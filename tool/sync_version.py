@@ -45,6 +45,12 @@ def main():
     # 显式传版本（如打 tag 时）→ build 从 1 开始；无参（沿用当前）→ build 自增
     build = "1" if explicit else str(int(build) + 1)
 
+    # versionCode 基于版本号计算，保证随版本单调递增（避免同版本或旧版本降级问题）
+    # 例：1.4.9 → 10409，1.5.1 → 10501，1.15.3 → 11503
+    parts = new.split(".")
+    vc = int(parts[0]) * 10000 + int(parts[1]) * 100 + int(parts[2])
+    version_code = str(vc)
+
     # 1) lib/state.dart
     state_path = os.path.join(ROOT, "lib", "state.dart")
     text = read(state_path)
@@ -55,11 +61,11 @@ def main():
     )
     write(state_path, text)
 
-    # 2) pubspec.yaml
+    # 2) pubspec.yaml：build 号用 versionCode（Flutter 构建 APK 时用它作为 versionCode）
     text = read(os.path.join(ROOT, "pubspec.yaml"))
     text = re.sub(
         r"^version:.*$",
-        "version: %s+%s" % (new, build),
+        "version: %s+%s" % (new, version_code),
         text,
         count=1,
         flags=re.M,
@@ -77,12 +83,12 @@ def main():
         )
         text = re.sub(
             r"flutter\.versionCode=.*",
-            "flutter.versionCode=%s" % build,
+            "flutter.versionCode=%s" % version_code,
             text,
         )
         write(lp_path, text)
 
-    print("version synced: %s+%s" % (new, build))
+    print("version synced: %s+%s (versionCode %s)" % (new, build, version_code))
 
 
 if __name__ == "__main__":
