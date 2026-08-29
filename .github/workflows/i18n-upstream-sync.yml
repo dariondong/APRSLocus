@@ -73,11 +73,16 @@ jobs:
           ]
           print('=== CJK string literals in upstream-touched UI files ===')
           lit = re.compile(r"(['\"])(?:(?!\1).)*[\u4e00-\u9fff](?:(?!\1).)*\1")
+          non_comment = {}
           for name in files:
+              kept=[]
               for i,line in enumerate(Path(name).read_text(encoding='utf-8').splitlines(),1):
                   s=line.strip()
-                  if s.startswith('//') or s.startswith('///'): continue
+                  if s.startswith('//') or s.startswith('///'):
+                      continue
+                  kept.append(line)
                   if lit.search(line): print(f'{name}:{i}: {s}')
+              non_comment[name]='\n'.join(kept)
           forbidden = [
               'Passcode 未验证','登录密码可能错误，无法正常收发消息',
               '配置已修改','重新连接后生效','已重新连接','连接失败，请检查配置',
@@ -87,8 +92,7 @@ jobs:
               "'搜索呼号…'", "'手动输入呼号'", "'已邀请'", "'点击邀请'"
           ]
           bad=[]
-          for name in files:
-              t=Path(name).read_text(encoding='utf-8')
+          for name,t in non_comment.items():
               for x in forbidden:
                   if x in t: bad.append((name,x))
           if bad:
