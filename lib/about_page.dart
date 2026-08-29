@@ -315,7 +315,7 @@ class _AboutPageState extends State<AboutPage>
                           _linkRow(
                             icon: Icons.translate_rounded,
                             label: S.of(context).codeContributionI18n,
-                            value: 'nimenhagg',
+                            value: 'BD3QID',
                             url: 'https://github.com/nimenhagg/APRSLocus-translation',
                           ),
                         ],
