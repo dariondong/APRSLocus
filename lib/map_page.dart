@@ -623,7 +623,7 @@ class _MapPageState extends State<MapPage>
     // 超过阈值才聚合（台站少时不聚合，保留单个标记体验）
     final clusterThreshold = _zoom < 8 ? 30 : 60;
     final stations = _visible;
-    if (stations.length > clusterThreshold) {
+    if (_clusterEnabled && stations.length > clusterThreshold) {
       return _buildClusteredMarkers(stations, size, clusterRadius);
     }
     return stations.map((s) {
@@ -1247,8 +1247,8 @@ class _MapPageState extends State<MapPage>
           color: _showTracks ? C.green : C.slate,
           onTap: () => setState(() => _showTracks = !_showTracks)),
       SizedBox(height: 6),
-      // 台站聚合开关（仅矢量地图）
-      if (_isVector) ...[
+      // 台站聚合开关（自绘 / 矢量地图有效）
+      if (!_isAmapJs) ...[
         RoundIconBtn(
             _clusterEnabled
                 ? Icons.blur_circular_rounded
