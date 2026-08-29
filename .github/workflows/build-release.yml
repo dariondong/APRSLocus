@@ -102,6 +102,21 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Setup Android signing keys
+        shell: bash
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "ANDROID_KEYSTORE_BASE64 未配置，使用 debug 签名"
+            exit 0
+          fi
+          mkdir -p android/keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore/release.keystore
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=aprslocus\nstoreFile=keystore/release.keystore\n' \
+            "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
       - name: Build APK (Release)
         run: flutter build apk --release
 
@@ -200,3 +215,41 @@ jobs:
             APRSLocus-Windows/*.exe
             APRSLocus-Android/*.apk
             APRSLocus-iOS/*.app
+
+      - name: Sync release to GitCode
+        shell: bash
+        run: |
+          set -e
+          # 未配置 GITCODE_TOKEN 时跳过
+          if [ -z "$GITCODE_TOKEN" ]; then
+            echo "GITCODE_TOKEN 未配置，跳过 GitCode 同步"
+            exit 0
+          fi
+          tag="${GITHUB_REF#refs/tags/}"
+          owner="DarionDong"
+          repo="APRSLocus"
+          api="https://api.gitcode.com/api/v5/repos/$owner/$repo"
+          # 创建 GitCode Release（已存在则忽略）
+          body="${{ steps.notes.outputs.notes }}"
+          release_id=$(curl -s -X POST "$api/releases" \
+            -H "Authorization: Bearer $GITCODE_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$(python3 -c "import json,sys;print(json.dumps(sys.argv[1]))" "$body")}" \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
+          if [ -z "$release_id" ]; then
+            # 可能已存在，查询现有 release id
+            release_id=$(curl -s "$api/releases/tags/$tag" \
+              -H "Authorization: Bearer $GITCODE_TOKEN" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
+          fi
+          echo "GitCode release id: $release_id"
+          # 上传资产
+          for f in APRSLocus-Windows/*.exe APRSLocus-Android/*.apk; do
+            echo "Uploading $f ..."
+            curl -s -X POST "$api/releases/$release_id/attach_files" \
+              -H "Authorization: Bearer $GITCODE_TOKEN" \
+              -F "files=@$f"
+            echo ""
+          done
+        env:
+          GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
