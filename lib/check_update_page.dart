@@ -265,7 +265,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       return;
     }
     final tag = rel.tagName;
-    final fileName = isWin ? 'APRSLocus_$tag.exe' : 'APRSLocus_$tag.apk';
+    // 本地缓存文件名：去掉 tag 的 v 前缀，与 CI 产物命名一致（APRSLocus_1.4.4.apk）
+    final ver = tag.replaceAll(RegExp('^v'), '');
+    final fileName = isWin ? 'APRSLocus_$ver.exe' : 'APRSLocus_$ver.apk';
     setState(() {
       _downloadingTag = tag;
       _progress = 0;

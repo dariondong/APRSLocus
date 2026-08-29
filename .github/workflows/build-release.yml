@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（如 1.5.0），留空则沿用 pubspec'
+        required: false
 
 jobs:
   build-windows:
@@ -19,6 +23,20 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      - name: Sync version
+        shell: pwsh
+        run: |
+          $ver = "${{ inputs.version }}"
+          if (-not $ver) {
+            $ref = "${{ github.ref }}"
+            if ($ref -match '^refs/tags/v') { $ver = $ref -replace '^refs/tags/v', '' }
+          }
+          if ($ver) {
+            python tool/sync_version.py $ver
+          } else {
+            python tool/sync_version.py
+          }
 
       - name: Install dependencies
         run: flutter pub get
@@ -64,17 +82,37 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Sync version
+        shell: bash
+        run: |
+          ver="${{ inputs.version }}"
+          if [ -z "$ver" ]; then
+            ref="${{ github.ref }}"
+            case "$ref" in refs/tags/v*) ver="${ref#refs/tags/v}";; esac
+          fi
+          if [ -n "$ver" ]; then
+            python tool/sync_version.py "$ver"
+          else
+            python tool/sync_version.py
+          fi
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build APK (Release)
         run: flutter build apk --release
 
+      - name: Rename APK
+        shell: bash
+        run: |
+          ver=$(grep -E '^version:' pubspec.yaml | head -1 | sed -E 's/version: ([0-9.]+).*/\1/')
+          mv build/app/outputs/flutter-apk/app-release.apk "build/app/outputs/flutter-apk/APRSLocus_${ver}.apk"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: APRSLocus-Android
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/APRSLocus_*.apk
 
   release:
     name: Publish Release
