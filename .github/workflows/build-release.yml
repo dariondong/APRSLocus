@@ -234,12 +234,10 @@ jobs:
 
           # 1. 创建 GitCode Release（已存在则忽略错误）
           echo "创建 GitCode Release $tag ..."
+          body_esc=$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$body")
           curl -sS -X POST "$api/releases?access_token=$token" \
             -H "Content-Type: application/json" \
-            -d "$(python3 -c "
-import json,sys
-print(json.dumps({'tag_name': sys.argv[1], 'name': sys.argv[2], 'body': sys.argv[3]}))
-" "$tag" "$tag" "$body")" --max-time 30 >/dev/null || true
+            -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$body_esc}" --max-time 30 >/dev/null || true
 
           # 2. 上传资产（官方 upload_url 接口）
           upload_file() {
@@ -249,15 +247,8 @@ print(json.dumps({'tag_name': sys.argv[1], 'name': sys.argv[2], 'body': sys.argv
             echo "获取上传地址: $filename ..."
             resp=$(curl -sS "$api/releases/$tag/upload_url?access_token=$token&file_name=$filename" --max-time 30)
             # 解析 url + headers
-            url=$(echo "$resp" | python3 -c "import json,sys;print(json.load(sys.stdin)['url'])")
-            # 提取 headers 中所有 x-obs-* 和 Content-Type
-            hdrs=$(echo "$resp" | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-h=d.get('headers',{})
-for k,v in h.items():
-    print('-H \"%s: %s\"' % (k,v))
-")
+            url=$(echo "$resp" | python3 -c 'import json,sys;print(json.load(sys.stdin)["url"])')
+            hdrs=$(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);h=d.get("headers",{});print(" ".join(["-H \""+k+": "+v+"\"" for k,v in h.items()]))')
             echo "上传: $filename ..."
             eval curl -sS -X PUT "$url" $hdrs --upload-file "$file" --max-time 300
             echo ""
