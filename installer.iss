@@ -1,5 +1,7 @@
 #define MyAppName "APRSLocus"
-#define MyAppVersion "1.4.4"
+#ifndef MyAppVersion
+#define MyAppVersion "1.4.5"
+#endif
 #define MyAppPublisher "APRSLocus"
 #define MyAppExeName "aprslocus.exe"
 #define MyAppAssocName MyAppName + " 文件"
