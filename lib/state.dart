@@ -2138,9 +2138,9 @@ class AppState extends ChangeNotifier {
   }
 
   // 信标定时器（每秒检查）
-  int get online => stations.where((s) => s.status != St.offline).length;
-  int get moving => stations.where((s) => s.status == St.moving).length;
-  int get emergency => stations.where((s) => s.status == St.emergency).length;
+  int get online => stations.where((s) => s.effectiveStatus != St.offline).length;
+  int get moving => stations.where((s) => s.effectiveStatus == St.moving).length;
+  int get stoppedCount => stations.where((s) => s.effectiveStatus == St.stopped).length;
 
   // ─── 地图焦点（台站列表 → 地图定位） ───
   Station? mapFocus;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'models.dart';
@@ -19,6 +20,7 @@ class _StationsPageState extends State<StationsPage> {
   String _app = 'all'; // 软件筛选：all / aprslocus
   String _sort = 'call';
   final _searchCtrl = TextEditingController();
+  Timer? _searchDebounce; // 搜索防抖：台站多时避免逐字重建列表
 
   // 列表缓存：台站版本 + 筛选参数未变时复用，避免每 60ms 重建时全量重算
   int _cacheVersion = -1;
@@ -27,6 +29,7 @@ class _StationsPageState extends State<StationsPage> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchCtrl.dispose();
     super.dispose();
   }
@@ -58,13 +61,13 @@ class _StationsPageState extends State<StationsPage> {
     }
     switch (_filter) {
       case 'online':
-        s = s.where((s) => s.status != St.offline).toList();
+        s = s.where((s) => s.effectiveStatus != St.offline).toList();
         break;
       case 'moving':
-        s = s.where((s) => s.status == St.moving).toList();
+        s = s.where((s) => s.effectiveStatus == St.moving).toList();
         break;
-      case 'emergency':
-        s = s.where((s) => s.status == St.emergency).toList();
+      case 'stopped':
+        s = s.where((s) => s.effectiveStatus == St.stopped).toList();
         break;
     }
     switch (_type) {
@@ -133,7 +136,13 @@ class _StationsPageState extends State<StationsPage> {
               // 搜索框
               TextField(
                 controller: _searchCtrl,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) {
+                  // 防抖：输入停止 300ms 才重建列表，台站多时避免卡顿
+                  _searchDebounce?.cancel();
+                  _searchDebounce = Timer(const Duration(milliseconds: 300), () {
+                    if (mounted) setState(() {});
+                  });
+                },
                 style: ts(13),
                 decoration: InputDecoration(
                   hintText: S.of(context).searchHint,
@@ -183,7 +192,7 @@ class _StationsPageState extends State<StationsPage> {
                     Row(children: [
                       _statMini(S.of(context).online, '${st.online}', C.green),
                       _statMini(S.of(context).moving, '${st.moving}', C.blue),
-                      _statMini(S.of(context).emergency, '${st.emergency}', C.red),
+                      _statMini('静止', '${st.stoppedCount}', C.yellow),
                       _statMini(S.of(context).totalStations, '${st.stations.length}', C.slate),
                       Spacer(),
                       _sortMenu(),
@@ -197,8 +206,8 @@ class _StationsPageState extends State<StationsPage> {
                         () => setState(() => _filter = _filter == 'online' ? 'all' : 'online')),
                     _miniChip(S.of(context).moving, _filter == 'moving', C.blue,
                         () => setState(() => _filter = _filter == 'moving' ? 'all' : 'moving')),
-                    _miniChip(S.of(context).emergency, _filter == 'emergency', C.red,
-                        () => setState(() => _filter = _filter == 'emergency' ? 'all' : 'emergency')),
+                    _miniChip('静止', _filter == 'stopped', C.yellow,
+                        () => setState(() => _filter = _filter == 'stopped' ? 'all' : 'stopped')),
                     Container(width: 1, height: 16, color: C.border),
                     _miniChip(S.of(context).mobile, _type == 'mobile', C.blue,
                         () => setState(() => _type = _type == 'mobile' ? 'all' : 'mobile')),
@@ -352,7 +361,7 @@ class _StationsPageState extends State<StationsPage> {
                       child: _callText(s, _query),
                     ),
                     SizedBox(width: 8),
-                    StatusBadge(s.status),
+                    StatusBadge(s.effectiveStatus),
                   ]),
                   SizedBox(height: 2),
                   Text('${s.typeName} · ${s.comment ?? ''}',

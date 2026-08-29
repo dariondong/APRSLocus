@@ -78,7 +78,7 @@ class _MapPageState extends State<MapPage>
   /// 脉冲动画按需启停：没有移动/选中台站时停转，省掉每帧重建开销
   void _syncPulse() {
     final need = _visible.any((s) =>
-        s.status == St.moving || (_selected?.call == s.call));
+        s.effectiveStatus == St.moving || (_selected?.call == s.call));
     if (need && !_pulse.isAnimating) {
       _pulse.repeat();
     } else if (!need && _pulse.isAnimating) {
@@ -635,7 +635,7 @@ class _MapPageState extends State<MapPage>
         return const SizedBox.shrink();
       }
       final sel = _selected?.call == s.call;
-      final pulsing = s.status == St.moving || sel;
+      final pulsing = s.effectiveStatus == St.moving || sel;
       final dx = pos.dx - 28;
       final dy = pos.dy - 28;
       return Positioned(
@@ -755,7 +755,7 @@ class _MapPageState extends State<MapPage>
                 alignment: Alignment.center,
                 clipBehavior: Clip.none,
                 children: [
-                  if (s.status == St.moving || sel)
+                  if (s.effectiveStatus == St.moving || sel)
                     _PulseRing(color: s.color, sel: sel, anim: _pulse),
                   Container(
                     width: sel ? 30 : 22,
@@ -810,7 +810,7 @@ class _MapPageState extends State<MapPage>
   }
 
   Widget _infoWindow(Station s) {
-    final st = statusLabel(s.status);
+    final st = statusLabel(s.effectiveStatus);
     final info = StringBuffer(s.call)
       ..write('  ·  $st');
     if (s.speed != null) info.write('  ·  ${s.speedStr}');
@@ -1139,7 +1139,8 @@ class _MapPageState extends State<MapPage>
               ),
             ),
             const SizedBox(width: 5),
-            Text(group, style: ts(10, c: color, w: FontWeight.w700)),
+            Text(group == '高德' ? S.of(context).osAmap : S.of(context).otherType,
+                style: ts(10, c: color, w: FontWeight.w700)),
           ]),
         ),
         for (final t in types)
@@ -1194,7 +1195,9 @@ class _MapPageState extends State<MapPage>
           SizedBox(height: 5),
           _lg(C.blue, S.of(context).moving),
           SizedBox(height: 5),
-          _lg(C.red, S.of(context).emergency),
+          _lg(C.yellow, '静止'),
+          SizedBox(height: 5),
+          _lg(C.grey, S.of(context).offline),
         ],
       ),
     );
@@ -1353,7 +1356,7 @@ class _MapPageState extends State<MapPage>
                   // 高德系列
                   _mapTypeGroup('高德', C.blue, () => entry.remove()),
                   // 其他地图
-                  _mapTypeGroup(S.of(context).otherType, C.slate, () => entry.remove()),
+                  _mapTypeGroup('其他', C.slate, () => entry.remove()),
                 ],
               ),
             ),
