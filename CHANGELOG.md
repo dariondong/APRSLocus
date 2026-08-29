@@ -2,6 +2,13 @@
 
 ## [1.4.8] - 2026-08-29
 
+> ⚠️ **重要：本次更换了 Android 签名（正式 release keystore）**
+>
+> 由于签名密钥更换，**老版本用户无法直接覆盖升级**，需先卸载旧版 APRSlocus 再安装新版（会清空本地数据）。
+> 自 1.4.8 起签名固定，以后可正常覆盖升级。
+>
+> 备份提示：卸载前建议记录我的呼号 / 台站备注 / 自定义主题等设置。
+
 ### ✨ 新增
 - **GitHub Actions 自动发版**：打 tag 自动构建 Windows 安装包 + Android APK，并发布 GitHub Release（备注自动从 CHANGELOG 提取）
 - **Android release 签名**：配置 keystore 正式签名，覆盖安装签名一致
