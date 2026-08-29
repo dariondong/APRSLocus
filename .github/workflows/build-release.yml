@@ -219,7 +219,6 @@ jobs:
       - name: Sync release to GitCode
         shell: bash
         run: |
-          set -e
           # 未配置 GITCODE_TOKEN 时跳过
           if [ -z "$GITCODE_TOKEN" ]; then
             echo "GITCODE_TOKEN 未配置，跳过 GitCode 同步"
@@ -239,18 +238,29 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$body_esc}" --max-time 30 >/dev/null || true
 
-          # 2. 上传资产（官方 upload_url 接口）
+          # 2. 上传资产（官方 upload_url 接口，headers 用 Bash 数组避免拼接错误）
           upload_file() {
             local file="$1"
             local filename
             filename=$(basename "$file")
             echo "获取上传地址: $filename ..."
             resp=$(curl -sS "$api/releases/$tag/upload_url?access_token=$token&file_name=$filename" --max-time 30)
-            # 解析 url + headers
-            url=$(echo "$resp" | python3 -c 'import json,sys;print(json.load(sys.stdin)["url"])')
-            hdrs=$(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);h=d.get("headers",{});print(" ".join(["-H \""+k+": "+v+"\"" for k,v in h.items()]))')
+            echo "Upload URL check..." 
+
+            upload_url=$(echo "$resp" | python3 -c 'import json,sys;print(json.load(sys.stdin)["url"])')
+            if [ -z "$upload_url" ]; then
+              echo "ERROR: GitCode 未返回上传 URL，跳过 $filename"
+              return 1
+            fi
+
+            # 用 Bash 数组保存 -H 参数（每个 header 独立参数，杜绝 -H 拼接错误）
+            curl_args=()
+            while IFS= read -r line; do
+              [ -n "$line" ] && curl_args+=(-H "$line")
+            done < <(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);print("\n".join([k+": "+v for k,v in d.get("headers",{}).items()]))')
+
             echo "上传: $filename ..."
-            eval curl -sS -X PUT "$url" $hdrs --upload-file "$file" --max-time 300
+            curl -sS -X PUT "${curl_args[@]}" --upload-file "$file" "$upload_url" --max-time 300
             echo ""
           }
 
