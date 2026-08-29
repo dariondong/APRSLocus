@@ -331,6 +331,7 @@ class _AboutPageState extends State<AboutPage>
                   _eggRow('呼号', 'BG7PGW'),
                   _eggRow('呼号', 'BG7LMW'),
                   _eggRow('呼号', 'BG7OSL'),
+                  _eggRow('呼号', 'BD3QID'),
                 ]),
               ),
               SizedBox(height: 20),

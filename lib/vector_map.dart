@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -238,15 +239,9 @@ class _VectorMapViewState extends State<VectorMapView> {
                   // 我的位置
                   if (widget.myHasFix && widget.myLat != null && widget.myLng != null)
                     MarkerLayer(markers: [_myMarker()]),
-                  // 台站标记
+                  // 台站标记（台站多时聚合为球，减少渲染量）
                   MarkerLayer(
-                    markers: widget.stations
-                        .where((s) =>
-                            s.call != widget.myCall &&
-                            s.lat != 0 &&
-                            s.lng != 0)
-                        .map((s) => _stationMarker(s))
-                        .toList(),
+                    markers: _buildStationMarkers(),
                   ),
                 ],
               ),
@@ -348,6 +343,99 @@ class _VectorMapViewState extends State<VectorMapView> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
+  List<Marker> _buildStationMarkers() {
+    final zoom = _mapReady ? _map.camera.zoom : 11.0;
+    // 台站数量多且缩放级别低时聚合
+    final total = widget.stations
+        .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)
+        .length;
+    // 台站少于阈值或已放大到足够清晰时不聚合
+    if (total < 60 || zoom >= 13) {
+      return widget.stations
+          .where((s) =>
+              s.call != widget.myCall && s.lat != 0 && s.lng != 0)
+          .map((s) => _stationMarker(s))
+          .toList();
+    }
+    final markers = <Marker>[];
+    for (final c in _clusterStations()) {
+      if (c.items.length > 1) {
+        markers.add(_clusterMarker(c.lat, c.lng, c.items));
+      } else {
+        markers.add(_stationMarker(c.items.first));
+      }
+    }
+    return markers;
+  }
+
+  /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
+  /// 返回 (经纬度中心, 台站列表) 列表
+  List<({double lat, double lng, List<Station> items})> _clusterStations() {
+    final zoom = _mapReady ? _map.camera.zoom : 11.0;
+    // 网格大小（度）：zoom 每 +2 缩小一半
+    final gridDeg = 0.5 / math.pow(2, (zoom - 8).clamp(0, 10)).toDouble();
+    final clusters = <({double lat, double lng, List<Station> items})>[];
+    final keyMap = <String, int>{};
+
+    for (final s in widget.stations) {
+      if (s.call == widget.myCall || s.lat == 0 || s.lng == 0) continue;
+      // 量化到网格
+      final gx = (s.lng / gridDeg).floor();
+      final gy = (s.lat / gridDeg).floor();
+      final key = '$gx,$gy';
+      final idx = keyMap[key];
+      if (idx == null) {
+        keyMap[key] = clusters.length;
+        clusters.add((
+          lat: s.lat,
+          lng: s.lng,
+          items: [s],
+        ));
+      } else {
+        final c = clusters[idx];
+        // 更新中心（均值）
+        final n = c.items.length;
+        clusters[idx] = (
+          lat: (c.lat * n + s.lat) / (n + 1),
+          lng: (c.lng * n + s.lng) / (n + 1),
+          items: [...c.items, s],
+        );
+      }
+    }
+    return clusters;
+  }
+
+  /// 聚合球 Marker：显示数量，点击放大
+  Marker _clusterMarker(double lat, double lng, List<Station> items) {
+    final count = items.length;
+    final size = (24 + count.clamp(0, 20)).toDouble();
+    return Marker(
+      point: LatLng(lat, lng),
+      width: size,
+      height: size,
+      child: GestureDetector(
+        onTap: () {
+          // 放大一级展开聚合
+          final z = (_map.camera.zoom + 1).clamp(2.0, 19.0);
+          _map.move(LatLng(lat, lng), z);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.indigo.withValues(alpha: 0.85),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: softShadow(blur: 8, alpha: 0.3),
+          ),
+          child: Center(
+            child: Text('$count',
+                style: ts(13, c: Colors.white, w: FontWeight.w800)),
+          ),
         ),
       ),
     );

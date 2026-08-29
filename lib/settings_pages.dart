@@ -1041,7 +1041,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
         SettingsSwitch('过滤中心跟随我的位置', value: st.filterFollow, color: C.cyan,
             onChanged: (v) {
           st.filterFollow = v;
-          st.refreshAprsFilter();
           _checkConfigDirty();
         }),
         Padding(
@@ -1054,9 +1053,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 style: ts(12),
                 onChanged: (v) {
-                  final lat = double.tryParse(v);
-                  if (lat != null) st.filterLat = lat;
-                  _checkConfigDirty();
+                  // 只改输入框，点"保存并应用"才生效
+                  setState(() {});
                 },
                 decoration: InputDecoration(
                   hintText: S.of(context).latitude,
@@ -1079,9 +1077,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 style: ts(12),
                 onChanged: (v) {
-                  final lng = double.tryParse(v);
-                  if (lng != null) st.filterLng = lng;
-                  _checkConfigDirty();
+                  // 只改输入框，点"保存并应用"才生效
+                  setState(() {});
                 },
                 decoration: InputDecoration(
                   hintText: S.of(context).longitude,
@@ -1099,13 +1096,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           ]),
         ),
         SettingsInput(S.of(context).filterRadius, _filterRadius,
-            tip: '接收半径（km），不设上限',
+            tip: '接收半径（km），点"保存并应用"生效',
             onChanged: (v) {
-          final r = int.tryParse(v);
-          if (r != null && r >= 10) st.filterRadius = r;
-          _checkConfigDirty();
+          // 只改输入框，点"保存并应用"才生效
+          setState(() {});
         }),
-        // 快捷半径预设
+        // 快捷半径预设（写入输入框，待保存应用）
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
           child: Wrap(
@@ -1115,25 +1111,24 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               for (final r in [50, 100, 200, 500, 1000, 2000])
                 GestureDetector(
                   onTap: () {
-                    st.filterRadius = r;
                     _filterRadius.text = '$r';
-                    _checkConfigDirty();
+                    setState(() {});
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: st.filterRadius == r ? C.cyanBg : C.bgSoft,
+                      color: _filterRadius.text == '$r' ? C.cyanBg : C.bgSoft,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: st.filterRadius == r ? C.cyan : C.border,
-                        width: st.filterRadius == r ? 1.5 : 1,
+                        color: _filterRadius.text == '$r' ? C.cyan : C.border,
+                        width: _filterRadius.text == '$r' ? 1.5 : 1,
                       ),
                     ),
                     child: Text('$r km',
                         style: ts(11,
-                            c: st.filterRadius == r ? C.cyan : C.slate,
-                            w: st.filterRadius == r
+                            c: _filterRadius.text == '$r' ? C.cyan : C.slate,
+                            w: _filterRadius.text == '$r'
                                 ? FontWeight.w700
                                 : FontWeight.w500)),
                   ),
@@ -1152,11 +1147,11 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           child: OutlinedButton.icon(
             onPressed: () {
               if (st.myLat != null && st.myLng != null) {
-                st.filterFollow = false;
-                st.setFilter(st.myLat!, st.myLng!, st.filterRadius);
-                _filterLat.text = st.filterLat.toStringAsFixed(2);
-                _filterLng.text = st.filterLng.toStringAsFixed(2);
-                _checkConfigDirty();
+                // 只填入经纬度输入框，点"保存并应用"才生效
+                setState(() {
+                  _filterLat.text = st.myLat!.toStringAsFixed(4);
+                  _filterLng.text = st.myLng!.toStringAsFixed(4);
+                });
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(S.of(context).noFixYet)),
@@ -1187,20 +1182,24 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                     borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () {
-                // 读取当前输入框的值并保存
-                final lat = double.tryParse(_filterLat.text);
-                final lng = double.tryParse(_filterLng.text);
-                final r = int.tryParse(_filterRadius.text);
-                if (lat == null || lng == null || r == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(S.of(context).invalidCoords)),
-                  );
-                  return;
+                // 读取输入框的值并统一保存生效
+                if (st.filterFollow) {
+                  // 跟随我的位置：无需手动经纬度，应用当前半径即可
+                  st.setFilter(st.filterLat, st.filterLng, st.filterRadius);
+                } else {
+                  final lat = double.tryParse(_filterLat.text);
+                  final lng = double.tryParse(_filterLng.text);
+                  final r = int.tryParse(_filterRadius.text);
+                  if (lat == null || lng == null || r == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(S.of(context).invalidCoords)),
+                    );
+                    return;
+                  }
+                  st.setFilter(lat, lng, r);
+                  _filterLat.text = st.filterLat.toStringAsFixed(4);
+                  _filterLng.text = st.filterLng.toStringAsFixed(4);
                 }
-                st.filterFollow = false;
-                st.setFilter(lat, lng, r);
-                _filterLat.text = st.filterLat.toStringAsFixed(2);
-                _filterLng.text = st.filterLng.toStringAsFixed(2);
                 _filterRadius.text = '${st.filterRadius}';
                 _checkConfigDirty();
                 ScaffoldMessenger.of(context).showSnackBar(
