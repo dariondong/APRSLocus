@@ -21,13 +21,15 @@ API = f"https://api.gitcode.com/api/v5/repos/{OWNER}/{REPO}"
 AUTH = {"private-token": TOKEN}
 
 
-def call(url, data=None, method="GET", headers=None):
+def call(url, data=None, method="GET", headers=None, timeout=300):
     req = urllib.request.Request(url, data=data, method=method, headers=headers or {})
     try:
-        resp = urllib.request.urlopen(req, timeout=300)
+        resp = urllib.request.urlopen(req, timeout=timeout)
         return resp.status, resp.read()
     except urllib.error.HTTPError as e:
         return e.code, e.read()
+    except Exception as e:
+        return -1, str(e).encode()
 
 
 def create_release():
@@ -58,19 +60,21 @@ def upload(path):
     size = os.path.getsize(path)
     print(f"获取上传地址: {filename} ({size} bytes) ...")
     q = urllib.parse.urlencode({"file_name": filename, "file_size": size})
-    st, resp = call(f"{API}/releases/{VERSION}/upload_url?{q}", headers=AUTH)
+    st, resp = call(f"{API}/releases/{VERSION}/upload_url?{q}", headers=AUTH, timeout=30)
     if st != 200:
         print(resp[:500])
-        raise SystemExit(f"获取上传地址失败: {filename}")
+        return False
     info = json.loads(resp)
     print(f"上传: {filename} ...")
     with open(path, "rb") as f:
         data = f.read()
-    st, resp = call(info["url"], data, "PUT", info.get("headers", {}))
+    # OBS 上传慢：短超时 45s，失败跳过不阻塞（用户可手动上传）
+    st, resp = call(info["url"], data, "PUT", info.get("headers", {}), timeout=45)
     print(f"上传结果: {filename} HTTP {st}")
     if st not in (200, 201):
         print(resp[:500])
-        raise SystemExit(f"上传失败: {filename}")
+        return False
+    return True
 
 
 def main():
@@ -81,10 +85,12 @@ def main():
         print("GITHUB_REF_NAME 为空，跳过")
         return
     create_release()
+    # 尽力上传 apk/exe；GitCode OBS 上传慢，超时/失败不阻塞（保留源码包）
     for pat in ("APRSLocus-Windows/*.exe", "APRSLocus-Android/*.apk"):
         for p in sorted(glob.glob(pat)):
-            upload(p)
-    print("GitCode Release 同步完成")
+            if not upload(p):
+                print(f"警告: {os.path.basename(p)} 上传失败，请手动上传")
+    print("GitCode Release 同步完成（附件如失败可手动上传）")
 
 
 if __name__ == "__main__":
