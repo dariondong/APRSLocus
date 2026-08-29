@@ -660,12 +660,56 @@ class _HomePageState extends State<HomePage> {
             boxShadow: [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 4)]),
       );
 
-  // ─── 未连接提示横幅 ───
+  // ─── 未连接 / Passcode 错误提示横幅 ───
   Widget _connBanner() {
     return ListenableBuilder(
       listenable: widget.state,
       builder: (context, _) {
         final st = widget.state;
+        // Passcode 未验证：显示黄色警告横幅（类似未连接提示）
+        if (st.connected && st.passcodeInvalid) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                  colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: softShadow(blur: 16, alpha: 0.22),
+            ),
+            child: Row(children: [
+              const Icon(Icons.warning_amber_rounded,
+                  color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Passcode 未验证',
+                          style: ts(12, c: Colors.white, w: FontWeight.w700)),
+                      Text('登录密码可能错误，无法正常收发消息',
+                          style: ts(10, c: Colors.white70)),
+                    ]),
+              ),
+              GestureDetector(
+                onTap: () {
+                  if (_tab != 4) setState(() => _tab = 4);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text('去设置', style: ts(11, c: Colors.white, w: FontWeight.w700)),
+                ),
+              ),
+            ]),
+          );
+        }
         if (st.connected) return const SizedBox.shrink();
         final connecting = st.connecting;
         return Container(

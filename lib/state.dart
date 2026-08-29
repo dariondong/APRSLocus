@@ -14,7 +14,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.5.0';
+  static const appVersion = '1.5.1';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -333,6 +333,8 @@ class AppState extends ChangeNotifier {
   bool connected = false;
   bool connecting = false;
   String connInfo = '未连接 · 点击播放按钮连接 APRS-IS';
+  // Passcode 是否被服务器判定无效（logresp unverified）
+  bool passcodeInvalid = false;
 
   // 坐标显示：'wgs84' 标准 / 'gcj' 高德火星坐标
   String coordDatum = 'wgs84';
@@ -806,9 +808,14 @@ class AppState extends ChangeNotifier {
     super.dispose();
   }
 
+  int _reconnectAttempt = 0; // 连续失败次数（用于渐进重试）
+
   void _scheduleReconnect() {
     _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(const Duration(seconds: 8), () {
+    // 渐进式重试：8s → 16s → 32s → 60s 封顶
+    final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
+    _reconnectAttempt++;
+    _reconnectTimer = Timer(Duration(seconds: backoff), () {
       if (_disposed || connected || _userDisconnected) return;
       _connect();
     });
@@ -827,6 +834,8 @@ class AppState extends ChangeNotifier {
     if (ok) {
       connected = true;
       _userDisconnected = false;
+      _reconnectAttempt = 0; // 连接成功，重置重试计数
+      passcodeInvalid = false; // 连接成功后重置，等待服务器验证
       _lastTx = DateTime.now();
       _lastFilter = aprs.filter; // 记录本次连接的过滤器
       connInfo = '已连接 · $myCall 在线';
@@ -835,8 +844,9 @@ class AppState extends ChangeNotifier {
       _sendBeaconNow();
     } else {
       connected = false;
-      connInfo = '连接失败 · 8秒后重试…';
-      _log(LogLevel.error, '连接', '连接失败，8 秒后自动重试');
+      final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
+      connInfo = '连接失败 · ${backoff}s 后重试…';
+      _log(LogLevel.error, '连接', '连接失败，${backoff} 秒后自动重试');
     }
     _notify();
     _updateNotification();
@@ -1008,6 +1018,7 @@ class AppState extends ChangeNotifier {
   Future<void> toggleConnect() async {
     if (connected) {
       _userDisconnected = true;
+      _reconnectAttempt = 0; // 手动断开，重置重试计数
       _reconnectTimer?.cancel();
       aprs.disconnect();
       connected = false;
@@ -1023,7 +1034,27 @@ class AppState extends ChangeNotifier {
   void _onAprsLine(String line) {
     // 简单解析收到的 APRS 帧
     try {
-      if (line.startsWith('#')) return; // 注释/服务器消息
+      if (line.startsWith('#')) {
+        // 服务器握手响应：# logresp {call} verified / unverified
+        final lm = RegExp(r'#\s*logresp[:\s]*(\S+)\s+(unverified|verified)', caseSensitive: false)
+            .firstMatch(line);
+        if (lm != null) {
+          final status = lm.group(2)!.toLowerCase();
+          if (status == 'unverified') {
+            passcodeInvalid = true;
+            _log(LogLevel.warn, '连接', '登录未验证：passcode 可能错误（unverified）');
+            if (connected) {
+              connInfo = '已连接 · 未验证（passcode 可能错误）';
+              _notify();
+              _updateNotification();
+            }
+          } else {
+            passcodeInvalid = false;
+            _log(LogLevel.info, '连接', '登录已通过服务器验证');
+          }
+        }
+        return; // 注释/服务器消息
+      }
       final sep = line.indexOf('>');
       final bodySep = line.indexOf(':');
       if (sep < 0 || bodySep < 0) return;
