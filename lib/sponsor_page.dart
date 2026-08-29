@@ -318,9 +318,7 @@ class SponsorPage extends StatelessWidget {
                       width: 260,
                       height: 260,
                       color: C.greyBg,
-                      child: const Center(
-                        child: Text(S.of(context).qrLoadFailed),
-                      ),
+                      child: Center(child: Text(S.of(context).qrLoadFailed)),
                     ),
                   ),
                 ),

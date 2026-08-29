@@ -182,6 +182,10 @@ String localizedSystemMessage(BuildContext context, String value) {
   if (m != null) return S.of(context).systemMemberLeft(m.group(1)!);
   m = RegExp(r'^(.+) 拒绝了邀请$').firstMatch(value);
   if (m != null) return S.of(context).systemInviteDeclined(m.group(1)!);
+  m = RegExp(r'^(.+) 已加入群组$').firstMatch(value);
+  if (m != null) return S.of(context).systemMemberJoined(m.group(1)!);
+  m = RegExp(r'^(.+) 已退出群组$').firstMatch(value);
+  if (m != null) return S.of(context).systemMemberLeft(m.group(1)!);
   return value;
 }
 
