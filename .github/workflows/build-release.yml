@@ -117,9 +117,53 @@ jobs:
           name: APRSLocus-Android
           path: build/app/outputs/flutter-apk/APRSLocus_*.apk
 
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Sync version
+        shell: bash
+        run: |
+          ver="${{ inputs.version }}"
+          if [ -z "$ver" ]; then
+            ref="${{ github.ref }}"
+            case "$ref" in refs/tags/v*) ver="${ref#refs/tags/v}";; esac
+          fi
+          if [ -n "$ver" ]; then
+            python tool/sync_version.py "$ver"
+          else
+            python tool/sync_version.py
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods --no-document
+          pod setup --silent
+
+      - name: Build iOS (Release, no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload iOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-iOS
+          path: build/ios/iphoneos/*.app
+
   release:
     name: Publish Release
-    needs: [build-windows, build-android]
+    needs: [build-windows, build-android, build-ios]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -160,3 +204,4 @@ jobs:
           files: |
             APRSLocus-Windows/*.exe
             APRSLocus-Android/*.apk
+            APRSLocus-iOS/*.app
