@@ -37,6 +37,10 @@ migrate_working_dir/
 # Inno Setup 输出
 /output/
 
+# Android 签名（不提交到 git）
+android/key.properties
+android/keystore/
+
 # Symbolication related
 app.*.symbols
 
