@@ -14,7 +14,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.4.9';
+  static const appVersion = '1.5.0';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -296,8 +296,6 @@ class AppState extends ChangeNotifier {
   /// 高性能版本：直接传 Station 对象，避免 indexWhere 线性查找（列表遍历时使用）
   bool stationAllowedFor(Station s) {
     if (s.favorite || s.manual) return true;
-    // 过滤不符合规范的呼号
-    if (!isValidCallsign(s.call)) return false;
     if (_matchReceiveFilter(s.call)) return true;
     // 其他台站：接收特殊类型（中继/气象/FMO）台站
     if (receiveOthers) {
@@ -525,6 +523,9 @@ class AppState extends ChangeNotifier {
   }
 
   /// 我的位置对应的台站对象（供列表/详情复用）
+  /// 我的位置轨迹（最近 N 个定位点）
+  final List<TrackPt> myTrack = [];
+
   Station? get myStation => myHasFix      ? Station(
           call: myCall,
           symbol: mySymbol,
@@ -911,6 +912,14 @@ class AppState extends ChangeNotifier {
     mySpeed = speed * 3.6;
     if (bearing >= 0) myCourse = bearing;
     locStatus = '已定位';
+    // 记录我的轨迹（限最近 200 点，间隔>20m 才记录避免冗余）
+    final last = myTrack.isEmpty ? null : myTrack.last;
+    if (last == null || haversine(last.lat, last.lng, lat, lng) > 0.02) {
+      myTrack.add(TrackPt(lat, lng, DateTime.now()));
+      if (myTrack.length > 200) {
+        myTrack.removeRange(0, myTrack.length - 200);
+      }
+    }
     // 过滤中心跟随我的位置
     if (filterFollow) {
       filterLat = lat;
@@ -1292,10 +1301,14 @@ class AppState extends ChangeNotifier {
       // 创建本地群组记录（我是成员，不是群主）
       g = createGroup(
         name,
-        {}, // 成员列表稍后填充
+        {from, myCall}, // 群主 + 自己作为初始成员
         groupCall: groupCall,
         owner: from,
       );
+      // 邀请者是群主，标记为已加入；自己视为已加入
+      g.memberStatus[from.toUpperCase()] = GroupMemberStatus.joined;
+      g.memberStatus[myCall.toUpperCase()] = GroupMemberStatus.joined;
+      _saveChatGroups();
     }
     _log(LogLevel.info, '群聊', '收到 ${from} 的邀请：${g.name}');
     // 系统通知（前后台都提示邀请）
@@ -1427,13 +1440,6 @@ class AppState extends ChangeNotifier {
   /// 将解码后的位置更新/添加到台站列表（地图/列表实时可见）
   /// raw 为原始数据包（用于识别 FMO 等特殊台站字段）
   void _upsertStation(String call, ParsedPos p, {String? raw, String? path}) {
-    // 过滤不符合规范的呼号台站（WIDE/TCPIP/APRS 等非台站标识，除非已是收藏/手动）
-    if (!isValidCallsign(call)) {
-      final existing = stations.indexWhere((s) => s.call == call);
-      if (existing < 0 || !(stations[existing].favorite || stations[existing].manual)) {
-        return;
-      }
-    }
     // 国家/地区接收筛选：未选择国家时不限制；
     // 开启「其他台站」时放行特殊类型（中继/气象/FMO/APRSlocus）；
     // 否则仅保留匹配国家前缀的台站（收藏/手动台站除外）
@@ -1703,8 +1709,6 @@ class AppState extends ChangeNotifier {
           final favorite = m['favorite'] as bool? ?? false;
           final manual = m['manual'] as bool? ?? false;
           final sym = m['symbol'] as String? ?? '/';
-          // 过滤不符合规范的呼号（收藏/手动例外）
-          if (!favorite && !manual && !isValidCallsign(call)) continue;
           // 国家筛选：非收藏/手动且不匹配所选国家的历史台站不加载
           // 开启「其他台站」时放行特殊类型（中继 R/#、气象 W/w、FMO i）
           final special = receiveOthers &&

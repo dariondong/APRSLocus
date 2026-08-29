@@ -260,8 +260,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       List<_ReleaseInfo> releases = [];
       for (final r in data) {
         if (r is! Map) continue;
+        // 统一去掉 tag 的前导 v（如 v1.4.9 → 1.4.9），避免显示两个 v
+        final tag = (r['tag_name'] ?? '').toString().replaceFirst(RegExp(r'^[Vv]'), '');
         releases.add(_ReleaseInfo(
-          tagName: (r['tag_name'] ?? '').toString(),
+          tagName: tag,
           name: (r['name'] ?? (r['tag_name'] ?? '')).toString(),
           body: (r['body'] ?? '').toString(),
           prerelease: r['prerelease'] == true,

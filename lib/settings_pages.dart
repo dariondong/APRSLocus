@@ -1099,11 +1099,48 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           ]),
         ),
         SettingsInput(S.of(context).filterRadius, _filterRadius,
+            tip: '接收半径（km），不设上限',
             onChanged: (v) {
           final r = int.tryParse(v);
           if (r != null && r >= 10) st.filterRadius = r;
           _checkConfigDirty();
         }),
+        // 快捷半径预设
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final r in [50, 100, 200, 500, 1000, 2000])
+                GestureDetector(
+                  onTap: () {
+                    st.filterRadius = r;
+                    _filterRadius.text = '$r';
+                    _checkConfigDirty();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: st.filterRadius == r ? C.cyanBg : C.bgSoft,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: st.filterRadius == r ? C.cyan : C.border,
+                        width: st.filterRadius == r ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Text('$r km',
+                        style: ts(11,
+                            c: st.filterRadius == r ? C.cyan : C.slate,
+                            w: st.filterRadius == r
+                                ? FontWeight.w700
+                                : FontWeight.w500)),
+                  ),
+                ),
+            ],
+          ),
+        ),
         SettingsInput(S.of(context).maxStations, _maxStations,
             tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
             onChanged: (v) {
@@ -1399,14 +1436,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   }
 
   void _checkConfigDirty() {
+    // 仅服务器相关配置变化才显示顶部"重新连接"横幅；
+    // 过滤范围修改通过卡片内的"保存并应用过滤"按钮应用（见 _filterCard）
     final dirty = st.aprs.server != _origServer ||
         st.aprs.port != _origPort ||
         st.aprs.passcode != _origPass ||
-        st.aprs.wsUrl != _origWs ||
-        st.filterRadius != _origFilterRadius ||
-        st.filterFollow != _origFilterFollow ||
-        (st.filterLat - _origFilterLat).abs() > 0.0001 ||
-        (st.filterLng - _origFilterLng).abs() > 0.0001;
+        st.aprs.wsUrl != _origWs;
     if (dirty != _configDirty) {
       setState(() => _configDirty = dirty);
     }
