@@ -1,0 +1,39 @@
+name: aprslocus
+description: "APRSlocus - APRS Tracking & Mapping"
+publish_to: 'none'
+version: 1.4.4+1
+
+environment:
+  sdk: ^3.13.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  cupertino_icons: ^1.0.8
+  web_socket_channel: ^3.0.1
+  shared_preferences: ^2.3.0
+  url_launcher: ^6.3.1
+  gbk_codec: ^0.4.0
+  path_provider: ^2.1.4
+  path_provider_android: 2.2.15
+  flutter_map: ^8.3.1
+  vector_map_tiles: ^9.0.0-beta.11
+  webview_flutter: ^4.14.1
+  webview_windows: ^0.4.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/aprs_syms/
+    - assets/amap_map.html
+    - assets/osl.png
+    - assets/logobg.jfif
+    - assets/WechatPay.jpg

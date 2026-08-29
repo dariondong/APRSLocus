@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+  html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+  #container { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; }
+  .stn-wrap { display: flex; flex-direction: column; align-items: center; }
+  .stn-icon {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 13px; font-weight: 700;
+    border: 2.5px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  }
+  .stn-label {
+    margin-top: 2px; padding: 1px 5px;
+    background: rgba(255,255,255,.92); border-radius: 4px;
+    font-size: 10px; font-weight: 700; line-height: 1.3;
+    white-space: nowrap; color: #333;
+    border: 1px solid rgba(0,0,0,.12);
+  }
+</style>
+<script>
+window._AMapSecurityConfig = { securityJsCode: '304f4b674f31ba5b1d42553cf0325134' };
+</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=5b8d70ea7cb60c5d92876b3682d931bb"></script>
+</head>
+<body>
+<div id="container"></div>
+<script>
+var map = null;
+var markers = {};     // call -> AMap.Marker
+var trackLines = [];  // AMap.Polyline[]
+var myMarker = null;
+var lastMyPos = null;
+var lastCenter = null; // 当前视图中心（地理坐标）
+
+function post(msg) {
+  var s = JSON.stringify(msg);
+  try { if (window.AmapBridge && window.AmapBridge.postMessage) { window.AmapBridge.postMessage(s); return; } } catch (e) {}
+  try { if (window.chrome && window.chrome.webview && window.chrome.webview.postMessage) { window.chrome.webview.postMessage(s); } } catch (e) {}
+}
+
+map = new AMap.Map('container', {
+  zoom: 11,
+  center: [116.4074, 39.9042],
+  mapStyle: 'amap://styles/normal',
+  viewMode: '2D',
+  zooms: [3, 20],
+  scrollWheel: false,      // 禁用原生滚轮（WebView2 坐标异常），由 Flutter 接管
+  dragEnable: true,
+  zoomEnable: true
+});
+
+map.on('click', function (e) {
+  post({ type: 'map', lat: e.lnglat.getLat(), lng: e.lnglat.getLng() });
+});
+map.on('moveend', function () {
+  lastCenter = map.getCenter();
+});
+
+// 地图加载完成 → 校准尺寸并通知 Flutter
+map.on('complete', function () {
+  try { map.resize(); } catch (e) {}
+  post({ type: 'ready' });
+});
+
+// ─── 对外 API ───
+
+window.setStations = function (list) {
+  if (!map || !list) return;
+  var seen = {};
+  for (var i = 0; i < list.length; i++) {
+    var st = list[i];
+    seen[st.call] = true;
+    var pos = [st.lng, st.lat];
+    var old = markers[st.call];
+    if (old) {
+      old.setPosition(pos);
+      if (old._c !== st.content) { old.setContent(st.content); old._c = st.content; }
+    } else {
+      var mk = new AMap.Marker({
+        position: pos, content: st.content,
+        anchor: 'bottom-center', map: map, zIndex: 100
+      });
+      mk._c = st.content;
+      mk.on('click', (function (call) {
+        return function () { post({ type: 'marker', call: call }); };
+      })(st.call));
+      markers[st.call] = mk;
+    }
+  }
+  var keys = Object.keys(markers);
+  for (var k = 0; k < keys.length; k++) {
+    if (!seen[keys[k]]) { markers[keys[k]].setMap(null); delete markers[keys[k]]; }
+  }
+};
+
+window.setTracks = function (list) {
+  if (!map) return;
+  for (var i = 0; i < trackLines.length; i++) trackLines[i].setMap(null);
+  trackLines = [];
+  if (!list) return;
+  for (var j = 0; j < list.length; j++) {
+    var t = list[j];
+    if (!t.points || t.points.length < 2) continue;
+    var path = t.points.map(function (p) { return [p[0], p[1]]; });
+    var line = new AMap.Polyline({
+      path: path, strokeColor: t.color, strokeWeight: 4,
+      strokeOpacity: 0.85, strokeLineJoin: 'round', map: map
+    });
+    trackLines.push(line);
+  }
+};
+
+window.setMyLocation = function (p) {
+  if (!map || !p) return;
+  var pos = [p.lng, p.lat];
+  lastMyPos = pos;
+  if (!myMarker) {
+    myMarker = new AMap.Marker({
+      position: pos, anchor: 'center', zIndex: 200, map: map,
+      content: '<div style="width:16px;height:16px;background:#2563EB;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 7px rgba(37,99,235,.22),0 1px 4px rgba(0,0,0,.3)"></div>'
+    });
+    myMarker.on('click', function () { post({ type: 'myloc' }); });
+  } else {
+    myMarker.setPosition(pos);
+  }
+};
+
+// 以当前视图中心缩放（±1 级），供 Flutter 的 +/− 按钮使用
+window.zoomBy = function (delta) {
+  if (!map) return;
+  var c = lastCenter || map.getCenter();
+  var z = Math.max(3, Math.min(20, map.getZoom() + delta));
+  map.setZoomAndCenter(z, [c.getLng(), c.getLat()], true);
+};
+
+// 以指定像素坐标（来自 Flutter）为锚点缩放（滚轮用）
+// 正确算法：缩放后把鼠标下的地理点平移回鼠标位置，保证"鼠标点不动、周围缩放"
+window.zoomAt = function (px, py, delta) {
+  if (!map) return;
+  var size;
+  try { size = map.getSize(); } catch (e) {}
+  var anchor;
+  try { anchor = map.containerToLngLat([px, py]); } catch (e) {}
+  var z = Math.max(3, Math.min(20, map.getZoom() + delta));
+  map.setZoom(z);
+  var after;
+  try { after = map.lngLatToContainer([anchor.getLng(), anchor.getLat()]); } catch (e) {}
+  map.panBy(px - after[0], py - after[1]);
+  post({
+    type: 'diag',
+    px: px, py: py,
+    sizeW: size ? size.width : -1, sizeH: size ? size.height : -1,
+    dpr: (window.devicePixelRatio || 1),
+    anchorLat: anchor ? anchor.getLat() : -999,
+    anchorLng: anchor ? anchor.getLng() : -999,
+    after: after ? [Math.round(after[0]), Math.round(after[1])] : null,
+    zoom: z
+  });
+};
+
+// 跳到某台站
+window.focusOn = function (lng, lat, zoom) {
+  if (!map) return;
+  map.setZoomAndCenter(zoom || 14, [lng, lat]);
+};
+
+// 初始定位
+window.setInitCenter = function (lng, lat, zoom) {
+  if (!map) return;
+  map.setZoomAndCenter(zoom, [lng, lat]);
+};
+
+// 定位到我的位置（保持缩放）
+window.myLocFocus = function () {
+  if (!map || !lastMyPos) return;
+  map.setCenter(lastMyPos);
+};
+
+// 用 Flutter 传入的实际尺寸校准容器
+window.__setSize = function (w, h) {
+  if (!map) return;
+  try {
+    if (w) document.getElementById('container').style.width = w + 'px';
+    if (h) document.getElementById('container').style.height = h + 'px';
+    map.resize();
+  } catch (e) {}
+};
+window.addEventListener('resize', function () {
+  if (map) map.resize();
+});
+</script>
+</body>
+</html>
