@@ -216,10 +216,14 @@ jobs:
             APRSLocus-iOS/*.app
 
       - name: Sync release to GitCode
-        if: ${{ secrets.GITCODE_TOKEN != '' }}
         shell: bash
         run: |
           set -e
+          # 未配置 GITCODE_TOKEN 时跳过
+          if [ -z "$GITCODE_TOKEN" ]; then
+            echo "GITCODE_TOKEN 未配置，跳过 GitCode 同步"
+            exit 0
+          fi
           tag="${GITHUB_REF#refs/tags/}"
           owner="DarionDong"
           repo="APRSLocus"
@@ -227,14 +231,14 @@ jobs:
           # 创建 GitCode Release（已存在则忽略）
           body="${{ steps.notes.outputs.notes }}"
           release_id=$(curl -s -X POST "$api/releases" \
-            -H "Authorization: Bearer ${{ secrets.GITCODE_TOKEN }}" \
+            -H "Authorization: Bearer $GITCODE_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$(python3 -c "import json,sys;print(json.dumps(sys.argv[1]))" "$body")}" \
             | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
           if [ -z "$release_id" ]; then
             # 可能已存在，查询现有 release id
             release_id=$(curl -s "$api/releases/tags/$tag" \
-              -H "Authorization: Bearer ${{ secrets.GITCODE_TOKEN }}" \
+              -H "Authorization: Bearer $GITCODE_TOKEN" \
               | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
           fi
           echo "GitCode release id: $release_id"
@@ -242,7 +246,9 @@ jobs:
           for f in APRSLocus-Windows/*.exe APRSLocus-Android/*.apk; do
             echo "Uploading $f ..."
             curl -s -X POST "$api/releases/$release_id/attach_files" \
-              -H "Authorization: Bearer ${{ secrets.GITCODE_TOKEN }}" \
+              -H "Authorization: Bearer $GITCODE_TOKEN" \
               -F "files=@$f"
             echo ""
           done
+        env:
+          GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
