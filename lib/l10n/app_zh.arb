@@ -1311,5 +1311,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "leaveAction": "退出",
+  "localRepoVersion": "本地 v{local} · 仓库最新 v{latest}"
 }

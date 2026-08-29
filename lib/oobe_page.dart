@@ -136,9 +136,7 @@ class _OobePageState extends State<OobePage> {
           ],
         ),
         content: Text(
-          'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n'
-          '使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n'
-          '建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。',
+          S.of(context).oobePasscodeMissingDesc,
           style: ts(13, c: C.slate, h: 1.6),
         ),
         actions: [

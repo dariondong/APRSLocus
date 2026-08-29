@@ -429,7 +429,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stationsShown => 'Stations';
 
   @override
-  String get settingsDesc => 'Configure radio, location & connection';
+  String get settingsDesc => 'Configure station, location & connection';
 
   @override
   String get radioCat => 'Station';
@@ -489,7 +489,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myStationSettingsDesc => 'Callsign · SSID · Symbol · Beaconing';
 
   @override
-  String get oobeWelcomeDesc => 'Start configuring your APRS radio';
+  String get oobeWelcomeDesc => 'Start configuring your APRS station';
 
   @override
   String get oobeCallDesc => 'Enter your callsign';
@@ -629,7 +629,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myCallsign => 'My callsign';
 
   @override
-  String get beaconEnabled => 'Enable beacon';
+  String get beaconEnabled => 'Enable beaconing';
 
   @override
   String get smartBeacon => 'SmartBeaconing';
@@ -832,7 +832,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureMsgDesc =>
-      'Feed + conversation views, Chinese text and auto-reply support';
+      'Feed + conversation views with Unicode text and auto-reply support';
 
   @override
   String get featureAutoConnect => 'Auto-connect';
@@ -852,7 +852,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureFmo => 'FMO stations';
 
   @override
-  String get featureFmoDesc => 'Auto-detect FMO data, structured info';
+  String get featureFmoDesc =>
+      'Automatically detects FMO data and shows structured details';
 
   @override
   String get osFlutter => 'Flutter';
@@ -2524,4 +2525,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gotIt => 'Got it';
+
+  @override
+  String get leaveAction => 'Leave';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return 'Local v$local · Latest repository v$latest';
+  }
 }
