@@ -1604,4 +1604,924 @@ class AppLocalizationsEn extends AppLocalizations {
   String contactAdded(String call) {
     return 'Added contact $call';
   }
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get stationary => 'Stationary';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get manual => 'Manual';
+
+  @override
+  String get management => 'Manage';
+
+  @override
+  String get debugLabel => 'Debug';
+
+  @override
+  String get information => 'Info';
+
+  @override
+  String get warning => 'Warning';
+
+  @override
+  String get errorLabel => 'Error';
+
+  @override
+  String countTimes(int count) {
+    return '$count times';
+  }
+
+  @override
+  String countItems(int count) {
+    return '$count';
+  }
+
+  @override
+  String countEntries(int count) {
+    return '$count';
+  }
+
+  @override
+  String aprsSymbolName(String symbol) {
+    String _temp0 = intl.Intl.selectLogic(symbol, {
+      'car': 'Car',
+      'police': 'Police',
+      'person': 'Person',
+      'digitalRepeater': 'Digipeater',
+      'telephone': 'Telephone',
+      'dxCluster': 'DX cluster',
+      'hfGateway': 'HF gateway',
+      'smallAircraft': 'Small aircraft',
+      'mobileSatellite': 'Mobile satellite',
+      'disabled': 'Accessibility',
+      'snowmobile': 'Snowmobile',
+      'redCross': 'Red Cross',
+      'scouts': 'Scouts',
+      'house': 'House',
+      'redX': 'Red X',
+      'redDot': 'Red dot',
+      'fire': 'Fire',
+      'campground': 'Campground',
+      'motorcycle': 'Motorcycle',
+      'train': 'Train',
+      'fileServer': 'File server',
+      'hurricane': 'Hurricane',
+      'dfTriangle': 'DF triangle',
+      'postOffice': 'Post office',
+      'largeAircraft': 'Large aircraft',
+      'weatherStation': 'Weather station',
+      'satelliteDish': 'Satellite dish',
+      'ambulance': 'Ambulance',
+      'bicycle': 'Bicycle',
+      'commandPost': 'Command post',
+      'fireStation': 'Fire station',
+      'horse': 'Horse',
+      'fireTruck': 'Fire truck',
+      'glider': 'Glider',
+      'hospital': 'Hospital',
+      'fmoStation': 'FMO station',
+      'jeep': 'Jeep',
+      'truck': 'Truck',
+      'laptop': 'Laptop',
+      'micERepeater': 'Mic-E digipeater',
+      'node': 'Node',
+      'emergencyOps': 'Emergency operations',
+      'dog': 'Dog',
+      'gridSquare': 'Grid square',
+      'repeaterTower': 'Repeater tower',
+      'boat': 'Boat',
+      'truckStop': 'Truck stop',
+      'semiTrailer': 'Semi-trailer',
+      'van': 'Van',
+      'waterStation': 'Water station',
+      'yagi': 'Yagi antenna',
+      'shelter': 'Shelter',
+      'rv': 'RV',
+      'weatherSymbol': 'Weather station',
+      'balloon': 'Balloon',
+      'bus': 'Bus',
+      'shuttle': 'Space shuttle',
+      'policeCar': 'Police car',
+      'sailboat': 'Sailboat',
+      'school': 'School',
+      'lodging': 'Lodging',
+      'hotel': 'Hotel',
+      'other': 'Unknown',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String symbolCategoryName(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'vehicles': 'Vehicles / transport',
+      'facilities': 'Buildings / facilities',
+      'weatherNature': 'Weather / nature',
+      'emergencyRescue': 'Emergency / rescue',
+      'airWater': 'Air / water',
+      'communications': 'Communications / other',
+      'other': 'Other',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String countryName(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'CN': 'China',
+      'KR': 'South Korea',
+      'JP': 'Japan',
+      'US': 'United States',
+      'CA': 'Canada',
+      'GB': 'United Kingdom',
+      'DE': 'Germany',
+      'FR': 'France',
+      'IT': 'Italy',
+      'ES': 'Spain',
+      'RU': 'Russia',
+      'AU': 'Australia',
+      'NZ': 'New Zealand',
+      'BR': 'Brazil',
+      'AR': 'Argentina',
+      'MX': 'Mexico',
+      'ZA': 'South Africa',
+      'IN': 'India',
+      'TH': 'Thailand',
+      'SG': 'Singapore',
+      'MY': 'Malaysia',
+      'ID': 'Indonesia',
+      'PH': 'Philippines',
+      'TW': 'Taiwan',
+      'HK': 'Hong Kong',
+      'MO': 'Macao',
+      'other': 'Unknown',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get locationNotFixed => 'Not located';
+
+  @override
+  String get simulatedLocation => 'Simulated location';
+
+  @override
+  String get savedLocation => 'Saved location';
+
+  @override
+  String get locationFailed => 'Location failed';
+
+  @override
+  String get locationStopped => 'Location stopped';
+
+  @override
+  String get locationFixed => 'Location acquired';
+
+  @override
+  String get locationPermission => 'Grant location permission…';
+
+  @override
+  String get gpsLocating => 'Acquiring GPS location…';
+
+  @override
+  String get webLocationUnsupported =>
+      'Automatic location is unavailable on the web; enter coordinates manually';
+
+  @override
+  String locationStreamError(String error) {
+    return 'Location stream error: $error';
+  }
+
+  @override
+  String locationInitError(String error) {
+    return 'Location initialization failed: $error';
+  }
+
+  @override
+  String get beaconDisabled => 'Disabled';
+
+  @override
+  String get waitingForLocation => 'Waiting for location';
+
+  @override
+  String get imminent => 'Soon';
+
+  @override
+  String get connTapToConnect => 'Not connected · Tap connect to join APRS-IS';
+
+  @override
+  String get connManuallyDisconnected =>
+      'Not connected · Manually disconnected';
+
+  @override
+  String connAutoReconnect(int seconds) {
+    return 'Connection lost · Reconnecting in ${seconds}s…';
+  }
+
+  @override
+  String connConnectingTarget(String target) {
+    return 'Connecting to $target…';
+  }
+
+  @override
+  String connOnline(String call) {
+    return 'Connected · $call online';
+  }
+
+  @override
+  String connRetry(int seconds) {
+    return 'Connection failed · Retrying in ${seconds}s…';
+  }
+
+  @override
+  String connPositionSent(String call) {
+    return 'Connected · Position beacon sent ($call)';
+  }
+
+  @override
+  String get connDemoBeacon =>
+      'Not connected · Position beacon recorded (demo)';
+
+  @override
+  String get connPasscodeInvalid =>
+      'Connected · Unverified (Passcode may be incorrect)';
+
+  @override
+  String get mapTypeAmap => 'AMap';
+
+  @override
+  String get mapTypeAmapSatellite => 'AMap Satellite';
+
+  @override
+  String get mapTypeAmapJs => 'AMap JS';
+
+  @override
+  String get mapTypeVector => 'Vector map';
+
+  @override
+  String get amapGroup => 'AMap';
+
+  @override
+  String get domesticMaps => 'China maps';
+
+  @override
+  String get internationalMaps => 'Global maps';
+
+  @override
+  String get metricUnits => 'Metric (km/h, m)';
+
+  @override
+  String get coordDisplay => 'Coordinate display';
+
+  @override
+  String mapDefaultCoord(int level) {
+    return 'Beijing · Zoom $level';
+  }
+
+  @override
+  String secondsValue(int count) {
+    return '$count sec';
+  }
+
+  @override
+  String get stationSettingsDetail => 'Callsign, SSID, symbol & comment';
+
+  @override
+  String get stationIdentity => 'Station identity';
+
+  @override
+  String get aprsCallsignHint => 'APRS callsign, e.g. BV2AAA';
+
+  @override
+  String get displayInfo => 'Station info';
+
+  @override
+  String get ssidSuffix => 'SSID suffix';
+
+  @override
+  String get chooseSsidSuffix => 'Choose SSID suffix';
+
+  @override
+  String get mySymbol => 'My symbol';
+
+  @override
+  String get moreSymbols => 'More symbols';
+
+  @override
+  String get allAprsSymbols => 'All APRS symbols';
+
+  @override
+  String get beaconSettingsDetail => 'GPS source, beaconing & manual location';
+
+  @override
+  String get locationSource => 'Location source';
+
+  @override
+  String get useDeviceLocation => 'Use device location';
+
+  @override
+  String get manualCoordinates => 'Enter coordinates manually';
+
+  @override
+  String get beaconingSection => 'Beaconing';
+
+  @override
+  String get beaconIntervalTip => 'Position beacon interval, minimum 5 seconds';
+
+  @override
+  String get beaconContent => 'Beacon contents';
+
+  @override
+  String get beaconContentDesc => 'Sent with each position beacon';
+
+  @override
+  String get phoneBattery => 'Phone battery';
+
+  @override
+  String get locationStatus => 'Location status';
+
+  @override
+  String get relocate => 'Relocate';
+
+  @override
+  String get startGps => 'Start GPS';
+
+  @override
+  String get trackingBeaconing =>
+      'Location is active and position beacons are being sent';
+
+  @override
+  String get manualLocation => 'Manual location';
+
+  @override
+  String get latitudeHint => 'Latitude 39.9042';
+
+  @override
+  String get longitudeHint => 'Longitude 116.4074';
+
+  @override
+  String get invalidLatLng => 'Enter valid latitude and longitude';
+
+  @override
+  String myLocationSetGrid(String grid) {
+    return 'Location set · Grid $grid';
+  }
+
+  @override
+  String get applyCoordinates => 'Apply coordinates';
+
+  @override
+  String get pickOnMap => 'Pick on map';
+
+  @override
+  String get manualLocationHelp =>
+      'If automatic location is unavailable, enter coordinates or pick a point on the map for beaconing and distance calculations.';
+
+  @override
+  String get passcodeTip =>
+      'APRS-IS login passcode; generate it online. Use -1 for unverified login';
+
+  @override
+  String get websocketOptional => 'WebSocket URL (optional)';
+
+  @override
+  String get configChanged => 'Configuration changed';
+
+  @override
+  String get reconnectToApply => 'Reconnect to apply';
+
+  @override
+  String get reconnected => 'Reconnected';
+
+  @override
+  String get connectFailedCheckConfig =>
+      'Connection failed; check the configuration';
+
+  @override
+  String get rangeFilterDesc =>
+      'Receive only station packets within the configured range';
+
+  @override
+  String get filterCenterFollows => 'Follow my location for filter center';
+
+  @override
+  String get radiusTip =>
+      'Receive radius (km); tap “Save & apply filter” to apply';
+
+  @override
+  String get maxStationsTip =>
+      'Maximum stations kept in memory (unlimited by default; increase as needed)';
+
+  @override
+  String filterSavedRadius(String saved, int radius) {
+    return '$saved · Radius $radius km';
+  }
+
+  @override
+  String get receiveFilterDesc2 =>
+      'In addition to the range filter, receive stations by country/region or exact callsign';
+
+  @override
+  String get receiveCountryDesc =>
+      'Receive all stations from a country/region by callsign prefix';
+
+  @override
+  String get noCountriesSelected => 'No countries or regions selected';
+
+  @override
+  String get receiveOthersDesc =>
+      'Receive special stations whose callsigns do not match selected countries';
+
+  @override
+  String get addCountry => 'Add country/region';
+
+  @override
+  String get chatSettingsDetail => 'Messages, contacts & chat data';
+
+  @override
+  String get messageCountLabel => 'Messages';
+
+  @override
+  String get manageContacts => 'Manage contacts';
+
+  @override
+  String deleteAllChatsConfirm(int count) {
+    return 'Delete all $count chat messages? This cannot be undone.';
+  }
+
+  @override
+  String get chatCleared => 'Chat history cleared';
+
+  @override
+  String get noContacts => 'No contacts';
+
+  @override
+  String get addOrFavoriteContact =>
+      'Tap “Add” above or favorite a station on the map';
+
+  @override
+  String movingWithSpeed(String speed) {
+    return 'Moving · $speed';
+  }
+
+  @override
+  String get callsignMin3 => 'Callsign must be at least 3 characters';
+
+  @override
+  String get deleteContact => 'Delete contact';
+
+  @override
+  String deleteContactConfirm(String call) {
+    return 'Delete contact $call?';
+  }
+
+  @override
+  String contactDeleted(String call) {
+    return 'Deleted $call';
+  }
+
+  @override
+  String get dataMaintenance => 'Data maintenance';
+
+  @override
+  String get clearAllData => 'Clear all data';
+
+  @override
+  String get clearAllDataIntro => 'This will delete all local data below:';
+
+  @override
+  String get chatHistory => 'Chat history';
+
+  @override
+  String get logs => 'Logs';
+
+  @override
+  String get irreversibleKeepSettings =>
+      'This cannot be undone. Connection settings and callsign will be kept.';
+
+  @override
+  String get confirmClearAllData => 'Clear all data';
+
+  @override
+  String get clearAllDataConfirm =>
+      'Clear all local data? This cannot be undone.';
+
+  @override
+  String get allDataCleared => 'All local data cleared';
+
+  @override
+  String get confirmClear => 'Clear';
+
+  @override
+  String get allowLandscape => 'Allow landscape orientation';
+
+  @override
+  String get packetParseTest => 'Packet parser test';
+
+  @override
+  String get packetParseHint =>
+      'Paste a raw APRS packet, e.g.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+
+  @override
+  String get parseAndApply => 'Parse & apply';
+
+  @override
+  String get oobePasscodeMissing => 'Passcode not entered';
+
+  @override
+  String get oobePasscodeMissingDesc =>
+      'The Passcode is the APRS-IS login verification code for your callsign.\n\nThe default -1 allows an unverified connection, but messages and group chat will not work normally.\n\nLook up the correct Passcode for your callsign at https://aprs.cool/AprsPG.';
+
+  @override
+  String get continueAnyway => 'Continue anyway';
+
+  @override
+  String get fillPasscode => 'Enter Passcode';
+
+  @override
+  String get oobeMapFeatureDesc =>
+      'AMap tiles with nearby APRS stations and tracks';
+
+  @override
+  String get oobeGpsFeatureDesc =>
+      'Acquire your location and send position beacons to APRS-IS';
+
+  @override
+  String get oobeMsgFeatureDesc =>
+      'Exchange station messages with auto-reply support';
+
+  @override
+  String get oobeIsFeatureDesc =>
+      'Connect to a public server and receive global APRS station data';
+
+  @override
+  String get oobeBackgroundTip =>
+      'Tip: allow APRSlocus to run in the background, disable battery optimization, and allow autostart to keep beaconing active.';
+
+  @override
+  String get oobeNextSteps =>
+      'Complete the basic setup in the next few steps. You can change it later in Settings.';
+
+  @override
+  String get ssidDescShort =>
+      'SSID is the numeric callsign suffix, such as -9 in BG7ABC-9';
+
+  @override
+  String get ssidOptional => 'SSID suffix (optional)';
+
+  @override
+  String get noSsid => 'No suffix (base callsign)';
+
+  @override
+  String fullCallsign(String call) {
+    return 'Full callsign: $call';
+  }
+
+  @override
+  String get passcodeImportant => 'Passcode is important';
+
+  @override
+  String get passcodeImportantDesc =>
+      'A correct Passcode is required to receive group messages and send acknowledgements. -1 can connect, but messaging will not work normally.';
+
+  @override
+  String get lookupPasscode => 'Look up your Passcode →';
+
+  @override
+  String get passcodeLookupHint => 'Enter your callsign, e.g. BV2AAA';
+
+  @override
+  String sendToGroupHint(String group) {
+    return 'Send to $group…';
+  }
+
+  @override
+  String sendToCallHint(String call) {
+    return 'Send to $call…';
+  }
+
+  @override
+  String get selectMessageReply => 'Select a message to reply…';
+
+  @override
+  String get broadcastShort => 'Broadcast';
+
+  @override
+  String memberCount(int count) {
+    return '$count members';
+  }
+
+  @override
+  String memberCountTap(int count) {
+    return '$count members · Tap to view';
+  }
+
+  @override
+  String get stepRecipients => 'Recipients';
+
+  @override
+  String get stepContent => 'Message';
+
+  @override
+  String get selectAllOnline => 'Select all online';
+
+  @override
+  String get clearSelection => 'Clear selection';
+
+  @override
+  String get onlineOnly => 'Online only';
+
+  @override
+  String get noRecipients => 'No recipients selected';
+
+  @override
+  String selectedRecipients(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String sendRecipientsList(int count, String calls) {
+    return 'Sending to $count: $calls';
+  }
+
+  @override
+  String get stepName => 'Name';
+
+  @override
+  String get stepMembers => 'Members';
+
+  @override
+  String get groupChatExplain =>
+      'Group chats broadcast to a group callsign so every member can receive them. A group callsign is generated automatically and invitations are sent to the members you select.';
+
+  @override
+  String get noMembersSelected => 'No members selected';
+
+  @override
+  String get memberBlocked => 'Blocked';
+
+  @override
+  String get memberJoined => 'Joined';
+
+  @override
+  String get memberPending => 'Pending';
+
+  @override
+  String get memberDeclined => 'Declined';
+
+  @override
+  String get memberLeft => 'Left';
+
+  @override
+  String get memberTimeout => 'Timed out';
+
+  @override
+  String get unblock => 'Unblock';
+
+  @override
+  String get block => 'Block';
+
+  @override
+  String get groupOwner => 'Owner';
+
+  @override
+  String systemMemberJoined(String call) {
+    return '$call joined the group';
+  }
+
+  @override
+  String systemMemberLeft(String call) {
+    return '$call left the group';
+  }
+
+  @override
+  String systemInviteDeclined(String call) {
+    return '$call declined the invitation';
+  }
+
+  @override
+  String get copyAllLogs => 'Copy all logs';
+
+  @override
+  String copiedLogs(int count) {
+    return 'Copied $count log entries';
+  }
+
+  @override
+  String get clearLogs => 'Clear logs';
+
+  @override
+  String get noLogs => 'No logs yet';
+
+  @override
+  String get supportProject => 'Your support helps the project go further';
+
+  @override
+  String get continuousIteration => 'Continuous improvement';
+
+  @override
+  String get continuousIterationDesc =>
+      'Continuously improving APRSlocus features and experience';
+
+  @override
+  String get sponsorSupport => 'Sponsor support';
+
+  @override
+  String get sponsorMethods => 'Ways to support';
+
+  @override
+  String qrCodeTitle(String title) {
+    return '$title QR code';
+  }
+
+  @override
+  String get qrLoadFailed => 'QR code image failed to load';
+
+  @override
+  String get qrSaveWechat => 'Long-press to save · Scan with WeChat to support';
+
+  @override
+  String get tapAnywhereClose => 'Tap anywhere to close';
+
+  @override
+  String get webAmapUnsupported => 'AMap JS is not supported on the web';
+
+  @override
+  String get webview2InitFailed =>
+      'WebView2 initialization failed\nInstall the Microsoft Edge WebView2 Runtime';
+
+  @override
+  String get loadingAmap => 'Loading AMap…';
+
+  @override
+  String vectorMapLoadFailed(String error) {
+    return 'Vector map failed to load\n$error';
+  }
+
+  @override
+  String get loadingVectorMap => 'Loading vector map…';
+
+  @override
+  String get updateChannel => 'Update channel';
+
+  @override
+  String serverReturned(int code) {
+    return 'Server returned $code';
+  }
+
+  @override
+  String get invalidResponseData => 'Invalid response format';
+
+  @override
+  String get noVersionsFound => 'No releases found';
+
+  @override
+  String get noWindowsInstaller => 'No Windows installer for this release';
+
+  @override
+  String get noApkInstaller => 'No APK for this release';
+
+  @override
+  String get connectingEllipsis => 'Connecting…';
+
+  @override
+  String downloadHttpError(int code) {
+    return 'Download failed: HTTP $code';
+  }
+
+  @override
+  String downloadedBytes(String received, String total) {
+    return 'Downloaded $received / $total';
+  }
+
+  @override
+  String androidInstallHelp(String path) {
+    return 'Package downloaded to:\n$path\n\nTap “Install” to open the system installer.\n\nIf Android blocks unknown apps, allow APRSlocus to install unknown apps in system settings.';
+  }
+
+  @override
+  String windowsInstallHelp(String path) {
+    return 'Installer saved to:\n$path\n\nTap “Run now” to launch it, or open the containing folder.';
+  }
+
+  @override
+  String get openContainingFolder => 'Open containing folder';
+
+  @override
+  String get runNow => 'Run now';
+
+  @override
+  String get cannotRunInstaller =>
+      'Could not start the installer. Open it manually from the containing folder.';
+
+  @override
+  String get cannotLaunchInstaller =>
+      'Could not launch the installer. Open the package manually.';
+
+  @override
+  String get openPackageManually => 'Open the package in a file manager';
+
+  @override
+  String cannotOpenPackage(String error) {
+    return 'Could not open package: $error';
+  }
+
+  @override
+  String get installPermissionTitle => 'Allow app installation';
+
+  @override
+  String get installPermissionDesc =>
+      'APRSlocus is not allowed to install apps.\n\nTap “Settings”, allow this app to install unknown apps, then return and try again.';
+
+  @override
+  String get recheck => 'Check again';
+
+  @override
+  String get signatureChangedTitle =>
+      'Signing key changed · Reinstall required';
+
+  @override
+  String get signatureChangedDesc =>
+      'The release signing key changed starting with 1.4.8. Older versions cannot be updated in place. Uninstall APRSlocus first, then install the new version to avoid a signature conflict.';
+
+  @override
+  String newVersionTitle(String version) {
+    return 'New version v$version available';
+  }
+
+  @override
+  String repoLatestTitle(String version) {
+    return 'Latest repository version v$version';
+  }
+
+  @override
+  String get checkingLatest => 'Checking latest version…';
+
+  @override
+  String get connectingGitCode => 'Connecting to GitCode';
+
+  @override
+  String get noReleaseNotes => 'No release notes';
+
+  @override
+  String noInstallerHistoryHint(String platform) {
+    return 'No $platform package for this release. Choose a downloadable version from History.';
+  }
+
+  @override
+  String get latestVersionLabel => 'Latest version';
+
+  @override
+  String packageSize(String platform, String size) {
+    return '$platform package size: $size';
+  }
+
+  @override
+  String get updateContents => 'What’s new';
+
+  @override
+  String get redownload => 'Download again';
+
+  @override
+  String get downloadInstaller => 'Download installer';
+
+  @override
+  String get downloadAndInstall => 'Download & install';
+
+  @override
+  String get localPackageExists => 'A downloaded package is already available';
+
+  @override
+  String get packageDeleted => 'Package deleted';
+
+  @override
+  String versionCount(int count) {
+    return '$count versions';
+  }
+
+  @override
+  String get noInstaller => 'No package';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get viewChangelog => 'View changelog';
+
+  @override
+  String versionChangelog(String version) {
+    return 'v$version changelog';
+  }
+
+  @override
+  String get gotIt => 'Got it';
 }

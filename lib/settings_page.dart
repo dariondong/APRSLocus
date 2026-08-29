@@ -327,7 +327,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       : S.of(context).disconnected,
                   style: ts(13, c: col, w: FontWeight.w700),
                 ),
-                Text(st.connInfo, style: ts(11, c: col.withValues(alpha: 0.8))),
+                Text(
+                  localizedConnectionInfo(context, st.connInfo),
+                  style: ts(11, c: col.withValues(alpha: 0.8)),
+                ),
               ],
             ),
           ),
