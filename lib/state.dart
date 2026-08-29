@@ -398,6 +398,15 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // 更新渠道：'gitcode' / 'github'
+  String updateChannel = 'gitcode';
+
+  void setUpdateChannel(String c) {
+    updateChannel = c;
+    persist();
+    _notify();
+  }
+
   // 接收范围过滤（APRS-IS filter: r/lat/lng/radius_km）
   double filterLat = 39.9042;
   double filterLng = 116.4074;
@@ -535,6 +544,7 @@ class AppState extends ChangeNotifier {
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
       mapType = p.getString('mapType') ?? mapType;
+      updateChannel = p.getString('updateChannel') ?? updateChannel;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
@@ -634,6 +644,7 @@ class AppState extends ChangeNotifier {
       p.setString('locale', locale);
       p.setString('themeColor', themeColor);
       p.setString('mapType', mapType);
+      p.setString('updateChannel', updateChannel);
       p.setBool('useSimLocation', useSimLocation);
       p.setDouble('filterLat', filterLat);
       p.setDouble('filterLng', filterLng);
