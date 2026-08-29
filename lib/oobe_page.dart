@@ -559,21 +559,6 @@ class _OobePageState extends State<OobePage> {
           ),
         ),
         SizedBox(height: 14),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: C.blueBg,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(children: [
-            Icon(Icons.info_outline_rounded, size: 15, color: C.blue),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text('数字呼号（如 BV2AAA）可以直接使用，无需额外验证。',
-                  style: ts(11, c: C.blue, w: FontWeight.w500)),
-            ),
-          ]),
-        ),
       ]),
     );
   }
