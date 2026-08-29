@@ -13,9 +13,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'APRSlocus';
 
   @override
-  String get appName_desc => '应用名称';
-
-  @override
   String get ok => 'OK';
 
   @override
@@ -76,7 +73,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fixed => 'Fixed';
 
   @override
-  String get infrastructure => 'Relay';
+  String get infrastructure => 'Digipeater';
 
   @override
   String get weather => 'Weather';
@@ -163,10 +160,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passcode => 'Passcode';
 
   @override
-  String get beacon => 'Beacon';
+  String get beacon => 'Position beacon';
 
   @override
-  String get beaconInterval => 'Interval (sec)';
+  String get beaconInterval => 'Beacon interval (sec)';
 
   @override
   String get nextBeacon => 'Next beacon';
@@ -223,7 +220,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coordDatum => 'Datum';
 
   @override
-  String get stationSettings => 'Radio settings';
+  String get stationSettings => 'Station settings';
 
   @override
   String get connectionSettings => 'Connection settings';
@@ -351,7 +348,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get oobeWelcomeRealMap => 'Live map';
 
   @override
-  String get oobeWelcomeGps => 'GPS beacon';
+  String get oobeWelcomeGps => 'GPS position beaconing';
 
   @override
   String get oobeWelcomeMsg => 'APRS messages';
@@ -417,16 +414,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveAndApply => 'Save & apply filter';
 
   @override
-  String get useMyLocation => 'Use my location as center';
+  String get useMyLocation => 'Use my position as filter center';
 
   @override
-  String get noFixYet => 'No fix yet, cannot use current location';
+  String get noFixYet => 'No location fix yet; current position is unavailable';
 
   @override
-  String get invalidCoords => 'Enter valid latitude/longitude and radius';
+  String get invalidCoords => 'Enter valid latitude, longitude, and radius';
 
   @override
-  String get filterSaved => 'Filter saved & applied';
+  String get filterSaved => 'Filter saved and applied';
 
   @override
   String get stationsShown => 'Stations';
@@ -435,22 +432,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDesc => 'Configure radio, location & connection';
 
   @override
-  String get radioCat => 'Radio';
+  String get radioCat => 'Station';
 
   @override
   String get radioCatDesc => 'Callsign · SSID · Symbol';
 
   @override
-  String get beaconCat => 'Beacon';
+  String get beaconCat => 'Beaconing';
 
   @override
-  String get beaconCatDesc => 'GPS · Beacon · Manual';
+  String get beaconCatDesc => 'GPS · Beaconing · Manual position';
 
   @override
   String get connectionCat => 'Connection';
 
   @override
-  String get connectionCatDesc => 'Server · Filter range';
+  String get connectionCatDesc => 'Server · Range filter';
 
   @override
   String get displayCat => 'Display';
@@ -486,10 +483,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkUpdate => 'Check update';
 
   @override
-  String get myStationSettings => 'My radio';
+  String get myStationSettings => 'My station';
 
   @override
-  String get myStationSettingsDesc => 'Callsign · SSID · Symbol · Beacon';
+  String get myStationSettingsDesc => 'Callsign · SSID · Symbol · Beaconing';
 
   @override
   String get oobeWelcomeDesc => 'Start configuring your APRS radio';
@@ -499,11 +496,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oobeSymbolDesc =>
-      'The symbol represents station type and is sent with the beacon';
+      'The symbol represents your station type and is sent with position beacons';
 
   @override
   String get oobeServerDesc =>
-      'Receive global APRS stations after connecting. Default config works.';
+      'Connect to receive APRS station data worldwide. The default settings work as-is.';
 
   @override
   String get wizard => 'Setup wizard';
@@ -518,7 +515,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSubtitle => 'Map coordinates & display preferences';
 
   @override
-  String get stationSettingsSubtitle => 'Callsign, symbol & beacon';
+  String get stationSettingsSubtitle => 'Callsign, symbol & beaconing';
 
   @override
   String get connectionSettingsSubtitle => 'APRS-IS server & receive range';
@@ -578,7 +575,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get features => 'Features';
 
   @override
-  String get openSource => 'Open source';
+  String get openSource => 'Open-source acknowledgements';
 
   @override
   String get feedback => 'Feedback';
@@ -608,10 +605,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterValidCall => 'Please enter a valid callsign';
 
   @override
-  String get stationSettings2 => 'Radio settings';
+  String get stationSettings2 => 'Station settings';
 
   @override
-  String get beaconSettings => 'Beacon';
+  String get beaconSettings => 'Beaconing';
 
   @override
   String get displaySettings2 => 'Display settings';
@@ -635,7 +632,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconEnabled => 'Enable beacon';
 
   @override
-  String get smartBeacon => 'Smart beacon (moving)';
+  String get smartBeacon => 'SmartBeaconing';
 
   @override
   String get packetConsole => 'Packet console';
@@ -683,21 +680,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String noPositionInfo(Object call) {
-    return '$call has no position info (packet without position)';
+    return 'No position information for $call (packet contains no position)';
   }
 
   @override
   String get copiedPacket => 'Packet copied';
 
   @override
-  String get mapPickMode => 'Map pick mode';
+  String get mapPickMode => 'Map position picker';
 
   @override
-  String get mapPickDesc => 'Tap the map to set my location';
+  String get mapPickDesc => 'Tap the map to set your position';
 
   @override
   String foundStations(Object count, Object q) {
-    return 'Found $count matching \"$q\"';
+    return 'Found $count stations matching \"$q\"';
   }
 
   @override
@@ -725,18 +722,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String positionBeacon(Object grid) {
-    return 'Beacon · grid $grid';
+    return 'Position beacon · Grid $grid';
   }
 
   @override
-  String get manualBeacon => 'Send now';
+  String get manualBeacon => 'Beacon now';
 
   @override
   String get mapPickNow => 'Pick on map';
 
   @override
   String pickedCoord(Object grid, Object lat, Object lng) {
-    return 'Picked · $lat, $lng · grid $grid';
+    return 'Position set · $lat, $lng · Grid $grid';
   }
 
   @override
@@ -772,7 +769,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02';
+  String get datumGcj => 'GCJ-02 (AMap)';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -789,7 +786,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToView => 'Tap to view';
 
   @override
-  String get beaconNow => 'Send now';
+  String get beaconNow => 'Beacon now';
 
   @override
   String get meLabel => 'Me';
@@ -810,43 +807,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapLayers => 'Layers';
 
   @override
-  String get featureLiveMap => 'Amap';
+  String get featureLiveMap => 'AMap';
 
   @override
-  String get featureLiveMapDesc => 'GCJ-02 coords, smooth zoom & pan';
+  String get featureLiveMapDesc =>
+      'GCJ-02 coordinates with smooth zooming and panning';
 
   @override
-  String get featureGps => 'GPS';
+  String get featureGps => 'GPS positioning';
 
   @override
-  String get featureGpsDesc => 'Native Android positioning, no Google services';
+  String get featureGpsDesc =>
+      'Native Android location, no Google services required';
 
   @override
-  String get featureBeacon => 'Beacon';
+  String get featureBeacon => 'Beaconing';
 
   @override
   String get featureBeaconDesc =>
-      'Custom content, frequency, symbol, APRS standard';
+      'Custom content, rate, and symbol with APRS-standard formatting';
 
   @override
   String get featureMsg => 'Messages';
 
   @override
-  String get featureMsgDesc => 'Feed + chat modes, Chinese & auto-reply';
+  String get featureMsgDesc =>
+      'Feed + conversation views, Chinese text and auto-reply support';
 
   @override
   String get featureAutoConnect => 'Auto-connect';
 
   @override
   String get featureAutoConnectDesc =>
-      'Auto-connect to public server, stay online';
+      'Automatically connects to a public server and stays online in the background';
 
   @override
   String get featureLayerFilter => 'Layer filter';
 
   @override
   String get featureLayerFilterDesc =>
-      'Filter: mobile, fixed, relay, weather, FMO';
+      'Filter: mobile, fixed, digipeater, weather, FMO';
 
   @override
   String get featureFmo => 'FMO stations';
@@ -861,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get osFlutterDesc => 'Google cross-platform UI framework';
 
   @override
-  String get osAmap => 'Amap';
+  String get osAmap => 'AMap';
 
   @override
   String get osAmapDesc => 'Map tile service';
@@ -873,10 +873,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get osAprsDesc => 'Global APRS data network';
 
   @override
-  String get osHam => 'Ham radio';
+  String get osHam => 'Amateur radio';
 
   @override
-  String get osHamDesc => 'Contribution of all APRS hams';
+  String get osHamDesc => 'Contributions from the APRS amateur radio community';
 
   @override
   String get authorName => 'Darion';
@@ -891,44 +891,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sponsorAuthor => 'Author BG7LZQ';
 
   @override
-  String get sponsorAuthorItems => 'Develops this project in spare time';
+  String get sponsorAuthorItems =>
+      'Develops and maintains this project in spare time';
 
   @override
   String get sponsorGroup => 'STUDENT HAMS';
 
   @override
-  String get sponsorGroupItems => 'Thanks for the group funding support';
+  String get sponsorGroupItems => 'Thanks to the group for financial support';
 
   @override
   String get sponsorBgp => 'BG7PGW';
 
   @override
-  String get sponsorBgpItems => 'Thanks for the Mixue Bingcheng 🧋';
+  String get sponsorBgpItems => 'Thanks for sponsoring a Mixue drink 🧋';
 
   @override
   String get sponsorEvery => 'Every supporter';
 
   @override
-  String get sponsorEveryItems => 'Every support is motivation';
+  String get sponsorEveryItems =>
+      'Every contribution helps keep the project going';
 
   @override
-  String get donateWechat => 'WeChat donate';
+  String get donateWechat => 'WeChat donation';
 
   @override
-  String get donateWechatDesc => 'Long-press to save QR · tap to enlarge';
+  String get donateWechatDesc =>
+      'Long-press to save the QR code · tap to enlarge';
 
   @override
-  String get donateAlipay => 'Alipay donate';
+  String get donateAlipay => 'Alipay donation';
 
   @override
-  String get donateAlipayDesc => 'Contact author for QR code';
+  String get donateAlipayDesc => 'Contact the author for the donation QR code';
 
   @override
   String get nonprofitNote =>
-      'Non-profit learning project\nDonations cover server & dev costs';
+      'Non-profit learning and community project\nDonations only cover server and development costs';
 
   @override
-  String get myStation => 'My radio';
+  String get myStation => 'My station';
 
   @override
   String get callSsid => 'Callsign · SSID';
@@ -944,13 +947,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get callComment => 'Station comment';
 
   @override
-  String get callCommentHint => 'Comment sent with the beacon';
+  String get callCommentHint => 'Comment sent with position beacons';
 
   @override
   String get callSymbol => 'Station symbol';
 
   @override
-  String get callSymbolDesc => 'Symbol is sent with the beacon';
+  String get callSymbolDesc => 'Symbol sent with position beacons';
 
   @override
   String get autoReply => 'Auto-reply';
@@ -960,7 +963,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTypeDesc =>
-      '\"Map 2.0 (vector)\" renders vectors on-device (small data, crisp zoom); Amap raster/satellite are online tiles.';
+      '\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; AMap raster/satellite uses online tiles.';
 
   @override
   String get msgHistory => 'Message history';
@@ -972,7 +975,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearData => 'Clear data';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Favorites / Manual';
 
   @override
   String get favoriteStations => 'Favorite stations';
@@ -993,17 +996,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactList => 'Contacts';
 
   @override
-  String get contactDesc => 'Rules for messages/contacts';
+  String get contactDesc => 'Message/contact filtering rules';
 
   @override
-  String get dataClearDesc => 'Clear local data: messages, packets, stations';
+  String get dataClearDesc =>
+      'Clear local messages, packets, stations, and other data';
 
   @override
   String get advancedDesc => 'Lab & developer tools';
 
   @override
   String get labDesc =>
-      'Lab features are experimental. Screen locked to portrait by default; enable for landscape.';
+      'Lab features are experimental and may affect usability. Portrait orientation is locked by default; enable this to allow landscape.';
 
   @override
   String get systemLog => 'System log';
@@ -1012,7 +1016,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get devDesc => 'Developer tools';
 
   @override
-  String get simData => 'Enable demo data (demo stations/packets)';
+  String get simData => 'Enable demo data (sample stations/packets)';
 
   @override
   String get rxTx => 'RX / TX';
@@ -1045,7 +1049,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dataPersistence => 'Station persistence';
 
   @override
-  String get autoSaveStations => 'Auto-save station data';
+  String get autoSaveStations => 'Save station data automatically';
 
   @override
   String get gridFormat => 'Grid format';
@@ -1107,7 +1111,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get installComplete => 'Install complete';
 
   @override
-  String get openInstallDir => 'Open install dir';
+  String get openInstallDir => 'Open install folder';
 
   @override
   String get deletePackage => 'Delete package';
@@ -1125,13 +1129,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get latestVersion => 'You are up to date';
 
   @override
-  String get currentVersion => 'APRSlocus current version';
+  String get currentVersion => 'Current APRSlocus version';
 
   @override
   String get checking => 'Checking for updates…';
 
   @override
-  String get checkingGitCode => 'Checking GitCode repo';
+  String get checkingGitCode => 'Checking GitCode repository';
 
   @override
   String get updateFailed => 'Update check failed';
@@ -1143,17 +1147,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newVersionFound => 'New version available';
 
   @override
-  String get downloadAgain => 'Re-download package';
+  String get downloadAgain => 'Download package again';
 
   @override
-  String get openDownloads => 'Open downloads';
+  String get openDownloads => 'Open downloads folder';
 
   @override
   String get releaseNotes => 'Release notes';
 
   @override
   String currentVsRepo(Object local, Object remote) {
-    return 'Local v$local · Repo v$remote';
+    return 'Installed v$local · Latest v$remote';
   }
 
   @override
@@ -1165,17 +1169,439 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyDownloaded => 'Package downloaded';
 
   @override
-  String get downloadReady => 'Download a package';
+  String get downloadReady => 'Download installation package';
 
   @override
-  String get appInstallDir => 'Install dir';
+  String get appInstallDir => 'Install folder';
 
   @override
   String get runInstaller => 'Run installer';
 
   @override
-  String get downloadUpdateTip => 'Download update and open';
+  String get downloadUpdateTip => 'Download the update and open it';
 
   @override
-  String get openDownloadFolder => 'Open downloads';
+  String get openDownloadFolder => 'Open downloads folder';
+
+  @override
+  String groupBubble(String name) {
+    return 'Group · $name';
+  }
+
+  @override
+  String get groupInviteTitle => 'Group chat invitation';
+
+  @override
+  String groupInviteFrom(String from) {
+    return '$from invited you to a group chat';
+  }
+
+  @override
+  String groupNameValue(String name) {
+    return 'Group: $name';
+  }
+
+  @override
+  String groupCallsignValue(String call) {
+    return 'Group callsign: $call';
+  }
+
+  @override
+  String groupInviteAccepted(String name) {
+    return 'Joined $name';
+  }
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String groupInviteRejected(String name) {
+    return 'Declined invitation to $name';
+  }
+
+  @override
+  String get reject => 'Decline';
+
+  @override
+  String get appTagline => 'APRS tracking';
+
+  @override
+  String gridValue(String grid) {
+    return 'Grid $grid';
+  }
+
+  @override
+  String packetsPerMinute(int count) {
+    return '$count/min';
+  }
+
+  @override
+  String get demo => 'Demo';
+
+  @override
+  String nextBeaconIn(String time) {
+    return 'Next beacon $time';
+  }
+
+  @override
+  String beaconCount(int count) {
+    return 'Beacons $count';
+  }
+
+  @override
+  String beaconSentAprsIs(String grid) {
+    return 'Position beacon sent · Grid $grid · Sent to APRS-IS';
+  }
+
+  @override
+  String beaconSentDemo(String grid) {
+    return 'Position beacon sent · Grid $grid · Demo';
+  }
+
+  @override
+  String get getLocation => 'Get location';
+
+  @override
+  String get disconnect => 'Disconnect';
+
+  @override
+  String get connectAprsIs => 'Connect APRS-IS';
+
+  @override
+  String get packetsReceived => 'RX';
+
+  @override
+  String get passcodeUnverified => 'Passcode not verified';
+
+  @override
+  String get passcodeWarning =>
+      'The login passcode may be incorrect; messages may not work';
+
+  @override
+  String get goSettings => 'Settings';
+
+  @override
+  String get connectingServer => 'Connecting to server…';
+
+  @override
+  String get notConnectedAprsServer => 'Not connected to APRS-IS';
+
+  @override
+  String connectingToServer(String server, int port) {
+    return 'Connecting to $server:$port…';
+  }
+
+  @override
+  String get connectNearbyDesc =>
+      'Connect to receive nearby station positions and messages';
+
+  @override
+  String get connectAction => 'Connect';
+
+  @override
+  String get backgroundRunTip =>
+      'Background operation: allow APRSlocus to run in the background, disable battery optimization, and allow autostart to keep beaconing active.';
+
+  @override
+  String get connectedAprsIs => 'Connected to APRS-IS';
+
+  @override
+  String get qqGroupDesc => 'APRSlocus · Feedback and discussion';
+
+  @override
+  String get reselectPoint => 'Pick again';
+
+  @override
+  String get disableClustering => 'Disable clustering';
+
+  @override
+  String get enableClustering => 'Enable clustering';
+
+  @override
+  String get noPackets => 'No packets yet';
+
+  @override
+  String secondsAgo(int count) {
+    return '${count}s ago';
+  }
+
+  @override
+  String minutesAgo(int count) {
+    return '${count}m ago';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String daysAgo(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String copiedCoordsValue(String coords) {
+    return 'Coordinates copied: $coords';
+  }
+
+  @override
+  String copiedGridValue(String grid) {
+    return 'Grid copied: $grid';
+  }
+
+  @override
+  String distanceBearing(String distance, String bearing) {
+    return '$distance km away · Bearing $bearing°';
+  }
+
+  @override
+  String weatherDataValue(String data) {
+    return 'Weather · $data';
+  }
+
+  @override
+  String get symbolLabel => 'Symbol';
+
+  @override
+  String get digipeaterTapHint =>
+      'Tap a digipeater to open its station details';
+
+  @override
+  String get copiedFmoInfo => 'FMO info copied';
+
+  @override
+  String get copiedAprslocusInfo => 'APRSlocus info copied';
+
+  @override
+  String trackPoints(int count) {
+    return 'Track ($count points)';
+  }
+
+  @override
+  String sendMessageTo(String call) {
+    return 'Message $call…';
+  }
+
+  @override
+  String get navigationUnavailable =>
+      'AMap is not installed and no other map app could be opened';
+
+  @override
+  String stationNoData(String call) {
+    return 'No data received from $call yet';
+  }
+
+  @override
+  String get software => 'Software';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get viewSponsorDetails => 'View author and sponsor details →';
+
+  @override
+  String get thanks => 'Thanks';
+
+  @override
+  String get qqSoftwareName => 'APRSlocus';
+
+  @override
+  String get usageNotice =>
+      'For amateur-radio learning and communication only\nFollow your local radio regulations';
+
+  @override
+  String get licenseNotice => 'GNU GPL v3 · Copyright © BG7LZQ';
+
+  @override
+  String appInfoText(String version) {
+    return 'APRSlocus v$version\nAuthor: BG7LZQ (Darion)\nWebsite: Theez.top';
+  }
+
+  @override
+  String get eggBg7lzq => 'Hey, what are you doing~';
+
+  @override
+  String get eggBg7pgw => 'Seriously?';
+
+  @override
+  String get eggBg7lmw => 'Quiet as ever...';
+
+  @override
+  String get eggBg7osl => 'You have got some nerve';
+
+  @override
+  String get manualCallsignHint => 'Enter callsign manually';
+
+  @override
+  String get noPacketReceived => 'No packets received';
+
+  @override
+  String get feedMode => 'Feed';
+
+  @override
+  String get conversationMode => 'Chats';
+
+  @override
+  String get messageFeed => 'Message feed';
+
+  @override
+  String messageTotal(int count) {
+    return '$count messages';
+  }
+
+  @override
+  String get noMessages => 'No messages yet';
+
+  @override
+  String get copiedClipboard => 'Copied to clipboard';
+
+  @override
+  String get groupShortLabel => 'Group';
+
+  @override
+  String get conversations => 'Chats';
+
+  @override
+  String get noConversations => 'No conversations yet';
+
+  @override
+  String get groupNotFound => 'Group chat not found';
+
+  @override
+  String get invite => 'Invite';
+
+  @override
+  String get manage => 'Manage';
+
+  @override
+  String get noGroupMessages => 'No group messages yet';
+
+  @override
+  String get selectConversation => 'Select a conversation to start chatting';
+
+  @override
+  String get newConversation => 'New conversation';
+
+  @override
+  String get newConversationDesc => 'Enter a callsign to start a conversation';
+
+  @override
+  String get callsignExample => 'Callsign, e.g. BG7ABC';
+
+  @override
+  String get start => 'Start';
+
+  @override
+  String get broadcastMessage => 'Broadcast message';
+
+  @override
+  String get noStations => 'No stations';
+
+  @override
+  String get broadcastHint =>
+      'Each message is sent separately to every recipient';
+
+  @override
+  String broadcastSent(int count) {
+    return 'Sent to $count recipients';
+  }
+
+  @override
+  String get searchCallsign => 'Search callsign…';
+
+  @override
+  String get broadcastContentHint => 'Enter message to broadcast…';
+
+  @override
+  String get groupNameHint => 'Enter group name';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String groupCallsignLine(String call) {
+    return 'Group callsign: $call';
+  }
+
+  @override
+  String get noMembers => 'No members';
+
+  @override
+  String get inviteMembersHint => 'Tap “Invite members” below to add people';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get inviteMembers => 'Invite members';
+
+  @override
+  String get deleteGroup => 'Delete group';
+
+  @override
+  String deleteGroupConfirm(String name) {
+    return 'Delete “$name”? This cannot be undone.';
+  }
+
+  @override
+  String memberOnlineCount(int members, int online) {
+    return '$members members · $online online';
+  }
+
+  @override
+  String get leaveGroup => 'Leave group';
+
+  @override
+  String leaveGroupConfirm(String name) {
+    return 'Leave “$name”? You will stop receiving messages from this group.';
+  }
+
+  @override
+  String leftGroup(String name) {
+    return 'Left $name';
+  }
+
+  @override
+  String get leave => 'Leave';
+
+  @override
+  String inviteMembersTo(String name) {
+    return 'Invite members to $name';
+  }
+
+  @override
+  String get manualCallsign => 'Enter callsign manually';
+
+  @override
+  String inviteSent(String call) {
+    return 'Invitation sent to $call';
+  }
+
+  @override
+  String get noMoreOnlineStations => 'No more online stations';
+
+  @override
+  String get invited => 'Invited';
+
+  @override
+  String get tapToInvite => 'Tap to invite';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get addContact => 'Add contact';
+
+  @override
+  String get addContactDesc => 'Enter a callsign to add it to contacts';
+
+  @override
+  String contactAdded(String call) {
+    return 'Added contact $call';
+  }
 }

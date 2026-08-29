@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'theme.dart';
 import 'models.dart';
 import 'state.dart';
@@ -24,11 +25,15 @@ class _PacketsPageState extends State<PacketsPage> {
     if (_filter != 'all') p = p.where((p) => p.type == _filter).toList();
     final q = _search.text.trim().toUpperCase();
     if (q.isNotEmpty) {
-      p = p.where((p) =>
-          p.src.toUpperCase().contains(q) ||
-          p.dest.toUpperCase().contains(q) ||
-          p.raw.toUpperCase().contains(q) ||
-          (p.info?.toUpperCase().contains(q) ?? false)).toList();
+      p = p
+          .where(
+            (p) =>
+                p.src.toUpperCase().contains(q) ||
+                p.dest.toUpperCase().contains(q) ||
+                p.raw.toUpperCase().contains(q) ||
+                (p.info?.toUpperCase().contains(q) ?? false),
+          )
+          .toList();
     }
     return p;
   }
@@ -48,18 +53,18 @@ class _PacketsPageState extends State<PacketsPage> {
     }
   }
 
-  String _tn(String t) {
+  String _tn(BuildContext context, String t) {
     switch (t) {
       case 'position':
-        return '位置';
+        return S.of(context).position;
       case 'message':
-        return '消息';
+        return S.of(context).message;
       case 'weather':
-        return '气象';
+        return S.of(context).weather;
       case 'status':
-        return '状态';
+        return S.of(context).statusType;
       default:
-        return '对象';
+        return S.of(context).objectType;
     }
   }
 
@@ -79,167 +84,243 @@ class _PacketsPageState extends State<PacketsPage> {
         final list = _list(st);
         return Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // 头部（Wrap 自动换行，避免窄屏溢出）
-            Wrap(spacing: 8, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: C.blueBg,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.cable_rounded, size: 16, color: C.blue),
-                  SizedBox(width: 8),
-                  Text(S.of(context).packetConsole,
-                      style: ts(14, c: C.blue, w: FontWeight.w700)),
-                ]),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: st.connected ? C.greenBg : C.yellowBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 头部（Wrap 自动换行，避免窄屏溢出）
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
                   Container(
-                    width: 7,
-                    height: 7,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: st.connected ? C.green : C.red,
-                    ),
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    st.connected ? S.of(context).connected : S.of(context).disconnected,
-                    style: ts(11,
-                        c: st.connected ? C.green : C.red,
-                        w: FontWeight.w600),
-                  ),
-                ]),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: C.blueBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  S.of(context).packetStats(st.packetsPerMin, st.packetsRx, st.packetsTx),
-                  style: ts(11, c: C.blue, w: FontWeight.w600),
-                ),
-              ),
-              RoundIconBtn(
-                _raw ? Icons.code_rounded : Icons.view_list_rounded,
-                color: _raw ? C.blue : C.slate,
-                tooltip: _raw ? S.of(context).rawMode : S.of(context).parsedMode,
-                onTap: () => setState(() => _raw = !_raw),
-              ),
-            ]),
-            SizedBox(height: 14),
-            // 筛选
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                FilterChip2(label: S.of(context).all, selected: _filter == 'all',
-                    color: C.slate,
-                    onTap: () => setState(() => _filter = 'all')),
-                SizedBox(width: 6),
-                FilterChip2(label: S.of(context).position, selected: _filter == 'position',
-                    color: C.green,
-                    onTap: () => setState(() => _filter = 'position')),
-                SizedBox(width: 6),
-                FilterChip2(label: S.of(context).message, selected: _filter == 'message',
-                    color: C.blue,
-                    onTap: () => setState(() => _filter = 'message')),
-                SizedBox(width: 6),
-                FilterChip2(label: S.of(context).weather, selected: _filter == 'weather',
-                    color: C.yellow,
-                    onTap: () => setState(() => _filter = 'weather')),
-                SizedBox(width: 6),
-                FilterChip2(label: S.of(context).statusType, selected: _filter == 'status',
-                    color: C.purple,
-                    onTap: () => setState(() => _filter = 'status')),
-                SizedBox(width: 6),
-                FilterChip2(label: S.of(context).objectType, selected: _filter == 'object',
-                    color: C.cyan,
-                    onTap: () => setState(() => _filter = 'object')),
-              ]),
-            ),
-            SizedBox(height: 10),
-            // 搜索
-            TextField(
-              controller: _search,
-              onChanged: (_) => setState(() {}),
-              style: ts(13),
-              decoration: InputDecoration(
-                hintText: S.of(context).searchPacket,
-                hintStyle: ts(12, c: C.greyLight),
-                prefixIcon: Icon(Icons.search_rounded, size: 18, color: C.grey),
-                suffixIcon: _search.text.isNotEmpty
-                    ? GestureDetector(
-                        onTap: () {
-                          _search.clear();
-                          setState(() {});
-                        },
-                        child: Icon(Icons.close_rounded, size: 16, color: C.grey),
-                      )
-                    : null,
-                filled: true,
-                fillColor: C.white,
-                isDense: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: C.border),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 10),
-              ),
-            ),
-            SizedBox(height: 14),
-            // 列表
-            Expanded(
-              child: list.isEmpty
-                  ? Center(
-                      child: Text(_filter != 'all' || _search.text.isNotEmpty
-                          ? '没有匹配的数据包'
-                          : '暂无数据包', style: ts(14, c: C.grey)))
-                  : _raw ? _rawList(list) : _parsedList(list),
-            ),
-            SizedBox(height: 8),
-            // 手动发送
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  controller: _tx,
-                  style: mono(11),
-                  decoration: InputDecoration(
-                    hintText: S.of(context).manualInject,
-                    hintStyle: ts(12, c: C.grey),
-                    filled: true,
-                    fillColor: C.white,
-                    border: OutlineInputBorder(
+                      color: C.blueBg,
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: C.border),
                     ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.cable_rounded, size: 16, color: C.blue),
+                        SizedBox(width: 8),
+                        Text(
+                          S.of(context).packetConsole,
+                          style: ts(14, c: C.blue, w: FontWeight.w700),
+                        ),
+                      ],
+                    ),
                   ),
-                  onSubmitted: (_) => _sendRaw(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: st.connected ? C.greenBg : C.yellowBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 7,
+                          height: 7,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: st.connected ? C.green : C.red,
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          st.connected
+                              ? S.of(context).connected
+                              : S.of(context).disconnected,
+                          style: ts(
+                            11,
+                            c: st.connected ? C.green : C.red,
+                            w: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: C.blueBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      S
+                          .of(context)
+                          .packetStats(
+                            st.packetsPerMin,
+                            st.packetsRx,
+                            st.packetsTx,
+                          ),
+                      style: ts(11, c: C.blue, w: FontWeight.w600),
+                    ),
+                  ),
+                  RoundIconBtn(
+                    _raw ? Icons.code_rounded : Icons.view_list_rounded,
+                    color: _raw ? C.blue : C.slate,
+                    tooltip: _raw
+                        ? S.of(context).rawMode
+                        : S.of(context).parsedMode,
+                    onTap: () => setState(() => _raw = !_raw),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14),
+              // 筛选
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    FilterChip2(
+                      label: S.of(context).all,
+                      selected: _filter == 'all',
+                      color: C.slate,
+                      onTap: () => setState(() => _filter = 'all'),
+                    ),
+                    SizedBox(width: 6),
+                    FilterChip2(
+                      label: S.of(context).position,
+                      selected: _filter == 'position',
+                      color: C.green,
+                      onTap: () => setState(() => _filter = 'position'),
+                    ),
+                    SizedBox(width: 6),
+                    FilterChip2(
+                      label: S.of(context).message,
+                      selected: _filter == 'message',
+                      color: C.blue,
+                      onTap: () => setState(() => _filter = 'message'),
+                    ),
+                    SizedBox(width: 6),
+                    FilterChip2(
+                      label: S.of(context).weather,
+                      selected: _filter == 'weather',
+                      color: C.yellow,
+                      onTap: () => setState(() => _filter = 'weather'),
+                    ),
+                    SizedBox(width: 6),
+                    FilterChip2(
+                      label: S.of(context).statusType,
+                      selected: _filter == 'status',
+                      color: C.purple,
+                      onTap: () => setState(() => _filter = 'status'),
+                    ),
+                    SizedBox(width: 6),
+                    FilterChip2(
+                      label: S.of(context).objectType,
+                      selected: _filter == 'object',
+                      color: C.cyan,
+                      onTap: () => setState(() => _filter = 'object'),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: 8),
-              RoundIconBtn(Icons.send_rounded,
-                  color: C.blue,
-                  tooltip: S.of(context).send,
-                  onTap: _sendRaw),
-            ]),
-          ]),
+              SizedBox(height: 10),
+              // 搜索
+              TextField(
+                controller: _search,
+                onChanged: (_) => setState(() {}),
+                style: ts(13),
+                decoration: InputDecoration(
+                  hintText: S.of(context).searchPacket,
+                  hintStyle: ts(12, c: C.greyLight),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    size: 18,
+                    color: C.grey,
+                  ),
+                  suffixIcon: _search.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            _search.clear();
+                            setState(() {});
+                          },
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 16,
+                            color: C.grey,
+                          ),
+                        )
+                      : null,
+                  filled: true,
+                  fillColor: C.white,
+                  isDense: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: C.border),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                ),
+              ),
+              SizedBox(height: 14),
+              // 列表
+              Expanded(
+                child: list.isEmpty
+                    ? Center(
+                        child: Text(
+                          _filter != 'all' || _search.text.isNotEmpty
+                              ? S.of(context).noMatchingPackets
+                              : S.of(context).noPackets,
+                          style: ts(14, c: C.grey),
+                        ),
+                      )
+                    : _raw
+                    ? _rawList(list)
+                    : _parsedList(list),
+              ),
+              SizedBox(height: 8),
+              // 手动发送
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _tx,
+                      style: mono(11),
+                      decoration: InputDecoration(
+                        hintText: S.of(context).manualInject,
+                        hintStyle: ts(12, c: C.grey),
+                        filled: true,
+                        fillColor: C.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: C.border),
+                        ),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                      ),
+                      onSubmitted: (_) => _sendRaw(),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  RoundIconBtn(
+                    Icons.send_rounded,
+                    color: C.blue,
+                    tooltip: S.of(context).send,
+                    onTap: _sendRaw,
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -270,59 +351,71 @@ class _PacketsPageState extends State<PacketsPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () => _openStation(p.src),
-                  onLongPress: () {
-                    Clipboard.setData(ClipboardData(text: p.raw));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(S.of(context).copiedPacket, style: ts(12)),
-                        duration: const Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  },
+                onLongPress: () {
+                  Clipboard.setData(ClipboardData(text: p.raw));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(S.of(context).copiedPacket, style: ts(12)),
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: tc.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(_tn(p.type),
-                      style: ts(9, c: tc, w: FontWeight.w700, ls: 0.5)),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: tc.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            _tn(context, p.type),
+                            style: ts(9, c: tc, w: FontWeight.w700, ls: 0.5),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            p.src,
+                            style: ts(12, c: C.blue, w: FontWeight.w700),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(' → ', style: ts(12, c: C.greyLight)),
+                        Flexible(
+                          child: Text(
+                            p.dest,
+                            style: ts(12, c: C.slate),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Text(_fmt(p.time), style: ts(10, c: C.grey)),
+                      ],
+                    ),
+                    if (p.info != null) ...[
+                      SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: C.bgSoft,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(p.info!, style: mono(11, c: C.slate)),
+                      ),
+                    ],
+                  ],
                 ),
-                SizedBox(width: 8),
-                Flexible(
-                  child: Text(p.src,
-                      style: ts(12, c: C.blue, w: FontWeight.w700),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                Text(' → ', style: ts(12, c: C.greyLight)),
-                Flexible(
-                  child: Text(p.dest,
-                      style: ts(12, c: C.slate),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                SizedBox(width: 6),
-                Text(_fmt(p.time), style: ts(10, c: C.grey)),
-              ]),
-              if (p.info != null) ...[
-                SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: C.bgSoft,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(p.info!, style: mono(11, c: C.slate)),
-                ),
-              ],
-            ]),
               ),
             ),
           ),
@@ -348,24 +441,29 @@ class _PacketsPageState extends State<PacketsPage> {
             );
           },
           child: Container(
-          margin: const EdgeInsets.only(bottom: 5),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-          decoration: BoxDecoration(
-            color: C.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: C.border),
-          ),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(_fts(p.time), style: mono(10, c: C.greyLight)),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(p.raw,
-                  style: mono(11, c: C.green), maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
+            margin: const EdgeInsets.only(bottom: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+            decoration: BoxDecoration(
+              color: C.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: C.border),
             ),
-          ]),
-        ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_fts(p.time), style: mono(10, c: C.greyLight)),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    p.raw,
+                    style: mono(11, c: C.green),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -385,8 +483,7 @@ class _PacketsPageState extends State<PacketsPage> {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (_) =>
-            StationDetail(state: widget.state, station: station),
+        builder: (_) => StationDetail(state: widget.state, station: station),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -400,10 +497,10 @@ class _PacketsPageState extends State<PacketsPage> {
 
   String _fmt(DateTime t) {
     final d = DateTime.now().difference(t);
-    if (d.inSeconds < 60) return '${d.inSeconds}秒前';
-    if (d.inMinutes < 60) return '${d.inMinutes}分前';
-    if (d.inHours < 24) return '${d.inHours}小时前';
-    return '${d.inDays}天前';
+    if (d.inSeconds < 60) return S.of(context).secondsAgo(d.inSeconds);
+    if (d.inMinutes < 60) return S.of(context).minutesAgo(d.inMinutes);
+    if (d.inHours < 24) return S.of(context).hoursAgo(d.inHours);
+    return S.of(context).daysAgo(d.inDays);
   }
 
   String _fts(DateTime t) =>
