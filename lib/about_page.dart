@@ -380,6 +380,14 @@ class _AboutPageState extends State<AboutPage>
               ),
               SizedBox(height: 12),
               Center(
+                child: Text(
+                  'GNU GPL v3 开源协议 · Copyright © BG7LZQ',
+                  textAlign: TextAlign.center,
+                  style: ts(10, c: C.greyLight, h: 1.6),
+                ),
+              ),
+              SizedBox(height: 12),
+              Center(
                 child: GestureDetector(
                   onTap: () {
                     final info = 'APRSlocus v${AppState.appVersion}\n作者: BG7LZQ (Darion)\n网站: Theez.top';
