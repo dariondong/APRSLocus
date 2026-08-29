@@ -245,28 +245,39 @@ jobs:
             filename=$(basename "$file")
             echo "获取上传地址: $filename ..."
             resp=$(curl -sS "$api/releases/$tag/upload_url?access_token=$token&file_name=$filename" --max-time 30)
-            echo "Upload URL check..." 
-
             upload_url=$(echo "$resp" | python3 -c 'import json,sys;print(json.load(sys.stdin)["url"])')
             if [ -z "$upload_url" ]; then
               echo "ERROR: GitCode 未返回上传 URL，跳过 $filename"
-              return 1
+              return 0
             fi
 
-            # 用 Bash 数组保存 -H 参数（每个 header 独立参数，杜绝 -H 拼接错误）
+            # 打印上传 Host（不泄露签名参数）
+            upload_host=$(echo "$upload_url" | python3 -c 'from urllib.parse import urlparse;import sys;print(urlparse(sys.stdin.read().strip()).netloc)')
+            echo "Upload host: $upload_host"
+
+            # 用 Bash 数组保存 -H 参数（每个 header 独立参数）
             curl_args=()
             while IFS= read -r line; do
               [ -n "$line" ] && curl_args+=(-H "$line")
             done < <(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);print("\n".join([k+": "+v for k,v in d.get("headers",{}).items()]))')
 
             echo "上传: $filename ..."
-            curl -sS -X PUT "${curl_args[@]}" --upload-file "$file" "$upload_url" --max-time 300
+            # 失败不阻塞：超时/网络问题记录警告继续（GitCode 可稍后手动补传）
+            curl --fail-with-body -sS \
+              --connect-timeout 20 \
+              --max-time 120 \
+              -X PUT \
+              "${curl_args[@]}" \
+              --upload-file "$file" \
+              -w '\nHTTP_CODE=%{http_code}\nREMOTE_IP=%{remote_ip}\n' \
+              "$upload_url" \
+              || echo "警告: $filename 上传失败（网络或签名问题），已跳过"
             echo ""
           }
 
           for f in APRSLocus-Windows/*.exe APRSLocus-Android/*.apk; do
             [ -f "$f" ] && upload_file "$f"
           done
-          echo "GitCode 同步完成"
+          echo "GitCode 同步完成（部分失败可手动补传）"
         env:
           GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
