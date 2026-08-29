@@ -1,5 +1,7 @@
 # APRSlocus
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
 **APRS 定位追踪与地图** — 专为业余无线电爱好者打造的 APRS 客户端
 
 > 作者：BG7LZQ (Darion) · 网站：[Theez.top](https://theez.top)
@@ -102,3 +104,15 @@ BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus
 ---
 
 > **免责声明**：本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。
+
+---
+
+## 📄 许可证
+
+本项目采用 [GNU General Public License v3.0](LICENSE) 开源协议。
+
+Copyright (C) BG7LZQ (Darion)
+
+本程序为自由软件：你可以依据自由软件基金会发布的 GNU 通用公共许可证第 3 版或（依你的选择）任何更新版本重新分发和/或修改本程序。
+
+本程序以希望其有用的方式分发，但不带任何保证；甚至没有隐含的适销性或特定用途适用性保证。详见 GNU 通用公共许可证。
