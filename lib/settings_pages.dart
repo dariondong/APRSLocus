@@ -1472,20 +1472,16 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     );
   }
 
-  /// 同步过滤器控制器文本（filterFollow 等模式下值可能外部变化）
+  /// 同步过滤器控制器文本（仅在 filterFollow 模式下外部更新 state 时同步；
+  /// 手动编辑模式下不重置输入框，避免"保存后变回旧值"）
   void _syncFilterControllers(AppState st) {
+    if (!st.filterFollow) return;
     final latText = st.filterLat.toStringAsFixed(4);
     final lngText = st.filterLng.toStringAsFixed(4);
     final radiusText = '${st.filterRadius}';
-    if (_filterLat.text != latText && !_filterLat.selection.isValid) {
-      _filterLat.text = latText;
-    }
-    if (_filterLng.text != lngText && !_filterLng.selection.isValid) {
-      _filterLng.text = lngText;
-    }
-    if (_filterRadius.text != radiusText && !_filterRadius.selection.isValid) {
-      _filterRadius.text = radiusText;
-    }
+    if (_filterLat.text != latText) _filterLat.text = latText;
+    if (_filterLng.text != lngText) _filterLng.text = lngText;
+    if (_filterRadius.text != radiusText) _filterRadius.text = radiusText;
   }
 
   void _checkConfigDirty() {
