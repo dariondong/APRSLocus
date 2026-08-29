@@ -54,6 +54,16 @@ class Station {
     return '${lastHeard.year}-${lastHeard.month.toString().padLeft(2, '0')}';
   }
 
+  /// 有效状态：5 分钟内上报为在线（保留移动/静止），否则为离线
+  St get effectiveStatus {
+    final d = DateTime.now().difference(lastHeard);
+    if (d.inMinutes >= 5) return St.offline;
+    // 5 分钟内：保留移动/静止；原本在线/其他归为在线
+    if (status == St.moving) return St.moving;
+    if (status == St.stopped) return St.stopped;
+    return St.online;
+  }
+
   /// 基础呼号（去掉 -SSID 后缀）
   String get baseCall => call.contains('-')
       ? call.substring(0, call.indexOf('-'))
@@ -95,6 +105,8 @@ class Station {
 
   /// 类型分组（用于筛选）
   TypeGroup get typeGroup {
+    // APRSlocus 同款台站：与 FMO 同等分类层
+    if (isAprslocusStation) return TypeGroup.fmo;
     switch (symbol) {
       case 'i':
         return TypeGroup.fmo;
@@ -329,7 +341,7 @@ String statusLabel(St st) {
     case St.stopped:
       return '静止';
     case St.emergency:
-      return '紧急';
+      return '在线';
     case St.offline:
       return '离线';
   }
