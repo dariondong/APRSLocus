@@ -27,10 +27,15 @@ jobs:
           set -e
           echo "merge exit: $rc"
           test -f .git/MERGE_HEAD
+          # The Actions token cannot push workflow-file changes. Keep our release
+          # workflow tree entry unchanged; upstream workflow-only commits still
+          # remain in merge ancestry and won't be re-merged later.
+          git checkout HEAD -- .github/workflows/build-release.yml
           python3 .github/i18n_upstream_sync.py
           git add lib/home_page.dart lib/map_page.dart lib/messages_page.dart \
                   lib/settings_pages.dart lib/stations_page.dart \
-                  lib/l10n/app_zh.arb lib/l10n/app_en.arb
+                  lib/l10n/app_zh.arb lib/l10n/app_en.arb \
+                  .github/workflows/build-release.yml
           if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
             echo "Unresolved files:"
             git diff --name-only --diff-filter=U
@@ -125,9 +130,9 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git rm .github/i18n_upstream_sync.py \
-                 .github/workflows/i18n-upstream-sync.yml \
-                 .github/workflows/i18n-upstream-inspect.yml
+          # Delete only the helper script here. Workflow files are cleaned up
+          # through the repository API after this push succeeds.
+          git rm .github/i18n_upstream_sync.py
           git add -A
           echo "=== final status ==="
           git status --short
