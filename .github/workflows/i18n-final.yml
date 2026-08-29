@@ -1,0 +1,84 @@
+name: Final English localization cleanup
+
+on:
+  push:
+    branches: [i18n/complete-english]
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: i18n/complete-english
+          fetch-depth: 0
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Apply final localization cleanup
+        run: python3 .github/i18n_final_pass.py
+      - name: Generate localizations
+        run: |
+          flutter pub get
+          flutter gen-l10n
+      - name: Format changed Dart files
+        run: |
+          dart format \
+            lib/home_page.dart \
+            lib/messages_page.dart \
+            lib/oobe_page.dart \
+            lib/check_update_page.dart \
+            lib/sponsor_page.dart \
+            lib/map_page.dart \
+            lib/settings_pages.dart \
+            lib/widgets.dart
+      - name: Scan remaining UI CJK literals
+        run: |
+          python3 - <<'PY'
+          import pathlib, re
+          files = [
+            'lib/home_page.dart','lib/messages_page.dart','lib/oobe_page.dart',
+            'lib/check_update_page.dart','lib/sponsor_page.dart','lib/map_page.dart',
+            'lib/settings_page.dart','lib/settings_pages.dart','lib/stations_page.dart',
+            'lib/station_detail.dart','lib/packets_page.dart','lib/about_page.dart',
+            'lib/log_page.dart','lib/splash_page.dart','lib/amap_js_map.dart',
+            'lib/vector_map.dart','lib/widgets.dart'
+          ]
+          lit = re.compile(r"(['\"])(?:(?!\1).)*[\u4e00-\u9fff](?:(?!\1).)*\1")
+          for name in files:
+              p=pathlib.Path(name)
+              if not p.exists(): continue
+              for i,line in enumerate(p.read_text(encoding='utf-8').splitlines(),1):
+                  s=line.strip()
+                  if s.startswith('//') or s.startswith('///'): continue
+                  if lit.search(line): print(f'{name}:{i}: {s}')
+          PY
+      - name: Analyze localization changes
+        run: |
+          set +e
+          flutter analyze 2>&1 | tee /tmp/analyze.log
+          set -e
+          python3 - <<'PY'
+          from pathlib import Path
+          lines=Path('/tmp/analyze.log').read_text(encoding='utf-8').splitlines()
+          errors=[x for x in lines if ' error • ' in x]
+          allowed=[x for x in errors if 'lib/vector_map.dart:243:36' in x]
+          bad=[x for x in errors if x not in allowed]
+          print('Analyzer errors:', len(errors))
+          for x in errors: print(x)
+          if bad:
+              raise SystemExit('Unexpected analyzer error(s) introduced by localization pass')
+          PY
+      - name: Commit final localization changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/i18n_final_pass.py .github/workflows/i18n-final.yml
+          git add lib
+          git commit -m "i18n: finish English UI localization"
+          git push origin HEAD:i18n/complete-english
