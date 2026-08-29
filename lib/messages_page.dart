@@ -2309,9 +2309,6 @@ class _MessagesPageState extends State<MessagesPage> {
                             final call = allMembers.elementAt(i);
                             final status =
                                 group.memberStatus[call.toUpperCase()];
-                            final isBlocked = group.blockedMembers.contains(
-                              call.toUpperCase(),
-                            );
                             final isOnline = st.stations.any(
                               (s) =>
                                   s.call.toUpperCase() == call.toUpperCase() &&
@@ -2326,10 +2323,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                   s.call.toUpperCase() == call.toUpperCase() &&
                                   s.status != St.offline,
                             );
-                            if (isBlocked) {
-                              statusText = S.of(context).memberBlocked;
-                              statusColor = C.red;
-                            } else if (status == GroupMemberStatus.joined) {
+                            if (status == GroupMemberStatus.joined) {
                               statusText = isOnlineStation
                                   ? S.of(context).online
                                   : S.of(context).memberJoined;
@@ -2389,56 +2383,18 @@ class _MessagesPageState extends State<MessagesPage> {
                                     ),
                                   ),
                                   // 操作按钮
-                                  if (!isBlocked)
-                                    GestureDetector(
-                                      onTap: () {
-                                        // 移除成员：从 memberStatus 和 activeMembers 删除
-                                        setSheetState(() {
-                                          group.memberStatus.remove(
-                                            call.toUpperCase(),
-                                          );
-                                          group.activeMembers.remove(
-                                            call.toUpperCase(),
-                                          );
-                                        });
-                                        // 保存群聊变更（持久化 + 刷新）
-                                        st.saveGroupNow();
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: C.redBg,
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          S.of(context).remove,
-                                          style: ts(
-                                            11,
-                                            c: C.red,
-                                            w: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (!isBlocked) SizedBox(width: 8),
                                   GestureDetector(
                                     onTap: () {
+                                      // 移除成员：从 memberStatus 和 activeMembers 删除
                                       setSheetState(() {
-                                        if (isBlocked) {
-                                          group.blockedMembers.remove(
-                                            call.toUpperCase(),
-                                          );
-                                        } else {
-                                          group.blockedMembers.add(
-                                            call.toUpperCase(),
-                                          );
-                                        }
+                                        group.memberStatus.remove(
+                                          call.toUpperCase(),
+                                        );
+                                        group.activeMembers.remove(
+                                          call.toUpperCase(),
+                                        );
                                       });
+                                      // 保存群聊变更（持久化 + 刷新）
                                       st.saveGroupNow();
                                     },
                                     child: Container(
@@ -2447,18 +2403,14 @@ class _MessagesPageState extends State<MessagesPage> {
                                         vertical: 5,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: isBlocked
-                                            ? C.greenBg
-                                            : C.yellowBg,
+                                        color: C.redBg,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        isBlocked
-                                            ? S.of(context).unblock
-                                            : S.of(context).block,
+                                        S.of(context).remove,
                                         style: ts(
                                           11,
-                                          c: isBlocked ? C.green : C.yellow,
+                                          c: C.red,
                                           w: FontWeight.w600,
                                         ),
                                       ),

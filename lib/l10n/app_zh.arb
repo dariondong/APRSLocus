@@ -1313,5 +1313,8 @@
     }
   },
   "leaveAction": "退出",
-  "localRepoVersion": "本地 v{local} · 仓库最新 v{latest}"
+  "localRepoVersion": "本地 v{local} · 仓库最新 v{latest}",
+  "unverified": "未验证",
+  "passcodeUnverifiedHint": "-1 未验证",
+  "passcodeMessageWarning": "APRS-IS 登录验证码，填 -1 无法正常收发消息"
 }

@@ -2533,4 +2533,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String localRepoVersion(Object latest, Object local) {
     return 'Local v$local · Latest repository v$latest';
   }
+
+  @override
+  String get unverified => 'Unverified';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 (unverified)';
+
+  @override
+  String get passcodeMessageWarning =>
+      'APRS-IS login passcode. Using -1 prevents normal message send/receive.';
 }
