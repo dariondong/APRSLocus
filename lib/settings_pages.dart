@@ -893,81 +893,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            _connBanner(),
-            SizedBox(height: 16),
-            SettingsSectionCard(
-              title: S.of(context).server,
-              icon: Icons.dns_rounded,
-              color: C.purple,
-              children: [
-                SettingsInput(S.of(context).server, _server,
-                    onChanged: (v) {
-                  st.aprs.server = v.trim();
-                  _checkConfigDirty();
-                }),
-                SettingsInput(S.of(context).port, _port,
-                    onChanged: (v) {
-                  final n = int.tryParse(v);
-                  if (n != null) st.aprs.port = n;
-                  _checkConfigDirty();
-                }),
-                SettingsInput(S.of(context).passcode, _pass,
-                    tip: 'APRS-IS 登录验证码，可在线生成；填 -1 表示未验证',
-                    onChanged: (v) {
-                  st.aprs.passcode = v.trim().isEmpty ? '-1' : v.trim();
-                  _checkConfigDirty();
-                }),
-                SettingsInput('WebSocket URL(可选)', _ws,
-                    onChanged: (v) {
-                  st.aprs.wsUrl = v.trim().isEmpty ? null : v.trim();
-                  _checkConfigDirty();
-                }),
-                SettingsRow2(S.of(context).connection, st.connInfo),
-                // 修改服务器配置后内嵌重连按钮
-                if (_configDirty) ...[
-                  Divider(height: 1, color: C.border),
-                  Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Row(children: [
-                      Icon(Icons.info_outline_rounded,
-                          color: C.orange, size: 20),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('配置已修改',
-                                  style: ts(13, c: C.orange, w: FontWeight.w700)),
-                              Text('重新连接后生效',
-                                  style: ts(11,
-                                      c: C.orange.withValues(alpha: 0.8))),
-                            ]),
-                      ),
-                      SizedBox(width: 8),
-                      IconButton(
-                        icon: Icon(Icons.refresh_rounded,
-                            color: C.orange, size: 22),
-                        tooltip: S.of(context).reconnect,
-                        onPressed: () async {
-                          setState(() => _configDirty = false);
-                          await st.reconnect();
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(st.connected
-                                    ? '已重新连接'
-                                    : '连接失败，请检查配置'),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ]),
-                  ),
-                ],
-              ],
-            ),
+            _connCard(),
             const SizedBox(height: 16),
             _filterCard(),
             const SizedBox(height: 16),
@@ -975,6 +901,133 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           ]),
       );
     });
+  }
+
+  /// 连接状态 + 服务器配置卡片（合并）
+  Widget _connCard() {
+    return SettingsSectionCard(
+      title: S.of(context).server,
+      icon: Icons.dns_rounded,
+      color: C.purple,
+      children: [
+        // 连接状态横幅（内嵌卡片顶部）
+        _connBanner(),
+        Divider(height: 1, color: C.border),
+        SettingsInput(S.of(context).server, _server,
+            onChanged: (v) {
+          st.aprs.server = v.trim();
+          _checkConfigDirty();
+        }),
+        SettingsInput(S.of(context).port, _port,
+            onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.aprs.port = n;
+          _checkConfigDirty();
+        }),
+        // Passcode（醒目：-1 时提示）
+        _passcodeInput(),
+        SettingsInput('WebSocket URL(可选)', _ws,
+            onChanged: (v) {
+          st.aprs.wsUrl = v.trim().isEmpty ? null : v.trim();
+          _checkConfigDirty();
+        }),
+        SettingsRow2(S.of(context).connection, st.connInfo),
+        // 修改服务器配置后内嵌重连按钮
+        if (_configDirty) ...[
+          Divider(height: 1, color: C.border),
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(children: [
+              Icon(Icons.info_outline_rounded,
+                  color: C.orange, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('配置已修改',
+                          style: ts(13, c: C.orange, w: FontWeight.w700)),
+                      Text('重新连接后生效',
+                          style: ts(11,
+                              c: C.orange.withValues(alpha: 0.8))),
+                    ]),
+              ),
+              SizedBox(width: 8),
+              IconButton(
+                icon: Icon(Icons.refresh_rounded,
+                    color: C.orange, size: 22),
+                tooltip: S.of(context).reconnect,
+                onPressed: () async {
+                  setState(() => _configDirty = false);
+                  await st.reconnect();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(st.connected
+                            ? '已重新连接'
+                            : '连接失败，请检查配置'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ]),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Passcode 输入（未验证时醒目提示）
+  Widget _passcodeInput() {
+    final isDefault = _pass.text.trim().isEmpty || _pass.text.trim() == '-1';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Text(S.of(context).passcode, style: ts(12, c: C.slate)),
+          if (isDefault) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: C.orangeBg,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text('未验证',
+                  style: ts(9, c: C.orange, w: FontWeight.w700)),
+            ),
+          ],
+        ]),
+        const SizedBox(height: 6),
+        TextField(
+          controller: _pass,
+          style: ts(13, w: FontWeight.w600),
+          onChanged: (v) {
+            st.aprs.passcode = v.trim().isEmpty ? '-1' : v.trim();
+            _checkConfigDirty();
+          },
+          decoration: InputDecoration(
+            hintText: '-1 未验证',
+            hintStyle: ts(13, c: C.greyLight),
+            isDense: true,
+            filled: true,
+            fillColor: C.bgSoft,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text('APRS-IS 登录验证码，填 -1 无法正常收发消息',
+            style: ts(10, c: C.grey)),
+      ]),
+    );
   }
 
   Widget _connBanner() {
