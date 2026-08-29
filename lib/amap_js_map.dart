@@ -1,13 +1,17 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_windows/webview_windows.dart' as wvw;
+
 import 'theme.dart';
 import 'models.dart';
 import 'coord.dart';
+import 'l10n/app_localizations.dart';
 
 /// 高德 JS API 地图（WebView 承载）
 /// - Android: webview_flutter
@@ -85,9 +89,12 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
     } else {
       final c = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..addJavaScriptChannel('AmapBridge', onMessageReceived: (m) {
-          _onWebMessage(m.message);
-        });
+        ..addJavaScriptChannel(
+          'AmapBridge',
+          onMessageReceived: (m) {
+            _onWebMessage(m.message);
+          },
+        );
       await c.loadFlutterAsset('assets/amap_map.html');
       if (mounted) setState(() => _webCtrl = c);
     }
@@ -110,9 +117,12 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
             _mapReady = true;
             if (_viewSize != null) {
               _eval(
-                  '__setSize(${_viewSize!.width.round()},${_viewSize!.height.round()})');
+                '__setSize(${_viewSize!.width.round()},${_viewSize!.height.round()})',
+              );
             }
-            if (widget.myHasFix && widget.myLat != null && widget.myLng != null) {
+            if (widget.myHasFix &&
+                widget.myLat != null &&
+                widget.myLng != null) {
               final g = Gcj.wgsToGcj(widget.myLat!, widget.myLng!);
               _eval("setInitCenter(${g.$2},${g.$1},13)");
             }
@@ -226,12 +236,10 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
         final col = _colorHex(s.color);
         tracks.add({
           'color': col,
-          'points': s.track
-              .map((p) {
-                final g = Gcj.wgsToGcj(p.lat, p.lng);
-                return [g.$2, g.$1];
-              })
-              .toList(),
+          'points': s.track.map((p) {
+            final g = Gcj.wgsToGcj(p.lat, p.lng);
+            return [g.$2, g.$1];
+          }).toList(),
         });
       }
     }
@@ -260,18 +268,27 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
         }
         Widget map;
         if (kIsWeb) {
-          map = Center(child: Text('Web 平台暂不支持高德 JS 地图',
-              style: TextStyle(color: C.grey, fontSize: 12)));
+          map = Center(
+            child: Text(
+              AppLocalizations.of(context).webAmapUnsupported,
+              style: TextStyle(color: C.grey, fontSize: 12),
+            ),
+          );
         } else if (_isWindows) {
           if (_winInitError) {
             map = Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.error_outline_rounded, color: C.red, size: 36),
-                SizedBox(height: 8),
-                Text('WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.error_outline_rounded, color: C.red, size: 36),
+                  SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context).webview2InitFailed,
                     textAlign: TextAlign.center,
-                    style: ts(12, c: C.red, w: FontWeight.w600)),
-              ]),
+                    style: ts(12, c: C.red, w: FontWeight.w600),
+                  ),
+                ],
+              ),
             );
           } else {
             final c = _winCtrl;
@@ -279,26 +296,39 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
           }
         } else {
           final c = _webCtrl;
-          map = c == null ? _loading() : _wrapScroll(WebViewWidget(controller: c));
+          map = c == null
+              ? _loading()
+              : _wrapScroll(WebViewWidget(controller: c));
         }
         // 叠加诊断浮层
-        return Stack(children: [
-          Positioned.fill(child: map),
-          if (_diag.isNotEmpty)
-            Positioned(
-              left: 8,
-              bottom: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.75),
-                  borderRadius: BorderRadius.circular(8),
+        return Stack(
+          children: [
+            Positioned.fill(child: map),
+            if (_diag.isNotEmpty)
+              Positioned(
+                left: 8,
+                bottom: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    _diag,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      height: 1.3,
+                    ),
+                  ),
                 ),
-                child: Text(_diag,
-                    style: const TextStyle(color: Colors.white, fontSize: 11, height: 1.3)),
               ),
-            ),
-        ]);
+          ],
+        );
       },
     );
   }
@@ -314,7 +344,9 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
           final px = e.localPosition.dx;
           final py = e.localPosition.dy;
           final delta = e.scrollDelta.dy > 0 ? 1 : -1;
-          _eval('zoomAt(${px.toStringAsFixed(1)},${py.toStringAsFixed(1)},$delta)');
+          _eval(
+            'zoomAt(${px.toStringAsFixed(1)},${py.toStringAsFixed(1)},$delta)',
+          );
         }
       },
       child: child,
@@ -323,11 +355,17 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
 
   Widget _loading() {
     return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        CircularProgressIndicator(strokeWidth: 2.5),
-        SizedBox(height: 10),
-        Text('加载高德地图…', style: TextStyle(color: C.grey, fontSize: 12)),
-      ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(strokeWidth: 2.5),
+          SizedBox(height: 10),
+          Text(
+            AppLocalizations.of(context).loadingAmap,
+            style: TextStyle(color: C.grey, fontSize: 12),
+          ),
+        ],
+      ),
     );
   }
 }

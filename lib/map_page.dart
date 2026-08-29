@@ -1070,13 +1070,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     const SizedBox(height: 8),
                     KV(
                       S.of(context).beaconIntervalLabel,
-                      '${st.beaconInterval} 秒',
+                      S.of(context).secondsValue(st.beaconInterval),
                       icon: Icons.timer_rounded,
                     ),
                     const SizedBox(height: 8),
                     KV(
                       S.of(context).beaconsSentLabel,
-                      '${st.beaconsSent} 次',
+                      S.of(context).countTimes(st.beaconsSent),
                       icon: Icons.sync_rounded,
                     ),
                     const SizedBox(height: 8),
@@ -1284,7 +1284,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               ),
               const SizedBox(width: 5),
               Text(
-                group,
+                group == '高德'
+                    ? S.of(context).amapGroup
+                    : S.of(context).otherType,
                 style: ts(10, c: color, w: FontWeight.w700),
               ),
             ],
@@ -1313,7 +1315,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    t.label,
+                    localizedMapTypeLabel(context, t.name),
                     style: ts(
                       13,
                       c: _currentMapType == t ? C.blue : C.ink,
@@ -1685,7 +1687,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final myLng = widget.state.myLng;
     final hasFix = widget.state.myHasFix;
     // 距离：鼠标悬停点 → 我的位置；否则地图中心 → 我的位置
-    String coord = '北京 · ${_zoom.round()}级';
+    String coord = S.of(context).mapDefaultCoord(_zoom.round());
     String grid = '';
     String datum = widget.state.coordDatum == 'gcj'
         ? S.of(context).datumGcj

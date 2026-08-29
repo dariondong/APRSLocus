@@ -375,13 +375,13 @@ class _StationDetailState extends State<StationDetail> {
                             SizedBox(height: 8),
                             KV(
                               S.of(context).lastSeen,
-                              s.lastSeen,
+                              localizedLastSeen(context, s),
                               icon: Icons.access_time_rounded,
                             ),
                             SizedBox(height: 8),
                             KV(
                               S.of(context).symbolLabel,
-                              '${s.symbol}  ${s.typeName}',
+                              '${s.symbol}  ${localizedAprsSymbolName(context, s.symbol)}',
                               icon: Icons.tag_rounded,
                             ),
                           ],
@@ -812,15 +812,15 @@ class _StationDetailState extends State<StationDetail> {
       r'APRSLOCUS\s*v?(\d[\d.]*)',
       caseSensitive: false,
     ).firstMatch(c);
-    if (vm != null) map['版本'] = 'v${vm.group(1)}';
+    if (vm != null) map[S.of(context).version] = 'v${vm.group(1)}';
     final bm = RegExp(r'Bat:(\d+)%', caseSensitive: false).firstMatch(c);
-    if (bm != null) map['电量'] = '${bm.group(1)}%';
+    if (bm != null) map[S.of(context).phoneBattery] = '${bm.group(1)}%';
     // 高度/速度来自台站已解析字段（s.alt/s.speed 米、km/h）
     if (s.alt != null && s.alt! > 0) {
-      map['高度'] = '${s.alt!.toStringAsFixed(0)}m';
+      map[S.of(context).altitude] = '${s.alt!.toStringAsFixed(0)}m';
     }
     if (s.speed != null && s.speed! > 0) {
-      map['速度'] = '${s.speed!.toStringAsFixed(0)}km/h';
+      map[S.of(context).speed] = '${s.speed!.toStringAsFixed(0)}km/h';
     }
     return map;
   }
