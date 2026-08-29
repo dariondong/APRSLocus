@@ -105,16 +105,17 @@ jobs:
       - name: Setup Android signing keys
         shell: bash
         run: |
-          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            mkdir -p android/keystore
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/keystore/release.keystore
-            cat > android/key.properties <<EOF
-            storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-            keyPassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-            keyAlias=aprslocus
-            storeFile=keystore/release.keystore
-            EOF
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "ANDROID_KEYSTORE_BASE64 未配置，使用 debug 签名"
+            exit 0
           fi
+          mkdir -p android/keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore/release.keystore
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=aprslocus\nstoreFile=keystore/release.keystore\n' \
+            "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       - name: Build APK (Release)
         run: flutter build apk --release
