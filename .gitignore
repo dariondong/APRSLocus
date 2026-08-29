@@ -34,6 +34,9 @@ migrate_working_dir/
 /coverage/
 **/build/
 
+# Inno Setup 输出
+/output/
+
 # Symbolication related
 app.*.symbols
 
