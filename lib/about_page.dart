@@ -312,11 +312,9 @@ class _AboutPageState extends State<AboutPage>
                       padding: EdgeInsets.zero,
                       child: Column(
                         children: [
-                          _linkRow(
-                            icon: Icons.translate_rounded,
-                            label: S.of(context).codeContributionI18n,
-                            value: 'BD3QID',
-                            url: 'https://github.com/nimenhagg/APRSLocus-translation',
+                          _eggRow(
+                            S.of(context).codeContributionI18n,
+                            'BD3QID',
                           ),
                         ],
                       ),
