@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'theme.dart';
 import 'models.dart';
 import 'mock_data.dart';
@@ -14,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.5.2';
+  static const appVersion = '1.5.3';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -28,7 +30,8 @@ class AppState extends ChangeNotifier {
   void Function(String src, String text, String? groupId)? onNewMessage;
 
   /// 收到群聊邀请时回调（from, groupCall, groupName），用于弹窗确认
-  void Function(String from, String groupCall, String groupName)? onInviteReceived;
+  void Function(String from, String groupCall, String groupName)?
+  onInviteReceived;
 
   /// 收到群聊事件时回调（groupCall, event），用于通知群主
   void Function(String groupCall, String event)? onGroupEvent;
@@ -59,8 +62,8 @@ class AppState extends ChangeNotifier {
   int beaconsSent = 0;
 
   // 信标上报内容选项
-  bool beaconIncludeSpeed = true;   // 速度
-  bool beaconIncludeCourse = true;  // 方位角
+  bool beaconIncludeSpeed = true; // 速度
+  bool beaconIncludeCourse = true; // 方位角
   bool beaconIncludeBattery = true; // 手机电量
   int _battery = -1; // 电量百分比（-1 未知）
 
@@ -121,7 +124,8 @@ class AppState extends ChangeNotifier {
 
   /// 生成 APRS-IS 过滤字符串（服务器只收范围 + 群呼号，国家过滤在本地做）
   String get filterString {
-    var f = 'r/${filterLat.toStringAsFixed(2)}/${filterLng.toStringAsFixed(2)}/$filterRadius';
+    var f =
+        'r/${filterLat.toStringAsFixed(2)}/${filterLng.toStringAsFixed(2)}/$filterRadius';
     // 追加所有群呼号（~ 前缀精确匹配）
     for (final g in chatGroups) {
       f += ' ~${g.groupCall}';
@@ -133,7 +137,27 @@ class AppState extends ChangeNotifier {
   static const Map<String, List<String>> countryCallPrefixes = {
     'CN': ['B'],
     'KR': ['HL', 'DS', 'D7', '6K', '6L', '6M'],
-    'JP': ['JA', 'JB', 'JC', 'JD', 'JE', 'JF', 'JG', 'JH', 'JI', 'JJ', 'JK', 'JL', 'JM', 'JN', 'JO', 'JP', 'JQ', 'JR', 'JS'],
+    'JP': [
+      'JA',
+      'JB',
+      'JC',
+      'JD',
+      'JE',
+      'JF',
+      'JG',
+      'JH',
+      'JI',
+      'JJ',
+      'JK',
+      'JL',
+      'JM',
+      'JN',
+      'JO',
+      'JP',
+      'JQ',
+      'JR',
+      'JS',
+    ],
     'US': ['K', 'W', 'N', 'A'],
     'CA': ['VE', 'VA', 'VY'],
     'GB': ['G', 'M', '2', 'M6', '2E'],
@@ -254,7 +278,9 @@ class AppState extends ChangeNotifier {
 
   /// 校验是否标准业余无线电呼号（排除 WIDE/TCPIP/APRS/纯数字等非台站呼号）
   /// 支持带 SSID：BG7LZQ-9；中国：B[GHDIYZ][1-9]...；国际：前缀+数字+后缀
-  static final RegExp _callRe = RegExp(r'^(?:\d{1}[A-Z]{1,2}|[A-Z]{1,2}\d{1,2})[A-Z]{1,3}$');
+  static final RegExp _callRe = RegExp(
+    r'^(?:\d{1}[A-Z]{1,2}|[A-Z]{1,2}\d{1,2})[A-Z]{1,3}$',
+  );
   static final RegExp _hasLetter = RegExp(r'[A-Z]');
   static final RegExp _hasDigit = RegExp(r'\d');
   static final Map<String, bool> _callCache = {};
@@ -268,7 +294,19 @@ class AppState extends ChangeNotifier {
       return false;
     }
     // 常见非呼号协议标识
-    const bad = {'WIDE', 'TCPIP', 'APRS', 'TRACE', 'RELAY', 'BEACON', 'SAT', 'CQ', 'QST', 'NOCALL', 'UNKNOWN'};
+    const bad = {
+      'WIDE',
+      'TCPIP',
+      'APRS',
+      'TRACE',
+      'RELAY',
+      'BEACON',
+      'SAT',
+      'CQ',
+      'QST',
+      'NOCALL',
+      'UNKNOWN',
+    };
     for (final b in bad) {
       if (base.startsWith(b)) {
         _callCache[key] = false;
@@ -460,15 +498,15 @@ class AppState extends ChangeNotifier {
   Future<void> _applyOrientation() async {
     if (kIsWeb) return;
     try {
-      await SystemChrome.setPreferredOrientations(labLandscape
-          ? [
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.landscapeLeft,
-              DeviceOrientation.landscapeRight,
-            ]
-          : [
-              DeviceOrientation.portraitUp,
-            ]);
+      await SystemChrome.setPreferredOrientations(
+        labLandscape
+            ? [
+                DeviceOrientation.portraitUp,
+                DeviceOrientation.landscapeLeft,
+                DeviceOrientation.landscapeRight,
+              ]
+            : [DeviceOrientation.portraitUp],
+      );
     } catch (_) {}
   }
 
@@ -528,7 +566,8 @@ class AppState extends ChangeNotifier {
   /// 我的位置轨迹（最近 N 个定位点）
   final List<TrackPt> myTrack = [];
 
-  Station? get myStation => myHasFix      ? Station(
+  Station? get myStation => myHasFix
+      ? Station(
           call: myCall,
           symbol: mySymbol,
           alias: '我的位置',
@@ -559,9 +598,12 @@ class AppState extends ChangeNotifier {
       myComment = p.getString('myComment') ?? myComment;
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
-      beaconIncludeSpeed = p.getBool('beaconIncludeSpeed') ?? beaconIncludeSpeed;
-      beaconIncludeCourse = p.getBool('beaconIncludeCourse') ?? beaconIncludeCourse;
-      beaconIncludeBattery = p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
+      beaconIncludeSpeed =
+          p.getBool('beaconIncludeSpeed') ?? beaconIncludeSpeed;
+      beaconIncludeCourse =
+          p.getBool('beaconIncludeCourse') ?? beaconIncludeCourse;
+      beaconIncludeBattery =
+          p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
       coordDatum = p.getString('coordDatum') ?? coordDatum;
       darkMode = p.getBool('darkMode') ?? darkMode;
       locale = p.getString('locale') ?? locale;
@@ -577,7 +619,10 @@ class AppState extends ChangeNotifier {
       // 按国家接收
       try {
         final ctr = p.getStringList('receiveCountries');
-        if (ctr != null) receiveCountries..clear()..addAll(ctr);
+        if (ctr != null)
+          receiveCountries
+            ..clear()
+            ..addAll(ctr);
       } catch (_) {}
       receiveOthers = p.getBool('receiveOthers') ?? receiveOthers;
       labLandscape = p.getBool('labLandscape') ?? labLandscape;
@@ -600,7 +645,9 @@ class AppState extends ChangeNotifier {
         try {
           final list = jsonDecode(msgsJson) as List;
           messages.clear();
-          messages.addAll(list.map((j) => AprsMsg.fromJson(j as Map<String, dynamic>)));
+          messages.addAll(
+            list.map((j) => AprsMsg.fromJson(j as Map<String, dynamic>)),
+          );
         } catch (_) {}
       }
       // 加载群聊
@@ -609,7 +656,9 @@ class AppState extends ChangeNotifier {
         try {
           final list = jsonDecode(groupsJson) as List;
           chatGroups.clear();
-          chatGroups.addAll(list.map((j) => ChatGroup.fromJson(j as Map<String, dynamic>)));
+          chatGroups.addAll(
+            list.map((j) => ChatGroup.fromJson(j as Map<String, dynamic>)),
+          );
         } catch (_) {}
       }
       // 加载会话已读时间点
@@ -652,66 +701,72 @@ class AppState extends ChangeNotifier {
 
   /// 保存当前设置到本地（重启后保留）
   void persist() {
-    SharedPreferences.getInstance().then((p) {
-      p.setString('myCall', myCall);
-      p.setInt('mySsid', mySsid);
-      p.setString('mySymbol', mySymbol);
-      p.setString('myComment', myComment);
-      p.setBool('beacon', beaconEnabled);
-      p.setInt('beaconInterval', beaconInterval);
-      p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
-      p.setBool('beaconIncludeCourse', beaconIncludeCourse);
-      p.setBool('beaconIncludeBattery', beaconIncludeBattery);
-      p.setString('coordDatum', coordDatum);
-      p.setBool('darkMode', darkMode);
-      p.setString('locale', locale);
-      p.setString('themeColor', themeColor);
-      p.setString('mapType', mapType);
-      p.setString('updateChannel', updateChannel);
-      p.setBool('useSimLocation', useSimLocation);
-      p.setDouble('filterLat', filterLat);
-      p.setDouble('filterLng', filterLng);
-      p.setInt('filterRadius', filterRadius);
-      p.setInt('maxStations', maxStations);
-      p.setBool('filterFollow', filterFollow);
-      p.setStringList('receiveCountries', receiveCountries);
-      p.setBool('receiveOthers', receiveOthers);
-      p.setBool('labLandscape', labLandscape);
-      p.setBool('oobeDone', oobeDone);
-      p.setString('server', aprs.server);
-      p.setInt('port', aprs.port);
-      p.setString('passcode', aprs.passcode);
-      if (myHasFix && myLat != null && myLng != null) {
-        p.setDouble('myLat', myLat!);
-        p.setDouble('myLng', myLng!);
-      }
-      // 保存消息
-      final msgsJson = jsonEncode(messages.map((m) => m.toJson()).toList());
-      p.setString('messages', msgsJson);
-      // 保存群聊
-      final groupsJson = jsonEncode(chatGroups.map((g) => g.toJson()).toList());
-      p.setString('chatGroups', groupsJson);
-    }).catchError((_) {});
+    SharedPreferences.getInstance()
+        .then((p) {
+          p.setString('myCall', myCall);
+          p.setInt('mySsid', mySsid);
+          p.setString('mySymbol', mySymbol);
+          p.setString('myComment', myComment);
+          p.setBool('beacon', beaconEnabled);
+          p.setInt('beaconInterval', beaconInterval);
+          p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
+          p.setBool('beaconIncludeCourse', beaconIncludeCourse);
+          p.setBool('beaconIncludeBattery', beaconIncludeBattery);
+          p.setString('coordDatum', coordDatum);
+          p.setBool('darkMode', darkMode);
+          p.setString('locale', locale);
+          p.setString('themeColor', themeColor);
+          p.setString('mapType', mapType);
+          p.setString('updateChannel', updateChannel);
+          p.setBool('useSimLocation', useSimLocation);
+          p.setDouble('filterLat', filterLat);
+          p.setDouble('filterLng', filterLng);
+          p.setInt('filterRadius', filterRadius);
+          p.setInt('maxStations', maxStations);
+          p.setBool('filterFollow', filterFollow);
+          p.setStringList('receiveCountries', receiveCountries);
+          p.setBool('receiveOthers', receiveOthers);
+          p.setBool('labLandscape', labLandscape);
+          p.setBool('oobeDone', oobeDone);
+          p.setString('server', aprs.server);
+          p.setInt('port', aprs.port);
+          p.setString('passcode', aprs.passcode);
+          if (myHasFix && myLat != null && myLng != null) {
+            p.setDouble('myLat', myLat!);
+            p.setDouble('myLng', myLng!);
+          }
+          // 保存消息
+          final msgsJson = jsonEncode(messages.map((m) => m.toJson()).toList());
+          p.setString('messages', msgsJson);
+          // 保存群聊
+          final groupsJson = jsonEncode(
+            chatGroups.map((g) => g.toJson()).toList(),
+          );
+          p.setString('chatGroups', groupsJson);
+        })
+        .catchError((_) {});
     _notify();
   }
 
   /// 仅保存消息列表到本地
   void _saveMessages() {
-    SharedPreferences.getInstance().then((p) {
-      final json = jsonEncode(messages.map((m) => m.toJson()).toList());
-      p.setString('messages', json);
-      final readJson = jsonEncode(
-          _readAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)));
-      p.setString('readAt', readJson);
-      final groupReadJson = jsonEncode(
-          _groupReadAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)));
-      p.setString('groupReadAt', groupReadJson);
-    }).catchError((_) {});
+    SharedPreferences.getInstance()
+        .then((p) {
+          final json = jsonEncode(messages.map((m) => m.toJson()).toList());
+          p.setString('messages', json);
+          final readJson = jsonEncode(
+            _readAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
+          );
+          p.setString('readAt', readJson);
+          final groupReadJson = jsonEncode(
+            _groupReadAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
+          );
+          p.setString('groupReadAt', groupReadJson);
+        })
+        .catchError((_) {});
   }
 
-  AppState()
-      : stations = <Station>[],
-        messages = <AprsMsg>[] {
+  AppState() : stations = <Station>[], messages = <AprsMsg>[] {
     _loadPrefs();
     loc.onFix = _onFix;
     loc.onStatus = (s) {
@@ -730,8 +785,11 @@ class AppState extends ChangeNotifier {
       connected = false;
       final manual = _userDisconnected;
       connInfo = manual ? '未连接 · 已手动断开' : '连接已断开 · 8秒后自动重连…';
-      _log(manual ? LogLevel.info : LogLevel.warn, '连接',
-          manual ? '已手动断开连接' : '连接意外断开，8 秒后自动重连');
+      _log(
+        manual ? LogLevel.info : LogLevel.warn,
+        '连接',
+        manual ? '已手动断开连接' : '连接意外断开，8 秒后自动重连',
+      );
       _notify();
       _updateNotification();
       // 意外断开自动重连
@@ -909,7 +967,13 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  void _onFix(double lat, double lng, double alt, double speed, double bearing) {
+  void _onFix(
+    double lat,
+    double lng,
+    double alt,
+    double speed,
+    double bearing,
+  ) {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
     final first = !myHasFix;
@@ -936,8 +1000,11 @@ class AppState extends ChangeNotifier {
       filterLng = lng;
     }
     if (first) {
-      _log(LogLevel.info, '定位',
-          '首次定位 ${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)} 网格 $myGrid');
+      _log(
+        LogLevel.info,
+        '定位',
+        '首次定位 ${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)} 网格 $myGrid',
+      );
     }
     _notify();
     _updateNotification();
@@ -958,10 +1025,24 @@ class AppState extends ChangeNotifier {
     if (!myHasFix || !beaconEnabled) return;
     final lat = myLat!;
     final lng = myLng!;
-    final raw = AprsFmt.position(myFullCall, lat, lng, mySymbol,
-        comment: _beaconComment(), path: 'APALOC,TCPIP*');
-    _pushPacket(Packet(raw, myFullCall, 'APRS', 'position', DateTime.now(),
-        info: '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)} · 手动上报'));
+    final raw = AprsFmt.position(
+      myFullCall,
+      lat,
+      lng,
+      mySymbol,
+      comment: _beaconComment(),
+      path: 'APALOC,TCPIP*',
+    );
+    _pushPacket(
+      Packet(
+        raw,
+        myFullCall,
+        'APRS',
+        'position',
+        DateTime.now(),
+        info: '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)} · 手动上报',
+      ),
+    );
     if (connected) {
       aprs.send(raw);
       _lastTx = DateTime.now();
@@ -971,9 +1052,13 @@ class AppState extends ChangeNotifier {
     }
     beaconsSent++;
     _lastBeacon = DateTime.now();
-    _log(LogLevel.info, '信标', '已上报位置 网格 $myGrid'
-        '${mySpeed != null && mySpeed! > 0 ? ' ${mySpeed!.toStringAsFixed(0)}km/h' : ''}'
-        '${connected ? ' · 已发送' : ' · 未连接，仅本地记录'}');
+    _log(
+      LogLevel.info,
+      '信标',
+      '已上报位置 网格 $myGrid'
+          '${mySpeed != null && mySpeed! > 0 ? ' ${mySpeed!.toStringAsFixed(0)}km/h' : ''}'
+          '${connected ? ' · 已发送' : ' · 未连接，仅本地记录'}',
+    );
     _notify();
     _updateNotification();
   }
@@ -987,9 +1072,16 @@ class AppState extends ChangeNotifier {
       parts.add('/A=${ft.toString().padLeft(6, '0')}');
     }
     // 标准 course/speed 格式：ddd/sss（度/节，各3位）
-    if (beaconIncludeSpeed && beaconIncludeCourse && myCourse != null && mySpeed != null) {
+    if (beaconIncludeSpeed &&
+        beaconIncludeCourse &&
+        myCourse != null &&
+        mySpeed != null) {
       final crs = myCourse!.round().clamp(0, 359).toString().padLeft(3, '0');
-      final kt = (mySpeed! * 0.539957).round().clamp(0, 999).toString().padLeft(3, '0');
+      final kt = (mySpeed! * 0.539957)
+          .round()
+          .clamp(0, 999)
+          .toString()
+          .padLeft(3, '0');
       parts.add('$crs/$kt');
     }
     if (beaconIncludeBattery && _battery >= 0) {
@@ -1036,8 +1128,10 @@ class AppState extends ChangeNotifier {
     try {
       if (line.startsWith('#')) {
         // 服务器握手响应：# logresp {call} verified / unverified
-        final lm = RegExp(r'#\s*logresp[:\s]*(\S+)\s+(unverified|verified)', caseSensitive: false)
-            .firstMatch(line);
+        final lm = RegExp(
+          r'#\s*logresp[:\s]*(\S+)\s+(unverified|verified)',
+          caseSensitive: false,
+        ).firstMatch(line);
         if (lm != null) {
           final status = lm.group(2)!.toLowerCase();
           if (status == 'unverified') {
@@ -1072,7 +1166,9 @@ class AppState extends ChangeNotifier {
       if (body.startsWith('_')) type = 'weather';
       if (body.startsWith('>')) type = 'status';
       // 多跳转发识别：记录转发路径（如 WIDE1-1,WIDE2-1 或数字中继）
-      if (path.isNotEmpty && path.toUpperCase() != 'APRS' && path.toUpperCase() != 'TCPIP*') {
+      if (path.isNotEmpty &&
+          path.toUpperCase() != 'APRS' &&
+          path.toUpperCase() != 'TCPIP*') {
         // 转发路径作为附加信息展示，不覆盖原 info
         info = '$info  ·  [via $path]';
       }
@@ -1082,9 +1178,7 @@ class AppState extends ChangeNotifier {
         final fmo = _parseFmoStatus(body);
         if (fmo != null) {
           _upsertFmoStatus(src, fmo);
-          info = fmo.entries
-              .map((e) => '${e.key}:${e.value}')
-              .join(' · ');
+          info = fmo.entries.map((e) => '${e.key}:${e.value}').join(' · ');
         }
       }
 
@@ -1122,8 +1216,16 @@ class AppState extends ChangeNotifier {
             // ack 包不带消息 ID，防止对方无限 ack 我们的 ack
             final ack = '$myFullCall>APRS,TCPIP*::${src.padRight(9)}:ack$ackId';
             aprs.send(ack);
-            _pushPacket(Packet(ack, myFullCall, 'APRS', 'message', DateTime.now(),
-                info: '自动 ack → $src ($ackId)'));
+            _pushPacket(
+              Packet(
+                ack,
+                myFullCall,
+                'APRS',
+                'message',
+                DateTime.now(),
+                info: '自动 ack → $src ($ackId)',
+              ),
+            );
           }
         }
       }
@@ -1136,7 +1238,8 @@ class AppState extends ChangeNotifier {
         final p = parseAprsPosition(body);
         if (p != null) {
           _upsertStation(src, p, raw: line, path: path.isEmpty ? null : path);
-          info = '${p.lat.toStringAsFixed(4)}, ${p.lng.toStringAsFixed(4)}'
+          info =
+              '${p.lat.toStringAsFixed(4)}, ${p.lng.toStringAsFixed(4)}'
               '${p.speed != null ? ' · ${p.speed!.toStringAsFixed(0)}km/h' : ''}'
               '${path.isNotEmpty ? ' · [via $path]' : ''}';
         } else {
@@ -1145,8 +1248,16 @@ class AppState extends ChangeNotifier {
         }
       }
 
-      _pushPacket(Packet(line.trim(), src, 'APRS', type, DateTime.now(),
-          info: info.length > 80 ? info.substring(0, 80) : info));
+      _pushPacket(
+        Packet(
+          line.trim(),
+          src,
+          'APRS',
+          type,
+          DateTime.now(),
+          info: info.length > 80 ? info.substring(0, 80) : info,
+        ),
+      );
     } catch (e) {
       _log(LogLevel.debug, '解析', '数据包处理异常: $e');
     }
@@ -1242,10 +1353,17 @@ class AppState extends ChangeNotifier {
   void _addGroupSystemMsg(String groupId, String text) {
     final g = chatGroups.where((g) => g.id == groupId).firstOrNull;
     if (g == null) return;
-    messages.insert(0, AprsMsg(
-      '系统', g.groupCall, text, DateTime.now(),
-      groupId: groupId, system: true,
-    ));
+    messages.insert(
+      0,
+      AprsMsg(
+        '系统',
+        g.groupCall,
+        text,
+        DateTime.now(),
+        groupId: groupId,
+        system: true,
+      ),
+    );
     if (messages.length > 500) messages.removeLast();
     _saveMessages();
     _notify();
@@ -1326,8 +1444,9 @@ class AppState extends ChangeNotifier {
   /// 处理邀请（我是成员，收到群主的邀请）
   void _processInvite(String from, String groupCall, String name) {
     // 查找是否已有此群
-    var g = chatGroups.where((g) =>
-        g.groupCall.toUpperCase() == groupCall.toUpperCase()).firstOrNull;
+    var g = chatGroups
+        .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
     if (g == null) {
       // 创建本地群组记录（我是成员，不是群主）
       g = createGroup(
@@ -1351,8 +1470,9 @@ class AppState extends ChangeNotifier {
 
   /// 处理加入确认（我是群主，收到成员的确认）
   void _processJoinConfirm(String from, String groupCall) {
-    final g = chatGroups.where((g) =>
-        g.groupCall.toUpperCase() == groupCall.toUpperCase()).firstOrNull;
+    final g = chatGroups
+        .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
     if (g != null && g.isOwner(myCall)) {
       g.memberStatus[from.toUpperCase()] = GroupMemberStatus.joined;
       g.activeMembers.add(from.toUpperCase());
@@ -1367,8 +1487,9 @@ class AppState extends ChangeNotifier {
 
   /// 处理拒绝（我是群主，收到成员的拒绝）
   void _processDecline(String from, String groupCall) {
-    final g = chatGroups.where((g) =>
-        g.groupCall.toUpperCase() == groupCall.toUpperCase()).firstOrNull;
+    final g = chatGroups
+        .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
     if (g != null && g.isOwner(myCall)) {
       g.memberStatus[from.toUpperCase()] = GroupMemberStatus.declined;
       _saveChatGroups();
@@ -1382,8 +1503,9 @@ class AppState extends ChangeNotifier {
 
   /// 处理成员离开（我是群主，收到成员的离开声明）
   void _processMemberLeft(String from, String groupCall) {
-    final g = chatGroups.where((g) =>
-        g.groupCall.toUpperCase() == groupCall.toUpperCase()).firstOrNull;
+    final g = chatGroups
+        .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
     if (g != null && g.isOwner(myCall)) {
       g.memberStatus[from.toUpperCase()] = GroupMemberStatus.left;
       g.activeMembers.remove(from.toUpperCase());
@@ -1398,12 +1520,15 @@ class AppState extends ChangeNotifier {
 
   /// 处理主动申请（我是群主，收到成员的加入申请）
   void _processJoinReq(String from, String groupCall) {
-    final g = chatGroups.where((g) =>
-        g.groupCall.toUpperCase() == groupCall.toUpperCase()).firstOrNull;
+    final g = chatGroups
+        .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
     if (g != null && g.isOwner(myCall)) {
       // 自动加入期望列表，状态设为 pending
       g.memberStatus.putIfAbsent(
-          from.toUpperCase(), () => GroupMemberStatus.pending);
+        from.toUpperCase(),
+        () => GroupMemberStatus.pending,
+      );
       _saveChatGroups();
       _log(LogLevel.info, '群聊', '${g.name}：${from} 申请加入');
       _addGroupSystemMsg(g.id, '$from 申请加入群聊');
@@ -1445,7 +1570,11 @@ class AppState extends ChangeNotifier {
       info['服务器'] = pm != null ? '${ip.group(0)}:${pm.group(1)}' : ip.group(0)!;
     }
     // 接收范围：F500KM / R500 / 覆盖范围500 等常见格式
-    final rng = RegExp(r'[FR](\d{2,4})\s*KM', caseSensitive: false).firstMatch(comment) ??
+    final rng =
+        RegExp(
+          r'[FR](\d{2,4})\s*KM',
+          caseSensitive: false,
+        ).firstMatch(comment) ??
         RegExp(r'接收范围[：:]\s*(\d{2,4})').firstMatch(comment);
     if (rng != null) info['接收范围'] = '${rng.group(1)}km';
     final um = RegExp(r'U(\d+)/(\d+)').firstMatch(comment);
@@ -1476,7 +1605,8 @@ class AppState extends ChangeNotifier {
     // 否则仅保留匹配国家前缀的台站（收藏/手动台站除外）
     if (receiveCountries.isNotEmpty) {
       final matched = _matchReceiveFilter(call);
-      final special = receiveOthers &&
+      final special =
+          receiveOthers &&
           ((raw?.toUpperCase().contains('APFMO') ?? false) ||
               (raw?.toUpperCase().contains('APRSLOCUS') ?? false) ||
               (raw?.toUpperCase().contains('APALOC') ?? false) ||
@@ -1487,7 +1617,8 @@ class AppState extends ChangeNotifier {
               p.symbol == 'w');
       if (!matched && !special) {
         final existing = stations.indexWhere((s) => s.call == call);
-        if (existing >= 0 && (stations[existing].favorite || stations[existing].manual)) {
+        if (existing >= 0 &&
+            (stations[existing].favorite || stations[existing].manual)) {
           // 收藏/手动台站保留更新
         } else {
           return;
@@ -1495,14 +1626,16 @@ class AppState extends ChangeNotifier {
       }
     }
     // FMO 台站识别：看数据包字段（路径 APFMO / 备注 FMO-V4、STATION、CERT: / 符号 i）
-    final isFmo = (raw?.contains('APFMO') ?? false) ||
+    final isFmo =
+        (raw?.contains('APFMO') ?? false) ||
         p.symbol == 'i' ||
         (p.comment?.contains('FMO') ?? false) ||
         (p.comment?.contains('CERT:') ?? false) ||
         (p.comment?.contains('STATION') ?? false);
     // APRSlocus 台站识别：路径 APALOC（专用标识）优先，兼容备注含 APRSLOCUS/APOLOCUS
     final rawUp = raw?.toUpperCase() ?? '';
-    final isAprslocus = rawUp.contains('APALOC') ||
+    final isAprslocus =
+        rawUp.contains('APALOC') ||
         rawUp.contains('APOLOCUS') ||
         rawUp.contains('APRSLOCUS') ||
         (p.comment?.toUpperCase().contains('APRSLOCUS') ?? false) ||
@@ -1515,15 +1648,20 @@ class AppState extends ChangeNotifier {
     if (isAprslocus && p.comment != null) {
       apInfo = <String, String>{};
       // 版本：APRSlocus v1.2.6
-      final vm = RegExp(r'APRSLOCUS\s*v?(\d[\d.]*)', caseSensitive: false)
-          .firstMatch(p.comment!);
+      final vm = RegExp(
+        r'APRSLOCUS\s*v?(\d[\d.]*)',
+        caseSensitive: false,
+      ).firstMatch(p.comment!);
       if (vm != null) apInfo['版本'] = 'v${vm.group(1)}';
       apInfo['软件'] = 'APRSlocus';
       // 是否有高度/速度等
       if (p.alt != null) apInfo['高度'] = '${p.alt!.toStringAsFixed(0)}m';
       if (p.speed != null) apInfo['速度'] = '${p.speed!.toStringAsFixed(0)}km/h';
       // 手机电量：Bat:XX%
-      final bm = RegExp(r'Bat:(\d+)%', caseSensitive: false).firstMatch(p.comment!);
+      final bm = RegExp(
+        r'Bat:(\d+)%',
+        caseSensitive: false,
+      ).firstMatch(p.comment!);
       if (bm != null) apInfo['电量'] = '${bm.group(1)}%';
     }
     // FMO 位置包结构化字段 + 合并此前缓存的状态信息
@@ -1540,7 +1678,8 @@ class AppState extends ChangeNotifier {
     final now = DateTime.now();
     if (idx >= 0) {
       final s = stations[idx];
-      final moved = (s.lat - p.lat).abs() > 1e-6 || (s.lng - p.lng).abs() > 1e-6;
+      final moved =
+          (s.lat - p.lat).abs() > 1e-6 || (s.lng - p.lng).abs() > 1e-6;
       s.lat = p.lat;
       s.lng = p.lng;
       s.lastHeard = now;
@@ -1566,7 +1705,8 @@ class AppState extends ChangeNotifier {
       stations[idx] = s;
       if (moved) stationsVersion++;
       _stationsDirty = true;
-    } else {      // 新台站：容量满时移除最旧的（优先保留收藏/手动台站）
+    } else {
+      // 新台站：容量满时移除最旧的（优先保留收藏/手动台站）
       if (stations.length >= maxStations) {
         // 排序：收藏/手动台站排前面，普通台站按最近活跃（新）在前
         // 删除时跳过所有收藏台站，从尾部删除最旧的普通台站
@@ -1586,23 +1726,25 @@ class AppState extends ChangeNotifier {
         }
       }
       stationsVersion++;
-      stations.add(Station(
-        call: call,
-        symbol: symbol,
-        symbolTable: symbolTable,
-        lat: p.lat,
-        lng: p.lng,
-        alt: p.alt,
-        speed: p.speed,
-        course: p.course,
-        comment: comment ?? '在线',
-        lastHeard: now,
-        status: St.online,
-        track: [TrackPt(p.lat, p.lng, now)],
-        fmo: fmoInfo,
-        aprslocus: apInfo,
-        path: path,
-      ));
+      stations.add(
+        Station(
+          call: call,
+          symbol: symbol,
+          symbolTable: symbolTable,
+          lat: p.lat,
+          lng: p.lng,
+          alt: p.alt,
+          speed: p.speed,
+          course: p.course,
+          comment: comment ?? '在线',
+          lastHeard: now,
+          status: St.online,
+          track: [TrackPt(p.lat, p.lng, now)],
+          fmo: fmoInfo,
+          aprslocus: apInfo,
+          path: path,
+        ),
+      );
       _stationsDirty = true;
     }
     _notifyRx();
@@ -1683,17 +1825,19 @@ class AppState extends ChangeNotifier {
       _saveStations();
       return true;
     }
-    stations.add(Station(
-      call: c,
-      symbol: '/',
-      lat: 0,
-      lng: 0,
-      lastHeard: DateTime.now(),
-      status: St.offline,
-      comment: '手动添加',
-      manual: true,
-      favorite: true,
-    ));
+    stations.add(
+      Station(
+        call: c,
+        symbol: '/',
+        lat: 0,
+        lng: 0,
+        lastHeard: DateTime.now(),
+        status: St.offline,
+        comment: '手动添加',
+        manual: true,
+        favorite: true,
+      ),
+    );
     _notify();
     _saveStations();
     return true;
@@ -1701,18 +1845,29 @@ class AppState extends ChangeNotifier {
 
   /// 保存台站列表到本地
   void _saveStations() {
-    SharedPreferences.getInstance().then((p) {
-      final json = stations.map((s) => {
-        'call': s.call, 'symbol': s.symbol, 'lat': s.lat, 'lng': s.lng,
-        'lastHeard': s.lastHeard.millisecondsSinceEpoch,
-        'status': s.status.index, 'comment': s.comment,
-        'favorite': s.favorite, 'manual': s.manual,
-        if (s.path != null) 'path': s.path,
-        if (s.fmo != null) 'fmo': s.fmo,
-        if (s.aprslocus != null) 'aprslocus': s.aprslocus,
-      }).toList();
-      p.setString('stations', jsonEncode(json));
-    }).catchError((_) {});
+    SharedPreferences.getInstance()
+        .then((p) {
+          final json = stations
+              .map(
+                (s) => {
+                  'call': s.call,
+                  'symbol': s.symbol,
+                  'lat': s.lat,
+                  'lng': s.lng,
+                  'lastHeard': s.lastHeard.millisecondsSinceEpoch,
+                  'status': s.status.index,
+                  'comment': s.comment,
+                  'favorite': s.favorite,
+                  'manual': s.manual,
+                  if (s.path != null) 'path': s.path,
+                  if (s.fmo != null) 'fmo': s.fmo,
+                  if (s.aprslocus != null) 'aprslocus': s.aprslocus,
+                },
+              )
+              .toList();
+          p.setString('stations', jsonEncode(json));
+        })
+        .catchError((_) {});
   }
 
   /// 加载台站列表（含收藏和手动添加的）
@@ -1732,8 +1887,9 @@ class AppState extends ChangeNotifier {
           stations[idx].path = m['path'] as String?;
           final apMap = m['aprslocus'];
           if (apMap is Map) {
-            stations[idx].aprslocus = apMap
-                .map((k, v) => MapEntry(k.toString(), v.toString()));
+            stations[idx].aprslocus = apMap.map(
+              (k, v) => MapEntry(k.toString(), v.toString()),
+            );
           }
         } else {
           final apMap = m['aprslocus'];
@@ -1742,24 +1898,34 @@ class AppState extends ChangeNotifier {
           final sym = m['symbol'] as String? ?? '/';
           // 国家筛选：非收藏/手动且不匹配所选国家的历史台站不加载
           // 开启「其他台站」时放行特殊类型（中继 R/#、气象 W/w、FMO i）
-          final special = receiveOthers &&
-              (sym == 'R' || sym == '#' || sym == 'W' || sym == 'w' || sym == 'i');
-          if (!favorite && !manual && !_matchReceiveFilter(call) && !special) continue;
-          stations.add(Station(
-            call: call,
-            symbol: sym,
-            lat: (m['lat'] as num?)?.toDouble() ?? 0,
-            lng: (m['lng'] as num?)?.toDouble() ?? 0,
-            lastHeard: DateTime.fromMillisecondsSinceEpoch(m['lastHeard'] as int? ?? 0),
-            status: St.values[m['status'] as int? ?? 0],
-            comment: m['comment'] as String?,
-            favorite: favorite,
-            manual: manual,
-            path: m['path'] as String?,
-            aprslocus: apMap is Map
-                ? apMap.map((k, v) => MapEntry(k.toString(), v.toString()))
-                : null,
-          ));
+          final special =
+              receiveOthers &&
+              (sym == 'R' ||
+                  sym == '#' ||
+                  sym == 'W' ||
+                  sym == 'w' ||
+                  sym == 'i');
+          if (!favorite && !manual && !_matchReceiveFilter(call) && !special)
+            continue;
+          stations.add(
+            Station(
+              call: call,
+              symbol: sym,
+              lat: (m['lat'] as num?)?.toDouble() ?? 0,
+              lng: (m['lng'] as num?)?.toDouble() ?? 0,
+              lastHeard: DateTime.fromMillisecondsSinceEpoch(
+                m['lastHeard'] as int? ?? 0,
+              ),
+              status: St.values[m['status'] as int? ?? 0],
+              comment: m['comment'] as String?,
+              favorite: favorite,
+              manual: manual,
+              path: m['path'] as String?,
+              aprslocus: apMap is Map
+                  ? apMap.map((k, v) => MapEntry(k.toString(), v.toString()))
+                  : null,
+            ),
+          );
         }
       }
     } catch (_) {}
@@ -1867,8 +2033,10 @@ class AppState extends ChangeNotifier {
     }
     final id = AprsFmt.randId();
     final raw = AprsFmt.message(myFullCall, to, text.trim(), id);
-    messages.insert(0, AprsMsg(myFullCall, to, text.trim(), DateTime.now(),
-        sent: true, id: id));
+    messages.insert(
+      0,
+      AprsMsg(myFullCall, to, text.trim(), DateTime.now(), sent: true, id: id),
+    );
     _saveMessages();
     packetsTx++;
     if (connected) {
@@ -1876,8 +2044,16 @@ class AppState extends ChangeNotifier {
       _lastTx = DateTime.now();
     }
     _log(LogLevel.info, '消息', '发送给 $to：$text');
-    _pushPacket(Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
-        info: '发给 $to：$text'));
+    _pushPacket(
+      Packet(
+        raw,
+        myFullCall,
+        'APRS',
+        'message',
+        DateTime.now(),
+        info: '发给 $to：$text',
+      ),
+    );
     _notify();
   }
 
@@ -1887,8 +2063,18 @@ class AppState extends ChangeNotifier {
     if (text.trim().isEmpty || groupCall.isEmpty) return 0;
     final id = AprsFmt.randId();
     final raw = AprsFmt.messageNoAck(myFullCall, groupCall, text.trim(), id);
-    messages.insert(0, AprsMsg(myFullCall, groupCall, text.trim(), DateTime.now(),
-        sent: true, id: id, groupId: groupId));
+    messages.insert(
+      0,
+      AprsMsg(
+        myFullCall,
+        groupCall,
+        text.trim(),
+        DateTime.now(),
+        sent: true,
+        id: id,
+        groupId: groupId,
+      ),
+    );
     _saveMessages();
     packetsTx++;
     if (connected) {
@@ -1896,15 +2082,27 @@ class AppState extends ChangeNotifier {
       _lastTx = DateTime.now();
     }
     _log(LogLevel.info, '群发', '发送到 $groupCall：$text');
-    _pushPacket(Packet(raw, myFullCall, 'APRS', 'message', DateTime.now(),
-        info: '群发到 $groupCall：$text'));
+    _pushPacket(
+      Packet(
+        raw,
+        myFullCall,
+        'APRS',
+        'message',
+        DateTime.now(),
+        info: '群发到 $groupCall：$text',
+      ),
+    );
     _notify();
     return 1;
   }
 
   // ─── 群聊管理 ───
-  ChatGroup createGroup(String name, Set<String> members,
-      {String? groupCall, String? owner}) {
+  ChatGroup createGroup(
+    String name,
+    Set<String> members, {
+    String? groupCall,
+    String? owner,
+  }) {
     // 生成群呼号：{群主呼号}-G{序号}
     final gc = groupCall ?? _generateGroupCall(owner ?? myCall);
     final g = ChatGroup(
@@ -1947,8 +2145,11 @@ class AppState extends ChangeNotifier {
   /// 无论当前是否连接都尝试发送（若刚建群触发重连，connected 可能短暂为 false）
   void sendInvite(String groupCall, String memberCall, String groupName) {
     final raw = AprsFmt.message(
-        myFullCall, memberCall, 'INVITE $groupCall $groupName',
-        AprsFmt.randId());
+      myFullCall,
+      memberCall,
+      'INVITE $groupCall $groupName',
+      AprsFmt.randId(),
+    );
     _trySend(raw);
     _log(LogLevel.info, '群聊', '发送邀请给 $memberCall：$groupCall $groupName');
   }
@@ -1956,7 +2157,11 @@ class AppState extends ChangeNotifier {
   /// 成员确认加入（发给群主）
   void sendJoinConfirm(String ownerCall, String groupCall) {
     final raw = AprsFmt.message(
-        myFullCall, ownerCall, 'JOIN_CONFIRM $groupCall', AprsFmt.randId());
+      myFullCall,
+      ownerCall,
+      'JOIN_CONFIRM $groupCall',
+      AprsFmt.randId(),
+    );
     _trySend(raw);
     _log(LogLevel.info, '群聊', '确认加入 $groupCall');
   }
@@ -1964,7 +2169,11 @@ class AppState extends ChangeNotifier {
   /// 成员离开（发给群主）
   void sendLeave(String ownerCall, String groupCall) {
     final raw = AprsFmt.message(
-        myFullCall, ownerCall, 'LEFT $groupCall', AprsFmt.randId());
+      myFullCall,
+      ownerCall,
+      'LEFT $groupCall',
+      AprsFmt.randId(),
+    );
     _trySend(raw);
     _log(LogLevel.info, '群聊', '离开 $groupCall');
   }
@@ -2004,7 +2213,9 @@ class AppState extends ChangeNotifier {
       // 添加新成员为 pending，不在列表中的保持不变
       for (final m in members) {
         g.memberStatus.putIfAbsent(
-            m.toUpperCase(), () => GroupMemberStatus.pending);
+          m.toUpperCase(),
+          () => GroupMemberStatus.pending,
+        );
       }
     }
     _saveChatGroups();
@@ -2044,8 +2255,7 @@ class AppState extends ChangeNotifier {
   void sendPacket(String raw) {
     if (raw.trim().isEmpty) return;
     final src = raw.contains('>') ? raw.split('>').first : myCall;
-    _pushPacket(Packet(raw, src, 'APRS', 'message', DateTime.now(),
-        info: raw));
+    _pushPacket(Packet(raw, src, 'APRS', 'message', DateTime.now(), info: raw));
     packetsTx++;
     if (connected) {
       aprs.send(raw);
@@ -2064,8 +2274,16 @@ class AppState extends ChangeNotifier {
       final sep = raw.indexOf('>');
       final bodySep = raw.indexOf(':');
       if (sep < 0 || bodySep < 0) {
-        _pushPacket(Packet(raw.trim(), '?', 'APRS', 'unknown',
-            DateTime.now(), info: raw.trim()));
+        _pushPacket(
+          Packet(
+            raw.trim(),
+            '?',
+            'APRS',
+            'unknown',
+            DateTime.now(),
+            info: raw.trim(),
+          ),
+        );
         _notify();
         return '格式异常：缺少 > 或 :';
       }
@@ -2077,18 +2295,27 @@ class AppState extends ChangeNotifier {
         final p = parseAprsPosition(body);
         if (p != null) {
           _upsertStation(src, p, raw: raw);
-          _pushPacket(Packet(raw.trim(), src, 'APRS', 'position',
+          _pushPacket(
+            Packet(
+              raw.trim(),
+              src,
+              'APRS',
+              'position',
               DateTime.now(),
-              info: '${p.lat.toStringAsFixed(4)}, ${p.lng.toStringAsFixed(4)}'
-                  ' · ${maidenhead(p.lat, p.lng)}'));
+              info:
+                  '${p.lat.toStringAsFixed(4)}, ${p.lng.toStringAsFixed(4)}'
+                  ' · ${maidenhead(p.lat, p.lng)}',
+            ),
+          );
           _notify();
           return '已解析台站 $src：'
               '${p.lat.toStringAsFixed(5)}, ${p.lng.toStringAsFixed(5)}'
               ' 网格 ${maidenhead(p.lat, p.lng)}';
         }
       }
-      _pushPacket(Packet(raw.trim(), src, 'APRS', 'unknown',
-          DateTime.now(), info: body));
+      _pushPacket(
+        Packet(raw.trim(), src, 'APRS', 'unknown', DateTime.now(), info: body),
+      );
       _notify();
       return '已加入数据包，但未识别为位置（$src）';
     } catch (e) {
@@ -2138,9 +2365,12 @@ class AppState extends ChangeNotifier {
   }
 
   // 信标定时器（每秒检查）
-  int get online => stations.where((s) => s.status != St.offline).length;
-  int get moving => stations.where((s) => s.status == St.moving).length;
-  int get emergency => stations.where((s) => s.status == St.emergency).length;
+  int get online =>
+      stations.where((s) => s.effectiveStatus != St.offline).length;
+  int get moving =>
+      stations.where((s) => s.effectiveStatus == St.moving).length;
+  int get stoppedCount =>
+      stations.where((s) => s.effectiveStatus == St.stopped).length;
 
   // ─── 地图焦点（台站列表 → 地图定位） ───
   Station? mapFocus;
@@ -2169,16 +2399,17 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  String get myPosStr =>
-      myHasFix ? '${myLat!.toStringAsFixed(4)}, ${myLng!.toStringAsFixed(4)}' : '--';
+  String get myPosStr => myHasFix
+      ? '${myLat!.toStringAsFixed(4)}, ${myLng!.toStringAsFixed(4)}'
+      : '--';
 
   String get myGrid => myHasFix ? maidenhead(myLat!, myLng!) : '--';
 
   String get nextBeaconIn {
     if (!beaconEnabled) return '已关闭';
     if (!myHasFix) return '等待定位';
-    final remain = beaconInterval -
-        DateTime.now().difference(_lastBeacon).inSeconds;
+    final remain =
+        beaconInterval - DateTime.now().difference(_lastBeacon).inSeconds;
     return remain > 0 ? '${remain}s' : '即将';
   }
 

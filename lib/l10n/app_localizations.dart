@@ -4435,6 +4435,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'本地 v{local} · 仓库最新 v{latest}'**
   String localRepoVersion(Object latest, Object local);
+
+  /// No description provided for @unverified.
+  ///
+  /// In zh, this message translates to:
+  /// **'未验证'**
+  String get unverified;
+
+  /// No description provided for @passcodeUnverifiedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'-1 未验证'**
+  String get passcodeUnverifiedHint;
+
+  /// No description provided for @passcodeMessageWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 登录验证码，填 -1 无法正常收发消息'**
+  String get passcodeMessageWarning;
 }
 
 class _AppLocalizationsDelegate

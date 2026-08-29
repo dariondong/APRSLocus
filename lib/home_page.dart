@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   int _lastFocusSeq = 0;
   int _lastPickSeq = 0;
   final _searchCtrl = TextEditingController();
+  Timer? _searchDebounce; // 搜索防抖：台站多时避免每敲一个字符重建地图/列表
 
   // 顶部消息气泡
   bool _showBubble = false;
@@ -199,6 +200,7 @@ class _HomePageState extends State<HomePage> {
     widget.state.onNewMessage = null;
     widget.state.onInviteReceived = null;
     widget.state.onGroupEvent = null;
+    _searchDebounce?.cancel();
     _searchCtrl.dispose();
     super.dispose();
   }
@@ -741,7 +743,16 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: TextField(
                     controller: _searchCtrl,
-                    onChanged: (v) => setState(() => _search = v),
+                    onChanged: (v) {
+                      // 防抖：输入停止 300ms 才更新搜索，台站多时避免逐字重建卡顿
+                      _searchDebounce?.cancel();
+                      _searchDebounce = Timer(
+                        const Duration(milliseconds: 300),
+                        () {
+                          if (mounted) setState(() => _search = v);
+                        },
+                      );
+                    },
                     style: ts(13),
                     decoration: InputDecoration(
                       hintText: S.of(context).searchHint,
