@@ -376,6 +376,20 @@ class _MapPageState extends State<MapPage>
                           ),
               ),
             ),
+            // 我的位置轨迹线（不挡手势）
+            if (!_usePluginMap &&
+                _showTracks &&
+                widget.state.myTrack.length > 1)
+              IgnorePointer(
+                child: CustomPaint(
+                  size: size,
+                  painter: _TrackOverlayPainter(
+                    points: widget.state.myTrack,
+                    color: C.blue,
+                    toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                  ),
+                ),
+              ),
             // 轨迹线（不挡手势）
             if (!_usePluginMap &&
                 _selected != null &&
@@ -602,7 +616,15 @@ class _MapPageState extends State<MapPage>
   }
 
   List<Widget> _buildMarkers(Size size) {
-    return _visible.map((s) {
+    // 聚合：当台站较多且缩放级别低时，把屏幕距离接近的台站合并为聚合球
+    final clusterRadius = _zoom < 8 ? 56.0 : 40.0;
+    // 超过阈值才聚合（台站少时不聚合，保留单个标记体验）
+    final clusterThreshold = _zoom < 8 ? 30 : 60;
+    final stations = _visible;
+    if (stations.length > clusterThreshold) {
+      return _buildClusteredMarkers(stations, size, clusterRadius);
+    }
+    return stations.map((s) {
       final pos = _toScreen(s.lat, s.lng, size);
       if (pos.dx < -50 ||
           pos.dx > size.width + 50 ||
@@ -663,6 +685,121 @@ class _MapPageState extends State<MapPage>
                     ),
                 ],
               ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  /// 聚合模式：把屏幕距离接近的台站合并为聚合球（减少 widget 数量，降低卡顿）
+  List<Widget> _buildClusteredMarkers(
+      List<Station> stations, Size size, double radius) {
+    final clusters = <({Offset center, List<Station> items})>[];
+    final placed = <int>[];
+
+    for (var i = 0; i < stations.length; i++) {
+      if (placed.contains(i)) continue;
+      final pos = _toScreen(stations[i].lat, stations[i].lng, size);
+      if (pos.dx < -50 ||
+          pos.dx > size.width + 50 ||
+          pos.dy < -50 ||
+          pos.dy > size.height + 50) {
+        continue;
+      }
+      final group = <Station>[stations[i]];
+      placed.add(i);
+      for (var j = i + 1; j < stations.length; j++) {
+        if (placed.contains(j)) continue;
+        final p2 = _toScreen(stations[j].lat, stations[j].lng, size);
+        final d = (p2 - pos).distance;
+        if (d < radius) {
+          group.add(stations[j]);
+          placed.add(j);
+        }
+      }
+      // 聚合球中心：取组内屏幕坐标均值
+      var cx = pos.dx, cy = pos.dy;
+      if (group.length > 1) {
+        var sumX = pos.dx, sumY = pos.dy;
+        for (var k = 1; k < group.length; k++) {
+          final pk = _toScreen(group[k].lat, group[k].lng, size);
+          sumX += pk.dx;
+          sumY += pk.dy;
+        }
+        cx = sumX / group.length;
+        cy = sumY / group.length;
+      }
+      clusters.add((center: Offset(cx, cy), items: group));
+    }
+
+    return clusters.map((c) {
+      final count = c.items.length;
+      if (count == 1) {
+        final s = c.items.first;
+        final sel = _selected?.call == s.call;
+        return Positioned(
+          left: c.center.dx - 28,
+          top: c.center.dy - 28,
+          child: GestureDetector(
+            onTapDown: (_) => setState(() => _selected = s),
+            onDoubleTap: () => _openDetail(s),
+            onTap: () => _animateToStation(s),
+            behavior: HitTestBehavior.opaque,
+            child: SizedBox(
+              width: 56,
+              height: 56,
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  if (s.status == St.moving || sel)
+                    _PulseRing(color: s.color, sel: sel, anim: _pulse),
+                  Container(
+                    width: sel ? 30 : 22,
+                    height: sel ? 30 : 22,
+                    decoration: BoxDecoration(
+                      color: s.color,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2.5),
+                      boxShadow: [
+                        BoxShadow(
+                            color: s.color.withValues(alpha: 0.4),
+                            blurRadius: sel ? 14 : 6),
+                      ],
+                    ),
+                    child: Center(
+                        child: Icon(s.icon,
+                            color: Colors.white, size: sel ? 14 : 11)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+      // 聚合球
+      return Positioned(
+        left: c.center.dx - 20,
+        top: c.center.dy - 20,
+        child: GestureDetector(
+          onTap: () => _zoomIn(),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: C.indigo.withValues(alpha: 0.85),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2.5),
+              boxShadow: [
+                BoxShadow(
+                    color: C.indigo.withValues(alpha: 0.5), blurRadius: 8),
+              ],
+            ),
+            child: Center(
+              child: Text('$count',
+                  style: ts(13, c: Colors.white, w: FontWeight.w800)),
             ),
           ),
         ),
@@ -1070,6 +1207,16 @@ class _MapPageState extends State<MapPage>
         SizedBox(width: 6),
         Text(t, style: ts(10, c: C.slate)),
       ]);
+
+  /// 聚合球点击：放大一级以展开聚合的台站
+  void _zoomIn() {
+    if (_usePluginMap) {
+      _pluginAction('zoomIn');
+      return;
+    }
+    final z = (_zoom + 1).clamp(8.0, 19.0);
+    _animateTo(z, _panForCenter(z));
+  }
 
   Widget _zoomCtrl() {
     return Column(children: [
