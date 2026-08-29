@@ -1,19 +1,15 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'theme.dart';
 import 'widgets.dart';
 import 'state.dart';
 import 'sponsor_page.dart';
 
 /// 彩蛋呼号 → 台词
-const _eggMap = <String, String>{
-  'BG7LZQ': '哎呦你干嘛~',
-  'BG7PGW': '闹呢？',
-  'BG7LMW': '默不作声...',
-  'BG7OSL': '你的胆子肥嘟嘟的',
-};
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -35,15 +31,21 @@ class _AboutPageState extends State<AboutPage>
     for (var i = 0; i < 28; i++) {
       final angle = rng.nextDouble() * 2 * pi;
       final speed = 80.0 + rng.nextDouble() * 160.0;
-      _particles.add(_Particle(
-        color: [
-          Colors.red, Colors.orange, Colors.blue,
-          Colors.green, Colors.purple, Colors.pink,
-        ][rng.nextInt(6)],
-        dx: cos(angle) * speed,
-        dy: sin(angle) * speed - 60,
-        size: 3.0 + rng.nextDouble() * 5.0,
-      ));
+      _particles.add(
+        _Particle(
+          color: [
+            Colors.red,
+            Colors.orange,
+            Colors.blue,
+            Colors.green,
+            Colors.purple,
+            Colors.pink,
+          ][rng.nextInt(6)],
+          dx: cos(angle) * speed,
+          dy: sin(angle) * speed - 60,
+          size: 3.0 + rng.nextDouble() * 5.0,
+        ),
+      );
     }
     _particleCenter = center;
     _showParticles = true;
@@ -53,12 +55,15 @@ class _AboutPageState extends State<AboutPage>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..addListener(() => setState(() {
-          if (_ctrl!.isCompleted) _showParticles = false;
-        }));
+    _ctrl =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 1200),
+        )..addListener(
+          () => setState(() {
+            if (_ctrl!.isCompleted) _showParticles = false;
+          }),
+        );
   }
 
   @override
@@ -68,7 +73,14 @@ class _AboutPageState extends State<AboutPage>
   }
 
   void _onEggTap(String call) {
-    final msg = _eggMap[call];
+    final l10n = S.of(context);
+    final msg = switch (call) {
+      'BG7LZQ' => l10n.eggBg7lzq,
+      'BG7PGW' => l10n.eggBg7pgw,
+      'BG7LMW' => l10n.eggBg7lmw,
+      'BG7OSL' => l10n.eggBg7osl,
+      _ => null,
+    };
     if (msg == null) return;
     HapticFeedback.mediumImpact();
     if (call == 'BG7OSL') {
@@ -76,7 +88,9 @@ class _AboutPageState extends State<AboutPage>
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -87,16 +101,23 @@ class _AboutPageState extends State<AboutPage>
                 fit: BoxFit.contain,
               ),
               SizedBox(height: 12),
-              Text(call, style: ts(14, c: C.blue, w: FontWeight.w700)),
+              Text(
+                call,
+                style: ts(14, c: C.blue, w: FontWeight.w700),
+              ),
               SizedBox(height: 6),
-              Text(msg, style: ts(16, w: FontWeight.w800), textAlign: TextAlign.center),
+              Text(
+                msg,
+                style: ts(16, w: FontWeight.w800),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('关闭', style: ts(13, c: C.grey)),
+              child: Text(S.of(context).close, style: ts(13, c: C.grey)),
             ),
           ],
         ),
@@ -111,16 +132,23 @@ class _AboutPageState extends State<AboutPage>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(call, style: ts(14, c: C.blue, w: FontWeight.w700)),
+            Text(
+              call,
+              style: ts(14, c: C.blue, w: FontWeight.w700),
+            ),
             SizedBox(height: 10),
-            Text(msg, style: ts(16, w: FontWeight.w800), textAlign: TextAlign.center),
+            Text(
+              msg,
+              style: ts(16, w: FontWeight.w800),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('好的', style: ts(13, c: C.blue)),
+            child: Text(S.of(context).ok, style: ts(13, c: C.blue)),
           ),
         ],
       ),
@@ -204,12 +232,20 @@ class _AboutPageState extends State<AboutPage>
                             children: [
                               AppLogo(size: 78),
                               const SizedBox(height: 12),
-                              Text('APRSlocus',
-                                  style: ts(22, w: FontWeight.w800, ls: -0.5,
-                                      c: Colors.white)),
+                              Text(
+                                'APRSlocus',
+                                style: ts(
+                                  22,
+                                  w: FontWeight.w800,
+                                  ls: -0.5,
+                                  c: Colors.white,
+                                ),
+                              ),
                               const SizedBox(height: 4),
-                              Text(S.of(context).aboutSubtitle,
-                                  style: ts(12, c: Colors.white70)),
+                              Text(
+                                S.of(context).aboutSubtitle,
+                                style: ts(12, c: Colors.white70),
+                              ),
                             ],
                           ),
                         ),
@@ -221,207 +257,326 @@ class _AboutPageState extends State<AboutPage>
               // ── 内容列表 ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SizedBox(height: 2),
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: C.blueBg,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text('v${AppState.appVersion}',
-                      style: ts(11, c: C.blue, w: FontWeight.w600)),
-                ),
-              ),
-              SizedBox(height: 32),
-              // ── 作者信息 ──
-              _sectionHeader(S.of(context).author, Icons.person_rounded, C.blue),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _eggRow('呼号', 'BG7LZQ'),
-                  _row('名称', 'Darion'),
-                  _linkRow(
-                    icon: Icons.language_rounded,
-                    label: '网站',
-                    value: 'Theez.top',
-                    url: 'https://theez.top',
-                  ),
-                ]),
-              ),
-              SizedBox(height: 20),
-              // ── 功能特性 ──
-              _sectionHeader(S.of(context).features, Icons.star_rounded, C.orange),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _feature(Icons.map_rounded, S.of(context).featureLiveMap, S.of(context).featureLiveMapDesc),
-                  _feature(Icons.gps_fixed_rounded, S.of(context).featureGps, S.of(context).featureGpsDesc),
-                  _feature(Icons.send_rounded, S.of(context).featureBeacon, S.of(context).featureBeaconDesc),
-                  _feature(Icons.chat_bubble_rounded, S.of(context).featureMsg, S.of(context).featureMsgDesc),
-                  _feature(Icons.wifi_tethering_rounded, S.of(context).featureAutoConnect, S.of(context).featureAutoConnectDesc),
-                  _feature(Icons.layers_rounded, S.of(context).featureLayerFilter, S.of(context).featureLayerFilterDesc),
-                  _feature(Icons.radio_rounded, S.of(context).featureFmo, S.of(context).featureFmoDesc),
-                ]),
-              ),
-              SizedBox(height: 20),
-              // ── 开源致谢 ──
-              _sectionHeader(S.of(context).openSource, Icons.favorite_rounded, C.red),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _feature(Icons.flutter_dash, S.of(context).osFlutter, S.of(context).osFlutterDesc),
-                  _feature(Icons.web_rounded, S.of(context).osAmap, S.of(context).osAmapDesc),
-                  _feature(Icons.cell_tower_rounded, S.of(context).osAprs, S.of(context).osAprsDesc),
-                  _feature(Icons.group_rounded, S.of(context).osHam, S.of(context).osHamDesc),
-                ]),
-              ),
-              SizedBox(height: 20),
-              // ── 赞助与鸣谢（独立页面入口） ──
-              _sectionHeader(S.of(context).sponsors, Icons.volunteer_activism_rounded, C.orange),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SponsorPage()),
-                ),
-                child: SoftCard(
-                  padding: const EdgeInsets.all(14),
-                  child: Row(children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFF8C00), Color(0xFFEA580C)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 2),
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 3,
                         ),
-                        borderRadius: BorderRadius.circular(10),
+                        decoration: BoxDecoration(
+                          color: C.blueBg,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'v${AppState.appVersion}',
+                          style: ts(11, c: C.blue, w: FontWeight.w600),
+                        ),
                       ),
-                      child: const Icon(Icons.volunteer_activism_rounded,
-                          color: Colors.white, size: 18),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(S.of(context).sponsorsThanks,
-                            style: ts(13, w: FontWeight.w700)),
-                        const SizedBox(height: 2),
-                        Text('查看作者与赞助详情 →',
-                            style: ts(11, c: C.grey)),
-                      ]),
+                    SizedBox(height: 32),
+                    // ── 作者信息 ──
+                    _sectionHeader(
+                      S.of(context).author,
+                      Icons.person_rounded,
+                      C.blue,
                     ),
-                    Icon(Icons.chevron_right_rounded,
-                        color: C.grey, size: 20),
-                  ]),
-                ),
-              ),
-              SizedBox(height: 20),
-              // ── 测试成员 ──
-              _sectionHeader(S.of(context).testMembers, Icons.group_rounded, C.green),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _eggRow('呼号', 'BG7PGW'),
-                  _eggRow('呼号', 'BG7LMW'),
-                  _eggRow('呼号', 'BG7OSL'),
-                  _eggRow('呼号', 'BD3QID'),
-                ]),
-              ),
-              SizedBox(height: 20),
-              // ── AI 算力支持 ──
-              _sectionHeader(S.of(context).aiSupport, Icons.memory_rounded, C.purple),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _row('感谢', 'BA3RZL 养生'),
-                ]),
-              ),
-              SizedBox(height: 20),
-              // ── 用户反馈 ──
-              _sectionHeader(S.of(context).feedback, Icons.forum_rounded, C.orange),
-              SizedBox(height: 8),
-              SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(children: [
-                  _linkRow(
-                    icon: Icons.wechat_rounded,
-                    label: S.of(context).qqGroup,
-                    value: 'APRSlocus 软件',
-                    url: 'https://qm.qq.com/q/8pL6vc5YA0',
-                  ),
-                  _linkRow(
-                    icon: Icons.link_rounded,
-                    label: S.of(context).projectRepo,
-                    value: 'GitCode',
-                    url: 'https://gitcode.com/DarionDong/APRSLocus',
-                  ),
-                  _linkRow(
-                    icon: Icons.code_rounded,
-                    label: S.of(context).projectRepo,
-                    value: 'GitHub',
-                    url: 'https://github.com/dariondong/APRSLocus',
-                  ),
-                ]),
-              ),
-              SizedBox(height: 24),
-              Center(
-                child: Text(
-                  '本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规',
-                  textAlign: TextAlign.center,
-                  style: ts(11, c: C.grey, h: 1.6),
-                ),
-              ),
-              SizedBox(height: 12),
-              Center(
-                child: Text(
-                  'GNU GPL v3 开源协议 · Copyright © BG7LZQ',
-                  textAlign: TextAlign.center,
-                  style: ts(10, c: C.greyLight, h: 1.6),
-                ),
-              ),
-              SizedBox(height: 12),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    final info = 'APRSlocus v${AppState.appVersion}\n作者: BG7LZQ (Darion)\n网站: Theez.top';
-                    Clipboard.setData(ClipboardData(text: info));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(S.of(context).appInfoCopied),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: C.ink,
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _eggRow(S.of(context).callsign, 'BG7LZQ'),
+                          _row(S.of(context).nameLabel, 'Darion'),
+                          _linkRow(
+                            icon: Icons.language_rounded,
+                            label: S.of(context).website,
+                            value: 'Theez.top',
+                            url: 'https://theez.top',
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: C.greyBg,
-                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.copy_rounded, size: 14, color: C.grey),
-                      SizedBox(width: 6),
-                      Text(S.of(context).copyAppInfo, style: ts(12, c: C.slate)),
-                    ]),
-                  ),
+                    SizedBox(height: 20),
+                    // ── 功能特性 ──
+                    _sectionHeader(
+                      S.of(context).features,
+                      Icons.star_rounded,
+                      C.orange,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _feature(
+                            Icons.map_rounded,
+                            S.of(context).featureLiveMap,
+                            S.of(context).featureLiveMapDesc,
+                          ),
+                          _feature(
+                            Icons.gps_fixed_rounded,
+                            S.of(context).featureGps,
+                            S.of(context).featureGpsDesc,
+                          ),
+                          _feature(
+                            Icons.send_rounded,
+                            S.of(context).featureBeacon,
+                            S.of(context).featureBeaconDesc,
+                          ),
+                          _feature(
+                            Icons.chat_bubble_rounded,
+                            S.of(context).featureMsg,
+                            S.of(context).featureMsgDesc,
+                          ),
+                          _feature(
+                            Icons.wifi_tethering_rounded,
+                            S.of(context).featureAutoConnect,
+                            S.of(context).featureAutoConnectDesc,
+                          ),
+                          _feature(
+                            Icons.layers_rounded,
+                            S.of(context).featureLayerFilter,
+                            S.of(context).featureLayerFilterDesc,
+                          ),
+                          _feature(
+                            Icons.radio_rounded,
+                            S.of(context).featureFmo,
+                            S.of(context).featureFmoDesc,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── 开源致谢 ──
+                    _sectionHeader(
+                      S.of(context).openSource,
+                      Icons.favorite_rounded,
+                      C.red,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _feature(
+                            Icons.flutter_dash,
+                            S.of(context).osFlutter,
+                            S.of(context).osFlutterDesc,
+                          ),
+                          _feature(
+                            Icons.web_rounded,
+                            S.of(context).osAmap,
+                            S.of(context).osAmapDesc,
+                          ),
+                          _feature(
+                            Icons.cell_tower_rounded,
+                            S.of(context).osAprs,
+                            S.of(context).osAprsDesc,
+                          ),
+                          _feature(
+                            Icons.group_rounded,
+                            S.of(context).osHam,
+                            S.of(context).osHamDesc,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── 赞助与鸣谢（独立页面入口） ──
+                    _sectionHeader(
+                      S.of(context).sponsors,
+                      Icons.volunteer_activism_rounded,
+                      C.orange,
+                    ),
+                    SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SponsorPage()),
+                      ),
+                      child: SoftCard(
+                        padding: const EdgeInsets.all(14),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFF8C00),
+                                    Color(0xFFEA580C),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.volunteer_activism_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    S.of(context).sponsorsThanks,
+                                    style: ts(13, w: FontWeight.w700),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    S.of(context).viewSponsorDetails,
+                                    style: ts(11, c: C.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: C.grey,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── 测试成员 ──
+                    _sectionHeader(
+                      S.of(context).testMembers,
+                      Icons.group_rounded,
+                      C.green,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _eggRow(S.of(context).callsign, 'BG7PGW'),
+                          _eggRow(S.of(context).callsign, 'BG7LMW'),
+                          _eggRow(S.of(context).callsign, 'BG7OSL'),
+                          _eggRow(S.of(context).callsign, 'BD3QID'),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── AI 算力支持 ──
+                    _sectionHeader(
+                      S.of(context).aiSupport,
+                      Icons.memory_rounded,
+                      C.purple,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [_row(S.of(context).thanks, 'BA3RZL 养生')],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── 用户反馈 ──
+                    _sectionHeader(
+                      S.of(context).feedback,
+                      Icons.forum_rounded,
+                      C.orange,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _linkRow(
+                            icon: Icons.wechat_rounded,
+                            label: S.of(context).qqGroup,
+                            value: S.of(context).qqSoftwareName,
+                            url: 'https://qm.qq.com/q/8pL6vc5YA0',
+                          ),
+                          _linkRow(
+                            icon: Icons.link_rounded,
+                            label: S.of(context).projectRepo,
+                            value: 'GitCode',
+                            url: 'https://gitcode.com/DarionDong/APRSLocus',
+                          ),
+                          _linkRow(
+                            icon: Icons.code_rounded,
+                            label: S.of(context).projectRepo,
+                            value: 'GitHub',
+                            url: 'https://github.com/dariondong/APRSLocus',
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Center(
+                      child: Text(
+                        S.of(context).usageNotice,
+                        textAlign: TextAlign.center,
+                        style: ts(11, c: C.grey, h: 1.6),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Center(
+                      child: Text(
+                        S.of(context).licenseNotice,
+                        textAlign: TextAlign.center,
+                        style: ts(10, c: C.greyLight, h: 1.6),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          final info = S
+                              .of(context)
+                              .appInfoText(AppState.appVersion);
+                          Clipboard.setData(ClipboardData(text: info));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(S.of(context).appInfoCopied),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: C.ink,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: C.greyBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.copy_rounded, size: 14, color: C.grey),
+                              SizedBox(width: 6),
+                              Text(
+                                S.of(context).copyAppInfo,
+                                style: ts(12, c: C.slate),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          ),
-        ],
-      ),
           // ─── 粒子层 ───
           if (_showParticles)
             IgnorePointer(
@@ -442,11 +597,16 @@ class _AboutPageState extends State<AboutPage>
   // ── 组件 ──
 
   Widget _sectionHeader(String title, IconData icon, Color c) {
-    return Row(children: [
-      Icon(icon, size: 16, color: c),
-      const SizedBox(width: 6),
-      Text(title, style: ts(13, w: FontWeight.w700, c: c)),
-    ]);
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: c),
+        const SizedBox(width: 6),
+        Text(
+          title,
+          style: ts(13, w: FontWeight.w700, c: c),
+        ),
+      ],
+    );
   }
 
   Widget _row(String label, String value) {
@@ -455,11 +615,13 @@ class _AboutPageState extends State<AboutPage>
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
       ),
-      child: Row(children: [
-        Text(label, style: ts(12, c: C.slate)),
-        const Spacer(),
-        Text(value, style: ts(12, w: FontWeight.w600)),
-      ]),
+      child: Row(
+        children: [
+          Text(label, style: ts(12, c: C.slate)),
+          const Spacer(),
+          Text(value, style: ts(12, w: FontWeight.w600)),
+        ],
+      ),
     );
   }
 
@@ -470,21 +632,27 @@ class _AboutPageState extends State<AboutPage>
     required String url,
   }) {
     return InkWell(
-      onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      onTap: () =>
+          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
         ),
-        child: Row(children: [
-          Icon(icon, size: 15, color: C.blue),
-          SizedBox(width: 8),
-          Text(label, style: ts(12, c: C.slate)),
-          Spacer(),
-          Text(value, style: ts(12, c: C.blue, w: FontWeight.w600)),
-          SizedBox(width: 4),
-          Icon(Icons.open_in_new_rounded, size: 14, color: C.grey),
-        ]),
+        child: Row(
+          children: [
+            Icon(icon, size: 15, color: C.blue),
+            SizedBox(width: 8),
+            Text(label, style: ts(12, c: C.slate)),
+            Spacer(),
+            Text(
+              value,
+              style: ts(12, c: C.blue, w: FontWeight.w600),
+            ),
+            SizedBox(width: 4),
+            Icon(Icons.open_in_new_rounded, size: 14, color: C.grey),
+          ],
+        ),
       ),
     );
   }
@@ -495,25 +663,31 @@ class _AboutPageState extends State<AboutPage>
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            color: C.blueBg,
-            borderRadius: BorderRadius.circular(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: C.blueBg,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 16, color: C.blue),
           ),
-          child: Icon(icon, size: 16, color: C.blue),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: ts(12, w: FontWeight.w700)),
-            SizedBox(height: 2),
-            Text(desc, style: ts(11, c: C.grey, h: 1.4)),
-          ]),
-        ),
-      ]),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: ts(12, w: FontWeight.w700)),
+                SizedBox(height: 2),
+                Text(desc, style: ts(11, c: C.grey, h: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -526,13 +700,15 @@ class _AboutPageState extends State<AboutPage>
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
         ),
-        child: Row(children: [
-          Text(label, style: ts(12, c: C.slate)),
-          Spacer(),
-          Text(call, style: ts(12, w: FontWeight.w600)),
-          SizedBox(width: 6),
-          Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
-        ]),
+        child: Row(
+          children: [
+            Text(label, style: ts(12, c: C.slate)),
+            Spacer(),
+            Text(call, style: ts(12, w: FontWeight.w600)),
+            SizedBox(width: 6),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+          ],
+        ),
       ),
     );
   }
@@ -543,7 +719,12 @@ class _AboutPageState extends State<AboutPage>
 class _Particle {
   final Color color;
   final double dx, dy, size;
-  _Particle({required this.color, required this.dx, required this.dy, required this.size});
+  _Particle({
+    required this.color,
+    required this.dx,
+    required this.dy,
+    required this.size,
+  });
 }
 
 class _ParticlePainter extends CustomPainter {
@@ -551,7 +732,11 @@ class _ParticlePainter extends CustomPainter {
   final double progress;
   final List<_Particle> particles;
 
-  _ParticlePainter({required this.center, required this.progress, required this.particles});
+  _ParticlePainter({
+    required this.center,
+    required this.progress,
+    required this.particles,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

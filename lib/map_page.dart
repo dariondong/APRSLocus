@@ -1,6 +1,9 @@
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
+
 import 'theme.dart';
 import 'models.dart';
 import 'state.dart';
@@ -19,8 +22,7 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage>
-    with TickerProviderStateMixin {
+class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // 视图状态：连续 zoom + 像素偏移
   double _zoom = 11.0;
   Offset _pan = Offset.zero;
@@ -29,8 +31,9 @@ class _MapPageState extends State<MapPage>
   Size _lastSize = Size.zero;
 
   MapType get _currentMapType => MapType.values.firstWhere(
-      (t) => t.name == widget.state.mapType,
-      orElse: () => MapType.gaode);
+    (t) => t.name == widget.state.mapType,
+    orElse: () => MapType.gaode,
+  );
 
   /// 是否使用矢量地图模式（flutter_map）
   bool get _isVector => _currentMapType == MapType.vector;
@@ -38,8 +41,7 @@ class _MapPageState extends State<MapPage>
   /// 是否使用高德 JS 地图（WebView）。
   /// Windows 的 WebView2 鼠标坐标异常（始终左上角），回退到稳定的瓦片地图。
   bool get _isAmapJs =>
-      !_isWindowsDesktop &&
-      _currentMapType == MapType.amap_js;
+      !_isWindowsDesktop && _currentMapType == MapType.amap_js;
 
   bool get _isWindowsDesktop =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.windows;
@@ -77,8 +79,9 @@ class _MapPageState extends State<MapPage>
 
   /// 脉冲动画按需启停：没有移动/选中台站时停转，省掉每帧重建开销
   void _syncPulse() {
-    final need = _visible.any((s) =>
-        s.status == St.moving || (_selected?.call == s.call));
+    final need = _visible.any(
+      (s) => s.status == St.moving || (_selected?.call == s.call),
+    );
     if (need && !_pulse.isAnimating) {
       _pulse.repeat();
     } else if (!need && _pulse.isAnimating) {
@@ -209,7 +212,10 @@ class _MapPageState extends State<MapPage>
   }
 
   void _animateToStation(Station s, {double? zoom}) {
-    _animateTo(zoom ?? math.max(_zoom, 14.0), _panFor(s.lat, s.lng, zoom ?? math.max(_zoom, 14.0)));
+    _animateTo(
+      zoom ?? math.max(_zoom, 14.0),
+      _panFor(s.lat, s.lng, zoom ?? math.max(_zoom, 14.0)),
+    );
   }
 
   void _setView(double zoom, Offset pan) {
@@ -277,10 +283,12 @@ class _MapPageState extends State<MapPage>
     list = list.where(widget.state.stationAllowedFor).toList();
     if (q.isNotEmpty) {
       list = list
-          .where((s) =>
-              s.call.toLowerCase().contains(q) ||
-              s.typeName.contains(q) ||
-              s.alias.contains(q))
+          .where(
+            (s) =>
+                s.call.toLowerCase().contains(q) ||
+                s.typeName.contains(q) ||
+                s.alias.contains(q),
+          )
           .toList();
     }
     if (_hiddenTypes.isNotEmpty) {
@@ -302,7 +310,8 @@ class _MapPageState extends State<MapPage>
           _lastPickSeq = widget.state.pickSeq;
           final newPick = widget.state.pickMode;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && _pickMode != newPick) setState(() => _pickMode = newPick);
+            if (mounted && _pickMode != newPick)
+              setState(() => _pickMode = newPick);
           });
         }
         return LayoutBuilder(
@@ -313,34 +322,35 @@ class _MapPageState extends State<MapPage>
             final searched = widget.searchQuery.trim().isNotEmpty;
             _syncPulse();
 
-          return Stack(children: [
-            // 瓦片地图（RepaintBoundary 隔离重绘）
-            RepaintBoundary(
-              child: MouseRegion(
-                onHover: (e) => _hover.value = e.localPosition,
-                onExit: (_) => _hover.value = null,
-                child: _isVector
-                    ? VectorMapView(
-                        stations: _visible,
-                        myCall: widget.state.myFullCall,
-                        myHasFix: widget.state.myHasFix,
-                        myLat: widget.state.myLat,
-                        myLng: widget.state.myLng,
-                        focusSeq: widget.state.mapFocusSeq,
-                        focusLat: widget.state.mapFocus?.lat,
-                        focusLng: widget.state.mapFocus?.lng,
-                        actionSeq: _mapActionSeq,
-                        action: _mapAction,
-                        showTracks: _showTracks,
-                        clustering: _clusterEnabled,
-                        onTap: _handleMapLatLng,
-                        onStationTap: (s) {
-                          _openDetail(s);
-                          _selected = s;
-                          _syncPulse();
-                        },
-                      )
-                    : _isAmapJs
+            return Stack(
+              children: [
+                // 瓦片地图（RepaintBoundary 隔离重绘）
+                RepaintBoundary(
+                  child: MouseRegion(
+                    onHover: (e) => _hover.value = e.localPosition,
+                    onExit: (_) => _hover.value = null,
+                    child: _isVector
+                        ? VectorMapView(
+                            stations: _visible,
+                            myCall: widget.state.myFullCall,
+                            myHasFix: widget.state.myHasFix,
+                            myLat: widget.state.myLat,
+                            myLng: widget.state.myLng,
+                            focusSeq: widget.state.mapFocusSeq,
+                            focusLat: widget.state.mapFocus?.lat,
+                            focusLng: widget.state.mapFocus?.lng,
+                            actionSeq: _mapActionSeq,
+                            action: _mapAction,
+                            showTracks: _showTracks,
+                            clustering: _clusterEnabled,
+                            onTap: _handleMapLatLng,
+                            onStationTap: (s) {
+                              _openDetail(s);
+                              _selected = s;
+                              _syncPulse();
+                            },
+                          )
+                        : _isAmapJs
                         ? AmapJsMapView(
                             stations: _visible,
                             myCall: widget.state.myFullCall,
@@ -372,187 +382,226 @@ class _MapPageState extends State<MapPage>
                             onZoomRequest: (z, p) => _animateTo(z, p),
                             onTap: _handleMapTap,
                             // Windows 上高德 JS 回退为高德矢量瓦片
-                            mapType: (_currentMapType == MapType.amap_js && _isWindowsDesktop)
+                            mapType:
+                                (_currentMapType == MapType.amap_js &&
+                                    _isWindowsDesktop)
                                 ? MapType.gaode
                                 : _currentMapType,
                           ),
-              ),
-            ),
-            // 我的位置轨迹线（不挡手势）
-            if (!_usePluginMap &&
-                _showTracks &&
-                widget.state.myTrack.length > 1)
-              IgnorePointer(
-                child: CustomPaint(
-                  size: size,
-                  painter: _TrackOverlayPainter(
-                    points: widget.state.myTrack,
-                    color: C.blue,
-                    toScreen: (lat, lng) => _toScreen(lat, lng, size),
                   ),
                 ),
-              ),
-            // 轨迹线（不挡手势）
-            if (!_usePluginMap &&
-                _selected != null &&
-                _selected!.track.length > 1)
-              IgnorePointer(
-                child: CustomPaint(
-                  size: size,
-                  painter: _TrackOverlayPainter(
-                    points: _selected!.track,
-                    color: _selected!.color,
-                    toScreen: (lat, lng) => _toScreen(lat, lng, size),
-                  ),
-                ),
-              ),
-            // 我的位置标记（点击弹信息面板）
-            if (!_usePluginMap && widget.state.myHasFix) _myMarker(size),
-            // 台站标记（直接在 Stack 中，每个标记独立 Positioned，不阻断手势）
-            if (!_usePluginMap) ..._stationMarkers(size),
-              // 信息
-              Positioned(top: 14, left: 14, child: _infoChip(vis, searched)),
-              // 选点提示
-              if (_pickMode)
-                Positioned(
-                  top: 14,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: C.orange,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(blur: 14, alpha: 0.25),
+                // 我的位置轨迹线（不挡手势）
+                if (!_usePluginMap &&
+                    _showTracks &&
+                    widget.state.myTrack.length > 1)
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _TrackOverlayPainter(
+                        points: widget.state.myTrack,
+                        color: C.blue,
+                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
                       ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.gps_fixed_rounded,
-                            color: Colors.white, size: 16),
-                        const SizedBox(width: 8),
-                        Text(S.of(context).mapPickDesc,
-                            style: ts(12,
-                                c: Colors.white, w: FontWeight.w700)),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () {
-                            widget.state.finishPick();
-                            setState(() => _pickMode = false);
-                          },
-                          child: const Icon(Icons.close_rounded,
-                              color: Colors.white, size: 18),
+                    ),
+                  ),
+                // 轨迹线（不挡手势）
+                if (!_usePluginMap &&
+                    _selected != null &&
+                    _selected!.track.length > 1)
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _TrackOverlayPainter(
+                        points: _selected!.track,
+                        color: _selected!.color,
+                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                      ),
+                    ),
+                  ),
+                // 我的位置标记（点击弹信息面板）
+                if (!_usePluginMap && widget.state.myHasFix) _myMarker(size),
+                // 台站标记（直接在 Stack 中，每个标记独立 Positioned，不阻断手势）
+                if (!_usePluginMap) ..._stationMarkers(size),
+                // 信息
+                Positioned(top: 14, left: 14, child: _infoChip(vis, searched)),
+                // 选点提示
+                if (_pickMode)
+                  Positioned(
+                    top: 14,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
                         ),
-                      ]),
+                        decoration: BoxDecoration(
+                          color: C.orange,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: softShadow(blur: 14, alpha: 0.25),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.gps_fixed_rounded,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              S.of(context).mapPickDesc,
+                              style: ts(
+                                12,
+                                c: Colors.white,
+                                w: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () {
+                                widget.state.finishPick();
+                                setState(() => _pickMode = false);
+                              },
+                              child: const Icon(
+                                Icons.close_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              // 图例
-              Positioned(top: 14, right: 60, child: _legend()),
-              // 图层筛选按钮（覆盖在右上角）
-              Positioned(
-                right: 14,
-                top: 14,
-                child: GestureDetector(
-                  onTap: () => _showLayerMenu(context),
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-                      border: Border.all(
-                          color: _hiddenTypes.isNotEmpty ? C.blue : C.border),
-                    ),
-                    child: Icon(Icons.layers_rounded,
-                        size: 20,
-                        color: _hiddenTypes.isNotEmpty ? C.blue : C.slate),
-                  ),
-                ),
-              ),
-              // 地图类型切换按钮
-              Positioned(
-                right: 14,
-                top: 58,
-                child: GestureDetector(
-                  onTap: _showMapTypeMenu,
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: C.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-                      border: Border.all(color: C.border),
-                    ),
-                    child: Icon(Icons.map_rounded, size: 20, color: C.slate),
-                  ),
-                ),
-              ),
-              // 缩放（位于地图按钮下方）
-              Positioned(right: 14, top: 102, child: _zoomCtrl()),
-              // 底部控制（安全区白条 + 14px）
-              Positioned(
-                left: 14,
-                right: 14,
-                bottom: 14 + MediaQuery.of(context).padding.bottom,
-                child: ValueListenableBuilder<Offset?>(
-                  valueListenable: _hover,
-                  builder: (_, hp, _) => _bottomControls(hp),
-                ),
-              ),
-              // 搜索提示
-              if (searched)
+                // 图例
+                Positioned(top: 14, right: 60, child: _legend()),
+                // 图层筛选按钮（覆盖在右上角）
                 Positioned(
+                  right: 14,
                   top: 14,
-                  left: 0,
-                  right: 0,
-                  child: Center(
+                  child: GestureDetector(
+                    onTap: () => _showLayerMenu(context),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 8),
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+                        border: Border.all(
+                          color: _hiddenTypes.isNotEmpty ? C.blue : C.border,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.layers_rounded,
+                        size: 20,
+                        color: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
+                      ),
+                    ),
+                  ),
+                ),
+                // 地图类型切换按钮
+                Positioned(
+                  right: 14,
+                  top: 58,
+                  child: GestureDetector(
+                    onTap: _showMapTypeMenu,
+                    child: Container(
+                      width: 38,
+                      height: 38,
                       decoration: BoxDecoration(
                         color: C.white,
                         borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(),
+                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+                        border: Border.all(color: C.border),
                       ),
-                      child: Text(
-                        S.of(context).foundStations(vis.length, widget.searchQuery.trim()),
-                        style: ts(12, w: FontWeight.w600),
-                      ),
+                      child: Icon(Icons.map_rounded, size: 20, color: C.slate),
                     ),
                   ),
                 ),
-              // 视野内无台站提示
-              if (vis.isNotEmpty && !_hasVisibleStation(size))
+                // 缩放（位于地图按钮下方）
+                Positioned(right: 14, top: 102, child: _zoomCtrl()),
+                // 底部控制（安全区白条 + 14px）
                 Positioned(
-                  bottom: 70,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: _fitAll,
+                  left: 14,
+                  right: 14,
+                  bottom: 14 + MediaQuery.of(context).padding.bottom,
+                  child: ValueListenableBuilder<Offset?>(
+                    valueListenable: _hover,
+                    builder: (_, hp, _) => _bottomControls(hp),
+                  ),
+                ),
+                // 搜索提示
+                if (searched)
+                  Positioned(
+                    top: 14,
+                    left: 0,
+                    right: 0,
+                    child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 9),
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: C.white,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: softShadow(blur: 14, alpha: 0.15),
+                          boxShadow: softShadow(),
                         ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.search_off_rounded,
-                              size: 15, color: C.cyan),
-                          SizedBox(width: 6),
-                          Text(S.of(context).noStationInView,
-                              style: ts(11, c: C.cyan, w: FontWeight.w600)),
-                        ]),
+                        child: Text(
+                          S
+                              .of(context)
+                              .foundStations(
+                                vis.length,
+                                widget.searchQuery.trim(),
+                              ),
+                          style: ts(12, w: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ]);
+                // 视野内无台站提示
+                if (vis.isNotEmpty && !_hasVisibleStation(size))
+                  Positioned(
+                    bottom: 70,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: _fitAll,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 9,
+                          ),
+                          decoration: BoxDecoration(
+                            color: C.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: softShadow(blur: 14, alpha: 0.15),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.search_off_rounded,
+                                size: 15,
+                                color: C.cyan,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                S.of(context).noStationInView,
+                                style: ts(11, c: C.cyan, w: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
           },
         );
       },
@@ -578,8 +627,10 @@ class _MapPageState extends State<MapPage>
       if (widget.state.myHasFix) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
-          _animateTo(13.0,
-              _panFor(widget.state.myLat!, widget.state.myLng!, 13.0));
+          _animateTo(
+            13.0,
+            _panFor(widget.state.myLat!, widget.state.myLng!, 13.0),
+          );
         });
       }
     }
@@ -597,15 +648,19 @@ class _MapPageState extends State<MapPage>
   List<Widget> _stationMarkers(Size size) {
     final now = DateTime.now();
     final viewHash =
-        (_zoom * 64).round() * 1000003 + _pan.dx.round() * 1009 + _pan.dy.round();
+        (_zoom * 64).round() * 1000003 +
+        _pan.dx.round() * 1009 +
+        _pan.dy.round();
     final selHash = _selected?.call ?? '';
     // 视图(拖动/缩放/选中)变化 → 立即重建，保证跟手；
     // 尺寸变化(键盘动画) → 150ms 节流；
     // 视图与尺寸都没变(收包洪峰) → 400ms 节流
-    final viewChanged = viewHash != _markerViewHash || selHash != _markerSelHash;
+    final viewChanged =
+        viewHash != _markerViewHash || selHash != _markerSelHash;
     final sizeChanged = _markerCacheSize != size;
     final elapsed = now.difference(_markerCacheTime).inMilliseconds;
-    final fresh = _markerCache != null &&
+    final fresh =
+        _markerCache != null &&
         !viewChanged &&
         (sizeChanged ? elapsed < 150 : elapsed < 400);
     if (fresh) return _markerCache!;
@@ -672,8 +727,11 @@ class _MapPageState extends State<MapPage>
                       ],
                     ),
                     child: Center(
-                      child: Icon(s.icon,
-                          color: Colors.white, size: sel ? 14 : 11),
+                      child: Icon(
+                        s.icon,
+                        color: Colors.white,
+                        size: sel ? 14 : 11,
+                      ),
                     ),
                   ),
                   if (sel)
@@ -696,7 +754,10 @@ class _MapPageState extends State<MapPage>
 
   /// 聚合模式：把屏幕距离接近的台站合并为聚合球（减少 widget 数量，降低卡顿）
   List<Widget> _buildClusteredMarkers(
-      List<Station> stations, Size size, double radius) {
+    List<Station> stations,
+    Size size,
+    double radius,
+  ) {
     final clusters = <({Offset center, List<Station> items})>[];
     final placed = <int>[];
 
@@ -766,13 +827,18 @@ class _MapPageState extends State<MapPage>
                       border: Border.all(color: Colors.white, width: 2.5),
                       boxShadow: [
                         BoxShadow(
-                            color: s.color.withValues(alpha: 0.4),
-                            blurRadius: sel ? 14 : 6),
+                          color: s.color.withValues(alpha: 0.4),
+                          blurRadius: sel ? 14 : 6,
+                        ),
                       ],
                     ),
                     child: Center(
-                        child: Icon(s.icon,
-                            color: Colors.white, size: sel ? 14 : 11)),
+                      child: Icon(
+                        s.icon,
+                        color: Colors.white,
+                        size: sel ? 14 : 11,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -796,12 +862,16 @@ class _MapPageState extends State<MapPage>
               border: Border.all(color: Colors.white, width: 2.5),
               boxShadow: [
                 BoxShadow(
-                    color: C.indigo.withValues(alpha: 0.5), blurRadius: 8),
+                  color: C.indigo.withValues(alpha: 0.5),
+                  blurRadius: 8,
+                ),
               ],
             ),
             child: Center(
-              child: Text('$count',
-                  style: ts(13, c: Colors.white, w: FontWeight.w800)),
+              child: Text(
+                '$count',
+                style: ts(13, c: Colors.white, w: FontWeight.w800),
+              ),
             ),
           ),
         ),
@@ -811,8 +881,7 @@ class _MapPageState extends State<MapPage>
 
   Widget _infoWindow(Station s) {
     final st = statusLabel(s.status);
-    final info = StringBuffer(s.call)
-      ..write('  ·  $st');
+    final info = StringBuffer(s.call)..write('  ·  $st');
     if (s.speed != null) info.write('  ·  ${s.speedStr}');
     final my = widget.state.myStation;
     if (my != null) {
@@ -826,8 +895,10 @@ class _MapPageState extends State<MapPage>
         borderRadius: BorderRadius.circular(10),
         boxShadow: softShadow(blur: 10, alpha: 0.15),
       ),
-      child: Text(info.toString(),
-          style: ts(11, c: s.color, w: FontWeight.w700)),
+      child: Text(
+        info.toString(),
+        style: ts(11, c: s.color, w: FontWeight.w700),
+      ),
     );
   }
 
@@ -847,48 +918,59 @@ class _MapPageState extends State<MapPage>
             animation: _pulse,
             builder: (_, _) {
               final v = _pulse.value;
-              return Stack(alignment: Alignment.center, children: [
-                Transform.scale(
-                  scale: 1 + v * 1.2,
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: C.blue.withValues(alpha: (1 - v) * 0.25),
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Transform.scale(
+                    scale: 1 + v * 1.2,
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: C.blue.withValues(alpha: (1 - v) * 0.25),
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    color: C.blue,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                    boxShadow: [
-                      BoxShadow(
-                          color: C.blue.withValues(alpha: 0.5),
-                          blurRadius: 12),
-                    ],
-                  ),
-                  child: const Icon(Icons.my_location_rounded,
-                      color: Colors.white, size: 15),
-                ),
-                Positioned(
-                  top: 30,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                  Container(
+                    width: 26,
+                    height: 26,
                     decoration: BoxDecoration(
                       color: C.blue,
-                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: C.blue.withValues(alpha: 0.5),
+                          blurRadius: 12,
+                        ),
+                      ],
                     ),
-                    child: Text('${S.of(context).meLabel} · ${widget.state.myCall}',
-                        style: ts(9, c: Colors.white, w: FontWeight.w700)),
+                    child: const Icon(
+                      Icons.my_location_rounded,
+                      color: Colors.white,
+                      size: 15,
+                    ),
                   ),
-                ),
-              ]);
+                  Positioned(
+                    top: 30,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: C.blue,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${S.of(context).meLabel} · ${widget.state.myCall}',
+                        style: ts(9, c: Colors.white, w: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
+              );
             },
           ),
         ),
@@ -914,109 +996,147 @@ class _MapPageState extends State<MapPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 头部
-              Row(children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: C.blueBg,
-                    borderRadius: BorderRadius.circular(12),
+              Row(
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: C.blueBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.my_location_rounded,
+                      color: C.blue,
+                      size: 24,
+                    ),
                   ),
-                  child: Icon(Icons.my_location_rounded,
-                      color: C.blue, size: 24),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).myLocationPanel(st.myCall),
-                          style: ts(16, w: FontWeight.w800)),
-                      Text(st.locStatus,
-                          style: ts(11, c: st.myHasFix ? C.green : C.yellow)),
-                    ],
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S.of(context).myLocationPanel(st.myCall),
+                          style: ts(16, w: FontWeight.w800),
+                        ),
+                        Text(
+                          st.locStatus,
+                          style: ts(11, c: st.myHasFix ? C.green : C.yellow),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: C.grey),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ]),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: C.grey),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
               const SizedBox(height: 14),
               SoftCard(
                 padding: const EdgeInsets.all(14),
-                child: Column(children: [
-                  KV(S.of(context).latitude, st.myLat?.toStringAsFixed(5) ?? '--',
-                      icon: Icons.explore_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).longitude, st.myLng?.toStringAsFixed(5) ?? '--',
-                      icon: Icons.explore_rounded),
-                  const SizedBox(height: 8),
-                  KV('Maidenhead', st.myGrid,
-                      icon: Icons.grid_4x4_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).speedLabel, st.mySpeed != null ? '${st.mySpeed!.toStringAsFixed(1)} km/h' : '--',
-                      icon: Icons.speed_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).bearing, st.myCourse != null ? '${st.myCourse!.toStringAsFixed(0)}°' : '--',
-                      icon: Icons.explore_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).beaconIntervalLabel, '${st.beaconInterval} 秒',
-                      icon: Icons.timer_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).beaconsSentLabel, '${st.beaconsSent} 次',
-                      icon: Icons.sync_rounded),
-                  const SizedBox(height: 8),
-                  KV(S.of(context).nextBeaconLabel, st.nextBeaconIn,
-                      icon: Icons.access_time_rounded),
-                ]),
+                child: Column(
+                  children: [
+                    KV(
+                      S.of(context).latitude,
+                      st.myLat?.toStringAsFixed(5) ?? '--',
+                      icon: Icons.explore_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).longitude,
+                      st.myLng?.toStringAsFixed(5) ?? '--',
+                      icon: Icons.explore_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).speedLabel,
+                      st.mySpeed != null
+                          ? '${st.mySpeed!.toStringAsFixed(1)} km/h'
+                          : '--',
+                      icon: Icons.speed_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).bearing,
+                      st.myCourse != null
+                          ? '${st.myCourse!.toStringAsFixed(0)}°'
+                          : '--',
+                      icon: Icons.explore_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).beaconIntervalLabel,
+                      '${st.beaconInterval} 秒',
+                      icon: Icons.timer_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).beaconsSentLabel,
+                      '${st.beaconsSent} 次',
+                      icon: Icons.sync_rounded,
+                    ),
+                    const SizedBox(height: 8),
+                    KV(
+                      S.of(context).nextBeaconLabel,
+                      st.nextBeaconIn,
+                      icon: Icons.access_time_rounded,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 14),
-              Row(children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      st.sendBeacon();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(S.of(context).positionBeacon(st.myGrid)),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.send_rounded, size: 16),
-                    label: Text(S.of(context).manualBeacon),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: C.green,
-                      side: BorderSide(color: C.green.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      textStyle: ts(12, w: FontWeight.w600),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        st.sendBeacon();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              S.of(context).positionBeacon(st.myGrid),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.send_rounded, size: 16),
+                      label: Text(S.of(context).manualBeacon),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: C.green,
+                        side: BorderSide(color: C.green.withValues(alpha: 0.5)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        textStyle: ts(12, w: FontWeight.w600),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      st.finishPick();
-                      setState(() => _pickMode = false);
-                      // 重新进入选点
-                      st.startPick();
-                    },
-                    icon: Icon(Icons.edit_location_alt_rounded,
-                        size: 16),
-                    label: Text('重新选点'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: C.blue,
-                      side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      textStyle: ts(12, w: FontWeight.w600),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        st.finishPick();
+                        setState(() => _pickMode = false);
+                        // 重新进入选点
+                        st.startPick();
+                      },
+                      icon: Icon(Icons.edit_location_alt_rounded, size: 16),
+                      label: Text(S.of(context).reselectPoint),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: C.blue,
+                        side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        textStyle: ts(12, w: FontWeight.w600),
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ],
           ),
         ),
@@ -1050,8 +1170,15 @@ class _MapPageState extends State<MapPage>
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(S.of(context).pickedCoord(
-              maidenhead(lat, lng), lat.toStringAsFixed(5), lng.toStringAsFixed(5))),
+          content: Text(
+            S
+                .of(context)
+                .pickedCoord(
+                  maidenhead(lat, lng),
+                  lat.toStringAsFixed(5),
+                  lng.toStringAsFixed(5),
+                ),
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -1072,8 +1199,15 @@ class _MapPageState extends State<MapPage>
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(S.of(context).pickedCoord(
-              maidenhead(lat, lng), lat.toStringAsFixed(5), lng.toStringAsFixed(5))),
+          content: Text(
+            S
+                .of(context)
+                .pickedCoord(
+                  maidenhead(lat, lng),
+                  lat.toStringAsFixed(5),
+                  lng.toStringAsFixed(5),
+                ),
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -1100,22 +1234,31 @@ class _MapPageState extends State<MapPage>
         borderRadius: BorderRadius.circular(14),
         boxShadow: softShadow(blur: 14, alpha: 0.09),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        _dot(C.green),
-        SizedBox(width: 6),
-        Text(S.of(context).onlineCount(widget.state.online),
-            style: ts(12, c: C.green, w: FontWeight.w600)),
-        SizedBox(width: 12),
-        _dot(C.blue),
-        SizedBox(width: 6),
-        Text(S.of(context).movingCount(widget.state.moving),
-            style: ts(12, c: C.blue, w: FontWeight.w600)),
-        SizedBox(width: 12),
-        _dot(C.slate),
-        SizedBox(width: 6),
-        Text(S.of(context).stationCount(vis.length),
-            style: ts(12, c: searched ? C.slate : C.grey)),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _dot(C.green),
+          SizedBox(width: 6),
+          Text(
+            S.of(context).onlineCount(widget.state.online),
+            style: ts(12, c: C.green, w: FontWeight.w600),
+          ),
+          SizedBox(width: 12),
+          _dot(C.blue),
+          SizedBox(width: 6),
+          Text(
+            S.of(context).movingCount(widget.state.moving),
+            style: ts(12, c: C.blue, w: FontWeight.w600),
+          ),
+          SizedBox(width: 12),
+          _dot(C.slate),
+          SizedBox(width: 6),
+          Text(
+            S.of(context).stationCount(vis.length),
+            style: ts(12, c: searched ? C.slate : C.grey),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1129,18 +1272,23 @@ class _MapPageState extends State<MapPage>
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 2),
-          child: Row(children: [
-            Container(
-              width: 3,
-              height: 10,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(2),
+          child: Row(
+            children: [
+              Container(
+                width: 3,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(width: 5),
-            Text(group, style: ts(10, c: color, w: FontWeight.w700)),
-          ]),
+              const SizedBox(width: 5),
+              Text(
+                group,
+                style: ts(10, c: color, w: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
         for (final t in types)
           GestureDetector(
@@ -1154,29 +1302,34 @@ class _MapPageState extends State<MapPage>
                 color: _currentMapType == t ? C.blueBg : Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(children: [
-                Icon(
-                  _currentMapType == t
-                      ? Icons.radio_button_checked_rounded
-                      : Icons.radio_button_off_rounded,
-                  size: 16,
-                  color: _currentMapType == t ? C.blue : C.grey,
-                ),
-                SizedBox(width: 10),
-                Text(t.label,
-                    style: ts(13,
-                        c: _currentMapType == t ? C.blue : C.ink,
-                        w: _currentMapType == t
-                            ? FontWeight.w700
-                            : FontWeight.w500)),
-              ]),
+              child: Row(
+                children: [
+                  Icon(
+                    _currentMapType == t
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    size: 16,
+                    color: _currentMapType == t ? C.blue : C.grey,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    t.label,
+                    style: ts(
+                      13,
+                      c: _currentMapType == t ? C.blue : C.ink,
+                      w: _currentMapType == t
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         const SizedBox(height: 2),
       ],
     );
   }
-
 
   Widget _legend() {
     return Container(
@@ -1200,15 +1353,18 @@ class _MapPageState extends State<MapPage>
     );
   }
 
-  Widget _lg(Color c, String t) =>
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-            width: 9,
-            height: 9,
-            decoration: BoxDecoration(color: c, shape: BoxShape.circle)),
-        SizedBox(width: 6),
-        Text(t, style: ts(10, c: C.slate)),
-      ]);
+  Widget _lg(Color c, String t) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 9,
+        height: 9,
+        decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+      ),
+      SizedBox(width: 6),
+      Text(t, style: ts(10, c: C.slate)),
+    ],
+  );
 
   /// 聚合球点击：放大一级以展开聚合的台站
   void _zoomIn() {
@@ -1221,8 +1377,10 @@ class _MapPageState extends State<MapPage>
   }
 
   Widget _zoomCtrl() {
-    return Column(children: [
-      RoundIconBtn(Icons.add_rounded,
+    return Column(
+      children: [
+        RoundIconBtn(
+          Icons.add_rounded,
           onTap: () {
             if (_usePluginMap) {
               _pluginAction('zoomIn');
@@ -1230,9 +1388,11 @@ class _MapPageState extends State<MapPage>
             }
             final z = (_zoom + 1).clamp(8.0, 19.0);
             _animateTo(z, _panForCenter(z));
-          }),
-      SizedBox(height: 6),
-      RoundIconBtn(Icons.remove_rounded,
+          },
+        ),
+        SizedBox(height: 6),
+        RoundIconBtn(
+          Icons.remove_rounded,
           onTap: () {
             if (_usePluginMap) {
               _pluginAction('zoomOut');
@@ -1240,25 +1400,32 @@ class _MapPageState extends State<MapPage>
             }
             final z = (_zoom - 1).clamp(8.0, 19.0);
             _animateTo(z, _panForCenter(z));
-          }),
-      SizedBox(height: 6),
-      RoundIconBtn(_showTracks ? Icons.route_rounded : Icons.route_outlined,
+          },
+        ),
+        SizedBox(height: 6),
+        RoundIconBtn(
+          _showTracks ? Icons.route_rounded : Icons.route_outlined,
           tooltip: S.of(context).track,
           color: _showTracks ? C.green : C.slate,
-          onTap: () => setState(() => _showTracks = !_showTracks)),
-      SizedBox(height: 6),
-      // 台站聚合开关（自绘 / 矢量地图有效）
-      if (!_isAmapJs) ...[
-        RoundIconBtn(
+          onTap: () => setState(() => _showTracks = !_showTracks),
+        ),
+        SizedBox(height: 6),
+        // 台站聚合开关（自绘 / 矢量地图有效）
+        if (!_isAmapJs) ...[
+          RoundIconBtn(
             _clusterEnabled
                 ? Icons.blur_circular_rounded
                 : Icons.blur_off_rounded,
-            tooltip: _clusterEnabled ? '关闭聚合' : '开启聚合',
+            tooltip: _clusterEnabled
+                ? S.of(context).disableClustering
+                : S.of(context).enableClustering,
             color: _clusterEnabled ? C.cyan : C.slate,
-            onTap: () => setState(() => _clusterEnabled = !_clusterEnabled)),
-        SizedBox(height: 6),
-      ],
-      RoundIconBtn(Icons.my_location_rounded,
+            onTap: () => setState(() => _clusterEnabled = !_clusterEnabled),
+          ),
+          SizedBox(height: 6),
+        ],
+        RoundIconBtn(
+          Icons.my_location_rounded,
           tooltip: S.of(context).locateMe,
           color: C.blue,
           onTap: () {
@@ -1267,13 +1434,17 @@ class _MapPageState extends State<MapPage>
               return;
             }
             if (widget.state.myHasFix) {
-              _animateTo(15.0,
-                  _panFor(widget.state.myLat!, widget.state.myLng!, 15.0));
+              _animateTo(
+                15.0,
+                _panFor(widget.state.myLat!, widget.state.myLng!, 15.0),
+              );
             } else {
               _animateTo(11.0, Offset.zero);
             }
-          }),
-    ]);
+          },
+        ),
+      ],
+    );
   }
 
   // ─── 插件地图（矢量/高德JS）动作分发 ───
@@ -1292,29 +1463,32 @@ class _MapPageState extends State<MapPage>
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
     entry = OverlayEntry(
-      builder: (ctx) => Stack(children: [
-        // 半透明遮罩
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: () => entry.remove(),
-            behavior: HitTestBehavior.opaque,
-            child: Container(color: Colors.black26),
-          ),
-        ),
-        // 面板
-        Positioned(
-          right: 56,
-          top: 14,
-          child: Material(
-            color: Colors.transparent,
-            child: StatefulBuilder(
-              builder: (ctx, setMenuState) => _layerPanelContent(setMenuState, () {
-                entry.remove();
-              }),
+      builder: (ctx) => Stack(
+        children: [
+          // 半透明遮罩
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => entry.remove(),
+              behavior: HitTestBehavior.opaque,
+              child: Container(color: Colors.black26),
             ),
           ),
-        ),
-      ]),
+          // 面板
+          Positioned(
+            right: 56,
+            top: 14,
+            child: Material(
+              color: Colors.transparent,
+              child: StatefulBuilder(
+                builder: (ctx, setMenuState) =>
+                    _layerPanelContent(setMenuState, () {
+                      entry.remove();
+                    }),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
     overlay.insert(entry);
   }
@@ -1324,51 +1498,67 @@ class _MapPageState extends State<MapPage>
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
     entry = OverlayEntry(
-      builder: (ctx) => Stack(children: [
-        // 半透明遮罩
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: () => entry.remove(),
-            behavior: HitTestBehavior.opaque,
-            child: Container(color: Colors.black26),
+      builder: (ctx) => Stack(
+        children: [
+          // 半透明遮罩
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => entry.remove(),
+              behavior: HitTestBehavior.opaque,
+              child: Container(color: Colors.black26),
+            ),
           ),
-        ),
-        // 面板
-        Positioned(
-          right: 56,
-          top: 58,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: 200,
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: C.white,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // 高德系列
-                  _mapTypeGroup('高德', C.blue, () => entry.remove()),
-                  // 其他地图
-                  _mapTypeGroup(S.of(context).otherType, C.slate, () => entry.remove()),
-                ],
+          // 面板
+          Positioned(
+            right: 56,
+            top: 58,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: 200,
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: C.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 高德系列
+                    _mapTypeGroup('高德', C.blue, () => entry.remove()),
+                    // 其他地图
+                    _mapTypeGroup(
+                      S.of(context).otherType,
+                      C.slate,
+                      () => entry.remove(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
     overlay.insert(entry);
   }
 
   Widget _layerPanelContent(StateSetter setMenuState, VoidCallback onClose) {
     final types = <(TypeGroup, String, IconData, Color)>[
-      (TypeGroup.mobile, S.of(context).mobile, Icons.directions_car_rounded, C.blue),
+      (
+        TypeGroup.mobile,
+        S.of(context).mobile,
+        Icons.directions_car_rounded,
+        C.blue,
+      ),
       (TypeGroup.fixed, S.of(context).fixed, Icons.home_rounded, C.purple),
-      (TypeGroup.infra, S.of(context).infrastructure, Icons.cell_tower_rounded, C.green),
+      (
+        TypeGroup.infra,
+        S.of(context).infrastructure,
+        Icons.cell_tower_rounded,
+        C.green,
+      ),
       (TypeGroup.wx, S.of(context).weather, Icons.cloud_rounded, C.cyan),
       (TypeGroup.fmo, 'FMO', Icons.radio_rounded, C.orange),
       (TypeGroup.other, S.of(context).otherType, Icons.apps_rounded, C.slate),
@@ -1385,29 +1575,38 @@ class _MapPageState extends State<MapPage>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Icon(Icons.layers_rounded, size: 15, color: C.blue),
-            SizedBox(width: 6),
-            Text(S.of(context).layerFilter, style: ts(12, w: FontWeight.w700)),
-            Spacer(),
-            if (_hiddenTypes.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  setMenuState(() => _hiddenTypes.clear());
-                  setState(() {});
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: C.blueBg,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(S.of(context).showAll,
-                      style: ts(10, c: C.blue, w: FontWeight.w600)),
-                ),
+          Row(
+            children: [
+              Icon(Icons.layers_rounded, size: 15, color: C.blue),
+              SizedBox(width: 6),
+              Text(
+                S.of(context).layerFilter,
+                style: ts(12, w: FontWeight.w700),
               ),
-          ]),
+              Spacer(),
+              if (_hiddenTypes.isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    setMenuState(() => _hiddenTypes.clear());
+                    setState(() {});
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: C.blueBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      S.of(context).showAll,
+                      style: ts(10, c: C.blue, w: FontWeight.w600),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           SizedBox(height: 8),
           for (final t in types)
             Padding(
@@ -1424,47 +1623,56 @@ class _MapPageState extends State<MapPage>
                   setState(() {});
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Row(children: [
-                  Icon(t.$3,
+                child: Row(
+                  children: [
+                    Icon(
+                      t.$3,
                       size: 16,
-                      color: _hiddenTypes.contains(t.$1) ? C.greyLight : t.$4),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(t.$2,
-                        style: ts(12,
-                            c: _hiddenTypes.contains(t.$1) ? C.grey : C.ink,
-                            w: FontWeight.w600)),
-                  ),
-                  Container(
-                    width: 40,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: !_hiddenTypes.contains(t.$1)
-                          ? t.$4.withValues(alpha: 0.25)
-                          : C.greyBg,
-                      borderRadius: BorderRadius.circular(11),
+                      color: _hiddenTypes.contains(t.$1) ? C.greyLight : t.$4,
                     ),
-                    child: Align(
-                      alignment: !_hiddenTypes.contains(t.$1)
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        width: 18,
-                        height: 18,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        decoration: BoxDecoration(
-                          color: !_hiddenTypes.contains(t.$1) ? t.$4 : C.grey,
-                          borderRadius: BorderRadius.circular(9),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 2)
-                          ],
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        t.$2,
+                        style: ts(
+                          12,
+                          c: _hiddenTypes.contains(t.$1) ? C.grey : C.ink,
+                          w: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ),
-                ]),
+                    Container(
+                      width: 40,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: !_hiddenTypes.contains(t.$1)
+                            ? t.$4.withValues(alpha: 0.25)
+                            : C.greyBg,
+                        borderRadius: BorderRadius.circular(11),
+                      ),
+                      child: Align(
+                        alignment: !_hiddenTypes.contains(t.$1)
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          width: 18,
+                          height: 18,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                            color: !_hiddenTypes.contains(t.$1) ? t.$4 : C.grey,
+                            borderRadius: BorderRadius.circular(9),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.15),
+                                blurRadius: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
@@ -1486,10 +1694,15 @@ class _MapPageState extends State<MapPage>
       final (lat, lng) = _screenToLatLng(hoverPos, _lastSize);
       coord = '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}';
       grid = maidenhead(lat, lng);
-    } else if (hasFix && myLat != null && myLng != null && _lastSize.width > 0) {
+    } else if (hasFix &&
+        myLat != null &&
+        myLng != null &&
+        _lastSize.width > 0) {
       // 计算地图中心到我的位置的距离
       final (cLat, cLng) = _screenToLatLng(
-          Offset(_lastSize.width / 2, _lastSize.height / 2), _lastSize);
+        Offset(_lastSize.width / 2, _lastSize.height / 2),
+        _lastSize,
+      );
       final dist = haversine(cLat, cLng, myLat, myLng);
       coord = S.of(context).distKm(dist.toStringAsFixed(1));
     }
@@ -1504,43 +1717,58 @@ class _MapPageState extends State<MapPage>
           borderRadius: BorderRadius.circular(12),
           boxShadow: softShadow(blur: 12, alpha: 0.08),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(Icons.straighten_rounded, size: 13, color: C.slate),
-          SizedBox(width: 5),
-          Text(_scaleText, style: ts(10, c: C.slate, w: FontWeight.w600)),
-          SizedBox(width: 8),
-          Container(width: 1, height: 12, color: C.border),
-          SizedBox(width: 8),
-          Text(coord, style: ts(11, c: C.slate, w: FontWeight.w500)),
-          if (grid.isNotEmpty) ...[
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.straighten_rounded, size: 13, color: C.slate),
+            SizedBox(width: 5),
+            Text(
+              _scaleText,
+              style: ts(10, c: C.slate, w: FontWeight.w600),
+            ),
             SizedBox(width: 8),
             Container(width: 1, height: 12, color: C.border),
             SizedBox(width: 8),
-            Text(grid, style: mono(10, c: C.blue, w: FontWeight.w600)),
-          ],
-          SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: C.blueBg,
-              borderRadius: BorderRadius.circular(6),
+            Text(
+              coord,
+              style: ts(11, c: C.slate, w: FontWeight.w500),
             ),
-            child: Text(datum,
-                style: ts(9, c: C.blue, w: FontWeight.w700)),
-          ),
-        ]),
+            if (grid.isNotEmpty) ...[
+              SizedBox(width: 8),
+              Container(width: 1, height: 12, color: C.border),
+              SizedBox(width: 8),
+              Text(
+                grid,
+                style: mono(10, c: C.blue, w: FontWeight.w600),
+              ),
+            ],
+            SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: C.blueBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                datum,
+                style: ts(9, c: C.blue, w: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _dot(Color c) => Container(
-        width: 8,
-        height: 8,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: c,
-            boxShadow: [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 4)]),
-      );
+    width: 8,
+    height: 8,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: c,
+      boxShadow: [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 4)],
+    ),
+  );
 }
 
 /// 脉冲扩散圈：仅此层在动画期间重建，避免整片标记每帧重建拖慢手势
@@ -1548,7 +1776,11 @@ class _PulseRing extends StatelessWidget {
   final Color color;
   final bool sel;
   final Animation<double> anim;
-  const _PulseRing({required this.color, required this.sel, required this.anim});
+  const _PulseRing({
+    required this.color,
+    required this.sel,
+    required this.anim,
+  });
 
   @override
   Widget build(BuildContext context) {

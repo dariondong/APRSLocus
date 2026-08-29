@@ -1,7 +1,6 @@
 {
   "@@locale": "zh",
   "appName": "APRSlocus",
-  "appName_desc": "应用名称",
   "ok": "确定",
   "cancel": "取消",
   "save": "保存",
@@ -322,7 +321,6 @@
   "advancedDesc": "实验室与开发者工具",
   "labDesc": "实验室功能仍在测试中，可能影响使用体验。默认锁定竖屏，开启后支持横屏。",
   "systemLog": "系统日志",
-  "restartWizard": "重新运行设置向导",
   "devDesc": "开发者调试工具",
   "simData": "启用模拟数据（演示台站/数据包）",
   "rxTx": "收包 / 发包",
@@ -342,7 +340,6 @@
   "appVersionDesc": "当前应用版本",
   "stationDetail": "台站详情",
   "backToTop": "回到顶部",
-  "checkUpdate": "检查更新",
   "installApk": "安装 APRSlocus",
   "install": "安装",
   "cancelInstall": "取消",
@@ -378,5 +375,377 @@
   "appInstallDir": "安装目录",
   "runInstaller": "运行安装程序",
   "downloadUpdateTip": "下载更新并自动打开",
-  "openDownloadFolder": "打开下载目录"
+  "openDownloadFolder": "打开下载目录",
+  "@appName": {
+    "description": "应用名称"
+  },
+  "groupBubble": "群·{name}",
+  "groupInviteTitle": "群聊邀请",
+  "groupInviteFrom": "{from} 邀请你加入群聊",
+  "groupNameValue": "群名：{name}",
+  "groupCallsignValue": "群呼号：{call}",
+  "groupInviteAccepted": "已接受邀请，加入 {name}",
+  "accept": "接受",
+  "groupInviteRejected": "已拒绝 {name} 的邀请",
+  "reject": "拒绝",
+  "appTagline": "APRS 定位追踪",
+  "gridValue": "网格 {grid}",
+  "packetsPerMinute": "{count}/分",
+  "demo": "演示",
+  "nextBeaconIn": "下次上报 {time}",
+  "beaconCount": "信标 {count} 次",
+  "beaconSentAprsIs": "位置已上报 · 网格 {grid} · 已发往 APRS-IS",
+  "beaconSentDemo": "位置已上报 · 网格 {grid} · 演示",
+  "getLocation": "获取定位",
+  "disconnect": "断开连接",
+  "connectAprsIs": "连接 APRS-IS",
+  "packetsReceived": "收包",
+  "passcodeUnverified": "Passcode 未验证",
+  "passcodeWarning": "登录密码可能错误，无法正常收发消息",
+  "goSettings": "去设置",
+  "connectingServer": "正在连接服务器…",
+  "notConnectedAprsServer": "未连接 APRS-IS 服务器",
+  "connectingToServer": "正在连接 {server}:{port}…",
+  "connectNearbyDesc": "连接后可接收附近台站定位与消息",
+  "connectAction": "连接",
+  "backgroundRunTip": "后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。",
+  "connectedAprsIs": "已连接 APRS-IS",
+  "qqGroupDesc": "APRSlocus 软件 · 反馈问题/交流使用",
+  "reselectPoint": "重新选点",
+  "disableClustering": "关闭聚合",
+  "enableClustering": "开启聚合",
+  "noPackets": "暂无数据包",
+  "secondsAgo": "{count}秒前",
+  "minutesAgo": "{count}分前",
+  "hoursAgo": "{count}小时前",
+  "daysAgo": "{count}天前",
+  "copiedCoordsValue": "已复制坐标：{coords}",
+  "copiedGridValue": "已复制网格：{grid}",
+  "distanceBearing": "距我 {distance}km · 方位 {bearing}°",
+  "weatherDataValue": "气象数据 · {data}",
+  "symbolLabel": "符号",
+  "digipeaterTapHint": "点击中继台跳转到对应台站",
+  "copiedFmoInfo": "已复制 FMO 信息",
+  "copiedAprslocusInfo": "已复制 APRSlocus 信息",
+  "trackPoints": "轨迹 ({count} 点)",
+  "sendMessageTo": "发消息给 {call}…",
+  "navigationUnavailable": "未安装高德地图，且无法打开其他地图应用",
+  "stationNoData": "台站 {call} 尚未收到数据",
+  "software": "软件",
+  "close": "关闭",
+  "nameLabel": "名称",
+  "viewSponsorDetails": "查看作者与赞助详情 →",
+  "thanks": "感谢",
+  "qqSoftwareName": "APRSlocus 软件",
+  "usageNotice": "本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规",
+  "licenseNotice": "GNU GPL v3 开源协议 · Copyright © BG7LZQ",
+  "appInfoText": "APRSlocus v{version}\n作者: BG7LZQ (Darion)\n网站: Theez.top",
+  "eggBg7lzq": "哎呦你干嘛~",
+  "eggBg7pgw": "闹呢？",
+  "eggBg7lmw": "默不作声...",
+  "eggBg7osl": "你的胆子肥嘟嘟的",
+  "manualCallsignHint": "手动输入呼号添加",
+  "noPacketReceived": "未收到数据包",
+  "feedMode": "瀑布流",
+  "conversationMode": "会话",
+  "messageFeed": "消息瀑布流",
+  "messageTotal": "共 {count} 条",
+  "noMessages": "暂无消息",
+  "copiedClipboard": "已复制到剪贴板",
+  "groupShortLabel": "群",
+  "conversations": "会话",
+  "noConversations": "暂无会话",
+  "groupNotFound": "群聊不存在",
+  "invite": "邀请",
+  "manage": "管理",
+  "noGroupMessages": "群聊暂无消息",
+  "selectConversation": "选择会话开始聊天",
+  "newConversation": "新建会话",
+  "newConversationDesc": "输入呼号开始新的会话",
+  "callsignExample": "呼号，如 BG7ABC",
+  "start": "开始",
+  "broadcastMessage": "群发消息",
+  "noStations": "暂无台站",
+  "broadcastHint": "提示：每条消息会单独发送给每个接收人",
+  "broadcastSent": "已群发给 {count} 人",
+  "searchCallsign": "搜索呼号…",
+  "broadcastContentHint": "输入要群发的内容…",
+  "groupNameHint": "输入群聊名称",
+  "create": "创建",
+  "groupCallsignLine": "群呼号: {call}",
+  "noMembers": "暂无成员",
+  "inviteMembersHint": "点击下方「邀请成员」添加",
+  "remove": "移除",
+  "inviteMembers": "邀请成员",
+  "deleteGroup": "删除群组",
+  "deleteGroupConfirm": "确定删除「{name}」？此操作不可撤销。",
+  "memberOnlineCount": "{members} 名成员 · {online} 在线",
+  "leaveGroup": "退出群组",
+  "leaveGroupConfirm": "确定退出「{name}」？你将不再收到该群的消息。",
+  "leftGroup": "已退出 {name}",
+  "leave": "退出",
+  "inviteMembersTo": "邀请成员到 {name}",
+  "manualCallsign": "手动输入呼号",
+  "inviteSent": "已发送邀请给 {call}",
+  "noMoreOnlineStations": "暂无更多在线台站",
+  "invited": "已邀请",
+  "tapToInvite": "点击邀请",
+  "done": "完成",
+  "addContact": "添加联系人",
+  "addContactDesc": "输入呼号手动添加到联系人列表",
+  "contactAdded": "已添加联系人 {call}",
+  "@groupBubble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteFrom": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupNameValue": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupCallsignValue": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteRejected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@packetsPerMinute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@nextBeaconIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@beaconSentAprsIs": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconSentDemo": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@connectingToServer": {
+    "placeholders": {
+      "server": {
+        "type": "String"
+      },
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "@secondsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@copiedCoordsValue": {
+    "placeholders": {
+      "coords": {
+        "type": "String"
+      }
+    }
+  },
+  "@copiedGridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@distanceBearing": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "bearing": {
+        "type": "String"
+      }
+    }
+  },
+  "@weatherDataValue": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "@trackPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sendMessageTo": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@stationNoData": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@appInfoText": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@messageTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@broadcastSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@groupCallsignLine": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@memberOnlineCount": {
+    "placeholders": {
+      "members": {
+        "type": "int"
+      },
+      "online": {
+        "type": "int"
+      }
+    }
+  },
+  "@leaveGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@leftGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteMembersTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactAdded": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  }
 }
