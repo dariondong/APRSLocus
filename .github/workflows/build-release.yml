@@ -262,14 +262,16 @@ jobs:
             done < <(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);print("\n".join([k+": "+v for k,v in d.get("headers",{}).items()]))')
 
             echo "上传: $filename ..."
-            # 失败不阻塞：超时/网络问题记录警告继续（GitCode 可稍后手动补传）
+            # 禁用 Expect: 100-continue（服务器 100 后卡死），用 HTTP/1.1 强制直接发送
             curl --fail-with-body -sS \
+              --http1.1 \
               --connect-timeout 20 \
-              --max-time 120 \
+              --max-time 300 \
+              -H "Expect:" \
               -X PUT \
               "${curl_args[@]}" \
               --upload-file "$file" \
-              -w '\nHTTP_CODE=%{http_code}\nREMOTE_IP=%{remote_ip}\n' \
+              -w '\nHTTP_CODE=%{http_code}\nREMOTE_IP=%{remote_ip}\nUPLOAD_SIZE=%{size_upload}\n' \
               "$upload_url" \
               || echo "警告: $filename 上传失败（网络或签名问题），已跳过"
             echo ""
