@@ -1,5 +1,16 @@
 # 更新日志
 
+## [1.4.5] - 2026-08-29
+
+### ✨ 新增
+- **更新渠道切换**：检查更新页支持在 GitCode / GitHub 之间切换更新源
+- **GitHub 更新支持**：从 GitHub Releases 拉取版本并下载安装包
+- **GPL-3.0 开源协议**：添加 LICENSE、README 徽章、关于页许可证声明
+- **本地一键打包**：`tool/build_all.ps1` 自动同步版本 + 构建 APK/安装包 + Inno Setup 打包
+
+### 🐛 修复
+- **CI 构建失败**：`sync_version.py` 在 GitHub Actions 上 `android/local.properties` 不存在时报错，改为存在才更新
+
 ## [1.4.4] - 2026-08-29
 
 ### ✨ 新增

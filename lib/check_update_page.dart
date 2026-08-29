@@ -63,7 +63,13 @@ class _ReleaseInfo {
 
   String? assetUrlFor(bool isWindows) {
     final a = assetFor(isWindows);
-    return a?['browser_download_url']?.toString();
+    if (a == null) return null;
+    // 兼容 GitHub / GitCode 不同字段名
+    for (final k in const ['browser_download_url', 'download_url', 'url']) {
+      final v = a[k]?.toString();
+      if (v != null && v.isNotEmpty && !v.endsWith('{?path}')) return v;
+    }
+    return null;
   }
 }
 
@@ -78,8 +84,12 @@ class CheckUpdatePage extends StatefulWidget {
 class _CheckUpdatePageState extends State<CheckUpdatePage> {
   static const _repoOwner = 'DarionDong';
   static const _repoName = 'APRSLocus';
-  static const _apiBase = 'https://api.gitcode.com/api/v5/repos';
   static const _installerChannel = MethodChannel('com.aprslocus/installer');
+
+  /// 当前更新渠道对应的 API 地址
+  String get _apiBase => widget.state.updateChannel == 'github'
+      ? 'https://api.github.com/repos'
+      : 'https://api.gitcode.com/api/v5/repos';
 
   bool _checking = false;
   bool _hasError = false;
@@ -152,6 +162,72 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     if (d != null) return d;
     final tmp = await getTemporaryDirectory();
     return tmp;
+  }
+
+  /// 切换更新渠道（GitCode / GitHub）
+  void _switchChannel() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: SafeArea(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('更新渠道', style: ts(15, w: FontWeight.w800)),
+            const SizedBox(height: 14),
+            _channelOption('GitCode', 'api.gitcode.com',
+                widget.state.updateChannel == 'gitcode', () {
+              widget.state.setUpdateChannel('gitcode');
+              Navigator.pop(context);
+              _check();
+            }),
+            const SizedBox(height: 8),
+            _channelOption('GitHub', 'api.github.com',
+                widget.state.updateChannel == 'github', () {
+              widget.state.setUpdateChannel('github');
+              Navigator.pop(context);
+              _check();
+            }),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _channelOption(String name, String api, bool selected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? C.blueBg : C.bgSoft,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+              color: selected ? C.blue : C.border,
+              width: selected ? 1.5 : 1),
+        ),
+        child: Row(children: [
+          Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
+              size: 18, color: selected ? C.blue : C.greyLight),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(name,
+                  style: ts(13,
+                      w: selected ? FontWeight.w700 : FontWeight.w500,
+                      c: selected ? C.blue : C.ink)),
+              Text(api, style: ts(10, c: C.grey)),
+            ]),
+          ),
+          if (selected)
+            Icon(Icons.check_rounded, size: 18, color: C.blue),
+        ]),
+      ),
+    );
   }
 
   /// 检查更新
@@ -498,6 +574,15 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         title: Text(S.of(context).checkUpdate),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: widget.state.updateChannel == 'github' ? 'GitHub' : 'GitCode',
+            onPressed: _switchChannel,
+            icon: Icon(
+                widget.state.updateChannel == 'github'
+                    ? Icons.public_rounded
+                    : Icons.cloud_rounded,
+                color: C.blue),
+          ),
           IconButton(
             tooltip: '重新检查',
             onPressed: _checking ? null : _check,
