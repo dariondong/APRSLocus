@@ -219,7 +219,6 @@ jobs:
       - name: Sync release to GitCode
         shell: bash
         run: |
-          set -e
           # 未配置 GITCODE_TOKEN 时跳过
           if [ -z "$GITCODE_TOKEN" ]; then
             echo "GITCODE_TOKEN 未配置，跳过 GitCode 同步"
@@ -229,27 +228,45 @@ jobs:
           owner="DarionDong"
           repo="APRSLocus"
           api="https://api.gitcode.com/api/v5/repos/$owner/$repo"
-          # 创建 GitCode Release（已存在则忽略）
+          token="$GITCODE_TOKEN"
           body="${{ steps.notes.outputs.notes }}"
-          release_id=$(curl -s -X POST "$api/releases" \
-            -H "Authorization: Bearer $GITCODE_TOKEN" \
+
+          # 1. 创建 GitCode Release（已存在则忽略错误）
+          echo "创建 GitCode Release $tag ..."
+          body_esc=$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$body")
+          curl -sS -X POST "$api/releases?access_token=$token" \
             -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$(python3 -c "import json,sys;print(json.dumps(sys.argv[1]))" "$body")}" \
-            | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
-          if [ -z "$release_id" ]; then
-            # 可能已存在，查询现有 release id
-            release_id=$(curl -s "$api/releases/tags/$tag" \
-              -H "Authorization: Bearer $GITCODE_TOKEN" \
-              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id',''))")
-          fi
-          echo "GitCode release id: $release_id"
-          # 上传资产
-          for f in APRSLocus-Windows/*.exe APRSLocus-Android/*.apk; do
-            echo "Uploading $f ..."
-            curl -s -X POST "$api/releases/$release_id/attach_files" \
-              -H "Authorization: Bearer $GITCODE_TOKEN" \
-              -F "files=@$f"
+            -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\",\"body\":$body_esc}" --max-time 30 >/dev/null || true
+
+          # 2. 上传资产（官方 upload_url 接口，headers 用 Bash 数组避免拼接错误）
+          upload_file() {
+            local file="$1"
+            local filename
+            filename=$(basename "$file")
+            echo "获取上传地址: $filename ..."
+            resp=$(curl -sS "$api/releases/$tag/upload_url?access_token=$token&file_name=$filename" --max-time 30)
+            echo "Upload URL check..." 
+
+            upload_url=$(echo "$resp" | python3 -c 'import json,sys;print(json.load(sys.stdin)["url"])')
+            if [ -z "$upload_url" ]; then
+              echo "ERROR: GitCode 未返回上传 URL，跳过 $filename"
+              return 1
+            fi
+
+            # 用 Bash 数组保存 -H 参数（每个 header 独立参数，杜绝 -H 拼接错误）
+            curl_args=()
+            while IFS= read -r line; do
+              [ -n "$line" ] && curl_args+=(-H "$line")
+            done < <(echo "$resp" | python3 -c 'import json,sys;d=json.load(sys.stdin);print("\n".join([k+": "+v for k,v in d.get("headers",{}).items()]))')
+
+            echo "上传: $filename ..."
+            curl -sS -X PUT "${curl_args[@]}" --upload-file "$file" "$upload_url" --max-time 300
             echo ""
+          }
+
+          for f in APRSLocus-Windows/*.exe APRSLocus-Android/*.apk; do
+            [ -f "$f" ] && upload_file "$f"
           done
+          echo "GitCode 同步完成"
         env:
           GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
