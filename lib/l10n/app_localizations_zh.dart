@@ -2481,4 +2481,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String localRepoVersion(Object latest, Object local) {
     return '本地 v$local · 仓库最新 v$latest';
   }
+
+  @override
+  String get unverified => '未验证';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 未验证';
+
+  @override
+  String get passcodeMessageWarning => 'APRS-IS 登录验证码，填 -1 无法正常收发消息';
 }

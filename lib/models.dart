@@ -1,5 +1,7 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+
 import 'theme.dart';
 
 enum St { online, moving, stopped, emergency, offline }
@@ -54,10 +56,19 @@ class Station {
     return '${lastHeard.year}-${lastHeard.month.toString().padLeft(2, '0')}';
   }
 
+  /// 有效状态：5 分钟内上报为在线（保留移动/静止），否则为离线
+  St get effectiveStatus {
+    final d = DateTime.now().difference(lastHeard);
+    if (d.inMinutes >= 5) return St.offline;
+    // 5 分钟内：保留移动/静止；原本在线/其他归为在线
+    if (status == St.moving) return St.moving;
+    if (status == St.stopped) return St.stopped;
+    return St.online;
+  }
+
   /// 基础呼号（去掉 -SSID 后缀）
-  String get baseCall => call.contains('-')
-      ? call.substring(0, call.indexOf('-'))
-      : call;
+  String get baseCall =>
+      call.contains('-') ? call.substring(0, call.indexOf('-')) : call;
 
   String get speedStr =>
       speed != null ? '${speed!.toStringAsFixed(0)} km/h' : '--';
@@ -82,7 +93,8 @@ class Station {
     final phi2 = lat * math.pi / 180;
     final dLng = (lng - flng) * math.pi / 180;
     final y = math.sin(dLng) * math.cos(phi2);
-    final x = math.cos(phi1) * math.sin(phi2) -
+    final x =
+        math.cos(phi1) * math.sin(phi2) -
         math.sin(phi1) * math.cos(phi2) * math.cos(dLng);
     final brg = math.atan2(y, x) * 180 / math.pi;
     return (brg + 360) % 360;
@@ -95,6 +107,8 @@ class Station {
 
   /// 类型分组（用于筛选）
   TypeGroup get typeGroup {
+    // APRSlocus 同款台站：与 FMO 同等分类层
+    if (isAprslocusStation) return TypeGroup.fmo;
     switch (symbol) {
       case 'i':
         return TypeGroup.fmo;
@@ -153,19 +167,34 @@ class AprsMsg {
   final String? groupId; // 群聊ID（可选）
   final bool system; // 系统消息（如"XX 已加入群聊"）
   bool acked;
-  AprsMsg(this.from, this.to, this.text, this.time,
-      {this.sent = false, this.id, this.acked = false, this.groupId, this.system = false});
+  AprsMsg(
+    this.from,
+    this.to,
+    this.text,
+    this.time, {
+    this.sent = false,
+    this.id,
+    this.acked = false,
+    this.groupId,
+    this.system = false,
+  });
 
   Map<String, dynamic> toJson() => {
-    'from': from, 'to': to, 'text': text,
+    'from': from,
+    'to': to,
+    'text': text,
     'time': time.millisecondsSinceEpoch,
-    'sent': sent, 'id': id, 'acked': acked,
+    'sent': sent,
+    'id': id,
+    'acked': acked,
     if (groupId != null) 'groupId': groupId,
     if (system) 'system': system,
   };
 
   factory AprsMsg.fromJson(Map<String, dynamic> j) => AprsMsg(
-    j['from'] as String, j['to'] as String, j['text'] as String,
+    j['from'] as String,
+    j['to'] as String,
+    j['text'] as String,
     DateTime.fromMillisecondsSinceEpoch(j['time'] as int),
     sent: j['sent'] as bool? ?? false,
     id: j['id'] as String?,
@@ -204,10 +233,10 @@ class ChatGroup {
     Map<String, GroupMemberStatus>? memberStatus,
     Set<String>? activeMembers,
     Set<String>? blockedMembers,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        memberStatus = memberStatus ?? {},
-        activeMembers = activeMembers ?? {},
-        blockedMembers = blockedMembers ?? {};
+  }) : createdAt = createdAt ?? DateTime.now(),
+       memberStatus = memberStatus ?? {},
+       activeMembers = activeMembers ?? {},
+       blockedMembers = blockedMembers ?? {};
 
   /// 获取所有成员（含已加入、待确认、拒绝、离开等所有状态）
   /// 用于成员管理展示；聊天接收则用 recipients（排除 left/declined/blocked）
@@ -215,51 +244,52 @@ class ChatGroup {
 
   /// 获取所有已加入的成员（joined 或 active）
   Set<String> get confirmedMembers => {
-        ...memberStatus.entries
-            .where((e) => e.value == GroupMemberStatus.joined ||
-                e.value == GroupMemberStatus.pending)
-            .map((e) => e.key),
-        ...activeMembers,
-      };
+    ...memberStatus.entries
+        .where(
+          (e) =>
+              e.value == GroupMemberStatus.joined ||
+              e.value == GroupMemberStatus.pending,
+        )
+        .map((e) => e.key),
+    ...activeMembers,
+  };
 
   /// 获取所有需要接收消息的成员（joined + active，排除 blocked/left/declined）
   Set<String> get recipients => {
-        ...memberStatus.entries
-            .where((e) => e.value == GroupMemberStatus.joined)
-            .map((e) => e.key),
-        ...activeMembers,
-      }.where((m) => !blockedMembers.contains(m)).toSet();
+    ...memberStatus.entries
+        .where((e) => e.value == GroupMemberStatus.joined)
+        .map((e) => e.key),
+    ...activeMembers,
+  }.where((m) => !blockedMembers.contains(m)).toSet();
 
   /// 是否是群主
   bool isOwner(String call) => call.toUpperCase() == owner.toUpperCase();
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'groupCall': groupCall,
-        'owner': owner,
-        'createdAt': createdAt.millisecondsSinceEpoch,
-        'memberStatus':
-            memberStatus.map((k, v) => MapEntry(k, v.index)),
-        'activeMembers': activeMembers.toList(),
-        'blockedMembers': blockedMembers.toList(),
-      };
+    'id': id,
+    'name': name,
+    'groupCall': groupCall,
+    'owner': owner,
+    'createdAt': createdAt.millisecondsSinceEpoch,
+    'memberStatus': memberStatus.map((k, v) => MapEntry(k, v.index)),
+    'activeMembers': activeMembers.toList(),
+    'blockedMembers': blockedMembers.toList(),
+  };
 
   factory ChatGroup.fromJson(Map<String, dynamic> j) => ChatGroup(
-        id: j['id'] as String,
-        name: j['name'] as String,
-        groupCall: j['groupCall'] as String,
-        owner: j['owner'] as String,
-        createdAt: DateTime.fromMillisecondsSinceEpoch(j['createdAt'] as int),
-        memberStatus: (j['memberStatus'] as Map<String, dynamic>?)
-                ?.map((k, v) =>
-                    MapEntry(k, GroupMemberStatus.values[v as int])) ??
-            {},
-        activeMembers:
-            Set<String>.from(j['activeMembers'] as List? ?? []),
-        blockedMembers:
-            Set<String>.from(j['blockedMembers'] as List? ?? []),
-      );
+    id: j['id'] as String,
+    name: j['name'] as String,
+    groupCall: j['groupCall'] as String,
+    owner: j['owner'] as String,
+    createdAt: DateTime.fromMillisecondsSinceEpoch(j['createdAt'] as int),
+    memberStatus:
+        (j['memberStatus'] as Map<String, dynamic>?)?.map(
+          (k, v) => MapEntry(k, GroupMemberStatus.values[v as int]),
+        ) ??
+        {},
+    activeMembers: Set<String>.from(j['activeMembers'] as List? ?? []),
+    blockedMembers: Set<String>.from(j['blockedMembers'] as List? ?? []),
+  );
 }
 
 class Packet {
@@ -329,7 +359,7 @@ String statusLabel(St st) {
     case St.stopped:
       return '静止';
     case St.emergency:
-      return '紧急';
+      return '在线';
     case St.offline:
       return '离线';
   }
@@ -410,8 +440,11 @@ class AprsSym {
     if (table.isEmpty || sym.isEmpty) return false;
     final t = table.codeUnitAt(0);
     final c = sym.codeUnitAt(0);
-    final okTable = t == 0x2f || t == 0x5c ||
-        (t >= 0x30 && t <= 0x39) || (t >= 0x41 && t <= 0x5a);
+    final okTable =
+        t == 0x2f ||
+        t == 0x5c ||
+        (t >= 0x30 && t <= 0x39) ||
+        (t >= 0x41 && t <= 0x5a);
     return okTable && c >= 0x21 && c <= 0x7e;
   }
 
@@ -458,7 +491,8 @@ double haversine(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
   final dLat = _rad(lat2 - lat1);
   final dLng = _rad(lng2 - lng1);
-  final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+  final a =
+      math.sin(dLat / 2) * math.sin(dLat / 2) +
       math.cos(_rad(lat1)) *
           math.cos(_rad(lat2)) *
           math.sin(dLng / 2) *

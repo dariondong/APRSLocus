@@ -725,5 +725,8 @@
   "versionChangelog": "v{version} changelog",
   "gotIt": "Got it",
   "leaveAction": "Leave",
-  "localRepoVersion": "Local v{local} · Latest repository v{latest}"
+  "localRepoVersion": "Local v{local} · Latest repository v{latest}",
+  "unverified": "Unverified",
+  "passcodeUnverifiedHint": "-1 (unverified)",
+  "passcodeMessageWarning": "APRS-IS login passcode. Using -1 prevents normal message send/receive."
 }
