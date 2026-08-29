@@ -690,8 +690,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，'
-                  '请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。',
+                  S.of(context).signatureChangedDesc,
                   style: ts(11, c: C.orange, h: 1.5),
                 ),
               ],
@@ -765,8 +764,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
                       _isNewer
-                          ? '发现新版本 v${_latest!.tagName}'
-                          : '仓库最新版本 v${_latest!.tagName}',
+                          ? S.of(context).newVersionTitle(_latest!.tagName)
+                          : S.of(context).repoLatestTitle(_latest!.tagName),
                       style: ts(12, c: Colors.white, w: FontWeight.w700),
                     ),
                   ),
@@ -910,7 +909,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                         ),
                         SizedBox(height: 2),
                         Text(
-                          '本地 v${AppState.appVersion} · 仓库最新 v${release.tagName}',
+                          S
+                              .of(context)
+                              .localRepoVersion(
+                                AppState.appVersion,
+                                release.tagName,
+                              ),
                           style: ts(11, c: C.grey),
                         ),
                       ],
@@ -1455,7 +1459,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        '正在下载 ${(_progress * 100).clamp(0, 100).toStringAsFixed(0)}%',
+                        S
+                            .of(context)
+                            .downloadProgress(
+                              (_progress * 100)
+                                  .clamp(0, 100)
+                                  .toStringAsFixed(0),
+                            ),
                         style: ts(11, c: C.grey),
                         overflow: TextOverflow.ellipsis,
                       ),

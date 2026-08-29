@@ -587,7 +587,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   children: [
                     _convActionBtn(
                       Icons.add_comment_rounded,
-                      '新建会话',
+                      S.of(context).newConversation,
                       C.blue,
                       () {
                         _showAddConversationDialog(st);
@@ -939,7 +939,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          '退出',
+                          S.of(context).leaveAction,
                           style: ts(10, c: C.red, w: FontWeight.w600),
                         ),
                       ),
@@ -1102,7 +1102,7 @@ class _MessagesPageState extends State<MessagesPage> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            m.text,
+            localizedSystemMessage(context, m.text),
             style: ts(10, c: C.grey, w: FontWeight.w500),
           ),
         ),
@@ -2332,7 +2332,7 @@ class _MessagesPageState extends State<MessagesPage> {
                             } else if (status == GroupMemberStatus.joined) {
                               statusText = isOnlineStation
                                   ? S.of(context).online
-                                  : '已加入';
+                                  : S.of(context).memberJoined;
                               statusColor = isOnlineStation ? C.green : C.blue;
                             } else if (status == GroupMemberStatus.pending) {
                               statusText = S.of(context).memberPending;
@@ -2899,7 +2899,7 @@ class _MessagesPageState extends State<MessagesPage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '邀请',
+                            S.of(context).invite,
                             style: ts(11, c: C.orange, w: FontWeight.w700),
                           ),
                         ),

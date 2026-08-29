@@ -2473,4 +2473,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get gotIt => '知道了';
+
+  @override
+  String get leaveAction => '退出';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return '本地 v$local · 仓库最新 v$latest';
+  }
 }

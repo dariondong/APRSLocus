@@ -4423,6 +4423,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'知道了'**
   String get gotIt;
+
+  /// No description provided for @leaveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出'**
+  String get leaveAction;
+
+  /// No description provided for @localRepoVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地 v{local} · 仓库最新 v{latest}'**
+  String localRepoVersion(Object latest, Object local);
 }
 
 class _AppLocalizationsDelegate

@@ -67,7 +67,9 @@ class _HomePageState extends State<HomePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('[$groupCall] $event'),
+            content: Text(
+              '[$groupCall] ${localizedSystemMessage(context, event)}',
+            ),
             backgroundColor: C.orange,
             duration: const Duration(seconds: 3),
           ),
@@ -586,7 +588,7 @@ class _HomePageState extends State<HomePage> {
               _dot(locColor),
               SizedBox(width: 6),
               Text(
-                widget.state.locStatus,
+                localizedLocationStatus(context, widget.state.locStatus),
                 style: ts(11, c: locColor, w: FontWeight.w600),
               ),
               Spacer(),
