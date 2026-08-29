@@ -572,6 +572,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get author => 'Author';
 
   @override
+  String get codeContributions => 'Code contributions';
+
+  @override
+  String get codeContributionI18n => 'Internationalization / English UI';
+
+  @override
+  String get licenseSection => 'License';
+
+  @override
+  String get licenseName => 'GNU GPL v3';
+
+  @override
+  String get licenseStatement =>
+      'This software is released under the GNU GPL v3. You may run, study, modify, and redistribute it under the terms of the license; modified and redistributed versions must comply with the applicable GPL v3 requirements. This software is provided without warranty.';
+
+  @override
+  String get licenseText => 'View license';
+
+  @override
   String get features => 'Features';
 
   @override

@@ -1214,6 +1214,42 @@ abstract class AppLocalizations {
   /// **'作者'**
   String get author;
 
+  /// No description provided for @codeContributions.
+  ///
+  /// In zh, this message translates to:
+  /// **'代码贡献'**
+  String get codeContributions;
+
+  /// No description provided for @codeContributionI18n.
+  ///
+  /// In zh, this message translates to:
+  /// **'国际化 / 英文界面'**
+  String get codeContributionI18n;
+
+  /// No description provided for @licenseSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'许可证声明'**
+  String get licenseSection;
+
+  /// No description provided for @licenseName.
+  ///
+  /// In zh, this message translates to:
+  /// **'GNU GPL v3'**
+  String get licenseName;
+
+  /// No description provided for @licenseStatement.
+  ///
+  /// In zh, this message translates to:
+  /// **'本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。'**
+  String get licenseStatement;
+
+  /// No description provided for @licenseText.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看许可证'**
+  String get licenseText;
+
   /// No description provided for @features.
   ///
   /// In zh, this message translates to:
