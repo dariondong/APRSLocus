@@ -495,10 +495,10 @@ class _MessagesPageState extends State<MessagesPage> {
         ? st.chatGroups.where((g) => g.id == _selectedGroupId).firstOrNull
         : null;
     final hintText = inGroupChat
-        ? '发到 ${group?.name ?? S.of(context).groupChat}…'
+        ? S.of(context).sendToGroupHint(group?.name ?? S.of(context).groupChat)
         : _selected.isNotEmpty
-        ? '发给 $_selected…'
-        : '点选消息以回复…';
+        ? S.of(context).sendToCallHint(_selected)
+        : S.of(context).selectMessageReply;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -594,9 +594,14 @@ class _MessagesPageState extends State<MessagesPage> {
                       },
                     ),
                     SizedBox(width: 6),
-                    _convActionBtn(Icons.campaign_rounded, '群发', C.purple, () {
-                      _showBroadcastDialog(st);
-                    }),
+                    _convActionBtn(
+                      Icons.campaign_rounded,
+                      S.of(context).broadcastShort,
+                      C.purple,
+                      () {
+                        _showBroadcastDialog(st);
+                      },
+                    ),
                     SizedBox(width: 6),
                     _convActionBtn(
                       Icons.group_add_rounded,
@@ -713,7 +718,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   Text(
                     last != null
                         ? '${last.$1}: ${last.$2}'
-                        : '${g.confirmedMembers.length} 个成员',
+                        : S.of(context).memberCount(g.confirmedMembers.length),
                     style: ts(11, c: C.grey),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -873,12 +878,14 @@ class _MessagesPageState extends State<MessagesPage> {
                           Text(group.name, style: ts(14, w: FontWeight.w700)),
                           SizedBox(height: 1),
                           Text(
-                            '群呼号: ${group.groupCall}',
+                            S.of(context).groupCallsignLine(group.groupCall),
                             style: ts(10, c: C.orange, w: FontWeight.w600),
                           ),
                           SizedBox(height: 1),
                           Text(
-                            '${group.confirmedMembers.length} 名成员 · 点击查看',
+                            S
+                                .of(context)
+                                .memberCountTap(group.confirmedMembers.length),
                             style: ts(10, c: C.grey),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -976,7 +983,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         return _bubble(
                           msg,
                           groupSender: sender,
-                          onSenderTap: sender == '我'
+                          onSenderTap: sender == S.of(context).meLabel
                               ? null
                               : () => _openStation(st, sender),
                         );
@@ -1494,14 +1501,14 @@ class _MessagesPageState extends State<MessagesPage> {
                   // ─── 步骤指示条 ───
                   Row(
                     children: [
-                      _stepDot(1, step, '选人'),
+                      _stepDot(1, step, S.of(context).stepRecipients),
                       Expanded(
                         child: Container(
                           height: 2,
                           color: step >= 2 ? C.purple : C.greyLight,
                         ),
                       ),
-                      _stepDot(2, step, '内容'),
+                      _stepDot(2, step, S.of(context).stepContent),
                     ],
                   ),
                   SizedBox(height: 12),
@@ -1533,7 +1540,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     Row(
                       children: [
                         _pickerActionBtn(
-                          '全选在线',
+                          S.of(context).selectAllOnline,
                           Icons.check_circle_outline_rounded,
                           () {
                             setDialogState(() {
@@ -1545,9 +1552,13 @@ class _MessagesPageState extends State<MessagesPage> {
                           },
                         ),
                         SizedBox(width: 6),
-                        _pickerActionBtn('取消全选', Icons.cancel_outlined, () {
-                          setDialogState(() => selected.clear());
-                        }),
+                        _pickerActionBtn(
+                          S.of(context).clearSelection,
+                          Icons.cancel_outlined,
+                          () {
+                            setDialogState(() => selected.clear());
+                          },
+                        ),
                         Spacer(),
                         GestureDetector(
                           onTap: () =>
@@ -1575,7 +1586,9 @@ class _MessagesPageState extends State<MessagesPage> {
                                 ),
                                 SizedBox(width: 3),
                                 Text(
-                                  onlyOnline ? '仅在线' : S.of(context).all,
+                                  onlyOnline
+                                      ? S.of(context).onlineOnly
+                                      : S.of(context).all,
                                   style: ts(
                                     10,
                                     c: onlyOnline ? C.purple : C.grey,
@@ -1600,7 +1613,9 @@ class _MessagesPageState extends State<MessagesPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        selected.isEmpty ? '未选择接收人' : '已选 ${selected.length} 人',
+                        selected.isEmpty
+                            ? S.of(context).noRecipients
+                            : S.of(context).selectedRecipients(selected.length),
                         style: ts(
                           11,
                           c: selected.isEmpty ? C.grey : C.purple,
@@ -1676,7 +1691,12 @@ class _MessagesPageState extends State<MessagesPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '将发送给 ${selected.length} 人：${selected.join('、')}',
+                        S
+                            .of(context)
+                            .sendRecipientsList(
+                              selected.length,
+                              selected.join(', '),
+                            ),
                         style: ts(11, c: C.purple, w: FontWeight.w600),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -1856,14 +1876,14 @@ class _MessagesPageState extends State<MessagesPage> {
                   // ─── 步骤指示条 ───
                   Row(
                     children: [
-                      _stepDot(1, step, '名称'),
+                      _stepDot(1, step, S.of(context).stepName),
                       Expanded(
                         child: Container(
                           height: 2,
                           color: step >= 2 ? C.orange : C.greyLight,
                         ),
                       ),
-                      _stepDot(2, step, '成员'),
+                      _stepDot(2, step, S.of(context).stepMembers),
                     ],
                   ),
                   SizedBox(height: 14),
@@ -1913,7 +1933,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              '群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。',
+                              S.of(context).groupChatExplain,
                               style: ts(
                                 11,
                                 c: C.orange,
@@ -1954,7 +1974,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     Row(
                       children: [
                         _pickerActionBtn(
-                          '全选在线',
+                          S.of(context).selectAllOnline,
                           Icons.check_circle_outline_rounded,
                           () {
                             setDialogState(() {
@@ -1966,9 +1986,13 @@ class _MessagesPageState extends State<MessagesPage> {
                           },
                         ),
                         SizedBox(width: 6),
-                        _pickerActionBtn('取消全选', Icons.cancel_outlined, () {
-                          setDialogState(() => selected.clear());
-                        }),
+                        _pickerActionBtn(
+                          S.of(context).clearSelection,
+                          Icons.cancel_outlined,
+                          () {
+                            setDialogState(() => selected.clear());
+                          },
+                        ),
                         Spacer(),
                         GestureDetector(
                           onTap: () =>
@@ -1994,7 +2018,9 @@ class _MessagesPageState extends State<MessagesPage> {
                                 ),
                                 SizedBox(width: 3),
                                 Text(
-                                  onlyOnline ? '仅在线' : S.of(context).all,
+                                  onlyOnline
+                                      ? S.of(context).onlineOnly
+                                      : S.of(context).all,
                                   style: ts(
                                     10,
                                     c: onlyOnline ? C.blue : C.grey,
@@ -2019,7 +2045,9 @@ class _MessagesPageState extends State<MessagesPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        selected.isEmpty ? '未选择成员' : '已选 ${selected.length} 人',
+                        selected.isEmpty
+                            ? S.of(context).noMembersSelected
+                            : S.of(context).selectedRecipients(selected.length),
                         style: ts(
                           11,
                           c: selected.isEmpty ? C.grey : C.orange,
@@ -2031,7 +2059,10 @@ class _MessagesPageState extends State<MessagesPage> {
                     Expanded(
                       child: list.isEmpty
                           ? Center(
-                              child: Text('暂无台站', style: ts(13, c: C.grey)),
+                              child: Text(
+                                S.of(context).noStations,
+                                style: ts(13, c: C.grey),
+                              ),
                             )
                           : ListView.builder(
                               itemCount: list.length,
@@ -2296,7 +2327,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                   s.status != St.offline,
                             );
                             if (isBlocked) {
-                              statusText = '已屏蔽';
+                              statusText = S.of(context).memberBlocked;
                               statusColor = C.red;
                             } else if (status == GroupMemberStatus.joined) {
                               statusText = isOnlineStation
@@ -2304,16 +2335,16 @@ class _MessagesPageState extends State<MessagesPage> {
                                   : '已加入';
                               statusColor = isOnlineStation ? C.green : C.blue;
                             } else if (status == GroupMemberStatus.pending) {
-                              statusText = '待确认';
+                              statusText = S.of(context).memberPending;
                               statusColor = C.yellow;
                             } else if (status == GroupMemberStatus.declined) {
-                              statusText = '已拒绝';
+                              statusText = S.of(context).memberDeclined;
                               statusColor = C.red;
                             } else if (status == GroupMemberStatus.left) {
-                              statusText = '已退出';
+                              statusText = S.of(context).memberLeft;
                               statusColor = C.grey;
                             } else if (status == GroupMemberStatus.timeout) {
-                              statusText = '超时';
+                              statusText = S.of(context).memberTimeout;
                               statusColor = C.grey;
                             } else {
                               statusText = isOnlineStation
@@ -2422,7 +2453,9 @@ class _MessagesPageState extends State<MessagesPage> {
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        isBlocked ? '解除屏蔽' : '屏蔽',
+                                        isBlocked
+                                            ? S.of(context).unblock
+                                            : S.of(context).block,
                                         style: ts(
                                           11,
                                           c: isBlocked ? C.green : C.yellow,
@@ -2610,7 +2643,9 @@ class _MessagesPageState extends State<MessagesPage> {
                         }
                       },
                       child: Text(
-                        group.isOwner(st.myCall) ? '+ 邀请' : '完成',
+                        group.isOwner(st.myCall)
+                            ? '+ ${S.of(context).invite}'
+                            : S.of(context).done,
                         style: ts(13, c: C.orange, w: FontWeight.w700),
                       ),
                     ),
@@ -2672,7 +2707,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
-                                        '群主',
+                                        S.of(context).groupOwner,
                                         style: ts(
                                           9,
                                           c: C.orange,

@@ -610,7 +610,14 @@ class _HomePageState extends State<HomePage> {
               Icon(Icons.timer_rounded, size: 12, color: C.grey),
               SizedBox(width: 4),
               Text(
-                S.of(context).nextBeaconIn(widget.state.nextBeaconIn),
+                S
+                    .of(context)
+                    .nextBeaconIn(
+                      localizedNextBeaconValue(
+                        context,
+                        widget.state.nextBeaconIn,
+                      ),
+                    ),
                 style: ts(10, c: C.slate),
               ),
               Spacer(),
