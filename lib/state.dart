@@ -200,6 +200,7 @@ class AppState extends ChangeNotifier {
   void addReceiveCountry(String code) {
     if (receiveCountries.contains(code)) return;
     receiveCountries.add(code);
+    _matchCache.clear();
     persist();
     _refreshFilter();
     _notify();
@@ -208,6 +209,7 @@ class AppState extends ChangeNotifier {
   /// 移除按国家接收
   void removeReceiveCountry(String code) {
     receiveCountries.remove(code);
+    _matchCache.clear();
     persist();
     _refreshFilter();
     _notify();
@@ -216,6 +218,7 @@ class AppState extends ChangeNotifier {
   /// 设置是否接收其他台站
   void setReceiveOthers(bool v) {
     receiveOthers = v;
+    _matchCache.clear();
     persist();
     _refreshFilter();
     _notify();
@@ -223,18 +226,31 @@ class AppState extends ChangeNotifier {
 
   /// 判断呼号是否匹配当前选择的国家/地区前缀（用于本地台站过滤）
   /// 空列表表示不匹配任何国家（普通台站隐藏，仅保留收藏/手动与「其他台站」特殊类型）
+  final Map<String, bool> _matchCache = {};
   bool _matchReceiveFilter(String call) {
     final up = call.toUpperCase();
-    if (receiveCountries.isEmpty) return false;
-    for (final code in receiveCountries) {
-      final prefixes = countryCallPrefixes[code];
-      if (prefixes == null) continue;
-      for (final p in prefixes) {
-        if (up.startsWith(p)) return true;
+    final cached = _matchCache[up];
+    if (cached != null) return cached;
+    var ok = false;
+    if (receiveCountries.isNotEmpty) {
+      for (final code in receiveCountries) {
+        final prefixes = countryCallPrefixes[code];
+        if (prefixes == null) continue;
+        for (final p in prefixes) {
+          if (up.startsWith(p)) {
+            ok = true;
+            break;
+          }
+        }
+        if (ok) break;
       }
     }
-    return false;
+    _matchCache[up] = ok;
+    return ok;
   }
+
+  /// 清除匹配缓存（国家筛选变化时调用）
+  void clearMatchCache() => _matchCache.clear();
 
   /// 校验是否标准业余无线电呼号（排除 WIDE/TCPIP/APRS/纯数字等非台站呼号）
   /// 支持带 SSID：BG7LZQ-9；中国：B[GHDIYZ][1-9]...；国际：前缀+数字+后缀
@@ -274,11 +290,15 @@ class AppState extends ChangeNotifier {
   bool stationAllowed(String call) {
     final idx = stations.indexWhere((s) => s.call == call);
     if (idx < 0) return _matchReceiveFilter(call) || receiveOthers;
-    final s = stations[idx];
+    return stationAllowedFor(stations[idx]);
+  }
+
+  /// 高性能版本：直接传 Station 对象，避免 indexWhere 线性查找（列表遍历时使用）
+  bool stationAllowedFor(Station s) {
     if (s.favorite || s.manual) return true;
     // 过滤不符合规范的呼号
-    if (!isValidCallsign(call)) return false;
-    if (_matchReceiveFilter(call)) return true;
+    if (!isValidCallsign(s.call)) return false;
+    if (_matchReceiveFilter(s.call)) return true;
     // 其他台站：接收特殊类型（中继/气象/FMO）台站
     if (receiveOthers) {
       final tg = s.typeGroup;

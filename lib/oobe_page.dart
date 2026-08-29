@@ -69,18 +69,26 @@ class _OobePageState extends State<OobePage> {
         // 语言选择步骤：立即应用界面语言
         widget.state.setLocale(_lang);
       case 1:
+        // 欢迎页：无校验
+      case 2:
+        // 呼号步骤
         final c = _call.text.trim().toUpperCase();
         if (c.isEmpty) {
           _toast(S.of(context).enterCallsign);
           return;
         }
+        if (!AppState.isValidCallsign(c)) {
+          _toast('呼号格式不正确，请检查后重试（如 BG7ABC）');
+          return;
+        }
         widget.state.myCall = c;
         widget.state.mySsid = _ssid;
         widget.state.persist();
-      case 2:
+      case 3:
+        // 符号步骤
         widget.state.mySymbol = _symbol;
         widget.state.persist();
-      case 3:
+      case 4:
         // 接收筛选步骤：把选择的国家写入 state（默认已选中国）
         _applyFilterCountries();
     }

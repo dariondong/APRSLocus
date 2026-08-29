@@ -272,8 +272,8 @@ class _MapPageState extends State<MapPage>
   List<Station> get _visible {
     final q = widget.searchQuery.trim().toLowerCase();
     var list = widget.state.stations;
-    // 国家/地区接收筛选：始终按 stationAllowed 过滤（空国家默认中国 B 开头）
-    list = list.where((s) => widget.state.stationAllowed(s.call)).toList();
+    // 国家/地区接收筛选：始终按 stationAllowedFor 过滤（传对象避免线性查找）
+    list = list.where(widget.state.stationAllowedFor).toList();
     if (q.isNotEmpty) {
       list = list
           .where((s) =>
