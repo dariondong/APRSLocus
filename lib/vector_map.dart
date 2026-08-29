@@ -27,11 +27,13 @@ class VectorMapView extends StatefulWidget {
   final int actionSeq;
   final String action;
   final bool showTracks;
+  // 是否启用台站聚合（台站多时合并为聚合球）
+  final bool clustering;
   const VectorMapView({
     super.key,
     required this.stations,
     required this.myCall,
-    required this.myHasFix,
+    this.myHasFix = false,
     this.myLat,
     this.myLng,
     this.onTap,
@@ -42,6 +44,7 @@ class VectorMapView extends StatefulWidget {
     this.actionSeq = 0,
     this.action = '',
     this.showTracks = true,
+    this.clustering = true,
   });
 
   @override
@@ -351,12 +354,12 @@ class _VectorMapViewState extends State<VectorMapView> {
   /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
   List<Marker> _buildStationMarkers() {
     final zoom = _mapReady ? _map.camera.zoom : 11.0;
-    // 台站数量多且缩放级别低时聚合
+    // 台站数量多且缩放级别低时聚合（可被 clustering 开关关闭）
     final total = widget.stations
         .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)
         .length;
-    // 台站少于阈值或已放大到足够清晰时不聚合
-    if (total < 60 || zoom >= 13) {
+    // 台站少于阈值、已放大到足够清晰、或关闭聚合时不聚合
+    if (!widget.clustering || total < 60 || zoom >= 13) {
       return widget.stations
           .where((s) =>
               s.call != widget.myCall && s.lat != 0 && s.lng != 0)

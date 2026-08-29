@@ -25,6 +25,7 @@ class _MapPageState extends State<MapPage>
   double _zoom = 11.0;
   Offset _pan = Offset.zero;
   bool _showTracks = true;
+  bool _clusterEnabled = true; // 台站聚合开关
   Size _lastSize = Size.zero;
 
   MapType get _currentMapType => MapType.values.firstWhere(
@@ -331,6 +332,7 @@ class _MapPageState extends State<MapPage>
                         actionSeq: _mapActionSeq,
                         action: _mapAction,
                         showTracks: _showTracks,
+                        clustering: _clusterEnabled,
                         onTap: _handleMapLatLng,
                         onStationTap: (s) {
                           _openDetail(s);
@@ -1245,6 +1247,17 @@ class _MapPageState extends State<MapPage>
           color: _showTracks ? C.green : C.slate,
           onTap: () => setState(() => _showTracks = !_showTracks)),
       SizedBox(height: 6),
+      // 台站聚合开关（仅矢量地图）
+      if (_isVector) ...[
+        RoundIconBtn(
+            _clusterEnabled
+                ? Icons.blur_circular_rounded
+                : Icons.blur_off_rounded,
+            tooltip: _clusterEnabled ? '关闭聚合' : '开启聚合',
+            color: _clusterEnabled ? C.cyan : C.slate,
+            onTap: () => setState(() => _clusterEnabled = !_clusterEnabled)),
+        SizedBox(height: 6),
+      ],
       RoundIconBtn(Icons.my_location_rounded,
           tooltip: S.of(context).locateMe,
           color: C.blue,

@@ -77,10 +77,6 @@ class _OobePageState extends State<OobePage> {
           _toast(S.of(context).enterCallsign);
           return;
         }
-        if (!AppState.isValidCallsign(c)) {
-          _toast('呼号格式不正确，请检查后重试（如 BG7ABC）');
-          return;
-        }
         widget.state.myCall = c;
         widget.state.mySsid = _ssid;
         widget.state.persist();
