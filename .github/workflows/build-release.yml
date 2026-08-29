@@ -10,6 +10,9 @@ on:
         description: '版本号（如 1.5.0），留空则沿用 pubspec'
         required: false
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     name: Build Windows Installer
