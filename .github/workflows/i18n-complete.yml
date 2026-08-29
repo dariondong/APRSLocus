@@ -1,0 +1,88 @@
+name: Complete English localization pass 2
+
+on:
+  push:
+    branches:
+      - i18n/complete-english
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: i18n/complete-english
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Apply localization patches
+        run: |
+          python3 .github/i18n_pass2_arb.py
+          python3 .github/i18n_pass2_core.py
+          python3 .github/i18n_pass2_settings.py
+          python3 .github/i18n_pass2_aux.py
+
+      - name: Generate localizations
+        run: |
+          flutter pub get
+          flutter gen-l10n
+
+      - name: Format translated files
+        run: |
+          dart format \
+            lib/about_page.dart \
+            lib/amap_js_map.dart \
+            lib/check_update_page.dart \
+            lib/home_page.dart \
+            lib/log_page.dart \
+            lib/map_page.dart \
+            lib/messages_page.dart \
+            lib/oobe_page.dart \
+            lib/packets_page.dart \
+            lib/settings_page.dart \
+            lib/settings_pages.dart \
+            lib/splash_page.dart \
+            lib/sponsor_page.dart \
+            lib/station_detail.dart \
+            lib/stations_page.dart \
+            lib/vector_map.dart \
+            lib/widgets.dart
+
+      - name: Scan remaining CJK string literals
+        run: |
+          python3 - <<'PY'
+          import pathlib, re
+          pat = re.compile(r"(['\"])(?:(?!\1).)*[\u4e00-\u9fff](?:(?!\1).)*\1")
+          for p in sorted(pathlib.Path('lib').glob('*.dart')):
+              for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
+                  s = line.strip()
+                  if s.startswith('//') or s.startswith('///'):
+                      continue
+                  if pat.search(line):
+                      print(f'{p}:{i}: {s}')
+          PY
+
+      - name: Analyze
+        continue-on-error: true
+        run: flutter analyze
+
+      - name: Commit localization changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/i18n-complete.yml
+          git rm .github/i18n_pass2_arb.py
+          git rm .github/i18n_pass2_core.py
+          git rm .github/i18n_pass2_settings.py
+          git rm .github/i18n_pass2_aux.py
+          git add lib
+          git commit -m "i18n: complete remaining English UI" || exit 0
+          git push origin HEAD:i18n/complete-english
