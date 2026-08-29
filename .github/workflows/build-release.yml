@@ -146,9 +146,12 @@ jobs:
             }
             found { print }
           ' CHANGELOG.md | head -n -1)
-          # 存为多行输出（JSON 转义）
-          body_json=$(python3 -c "import json,sys; print(json.dumps(sys.stdin.read()))" <<< "$body")
-          echo "notes=$body_json" >> "$GITHUB_OUTPUT"
+          # 用 heredoc 写多行输出（避免 JSON 转义导致乱码）
+          {
+            echo "notes<<EOF"
+            echo "$body"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
