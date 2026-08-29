@@ -1770,7 +1770,6 @@ class _MessagesPageState extends State<MessagesPage> {
                         itemBuilder: (_, i) {
                           final call = allMembers.elementAt(i);
                           final status = group.memberStatus[call.toUpperCase()];
-                          final isBlocked = group.blockedMembers.contains(call.toUpperCase());
                           final isOnline = st.stations.any((s) =>
                               s.call.toUpperCase() == call.toUpperCase() && s.status == St.online);
 
@@ -1780,10 +1779,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           final isOnlineStation = st.stations.any((s) =>
                               s.call.toUpperCase() == call.toUpperCase() &&
                               s.status != St.offline);
-                          if (isBlocked) {
-                            statusText = '已屏蔽';
-                            statusColor = C.red;
-                          } else if (status == GroupMemberStatus.joined) {
+                          if (status == GroupMemberStatus.joined) {
                             statusText = isOnlineStation ? S.of(context).online : '已加入';
                             statusColor = isOnlineStation ? C.green : C.blue;
                           } else if (status == GroupMemberStatus.pending) {
@@ -1825,50 +1821,25 @@ class _MessagesPageState extends State<MessagesPage> {
                                 ],
                               )),
                               // 操作按钮
-                              if (!isBlocked)
-                                GestureDetector(
-                                  onTap: () {
-                                    // 移除成员：从 memberStatus 和 activeMembers 删除
-                                    setSheetState(() {
-                                      group.memberStatus
-                                          .remove(call.toUpperCase());
-                                      group.activeMembers
-                                          .remove(call.toUpperCase());
-                                    });
-                                    // 保存群聊变更（持久化 + 刷新）
-                                    st.saveGroupNow();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    decoration: BoxDecoration(
-                                      color: C.redBg,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text('移除', style: ts(11, c: C.red, w: FontWeight.w600)),
-                                  ),
-                                ),
-                              if (!isBlocked) SizedBox(width: 8),
                               GestureDetector(
                                 onTap: () {
+                                  // 移除成员：从 memberStatus 和 activeMembers 删除
                                   setSheetState(() {
-                                    if (isBlocked) {
-                                      group.blockedMembers.remove(call.toUpperCase());
-                                    } else {
-                                      group.blockedMembers.add(call.toUpperCase());
-                                    }
+                                    group.memberStatus
+                                        .remove(call.toUpperCase());
+                                    group.activeMembers
+                                        .remove(call.toUpperCase());
                                   });
+                                  // 保存群聊变更（持久化 + 刷新）
                                   st.saveGroupNow();
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: isBlocked ? C.greenBg : C.yellowBg,
+                                    color: C.redBg,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: Text(
-                                    isBlocked ? '解除屏蔽' : '屏蔽',
-                                    style: ts(11, c: isBlocked ? C.green : C.yellow, w: FontWeight.w600),
-                                  ),
+                                  child: Text('移除', style: ts(11, c: C.red, w: FontWeight.w600)),
                                 ),
                               ),
                             ]),
