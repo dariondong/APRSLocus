@@ -44,8 +44,8 @@ class _StationsPageState extends State<StationsPage> {
       return _cacheList;
     }
     var s = List<Station>.from(st.stations);
-    // 国家/地区接收筛选：始终按 stationAllowed 过滤（空国家默认中国 B 开头）
-    s = s.where((s) => st.stationAllowed(s.call)).toList();
+    // 国家/地区接收筛选：始终按 stationAllowedFor 过滤（传对象避免线性查找）
+    s = s.where(st.stationAllowedFor).toList();
     final q = _query;
     if (q.isNotEmpty) {
       s = s
