@@ -301,6 +301,27 @@ class _AboutPageState extends State<AboutPage>
                       ),
                     ),
                     SizedBox(height: 20),
+                    // ── Code contributions ──
+                    _sectionHeader(
+                      S.of(context).codeContributions,
+                      Icons.code_rounded,
+                      C.purple,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _linkRow(
+                            icon: Icons.translate_rounded,
+                            label: S.of(context).codeContributionI18n,
+                            value: 'nimenhagg',
+                            url: 'https://github.com/nimenhagg/APRSLocus-translation',
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
                     // ── 功能特性 ──
                     _sectionHeader(
                       S.of(context).features,
@@ -381,6 +402,32 @@ class _AboutPageState extends State<AboutPage>
                             Icons.group_rounded,
                             S.of(context).osHam,
                             S.of(context).osHamDesc,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // ── License ──
+                    _sectionHeader(
+                      S.of(context).licenseSection,
+                      Icons.balance_rounded,
+                      C.slate,
+                    ),
+                    SizedBox(height: 8),
+                    SoftCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          _feature(
+                            Icons.gavel_rounded,
+                            S.of(context).licenseName,
+                            S.of(context).licenseStatement,
+                          ),
+                          _linkRow(
+                            icon: Icons.description_rounded,
+                            label: S.of(context).licenseText,
+                            value: 'GPL-3.0',
+                            url: 'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
                           ),
                         ],
                       ),

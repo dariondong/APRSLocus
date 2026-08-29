@@ -569,6 +569,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get author => '作者';
 
   @override
+  String get codeContributions => '代码贡献';
+
+  @override
+  String get codeContributionI18n => '国际化 / 英文界面';
+
+  @override
+  String get licenseSection => '许可证声明';
+
+  @override
+  String get licenseName => 'GNU GPL v3';
+
+  @override
+  String get licenseStatement =>
+      '本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。';
+
+  @override
+  String get licenseText => '查看许可证';
+
+  @override
   String get features => '功能特性';
 
   @override
