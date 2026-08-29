@@ -66,20 +66,21 @@ def main():
     )
     write(os.path.join(ROOT, "pubspec.yaml"), text)
 
-    # 3) android/local.properties
+    # 3) android/local.properties（CI 上可能不存在，flutter 会自动生成，跳过即可）
     lp_path = os.path.join(ROOT, "android", "local.properties")
-    text = read(lp_path)
-    text = re.sub(
-        r"flutter\.versionName=.*",
-        "flutter.versionName=%s" % new,
-        text,
-    )
-    text = re.sub(
-        r"flutter\.versionCode=.*",
-        "flutter.versionCode=%s" % build,
-        text,
-    )
-    write(lp_path, text)
+    if os.path.exists(lp_path):
+        text = read(lp_path)
+        text = re.sub(
+            r"flutter\.versionName=.*",
+            "flutter.versionName=%s" % new,
+            text,
+        )
+        text = re.sub(
+            r"flutter\.versionCode=.*",
+            "flutter.versionCode=%s" % build,
+            text,
+        )
+        write(lp_path, text)
 
     print("version synced: %s+%s" % (new, build))
 
