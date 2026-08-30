@@ -1,4 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+
+/// Windows 上 Roboto 未预装，用系统字体避免字体回退导致发虚
+String get _uiFont {
+  if (Platform.isWindows) return 'Segoe UI';
+  if (Platform.isLinux) return 'Noto Sans';
+  if (Platform.isMacOS) return '.SF NS Text';
+  return 'Roboto';
+}
 
 class C {
   C._();
@@ -113,7 +123,8 @@ TextStyle ts(double s, {Color? c, FontWeight? w, double? h, double? ls}) =>
       fontWeight: w ?? FontWeight.w400,
       height: h,
       letterSpacing: ls,
-      fontFamily: 'Roboto',
+      fontFamily: _uiFont,
+      fontFamilyFallback: const ['Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC'],
       package: null,
     );
 
@@ -123,6 +134,7 @@ TextStyle mono(double s, {Color? c, FontWeight? w}) =>
       color: c ?? C.ink,
       fontWeight: w ?? FontWeight.w500,
       fontFamily: 'monospace',
+      fontFamilyFallback: const ['Consolas', 'Microsoft YaHei'],
       package: null,
     );
 
