@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
@@ -18,6 +20,8 @@ class OobePage extends StatefulWidget {
 
 class _OobePageState extends State<OobePage> {
   int _step = 0;
+  // 页面切换动画进行中标记：防止快速连点导致 PageView 与 _step 失步（偶发卡死）
+  bool _busy = false;
   final PageController _pc = PageController();
   late final TextEditingController _call;
   late final TextEditingController _server;
@@ -66,12 +70,15 @@ class _OobePageState extends State<OobePage> {
   }
 
   void _next() {
+    if (_busy) return; // 动画期间防重复点击，避免 PageView 与 _step 失步
     switch (_step) {
       case 0:
         // 语言选择步骤：立即应用界面语言
         widget.state.setLocale(_lang);
+        break;
       case 1:
-      // 欢迎页：无校验
+        // 欢迎页：无校验
+        break;
       case 2:
         // 呼号步骤
         final c = _call.text.trim().toUpperCase();
@@ -82,13 +89,16 @@ class _OobePageState extends State<OobePage> {
         widget.state.myCall = c;
         widget.state.mySsid = _ssid;
         widget.state.persist();
+        break;
       case 3:
         // 符号步骤
         widget.state.mySymbol = _symbol;
         widget.state.persist();
+        break;
       case 4:
         // 接收筛选步骤：把选择的国家写入 state（默认已选中国）
         _applyFilterCountries();
+        break;
     }
     if (_step >= 5) {
       // 步骤 5（服务器）：强调 passcode 重要性，默认值弹确认
@@ -100,20 +110,39 @@ class _OobePageState extends State<OobePage> {
       }
       return;
     }
-    _pc.nextPage(
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeOutCubic,
-    );
-    setState(() => _step++);
+    // 先更新 _step 再动画到显式目标页：动画中重复点击也不会再触发逻辑
+    final target = _step + 1;
+    setState(() => _step = target);
+    _goTo(target);
+  }
+
+  /// 页面切换：以 _step 为唯一事实来源，动画到显式目标页。
+  /// 双保险：① animateToPage 抛异常则退化为瞬时跳转；② 兜底定时器确保
+  /// _busy 不会因 Future 异常/不完成而永远卡住（否则界面会“卡死”）。
+  void _goTo(int target) {
+    _busy = true;
+    try {
+      _pc
+          .animateToPage(
+            target,
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeOutCubic,
+          )
+          .whenComplete(() => _busy = false);
+    } catch (_) {
+      try {
+        _pc.jumpToPage(target);
+      } catch (_) {}
+      _busy = false;
+    }
+    Timer(const Duration(milliseconds: 500), () => _busy = false);
   }
 
   void _back() {
-    if (_step == 0) return;
-    _pc.previousPage(
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeInCubic,
-    );
-    setState(() => _step--);
+    if (_busy || _step == 0) return;
+    final target = _step - 1;
+    setState(() => _step = target);
+    _goTo(target);
   }
 
   /// 默认 Passcode（-1）确认提示：强调未验证无法正常收发消息
