@@ -108,7 +108,7 @@ class SettingsInput extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             textAlign: TextAlign.right,
-            style: ts(12, w: FontWeight.w500),
+            style: ts(13, w: FontWeight.w600),
             decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 6),
@@ -135,7 +135,7 @@ class SettingsSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? C.blue;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
       child: Row(children: [
@@ -174,7 +174,6 @@ class SettingsMiniSwitch extends StatelessWidget {
         activeTrackColor: C.green.withValues(alpha: 0.25),
         inactiveThumbColor: C.grey,
         inactiveTrackColor: C.greyBg,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     ]);
   }
@@ -195,8 +194,34 @@ class SettingsRow2 extends StatelessWidget {
       child: Row(children: [
         Text(label, style: ts(12, c: C.slate)),
         const Spacer(),
-        Text(value, style: ts(12, w: FontWeight.w600, c: valueColor)),
+        Text(value, style: ts(13, w: FontWeight.w600, c: valueColor)),
       ]),
+    );
+  }
+}
+
+/// 分区内统一提示说明块
+class SettingsHint extends StatelessWidget {
+  final String text;
+  final Color color;
+  final IconData icon;
+  const SettingsHint(this.text,
+      {super.key, this.color = C.slate, this.icon = Icons.info_outline_rounded});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(text, style: ts(11, c: color, h: 1.4)),
+          ),
+        ],
+      ),
     );
   }
 }
