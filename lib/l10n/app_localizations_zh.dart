@@ -13,9 +13,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appName => 'APRSlocus';
 
   @override
-  String get appName_desc => '应用名称';
-
-  @override
   String get ok => '确定';
 
   @override
@@ -570,6 +567,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get author => '作者';
+
+  @override
+  String get codeContributions => '代码贡献';
+
+  @override
+  String get codeContributionI18n => '国际化 / 英文界面';
+
+  @override
+  String get licenseSection => '许可证声明';
+
+  @override
+  String get licenseName => 'GNU GPL v3';
+
+  @override
+  String get licenseStatement =>
+      '本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。';
+
+  @override
+  String get licenseText => '查看许可证';
 
   @override
   String get features => '功能特性';
@@ -1168,4 +1184,1329 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get openDownloadFolder => '打开下载目录';
+
+  @override
+  String groupBubble(String name) {
+    return '群·$name';
+  }
+
+  @override
+  String get groupInviteTitle => '群聊邀请';
+
+  @override
+  String groupInviteFrom(String from) {
+    return '$from 邀请你加入群聊';
+  }
+
+  @override
+  String groupNameValue(String name) {
+    return '群名：$name';
+  }
+
+  @override
+  String groupCallsignValue(String call) {
+    return '群呼号：$call';
+  }
+
+  @override
+  String groupInviteAccepted(String name) {
+    return '已接受邀请，加入 $name';
+  }
+
+  @override
+  String get accept => '接受';
+
+  @override
+  String groupInviteRejected(String name) {
+    return '已拒绝 $name 的邀请';
+  }
+
+  @override
+  String get reject => '拒绝';
+
+  @override
+  String get appTagline => 'APRS 定位追踪';
+
+  @override
+  String gridValue(String grid) {
+    return '网格 $grid';
+  }
+
+  @override
+  String packetsPerMinute(int count) {
+    return '$count/分';
+  }
+
+  @override
+  String get demo => '演示';
+
+  @override
+  String nextBeaconIn(String time) {
+    return '下次上报 $time';
+  }
+
+  @override
+  String beaconCount(int count) {
+    return '信标 $count 次';
+  }
+
+  @override
+  String beaconSentAprsIs(String grid) {
+    return '位置已上报 · 网格 $grid · 已发往 APRS-IS';
+  }
+
+  @override
+  String beaconSentDemo(String grid) {
+    return '位置已上报 · 网格 $grid · 演示';
+  }
+
+  @override
+  String get getLocation => '获取定位';
+
+  @override
+  String get disconnect => '断开连接';
+
+  @override
+  String get connectAprsIs => '连接 APRS-IS';
+
+  @override
+  String get packetsReceived => '收包';
+
+  @override
+  String get passcodeUnverified => 'Passcode 未验证';
+
+  @override
+  String get passcodeWarning => '登录密码可能错误，无法正常收发消息';
+
+  @override
+  String get goSettings => '去设置';
+
+  @override
+  String get connectingServer => '正在连接服务器…';
+
+  @override
+  String get notConnectedAprsServer => '未连接 APRS-IS 服务器';
+
+  @override
+  String connectingToServer(String server, int port) {
+    return '正在连接 $server:$port…';
+  }
+
+  @override
+  String get connectNearbyDesc => '连接后可接收附近台站定位与消息';
+
+  @override
+  String get connectAction => '连接';
+
+  @override
+  String get backgroundRunTip =>
+      '后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
+
+  @override
+  String get connectedAprsIs => '已连接 APRS-IS';
+
+  @override
+  String get qqGroupDesc => 'APRSlocus 软件 · 反馈问题/交流使用';
+
+  @override
+  String get reselectPoint => '重新选点';
+
+  @override
+  String get disableClustering => '关闭聚合';
+
+  @override
+  String get enableClustering => '开启聚合';
+
+  @override
+  String get noPackets => '暂无数据包';
+
+  @override
+  String secondsAgo(int count) {
+    return '$count秒前';
+  }
+
+  @override
+  String minutesAgo(int count) {
+    return '$count分前';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return '$count小时前';
+  }
+
+  @override
+  String daysAgo(int count) {
+    return '$count天前';
+  }
+
+  @override
+  String copiedCoordsValue(String coords) {
+    return '已复制坐标：$coords';
+  }
+
+  @override
+  String copiedGridValue(String grid) {
+    return '已复制网格：$grid';
+  }
+
+  @override
+  String distanceBearing(String distance, String bearing) {
+    return '距我 ${distance}km · 方位 $bearing°';
+  }
+
+  @override
+  String weatherDataValue(String data) {
+    return '气象数据 · $data';
+  }
+
+  @override
+  String get symbolLabel => '符号';
+
+  @override
+  String get digipeaterTapHint => '点击中继台跳转到对应台站';
+
+  @override
+  String get copiedFmoInfo => '已复制 FMO 信息';
+
+  @override
+  String get copiedAprslocusInfo => '已复制 APRSlocus 信息';
+
+  @override
+  String trackPoints(int count) {
+    return '轨迹 ($count 点)';
+  }
+
+  @override
+  String sendMessageTo(String call) {
+    return '发消息给 $call…';
+  }
+
+  @override
+  String get navigationUnavailable => '未安装高德地图，且无法打开其他地图应用';
+
+  @override
+  String stationNoData(String call) {
+    return '台站 $call 尚未收到数据';
+  }
+
+  @override
+  String get software => '软件';
+
+  @override
+  String get close => '关闭';
+
+  @override
+  String get nameLabel => '名称';
+
+  @override
+  String get viewSponsorDetails => '查看作者与赞助详情 →';
+
+  @override
+  String get thanks => '感谢';
+
+  @override
+  String get qqSoftwareName => 'APRSlocus 软件';
+
+  @override
+  String get usageNotice => '本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规';
+
+  @override
+  String get licenseNotice => 'GNU GPL v3 开源协议 · Copyright © BG7LZQ';
+
+  @override
+  String appInfoText(String version) {
+    return 'APRSlocus v$version\n作者: BG7LZQ (Darion)\n网站: Theez.top';
+  }
+
+  @override
+  String get eggBg7lzq => '哎呦你干嘛~';
+
+  @override
+  String get eggBg7pgw => '闹呢？';
+
+  @override
+  String get eggBg7lmw => '默不作声...';
+
+  @override
+  String get eggBg7osl => '你的胆子肥嘟嘟的';
+
+  @override
+  String get manualCallsignHint => '手动输入呼号添加';
+
+  @override
+  String get noPacketReceived => '未收到数据包';
+
+  @override
+  String get feedMode => '瀑布流';
+
+  @override
+  String get conversationMode => '会话';
+
+  @override
+  String get messageFeed => '消息瀑布流';
+
+  @override
+  String messageTotal(int count) {
+    return '共 $count 条';
+  }
+
+  @override
+  String get noMessages => '暂无消息';
+
+  @override
+  String get copiedClipboard => '已复制到剪贴板';
+
+  @override
+  String get groupShortLabel => '群';
+
+  @override
+  String get conversations => '会话';
+
+  @override
+  String get noConversations => '暂无会话';
+
+  @override
+  String get groupNotFound => '群聊不存在';
+
+  @override
+  String get invite => '邀请';
+
+  @override
+  String get manage => '管理';
+
+  @override
+  String get noGroupMessages => '群聊暂无消息';
+
+  @override
+  String get selectConversation => '选择会话开始聊天';
+
+  @override
+  String get newConversation => '新建会话';
+
+  @override
+  String get newConversationDesc => '输入呼号开始新的会话';
+
+  @override
+  String get callsignExample => '呼号，如 BG7ABC';
+
+  @override
+  String get start => '开始';
+
+  @override
+  String get broadcastMessage => '群发消息';
+
+  @override
+  String get noStations => '暂无台站';
+
+  @override
+  String get broadcastHint => '提示：每条消息会单独发送给每个接收人';
+
+  @override
+  String broadcastSent(int count) {
+    return '已群发给 $count 人';
+  }
+
+  @override
+  String get searchCallsign => '搜索呼号…';
+
+  @override
+  String get broadcastContentHint => '输入要群发的内容…';
+
+  @override
+  String get groupNameHint => '输入群聊名称';
+
+  @override
+  String get create => '创建';
+
+  @override
+  String groupCallsignLine(String call) {
+    return '群呼号: $call';
+  }
+
+  @override
+  String get noMembers => '暂无成员';
+
+  @override
+  String get inviteMembersHint => '点击下方「邀请成员」添加';
+
+  @override
+  String get remove => '移除';
+
+  @override
+  String get inviteMembers => '邀请成员';
+
+  @override
+  String get deleteGroup => '删除群组';
+
+  @override
+  String deleteGroupConfirm(String name) {
+    return '确定删除「$name」？此操作不可撤销。';
+  }
+
+  @override
+  String memberOnlineCount(int members, int online) {
+    return '$members 名成员 · $online 在线';
+  }
+
+  @override
+  String get leaveGroup => '退出群组';
+
+  @override
+  String leaveGroupConfirm(String name) {
+    return '确定退出「$name」？你将不再收到该群的消息。';
+  }
+
+  @override
+  String leftGroup(String name) {
+    return '已退出 $name';
+  }
+
+  @override
+  String get leave => '退出';
+
+  @override
+  String inviteMembersTo(String name) {
+    return '邀请成员到 $name';
+  }
+
+  @override
+  String get manualCallsign => '手动输入呼号';
+
+  @override
+  String inviteSent(String call) {
+    return '已发送邀请给 $call';
+  }
+
+  @override
+  String get noMoreOnlineStations => '暂无更多在线台站';
+
+  @override
+  String get invited => '已邀请';
+
+  @override
+  String get tapToInvite => '点击邀请';
+
+  @override
+  String get done => '完成';
+
+  @override
+  String get addContact => '添加联系人';
+
+  @override
+  String get addContactDesc => '输入呼号手动添加到联系人列表';
+
+  @override
+  String contactAdded(String call) {
+    return '已添加联系人 $call';
+  }
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get stationary => '静止';
+
+  @override
+  String get unknown => '未知';
+
+  @override
+  String get none => '无';
+
+  @override
+  String get manual => '手动';
+
+  @override
+  String get management => '管理';
+
+  @override
+  String get debugLabel => '调试';
+
+  @override
+  String get information => '信息';
+
+  @override
+  String get warning => '警告';
+
+  @override
+  String get errorLabel => '错误';
+
+  @override
+  String countTimes(int count) {
+    return '$count 次';
+  }
+
+  @override
+  String countItems(int count) {
+    return '$count 个';
+  }
+
+  @override
+  String countEntries(int count) {
+    return '$count 条';
+  }
+
+  @override
+  String aprsSymbolName(String symbol) {
+    String _temp0 = intl.Intl.selectLogic(symbol, {
+      'car': '汽车',
+      'police': '警局',
+      'person': '人',
+      'digitalRepeater': '数字中继',
+      'telephone': '电话',
+      'dxCluster': 'DX 集群',
+      'hfGateway': 'HF 网关',
+      'smallAircraft': '小型飞机',
+      'mobileSatellite': '移动卫星',
+      'disabled': '残障',
+      'snowmobile': '雪地摩托',
+      'redCross': '红十字',
+      'scouts': '童子军',
+      'house': '房屋',
+      'redX': '红叉',
+      'redDot': '红点',
+      'fire': '火警',
+      'campground': '露营',
+      'motorcycle': '摩托',
+      'train': '火车',
+      'fileServer': '文件服务器',
+      'hurricane': '飓风',
+      'dfTriangle': 'DF 三角',
+      'postOffice': '邮局',
+      'largeAircraft': '大型飞机',
+      'weatherStation': '气象站',
+      'satelliteDish': '卫星天线',
+      'ambulance': '救护车',
+      'bicycle': '自行车',
+      'commandPost': '指挥中心',
+      'fireStation': '消防站',
+      'horse': '骑马',
+      'fireTruck': '消防车',
+      'glider': '滑翔机',
+      'hospital': '医院',
+      'fmoStation': 'FMO 台站',
+      'jeep': '吉普',
+      'truck': '卡车',
+      'laptop': '笔记本',
+      'micERepeater': 'Mic-E 中继',
+      'node': '节点',
+      'emergencyOps': '应急中心',
+      'dog': '狗',
+      'gridSquare': '网格',
+      'repeaterTower': '中继塔',
+      'boat': '船',
+      'truckStop': '卡车停靠站',
+      'semiTrailer': '半挂车',
+      'van': '面包车',
+      'waterStation': '供水站',
+      'yagi': '八木天线屋',
+      'shelter': '避难所',
+      'rv': '房车',
+      'weatherSymbol': '气象台',
+      'balloon': '气球',
+      'bus': '公交',
+      'shuttle': '航天飞机',
+      'policeCar': '警车',
+      'sailboat': '帆船',
+      'school': '学校',
+      'lodging': '旅馆',
+      'hotel': '酒店',
+      'other': '未知',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String symbolCategoryName(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'vehicles': '车辆 / 交通',
+      'facilities': '建筑 / 设施',
+      'weatherNature': '气象 / 自然',
+      'emergencyRescue': '应急救援',
+      'airWater': '飞行 / 水域',
+      'communications': '通信 / 其他',
+      'other': '其他',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String countryName(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'CN': '中国',
+      'KR': '韩国',
+      'JP': '日本',
+      'US': '美国',
+      'CA': '加拿大',
+      'GB': '英国',
+      'DE': '德国',
+      'FR': '法国',
+      'IT': '意大利',
+      'ES': '西班牙',
+      'RU': '俄罗斯',
+      'AU': '澳大利亚',
+      'NZ': '新西兰',
+      'BR': '巴西',
+      'AR': '阿根廷',
+      'MX': '墨西哥',
+      'ZA': '南非',
+      'IN': '印度',
+      'TH': '泰国',
+      'SG': '新加坡',
+      'MY': '马来西亚',
+      'ID': '印度尼西亚',
+      'PH': '菲律宾',
+      'TW': '台湾',
+      'HK': '香港',
+      'MO': '澳门',
+      'other': '未知',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get locationNotFixed => '未定位';
+
+  @override
+  String get simulatedLocation => '模拟位置';
+
+  @override
+  String get savedLocation => '已保存位置';
+
+  @override
+  String get locationFailed => '定位失败';
+
+  @override
+  String get locationStopped => '定位已停止';
+
+  @override
+  String get locationFixed => '已定位';
+
+  @override
+  String get locationPermission => '请授予定位权限…';
+
+  @override
+  String get gpsLocating => 'GPS 定位中…';
+
+  @override
+  String get webLocationUnsupported => 'Web 平台暂不支持自动定位，请手动输入坐标';
+
+  @override
+  String locationStreamError(String error) {
+    return '定位流异常：$error';
+  }
+
+  @override
+  String locationInitError(String error) {
+    return '定位初始化失败：$error';
+  }
+
+  @override
+  String get beaconDisabled => '已关闭';
+
+  @override
+  String get waitingForLocation => '等待定位';
+
+  @override
+  String get imminent => '即将';
+
+  @override
+  String get connTapToConnect => '未连接 · 点击播放按钮连接 APRS-IS';
+
+  @override
+  String get connManuallyDisconnected => '未连接 · 已手动断开';
+
+  @override
+  String connAutoReconnect(int seconds) {
+    return '连接已断开 · $seconds秒后自动重连…';
+  }
+
+  @override
+  String connConnectingTarget(String target) {
+    return '正在连接 $target…';
+  }
+
+  @override
+  String connOnline(String call) {
+    return '已连接 · $call 在线';
+  }
+
+  @override
+  String connRetry(int seconds) {
+    return '连接失败 · ${seconds}s 后重试…';
+  }
+
+  @override
+  String connPositionSent(String call) {
+    return '已连接 · 位置已上报 ($call)';
+  }
+
+  @override
+  String get connDemoBeacon => '未连接 · 位置已上报（模拟）';
+
+  @override
+  String get connPasscodeInvalid => '已连接 · 未验证（Passcode 可能错误）';
+
+  @override
+  String get mapTypeAmap => '高德地图';
+
+  @override
+  String get mapTypeAmapSatellite => '高德卫星';
+
+  @override
+  String get mapTypeAmapJs => '高德 JS';
+
+  @override
+  String get mapTypeVector => '矢量地图';
+
+  @override
+  String get amapGroup => '高德';
+
+  @override
+  String get domesticMaps => '国内地图';
+
+  @override
+  String get internationalMaps => '国际地图';
+
+  @override
+  String get metricUnits => '公制 (km/h, m)';
+
+  @override
+  String get coordDisplay => '坐标显示';
+
+  @override
+  String mapDefaultCoord(int level) {
+    return '北京 · $level级';
+  }
+
+  @override
+  String secondsValue(int count) {
+    return '$count 秒';
+  }
+
+  @override
+  String get stationSettingsDetail => '呼号、SSID、符号与备注';
+
+  @override
+  String get stationIdentity => '电台身份';
+
+  @override
+  String get aprsCallsignHint => 'APRS 呼号，如 BV2AAA';
+
+  @override
+  String get displayInfo => '显示信息';
+
+  @override
+  String get ssidSuffix => 'SSID 后缀';
+
+  @override
+  String get chooseSsidSuffix => '选择 SSID 后缀';
+
+  @override
+  String get mySymbol => '我的符号';
+
+  @override
+  String get moreSymbols => '更多符号';
+
+  @override
+  String get allAprsSymbols => '全部 APRS 符号';
+
+  @override
+  String get beaconSettingsDetail => 'GPS 来源、信标与手动定位';
+
+  @override
+  String get locationSource => '定位来源';
+
+  @override
+  String get useDeviceLocation => '使用设备定位';
+
+  @override
+  String get manualCoordinates => '手动输入坐标';
+
+  @override
+  String get beaconingSection => '信标上报';
+
+  @override
+  String get beaconIntervalTip => '位置信标的发送间隔，至少 5 秒';
+
+  @override
+  String get beaconContent => '信标上报内容';
+
+  @override
+  String get beaconContentDesc => '随位置信标一起发送';
+
+  @override
+  String get phoneBattery => '手机电量';
+
+  @override
+  String get locationStatus => '定位状态';
+
+  @override
+  String get relocate => '重新定位';
+
+  @override
+  String get startGps => '开启 GPS 定位';
+
+  @override
+  String get trackingBeaconing => '定位运行中，正在持续上报位置';
+
+  @override
+  String get manualLocation => '手动定位';
+
+  @override
+  String get latitudeHint => '纬度 39.9042';
+
+  @override
+  String get longitudeHint => '经度 116.4074';
+
+  @override
+  String get invalidLatLng => '请输入有效经纬度';
+
+  @override
+  String myLocationSetGrid(String grid) {
+    return '已设置我的位置，网格 $grid';
+  }
+
+  @override
+  String get applyCoordinates => '应用坐标';
+
+  @override
+  String get pickOnMap => '在地图选点';
+
+  @override
+  String get manualLocationHelp => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
+
+  @override
+  String get passcodeTip => 'APRS-IS 登录验证码，可在线生成；填 -1 表示未验证';
+
+  @override
+  String get websocketOptional => 'WebSocket URL（可选）';
+
+  @override
+  String get configChanged => '配置已修改';
+
+  @override
+  String get reconnectToApply => '重新连接后生效';
+
+  @override
+  String get reconnected => '已重新连接';
+
+  @override
+  String get connectFailedCheckConfig => '连接失败，请检查配置';
+
+  @override
+  String get rangeFilterDesc => '只接收设定范围内的台站数据包';
+
+  @override
+  String get filterCenterFollows => '过滤中心跟随我的位置';
+
+  @override
+  String get radiusTip => '接收半径（km），点“保存并应用”生效';
+
+  @override
+  String get maxStationsTip => '内存中保留的最大台站数量（默认不限制，可设更大值）';
+
+  @override
+  String filterSavedRadius(String saved, int radius) {
+    return '$saved · 半径 ${radius}km';
+  }
+
+  @override
+  String get receiveFilterDesc2 => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
+
+  @override
+  String get receiveCountryDesc => '按呼号前缀批量接收某国家/地区全部台站';
+
+  @override
+  String get noCountriesSelected => '未选择国家/地区';
+
+  @override
+  String get receiveOthersDesc => '接收不匹配所选国家的特殊呼号台站';
+
+  @override
+  String get addCountry => '添加国家/地区';
+
+  @override
+  String get chatSettingsDetail => '消息、联系人与聊天数据';
+
+  @override
+  String get messageCountLabel => '消息条数';
+
+  @override
+  String get manageContacts => '管理联系人';
+
+  @override
+  String deleteAllChatsConfirm(int count) {
+    return '确定要删除全部 $count 条聊天记录吗？此操作不可恢复。';
+  }
+
+  @override
+  String get chatCleared => '聊天记录已清空';
+
+  @override
+  String get noContacts => '暂无联系人';
+
+  @override
+  String get addOrFavoriteContact => '点击右上角“添加”或在地图上收藏台站';
+
+  @override
+  String movingWithSpeed(String speed) {
+    return '移动中 · $speed';
+  }
+
+  @override
+  String get callsignMin3 => '呼号至少 3 个字符';
+
+  @override
+  String get deleteContact => '删除联系人';
+
+  @override
+  String deleteContactConfirm(String call) {
+    return '确定删除联系人 $call？';
+  }
+
+  @override
+  String contactDeleted(String call) {
+    return '已删除 $call';
+  }
+
+  @override
+  String get dataMaintenance => '数据维护';
+
+  @override
+  String get clearAllData => '清除所有数据';
+
+  @override
+  String get clearAllDataIntro => '此操作将删除以下所有本地数据：';
+
+  @override
+  String get chatHistory => '聊天记录';
+
+  @override
+  String get logs => '日志';
+
+  @override
+  String get irreversibleKeepSettings => '此操作不可恢复，连接设置和呼号不会被删除。';
+
+  @override
+  String get confirmClearAllData => '确认清除所有数据';
+
+  @override
+  String get clearAllDataConfirm => '确定要清除全部本地数据吗？此操作不可恢复。';
+
+  @override
+  String get allDataCleared => '所有数据已清除';
+
+  @override
+  String get confirmClear => '确认清除';
+
+  @override
+  String get allowLandscape => '允许手机横屏显示';
+
+  @override
+  String get packetParseTest => '数据包解析测试';
+
+  @override
+  String get packetParseHint =>
+      '粘贴原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+
+  @override
+  String get parseAndApply => '解析并应用';
+
+  @override
+  String get oobePasscodeMissing => 'Passcode 未填写';
+
+  @override
+  String get oobePasscodeMissingDesc =>
+      'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
+
+  @override
+  String get continueAnyway => '仍然继续';
+
+  @override
+  String get fillPasscode => '去填写';
+
+  @override
+  String get oobeMapFeatureDesc => '高德地图瓦片，查看附近 APRS 台站与轨迹';
+
+  @override
+  String get oobeGpsFeatureDesc => '自动获取位置并发送信标到 APRS-IS';
+
+  @override
+  String get oobeMsgFeatureDesc => '与台站收发消息，支持自动应答';
+
+  @override
+  String get oobeIsFeatureDesc => '连接公共服务器，接收全球台站数据';
+
+  @override
+  String get oobeBackgroundTip =>
+      '提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
+
+  @override
+  String get oobeNextSteps => '接下来几步完成基础配置，随时可在设置中修改。';
+
+  @override
+  String get ssidDescShort => 'SSID 是呼号后面的数字标识，如 BG7ABC-9 中的 -9';
+
+  @override
+  String get ssidOptional => 'SSID 后缀（可选）';
+
+  @override
+  String get noSsid => '无后缀（基本呼号）';
+
+  @override
+  String fullCallsign(String call) {
+    return '完整呼号：$call';
+  }
+
+  @override
+  String get passcodeImportant => 'Passcode 非常重要';
+
+  @override
+  String get passcodeImportantDesc =>
+      '正确的 Passcode 是接收群聊消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。';
+
+  @override
+  String get lookupPasscode => '点击查询你的 Passcode →';
+
+  @override
+  String get passcodeLookupHint => '输入你的呼号即可获取，例如 BV2AAA';
+
+  @override
+  String sendToGroupHint(String group) {
+    return '发到 $group…';
+  }
+
+  @override
+  String sendToCallHint(String call) {
+    return '发给 $call…';
+  }
+
+  @override
+  String get selectMessageReply => '点选消息以回复…';
+
+  @override
+  String get broadcastShort => '群发';
+
+  @override
+  String memberCount(int count) {
+    return '$count 个成员';
+  }
+
+  @override
+  String memberCountTap(int count) {
+    return '$count 名成员 · 点击查看';
+  }
+
+  @override
+  String get stepRecipients => '选人';
+
+  @override
+  String get stepContent => '内容';
+
+  @override
+  String get selectAllOnline => '全选在线';
+
+  @override
+  String get clearSelection => '取消全选';
+
+  @override
+  String get onlineOnly => '仅在线';
+
+  @override
+  String get noRecipients => '未选择接收人';
+
+  @override
+  String selectedRecipients(int count) {
+    return '已选 $count 人';
+  }
+
+  @override
+  String sendRecipientsList(int count, String calls) {
+    return '将发送给 $count 人：$calls';
+  }
+
+  @override
+  String get stepName => '名称';
+
+  @override
+  String get stepMembers => '成员';
+
+  @override
+  String get groupChatExplain => '群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。';
+
+  @override
+  String get noMembersSelected => '未选择成员';
+
+  @override
+  String get memberBlocked => '已屏蔽';
+
+  @override
+  String get memberJoined => '已加入';
+
+  @override
+  String get memberPending => '待确认';
+
+  @override
+  String get memberDeclined => '已拒绝';
+
+  @override
+  String get memberLeft => '已退出';
+
+  @override
+  String get memberTimeout => '超时';
+
+  @override
+  String get unblock => '解除屏蔽';
+
+  @override
+  String get block => '屏蔽';
+
+  @override
+  String get groupOwner => '群主';
+
+  @override
+  String systemMemberJoined(String call) {
+    return '$call 加入了群聊';
+  }
+
+  @override
+  String systemMemberLeft(String call) {
+    return '$call 离开了群聊';
+  }
+
+  @override
+  String systemInviteDeclined(String call) {
+    return '$call 拒绝了邀请';
+  }
+
+  @override
+  String get copyAllLogs => '复制全部日志';
+
+  @override
+  String copiedLogs(int count) {
+    return '已复制 $count 条日志';
+  }
+
+  @override
+  String get clearLogs => '清空日志';
+
+  @override
+  String get noLogs => '暂无日志';
+
+  @override
+  String get supportProject => '你们的支持让项目走得更远';
+
+  @override
+  String get continuousIteration => '持续迭代';
+
+  @override
+  String get continuousIterationDesc => '不断改进 APRSlocus 功能与体验';
+
+  @override
+  String get sponsorSupport => '赞助支持';
+
+  @override
+  String get sponsorMethods => '赞助方式';
+
+  @override
+  String qrCodeTitle(String title) {
+    return '$title 赞赏码';
+  }
+
+  @override
+  String get qrLoadFailed => '赞赏码图片加载失败';
+
+  @override
+  String get qrSaveWechat => '长按图片可保存 · 微信扫一扫赞赏';
+
+  @override
+  String get tapAnywhereClose => '点击任意处关闭';
+
+  @override
+  String get webAmapUnsupported => 'Web 平台暂不支持高德 JS 地图';
+
+  @override
+  String get webview2InitFailed =>
+      'WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时';
+
+  @override
+  String get loadingAmap => '加载高德地图…';
+
+  @override
+  String vectorMapLoadFailed(String error) {
+    return '矢量地图加载失败\n$error';
+  }
+
+  @override
+  String get loadingVectorMap => '加载矢量地图…';
+
+  @override
+  String get updateChannel => '更新渠道';
+
+  @override
+  String serverReturned(int code) {
+    return '服务器返回 $code';
+  }
+
+  @override
+  String get invalidResponseData => '返回数据格式错误';
+
+  @override
+  String get noVersionsFound => '没有找到任何版本';
+
+  @override
+  String get noWindowsInstaller => '该版本没有 Windows 安装包';
+
+  @override
+  String get noApkInstaller => '该版本没有 APK 安装包';
+
+  @override
+  String get connectingEllipsis => '正在连接…';
+
+  @override
+  String downloadHttpError(int code) {
+    return '下载失败：HTTP $code';
+  }
+
+  @override
+  String downloadedBytes(String received, String total) {
+    return '已下载 $received / $total';
+  }
+
+  @override
+  String androidInstallHelp(String path) {
+    return '安装包已下载到：\n$path\n\n点击“安装”后，系统会弹出安装确认框。\n\n若提示“不允许安装未知来源应用”，请到系统设置中允许本应用安装未知应用。';
+  }
+
+  @override
+  String windowsInstallHelp(String path) {
+    return '安装包已保存到：\n$path\n\n点击“立即运行”直接启动安装程序；也可以打开所在目录查看文件。';
+  }
+
+  @override
+  String get openContainingFolder => '打开所在目录';
+
+  @override
+  String get runNow => '立即运行';
+
+  @override
+  String get cannotRunInstaller => '无法启动安装程序，请到所在目录手动打开';
+
+  @override
+  String get cannotLaunchInstaller => '无法启动安装器，请手动打开安装包';
+
+  @override
+  String get openPackageManually => '请在文件管理器中打开安装包';
+
+  @override
+  String cannotOpenPackage(String error) {
+    return '无法打开安装包：$error';
+  }
+
+  @override
+  String get installPermissionTitle => '需要允许安装应用';
+
+  @override
+  String get installPermissionDesc =>
+      '检测到系统未允许 APRSlocus 安装应用。\n\n请点击“去设置”，在“安装未知应用”中允许本应用安装应用，然后返回重新安装。';
+
+  @override
+  String get recheck => '重新检查';
+
+  @override
+  String get signatureChangedTitle => '签名已更换 · 需卸载重装';
+
+  @override
+  String get signatureChangedDesc =>
+      '本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。';
+
+  @override
+  String newVersionTitle(String version) {
+    return '发现新版本 v$version';
+  }
+
+  @override
+  String repoLatestTitle(String version) {
+    return '仓库最新版本 v$version';
+  }
+
+  @override
+  String get checkingLatest => '正在检查最新版本…';
+
+  @override
+  String get connectingGitCode => '连接 GitCode 服务器';
+
+  @override
+  String get noReleaseNotes => '暂无更新说明';
+
+  @override
+  String noInstallerHistoryHint(String platform) {
+    return '该版本暂无 $platform 安装包，请到历史版本中选择可下载的版本';
+  }
+
+  @override
+  String get latestVersionLabel => '最新版本';
+
+  @override
+  String packageSize(String platform, String size) {
+    return '$platform 安装包大小：$size';
+  }
+
+  @override
+  String get updateContents => '更新内容';
+
+  @override
+  String get redownload => '重新下载';
+
+  @override
+  String get downloadInstaller => '下载安装包';
+
+  @override
+  String get downloadAndInstall => '下载并安装';
+
+  @override
+  String get localPackageExists => '本地已有一份安装包';
+
+  @override
+  String get packageDeleted => '安装包已删除';
+
+  @override
+  String versionCount(int count) {
+    return '$count 个';
+  }
+
+  @override
+  String get noInstaller => '无安装包';
+
+  @override
+  String get download => '下载';
+
+  @override
+  String get viewChangelog => '查看更新日志';
+
+  @override
+  String versionChangelog(String version) {
+    return 'v$version 更新日志';
+  }
+
+  @override
+  String get gotIt => '知道了';
+
+  @override
+  String get leaveAction => '退出';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return '本地 v$local · 仓库最新 v$latest';
+  }
+
+  @override
+  String get unverified => '未验证';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 未验证';
+
+  @override
+  String get passcodeMessageWarning => 'APRS-IS 登录验证码，填 -1 无法正常收发消息';
 }
