@@ -47,6 +47,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
         body: Column(children: [
         SettingsSectionCard(
           title: '电台身份',
+          subtitle: '呼号、SSID 与备注',
           icon: Icons.badge_rounded,
           color: C.blue,
           children: [
@@ -70,6 +71,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
         SizedBox(height: 16),
         SettingsSectionCard(
           title: '显示信息',
+          subtitle: '我的符号与当前定位',
           icon: Icons.info_outline_rounded,
           color: C.purple,
           children: [
@@ -549,6 +551,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         body: Column(children: [
           SettingsSectionCard(
           title: '定位来源',
+          subtitle: '选择坐标来源',
           icon: Icons.gps_fixed_rounded,
           color: C.green,
           children: [
@@ -582,6 +585,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         SizedBox(height: 16),
         SettingsSectionCard(
           title: '信标上报',
+          subtitle: '发送间隔与上报内容',
           icon: Icons.radio_rounded,
           color: C.blue,
           children: [
@@ -654,6 +658,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         // 手动定位
         SettingsFold(
           title: '手动定位',
+          subtitle: '无定位时可手动输入或选点',
           icon: Icons.gps_off_rounded,
           color: C.orange,
           open: _manualOpen,
@@ -750,22 +755,8 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 ),
               ]),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.info_outline_rounded, size: 14, color: C.slate),
-                  SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。',
-                      style: ts(11, c: C.slate, h: 1.4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            SettingsHint(
+                '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。'),
           ],
         ),
       ]),
@@ -911,6 +902,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   Widget _connStatusCard() {
     return SettingsSectionCard(
       title: S.of(context).server,
+      subtitle: '连接状态与信息',
       icon: Icons.dns_rounded,
       color: C.purple,
       children: [
@@ -925,6 +917,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   Widget _serverCard() {
     return SettingsSectionCard(
       title: '服务器配置',
+      subtitle: 'APRS-IS 服务器与验证码',
       icon: Icons.settings_ethernet_rounded,
       color: C.purple,
       children: [
@@ -1094,16 +1087,11 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   Widget _filterCard() {
     return SettingsSectionCard(
       title: S.of(context).filter,
+      subtitle: '接收范围与台站上限',
       icon: Icons.filter_alt_rounded,
       color: C.cyan,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('只接收设定范围内的台站数据包',
-                style: ts(11, c: C.slate)),
-          ]),
-        ),
+        SettingsHint('只接收设定范围内的台站数据包'),
         SettingsSwitch('过滤中心跟随我的位置', value: st.filterFollow, color: C.cyan,
             onChanged: (v) {
           st.filterFollow = v;
@@ -1289,17 +1277,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.info_outline_rounded, size: 14, color: C.slate),
-            SizedBox(width: 6),
-            Expanded(
-              child: Text('${S.of(context).filterRule}: ${st.filterString}',
-                  style: ts(11, c: C.slate, h: 1.4)),
-            ),
-          ]),
-        ),
+        SettingsHint('${S.of(context).filterRule}: ${st.filterString}'),
       ],
     );
   }
@@ -1308,16 +1286,11 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   Widget _receivePrefCard() {
     return SettingsSectionCard(
       title: S.of(context).receiveFilter,
+      subtitle: '按国家/地区或呼号接收',
       icon: Icons.public_rounded,
       color: C.cyan,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('除范围过滤外，按国家/地区分组或精确呼号接收台站',
-                style: ts(11, c: C.slate)),
-          ]),
-        ),
+        SettingsHint('除范围过滤外，按国家/地区分组或精确呼号接收台站'),
         // ── 国家/地区分组 ──
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
@@ -1537,6 +1510,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         body: Column(children: [
           SettingsSectionCard(
             title: S.of(context).all,
+            subtitle: '主题、语言与坐标显示',
             icon: Icons.display_settings_rounded,
             color: C.cyan,
             children: [
@@ -1553,26 +1527,12 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
           SizedBox(height: 16),
           SettingsSectionCard(
             title: S.of(context).map,
+            subtitle: '地图类型与显示',
             icon: Icons.map_rounded,
             color: C.blue,
             children: [
               _mapTypeSelector(),
-              Container(
-                padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.info_outline_rounded, size: 14, color: C.slate),
-                    SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        S.of(context).mapTypeDesc,
-                        style: ts(11, c: C.slate, h: 1.4),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              SettingsHint(S.of(context).mapTypeDesc),
             ],
           ),
         ]),
@@ -1923,6 +1883,7 @@ class _ChatSettingsPageState extends State<ChatSettingsPage> {
         body: Column(children: [
           SettingsSectionCard(
           title: S.of(context).statistics,
+          subtitle: '消息与联系人统计',
           icon: Icons.analytics_rounded,
           color: C.purple,
           children: [
@@ -1934,6 +1895,7 @@ class _ChatSettingsPageState extends State<ChatSettingsPage> {
         SizedBox(height: 16),
         SettingsSectionCard(
           title: '管理',
+          subtitle: '联系人与聊天数据',
           icon: Icons.manage_search_rounded,
           color: C.blue,
           children: [
@@ -2408,6 +2370,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         body: Column(children: [
         SettingsSectionCard(
           title: '清除所有数据',
+          subtitle: '删除本地记录',
           icon: Icons.delete_forever_rounded,
           color: C.red,
           children: [
@@ -2579,6 +2542,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
         body: Column(children: [
         SettingsFold(
           title: S.of(context).advancedCat,
+          subtitle: '实验性功能',
           icon: Icons.science_rounded,
           color: C.cyan,
           open: _labOpen,
@@ -2586,24 +2550,13 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
           children: [
             SettingsSwitch('允许手机横屏显示', value: st.labLandscape, color: C.cyan,
                 onChanged: st.setLabLandscape),
-            Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(Icons.info_outline_rounded, size: 14, color: C.slate),
-                SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    S.of(context).labDesc,
-                    style: ts(11, c: C.slate, h: 1.4),
-                  ),
-                ),
-              ]),
-            ),
+            SettingsHint(S.of(context).labDesc),
           ],
         ),
         SizedBox(height: 16),
         SettingsFold(
           title: S.of(context).devDesc,
+          subtitle: '调试与测试',
           icon: Icons.bug_report_rounded,
           color: C.purple,
           open: _devOpen,
