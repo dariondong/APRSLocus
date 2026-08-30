@@ -4673,4 +4673,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
+  /// **'人生真是喵喵又咪咪啊'**
+  String get eggBg2hcb;
+
 }

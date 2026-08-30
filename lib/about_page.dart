@@ -52,6 +52,27 @@ class _AboutPageState extends State<AboutPage>
     _ctrl?.forward(from: 0);
   }
 
+  void _fireEmojiParticles(Offset center) {
+    final rng = Random();
+    _particles.clear();
+    for (var i = 0; i < 30; i++) {
+      final angle = rng.nextDouble() * 2 * pi;
+      final speed = 90.0 + rng.nextDouble() * 180.0;
+      _particles.add(
+        _Particle(
+          color: Colors.transparent,
+          dx: cos(angle) * speed,
+          dy: sin(angle) * speed - 70,
+          size: 16.0 + rng.nextDouble() * 8.0,
+          emoji: i.isEven ? '🐱' : '❤️',
+        ),
+      );
+    }
+    _particleCenter = center;
+    _showParticles = true;
+    _ctrl?.forward(from: 0);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -79,12 +100,15 @@ class _AboutPageState extends State<AboutPage>
       'BG7PGW' => l10n.eggBg7pgw,
       'BG7LMW' => l10n.eggBg7lmw,
       'BG7OSL' => l10n.eggBg7osl,
+      'BG2HCB' => l10n.eggBg2hcb,
       _ => null,
     };
     if (msg == null) return;
     HapticFeedback.mediumImpact();
-    if (call == 'BG7OSL') {
-      // OSL 彩蛋：显示袋鼠图片
+    if (call == 'BG7OSL' || call == 'BG2HCB') {
+      // 图片彩蛋：OSL 袋鼠 / BG2HCB 专属
+      final eggAsset =
+          call == 'BG7OSL' ? 'assets/osl.png' : 'assets/bg2hcb.jpg';
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -95,7 +119,7 @@ class _AboutPageState extends State<AboutPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/osl.png',
+                eggAsset,
                 width: 200,
                 height: 200,
                 fit: BoxFit.contain,
@@ -122,6 +146,12 @@ class _AboutPageState extends State<AboutPage>
           ],
         ),
       );
+      if (call == 'BG2HCB') {
+        final box = context.findRenderObject() as RenderBox?;
+        if (box != null) {
+          _fireEmojiParticles(box.size.center(Offset.zero));
+        }
+      }
       return;
     }
     // 弹提示框
@@ -510,6 +540,7 @@ class _AboutPageState extends State<AboutPage>
                           _eggRow(S.of(context).callsign, 'BG7LMW'),
                           _eggRow(S.of(context).callsign, 'BG7OSL'),
                           _eggRow(S.of(context).callsign, 'BD3QID'),
+                          _eggRow(S.of(context).callsign, 'BG2HCB'),
                         ],
                       ),
                     ),
@@ -765,11 +796,13 @@ class _AboutPageState extends State<AboutPage>
 class _Particle {
   final Color color;
   final double dx, dy, size;
+  final String? emoji;
   _Particle({
     required this.color,
     required this.dx,
     required this.dy,
     required this.size,
+    this.emoji,
   });
 }
 
@@ -789,13 +822,27 @@ class _ParticlePainter extends CustomPainter {
     final p = progress;
     final opacity = (1.0 - p).clamp(0.0, 1.0);
     for (final pt in particles) {
-      final paint = Paint()
-        ..color = pt.color.withValues(alpha: opacity)
-        ..style = PaintingStyle.fill;
       final dx = center.dx + pt.dx * p;
       final dy = center.dy + pt.dy * p + 80 * p * p; // 重力
       final s = pt.size * (1.0 - p * 0.5);
-      canvas.drawCircle(Offset(dx, dy), s, paint);
+      if (pt.emoji != null) {
+        final tp = TextPainter(
+          text: TextSpan(
+            text: pt.emoji,
+            style: TextStyle(
+              fontSize: s,
+              color: Colors.black.withValues(alpha: opacity),
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        tp.paint(canvas, Offset(dx - tp.width / 2, dy - tp.height / 2));
+      } else {
+        final paint = Paint()
+          ..color = pt.color.withValues(alpha: opacity)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(Offset(dx, dy), s, paint);
+      }
     }
   }
 
