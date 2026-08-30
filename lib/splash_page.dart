@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -17,7 +18,10 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
     _fade = CurvedAnimation(parent: _c, curve: Curves.easeOutCubic);
     _c.forward();
   }
@@ -41,11 +45,12 @@ class _SplashPageState extends State<SplashPage>
               // Logo
               AppLogo(size: 88),
               SizedBox(height: 20),
-              Text('APRSlocus',
-                  style: ts(28, w: FontWeight.w800, ls: -0.5, c: Colors.white)),
+              Text(
+                'APRSlocus',
+                style: ts(28, w: FontWeight.w800, ls: -0.5, c: Colors.white),
+              ),
               SizedBox(height: 6),
-              Text('APRS 定位追踪',
-                  style: ts(14, c: Colors.white70)),
+              Text(S.of(context).appTagline, style: ts(14, c: Colors.white70)),
               SizedBox(height: 32),
               SizedBox(
                 width: 28,

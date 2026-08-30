@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'theme.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -176,29 +178,48 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         ),
         padding: const EdgeInsets.all(20),
         child: SafeArea(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text('更新渠道', style: ts(15, w: FontWeight.w800)),
-            const SizedBox(height: 14),
-            _channelOption('GitCode', 'api.gitcode.com',
-                widget.state.updateChannel == 'gitcode', () {
-              widget.state.setUpdateChannel('gitcode');
-              Navigator.pop(context);
-              _check();
-            }),
-            const SizedBox(height: 8),
-            _channelOption('GitHub', 'api.github.com',
-                widget.state.updateChannel == 'github', () {
-              widget.state.setUpdateChannel('github');
-              Navigator.pop(context);
-              _check();
-            }),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                S.of(context).updateChannel,
+                style: ts(15, w: FontWeight.w800),
+              ),
+              const SizedBox(height: 14),
+              _channelOption(
+                'GitCode',
+                'api.gitcode.com',
+                widget.state.updateChannel == 'gitcode',
+                () {
+                  widget.state.setUpdateChannel('gitcode');
+                  Navigator.pop(context);
+                  _check();
+                },
+              ),
+              const SizedBox(height: 8),
+              _channelOption(
+                'GitHub',
+                'api.github.com',
+                widget.state.updateChannel == 'github',
+                () {
+                  widget.state.setUpdateChannel('github');
+                  Navigator.pop(context);
+                  _check();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _channelOption(String name, String api, bool selected, VoidCallback onTap) {
+  Widget _channelOption(
+    String name,
+    String api,
+    bool selected,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -207,25 +228,39 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           color: selected ? C.blueBg : C.bgSoft,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-              color: selected ? C.blue : C.border,
-              width: selected ? 1.5 : 1),
-        ),
-        child: Row(children: [
-          Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-              size: 18, color: selected ? C.blue : C.greyLight),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(name,
-                  style: ts(13,
-                      w: selected ? FontWeight.w700 : FontWeight.w500,
-                      c: selected ? C.blue : C.ink)),
-              Text(api, style: ts(10, c: C.grey)),
-            ]),
+            color: selected ? C.blue : C.border,
+            width: selected ? 1.5 : 1,
           ),
-          if (selected)
-            Icon(Icons.check_rounded, size: 18, color: C.blue),
-        ]),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              selected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_off_rounded,
+              size: 18,
+              color: selected ? C.blue : C.greyLight,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: ts(
+                      13,
+                      w: selected ? FontWeight.w700 : FontWeight.w500,
+                      c: selected ? C.blue : C.ink,
+                    ),
+                  ),
+                  Text(api, style: ts(10, c: C.grey)),
+                ],
+              ),
+            ),
+            if (selected) Icon(Icons.check_rounded, size: 18, color: C.blue),
+          ],
+        ),
       ),
     );
   }
@@ -244,36 +279,44 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           .getUrl(Uri.parse('$_apiBase/$_repoOwner/$_repoName/releases'))
           .timeout(const Duration(seconds: 20));
       req.headers.set(HttpHeaders.acceptHeader, 'application/json');
-      req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus/${AppState.appVersion}');
+      req.headers.set(
+        HttpHeaders.userAgentHeader,
+        'APRSlocus/${AppState.appVersion}',
+      );
       final resp = await req.close().timeout(const Duration(seconds: 20));
       final body = await resp.transform(utf8.decoder).join();
       client.close();
 
       if (resp.statusCode != 200) {
-        throw Exception('服务器返回 ${resp.statusCode}');
+        throw Exception(S.of(context).serverReturned(resp.statusCode));
       }
 
       final data = jsonDecode(body);
-      if (data is! List) throw Exception('返回数据格式错误');
+      if (data is! List) throw Exception(S.of(context).invalidResponseData);
 
       // 解析所有 release，取最新正式版
       List<_ReleaseInfo> releases = [];
       for (final r in data) {
         if (r is! Map) continue;
         // 统一去掉 tag 的前导 v（如 v1.4.9 → 1.4.9），避免显示两个 v
-        final tag = (r['tag_name'] ?? '').toString().replaceFirst(RegExp(r'^[Vv]'), '');
-        releases.add(_ReleaseInfo(
-          tagName: tag,
-          name: (r['name'] ?? (r['tag_name'] ?? '')).toString(),
-          body: (r['body'] ?? '').toString(),
-          prerelease: r['prerelease'] == true,
-          assets: (r['assets'] as List? ?? [])
-              .whereType<Map>()
-              .cast<Map<String, dynamic>>()
-              .toList(),
-        ));
+        final tag = (r['tag_name'] ?? '').toString().replaceFirst(
+          RegExp(r'^[Vv]'),
+          '',
+        );
+        releases.add(
+          _ReleaseInfo(
+            tagName: tag,
+            name: (r['name'] ?? (r['tag_name'] ?? '')).toString(),
+            body: (r['body'] ?? '').toString(),
+            prerelease: r['prerelease'] == true,
+            assets: (r['assets'] as List? ?? [])
+                .whereType<Map>()
+                .cast<Map<String, dynamic>>()
+                .toList(),
+          ),
+        );
       }
-      if (releases.isEmpty) throw Exception('没有找到任何版本');
+      if (releases.isEmpty) throw Exception(S.of(context).noVersionsFound);
 
       // 过滤正式版，选最新
       final formal = releases.where((r) => !r.prerelease).toList();
@@ -310,7 +353,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       final hasA = i < sa.length;
       final hasB = i < sb.length;
       if (!hasA && hasB) return -1; // a 已结束，b 有后缀 → b 新
-      if (hasA && !hasB) return 1;  // b 已结束，a 有后缀 → a 新
+      if (hasA && !hasB) return 1; // b 已结束，a 有后缀 → a 新
       final x = sa[i];
       final y = sb[i];
       final xv = int.tryParse(x);
@@ -339,7 +382,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     final url = rel.assetUrlFor(isWin);
     if (url == null) {
       _showSnack(
-          isWin ? '该版本没有 Windows 安装包' : '该版本没有 APK 安装包');
+        isWin ? S.of(context).noWindowsInstaller : S.of(context).noApkInstaller,
+      );
       return;
     }
     final tag = rel.tagName;
@@ -349,7 +393,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     setState(() {
       _downloadingTag = tag;
       _progress = 0;
-      _dlStatus = '正在连接…';
+      _dlStatus = S.of(context).connectingEllipsis;
       _dlError = false;
     });
 
@@ -365,7 +409,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           .timeout(const Duration(seconds: 30));
       final resp = await req.close().timeout(const Duration(seconds: 120));
       if (resp.statusCode != 200) {
-        throw Exception('下载失败：HTTP ${resp.statusCode}');
+        throw Exception(S.of(context).downloadHttpError(resp.statusCode));
       }
       final total = resp.contentLength;
 
@@ -379,7 +423,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           if (mounted) {
             setState(() {
               _progress = p;
-              _dlStatus = '已下载 ${_fmtSize(received)} / ${_fmtSize(total)}';
+              _dlStatus = S
+                  .of(context)
+                  .downloadedBytes(_fmtSize(received), _fmtSize(total));
             });
           }
         }
@@ -394,7 +440,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           _downloadedPath = file.path;
           _downloadedTag = tag;
           _localApkPath = file.path;
-          _dlStatus = '下载完成';
+          _dlStatus = S.of(context).downloadComplete;
         });
       }
       if (defaultTargetPlatform == TargetPlatform.windows) {
@@ -407,7 +453,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         setState(() {
           _downloadingTag = null;
           _dlError = true;
-          _dlStatus = '下载失败：${e.toString().replaceFirst('Exception: ', '')}';
+          _dlStatus =
+              '${S.of(context).downloadFailed}: ${e.toString().replaceFirst('Exception: ', '')}';
         });
       }
     }
@@ -421,7 +468,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         backgroundColor: Colors.white,
         title: Text(S.of(context).installApk),
         content: Text(
-          '安装包已下载到：\n$path\n\n点击"安装"后，系统会弹出安装确认框。\n\n若提示"不允许安装未知来源应用"，请到系统设置中允许本应用安装未知应用。',
+          S.of(context).androidInstallHelp(path),
           style: ts(13, h: 1.5),
         ),
         actions: [
@@ -450,7 +497,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         backgroundColor: Colors.white,
         title: Text(S.of(context).downloadComplete),
         content: Text(
-          '安装包已保存到：\n$path\n\n点击"立即运行"直接启动安装程序；也可以打开所在目录查看文件。',
+          S.of(context).windowsInstallHelp(path),
           style: ts(13, h: 1.5),
         ),
         actions: [
@@ -459,7 +506,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               Navigator.pop(ctx);
               _openFolder(path);
             },
-            child: const Text('打开所在目录'),
+            child: Text(S.of(context).openContainingFolder),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: C.blue),
@@ -467,7 +514,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               Navigator.pop(ctx);
               _runExe(path);
             },
-            child: const Text('立即运行'),
+            child: Text(S.of(context).runNow),
           ),
         ],
       ),
@@ -479,7 +526,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     try {
       Process.start(path, [], mode: ProcessStartMode.detachedWithStdio);
     } catch (_) {
-      _showSnack('无法启动安装程序，请到所在目录手动打开');
+      _showSnack(S.of(context).cannotRunInstaller);
     }
   }
 
@@ -490,23 +537,25 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         // 检查是否允许安装未知来源
         bool canInstall = false;
         try {
-          canInstall = await _installerChannel
-              .invokeMethod<bool>('canRequestInstall') ?? false;
+          canInstall =
+              await _installerChannel.invokeMethod<bool>('canRequestInstall') ??
+              false;
         } catch (_) {}
         if (!canInstall) {
           _showInstallPermissionDialog();
           return;
         }
-        final ok = await _installerChannel.invokeMethod<bool>(
-            'installApk', {'path': path});
+        final ok = await _installerChannel.invokeMethod<bool>('installApk', {
+          'path': path,
+        });
         if (ok != true) {
-          _showSnack('无法启动安装器，请手动打开安装包');
+          _showSnack(S.of(context).cannotLaunchInstaller);
         }
       } else {
-        _showSnack('请在文件管理器中打开安装包');
+        _showSnack(S.of(context).openPackageManually);
       }
     } catch (e) {
-      _showSnack('无法打开安装包：$e');
+      _showSnack(S.of(context).cannotOpenPackage(e.toString()));
     }
   }
 
@@ -516,9 +565,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
-        title: Text('需要允许安装应用'),
+        title: Text(S.of(context).installPermissionTitle),
         content: Text(
-          '检测到系统未允许 APRSlocus 安装应用。\n\n请点击"去设置"，在"安装未知应用"中允许本应用安装应用，然后返回重新安装。',
+          S.of(context).installPermissionDesc,
           style: ts(13, h: 1.5),
         ),
         actions: [
@@ -532,7 +581,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               Navigator.pop(ctx);
               _openInstallSettings();
             },
-            child: const Text('去设置'),
+            child: Text(S.of(context).goSettings),
           ),
         ],
       ),
@@ -552,6 +601,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       Process.run('explorer', ['/select,', path]);
     } catch (_) {}
   }
+
   String _fmtSize(int bytes) {
     if (bytes >= 1024 * 1024) {
       return '${(bytes / 1024 / 1024).toStringAsFixed(1)} MB';
@@ -577,16 +627,19 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         centerTitle: true,
         actions: [
           IconButton(
-            tooltip: widget.state.updateChannel == 'github' ? 'GitHub' : 'GitCode',
+            tooltip: widget.state.updateChannel == 'github'
+                ? 'GitHub'
+                : 'GitCode',
             onPressed: _switchChannel,
             icon: Icon(
-                widget.state.updateChannel == 'github'
-                    ? Icons.public_rounded
-                    : Icons.cloud_rounded,
-                color: C.blue),
+              widget.state.updateChannel == 'github'
+                  ? Icons.public_rounded
+                  : Icons.cloud_rounded,
+              color: C.blue,
+            ),
           ),
           IconButton(
-            tooltip: '重新检查',
+            tooltip: S.of(context).recheck,
             onPressed: _checking ? null : _check,
             icon: Icon(Icons.refresh_rounded, color: C.blue),
           ),
@@ -595,6 +648,8 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // 签名变更提示：1.4.8 更换了正式 release 签名，老版本升级需卸载重装
+          if (!isWin && _isNewer) _signatureNoticeCard(),
           _versionCard(isWin),
           const SizedBox(height: 16),
           ..._buildStatusArea(isWin),
@@ -605,6 +660,42 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             const SizedBox(height: 16),
             _moreVersionsCard(isWin),
           ],
+        ],
+      ),
+    );
+  }
+
+  /// 签名变更提示卡片（1.4.8 起更换正式 release 签名，老版本需卸载重装）
+  Widget _signatureNoticeCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: C.orangeBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: C.orange.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  S.of(context).signatureChangedTitle,
+                  style: ts(13, c: C.orange, w: FontWeight.w700),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  S.of(context).signatureChangedDesc,
+                  style: ts(11, c: C.orange, h: 1.5),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -639,56 +730,73 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           ),
         ],
       ),
-      child: Row(children: [
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.18),
-            borderRadius: BorderRadius.circular(15),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(
+              Icons.system_update_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
-          child: const Icon(Icons.system_update_rounded,
-              color: Colors.white, size: 28),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(S.of(context).currentVersion,
-                  style: ts(11, c: Colors.white70, w: FontWeight.w600)),
-              const SizedBox(height: 3),
-              Text('v${AppState.appVersion}',
-                  style: ts(24, c: Colors.white, w: FontWeight.w800)),
-              if (_latest != null && !_checking && !_hasError)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(
-                    _isNewer
-                        ? '发现新版本 v${_latest!.tagName}'
-                        : '仓库最新版本 v${_latest!.tagName}',
-                    style: ts(12, c: Colors.white, w: FontWeight.w700),
-                  ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  S.of(context).currentVersion,
+                  style: ts(11, c: Colors.white70, w: FontWeight.w600),
                 ),
-            ],
+                const SizedBox(height: 3),
+                Text(
+                  'v${AppState.appVersion}',
+                  style: ts(24, c: Colors.white, w: FontWeight.w800),
+                ),
+                if (_latest != null && !_checking && !_hasError)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      _isNewer
+                          ? S.of(context).newVersionTitle(_latest!.tagName)
+                          : S.of(context).repoLatestTitle(_latest!.tagName),
+                      style: ts(12, c: Colors.white, w: FontWeight.w700),
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        if (_checking)
-          const SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(
-                strokeWidth: 2.5, color: Colors.white),
-          )
-        else if (_isNewer && !_hasError)
-          const Icon(Icons.arrow_downward_rounded,
-              color: Colors.white, size: 30)
-        else if (!_hasError)
-          const Icon(Icons.check_rounded, color: Colors.white, size: 30)
-        else
-          const Icon(Icons.warning_amber_rounded,
-              color: Colors.white, size: 30),
-      ]),
+          if (_checking)
+            const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: Colors.white,
+              ),
+            )
+          else if (_isNewer && !_hasError)
+            const Icon(
+              Icons.arrow_downward_rounded,
+              color: Colors.white,
+              size: 30,
+            )
+          else if (!_hasError)
+            const Icon(Icons.check_rounded, color: Colors.white, size: 30)
+          else
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.white,
+              size: 30,
+            ),
+        ],
+      ),
     );
   }
 
@@ -698,20 +806,25 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: cardDeco(),
-          child: Column(children: [
-            SizedBox(
-              width: 30,
-              height: 30,
-              child: CircularProgressIndicator(
-                  strokeWidth: 3, color: C.blue),
-            ),
-            SizedBox(height: 14),
-            Text('正在检查最新版本…',
-                style: TextStyle(fontSize: 13, color: C.grey)),
-            SizedBox(height: 4),
-            Text('连接 GitCode 服务器',
-                style: TextStyle(fontSize: 11, color: C.greyLight)),
-          ]),
+          child: Column(
+            children: [
+              SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(strokeWidth: 3, color: C.blue),
+              ),
+              SizedBox(height: 14),
+              Text(
+                S.of(context).checkingLatest,
+                style: TextStyle(fontSize: 13, color: C.grey),
+              ),
+              SizedBox(height: 4),
+              Text(
+                S.of(context).connectingGitCode,
+                style: TextStyle(fontSize: 11, color: C.greyLight),
+              ),
+            ],
+          ),
         ),
       ];
     }
@@ -721,28 +834,40 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: cardDeco(),
-          child: Column(children: [
-            Icon(Icons.cloud_off_rounded, color: C.red, size: 40),
-            SizedBox(height: 12),
-                Text(S.of(context).updateFailed,
-                    style: ts(16, w: FontWeight.w700)),
-            SizedBox(height: 8),
-            Text(_errorMsg,
-                textAlign: TextAlign.center,
-                style: ts(12, c: C.grey, h: 1.5)),
-            SizedBox(height: 16),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                    backgroundColor: C.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 12)),
-                onPressed: _check,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('重新检查'),
+          child: Column(
+            children: [
+              Icon(Icons.cloud_off_rounded, color: C.red, size: 40),
+              SizedBox(height: 12),
+              Text(
+                S.of(context).updateFailed,
+                style: ts(16, w: FontWeight.w700),
               ),
-            ]),
-          ]),
+              SizedBox(height: 8),
+              Text(
+                _errorMsg,
+                textAlign: TextAlign.center,
+                style: ts(12, c: C.grey, h: 1.5),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: C.blue,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 12,
+                      ),
+                    ),
+                    onPressed: _check,
+                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    label: Text(S.of(context).recheck),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ];
     }
@@ -758,42 +883,61 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: C.greenBg,
-                    borderRadius: BorderRadius.circular(10),
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: C.greenBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.verified_rounded,
+                      color: C.green,
+                      size: 20,
+                    ),
                   ),
-                  child: Icon(Icons.verified_rounded,
-                      color: C.green, size: 20),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).latestVersion,
-                          style: ts(14, w: FontWeight.w700)),
-                      SizedBox(height: 2),
-                      Text('本地 v${AppState.appVersion} · 仓库最新 v${release.tagName}',
-                          style: ts(11, c: C.grey)),
-                    ],
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S.of(context).latestVersion,
+                          style: ts(14, w: FontWeight.w700),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          S
+                              .of(context)
+                              .localRepoVersion(
+                                AppState.appVersion,
+                                release.tagName,
+                              ),
+                          style: ts(11, c: C.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
               SizedBox(height: 16),
-              Row(children: [
-                Icon(Icons.notes_rounded,
-                    size: 14, color: C.greyLight),
-                SizedBox(width: 4),
-                Text(S.of(context).releaseNotes,
-                    style: ts(12, c: C.grey, w: FontWeight.w700)),
-                Spacer(),
-                Text('v${release.tagName}',
-                    style: ts(12, c: C.slate, w: FontWeight.w700)),
-              ]),
+              Row(
+                children: [
+                  Icon(Icons.notes_rounded, size: 14, color: C.greyLight),
+                  SizedBox(width: 4),
+                  Text(
+                    S.of(context).releaseNotes,
+                    style: ts(12, c: C.grey, w: FontWeight.w700),
+                  ),
+                  Spacer(),
+                  Text(
+                    'v${release.tagName}',
+                    style: ts(12, c: C.slate, w: FontWeight.w700),
+                  ),
+                ],
+              ),
               SizedBox(height: 8),
               Container(
                 width: double.infinity,
@@ -805,7 +949,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 child: Text(
                   release.body.trim().isNotEmpty
                       ? release.body.trim()
-                      : '暂无更新说明',
+                      : S.of(context).noReleaseNotes,
                   style: ts(13, c: C.slate, h: 1.7),
                 ),
               ),
@@ -823,7 +967,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    '该版本暂无${isWin ? ' Windows' : ' APK'} 安装包，请到历史版本中选择可下载的版本',
+                    S
+                        .of(context)
+                        .noInstallerHistoryHint(isWin ? 'Windows' : 'APK'),
                     textAlign: TextAlign.center,
                     style: ts(12, c: C.grey),
                   ),
@@ -834,13 +980,17 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                   height: 46,
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
-                        foregroundColor: C.blue,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
+                      foregroundColor: C.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     onPressed: _download,
                     icon: const Icon(Icons.download_rounded, size: 18),
-                    label: Text(S.of(context).downloadAgain,
-                        style: ts(13, w: FontWeight.w700)),
+                    label: Text(
+                      S.of(context).downloadAgain,
+                      style: ts(13, w: FontWeight.w700),
+                    ),
                   ),
                 ),
             ],
@@ -859,41 +1009,64 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 版本升级信息
-            Row(children: [
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('最新版本',
-                      style: ts(11, c: C.grey, w: FontWeight.w600)),
-                  SizedBox(height: 2),
-                  Text('v${release.tagName}',
-                      style: ts(20, w: FontWeight.w800, c: C.red)),
-                ]),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: C.redBg,
-                  borderRadius: BorderRadius.circular(10),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.of(context).latestVersionLabel,
+                        style: ts(11, c: C.grey, w: FontWeight.w600),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'v${release.tagName}',
+                        style: ts(20, w: FontWeight.w800, c: C.red),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.arrow_upward_rounded,
-                      color: C.red, size: 16),
-                  SizedBox(width: 4),
-                  Text('v${AppState.appVersion} → v${release.tagName}',
-                      style: ts(12, c: C.red, w: FontWeight.w700)),
-                ]),
-              ),
-            ]),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: C.redBg,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.arrow_upward_rounded, color: C.red, size: 16),
+                      SizedBox(width: 4),
+                      Text(
+                        'v${AppState.appVersion} → v${release.tagName}',
+                        style: ts(12, c: C.red, w: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             if (release.assetSizeFor(isWin) > 0) ...[
               SizedBox(height: 10),
-              Row(children: [
-                Icon(Icons.sd_storage_rounded,
-                    size: 14, color: C.greyLight),
-                SizedBox(width: 4),
-                Text('${isWin ? 'Windows' : 'APK'} 安装包大小：${_fmtSize(release.assetSizeFor(isWin))}',
-                    style: ts(12, c: C.grey)),
-              ]),
+              Row(
+                children: [
+                  Icon(Icons.sd_storage_rounded, size: 14, color: C.greyLight),
+                  SizedBox(width: 4),
+                  Text(
+                    S
+                        .of(context)
+                        .packageSize(
+                          isWin ? 'Windows' : 'APK',
+                          _fmtSize(release.assetSizeFor(isWin)),
+                        ),
+                    style: ts(12, c: C.grey),
+                  ),
+                ],
+              ),
             ],
             if (release.body.trim().isNotEmpty) ...[
               SizedBox(height: 14),
@@ -907,16 +1080,21 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(children: [
-                      Icon(Icons.notes_rounded,
-                          size: 14, color: C.greyLight),
-                      SizedBox(width: 4),
-                      Text('更新内容',
-                          style: ts(12, c: C.grey, w: FontWeight.w700)),
-                    ]),
+                    Row(
+                      children: [
+                        Icon(Icons.notes_rounded, size: 14, color: C.greyLight),
+                        SizedBox(width: 4),
+                        Text(
+                          S.of(context).updateContents,
+                          style: ts(12, c: C.grey, w: FontWeight.w700),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 8),
-                    Text(release.body.trim(),
-                        style: ts(13, c: C.slate, h: 1.7)),
+                    Text(
+                      release.body.trim(),
+                      style: ts(13, c: C.slate, h: 1.7),
+                    ),
                   ],
                 ),
               ),
@@ -935,7 +1113,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  '该版本暂无${isWin ? ' Windows' : ' APK'} 安装包，请到历史版本中选择可下载的版本',
+                  S
+                      .of(context)
+                      .noInstallerHistoryHint(isWin ? 'Windows' : 'APK'),
                   textAlign: TextAlign.center,
                   style: ts(12, c: C.grey),
                 ),
@@ -950,83 +1130,109 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
 
   Widget _progressCard() {
     final pct = (_progress * 100).clamp(0, 100);
-    return Column(children: [
-      Row(children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: _progress,
-              minHeight: 10,
-              backgroundColor: C.greyBg,
-              color: C.blue,
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  value: _progress,
+                  minHeight: 10,
+                  backgroundColor: C.greyBg,
+                  color: C.blue,
+                ),
+              ),
             ),
-          ),
+            SizedBox(width: 10),
+            Text(
+              '${pct.toStringAsFixed(0)}%',
+              style: ts(13, w: FontWeight.w800, c: C.blue),
+            ),
+          ],
         ),
-        SizedBox(width: 10),
-        Text('${pct.toStringAsFixed(0)}%',
-            style: ts(13, w: FontWeight.w800, c: C.blue)),
-      ]),
-      SizedBox(height: 8),
-      Text(_dlStatus, style: ts(12, c: C.grey)),
-    ]);
+        SizedBox(height: 8),
+        Text(_dlStatus, style: ts(12, c: C.grey)),
+      ],
+    );
   }
 
   Widget _retryDownloadCard() {
-    return Column(children: [
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: C.redBg,
-          borderRadius: BorderRadius.circular(10),
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: C.redBg,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            _dlStatus,
+            style: ts(12, c: C.red, w: FontWeight.w600),
+          ),
         ),
-        child: Text(_dlStatus, style: ts(12, c: C.red, w: FontWeight.w600)),
-      ),
-      SizedBox(height: 10),
-      SizedBox(
-        width: double.infinity,
-        height: 46,
-        child: FilledButton.icon(
-          style: FilledButton.styleFrom(backgroundColor: C.blue),
-          onPressed: _download,
-          icon: const Icon(Icons.refresh_rounded, size: 20),
-          label: Text('重新下载',
-              style: ts(14, w: FontWeight.w700)),
+        SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          height: 46,
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(backgroundColor: C.blue),
+            onPressed: _download,
+            icon: const Icon(Icons.refresh_rounded, size: 20),
+            label: Text(
+              S.of(context).redownload,
+              style: ts(14, w: FontWeight.w700),
+            ),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _downloadButton(bool isWin) {
-    return Column(children: [
-      SizedBox(
-        width: double.infinity,
-        height: 48,
-        child: FilledButton.icon(
-          style: FilledButton.styleFrom(
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: 48,
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
               backgroundColor: C.blue,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12))),
-          onPressed: _download,
-          icon: const Icon(Icons.download_rounded, size: 20),
-          label: Text(isWin ? '下载安装包' : '下载并安装',
-              style: ts(15, w: FontWeight.w700)),
-        ),
-      ),
-      if (_localApkPath != null) ...[
-        SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(Icons.folder_rounded, size: 13, color: C.greyLight),
-          SizedBox(width: 4),
-          Flexible(
-            child: Text('本地已有一份安装包',
-                style: ts(11, c: C.greyLight),
-                overflow: TextOverflow.ellipsis),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: _download,
+            icon: const Icon(Icons.download_rounded, size: 20),
+            label: Text(
+              isWin
+                  ? S.of(context).downloadInstaller
+                  : S.of(context).downloadAndInstall,
+              style: ts(15, w: FontWeight.w700),
+            ),
           ),
-        ]),
+        ),
+        if (_localApkPath != null) ...[
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.folder_rounded, size: 13, color: C.greyLight),
+              SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  S.of(context).localPackageExists,
+                  style: ts(11, c: C.greyLight),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
-    ]);
+    );
   }
 
   Widget _downloadedCard(bool isWin) {
@@ -1034,103 +1240,129 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: cardDeco(),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: C.greenBg,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.download_done_rounded,
+                  color: C.green,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    S.of(context).alreadyDownloaded,
+                    style: ts(14, w: FontWeight.w700),
+                  ),
+                  SizedBox(height: 2),
+                  Text('v${_downloadedTag ?? ''}', style: ts(11, c: C.grey)),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
           Container(
-            width: 36,
-            height: 36,
+            width: double.infinity,
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: C.greenBg,
+              color: C.greyBg,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(Icons.download_done_rounded,
-                color: C.green, size: 20),
+            child: Text(
+              path,
+              style: ts(11, c: C.grey),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          SizedBox(width: 10),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(S.of(context).alreadyDownloaded,
-                style: ts(14, w: FontWeight.w700)),
-            SizedBox(height: 2),
-            Text('v${_downloadedTag ?? ''}',
-                style: ts(11, c: C.grey)),
-          ]),
-        ]),
-        SizedBox(height: 10),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: C.greyBg,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(path,
-              style: ts(11, c: C.grey), maxLines: 2, overflow: TextOverflow.ellipsis),
-        ),
-        SizedBox(height: 12),
-        if (!isWin)
-          Row(children: [
-            Expanded(
-              child: FilledButton.icon(
-                style: FilledButton.styleFrom(
-                    backgroundColor: C.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 12)),
-                onPressed: () => _openApk(path),
-                icon: const Icon(Icons.android_rounded, size: 18),
-                label: Text(S.of(context).installNow),
+          SizedBox(height: 12),
+          if (!isWin)
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: C.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () => _openApk(path),
+                    icon: const Icon(Icons.android_rounded, size: 18),
+                    label: Text(S.of(context).installNow),
+                  ),
+                ),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: C.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () => _runExe(path),
+                    icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                    label: Text(S.of(context).runInstaller),
+                  ),
+                ),
+              ],
+            ),
+          if (isWin) ...[
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(foregroundColor: C.blue),
+                onPressed: () => _openFolder(path),
+                icon: const Icon(Icons.folder_open_rounded, size: 18),
+                label: Text(S.of(context).openContainingFolder),
               ),
             ),
-          ])
-        else
-          Row(children: [
-            Expanded(
-              child: FilledButton.icon(
-                style: FilledButton.styleFrom(
-                    backgroundColor: C.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 12)),
-                onPressed: () => _runExe(path),
-                icon: const Icon(Icons.play_arrow_rounded, size: 18),
-                label: Text(S.of(context).runInstaller),
-              ),
-            ),
-          ]),
-        if (isWin) ...[
+          ],
           SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
             height: 44,
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(foregroundColor: C.blue),
-              onPressed: () => _openFolder(path),
-              icon: const Icon(Icons.folder_open_rounded, size: 18),
-              label: const Text('打开所在目录'),
+              onPressed: _download,
+              icon: const Icon(Icons.replay_rounded, size: 18),
+              label: Text(
+                S.of(context).downloadAgain,
+                style: ts(13, w: FontWeight.w700),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(foregroundColor: C.red),
+              onPressed: () => _deleteDownloaded(path),
+              icon: const Icon(Icons.delete_outline_rounded, size: 18),
+              label: Text(
+                S.of(context).deletePackage,
+                style: ts(13, w: FontWeight.w700),
+              ),
             ),
           ),
         ],
-        SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          height: 44,
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(foregroundColor: C.blue),
-            onPressed: _download,
-            icon: const Icon(Icons.replay_rounded, size: 18),
-            label: Text(S.of(context).downloadAgain,
-                style: ts(13, w: FontWeight.w700)),
-          ),
-        ),
-        SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          height: 44,
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(foregroundColor: C.red),
-            onPressed: () => _deleteDownloaded(path),
-            icon: const Icon(Icons.delete_outline_rounded, size: 18),
-            label: Text(S.of(context).deletePackage,
-                style: ts(13, w: FontWeight.w700)),
-          ),
-        ),
-      ]),
+      ),
     );
   }
 
@@ -1144,7 +1376,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       _downloadedPath = null;
       _downloadedTag = null;
     });
-    _showSnack('安装包已删除');
+    _showSnack(S.of(context).packageDeleted);
   }
 
   /// 更多版本列表
@@ -1155,41 +1387,50 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
 
     return Container(
       decoration: cardDeco(),
-      child: Column(children: [
-        InkWell(
-          onTap: () => setState(() => _moreOpen = !_moreOpen),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: C.blueBg,
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Icon(Icons.history_rounded,
-                    color: C.blue, size: 17),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => setState(() => _moreOpen = !_moreOpen),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: C.blueBg,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Icon(Icons.history_rounded, color: C.blue, size: 17),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    S.of(context).historyVersions,
+                    style: ts(13, w: FontWeight.w700),
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    S.of(context).versionCount(history.length),
+                    style: ts(11, c: C.grey),
+                  ),
+                  Spacer(),
+                  AnimatedRotation(
+                    turns: _moreOpen ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: C.grey,
+                      size: 20,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 10),
-              Text(S.of(context).historyVersions,
-                  style: ts(13, w: FontWeight.w700)),
-              SizedBox(width: 6),
-              Text('${history.length} 个',
-                  style: ts(11, c: C.grey)),
-              Spacer(),
-              AnimatedRotation(
-                turns: _moreOpen ? 0.5 : 0,
-                duration: const Duration(milliseconds: 200),
-                child: Icon(Icons.keyboard_arrow_down_rounded,
-                    color: C.grey, size: 20),
-              ),
-            ]),
+            ),
           ),
-        ),
-        if (_moreOpen)
-          ...history.map((rel) => _versionRow(isWin, rel)),
-      ]),
+          if (_moreOpen) ...history.map((rel) => _versionRow(isWin, rel)),
+        ],
+      ),
     );
   }
 
@@ -1206,83 +1447,118 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         border: Border(top: BorderSide(color: C.greyBg, width: 1)),
       ),
       child: busy
-          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Text('v$tag',
-                    style: ts(13, w: FontWeight.w700, c: C.blue)),
-                SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    '正在下载 ${(_progress * 100).clamp(0, 100).toStringAsFixed(0)}%',
-                    style: ts(11, c: C.grey),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ]),
-              SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: _progress,
-                  minHeight: 6,
-                  backgroundColor: C.greyBg,
-                  color: C.blue,
-                ),
-              ),
-              SizedBox(height: 6),
-              Text(_dlStatus.isNotEmpty ? _dlStatus : '正在连接…',
-                  style: ts(10, c: C.greyLight)),
-            ])
-          : Row(children: [
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Text('v$tag',
-                        style: ts(13, w: FontWeight.w700,
-                            c: isCurrent ? C.green : C.slate)),
-                    if (isCurrent) ...[
-                      SizedBox(width: 6),
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                        decoration: BoxDecoration(
-                          color: C.greenBg,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(S.of(context).current,
-                            style: ts(10, c: C.green, w: FontWeight.w700)),
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'v$tag',
+                      style: ts(13, w: FontWeight.w700, c: C.blue),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        S
+                            .of(context)
+                            .downloadProgress(
+                              (_progress * 100)
+                                  .clamp(0, 100)
+                                  .toStringAsFixed(0),
+                            ),
+                        style: ts(11, c: C.grey),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ]),
-                  if (size > 0) ...[
-                    SizedBox(height: 2),
-                    Text('${isWin ? 'Windows' : 'APK'} ${_fmtSize(size)}',
-                        style: ts(11, c: C.grey)),
+                    ),
                   ],
-                ]),
-              ),
-              if (!hasAsset)
-                Text('无安装包',
-                    style: ts(11, c: C.greyLight))
-              else
-                SizedBox(
-                  height: 32,
-                  child: TextButton.icon(
-                    style: TextButton.styleFrom(foregroundColor: C.blue),
-                    onPressed: () => _download(rel),
-                    icon: const Icon(Icons.download_rounded, size: 16),
-                    label: Text('下载',
-                        style: ts(12, w: FontWeight.w700)),
+                ),
+                SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: _progress,
+                    minHeight: 6,
+                    backgroundColor: C.greyBg,
+                    color: C.blue,
                   ),
                 ),
-              if (rel.body.trim().isNotEmpty)
-                IconButton(
-                  tooltip: '查看更新日志',
-                  icon: Icon(Icons.notes_rounded,
-                      size: 16, color: C.grey),
-                  onPressed: () => _showReleaseLog(rel),
+                SizedBox(height: 6),
+                Text(
+                  _dlStatus.isNotEmpty
+                      ? _dlStatus
+                      : S.of(context).connectingEllipsis,
+                  style: ts(10, c: C.greyLight),
                 ),
-            ]),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'v$tag',
+                            style: ts(
+                              13,
+                              w: FontWeight.w700,
+                              c: isCurrent ? C.green : C.slate,
+                            ),
+                          ),
+                          if (isCurrent) ...[
+                            SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.greenBg,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                S.of(context).current,
+                                style: ts(10, c: C.green, w: FontWeight.w700),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (size > 0) ...[
+                        SizedBox(height: 2),
+                        Text(
+                          '${isWin ? 'Windows' : 'APK'} ${_fmtSize(size)}',
+                          style: ts(11, c: C.grey),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                if (!hasAsset)
+                  Text(S.of(context).noInstaller, style: ts(11, c: C.greyLight))
+                else
+                  SizedBox(
+                    height: 32,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: C.blue),
+                      onPressed: () => _download(rel),
+                      icon: const Icon(Icons.download_rounded, size: 16),
+                      label: Text(
+                        S.of(context).download,
+                        style: ts(12, w: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                if (rel.body.trim().isNotEmpty)
+                  IconButton(
+                    tooltip: S.of(context).viewChangelog,
+                    icon: Icon(Icons.notes_rounded, size: 16, color: C.grey),
+                    onPressed: () => _showReleaseLog(rel),
+                  ),
+              ],
+            ),
     );
   }
 
@@ -1292,18 +1568,24 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
-        title: Row(children: [
-          Text('v${rel.tagName} 更新日志',
-              style: ts(15, w: FontWeight.w700)),
-          Spacer(),
-          IconButton(
-            icon: Icon(Icons.close_rounded, size: 18, color: C.grey),
-            onPressed: () => Navigator.pop(ctx),
-          ),
-        ]),
+        title: Row(
+          children: [
+            Text(
+              S.of(context).versionChangelog(rel.tagName),
+              style: ts(15, w: FontWeight.w700),
+            ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.close_rounded, size: 18, color: C.grey),
+              onPressed: () => Navigator.pop(ctx),
+            ),
+          ],
+        ),
         content: SingleChildScrollView(
           child: Text(
-            rel.body.trim().isNotEmpty ? rel.body.trim() : '暂无更新说明',
+            rel.body.trim().isNotEmpty
+                ? rel.body.trim()
+                : S.of(context).noReleaseNotes,
             style: ts(13, c: C.slate, h: 1.7),
           ),
         ),
@@ -1311,7 +1593,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: C.blue),
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('知道了'),
+            child: Text(S.of(context).gotIt),
           ),
         ],
       ),

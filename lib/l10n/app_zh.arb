@@ -1,7 +1,6 @@
 {
   "@@locale": "zh",
   "appName": "APRSlocus",
-  "appName_desc": "应用名称",
   "ok": "确定",
   "cancel": "取消",
   "save": "保存",
@@ -187,6 +186,12 @@
   "aboutTitle": "关于",
   "aboutSubtitle": "APRS 定位追踪与地图",
   "author": "作者",
+  "codeContributions": "代码贡献",
+  "codeContributionI18n": "国际化 / 英文界面",
+  "licenseSection": "许可证声明",
+  "licenseName": "GNU GPL v3",
+  "licenseStatement": "本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。",
+  "licenseText": "查看许可证",
   "features": "功能特性",
   "openSource": "开源致谢",
   "feedback": "用户反馈",
@@ -322,7 +327,6 @@
   "advancedDesc": "实验室与开发者工具",
   "labDesc": "实验室功能仍在测试中，可能影响使用体验。默认锁定竖屏，开启后支持横屏。",
   "systemLog": "系统日志",
-  "restartWizard": "重新运行设置向导",
   "devDesc": "开发者调试工具",
   "simData": "启用模拟数据（演示台站/数据包）",
   "rxTx": "收包 / 发包",
@@ -342,7 +346,6 @@
   "appVersionDesc": "当前应用版本",
   "stationDetail": "台站详情",
   "backToTop": "回到顶部",
-  "checkUpdate": "检查更新",
   "installApk": "安装 APRSlocus",
   "install": "安装",
   "cancelInstall": "取消",
@@ -378,5 +381,946 @@
   "appInstallDir": "安装目录",
   "runInstaller": "运行安装程序",
   "downloadUpdateTip": "下载更新并自动打开",
-  "openDownloadFolder": "打开下载目录"
+  "openDownloadFolder": "打开下载目录",
+  "@appName": {
+    "description": "应用名称"
+  },
+  "groupBubble": "群·{name}",
+  "groupInviteTitle": "群聊邀请",
+  "groupInviteFrom": "{from} 邀请你加入群聊",
+  "groupNameValue": "群名：{name}",
+  "groupCallsignValue": "群呼号：{call}",
+  "groupInviteAccepted": "已接受邀请，加入 {name}",
+  "accept": "接受",
+  "groupInviteRejected": "已拒绝 {name} 的邀请",
+  "reject": "拒绝",
+  "appTagline": "APRS 定位追踪",
+  "gridValue": "网格 {grid}",
+  "packetsPerMinute": "{count}/分",
+  "demo": "演示",
+  "nextBeaconIn": "下次上报 {time}",
+  "beaconCount": "信标 {count} 次",
+  "beaconSentAprsIs": "位置已上报 · 网格 {grid} · 已发往 APRS-IS",
+  "beaconSentDemo": "位置已上报 · 网格 {grid} · 演示",
+  "getLocation": "获取定位",
+  "disconnect": "断开连接",
+  "connectAprsIs": "连接 APRS-IS",
+  "packetsReceived": "收包",
+  "passcodeUnverified": "Passcode 未验证",
+  "passcodeWarning": "登录密码可能错误，无法正常收发消息",
+  "goSettings": "去设置",
+  "connectingServer": "正在连接服务器…",
+  "notConnectedAprsServer": "未连接 APRS-IS 服务器",
+  "connectingToServer": "正在连接 {server}:{port}…",
+  "connectNearbyDesc": "连接后可接收附近台站定位与消息",
+  "connectAction": "连接",
+  "backgroundRunTip": "后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。",
+  "connectedAprsIs": "已连接 APRS-IS",
+  "qqGroupDesc": "APRSlocus 软件 · 反馈问题/交流使用",
+  "reselectPoint": "重新选点",
+  "disableClustering": "关闭聚合",
+  "enableClustering": "开启聚合",
+  "noPackets": "暂无数据包",
+  "secondsAgo": "{count}秒前",
+  "minutesAgo": "{count}分前",
+  "hoursAgo": "{count}小时前",
+  "daysAgo": "{count}天前",
+  "copiedCoordsValue": "已复制坐标：{coords}",
+  "copiedGridValue": "已复制网格：{grid}",
+  "distanceBearing": "距我 {distance}km · 方位 {bearing}°",
+  "weatherDataValue": "气象数据 · {data}",
+  "symbolLabel": "符号",
+  "digipeaterTapHint": "点击中继台跳转到对应台站",
+  "copiedFmoInfo": "已复制 FMO 信息",
+  "copiedAprslocusInfo": "已复制 APRSlocus 信息",
+  "trackPoints": "轨迹 ({count} 点)",
+  "sendMessageTo": "发消息给 {call}…",
+  "navigationUnavailable": "未安装高德地图，且无法打开其他地图应用",
+  "stationNoData": "台站 {call} 尚未收到数据",
+  "software": "软件",
+  "close": "关闭",
+  "nameLabel": "名称",
+  "viewSponsorDetails": "查看作者与赞助详情 →",
+  "thanks": "感谢",
+  "qqSoftwareName": "APRSlocus 软件",
+  "usageNotice": "本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规",
+  "licenseNotice": "GNU GPL v3 开源协议 · Copyright © BG7LZQ",
+  "appInfoText": "APRSlocus v{version}\n作者: BG7LZQ (Darion)\n网站: Theez.top",
+  "eggBg7lzq": "哎呦你干嘛~",
+  "eggBg7pgw": "闹呢？",
+  "eggBg7lmw": "默不作声...",
+  "eggBg7osl": "你的胆子肥嘟嘟的",
+  "manualCallsignHint": "手动输入呼号添加",
+  "noPacketReceived": "未收到数据包",
+  "feedMode": "瀑布流",
+  "conversationMode": "会话",
+  "messageFeed": "消息瀑布流",
+  "messageTotal": "共 {count} 条",
+  "noMessages": "暂无消息",
+  "copiedClipboard": "已复制到剪贴板",
+  "groupShortLabel": "群",
+  "conversations": "会话",
+  "noConversations": "暂无会话",
+  "groupNotFound": "群聊不存在",
+  "invite": "邀请",
+  "manage": "管理",
+  "noGroupMessages": "群聊暂无消息",
+  "selectConversation": "选择会话开始聊天",
+  "newConversation": "新建会话",
+  "newConversationDesc": "输入呼号开始新的会话",
+  "callsignExample": "呼号，如 BG7ABC",
+  "start": "开始",
+  "broadcastMessage": "群发消息",
+  "noStations": "暂无台站",
+  "broadcastHint": "提示：每条消息会单独发送给每个接收人",
+  "broadcastSent": "已群发给 {count} 人",
+  "searchCallsign": "搜索呼号…",
+  "broadcastContentHint": "输入要群发的内容…",
+  "groupNameHint": "输入群聊名称",
+  "create": "创建",
+  "groupCallsignLine": "群呼号: {call}",
+  "noMembers": "暂无成员",
+  "inviteMembersHint": "点击下方「邀请成员」添加",
+  "remove": "移除",
+  "inviteMembers": "邀请成员",
+  "deleteGroup": "删除群组",
+  "deleteGroupConfirm": "确定删除「{name}」？此操作不可撤销。",
+  "memberOnlineCount": "{members} 名成员 · {online} 在线",
+  "leaveGroup": "退出群组",
+  "leaveGroupConfirm": "确定退出「{name}」？你将不再收到该群的消息。",
+  "leftGroup": "已退出 {name}",
+  "leave": "退出",
+  "inviteMembersTo": "邀请成员到 {name}",
+  "manualCallsign": "手动输入呼号",
+  "inviteSent": "已发送邀请给 {call}",
+  "noMoreOnlineStations": "暂无更多在线台站",
+  "invited": "已邀请",
+  "tapToInvite": "点击邀请",
+  "done": "完成",
+  "addContact": "添加联系人",
+  "addContactDesc": "输入呼号手动添加到联系人列表",
+  "contactAdded": "已添加联系人 {call}",
+  "@groupBubble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteFrom": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupNameValue": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupCallsignValue": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteRejected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@packetsPerMinute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@nextBeaconIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@beaconSentAprsIs": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconSentDemo": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@connectingToServer": {
+    "placeholders": {
+      "server": {
+        "type": "String"
+      },
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "@secondsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@copiedCoordsValue": {
+    "placeholders": {
+      "coords": {
+        "type": "String"
+      }
+    }
+  },
+  "@copiedGridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@distanceBearing": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "bearing": {
+        "type": "String"
+      }
+    }
+  },
+  "@weatherDataValue": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "@trackPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sendMessageTo": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@stationNoData": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@appInfoText": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@messageTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@broadcastSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@groupCallsignLine": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@memberOnlineCount": {
+    "placeholders": {
+      "members": {
+        "type": "int"
+      },
+      "online": {
+        "type": "int"
+      }
+    }
+  },
+  "@leaveGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@leftGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteMembersTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactAdded": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "add": "添加",
+  "stationary": "静止",
+  "unknown": "未知",
+  "none": "无",
+  "manual": "手动",
+  "management": "管理",
+  "debugLabel": "调试",
+  "information": "信息",
+  "warning": "警告",
+  "errorLabel": "错误",
+  "countTimes": "{count} 次",
+  "countItems": "{count} 个",
+  "countEntries": "{count} 条",
+  "aprsSymbolName": "{symbol, select, car {汽车} police {警局} person {人} digitalRepeater {数字中继} telephone {电话} dxCluster {DX 集群} hfGateway {HF 网关} smallAircraft {小型飞机} mobileSatellite {移动卫星} disabled {残障} snowmobile {雪地摩托} redCross {红十字} scouts {童子军} house {房屋} redX {红叉} redDot {红点} fire {火警} campground {露营} motorcycle {摩托} train {火车} fileServer {文件服务器} hurricane {飓风} dfTriangle {DF 三角} postOffice {邮局} largeAircraft {大型飞机} weatherStation {气象站} satelliteDish {卫星天线} ambulance {救护车} bicycle {自行车} commandPost {指挥中心} fireStation {消防站} horse {骑马} fireTruck {消防车} glider {滑翔机} hospital {医院} fmoStation {FMO 台站} jeep {吉普} truck {卡车} laptop {笔记本} micERepeater {Mic-E 中继} node {节点} emergencyOps {应急中心} dog {狗} gridSquare {网格} repeaterTower {中继塔} boat {船} truckStop {卡车停靠站} semiTrailer {半挂车} van {面包车} waterStation {供水站} yagi {八木天线屋} shelter {避难所} rv {房车} weatherSymbol {气象台} balloon {气球} bus {公交} shuttle {航天飞机} policeCar {警车} sailboat {帆船} school {学校} lodging {旅馆} hotel {酒店} other {未知}}",
+  "symbolCategoryName": "{category, select, vehicles {车辆 / 交通} facilities {建筑 / 设施} weatherNature {气象 / 自然} emergencyRescue {应急救援} airWater {飞行 / 水域} communications {通信 / 其他} other {其他}}",
+  "countryName": "{code, select, CN {中国} KR {韩国} JP {日本} US {美国} CA {加拿大} GB {英国} DE {德国} FR {法国} IT {意大利} ES {西班牙} RU {俄罗斯} AU {澳大利亚} NZ {新西兰} BR {巴西} AR {阿根廷} MX {墨西哥} ZA {南非} IN {印度} TH {泰国} SG {新加坡} MY {马来西亚} ID {印度尼西亚} PH {菲律宾} TW {台湾} HK {香港} MO {澳门} other {未知}}",
+  "locationNotFixed": "未定位",
+  "simulatedLocation": "模拟位置",
+  "savedLocation": "已保存位置",
+  "locationFailed": "定位失败",
+  "locationStopped": "定位已停止",
+  "locationFixed": "已定位",
+  "locationPermission": "请授予定位权限…",
+  "gpsLocating": "GPS 定位中…",
+  "webLocationUnsupported": "Web 平台暂不支持自动定位，请手动输入坐标",
+  "locationStreamError": "定位流异常：{error}",
+  "locationInitError": "定位初始化失败：{error}",
+  "beaconDisabled": "已关闭",
+  "waitingForLocation": "等待定位",
+  "imminent": "即将",
+  "connTapToConnect": "未连接 · 点击播放按钮连接 APRS-IS",
+  "connManuallyDisconnected": "未连接 · 已手动断开",
+  "connAutoReconnect": "连接已断开 · {seconds}秒后自动重连…",
+  "connConnectingTarget": "正在连接 {target}…",
+  "connOnline": "已连接 · {call} 在线",
+  "connRetry": "连接失败 · {seconds}s 后重试…",
+  "connPositionSent": "已连接 · 位置已上报 ({call})",
+  "connDemoBeacon": "未连接 · 位置已上报（模拟）",
+  "connPasscodeInvalid": "已连接 · 未验证（Passcode 可能错误）",
+  "mapTypeAmap": "高德地图",
+  "mapTypeAmapSatellite": "高德卫星",
+  "mapTypeAmapJs": "高德 JS",
+  "mapTypeVector": "矢量地图",
+  "amapGroup": "高德",
+  "domesticMaps": "国内地图",
+  "internationalMaps": "国际地图",
+  "metricUnits": "公制 (km/h, m)",
+  "coordDisplay": "坐标显示",
+  "mapDefaultCoord": "北京 · {level}级",
+  "secondsValue": "{count} 秒",
+  "stationSettingsDetail": "呼号、SSID、符号与备注",
+  "stationIdentity": "电台身份",
+  "aprsCallsignHint": "APRS 呼号，如 BV2AAA",
+  "displayInfo": "显示信息",
+  "ssidSuffix": "SSID 后缀",
+  "chooseSsidSuffix": "选择 SSID 后缀",
+  "mySymbol": "我的符号",
+  "moreSymbols": "更多符号",
+  "allAprsSymbols": "全部 APRS 符号",
+  "beaconSettingsDetail": "GPS 来源、信标与手动定位",
+  "locationSource": "定位来源",
+  "useDeviceLocation": "使用设备定位",
+  "manualCoordinates": "手动输入坐标",
+  "beaconingSection": "信标上报",
+  "beaconIntervalTip": "位置信标的发送间隔，至少 5 秒",
+  "beaconContent": "信标上报内容",
+  "beaconContentDesc": "随位置信标一起发送",
+  "phoneBattery": "手机电量",
+  "locationStatus": "定位状态",
+  "relocate": "重新定位",
+  "startGps": "开启 GPS 定位",
+  "trackingBeaconing": "定位运行中，正在持续上报位置",
+  "manualLocation": "手动定位",
+  "latitudeHint": "纬度 39.9042",
+  "longitudeHint": "经度 116.4074",
+  "invalidLatLng": "请输入有效经纬度",
+  "myLocationSetGrid": "已设置我的位置，网格 {grid}",
+  "applyCoordinates": "应用坐标",
+  "pickOnMap": "在地图选点",
+  "manualLocationHelp": "无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。",
+  "passcodeTip": "APRS-IS 登录验证码，可在线生成；填 -1 表示未验证",
+  "websocketOptional": "WebSocket URL（可选）",
+  "configChanged": "配置已修改",
+  "reconnectToApply": "重新连接后生效",
+  "reconnected": "已重新连接",
+  "connectFailedCheckConfig": "连接失败，请检查配置",
+  "rangeFilterDesc": "只接收设定范围内的台站数据包",
+  "filterCenterFollows": "过滤中心跟随我的位置",
+  "radiusTip": "接收半径（km），点“保存并应用”生效",
+  "maxStationsTip": "内存中保留的最大台站数量（默认不限制，可设更大值）",
+  "filterSavedRadius": "{saved} · 半径 {radius}km",
+  "receiveFilterDesc2": "除范围过滤外，按国家/地区分组或精确呼号接收台站",
+  "receiveCountryDesc": "按呼号前缀批量接收某国家/地区全部台站",
+  "noCountriesSelected": "未选择国家/地区",
+  "receiveOthersDesc": "接收不匹配所选国家的特殊呼号台站",
+  "addCountry": "添加国家/地区",
+  "chatSettingsDetail": "消息、联系人与聊天数据",
+  "messageCountLabel": "消息条数",
+  "manageContacts": "管理联系人",
+  "deleteAllChatsConfirm": "确定要删除全部 {count} 条聊天记录吗？此操作不可恢复。",
+  "chatCleared": "聊天记录已清空",
+  "noContacts": "暂无联系人",
+  "addOrFavoriteContact": "点击右上角“添加”或在地图上收藏台站",
+  "movingWithSpeed": "移动中 · {speed}",
+  "callsignMin3": "呼号至少 3 个字符",
+  "deleteContact": "删除联系人",
+  "deleteContactConfirm": "确定删除联系人 {call}？",
+  "contactDeleted": "已删除 {call}",
+  "dataMaintenance": "数据维护",
+  "clearAllData": "清除所有数据",
+  "clearAllDataIntro": "此操作将删除以下所有本地数据：",
+  "chatHistory": "聊天记录",
+  "logs": "日志",
+  "irreversibleKeepSettings": "此操作不可恢复，连接设置和呼号不会被删除。",
+  "confirmClearAllData": "确认清除所有数据",
+  "clearAllDataConfirm": "确定要清除全部本地数据吗？此操作不可恢复。",
+  "allDataCleared": "所有数据已清除",
+  "confirmClear": "确认清除",
+  "allowLandscape": "允许手机横屏显示",
+  "packetParseTest": "数据包解析测试",
+  "packetParseHint": "粘贴原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station",
+  "parseAndApply": "解析并应用",
+  "oobePasscodeMissing": "Passcode 未填写",
+  "oobePasscodeMissingDesc": "Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。",
+  "continueAnyway": "仍然继续",
+  "fillPasscode": "去填写",
+  "oobeMapFeatureDesc": "高德地图瓦片，查看附近 APRS 台站与轨迹",
+  "oobeGpsFeatureDesc": "自动获取位置并发送信标到 APRS-IS",
+  "oobeMsgFeatureDesc": "与台站收发消息，支持自动应答",
+  "oobeIsFeatureDesc": "连接公共服务器，接收全球台站数据",
+  "oobeBackgroundTip": "提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。",
+  "oobeNextSteps": "接下来几步完成基础配置，随时可在设置中修改。",
+  "ssidDescShort": "SSID 是呼号后面的数字标识，如 BG7ABC-9 中的 -9",
+  "ssidOptional": "SSID 后缀（可选）",
+  "noSsid": "无后缀（基本呼号）",
+  "fullCallsign": "完整呼号：{call}",
+  "passcodeImportant": "Passcode 非常重要",
+  "passcodeImportantDesc": "正确的 Passcode 是接收群聊消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。",
+  "lookupPasscode": "点击查询你的 Passcode →",
+  "passcodeLookupHint": "输入你的呼号即可获取，例如 BV2AAA",
+  "sendToGroupHint": "发到 {group}…",
+  "sendToCallHint": "发给 {call}…",
+  "selectMessageReply": "点选消息以回复…",
+  "broadcastShort": "群发",
+  "memberCount": "{count} 个成员",
+  "memberCountTap": "{count} 名成员 · 点击查看",
+  "stepRecipients": "选人",
+  "stepContent": "内容",
+  "selectAllOnline": "全选在线",
+  "clearSelection": "取消全选",
+  "onlineOnly": "仅在线",
+  "noRecipients": "未选择接收人",
+  "selectedRecipients": "已选 {count} 人",
+  "sendRecipientsList": "将发送给 {count} 人：{calls}",
+  "stepName": "名称",
+  "stepMembers": "成员",
+  "groupChatExplain": "群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。",
+  "noMembersSelected": "未选择成员",
+  "memberBlocked": "已屏蔽",
+  "memberJoined": "已加入",
+  "memberPending": "待确认",
+  "memberDeclined": "已拒绝",
+  "memberLeft": "已退出",
+  "memberTimeout": "超时",
+  "unblock": "解除屏蔽",
+  "block": "屏蔽",
+  "groupOwner": "群主",
+  "systemMemberJoined": "{call} 加入了群聊",
+  "systemMemberLeft": "{call} 离开了群聊",
+  "systemInviteDeclined": "{call} 拒绝了邀请",
+  "copyAllLogs": "复制全部日志",
+  "copiedLogs": "已复制 {count} 条日志",
+  "clearLogs": "清空日志",
+  "noLogs": "暂无日志",
+  "supportProject": "你们的支持让项目走得更远",
+  "continuousIteration": "持续迭代",
+  "continuousIterationDesc": "不断改进 APRSlocus 功能与体验",
+  "sponsorSupport": "赞助支持",
+  "sponsorMethods": "赞助方式",
+  "qrCodeTitle": "{title} 赞赏码",
+  "qrLoadFailed": "赞赏码图片加载失败",
+  "qrSaveWechat": "长按图片可保存 · 微信扫一扫赞赏",
+  "tapAnywhereClose": "点击任意处关闭",
+  "webAmapUnsupported": "Web 平台暂不支持高德 JS 地图",
+  "webview2InitFailed": "WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时",
+  "loadingAmap": "加载高德地图…",
+  "vectorMapLoadFailed": "矢量地图加载失败\n{error}",
+  "loadingVectorMap": "加载矢量地图…",
+  "updateChannel": "更新渠道",
+  "serverReturned": "服务器返回 {code}",
+  "invalidResponseData": "返回数据格式错误",
+  "noVersionsFound": "没有找到任何版本",
+  "noWindowsInstaller": "该版本没有 Windows 安装包",
+  "noApkInstaller": "该版本没有 APK 安装包",
+  "connectingEllipsis": "正在连接…",
+  "downloadHttpError": "下载失败：HTTP {code}",
+  "downloadedBytes": "已下载 {received} / {total}",
+  "androidInstallHelp": "安装包已下载到：\n{path}\n\n点击“安装”后，系统会弹出安装确认框。\n\n若提示“不允许安装未知来源应用”，请到系统设置中允许本应用安装未知应用。",
+  "windowsInstallHelp": "安装包已保存到：\n{path}\n\n点击“立即运行”直接启动安装程序；也可以打开所在目录查看文件。",
+  "openContainingFolder": "打开所在目录",
+  "runNow": "立即运行",
+  "cannotRunInstaller": "无法启动安装程序，请到所在目录手动打开",
+  "cannotLaunchInstaller": "无法启动安装器，请手动打开安装包",
+  "openPackageManually": "请在文件管理器中打开安装包",
+  "cannotOpenPackage": "无法打开安装包：{error}",
+  "installPermissionTitle": "需要允许安装应用",
+  "installPermissionDesc": "检测到系统未允许 APRSlocus 安装应用。\n\n请点击“去设置”，在“安装未知应用”中允许本应用安装应用，然后返回重新安装。",
+  "recheck": "重新检查",
+  "signatureChangedTitle": "签名已更换 · 需卸载重装",
+  "signatureChangedDesc": "本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。",
+  "newVersionTitle": "发现新版本 v{version}",
+  "repoLatestTitle": "仓库最新版本 v{version}",
+  "checkingLatest": "正在检查最新版本…",
+  "connectingGitCode": "连接 GitCode 服务器",
+  "noReleaseNotes": "暂无更新说明",
+  "noInstallerHistoryHint": "该版本暂无 {platform} 安装包，请到历史版本中选择可下载的版本",
+  "latestVersionLabel": "最新版本",
+  "packageSize": "{platform} 安装包大小：{size}",
+  "updateContents": "更新内容",
+  "redownload": "重新下载",
+  "downloadInstaller": "下载安装包",
+  "downloadAndInstall": "下载并安装",
+  "localPackageExists": "本地已有一份安装包",
+  "packageDeleted": "安装包已删除",
+  "versionCount": "{count} 个",
+  "noInstaller": "无安装包",
+  "download": "下载",
+  "viewChangelog": "查看更新日志",
+  "versionChangelog": "v{version} 更新日志",
+  "gotIt": "知道了",
+  "@countTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@countItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@countEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@aprsSymbolName": {
+    "placeholders": {
+      "symbol": {
+        "type": "String"
+      }
+    }
+  },
+  "@symbolCategoryName": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "@countryName": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@locationStreamError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@locationInitError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAutoReconnect": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connConnectingTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@connOnline": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetry": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connPositionSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@mapDefaultCoord": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "@secondsValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@myLocationSetGrid": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@filterSavedRadius": {
+    "placeholders": {
+      "saved": {
+        "type": "String"
+      },
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "@deleteAllChatsConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@movingWithSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteContactConfirm": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactDeleted": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@fullCallsign": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendToGroupHint": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendToCallHint": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@memberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberCountTap": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@selectedRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sendRecipientsList": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "calls": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemMemberJoined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemMemberLeft": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemInviteDeclined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@copiedLogs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@qrCodeTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@vectorMapLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@serverReturned": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "@downloadHttpError": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "@downloadedBytes": {
+    "placeholders": {
+      "received": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "@androidInstallHelp": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@windowsInstallHelp": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@cannotOpenPackage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@newVersionTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@repoLatestTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@noInstallerHistoryHint": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "@packageSize": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@versionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@versionChangelog": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveAction": "退出",
+  "localRepoVersion": "本地 v{local} · 仓库最新 v{latest}",
+  "unverified": "未验证",
+  "passcodeUnverifiedHint": "-1 未验证",
+  "passcodeMessageWarning": "APRS-IS 登录验证码，填 -1 无法正常收发消息"
 }

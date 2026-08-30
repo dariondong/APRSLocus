@@ -98,17 +98,11 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
-  /// No description provided for @appName.
+  /// 应用名称
   ///
   /// In zh, this message translates to:
   /// **'APRSlocus'**
   String get appName;
-
-  /// No description provided for @appName_desc.
-  ///
-  /// In zh, this message translates to:
-  /// **'应用名称'**
-  String get appName_desc;
 
   /// No description provided for @ok.
   ///
@@ -1219,6 +1213,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'作者'**
   String get author;
+
+  /// No description provided for @codeContributions.
+  ///
+  /// In zh, this message translates to:
+  /// **'代码贡献'**
+  String get codeContributions;
+
+  /// No description provided for @codeContributionI18n.
+  ///
+  /// In zh, this message translates to:
+  /// **'国际化 / 英文界面'**
+  String get codeContributionI18n;
+
+  /// No description provided for @licenseSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'许可证声明'**
+  String get licenseSection;
+
+  /// No description provided for @licenseName.
+  ///
+  /// In zh, this message translates to:
+  /// **'GNU GPL v3'**
+  String get licenseName;
+
+  /// No description provided for @licenseStatement.
+  ///
+  /// In zh, this message translates to:
+  /// **'本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。'**
+  String get licenseStatement;
+
+  /// No description provided for @licenseText.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看许可证'**
+  String get licenseText;
 
   /// No description provided for @features.
   ///
@@ -2359,6 +2389,2106 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'打开下载目录'**
   String get openDownloadFolder;
+
+  /// No description provided for @groupBubble.
+  ///
+  /// In zh, this message translates to:
+  /// **'群·{name}'**
+  String groupBubble(String name);
+
+  /// No description provided for @groupInviteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊邀请'**
+  String get groupInviteTitle;
+
+  /// No description provided for @groupInviteFrom.
+  ///
+  /// In zh, this message translates to:
+  /// **'{from} 邀请你加入群聊'**
+  String groupInviteFrom(String from);
+
+  /// No description provided for @groupNameValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'群名：{name}'**
+  String groupNameValue(String name);
+
+  /// No description provided for @groupCallsignValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'群呼号：{call}'**
+  String groupCallsignValue(String call);
+
+  /// No description provided for @groupInviteAccepted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已接受邀请，加入 {name}'**
+  String groupInviteAccepted(String name);
+
+  /// No description provided for @accept.
+  ///
+  /// In zh, this message translates to:
+  /// **'接受'**
+  String get accept;
+
+  /// No description provided for @groupInviteRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已拒绝 {name} 的邀请'**
+  String groupInviteRejected(String name);
+
+  /// No description provided for @reject.
+  ///
+  /// In zh, this message translates to:
+  /// **'拒绝'**
+  String get reject;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 定位追踪'**
+  String get appTagline;
+
+  /// No description provided for @gridValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'网格 {grid}'**
+  String gridValue(String grid);
+
+  /// No description provided for @packetsPerMinute.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}/分'**
+  String packetsPerMinute(int count);
+
+  /// No description provided for @demo.
+  ///
+  /// In zh, this message translates to:
+  /// **'演示'**
+  String get demo;
+
+  /// No description provided for @nextBeaconIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'下次上报 {time}'**
+  String nextBeaconIn(String time);
+
+  /// No description provided for @beaconCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标 {count} 次'**
+  String beaconCount(int count);
+
+  /// No description provided for @beaconSentAprsIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置已上报 · 网格 {grid} · 已发往 APRS-IS'**
+  String beaconSentAprsIs(String grid);
+
+  /// No description provided for @beaconSentDemo.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置已上报 · 网格 {grid} · 演示'**
+  String beaconSentDemo(String grid);
+
+  /// No description provided for @getLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取定位'**
+  String get getLocation;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'断开连接'**
+  String get disconnect;
+
+  /// No description provided for @connectAprsIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接 APRS-IS'**
+  String get connectAprsIs;
+
+  /// No description provided for @packetsReceived.
+  ///
+  /// In zh, this message translates to:
+  /// **'收包'**
+  String get packetsReceived;
+
+  /// No description provided for @passcodeUnverified.
+  ///
+  /// In zh, this message translates to:
+  /// **'Passcode 未验证'**
+  String get passcodeUnverified;
+
+  /// No description provided for @passcodeWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录密码可能错误，无法正常收发消息'**
+  String get passcodeWarning;
+
+  /// No description provided for @goSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'去设置'**
+  String get goSettings;
+
+  /// No description provided for @connectingServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接服务器…'**
+  String get connectingServer;
+
+  /// No description provided for @notConnectedAprsServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接 APRS-IS 服务器'**
+  String get notConnectedAprsServer;
+
+  /// No description provided for @connectingToServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 {server}:{port}…'**
+  String connectingToServer(String server, int port);
+
+  /// No description provided for @connectNearbyDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接后可接收附近台站定位与消息'**
+  String get connectNearbyDesc;
+
+  /// No description provided for @connectAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接'**
+  String get connectAction;
+
+  /// No description provided for @backgroundRunTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。'**
+  String get backgroundRunTip;
+
+  /// No description provided for @connectedAprsIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 APRS-IS'**
+  String get connectedAprsIs;
+
+  /// No description provided for @qqGroupDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocus 软件 · 反馈问题/交流使用'**
+  String get qqGroupDesc;
+
+  /// No description provided for @reselectPoint.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新选点'**
+  String get reselectPoint;
+
+  /// No description provided for @disableClustering.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭聚合'**
+  String get disableClustering;
+
+  /// No description provided for @enableClustering.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启聚合'**
+  String get enableClustering;
+
+  /// No description provided for @noPackets.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无数据包'**
+  String get noPackets;
+
+  /// No description provided for @secondsAgo.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}秒前'**
+  String secondsAgo(int count);
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}分前'**
+  String minutesAgo(int count);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}小时前'**
+  String hoursAgo(int count);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}天前'**
+  String daysAgo(int count);
+
+  /// No description provided for @copiedCoordsValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制坐标：{coords}'**
+  String copiedCoordsValue(String coords);
+
+  /// No description provided for @copiedGridValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制网格：{grid}'**
+  String copiedGridValue(String grid);
+
+  /// No description provided for @distanceBearing.
+  ///
+  /// In zh, this message translates to:
+  /// **'距我 {distance}km · 方位 {bearing}°'**
+  String distanceBearing(String distance, String bearing);
+
+  /// No description provided for @weatherDataValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'气象数据 · {data}'**
+  String weatherDataValue(String data);
+
+  /// No description provided for @symbolLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'符号'**
+  String get symbolLabel;
+
+  /// No description provided for @digipeaterTapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击中继台跳转到对应台站'**
+  String get digipeaterTapHint;
+
+  /// No description provided for @copiedFmoInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制 FMO 信息'**
+  String get copiedFmoInfo;
+
+  /// No description provided for @copiedAprslocusInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制 APRSlocus 信息'**
+  String get copiedAprslocusInfo;
+
+  /// No description provided for @trackPoints.
+  ///
+  /// In zh, this message translates to:
+  /// **'轨迹 ({count} 点)'**
+  String trackPoints(int count);
+
+  /// No description provided for @sendMessageTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'发消息给 {call}…'**
+  String sendMessageTo(String call);
+
+  /// No description provided for @navigationUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'未安装高德地图，且无法打开其他地图应用'**
+  String get navigationUnavailable;
+
+  /// No description provided for @stationNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站 {call} 尚未收到数据'**
+  String stationNoData(String call);
+
+  /// No description provided for @software.
+  ///
+  /// In zh, this message translates to:
+  /// **'软件'**
+  String get software;
+
+  /// No description provided for @close.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭'**
+  String get close;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get nameLabel;
+
+  /// No description provided for @viewSponsorDetails.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看作者与赞助详情 →'**
+  String get viewSponsorDetails;
+
+  /// No description provided for @thanks.
+  ///
+  /// In zh, this message translates to:
+  /// **'感谢'**
+  String get thanks;
+
+  /// No description provided for @qqSoftwareName.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocus 软件'**
+  String get qqSoftwareName;
+
+  /// No description provided for @usageNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规'**
+  String get usageNotice;
+
+  /// No description provided for @licenseNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'GNU GPL v3 开源协议 · Copyright © BG7LZQ'**
+  String get licenseNotice;
+
+  /// No description provided for @appInfoText.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocus v{version}\n作者: BG7LZQ (Darion)\n网站: Theez.top'**
+  String appInfoText(String version);
+
+  /// No description provided for @eggBg7lzq.
+  ///
+  /// In zh, this message translates to:
+  /// **'哎呦你干嘛~'**
+  String get eggBg7lzq;
+
+  /// No description provided for @eggBg7pgw.
+  ///
+  /// In zh, this message translates to:
+  /// **'闹呢？'**
+  String get eggBg7pgw;
+
+  /// No description provided for @eggBg7lmw.
+  ///
+  /// In zh, this message translates to:
+  /// **'默不作声...'**
+  String get eggBg7lmw;
+
+  /// No description provided for @eggBg7osl.
+  ///
+  /// In zh, this message translates to:
+  /// **'你的胆子肥嘟嘟的'**
+  String get eggBg7osl;
+
+  /// No description provided for @manualCallsignHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动输入呼号添加'**
+  String get manualCallsignHint;
+
+  /// No description provided for @noPacketReceived.
+  ///
+  /// In zh, this message translates to:
+  /// **'未收到数据包'**
+  String get noPacketReceived;
+
+  /// No description provided for @feedMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'瀑布流'**
+  String get feedMode;
+
+  /// No description provided for @conversationMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'会话'**
+  String get conversationMode;
+
+  /// No description provided for @messageFeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息瀑布流'**
+  String get messageFeed;
+
+  /// No description provided for @messageTotal.
+  ///
+  /// In zh, this message translates to:
+  /// **'共 {count} 条'**
+  String messageTotal(int count);
+
+  /// No description provided for @noMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无消息'**
+  String get noMessages;
+
+  /// No description provided for @copiedClipboard.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制到剪贴板'**
+  String get copiedClipboard;
+
+  /// No description provided for @groupShortLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'群'**
+  String get groupShortLabel;
+
+  /// No description provided for @conversations.
+  ///
+  /// In zh, this message translates to:
+  /// **'会话'**
+  String get conversations;
+
+  /// No description provided for @noConversations.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无会话'**
+  String get noConversations;
+
+  /// No description provided for @groupNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊不存在'**
+  String get groupNotFound;
+
+  /// No description provided for @invite.
+  ///
+  /// In zh, this message translates to:
+  /// **'邀请'**
+  String get invite;
+
+  /// No description provided for @manage.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理'**
+  String get manage;
+
+  /// No description provided for @noGroupMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊暂无消息'**
+  String get noGroupMessages;
+
+  /// No description provided for @selectConversation.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择会话开始聊天'**
+  String get selectConversation;
+
+  /// No description provided for @newConversation.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建会话'**
+  String get newConversation;
+
+  /// No description provided for @newConversationDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入呼号开始新的会话'**
+  String get newConversationDesc;
+
+  /// No description provided for @callsignExample.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号，如 BG7ABC'**
+  String get callsignExample;
+
+  /// No description provided for @start.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始'**
+  String get start;
+
+  /// No description provided for @broadcastMessage.
+  ///
+  /// In zh, this message translates to:
+  /// **'群发消息'**
+  String get broadcastMessage;
+
+  /// No description provided for @noStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无台站'**
+  String get noStations;
+
+  /// No description provided for @broadcastHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'提示：每条消息会单独发送给每个接收人'**
+  String get broadcastHint;
+
+  /// No description provided for @broadcastSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已群发给 {count} 人'**
+  String broadcastSent(int count);
+
+  /// No description provided for @searchCallsign.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索呼号…'**
+  String get searchCallsign;
+
+  /// No description provided for @broadcastContentHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入要群发的内容…'**
+  String get broadcastContentHint;
+
+  /// No description provided for @groupNameHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入群聊名称'**
+  String get groupNameHint;
+
+  /// No description provided for @create.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建'**
+  String get create;
+
+  /// No description provided for @groupCallsignLine.
+  ///
+  /// In zh, this message translates to:
+  /// **'群呼号: {call}'**
+  String groupCallsignLine(String call);
+
+  /// No description provided for @noMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无成员'**
+  String get noMembers;
+
+  /// No description provided for @inviteMembersHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击下方「邀请成员」添加'**
+  String get inviteMembersHint;
+
+  /// No description provided for @remove.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除'**
+  String get remove;
+
+  /// No description provided for @inviteMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'邀请成员'**
+  String get inviteMembers;
+
+  /// No description provided for @deleteGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除群组'**
+  String get deleteGroup;
+
+  /// No description provided for @deleteGroupConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除「{name}」？此操作不可撤销。'**
+  String deleteGroupConfirm(String name);
+
+  /// No description provided for @memberOnlineCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{members} 名成员 · {online} 在线'**
+  String memberOnlineCount(int members, int online);
+
+  /// No description provided for @leaveGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出群组'**
+  String get leaveGroup;
+
+  /// No description provided for @leaveGroupConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定退出「{name}」？你将不再收到该群的消息。'**
+  String leaveGroupConfirm(String name);
+
+  /// No description provided for @leftGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'已退出 {name}'**
+  String leftGroup(String name);
+
+  /// No description provided for @leave.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出'**
+  String get leave;
+
+  /// No description provided for @inviteMembersTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'邀请成员到 {name}'**
+  String inviteMembersTo(String name);
+
+  /// No description provided for @manualCallsign.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动输入呼号'**
+  String get manualCallsign;
+
+  /// No description provided for @inviteSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发送邀请给 {call}'**
+  String inviteSent(String call);
+
+  /// No description provided for @noMoreOnlineStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无更多在线台站'**
+  String get noMoreOnlineStations;
+
+  /// No description provided for @invited.
+  ///
+  /// In zh, this message translates to:
+  /// **'已邀请'**
+  String get invited;
+
+  /// No description provided for @tapToInvite.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击邀请'**
+  String get tapToInvite;
+
+  /// No description provided for @done.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成'**
+  String get done;
+
+  /// No description provided for @addContact.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加联系人'**
+  String get addContact;
+
+  /// No description provided for @addContactDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入呼号手动添加到联系人列表'**
+  String get addContactDesc;
+
+  /// No description provided for @contactAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'已添加联系人 {call}'**
+  String contactAdded(String call);
+
+  /// No description provided for @add.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加'**
+  String get add;
+
+  /// No description provided for @stationary.
+  ///
+  /// In zh, this message translates to:
+  /// **'静止'**
+  String get stationary;
+
+  /// No description provided for @unknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'未知'**
+  String get unknown;
+
+  /// No description provided for @none.
+  ///
+  /// In zh, this message translates to:
+  /// **'无'**
+  String get none;
+
+  /// No description provided for @manual.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动'**
+  String get manual;
+
+  /// No description provided for @management.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理'**
+  String get management;
+
+  /// No description provided for @debugLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'调试'**
+  String get debugLabel;
+
+  /// No description provided for @information.
+  ///
+  /// In zh, this message translates to:
+  /// **'信息'**
+  String get information;
+
+  /// No description provided for @warning.
+  ///
+  /// In zh, this message translates to:
+  /// **'警告'**
+  String get warning;
+
+  /// No description provided for @errorLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'错误'**
+  String get errorLabel;
+
+  /// No description provided for @countTimes.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 次'**
+  String countTimes(int count);
+
+  /// No description provided for @countItems.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 个'**
+  String countItems(int count);
+
+  /// No description provided for @countEntries.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 条'**
+  String countEntries(int count);
+
+  /// No description provided for @aprsSymbolName.
+  ///
+  /// In zh, this message translates to:
+  /// **'{symbol, select, car {汽车} police {警局} person {人} digitalRepeater {数字中继} telephone {电话} dxCluster {DX 集群} hfGateway {HF 网关} smallAircraft {小型飞机} mobileSatellite {移动卫星} disabled {残障} snowmobile {雪地摩托} redCross {红十字} scouts {童子军} house {房屋} redX {红叉} redDot {红点} fire {火警} campground {露营} motorcycle {摩托} train {火车} fileServer {文件服务器} hurricane {飓风} dfTriangle {DF 三角} postOffice {邮局} largeAircraft {大型飞机} weatherStation {气象站} satelliteDish {卫星天线} ambulance {救护车} bicycle {自行车} commandPost {指挥中心} fireStation {消防站} horse {骑马} fireTruck {消防车} glider {滑翔机} hospital {医院} fmoStation {FMO 台站} jeep {吉普} truck {卡车} laptop {笔记本} micERepeater {Mic-E 中继} node {节点} emergencyOps {应急中心} dog {狗} gridSquare {网格} repeaterTower {中继塔} boat {船} truckStop {卡车停靠站} semiTrailer {半挂车} van {面包车} waterStation {供水站} yagi {八木天线屋} shelter {避难所} rv {房车} weatherSymbol {气象台} balloon {气球} bus {公交} shuttle {航天飞机} policeCar {警车} sailboat {帆船} school {学校} lodging {旅馆} hotel {酒店} other {未知}}'**
+  String aprsSymbolName(String symbol);
+
+  /// No description provided for @symbolCategoryName.
+  ///
+  /// In zh, this message translates to:
+  /// **'{category, select, vehicles {车辆 / 交通} facilities {建筑 / 设施} weatherNature {气象 / 自然} emergencyRescue {应急救援} airWater {飞行 / 水域} communications {通信 / 其他} other {其他}}'**
+  String symbolCategoryName(String category);
+
+  /// No description provided for @countryName.
+  ///
+  /// In zh, this message translates to:
+  /// **'{code, select, CN {中国} KR {韩国} JP {日本} US {美国} CA {加拿大} GB {英国} DE {德国} FR {法国} IT {意大利} ES {西班牙} RU {俄罗斯} AU {澳大利亚} NZ {新西兰} BR {巴西} AR {阿根廷} MX {墨西哥} ZA {南非} IN {印度} TH {泰国} SG {新加坡} MY {马来西亚} ID {印度尼西亚} PH {菲律宾} TW {台湾} HK {香港} MO {澳门} other {未知}}'**
+  String countryName(String code);
+
+  /// No description provided for @locationNotFixed.
+  ///
+  /// In zh, this message translates to:
+  /// **'未定位'**
+  String get locationNotFixed;
+
+  /// No description provided for @simulatedLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'模拟位置'**
+  String get simulatedLocation;
+
+  /// No description provided for @savedLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存位置'**
+  String get savedLocation;
+
+  /// No description provided for @locationFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位失败'**
+  String get locationFailed;
+
+  /// No description provided for @locationStopped.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位已停止'**
+  String get locationStopped;
+
+  /// No description provided for @locationFixed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已定位'**
+  String get locationFixed;
+
+  /// No description provided for @locationPermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'请授予定位权限…'**
+  String get locationPermission;
+
+  /// No description provided for @gpsLocating.
+  ///
+  /// In zh, this message translates to:
+  /// **'GPS 定位中…'**
+  String get gpsLocating;
+
+  /// No description provided for @webLocationUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 平台暂不支持自动定位，请手动输入坐标'**
+  String get webLocationUnsupported;
+
+  /// No description provided for @locationStreamError.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位流异常：{error}'**
+  String locationStreamError(String error);
+
+  /// No description provided for @locationInitError.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位初始化失败：{error}'**
+  String locationInitError(String error);
+
+  /// No description provided for @beaconDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已关闭'**
+  String get beaconDisabled;
+
+  /// No description provided for @waitingForLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待定位'**
+  String get waitingForLocation;
+
+  /// No description provided for @imminent.
+  ///
+  /// In zh, this message translates to:
+  /// **'即将'**
+  String get imminent;
+
+  /// No description provided for @connTapToConnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接 · 点击播放按钮连接 APRS-IS'**
+  String get connTapToConnect;
+
+  /// No description provided for @connManuallyDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接 · 已手动断开'**
+  String get connManuallyDisconnected;
+
+  /// No description provided for @connAutoReconnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接已断开 · {seconds}秒后自动重连…'**
+  String connAutoReconnect(int seconds);
+
+  /// No description provided for @connConnectingTarget.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 {target}…'**
+  String connConnectingTarget(String target);
+
+  /// No description provided for @connOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 · {call} 在线'**
+  String connOnline(String call);
+
+  /// No description provided for @connRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接失败 · {seconds}s 后重试…'**
+  String connRetry(int seconds);
+
+  /// No description provided for @connPositionSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 · 位置已上报 ({call})'**
+  String connPositionSent(String call);
+
+  /// No description provided for @connDemoBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接 · 位置已上报（模拟）'**
+  String get connDemoBeacon;
+
+  /// No description provided for @connPasscodeInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 · 未验证（Passcode 可能错误）'**
+  String get connPasscodeInvalid;
+
+  /// No description provided for @mapTypeAmap.
+  ///
+  /// In zh, this message translates to:
+  /// **'高德地图'**
+  String get mapTypeAmap;
+
+  /// No description provided for @mapTypeAmapSatellite.
+  ///
+  /// In zh, this message translates to:
+  /// **'高德卫星'**
+  String get mapTypeAmapSatellite;
+
+  /// No description provided for @mapTypeAmapJs.
+  ///
+  /// In zh, this message translates to:
+  /// **'高德 JS'**
+  String get mapTypeAmapJs;
+
+  /// No description provided for @mapTypeVector.
+  ///
+  /// In zh, this message translates to:
+  /// **'矢量地图'**
+  String get mapTypeVector;
+
+  /// No description provided for @amapGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'高德'**
+  String get amapGroup;
+
+  /// No description provided for @domesticMaps.
+  ///
+  /// In zh, this message translates to:
+  /// **'国内地图'**
+  String get domesticMaps;
+
+  /// No description provided for @internationalMaps.
+  ///
+  /// In zh, this message translates to:
+  /// **'国际地图'**
+  String get internationalMaps;
+
+  /// No description provided for @metricUnits.
+  ///
+  /// In zh, this message translates to:
+  /// **'公制 (km/h, m)'**
+  String get metricUnits;
+
+  /// No description provided for @coordDisplay.
+  ///
+  /// In zh, this message translates to:
+  /// **'坐标显示'**
+  String get coordDisplay;
+
+  /// No description provided for @mapDefaultCoord.
+  ///
+  /// In zh, this message translates to:
+  /// **'北京 · {level}级'**
+  String mapDefaultCoord(int level);
+
+  /// No description provided for @secondsValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 秒'**
+  String secondsValue(int count);
+
+  /// No description provided for @stationSettingsDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号、SSID、符号与备注'**
+  String get stationSettingsDetail;
+
+  /// No description provided for @stationIdentity.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台身份'**
+  String get stationIdentity;
+
+  /// No description provided for @aprsCallsignHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 呼号，如 BV2AAA'**
+  String get aprsCallsignHint;
+
+  /// No description provided for @displayInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示信息'**
+  String get displayInfo;
+
+  /// No description provided for @ssidSuffix.
+  ///
+  /// In zh, this message translates to:
+  /// **'SSID 后缀'**
+  String get ssidSuffix;
+
+  /// No description provided for @chooseSsidSuffix.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择 SSID 后缀'**
+  String get chooseSsidSuffix;
+
+  /// No description provided for @mySymbol.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的符号'**
+  String get mySymbol;
+
+  /// No description provided for @moreSymbols.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多符号'**
+  String get moreSymbols;
+
+  /// No description provided for @allAprsSymbols.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部 APRS 符号'**
+  String get allAprsSymbols;
+
+  /// No description provided for @beaconSettingsDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'GPS 来源、信标与手动定位'**
+  String get beaconSettingsDetail;
+
+  /// No description provided for @locationSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位来源'**
+  String get locationSource;
+
+  /// No description provided for @useDeviceLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用设备定位'**
+  String get useDeviceLocation;
+
+  /// No description provided for @manualCoordinates.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动输入坐标'**
+  String get manualCoordinates;
+
+  /// No description provided for @beaconingSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标上报'**
+  String get beaconingSection;
+
+  /// No description provided for @beaconIntervalTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置信标的发送间隔，至少 5 秒'**
+  String get beaconIntervalTip;
+
+  /// No description provided for @beaconContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标上报内容'**
+  String get beaconContent;
+
+  /// No description provided for @beaconContentDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'随位置信标一起发送'**
+  String get beaconContentDesc;
+
+  /// No description provided for @phoneBattery.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机电量'**
+  String get phoneBattery;
+
+  /// No description provided for @locationStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位状态'**
+  String get locationStatus;
+
+  /// No description provided for @relocate.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新定位'**
+  String get relocate;
+
+  /// No description provided for @startGps.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启 GPS 定位'**
+  String get startGps;
+
+  /// No description provided for @trackingBeaconing.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位运行中，正在持续上报位置'**
+  String get trackingBeaconing;
+
+  /// No description provided for @manualLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动定位'**
+  String get manualLocation;
+
+  /// No description provided for @latitudeHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'纬度 39.9042'**
+  String get latitudeHint;
+
+  /// No description provided for @longitudeHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'经度 116.4074'**
+  String get longitudeHint;
+
+  /// No description provided for @invalidLatLng.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入有效经纬度'**
+  String get invalidLatLng;
+
+  /// No description provided for @myLocationSetGrid.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置我的位置，网格 {grid}'**
+  String myLocationSetGrid(String grid);
+
+  /// No description provided for @applyCoordinates.
+  ///
+  /// In zh, this message translates to:
+  /// **'应用坐标'**
+  String get applyCoordinates;
+
+  /// No description provided for @pickOnMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'在地图选点'**
+  String get pickOnMap;
+
+  /// No description provided for @manualLocationHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。'**
+  String get manualLocationHelp;
+
+  /// No description provided for @passcodeTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 登录验证码，可在线生成；填 -1 表示未验证'**
+  String get passcodeTip;
+
+  /// No description provided for @websocketOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'WebSocket URL（可选）'**
+  String get websocketOptional;
+
+  /// No description provided for @configChanged.
+  ///
+  /// In zh, this message translates to:
+  /// **'配置已修改'**
+  String get configChanged;
+
+  /// No description provided for @reconnectToApply.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新连接后生效'**
+  String get reconnectToApply;
+
+  /// No description provided for @reconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已重新连接'**
+  String get reconnected;
+
+  /// No description provided for @connectFailedCheckConfig.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接失败，请检查配置'**
+  String get connectFailedCheckConfig;
+
+  /// No description provided for @rangeFilterDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'只接收设定范围内的台站数据包'**
+  String get rangeFilterDesc;
+
+  /// No description provided for @filterCenterFollows.
+  ///
+  /// In zh, this message translates to:
+  /// **'过滤中心跟随我的位置'**
+  String get filterCenterFollows;
+
+  /// No description provided for @radiusTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'接收半径（km），点“保存并应用”生效'**
+  String get radiusTip;
+
+  /// No description provided for @maxStationsTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'内存中保留的最大台站数量（默认不限制，可设更大值）'**
+  String get maxStationsTip;
+
+  /// No description provided for @filterSavedRadius.
+  ///
+  /// In zh, this message translates to:
+  /// **'{saved} · 半径 {radius}km'**
+  String filterSavedRadius(String saved, int radius);
+
+  /// No description provided for @receiveFilterDesc2.
+  ///
+  /// In zh, this message translates to:
+  /// **'除范围过滤外，按国家/地区分组或精确呼号接收台站'**
+  String get receiveFilterDesc2;
+
+  /// No description provided for @receiveCountryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'按呼号前缀批量接收某国家/地区全部台站'**
+  String get receiveCountryDesc;
+
+  /// No description provided for @noCountriesSelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未选择国家/地区'**
+  String get noCountriesSelected;
+
+  /// No description provided for @receiveOthersDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'接收不匹配所选国家的特殊呼号台站'**
+  String get receiveOthersDesc;
+
+  /// No description provided for @addCountry.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加国家/地区'**
+  String get addCountry;
+
+  /// No description provided for @chatSettingsDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息、联系人与聊天数据'**
+  String get chatSettingsDetail;
+
+  /// No description provided for @messageCountLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息条数'**
+  String get messageCountLabel;
+
+  /// No description provided for @manageContacts.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理联系人'**
+  String get manageContacts;
+
+  /// No description provided for @deleteAllChatsConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要删除全部 {count} 条聊天记录吗？此操作不可恢复。'**
+  String deleteAllChatsConfirm(int count);
+
+  /// No description provided for @chatCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'聊天记录已清空'**
+  String get chatCleared;
+
+  /// No description provided for @noContacts.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无联系人'**
+  String get noContacts;
+
+  /// No description provided for @addOrFavoriteContact.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击右上角“添加”或在地图上收藏台站'**
+  String get addOrFavoriteContact;
+
+  /// No description provided for @movingWithSpeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动中 · {speed}'**
+  String movingWithSpeed(String speed);
+
+  /// No description provided for @callsignMin3.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号至少 3 个字符'**
+  String get callsignMin3;
+
+  /// No description provided for @deleteContact.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除联系人'**
+  String get deleteContact;
+
+  /// No description provided for @deleteContactConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除联系人 {call}？'**
+  String deleteContactConfirm(String call);
+
+  /// No description provided for @contactDeleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除 {call}'**
+  String contactDeleted(String call);
+
+  /// No description provided for @dataMaintenance.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据维护'**
+  String get dataMaintenance;
+
+  /// No description provided for @clearAllData.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除所有数据'**
+  String get clearAllData;
+
+  /// No description provided for @clearAllDataIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'此操作将删除以下所有本地数据：'**
+  String get clearAllDataIntro;
+
+  /// No description provided for @chatHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'聊天记录'**
+  String get chatHistory;
+
+  /// No description provided for @logs.
+  ///
+  /// In zh, this message translates to:
+  /// **'日志'**
+  String get logs;
+
+  /// No description provided for @irreversibleKeepSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'此操作不可恢复，连接设置和呼号不会被删除。'**
+  String get irreversibleKeepSettings;
+
+  /// No description provided for @confirmClearAllData.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认清除所有数据'**
+  String get confirmClearAllData;
+
+  /// No description provided for @clearAllDataConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要清除全部本地数据吗？此操作不可恢复。'**
+  String get clearAllDataConfirm;
+
+  /// No description provided for @allDataCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'所有数据已清除'**
+  String get allDataCleared;
+
+  /// No description provided for @confirmClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认清除'**
+  String get confirmClear;
+
+  /// No description provided for @allowLandscape.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许手机横屏显示'**
+  String get allowLandscape;
+
+  /// No description provided for @packetParseTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据包解析测试'**
+  String get packetParseTest;
+
+  /// No description provided for @packetParseHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'粘贴原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station'**
+  String get packetParseHint;
+
+  /// No description provided for @parseAndApply.
+  ///
+  /// In zh, this message translates to:
+  /// **'解析并应用'**
+  String get parseAndApply;
+
+  /// No description provided for @oobePasscodeMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'Passcode 未填写'**
+  String get oobePasscodeMissing;
+
+  /// No description provided for @oobePasscodeMissingDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。'**
+  String get oobePasscodeMissingDesc;
+
+  /// No description provided for @continueAnyway.
+  ///
+  /// In zh, this message translates to:
+  /// **'仍然继续'**
+  String get continueAnyway;
+
+  /// No description provided for @fillPasscode.
+  ///
+  /// In zh, this message translates to:
+  /// **'去填写'**
+  String get fillPasscode;
+
+  /// No description provided for @oobeMapFeatureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'高德地图瓦片，查看附近 APRS 台站与轨迹'**
+  String get oobeMapFeatureDesc;
+
+  /// No description provided for @oobeGpsFeatureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动获取位置并发送信标到 APRS-IS'**
+  String get oobeGpsFeatureDesc;
+
+  /// No description provided for @oobeMsgFeatureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'与台站收发消息，支持自动应答'**
+  String get oobeMsgFeatureDesc;
+
+  /// No description provided for @oobeIsFeatureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接公共服务器，接收全球台站数据'**
+  String get oobeIsFeatureDesc;
+
+  /// No description provided for @oobeBackgroundTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。'**
+  String get oobeBackgroundTip;
+
+  /// No description provided for @oobeNextSteps.
+  ///
+  /// In zh, this message translates to:
+  /// **'接下来几步完成基础配置，随时可在设置中修改。'**
+  String get oobeNextSteps;
+
+  /// No description provided for @ssidDescShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'SSID 是呼号后面的数字标识，如 BG7ABC-9 中的 -9'**
+  String get ssidDescShort;
+
+  /// No description provided for @ssidOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'SSID 后缀（可选）'**
+  String get ssidOptional;
+
+  /// No description provided for @noSsid.
+  ///
+  /// In zh, this message translates to:
+  /// **'无后缀（基本呼号）'**
+  String get noSsid;
+
+  /// No description provided for @fullCallsign.
+  ///
+  /// In zh, this message translates to:
+  /// **'完整呼号：{call}'**
+  String fullCallsign(String call);
+
+  /// No description provided for @passcodeImportant.
+  ///
+  /// In zh, this message translates to:
+  /// **'Passcode 非常重要'**
+  String get passcodeImportant;
+
+  /// No description provided for @passcodeImportantDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'正确的 Passcode 是接收群聊消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。'**
+  String get passcodeImportantDesc;
+
+  /// No description provided for @lookupPasscode.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击查询你的 Passcode →'**
+  String get lookupPasscode;
+
+  /// No description provided for @passcodeLookupHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入你的呼号即可获取，例如 BV2AAA'**
+  String get passcodeLookupHint;
+
+  /// No description provided for @sendToGroupHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发到 {group}…'**
+  String sendToGroupHint(String group);
+
+  /// No description provided for @sendToCallHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发给 {call}…'**
+  String sendToCallHint(String call);
+
+  /// No description provided for @selectMessageReply.
+  ///
+  /// In zh, this message translates to:
+  /// **'点选消息以回复…'**
+  String get selectMessageReply;
+
+  /// No description provided for @broadcastShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'群发'**
+  String get broadcastShort;
+
+  /// No description provided for @memberCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 个成员'**
+  String memberCount(int count);
+
+  /// No description provided for @memberCountTap.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 名成员 · 点击查看'**
+  String memberCountTap(int count);
+
+  /// No description provided for @stepRecipients.
+  ///
+  /// In zh, this message translates to:
+  /// **'选人'**
+  String get stepRecipients;
+
+  /// No description provided for @stepContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容'**
+  String get stepContent;
+
+  /// No description provided for @selectAllOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选在线'**
+  String get selectAllOnline;
+
+  /// No description provided for @clearSelection.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消全选'**
+  String get clearSelection;
+
+  /// No description provided for @onlineOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅在线'**
+  String get onlineOnly;
+
+  /// No description provided for @noRecipients.
+  ///
+  /// In zh, this message translates to:
+  /// **'未选择接收人'**
+  String get noRecipients;
+
+  /// No description provided for @selectedRecipients.
+  ///
+  /// In zh, this message translates to:
+  /// **'已选 {count} 人'**
+  String selectedRecipients(int count);
+
+  /// No description provided for @sendRecipientsList.
+  ///
+  /// In zh, this message translates to:
+  /// **'将发送给 {count} 人：{calls}'**
+  String sendRecipientsList(int count, String calls);
+
+  /// No description provided for @stepName.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get stepName;
+
+  /// No description provided for @stepMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'成员'**
+  String get stepMembers;
+
+  /// No description provided for @groupChatExplain.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。'**
+  String get groupChatExplain;
+
+  /// No description provided for @noMembersSelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未选择成员'**
+  String get noMembersSelected;
+
+  /// No description provided for @memberBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'已屏蔽'**
+  String get memberBlocked;
+
+  /// No description provided for @memberJoined.
+  ///
+  /// In zh, this message translates to:
+  /// **'已加入'**
+  String get memberJoined;
+
+  /// No description provided for @memberPending.
+  ///
+  /// In zh, this message translates to:
+  /// **'待确认'**
+  String get memberPending;
+
+  /// No description provided for @memberDeclined.
+  ///
+  /// In zh, this message translates to:
+  /// **'已拒绝'**
+  String get memberDeclined;
+
+  /// No description provided for @memberLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'已退出'**
+  String get memberLeft;
+
+  /// No description provided for @memberTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'超时'**
+  String get memberTimeout;
+
+  /// No description provided for @unblock.
+  ///
+  /// In zh, this message translates to:
+  /// **'解除屏蔽'**
+  String get unblock;
+
+  /// No description provided for @block.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽'**
+  String get block;
+
+  /// No description provided for @groupOwner.
+  ///
+  /// In zh, this message translates to:
+  /// **'群主'**
+  String get groupOwner;
+
+  /// No description provided for @systemMemberJoined.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 加入了群聊'**
+  String systemMemberJoined(String call);
+
+  /// No description provided for @systemMemberLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 离开了群聊'**
+  String systemMemberLeft(String call);
+
+  /// No description provided for @systemInviteDeclined.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 拒绝了邀请'**
+  String systemInviteDeclined(String call);
+
+  /// No description provided for @copyAllLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制全部日志'**
+  String get copyAllLogs;
+
+  /// No description provided for @copiedLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制 {count} 条日志'**
+  String copiedLogs(int count);
+
+  /// No description provided for @clearLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空日志'**
+  String get clearLogs;
+
+  /// No description provided for @noLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无日志'**
+  String get noLogs;
+
+  /// No description provided for @supportProject.
+  ///
+  /// In zh, this message translates to:
+  /// **'你们的支持让项目走得更远'**
+  String get supportProject;
+
+  /// No description provided for @continuousIteration.
+  ///
+  /// In zh, this message translates to:
+  /// **'持续迭代'**
+  String get continuousIteration;
+
+  /// No description provided for @continuousIterationDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'不断改进 APRSlocus 功能与体验'**
+  String get continuousIterationDesc;
+
+  /// No description provided for @sponsorSupport.
+  ///
+  /// In zh, this message translates to:
+  /// **'赞助支持'**
+  String get sponsorSupport;
+
+  /// No description provided for @sponsorMethods.
+  ///
+  /// In zh, this message translates to:
+  /// **'赞助方式'**
+  String get sponsorMethods;
+
+  /// No description provided for @qrCodeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{title} 赞赏码'**
+  String qrCodeTitle(String title);
+
+  /// No description provided for @qrLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'赞赏码图片加载失败'**
+  String get qrLoadFailed;
+
+  /// No description provided for @qrSaveWechat.
+  ///
+  /// In zh, this message translates to:
+  /// **'长按图片可保存 · 微信扫一扫赞赏'**
+  String get qrSaveWechat;
+
+  /// No description provided for @tapAnywhereClose.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击任意处关闭'**
+  String get tapAnywhereClose;
+
+  /// No description provided for @webAmapUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 平台暂不支持高德 JS 地图'**
+  String get webAmapUnsupported;
+
+  /// No description provided for @webview2InitFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时'**
+  String get webview2InitFailed;
+
+  /// No description provided for @loadingAmap.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载高德地图…'**
+  String get loadingAmap;
+
+  /// No description provided for @vectorMapLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'矢量地图加载失败\n{error}'**
+  String vectorMapLoadFailed(String error);
+
+  /// No description provided for @loadingVectorMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载矢量地图…'**
+  String get loadingVectorMap;
+
+  /// No description provided for @updateChannel.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新渠道'**
+  String get updateChannel;
+
+  /// No description provided for @serverReturned.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器返回 {code}'**
+  String serverReturned(int code);
+
+  /// No description provided for @invalidResponseData.
+  ///
+  /// In zh, this message translates to:
+  /// **'返回数据格式错误'**
+  String get invalidResponseData;
+
+  /// No description provided for @noVersionsFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有找到任何版本'**
+  String get noVersionsFound;
+
+  /// No description provided for @noWindowsInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'该版本没有 Windows 安装包'**
+  String get noWindowsInstaller;
+
+  /// No description provided for @noApkInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'该版本没有 APK 安装包'**
+  String get noApkInstaller;
+
+  /// No description provided for @connectingEllipsis.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接…'**
+  String get connectingEllipsis;
+
+  /// No description provided for @downloadHttpError.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载失败：HTTP {code}'**
+  String downloadHttpError(int code);
+
+  /// No description provided for @downloadedBytes.
+  ///
+  /// In zh, this message translates to:
+  /// **'已下载 {received} / {total}'**
+  String downloadedBytes(String received, String total);
+
+  /// No description provided for @androidInstallHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包已下载到：\n{path}\n\n点击“安装”后，系统会弹出安装确认框。\n\n若提示“不允许安装未知来源应用”，请到系统设置中允许本应用安装未知应用。'**
+  String androidInstallHelp(String path);
+
+  /// No description provided for @windowsInstallHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包已保存到：\n{path}\n\n点击“立即运行”直接启动安装程序；也可以打开所在目录查看文件。'**
+  String windowsInstallHelp(String path);
+
+  /// No description provided for @openContainingFolder.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开所在目录'**
+  String get openContainingFolder;
+
+  /// No description provided for @runNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即运行'**
+  String get runNow;
+
+  /// No description provided for @cannotRunInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法启动安装程序，请到所在目录手动打开'**
+  String get cannotRunInstaller;
+
+  /// No description provided for @cannotLaunchInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法启动安装器，请手动打开安装包'**
+  String get cannotLaunchInstaller;
+
+  /// No description provided for @openPackageManually.
+  ///
+  /// In zh, this message translates to:
+  /// **'请在文件管理器中打开安装包'**
+  String get openPackageManually;
+
+  /// No description provided for @cannotOpenPackage.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开安装包：{error}'**
+  String cannotOpenPackage(String error);
+
+  /// No description provided for @installPermissionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'需要允许安装应用'**
+  String get installPermissionTitle;
+
+  /// No description provided for @installPermissionDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'检测到系统未允许 APRSlocus 安装应用。\n\n请点击“去设置”，在“安装未知应用”中允许本应用安装应用，然后返回重新安装。'**
+  String get installPermissionDesc;
+
+  /// No description provided for @recheck.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新检查'**
+  String get recheck;
+
+  /// No description provided for @signatureChangedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'签名已更换 · 需卸载重装'**
+  String get signatureChangedTitle;
+
+  /// No description provided for @signatureChangedDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。'**
+  String get signatureChangedDesc;
+
+  /// No description provided for @newVersionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现新版本 v{version}'**
+  String newVersionTitle(String version);
+
+  /// No description provided for @repoLatestTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'仓库最新版本 v{version}'**
+  String repoLatestTitle(String version);
+
+  /// No description provided for @checkingLatest.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在检查最新版本…'**
+  String get checkingLatest;
+
+  /// No description provided for @connectingGitCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接 GitCode 服务器'**
+  String get connectingGitCode;
+
+  /// No description provided for @noReleaseNotes.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无更新说明'**
+  String get noReleaseNotes;
+
+  /// No description provided for @noInstallerHistoryHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'该版本暂无 {platform} 安装包，请到历史版本中选择可下载的版本'**
+  String noInstallerHistoryHint(String platform);
+
+  /// No description provided for @latestVersionLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'最新版本'**
+  String get latestVersionLabel;
+
+  /// No description provided for @packageSize.
+  ///
+  /// In zh, this message translates to:
+  /// **'{platform} 安装包大小：{size}'**
+  String packageSize(String platform, String size);
+
+  /// No description provided for @updateContents.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新内容'**
+  String get updateContents;
+
+  /// No description provided for @redownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新下载'**
+  String get redownload;
+
+  /// No description provided for @downloadInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载安装包'**
+  String get downloadInstaller;
+
+  /// No description provided for @downloadAndInstall.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载并安装'**
+  String get downloadAndInstall;
+
+  /// No description provided for @localPackageExists.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地已有一份安装包'**
+  String get localPackageExists;
+
+  /// No description provided for @packageDeleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'安装包已删除'**
+  String get packageDeleted;
+
+  /// No description provided for @versionCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 个'**
+  String versionCount(int count);
+
+  /// No description provided for @noInstaller.
+  ///
+  /// In zh, this message translates to:
+  /// **'无安装包'**
+  String get noInstaller;
+
+  /// No description provided for @download.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载'**
+  String get download;
+
+  /// No description provided for @viewChangelog.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看更新日志'**
+  String get viewChangelog;
+
+  /// No description provided for @versionChangelog.
+  ///
+  /// In zh, this message translates to:
+  /// **'v{version} 更新日志'**
+  String versionChangelog(String version);
+
+  /// No description provided for @gotIt.
+  ///
+  /// In zh, this message translates to:
+  /// **'知道了'**
+  String get gotIt;
+
+  /// No description provided for @leaveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出'**
+  String get leaveAction;
+
+  /// No description provided for @localRepoVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地 v{local} · 仓库最新 v{latest}'**
+  String localRepoVersion(Object latest, Object local);
+
+  /// No description provided for @unverified.
+  ///
+  /// In zh, this message translates to:
+  /// **'未验证'**
+  String get unverified;
+
+  /// No description provided for @passcodeUnverifiedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'-1 未验证'**
+  String get passcodeUnverifiedHint;
+
+  /// No description provided for @passcodeMessageWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 登录验证码，填 -1 无法正常收发消息'**
+  String get passcodeMessageWarning;
 }
 
 class _AppLocalizationsDelegate
