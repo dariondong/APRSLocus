@@ -84,6 +84,14 @@ class _AppState extends State<App> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      builder: (context, child) {
+        final scale = _state.uiScale;
+        return MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(scale)),
+          child: child!,
+        );
+      },
       home: ListenableBuilder(
         listenable: _state,
         builder: (_, _) {
