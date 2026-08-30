@@ -15,7 +15,8 @@ import urllib.error
 TOKEN = os.environ.get("GITCODE_TOKEN", "")
 OWNER = "DarionDong"
 REPO = "APRSLocus"
-VERSION = os.environ.get("GITHUB_REF_NAME", "")
+# 优先用显式版本（GITCODE_VERSION），回退 GITHUB_REF_NAME
+VERSION = os.environ.get("GITCODE_VERSION", "") or os.environ.get("GITHUB_REF_NAME", "")
 SHA = os.environ.get("GITHUB_SHA", "")
 API = f"https://api.gitcode.com/api/v5/repos/{OWNER}/{REPO}"
 AUTH = {"private-token": TOKEN}
