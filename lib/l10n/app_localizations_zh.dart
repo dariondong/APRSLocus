@@ -2529,4 +2529,64 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get passcodeMessageWarning => 'APRS-IS 登录验证码，填 -1 无法正常收发消息';
+  @override
+  String get settingsBeaconSubtitle => '发送间隔与上报内容';
+
+  @override
+  String get settingsChatManageSubtitle => '联系人与聊天数据';
+
+  @override
+  String get settingsChatStatsSubtitle => '消息与联系人统计';
+
+  @override
+  String get settingsClearDataSubtitle => '删除本地记录';
+
+  @override
+  String get settingsConnStatusSubtitle => '连接状态与信息';
+
+  @override
+  String get settingsContribCodeOptimization => '代码优化';
+
+  @override
+  String get settingsDevSubtitle => '调试与测试';
+
+  @override
+  String get settingsDisplayInfoSubtitle => '我的符号与当前定位';
+
+  @override
+  String get settingsFilterHint => '只接收设定范围内的台站数据包';
+
+  @override
+  String get settingsFilterSubtitle => '接收范围与台站上限';
+
+  @override
+  String get settingsGeneralSubtitle => '主题、语言与坐标显示';
+
+  @override
+  String get settingsLabSubtitle => '实验性功能';
+
+  @override
+  String get settingsLocSourceSubtitle => '选择坐标来源';
+
+  @override
+  String get settingsManualLocHint => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
+
+  @override
+  String get settingsManualLocSubtitle => '无定位时可手动输入或选点';
+
+  @override
+  String get settingsMapSubtitle => '地图类型与显示';
+
+  @override
+  String get settingsReceivePrefHint => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
+
+  @override
+  String get settingsReceivePrefSubtitle => '按国家/地区或呼号接收';
+
+  @override
+  String get settingsServerSubtitle => 'APRS-IS 服务器与验证码';
+
+  @override
+  String get settingsStationIdentitySubtitle => '呼号、SSID 与备注';
+
 }
