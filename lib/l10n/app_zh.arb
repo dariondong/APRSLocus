@@ -1347,5 +1347,6 @@
   "settingsDevSubtitle": "调试与测试",
   "settingsFilterHint": "只接收设定范围内的台站数据包",
   "settingsReceivePrefHint": "除范围过滤外，按国家/地区分组或精确呼号接收台站",
-  "settingsContribCodeOptimization": "代码优化"
+  "settingsContribCodeOptimization": "代码优化",
+  "eggBg2hcb": "人生真是喵喵又咪咪啊"
 }
