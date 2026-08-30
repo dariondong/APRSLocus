@@ -1202,6 +1202,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ],
           ),
         ),
+        SettingsInput(S.of(context).maxStations, _maxStations,
+            tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
+            onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxStations(n);
+        }),
         Padding(
           padding: const EdgeInsets.all(14),
           child: OutlinedButton.icon(
