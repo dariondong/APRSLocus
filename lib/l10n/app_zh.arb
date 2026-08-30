@@ -68,6 +68,8 @@
   "languageEn": "English",
   "displaySettings": "显示设置",
   "uiScale": "界面缩放",
+  "reloadUi": "重新加载界面",
+  "reloadDone": "已重新加载",
   "mapType": "地图类型",
   "unit": "单位",
   "coordDatum": "坐标基准",

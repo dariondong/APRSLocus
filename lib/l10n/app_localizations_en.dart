@@ -214,6 +214,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uiScale => 'UI scale';
 
   @override
+  String get reloadUi => 'Reload UI';
+
+  @override
+  String get reloadDone => 'Reloaded';
+
+  @override
   String get mapType => 'Map type';
 
   @override

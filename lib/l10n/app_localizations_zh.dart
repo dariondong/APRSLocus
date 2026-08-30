@@ -214,6 +214,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uiScale => '界面缩放';
 
   @override
+  String get reloadUi => '重新加载界面';
+
+  @override
+  String get reloadDone => '已重新加载';
+
+  @override
   String get mapType => '地图类型';
 
   @override
