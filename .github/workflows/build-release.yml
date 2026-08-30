@@ -1,0 +1,217 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（如 1.5.0），留空则沿用 pubspec'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows Installer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Sync version
+        shell: pwsh
+        run: |
+          $ver = "${{ inputs.version }}"
+          if (-not $ver) {
+            $ref = "${{ github.ref }}"
+            if ($ref -match '^refs/tags/v') { $ver = $ref -replace '^refs/tags/v', '' }
+          }
+          if ($ver) {
+            python tool/sync_version.py $ver
+          } else {
+            python tool/sync_version.py
+          }
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows (Release)
+        run: flutter build windows --release
+
+      - name: Setup Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          echo "ISCC=$(Get-Command ISCC.exe | Select-Object -ExpandProperty Source)" | Out-File $env:GITHUB_ENV -Append
+
+      - name: Build Installer
+        shell: pwsh
+        run: |
+          # 版本号跟随 pubspec.yaml（如 1.4.4），传给 Inno 预处理器
+          $ver = (Select-String -Path pubspec.yaml -Pattern '^version: (\S+)').Matches[0].Groups[1].Value.Split('+')[0]
+          & "$env:ISCC" "/DMyAppVersion=$ver" installer.iss
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-Windows
+          path: output/*.exe
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Sync version
+        shell: bash
+        run: |
+          ver="${{ inputs.version }}"
+          if [ -z "$ver" ]; then
+            ref="${{ github.ref }}"
+            case "$ref" in refs/tags/v*) ver="${ref#refs/tags/v}";; esac
+          fi
+          if [ -n "$ver" ]; then
+            python tool/sync_version.py "$ver"
+          else
+            python tool/sync_version.py
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Setup Android signing keys
+        shell: bash
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "ANDROID_KEYSTORE_BASE64 未配置，使用 debug 签名"
+            exit 0
+          fi
+          mkdir -p android/keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore/release.keystore
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=aprslocus\nstoreFile=keystore/release.keystore\n' \
+            "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Build APK (Release)
+        run: flutter build apk --release
+
+      - name: Rename APK
+        shell: bash
+        run: |
+          ver=$(grep -E '^version:' pubspec.yaml | head -1 | sed -E 's/version: ([0-9.]+).*/\1/')
+          mv build/app/outputs/flutter-apk/app-release.apk "build/app/outputs/flutter-apk/APRSLocus_${ver}.apk"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-Android
+          path: build/app/outputs/flutter-apk/APRSLocus_*.apk
+
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Sync version
+        shell: bash
+        run: |
+          ver="${{ inputs.version }}"
+          if [ -z "$ver" ]; then
+            ref="${{ github.ref }}"
+            case "$ref" in refs/tags/v*) ver="${ref#refs/tags/v}";; esac
+          fi
+          if [ -n "$ver" ]; then
+            python tool/sync_version.py "$ver"
+          else
+            python tool/sync_version.py
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS (Release, no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload iOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-iOS
+          path: build/ios/iphoneos/*.app
+
+  release:
+    name: Publish Release
+    needs: [build-windows, build-android, build-ios]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: List artifacts
+        run: ls -R
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        shell: bash
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          ver="${tag#v}"
+          # 从 CHANGELOG.md 提取对应版本条目（## [x.y.z] 到下一个 ## 之间）
+          body=$(awk -v v="$ver" '
+            $0 ~ /^## \[/ {
+              if (found) exit
+              if ($0 ~ "\\[" v "\\]") found=1
+            }
+            found { print }
+          ' CHANGELOG.md | head -n -1)
+          # 用 heredoc 写多行输出（避免 JSON 转义导致乱码）
+          {
+            echo "notes<<EOF"
+            echo "$body"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.notes.outputs.notes }}
+          files: |
+            APRSLocus-Windows/*.exe
+            APRSLocus-Android/*.apk
+            APRSLocus-iOS/*.app
