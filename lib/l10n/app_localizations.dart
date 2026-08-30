@@ -4553,4 +4553,64 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
+  /// **'发送间隔与上报内容'**
+  String get settingsBeaconSubtitle;
+
+  /// **'联系人与聊天数据'**
+  String get settingsChatManageSubtitle;
+
+  /// **'消息与联系人统计'**
+  String get settingsChatStatsSubtitle;
+
+  /// **'删除本地记录'**
+  String get settingsClearDataSubtitle;
+
+  /// **'连接状态与信息'**
+  String get settingsConnStatusSubtitle;
+
+  /// **'代码优化'**
+  String get settingsContribCodeOptimization;
+
+  /// **'调试与测试'**
+  String get settingsDevSubtitle;
+
+  /// **'我的符号与当前定位'**
+  String get settingsDisplayInfoSubtitle;
+
+  /// **'只接收设定范围内的台站数据包'**
+  String get settingsFilterHint;
+
+  /// **'接收范围与台站上限'**
+  String get settingsFilterSubtitle;
+
+  /// **'主题、语言与坐标显示'**
+  String get settingsGeneralSubtitle;
+
+  /// **'实验性功能'**
+  String get settingsLabSubtitle;
+
+  /// **'选择坐标来源'**
+  String get settingsLocSourceSubtitle;
+
+  /// **'无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。'**
+  String get settingsManualLocHint;
+
+  /// **'无定位时可手动输入或选点'**
+  String get settingsManualLocSubtitle;
+
+  /// **'地图类型与显示'**
+  String get settingsMapSubtitle;
+
+  /// **'除范围过滤外，按国家/地区分组或精确呼号接收台站'**
+  String get settingsReceivePrefHint;
+
+  /// **'按国家/地区或呼号接收'**
+  String get settingsReceivePrefSubtitle;
+
+  /// **'APRS-IS 服务器与验证码'**
+  String get settingsServerSubtitle;
+
+  /// **'呼号、SSID 与备注'**
+  String get settingsStationIdentitySubtitle;
+
 }
