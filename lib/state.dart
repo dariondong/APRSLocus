@@ -400,6 +400,16 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // 界面重建计数：缩放等全局变化后强制重建导航栈
+  int reloadTick = 0;
+
+  /// 重新加载整个界面（重建导航栈）
+  void reloadUi() {
+    reloadTick++;
+    persist();
+    _notify();
+  }
+
   // 自定义主题色（十六进制字符串，如 '2563EB'；空 = 默认蓝）
   String themeColor = '';
 
