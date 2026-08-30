@@ -595,9 +595,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // 签名变更提示：1.4.8 更换了正式 release 签名，老版本升级需卸载重装
-          if (!isWin && _isNewer)
-            _signatureNoticeCard(),
           _versionCard(isWin),
           const SizedBox(height: 16),
           ..._buildStatusArea(isWin),
@@ -610,35 +607,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           ],
         ],
       ),
-    );
-  }
-
-  /// 签名变更提示卡片（1.4.8 起更换正式 release 签名，老版本需卸载重装）
-  Widget _signatureNoticeCard() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: C.orangeBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: C.orange.withValues(alpha: 0.4)),
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('签名已更换 · 需卸载重装',
-                style: ts(13, c: C.orange, w: FontWeight.w700)),
-            const SizedBox(height: 4),
-            Text(
-              '本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，'
-              '请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。',
-              style: ts(11, c: C.orange, h: 1.5),
-            ),
-          ]),
-        ),
-      ]),
     );
   }
 
