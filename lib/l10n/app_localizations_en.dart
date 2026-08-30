@@ -1146,6 +1146,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deletePackage => 'Delete package';
 
   @override
+  String deletePackageConfirm(Object file) {
+    return 'Delete package $file?';
+  }
+
+  @override
+  String get deleteAllPackages => 'Delete all packages';
+
+  @override
+  String deleteAllPackagesWithCount(Object count) {
+    return 'Delete all packages ($count)';
+  }
+
+  @override
+  String deleteAllPackagesConfirm(Object count, Object size) {
+    return 'Delete $count downloaded packages ($size)? This cannot be undone.';
+  }
+
+  @override
   String get historyVersions => 'History';
 
   @override
@@ -2473,14 +2491,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recheck => 'Check again';
-
-  @override
-  String get signatureChangedTitle =>
-      'Signing key changed · Reinstall required';
-
-  @override
-  String get signatureChangedDesc =>
-      'The release signing key changed starting with 1.4.8. Older versions cannot be updated in place. Uninstall APRSlocus first, then install the new version to avoid a signature conflict.';
 
   @override
   String newVersionTitle(String version) {

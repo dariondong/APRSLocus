@@ -215,28 +215,3 @@ jobs:
             APRSLocus-Windows/*.exe
             APRSLocus-Android/*.apk
             APRSLocus-iOS/*.app
-
-      - name: Push tag to GitCode
-        shell: bash
-        run: |
-          if [ -z "$GITCODE_TOKEN" ]; then
-            echo "GITCODE_TOKEN 未配置，跳过 tag 推送"
-            exit 0
-          fi
-          git remote add gitcode "https://gitcode.com/DarionDong/APRSLocus.git" 2>/dev/null || true
-          git -c http.extraheader="PRIVATE-TOKEN: $GITCODE_TOKEN" \
-            push gitcode "$GITHUB_REF_NAME" --force 2>&1 | sed 's/PRIVATE-TOKEN: .*/PRIVATE-TOKEN: ***/' || \
-            echo "tag 推送失败（可能已存在）"
-        env:
-          GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
-
-      - name: Sync release to GitCode
-        shell: bash
-        run: |
-          if [ -z "$GITCODE_TOKEN" ]; then
-            echo "GITCODE_TOKEN 未配置，跳过 GitCode 同步"
-            exit 0
-          fi
-          python3 .github/scripts/sync_gitcode.py
-        env:
-          GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
