@@ -2282,6 +2282,30 @@ abstract class AppLocalizations {
   /// **'删除安装包'**
   String get deletePackage;
 
+  /// No description provided for @deletePackageConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除安装包 {file}？'**
+  String deletePackageConfirm(Object file);
+
+  /// No description provided for @deleteAllPackages.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除全部安装包'**
+  String get deleteAllPackages;
+
+  /// No description provided for @deleteAllPackagesWithCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除全部安装包（{count} 个）'**
+  String deleteAllPackagesWithCount(Object count);
+
+  /// No description provided for @deleteAllPackagesConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'将删除本地已下载的 {count} 个安装包（共 {size}），确定？'**
+  String deleteAllPackagesConfirm(Object count, Object size);
+
   /// No description provided for @historyVersions.
   ///
   /// In zh, this message translates to:
@@ -4345,18 +4369,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'重新检查'**
   String get recheck;
-
-  /// No description provided for @signatureChangedTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'签名已更换 · 需卸载重装'**
-  String get signatureChangedTitle;
-
-  /// No description provided for @signatureChangedDesc.
-  ///
-  /// In zh, this message translates to:
-  /// **'本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。'**
-  String get signatureChangedDesc;
 
   /// No description provided for @newVersionTitle.
   ///

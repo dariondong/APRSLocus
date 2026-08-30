@@ -113,6 +113,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
   // 本地已有安装包（用于"重新下载"按钮提示）
   String? _localApkPath;
 
+  // 本地已下载的全部安装包（按版本会累积多个，用于"删除全部"）
+  List<File> _localPackages = [];
+
   @override
   void initState() {
     super.initState();
@@ -130,9 +133,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           .listSync()
           .whereType<File>()
           .where((f) => f.path.toLowerCase().endsWith(ext))
-          .toList();
+          .toList()
+        ..sort((a, b) => b.path.compareTo(a.path));
+      _localPackages = files;
       // 优先找带版本号的最新文件（APRSLocus_1.2.5.apk），其次通用名
-      files.sort((a, b) => b.path.compareTo(a.path));
       for (final f in files) {
         final base = f.uri.pathSegments.last;
         final m = RegExp(r'[Vv]?(\d[\d._a-z]*)').firstMatch(base);
@@ -440,6 +444,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           _downloadedPath = file.path;
           _downloadedTag = tag;
           _localApkPath = file.path;
+          if (!_localPackages.any((f) => f.path == file.path)) {
+            _localPackages.add(file);
+          }
           _dlStatus = S.of(context).downloadComplete;
         });
       }
@@ -648,8 +655,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // 签名变更提示：1.4.8 更换了正式 release 签名，老版本升级需卸载重装
-          if (!isWin && _isNewer) _signatureNoticeCard(),
+          // 签名已固定（1.5.2 起 release 统一 keystore），不再提示“签名变更需卸载重装”
           _versionCard(isWin),
           const SizedBox(height: 16),
           ..._buildStatusArea(isWin),
@@ -660,42 +666,6 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             const SizedBox(height: 16),
             _moreVersionsCard(isWin),
           ],
-        ],
-      ),
-    );
-  }
-
-  /// 签名变更提示卡片（1.4.8 起更换正式 release 签名，老版本需卸载重装）
-  Widget _signatureNoticeCard() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: C.orangeBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: C.orange.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  S.of(context).signatureChangedTitle,
-                  style: ts(13, c: C.orange, w: FontWeight.w700),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  S.of(context).signatureChangedDesc,
-                  style: ts(11, c: C.orange, h: 1.5),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -1361,22 +1331,108 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               ),
             ),
           ),
+          // 本地按版本会累积多个安装包，提供“删除全部”清理入口
+          if (_localPackages.length > 1) ...[
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(foregroundColor: C.red),
+                onPressed: _deleteAllPackages,
+                icon: const Icon(Icons.delete_sweep_rounded, size: 18),
+                label: Text(
+                  S
+                      .of(context)
+                      .deleteAllPackagesWithCount(_localPackages.length),
+                  style: ts(13, w: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  /// 删除已下载的安装包
+  /// 删除已下载的安装包（带确认）
   void _deleteDownloaded(String path) {
-    try {
-      final f = File(path);
-      if (f.existsSync()) f.deleteSync();
-    } catch (_) {}
-    setState(() {
-      _downloadedPath = null;
-      _downloadedTag = null;
-    });
-    _showSnack(S.of(context).packageDeleted);
+    final name = path.split(Platform.pathSeparator).last;
+    _confirmDelete(
+      title: S.of(context).deletePackage,
+      message: S.of(context).deletePackageConfirm(name),
+      onConfirm: () {
+        try {
+          final f = File(path);
+          if (f.existsSync()) f.deleteSync();
+        } catch (_) {}
+        _localPackages.removeWhere((x) => x.path == path);
+        _findLocalApk(); // 重新确定“最新已下载”，无残留则收起下载卡片
+        _showSnack(S.of(context).packageDeleted);
+      },
+    );
+  }
+
+  /// 删除本地全部已下载的安装包（带确认，展示数量与占用空间）
+  void _deleteAllPackages() {
+    if (_localPackages.isEmpty) return;
+    var total = 0;
+    for (final f in _localPackages) {
+      try {
+        total += f.lengthSync();
+      } catch (_) {}
+    }
+    _confirmDelete(
+      title: S.of(context).deleteAllPackages,
+      message: S.of(context).deleteAllPackagesConfirm(
+        _localPackages.length,
+        _fmtSize(total),
+      ),
+      onConfirm: () {
+        for (final f in _localPackages) {
+          try {
+            if (f.existsSync()) f.deleteSync();
+          } catch (_) {}
+        }
+        setState(() {
+          _localPackages = [];
+          _downloadedPath = null;
+          _downloadedTag = null;
+          _localApkPath = null;
+        });
+        _showSnack(S.of(context).packageDeleted);
+      },
+    );
+  }
+
+  /// 通用删除确认弹窗
+  void _confirmDelete({
+    required String title,
+    required String message,
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(title, style: ts(15, w: FontWeight.w700)),
+        content: Text(message, style: ts(13, h: 1.5)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(S.of(context).cancel, style: ts(14, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.red),
+            onPressed: () {
+              Navigator.pop(ctx);
+              onConfirm();
+            },
+            child: Text(S.of(context).confirmDelete, style: ts(14)),
+          ),
+        ],
+      ),
+    );
   }
 
   /// 更多版本列表
