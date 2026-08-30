@@ -16,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.5.5';
+  static const appVersion = '1.5.6';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -227,6 +227,7 @@ class AppState extends ChangeNotifier {
     _matchCache.clear();
     persist();
     _refreshFilter();
+    _bumpStationsVersion(); // 可见台站集合变化
     _notify();
   }
 
@@ -236,6 +237,7 @@ class AppState extends ChangeNotifier {
     _matchCache.clear();
     persist();
     _refreshFilter();
+    _bumpStationsVersion(); // 可见台站集合变化
     _notify();
   }
 
@@ -245,6 +247,7 @@ class AppState extends ChangeNotifier {
     _matchCache.clear();
     persist();
     _refreshFilter();
+    _bumpStationsVersion(); // 可见台站集合变化
     _notify();
   }
 
@@ -360,7 +363,7 @@ class AppState extends ChangeNotifier {
         final doRemove = needRemove < canRemove ? needRemove : canRemove;
         stations.removeRange(stations.length - doRemove, stations.length);
       }
-      stationsVersion++;
+      _bumpStationsVersion();
       _saveStations();
     }
     persist();
@@ -608,6 +611,11 @@ class AppState extends ChangeNotifier {
   Timer? _simTimer;
   Timer? _tickTimer;
 
+  /// 每秒刷新通知（信标倒计时/收包速率等秒级 UI 专用）。
+  /// 与 AppState.notifyListeners 分离：避免每秒 _notify() 触发整个页面树
+  /// （含 IndexedStack 内所有页面）重建、反复重算几百个台站的数据。
+  final ValueNotifier<int> tick = ValueNotifier<int>(0);
+
   // ─── 设置持久化 ───
   Future<void> _loadPrefs() async {
     try {
@@ -826,8 +834,12 @@ class AppState extends ChangeNotifier {
           DateTime.now().difference(_lastBeacon).inSeconds >= beaconInterval) {
         _sendBeaconNow();
       }
-      // 每秒刷新：下次上报倒计时、收包速率等秒级数据
-      _notify();
+      // 台站“有效状态”翻转（如超 5 分钟变离线、移动→静止）时才推进版本并通知，
+      // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
+      if (_bumpStatusVersionIfChanged()) _notify();
+      // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
+      // 不再全量 _notify() 重建整个页面树
+      tick.value++;
     });
     // 连接保活：APRS-IS 空闲超时约 30s，无发送时发状态帧防止被踢
     _keepaliveTimer = Timer.periodic(const Duration(seconds: 15), (_) {
@@ -868,6 +880,7 @@ class AppState extends ChangeNotifier {
       stations.removeWhere((s) => _demoCalls.contains(s.call));
       _demoCalls.clear();
     }
+    _bumpStationsVersion();
     persist();
     _notify();
   }
@@ -880,6 +893,8 @@ class AppState extends ChangeNotifier {
     _keepaliveTimer?.cancel();
     _reconnectTimer?.cancel();
     _rxNotifyTimer?.cancel();
+    tick.dispose();
+    _stationsCtrl.close();
     loc.stop();
     aprs.disconnect();
     // 退出前保存台站列表
@@ -961,6 +976,94 @@ class AppState extends ChangeNotifier {
 
   /// 台站数据版本：位置新增/变化时自增，地图据此立即刷新标记
   int stationsVersion = 0;
+
+  /// 台站数据流：每次台站版本推进时推送新版本号。
+  /// 台站列表页等只关心台站数据的页面订阅此流，避免被全量 AppState 通知反复重建。
+  final StreamController<int> _stationsCtrl =
+      StreamController<int>.broadcast(sync: true);
+  Stream<int> get stationsStream => _stationsCtrl.stream;
+
+  /// 台站版本推进的唯一出口：自增版本并向流推送（台站列表/地图据此刷新）
+  void _bumpStationsVersion() {
+    _bumpStationsVersion();
+    if (!_stationsCtrl.isClosed) _stationsCtrl.add(stationsVersion);
+  }
+
+  int _statusSig = 0;
+  bool _statusSigInit = false;
+
+  /// 台站“有效状态”签名：仅当某个台站状态翻转（在线/离线/移动/静止）时变化，
+  /// 用于每秒 tick 低成本地发现状态变化并推进 stationsVersion。
+  int _computeStatusSig() {
+    var h = 0;
+    for (final s in stations) {
+      h = h * 31 + s.effectiveStatus.index;
+    }
+    return h;
+  }
+
+  /// 若台站在线/离线/移动/静止状态发生变化，推进 stationsVersion（触发地图/列表刷新）
+  /// 返回是否发生变化（变化时调用方应 _notify()）
+  bool _bumpStatusVersionIfChanged() {
+    final sig = _computeStatusSig();
+    if (!_statusSigInit) {
+      _statusSigInit = true;
+      _statusSig = sig;
+      return false;
+    }
+    if (sig != _statusSig) {
+      _statusSig = sig;
+      _bumpStationsVersion();
+      return true;
+    }
+    return false;
+  }
+
+  // 台站统计缓存：按 stationsVersion 惰性重建，
+  // 避免每次重建/每秒 tick 对几百个台站做多次全量扫描
+  int _statVersion = -1;
+  int _onlineCount = 0, _movingCount = 0, _stoppedCount = 0;
+  void _refreshStats() {
+    if (_statVersion == stationsVersion) return;
+    _statVersion = stationsVersion;
+    var o = 0, m = 0, s = 0;
+    for (final x in stations) {
+      switch (x.effectiveStatus) {
+        case St.moving:
+          m++;
+          o++;
+          break;
+        case St.stopped:
+          s++;
+          o++;
+          break;
+        case St.online:
+          o++;
+          break;
+        default:
+          break; // offline 不计入在线
+      }
+    }
+    _onlineCount = o;
+    _movingCount = m;
+    _stoppedCount = s;
+  }
+
+  // 信标定时器（每秒检查）
+  int get online {
+    _refreshStats();
+    return _onlineCount;
+  }
+
+  int get moving {
+    _refreshStats();
+    return _movingCount;
+  }
+
+  int get stoppedCount {
+    _refreshStats();
+    return _stoppedCount;
+  }
 
   // ─── 定位 ───
   Future<bool> startTracking() async {
@@ -1614,7 +1717,7 @@ class AppState extends ChangeNotifier {
     s.fmo = {...?s.fmo, ...info};
     if (info['地区'] != null) s.comment = info['地区'];
     stations[idx] = s;
-    stationsVersion++;
+    _bumpStationsVersion();
     _notifyRx();
   }
 
@@ -1701,6 +1804,10 @@ class AppState extends ChangeNotifier {
       final s = stations[idx];
       final moved =
           (s.lat - p.lat).abs() > 1e-6 || (s.lng - p.lng).abs() > 1e-6;
+      // 记录修改前的“地图相关”字段，用于判断是否推进台站版本
+      final oldStatus = s.status;
+      final oldSym = s.symbol;
+      final oldSymT = s.symbolTable;
       s.lat = p.lat;
       s.lng = p.lng;
       s.lastHeard = now;
@@ -1724,7 +1831,14 @@ class AppState extends ChangeNotifier {
         if (s.track.length > 60) s.track = s.track.sublist(s.track.length - 60);
       }
       stations[idx] = s;
-      if (moved) stationsVersion++;
+      // 地图相关字段变化（位置/状态/符号）才推进版本，触发地图标记重建；
+      // 仅 lastHeard/速度/备注变化不会触发整片标记重建
+      if (moved ||
+          s.status != oldStatus ||
+          s.symbol != oldSym ||
+          s.symbolTable != oldSymT) {
+        _bumpStationsVersion();
+      }
       _stationsDirty = true;
     } else {
       // 新台站：容量满时移除最旧的（优先保留收藏/手动台站）
@@ -1746,7 +1860,7 @@ class AppState extends ChangeNotifier {
           stations.removeRange(stations.length - doRemove, stations.length);
         }
       }
-      stationsVersion++;
+      _bumpStationsVersion();
       stations.add(
         Station(
           call: call,
@@ -1829,6 +1943,7 @@ class AppState extends ChangeNotifier {
     final idx = stations.indexWhere((s) => s.call == call);
     if (idx >= 0) {
       stations[idx].favorite = !stations[idx].favorite;
+      _bumpStationsVersion();
       _notify();
       _saveStations();
     }
@@ -1842,6 +1957,7 @@ class AppState extends ChangeNotifier {
     final idx = stations.indexWhere((s) => s.call == c);
     if (idx >= 0) {
       stations[idx].favorite = true;
+      _bumpStationsVersion();
       _notify();
       _saveStations();
       return true;
@@ -1859,6 +1975,7 @@ class AppState extends ChangeNotifier {
         favorite: true,
       ),
     );
+    _bumpStationsVersion();
     _notify();
     _saveStations();
     return true;
@@ -2039,6 +2156,7 @@ class AppState extends ChangeNotifier {
   /// 删除联系人（收藏/手动台站）
   void removeContact(String call) {
     stations.removeWhere((s) => s.call == call);
+    _bumpStationsVersion();
     _saveStations();
     _notify();
   }
@@ -2354,7 +2472,7 @@ class AppState extends ChangeNotifier {
   /// 清除所有本地数据
   void clearAllData() {
     stations.clear();
-    stationsVersion++;
+    _bumpStationsVersion();
     messages.clear();
     chatGroups.clear();
     logs.clear();
@@ -2382,16 +2500,9 @@ class AppState extends ChangeNotifier {
       s.track = [...s.track, TrackPt(s.lat, s.lng, DateTime.now())];
       if (s.track.length > 60) s.track = s.track.sublist(s.track.length - 60);
     }
+    _bumpStationsVersion();
     _notify();
   }
-
-  // 信标定时器（每秒检查）
-  int get online =>
-      stations.where((s) => s.effectiveStatus != St.offline).length;
-  int get moving =>
-      stations.where((s) => s.effectiveStatus == St.moving).length;
-  int get stoppedCount =>
-      stations.where((s) => s.effectiveStatus == St.stopped).length;
 
   // ─── 地图焦点（台站列表 → 地图定位） ───
   Station? mapFocus;

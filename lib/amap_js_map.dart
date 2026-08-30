@@ -19,6 +19,8 @@ import 'l10n/app_localizations.dart';
 /// 高德坐标 GCJ-02，传入/回调均做 WGS-84 ↔ GCJ-02 转换。
 class AmapJsMapView extends StatefulWidget {
   final List<Station> stations;
+  // 台站数据版本：未变化时跳过 _syncAll（避免每秒把全部台站 JSON 推给 JS）
+  final int stationsVersion;
   final String myCall;
   final bool myHasFix;
   final double? myLat, myLng;
@@ -36,6 +38,7 @@ class AmapJsMapView extends StatefulWidget {
   const AmapJsMapView({
     super.key,
     required this.stations,
+    this.stationsVersion = 0,
     required this.myCall,
     required this.myHasFix,
     this.myLat,
@@ -177,7 +180,15 @@ class _AmapJsMapViewState extends State<AmapJsMapView> {
     super.didUpdateWidget(old);
     if (widget.focusSeq != old.focusSeq) _applyFocusIfAny();
     if (widget.actionSeq != old.actionSeq) _handleAction();
-    if (_mapReady) _syncAll();
+    // 仅当台站/轨迹/我的位置实际变化时才把数据推给 JS，
+    // 避免每秒 tick 重建时反复 setStations/setTracks（高德 JS 全量更新开销大）
+    final dataChanged =
+        widget.stationsVersion != old.stationsVersion ||
+        widget.showTracks != old.showTracks ||
+        widget.myHasFix != old.myHasFix ||
+        widget.myLat != old.myLat ||
+        widget.myLng != old.myLng;
+    if (_mapReady && dataChanged) _syncAll();
   }
 
   void _handleAction() {

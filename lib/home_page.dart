@@ -228,12 +228,24 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
+  // 页面子树记忆化：仅当 tab / 搜索词变化时重建整个 IndexedStack。
+  // 否则 HomePage 因键盘动画/状态通知重建时，各页面不会被父级连带重建，
+  // 由各自内部监听器（地图 ListenableBuilder、台站页 StreamBuilder 等）自我更新。
+  Widget? _cachedPage;
+  int _cachedPageTab = -1;
+  String _cachedPageSearch = '';
+
   Widget _page() {
+    if (_cachedPageTab == _tab && _cachedPageSearch == _search) {
+      return _cachedPage!;
+    }
+    _cachedPageTab = _tab;
+    _cachedPageSearch = _search;
     // IndexedStack：所有页面常驻不销毁。
     // 地图页（含矢量/高德JS 的 style 缓存、相机位置、WebView 状态）切换 tab 后保留，
     // 避免每次切回都重新加载瓦片/重建 WebView。
     // 外层淡入动画：切 tab 时页面淡入，过渡平滑。
-    return TweenAnimationBuilder<double>(
+    _cachedPage = TweenAnimationBuilder<double>(
       key: ValueKey('tabfade-$_tab'),
       tween: Tween(begin: 0.3, end: 1),
       duration: const Duration(milliseconds: 220),
@@ -250,6 +262,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+    return _cachedPage!;
   }
 
   @override
@@ -271,12 +284,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       _topBar(),
-                      Expanded(
-                        child: ListenableBuilder(
-                          listenable: widget.state,
-                          builder: (_, _) => _page(),
-                        ),
-                      ),
+                      // 各页面内部自监听（地图/消息/数据包/设置用 ListenableBuilder、
+                      // 台站页用 StreamBuilder），无需外层再包全量 state 监听。
+                      Expanded(child: _page()),
                       _connBanner(),
                     ],
                   ),
@@ -516,6 +526,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _myPanel() {
+    // 每秒 tick 只刷新信标倒计时/收包速率等秒级文本；
+    // 连接/定位等真实状态变化由 HomePage 重建（_onStateChanged setState）覆盖
+    return ValueListenableBuilder<int>(
+      valueListenable: widget.state.tick,
+      builder: (context, _, _) => _myPanelBody(),
+    );
+  }
+
+  Widget _myPanelBody() {
     final fix = widget.state.myHasFix;
     final locColor = fix
         ? C.green
