@@ -1,0 +1,103 @@
+name: CI Test Build
+
+# 测试用 CI：验证代码可编译（analyze + Windows/Android 构建），
+# 不创建 Release、不发版、不推送任何远端。可在 Actions 页手动触发。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze (tolerate known vector_map false positive)
+        shell: bash
+        run: |
+          set +e
+          flutter analyze > /tmp/analyze.log 2>&1
+          code=$?
+          set -e
+          # 已知误报：vector_map.dart:243 cacheFolder（analyzer 的 typedef 泛型解析 bug，
+          # flutter build 可正常编译，见 HANDOVER.md）。过滤后仍有其他 error 才判失败。
+          known_lines=$(grep -c "vector_map.dart:243" /tmp/analyze.log || true)
+          other_errors=$(grep -v "vector_map.dart:243" /tmp/analyze.log | grep -c "error •" || true)
+          cat /tmp/analyze.log
+          if [ "$code" -ne 0 ] && [ "$other_errors" -gt 0 ]; then
+            echo "analyze 发现除已知误报外的错误"
+            exit 1
+          fi
+          echo "analyze ok (忽略 $known_lines 处 vector_map 已知误报)"
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows (Release)
+        run: flutter build windows --release
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-Windows
+          path: build/windows/x64/runner/Release/*.exe
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK (Release, debug 签名)
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-Android
+          path: build/app/outputs/flutter-apk/app-release.apk
