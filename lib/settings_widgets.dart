@@ -214,22 +214,23 @@ class SettingsRow2 extends StatelessWidget {
 /// 分区内统一提示说明块
 class SettingsHint extends StatelessWidget {
   final String text;
-  final Color color;
+  final Color? color; // 可空：build 内回退到 C.slate（运行时可变，不能作 const 默认值）
   final IconData icon;
   const SettingsHint(this.text,
-      {super.key, this.color = C.slate, this.icon = Icons.info_outline_rounded});
+      {super.key, this.color, this.icon = Icons.info_outline_rounded});
 
   @override
   Widget build(BuildContext context) {
+    final c = color ?? C.slate;
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: 14, color: c),
           const SizedBox(width: 6),
           Expanded(
-            child: Text(text, style: ts(11, c: color, h: 1.4)),
+            child: Text(text, style: ts(11, c: c, h: 1.4)),
           ),
         ],
       ),

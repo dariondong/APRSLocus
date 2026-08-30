@@ -4519,6 +4519,126 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'APRS-IS 登录验证码，填 -1 无法正常收发消息'**
   String get passcodeMessageWarning;
+
+  /// No description provided for @settingsStationIdentitySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号、SSID 与备注'**
+  String get settingsStationIdentitySubtitle;
+
+  /// No description provided for @settingsDisplayInfoSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的符号与当前定位'**
+  String get settingsDisplayInfoSubtitle;
+
+  /// No description provided for @settingsLocSourceSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择坐标来源'**
+  String get settingsLocSourceSubtitle;
+
+  /// No description provided for @settingsBeaconSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送间隔与上报内容'**
+  String get settingsBeaconSubtitle;
+
+  /// No description provided for @settingsManualLocSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'无定位时可手动输入或选点'**
+  String get settingsManualLocSubtitle;
+
+  /// No description provided for @settingsManualLocHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。'**
+  String get settingsManualLocHint;
+
+  /// No description provided for @settingsConnStatusSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接状态与信息'**
+  String get settingsConnStatusSubtitle;
+
+  /// No description provided for @settingsServerSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 服务器与验证码'**
+  String get settingsServerSubtitle;
+
+  /// No description provided for @settingsFilterSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'接收范围与台站上限'**
+  String get settingsFilterSubtitle;
+
+  /// No description provided for @settingsReceivePrefSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'按国家/地区或呼号接收'**
+  String get settingsReceivePrefSubtitle;
+
+  /// No description provided for @settingsGeneralSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题、语言与坐标显示'**
+  String get settingsGeneralSubtitle;
+
+  /// No description provided for @settingsMapSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'地图类型与显示'**
+  String get settingsMapSubtitle;
+
+  /// No description provided for @settingsChatStatsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息与联系人统计'**
+  String get settingsChatStatsSubtitle;
+
+  /// No description provided for @settingsChatManageSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'联系人与聊天数据'**
+  String get settingsChatManageSubtitle;
+
+  /// No description provided for @settingsClearDataSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除本地记录'**
+  String get settingsClearDataSubtitle;
+
+  /// No description provided for @settingsLabSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'实验性功能'**
+  String get settingsLabSubtitle;
+
+  /// No description provided for @settingsDevSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'调试与测试'**
+  String get settingsDevSubtitle;
+
+  /// No description provided for @settingsFilterHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'只接收设定范围内的台站数据包'**
+  String get settingsFilterHint;
+
+  /// No description provided for @settingsReceivePrefHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'除范围过滤外，按国家/地区分组或精确呼号接收台站'**
+  String get settingsReceivePrefHint;
+
+  /// No description provided for @settingsContribCodeOptimization.
+  ///
+  /// In zh, this message translates to:
+  /// **'代码优化'**
+  String get settingsContribCodeOptimization;
 }
 
 class _AppLocalizationsDelegate
@@ -4553,64 +4673,4 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
-  /// **'发送间隔与上报内容'**
-  String get settingsBeaconSubtitle;
-
-  /// **'联系人与聊天数据'**
-  String get settingsChatManageSubtitle;
-
-  /// **'消息与联系人统计'**
-  String get settingsChatStatsSubtitle;
-
-  /// **'删除本地记录'**
-  String get settingsClearDataSubtitle;
-
-  /// **'连接状态与信息'**
-  String get settingsConnStatusSubtitle;
-
-  /// **'代码优化'**
-  String get settingsContribCodeOptimization;
-
-  /// **'调试与测试'**
-  String get settingsDevSubtitle;
-
-  /// **'我的符号与当前定位'**
-  String get settingsDisplayInfoSubtitle;
-
-  /// **'只接收设定范围内的台站数据包'**
-  String get settingsFilterHint;
-
-  /// **'接收范围与台站上限'**
-  String get settingsFilterSubtitle;
-
-  /// **'主题、语言与坐标显示'**
-  String get settingsGeneralSubtitle;
-
-  /// **'实验性功能'**
-  String get settingsLabSubtitle;
-
-  /// **'选择坐标来源'**
-  String get settingsLocSourceSubtitle;
-
-  /// **'无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。'**
-  String get settingsManualLocHint;
-
-  /// **'无定位时可手动输入或选点'**
-  String get settingsManualLocSubtitle;
-
-  /// **'地图类型与显示'**
-  String get settingsMapSubtitle;
-
-  /// **'除范围过滤外，按国家/地区分组或精确呼号接收台站'**
-  String get settingsReceivePrefHint;
-
-  /// **'按国家/地区或呼号接收'**
-  String get settingsReceivePrefSubtitle;
-
-  /// **'APRS-IS 服务器与验证码'**
-  String get settingsServerSubtitle;
-
-  /// **'呼号、SSID 与备注'**
-  String get settingsStationIdentitySubtitle;
-
 }
