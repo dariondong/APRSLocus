@@ -6,6 +6,8 @@
 
 > 作者：BG7LZQ (Darion) · 网站：[Theez.top](https://theez.top)
 
+> ## 最新测试版本在Github上发布 https://github.com/dariondong/APRSLocus
+
 APRSlocus 是一个轻量、易用的 APRS（Automatic Packet Reporting System，自动分组报告系统）客户端，基于 Flutter 开发，支持 Android 与 Windows。它将实时定位、台站追踪、消息收发与地图显示融为一体，让您随时随地掌握电波世界的一举一动。
 
 ---
