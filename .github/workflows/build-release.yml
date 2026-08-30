@@ -223,9 +223,10 @@ jobs:
             echo "GITCODE_TOKEN 未配置，跳过 tag 推送"
             exit 0
           fi
-          git remote add gitcode "https://oauth2:$GITCODE_TOKEN@gitcode.com/DarionDong/APRSLocus.git" 2>/dev/null || git remote set-url gitcode "https://oauth2:$GITCODE_TOKEN@gitcode.com/DarionDong/APRSLocus.git"
-          echo "推送 tag $GITHUB_REF_NAME 到 GitCode ..."
-          git push gitcode "$GITHUB_REF_NAME" --force || echo "tag 推送失败（可能已存在）"
+          git remote add gitcode "https://gitcode.com/DarionDong/APRSLocus.git" 2>/dev/null || true
+          git -c http.extraheader="PRIVATE-TOKEN: $GITCODE_TOKEN" \
+            push gitcode "$GITHUB_REF_NAME" --force 2>&1 | sed 's/PRIVATE-TOKEN: .*/PRIVATE-TOKEN: ***/' || \
+            echo "tag 推送失败（可能已存在）"
         env:
           GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
 
