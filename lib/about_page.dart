@@ -316,6 +316,7 @@ class _AboutPageState extends State<AboutPage>
                             S.of(context).codeContributionI18n,
                             'BD3QID',
                           ),
+                          _row(S.of(context).settingsContribCodeOptimization, '清零（BG2HCB）'),
                         ],
                       ),
                     ),
