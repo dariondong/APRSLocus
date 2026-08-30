@@ -1086,8 +1086,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     );
   }
 
-  /// 连接状态 + 服务器配置卡片（合并）
-  Widget _connCard() {
+  /// 连接状态卡片（独立简洁）
+  Widget _connStatusCard() {
     return SettingsSectionCard(
       title: S.of(context).server,
       icon: Icons.dns_rounded,
@@ -1479,15 +1479,21 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 ),
               ),
               onPressed: () {
-                // 读取输入框的值并统一保存生效
+                // 读取输入框的值并统一保存生效（半径始终读输入框）
+                final r = int.tryParse(_filterRadius.text);
+                if (r == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(S.of(context).invalidCoords)),
+                  );
+                  return;
+                }
                 if (st.filterFollow) {
-                  // 跟随我的位置：无需手动经纬度，应用当前半径即可
-                  st.setFilter(st.filterLat, st.filterLng, st.filterRadius);
+                  // 跟随我的位置：应用当前位置 + 输入框半径
+                  st.setFilter(st.filterLat, st.filterLng, r);
                 } else {
                   final lat = double.tryParse(_filterLat.text);
                   final lng = double.tryParse(_filterLng.text);
-                  final r = int.tryParse(_filterRadius.text);
-                  if (lat == null || lng == null || r == null) {
+                  if (lat == null || lng == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(S.of(context).invalidCoords)),
                     );
@@ -1785,15 +1791,14 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   }
 
   /// 同步过滤器控制器文本（仅在 filterFollow 模式下外部更新 state 时同步；
-  /// 手动编辑模式下不重置输入框，避免"保存后变回旧值"）
+  /// 同步过滤器控制器文本（仅在 filterFollow 模式下同步经纬度；
+  /// 半径始终由用户输入控制，避免被重置）
   void _syncFilterControllers(AppState st) {
     if (!st.filterFollow) return;
     final latText = st.filterLat.toStringAsFixed(4);
     final lngText = st.filterLng.toStringAsFixed(4);
-    final radiusText = '${st.filterRadius}';
     if (_filterLat.text != latText) _filterLat.text = latText;
     if (_filterLng.text != lngText) _filterLng.text = lngText;
-    if (_filterRadius.text != radiusText) _filterRadius.text = radiusText;
   }
 
   void _checkConfigDirty() {
