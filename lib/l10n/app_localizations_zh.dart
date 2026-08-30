@@ -1128,6 +1128,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deletePackage => '删除安装包';
 
   @override
+  String deletePackageConfirm(Object file) {
+    return '确定删除安装包 $file？';
+  }
+
+  @override
+  String get deleteAllPackages => '删除全部安装包';
+
+  @override
+  String deleteAllPackagesWithCount(Object count) {
+    return '删除全部安装包（$count 个）';
+  }
+
+  @override
+  String deleteAllPackagesConfirm(Object count, Object size) {
+    return '将删除本地已下载的 $count 个安装包（共 $size），确定？';
+  }
+
+  @override
   String get historyVersions => '历史版本';
 
   @override
@@ -2422,13 +2440,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recheck => '重新检查';
-
-  @override
-  String get signatureChangedTitle => '签名已更换 · 需卸载重装';
-
-  @override
-  String get signatureChangedDesc =>
-      '本次更新更换了正式签名（1.4.8 起）。旧版本无法直接覆盖安装，请先卸载手机上的 APRSlocus 再安装新版，否则会提示签名冲突。';
 
   @override
   String newVersionTitle(String version) {
