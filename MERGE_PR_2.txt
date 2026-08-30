@@ -1,9 +1,0 @@
-Merge branch 'feat/settings-ui-polish' from fork xaxovo
-
-This merge brings UI polish for settings pages from contributor xaxovo (PR #2):
-- Section cards with icon + subtitle
-- Fold sections with animated expand/collapse
-- SettingsHint component and unified row styles
-- i18n of newly added strings
-
-Merged-by: dariondong (GitHub Copilot Chat Assistant)
