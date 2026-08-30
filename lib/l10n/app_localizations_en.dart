@@ -2581,64 +2581,70 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get passcodeMessageWarning =>
       'APRS-IS login passcode. Using -1 prevents normal message send/receive.';
-  @override
-  String get settingsBeaconSubtitle => 'Transmit interval & report content';
 
   @override
-  String get settingsChatManageSubtitle => 'Contacts and chat data';
-
-  @override
-  String get settingsChatStatsSubtitle => 'Message and contact statistics';
-
-  @override
-  String get settingsClearDataSubtitle => 'Delete local records';
-
-  @override
-  String get settingsConnStatusSubtitle => 'Connection status and info';
-
-  @override
-  String get settingsContribCodeOptimization => 'Code optimization';
-
-  @override
-  String get settingsDevSubtitle => 'Debugging and testing';
+  String get settingsStationIdentitySubtitle => 'Callsign, SSID and comment';
 
   @override
   String get settingsDisplayInfoSubtitle => 'My symbol and current position';
 
   @override
-  String get settingsFilterHint => 'Only receive station packets within the configured range';
-
-  @override
-  String get settingsFilterSubtitle => 'Receive range and station limit';
-
-  @override
-  String get settingsGeneralSubtitle => 'Theme, language and coordinate display';
-
-  @override
-  String get settingsLabSubtitle => 'Experimental features';
-
-  @override
   String get settingsLocSourceSubtitle => 'Choose position source';
 
   @override
-  String get settingsManualLocHint => 'When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.';
+  String get settingsBeaconSubtitle => 'Transmit interval & report content';
 
   @override
-  String get settingsManualLocSubtitle => 'Manual input or map pick when no fix';
+  String get settingsManualLocSubtitle =>
+      'Manual input or map pick when no fix';
 
   @override
-  String get settingsMapSubtitle => 'Map type and display';
+  String get settingsManualLocHint =>
+      'When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.';
 
   @override
-  String get settingsReceivePrefHint => 'Besides range filter, receive stations by country/region group or exact callsign';
-
-  @override
-  String get settingsReceivePrefSubtitle => 'Receive by country/region or callsign';
+  String get settingsConnStatusSubtitle => 'Connection status and info';
 
   @override
   String get settingsServerSubtitle => 'APRS-IS server and passcode';
 
   @override
-  String get settingsStationIdentitySubtitle => 'Callsign, SSID and comment';
+  String get settingsFilterSubtitle => 'Receive range and station limit';
 
+  @override
+  String get settingsReceivePrefSubtitle =>
+      'Receive by country/region or callsign';
+
+  @override
+  String get settingsGeneralSubtitle =>
+      'Theme, language and coordinate display';
+
+  @override
+  String get settingsMapSubtitle => 'Map type and display';
+
+  @override
+  String get settingsChatStatsSubtitle => 'Message and contact statistics';
+
+  @override
+  String get settingsChatManageSubtitle => 'Contacts and chat data';
+
+  @override
+  String get settingsClearDataSubtitle => 'Delete local records';
+
+  @override
+  String get settingsLabSubtitle => 'Experimental features';
+
+  @override
+  String get settingsDevSubtitle => 'Debugging and testing';
+
+  @override
+  String get settingsFilterHint =>
+      'Only receive station packets within the configured range';
+
+  @override
+  String get settingsReceivePrefHint =>
+      'Besides range filter, receive stations by country/region group or exact callsign';
+
+  @override
+  String get settingsContribCodeOptimization => 'Code optimization';
 }
