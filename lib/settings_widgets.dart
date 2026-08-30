@@ -185,7 +185,6 @@ class SettingsMiniSwitch extends StatelessWidget {
         activeTrackColor: C.green.withValues(alpha: 0.25),
         inactiveThumbColor: C.grey,
         inactiveTrackColor: C.greyBg,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     ]);
   }
