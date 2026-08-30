@@ -390,6 +390,16 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // 界面缩放系数：1.0 = 标准；范围 0.85 ~ 1.3
+  double uiScale = 1.0;
+
+  /// 设置界面缩放
+  void setUiScale(double v) {
+    uiScale = v.clamp(0.85, 1.3);
+    persist();
+    _notify();
+  }
+
   // 自定义主题色（十六进制字符串，如 '2563EB'；空 = 默认蓝）
   String themeColor = '';
 
@@ -608,7 +618,7 @@ class AppState extends ChangeNotifier {
       darkMode = p.getBool('darkMode') ?? darkMode;
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
-      mapType = p.getString('mapType') ?? mapType;
+      uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
@@ -716,6 +726,7 @@ class AppState extends ChangeNotifier {
           p.setBool('darkMode', darkMode);
           p.setString('locale', locale);
           p.setString('themeColor', themeColor);
+          p.setDouble('uiScale', uiScale);
           p.setString('mapType', mapType);
           p.setString('updateChannel', updateChannel);
           p.setBool('useSimLocation', useSimLocation);

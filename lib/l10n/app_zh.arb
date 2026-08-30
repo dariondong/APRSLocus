@@ -67,6 +67,7 @@
   "languageZh": "中文",
   "languageEn": "English",
   "displaySettings": "显示设置",
+  "uiScale": "界面缩放",
   "mapType": "地图类型",
   "unit": "单位",
   "coordDatum": "坐标基准",

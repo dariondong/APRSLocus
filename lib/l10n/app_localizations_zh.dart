@@ -211,6 +211,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get displaySettings => '显示设置';
 
   @override
+  String get uiScale => '界面缩放';
+
+  @override
   String get mapType => '地图类型';
 
   @override

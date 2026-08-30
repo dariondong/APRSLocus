@@ -1544,6 +1544,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                   color: C.slate, onChanged: (v) => st.setDarkMode(v)),
               _themeColorSelector(st),
               _languageSelector(st),
+              _uiScaleSelector(st),
               SettingsRow2(S.of(context).unit, '公制 (km/h, m)'),
               SettingsRow2(S.of(context).grid, 'Maidenhead'),
               _datumSelector(),
@@ -1687,6 +1688,74 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                                   ? FontWeight.w700
                                   : FontWeight.w500)),
                     ]),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 界面缩放选择
+  Widget _uiScaleSelector(AppState st) {
+    const presets = <double>[0.9, 1.0, 1.15, 1.3];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text(S.of(context).uiScale, style: ts(12, c: C.slate)),
+            const Spacer(),
+            Text('${(st.uiScale * 100).round()}%',
+                style: ts(12, c: C.cyan, w: FontWeight.w700)),
+          ]),
+          const SizedBox(height: 4),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: C.cyan,
+              thumbColor: C.cyan,
+              inactiveTrackColor: C.border,
+              overlayColor: C.cyan.withValues(alpha: 0.12),
+              trackHeight: 3,
+              thumbShape:
+                  const RoundSliderThumbShape(enabledThumbRadius: 7),
+            ),
+            child: Slider(
+              value: st.uiScale,
+              min: 0.85,
+              max: 1.3,
+              divisions: 18,
+              label: '${(st.uiScale * 100).round()}%',
+              onChanged: (v) => st.setUiScale(v),
+            ),
+          ),
+          Wrap(
+            spacing: 8,
+            children: [
+              for (final s in presets)
+                GestureDetector(
+                  onTap: () => st.setUiScale(s),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: st.uiScale == s ? C.cyanBg : C.bgSoft,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: st.uiScale == s ? C.cyan : C.border,
+                        width: st.uiScale == s ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Text('${(s * 100).round()}%',
+                        style: ts(11,
+                            c: st.uiScale == s ? C.cyan : C.slate,
+                            w: st.uiScale == s
+                                ? FontWeight.w700
+                                : FontWeight.w500)),
                   ),
                 ),
             ],

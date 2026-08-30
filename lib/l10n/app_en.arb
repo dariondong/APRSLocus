@@ -67,6 +67,7 @@
   "languageZh": "中文",
   "languageEn": "English",
   "displaySettings": "Display settings",
+  "uiScale": "UI scale",
   "mapType": "Map type",
   "unit": "Unit",
   "coordDatum": "Datum",
