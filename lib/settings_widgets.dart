@@ -48,16 +48,26 @@ class SettingsPageShell extends StatelessWidget {
         bottom: subtitle.isEmpty
             ? null
             : PreferredSize(
-                preferredSize: const Size.fromHeight(30),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, bottom: 10),
-                    child: Text(subtitle,
-                        style: ts(11, c: C.grey),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                  ),
+                preferredSize: const Size.fromHeight(32),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                  child: Row(children: [
+                    Container(
+                      width: 3,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: Text(subtitle,
+                          style: ts(11, c: C.grey),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ]),
                 ),
               ),
       ),
@@ -108,7 +118,7 @@ class SettingsInput extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             textAlign: TextAlign.right,
-            style: ts(12, w: FontWeight.w500),
+            style: ts(13, w: FontWeight.w600),
             decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 6),
@@ -135,7 +145,7 @@ class SettingsSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? C.blue;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
       child: Row(children: [
@@ -148,6 +158,7 @@ class SettingsSwitch extends StatelessWidget {
           activeTrackColor: c.withValues(alpha: 0.25),
           inactiveThumbColor: C.grey,
           inactiveTrackColor: C.greyBg,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ]),
     );
@@ -195,8 +206,34 @@ class SettingsRow2 extends StatelessWidget {
       child: Row(children: [
         Text(label, style: ts(12, c: C.slate)),
         const Spacer(),
-        Text(value, style: ts(12, w: FontWeight.w600, c: valueColor)),
+        Text(value, style: ts(13, w: FontWeight.w600, c: valueColor)),
       ]),
+    );
+  }
+}
+
+/// 分区内统一提示说明块
+class SettingsHint extends StatelessWidget {
+  final String text;
+  final Color color;
+  final IconData icon;
+  const SettingsHint(this.text,
+      {super.key, this.color = C.slate, this.icon = Icons.info_outline_rounded});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(text, style: ts(11, c: color, h: 1.4)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -204,6 +241,7 @@ class SettingsRow2 extends StatelessWidget {
 /// 可折叠分区卡片
 class SettingsFold extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final IconData icon;
   final Color color;
   final bool open;
@@ -212,6 +250,7 @@ class SettingsFold extends StatelessWidget {
   const SettingsFold({
     super.key,
     required this.title,
+    this.subtitle,
     required this.icon,
     required this.color,
     required this.open,
@@ -227,19 +266,54 @@ class SettingsFold extends StatelessWidget {
         InkWell(
           onTap: onToggle,
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
             child: Row(children: [
-              Icon(icon, color: color, size: 18),
-              SizedBox(width: 8),
-              Text(title, style: ts(12, c: color, w: FontWeight.w700, ls: 1)),
-              Spacer(),
-              Icon(open ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                  color: C.grey, size: 20),
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 17),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: ts(13, c: color, w: FontWeight.w700)),
+                    if (subtitle != null) ...[
+                      SizedBox(height: 2),
+                      Text(subtitle!,
+                          style: ts(10, c: C.slate),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(
+                  open
+                      ? Icons.expand_less_rounded
+                      : Icons.expand_more_rounded,
+                  color: C.grey,
+                  size: 20),
             ]),
           ),
         ),
-        if (open) Divider(height: 1, color: C.border),
-        if (open) ...children,
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          alignment: Alignment.topCenter,
+          child: open
+              ? Column(children: [
+                  Divider(height: 1, color: C.border),
+                  ...children,
+                ])
+              : const SizedBox(width: double.infinity),
+        ),
       ]),
     );
   }
@@ -248,19 +322,30 @@ class SettingsFold extends StatelessWidget {
 /// 卡片分区（非折叠）
 class SettingsSectionCard extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final IconData icon;
   final Color color;
+  final Widget? trailing;
   final List<Widget> children;
   const SettingsSectionCard({
     super.key,
     required this.title,
+    this.subtitle,
     required this.icon,
     required this.color,
+    this.trailing,
     required this.children,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SectionCard(title: title, icon: icon, color: color, children: children);
+    return SectionCard(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      color: color,
+      trailing: trailing,
+      children: children,
+    );
   }
 }

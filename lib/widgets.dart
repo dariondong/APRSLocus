@@ -396,14 +396,18 @@ class KV extends StatelessWidget {
 /// Section card with title
 class SectionCard extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final IconData icon;
   final Color color;
+  final Widget? trailing;
   final List<Widget> children;
   const SectionCard({
     super.key,
     required this.title,
+    this.subtitle,
     required this.icon,
     required this.color,
+    this.trailing,
     required this.children,
   });
   @override
@@ -414,15 +418,39 @@ class SectionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
             child: Row(
               children: [
-                Icon(icon, color: color, size: 18),
-                SizedBox(width: 8),
-                Text(
-                  title,
-                  style: ts(12, c: color, w: FontWeight.w700, ls: 1),
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: color, size: 17),
                 ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: ts(13, c: color, w: FontWeight.w700)),
+                      if (subtitle != null) ...[
+                        SizedBox(height: 2),
+                        Text(subtitle!,
+                            style: ts(10, c: C.slate),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    ],
+                  ),
+                ),
+                if (trailing != null) ...[
+                  SizedBox(width: 8),
+                  trailing!,
+                ],
               ],
             ),
           ),
