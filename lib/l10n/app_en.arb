@@ -759,5 +759,6 @@
   "settingsDevSubtitle": "Debugging and testing",
   "settingsFilterHint": "Only receive station packets within the configured range",
   "settingsReceivePrefHint": "Besides range filter, receive stations by country/region group or exact callsign",
-  "settingsContribCodeOptimization": "Code optimization"
+  "settingsContribCodeOptimization": "Code optimization",
+  "eggBg2hcb": "Life is all meow-meow and mimi~"
 }
