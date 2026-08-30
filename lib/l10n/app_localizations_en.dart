@@ -2647,7 +2647,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsContribCodeOptimization => 'Code optimization';
+
   @override
   String get eggBg2hcb => 'Life is all meow-meow and mimi~';
-
 }
