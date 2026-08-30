@@ -1,0 +1,68 @@
+name: Sync to GitCode (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'GitHub Release 的 tag（如 v1.5.3）'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  sync-gitcode:
+    name: Sync release to GitCode
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate version
+        shell: bash
+        run: |
+          VER="${{ inputs.version }}"
+          if [[ ! "$VER" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "版本号格式错误，应为 vX.Y.Z（如 v1.5.3）"
+            exit 1
+          fi
+          echo "将同步版本: $VER"
+
+      - name: Download assets from GitHub Release
+        shell: bash
+        run: |
+          VER="${{ inputs.version }}"
+          mkdir -p dist
+          cd dist
+          # 下载该 release 的所有资产（单行 python 提取 URL）
+          for url in $(curl -sS "https://api.github.com/repos/dariondong/APRSLocus/releases/tags/$VER" \
+            -H "Accept: application/vnd.github+json" | python3 -c 'import json,sys;d=json.load(sys.stdin);[print(a["browser_download_url"]) for a in d.get("assets",[]) if a.get("name","").endswith((".apk",".exe"))]'); do
+            echo "下载: $url"
+            curl -sSL -O "$url" --max-time 300
+          done
+          ls -la
+
+      - name: Sync to GitCode
+        env:
+          GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
+          GITHUB_REF_NAME: ${{ inputs.version }}
+          GITHUB_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          if [ -z "$GITCODE_TOKEN" ]; then
+            echo "GITCODE_TOKEN 未配置，无法同步 GitCode"
+            exit 1
+          fi
+          # 把下载的资产重命名到脚本期望的目录
+          mkdir -p APRSLocus-Windows APRSLocus-Android
+          cp dist/*.exe APRSLocus-Windows/ 2>/dev/null || true
+          cp dist/*.apk APRSLocus-Android/ 2>/dev/null || true
+          ls -la APRSLocus-Windows APRSLocus-Android
+          python3 .github/scripts/sync_gitcode.py
+
+      - name: Summary
+        shell: bash
+        run: |
+          echo "✅ GitCode 同步完成（${{ inputs.version }}）"
+          echo "apk/exe 如因 OBS 带宽失败，请到 GitCode Releases 手动补传"
