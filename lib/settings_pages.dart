@@ -893,7 +893,11 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            _connCard(),
+            // 连接状态卡片
+            _connStatusCard(),
+            const SizedBox(height: 16),
+            // 服务器配置卡片
+            _serverCard(),
             const SizedBox(height: 16),
             _filterCard(),
             const SizedBox(height: 16),
@@ -903,16 +907,27 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     });
   }
 
-  /// 连接状态 + 服务器配置卡片（合并）
-  Widget _connCard() {
+  /// 连接状态卡片（独立简洁）
+  Widget _connStatusCard() {
     return SettingsSectionCard(
       title: S.of(context).server,
       icon: Icons.dns_rounded,
       color: C.purple,
       children: [
-        // 连接状态横幅（内嵌卡片顶部）
         _connBanner(),
         Divider(height: 1, color: C.border),
+        SettingsRow2(S.of(context).connection, st.connInfo),
+      ],
+    );
+  }
+
+  /// 服务器配置卡片（含重连）
+  Widget _serverCard() {
+    return SettingsSectionCard(
+      title: '服务器配置',
+      icon: Icons.settings_ethernet_rounded,
+      color: C.purple,
+      children: [
         SettingsInput(S.of(context).server, _server,
             onChanged: (v) {
           st.aprs.server = v.trim();
@@ -924,15 +939,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           if (n != null) st.aprs.port = n;
           _checkConfigDirty();
         }),
-        // Passcode（醒目：-1 时提示）
         _passcodeInput(),
         SettingsInput('WebSocket URL(可选)', _ws,
             onChanged: (v) {
           st.aprs.wsUrl = v.trim().isEmpty ? null : v.trim();
           _checkConfigDirty();
         }),
-        SettingsRow2(S.of(context).connection, st.connInfo),
-        // 修改服务器配置后内嵌重连按钮
         if (_configDirty) ...[
           Divider(height: 1, color: C.border),
           Padding(
@@ -1190,12 +1202,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ],
           ),
         ),
-        SettingsInput(S.of(context).maxStations, _maxStations,
-            tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
-            onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxStations(n);
-        }),
         Padding(
           padding: const EdgeInsets.all(14),
           child: OutlinedButton.icon(
