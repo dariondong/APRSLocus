@@ -570,16 +570,13 @@ class _StationsPageState extends State<StationsPage> {
                   ),
                 ),
                 SizedBox(width: 6),
-                // 包一层 GestureDetector，防止点击冒泡到外层 InkWell 打开详情面板
-                GestureDetector(
-                  onTap: () => st.focusOnMap(s),
-                  behavior: HitTestBehavior.opaque,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.map_outlined, color: C.blue, size: 20),
-                    tooltip: S.of(context).openInMap,
-                    visualDensity: VisualDensity.compact,
-                  ),
+                // 在地图显示：直接给 IconButton 有效 onPressed（IconButton 会吸收点击，
+                // 不会再冒泡到外层 InkWell 打开详情面板）
+                IconButton(
+                  onPressed: () => st.focusOnMap(s),
+                  icon: Icon(Icons.map_outlined, color: C.blue, size: 20),
+                  tooltip: S.of(context).openInMap,
+                  visualDensity: VisualDensity.compact,
                 ),
                 Icon(Icons.chevron_right_rounded, color: C.greyLight, size: 20),
               ],

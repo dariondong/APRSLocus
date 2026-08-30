@@ -10,6 +10,7 @@ import 'stations_page.dart';
 import 'messages_page.dart';
 import 'packets_page.dart';
 import 'settings_page.dart';
+import 'settings_pages.dart';
 
 class HomePage extends StatefulWidget {
   final AppState state;
@@ -904,7 +905,16 @@ class _HomePageState extends State<HomePage> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    // 跳到设置 tab 并直接打开「连接设置」（passcode 输入所在页），
+                    // 而不是只停在设置首页
                     if (_tab != 4) setState(() => _tab = 4);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ConnectionSettingsPage(
+                          state: widget.state,
+                        ),
+                      ),
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
