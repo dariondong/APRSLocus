@@ -1,0 +1,8 @@
+Merge remote-tracking branch 'refs/remotes/xaxovo/feat/settings-ui-polish' into main
+
+Merged PR #2 from contributor xaxovo and applied maintainer fixes from fix/settings-ui-polish:
+- Settings UI polish (section cards, fold animation, hints, i18n)
+- Fix: use SizedBox.shrink() for closed fold
+- Fix: restore default Switch tap targets for accessibility
+
+Co-authored-by: Xax <224216966+xaxovo@users.noreply.github.com>
