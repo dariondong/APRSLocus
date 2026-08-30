@@ -1074,7 +1074,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           color: C.purple,
           body: Column(
             children: [
-              _connCard(),
+              _connStatusCard(),
               const SizedBox(height: 16),
               _filterCard(),
               const SizedBox(height: 16),

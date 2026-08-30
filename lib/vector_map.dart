@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
-
 import 'theme.dart';
-import 'l10n/app_localizations.dart';
 import 'models.dart';
 
 /// 矢量地图视图（flutter_map + vector_map_tiles）
@@ -82,10 +79,8 @@ class _VectorMapViewState extends State<VectorMapView> {
       case 'zoomIn':
       case 'zoomOut':
         final cur = _map.camera.zoom;
-        final nz = (widget.action == 'zoomIn' ? cur + 1 : cur - 1).clamp(
-          3.0,
-          19.0,
-        );
+        final nz = (widget.action == 'zoomIn' ? cur + 1 : cur - 1)
+            .clamp(3.0, 19.0);
         _map.move(_map.camera.center, nz);
         break;
       case 'myLoc':
@@ -115,13 +110,13 @@ class _VectorMapViewState extends State<VectorMapView> {
     final result = <Polyline>[];
     for (final s in widget.stations) {
       if (s.track.length < 2) continue;
-      result.add(
-        Polyline(
-          points: s.track.map((p) => LatLng(p.lat, p.lng)).toList(),
-          color: s.color.withValues(alpha: 0.8),
-          strokeWidth: 3,
-        ),
-      );
+      result.add(Polyline(
+        points: s.track
+            .map((p) => LatLng(p.lat, p.lng))
+            .toList(),
+        color: s.color.withValues(alpha: 0.8),
+        strokeWidth: 3,
+      ));
     }
     return result;
   }
@@ -198,99 +193,88 @@ class _VectorMapViewState extends State<VectorMapView> {
     final initLat = _pendingFocus?.latitude ?? widget.myLat ?? 39.9042;
     final initLng = _pendingFocus?.longitude ?? widget.myLng ?? 116.4074;
     final initZoom = _pendingFocus != null ? 14.0 : 11.0;
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: style == null
-              ? _loadingOrError()
-              : FlutterMap(
-                  mapController: _map,
-                  options: MapOptions(
-                    initialCenter: LatLng(initLat, initLng),
-                    initialZoom: initZoom,
-                    minZoom: 2,
-                    maxZoom: 19,
-                    backgroundColor: const Color(0xFFF3F5F9),
-                    interactionOptions: const InteractionOptions(
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                    ),
-                    onTap: (tapPos, latLng) =>
-                        widget.onTap?.call(latLng.latitude, latLng.longitude),
-                    onMapReady: () {
-                      _mapReady = true;
-                      // 地图就绪后应用待处理焦点
-                      if (_pendingFocus != null) {
-                        final f = _pendingFocus!;
-                        _pendingFocus = null;
-                        _map.move(f, 14.0);
-                        _lastFocusSeq = widget.focusSeq;
-                      } else if (widget.focusSeq != _lastFocusSeq &&
-                          widget.focusLat != null &&
-                          widget.focusLng != null) {
-                        _lastFocusSeq = widget.focusSeq;
-                        _map.move(
-                          LatLng(widget.focusLat!, widget.focusLng!),
-                          14.0,
-                        );
-                      }
-                    },
+    return Stack(children: [
+      Positioned.fill(
+        child: style == null
+            ? _loadingOrError()
+            : FlutterMap(
+                mapController: _map,
+                options: MapOptions(
+                  initialCenter: LatLng(initLat, initLng),
+                  initialZoom: initZoom,
+                  minZoom: 2,
+                  maxZoom: 19,
+                  backgroundColor: const Color(0xFFF3F5F9),
+                  interactionOptions: const InteractionOptions(
+                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                   ),
-                  children: [
-                    VectorTileLayer(
-                      theme: style.theme,
-                      sprites: style.sprites,
-                      tileProviders: style.providers,
-                      cacheFolder: getApplicationSupportDirectory,
+                  onTap: (tapPos, latLng) =>
+                      widget.onTap?.call(latLng.latitude, latLng.longitude),
+                  onMapReady: () {
+                    _mapReady = true;
+                    // 地图就绪后应用待处理焦点
+                    if (_pendingFocus != null) {
+                      final f = _pendingFocus!;
+                      _pendingFocus = null;
+                      _map.move(f, 14.0);
+                      _lastFocusSeq = widget.focusSeq;
+                    } else if (widget.focusSeq != _lastFocusSeq &&
+                        widget.focusLat != null &&
+                        widget.focusLng != null) {
+                      _lastFocusSeq = widget.focusSeq;
+                      _map.move(
+                          LatLng(widget.focusLat!, widget.focusLng!), 14.0);
+                    }
+                  },
+                ),
+                children: [
+                  VectorTileLayer(
+                    theme: style.theme,
+                    sprites: style.sprites,
+                    tileProviders: style.providers,
+                    cacheFolder: getApplicationSupportDirectory,
+                  ),
+                  // 轨迹线（所有有轨迹的台站）
+                  if (_trackPolylines.isNotEmpty)
+                    PolylineLayer(
+                      polylines: _trackPolylines,
                     ),
-                    // 轨迹线（所有有轨迹的台站）
-                    if (_trackPolylines.isNotEmpty)
-                      PolylineLayer(polylines: _trackPolylines),
-                    // 我的位置
-                    if (widget.myHasFix &&
-                        widget.myLat != null &&
-                        widget.myLng != null)
-                      MarkerLayer(markers: [_myMarker()]),
-                    // 台站标记（台站多时聚合为球，减少渲染量）
-                    MarkerLayer(markers: _buildStationMarkers()),
-                  ],
-                ),
-        ),
-        // 加载失败提示
-        if (style == null && _styleError != null)
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 60,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: C.redBg,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: C.red.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.error_outline_rounded, size: 16, color: C.red),
-                    SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        AppLocalizations.of(context)
-                            .vectorMapLoadFailed(_styleError ?? ''),
-                        style: ts(11, c: C.red, w: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
+                  // 我的位置
+                  if (widget.myHasFix && widget.myLat != null && widget.myLng != null)
+                    MarkerLayer(markers: [_myMarker()]),
+                  // 台站标记（台站多时聚合为球，减少渲染量）
+                  MarkerLayer(
+                    markers: _buildStationMarkers(),
+                  ),
+                ],
               ),
+      ),
+      // 加载失败提示
+      if (style == null && _styleError != null)
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 60,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: C.redBg,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: C.red.withValues(alpha: 0.3)),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.error_outline_rounded, size: 16, color: C.red),
+                SizedBox(width: 6),
+                Flexible(
+                  child: Text('矢量地图加载失败\n$_styleError',
+                      style: ts(11, c: C.red, w: FontWeight.w600)),
+                ),
+              ]),
             ),
           ),
-      ],
-    );
+        ),
+    ]);
   }
 
   Widget _loadingOrError() {
@@ -300,10 +284,7 @@ class _VectorMapViewState extends State<VectorMapView> {
         children: [
           CircularProgressIndicator(strokeWidth: 2.5),
           SizedBox(height: 10),
-          Text(
-            AppLocalizations.of(context).loadingVectorMap,
-            style: TextStyle(color: C.grey, fontSize: 12),
-          ),
+          Text('加载矢量地图…', style: TextStyle(color: C.grey, fontSize: 12)),
         ],
       ),
     );
@@ -321,11 +302,7 @@ class _VectorMapViewState extends State<VectorMapView> {
           border: Border.all(color: Colors.white, width: 2),
           boxShadow: softShadow(blur: 8, alpha: 0.3),
         ),
-        child: const Icon(
-          Icons.navigation_rounded,
-          color: Colors.white,
-          size: 14,
-        ),
+        child: const Icon(Icons.navigation_rounded, color: Colors.white, size: 14),
       ),
     );
   }
@@ -360,7 +337,10 @@ class _VectorMapViewState extends State<VectorMapView> {
               ),
               child: Text(
                 s.call,
-                style: ts(9, c: s.color, w: FontWeight.w700, h: 1.0),
+                style: ts(9,
+                    c: s.color,
+                    w: FontWeight.w700,
+                    h: 1.0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -381,7 +361,8 @@ class _VectorMapViewState extends State<VectorMapView> {
     // 台站少于阈值、已放大到足够清晰、或关闭聚合时不聚合
     if (!widget.clustering || total < 60 || zoom >= 13) {
       return widget.stations
-          .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)
+          .where((s) =>
+              s.call != widget.myCall && s.lat != 0 && s.lng != 0)
           .map((s) => _stationMarker(s))
           .toList();
     }
@@ -414,7 +395,11 @@ class _VectorMapViewState extends State<VectorMapView> {
       final idx = keyMap[key];
       if (idx == null) {
         keyMap[key] = clusters.length;
-        clusters.add((lat: s.lat, lng: s.lng, items: [s]));
+        clusters.add((
+          lat: s.lat,
+          lng: s.lng,
+          items: [s],
+        ));
       } else {
         final c = clusters[idx];
         // 更新中心（均值）
@@ -451,10 +436,8 @@ class _VectorMapViewState extends State<VectorMapView> {
             boxShadow: softShadow(blur: 8, alpha: 0.3),
           ),
           child: Center(
-            child: Text(
-              '$count',
-              style: ts(13, c: Colors.white, w: FontWeight.w800),
-            ),
+            child: Text('$count',
+                style: ts(13, c: Colors.white, w: FontWeight.w800)),
           ),
         ),
       ),
