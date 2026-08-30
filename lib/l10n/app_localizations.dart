@@ -500,6 +500,12 @@ abstract class AppLocalizations {
   /// **'显示设置'**
   String get displaySettings;
 
+  /// No description provided for @uiScale.
+  ///
+  /// In zh, this message translates to:
+  /// **'界面缩放'**
+  String get uiScale;
+
   /// No description provided for @mapType.
   ///
   /// In zh, this message translates to:

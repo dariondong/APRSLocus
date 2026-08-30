@@ -211,6 +211,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get displaySettings => 'Display settings';
 
   @override
+  String get uiScale => 'UI scale';
+
+  @override
   String get mapType => 'Map type';
 
   @override
