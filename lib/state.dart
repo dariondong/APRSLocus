@@ -979,14 +979,20 @@ class AppState extends ChangeNotifier {
 
   /// 台站数据流：每次台站版本推进时推送新版本号。
   /// 台站列表页等只关心台站数据的页面订阅此流，避免被全量 AppState 通知反复重建。
-  final StreamController<int> _stationsCtrl =
-      StreamController<int>.broadcast(sync: true);
+  /// 异步投递（非 sync）：add() 不会在调用栈中同步触发监听者，杜绝重入类异常。
+  final StreamController<int> _stationsCtrl = StreamController<int>.broadcast();
   Stream<int> get stationsStream => _stationsCtrl.stream;
 
   /// 台站版本推进的唯一出口：自增版本并向流推送（台站列表/地图据此刷新）
+  /// 只有存在监听者（台站页已挂载）时才 add，且异常不外抛，
+  /// 避免 OOBE 等无监听场景下 add() 的任何重入/异常导致界面卡死。
   void _bumpStationsVersion() {
-    _bumpStationsVersion();
-    if (!_stationsCtrl.isClosed) _stationsCtrl.add(stationsVersion);
+    stationsVersion++;
+    try {
+      if (!_stationsCtrl.isClosed && _stationsCtrl.hasListener) {
+        _stationsCtrl.add(stationsVersion);
+      }
+    } catch (_) {}
   }
 
   int _statusSig = 0;
