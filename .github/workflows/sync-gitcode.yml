@@ -46,7 +46,7 @@ jobs:
       - name: Sync to GitCode
         env:
           GITCODE_TOKEN: ${{ secrets.GITCODE_TOKEN }}
-          GITHUB_REF_NAME: ${{ inputs.version }}
+          GITCODE_VERSION: ${{ inputs.version }}
           GITHUB_SHA: ${{ github.sha }}
         shell: bash
         run: |
