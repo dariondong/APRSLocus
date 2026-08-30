@@ -86,6 +86,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       _pulse.repeat();
     } else if (!need && _pulse.isAnimating) {
       _pulse.stop();
+      // 停转后强制标记重建一次，去掉标记里残留的静态脉冲圈
+      _forceMarkerRebuild = true;
     }
   }
 
@@ -276,8 +278,25 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // 图层筛选：隐藏的类型
   final Set<TypeGroup> _hiddenTypes = {};
 
+  // 可见台站缓存：台站版本 + 筛选条件未变时复用，
+  // 避免每秒 tick 重建时对几百个台站反复全量过滤
+  int _visibleStationsVersion = -1;
+  int _visibleFilterHash = 0;
+  List<Station> _visibleCache = const [];
+
   List<Station> get _visible {
+    final sv = widget.state.stationsVersion;
     final q = widget.searchQuery.trim().toLowerCase();
+    // 无分配 hash：搜索词 + 隐藏类型 + 国家筛选快照
+    final filterHash = Object.hash(
+      q,
+      Object.hashAll(_hiddenTypes),
+      Object.hashAll(widget.state.receiveCountries),
+      widget.state.receiveOthers,
+    );
+    if (sv == _visibleStationsVersion && filterHash == _visibleFilterHash) {
+      return _visibleCache;
+    }
     var list = widget.state.stations;
     // 国家/地区接收筛选：始终按 stationAllowedFor 过滤（传对象避免线性查找）
     list = list.where(widget.state.stationAllowedFor).toList();
@@ -294,6 +313,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (_hiddenTypes.isNotEmpty) {
       list = list.where((s) => !_hiddenTypes.contains(s.typeGroup)).toList();
     }
+    _visibleStationsVersion = sv;
+    _visibleFilterHash = filterHash;
+    _visibleCache = list;
     return list;
   }
 
@@ -329,9 +351,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   child: MouseRegion(
                     onHover: (e) => _hover.value = e.localPosition,
                     onExit: (_) => _hover.value = null,
-                    child: _isVector
+                    child                        : _isVector
                         ? VectorMapView(
                             stations: _visible,
+                            stationsVersion: widget.state.stationsVersion,
                             myCall: widget.state.myFullCall,
                             myHasFix: widget.state.myHasFix,
                             myLat: widget.state.myLat,
@@ -353,6 +376,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         : _isAmapJs
                         ? AmapJsMapView(
                             stations: _visible,
+                            stationsVersion: widget.state.stationsVersion,
                             myCall: widget.state.myFullCall,
                             myHasFix: widget.state.myHasFix,
                             myLat: widget.state.myLat,
@@ -637,13 +661,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   // ─── 标记 ───
-  // 标记列表缓存：视图(缩放/平移/选中)变化立即重建以跟手；
-  // 纯尺寸变化(键盘展开动画/收包洪峰)节流到 ~400ms，避免每帧重建全部标记
+  // 标记列表缓存：视图(缩放/平移/选中)或台站版本变化立即重建以保持实时；
+  // 台站/视图都没变（每秒 tick）直接复用，避免重建几百个 Marker；
+  // 纯尺寸变化(键盘展开动画/收包洪峰)节流到 ~150ms
   List<Widget>? _markerCache;
   DateTime _markerCacheTime = DateTime.fromMillisecondsSinceEpoch(0);
   Size? _markerCacheSize;
   int _markerViewHash = 0;
   String? _markerSelHash;
+  List<Station>? _markerVisibleList; // 上次构建标记所用的可见台站列表（用同一性判断）
+  bool _forceMarkerRebuild = false; // 脉冲动画停转后强制重建一次，移除残留圈
 
   List<Widget> _stationMarkers(Size size) {
     final now = DateTime.now();
@@ -652,22 +679,31 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         _pan.dx.round() * 1009 +
         _pan.dy.round();
     final selHash = _selected?.call ?? '';
+    // 可见台站列表身份变化（台站版本 / 搜索 / 图层筛选 / 国家筛选变化都会使 _visible
+    // 返回新列表）→ 立即重建，保证实时与筛选生效；
     // 视图(拖动/缩放/选中)变化 → 立即重建，保证跟手；
-    // 尺寸变化(键盘动画) → 150ms 节流；
-    // 视图与尺寸都没变(收包洪峰) → 400ms 节流
+    // 都没有变化（每秒 tick）→ 直接复用缓存，不再重建 Marker；
+    // 尺寸变化(键盘动画) → 150ms 节流
+    final vis = _visible;
+    final visChanged = !identical(vis, _markerVisibleList);
     final viewChanged =
         viewHash != _markerViewHash || selHash != _markerSelHash;
+    final force = _forceMarkerRebuild;
+    _forceMarkerRebuild = false;
     final sizeChanged = _markerCacheSize != size;
     final elapsed = now.difference(_markerCacheTime).inMilliseconds;
     final fresh =
         _markerCache != null &&
+        !force &&
+        !visChanged &&
         !viewChanged &&
-        (sizeChanged ? elapsed < 150 : elapsed < 400);
+        (sizeChanged ? elapsed < 150 : true);
     if (fresh) return _markerCache!;
     _markerCacheTime = now;
     _markerCacheSize = size;
     _markerViewHash = viewHash;
     _markerSelHash = selHash;
+    _markerVisibleList = vis;
     _markerCache = _buildMarkers(size);
     return _markerCache!;
   }
@@ -1144,17 +1180,34 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
+  List<Station>? _hasVisList;
+  int _hasVisViewHash = -1;
+  Size _hasVisSize = Size.zero;
+  bool _hasVisResult = false;
+
   /// 视野内是否有可见台站（放大后视野缩小时判断）
+  /// 按 可见台站列表同一性 + 视图 + 尺寸 缓存，避免每次重建全量投影
   bool _hasVisibleStation(Size size) {
-    for (final s in _visible) {
+    final vis = _visible;
+    final vh =
+        (_zoom * 64).round() * 1000003 + _pan.dx.round() * 1009 + _pan.dy.round();
+    if (identical(vis, _hasVisList) && vh == _hasVisViewHash && size == _hasVisSize) {
+      return _hasVisResult;
+    }
+    _hasVisList = vis;
+    _hasVisViewHash = vh;
+    _hasVisSize = size;
+    for (final s in vis) {
       final pos = _toScreen(s.lat, s.lng, size);
       if (pos.dx > -20 &&
           pos.dx < size.width + 20 &&
           pos.dy > -20 &&
           pos.dy < size.height + 20) {
+        _hasVisResult = true;
         return true;
       }
     }
+    _hasVisResult = false;
     return false;
   }
 

@@ -31,6 +31,10 @@ class _MessagesPageState extends State<MessagesPage> {
   final _scrollChat = ScrollController();
   final _manualAddCtrl = TextEditingController(); // 手动添加呼号
 
+  // _partners 缓存：消息/台站/群组未变化时复用，避免每秒/每次 build 全量扫描
+  String _partnersKey = '';
+  List<String> _partnersCache = const [];
+
   Widget get _manualAddField => TextField(
     controller: _manualAddCtrl,
     style: ts(12),
@@ -83,6 +87,10 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   List<String> _partners(AppState st) {
+    final key =
+        '${st.messages.length}|${st.messages.isEmpty ? 0 : st.messages.first.time.millisecondsSinceEpoch}|${st.stationsVersion}|${st.chatGroups.length}';
+    if (key == _partnersKey) return _partnersCache;
+    _partnersKey = key;
     final s = <String>{};
     for (final m in st.messages) {
       // 排除群聊消息（有 groupId 或收件人是群呼号）
@@ -99,7 +107,8 @@ class _MessagesPageState extends State<MessagesPage> {
     for (final st2 in st.stations) {
       if (st2.favorite || st2.manual) s.add(st2.call);
     }
-    return s.toList();
+    _partnersCache = s.toList();
+    return _partnersCache;
   }
 
   List<AprsMsg> _chatWith(AppState st, String call) => st.messages.where((m) {

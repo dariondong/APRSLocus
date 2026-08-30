@@ -15,6 +15,8 @@ import 'models.dart';
 /// 坐标体系：WGS-84（标准 Web Mercator），无 GCJ 偏移。
 class VectorMapView extends StatefulWidget {
   final List<Station> stations;
+  // 台站数据版本：未变化时复用已构建的 Marker，避免每秒重建
+  final int stationsVersion;
   final String myCall;
   final bool myHasFix;
   final double? myLat, myLng;
@@ -32,6 +34,7 @@ class VectorMapView extends StatefulWidget {
   const VectorMapView({
     super.key,
     required this.stations,
+    this.stationsVersion = 0,
     required this.myCall,
     this.myHasFix = false,
     this.myLat,
@@ -59,6 +62,11 @@ class _VectorMapViewState extends State<VectorMapView> {
   int _lastActionSeq = -1;
   bool _initDone = false;
   LatLng? _pendingFocus;
+  // 台站 Marker 缓存（版本/缩放/聚合开关键）
+  int _lastMarkersVersion = -1;
+  double _lastMarkerZoom = -999;
+  bool _lastClustering = true;
+  List<Marker>? _markersCache;
 
   @override
   void didUpdateWidget(covariant VectorMapView old) {
@@ -354,27 +362,42 @@ class _VectorMapViewState extends State<VectorMapView> {
   /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
   List<Marker> _buildStationMarkers() {
     final zoom = _mapReady ? _map.camera.zoom : 11.0;
+    // 台站版本 + 缩放级别 + 聚合开关未变时复用 Marker，
+    // 避免 MapPage 每秒 tick 重建时反复创建全部 Marker
+    if (widget.stationsVersion == _lastMarkersVersion &&
+        (zoom - _lastMarkerZoom).abs() < 0.5 &&
+        widget.clustering == _lastClustering &&
+        _markersCache != null) {
+      return _markersCache!;
+    }
+    _lastMarkersVersion = widget.stationsVersion;
+    _lastMarkerZoom = zoom;
+    _lastClustering = widget.clustering;
     // 台站数量多且缩放级别低时聚合（可被 clustering 开关关闭）
     final total = widget.stations
         .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)
         .length;
+    final List<Marker> result;
     // 台站少于阈值、已放大到足够清晰、或关闭聚合时不聚合
     if (!widget.clustering || total < 60 || zoom >= 13) {
-      return widget.stations
+      result = widget.stations
           .where((s) =>
               s.call != widget.myCall && s.lat != 0 && s.lng != 0)
           .map((s) => _stationMarker(s))
           .toList();
-    }
-    final markers = <Marker>[];
-    for (final c in _clusterStations()) {
-      if (c.items.length > 1) {
-        markers.add(_clusterMarker(c.lat, c.lng, c.items));
-      } else {
-        markers.add(_stationMarker(c.items.first));
+    } else {
+      final markers = <Marker>[];
+      for (final c in _clusterStations()) {
+        if (c.items.length > 1) {
+          markers.add(_clusterMarker(c.lat, c.lng, c.items));
+        } else {
+          markers.add(_stationMarker(c.items.first));
+        }
       }
+      result = markers;
     }
-    return markers;
+    _markersCache = result;
+    return result;
   }
 
   /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）

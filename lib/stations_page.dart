@@ -131,8 +131,11 @@ class _StationsPageState extends State<StationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: widget.state,
+    // 流式加载：只订阅“台站数据流”（版本变化才推流）+ 页内秒级 tick，
+    // 连接/消息/GPS/设置等与台站无关的 AppState 变化不再触发整页重建
+    return StreamBuilder<int>(
+      stream: widget.state.stationsStream,
+      initialData: widget.state.stationsVersion,
       builder: (context, _) {
         final st = widget.state;
         final list = _list(st);
@@ -485,10 +488,10 @@ class _StationsPageState extends State<StationsPage> {
   }
 
   Widget _tile(AppState st, Station s, int index) {
+    // key 必须稳定（只用呼号）：以前把 lastHeard 的 5 秒桶写进 key，
+    // 导致每 5 秒整行被当成新组件重新播放入场动画（列表在后台也持续抖动）
     return TweenAnimationBuilder<double>(
-      key: ValueKey(
-        'st-${s.call}-${s.lastHeard.millisecondsSinceEpoch ~/ 5000}',
-      ),
+      key: ValueKey('st-${s.call}'),
       tween: Tween(begin: 0, end: 1),
       duration: Duration(milliseconds: 260 + index * 25),
       curve: Curves.easeOutCubic,
@@ -542,9 +545,13 @@ class _StationsPageState extends State<StationsPage> {
                           _mini(Icons.speed_rounded, s.speedStr),
                           _mini(Icons.height_rounded, s.altStr),
                           _mini(Icons.grid_4x4_rounded, s.grid),
-                          _mini(
-                            Icons.access_time_rounded,
-                            localizedLastSeen(context, s),
+                          // “X秒前”随每秒 tick 单独刷新，避免整页每秒重建
+                          ValueListenableBuilder<int>(
+                            valueListenable: widget.state.tick,
+                            builder: (_, _, _) => _mini(
+                              Icons.access_time_rounded,
+                              localizedLastSeen(context, s),
+                            ),
                           ),
                           if (s.wx != null) _mini(Icons.cloud_outlined, s.wx!),
                           if (st.myStation != null) ...[

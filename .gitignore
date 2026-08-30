@@ -54,3 +54,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# AI handover file (local only)
+HANDOVER.md
