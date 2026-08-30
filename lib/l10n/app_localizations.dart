@@ -4639,6 +4639,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'代码优化'**
   String get settingsContribCodeOptimization;
+
+  /// No description provided for @eggBg2hcb.
+  ///
+  /// In zh, this message translates to:
+  /// **'人生真是喵喵又咪咪啊'**
+  String get eggBg2hcb;
 }
 
 class _AppLocalizationsDelegate
@@ -4673,7 +4679,4 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
-  /// **'人生真是喵喵又咪咪啊'**
-  String get eggBg2hcb;
-
 }

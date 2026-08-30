@@ -2589,7 +2589,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsContribCodeOptimization => '代码优化';
+
   @override
   String get eggBg2hcb => '人生真是喵喵又咪咪啊';
-
 }
