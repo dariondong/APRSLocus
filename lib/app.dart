@@ -18,11 +18,12 @@ class _AppState extends State<App> {
   bool _lastDark = false;
   String _lastTheme = '';
   String _lastLocale = '';
+  int _lastReloadTick = 0;
 
   @override
   void initState() {
     super.initState();
-    // 仅在深色/主题色/语言变化时重建 MaterialApp（避免数据洪峰期间反复重建整个导航栈）
+    // 仅在深色/主题色/语言/重载变化时重建 MaterialApp（避免数据洪峰期间反复重建整个导航栈）
     _state.addListener(_onThemeChange);
     // 启动后应用保存的主题（深色/自定义色）——_loadPrefs 完成后还会再应用一次
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,10 +36,15 @@ class _AppState extends State<App> {
     final dark = _state.darkMode;
     final tc = _state.themeColor;
     final loc = _state.locale;
-    if (dark != _lastDark || tc != _lastTheme || loc != _lastLocale) {
+    final rt = _state.reloadTick;
+    if (dark != _lastDark ||
+        tc != _lastTheme ||
+        loc != _lastLocale ||
+        rt != _lastReloadTick) {
       _lastDark = dark;
       _lastTheme = tc;
       _lastLocale = loc;
+      _lastReloadTick = rt;
       if (mounted) setState(() {});
     }
   }
@@ -53,6 +59,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: ValueKey('app_${_state.reloadTick}'),
       title: 'APRSlocus',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true).copyWith(
@@ -93,7 +100,6 @@ class _AppState extends State<App> {
         );
       },
       home: ListenableBuilder(
-        key: ValueKey('home_${_state.reloadTick}'),
         listenable: _state,
         builder: (_, _) {
           if (!_state.initialized) return const SplashPage();
