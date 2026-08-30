@@ -24,6 +24,7 @@ class _AboutPageState extends State<AboutPage>
   final List<_Particle> _particles = [];
   Offset _particleCenter = Offset.zero;
   bool _showParticles = false;
+  OverlayEntry? _particleOverlay;
 
   void _fireParticles(Offset center) {
     final rng = Random();
@@ -70,6 +71,24 @@ class _AboutPageState extends State<AboutPage>
     }
     _particleCenter = center;
     _showParticles = true;
+    _particleOverlay?.remove();
+    _particleOverlay = OverlayEntry(
+      builder: (_) => IgnorePointer(
+        child: AnimatedBuilder(
+          animation: _ctrl!,
+          builder: (_, __) => SizedBox.expand(
+            child: CustomPaint(
+              painter: _ParticlePainter(
+                center: _particleCenter,
+                progress: _ctrl!.value,
+                particles: _particles,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_particleOverlay!);
     _ctrl?.forward(from: 0);
   }
 
@@ -82,13 +101,19 @@ class _AboutPageState extends State<AboutPage>
           duration: const Duration(milliseconds: 1200),
         )..addListener(
           () => setState(() {
-            if (_ctrl!.isCompleted) _showParticles = false;
+            if (_ctrl!.isCompleted) {
+              _showParticles = false;
+              _particleOverlay?.remove();
+              _particleOverlay = null;
+            }
           }),
         );
   }
 
   @override
   void dispose() {
+    _particleOverlay?.remove();
+    _particleOverlay = null;
     _ctrl?.dispose();
     super.dispose();
   }
@@ -346,7 +371,11 @@ class _AboutPageState extends State<AboutPage>
                             S.of(context).codeContributionI18n,
                             'BD3QID',
                           ),
-                          _row(S.of(context).settingsContribCodeOptimization, '清零（BG2HCB）'),
+                          _row(
+                            S.of(context).settingsContribCodeOptimization,
+                            '清零（BG2HCB）',
+                            onLongPress: () => _onEggTap('BG2HCB'),
+                          ),
                         ],
                       ),
                     ),
@@ -540,7 +569,6 @@ class _AboutPageState extends State<AboutPage>
                           _eggRow(S.of(context).callsign, 'BG7LMW'),
                           _eggRow(S.of(context).callsign, 'BG7OSL'),
                           _eggRow(S.of(context).callsign, 'BD3QID'),
-                          _eggRow(S.of(context).callsign, 'BG2HCB'),
                         ],
                       ),
                     ),
@@ -686,8 +714,8 @@ class _AboutPageState extends State<AboutPage>
     );
   }
 
-  Widget _row(String label, String value) {
-    return Container(
+  Widget _row(String label, String value, {VoidCallback? onLongPress}) {
+    final row = Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
@@ -697,9 +725,20 @@ class _AboutPageState extends State<AboutPage>
           Text(label, style: ts(12, c: C.slate)),
           const Spacer(),
           Text(value, style: ts(12, w: FontWeight.w600)),
+          if (onLongPress != null) ...[
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+          ],
         ],
       ),
     );
+    if (onLongPress != null) {
+      return GestureDetector(
+        onLongPress: onLongPress,
+        child: row,
+      );
+    }
+    return row;
   }
 
   Widget _linkRow({
