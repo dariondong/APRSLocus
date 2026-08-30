@@ -93,6 +93,7 @@ class _AppState extends State<App> {
         );
       },
       home: ListenableBuilder(
+        key: ValueKey('home_${_state.reloadTick}'),
         listenable: _state,
         builder: (_, _) {
           if (!_state.initialized) return const SplashPage();

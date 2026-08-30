@@ -506,6 +506,18 @@ abstract class AppLocalizations {
   /// **'界面缩放'**
   String get uiScale;
 
+  /// No description provided for @reloadUi.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新加载界面'**
+  String get reloadUi;
+
+  /// No description provided for @reloadDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已重新加载'**
+  String get reloadDone;
+
   /// No description provided for @mapType.
   ///
   /// In zh, this message translates to:

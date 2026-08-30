@@ -1710,10 +1710,17 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
           Row(children: [
             Text(S.of(context).uiScale, style: ts(12, c: C.slate)),
             const Spacer(),
-            Text('${(st.uiScale * 100).round()}%',
-                style: ts(12, c: C.cyan, w: FontWeight.w700)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: C.cyanBg,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text('${(st.uiScale * 100).round()}%',
+                  style: ts(12, c: C.cyan, w: FontWeight.w700)),
+            ),
           ]),
-          const SizedBox(height: 4),
+          const SizedBox(height: 10),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: C.cyan,
@@ -1735,13 +1742,14 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
           ),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: [
               for (final s in presets)
                 GestureDetector(
                   onTap: () => st.setUiScale(s),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 5),
+                        horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
                       color: st.uiScale == s ? C.cyanBg : C.bgSoft,
                       borderRadius: BorderRadius.circular(8),
@@ -1751,7 +1759,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                       ),
                     ),
                     child: Text('${(s * 100).round()}%',
-                        style: ts(11,
+                        style: ts(12,
                             c: st.uiScale == s ? C.cyan : C.slate,
                             w: st.uiScale == s
                                 ? FontWeight.w700
@@ -1759,6 +1767,35 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                   ),
                 ),
             ],
+          ),
+          const SizedBox(height: 10),
+          Divider(height: 1, color: C.border),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: C.cyan,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: Text(S.of(context).reloadUi,
+                  style: ts(13, w: FontWeight.w600)),
+              onPressed: () {
+                st.reloadUi();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).reloadDone),
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

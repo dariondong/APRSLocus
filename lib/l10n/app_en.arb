@@ -68,6 +68,8 @@
   "languageEn": "English",
   "displaySettings": "Display settings",
   "uiScale": "UI scale",
+  "reloadUi": "Reload UI",
+  "reloadDone": "Reloaded",
   "mapType": "Map type",
   "unit": "Unit",
   "coordDatum": "Datum",
