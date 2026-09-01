@@ -216,7 +216,7 @@
         const d2 = dx * dx + dy * dy;
         if (d2 < maxDist * maxDist) {
           const a = (1 - Math.sqrt(d2) / maxDist) * 0.5;
-          ctx.strokeStyle = `rgba(99, 102, 241, ${a * 0.28})`;
+          ctx.strokeStyle = `rgba(14, 165, 233, ${a * 0.3})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
