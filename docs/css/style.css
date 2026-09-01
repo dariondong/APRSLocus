@@ -90,16 +90,13 @@ code {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
-.section-head { max-width: 720px; margin: 0 auto 60px; text-align: center; }
-.eyebrow {
-  display: inline-block; font-size: 12px; letter-spacing: .35em; font-weight: 700;
-  color: var(--cyan); text-transform: uppercase; margin-bottom: 14px;
-  background: rgba(255, 255, 255, .55); padding: 6px 16px; border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .7);
-  box-shadow: 0 6px 18px rgba(45, 70, 120, .08);
+.section-head { max-width: 720px; margin: 0 0 54px; }
+.section-head::before {
+  content: ""; display: block; width: 42px; height: 3px; border-radius: 3px;
+  background: var(--grad); margin-bottom: 18px;
 }
 .section-head h2 { font-size: clamp(30px, 4.6vw, 46px); font-weight: 800; letter-spacing: -.02em; line-height: 1.2; }
-.section-head p { color: var(--text-dim); margin-top: 16px; font-size: 17px; }
+.section-head p { color: var(--text-dim); margin-top: 14px; font-size: 16.5px; }
 
 /* ── 04. 导航栏 ── */
 .nav { position: fixed; inset: 0 0 auto 0; z-index: 100; padding: 18px 0; transition: all .4s var(--ease); }
@@ -272,7 +269,7 @@ code {
   transition: transform .35s var(--ease), box-shadow .35s, border-color .35s;
 }
 .stat:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, .55); box-shadow: var(--shadow-hover); }
-.stat-num { font-size: clamp(30px, 3.6vw, 44px); font-weight: 900; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stat-num { font-size: clamp(30px, 3.6vw, 44px); font-weight: 900; color: var(--text); }
 .stat-label { color: var(--text-dim); font-size: 14px; margin-top: 6px; }
 
 /* ── 08. 功能卡片 ── */
@@ -285,17 +282,12 @@ code {
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   transition: transform .4s var(--ease), border-color .4s, box-shadow .4s;
 }
-.card::before {
-  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
-  background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease);
-}
 .card::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(56, 189, 248, .16), transparent 65%);
   opacity: 0; transition: opacity .4s;
 }
 .card:hover { transform: translateY(-8px); border-color: rgba(255, 255, 255, .9); box-shadow: var(--shadow-hover); }
-.card:hover::before { transform: scaleX(1); }
 .card:hover::after { opacity: 1; }
 .card-icon {
   width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 18px;
@@ -366,8 +358,8 @@ code {
 .step:hover { transform: translateY(-6px); border-color: rgba(255, 255, 255, .9); box-shadow: var(--shadow); }
 .step-num {
   width: 46px; height: 46px; margin: 0 auto 16px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 20px; font-weight: 900; color: #fff; background: var(--grad);
-  box-shadow: 0 12px 26px rgba(99, 102, 241, .4);
+  font-size: 20px; font-weight: 900; color: #fff; background: #2563eb;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, .35);
 }
 .step h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
 .step p { color: var(--text-dim); font-size: 14px; }
