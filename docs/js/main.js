@@ -148,37 +148,6 @@
     revealEls.forEach((el) => el.classList.add("in"));
   }
 
-  /* ── 数字滚动 ── */
-  const counters = document.querySelectorAll("[data-count]");
-  const animateCount = (el) => {
-    const target = +el.dataset.count;
-    const dur = 1400;
-    const start = performance.now();
-    const step = (now) => {
-      const p = Math.min((now - start) / dur, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(target * eased).toLocaleString();
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-  if ("IntersectionObserver" in window && !prefersReduced) {
-    const cio = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            animateCount(e.target);
-            cio.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-    counters.forEach((c) => cio.observe(c));
-  } else {
-    counters.forEach((c) => (c.textContent = (+c.dataset.count).toLocaleString()));
-  }
-
   /* ── Hero 粒子背景（APRS 星网/雷达网络感） ── */
   const canvas = document.getElementById("heroCanvas");
   const ctx = canvas.getContext("2d");
