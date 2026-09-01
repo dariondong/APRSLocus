@@ -212,8 +212,8 @@ code {
   margin: 0 auto;
 }
 .phone {
-  position: absolute; right: 0; top: 4%; z-index: 3;
-  width: 35%; aspect-ratio: 9/19; border-radius: 34px;
+  position: absolute; right: 0; bottom: 4%; top: auto; z-index: 3;
+  width: 32%; aspect-ratio: 9/19; border-radius: 34px;
   background: linear-gradient(160deg, rgba(255, 255, 255, .78), rgba(240, 246, 255, .6));
   border: 1px solid rgba(255, 255, 255, .9);
   box-shadow: 0 44px 88px rgba(45, 70, 120, .34), inset 0 0 0 5px rgba(255, 255, 255, .4);
@@ -287,8 +287,8 @@ code {
 
 /* ── 07. 桌面窗口（Windows 端，宽屏布局：侧栏 + 顶栏 + 地图 + 底部坐标条） ── */
 .deskwin {
-  position: absolute; left: 0; top: 2%; z-index: 2;
-  width: 92%; height: 93%; border-radius: 16px; overflow: hidden;
+  position: absolute; left: 0; top: 0; z-index: 2;
+  width: 90%; height: 94%; border-radius: 16px; overflow: hidden;
   background: rgba(255, 255, 255, .64);
   border: 1px solid rgba(255, 255, 255, .85);
   box-shadow: 0 40px 80px rgba(45, 70, 120, .28);
@@ -709,7 +709,7 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   .hero-actions .btn { width: 100%; justify-content: center; }
   /* 移动端：手机与桌面窗口改为上下叠放，桌面窗口上移形成竖向重叠 */
   .hero-phone { height: auto; aspect-ratio: auto; display: flex; flex-direction: column; align-items: center; }
-  .phone { position: relative; left: auto; top: auto; width: 240px; z-index: 3; }
+  .phone { position: relative; left: auto; top: auto; bottom: auto; width: 240px; z-index: 3; }
   .deskwin { position: relative; left: auto; top: auto; width: min(560px, 100%); height: auto; margin-top: -64px; z-index: 2; }
   .phone-glow { left: 0; top: 0; width: 52%; }
   .footer-bottom { flex-direction: column; text-align: center; }
