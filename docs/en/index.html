@@ -44,6 +44,7 @@
     <nav class="nav-links" id="navLinks">
       <a href="#features">Features</a>
       <a href="#platforms">Platforms</a>
+      <a href="#changelog">Changelog</a>
       <a href="#getting-started">Getting Started</a>
       <a href="#faq">FAQ</a>
       <a href="#community">Community</a>
@@ -391,6 +392,56 @@
     </div>
 
     
+  </div>
+</section>
+
+<!-- ═══════════ Changelog ═══════════ -->
+<section class="section" id="changelog">
+  <div class="section-head reveal">
+    <h2>Changelog</h2>
+    <p>Recent changes across the latest releases.</p>
+  </div>
+
+  <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.8</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>Fix: "Show on map" button in station list not working — now jumps to map and centers on the station</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>Fix: "Go to settings" link in Passcode warning not working — now opens connection settings directly</div>
+        <div class="cl-item"><span class="cl-dot new"></span>New: ci-test workflow for automated flutter analyze + Windows/Android build</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Improved: Settings page UI consistency, collapsible sections more compact</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.7</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Improved settings page UI consistency with section cards and expand/collapse animation</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Better station data processing and long-running performance</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Improved i18n support and internal logic adjustments</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Thanks to contributors BD3QID and xaxovo</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.6</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>Fix: UI lag after long running — render/data isolation, map Marker caching</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Per-second tick decoupled, station page streamed loading, page subtree memoization</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Station stats caching, list key jitter fix, map marker rendering optimization</div>
+      </div>
+    </div>
+
+    <p class="cl-more reveal"><a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">View full release history →</a></p>
   </div>
 </section>
 
