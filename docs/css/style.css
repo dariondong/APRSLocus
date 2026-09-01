@@ -325,17 +325,11 @@ code {
 .pl-logo svg { width: 28px; height: 28px; fill: #fff; }
 .pl-logo.a { background: linear-gradient(135deg, #34d399, #059669); }
 .pl-logo.w { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-.pl-logo.i { background: linear-gradient(135deg, #94a3b8, #475569); }
-.pl-logo.l { background: linear-gradient(135deg, #fbbf24, #b45309); }
-.pl-logo.m { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-.pl-logo.web { background: linear-gradient(135deg, #38bdf8, #0369a1); }
 .pl-body { flex: 1; }
 .pl-body h3 { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 .pl-body p { color: var(--text-dim); font-size: 13.5px; margin-top: 3px; }
 .tag { font-style: normal; font-size: 11px; padding: 2px 9px; border-radius: 999px; font-weight: 700; }
 .tag.ok { color: #047857; background: rgba(16, 185, 129, .14); border: 1px solid rgba(16, 185, 129, .35); }
-.tag.build { color: #b45309; background: rgba(245, 158, 11, .14); border: 1px solid rgba(245, 158, 11, .35); }
-.tag.ready { color: var(--text-faint); background: rgba(139, 152, 176, .14); border: 1px solid rgba(139, 152, 176, .35); }
 .pl-arrow { font-size: 22px; color: var(--text-faint); transition: transform .3s, color .3s; }
 .platform:hover .pl-arrow { transform: translateX(4px); color: var(--cyan); }
 .dl-note {
@@ -597,4 +591,65 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   18. 进入动画 · 启动遮罩 + Hero 入场 + 溢出防护
+   ════════════════════════════════════════════════════════════════ */
+
+/* 全局横向溢出防护（移动端抽屉 / 全屏光斑不会撑出滚动条） */
+html { overflow-x: hidden; }
+
+/* 启动遮罩 */
+.preloader {
+  position: fixed; inset: 0; z-index: 400;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(900px 600px at 50% 30%, rgba(56, 189, 248, .18), transparent 60%),
+    radial-gradient(700px 500px at 80% 90%, rgba(168, 85, 247, .12), transparent 60%),
+    linear-gradient(180deg, #f3f6fd 0%, #eaf0fb 100%);
+  transition: opacity .7s var(--ease), visibility .7s;
+}
+.preloader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.pre-inner { text-align: center; }
+.pre-radar {
+  position: relative; width: 96px; height: 96px; margin: 0 auto 18px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid rgba(56, 189, 248, .4);
+  animation: prePulse 2.4s ease-in-out infinite;
+}
+.pre-radar::before { content: ""; position: absolute; inset: 20px; border-radius: 50%; border: 1px solid rgba(56, 189, 248, .35); }
+.pre-radar::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgba(56, 189, 248, .5), transparent 70deg); animation: spin 1.6s linear infinite; }
+.pre-radar i { position: absolute; inset: 0; border-radius: 50%; animation: spin 1.6s linear infinite; }
+.pre-radar i::after { content: ""; position: absolute; top: 50%; left: 50%; width: 50%; height: 2px; background: linear-gradient(90deg, rgba(56, 189, 248, .9), transparent); transform-origin: left center; }
+.pre-logo { position: relative; z-index: 2; width: 34px; height: 34px; border-radius: 10px; object-fit: cover; box-shadow: 0 8px 22px rgba(56, 189, 248, .4); }
+.pre-brand { font-weight: 800; font-size: 20px; letter-spacing: .06em; color: var(--text); }
+.pre-bar { width: 170px; height: 3px; margin: 16px auto 0; border-radius: 3px; background: rgba(15, 40, 80, .1); overflow: hidden; }
+.pre-bar i { display: block; height: 100%; width: 38%; border-radius: 3px; background: var(--grad); animation: preBar 1.2s ease-in-out infinite; }
+@keyframes prePulse { 50% { transform: scale(1.05); } }
+@keyframes preBar { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
+
+/* Hero 入场：遮罩淡出时内容依次浮现 */
+.hero-copy > *, .hero-phone {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .8s var(--ease), transform .8s var(--ease);
+}
+.hero-copy > *:nth-child(1) { transition-delay: .06s; }
+.hero-copy > *:nth-child(2) { transition-delay: .14s; }
+.hero-copy > *:nth-child(3) { transition-delay: .22s; }
+.hero-copy > *:nth-child(4) { transition-delay: .30s; }
+.hero-copy > *:nth-child(5) { transition-delay: .38s; }
+.hero-phone { transform: translateY(28px) scale(.95); transition-delay: .26s; }
+body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: none; }
+
+/* 移动端：导航抽屉收起时隐藏，避免脱离屏幕造成横向滚动 */
+@media (max-width: 720px) {
+  .nav-links { visibility: hidden; }
+  .nav-links.open { visibility: visible; }
+}
+
+/* 动效偏好：跳过入场动画 */
+@media (prefers-reduced-motion: reduce) {
+  .preloader { display: none; }
+  .hero-copy > *, .hero-phone { opacity: 1; transform: none; }
 }
