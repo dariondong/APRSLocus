@@ -12,7 +12,7 @@
 <link rel="canonical" href="https://dariondong.github.io/APRSLocus/">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="stylesheet" href="css/style.css?v=2">
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
 
@@ -73,11 +73,11 @@
       </p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
-          <i data-lucide="smartphone" style="width:20px;height:20px"></i>
+          <i class="fa-solid fa-mobile-screen"></i>
           下载 Android APK
         </a>
         <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
-          <i data-lucide="monitor" style="width:20px;height:20px"></i>
+          <i class="fa-solid fa-desktop" style="width:20px;height:20px"></i>
           Windows 安装包
         </a>
         <a class="btn btn-text" href="#getting-started">开始使用<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
@@ -229,56 +229,56 @@
 
   <div class="cards">
     <article class="card reveal">
-      <div class="card-icon c1"><i data-lucide="map-pin"></i></div>
+      <div class="card-icon c1"><i class="fa-solid fa-location-dot"></i></div>
       <h3>实时地图追踪</h3>
       <p>高德瓦片 / 高德卫星 / 高德 JS / 矢量 / Carto / OSM 六种底图可切。台站按呼号聚合，也能看轨迹回放。</p>
       <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>台站聚合</li><li>轨迹显示</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c2"><i data-lucide="radio"></i></div>
+      <div class="card-icon c2"><i class="fa-solid fa-tower-broadcast"></i></div>
       <h3>位置信标</h3>
       <p>一键上报位置，按 APRS 1.0 标准格式发送，自动带上高度、速度、航向和电量，上报间隔可调。</p>
       <ul class="card-tags"><li>标准格式</li><li>自动附带信息</li><li>演示模式</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c3"><i data-lucide="message-square"></i></div>
+      <div class="card-icon c3"><i class="fa-solid fa-message"></i></div>
       <h3>消息通信</h3>
       <p>单聊、群聊统一在会话列表里，带 ACK 确认。支持群聊邀请、成员管理、未读角标，中文消息也没问题。</p>
       <ul class="card-tags"><li>ACK 确认</li><li>群聊管理</li><li>中文兼容</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c4"><i data-lucide="shield"></i></div>
+      <div class="card-icon c4"><i class="fa-solid fa-shield"></i></div>
       <h3>台站识别</h3>
       <p>能识别 FMO 台站（按 APFMO 路径、备注字段识别），也会标出同款 APRSlocus 台站。37 个符号表、3571 个标准图标都用得上。</p>
       <ul class="card-tags"><li>FMO 识别</li><li>同款标记</li><li>官方图标库</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c5"><i data-lucide="file-text"></i></div>
+      <div class="card-icon c5"><i class="fa-solid fa-file-lines"></i></div>
       <h3>数据包与日志</h3>
       <p>原始报文用等宽字体展示，长按可复制；解析结果按位置 / 消息 / 气象 / 状态分类。内置分级日志方便排查问题。</p>
       <ul class="card-tags"><li>原始报文</li><li>类型筛选</li><li>调试日志</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c6"><i data-lucide="wifi"></i></div>
+      <div class="card-icon c6"><i class="fa-solid fa-wifi"></i></div>
       <h3>连接与后台</h3>
       <p>自动连 APRS-IS 公共服务器，TCP / WebSocket 都支持，断线按 8 → 16 → 32 → 60 秒渐进重连。Android 用前台服务保持在线。</p>
       <ul class="card-tags"><li>自动重连</li><li>前台服务</li><li>系统通知</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c7"><i data-lucide="refresh-cw"></i></div>
+      <div class="card-icon c7"><i class="fa-solid fa-arrows-rotate"></i></div>
       <h3>自动更新</h3>
       <p>应用内检查更新，GitHub / GitCode 两个渠道可切，按平台分流下载，也能装历史版本。</p>
       <ul class="card-tags"><li>双渠道</li><li>按平台分流</li><li>历史版本</li></ul>
     </article>
 
     <article class="card reveal">
-      <div class="card-icon c8"><i data-lucide="palette"></i></div>
+      <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
       <h3>个性化体验</h3>
       <p>中文 / English 可选，支持深色模式和自定义主题色，界面可缩放 85% ~ 130%。首次启动有六步引导。</p>
       <ul class="card-tags"><li>多语言</li><li>深色模式</li><li>OOBE 引导</li></ul>
@@ -540,6 +540,5 @@
 </a>
 
 <script src="js/main.js"></script>
-<script>lucide.createIcons()</script>
 </body>
 </html>
