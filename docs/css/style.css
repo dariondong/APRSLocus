@@ -257,21 +257,6 @@ code {
 .ph-nav .dot { position: absolute; top: -2px; right: -6px; background: var(--red); color: #fff; font-size: 7px; border-radius: 8px; padding: 0 3px; line-height: 1.4; }
 .phone-glow { position: absolute; inset: 6% 10%; z-index: 1; background: radial-gradient(60% 50% at 50% 50%, rgba(56, 189, 248, .22), transparent 70%); filter: blur(30px); }
 
-/* ── 07. 数据统计 ── */
-.stats { position: relative; z-index: 1; margin-top: -6px; padding: 34px clamp(20px, 6vw, 96px) 30px; }
-.stats-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.stat {
-  text-align: center; padding: 34px 16px; border-radius: var(--radius);
-  background: var(--glass); border: 1px solid var(--line);
-  box-shadow: 0 16px 40px rgba(45, 70, 120, .12);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  transition: transform .35s var(--ease), box-shadow .35s, border-color .35s;
-}
-.stat:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, .55); box-shadow: var(--shadow-hover); }
-.stat-num { font-size: clamp(30px, 3.6vw, 44px); font-weight: 900; color: var(--text); }
-.stat-label { color: var(--text-dim); font-size: 14px; margin-top: 6px; }
-
 /* ── 08. 功能卡片 ── */
 .cards { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .card {
@@ -590,7 +575,6 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   .cards { grid-template-columns: repeat(2, 1fr); }
   .platforms, .community-links { grid-template-columns: 1fr; }
   .showcase-grid { grid-template-columns: 1fr; }
-  .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 720px) {
@@ -616,7 +600,6 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
     .nav-links { background: rgba(255, 255, 255, .42); }
   }
   .cards { grid-template-columns: 1fr; }
-  .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: 1fr; }
   .syms { grid-template-columns: repeat(3, 1fr); }
   .hero-actions .btn { width: 100%; justify-content: center; }
