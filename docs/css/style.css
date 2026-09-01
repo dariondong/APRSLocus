@@ -288,7 +288,7 @@ code {
 /* ── 07. 桌面窗口（Windows 端，宽屏布局：侧栏 + 顶栏 + 地图 + 底部坐标条） ── */
 .deskwin {
   position: absolute; left: 0; top: 0; z-index: 2;
-  width: 88%; height: 92%; border-radius: 16px; overflow: hidden;
+  width: 88%; height: 96%; border-radius: 16px; overflow: hidden;
   background: rgba(255, 255, 255, .64);
   border: 1px solid rgba(255, 255, 255, .85);
   box-shadow: 0 40px 80px rgba(45, 70, 120, .28);
