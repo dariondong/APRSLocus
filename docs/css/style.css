@@ -133,8 +133,9 @@ code {
 }
 .nav-links .nav-cta::after { display: none; }
 .nav-links .nav-cta:hover { color: #fff; filter: brightness(1.06); background: var(--grad); box-shadow: 0 14px 30px rgba(2, 132, 199, .4); }
-.lang-switch { display: inline-flex; align-items: center; justify-content: center; padding: 5px 10px; font-size: 11px; font-weight: 600; color: var(--cyan); background: rgba(2, 132, 199, .08); border-radius: 8px; border: 1px solid rgba(2, 132, 199, .12); text-decoration: none; transition: .2s var(--ease); margin-left: 4px; }
-.lang-switch:hover { background: rgba(2, 132, 199, .16); color: var(--cyan); }
+.lang-switch { display: inline-flex; align-items: center; justify-content: center; padding: 4px 8px; font-size: 10px; font-weight: 500; color: var(--text-faint); text-decoration: none; transition: .2s var(--ease); margin-left: 2px; letter-spacing: .3px; position: relative; }
+.lang-switch::before { content: ""; width: 1px; height: 14px; background: rgba(148, 160, 178, .35); margin-right: 8px; }
+.lang-switch:hover { color: var(--text); }
 .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; padding: 8px; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s var(--ease); }
 .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
