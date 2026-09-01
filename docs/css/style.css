@@ -208,7 +208,7 @@ code {
 
 /* ── 06. 手机 + 桌面窗口：交错重叠展示（桌面窗口垫后、手机在前） ── */
 .hero-phone {
-  position: relative; width: 100%; max-width: 820px; height: 660px;
+  position: relative; width: 100%; max-width: 820px; height: 800px;
   margin: 0 auto; overflow: hidden;
 }
 .phone {
@@ -675,7 +675,7 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
 /* ── 18. 响应式与动效偏好 ── */
 @media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; gap: 56px; }
-  .hero-phone { order: -1; max-width: 640px; height: 480px; overflow: hidden; }
+  .hero-phone { order: -1; max-width: 640px; height: 600px; overflow: hidden; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .platforms, .community-links { grid-template-columns: 1fr; }
   .showcase-grid { grid-template-columns: 1fr; }
