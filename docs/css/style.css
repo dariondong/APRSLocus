@@ -291,7 +291,7 @@ code {
 /* ── 07. 桌面窗口（Windows 端，宽屏布局：侧栏 + 顶栏 + 地图 + 底部坐标条） ── */
 .deskwin {
   position: absolute; left: 0; top: 0; z-index: 2;
-  width: 88%; height: 42%; border-radius: 16px;
+  width: 88%; height: 62%; border-radius: 16px;
   background: rgba(255, 255, 255, .64);
   border: 1px solid rgba(255, 255, 255, .85);
   box-shadow: 0 40px 80px rgba(45, 70, 120, .28);
@@ -724,10 +724,10 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   .syms { grid-template-columns: repeat(3, 1fr); }
   .hero-actions .btn { width: 100%; justify-content: center; }
   /* 移动端：文字优先，模拟器紧凑展示 */
-  .hero-phone { height: 260px; aspect-ratio: auto; position: relative; margin: 0 auto; order: 0; overflow: hidden; }
+  .hero-phone { height: 380px; aspect-ratio: auto; position: relative; margin: 0 auto; order: 0; overflow: hidden; }
   .phone { position: absolute; right: 4%; bottom: 0; top: auto; left: auto; width: 180px; z-index: 3; }
-  .deskwin { position: absolute; left: 0; bottom: 0; top: auto; width: 100%; height: 60%; z-index: 2; }
-  .phone-glow { left: auto; right: 0; top: auto; bottom: 0; width: 200px; height: 260px; }
+  .deskwin { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; }
+  .phone-glow { left: auto; right: 0; top: auto; bottom: 0; width: 200px; height: 380px; }
   .footer-bottom { flex-direction: column; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
