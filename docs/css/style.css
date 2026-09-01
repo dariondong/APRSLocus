@@ -288,7 +288,7 @@ code {
 /* ── 07. 桌面窗口（Windows 端，宽屏布局：侧栏 + 顶栏 + 地图 + 底部坐标条） ── */
 .deskwin {
   position: absolute; left: 0; top: 0; z-index: 2;
-  width: 88%; height: 96%; border-radius: 16px;
+  width: 88%; height: 62%; border-radius: 16px;
   background: rgba(255, 255, 255, .64);
   border: 1px solid rgba(255, 255, 255, .85);
   box-shadow: 0 40px 80px rgba(45, 70, 120, .28);
@@ -359,6 +359,21 @@ code {
 .dw-coord { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 7px; font-size: 7px; color: #637083; white-space: nowrap; background: rgba(255, 255, 255, .9); padding: 4px 10px; border-radius: 9px; box-shadow: 0 2px 8px rgba(45, 70, 120, .16); backdrop-filter: blur(4px); }
 .dw-coord .sc { width: 20px; }
 .dw-coord .datum { font-size: 5.5px; }
+
+/* ── 骨架（Skeleton）占位元素 ── */
+.skel-line { display: inline-block; height: 7px; border-radius: 4px; background: rgba(148, 160, 178, .3); vertical-align: middle; }
+.skel-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: rgba(148, 160, 178, .3); vertical-align: middle; }
+.skel-dot.g { background: rgba(22, 163, 74, .35); }
+.skel-tag { display: inline-block; width: 32px; height: 8px; border-radius: 4px; background: rgba(148, 160, 178, .25); }
+.skel-tag-short { display: inline-block; width: 20px; height: 8px; border-radius: 4px; background: rgba(148, 160, 178, .25); }
+.skel-chip { display: inline-flex; align-items: center; gap: 3px; }
+.skel-chip i { width: 5px; height: 5px; border-radius: 50%; background: rgba(148, 160, 178, .3); }
+.skel-chip .w20 { display: inline-block; width: 20px; height: 5px; border-radius: 3px; background: rgba(148, 160, 178, .25); }
+.skel-chip .w30 { display: inline-block; width: 26px; height: 5px; border-radius: 3px; background: rgba(148, 160, 178, .25); }
+.skel-call { display: inline-block; width: 36px; height: 7px; border-radius: 4px; background: rgba(148, 160, 178, .25); vertical-align: middle; }
+.skel-bar { display: inline-block; width: 28px; height: 6px; border-radius: 3px; background: rgba(148, 160, 178, .25); vertical-align: middle; }
+.skel-btn { display: block; height: 16px; border-radius: 7px; background: rgba(148, 160, 178, .2); }
+.w20 { width: 20px; } .w25 { width: 25px; } .w30 { width: 30px; } .w35 { width: 35px; } .w40 { width: 40px; } .w50 { width: 50px; } .w60 { width: 60px; }
 
 /* ── 08. 功能卡片 ── */
 .cards { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }

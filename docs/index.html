@@ -98,17 +98,17 @@
           </div>
           <div class="ph-appbar">
             <b>地图</b>
-            <span class="ph-stat g"><i class="dot"></i>8 在线</span>
+            <span class="ph-stat g"><i class="dot"></i><span class="skel-tag-short"></span></span>
           </div>
           <div class="ph-map" id="phoneMap">
             <div class="ph-grid"></div>
-            <!-- 左上：在线/移动/台站 信息条 -->
-            <div class="ph-chip"><i class="g"></i>8 在线<i class="b"></i>3 移动<i class="s"></i>12 台站</div>
-            <!-- 右上：图例 -->
+            <div class="ph-chip"><span class="skel-chip"><i></i><span class="w20"></span></span><span class="skel-chip"><i></i><span class="w20"></span></span><span class="skel-chip"><i></i><span class="w20"></span></span></div>
             <div class="ph-legend">
-              <span><i class="g"></i>在线</span><span><i class="b"></i>移动</span><span><i class="y"></i>静止</span><span><i class="o"></i>离线</span>
+              <span class="skel-chip"><i></i><span class="w30"></span></span>
+              <span class="skel-chip"><i></i><span class="w30"></span></span>
+              <span class="skel-chip"><i></i><span class="w30"></span></span>
+              <span class="skel-chip"><i></i><span class="w30"></span></span>
             </div>
-            <!-- 右侧控件：图层 / 地图类型 / 缩放列 -->
             <div class="ph-rcol">
               <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2l9 3-9 3-9-3 9-3zm-9 6l9 3 9-3v4l-9 3-9-3V8zm0 6l9 3 9-3v4l-9 3-9-3v-4z"/></svg></i>
               <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M3 5v14l8-7L3 5zm9 7 8 7V5l-8 7z"/></svg></i>
@@ -118,14 +118,13 @@
               <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-4-8a4 4 0 1 0 8 0 4 4 0 0 0-8 0zm4 2a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg></i>
               <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-13h2v3h3v2h-3v3h-2v-3H8v-2h3V7z"/></svg></i>
             </div>
-            <div class="ph-marker" style="left:26%;top:30%"><i class="p-online"></i>BG7LZQ-3</div>
-            <div class="ph-marker" style="left:62%;top:24%"><i class="p-moving"></i>BG7PGW</div>
-            <div class="ph-marker" style="left:72%;top:58%"><i class="p-stopped"></i>BG7LMW</div>
-            <div class="ph-marker" style="left:38%;top:66%"><i class="p-fmo"></i>BD3QID</div>
+            <div class="ph-marker" style="left:26%;top:30%"><i class="p-online"></i><span class="skel-call"></span></div>
+            <div class="ph-marker" style="left:62%;top:24%"><i class="p-moving"></i><span class="skel-call"></span></div>
+            <div class="ph-marker" style="left:72%;top:58%"><i class="p-stopped"></i><span class="skel-call"></span></div>
+            <div class="ph-marker" style="left:38%;top:66%"><i class="p-fmo"></i><span class="skel-call"></span></div>
             <div class="ph-self"></div>
             <div class="ph-trail"></div>
-            <!-- 底部：比例尺 + 距离 + 网格 + 坐标系 -->
-            <div class="ph-coord"><span class="sc"></span>500 m<i class="vd"></i>3.2 km<i class="vd"></i>OL62XH<i class="datum">GCJ-02</i></div>
+            <div class="ph-coord"><span class="sc"></span><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="datum"></i></div>
           </div>
           <div class="ph-nav">
             <span class="on"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>地图</span>
@@ -138,7 +137,7 @@
       </div>
       <div class="phone-glow"></div>
 
-      <!-- Windows 桌面窗口（宽屏布局：侧栏 + 顶栏 + 地图 + 底部坐标条，与手机交错重叠） -->
+      <!-- Windows 桌面窗口（横屏宽屏布局：标题栏 + 侧栏 + 顶栏 + 地图，骨架填充） -->
       <div class="deskwin">
         <div class="dw-title">
           <img class="dw-logo" src="assets/logo.png" alt="">
@@ -149,25 +148,25 @@
           <div class="dw-side">
             <div class="dw-brand">
               <img src="assets/logo.png" alt="">
-              <div><b>APRSlocus</b><em>APRS 定位追踪与地图</em></div>
+              <div><b>APRSlocus</b><em>APRS 定位追踪</em></div>
             </div>
             <div class="dw-nav">
               <a class="on"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>地图</a>
               <a><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>台站</a>
-              <a><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V4z"/></svg>消息<i class="badge">2</i></a>
+              <a><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V4z"/></svg>消息</a>
               <a><svg viewBox="0 0 24 24"><path d="M7 2h10l2 2v18H5V4l2-2zm3 2v4h4V4h-4zm-3 8v2h10v-2H7zm0 4v2h10v-2H7z"/></svg>数据包</a>
-              <a><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2zm0 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>设置</a>
+              <a><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>设置</a>
             </div>
             <div class="dw-my">
               <div class="dw-my-head">
                 <i class="dw-my-ic"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></i>
-                <div><b>BG7LZQ-3</b><em>OL62XH</em></div>
-                <i class="dw-my-fix"></i>
+                <div class="skel-line w60"></div>
+                <i class="skel-dot"></i>
               </div>
-              <div class="dw-my-row"><i class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg></i>OL62XH<span class="push"><i class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 4.6 5 .7-3.6 3.5.9 5L12 13.6 7.2 15.8l.9-5L4.5 7.3l5-.7L12 2z"/></svg></i>45/分</span></div>
-              <div class="dw-my-row"><i class="dot g"></i>GPS 已定位<span class="push"><i class="dot g"></i>已连接</span></div>
-              <div class="dw-my-row"><i class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm1-13h-2v6l5 3 1-1.7-4-2.3V7z"/></svg></i>30s 后上报<span class="push"><i class="ico"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 0 16v-2a6 6 0 1 1 0-12V2l5 5-5 5V4zm4 8h5v5h-2v-2.3A8 8 0 0 1 12 22v-2a6 6 0 0 0 4-10.3V8z"/></svg></i>12 次</span></div>
-              <div class="dw-my-ops"><button class="primary">上报位置</button><button>断开</button></div>
+              <div class="dw-my-row"><span class="skel-line w40"></span><span class="push"><span class="skel-line w30"></span></span></div>
+              <div class="dw-my-row"><span class="skel-dot g"></span><span class="skel-line w50"></span><span class="push"><span class="skel-dot g"></span><span class="skel-line w30"></span></span></div>
+              <div class="dw-my-row"><span class="skel-line w35"></span><span class="push"><span class="skel-line w25"></span></span></div>
+              <div class="dw-my-ops"><span class="skel-btn"></span><span class="skel-btn"></span></div>
             </div>
           </div>
           <div class="dw-main">
@@ -177,15 +176,18 @@
                 <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 1 0 4.9 14.3l5 5 1.4-1.4-5-5A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
                 <input placeholder="搜索呼号 / 台站" readonly>
               </div>
-              <span class="dw-stat g">8 在线</span>
-              <span class="dw-stat b">3 移动</span>
-              <span class="dw-stat s">1246 收包</span>
+              <span class="dw-stat g"><span class="skel-tag"></span></span>
+              <span class="dw-stat b"><span class="skel-tag"></span></span>
+              <span class="dw-stat s"><span class="skel-tag"></span></span>
             </div>
             <div class="dw-map">
               <div class="ph-grid"></div>
-              <div class="dw-chip"><i class="g"></i>8 在线<i class="b"></i>3 移动<i class="s"></i>12 台站</div>
+              <div class="dw-chip"><span class="skel-chip"><i></i><span class="w20"></span></span><span class="skel-chip"><i></i><span class="w20"></span></span><span class="skel-chip"><i></i><span class="w20"></span></span></div>
               <div class="dw-legend">
-                <span><i class="g"></i>在线</span><span><i class="b"></i>移动</span><span><i class="y"></i>静止</span><span><i class="o"></i>离线</span>
+                <span class="skel-chip"><i></i><span class="w30"></span></span>
+                <span class="skel-chip"><i></i><span class="w30"></span></span>
+                <span class="skel-chip"><i></i><span class="w30"></span></span>
+                <span class="skel-chip"><i></i><span class="w30"></span></span>
               </div>
               <div class="dw-rcol">
                 <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2l9 3-9 3-9-3 9-3zm-9 6l9 3 9-3v4l-9 3-9-3V8zm0 6l9 3 9-3v4l-9 3-9-3v-4z"/></svg></i>
@@ -196,13 +198,13 @@
                 <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-4-8a4 4 0 1 0 8 0 4 4 0 0 0-8 0zm4 2a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg></i>
                 <i class="rbtn"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-13h2v3h3v2h-3v3h-2v-3H8v-2h3V7z"/></svg></i>
               </div>
-              <div class="dw-marker" style="left:26%;top:32%"><i class="p-online"></i>BG7LZQ-3</div>
-              <div class="dw-marker" style="left:62%;top:24%"><i class="p-moving"></i>BG7PGW</div>
-              <div class="dw-marker" style="left:74%;top:56%"><i class="p-stopped"></i>BG7LMW</div>
-              <div class="dw-marker" style="left:40%;top:64%"><i class="p-fmo"></i>BD3QID</div>
+              <div class="dw-marker" style="left:26%;top:32%"><i class="p-online"></i><span class="skel-call"></span></div>
+              <div class="dw-marker" style="left:62%;top:24%"><i class="p-moving"></i><span class="skel-call"></span></div>
+              <div class="dw-marker" style="left:74%;top:56%"><i class="p-stopped"></i><span class="skel-call"></span></div>
+              <div class="dw-marker" style="left:40%;top:64%"><i class="p-fmo"></i><span class="skel-call"></span></div>
               <div class="ph-self"></div>
               <div class="ph-trail"></div>
-              <div class="dw-coord"><span class="sc"></span>500 m<i class="vd"></i>3.2 km<i class="vd"></i>22.54N, 113.92E<i class="vd"></i>OL62XH<i class="datum">GCJ-02</i></div>
+              <div class="dw-coord"><span class="sc"></span><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="datum"></i></div>
             </div>
           </div>
         </div>
