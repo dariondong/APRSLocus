@@ -726,7 +726,7 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   /* 移动端：文字优先，模拟器紧凑展示 */
   .hero-phone { height: 380px; aspect-ratio: auto; position: relative; margin: 0 auto; order: 0; overflow: hidden; }
   .phone { position: absolute; right: 4%; bottom: 0; top: auto; left: auto; width: 180px; z-index: 3; }
-  .deskwin { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; }
+  .deskwin { position: absolute; left: 0; bottom: 0; top: auto; width: 100%; height: 60%; z-index: 2; }
   .phone-glow { left: auto; right: 0; top: auto; bottom: 0; width: 200px; height: 380px; }
   .footer-bottom { flex-direction: column; text-align: center; }
 }
