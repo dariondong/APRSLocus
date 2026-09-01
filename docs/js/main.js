@@ -4,6 +4,20 @@
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ── 进入动画：加载后淡出启动遮罩，触发 Hero 依次入场 ── */
+  const preloader = document.getElementById("preloader");
+  const finishEnter = () => {
+    if (preloader) preloader.classList.add("hide");
+    document.body.classList.add("loaded");
+  };
+  if (prefersReduced) {
+    finishEnter();
+  } else {
+    // load 完成后稍等片刻，让雷达转几圈再淡出；超时兜底防止卡住
+    window.addEventListener("load", () => setTimeout(finishEnter, 420), { once: true });
+    setTimeout(finishEnter, 3200);
+  }
+
   /* ── 导航栏：滚动收缩 + 移动端菜单 ── */
   const nav = document.getElementById("nav");
   const backTop = document.getElementById("backTop");
