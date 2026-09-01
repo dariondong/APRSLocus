@@ -675,7 +675,7 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
 /* ── 18. 响应式与动效偏好 ── */
 @media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; gap: 56px; }
-  .hero-phone { order: -1; max-width: 600px; }
+  .hero-phone { order: -1; max-width: 640px; height: 480px; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .platforms, .community-links { grid-template-columns: 1fr; }
   .showcase-grid { grid-template-columns: 1fr; }
@@ -707,11 +707,11 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   .steps { grid-template-columns: 1fr; }
   .syms { grid-template-columns: repeat(3, 1fr); }
   .hero-actions .btn { width: 100%; justify-content: center; }
-  /* 移动端：手机与桌面窗口改为上下叠放，桌面窗口上移形成竖向重叠 */
-  .hero-phone { height: auto; aspect-ratio: auto; display: flex; flex-direction: column; align-items: center; }
-  .phone { position: relative; left: auto; top: auto; bottom: auto; width: 240px; z-index: 3; }
-  .deskwin { position: relative; left: auto; top: auto; width: min(560px, 100%); height: auto; margin-top: -64px; z-index: 2; }
-  .phone-glow { left: 0; top: 0; width: 52%; }
+  /* 移动端：文字优先，模拟器紧凑展示 */
+  .hero-phone { height: 380px; aspect-ratio: auto; position: relative; margin: 0 auto; order: 0; }
+  .phone { position: absolute; right: 4%; bottom: 0; top: auto; left: auto; width: 180px; z-index: 3; }
+  .deskwin { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; }
+  .phone-glow { left: auto; right: 0; top: auto; bottom: 0; width: 200px; height: 380px; }
   .footer-bottom { flex-direction: column; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
