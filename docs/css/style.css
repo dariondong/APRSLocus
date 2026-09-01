@@ -294,9 +294,7 @@ code {
   box-shadow: 0 40px 80px rgba(45, 70, 120, .28);
   backdrop-filter: blur(22px) saturate(150%);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
-  animation: dwFloat 8s ease-in-out infinite;
-}
-@keyframes dwFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  }
 .dw-title { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: rgba(255, 255, 255, .74); border-bottom: 1px solid rgba(255, 255, 255, .8); }
 .dw-logo { width: 15px; height: 15px; border-radius: 4px; }
 .dw-title b { flex: 1; font-size: 10px; font-weight: 700; color: var(--text); }
