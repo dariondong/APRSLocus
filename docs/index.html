@@ -46,6 +46,7 @@
     <nav class="nav-links" id="navLinks">
       <a href="#features">功能</a>
       <a href="#platforms">平台</a>
+      <a href="#changelog">更新</a>
       <a href="#getting-started">上手</a>
       <a href="#faq">问答</a>
       <a href="#community">社区</a>
@@ -396,6 +397,56 @@
     </div>
 
     
+  </div>
+</section>
+
+<!-- ═══════════ 更新日志 ═══════════ -->
+<section class="section" id="changelog">
+  <div class="section-head reveal">
+    <h2>更新日志</h2>
+    <p>近几个版本的主要变化。</p>
+  </div>
+
+  <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.8</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>台站列表「在地图显示」按钮无反应 — 点击可直接跳转地图并定位</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>Passcode 错误通知的「去设置」跳转无效 — 现直接打开连接设置页</div>
+        <div class="cl-item"><span class="cl-dot new"></span>新增 ci-test 工作流，自动 analyze 并构建 Windows / Android</div>
+        <div class="cl-item"><span class="cl-dot up"></span>设置页 UI 统一优化，样式一致性、折叠分区更紧凑</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.7</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>优化设置页面 UI 一致性，新增分区卡片与展开/折叠动画</div>
+        <div class="cl-item"><span class="cl-dot up"></span>改进台站数据处理与长时间运行性能</div>
+        <div class="cl-item"><span class="cl-dot up"></span>完善多语言文本，对部分内部逻辑进行调整</div>
+        <div class="cl-item"><span class="cl-dot new"></span>感谢 BD3QID、xaxovo 的代码贡献</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.5.6</span>
+        <span class="cl-date">2026-08-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>修复长时间运行后 UI 卡顿 — 渲染与数据隔离，地图 Marker 缓存</div>
+        <div class="cl-item"><span class="cl-dot up"></span>秒级刷新解耦，台站页流式加载，页面子树记忆化</div>
+        <div class="cl-item"><span class="cl-dot up"></span>台站统计缓存，列表 key 抖动修复，地图标记渲染优化</div>
+      </div>
+    </div>
+
+    <p class="cl-more reveal"><a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">查看完整更新记录 →</a></p>
   </div>
 </section>
 

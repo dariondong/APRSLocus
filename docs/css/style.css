@@ -13,8 +13,9 @@
    10. 快速上手
    11. 信标 / 符号展示
    12. FAQ
-   13. 社区
-   14. 页脚
+   13. 更新日志
+   14. 社区
+   15. 页脚
    15. 悬浮工具（进度条 / 回到顶部 / Toast）
    16. 细节交互（复制 / 焦点 / 滚动显现）
    17. 进入动画（启动遮罩 + Hero 入场）
@@ -543,7 +544,30 @@ code {
 .faq > p { padding: 0 24px 22px; color: var(--text-dim); font-size: 14.5px; animation: fadeDown .4s var(--ease); }
 @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
-/* ── 13. 社区 ── */
+/* ── 13. 更新日志 ── */
+.changelog-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.cl-version {
+  background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 22px 26px; box-shadow: 0 12px 32px rgba(45, 70, 120, .1);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  transition: transform .3s var(--ease), box-shadow .3s;
+}
+.cl-version:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.cl-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.cl-tag { font-weight: 800; font-size: 13px; color: #fff; background: var(--grad); padding: 2px 12px; border-radius: 999px; letter-spacing: .3px; }
+.cl-date { font-size: 13px; color: var(--text-faint); }
+.cl-body { display: flex; flex-direction: column; gap: 6px; }
+.cl-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+.cl-dot { flex: 0 0 auto; width: 6px; height: 6px; border-radius: 50%; margin-top: 8px; }
+.cl-dot.fix { background: var(--red); }
+.cl-dot.new { background: var(--green); }
+.cl-dot.up { background: var(--amber); }
+.cl-more { text-align: center; margin-top: 6px; font-size: 14px; color: var(--text-faint); }
+.cl-more a { color: var(--cyan); font-weight: 600; }
+.cl-more a:hover { text-decoration: underline; }
+
+/* ── 14. 社区 ── */
 .community-inner { max-width: 1100px; margin: 0 auto; }
 .community-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .clink {
@@ -568,7 +592,7 @@ code {
 .cl-arrow { color: var(--text-faint); font-size: 20px; transition: transform .3s, color .3s; }
 .clink:hover .cl-arrow { transform: translate(3px, -3px); color: var(--cyan); }
 
-/* ── 14. 页脚 ── */
+/* ── 15. 页脚 ── */
 .footer { border-top: 1px solid rgba(255, 255, 255, .6); padding: 50px clamp(20px, 6vw, 96px) 34px; position: relative; z-index: 1; background: rgba(255, 255, 255, .35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .footer-inner { max-width: 1200px; margin: 0 auto; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; padding-bottom: 28px; border-bottom: 1px solid rgba(255, 255, 255, .7); }
@@ -589,7 +613,7 @@ code {
 .footer-links a:hover, .footer-bottom a:hover { background-size: 100% 1.5px; }
 .disclaimer { opacity: .85; }
 
-/* ── 15. 悬浮工具（进度条 / 回到顶部 / Toast） ── */
+/* ── 16. 悬浮工具（进度条 / 回到顶部 / Toast） ── */
 .scroll-progress {
   position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 300;
   background: var(--grad); transform-origin: 0 50%; transform: scaleX(0);
@@ -630,7 +654,7 @@ code {
 .toast::before { content: "✓"; color: var(--green); font-weight: 800; }
 .toast svg { width: 15px; height: 15px; fill: var(--green); }
 
-/* ── 16. 细节交互（复制 / 焦点 / 滚动显现） ── */
+/* ── 17. 细节交互（复制 / 焦点 / 滚动显现） ── */
 .beacon-code { position: relative; }
 .copy-btn {
   position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 9px;
@@ -651,7 +675,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .reveal.d2 { transition-delay: .16s; }
 .reveal.d3 { transition-delay: .24s; }
 
-/* ── 17. 进入动画（启动遮罩 + Hero 入场） ── */
+/* ── 18. 进入动画（启动遮罩 + Hero 入场） ── */
 .preloader {
   position: fixed; inset: 0; z-index: 400;
   display: grid; place-items: center;
@@ -693,7 +717,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .hero-phone { transform: translateY(28px) scale(.95); transition-delay: .26s; }
 body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: none; }
 
-/* ── 18. 响应式与动效偏好 ── */
+/* ── 19. 响应式与动效偏好 ── */
 @media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; gap: 56px; }
   .hero-phone { order: -1; max-width: 640px; height: 540px; overflow: hidden; }
