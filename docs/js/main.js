@@ -202,7 +202,7 @@
         const d2 = dx * dx + dy * dy;
         if (d2 < maxDist * maxDist) {
           const a = (1 - Math.sqrt(d2) / maxDist) * 0.5;
-          ctx.strokeStyle = `rgba(59, 130, 246, ${a * 0.35})`;
+          ctx.strokeStyle = `rgba(99, 102, 241, ${a * 0.28})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
@@ -211,7 +211,7 @@
         }
       }
       const glow = 0.4 + Math.sin(performance.now() / 1200 + i) * 0.3;
-      ctx.fillStyle = `rgba(37, 99, 235, ${glow * 0.8})`;
+      ctx.fillStyle = `rgba(56, 189, 248, ${glow * 0.7})`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fill();
