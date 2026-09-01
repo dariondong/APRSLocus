@@ -189,7 +189,7 @@ code {
   padding: 14px 22px; border-radius: 14px; transition: transform .3s var(--ease), box-shadow .3s, background .3s, color .3s, border-color .3s;
 }
 .btn svg { width: 18px; height: 18px; fill: currentColor; }
-.btn .lucide { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; }
+.btn .fa-solid { font-size: 18px; color: inherit; }
 .btn-primary { position: relative; overflow: hidden; color: #fff; background: var(--grad); box-shadow: 0 14px 32px rgba(2, 132, 199, .32); }
 .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 44px rgba(2, 132, 199, .42); }
 .btn-primary::after {
@@ -286,7 +286,7 @@ code {
 .ph-nav span { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 6.5px; color: var(--text-faint); position: relative; white-space: nowrap; }
 .ph-nav span.on { color: var(--cyan); }
 .ph-nav svg { width: 14px; height: 14px; fill: currentColor; }
-.ph-nav .lucide { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; }
+.ph-nav .fa-solid { font-size: 14px; color: inherit; }
 .ph-nav .dot { position: absolute; top: -2px; right: -6px; background: var(--red); color: #fff; font-size: 5.5px; border-radius: 8px; padding: 0 3px; line-height: 1.5; }
 .phone-glow { position: absolute; left: -6%; top: -4%; width: 54%; height: 106%; z-index: 1; background: radial-gradient(60% 50% at 50% 50%, rgba(56, 189, 248, .22), transparent 70%); filter: blur(30px); pointer-events: none; }
 
@@ -317,7 +317,7 @@ code {
 .dw-nav { display: flex; flex-direction: column; gap: 1px; flex: 1; }
 .dw-nav a { display: flex; align-items: center; gap: 6px; font-size: 8px; color: var(--text-dim); padding: 5px 7px; border-radius: 8px; position: relative; }
 .dw-nav a svg { width: 13px; height: 13px; fill: currentColor; }
-.dw-nav a .lucide { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.5; }
+.dw-nav a .fa-solid { font-size: 13px; color: inherit; }
 .dw-nav a.on { background: rgba(37, 99, 235, .12); color: var(--blue); font-weight: 600; }
 .dw-nav a .badge { position: absolute; right: 6px; background: var(--red); color: #fff; font-size: 5.5px; border-radius: 8px; padding: 0 4px; line-height: 1.5; font-style: normal; }
 .dw-my { margin-top: 6px; background: rgba(237, 241, 247, .8); border-radius: 10px; padding: 7px; }
@@ -404,8 +404,7 @@ code {
   transition: transform .4s var(--ease);
 }
 .card:hover .card-icon { transform: translateY(-3px) scale(1.06) rotate(-4deg); }
-.card-icon svg, .card-icon .lucide { width: 26px; height: 26px; fill: #fff; stroke: none; }
-.card-icon .lucide { fill: none; stroke: #fff; stroke-width: 1.5; }
+.card-icon svg, .card-icon .fa-solid { font-size: 26px; color: #fff; }
 .c1 { background: linear-gradient(135deg, #38bdf8, #0284c7); }
 .c2 { background: linear-gradient(135deg, #34d399, #059669); }
 .c3 { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
