@@ -1441,6 +1441,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableClustering => 'Enable clustering';
 
   @override
+  String get heatmap => 'Station heatmap';
+
+  @override
+  String get heatmapHint => 'Show station density heatmap when zoomed out';
+
+  @override
   String get noPackets => 'No packets yet';
 
   @override

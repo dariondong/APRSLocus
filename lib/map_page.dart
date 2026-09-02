@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Offset _pan = Offset.zero;
   bool _showTracks = true;
   bool _clusterEnabled = true; // 台站聚合开关
+  bool _heatEnabled = true; // 低缩放热力图开关
+  /// 缩小到该级别以下时自动显示热力图（替代密集标记/聚合）
+  static const double _heatZoom = 6.5;
   Size _lastSize = Size.zero;
 
   MapType get _currentMapType => MapType.values.firstWhere(
@@ -37,6 +41,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 插件地图（自绘标记不可用的模式）
   bool get _usePluginMap => _isVector;
+
+  /// 低缩放热力图：瓦片自绘模式 + 开关开启 + zoom 足够低 + 台站够多
+  bool get _showHeatmap =>
+      !_usePluginMap &&
+      _heatEnabled &&
+      _zoom <= _heatZoom &&
+      _visible.length >= 20;
 
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
@@ -394,10 +405,22 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                // 低缩放热力图（替代密集标记/聚合球，展示台站密度）
+                if (_showHeatmap)
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _HeatmapPainter(
+                        stations: _visible,
+                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                      ),
+                    ),
+                  ),
                 // 我的位置标记（点击弹信息面板）
                 if (!_usePluginMap && widget.state.myHasFix) _myMarker(size),
-                // 台站标记（直接在 Stack 中，每个标记独立 Positioned，不阻断手势）
-                if (!_usePluginMap) ..._stationMarkers(size),
+                // 台站标记（热力图模式下隐藏，其余直接 Stack Positioned）
+                if (!_usePluginMap && !_showHeatmap)
+                  ..._stationMarkers(size),
                 // 信息
                 Positioned(top: 14, left: 14, child: _infoChip(vis, searched)),
                 // 选点提示
@@ -1539,6 +1562,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           onTap: () => setState(() => _clusterEnabled = !_clusterEnabled),
         ),
         SizedBox(height: 6),
+        // 低缩放热力图开关
+        RoundIconBtn(
+          _heatEnabled
+              ? Icons.local_fire_department_rounded
+              : Icons.local_fire_department_outlined,
+          tooltip: S.of(context).heatmap,
+          color: _heatEnabled ? C.orange : C.slate,
+          onTap: () => setState(() => _heatEnabled = !_heatEnabled),
+        ),
+        SizedBox(height: 6),
         RoundIconBtn(
           Icons.my_location_rounded,
           tooltip: S.of(context).locateMe,
@@ -1983,4 +2016,79 @@ class _TrackOverlayPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _TrackOverlayPainter old) =>
       old.points != points || old.color != color;
+}
+
+/// 低缩放热力图：把台站按屏幕位置绘制成密度热力点（网格统计 + 色阶），无第三方依赖
+class _HeatmapPainter extends CustomPainter {
+  final List<Station> stations;
+  final Offset Function(double lat, double lng) toScreen;
+  _HeatmapPainter({required this.stations, required this.toScreen});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (stations.isEmpty || size.isEmpty) return;
+    // 网格单元（px）：统计每个格子内台站数作为密度
+    const cell = 28.0;
+    final cols = (size.width / cell).ceil() + 1;
+    final rows = (size.height / cell).ceil() + 1;
+    final grid = List<int>.filled(cols * rows, 0);
+    for (final s in stations) {
+      final p = toScreen(s.lat, s.lng);
+      if (p.dx < 0 || p.dx > size.width || p.dy < 0 || p.dy > size.height) {
+        continue;
+      }
+      final cx = (p.dx / cell).floor().clamp(0, cols - 1);
+      final cy = (p.dy / cell).floor().clamp(0, rows - 1);
+      grid[cy * cols + cx]++;
+    }
+    var maxC = 0;
+    for (final v in grid) {
+      if (v > maxC) maxC = v;
+    }
+    if (maxC <= 0) return;
+
+    for (var cy = 0; cy < rows; cy++) {
+      for (var cx = 0; cx < cols; cx++) {
+        final c = grid[cy * cols + cx];
+        if (c == 0) continue;
+        final t = c / maxC; // 0..1 密度
+        final center = Offset(cx * cell + cell / 2, cy * cell + cell / 2);
+        final color = _heatColor(t);
+        final alpha = 0.16 + t * 0.5;
+        final r = cell * 0.9 + t * 6;
+        canvas.drawCircle(
+          center,
+          r,
+          Paint()
+            ..shader = ui.Gradient.radial(
+              center,
+              r,
+              [
+                color.withValues(alpha: alpha),
+                color.withValues(alpha: alpha * 0.55),
+                color.withValues(alpha: 0),
+              ],
+              [0.0, 0.5, 1.0],
+            ),
+        );
+      }
+    }
+  }
+
+  /// 密度 0..1 → 颜色（蓝 → 青 → 黄 → 红）
+  Color _heatColor(double t) {
+    const stops = [
+      Color(0xFF2563EB),
+      Color(0xFF06B6D4),
+      Color(0xFFFACC15),
+      Color(0xFFEF4444),
+    ];
+    final x = t.clamp(0.0, 1.0) * (stops.length - 1);
+    final i = x.floor().clamp(0, stops.length - 2);
+    return Color.lerp(stops[i], stops[i + 1], x - i)!;
+  }
+
+  @override
+  bool shouldRepaint(covariant _HeatmapPainter old) =>
+      old.stations != stations;
 }

@@ -450,6 +450,8 @@
   "reselectPoint": "重新选点",
   "disableClustering": "关闭聚合",
   "enableClustering": "开启聚合",
+  "heatmap": "台站热力图",
+  "heatmapHint": "缩小地图后显示台站密度热力图",
   "noPackets": "暂无数据包",
   "secondsAgo": "{count}秒前",
   "minutesAgo": "{count}分前",

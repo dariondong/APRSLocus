@@ -1416,6 +1416,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get enableClustering => '开启聚合';
 
   @override
+  String get heatmap => '台站热力图';
+
+  @override
+  String get heatmapHint => '缩小地图后显示台站密度热力图';
+
+  @override
   String get noPackets => '暂无数据包';
 
   @override

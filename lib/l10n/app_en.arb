@@ -450,6 +450,8 @@
   "reselectPoint": "Pick again",
   "disableClustering": "Disable clustering",
   "enableClustering": "Enable clustering",
+  "heatmap": "Station heatmap",
+  "heatmapHint": "Show station density heatmap when zoomed out",
   "noPackets": "No packets yet",
   "secondsAgo": "{count}s ago",
   "minutesAgo": "{count}m ago",

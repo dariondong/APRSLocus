@@ -2780,6 +2780,18 @@ abstract class AppLocalizations {
   /// **'开启聚合'**
   String get enableClustering;
 
+  /// No description provided for @heatmap.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站热力图'**
+  String get heatmap;
+
+  /// No description provided for @heatmapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'缩小地图后显示台站密度热力图'**
+  String get heatmapHint;
+
   /// No description provided for @noPackets.
   ///
   /// In zh, this message translates to:
