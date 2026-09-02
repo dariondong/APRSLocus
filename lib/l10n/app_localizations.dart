@@ -3368,12 +3368,6 @@ abstract class AppLocalizations {
   /// **'高德卫星'**
   String get mapTypeAmapSatellite;
 
-  /// No description provided for @mapTypeAmapJs.
-  ///
-  /// In zh, this message translates to:
-  /// **'高德 JS'**
-  String get mapTypeAmapJs;
-
   /// No description provided for @mapTypeVector.
   ///
   /// In zh, this message translates to:
@@ -4219,24 +4213,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'点击任意处关闭'**
   String get tapAnywhereClose;
-
-  /// No description provided for @webAmapUnsupported.
-  ///
-  /// In zh, this message translates to:
-  /// **'Web 平台暂不支持高德 JS 地图'**
-  String get webAmapUnsupported;
-
-  /// No description provided for @webview2InitFailed.
-  ///
-  /// In zh, this message translates to:
-  /// **'WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时'**
-  String get webview2InitFailed;
-
-  /// No description provided for @loadingAmap.
-  ///
-  /// In zh, this message translates to:
-  /// **'加载高德地图…'**
-  String get loadingAmap;
 
   /// No description provided for @vectorMapLoadFailed.
   ///

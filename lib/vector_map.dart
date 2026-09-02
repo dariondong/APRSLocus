@@ -20,6 +20,11 @@ class VectorMapView extends StatefulWidget {
   final String myCall;
   final bool myHasFix;
   final double? myLat, myLng;
+  // 轨迹显示：我的轨迹（蓝色）+ 选中台站轨迹（台站颜色）
+  final List<TrackPt> myTrack;
+  final String? selectedCall;
+  final List<TrackPt> selectedTrack;
+  final Color? selectedColor;
   final void Function(double lat, double lng)? onTap;
   final void Function(Station s)? onStationTap;
   // 外部焦点请求：focusSeq 变化时相机平移到 focusLat/focusLng
@@ -39,6 +44,10 @@ class VectorMapView extends StatefulWidget {
     this.myHasFix = false,
     this.myLat,
     this.myLng,
+    this.myTrack = const [],
+    this.selectedCall,
+    this.selectedTrack = const [],
+    this.selectedColor,
     this.onTap,
     this.onStationTap,
     this.focusSeq = 0,
@@ -66,6 +75,7 @@ class _VectorMapViewState extends State<VectorMapView> {
   int _lastMarkersVersion = -1;
   double _lastMarkerZoom = -999;
   bool _lastClustering = true;
+  String? _lastSelectedCall;
   List<Marker>? _markersCache;
 
   @override
@@ -112,18 +122,25 @@ class _VectorMapViewState extends State<VectorMapView> {
 
   bool _mapReady = false;
 
-  /// 台站轨迹线（WGS-84 直接使用，无 GCJ 偏移）
+  /// 轨迹线（WGS-84 直接使用，无 GCJ 偏移）：
+  /// 我的轨迹（蓝色）+ 选中台站的轨迹（台站颜色），与自绘瓦片地图一致
   List<Polyline> get _trackPolylines {
     if (!widget.showTracks) return const [];
     final result = <Polyline>[];
-    for (final s in widget.stations) {
-      if (s.track.length < 2) continue;
+    if (widget.myTrack.length > 1) {
       result.add(Polyline(
-        points: s.track
-            .map((p) => LatLng(p.lat, p.lng))
-            .toList(),
-        color: s.color.withValues(alpha: 0.8),
-        strokeWidth: 3,
+        points: widget.myTrack.map((p) => LatLng(p.lat, p.lng)).toList(),
+        color: C.blue.withValues(alpha: 0.85),
+        strokeWidth: 3.5,
+      ));
+    }
+    final sel = widget.selectedTrack;
+    final selColor = widget.selectedColor;
+    if (sel.length > 1 && selColor != null) {
+      result.add(Polyline(
+        points: sel.map((p) => LatLng(p.lat, p.lng)).toList(),
+        color: selColor.withValues(alpha: 0.85),
+        strokeWidth: 3.5,
       ));
     }
     return result;
@@ -242,7 +259,7 @@ class _VectorMapViewState extends State<VectorMapView> {
                     tileProviders: style.providers,
                     cacheFolder: getApplicationSupportDirectory,
                   ),
-                  // 轨迹线（所有有轨迹的台站）
+                  // 轨迹线（我的 + 选中台站）
                   if (_trackPolylines.isNotEmpty)
                     PolylineLayer(
                       polylines: _trackPolylines,
@@ -316,6 +333,7 @@ class _VectorMapViewState extends State<VectorMapView> {
   }
 
   Marker _stationMarker(Station s) {
+    final selected = s.call == widget.selectedCall;
     return Marker(
       point: LatLng(s.lat, s.lng),
       width: 70,
@@ -327,12 +345,20 @@ class _VectorMapViewState extends State<VectorMapView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
+              width: selected ? 30 : 22,
+              height: selected ? 30 : 22,
               decoration: BoxDecoration(
-                color: s.color.withValues(alpha: 0.15),
+                color: selected ? s.color : s.color.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
-                border: Border.all(color: s.color, width: 1.5),
+                border: Border.all(
+                  color: selected ? Colors.white : s.color,
+                  width: selected ? 3 : 1.5,
+                ),
+                boxShadow:
+                    selected ? softShadow(blur: 12, alpha: 0.35) : null,
               ),
-              child: Icon(s.icon, color: s.color, size: 18),
+              child:
+                  Icon(s.icon, color: selected ? Colors.white : s.color, size: 18),
             ),
             // 呼号标签
             Container(
@@ -367,12 +393,14 @@ class _VectorMapViewState extends State<VectorMapView> {
     if (widget.stationsVersion == _lastMarkersVersion &&
         (zoom - _lastMarkerZoom).abs() < 0.5 &&
         widget.clustering == _lastClustering &&
+        widget.selectedCall == _lastSelectedCall &&
         _markersCache != null) {
       return _markersCache!;
     }
     _lastMarkersVersion = widget.stationsVersion;
     _lastMarkerZoom = zoom;
     _lastClustering = widget.clustering;
+    _lastSelectedCall = widget.selectedCall;
     // 台站数量多且缩放级别低时聚合（可被 clustering 开关关闭）
     final total = widget.stations
         .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)

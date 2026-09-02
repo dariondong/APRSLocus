@@ -40,8 +40,8 @@
 ## ✨ 核心特性
 
 ### 🗺️ 实时地图追踪
-- **多地图类型**：高德普通 / 高德卫星 / 高德 JS（WebView）/ 矢量地图 / Carto / OSM，设置页一键切换
-- **矢量地图**：基于 `flutter_map` + `vector_map_tiles` 客户端实时渲染，数据量小、缩放清晰、**无需 API Key**，坐标为 WGS-84
+- **多地图类型**：高德普通 / 高德卫星 / 矢量地图 / Carto（浅色·深色·航行者）/ OSM（标准·人道）/ OpenTopo 地形 / Esri（街道·影像），设置页一键切换
+- **矢量地图**：基于 `flutter_map` + `vector_map_tiles` 客户端实时渲染，数据量小、缩放清晰、**无需 API Key**，坐标为 WGS-84，支持显示我的轨迹与选中台站轨迹
 - **高德瓦片（GCJ-02）**：国内定位无缝对齐，内置 WGS-84 ↔ GCJ-02 坐标转换
 - **实时台站显示**：所有台站位置一目了然，在线 / 移动 / 静止 / 离线状态以绿 / 蓝 / 黄 / 灰区分，活跃台站带脉冲动画
 - **台站聚合（Clustering）**：台站较多时按网格聚合成聚合球（显示数量，点击放大展开），显著降低渲染卡顿，可随时开关
@@ -158,7 +158,7 @@
 ## 📚 使用指南
 
 ### 🗺️ 地图页
-- 切换地图类型：设置 → 显示 → 地图类型（高德矢量 / 高德卫星 / 矢量 / Carto / OSM）
+- 切换地图类型：设置 → 显示 → 地图类型（高德 / 高德卫星 / 矢量 / Carto 系列 / OSM 系列 / OpenTopo / Esri）
 - 开启台站聚合：地图控制栏聚合开关
 - 显示 / 隐藏自身轨迹与选中台站轨迹
 - 顶部搜索框按呼号快速定位台站，点击台站 Marker 查看详情
@@ -223,7 +223,7 @@ BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus
 | 类别 | 技术 |
 |------|------|
 | **框架** | [Flutter](https://flutter.dev)（Dart 3.x） |
-| **地图** | [高德地图](https://lbs.amap.com)（瓦片 / JS API 2.0）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap |
+| **地图** | [高德地图](https://lbs.amap.com)（瓦片）、[flutter_map](https://pub.dev/packages/flutter_map)、[vector_map_tiles](https://pub.dev/packages/vector_map_tiles)、Carto、OpenStreetMap、OpenTopoMap、Esri ArcGIS |
 | **网络** | APRS-IS（TCP Socket / WebSocket） |
 | **协议** | APRS 1.0（位置 / 消息 / 气象 / 状态 / 物体 / Mic-E 等） |
 | **定位** | Android FusedLocationProvider + 前台服务 |
@@ -242,8 +242,7 @@ APRSLocus/
 │   ├── home_page.dart        # 主界面（5 Tab：地图 / 台站 / 消息 / 数据包 / 设置）
 │   ├── map_page.dart         # 地图页
 │   ├── vector_map.dart       # 矢量地图（flutter_map）
-│   ├── tile_map.dart         # 瓦片地图（高德 / Carto / OSM）
-│   ├── amap_js_map.dart      # 高德 JS 地图（WebView）
+│   ├── tile_map.dart         # 瓦片地图（高德 / Carto / OSM / OpenTopo / Esri）
 │   ├── stations_page.dart    # 台站列表
 │   ├── station_detail.dart   # 台站详情
 │   ├── messages_page.dart    # 消息页（单聊 + 群聊）
@@ -360,7 +359,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 <details>
 <summary><b>Q：Windows 上地图显示异常？</b></summary>
 
-Windows 上高德 JS 地图会自动回退为高德瓦片以避免 WebView2 兼容问题；也建议在"显示 → 地图类型"中切换为**矢量地图**（无需 API Key，兼容性最好）。
+建议在"显示 → 地图类型"中切换为**矢量地图**（无需 API Key，兼容性最好）；或切换到 Carto / OSM / Esri 等国际图源。
 </details>
 
 <details>
