@@ -1976,6 +1976,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manualCoordinates => 'Enter coordinates manually';
 
   @override
+  String get locationMode => 'Location mode';
+
+  @override
+  String get settingsLocModeSubtitle => 'Choose location method';
+
+  @override
+  String get locModeGps => 'GPS only';
+
+  @override
+  String get locModeGpsDesc => 'Satellite only, saves battery';
+
+  @override
+  String get locModeGpsNetwork => 'GPS + Network';
+
+  @override
+  String get locModeGpsNetworkDesc => 'Network-assisted, faster fix';
+
+  @override
   String get beaconingSection => 'Beaconing';
 
   @override
