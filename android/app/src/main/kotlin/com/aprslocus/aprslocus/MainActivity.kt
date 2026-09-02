@@ -30,12 +30,18 @@ class MainActivity : FlutterActivity() {
                     if (!hasPermissions()) {
                         result.error("NO_PERMISSION", "缺少定位权限", null)
                     } else {
-                        startLocationService()
+                        val mode = call.argument<String>("mode") ?: "gps_network"
+                        startLocationService(mode)
                         result.success(true)
                     }
                 }
                 "stopService" -> {
                     stopLocationService()
+                    result.success(true)
+                }
+                "setLocationMode" -> {
+                    val mode = call.argument<String>("mode") ?: "gps_network"
+                    LocationService.setModeStatic(mode)
                     result.success(true)
                 }
                 "updateNotification" -> {
@@ -149,8 +155,10 @@ class MainActivity : FlutterActivity() {
         return fine || coarse
     }
 
-    private fun startLocationService() {
-        val intent = Intent(this, LocationService::class.java)
+    private fun startLocationService(mode: String = "gps_network") {
+        val intent = Intent(this, LocationService::class.java).apply {
+            putExtra(LocationService.EXTRA_MODE, mode)
+        }
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent)

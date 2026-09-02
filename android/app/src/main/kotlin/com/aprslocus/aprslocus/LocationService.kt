@@ -80,11 +80,23 @@ class LocationService : Service() {
         const val NOTIFICATION_ID = 1001
         const val ACTION_TOGGLE_CONNECT = "com.aprslocus.action.TOGGLE_CONNECT"
         const val ACTION_EXIT = "com.aprslocus.action.EXIT"
+        const val EXTRA_MODE = "location_mode"
+        /** 定位模式：gps = 纯 GPS；gps_network = GPS + 网络辅助 */
+        @Volatile var mode: String = "gps_network"
         private var instance: LocationService? = null
 
         /// 更新前台服务通知（同进程直连，MainActivity 调用）
         fun updateNotificationStatic(text: String) {
             instance?.updateNotification(text)
+        }
+
+        /// 动态切换定位模式（服务运行中立即生效：重建 provider 监听）
+        fun setModeStatic(newMode: String) {
+            if (mode == newMode) return
+            mode = newMode
+            instance?.let {
+                it.restartLocationUpdates()
+            }
         }
     }
 
@@ -126,6 +138,10 @@ class LocationService : Service() {
         if (intent?.action == ACTION_TOGGLE_CONNECT) {
             LocationBus.emit(mapOf("type" to "toggleConnect"))
             return START_STICKY
+        }
+        // 读取定位模式（Flutter 启动服务时传入）
+        intent?.getStringExtra(EXTRA_MODE)?.let {
+            if (it == "gps" || it == "gps_network") mode = it
         }
         val notification = buildNotification("APRSlocus 运行中")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -224,14 +240,22 @@ class LocationService : Service() {
         nm.notify(NOTIFICATION_ID, buildNotification(text))
     }
 
+    /// 按当前模式重建 provider 监听（模式切换时调用）
+    private fun restartLocationUpdates() {
+        stopLocationUpdates()
+        startLocationUpdates()
+        reportLastKnown()
+    }
+
     @Suppress("MissingPermission")
     private fun startLocationUpdates() {
         val lm = locationManager ?: return
+        val useNetwork = mode == "gps_network"
         // 先报告定位服务是否可用
         val gpsOn = try { lm.isProviderEnabled(LocationManager.GPS_PROVIDER) } catch (_: Exception) { false }
         val netOn = try { lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) } catch (_: Exception) { false }
-        if (!gpsOn && !netOn) {
-            LocationBus.emit(mapOf("status" to "定位服务未开启，请在系统设置中开启定位"))
+        if (!gpsOn && !(useNetwork && netOn)) {
+            LocationBus.emit(mapOf("status" to (if (useNetwork) "定位服务未开启，请在系统设置中开启定位" else "GPS 未开启，请开启系统定位")))
         } else if (!gpsOn) {
             LocationBus.emit(mapOf("status" to "GPS 未开启，使用网络定位"))
         }
@@ -252,17 +276,20 @@ class LocationService : Service() {
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
         }
         locationListener = listener
-        // GPS 高精度 + 网络辅助，两者都可触发
+        // GPS 高精度（两种模式都注册）
         var gpsRequested = false
         try {
             lm.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, 10000L, 5f, listener, Looper.getMainLooper())
             gpsRequested = true
         } catch (_: Exception) {}
-        try {
-            lm.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 10000L, 5f, listener, Looper.getMainLooper())
-        } catch (_: Exception) {}
+        // GPS + 网络模式：额外注册网络辅助定位
+        if (useNetwork) {
+            try {
+                lm.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 10000L, 5f, listener, Looper.getMainLooper())
+            } catch (_: Exception) {}
+        }
         if (!gpsRequested) {
             LocationBus.emit(mapOf("status" to "GPS 监听注册失败，请检查定位权限"))
         }
@@ -275,6 +302,8 @@ class LocationService : Service() {
             val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) { broadcastLocation(gps); return }
         } catch (_: Exception) {}
+        // 纯 GPS 模式不查询网络位置
+        if (mode == "gps") return
         try {
             val net = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             if (net != null && net.latitude != 0.0 && net.longitude != 0.0) broadcastLocation(net)
@@ -282,13 +311,19 @@ class LocationService : Service() {
     }
 
     private fun broadcastLocation(location: Location) {
+        val provider = location.provider
+        val status = when {
+            provider == LocationManager.GPS_PROVIDER -> "GPS 定位中"
+            mode == "gps_network" -> "网络定位中"
+            else -> "GPS 定位中"
+        }
         LocationBus.emit(mapOf(
             "lat" to location.latitude,
             "lng" to location.longitude,
             "alt" to location.altitude,
             "speed" to location.speed,      // m/s
             "bearing" to location.bearing,  // 度
-            "status" to "GPS 定位中"))
+            "status" to status))
     }
 
     private fun stopLocationUpdates() {

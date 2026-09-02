@@ -584,6 +584,42 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         ),
         SizedBox(height: 16),
         SettingsSectionCard(
+          title: S.of(context).locationMode,
+          subtitle: S.of(context).settingsLocModeSubtitle,
+          icon: Icons.satellite_alt_rounded,
+          color: C.cyan,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+              child: Row(children: [
+                Expanded(
+                  child: _locSourceCard(
+                    title: S.of(context).locModeGps,
+                    icon: Icons.gps_fixed_rounded,
+                    desc: S.of(context).locModeGpsDesc,
+                    selected: st.locationMode == 'gps',
+                    onTap: () => st.setLocationMode('gps'),
+                    color: C.cyan,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: _locSourceCard(
+                    title: S.of(context).locModeGpsNetwork,
+                    icon: Icons.wifi_tethering_rounded,
+                    desc: S.of(context).locModeGpsNetworkDesc,
+                    selected: st.locationMode == 'gps_network',
+                    onTap: () => st.setLocationMode('gps_network'),
+                    color: C.cyan,
+                  ),
+                ),
+              ]),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+        SizedBox(height: 16),
+        SettingsSectionCard(
           title: '信标上报',
           subtitle: S.of(context).settingsBeaconSubtitle,
           icon: Icons.radio_rounded,
@@ -770,6 +806,8 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     required String desc,
     required bool selected,
     required VoidCallback onTap,
+    Color color = C.green,
+    Color? bg,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -777,14 +815,14 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? C.greenBg : C.bgSoft,
+          color: selected ? (bg ?? color.withValues(alpha: 0.10)) : C.bgSoft,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-              color: selected ? C.green : C.border,
+              color: selected ? color : C.border,
               width: selected ? 1.5 : 1),
         ),
         child: Row(children: [
-          Icon(icon, size: 18, color: selected ? C.green : C.slate),
+          Icon(icon, size: 18, color: selected ? color : C.slate),
           SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -792,7 +830,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               children: [
                 Text(title,
                     style: ts(12,
-                        c: selected ? C.green : C.ink,
+                        c: selected ? color : C.ink,
                         w: FontWeight.w700)),
                 SizedBox(height: 1),
                 Text(desc, style: ts(9, c: C.slate)),
@@ -800,7 +838,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             ),
           ),
           if (selected)
-            Icon(Icons.check_circle_rounded, size: 16, color: C.green),
+            Icon(Icons.check_circle_rounded, size: 16, color: color),
         ]),
       ),
     );
