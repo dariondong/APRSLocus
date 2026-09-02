@@ -233,6 +233,9 @@ class _TileMapViewState extends State<TileMapView> {
                       pan: widget.pan,
                       centerLat: widget.centerLat,
                       centerLng: widget.centerLng,
+                      // 高德瓦片为 GCJ-02，国际图源为 WGS-84
+                      gcj: widget.mapType == MapType.gaode ||
+                          widget.mapType == MapType.gaode_sat,
                     ),
                   ),
                   ...tiles,
@@ -252,12 +255,19 @@ class _FallbackPainter extends CustomPainter {
   final double zoom;
   final Offset pan;
   final double centerLat, centerLng;
+  /// 底图是否为 GCJ-02（高德）：是→元素坐标做 WGS→GCJ；国际 WGS 底图→原样
+  final bool gcj;
   _FallbackPainter({
     required this.zoom,
     required this.pan,
     required this.centerLat,
     required this.centerLng,
+    this.gcj = true,
   });
+
+  /// 把 WGS-84 元素坐标映射到底图坐标系
+  (double, double) _tc(double lat, double lng) =>
+      gcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
 
   Offset _s(double lat, double lng) {
     final c = MapProj.latLngToPx(centerLat, centerLng, zoom);
@@ -287,7 +297,7 @@ class _FallbackPainter extends CustomPainter {
     }
 
     // 北京环形路（以天安门为中心）
-    final ring = Gcj.wgsToGcj(39.9087, 116.3975);
+    final ring = _tc(39.9087, 116.3975);
     final rc = _s(ring.$1, ring.$2);
     final dLng = (_s(ring.$1, ring.$2 + 0.01).dx - rc.dx) / 0.01;
     final dLat = (_s(ring.$1 + 0.01, ring.$2).dy - rc.dy) / 0.01;
@@ -320,33 +330,33 @@ class _FallbackPainter extends CustomPainter {
       canvas.drawLine(p1, p2, major ? road : roadLight);
     }
 
-    final a = Gcj.wgsToGcj(39.9075, 116.30);
-    final b = Gcj.wgsToGcj(39.9075, 116.50);
-    final c = Gcj.wgsToGcj(39.85, 116.3975);
-    final d = Gcj.wgsToGcj(39.95, 116.3975);
+    final a = _tc(39.9075, 116.30);
+    final b = _tc(39.9075, 116.50);
+    final c = _tc(39.85, 116.3975);
+    final d = _tc(39.95, 116.3975);
     roadLine(a.$1, a.$2, b.$1, b.$2, major: true); // 长安街
     roadLine(c.$1, c.$2, d.$1, d.$2, major: true); // 中轴线
 
     // 次要道路（东西/南北各几条）
     for (final lat in [39.88, 39.92, 39.94]) {
-      final p1 = Gcj.wgsToGcj(lat, 116.32);
-      final p2 = Gcj.wgsToGcj(lat, 116.48);
+      final p1 = _tc(lat, 116.32);
+      final p2 = _tc(lat, 116.48);
       roadLine(p1.$1, p1.$2, p2.$1, p2.$2);
     }
     for (final lng in [116.35, 116.42, 116.45]) {
-      final p1 = Gcj.wgsToGcj(39.86, lng);
-      final p2 = Gcj.wgsToGcj(39.95, lng);
+      final p1 = _tc(39.86, lng);
+      final p2 = _tc(39.95, lng);
       roadLine(p1.$1, p1.$2, p2.$1, p2.$2);
     }
 
     // 水域
     final water = Paint()..color = C.water;
-    final lake = Gcj.wgsToGcj(39.999, 116.266);
+    final lake = _tc(39.999, 116.266);
     final lp = _s(lake.$1, lake.$2);
     canvas.drawOval(
         Rect.fromCenter(center: lp, width: 0.02 * dLng, height: 0.012 * dLat),
         water);
-    final river = Gcj.wgsToGcj(39.90, 116.44);
+    final river = _tc(39.90, 116.44);
     final rp = _s(river.$1, river.$2);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -360,7 +370,8 @@ class _FallbackPainter extends CustomPainter {
     // 标签
     final tp = TextPainter(textDirection: TextDirection.ltr);
     void label(String text, double lat, double lng, {double size = 10}) {
-      final p = _s(lat, lng);
+      final t = _tc(lat, lng);
+      final p = _s(t.$1, t.$2);
       tp.text = TextSpan(
         text: text,
         style: ts(size, c: C.slate.withValues(alpha: 0.7), w: FontWeight.w600),
