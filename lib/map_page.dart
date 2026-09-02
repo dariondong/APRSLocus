@@ -1242,7 +1242,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: C.grey),
+                    icon: Icon(Icons.close_rounded, color: C.grey),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],

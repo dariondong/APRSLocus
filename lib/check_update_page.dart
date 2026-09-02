@@ -1693,7 +1693,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     ),
                     const Spacer(),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: C.grey),
+                      icon: Icon(Icons.close_rounded, color: C.grey),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
