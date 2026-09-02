@@ -1730,6 +1730,60 @@ abstract class AppLocalizations {
   /// **'该区域暂无台站 · 点击显示全部'**
   String get noStationInView;
 
+  /// No description provided for @noStationHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'该区域暂无台站 · 点击查看帮助'**
+  String get noStationHelp;
+
+  /// No description provided for @mapHelpTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'地图帮助'**
+  String get mapHelpTitle;
+
+  /// No description provided for @mapHelpIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前视野内没有台站。可能原因：未连接 APRS-IS、接收范围较小或附近暂无活跃台站。'**
+  String get mapHelpIntro;
+
+  /// No description provided for @mapHelpMove.
+  ///
+  /// In zh, this message translates to:
+  /// **'拖动 / 缩放：单指拖动地图，双指或滚轮缩放'**
+  String get mapHelpMove;
+
+  /// No description provided for @mapHelpStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看台站：点击标记选中并居中，双击打开详情'**
+  String get mapHelpStation;
+
+  /// No description provided for @mapHelpLayer.
+  ///
+  /// In zh, this message translates to:
+  /// **'图层与底图：右上角按钮筛选台站类型、切换地图样式'**
+  String get mapHelpLayer;
+
+  /// No description provided for @mapHelpLocate.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位：点击右下角「定位到我」回到当前位置'**
+  String get mapHelpLocate;
+
+  /// No description provided for @mapHelpSearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索：顶部搜索框输入呼号可快速定位台站'**
+  String get mapHelpSearch;
+
+  /// No description provided for @allChangelog.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部更新日志'**
+  String get allChangelog;
+
   /// No description provided for @tapToView.
   ///
   /// In zh, this message translates to:

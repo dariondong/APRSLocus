@@ -854,6 +854,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStationInView => 'No stations here · tap to show all';
 
   @override
+  String get noStationHelp => 'No stations here · tap for help';
+
+  @override
+  String get mapHelpTitle => 'Map help';
+
+  @override
+  String get mapHelpIntro =>
+      'No stations in view. Possible reasons: not connected to APRS-IS, small receive range, or no active stations nearby.';
+
+  @override
+  String get mapHelpMove =>
+      'Move / zoom: drag to pan, pinch or scroll-wheel to zoom';
+
+  @override
+  String get mapHelpStation =>
+      'Stations: tap a marker to select & center, double-tap for details';
+
+  @override
+  String get mapHelpLayer =>
+      'Layers & style: top-right buttons filter station types / switch basemap';
+
+  @override
+  String get mapHelpLocate =>
+      'Locate: tap \u201cLocate me\u201d (bottom-right) to return to your position';
+
+  @override
+  String get mapHelpSearch =>
+      'Search: type a callsign in the top search box to jump to it';
+
+  @override
+  String get allChangelog => 'All changelogs';
+
+  @override
   String get tapToView => 'Tap to view';
 
   @override

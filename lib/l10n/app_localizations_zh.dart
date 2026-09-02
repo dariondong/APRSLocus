@@ -851,6 +851,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noStationInView => '该区域暂无台站 · 点击显示全部';
 
   @override
+  String get noStationHelp => '该区域暂无台站 · 点击查看帮助';
+
+  @override
+  String get mapHelpTitle => '地图帮助';
+
+  @override
+  String get mapHelpIntro =>
+      '当前视野内没有台站。可能原因：未连接 APRS-IS、接收范围较小或附近暂无活跃台站。';
+
+  @override
+  String get mapHelpMove => '拖动 / 缩放：单指拖动地图，双指或滚轮缩放';
+
+  @override
+  String get mapHelpStation => '查看台站：点击标记选中并居中，双击打开详情';
+
+  @override
+  String get mapHelpLayer => '图层与底图：右上角按钮筛选台站类型、切换地图样式';
+
+  @override
+  String get mapHelpLocate => '定位：点击右下角「定位到我」回到当前位置';
+
+  @override
+  String get mapHelpSearch => '搜索：顶部搜索框输入呼号可快速定位台站';
+
+  @override
+  String get allChangelog => '全部更新日志';
+
+  @override
   String get tapToView => '点击查看';
 
   @override
