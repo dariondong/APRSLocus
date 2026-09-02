@@ -88,16 +88,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // 基准（WGS-84 北京）+ GCJ-02 转换后的投影基准
+  // 基准（WGS-84 北京）
   static const _baseLat = 39.9042;
   static const _baseLng = 116.4074;
+  // GCJ-02（火星坐标）转换后的高德投影基准
   static final (double, double) _gcjBase = Gcj.wgsToGcj(_baseLat, _baseLng);
 
-  // ─── 投影（统一在 GCJ-02 坐标系，与高德瓦片对齐） ───
-  // GCJ 转换缓存：手势每帧对每个台站做三角函数转换很贵，缓存坐标结果
+  // ─── 投影 ───
+  // 瓦片底图坐标系：高德瓦片为 GCJ-02；国际图源（Carto/OSM/Esri/OpenTopo）为 WGS-84。
+  // 投影基准必须与底图一致，否则标记整体偏移。
+  bool get _isGcjTile =>
+      !_usePluginMap &&
+      (_currentMapType == MapType.gaode || _currentMapType == MapType.gaode_sat);
+
+  /// 投影基准坐标：高德→GCJ 天安门；国际 WGS→原始 WGS-84 天安门
+  (double, double) get _projBase =>
+      _isGcjTile ? _gcjBase : (_baseLat, _baseLng);
+
+  // 坐标转换缓存：手势每帧对每个台站做三角函数转换很贵，缓存坐标结果
   final Map<String, (double, double)> _gcjCache = {};
 
-  (double, double) _gcj(double lat, double lng) {
+  /// 把台站坐标映射到底图坐标系：GCJ 瓦片做 WGS→GCJ，国际 WGS 瓦片原样
+  (double, double) _toTileCoord(double lat, double lng) {
+    if (!_isGcjTile) return (lat, lng);
     final key = '${lat.toStringAsFixed(6)}|${lng.toStringAsFixed(6)}';
     final v = _gcjCache[key];
     if (v != null) return v;
@@ -108,8 +121,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Offset _toScreen(double lat, double lng, Size size) {
-    final g = _gcj(lat, lng);
-    final c = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, _zoom);
+    final g = _toTileCoord(lat, lng);
+    final b = _projBase;
+    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
     final p = MapProj.latLngToPx(g.$1, g.$2, _zoom);
     return Offset(
       p.dx - c.dx + size.width / 2 + _pan.dx,
@@ -118,21 +132,27 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   (double, double) _screenToLatLng(Offset screen, Size size) {
-    final c = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, _zoom);
+    final b = _projBase;
+    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
     final p = Offset(
       screen.dx + c.dx - size.width / 2 - _pan.dx,
       screen.dy + c.dy - size.height / 2 - _pan.dy,
     );
     final g = MapProj.pxToLatLng(p, _zoom);
-    // 高德坐标(GCJ)直接显示；标准 WGS-84 需反解
-    if (widget.state.coordDatum == 'gcj') return g;
-    return Gcj.gcjToWgs(g.$1, g.$2);
+    // GCJ 瓦片：坐标是 GCJ-02，按用户 datum 偏好输出 WGS-84
+    if (_isGcjTile) {
+      if (widget.state.coordDatum == 'gcj') return g;
+      return Gcj.gcjToWgs(g.$1, g.$2);
+    }
+    // 国际 WGS 瓦片：坐标已是 WGS-84，原样返回
+    return g;
   }
 
   /// 让某点居中的 pan：screen = p - c + size/2 + pan = size/2 → pan = c - p
   Offset _panFor(double lat, double lng, double zoom) {
-    final g = Gcj.wgsToGcj(lat, lng);
-    final c = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, zoom);
+    final g = _toTileCoord(lat, lng);
+    final b = _projBase;
+    final c = MapProj.latLngToPx(b.$1, b.$2, zoom);
     final p = MapProj.latLngToPx(g.$1, g.$2, zoom);
     return c - p;
   }
@@ -171,8 +191,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     _toPan = pan;
     // 起止中心对应的世界像素（以起始 zoom 为参考系）
     final ref = _fromZoom;
-    final c1 = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, _fromZoom);
-    final c2 = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, _toZoom);
+    final b = _projBase;
+    final c1 = MapProj.latLngToPx(b.$1, b.$2, _fromZoom);
+    final c2 = MapProj.latLngToPx(b.$1, b.$2, _toZoom);
     final wc1 = (c1 - _fromPan) * math.pow(2, ref - _fromZoom).toDouble();
     final wc2 = (c2 - _toPan) * math.pow(2, ref - _toZoom).toDouble();
 
@@ -184,7 +205,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       final t = Curves.easeOutCubic.transform(ctrl.value);
       final z = _fromZoom + (_toZoom - _fromZoom) * t;
       final wc = Offset.lerp(wc1, wc2, t)!;
-      final c = MapProj.latLngToPx(_gcjBase.$1, _gcjBase.$2, z);
+      final c = MapProj.latLngToPx(_projBase.$1, _projBase.$2, z);
       setState(() {
         _zoom = z;
         _pan = c - wc * math.pow(2, z - ref).toDouble();
@@ -332,8 +353,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             },
                           )
                         : TileMapView(
-                            centerLat: _gcjBase.$1,
-                            centerLng: _gcjBase.$2,
+                            centerLat: _projBase.$1,
+                            centerLng: _projBase.$2,
                             zoom: _zoom,
                             pan: _pan,
                             onPan: _panDelta,
@@ -1785,9 +1806,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     // 距离：鼠标悬停点 → 我的位置；否则地图中心 → 我的位置
     String coord = S.of(context).mapDefaultCoord(_zoom.round());
     String grid = '';
-    String datum = widget.state.coordDatum == 'gcj'
-        ? S.of(context).datumGcj
-        : S.of(context).datumWgs;
+    // 底图坐标系：GCJ 瓦片按用户 datum 偏好显示；国际 WGS 底图始终 WGS-84
+    String datum = !_isGcjTile || widget.state.coordDatum != 'gcj'
+        ? S.of(context).datumWgs
+        : S.of(context).datumGcj;
     if (hoverPos != null && hoverPos.dx > 0 && _lastSize.width > 0) {
       final (lat, lng) = _screenToLatLng(hoverPos, _lastSize);
       coord = '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}';
