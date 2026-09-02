@@ -1328,6 +1328,48 @@ abstract class AppLocalizations {
   /// **'已复制应用信息'**
   String get appInfoCopied;
 
+  /// No description provided for @shareApp.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享 APRSlocus'**
+  String get shareApp;
+
+  /// No description provided for @shareToSystem.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享到系统'**
+  String get shareToSystem;
+
+  /// No description provided for @shareToSystemDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信 / QQ / 短信等'**
+  String get shareToSystemDesc;
+
+  /// No description provided for @copyShareText.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制分享文案'**
+  String get copyShareText;
+
+  /// No description provided for @openDownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开下载页'**
+  String get openDownload;
+
+  /// No description provided for @shareTextCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享文案已复制，可粘贴发送给好友'**
+  String get shareTextCopied;
+
+  /// No description provided for @shareText.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocus —— 业余无线电 APRS 定位追踪与地图 📡\n实时台站追踪、消息收发、信标上报，Android / Windows 全平台可用。\n官网：https://aprslocus.theez.top/\n下载：https://github.com/dariondong/APRSLocus/releases'**
+  String get shareText;
+
   /// No description provided for @enterCallsign.
   ///
   /// In zh, this message translates to:

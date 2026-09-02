@@ -627,6 +627,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appInfoCopied => '已复制应用信息';
 
   @override
+  String get shareApp => '分享 APRSlocus';
+
+  @override
+  String get shareToSystem => '分享到系统';
+
+  @override
+  String get shareToSystemDesc => '微信 / QQ / 短信等';
+
+  @override
+  String get copyShareText => '复制分享文案';
+
+  @override
+  String get openDownload => '打开下载页';
+
+  @override
+  String get shareTextCopied => '分享文案已复制，可粘贴发送给好友';
+
+  @override
+  String get shareText =>
+      'APRSlocus —— 业余无线电 APRS 定位追踪与地图 📡\n实时台站追踪、消息收发、信标上报，Android / Windows 全平台可用。\n官网：https://aprslocus.theez.top/\n下载：https://github.com/dariondong/APRSLocus/releases';
+
+  @override
   String get enterCallsign => '请输入你的呼号';
 
   @override

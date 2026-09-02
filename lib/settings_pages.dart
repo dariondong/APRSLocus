@@ -582,42 +582,45 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             SizedBox(height: 10),
           ],
         ),
-        SizedBox(height: 16),
-        SettingsSectionCard(
-          title: S.of(context).locationMode,
-          subtitle: S.of(context).settingsLocModeSubtitle,
-          icon: Icons.satellite_alt_rounded,
-          color: C.cyan,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-              child: Row(children: [
-                Expanded(
-                  child: _locSourceCard(
-                    title: S.of(context).locModeGps,
-                    icon: Icons.gps_fixed_rounded,
-                    desc: S.of(context).locModeGpsDesc,
-                    selected: st.locationMode == 'gps',
-                    onTap: () => st.setLocationMode('gps'),
-                    color: C.cyan,
+        // 模拟位置模式下 GPS 定位模式无意义，隐藏
+        if (!st.useSimLocation) ...[
+          SizedBox(height: 16),
+          SettingsSectionCard(
+            title: S.of(context).locationMode,
+            subtitle: S.of(context).settingsLocModeSubtitle,
+            icon: Icons.satellite_alt_rounded,
+            color: C.cyan,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+                child: Row(children: [
+                  Expanded(
+                    child: _locSourceCard(
+                      title: S.of(context).locModeGps,
+                      icon: Icons.gps_fixed_rounded,
+                      desc: S.of(context).locModeGpsDesc,
+                      selected: st.locationMode == 'gps',
+                      onTap: () => st.setLocationMode('gps'),
+                      color: C.cyan,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _locSourceCard(
-                    title: S.of(context).locModeGpsNetwork,
-                    icon: Icons.wifi_tethering_rounded,
-                    desc: S.of(context).locModeGpsNetworkDesc,
-                    selected: st.locationMode == 'gps_network',
-                    onTap: () => st.setLocationMode('gps_network'),
-                    color: C.cyan,
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: _locSourceCard(
+                      title: S.of(context).locModeGpsNetwork,
+                      icon: Icons.wifi_tethering_rounded,
+                      desc: S.of(context).locModeGpsNetworkDesc,
+                      selected: st.locationMode == 'gps_network',
+                      onTap: () => st.setLocationMode('gps_network'),
+                      color: C.cyan,
+                    ),
                   ),
-                ),
-              ]),
-            ),
-            SizedBox(height: 10),
-          ],
-        ),
+                ]),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ],
         SizedBox(height: 16),
         SettingsSectionCard(
           title: '信标上报',
@@ -660,7 +663,18 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             SettingsRow2('定位状态', st.locStatus),
             SettingsRow2(S.of(context).beaconsSent, '${st.beaconsSent} 次'),
             SettingsRow2(S.of(context).nextBeacon, st.nextBeaconIn),
-            if (!st.loc.running)
+            // 模拟位置模式：不显示 GPS 启动按钮，改为提示
+            if (st.useSimLocation)
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(children: [
+                  Icon(Icons.gps_off_rounded, color: C.orange, size: 16),
+                  SizedBox(width: 8),
+                  Text('使用模拟位置，无需 GPS',
+                      style: ts(12, c: C.orange, w: FontWeight.w600)),
+                ]),
+              )
+            else if (!st.loc.running)
               Padding(
                 padding: const EdgeInsets.all(14),
                 child: SizedBox(

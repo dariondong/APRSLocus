@@ -105,6 +105,31 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        // 分享通道：调用系统分享面板（微信 / QQ 等）
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/share").setMethodCallHandler { call, result ->
+            when (call.method) {
+                "shareText" -> {
+                    val text = call.argument<String>("text") ?: ""
+                    shareText(text)
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    /// 系统分享面板：分享文本到其他 App（微信 / QQ / 短信等）
+    private fun shareText(text: String) {
+        try {
+            val send = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+            }
+            startActivity(Intent.createChooser(send, "分享 APRSlocus"))
+        } catch (_: Exception) {
+            // 无可用分享目标时静默失败
+        }
     }
 
     override fun onPostResume() {
