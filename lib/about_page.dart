@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,6 +21,185 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage>
     with SingleTickerProviderStateMixin {
+  /// 分享通道：Android 调用系统分享面板（ACTION_SEND）
+  static const _shareChannel = MethodChannel('com.aprslocus/share');
+
+  bool get _isAndroid =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
+  /// 分享文案
+  String get _shareText => S.of(context).shareText;
+
+  /// 分享到系统：Android 弹系统分享面板，其他平台复制文案
+  Future<void> _shareToSystem() async {
+    if (_isAndroid) {
+      try {
+        await _shareChannel.invokeMethod('shareText', {'text': _shareText});
+        return;
+      } catch (_) {}
+    }
+    await _copyShareText();
+  }
+
+  /// 复制分享文案到剪贴板
+  Future<void> _copyShareText() async {
+    await Clipboard.setData(ClipboardData(text: _shareText));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).shareTextCopied),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: C.ink,
+      ),
+    );
+  }
+
+  /// 打开下载页（GitHub Releases）
+  void _openDownload() {
+    launchUrl(
+      Uri.parse('https://github.com/dariondong/APRSLocus/releases'),
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  /// 分享面板
+  void _showShareSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 头部
+              Row(children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: C.blueBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.share_rounded, color: C.blue, size: 22),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.of(context).shareApp,
+                        style: ts(16, w: FontWeight.w800),
+                      ),
+                      Text(
+                        'APRSlocus · v${AppState.appVersion}',
+                        style: ts(11, c: C.grey),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded, color: C.grey),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ]),
+              const SizedBox(height: 14),
+              // 分享到系统（仅 Android：调系统分享面板）
+              if (_isAndroid) ...[
+                _shareOption(
+                  icon: Icons.send_rounded,
+                  color: C.green,
+                  title: S.of(context).shareToSystem,
+                  subtitle: S.of(context).shareToSystemDesc,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _shareToSystem();
+                  },
+                ),
+                const SizedBox(height: 8),
+              ],
+              // 复制分享文案
+              _shareOption(
+                icon: Icons.copy_rounded,
+                color: C.blue,
+                title: S.of(context).copyShareText,
+                subtitle: 'Android / Windows / iOS',
+                onTap: () {
+                  Navigator.pop(context);
+                  _copyShareText();
+                },
+              ),
+              const SizedBox(height: 8),
+              // 打开下载页
+              _shareOption(
+                icon: Icons.download_rounded,
+                color: C.orange,
+                title: S.of(context).openDownload,
+                subtitle: 'github.com/dariondong/APRSLocus/releases',
+                onTap: () {
+                  Navigator.pop(context);
+                  _openDownload();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _shareOption({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: C.bgSoft,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          child: Row(children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(icon, size: 17, color: color),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: ts(13, w: FontWeight.w700)),
+                  const SizedBox(height: 1),
+                  Text(subtitle,
+                      style: ts(10, c: C.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, size: 17, color: C.greyLight),
+          ]),
+        ),
+      ),
+    );
+  }
+
   // ─── 粒子动画 ───
   AnimationController? _ctrl;
   final List<_Particle> _particles = [];
@@ -332,7 +513,30 @@ class _AboutPageState extends State<AboutPage>
                         ),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 12),
+                    // 分享 APRSlocus 入口
+                    Center(
+                      child: OutlinedButton.icon(
+                        onPressed: _showShareSheet,
+                        icon: const Icon(Icons.share_rounded, size: 16),
+                        label: Text(S.of(context).shareApp),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.blue,
+                          side: BorderSide(
+                            color: C.blue.withValues(alpha: 0.5),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 9,
+                          ),
+                          textStyle: ts(12, w: FontWeight.w600),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 28),
                     // ── 作者信息 ──
                     _sectionHeader(
                       S.of(context).author,
