@@ -5,6 +5,9 @@
 ### ✨ 新增
 - **关于页增加官方网站入口**：用户反馈区块新增「官方网站」链接（aprslocus.theez.top），点击直接跳转
 
+### 🐛 修复
+- **v1.6.1 三平台编译失败**：定位模式设置卡片 `_locSourceCard` 的 `color` 参数把 `C.green`（static 变量，非 const）用作默认参数值，触发 `Constant evaluation error`，Windows / iOS / Android 均编译失败；改为可空参数 + 方法内回退
+
 ## [1.6.1] - 2026-09-02
 
 ### ✨ 新增
