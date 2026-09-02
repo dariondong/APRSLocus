@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logobg.jfif" alt="APRSlocus" width="200" height="200" style="border-radius:20px;"/>
+<img src="docs/assets/logo.png" alt="APRSlocus" width="200" height="200" style="border-radius:20px;"/>
 
 # APRSlocus
 

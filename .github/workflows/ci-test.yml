@@ -35,10 +35,11 @@ jobs:
           flutter analyze > /tmp/analyze.log 2>&1
           code=$?
           set -e
-          # 已知误报：vector_map.dart:243 cacheFolder（analyzer 的 typedef 泛型解析 bug，
+          # 已知误报：vector_map.dart cacheFolder（analyzer 的 typedef 泛型解析 bug，
           # flutter build 可正常编译，见 HANDOVER.md）。过滤后仍有其他 error 才判失败。
-          known_lines=$(grep -c "vector_map.dart:243" /tmp/analyze.log || true)
-          other_errors=$(grep -v "vector_map.dart:243" /tmp/analyze.log | grep -c "error •" || true)
+          # 按错误文本匹配而非行号（行号会随代码行数漂移导致误报漏过滤）。
+          known_lines=$(grep -c "Future<Directory> Function()" /tmp/analyze.log || true)
+          other_errors=$(grep -v "Future<Directory> Function()" /tmp/analyze.log | grep -c "error •" || true)
           cat /tmp/analyze.log
           if [ "$code" -ne 0 ] && [ "$other_errors" -gt 0 ]; then
             echo "analyze 发现除已知误报外的错误"
