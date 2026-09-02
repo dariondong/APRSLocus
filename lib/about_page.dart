@@ -599,6 +599,12 @@ class _AboutPageState extends State<AboutPage>
                       child: Column(
                         children: [
                           _linkRow(
+                            icon: Icons.public_rounded,
+                            label: S.of(context).officialWebsite,
+                            value: 'aprslocus.theez.top',
+                            url: 'https://aprslocus.theez.top/',
+                          ),
+                          _linkRow(
                             icon: Icons.wechat_rounded,
                             label: S.of(context).qqGroup,
                             value: S.of(context).qqSoftwareName,

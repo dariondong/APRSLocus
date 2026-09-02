@@ -606,6 +606,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feedback => '用户反馈';
 
   @override
+  String get officialWebsite => '官方网站';
+
+  @override
   String get qqGroup => 'QQ 交流群';
 
   @override
