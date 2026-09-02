@@ -634,6 +634,14 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         centerTitle: true,
         actions: [
           IconButton(
+            tooltip: S.of(context).allChangelog,
+            onPressed: _allReleases.isEmpty ? null : _showAllChangelog,
+            icon: Icon(
+              Icons.article_outlined,
+              color: _allReleases.isEmpty ? C.greyLight : C.blue,
+            ),
+          ),
+          IconButton(
             tooltip: widget.state.updateChannel == 'github'
                 ? 'GitHub'
                 : 'GitCode',
@@ -1652,6 +1660,99 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             child: Text(S.of(context).gotIt),
           ),
         ],
+      ),
+    );
+  }
+
+  /// 弹出全部版本的更新日志（新 → 旧）
+  void _showAllChangelog() {
+    if (_allReleases.isEmpty) return;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => FractionallySizedBox(
+        heightFactor: 0.82,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 8, 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.article_outlined, size: 20, color: C.blue),
+                    const SizedBox(width: 8),
+                    Text(
+                      S.of(context).allChangelog,
+                      style: ts(16, w: FontWeight.w800),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: C.grey),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+                  children: [
+                    for (final rel in _allReleases) ...[
+                      Row(
+                        children: [
+                          Text(
+                            'v${rel.tagName}',
+                            style: ts(13, c: C.blue, w: FontWeight.w800),
+                          ),
+                          if (rel.tagName == AppState.appVersion) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.greenBg,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                S.of(context).current,
+                                style: ts(10, c: C.green, w: FontWeight.w700),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: C.greyBg,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          rel.body.trim().isNotEmpty
+                              ? rel.body.trim()
+                              : S.of(context).noReleaseNotes,
+                          style: ts(12, c: C.slate, h: 1.6),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

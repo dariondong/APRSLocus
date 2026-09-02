@@ -229,41 +229,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return _pan * sf;
   }
 
-  /// 精确墨卡托 y 归一化值 [0,1]
-  double _mercY(double lat) {
-    final s = math.sin(lat * math.pi / 180);
-    return (1 - math.log((1 + s) / (1 - s)) / (2 * math.pi)) / 2;
-  }
-
-  /// 自适应：缩放到覆盖所有可见台站（精确墨卡托 + 标记边距）
-  void _fitAll() {
-    final vis = _visible;
-    if (vis.isEmpty) return;
-    double minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
-    for (final s in vis) {
-      if (s.lat < minLat) minLat = s.lat;
-      if (s.lat > maxLat) maxLat = s.lat;
-      if (s.lng < minLng) minLng = s.lng;
-      if (s.lng > maxLng) maxLng = s.lng;
-    }
-    final size = _lastSize;
-    final w = size.width > 100 ? size.width : 1000;
-    final h = size.height > 100 ? size.height : 700;
-    // 留出标记(~28px)与边距
-    final availW = w - 72.0;
-    final availH = h - 72.0;
-    final spanLng = math.max(maxLng - minLng, 0.002);
-    final spanY = math.max((_mercY(maxLat) - _mercY(minLat)).abs(), 1e-6);
-    // world_px = 256 * 2^z；x 跨度 = world*(spanLng/360)
-    // zX = log2(availW * 360 / (spanLng * 256))
-    final zX = math.log(availW * 360 / (spanLng * 256)) / math.ln2;
-    final zY = math.log(availH / (spanY * 256)) / math.ln2;
-    final z = (zX < zY ? zX : zY).clamp(3.0, 16.0);
-    final cLat = (minLat + maxLat) / 2;
-    final cLng = (minLng + maxLng) / 2;
-    _animateTo(z, _panFor(cLat, cLng, z));
-  }
-
   // 图层筛选：隐藏的类型
   final Set<TypeGroup> _hiddenTypes = {};
 
@@ -552,15 +517,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                // 视野内无台站提示
-                if (vis.isNotEmpty && !_hasVisibleStation(size))
+                // 视野内无台站提示（点击弹出地图帮助）
+                if (!_hasVisibleStation(size))
                   Positioned(
                     bottom: 70,
                     left: 0,
                     right: 0,
                     child: Center(
                       child: GestureDetector(
-                        onTap: _fitAll,
+                        onTap: _showMapHelp,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
@@ -575,13 +540,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                Icons.search_off_rounded,
+                                Icons.help_outline_rounded,
                                 size: 15,
                                 color: C.cyan,
                               ),
                               SizedBox(width: 6),
                               Text(
-                                S.of(context).noStationInView,
+                                S.of(context).noStationHelp,
                                 style: ts(11, c: C.cyan, w: FontWeight.w600),
                               ),
                             ],
@@ -1241,6 +1206,114 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => StationDetail(state: widget.state, station: s),
+    );
+  }
+
+  /// 视野内无台站时点击弹出的地图帮助面板
+  void _showMapHelp() {
+    final rows = <(IconData, String)>[
+      (Icons.pan_tool_rounded, S.of(context).mapHelpMove),
+      (Icons.radio_rounded, S.of(context).mapHelpStation),
+      (Icons.layers_rounded, S.of(context).mapHelpLayer),
+      (Icons.my_location_rounded, S.of(context).mapHelpLocate),
+      (Icons.search_rounded, S.of(context).mapHelpSearch),
+    ];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.help_outline_rounded, size: 20, color: C.cyan),
+                  const SizedBox(width: 8),
+                  Text(
+                    S.of(context).mapHelpTitle,
+                    style: ts(16, w: FontWeight.w800),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: C.grey),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: C.cyanBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  S.of(context).mapHelpIntro,
+                  style: ts(12, c: C.cyan, w: FontWeight.w600, h: 1.5),
+                ),
+              ),
+              const SizedBox(height: 12),
+              for (final (icon, text) in rows) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 26,
+                        height: 26,
+                        decoration: BoxDecoration(
+                          color: C.bgSoft,
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        child: Icon(icon, size: 15, color: C.blue),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          text,
+                          style: ts(12, c: C.ink, h: 1.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.state.toggleConnect();
+                  },
+                  icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+                  label: Text(
+                    S.of(context).connectAprsIs,
+                    style: ts(13, w: FontWeight.w700),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: C.blue,
+                    side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
