@@ -160,10 +160,15 @@ String localizedMapTypeLabel(BuildContext context, String name) =>
     switch (name) {
       'gaode' => S.of(context).mapTypeAmap,
       'gaode_sat' => S.of(context).mapTypeAmapSatellite,
-      'amap_js' => S.of(context).mapTypeAmapJs,
       'vector' => S.of(context).mapTypeVector,
-      'carto' => 'Carto',
-      'osm' => 'OSM',
+      'carto' => 'Carto 浅色',
+      'carto_dark' => 'Carto 深色',
+      'carto_voyager' => 'Carto 航行者',
+      'osm' => 'OSM 标准',
+      'osm_hot' => 'OSM 人道',
+      'open_topo' => 'OpenTopo 地形',
+      'esri_street' => 'Esri 街道',
+      'esri_sat' => 'Esri 影像',
       _ => name,
     };
 

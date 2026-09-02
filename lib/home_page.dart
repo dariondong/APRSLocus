@@ -243,8 +243,8 @@ class _HomePageState extends State<HomePage> {
     _cachedPageTab = _tab;
     _cachedPageSearch = _search;
     // IndexedStack：所有页面常驻不销毁。
-    // 地图页（含矢量/高德JS 的 style 缓存、相机位置、WebView 状态）切换 tab 后保留，
-    // 避免每次切回都重新加载瓦片/重建 WebView。
+    // 地图页（含矢量 style 缓存、相机位置）切换 tab 后保留，
+    // 避免每次切回都重新加载瓦片/重建地图。
     // 外层淡入动画：切 tab 时页面淡入，过渡平滑。
     _cachedPage = TweenAnimationBuilder<double>(
       key: ValueKey('tabfade-$_tab'),

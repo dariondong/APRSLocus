@@ -1881,9 +1881,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mapTypeAmapSatellite => '高德卫星';
 
   @override
-  String get mapTypeAmapJs => '高德 JS';
-
-  @override
   String get mapTypeVector => '矢量地图';
 
   @override
@@ -2349,16 +2346,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tapAnywhereClose => '点击任意处关闭';
-
-  @override
-  String get webAmapUnsupported => 'Web 平台暂不支持高德 JS 地图';
-
-  @override
-  String get webview2InitFailed =>
-      'WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时';
-
-  @override
-  String get loadingAmap => '加载高德地图…';
 
   @override
   String vectorMapLoadFailed(String error) {

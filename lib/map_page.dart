@@ -1,7 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart'
-    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
@@ -11,7 +9,6 @@ import 'widgets.dart';
 import 'station_detail.dart';
 import 'tile_map.dart';
 import 'vector_map.dart';
-import 'amap_js_map.dart';
 import 'coord.dart';
 
 class MapPage extends StatefulWidget {
@@ -38,16 +35,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 是否使用矢量地图模式（flutter_map）
   bool get _isVector => _currentMapType == MapType.vector;
 
-  /// 是否使用高德 JS 地图（WebView）。
-  /// Windows 的 WebView2 鼠标坐标异常（始终左上角），回退到稳定的瓦片地图。
-  bool get _isAmapJs =>
-      !_isWindowsDesktop && _currentMapType == MapType.amap_js;
-
-  bool get _isWindowsDesktop =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.windows;
-
   /// 插件地图（自绘标记不可用的模式）
-  bool get _usePluginMap => _isVector || _isAmapJs;
+  bool get _usePluginMap => _isVector;
 
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
@@ -351,7 +340,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   child: MouseRegion(
                     onHover: (e) => _hover.value = e.localPosition,
                     onExit: (_) => _hover.value = null,
-                    child                        : _isVector
+                    child: _isVector
                         ? VectorMapView(
                             stations: _visible,
                             stationsVersion: widget.state.stationsVersion,
@@ -359,6 +348,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             myHasFix: widget.state.myHasFix,
                             myLat: widget.state.myLat,
                             myLng: widget.state.myLng,
+                            myTrack: widget.state.myTrack,
+                            selectedCall: _selected?.call,
+                            selectedTrack: _selected?.track ?? const [],
+                            selectedColor: _selected?.color,
                             focusSeq: widget.state.mapFocusSeq,
                             focusLat: widget.state.mapFocus?.lat,
                             focusLng: widget.state.mapFocus?.lng,
@@ -367,28 +360,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             showTracks: _showTracks,
                             clustering: _clusterEnabled,
                             onTap: _handleMapLatLng,
-                            onStationTap: (s) {
-                              _openDetail(s);
-                              _selected = s;
-                              _syncPulse();
-                            },
-                          )
-                        : _isAmapJs
-                        ? AmapJsMapView(
-                            stations: _visible,
-                            stationsVersion: widget.state.stationsVersion,
-                            myCall: widget.state.myFullCall,
-                            myHasFix: widget.state.myHasFix,
-                            myLat: widget.state.myLat,
-                            myLng: widget.state.myLng,
-                            focusSeq: widget.state.mapFocusSeq,
-                            focusLat: widget.state.mapFocus?.lat,
-                            focusLng: widget.state.mapFocus?.lng,
-                            actionSeq: _mapActionSeq,
-                            action: _mapAction,
-                            showTracks: _showTracks,
-                            onTap: _handleMapLatLng,
-                            onMyLocationTap: _showMyPanel,
                             onStationTap: (s) {
                               _openDetail(s);
                               _selected = s;
@@ -405,12 +376,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             // 滚轮：瞬时围绕焦点缩放，跟手不飘
                             onZoomRequest: (z, p) => _animateTo(z, p),
                             onTap: _handleMapTap,
-                            // Windows 上高德 JS 回退为高德矢量瓦片
-                            mapType:
-                                (_currentMapType == MapType.amap_js &&
-                                    _isWindowsDesktop)
-                                ? MapType.gaode
-                                : _currentMapType,
+                            mapType: _currentMapType,
                           ),
                   ),
                 ),
@@ -1468,19 +1434,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         ),
         SizedBox(height: 6),
         // 台站聚合开关（自绘 / 矢量地图有效）
-        if (!_isAmapJs) ...[
-          RoundIconBtn(
-            _clusterEnabled
-                ? Icons.blur_circular_rounded
-                : Icons.blur_off_rounded,
-            tooltip: _clusterEnabled
-                ? S.of(context).disableClustering
-                : S.of(context).enableClustering,
-            color: _clusterEnabled ? C.cyan : C.slate,
-            onTap: () => setState(() => _clusterEnabled = !_clusterEnabled),
-          ),
-          SizedBox(height: 6),
-        ],
+        RoundIconBtn(
+          _clusterEnabled
+              ? Icons.blur_circular_rounded
+              : Icons.blur_off_rounded,
+          tooltip: _clusterEnabled
+              ? S.of(context).disableClustering
+              : S.of(context).enableClustering,
+          color: _clusterEnabled ? C.cyan : C.slate,
+          onTap: () => setState(() => _clusterEnabled = !_clusterEnabled),
+        ),
+        SizedBox(height: 6),
         RoundIconBtn(
           Icons.my_location_rounded,
           tooltip: S.of(context).locateMe,
@@ -1504,7 +1468,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ─── 插件地图（矢量/高德JS）动作分发 ───
+  // ─── 插件地图（矢量）动作分发 ───
   int _mapActionSeq = 0;
   String _mapAction = '';
 
@@ -1572,21 +1536,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             child: Material(
               color: Colors.transparent,
               child: Container(
-                width: 200,
+                width: 210,
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: C.white,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 高德系列
-                    _mapTypeGroup('高德', C.blue, () => entry.remove()),
-                    // 其他地图
-                    _mapTypeGroup('其他', C.slate, () => entry.remove()),
-                  ],
+                // 图层较多时允许滚动，避免超出屏幕
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(ctx).size.height * 0.68,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 高德系列
+                        _mapTypeGroup('高德', C.blue, () => entry.remove()),
+                        // 其他地图
+                        _mapTypeGroup('其他', C.slate, () => entry.remove()),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
