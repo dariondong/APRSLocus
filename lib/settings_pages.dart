@@ -582,6 +582,114 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             SizedBox(height: 10),
           ],
         ),
+        // 模拟位置模式：手动定位坐标设置前置显示
+        if (st.useSimLocation) ...[
+          SizedBox(height: 16),
+          // 手动定位
+          SettingsFold(
+            title: '手动定位',
+            subtitle: S.of(context).settingsManualLocSubtitle,
+            icon: Icons.gps_off_rounded,
+            color: C.orange,
+            open: _manualOpen || st.useSimLocation,
+            onToggle: () => setState(() => _manualOpen = !_manualOpen),
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                child: Row(children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _myLat,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: ts(12),
+                      decoration: InputDecoration(
+                        hintText: '纬度 39.9042',
+                        hintStyle: ts(12, c: C.grey),
+                        isDense: true,
+                        filled: true,
+                        fillColor: C.bgSoft,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _myLng,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: ts(12),
+                      decoration: InputDecoration(
+                        hintText: '经度 116.4074',
+                        hintStyle: ts(12, c: C.grey),
+                        isDense: true,
+                        filled: true,
+                        fillColor: C.bgSoft,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+                child: Row(children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        final lat = double.tryParse(_myLat.text.trim());
+                        final lng = double.tryParse(_myLng.text.trim());
+                        if (lat == null || lng == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('请输入有效经纬度')),
+                          );
+                          return;
+                        }
+                        st.setMyPosition(lat, lng);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('已设置我的位置，网格 ${st.myGrid}')),
+                        );
+                      },
+                      icon: Icon(Icons.my_location_rounded, size: 15),
+                      label: Text('应用坐标'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: C.blue,
+                        side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+                        padding: const EdgeInsets.symmetric(vertical: 7),
+                        textStyle: ts(11, w: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        // 先关闭设置子页面，再进入地图选点
+                        Navigator.of(context).pop();
+                        st.startPick();
+                      },
+                      icon: Icon(Icons.edit_location_alt_rounded, size: 15),
+                      label: Text('在地图选点'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: C.orange,
+                        side: BorderSide(color: C.orange.withValues(alpha: 0.5)),
+                        padding: const EdgeInsets.symmetric(vertical: 7),
+                        textStyle: ts(11, w: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+              SettingsHint(
+                  S.of(context).settingsManualLocHint),
+            ],
+          ),
+        ],
         // 模拟位置模式下 GPS 定位模式无意义，隐藏
         if (!st.useSimLocation) ...[
           SizedBox(height: 16),
@@ -704,111 +812,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               ),
           ],
         ),
-        SizedBox(height: 16),
-        // 手动定位
-        SettingsFold(
-          title: '手动定位',
-          subtitle: S.of(context).settingsManualLocSubtitle,
-          icon: Icons.gps_off_rounded,
-          color: C.orange,
-          open: _manualOpen,
-          onToggle: () => setState(() => _manualOpen = !_manualOpen),
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              child: Row(children: [
-                Expanded(
-                  child: TextField(
-                    controller: _myLat,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    style: ts(12),
-                    decoration: InputDecoration(
-                      hintText: '纬度 39.9042',
-                      hintStyle: ts(12, c: C.grey),
-                      isDense: true,
-                      filled: true,
-                      fillColor: C.bgSoft,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: _myLng,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    style: ts(12),
-                    decoration: InputDecoration(
-                      hintText: '经度 116.4074',
-                      hintStyle: ts(12, c: C.grey),
-                      isDense: true,
-                      filled: true,
-                      fillColor: C.bgSoft,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-              child: Row(children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      final lat = double.tryParse(_myLat.text.trim());
-                      final lng = double.tryParse(_myLng.text.trim());
-                      if (lat == null || lng == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('请输入有效经纬度')),
-                        );
-                        return;
-                      }
-                      st.setMyPosition(lat, lng);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('已设置我的位置，网格 ${st.myGrid}')),
-                      );
-                    },
-                    icon: Icon(Icons.my_location_rounded, size: 15),
-                    label: Text('应用坐标'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: C.blue,
-                      side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 7),
-                      textStyle: ts(11, w: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      // 先关闭设置子页面，再进入地图选点
-                      Navigator.of(context).pop();
-                      st.startPick();
-                    },
-                    icon: Icon(Icons.edit_location_alt_rounded, size: 15),
-                    label: Text('在地图选点'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: C.orange,
-                      side: BorderSide(color: C.orange.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 7),
-                      textStyle: ts(11, w: FontWeight.w600),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            SettingsHint(
-                S.of(context).settingsManualLocHint),
-          ],
-        ),
+
       ]),
       ),
     );
