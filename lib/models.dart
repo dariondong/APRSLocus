@@ -24,6 +24,8 @@ class Station {
   String? path; // 最近一次数据包的转发路径（如 WIDE1-1,WIDE2-1）
   bool favorite;
   bool manual; // 手动添加的联系人
+  /// 速度/高度遥测历史（内存态，与 track 一致不持久化）
+  List<TelemetryPt> telemetry;
 
   Station({
     required this.call,
@@ -39,6 +41,7 @@ class Station {
     required this.lastHeard,
     this.status = St.online,
     this.track = const [],
+    this.telemetry = const [],
     this.wx,
     this.fmo,
     this.aprslocus,
@@ -157,6 +160,14 @@ class TrackPt {
   final double lat, lng;
   final DateTime time;
   const TrackPt(this.lat, this.lng, this.time);
+}
+
+/// 台站遥测采样点：速度/高度历史（用于详情页变化图表）
+class TelemetryPt {
+  final DateTime time;
+  final double? speed; // km/h
+  final double? alt; // 米
+  const TelemetryPt(this.time, {this.speed, this.alt});
 }
 
 class AprsMsg {

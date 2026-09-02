@@ -1580,6 +1580,42 @@ abstract class AppLocalizations {
   /// **'航向'**
   String get courseLabel;
 
+  /// No description provided for @telemetryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'速度 / 高度变化'**
+  String get telemetryTitle;
+
+  /// No description provided for @range10m.
+  ///
+  /// In zh, this message translates to:
+  /// **'10 分钟'**
+  String get range10m;
+
+  /// No description provided for @range30m.
+  ///
+  /// In zh, this message translates to:
+  /// **'30 分钟'**
+  String get range30m;
+
+  /// No description provided for @range1h.
+  ///
+  /// In zh, this message translates to:
+  /// **'1 小时'**
+  String get range1h;
+
+  /// No description provided for @range3h.
+  ///
+  /// In zh, this message translates to:
+  /// **'3 小时'**
+  String get range3h;
+
+  /// No description provided for @rangeAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部'**
+  String get rangeAll;
+
   /// No description provided for @beaconIntervalLabel.
   ///
   /// In zh, this message translates to:
