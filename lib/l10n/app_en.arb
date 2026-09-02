@@ -548,7 +548,6 @@
   "connPasscodeInvalid": "Connected · Unverified (Passcode may be incorrect)",
   "mapTypeAmap": "AMap",
   "mapTypeAmapSatellite": "AMap Satellite",
-  "mapTypeAmapJs": "AMap JS",
   "mapTypeVector": "Vector map",
   "amapGroup": "AMap",
   "domesticMaps": "China maps",
@@ -690,9 +689,7 @@
   "qrLoadFailed": "QR code image failed to load",
   "qrSaveWechat": "Long-press to save · Scan with WeChat to support",
   "tapAnywhereClose": "Tap anywhere to close",
-  "webAmapUnsupported": "AMap JS is not supported on the web",
-  "webview2InitFailed": "WebView2 initialization failed\nInstall the Microsoft Edge WebView2 Runtime",
-  "loadingAmap": "Loading AMap…",
+
   "vectorMapLoadFailed": "Vector map failed to load\n{error}",
   "loadingVectorMap": "Loading vector map…",
   "updateChannel": "Update channel",

@@ -39,17 +39,33 @@ String _gaodeUrl(int tx, int ty, int z, {int style = 7}) {
       '?lang=zh_cn&size=1&scale=1&style=$style&x=$tx&y=$ty&z=$z';
 }
 
-const _cartoUrl = 'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+// 各图源瓦片模板（全部免 API Key）
+const _cartoLightUrl = 'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+const _cartoDarkUrl = 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+const _cartoVoyagerUrl =
+    'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
 const _osmUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const _osmHotUrl =
+    'https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png';
+const _openTopoUrl = 'https://tile.opentopomap.org/{z}/{x}/{y}.png';
+const _esriStreetUrl =
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+const _esriSatUrl =
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 
 /// 地图类型
 enum MapType {
   gaode('高德地图', group: '高德'),
   gaode_sat('高德卫星', group: '高德'),
-  amap_js('高德 JS', group: '高德'),
   vector('矢量地图', group: '其他'),
-  carto('Carto', group: '其他'),
-  osm('OSM', group: '其他');
+  carto('Carto 浅色', group: '其他'),
+  carto_dark('Carto 深色', group: '其他'),
+  carto_voyager('Carto 航行者', group: '其他'),
+  osm('OSM 标准', group: '其他'),
+  osm_hot('OSM 人道', group: '其他'),
+  open_topo('OpenTopo 地形', group: '其他'),
+  esri_street('Esri 街道', group: '其他'),
+  esri_sat('Esri 影像', group: '其他');
 
   const MapType(this.label, {this.group = '高德'});
   final String label;
@@ -377,83 +393,68 @@ class _Tile extends StatelessWidget {
     this.mapType = MapType.gaode,
   });
 
-  String _fmt(String tpl) => tpl
-      .replaceAll('{z}', '$z')
-      .replaceAll('{x}', '$tx')
-      .replaceAll('{y}', '$ty');
+  /// 替换 {z}/{x}/{y}/{s}，{s} 为子域名轮询（a/b/c）
+  String _fmt(String tpl) {
+    final s = ['a', 'b', 'c'][(tx + ty) % 3];
+    return tpl
+        .replaceAll('{z}', '$z')
+        .replaceAll('{x}', '$tx')
+        .replaceAll('{y}', '$ty')
+        .replaceAll('{s}', s);
+  }
+
+  /// 当前图源 URL（矢量地图不在此渲染，返回空串）
+  String _url(MapType t) {
+    switch (t) {
+      case MapType.gaode:
+        return _gaodeUrl(tx, ty, z, style: 7);
+      case MapType.gaode_sat:
+        return _gaodeUrl(tx, ty, z, style: 6);
+      case MapType.carto:
+        return _fmt(_cartoLightUrl);
+      case MapType.carto_dark:
+        return _fmt(_cartoDarkUrl);
+      case MapType.carto_voyager:
+        return _fmt(_cartoVoyagerUrl);
+      case MapType.osm:
+        return _fmt(_osmUrl);
+      case MapType.osm_hot:
+        return _fmt(_osmHotUrl);
+      case MapType.open_topo:
+        return _fmt(_openTopoUrl);
+      case MapType.esri_street:
+        return _fmt(_esriStreetUrl);
+      case MapType.esri_sat:
+        return _fmt(_esriSatUrl);
+      case MapType.vector:
+        return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) => _try(0);
 
   Widget _try(int idx) {
     final size = 256.0 * scale;
-    // 首选当前地图类型
-    if (idx == 0 && mapType == MapType.gaode) {
-      return Image.network(
-        _gaodeUrl(tx, ty, z, style: 7),
-        width: size,
-        height: size,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
-        headers: _tileHeaders,
-        errorBuilder: (_, _, _) => _try(1),
-      );
-    }
-    if (idx == 0 && mapType == MapType.gaode_sat) {
-      return Image.network(
-        _gaodeUrl(tx, ty, z, style: 6),
-        width: size,
-        height: size,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
-        headers: _tileHeaders,
-        errorBuilder: (_, _, _) => _try(1),
-      );
-    }
-    if (idx == 0 && mapType == MapType.carto) {
-      return Image.network(
-        _fmt(_cartoUrl),
-        width: size,
-        height: size,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
-        errorBuilder: (_, _, _) => _try(1),
-      );
-    }
-    if (idx == 0 && mapType == MapType.osm) {
-      return Image.network(
-        _fmt(_osmUrl),
-        width: size,
-        height: size,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
-        errorBuilder: (_, _, _) => _try(1),
-      );
-    }
-    // 备用：高德 → Carto → OSM
-    if (idx == 1) {
-      return Image.network(
-        _fmt(_cartoUrl),
-        width: size,
-        height: size,
-        fit: BoxFit.fill,
-        gaplessPlayback: true,
-        filterQuality: FilterQuality.medium,
-        errorBuilder: (_, _, _) => _try(2),
-      );
-    }
+    // 候选链：当前图源 → Carto 浅色 → OSM → 空白（逐级降级）
+    final candidates = <MapType>[
+      mapType,
+      if (mapType != MapType.carto) MapType.carto,
+      if (mapType != MapType.osm) MapType.osm,
+    ];
+    if (idx >= candidates.length) return const SizedBox.shrink();
+    final url = _url(candidates[idx]);
+    // 无 URL（如矢量地图）时继续降级到下一候选
+    if (url.isEmpty) return _try(idx + 1);
     return Image.network(
-      _fmt(_osmUrl),
+      url,
       width: size,
       height: size,
       fit: BoxFit.fill,
       gaplessPlayback: true,
       filterQuality: FilterQuality.medium,
-      errorBuilder: (_, _, _) => const SizedBox.shrink(),
+      headers: _tileHeaders,
+      errorBuilder: (_, _, _) => _try(idx + 1),
     );
   }
 }

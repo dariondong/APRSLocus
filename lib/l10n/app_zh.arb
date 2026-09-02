@@ -802,7 +802,6 @@
   "connPasscodeInvalid": "已连接 · 未验证（Passcode 可能错误）",
   "mapTypeAmap": "高德地图",
   "mapTypeAmapSatellite": "高德卫星",
-  "mapTypeAmapJs": "高德 JS",
   "mapTypeVector": "矢量地图",
   "amapGroup": "高德",
   "domesticMaps": "国内地图",
@@ -944,9 +943,7 @@
   "qrLoadFailed": "赞赏码图片加载失败",
   "qrSaveWechat": "长按图片可保存 · 微信扫一扫赞赏",
   "tapAnywhereClose": "点击任意处关闭",
-  "webAmapUnsupported": "Web 平台暂不支持高德 JS 地图",
-  "webview2InitFailed": "WebView2 初始化失败\n请安装 Microsoft Edge WebView2 运行时",
-  "loadingAmap": "加载高德地图…",
+
   "vectorMapLoadFailed": "矢量地图加载失败\n{error}",
   "loadingVectorMap": "加载矢量地图…",
   "updateChannel": "更新渠道",

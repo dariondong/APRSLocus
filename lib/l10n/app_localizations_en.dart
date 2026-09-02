@@ -1909,9 +1909,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTypeAmapSatellite => 'AMap Satellite';
 
   @override
-  String get mapTypeAmapJs => 'AMap JS';
-
-  @override
   String get mapTypeVector => 'Vector map';
 
   @override
@@ -2398,16 +2395,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapAnywhereClose => 'Tap anywhere to close';
-
-  @override
-  String get webAmapUnsupported => 'AMap JS is not supported on the web';
-
-  @override
-  String get webview2InitFailed =>
-      'WebView2 initialization failed\nInstall the Microsoft Edge WebView2 Runtime';
-
-  @override
-  String get loadingAmap => 'Loading AMap…';
 
   @override
   String vectorMapLoadFailed(String error) {
