@@ -19,11 +19,146 @@ class StationDetail extends StatefulWidget {
 class _StationDetailState extends State<StationDetail> {
   final _msg = TextEditingController();
 
+  /// 遥测图表时间范围（秒，0 = 全部）
+  int _telSec = 1800;
+  static const _telOptions = <(int, String)>[
+    (600, '10m'),
+    (1800, '30m'),
+    (3600, '1h'),
+    (10800, '3h'),
+    (0, 'All'),
+  ];
+
   @override
   void dispose() {
     _msg.dispose();
     super.dispose();
   }
+
+  /// 按当前时间范围过滤遥测，返回 (速度点, 高度点)
+  (List<_TrendPt>, List<_TrendPt>) _telData(Station s) {
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    final fromMs = _telSec > 0 ? nowMs - _telSec * 1000 : 0;
+    final speed = <_TrendPt>[];
+    final alt = <_TrendPt>[];
+    for (final t in s.telemetry) {
+      final ms = t.time.millisecondsSinceEpoch;
+      if (ms < fromMs) continue;
+      if (t.speed != null) speed.add(_TrendPt(t.time, t.speed!));
+      if (t.alt != null) alt.add(_TrendPt(t.time, t.alt!));
+    }
+    return (speed, alt);
+  }
+
+  /// 速度/高度变化图表卡片
+  Widget _trendChartCard(Station s) {
+    final (speed, alt) = _telData(s);
+    if (speed.isEmpty && alt.isEmpty) return const SizedBox.shrink();
+    final labelOf = <int, String>{
+      600: S.of(context).range10m,
+      1800: S.of(context).range30m,
+      3600: S.of(context).range1h,
+      10800: S.of(context).range3h,
+      0: S.of(context).rangeAll,
+    };
+    return SoftCard(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.show_chart_rounded, size: 16, color: C.blue),
+              SizedBox(width: 6),
+              Text(
+                S.of(context).telemetryTitle,
+                style: ts(12, w: FontWeight.w700),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          // 时间范围选择（单独一行，窄屏不溢出）
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final (sec, label) in _telOptions)
+                GestureDetector(
+                  onTap: () => setState(() => _telSec = sec),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _telSec == sec ? C.blue : C.bgSoft,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: _telSec == sec
+                            ? C.blue
+                            : C.border.withValues(alpha: 0.6),
+                      ),
+                    ),
+                    child: Text(
+                      labelOf[sec] ?? label,
+                      style: ts(
+                        9,
+                        c: _telSec == sec ? Colors.white : C.slate,
+                        w: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 2),
+          if (speed.isNotEmpty) ...[
+            _trendSubtitle(S.of(context).speedLabel, C.blue, 'km/h'),
+            SizedBox(
+              height: 84,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _TrendPainter(
+                  data: speed,
+                  color: C.blue,
+                  fromZero: true,
+                ),
+              ),
+            ),
+          ],
+          if (speed.isNotEmpty && alt.isNotEmpty) SizedBox(height: 10),
+          if (alt.isNotEmpty) ...[
+            _trendSubtitle(S.of(context).altitude, C.purple, 'm'),
+            SizedBox(
+              height: 84,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _TrendPainter(data: alt, color: C.purple),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _trendSubtitle(String title, Color c, String unit) => Padding(
+    padding: const EdgeInsets.only(top: 8, bottom: 2),
+    child: Row(
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+        ),
+        SizedBox(width: 5),
+        Text(
+          '$title ($unit)',
+          style: ts(10, c: C.slate, w: FontWeight.w600),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -622,6 +757,11 @@ class _StationDetailState extends State<StationDetail> {
                           ],
                         ),
                       ),
+                      // 速度 / 高度变化图表
+                      if (s.telemetry.isNotEmpty) ...[
+                        SizedBox(height: 14),
+                        _trendChartCard(s),
+                      ],
                       SizedBox(height: 14),
                       // 最近数据包
                       if (pkt.isNotEmpty) ...[
@@ -1024,4 +1164,139 @@ class _TrackPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _TrackPainter old) => old.pts != pts;
+}
+
+
+/// 遥测图表数据点
+class _TrendPt {
+  final DateTime time;
+  final double value;
+  const _TrendPt(this.time, this.value);
+}
+
+/// 速度/高度变化折线图（自绘，无第三方依赖）
+class _TrendPainter extends CustomPainter {
+  final List<_TrendPt> data;
+  final Color color;
+  final bool fromZero;
+  _TrendPainter({required this.data, required this.color, this.fromZero = false});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.isEmpty) return;
+    const padL = 34.0, padR = 8.0, padT = 8.0, padB = 16.0;
+    final w = size.width, h = size.height;
+    final plotW = w - padL - padR, plotH = h - padT - padB;
+    if (plotW <= 0 || plotH <= 0) return;
+
+    // 数值范围
+    var minV = data.map((d) => d.value).reduce((a, b) => a < b ? a : b);
+    var maxV = data.map((d) => d.value).reduce((a, b) => a > b ? a : b);
+    if (fromZero && minV > 0) minV = 0;
+    var span = maxV - minV;
+    if (span <= 0) span = maxV > 0 ? maxV * 0.5 : 1.0;
+    final yMin = minV - span * 0.2;
+    final yMax = maxV + span * 0.2;
+    final t0 = data.first.time.millisecondsSinceEpoch;
+    final t1 = data.last.time.millisecondsSinceEpoch;
+    final tSpan = (t1 - t0) <= 0 ? 1.0 : (t1 - t0).toDouble();
+
+    double x(DateTime t) =>
+        (t.millisecondsSinceEpoch - t0) / tSpan * plotW + padL;
+    double y(double v) => h - padB - (v - yMin) / (yMax - yMin) * plotH;
+
+    // 网格 + Y 轴刻度（3 段）
+    final gridPaint = Paint()
+      ..color = C.border.withValues(alpha: 0.6)
+      ..strokeWidth = 0.6;
+    final labelStyle = ts(8, c: C.greyLight);
+    for (var i = 0; i <= 3; i++) {
+      final vy = yMin + (yMax - yMin) * i / 3;
+      final yy = y(vy);
+      canvas.drawLine(Offset(padL, yy), Offset(w - padR, yy), gridPaint);
+      final tp = TextPainter(
+        text: TextSpan(
+          text: vy >= 100 ? vy.round().toString() : vy.toStringAsFixed(1),
+          style: labelStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, Offset(padL - tp.width - 4, yy - tp.height / 2));
+    }
+
+    // 时间轴标签：起止 HH:mm
+    String fmt(int ms) {
+      final d = DateTime.fromMillisecondsSinceEpoch(ms);
+      final hh = d.hour.toString().padLeft(2, '0');
+      final mm = d.minute.toString().padLeft(2, '0');
+      return '$hh:$mm';
+    }
+    final leftLabel = TextPainter(
+      text: TextSpan(text: fmt(t0), style: labelStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    leftLabel.paint(canvas, Offset(padL, h - padB + 3));
+    final rightLabel = TextPainter(
+      text: TextSpan(text: fmt(t1), style: labelStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    rightLabel.paint(canvas, Offset(w - padR - rightLabel.width, h - padB + 3));
+
+    // 折线
+    final linePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final path = Path();
+    bool first = true;
+    for (final d in data) {
+      final px = x(d.time), py = y(d.value);
+      if (first) {
+        path.moveTo(px, py);
+        first = false;
+      } else {
+        path.lineTo(px, py);
+      }
+    }
+    canvas.drawPath(path, linePaint);
+
+    // 渐变填充（线下方淡色）
+    final fillPath = Path.from(path)
+      ..lineTo(x(data.last.time), h - padB)
+      ..lineTo(x(data.first.time), h - padB)
+      ..close();
+    canvas.drawPath(
+      fillPath,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            color.withValues(alpha: 0.18),
+            color.withValues(alpha: 0.02),
+          ],
+        ).createShader(Rect.fromLTWH(0, padT, w, plotH)),
+    );
+
+    // 数据点（稀疏绘制，避免过密）
+    final step = (data.length / 40).ceil().clamp(1, 5).toInt();
+    final dot = Paint()..color = color;
+    for (var i = 0; i < data.length; i += step) {
+      canvas.drawCircle(Offset(x(data[i].time), y(data[i].value)), 1.6, dot);
+    }
+    // 最新值强调点
+    final last = data.last;
+    canvas.drawCircle(Offset(x(last.time), y(last.value)), 3.5, Paint()..color = color);
+    canvas.drawCircle(
+      Offset(x(last.time), y(last.value)),
+      1.5,
+      Paint()..color = Colors.white,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrendPainter old) =>
+      old.data != data || old.color != color || old.fromZero != fromZero;
 }

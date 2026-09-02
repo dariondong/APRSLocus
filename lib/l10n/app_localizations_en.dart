@@ -765,6 +765,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courseLabel => 'Course';
 
   @override
+  String get telemetryTitle => 'Speed / Altitude';
+
+  @override
+  String get range10m => '10 min';
+
+  @override
+  String get range30m => '30 min';
+
+  @override
+  String get range1h => '1 h';
+
+  @override
+  String get range3h => '3 h';
+
+  @override
+  String get rangeAll => 'All';
+
+  @override
   String get beaconIntervalLabel => 'Interval';
 
   @override

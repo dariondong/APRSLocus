@@ -762,6 +762,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get courseLabel => '航向';
 
   @override
+  String get telemetryTitle => '速度 / 高度变化';
+
+  @override
+  String get range10m => '10 分钟';
+
+  @override
+  String get range30m => '30 分钟';
+
+  @override
+  String get range1h => '1 小时';
+
+  @override
+  String get range3h => '3 小时';
+
+  @override
+  String get rangeAll => '全部';
+
+  @override
   String get beaconIntervalLabel => '上报间隔';
 
   @override

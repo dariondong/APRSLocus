@@ -16,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.3';
+  static const appVersion = '1.6.4';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1850,6 +1850,14 @@ class AppState extends ChangeNotifier {
         s.track = [...s.track, TrackPt(p.lat, p.lng, now)];
         if (s.track.length > 60) s.track = s.track.sublist(s.track.length - 60);
       }
+      // 记录速度/高度遥测采样（每次位置包都记，供详情页变化图表）
+      s.telemetry = [
+        ...s.telemetry,
+        TelemetryPt(now, speed: p.speed, alt: p.alt),
+      ];
+      if (s.telemetry.length > 200) {
+        s.telemetry = s.telemetry.sublist(s.telemetry.length - 200);
+      }
       stations[idx] = s;
       // 地图相关字段变化（位置/状态/符号）才推进版本，触发地图标记重建；
       // 仅 lastHeard/速度/备注变化不会触发整片标记重建
@@ -1895,6 +1903,7 @@ class AppState extends ChangeNotifier {
           lastHeard: now,
           status: St.online,
           track: [TrackPt(p.lat, p.lng, now)],
+          telemetry: [TelemetryPt(now, speed: p.speed, alt: p.alt)],
           fmo: fmoInfo,
           aprslocus: apInfo,
           path: path,
