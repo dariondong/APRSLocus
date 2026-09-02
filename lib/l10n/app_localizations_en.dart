@@ -630,6 +630,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appInfoCopied => 'App info copied';
 
   @override
+  String get shareApp => 'Share APRSlocus';
+
+  @override
+  String get shareToSystem => 'Share to system';
+
+  @override
+  String get shareToSystemDesc => 'WeChat, QQ, SMS, etc.';
+
+  @override
+  String get copyShareText => 'Copy share text';
+
+  @override
+  String get openDownload => 'Open download page';
+
+  @override
+  String get shareTextCopied => 'Share text copied, paste it to your friends';
+
+  @override
+  String get shareText =>
+      'APRSlocus — APRS Tracking & Mapping for amateur radio 📡\nReal-time station tracking, messaging & beaconing. Available on Android & Windows.\nWebsite: https://aprslocus.theez.top/\nDownload: https://github.com/dariondong/APRSLocus/releases';
+
+  @override
   String get enterCallsign => 'Please enter your callsign';
 
   @override
