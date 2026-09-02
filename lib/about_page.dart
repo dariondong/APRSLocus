@@ -88,7 +88,7 @@ class _AboutPageState extends State<AboutPage>
                     color: C.blueBg,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.share_rounded, color: C.blue, size: 22),
+                  child: Icon(Icons.share_rounded, color: C.blue, size: 22),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -107,7 +107,7 @@ class _AboutPageState extends State<AboutPage>
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded, color: C.grey),
+                  icon: Icon(Icons.close_rounded, color: C.grey),
                   onPressed: () => Navigator.pop(context),
                 ),
               ]),
