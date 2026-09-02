@@ -39,11 +39,16 @@ String _gaodeUrl(int tx, int ty, int z, {int style = 7}) {
       '?lang=zh_cn&size=1&scale=1&style=$style&x=$tx&y=$ty&z=$z';
 }
 
-// 各图源瓦片模板（全部免 API Key）
-const _cartoLightUrl = 'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-const _cartoDarkUrl = 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+// 各图源瓦片模板（Carto raster basemaps 需 API key，其余免 key）
+const _cartoLightUrl =
+    'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key='
+    'cb1_2tpj_1_0a343408cea16e942cf61257';
+const _cartoDarkUrl =
+    'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key='
+    'cb1_2tpj_1_0a343408cea16e942cf61257';
 const _cartoVoyagerUrl =
-    'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
+    'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key='
+    'cb1_2tpj_1_0a343408cea16e942cf61257';
 const _osmUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const _osmHotUrl =
     'https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png';
