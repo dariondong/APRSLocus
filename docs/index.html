@@ -50,7 +50,7 @@
       <a href="#getting-started">上手</a>
       <a href="#faq">问答</a>
       <a href="#community">社区</a>
-      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载 v1.5.8</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载 v1.6.5</a>
       <a class="lang-switch" href="en/" title="English">EN</a>
     </nav>
     <button class="nav-burger" id="navBurger" aria-label="菜单">
@@ -66,7 +66,7 @@
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <span class="hero-badge"><span class="pulse-dot"></span> v1.5.8 · 刚发布</span>
+      <span class="hero-badge"><span class="pulse-dot"></span> v1.6.5 · 刚发布</span>
       <h1 class="hero-title">APRS <span class="grad">定位追踪</span> 与 <span class="grad">地图</span></h1>
       <p class="hero-sub">
         一个给业余无线电爱好者用的 APRS 客户端。<br>
@@ -383,7 +383,7 @@
         <span class="lang-tag">APRS 1.0</span>
       </div>
       <div class="beacon-code">
-        <pre><code><span class="tok-c">BG7LZQ-3</span><span class="tok-m">&gt;</span><span class="tok-p">APALOC,TCPIP*</span><span class="tok-m">:</span><span class="tok-o">!</span><span class="tok-n">2148.90N</span><span class="tok-m">/</span><span class="tok-n">11049.14E</span><span class="tok-s">/&gt;</span> <span class="tok-c">/A=000328 090/050 Bat:70%</span> <span class="tok-p">APRSlocus v1.5.8</span></code></pre>
+        <pre><code><span class="tok-c">BG7LZQ-3</span><span class="tok-m">&gt;</span><span class="tok-p">APALOC,TCPIP*</span><span class="tok-m">:</span><span class="tok-o">!</span><span class="tok-n">2148.90N</span><span class="tok-m">/</span><span class="tok-n">11049.14E</span><span class="tok-s">/&gt;</span> <span class="tok-c">/A=000328 090/050 Bat:70%</span> <span class="tok-p">APRSlocus v1.6.5</span></code></pre>
         <button class="copy-btn" id="copyBeacon" aria-label="复制信标" title="复制到剪贴板">
           <svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2zm2 2v13h10V7h-1v8a2 2 0 0 1-2 2H9z"/></svg>
         </button>
@@ -410,39 +410,37 @@
   <div class="changelog-list">
     <div class="cl-version reveal">
       <div class="cl-head">
-        <span class="cl-tag">v1.5.8</span>
-        <span class="cl-date">2026-08-30</span>
+        <span class="cl-tag">v1.6.5</span>
+        <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot fix"></span>台站列表「在地图显示」按钮无反应 — 点击可直接跳转地图并定位</div>
-        <div class="cl-item"><span class="cl-dot fix"></span>Passcode 错误通知的「去设置」跳转无效 — 现直接打开连接设置页</div>
-        <div class="cl-item"><span class="cl-dot new"></span>新增 ci-test 工作流，自动 analyze 并构建 Windows / Android</div>
-        <div class="cl-item"><span class="cl-dot up"></span>设置页 UI 统一优化，样式一致性、折叠分区更紧凑</div>
+        <div class="cl-item"><span class="cl-dot new"></span>更新页新增「全部更新日志」入口，一次看全所有版本说明</div>
+        <div class="cl-item"><span class="cl-dot new"></span>地图视野内无台站时，点击提示弹出「地图帮助」面板</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>修复国际图源（Carto / OSM / Esri / OpenTopo）地图偏移，改用 WGS-84 投影</div>
+        <div class="cl-item"><span class="cl-dot up"></span>移除「显示全部台站」自适应，无台站提示改为打开帮助面板</div>
       </div>
     </div>
 
     <div class="cl-version reveal">
       <div class="cl-head">
-        <span class="cl-tag">v1.5.7</span>
-        <span class="cl-date">2026-08-30</span>
+        <span class="cl-tag">v1.6.4</span>
+        <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>优化设置页面 UI 一致性，新增分区卡片与展开/折叠动画</div>
-        <div class="cl-item"><span class="cl-dot up"></span>改进台站数据处理与长时间运行性能</div>
-        <div class="cl-item"><span class="cl-dot up"></span>完善多语言文本，对部分内部逻辑进行调整</div>
-        <div class="cl-item"><span class="cl-dot new"></span>感谢 BD3QID、xaxovo 的代码贡献</div>
+        <div class="cl-item"><span class="cl-dot new"></span>台站详情新增速度 / 高度变化图表</div>
+        <div class="cl-item"><span class="cl-dot new"></span>图表时间范围可切换：10 分钟 / 30 分钟 / 1 小时 / 3 小时 / 全部</div>
       </div>
     </div>
 
     <div class="cl-version reveal">
       <div class="cl-head">
-        <span class="cl-tag">v1.5.6</span>
-        <span class="cl-date">2026-08-30</span>
+        <span class="cl-tag">v1.6.3</span>
+        <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot fix"></span>修复长时间运行后 UI 卡顿 — 渲染与数据隔离，地图 Marker 缓存</div>
-        <div class="cl-item"><span class="cl-dot up"></span>秒级刷新解耦，台站页流式加载，页面子树记忆化</div>
-        <div class="cl-item"><span class="cl-dot up"></span>台站统计缓存，列表 key 抖动修复，地图标记渲染优化</div>
+        <div class="cl-item"><span class="cl-dot new"></span>关于页新增「分享 APRSlocus」（系统分享 / 复制文案 / 打开下载页）</div>
+        <div class="cl-item"><span class="cl-dot up"></span>模拟位置模式隐藏 GPS 专属设置，手动定位前置显示</div>
+        <div class="cl-item"><span class="cl-dot up"></span>瓦片地图最小缩放扩展至全球视野（z=3）</div>
       </div>
     </div>
 
@@ -528,11 +526,11 @@
         <span class="cl-arrow">↗</span>
       </a>
 
-      <a class="clink reveal" href="https://theez.top" target="_blank" rel="noopener">
+      <a class="clink reveal" href="https://aprslocus.theez.top/" target="_blank" rel="noopener">
         <span class="cl-icon web2">
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7.4 11h-3.3c-.3 3.3-1.6 6.1-3.4 7.9A8 8 0 0 1 19.4 13zM12 4c1.6 1.9 2.9 4.7 3.2 8H8.8c.3-3.3 1.6-6.1 3.2-8zm-1.7 16.9c-1.8-1.8-3.1-4.6-3.4-7.9H3.6a8 8 0 0 0 6.7 7.9z"/></svg>
         </span>
-        <div><b>作者网站</b><span>theez.top</span></div>
+        <div><b>官方网站</b><span>aprslocus.theez.top</span></div>
         <span class="cl-arrow">↗</span>
       </a>
     </div>
