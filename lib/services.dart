@@ -12,6 +12,8 @@ class LocService {
   static const _eventChannel = EventChannel('com.aprslocus/location_events');
   StreamSubscription? _sub;
   Duration interval = const Duration(seconds: 10);
+  /// 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助
+  String mode = 'gps_network';
   void Function(double lat, double lng, double alt, double speed, double bearing)?
       onFix;
   void Function(String status)? onStatus;
@@ -60,8 +62,8 @@ class LocService {
       }, onError: (e) {
         onStatus?.call('定位流异常: $e');
       });
-      // 启动前台定位服务
-      await _channel.invokeMethod('startService');
+      // 启动前台定位服务（携带定位模式）
+      await _channel.invokeMethod('startService', {'mode': mode});
       _running = true;
       onStatus?.call('GPS 定位中…');
       return true;
@@ -69,6 +71,15 @@ class LocService {
       onStatus?.call('定位初始化失败: $e');
       return false;
     }
+  }
+
+  /// 动态切换定位模式（服务运行中立即生效）
+  Future<void> setMode(String m) async {
+    if (m != 'gps' && m != 'gps_network') return;
+    mode = m;
+    try {
+      await _channel.invokeMethod('setLocationMode', {'mode': m});
+    } catch (_) {}
   }
 
   Future<bool> _checkPerm() async {

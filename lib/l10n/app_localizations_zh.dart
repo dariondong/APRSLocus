@@ -1948,6 +1948,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get manualCoordinates => '手动输入坐标';
 
   @override
+  String get locationMode => '定位模式';
+
+  @override
+  String get settingsLocModeSubtitle => '选择定位方式';
+
+  @override
+  String get locModeGps => '纯 GPS';
+
+  @override
+  String get locModeGpsDesc => '仅卫星定位，更省电';
+
+  @override
+  String get locModeGpsNetwork => 'GPS + 网络';
+
+  @override
+  String get locModeGpsNetworkDesc => '网络辅助，定位更快';
+
+  @override
   String get beaconingSection => '信标上报';
 
   @override

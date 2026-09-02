@@ -3494,6 +3494,42 @@ abstract class AppLocalizations {
   /// **'手动输入坐标'**
   String get manualCoordinates;
 
+  /// No description provided for @locationMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位模式'**
+  String get locationMode;
+
+  /// No description provided for @settingsLocModeSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择定位方式'**
+  String get settingsLocModeSubtitle;
+
+  /// No description provided for @locModeGps.
+  ///
+  /// In zh, this message translates to:
+  /// **'纯 GPS'**
+  String get locModeGps;
+
+  /// No description provided for @locModeGpsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅卫星定位，更省电'**
+  String get locModeGpsDesc;
+
+  /// No description provided for @locModeGpsNetwork.
+  ///
+  /// In zh, this message translates to:
+  /// **'GPS + 网络'**
+  String get locModeGpsNetwork;
+
+  /// No description provided for @locModeGpsNetworkDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络辅助，定位更快'**
+  String get locModeGpsNetworkDesc;
+
   /// No description provided for @beaconingSection.
   ///
   /// In zh, this message translates to:

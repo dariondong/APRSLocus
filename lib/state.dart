@@ -16,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.0';
+  static const appVersion = '1.6.1';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -470,6 +470,17 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助
+  String locationMode = 'gps_network';
+
+  void setLocationMode(String v) {
+    if (v != 'gps' && v != 'gps_network') return;
+    locationMode = v;
+    loc.setMode(v); // 运行中立即生效
+    persist();
+    _notify();
+  }
+
   // 地图类型：gaode / carto / osm
   String mapType = 'gaode';
 
@@ -638,6 +649,8 @@ class AppState extends ChangeNotifier {
       themeColor = p.getString('themeColor') ?? themeColor;
       uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
+      locationMode = p.getString('locationMode') ?? locationMode;
+      loc.mode = locationMode;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
       filterLat = p.getDouble('filterLat') ?? filterLat;
       filterLng = p.getDouble('filterLng') ?? filterLng;
@@ -747,6 +760,7 @@ class AppState extends ChangeNotifier {
           p.setDouble('uiScale', uiScale);
           p.setString('mapType', mapType);
           p.setString('updateChannel', updateChannel);
+          p.setString('locationMode', locationMode);
           p.setBool('useSimLocation', useSimLocation);
           p.setDouble('filterLat', filterLat);
           p.setDouble('filterLng', filterLng);
