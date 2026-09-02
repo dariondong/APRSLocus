@@ -1286,6 +1286,12 @@ abstract class AppLocalizations {
   /// **'用户反馈'**
   String get feedback;
 
+  /// No description provided for @officialWebsite.
+  ///
+  /// In zh, this message translates to:
+  /// **'官方网站'**
+  String get officialWebsite;
+
   /// No description provided for @qqGroup.
   ///
   /// In zh, this message translates to:

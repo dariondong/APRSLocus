@@ -609,6 +609,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedback => 'Feedback';
 
   @override
+  String get officialWebsite => 'Official website';
+
+  @override
   String get qqGroup => 'QQ group';
 
   @override
