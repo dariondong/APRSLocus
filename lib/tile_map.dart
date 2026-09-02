@@ -98,7 +98,7 @@ class TileMapView extends StatefulWidget {
     required this.onZoomRequest,
     required this.onTap,
     this.overlay,
-    this.minZoom = 8,
+    this.minZoom = 3,
     this.maxZoom = 19,
     this.mapType = MapType.gaode,
   });

@@ -258,7 +258,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     // zX = log2(availW * 360 / (spanLng * 256))
     final zX = math.log(availW * 360 / (spanLng * 256)) / math.ln2;
     final zY = math.log(availH / (spanY * 256)) / math.ln2;
-    final z = (zX < zY ? zX : zY).clamp(8.0, 16.0);
+    final z = (zX < zY ? zX : zY).clamp(3.0, 16.0);
     final cLat = (minLat + maxLat) / 2;
     final cLng = (minLng + maxLng) / 2;
     _animateTo(z, _panFor(cLat, cLng, z));
@@ -1395,7 +1395,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       _pluginAction('zoomIn');
       return;
     }
-    final z = (_zoom + 1).clamp(8.0, 19.0);
+    final z = (_zoom + 1).clamp(3.0, 19.0);
     _animateTo(z, _panForCenter(z));
   }
 
@@ -1409,7 +1409,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               _pluginAction('zoomIn');
               return;
             }
-            final z = (_zoom + 1).clamp(8.0, 19.0);
+            final z = (_zoom + 1).clamp(3.0, 19.0);
             _animateTo(z, _panForCenter(z));
           },
         ),
@@ -1421,7 +1421,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               _pluginAction('zoomOut');
               return;
             }
-            final z = (_zoom - 1).clamp(8.0, 19.0);
+            final z = (_zoom - 1).clamp(3.0, 19.0);
             _animateTo(z, _panForCenter(z));
           },
         ),
