@@ -806,23 +806,25 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     required String desc,
     required bool selected,
     required VoidCallback onTap,
-    Color color = C.green,
+    Color? color,
     Color? bg,
   }) {
+    // C.green 是 static 变量（非 const），不能作为默认参数值，方法内回退
+    final accent = color ?? C.green;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? (bg ?? color.withValues(alpha: 0.10)) : C.bgSoft,
+          color: selected ? (bg ?? accent.withValues(alpha: 0.10)) : C.bgSoft,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-              color: selected ? color : C.border,
+              color: selected ? accent : C.border,
               width: selected ? 1.5 : 1),
         ),
         child: Row(children: [
-          Icon(icon, size: 18, color: selected ? color : C.slate),
+          Icon(icon, size: 18, color: selected ? accent : C.slate),
           SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -830,7 +832,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               children: [
                 Text(title,
                     style: ts(12,
-                        c: selected ? color : C.ink,
+                        c: selected ? accent : C.ink,
                         w: FontWeight.w700)),
                 SizedBox(height: 1),
                 Text(desc, style: ts(9, c: C.slate)),
@@ -838,7 +840,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             ),
           ),
           if (selected)
-            Icon(Icons.check_circle_rounded, size: 16, color: color),
+            Icon(Icons.check_circle_rounded, size: 16, color: accent),
         ]),
       ),
     );
