@@ -1422,6 +1422,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get heatmapHint => '缩小地图后显示台站密度热力图';
 
   @override
+  String get groupTracking => '群组跟踪';
+
+  @override
+  String get groupTrackingHint => '把关心的呼号编成组，在大地图上持续跟踪（车队 / 好友结伴），支持横屏。';
+
+  @override
+  String get newTrackGroup => '新建跟踪组';
+
+  @override
+  String get trackGroupNameHint => '组名，如：周末骑行';
+
+  @override
+  String get editTrackGroup => '编辑跟踪组';
+
+  @override
+  String get deleteTrackGroup => '删除跟踪组';
+
+  @override
+  String deleteTrackGroupConfirm(Object name) => '确定删除跟踪组「$name」吗？';
+
+  @override
+  String get pickTrackMembers => '选择成员（勾选要跟踪的呼号）';
+
+  @override
+  String get saveAndTrack => '保存并跟踪';
+
+  @override
+  String get trackGroupsEmptyHint => '还没有跟踪组，点「新建跟踪组」创建一组要跟踪的呼号。';
+
+  @override
+  String trackMemberSub(Object type, Object seen) => '$type · $seen';
+
+  @override
+  String get trackGroupEmpty => '组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。';
+
+  @override
+  String get trackActive => '在线';
+
+  @override
+  String get fitAll => '全览';
+
+  @override
+  String get noStationsYet => '暂无台站数据，连接 APRS-IS 后即可选择。';
+
+  @override
   String get noPackets => '暂无数据包';
 
   @override

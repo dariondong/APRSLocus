@@ -1447,6 +1447,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heatmapHint => 'Show station density heatmap when zoomed out';
 
   @override
+  String get groupTracking => 'Group tracking';
+
+  @override
+  String get groupTrackingHint => 'Group callsigns you care about and track them on a big map (caravan / friends). Landscape friendly.';
+
+  @override
+  String get newTrackGroup => 'New track group';
+
+  @override
+  String get trackGroupNameHint => 'Name, e.g. Weekend Ride';
+
+  @override
+  String get editTrackGroup => 'Edit track group';
+
+  @override
+  String get deleteTrackGroup => 'Delete track group';
+
+  @override
+  String deleteTrackGroupConfirm(Object name) => 'Delete track group \u201c$name\u201d?';
+
+  @override
+  String get pickTrackMembers => 'Pick members (check callsigns to track)';
+
+  @override
+  String get saveAndTrack => 'Save & track';
+
+  @override
+  String get trackGroupsEmptyHint => 'No track groups yet. Tap \u201cNew track group\u201d to create one.';
+
+  @override
+  String trackMemberSub(Object type, Object seen) => '$type · $seen';
+
+  @override
+  String get trackGroupEmpty => 'Members have no position data yet (not received or not beaconing).';
+
+  @override
+  String get trackActive => 'Active';
+
+  @override
+  String get fitAll => 'Fit all';
+
+  @override
+  String get noStationsYet => 'No station data yet. Connect to APRS-IS to pick members.';
+
+  @override
   String get noPackets => 'No packets yet';
 
   @override

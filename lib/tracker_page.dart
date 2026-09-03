@@ -1,0 +1,620 @@
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+
+import 'theme.dart';
+import 'models.dart';
+import 'state.dart';
+import 'widgets.dart';
+import 'coord.dart';
+import 'tile_map.dart';
+
+/// 群组跟踪页：全屏地图跟踪一组呼号（车队 / 好友结伴）
+/// - 横屏：左侧成员栏 + 右侧全屏地图（导航风格）
+/// - 竖屏：全屏地图 + 底部成员横条
+/// - 点选成员 → 地图锁定跟随该成员；提供「全览」缩放到全部成员
+class TrackerPage extends StatefulWidget {
+  final AppState state;
+  final TrackGroup group;
+  const TrackerPage({super.key, required this.state, required this.group});
+  @override
+  State<TrackerPage> createState() => _TrackerPageState();
+}
+
+class _TrackerPageState extends State<TrackerPage> {
+  double _zoom = 8.0;
+  Offset _pan = Offset.zero;
+  Size _size = Size.zero;
+
+  static const _baseLat = 39.9042;
+  static const _baseLng = 116.4074;
+  static final (double, double) _gcjBase = Gcj.wgsToGcj(_baseLat, _baseLng);
+
+  MapType get _mapType {
+    for (final m in MapType.values) {
+      if (m.name == widget.state.mapType) return m;
+    }
+    return MapType.gaode;
+  }
+
+  bool get _isGcj => _mapType == MapType.gaode || _mapType == MapType.gaode_sat;
+  (double, double) get _base => _isGcj ? _gcjBase : (_baseLat, _baseLng);
+
+  /// 当前跟踪锁定（跟随）的呼号；null = 全览/自由
+  String? _followCall;
+
+  (double, double) _tc(double lat, double lng) =>
+      _isGcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
+
+  Offset _toScreen(double lat, double lng) {
+    final t = _tc(lat, lng);
+    final b = _base;
+    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
+    final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
+    return Offset(
+      p.dx - c.dx + _size.width / 2 + _pan.dx,
+      p.dy - c.dy + _size.height / 2 + _pan.dy,
+    );
+  }
+
+  void _centerOn(double lat, double lng) {
+    final b = _base;
+    final g = _tc(lat, lng);
+    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
+    final p = MapProj.latLngToPx(g.$1, g.$2, _zoom);
+    _pan = c - p;
+  }
+
+  void _zoomBy(double dz) {
+    final z = (_zoom + dz).clamp(3.0, 19.0);
+    final sf = math.pow(2, z - _zoom).toDouble();
+    setState(() {
+      _zoom = z;
+      _pan = _pan * sf;
+    });
+  }
+
+  void _fitAll() {
+    final stations = _members();
+    final pts = <(double, double)>[];
+    for (final s in stations) {
+      pts.add((s.lat, s.lng));
+    }
+    if (widget.state.myHasFix &&
+        widget.state.myLat != null &&
+        widget.state.myLng != null) {
+      pts.add((widget.state.myLat!, widget.state.myLng!));
+    }
+    if (pts.isEmpty) return;
+    double minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+    for (final p in pts) {
+      if (p.$1 < minLat) minLat = p.$1;
+      if (p.$1 > maxLat) maxLat = p.$1;
+      if (p.$2 < minLng) minLng = p.$2;
+      if (p.$2 > maxLng) maxLng = p.$2;
+    }
+    final w = _size.width > 100 ? _size.width : 1000;
+    final h = _size.height > 100 ? _size.height : 700;
+    final spanLng = math.max(maxLng - minLng, 0.02);
+    final spanY = math.max((_mercY(maxLat) - _mercY(minLat)).abs(), 1e-4);
+    final zX = math.log((w - 120) * 360 / (spanLng * 256)) / math.ln2;
+    final zY = math.log((h - 160) / (spanY * 256)) / math.ln2;
+    final z = (zX < zY ? zX : zY).clamp(3.0, 16.0);
+    final cLat = (minLat + maxLat) / 2;
+    final cLng = (minLng + maxLng) / 2;
+    final b = _base;
+    final g = _tc(cLat, cLng);
+    final c = MapProj.latLngToPx(b.$1, b.$2, z);
+    final p = MapProj.latLngToPx(g.$1, g.$2, z);
+    setState(() {
+      _zoom = z;
+      _pan = c - p;
+      _followCall = null;
+    });
+  }
+
+  double _mercY(double lat) {
+    final s = math.sin(lat * math.pi / 180);
+    return (1 - math.log((1 + s) / (1 - s)) / (2 * math.pi)) / 2;
+  }
+
+  /// 组内成员台站（含我）。按组内呼号顺序。
+  List<Station> _members() {
+    final mine = widget.state.myStation;
+    final out = <Station>[];
+    for (final c in widget.group.calls) {
+      final u = c.toUpperCase();
+      if (mine != null && u == widget.state.myFullCall.toUpperCase()) {
+        out.add(mine);
+        continue;
+      }
+      for (final s in widget.state.stations) {
+        if (s.call.toUpperCase() == u) {
+          out.add(s);
+          break;
+        }
+      }
+    }
+    return out;
+  }
+
+  Station? _memberByCall(String call) {
+    final u = call.toUpperCase();
+    for (final s in _members()) {
+      if (s.call.toUpperCase() == u) return s;
+    }
+    return null;
+  }
+
+  /// 我的呼号（用于标记层区分"我"）
+  String get _myFullCall => widget.state.myFullCall;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: widget.state,
+      builder: (context, _) {
+        final members = _members();
+        // 跟随模式：成员每次更新 → 地图中心跟随该成员
+        if (_followCall != null) {
+          final s = _memberByCall(_followCall!);
+          if (s != null) _centerOn(s.lat, s.lng);
+        }
+        return Scaffold(
+          backgroundColor: C.mapBg,
+          body: LayoutBuilder(
+            builder: (context, c) {
+              _size = Size(c.maxWidth, c.maxHeight);
+              final landscape = c.maxWidth >= c.maxHeight * 1.1;
+              return landscape
+                  ? _landscape(members)
+                  : _portrait(members);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  // ─── 地图主体（横竖屏共用）───
+  Widget _mapBody(List<Station> members) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        TileMapView(
+          centerLat: _base.$1,
+          centerLng: _base.$2,
+          zoom: _zoom,
+          pan: _pan,
+          onPan: (d) => setState(() => _pan += d),
+          onViewChanged: (z, p) => setState(() {
+            _zoom = z;
+            _pan = p;
+            _followCall = null;
+          }),
+          onZoomRequest: (z, p) => setState(() {
+            _zoom = z;
+            _pan = p;
+          }),
+          onTap: (_) => setState(() => _followCall = null),
+          mapType: _mapType,
+        ),
+        IgnorePointer(
+          child: CustomPaint(
+            size: _size,
+            painter: _TrackerOverlayPainter(
+              members: members,
+              myCall: _myFullCall,
+              followCall: _followCall,
+              myHasFix: widget.state.myHasFix,
+              myLat: widget.state.myLat,
+              myLng: widget.state.myLng,
+              toScreen: _toScreen,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ─── 横屏：左成员栏 + 全屏地图 ───
+  Widget _landscape(List<Station> members) {
+    return Row(
+      children: [
+        Container(
+          width: 210,
+          color: C.white,
+          child: Column(
+            children: [
+              _header(members),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  children: [
+                    for (final s in members) _memberTile(s),
+                    if (members.isEmpty) _emptyHint(),
+                  ],
+                ),
+              ),
+              _toolRow(),
+            ],
+          ),
+        ),
+        Expanded(child: _mapBody(members)),
+      ],
+    );
+  }
+
+  // ─── 竖屏：地图 + 顶部标题 + 底部成员条 ───
+  Widget _portrait(List<Station> members) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        _mapBody(members),
+        SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+                child: _header(members),
+              ),
+              const Spacer(),
+              if (members.isNotEmpty)
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 220),
+                  margin: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+                  decoration: BoxDecoration(
+                    color: C.white.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: softShadow(blur: 14, alpha: 0.15),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: members.length,
+                    itemBuilder: (_, i) => _memberTile(members[i]),
+                  ),
+                )
+              else
+                _emptyHint(),
+              _toolRow(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _header(List<Station> members) {
+    final online = members.where((s) => s.effectiveStatus != St.offline).length;
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        decoration: BoxDecoration(
+          color: C.white.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: softShadow(blur: 10, alpha: 0.08),
+        ),
+        child: Row(
+          children: [
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.arrow_back_rounded, size: 20),
+              color: C.ink,
+              onPressed: () => Navigator.pop(context),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.group.name,
+                    style: ts(14, w: FontWeight.w800),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    S.of(context).memberOnlineCount(members.length, online),
+                    style: ts(9, c: C.grey),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: _fitAll,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: C.blueBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.zoom_out_map_rounded,
+                        size: 14, color: C.blue),
+                    const SizedBox(width: 4),
+                    Text(S.of(context).fitAll,
+                        style: ts(10, c: C.blue, w: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyHint() => Padding(
+    padding: const EdgeInsets.all(20),
+    child: Text(
+      S.of(context).trackGroupEmpty,
+      textAlign: TextAlign.center,
+      style: ts(11, c: C.grey, h: 1.5),
+    ),
+  );
+
+  Widget _memberTile(Station s) {
+    final isMe = s.call.toUpperCase() == _myFullCall.toUpperCase();
+    final sel = _followCall == s.call;
+    final color = s.effectiveStatus == St.offline ? C.grey : s.color;
+    final dist = widget.state.myHasFix
+        ? s.distKm(widget.state.myLat!, widget.state.myLng!)
+        : null;
+    return Material(
+      color: sel ? C.blueBg : Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _followCall = _followCall == s.call ? null : s.call;
+          });
+          _centerOn(s.lat, s.lng);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color: sel ? C.blue : Colors.transparent,
+                width: 3,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: color, width: 1.5),
+                ),
+                child: Icon(s.icon, color: color, size: 13),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            isMe ? '${s.call} · ${S.of(context).meLabel}' : s.call,
+                            style: ts(11, c: C.ink, w: FontWeight.w700),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (s.effectiveStatus == St.moving) ...[
+                          const SizedBox(width: 3),
+                          const Icon(Icons.navigation_rounded,
+                              size: 9, color: C.blue),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      _memberSub(s, dist, isMe),
+                      style: ts(9, c: C.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              if (sel)
+                const Icon(Icons.my_location_rounded,
+                    size: 14, color: C.blue),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _memberSub(Station s, double? dist, bool isMe) {
+    final buf = StringBuffer();
+    if (isMe) {
+      buf.write(S.of(context).trackActive);
+    } else if (s.effectiveStatus == St.offline) {
+      buf.write(localizedLastSeen(context, s));
+    } else {
+      if (s.speed != null && s.speed! > 0.5) {
+        buf.write('${s.speed!.toStringAsFixed(0)} km/h');
+      }
+      if (s.course != null && s.course! >= 0) {
+        buf.write(buf.isEmpty ? '' : ' · ');
+        buf.write('${s.course!.round()}°');
+      }
+      if (buf.isEmpty) buf.write(S.of(context).trackActive);
+    }
+    if (dist != null) {
+      buf.write(buf.isEmpty ? '' : ' · ');
+      buf.write('${dist.toStringAsFixed(1)} km');
+    }
+    return buf.toString();
+  }
+
+  Widget _toolRow() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RoundIconBtn(
+            Icons.my_location_rounded,
+            tooltip: S.of(context).locateMe,
+            color: C.blue,
+            onTap: () {
+              if (widget.state.myHasFix &&
+                  widget.state.myLat != null &&
+                  widget.state.myLng != null) {
+                setState(() {
+                  _followCall = widget.state.myFullCall;
+                  _centerOn(widget.state.myLat!, widget.state.myLng!);
+                });
+              }
+            },
+          ),
+          const SizedBox(width: 6),
+          RoundIconBtn(Icons.add_rounded, onTap: () => _zoomBy(1)),
+          const SizedBox(width: 6),
+          RoundIconBtn(Icons.remove_rounded, onTap: () => _zoomBy(-1)),
+        ],
+      ),
+    );
+  }
+}
+
+/// 覆盖层：轨迹折线 + 成员标记 + 我的位置
+class _TrackerOverlayPainter extends CustomPainter {
+  final List<Station> members;
+  final String myCall;
+  final String? followCall;
+  final bool myHasFix;
+  final double? myLat, myLng;
+  final Offset Function(double lat, double lng) toScreen;
+  _TrackerOverlayPainter({
+    required this.members,
+    required this.myCall,
+    required this.followCall,
+    required this.myHasFix,
+    required this.myLat,
+    required this.myLng,
+    required this.toScreen,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 轨迹
+    for (final s in members) {
+      if (s.call.toUpperCase() == myCall.toUpperCase()) continue;
+      if (s.track.length < 2) continue;
+      final path = Path();
+      bool first = true;
+      for (final p in s.track) {
+        final o = toScreen(p.lat, p.lng);
+        if (first) {
+          path.moveTo(o.dx, o.dy);
+          first = false;
+        } else {
+          path.lineTo(o.dx, o.dy);
+        }
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = s.color.withValues(alpha: 0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
+    // 我的位置
+    if (myHasFix && myLat != null && myLng != null) {
+      final o = toScreen(myLat!, myLng!);
+      canvas.drawCircle(o, 11, Paint()..color = C.blue.withValues(alpha: 0.18));
+      canvas.drawCircle(o, 6, Paint()..color = C.blue);
+      canvas.drawCircle(
+        o,
+        6,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.4,
+      );
+    }
+
+    // 成员标记
+    for (final s in members) {
+      if (s.call.toUpperCase() == myCall.toUpperCase()) continue;
+      if (s.lat == 0 && s.lng == 0) continue;
+      final o = toScreen(s.lat, s.lng);
+      if (o.dx < -40 ||
+          o.dx > size.width + 40 ||
+          o.dy < -40 ||
+          o.dy > size.height + 40) {
+        continue;
+      }
+      final offline = s.effectiveStatus == St.offline;
+      final sel = followCall == s.call;
+      final c = offline ? C.grey : s.color;
+      if (sel) {
+        canvas.drawCircle(o, 17, Paint()..color = c.withValues(alpha: 0.18));
+        canvas.drawCircle(
+          o,
+          17,
+          Paint()
+            ..color = c.withValues(alpha: 0.5)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.6,
+        );
+      }
+      canvas.drawCircle(o, 7.5, Paint()..color = c);
+      canvas.drawCircle(
+        o,
+        7.5,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.4,
+      );
+      // 呼号标签
+      final tp = TextPainter(
+        text: TextSpan(
+          text: s.call,
+          style: TextStyle(
+            color: offline ? C.grey : C.ink,
+            fontSize: 9,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final bg = RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          o.dx - tp.width / 2 - 3,
+          o.dy - 21 - tp.height,
+          tp.width + 6,
+          tp.height + 3,
+        ),
+        const Radius.circular(4),
+      );
+      canvas.drawRRect(
+        bg,
+        Paint()..color = Colors.white.withValues(alpha: 0.92),
+      );
+      tp.paint(canvas, Offset(o.dx - tp.width / 2, o.dy - 21 - tp.height + 1));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrackerOverlayPainter old) => true;
+}

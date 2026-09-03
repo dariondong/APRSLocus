@@ -2791,6 +2791,83 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'缩小地图后显示台站密度热力图'**
   String get heatmapHint;
+  /// No description provided for @groupTracking.
+  ///
+  /// In zh, this message translates to:
+  /// **'群组跟踪'**
+  String get groupTracking;
+  /// No description provided for @groupTrackingHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'把关心的呼号编成组，在大地图上持续跟踪（车队 / 好友结伴），支持横屏。'**
+  String get groupTrackingHint;
+  /// No description provided for @newTrackGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建跟踪组'**
+  String get newTrackGroup;
+  /// No description provided for @trackGroupNameHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'组名，如：周末骑行'**
+  String get trackGroupNameHint;
+  /// No description provided for @editTrackGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑跟踪组'**
+  String get editTrackGroup;
+  /// No description provided for @deleteTrackGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除跟踪组'**
+  String get deleteTrackGroup;
+  /// No description provided for @deleteTrackGroupConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除跟踪组「{name}」吗？'**
+  String deleteTrackGroupConfirm(Object name);
+
+  /// No description provided for @pickTrackMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择成员（勾选要跟踪的呼号）'**
+  String get pickTrackMembers;
+  /// No description provided for @saveAndTrack.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存并跟踪'**
+  String get saveAndTrack;
+  /// No description provided for @trackGroupsEmptyHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有跟踪组，点「新建跟踪组」创建一组要跟踪的呼号。'**
+  String get trackGroupsEmptyHint;
+  /// No description provided for @trackMemberSub.
+  ///
+  /// In zh, this message translates to:
+  /// **'{type} · {seen}'**
+  String trackMemberSub(Object type, Object seen);
+
+  /// No description provided for @trackGroupEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。'**
+  String get trackGroupEmpty;
+  /// No description provided for @trackActive.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线'**
+  String get trackActive;
+  /// No description provided for @fitAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全览'**
+  String get fitAll;
+  /// No description provided for @noStationsYet.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无台站数据，连接 APRS-IS 后即可选择。'**
+  String get noStationsYet;
 
   /// No description provided for @noPackets.
   ///

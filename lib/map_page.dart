@@ -10,6 +10,7 @@ import 'widgets.dart';
 import 'station_detail.dart';
 import 'tile_map.dart';
 import 'vector_map.dart';
+import 'track_groups_sheet.dart';
 import 'coord.dart';
 
 class MapPage extends StatefulWidget {
@@ -501,10 +502,30 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                // 地图类型切换按钮
+                // 群组跟踪按钮
                 Positioned(
                   right: 14,
                   top: 58,
+                  child: GestureDetector(
+                    onTap: () => showTrackGroupsSheet(context, widget.state),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: C.orangeBg,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+                        border: Border.all(color: C.orange.withValues(alpha: 0.4)),
+                      ),
+                      child: const Icon(Icons.group_rounded,
+                          size: 20, color: C.orange),
+                    ),
+                  ),
+                ),
+                // 地图类型切换按钮
+                Positioned(
+                  right: 14,
+                  top: 102,
                   child: GestureDetector(
                     onTap: _showMapTypeMenu,
                     child: Container(
@@ -521,7 +542,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                 ),
                 // 缩放（位于地图按钮下方）
-                Positioned(right: 14, top: 102, child: _zoomCtrl()),
+                Positioned(right: 14, top: 146, child: _zoomCtrl()),
                 // 底部控制（安全区白条 + 14px）
                 Positioned(
                   left: 14,

@@ -16,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.6';
+  static const appVersion = '1.6.7';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -568,6 +568,8 @@ class AppState extends ChangeNotifier {
   final List<Packet> packets = [];
   final List<AprsMsg> messages;
   final List<ChatGroup> chatGroups = [];
+  /// 跟踪组（地图群组跟踪，可多组保存）
+  final List<TrackGroup> trackGroups = [];
   bool _stationsDirty = false; // 台站列表有变更，待节流保存
   final List<LogEntry> logs = [];
   int unreadMessages = 0; // 未读消息数（侧边栏/底部导航角标）
@@ -724,6 +726,17 @@ class AppState extends ChangeNotifier {
           });
         } catch (_) {}
       }
+      // 加载跟踪组
+      final trackJson = p.getString('trackGroups');
+      if (trackJson != null && trackJson.isNotEmpty) {
+        try {
+          final list = jsonDecode(trackJson) as List;
+          trackGroups.clear();
+          trackGroups.addAll(
+            list.map((j) => TrackGroup.fromJson(j as Map<String, dynamic>)),
+          );
+        } catch (_) {}
+      }
       _recalcUnread();
       // 加载收藏/手动联系人
       _loadStations(p);
@@ -786,6 +799,11 @@ class AppState extends ChangeNotifier {
             chatGroups.map((g) => g.toJson()).toList(),
           );
           p.setString('chatGroups', groupsJson);
+          // 保存跟踪组
+          final trackJson = jsonEncode(
+            trackGroups.map((g) => g.toJson()).toList(),
+          );
+          p.setString('trackGroups', trackJson);
         })
         .catchError((_) {});
     _notify();
@@ -2394,6 +2412,56 @@ class AppState extends ChangeNotifier {
     chatGroups.removeWhere((g) => g.id == groupId);
     _saveChatGroups();
     _notify();
+  }
+
+  // ─── 跟踪组（地图群组跟踪）───
+  TrackGroup createTrackGroup(String name, {Set<String>? calls}) {
+    final g = TrackGroup(
+      id: 'trk_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      calls: calls?.map((c) => c.toUpperCase()).toSet(),
+    );
+    trackGroups.add(g);
+    _saveTrackGroups();
+    _log(LogLevel.info, '跟踪', '创建跟踪组 ${g.name} (${g.calls.length} 人)');
+    _notify();
+    return g;
+  }
+
+  /// 更新跟踪组：可改名称/成员（全量替换成员集合）
+  void updateTrackGroup(String groupId, {String? name, Set<String>? calls}) {
+    final g = trackGroups.where((g) => g.id == groupId).firstOrNull;
+    if (g == null) return;
+    if (name != null) g.name = name;
+    if (calls != null) {
+      g.calls
+        ..clear()
+        ..addAll(calls.map((c) => c.toUpperCase()));
+    }
+    _saveTrackGroups();
+    _notify();
+  }
+
+  void deleteTrackGroup(String groupId) {
+    trackGroups.removeWhere((g) => g.id == groupId);
+    _saveTrackGroups();
+    _notify();
+  }
+
+  void _saveTrackGroups() {
+    SharedPreferences.getInstance().then((p) {
+      final json = jsonEncode(trackGroups.map((g) => g.toJson()).toList());
+      p.setString('trackGroups', json);
+    }).catchError((_) {});
+  }
+
+  /// 跟踪组里的台站列表（呼号匹配，按状态排序）
+  List<Station> trackGroupStations(TrackGroup g) {
+    final list = stations
+        .where((s) => g.calls.contains(s.call.toUpperCase()))
+        .toList()
+      ..sort((a, b) => b.lastHeard.compareTo(a.lastHeard));
+    return list;
   }
 
   String _lastFilter = ''; // 上次连接使用的过滤器，避免无效重连

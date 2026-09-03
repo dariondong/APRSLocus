@@ -303,6 +303,36 @@ class ChatGroup {
   );
 }
 
+/// 跟踪组：把一组呼号集合起来在地图上持续跟踪（车队/好友等）
+class TrackGroup {
+  final String id;
+  String name;
+  final Set<String> calls; // 成员呼号（大写）
+  final DateTime createdAt;
+
+  TrackGroup({
+    required this.id,
+    required this.name,
+    Set<String>? calls,
+    DateTime? createdAt,
+  }) : calls = calls ?? {},
+       createdAt = createdAt ?? DateTime.now();
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'calls': calls.toList(),
+    'createdAt': createdAt.millisecondsSinceEpoch,
+  };
+
+  factory TrackGroup.fromJson(Map<String, dynamic> j) => TrackGroup(
+    id: j['id'] as String,
+    name: j['name'] as String,
+    calls: Set<String>.from(j['calls'] as List? ?? []),
+    createdAt: DateTime.fromMillisecondsSinceEpoch(j['createdAt'] as int),
+  );
+}
+
 class Packet {
   final String raw, src, dest, type;
   final DateTime time;
