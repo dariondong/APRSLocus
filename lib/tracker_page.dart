@@ -349,8 +349,6 @@ class _TrackerPageState extends State<TrackerPage>
                 ),
               ),
             ),
-            // 当前模式徽章（跟随中 / 全览保持）——置于地图顶部，避让竖屏底部成员条
-            Positioned(left: 10, top: 56, child: _modeBadge()),
           ],
         );
       },
@@ -434,7 +432,16 @@ class _TrackerPageState extends State<TrackerPage>
               ],
             ),
           ),
-          Expanded(child: _mapBody(members)),
+          // 横屏：地图区左上角叠模式徽章（不遮挡，地图上方无 header）
+          Expanded(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _mapBody(members),
+                Positioned(left: 10, top: 10, child: _modeBadge()),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -452,6 +459,11 @@ class _TrackerPageState extends State<TrackerPage>
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
                 child: _header(members, showGroupChat: true),
+              ),
+              // 模式徽章（跟随中 / 全览保持）——位于 header 下方，不被遮挡
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
+                child: Row(children: [_modeBadge()]),
               ),
               const Spacer(),
               if (members.isNotEmpty)
