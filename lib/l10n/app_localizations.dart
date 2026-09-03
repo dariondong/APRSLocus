@@ -2858,6 +2858,16 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'在线'**
   String get trackActive;
+  /// No description provided for @trackWaitingPos.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待位置…'**
+  String get trackWaitingPos;
+  /// No description provided for @trackHeader.
+  ///
+  /// In zh, this message translates to:
+  /// **'{total} 人 · {online} 在线 · {fixed} 已定位'**
+  String trackHeader(Object total, Object online, Object fixed);
   /// No description provided for @fitAll.
   ///
   /// In zh, this message translates to:

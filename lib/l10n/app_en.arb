@@ -465,6 +465,8 @@
   "trackMemberSub": "{type} · {seen}",
   "trackGroupEmpty": "Members have no position data yet (not received or not beaconing).",
   "trackActive": "Active",
+  "trackWaitingPos": "Waiting for position…",
+  "trackHeader": "{total} members · {online} online · {fixed} fixed",
   "fitAll": "Fit all",
   "noStationsYet": "No station data yet. Connect to APRS-IS to pick members.",  "noPackets": "No packets yet",
   "secondsAgo": "{count}s ago",

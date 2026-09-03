@@ -544,6 +544,21 @@ class AppState extends ChangeNotifier {
     } catch (_) {}
   }
 
+  /// 临时解锁横屏（群组跟踪等全屏场景用）；退出时调用 [_restoreOrientation]
+  Future<void> unlockLandscape() async {
+    if (kIsWeb) return;
+    try {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } catch (_) {}
+  }
+
+  /// 按用户设置恢复屏幕方向（横屏偏好关闭时回到竖屏锁定）
+  Future<void> restoreOrientation() => _applyOrientation();
+
   // 首次引导（OOBE）是否已完成
   bool oobeDone = false;
 

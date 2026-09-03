@@ -9,6 +9,7 @@ import 'models.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
+import 'tracker_page.dart';
 
 class MessagesPage extends StatefulWidget {
   final AppState state;
@@ -968,6 +969,41 @@ class _MessagesPageState extends State<MessagesPage> {
                       child: Text(
                         S.of(context).manage,
                         style: ts(10, c: C.blue, w: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 6),
+                  // 群跟踪：把该群成员放到地图持续跟踪
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              TrackerPage(state: st, group: group),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: C.cyanBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.gps_fixed_rounded,
+                              size: 12, color: C.cyan),
+                          SizedBox(width: 3),
+                          Text(
+                            S.of(context).groupTracking,
+                            style: ts(10, c: C.cyan, w: FontWeight.w600),
+                          ),
+                        ],
                       ),
                     ),
                   ),

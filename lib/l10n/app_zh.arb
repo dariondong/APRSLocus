@@ -465,6 +465,8 @@
   "trackMemberSub": "{type} · {seen}",
   "trackGroupEmpty": "组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。",
   "trackActive": "在线",
+  "trackWaitingPos": "等待位置…",
+  "trackHeader": "{total} 人 · {online} 在线 · {fixed} 已定位",
   "fitAll": "全览",
   "noStationsYet": "暂无台站数据，连接 APRS-IS 后即可选择。",  "noPackets": "暂无数据包",
   "secondsAgo": "{count}秒前",
