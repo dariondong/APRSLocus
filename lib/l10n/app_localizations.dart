@@ -2868,6 +2868,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{total} 人 · {online} 在线 · {fixed} 已定位'**
   String trackHeader(Object total, Object online, Object fixed);
+  /// No description provided for @groupChatShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊'**
+  String get groupChatShort;
+  /// No description provided for @groupChatTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊 · {name}'**
+  String groupChatTitle(Object name);
+  /// No description provided for @chatWithTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'与 {call} 聊天'**
+  String chatWithTitle(Object call);
+  /// No description provided for @chatToGroupHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发消息给全群…'**
+  String get chatToGroupHint;
+  /// No description provided for @chatToHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发给 {call}…'**
+  String chatToHint(Object call);
+  /// No description provided for @noMessagesHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无消息，发一条吧'**
+  String get noMessagesHint;
   /// No description provided for @fitAll.
   ///
   /// In zh, this message translates to:

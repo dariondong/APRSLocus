@@ -1493,6 +1493,24 @@ class AppLocalizationsEn extends AppLocalizations {
       '$total members · $online online · $fixed fixed';
 
   @override
+  String get groupChatShort => 'Chat';
+
+  @override
+  String groupChatTitle(Object name) => 'Group · $name';
+
+  @override
+  String chatWithTitle(Object call) => 'Chat with $call';
+
+  @override
+  String get chatToGroupHint => 'Message the group…';
+
+  @override
+  String chatToHint(Object call) => 'Message $call…';
+
+  @override
+  String get noMessagesHint => 'No messages yet — say hi!';
+
+  @override
   String get fitAll => 'Fit all';
 
   @override

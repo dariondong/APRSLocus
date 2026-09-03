@@ -1468,6 +1468,24 @@ class AppLocalizationsZh extends AppLocalizations {
       '$total 人 · $online 在线 · $fixed 已定位';
 
   @override
+  String get groupChatShort => '群聊';
+
+  @override
+  String groupChatTitle(Object name) => '群聊 · $name';
+
+  @override
+  String chatWithTitle(Object call) => '与 $call 聊天';
+
+  @override
+  String get chatToGroupHint => '发消息给全群…';
+
+  @override
+  String chatToHint(Object call) => '发给 $call…';
+
+  @override
+  String get noMessagesHint => '暂无消息，发一条吧';
+
+  @override
   String get fitAll => '全览';
 
   @override

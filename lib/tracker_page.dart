@@ -280,28 +280,31 @@ class _TrackerPageState extends State<TrackerPage>
 
   // ─── 横屏：左成员栏 + 全屏地图 ───
   Widget _landscape(List<_Tm> members) {
-    return Row(
-      children: [
-        Container(
-          width: 218,
-          color: C.white,
-          child: Column(
-            children: [
-              _header(members),
-              const Divider(height: 1),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  itemCount: members.length,
-                  itemBuilder: (_, i) => _memberTile(members[i]),
+    // 左侧栏整体放入 SafeArea：横屏刘海/圆角不会挡住顶栏与返回键
+    return SafeArea(
+      child: Row(
+        children: [
+          Container(
+            width: 238,
+            color: C.white,
+            child: Column(
+              children: [
+                _header(members, showGroupChat: true),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: members.length,
+                    itemBuilder: (_, i) => _memberTile(members[i]),
+                  ),
                 ),
-              ),
-              _toolRow(),
-            ],
+                _toolRow(),
+              ],
+            ),
           ),
-        ),
-        Expanded(child: _mapBody(members)),
-      ],
+          Expanded(child: _mapBody(members)),
+        ],
+      ),
     );
   }
 
@@ -316,7 +319,7 @@ class _TrackerPageState extends State<TrackerPage>
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-                child: _header(members),
+                child: _header(members, showGroupChat: true),
               ),
               const Spacer(),
               if (members.isNotEmpty)
@@ -345,7 +348,7 @@ class _TrackerPageState extends State<TrackerPage>
     );
   }
 
-  Widget _header(List<_Tm> members) {
+  Widget _header(List<_Tm> members, {bool showGroupChat = false}) {
     final withPos = members.where((m) => m.st != null).length;
     final online = members
         .where((m) => m.st != null && m.st!.effectiveStatus != St.offline)
@@ -386,6 +389,30 @@ class _TrackerPageState extends State<TrackerPage>
                 ],
               ),
             ),
+            // 群聊快捷入口（可选，横屏成员栏显示）
+            if (showGroupChat)
+              GestureDetector(
+                onTap: () => _openChatSheet(null),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: C.orangeBg,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.chat_rounded, size: 13, color: C.orange),
+                      const SizedBox(width: 3),
+                      Text(S.of(context).groupChatShort,
+                          style: ts(10, c: C.orange, w: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ),
             GestureDetector(
               onTap: _fitAll,
               child: Container(
@@ -503,6 +530,20 @@ class _TrackerPageState extends State<TrackerPage>
               ),
               if (sel)
                 Icon(Icons.my_location_rounded, size: 14, color: C.blue),
+              // 私聊快捷
+              if (!m.isMe)
+                GestureDetector(
+                  onTap: () => _openChatSheet(m.call),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: C.cyanBg,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Icon(Icons.chat_rounded, size: 13, color: C.cyan),
+                  ),
+                ),
+              const SizedBox(width: 2),
             ],
           ),
         ),
@@ -539,6 +580,163 @@ class _TrackerPageState extends State<TrackerPage>
       buf.write('${dist.toStringAsFixed(1)} km');
     }
     return buf.toString();
+  }
+
+  /// 快捷聊天面板：target 为 null 表示发到整个群；否则私聊该成员
+  /// 快捷聊天面板：target 为 null 表示发到整个群；否则私聊该成员
+  void _openChatSheet(String? target) {
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (bctx) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(bctx).viewInsets.bottom),
+          child: StatefulBuilder(
+            builder: (bctx, setSheet) {
+              final isGroup = target == null;
+              final title = isGroup
+                  ? S.of(bctx).groupChatTitle(widget.group.name)
+                  : S.of(bctx).chatWithTitle(target!);
+              final hist = widget.state.messages
+                  .where((m) {
+                    if (isGroup) return m.groupId == widget.group.id;
+                    return m.from == target || m.to == target;
+                  })
+                  .take(30)
+                  .toList();
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          isGroup ? Icons.group_rounded : Icons.person_rounded,
+                          size: 18,
+                          color: isGroup ? C.orange : C.cyan,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(title,
+                              style: ts(15, w: FontWeight.w800),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(Icons.close_rounded, color: C.grey),
+                          onPressed: () => Navigator.pop(bctx),
+                        ),
+                      ],
+                    ),
+                    if (hist.isNotEmpty)
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 120),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          reverse: true,
+                          itemCount: hist.length,
+                          itemBuilder: (_, i) {
+                            final m = hist[i];
+                            final mine = m.from == widget.state.myFullCall;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Align(
+                                alignment: mine
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: mine ? C.blueBg : C.bgSoft,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(m.text,
+                                      style: ts(12, c: C.ink),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Text(S.of(bctx).noMessagesHint,
+                            style: ts(11, c: C.greyLight)),
+                      ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: ctrl,
+                            style: ts(13),
+                            minLines: 1,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: isGroup
+                                  ? S.of(bctx).chatToGroupHint
+                                  : S.of(bctx).chatToHint(target),
+                              hintStyle: ts(12, c: C.grey),
+                              isDense: true,
+                              filled: true,
+                              fillColor: C.bgSoft,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () {
+                            final text = ctrl.text.trim();
+                            if (text.isEmpty) return;
+                            if (isGroup) {
+                              widget.state.sendGroupMessage(
+                                widget.group.groupCall,
+                                text,
+                                groupId: widget.group.id,
+                              );
+                            } else {
+                              widget.state.sendMessage(target!, text);
+                            }
+                            ctrl.clear();
+                            setSheet(() {});
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: C.blue,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(Icons.send_rounded,
+                                size: 18, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    ).then((_) => ctrl.dispose());
   }
 
   Widget _toolRow() {
