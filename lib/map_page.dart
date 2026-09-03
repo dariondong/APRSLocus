@@ -507,7 +507,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   right: 14,
                   top: 58,
                   child: GestureDetector(
-                    onTap: () => showTrackGroupsSheet(context, widget.state),
+                    onTap: () => showTrackGroupPicker(context, widget.state),
                     child: Container(
                       width: 38,
                       height: 38,

@@ -9,13 +9,13 @@ import 'widgets.dart';
 import 'coord.dart';
 import 'tile_map.dart';
 
-/// 群组跟踪页：全屏地图跟踪一组呼号（车队 / 好友结伴）
+/// 群组跟踪页：把聊天群的成员放到整屏地图跟踪（车队 / 好友结伴）
 /// - 横屏：左侧成员栏 + 右侧全屏地图（导航风格）
 /// - 竖屏：全屏地图 + 底部成员横条
 /// - 点选成员 → 地图锁定跟随该成员；提供「全览」缩放到全部成员
 class TrackerPage extends StatefulWidget {
   final AppState state;
-  final TrackGroup group;
+  final ChatGroup group;
   const TrackerPage({super.key, required this.state, required this.group});
   @override
   State<TrackerPage> createState() => _TrackerPageState();
@@ -118,11 +118,12 @@ class _TrackerPageState extends State<TrackerPage> {
     return (1 - math.log((1 + s) / (1 - s)) / (2 * math.pi)) / 2;
   }
 
-  /// 组内成员台站（含我）。按组内呼号顺序。
+  /// 组内成员台站：聊天群成员（confirmedMembers + 我）
   List<Station> _members() {
+    final calls = widget.group.confirmedMembers;
     final mine = widget.state.myStation;
     final out = <Station>[];
-    for (final c in widget.group.calls) {
+    for (final c in calls) {
       final u = c.toUpperCase();
       if (mine != null && u == widget.state.myFullCall.toUpperCase()) {
         out.add(mine);
