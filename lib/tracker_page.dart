@@ -101,13 +101,25 @@ class _TrackerPageState extends State<TrackerPage>
     return c - p;
   }
 
-  /// 平滑平移中心到某点
+  /// 平滑平移中心到某点（主动触发：点成员/定位我；会打断当前动画立即跟随）
   void _smoothCenterOn(double lat, double lng, {bool instant = false}) {
     final target = _panFor(lat, lng, _zoom);
     if (instant || _size.width == 0) {
       _pan = target;
       return;
     }
+    _panCtrl.stop();
+    _panFrom = _pan;
+    _panTo = target;
+    _panCtrl.forward(from: 0);
+  }
+
+  /// 跟随刷新（由 build 调用）：仅在目标位置显著变化且当前无动画时启动一次，
+  /// 避免跟随模式下每次重建都重启动画导致无限重绘/卡死
+  void _followTick(double lat, double lng) {
+    final target = _panFor(lat, lng, _zoom);
+    if (_panCtrl.isAnimating) return;
+    if ((target - _pan).distance < 1.0) return;
     _panFrom = _pan;
     _panTo = target;
     _panCtrl.forward(from: 0);
@@ -147,11 +159,17 @@ class _TrackerPageState extends State<TrackerPage>
     final cLat = (minLat + maxLat) / 2;
     final cLng = (minLng + maxLng) / 2;
     _panCtrl.stop();
+    final z0 = _zoom;
+    // 第 1 步：围绕当前中心缩放到目标级别（中心点不动）
     setState(() {
       _zoom = z;
-      _pan = _panFor(cLat, cLng, z);
+      _pan = _pan * math.pow(2, z - z0).toDouble();
       _followCall = null;
     });
+    // 第 2 步：平滑平移到成员群中心
+    _panFrom = _pan;
+    _panTo = _panFor(cLat, cLng, z);
+    _panCtrl.forward(from: 0);
   }
 
   double _mercY(double lat) {
@@ -212,10 +230,10 @@ class _TrackerPageState extends State<TrackerPage>
       listenable: widget.state,
       builder: (context, _) {
         final members = _members();
-        // 跟随模式：成员位置变化 → 平滑居中跟随
+        // 跟随模式：成员位置变化 → 平滑居中跟随（带防循环守护）
         final follow = _followCall == null ? null : _memberByCall(_followCall!);
         if (follow?.st != null) {
-          _smoothCenterOn(follow!.st!.lat, follow.st!.lng);
+          _followTick(follow!.st!.lat, follow.st!.lng);
         }
         return Scaffold(
           backgroundColor: C.mapBg,
