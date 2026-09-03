@@ -58,6 +58,11 @@ class _TrackerPageState extends State<TrackerPage>
   /// 当前跟踪锁定（跟随）的呼号；null = 全览/自由
   String? _followCall;
 
+  /// 全览保持模式：点「全览」后开启；成员移动跑出视野时自动重新适配。
+  /// 用户手动拖动/缩放/点人跟随即退出。
+  bool _keepFitAll = false;
+  DateTime _lastAutoFit = DateTime.fromMillisecondsSinceEpoch(0);
+
   @override
   void initState() {
     super.initState();
@@ -135,7 +140,8 @@ class _TrackerPageState extends State<TrackerPage>
     });
   }
 
-  void _fitAll() {
+  /// 全览（keep=true 进入保持模式：成员跑出视野自动重新适配）
+  void _fitAll({bool keep = true}) {
     final pts = <(double, double)>[];
     for (final m in _members()) {
       final s = m.st;
@@ -160,16 +166,47 @@ class _TrackerPageState extends State<TrackerPage>
     final cLng = (minLng + maxLng) / 2;
     _panCtrl.stop();
     final z0 = _zoom;
-    // 第 1 步：围绕当前中心缩放到目标级别（中心点不动）
     setState(() {
       _zoom = z;
       _pan = _pan * math.pow(2, z - z0).toDouble();
       _followCall = null;
+      _keepFitAll = keep;
     });
-    // 第 2 步：平滑平移到成员群中心
+    _lastAutoFit = DateTime.now();
+    // 平滑平移到成员群中心
     _panFrom = _pan;
     _panTo = _panFor(cLat, cLng, z);
     _panCtrl.forward(from: 0);
+  }
+
+  /// 全览保持：检查是否有成员跑出视野（带边距），有则重新适配（带防抖）
+  void _autoKeepFit() {
+    if (!_keepFitAll || _panCtrl.isAnimating) return;
+    // 防抖：至少 1.5s 才允许再次自动全览，避免成员密集跳动导致地图抽搐
+    if (DateTime.now().difference(_lastAutoFit).inMilliseconds < 1500) return;
+    if (_size.width <= 0 || _size.height <= 0) return;
+    // 视口世界像素范围（含余量 70px）
+    final b = _base;
+    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
+    final left = c.dx - _size.width / 2 - _pan.dx - 70;
+    final right = c.dx + _size.width / 2 - _pan.dx + 70;
+    final top = c.dy - _size.height / 2 - _pan.dy - 70;
+    final bottom = c.dy + _size.height / 2 - _pan.dy + 70;
+    for (final m in _members()) {
+      final s = m.st;
+      if (s == null) continue;
+      final t = _tc(s.lat, s.lng);
+      final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
+      if (p.dx < left || p.dx > right || p.dy < top || p.dy > bottom) {
+        _fitAll(keep: true);
+        return;
+      }
+    }
+  }
+
+  /// 退出全览保持（用户手动操作/点人时调用）
+  void _exitKeepFit() {
+    _keepFitAll = false;
   }
 
   double _mercY(double lat) {
@@ -234,6 +271,11 @@ class _TrackerPageState extends State<TrackerPage>
         final follow = _followCall == null ? null : _memberByCall(_followCall!);
         if (follow?.st != null) {
           _followTick(follow!.st!.lat, follow.st!.lng);
+        } else {
+          // 非跟随（自由/全览保持）：成员跑出视野时自动重新适配（帧后安全执行）
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _autoKeepFit();
+          });
         }
         return Scaffold(
           backgroundColor: C.mapBg,
@@ -262,20 +304,30 @@ class _TrackerPageState extends State<TrackerPage>
           zoom: _zoom,
           pan: _pan,
           onPan: (d) {
+            _exitKeepFit();
             _panCtrl.stop();
             setState(() => _pan += d);
           },
-          onViewChanged: (z, p) => setState(() {
-            _zoom = z;
-            _pan = p;
-            _followCall = null;
-          }),
-          onZoomRequest: (z, p) => setState(() {
-            _zoom = z;
-            _pan = p;
-            _followCall = null;
-          }),
-          onTap: (_) => setState(() => _followCall = null),
+          onViewChanged: (z, p) {
+            _exitKeepFit();
+            setState(() {
+              _zoom = z;
+              _pan = p;
+              _followCall = null;
+            });
+          },
+          onZoomRequest: (z, p) {
+            _exitKeepFit();
+            setState(() {
+              _zoom = z;
+              _pan = p;
+              _followCall = null;
+            });
+          },
+          onTap: (_) {
+            _exitKeepFit();
+            setState(() => _followCall = null);
+          },
           mapType: _mapType,
         ),
         IgnorePointer(
@@ -480,6 +532,7 @@ class _TrackerPageState extends State<TrackerPage>
       child: InkWell(
         onTap: () {
           if (!hasPos) return; // 无位置不可跟随
+          _exitKeepFit();
           setState(() {
             _followCall = _followCall == m.call ? null : m.call;
           });
@@ -771,6 +824,7 @@ class _TrackerPageState extends State<TrackerPage>
               if (widget.state.myHasFix &&
                   widget.state.myLat != null &&
                   widget.state.myLng != null) {
+                _exitKeepFit();
                 setState(() {
                   _followCall = widget.state.myFullCall;
                   _smoothCenterOn(
