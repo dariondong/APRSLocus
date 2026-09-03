@@ -2898,6 +2898,21 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'暂无消息，发一条吧'**
   String get noMessagesHint;
+  /// No description provided for @trackModeFollow.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随 {call}'**
+  String trackModeFollow(Object call);
+  /// No description provided for @trackModeMe.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随我'**
+  String get trackModeMe;
+  /// No description provided for @trackModeFitAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全览保持中'**
+  String get trackModeFitAll;
   /// No description provided for @fitAll.
   ///
   /// In zh, this message translates to:

@@ -344,7 +344,62 @@ class _TrackerPageState extends State<TrackerPage>
             ),
           ),
         ),
+        // 当前模式徽章（跟随中 / 全览保持）——置于地图顶部，避让竖屏底部成员条
+        Positioned(left: 10, top: 56, child: _modeBadge()),
       ],
+    );
+  }
+
+  /// 地图模式徽章：提示当前是跟随某成员 / 全览保持 / 自由浏览
+  Widget _modeBadge() {
+    Widget? chip;
+    if (_followCall != null) {
+      final m = _memberByCall(_followCall!);
+      if (m != null) {
+        chip = _badgePill(
+          icon: Icons.gps_fixed_rounded,
+          text: m.isMe
+              ? S.of(context).trackModeMe
+              : S.of(context).trackModeFollow(m.call),
+          color: C.blue,
+        );
+      }
+    } else if (_keepFitAll) {
+      chip = _badgePill(
+        icon: Icons.zoom_out_map_rounded,
+        text: S.of(context).trackModeFitAll,
+        color: C.green,
+      );
+    }
+    if (chip == null) return const SizedBox.shrink();
+    return IgnorePointer(child: chip);
+  }
+
+  Widget _badgePill({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: softShadow(blur: 10, alpha: 0.2),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: Colors.white),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: ts(10, c: Colors.white, w: FontWeight.w700),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 
@@ -394,18 +449,22 @@ class _TrackerPageState extends State<TrackerPage>
               const Spacer(),
               if (members.isNotEmpty)
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 240),
-                  margin: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+                  height: 96,
+                  margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
                   decoration: BoxDecoration(
-                    color: C.white.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: softShadow(blur: 14, alpha: 0.15),
+                    color: C.white.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.7),
+                    ),
+                    boxShadow: softShadow(blur: 16, alpha: 0.12),
                   ),
                   child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
                     itemCount: members.length,
-                    itemBuilder: (_, i) => _memberTile(members[i]),
+                    itemBuilder: (_, i) =>
+                        SizedBox(width: 208, child: _memberTile(members[i])),
                   ),
                 )
               else
@@ -461,48 +520,37 @@ class _TrackerPageState extends State<TrackerPage>
             ),
             // 群聊快捷入口（可选，横屏成员栏显示）
             if (showGroupChat)
-              GestureDetector(
-                onTap: () => _openChatSheet(null),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: C.orangeBg,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.chat_rounded, size: 13, color: C.orange),
-                      const SizedBox(width: 3),
-                      Text(S.of(context).groupChatShort,
-                          style: ts(10, c: C.orange, w: FontWeight.w700)),
-                    ],
-                  ),
-                ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                tooltip: S.of(context).groupChatShort,
+                icon: Icon(Icons.chat_bubble_rounded,
+                    size: 18, color: C.orange),
+                onPressed: () => _openChatSheet(null),
               ),
-            GestureDetector(
-              onTap: _fitAll,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: C.blueBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.zoom_out_map_rounded, size: 14, color: C.blue),
-                    const SizedBox(width: 4),
-                    Text(S.of(context).fitAll,
-                        style: ts(10, c: C.blue, w: FontWeight.w700)),
-                  ],
-                ),
+            // 全览（进入自动保持模式；再次点击退出）
+            IconButton(
+              visualDensity: VisualDensity.compact,
+              tooltip: S.of(context).fitAll,
+              icon: Icon(
+                Icons.zoom_out_map_rounded,
+                size: 19,
+                color: _keepFitAll ? Colors.white : C.blue,
               ),
+              style: IconButton.styleFrom(
+                backgroundColor: _keepFitAll
+                    ? C.green
+                    : C.blueBg,
+                disabledBackgroundColor: Colors.transparent,
+              ),
+              onPressed: () {
+                if (_keepFitAll) {
+                  _exitKeepFit();
+                } else {
+                  _fitAll(keep: true);
+                }
+              },
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 2),
           ],
         ),
       ),
@@ -523,99 +571,149 @@ class _TrackerPageState extends State<TrackerPage>
     final sel = _followCall == m.call;
     final hasPos = s != null;
     final offline = !hasPos || s!.effectiveStatus == St.offline;
+    final moving = hasPos && s!.effectiveStatus == St.moving;
     final color = offline ? C.grey : s!.color;
     final dist = hasPos && widget.state.myHasFix
         ? s!.distKm(widget.state.myLat!, widget.state.myLng!)
         : null;
-    return Material(
-      color: sel ? C.blueBg : Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          if (!hasPos) return; // 无位置不可跟随
-          _exitKeepFit();
-          setState(() {
-            _followCall = _followCall == m.call ? null : m.call;
-          });
-          if (_followCall == m.call) _smoothCenterOn(s!.lat, s.lng);
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color: sel ? C.blue : Colors.transparent,
-                width: 3,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      child: Material(
+        color: sel ? C.blueBg : C.white,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            if (!hasPos) return; // 无位置不可跟随
+            _exitKeepFit();
+            setState(() {
+              _followCall = _followCall == m.call ? null : m.call;
+            });
+            if (_followCall == m.call) _smoothCenterOn(s!.lat, s.lng);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: sel
+                    ? C.blue.withValues(alpha: 0.6)
+                    : C.border.withValues(alpha: 0.5),
+                width: sel ? 1.4 : 1,
               ),
             ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: color, width: 1.5),
+            child: Row(
+              children: [
+                // 状态头像
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: offline ? 0.08 : 0.16),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: moving ? color : color.withValues(alpha: 0.4),
+                      width: moving ? 2 : 1.5,
+                    ),
+                  ),
+                  child: hasPos
+                      ? Icon(
+                          moving
+                              ? Icons.navigation_rounded
+                              : s!.icon,
+                          color: color,
+                          size: 15,
+                        )
+                      : Icon(Icons.hourglass_empty_rounded,
+                          color: color, size: 15),
                 ),
-                child: hasPos
-                    ? Icon(s!.icon, color: color, size: 13)
-                    : Icon(Icons.hourglass_empty_rounded,
-                        color: color, size: 13),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            m.isMe
-                                ? '${m.call} · ${S.of(context).meLabel}'
-                                : m.call,
-                            style: ts(11,
-                                c: offline ? C.grey : C.ink,
-                                w: FontWeight.w700),
-                            overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              m.isMe
+                                  ? '${m.call} · ${S.of(context).meLabel}'
+                                  : m.call,
+                              style: ts(12,
+                                  c: m.isMe
+                                      ? C.blue
+                                      : (offline ? C.grey : C.ink),
+                                  w: FontWeight.w800),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        if (hasPos &&
-                            s!.effectiveStatus == St.moving) ...[
-                          const SizedBox(width: 3),
-                          Icon(Icons.navigation_rounded,
-                              size: 9, color: C.blue),
+                          if (moving) ...[
+                            const SizedBox(width: 3),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.blueBg,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                localizedStatusLabel(context, s!.effectiveStatus),
+                                style: ts(8,
+                                    c: C.blue, w: FontWeight.w700),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                    Text(
-                      _memberSub(m, dist),
-                      style: ts(9, c: C.grey),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              if (sel)
-                Icon(Icons.my_location_rounded, size: 14, color: C.blue),
-              // 私聊快捷
-              if (!m.isMe)
-                GestureDetector(
-                  onTap: () => _openChatSheet(m.call),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: C.cyanBg,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Icon(Icons.chat_rounded, size: 13, color: C.cyan),
+                      ),
+                      Text(
+                        _memberSub(m, dist),
+                        style: ts(9.5, c: C.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-              const SizedBox(width: 2),
-            ],
+                // 距离胶囊
+                if (dist != null)
+                  Container(
+                    margin: const EdgeInsets.only(right: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: C.bgSoft,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${dist.toStringAsFixed(1)}km',
+                      style: ts(9, c: C.slate, w: FontWeight.w700),
+                    ),
+                  ),
+                // 跟随指示
+                if (sel)
+                  Icon(Icons.my_location_rounded, size: 15, color: C.blue),
+                // 私聊快捷
+                if (!m.isMe)
+                  GestureDetector(
+                    onTap: () => _openChatSheet(m.call),
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 4),
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: C.cyanBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(Icons.chat_rounded,
+                          size: 13, color: C.cyan),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1511,6 +1511,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMessagesHint => 'No messages yet — say hi!';
 
   @override
+  String trackModeFollow(Object call) => 'Following $call';
+
+  @override
+  String get trackModeMe => 'Following me';
+
+  @override
+  String get trackModeFitAll => 'Keep-fit all';
+
+  @override
   String get fitAll => 'Fit all';
 
   @override

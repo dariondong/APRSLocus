@@ -1486,6 +1486,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noMessagesHint => '暂无消息，发一条吧';
 
   @override
+  String trackModeFollow(Object call) => '跟随 $call';
+
+  @override
+  String get trackModeMe => '跟随我';
+
+  @override
+  String get trackModeFitAll => '全览保持中';
+
+  @override
   String get fitAll => '全览';
 
   @override
