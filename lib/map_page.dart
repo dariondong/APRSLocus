@@ -517,7 +517,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
                         border: Border.all(color: C.orange.withValues(alpha: 0.4)),
                       ),
-                      child: const Icon(Icons.group_rounded,
+                      child: Icon(Icons.group_rounded,
                           size: 20, color: C.orange),
                     ),
                   ),

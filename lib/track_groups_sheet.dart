@@ -272,7 +272,7 @@ class _TrackGroupsSheetState extends State<_TrackGroupsSheet> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded, color: C.grey),
+                  icon: Icon(Icons.close_rounded, color: C.grey),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -329,7 +329,7 @@ class _TrackGroupsSheetState extends State<_TrackGroupsSheet> {
                           leading: CircleAvatar(
                             radius: 17,
                             backgroundColor: C.blueBg,
-                            child: const Icon(Icons.group_rounded,
+                            child: Icon(Icons.group_rounded,
                                 size: 18, color: C.blue),
                           ),
                           title: Text(
@@ -345,14 +345,14 @@ class _TrackGroupsSheetState extends State<_TrackGroupsSheet> {
                             children: [
                               IconButton(
                                 visualDensity: VisualDensity.compact,
-                                icon: const Icon(Icons.edit_rounded,
+                                icon: Icon(Icons.edit_rounded,
                                     size: 16, color: C.slate),
                                 tooltip: S.of(context).editTrackGroup,
                                 onPressed: () => _editGroup(g),
                               ),
                               IconButton(
                                 visualDensity: VisualDensity.compact,
-                                icon: const Icon(Icons.delete_outline_rounded,
+                                icon: Icon(Icons.delete_outline_rounded,
                                     size: 16, color: C.red),
                                 tooltip: S.of(context).deleteTrackGroup,
                                 onPressed: () => _deleteGroup(g),

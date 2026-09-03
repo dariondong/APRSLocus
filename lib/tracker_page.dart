@@ -334,7 +334,7 @@ class _TrackerPageState extends State<TrackerPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.zoom_out_map_rounded,
+                    Icon(Icons.zoom_out_map_rounded,
                         size: 14, color: C.blue),
                     const SizedBox(width: 4),
                     Text(S.of(context).fitAll,
@@ -414,7 +414,7 @@ class _TrackerPageState extends State<TrackerPage> {
                         ),
                         if (s.effectiveStatus == St.moving) ...[
                           const SizedBox(width: 3),
-                          const Icon(Icons.navigation_rounded,
+                          Icon(Icons.navigation_rounded,
                               size: 9, color: C.blue),
                         ],
                       ],
@@ -429,7 +429,7 @@ class _TrackerPageState extends State<TrackerPage> {
                 ),
               ),
               if (sel)
-                const Icon(Icons.my_location_rounded,
+                Icon(Icons.my_location_rounded,
                     size: 14, color: C.blue),
             ],
           ),
