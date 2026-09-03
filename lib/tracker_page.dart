@@ -34,7 +34,8 @@ class _TrackerPageState extends State<TrackerPage>
     with SingleTickerProviderStateMixin {
   double _zoom = 8.0;
   Offset _pan = Offset.zero;
-  Size _size = Size.zero;
+  Size _size = Size.zero; // 整个页面可用区域（横竖屏判断等）
+  Size _mapSize = Size.zero; // 地图实际区域（横屏不含左侧成员栏）——投影基准
 
   // 平滑平移动画
   late final AnimationController _panCtrl;
@@ -93,8 +94,8 @@ class _TrackerPageState extends State<TrackerPage>
     final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
     final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
     return Offset(
-      p.dx - c.dx + _size.width / 2 + _pan.dx,
-      p.dy - c.dy + _size.height / 2 + _pan.dy,
+      p.dx - c.dx + _mapSize.width / 2 + _pan.dx,
+      p.dy - c.dy + _mapSize.height / 2 + _pan.dy,
     );
   }
 
@@ -109,7 +110,7 @@ class _TrackerPageState extends State<TrackerPage>
   /// 平滑平移中心到某点（主动触发：点成员/定位我；会打断当前动画立即跟随）
   void _smoothCenterOn(double lat, double lng, {bool instant = false}) {
     final target = _panFor(lat, lng, _zoom);
-    if (instant || _size.width == 0) {
+    if (instant || _mapSize.width == 0) {
       _pan = target;
       return;
     }
@@ -155,8 +156,8 @@ class _TrackerPageState extends State<TrackerPage>
       if (p.$2 < minLng) minLng = p.$2;
       if (p.$2 > maxLng) maxLng = p.$2;
     }
-    final w = _size.width > 100 ? _size.width : 1000;
-    final h = _size.height > 100 ? _size.height : 700;
+    final w = _mapSize.width > 100 ? _mapSize.width : 1000;
+    final h = _mapSize.height > 100 ? _mapSize.height : 700;
     final spanLng = math.max(maxLng - minLng, 0.02);
     final spanY = math.max((_mercY(maxLat) - _mercY(minLat)).abs(), 1e-4);
     final zX = math.log((w - 120) * 360 / (spanLng * 256)) / math.ln2;
@@ -184,14 +185,14 @@ class _TrackerPageState extends State<TrackerPage>
     if (!_keepFitAll || _panCtrl.isAnimating) return;
     // 防抖：至少 1.5s 才允许再次自动全览，避免成员密集跳动导致地图抽搐
     if (DateTime.now().difference(_lastAutoFit).inMilliseconds < 1500) return;
-    if (_size.width <= 0 || _size.height <= 0) return;
+    if (_mapSize.width <= 0 || _mapSize.height <= 0) return;
     // 视口世界像素范围（含余量 70px）
     final b = _base;
     final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
-    final left = c.dx - _size.width / 2 - _pan.dx - 70;
-    final right = c.dx + _size.width / 2 - _pan.dx + 70;
-    final top = c.dy - _size.height / 2 - _pan.dy - 70;
-    final bottom = c.dy + _size.height / 2 - _pan.dy + 70;
+    final left = c.dx - _mapSize.width / 2 - _pan.dx - 70;
+    final right = c.dx + _mapSize.width / 2 - _pan.dx + 70;
+    final top = c.dy - _mapSize.height / 2 - _pan.dy - 70;
+    final bottom = c.dy + _mapSize.height / 2 - _pan.dy + 70;
     for (final m in _members()) {
       final s = m.st;
       if (s == null) continue;
@@ -295,58 +296,64 @@ class _TrackerPageState extends State<TrackerPage>
 
   // ─── 地图主体（横竖屏共用）───
   Widget _mapBody(List<_Tm> members) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        TileMapView(
-          centerLat: _base.$1,
-          centerLng: _base.$2,
-          zoom: _zoom,
-          pan: _pan,
-          onPan: (d) {
-            _exitKeepFit();
-            _panCtrl.stop();
-            setState(() => _pan += d);
-          },
-          onViewChanged: (z, p) {
-            _exitKeepFit();
-            setState(() {
-              _zoom = z;
-              _pan = p;
-              _followCall = null;
-            });
-          },
-          onZoomRequest: (z, p) {
-            _exitKeepFit();
-            setState(() {
-              _zoom = z;
-              _pan = p;
-              _followCall = null;
-            });
-          },
-          onTap: (_) {
-            _exitKeepFit();
-            setState(() => _followCall = null);
-          },
-          mapType: _mapType,
-        ),
-        IgnorePointer(
-          child: CustomPaint(
-            size: _size,
-            painter: _TrackerOverlayPainter(
-              members: members.where((m) => m.st != null).map((m) => m.st!).toList(),
-              myCall: widget.state.myFullCall,
-              followCall: _followCall,
-              myHasFix: widget.state.myHasFix,
-              myLat: widget.state.myLat,
-              myLng: widget.state.myLng,
-              toScreen: _toScreen,
+    return LayoutBuilder(
+      builder: (context, c) {
+        // 地图区域实际尺寸（横屏=右半部，竖屏=全宽）——投影/视野都以此为准
+        _mapSize = Size(c.maxWidth, c.maxHeight);
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            TileMapView(
+              centerLat: _base.$1,
+              centerLng: _base.$2,
+              zoom: _zoom,
+              pan: _pan,
+              onPan: (d) {
+                _exitKeepFit();
+                _panCtrl.stop();
+                setState(() => _pan += d);
+              },
+              onViewChanged: (z, p) {
+                _exitKeepFit();
+                setState(() {
+                  _zoom = z;
+                  _pan = p;
+                  _followCall = null;
+                });
+              },
+              onZoomRequest: (z, p) {
+                _exitKeepFit();
+                setState(() {
+                  _zoom = z;
+                  _pan = p;
+                  _followCall = null;
+                });
+              },
+              onTap: (_) {
+                _exitKeepFit();
+                setState(() => _followCall = null);
+              },
+              mapType: _mapType,
             ),
-          ),
-        ),
-        // 当前模式徽章（跟随中 / 全览保持）——置于地图顶部，避让竖屏底部成员条
-        Positioned(left: 10, top: 56, child: _modeBadge()),
-      ],
+            IgnorePointer(
+              child: CustomPaint(
+                size: _mapSize,
+                painter: _TrackerOverlayPainter(
+                  members: members.where((m) => m.st != null).map((m) => m.st!).toList(),
+                  myCall: widget.state.myFullCall,
+                  followCall: _followCall,
+                  myHasFix: widget.state.myHasFix,
+                  myLat: widget.state.myLat,
+                  myLng: widget.state.myLng,
+                  toScreen: _toScreen,
+                ),
+              ),
+            ),
+            // 当前模式徽章（跟随中 / 全览保持）——置于地图顶部，避让竖屏底部成员条
+            Positioned(left: 10, top: 56, child: _modeBadge()),
+          ],
+        );
+      },
     );
   }
 
