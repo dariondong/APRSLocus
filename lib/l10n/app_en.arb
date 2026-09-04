@@ -466,6 +466,8 @@
   "trackGroupEmpty": "Members have no position data yet (not received or not beaconing).",
   "trackActive": "Active",
   "trackWaitingPos": "Waiting for position…",
+  "offlineShort": "Offline",
+  "stoppedShort": "Stopped",
   "trackHeader": "{total} members · {online} online · {fixed} fixed",
   "groupChatShort": "Chat",
   "groupChatTitle": "Group · {name}",

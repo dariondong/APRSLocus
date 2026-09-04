@@ -1464,6 +1464,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trackWaitingPos => '等待位置…';
 
   @override
+  String get offlineShort => '离线';
+
+  @override
+  String get stoppedShort => '静止';
+
+  @override
   String trackHeader(Object total, Object online, Object fixed) =>
       '$total 人 · $online 在线 · $fixed 已定位';
 

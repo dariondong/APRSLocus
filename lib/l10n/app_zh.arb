@@ -466,6 +466,8 @@
   "trackGroupEmpty": "组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。",
   "trackActive": "在线",
   "trackWaitingPos": "等待位置…",
+  "offlineShort": "离线",
+  "stoppedShort": "静止",
   "trackHeader": "{total} 人 · {online} 在线 · {fixed} 已定位",
   "groupChatShort": "群聊",
   "groupChatTitle": "群聊 · {name}",

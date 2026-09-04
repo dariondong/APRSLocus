@@ -789,30 +789,45 @@ class _TrackerPageState extends State<TrackerPage>
 
   String _memberSub(_Tm m) {
     final s = m.st;
-    final buf = StringBuffer();
-    if (m.isMe) {
-      buf.write(s != null
-          ? (s.speed != null && s.speed! > 0.5
-              ? '${s.speed!.toStringAsFixed(0)} km/h'
-              : S.of(context).trackActive)
-          : S.of(context).trackWaitingPos);
-    } else if (s == null) {
-      buf.write(S.of(context).trackWaitingPos);
-    } else if (s.effectiveStatus == St.offline) {
-      buf.write(localizedLastSeen(context, s));
-    } else {
-      if (s.speed != null && s.speed! > 0.5) {
-        buf.write('${s.speed!.toStringAsFixed(0)} km/h');
-      }
-      if (s.course != null && s.course! >= 0) {
-        buf.write(buf.isEmpty ? '' : ' · ');
-        buf.write('${s.course!.round()}°');
-      }
-      if (buf.isEmpty) buf.write(S.of(context).trackActive);
-      buf.write(' · ${localizedLastSeen(context, s)}');
+    // 无位置（等待上报）
+    if (s == null) {
+      if (m.isMe) return S.of(context).trackWaitingPos;
+      return '${S.of(context).trackWaitingPos} · ${localizedStatusLabel(context, St.offline)}';
     }
-    return buf.toString();
+    // 我自己
+    if (m.isMe) {
+      final parts = <String>[];
+      if (s.speed != null && s.speed! > 0.5) {
+        parts.add('${s.speed!.toStringAsFixed(1)} km/h');
+      }
+      if (s.course != null && s.course! >= 0) parts.add('${s.course!.round()}°');
+      if (s.alt != null && s.alt! > 0) parts.add('${s.alt!.toStringAsFixed(0)} m');
+      parts.add(s.grid);
+      parts.add(localizedLastSeen(context, s));
+      return parts.join(' · ');
+    }
+    // 其他成员
+    final parts = <String>[];
+    final st = s.effectiveStatus;
+    if (st == St.offline) {
+      return '${localizedLastSeen(context, s)} · ${S.of(context).offlineShort}';
+    }
+    // 移动/静止
+    if (s.speed != null && s.speed! > 0.5) {
+      parts.add('${s.speed!.toStringAsFixed(1)} km/h');
+    }
+    if (s.course != null && s.course! >= 0) {
+      parts.add('${s.course!.round()}°');
+    }
+    if (s.alt != null && s.alt! > 0) {
+      parts.add('${s.alt!.toStringAsFixed(0)} m');
+    }
+    if (st == St.stopped) parts.add(S.of(context).stoppedShort);
+    parts.add(s.grid);
+    parts.add(localizedLastSeen(context, s));
+    return parts.join(' · ');
   }
+
 
   /// 发送快捷聊天消息
   void _sheetSend(

@@ -1489,6 +1489,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackWaitingPos => 'Waiting for position…';
 
   @override
+  String get offlineShort => 'Offline';
+
+  @override
+  String get stoppedShort => 'Stopped';
+
+  @override
   String trackHeader(Object total, Object online, Object fixed) =>
       '$total members · $online online · $fixed fixed';
 

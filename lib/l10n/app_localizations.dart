@@ -2863,6 +2863,16 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'等待位置…'**
   String get trackWaitingPos;
+  /// No description provided for @offlineShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'离线'**
+  String get offlineShort;
+  /// No description provided for @stoppedShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'静止'**
+  String get stoppedShort;
   /// No description provided for @trackHeader.
   ///
   /// In zh, this message translates to:
