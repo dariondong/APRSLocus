@@ -451,7 +451,7 @@ class _TrackerPageState extends State<TrackerPage>
       child: Row(
         children: [
           Container(
-            width: 238,
+            width: 272,
             color: C.white,
             child: Column(
               children: [
@@ -516,7 +516,7 @@ class _TrackerPageState extends State<TrackerPage>
                 ),
               if (members.isNotEmpty)
                 Container(
-                  height: 96,
+                  height: 116,
                   margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
                   decoration: BoxDecoration(
                     color: C.white.withValues(alpha: 0.6),
@@ -531,7 +531,7 @@ class _TrackerPageState extends State<TrackerPage>
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
                     itemCount: members.length,
                     itemBuilder: (_, i) =>
-                        SizedBox(width: 208, child: _memberTile(members[i])),
+                        SizedBox(width: 244, child: _memberTile(members[i])),
                   ),
                 )
               else
@@ -659,7 +659,7 @@ class _TrackerPageState extends State<TrackerPage>
             if (_followCall == m.call) _smoothCenterOn(s!.lat, s.lng);
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
@@ -737,8 +737,8 @@ class _TrackerPageState extends State<TrackerPage>
                       ),
                       Text(
                         _memberSub(m),
-                        style: ts(9.5, c: C.grey),
-                        maxLines: 1,
+                        style: ts(9.5, c: C.grey, h: 1.25),
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
