@@ -110,8 +110,8 @@ class Station {
 
   /// 类型分组（用于筛选）
   TypeGroup get typeGroup {
-    // APRSlocus 同款台站：与 FMO 同等分类层
-    if (isAprslocusStation) return TypeGroup.fmo;
+    // APRSlocus 同款台站按其符号类型归类（可用独立「APRSlocus」过滤查看），
+    // 不再与 FMO 混在同一分类
     switch (symbol) {
       case 'i':
         return TypeGroup.fmo;

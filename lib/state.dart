@@ -338,10 +338,13 @@ class AppState extends ChangeNotifier {
   bool stationAllowedFor(Station s) {
     if (s.favorite || s.manual) return true;
     if (_matchReceiveFilter(s.call)) return true;
-    // 其他台站：接收特殊类型（中继/气象/FMO）台站
+    // 其他台站：接收特殊类型（中继/气象/FMO/APRSlocus 同款）台站
     if (receiveOthers) {
       final tg = s.typeGroup;
-      return tg == TypeGroup.infra || tg == TypeGroup.wx || tg == TypeGroup.fmo;
+      return tg == TypeGroup.infra ||
+          tg == TypeGroup.wx ||
+          tg == TypeGroup.fmo ||
+          s.isAprslocusStation;
     }
     return false;
   }
