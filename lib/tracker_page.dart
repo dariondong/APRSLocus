@@ -1055,7 +1055,7 @@ class _TrackerPageState extends State<TrackerPage>
                 size: compact ? 14 : 28,
                 color: isGroupMsg ? C.orange : C.cyan,
               ),
-              const SizedBox(width: compact ? 6 : 8),
+              SizedBox(width: compact ? 6 : 8),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
