@@ -475,6 +475,13 @@ class _TrackerPageState extends State<TrackerPage>
               children: [
                 _mapBody(members),
                 Positioned(left: 10, top: 10, child: _modeBadge()),
+                // 底部会话条（最新消息实时预览）
+                Positioned(
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                  child: _chatBar(members),
+                ),
               ],
             ),
           ),
@@ -502,6 +509,12 @@ class _TrackerPageState extends State<TrackerPage>
                 child: Row(children: [_modeBadge()]),
               ),
               const Spacer(),
+              // 底部会话条（最新消息实时预览，点击可回复；无消息时隐藏不占位）
+              if (_recentGroupMsgs().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 6),
+                  child: _chatBar(members),
+                ),
               if (members.isNotEmpty)
                 Container(
                   height: 96,
@@ -983,6 +996,105 @@ class _TrackerPageState extends State<TrackerPage>
         );
       },
     ).then((_) => ctrl.dispose());
+  }
+
+  /// 本群最近收到的消息（会话条展示用）
+  List<AprsMsg> _recentGroupMsgs() {
+    final out = <AprsMsg>[];
+    for (final m in widget.state.messages) {
+      final isGroupMsg = m.groupId == widget.group.id;
+      final fromMember =
+          widget.group.confirmedMembers.contains(m.from.toUpperCase());
+      final toMember =
+          widget.group.confirmedMembers.contains(m.to.toUpperCase());
+      if ((isGroupMsg || fromMember || toMember) && !m.sent) {
+        out.add(m);
+        if (out.length >= 5) break;
+      }
+    }
+    return out;
+  }
+
+  /// 地图底部会话条：显示最近收到的群/成员消息，点击打开对应聊天
+  Widget _chatBar(List<_Tm> members) {
+    final recent = _recentGroupMsgs();
+    if (recent.isEmpty) return const SizedBox.shrink();
+    final m = recent.first;
+    final mine = m.from == widget.state.myFullCall;
+    final fromName = mine ? S.of(context).meLabel : m.from;
+    final isGroupMsg = m.groupId == widget.group.id;
+    final target = isGroupMsg ? null : m.from;
+    return GestureDetector(
+        onTap: () => _openChatSheet(target),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: C.white.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: C.border.withValues(alpha: 0.6)),
+            boxShadow: softShadow(blur: 14, alpha: 0.18),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: (isGroupMsg ? C.orange : C.cyan)
+                      .withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isGroupMsg ? Icons.group_rounded : Icons.person_rounded,
+                  size: 14,
+                  color: isGroupMsg ? C.orange : C.cyan,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          isGroupMsg ? widget.group.name : fromName,
+                          style: ts(10, c: C.slate, w: FontWeight.w700),
+                        ),
+                        if (recent.length > 1) ...[
+                          const SizedBox(width: 5),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: C.red,
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Text(
+                              '${recent.length}',
+                              style: ts(8,
+                                  c: Colors.white, w: FontWeight.w800),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      m.text,
+                      style: ts(11, c: C.ink, w: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.reply_rounded, size: 14, color: C.blue),
+            ],
+          ),
+        ),
+    );
   }
 
   Widget _toolRow() {
