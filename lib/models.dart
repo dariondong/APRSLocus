@@ -108,13 +108,16 @@ class Station {
     return '${bearingFrom(flat, flng).toStringAsFixed(0)}°';
   }
 
-  /// 类型分组（用于筛选）
+  /// 类型分组（用于筛选）——基于业务字段而非图标
+  /// FMO：看已解析的 fmo 结构化字段（收包时按 APFMO/FMO-V4 等识别填充），
+  /// 图标符号仅作展示；APRSlocus 同款走独立字段 + 独立过滤。
   TypeGroup get typeGroup {
-    // APRSlocus 同款台站按其符号类型归类（可用独立「APRSlocus」过滤查看），
-    // 不再与 FMO 混在同一分类
+    // 真正的 FMO：已解析出 FMO 结构化字段，或符号明确为 FMO（主表 i / 反斜杠表 I）
+    final hasFmoData = (fmo != null && fmo!.isNotEmpty);
+    final isFmoSymbol =
+        symbol == 'i' || (symbolTable == '\\' && symbol == 'I');
+    if (hasFmoData || isFmoSymbol) return TypeGroup.fmo;
     switch (symbol) {
-      case 'i':
-        return TypeGroup.fmo;
       case '>':
       case '<':
       case 'c':
