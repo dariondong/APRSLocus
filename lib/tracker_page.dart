@@ -744,8 +744,8 @@ class _TrackerPageState extends State<TrackerPage>
                     ],
                   ),
                 ),
-                // 距离胶囊
-                if (dist != null)
+                // 距离胶囊（自己不显示距离）
+                if (dist != null && !m.isMe)
                   Container(
                     margin: const EdgeInsets.only(right: 4),
                     padding: const EdgeInsets.symmetric(
@@ -794,17 +794,22 @@ class _TrackerPageState extends State<TrackerPage>
       if (m.isMe) return S.of(context).trackWaitingPos;
       return '${S.of(context).trackWaitingPos} · ${localizedStatusLabel(context, St.offline)}';
     }
-    // 我自己
+    // 我自己：显示航向/海拔/网格（速度与相对时间对自己无意义）
     if (m.isMe) {
       final parts = <String>[];
-      if (s.speed != null && s.speed! > 0.5) {
-        parts.add('${s.speed!.toStringAsFixed(1)} km/h');
+      if (s.speed != null && s.speed! > 0.5 &&
+          s.course != null && s.course! >= 0) {
+        parts.add('${s.course!.round()}° ${s.speed!.toStringAsFixed(0)}km/h');
+      } else if (s.course != null && s.course! >= 0) {
+        parts.add('${s.course!.round()}°');
       }
-      if (s.course != null && s.course! >= 0) parts.add('${s.course!.round()}°');
-      if (s.alt != null && s.alt! > 0) parts.add('${s.alt!.toStringAsFixed(0)} m');
-      parts.add(s.grid);
-      parts.add(localizedLastSeen(context, s));
-      return parts.join(' · ');
+      if (s.alt != null && s.alt! > 0) {
+        parts.add('${s.alt!.toStringAsFixed(0)} m');
+      }
+      if (parts.isNotEmpty) parts.add(s.grid);
+      return parts.isEmpty
+          ? S.of(context).trackActive
+          : parts.join(' · ');
     }
     // 其他成员
     final parts = <String>[];
