@@ -26,6 +26,7 @@ class _MessagesPageState extends State<MessagesPage> {
   String? _selectedGroupId; // 当前打开的群聊ID
   final Set<String> _groupRecipients = {}; // 临时群发目标（创建群聊用）
   final _input = TextEditingController();
+  final _inputFocus = FocusNode();
   final _scroll = ScrollController();
   final _scrollFeed = ScrollController();
   final _scrollGroup = ScrollController();
@@ -79,6 +80,7 @@ class _MessagesPageState extends State<MessagesPage> {
   @override
   void dispose() {
     _input.dispose();
+    _inputFocus.dispose();
     _scroll.dispose();
     _scrollFeed.dispose();
     _scrollGroup.dispose();
@@ -519,6 +521,8 @@ class _MessagesPageState extends State<MessagesPage> {
           Expanded(
             child: TextField(
               controller: _input,
+              focusNode: _inputFocus,
+              textInputAction: TextInputAction.send,
               style: ts(13),
               decoration: InputDecoration(
                 hintText: hintText,
@@ -3190,6 +3194,8 @@ class _MessagesPageState extends State<MessagesPage> {
           );
         }
       });
+      // 保持输入焦点：回车/发送后继续打字
+      _inputFocus.requestFocus();
       return;
     }
     if (_selected.isEmpty) return;
@@ -3204,5 +3210,7 @@ class _MessagesPageState extends State<MessagesPage> {
         );
       }
     });
+    // 保持输入焦点：回车/发送后继续打字
+    _inputFocus.requestFocus();
   }
 }

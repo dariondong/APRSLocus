@@ -58,11 +58,14 @@ class _TrackerPageState extends State<TrackerPage>
 
   /// 当前跟踪锁定（跟随）的呼号；null = 全览/自由
   String? _followCall;
+  /// 快捷聊天面板输入焦点（回车发送后保持）
+  final FocusNode _sheetFocus = FocusNode();
 
   /// 全览保持模式：点「全览」后开启；成员移动跑出视野时自动重新适配。
   /// 用户手动拖动/缩放/点人跟随即退出。
   bool _keepFitAll = false;
   DateTime _lastAutoFit = DateTime.fromMillisecondsSinceEpoch(0);
+  bool _didAutoFit = false; // 首次进入自动全览一次
 
   @override
   void initState() {
@@ -81,6 +84,7 @@ class _TrackerPageState extends State<TrackerPage>
   @override
   void dispose() {
     _panCtrl.dispose();
+    _sheetFocus.dispose();
     widget.state.restoreOrientation();
     super.dispose();
   }
@@ -262,6 +266,23 @@ class _TrackerPageState extends State<TrackerPage>
     return null;
   }
 
+  /// 地图上点击位置附近是否有成员标记（像素命中），用于“点地图成员=跟随”
+  _Tm? _hitMember(Offset pos, List<_Tm> members) {
+    _Tm? best;
+    double bestD = 24 * 24; // 命中半径 24px
+    for (final m in members) {
+      final s = m.st;
+      if (s == null) continue;
+      final p = _toScreen(s.lat, s.lng);
+      final d = (p - pos).distanceSquared;
+      if (d < bestD) {
+        bestD = d;
+        best = m;
+      }
+    }
+    return best;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -300,6 +321,13 @@ class _TrackerPageState extends State<TrackerPage>
       builder: (context, c) {
         // 地图区域实际尺寸（横屏=右半部，竖屏=全宽）——投影/视野都以此为准
         _mapSize = Size(c.maxWidth, c.maxHeight);
+        // 首次进入（尺寸就绪后）自动全览一次，用户打开即可看到全部成员
+        if (!_didAutoFit && c.maxWidth > 0) {
+          _didAutoFit = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _fitAll(keep: false);
+          });
+        }
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -329,9 +357,17 @@ class _TrackerPageState extends State<TrackerPage>
                   _followCall = null;
                 });
               },
-              onTap: (_) {
+              onTap: (pos) {
                 _exitKeepFit();
-                setState(() => _followCall = null);
+                // 点在地图上的成员标记 → 跟随该成员（更直觉）
+                final hit = _hitMember(pos, members);
+                if (hit != null) {
+                  setState(() => _followCall = hit.call);
+                  final st = hit.st;
+                  if (st != null) _smoothCenterOn(st.lat, st.lng);
+                } else {
+                  setState(() => _followCall = null);
+                }
               },
               mapType: _mapType,
             ),
@@ -770,7 +806,28 @@ class _TrackerPageState extends State<TrackerPage>
     return buf.toString();
   }
 
-  /// 快捷聊天面板：target 为 null 表示发到整个群；否则私聊该成员
+  /// 发送快捷聊天消息
+  void _sheetSend(
+    TextEditingController ctrl,
+    bool isGroup,
+    String? target,
+    void Function() refresh,
+  ) {
+    final text = ctrl.text.trim();
+    if (text.isEmpty) return;
+    if (isGroup) {
+      widget.state.sendGroupMessage(
+        widget.group.groupCall,
+        text,
+        groupId: widget.group.id,
+      );
+    } else {
+      widget.state.sendMessage(target!, text);
+    }
+    ctrl.clear();
+    refresh();
+  }
+
   /// 快捷聊天面板：target 为 null 表示发到整个群；否则私聊该成员
   void _openChatSheet(String? target) {
     final ctrl = TextEditingController();
@@ -870,6 +927,9 @@ class _TrackerPageState extends State<TrackerPage>
                         Expanded(
                           child: TextField(
                             controller: ctrl,
+                            focusNode: _sheetFocus,
+                            textInputAction: TextInputAction.send,
+                            autofocus: true,
                             style: ts(13),
                             minLines: 1,
                             maxLines: 3,
@@ -886,24 +946,22 @@ class _TrackerPageState extends State<TrackerPage>
                                 borderSide: BorderSide.none,
                               ),
                             ),
+                            onSubmitted: (_) {
+                              _sheetSend(ctrl, isGroup, target, () {
+                                setSheet(() {});
+                              });
+                              // 回车发送后保持焦点继续输入
+                              _sheetFocus.requestFocus();
+                            },
                           ),
                         ),
                         const SizedBox(width: 6),
                         GestureDetector(
                           onTap: () {
-                            final text = ctrl.text.trim();
-                            if (text.isEmpty) return;
-                            if (isGroup) {
-                              widget.state.sendGroupMessage(
-                                widget.group.groupCall,
-                                text,
-                                groupId: widget.group.id,
-                              );
-                            } else {
-                              widget.state.sendMessage(target!, text);
-                            }
-                            ctrl.clear();
-                            setSheet(() {});
+                            _sheetSend(ctrl, isGroup, target, () {
+                              setSheet(() {});
+                            });
+                            _sheetFocus.requestFocus();
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10),

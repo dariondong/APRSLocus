@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 
 /// 定位服务
-/// - Android: 通过平台通道调用 FusedLocationProviderClient + 前台服务
-/// - Web: 浏览器 Geolocation API (TODO)
-/// - Desktop: 手动输入坐标
+/// - Android/iOS: 通过平台通道调用原生定位 + 前台服务
+/// - Windows/Linux/macOS 桌面: 无系统 GPS，用 IP 网络定位（获取所在城市坐标）
+/// - Web: 浏览器 Geolocation API (TODO)，降级提示手动输入坐标
 class LocService {
   bool _running = false;
   static const _channel = MethodChannel('com.aprslocus/location');
@@ -25,6 +28,13 @@ class LocService {
   /// 启动持续定位，返回是否成功
   Future<bool> start() async {
     if (_running) return true;
+    // 桌面平台：无系统 GPS，改用 IP 网络定位（纯 Dart，不依赖原生通道）
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
+      return _startIpLocate();
+    }
     try {
       if (kIsWeb) {
         // Web 平台暂未实现
@@ -80,6 +90,57 @@ class LocService {
     try {
       await _channel.invokeMethod('setLocationMode', {'mode': m});
     } catch (_) {}
+  }
+
+  /// 桌面 IP 网络定位：通过免费定位 API 获取外网 IP 所在城市坐标。
+  /// 精度为城市级，适合业余电台定位/信标参考；首次成功后 onStatus 报告城市。
+  Future<bool> _startIpLocate() async {
+    _running = true;
+    onStatus?.call('网络定位中…');
+    // 依次尝试多个免费 IP 定位服务，提高可用性
+    const apis = [
+      'https://ipwho.is/', // 免费，返回 latitude/longitude/city/region
+      'https://ipapi.co/json/', // 备用
+      'http://ip-api.com/json/', // 备用（http）
+    ];
+    for (final url in apis) {
+      try {
+        final client = HttpClient()
+          ..connectionTimeout = const Duration(seconds: 6);
+        try {
+          final req = await client
+              .getUrl(Uri.parse(url))
+              .timeout(const Duration(seconds: 6));
+          req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus');
+          final resp = await req.close().timeout(const Duration(seconds: 8));
+          if (resp.statusCode != 200) continue;
+          final body = await resp
+              .transform(utf8.decoder)
+              .join()
+              .timeout(const Duration(seconds: 8));
+          final d = jsonDecode(body);
+          if (d is! Map) continue;
+          // ipwho.is: latitude/longitude/city；ipapi.co: latitude/longitude/city
+          final lat = (d['latitude'] as num?)?.toDouble();
+          final lng = (d['longitude'] as num?)?.toDouble();
+          if (lat == null || lng == null) continue;
+          final city = (d['city'] as String?) ?? '';
+          final region = (d['region'] as String?) ?? '';
+          final place =
+              [region, city].where((s) => s.isNotEmpty).join(' · ');
+          onStatus?.call(place.isEmpty ? '已定位' : '已定位 · $place');
+          onFix?.call(lat, lng, 0, 0, -1);
+          return true;
+        } finally {
+          client.close(force: true);
+        }
+      } catch (e) {
+        // 尝试下一个服务
+      }
+    }
+    _running = false;
+    onStatus?.call('网络定位失败，请在地图上选点');
+    return false;
   }
 
   Future<bool> _checkPerm() async {
