@@ -464,6 +464,12 @@ class _TrackerPageState extends State<TrackerPage>
                     itemBuilder: (_, i) => _memberTile(members[i]),
                   ),
                 ),
+                // 横屏：最新会话预览（收窄，避免与左侧成员信息视觉重复）
+                if (_recentGroupMsgs().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
+                    child: _chatBar(members, compact: true),
+                  ),
                 _toolRow(),
               ],
             ),
@@ -475,13 +481,6 @@ class _TrackerPageState extends State<TrackerPage>
               children: [
                 _mapBody(members),
                 Positioned(left: 10, top: 10, child: _modeBadge()),
-                // 底部会话条（最新消息实时预览）
-                Positioned(
-                  left: 10,
-                  right: 10,
-                  bottom: 10,
-                  child: _chatBar(members),
-                ),
               ],
             ),
           ),
@@ -513,7 +512,7 @@ class _TrackerPageState extends State<TrackerPage>
               if (_recentGroupMsgs().isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 6),
-                  child: _chatBar(members),
+                  child: _chatBar(members, compact: true),
                 ),
               if (members.isNotEmpty)
                 Container(
@@ -737,7 +736,7 @@ class _TrackerPageState extends State<TrackerPage>
                         ],
                       ),
                       Text(
-                        _memberSub(m, dist),
+                        _memberSub(m),
                         style: ts(9.5, c: C.grey),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -788,7 +787,7 @@ class _TrackerPageState extends State<TrackerPage>
     );
   }
 
-  String _memberSub(_Tm m, double? dist) {
+  String _memberSub(_Tm m) {
     final s = m.st;
     final buf = StringBuffer();
     if (m.isMe) {
@@ -811,10 +810,6 @@ class _TrackerPageState extends State<TrackerPage>
       }
       if (buf.isEmpty) buf.write(S.of(context).trackActive);
       buf.write(' · ${localizedLastSeen(context, s)}');
-    }
-    if (dist != null) {
-      buf.write(buf.isEmpty ? '' : ' · ');
-      buf.write('${dist.toStringAsFixed(1)} km');
     }
     return buf.toString();
   }
@@ -1016,7 +1011,7 @@ class _TrackerPageState extends State<TrackerPage>
   }
 
   /// 地图底部会话条：显示最近收到的群/成员消息，点击打开对应聊天
-  Widget _chatBar(List<_Tm> members) {
+  Widget _chatBar(List<_Tm> members, {bool compact = false}) {
     final recent = _recentGroupMsgs();
     if (recent.isEmpty) return const SizedBox.shrink();
     final m = recent.first;
@@ -1027,70 +1022,68 @@ class _TrackerPageState extends State<TrackerPage>
     return GestureDetector(
         onTap: () => _openChatSheet(target),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: compact
+              ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
+              : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: C.white.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: C.border.withValues(alpha: 0.6)),
-            boxShadow: softShadow(blur: 14, alpha: 0.18),
+            color: C.white.withValues(alpha: compact ? 0.98 : 0.95),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: (isGroupMsg ? C.orange : C.cyan).withValues(alpha: 0.4),
+            ),
+            boxShadow: softShadow(blur: 12, alpha: 0.15),
           ),
           child: Row(
             children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: (isGroupMsg ? C.orange : C.cyan)
-                      .withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isGroupMsg ? Icons.group_rounded : Icons.person_rounded,
-                  size: 14,
-                  color: isGroupMsg ? C.orange : C.cyan,
-                ),
+              Icon(
+                isGroupMsg ? Icons.group_rounded : Icons.person_rounded,
+                size: compact ? 14 : 28,
+                color: isGroupMsg ? C.orange : C.cyan,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: compact ? 6 : 8),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          isGroupMsg ? widget.group.name : fromName,
-                          style: ts(10, c: C.slate, w: FontWeight.w700),
-                        ),
-                        if (recent.length > 1) ...[
-                          const SizedBox(width: 5),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: C.red,
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: Text(
-                              '${recent.length}',
-                              style: ts(8,
-                                  c: Colors.white, w: FontWeight.w800),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 1),
+                    if (!compact) ...[],
                     Text(
-                      m.text,
-                      style: ts(11, c: C.ink, w: FontWeight.w600),
+                      compact
+                          ? '${isGroupMsg ? widget.group.name : fromName}: ${m.text}'
+                          : m.text,
+                      style: ts(
+                        compact ? 10 : 11,
+                        c: C.ink,
+                        w: compact ? FontWeight.w600 : FontWeight.w700,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (!compact)
+                      Text(
+                        isGroupMsg ? widget.group.name : fromName,
+                        style: ts(9, c: C.slate, w: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   ],
                 ),
               ),
-              Icon(Icons.reply_rounded, size: 14, color: C.blue),
+              if (recent.length > 1) ...[
+                const SizedBox(width: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: C.red,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Text('${recent.length}',
+                      style: ts(8, c: Colors.white, w: FontWeight.w800)),
+                ),
+              ],
+              const SizedBox(width: 4),
+              Icon(Icons.reply_rounded,
+                  size: compact ? 12 : 14, color: C.blue),
             ],
           ),
         ),
