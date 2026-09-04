@@ -464,23 +464,25 @@ class _TrackerPageState extends State<TrackerPage>
                     itemBuilder: (_, i) => _memberTile(members[i]),
                   ),
                 ),
-                // 横屏：最新会话预览（收窄，避免与左侧成员信息视觉重复）
-                if (_recentGroupMsgs().isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
-                    child: _chatBar(members, compact: true),
-                  ),
                 _toolRow(),
               ],
             ),
           ),
-          // 横屏：地图区左上角叠模式徽章（不遮挡，地图上方无 header）
+          // 横屏：地图区左上角叠模式徽章，底部叠会话信息条
           Expanded(
             child: Stack(
               fit: StackFit.expand,
               children: [
                 _mapBody(members),
                 Positioned(left: 10, top: 10, child: _modeBadge()),
+                // 底部会话条（最新消息实时预览，点击可回复；无消息时隐藏不占位）
+                if (_recentGroupMsgs().isNotEmpty)
+                  Positioned(
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    child: _chatBar(members),
+                  ),
               ],
             ),
           ),
