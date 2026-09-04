@@ -1802,8 +1802,10 @@ class AppState extends ChangeNotifier {
         rawUp.contains('APRSLOCUS') ||
         (p.comment?.toUpperCase().contains('APRSLOCUS') ?? false) ||
         (p.comment?.toUpperCase().contains('APOLOCUS') ?? false);
-    final symbol = isFmo ? 'i' : p.symbol;
-    final symbolTable = isFmo ? '/' : p.symbolTable;
+    // 保留台站原始上报符号/符号表（不因识别为 FMO 而改写），
+    // 使图标与其它 APRS 地图一致；FMO 分类由 fmo 结构化字段决定
+    final symbol = p.symbol;
+    final symbolTable = p.symbolTable;
     final comment = isFmo ? _cleanFmoComment(p.comment) : _trunc(p.comment);
     // APRSlocus 专属信息（版本等）
     Map<String, String>? apInfo;
@@ -1833,8 +1835,12 @@ class AppState extends ChangeNotifier {
       _parseFmoPosInfo(p.comment!, fmoInfo);
       final pending = _pendingFmo.remove(call);
       if (pending != null) fmoInfo.addAll(pending);
+      // 无任何 FMO 信息也至少保留标记，供 FMO 分类/过滤识别
+      if (fmoInfo.isEmpty) fmoInfo['类型'] = 'FMO';
     } else if (_pendingFmo.containsKey(call)) {
       fmoInfo = _pendingFmo.remove(call);
+    } else if (isFmo) {
+      fmoInfo = <String, String>{'类型': 'FMO'};
     }
     final idx = stations.indexWhere((s) => s.call == call);
     final now = DateTime.now();
