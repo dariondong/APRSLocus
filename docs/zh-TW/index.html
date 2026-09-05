@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="192">
 <meta property="og:image:alt" content="APRSlocus logo">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:locale:alternate" content="zh_CN, en_US">
+<meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="APRSlocus — APRS 定位追蹤與地圖">
 <meta name="twitter:description" content="給業餘無線電愛好者用的 APRS 客戶端，Android 和 Windows 都能跑。">
@@ -38,6 +38,7 @@
 
 <meta name="msvalidate.01" content="A10C9AF6F0DAC9E3BF451E4DC575DC4E" />
 <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/">
+<link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/">
 <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/">
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
 <link rel="canonical" href="https://aprslocus.theez.top/zh-TW/">
@@ -82,7 +83,7 @@
       <a href="#faq">問答</a>
       <a href="#community">社區</a>
       <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載 v1.6.18</a>
-      <span class="lang-switch-group"><a class="lang-switch active" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../en/" hreflang="en">EN</a></span>
+      <span class="lang-switch-group"><a class="lang-switch" href="../" hreflang="zh-Hans">簡中</a><a class="lang-switch active" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/" hreflang="en">EN</a></span>
     </nav>
     <button class="nav-burger" id="navBurger" aria-label="菜單">
       <span></span><span></span><span></span>
@@ -283,9 +284,9 @@
 
     <article class="card reveal">
       <div class="card-icon c4"><i class="fa-solid fa-shield"></i></div>
-      <h3>臺站識別</h3>
-      <p>能識別 FMO 臺站（按 APFMO 路徑、備註欄位識別），也會標出同款 APRSlocus 臺站。37 個符號表、3571 個標準圖標都用得上。</p>
-      <ul class="card-tags"><li>FMO 識別</li><li>同款標記</li><li>官方圖標庫</li></ul>
+      <h3>臺站識別與篩選</h3>
+      <p>接入 aprs.org 官方設備庫，從報文目的呼號識別臺站所用設備（廠商 + 型號 + 車臺 / 手臺 / 跟蹤器 / App / 網關…）。列表可篩狀態、類型、設備類別與具體型號；詳情頁可跳 QRZ 呼號庫與 aprs.fi 看軌跡。</p>
+      <ul class="card-tags"><li>官方設備識別</li><li>類別 / 型號篩選</li><li>QRZ / aprs.fi</li></ul>
     </article>
 
     <article class="card reveal">
@@ -312,8 +313,8 @@
     <article class="card reveal">
       <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
       <h3>個性化體驗</h3>
-      <p>中文 / English 可選，支持深色模式和自定義主題色，界面可縮放 85% ~ 130%。首次啟動有六步引導。</p>
-      <ul class="card-tags"><li>多語言</li><li>深色模式</li><li>OOBE 引導</li></ul>
+      <p>簡體中文 / 繁體中文 / English 可切換，支持深色模式和自定義主題色，界面可縮放 85% ~ 130%。首次啟動有六步引導。</p>
+      <ul class="card-tags"><li>簡 / 繁 / 英</li><li>深色模式</li><li>OOBE 引導</li></ul>
     </article>
   </div>
 </section>
@@ -439,6 +440,38 @@
   </div>
 
   <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.18</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>詳情頁新增「QRZ 呼號 / aprs.fi 位置」在線查看</div>
+        <div class="cl-item"><span class="cl-dot new"></span>新增繁體中文界面（設置 / OOBE 可選，全量翻譯）</div>
+        <div class="cl-item"><span class="cl-dot new"></span>接入官方 APRS 設備庫識別臺站設備（廠商型號 + 設備類別）</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.17</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>臺站篩選重做為單行常駐 chips，即點即篩，去掉 FMO 篩選項</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.16</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>臺站篩選支持精確到具體設備型號（官方 tocalls 識別）</div>
+      </div>
+    </div>
+
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.5</span>

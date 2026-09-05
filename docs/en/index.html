@@ -278,9 +278,9 @@
 
     <article class="card reveal">
       <div class="card-icon c4"><i class="fa-solid fa-shield"></i></div>
-      <h3>Station Recognition</h3>
-      <p>Identifies FMO stations (by APFMO path and comment field), and highlights fellow APRSlocus users. All 37 symbol tables and 3571 standard icons are supported.</p>
-      <ul class="card-tags"><li>FMO Detection</li><li>Peer Marking</li><li>Official Icon Set</li></ul>
+      <h3>Station Recognition &amp; Filter</h3>
+      <p>Recognizes station devices via the official aprs.org database (tocalls): vendor + model + device class (rig / HT / tracker / app / gateway…). Filter by status, type, device class or exact model; jump to QRZ callsign DB or aprs.fi for tracks from the details page.</p>
+      <ul class="card-tags"><li>Official Device ID</li><li>Class / Model Filter</li><li>QRZ / aprs.fi</li></ul>
     </article>
 
     <article class="card reveal">
@@ -307,8 +307,8 @@
     <article class="card reveal">
       <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
       <h3>Personalization</h3>
-      <p>Chinese / English UI, dark mode, custom accent colors, scalable UI (85%–130%). Six-step onboarding wizard on first launch.</p>
-      <ul class="card-tags"><li>Multi-language</li><li>Dark Mode</li><li>OOBE Wizard</li></ul>
+      <p>Simplified Chinese / Traditional Chinese / English UI, dark mode, custom accent colors, scalable UI (85%–130%). Six-step onboarding wizard on first launch.</p>
+      <ul class="card-tags"><li>ZH / ZH-TW / EN</li><li>Dark Mode</li><li>OOBE Wizard</li></ul>
     </article>
   </div>
 </section>
@@ -434,6 +434,38 @@
   </div>
 
   <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.18</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New: "QRZ callsign / aprs.fi position" online lookup on station details</div>
+        <div class="cl-item"><span class="cl-dot new"></span>New: Traditional Chinese (繁體中文) UI — selectable in Settings / OOBE, fully translated</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Official APRS device ID via aprs.org database — vendor + model + device class</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.17</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>Station filter redesigned to single-row tap-to-filter chips; removed the FMO option</div>
+      </div>
+    </div>
+
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.16</span>
+        <span class="cl-date">2026-09-05</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Filter stations down to a specific device model (official tocalls recognition)</div>
+      </div>
+    </div>
+
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.5</span>
