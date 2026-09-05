@@ -13,7 +13,7 @@
 [![Version](https://img.shields.io/badge/Version-1.6.18-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
-作者：[BG7LZQ (Darion)](https://theez.top) · 最新版發布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
+作者：[BG7LZQ (Darion)](https://theez.top) · 官網：[aprslocus.theez.top](https://aprslocus.theez.top/) · 最新版發布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
 
 **🌐 語言 / Language：** [簡體中文](README.md) · [English](README.en.md) · [繁體中文](README.zh-TW.md)
 
@@ -394,6 +394,7 @@ Android 端使用前臺服務持續定位以保持 APRS 在線，可在"定位 /
 | 渠道 | 地址 |
 |------|------|
 | **GitHub 倉庫** | https://github.com/dariondong/APRSLocus |
+| **官網** | https://aprslocus.theez.top/ |
 | **GitCode 倉庫** | https://gitcode.com/DarionDong/APRSLocus |
 | **作者網站** | https://theez.top |
 | **QQ 交流群** | https://qm.qq.com/q/8pL6vc5YA0 |
