@@ -4964,6 +4964,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'人生真是喵喵又咪咪啊'**
   String get eggBg2hcb;
+
+  /// No description provided for @deviceInfoTitle.
+  String get deviceInfoTitle;
+
+  /// No description provided for @deviceToCall.
+  String get deviceToCall;
+
+  /// No description provided for @deviceModel.
+  String get deviceModel;
+
+  /// No description provided for @deviceClass.
+  String get deviceClass;
 }
 
 class _AppLocalizationsDelegate

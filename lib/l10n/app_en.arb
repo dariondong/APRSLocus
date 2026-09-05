@@ -830,5 +830,9 @@
   "settingsFilterHint": "Only receive station packets within the configured range",
   "settingsReceivePrefHint": "Besides range filter, receive stations by country/region group or exact callsign",
   "settingsContribCodeOptimization": "Code optimization",
-  "eggBg2hcb": "Life is all meow-meow and mimi~"
+  "eggBg2hcb": "Life is all meow-meow and mimi~",
+  "deviceInfoTitle": "Device identification",
+  "deviceToCall": "To-call",
+  "deviceModel": "Model",
+  "deviceClass": "Device class"
 }

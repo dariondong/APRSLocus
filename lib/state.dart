@@ -12,6 +12,7 @@ import 'models.dart';
 import 'mock_data.dart';
 import 'services.dart';
 import 'aprs_parse.dart';
+import 'aprs_device.dart';
 import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
@@ -827,7 +828,19 @@ class AppState extends ChangeNotifier {
         .catchError((_) {});
   }
 
+  /// 初始化官方 APRS 设备识别库：内置快照/本地缓存先行，随后静默拉取官方更新。
+  /// 就绪/更新完成后刷新台站版本，让列表设备标签与设备类别筛选生效。
+  void _initDeviceDb() {
+    AprsDevice.instance.onReady = () {
+      if (_disposed) return;
+      _bumpStationsVersion();
+      _notify();
+    };
+    unawaited(AprsDevice.instance.ensureLoaded());
+  }
+
   AppState() : stations = <Station>[], messages = <AprsMsg>[] {
+    _initDeviceDb();
     _loadPrefs();
     loc.onFix = _onFix;
     loc.onStatus = (s) {
@@ -1316,10 +1329,20 @@ class AppState extends ChangeNotifier {
       if (sep < 0 || bodySep < 0) return;
       final src = line.substring(0, sep).trim();
       final body = line.substring(bodySep + 1);
-      // 提取路径（src>path:body），识别多跳转发链路
+      // 提取路径（src>dest,digi1,digi2:body），识别多跳转发链路
       String path = '';
+      String toCall = ''; // 目的呼号（路径首段，APxxxx），设备识别依据
       if (bodySep > sep + 1) {
         path = line.substring(sep + 1, bodySep).trim();
+        final first = path.split(RegExp(r'[, ]')).first.trim().toUpperCase();
+        // APRS/TCPIP*/BEACON 等通用目的呼号无设备识别价值，不入库
+        if (first.isNotEmpty &&
+            first != 'APRS' &&
+            first != 'TCPIP*' &&
+            first != 'BEACON' &&
+            first != 'MAIL') {
+          toCall = first;
+        }
       }
       var type = 'position';
       var info = body;
@@ -1399,7 +1422,13 @@ class AppState extends ChangeNotifier {
           body.startsWith('@')) {
         final p = parseAprsPosition(body);
         if (p != null) {
-          _upsertStation(src, p, raw: line, path: path.isEmpty ? null : path);
+          _upsertStation(
+            src,
+            p,
+            raw: line,
+            path: path.isEmpty ? null : path,
+            toCall: toCall,
+          );
           info =
               '${p.lat.toStringAsFixed(4)}, ${p.lng.toStringAsFixed(4)}'
               '${p.speed != null ? ' · ${p.speed!.toStringAsFixed(0)}km/h' : ''}'
@@ -1761,7 +1790,8 @@ class AppState extends ChangeNotifier {
 
   /// 将解码后的位置更新/添加到台站列表（地图/列表实时可见）
   /// raw 为原始数据包（用于识别 FMO 等特殊台站字段）
-  void _upsertStation(String call, ParsedPos p, {String? raw, String? path}) {
+  void _upsertStation(String call, ParsedPos p,
+      {String? raw, String? path, String? toCall}) {
     // 国家/地区接收筛选：未选择国家时不限制；
     // 开启「其他台站」时放行特殊类型（中继/气象/FMO/APRSlocus）；
     // 否则仅保留匹配国家前缀的台站（收藏/手动台站除外）
@@ -1858,6 +1888,7 @@ class AppState extends ChangeNotifier {
       s.symbolTable = symbolTable;
       s.symbol = symbol;
       if (path != null) s.path = path;
+      if (toCall != null && toCall.isNotEmpty) s.toCall = toCall;
       if (fmoInfo != null) s.fmo = {...?s.fmo, ...fmoInfo};
       if (apInfo != null) s.aprslocus = {...?s.aprslocus, ...apInfo};
       if (comment != null) s.comment = comment;
@@ -1931,6 +1962,7 @@ class AppState extends ChangeNotifier {
           fmo: fmoInfo,
           aprslocus: apInfo,
           path: path,
+          toCall: toCall,
         ),
       );
       _stationsDirty = true;
@@ -2051,6 +2083,8 @@ class AppState extends ChangeNotifier {
                   'favorite': s.favorite,
                   'manual': s.manual,
                   if (s.path != null) 'path': s.path,
+                  if (s.toCall != null && s.toCall!.isNotEmpty)
+                    'toCall': s.toCall,
                   if (s.fmo != null) 'fmo': s.fmo,
                   if (s.aprslocus != null) 'aprslocus': s.aprslocus,
                 },
@@ -2076,6 +2110,10 @@ class AppState extends ChangeNotifier {
           stations[idx].favorite = m['favorite'] as bool? ?? false;
           stations[idx].manual = m['manual'] as bool? ?? false;
           stations[idx].path = m['path'] as String?;
+          final savedToCall = m['toCall'] as String?;
+          if (savedToCall != null && savedToCall.isNotEmpty) {
+            stations[idx].toCall = savedToCall;
+          }
           final apMap = m['aprslocus'];
           if (apMap is Map) {
             stations[idx].aprslocus = apMap.map(
@@ -2112,6 +2150,9 @@ class AppState extends ChangeNotifier {
               favorite: favorite,
               manual: manual,
               path: m['path'] as String?,
+              toCall: (m['toCall'] as String?)?.isNotEmpty == true
+                  ? m['toCall'] as String?
+                  : null,
               aprslocus: apMap is Map
                   ? apMap.map((k, v) => MapEntry(k.toString(), v.toString()))
                   : null,
@@ -2481,12 +2522,24 @@ class AppState extends ChangeNotifier {
       }
       final src = raw.substring(0, sep).trim();
       final body = raw.substring(bodySep + 1);
+      String toCall = '';
+      if (bodySep > sep + 1) {
+        final pathSeg = raw.substring(sep + 1, bodySep).trim();
+        final first = pathSeg.split(RegExp(r'[, ]')).first.trim().toUpperCase();
+        if (first.isNotEmpty &&
+            first != 'APRS' &&
+            first != 'TCPIP*' &&
+            first != 'BEACON' &&
+            first != 'MAIL') {
+          toCall = first;
+        }
+      }
       if (body.startsWith('!') ||
           body.startsWith('=') ||
           body.startsWith('@')) {
         final p = parseAprsPosition(body);
         if (p != null) {
-          _upsertStation(src, p, raw: raw);
+          _upsertStation(src, p, raw: raw, toCall: toCall);
           _pushPacket(
             Packet(
               raw.trim(),

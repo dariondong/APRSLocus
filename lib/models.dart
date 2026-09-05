@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
+import 'aprs_device.dart';
 
 enum St { online, moving, stopped, emergency, offline }
 
@@ -22,6 +23,29 @@ class Station {
   Map<String, String>? fmo;
   Map<String, String>? aprslocus; // APRSlocus 专属信息（版本等）
   String? path; // 最近一次数据包的转发路径（如 WIDE1-1,WIDE2-1）
+  String? toCall; // 目的呼号（APxxxx），官方 tocalls 设备识别的依据
+
+  /// 目的呼号对应的设备（未识别/未加载返回 null）
+  AprsDeviceInfo? get device => AprsDevice.instance.lookup(toCall);
+
+  /// 识别出的设备展示名（无有效识别时为 null）
+  String? get deviceName {
+    final d = device;
+    if (d == null || !d.isKnown) return null;
+    return d.displayName;
+  }
+
+  /// 设备类别 key（wx/tracker/rig/ht/app/software/igate/…，无类别归 other）
+  String? get deviceClassKey => device?.classKey;
+
+  /// 设备类别中文/英文展示名（跟随界面语言）
+  String deviceClassLabel(BuildContext context) {
+    final k = deviceClassKey;
+    if (k == null) return '';
+    final zh = (Localizations.maybeLocaleOf(context)?.languageCode ?? 'zh') ==
+        'zh';
+    return DeviceClassNames.labelOf(k, zh);
+  }
   bool favorite;
   bool manual; // 手动添加的联系人
   /// 速度/高度遥测历史（内存态，与 track 一致不持久化）
@@ -46,6 +70,7 @@ class Station {
     this.fmo,
     this.aprslocus,
     this.path,
+    this.toCall,
     this.favorite = false,
     this.manual = false,
   });

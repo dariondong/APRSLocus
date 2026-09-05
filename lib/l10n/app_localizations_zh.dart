@@ -2774,4 +2774,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get eggBg2hcb => '人生真是喵喵又咪咪啊';
+
+  @override
+  String get deviceInfoTitle => '设备识别';
+
+  @override
+  String get deviceToCall => '目的呼号';
+
+  @override
+  String get deviceModel => '设备型号';
+
+  @override
+  String get deviceClass => '设备类别';
 }

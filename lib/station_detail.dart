@@ -407,6 +407,11 @@ class _StationDetailState extends State<StationDetail> {
                           ),
                         ],
                       ),
+                      // 设备识别信息（官方 tocalls 目的呼号识别）
+                      if (_deviceCard(context, s) != null) ...[
+                        SizedBox(height: 14),
+                        _deviceCard(context, s)!,
+                      ],
                       if (widget.state.myStation != null) ...[
                         SizedBox(height: 10),
                         Container(
@@ -855,6 +860,46 @@ class _StationDetailState extends State<StationDetail> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// 设备识别信息卡：识别到官方设备（或可显示目的呼号）时展示。
+  /// 未识别返回 null（不占位）。
+  Widget? _deviceCard(BuildContext context, Station s) {
+    final dev = s.device;
+    final toCall = (s.toCall ?? '').trim();
+    final showCall = toCall.isNotEmpty &&
+        toCall.toUpperCase() != 'APRS' &&
+        toCall.toUpperCase() != 'BEACON';
+    // APRSlocus 同款软件台站已有专属信息卡，不再重复展示目的呼号
+    final isSelf = (s.aprslocus?.isNotEmpty ?? false);
+    if (dev == null && (!showCall || isSelf)) return null;
+    final name = s.deviceName;
+    final clsKey = s.deviceClassKey;
+    final clsLabel = clsKey == null ? '' : s.deviceClassLabel(context);
+    return SoftCard(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.devices_rounded, size: 14, color: C.indigo),
+              SizedBox(width: 6),
+              Text(
+                S.of(context).deviceInfoTitle,
+                style: ts(12, c: C.indigo, w: FontWeight.w700),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          if (showCall && !isSelf)
+            ...[KV(S.of(context).deviceToCall, toCall, icon: Icons.tag_rounded), SizedBox(height: 8)],
+          if (name != null) ...[KV(S.of(context).deviceModel, name, icon: Icons.router_rounded), SizedBox(height: 8)],
+          if (clsLabel.isNotEmpty)
+            KV(S.of(context).deviceClass, clsLabel, icon: Icons.category_rounded),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'models.dart';
 import 'state.dart';
+import 'aprs_device.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
 
@@ -20,6 +21,7 @@ class _StationsPageState extends State<StationsPage> {
   String _filter = 'all'; // 状态筛选
   String _type = 'all'; // 类型筛选
   String _app = 'all'; // 软件筛选：all / aprslocus
+  String _dev = 'all'; // 设备类别筛选：all / 官方 tocalls 类别 key
   String _sort = 'call';
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce; // 搜索防抖：台站多时避免逐字重建列表
@@ -45,7 +47,7 @@ class _StationsPageState extends State<StationsPage> {
 
   List<Station> _list(AppState st) {
     final key =
-        '${st.stationsVersion}|$_filter|$_type|$_app|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
+        '${st.stationsVersion}|$_filter|$_type|$_app|$_dev|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
     if (key == _cacheKey && st.stationsVersion == _cacheVersion) {
       return _cacheList;
     }
@@ -60,6 +62,7 @@ class _StationsPageState extends State<StationsPage> {
                 s.call.toLowerCase().contains(q) ||
                 s.typeName.contains(q) ||
                 (s.comment ?? '').contains(q) ||
+                (s.deviceName ?? '').toLowerCase().contains(q) ||
                 s.grid.contains(q),
           )
           .toList();
@@ -91,6 +94,9 @@ class _StationsPageState extends State<StationsPage> {
       case 'fmo':
         s = s.where((s) => s.typeGroup == TypeGroup.fmo).toList();
         break;
+    }
+    if (_dev != 'all') {
+      s = s.where((s) => s.deviceClassKey == _dev).toList();
     }
     switch (_app) {
       case 'aprslocus':
@@ -139,6 +145,8 @@ class _StationsPageState extends State<StationsPage> {
       builder: (context, _) {
         final st = widget.state;
         final list = _list(st);
+        // 设备类别筛选 chips（当前接收范围内出现的类别）
+        final devChips = _deviceChips(context, st);
         // 横屏屏幕矮：隐藏统计框，避免头部过高溢出
         final landscape =
             MediaQuery.of(context).orientation == Orientation.landscape;
@@ -254,12 +262,16 @@ class _StationsPageState extends State<StationsPage> {
                       children: [
                         _miniChip(
                           S.of(context).all,
-                          _filter == 'all' && _type == 'all' && _app == 'all',
+                          _filter == 'all' &&
+                              _type == 'all' &&
+                              _app == 'all' &&
+                              _dev == 'all',
                           C.slate,
                           () => setState(() {
                             _filter = 'all';
                             _type = 'all';
                             _app = 'all';
+                            _dev = 'all';
                           }),
                         ),
                         _miniChip(
@@ -344,6 +356,8 @@ class _StationsPageState extends State<StationsPage> {
                                 : 'aprslocus',
                           ),
                         ),
+                        // 设备类别筛选（官方 tocalls 识别结果）
+                        if (devChips.isNotEmpty) ...[Container(width: 1, height: 16, color: C.border), ...devChips],
                       ],
                     ),
                   ],
@@ -399,6 +413,65 @@ class _StationsPageState extends State<StationsPage> {
           Text(
             value,
             style: ts(11, c: c, w: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 设备类别筛选 chips：统计接收范围内台站识别出的设备类别，仅出现过的生成 chip。
+  /// 设备库未就绪（无识别）时不显示该分组。
+  List<Widget> _deviceChips(BuildContext context, AppState st) {
+    final counts = <String, int>{};
+    for (final s in st.stations) {
+      if (!st.stationAllowedFor(s)) continue;
+      final k = s.deviceClassKey;
+      if (k != null && k.isNotEmpty) counts[k] = (counts[k] ?? 0) + 1;
+    }
+    if (counts.isEmpty) return const [];
+    // 已选中的类别即使当前无台站也保留 chip（避免筛选项消失无法取消）
+    if (_dev != 'all' && !counts.containsKey(_dev)) counts[_dev] = 0;
+    final zh =
+        (Localizations.maybeLocaleOf(context)?.languageCode ?? 'zh') == 'zh';
+    final order = <String>[];
+    // 稳定排序：优先按设备库固定顺序，剩余按台站遍历序
+    for (final k in AprsDevice.instance.classKeys) {
+      if (counts.containsKey(k) && !order.contains(k)) order.add(k);
+    }
+    for (final k in counts.keys) {
+      if (!order.contains(k)) order.add(k);
+    }
+    return [
+      for (final k in order)
+        _miniChip(
+          DeviceClassNames.labelOf(k, zh),
+          _dev == k,
+          C.indigo,
+          () => setState(() => _dev = _dev == k ? 'all' : k),
+        ),
+    ];
+  }
+
+  /// 行内设备标签（识别到厂商/型号才显示）
+  Widget _devicePill(Station s) {
+    final name = s.deviceName;
+    if (name == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: C.indigo.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.devices_rounded, size: 11, color: C.indigo),
+          SizedBox(width: 3),
+          Text(
+            name,
+            style: ts(10, c: C.indigo, w: FontWeight.w700),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -531,11 +604,19 @@ class _StationsPageState extends State<StationsPage> {
                         ],
                       ),
                       SizedBox(height: 2),
-                      Text(
-                        '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
-                        style: ts(11, c: C.slate),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
+                              style: ts(11, c: C.slate),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          // 识别出的设备标签（目的呼号 → 官方 tocalls）
+                          if (s.deviceName != null) ...[SizedBox(width: 6), _devicePill(s)],
+                        ],
                       ),
                       SizedBox(height: 6),
                       Wrap(

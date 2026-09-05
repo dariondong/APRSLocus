@@ -31,6 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/aprs_syms/
+    - assets/aprs_device/
     - assets/osl.png
     - assets/logobg.jfif
     - assets/WechatPay.jpg

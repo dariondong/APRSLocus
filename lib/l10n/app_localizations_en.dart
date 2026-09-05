@@ -2837,4 +2837,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eggBg2hcb => 'Life is all meow-meow and mimi~';
+
+  @override
+  String get deviceInfoTitle => 'Device identification';
+
+  @override
+  String get deviceToCall => 'To-call';
+
+  @override
+  String get deviceModel => 'Model';
+
+  @override
+  String get deviceClass => 'Device class';
 }

@@ -293,7 +293,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             (s) =>
                 s.call.toLowerCase().contains(q) ||
                 s.typeName.contains(q) ||
-                s.alias.contains(q),
+                s.alias.contains(q) ||
+                (s.deviceName ?? '').toLowerCase().contains(q),
           )
           .toList();
     }
