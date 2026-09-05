@@ -405,6 +405,21 @@ class _StationDetailState extends State<StationDetail> {
                               _openNavigation(s);
                             },
                           ),
+                          // 在线查询：QRZ（去 SSID 查基础呼号）/ aprs.fi（完整呼号）
+                          _action(
+                            Icons.badge_rounded,
+                            S.of(context).lookupQrz,
+                            () => _openUrl(
+                              'https://www.qrz.com/db/${s.baseCall}',
+                            ),
+                          ),
+                          _action(
+                            Icons.public_rounded,
+                            S.of(context).lookupAprsFi,
+                            () => _openUrl(
+                              'https://aprs.fi/info/a/${s.call}',
+                            ),
+                          ),
                         ],
                       ),
                       // 设备识别信息（官方 tocalls 目的呼号识别）
@@ -932,6 +947,20 @@ class _StationDetailState extends State<StationDetail> {
         ),
       ),
     );
+  }
+
+  /// 用系统浏览器打开外站查询链接（QRZ / aprs.fi），失败提示
+  Future<void> _openUrl(String url) async {
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return;
+      }
+      await launchUrl(uri);
+    } catch (_) {
+      _toast(S.of(context).linkOpenFailed);
+    }
   }
 
   Future<void> _openNavigation(Station s) async {

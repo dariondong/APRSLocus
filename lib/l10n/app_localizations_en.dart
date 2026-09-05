@@ -2852,4 +2852,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deviceFilter => 'Device filter';
+
+  @override
+  String get lookupQrz => 'QRZ callsign';
+
+  @override
+  String get lookupAprsFi => 'aprs.fi position';
+
+  @override
+  String get linkOpenFailed => 'Unable to open link';
 }

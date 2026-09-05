@@ -835,5 +835,8 @@
   "deviceToCall": "To-call",
   "deviceModel": "Model",
   "deviceClass": "Device class",
-  "deviceFilter": "Device filter"
+  "deviceFilter": "Device filter",
+  "lookupQrz": "QRZ callsign",
+  "lookupAprsFi": "aprs.fi position",
+  "linkOpenFailed": "Unable to open link"
 }

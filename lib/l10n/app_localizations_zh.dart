@@ -2789,4 +2789,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get deviceFilter => '设备筛选';
+
+  @override
+  String get lookupQrz => 'QRZ 呼号';
+
+  @override
+  String get lookupAprsFi => 'aprs.fi 位置';
+
+  @override
+  String get linkOpenFailed => '无法打开链接';
 }

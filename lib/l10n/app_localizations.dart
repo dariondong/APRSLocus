@@ -4979,6 +4979,15 @@ abstract class AppLocalizations {
 
   /// No description provided for @deviceFilter.
   String get deviceFilter;
+
+  /// No description provided for @lookupQrz.
+  String get lookupQrz;
+
+  /// No description provided for @lookupAprsFi.
+  String get lookupAprsFi;
+
+  /// No description provided for @linkOpenFailed.
+  String get linkOpenFailed;
 }
 
 class _AppLocalizationsDelegate
