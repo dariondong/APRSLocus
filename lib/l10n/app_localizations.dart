@@ -4976,6 +4976,9 @@ abstract class AppLocalizations {
 
   /// No description provided for @deviceClass.
   String get deviceClass;
+
+  /// No description provided for @deviceFilter.
+  String get deviceFilter;
 }
 
 class _AppLocalizationsDelegate

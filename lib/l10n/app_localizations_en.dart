@@ -2849,4 +2849,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deviceClass => 'Device class';
+
+  @override
+  String get deviceFilter => 'Device filter';
 }

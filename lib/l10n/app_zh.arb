@@ -1422,5 +1422,6 @@
   "deviceInfoTitle": "设备识别",
   "deviceToCall": "目的呼号",
   "deviceModel": "设备型号",
-  "deviceClass": "设备类别"
+  "deviceClass": "设备类别",
+  "deviceFilter": "设备筛选"
 }

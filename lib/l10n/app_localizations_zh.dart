@@ -2786,4 +2786,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get deviceClass => '设备类别';
+
+  @override
+  String get deviceFilter => '设备筛选';
 }

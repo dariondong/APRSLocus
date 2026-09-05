@@ -834,5 +834,6 @@
   "deviceInfoTitle": "Device identification",
   "deviceToCall": "To-call",
   "deviceModel": "Model",
-  "deviceClass": "Device class"
+  "deviceClass": "Device class",
+  "deviceFilter": "Device filter"
 }
