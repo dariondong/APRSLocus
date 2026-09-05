@@ -22,6 +22,7 @@ class _StationsPageState extends State<StationsPage> {
   String _type = 'all'; // 类型筛选
   String _app = 'all'; // 软件筛选：all / aprslocus
   String _dev = 'all'; // 设备类别筛选：all / 官方 tocalls 类别 key
+  String _model = 'all'; // 具体设备筛选：all / 识别出的 厂商型号(displayName)
   String _sort = 'call';
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce; // 搜索防抖：台站多时避免逐字重建列表
@@ -47,7 +48,7 @@ class _StationsPageState extends State<StationsPage> {
 
   List<Station> _list(AppState st) {
     final key =
-        '${st.stationsVersion}|$_filter|$_type|$_app|$_dev|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
+        '${st.stationsVersion}|$_filter|$_type|$_app|$_dev|$_model|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
     if (key == _cacheKey && st.stationsVersion == _cacheVersion) {
       return _cacheList;
     }
@@ -97,6 +98,9 @@ class _StationsPageState extends State<StationsPage> {
     }
     if (_dev != 'all') {
       s = s.where((s) => s.deviceClassKey == _dev).toList();
+    }
+    if (_model != 'all') {
+      s = s.where((s) => (s.deviceName ?? '') == _model).toList();
     }
     switch (_app) {
       case 'aprslocus':
@@ -264,13 +268,15 @@ class _StationsPageState extends State<StationsPage> {
                           _filter == 'all' &&
                               _type == 'all' &&
                               _app == 'all' &&
-                              _dev == 'all',
+                              _dev == 'all' &&
+                              _model == 'all',
                           C.slate,
                           () => setState(() {
                             _filter = 'all';
                             _type = 'all';
                             _app = 'all';
                             _dev = 'all';
+                            _model = 'all';
                           }),
                         ),
                         _miniChip(
@@ -370,7 +376,24 @@ class _StationsPageState extends State<StationsPage> {
 
   /// 除状态外是否还有分类筛选生效（类型/软件/设备类别）
   bool get _hasCategoryFilter =>
-      _type != 'all' || _app != 'all' || _dev != 'all';
+      _type != 'all' || _app != 'all' || _dev != 'all' || _model != 'all';
+
+  /// 当前接收范围内台站识别出的具体设备名（去重，出现多的在前，含已选中兜底）
+  List<String> _deviceModelOptions(AppState st) {
+    final counts = <String, int>{};
+    for (final s in st.stations) {
+      if (!st.stationAllowedFor(s)) continue;
+      final n = s.deviceName;
+      if (n != null && n.isNotEmpty) counts[n] = (counts[n] ?? 0) + 1;
+    }
+    if (_model != 'all' && !counts.containsKey(_model)) counts[_model] = 0;
+    final list = counts.keys.toList()
+      ..sort((a, b) {
+        final c = (counts[b] ?? 0).compareTo(counts[a] ?? 0);
+        return c != 0 ? c : a.compareTo(b);
+      });
+    return list;
+  }
 
   /// 当前接收范围内台站识别出的设备类别 key（有序，含已选中兜底）
   List<String> _deviceClassKeys(AppState st) {
@@ -490,6 +513,12 @@ class _StationsPageState extends State<StationsPage> {
             C.indigo,
             () => setState(() => _dev = 'all'),
           ),
+        if (_model != 'all')
+          _tagChip(
+            _model,
+            C.blueDark,
+            () => setState(() => _model = 'all'),
+          ),
         _miniChip(
           S.of(context).clearAll,
           false,
@@ -498,6 +527,7 @@ class _StationsPageState extends State<StationsPage> {
             _type = 'all';
             _app = 'all';
             _dev = 'all';
+            _model = 'all';
           }),
         ),
       ],
@@ -535,6 +565,7 @@ class _StationsPageState extends State<StationsPage> {
     final st = widget.state;
     final zh = _zh(context);
     final devKeys = _deviceClassKeys(st);
+    final _modelOptions = _deviceModelOptions(st);
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -555,21 +586,29 @@ class _StationsPageState extends State<StationsPage> {
             VoidCallback tap,
           ) => GestureDetector(
             onTap: tap,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: selected ? c.withValues(alpha: 0.12) : C.bgSoft,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: selected ? c.withValues(alpha: 0.4) : C.border,
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(sheetCtx).size.width - 84,
               ),
-              child: Text(
-                label,
-                style: ts(
-                  12,
-                  c: selected ? c : C.ink,
-                  w: selected ? FontWeight.w700 : FontWeight.w500,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: selected ? c.withValues(alpha: 0.12) : C.bgSoft,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: selected ? c.withValues(alpha: 0.4) : C.border,
+                  ),
+                ),
+                child: Text(
+                  label,
+                  style: ts(
+                    12,
+                    c: selected ? c : C.ink,
+                    w: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
                 ),
               ),
             ),
@@ -608,6 +647,7 @@ class _StationsPageState extends State<StationsPage> {
                           _type = 'all';
                           _app = 'all';
                           _dev = 'all';
+                          _model = 'all';
                         }),
                         child: Text(
                           S.of(sheetCtx).clearAll,
@@ -729,6 +769,26 @@ class _StationsPageState extends State<StationsPage> {
                                 _dev == k,
                                 C.indigo,
                                 () => apply(() => _dev = _dev == k ? 'all' : k),
+                              ),
+                          ],
+                        )],
+                        // ── 具体设备（识别到的厂商型号）──
+                        if (_modelOptions.isNotEmpty) ...[SizedBox(height: 12), groupTitle(S.of(sheetCtx).deviceModel), Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            opt(
+                              S.of(sheetCtx).all,
+                              _model == 'all',
+                              C.slate,
+                              () => apply(() => _model = 'all'),
+                            ),
+                            for (final m in _modelOptions)
+                              opt(
+                                m,
+                                _model == m,
+                                C.blueDark,
+                                () => apply(() => _model = _model == m ? 'all' : m),
                               ),
                           ],
                         )],
