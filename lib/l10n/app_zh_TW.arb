@@ -1,0 +1,1431 @@
+{
+  "@@locale": "zh_TW",
+  "appName": "APRSlocus",
+  "ok": "確定",
+  "cancel": "取消",
+  "save": "儲存",
+  "delete": "刪除",
+  "confirm": "確認",
+  "back": "返回",
+  "next": "下一步",
+  "finish": "完成並連線",
+  "previous": "上一步",
+  "search": "搜尋",
+  "settings": "設定",
+  "greetMorning": "早上好，",
+  "greetNoon": "中午好，",
+  "greetAfternoon": "下午好，",
+  "greetEvening": "晚上好，",
+  "greetNight": "夜深了，",
+  "about": "關於",
+  "logout": "退出",
+  "retry": "重試",
+  "all": "全部",
+  "online": "線上",
+  "offline": "離線",
+  "moving": "移動",
+  "emergency": "緊急",
+  "fixed": "固定",
+  "infrastructure": "中繼",
+  "weather": "氣象",
+  "fmo": "FMO",
+  "mobile": "車載",
+  "favorite": "收藏",
+  "grid": "網格",
+  "callsign": "呼號",
+  "speed": "速度",
+  "altitude": "高度",
+  "course": "航向",
+  "distance": "距離",
+  "bearing": "方位角",
+  "lastSeen": "最近活躍",
+  "latitude": "緯度",
+  "longitude": "經度",
+  "station": "臺站",
+  "stations": "臺站",
+  "messages": "訊息",
+  "packets": "資料包",
+  "map": "地圖",
+  "home": "首頁",
+  "connection": "連線",
+  "connected": "已連線",
+  "disconnected": "未連線",
+  "connecting": "連線中",
+  "reconnect": "重新連線",
+  "server": "伺服器",
+  "port": "埠",
+  "passcode": "Passcode",
+  "beacon": "位置信標",
+  "beaconInterval": "上報間隔(秒)",
+  "nextBeacon": "下次上報",
+  "beaconsSent": "信標傳送次數",
+  "filter": "接收範圍過濾",
+  "filterRadius": "過濾半徑(km)",
+  "maxStations": "最大臺站數",
+  "receiveFilter": "接收呼號篩選",
+  "receiveCountries": "國家/地區",
+  "receiveOthers": "其他臺站",
+  "darkMode": "深色模式",
+  "themeColor": "主題顏色",
+  "language": "語言",
+  "languageSystem": "跟隨系統",
+  "languageZh": "中文",
+  "languageEn": "English",
+  "languageZhTw": "繁體中文",
+  "displaySettings": "顯示設定",
+  "uiScale": "介面縮放",
+  "reloadUi": "重新載入介面",
+  "reloadDone": "已重新載入",
+  "mapType": "地圖型別",
+  "unit": "單位",
+  "coordDatum": "座標基準",
+  "stationSettings": "電臺設定",
+  "connectionSettings": "連線設定",
+  "chatSettings": "聊天設定",
+  "dataSettings": "資料設定",
+  "advancedSettings": "高階設定",
+  "sponsors": "贊助與鳴謝",
+  "sponsorsThanks": "感謝每一位支持者",
+  "send": "傳送",
+  "receive": "接收",
+  "clear": "清除",
+  "copy": "複製",
+  "copied": "已複製",
+  "version": "版本",
+  "location": "定位",
+  "gpsStatus": "GPS 狀態",
+  "myLocation": "我的位置",
+  "track": "軌跡",
+  "forwardingPath": "轉發路徑",
+  "relatedStations": "相關臺站",
+  "openInMap": "在地圖檢視",
+  "navigate": "導航",
+  "messageSent": "訊息已傳送",
+  "enterMessage": "輸入訊息",
+  "noData": "暫無資料",
+  "searchHint": "搜尋呼號 / 型別 / 網格 / 備註…",
+  "notFound": "未找到臺站",
+  "totalStations": "總數",
+  "sortBy": "排序",
+  "sortCall": "呼號",
+  "sortRecent": "最近",
+  "sortDistance": "距離",
+  "sortStatus": "狀態",
+  "typeFilter": "型別篩選",
+  "aprslocusOnly": "APRSlocus",
+  "confirmDelete": "確定要刪除嗎？",
+  "confirmRestartOobe": "將重新進入首次啟動向導，可重新設定呼號、接收地區等。\n當前設定不會丟失，完成嚮導後繼續使用。",
+  "restartWizard": "重新執行設定嚮導",
+  "restartWizardTitle": "重新執行設定嚮導？",
+  "oobeFilterTitle": "選擇接收地區",
+  "oobeFilterDesc": "預設只接收中國呼號臺站，可按需新增其他國家/地區",
+  "oobeWelcomeTitle": "歡迎使用 APRSlocus",
+  "oobeWelcomeRealMap": "實時地圖",
+  "oobeWelcomeGps": "GPS 定位上報",
+  "oobeWelcomeMsg": "APRS 訊息",
+  "oobeWelcomeIs": "接入 APRS-IS",
+  "oobeCallTitle": "你的呼號",
+  "oobeSymbolTitle": "選擇臺站符號",
+  "oobeServerTitle": "連線 APRS-IS 伺服器",
+  "weatherData": "氣象資料",
+  "fmoInfo": "FMO 臺站資訊",
+  "aprslocusInfo": "APRSlocus 資訊",
+  "locationInfo": "位置資訊",
+  "recentPackets": "最近資料包",
+  "quickActions": "快捷操作",
+  "copyCoords": "複製座標",
+  "copyGrid": "複製網格",
+  "sender": "傳送方",
+  "time": "時間",
+  "message": "訊息",
+  "groupChat": "群聊",
+  "newGroup": "新建群聊",
+  "sendTo": "傳送至",
+  "filterRule": "過濾規則",
+  "saveAndApply": "儲存並應用過濾",
+  "useMyLocation": "用我的位置作為過濾中心",
+  "noFixYet": "尚未定位，無法獲取當前位置",
+  "invalidCoords": "請輸入有效的經緯度和半徑",
+  "filterSaved": "過濾已儲存並應用",
+  "stationsShown": "臺站",
+  "settingsDesc": "配置電臺、定位與連線",
+  "radioCat": "電臺",
+  "radioCatDesc": "呼號 · SSID · 符號",
+  "beaconCat": "定位上報",
+  "beaconCatDesc": "GPS · 信標 · 手動定位",
+  "connectionCat": "連線",
+  "connectionCatDesc": "伺服器 · 過濾範圍",
+  "displayCat": "顯示",
+  "displayCatDesc": "座標 · 主題",
+  "chatCat": "聊天",
+  "chatCatDesc": "記錄 · 聯絡人",
+  "dataCat": "資料",
+  "dataCatDesc": "清除本地資料",
+  "advancedCat": "高階",
+  "advancedCatDesc": "實驗室 · 開發者",
+  "updateCat": "更新",
+  "updateCatDesc": "檢查新版本",
+  "checkUpdate": "檢查更新",
+  "myStationSettings": "我的電臺",
+  "myStationSettingsDesc": "呼號 · SSID · 符號 · 信標",
+  "oobeWelcomeDesc": "開始配置你的 APRS 電臺",
+  "oobeCallDesc": "輸入你的呼號",
+  "oobeSymbolDesc": "符號代表臺站型別，會隨位置信標一起傳送",
+  "oobeServerDesc": "連線後接收全球 APRS 臺站資料，可保持預設配置直接使用",
+  "wizard": "設定嚮導",
+  "setStep": "步驟",
+  "chooseSymbol": "選擇臺站符號",
+  "settingsSubtitle": "地圖座標與顯示偏好",
+  "stationSettingsSubtitle": "呼號、符號與信標",
+  "connectionSettingsSubtitle": "APRS-IS 伺服器與接收範圍",
+  "chatSettingsSubtitle": "訊息記錄與聯絡人",
+  "dataSettingsSubtitle": "本地資料管理",
+  "advancedSettingsSubtitle": "實驗室與開發者工具",
+  "stationListTitle": "臺站列表",
+  "filters": "篩選",
+  "clearAll": "全部清除",
+  "statusFilter": "狀態",
+  "typeGroup": "型別",
+  "appFilter": "軟體",
+  "mapMenu": "地圖選單",
+  "mapTypeTitle": "地圖型別",
+  "selectMapType": "選擇地圖型別",
+  "showTrails": "顯示軌跡",
+  "showStations": "顯示臺站",
+  "aboutTitle": "關於",
+  "aboutSubtitle": "APRS 定位追蹤與地圖",
+  "author": "作者",
+  "codeContributions": "程式碼貢獻",
+  "codeContributionI18n": "國際化 / 英文介面",
+  "licenseSection": "許可證宣告",
+  "licenseName": "GNU GPL v3",
+  "licenseStatement": "本軟體依據 GNU GPL v3 開源許可證釋出。你可以在遵守許可證條款的前提下執行、研究、修改和再分發本軟體；修改和再分發時須遵守 GPL v3 的相應義務。本軟體不附帶任何擔保。",
+  "licenseText": "檢視許可證",
+  "oobeAgreeTitle": "使用者協議與許可",
+  "oobeAgreeBody": "歡迎使用 APRSlocus！在使用前，請閱讀並同意以下條款。請注意：APRS 資料是公開資訊，一旦傳送即代表其可能被全球 APRS 網路接收、儲存與轉發。",
+  "oobeAgreeCheck": "我已閱讀並同意《使用者協議》與 GPL-3.0 開源許可證",
+  "oobeAgreeNeed": "請先閱讀並勾選同意《使用者協議》",
+  "oobeDeclineExit": "不同意並退出",
+  "userAgreement": "使用者協議",
+  "beaconWarnTitle": "信標間隔過短",
+  "beaconWarnBody": "APRS-IS 建議移動站信標間隔不低於 60 秒。過快的上報可能被視為濫用並導致伺服器斷開連線。是否仍要使用該間隔？",
+  "beaconWarnKeep": "仍然使用",
+  "beaconWarnFix": "改回 60 秒",
+  "features": "功能特性",
+  "openSource": "開源致謝",
+  "feedback": "使用者反饋",
+  "officialWebsite": "官方網站",
+  "qqGroup": "QQ 交流群",
+  "projectRepo": "專案倉庫",
+  "testMembers": "測試成員",
+  "aiSupport": "AI 算力支援",
+  "copyAppInfo": "複製應用資訊",
+  "appInfoCopied": "已複製應用資訊",
+  "shareApp": "分享 APRSlocus",
+  "shareToSystem": "分享到系統",
+  "shareToSystemDesc": "微信 / QQ / 簡訊等",
+  "copyShareText": "複製分享文案",
+  "openDownload": "開啟下載頁",
+  "shareTextCopied": "分享文案已複製，可貼上傳送給好友",
+  "shareText": "APRSlocus —— 業餘無線電 APRS 定位追蹤與地圖 📡\n實時臺站追蹤、訊息收發、信標上報，Android / Windows 全平臺可用。\n官網：https://aprslocus.theez.top/\n下載：https://github.com/dariondong/APRSLocus/releases",
+  "enterCallsign": "請輸入你的呼號",
+  "enterValidCall": "請輸入有效呼號",
+  "stationSettings2": "電臺設定",
+  "beaconSettings": "定位上報",
+  "displaySettings2": "顯示設定",
+  "chatSettings2": "聊天設定",
+  "dataSettings2": "資料設定",
+  "advancedSettings2": "高階設定",
+  "connectionSettings2": "連線設定",
+  "myCallsign": "我的呼號",
+  "beaconEnabled": "啟用位置信標",
+  "smartBeacon": "智慧信標(移動加速)",
+  "packetConsole": "資料包控制檯",
+  "rawMode": "原始模式",
+  "parsedMode": "解析模式",
+  "position": "位置",
+  "statusType": "狀態",
+  "objectType": "物件",
+  "packetStats": "收 {rx} · 發 {tx} · {ppm}/分",
+  "searchPacket": "搜尋呼號、目的地或原始內容…",
+  "noMatchingPackets": "沒有匹配的資料包",
+  "inject": "注入",
+  "manualInject": "手動注入 APRS 資料包",
+  "injected": "已注入資料包",
+  "clearedPackets": "已清除資料包",
+  "clearPackets": "清除資料包",
+  "noPositionInfo": "{call} 暫無位置資訊（資料包未含位置）",
+  "copiedPacket": "已複製資料包",
+  "mapPickMode": "地圖選點模式",
+  "mapPickDesc": "點選地圖選擇我的位置",
+  "foundStations": "找到 {count} 臺匹配「{q}」",
+  "tapMapHint": "點選地圖檢視臺站 · 雙指縮放",
+  "myLocationPanel": "我的位置 · {call}",
+  "speedLabel": "速度",
+  "courseLabel": "航向",
+  "telemetryTitle": "速度 / 高度變化",
+  "range10m": "10 分鐘",
+  "range30m": "30 分鐘",
+  "range1h": "1 小時",
+  "range3h": "3 小時",
+  "rangeAll": "全部",
+  "beaconIntervalLabel": "上報間隔",
+  "beaconsSentLabel": "已上報",
+  "nextBeaconLabel": "下次上報",
+  "positionBeacon": "位置信標 · 網格 {grid}",
+  "manualBeacon": "手動上報",
+  "mapPickNow": "地圖選點",
+  "pickedCoord": "已在地圖選點 · {lat}, {lng} · 網格 {grid}",
+  "onlineCount": "{count} 線上",
+  "movingCount": "{count} 移動",
+  "stationCount": "{count} 臺站",
+  "locateMe": "定位",
+  "layerFilter": "圖層篩選",
+  "showAll": "全部顯示",
+  "otherType": "其他",
+  "zoomLevel": "縮放 {z}",
+  "datumGcj": "高德火星",
+  "datumWgs": "WGS-84",
+  "distKm": "距離 {d}km",
+  "noStationInView": "該區域暫無臺站 · 點選顯示全部",
+  "noStationHelp": "該區域暫無臺站 · 點選檢視幫助",
+  "mapHelpTitle": "地圖幫助",
+  "mapHelpIntro": "當前視野內沒有臺站。可能原因：未連線 APRS-IS、接收範圍較小或附近暫無活躍臺站。",
+  "mapHelpMove": "拖動 / 縮放：單指拖動地圖，雙指或滾輪縮放",
+  "mapHelpStation": "檢視臺站：點選標記選中並居中，雙擊開啟詳情",
+  "mapHelpLayer": "圖層與底圖：右上角按鈕篩選臺站型別、切換地圖樣式",
+  "mapHelpLocate": "定位：點選右下角「定位到我」回到當前位置",
+  "mapHelpSearch": "搜尋：頂部搜尋框輸入呼號可快速定位臺站",
+  "allChangelog": "全部更新日誌",
+  "tapToView": "點選檢視",
+  "beaconNow": "手動上報",
+  "meLabel": "我",
+  "mapZoomIn": "放大",
+  "mapZoomOut": "縮小",
+  "mapHome": "回到中心",
+  "mapLocate": "定位",
+  "mapLayers": "圖層",
+  "featureLiveMap": "高德地圖",
+  "featureLiveMapDesc": "GCJ-02 座標，流暢的縮放與拖拽體驗",
+  "featureGps": "GPS 定位",
+  "featureGpsDesc": "原生 Android 定位，無需 Google 服務",
+  "featureBeacon": "信標傳送",
+  "featureBeaconDesc": "自定義內容、頻率、符號，支援 APRS 標準格式",
+  "featureMsg": "訊息收發",
+  "featureMsgDesc": "瀑布流 + 會話模式，支援中文和自動應答",
+  "featureAutoConnect": "自動連線",
+  "featureAutoConnectDesc": "公共伺服器自動連線，後臺保持線上",
+  "featureLayerFilter": "圖層篩選",
+  "featureLayerFilterDesc": "按型別篩選：移動、固定、中繼、氣象、FMO",
+  "featureFmo": "FMO 臺站",
+  "featureFmoDesc": "自動識別 FMO 資料，顯示結構化資訊",
+  "osFlutter": "Flutter",
+  "osFlutterDesc": "Google 跨平臺 UI 框架",
+  "osAmap": "高德地圖",
+  "osAmapDesc": "地圖瓦片服務",
+  "osAprs": "APRS-IS",
+  "osAprsDesc": "全球 APRS 資料網路",
+  "osHam": "業餘無線電",
+  "osHamDesc": "所有 APRS 愛好者的貢獻",
+  "authorName": "Darion",
+  "authorCall": "呼號",
+  "website": "網站",
+  "sponsorAuthor": "作者 BG7LZQ",
+  "sponsorAuthorItems": "利用課餘時間開發維護本專案",
+  "sponsorGroup": "STUDENT HAMS 群組",
+  "sponsorGroupItems": "感謝群組的資金贊助支援",
+  "sponsorBgp": "BG7PGW",
+  "sponsorBgpItems": "感謝贊助的蜜雪冰城一杯 🧋",
+  "sponsorEvery": "每一位支持者",
+  "sponsorEveryItems": "你們的每一份支援都是動力",
+  "donateWechat": "微信讚賞",
+  "donateWechatDesc": "長按儲存讚賞碼 · 點選放大",
+  "donateAlipay": "支付寶讚賞",
+  "donateAlipayDesc": "聯絡作者獲取讚賞碼",
+  "nonprofitNote": "本專案為非盈利學習交流專案\n贊助僅用於伺服器與開發成本",
+  "myStation": "我的電臺",
+  "callSsid": "呼號 · SSID",
+  "ssid": "SSID",
+  "ssidDesc": "SSID 是呼號字尾用於標識裝置，如 BG7ABC-9 中的 -9",
+  "callComment": "臺站備註",
+  "callCommentHint": "信標傳送時的備註內容",
+  "callSymbol": "臺站符號",
+  "callSymbolDesc": "符號隨位置信標一起傳送",
+  "autoReply": "自動應答",
+  "sendBeacon": "傳送信標",
+  "mapTypeDesc": "「地圖 2.0（向量）」使用客戶端實時向量渲染，資料量小、縮放清晰；高德向量/衛星為線上柵格瓦片。",
+  "msgHistory": "訊息記錄",
+  "statistics": "統計",
+  "clearData": "清除資料",
+  "favorites": "收藏/手動",
+  "favoriteStations": "收藏臺站",
+  "manualStations": "手動臺站",
+  "wgs84": "WGS-84",
+  "gcj02": "高德火星",
+  "onlyWgs84": "僅標準 WGS-84",
+  "contactList": "聯絡人",
+  "contactDesc": "訊息/聯絡人相關的過濾規則",
+  "dataClearDesc": "清除訊息、資料包、臺站等本地資料",
+  "advancedDesc": "實驗室與開發者工具",
+  "labDesc": "實驗室功能仍在測試中，可能影響使用體驗。預設鎖定豎屏，開啟後支援橫屏。",
+  "systemLog": "系統日誌",
+  "devDesc": "開發者除錯工具",
+  "simData": "啟用模擬資料（演示臺站/資料包）",
+  "rxTx": "收包 / 發包",
+  "stationCount2": "臺站數量",
+  "appInfo": "應用資訊",
+  "clearMessages": "清空全部聊天記錄",
+  "clearPackets2": "清除資料包",
+  "clearStations": "清除臺站列表",
+  "clearCache": "清除快取",
+  "resetAll": "重置全部設定",
+  "resetAllDesc": "恢復出廠設定",
+  "dataPersistence": "臺站持久化",
+  "autoSaveStations": "自動儲存臺站資料",
+  "gridFormat": "網格格式",
+  "coordsFormat": "座標格式",
+  "appVersion": "版本",
+  "appVersionDesc": "當前應用版本",
+  "stationDetail": "臺站詳情",
+  "backToTop": "回到頂部",
+  "installApk": "安裝 APRSlocus",
+  "install": "安裝",
+  "cancelInstall": "取消",
+  "openFolder": "開啟目錄",
+  "browse": "瀏覽",
+  "downloadUpdate": "下載更新",
+  "downloadNow": "立即下載",
+  "downloading": "下載中",
+  "downloadProgress": "下載中 {p}%",
+  "downloadComplete": "下載完成",
+  "downloadFailed": "下載失敗",
+  "installNow": "立即安裝",
+  "installComplete": "安裝完成",
+  "openInstallDir": "開啟安裝目錄",
+  "deletePackage": "刪除安裝包",
+  "deletePackageConfirm": "確定刪除安裝包 {file}？",
+  "deleteAllPackages": "刪除全部安裝包",
+  "deleteAllPackagesWithCount": "刪除全部安裝包（{count} 個）",
+  "deleteAllPackagesConfirm": "將刪除本地已下載的 {count} 個安裝包（共 {size}），確定？",
+  "historyVersions": "歷史版本",
+  "current": "當前",
+  "newVersion": "新版本",
+  "latestVersion": "當前已是最新版本",
+  "currentVersion": "APRSlocus 當前版本",
+  "checking": "正在檢查新版本…",
+  "checkingGitCode": "檢查 GitCode 倉庫",
+  "updateFailed": "檢查更新失敗",
+  "noUpdateFound": "當前已是最新版本",
+  "newVersionFound": "發現新版本",
+  "downloadAgain": "重新下載安裝包",
+  "openDownloads": "開啟下載目錄",
+  "releaseNotes": "更新日誌",
+  "currentVsRepo": "本地 v{local} · 倉庫最新 v{remote}",
+  "installSize": "{os} 安裝包大小：{size}",
+  "alreadyDownloaded": "安裝包已下載",
+  "downloadReady": "下載一份安裝包",
+  "appInstallDir": "安裝目錄",
+  "runInstaller": "執行安裝程式",
+  "downloadUpdateTip": "下載更新並自動開啟",
+  "openDownloadFolder": "開啟下載目錄",
+  "@appName": {
+    "description": "應用名稱"
+  },
+  "groupBubble": "群·{name}",
+  "groupInviteTitle": "群聊邀請",
+  "groupInviteFrom": "{from} 邀請你加入群聊",
+  "groupNameValue": "群名：{name}",
+  "groupCallsignValue": "群呼號：{call}",
+  "groupInviteAccepted": "已接受邀請，加入 {name}",
+  "accept": "接受",
+  "groupInviteRejected": "已拒絕 {name} 的邀請",
+  "reject": "拒絕",
+  "appTagline": "APRS 定位追蹤",
+  "gridValue": "網格 {grid}",
+  "packetsPerMinute": "{count}/分",
+  "demo": "演示",
+  "nextBeaconIn": "下次上報 {time}",
+  "beaconCount": "信標 {count} 次",
+  "beaconSentAprsIs": "位置已上報 · 網格 {grid} · 已發往 APRS-IS",
+  "beaconSentDemo": "位置已上報 · 網格 {grid} · 演示",
+  "getLocation": "獲取定位",
+  "disconnect": "斷開連線",
+  "connectAprsIs": "連線 APRS-IS",
+  "packetsReceived": "收包",
+  "passcodeUnverified": "Passcode 未驗證",
+  "passcodeWarning": "登入密碼可能錯誤，無法正常收發訊息",
+  "goSettings": "去設定",
+  "connectingServer": "正在連線伺服器…",
+  "notConnectedAprsServer": "未連線 APRS-IS 伺服器",
+  "connectingToServer": "正在連線 {server}:{port}…",
+  "connectNearbyDesc": "連線後可接收附近臺站定位與訊息",
+  "connectAction": "連線",
+  "backgroundRunTip": "後臺執行提示：為保證後臺持續定位上報，請到系統設定中允許 APRSlocus 後臺執行、關閉省電最佳化，並允許自啟動。",
+  "connectedAprsIs": "已連線 APRS-IS",
+  "qqGroupDesc": "APRSlocus 軟體 · 反饋問題/交流使用",
+  "reselectPoint": "重新選點",
+  "disableClustering": "關閉聚合",
+  "enableClustering": "開啟聚合",
+  "heatmap": "臺站熱力圖",
+  "heatmapHint": "縮小地圖後顯示臺站密度熱力圖",
+  "groupTracking": "群組跟蹤",
+  "groupTrackingHint": "把關心的呼號編成組，在大地圖上持續跟蹤（車隊 / 好友結伴），支援橫屏。",
+  "newTrackGroup": "新建跟蹤組",
+  "trackGroupNameHint": "組名，如：週末騎行",
+  "editTrackGroup": "編輯跟蹤組",
+  "deleteTrackGroup": "刪除跟蹤組",
+  "deleteTrackGroupConfirm": "確定刪除跟蹤組「{name}」嗎？",
+  "pickTrackMembers": "選擇成員（勾選要跟蹤的呼號）",
+  "saveAndTrack": "儲存並跟蹤",
+  "trackGroupsEmptyHint": "還沒有跟蹤組，點「新建跟蹤組」建立一組要跟蹤的呼號。",
+  "trackMemberSub": "{type} · {seen}",
+  "trackGroupEmpty": "組內成員暫無位置資料（未收到或未上報），點選下方可編輯成員。",
+  "trackActive": "線上",
+  "trackWaitingPos": "等待位置…",
+  "offlineShort": "離線",
+  "stoppedShort": "靜止",
+  "trackHeader": "{total} 人 · {online} 線上 · {fixed} 已定位",
+  "groupChatShort": "群聊",
+  "groupChatTitle": "群聊 · {name}",
+  "chatWithTitle": "與 {call} 聊天",
+  "chatToGroupHint": "發訊息給全群…",
+  "chatToHint": "發給 {call}…",
+  "noMessagesHint": "暫無訊息，發一條吧",
+  "trackModeFollow": "跟隨 {call}",
+  "trackModeMe": "跟隨我",
+  "trackModeFitAll": "全覽保持中",
+  "fitAll": "全覽",
+  "noStationsYet": "暂无台站数据，连接 APRS-IS 后即可选择。",  "noPackets": "暂无数据包",
+  "secondsAgo": "{count}秒前",
+  "minutesAgo": "{count}分前",
+  "hoursAgo": "{count}小時前",
+  "daysAgo": "{count}天前",
+  "copiedCoordsValue": "已複製座標：{coords}",
+  "copiedGridValue": "已複製網格：{grid}",
+  "distanceBearing": "距我 {distance}km · 方位 {bearing}°",
+  "weatherDataValue": "氣象資料 · {data}",
+  "symbolLabel": "符號",
+  "digipeaterTapHint": "點選中繼臺跳轉到對應臺站",
+  "copiedFmoInfo": "已複製 FMO 資訊",
+  "copiedAprslocusInfo": "已複製 APRSlocus 資訊",
+  "trackPoints": "軌跡 ({count} 點)",
+  "sendMessageTo": "發訊息給 {call}…",
+  "navigationUnavailable": "未安裝高德地圖，且無法開啟其他地圖應用",
+  "stationNoData": "臺站 {call} 尚未收到資料",
+  "software": "軟體",
+  "close": "關閉",
+  "nameLabel": "名稱",
+  "viewSponsorDetails": "檢視作者與贊助詳情 →",
+  "thanks": "感謝",
+  "qqSoftwareName": "APRSlocus 軟體",
+  "usageNotice": "本軟體僅供業餘無線電愛好者學習交流使用\n請遵守當地無線電管理法規",
+  "licenseNotice": "GNU GPL v3 開源協議 · Copyright © BG7LZQ",
+  "appInfoText": "APRSlocus v{version}\n作者: BG7LZQ (Darion)\n網站: Theez.top",
+  "eggBg7lzq": "哎呦你幹嘛~",
+  "eggBg7pgw": "鬧呢？",
+  "eggBg7lmw": "默不作聲...",
+  "eggBg7osl": "你的膽子肥嘟嘟的",
+  "manualCallsignHint": "手動輸入呼號新增",
+  "noPacketReceived": "未收到資料包",
+  "feedMode": "瀑布流",
+  "conversationMode": "會話",
+  "messageFeed": "訊息瀑布流",
+  "messageTotal": "共 {count} 條",
+  "noMessages": "暫無訊息",
+  "copiedClipboard": "已複製到剪貼簿",
+  "groupShortLabel": "群",
+  "conversations": "會話",
+  "noConversations": "暫無會話",
+  "groupNotFound": "群聊不存在",
+  "invite": "邀請",
+  "manage": "管理",
+  "noGroupMessages": "群聊暫無訊息",
+  "selectConversation": "選擇會話開始聊天",
+  "newConversation": "新建會話",
+  "newConversationDesc": "輸入呼號開始新的會話",
+  "callsignExample": "呼號，如 BG7ABC",
+  "start": "開始",
+  "broadcastMessage": "群發訊息",
+  "noStations": "暫無臺站",
+  "broadcastHint": "提示：每條訊息會單獨傳送給每個接收人",
+  "broadcastSent": "已群發給 {count} 人",
+  "searchCallsign": "搜尋呼號…",
+  "broadcastContentHint": "輸入要群發的內容…",
+  "groupNameHint": "輸入群聊名稱",
+  "create": "建立",
+  "groupCallsignLine": "群呼號: {call}",
+  "noMembers": "暫無成員",
+  "inviteMembersHint": "點選下方「邀請成員」新增",
+  "remove": "移除",
+  "inviteMembers": "邀請成員",
+  "deleteGroup": "刪除群組",
+  "deleteGroupConfirm": "確定刪除「{name}」？此操作不可撤銷。",
+  "memberOnlineCount": "{members} 名成員 · {online} 線上",
+  "leaveGroup": "退出群組",
+  "leaveGroupConfirm": "確定退出「{name}」？你將不再收到該群的訊息。",
+  "leftGroup": "已退出 {name}",
+  "leave": "退出",
+  "inviteMembersTo": "邀請成員到 {name}",
+  "manualCallsign": "手動輸入呼號",
+  "inviteSent": "已傳送邀請給 {call}",
+  "noMoreOnlineStations": "暫無更多線上臺站",
+  "invited": "已邀請",
+  "tapToInvite": "點選邀請",
+  "done": "完成",
+  "addContact": "新增聯絡人",
+  "addContactDesc": "輸入呼號手動新增到聯絡人列表",
+  "contactAdded": "已新增聯絡人 {call}",
+  "@groupBubble": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteFrom": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupNameValue": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupCallsignValue": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@groupInviteRejected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@packetsPerMinute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@nextBeaconIn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@beaconSentAprsIs": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconSentDemo": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@connectingToServer": {
+    "placeholders": {
+      "server": {
+        "type": "String"
+      },
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "@secondsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@copiedCoordsValue": {
+    "placeholders": {
+      "coords": {
+        "type": "String"
+      }
+    }
+  },
+  "@copiedGridValue": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@distanceBearing": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "bearing": {
+        "type": "String"
+      }
+    }
+  },
+  "@weatherDataValue": {
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "@trackPoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sendMessageTo": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@stationNoData": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@appInfoText": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@messageTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@broadcastSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@groupCallsignLine": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@memberOnlineCount": {
+    "placeholders": {
+      "members": {
+        "type": "int"
+      },
+      "online": {
+        "type": "int"
+      }
+    }
+  },
+  "@leaveGroupConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@leftGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteMembersTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@inviteSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactAdded": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "add": "新增",
+  "stationary": "靜止",
+  "unknown": "未知",
+  "none": "無",
+  "manual": "手動",
+  "management": "管理",
+  "debugLabel": "除錯",
+  "information": "資訊",
+  "warning": "警告",
+  "errorLabel": "錯誤",
+  "countTimes": "{count} 次",
+  "countItems": "{count} 個",
+  "countEntries": "{count} 條",
+  "aprsSymbolName": "{symbol, select, car {汽車} police {警局} person {人} digitalRepeater {數字中繼} telephone {電話} dxCluster {DX 叢集} hfGateway {HF 閘道器} smallAircraft {小型飛機} mobileSatellite {移動衛星} disabled {殘障} snowmobile {雪地摩托} redCross {紅十字} scouts {童子軍} house {房屋} redX {紅叉} redDot {紅點} fire {火警} campground {露營} motorcycle {摩托} train {火車} fileServer {檔案伺服器} hurricane {颶風} dfTriangle {DF 三角} postOffice {郵局} largeAircraft {大型飛機} weatherStation {氣象站} satelliteDish {衛星天線} ambulance {救護車} bicycle {腳踏車} commandPost {指揮中心} fireStation {消防站} horse {騎馬} fireTruck {消防車} glider {滑翔機} hospital {醫院} fmoStation {FMO 臺站} jeep {吉普} truck {卡車} laptop {筆記本} micERepeater {Mic-E 中繼} node {節點} emergencyOps {應急中心} dog {狗} gridSquare {網格} repeaterTower {中繼塔} boat {船} truckStop {卡車停靠站} semiTrailer {半掛車} van {麵包車} waterStation {供水站} yagi {八木天線屋} shelter {避難所} rv {房車} weatherSymbol {氣象臺} balloon {氣球} bus {公交} shuttle {太空梭} policeCar {警車} sailboat {帆船} school {學校} lodging {旅館} hotel {酒店} other {未知}}",
+  "symbolCategoryName": "{category, select, vehicles {車輛 / 交通} facilities {建築 / 設施} weatherNature {氣象 / 自然} emergencyRescue {應急救援} airWater {飛行 / 水域} communications {通訊 / 其他} other {其他}}",
+  "countryName": "{code, select, CN {中國} KR {韓國} JP {日本} US {美國} CA {加拿大} GB {英國} DE {德國} FR {法國} IT {義大利} ES {西班牙} RU {俄羅斯} AU {澳大利亞} NZ {紐西蘭} BR {巴西} AR {阿根廷} MX {墨西哥} ZA {南非} IN {印度} TH {泰國} SG {新加坡} MY {馬來西亞} ID {印度尼西亞} PH {菲律賓} TW {臺灣} HK {香港} MO {澳門} other {未知}}",
+  "locationNotFixed": "未定位",
+  "simulatedLocation": "模擬位置",
+  "savedLocation": "已儲存位置",
+  "locationFailed": "定位失敗",
+  "locationStopped": "定位已停止",
+  "locationFixed": "已定位",
+  "locationPermission": "請授予定位許可權…",
+  "gpsLocating": "GPS 定位中…",
+  "webLocationUnsupported": "Web 平臺暫不支援自動定位，請手動輸入座標",
+  "locationStreamError": "定位流異常：{error}",
+  "locationInitError": "定位初始化失敗：{error}",
+  "beaconDisabled": "已關閉",
+  "waitingForLocation": "等待定位",
+  "imminent": "即將",
+  "connTapToConnect": "未連線 · 點選播放按鈕連線 APRS-IS",
+  "connManuallyDisconnected": "未連線 · 已手動斷開",
+  "connAutoReconnect": "連線已斷開 · {seconds}秒後自動重連…",
+  "connConnectingTarget": "正在連線 {target}…",
+  "connOnline": "已連線 · {call} 線上",
+  "connRetry": "連線失敗 · {seconds}s 後重試…",
+  "connPositionSent": "已連線 · 位置已上報 ({call})",
+  "connDemoBeacon": "未連線 · 位置已上報（模擬）",
+  "connPasscodeInvalid": "已連線 · 未驗證（Passcode 可能錯誤）",
+  "mapTypeAmap": "高德地圖",
+  "mapTypeAmapSatellite": "高德衛星",
+  "mapTypeVector": "向量地圖",
+  "amapGroup": "高德",
+  "domesticMaps": "國內地圖",
+  "internationalMaps": "國際地圖",
+  "metricUnits": "公制 (km/h, m)",
+  "coordDisplay": "座標顯示",
+  "mapDefaultCoord": "北京 · {level}級",
+  "secondsValue": "{count} 秒",
+  "stationSettingsDetail": "呼號、SSID、符號與備註",
+  "stationIdentity": "電臺身份",
+  "aprsCallsignHint": "APRS 呼號，如 BV2AAA",
+  "displayInfo": "顯示資訊",
+  "ssidSuffix": "SSID 字尾",
+  "chooseSsidSuffix": "選擇 SSID 字尾",
+  "mySymbol": "我的符號",
+  "moreSymbols": "更多符號",
+  "allAprsSymbols": "全部 APRS 符號",
+  "beaconSettingsDetail": "GPS 來源、信標與手動定位",
+  "locationSource": "定位來源",
+  "useDeviceLocation": "使用裝置定位",
+  "manualCoordinates": "手動輸入座標",
+  "locationMode": "定位模式",
+  "settingsLocModeSubtitle": "選擇定位方式",
+  "locModeGps": "純 GPS",
+  "locModeGpsDesc": "僅衛星定位，更省電",
+  "locModeGpsNetwork": "GPS + 網路",
+  "locModeGpsNetworkDesc": "網路輔助，定位更快",
+  "beaconingSection": "信標上報",
+  "beaconIntervalTip": "位置信標的傳送間隔，至少 5 秒",
+  "beaconContent": "信標上報內容",
+  "beaconContentDesc": "隨位置信標一起傳送",
+  "phoneBattery": "手機電量",
+  "locationStatus": "定位狀態",
+  "relocate": "重新定位",
+  "startGps": "開啟 GPS 定位",
+  "trackingBeaconing": "定位執行中，正在持續上報位置",
+  "manualLocation": "手動定位",
+  "latitudeHint": "緯度 39.9042",
+  "longitudeHint": "經度 116.4074",
+  "invalidLatLng": "請輸入有效經緯度",
+  "myLocationSetGrid": "已設定我的位置，網格 {grid}",
+  "applyCoordinates": "應用座標",
+  "pickOnMap": "在地圖選點",
+  "manualLocationHelp": "無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。",
+  "passcodeTip": "APRS-IS 登入驗證碼，可線上生成；填 -1 表示未驗證",
+  "websocketOptional": "WebSocket URL（可選）",
+  "configChanged": "配置已修改",
+  "reconnectToApply": "重新連線後生效",
+  "reconnected": "已重新連線",
+  "connectFailedCheckConfig": "連線失敗，請檢查配置",
+  "rangeFilterDesc": "只接收設定範圍內的臺站資料包",
+  "filterCenterFollows": "過濾中心跟隨我的位置",
+  "radiusTip": "接收半徑（km），點“儲存並應用”生效",
+  "maxStationsTip": "記憶體中保留的最大臺站數量（預設不限制，可設更大值）",
+  "filterSavedRadius": "{saved} · 半徑 {radius}km",
+  "receiveFilterDesc2": "除範圍過濾外，按國家/地區分組或精確呼號接收臺站",
+  "receiveCountryDesc": "按呼號字首批次接收某國家/地區全部臺站",
+  "noCountriesSelected": "未選擇國家/地區",
+  "receiveOthersDesc": "接收不匹配所選國家的特殊呼號臺站",
+  "addCountry": "新增國家/地區",
+  "chatSettingsDetail": "訊息、聯絡人與聊天資料",
+  "messageCountLabel": "訊息條數",
+  "manageContacts": "管理聯絡人",
+  "deleteAllChatsConfirm": "確定要刪除全部 {count} 條聊天記錄嗎？此操作不可恢復。",
+  "chatCleared": "聊天記錄已清空",
+  "noContacts": "暫無聯絡人",
+  "addOrFavoriteContact": "點選右上角“新增”或在地圖上收藏臺站",
+  "movingWithSpeed": "移動中 · {speed}",
+  "callsignMin3": "呼號至少 3 個字元",
+  "deleteContact": "刪除聯絡人",
+  "deleteContactConfirm": "確定刪除聯絡人 {call}？",
+  "contactDeleted": "已刪除 {call}",
+  "dataMaintenance": "資料維護",
+  "clearAllData": "清除所有資料",
+  "clearAllDataIntro": "此操作將刪除以下所有本地資料：",
+  "chatHistory": "聊天記錄",
+  "logs": "日誌",
+  "irreversibleKeepSettings": "此操作不可恢復，連線設定和呼號不會被刪除。",
+  "confirmClearAllData": "確認清除所有資料",
+  "clearAllDataConfirm": "確定要清除全部本地資料嗎？此操作不可恢復。",
+  "allDataCleared": "所有資料已清除",
+  "confirmClear": "確認清除",
+  "allowLandscape": "允許手機橫屏顯示",
+  "packetParseTest": "資料包解析測試",
+  "packetParseHint": "貼上原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station",
+  "parseAndApply": "解析並應用",
+  "oobePasscodeMissing": "Passcode 未填寫",
+  "oobePasscodeMissingDesc": "Passcode 是 APRS-IS 登入驗證碼，用於識別你的呼號。\n\n使用預設值 -1（未驗證）雖然可以連線，但將無法正常收發訊息與群聊。\n\n建議在 https://aprs.cool/AprsPG 輸入呼號查詢正確 Passcode 後填寫。",
+  "continueAnyway": "仍然繼續",
+  "fillPasscode": "去填寫",
+  "oobeMapFeatureDesc": "高德地圖瓦片，檢視附近 APRS 臺站與軌跡",
+  "oobeGpsFeatureDesc": "自動獲取位置併傳送信標到 APRS-IS",
+  "oobeMsgFeatureDesc": "與臺站收發訊息，支援自動應答",
+  "oobeIsFeatureDesc": "連線公共伺服器，接收全球檯站資料",
+  "oobeBackgroundTip": "提示：為保證後臺持續定位上報，請到系統設定中允許 APRSlocus 後臺執行、關閉省電最佳化，並允許自啟動。",
+  "oobeNextSteps": "接下來幾步完成基礎配置，隨時可在設定中修改。",
+  "ssidDescShort": "SSID 是呼號後面的數字標識，如 BG7ABC-9 中的 -9",
+  "ssidOptional": "SSID 字尾（可選）",
+  "noSsid": "無字尾（基本呼號）",
+  "fullCallsign": "完整呼號：{call}",
+  "passcodeImportant": "Passcode 非常重要",
+  "passcodeImportantDesc": "正確的 Passcode 是接收群聊訊息和傳送確認訊息的前提。填 -1 雖然可以連線，但無法正常收發訊息。",
+  "lookupPasscode": "點選查詢你的 Passcode →",
+  "passcodeLookupHint": "輸入你的呼號即可獲取，例如 BV2AAA",
+  "sendToGroupHint": "發到 {group}…",
+  "sendToCallHint": "發給 {call}…",
+  "selectMessageReply": "點選訊息以回覆…",
+  "broadcastShort": "群發",
+  "memberCount": "{count} 個成員",
+  "memberCountTap": "{count} 名成員 · 點選檢視",
+  "stepRecipients": "選人",
+  "stepContent": "內容",
+  "selectAllOnline": "全選線上",
+  "clearSelection": "取消全選",
+  "onlineOnly": "僅線上",
+  "noRecipients": "未選擇接收人",
+  "selectedRecipients": "已選 {count} 人",
+  "sendRecipientsList": "將傳送給 {count} 人：{calls}",
+  "stepName": "名稱",
+  "stepMembers": "成員",
+  "groupChatExplain": "群聊使用群呼號廣播訊息，所有成員都能收到。建立後系統會自動生成群呼號並邀請你選擇的成員。",
+  "noMembersSelected": "未選擇成員",
+  "memberBlocked": "已遮蔽",
+  "memberJoined": "已加入",
+  "memberPending": "待確認",
+  "memberDeclined": "已拒絕",
+  "memberLeft": "已退出",
+  "memberTimeout": "超時",
+  "unblock": "解除遮蔽",
+  "block": "遮蔽",
+  "groupOwner": "群主",
+  "systemMemberJoined": "{call} 加入了群聊",
+  "systemMemberLeft": "{call} 離開了群聊",
+  "systemInviteDeclined": "{call} 拒絕了邀請",
+  "copyAllLogs": "複製全部日誌",
+  "copiedLogs": "已複製 {count} 條日誌",
+  "clearLogs": "清空日誌",
+  "noLogs": "暫無日誌",
+  "supportProject": "你們的支援讓專案走得更遠",
+  "continuousIteration": "持續迭代",
+  "continuousIterationDesc": "不斷改進 APRSlocus 功能與體驗",
+  "sponsorSupport": "贊助支援",
+  "sponsorMethods": "贊助方式",
+  "qrCodeTitle": "{title} 讚賞碼",
+  "qrLoadFailed": "讚賞碼圖片載入失敗",
+  "qrSaveWechat": "長按圖片可儲存 · 微信掃一掃讚賞",
+  "tapAnywhereClose": "點選任意處關閉",
+
+  "vectorMapLoadFailed": "向量地圖載入失敗\n{error}",
+  "loadingVectorMap": "載入向量地圖…",
+  "updateChannel": "更新渠道",
+  "serverReturned": "伺服器返回 {code}",
+  "invalidResponseData": "返回資料格式錯誤",
+  "noVersionsFound": "沒有找到任何版本",
+  "noWindowsInstaller": "該版本沒有 Windows 安裝包",
+  "noApkInstaller": "該版本沒有 APK 安裝包",
+  "connectingEllipsis": "正在連線…",
+  "downloadHttpError": "下載失敗：HTTP {code}",
+  "downloadedBytes": "已下載 {received} / {total}",
+  "androidInstallHelp": "安裝包已下載到：\n{path}\n\n點選“安裝”後，系統會彈出安裝確認框。\n\n若提示“不允許安裝未知來源應用”，請到系統設定中允許本應用安裝未知應用。",
+  "windowsInstallHelp": "安裝包已儲存到：\n{path}\n\n點選“立即執行”直接啟動安裝程式；也可以開啟所在目錄檢視檔案。",
+  "openContainingFolder": "開啟所在目錄",
+  "runNow": "立即執行",
+  "cannotRunInstaller": "無法啟動安裝程式，請到所在目錄手動開啟",
+  "cannotLaunchInstaller": "無法啟動安裝器，請手動開啟安裝包",
+  "openPackageManually": "請在檔案管理器中開啟安裝包",
+  "cannotOpenPackage": "無法開啟安裝包：{error}",
+  "installPermissionTitle": "需要允許安裝應用",
+  "installPermissionDesc": "檢測到系統未允許 APRSlocus 安裝應用。\n\n請點選“去設定”，在“安裝未知應用”中允許本應用安裝應用，然後返回重新安裝。",
+  "recheck": "重新檢查",
+  "newVersionTitle": "發現新版本 v{version}",
+  "repoLatestTitle": "倉庫最新版本 v{version}",
+  "checkingLatest": "正在檢查最新版本…",
+  "connectingGitCode": "連線 GitCode 伺服器",
+  "noReleaseNotes": "暫無更新說明",
+  "noInstallerHistoryHint": "該版本暫無 {platform} 安裝包，請到歷史版本中選擇可下載的版本",
+  "latestVersionLabel": "最新版本",
+  "packageSize": "{platform} 安裝包大小：{size}",
+  "updateContents": "更新內容",
+  "redownload": "重新下載",
+  "downloadInstaller": "下載安裝包",
+  "downloadAndInstall": "下載並安裝",
+  "localPackageExists": "本地已有一份安裝包",
+  "packageDeleted": "安裝包已刪除",
+  "versionCount": "{count} 個",
+  "noInstaller": "無安裝包",
+  "download": "下載",
+  "viewChangelog": "檢視更新日誌",
+  "versionChangelog": "v{version} 更新日誌",
+  "gotIt": "知道了",
+  "@countTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@countItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@countEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@aprsSymbolName": {
+    "placeholders": {
+      "symbol": {
+        "type": "String"
+      }
+    }
+  },
+  "@symbolCategoryName": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "@countryName": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@locationStreamError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@locationInitError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@connAutoReconnect": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connConnectingTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "@connOnline": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@connRetry": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@connPositionSent": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@mapDefaultCoord": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "@secondsValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@myLocationSetGrid": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@filterSavedRadius": {
+    "placeholders": {
+      "saved": {
+        "type": "String"
+      },
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "@deleteAllChatsConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@movingWithSpeed": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteContactConfirm": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@contactDeleted": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@fullCallsign": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendToGroupHint": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendToCallHint": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@memberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberCountTap": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@selectedRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@sendRecipientsList": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "calls": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemMemberJoined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemMemberLeft": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@systemInviteDeclined": {
+    "placeholders": {
+      "call": {
+        "type": "String"
+      }
+    }
+  },
+  "@copiedLogs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@qrCodeTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@vectorMapLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@serverReturned": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "@downloadHttpError": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "@downloadedBytes": {
+    "placeholders": {
+      "received": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "@androidInstallHelp": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@windowsInstallHelp": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@cannotOpenPackage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@newVersionTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@repoLatestTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@noInstallerHistoryHint": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "@packageSize": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@versionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@versionChangelog": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveAction": "退出",
+  "localRepoVersion": "本地 v{local} · 倉庫最新 v{latest}",
+  "unverified": "未驗證",
+  "passcodeUnverifiedHint": "-1 未驗證",
+  "passcodeMessageWarning": "APRS-IS 登入驗證碼，填 -1 無法正常收發訊息",
+  "settingsStationIdentitySubtitle": "呼號、SSID 與備註",
+  "settingsDisplayInfoSubtitle": "我的符號與當前定位",
+  "settingsLocSourceSubtitle": "選擇座標來源",
+  "settingsBeaconSubtitle": "傳送間隔與上報內容",
+  "settingsManualLocSubtitle": "無定位時可手動輸入或選點",
+  "settingsManualLocHint": "無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。",
+  "settingsConnStatusSubtitle": "連線狀態與資訊",
+  "settingsServerSubtitle": "APRS-IS 伺服器與驗證碼",
+  "settingsFilterSubtitle": "接收範圍與臺站上限",
+  "settingsReceivePrefSubtitle": "按國家/地區或呼號接收",
+  "settingsGeneralSubtitle": "主題、語言與座標顯示",
+  "settingsMapSubtitle": "地圖型別與顯示",
+  "settingsChatStatsSubtitle": "訊息與聯絡人統計",
+  "settingsChatManageSubtitle": "聯絡人與聊天資料",
+  "settingsClearDataSubtitle": "刪除本地記錄",
+  "settingsLabSubtitle": "實驗性功能",
+  "settingsDevSubtitle": "除錯與測試",
+  "settingsFilterHint": "只接收設定範圍內的臺站資料包",
+  "settingsReceivePrefHint": "除範圍過濾外，按國家/地區分組或精確呼號接收臺站",
+  "settingsContribCodeOptimization": "程式碼最佳化",
+  "eggBg2hcb": "人生真是喵喵又咪咪啊",
+  "deviceInfoTitle": "裝置識別",
+  "deviceToCall": "目的呼號",
+  "deviceModel": "裝置型號",
+  "deviceClass": "裝置類別",
+  "deviceFilter": "裝置篩選",
+  "lookupQrz": "QRZ 呼號",
+  "lookupAprsFi": "aprs.fi 位置",
+  "linkOpenFailed": "無法開啟連結"
+}

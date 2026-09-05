@@ -71,6 +71,7 @@
   "languageSystem": "Follow system",
   "languageZh": "中文",
   "languageEn": "English",
+  "languageZhTw": "繁體中文",
   "displaySettings": "Display settings",
   "uiScale": "UI scale",
   "reloadUi": "Reload UI",

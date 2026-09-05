@@ -7,6 +7,14 @@ import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'l10n/app_localizations.dart';
 
+/// 将设置里保存的语言码（如 'zh_TW'）解析成 Locale
+Locale _localeOf(String s) {
+  final parts = s.split('_');
+  return parts.length > 1
+      ? Locale(parts[0], parts[1])
+      : Locale(s);
+}
+
 class App extends StatefulWidget {
   const App({super.key});
   @override
@@ -83,8 +91,12 @@ class _AppState extends State<App> {
       themeMode: _state.darkMode ? ThemeMode.dark : ThemeMode.light,
       locale: _state.locale.isEmpty
           ? null
-          : Locale(_state.locale),
-      supportedLocales: const [Locale('zh'), Locale('en')],
+          : _localeOf(_state.locale),
+      supportedLocales: const [
+        Locale('zh'),
+        Locale('zh', 'TW'),
+        Locale('en'),
+      ],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

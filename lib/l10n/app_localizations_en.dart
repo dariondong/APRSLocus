@@ -213,6 +213,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageEn => 'English';
 
   @override
+  String get languageZhTw => '繁體中文';
+
+  @override
   String get displaySettings => 'Display settings';
 
   @override

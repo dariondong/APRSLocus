@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
+import 'app_localizations_zh_TW.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +97,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('zh'),
+    Locale('zh', 'TW'),
+    Locale('zh', 'TW'),
   ];
 
   /// 应用名称
@@ -498,6 +501,9 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'English'**
   String get languageEn;
+
+  /// No description provided for @languageZhTw.
+  String get languageZhTw;
 
   /// No description provided for @displaySettings.
   ///
@@ -5008,12 +5014,17 @@ class _AppLocalizationsDelegate
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+  // zh 分繁简：zh_TW / zh_Hant → 繁体，否则简体
+  if (locale.languageCode == 'zh') {
+    final st =
+        (locale.scriptCode ?? locale.countryCode ?? '').toUpperCase();
+    if (st == 'TW' || st == 'HANT') return AppLocalizationsZhTw();
+    return AppLocalizationsZh();
+  }
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
-    case 'zh':
-      return AppLocalizationsZh();
   }
 
   throw FlutterError(

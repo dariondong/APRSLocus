@@ -71,6 +71,7 @@
   "languageSystem": "跟随系统",
   "languageZh": "中文",
   "languageEn": "English",
+  "languageZhTw": "繁體中文",
   "displaySettings": "显示设置",
   "uiScale": "界面缩放",
   "reloadUi": "重新加载界面",

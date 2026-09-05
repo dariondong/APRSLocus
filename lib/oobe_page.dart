@@ -347,6 +347,7 @@ class _OobePageState extends State<OobePage> {
     final options = <(String, String)>[
       ('', S.of(context).languageSystem),
       ('zh', S.of(context).languageZh),
+      ('zh_TW', S.of(context).languageZhTw),
       ('en', S.of(context).languageEn),
     ];
     return SingleChildScrollView(
