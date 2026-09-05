@@ -595,6 +595,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get licenseText => '查看许可证';
+  String get oobeAgreeTitle => '用户协议与许可';
+  String get oobeAgreeBody => '欢迎使用 APRSlocus！在使用前，请阅读并同意以下条款。请注意：APRS 数据是公开信息，一旦发送即代表其可能被全球 APRS 网络接收、存储与转发。';
+  String get oobeAgreeCheck => '我已阅读并同意《用户协议》与 GPL-3.0 开源许可证';
+  String get oobeAgreeNeed => '请先阅读并勾选同意《用户协议》';
+  String get oobeDeclineExit => '不同意并退出';
   String get userAgreement => '用户协议';
   String get beaconWarnTitle => '信标间隔过短';
   String get beaconWarnBody => 'APRS-IS 建议移动站信标间隔不低于 60 秒。过快的上报可能被视为滥用并导致服务器断开连接。是否仍要使用该间隔？';

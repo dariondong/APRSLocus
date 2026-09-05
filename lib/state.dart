@@ -16,7 +16,7 @@ import 'net/aprs.dart';
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.12';
+  static const appVersion = '1.6.13';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -57,7 +57,7 @@ class AppState extends ChangeNotifier {
 
   // 信标
   bool beaconEnabled = true;
-  int beaconInterval = 30; // 秒
+  int beaconInterval = 60; // 秒（APRS-IS 建议移动站不低于 60 秒）
   DateTime _lastBeacon = DateTime.now();
   int beaconsSent = 0;
 

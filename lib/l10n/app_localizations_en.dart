@@ -598,6 +598,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenseText => 'View license';
+  String get oobeAgreeTitle => 'User Agreement & License';
+  String get oobeAgreeBody => 'Welcome to APRSlocus! Please read and agree to the terms below before using the app. Note that APRS data is public: once sent, it may be received, stored and forwarded by the global APRS network.';
+  String get oobeAgreeCheck => 'I have read and agree to the User Agreement and the GPL-3.0 license';
+  String get oobeAgreeNeed => 'Please read and agree to the User Agreement first';
+  String get oobeDeclineExit => 'Decline and exit';
   String get userAgreement => 'User Agreement';
   String get beaconWarnTitle => 'Beacon interval too short';
   String get beaconWarnBody => 'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';

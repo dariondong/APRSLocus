@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, TargetPlatform;
+    show defaultTargetPlatform, TargetPlatform, kIsWeb;
+import 'package:flutter/services.dart' show SystemNavigator;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 import 'state.dart';
 import 'models.dart';
 import 'widgets.dart';
+import 'terms_page.dart';
 
-/// 首次启动引导（OOBE）：欢迎 → 呼号 → 符号 → 服务器连接
+/// 首次启动引导（OOBE）：语言 → 用户协议确认 → 欢迎 → 呼号 → 符号 → 筛选 → 服务器
 class OobePage extends StatefulWidget {
   final AppState state;
   const OobePage({super.key, required this.state});
@@ -34,6 +36,8 @@ class _OobePageState extends State<OobePage> {
   // 接收筛选：默认接受中国呼号
   List<String> _filterCountries = ['CN'];
   bool _receiveOthers = false;
+  // 用户协议：已阅读并同意
+  bool _agreed = false;
 
   static const _syms = [
     ('>', '汽车', Icons.directions_car_rounded),
@@ -77,9 +81,16 @@ class _OobePageState extends State<OobePage> {
         widget.state.setLocale(_lang);
         break;
       case 1:
-        // 欢迎页：无校验
+        // 用户协议确认步骤：必须勾选同意才能继续
+        if (!_agreed) {
+          _toast(S.of(context).oobeAgreeNeed);
+          return;
+        }
         break;
       case 2:
+        // 欢迎页：无校验
+        break;
+      case 3:
         // 呼号步骤
         final c = _call.text.trim().toUpperCase();
         if (c.isEmpty) {
@@ -90,18 +101,18 @@ class _OobePageState extends State<OobePage> {
         widget.state.mySsid = _ssid;
         widget.state.persist();
         break;
-      case 3:
+      case 4:
         // 符号步骤
         widget.state.mySymbol = _symbol;
         widget.state.persist();
         break;
-      case 4:
+      case 5:
         // 接收筛选步骤：把选择的国家写入 state（默认已选中国）
         _applyFilterCountries();
         break;
     }
-    if (_step >= 5) {
-      // 步骤 5（服务器）：强调 passcode 重要性，默认值弹确认
+    if (_step >= 6) {
+      // 步骤 6（服务器）：强调 passcode 重要性，默认值弹确认
       final pc = _pass.text.trim().isEmpty ? '-1' : _pass.text.trim();
       if (pc == '-1') {
         _confirmDefaultPasscode();
@@ -218,7 +229,7 @@ class _OobePageState extends State<OobePage> {
 
   @override
   Widget build(BuildContext context) {
-    final last = _step >= 5;
+    final last = _step >= 6;
     return Scaffold(
       backgroundColor: C.bg,
       body: SafeArea(
@@ -236,7 +247,7 @@ class _OobePageState extends State<OobePage> {
                     style: ts(15, w: FontWeight.w800, ls: -0.3),
                   ),
                   Spacer(),
-                  Text('${_step + 1} / 6', style: ts(12, c: C.grey)),
+                  Text('${_step + 1} / 7', style: ts(12, c: C.grey)),
                 ],
               ),
             ),
@@ -245,7 +256,7 @@ class _OobePageState extends State<OobePage> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  for (var i = 0; i < 6; i++) ...[
+                  for (var i = 0; i < 7; i++) ...[
                     Expanded(
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -256,7 +267,7 @@ class _OobePageState extends State<OobePage> {
                         ),
                       ),
                     ),
-                    if (i < 5) const SizedBox(width: 6),
+                    if (i < 6) const SizedBox(width: 6),
                   ],
                 ],
               ),
@@ -269,6 +280,7 @@ class _OobePageState extends State<OobePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _languagePick(),
+                  _agreement(),
                   _welcome(),
                   _callsign(),
                   _symbolPick(),
@@ -408,7 +420,156 @@ class _OobePageState extends State<OobePage> {
     );
   }
 
-  // ─── 第 2 步：欢迎 ───
+  // ─── 第 2 步：用户协议确认 ───
+  Widget _agreement() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+      child: Column(
+        children: [
+          SizedBox(height: 10),
+          Container(
+            width: 74,
+            height: 74,
+            decoration: BoxDecoration(
+              color: C.blueBg,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(Icons.description_rounded, size: 36, color: C.blue),
+          ),
+          SizedBox(height: 18),
+          Text(
+            S.of(context).oobeAgreeTitle,
+            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 10),
+          Text(
+            S.of(context).oobeAgreeBody,
+            style: ts(13, c: C.slate, h: 1.7),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 18),
+          // 全文入口
+          SoftCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _agreeLink(
+                  Icons.assignment_rounded,
+                  S.of(context).userAgreement,
+                  'V1.0',
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const TermsPage()),
+                  ),
+                ),
+                _agreeLink(
+                  Icons.gavel_rounded,
+                  S.of(context).licenseText,
+                  'GPL-3.0',
+                  () => launchUrl(
+                    Uri.parse(
+                      'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 14),
+          // 同意复选框
+          Container(
+            decoration: BoxDecoration(
+              color: C.greyBg,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () => setState(() => _agreed = !_agreed),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _agreed
+                          ? Icons.check_circle_rounded
+                          : Icons.radio_button_unchecked_rounded,
+                      color: _agreed ? C.blue : C.grey,
+                      size: 22,
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        S.of(context).oobeAgreeCheck,
+                        style: ts(12.5, c: _agreed ? C.ink : C.slate, h: 1.4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          // 不同意：退出应用
+          TextButton(
+            onPressed: _exitOobe,
+            style: TextButton.styleFrom(foregroundColor: C.red),
+            child: Text(
+              S.of(context).oobeDeclineExit,
+              style: ts(12.5, w: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _agreeLink(
+    IconData icon,
+    String label,
+    String value,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 15, color: C.blue),
+            SizedBox(width: 8),
+            Text(label, style: ts(12.5, c: C.slate)),
+            Spacer(),
+            Text(value, style: ts(12, c: C.blue, w: FontWeight.w600)),
+            SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 不同意协议：退出应用（移动端退回系统桌面；Web 提示无法退出）
+  void _exitOobe() {
+    if (kIsWeb) {
+      _toast(S.of(context).oobeAgreeNeed);
+      return;
+    }
+    try {
+      SystemNavigator.pop();
+    } catch (_) {
+      // 桌面端无“退出”语义时忽略
+    }
+  }
+
+  // ─── 第 3 步：欢迎 ───
   Widget _welcome() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
@@ -607,7 +768,7 @@ class _OobePageState extends State<OobePage> {
     );
   }
 
-  // ─── 第 2 步：呼号 ───
+  // ─── 第 4 步：呼号 ───
   Widget _callsign() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
@@ -707,7 +868,7 @@ class _OobePageState extends State<OobePage> {
     );
   }
 
-  // ─── 第 3 步：符号 ───
+  // ─── 第 5 步：符号 ───
   Widget _symbolPick() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
@@ -768,7 +929,7 @@ class _OobePageState extends State<OobePage> {
     );
   }
 
-  // ─── 第 4 步：服务器 ───
+  // 接收筛选：把勾选的国家写回 state
   void _applyFilterCountries() {
     widget.state.receiveCountries
       ..clear()
@@ -776,6 +937,7 @@ class _OobePageState extends State<OobePage> {
     widget.state.setReceiveOthers(_receiveOthers);
   }
 
+  // ─── 第 6 步：接收筛选 ───
   /// 接收筛选：按国家/地区选择接收台站（默认中国）
   Widget _filterPick() {
     final entries = AppState.countryNames.entries.toList()
@@ -888,6 +1050,7 @@ class _OobePageState extends State<OobePage> {
     );
   }
 
+  // ─── 第 7 步：服务器连接 ───
   Widget _serverPage() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),

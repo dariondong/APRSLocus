@@ -1267,6 +1267,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'查看许可证'**
   String get licenseText;
+  String get oobeAgreeTitle;
+  String get oobeAgreeBody;
+  String get oobeAgreeCheck;
+  String get oobeAgreeNeed;
+  String get oobeDeclineExit;
   String get userAgreement;
   String get beaconWarnTitle;
   String get beaconWarnBody;
