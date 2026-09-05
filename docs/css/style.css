@@ -137,6 +137,10 @@ code {
 .lang-switch { display: inline-flex; align-items: center; justify-content: center; padding: 4px 8px; font-size: 10px; font-weight: 500; color: var(--text-faint); text-decoration: none; transition: .2s var(--ease); margin-left: 2px; letter-spacing: .3px; position: relative; }
 .lang-switch::before { content: ""; width: 1px; height: 14px; background: rgba(148, 160, 178, .35); margin-right: 8px; }
 .lang-switch:hover { color: var(--text); }
+.lang-switch-group .lang-switch::before { margin-right: 6px; }
+.lang-switch-group .lang-switch:first-child { margin-left: 8px; }
+.lang-switch-group .lang-switch:first-child::before { display: none; }
+.lang-switch-group .lang-switch.active { color: var(--text); font-weight: 700; }
 .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; padding: 8px; }
 .nav-burger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s var(--ease); }
 .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }

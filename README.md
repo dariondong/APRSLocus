@@ -10,10 +10,12 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows%20%7C%20iOS%20%7C%20Linux%20%7C%20macOS%20%7C%20Web-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-1.5.8-green.svg)]()
+[![Version](https://img.shields.io/badge/Version-1.6.18-green.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blueviolet.svg)](https://flutter.dev)
 
 作者：[BG7LZQ (Darion)](https://theez.top) · 最新版发布：[GitHub Releases](https://github.com/dariondong/APRSLocus/releases)
+
+**🌐 语言 / Language：** [简体中文](README.md) · [English](README.en.md) · [繁體中文](README.zh-TW.md)
 
 </div>
 
@@ -70,14 +72,15 @@
 ### 🚒 台站识别
 - 自动识别 **FMO（机动消防）** 台站
 - 同款 **APRSlocus** 台站自动标记（备注含 `APRSlocus`），显示版本 / 电量 / 高度等专属信息
+- **官方 APRS 设备识别**：接入 aprs.org 官方设备库 `aprsorg/aprs-deviceid`（tocalls），通过数据包目的呼号识别台站所用 厂商 + 型号 + 设备类别（车台 / 手台 / 跟踪器 / App / 软件 / iGate / 中继 / 气象站…），内置设备库快照 + 联网自动更新
 - 支持 **37 个官方符号表、3571 个标准图标**，官方 PNG 图标优先、Material 图标兜底
 
 ### 🛰️ 台站列表与详情
-- **多维筛选**：状态（在线 / 移动 / 静止 / 离线）、类型（移动 / 固定 / 中继 / 气象 / FMO）、国家 / 地区接收筛选、收藏
-- **智能搜索**：按呼号 / 类型 / 备注 / 网格号实时搜索（防抖，台站多也不卡）
+- **多维筛选**：状态（在线 / 移动 / 静止）、APRS 类型（车载 / 固定 / 中继 / 气象）、软件（APRSlocus）、设备类别与具体设备型号（官方 tocalls 识别）、国家 / 地区接收筛选、收藏；单行 chips 即点即筛
+- **智能搜索**：按呼号 / 类型 / 备注 / 网格 / 设备名实时搜索（防抖，台站多也不卡）
 - **多种排序**：呼号 / 最近听到 / 距离 / 状态
 - **详情页**：经纬度、Maidenhead 网格、速度、高度、航向、与我距离与方位角、天气数据、移动轨迹、转发路径可视化（箭头串联各跳段，中继台可点击跳转）、最近原始数据包
-- **快捷操作**：复制坐标 / 网格、在地图显示、导航到该台站
+- **快捷操作**：复制坐标 / 网格、在地图显示、导航到该台站、在线查看（QRZ 呼号库 / aprs.fi 位置轨迹）
 
 ### 📦 数据包与日志
 - **原始数据包查看**：等宽字体展示 + 时间戳，长按复制
@@ -94,7 +97,7 @@
 - 按国家 / 地区接收台站筛选，按经纬度 + 半径过滤接收范围（50 / 100 / 200 / 500 / 1000 / 2000 km 快捷预设）
 
 ### 🎨 个性化与体验
-- **多语言**：中文 / English / 跟随系统，首次启动可选
+- **多语言**：简体中文 / 繁體中文 / English / 跟随系统，首次启动可选
 - **深色模式** + 自定义主题色，即时生效
 - **界面缩放**（85% ~ 130%，滑块 + 预设快捷），一键重新加载界面
 - **六步引导向导（OOBE）**：语言 → 欢迎 → 呼号 / SSID → 符号 → 接收筛选 → 服务器连接，上手零门槛
@@ -142,7 +145,7 @@
 
 | 步骤 | 内容 |
 |------|------|
-| 1️⃣ | 选择界面语言（中文 / English / 跟随系统） |
+| 1️⃣ | 选择界面语言（简体中文 / 繁體中文 / English / 跟随系统） |
 | 2️⃣ | 欢迎页：了解核心功能，建议先试用**演示模式** |
 | 3️⃣ | 输入你的业余无线电**呼号**（如 `BG7LZQ-3`）并选择 **SSID 后缀**（移动端建议 `3`，手持台建议 `7`） |
 | 4️⃣ | 选择代表台站类型的**符号**（汽车 / 房屋 / 人 / 卡车 / 自行车 / 房车 / 气象站 / 警局） |
@@ -198,7 +201,7 @@
 APRSlocus 发送的位置信标遵循 APRS 1.0 标准：
 
 ```
-BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus v1.5.8
+BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus v1.6.18
 ```
 
 - 路径中的 `APALOC` 标识本台站使用 APRSlocus 软件
@@ -227,7 +230,7 @@ BG7LZQ-3>APALOC,TCPIP*:!2148.90N/11049.14E/> /A=000328 090/050 Bat:70% APRSlocus
 | **网络** | APRS-IS（TCP Socket / WebSocket） |
 | **协议** | APRS 1.0（位置 / 消息 / 气象 / 状态 / 物体 / Mic-E 等） |
 | **定位** | Android FusedLocationProvider + 前台服务 |
-| **国际化** | flutter_localizations + ARB（中文 / English） |
+| **国际化** | flutter_localizations + ARB（简体中文 / 繁體中文 / English） |
 | **CI / 发版** | GitHub Actions（Windows / Android / iOS 构建 + Release 自动发版） |
 
 ---
@@ -297,8 +300,8 @@ flutter pub get
 ### 构建 Windows 安装包
 ```bash
 flutter build windows --release
-# 使用 Inno Setup 打包（版本号跟随 pubspec.yaml）
-ISCC /DMyAppVersion=1.5.8 installer.iss
+# 使用 Inno Setup 打包（版本号自动跟随 pubspec.yaml）
+ISCC /DMyAppVersion=1.6.18 installer.iss
 ```
 
 ### 构建 Android APK
@@ -319,7 +322,7 @@ flutter build ios --release --no-codesign
 ```
 
 ### 版本号
-- 应用版本统一维护于 `pubspec.yaml`（`version: 1.5.8+10508`）
+- 应用版本统一维护于 `pubspec.yaml`（`version: 1.6.18+10618`）
 - 打 `v*` tag 推送后，[GitHub Actions](.github/workflows/build-release.yml) 自动构建 Windows / Android / iOS 并发布 Release，更新日志自动从 `CHANGELOG.md` 提取
 
 ---

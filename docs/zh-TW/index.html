@@ -1,52 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APRSlocus — APRS Tracking &amp; Mapping</title>
-<meta name="description" content="APRSlocus: An APRS client for amateur radio operators. Open it up and see nearby stations — positions, messages, and beacons all on one map. Runs on Android and Windows.">
+<title>APRSlocus — APRS 定位追蹤與地圖</title>
+<meta name="description" content="APRSlocus：給業餘無線電愛好者用的 APRS 客戶端。打開就能看到附近的臺站，位置、消息、信標都在同一張圖上，Android 和 Windows 都能跑。">
+<meta name="theme-color" content="#f3f6fd">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="APRSlocus">
-<meta property="og:title" content="APRSlocus — APRS Tracking & Mapping">
-<meta property="og:description" content="An APRS client for amateur radio operators: nearby stations, positions, messages and beacons on one map. Runs on Android and Windows.">
-<meta property="og:url" content="https://aprslocus.theez.top/en/">
+<meta property="og:title" content="APRSlocus — APRS 定位追蹤與地圖">
+<meta property="og:description" content="給業餘無線電愛好者用的 APRS 客戶端：附近臺站、位置消息、信標都在同一張圖上，Android 和 Windows 都能跑。">
+<meta property="og:url" content="https://aprslocus.theez.top/zh-TW/">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <meta property="og:image:width" content="192">
 <meta property="og:image:height" content="192">
 <meta property="og:image:alt" content="APRSlocus logo">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:locale:alternate" content="zh_CN, en_US">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="APRSlocus — APRS Tracking & Mapping">
-<meta name="twitter:description" content="An APRS client for amateur radio operators. Runs on Android and Windows.">
+<meta name="twitter:title" content="APRSlocus — APRS 定位追蹤與地圖">
+<meta name="twitter:description" content="給業餘無線電愛好者用的 APRS 客戶端，Android 和 Windows 都能跑。">
 <meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "APRSlocus",
-  "alternateName": "APRS Tracking & Mapping",
+  "alternateName": "APRS 定位追蹤與地圖",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Android, Windows",
-  "url": "https://aprslocus.theez.top/en/",
-  "description": "An APRS client for amateur radio: real-time station tracking, messaging and beaconing.",
+  "url": "https://aprslocus.theez.top/",
+  "description": "給業餘無線電愛好者用的 APRS 客戶端：實時臺站追蹤、消息收發、信標上報。",
   "author": {"@type": "Person", "name": "BG7LZQ (Darion)", "url": "https://aprslocus.theez.top/"},
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CNY"}
 }
 </script>
 
-<meta name="theme-color" content="#f3f6fd">
+<meta name="msvalidate.01" content="A10C9AF6F0DAC9E3BF451E4DC575DC4E" />
 <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/">
 <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/">
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
-<link rel="canonical" href="https://aprslocus.theez.top/en/">
+<link rel="canonical" href="https://aprslocus.theez.top/zh-TW/">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <link rel="stylesheet" href="../css/style.css?v=2">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
 
-<!-- ═══════════ Preloader ═══════════ -->
+<!-- ═══════════ 進入動畫：啟動遮罩 ═══════════ -->
 <div class="preloader" id="preloader" aria-hidden="true">
   <div class="pre-inner">
     <div class="pre-radar"><i></i><img class="pre-logo" src="../assets/logo.png" alt=""></div>
@@ -58,6 +59,7 @@
 
 <div class="scroll-progress" id="scrollProgress"></div>
 
+<!-- 全屏漂浮漸變色塊（毛玻璃背後的光斑） -->
 <div class="bg-blobs" aria-hidden="true">
   <span class="blob b1"></span>
   <span class="blob b2"></span>
@@ -65,7 +67,7 @@
   <span class="blob b4"></span>
 </div>
 
-<!-- ═══════════ Navbar ═══════════ -->
+<!-- ═══════════ 導航欄 ═══════════ -->
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a class="brand" href="#hero">
@@ -73,16 +75,16 @@
       <span class="brand-name">APRSlocus</span>
     </a>
     <nav class="nav-links" id="navLinks">
-      <a href="#features">Features</a>
-      <a href="#platforms">Platforms</a>
-      <a href="#changelog">Changelog</a>
-      <a href="#getting-started">Getting Started</a>
-      <a href="#faq">FAQ</a>
-      <a href="#community">Community</a>
-      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download v1.6.18</a>
-      <span class="lang-switch-group"><a class="lang-switch" href="../" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="./" hreflang="en">EN</a></span>
+      <a href="#features">功能</a>
+      <a href="#platforms">平臺</a>
+      <a href="#changelog">更新</a>
+      <a href="#getting-started">上手</a>
+      <a href="#faq">問答</a>
+      <a href="#community">社區</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載 v1.6.18</a>
+      <span class="lang-switch-group"><a class="lang-switch active" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../en/" hreflang="en">EN</a></span>
     </nav>
-    <button class="nav-burger" id="navBurger" aria-label="Menu">
+    <button class="nav-burger" id="navBurger" aria-label="菜單">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -95,30 +97,32 @@
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <span class="hero-badge"><span class="pulse-dot"></span> v1.6.18 · Fresh Release</span>
-      <h1 class="hero-title">APRS <span class="grad">Tracking</span> &amp; <span class="grad">Mapping</span></h1>
+      <span class="hero-badge"><span class="pulse-dot"></span> v1.6.18 · 剛發布</span>
+      <h1 class="hero-title">APRS <span class="grad">定位追蹤</span> 與 <span class="grad">地圖</span></h1>
       <p class="hero-sub">
-        An APRS client for amateur radio operators.<br>
-        Open it up and see nearby stations — positions, messages, and beacons all on one map. Runs on Android and Windows.
+        一個給業餘無線電愛好者用的 APRS 客戶端。<br>
+        打開就能看到附近的臺站，位置、消息、信標都在同一張圖上，Android 和 Windows 都能跑。
       </p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-mobile-screen"></i>
-          Download Android APK
+          下載 Android APK
         </a>
         <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-desktop" style="width:20px;height:20px"></i>
-          Windows Installer
+          Windows 安裝包
         </a>
-        <a class="btn btn-text" href="#getting-started">Get Started<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
+        <a class="btn btn-text" href="#getting-started">開始使用<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
       </div>
       <div class="hero-meta">
-        <span>APRS-IS Auto Connect</span>
+        <span>APRS-IS 自動連接</span>
         <span>Android / Windows</span>
       </div>
     </div>
 
+    <!-- 手機 + 桌面窗口：交錯重疊展示（手機在前、桌面窗口墊後） -->
     <div class="hero-phone">
+      <!-- 手機模擬器（窄屏布局：系統狀態欄 + 應用頂欄 + 地圖控制項 + 底部 5 Tab） -->
       <div class="phone">
         <div class="phone-notch"></div>
         <div class="phone-screen">
@@ -130,7 +134,7 @@
             </span>
           </div>
           <div class="ph-appbar">
-            <b>Map</b>
+            <b>地圖</b>
             <span class="ph-stat g"><i class="dot"></i><span class="skel-tag-short"></span></span>
           </div>
           <div class="ph-map" id="phoneMap">
@@ -160,16 +164,17 @@
             <div class="ph-coord"><span class="sc"></span><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="vd"></i><span class="skel-bar"></span><i class="datum"></i></div>
           </div>
           <div class="ph-nav">
-            <span class="on"><i class="fa-solid fa-map" style="width:13px;height:13px"></i>Map</span>
-            <span><i class="fa-solid fa-location-dot" style="width:13px;height:13px"></i>Stations</span>
-            <span><i class="fa-solid fa-message" style="width:13px;height:13px"></i>Messages<i class="dot">2</i></span>
-            <span><i class="fa-solid fa-file-lines" style="width:13px;height:13px"></i>Packets</span>
-            <span><i class="fa-solid fa-gear" style="width:13px;height:13px"></i>Settings</span>
+            <span class="on"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>地圖</span>
+            <span><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>臺站</span>
+            <span><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V4z"/></svg>消息<i class="dot">2</i></span>
+            <span><svg viewBox="0 0 24 24"><path d="M7 2h10l2 2v18H5V4l2-2zm3 2v4h4V4h-4zm-3 8v2h10v-2H7zm0 4v2h10v-2H7z"/></svg>數據包</span>
+            <span><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2zm0 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>設置</span>
           </div>
         </div>
       </div>
       <div class="phone-glow"></div>
 
+      <!-- Windows 桌面窗口（橫屏寬屏布局：標題欄 + 側欄 + 頂欄 + 地圖，骨架填充） -->
       <div class="deskwin">
         <div class="dw-title">
           <img class="dw-logo" src="../assets/logo.png" alt="">
@@ -180,14 +185,14 @@
           <div class="dw-side">
             <div class="dw-brand">
               <img src="../assets/logo.png" alt="">
-              <div><b>APRSlocus</b><em>APRS Tracking &amp; Mapping</em></div>
+              <div><b>APRSlocus</b><em>APRS 定位追蹤</em></div>
             </div>
             <div class="dw-nav">
-              <a class="on"><i class="fa-solid fa-map" style="width:13px;height:13px"></i>Map</a>
-              <a><i class="fa-solid fa-location-dot" style="width:13px;height:13px"></i>Stations</a>
-              <a><i class="fa-solid fa-message" style="width:13px;height:13px"></i>Messages</a>
-              <a><i class="fa-solid fa-file-lines" style="width:13px;height:13px"></i>Packets</a>
-              <a><i class="fa-solid fa-gear" style="width:13px;height:13px"></i>Settings</a>
+              <a class="on"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>地圖</a>
+              <a><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>臺站</a>
+              <a><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V4z"/></svg>消息</a>
+              <a><svg viewBox="0 0 24 24"><path d="M7 2h10l2 2v18H5V4l2-2zm3 2v4h4V4h-4zm-3 8v2h10v-2H7zm0 4v2h10v-2H7z"/></svg>數據包</a>
+              <a><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7.2 17l.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>設置</a>
             </div>
             <div class="dw-my">
               <div class="dw-my-head">
@@ -203,10 +208,10 @@
           </div>
           <div class="dw-main">
             <div class="dw-top">
-              <b>Map</b>
+              <b>地圖</b>
               <div class="dw-search">
                 <svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 1 0 4.9 14.3l5 5 1.4-1.4-5-5A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
-                <input placeholder="Search callsign / station" readonly>
+                <input placeholder="搜索呼號 / 臺站" readonly>
               </div>
               <span class="dw-stat g"><span class="skel-tag"></span></span>
               <span class="dw-stat b"><span class="skel-tag"></span></span>
@@ -244,88 +249,88 @@
     </div>
   </div>
 
-  <a class="hero-scroll" href="#features" aria-label="Scroll down"><span></span></a>
+  <a class="hero-scroll" href="#features" aria-label="向下滾動"><span></span></a>
 </section>
 
-<!-- ═══════════ Features ═══════════ -->
+<!-- ═══════════ 功能特性 ═══════════ -->
 <section class="section" id="features">
   <div class="section-head reveal">
-    <h2>What It Does</h2>
-    <p>Position tracking, beacon reporting, messaging, group chat — all the APRS essentials, built to be straightforward.</p>
+    <h2>它能幹什麼</h2>
+    <p>位置追蹤、信標上報、消息收發、群聊……都是 APRS 裡常用的那套，儘量做得順手一些。</p>
   </div>
 
   <div class="cards">
     <article class="card reveal">
       <div class="card-icon c1"><i class="fa-solid fa-location-dot"></i></div>
-      <h3>Real-time Map Tracking</h3>
-      <p>Many tile sources: AMap tiles, AMap satellite, Vector, Carto (light/dark/voyager), OSM (standard/humanitarian), OpenTopo, and Esri. Stations are grouped by callsign, with trail playback support.</p>
-      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>Station Clustering</li><li>Trail Display</li></ul>
+      <h3>實時地圖追蹤</h3>
+      <p>高德瓦片 / 高德衛星 / 矢量 / Carto（淺色·深色·航行者）/ OSM（標準·人道）/ OpenTopo / Esri 十多種底圖可切。臺站按呼號聚合，也能看軌跡回放。</p>
+      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>臺站聚合</li><li>軌跡顯示</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c2"><i class="fa-solid fa-tower-broadcast"></i></div>
-      <h3>Position Beacon</h3>
-      <p>One-tap position reporting in standard APRS 1.0 format. Auto-includes altitude, speed, heading, and battery level. Report interval is configurable.</p>
-      <ul class="card-tags"><li>Standard Format</li><li>Auto Attachments</li><li>Demo Mode</li></ul>
+      <h3>位置信標</h3>
+      <p>一鍵上報位置，按 APRS 1.0 標準格式發送，自動帶上高度、速度、航向和電量，上報間隔可調。</p>
+      <ul class="card-tags"><li>標準格式</li><li>自動附帶信息</li><li>演示模式</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c3"><i class="fa-solid fa-message"></i></div>
-      <h3>Messaging</h3>
-      <p>Private and group chat in a unified conversation list with ACK confirmation. Supports group invites, member management, unread badges, and Chinese text.</p>
-      <ul class="card-tags"><li>ACK Confirmation</li><li>Group Chat</li><li>Chinese Compatible</li></ul>
+      <h3>消息通信</h3>
+      <p>單聊、群聊統一在會話列表裡，帶 ACK 確認。支持群聊邀請、成員管理、未讀角標，中文消息也沒問題。</p>
+      <ul class="card-tags"><li>ACK 確認</li><li>群聊管理</li><li>中文兼容</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c4"><i class="fa-solid fa-shield"></i></div>
-      <h3>Station Recognition</h3>
-      <p>Identifies FMO stations (by APFMO path and comment field), and highlights fellow APRSlocus users. All 37 symbol tables and 3571 standard icons are supported.</p>
-      <ul class="card-tags"><li>FMO Detection</li><li>Peer Marking</li><li>Official Icon Set</li></ul>
+      <h3>臺站識別</h3>
+      <p>能識別 FMO 臺站（按 APFMO 路徑、備註欄位識別），也會標出同款 APRSlocus 臺站。37 個符號表、3571 個標準圖標都用得上。</p>
+      <ul class="card-tags"><li>FMO 識別</li><li>同款標記</li><li>官方圖標庫</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c5"><i class="fa-solid fa-file-lines"></i></div>
-      <h3>Packet &amp; Log Viewer</h3>
-      <p>Raw packets displayed in monospace with long-press copy. Parsed results sorted by type: position, message, weather, status. Built-in hierarchical logs for debugging.</p>
-      <ul class="card-tags"><li>Raw Packet View</li><li>Type Filtering</li><li>Debug Logs</li></ul>
+      <h3>數據包與日誌</h3>
+      <p>原始報文用等寬字體展示，長按可複製；解析結果按位置 / 消息 / 氣象 / 狀態分類。內置分級日誌方便排查問題。</p>
+      <ul class="card-tags"><li>原始報文</li><li>類型篩選</li><li>調試日誌</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c6"><i class="fa-solid fa-wifi"></i></div>
-      <h3>Connectivity &amp; Background</h3>
-      <p>Auto-connects to APRS-IS public servers over TCP or WebSocket. Progressive reconnect: 8 → 16 → 32 → 60 seconds. Android uses a foreground service to stay online.</p>
-      <ul class="card-tags"><li>Auto Reconnect</li><li>Foreground Service</li><li>System Notifications</li></ul>
+      <h3>連接與後臺</h3>
+      <p>自動連 APRS-IS 公共伺服器，TCP / WebSocket 都支持，斷線按 8 → 16 → 32 → 60 秒漸進重連。Android 用前臺服務保持在線。</p>
+      <ul class="card-tags"><li>自動重連</li><li>前臺服務</li><li>系統通知</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c7"><i class="fa-solid fa-arrows-rotate"></i></div>
-      <h3>Auto Updates</h3>
-      <p>In-app update checker with two channels (GitHub / GitCode). Platform-aware download routing and historical version access.</p>
-      <ul class="card-tags"><li>Dual Channels</li><li>Platform Routing</li><li>Historical Versions</li></ul>
+      <h3>自動更新</h3>
+      <p>應用內檢查更新，GitHub / GitCode 兩個渠道可切，按平臺分流下載，也能裝歷史版本。</p>
+      <ul class="card-tags"><li>雙渠道</li><li>按平臺分流</li><li>歷史版本</li></ul>
     </article>
 
     <article class="card reveal">
       <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
-      <h3>Personalization</h3>
-      <p>Chinese / English UI, dark mode, custom accent colors, scalable UI (85%–130%). Six-step onboarding wizard on first launch.</p>
-      <ul class="card-tags"><li>Multi-language</li><li>Dark Mode</li><li>OOBE Wizard</li></ul>
+      <h3>個性化體驗</h3>
+      <p>中文 / English 可選，支持深色模式和自定義主題色，界面可縮放 85% ~ 130%。首次啟動有六步引導。</p>
+      <ul class="card-tags"><li>多語言</li><li>深色模式</li><li>OOBE 引導</li></ul>
     </article>
   </div>
 </section>
 
-<!-- ═══════════ Platforms ═══════════ -->
+<!-- ═══════════ 平臺下載 ═══════════ -->
 <section class="section alt" id="platforms">
   <div class="section-head reveal">
-    <h2>Supported Platforms</h2>
-    <p>Ready-made packages for Android and Windows. Download and go.</p>
+    <h2>能跑的平臺</h2>
+    <p>Android 與 Windows 有現成的安裝包，下載就能用。</p>
   </div>
 
   <div class="platforms">
     <a class="platform reveal" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
       <span class="pl-logo a"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4-3 7-6 10-3-3-6-6-6-10a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></span>
       <div class="pl-body">
-        <h3>Android <em class="tag ok">Full Support</em></h3>
-        <p>Requires Android 5.0+. Direct APK install, foreground service keeps you online.</p>
+        <h3>Android <em class="tag ok">完整支持</em></h3>
+        <p>最低 Android 5.0，APK 直裝，前臺服務持續在線。</p>
       </div>
       <span class="pl-arrow">→</span>
     </a>
@@ -333,8 +338,8 @@
     <a class="platform reveal" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
       <span class="pl-logo w"><svg viewBox="0 0 24 24"><path d="M3 5h18v4H3V5zm0 6h18v4H3v-4zm0 6h12v2H3v-2z"/></svg></span>
       <div class="pl-body">
-        <h3>Windows <em class="tag ok">Full Support</em></h3>
-        <p>Portable single-file EXE + Inno Setup installer. Double-click to run.</p>
+        <h3>Windows <em class="tag ok">完整支持</em></h3>
+        <p>綠色單文件 EXE + Inno Setup 安裝包，雙擊即用。</p>
       </div>
       <span class="pl-arrow">→</span>
     </a>
@@ -342,83 +347,83 @@
 
   <div class="dl-note reveal">
     <svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4zm4 14V7.8l-4-2-4 2V16c0 2.6 1.6 4.7 4 5.7 2.4-1 4-3.1 4-5.7zM11 9h2v3h3v2h-3v3h-2v-3H8v-2h3V9z"/></svg>
-    Latest test builds (APK / EXE) are available on <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a>
+    最新測試版安裝包（APK / EXE）請在 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a> 頁面獲取
   </div>
 </section>
 
-<!-- ═══════════ Getting Started ═══════════ -->
+<!-- ═══════════ 快速上手 ═══════════ -->
 <section class="section" id="getting-started">
   <div class="section-head reveal">
-    <h2>First Launch? Follow the Wizard</h2>
-    <p>On first open, the onboarding wizard walks you through the setup. Fill in the steps and you'll be connected to APRS-IS and reporting your position.</p>
+    <h2>首次啟動，跟著嚮導走</h2>
+    <p>第一次打開會進引導嚮導，按步驟填完就能連上 APRS-IS 並開始上報位置。</p>
   </div>
 
   <div class="steps">
     <div class="step reveal">
       <div class="step-num">1</div>
-      <h3>Choose Language</h3>
-      <p>中文 / English / Follow System</p>
+      <h3>選擇語言</h3>
+      <p>中文 / English / 跟隨系統</p>
     </div>
     <div class="step reveal">
       <div class="step-num">2</div>
-      <h3>Learn the Features</h3>
-      <p>Try demo mode first</p>
+      <h3>了解功能</h3>
+      <p>建議先試用演示模式</p>
     </div>
     <div class="step reveal">
       <div class="step-num">3</div>
-      <h3>Enter Callsign</h3>
-      <p>e.g. <code>BG7LZQ-3</code>, choose SSID suffix</p>
+      <h3>填寫呼號</h3>
+      <p>如 <code>BG7LZQ-3</code>，選擇 SSID 後綴</p>
     </div>
     <div class="step reveal">
       <div class="step-num">4</div>
-      <h3>Pick a Symbol</h3>
-      <p>Car / House / Person / Weather Station …</p>
+      <h3>選擇符號</h3>
+      <p>汽車 / 房屋 / 人 / 氣象站 …</p>
     </div>
     <div class="step reveal">
       <div class="step-num">5</div>
-      <h3>Receive Filter</h3>
-      <p>Filter stations by country / region</p>
+      <h3>接收篩選</h3>
+      <p>按國家 / 地區選擇接收臺站</p>
     </div>
     <div class="step reveal">
       <div class="step-num">6</div>
-      <h3>Server Config</h3>
-      <p>Enter Passcode, done — auto-connect</p>
+      <h3>配置伺服器</h3>
+      <p>填入 Passcode，完成即自動連接</p>
     </div>
   </div>
 
   <div class="oobe-tip reveal">
     <div class="tip-icon">💡</div>
     <div>
-      <b>Passcode Tip:</b> Entering <code>-1</code> works for basic connectivity, but <u>an unverified Passcode cannot send or receive messages properly</u>. Visit
-      <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode Generator</a> to generate your own Passcode.
+      <b>Passcode 小貼士：</b>密碼填 <code>-1</code> 即可連接，但<u>未驗證的 Passcode 無法正常收發消息</u>。建議到
+      <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查詢</a> 生成你的專屬 Passcode 後填入。
     </div>
   </div>
 </section>
 
-<!-- ═══════════ Beacon & Symbols ═══════════ -->
+<!-- ═══════════ 信標示例 ═══════════ -->
 <section class="section alt" id="showcase">
   <div class="section-head reveal">
-    <h2>Beacon &amp; Symbols</h2>
-    <p>APRS 1.0 compliant, compatible with mainstream APRS software. All icons from the official symbol table.</p>
+    <h2>信標 · 符號</h2>
+    <p>遵循 APRS 1.0 標準，兼容主流 APRS 軟體，圖標全部來自官方符號表。</p>
   </div>
 
   <div class="showcase-grid">
     <div class="beacon-box reveal">
       <div class="beacon-title">
-        <span>Position Beacon Example</span>
+        <span>信標示例 · Position Beacon</span>
         <span class="lang-tag">APRS 1.0</span>
       </div>
       <div class="beacon-code">
         <pre><code><span class="tok-c">BG7LZQ-3</span><span class="tok-m">&gt;</span><span class="tok-p">APALOC,TCPIP*</span><span class="tok-m">:</span><span class="tok-o">!</span><span class="tok-n">2148.90N</span><span class="tok-m">/</span><span class="tok-n">11049.14E</span><span class="tok-s">/&gt;</span> <span class="tok-c">/A=000328 090/050 Bat:70%</span> <span class="tok-p">APRSlocus v1.6.18</span></code></pre>
-        <button class="copy-btn" id="copyBeacon" aria-label="Copy beacon" title="Copy to clipboard">
+        <button class="copy-btn" id="copyBeacon" aria-label="複製信標" title="複製到剪貼板">
           <svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2zm2 2v13h10V7h-1v8a2 2 0 0 1-2 2H9z"/></svg>
         </button>
       </div>
       <ul class="beacon-notes">
-        <li><code>APALOC</code> — Identifies this station as APRSlocus</li>
-        <li><code>/A=000328</code> — Altitude in feet</li>
-        <li><code>090/050</code> — Course / Speed</li>
-        <li><code>Bat:70%</code> — Battery level</li>
+        <li><code>APALOC</code> — 標識本臺站使用 APRSlocus</li>
+        <li><code>/A=000328</code> — 高度（英尺）</li>
+        <li><code>090/050</code> — 航向 / 速度</li>
+        <li><code>Bat:70%</code> — 電量</li>
       </ul>
     </div>
 
@@ -426,11 +431,11 @@
   </div>
 </section>
 
-<!-- ═══════════ Changelog ═══════════ -->
+<!-- ═══════════ 更新日誌 ═══════════ -->
 <section class="section" id="changelog">
   <div class="section-head reveal">
-    <h2>Changelog</h2>
-    <p>Recent changes across the latest releases.</p>
+    <h2>更新日誌</h2>
+    <p>近幾個版本的主要變化。</p>
   </div>
 
   <div class="changelog-list">
@@ -440,10 +445,10 @@
         <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>New: "All changelogs" entry on the Update page — view every release note</div>
-        <div class="cl-item"><span class="cl-dot new"></span>New: Map help panel when no stations are in view (tap the hint)</div>
-        <div class="cl-item"><span class="cl-dot fix"></span>Fix: Map offset on international tiles (Carto/OSM/Esri/OpenTopo) — WGS-84 projection</div>
-        <div class="cl-item"><span class="cl-dot up"></span>Removed "show all stations" auto-fit; hint now opens the help panel</div>
+        <div class="cl-item"><span class="cl-dot new"></span>更新頁新增「全部更新日誌」入口，一次看全所有版本說明</div>
+        <div class="cl-item"><span class="cl-dot new"></span>地圖視野內無臺站時，點擊提示彈出「地圖幫助」面板</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>修復國際圖源（Carto / OSM / Esri / OpenTopo）地圖偏移，改用 WGS-84 投影</div>
+        <div class="cl-item"><span class="cl-dot up"></span>移除「顯示全部臺站」自適應，無臺站提示改為打開幫助面板</div>
       </div>
     </div>
 
@@ -453,8 +458,8 @@
         <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>New: Speed / altitude trend charts on the station detail page</div>
-        <div class="cl-item"><span class="cl-dot new"></span>Chart time range selectable: 10m / 30m / 1h / 3h / All</div>
+        <div class="cl-item"><span class="cl-dot new"></span>臺站詳情新增速度 / 高度變化圖表</div>
+        <div class="cl-item"><span class="cl-dot new"></span>圖表時間範圍可切換：10 分鐘 / 30 分鐘 / 1 小時 / 3 小時 / 全部</div>
       </div>
     </div>
 
@@ -464,67 +469,67 @@
         <span class="cl-date">2026-09-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>New: "Share APRSlocus" on the About page (system share / copy / download)</div>
-        <div class="cl-item"><span class="cl-dot up"></span>Simulated-location mode hides GPS-only settings; manual coordinates shown first</div>
-        <div class="cl-item"><span class="cl-dot up"></span>Tile map minimum zoom extended to world view (z=3)</div>
+        <div class="cl-item"><span class="cl-dot new"></span>關於頁新增「分享 APRSlocus」（系統分享 / 複製文案 / 打開下載頁）</div>
+        <div class="cl-item"><span class="cl-dot up"></span>模擬位置模式隱藏 GPS 專屬設置，手動定位前置顯示</div>
+        <div class="cl-item"><span class="cl-dot up"></span>瓦片地圖最小縮放擴展至全球視野（z=3）</div>
       </div>
     </div>
 
-    <p class="cl-more reveal"><a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">View full release history →</a></p>
+    <p class="cl-more reveal"><a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">查看完整更新記錄 →</a></p>
   </div>
 </section>
 
-<!-- ═══════════ FAQ ═══════════ -->
+<!-- ═══════════ 常見問題 ═══════════ -->
 <section class="section" id="faq">
   <div class="section-head reveal">
-    <h2>Frequently Asked Questions</h2>
-    <p>From Passcode to battery drain — everything we could think of.</p>
+    <h2>常見問題</h2>
+    <p>從 Passcode 到後臺耗電，能想到的問題都寫在這裡了。</p>
   </div>
 
   <div class="faq-list">
     <details class="faq reveal" open>
-      <summary>Can't receive / send messages?<span class="chev"></span></summary>
-      <p>Most likely an <b>unverified Passcode</b>. Entering <code>-1</code> only lets you connect — it won't work for messaging. Visit <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode Generator</a> to generate your own Passcode and enter it in Connection Settings. If the server returns <code>unverified</code>, a yellow banner appears at the top of the home page — tap "Go to Settings" to fix it.</p>
+      <summary>為什麼收不到消息 / 無法收發消息？<span class="chev"></span></summary>
+      <p>絕大多數情況是 <b>Passcode 未驗證</b>。密碼填 <code>-1</code> 只能連接，不能正常收發消息。請到 <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查詢</a> 生成自己的 Passcode 並填入「連接設置」。登錄後若伺服器返回 <code>unverified</code>，主頁頂部會出現黃色警告橫幅，點擊「去設置」即可直達修改。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>How do I set up a Passcode?<span class="chev"></span></summary>
-      <p>In step 6 of the wizard or under Settings → Connection, use your <b>full callsign (including SSID suffix, e.g. BG7LZQ-3)</b> to generate a Passcode, then paste it in.</p>
+      <summary>Passcode 該怎麼設置？<span class="chev"></span></summary>
+      <p>在引導第 6 步或「設置 → 連接」中，用你的<b>完整呼號（含 SSID 後綴，如 BG7LZQ-3）</b>查詢生成 Passcode 後填入即可。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>Connection fails / keeps dropping?<span class="chev"></span></summary>
-      <p>The app has built-in progressive reconnect (8 → 16 → 32 → 60 seconds). If it persists, check your network, make sure the server address (default <code>rotate.aprs2.net:14580</code>) and port aren't blocked, or try a different server in Connection Settings.</p>
+      <summary>連接失敗 / 頻繁掉線？<span class="chev"></span></summary>
+      <p>應用內置漸進式重連（8 → 16 → 32 → 60 秒）。若持續失敗，請檢查網絡、確認伺服器地址（默認 <code>rotate.aprs2.net:14580</code>）與埠是否被攔截，或在「連接設置」中更換伺服器後點擊「重新連接」。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>Can't see nearby stations on mobile?<span class="chev"></span></summary>
-      <p>Check if your target country/region is selected in the Receive Filter, and verify that the receive range (lat/lon + radius) covers your location. By default, only Chinese (B-prefix) stations are received.</p>
+      <summary>手機上收不到周邊臺站？<span class="chev"></span></summary>
+      <p>檢查「接收篩選」是否勾選了目標國家 / 地區，並確認接收範圍（經緯度 + 半徑）覆蓋你的位置。默認只接收中國（B 開頭）臺站。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>Does background positioning drain the battery?<span class="chev"></span></summary>
-      <p>Android uses a foreground service for continuous positioning. You can adjust the report interval in Location / Beacon settings, or switch to manual reporting to reduce power usage. The notification bar has a one-tap "Exit" button.</p>
+      <summary>後臺定位會一直耗電嗎？<span class="chev"></span></summary>
+      <p>Android 端使用前臺服務持續定位以保持 APRS 在線，可在「定位 / 信標」設置中調整上報間隔，或關閉信標上報、按需手動上報來降低耗電。通知欄可一鍵「退出」應用。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>Map display issues on Windows?<span class="chev"></span></summary>
-      <p>For best compatibility on Windows, switch to <b>Vector Map</b> (no API key needed) or use Carto / OSM / Esri layers in Display → Map Type.</p>
+      <summary>Windows 上地圖顯示異常？<span class="chev"></span></summary>
+      <p>建議在「顯示 → 地圖類型」中切換為<b>矢量地圖</b>（無需 API Key，兼容性最好），或使用 Carto / OSM / Esri 等國際圖源。</p>
     </details>
 
     <details class="faq reveal">
-      <summary>Signature conflict / version downgrade on install?<span class="chev"></span></summary>
-      <p>Since v1.5.2, Android builds use the official release signature. CI and local builds use the same key — just install over the old version. If upgrading from a much older build, uninstall and reinstall.</p>
+      <summary>覆蓋安裝提示籤名衝突 / 版本降級？<span class="chev"></span></summary>
+      <p>自 1.5.2 起 Android 使用正式 release 籤名，CI 與本地籤名一致，直接覆蓋安裝即可。若從更老版本升級，請卸載後重裝。</p>
     </details>
   </div>
 </section>
 
-<!-- ═══════════ Community ═══════════ -->
+<!-- ═══════════ 社區 ═══════════ -->
 <section class="section alt" id="community">
   <div class="community-inner">
     <div class="section-head reveal">
-      <h2>Chat, Feedback, Development</h2>
-      <p>Star, open an issue, send a PR, or join the QQ group — all welcome.</p>
+      <h2>聊聊、反饋、一起開發</h2>
+      <p>Star、提 Issue、發 PR，或者直接進 QQ 群嘮嗑，都歡迎。</p>
     </div>
 
     <div class="community-links">
@@ -548,7 +553,7 @@
         <span class="cl-icon qq">
           <svg viewBox="0 0 24 24"><path d="M12 2c3.5 0 6 2.4 6 5.6 0 .9-.1 1.7-.4 2.5l1.5 3.3c.4.9.1 1.5-.6 1.2l-1.5-.6-.2 1.2c0 .9-1 1.6-2.6 1.9l.4 2H9.4l.4-2c-1.6-.3-2.6-1-2.6-1.9l-.2-1.2-1.5.6c-.7.3-1-.3-.6-1.2l1.5-3.3a6.6 6.6 0 0 1-.4-2.5C6 4.4 8.5 2 12 2zm-1.5 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm3 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>
         </span>
-        <div><b>QQ Group</b><span>qm.qq.com/q/8pL6vc5YA0</span></div>
+        <div><b>QQ 交流群</b><span>qm.qq.com/q/8pL6vc5YA0</span></div>
         <span class="cl-arrow">↗</span>
       </a>
 
@@ -556,14 +561,14 @@
         <span class="cl-icon web2">
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7.4 11h-3.3c-.3 3.3-1.6 6.1-3.4 7.9A8 8 0 0 1 19.4 13zM12 4c1.6 1.9 2.9 4.7 3.2 8H8.8c.3-3.3 1.6-6.1 3.2-8zm-1.7 16.9c-1.8-1.8-3.1-4.6-3.4-7.9H3.6a8 8 0 0 0 6.7 7.9z"/></svg>
         </span>
-        <div><b>Official Website</b><span>aprslocus.theez.top</span></div>
+        <div><b>官方網站</b><span>aprslocus.theez.top</span></div>
         <span class="cl-arrow">↗</span>
       </a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ Footer ═══════════ -->
+<!-- ═══════════ 頁腳 ═══════════ -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-top">
@@ -571,24 +576,25 @@
         <img src="../assets/logo.png" alt="APRSlocus">
         <div>
           <b>APRSlocus</b>
-          <span>APRS Tracking &amp; Mapping</span>
+          <span>APRS 定位追蹤與地圖 · APRS Tracking &amp; Mapping</span>
         </div>
       </div>
       <div class="footer-links">
-        <a href="#features">Features</a>
-        <a href="#platforms">Platforms</a>
-        <a href="#getting-started">Getting Started</a>
-        <a href="#faq">FAQ</a>
+        <a href="#features">功能</a>
+        <a href="#platforms">平臺</a>
+        <a href="#getting-started">上手</a>
+        <a href="#faq">問答</a>
         <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span id="year">2026</span> BG7LZQ (Darion) · Licensed under <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">User Agreement</a></span>
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · 開源協議 <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">用戶協議</a></span>
+      <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地無線電管理法規。</span>
     </div>
   </div>
 </footer>
 
-<a class="backtop" id="backTop" href="#hero" aria-label="Back to top">
+<a class="backtop" id="backTop" href="#hero" aria-label="回到頂部">
   <svg class="backtop-ring" viewBox="0 0 40 40">
     <circle class="ring-bg" cx="20" cy="20" r="17"/>
     <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
