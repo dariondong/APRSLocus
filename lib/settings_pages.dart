@@ -520,6 +520,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
   late final TextEditingController _myLng;
   bool _manualOpen = false;
   bool _smartBeacon = true;
+  int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
 
   AppState get st => widget.state;
 
@@ -537,6 +538,49 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     _myLat.dispose();
     _myLng.dispose();
     super.dispose();
+  }
+
+  /// 信标间隔 < 60 秒 → 强提示（APRS-IS 建议移动站不低于 60 秒）
+  Future<void> _confirmFastInterval(int n) async {
+    if (_fastApproved == n) {
+      st.setBeaconInterval(n);
+      return;
+    }
+    final keep = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Row(children: [
+          Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(S.of(context).beaconWarnTitle,
+                style: ts(15, w: FontWeight.w700)),
+          ),
+        ]),
+        content: Text(S.of(context).beaconWarnBody,
+            style: ts(13, h: 1.7)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(S.of(context).beaconWarnFix,
+                style: ts(13, c: C.blue)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(S.of(context).beaconWarnKeep, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    if (keep == true) {
+      _fastApproved = n;
+      st.setBeaconInterval(n);
+    } else if (keep == false) {
+      st.setBeaconInterval(60);
+      setState(() => _interval.text = '60');
+    }
   }
 
   @override
@@ -742,7 +786,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 tip: '位置信标的发送间隔，至少 5 秒',
                 onChanged: (v) {
               final n = int.tryParse(v);
-              if (n != null && n >= 5) st.setBeaconInterval(n);
+              if (n == null || n < 5) return;
+              if (n < 60) {
+                _confirmFastInterval(n);
+              } else {
+                st.setBeaconInterval(n);
+              }
             }),
             SettingsSwitch(S.of(context).smartBeacon, value: _smartBeacon,
                 onChanged: (v) => setState(() => _smartBeacon = v)),

@@ -10,6 +10,7 @@ import 'theme.dart';
 import 'widgets.dart';
 import 'state.dart';
 import 'sponsor_page.dart';
+import 'terms_page.dart';
 
 /// 彩蛋呼号 → 台词
 
@@ -691,6 +692,7 @@ class _AboutPageState extends State<AboutPage>
                             value: 'GPL-3.0',
                             url: 'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
                           ),
+                          _termsRow(context),
                         ],
                       ),
                     ),
@@ -977,6 +979,36 @@ class _AboutPageState extends State<AboutPage>
             ),
             SizedBox(width: 4),
             Icon(Icons.open_in_new_rounded, size: 14, color: C.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 用户协议入口行（App 内页面，非外链）
+  Widget _termsRow(BuildContext context) {
+    return InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const TermsPage()),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.assignment_rounded, size: 15, color: C.blue),
+            SizedBox(width: 8),
+            Text(S.of(context).userAgreement, style: ts(12, c: C.slate)),
+            Spacer(),
+            Text(
+              'V1.0',
+              style: ts(12, c: C.blue, w: FontWeight.w600),
+            ),
+            SizedBox(width: 2),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
           ],
         ),
       ),

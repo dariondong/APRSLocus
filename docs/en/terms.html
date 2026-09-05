@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Agreement — APRSlocus Terms of Use and Disclaimer</title>
+<meta name="description" content="APRSlocus Terms of Use and Disclaimer (V1.0): APRS protocol, APRS-IS, legal use & callsign, data storage & privacy, third-party services, intellectual property, disclaimer of liability.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="User Agreement — APRSlocus Terms of Use and Disclaimer">
+<meta property="og:description" content="APRSlocus Terms of Use and Disclaimer (V1.0).">
+<meta property="og:url" content="https://aprslocus.theez.top/en/terms.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:image:width" content="192">
+<meta property="og:image:height" content="192">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://aprslocus.theez.top/en/terms.html">
+<link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/terms.html">
+<link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/terms.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(160deg,#f3f6fd 0%,#eaf0fa 100%); color: #253044; line-height: 1.9; min-height: 100vh; }
+  .topbar { background: rgba(255,255,255,.82); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e9f0; position: sticky; top: 0; z-index: 10; }
+  .topbar-inner { max-width: 880px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #253044; font-weight: 800; font-size: 15px; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .lang { font-size: 13px; display: flex; gap: 6px; }
+  .lang a { text-decoration: none; color: #2563eb; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #eaf1fe; }
+  .lang a:hover { background: #dbe7fd; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+  .card { background: #fff; border: 1px solid #e5e9f0; border-radius: 18px; padding: 30px 32px; box-shadow: 0 8px 30px rgba(37,99,235,.05); }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #637083; margin-bottom: 20px; }
+  pre.terms { white-space: pre-wrap; word-break: break-word; font-family: inherit; font-size: 14px; color: #253044; }
+  .foot { max-width: 860px; margin: 24px auto 0; padding: 0 20px 40px; text-align: center; font-size: 12px; color: #94a0b2; }
+  .foot a { color: #637083; text-decoration: none; }
+  .foot a:hover { color: #2563eb; }
+  @media (max-width: 640px){ .card{ padding: 22px 18px; } h1{ font-size: 20px; } pre.terms{ font-size: 13px; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./">
+      <img src="../assets/logo.png" alt="APRSlocus">
+      <span>APRSlocus · User Agreement</span>
+    </a>
+    <div class="lang">
+      <a href="../terms.html">中文</a>
+      <a href="terms.html">English</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <h1>APRSlocus Terms of Use and Disclaimer</h1>
+    <p class="sub">This agreement is executed in Chinese; the English translation is for reference only. In case of any discrepancy, the Chinese version shall prevail.</p>
+    <pre class="terms" id="terms">Loading…</pre>
+  </div>
+</div>
+
+<div class="foot">
+  © <span id="year">2026</span> BG7LZQ (Darion) ·
+  <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> ·
+  <a href="https://github.com/dariondong/APRSLocus" target="_blank" rel="noopener">GitHub</a>
+</div>
+
+<script>
+  fetch('../assets/terms_en.txt')
+    .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+    .then(function (t) { document.getElementById('terms').textContent = t; })
+    .catch(function () { document.getElementById('terms').textContent = 'Failed to load. Please refresh and try again later.'; });
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

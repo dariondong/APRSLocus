@@ -1,0 +1,145 @@
+APRSlocus Terms of Use and Disclaimer
+
+Version: V1.0
+
+Effective Date: September 5, 2026
+
+Thank you for using APRSlocus! APRSlocus is an open-source APRS client software, licensed under the GPL-3.0 license. This document, together with the GPL-3.0 license, constitutes the complete agreement between you and the development team.
+
+---
+
+1. About the APRS Protocol
+
+1.1 APRS (Automatic Packet Reporting System) is a real-time tactical digital communication protocol developed by Bob Bruninga (WB4APR) for exchanging information among a large number of stations over a wide area. APRS was originally based on the AX.25 packet radio protocol and operates on VHF frequencies (144.390 MHz in North America, 144.800 MHz in Europe) at 1200 bps using AFSK (Audio Frequency Shift Keying).
+
+1.2 The APRS protocol specifications cover various data formats, including position reports, weather data, messages, telemetry, status, objects, items, queries, and bulletins. APRS v1.0 was released in June 2000, v1.1 was updated in July 2004, and the protocol continues to evolve.
+
+1.3 APRS differs from conventional packet radio in four key aspects: ① integration of maps and other data displays; ② use of a one-to-many broadcast protocol for real-time updates; ③ use of generic digital relays without requiring prior knowledge of network topology; ④ since 1997, interconnection of global users through a transparent Internet backbone.
+
+1.4 As an APRS client, this software sends and receives data in accordance with the above protocol specifications. All data you send through this software follows the APRS protocol format and may be received, stored, and forwarded by other nodes on the global APRS network.
+
+---
+
+2. About the APRS-IS Internet Service
+
+2.1 APRS-IS (APRS-Internet Service) is an Internet backbone network maintained by volunteer amateur radio operators worldwide, connecting APRS radio networks around the globe.
+
+2.2 This software is a pure client tool and does not operate any APRS servers. All APRS data you send and receive through this software is transmitted via third-party APRS-IS public networks. We assume no responsibility for the availability, accuracy, or security of those networks.
+
+2.3 The APRS-IS network is operated and maintained by volunteers. All users shall comply with the following basic rules:
+
+· Every APRS-IS packet may be forwarded to radio networks, so beacon rates and packet content must comply with RF usage norms;
+· Beacon rates should follow reasonable RF frequency standards (mobile stations no less than 1 minute, weather stations no less than 5 minutes, fixed stations no less than 10 minutes, local infrastructure no less than 20 minutes);
+· It is prohibited to inject non-amateur-radio content into APRS-IS while masquerading as an amateur station;
+· Access to APRS-IS is limited to operators holding a valid amateur radio callsign.
+
+---
+
+3. Legal Use and Callsign
+
+3.1 Use of APRSlocus involves an amateur radio callsign. You shall ensure that the callsign used is legally held by yourself and you are responsible for all data transmitted under that callsign.
+
+3.2 According to the Regulations on the Administration of Radio of the People's Republic of China and the Measures for the Administration of Amateur Radio Stations (Ministry of Industry and Information Technology Order No. 67), the establishment and use of amateur radio stations require a valid license. Amateur radio stations may only be used for mutual communication, technical research, and self-training, and may not be used for commercial gain.
+
+3.3 By using this software, you represent and warrant that:
+
+· You hold a valid amateur radio operator certificate and station license (where applicable);
+· You conduct APRS communication using your own legal callsign;
+· Your use complies with the radio regulations of your country or region.
+
+3.4 You shall not use this software to engage in any illegal or improper activities, including but not limited to:
+
+· Tracking or publishing another person's location without their consent;
+· Sending harassing, threatening, defamatory, illegal, or false information through this software;
+· Sending data at beacon rates higher than reasonable, thereby interfering with normal APRS-IS operations;
+· Injecting non-amateur-radio content into APRS-IS or impersonating others;
+· Reverse engineering, decompiling, disassembling, or otherwise infringing the intellectual property rights of this software.
+
+---
+
+4. Data Storage and Privacy
+
+4.1 APRS is by nature a public position-reporting system. APRS data is transmitted in plaintext over amateur radio frequencies and the Internet, and can be received and decoded by anyone. APRS is never encrypted and never private.
+
+4.2 Location tracks, weather data, and messages collected by the APRS-IS network are public data. All APRS data you send through this software may be received, stored, forwarded, and publicly archived by other nodes on the APRS-IS network as well as third-party services (such as aprs.fi).
+
+4.3 If you do not wish your location to be known to anyone in the world, please do not send it via APRS or the Internet.
+
+4.4 Local Data Storage: To ensure normal operation, this software stores the following data locally on your device:
+
+· Beacon history and track points;
+· Sent and received messages;
+· Address book (callsigns and notes);
+· Custom notes and theme settings for stations;
+· Software configuration parameters (e.g., server address, beacon interval, map layer preferences, etc.).
+
+4.5 All the above data is stored only locally on your device and is not automatically uploaded to any server controlled by us or any third party. You can delete this local data by using the "Clear Data" function within the software or by uninstalling the software.
+
+4.6 We do not actively collect, store, or process your personal data. The APRS data you send through this software is transmitted directly via third-party APRS-IS networks and does not pass through any server under our control.
+
+4.7 You are responsible for safeguarding your device against unauthorised access to your local data. The development team assumes no liability for data disclosure resulting from loss, theft, or unauthorised use of your device.
+
+---
+
+5. Third-Party Services
+
+5.1 This software may connect to third-party APRS-IS servers (e.g., rotate.aprs2.net, noam.aprs2.net, etc.) and third-party map services (e.g., Amap, etc.). These services are independently provided by third parties, and we assume no responsibility for their availability, accuracy, or security.
+
+5.2 When using third-party services, you shall comply with their respective terms of use and privacy policies.
+
+---
+
+6. Intellectual Property
+
+6.1 APRSlocus is open-source software under the GPL-3.0 license. You may use, modify, and distribute the source code of this software in accordance with the GPL-3.0 terms.
+
+6.2 The name "APRSlocus", its icon, and related logos are owned by the development team and may not be used without permission.
+
+6.3 "APRS" is a registered trademark of Bob Bruninga (WB4APR). Use of the term "APRS" in this software is solely to indicate compatibility and does not imply any affiliation with or endorsement by the trademark holder.
+
+---
+
+7. Disclaimer of Liability
+
+7.1 This software is provided "AS IS" without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
+
+7.2 APRS relies on radio communications and the Internet. We cannot guarantee that the service will be available at all times. We assume no liability for interruptions or data loss caused by network failures, server maintenance, third-party service changes, force majeure, or other reasons.
+
+7.3 This software is an auxiliary tool for amateur radio enthusiasts and is not intended for mission-critical scenarios involving life or property safety. The development team assumes no liability for any direct or indirect losses (including but not limited to location errors, communication interruptions, or data acquisition by third parties) arising from the use of this software.
+
+7.4 The APRS-IS is a public network. Data you send through this software may be received, stored, and used by third parties. You are responsible for judging the appropriateness of the information you publish and for bearing the corresponding consequences.
+
+7.5 In no event shall the development team's total liability to you exceed the amount you paid for this software (if any). Since this software is provided free of charge, the liability cap is zero.
+
+---
+
+8. Changes and Termination
+
+8.1 We reserve the right to revise this agreement in response to changes in laws, regulations, or business needs. The revised agreement will be published within the software, in the GitHub repository, or on official channels. If you continue to use this software after such revision, you will be deemed to have accepted the revised agreement.
+
+8.2 If you violate any provision of this agreement, we reserve the right to restrict, suspend, or terminate your use of this software.
+
+8.3 This agreement terminates when you cease using this software or when we cease distribution.
+
+---
+
+9. Miscellaneous
+
+9.1 The formation, performance, interpretation, and dispute resolution of this agreement shall be governed by the laws of the People's Republic of China.
+
+9.2 Any dispute arising out of or in connection with this agreement shall first be settled through friendly negotiation. If negotiation fails, either party may submit the dispute to a competent court in the People's Republic of China.
+
+9.3 If any provision of this agreement is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+
+---
+
+10. Contact Us
+
+If you have any questions, suggestions, or complaints regarding this agreement, you may contact us via:
+
+· QQ Group: 925025834
+· GitHub Repository: search for "APRSlocus" and submit an Issue
+
+---
+
+73 and happy operating!

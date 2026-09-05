@@ -595,6 +595,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get licenseText => '查看许可证';
+  String get userAgreement => '用户协议';
+  String get beaconWarnTitle => '信标间隔过短';
+  String get beaconWarnBody => 'APRS-IS 建议移动站信标间隔不低于 60 秒。过快的上报可能被视为滥用并导致服务器断开连接。是否仍要使用该间隔？';
+  String get beaconWarnKeep => '仍然使用';
+  String get beaconWarnFix => '改回 60 秒';
 
   @override
   String get features => '功能特性';

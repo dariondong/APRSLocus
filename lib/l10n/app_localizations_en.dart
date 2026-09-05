@@ -598,6 +598,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenseText => 'View license';
+  String get userAgreement => 'User Agreement';
+  String get beaconWarnTitle => 'Beacon interval too short';
+  String get beaconWarnBody => 'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';
+  String get beaconWarnKeep => 'Keep anyway';
+  String get beaconWarnFix => 'Set to 60 s';
 
   @override
   String get features => 'Features';

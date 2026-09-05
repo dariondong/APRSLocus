@@ -1267,6 +1267,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'查看许可证'**
   String get licenseText;
+  String get userAgreement;
+  String get beaconWarnTitle;
+  String get beaconWarnBody;
+  String get beaconWarnKeep;
+  String get beaconWarnFix;
 
   /// No description provided for @features.
   ///
