@@ -44,6 +44,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings => '设置';
+  String get greetMorning => '早上好，';
+  String get greetNoon => '中午好，';
+  String get greetAfternoon => '下午好，';
+  String get greetEvening => '晚上好，';
+  String get greetNight => '夜深了，';
 
   @override
   String get about => '关于';

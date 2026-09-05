@@ -44,6 +44,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+  String get greetMorning => 'Good morning, ';
+  String get greetNoon => 'Good noon, ';
+  String get greetAfternoon => 'Good afternoon, ';
+  String get greetEvening => 'Good evening, ';
+  String get greetNight => 'Hello, ';
 
   @override
   String get about => 'About';

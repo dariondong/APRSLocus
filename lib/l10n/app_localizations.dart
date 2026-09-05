@@ -169,6 +169,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'设置'**
   String get settings;
+  String get greetMorning;
+  String get greetNoon;
+  String get greetAfternoon;
+  String get greetEvening;
+  String get greetNight;
 
   /// No description provided for @about.
   ///

@@ -21,6 +21,18 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   AppState get st => widget.state;
 
+  /// 按时段返回问候前缀（早上好/中午好/下午好/晚上好/夜深了）
+  String get _greetingPrefix {
+    final s = S.of(context);
+    final h = DateTime.now().hour;
+    if (h < 5) return s.greetNight;
+    if (h < 11) return s.greetMorning;
+    if (h < 13) return s.greetNoon;
+    if (h < 18) return s.greetAfternoon;
+    if (h < 22) return s.greetEvening;
+    return s.greetNight;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -32,7 +44,11 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(S.of(context).settings, style: T.h1),
+                // 页面标题：顶部栏已显示“设置”，这里用问候语（早上好，呼号）避免重复
+                Text(
+                  '$_greetingPrefix${widget.state.myCall}',
+                  style: T.h1,
+                ),
                 SizedBox(height: 4),
                 Text(S.of(context).settingsDesc, style: ts(13, c: C.slate)),
                 SizedBox(height: 20),
