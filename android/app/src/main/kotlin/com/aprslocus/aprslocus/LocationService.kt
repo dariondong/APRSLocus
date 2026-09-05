@@ -83,6 +83,10 @@ class LocationService : Service() {
         const val EXTRA_MODE = "location_mode"
         /** 定位模式：gps = 纯 GPS；gps_network = GPS + 网络辅助 */
         @Volatile var mode: String = "gps_network"
+        /** 接受定位的精度上限（米）。超过则丢弃，避免基站/Wi-Fi 粗点引起漂移 */
+        const val MAX_ACCURACY_M = 150f
+        /** 网络定位仅在 GPS 停更超过该时长时作为兜底（毫秒） */
+        const val NET_FALLBACK_GAP_MS = 20000L
         private var instance: LocationService? = null
 
         /// 更新前台服务通知（同进程直连，MainActivity 调用）
@@ -103,6 +107,8 @@ class LocationService : Service() {
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
     private var wakeLock: PowerManager.WakeLock? = null
+    /** 最近一次优质 GPS fix 时间戳（用于网络定位兜底判断） */
+    private var lastGpsFixMs: Long = 0L
     private val lastKnownPoll = Handler(Looper.getMainLooper())
     private val lastKnownRunnable = object : Runnable {
         override fun run() {
@@ -264,7 +270,7 @@ class LocationService : Service() {
 
         val listener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                broadcastLocation(location)
+                considerLocation(location)
             }
             override fun onProviderEnabled(provider: String) {
                 LocationBus.emit(mapOf("status" to "$provider 定位已开启"))
@@ -295,35 +301,54 @@ class LocationService : Service() {
         }
     }
 
-    @Suppress("MissingPermission")
-    private fun reportLastKnown() {
-        val lm = locationManager ?: return
-        try {
-            val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) { broadcastLocation(gps); return }
-        } catch (_: Exception) {}
-        // 纯 GPS 模式不查询网络位置
-        if (mode == "gps") return
-        try {
-            val net = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            if (net != null && net.latitude != 0.0 && net.longitude != 0.0) broadcastLocation(net)
-        } catch (_: Exception) {}
-    }
+    /** 定位决策：GPS 优先，网络仅在 GPS 长时间停更时兜底；
+     *  精度超过阈值（基站/Wi-Fi 粗点）一律丢弃，抑制漂移。 */
+    private fun considerLocation(location: Location) {
+        val acc = try { location.accuracy } catch (_: Exception) { Float.MAX_VALUE }
+        val isGps = location.provider == LocationManager.GPS_PROVIDER
+        val now = System.currentTimeMillis()
 
-    private fun broadcastLocation(location: Location) {
-        val provider = location.provider
-        val status = when {
-            provider == LocationManager.GPS_PROVIDER -> "GPS 定位中"
-            mode == "gps_network" -> "网络定位中"
-            else -> "GPS 定位中"
+        // 1) 精度超限：直接丢弃（粗点比不准还伤——会拖走标记）
+        if (!acc.isNaN() && acc > MAX_ACCURACY_M) return
+
+        // 2) 网络定位点：仅当 GPS 长期无更新时才允许兜底，避免与 GPS 交替跳动
+        if (!isGps) {
+            if (mode != "gps_network") return
+            if (lastGpsFixMs != 0L && now - lastGpsFixMs < NET_FALLBACK_GAP_MS) return
+            // 网络兜底点精度门槛更严，避免明显劣化
+            if (!acc.isNaN() && acc > 80f) return
+        } else {
+            lastGpsFixMs = now
         }
+
+        // 3) 通过：记录时间并上报
+        if (isGps) lastGpsFixMs = now
+        val provider = location.provider
+        val status = if (isGps) "GPS 定位中" else "网络定位中"
         LocationBus.emit(mapOf(
             "lat" to location.latitude,
             "lng" to location.longitude,
             "alt" to location.altitude,
             "speed" to location.speed,      // m/s
             "bearing" to location.bearing,  // 度
+            "accuracy" to (if (acc.isNaN()) null else acc.toDouble()),
+            "provider" to provider,
             "status" to status))
+    }
+
+    @Suppress("MissingPermission")
+    private fun reportLastKnown() {
+        val lm = locationManager ?: return
+        try {
+            val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) { considerLocation(gps); return }
+        } catch (_: Exception) {}
+        // 纯 GPS 模式不查询网络位置
+        if (mode == "gps") return
+        try {
+            val net = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            if (net != null && net.latitude != 0.0 && net.longitude != 0.0) considerLocation(net)
+        } catch (_: Exception) {}
     }
 
     private fun stopLocationUpdates() {
