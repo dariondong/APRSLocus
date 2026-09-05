@@ -145,8 +145,6 @@ class _StationsPageState extends State<StationsPage> {
       builder: (context, _) {
         final st = widget.state;
         final list = _list(st);
-        // 设备类别筛选 chips（当前接收范围内出现的类别）
-        final devChips = _deviceChips(context, st);
         // 横屏屏幕矮：隐藏统计框，避免头部过高溢出
         final landscape =
             MediaQuery.of(context).orientation == Orientation.landscape;
@@ -255,10 +253,11 @@ class _StationsPageState extends State<StationsPage> {
                         ],
                       ),
                     if (!landscape) SizedBox(height: 6),
-                    // 筛选 chips 合并为一行 Wrap
+                    // 常驻行：状态 chips + 「筛选」按钮（分类筛选在底部弹层内选择）
                     Wrap(
                       spacing: 4,
                       runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         _miniChip(
                           S.of(context).all,
@@ -305,61 +304,11 @@ class _StationsPageState extends State<StationsPage> {
                           ),
                         ),
                         Container(width: 1, height: 16, color: C.border),
-                        _miniChip(
-                          S.of(context).mobile,
-                          _type == 'mobile',
-                          C.blue,
-                          () => setState(
-                            () => _type = _type == 'mobile' ? 'all' : 'mobile',
-                          ),
-                        ),
-                        _miniChip(
-                          S.of(context).fixed,
-                          _type == 'fixed',
-                          C.green,
-                          () => setState(
-                            () => _type = _type == 'fixed' ? 'all' : 'fixed',
-                          ),
-                        ),
-                        _miniChip(
-                          S.of(context).infrastructure,
-                          _type == 'infra',
-                          C.orange,
-                          () => setState(
-                            () => _type = _type == 'infra' ? 'all' : 'infra',
-                          ),
-                        ),
-                        _miniChip(
-                          S.of(context).weather,
-                          _type == 'wx',
-                          C.cyan,
-                          () => setState(
-                            () => _type = _type == 'wx' ? 'all' : 'wx',
-                          ),
-                        ),
-                        _miniChip(
-                          'FMO',
-                          _type == 'fmo',
-                          C.orange,
-                          () => setState(
-                            () => _type = _type == 'fmo' ? 'all' : 'fmo',
-                          ),
-                        ),
-                        Container(width: 1, height: 16, color: C.border),
-                        _miniChip(
-                          S.of(context).aprslocusOnly,
-                          _app == 'aprslocus',
-                          C.purple,
-                          () => setState(
-                            () => _app = _app == 'aprslocus'
-                                ? 'all'
-                                : 'aprslocus',
-                          ),
-                        ),
-                        // 设备类别筛选（官方 tocalls 识别结果）
-                        if (devChips.isNotEmpty) ...[Container(width: 1, height: 16, color: C.border), ...devChips],
+                        _categoryButton(context),
                       ],
                     ),
+                    // 已生效的分类筛选 tag（类型/软件/设备类别，可单独删除）
+                    if (_hasCategoryFilter) ...[SizedBox(height: 6), _activeFilterTags(context)],
                   ],
                 ),
               ),
@@ -419,37 +368,380 @@ class _StationsPageState extends State<StationsPage> {
     );
   }
 
-  /// 设备类别筛选 chips：统计接收范围内台站识别出的设备类别，仅出现过的生成 chip。
-  /// 设备库未就绪（无识别）时不显示该分组。
-  List<Widget> _deviceChips(BuildContext context, AppState st) {
-    final counts = <String, int>{};
+  /// 除状态外是否还有分类筛选生效（类型/软件/设备类别）
+  bool get _hasCategoryFilter =>
+      _type != 'all' || _app != 'all' || _dev != 'all';
+
+  /// 当前接收范围内台站识别出的设备类别 key（有序，含已选中兜底）
+  List<String> _deviceClassKeys(AppState st) {
+    final present = <String>{};
     for (final s in st.stations) {
       if (!st.stationAllowedFor(s)) continue;
       final k = s.deviceClassKey;
-      if (k != null && k.isNotEmpty) counts[k] = (counts[k] ?? 0) + 1;
+      if (k != null && k.isNotEmpty) present.add(k);
     }
-    if (counts.isEmpty) return const [];
-    // 已选中的类别即使当前无台站也保留 chip（避免筛选项消失无法取消）
-    if (_dev != 'all' && !counts.containsKey(_dev)) counts[_dev] = 0;
-    final zh =
-        (Localizations.maybeLocaleOf(context)?.languageCode ?? 'zh') == 'zh';
+    if (_dev != 'all') present.add(_dev); // 已选类别即使暂无台站也保留
     final order = <String>[];
-    // 稳定排序：优先按设备库固定顺序，剩余按台站遍历序
     for (final k in AprsDevice.instance.classKeys) {
-      if (counts.containsKey(k) && !order.contains(k)) order.add(k);
+      if (present.contains(k) && !order.contains(k)) order.add(k);
     }
-    for (final k in counts.keys) {
+    for (final k in present) {
       if (!order.contains(k)) order.add(k);
     }
-    return [
-      for (final k in order)
-        _miniChip(
-          DeviceClassNames.labelOf(k, zh),
-          _dev == k,
-          C.indigo,
-          () => setState(() => _dev = _dev == k ? 'all' : k),
+    return order;
+  }
+
+  bool _zh(BuildContext context) =>
+      (Localizations.maybeLocaleOf(context)?.languageCode ?? 'zh') == 'zh';
+
+  /// APRS 符号类型选中项的标签
+  String _typeLabel(BuildContext context, String v) {
+    switch (v) {
+      case 'mobile':
+        return S.of(context).mobile;
+      case 'fixed':
+        return S.of(context).fixed;
+      case 'infra':
+        return S.of(context).infrastructure;
+      case 'wx':
+        return S.of(context).weather;
+      case 'fmo':
+        return 'FMO';
+    }
+    return v;
+  }
+
+  /// 分类类型对应主题色（用于 chip / tag）
+  Color _typeColor(String v) {
+    switch (v) {
+      case 'mobile':
+        return C.blue;
+      case 'fixed':
+        return C.green;
+      case 'infra':
+        return C.orange;
+      case 'wx':
+        return C.cyan;
+      case 'fmo':
+        return C.orange;
+    }
+    return C.slate;
+  }
+
+  /// 常驻「筛选」按钮：分类维度（类型/软件/设备）均从底部弹层选择。
+  Widget _categoryButton(BuildContext context) {
+    final active = _hasCategoryFilter;
+    return GestureDetector(
+      onTap: () => _openFilterSheet(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+        decoration: BoxDecoration(
+          color: active ? C.purple.withValues(alpha: 0.12) : C.bgSoft,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: active ? C.purple.withValues(alpha: 0.3) : C.border,
+          ),
         ),
-    ];
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.tune_rounded,
+              size: 12,
+              color: active ? C.purple : C.slate,
+            ),
+            SizedBox(width: 3),
+            Text(
+              S.of(context).filters,
+              style: ts(
+                10,
+                c: active ? C.purple : C.slate,
+                w: active ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 已生效分类筛选 tag 行（类型/软件/设备类别，各可单独点除）
+  Widget _activeFilterTags(BuildContext context) {
+    final zh = _zh(context);
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        if (_type != 'all')
+          _tagChip(
+            _typeLabel(context, _type),
+            _typeColor(_type),
+            () => setState(() => _type = 'all'),
+          ),
+        if (_app == 'aprslocus')
+          _tagChip(
+            S.of(context).aprslocusOnly,
+            C.purple,
+            () => setState(() => _app = 'all'),
+          ),
+        if (_dev != 'all')
+          _tagChip(
+            DeviceClassNames.labelOf(_dev, zh),
+            C.indigo,
+            () => setState(() => _dev = 'all'),
+          ),
+        _miniChip(
+          S.of(context).clearAll,
+          false,
+          C.grey,
+          () => setState(() {
+            _type = 'all';
+            _app = 'all';
+            _dev = 'all';
+          }),
+        ),
+      ],
+    );
+  }
+
+  /// 可删除的筛选 tag：显示分类名，点击即取消该筛选
+  Widget _tagChip(String label, Color c, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.only(left: 8, right: 4),
+        decoration: BoxDecoration(
+          color: c.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: c.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: ts(10, c: c, w: FontWeight.w700),
+            ),
+            SizedBox(width: 2),
+            Icon(Icons.close_rounded, size: 12, color: c),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 底部筛选弹层：APRS 类型 / 软件 / 设备类别 分组，组内单选、跨组叠加
+  Future<void> _openFilterSheet(BuildContext context) async {
+    final st = widget.state;
+    final zh = _zh(context);
+    final devKeys = _deviceClassKeys(st);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => StatefulBuilder(
+        builder: (sheetCtx, setSheet) {
+          Widget groupTitle(String t) => Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 8),
+            child: Text(
+              t,
+              style: ts(11, c: C.slate, w: FontWeight.w700, ls: 0.5),
+            ),
+          );
+          Widget opt(
+            String label,
+            bool selected,
+            Color c,
+            VoidCallback tap,
+          ) => GestureDetector(
+            onTap: tap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: selected ? c.withValues(alpha: 0.12) : C.bgSoft,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: selected ? c.withValues(alpha: 0.4) : C.border,
+                ),
+              ),
+              child: Text(
+                label,
+                style: ts(
+                  12,
+                  c: selected ? c : C.ink,
+                  w: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ),
+          );
+          void apply(VoidCallback change) {
+            change();
+            setSheet(() {}); // 刷新面板内选中态
+            setState(() {}); // 刷新背后列表
+          }
+          return Container(
+            decoration: const BoxDecoration(
+              color: C.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheetCtx).size.height * 0.78,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 标题 + 全部清除
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 14, 10, 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.tune_rounded, size: 18, color: C.purple),
+                      SizedBox(width: 8),
+                      Text(
+                        S.of(sheetCtx).filters,
+                        style: ts(16, c: C.ink, w: FontWeight.w800),
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () => apply(() {
+                          _type = 'all';
+                          _app = 'all';
+                          _dev = 'all';
+                        }),
+                        child: Text(
+                          S.of(sheetCtx).clearAll,
+                          style: ts(12, c: C.grey),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close_rounded, size: 18, color: C.grey),
+                        onPressed: () => Navigator.pop(sheetCtx),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(18, 4, 18, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── APRS 类型 ──
+                        groupTitle(S.of(sheetCtx).typeGroup),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            opt(
+                              S.of(sheetCtx).all,
+                              _type == 'all',
+                              C.slate,
+                              () => apply(() => _type = 'all'),
+                            ),
+                            opt(
+                              _typeLabel(sheetCtx, 'mobile'),
+                              _type == 'mobile',
+                              C.blue,
+                              () => apply(
+                                () => _type = _type == 'mobile'
+                                    ? 'all'
+                                    : 'mobile',
+                              ),
+                            ),
+                            opt(
+                              _typeLabel(sheetCtx, 'fixed'),
+                              _type == 'fixed',
+                              C.green,
+                              () => apply(
+                                () => _type = _type == 'fixed'
+                                    ? 'all'
+                                    : 'fixed',
+                              ),
+                            ),
+                            opt(
+                              _typeLabel(sheetCtx, 'infra'),
+                              _type == 'infra',
+                              C.orange,
+                              () => apply(
+                                () => _type = _type == 'infra'
+                                    ? 'all'
+                                    : 'infra',
+                              ),
+                            ),
+                            opt(
+                              _typeLabel(sheetCtx, 'wx'),
+                              _type == 'wx',
+                              C.cyan,
+                              () => apply(
+                                () => _type = _type == 'wx' ? 'all' : 'wx',
+                              ),
+                            ),
+                            opt(
+                              _typeLabel(sheetCtx, 'fmo'),
+                              _type == 'fmo',
+                              C.orange,
+                              () => apply(
+                                () => _type = _type == 'fmo' ? 'all' : 'fmo',
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        // ── 软件 ──
+                        groupTitle(S.of(sheetCtx).software),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            opt(
+                              S.of(sheetCtx).all,
+                              _app == 'all',
+                              C.slate,
+                              () => apply(() => _app = 'all'),
+                            ),
+                            opt(
+                              S.of(sheetCtx).aprslocusOnly,
+                              _app == 'aprslocus',
+                              C.purple,
+                              () => apply(
+                                () => _app = _app == 'aprslocus'
+                                    ? 'all'
+                                    : 'aprslocus',
+                              ),
+                            ),
+                          ],
+                        ),
+                        // ── 设备类别（官方 tocalls 识别）──
+                        if (devKeys.isNotEmpty) ...[SizedBox(height: 12), groupTitle(S.of(sheetCtx).deviceClass), Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            opt(
+                              S.of(sheetCtx).all,
+                              _dev == 'all',
+                              C.slate,
+                              () => apply(() => _dev = 'all'),
+                            ),
+                            for (final k in devKeys)
+                              opt(
+                                DeviceClassNames.labelOf(k, zh),
+                                _dev == k,
+                                C.indigo,
+                                () => apply(() => _dev = _dev == k ? 'all' : k),
+                              ),
+                          ],
+                        )],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   /// 行内设备标签（识别到厂商/型号才显示）
