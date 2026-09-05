@@ -580,7 +580,7 @@ class _StationsPageState extends State<StationsPage> {
             setState(() {}); // 刷新背后列表
           }
           return Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: C.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
