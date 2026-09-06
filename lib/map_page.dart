@@ -544,12 +544,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ),
                 // 缩放（位于地图按钮下方）
                 Positioned(right: 14, top: 146, child: _zoomCtrl()),
-                // 竖屏：左下角信标/上报状态胶囊（仅已连接时显示，横屏由侧边栏承担）
-                if (size.height > size.width && widget.state.connected)
+                // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
+                if (size.height > size.width &&
+                    widget.state.connected &&
+                    widget.state.myHasFix)
                   Positioned(
                     left: 14,
-                    bottom: 70 + MediaQuery.of(context).padding.bottom,
-                    child: _beaconStatusChip(),
+                    right: 14,
+                    bottom: 62 + MediaQuery.of(context).padding.bottom,
+                    child: _beaconBar(),
                   ),
                 // 底部控制（安全区白条 + 14px）
                 Positioned(
@@ -593,7 +596,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 视野内无台站提示（点击弹出地图帮助）
                 if (!_hasVisibleStation(size))
                   Positioned(
-                    bottom: 70,
+                    bottom: 118,
                     left: 0,
                     right: 0,
                     child: Center(
@@ -1863,63 +1866,57 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
 
   /// 竖屏左下角信标/上报状态胶囊：距下次上报倒计时 + 立即上报
-  Widget _beaconStatusChip() {
+
+  /// 竖屏底部“上报通知”通栏横杠：自动上报状态/倒计时 + 立即上报
+  Widget _beaconBar() {
     final st = widget.state;
     final on = st.beaconEnabled;
-    final next = st.nextBeaconIn; // '已关闭' / '等待定位' / '45s' / '即将'
-    final hasFix = st.myHasFix;
-    final label = !on
-        ? S.of(context).beaconOffChip // '自动上报已关闭'
-        : !hasFix
-        ? '等待定位…'
-        : next == '即将'
-        ? '即将上报…'
-        : '距下次上报 ${next}';
-    final Color c = on ? C.green : C.grey;
+    final next = st.nextBeaconIn; // '未连接' / '已关闭' / '等待定位' / '45s' / '即将'
+    final c = on ? C.green : C.slate;
+    // 连接但信标关 → 显示未上报；信标开 → 倒计时
+    final label = on
+        ? (next == '即将' ? '即将上报…' : '距下次上报 $next')
+        : S.of(context).beaconOffChip;
     return GestureDetector(
-      onTap: () => _showMyPanel(), // 点胶囊开“我的位置”面板（含开关与手动上报）
+      onTap: _showMyPanel,
       child: Container(
-        padding: const EdgeInsets.only(left: 10, right: 4, top: 5, bottom: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: C.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: softShadow(blur: 12, alpha: 0.15),
-          border: Border.all(color: c.withValues(alpha: 0.35)),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: softShadow(blur: 10, alpha: 0.12),
+          border: Border.all(color: c.withValues(alpha: 0.25)),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               on ? Icons.send_rounded : Icons.notifications_off_rounded,
               size: 14,
               color: c,
             ),
-            SizedBox(width: 5),
-            Text(
-              label,
-              style: ts(10.5, c: on ? C.ink : C.slate, w: FontWeight.w600),
-            ),
             SizedBox(width: 6),
-            // 立即上报按钮（无定位时点击去定位）
+            Expanded(
+              child: Text(
+                label,
+                style: ts(11.5, c: C.ink, w: FontWeight.w600),
+              ),
+            ),
+            // 立即上报（信标开时绿色；关时置灰仍可发一次）
             GestureDetector(
               onTap: () {
-                if (hasFix) {
-                  st.sendBeacon();
-                  _toastMsg(S.of(context).positionBeacon(st.myGrid));
-                } else {
-                  st.startTracking();
-                }
+                st.sendBeacon();
+                _toastMsg(S.of(context).positionBeacon(st.myGrid));
               },
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: on ? C.green : C.blue,
-                  borderRadius: BorderRadius.circular(14),
+                  color: C.blue,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  hasFix ? S.of(context).manualBeacon : S.of(context).getLocation,
-                  style: ts(10, c: Colors.white, w: FontWeight.w700),
+                  S.of(context).manualBeacon,
+                  style: ts(10.5, c: Colors.white, w: FontWeight.w700),
                 ),
               ),
             ),
