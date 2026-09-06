@@ -1,7 +1,7 @@
 name: aprslocus
 description: "APRSlocus - APRS Tracking & Mapping"
 publish_to: 'none'
-version: 1.6.24+10624
+version: 1.6.25+10625
 
 environment:
   sdk: ^3.13.1
