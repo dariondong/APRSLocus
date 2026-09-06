@@ -2820,4 +2820,21 @@ class AppLocalizationsZhTw extends AppLocalizations {
 
   @override
   String get beaconOffChip => '自動上報已關閉';
+  @override
+  String get quickTrackCreate => '新建跟蹤組';
+  @override
+  String get quickTrackHint => '從已接收臺站勾選成員，也可手輸呼號補充；直接在地圖上跟蹤這些人，不需要先建聊天群。';
+  @override
+  String get quickTrackName => '組名（可選）';
+  @override
+  String get quickTrackPickLabel => '選擇要跟蹤的臺站';
+  @override
+  String get quickTrackNoStations => '暫無已接收臺站，可直接手輸呼號（多個用逗號分隔）';
+  @override
+  String get quickTrackManualHint => '手輸呼號，如 BG7PGW,BG7LMW';
+  @override
+  String get quickTrackStart => '開始跟蹤';
+  @override
+  String get quickTrackNeedMembers => '請至少選擇或輸入一個呼號';
+
 }

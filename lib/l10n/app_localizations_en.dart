@@ -2883,4 +2883,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconOffChip => 'Auto-report off';
+  @override
+  String get quickTrackCreate => 'New track group';
+  @override
+  String get quickTrackHint => 'Pick stations you received, or type callsigns — track them on the map directly, no chat group required.';
+  @override
+  String get quickTrackName => 'Name (optional)';
+  @override
+  String get quickTrackPickLabel => 'Choose stations to track';
+  @override
+  String get quickTrackNoStations => 'No stations received yet — type callsigns below (comma separated)';
+  @override
+  String get quickTrackManualHint => 'Type callsigns, e.g. BG7PGW,BG7LMW';
+  @override
+  String get quickTrackStart => 'Start tracking';
+  @override
+  String get quickTrackNeedMembers => 'Pick or type at least one callsign';
+
 }

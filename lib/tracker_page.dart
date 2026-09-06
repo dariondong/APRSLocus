@@ -220,6 +220,9 @@ class _TrackerPageState extends State<TrackerPage>
   }
 
   /// 跟踪成员：群成员(confirmedMembers) ∪ 我自己。排序：我 → 有位置 → 无位置
+  /// 是否为快速创建的临时跟踪组（非聊天群），隐藏群聊快捷入口
+  bool get _isTemp => widget.group.id.startsWith('track_');
+
   List<_Tm> _members() {
     final calls = <String>{
       ...widget.group.confirmedMembers.map((c) => c.toUpperCase()),
@@ -455,7 +458,7 @@ class _TrackerPageState extends State<TrackerPage>
             color: C.white,
             child: Column(
               children: [
-                _header(members, showGroupChat: true),
+                _header(members, showGroupChat: !_isTemp),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView.builder(
@@ -502,7 +505,7 @@ class _TrackerPageState extends State<TrackerPage>
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-                child: _header(members, showGroupChat: true),
+                child: _header(members, showGroupChat: !_isTemp),
               ),
               // 模式徽章（跟随中 / 全览保持）——位于 header 下方，不被遮挡
               Padding(

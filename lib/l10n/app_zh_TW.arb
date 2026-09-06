@@ -496,7 +496,8 @@
   "trackModeMe": "跟隨我",
   "trackModeFitAll": "全覽保持中",
   "fitAll": "全覽",
-  "noStationsYet": "暫無臺站資料，連線 APRS-IS 後即可選擇。",  "noPackets": "暫無資料包",
+  "noStationsYet": "暫無臺站資料，連線 APRS-IS 後即可選擇。",
+  "noPackets": "暫無資料包",
   "secondsAgo": "{count}秒前",
   "minutesAgo": "{count}分前",
   "hoursAgo": "{count}小時前",
@@ -1432,5 +1433,13 @@
   "beaconAutoAskDesc": "是否讓 APRSlocus 在連線後自動定時上報你的位置（信標）？行動臺建議開啟；若只想接收訊息與檢視周邊臺站，可關閉（隨時可手動上報一次）。",
   "beaconAutoYes": "自動上報",
   "beaconAutoNo": "暫不，僅接收",
-  "beaconOffChip": "自動上報已關閉"
+  "beaconOffChip": "自動上報已關閉",
+  "quickTrackCreate": "新建跟蹤組",
+  "quickTrackHint": "從已接收臺站勾選成員，也可手輸呼號補充；直接在地圖上跟蹤這些人，不需要先建聊天群。",
+  "quickTrackName": "組名（可選）",
+  "quickTrackPickLabel": "選擇要跟蹤的臺站",
+  "quickTrackNoStations": "暫無已接收臺站，可直接手輸呼號（多個用逗號分隔）",
+  "quickTrackManualHint": "手輸呼號，如 BG7PGW,BG7LMW",
+  "quickTrackStart": "開始跟蹤",
+  "quickTrackNeedMembers": "請至少選擇或輸入一個呼號"
 }

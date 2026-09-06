@@ -4998,6 +4998,30 @@ abstract class AppLocalizations {
   /// No description provided for @linkOpenFailed.
   String get linkOpenFailed;
 
+  /// No description provided for @quickTrackCreate.
+  String get quickTrackCreate;
+
+  /// No description provided for @quickTrackHint.
+  String get quickTrackHint;
+
+  /// No description provided for @quickTrackName.
+  String get quickTrackName;
+
+  /// No description provided for @quickTrackPickLabel.
+  String get quickTrackPickLabel;
+
+  /// No description provided for @quickTrackNoStations.
+  String get quickTrackNoStations;
+
+  /// No description provided for @quickTrackManualHint.
+  String get quickTrackManualHint;
+
+  /// No description provided for @quickTrackStart.
+  String get quickTrackStart;
+
+  /// No description provided for @quickTrackNeedMembers.
+  String get quickTrackNeedMembers;
+
   /// No description provided for @beaconAutoAskTitle.
   String get beaconAutoAskTitle;
 
@@ -5051,4 +5075,6 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
+
+
 }
