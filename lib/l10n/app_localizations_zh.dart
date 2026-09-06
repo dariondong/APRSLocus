@@ -592,6 +592,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionI18n => '国际化 / 英文界面';
 
   @override
+  String get codeContributionZhTw => '繁体中文界面';
+
+  @override
   String get licenseSection => '许可证声明';
 
   @override

@@ -1255,6 +1255,9 @@ abstract class AppLocalizations {
   /// **'国际化 / 英文界面'**
   String get codeContributionI18n;
 
+  /// No description provided for @codeContributionZhTw.
+  String get codeContributionZhTw;
+
   /// No description provided for @licenseSection.
   ///
   /// In zh, this message translates to:

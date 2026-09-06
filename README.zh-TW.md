@@ -380,6 +380,7 @@ Android 端使用前臺服務持續定位以保持 APRS 在線，可在"定位 /
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — 矢量地圖渲染
 - [OpenFreeMap](https://openfreemap.org) — 免費矢量瓦片底圖
 - **BD3QID** — 國際化（i18n）貢獻
+- **BA4UAX** — 繁體中文翻譯
 - **清零（BG2HCB）** — 設置頁代碼優化
 - **測試成員**：BG7PGW、BG7LMW、BG7OSL、BD3QID
 - **AI 算力支持**：BA3RZL 養生

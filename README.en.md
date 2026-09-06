@@ -380,6 +380,7 @@ Since 1.5.2 Android uses the official release signature, identical between CI an
 - [flutter_map](https://pub.dev/packages/flutter_map) / [vector_map_tiles](https://pub.dev/packages/vector_map_tiles) — vector rendering
 - [OpenFreeMap](https://openfreemap.org) — free vector tiles
 - **BD3QID** — i18n contributions
+- **BA4UAX** — Traditional Chinese translation
 - **清零 (BG2HCB)** — settings code optimization
 - **Testers**: BG7PGW, BG7LMW, BG7OSL, BD3QID
 - **AI compute support**: BA3RZL 养生

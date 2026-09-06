@@ -592,6 +592,9 @@ class AppLocalizationsZhTw extends AppLocalizations {
   String get codeContributionI18n => '國際化 / 英文介面';
 
   @override
+  String get codeContributionZhTw => '繁體中文介面';
+
+  @override
   String get licenseSection => '許可證宣告';
 
   @override

@@ -197,6 +197,7 @@
   "author": "作者",
   "codeContributions": "代码贡献",
   "codeContributionI18n": "国际化 / 英文界面",
+  "codeContributionZhTw": "繁体中文界面",
   "licenseSection": "许可证声明",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。",

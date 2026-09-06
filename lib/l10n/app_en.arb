@@ -215,6 +215,7 @@
   "author": "Author",
   "codeContributions": "Code contributions",
   "codeContributionI18n": "Internationalization / English UI",
+  "codeContributionZhTw": "Traditional Chinese UI",
   "licenseSection": "License",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "This software is released under the GNU GPL v3. You may run, study, modify, and redistribute it under the terms of the license; modified and redistributed versions must comply with the applicable GPL v3 requirements. This software is provided without warranty.",
