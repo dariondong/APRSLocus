@@ -2814,4 +2814,7 @@ class AppLocalizationsZhTw extends AppLocalizations {
 
   @override
   String get beaconAutoNo => '暫不，僅接收';
+
+  @override
+  String get beaconOffChip => '自動上報已關閉';
 }

@@ -2877,4 +2877,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconAutoNo => 'Receive only';
+
+  @override
+  String get beaconOffChip => 'Auto-report off';
 }

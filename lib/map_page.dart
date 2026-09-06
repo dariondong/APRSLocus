@@ -544,6 +544,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ),
                 // 缩放（位于地图按钮下方）
                 Positioned(right: 14, top: 146, child: _zoomCtrl()),
+                // 竖屏：左下角信标/上报状态胶囊（横屏由侧边栏承担，避免重复）
+                if (size.height > size.width)
+                  Positioned(
+                    left: 14,
+                    bottom: 70 + MediaQuery.of(context).padding.bottom,
+                    child: _beaconStatusChip(),
+                  ),
                 // 底部控制（安全区白条 + 14px）
                 Positioned(
                   left: 14,
@@ -1851,6 +1858,80 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             ),
         ],
       ),
+    );
+  }
+
+
+  /// 竖屏左下角信标/上报状态胶囊：距下次上报倒计时 + 立即上报
+  Widget _beaconStatusChip() {
+    final st = widget.state;
+    final on = st.beaconEnabled;
+    final next = st.nextBeaconIn; // '已关闭' / '等待定位' / '45s' / '即将'
+    final hasFix = st.myHasFix;
+    final label = !on
+        ? S.of(context).beaconOffChip // '自动上报已关闭'
+        : !hasFix
+        ? '等待定位…'
+        : next == '即将'
+        ? '即将上报…'
+        : '距下次上报 ${next}';
+    final Color c = on ? C.green : C.grey;
+    return GestureDetector(
+      onTap: () => _showMyPanel(), // 点胶囊开“我的位置”面板（含开关与手动上报）
+      child: Container(
+        padding: const EdgeInsets.only(left: 10, right: 4, top: 5, bottom: 5),
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: softShadow(blur: 12, alpha: 0.15),
+          border: Border.all(color: c.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              on ? Icons.send_rounded : Icons.notifications_off_rounded,
+              size: 14,
+              color: c,
+            ),
+            SizedBox(width: 5),
+            Text(
+              label,
+              style: ts(10.5, c: on ? C.ink : C.slate, w: FontWeight.w600),
+            ),
+            SizedBox(width: 6),
+            // 立即上报按钮（无定位时点击去定位）
+            GestureDetector(
+              onTap: () {
+                if (hasFix) {
+                  st.sendBeacon();
+                  _toastMsg(S.of(context).positionBeacon(st.myGrid));
+                } else {
+                  st.startTracking();
+                }
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                decoration: BoxDecoration(
+                  color: on ? C.green : C.blue,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  hasFix ? S.of(context).manualBeacon : S.of(context).getLocation,
+                  style: ts(10, c: Colors.white, w: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _toastMsg(String m) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(m), behavior: SnackBarBehavior.floating),
     );
   }
 

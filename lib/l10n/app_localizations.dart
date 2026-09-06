@@ -5006,6 +5006,9 @@ abstract class AppLocalizations {
 
   /// No description provided for @beaconAutoNo.
   String get beaconAutoNo;
+
+  /// No description provided for @beaconOffChip.
+  String get beaconOffChip;
 }
 
 class _AppLocalizationsDelegate
