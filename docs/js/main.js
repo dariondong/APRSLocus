@@ -223,4 +223,35 @@
     });
     pio.observe(phone);
   }
+
+  /* ── 自动拉取 GitHub 最新版本号，替换页面上的静态版本（下载按钮 / Hero 徽章） ── */
+  const refreshVersion = (() => {
+    const els = [
+      document.querySelector(".nav-cta"),
+      document.querySelector(".hero-badge"),
+    ].filter(Boolean);
+    if (!els.length) return;
+    // 各语言页显示版本号文本形如 "v1.6.18"/"下载 v1.6.18"，只替换版本部分
+    const versionRe = /v\d+\.\d+\.\d+/;
+    const update = (ver) => {
+      els.forEach((el) => {
+        const txt = el.textContent || "";
+        if (versionRe.test(txt)) {
+          el.textContent = txt.replace(versionRe, ver);
+        }
+      });
+    };
+    // 先尝试 GitHub API（可能限流/失败），失败则静默保留静态版本
+    fetch("https://api.github.com/repos/dariondong/APRSLocus/releases/latest", {
+      headers: { Accept: "application/vnd.github+json" },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => {
+        const tag = (data && data.tag_name) || "";
+        const m = tag.match(/v?(\d+\.\d+\.\d+)/);
+        if (m) update("v" + m[1]);
+      })
+      .catch(() => {});
+  })();
+
 })();
