@@ -931,6 +931,24 @@ class AppState extends ChangeNotifier {
     }
   }
 
+
+  /// 判断并触发“是否自动上报位置”的首次询问。
+  /// 由主界面在挂载后调用（防连接成功早于界面绑定的竞态漏弹）。
+  /// 用户做出选择前不会置位，避免“弹不出来但已标记问过”的永久丢失。
+  void maybeAskBeaconAuto() {
+    if (_disposed) return;
+    if (beaconAutoAsked) return;
+    if (!connected) return;
+    if (!beaconEnabled) return; // 用户已主动关过自动上报则不打扰
+    onAskBeaconAuto?.call();
+  }
+
+  /// 用户已在询问弹窗中做出选择后调用（UI 层在选完时调用）
+  void beaconAutoAnswered() {
+    beaconAutoAsked = true;
+    persist();
+  }
+
   /// 切换开发者模式：开启后加载并模拟演示台站/数据包
   void setDevMode(bool v) {
     devMode = v;
@@ -1006,15 +1024,12 @@ class AppState extends ChangeNotifier {
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
       aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT');
-      // 首次连接成功后询问“是否自动上报位置”（只问一次，UI 弹底部选择）；
-      // 若用户已主动关闭过自动上报（beaconEnabled=false）则不打扰。
+      // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
+      // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
       if (!beaconAutoAsked && beaconEnabled) {
-        beaconAutoAsked = true;
-        persist();
-        // 延迟到帧显示后再弹，避免与连接动画/通知竞争
-        Future.delayed(const Duration(milliseconds: 400), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           if (_disposed) return;
-          onAskBeaconAuto?.call();
+          maybeAskBeaconAuto();
         });
       }
     } else {

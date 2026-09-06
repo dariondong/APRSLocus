@@ -82,6 +82,10 @@ class _HomePageState extends State<HomePage> {
     widget.state.onAskBeaconAuto = () {
       if (mounted) _askBeaconAuto();
     };
+    // 首帧后补查一次：覆盖“OOBE 完成瞬间连接成功、绑定晚于连接”的竞态漏弹
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.state.maybeAskBeaconAuto();
+    });
   }
 
 
@@ -165,7 +169,13 @@ class _HomePageState extends State<HomePage> {
         return SafeArea(child: sheet);
       },
     );
-    if (!mounted || enable == null) return;
+    if (!mounted || enable == null) {
+      // 用户直接划掉/返回：视为本次不选择，为避免反复打扰同样记住已问过
+      if (mounted) widget.state.beaconAutoAnswered();
+      return;
+    }
+    // 用户已做出选择 → 记录“已询问过”
+    widget.state.beaconAutoAnswered();
     if (enable) {
       st.setBeaconEnabled(true);
       // 立即上报一次，让用户确认能在地图上看到自己
