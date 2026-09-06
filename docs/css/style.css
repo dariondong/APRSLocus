@@ -770,3 +770,22 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
   .hero-copy > *, .hero-phone { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+
+/* ── 15. 贡献者 ── */
+.contributors-inner { max-width: 1100px; margin: 0 auto; }
+.contributors { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
+.contributor {
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--line); transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.contributor:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(45, 70, 120, .15); }
+.contributor .avatar {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;
+  color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .5px;
+}
+.contributor .c-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.contributor .c-role { display: block; font-size: 11px; color: var(--text-faint); font-weight: 500; }
+.cta-line { text-align: center; margin-top: 22px; font-size: 13.5px; color: var(--text-faint); }
+.cta-line a { color: var(--cyan); font-weight: 600; }
+.cta-line a:hover { text-decoration: underline; }
+@media (max-width: 640px) { .contributors { gap: 8px; } .contributor { padding: 8px 12px; } }
