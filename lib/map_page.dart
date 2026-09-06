@@ -16,7 +16,16 @@ import 'coord.dart';
 class MapPage extends StatefulWidget {
   final AppState state;
   final String searchQuery;
-  const MapPage({super.key, required this.state, this.searchQuery = ''});
+
+  /// 当前是否为激活 Tab（首页 IndexedStack 可见页）。非激活时跳过地图重建，
+  /// 避免台站上千时后台地图反复 rebuild 造成全局卡顿。
+  final bool isActive;
+  const MapPage({
+    super.key,
+    required this.state,
+    this.searchQuery = '',
+    this.isActive = true,
+  });
   @override
   State<MapPage> createState() => _MapPageState();
 }
@@ -310,6 +319,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // ─── 构建 ───
   @override
   Widget build(BuildContext context) {
+    // 非激活 Tab（在其它页面时地图在 IndexedStack 后台）：跳过昂贵构建，
+    // 仅保留轻量占位。台站多时避免后台地图反复 rebuild 拖慢全局。
+    if (!widget.isActive) {
+      return const SizedBox.shrink();
+    }
     return ListenableBuilder(
       listenable: widget.state,
       builder: (context, _) {

@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
       child: IndexedStack(
         index: _tab,
         children: [
-          MapPage(state: widget.state, searchQuery: _search),
+          MapPage(state: widget.state, searchQuery: _search, isActive: _tab == 0),
           StationsPage(state: widget.state, searchQuery: _search),
           MessagesPage(state: widget.state, isActive: _tab == 2),
           PacketsPage(state: widget.state),
