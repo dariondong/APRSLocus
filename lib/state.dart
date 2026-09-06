@@ -884,7 +884,9 @@ class AppState extends ChangeNotifier {
     });
     _tickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_disposed) return;
-      if (beaconEnabled &&
+      // 自动定时上报仅在已连接 APRS-IS 时进行；未连接不发送（避免误以为在上报）
+      if (connected &&
+          beaconEnabled &&
           myHasFix &&
           DateTime.now().difference(_lastBeacon).inSeconds >= beaconInterval) {
         _sendBeaconNow();
@@ -2700,6 +2702,7 @@ class AppState extends ChangeNotifier {
 
   String get nextBeaconIn {
     if (!beaconEnabled) return '已关闭';
+    if (!connected) return '未连接';
     if (!myHasFix) return '等待定位';
     final remain =
         beaconInterval - DateTime.now().difference(_lastBeacon).inSeconds;

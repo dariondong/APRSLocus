@@ -544,8 +544,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ),
                 // 缩放（位于地图按钮下方）
                 Positioned(right: 14, top: 146, child: _zoomCtrl()),
-                // 竖屏：左下角信标/上报状态胶囊（横屏由侧边栏承担，避免重复）
-                if (size.height > size.width)
+                // 竖屏：左下角信标/上报状态胶囊（仅已连接时显示，横屏由侧边栏承担）
+                if (size.height > size.width && widget.state.connected)
                   Positioned(
                     left: 14,
                     bottom: 70 + MediaQuery.of(context).padding.bottom,
