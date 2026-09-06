@@ -84,9 +84,11 @@ class SettingsInput extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final FocusNode? focusNode;
   final String? tip;
   const SettingsInput(this.label, this.controller,
-      {super.key, this.onChanged, this.tip});
+      {super.key, this.onChanged, this.onEditingComplete, this.focusNode, this.tip});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +118,10 @@ class SettingsInput extends StatelessWidget {
           flex: 2,
           child: TextField(
             controller: controller,
+            focusNode: focusNode,
             onChanged: onChanged,
+            onEditingComplete: onEditingComplete,
+            textInputAction: TextInputAction.done,
             textAlign: TextAlign.right,
             style: ts(13, w: FontWeight.w600),
             decoration: const InputDecoration(

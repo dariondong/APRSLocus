@@ -570,6 +570,8 @@ class AppState extends ChangeNotifier {
     oobeDone = true;
     persist();
     _notify();
+    // OOBE 完成：此时再引导请求定位权限并启动定位（避免向导中途弹权限）
+    unawaited(_requestLocationAfterOobe());
   }
 
   /// 重新运行首次引导（OOBE）：标记未完成，App 层会切换到向导
@@ -890,21 +892,35 @@ class AppState extends ChangeNotifier {
     _keepaliveTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       if (!connected || _userDisconnected) return;
       if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
-      final raw = '$myFullCall>APRS,TCPIP*:>APRSlocus 保持连接';
+      // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
+      // body=APRSLocus CONNECT（区分于位置信标；不再用非标 “保持连接”）
+      final raw = '$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT';
       aprs.send(raw);
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
     });
-    // 尝试自动获取定位：权限弹窗可能未点完，重试多次
-    Future.delayed(const Duration(milliseconds: 600), () async {
+    // 启动后自动获取定位：仅在 OOBE 已完成（非首次）且非模拟位置时进行；
+    // 首次启动的权限请求移到 OOBE 完成后由 _requestLocationAfterOobe 触发。
+    Future.delayed(const Duration(milliseconds: 900), () async {
+      if (_disposed || !initialized) return;
+      if (!oobeDone || useSimLocation) return;
       for (int i = 0; i < 15; i++) {
         final ok = await startTracking();
         if (ok) break;
         await Future.delayed(const Duration(seconds: 1));
       }
-      _sendBeaconNow(); // 首次上报位置
       _updateNotification();
     });
+  }
+
+  /// OOBE 完成后的定位引导：请求定位权限并启动定位，失败不阻塞（可手动再开）
+  Future<void> _requestLocationAfterOobe() async {
+    if (_disposed || useSimLocation) return;
+    for (int i = 0; i < 6; i++) {
+      final ok = await startTracking();
+      if (ok) break;
+      await Future.delayed(const Duration(seconds: 1));
+    }
   }
 
   /// 切换开发者模式：开启后加载并模拟演示台站/数据包
@@ -980,7 +996,8 @@ class AppState extends ChangeNotifier {
       connInfo = '已连接 · $myCall 在线';
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
       _flushPendingTx();
-      _sendBeaconNow();
+      // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
+      aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT');
     } else {
       connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
@@ -1192,12 +1209,16 @@ class AppState extends ChangeNotifier {
   }
 
   // ─── 信标（定位上传） ───
+  /// 手动“立即上报”：无论自动信标是否开启都会发送一次
   void sendBeacon() {
-    _sendBeaconNow();
+    _sendBeaconNow(force: true);
   }
 
-  void _sendBeaconNow() {
-    if (!myHasFix || !beaconEnabled) return;
+  /// [force] 为 true 时忽略信标总开关（仅手动上报用）；
+  /// 自动定时上报调用时不带 force，受 beaconEnabled 门控。
+  void _sendBeaconNow({bool force = false}) {
+    if (!myHasFix) return;
+    if (!force && !beaconEnabled) return;
     final lat = myLat!;
     final lng = myLng!;
     final raw = AprsFmt.position(

@@ -518,6 +518,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
   late final TextEditingController _interval;
   late final TextEditingController _myLat;
   late final TextEditingController _myLng;
+  final _intervalFocus = FocusNode();
   bool _manualOpen = false;
   bool _smartBeacon = true;
   int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
@@ -530,14 +531,34 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     _interval = TextEditingController(text: '${st.beaconInterval}');
     _myLat = TextEditingController(text: st.myLat?.toString() ?? '');
     _myLng = TextEditingController(text: st.myLng?.toString() ?? '');
+    // 失焦时统一校验（避免逐字符输入就弹窗）
+    _intervalFocus.addListener(() {
+      if (!_intervalFocus.hasFocus) _applyIntervalInput();
+    });
   }
 
   @override
   void dispose() {
+    _intervalFocus.dispose();
     _interval.dispose();
     _myLat.dispose();
     _myLng.dispose();
     super.dispose();
+  }
+
+  /// 读取间隔输入并应用（仅提交/失焦时调用，不再逐字符触发弹窗）
+  void _applyIntervalInput() {
+    final n = int.tryParse(_interval.text.trim());
+    if (n == null || n < 5) {
+      // 非法输入回退到当前生效值
+      _interval.text = '${st.beaconInterval}';
+      return;
+    }
+    if (n < 60) {
+      _confirmFastInterval(n);
+    } else {
+      st.setBeaconInterval(n);
+    }
   }
 
   /// 信标间隔 < 60 秒 → 强提示（APRS-IS 建议移动站不低于 60 秒）
@@ -784,14 +805,11 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 onChanged: st.setBeaconEnabled),
             SettingsInput(S.of(context).beaconInterval, _interval,
                 tip: '位置信标的发送间隔，至少 5 秒',
-                onChanged: (v) {
-              final n = int.tryParse(v);
-              if (n == null || n < 5) return;
-              if (n < 60) {
-                _confirmFastInterval(n);
-              } else {
-                st.setBeaconInterval(n);
-              }
+                focusNode: _intervalFocus,
+                onEditingComplete: () {
+              // 回车=确认：立即收起键盘并校验
+              _intervalFocus.unfocus();
+              _applyIntervalInput();
             }),
             SettingsSwitch(S.of(context).smartBeacon, value: _smartBeacon,
                 onChanged: (v) => setState(() => _smartBeacon = v)),

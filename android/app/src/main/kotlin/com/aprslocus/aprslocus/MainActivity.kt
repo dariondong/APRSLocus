@@ -18,7 +18,6 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.aprslocus/location"
     private val EVENT_CHANNEL = "com.aprslocus/location_events"
     private var permCompleter: MethodChannel.Result? = null
-    private var _permRequested = false
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -134,11 +133,9 @@ class MainActivity : FlutterActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        // Activity 恢复后才请求权限，时机可靠
-        if (!_permRequested) {
-            _permRequested = true
-            requestPermissionsNow()
-        }
+        // 权限请求统一由 Dart 侧按业务时机触发（OOBE 完成后 / 用户主动开启定位），
+        // 避免首次启动向导期间系统权限弹窗突兀打断。
+        // 这里仅兜底：如果 Dart 尚未请求但用户已回到前台且已有权限，就绪无需操作。
     }
 
     private fun requestPermissionsNow() {
