@@ -62,6 +62,12 @@ class AppState extends ChangeNotifier {
   DateTime _lastBeacon = DateTime.now();
   int beaconsSent = 0;
 
+  /// 是否已询问过“连接后是否自动上报位置”（只问一次，记住选择）
+  bool beaconAutoAsked = false;
+
+  /// 连接成功后首次询问“自动上报位置”的回调（由首页绑定并弹出选择）
+  void Function()? onAskBeaconAuto;
+
   // 信标上报内容选项
   bool beaconIncludeSpeed = true; // 速度
   bool beaconIncludeCourse = true; // 方位角
@@ -657,6 +663,7 @@ class AppState extends ChangeNotifier {
       mySymbol = p.getString('mySymbol') ?? mySymbol;
       myComment = p.getString('myComment') ?? myComment;
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
+      beaconAutoAsked = p.getBool('beaconAutoAsked') ?? beaconAutoAsked;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
       beaconIncludeSpeed =
           p.getBool('beaconIncludeSpeed') ?? beaconIncludeSpeed;
@@ -770,6 +777,7 @@ class AppState extends ChangeNotifier {
           p.setString('mySymbol', mySymbol);
           p.setString('myComment', myComment);
           p.setBool('beacon', beaconEnabled);
+          p.setBool('beaconAutoAsked', beaconAutoAsked);
           p.setInt('beaconInterval', beaconInterval);
           p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
           p.setBool('beaconIncludeCourse', beaconIncludeCourse);
@@ -998,6 +1006,17 @@ class AppState extends ChangeNotifier {
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
       aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT');
+      // 首次连接成功后询问“是否自动上报位置”（只问一次，UI 弹底部选择）；
+      // 若用户已主动关闭过自动上报（beaconEnabled=false）则不打扰。
+      if (!beaconAutoAsked && beaconEnabled) {
+        beaconAutoAsked = true;
+        persist();
+        // 延迟到帧显示后再弹，避免与连接动画/通知竞争
+        Future.delayed(const Duration(milliseconds: 400), () {
+          if (_disposed) return;
+          onAskBeaconAuto?.call();
+        });
+      }
     } else {
       connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];

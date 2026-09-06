@@ -2864,4 +2864,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkOpenFailed => 'Unable to open link';
+
+  @override
+  String get beaconAutoAskTitle => 'Connected — auto-report your position?';
+
+  @override
+  String get beaconAutoAskDesc =>
+      'Let APRSlocus automatically beacon your position while connected? Recommended for mobile use. Choose no to receive only (you can still send one manually anytime).';
+
+  @override
+  String get beaconAutoYes => 'Auto-report';
+
+  @override
+  String get beaconAutoNo => 'Receive only';
 }

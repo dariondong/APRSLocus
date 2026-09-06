@@ -2801,4 +2801,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get linkOpenFailed => '无法打开链接';
+
+  @override
+  String get beaconAutoAskTitle => '连接成功，自动上报位置？';
+
+  @override
+  String get beaconAutoAskDesc =>
+      '是否让 APRSlocus 在连接后自动定时上报你的位置（信标）？移动台建议开启；若只想接收消息与看周边台站，可关闭（随时可手动上报一次）。';
+
+  @override
+  String get beaconAutoYes => '自动上报';
+
+  @override
+  String get beaconAutoNo => '暂不，仅接收';
 }

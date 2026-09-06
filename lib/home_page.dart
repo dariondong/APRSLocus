@@ -78,6 +78,105 @@ class _HomePageState extends State<HomePage> {
         );
       }
     };
+    // 首次连接成功后询问：是否自动上报位置
+    widget.state.onAskBeaconAuto = () {
+      if (mounted) _askBeaconAuto();
+    };
+  }
+
+
+  /// 首次连接成功后：询问是否自动上报位置（记住选择）
+  Future<void> _askBeaconAuto() async {
+    if (!mounted) return;
+    final st = widget.state;
+    final enable = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final sheet = Container(
+          margin: const EdgeInsets.all(12),
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+          decoration: BoxDecoration(
+            color: C.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: C.greenBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(Icons.send_rounded, color: C.green, size: 20),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      S.of(ctx).beaconAutoAskTitle,
+                      style: ts(15, w: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Text(
+                S.of(ctx).beaconAutoAskDesc,
+                style: ts(12.5, c: C.slate, h: 1.6),
+              ),
+              SizedBox(height: 18),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: C.slate,
+                        side: BorderSide(color: C.borderStrong),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(S.of(ctx).beaconAutoNo,
+                          style: ts(13, w: FontWeight.w600)),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: C.green,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(S.of(ctx).beaconAutoYes,
+                          style: ts(13, w: FontWeight.w700)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+        return SafeArea(child: sheet);
+      },
+    );
+    if (!mounted || enable == null) return;
+    if (enable) {
+      st.setBeaconEnabled(true);
+      // 立即上报一次，让用户确认能在地图上看到自己
+      if (st.myHasFix) {
+        st.sendBeacon();
+      } else {
+        st.startTracking();
+      }
+    } else {
+      st.setBeaconEnabled(false);
+    }
   }
 
   void _onStateChanged() {
@@ -201,6 +300,7 @@ class _HomePageState extends State<HomePage> {
     widget.state.onNewMessage = null;
     widget.state.onInviteReceived = null;
     widget.state.onGroupEvent = null;
+    widget.state.onAskBeaconAuto = null;
     _searchDebounce?.cancel();
     _searchCtrl.dispose();
     super.dispose();
@@ -654,6 +754,56 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 10),
+          // 位置上报状态行：是否向 APRS-IS 自动上报位置（连接后可见）
+          if (widget.state.connected) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: widget.state.beaconEnabled
+                    ? C.greenBg
+                    : C.greyBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    widget.state.beaconEnabled
+                        ? Icons.send_rounded
+                        : Icons.notifications_off_rounded,
+                    size: 13,
+                    color: widget.state.beaconEnabled ? C.green : C.grey,
+                  ),
+                  SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      widget.state.beaconEnabled
+                          ? '自动上报中 · 每 ${widget.state.beaconInterval}s'
+                          : '位置未上报 · 仅接收',
+                      style: ts(
+                        10.5,
+                        c: widget.state.beaconEnabled ? C.green : C.slate,
+                        w: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  if (!widget.state.beaconEnabled)
+                    GestureDetector(
+                      onTap: () {
+                        widget.state.setBeaconEnabled(true);
+                        if (widget.state.myHasFix) {
+                          widget.state.sendBeacon();
+                        }
+                      },
+                      child: Text(
+                        '开启自动上报',
+                        style: ts(10.5, c: C.blue, w: FontWeight.w700),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+          ],
           // 操作按钮
           Row(
             children: [

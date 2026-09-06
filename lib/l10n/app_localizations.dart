@@ -4994,6 +4994,18 @@ abstract class AppLocalizations {
 
   /// No description provided for @linkOpenFailed.
   String get linkOpenFailed;
+
+  /// No description provided for @beaconAutoAskTitle.
+  String get beaconAutoAskTitle;
+
+  /// No description provided for @beaconAutoAskDesc.
+  String get beaconAutoAskDesc;
+
+  /// No description provided for @beaconAutoYes.
+  String get beaconAutoYes;
+
+  /// No description provided for @beaconAutoNo.
+  String get beaconAutoNo;
 }
 
 class _AppLocalizationsDelegate

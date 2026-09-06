@@ -839,5 +839,9 @@
   "deviceFilter": "Device filter",
   "lookupQrz": "QRZ callsign",
   "lookupAprsFi": "aprs.fi position",
-  "linkOpenFailed": "Unable to open link"
+  "linkOpenFailed": "Unable to open link",
+  "beaconAutoAskTitle": "Connected — auto-report your position?",
+  "beaconAutoAskDesc": "Let APRSlocus automatically beacon your position while connected? Recommended for mobile use. Choose no to receive only (you can still send one manually anytime).",
+  "beaconAutoYes": "Auto-report",
+  "beaconAutoNo": "Receive only"
 }
