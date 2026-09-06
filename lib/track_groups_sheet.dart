@@ -29,25 +29,21 @@ class _GroupPicker extends StatelessWidget {
     );
   }
 
-  void _quickCreate(BuildContext ctx) {
-    Navigator.pop(ctx); // 关当前面板
-    showModalBottomSheet<void>(
+  void _quickCreate(BuildContext ctx) async {
+    // 在当前面板之上叠加“快速创建”弹层，结果用返回值回传；
+    // 不手动连续 pop 多层，避免路由时序问题。
+    final g = await showModalBottomSheet<ChatGroup>(
       context: ctx,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       isDismissible: true,
-      builder: (_) => _QuickCreateSheet(
-        state: state,
-        onDone: (g) {
-          Navigator.pop(ctx); // 关掉快速创建后的外层残留（如有）
-          Navigator.push(
-            ctx,
-            MaterialPageRoute(
-              builder: (_) => TrackerPage(state: state, group: g),
-            ),
-          );
-        },
-      ),
+      builder: (_) => _QuickCreateSheet(state: state),
+    );
+    if (g == null) return;
+    // 关掉选群面板，进入跟踪页
+    Navigator.of(ctx).pop();
+    Navigator.of(ctx).push(
+      MaterialPageRoute(builder: (_) => TrackerPage(state: state, group: g)),
     );
   }
 
@@ -193,8 +189,7 @@ class _GroupPicker extends StatelessWidget {
 /// 快速创建跟踪组：从已接收台站勾选 + 手输呼号
 class _QuickCreateSheet extends StatefulWidget {
   final AppState state;
-  final ValueChanged<ChatGroup> onDone;
-  const _QuickCreateSheet({required this.state, required this.onDone});
+  const _QuickCreateSheet({required this.state});
 
   @override
   State<_QuickCreateSheet> createState() => _QuickCreateSheetState();
@@ -270,7 +265,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
       );
       return;
     }
-    widget.onDone(_build());
+    Navigator.of(context).pop(_build());
   }
 
   @override
