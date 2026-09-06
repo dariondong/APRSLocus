@@ -789,3 +789,15 @@ body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: non
 .cta-line a { color: var(--cyan); font-weight: 600; }
 .cta-line a:hover { text-decoration: underline; }
 @media (max-width: 640px) { .contributors { gap: 8px; } .contributor { padding: 8px 12px; } }
+
+/* ── 贡献者分组 ── */
+.cgroup { margin-bottom: 26px; }
+.cgroup:last-of-type { margin-bottom: 6px; }
+.cgroup-title {
+  display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;
+  color: var(--text); letter-spacing: .5px; margin-bottom: 14px;
+}
+.cgroup-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.cgroup-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.contributors { justify-content: flex-start; }
+@media (max-width: 640px) { .cgroup { margin-bottom: 20px; } }
