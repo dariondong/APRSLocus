@@ -415,10 +415,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get message => '消息';
 
   @override
-  String get groupChat => '群聊';
+  String get groupChat => '群组';
 
   @override
-  String get newGroup => '新建群聊';
+  String get newGroup => '新建群组';
 
   @override
   String get sendTo => '发送至';
@@ -1307,11 +1307,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get groupInviteTitle => '群聊邀请';
+  String get groupInviteTitle => '群组邀请';
 
   @override
   String groupInviteFrom(String from) {
-    return '$from 邀请你加入群聊';
+    return '$from 邀请你加入群组';
   }
 
   @override
@@ -1492,10 +1492,10 @@ class AppLocalizationsZh extends AppLocalizations {
       '$total 人 · $online 在线 · $fixed 已定位';
 
   @override
-  String get groupChatShort => '群聊';
+  String get groupChatShort => '群组';
 
   @override
-  String groupChatTitle(Object name) => '群聊 · $name';
+  String groupChatTitle(Object name) => '群组 · $name';
 
   @override
   String chatWithTitle(Object call) => '与 $call 聊天';
@@ -1674,7 +1674,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noConversations => '暂无会话';
 
   @override
-  String get groupNotFound => '群聊不存在';
+  String get groupNotFound => '群组不存在';
 
   @override
   String get invite => '邀请';
@@ -1683,7 +1683,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get manage => '管理';
 
   @override
-  String get noGroupMessages => '群聊暂无消息';
+  String get noGroupMessages => '群组暂无消息';
 
   @override
   String get selectConversation => '选择会话开始聊天';
@@ -1721,7 +1721,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get broadcastContentHint => '输入要群发的内容…';
 
   @override
-  String get groupNameHint => '输入群聊名称';
+  String get groupNameHint => '输入群组名称';
 
   @override
   String get create => '创建';
@@ -2340,7 +2340,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get oobePasscodeMissingDesc =>
-      'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
+      'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群组。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
 
   @override
   String get continueAnyway => '仍然继续';
@@ -2386,7 +2386,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get passcodeImportantDesc =>
-      '正确的 Passcode 是接收群聊消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。';
+      '正确的 Passcode 是接收群组消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。';
 
   @override
   String get lookupPasscode => '点击查询你的 Passcode →';
@@ -2455,7 +2455,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get stepMembers => '成员';
 
   @override
-  String get groupChatExplain => '群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。';
+  String get groupChatExplain => '群组使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。';
 
   @override
   String get noMembersSelected => '未选择成员';
@@ -2489,12 +2489,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String systemMemberJoined(String call) {
-    return '$call 加入了群聊';
+    return '$call 加入了群组';
   }
 
   @override
   String systemMemberLeft(String call) {
-    return '$call 离开了群聊';
+    return '$call 离开了群组';
   }
 
   @override

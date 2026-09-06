@@ -1017,7 +1017,6 @@
   "qrLoadFailed": "讚賞碼圖片載入失敗",
   "qrSaveWechat": "長按圖片可儲存 · 使用 WeChat 掃一掃讚賞",
   "tapAnywhereClose": "點選任意處關閉",
-
   "vectorMapLoadFailed": "向量地圖載入失敗\n{error}",
   "loadingVectorMap": "載入向量地圖…",
   "updateChannel": "更新管道",
