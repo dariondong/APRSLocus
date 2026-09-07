@@ -82,8 +82,20 @@ class AppState extends ChangeNotifier {
     useSimLocation = true;
     loc.stop();
     locStatus = '模拟位置';
+    _syncFilterToPosition(); // 过滤中心跟随我的位置（filterFollow 时）
     persist();
     _notify();
+  }
+
+  /// 「过滤中心跟随我的位置」在手动设坐标 / 切到模拟位置时同步过滤中心。
+  /// 已连接且过滤串实际变化才重连应用（未连接仅更新字段，下次连接生效）；
+  /// GPS 实时定位的跟随在 _onFix 中处理（字段更新，避免每次定位都重连）。
+  void _syncFilterToPosition() {
+    if (!filterFollow) return;
+    if (myLat == null || myLng == null) return;
+    filterLat = myLat!;
+    filterLng = myLng!;
+    _refreshFilter();
   }
 
   // 信标
@@ -606,6 +618,7 @@ class AppState extends ChangeNotifier {
       } else {
         myHasFix = true;
         locStatus = '模拟位置';
+        _syncFilterToPosition(); // 已有坐标：切模拟时同样同步过滤中心
       }
     } else {
       // 切换到 GPS：自动启动
