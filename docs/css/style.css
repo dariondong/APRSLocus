@@ -176,6 +176,17 @@ code {
   margin-bottom: 26px;
 }
 .hero-badge b { color: var(--text); font-weight: 800; letter-spacing: .3px; }
+/* Hero 首发标语行 */
+.hero-rel {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; letter-spacing: .5px;
+  color: var(--green);
+  background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(56,189,248,.12));
+  border: 1px solid rgba(16,185,129,.35);
+  padding: 8px 16px; border-radius: 999px;
+  margin: -6px 0 20px; width: fit-content;
+}
+
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); position: relative; }
 .pulse-dot::after {
   content: ""; position: absolute; inset: -4px; border-radius: 50%;
