@@ -70,7 +70,7 @@ Author: [BG7LZQ (Darion)](https://theez.top) · Website: [aprslocus.theez.top](h
 - Compatible with Chinese APRS messages (UTF-8 / GBK auto-detected)
 
 ### 🚒 Station Identification
-- Auto-detects **FMO (mobile fire) ** stations
+- Auto-detects **FMO** stations
 - Marks fellow **APRSlocus** stations (comment contains `APRSlocus`), showing version / battery / altitude etc.
 - **Official APRS device identification**: uses the aprs.org device database `aprsorg/aprs-deviceid` (tocalls); recognizes each station's vendor + model + device class (rig / HT / tracker / app / software / iGate / digipeater / weather …) from the packet destination callsign, with a bundled offline snapshot + online auto-update
 - Full **37 official symbol tables, 3571 standard icons**, official PNG preferred with Material fallback
@@ -381,6 +381,7 @@ Since 1.5.2 Android uses the official release signature, identical between CI an
 - [OpenFreeMap](https://openfreemap.org) — free vector tiles
 - **BD3QID** — i18n contributions
 - **BA4UAX** — Traditional Chinese translation
+- **imThree** — bug reports & feedback
 - **清零 (BG2HCB)** — settings code optimization
 - **Testers**: BG7PGW, BG7LMW, BG7OSL, BD3QID
 - **AI compute support**: BA3RZL 养生

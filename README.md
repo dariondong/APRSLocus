@@ -70,7 +70,7 @@
 - 兼容中文 APRS 消息（UTF-8 / GBK 自动解码）
 
 ### 🚒 台站识别
-- 自动识别 **FMO（机动消防）** 台站
+- 自动识别 **FMO** 台站
 - 同款 **APRSlocus** 台站自动标记（备注含 `APRSlocus`），显示版本 / 电量 / 高度等专属信息
 - **官方 APRS 设备识别**：接入 aprs.org 官方设备库 `aprsorg/aprs-deviceid`（tocalls），通过数据包目的呼号识别台站所用 厂商 + 型号 + 设备类别（车台 / 手台 / 跟踪器 / App / 软件 / iGate / 中继 / 气象站…），内置设备库快照 + 联网自动更新
 - 支持 **37 个官方符号表、3571 个标准图标**，官方 PNG 图标优先、Material 图标兜底
@@ -381,6 +381,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 - [OpenFreeMap](https://openfreemap.org) — 免费矢量瓦片底图
 - **BD3QID** — 国际化（i18n）贡献
 - **BA4UAX** — 繁体中文翻译
+- **imThree** — Bug 提交与反馈
 - **清零（BG2HCB）** — 设置页代码优化
 - **测试成员**：BG7PGW、BG7LMW、BG7OSL、BD3QID
 - **AI 算力支持**：BA3RZL 养生
