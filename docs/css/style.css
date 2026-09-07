@@ -175,6 +175,7 @@ code {
   -webkit-backdrop-filter: blur(10px);
   margin-bottom: 26px;
 }
+.hero-badge b { color: var(--text); font-weight: 800; letter-spacing: .3px; }
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); position: relative; }
 .pulse-dot::after {
   content: ""; position: absolute; inset: -4px; border-radius: 50%;
