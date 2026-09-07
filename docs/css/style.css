@@ -172,15 +172,6 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
   -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 40%, transparent 78%);
   mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 40%, transparent 78%);
 }
-/* Hero 巨型水印字（大气背景层次） */
-.hero-inner::before {
-  content: "APRS"; position: absolute; z-index: 0; pointer-events: none;
-  left: -2%; top: 16%; font-weight: 900; letter-spacing: -.02em;
-  font-size: clamp(140px, 22vw, 300px); line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(2,132,199,.10);
-  user-select: none; white-space: nowrap;
-}
 .hero-inner {
   position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center;
@@ -206,7 +197,7 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 @keyframes pulse { 0% { transform: scale(.5); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
  /* Hero 主视觉：FIRST FIX 巨型主题字 */
 .hero-wordmark {
-  font-size: clamp(56px, 9vw, 120px); font-weight: 900; letter-spacing: -.04em;
+  font-size: clamp(48px, 6.6vw, 96px); font-weight: 900; letter-spacing: -.04em;
   line-height: .95; margin: 6px 0 14px;
   background: linear-gradient(120deg,#0f172a 0%,#075985 45%,#0284c7 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
