@@ -765,9 +765,6 @@ body:not(.loaded) .hero-phone {
 }
 body:not(.loaded) .hero-copy > *:nth-child(2),
 body:not(.loaded) .hero-copy > *:nth-child(3) { }
-/* 主题标题更大气 */
-.hero-title { font-size: clamp(42px, 6.4vw, 76px); letter-spacing: -.035em; }
-.hero-badge { box-shadow: 0 14px 38px rgba(2, 132, 199, .28); }
 @keyframes heroUp {
   0% { opacity: 0; transform: translateY(34px); filter: blur(6px); }
   60% { opacity: 1; }
