@@ -157,9 +157,12 @@ code {
 .hero::after {
   content: ""; position: absolute; z-index: 1; pointer-events: none;
   left: 50%; top: 40%; width: min(1000px, 96%); height: min(720px, 78%);
-  transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse at center, rgba(14,165,233,.17), rgba(56,189,248,.07) 46%, transparent 72%);
+  transform: translate(-50%, -50%) scale(.7); opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(14,165,233,.20), rgba(56,189,248,.08) 46%, transparent 72%);
+  transition: transform 1.4s cubic-bezier(.2,.8,.2,1), opacity 1.4s var(--ease);
 }
+body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+
 .hero-grid {
   position: absolute; inset: 0; z-index: 0; opacity: .5;
   background-image:
@@ -748,30 +751,38 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @keyframes prePulse { 50% { transform: scale(1.05); } }
 @keyframes preBar { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
 
-/* Hero 入场：遮罩淡出时内容依次浮现（大气级：上浮 + 模糊清晰 + 错峰弹性） */
+/* Hero 登场：遮罩消失后才开始（animation-play-state 门控，避免在 preloader 期间播完） */
 .hero-copy > *,
 .hero-phone {
   opacity: 0;
+  animation-play-state: paused;
+  animation-fill-mode: both;
 }
-.hero-copy > *:nth-child(1) { animation: heroUp .9s var(--ease) forwards; animation-delay: .08s; }
-.hero-copy > *:nth-child(2) { animation: heroUp .9s var(--ease) forwards; animation-delay: .18s; }
-.hero-copy > *:nth-child(3) { animation: heroUp .9s var(--ease) forwards; animation-delay: .28s; }
-.hero-copy > *:nth-child(4) { animation: heroUp .9s var(--ease) forwards; animation-delay: .38s; }
-.hero-copy > *:nth-child(5) { animation: heroUp .9s var(--ease) forwards; animation-delay: .46s; }
-.hero-phone { animation: heroPop 1.1s var(--ease) forwards; animation-delay: .3s; }
-body:not(.loaded) .hero-copy > *,
-body:not(.loaded) .hero-phone {
-  opacity: 0;
+/* 各元素登场：FIRST FIX 主视觉用“冲击式”放大渐显，其余依次上浮 */
+.hero-copy > *:nth-child(1) { animation: heroUp .8s var(--ease) both; animation-delay: .0s; }
+.hero-copy > *:nth-child(2) { animation: heroBoom .85s cubic-bezier(.2,.9,.25,1.2) both; animation-delay: .15s; }
+.hero-copy > *:nth-child(3) { animation: heroUp .8s var(--ease) both; animation-delay: .45s; }
+.hero-copy > *:nth-child(4) { animation: heroUp .8s var(--ease) both; animation-delay: .6s; }
+.hero-copy > *:nth-child(5) { animation: heroUp .8s var(--ease) both; animation-delay: .75s; }
+.hero-phone { animation: heroPop 1s var(--ease) both; animation-delay: .55s; }
+/* 仅在遮罩消失(loaded)后开始播放 */
+body.loaded .hero-copy > *,
+body.loaded .hero-phone {
+  animation-play-state: running;
 }
-body:not(.loaded) .hero-copy > *:nth-child(2),
-body:not(.loaded) .hero-copy > *:nth-child(3) { }
 @keyframes heroUp {
-  0% { opacity: 0; transform: translateY(34px); filter: blur(6px); }
-  60% { opacity: 1; }
+  0% { opacity: 0; transform: translateY(36px); filter: blur(8px); }
+  55% { opacity: 1; filter: blur(2px); }
   100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
+/* 主视觉冲击登场：小放大 + 辉光展开 */
+@keyframes heroBoom {
+  0% { opacity: 0; transform: scale(.82) translateY(14px); filter: blur(10px); }
+  55% { opacity: 1; filter: blur(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
 @keyframes heroPop {
-  0% { opacity: 0; transform: translateY(40px) scale(.92); }
+  0% { opacity: 0; transform: translateY(46px) scale(.9); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
