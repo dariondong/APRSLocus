@@ -201,8 +201,20 @@ code {
   border: 1.5px solid var(--green); animation: pulse 1.8s ease-out infinite;
 }
 @keyframes pulse { 0% { transform: scale(.5); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-.hero-title { font-size: clamp(38px, 6vw, 68px); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; }
-.hero-title .grad { background: linear-gradient(120deg,#38bdf8,#0ea5e9 40%,#6366f1); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 10px 30px rgba(56,189,248,.25)); }
+ /* Hero 主视觉：FIRST FIX 巨型主题字 */
+.hero-wordmark {
+  font-size: clamp(56px, 9vw, 120px); font-weight: 900; letter-spacing: -.04em;
+  line-height: .95; margin: 6px 0 14px;
+  background: linear-gradient(120deg,#0f172a 0%,#075985 45%,#0284c7 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 14px 34px rgba(2,132,199,.20));
+}
+/* Hero 功能 Slogan（原大标题降级） */
+.hero-slogan {
+  font-size: clamp(26px, 3.4vw, 44px); font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.15; margin: 0 0 6px; color: var(--text);
+}
+.hero-slogan .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero-sub { color: var(--text-dim); font-size: clamp(15px, 1.6vw, 18px); margin: 26px 0 34px; max-width: 560px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 .hero-meta { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 30px; color: var(--text-faint); font-size: 13.5px; }
