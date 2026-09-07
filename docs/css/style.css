@@ -167,16 +167,17 @@ code {
   display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center;
 }
 .hero-badge {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 13px;
-  padding: 7px 15px; border-radius: 999px; color: var(--cyan);
-  background: rgba(255, 255, 255, .55); border: 1px solid rgba(255, 255, 255, .75);
-  box-shadow: 0 6px 18px rgba(45, 70, 120, .1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  margin-bottom: 26px;
+  display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px;
+  padding: 8px 18px 8px 10px; border-radius: 999px; color: #fff;
+  background: linear-gradient(120deg, #0f172a, #1e3a5f 60%, #155e75);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .28);
+  margin-bottom: 26px; letter-spacing: .5px;
 }
-.hero-badge b { color: var(--text); font-weight: 800; letter-spacing: .3px; }
-
+.hero-badge .pulse-dot { width: 9px; height: 9px; }
+.hero-badge b { color: #fff; font-weight: 800; letter-spacing: .4px; }
+.hero-badge .sep { width: 1px; height: 13px; background: rgba(255,255,255,.28); }
+.hero-badge .rel-tag { font-size: 10.5px; font-weight: 700; color: #a5f3fc; border: 1px solid rgba(165,243,252,.4); padding: 2px 8px; border-radius: 999px; background: rgba(8,145,178,.2); }
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); position: relative; }
 .pulse-dot::after {
   content: ""; position: absolute; inset: -4px; border-radius: 50%;
