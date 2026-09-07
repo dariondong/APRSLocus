@@ -1,0 +1,52 @@
+name: macOS Build
+
+# 构建 macOS 版 APRSlocus（.app，无签名，自用 / 测试分发）
+# 说明：无 Developer ID 签名与公证的 .app，发给他人时 Gatekeeper 可能拦截；
+#       本机/开发者自用可直接运行（xattr -cr 可解除限制）。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build macOS (Release)
+        run: flutter build macos --release
+
+      - name: Verify .app
+        run: |
+          ls -la build/macos/Build/Products/Release/
+          test -d "build/macos/Build/Products/Release/APRSlocus.app" && echo "app ok"
+          # 读取 Info.plist 里的版本号供 artifact 命名
+          /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "build/macos/Build/Products/Release/APRSlocus.app/Contents/Info.plist" || true
+
+      - name: Package .app as zip
+        run: |
+          cd build/macos/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent APRSlocus.app APRSlocus-macos.zip
+
+      - name: Upload macOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-macOS
+          path: build/macos/Build/Products/Release/APRSlocus-macos.zip
+          if-no-files-found: error
