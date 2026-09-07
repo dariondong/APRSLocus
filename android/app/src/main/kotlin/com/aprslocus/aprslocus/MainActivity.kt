@@ -105,6 +105,26 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        // 退出通道：设置页"退出应用"→ 结束前台服务 + 移除任务 + 结束进程
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/exit").setMethodCallHandler { call, result ->
+            when (call.method) {
+                "exitApp" -> {
+                    try {
+                        stopLocationService()
+                    } catch (_: Exception) {
+                        // 定位服务未启动等场景忽略
+                    }
+                    finishAndRemoveTask()
+                    // 给 Dart 侧回执留时间后彻底结束进程（避免仅回桌面但进程残留）
+                    android.os.Handler(mainLooper).postDelayed({
+                        android.os.Process.killProcess(android.os.Process.myPid())
+                    }, 200)
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
         // 分享通道：调用系统分享面板（微信 / QQ 等）
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/share").setMethodCallHandler { call, result ->
             when (call.method) {

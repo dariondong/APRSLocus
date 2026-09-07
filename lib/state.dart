@@ -1143,6 +1143,19 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 手动「退出应用」前的清理：保存设置、停止定位服务、断开 APRS-IS。
+  /// 与 dispose() 的区别：不销毁通知器/控制器（调用后立即退出进程，无需再重建）。
+  Future<void> shutdownForExit() async {
+    _simTimer?.cancel();
+    _tickTimer?.cancel();
+    loc.stop();
+    aprs.disconnect();
+    if (_stationsDirty) _saveStations();
+    persist();
+    // 留出时间让 SharedPreferences / 台站文件写入落盘
+    await Future.delayed(const Duration(milliseconds: 400));
+  }
+
   @override
   void dispose() {
     _disposed = true;

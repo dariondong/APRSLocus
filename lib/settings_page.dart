@@ -9,6 +9,7 @@ import 'models.dart';
 import 'widgets.dart';
 import 'about_page.dart';
 import 'check_update_page.dart';
+import 'exit_app.dart';
 import 'settings_pages.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -240,6 +241,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ],
+                // 退出应用（Android / 桌面）：结束后台服务并退出进程
+                if (canShowExitButton) ...[const SizedBox(height: 16), _exitButton()],
               ],
             ),
           ),
@@ -363,6 +366,58 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
+  }
+
+  /// 退出应用按钮：确认后保存设置、停止定位/后台服务并按平台退出进程
+  Widget _exitButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: _confirmExit,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: C.red,
+          side: BorderSide(color: C.red.withValues(alpha: 0.4)),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          textStyle: ts(13, w: FontWeight.w700),
+        ),
+        icon: const Icon(Icons.power_settings_new_rounded, size: 17),
+        label: const Text('退出应用'),
+      ),
+    );
+  }
+
+  Future<void> _confirmExit() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Row(children: [
+          Icon(Icons.power_settings_new_rounded, color: C.red, size: 22),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text('退出应用', style: ts(15, w: FontWeight.w700)),
+          ),
+        ]),
+        content: Text(
+          '退出后 APRSlocus 将停止定位上报与后台接收，并结束进程。',
+          style: ts(13, h: 1.7),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('取消', style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('退出', style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    await st.shutdownForExit();
+    if (!mounted) return;
+    await exitApplication();
   }
 
   Widget _qqBanner() {
