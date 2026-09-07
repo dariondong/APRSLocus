@@ -153,6 +153,13 @@ code {
   padding: 140px clamp(20px, 6vw, 96px) 80px; overflow: hidden;
 }
 .hero-canvas { position: absolute; inset: 0; z-index: 0; opacity: .7; }
+/* Hero 背景中心辉光（大气氛围） */
+.hero::after {
+  content: ""; position: absolute; z-index: 1; pointer-events: none;
+  left: 50%; top: 40%; width: min(1000px, 96%); height: min(720px, 78%);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(14,165,233,.17), rgba(56,189,248,.07) 46%, transparent 72%);
+}
 .hero-grid {
   position: absolute; inset: 0; z-index: 0; opacity: .5;
   background-image:
@@ -166,6 +173,7 @@ code {
   position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: center;
 }
+
 .hero-badge {
   display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px;
   padding: 8px 18px 8px 10px; border-radius: 999px; color: #fff;
@@ -711,18 +719,35 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 @keyframes prePulse { 50% { transform: scale(1.05); } }
 @keyframes preBar { 0% { transform: translateX(-120%); } 100% { transform: translateX(420%); } }
 
-/* Hero 入场：遮罩淡出时内容依次浮现 */
-.hero-copy > *, .hero-phone {
-  opacity: 0; transform: translateY(28px);
-  transition: opacity .8s var(--ease), transform .8s var(--ease);
+/* Hero 入场：遮罩淡出时内容依次浮现（大气级：上浮 + 模糊清晰 + 错峰弹性） */
+.hero-copy > *,
+.hero-phone {
+  opacity: 0;
 }
-.hero-copy > *:nth-child(1) { transition-delay: .06s; }
-.hero-copy > *:nth-child(2) { transition-delay: .14s; }
-.hero-copy > *:nth-child(3) { transition-delay: .22s; }
-.hero-copy > *:nth-child(4) { transition-delay: .30s; }
-.hero-copy > *:nth-child(5) { transition-delay: .38s; }
-.hero-phone { transform: translateY(28px) scale(.95); transition-delay: .26s; }
-body.loaded .hero-copy > *, body.loaded .hero-phone { opacity: 1; transform: none; }
+.hero-copy > *:nth-child(1) { animation: heroUp .9s var(--ease) forwards; animation-delay: .08s; }
+.hero-copy > *:nth-child(2) { animation: heroUp .9s var(--ease) forwards; animation-delay: .18s; }
+.hero-copy > *:nth-child(3) { animation: heroUp .9s var(--ease) forwards; animation-delay: .28s; }
+.hero-copy > *:nth-child(4) { animation: heroUp .9s var(--ease) forwards; animation-delay: .38s; }
+.hero-copy > *:nth-child(5) { animation: heroUp .9s var(--ease) forwards; animation-delay: .46s; }
+.hero-phone { animation: heroPop 1.1s var(--ease) forwards; animation-delay: .3s; }
+body:not(.loaded) .hero-copy > *,
+body:not(.loaded) .hero-phone {
+  opacity: 0;
+}
+body:not(.loaded) .hero-copy > *:nth-child(2),
+body:not(.loaded) .hero-copy > *:nth-child(3) { }
+/* 主题标题更大气 */
+.hero-title { font-size: clamp(42px, 6.4vw, 76px); letter-spacing: -.035em; }
+.hero-badge { box-shadow: 0 14px 38px rgba(2, 132, 199, .28); }
+@keyframes heroUp {
+  0% { opacity: 0; transform: translateY(34px); filter: blur(6px); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes heroPop {
+  0% { opacity: 0; transform: translateY(40px) scale(.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 /* ── 19. 响应式与动效偏好 ── */
 @media (max-width: 1024px) {
