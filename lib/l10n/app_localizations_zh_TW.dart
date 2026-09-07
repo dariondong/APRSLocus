@@ -703,7 +703,7 @@ class AppLocalizationsZhTw extends AppLocalizations {
   String get beaconEnabled => '啟用位置信標';
 
   @override
-  String get smartBeacon => '智慧信標(移動加速)';
+  String get smartBeacon => '智慧信標(依速度分檔)';
 
   @override
   String get packetConsole => '資料包控制檯';

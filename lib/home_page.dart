@@ -787,7 +787,9 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: Text(
                       widget.state.beaconEnabled
-                          ? '自动上报中 · 每 ${widget.state.beaconInterval}s'
+                          ? (widget.state.smartBeaconEnabled
+                              ? '自动上报中 · 智能分档(每 ${widget.state.beaconIntervalNow}s)'
+                              : '自动上报中 · 每 ${widget.state.beaconInterval}s')
                           : '位置未上报 · 仅接收',
                       style: ts(
                         10.5,

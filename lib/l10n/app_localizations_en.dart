@@ -706,7 +706,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconEnabled => 'Enable beaconing';
 
   @override
-  String get smartBeacon => 'SmartBeaconing';
+  String get smartBeacon => 'SmartBeacon (by speed)';
 
   @override
   String get packetConsole => 'Packet console';

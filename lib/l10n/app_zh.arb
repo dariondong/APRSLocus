@@ -240,7 +240,7 @@
   "connectionSettings2": "连接设置",
   "myCallsign": "我的呼号",
   "beaconEnabled": "启用位置信标",
-  "smartBeacon": "智能信标(移动加速)",
+  "smartBeacon": "智能信标(按速度分档)",
   "packetConsole": "数据包控制台",
   "rawMode": "原始模式",
   "parsedMode": "解析模式",

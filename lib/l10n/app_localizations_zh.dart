@@ -703,7 +703,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get beaconEnabled => '启用位置信标';
 
   @override
-  String get smartBeacon => '智能信标(移动加速)';
+  String get smartBeacon => '智能信标(按速度分档)';
 
   @override
   String get packetConsole => '数据包控制台';

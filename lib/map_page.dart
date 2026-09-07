@@ -1127,7 +1127,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     const SizedBox(height: 8),
                     KV(
                       S.of(context).beaconIntervalLabel,
-                      S.of(context).secondsValue(st.beaconInterval),
+                      st.smartBeaconEnabled
+                          ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
+                          : S.of(context).secondsValue(st.beaconInterval),
                       icon: Icons.timer_rounded,
                     ),
                     const SizedBox(height: 8),

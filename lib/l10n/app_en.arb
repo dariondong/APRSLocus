@@ -150,7 +150,7 @@
   "stationsShown": "Stations",
   "myCallsign": "My callsign",
   "beaconEnabled": "Enable beaconing",
-  "smartBeacon": "SmartBeaconing",
+  "smartBeacon": "SmartBeacon (by speed)",
   "packetConsole": "Packet console",
   "rawMode": "Raw mode",
   "parsedMode": "Parsed mode",

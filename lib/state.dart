@@ -15,6 +15,36 @@ import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'net/aprs.dart';
 
+/// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
+/// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
+/// symbol 为空串表示沿用「我的符号」（与发送时设备图标一致）。
+class SmartBeaconTier {
+  int minSpeed; // km/h，≥0，列表内升序，首档必须为 0
+  int intervalSec; // 上报间隔（秒）
+  String symbol; // APRS 符号码（空串 = 默认 mySymbol）
+
+  SmartBeaconTier({
+    this.minSpeed = 0,
+    this.intervalSec = 60,
+    this.symbol = '',
+  });
+
+  SmartBeaconTier copy() => SmartBeaconTier(
+        minSpeed: minSpeed,
+        intervalSec: intervalSec,
+        symbol: symbol,
+      );
+
+  Map<String, dynamic> toJson() =>
+      {'minSpeed': minSpeed, 'intervalSec': intervalSec, 'symbol': symbol};
+
+  factory SmartBeaconTier.fromJson(Map<String, dynamic> j) => SmartBeaconTier(
+        minSpeed: ((j['minSpeed'] as num?) ?? 0).toInt(),
+        intervalSec: ((j['intervalSec'] as num?) ?? 60).toInt(),
+        symbol: (j['symbol'] as String?) ?? '',
+      );
+}
+
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
   static const appVersion = '1.6.25';
@@ -73,6 +103,112 @@ class AppState extends ChangeNotifier {
   bool beaconIncludeCourse = true; // 方位角
   bool beaconIncludeBattery = true; // 手机电量
   int _battery = -1; // 电量百分比（-1 未知）
+
+  // ─── 智能信标（按速度分档：不同速度 → 不同上报间隔 + 信标图标）───
+  bool smartBeaconEnabled = false;
+  /// 速度档列表（升序，首档 minSpeed==0 为静止档）。空串 symbol 沿用 mySymbol。
+  final List<SmartBeaconTier> smartTiers = [];
+
+  /// 默认分档方案：
+  /// 静止(<5km/h)→300s；步行(≥5)→120s 人形；城市(≥20)→60s 汽车；高速(≥70)→30s 汽车。
+  static List<SmartBeaconTier> defaultSmartTiers() => [
+        SmartBeaconTier(minSpeed: 0, intervalSec: 300, symbol: ''),
+        SmartBeaconTier(minSpeed: 5, intervalSec: 120, symbol: '['),
+        SmartBeaconTier(minSpeed: 20, intervalSec: 60, symbol: '>'),
+        SmartBeaconTier(minSpeed: 70, intervalSec: 30, symbol: '>'),
+      ];
+
+  void _ensureSmartTiers() {
+    if (smartTiers.isEmpty) smartTiers.addAll(defaultSmartTiers());
+  }
+
+  void _normalizeSmartTiers() {
+    if (smartTiers.isEmpty) {
+      smartTiers.addAll(defaultSmartTiers());
+      return;
+    }
+    // 首档恒为静止档（0）
+    smartTiers.first.minSpeed = 0;
+    // 移动档最低速度至少 1，间隔下限 5 秒
+    for (int i = 1; i < smartTiers.length; i++) {
+      final t = smartTiers[i];
+      if (t.minSpeed < 1) t.minSpeed = 1;
+      if (t.intervalSec < 5) t.intervalSec = 5;
+    }
+    smartTiers.sort((a, b) => a.minSpeed.compareTo(b.minSpeed));
+  }
+
+  void setSmartBeaconOn(bool v) {
+    smartBeaconEnabled = v;
+    _ensureSmartTiers();
+    _normalizeSmartTiers();
+    persist();
+    _notify();
+  }
+
+  void resetSmartTiers() {
+    smartTiers
+      ..clear()
+      ..addAll(defaultSmartTiers());
+    persist();
+    _notify();
+  }
+
+  /// 新增一个移动速度档（阈值自动取当前最大 +10，缺省从 ≥10 起步）
+  void addSmartTier() {
+    _ensureSmartTiers();
+    var next = 10;
+    for (final t in smartTiers) {
+      if (t.minSpeed >= next) next = t.minSpeed + 10;
+    }
+    smartTiers.add(SmartBeaconTier(minSpeed: next, intervalSec: 60, symbol: ''));
+    _normalizeSmartTiers();
+    persist();
+    _notify();
+  }
+
+  /// 更新某一档（index==0 为静止档，threshold 锁死为 0）
+  void updateSmartTier(int index, SmartBeaconTier tier) {
+    if (index < 0 || index >= smartTiers.length) return;
+    smartTiers[index] = tier;
+    _normalizeSmartTiers();
+    persist();
+    _notify();
+  }
+
+  /// 删除某一档（静止档 index==0 不可删）
+  void removeSmartTier(int index) {
+    if (index <= 0 || index >= smartTiers.length) return;
+    smartTiers.removeAt(index);
+    _normalizeSmartTiers();
+    persist();
+    _notify();
+  }
+
+  /// 智能信标开启时，按当前速度命中的档位；关闭或列表空返回 null
+  SmartBeaconTier? get activeSmartTier {
+    if (!smartBeaconEnabled || smartTiers.isEmpty) return null;
+    final speed = mySpeed ?? 0; // 无速度按静止处理
+    SmartBeaconTier? hit;
+    for (final t in smartTiers) {
+      if (t.minSpeed <= speed) {
+        hit = t;
+      } else {
+        break; // 已升序排序，后续阈值更大
+      }
+    }
+    return hit ?? smartTiers.first;
+  }
+
+  /// 实际生效的上报间隔：智能信标按速度取档，否则用固定间隔
+  int get beaconIntervalNow => activeSmartTier?.intervalSec ?? beaconInterval;
+
+  /// 实际生效的信标符号：智能档指定了符号则用之，否则用「我的符号」
+  String get beaconSymbolNow {
+    final tier = activeSmartTier;
+    if (tier != null && tier.symbol.isNotEmpty) return tier.symbol;
+    return mySymbol;
+  }
 
   void setBeaconEnabled(bool v) {
     beaconEnabled = v;
@@ -630,7 +766,7 @@ class AppState extends ChangeNotifier {
   Station? get myStation => myHasFix
       ? Station(
           call: myCall,
-          symbol: mySymbol,
+          symbol: beaconSymbolNow,
           alias: '我的位置',
           lat: myLat!,
           lng: myLng!,
@@ -665,6 +801,20 @@ class AppState extends ChangeNotifier {
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
       beaconAutoAsked = p.getBool('beaconAutoAsked') ?? beaconAutoAsked;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
+      smartBeaconEnabled =
+          p.getBool('smartBeaconOn') ?? smartBeaconEnabled;
+      final smartJson = p.getString('smartTiers');
+      if (smartJson != null && smartJson.isNotEmpty) {
+        try {
+          final list = jsonDecode(smartJson) as List;
+          smartTiers
+            ..clear()
+            ..addAll(list
+                .map((j) => SmartBeaconTier.fromJson(j as Map<String, dynamic>)));
+        } catch (_) {}
+      }
+      _ensureSmartTiers();
+      _normalizeSmartTiers();
       beaconIncludeSpeed =
           p.getBool('beaconIncludeSpeed') ?? beaconIncludeSpeed;
       beaconIncludeCourse =
@@ -779,6 +929,11 @@ class AppState extends ChangeNotifier {
           p.setBool('beacon', beaconEnabled);
           p.setBool('beaconAutoAsked', beaconAutoAsked);
           p.setInt('beaconInterval', beaconInterval);
+          _ensureSmartTiers();
+          p.setBool('smartBeaconOn', smartBeaconEnabled);
+          p.setString(
+              'smartTiers',
+              jsonEncode(smartTiers.map((t) => t.toJson()).toList()));
           p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
           p.setBool('beaconIncludeCourse', beaconIncludeCourse);
           p.setBool('beaconIncludeBattery', beaconIncludeBattery);
@@ -888,7 +1043,8 @@ class AppState extends ChangeNotifier {
       if (connected &&
           beaconEnabled &&
           myHasFix &&
-          DateTime.now().difference(_lastBeacon).inSeconds >= beaconInterval) {
+          DateTime.now().difference(_lastBeacon).inSeconds >=
+              beaconIntervalNow) {
         _sendBeaconNow();
       }
       // 台站“有效状态”翻转（如超 5 分钟变离线、移动→静止）时才推进版本并通知，
@@ -1261,7 +1417,7 @@ class AppState extends ChangeNotifier {
       myFullCall,
       lat,
       lng,
-      mySymbol,
+      beaconSymbolNow,
       comment: _beaconComment(),
       path: 'APALOC,TCPIP*',
     );
@@ -2705,7 +2861,7 @@ class AppState extends ChangeNotifier {
     if (!connected) return '未连接';
     if (!myHasFix) return '等待定位';
     final remain =
-        beaconInterval - DateTime.now().difference(_lastBeacon).inSeconds;
+        beaconIntervalNow - DateTime.now().difference(_lastBeacon).inSeconds;
     return remain > 0 ? '${remain}s' : '即将';
   }
 

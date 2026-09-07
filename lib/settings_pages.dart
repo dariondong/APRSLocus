@@ -428,7 +428,8 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     );
   }
 
-  static const _symCategories = <(String, List<(String, String, IconData)>)>[
+}
+const _symCategories = <(String, List<(String, String, IconData)>)>[
     ('车辆 / 交通', [
       ('>', '汽车', Icons.directions_car_rounded),
       ('<', '摩托', Icons.two_wheeler_rounded),
@@ -504,7 +505,22 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       ('i', 'FMO 台站', Icons.radio_rounded),
     ]),
   ];
-}
+const _smartQuickSymbols = <(String, String, IconData)>[
+  ('>', '汽车', Icons.directions_car_rounded),
+  ('<', '摩托', Icons.two_wheeler_rounded),
+  ('k', '卡车', Icons.local_shipping_rounded),
+  ('v', '面包车', Icons.airport_shuttle_rounded),
+  ('j', '吉普', Icons.directions_car_rounded),
+  ('b', '自行车', Icons.directions_bike_rounded),
+  ('[', '人', Icons.man_rounded),
+  ('R', '房车', Icons.airport_shuttle_rounded),
+  ('U', '公交', Icons.directions_bus_rounded),
+  ('f', '消防车', Icons.fire_truck_rounded),
+  ('P', '警车', Icons.local_police_rounded),
+  ('-', '房屋', Icons.home_rounded),
+];
+
+
 
 /// ─── 定位上报设置 ───
 class BeaconSettingsPage extends StatefulWidget {
@@ -520,7 +536,6 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
   late final TextEditingController _myLng;
   final _intervalFocus = FocusNode();
   bool _manualOpen = false;
-  bool _smartBeacon = true;
   int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
 
   AppState get st => widget.state;
@@ -803,16 +818,19 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           children: [
             SettingsSwitch(S.of(context).beaconEnabled, value: st.beaconEnabled,
                 onChanged: st.setBeaconEnabled),
-            SettingsInput(S.of(context).beaconInterval, _interval,
-                tip: '位置信标的发送间隔，至少 5 秒',
-                focusNode: _intervalFocus,
-                onEditingComplete: () {
-              // 回车=确认：立即收起键盘并校验
-              _intervalFocus.unfocus();
-              _applyIntervalInput();
-            }),
-            SettingsSwitch(S.of(context).smartBeacon, value: _smartBeacon,
-                onChanged: (v) => setState(() => _smartBeacon = v)),
+            // 固定间隔：仅在关闭智能信标时作为兜底使用
+            if (!st.smartBeaconEnabled)
+              SettingsInput(S.of(context).beaconInterval, _interval,
+                  tip: '位置信标的发送间隔，至少 5 秒',
+                  focusNode: _intervalFocus,
+                  onEditingComplete: () {
+                    // 回车=确认：立即收起键盘并校验
+                    _intervalFocus.unfocus();
+                    _applyIntervalInput();
+                  }),
+            SettingsSwitch(S.of(context).smartBeacon,
+                value: st.smartBeaconEnabled, onChanged: st.setSmartBeaconOn),
+            if (st.smartBeaconEnabled) _smartTierArea(),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
               child: Column(
@@ -884,6 +902,345 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
       ),
     );
   }
+
+  // ─── 智能信标 · 按速度分档编辑区 ───
+
+  /// 速度档范围文案：静止/低速 / X–Y / ≥X
+  String _tierRange(int index) {
+    final tiers = st.smartTiers;
+    if (index >= tiers.length) return '';
+    final t = tiers[index];
+    if (t.minSpeed <= 0) {
+      final next = _nextMin(index);
+      final seg = next == null ? '' : ' · < $next km/h';
+      return '静止/低速$seg';
+    }
+    final next = _nextMin(index);
+    return next == null
+        ? '≥ ${t.minSpeed} km/h'
+        : '${t.minSpeed}–${next - 1} km/h';
+  }
+
+  int? _nextMin(int index) {
+    final tiers = st.smartTiers;
+    if (index + 1 >= tiers.length) return null;
+    return tiers[index + 1].minSpeed;
+  }
+
+  /// 显示 APRS 符号（空串 = 我的符号，带图标）
+  Widget _symCharIcon(String symbol, {double size = 30}) {
+    final sym = symbol.isNotEmpty ? symbol : st.mySymbol;
+    final png = AprsSym.iconAsset('/', sym);
+    final Widget icon = Icon(AprsSym.icon(sym),
+        size: size - 6, color: symbol.isEmpty ? C.slate : C.blue);
+    if (png == null) return icon;
+    return Image.asset(png,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => icon);
+  }
+
+  /// 智能信标开启后的分档配置区
+  Widget _smartTierArea() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
+      decoration: BoxDecoration(
+        color: C.bgSoft,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: C.border),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.speed_rounded, size: 15, color: C.blue),
+          SizedBox(width: 6),
+          Text('速度分档规则', style: ts(11, c: C.blue, w: FontWeight.w700)),
+          Spacer(),
+          GestureDetector(
+            onTap: () => st.resetSmartTiers(),
+            child: Row(children: [
+              Icon(Icons.restart_alt_rounded, size: 13, color: C.slate),
+              SizedBox(width: 3),
+              Text('恢复默认', style: ts(10, c: C.slate)),
+            ]),
+          ),
+        ]),
+        SizedBox(height: 2),
+        Text('速度越快上报越频繁；每档可自定义间隔与图标（留空=我的符号）。'
+            '间隔低于 60 秒会显著增加服务器负载，建议 ≥60 秒。',
+            style: ts(9, c: C.slate)),
+        SizedBox(height: 6),
+        for (int i = 0; i < st.smartTiers.length; i++) _tierRow(i),
+        SizedBox(height: 2),
+        if (st.smartTiers.length < 5)
+          Align(
+            alignment: Alignment.center,
+            child: TextButton.icon(
+              onPressed: st.addSmartTier,
+              icon: Icon(Icons.add_rounded, size: 15, color: C.blue),
+              label: Text('添加速度档', style: ts(11, c: C.blue)),
+              style: TextButton.styleFrom(
+                foregroundColor: C.blue,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              ),
+            ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            child: Center(child: Text('最多 5 个速度档', style: ts(9, c: C.grey))),
+          ),
+      ]),
+    );
+  }
+
+  Widget _tierRow(int index) {
+    final t = st.smartTiers[index];
+    return GestureDetector(
+      onTap: () => _editTierSheet(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+        decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: C.border, width: 0.3))),
+        child: Row(children: [
+          _symCharIcon(t.symbol, size: 26),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_tierRange(index),
+                    style: ts(11,
+                        w: FontWeight.w700, c: index == 0 ? C.slate : C.ink)),
+                SizedBox(height: 1),
+                Text(t.symbol.isEmpty
+                    ? '图标 · 默认(我的符号)'
+                    : '图标 · ${AprsSym.name(t.symbol)}',
+                    style: ts(9, c: C.slate)),
+              ],
+            ),
+          ),
+          Text('每 ${t.intervalSec} 秒',
+              style: ts(11, c: C.blue, w: FontWeight.w700)),
+          SizedBox(width: 4),
+          Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+        ]),
+      ),
+    );
+  }
+
+  InputDecoration _tierFieldDeco(String label) => InputDecoration(
+        labelText: label,
+        labelStyle: ts(11, c: C.slate),
+        isDense: true,
+        border: UnderlineInputBorder(borderSide: BorderSide(color: C.border)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: C.blue, width: 1.5)),
+      );
+
+  /// 编辑某一档：index==0 为静止档（阈值锁定 0，仅可改间隔/图标）
+  Future<void> _editTierSheet(int index) async {
+    final tiers = st.smartTiers;
+    if (index < 0 || index >= tiers.length) return;
+    final isIdle = index == 0;
+    final thCtrl = TextEditingController(text: '${tiers[index].minSpeed}');
+    final ivCtrl = TextEditingController(text: '${tiers[index].intervalSec}');
+    final symNotifier = ValueNotifier<String>(tiers[index].symbol);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        void close() => Navigator.pop(ctx);
+        return Container(
+          decoration: BoxDecoration(
+            color: C.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: EdgeInsets.fromLTRB(20, 10, 20,
+              MediaQuery.of(ctx).viewInsets.bottom + 10),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                        color: C.grey.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2)),
+                  ),
+                ),
+                SizedBox(height: 12),
+                Row(children: [
+                  Icon(Icons.speed_rounded, size: 18, color: C.blue),
+                  SizedBox(width: 8),
+                  Text(isIdle ? '编辑 · 静止/低速档' : '编辑 · 速度档',
+                      style: ts(15, w: FontWeight.w700)),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
+                    onPressed: close,
+                  ),
+                ]),
+                if (!isIdle)
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: thCtrl,
+                        keyboardType: TextInputType.number,
+                        style: ts(13, w: FontWeight.w600),
+                        decoration: _tierFieldDeco('最低速度 (km/h)'),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: ivCtrl,
+                        keyboardType: TextInputType.number,
+                        style: ts(13, w: FontWeight.w600),
+                        decoration: _tierFieldDeco('上报间隔 (秒)'),
+                      ),
+                    ),
+                  ])
+                else
+                  Row(children: [
+                    Text('低于第一移动档的速度都按此档上报',
+                        style: ts(11, c: C.slate)),
+                    Spacer(),
+                    Text('间隔', style: ts(11, c: C.slate)),
+                    SizedBox(width: 8),
+                    SizedBox(
+                      width: 84,
+                      child: TextField(
+                        controller: ivCtrl,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.right,
+                        style: ts(13, w: FontWeight.w700),
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Text('秒', style: ts(11, c: C.slate)),
+                  ]),
+                SizedBox(height: 14),
+                Text('选择信标图标 ·「默认」= 沿用我的符号',
+                    style: ts(10, c: C.slate)),
+                SizedBox(height: 8),
+                Wrap(spacing: 8, runSpacing: 8, children: [
+                  _symbolOpt(ctx, symNotifier, '', '默认'),
+                  for (final q in _smartQuickSymbols)
+                    _symbolOpt(ctx, symNotifier, q.$1, q.$2),
+                ]),
+                SizedBox(height: 16),
+                Row(children: [
+                  if (!isIdle)
+                    TextButton.icon(
+                      onPressed: () {
+                        st.removeSmartTier(index);
+                        close();
+                      },
+                      icon: Icon(Icons.delete_outline_rounded,
+                          size: 16, color: C.red),
+                      label: Text('删除此档', style: ts(11, c: C.red)),
+                    )
+                  else
+                    Text('静止档不可删除', style: ts(10, c: C.grey)),
+                  Spacer(),
+                  OutlinedButton(
+                    onPressed: close,
+                    child: Text('取消', style: ts(12)),
+                  ),
+                  SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () {
+                      int? th = isIdle ? 0 : int.tryParse(thCtrl.text.trim());
+                      int? iv = int.tryParse(ivCtrl.text.trim());
+                      String? err;
+                      if (!isIdle && (th == null || th < 1)) {
+                        err = '最低速度需为 ≥1 的整数';
+                      } else if (iv == null || iv < 5) {
+                        err = '上报间隔需为 ≥5 秒的整数';
+                      } else if (!isIdle && th != null) {
+                        for (var i = 0; i < tiers.length; i++) {
+                          if (i != index && tiers[i].minSpeed == th) {
+                            err = '该速度档已存在，速度值需互不相同';
+                            break;
+                          }
+                        }
+                      }
+                      if (err != null) {
+                        ScaffoldMessenger.of(ctx)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(SnackBar(
+                            content: Text(err, style: ts(12)),
+                            duration: const Duration(seconds: 2),
+                          ));
+                        return;
+                      }
+                      st.updateSmartTier(
+                        index,
+                        SmartBeaconTier(
+                          minSpeed: th!,
+                          intervalSec: iv!,
+                          symbol: symNotifier.value,
+                        ),
+                      );
+                      close();
+                    },
+                    child: Text('保存', style: ts(12)),
+                  ),
+                ]),
+              ],
+            ),
+            ),
+          );
+        },
+      );
+    thCtrl.dispose();
+    ivCtrl.dispose();
+    symNotifier.dispose();
+  }
+
+  Widget _symbolOpt(BuildContext ctx, ValueNotifier<String> sym,
+      String symbol, String label) {
+    return ValueListenableBuilder<String>(
+      valueListenable: sym,
+      builder: (ctx, cur, _) {
+        final sel = cur == symbol;
+        return GestureDetector(
+          onTap: () => sym.value = symbol,
+          child: Container(
+            width: 76,
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            decoration: BoxDecoration(
+              color: sel ? C.blueBg : C.bgSoft,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                  color: sel ? C.blue : C.border, width: sel ? 1.5 : 1),
+            ),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              _symCharIcon(symbol, size: 26),
+              SizedBox(height: 2),
+              Text(label,
+                  style: ts(9,
+                      c: sel ? C.blue : C.slate,
+                      w: sel ? FontWeight.w700 : FontWeight.w500),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
 
   Widget _locSourceCard({
     required String title,
