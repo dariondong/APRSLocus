@@ -368,32 +368,22 @@ class _VectorMapViewState extends State<VectorMapView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: selected ? 34 : 26,
-              height: selected ? 34 : 26,
-              decoration: BoxDecoration(
-                // 白底 + 状态色描边，让真实 APRS 彩色符号在矢量底图上清晰可辨
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: s.color,
-                  width: selected ? 3 : 1.6,
-                ),
-                boxShadow:
-                    selected ? softShadow(blur: 12, alpha: 0.35) : null,
-              ),
+            // APRS 官方符号图标原图（不加圆底/描边圈）
+            SizedBox(
+              width: 56,
+              height: 56,
               child: Center(
                 child: AprsSymbolImage(
                   s.symbol,
                   s.symbolTable,
-                  size: selected ? 18 : 14,
+                  size: selected ? 32 : 24,
                   grayscale: s.effectiveStatus == St.offline,
                 ),
               ),
             ),
             // 呼号标签
             Container(
-              margin: const EdgeInsets.only(top: 1),
+              margin: const EdgeInsets.only(top: -22),
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.9),

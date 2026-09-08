@@ -772,29 +772,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   // 脉冲扩散圈：只在移动/选中时动画，且只重建这一层
                   if (pulsing)
                     _PulseRing(color: s.color, sel: sel, anim: _pulse),
-                  Container(
-                    width: sel ? 32 : 24,
-                    height: sel ? 32 : 24,
-                    decoration: BoxDecoration(
-                      // 白底 + 状态色描边，让真实 APRS 彩色符号在各种底图上清晰可辨
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: s.color,
-                        width: sel ? 3 : 1.6,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: s.color.withValues(alpha: 0.45),
-                          blurRadius: sel ? 12 : 5,
-                        ),
-                      ],
-                    ),
+                  // APRS 官方符号图标原图（不加圆底/描边圈）
+                  SizedBox(
+                    width: 56,
+                    height: 56,
                     child: Center(
                       child: AprsSymbolImage(
                         s.symbol,
                         s.symbolTable,
-                        size: sel ? 18 : 14,
+                        size: sel ? 30 : 24,
                         grayscale: s.effectiveStatus == St.offline,
                       ),
                     ),
@@ -804,7 +790,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     Positioned(
                       left: 0,
                       right: 0,
-                      top: 44,
+                      top: 40,
                       child: _callLabel(s),
                     ),
                   if (sel)
@@ -891,28 +877,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 children: [
                   if (s.effectiveStatus == St.moving || sel)
                     _PulseRing(color: s.color, sel: sel, anim: _pulse),
-                  Container(
-                    width: sel ? 32 : 24,
-                    height: sel ? 32 : 24,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: s.color,
-                        width: sel ? 3 : 1.6,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: s.color.withValues(alpha: 0.45),
-                          blurRadius: sel ? 12 : 5,
-                        ),
-                      ],
-                    ),
+                  // APRS 官方符号图标原图（不加圆底/描边圈）
+                  SizedBox(
+                    width: 56,
+                    height: 56,
                     child: Center(
                       child: AprsSymbolImage(
                         s.symbol,
                         s.symbolTable,
-                        size: sel ? 18 : 14,
+                        size: sel ? 30 : 24,
                         grayscale: s.effectiveStatus == St.offline,
                       ),
                     ),
@@ -922,7 +895,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     Positioned(
                       left: 0,
                       right: 0,
-                      top: 44,
+                      top: 40,
                       child: _callLabel(s),
                     ),
                 ],
