@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 import 'achievements.dart';
+import 'honor_wall_page.dart';
 
 /// ─── APRSlocus 荣誉徽章体系 ───
 /// 一个呼号可拥有多个称号徽章；徽章定义/授予/优先徽章均由官网 members.json 维护。
@@ -339,18 +340,9 @@ class HonorBadge extends StatelessWidget {
   }
 
   void _showHonorWall(BuildContext context, String call) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.82,
-        minChildSize: 0.45,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (context, scrollCtrl) =>
-            _HonorWallSheet(call: call, scrollCtrl: scrollCtrl),
-      ),
+    // 打开独立「荣誉墙」专属页面
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => HonorWallPage(call)),
     );
   }
 }
