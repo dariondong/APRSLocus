@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -537,6 +537,17 @@
         "en": "Hidden: silently channeled the tide of compute — lighting more than half the project's sky."
       },
       "color": "#0EA5C4"
+    },
+    "firstFix": {
+      "zh": "FIRST FIX · 至高荣誉",
+      "zh-TW": "FIRST FIX · 至高榮譽",
+      "en": "FIRST FIX · Supreme Honor",
+      "desc": {
+        "zh": "完成 APRSlocus 1.0 全部成就，经开发团队授勋的至高荣誉。",
+        "zh-TW": "完成 APRSlocus 1.0 全部成就，經開發團隊授勳的至高榮譽。",
+        "en": "Completed every APRSlocus 1.0 achievement — the supreme honor bestowed by the dev team."
+      },
+      "color": "#C9A227"
     }
   }
 }
