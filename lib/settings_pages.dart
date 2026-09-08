@@ -153,51 +153,60 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
   void _pickDefaultBadge(BuildContext context) {
     final owns = ownedHonorsOf(st.myFullCall);
     if (owns.isEmpty) return;
-    showModalBottomSheet<void>(
+    showDialog<void>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setModalState) => Container(
-          decoration: BoxDecoration(
-            color: C.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(
-                color: C.greyLight.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(2)))),
-            const SizedBox(height: 14),
+      builder: (ctx) {
+        final cur = primaryHonorOf(st.myFullCall)?.key;
+        return AlertDialog(
+          title: Row(children: [
+            Icon(Icons.star_rounded, size: 20, color: C.yellow),
+            const SizedBox(width: 8),
             Text('选择主页展示徽章', style: ts(16, w: FontWeight.w700)),
-            const SizedBox(height: 4),
-            Text('可在以下已获得的徽章中选一个常驻展示', style: ts(11, c: C.grey)),
-            const SizedBox(height: 12),
+          ]),
+          content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('在以下已获得的徽章中选一个，作为主页常驻展示',
+                style: ts(12, c: C.slate)),
+            const SizedBox(height: 14),
             for (final h in owns)
-              GestureDetector(
-                onTap: () {
-                  setUserPrimary(st.myFullCall, h.key);
-                  Navigator.pop(ctx);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: C.bgSoft,
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: C.border),
+                    onTap: () {
+                      setUserPrimary(st.myFullCall, h.key);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: C.bgSoft,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: cur == h.key ? h.color : C.border,
+                            width: cur == h.key ? 1.5 : 1),
+                      ),
+                      child: Row(children: [
+                        Icon(h.icon, size: 20, color: h.color),
+                        const SizedBox(width: 12),
+                        Text(h.label, style: ts(14, w: FontWeight.w700)),
+                        const Spacer(),
+                        if (cur == h.key)
+                          Icon(Icons.check_circle_rounded, size: 20, color: h.color),
+                      ]),
+                    ),
                   ),
-                  child: Row(children: [
-                    Icon(h.icon, size: 18, color: h.color),
-                    const SizedBox(width: 10),
-                    Text(h.label, style: ts(13, w: FontWeight.w700)),
-                    const Spacer(),
-                    if (primaryHonorOf(st.myFullCall)?.key == h.key)
-                      Icon(Icons.check_circle_rounded, size: 18, color: h.color),
-                  ]),
                 ),
               ),
           ]),
-        ),
-      ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text('取消', style: ts(13, c: C.slate))),
+          ],
+        );
+      },
     );
   }
 
