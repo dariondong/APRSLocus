@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -49,6 +49,7 @@
       "c": "#3b6ef5",
       "grp": "core",
       "honors": [
+        "mostBrain",
         "kaishan",
         "developer",
         "earlyMember"
@@ -485,29 +486,60 @@
     }
   ],
   "honors": {
+    "kaishan": {
+      "zh": "开山",
+      "zh-TW": "開山",
+      "en": "Founding pioneer",
+      "desc": {
+        "zh": "极早期内测成员，项目最开始的参与与建设者。",
+        "zh-TW": "極早期內測成員，項目最開始的參與與建設者。",
+        "en": "Joined in the earliest closed alpha — among the very first to build APRSlocus."
+      },
+      "color": "#E67E22"
+    },
     "developer": {
       "zh": "开发人员",
       "zh-TW": "開發人員",
       "en": "Developer",
+      "desc": {
+        "zh": "参与代码 / 翻译 / PR 的开发伙伴，让 APRSlocus 功能更完善。",
+        "zh-TW": "參與程式碼 / 翻譯 / PR 的開發夥伴，讓 APRSlocus 功能更完善。",
+        "en": "Code, translation & PR contributors who kept APRSlocus improving."
+      },
       "color": "#1D6FF2"
     },
     "earlyMember": {
       "zh": "早期成员",
       "zh-TW": "早期成員",
       "en": "Early member",
+      "desc": {
+        "zh": "早期公测阶段加入，陪伴 APRSlocus 成长。",
+        "zh-TW": "早期公測階段加入，陪伴 APRSlocus 成長。",
+        "en": "Came aboard during early public beta and grew with APRSlocus."
+      },
       "color": "#B08A34"
     },
     "aiCompute": {
       "zh": "AI 算力支持",
       "zh-TW": "AI 算力支持",
       "en": "AI compute",
-      "color": "#7c3aed"
+      "desc": {
+        "zh": "以 AI 算力支持开发与测试。",
+        "zh-TW": "以 AI 算力支持開發與測試。",
+        "en": "Backed development & testing with AI compute."
+      },
+      "color": "#7C3AED"
     },
-    "kaishan": {
-      "zh": "开山",
-      "zh-TW": "開山",
-      "en": "Founding pioneer",
-      "color": "#E67E22"
+    "mostBrain": {
+      "zh": "最强大脑",
+      "zh-TW": "最強大腦",
+      "en": "Brightest mind",
+      "desc": {
+        "zh": "项目理念与架构的核心大脑。",
+        "zh-TW": "專案理念與架構的核心大腦。",
+        "en": "The core brain behind the project's vision & architecture."
+      },
+      "color": "#0EA5C4"
     }
   }
 }
