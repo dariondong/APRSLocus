@@ -336,27 +336,33 @@ function draw(){
  c2.fillStyle="#141e38";c2.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c2.fillText("APRSlocus",tx+lw+16,ty+2);
  c2.fillStyle="#8b95a9";c2.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
  c2.save();c2.letterSpacing="1.6px";c2.fillText(TX[lang].mem,tx+lw+16,ty+26);c2.restore();
- // 右上角展示该成员实际荣誉（替代固定“早期成员”文案）
- const honorKeys = (c && c.kind==="p") ? honorDefsOf(c.p) : [];
- const cap = honorKeys.length ? honorKeys.map(k=>honorLabel(k)).join(" · ") : (TX[lang].mem||"");
- const capCol = honorKeys.length ? honorColor(honorKeys[0]) : g;
- c2.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c2.measureText(cap).width;
- c2.save();rr(c2,W-58-capW-30,24,capW+30,36,18);c2.fillStyle=hexA(capCol,.15);c2.fill();
- c2.fillStyle=capCol;c2.textAlign="center";c2.fillText(cap,W-58-capW/2-15,49);c2.textAlign="left";c2.restore();
+ // 右上角保持干净（不渲染荣誉/早期文案，避免与下方重复）
  c2.fillStyle="#8b95a9";c2.font="700 14px Consolas,monospace";c2.textAlign="right";
  c2.fillText((idx+1)+" / "+CARDS.length,W-58,100);c2.textAlign="left";
  c2.fillStyle="#eef1f7";c2.fillRect(58,132,W-116,1);
  const cx=58,cy0=278;
- c2.save();c2.letterSpacing="2.5px";c2.fillStyle="#8b95a9";c2.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
- c2.fillText(TX[lang].t1.toUpperCase(),cx,cy0-102);c2.restore();
  if(c.kind==="p"){
   c2.fillStyle="#0d1426";c2.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";c2.fillText(c.p.call,cx,cy0+2);
   c2.fillStyle=g;c2.fillRect(cx,cy0+56,72,4);
   c2.fillStyle="#182238";c2.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c2.fillText(c.p.who?(c.p.who[lang]||c.p.who.zh):"",cx,cy0+128);
-  const role=T(c.p.role);c2.font="600 17px 'PingFang SC','Segoe UI',sans-serif";
-  const rw=c2.measureText(role).width;
-  c2.save();rr(c2,cx,cy0+150,rw+30,34,17);c2.fillStyle="#f2f4f9";c2.fill();c2.restore();
-  c2.fillStyle="#4c5770";c2.fillText(role,cx+15,cy0+172);
+  // 姓名下：渲染荣誉徽章（依次小胶囊）
+  const hkeys=honorDefsOf(c.p);
+  if(hkeys.length){
+    let hx=cx;
+    c2.font="600 15px 'PingFang SC','Segoe UI',sans-serif";
+    for(const k of hkeys){
+      const hc=honorColor(k); const lbl=honorLabel(k);
+      const w=c2.measureText(lbl).width;
+      c2.save();rr(c2,hx,cy0+148,w+26,30,15);c2.fillStyle=hexA(hc,.15);c2.fill();
+      c2.strokeStyle=hc;c2.lineWidth=1;c2.stroke();c2.restore();
+      c2.fillStyle=hc;c2.fillText(lbl,hx+13,cy0+169);
+      hx += w+26+10;
+    }
+  } else {
+    // 无荣誉回退显示角色
+    const role=T(c.p.role);c2.font="600 17px 'PingFang SC','Segoe UI',sans-serif";
+    c2.fillStyle="#4c5770";c2.fillText(role,cx,cy0+170);
+  }
   c2.fillStyle="#7c8699";c2.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
   c2.fillText("“"+T(c.p.brief)+"”",cx,cy0+240);
  } else {
