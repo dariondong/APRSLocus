@@ -1,17 +1,448 @@
 {
-  "version": 1,
+  "version": 2,
   "updated": "2026-09-08",
   "developers": [
-    "BG7LZQ",
-    "BG2HCB",
-    "BA4UAX",
-    "BD3QID"
+    {
+      "call": "BG7LZQ",
+      "who": {
+        "zh": "Darion Dong",
+        "zh-TW": "Darion Dong",
+        "en": "Darion Dong"
+      },
+      "role": {
+        "zh": "创始人 · 全栈开发",
+        "zh-TW": "創始人 · 全棧開發",
+        "en": "Founder · Full-stack"
+      },
+      "brief": {
+        "zh": "让 APRSlocus 从理想变成电波",
+        "zh-TW": "讓 APRSlocus 從理想變成電波",
+        "en": "Turned APRSlocus from idea into radio waves"
+      },
+      "contrib": {
+        "zh": "创建并全栈开发 APRSlocus：从 APRS-IS 接入、地图引擎，到消息与信标体系，独立完成 Android / Windows 双端，并将项目开源给全球业余无线电爱好者。",
+        "zh-TW": "創建並全棧開發 APRSlocus：從 APRS-IS 接入、地圖引擎，到訊息與信標體系，獨立完成 Android / Windows 雙端，並將項目開源給全球業餘無線電愛好者。",
+        "en": "Founded and built APRSlocus end-to-end — APRS-IS feed, map engines, messaging and beacon systems — for Android and Windows, then opened it to hams worldwide."
+      },
+      "quote": {
+        "zh": "愿这串呼号，永远在地图上闪着光。",
+        "zh-TW": "願這串呼號，永遠在地圖上閃著光。",
+        "en": "May this callsign always shine on the map."
+      },
+      "tags": {
+        "zh": [
+          "全栈开发",
+          "APRS 接入",
+          "开源"
+        ],
+        "zh-TW": [
+          "全棧開發",
+          "APRS 接入",
+          "開源"
+        ],
+        "en": [
+          "Full-stack",
+          "APRS feed",
+          "Open source"
+        ]
+      },
+      "c": "#3b6ef5",
+      "grp": "core"
+    },
+    {
+      "call": "BG2HCB",
+      "who": {
+        "zh": "清零",
+        "zh-TW": "清零",
+        "en": "Qing Ling"
+      },
+      "role": {
+        "zh": "设置页代码优化",
+        "zh-TW": "設置頁代碼優化",
+        "en": "Settings optimization"
+      },
+      "brief": {
+        "zh": "把设置收束成顺手的样子",
+        "zh-TW": "把設置收束成順手的樣子",
+        "en": "Tamed the settings into something intuitive"
+      },
+      "contrib": {
+        "zh": "重构设置页交互与代码结构，让众多开关、分页与提示在手机与桌面上都清晰顺手，显著降低上手门槛。",
+        "zh-TW": "重構設置頁交互與程式碼結構，讓眾多開關、分頁與提示在手機與桌面上都清晰順手，顯著降低上手門檻。",
+        "en": "Rebuilt the settings experience and its code so every toggle, tab and hint feels clear on phone and desktop — and much easier to get started."
+      },
+      "quote": {
+        "zh": "把复杂留给自己，把简单留给同好。",
+        "zh-TW": "把複雜留給自己，把簡單留給同好。",
+        "en": "Keep complexity to yourself; leave simplicity to the community."
+      },
+      "tags": {
+        "zh": [
+          "设置体验",
+          "代码重构"
+        ],
+        "zh-TW": [
+          "設置體驗",
+          "代碼重構"
+        ],
+        "en": [
+          "Settings UX",
+          "Refactor"
+        ]
+      },
+      "c": "#0e9f8b",
+      "grp": "core"
+    },
+    {
+      "call": "BA4UAX",
+      "who": {
+        "zh": "BA4UAX",
+        "zh-TW": "BA4UAX",
+        "en": "BA4UAX"
+      },
+      "role": {
+        "zh": "繁体中文翻译",
+        "zh-TW": "繁體中文翻譯",
+        "en": "Traditional Chinese translation"
+      },
+      "brief": {
+        "zh": "让繁体中文同好读懂它",
+        "zh-TW": "讓繁體中文同好讀懂它",
+        "en": "Made it readable for Traditional-Chinese hams"
+      },
+      "contrib": {
+        "zh": "完成整套界面的繁体中文翻译与本地化打磨，让港台澳与海外繁体用户都能顺畅使用 APRSlocus。",
+        "zh-TW": "完成整套介面的繁體中文翻譯與本地化打磨，讓港台澳與海外繁體使用者都能順暢使用 APRSlocus。",
+        "en": "Delivered the full Traditional-Chinese translation and localization polish, so hams in Hong Kong, Taiwan and beyond can use APRSlocus with ease."
+      },
+      "quote": {
+        "zh": "多一种语言，就多一群在电波里相逢的朋友。",
+        "zh-TW": "多一種語言，就多一群在電波裡相逢的朋友。",
+        "en": "One more language, one more circle of friends on the air."
+      },
+      "tags": {
+        "zh": [
+          "繁体中文",
+          "本地化"
+        ],
+        "zh-TW": [
+          "繁體中文",
+          "本地化"
+        ],
+        "en": [
+          "Traditional Chinese",
+          "L10n"
+        ]
+      },
+      "c": "#6269e6",
+      "grp": "i18n"
+    },
+    {
+      "call": "BD3QID",
+      "who": {
+        "zh": "BD3QID",
+        "zh-TW": "BD3QID",
+        "en": "BD3QID"
+      },
+      "role": {
+        "zh": "英文翻译 · 测试",
+        "zh-TW": "英文翻譯 · 測試",
+        "en": "English · Testing"
+      },
+      "brief": {
+        "zh": "把 APRSlocus 讲给世界",
+        "zh-TW": "把 APRSlocus 講給世界",
+        "en": "Told APRSlocus' story to the world"
+      },
+      "contrib": {
+        "zh": "推进英文国际化与多轮真实测试，提交详细反馈，协助完善台站与消息流程。",
+        "zh-TW": "推進英文國際化與多輪真實測試，提交詳細回饋，協助完善台站與訊息流程。",
+        "en": "Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows."
+      },
+      "quote": {
+        "zh": "让世界听见我们的信标。",
+        "zh-TW": "讓世界聽見我們的信標。",
+        "en": "Let the world hear our beacons."
+      },
+      "tags": {
+        "zh": [
+          "英文翻译",
+          "质量测试"
+        ],
+        "zh-TW": [
+          "英文翻譯",
+          "品質測試"
+        ],
+        "en": [
+          "English",
+          "QA"
+        ]
+      },
+      "c": "#8a5cf0",
+      "grp": "i18n"
+    }
   ],
   "earlyMembers": [
-    "BG7PGW",
-    "BG7LMW",
-    "BG7OSL",
-    "imThree",
-    "BA3RZL"
+    {
+      "call": "BG7PGW",
+      "who": {
+        "zh": "BG7PGW",
+        "zh-TW": "BG7PGW",
+        "en": "BG7PGW"
+      },
+      "role": {
+        "zh": "功能测试 · 赞助",
+        "zh-TW": "功能測試 · 贊助",
+        "en": "Testing · Sponsor"
+      },
+      "brief": {
+        "zh": "一遍遍把 bug 揪出来，也为项目送来蜜雪冰城 🧋",
+        "zh-TW": "一遍遍把 bug 揪出來，也為項目送來蜜雪冰城 🧋",
+        "en": "Flushed bugs from every corner — and bought the dev a Mixue 🧋"
+      },
+      "contrib": {
+        "zh": "长期参与真实环境收测，反馈定位、地图与连接稳定性问题；并赞助一杯蜜雪冰城支持开发。",
+        "zh-TW": "長期參與真實環境收測，回饋定位、地圖與連線穩定性問題；並贊助一杯蜜雪冰城支持開發。",
+        "en": "Long-time on-air tester for GPS, maps and connectivity — and a Mixue sponsor cheering the dev on."
+      },
+      "quote": {
+        "zh": "每一份 bug 报告，都是让产品变好的电波。",
+        "zh-TW": "每一份 bug 報告，都是讓產品變好的電波。",
+        "en": "Every bug report is a signal that makes the product better."
+      },
+      "tags": {
+        "zh": [
+          "功能测试",
+          "蜜雪赞助",
+          "Bug 反馈"
+        ],
+        "zh-TW": [
+          "功能測試",
+          "蜜雪贊助",
+          "Bug 回饋"
+        ],
+        "en": [
+          "Testing",
+          "Sponsor",
+          "Bug reports"
+        ]
+      },
+      "c": "#0da46b",
+      "grp": "test"
+    },
+    {
+      "call": "BG7LMW",
+      "who": {
+        "zh": "BG7LMW",
+        "zh-TW": "BG7LMW",
+        "en": "BG7LMW"
+      },
+      "role": {
+        "zh": "功能测试",
+        "zh-TW": "功能測試",
+        "en": "Functional testing"
+      },
+      "brief": {
+        "zh": "在真实电台上验证功能",
+        "zh-TW": "在真實電台上驗證功能",
+        "en": "Validated every feature on real gear"
+      },
+      "contrib": {
+        "zh": "在多台真实设备上逐项验证移动、信标、消息等场景，为每个发版守住质量关口。",
+        "zh-TW": "在多台真實設備上逐項驗證移動、信標、訊息等場景，為每個發版守住品質關口。",
+        "en": "Validated beaconing, mobility and messaging across real devices — guarding quality before every release."
+      },
+      "quote": {
+        "zh": "用真实电台说话，用认真态度测试。",
+        "zh-TW": "用真實電台說話，用認真態度測試。",
+        "en": "Speak with real radios; test with real care."
+      },
+      "tags": {
+        "zh": [
+          "功能测试",
+          "实机验证"
+        ],
+        "zh-TW": [
+          "功能測試",
+          "實機驗證"
+        ],
+        "en": [
+          "Testing",
+          "On-device"
+        ]
+      },
+      "c": "#0a9fb4",
+      "grp": "test"
+    },
+    {
+      "call": "BG7OSL",
+      "who": {
+        "zh": "BG7OSL",
+        "zh-TW": "BG7OSL",
+        "en": "BG7OSL"
+      },
+      "role": {
+        "zh": "功能测试",
+        "zh-TW": "功能測試",
+        "en": "Functional testing"
+      },
+      "brief": {
+        "zh": "事无巨细推动它变好",
+        "zh-TW": "鉅細靡遺推動它變好",
+        "en": "Pushed it forward with meticulous feedback"
+      },
+      "contrib": {
+        "zh": "细致覆盖定位、消息、群组与地图细节，持续反馈推动整体体验一路打磨。",
+        "zh-TW": "細緻涵蓋定位、訊息、群組與地圖細節，持續回饋推動整體體驗一路打磨。",
+        "en": "Covered fixes, messages, groups and map details with meticulous notes that kept the whole experience improving."
+      },
+      "quote": {
+        "zh": "细节见真章，较真见热爱。",
+        "zh-TW": "細節見真章，較真見熱愛。",
+        "en": "Details reveal craft; diligence reveals love."
+      },
+      "tags": {
+        "zh": [
+          "功能测试",
+          "体验打磨"
+        ],
+        "zh-TW": [
+          "功能測試",
+          "體驗打磨"
+        ],
+        "en": [
+          "Testing",
+          "UX polish"
+        ]
+      },
+      "c": "#e0568f",
+      "grp": "test"
+    },
+    {
+      "call": "imThree",
+      "who": {
+        "zh": "imThree",
+        "zh-TW": "imThree",
+        "en": "imThree"
+      },
+      "role": {
+        "zh": "Bug 提交与反馈",
+        "zh-TW": "Bug 提交與反饋",
+        "en": "Bug reports & feedback"
+      },
+      "brief": {
+        "zh": "认真报障，推动一次次修复",
+        "zh-TW": "認真報障，推動一次次修復",
+        "en": "Reported issues that drove real fixes"
+      },
+      "contrib": {
+        "zh": "持续提交测试与 Bug 反馈，帮助定位并修复了过滤、退出与多处细节问题，为发版质量提供重要输入。",
+        "zh-TW": "持續提交測試與 Bug 回饋，幫助定位並修復了過濾、退出與多處細節問題，為發版品質提供重要輸入。",
+        "en": "Filing steady bug reports — filter, exit and other edge cases — gave the release process crucial signal."
+      },
+      "quote": {
+        "zh": "发现并说出问题，就是在帮忙。",
+        "zh-TW": "發現並說出問題，就是在幫忙。",
+        "en": "Finding and voicing issues is helping."
+      },
+      "tags": {
+        "zh": [
+          "Bug 反馈",
+          "发版测试"
+        ],
+        "zh-TW": [
+          "Bug 回饋",
+          "發版測試"
+        ],
+        "en": [
+          "Bug reports",
+          "Release QA"
+        ]
+      },
+      "c": "#ef5252",
+      "grp": "test"
+    },
+    {
+      "call": "BA3RZL",
+      "who": {
+        "zh": "BA3RZL",
+        "zh-TW": "BA3RZL",
+        "en": "BA3RZL"
+      },
+      "role": {
+        "zh": "AI 算力支持",
+        "zh-TW": "AI 算力支持",
+        "en": "AI compute support"
+      },
+      "brief": {
+        "zh": "用算力托起开发的路",
+        "zh-TW": "用算力托起開發的路",
+        "en": "Carried the build on a different signal"
+      },
+      "contrib": {
+        "zh": "为开发与测试提供 AI 算力支持，加速原型、排错与多语言内容产出。",
+        "zh-TW": "為開發與測試提供 AI 算力支持，加速原型、除錯與多語言內容產出。",
+        "en": "Provided AI compute for development and testing, accelerating prototypes, debugging and multilingual content."
+      },
+      "quote": {
+        "zh": "算力无形，善意有迹。",
+        "zh-TW": "算力無形，善意有跡。",
+        "en": "Compute is invisible; kindness leaves a trace."
+      },
+      "tags": {
+        "zh": [
+          "AI 算力",
+          "开发支持"
+        ],
+        "zh-TW": [
+          "AI 算力",
+          "開發支持"
+        ],
+        "en": [
+          "AI compute",
+          "Dev support"
+        ]
+      },
+      "c": "#df7a36",
+      "grp": "support"
+    }
+  ],
+  "groups": [
+    {
+      "name": {
+        "zh": "STUDENT HAMS 群组",
+        "zh-TW": "STUDENT HAMS 群組",
+        "en": "STUDENT HAMS"
+      },
+      "role": {
+        "zh": "学生火腿群体 · 资金赞助",
+        "zh-TW": "學生火腿群體 · 資金贊助",
+        "en": "Student hams · financial support"
+      },
+      "note": {
+        "zh": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。",
+        "zh-TW": "感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。",
+        "en": "Thanks to the group for financial support that keeps APRSlocus building."
+      },
+      "c": "#7c5cff"
+    },
+    {
+      "name": {
+        "zh": "每一位支持者",
+        "zh-TW": "每一位支持者",
+        "en": "Every supporter"
+      },
+      "role": {
+        "zh": "匿名赞助 · 陪伴与鼓励",
+        "zh-TW": "匿名贊助 · 陪伴與鼓勵",
+        "en": "Anonymous · encouragement"
+      },
+      "note": {
+        "zh": "你们的每一份支持，都是 APRSlocus 继续发光的动力。",
+        "zh-TW": "你們的每一份支持，都是 APRSlocus 繼續發光的動力。",
+        "en": "Every bit of support keeps APRSlocus glowing."
+      },
+      "c": "#e67a9a"
+    }
   ]
 }
