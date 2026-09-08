@@ -164,7 +164,8 @@ class HonorWallPage extends StatelessWidget {
       if (asset != null) {
         img = Image.asset(asset,
             width: 40, height: 40, fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => null);
+            errorBuilder: (_, __, ___) => const Icon(Icons.place_rounded,
+                size: 24, color: Color(0xFF14203A)));
       }
     } catch (_) {}
     if (img == null) {
