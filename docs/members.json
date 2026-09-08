@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -499,9 +499,9 @@
       "zh-TW": "開山",
       "en": "Founding pioneer",
       "desc": {
-        "zh": "极早期内测成员，项目最开始的参与与建设者。",
-        "zh-TW": "極早期內測成員，項目最開始的參與與建設者。",
-        "en": "Joined in the earliest closed alpha — among the very first to build APRSlocus."
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
       },
       "color": "#E67E22"
     },
@@ -510,9 +510,9 @@
       "zh-TW": "開發人員",
       "en": "Developer",
       "desc": {
-        "zh": "参与代码 / 翻译 / PR 的开发伙伴，让 APRSlocus 功能更完善。",
-        "zh-TW": "參與程式碼 / 翻譯 / PR 的開發夥伴，讓 APRSlocus 功能更完善。",
-        "en": "Code, translation & PR contributors who kept APRSlocus improving."
+        "zh": "以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。",
+        "zh-TW": "以程式為槳、翻譯為橋，一磚一瓦把 APRSlocus 推向更遠的頻率。",
+        "en": "Oars of code and bridges of translation — brick by brick, tuned APRSlocus to farther frequencies."
       },
       "color": "#1D6FF2"
     },
@@ -521,9 +521,9 @@
       "zh-TW": "早期成員",
       "en": "Early member",
       "desc": {
-        "zh": "早期公测阶段加入，陪伴 APRSlocus 成长。",
-        "zh-TW": "早期公測階段加入，陪伴 APRSlocus 成長。",
-        "en": "Came aboard during early public beta and grew with APRSlocus."
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
       "color": "#B08A34"
     },
@@ -532,9 +532,9 @@
       "zh-TW": "最強大腦",
       "en": "Brightest mind",
       "desc": {
-        "zh": "隐藏成就：为项目提供超 50% 的算力支持！",
-        "zh-TW": "隱藏成就：為項目提供超過 50% 的算力支持！",
-        "en": "Hidden achievement: provided over 50% of the project's compute power!"
+        "zh": "隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。",
+        "zh-TW": "隱藏成就：於無聲處托舉算力洪流——為專案點亮超過半數的光。",
+        "en": "Hidden: silently channeled the tide of compute — lighting more than half the project's sky."
       },
       "color": "#0EA5C4"
     }

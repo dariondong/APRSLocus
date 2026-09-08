@@ -41,14 +41,14 @@ const List<String> kHonorOrder = [
 
 /// 默认徽章定义（联网兜底）
 final Map<String, Honor> _defaultHonorDefs = {
-  'kaishan': const Honor('kaishan', '开山', '极早期内测成员，项目最开始的参与与建设者。',
+  'kaishan': const Honor('kaishan', '开山', '群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。',
       Color(0xFFE67E22), Icons.terrain_rounded),
-  'developer': const Honor('developer', '开发人员', '参与代码 / 翻译 / PR 的开发伙伴。',
+  'developer': const Honor('developer', '开发人员', '以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。',
       Color(0xFF1D6FF2), Icons.code_rounded),
-  'earlyMember': const Honor('earlyMember', '早期成员', '早期公测阶段加入，陪伴 APRSlocus 成长。',
+  'earlyMember': const Honor('earlyMember', '早期成员', '在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。',
       Color(0xFFB08A34), Icons.workspace_premium_rounded),
   'mostBrain': const Honor('mostBrain', '最强大脑',
-      '隐藏成就：为项目提供超 50% 的算力支持！', Color(0xFF0EA5C4), Icons.psychology_rounded),
+      '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。', Color(0xFF0EA5C4), Icons.psychology_rounded),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
