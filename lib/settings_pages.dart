@@ -6,6 +6,7 @@ import 'widgets.dart';
 import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
+import 'early_member.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -103,6 +104,8 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           ),
           SizedBox(width: 4),
           Text('· ${st.myFullCall}', style: ts(10, c: C.grey)),
+          SizedBox(width: 6),
+          EarlyMemberBadge(st.myFullCall, compact: true),
           SizedBox(width: 4),
           Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
         ]),

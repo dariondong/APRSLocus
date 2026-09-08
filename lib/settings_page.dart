@@ -10,6 +10,7 @@ import 'widgets.dart';
 import 'about_page.dart';
 import 'check_update_page.dart';
 import 'exit_app.dart';
+import 'early_member.dart';
 import 'settings_pages.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -46,9 +47,18 @@ class _SettingsPageState extends State<SettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 页面标题：顶部栏已显示“设置”，这里用问候语（早上好，呼号）避免重复
-                Text(
-                  '$_greetingPrefix${widget.state.myCall}',
-                  style: T.h1,
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '$_greetingPrefix${widget.state.myCall}',
+                        style: T.h1,
+                      ),
+                    ),
+                    // 早期成员徽标：呼号匹配时显示，点击打开专属会员卡页
+                    SizedBox(width: 8),
+                    EarlyMemberBadge(widget.state.myCall),
+                  ],
                 ),
                 SizedBox(height: 4),
                 Text(S.of(context).settingsDesc, style: ts(13, c: C.slate)),
