@@ -298,34 +298,41 @@ function ui(){
  CARDS.forEach((c,i)=>{const b=document.createElement("button");
   b.textContent=c.kind==="p"?c.p.call:labelOf(c);
   if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
-function wallSection(grp,people){
- const gm=GRP_META[grp]||GRP_META.core; if(!gm) return "";
- const gcols={core:"#3b6ef5",i18n:"#6269e6",test:"#0da46b",support:"#df7a36"};
- return `<div class="group"><div class="gh"><span class="dot" style="background:${gcols[grp]}"></span>
-  <h3>${T(gm)}</h3><span>${people.length}</span></div>
+function wallSection(hkey, people){
+ const hc=honorColor(hkey); const hname=honorLabel(hkey);
+ return `<div class="group"><div class="gh"><span class="dot" style="background:${hc}"></span>
+  <h3>${hname}</h3><span>${people.length}</span></div>
   <div class="cards">${people.map(p=>`
    <div class="mcard" onclick="pick(${PEOPLE.indexOf(p)})">
-     <div class="av" style="background:linear-gradient(140deg,${p.c},${p.c})">${(p.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
+     <div class="av" style="background:linear-gradient(140deg,${hc},${hc})">${(p.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
      <div class="call">${p.call}</div>
      <div class="who">${p.who&&(p.who[lang]||p.who.zh)!==p.call?(p.who[lang]||p.who.zh):""}</div>
-     <div class="role">${T(p.role)}</div>
+     <div class="role">${hname}</div>
    </div>`).join("")}
   </div></div>`;}
 function walls(){
- const order=["core","test","support"];
- let html=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
- const gcols="#7c5cff";
- html+=`<div class="group"><div class="gh"><span class="dot" style="background:${gcols}"></span>
-   <h3>${T(GRP_META.support)} · ${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
-   <div class="cards">${GROUPS.map((g,gi)=>`
-     <div class="mcard" onclick="pick(${PEOPLE.length+gi})">
-       <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">${T(g.name).trim().charAt(0).toUpperCase()}</div>
-       <div class="call">${T(g.name)}</div>
-       <div class="who">${T(g.role)}</div>
-       <div class="tag2">${TX[lang].sponsor}</div>
-     </div>`).join("")}
-   </div></div>`;
+ // 按徽章分类展示（替代按角色分组）
+ const honorOrder=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift"];
+ let html="";
+ for(const hk of honorOrder){
+   const holders=PEOPLE.filter(p=>honorDefsOf(p).includes(hk));
+   if(holders.length) html+=wallSection(hk,holders);
+ }
+ // 团体（赞助类）单独保留底部
+ if(GROUPS&&GROUPS.length){
+   html+=`<div class="group"><div class="gh"><span class="dot" style="background:#7c5cff"></span>
+     <h3>${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
+     <div class="cards">${GROUPS.map((g,gi)=>`
+       <div class="mcard" onclick="pick(${PEOPLE.length+gi})">
+         <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">${T(g.name).trim().charAt(0).toUpperCase()}</div>
+         <div class="call">${T(g.name)}</div>
+         <div class="who">${T(g.role)}</div>
+         <div class="tag2">${TX[lang].sponsor}</div>
+       </div>`).join("")}
+     </div></div>`;
+ }
  document.getElementById("walls").innerHTML=html;}
+
 function cardColor(c){return c.kind==="p"?c.p.c:c.g.c;}
 function draw(){
  const c=cur();const g=cardColor(c);const c2=cv.getContext("2d");
