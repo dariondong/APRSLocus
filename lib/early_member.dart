@@ -11,7 +11,9 @@ import 'theme.dart';
 /// ─── APRSlocus 荣誉成员（DEVELOPER / EARLY MEMBER）───
 ///
 /// 名单默认内置一份兜底；启动 / 刷新时会从官网 members.json 拉取最新，
-/// 解析后覆盖。名单归属（开发 / 早期成员）由官网 JSON 维护，无需发版即可更新。
+/// 解析后覆盖。members.json 结构：
+///   developers / earlyMembers: 元素可为 {call, who:{...}, ...} 或纯呼号字符串
+/// 名单归属（开发 / 早期成员）由官网 JSON 维护，无需发版即可更新。
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
 
@@ -57,6 +59,16 @@ MemberKind memberKindOf(String call) {
 
 String _normalize(String s) => s.trim().toUpperCase();
 
+/// 从 json 元素提取呼号：兼容字符串或 {call}
+String _callOf(dynamic it) {
+  if (it is String) return it;
+  if (it is Map) {
+    final c = it['call'];
+    if (c is String) return c;
+  }
+  return '';
+}
+
 /// 从官网拉取并合并名单（幂等；失败静默保留现有/默认）
 Future<void> refreshMembers() async {
   try {
@@ -72,11 +84,11 @@ Future<void> refreshMembers() async {
       final body = await resp.transform(utf8.decoder).join();
       final d = jsonDecode(body);
       if (d is! Map) return;
-      final dev = (d['developers'] as List?)?.cast<String>() ?? [];
-      final early = (d['earlyMembers'] as List?)?.cast<String>() ?? [];
+      final dev = (d['developers'] as List?) ?? const [];
+      final early = (d['earlyMembers'] as List?) ?? const [];
       if (dev.isEmpty && early.isEmpty) return; // 非法内容忽略
-      _developers = dev.map(_normalize).toList();
-      _earlyMembers = early.map(_normalize).toList();
+      _developers = dev.map(_callOf).where((s) => s.isNotEmpty).map(_normalize).toList();
+      _earlyMembers = early.map(_callOf).where((s) => s.isNotEmpty).map(_normalize).toList();
       memberListVersion.value++;
       // 缓存便于离线读取
       try {
