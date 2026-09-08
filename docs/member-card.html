@@ -3,275 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APRSlocus · FIRST MEMBER 会员卡</title>
-<meta name="description" content="APRSlocus FIRST MEMBER 纪念会员卡。电波无限，感谢同行。">
-<meta property="og:title" content="APRSlocus FIRST MEMBER">
-<meta property="og:description" content="APRSlocus 早期成员纪念会员卡，可导出图片。">
+<title>APRSlocus · FIRST MEMBER Card</title>
+<meta name="description" content="APRSlocus FIRST MEMBER 高级会员卡 · 电波无限，感谢同行">
+<meta property="og:title" content="APRSlocus FIRST MEMBER Card">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
   body{
-    min-height:100vh;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
-    color:#1a2744;line-height:1.6;overflow-x:hidden;padding:22px 16px 50px;
+    font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
     background:
-      radial-gradient(1100px 620px at 82% -10%, rgba(56,189,248,.18), transparent 60%),
-      radial-gradient(760px 480px at -8% 40%, rgba(47,107,255,.13), transparent 55%),
-      radial-gradient(900px 560px at 100% 106%, rgba(212,175,90,.14), transparent 55%),
-      linear-gradient(180deg,#eef2fb,#e8eef9);
-    background-attachment:fixed;display:flex;flex-direction:column;align-items:center;
+      radial-gradient(900px 560px at 82% -6%, rgba(40,80,160,.32), transparent 62%),
+      radial-gradient(700px 500px at 4% 26%, rgba(160,120,50,.10), transparent 55%),
+      radial-gradient(1000px 700px at 50% 120%, rgba(8,14,34,.9), transparent 70%),
+      linear-gradient(165deg,#0b1226 0%,#0a1022 46%,#070c1c 100%);
+    background-attachment:fixed;
+    min-height:100vh;color:#eaf1ff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(14px,4vh,40px) 16px;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
   }
-  /* 顶栏 */
-  .bar{width:100%;max-width:900px;display:flex;align-items:center;gap:10px;margin-bottom:18px}
-  .bar .lg{width:36px;height:36px;border-radius:10px;background:#fff;box-shadow:0 8px 20px rgba(40,70,140,.2);padding:4px}
-  .bar .lg img{width:100%;height:100%;border-radius:7px}
-  .bar .tt b{font-size:17px;letter-spacing:-.02em;display:block;line-height:1.1}
-  .bar .tt span{font-size:10px;letter-spacing:3.2px;color:#b08a34;font-weight:800}
-  .langs{margin-left:auto;display:flex;gap:5px}
-  .langs button{font:inherit;font-size:12px;background:rgba(255,255,255,.75);border:1px solid rgba(30,50,90,.12);
-    color:#5b6b8c;border-radius:999px;padding:4px 12px;cursor:pointer;transition:.2s}
-  .langs button.on{background:#0c1f46;color:#fff;border-color:transparent;font-weight:700}
-  /* 卡片舞台 */
-  .stage{margin:6px 0 20px;position:relative}
-  .glow{position:absolute;inset:-40px;filter:blur(60px);opacity:.5;pointer-events:none;border-radius:40px;
-    background:radial-gradient(60% 70% at 50% 40%, rgba(47,107,255,.45), rgba(212,175,90,.25) 70%, transparent)}
-  canvas.card{display:block;width:min(660px,94vw);height:auto;border-radius:26px;
-    box-shadow:0 34px 80px -18px rgba(8,22,60,.55),0 0 0 1px rgba(255,255,255,.55) inset;
-    -webkit-tap-highlight-color:transparent}
-  /* 说明行 */
-  .hint{color:#8494ad;font-size:13px;text-align:center;margin-bottom:16px;max-width:640px}
-  /* 控制条 */
-  .ctrl{width:100%;max-width:760px;display:flex;flex-direction:column;align-items:center;gap:14px}
-  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-  .btn{font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:8px;
-    border-radius:14px;padding:11px 22px;cursor:pointer;transition:.25s;border:1px solid rgba(30,50,90,.12);
-    background:rgba(255,255,255,.8);color:#31415f;box-shadow:0 12px 28px -14px rgba(30,60,120,.4)}
-  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px -14px rgba(30,60,120,.5)}
-  .btn.gold{background:linear-gradient(135deg,#e7c873,#c99b3c);color:#241a02;border:none;
-    box-shadow:0 14px 30px -12px rgba(201,155,60,.6)}
-  .btn svg{width:17px;height:17px}
-  .pager{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-  .pager button{font:inherit;font-size:12.5px;font-weight:700;font-family:ui-monospace,Consolas,monospace;
-    color:#43527a;background:rgba(255,255,255,.7);border:1px solid rgba(30,50,90,.14);
-    border-radius:999px;padding:6px 13px;cursor:pointer;transition:.2s}
-  .pager button:hover{border-color:rgba(47,107,255,.4);color:#0c2f7a}
-  .pager button.on{background:linear-gradient(135deg,#0c2f7a,#0ea5c4);color:#fff;border-color:transparent}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
-    background:#0c1f46;color:#fff;font-size:13px;padding:10px 20px;border-radius:12px;opacity:0;transition:.3s;
-    box-shadow:0 12px 30px rgba(8,22,60,.35);z-index:99;pointer-events:none}
+  /* 细网格肌理（极淡） */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(140,170,255,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(140,170,255,.035) 1px,transparent 1px);
+    background-size:44px 44px}
+  /* 卡片下方光面 */
+  .ped{position:relative;margin:10px 0 6px}
+  .ped::before{content:"";position:absolute;left:8%;right:8%;bottom:-34px;height:80px;
+    background:radial-gradient(50% 100% at 50% 0%, rgba(4,8,20,.85), transparent 75%);
+    filter:blur(12px);z-index:-1}
+  canvas{display:block;width:min(680px,94vw);height:auto;border-radius:30px;
+    filter:drop-shadow(0 40px 70px rgba(2,5,16,.75)) drop-shadow(0 6px 18px rgba(2,5,16,.5))}
+  /* 底部极简控件 */
+  .ui{width:min(680px,94vw);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:clamp(16px,4vh,30px)}
+  .pill{font:inherit;font-size:12.5px;color:#c3d2f2;display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(150,180,255,.18);
+    border-radius:999px;padding:7px 15px;cursor:pointer;transition:.25s;backdrop-filter:blur(8px);
+    text-decoration:none}
+  .pill:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(180,205,255,.4)}
+  .pill.gold{background:linear-gradient(135deg,#e7c873,#c89b3c);color:#251a04;font-weight:800;border:none;
+    box-shadow:0 8px 22px -8px rgba(212,175,90,.6)}
+  .pill svg{width:14px;height:14px}
+  .pill.sel{background:rgba(230,200,122,.2);color:#f2d98e;border-color:rgba(230,200,122,.5)}
+  .langs{position:fixed;top:14px;right:16px;display:flex;gap:5px;z-index:20}
+  .langs button{font:inherit;font-size:11.5px;color:#9fb2dd;background:rgba(255,255,255,.04);
+    border:1px solid rgba(150,180,255,.14);border-radius:999px;padding:4px 11px;cursor:pointer;transition:.2s}
+  .langs button.on{color:#241a04;background:linear-gradient(135deg,#e7c873,#c89b3c);border-color:transparent;font-weight:800}
+  .langs button:not(.on):hover{color:#fff}
+  .mark{position:fixed;top:12px;left:16px;display:flex;align-items:center;gap:9px;z-index:20;text-decoration:none}
+  .mark img{width:34px;height:34px;border-radius:9px;background:#fff;padding:3px;box-shadow:0 8px 20px rgba(2,5,16,.5)}
+  .mark b{font-size:15px;letter-spacing:-.02em;color:#eaf1ff;display:block;line-height:1.05}
+  .mark span{font-size:9.5px;letter-spacing:3px;color:#d4af5a;font-weight:800}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);
+    background:#141e38;border:1px solid rgba(212,175,90,.4);color:#f2e3b6;font-size:13px;
+    padding:10px 22px;border-radius:12px;opacity:0;transition:.3s;z-index:99;box-shadow:0 12px 30px rgba(0,0,0,.5)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .foot{margin-top:34px;color:#8494ad;font-size:12.5px;text-align:center;line-height:2}
-  .foot b{color:#43527a}
+  @media (max-width:520px){ .mark span{display:none} }
 </style>
 </head>
 <body>
 
-<div class="bar">
-  <div class="lg"><img id="lgimg" alt="APRSlocus"></div>
-  <div class="tt"><b>APRSlocus</b><span>FIRST MEMBER</span></div>
-  <div class="langs">
-    <button data-lang="zh" onclick="setLang('zh')">简</button>
-    <button data-lang="zh-TW" onclick="setLang('zh-TW')">繁</button>
-    <button data-lang="en" onclick="setLang('en')">EN</button>
-  </div>
+<div class="mark"><img id="lg" alt="APRSlocus"><span><b>APRSlocus</b>FIRST MEMBER</span></div>
+<div class="langs">
+  <button data-lang="zh" onclick="setLang('zh')">简</button>
+  <button data-lang="zh-TW" onclick="setLang('zh-TW')">繁</button>
+  <button data-lang="en" onclick="setLang('en')">EN</button>
 </div>
 
-<div class="stage">
-  <div class="glow"></div>
-  <canvas class="card" id="cv"></canvas>
-</div>
-<p class="hint" id="hint"></p>
+<div class="ped"><canvas id="cv"></canvas></div>
 
-<div class="ctrl">
-  <div class="btns">
-    <button class="btn gold" id="dl" onclick="exportPng()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-      <span data-i18n="export">导出图片</span>
-    </button>
-    <button class="btn" onclick="nextCard()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      <span data-i18n="next">下一位成员</span>
-    </button>
-  </div>
-  <div class="pager" id="pager"></div>
+<div class="ui">
+  <button class="pill gold" onclick="exportPng()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4.2-4.2M12 14 7.8 9.8M5 15.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3.5"/></svg>
+    <span data-i18n="exp">导出高清图</span></button>
+  <button class="pill" onclick="nextCard()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    <span data-i18n="next">下一位</span></button>
+  <span id="pager" style="display:inline-flex;gap:6px;flex-wrap:wrap"></span>
 </div>
 
-<div class="foot">
-  <div><b>APRSlocus</b> · <span data-i18n="f1">FIRST MEMBER · 电波无限，感谢同行</span></div>
-</div>
 <div class="toast" id="toast"></div>
 
 <script>
 const LOGO="data:image/png;base64,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";
-const img=document.getElementById("lgimg"); img.src=LOGO;
+const lgEl=document.getElementById("lg");lgEl.src=LOGO;
+let logoImg=null;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
 
 const MEMBERS=[
- {call:"BG7LZQ",who:{zh:"Darion Dong · 作者","zh-TW":"Darion Dong · 作者",en:"Darion Dong · Author"},
-  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},
-  tag:{zh:"电波起点","zh-TW":"電波起點",en:"Where it began"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#0ea5e9","#2563eb"],no:"0001"},
+ {call:"BG7LZQ",who:{zh:"Darion Dong","zh-TW":"Darion Dong",en:"Darion Dong"},
+  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},accent:"#39c0ff",no:"NO. 0001"},
  {call:"BG2HCB",who:{zh:"清零","zh-TW":"清零",en:"Qing Ling"},
-  role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},
-  tag:{zh:"细节匠人","zh-TW":"細節匠人",en:"Craftsman of detail"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#f59e0b","#d97706"],no:"0002"},
+  role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},accent:"#ffc861",no:"NO. 0002"},
  {call:"BA4UAX",who:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
-  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},
-  tag:{zh:"语言之桥","zh-TW":"語言之橋",en:"Bridge of language"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#14b8a6","#0d9488"],no:"0003"},
+  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},accent:"#59e0c8",no:"NO. 0003"},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
-  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},
-  tag:{zh:"世界之声","zh-TW":"世界之聲",en:"Voice to the world"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#8b5cf6","#7c3aed"],no:"0004"},
+  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},accent:"#bd9bff",no:"NO. 0004"},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  tag:{zh:"收测先锋","zh-TW":"收測先鋒",en:"Testing pioneer"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#10b981","#059669"],no:"0005"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#5ee6a3",no:"NO. 0005"},
  {call:"BG7LMW",who:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  tag:{zh:"实地验证","zh-TW":"實地驗證",en:"On-air validator"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#06b6d4","#0891b2"],no:"0006"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#4fe0ee",no:"NO. 0006"},
  {call:"BG7OSL",who:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  tag:{zh:"细节把关","zh-TW":"細節把關",en:"Gatekeeper of detail"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#ec4899","#db2777"],no:"0007"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#ff86b4",no:"NO. 0007"},
  {call:"BA3RZL",who:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
-  role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},
-  tag:{zh:"算力之光","zh-TW":"算力之光",en:"Light of compute"},
-  words:{zh:"电波无限 · 感谢同行","zh-TW":"電波無限 · 感謝同行",en:"Endless waves · thank you, friends"},
-  g:["#f97316","#ea580c"],no:"0008"}
+  role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},accent:"#ffa45f",no:"NO. 0008"}
 ];
-const I18N={
- "zh":{hint:"APRSlocus 早期成员会员卡 · 点击下方切换成员 · 可导出高清图片保存分享",
-   export:"导出图片",next:"下一位成员",f1:"FIRST MEMBER · 电波无限，感谢同行",saved:"✓ 图片已导出",member:"会员",since:"致电波里的同行"},
- "zh-TW":{hint:"APRSlocus 早期成員會員卡 · 點擊下方切換成員 · 可匯出高清圖片儲存分享",
-   export:"匯出圖片",next:"下一位成員",f1:"FIRST MEMBER · 電波無限，感謝同行",saved:"✓ 圖片已匯出",member:"會員",since:"致電波裡的同行"},
- "en":{hint:"APRSlocus early-member membership card · switch below · export hi-res image",
-   export:"Export image",next:"Next member",f1:"FIRST MEMBER · endless waves, thank you friends",saved:"✓ Image exported",member:"MEMBER",since:"To friends on the air"}
+const TX={
+ "zh":{exp:"导出高清图",next:"下一位",brand:"电波无限 · 感谢同行",since:"致电波里的同行",saved:"✓ 高清图已导出",mem:"F I R S T   M E M B E R"},
+ "zh-TW":{exp:"匯出高清圖",next:"下一位",brand:"電波無限 · 感謝同行",since:"致電波裡的同行",saved:"✓ 高清圖已匯出",mem:"F I R S T   M E M B E R"},
+ "en":{exp:"Export image",next:"Next",brand:"Endless waves · Thank you, friends",since:"To friends on the air",saved:"✓ Image exported",mem:"F I R S T   M E M B E R"}
 };
-
-const W=1200,H=720,SF=1.6; // 逻辑分辨率 + 导出放大
-let lang="zh"; let idx=0; let cur=0;
-const cv=document.getElementById("cv");
-let logoImg=null;
-(function(){const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;})();
-
-function detectLang(){const q=new URLSearchParams(location.search);
- if(q.get("lang"))return q.get("lang");
- const n=(navigator.language||"zh-CN").toLowerCase();
- return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
-function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);syncText();draw();mark();}
+const W=1240,H=760,SF=2;
+let lang="zh",idx=0;const cv=document.getElementById("cv");
+function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
+ const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
+function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();}
 function setCard(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
- const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);draw();mark();}
+ const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();}
 function nextCard(){setCard(idx+1);}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function syncText(){document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(I18N[lang][k]!=null)e.textContent=I18N[lang][k];});
- document.getElementById("hint").textContent=I18N[lang].hint;
- document.documentElement.lang=lang==="zh"?"zh-CN":(lang==="zh-TW"?"zh-Hant":"en");
- document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));}
-function mark(){document.getElementById("pager").innerHTML="";
- MEMBERS.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;
-  if(i===idx)b.classList.add("on");b.onclick=()=>setCard(i);document.getElementById("pager").appendChild(b);});}
-
-function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function ui(){document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
+ document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
+ const p=document.getElementById("pager");p.innerHTML="";
+ MEMBERS.forEach((m,i)=>{const s=document.createElement("span");s.className="pill"+(i===idx?" sel":"");s.textContent=m.call;
+  s.style.cursor="pointer";s.onclick=()=>setCard(i);p.appendChild(s);});
+ document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";}
 function draw(){
  const m=MEMBERS[idx];
- cv.width=W*SF;cv.height=H*SF;
- const c=cv.getContext("2d");c.scale(SF,SF);
+ cv.width=W*SF;cv.height=H*SF;const c=cv.getContext("2d");c.scale(SF,SF);
  c.clearRect(0,0,W,H);
- /* 外描边 */
- rr(c,1.5,1.5,W-3,H-3,24);c.lineWidth=2;c.strokeStyle="rgba(212,175,90,.55)";c.stroke();
- /* 底色：深蓝渐变 + 光斑 */
- const bg=c.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#0a1735");bg.addColorStop(.5,"#0c1f46");bg.addColorStop(1,"#071027");
- c.fillStyle=bg;c.fillRect(2,2,W-4,H-4);
- const r1=c.createRadialGradient(W*.82,H*.12,40,W*.82,H*.12,W*.5);
- r1.addColorStop(0,"rgba(56,189,248,.28)");r1.addColorStop(1,"transparent");
- c.fillStyle=r1;c.fillRect(0,0,W,H);
- const r2=c.createRadialGradient(W*.12,H*.9,30,W*.12,H*.9,W*.42);
- r2.addColorStop(0,"rgba(212,175,90,.22)");r2.addColorStop(1,"transparent");
- c.fillStyle=r2;c.fillRect(0,0,W,H);
- /* 细波线装饰（底部） */
- c.save();c.globalAlpha=.12;c.strokeStyle="#9fd8ff";c.lineWidth=1.5;
- for(let k=0;k<4;k++){c.beginPath();
-   for(let x=40;x<W-40;x+=4){const y=H-(46+k*18)+Math.sin((x+k*80)/46)*4;
-     k===0?c.moveTo(x,y):c.lineTo(x,y);}c.stroke();}c.restore();
- /* 顶部徽标行 */
- const tx=64,ty=62;
- if(logoImg){c.save();
-   rr(c,tx,ty-34,40,40,11);c.fillStyle="#ffffff";c.fill();
-   rr(c,tx,ty-34,40,40,11);c.clip();
-   c.drawImage(logoImg,tx,ty-34,40,40);c.restore();}
- c.fillStyle="#fff";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText("APRSlocus",tx+54,ty-6);
- c.fillStyle="#d4af5a";c.font="700 12px 'Segoe UI',sans-serif";
- c.fillText("F I R S T   M E M B E R",tx+54,ty+12);
- /* 右上：电台图标符号 */
- c.save();c.globalAlpha=.85;c.strokeStyle="#d4af5a";c.lineWidth=2;
- c.beginPath();c.arc(W-130,58,22,0,Math.PI*2);c.stroke();
- c.beginPath();c.arc(W-130,58,13,0,Math.PI*2);c.stroke();
- c.fillStyle="#d4af5a";c.beginPath();c.arc(W-130,58,5,0,Math.PI*2);c.fill();c.restore();
- c.fillStyle="rgba(255,255,255,.75)";c.font="700 13px 'Segoe UI',sans-serif";c.textAlign="right";
- c.fillText("HAM RADIO · APRS",W-94,63);c.textAlign="left";
+ const R=26;
+ /* —— 卡体 —— */
+ rr(c,0,0,W,H,R);c.save();c.clip();
+ /* 底色 */
+ const bg=c.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#17294f");bg.addColorStop(.32,"#0e1c3b");bg.addColorStop(.75,"#0a142e");bg.addColorStop(1,"#060b1c");
+ c.fillStyle=bg;c.fillRect(0,0,W,H);
+ /* 斜向柔光（模拟塑料高光）：左上大光 */
+ const hl=c.createRadialGradient(W*.16,H*.06,30,W*.16,H*.06,W*.75);
+ hl.addColorStop(0,"rgba(210,235,255,.32)");hl.addColorStop(.3,"rgba(150,190,255,.10)");hl.addColorStop(1,"transparent");
+ c.fillStyle=hl;c.fillRect(0,0,W,H);
+ /* 右上气氛色（成员 accent）低透明 */
+ const ar=c.createRadialGradient(W*.86,H*.22,20,W*.86,H*.22,W*.6);
+ ar.addColorStop(0,hexA(m.accent,.30));ar.addColorStop(.55,hexA(m.accent,.05));ar.addColorStop(1,"transparent");
+ c.fillStyle=ar;c.fillRect(0,0,W,H);
+ /* 顶部边缘高光（实体卡棱边） */
+ const etop=c.createLinearGradient(0,0,0,26);etop.addColorStop(0,"rgba(255,255,255,.55)");etop.addColorStop(.5,"rgba(255,255,255,.10)");etop.addColorStop(1,"transparent");
+ c.fillStyle=etop;c.fillRect(0,0,W,26);
+ /* 细暗纹：极淡斜线 */
+ c.save();c.globalAlpha=.05;c.strokeStyle="#000";c.lineWidth=1;
+ for(let x=-H;x<W+H;x+=22){c.beginPath();c.moveTo(x,0);c.lineTo(x+H,H);c.stroke();}c.restore();
+ /* 底部斜向深色渐变增加纵深 */
+ const eb=c.createLinearGradient(0,H-120,0,H);eb.addColorStop(0,"transparent");eb.addColorStop(1,"rgba(0,0,0,.34)");
+ c.fillStyle=eb;c.fillRect(0,H-120,W,120);
 
- /* 中部：芯片 + 呼号 */
- const cy=H*.52;
- /* 芯片 */
+ /* 点状颗粒（金属磨砂） */
+ c.save();c.globalAlpha=.05;c.fillStyle="#fff";
+ for(let k=0;k<520;k++){c.fillRect((Math.random()*W)|0,(Math.random()*H)|0,1,1);}c.restore();
+
+ /* 左下：金色圆标（雷达/73） */
+ const ox=76,oy=H-92,Ro=46;
  c.save();
- const chip=c.createLinearGradient(72,cy-52,120,cy-4);chip.addColorStop(0,"#e7c873");chip.addColorStop(1,"#a97c2c");
- c.fillStyle=chip;c.fill();
- c.strokeStyle="rgba(90,60,10,.35)";c.lineWidth=1;c.stroke();
- c.beginPath();c.moveTo(103,cy-52);c.lineTo(103,cy-4);c.stroke();
- c.beginPath();c.moveTo(72,cy-30);c.lineTo(134,cy-30);c.stroke();
- c.beginPath();c.moveTo(72,cy-16);c.lineTo(134,cy-16);c.stroke();
+ const ring=c.createLinearGradient(ox-Ro,oy-Ro,ox+Ro,oy+Ro);ring.addColorStop(0,"#e9cd80");ring.addColorStop(1,"#9c7626");
+ c.fillStyle=ring;c.beginPath();c.arc(ox,oy,Ro,0,Math.PI*2);c.fill();
+ c.strokeStyle="rgba(60,40,5,.55)";c.lineWidth=1;c.stroke();
+ /* 圆内：深蓝底 + 信号 */
+ c.beginPath();c.arc(ox,oy,Ro-7,0,Math.PI*2);c.fillStyle="#0a142e";c.fill();
+ c.strokeStyle="rgba(233,205,128,.9)";c.lineWidth=1.6;
+ c.beginPath();c.arc(ox,oy,14,0,Math.PI*2);c.stroke();
+ c.beginPath();c.arc(ox,oy,22,-.3,Math.PI*2+.3);c.stroke();
+ c.fillStyle="#e9cd80";c.font="800 15px 'Segoe UI',sans-serif";c.textAlign="center";c.textBaseline="middle";
+ c.fillText("73",ox,oy+1);c.textBaseline="alphabetic";c.textAlign="left";
  c.restore();
- /* 联系人样式符号 */
- c.save();c.strokeStyle="rgba(255,255,255,.5)";c.lineWidth=2;
- [[0,.35],[1.4,.6],[2.8,.85]].forEach(([a,b])=>{c.beginPath();c.arc(158,cy-24,9+b*10,-a*Math.PI,a*Math.PI);c.stroke();});
+ /* 左下：编号 + 发行行 */
+ c.fillStyle="#e6c87a";c.font="800 30px 'Consolas',ui-monospace,monospace";
+ c.fillText(m.no,152,H-86);
+ c.fillStyle="rgba(230,200,122,.55)";c.font="600 13px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText((m.who[lang]||m.who.zh)+" · "+(m.role[lang]||m.role.zh),152,H-62);
+
+ /* 中部主呼号（凸印：多层） */
+ const callX=76, callY=260;
+ const mono="'Consolas','Menlo',ui-monospace,monospace";
+ c.font="900 118px "+mono;
+ c.textBaseline="alphabetic";
+ /* 阴影层 */
+ c.fillStyle="rgba(0,0,0,.55)";c.fillText(m.call,callX+3,callY+5);
+ /* 主字金渐变 */
+ const gc=c.createLinearGradient(callX,callY-110,callX+300,callY);
+ gc.addColorStop(0,"#fdf3d0");gc.addColorStop(.45,"#e7c87c");gc.addColorStop(1,"#a97c2e");
+ c.fillStyle=gc;c.fillText(m.call,callX,callY);
+ /* 高光：顶部细浅色 */
+ c.save();c.globalAlpha=.55;c.strokeStyle="#fff6dd";c.lineWidth=2;
+ c.strokeText(m.call,callX,callY);c.restore();
+ /* 底部暗线加重浮雕 */
+ c.save();c.globalAlpha=.4;c.strokeStyle="#241703";c.lineWidth=4;
+ c.strokeText(m.call,callX,callY);c.restore();
+
+ /* 成员 accent 细分隔线 */
+ c.fillStyle=hexA(m.accent,.8);
+ c.fillRect(callX,callY+16,118,3);
+
+ /* 右上 logo 章 */
+ const lx=W-96,ly=86,LR=40;
+ if(logoImg){c.save();
+  rr(c,lx-LR,ly-LR,LR*2,LR*2,LR);c.fillStyle="#ffffff";c.fill();
+  rr(c,lx-LR,ly-LR,LR*2,LR*2,LR);c.clip();
+  c.drawImage(logoImg,lx-LR,ly-LR,LR*2,LR*2);c.restore();}
+ /* 右上文字 */
+ c.textAlign="right";c.fillStyle="#fff";c.font="800 25px 'Segoe UI','PingFang SC',sans-serif";
+ c.fillText("APRSlocus",W-88,80);
+ c.fillStyle="#d4af5a";c.font="700 12.5px 'Segoe UI',sans-serif";
+ c.fillText(TX[lang].mem,W-88,102);c.textAlign="left";
+ /* 右侧竖排小呼号（装饰） */
+ c.save();c.globalAlpha=.22;c.fillStyle="#fff";c.font="700 15px Consolas,monospace";
+ c.translate(W-66,H-100);c.rotate(-Math.PI/2);c.fillText(m.call+" · HAM RADIO · APRS",0,0);c.restore();
+
+ /* 底部中央：品牌寄语 */
+ c.textAlign="center";c.fillStyle="rgba(233,205,128,.92)";c.font="600 16px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText(TX[lang].brand,W/2,H-40);c.textAlign="left";
+
+ /* 右下发卡信息（小） */
+ c.textAlign="right";c.fillStyle="rgba(220,235,255,.5)";c.font="600 12px 'PingFang SC',sans-serif";
+ c.fillText(TX[lang].since+"  ·  EST. 2025",W-78,H-40);
  c.restore();
-
- /* 呼号大字 */
- c.fillStyle="#fff";
- c.font="900 96px 'Consolas','Menlo',ui-monospace,monospace";
- const callW=c.measureText(m.call).width;
- c.fillText(m.call,72,cy+44);
- /* 名称 */
- c.fillStyle="rgba(255,255,255,.88)";c.font="600 26px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(m.who[lang]||m.who.zh,74,cy+92);
- /* 角色徽章 */
- const role=m.role[lang]||m.role.zh;
- c.font="700 17px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
- c.save();const gc=c.createLinearGradient(74,cy+108,74+rw+44,cy+108);gc.addColorStop(0,m.g[0]);gc.addColorStop(1,m.g[1]);
- c.fillStyle=gc;rr(c,74,cy+110,rw+44,36,18);c.fill();c.restore();
- c.fillStyle="#fff";c.textAlign="center";c.fillText(role,96+rw/2,cy+134);c.textAlign="left";
-
- /* 底部编号 + 寄语 */
- c.fillStyle="rgba(255,255,255,.92)";c.font="800 34px 'Consolas',monospace";
- c.fillText("NO."+m.no,72,H-58);
- c.fillStyle="#d4af5a";c.font="700 16px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(m.words[lang]||m.words.zh,72,H-28);
- /* 右下标：member 铭牌 */
- const tag=m.tag[lang]||m.tag.zh;
- c.font="700 15px 'PingFang SC',sans-serif";const tw=c.measureText(tag).width;
- c.save();rr(c,W-72-tw-34,H-72,tw+34,30,15);c.strokeStyle="rgba(212,175,90,.7)";c.lineWidth=1.5;c.stroke();c.restore();
- c.fillStyle="#d4af5a";c.textAlign="right";c.fillText(tag,W-86,H-51);c.textAlign="left";
- /* 右下角小字会员 */
- c.fillStyle="rgba(255,255,255,.45)";c.font="600 12px 'Segoe UI',sans-serif";
- c.textAlign="right";c.fillText(I18N[lang].member+" · "+I18N[lang].since,W-86,H-34);c.textAlign="left";
+ /* 外描边 */
+ rr(c,.5,.5,W-1,H-1,R);c.strokeStyle="rgba(255,255,255,.35)";c.lineWidth=1;c.stroke();
 }
-function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800);}
-function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(I18N[lang].saved);}
-
-/* init */
-lang=detectLang();
-const q=new URLSearchParams(location.search).get("call");
-const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(q||"").toUpperCase());if(fi>=0)idx=fi;
-mark();syncText();draw();
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);
+ return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1700);}
+function exportPng(){const a=document.createElement("a");
+ a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";
+ a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
+lang=detect();
+const qc=new URLSearchParams(location.search).get("call");
+const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
+ui();
 </script>
 </body>
 </html>
