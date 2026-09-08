@@ -146,54 +146,54 @@ function draw(){
  c.fillStyle=m.c;c.fillRect(P,P,W-P*2,5);
 
  /* ── 顶部 · 发行方 & 徽标 ── */
- const tx=58, ty=46, lw=40;
- if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,12);c.fillStyle="#fff";c.strokeStyle="#eceff6";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,12);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
- c.fillStyle="#16203a";c.font="800 19px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+14,ty-2);
- c.fillStyle="#98a1b4";c.font="600 9.5px 'Segoe UI','PingFang SC',sans-serif";
- c.save();c.letterSpacing="2px";c.fillText(TX[lang].sub.toUpperCase(),tx+lw+14,ty+16);c.restore();
+ const tx=58, ty=52, lw=46;
+ if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,13);c.fillStyle="#fff";c.strokeStyle="#e7eaf2";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,13);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
+ c.fillStyle="#141e38";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+16,ty+2);
+ c.fillStyle="#8b95a9";c.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
+ c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].sub.toUpperCase(),tx+lw+16,ty+26);c.restore();
 
  /* 右上角 FIRST MEMBER 胶囊 */
  const cap=TX[lang].early;
- c.font="700 12px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
- c.save();rr(c,W-58-capW-26,26,capW+26,30,15);c.fillStyle=hexA(m.c,.14);c.fill();
- c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-13,47);c.textAlign="left";c.restore();
- c.fillStyle="#9aa3b7";c.font="600 10.5px Consolas,monospace";c.textAlign="right";
- c.fillText(m.num.toString().padStart(2,"0")+" / "+MEMBERS.length.toString().padStart(2,"0"),W-58,92);c.textAlign="left";
+ c.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
+ c.save();rr(c,W-58-capW-30,24,capW+30,36,18);c.fillStyle=hexA(m.c,.15);c.fill();
+ c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,48);c.textAlign="left";c.restore();
+ c.fillStyle="#8b95a9";c.font="700 14px Consolas,monospace";c.textAlign="right";
+ c.fillText(m.num.toString().padStart(2,"0")+" / "+MEMBERS.length.toString().padStart(2,"0"),W-58,100);c.textAlign="left";
 
  /* 细顶分隔 */
- c.fillStyle="#f0f2f7";c.fillRect(58,116,W-116,1);
+ c.fillStyle="#eef1f7";c.fillRect(58,132,W-116,1);
 
  /* ── 中部 · 呼号区 ── */
- const cx=58, cy0=252;
+ const cx=58, cy0=278;
  /* 身份行小字：APRSlocus 早期成员 */
- c.save();c.letterSpacing="3px";c.fillStyle="#9aa3b7";c.font="600 12px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText(TX[lang].early.toUpperCase(),cx,cy0-64);c.restore();
+ c.save();c.letterSpacing="2.5px";c.fillStyle="#8b95a9";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
+ c.fillText(TX[lang].early.toUpperCase(),cx,cy0-102);c.restore();
  /* 大呼号 */
- c.fillStyle="#101a30";c.font="800 92px 'SF Mono','Consolas',ui-monospace,monospace";
- c.fillText(m.call,cx,cy0+6);
+ c.fillStyle="#0d1426";c.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";
+ c.fillText(m.call,cx,cy0+2);
  /* accent 短线 */
- c.fillStyle=m.c;c.fillRect(cx,cy0+34,56,3);
+ c.fillStyle=m.c;c.fillRect(cx,cy0+56,72,4);
  /* 姓名 + 角色 */
- c.fillStyle="#1b253c";c.font="600 22px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who[lang]||m.who.zh,cx,cy0+88);
+ c.fillStyle="#182238";c.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who[lang]||m.who.zh,cx,cy0+128);
  /* 角色胶囊 */
  const role=m.role[lang]||m.role.zh;
- c.font="600 13px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
- c.save();rr(c,cx,cy0+106,rw+24,27,13.5);c.fillStyle="#f2f4f9";c.fill();c.restore();
- c.fillStyle="#5a657c";c.fillText(role,cx+12,cy0+125);
+ c.font="600 17px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
+ c.save();rr(c,cx,cy0+150,rw+30,34,17);c.fillStyle="#f2f4f9";c.fill();c.restore();
+ c.fillStyle="#4c5770";c.fillText(role,cx+15,cy0+172);
  /* 一句贡献简介 */
- c.fillStyle="#98a1b4";c.font="500 14.5px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText("“"+(m.brief[lang]||m.brief.zh)+"”",cx,cy0+168);
+ c.fillStyle="#7c8699";c.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText("“"+(m.brief[lang]||m.brief.zh)+"”",cx,cy0+236);
 
  /* 右侧竖排装饰字（克制的 APRSlocus 标识） */
- c.save();c.globalAlpha=.5;c.fillStyle="#c9d0dd";c.font="600 11px Consolas,monospace";
+ c.save();c.globalAlpha=.5;c.fillStyle="#c9d0dd";c.font="600 14px Consolas,monospace";
  c.translate(W-52,H-120);c.rotate(-Math.PI/2);c.fillText("APRSLOCUS · FIRST MEMBER · 73",0,0);c.restore();
 
  /* ── 底部 · 极简一行：左序号 / 右寄语 ── */
- c.fillStyle="#eef0f6";c.fillRect(58,H-66,W-116,1);
- c.fillStyle="#c3cbd8";c.font="600 13px Consolas,monospace";
- c.fillText("# "+m.num.toString().padStart(2,"0"),58,H-36);
- c.fillStyle="#9aa3b7";c.font="500 13px 'PingFang SC','Segoe UI',sans-serif";
- c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-36);c.textAlign="left";
+ c.fillStyle="#eef0f6";c.fillRect(58,H-82,W-116,1);
+ c.fillStyle="#9aa4b8";c.font="700 18px Consolas,monospace";
+ c.fillText("# "+m.num.toString().padStart(2,"0"),58,H-44);
+ c.fillStyle="#7c8699";c.font="500 17px 'PingFang SC','Segoe UI',sans-serif";
+ c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-44);c.textAlign="left";
  c.restore();
  /* 外细边 */
  rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
