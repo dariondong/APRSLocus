@@ -340,7 +340,7 @@ class HonorBadge extends StatelessWidget {
   }
 
   void _showHonorWall(BuildContext context, String call) {
-    // 打开独立「荣誉墙」专属页面
+    // 进入 App 内荣誉墙页面（徽章+成就），其中点具体徽章再跳官网徽章页
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => HonorWallPage(call)),
     );
