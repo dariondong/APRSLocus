@@ -1,6 +1,6 @@
 # 更新日志
 
-## [Unreleased]
+## [1.6.28] - 2026-09-08
 
 ### ✨ 新增
 - **地图新增「Carto Positron（浅色矢量）」底图**：设置 → 显示 → 地图类型新增 CARTO Positron 观感的矢量底图（WGS-84），与现有矢量地图（OpenFreeMap Liberty）并存可随时切换；矢量底图 style 按图源分别缓存，切换风格时热重载、不重复下载
