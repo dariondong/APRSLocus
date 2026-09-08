@@ -4,56 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APRSlocus · FIRST MEMBER</title>
-<meta name="description" content="APRSlocus FIRST MEMBER 早期成员 · 电波无限，感谢同行">
+<meta name="description" content="APRSlocus FIRST MEMBER 早期成员纪念档案">
 <meta property="og:title" content="APRSlocus FIRST MEMBER">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{min-height:100vh;font-family:"Inter","PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
-    color:#131c30;display:flex;flex-direction:column;align-items:center;
-    background:linear-gradient(165deg,#fafbfe,#f0f2f8 55%,#eceff6);
-    -webkit-font-smoothing:antialiased;padding:clamp(18px,4vh,44px) 14px 50px}
-  .top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;z-index:30}
+    background:linear-gradient(165deg,#fafbfd,#eef0f6 55%,#e9ecf4);color:#101a30;
+    -webkit-font-smoothing:antialiased}
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;background:rgba(244,246,251,.7);backdrop-filter:blur(8px);border-bottom:1px solid rgba(30,50,90,.06)}
   .brand{display:flex;align-items:center;gap:9px;text-decoration:none}
-  .brand img{width:26px;height:26px;border-radius:7px;background:#fff;box-shadow:0 4px 10px rgba(20,30,60,.14)}
-  .brand b{font-size:14.5px;color:#131c30}
+  .brand img{width:26px;height:26px;border-radius:7px;background:#fff;box-shadow:0 4px 10px rgba(20,30,60,.12)}
+  .brand b{font-size:14px;color:#141c30}
   .langs{display:flex;gap:3px}
-  .langs button{font:inherit;font-size:12px;color:#8b95aa;background:transparent;border:0;border-radius:8px;padding:4px 9px;cursor:pointer}
-  .langs button.on{color:#131c30;font-weight:700;background:#fff;box-shadow:0 2px 8px rgba(20,35,70,.08)}
-  .langs button:not(.on):hover{color:#131c30}
-  .wrap{width:100%;max-width:720px;margin-top:clamp(30px,8vh,64px);display:flex;flex-direction:column;align-items:center}
-  /* 会员卡 */
-  canvas.card{width:100%;max-width:660px;height:auto;border-radius:22px;
-    box-shadow:0 30px 70px -26px rgba(18,32,64,.42),0 3px 10px rgba(18,32,64,.07)}
-  /* 卡下控件 */
-  .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:18px;flex-wrap:wrap}
-  .ct{font:inherit;font-size:13.5px;color:#39435e;background:#fff;border:1px solid #e4e8f1;border-radius:10px;padding:8px 15px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;box-shadow:0 4px 14px -6px rgba(20,35,70,.18)}
-  .ct:hover{border-color:#c9d3e6}
+  .langs button{font:inherit;font-size:12.5px;color:#7b879d;background:transparent;border:0;border-radius:8px;padding:4px 10px;cursor:pointer}
+  .langs button.on{color:#10192e;font-weight:700;background:#fff;box-shadow:0 2px 8px rgba(20,35,70,.07)}
+  .wrap{max-width:760px;margin:0 auto;padding:clamp(22px,6vh,56px) 16px 8px;display:flex;flex-direction:column;align-items:center}
+  canvas{display:block;width:100%;max-width:720px;height:auto;border-radius:22px;
+    box-shadow:0 30px 70px -32px rgba(20,35,70,.45),0 2px 10px rgba(20,35,70,.05)}
+  /* 资料区 */
+  .profile{margin-top:34px;width:100%;max-width:720px;background:rgba(255,255,255,.85);
+    border:1px solid rgba(30,50,90,.08);border-radius:20px;padding:clamp(20px,4vw,34px);box-shadow:0 18px 44px -30px rgba(20,35,70,.4)}
+  .p-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .p-num{flex:0 0 auto;width:52px;height:52px;border-radius:15px;color:#fff;font:800 17px Consolas,monospace;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(20,35,70,.2)}
+  .p-id{min-width:0}
+  .p-call{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,'SF Mono',Consolas,monospace;line-height:1.1}
+  .p-who{color:#6a7590;font-size:14px;margin-top:4px}
+  .p-role{margin-left:auto;font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:999px;flex-shrink:0}
+  .p-hr{height:1px;background:rgba(30,50,90,.08);margin:22px 0}
+  .p-sec h4{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2.5px;color:#8b95a9;font-weight:700;margin-bottom:10px}
+  .p-sec h4::after{content:"";flex:1;height:1px;background:rgba(30,50,90,.06)}
+  .p-sec p{color:#303d58;font-size:15.5px;line-height:1.95}
+  .p-quote{display:flex;gap:12px;margin-top:20px;padding:14px 18px;border-radius:14px;background:#f7f9fd;border-left:3px solid}
+  .p-quote .qm{font-size:20px;line-height:1;color:#c9d0dd;font-family:Georgia,serif;flex:0 0 auto}
+  .p-quote p{color:#44506b;font-size:14.5px;line-height:1.8;font-style:italic}
+  .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .tag{font-size:12px;font-weight:600;color:#54617c;background:#eef1f8;border-radius:999px;padding:5px 13px}
+  .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:26px;flex-wrap:wrap}
+  .ct{font:inherit;font-size:14px;color:#39435e;background:transparent;border:0;border-radius:11px;padding:10px 17px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+  .ct:hover{background:#fff;box-shadow:0 4px 12px rgba(20,35,70,.08)}
   .ct svg{width:15px;height:15px}
-  .ct.prim{font-weight:700;color:#fff;background:#16213b;border-color:#16213b;box-shadow:0 10px 24px -10px rgba(20,30,55,.6)}
+  .ct.prim{font-weight:700;color:#fff;background:#16213b;box-shadow:0 12px 24px -14px rgba(20,30,55,.8)}
   .ct.prim:hover{background:#0f1830}
-  .sep{width:1px;height:20px;background:#dde2ec;margin:0 8px}
-  .calls{display:inline-flex;gap:2px;flex-wrap:wrap}
-  .calls button{font:inherit;font-size:12px;font-family:ui-monospace,'SF Mono',Consolas,monospace;color:#96a0b4;background:transparent;border:0;border-radius:8px;padding:5px 8px;cursor:pointer}
-  .calls button.on{color:#131c30;background:#fff;font-weight:700;box-shadow:0 2px 8px rgba(20,35,70,.08)}
-  .calls button:not(.on):hover{color:#131c30}
-  /* 下方资料区 */
-  .profile{width:100%;max-width:660px;background:#fff;border:1px solid #e9ecf4;border-radius:22px;
-    margin-top:22px;padding:30px clamp(20px,5vw,38px) 28px;box-shadow:0 16px 44px -30px rgba(18,32,64,.4)}
-  .p-call{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .p-call .c1{font-family:'SF Mono',ui-monospace,Consolas,monospace;font-size:30px;font-weight:900;letter-spacing:.5px}
-  .p-call .c2{font-size:16px;font-weight:700;color:#3a445e}
-  .p-role{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;color:#fff;background:#16213b;border-radius:999px;padding:5px 14px}
-  .p-num{margin-left:8px;font-size:12px;font-weight:700;font-family:Consolas,monospace;color:#97a2b8}
-  .p-brief{margin-top:18px;font-size:15.5px;line-height:1.9;color:#31405e}
-  .p-words{margin-top:16px;border-left:3px solid #dfe4ee;padding:2px 0 2px 16px;color:#8490a8;font-size:14px;line-height:1.85}
-  .p-div{height:1px;background:#eff1f7;margin:20px 0 16px}
-  .p-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#97a2b8;font-size:12px}
-  .p-foot b{color:#4a5670;font-size:12.5px}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;
-    font-size:12.5px;padding:10px 20px;border-radius:10px;opacity:0;transition:.28s;z-index:60}
+  .sep{width:1px;height:20px;background:#d7dbe6;margin:0 8px}
+  .calls{display:inline-flex;gap:3px;flex-wrap:wrap;justify-content:center}
+  .calls button{font:inherit;font-size:12.5px;font-family:ui-monospace,Consolas,monospace;color:#98a1b4;
+    background:transparent;border:0;border-radius:9px;padding:6px 9px;cursor:pointer}
+  .calls button.on{color:#10192e;background:#fff;font-weight:700;box-shadow:0 3px 10px rgba(20,35,70,.1)}
+  .calls button:not(.on):hover{color:#10192e}
+  .foot{margin:34px 0 30px;color:#9aa3b6;font-size:12.5px;text-align:center}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;
+    font-size:13px;padding:10px 20px;border-radius:11px;opacity:0;transition:.28s;z-index:60;box-shadow:0 12px 30px rgba(0,0,0,.4)}
   .toast.show{opacity:1;transform:translateX(-50%)}
-  @media(max-width:540px){.top{position:static;margin-bottom:4px}.wrap{margin-top:10px}.p-call .c1{font-size:25px}}
+  @media(max-width:520px){.p-role{margin-left:0}.p-head{gap:13px}}
 </style>
 </head>
 <body>
@@ -67,8 +72,8 @@
 </div>
 
 <div class="wrap">
-  <canvas class="card" id="cv"></canvas>
-
+  <canvas id="cv"></canvas>
+  <section class="profile" id="profile"></section>
   <div class="ctrl">
     <button class="ct prim" onclick="exportPng()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
@@ -79,22 +84,8 @@
     <span class="sep"></span>
     <span class="calls" id="calls"></span>
   </div>
-
-  <!-- 成员资料区 -->
-  <div class="profile">
-    <div class="p-call"><span class="c1" id="pCall"></span><span class="c2" id="pWho"></span>
-      <span class="p-num" id="pNum"></span></div>
-    <div class="p-role" id="pRole"></div>
-    <div class="p-brief" id="pBrief"></div>
-    <div class="p-words" id="pWords"></div>
-    <div class="p-div"></div>
-    <div class="p-foot">
-      <span><b>APRSlocus</b> <span data-i18n="foot">· 电波无限，感谢同行</span></span>
-      <span>FIRST MEMBER</span>
-    </div>
-  </div>
+  <div class="foot" data-i18n="foot">APRSlocus · 电波无限，感谢同行</div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -102,60 +93,98 @@ const LOGO="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAA
 const MEMBERS=[
  {call:"BG7LZQ",who:{zh:"Darion Dong","zh-TW":"Darion Dong",en:"Darion Dong"},
   role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},
-  brief:{zh:"APRSlocus 的作者与全栈开发者，写下第一行代码，让这款 APRS 定位追踪应用从理想变成电波。","zh-TW":"APRSlocus 的作者與全棧開發者，寫下第一行程式，讓這款 APRS 定位追蹤應用從理想變成電波。",en:"Author and full-stack developer of APRSlocus. He wrote the first line of code that turned this APRS tracker from an idea into radio waves."},
-  words:{zh:"愿这片电波里的星光，能一直为每一位同好亮着。","zh-TW":"願這片電波裡的星光，能一直為每一位同好亮著。",en:"May the stars in these waves keep shining for every fellow ham."},
+  brief:{zh:"让 APRSlocus 从理想变成电波","zh-TW":"讓 APRSlocus 從理想變成電波",en:"Turned APRSlocus from idea into radio waves"},
+  contrib:{zh:"创建并全栈开发 APRSlocus：从 APRS-IS 接入、地图引擎，到消息与信标体系，独立完成 Android / Windows 双端，并将项目开源给全球业余无线电爱好者。",
+           "zh-TW":"創建並全棧開發 APRSlocus：從 APRS-IS 接入、地圖引擎，到訊息與信標體系，獨立完成 Android / Windows 雙端，並將項目開源給全球業餘無線電愛好者。",
+           en:"Founded and built APRSlocus end-to-end — APRS-IS feed, map engines, messaging and beacon systems — for Android and Windows, then opened it to hams worldwide."},
+  quote:{zh:"愿这串呼号，永远在地图上闪着光。","zh-TW":"願這串呼號，永遠在地圖上閃著光。",en:"May this callsign always shine on the map."},
+  tags:{zh:["全栈开发","APRS 接入","开源"],"zh-TW":["全棧開發","APRS 接入","開源"],en:["Full-stack","APRS feed","Open source"]},
   c:"#3b6ef5",num:1},
  {call:"BG2HCB",who:{zh:"清零","zh-TW":"清零",en:"Qing Ling"},
   role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},
-  brief:{zh:"深度参与设置页代码优化，把纷繁的配置收束成顺手好用的样子，让每个开关都恰到好处。","zh-TW":"深度參與設置頁代碼優化，把紛繁的配置收束成順手好用的樣子，讓每個開關都恰到好處。",en:"Deeply refined the settings code, taming complex options into something intuitive where every toggle lands just right."},
-  words:{zh:"细节之处，最见功夫。","zh-TW":"細節之處，最見功夫。",en:"Craft always lives in the details."},
+  brief:{zh:"把设置收束成顺手的样子","zh-TW":"把設置收束成順手的樣子",en:"Tamed the settings into something intuitive"},
+  contrib:{zh:"重构设置页交互与代码结构，让众多开关、分页与提示在手机与桌面上都清晰顺手，显著降低上手门槛。",
+           "zh-TW":"重構設置頁交互與程式碼結構，讓眾多開關、分頁與提示在手機與桌面上都清晰順手，顯著降低上手門檻。",
+           en:"Rebuilt the settings experience and its code so every toggle, tab and hint feels clear on phone and desktop — and much easier to get started."},
+  quote:{zh:"把复杂留给自己，把简单留给同好。","zh-TW":"把複雜留給自己，把簡單留給同好。",en:"Keep complexity to yourself; leave simplicity to the community."},
+  tags:{zh:["设置体验","代码重构"],"zh-TW":["設置體驗","代碼重構"],en:["Settings UX","Refactor"]},
   c:"#0e9f8b",num:2},
  {call:"BA4UAX",who:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
-  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},
-  brief:{zh:"负责繁体中文界面翻译，让更多使用繁体中文的业余无线电同好能顺畅地读懂并爱上 APRSlocus。","zh-TW":"負責繁體中文介面翻譯，讓更多使用繁體中文的業餘無線電同好能順暢地讀懂並愛上 APRSlocus。",en:"Translated the app into Traditional Chinese, helping more hams read and enjoy APRSlocus with ease."},
-  words:{zh:"语言是电波的另一副天线。","zh-TW":"語言是電波的另一副天線。",en:"Language is another antenna for radio."},
+  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese translation"},
+  brief:{zh:"让繁体中文同好读懂它","zh-TW":"讓繁體中文同好讀懂它",en:"Made it readable for Traditional-Chinese hams"},
+  contrib:{zh:"完成整套界面的繁体中文翻译与本地化打磨，让港台澳与海外繁体用户都能顺畅使用 APRSlocus。",
+           "zh-TW":"完成整套介面的繁體中文翻譯與本地化打磨，讓港台澳與海外繁體使用者都能順暢使用 APRSlocus。",
+           en:"Delivered the full Traditional-Chinese translation and localization polish, so hams in Hong Kong, Taiwan and beyond can use APRSlocus with ease."},
+  quote:{zh:"多一种语言，就多一群在电波里相逢的朋友。","zh-TW":"多一種語言，就多一群在電波裡相逢的朋友。",en:"One more language, one more circle of friends on the air."},
+  tags:{zh:["繁体中文","本地化"],"zh-TW":["繁體中文","本地化"],en:["Traditional Chinese","L10n"]},
   c:"#6269e6",num:3},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
   role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},
-  brief:{zh:"完成英文翻译并参与功能测试，把 APRSlocus 讲给世界听，也让世界的信号传回这里。","zh-TW":"完成英文翻譯並參與功能測試，把 APRSlocus 講給世界聽，也讓世界的訊號傳回這裡。",en:"Handled English translation and testing — telling APRSlocus' story to the world and bringing its signal home."},
-  words:{zh:"你架起的，是跨过语言与海面的中继。","zh-TW":"你架起的，是跨過語言與海面的中繼。",en:"You built a relay across languages and oceans."},
+  brief:{zh:"把 APRSlocus 讲给世界","zh-TW":"把 APRSlocus 講給世界",en:"Told APRSlocus' story to the world"},
+  contrib:{zh:"推进英文国际化与多轮真实测试，提交详细反馈，协助完善台站与消息流程。",
+           "zh-TW":"推進英文國際化與多輪真實測試，提交詳細回饋，協助完善台站與訊息流程。",
+           en:"Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows."},
+  quote:{zh:"让世界听见我们的信标。","zh-TW":"讓世界聽見我們的信標。",en:"Let the world hear our beacons."},
+  tags:{zh:["英文翻译","质量测试"],"zh-TW":["英文翻譯","品質測試"],en:["English","QA"]},
   c:"#8a5cf0",num:4},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
   role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  brief:{zh:"参与早期功能测试，一遍遍发射与收测，把藏在角落的问题一个个找出来，让应用更可靠。","zh-TW":"參與早期功能測試，一遍遍發射與收測，把藏在角落的問題一個個找出來，讓應用更可靠。",en:"Tested early builds with beacon after beacon, flushing hidden issues from every corner to make the app rock-solid."},
-  words:{zh:"严谨与耐心，是测试者的浪漫。","zh-TW":"嚴謹與耐心，是測試者的浪漫。",en:"Rigor and patience — a tester's quiet romance."},
+  brief:{zh:"一遍遍把 bug 揪出来","zh-TW":"一遍遍把 bug 揪出來",en:"Flushed bugs out of every corner"},
+  contrib:{zh:"长期参与真实环境收测，反馈定位、地图与连接稳定性问题，帮助开发快速定位并修复。",
+           "zh-TW":"長期參與真實環境收測，回饋定位、地圖與連線穩定性問題，幫助開發快速定位並修復。",
+           en:"Long-time on-air tester who reported real-world issues across GPS, maps and connectivity — helping fixes land fast."},
+  quote:{zh:"每一份 bug 报告，都是让产品变好的电波。","zh-TW":"每一份 bug 報告，都是讓產品變好的電波。",en:"Every bug report is a signal that makes the product better."},
+  tags:{zh:["功能测试","Bug 反馈"],"zh-TW":["功能測試","Bug 回饋"],en:["Testing","Bug reports"]},
   c:"#0da46b",num:5},
  {call:"BG7LMW",who:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
   role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  brief:{zh:"在真实电台上验证每个功能，认真得让人安心，为每一次稳定运行提供了一手数据支撑。","zh-TW":"在真實電台上驗證每個功能，認真得讓人安心，為每一次穩定運行提供了一手數據支撐。",en:"Validated every feature on real gear with reassuring care, backing each stable release with first-hand data."},
-  words:{zh:"每一份数据里，都有你对品质的坚持。","zh-TW":"每一份數據裡，都有你對品質的堅持。",en:"Quality you could feel in every data point."},
+  brief:{zh:"在真实电台上验证功能","zh-TW":"在真實電台上驗證功能",en:"Validated every feature on real gear"},
+  contrib:{zh:"在多台真实设备上逐项验证移动、信标、消息等场景，为每个发版守住质量关口。",
+           "zh-TW":"在多台真實設備上逐項驗證移動、信標、訊息等場景，為每個發版守住品質關口。",
+           en:"Validated beaconing, mobility and messaging across real devices — guarding quality before every release."},
+  quote:{zh:"用真实电台说话，用认真态度测试。","zh-TW":"用真實電台說話，用認真態度測試。",en:"Speak with real radios; test with real care."},
+  tags:{zh:["功能测试","实机验证"],"zh-TW":["功能測試","實機驗證"],en:["Testing","On-device"]},
   c:"#0a9fb4",num:6},
  {call:"BG7OSL",who:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
   role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  brief:{zh:"从定位到消息、从地图到细节，事无巨细的反馈一路推动 APRSlocus 持续变好。","zh-TW":"從定位到訊息、從地圖到細節，鉅細靡遺的回饋一路推動 APRSlocus 持續變好。",en:"From fixes to messages to map details, meticulous feedback kept pushing APRSlocus forward every step of the way."},
-  words:{zh:"谢谢你的每一次较真。","zh-TW":"謝謝你的每一次較真。",en:"Thank you for caring so much."},
+  brief:{zh:"事无巨细推动它变好","zh-TW":"鉅細靡遺推動它變好",en:"Pushed it forward with meticulous feedback"},
+  contrib:{zh:"细致覆盖定位、消息、群组与地图细节，持续反馈推动整体体验一路打磨。",
+           "zh-TW":"細緻涵蓋定位、訊息、群組與地圖細節，持續回饋推動整體體驗一路打磨。",
+           en:"Covered fixes, messages, groups and map details with meticulous notes that kept the whole experience improving."},
+  quote:{zh:"细节见真章，较真见热爱。","zh-TW":"細節見真章，較真見熱愛。",en:"Details reveal craft; diligence reveals love."},
+  tags:{zh:["功能测试","体验打磨"],"zh-TW":["功能測試","體驗打磨"],en:["Testing","UX polish"]},
   c:"#e0568f",num:7},
  {call:"BA3RZL",who:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
   role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},
-  brief:{zh:"以另一种形式的“电波”——算力与善意——托起 APRSlocus 的研发之路。","zh-TW":"以另一種形式的「電波」——算力與善意——托起 APRSlocus 的研發之路。",en:"Carried the road of development on a different kind of signal — compute and kindness."},
-  words:{zh:"代码背后的支持，同样值得被写进纪念册。","zh-TW":"程式背後的支持，同樣值得被寫進紀念冊。",en:"The support behind the code deserves a page here too."},
+  brief:{zh:"用算力托起开发的路","zh-TW":"用算力托起開發的路",en:"Carried the build on a different signal"},
+  contrib:{zh:"为开发与测试提供 AI 算力支持，加速原型、排错与多语言内容产出。",
+           "zh-TW":"為開發與測試提供 AI 算力支持，加速原型、除錯與多語言內容產出。",
+           en:"Provided AI compute for development and testing, accelerating prototypes, debugging and multilingual content."},
+  quote:{zh:"算力无形，善意有迹。","zh-TW":"算力無形，善意有跡。",en:"Compute is invisible; kindness leaves a trace."},
+  tags:{zh:["AI 算力","开发支持"],"zh-TW":["AI 算力","開發支持"],en:["AI compute","Dev support"]},
   c:"#df7a36",num:8}
 ];
 const TX={
- "zh":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成员",export:"导出 PNG",next:"下一位",foot:"· 电波无限，感谢同行",saved:"已保存 PNG",sec:"贡献与寄语"},
- "zh-TW":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成員",export:"匯出 PNG",next:"下一位",foot:"· 電波無限，感謝同行",saved:"已儲存 PNG",sec:"貢獻與寄語"},
- "en":{mem:"F I R S T   M E M B E R",early:"Early member of APRSlocus",export:"Export PNG",next:"Next",foot:"· Endless waves, thank you",saved:"PNG saved",sec:"About & words"}
+ "zh":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成员",sub:"APRS 定位追踪与地图",
+   foot:"APRSlocus · 电波无限，感谢同行",saved:"已保存 PNG",export:"导出 PNG",next:"下一位",
+   contribution:"贡献",quote:"寄语",role:"同行角色",no:"#"},
+ "zh-TW":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成員",sub:"APRS 定位追蹤與地圖",
+   foot:"APRSlocus · 電波無限，感謝同行",saved:"已儲存 PNG",export:"匯出 PNG",next:"下一位",
+   contribution:"貢獻",quote:"寄語",role:"同行角色",no:"#"},
+ "en":{mem:"F I R S T   M E M B E R",early:"Early member of APRSlocus",sub:"APRS Tracking & Mapping",
+   foot:"APRSlocus · Endless waves, thank you",saved:"PNG saved",export:"Export PNG",next:"Next",
+   contribution:"Contribution",quote:"Words",role:"Role",no:"#"}
 };
 const W=1040,H=680,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function hexA(h,a){const n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
-function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();}
+function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();renderProfile();}
 function go(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
- const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();updateProfile();}
+ const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();renderProfile();}
 function next(){go(idx+1);}
+function hexA(h,a){const n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
 function sync(){
  document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
@@ -167,27 +196,27 @@ function draw(){
  cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
  const R=24,P=1;
  rr(c,P,P,W-P*2,H-P*2,R);c.fillStyle="#ffffff";c.fill();c.save();c.clip();
+ /* 底 */
  const tint=c.createRadialGradient(W*.9,0,20,W*.9,0,W*.5);tint.addColorStop(0,hexA(m.c,.10));tint.addColorStop(1,"rgba(255,255,255,0)");
  c.fillStyle=tint;c.fillRect(0,0,W,H);
  c.fillStyle=m.c;c.fillRect(P,P,W-P*2,5);
- /* 顶 */
+ /* 顶部 */
  const tx=58,ty=52,lw=46;
  if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,13);c.fillStyle="#fff";c.strokeStyle="#e7eaf2";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,13);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
  c.fillStyle="#141e38";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+16,ty+2);
  c.fillStyle="#8b95a9";c.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
- c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].mem||"F I R S T   M E M B E R",tx+lw+16,ty+27);c.restore();
- /* 右上 */
- const cap=(TX[lang].early||"APRSlocus 早期成员");
+ c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].sub.toUpperCase(),tx+lw+16,ty+26);c.restore();
+ const cap=TX[lang].early;
  c.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
  c.save();rr(c,W-58-capW-30,24,capW+30,36,18);c.fillStyle=hexA(m.c,.15);c.fill();
- c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,48);c.textAlign="left";c.restore();
+ c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,49);c.textAlign="left";c.restore();
  c.fillStyle="#8b95a9";c.font="700 14px Consolas,monospace";c.textAlign="right";
  c.fillText(m.num.toString().padStart(2,"0")+" / "+MEMBERS.length.toString().padStart(2,"0"),W-58,100);c.textAlign="left";
  c.fillStyle="#eef1f7";c.fillRect(58,132,W-116,1);
- /* 中 */
+ /* 中部 */
  const cx=58,cy0=278;
  c.save();c.letterSpacing="2.5px";c.fillStyle="#8b95a9";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText((TX[lang].early||"").toUpperCase(),cx,cy0-102);c.restore();
+ c.fillText(TX[lang].early.toUpperCase(),cx,cy0-102);c.restore();
  c.fillStyle="#0d1426";c.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";c.fillText(m.call,cx,cy0+2);
  c.fillStyle=m.c;c.fillRect(cx,cy0+56,72,4);
  c.fillStyle="#182238";c.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who[lang]||m.who.zh,cx,cy0+128);
@@ -195,28 +224,39 @@ function draw(){
  c.font="600 17px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
  c.save();rr(c,cx,cy0+150,rw+30,34,17);c.fillStyle="#f2f4f9";c.fill();c.restore();
  c.fillStyle="#4c5770";c.fillText(role,cx+15,cy0+172);
- /* 底 */
+ c.fillStyle="#7c8699";c.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText("“"+(m.brief[lang]||m.brief.zh)+"”",cx,cy0+240);
+ /* 底部 */
  c.fillStyle="#eef0f6";c.fillRect(58,H-82,W-116,1);
  c.fillStyle="#9aa4b8";c.font="700 18px Consolas,monospace";c.fillText("# "+m.num.toString().padStart(2,"0"),58,H-44);
- c.fillStyle="#7c8699";c.font="500 17px 'PingFang SC','Segoe UI',sans-serif";c.textAlign="right";
- c.fillText(TX[lang].foot,W-58,H-44);c.textAlign="left";
+ c.fillStyle="#7c8699";c.font="500 17px 'PingFang SC','Segoe UI',sans-serif";
+ c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-44);c.textAlign="left";
  c.restore();
  rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
 }
-function updateProfile(){const m=MEMBERS[idx];
- document.getElementById("pCall").textContent=m.call;
- document.getElementById("pWho").textContent=m.who[lang]||m.who.zh;
- document.getElementById("pNum").textContent="# "+m.num.toString().padStart(2,"0")+" / "+MEMBERS.length;
- document.getElementById("pRole").textContent=m.role[lang]||m.role.zh;
- document.getElementById("pBrief").textContent=m.brief[lang]||m.brief.zh;
- document.getElementById("pWords").textContent="“"+(m.words[lang]||m.words.zh)+"”";}
+function renderProfile(){
+ const m=MEMBERS[idx];const g=m.c;
+ const who=m.who[lang]||m.who.zh, role=m.role[lang]||m.role.zh;
+ const contrib=m.contrib[lang]||m.contrib.zh, quote=m.quote[lang]||m.quote.zh;
+ const tags=m.tags[lang]||m.tags.zh;
+ const box=document.getElementById("profile");
+ box.innerHTML=`<div class="p-head">
+   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${TX[lang].no}${m.num.toString().padStart(2,"0")}</div>
+   <div class="p-id"><div class="p-call">${m.call}</div><div class="p-who">${who}</div></div>
+   <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${role}</span>
+ </div>
+ <div class="p-hr"></div>
+ <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${contrib}</p></div>
+ <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${quote}</p></div>
+ <div class="p-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
+}
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600);}
 function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
 const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
-sync();updateProfile();
+sync();
 </script>
 </body>
 </html>
