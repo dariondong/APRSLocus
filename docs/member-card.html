@@ -261,8 +261,8 @@ function T(obj){return obj?(obj[lang]||obj.zh):"";}
 let HONOR_DEFS={};
 function honorDefsOf(p){
   // p.honors 显式，否则按 grp 映射默认
-  let list = p&&p.honors? p.honors : []; 
-  if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["developer"]; else if(g==="support")list=["earlyMember","aiCompute"]; else list=["earlyMember"]; }
+  let list = p&&p.honors&&p.honors.length? p.honors : []; 
+  if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["kaishan","developer","earlyMember"]; else if(g==="support")list=["earlyMember","aiCompute"]; else list=["earlyMember"]; }
   return list;
 }
 function honorColor(key){ return (HONOR_DEFS[key]&&HONOR_DEFS[key].color)||"#8a94ab"; }

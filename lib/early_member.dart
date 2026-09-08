@@ -13,8 +13,8 @@ import 'theme.dart';
 /// 一个呼号可拥有多个称号。数据默认内置一份兜底，启动时从官网 members.json
 /// 拉取最新（结构见 docs/members.json）：
 ///   honors: { key: {zh, "zh-TW", en, color} }        称号定义
-///   developers / earlyMembers: [{call, honors:[...], ...}] 成员(分组决定默认称号)
-/// 名单归属与称号均由官网 JSON 维护，无需发版即可更新。
+///   developers / earlyMembers: [{call, honors:[...], ...}] 成员
+/// 称号归属均由官网 JSON 维护，无需发版即可更新。
 
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
@@ -30,16 +30,21 @@ class Honor {
   static IconData iconFor(String key) => switch (key) {
         'developer' => Icons.code_rounded,
         'earlyMember' => Icons.workspace_premium_rounded,
+        'aiCompute' => Icons.memory_rounded,
         _ => Icons.emoji_events_rounded,
       };
 }
 
 /// 默认称号定义（联网失败 / 首次加载前兜底，与官网 json 默认一致）
 final Map<String, Honor> _defaultHonorDefs = {
-  'developer': const Honor('developer', '开发人员', Color(0xFF1D6FF2), Icons.code_rounded),
-  'earlyMember':
-      const Honor('earlyMember', '早期成员', Color(0xFFB08A34), Icons.workspace_premium_rounded),
-  'aiCompute': const Honor('aiCompute', 'AI 算力支持', Color(0xFF7c3aed), Icons.memory_rounded),
+  'developer':
+      const Honor('developer', '开发人员', Color(0xFF1D6FF2), Icons.code_rounded),
+  'earlyMember': const Honor(
+      'earlyMember', '早期成员', Color(0xFFB08A34), Icons.workspace_premium_rounded),
+  'aiCompute':
+      const Honor('aiCompute', 'AI 算力支持', Color(0xFF7C3AED), Icons.memory_rounded),
+  'kaishan':
+      const Honor('kaishan', '开山', Color(0xFFE67E22), Icons.emoji_events_rounded),
 };
 
 /// 运行时称号定义（联网更新后替换）
@@ -52,30 +57,30 @@ final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
 /// 取基呼号（去 SSID 后缀，转大写）
 String _base(String call) => call.trim().toUpperCase().split('-').first;
 
-/// 判断某呼号命中的称号 key（可多个）
-List<String> memberHonorsOf(String call) {
-  final base = _base(call);
-  return _honorsCache[base] ?? const [];
-}
-
 /// 运行时“呼号 -> 称号 key 列表”缓存（联网更新后替换）
 Map<String, List<String>> _honorsCache = {};
 
 String _normalize(String s) => s.trim().toUpperCase();
 
-/// 内置兜底：默认称号映射（开发者/早期成员分组 + BA3RZL 额外 AI 算力）
+/// 内置兜底：默认称号映射（开发者：开山+开发+早期；BA3RZL 额外 AI 算力）
 void _seedDefaults() {
   _honorsCache = {
-    'BG7LZQ': ['developer'],
-    'BG2HCB': ['developer'],
-    'BA4UAX': ['developer'],
-    'BD3QID': ['developer'],
+    'BG7LZQ': ['kaishan', 'developer', 'earlyMember'],
+    'BG2HCB': ['kaishan', 'developer', 'earlyMember'],
+    'BA4UAX': ['kaishan', 'developer', 'earlyMember'],
+    'BD3QID': ['kaishan', 'developer', 'earlyMember'],
     'BG7PGW': ['earlyMember'],
     'BG7LMW': ['earlyMember'],
     'BG7OSL': ['earlyMember'],
     'imThree': ['earlyMember'],
     'BA3RZL': ['earlyMember', 'aiCompute'],
   };
+}
+
+/// 判断某呼号命中的称号 key（可多个）
+List<String> memberHonorsOf(String call) {
+  final base = _base(call);
+  return _honorsCache[base] ?? const [];
 }
 
 /// 从 members.json 解析称号
@@ -88,7 +93,8 @@ void _parseMembers(Map d) {
       if (v is Map) {
         final zh = v['zh'] ?? k;
         final color = _parseColor(v['color']);
-        m[k.toString()] = Honor(k.toString(), zh.toString(), color, Honor.iconFor(k.toString()));
+        m[k.toString()] =
+            Honor(k.toString(), zh.toString(), color, Honor.iconFor(k.toString()));
       }
     });
     if (m.isNotEmpty) _honorDefs = m;
@@ -163,9 +169,10 @@ Future<void> refreshMembers() async {
   } catch (_) {}
 }
 
-Map<String, dynamic> _serializeDefs() => _honorDefs.map(
-      (k, h) => MapEntry(k, {'label': h.label, 'color': '#${h.color.value.toRadixString(16).substring(2)}'}),
-    );
+Map<String, dynamic> _serializeDefs() => _honorDefs.map((k, h) => MapEntry(k, {
+      'label': h.label,
+      'color': '#${h.color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+    }));
 
 /// 首次加载：读缓存 → 若空用默认 → 后台联网刷新
 Future<void> ensureMembersLoaded() async {

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -47,7 +47,12 @@
         ]
       },
       "c": "#3b6ef5",
-      "grp": "core"
+      "grp": "core",
+      "honors": [
+        "kaishan",
+        "developer",
+        "earlyMember"
+      ]
     },
     {
       "call": "BG2HCB",
@@ -91,7 +96,12 @@
         ]
       },
       "c": "#0e9f8b",
-      "grp": "core"
+      "grp": "core",
+      "honors": [
+        "kaishan",
+        "developer",
+        "earlyMember"
+      ]
     },
     {
       "call": "BA4UAX",
@@ -135,7 +145,12 @@
         ]
       },
       "c": "#6269e6",
-      "grp": "core"
+      "grp": "core",
+      "honors": [
+        "kaishan",
+        "developer",
+        "earlyMember"
+      ]
     },
     {
       "call": "BD3QID",
@@ -179,7 +194,12 @@
         ]
       },
       "c": "#8a5cf0",
-      "grp": "core"
+      "grp": "core",
+      "honors": [
+        "kaishan",
+        "developer",
+        "earlyMember"
+      ]
     }
   ],
   "earlyMembers": [
@@ -228,7 +248,10 @@
         ]
       },
       "c": "#0da46b",
-      "grp": "test"
+      "grp": "test",
+      "honors": [
+        "earlyMember"
+      ]
     },
     {
       "call": "BG7LMW",
@@ -272,7 +295,10 @@
         ]
       },
       "c": "#0a9fb4",
-      "grp": "test"
+      "grp": "test",
+      "honors": [
+        "earlyMember"
+      ]
     },
     {
       "call": "BG7OSL",
@@ -316,7 +342,10 @@
         ]
       },
       "c": "#e0568f",
-      "grp": "test"
+      "grp": "test",
+      "honors": [
+        "earlyMember"
+      ]
     },
     {
       "call": "imThree",
@@ -360,7 +389,10 @@
         ]
       },
       "c": "#ef5252",
-      "grp": "test"
+      "grp": "test",
+      "honors": [
+        "earlyMember"
+      ]
     },
     {
       "call": "BA3RZL",
@@ -467,6 +499,12 @@
       "zh-TW": "AI 算力支持",
       "en": "AI compute",
       "color": "#7c3aed"
+    },
+    "kaishan": {
+      "zh": "开山",
+      "zh-TW": "開山",
+      "en": "Founding pioneer",
+      "color": "#E67E22"
     }
   }
 }
