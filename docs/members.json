@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1009,6 +1009,30 @@
       "primary": "earlyMember",
       "grp": "test",
       "c": "#B08A34"
+    },
+    {
+      "call": "BG7MGR",
+      "who": {
+        "zh": "BG7MGR",
+        "zh-TW": "BG7MGR",
+        "en": "BG7MGR"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "core",
+      "c": "#E67E22"
     }
   ],
   "groups": [
