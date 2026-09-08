@@ -346,6 +346,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _lastSize = size;
             final vis = _visible;
             final searched = widget.searchQuery.trim().isNotEmpty;
+            // 矮横屏（小屏手机横放）：隐藏图例减少遮挡，让地图更全
+            final shortWide = size.width > size.height && size.height < 520;
             _syncPulse();
 
             return Stack(
@@ -493,8 +495,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                // 图例
-                Positioned(top: 14, right: 60, child: _legend()),
+                // 图例（矮横屏隐藏，减少遮挡）
+                if (!shortWide)
+                  Positioned(top: 14, right: 60, child: _legend()),
                 // 图层筛选按钮（覆盖在右上角）
                 Positioned(
                   right: 14,

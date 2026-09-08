@@ -490,7 +490,8 @@ class _HomePageState extends State<HomePage> {
   bool get _compact {
     final sw = MediaQuery.of(context).size.width;
     final sh = MediaQuery.of(context).size.height;
-    return sw > sh && sw < 920;
+    // 横屏较窄（含大屏手机横屏，如 926pt 宽）用紧凑侧栏，留更多空间给地图
+    return sw > sh && sw < 1024;
   }
 
   Widget _sidebar() {
@@ -902,14 +903,15 @@ class _HomePageState extends State<HomePage> {
 
   // ─── 顶栏 ───
   Widget _topBar() {
+    final compact = _compact;
     return Container(
-      height: 58,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: compact ? 48 : 58,
+      padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 20),
       color: C.white,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // 手机横屏紧凑模式不显示搜索框+统计，避免溢出
-          final wide = constraints.maxWidth > 560 && !_compact;
+          // 手机横屏紧凑模式下：只要右侧宽度足够就保留搜索+统计，否则只留标题+在线数
+          final wide = constraints.maxWidth > 560;
           final searchW = (constraints.maxWidth * 0.28).clamp(140.0, 260.0);
           return Row(
             children: [
@@ -1028,11 +1030,14 @@ class _HomePageState extends State<HomePage> {
       listenable: widget.state,
       builder: (context, _) {
         final st = widget.state;
+        final compact = _compact;
         // Passcode 未验证：显示黄色警告横幅（类似未连接提示）
         if (st.connected && st.passcodeInvalid) {
           return Container(
-            margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            margin: EdgeInsets.fromLTRB(
+                compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
+            padding: EdgeInsets.symmetric(
+                horizontal: compact ? 12 : 14, vertical: compact ? 7 : 10),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
@@ -1100,8 +1105,10 @@ class _HomePageState extends State<HomePage> {
         if (st.connected) return const SizedBox.shrink();
         final connecting = st.connecting;
         return Container(
-          margin: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          margin: EdgeInsets.fromLTRB(
+              compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
+          padding: EdgeInsets.symmetric(
+              horizontal: compact ? 12 : 14, vertical: compact ? 7 : 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [C.blue, C.indigo],
