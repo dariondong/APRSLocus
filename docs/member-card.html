@@ -269,10 +269,14 @@ let HONOR_DEFS={
  firstFix:{zh:"FIRST FIX · 至高荣誉","zh-TW":"FIRST FIX · 至高榮譽",en:"FIRST FIX · Supreme Honor",color:"#C9A227"},
  jadeGift:{zh:"赠我以琼琚","zh-TW":"贈我以瓊琚",en:"Gifted with Jade",color:"#0EA5B7"}
 };
+let FIRSTFIX_HOLDERS=new Set();
+function isFF(call){const b=String(call||"").toUpperCase().split("-")[0];return FIRSTFIX_HOLDERS.has(b);}
 function honorDefsOf(p){
   // p.honors 显式，否则按 grp 映射默认
-  let list = p&&p.honors&&p.honors.length? p.honors : []; 
+  let list = p&&p.honors&&p.honors.length? p.honors.slice() : []; 
   if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["kaishan","developer","earlyMember"]; else if(g==="support")list=["earlyMember","mostBrain"]; else list=["earlyMember"]; }
+  // 官网 firstfix.json 授勋命中 → 追加 FIRST FIX
+  if(p&&p.call&&isFF(p.call)&&!list.includes("firstFix")) list.push("firstFix");
   return list;
 }
 function honorColor(key){ return (HONOR_DEFS[key]&&HONOR_DEFS[key].color)||"#8a94ab"; }
@@ -465,6 +469,13 @@ const fi=qc?CARDS.findIndex(x=>x.kind==="p"&&x.p.call.toUpperCase()===(qc||"").t
 ui();walls();profile();draw();
 /* 从同目录 members.json 拉取最新名单/资料（与 App 徽标共用数据源，改名单无需发版） */
 fetch("members.json").then(r=>r.ok?r.json():null).then(d=>applyRemote(d)).catch(()=>{});
+/* 加载 FIRST FIX 授勋名单（官网 firstfix.json） */
+fetch("firstfix.json").then(r=>r.ok?r.json():null).then(d=>{
+  if(d&&Array.isArray(d.holders)){
+    d.holders.forEach(h=>{if(h&&String(h).trim())FIRSTFIX_HOLDERS.add(String(h).trim().toUpperCase());});
+    ui();walls();profile();draw();
+  }
+}).catch(()=>{});
 </script>
 </body>
 </html>
