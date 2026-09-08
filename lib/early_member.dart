@@ -323,9 +323,13 @@ class HonorBadge extends StatelessWidget {
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(ic, size: 14, color: col),
-              if (keys.length > 1) ...[
-                const SizedBox(width: 3),
-                Text('×${keys.length}', style: ts(10, c: col, w: FontWeight.w800)),
+              const SizedBox(width: 4),
+              // 显示具体徽章名（可读性优先，不画成纯图标）
+              Text(pri?.label ?? '徽章',
+                  style: ts(11, c: col, w: FontWeight.w800)),
+              if (keys.length > 1) ...[const SizedBox(width: 3),
+                Text('+${keys.length - 1}',
+                    style: ts(9.5, c: col.withValues(alpha: 0.7), w: FontWeight.w700)),
               ],
             ]),
           ),
