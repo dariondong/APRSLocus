@@ -156,7 +156,7 @@ let PEOPLE=[
            en:"Delivered the full Traditional-Chinese translation and localization polish, so hams in Hong Kong, Taiwan and beyond can use APRSlocus with ease."},
   quote:{zh:"多一种语言，就多一群在电波里相逢的朋友。","zh-TW":"多一種語言，就多一群在電波裡相逢的朋友。",en:"One more language, one more circle of friends on the air."},
   tags:{zh:["繁体中文","本地化"],"zh-TW":["繁體中文","本地化"],en:["Traditional Chinese","L10n"]},
-  c:"#6269e6",grp:"i18n"},
+  c:"#6269e6",grp:"core"},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
   role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},
   brief:{zh:"把 APRSlocus 讲给世界","zh-TW":"把 APRSlocus 講給世界",en:"Told APRSlocus' story to the world"},
@@ -165,7 +165,7 @@ let PEOPLE=[
            en:"Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows."},
   quote:{zh:"让世界听见我们的信标。","zh-TW":"讓世界聽見我們的信標。",en:"Let the world hear our beacons."},
   tags:{zh:["英文翻译","质量测试"],"zh-TW":["英文翻譯","品質測試"],en:["English","QA"]},
-  c:"#8a5cf0",grp:"i18n"},
+  c:"#8a5cf0",grp:"core"},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
   role:{zh:"功能测试 · 赞助","zh-TW":"功能測試 · 贊助",en:"Testing · Sponsor"},
   brief:{zh:"一遍遍把 bug 揪出来，也为项目送来蜜雪冰城 🧋","zh-TW":"一遍遍把 bug 揪出來，也為項目送來蜜雪冰城 🧋",en:"Flushed bugs from every corner — and bought the dev a Mixue 🧋"},
@@ -225,7 +225,7 @@ let GROUPS=[
 ];
 const GRP_META={
  core:{zh:"核心 · 开发","zh-TW":"核心 · 開發",en:"Core · Development"},
- i18n:{zh:"国际化 · 翻译","zh-TW":"國際化 · 翻譯",en:"i18n · Translation"},
+
  test:{zh:"测试 · 反馈","zh-TW":"測試 · 回饋",en:"Testing · Feedback"},
  support:{zh:"支持与赞助","zh-TW":"支持與贊助",en:"Support & Sponsors"}
 };
@@ -273,7 +273,7 @@ function ui(){
   b.textContent=c.kind==="p"?c.p.call:labelOf(c);
   if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
 function wallSection(grp,people){
- const gm=GRP_META[grp]; if(!gm) return "";
+ const gm=GRP_META[grp]||GRP_META.core; if(!gm) return "";
  const gcols={core:"#3b6ef5",i18n:"#6269e6",test:"#0da46b",support:"#df7a36"};
  return `<div class="group"><div class="gh"><span class="dot" style="background:${gcols[grp]}"></span>
   <h3>${T(gm)}</h3><span>${people.length}</span></div>
@@ -286,7 +286,7 @@ function wallSection(grp,people){
    </div>`).join("")}
   </div></div>`;}
 function walls(){
- const order=["core","i18n","test","support"];
+ const order=["core","test","support"];
  let html=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
  const gcols="#7c5cff";
  html+=`<div class="group"><div class="gh"><span class="dot" style="background:${gcols}"></span>

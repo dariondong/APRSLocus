@@ -135,7 +135,7 @@
         ]
       },
       "c": "#6269e6",
-      "grp": "i18n"
+      "grp": "core"
     },
     {
       "call": "BD3QID",
@@ -179,7 +179,7 @@
         ]
       },
       "c": "#8a5cf0",
-      "grp": "i18n"
+      "grp": "core"
     }
   ],
   "earlyMembers": [
