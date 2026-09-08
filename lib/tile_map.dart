@@ -63,6 +63,7 @@ enum MapType {
   gaode('高德地图', group: '高德'),
   gaode_sat('高德卫星', group: '高德'),
   vector('矢量地图', group: '其他'),
+  vector_positron('Carto Positron(浅色矢量)', group: '其他'),
   carto('Carto 浅色', group: '其他'),
   carto_dark('Carto 深色', group: '其他'),
   carto_voyager('Carto 航行者', group: '其他'),
@@ -443,6 +444,8 @@ class _Tile extends StatelessWidget {
       case MapType.esri_sat:
         return _fmt(_esriSatUrl);
       case MapType.vector:
+      case MapType.vector_positron:
+        // 矢量地图由 VectorMapView 渲染，此处返回空串走降级候选
         return '';
     }
   }

@@ -46,8 +46,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     orElse: () => MapType.gaode,
   );
 
-  /// 是否使用矢量地图模式（flutter_map）
-  bool get _isVector => _currentMapType == MapType.vector;
+  /// 是否使用矢量地图模式（flutter_map）：OpenFreeMap Liberty / Carto Positron
+  bool get _isVector =>
+      _currentMapType == MapType.vector ||
+      _currentMapType == MapType.vector_positron;
 
   /// 插件地图（自绘标记不可用的模式）
   bool get _usePluginMap => _isVector;
@@ -356,6 +358,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: _isVector
                         ? VectorMapView(
                             stations: _visible,
+                            styleUrl: vectorStyleUrlFor(_currentMapType.name),
                             stationsVersion: widget.state.stationsVersion,
                             myCall: widget.state.myFullCall,
                             myHasFix: widget.state.myHasFix,

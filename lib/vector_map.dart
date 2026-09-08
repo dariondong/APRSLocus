@@ -13,6 +13,16 @@ import 'models.dart';
 /// 矢量地图视图（flutter_map + vector_map_tiles）
 /// 使用 OpenFreeMap 免费矢量瓦片，无需 API key。
 /// 坐标体系：WGS-84（标准 Web Mercator），无 GCJ 偏移。
+/// 支持多种 style：默认 Liberty；vector_positron 使用 CARTO Positron 观感。
+const kVectorStyleLiberty = 'https://tiles.openfreemap.org/styles/liberty';
+const kVectorStylePositron = 'https://tiles.openfreemap.org/styles/positron';
+
+/// 各 mapType 对应的矢量 style URL
+String vectorStyleUrlFor(String mapType) {
+  if (mapType == 'vector_positron') return kVectorStylePositron;
+  return kVectorStyleLiberty;
+}
+
 class VectorMapView extends StatefulWidget {
   final List<Station> stations;
   // 台站数据版本：未变化时复用已构建的 Marker，避免每秒重建
@@ -36,6 +46,8 @@ class VectorMapView extends StatefulWidget {
   final bool showTracks;
   // 是否启用台站聚合（台站多时合并为聚合球）
   final bool clustering;
+  // 矢量底图 style URL（OpenFreeMap Liberty / CARTO Positron）
+  final String styleUrl;
   const VectorMapView({
     super.key,
     required this.stations,
@@ -57,6 +69,7 @@ class VectorMapView extends StatefulWidget {
     this.action = '',
     this.showTracks = true,
     this.clustering = true,
+    this.styleUrl = kVectorStyleLiberty,
   });
 
   @override
@@ -81,6 +94,12 @@ class _VectorMapViewState extends State<VectorMapView> {
   @override
   void didUpdateWidget(covariant VectorMapView old) {
     super.didUpdateWidget(old);
+    // 底图风格切换：重新加载对应 style
+    if (widget.styleUrl != old.styleUrl) {
+      _style = null;
+      _styleError = null;
+      _loadStyle(widget.styleUrl);
+    }
     if (widget.focusSeq != old.focusSeq &&
         widget.focusLat != null &&
         widget.focusLng != null) {
@@ -146,31 +165,34 @@ class _VectorMapViewState extends State<VectorMapView> {
     return result;
   }
 
-  // 进程级 style 缓存：整个应用生命周期只下载一次 style JSON，
-  // 避免每次切回矢量地图都重新加载
-  static Style? _cachedStyle;
-  static bool _loading = false;
-  static final List<void Function(Style?, String?)> _waiters = [];
+  // 进程级 style 缓存：按 style URL 分别缓存，整个应用生命周期每个只下载一次，
+  // 避免每次切回矢量地图 / 切换底图风格都重新加载
+  static final Map<String, Style> _cachedStyle = {};
+  static final Set<String> _loading = {};
+  static final Map<String, List<void Function(Style?, String?)>> _waiters = {};
 
   @override
   void initState() {
     super.initState();
-    _loadStyle();
+    _loadStyle(widget.styleUrl);
   }
 
-  Future<void> _loadStyle() async {
+  Future<void> _loadStyle(String url) async {
     // 已有缓存：直接使用
-    if (_cachedStyle != null) {
-      _style = _cachedStyle;
+    final cached = _cachedStyle[url];
+    if (cached != null) {
+      _style = cached;
+      _styleError = null;
+      if (mounted) setState(() {});
       return;
     }
-    if (_styleError != null) {
+    if (_styleError != null && !_loading.contains(url)) {
       return;
     }
     // 正在加载：等待共享结果
-    if (_loading) {
+    if (_loading.contains(url)) {
       final completer = Completer<void>();
-      _waiters.add((style, err) {
+      _waiters.putIfAbsent(url, () => []).add((style, err) {
         _style = style;
         _styleError = err;
         if (mounted) setState(() {});
@@ -179,27 +201,28 @@ class _VectorMapViewState extends State<VectorMapView> {
       await completer.future;
       return;
     }
-    _loading = true;
+    _loading.add(url);
     try {
       final style = await StyleReader(
-        uri: 'https://tiles.openfreemap.org/styles/liberty',
+        uri: url,
         logger: const vtr.Logger.noop(),
       ).read();
-      _cachedStyle = style;
+      _cachedStyle[url] = style;
       _style = style;
-      _notifyWaiters(style, null);
+      _styleError = null;
+      _notifyWaiters(url, style, null);
     } catch (e) {
       _styleError = '$e';
-      _notifyWaiters(null, '$e');
+      _notifyWaiters(url, null, '$e');
     } finally {
-      _loading = false;
+      _loading.remove(url);
     }
     if (mounted) setState(() {});
   }
 
-  void _notifyWaiters(Style? style, String? err) {
-    final waiters = List.from(_waiters);
-    _waiters.clear();
+  void _notifyWaiters(String url, Style? style, String? err) {
+    final waiters = _waiters.remove(url);
+    if (waiters == null) return;
     for (final w in waiters) {
       w(style, err);
     }

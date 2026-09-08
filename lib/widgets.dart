@@ -161,6 +161,7 @@ String localizedMapTypeLabel(BuildContext context, String name) =>
       'gaode' => S.of(context).mapTypeAmap,
       'gaode_sat' => S.of(context).mapTypeAmapSatellite,
       'vector' => S.of(context).mapTypeVector,
+      'vector_positron' => 'Carto Positron(浅色矢量)',
       'carto' => 'Carto 浅色',
       'carto_dark' => 'Carto 深色',
       'carto_voyager' => 'Carto 航行者',
