@@ -773,24 +773,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   if (pulsing)
                     _PulseRing(color: s.color, sel: sel, anim: _pulse),
                   Container(
-                    width: sel ? 30 : 22,
-                    height: sel ? 30 : 22,
+                    width: sel ? 32 : 24,
+                    height: sel ? 32 : 24,
                     decoration: BoxDecoration(
-                      color: s.color,
+                      // 白底 + 状态色描边，让真实 APRS 彩色符号在各种底图上清晰可辨
+                      color: Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2.5),
+                      border: Border.all(
+                        color: s.color,
+                        width: sel ? 3 : 1.6,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: s.color.withValues(alpha: 0.4),
-                          blurRadius: sel ? 14 : 6,
+                          color: s.color.withValues(alpha: 0.45),
+                          blurRadius: sel ? 12 : 5,
                         ),
                       ],
                     ),
                     child: Center(
-                      child: Icon(
-                        s.icon,
-                        color: Colors.white,
-                        size: sel ? 14 : 11,
+                      child: AprsSymbolImage(
+                        s.symbol,
+                        s.symbolTable,
+                        size: sel ? 18 : 14,
+                        grayscale: s.effectiveStatus == St.offline,
                       ),
                     ),
                   ),
@@ -879,24 +884,28 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   if (s.effectiveStatus == St.moving || sel)
                     _PulseRing(color: s.color, sel: sel, anim: _pulse),
                   Container(
-                    width: sel ? 30 : 22,
-                    height: sel ? 30 : 22,
+                    width: sel ? 32 : 24,
+                    height: sel ? 32 : 24,
                     decoration: BoxDecoration(
-                      color: s.color,
+                      color: Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2.5),
+                      border: Border.all(
+                        color: s.color,
+                        width: sel ? 3 : 1.6,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: s.color.withValues(alpha: 0.4),
-                          blurRadius: sel ? 14 : 6,
+                          color: s.color.withValues(alpha: 0.45),
+                          blurRadius: sel ? 12 : 5,
                         ),
                       ],
                     ),
                     child: Center(
-                      child: Icon(
-                        s.icon,
-                        color: Colors.white,
-                        size: sel ? 14 : 11,
+                      child: AprsSymbolImage(
+                        s.symbol,
+                        s.symbolTable,
+                        size: sel ? 18 : 14,
+                        grayscale: s.effectiveStatus == St.offline,
                       ),
                     ),
                   ),

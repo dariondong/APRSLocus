@@ -9,6 +9,7 @@ import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 import 'theme.dart';
 import 'models.dart';
+import 'widgets.dart';
 
 /// 矢量地图视图（flutter_map + vector_map_tiles）
 /// 使用 OpenFreeMap 免费矢量瓦片，无需 API key。
@@ -368,20 +369,27 @@ class _VectorMapViewState extends State<VectorMapView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: selected ? 30 : 22,
-              height: selected ? 30 : 22,
+              width: selected ? 34 : 26,
+              height: selected ? 34 : 26,
               decoration: BoxDecoration(
-                color: selected ? s.color : s.color.withValues(alpha: 0.15),
+                // 白底 + 状态色描边，让真实 APRS 彩色符号在矢量底图上清晰可辨
+                color: Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected ? Colors.white : s.color,
-                  width: selected ? 3 : 1.5,
+                  color: s.color,
+                  width: selected ? 3 : 1.6,
                 ),
                 boxShadow:
                     selected ? softShadow(blur: 12, alpha: 0.35) : null,
               ),
-              child:
-                  Icon(s.icon, color: selected ? Colors.white : s.color, size: 18),
+              child: Center(
+                child: AprsSymbolImage(
+                  s.symbol,
+                  s.symbolTable,
+                  size: selected ? 18 : 14,
+                  grayscale: s.effectiveStatus == St.offline,
+                ),
+              ),
             ),
             // 呼号标签
             Container(

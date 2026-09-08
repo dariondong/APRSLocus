@@ -593,3 +593,53 @@ class _LogoPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+/// 真实 APRS 官方符号图标：优先加载官方符号表 PNG（透明底彩色），
+/// 资源缺失/超出范围回退 Material 图标；offline 等场景可整图灰度弱化。
+class AprsSymbolImage extends StatelessWidget {
+  final String symbol; // 符号码，如 '>' / 'k'
+  final String symbolTable; // 符号表字符，默认主表 '/'
+  final double size;
+  final bool grayscale;
+  const AprsSymbolImage(
+    this.symbol,
+    this.symbolTable, {
+    super.key,
+    this.size = 20,
+    this.grayscale = false,
+  });
+
+  /// 灰度滤镜：保留透明度，只把彩色像素去饱和，用于离线台站弱化
+  static const List<double> _grayscale = <double>[
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0, 0, 0, 1, 0,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final table = symbolTable.isEmpty ? '/' : symbolTable;
+    final png = AprsSym.iconAsset(table, symbol);
+    final fallback = Icon(AprsSym.icon(symbol), size: size);
+    Widget child;
+    if (png == null) {
+      child = fallback;
+    } else {
+      child = Image.asset(
+        png,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        // 地图标记大量同 asset 复用；小图按固定像素解码降内存
+        cacheWidth: (size * 3).clamp(32, 128).round(),
+        errorBuilder: (_, __, ___) => fallback,
+      );
+    }
+    if (!grayscale) return child;
+    return ColorFiltered(
+      colorFilter: const ColorFilter.matrix(_grayscale),
+      child: child,
+    );
+  }
+}
