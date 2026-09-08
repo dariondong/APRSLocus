@@ -62,7 +62,7 @@
   .p-call{font-size:clamp(24px,4vw,34px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,Consolas,monospace;line-height:1.1}
   .p-who{color:#6a7590;font-size:14.5px;margin-top:6px}
   .p-honors{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-  .p-honors .honor{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
+  .p-honors .honor{display:inline-flex;text-decoration:none;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
     background:#fff;border:1px solid;border-radius:999px;padding:4px 12px;box-shadow:0 2px 8px rgba(20,35,70,.05)}
   .p-honors .honor .hd{width:8px;height:8px;border-radius:50%}
   .p-hr{height:1px;background:rgba(30,50,90,.08);margin:22px 0}
@@ -380,7 +380,7 @@ function profile(){
    <div class="p-id">
      <div class="p-call">${m.call}</div>
      <div class="p-who">${who} · ${role}</div>
-     <div class="p-honors">${honorDefsOf(m).map(k=>`<span class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}"><span class="hd" style="background:${honorColor(k)}"></span>${honorLabel(k)}</span>`).join("")}</div>
+     <div class="p-honors">${honorDefsOf(m).map(k=>`<a class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}" href="badge.html?honor=${k}"><span class="hd" style="background:${honorColor(k)}"></span>${honorLabel(k)}</a>`).join("")}</div>
    </div>
   </div>
   <div class="p-hr"></div>
