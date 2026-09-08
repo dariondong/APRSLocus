@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -49,11 +49,11 @@
       "c": "#3b6ef5",
       "grp": "core",
       "honors": [
-        "mostBrain",
         "kaishan",
         "developer",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "BG2HCB",
@@ -102,7 +102,8 @@
         "kaishan",
         "developer",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "BA4UAX",
@@ -151,7 +152,8 @@
         "kaishan",
         "developer",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "BD3QID",
@@ -200,7 +202,8 @@
         "kaishan",
         "developer",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     }
   ],
   "earlyMembers": [
@@ -253,7 +256,8 @@
       "honors": [
         "kaishan",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "BG7LMW",
@@ -301,7 +305,8 @@
       "honors": [
         "kaishan",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "BG7OSL",
@@ -349,7 +354,8 @@
       "honors": [
         "kaishan",
         "earlyMember"
-      ]
+      ],
+      "primary": "kaishan"
     },
     {
       "call": "imThree",
@@ -396,7 +402,8 @@
       "grp": "test",
       "honors": [
         "earlyMember"
-      ]
+      ],
+      "primary": "earlyMember"
     },
     {
       "call": "BA3RZL",
@@ -443,8 +450,10 @@
       "grp": "support",
       "honors": [
         "earlyMember",
-        "aiCompute"
-      ]
+        "aiCompute",
+        "mostBrain"
+      ],
+      "primary": "aiCompute"
     }
   ],
   "groups": [
@@ -535,9 +544,9 @@
       "zh-TW": "最強大腦",
       "en": "Brightest mind",
       "desc": {
-        "zh": "项目理念与架构的核心大脑。",
-        "zh-TW": "專案理念與架構的核心大腦。",
-        "en": "The core brain behind the project's vision & architecture."
+        "zh": "隐藏成就：为项目提供超 50% 的算力支持！",
+        "zh-TW": "隱藏成就：為項目提供超過 50% 的算力支持！",
+        "en": "Hidden achievement: provided over 50% of the project's compute power!"
       },
       "color": "#0EA5C4"
     }

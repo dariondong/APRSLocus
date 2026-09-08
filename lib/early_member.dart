@@ -9,11 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 
 /// ─── APRSlocus 荣誉徽章体系 ───
-///
-/// 一个呼号可拥有多个称号徽章。徽章定义/授予均由官网 members.json 维护：
-///   honors: { key: { zh, "zh-TW", en, desc:{...}, color } }  全集（含未点亮项）
-///   developers / earlyMembers: [{call, honors:[key,...]}]
-/// App 启动拉取 + 缓存；离线用内置兜底。
+/// 一个呼号可拥有多个称号徽章；徽章定义/授予/优先徽章均由官网 members.json 维护。
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
 
@@ -27,11 +23,11 @@ class Honor {
   const Honor(this.key, this.label, this.desc, this.color, this.icon);
 
   static IconData iconFor(String key) => switch (key) {
-        'kaishan' => Icons.terrain_rounded, // 开山
-        'developer' => Icons.code_rounded, // 开发
-        'earlyMember' => Icons.workspace_premium_rounded, // 早期成员
-        'aiCompute' => Icons.memory_rounded, // AI 算力
-        'mostBrain' => Icons.psychology_rounded, // 最强大脑
+        'kaishan' => Icons.terrain_rounded,
+        'developer' => Icons.code_rounded,
+        'earlyMember' => Icons.workspace_premium_rounded,
+        'aiCompute' => Icons.memory_rounded,
+        'mostBrain' => Icons.psychology_rounded,
         _ => Icons.emoji_events_rounded,
       };
 }
@@ -45,7 +41,7 @@ const List<String> kHonorOrder = [
   'mostBrain',
 ];
 
-/// 默认徽章定义（兜底，与官网 json 一致）
+/// 默认徽章定义（联网兜底）
 final Map<String, Honor> _defaultHonorDefs = {
   'kaishan': const Honor('kaishan', '开山', '极早期内测成员，项目最开始的参与与建设者。',
       Color(0xFFE67E22), Icons.terrain_rounded),
@@ -55,13 +51,13 @@ final Map<String, Honor> _defaultHonorDefs = {
       Color(0xFFB08A34), Icons.workspace_premium_rounded),
   'aiCompute': const Honor('aiCompute', 'AI 算力支持', '以 AI 算力支持开发与测试。',
       Color(0xFF7C3AED), Icons.memory_rounded),
-  'mostBrain': const Honor('mostBrain', '最强大脑', '项目理念与架构的核心大脑。',
-      Color(0xFF0EA5C4), Icons.psychology_rounded),
+  'mostBrain': const Honor('mostBrain', '最强大脑',
+      '隐藏成就：为项目提供超 50% 的算力支持！', Color(0xFF0EA5C4), Icons.psychology_rounded),
 };
 
-/// 运行时徽章定义
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
 Map<String, List<String>> _honorsCache = {};
+Map<String, String> _primariesCache = {};
 int _loadSeq = 0;
 
 final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
@@ -69,10 +65,9 @@ final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
 String _base(String call) => call.trim().toUpperCase().split('-').first;
 String _norm(String s) => s.trim().toUpperCase();
 
-/// 兜底归属
 void _seedDefaults() {
   _honorsCache = {
-    'BG7LZQ': ['mostBrain', 'kaishan', 'developer', 'earlyMember'],
+    'BG7LZQ': ['kaishan', 'developer', 'earlyMember'],
     'BG2HCB': ['kaishan', 'developer', 'earlyMember'],
     'BA4UAX': ['kaishan', 'developer', 'earlyMember'],
     'BD3QID': ['kaishan', 'developer', 'earlyMember'],
@@ -80,11 +75,21 @@ void _seedDefaults() {
     'BG7LMW': ['kaishan', 'earlyMember'],
     'BG7OSL': ['kaishan', 'earlyMember'],
     'imThree': ['earlyMember'],
-    'BA3RZL': ['earlyMember', 'aiCompute'],
+    'BA3RZL': ['earlyMember', 'aiCompute', 'mostBrain'],
+  };
+  _primariesCache = {
+    'BG7LZQ': 'kaishan',
+    'BG2HCB': 'kaishan',
+    'BA4UAX': 'kaishan',
+    'BD3QID': 'kaishan',
+    'BG7PGW': 'kaishan',
+    'BG7LMW': 'kaishan',
+    'BG7OSL': 'kaishan',
+    'imThree': 'earlyMember',
+    'BA3RZL': 'aiCompute',
   };
 }
 
-/// 某呼号已获得的徽章 key（保持 kHonorOrder 顺序）
 List<String> memberHonorKeys(String call) {
   final base = _base(call);
   final got = _honorsCache[base] ?? const <String>[];
@@ -94,15 +99,9 @@ List<String> memberHonorKeys(String call) {
 
 bool hasAnyHonor(String call) => memberHonorKeys(call).isNotEmpty;
 
-/// 某呼号已获得的徽章对象
-List<Honor> honorsOf(String call) {
-  return memberHonorKeys(call)
-      .map((k) => _honorDefs[k])
-      .whereType<Honor>()
-      .toList();
-}
+List<Honor> honorsOf(String call) =>
+    memberHonorKeys(call).map((k) => _honorDefs[k]).whereType<Honor>().toList();
 
-/// 徽章全集（含未获得，用于面板展示；lock=未点亮）
 List<({Honor honor, bool owned})> allHonorsWithState(String call) {
   final owned = memberHonorKeys(call).toSet();
   return [
@@ -110,6 +109,16 @@ List<({Honor honor, bool owned})> allHonorsWithState(String call) {
       if (_honorDefs[k] != null)
         (honor: _honorDefs[k]!, owned: owned.contains(k)),
   ];
+}
+
+/// 优先徽章（member.json 每人的 primary；缺省取第一个已获）
+Honor? primaryHonorOf(String call) {
+  final base = _base(call);
+  final keys = memberHonorKeys(call);
+  if (keys.isEmpty) return null;
+  final p = _primariesCache[base];
+  if (p != null && _honorDefs[p] != null && keys.contains(p)) return _honorDefs[p];
+  return _honorDefs[keys.first];
 }
 
 Color _parseColor(dynamic v) {
@@ -130,11 +139,9 @@ void _parseMembers(Map d) {
     hDefs.forEach((k, v) {
       if (v is Map) {
         final zh = v['zh'] ?? k;
-        final descMap = v['desc'];
-        String desc = '';
-        if (descMap is Map) {
-          desc = (descMap['zh'] ?? descMap.values.firstOrNull ?? '').toString();
-        }
+        var desc = '';
+        final dm = v['desc'];
+        if (dm is Map) desc = (dm['zh'] ?? '').toString();
         m[k.toString()] = Honor(k.toString(), zh.toString(), desc,
             _parseColor(v['color']), Honor.iconFor(k.toString()));
       }
@@ -142,22 +149,26 @@ void _parseMembers(Map d) {
     if (m.isNotEmpty) _honorDefs = m;
   }
   final cache = <String, List<String>>{};
+  final prim = <String, String>{};
   void addMember(dynamic it, String defHonor) {
     String? call;
-    List<dynamic>? honors;
+    List? honors;
+    Object? primary;
     if (it is String) {
       call = it;
     } else if (it is Map) {
       call = it['call'] as String?;
       honors = it['honors'] as List?;
+      primary = it['primary'];
     }
     if (call == null || call.toString().isEmpty) return;
+    final key = call.toString().toUpperCase();
     if (honors != null && honors.isNotEmpty) {
-      cache[call.toString().toUpperCase()] =
-          honors.map((h) => h.toString()).toList();
+      cache[key] = honors.map((x) => x.toString()).toList();
     } else {
-      cache[call.toString().toUpperCase()] = [defHonor];
+      cache[key] = [defHonor];
     }
+    if (primary != null) prim[key] = primary.toString();
   }
 
   for (final m in (d['developers'] as List?) ?? const []) {
@@ -167,16 +178,15 @@ void _parseMembers(Map d) {
     addMember(m, 'earlyMember');
   }
   if (cache.isNotEmpty) _honorsCache = cache;
+  if (prim.isNotEmpty) _primariesCache = prim;
 }
 
 Future<void> refreshMembers() async {
   try {
-    final client = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 8);
+    final client = HttpClient()..connectionTimeout = const Duration(seconds: 8);
     try {
-      final req = await client
-          .getUrl(Uri.parse(kMembersJsonUrl))
-          .timeout(const Duration(seconds: 8));
+      final req =
+          await client.getUrl(Uri.parse(kMembersJsonUrl)).timeout(const Duration(seconds: 8));
       req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus');
       final resp = await req.close().timeout(const Duration(seconds: 8));
       if (resp.statusCode != 200) return;
@@ -189,6 +199,7 @@ Future<void> refreshMembers() async {
         final p = await SharedPreferences.getInstance();
         await p.setString('honorDefsJson', jsonEncode(_serializeDefs()));
         await p.setString('honorsCacheJson', jsonEncode(_honorsCache));
+        await p.setString('primariesJson', jsonEncode(_primariesCache));
       } catch (_) {}
     } finally {
       client.close(force: true);
@@ -210,6 +221,7 @@ Future<void> ensureMembersLoaded() async {
     final p = await SharedPreferences.getInstance();
     final defs = p.getString('honorDefsJson');
     final cache = p.getString('honorsCacheJson');
+    final prim = p.getString('primariesJson');
     if (defs != null && cache != null) {
       try {
         final dd = jsonDecode(defs) as Map;
@@ -232,13 +244,17 @@ Future<void> ensureMembersLoaded() async {
           if (v is List) cm[k.toString()] = v.map((x) => x.toString()).toList();
         });
         if (cm.isNotEmpty) _honorsCache = cm;
+        if (prim != null) {
+          final pm = jsonDecode(prim) as Map;
+          _primariesCache =
+              pm.map((k, v) => MapEntry(k.toString(), v.toString()));
+        }
       } catch (_) {}
     }
   } catch (_) {}
   unawaited(refreshMembers());
 }
 
-/// 打开该呼号专属会员卡网页（浏览器）
 Future<void> openMemberCard(String call) async {
   final url = '$kMemberCardBase?call=${_base(call)}';
   try {
@@ -246,7 +262,7 @@ Future<void> openMemberCard(String call) async {
   } catch (_) {}
 }
 
-/// 奖牌入口：显示已获徽章数量，点击弹出「徽章墙」面板
+/// 入口：显示优先徽章（primary）图标+颜色，点击打开徽章墙面板。
 class HonorBadge extends StatelessWidget {
   final String call;
   const HonorBadge(this.call, {super.key});
@@ -256,24 +272,25 @@ class HonorBadge extends StatelessWidget {
     return ValueListenableBuilder<int>(
       valueListenable: memberListVersion,
       builder: (context, _, _) {
-        final owned = memberHonorKeys(call);
-        if (owned.isEmpty) return const SizedBox.shrink();
-        const gold = Color(0xFFE67E22);
+        final keys = memberHonorKeys(call);
+        if (keys.isEmpty) return const SizedBox.shrink();
+        final pri = primaryHonorOf(call);
+        final col = pri?.color ?? const Color(0xFFE67E22);
+        final ic = pri?.icon ?? Icons.emoji_events_rounded;
         return GestureDetector(
           onTap: () => _showHonorWall(context, call),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)]),
+              color: col.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: gold.withValues(alpha: 0.6)),
+              border: Border.all(color: col.withValues(alpha: 0.6)),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.emoji_events_rounded, size: 13, color: gold),
-              // 仅 1 枚徽章时不显示数量，保持简洁
-              if (owned.length > 1) ...[const SizedBox(width: 3),
-                Text('×${owned.length}',
-                    style: ts(10, c: gold, w: FontWeight.w800)),
+              Icon(ic, size: 14, color: col),
+              if (keys.length > 1) ...[
+                const SizedBox(width: 3),
+                Text('×${keys.length}', style: ts(10, c: col, w: FontWeight.w800)),
               ],
             ]),
           ),
@@ -288,117 +305,133 @@ class HonorBadge extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.5,
+        initialChildSize: 0.82,
+        minChildSize: 0.45,
         maxChildSize: 0.95,
         expand: false,
-        builder: (context, scrollCtrl) => _HonorWallSheet(call: call, scrollCtrl: scrollCtrl),
+        builder: (context, scrollCtrl) =>
+            _HonorWallSheet(call: call, scrollCtrl: scrollCtrl),
       ),
     );
   }
 }
 
-/// 徽章墙面板：右上角呼号，逐行展示全部徽章（点亮彩色 + 说明 / 未点亮灰显）
-class _HonorWallSheet extends StatefulWidget {
+/// 徽章墙面板：头部靠左大呼号，逐行徽章；已点亮徽章点击打开官网专属卡
+class _HonorWallSheet extends StatelessWidget {
   final String call;
   final ScrollController scrollCtrl;
   const _HonorWallSheet({required this.call, required this.scrollCtrl});
 
   @override
-  State<_HonorWallSheet> createState() => _HonorWallSheetState();
-}
-
-class _HonorWallSheetState extends State<_HonorWallSheet> {
-  @override
   Widget build(BuildContext context) {
-    final call = widget.call;
     final base = _base(call);
-    final wall = allHonorsWithState(call);
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFFF8F9FD),
+        color: Color(0xFFF7F9FC),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Center(
           child: Container(width: 40, height: 4, decoration: BoxDecoration(
-              color: const Color(0xFFD9DEEB), borderRadius: BorderRadius.circular(2))),
+              color: const Color(0xFFD5DBE8),
+              borderRadius: BorderRadius.circular(2))),
         ),
-        const SizedBox(height: 6),
-        // 右上呼号
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-          child: Row(children: [
-            const Text('徽章墙', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-            const Spacer(),
-            Text(base,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'monospace',
-                    letterSpacing: 1.2)),
-          ]),
-        ),
+        const SizedBox(height: 14),
+        Row(children: [
+          Text(base,
+              style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'monospace',
+                  letterSpacing: 1.5,
+                  height: 1.1)),
+          const SizedBox(width: 12),
+          const Text('徽章墙',
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF98A2B8))),
+        ]),
         const SizedBox(height: 4),
-        Text(
-          '已点亮 ${wall.where((w) => w.owned).length}/${wall.length}',
-          style: const TextStyle(fontSize: 12, color: Color(0xFF98A2B8)),
-        ),
-        const SizedBox(height: 10),
-        Expanded(
-          child: ValueListenableBuilder<int>(
-            valueListenable: memberListVersion,
-            builder: (context, _, _) => ListView(
-              controller: widget.scrollCtrl,
-              children: [
-                for (final w in wall) _badgeTile(w.honor, w.owned),
-              ],
-            ),
-          ),
+        ValueListenableBuilder<int>(
+          valueListenable: memberListVersion,
+          builder: (context, _, _) {
+            final wall = allHonorsWithState(call);
+            final ownedCount = wall.where((w) => w.owned).length;
+            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('已点亮 $ownedCount/${wall.length}',
+                  style: const TextStyle(fontSize: 12.5, color: Color(0xFF98A2B8))),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.62,
+                child: ListView.builder(
+                  controller: scrollCtrl,
+                  itemCount: wall.length,
+                  itemBuilder: (_, i) =>
+                      _badgeTile(call, wall[i].honor, wall[i].owned),
+                ),
+              ),
+            ]);
+          },
         ),
       ]),
     );
   }
 }
 
-Widget _badgeTile(Honor h, bool owned) {
-  final c = owned ? h.color : const Color(0xFFC3CBD8);
-  final col = owned ? h.color : const Color(0xFFADB6C8);
-  return Container(
-    margin: const EdgeInsets.only(bottom: 10),
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: owned ? c.withValues(alpha: 0.4) : const Color(0xFFECEEF5)),
-    ),
-    child: Row(children: [
-      // 徽章图标
-      Container(
-        width: 44, height: 44,
-        decoration: BoxDecoration(
-          color: owned ? c.withValues(alpha: 0.14) : const Color(0xFFF0F2F7),
-          borderRadius: BorderRadius.circular(14),
+/// 单行徽章（固定 72 高 icon 46 框，统一样式；点亮可点开专属卡）
+Widget _badgeTile(String call, Honor h, bool owned) {
+  final c = owned ? h.color : const Color(0xFFC2CAD8);
+  final col = owned ? h.color : const Color(0xFFAEB7C7);
+  return GestureDetector(
+    onTap: owned ? () => openMemberCard(call) : null,
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: owned ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+      ),
+      child: Row(children: [
+        Container(
+          width: 46,
+          height: 46,
+          decoration: BoxDecoration(
+            color: owned ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(owned ? h.icon : Icons.lock_rounded, color: col, size: 23),
         ),
-        child: Icon(owned ? h.icon : Icons.lock_rounded, color: col, size: 22),
-      ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(h.label,
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w800,
-                  color: owned ? const Color(0xFF1B253C) : const Color(0xFF9AA3B7))),
-          const SizedBox(height: 2),
-          Text(owned ? h.desc : '未点亮',
-              style: TextStyle(fontSize: 12, color: owned ? const Color(0xFF6A7590) : const Color(0xFFB8C0D0))),
-        ]),
-      ),
-      if (owned)
-        Icon(Icons.check_circle_rounded, color: c, size: 18)
-      else
-        const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
-    ]),
+        const SizedBox(width: 13),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(h.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: owned ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
+            const SizedBox(height: 3),
+            Text(owned ? h.desc : '未点亮',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: owned ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
+          ]),
+        ),
+        const SizedBox(width: 10),
+        if (owned)
+          const Icon(Icons.open_in_new_rounded,
+              size: 16, color: Color(0xFFAAB4C6))
+        else
+          const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+      ]),
+    ),
   );
 }
