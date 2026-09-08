@@ -83,6 +83,11 @@ class SponsorPage extends StatelessWidget {
                   S.of(context).sponsorBgpItems,
                 ),
                 _feature(
+                  Icons.card_giftcard_rounded,
+                  'BG7ORC',
+                  '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
+                ),
+                _feature(
                   Icons.favorite_rounded,
                   S.of(context).sponsorEvery,
                   S.of(context).sponsorEveryItems,
