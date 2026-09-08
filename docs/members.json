@@ -881,7 +881,8 @@
       },
       "honors": [
         "kaishan",
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "earlyMember",
       "grp": "test",
