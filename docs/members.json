@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1032,7 +1032,7 @@
         "kaishan"
       ],
       "primary": "kaishan",
-      "grp": "core",
+      "grp": "test",
       "c": "#E67E22"
     }
   ],
