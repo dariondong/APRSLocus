@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -453,6 +453,438 @@
         "mostBrain"
       ],
       "primary": "earlyMember"
+    },
+    {
+      "call": "BA4JLD",
+      "who": {
+        "zh": "BA4JLD",
+        "zh-TW": "BA4JLD",
+        "en": "BA4JLD"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BA4RAB",
+      "who": {
+        "zh": "BA4RAB",
+        "zh-TW": "BA4RAB",
+        "en": "BA4RAB"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BA8AFU",
+      "who": {
+        "zh": "BA8AFU",
+        "zh-TW": "BA8AFU",
+        "en": "BA8AFU"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BA8AZJ",
+      "who": {
+        "zh": "BA8AZJ",
+        "zh-TW": "BA8AZJ",
+        "en": "BA8AZJ"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BD7LGH",
+      "who": {
+        "zh": "BD7LGH",
+        "zh-TW": "BD7LGH",
+        "en": "BD7LGH"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG0AVI",
+      "who": {
+        "zh": "BG0AVI",
+        "zh-TW": "BG0AVI",
+        "en": "BG0AVI"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG7MYN",
+      "who": {
+        "zh": "BG7MYN",
+        "zh-TW": "BG7MYN",
+        "en": "BG7MYN"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG1QGB",
+      "who": {
+        "zh": "BG1QGB",
+        "zh-TW": "BG1QGB",
+        "en": "BG1QGB"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG0FCU",
+      "who": {
+        "zh": "BG0FCU",
+        "zh-TW": "BG0FCU",
+        "en": "BG0FCU"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH3PYF",
+      "who": {
+        "zh": "BH3PYF",
+        "zh-TW": "BH3PYF",
+        "en": "BH3PYF"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH6JOI",
+      "who": {
+        "zh": "BH6JOI",
+        "zh-TW": "BH6JOI",
+        "en": "BH6JOI"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH6RIZ",
+      "who": {
+        "zh": "BH6RIZ",
+        "zh-TW": "BH6RIZ",
+        "en": "BH6RIZ"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH6TAD",
+      "who": {
+        "zh": "BH6TAD",
+        "zh-TW": "BH6TAD",
+        "en": "BH6TAD"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH2WTV",
+      "who": {
+        "zh": "BH2WTV",
+        "zh-TW": "BH2WTV",
+        "en": "BH2WTV"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BI3ATV",
+      "who": {
+        "zh": "BI3ATV",
+        "zh-TW": "BI3ATV",
+        "en": "BI3ATV"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BD6KIR",
+      "who": {
+        "zh": "BD6KIR",
+        "zh-TW": "BD6KIR",
+        "en": "BD6KIR"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG7PJV",
+      "who": {
+        "zh": "BG7PJV",
+        "zh-TW": "BG7PJV",
+        "en": "BG7PJV"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG7ORC",
+      "who": {
+        "zh": "BG7ORC",
+        "zh-TW": "BG7ORC",
+        "en": "BG7ORC"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
     }
   ],
   "groups": [
