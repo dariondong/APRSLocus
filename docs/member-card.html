@@ -109,13 +109,13 @@ const MEMBERS=[
 ];
 const TX={
  "zh":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成员",sub:"业余无线电定位追踪 · HAM RADIO TRACKING",
-   no:"成员编号",since:"入册时间",issuer:"签发 · APRSlocus",valid:"长期有效 · 电波为证",foot:"APRSlocus · 电波无限，感谢同行",
+   foot:"APRSlocus · 电波无限，感谢同行",
    saved:"已保存 PNG",export:"导出 PNG",next:"下一位",contrib:"同行者 · NO."},
  "zh-TW":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成員",sub:"業餘無線電定位追蹤 · HAM RADIO TRACKING",
-   no:"成員編號",since:"入冊時間",issuer:"簽發 · APRSlocus",valid:"長期有效 · 電波為證",foot:"APRSlocus · 電波無限，感謝同行",
+   foot:"APRSlocus · 電波無限，感謝同行",
    saved:"已儲存 PNG",export:"匯出 PNG",next:"下一位",contrib:"同行者 · NO."},
  "en":{mem:"F I R S T   M E M B E R",early:"Early member of APRSlocus",sub:"Ham radio tracking · APRSlocus",
-   no:"MEMBER NO.",since:"Member since",issuer:"Issued by APRSlocus",valid:"Valid forever · on the air",foot:"APRSlocus · Endless waves, thank you",
+   foot:"APRSlocus · Endless waves, thank you",
    saved:"PNG saved",export:"Export PNG",next:"Next",contrib:"Fellow · NO."}
 };
 const W=1040,H=680,SF=2.5;
@@ -188,27 +188,12 @@ function draw(){
  c.save();c.globalAlpha=.5;c.fillStyle="#c9d0dd";c.font="600 11px Consolas,monospace";
  c.translate(W-52,H-120);c.rotate(-Math.PI/2);c.fillText("APRSLOCUS · FIRST MEMBER · 73",0,0);c.restore();
 
- /* ── 底部 · 发卡信息条（三栏，卡式）── */
- const by=H-52;
- c.fillStyle="#eef0f6";c.fillRect(58,H-70,W-116,1);
- const colX=[58, W/2-10, W-58];
- c.textAlign="left";
- c.font="600 9.5px 'Segoe UI','PingFang SC',sans-serif";c.save();c.letterSpacing="1.5px";c.fillStyle="#a5adbe";
- c.fillText(TX[lang].no.toUpperCase(),colX[0],by-26);c.textAlign="right";
- c.fillText(TX[lang].since.toUpperCase(),colX[2],by-26);c.textAlign="left";c.restore();
- c.font="700 14px 'Consolas',ui-monospace,monospace";c.fillStyle="#1b253c";
- c.fillText(m.num.toString().padStart(4,"0"),colX[0],by-8);
- /* 底部中央 APRSlocus 签名 */
- c.font="800 13px 'Segoe UI','PingFang SC',sans-serif";c.fillStyle="#28344f";c.textAlign="center";
- c.fillText("APRSlocus",W/2,by-8);
- c.textAlign="left";
- c.font="600 9.5px 'PingFang SC',sans-serif";c.fillStyle="#9aa3b7";
- c.fillText(TX[lang].issuer,58,H-32);
- c.textAlign="right";c.fillText(TX[lang].valid,W-58,H-32);c.textAlign="left";
- /* 右栏值：MEMBER SINCE */
- const ynow=2025;
- c.font="700 14px 'Consolas',monospace";c.fillStyle="#1b253c";c.textAlign="right";
- c.fillText(String(ynow),W-58,by-8);c.textAlign="left";
+ /* ── 底部 · 极简一行：左序号 / 右寄语 ── */
+ c.fillStyle="#eef0f6";c.fillRect(58,H-66,W-116,1);
+ c.fillStyle="#c3cbd8";c.font="600 13px Consolas,monospace";
+ c.fillText("# "+m.num.toString().padStart(2,"0"),58,H-36);
+ c.fillStyle="#9aa3b7";c.font="500 13px 'PingFang SC','Segoe UI',sans-serif";
+ c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-36);c.textAlign="left";
  c.restore();
  /* 外细边 */
  rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
