@@ -29,6 +29,7 @@ class Honor {
         'developer' => Icons.code_rounded,
         'earlyMember' => Icons.workspace_premium_rounded,
         'mostBrain' => Icons.psychology_rounded,
+        'firstFix' => Icons.military_tech_rounded,
         _ => Icons.emoji_events_rounded,
       };
 }
@@ -39,6 +40,7 @@ const List<String> kHonorOrder = [
   'developer',
   'earlyMember',
   'mostBrain',
+  'firstFix',
 ];
 
 /// 默认徽章定义（联网兜底）
@@ -51,6 +53,9 @@ final Map<String, Honor> _defaultHonorDefs = {
       Color(0xFFB08A34), Icons.workspace_premium_rounded),
   'mostBrain': const Honor('mostBrain', '最强大脑',
       '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。', Color(0xFF0EA5C4), Icons.psychology_rounded),
+  'firstFix': const Honor('firstFix', 'FIRST FIX · 至高荣誉',
+      '完成 APRSlocus 1.0 全部成就，经开发团队授勋的至高荣誉。',
+      Color(0xFFC9A227), Icons.military_tech_rounded),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
@@ -94,6 +99,8 @@ List<String> memberHonorKeys(String call) {
   final base = _base(call);
   final got = _honorsCache[base] ?? const <String>[];
   final set = got.toSet();
+  // FIRST FIX：在线授勋名单命中即拥有（作为徽章展示/可选主页徽章）
+  if (AchievementCenter.instance.isFirstFixHolder(base)) set.add('firstFix');
   return kHonorOrder.where(set.contains).toList();
 }
 
@@ -307,9 +314,11 @@ class HonorBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: memberListVersion,
-      builder: (context, _, _) {
+    // 徽章来源：members.json 荣誉 + FIRST FIX 在线授勋，两处变更都刷新
+    return ListenableBuilder(
+      listenable: Listenable.merge(
+          [memberListVersion, AchievementCenter.instance.version]),
+      builder: (context, _) {
         final keys = memberHonorKeys(call);
         if (keys.isEmpty) return const SizedBox.shrink();
         final pri = primaryHonorOf(call);
