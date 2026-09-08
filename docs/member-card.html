@@ -265,7 +265,9 @@ let HONOR_DEFS={
  kaishan:{zh:"开山","zh-TW":"開山",en:"Founding pioneer",color:"#E67E22"},
  developer:{zh:"开发人员","zh-TW":"開發人員",en:"Developer",color:"#1D6FF2"},
  earlyMember:{zh:"早期成员","zh-TW":"早期成員",en:"Early member",color:"#B08A34"},
- mostBrain:{zh:"最强大脑","zh-TW":"最強大腦",en:"Brightest mind",color:"#0EA5C4"}
+ mostBrain:{zh:"最强大脑","zh-TW":"最強大腦",en:"Brightest mind",color:"#0EA5C4"},
+ firstFix:{zh:"FIRST FIX · 至高荣誉","zh-TW":"FIRST FIX · 至高榮譽",en:"FIRST FIX · Supreme Honor",color:"#C9A227"},
+ jadeGift:{zh:"赠我以琼琚","zh-TW":"贈我以瓊琚",en:"Gifted with Jade",color:"#0EA5B7"}
 };
 function honorDefsOf(p){
   // p.honors 显式，否则按 grp 映射默认
@@ -334,10 +336,13 @@ function draw(){
  c2.fillStyle="#141e38";c2.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c2.fillText("APRSlocus",tx+lw+16,ty+2);
  c2.fillStyle="#8b95a9";c2.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
  c2.save();c2.letterSpacing="1.6px";c2.fillText(TX[lang].mem,tx+lw+16,ty+26);c2.restore();
- const cap=TX[lang].t1;
+ // 右上角展示该成员实际荣誉（替代固定“早期成员”文案）
+ const honorKeys = (c && c.kind==="p") ? honorDefsOf(c.p) : [];
+ const cap = honorKeys.length ? honorKeys.map(k=>honorLabel(k)).join(" · ") : (TX[lang].mem||"");
+ const capCol = honorKeys.length ? honorColor(honorKeys[0]) : g;
  c2.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c2.measureText(cap).width;
- c2.save();rr(c2,W-58-capW-30,24,capW+30,36,18);c2.fillStyle=hexA(g,.15);c2.fill();
- c2.fillStyle=g;c2.textAlign="center";c2.fillText(cap,W-58-capW/2-15,49);c2.textAlign="left";c2.restore();
+ c2.save();rr(c2,W-58-capW-30,24,capW+30,36,18);c2.fillStyle=hexA(capCol,.15);c2.fill();
+ c2.fillStyle=capCol;c2.textAlign="center";c2.fillText(cap,W-58-capW/2-15,49);c2.textAlign="left";c2.restore();
  c2.fillStyle="#8b95a9";c2.font="700 14px Consolas,monospace";c2.textAlign="right";
  c2.fillText((idx+1)+" / "+CARDS.length,W-58,100);c2.textAlign="left";
  c2.fillStyle="#eef1f7";c2.fillRect(58,132,W-116,1);
