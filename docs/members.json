@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1017,6 +1017,78 @@
         "zh": "BG7MGR",
         "zh-TW": "BG7MGR",
         "en": "BG7MGR"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BI7LKD",
+      "who": {
+        "zh": "BI7LKD",
+        "zh-TW": "BI7LKD",
+        "en": "BI7LKD"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BI7JEN",
+      "who": {
+        "zh": "BI7JEN",
+        "zh-TW": "BI7JEN",
+        "en": "BI7JEN"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BH7LCD",
+      "who": {
+        "zh": "BH7LCD",
+        "zh-TW": "BH7LCD",
+        "en": "BH7LCD"
       },
       "role": {
         "zh": "早期成员",
