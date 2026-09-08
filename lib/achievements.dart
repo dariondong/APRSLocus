@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,9 @@ const Map<String, int> kAchieveThreshold = {
   'gather': 2, // 累计组建 2 个群组
 };
 
+/// FIRST FIX 在线名单 URL（官网，由开发团队维护）
+const String kFirstFixUrl = 'https://aprslocus.theez.top/firstfix.json';
+
 /// 全局成就中心：定义 + 计数 + 解锁状态（SharedPreferences 持久化）
 class AchievementCenter {
   AchievementCenter._();
@@ -47,19 +51,30 @@ class AchievementCenter {
         '累计组建 2 个 APRSlocus 群组', Icons.groups_rounded, Color(0xFFE11D48)),
   ];
 
-  /// 至高荣誉（需解锁全部成就后可申请）
+  /// 至高荣誉（需解锁全部成就 + 名单命中）
   static const Achievement firstFix = Achievement(
       'firstFix', 'FIRST FIX · 至高荣誉',
-      '完成 APRSlocus 1.0 全部成就（解锁全部成就后可向开发团队申请）',
+      '完成 APRSlocus 1.0 全部成就，经开发团队授勋后点亮',
       Icons.military_tech_rounded, Color(0xFFC9A227));
 
   final ValueNotifier<int> version = ValueNotifier<int>(0);
   final Set<String> _unlocked = {};
   final Map<String, int> _counts = {};
+  final Set<String> _firstFixHolders = {}; // 官网授予名单
   int _loaded = 0;
+  int _ffLoaded = 0;
 
   bool isUnlocked(String key) => _unlocked.contains(key);
   int get unlockedCount => _unlocked.length;
+
+  /// FIRST FIX 是否已由官方授予（在线名单命中）
+  bool isFirstFixHolder(String call) {
+    final base = call.trim().toUpperCase().split('-').first;
+    return _firstFixHolders.contains(base);
+  }
+
+  /// FIRST FIX 完整点亮条件：官方名单命中（申请授勋后）——不要求本地全成就（授勋代表官方认可）
+  bool firstFixUnlocked(String call) => isFirstFixHolder(call);
 
   Future<void> ensureLoaded() async {
     if (_loaded > 0) return;
@@ -84,7 +99,53 @@ class AchievementCenter {
           });
         }
       }
+      final ff = p.getString('firstFixHolders');
+      if (ff != null) {
+        final list = jsonDecode(ff);
+        if (list is List) {
+          for (final k in list) {
+            if (k is String) _firstFixHolders.add(k.toUpperCase());
+          }
+        }
+      }
       version.value++;
+    } catch (_) {}
+    unawaited(refreshFirstFix());
+  }
+
+  /// 拉取官网 FIRST FIX 名单并缓存
+  Future<void> refreshFirstFix() async {
+    try {
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 8);
+      try {
+        final req = await client
+            .getUrl(Uri.parse(kFirstFixUrl))
+            .timeout(const Duration(seconds: 8));
+        req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus');
+        final resp = await req.close().timeout(const Duration(seconds: 8));
+        if (resp.statusCode != 200) return;
+        final body = await resp.transform(utf8.decoder).join();
+        final d = jsonDecode(body);
+        if (d is! Map) return;
+        final list = d['holders'];
+        if (list is List) {
+          _firstFixHolders.clear();
+          for (final k in list) {
+            if (k is String && k.trim().isNotEmpty) {
+              _firstFixHolders.add(k.trim().toUpperCase());
+            }
+          }
+          version.value++;
+          try {
+            final p = await SharedPreferences.getInstance();
+            await p.setString('firstFixHolders',
+                jsonEncode(_firstFixHolders.toList()));
+          } catch (_) {}
+        }
+      } finally {
+        client.close(force: true);
+      }
     } catch (_) {}
   }
 
@@ -131,6 +192,6 @@ class AchievementCenter {
     version.value++;
   }
 
-  /// 是否已解锁全部 7 项（FIRST FIX 前置）
+  /// 是否已解锁全部 7 项（FIRST FIX 申请前置）
   bool get allUnlocked => AchievementCenter.all.every((a) => isUnlocked(a.key));
 }

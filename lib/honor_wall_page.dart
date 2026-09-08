@@ -143,14 +143,15 @@ class HonorWallPage extends StatelessWidget {
                   valueListenable: AchievementCenter.instance.version,
                   builder: (context, _, _) {
                     final allDone = AchievementCenter.instance.allUnlocked;
+                    final granted = AchievementCenter.instance
+                        .firstFixUnlocked(call);
                     return Column(children: [
                       for (final a in AchievementCenter.all)
                         _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
-                      // FIRST FIX 至高荣誉：全成就解锁后可申请
+                      // FIRST FIX 至高荣誉：全成就解锁且官网授勋后点亮
                       _firstFixTile(AchievementCenter.firstFix,
-                          unlocked: AchievementCenter.instance
-                              .isUnlocked(AchievementCenter.firstFix.key),
-                          unlockable: allDone),
+                          unlocked: granted,
+                          unlockable: allDone && !granted),
                     ]);
                   },
                 ),
