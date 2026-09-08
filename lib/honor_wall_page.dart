@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'achievements.dart';
 import 'early_member.dart';
+import 'models.dart';
+import 'widgets.dart';
 
 /// 打开官网徽章专属页（badge.html?honor=key）
 Future<void> openBadgePage(String honorKey) async {
@@ -17,7 +19,10 @@ Future<void> openBadgePage(String honorKey) async {
 /// ─── 荣誉墙（专属页面）：呼号 + 徽章墙 + 成就墙 ───
 class HonorWallPage extends StatelessWidget {
   final String call;
-  const HonorWallPage(this.call, {super.key});
+  final String? symbol;
+  final String? symbolTable;
+  const HonorWallPage(this.call,
+      {super.key, this.symbol, this.symbolTable});
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +78,13 @@ class HonorWallPage extends StatelessWidget {
                     Container(
                       width: 56,
                       height: 56,
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF14203A),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: const Color(0xFFE4E8F1)),
                       ),
-                      child: Center(
-                        child: Text(base[0],
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 26,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'monospace')),
-                      ),
+                      child: Center(child: _userAvatar()),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -160,6 +160,31 @@ class HonorWallPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// 头像：使用用户当前 APRS 符号 PNG（无符号才回退首字母）
+  Widget _userAvatar() {
+    final sym = symbol ?? '>';
+    final table = symbolTable ?? '/';
+    Widget? img;
+    try {
+      final asset = AprsSym.iconAsset(table, sym);
+      if (asset != null) {
+        img = Image.asset(asset,
+            width: 40, height: 40, fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => null);
+      }
+    } catch (_) {}
+    if (img == null) {
+      final base = call.contains('-') ? call.substring(0, call.indexOf('-')) : call;
+      return Text(base[0],
+          style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF14203A),
+              fontFamily: 'monospace'));
+    }
+    return img;
   }
 
   Widget _honorTile(String call, Honor h, bool owned) {

@@ -301,7 +301,9 @@ Future<void> openMemberCard(String call) async {
 /// 入口：显示优先徽章（primary）图标+颜色，点击打开徽章墙面板。
 class HonorBadge extends StatelessWidget {
   final String call;
-  const HonorBadge(this.call, {super.key});
+  final String? symbol; // 用户当前 APRS 符号（用于荣誉墙头像）
+  final String? symbolTable;
+  const HonorBadge(this.call, {super.key, this.symbol, this.symbolTable});
 
   @override
   Widget build(BuildContext context) {
@@ -342,7 +344,9 @@ class HonorBadge extends StatelessWidget {
   void _showHonorWall(BuildContext context, String call) {
     // 进入 App 内荣誉墙页面（徽章+成就），其中点具体徽章再跳官网徽章页
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => HonorWallPage(call)),
+      MaterialPageRoute(
+          builder: (_) => HonorWallPage(call,
+              symbol: symbol, symbolTable: symbolTable)),
     );
   }
 }

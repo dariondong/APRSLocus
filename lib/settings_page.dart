@@ -57,7 +57,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     // 早期成员徽标：呼号匹配时显示，点击打开专属会员卡页
                     SizedBox(width: 8),
-                    HonorBadge(widget.state.myCall),
+                    HonorBadge(widget.state.myCall,
+                        symbol: widget.state.mySymbol),
                   ],
                 ),
                 SizedBox(height: 4),

@@ -106,7 +106,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           SizedBox(width: 4),
           Text('· ${st.myFullCall}', style: ts(10, c: C.grey)),
           SizedBox(width: 6),
-          HonorBadge(st.myFullCall),
+          HonorBadge(st.myFullCall, symbol: st.mySymbol),
           SizedBox(width: 4),
           Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
         ]),
