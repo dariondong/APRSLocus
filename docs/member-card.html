@@ -268,7 +268,7 @@ function ui(){
  document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";
  const cl=document.getElementById("calls");cl.innerHTML="";
  CARDS.forEach((c,i)=>{const b=document.createElement("button");
-  b.textContent=c.kind==="p"?c.p.call:"♥ "+labelOf(c);
+  b.textContent=c.kind==="p"?c.p.call:labelOf(c);
   if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
 function wallSection(grp,people){
  const gm=GRP_META[grp]; if(!gm) return "";
@@ -291,7 +291,7 @@ function walls(){
    <h3>${T(GRP_META.support)} · ${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
    <div class="cards">${GROUPS.map((g,gi)=>`
      <div class="mcard" onclick="pick(${PEOPLE.length+gi})">
-       <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">♥</div>
+       <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">${T(g.name).trim().charAt(0).toUpperCase()}</div>
        <div class="call">${T(g.name)}</div>
        <div class="who">${T(g.role)}</div>
        <div class="tag2">${TX[lang].sponsor}</div>
@@ -334,8 +334,8 @@ function draw(){
   c2.fillText("“"+T(c.p.brief)+"”",cx,cy0+240);
  } else {
   const gname=T(c.g.name);
-  const fs=(gname.length>12)?64:112;
-  c2.fillStyle="#0d1426";c2.font="800 "+fs+"px 'PingFang SC','Segoe UI',sans-serif";c2.fillText("♥  "+gname,cx,cy0+8);
+  const fs=(gname.length>10)?52:96;
+  c2.fillStyle="#0d1426";c2.font="800 "+fs+"px 'PingFang SC','Segoe UI',sans-serif";c2.fillText(gname,cx,cy0+8);
   c2.fillStyle=g;c2.fillRect(cx,cy0+70,72,4);
   c2.fillStyle="#182238";c2.font="700 28px 'PingFang SC','Segoe UI',sans-serif";c2.fillText(T(c.g.role),cx,cy0+150);
   c2.fillStyle="#7c8699";c2.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
@@ -365,14 +365,14 @@ function profile(){
  } else {
   const m=c.g;
   box.innerHTML=`<div class="p-head">
-   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">♥</div>
+   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${T(m.name).trim().charAt(0).toUpperCase()}</div>
    <div class="p-id"><div class="p-call">${T(m.name)}</div><div class="p-who">${T(m.role)}</div></div>
    <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${TX[lang].sponsor}</span>
   </div>
   <div class="p-hr"></div>
   <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${T(m.note)}</p></div>
   <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${TX[lang].t2}</p></div>
-  <div class="p-tags"><span class="tag">♥ ${TX[lang].sponsor}</span></div>`;
+  <div class="p-tags"><span class="tag">${TX[lang].sponsor}</span></div>`;
  }
 }
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
