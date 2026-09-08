@@ -11,6 +11,7 @@ import 'about_page.dart';
 import 'check_update_page.dart';
 import 'exit_app.dart';
 import 'early_member.dart';
+import 'honor_wall_page.dart';
 import 'settings_pages.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -172,6 +173,47 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 SizedBox(height: 16),
+                // 荣誉墙（徽章墙 / 成就墙 / FIRST FIX）
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => HonorWallPage(widget.state.myFullCall,
+                            symbol: widget.state.mySymbol,
+                            symbolTable: '/')),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFC9A227), Color(0xFF8A6D1F)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: const Icon(Icons.emoji_events_rounded,
+                              color: Colors.white, size: 17),
+                        ),
+                        SizedBox(width: 10),
+                        Text('荣誉墙', style: ts(13, w: FontWeight.w700)),
+                        const SizedBox(width: 6),
+                        const Text('徽章 · 成就 · 至高荣誉',
+                            style: TextStyle(fontSize: 10, color: Color(0xFF98A2B8))),
+                        Spacer(),
+                        Icon(Icons.chevron_right_rounded,
+                            color: C.grey, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
                 // QQ 交流群
                 _qqBanner(),
                 SizedBox(height: 12),

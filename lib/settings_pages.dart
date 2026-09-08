@@ -7,7 +7,6 @@ import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
 import 'early_member.dart';
-import 'honor_wall_page.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -53,7 +52,6 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           icon: Icons.badge_rounded,
           color: C.blue,
           children: [
-            _honorWallEntry(),
             SettingsInput(S.of(context).callsign, _call,
                 tip: 'APRS 呼号，如 BV2AAA',
                 onChanged: (v) {
@@ -111,48 +109,6 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           HonorBadge(st.myFullCall, symbol: st.mySymbol),
           SizedBox(width: 4),
           Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
-        ]),
-      ),
-    );
-  }
-
-  /// 「荣誉墙」固定入口：所有用户可查看徽章墙/成就墙（无称号也可进入）
-  Widget _honorWallEntry() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => HonorWallPage(st.myFullCall,
-                symbol: st.mySymbol, symbolTable: '/')));
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
-        child: Row(children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              gradient:
-                  const LinearGradient(colors: [Color(0xFFC9A227), Color(0xFFE6C873)]),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child:
-                const Icon(Icons.emoji_events_rounded, size: 17, color: Colors.white),
-          ),
-          const SizedBox(width: 11),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('荣誉墙', style: ts(13, w: FontWeight.w800)),
-              const SizedBox(height: 2),
-              Text('徽章 · 成就墙 · FIRST FIX 至高荣誉',
-                  style: ts(10, c: C.grey)),
-            ]),
-          ),
-          HonorBadge(st.myFullCall, symbol: st.mySymbol),
-          const SizedBox(width: 2),
-          const Icon(Icons.chevron_right_rounded,
-              size: 18, color: Color(0xFFC3CBD8)),
         ]),
       ),
     );
