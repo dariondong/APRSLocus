@@ -55,22 +55,25 @@
     box-shadow:0 30px 70px -32px rgba(20,35,70,.45),0 2px 10px rgba(20,35,70,.05)}
   .profile{margin-top:26px;width:100%;background:rgba(255,255,255,.9);border:1px solid rgba(30,50,90,.08);
     border-radius:20px;padding:clamp(20px,4vw,32px);box-shadow:0 18px 44px -30px rgba(20,35,70,.4)}
-  .p-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .p-num{flex:0 0 auto;width:52px;height:52px;border-radius:15px;color:#fff;font:800 17px Consolas,monospace;display:flex;align-items:center;justify-content:center}
-  .p-id{min-width:0}
-  .p-call{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,Consolas,monospace;line-height:1.1}
-  .p-who{color:#6a7590;font-size:14px;margin-top:4px}
-  .p-role{margin-left:auto;font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:999px}
+  .p-top{display:flex;gap:18px;align-items:center}
+  .p-av{flex:0 0 auto;width:72px;height:72px;border-radius:22px;color:#fff;font:900 28px Consolas,monospace;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(20,35,70,.4)}
+  .p-id{min-width:0;flex:1}
+  .p-call{font-size:clamp(24px,4vw,34px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,Consolas,monospace;line-height:1.1}
+  .p-who{color:#6a7590;font-size:14.5px;margin-top:6px}
+  .p-honors{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .p-honors .honor{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;
+    background:#fff;border:1px solid;border-radius:999px;padding:4px 12px;box-shadow:0 2px 8px rgba(20,35,70,.05)}
+  .p-honors .honor .hd{width:8px;height:8px;border-radius:50%}
   .p-hr{height:1px;background:rgba(30,50,90,.08);margin:22px 0}
   .p-sec h4{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2.5px;color:#8b95a9;font-weight:700;margin-bottom:10px}
   .p-sec h4::after{content:"";flex:1;height:1px;background:rgba(30,50,90,.06)}
   .p-sec p{color:#303d58;font-size:15.5px;line-height:1.95}
-  .p-quote{display:flex;gap:12px;margin-top:20px;padding:14px 18px;border-radius:14px;background:#f7f9fd;border-left:3px solid}
-  .p-quote .qm{font-size:20px;line-height:1;color:#c9d0dd;font-family:Georgia,serif}
+  .p-quote{display:flex;gap:12px;margin-top:20px;padding:16px 20px;border-radius:14px;background:#f7f9fd;border-left:3px solid}
+  .p-quote .qm{font-size:24px;line-height:1;color:#c9d0dd;font-family:Georgia,serif}
   .p-quote p{color:#44506b;font-size:14.5px;line-height:1.8;font-style:italic}
-  .p-honors{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
-  .p-honors .honor{font-size:12px;font-weight:700;background:#f7f9fd;border:1px solid;border-radius:999px;padding:3px 12px}
-  .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .tag{font-size:12px;font-weight:600;color:#54617c;background:#eef1f8;border-radius:999px;padding:5px 13px}
   .tag{font-size:12px;font-weight:600;color:#54617c;background:#eef1f8;border-radius:999px;padding:5px 13px}
   .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:24px;flex-wrap:wrap}
   .ct{font:inherit;font-size:14px;color:#39435e;background:transparent;border:0;border-radius:11px;padding:10px 17px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
@@ -257,8 +260,14 @@ function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function T(obj){return obj?(obj[lang]||obj.zh):"";}
-/* 称号：members.json honors 定义 + 每人 honors 推导 */
-let HONOR_DEFS={};
+/* 称号：members.json honors 定义 + 每人 honors 推导（内置兜底，联网后覆盖） */
+let HONOR_DEFS={
+ kaishan:{zh:"开山","zh-TW":"開山",en:"Founding pioneer",color:"#E67E22"},
+ developer:{zh:"开发人员","zh-TW":"開發人員",en:"Developer",color:"#1D6FF2"},
+ earlyMember:{zh:"早期成员","zh-TW":"早期成員",en:"Early member",color:"#B08A34"},
+ aiCompute:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute",color:"#7C3AED"},
+ mostBrain:{zh:"最强大脑","zh-TW":"最強大腦",en:"Brightest mind",color:"#0EA5C4"}
+};
 function honorDefsOf(p){
   // p.honors 显式，否则按 grp 映射默认
   let list = p&&p.honors&&p.honors.length? p.honors : []; 
@@ -367,22 +376,27 @@ function profile(){
  if(c.kind==="p"){
   const m=c.p;const who=m.who?(m.who[lang]||m.who.zh):"";
   const contrib=T(m.contrib),quote=T(m.quote),tags=T(m.tags),role=T(m.role);
-  box.innerHTML=`<div class="p-head">
-   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${(m.call[0]||"A").toUpperCase()}</div>
-   <div class="p-id"><div class="p-call">${m.call}</div><div class="p-who">${who}</div></div>
-   <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${role}</span>
+  box.innerHTML=`<div class="p-top">
+   <div class="p-av" style="background:linear-gradient(140deg,${g},${g})">${(m.call[0]||"A").toUpperCase()}</div>
+   <div class="p-id">
+     <div class="p-call">${m.call}</div>
+     <div class="p-who">${who} · ${role}</div>
+     <div class="p-honors">${honorDefsOf(m).map(k=>`<span class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}"><span class="hd" style="background:${honorColor(k)}"></span>${honorLabel(k)}</span>`).join("")}</div>
+   </div>
   </div>
   <div class="p-hr"></div>
-  <div class="p-honors">${honorDefsOf(m).map(k=>`<span class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}">${honorLabel(k)}</span>`).join("")}</div>
   <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${contrib}</p></div>
   <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${quote}</p></div>
   <div class="p-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
  } else {
   const m=c.g;
-  box.innerHTML=`<div class="p-head">
-   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${T(m.name).trim().charAt(0).toUpperCase()}</div>
-   <div class="p-id"><div class="p-call">${T(m.name)}</div><div class="p-who">${T(m.role)}</div></div>
-   <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${TX[lang].sponsor}</span>
+  box.innerHTML=`<div class="p-top">
+   <div class="p-av" style="background:linear-gradient(140deg,${g},${g})">${T(m.name).trim().charAt(0).toUpperCase()}</div>
+   <div class="p-id">
+     <div class="p-call">${T(m.name)}</div>
+     <div class="p-who">${T(m.role)}</div>
+     <div class="p-honors"><span class="honor" style="color:${g};border-color:${g}"><span class="hd" style="background:${g}"></span>${TX[lang].sponsor}</span></div>
+   </div>
   </div>
   <div class="p-hr"></div>
   <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${T(m.note)}</p></div>
