@@ -14,6 +14,7 @@ import 'services.dart';
 import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'net/aprs.dart';
+import 'early_member.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
 /// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
@@ -1019,6 +1020,7 @@ class AppState extends ChangeNotifier {
 
   AppState() : stations = <Station>[], messages = <AprsMsg>[] {
     _initDeviceDb();
+    unawaited(ensureMembersLoaded());
     _loadPrefs();
     loc.onFix = _onFix;
     loc.onStatus = (s) {
