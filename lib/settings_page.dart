@@ -204,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(width: 10),
                         Text('荣誉墙', style: ts(13, w: FontWeight.w700)),
                         const SizedBox(width: 6),
-                        const Text('徽章 · 成就 · 至高荣誉',
+                        const Text('我的徽章与成就',
                             style: TextStyle(fontSize: 10, color: Color(0xFF98A2B8))),
                         Spacer(),
                         Icon(Icons.chevron_right_rounded,
