@@ -4,61 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APRSlocus · FIRST MEMBER</title>
-<meta name="description" content="APRSlocus FIRST MEMBER · 电波无限，感谢同行">
+<meta name="description" content="APRSlocus FIRST MEMBER 早期成员卡">
 <meta property="og:title" content="APRSlocus FIRST MEMBER">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{
     min-height:100vh;font-family:"Inter","PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
-    background:linear-gradient(160deg,#f7f8fb,#eceef4 55%,#e6e9f1);
-    color:#10192e;display:flex;flex-direction:column;align-items:center;
-    padding:clamp(20px,5vh,48px) 16px 40px;
+    background:linear-gradient(165deg,#fafbfd,#eef0f6 60%,#e9ecf4);color:#101a30;
+    display:flex;flex-direction:column;align-items:center;padding:clamp(20px,5vh,52px) 16px 40px;
     -webkit-font-smoothing:antialiased;
   }
-  /* 极简顶部：只留一个小 logo 角标 + 语言 */
-  .top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;
-    padding:12px 18px;z-index:20}
-  .brand{display:flex;align-items:center;gap:8px;text-decoration:none}
-  .brand img{width:26px;height:26px;border-radius:7px}
-  .brand b{font-size:14px;letter-spacing:-.01em;color:#10192e}
+  .top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;z-index:20}
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+  .brand img{width:26px;height:26px;border-radius:7px;background:#fff;box-shadow:0 4px 10px rgba(20,30,60,.12)}
+  .brand b{font-size:14px;color:#141c30}
   .langs{display:flex;gap:3px}
-  .langs button{font:inherit;font-size:12px;color:#8a94a8;background:transparent;border:0;border-radius:8px;
-    padding:4px 8px;cursor:pointer}
-  .langs button.on{color:#10192e;font-weight:700;background:rgba(255,255,255,.8)}
-  .langs button:not(.on):hover{color:#10192e}
-
-  /* 中部：单张卡，干净留白 */
-  canvas{display:block;width:min(560px,92vw);height:auto;border-radius:20px;margin-top:clamp(30px,10vh,72px);
-    box-shadow:0 24px 60px -24px rgba(28,42,74,.35)}
-  /* 名字 + 身份（卡下极简说明） */
-  .meta{margin-top:22px;text-align:center}
-  .meta .nm{font-size:17px;font-weight:700;letter-spacing:.02em}
-  .meta .st{font-size:12.5px;color:#8a94a8;margin-top:3px}
-  /* 极简控件：一字排开，细分割 */
-  .ctrl{display:flex;align-items:center;gap:4px;margin-top:24px;flex-wrap:wrap;justify-content:center}
-  .ct{font:inherit;font-size:13.5px;color:#36405a;background:transparent;border:0;border-radius:10px;
-    padding:9px 15px;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:6px}
-  .ct:hover{background:rgba(255,255,255,.75)}
+  .langs button{font:inherit;font-size:12px;color:#8a94a8;background:transparent;border:0;border-radius:8px;padding:4px 9px;cursor:pointer}
+  .langs button.on{color:#10192e;font-weight:700;background:rgba(255,255,255,.85)}
+  canvas{display:block;width:min(640px,94vw);height:auto;border-radius:22px;margin-top:clamp(30px,9vh,74px);
+    box-shadow:0 30px 70px -30px rgba(20,35,70,.4),0 2px 8px rgba(20,35,70,.06)}
+  .meta{margin-top:20px;text-align:center}
+  .meta .st{font-size:12.5px;color:#8a94a8}
+  .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:22px;flex-wrap:wrap}
+  .ct{font:inherit;font-size:13.5px;color:#39435e;background:transparent;border:0;border-radius:10px;padding:9px 15px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  .ct:hover{background:rgba(255,255,255,.8)}
   .ct svg{width:15px;height:15px}
-  .ct.prim{font-weight:700;color:#fff;background:#16213b;box-shadow:0 10px 22px -10px rgba(20,30,55,.6)}
-  .ct.prim:hover{background:#101a30}
-  .sep{width:1px;height:18px;background:#d9dde7;margin:0 6px}
-  .calls{display:inline-flex;gap:3px;flex-wrap:wrap}
-  .calls button{font:inherit;font-size:12px;font-family:ui-monospace,'SF Mono',Consolas,monospace;color:#8a94a8;
+  .ct.prim{font-weight:700;color:#fff;background:#16213b;box-shadow:0 10px 22px -12px rgba(20,30,55,.7)}
+  .ct.prim:hover{background:#0f1830}
+  .sep{width:1px;height:18px;background:#d7dbe6;margin:0 8px}
+  .calls{display:inline-flex;gap:2px;flex-wrap:wrap}
+  .calls button{font:inherit;font-size:12px;font-family:ui-monospace,'SF Mono',Consolas,monospace;color:#96a0b4;
     background:transparent;border:0;border-radius:8px;padding:5px 8px;cursor:pointer}
-  .calls button.on{color:#10192e;background:#fff;font-weight:700}
+  .calls button.on{color:#10192e;background:#fff;font-weight:700;box-shadow:0 2px 8px rgba(20,35,70,.08)}
   .calls button:not(.on):hover{color:#10192e}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);
-    background:#16213b;color:#fff;font-size:12.5px;padding:9px 18px;border-radius:10px;opacity:0;
-    transition:.28s;z-index:60}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .foot{margin-top:36px;color:#aab2c4;font-size:12px;letter-spacing:.01em}
-  @media(max-width:520px){ .top{position:static;margin-bottom:6px} canvas{margin-top:8px} }
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;
+    font-size:12.5px;padding:9px 18px;border-radius:10px;opacity:0;transition:.28s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%)}
+  .foot{margin-top:34px;color:#9aa3b6;font-size:11.5px}
+  @media(max-width:520px){.top{position:static;margin-bottom:8px}canvas{margin-top:6px}}
 </style>
 </head>
 <body>
-
 <div class="top">
   <a class="brand" href="."><img src="data:image/png;base64,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" alt=""><b>APRSlocus</b></a>
   <div class="langs">
@@ -70,15 +57,10 @@
 
 <canvas id="cv"></canvas>
 
-<div class="meta">
-  <div class="nm" id="who"></div>
-  <div class="st" id="role"></div>
-</div>
-
 <div class="ctrl">
   <button class="ct prim" onclick="exportPng()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
-    <span data-i18n="export">导出</span></button>
+    <span data-i18n="export">导出 PNG</span></button>
   <button class="ct" onclick="next()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
     <span data-i18n="next">下一位</span></button>
@@ -86,113 +68,158 @@
   <span class="calls" id="calls"></span>
 </div>
 
-<div class="foot" data-i18n="foot">电波无限 · 感谢同行</div>
+<div class="foot" data-i18n="foot">APRSlocus · 电波无限，感谢同行</div>
 <div class="toast" id="toast"></div>
 
 <script>
 const LOGO="data:image/png;base64,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";
 const MEMBERS=[
  {call:"BG7LZQ",who:{zh:"Darion Dong","zh-TW":"Darion Dong",en:"Darion Dong"},
-  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},c:"#3a6df0",num:"01"},
+  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},
+  brief:{zh:"让 APRSlocus 从理想变成电波","zh-TW":"讓 APRSlocus 從理想變成電波",en:"Turned APRSlocus from idea into radio waves"},
+  c:"#3b6ef5",num:1},
  {call:"BG2HCB",who:{zh:"清零","zh-TW":"清零",en:"Qing Ling"},
-  role:{zh:"设置页优化","zh-TW":"設置頁優化",en:"Settings optimization"},c:"#0f9d8e",num:"02"},
+  role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},
+  brief:{zh:"把设置收束成顺手的样子","zh-TW":"把設置收束成順手的樣子",en:"Tamed the settings into something intuitive"},
+  c:"#0e9f8b",num:2},
  {call:"BA4UAX",who:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
-  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},c:"#6366f1",num:"03"},
+  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese translation"},
+  brief:{zh:"让繁体中文同好读懂它","zh-TW":"讓繁體中文同好讀懂它",en:"Made it readable for Traditional-Chinese hams"},
+  c:"#6269e6",num:3},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
-  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},c:"#8b5cf6",num:"04"},
+  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},
+  brief:{zh:"把 APRSlocus 讲给世界","zh-TW":"把 APRSlocus 講給世界",en:"Told APRSlocus' story to the world"},
+  c:"#8a5cf0",num:4},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#10a06a",num:"05"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+  brief:{zh:"一遍遍把 bug 揪出来","zh-TW":"一遍遍把 bug 揪出來",en:"Flushed bugs out of every corner"},
+  c:"#0da46b",num:5},
  {call:"BG7LMW",who:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#0aa5b8",num:"06"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+  brief:{zh:"在真实电台上验证功能","zh-TW":"在真實電台上驗證功能",en:"Validated every feature on real gear"},
+  c:"#0a9fb4",num:6},
  {call:"BG7OSL",who:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#e05a92",num:"07"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+  brief:{zh:"事无巨细推动它变好","zh-TW":"鉅細靡遺推動它變好",en:"Pushed it forward with meticulous feedback"},
+  c:"#e0568f",num:7},
  {call:"BA3RZL",who:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
-  role:{zh:"算力支持","zh-TW":"算力支持",en:"Compute support"},c:"#e07a3a",num:"08"}
+  role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},
+  brief:{zh:"用算力托起开发的路","zh-TW":"用算力托起開發的路",en:"Carried the build on a different signal"},
+  c:"#df7a36",num:8}
 ];
 const TX={
- "zh":{export:"导出",next:"下一位",foot:"APRSlocus · 电波无限，感谢同行",saved:"已保存 PNG",mem:"FIRST MEMBER"},
- "zh-TW":{export:"匯出",next:"下一位",foot:"APRSlocus · 電波無限，感謝同行",saved:"已儲存 PNG",mem:"FIRST MEMBER"},
- "en":{export:"Export",next:"Next",foot:"APRSlocus · Endless waves, thank you",saved:"PNG saved",mem:"FIRST MEMBER"}
+ "zh":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成员",sub:"业余无线电定位追踪 · HAM RADIO TRACKING",
+   no:"成员编号",since:"入册时间",issuer:"签发 · APRSlocus",valid:"长期有效 · 电波为证",foot:"APRSlocus · 电波无限，感谢同行",
+   saved:"已保存 PNG",export:"导出 PNG",next:"下一位",contrib:"同行者 · NO."},
+ "zh-TW":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成員",sub:"業餘無線電定位追蹤 · HAM RADIO TRACKING",
+   no:"成員編號",since:"入冊時間",issuer:"簽發 · APRSlocus",valid:"長期有效 · 電波為證",foot:"APRSlocus · 電波無限，感謝同行",
+   saved:"已儲存 PNG",export:"匯出 PNG",next:"下一位",contrib:"同行者 · NO."},
+ "en":{mem:"F I R S T   M E M B E R",early:"Early member of APRSlocus",sub:"Ham radio tracking · APRSlocus",
+   no:"MEMBER NO.",since:"Member since",issuer:"Issued by APRSlocus",valid:"Valid forever · on the air",foot:"APRSlocus · Endless waves, thank you",
+   saved:"PNG saved",export:"Export PNG",next:"Next",contrib:"Fellow · NO."}
 };
-const W=1000,H=620,SF=2.5;
+const W=1040,H=680,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();updateMeta();}
+function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();}
 function go(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
- const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();updateMeta();}
+ const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();}
 function next(){go(idx+1);}
-function updateMeta(){const m=MEMBERS[idx];
- document.getElementById("who").textContent=m.who[lang]||m.who.zh;
- document.getElementById("role").textContent=m.role[lang]||m.role.zh;}
+function hexA(h,a){const n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
 function sync(){
  document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
- const calls=document.getElementById("calls");calls.innerHTML="";
- MEMBERS.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");
-  b.onclick=()=>go(i);calls.appendChild(b);});
+ const cl=document.getElementById("calls");cl.innerHTML="";
+ MEMBERS.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");b.onclick=()=>go(i);cl.appendChild(b);});
  document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";}
-function hexA(hex,a){const n=parseInt(hex.slice(1),16);
- return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
 function draw(){
  const m=MEMBERS[idx];const c=cv.getContext("2d");
  cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
- const R=26,pad=1;
- /* —— 白卡（极简） —— */
- rr(c,pad,pad,W-pad*2,H-pad*2,R);c.fillStyle="#ffffff";c.fill();
- c.save();c.clip();
- /* 顶部大面积渐变（非常淡的 accent tint） */
- const tg=c.createLinearGradient(0,0,0,H*.66);
- tg.addColorStop(0,hexA(m.c,.07));tg.addColorStop(1,"rgba(255,255,255,0)");
- c.fillStyle=tg;c.fillRect(0,0,W,H);
- /* 细 accent 上边线 */
- c.fillStyle=m.c;c.fillRect(pad,pad,W-pad*2,3);
+ const R=24, P=1;
+ rr(c,P,P,W-P*2,H-P*2,R);c.fillStyle="#ffffff";c.fill();c.save();c.clip();
 
- /* —— 排版：右上角小组 —— */
- const gx=W-44,gy=48,gl=40;
- /* logo 圆形白章（细描边） */
- c.save();
- c.beginPath();c.arc(gx,gy,gl/2,0,Math.PI*2);
- c.fillStyle="#fff";c.fill();c.lineWidth=1.2;c.strokeStyle="#e6e9f1";c.stroke();
- if(typeof logoImg!=="undefined"&&logoImg){c.save();c.beginPath();c.arc(gx,gy,gl/2-1,0,Math.PI*2);c.clip();c.drawImage(logoImg,gx-gl/2,gy-gl/2,gl,gl);c.restore();}
+ /* —— 材质：留白 + 右上/左下极淡色晕，一条发卡行风格 accent 上沿 —— */
+ const tint=c.createRadialGradient(W*.9,0,20,W*.9,0,W*.5);tint.addColorStop(0,hexA(m.c,.10));tint.addColorStop(1,"rgba(255,255,255,0)");
+ c.fillStyle=tint;c.fillRect(0,0,W,H);
+ c.fillStyle=m.c;c.fillRect(P,P,W-P*2,5);
+
+ /* ── 顶部 · 发行方 & 徽标 ── */
+ const tx=58, ty=46, lw=40;
+ if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,12);c.fillStyle="#fff";c.strokeStyle="#eceff6";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,12);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
+ c.fillStyle="#16203a";c.font="800 19px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+14,ty-2);
+ c.fillStyle="#98a1b4";c.font="600 9.5px 'Segoe UI','PingFang SC',sans-serif";
+ c.save();c.letterSpacing="2px";c.fillText(TX[lang].sub.toUpperCase(),tx+lw+14,ty+16);c.restore();
+
+ /* 右上角 FIRST MEMBER 胶囊 */
+ const cap=TX[lang].early;
+ c.font="700 12px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
+ c.save();rr(c,W-58-capW-26,26,capW+26,30,15);c.fillStyle=hexA(m.c,.14);c.fill();
+ c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-13,47);c.textAlign="left";c.restore();
+ c.fillStyle="#9aa3b7";c.font="600 10.5px Consolas,monospace";c.textAlign="right";
+ c.fillText(m.num.toString().padStart(2,"0")+" / "+MEMBERS.length.toString().padStart(2,"0"),W-58,92);c.textAlign="left";
+
+ /* 细顶分隔 */
+ c.fillStyle="#f0f2f7";c.fillRect(58,116,W-116,1);
+
+ /* ── 中部 · 呼号区 ── */
+ const cx=58, cy0=252;
+ /* 身份行小字：APRSlocus 早期成员 */
+ c.save();c.letterSpacing="3px";c.fillStyle="#9aa3b7";c.font="600 12px 'Segoe UI','PingFang SC',sans-serif";
+ c.fillText(TX[lang].early.toUpperCase(),cx,cy0-64);c.restore();
+ /* 大呼号 */
+ c.fillStyle="#101a30";c.font="800 92px 'SF Mono','Consolas',ui-monospace,monospace";
+ c.fillText(m.call,cx,cy0+6);
+ /* accent 短线 */
+ c.fillStyle=m.c;c.fillRect(cx,cy0+34,56,3);
+ /* 姓名 + 角色 */
+ c.fillStyle="#1b253c";c.font="600 22px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who[lang]||m.who.zh,cx,cy0+88);
+ /* 角色胶囊 */
+ const role=m.role[lang]||m.role.zh;
+ c.font="600 13px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
+ c.save();rr(c,cx,cy0+106,rw+24,27,13.5);c.fillStyle="#f2f4f9";c.fill();c.restore();
+ c.fillStyle="#5a657c";c.fillText(role,cx+12,cy0+125);
+ /* 一句贡献简介 */
+ c.fillStyle="#98a1b4";c.font="500 14.5px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText("“"+(m.brief[lang]||m.brief.zh)+"”",cx,cy0+168);
+
+ /* 右侧竖排装饰字（克制的 APRSlocus 标识） */
+ c.save();c.globalAlpha=.5;c.fillStyle="#c9d0dd";c.font="600 11px Consolas,monospace";
+ c.translate(W-52,H-120);c.rotate(-Math.PI/2);c.fillText("APRSLOCUS · FIRST MEMBER · 73",0,0);c.restore();
+
+ /* ── 底部 · 发卡信息条（三栏，卡式）── */
+ const by=H-52;
+ c.fillStyle="#eef0f6";c.fillRect(58,H-70,W-116,1);
+ const colX=[58, W/2-10, W-58];
+ c.textAlign="left";
+ c.font="600 9.5px 'Segoe UI','PingFang SC',sans-serif";c.save();c.letterSpacing="1.5px";c.fillStyle="#a5adbe";
+ c.fillText(TX[lang].no.toUpperCase(),colX[0],by-26);c.textAlign="right";
+ c.fillText(TX[lang].since.toUpperCase(),colX[2],by-26);c.textAlign="left";c.restore();
+ c.font="700 14px 'Consolas',ui-monospace,monospace";c.fillStyle="#1b253c";
+ c.fillText(m.num.toString().padStart(4,"0"),colX[0],by-8);
+ /* 底部中央 APRSlocus 签名 */
+ c.font="800 13px 'Segoe UI','PingFang SC',sans-serif";c.fillStyle="#28344f";c.textAlign="center";
+ c.fillText("APRSlocus",W/2,by-8);
+ c.textAlign="left";
+ c.font="600 9.5px 'PingFang SC',sans-serif";c.fillStyle="#9aa3b7";
+ c.fillText(TX[lang].issuer,58,H-32);
+ c.textAlign="right";c.fillText(TX[lang].valid,W-58,H-32);c.textAlign="left";
+ /* 右栏值：MEMBER SINCE */
+ const ynow=2025;
+ c.font="700 14px 'Consolas',monospace";c.fillStyle="#1b253c";c.textAlign="right";
+ c.fillText(String(ynow),W-58,by-8);c.textAlign="left";
  c.restore();
- /* 徽标文字 */
- c.textAlign="right";c.fillStyle="#141c30";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText("APRSlocus",W-70,42);
- c.fillStyle="#9aa2b6";c.font="600 10px 'Segoe UI',sans-serif";c.letterSpacing="3px";
- c.fillText(TX[lang].mem,W-70,60);c.letterSpacing="0px";c.textAlign="left";
-
- /* —— 中部大呼号 —— */
- const cx=76;
- c.fillStyle="#121a2e";c.font="800 84px 'SF Mono','Consolas',monospace";
- c.fillText(m.call,cx,268);
- /* 细 accent 线（很短，克制） */
- c.fillStyle=m.c;c.fillRect(cx,300,54,3);
- /* 名字 */
- c.fillStyle="#1b253c";c.font="600 22px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(m.who[lang]||m.who.zh,cx,348);
- /* 角色（灰） */
- c.fillStyle="#99a1b5";c.font="500 15px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(m.role[lang]||m.role.zh,cx,378);
-
- /* —— 底部细行 —— */
- c.fillStyle="#aeb6c8";c.font="500 12.5px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(TX[lang].foot,cx,H-52);
- c.fillStyle="#c6ccd8";c.font="500 12px 'PingFang SC',sans-serif";
- c.textAlign="right";c.fillText(m.call,cx,H-52);c.textAlign="left";
- c.restore();
- /* 外细描边 */
- rr(c,pad,pad,W-pad*2,H-pad*2,R);c.lineWidth=1;c.strokeStyle="#e7eaf2";c.stroke();
+ /* 外细边 */
+ rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
 }
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
-function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1500);}
-function exportPng(){const a=document.createElement("a");
- a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600);}
+function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
 const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
-sync();updateMeta();
+sync();
 </script>
 </body>
 </html>
