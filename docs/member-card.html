@@ -245,13 +245,20 @@ const TX={
 };
 const W=1040,H=680,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
+/* 统一卡片列表：成员 + 赞助/团体，均可渲染会员卡 */
+const CARDS=PEOPLE.map((p,pi)=>({kind:"p",p,pi})).concat(GROUPS.map((g,gi)=>({kind:"g",g,gi})));
+function cur(){return CARDS[idx];}
+function labelOf(c){return c.kind==="p"?c.p.call:T(c.g.name);}
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function T(obj){return obj?(obj[lang]||obj.zh):"";}
 function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();walls();draw();profile();}
-function pick(i){idx=((i%PEOPLE.length)+PEOPLE.length)%PEOPLE.length;
- const u=new URL(location);u.searchParams.set("call",PEOPLE[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();profile();
+function pick(i){idx=((i%CARDS.length)+CARDS.length)%CARDS.length;
+ const c=cur();const u=new URL(location);
+ if(c.kind==="p")u.searchParams.set("call",c.p.call);else u.searchParams.delete("call");
+ if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");
+ history.replaceState(null,"",u);ui();draw();profile();
  const el=document.querySelector(".prehead");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
 function next(){pick(idx+1);}
 function hexA(h,a){const n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
@@ -260,97 +267,122 @@ function ui(){
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
  document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";
  const cl=document.getElementById("calls");cl.innerHTML="";
- PEOPLE.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
+ CARDS.forEach((c,i)=>{const b=document.createElement("button");
+  b.textContent=c.kind==="p"?c.p.call:"♥ "+labelOf(c);
+  if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
 function wallSection(grp,people){
  const gm=GRP_META[grp]; if(!gm) return "";
  const gcols={core:"#3b6ef5",i18n:"#6269e6",test:"#0da46b",support:"#df7a36"};
  return `<div class="group"><div class="gh"><span class="dot" style="background:${gcols[grp]}"></span>
   <h3>${T(gm)}</h3><span>${people.length}</span></div>
-  <div class="cards">${people.map(m=>`
-   <div class="mcard" onclick="pick(${PEOPLE.indexOf(m)})">
-     <div class="av" style="background:linear-gradient(140deg,${m.c},${m.c})">${(m.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
-     <div class="call">${m.call}</div>
-     <div class="who">${m.who&&(m.who[lang]||m.who.zh)!==m.call?(m.who[lang]||m.who.zh):""}</div>
-     <div class="role">${T(m.role)}</div>
+  <div class="cards">${people.map(p=>`
+   <div class="mcard" onclick="pick(${PEOPLE.indexOf(p)})">
+     <div class="av" style="background:linear-gradient(140deg,${p.c},${p.c})">${(p.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
+     <div class="call">${p.call}</div>
+     <div class="who">${p.who&&(p.who[lang]||p.who.zh)!==p.call?(p.who[lang]||p.who.zh):""}</div>
+     <div class="role">${T(p.role)}</div>
    </div>`).join("")}
   </div></div>`;}
 function walls(){
  const order=["core","i18n","test","support"];
  let html=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
- /* 独立「赞助与支持」段：团体/匿名赞助卡 */
- const gcols={support:"#df7a36",group:"#7c5cff"};
- html+=`<div class="group"><div class="gh"><span class="dot" style="background:${gcols.group}"></span>
+ const gcols="#7c5cff";
+ html+=`<div class="group"><div class="gh"><span class="dot" style="background:${gcols}"></span>
    <h3>${T(GRP_META.support)} · ${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
-   <div class="cards">${GROUPS.map((g,i)=>`
-     <div class="mcard grp" onclick="sponsorToast(${i})">
+   <div class="cards">${GROUPS.map((g,gi)=>`
+     <div class="mcard" onclick="pick(${PEOPLE.length+gi})">
        <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">♥</div>
        <div class="call">${T(g.name)}</div>
        <div class="who">${T(g.role)}</div>
        <div class="tag2">${TX[lang].sponsor}</div>
      </div>`).join("")}
    </div></div>`;
- document.getElementById("walls").innerHTML=html;
-}
-function sponsorToast(i){const g=GROUPS[i];if(!g)return;toast(T(g.note));}
+ document.getElementById("walls").innerHTML=html;}
+function cardColor(c){return c.kind==="p"?c.p.c:c.g.c;}
 function draw(){
- const m=PEOPLE[idx];const c=cv.getContext("2d");
- cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
+ const c=cur();const g=cardColor(c);const c2=cv.getContext("2d");
+ cv.width=W*SF;cv.height=H*SF;c2.scale(SF,SF);c2.clearRect(0,0,W,H);
  const R=24,P=1;
- rr(c,P,P,W-P*2,H-P*2,R);c.fillStyle="#ffffff";c.fill();c.save();c.clip();
- const tint=c.createRadialGradient(W*.9,0,20,W*.9,0,W*.5);tint.addColorStop(0,hexA(m.c,.10));tint.addColorStop(1,"rgba(255,255,255,0)");
- c.fillStyle=tint;c.fillRect(0,0,W,H);
- c.fillStyle=m.c;c.fillRect(P,P,W-P*2,5);
+ rr(c2,P,P,W-P*2,H-P*2,R);c2.fillStyle="#ffffff";c2.fill();c2.save();c2.clip();
+ const tint=c2.createRadialGradient(W*.9,0,20,W*.9,0,W*.5);tint.addColorStop(0,hexA(g,.10));tint.addColorStop(1,"rgba(255,255,255,0)");
+ c2.fillStyle=tint;c2.fillRect(0,0,W,H);
+ c2.fillStyle=g;c2.fillRect(P,P,W-P*2,5);
  const tx=58,ty=52,lw=46;
- if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,13);c.fillStyle="#fff";c.strokeStyle="#e7eaf2";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,13);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
- c.fillStyle="#141e38";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+16,ty+2);
- c.fillStyle="#8b95a9";c.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
- c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].mem,tx+lw+16,ty+26);c.restore();
+ if(logoImg){c2.save();rr(c2,tx,ty-lw/2,lw,lw,13);c2.fillStyle="#fff";c2.strokeStyle="#e7eaf2";c2.lineWidth=1;c2.stroke();rr(c2,tx,ty-lw/2,lw,lw,13);c2.clip();c2.drawImage(logoImg,tx,ty-lw/2,lw,lw);c2.restore();}
+ c2.fillStyle="#141e38";c2.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c2.fillText("APRSlocus",tx+lw+16,ty+2);
+ c2.fillStyle="#8b95a9";c2.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
+ c2.save();c2.letterSpacing="1.6px";c2.fillText(TX[lang].mem,tx+lw+16,ty+26);c2.restore();
  const cap=TX[lang].t1;
- c.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
- c.save();rr(c,W-58-capW-30,24,capW+30,36,18);c.fillStyle=hexA(m.c,.15);c.fill();
- c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,49);c.textAlign="left";c.restore();
- c.fillStyle="#8b95a9";c.font="700 14px Consolas,monospace";c.textAlign="right";
- c.fillText((idx+1)+" / "+PEOPLE.length,W-58,100);c.textAlign="left";
- c.fillStyle="#eef1f7";c.fillRect(58,132,W-116,1);
+ c2.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c2.measureText(cap).width;
+ c2.save();rr(c2,W-58-capW-30,24,capW+30,36,18);c2.fillStyle=hexA(g,.15);c2.fill();
+ c2.fillStyle=g;c2.textAlign="center";c2.fillText(cap,W-58-capW/2-15,49);c2.textAlign="left";c2.restore();
+ c2.fillStyle="#8b95a9";c2.font="700 14px Consolas,monospace";c2.textAlign="right";
+ c2.fillText((idx+1)+" / "+CARDS.length,W-58,100);c2.textAlign="left";
+ c2.fillStyle="#eef1f7";c2.fillRect(58,132,W-116,1);
  const cx=58,cy0=278;
- c.save();c.letterSpacing="2.5px";c.fillStyle="#8b95a9";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText(TX[lang].t1.toUpperCase(),cx,cy0-102);c.restore();
- c.fillStyle="#0d1426";c.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";c.fillText(m.call,cx,cy0+2);
- c.fillStyle=m.c;c.fillRect(cx,cy0+56,72,4);
- c.fillStyle="#182238";c.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who?(m.who[lang]||m.who.zh):"",cx,cy0+128);
- const role=T(m.role);
- c.font="600 17px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
- c.save();rr(c,cx,cy0+150,rw+30,34,17);c.fillStyle="#f2f4f9";c.fill();c.restore();
- c.fillStyle="#4c5770";c.fillText(role,cx+15,cy0+172);
- c.fillStyle="#7c8699";c.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText("“"+T(m.brief)+"”",cx,cy0+240);
- c.fillStyle="#eef0f6";c.fillRect(58,H-82,W-116,1);
- c.fillStyle="#9aa4b8";c.font="700 18px Consolas,monospace";c.fillText("# "+(idx+1),58,H-44);
- c.fillStyle="#7c8699";c.font="500 17px 'PingFang SC','Segoe UI',sans-serif";
- c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-44);c.textAlign="left";
- c.restore();
- rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
+ c2.save();c2.letterSpacing="2.5px";c2.fillStyle="#8b95a9";c2.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
+ c2.fillText(TX[lang].t1.toUpperCase(),cx,cy0-102);c2.restore();
+ if(c.kind==="p"){
+  c2.fillStyle="#0d1426";c2.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";c2.fillText(c.p.call,cx,cy0+2);
+  c2.fillStyle=g;c2.fillRect(cx,cy0+56,72,4);
+  c2.fillStyle="#182238";c2.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c2.fillText(c.p.who?(c.p.who[lang]||c.p.who.zh):"",cx,cy0+128);
+  const role=T(c.p.role);c2.font="600 17px 'PingFang SC','Segoe UI',sans-serif";
+  const rw=c2.measureText(role).width;
+  c2.save();rr(c2,cx,cy0+150,rw+30,34,17);c2.fillStyle="#f2f4f9";c2.fill();c2.restore();
+  c2.fillStyle="#4c5770";c2.fillText(role,cx+15,cy0+172);
+  c2.fillStyle="#7c8699";c2.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
+  c2.fillText("“"+T(c.p.brief)+"”",cx,cy0+240);
+ } else {
+  const gname=T(c.g.name);
+  const fs=(gname.length>12)?64:112;
+  c2.fillStyle="#0d1426";c2.font="800 "+fs+"px 'PingFang SC','Segoe UI',sans-serif";c2.fillText("♥  "+gname,cx,cy0+8);
+  c2.fillStyle=g;c2.fillRect(cx,cy0+70,72,4);
+  c2.fillStyle="#182238";c2.font="700 28px 'PingFang SC','Segoe UI',sans-serif";c2.fillText(T(c.g.role),cx,cy0+150);
+  c2.fillStyle="#7c8699";c2.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
+  c2.fillText("“"+T(c.g.note)+"”",cx,cy0+220);
+ }
+ c2.fillStyle="#eef0f6";c2.fillRect(58,H-82,W-116,1);
+ c2.fillStyle="#9aa4b8";c2.font="700 18px Consolas,monospace";c2.fillText("# "+(idx+1),58,H-44);
+ c2.fillStyle="#7c8699";c2.font="500 17px 'PingFang SC','Segoe UI',sans-serif";
+ c2.textAlign="right";c2.fillText(TX[lang].foot,W-58,H-44);c2.textAlign="left";
+ c2.restore();
+ rr(c2,P,P,W-P*2,H-P*2,R);c2.lineWidth=1;c2.strokeStyle="#e4e8f1";c2.stroke();
 }
 function profile(){
- const m=PEOPLE[idx],g=m.c;const who=m.who?(m.who[lang]||m.who.zh):"";
- const contrib=T(m.contrib),quote=T(m.quote),tags=T(m.tags),role=T(m.role);
- const box=document.getElementById("profile");
- box.innerHTML=`<div class="p-head">
-   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${TX[lang].no}${(idx+1).toString().padStart(2,"0")}</div>
+ const c=cur(),g=cardColor(c);const box=document.getElementById("profile");
+ if(c.kind==="p"){
+  const m=c.p;const who=m.who?(m.who[lang]||m.who.zh):"";
+  const contrib=T(m.contrib),quote=T(m.quote),tags=T(m.tags),role=T(m.role);
+  box.innerHTML=`<div class="p-head">
+   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${(m.call[0]||"A").toUpperCase()}</div>
    <div class="p-id"><div class="p-call">${m.call}</div><div class="p-who">${who}</div></div>
    <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${role}</span>
- </div>
- <div class="p-hr"></div>
- <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${contrib}</p></div>
- <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${quote}</p></div>
- <div class="p-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
+  </div>
+  <div class="p-hr"></div>
+  <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${contrib}</p></div>
+  <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${quote}</p></div>
+  <div class="p-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
+ } else {
+  const m=c.g;
+  box.innerHTML=`<div class="p-head">
+   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">♥</div>
+   <div class="p-id"><div class="p-call">${T(m.name)}</div><div class="p-who">${T(m.role)}</div></div>
+   <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${TX[lang].sponsor}</span>
+  </div>
+  <div class="p-hr"></div>
+  <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${T(m.note)}</p></div>
+  <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${TX[lang].t2}</p></div>
+  <div class="p-tags"><span class="tag">♥ ${TX[lang].sponsor}</span></div>`;
+ }
 }
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600);}
-function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+PEOPLE[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
+function exportPng(){const a=document.createElement("a");
+ const c=cur();const nm=c.kind==="p"?c.p.call:T(c.g.name).replace(/\s+/g,"-");
+ a.download="APRSlocus-"+nm+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
-const fi=PEOPLE.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
+const fi=qc?CARDS.findIndex(x=>x.kind==="p"&&x.p.call.toUpperCase()===(qc||"").toUpperCase()):-1;if(fi>=0)idx=fi;
 ui();walls();profile();draw();
 </script>
 </body>
