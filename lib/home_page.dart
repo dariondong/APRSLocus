@@ -10,6 +10,7 @@ import 'stations_page.dart';
 import 'messages_page.dart';
 import 'packets_page.dart';
 import 'settings_page.dart';
+import 'early_member.dart';
 import 'settings_pages.dart';
 
 class HomePage extends StatefulWidget {
@@ -684,10 +685,17 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.state.myCall,
-                      style: ts(13, w: FontWeight.w700),
-                    ),
+                    Row(children: [
+                      Flexible(
+                        child: Text(
+                          widget.state.myCall,
+                          style: ts(13, w: FontWeight.w700),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      // 主页呼号旁展示优先徽章入口（点开徽章墙）
+                      HonorBadge(widget.state.myCall),
+                    ]),
                     Text(widget.state.myPosStr, style: ts(9, c: C.grey)),
                   ],
                 ),
