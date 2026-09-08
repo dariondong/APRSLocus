@@ -248,7 +248,7 @@ let lang="zh",idx=0;const cv=document.getElementById("cv");
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function T(l,obj){return obj[lang]||obj.zh;}
+function T(obj){return obj?(obj[lang]||obj.zh):"";}
 function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();walls();draw();profile();}
 function pick(i){idx=((i%PEOPLE.length)+PEOPLE.length)%PEOPLE.length;
  const u=new URL(location);u.searchParams.set("call",PEOPLE[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();profile();
@@ -298,7 +298,7 @@ function draw(){
  c.fillStyle="#141e38";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+16,ty+2);
  c.fillStyle="#8b95a9";c.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
  c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].mem,tx+lw+16,ty+26);c.restore();
- const cap=T(TX[lang].t1);
+ const cap=TX[lang].t1;
  c.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
  c.save();rr(c,W-58-capW-30,24,capW+30,36,18);c.fillStyle=hexA(m.c,.15);c.fill();
  c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,49);c.textAlign="left";c.restore();
@@ -344,7 +344,7 @@ function exportPng(){const a=document.createElement("a");a.download="APRSlocus-F
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
 const fi=PEOPLE.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
-ui();walls();
+ui();walls();profile();draw();
 </script>
 </body>
 </html>
