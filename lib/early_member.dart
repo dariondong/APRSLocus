@@ -270,8 +270,11 @@ class HonorBadge extends StatelessWidget {
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               const Icon(Icons.emoji_events_rounded, size: 13, color: gold),
-              const SizedBox(width: 3),
-              Text('×$owned', style: ts(10, c: gold, w: FontWeight.w800)),
+              // 仅 1 枚徽章时不显示数量，保持简洁
+              if (owned.length > 1) ...[const SizedBox(width: 3),
+                Text('×${owned.length}',
+                    style: ts(10, c: gold, w: FontWeight.w800)),
+              ],
             ]),
           ),
         );
