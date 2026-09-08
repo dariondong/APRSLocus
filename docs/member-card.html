@@ -3,241 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APRSlocus · FIRST MEMBER Card</title>
-<meta name="description" content="APRSlocus FIRST MEMBER 高级会员卡 · 电波无限，感谢同行">
-<meta property="og:title" content="APRSlocus FIRST MEMBER Card">
+<title>APRSlocus · FIRST MEMBER</title>
+<meta name="description" content="APRSlocus FIRST MEMBER · 电波无限，感谢同行">
+<meta property="og:title" content="APRSlocus FIRST MEMBER">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{min-height:100%}
   body{
-    font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
-    background:
-      radial-gradient(900px 560px at 82% -6%, rgba(40,80,160,.32), transparent 62%),
-      radial-gradient(700px 500px at 4% 26%, rgba(160,120,50,.10), transparent 55%),
-      radial-gradient(1000px 700px at 50% 120%, rgba(8,14,34,.9), transparent 70%),
-      linear-gradient(165deg,#0b1226 0%,#0a1022 46%,#070c1c 100%);
-    background-attachment:fixed;
-    min-height:100vh;color:#eaf1ff;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:clamp(14px,4vh,40px) 16px;overflow-x:hidden;
+    min-height:100vh;font-family:"Inter","PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,#f7f8fb,#eceef4 55%,#e6e9f1);
+    color:#10192e;display:flex;flex-direction:column;align-items:center;
+    padding:clamp(20px,5vh,48px) 16px 40px;
     -webkit-font-smoothing:antialiased;
   }
-  /* 细网格肌理（极淡） */
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
-    background-image:linear-gradient(rgba(140,170,255,.035) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(140,170,255,.035) 1px,transparent 1px);
-    background-size:44px 44px}
-  /* 卡片下方光面 */
-  .ped{position:relative;margin:10px 0 6px}
-  .ped::before{content:"";position:absolute;left:8%;right:8%;bottom:-34px;height:80px;
-    background:radial-gradient(50% 100% at 50% 0%, rgba(4,8,20,.85), transparent 75%);
-    filter:blur(12px);z-index:-1}
-  canvas{display:block;width:min(680px,94vw);height:auto;border-radius:30px;
-    filter:drop-shadow(0 40px 70px rgba(2,5,16,.75)) drop-shadow(0 6px 18px rgba(2,5,16,.5))}
-  /* 底部极简控件 */
-  .ui{width:min(680px,94vw);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:clamp(16px,4vh,30px)}
-  .pill{font:inherit;font-size:12.5px;color:#c3d2f2;display:inline-flex;align-items:center;gap:7px;
-    background:rgba(255,255,255,.05);border:1px solid rgba(150,180,255,.18);
-    border-radius:999px;padding:7px 15px;cursor:pointer;transition:.25s;backdrop-filter:blur(8px);
-    text-decoration:none}
-  .pill:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(180,205,255,.4)}
-  .pill.gold{background:linear-gradient(135deg,#e7c873,#c89b3c);color:#251a04;font-weight:800;border:none;
-    box-shadow:0 8px 22px -8px rgba(212,175,90,.6)}
-  .pill svg{width:14px;height:14px}
-  .pill.sel{background:rgba(230,200,122,.2);color:#f2d98e;border-color:rgba(230,200,122,.5)}
-  .langs{position:fixed;top:14px;right:16px;display:flex;gap:5px;z-index:20}
-  .langs button{font:inherit;font-size:11.5px;color:#9fb2dd;background:rgba(255,255,255,.04);
-    border:1px solid rgba(150,180,255,.14);border-radius:999px;padding:4px 11px;cursor:pointer;transition:.2s}
-  .langs button.on{color:#241a04;background:linear-gradient(135deg,#e7c873,#c89b3c);border-color:transparent;font-weight:800}
-  .langs button:not(.on):hover{color:#fff}
-  .mark{position:fixed;top:12px;left:16px;display:flex;align-items:center;gap:9px;z-index:20;text-decoration:none}
-  .mark img{width:34px;height:34px;border-radius:9px;background:#fff;padding:3px;box-shadow:0 8px 20px rgba(2,5,16,.5)}
-  .mark b{font-size:15px;letter-spacing:-.02em;color:#eaf1ff;display:block;line-height:1.05}
-  .mark span{font-size:9.5px;letter-spacing:3px;color:#d4af5a;font-weight:800}
+  /* 极简顶部：只留一个小 logo 角标 + 语言 */
+  .top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;z-index:20}
+  .brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+  .brand img{width:26px;height:26px;border-radius:7px}
+  .brand b{font-size:14px;letter-spacing:-.01em;color:#10192e}
+  .langs{display:flex;gap:3px}
+  .langs button{font:inherit;font-size:12px;color:#8a94a8;background:transparent;border:0;border-radius:8px;
+    padding:4px 8px;cursor:pointer}
+  .langs button.on{color:#10192e;font-weight:700;background:rgba(255,255,255,.8)}
+  .langs button:not(.on):hover{color:#10192e}
+
+  /* 中部：单张卡，干净留白 */
+  canvas{display:block;width:min(560px,92vw);height:auto;border-radius:20px;margin-top:clamp(30px,10vh,72px);
+    box-shadow:0 24px 60px -24px rgba(28,42,74,.35)}
+  /* 名字 + 身份（卡下极简说明） */
+  .meta{margin-top:22px;text-align:center}
+  .meta .nm{font-size:17px;font-weight:700;letter-spacing:.02em}
+  .meta .st{font-size:12.5px;color:#8a94a8;margin-top:3px}
+  /* 极简控件：一字排开，细分割 */
+  .ctrl{display:flex;align-items:center;gap:4px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+  .ct{font:inherit;font-size:13.5px;color:#36405a;background:transparent;border:0;border-radius:10px;
+    padding:9px 15px;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:6px}
+  .ct:hover{background:rgba(255,255,255,.75)}
+  .ct svg{width:15px;height:15px}
+  .ct.prim{font-weight:700;color:#fff;background:#16213b;box-shadow:0 10px 22px -10px rgba(20,30,55,.6)}
+  .ct.prim:hover{background:#101a30}
+  .sep{width:1px;height:18px;background:#d9dde7;margin:0 6px}
+  .calls{display:inline-flex;gap:3px;flex-wrap:wrap}
+  .calls button{font:inherit;font-size:12px;font-family:ui-monospace,'SF Mono',Consolas,monospace;color:#8a94a8;
+    background:transparent;border:0;border-radius:8px;padding:5px 8px;cursor:pointer}
+  .calls button.on{color:#10192e;background:#fff;font-weight:700}
+  .calls button:not(.on):hover{color:#10192e}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);
-    background:#141e38;border:1px solid rgba(212,175,90,.4);color:#f2e3b6;font-size:13px;
-    padding:10px 22px;border-radius:12px;opacity:0;transition:.3s;z-index:99;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+    background:#16213b;color:#fff;font-size:12.5px;padding:9px 18px;border-radius:10px;opacity:0;
+    transition:.28s;z-index:60}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  @media (max-width:520px){ .mark span{display:none} }
+  .foot{margin-top:36px;color:#aab2c4;font-size:12px;letter-spacing:.01em}
+  @media(max-width:520px){ .top{position:static;margin-bottom:6px} canvas{margin-top:8px} }
 </style>
 </head>
 <body>
 
-<div class="mark"><img id="lg" alt="APRSlocus"><span><b>APRSlocus</b>FIRST MEMBER</span></div>
-<div class="langs">
-  <button data-lang="zh" onclick="setLang('zh')">简</button>
-  <button data-lang="zh-TW" onclick="setLang('zh-TW')">繁</button>
-  <button data-lang="en" onclick="setLang('en')">EN</button>
+<div class="top">
+  <a class="brand" href="."><img src="data:image/png;base64,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" alt=""><b>APRSlocus</b></a>
+  <div class="langs">
+    <button data-lang="zh" onclick="setLang('zh')">简</button>
+    <button data-lang="zh-TW" onclick="setLang('zh-TW')">繁</button>
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+  </div>
 </div>
 
-<div class="ped"><canvas id="cv"></canvas></div>
+<canvas id="cv"></canvas>
 
-<div class="ui">
-  <button class="pill gold" onclick="exportPng()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4.2-4.2M12 14 7.8 9.8M5 15.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3.5"/></svg>
-    <span data-i18n="exp">导出高清图</span></button>
-  <button class="pill" onclick="nextCard()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+<div class="meta">
+  <div class="nm" id="who"></div>
+  <div class="st" id="role"></div>
+</div>
+
+<div class="ctrl">
+  <button class="ct prim" onclick="exportPng()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
+    <span data-i18n="export">导出</span></button>
+  <button class="ct" onclick="next()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
     <span data-i18n="next">下一位</span></button>
-  <span id="pager" style="display:inline-flex;gap:6px;flex-wrap:wrap"></span>
+  <span class="sep"></span>
+  <span class="calls" id="calls"></span>
 </div>
 
+<div class="foot" data-i18n="foot">电波无限 · 感谢同行</div>
 <div class="toast" id="toast"></div>
 
 <script>
 const LOGO="data:image/png;base64,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";
-const lgEl=document.getElementById("lg");lgEl.src=LOGO;
-let logoImg=null;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
-
 const MEMBERS=[
  {call:"BG7LZQ",who:{zh:"Darion Dong","zh-TW":"Darion Dong",en:"Darion Dong"},
-  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},accent:"#39c0ff",no:"NO. 0001"},
+  role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},c:"#3a6df0",num:"01"},
  {call:"BG2HCB",who:{zh:"清零","zh-TW":"清零",en:"Qing Ling"},
-  role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},accent:"#ffc861",no:"NO. 0002"},
+  role:{zh:"设置页优化","zh-TW":"設置頁優化",en:"Settings optimization"},c:"#0f9d8e",num:"02"},
  {call:"BA4UAX",who:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
-  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},accent:"#59e0c8",no:"NO. 0003"},
+  role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese"},c:"#6366f1",num:"03"},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
-  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},accent:"#bd9bff",no:"NO. 0004"},
+  role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},c:"#8b5cf6",num:"04"},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#5ee6a3",no:"NO. 0005"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#10a06a",num:"05"},
  {call:"BG7LMW",who:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#4fe0ee",no:"NO. 0006"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#0aa5b8",num:"06"},
  {call:"BG7OSL",who:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},accent:"#ff86b4",no:"NO. 0007"},
+  role:{zh:"功能测试","zh-TW":"功能測試",en:"Testing"},c:"#e05a92",num:"07"},
  {call:"BA3RZL",who:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
-  role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},accent:"#ffa45f",no:"NO. 0008"}
+  role:{zh:"算力支持","zh-TW":"算力支持",en:"Compute support"},c:"#e07a3a",num:"08"}
 ];
 const TX={
- "zh":{exp:"导出高清图",next:"下一位",brand:"电波无限 · 感谢同行",since:"致电波里的同行",saved:"✓ 高清图已导出",mem:"F I R S T   M E M B E R"},
- "zh-TW":{exp:"匯出高清圖",next:"下一位",brand:"電波無限 · 感謝同行",since:"致電波裡的同行",saved:"✓ 高清圖已匯出",mem:"F I R S T   M E M B E R"},
- "en":{exp:"Export image",next:"Next",brand:"Endless waves · Thank you, friends",since:"To friends on the air",saved:"✓ Image exported",mem:"F I R S T   M E M B E R"}
+ "zh":{export:"导出",next:"下一位",foot:"APRSlocus · 电波无限，感谢同行",saved:"已保存 PNG",mem:"FIRST MEMBER"},
+ "zh-TW":{export:"匯出",next:"下一位",foot:"APRSlocus · 電波無限，感謝同行",saved:"已儲存 PNG",mem:"FIRST MEMBER"},
+ "en":{export:"Export",next:"Next",foot:"APRSlocus · Endless waves, thank you",saved:"PNG saved",mem:"FIRST MEMBER"}
 };
-const W=1240,H=760,SF=2;
+const W=1000,H=620,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
-function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();}
-function setCard(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
- const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();}
-function nextCard(){setCard(idx+1);}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function ui(){document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
+function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();updateMeta();}
+function go(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
+ const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();updateMeta();}
+function next(){go(idx+1);}
+function updateMeta(){const m=MEMBERS[idx];
+ document.getElementById("who").textContent=m.who[lang]||m.who.zh;
+ document.getElementById("role").textContent=m.role[lang]||m.role.zh;}
+function sync(){
+ document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
- const p=document.getElementById("pager");p.innerHTML="";
- MEMBERS.forEach((m,i)=>{const s=document.createElement("span");s.className="pill"+(i===idx?" sel":"");s.textContent=m.call;
-  s.style.cursor="pointer";s.onclick=()=>setCard(i);p.appendChild(s);});
+ const calls=document.getElementById("calls");calls.innerHTML="";
+ MEMBERS.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");
+  b.onclick=()=>go(i);calls.appendChild(b);});
  document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";}
-function draw(){
- const m=MEMBERS[idx];
- cv.width=W*SF;cv.height=H*SF;const c=cv.getContext("2d");c.scale(SF,SF);
- c.clearRect(0,0,W,H);
- const R=26;
- /* —— 卡体 —— */
- rr(c,0,0,W,H,R);c.save();c.clip();
- /* 底色 */
- const bg=c.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#17294f");bg.addColorStop(.32,"#0e1c3b");bg.addColorStop(.75,"#0a142e");bg.addColorStop(1,"#060b1c");
- c.fillStyle=bg;c.fillRect(0,0,W,H);
- /* 斜向柔光（模拟塑料高光）：左上大光 */
- const hl=c.createRadialGradient(W*.16,H*.06,30,W*.16,H*.06,W*.75);
- hl.addColorStop(0,"rgba(210,235,255,.32)");hl.addColorStop(.3,"rgba(150,190,255,.10)");hl.addColorStop(1,"transparent");
- c.fillStyle=hl;c.fillRect(0,0,W,H);
- /* 右上气氛色（成员 accent）低透明 */
- const ar=c.createRadialGradient(W*.86,H*.22,20,W*.86,H*.22,W*.6);
- ar.addColorStop(0,hexA(m.accent,.30));ar.addColorStop(.55,hexA(m.accent,.05));ar.addColorStop(1,"transparent");
- c.fillStyle=ar;c.fillRect(0,0,W,H);
- /* 顶部边缘高光（实体卡棱边） */
- const etop=c.createLinearGradient(0,0,0,26);etop.addColorStop(0,"rgba(255,255,255,.55)");etop.addColorStop(.5,"rgba(255,255,255,.10)");etop.addColorStop(1,"transparent");
- c.fillStyle=etop;c.fillRect(0,0,W,26);
- /* 细暗纹：极淡斜线 */
- c.save();c.globalAlpha=.05;c.strokeStyle="#000";c.lineWidth=1;
- for(let x=-H;x<W+H;x+=22){c.beginPath();c.moveTo(x,0);c.lineTo(x+H,H);c.stroke();}c.restore();
- /* 底部斜向深色渐变增加纵深 */
- const eb=c.createLinearGradient(0,H-120,0,H);eb.addColorStop(0,"transparent");eb.addColorStop(1,"rgba(0,0,0,.34)");
- c.fillStyle=eb;c.fillRect(0,H-120,W,120);
-
- /* 点状颗粒（金属磨砂） */
- c.save();c.globalAlpha=.05;c.fillStyle="#fff";
- for(let k=0;k<520;k++){c.fillRect((Math.random()*W)|0,(Math.random()*H)|0,1,1);}c.restore();
-
- /* 左下：金色圆标（雷达/73） */
- const ox=76,oy=H-92,Ro=46;
- c.save();
- const ring=c.createLinearGradient(ox-Ro,oy-Ro,ox+Ro,oy+Ro);ring.addColorStop(0,"#e9cd80");ring.addColorStop(1,"#9c7626");
- c.fillStyle=ring;c.beginPath();c.arc(ox,oy,Ro,0,Math.PI*2);c.fill();
- c.strokeStyle="rgba(60,40,5,.55)";c.lineWidth=1;c.stroke();
- /* 圆内：深蓝底 + 信号 */
- c.beginPath();c.arc(ox,oy,Ro-7,0,Math.PI*2);c.fillStyle="#0a142e";c.fill();
- c.strokeStyle="rgba(233,205,128,.9)";c.lineWidth=1.6;
- c.beginPath();c.arc(ox,oy,14,0,Math.PI*2);c.stroke();
- c.beginPath();c.arc(ox,oy,22,-.3,Math.PI*2+.3);c.stroke();
- c.fillStyle="#e9cd80";c.font="800 15px 'Segoe UI',sans-serif";c.textAlign="center";c.textBaseline="middle";
- c.fillText("73",ox,oy+1);c.textBaseline="alphabetic";c.textAlign="left";
- c.restore();
- /* 左下：编号 + 发行行 */
- c.fillStyle="#e6c87a";c.font="800 30px 'Consolas',ui-monospace,monospace";
- c.fillText(m.no,152,H-86);
- c.fillStyle="rgba(230,200,122,.55)";c.font="600 13px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText((m.who[lang]||m.who.zh)+" · "+(m.role[lang]||m.role.zh),152,H-62);
-
- /* 中部主呼号（凸印：多层） */
- const callX=76, callY=260;
- const mono="'Consolas','Menlo',ui-monospace,monospace";
- c.font="900 118px "+mono;
- c.textBaseline="alphabetic";
- /* 阴影层 */
- c.fillStyle="rgba(0,0,0,.55)";c.fillText(m.call,callX+3,callY+5);
- /* 主字金渐变 */
- const gc=c.createLinearGradient(callX,callY-110,callX+300,callY);
- gc.addColorStop(0,"#fdf3d0");gc.addColorStop(.45,"#e7c87c");gc.addColorStop(1,"#a97c2e");
- c.fillStyle=gc;c.fillText(m.call,callX,callY);
- /* 高光：顶部细浅色 */
- c.save();c.globalAlpha=.55;c.strokeStyle="#fff6dd";c.lineWidth=2;
- c.strokeText(m.call,callX,callY);c.restore();
- /* 底部暗线加重浮雕 */
- c.save();c.globalAlpha=.4;c.strokeStyle="#241703";c.lineWidth=4;
- c.strokeText(m.call,callX,callY);c.restore();
-
- /* 成员 accent 细分隔线 */
- c.fillStyle=hexA(m.accent,.8);
- c.fillRect(callX,callY+16,118,3);
-
- /* 右上 logo 章 */
- const lx=W-96,ly=86,LR=40;
- if(logoImg){c.save();
-  rr(c,lx-LR,ly-LR,LR*2,LR*2,LR);c.fillStyle="#ffffff";c.fill();
-  rr(c,lx-LR,ly-LR,LR*2,LR*2,LR);c.clip();
-  c.drawImage(logoImg,lx-LR,ly-LR,LR*2,LR*2);c.restore();}
- /* 右上文字 */
- c.textAlign="right";c.fillStyle="#fff";c.font="800 25px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText("APRSlocus",W-88,80);
- c.fillStyle="#d4af5a";c.font="700 12.5px 'Segoe UI',sans-serif";
- c.fillText(TX[lang].mem,W-88,102);c.textAlign="left";
- /* 右侧竖排小呼号（装饰） */
- c.save();c.globalAlpha=.22;c.fillStyle="#fff";c.font="700 15px Consolas,monospace";
- c.translate(W-66,H-100);c.rotate(-Math.PI/2);c.fillText(m.call+" · HAM RADIO · APRS",0,0);c.restore();
-
- /* 底部中央：品牌寄语 */
- c.textAlign="center";c.fillStyle="rgba(233,205,128,.92)";c.font="600 16px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText(TX[lang].brand,W/2,H-40);c.textAlign="left";
-
- /* 右下发卡信息（小） */
- c.textAlign="right";c.fillStyle="rgba(220,235,255,.5)";c.font="600 12px 'PingFang SC',sans-serif";
- c.fillText(TX[lang].since+"  ·  EST. 2025",W-78,H-40);
- c.restore();
- /* 外描边 */
- rr(c,.5,.5,W-1,H-1,R);c.strokeStyle="rgba(255,255,255,.35)";c.lineWidth=1;c.stroke();
-}
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);
  return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
-function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1700);}
+function draw(){
+ const m=MEMBERS[idx];const c=cv.getContext("2d");
+ cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
+ const R=26,pad=1;
+ /* —— 白卡（极简） —— */
+ rr(c,pad,pad,W-pad*2,H-pad*2,R);c.fillStyle="#ffffff";c.fill();
+ c.save();c.clip();
+ /* 顶部大面积渐变（非常淡的 accent tint） */
+ const tg=c.createLinearGradient(0,0,0,H*.66);
+ tg.addColorStop(0,hexA(m.c,.07));tg.addColorStop(1,"rgba(255,255,255,0)");
+ c.fillStyle=tg;c.fillRect(0,0,W,H);
+ /* 细 accent 上边线 */
+ c.fillStyle=m.c;c.fillRect(pad,pad,W-pad*2,3);
+
+ /* —— 排版：右上角小组 —— */
+ const gx=W-44,gy=48,gl=40;
+ /* logo 圆形白章（细描边） */
+ c.save();
+ c.beginPath();c.arc(gx,gy,gl/2,0,Math.PI*2);
+ c.fillStyle="#fff";c.fill();c.lineWidth=1.2;c.strokeStyle="#e6e9f1";c.stroke();
+ if(typeof logoImg!=="undefined"&&logoImg){c.save();c.beginPath();c.arc(gx,gy,gl/2-1,0,Math.PI*2);c.clip();c.drawImage(logoImg,gx-gl/2,gy-gl/2,gl,gl);c.restore();}
+ c.restore();
+ /* 徽标文字 */
+ c.textAlign="right";c.fillStyle="#141c30";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
+ c.fillText("APRSlocus",W-70,42);
+ c.fillStyle="#9aa2b6";c.font="600 10px 'Segoe UI',sans-serif";c.letterSpacing="3px";
+ c.fillText(TX[lang].mem,W-70,60);c.letterSpacing="0px";c.textAlign="left";
+
+ /* —— 中部大呼号 —— */
+ const cx=76;
+ c.fillStyle="#121a2e";c.font="800 84px 'SF Mono','Consolas',monospace";
+ c.fillText(m.call,cx,268);
+ /* 细 accent 线（很短，克制） */
+ c.fillStyle=m.c;c.fillRect(cx,300,54,3);
+ /* 名字 */
+ c.fillStyle="#1b253c";c.font="600 22px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText(m.who[lang]||m.who.zh,cx,348);
+ /* 角色（灰） */
+ c.fillStyle="#99a1b5";c.font="500 15px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText(m.role[lang]||m.role.zh,cx,378);
+
+ /* —— 底部细行 —— */
+ c.fillStyle="#aeb6c8";c.font="500 12.5px 'PingFang SC','Segoe UI',sans-serif";
+ c.fillText(TX[lang].foot,cx,H-52);
+ c.fillStyle="#c6ccd8";c.font="500 12px 'PingFang SC',sans-serif";
+ c.textAlign="right";c.fillText(m.call,cx,H-52);c.textAlign="left";
+ c.restore();
+ /* 外细描边 */
+ rr(c,pad,pad,W-pad*2,H-pad*2,R);c.lineWidth=1;c.strokeStyle="#e7eaf2";c.stroke();
+}
+let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1500);}
 function exportPng(){const a=document.createElement("a");
- a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";
- a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
+ a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
 const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
-ui();
+sync();updateMeta();
 </script>
 </body>
 </html>
