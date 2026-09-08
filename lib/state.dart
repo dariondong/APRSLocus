@@ -259,7 +259,7 @@ class AppState extends ChangeNotifier {
     filterLat = lat;
     filterLng = lng;
     filterRadius = radiusKm < 10 ? 10 : radiusKm;
-    if (filterRadius >= 2000) AchievementCenter.instance.unlock('bigRadius'); // Big? Big!
+    if (filterRadius >= 3000) AchievementCenter.instance.unlock('bigRadius'); // Big? Big!
     persist();
     _notify();
     // 重新连接以应用新过滤器
@@ -375,7 +375,7 @@ class AppState extends ChangeNotifier {
   /// 台站数成就检测：达到 500 解锁
   void _checkStationAchievement() {
     if (stations.length >= 500) {
-      AchievementCenter.instance.unlock('flowerWorld'); // 花花世界
+      AchievementCenter.instance.reach('flowerWorld', stations.length); // 花花世界
     }
   }
 
@@ -1479,7 +1479,7 @@ class AppState extends ChangeNotifier {
     }
     beaconsSent++;
     _lastBeacon = DateTime.now();
-    AchievementCenter.instance.unlock('sendCoord'); // 坐标发送·请求打击
+    AchievementCenter.instance.bump('sendCoord'); // 坐标发送·请求打击
     _log(
       LogLevel.info,
       '信标',
@@ -1788,7 +1788,7 @@ class AppState extends ChangeNotifier {
       unreadMessages++;
     }
     _saveMessages();
-    AchievementCenter.instance.unlock('receiveMsg'); // 听没听到
+    AchievementCenter.instance.bump('receiveMsg'); // 听没听到
     onNewMessage?.call(src, text, groupId);
     return (text, ackId);
   }
@@ -2268,7 +2268,7 @@ class AppState extends ChangeNotifier {
   void _pushPacket(Packet p) {
     packets.insert(0, p);
     packetsRx++;
-    if (packetsRx >= 10000) AchievementCenter.instance.unlock('worldListener');
+    AchievementCenter.instance.bump('worldListener'); // 世界聆听者(累计3万)
     _rxTimes.add(DateTime.now());
     // 顺带清理超过 60 秒的记录，防止 _rxTimes 无界增长
     final now = DateTime.now();
@@ -2527,7 +2527,7 @@ class AppState extends ChangeNotifier {
     );
     _saveMessages();
     packetsTx++;
-    AchievementCenter.instance.unlock('sendMsg'); // 我发出去了吗？
+    AchievementCenter.instance.bump('sendMsg'); // 我发出去了吗？
     if (connected) {
       aprs.send(raw);
       _lastTx = DateTime.now();
@@ -2552,7 +2552,7 @@ class AppState extends ChangeNotifier {
     if (text.trim().isEmpty || groupCall.isEmpty) return 0;
     final id = AprsFmt.randId();
     final raw = AprsFmt.messageNoAck(myFullCall, groupCall, text.trim(), id);
-    AchievementCenter.instance.unlock('sendMsg'); // 我发出去了吗？
+    AchievementCenter.instance.bump('sendMsg'); // 我发出去了吗？
     messages.insert(
       0,
       AprsMsg(
@@ -2607,7 +2607,7 @@ class AppState extends ChangeNotifier {
     }
     chatGroups.add(g);
     _saveChatGroups();
-    AchievementCenter.instance.unlock('gather'); // 紧急集合！
+    AchievementCenter.instance.bump('gather'); // 紧急集合！
     _log(LogLevel.info, '群聊', '创建群组 ${g.name} ($gc)');
     _notify();
     return g;

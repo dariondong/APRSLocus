@@ -141,10 +141,18 @@ class HonorWallPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 ValueListenableBuilder<int>(
                   valueListenable: AchievementCenter.instance.version,
-                  builder: (context, _, _) => Column(children: [
-                    for (final a in AchievementCenter.all)
-                      _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
-                  ]),
+                  builder: (context, _, _) {
+                    final allDone = AchievementCenter.instance.allUnlocked;
+                    return Column(children: [
+                      for (final a in AchievementCenter.all)
+                        _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
+                      // FIRST FIX 至高荣誉：全成就解锁后可申请
+                      _firstFixTile(AchievementCenter.firstFix,
+                          unlocked: AchievementCenter.instance
+                              .isUnlocked(AchievementCenter.firstFix.key),
+                          unlockable: allDone),
+                    ]);
+                  },
                 ),
               ],
             );
@@ -212,6 +220,63 @@ class HonorWallPage extends StatelessWidget {
             const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
         ]),
       ),
+    );
+  }
+
+  /// FIRST FIX 至高荣誉行（特殊金色，未解锁时展示前置条件）
+  Widget _firstFixTile(Achievement a, {required bool unlocked, required bool unlockable}) {
+    final Color gold = const Color(0xFFC9A227);
+    final bool locked = !unlocked && !unlockable;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: locked ? const Color(0xFFF4F2E8) : const Color(0xFFFFF8E1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: locked ? const Color(0xFFE0DCC8) : gold.withValues(alpha: 0.6)),
+      ),
+      child: Row(children: [
+        Container(
+          width: 46,
+          height: 46,
+          decoration: BoxDecoration(
+            color: locked
+                ? const Color(0xFFE9E5D3)
+                : gold.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(unlocked || unlockable
+              ? a.icon
+              : Icons.lock_rounded,
+              color: locked ? const Color(0xFFB4AE97) : gold, size: 24),
+        ),
+        const SizedBox(width: 13),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(a.title,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    color: locked ? const Color(0xFF8A8572) : gold)),
+            const SizedBox(height: 3),
+            Text(a.desc,
+                style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.4,
+                    color: locked
+                        ? const Color(0xFFAAA58F)
+                        : const Color(0xFF6A654D))),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        if (unlocked)
+          const Icon(Icons.check_circle_rounded, size: 20, color: Color(0xFFC9A227))
+        else if (unlockable)
+          Icon(Icons.auto_awesome_rounded, size: 20, color: gold)
+        else
+          const Icon(Icons.lock_rounded, size: 18, color: Color(0xFFB4AE97)),
+      ]),
     );
   }
 
