@@ -30,6 +30,7 @@ class Honor {
         'earlyMember' => Icons.workspace_premium_rounded,
         'mostBrain' => Icons.psychology_rounded,
         'firstFix' => Icons.military_tech_rounded,
+        'jadeGift' => Icons.card_giftcard_rounded,
         _ => Icons.emoji_events_rounded,
       };
 }
@@ -41,6 +42,7 @@ const List<String> kHonorOrder = [
   'earlyMember',
   'mostBrain',
   'firstFix',
+  'jadeGift',
 ];
 
 /// 默认徽章定义（联网兜底）
@@ -56,6 +58,9 @@ final Map<String, Honor> _defaultHonorDefs = {
   'firstFix': const Honor('firstFix', 'FIRST FIX · 至高荣誉',
       'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。',
       Color(0xFFC9A227), Icons.military_tech_rounded),
+  'jadeGift': const Honor('jadeGift', '赠我以琼琚',
+      '承君厚赠，藏之于心；唯有砥砺，以报清音。',
+      Color(0xFF0EA5B7), Icons.card_giftcard_rounded),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);

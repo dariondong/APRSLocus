@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -981,6 +981,17 @@
         "en": "Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team for this supreme honor."
       },
       "color": "#C9A227"
+    },
+    "jadeGift": {
+      "zh": "赠我以琼琚",
+      "zh-TW": "贈我以瓊琚",
+      "en": "Gifted with Jade",
+      "desc": {
+        "zh": "承君厚赠，藏之于心；唯有砥砺，以报清音。",
+        "zh-TW": "承君厚贈，藏之於心；唯有砥礪，以報清音。",
+        "en": "Your gift is treasured in my heart; the only return I can offer is to strive, and answer your kindness with good work."
+      },
+      "color": "#0EA5B7"
     }
   }
 }
