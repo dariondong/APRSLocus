@@ -624,6 +624,7 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .cl-icon.gc { background: linear-gradient(135deg, #38bdf8, #0284c7); }
 .cl-icon.qq { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
 .cl-icon.web2 { background: linear-gradient(135deg, #f472b6, #db2777); }
+.cl-icon.hw { background: linear-gradient(135deg, #e6c873, #c9a227); }
 .clink div { flex: 1; }
 .clink b { display: block; font-size: 16px; }
 .clink div span { color: var(--text-faint); font-size: 12.5px; word-break: break-all; }
