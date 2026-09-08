@@ -54,6 +54,8 @@ final Map<String, Honor> _defaultHonorDefs = {
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
 Map<String, List<String>> _honorsCache = {};
 Map<String, String> _primariesCache = {};
+/// 用户手动选择的默认徽章（key=基呼号）
+Map<String, String> _userPrimary = {};
 int _loadSeq = 0;
 
 final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
@@ -107,15 +109,42 @@ List<({Honor honor, bool owned})> allHonorsWithState(String call) {
   ];
 }
 
-/// 优先徽章（member.json 每人的 primary；缺省取第一个已获）
-Honor? primaryHonorOf(String call) {
+/// 用户手动选择的默认徽章 key；未选/无效返回 null
+String? userPrimaryKeyOf(String call) {
   final base = _base(call);
+  final v = _userPrimary[base];
+  if (v != null && memberHonorKeys(call).contains(v)) return v;
+  return null;
+}
+
+/// 设置用户默认展示徽章（仅可从未获得? 不：仅可从已获得中选择）
+Future<void> setUserPrimary(String call, String honorKey) async {
+  final base = _base(call);
+  if (!memberHonorKeys(call).contains(honorKey)) return;
+  _userPrimary[base] = honorKey;
+  memberListVersion.value++;
+  try {
+    final p = await SharedPreferences.getInstance();
+    await p.setString('honorPrimary_$base', honorKey);
+  } catch (_) {}
+}
+
+/// 默认展示徽章：用户选择 > member.json primary > 第一个已获
+Honor? primaryHonorOf(String call) {
   final keys = memberHonorKeys(call);
   if (keys.isEmpty) return null;
+  final base = _base(call);
+  final user = _userPrimary[base];
+  if (user != null && keys.contains(user) && _honorDefs[user] != null) {
+    return _honorDefs[user];
+  }
   final p = _primariesCache[base];
   if (p != null && _honorDefs[p] != null && keys.contains(p)) return _honorDefs[p];
   return _honorDefs[keys.first];
 }
+
+/// 当前用户已获得的所有徽章对象（供选择器用）
+List<Honor> ownedHonorsOf(String call) => honorsOf(call);
 
 Color _parseColor(dynamic v) {
   if (v is String) {
@@ -220,6 +249,15 @@ Future<void> ensureMembersLoaded() async {
     final prim = p.getString('primariesJson');
     if (defs != null && cache != null) {
       try {
+        _userPrimary.clear();
+        final allKeys = p.getKeys();
+        for (final k in allKeys) {
+          if (k.startsWith('honorPrimary_')) {
+            final base = k.substring('honorPrimary_'.length);
+            final v = p.getString(k);
+            if (base != null && v != null) _userPrimary[base] = v;
+          }
+        }
         final dd = jsonDecode(defs) as Map;
         final dm = <String, Honor>{};
         dd.forEach((k, v) {

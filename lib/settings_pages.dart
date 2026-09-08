@@ -61,6 +61,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
               }
             }),
             _ssidRow(),
+            _defaultBadgeRow(),
             SettingsInput(S.of(context).callComment, _comment,
                 tip: S.of(context).callCommentHint,
                 onChanged: (v) {
@@ -109,6 +110,93 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           SizedBox(width: 4),
           Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
         ]),
+      ),
+    );
+  }
+
+  /// 「默认展示徽章」行：选择呼号在主页/设置页展示的那枚徽章
+  Widget _defaultBadgeRow() {
+    return ListenableBuilder(
+      listenable: memberListVersion,
+      builder: (context, _) {
+        final owns = ownedHonorsOf(st.myFullCall);
+        if (owns.isEmpty) return const SizedBox.shrink();
+        final cur = primaryHonorOf(st.myFullCall);
+        return GestureDetector(
+          onTap: () => _pickDefaultBadge(context),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+            child: Row(children: [
+              Icon(Icons.star_rounded, size: 16, color: C.yellow),
+              SizedBox(width: 8),
+              Text('主页展示徽章', style: ts(12, c: C.slate)),
+              Spacer(),
+              if (cur != null)
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(cur.icon, size: 15, color: cur.color),
+                  SizedBox(width: 4),
+                  Text(cur.label,
+                      style: ts(12, c: cur.color, w: FontWeight.w700)),
+                ]),
+              SizedBox(width: 4),
+              Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
+  /// 选择默认展示徽章（底部弹层列出已获得徽章）
+  void _pickDefaultBadge(BuildContext context) {
+    final owns = ownedHonorsOf(st.myFullCall);
+    if (owns.isEmpty) return;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Container(
+          decoration: BoxDecoration(
+            color: C.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(
+                color: C.greyLight.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(2)))),
+            const SizedBox(height: 14),
+            Text('选择主页展示徽章', style: ts(16, w: FontWeight.w700)),
+            const SizedBox(height: 4),
+            Text('可在以下已获得的徽章中选一个常驻展示', style: ts(11, c: C.grey)),
+            const SizedBox(height: 12),
+            for (final h in owns)
+              GestureDetector(
+                onTap: () {
+                  setUserPrimary(st.myFullCall, h.key);
+                  Navigator.pop(ctx);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: C.bgSoft,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: C.border),
+                  ),
+                  child: Row(children: [
+                    Icon(h.icon, size: 18, color: h.color),
+                    const SizedBox(width: 10),
+                    Text(h.label, style: ts(13, w: FontWeight.w700)),
+                    const Spacer(),
+                    if (primaryHonorOf(st.myFullCall)?.key == h.key)
+                      Icon(Icons.check_circle_rounded, size: 18, color: h.color),
+                  ]),
+                ),
+              ),
+          ]),
+        ),
       ),
     );
   }
