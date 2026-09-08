@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -250,6 +250,7 @@
       "c": "#0da46b",
       "grp": "test",
       "honors": [
+        "kaishan",
         "earlyMember"
       ]
     },
@@ -297,6 +298,7 @@
       "c": "#0a9fb4",
       "grp": "test",
       "honors": [
+        "kaishan",
         "earlyMember"
       ]
     },
@@ -344,6 +346,7 @@
       "c": "#e0568f",
       "grp": "test",
       "honors": [
+        "kaishan",
         "earlyMember"
       ]
     },

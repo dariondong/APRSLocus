@@ -69,9 +69,9 @@ void _seedDefaults() {
     'BG2HCB': ['kaishan', 'developer', 'earlyMember'],
     'BA4UAX': ['kaishan', 'developer', 'earlyMember'],
     'BD3QID': ['kaishan', 'developer', 'earlyMember'],
-    'BG7PGW': ['earlyMember'],
-    'BG7LMW': ['earlyMember'],
-    'BG7OSL': ['earlyMember'],
+    'BG7PGW': ['kaishan', 'earlyMember'],
+    'BG7LMW': ['kaishan', 'earlyMember'],
+    'BG7OSL': ['kaishan', 'earlyMember'],
     'imThree': ['earlyMember'],
     'BA3RZL': ['earlyMember', 'aiCompute'],
   };
