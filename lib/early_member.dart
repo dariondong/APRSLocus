@@ -54,7 +54,7 @@ final Map<String, Honor> _defaultHonorDefs = {
   'mostBrain': const Honor('mostBrain', '最强大脑',
       '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。', Color(0xFF0EA5C4), Icons.psychology_rounded),
   'firstFix': const Honor('firstFix', 'FIRST FIX · 至高荣誉',
-      '完成 APRSlocus 1.0 全部成就，经开发团队授勋的至高荣誉。',
+      'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。',
       Color(0xFFC9A227), Icons.military_tech_rounded),
 };
 

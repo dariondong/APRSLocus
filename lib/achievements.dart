@@ -54,7 +54,7 @@ class AchievementCenter {
   /// 至高荣誉（需解锁全部成就 + 名单命中）
   static const Achievement firstFix = Achievement(
       'firstFix', 'FIRST FIX · 至高荣誉',
-      '完成 APRSlocus 1.0 全部成就，经开发团队授勋后点亮',
+      'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请',
       Icons.military_tech_rounded, Color(0xFFC9A227));
 
   final ValueNotifier<int> version = ValueNotifier<int>(0);

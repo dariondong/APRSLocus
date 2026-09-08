@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -543,9 +543,9 @@
       "zh-TW": "FIRST FIX · 至高榮譽",
       "en": "FIRST FIX · Supreme Honor",
       "desc": {
-        "zh": "完成 APRSlocus 1.0 全部成就，经开发团队授勋的至高荣誉。",
-        "zh-TW": "完成 APRSlocus 1.0 全部成就，經開發團隊授勳的至高榮譽。",
-        "en": "Completed every APRSlocus 1.0 achievement — the supreme honor bestowed by the dev team."
+        "zh": "APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。",
+        "zh-TW": "APRSlocus 1.7.0 開放 —— 完成全部成就後向開發團隊申請，獲頒至高榮譽。",
+        "en": "Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team for this supreme honor."
       },
       "color": "#C9A227"
     }
