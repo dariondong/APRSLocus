@@ -17,12 +17,12 @@ class Achievement {
 
 /// 各成就解锁阈值（计数型）
 const Map<String, int> kAchieveThreshold = {
-  'sendCoord': 150, // 累计发送 150 次坐标
-  'receiveMsg': 20, // 累计收到 20 条短信
-  'sendMsg': 20, // 累计发送 20 条短信
-  'worldListener': 30000, // 累计接收 3 万数据包
-  'flowerWorld': 800, // 累计见过 800 个台站
-  'gather': 2, // 累计组建 2 个群组
+  'sendCoord': 500, // 累计发送 500 次坐标
+  'receiveMsg': 50, // 累计收到 50 条短信
+  'sendMsg': 50, // 累计发送 50 条短信
+  'worldListener': 50000, // 累计接收 5 万数据包
+  'flowerWorld': 1500, // 累计见过 1500 个台站
+  'gather': 5, // 累计组建 5 个群组
 };
 
 /// FIRST FIX 在线名单 URL（官网，由开发团队维护）
@@ -36,19 +36,19 @@ class AchievementCenter {
   /// 全部成就（固定顺序展示）
   static const List<Achievement> all = [
     Achievement('sendCoord', '坐标发送·请求打击',
-        '使用 APRSlocus 累计发送 150 次坐标', Icons.near_me_rounded, Color(0xFF16A34A)),
+        '使用 APRSlocus 累计发送 500 次坐标', Icons.near_me_rounded, Color(0xFF16A34A)),
     Achievement('receiveMsg', '听没听到',
-        '累计接收到 20 条 APRS 短信', Icons.mark_chat_unread_rounded, Color(0xFF2563EB)),
+        '累计接收到 50 条 APRS 短信', Icons.mark_chat_unread_rounded, Color(0xFF2563EB)),
     Achievement('sendMsg', '我发出去了吗？',
-        '累计发送 20 条 APRS 短信', Icons.send_rounded, Color(0xFF0E7490)),
+        '累计发送 50 条 APRS 短信', Icons.send_rounded, Color(0xFF0E7490)),
     Achievement('bigRadius', 'Big? Big!',
-        '将接收范围调到 3000 公里以上', Icons.public_rounded, Color(0xFFEA580C)),
+        '将接收范围调到 5000 公里以上', Icons.public_rounded, Color(0xFFEA580C)),
     Achievement('worldListener', '世界聆听者',
-        '累计接收超过 3 万个数据包', Icons.earbuds_rounded, Color(0xFF7C3AED)),
+        '累计接收超过 5 万个数据包', Icons.earbuds_rounded, Color(0xFF7C3AED)),
     Achievement('flowerWorld', '花花世界',
-        '累计看到超过 800 个台站', Icons.radar_rounded, Color(0xFFDB2777)),
+        '累计看到超过 1500 个台站', Icons.radar_rounded, Color(0xFFDB2777)),
     Achievement('gather', '紧急集合！',
-        '累计组建 2 个 APRSlocus 群组', Icons.groups_rounded, Color(0xFFE11D48)),
+        '累计组建 5 个 APRSlocus 群组', Icons.groups_rounded, Color(0xFFE11D48)),
   ];
 
   /// 至高荣誉（需解锁全部成就 + 名单命中）

@@ -49,7 +49,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.44';
+  static const appVersion = '1.6.45';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -259,7 +259,7 @@ class AppState extends ChangeNotifier {
     filterLat = lat;
     filterLng = lng;
     filterRadius = radiusKm < 10 ? 10 : radiusKm;
-    if (filterRadius >= 3000) AchievementCenter.instance.unlock('bigRadius'); // Big? Big!
+    if (filterRadius >= 5000) AchievementCenter.instance.unlock('bigRadius'); // Big? Big!
     persist();
     _notify();
     // 重新连接以应用新过滤器
