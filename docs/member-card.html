@@ -273,18 +273,25 @@ function wallSection(grp,people){
      <div class="who">${m.who&&(m.who[lang]||m.who.zh)!==m.call?(m.who[lang]||m.who.zh):""}</div>
      <div class="role">${T(m.role)}</div>
    </div>`).join("")}
-  ${GROUPS.filter(g=>grp==="support").map(g=>`
-   <div class="mcard grp">
-     <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">♥</div>
-     <div class="call">${T(g.name)}</div>
-     <div class="who">${T(g.role)}</div>
-     <div class="tag2">${TX[lang].sponsor}</div>
-   </div>`).join("")}
   </div></div>`;}
 function walls(){
  const order=["core","i18n","test","support"];
- document.getElementById("walls").innerHTML=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
+ let html=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
+ /* 独立「赞助与支持」段：团体/匿名赞助卡 */
+ const gcols={support:"#df7a36",group:"#7c5cff"};
+ html+=`<div class="group"><div class="gh"><span class="dot" style="background:${gcols.group}"></span>
+   <h3>${T(GRP_META.support)} · ${TX[lang].groupT}</h3><span>${GROUPS.length}</span></div>
+   <div class="cards">${GROUPS.map((g,i)=>`
+     <div class="mcard grp" onclick="sponsorToast(${i})">
+       <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">♥</div>
+       <div class="call">${T(g.name)}</div>
+       <div class="who">${T(g.role)}</div>
+       <div class="tag2">${TX[lang].sponsor}</div>
+     </div>`).join("")}
+   </div></div>`;
+ document.getElementById("walls").innerHTML=html;
 }
+function sponsorToast(i){const g=GROUPS[i];if(!g)return;toast(T(g.note));}
 function draw(){
  const m=PEOPLE[idx];const c=cv.getContext("2d");
  cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
