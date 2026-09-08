@@ -15,6 +15,7 @@ import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'net/aprs.dart';
 import 'early_member.dart';
+import 'achievements.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
 /// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
@@ -258,6 +259,7 @@ class AppState extends ChangeNotifier {
     filterLat = lat;
     filterLng = lng;
     filterRadius = radiusKm < 10 ? 10 : radiusKm;
+    if (filterRadius >= 2000) AchievementCenter.instance.unlock('bigRadius'); // Big? Big!
     persist();
     _notify();
     // 重新连接以应用新过滤器
@@ -369,6 +371,13 @@ class AppState extends ChangeNotifier {
     'HK': '香港',
     'MO': '澳门',
   };
+
+  /// 台站数成就检测：达到 500 解锁
+  void _checkStationAchievement() {
+    if (stations.length >= 500) {
+      AchievementCenter.instance.unlock('flowerWorld'); // 花花世界
+    }
+  }
 
   /// 按国家接收列表（国家代码）
   final List<String> receiveCountries = [];
@@ -1021,6 +1030,7 @@ class AppState extends ChangeNotifier {
   AppState() : stations = <Station>[], messages = <AprsMsg>[] {
     _initDeviceDb();
     unawaited(ensureMembersLoaded());
+    unawaited(AchievementCenter.instance.ensureLoaded());
     _loadPrefs();
     loc.onFix = _onFix;
     loc.onStatus = (s) {
@@ -1065,6 +1075,7 @@ class AppState extends ChangeNotifier {
       // 台站“有效状态”翻转（如超 5 分钟变离线、移动→静止）时才推进版本并通知，
       // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
       if (_bumpStatusVersionIfChanged()) _notify();
+      _checkStationAchievement();
       // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
       // 不再全量 _notify() 重建整个页面树
       tick.value++;
@@ -1468,6 +1479,7 @@ class AppState extends ChangeNotifier {
     }
     beaconsSent++;
     _lastBeacon = DateTime.now();
+    AchievementCenter.instance.unlock('sendCoord'); // 坐标发送·请求打击
     _log(
       LogLevel.info,
       '信标',
@@ -1776,6 +1788,7 @@ class AppState extends ChangeNotifier {
       unreadMessages++;
     }
     _saveMessages();
+    AchievementCenter.instance.unlock('receiveMsg'); // 听没听到
     onNewMessage?.call(src, text, groupId);
     return (text, ackId);
   }
@@ -2255,6 +2268,7 @@ class AppState extends ChangeNotifier {
   void _pushPacket(Packet p) {
     packets.insert(0, p);
     packetsRx++;
+    if (packetsRx >= 10000) AchievementCenter.instance.unlock('worldListener');
     _rxTimes.add(DateTime.now());
     // 顺带清理超过 60 秒的记录，防止 _rxTimes 无界增长
     final now = DateTime.now();
@@ -2513,6 +2527,7 @@ class AppState extends ChangeNotifier {
     );
     _saveMessages();
     packetsTx++;
+    AchievementCenter.instance.unlock('sendMsg'); // 我发出去了吗？
     if (connected) {
       aprs.send(raw);
       _lastTx = DateTime.now();
@@ -2537,6 +2552,7 @@ class AppState extends ChangeNotifier {
     if (text.trim().isEmpty || groupCall.isEmpty) return 0;
     final id = AprsFmt.randId();
     final raw = AprsFmt.messageNoAck(myFullCall, groupCall, text.trim(), id);
+    AchievementCenter.instance.unlock('sendMsg'); // 我发出去了吗？
     messages.insert(
       0,
       AprsMsg(
@@ -2591,6 +2607,7 @@ class AppState extends ChangeNotifier {
     }
     chatGroups.add(g);
     _saveChatGroups();
+    AchievementCenter.instance.unlock('gather'); // 紧急集合！
     _log(LogLevel.info, '群聊', '创建群组 ${g.name} ($gc)');
     _notify();
     return g;

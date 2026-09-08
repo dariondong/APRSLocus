@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
+import 'achievements.dart';
 
 /// ─── APRSlocus 荣誉徽章体系 ───
 /// 一个呼号可拥有多个称号徽章；徽章定义/授予/优先徽章均由官网 members.json 维护。
@@ -399,11 +400,35 @@ class _HonorWallSheet extends StatelessWidget {
               const SizedBox(height: 12),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.62,
-                child: ListView.builder(
-                  controller: scrollCtrl,
-                  itemCount: wall.length,
-                  itemBuilder: (_, i) =>
-                      _badgeTile(call, wall[i].honor, wall[i].owned),
+                child: ValueListenableBuilder<int>(
+                  valueListenable: AchievementCenter.instance.version,
+                  builder: (context, _, _) {
+                    // 徽章行 + “成就”小节标题 + 成就行
+                    final ach = AchievementCenter.instance;
+                    return ListView(
+                      controller: scrollCtrl,
+                      children: [
+                        for (final w in wall) _badgeTile(call, w.honor, w.owned),
+                        const SizedBox(height: 8),
+                        Row(children: const [
+                          Icon(Icons.emoji_events_outlined, size: 15, color: Color(0xFF9AA3B7)),
+                          SizedBox(width: 6),
+                          Text('成就墙',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF6A7590))),
+                          SizedBox(width: 8),
+                          Expanded(
+                              child: Divider(color: Color(0xFFE4E8F1), height: 1)),
+                        ]),
+                        const SizedBox(height: 10),
+                        for (final a in AchievementCenter.all)
+                          _achievementTile(a, ach.isUnlocked(a.key)),
+                        const SizedBox(height: 8),
+                      ],
+                    );
+                  },
                 ),
               ),
             ]);
@@ -467,5 +492,58 @@ Widget _badgeTile(String call, Honor h, bool owned) {
           const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
       ]),
     ),
+  );
+}
+
+
+/// 成就行：已解锁点亮（图标+标题+说明），未解锁灰显锁
+Widget _achievementTile(Achievement a, bool unlocked) {
+  final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
+  final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
+  return Container(
+    margin: const EdgeInsets.only(bottom: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+          color: unlocked ? c.withValues(alpha: 0.35) : const Color(0xFFEBEEF5)),
+    ),
+    child: Row(children: [
+      Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          color: unlocked ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(unlocked ? a.icon : Icons.lock_rounded, color: col, size: 23),
+      ),
+      const SizedBox(width: 13),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(a.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: unlocked ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
+          const SizedBox(height: 3),
+          Text(a.desc,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 12.5,
+                  height: 1.35,
+                  color: unlocked ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
+        ]),
+      ),
+      const SizedBox(width: 10),
+      if (unlocked)
+        const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF7FC98A))
+      else
+        const Icon(Icons.circle_outlined, color: Color(0xFFD5DAE5), size: 18),
+    ]),
   );
 }
