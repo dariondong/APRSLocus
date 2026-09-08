@@ -799,6 +799,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  // 常驻呼号标签（仅未选中显示，避免与选中信息条重叠）
+                  if (!sel)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 44,
+                      child: _callLabel(s),
+                    ),
                   if (sel)
                     Positioned(
                       top: 34,
@@ -909,6 +917,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  // 常驻呼号标签
+                  if (!sel)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 44,
+                      child: _callLabel(s),
+                    ),
                 ],
               ),
             ),
@@ -946,6 +962,28 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         ),
       );
     }).toList();
+  }
+
+  /// 台站常驻呼号小标签（白底圆角，显示在图标下方）
+  Widget _callLabel(Station s) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+        constraints: const BoxConstraints(maxWidth: 120),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: s.color.withValues(alpha: 0.5)),
+        ),
+        child: Text(
+          s.call,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: ts(8.5, c: s.color, w: FontWeight.w700, h: 1.0),
+        ),
+      ),
+    );
   }
 
   Widget _infoWindow(Station s) {
