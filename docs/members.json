@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -450,10 +450,9 @@
       "grp": "support",
       "honors": [
         "earlyMember",
-        "aiCompute",
         "mostBrain"
       ],
-      "primary": "aiCompute"
+      "primary": "earlyMember"
     }
   ],
   "groups": [
@@ -527,17 +526,6 @@
         "en": "Came aboard during early public beta and grew with APRSlocus."
       },
       "color": "#B08A34"
-    },
-    "aiCompute": {
-      "zh": "AI 算力支持",
-      "zh-TW": "AI 算力支持",
-      "en": "AI compute",
-      "desc": {
-        "zh": "以 AI 算力支持开发与测试。",
-        "zh-TW": "以 AI 算力支持開發與測試。",
-        "en": "Backed development & testing with AI compute."
-      },
-      "color": "#7C3AED"
     },
     "mostBrain": {
       "zh": "最强大脑",

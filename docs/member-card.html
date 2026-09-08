@@ -265,13 +265,12 @@ let HONOR_DEFS={
  kaishan:{zh:"开山","zh-TW":"開山",en:"Founding pioneer",color:"#E67E22"},
  developer:{zh:"开发人员","zh-TW":"開發人員",en:"Developer",color:"#1D6FF2"},
  earlyMember:{zh:"早期成员","zh-TW":"早期成員",en:"Early member",color:"#B08A34"},
- aiCompute:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute",color:"#7C3AED"},
  mostBrain:{zh:"最强大脑","zh-TW":"最強大腦",en:"Brightest mind",color:"#0EA5C4"}
 };
 function honorDefsOf(p){
   // p.honors 显式，否则按 grp 映射默认
   let list = p&&p.honors&&p.honors.length? p.honors : []; 
-  if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["kaishan","developer","earlyMember"]; else if(g==="support")list=["earlyMember","aiCompute"]; else list=["earlyMember"]; }
+  if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["kaishan","developer","earlyMember"]; else if(g==="support")list=["earlyMember","mostBrain"]; else list=["earlyMember"]; }
   return list;
 }
 function honorColor(key){ return (HONOR_DEFS[key]&&HONOR_DEFS[key].color)||"#8a94ab"; }

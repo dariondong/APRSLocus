@@ -26,7 +26,6 @@ class Honor {
         'kaishan' => Icons.terrain_rounded,
         'developer' => Icons.code_rounded,
         'earlyMember' => Icons.workspace_premium_rounded,
-        'aiCompute' => Icons.memory_rounded,
         'mostBrain' => Icons.psychology_rounded,
         _ => Icons.emoji_events_rounded,
       };
@@ -37,7 +36,6 @@ const List<String> kHonorOrder = [
   'kaishan',
   'developer',
   'earlyMember',
-  'aiCompute',
   'mostBrain',
 ];
 
@@ -49,8 +47,6 @@ final Map<String, Honor> _defaultHonorDefs = {
       Color(0xFF1D6FF2), Icons.code_rounded),
   'earlyMember': const Honor('earlyMember', '早期成员', '早期公测阶段加入，陪伴 APRSlocus 成长。',
       Color(0xFFB08A34), Icons.workspace_premium_rounded),
-  'aiCompute': const Honor('aiCompute', 'AI 算力支持', '以 AI 算力支持开发与测试。',
-      Color(0xFF7C3AED), Icons.memory_rounded),
   'mostBrain': const Honor('mostBrain', '最强大脑',
       '隐藏成就：为项目提供超 50% 的算力支持！', Color(0xFF0EA5C4), Icons.psychology_rounded),
 };
@@ -75,7 +71,7 @@ void _seedDefaults() {
     'BG7LMW': ['kaishan', 'earlyMember'],
     'BG7OSL': ['kaishan', 'earlyMember'],
     'imThree': ['earlyMember'],
-    'BA3RZL': ['earlyMember', 'aiCompute', 'mostBrain'],
+    'BA3RZL': ['earlyMember', 'mostBrain'],
   };
   _primariesCache = {
     'BG7LZQ': 'kaishan',
@@ -86,7 +82,7 @@ void _seedDefaults() {
     'BG7LMW': 'kaishan',
     'BG7OSL': 'kaishan',
     'imThree': 'earlyMember',
-    'BA3RZL': 'aiCompute',
+    'BA3RZL': 'earlyMember',
   };
 }
 
