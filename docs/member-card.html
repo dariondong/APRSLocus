@@ -68,6 +68,8 @@
   .p-quote{display:flex;gap:12px;margin-top:20px;padding:14px 18px;border-radius:14px;background:#f7f9fd;border-left:3px solid}
   .p-quote .qm{font-size:20px;line-height:1;color:#c9d0dd;font-family:Georgia,serif}
   .p-quote p{color:#44506b;font-size:14.5px;line-height:1.8;font-style:italic}
+  .p-honors{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 0}
+  .p-honors .honor{font-size:12px;font-weight:700;background:#f7f9fd;border:1px solid;border-radius:999px;padding:3px 12px}
   .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
   .tag{font-size:12px;font-weight:600;color:#54617c;background:#eef1f8;border-radius:999px;padding:5px 13px}
   .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:24px;flex-wrap:wrap}
@@ -255,6 +257,16 @@ function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function T(obj){return obj?(obj[lang]||obj.zh):"";}
+/* 称号：members.json honors 定义 + 每人 honors 推导 */
+let HONOR_DEFS={};
+function honorDefsOf(p){
+  // p.honors 显式，否则按 grp 映射默认
+  let list = p&&p.honors? p.honors : []; 
+  if(!list.length){ const g=(p&&p.grp)||""; if(g==="core"||g==="developer")list=["developer"]; else if(g==="support")list=["earlyMember","aiCompute"]; else list=["earlyMember"]; }
+  return list;
+}
+function honorColor(key){ return (HONOR_DEFS[key]&&HONOR_DEFS[key].color)||"#8a94ab"; }
+function honorLabel(key){ const d=HONOR_DEFS[key]; return d? (d[lang]||d.zh||key) : key; }
 function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();walls();draw();profile();}
 function pick(i){idx=((i%CARDS.length)+CARDS.length)%CARDS.length;
  const c=cur();const u=new URL(location);
@@ -361,6 +373,7 @@ function profile(){
    <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${role}</span>
   </div>
   <div class="p-hr"></div>
+  <div class="p-honors">${honorDefsOf(m).map(k=>`<span class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}">${honorLabel(k)}</span>`).join("")}</div>
   <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${contrib}</p></div>
   <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${quote}</p></div>
   <div class="p-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
@@ -384,6 +397,7 @@ function exportPng(){const a=document.createElement("a");
  a.download="APRSlocus-"+nm+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 function applyRemote(d){
  if(!d) return;
+ if(d.honors){ HONOR_DEFS = d.honors||{}; }
  const norm=(v)=>String(v==null?"":v).toUpperCase();
  // members.json: developers/earlyMembers 可为对象数组（含 call/who/role...）或纯呼号字符串
  const toPeople=(arr,defGrp)=>{
@@ -403,6 +417,7 @@ function applyRemote(d){
        tags: it.tags||(b?b.tags:null)||{zh:[],en:[]},
        c: it.c||(b?b.c:"#7a879d"),
        grp: it.grp||(b?b.grp:defGrp),
+       honors: it.honors||(b?b.honors:null),
      });
    });
    return out;

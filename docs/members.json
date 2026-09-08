@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -404,7 +404,11 @@
         ]
       },
       "c": "#df7a36",
-      "grp": "support"
+      "grp": "support",
+      "honors": [
+        "earlyMember",
+        "aiCompute"
+      ]
     }
   ],
   "groups": [
@@ -444,5 +448,25 @@
       },
       "c": "#e67a9a"
     }
-  ]
+  ],
+  "honors": {
+    "developer": {
+      "zh": "开发人员",
+      "zh-TW": "開發人員",
+      "en": "Developer",
+      "color": "#1D6FF2"
+    },
+    "earlyMember": {
+      "zh": "早期成员",
+      "zh-TW": "早期成員",
+      "en": "Early member",
+      "color": "#B08A34"
+    },
+    "aiCompute": {
+      "zh": "AI 算力支持",
+      "zh-TW": "AI 算力支持",
+      "en": "AI compute",
+      "color": "#7c3aed"
+    }
+  }
 }

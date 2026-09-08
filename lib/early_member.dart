@@ -8,33 +8,42 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 
-/// ─── APRSlocus 荣誉成员（DEVELOPER / EARLY MEMBER）───
+/// ─── APRSlocus 荣誉称号（HONOR / DEVELOPER / EARLY MEMBER）───
 ///
-/// 名单默认内置一份兜底；启动 / 刷新时会从官网 members.json 拉取最新，
-/// 解析后覆盖。members.json 结构：
-///   developers / earlyMembers: 元素可为 {call, who:{...}, ...} 或纯呼号字符串
-/// 名单归属（开发 / 早期成员）由官网 JSON 维护，无需发版即可更新。
+/// 一个呼号可拥有多个称号。数据默认内置一份兜底，启动时从官网 members.json
+/// 拉取最新（结构见 docs/members.json）：
+///   honors: { key: {zh, "zh-TW", en, color} }        称号定义
+///   developers / earlyMembers: [{call, honors:[...], ...}] 成员(分组决定默认称号)
+/// 名单归属与称号均由官网 JSON 维护，无需发版即可更新。
+
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
 
-/// 默认内置名单（联网失败 / 首次加载前兜底，与官网 json 默认一致）
-const List<String> _defaultDevelopers = [
-  'BG7LZQ', // 作者
-  'BG2HCB', // 代码优化
-  'BA4UAX', // 繁体翻译
-  'BD3QID', // 英文翻译
-];
-const List<String> _defaultEarly = [
-  'BG7PGW', // 测试·赞助
-  'BG7LMW', // 测试
-  'BG7OSL', // 测试
-  'imThree', // 反馈
-  'BA3RZL', // 算力
-];
+/// 单个称号定义
+class Honor {
+  final String key;
+  final String label;
+  final Color color;
+  final IconData icon;
+  const Honor(this.key, this.label, this.color, this.icon);
 
-/// 运行时名单（联网更新后替换）
-List<String> _developers = List.of(_defaultDevelopers);
-List<String> _earlyMembers = List.of(_defaultEarly);
+  static IconData iconFor(String key) => switch (key) {
+        'developer' => Icons.code_rounded,
+        'earlyMember' => Icons.workspace_premium_rounded,
+        _ => Icons.emoji_events_rounded,
+      };
+}
+
+/// 默认称号定义（联网失败 / 首次加载前兜底，与官网 json 默认一致）
+final Map<String, Honor> _defaultHonorDefs = {
+  'developer': const Honor('developer', '开发人员', Color(0xFF1D6FF2), Icons.code_rounded),
+  'earlyMember':
+      const Honor('earlyMember', '早期成员', Color(0xFFB08A34), Icons.workspace_premium_rounded),
+  'aiCompute': const Honor('aiCompute', 'AI 算力支持', Color(0xFF7c3aed), Icons.memory_rounded),
+};
+
+/// 运行时称号定义（联网更新后替换）
+Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
 int _loadSeq = 0;
 
 /// 徽标重建通知
@@ -43,33 +52,89 @@ final ValueNotifier<int> memberListVersion = ValueNotifier<int>(0);
 /// 取基呼号（去 SSID 后缀，转大写）
 String _base(String call) => call.trim().toUpperCase().split('-').first;
 
-enum MemberKind { none, developer, early }
-
-/// 判断呼号荣誉类型（开发 / 早期成员 / 无）
-MemberKind memberKindOf(String call) {
+/// 判断某呼号命中的称号 key（可多个）
+List<String> memberHonorsOf(String call) {
   final base = _base(call);
-  for (final c in _developers) {
-    if (c.toUpperCase() == base) return MemberKind.developer;
-  }
-  for (final c in _earlyMembers) {
-    if (c.toUpperCase() == base) return MemberKind.early;
-  }
-  return MemberKind.none;
+  return _honorsCache[base] ?? const [];
 }
+
+/// 运行时“呼号 -> 称号 key 列表”缓存（联网更新后替换）
+Map<String, List<String>> _honorsCache = {};
 
 String _normalize(String s) => s.trim().toUpperCase();
 
-/// 从 json 元素提取呼号：兼容字符串或 {call}
-String _callOf(dynamic it) {
-  if (it is String) return it;
-  if (it is Map) {
-    final c = it['call'];
-    if (c is String) return c;
-  }
-  return '';
+/// 内置兜底：默认称号映射（开发者/早期成员分组 + BA3RZL 额外 AI 算力）
+void _seedDefaults() {
+  _honorsCache = {
+    'BG7LZQ': ['developer'],
+    'BG2HCB': ['developer'],
+    'BA4UAX': ['developer'],
+    'BD3QID': ['developer'],
+    'BG7PGW': ['earlyMember'],
+    'BG7LMW': ['earlyMember'],
+    'BG7OSL': ['earlyMember'],
+    'imThree': ['earlyMember'],
+    'BA3RZL': ['earlyMember', 'aiCompute'],
+  };
 }
 
-/// 从官网拉取并合并名单（幂等；失败静默保留现有/默认）
+/// 从 members.json 解析称号
+void _parseMembers(Map d) {
+  // 1) 称号定义
+  final hDefs = d['honors'];
+  if (hDefs is Map && hDefs.isNotEmpty) {
+    final m = <String, Honor>{};
+    hDefs.forEach((k, v) {
+      if (v is Map) {
+        final zh = v['zh'] ?? k;
+        final color = _parseColor(v['color']);
+        m[k.toString()] = Honor(k.toString(), zh.toString(), color, Honor.iconFor(k.toString()));
+      }
+    });
+    if (m.isNotEmpty) _honorDefs = m;
+  }
+  // 2) 成员 -> 称号
+  final dev = (d['developers'] as List?) ?? const [];
+  final early = (d['earlyMembers'] as List?) ?? const [];
+  final cache = <String, List<String>>{};
+  void addMember(dynamic it, String defaultHonor) {
+    if (it is String) {
+      cache[it.toUpperCase()] = [defaultHonor];
+    } else if (it is Map) {
+      final c = it['call'];
+      if (c is String) {
+        final key = c.toUpperCase();
+        final honors = it['honors'];
+        if (honors is List && honors.isNotEmpty) {
+          cache[key] = honors.map((h) => h.toString()).toList();
+        } else {
+          cache[key] = [defaultHonor];
+        }
+      }
+    }
+  }
+
+  for (final m in dev) {
+    addMember(m, 'developer');
+  }
+  for (final m in early) {
+    addMember(m, 'earlyMember');
+  }
+  if (cache.isNotEmpty) _honorsCache = cache;
+}
+
+Color _parseColor(dynamic v) {
+  if (v is String) {
+    final s = v.replaceFirst('#', '');
+    if (s.length == 6) {
+      final val = int.tryParse(s, radix: 16);
+      if (val != null) return Color(0xFF000000 | val);
+    }
+  }
+  return const Color(0xFF7A879D);
+}
+
+/// 从官网拉取并合并（幂等；失败静默保留现有/默认）
 Future<void> refreshMembers() async {
   try {
     final client = HttpClient()
@@ -84,17 +149,13 @@ Future<void> refreshMembers() async {
       final body = await resp.transform(utf8.decoder).join();
       final d = jsonDecode(body);
       if (d is! Map) return;
-      final dev = (d['developers'] as List?) ?? const [];
-      final early = (d['earlyMembers'] as List?) ?? const [];
-      if (dev.isEmpty && early.isEmpty) return; // 非法内容忽略
-      _developers = dev.map(_callOf).where((s) => s.isNotEmpty).map(_normalize).toList();
-      _earlyMembers = early.map(_callOf).where((s) => s.isNotEmpty).map(_normalize).toList();
+      _parseMembers(d);
       memberListVersion.value++;
       // 缓存便于离线读取
       try {
         final p = await SharedPreferences.getInstance();
-        await p.setString('membersDev', jsonEncode(_developers));
-        await p.setString('membersEarly', jsonEncode(_earlyMembers));
+        await p.setString('honorDefsJson', jsonEncode(_serializeDefs()));
+        await p.setString('honorsCacheJson', jsonEncode(_honorsCache));
       } catch (_) {}
     } finally {
       client.close(force: true);
@@ -102,26 +163,55 @@ Future<void> refreshMembers() async {
   } catch (_) {}
 }
 
+Map<String, dynamic> _serializeDefs() => _honorDefs.map(
+      (k, h) => MapEntry(k, {'label': h.label, 'color': '#${h.color.value.toRadixString(16).substring(2)}'}),
+    );
+
 /// 首次加载：读缓存 → 若空用默认 → 后台联网刷新
 Future<void> ensureMembersLoaded() async {
   if (_loadSeq > 0) return;
+  _seedDefaults();
   _loadSeq++;
   try {
     final p = await SharedPreferences.getInstance();
-    final dev = p.getString('membersDev');
-    final early = p.getString('membersEarly');
-    if (dev != null && early != null) {
+    final defs = p.getString('honorDefsJson');
+    final cache = p.getString('honorsCacheJson');
+    if (defs != null && cache != null) {
       try {
-        _developers =
-            (jsonDecode(dev) as List).cast<String>().map(_normalize).toList();
-        _earlyMembers = (jsonDecode(early) as List)
-            .cast<String>()
-            .map(_normalize)
-            .toList();
+        final dd = jsonDecode(defs) as Map;
+        final dm = <String, Honor>{};
+        dd.forEach((k, v) {
+          if (v is Map) {
+            dm[k.toString()] = Honor(
+              k.toString(),
+              (v['label'] ?? k).toString(),
+              _parseColor(v['color']),
+              Honor.iconFor(k.toString()),
+            );
+          }
+        });
+        if (dm.isNotEmpty) _honorDefs = dm;
+        final cc = jsonDecode(cache) as Map;
+        final cm = <String, List<String>>{};
+        cc.forEach((k, v) {
+          if (v is List) cm[k.toString()] = v.map((x) => x.toString()).toList();
+        });
+        if (cm.isNotEmpty) _honorsCache = cm;
       } catch (_) {}
     }
   } catch (_) {}
   unawaited(refreshMembers());
+}
+
+/// 该呼号的称号列表（供徽标/详情展示）
+List<Honor> honorsOf(String call) {
+  final keys = memberHonorsOf(call);
+  final out = <Honor>[];
+  for (final k in keys) {
+    final h = _honorDefs[k];
+    if (h != null) out.add(h);
+  }
+  return out;
 }
 
 /// 打开该呼号的专属会员卡网页（浏览器）
@@ -132,7 +222,7 @@ Future<void> openMemberCard(String call) async {
   } catch (_) {}
 }
 
-/// 荣誉徽标：分「开发人员」/「早期成员」两类，点击打开专属卡页。
+/// 荣誉徽标组：同一呼号可有多个称号，全部展示。点击任意徽章打开专属卡页。
 class HonorBadge extends StatelessWidget {
   final String call;
   final bool compact;
@@ -143,36 +233,36 @@ class HonorBadge extends StatelessWidget {
     return ValueListenableBuilder<int>(
       valueListenable: memberListVersion,
       builder: (context, _, _) {
-        final kind = memberKindOf(call);
-        if (kind == MemberKind.none) return const SizedBox.shrink();
-        final developer = kind == MemberKind.developer;
-        final Color c =
-            developer ? const Color(0xFF1D6FF2) : const Color(0xFFB08A34);
-        final Color bg =
-            developer ? const Color(0xFFE8F0FE) : const Color(0xFFFFF6E0);
-        final String label = developer ? '开发人员' : '早期成员';
-        final IconData icon =
-            developer ? Icons.code_rounded : Icons.workspace_premium_rounded;
-        return GestureDetector(
-          onTap: () => openMemberCard(call),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 6 : 9,
-              vertical: 2,
-            ),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: c.withValues(alpha: 0.55)),
-            ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(icon, size: compact ? 12 : 13, color: c),
-              if (!compact) ...[
-                SizedBox(width: 3),
-                Text(label, style: ts(9.5, c: c, w: FontWeight.w800)),
-              ],
-            ]),
-          ),
+        final honors = honorsOf(call);
+        if (honors.isEmpty) return const SizedBox.shrink();
+        return Wrap(
+          spacing: 4,
+          runSpacing: 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            for (final h in honors)
+              GestureDetector(
+                onTap: () => openMemberCard(call),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact ? 6 : 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: h.color.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: h.color.withValues(alpha: 0.55)),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(h.icon, size: compact ? 12 : 13, color: h.color),
+                    if (!compact) ...[
+                      SizedBox(width: 3),
+                      Text(h.label, style: ts(9.5, c: h.color, w: FontWeight.w800)),
+                    ],
+                  ]),
+                ),
+              ),
+          ],
         );
       },
     );
