@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -912,6 +912,30 @@
       "primary": "jadeGift",
       "grp": "test",
       "c": "#0EA5B7"
+    },
+    {
+      "call": "BG9KAG",
+      "who": {
+        "zh": "BG9KAG",
+        "zh-TW": "BG9KAG",
+        "en": "BG9KAG"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
     }
   ],
   "groups": [
