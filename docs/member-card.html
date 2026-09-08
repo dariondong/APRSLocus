@@ -4,61 +4,85 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APRSlocus · FIRST MEMBER</title>
-<meta name="description" content="APRSlocus FIRST MEMBER 早期成员纪念档案">
+<meta name="description" content="APRSlocus FIRST MEMBER — 早期成员与赞助同行者纪念墙">
 <meta property="og:title" content="APRSlocus FIRST MEMBER">
 <meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{min-height:100vh;font-family:"Inter","PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,"Segoe UI",Roboto,sans-serif;
-    background:linear-gradient(165deg,#fafbfd,#eef0f6 55%,#e9ecf4);color:#101a30;
+    background:linear-gradient(165deg,#fafbfe,#f0f2f8 55%,#e9ecf4);color:#131c30;
     -webkit-font-smoothing:antialiased}
   .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
-    padding:12px 18px;background:rgba(244,246,251,.7);backdrop-filter:blur(8px);border-bottom:1px solid rgba(30,50,90,.06)}
+    padding:12px 18px;background:rgba(244,246,251,.72);backdrop-filter:blur(8px);border-bottom:1px solid rgba(30,50,90,.06)}
   .brand{display:flex;align-items:center;gap:9px;text-decoration:none}
   .brand img{width:26px;height:26px;border-radius:7px;background:#fff;box-shadow:0 4px 10px rgba(20,30,60,.12)}
-  .brand b{font-size:14px;color:#141c30}
+  .brand b{font-size:14.5px;color:#141c30}
   .langs{display:flex;gap:3px}
   .langs button{font:inherit;font-size:12.5px;color:#7b879d;background:transparent;border:0;border-radius:8px;padding:4px 10px;cursor:pointer}
   .langs button.on{color:#10192e;font-weight:700;background:#fff;box-shadow:0 2px 8px rgba(20,35,70,.07)}
-  .wrap{max-width:760px;margin:0 auto;padding:clamp(22px,6vh,56px) 16px 8px;display:flex;flex-direction:column;align-items:center}
-  canvas{display:block;width:100%;max-width:720px;height:auto;border-radius:22px;
+  .wrap{max-width:1000px;margin:0 auto;padding:clamp(24px,5vh,52px) 16px 10px}
+  /* hero */
+  .hero{text-align:center;margin-bottom:34px}
+  .hero .st{display:inline-block;font-size:11px;letter-spacing:3px;color:#b08a34;border:1px solid rgba(176,138,52,.35);border-radius:999px;padding:5px 16px;margin-bottom:14px}
+  .hero h1{font-size:clamp(26px,5vw,44px);font-weight:900;letter-spacing:-.02em}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,#0c2f7a,#0ea5c4);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:#7b879d;font-size:14px;margin-top:8px}
+  /* 分组区 */
+  .group{margin:0 0 30px}
+  .gh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .gh .dot{width:8px;height:8px;border-radius:50%}
+  .gh h3{font-size:15px;font-weight:800;letter-spacing:.5px}
+  .gh span{color:#a3adc0;font-size:12px;margin-left:auto}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+  .mcard{background:#fff;border:1px solid #e9ecf4;border-radius:18px;padding:18px 12px 14px;text-align:center;cursor:pointer;
+    transition:.2s cubic-bezier(.2,.8,.2,1);box-shadow:0 10px 26px -22px rgba(20,35,70,.6)}
+  .mcard:hover{transform:translateY(-4px);border-color:#cdd8ec;box-shadow:0 20px 40px -24px rgba(20,35,70,.6)}
+  .mcard.grp{cursor:default}
+  .mcard.grp:hover{transform:none}
+  .av{width:52px;height:52px;border-radius:16px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:900;color:#fff;box-shadow:0 8px 18px rgba(20,35,70,.18)}
+  .mcard .call{font-size:15px;font-weight:900;letter-spacing:1px;font-family:ui-monospace,'SF Mono',Consolas,monospace}
+  .mcard .who{font-size:12px;color:#6a7590;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mcard .role{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;color:#54617c;background:#eef1f8;border-radius:999px;padding:3px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .mcard .tag2{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;color:#0e7a4d;background:#e6f6ee;border-radius:999px;padding:3px 9px}
+  .mcard .heart{margin-top:8px;font-size:13px}
+  /* 会员卡预览 */
+  .prehead{display:flex;align-items:center;gap:10px;margin:8px 0 16px}
+  .prehead::after{content:"";flex:1;height:1px;background:rgba(30,50,90,.08)}
+  .prehead b{font-size:14px;letter-spacing:1px}
+  .pre{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
+  canvas{display:block;width:100%;height:auto;border-radius:22px;
     box-shadow:0 30px 70px -32px rgba(20,35,70,.45),0 2px 10px rgba(20,35,70,.05)}
-  /* 资料区 */
-  .profile{margin-top:34px;width:100%;max-width:720px;background:rgba(255,255,255,.85);
-    border:1px solid rgba(30,50,90,.08);border-radius:20px;padding:clamp(20px,4vw,34px);box-shadow:0 18px 44px -30px rgba(20,35,70,.4)}
+  .profile{margin-top:26px;width:100%;background:rgba(255,255,255,.9);border:1px solid rgba(30,50,90,.08);
+    border-radius:20px;padding:clamp(20px,4vw,32px);box-shadow:0 18px 44px -30px rgba(20,35,70,.4)}
   .p-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .p-num{flex:0 0 auto;width:52px;height:52px;border-radius:15px;color:#fff;font:800 17px Consolas,monospace;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(20,35,70,.2)}
+  .p-num{flex:0 0 auto;width:52px;height:52px;border-radius:15px;color:#fff;font:800 17px Consolas,monospace;display:flex;align-items:center;justify-content:center}
   .p-id{min-width:0}
-  .p-call{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,'SF Mono',Consolas,monospace;line-height:1.1}
+  .p-call{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:1.5px;font-family:ui-monospace,Consolas,monospace;line-height:1.1}
   .p-who{color:#6a7590;font-size:14px;margin-top:4px}
-  .p-role{margin-left:auto;font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:999px;flex-shrink:0}
+  .p-role{margin-left:auto;font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:999px}
   .p-hr{height:1px;background:rgba(30,50,90,.08);margin:22px 0}
   .p-sec h4{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2.5px;color:#8b95a9;font-weight:700;margin-bottom:10px}
   .p-sec h4::after{content:"";flex:1;height:1px;background:rgba(30,50,90,.06)}
   .p-sec p{color:#303d58;font-size:15.5px;line-height:1.95}
   .p-quote{display:flex;gap:12px;margin-top:20px;padding:14px 18px;border-radius:14px;background:#f7f9fd;border-left:3px solid}
-  .p-quote .qm{font-size:20px;line-height:1;color:#c9d0dd;font-family:Georgia,serif;flex:0 0 auto}
+  .p-quote .qm{font-size:20px;line-height:1;color:#c9d0dd;font-family:Georgia,serif}
   .p-quote p{color:#44506b;font-size:14.5px;line-height:1.8;font-style:italic}
   .p-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
   .tag{font-size:12px;font-weight:600;color:#54617c;background:#eef1f8;border-radius:999px;padding:5px 13px}
-  .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:26px;flex-wrap:wrap}
-  .ct{font:inherit;font-size:14px;color:#39435e;background:transparent;border:0;border-radius:11px;padding:10px 17px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+  .ctrl{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:24px;flex-wrap:wrap}
+  .ct{font:inherit;font-size:14px;color:#39435e;background:transparent;border:0;border-radius:11px;padding:10px 17px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .ct:hover{background:#fff;box-shadow:0 4px 12px rgba(20,35,70,.08)}
   .ct svg{width:15px;height:15px}
   .ct.prim{font-weight:700;color:#fff;background:#16213b;box-shadow:0 12px 24px -14px rgba(20,30,55,.8)}
-  .ct.prim:hover{background:#0f1830}
   .sep{width:1px;height:20px;background:#d7dbe6;margin:0 8px}
   .calls{display:inline-flex;gap:3px;flex-wrap:wrap;justify-content:center}
-  .calls button{font:inherit;font-size:12.5px;font-family:ui-monospace,Consolas,monospace;color:#98a1b4;
-    background:transparent;border:0;border-radius:9px;padding:6px 9px;cursor:pointer}
+  .calls button{font:inherit;font-size:12.5px;font-family:ui-monospace,Consolas,monospace;color:#98a1b4;background:transparent;border:0;border-radius:9px;padding:6px 9px;cursor:pointer}
   .calls button.on{color:#10192e;background:#fff;font-weight:700;box-shadow:0 3px 10px rgba(20,35,70,.1)}
-  .calls button:not(.on):hover{color:#10192e}
-  .foot{margin:34px 0 30px;color:#9aa3b6;font-size:12.5px;text-align:center}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;
-    font-size:13px;padding:10px 20px;border-radius:11px;opacity:0;transition:.28s;z-index:60;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .foot{margin:34px 0 26px;color:#9aa3b6;font-size:12.5px;text-align:center}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#16213b;color:#fff;font-size:13px;padding:10px 20px;border-radius:11px;opacity:0;transition:.28s;z-index:60;box-shadow:0 12px 30px rgba(0,0,0,.4)}
   .toast.show{opacity:1;transform:translateX(-50%)}
-  @media(max-width:520px){.p-role{margin-left:0}.p-head{gap:13px}}
+  @media(max-width:520px){.p-role{margin-left:0}}
 </style>
 </head>
 <body>
@@ -72,25 +96,40 @@
 </div>
 
 <div class="wrap">
-  <canvas id="cv"></canvas>
-  <section class="profile" id="profile"></section>
-  <div class="ctrl">
-    <button class="ct prim" onclick="exportPng()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
-      <span data-i18n="export">导出 PNG</span></button>
-    <button class="ct" onclick="next()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-      <span data-i18n="next">下一位</span></button>
-    <span class="sep"></span>
-    <span class="calls" id="calls"></span>
+  <div class="hero">
+    <div class="st" data-i18n="mem">F I R S T &nbsp;M E M B E R</div>
+    <h1><span data-i18n="t1">APRSlocus 早期成员</span> · <em data-i18n="t2">感谢同行</em></h1>
+    <p data-i18n="desc">每一位点亮 APRSlocus 的伙伴，都值得一张纪念卡。</p>
   </div>
+
+  <!-- 成员名录（分组） -->
+  <div id="walls"></div>
+
+  <!-- 单会员卡预览 -->
+  <div class="prehead"><b data-i18n="card">会员卡预览</b></div>
+  <div class="pre">
+    <canvas id="cv"></canvas>
+    <section class="profile" id="profile"></section>
+    <div class="ctrl">
+      <button class="ct prim" onclick="exportPng()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
+        <span data-i18n="export">导出 PNG</span></button>
+      <button class="ct" onclick="next()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        <span data-i18n="next">下一位</span></button>
+      <span class="sep"></span>
+      <span class="calls" id="calls"></span>
+    </div>
+  </div>
+
   <div class="foot" data-i18n="foot">APRSlocus · 电波无限，感谢同行</div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 const LOGO="data:image/png;base64,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";
-const MEMBERS=[
+/* 个人成员（有呼号） */
+const PEOPLE=[
  {call:"BG7LZQ",who:{zh:"Darion Dong","zh-TW":"Darion Dong",en:"Darion Dong"},
   role:{zh:"创始人 · 全栈开发","zh-TW":"創始人 · 全棧開發",en:"Founder · Full-stack"},
   brief:{zh:"让 APRSlocus 从理想变成电波","zh-TW":"讓 APRSlocus 從理想變成電波",en:"Turned APRSlocus from idea into radio waves"},
@@ -99,7 +138,7 @@ const MEMBERS=[
            en:"Founded and built APRSlocus end-to-end — APRS-IS feed, map engines, messaging and beacon systems — for Android and Windows, then opened it to hams worldwide."},
   quote:{zh:"愿这串呼号，永远在地图上闪着光。","zh-TW":"願這串呼號，永遠在地圖上閃著光。",en:"May this callsign always shine on the map."},
   tags:{zh:["全栈开发","APRS 接入","开源"],"zh-TW":["全棧開發","APRS 接入","開源"],en:["Full-stack","APRS feed","Open source"]},
-  c:"#3b6ef5",num:1},
+  c:"#3b6ef5",grp:"core"},
  {call:"BG2HCB",who:{zh:"清零","zh-TW":"清零",en:"Qing Ling"},
   role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings optimization"},
   brief:{zh:"把设置收束成顺手的样子","zh-TW":"把設置收束成順手的樣子",en:"Tamed the settings into something intuitive"},
@@ -108,7 +147,7 @@ const MEMBERS=[
            en:"Rebuilt the settings experience and its code so every toggle, tab and hint feels clear on phone and desktop — and much easier to get started."},
   quote:{zh:"把复杂留给自己，把简单留给同好。","zh-TW":"把複雜留給自己，把簡單留給同好。",en:"Keep complexity to yourself; leave simplicity to the community."},
   tags:{zh:["设置体验","代码重构"],"zh-TW":["設置體驗","代碼重構"],en:["Settings UX","Refactor"]},
-  c:"#0e9f8b",num:2},
+  c:"#0e9f8b",grp:"core"},
  {call:"BA4UAX",who:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
   role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese translation"},
   brief:{zh:"让繁体中文同好读懂它","zh-TW":"讓繁體中文同好讀懂它",en:"Made it readable for Traditional-Chinese hams"},
@@ -117,7 +156,7 @@ const MEMBERS=[
            en:"Delivered the full Traditional-Chinese translation and localization polish, so hams in Hong Kong, Taiwan and beyond can use APRSlocus with ease."},
   quote:{zh:"多一种语言，就多一群在电波里相逢的朋友。","zh-TW":"多一種語言，就多一群在電波裡相逢的朋友。",en:"One more language, one more circle of friends on the air."},
   tags:{zh:["繁体中文","本地化"],"zh-TW":["繁體中文","本地化"],en:["Traditional Chinese","L10n"]},
-  c:"#6269e6",num:3},
+  c:"#6269e6",grp:"i18n"},
  {call:"BD3QID",who:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
   role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English · Testing"},
   brief:{zh:"把 APRSlocus 讲给世界","zh-TW":"把 APRSlocus 講給世界",en:"Told APRSlocus' story to the world"},
@@ -126,16 +165,16 @@ const MEMBERS=[
            en:"Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows."},
   quote:{zh:"让世界听见我们的信标。","zh-TW":"讓世界聽見我們的信標。",en:"Let the world hear our beacons."},
   tags:{zh:["英文翻译","质量测试"],"zh-TW":["英文翻譯","品質測試"],en:["English","QA"]},
-  c:"#8a5cf0",num:4},
+  c:"#8a5cf0",grp:"i18n"},
  {call:"BG7PGW",who:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
-  role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
-  brief:{zh:"一遍遍把 bug 揪出来","zh-TW":"一遍遍把 bug 揪出來",en:"Flushed bugs out of every corner"},
-  contrib:{zh:"长期参与真实环境收测，反馈定位、地图与连接稳定性问题，帮助开发快速定位并修复。",
-           "zh-TW":"長期參與真實環境收測，回饋定位、地圖與連線穩定性問題，幫助開發快速定位並修復。",
-           en:"Long-time on-air tester who reported real-world issues across GPS, maps and connectivity — helping fixes land fast."},
+  role:{zh:"功能测试 · 赞助","zh-TW":"功能測試 · 贊助",en:"Testing · Sponsor"},
+  brief:{zh:"一遍遍把 bug 揪出来，也为项目送来蜜雪冰城 🧋","zh-TW":"一遍遍把 bug 揪出來，也為項目送來蜜雪冰城 🧋",en:"Flushed bugs from every corner — and bought the dev a Mixue 🧋"},
+  contrib:{zh:"长期参与真实环境收测，反馈定位、地图与连接稳定性问题；并赞助一杯蜜雪冰城支持开发。",
+           "zh-TW":"長期參與真實環境收測，回饋定位、地圖與連線穩定性問題；並贊助一杯蜜雪冰城支持開發。",
+           en:"Long-time on-air tester for GPS, maps and connectivity — and a Mixue sponsor cheering the dev on."},
   quote:{zh:"每一份 bug 报告，都是让产品变好的电波。","zh-TW":"每一份 bug 報告，都是讓產品變好的電波。",en:"Every bug report is a signal that makes the product better."},
-  tags:{zh:["功能测试","Bug 反馈"],"zh-TW":["功能測試","Bug 回饋"],en:["Testing","Bug reports"]},
-  c:"#0da46b",num:5},
+  tags:{zh:["功能测试","蜜雪赞助","Bug 反馈"],"zh-TW":["功能測試","蜜雪贊助","Bug 回饋"],en:["Testing","Sponsor","Bug reports"]},
+  c:"#0da46b",grp:"test"},
  {call:"BG7LMW",who:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
   role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
   brief:{zh:"在真实电台上验证功能","zh-TW":"在真實電台上驗證功能",en:"Validated every feature on real gear"},
@@ -144,7 +183,7 @@ const MEMBERS=[
            en:"Validated beaconing, mobility and messaging across real devices — guarding quality before every release."},
   quote:{zh:"用真实电台说话，用认真态度测试。","zh-TW":"用真實電台說話，用認真態度測試。",en:"Speak with real radios; test with real care."},
   tags:{zh:["功能测试","实机验证"],"zh-TW":["功能測試","實機驗證"],en:["Testing","On-device"]},
-  c:"#0a9fb4",num:6},
+  c:"#0a9fb4",grp:"test"},
  {call:"BG7OSL",who:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
   role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
   brief:{zh:"事无巨细推动它变好","zh-TW":"鉅細靡遺推動它變好",en:"Pushed it forward with meticulous feedback"},
@@ -153,7 +192,16 @@ const MEMBERS=[
            en:"Covered fixes, messages, groups and map details with meticulous notes that kept the whole experience improving."},
   quote:{zh:"细节见真章，较真见热爱。","zh-TW":"細節見真章，較真見熱愛。",en:"Details reveal craft; diligence reveals love."},
   tags:{zh:["功能测试","体验打磨"],"zh-TW":["功能測試","體驗打磨"],en:["Testing","UX polish"]},
-  c:"#e0568f",num:7},
+  c:"#e0568f",grp:"test"},
+ {call:"imThree",who:{zh:"imThree","zh-TW":"imThree",en:"imThree"},
+  role:{zh:"Bug 提交与反馈","zh-TW":"Bug 提交與反饋",en:"Bug reports & feedback"},
+  brief:{zh:"认真报障，推动一次次修复","zh-TW":"認真報障，推動一次次修復",en:"Reported issues that drove real fixes"},
+  contrib:{zh:"持续提交测试与 Bug 反馈，帮助定位并修复了过滤、退出与多处细节问题，为发版质量提供重要输入。",
+           "zh-TW":"持續提交測試與 Bug 回饋，幫助定位並修復了過濾、退出與多處細節問題，為發版品質提供重要輸入。",
+           en:"Filing steady bug reports — filter, exit and other edge cases — gave the release process crucial signal."},
+  quote:{zh:"发现并说出问题，就是在帮忙。","zh-TW":"發現並說出問題，就是在幫忙。",en:"Finding and voicing issues is helping."},
+  tags:{zh:["Bug 反馈","发版测试"],"zh-TW":["Bug 回饋","發版測試"],en:["Bug reports","Release QA"]},
+  c:"#ef5252",grp:"test"},
  {call:"BA3RZL",who:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
   role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},
   brief:{zh:"用算力托起开发的路","zh-TW":"用算力托起開發的路",en:"Carried the build on a different signal"},
@@ -162,86 +210,126 @@ const MEMBERS=[
            en:"Provided AI compute for development and testing, accelerating prototypes, debugging and multilingual content."},
   quote:{zh:"算力无形，善意有迹。","zh-TW":"算力無形，善意有跡。",en:"Compute is invisible; kindness leaves a trace."},
   tags:{zh:["AI 算力","开发支持"],"zh-TW":["AI 算力","開發支持"],en:["AI compute","Dev support"]},
-  c:"#df7a36",num:8}
+  c:"#df7a36",grp:"support"}
 ];
+/* 团体/赞助项（无呼号） */
+const GROUPS=[
+ {name:{zh:"STUDENT HAMS 群组","zh-TW":"STUDENT HAMS 群組",en:"STUDENT HAMS"},
+  role:{zh:"学生火腿群体 · 资金赞助","zh-TW":"學生火腿群體 · 資金贊助",en:"Student hams · financial support"},
+  note:{zh:"感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。","zh-TW":"感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。",en:"Thanks to the group for financial support that keeps APRSlocus building."},
+  c:"#7c5cff",heart:"true"},
+ {name:{zh:"每一位支持者","zh-TW":"每一位支持者",en:"Every supporter"},
+  role:{zh:"匿名赞助 · 陪伴与鼓励","zh-TW":"匿名贊助 · 陪伴與鼓勵",en:"Anonymous · encouragement"},
+  note:{zh:"你们的每一份支持，都是 APRSlocus 继续发光的动力。","zh-TW":"你們的每一份支持，都是 APRSlocus 繼續發光的動力。",en:"Every bit of support keeps APRSlocus glowing."},
+  c:"#e67a9a",heart:"true"}
+];
+const GRP_META={
+ core:{zh:"核心 · 开发","zh-TW":"核心 · 開發",en:"Core · Development"},
+ i18n:{zh:"国际化 · 翻译","zh-TW":"國際化 · 翻譯",en:"i18n · Translation"},
+ test:{zh:"测试 · 反馈","zh-TW":"測試 · 回饋",en:"Testing · Feedback"},
+ support:{zh:"支持与赞助","zh-TW":"支持與贊助",en:"Support & Sponsors"}
+};
 const TX={
- "zh":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成员",sub:"APRS 定位追踪与地图",
+ "zh":{mem:"F I R S T   M E M B E R",t1:"APRSlocus 早期成员",t2:"感谢同行",
+   desc:"每一位点亮 APRSlocus 的伙伴，都值得一张纪念卡。",card:"会员卡预览",
    foot:"APRSlocus · 电波无限，感谢同行",saved:"已保存 PNG",export:"导出 PNG",next:"下一位",
-   contribution:"贡献",quote:"寄语",role:"同行角色",no:"#"},
- "zh-TW":{mem:"F I R S T   M E M B E R",early:"APRSlocus 早期成員",sub:"APRS 定位追蹤與地圖",
+   contribution:"贡献",quote:"寄语",role:"角色",no:"#",sponsor:"赞助同行",groupT:"同行团体"},
+ "zh-TW":{mem:"F I R S T   M E M B E R",t1:"APRSlocus 早期成員",t2:"感謝同行",
+   desc:"每一位點亮 APRSlocus 的夥伴，都值得一張紀念卡。",card:"會員卡預覽",
    foot:"APRSlocus · 電波無限，感謝同行",saved:"已儲存 PNG",export:"匯出 PNG",next:"下一位",
-   contribution:"貢獻",quote:"寄語",role:"同行角色",no:"#"},
- "en":{mem:"F I R S T   M E M B E R",early:"Early member of APRSlocus",sub:"APRS Tracking & Mapping",
+   contribution:"貢獻",quote:"寄語",role:"角色",no:"#",sponsor:"贊助同行",groupT:"同行團體"},
+ "en":{mem:"F I R S T   M E M B E R",t1:"APRSlocus early members",t2:"Thank you, friends",
+   desc:"Every friend who lit up APRSlocus deserves a card of their own.",card:"Member card",
    foot:"APRSlocus · Endless waves, thank you",saved:"PNG saved",export:"Export PNG",next:"Next",
-   contribution:"Contribution",quote:"Words",role:"Role",no:"#"}
+   contribution:"Contribution",quote:"Words",role:"Role",no:"#",sponsor:"Sponsors",groupT:"Groups"}
 };
 const W=1040,H=680,SF=2.5;
 let lang="zh",idx=0;const cv=document.getElementById("cv");
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();renderProfile();}
-function go(i){idx=((i%MEMBERS.length)+MEMBERS.length)%MEMBERS.length;
- const u=new URL(location);u.searchParams.set("call",MEMBERS[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);sync();draw();renderProfile();}
-function next(){go(idx+1);}
+function T(l,obj){return obj[lang]||obj.zh;}
+function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();walls();draw();profile();}
+function pick(i){idx=((i%PEOPLE.length)+PEOPLE.length)%PEOPLE.length;
+ const u=new URL(location);u.searchParams.set("call",PEOPLE[idx].call);if(lang!=="zh")u.searchParams.set("lang",lang);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();draw();profile();
+ const el=document.querySelector(".prehead");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
+function next(){pick(idx+1);}
 function hexA(h,a){const n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
-function sync(){
+function ui(){
  document.querySelectorAll("[data-i18n]").forEach(e=>{const k=e.dataset.i18n;if(TX[lang][k]!=null)e.textContent=TX[lang][k];});
  document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
+ document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";
  const cl=document.getElementById("calls");cl.innerHTML="";
- MEMBERS.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");b.onclick=()=>go(i);cl.appendChild(b);});
- document.documentElement.lang=lang==="zh"?"zh-CN":lang==="zh-TW"?"zh-Hant":"en";}
+ PEOPLE.forEach((m,i)=>{const b=document.createElement("button");b.textContent=m.call;if(i===idx)b.classList.add("on");b.onclick=()=>pick(i);cl.appendChild(b);});}
+function wallSection(grp,people){
+ const gm=GRP_META[grp]; if(!gm) return "";
+ const gcols={core:"#3b6ef5",i18n:"#6269e6",test:"#0da46b",support:"#df7a36"};
+ return `<div class="group"><div class="gh"><span class="dot" style="background:${gcols[grp]}"></span>
+  <h3>${T(gm)}</h3><span>${people.length}</span></div>
+  <div class="cards">${people.map(m=>`
+   <div class="mcard" onclick="pick(${PEOPLE.indexOf(m)})">
+     <div class="av" style="background:linear-gradient(140deg,${m.c},${m.c})">${(m.call.replace(/[0-9-]/g,"")[0]||"A").toUpperCase()}</div>
+     <div class="call">${m.call}</div>
+     <div class="who">${m.who&&(m.who[lang]||m.who.zh)!==m.call?(m.who[lang]||m.who.zh):""}</div>
+     <div class="role">${T(m.role)}</div>
+   </div>`).join("")}
+  ${GROUPS.filter(g=>grp==="support").map(g=>`
+   <div class="mcard grp">
+     <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">♥</div>
+     <div class="call">${T(g.name)}</div>
+     <div class="who">${T(g.role)}</div>
+     <div class="tag2">${TX[lang].sponsor}</div>
+   </div>`).join("")}
+  </div></div>`;}
+function walls(){
+ const order=["core","i18n","test","support"];
+ document.getElementById("walls").innerHTML=order.map(g=>wallSection(g,PEOPLE.filter(p=>p.grp===g))).join("");
+}
 function draw(){
- const m=MEMBERS[idx];const c=cv.getContext("2d");
+ const m=PEOPLE[idx];const c=cv.getContext("2d");
  cv.width=W*SF;cv.height=H*SF;c.scale(SF,SF);c.clearRect(0,0,W,H);
  const R=24,P=1;
  rr(c,P,P,W-P*2,H-P*2,R);c.fillStyle="#ffffff";c.fill();c.save();c.clip();
- /* 底 */
  const tint=c.createRadialGradient(W*.9,0,20,W*.9,0,W*.5);tint.addColorStop(0,hexA(m.c,.10));tint.addColorStop(1,"rgba(255,255,255,0)");
  c.fillStyle=tint;c.fillRect(0,0,W,H);
  c.fillStyle=m.c;c.fillRect(P,P,W-P*2,5);
- /* 顶部 */
  const tx=58,ty=52,lw=46;
  if(logoImg){c.save();rr(c,tx,ty-lw/2,lw,lw,13);c.fillStyle="#fff";c.strokeStyle="#e7eaf2";c.lineWidth=1;c.stroke();rr(c,tx,ty-lw/2,lw,lw,13);c.clip();c.drawImage(logoImg,tx,ty-lw/2,lw,lw);c.restore();}
  c.fillStyle="#141e38";c.font="800 26px 'Segoe UI','PingFang SC',sans-serif";c.fillText("APRSlocus",tx+lw+16,ty+2);
  c.fillStyle="#8b95a9";c.font="600 13px 'Segoe UI','PingFang SC',sans-serif";
- c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].sub.toUpperCase(),tx+lw+16,ty+26);c.restore();
- const cap=TX[lang].early;
+ c.save();c.letterSpacing="1.6px";c.fillText(TX[lang].mem,tx+lw+16,ty+26);c.restore();
+ const cap=T(TX[lang].t1);
  c.font="700 14.5px 'PingFang SC','Segoe UI',sans-serif";const capW=c.measureText(cap).width;
  c.save();rr(c,W-58-capW-30,24,capW+30,36,18);c.fillStyle=hexA(m.c,.15);c.fill();
  c.fillStyle=m.c;c.textAlign="center";c.fillText(cap,W-58-capW/2-15,49);c.textAlign="left";c.restore();
  c.fillStyle="#8b95a9";c.font="700 14px Consolas,monospace";c.textAlign="right";
- c.fillText(m.num.toString().padStart(2,"0")+" / "+MEMBERS.length.toString().padStart(2,"0"),W-58,100);c.textAlign="left";
+ c.fillText((idx+1)+" / "+PEOPLE.length,W-58,100);c.textAlign="left";
  c.fillStyle="#eef1f7";c.fillRect(58,132,W-116,1);
- /* 中部 */
  const cx=58,cy0=278;
  c.save();c.letterSpacing="2.5px";c.fillStyle="#8b95a9";c.font="700 15px 'Segoe UI','PingFang SC',sans-serif";
- c.fillText(TX[lang].early.toUpperCase(),cx,cy0-102);c.restore();
+ c.fillText(TX[lang].t1.toUpperCase(),cx,cy0-102);c.restore();
  c.fillStyle="#0d1426";c.font="800 132px 'SF Mono','Consolas',ui-monospace,monospace";c.fillText(m.call,cx,cy0+2);
  c.fillStyle=m.c;c.fillRect(cx,cy0+56,72,4);
- c.fillStyle="#182238";c.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who[lang]||m.who.zh,cx,cy0+128);
- const role=m.role[lang]||m.role.zh;
+ c.fillStyle="#182238";c.font="700 30px 'PingFang SC','Segoe UI',sans-serif";c.fillText(m.who?(m.who[lang]||m.who.zh):"",cx,cy0+128);
+ const role=T(m.role);
  c.font="600 17px 'PingFang SC','Segoe UI',sans-serif";const rw=c.measureText(role).width;
  c.save();rr(c,cx,cy0+150,rw+30,34,17);c.fillStyle="#f2f4f9";c.fill();c.restore();
  c.fillStyle="#4c5770";c.fillText(role,cx+15,cy0+172);
  c.fillStyle="#7c8699";c.font="500 19px 'PingFang SC','Segoe UI',sans-serif";
- c.fillText("“"+(m.brief[lang]||m.brief.zh)+"”",cx,cy0+240);
- /* 底部 */
+ c.fillText("“"+T(m.brief)+"”",cx,cy0+240);
  c.fillStyle="#eef0f6";c.fillRect(58,H-82,W-116,1);
- c.fillStyle="#9aa4b8";c.font="700 18px Consolas,monospace";c.fillText("# "+m.num.toString().padStart(2,"0"),58,H-44);
+ c.fillStyle="#9aa4b8";c.font="700 18px Consolas,monospace";c.fillText("# "+(idx+1),58,H-44);
  c.fillStyle="#7c8699";c.font="500 17px 'PingFang SC','Segoe UI',sans-serif";
  c.textAlign="right";c.fillText(TX[lang].foot,W-58,H-44);c.textAlign="left";
  c.restore();
  rr(c,P,P,W-P*2,H-P*2,R);c.lineWidth=1;c.strokeStyle="#e4e8f1";c.stroke();
 }
-function renderProfile(){
- const m=MEMBERS[idx];const g=m.c;
- const who=m.who[lang]||m.who.zh, role=m.role[lang]||m.role.zh;
- const contrib=m.contrib[lang]||m.contrib.zh, quote=m.quote[lang]||m.quote.zh;
- const tags=m.tags[lang]||m.tags.zh;
+function profile(){
+ const m=PEOPLE[idx],g=m.c;const who=m.who?(m.who[lang]||m.who.zh):"";
+ const contrib=T(m.contrib),quote=T(m.quote),tags=T(m.tags),role=T(m.role);
  const box=document.getElementById("profile");
  box.innerHTML=`<div class="p-head">
-   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${TX[lang].no}${m.num.toString().padStart(2,"0")}</div>
+   <div class="p-num" style="background:linear-gradient(140deg,${g},${g})">${TX[lang].no}${(idx+1).toString().padStart(2,"0")}</div>
    <div class="p-id"><div class="p-call">${m.call}</div><div class="p-who">${who}</div></div>
    <span class="p-role" style="background:linear-gradient(120deg,${g},${g})">${role}</span>
  </div>
@@ -252,11 +340,11 @@ function renderProfile(){
 }
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600);}
-function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+MEMBERS[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
+function exportPng(){const a=document.createElement("a");a.download="APRSlocus-FIRST-MEMBER-"+PEOPLE[idx].call+".png";a.href=cv.toDataURL("image/png");a.click();toast(TX[lang].saved);}
 lang=detect();
 const qc=new URLSearchParams(location.search).get("call");
-const fi=MEMBERS.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
-sync();
+const fi=PEOPLE.findIndex(x=>x.call.toUpperCase()===(qc||"").toUpperCase());if(fi>=0)idx=fi;
+ui();walls();
 </script>
 </body>
 </html>
