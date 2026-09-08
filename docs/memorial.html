@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电波无限 · 感谢同行 — APRSlocus</title>
+<meta name="description" content="纪念与 APRSlocus 一路同行的早期成员。电波无限，感谢同行。">
+<meta property="og:title" content="电波无限 · 感谢同行 — APRSlocus">
+<meta property="og:description" content="纪念与 APRSlocus 一路同行的早期成员。电波无限，感谢同行。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<style>
+  :root{
+    --bg0:#070d1f; --bg1:#0c1530; --bg2:#101d3f;
+    --ink:#e8eefc; --sub:#93a2c4; --line:rgba(148,163,215,.18);
+    --gold:#ffd76a; --cyan:#5ad7ff; --blue:#4f8bff; --green:#57e6a1;
+    --card:linear-gradient(160deg,#111c3d,#0a1229);
+    --wave:rgba(90,215,255,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    min-height:100vh;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%,rgba(79,139,255,.18),transparent 60%),
+      radial-gradient(900px 500px at -10% 20%,rgba(90,215,255,.12),transparent 55%),
+      linear-gradient(180deg,var(--bg0),var(--bg1) 45%,var(--bg0));
+    overflow-x:hidden;
+  }
+  /* 顶栏 */
+  .top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(7,13,31,.75);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:14px;padding:12px 22px;flex-wrap:wrap}
+  .top .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .top .brand img{width:30px;height:30px;border-radius:8px}
+  .top .brand b{font-size:15px}
+  .top .brand span{color:var(--sub);font-weight:500;font-size:11px;margin-left:2px}
+  .top .langs{margin-left:auto;display:flex;gap:6px}
+  .top .langs button{background:transparent;color:var(--sub);border:1px solid var(--line);
+    border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;transition:.2s}
+  .top .langs button.on{color:#08122e;background:var(--gold);border-color:var(--gold);font-weight:700}
+  /* 主视觉 */
+  .hero{text-align:center;padding:70px 20px 26px;position:relative}
+  .hero .stamp{display:inline-block;font-size:12px;letter-spacing:4px;color:var(--gold);
+    border:1px solid rgba(255,215,106,.4);border-radius:999px;padding:6px 18px;margin-bottom:22px}
+  .hero h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:2px;line-height:1.25}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--cyan));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--sub);max-width:720px;margin:18px auto 0;font-size:15px;line-height:1.9}
+  .wave-deco{height:46px;margin:26px auto 4px;max-width:720px;opacity:.9}
+  .wave-deco svg{width:100%;height:100%}
+  /* 成员区 */
+  .members{max-width:1080px;margin:14px auto 40px;padding:0 22px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+  .card{position:relative;overflow:hidden;border-radius:22px;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);
+    padding:24px 20px 20px;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,box-shadow .28s;
+    box-shadow:0 14px 34px rgba(0,0,0,.28)}
+  .card:hover,.card.hl{transform:translateY(-6px);border-color:rgba(90,215,255,.55);
+    box-shadow:0 22px 48px rgba(30,80,200,.28)}
+  .card.hl{outline:1px solid var(--cyan)}
+  .card::before{content:"";position:absolute;inset:0;opacity:.5;
+    background:radial-gradient(420px 200px at 120% -10%,rgba(79,139,255,.22),transparent 60%)}
+  .avatar{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:900;color:#08122e;margin-bottom:16px;letter-spacing:.5px;
+    background:linear-gradient(140deg,var(--gold),var(--cyan));box-shadow:0 10px 22px rgba(90,215,255,.25)}
+  .card .call{font-size:19px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card .call .tag{font-size:10px;font-weight:700;color:var(--cyan);border:1px solid rgba(90,215,255,.4);
+    border-radius:6px;padding:2px 7px}
+  .card .name{color:var(--sub);font-size:12.5px;margin:6px 0 2px}
+  .card .role{color:var(--gold);font-size:12.5px;font-weight:700}
+  .card .words{color:#c4d0ec;font-size:13px;line-height:1.75;margin-top:12px;min-height:52px}
+  .card .link{display:inline-flex;align-items:center;gap:6px;color:var(--cyan);font-size:12px;margin-top:12px}
+  /* 页脚 */
+  .foot{text-align:center;padding:42px 20px 52px;color:var(--sub);font-size:13px;line-height:2;
+    border-top:1px solid var(--line);background:rgba(4,8,20,.5)}
+  .foot .seal{display:inline-block;font-size:12px;letter-spacing:6px;color:var(--cyan);
+    border:1px solid rgba(90,215,255,.35);border-radius:999px;padding:8px 22px;margin-bottom:18px}
+  .foot .fine{opacity:.75;font-size:12px}
+  .hl-scroll{scroll-margin-top:90px}
+  @media (max-width:560px){ .hero{padding-top:44px} .members{padding:0 14px} .top{padding:10px 14px} }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <img src="assets/logo.png" alt="APRSlocus" onerror="this.style.display='none'">
+    <b>APRSlocus</b>
+    <span data-i18n="brandSub">业余无线电 APRS 定位追踪</span>
+  </div>
+  <div class="langs">
+    <button data-lang="zh" onclick="setLang('zh')">简体</button>
+    <button data-lang="zh-TW" onclick="setLang('zh-TW')">繁體</button>
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="stamp">✧ <span data-i18n="stamp">APRSLOCUS · 一路同行</span> ✧</div>
+  <h1><span data-i18n="title1">电波无限</span><br><em data-i18n="title2">感谢同行</em></h1>
+  <p data-i18n="heroDesc">从一串呼号、一帧定位包开始，我们因电波相识，在山野、城市与夜空中彼此守望。
+    谨以此页，纪念与 APRSlocus 一路同行的早期伙伴。</p>
+  <div class="wave-deco">
+    <svg viewBox="0 0 720 46" preserveAspectRatio="none"><defs>
+      <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#ffd76a"/><stop offset=".5" stop-color="#5ad7ff"/><stop offset="1" stop-color="#4f8bff"/>
+      </linearGradient></defs>
+      <path d="M0 30 Q60 4 120 26 T240 22 T360 30 T480 22 T600 28 T720 20 V46 H0Z" fill="url(#wg)" opacity=".5"/>
+    </svg>
+  </div>
+</div>
+
+<div class="members" id="members"></div>
+
+<div class="foot">
+  <div class="seal" data-i18n="seal">电波无限 · 感谢同行</div>
+  <div data-i18n="foot1">73，愿每一次 CQ 都有应答，愿每一份信标都被听见。</div>
+  <div data-i18n="foot2">APRSlocus · 由热爱业余无线电的人们共同点亮</div>
+  <div class="fine">© 2026 APRSlocus <span data-i18n="foot3">· 电波里的纪念</span></div>
+</div>
+
+<script>
+/* ============ 数据：早期同行（呼号、姓名、角色、寄语） ============ */
+const MEMBERS = [
+  { call:"BG7LZQ", name:{zh:"董达闻 Darion Dong","zh-TW":"董達聞 Darion Dong",en:"Darion Dong"},
+    role:{zh:"作者 · 全栈开发","zh-TW":"作者 · 全棧開發",en:"Author · Full-stack"},
+    words:{zh:"写下第一行代码，让 APRSlocus 从理想变成电波。","zh-TW":"寫下第一行程式，讓 APRSlocus 從理想變成電波。",en:"Wrote the first line and turned APRSlocus from an idea into radio waves."},
+    kind:"founder" },
+  { call:"BG2HCB", name:{zh:"清零","zh-TW":"清零",en:"Qing Ling (BG2HCB)"},
+    role:{zh:"设置页代码优化","zh-TW":"設置頁代碼優化",en:"Settings code optimization"},
+    words:{zh:"把纷繁的设置收束成顺手的样子，让每个开关都恰到好处。","zh-TW":"把紛繁的設置收束成順手的樣子，讓每個開關都恰到好處。",en:"Tamed the settings into something intuitive — every toggle in just the right place."},
+    kind:"code" },
+  { call:"BA4UAX", name:{zh:"BA4UAX","zh-TW":"BA4UAX",en:"BA4UAX"},
+    role:{zh:"繁体中文翻译","zh-TW":"繁體中文翻譯",en:"Traditional Chinese translation"},
+    words:{zh:"让更多讲繁体中文的朋友，也能顺畅读懂 APRSlocus。","zh-TW":"讓更多講繁體中文的朋友，也能順暢讀懂 APRSlocus。",en:"Helped more Traditional-Chinese hams use APRSlocus with ease."},
+    kind:"i18n" },
+  { call:"BD3QID", name:{zh:"BD3QID","zh-TW":"BD3QID",en:"BD3QID"},
+    role:{zh:"英文翻译 · 测试","zh-TW":"英文翻譯 · 測試",en:"English translation · Testing"},
+    words:{zh:"把 APRSlocus 讲给世界，也让世界的声音传回这里。","zh-TW":"把 APRSlocus 講給世界，也讓世界的聲音傳回這裡。",en:"Introduced APRSlocus to the world and brought the world’s signal back."},
+    kind:"i18n" },
+  { call:"BG7PGW", name:{zh:"BG7PGW","zh-TW":"BG7PGW",en:"BG7PGW"},
+    role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+    words:{zh:"一遍遍地发射与收测，让 bug 无处遁形。","zh-TW":"一遍遍地發射與收測，讓 bug 無所遁形。",en:"Beacon after beacon, tracked down bugs until none were left."},
+    kind:"tester" },
+  { call:"BG7LMW", name:{zh:"BG7LMW","zh-TW":"BG7LMW",en:"BG7LMW"},
+    role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+    words:{zh:"在真实电台上验证每一个功能，认真得让人安心。","zh-TW":"在真實電台上驗證每一個功能，認真得讓人安心。",en:"Tested every feature on real gear with reassuring care."},
+    kind:"tester" },
+  { call:"BG7OSL", name:{zh:"BG7OSL","zh-TW":"BG7OSL",en:"BG7OSL"},
+    role:{zh:"功能测试","zh-TW":"功能測試",en:"Functional testing"},
+    words:{zh:"从定位到消息，事无巨细的反馈推动它不断变好。","zh-TW":"從定位到訊息，鉅細靡遺的回饋推動它不斷變好。",en:"From fixes to messages, meticulous feedback made it better every day."},
+    kind:"tester" },
+  { call:"BA3RZL", name:{zh:"BA3RZL","zh-TW":"BA3RZL",en:"BA3RZL"},
+    role:{zh:"AI 算力支持","zh-TW":"AI 算力支持",en:"AI compute support"},
+    words:{zh:"以另一种形式的“电波”，托起开发路上的每一程。","zh-TW":"以另一種形式的「電波」，托起開發路上的每一程。",en:"Supported the journey with a different kind of signal."},
+    kind:"support" }
+];
+
+/* ============ 语言资源 ============ */
+const I18N = {
+  "zh": {
+    brandSub:"业余无线电 APRS 定位追踪",
+    stamp:"APRSLOCUS · 一路同行",
+    title1:"电波无限", title2:"感谢同行",
+    heroDesc:"从一串呼号、一帧定位包开始，我们因电波相识，在山野、城市与夜空中彼此守望。谨以此页，纪念与 APRSlocus 一路同行的早期伙伴。",
+    seal:"电波无限 · 感谢同行",
+    foot1:"73，愿每一次 CQ 都有应答，愿每一份信标都被听见。",
+    foot2:"APRSlocus · 由热爱业余无线电的人们共同点亮",
+    foot3:"· 电波里的纪念",
+    visit:"打开纪念卡 →"
+  },
+  "zh-TW": {
+    brandSub:"業餘無線電 APRS 定位追蹤",
+    stamp:"APRSLOCUS · 一路同行",
+    title1:"電波無限", title2:"感謝同行",
+    heroDesc:"從一串呼號、一幀定位封包開始，我們因電波相識，在山野、城市與夜空中彼此守望。謹以此頁，紀念與 APRSlocus 一路同行的早期夥伴。",
+    seal:"電波無限 · 感謝同行",
+    foot1:"73，願每一次 CQ 都有回應，願每一份信標都被聽見。",
+    foot2:"APRSlocus · 由熱愛業餘無線電的人們共同點亮",
+    foot3:"· 電波裡的紀念",
+    visit:"開啟紀念卡 →"
+  },
+  "en": {
+    brandSub:"Ham radio APRS tracking",
+    stamp:"APRSLOCUS · FELLOW TRAVELLERS",
+    title1:"Endless Waves", title2:"Thank You, Fellow Travellers",
+    heroDesc:"It started with a callsign and a position packet — kindred spirits meeting over the air, watching over each other across hills, cities and night skies. This page honors those who travelled with APRSlocus from the early days.",
+    seal:"Endless Waves · Thank You, Friends",
+    foot1:"73 — may every CQ find an answer, may every beacon be heard.",
+    foot2:"APRSlocus · lit together by people who love ham radio",
+    foot3:"· a memorial on the air",
+    visit:"Open card →"
+  }
+};
+
+/* 颜色轴 */
+const KIND_GRAD = {
+  founder:["linear-gradient(140deg,#ffd76a,#ff9d5c)","#ffd76a"],
+  code:["linear-gradient(140deg,#57e6a1,#2fd0c4)","#57e6a1"],
+  i18n:["linear-gradient(140deg,#5ad7ff,#4f8bff)","#5ad7ff"],
+  tester:["linear-gradient(140deg,#b18cff,#7c5cff)","#b18cff"],
+  support:["linear-gradient(140deg,#ff9db8,#ff6f91)","#ff9db8"]
+};
+
+let lang = "zh";
+function detectLang(){
+  const q = new URLSearchParams(location.search);
+  if (q.get("lang")) return q.get("lang");
+  const n = (navigator.language||"zh-CN").toLowerCase();
+  if (n.startsWith("zh-tw")||n.startsWith("zh-hk")) return "zh-TW";
+  if (n.startsWith("en")) return "en";
+  return "zh";
+}
+function applyI18n(){
+  document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="zh-TW"?"zh-Hant":"en");
+  document.title = I18N[lang].title1 + " · " + I18N[lang].title2 + " — APRSlocus";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k = el.getAttribute("data-i18n");
+    if (I18N[lang] && I18N[lang][k]!=null) el.textContent = I18N[lang][k];
+  });
+  document.querySelectorAll(".langs button").forEach(b=>
+    b.classList.toggle("on", b.dataset.lang===lang));
+}
+function render(){
+  const box = document.getElementById("members");
+  box.innerHTML = MEMBERS.map((m,i)=>{
+    const g = KIND_GRAD[m.kind]||KIND_GRAD.tester;
+    return `<div class="card hl-scroll" id="m-${m.call}" data-call="${m.call}">
+      <div class="avatar" style="background:${g[0]}">${m.call.replace(/[0-9]/g,"").slice(0,2)}</div>
+      <div class="call">${m.call}</div>
+      <div class="name">${m.name[lang]||m.name.zh}</div>
+      <div class="role" style="color:${g[1]}">${m.role[lang]||m.role.zh}</div>
+      <div class="words">${m.words[lang]||m.words.zh}</div>
+      <span class="link">${I18N[lang].visit}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>`;
+  }).join("");
+  box.querySelectorAll(".card").forEach(c=>{
+    c.onclick = ()=>{ select(c.dataset.call, true); };
+  });
+  const q = new URLSearchParams(location.search).get("call");
+  if (q) select(q, false);
+}
+function select(call, push){
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("hl"));
+  const el = document.getElementById("m-"+call);
+  if(!el) return;
+  el.classList.add("hl");
+  el.scrollIntoView({behavior:"smooth", block:"center"});
+  if (push){
+    const url = new URL(location);
+    url.searchParams.set("call", call);
+    if (lang!=="zh") url.searchParams.set("lang", lang); else url.searchParams.delete("lang");
+    history.replaceState(null,"",url);
+  }
+}
+function setLang(l){ lang=l; applyI18n(); render(); }
+lang = detectLang(); applyI18n(); render();
+</script>
+</body>
+</html>
