@@ -638,7 +638,7 @@ class _FxPainter extends CustomPainter {
         for (var i = 0; i < 6; i++) {
           final cx = drift(i * 140.0 + 20);
           final cy = (0.15 + (i % 3) * 0.3) * h;
-          final rr = 46 + (i % 2) * 34;
+          final rr = 46.0 + (i % 2) * 34.0;
           final g = RadialGradient(colors: [
             Colors.white.withValues(alpha: dark ? 0.05 : 0.16),
             Colors.white.withValues(alpha: 0),
