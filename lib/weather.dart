@@ -157,11 +157,11 @@ class WeatherCenter {
 
   bool get hasData => now != null;
 
-  /// 是否命中缓存：同坐标且 30 分钟内（顶栏每秒重建时避免风暴请求）
+  /// 是否命中缓存：同坐标且 15 分钟内自动刷新（仅前台渲染时触发，后台不轮询）
   bool _withinTtl(double lat, double lng) {
     final n = now;
     if (n == null || updated == null) return false;
-    if (DateTime.now().difference(updated!) > const Duration(minutes: 30)) {
+    if (DateTime.now().difference(updated!) > const Duration(minutes: 15)) {
       return false;
     }
     if (this.lat == null || this.lng == null) return false;
@@ -171,7 +171,7 @@ class WeatherCenter {
 
   DateTime? updated;
 
-  /// 拉取天气（幂等）：同坐标缓存有效期内直接返回；移动超过 3km 或 30 分钟后重拉
+  /// 拉取天气（幂等）：同坐标缓存有效期内直接返回；移动超过 3km 或 15 分钟后重拉
   Future<void> load(double lat, double lng, {bool force = false}) async {
     if (simulating) return; // 模拟模式不走网络
     if (_busy) return;
@@ -828,7 +828,6 @@ class _WeatherPanelState extends State<_WeatherPanel>
     final kind =
         (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
     final hasPos = widget.hasPos;
-    final st = widget.state;
     final s = S.of(context);
     final baseText = dark ? Colors.white : const Color(0xFF1B253C);
     final subText = dark ? Colors.white70 : const Color(0xFF68748F);
@@ -867,28 +866,6 @@ class _WeatherPanelState extends State<_WeatherPanel>
                 ],
               ),
             ),
-            if (hasPos)
-              GestureDetector(
-                onTap: () {
-                  if (st.myHasFix && st.myLat != null && st.myLng != null) {
-                    WeatherCenter.instance
-                        .load(st.myLat!, st.myLng!, force: true);
-                  }
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: dark ? 0.14 : 0.7),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.refresh_rounded, size: 14, color: baseText),
-                    const SizedBox(width: 3),
-                    Text(s.weatherRefresh, style: ts(11, c: baseText, w: FontWeight.w700)),
-                  ]),
-                ),
-              ),
           ]),
           const SizedBox(height: 14),
           // 无定位 / 加载 / 无数据
