@@ -1,6 +1,6 @@
 {
-  "version": 30,
-  "updated": "2026-09-08",
+  "version": 31,
+  "updated": "2026-09-09",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1358,6 +1358,18 @@
         "en": "Your gift is treasured in my heart; the only return I can offer is to strive, and answer your kindness with good work."
       },
       "color": "#0EA5B7"
+    },
+    "sower": {
+      "zh": "播种",
+      "zh-TW": "播種",
+      "en": "Sower",
+      "desc": {
+        "zh": "在旷野埋下种子，等待遍地开花。",
+        "zh-TW": "在曠野埋下種子，等待遍地開花。",
+        "en": "Sowing seeds in the open field — waiting for blossoms everywhere."
+      },
+      "color": "#2E9E5B",
+      "icon": "sower"
     }
   }
 }

@@ -22,20 +22,32 @@ class Honor {
   final String desc;
   final Color color;
   final IconData icon;
-  const Honor(this.key, this.label, this.desc, this.color, this.icon);
+  /// 在线定义可携带的图标名（members.json honors[].icon），无则按 key 映射
+  final String? iconName;
+  const Honor(this.key, this.label, this.desc, this.color, this.icon,
+      {this.iconName});
 
-  static IconData iconFor(String key) => switch (key) {
-        'kaishan' => Icons.terrain_rounded,
-        'developer' => Icons.code_rounded,
-        'earlyMember' => Icons.workspace_premium_rounded,
-        'mostBrain' => Icons.psychology_rounded,
-        'firstFix' => Icons.military_tech_rounded,
-        'jadeGift' => Icons.card_giftcard_rounded,
-        _ => Icons.emoji_events_rounded,
-      };
+  /// 图标名 → Material 图标（key 与 members.json honors[].icon 共用同一命名空间）
+  static const Map<String, IconData> iconMap = {
+    'kaishan': Icons.terrain_rounded,
+    'developer': Icons.code_rounded,
+    'earlyMember': Icons.workspace_premium_rounded,
+    'mostBrain': Icons.psychology_rounded,
+    'firstFix': Icons.military_tech_rounded,
+    'jadeGift': Icons.card_giftcard_rounded,
+    'sower': Icons.eco_rounded,
+  };
+
+  static IconData iconFor(String key) =>
+      iconMap[key] ?? Icons.emoji_events_rounded;
+
+  /// 在线定义可带 icon 字段（可选）：映射表命中用之，未命中回退按 key 映射
+  static IconData iconForName(String? name, String key) => name == null
+      ? iconFor(key)
+      : (iconMap[name] ?? iconFor(key));
 }
 
-/// 徽章全集展示顺序
+/// 徽章全集本地兜底展示顺序（联网后以 members.json honors 键序优先）
 const List<String> kHonorOrder = [
   'kaishan',
   'developer',
@@ -43,7 +55,21 @@ const List<String> kHonorOrder = [
   'mostBrain',
   'firstFix',
   'jadeGift',
+  'sower',
 ];
+
+/// 当前全量展示顺序：优先在线定义键序（members.json honors 书写顺序），
+/// 未加载/缺失时回退本地 kHonorOrder；确保在线新增徽章无需发版即可上墙。
+List<String> get displayHonorKeys {
+  final keys = <String>[];
+  for (final k in _honorDefs.keys) {
+    if (!keys.contains(k)) keys.add(k);
+  }
+  for (final k in kHonorOrder) {
+    if (!keys.contains(k)) keys.add(k);
+  }
+  return keys;
+}
 
 /// 默认徽章定义（联网兜底）
 final Map<String, Honor> _defaultHonorDefs = {
@@ -61,6 +87,9 @@ final Map<String, Honor> _defaultHonorDefs = {
   'jadeGift': const Honor('jadeGift', '赠我以琼琚',
       '承君厚赠，藏之于心；唯有砥砺，以报清音。',
       Color(0xFF0EA5B7), Icons.card_giftcard_rounded),
+  'sower': const Honor('sower', '播种',
+      '在旷野埋下种子，等待遍地开花。',
+      Color(0xFF2E9E5B), Icons.eco_rounded),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
@@ -106,7 +135,7 @@ List<String> memberHonorKeys(String call) {
   final set = got.toSet();
   // FIRST FIX：在线授勋名单命中即拥有（作为徽章展示/可选主页徽章）
   if (AchievementCenter.instance.isFirstFixHolder(base)) set.add('firstFix');
-  return kHonorOrder.where(set.contains).toList();
+  return displayHonorKeys.where(set.contains).toList();
 }
 
 bool hasAnyHonor(String call) => memberHonorKeys(call).isNotEmpty;
@@ -117,7 +146,7 @@ List<Honor> honorsOf(String call) =>
 List<({Honor honor, bool owned})> allHonorsWithState(String call) {
   final owned = memberHonorKeys(call).toSet();
   return [
-    for (final k in kHonorOrder)
+    for (final k in displayHonorKeys)
       if (_honorDefs[k] != null)
         (honor: _honorDefs[k]!, owned: owned.contains(k)),
   ];
@@ -182,10 +211,18 @@ void _parseMembers(Map d) {
         final dm = v['desc'];
         if (dm is Map) desc = (dm['zh'] ?? '').toString();
         m[k.toString()] = Honor(k.toString(), zh.toString(), desc,
-            _parseColor(v['color']), Honor.iconFor(k.toString()));
+            _parseColor(v['color']),
+            Honor.iconForName(v['icon']?.toString(), k.toString()),
+            iconName: v['icon']?.toString());
       }
     });
-    if (m.isNotEmpty) _honorDefs = m;
+    if (m.isNotEmpty) {
+      // 在线定义键序优先；本地兜底中未被覆盖的定义追加在尾部
+      for (final e in _defaultHonorDefs.entries) {
+        m.putIfAbsent(e.key, () => e.value);
+      }
+      _honorDefs = m;
+    }
   }
   final cache = <String, List<String>>{};
   final prim = <String, String>{};
@@ -250,6 +287,7 @@ Map<String, dynamic> _serializeDefs() => _honorDefs.map((k, h) => MapEntry(k, {
       'label': h.label,
       'desc': h.desc,
       'color': '#${h.color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+      'icon': h.iconName ?? k,
     }));
 
 Future<void> ensureMembersLoaded() async {
@@ -281,11 +319,18 @@ Future<void> ensureMembersLoaded() async {
               (v['label'] ?? k).toString(),
               (v['desc'] ?? '').toString(),
               _parseColor(v['color']),
-              Honor.iconFor(k.toString()),
+              Honor.iconForName(v['icon']?.toString(), k.toString()),
+              iconName: v['icon']?.toString(),
             );
           }
         });
-        if (dm.isNotEmpty) _honorDefs = dm;
+        if (dm.isNotEmpty) {
+          // 旧缓存可能缺新徽章定义；补本地兜底，保证新徽章离线也能显示
+          for (final e in _defaultHonorDefs.entries) {
+            dm.putIfAbsent(e.key, () => e.value);
+          }
+          _honorDefs = dm;
+        }
         final cc = jsonDecode(cache) as Map;
         final cm = <String, List<String>>{};
         cc.forEach((k, v) {
