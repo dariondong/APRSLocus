@@ -765,7 +765,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   child: CircularProgressIndicator(strokeWidth: 2.5)),
             )
           else if (wc.now == null)
-            _hint(Icons.cloud_off_rounded, s.errorCode == 1 ? s.weatherDataFail : (s.errorCode == 2 ? s.weatherConnFail : s.weatherUnavail), subText)
+            _hint(Icons.cloud_off_rounded, wc.errorCode == 1 ? s.weatherDataFail : (wc.errorCode == 2 ? s.weatherConnFail : s.weatherUnavail), subText)
           else
             _content(wc, kind, dark, baseText, subText),
         ],
@@ -831,7 +831,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         ]),
         const SizedBox(height: 14),
         // ── 火腿建议卡片 ──
-        _hamCard(_hamTips(now), dark, baseText),
+        _hamCard(_hamTips(now, s), dark, baseText),
         const SizedBox(height: 12),
         // ── 更多天气信息 ──
         Row(children: [

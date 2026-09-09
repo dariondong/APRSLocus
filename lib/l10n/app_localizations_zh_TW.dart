@@ -1669,7 +1669,7 @@ class AppLocalizationsZhTw extends AppLocalizations {
 
   @override
   String hamFog(String v) {
-    return '能見度低（$vkm）：出行架台注意安全；霧天易形成大氣波導，可嘗試遠地 V/U 通聯';
+    return '能見度低（$v km）：出行架台注意安全；霧天易形成大氣波導，可嘗試遠地 V/U 通聯';
   }
 
   @override
