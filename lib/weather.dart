@@ -506,46 +506,64 @@ List<_HamTip> _hamTips(WeatherNow? w, AppLocalizations s) {
 /// 物理特效画笔：按天气类型绘制飘雨/落雪/光斑/雾
 /// 蓬松云团绘制：多个模糊圆叠加 → 边缘柔和、透气，取代生硬椭圆
 class _CloudPuffPainter {
-  /// 在 (cx, cy) 画一朵由模糊圆组成的云；scale 控制大小，alpha 控制不透明度
-  static void paint(Canvas canvas, double cx, double cy, double scale, double alpha, {Color? tint}) {
-    final color = (tint ?? Colors.white).withValues(alpha: alpha.clamp(0.0, 1.0));
-    final paint = Paint()
-      ..color = color
+  /// 性能版云朵：用 1 个模糊椭圆主体 + 顶部模糊圆鼓包（2 次 mask 绘制），
+  /// 取代原先 6-7 个模糊圆逐圆绘制，视觉相近但开销大幅下降。
+  static void paint(Canvas canvas, double cx, double cy, double scale,
+      double alpha, {Color? tint}) {
+    final color = (tint ?? Colors.white);
+    final blurA = Paint()
+      ..color = color.withValues(alpha: alpha.clamp(0.0, 1.0))
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 9);
+    final blurB = Paint()
+      ..color = color.withValues(alpha: (alpha * 0.9).clamp(0.0, 1.0))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7);
-    // 底部平、上部堆叠的云轮廓
-    final blobs = <(double, double, double)>[
-      (-26, 8, 20), // 左翼
-      (26, 8, 20),  // 右翼
-      (0, 0, 26),   // 主体
-      (-14, -10, 18),
-      (14, -12, 17),
-      (0, -18, 15),
-    ];
-    for (final (dx, dy, r) in blobs) {
-      canvas.drawCircle(Offset(cx + dx * scale, cy + dy * scale), r * scale, paint);
-    }
-    // 一层较淡的内芯让云更有体积
+    // 扁椭圆云身（底部较平）
+    canvas.drawOval(
+        Rect.fromCenter(
+            center: Offset(cx, cy + 4 * scale),
+            width: 108 * scale,
+            height: 52 * scale),
+        blurA);
+    // 顶部一个鼓包圆，增强蓬松感
+    canvas.drawCircle(Offset(cx - 6 * scale, cy - 14 * scale), 22 * scale, blurB);
+    canvas.drawCircle(Offset(cx + 12 * scale, cy - 8 * scale), 18 * scale, blurB);
+    // 高光（无 blur 实色，几乎不耗）
     final core = Paint()
-      ..color = Colors.white.withValues(alpha: (alpha * 0.9).clamp(0.0, 1.0))
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
-    canvas.drawCircle(Offset(cx + 2 * scale, cy - 4 * scale), 10 * scale, core);
+      ..color = Colors.white.withValues(alpha: (alpha * 0.6).clamp(0.0, 0.6));
+    canvas.drawCircle(Offset(cx - 2 * scale, cy - 4 * scale), 6 * scale, core);
   }
 }
 
 class _FxPainter extends CustomPainter {
   final _FxKind kind;
-  final double t; // 0..1 循环进度
+  final double t;
   final bool dark;
-  final double rain; // 0..1 降雨强度
+  final double rain;
   _FxPainter({required this.kind, required this.t, required this.dark, this.rain = 0});
 
-  // 平滑包络：p∈0..1 → 0..1..0（正弦），让粒子在循环两端淡入淡出，杜绝硬跳变
-  static double _env(double p) {
-    if (p <= 0 || p >= 1) return 0;
-    return math.sin(math.pi * p);
+  // ── 粒子参数缓存：位置/相位/速度/外形在首帧确定后复用（不再每帧重建 Random+数组）──
+  List<double>? _rxs, _rph, _rsp, _rsh; // 近雨
+  List<double>? _fxs, _fph, _fsp, _fsh; // 远雨
+  int _rcN = 0;
+
+  void _ensureRain(bool storm) {
+    final nearN = storm ? 30 : 26;
+    final farN = storm ? 22 : 28;
+    if (_rcN == nearN && _rxs != null) return;
+    _rcN = nearN;
+    final rnd = math.Random(7);
+    List<double> gen(int n) => [for (var i = 0; i < n; i++) rnd.nextDouble()];
+    _rxs = gen(nearN);
+    _rph = gen(nearN);
+    _rsp = [for (var i = 0; i < nearN; i++) 0.5 + rnd.nextDouble() * 0.5];
+    _rsh = gen(nearN);
+    _fxs = gen(farN);
+    _fph = gen(farN);
+    _fsp = [for (var i = 0; i < farN; i++) 0.2 + rnd.nextDouble() * 0.4];
+    _fsh = gen(farN);
   }
 
-  // 正弦摆动：种子做错相，随 t 往复（不 wrap），用于云朵/雾/雨横摆
+  // 正弦摆动（往复、不 wrap）
   double _sway(double seed, double cyc, double amp) =>
       math.sin(2 * math.pi * cyc * seed + t * 2 * math.pi) * amp;
 
@@ -553,120 +571,100 @@ class _FxPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
-    // 确定性伪随机：每帧从同种子重放，粒子形状稳定、只由 t 驱动运动
-    final rnd = math.Random(20260909);
-    final whiteMain = Colors.white;
     final cloudDark = dark ? const Color(0xFF5B6B7C) : const Color(0xFFC9D6E4);
-
-    // 粒子的确定性参数：x 座标、寿命相位、速度/时长、外形
-    // 每帧重算数组（数量不大，可接受），保证帧间连续
-    List<double> defs(int n, double lo, double hi) =>
-        [for (var i = 0; i < n; i++) lo + rnd.nextDouble() * (hi - lo)];
 
     switch (kind) {
       case _FxKind.rain:
       case _FxKind.storm:
         final storm = kind == _FxKind.storm;
-        // ── 顶部积雨云：正弦来回游弋（不整屏跳回）──
+        // 积雨云：2 朵，来回游弋
         final cloudTint = storm ? const Color(0xFF46586B) : cloudDark;
-        final cloudA = storm ? (dark ? 0.30 : 0.55) : (dark ? 0.22 : 0.5);
-        for (var i = 0; i < 3; i++) {
-          final cx = w * (0.25 + i * 0.27) + _sway(i * 0.41, 0.10 + i * 0.04, w * 0.16);
-          final cy = 26.0 + i * 7.0;
-          _CloudPuffPainter.paint(canvas, cx, cy, 1.3 + (i % 2) * 0.3,
-              cloudA - i * 0.02, tint: cloudTint);
+        final cloudA = storm ? (dark ? 0.30 : 0.5) : (dark ? 0.20 : 0.45);
+        for (var i = 0; i < 2; i++) {
+          final cx = w * (0.3 + i * 0.42) + _sway(i * 0.41, 0.12 + i * 0.05, w * 0.16);
+          final cy = 26.0 + i * 8.0;
+          _CloudPuffPainter.paint(canvas, cx, cy, 1.2 + i * 0.3,
+              cloudA - i * 0.03, tint: cloudTint);
         }
-        // ── 近景雨丝：每滴按“寿命”下落，头尾淡入淡出无缝衔接 ──
-        final nearN = (storm ? 46 : 42).toDouble();
-        final xs = defs(nearN.toInt(), 0.0, 1.0);
-        final ph = defs(nearN.toInt(), 0.0, 1.0);
-        final spd = defs(nearN.toInt(), storm ? 0.65 : 0.5, 1.0);
-        final shp = defs(nearN.toInt(), 0.0, 1.0); // 雨丝长度/粗细的随机外形
+        _ensureRain(storm);
+        // ── 近景雨丝：合并为一条 Path 绘制（一次 raster，不再逐滴 drawLine）──
         final nearPaint = Paint()
-          ..strokeWidth = 1.1
+          ..color = Colors.white.withValues(alpha: (dark ? 0.16 : 0.45).clamp(0.0, 0.9))
           ..strokeCap = StrokeCap.round
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 0.9);
-        for (var i = 0; i < nearN; i++) {
-          final p = (t * spd[i] + ph[i]) % 1.0;   // 该滴在生命周期中的位置
-          final y = p * (h + 60) - 30;            // -30 → h+30 全程
-          final x = xs[i] * w + _sway(shp[i], 0.4 + rain * 0.4, 6);
-          final e = _env(p);                        // 淡入淡出包络
-          if (e < 0.02) continue;
-          final len = (7 + shp[i] * 8) * (1 + rain * 0.9);
-          final slant = 1.2 + rain * 1.8 + math.sin(shp[i] * 40) * 0.4;
-          nearPaint.color = Colors.white.withValues(
-              alpha: ((dark ? 0.16 : 0.5) * (0.7 + rain * 0.5) * e).clamp(0.0, 0.85));
-          nearPaint.strokeWidth = (1.0 + shp[i] * 1.4 + rain * 0.8).clamp(1.0, 3.2);
-          canvas.drawLine(Offset(x, y), Offset(x - slant, y + len), nearPaint);
-        }
-        // ── 远景雨幕：细、淡、密、慢，同用寿命循环避免跳动 ──
-        final farN = (storm ? 30 : 44);
-        final fxs = defs(farN, 0.0, 1.0);
-        final fph = defs(farN, 0.0, 1.0);
-        final fspd = defs(farN, 0.25, 0.6);
-        final fshp = defs(farN, 0.0, 1.0);
-        final farPaint = Paint()
-          ..color = Colors.white
-          ..strokeWidth = 0.6
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.2);
-        for (var i = 0; i < farN; i++) {
-          final p = (t * fspd[i] + fph[i]) % 1.0;
+          ..strokeWidth = (1.2 + rain * 1.6).clamp(1.2, 3.0);
+        final np = Path();
+        for (var i = 0; i < _rcN; i++) {
+          final p = (t * _rsp![i] + _rph![i]) % 1.0;
           final y = p * (h + 40) - 20;
-          final x = fxs[i] * w + _sway(fshp[i], 0.3, 4);
-          final e = _env(p);
-          farPaint.color = Colors.white.withValues(
-              alpha: ((dark ? 0.04 : 0.13) * e).clamp(0.0, 0.3));
-          final len = 3 + fshp[i] * 5;
-          canvas.drawLine(Offset(x, y), Offset(x - 1, y + len), farPaint);
+          final x = _rxs![i] * w + _sway(_rsh![i], 0.35 + rain * 0.3, 5);
+          final len = (7 + _rsh![i] * 9) * (1 + rain * 0.6);
+          final slant = 1.4 + rain * 1.6;
+          np.moveTo(x, y);
+          np.lineTo(x - slant, y + len);
         }
-        // 雷雨：偶尔闪电
+        canvas.drawPath(np, nearPaint);
+        // ── 远景雨幕：细淡，一条 Path ──
+        final farPaint = Paint()
+          ..color = Colors.white.withValues(alpha: dark ? 0.05 : 0.12)
+          ..strokeWidth = 0.6;
+        final fp = Path();
+        final farN = storm ? 22 : 28;
+        for (var i = 0; i < farN; i++) {
+          final p = (t * _fsp![i] + _fph![i]) % 1.0;
+          final y = p * (h + 30) - 15;
+          final x = _fxs![i] * w + _sway(_fsh![i], 0.3, 3);
+          final len = 3 + _fsh![i] * 5;
+          fp.moveTo(x, y);
+          fp.lineTo(x - 1, y + len);
+        }
+        canvas.drawPath(fp, farPaint);
+        // 雷雨闪电
         if (storm) {
           final phase = math.sin(t * math.pi * 2);
-          if (phase > 0.72 || phase < -0.6 && math.sin(t * 40) > 0.7) {
-            final fp = Paint()
-              ..color = const Color(0xFFFFF6D8).withValues(alpha: 0.45)
+          if (phase > 0.74 || (phase < -0.6 && math.sin(t * 40) > 0.75)) {
+            final lp = Paint()
+              ..color = const Color(0xFFFFF6D8).withValues(alpha: 0.4)
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.5
+              ..strokeWidth = 1.4
               ..strokeJoin = StrokeJoin.round;
-            final bx = w * 0.66 + _sway(0.3, 0.7, 14);
+            final bx = w * 0.68 + _sway(0.3, 0.7, 12);
             final path = Path()
-              ..moveTo(bx, h * 0.24)
-              ..lineTo(bx - 9, h * 0.36)
-              ..lineTo(bx + 4, h * 0.38)
-              ..lineTo(bx - 6, h * 0.5);
-            canvas.drawPath(path, fp);
+              ..moveTo(bx, h * 0.26)
+              ..lineTo(bx - 9, h * 0.38)
+              ..lineTo(bx + 4, h * 0.4)
+              ..lineTo(bx - 6, h * 0.52);
+            canvas.drawPath(path, lp);
           }
         }
         break;
 
       case _FxKind.snow:
-        final n = 60;
-        final xs = defs(n, 0.0, 1.0);
-        final ph = defs(n, 0.0, 1.0);
-        final spd = defs(n, 0.06, 0.22);
-        final shp = defs(n, 0.0, 1.0);
+        // 雪：无 blur 实色圆 + 复用单一 Paint；数量 34（原 60），减轻重绘
+        final rnd = math.Random(9);
+        final pnt = Paint()..color = Colors.white;
+        final n = 34;
         for (var i = 0; i < n; i++) {
-          final p = (t * spd[i] + ph[i]) % 1.0;
-          final e = _env(p);
-          if (e < 0.02) continue;
-          final y = p * (h + 40) - 20;
-          final x = xs[i] * w + _sway(shp[i], 0.5 + spd[i], 8) + math.sin(t * 6 + i) * 2;
-          final near = shp[i] > 0.72;
-          final r = near ? 1.6 + shp[i] : 1.0 + shp[i] * 0.9;
-          final pnt = Paint()
-            ..color = Colors.white.withValues(
-                alpha: (near ? (dark ? 0.5 : 0.85) : (dark ? 0.22 : 0.45)) * e)
-            ..maskFilter = MaskFilter.blur(BlurStyle.normal, near ? 1.4 : 0.8);
+          final px = rnd.nextDouble();
+          final ph = rnd.nextDouble();
+          final sp = 0.06 + rnd.nextDouble() * 0.12;
+          final shp = rnd.nextDouble();
+          final p = (t * sp + ph) % 1.0;
+          final y = p * (h + 30) - 15;
+          final x = px * w + _sway(shp, 0.5 + sp, 7);
+          final near = shp > 0.7;
+          final r = near ? 1.5 + shp : 1.0;
+          pnt.color = Colors.white.withValues(
+              alpha: near ? (dark ? 0.5 : 0.8) : (dark ? 0.2 : 0.4));
           canvas.drawCircle(Offset(x, y), r, pnt);
         }
         break;
 
       case _FxKind.fog:
-        // 雾：径向渐变团 + 细雾纹，正弦慢漂
-        for (var i = 0; i < 5; i++) {
-          final cx = w * (0.1 + i * 0.2) + _sway(i * 0.53, 0.05 + i * 0.01, w * 0.2);
+        // 雾：少量径向渐变团 + 无 blur 细雾纹（去掉 7px blur 的 20 次 drawOval 开销）
+        for (var i = 0; i < 4; i++) {
+          final cx = w * (0.1 + i * 0.26) + _sway(i * 0.53, 0.05, w * 0.22);
           final cy = (0.18 + (i % 3) * 0.3) * h;
-          final rr = 52.0 + (i % 2) * 36;
+          final rr = 60.0 + (i % 2) * 40;
           final g = RadialGradient(colors: [
             Colors.white.withValues(alpha: dark ? 0.05 : 0.14),
             Colors.white.withValues(alpha: 0),
@@ -676,48 +674,47 @@ class _FxPainter extends CustomPainter {
           canvas.drawCircle(Offset(cx, cy), rr, p);
         }
         final fp = Paint()
-          ..color = Colors.white.withValues(alpha: dark ? 0.04 : 0.12)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7);
-        for (var i = 0; i < 20; i++) {
-          final x = w * (0.2 + rnd.nextDouble() * 0.6) + _sway(i * 0.71, 0.04, w * 0.3);
-          final y = (0.1 + rnd.nextDouble() * 0.8) * h;
+          ..color = Colors.white.withValues(alpha: dark ? 0.05 : 0.1);
+        for (var i = 0; i < 16; i++) {
+          final x = w * (0.1 + (i % 4) * 0.26) + _sway(i * 0.71, 0.04, w * 0.3);
+          final y = (0.1 + (i ~/ 4) * 0.26) * h;
           canvas.drawOval(
-              Rect.fromCenter(center: Offset(x, y),
-                  width: 60 + rnd.nextDouble() * 80,
-                  height: 12 + rnd.nextDouble() * 12),
+              Rect.fromCenter(
+                  center: Offset(x, y),
+                  width: 90.0 + (i % 3) * 40,
+                  height: 14.0),
               fp);
         }
         break;
 
       case _FxKind.clear:
-        // 晴：极淡细尘，慢速上浮并淡入淡出
-        final n = 30;
-        final xs = defs(n, 0.0, 1.0);
-        final ph = defs(n, 0.0, 1.0);
-        final spd = defs(n, 0.02, 0.08);
+        final rnd = math.Random(5);
+        final pnt = Paint();
+        final n = 24;
         for (var i = 0; i < n; i++) {
-          final p = (t * spd[i] + ph[i]) % 1.0;
-          final e = _env(p);
-          final y = (1 - p) * (h + 30) - 15;
-          final x = xs[i] * w + math.sin(t * 3 + i) * 3;
-          canvas.drawCircle(Offset(x, y), 0.8 + xs[i] * 1.3,
-              Paint()..color = Colors.white.withValues(alpha: ((dark ? 0.06 : 0.16) * e).clamp(0.0, 0.3)));
+          final px = rnd.nextDouble();
+          final ph = rnd.nextDouble();
+          final sp = 0.02 + rnd.nextDouble() * 0.05;
+          final p = (t * sp + ph) % 1.0;
+          final y = (1 - p) * (h + 20) - 10;
+          final x = px * w + math.sin(t * 3 + i) * 3;
+          pnt.color = Colors.white.withValues(alpha: ((dark ? 0.05 : 0.14) * (1 - p)).clamp(0.0, 0.3));
+          canvas.drawCircle(Offset(x, y), 1.0 + px * 1.2, pnt);
         }
         break;
 
       case _FxKind.cloudy:
       case _FxKind.overcast:
-        // 蓬松白云：正弦往复（不出现整屏 wrap 跳回）
         final n = kind == _FxKind.overcast ? 3 : 2;
-        final tint = kind == _FxKind.overcast ? cloudDark : whiteMain;
+        final tint = kind == _FxKind.overcast ? cloudDark : Colors.white;
         final baseA = kind == _FxKind.overcast
-            ? (dark ? 0.16 : 0.34)
-            : (dark ? 0.20 : 0.5);
+            ? (dark ? 0.16 : 0.32)
+            : (dark ? 0.2 : 0.48);
         for (var i = 0; i < n; i++) {
-          final cx = w * (0.2 + i * 0.3) + _sway(i * 0.37, 0.07 + i * 0.03, w * 0.18);
+          final cx = w * (0.2 + i * 0.3) + _sway(i * 0.37, 0.08 + i * 0.03, w * 0.18);
           final cy = 30.0 + i * 10.0;
-          final sc = 1.15 + i * 0.3;
-          _CloudPuffPainter.paint(canvas, cx, cy, sc, baseA - i * 0.04, tint: tint);
+          _CloudPuffPainter.paint(canvas, cx, cy, 1.15 + i * 0.25,
+              baseA - i * 0.04, tint: tint);
         }
         break;
     }
