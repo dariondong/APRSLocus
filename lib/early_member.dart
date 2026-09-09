@@ -113,7 +113,7 @@ void _seedDefaults() {
     'BG7PGW': ['kaishan', 'earlyMember'],
     'BG7LMW': ['kaishan', 'earlyMember'],
     'BG7OSL': ['kaishan', 'earlyMember'],
-    'imThree': ['earlyMember'],
+    'BG4LZY': ['earlyMember'],
     'BA3RZL': ['earlyMember', 'mostBrain'],
   };
   _primariesCache = {
@@ -124,7 +124,7 @@ void _seedDefaults() {
     'BG7PGW': 'kaishan',
     'BG7LMW': 'kaishan',
     'BG7OSL': 'kaishan',
-    'imThree': 'earlyMember',
+    'BG4LZY': 'earlyMember',
     'BA3RZL': 'earlyMember',
   };
 }

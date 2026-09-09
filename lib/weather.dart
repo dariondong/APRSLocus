@@ -545,12 +545,14 @@ class _FxPainter extends CustomPainter {
   List<double>? _rxs, _rph, _rsp, _rsh; // 近雨
   List<double>? _fxs, _fph, _fsp, _fsh; // 远雨
   int _rcN = 0;
+  int _fcN = 0;
 
   void _ensureRain(bool storm) {
-    final nearN = storm ? 30 : 26;
-    final farN = storm ? 22 : 28;
+    final nearN = storm ? 52 : 44;
+    final farN = storm ? 34 : 42;
     if (_rcN == nearN && _rxs != null) return;
     _rcN = nearN;
+    _fcN = farN;
     final rnd = math.Random(7);
     List<double> gen(int n) => [for (var i = 0; i < n; i++) rnd.nextDouble()];
     _rxs = gen(nearN);
@@ -608,8 +610,7 @@ class _FxPainter extends CustomPainter {
           ..color = Colors.white.withValues(alpha: dark ? 0.05 : 0.12)
           ..strokeWidth = 0.6;
         final fp = Path();
-        final farN = storm ? 22 : 28;
-        for (var i = 0; i < farN; i++) {
+        for (var i = 0; i < _fcN; i++) {
           final p = (t * _fsp![i] + _fph![i]) % 1.0;
           final y = p * (h + 30) - 15;
           final x = _fxs![i] * w + _sway(_fsh![i], 0.3, 3);

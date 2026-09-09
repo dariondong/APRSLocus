@@ -1,5 +1,5 @@
 {
-  "version": 32,
+  "version": 33,
   "updated": "2026-09-09",
   "developers": [
     {
@@ -359,11 +359,11 @@
       "primary": "kaishan"
     },
     {
-      "call": "imThree",
+      "call": "BG4LZY",
       "who": {
-        "zh": "imThree",
-        "zh-TW": "imThree",
-        "en": "imThree"
+        "zh": "BG4LZY",
+        "zh-TW": "BG4LZY",
+        "en": "BG4LZY"
       },
       "role": {
         "zh": "Bug 提交与反馈",
