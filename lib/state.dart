@@ -551,6 +551,16 @@ class AppState extends ChangeNotifier {
   // 深色模式
   bool darkMode = false;
 
+  // 顶栏天气组件（和风天气：当前位置天气 + 温度）
+  bool weatherEnabled = true;
+
+  /// 切换顶栏天气组件
+  void setWeatherEnabled(bool v) {
+    weatherEnabled = v;
+    persist();
+    _notify();
+  }
+
   // 界面语言：'' = 跟随系统；'zh' 中文；'en' English
   String locale = '';
 
@@ -846,6 +856,7 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
       coordDatum = p.getString('coordDatum') ?? coordDatum;
       darkMode = p.getBool('darkMode') ?? darkMode;
+      weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
       uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
@@ -962,6 +973,7 @@ class AppState extends ChangeNotifier {
           p.setBool('beaconIncludeBattery', beaconIncludeBattery);
           p.setString('coordDatum', coordDatum);
           p.setBool('darkMode', darkMode);
+          p.setBool('weatherEnabled', weatherEnabled);
           p.setString('locale', locale);
           p.setString('themeColor', themeColor);
           p.setDouble('uiScale', uiScale);

@@ -11,6 +11,7 @@ import 'messages_page.dart';
 import 'packets_page.dart';
 import 'settings_page.dart';
 import 'settings_pages.dart';
+import 'weather.dart';
 
 class HomePage extends StatefulWidget {
   final AppState state;
@@ -915,7 +916,14 @@ class _HomePageState extends State<HomePage> {
           final searchW = (constraints.maxWidth * 0.28).clamp(140.0, 260.0);
           return Row(
             children: [
-              Text(_nav[_tab].$3, style: T.h2),
+              Flexible(
+                child: Text(
+                  _nav[_tab].$3,
+                  style: T.h2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
               Spacer(),
               if (wide) ...[
                 Container(
@@ -966,6 +974,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(width: 12),
+                // 天气组件（在线左侧）：默认显示当前天气 + 温度，点击弹浮动面板
+                if (widget.state.weatherEnabled) ...[
+                  WeatherBadge(state: widget.state),
+                  const SizedBox(width: 8),
+                ],
                 _statTag(
                   '${widget.state.online}',
                   S.of(context).online,
@@ -986,13 +999,19 @@ class _HomePageState extends State<HomePage> {
                   C.slate,
                   C.greyBg,
                 ),
-              ] else
+              ] else ...[
+                // 天气组件（在线左侧）：窄屏同样展示（标题可收缩防溢出）
+                if (widget.state.weatherEnabled) ...[
+                  WeatherBadge(state: widget.state),
+                  const SizedBox(width: 8),
+                ],
                 _statTag(
                   '${widget.state.online}',
                   S.of(context).online,
                   C.green,
                   C.greenBg,
                 ),
+              ],
             ],
           );
         },

@@ -2098,6 +2098,8 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
             children: [
               SettingsSwitch(S.of(context).darkMode, value: st.darkMode,
                   color: C.slate, onChanged: (v) => st.setDarkMode(v)),
+              SettingsSwitch('天气组件', value: st.weatherEnabled,
+                  color: C.cyan, onChanged: (v) => st.setWeatherEnabled(v)),
               _themeColorSelector(st),
               _languageSelector(st),
               _uiScaleSelector(st),
