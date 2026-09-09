@@ -1,5 +1,5 @@
 {
-  "version": 28,
+  "version": 29,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1203,6 +1203,54 @@
       "primary": "kaishan",
       "grp": "test",
       "c": "#E67E22"
+    },
+    {
+      "call": "BG7PFE",
+      "who": {
+        "zh": "BG7PFE",
+        "zh-TW": "BG7PFE",
+        "en": "BG7PFE"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "en": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。"
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BA7LUT",
+      "who": {
+        "zh": "BA7LUT",
+        "zh-TW": "BA7LUT",
+        "en": "BA7LUT"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "en": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。"
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
     }
   ],
   "groups": [
