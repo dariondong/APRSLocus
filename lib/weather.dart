@@ -26,6 +26,8 @@ class WeatherNow {
   final String pressure; // 气压 hPa
   final String vis; // 能见度 km
   final String precip; // 降水量 mm
+  final String cloud; // 云量 %
+  final String dew; // 露点 ℃
   final String obsTime; // 观测时间
   final String? city; // 城市名（geoapi 反查，失败为 null）
 
@@ -41,6 +43,8 @@ class WeatherNow {
     required this.pressure,
     required this.vis,
     required this.precip,
+    required this.cloud,
+    required this.dew,
     required this.obsTime,
     this.city,
   });
@@ -139,6 +143,8 @@ class WeatherCenter {
           pressure: n.pressure,
           vis: n.vis,
           precip: n.precip,
+          cloud: n.cloud,
+          dew: n.dew,
           obsTime: n.obsTime,
           city: city ?? n.city,
         );
@@ -215,6 +221,8 @@ class WeatherCenter {
       pressure: s(now['pressure']),
       vis: s(now['vis']),
       precip: s(now['precip']),
+      cloud: s(now['cloud']),
+      dew: s(now['dew']),
       obsTime: s(now['obsTime']),
     );
   }
@@ -304,7 +312,206 @@ class WeatherBadge extends StatelessWidget {
   }
 }
 
-/// 打开天气浮动面板（底部弹层）：大图标 + 温度 + 天气现象 + 详情 + 手动刷新
+/// 天气视觉类型（用于背景渐变与粒子特效）
+enum _FxKind { clear, cloudy, overcast, rain, storm, snow, fog }
+
+_FxKind _fxKindOf(WeatherNow w) {
+  final n = int.tryParse(w.icon) ?? -1;
+  if (n >= 300 && n < 305) return _FxKind.storm; // 雷雨
+  if (n >= 300 && n < 400) return _FxKind.rain;
+  if (n >= 400 && n < 500) return _FxKind.snow;
+  if (n >= 500 && n < 600) return _FxKind.fog;
+  if (n == 104 || n == 154) return _FxKind.overcast;
+  if ((n >= 101 && n <= 103) || (n >= 151 && n <= 153)) return _FxKind.cloudy;
+  return _FxKind.clear; // 100 / 150 晴（含夜间晴）
+}
+
+/// 面板背景渐变（按天气类型 + 明暗主题）
+List<Color> _fxGradient(_FxKind k, bool dark) {
+  const light = <_FxKind, List<Color>>{
+    _FxKind.clear: [Color(0xFFE8F6FF), Color(0xFFCFE8FF)],
+    _FxKind.cloudy: [Color(0xFFEEF3F9), Color(0xFFD8E4F0)],
+    _FxKind.overcast: [Color(0xFFE6ECF3), Color(0xFFC9D6E4)],
+    _FxKind.rain: [Color(0xFFDCE9F7), Color(0xFFAFCBE6)],
+    _FxKind.storm: [Color(0xFFC7D4E2), Color(0xFF8FA8BE)],
+    _FxKind.snow: [Color(0xFFF0F6FB), Color(0xFFDCEDF7)],
+    _FxKind.fog: [Color(0xFFE7ECEF), Color(0xFFC3CED6)],
+  };
+  const darkc = <_FxKind, List<Color>>{
+    _FxKind.clear: [Color(0xFF26374A), Color(0xFF141F2E)],
+    _FxKind.cloudy: [Color(0xFF2A3444), Color(0xFF161D28)],
+    _FxKind.overcast: [Color(0xFF313B49), Color(0xFF1A212B)],
+    _FxKind.rain: [Color(0xFF1F3143), Color(0xFF0F1924)],
+    _FxKind.storm: [Color(0xFF232E3A), Color(0xFF0D131B)],
+    _FxKind.snow: [Color(0xFF2C3642), Color(0xFF171E27)],
+    _FxKind.fog: [Color(0xFF2B3138), Color(0xFF171B21)],
+  };
+  return dark ? darkc[k]! : light[k]!;
+}
+
+/// 单条火腿建议
+class _HamTip {
+  final IconData icon;
+  final String text;
+  final Color color;
+  const _HamTip(this.icon, this.text, this.color);
+}
+
+/// 根据天气生成业余无线电操作建议（无数据时返回通用提示）
+List<_HamTip> _hamTips(WeatherNow? w) {
+  if (w == null) {
+    return const [
+      _HamTip(Icons.info_outline_rounded,
+          '获取天气后，将给出适合架台/通联/防雷的安全建议', Color(0xFF94A0B2)),
+    ];
+  }
+  final n = int.tryParse(w.icon) ?? -1;
+  final t = int.tryParse(w.temp) ?? 0;
+  final wind = int.tryParse(w.windScale) ?? 0;
+  final hum = int.tryParse(w.humidity) ?? 0;
+  final vis = double.tryParse(w.vis) ?? 30;
+  final tips = <_HamTip>[];
+  // 雷雨：最关键，排最前
+  if (n >= 300 && n < 305) {
+    tips.add(const _HamTip(Icons.flash_on_rounded,
+        '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备', Color(0xFFE11D48)));
+    tips.add(const _HamTip(Icons.warning_amber_rounded,
+        '如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮', Color(0xFFD97706)));
+  }
+  // 降雨
+  final precip = double.tryParse(w.precip);
+  if ((n >= 300 && n < 400) || (precip != null && precip > 0)) {
+    tips.add(_HamTip(Icons.umbrella_rounded,
+        '有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水', Color(0xFF2563EB)));
+  }
+  // 雪 / 低温
+  if (n >= 400 && n < 500 || t <= 2) {
+    tips.add(const _HamTip(Icons.ac_unit_rounded,
+        '低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化', Color(0xFF0E7490)));
+  }
+  // 大风
+  if (wind >= 5) {
+    tips.add(_HamTip(Icons.air_rounded,
+        '风力 $wind 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒', Color(0xFFEA580C)));
+  }
+  // 高温
+  if (n < 300 && t >= 33) {
+    tips.add(_HamTip(Icons.local_fire_department_rounded,
+        '高温 ${t}°C：注意防暑补水，设备避免长时间满功率发射导致过热', const Color(0xFFD97706)));
+  }
+  // 高湿
+  if (hum >= 85) {
+    tips.add(_HamTip(Icons.water_drop_rounded,
+        '湿度 ${hum}%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈', const Color(0xFF0EA5B7)));
+  }
+  // 低能见度（雾/霾）
+  if (vis < 3) {
+    tips.add(_HamTip(Icons.blur_on_rounded,
+        '能见度低（${w.vis}km）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联', const Color(0xFF7C3AED)));
+  }
+  // 天气良好
+  if (tips.isEmpty) {
+    tips.add(_HamTip(Icons.rss_feed_rounded,
+        '天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化', const Color(0xFF16A34A)));
+    if (wind >= 4) {
+      tips.add(_HamTip(Icons.flag_rounded,
+          '虽有 $wind 级风，仍建议为天线加固风绳，野外架台注意安全', const Color(0xFFEA580C)));
+    }
+  }
+  return tips.length > 4 ? tips.sublist(0, 4) : tips;
+}
+
+/// 物理特效画笔：按天气类型绘制飘雨/落雪/光斑/雾
+class _FxPainter extends CustomPainter {
+  final _FxKind kind;
+  final double t; // 0..1 循环进度
+  final bool dark;
+  _FxPainter({required this.kind, required this.t, required this.dark});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rnd = math.Random(7);
+    final w = size.width;
+    final h = size.height;
+    final white =
+        dark ? Colors.white.withValues(alpha: 0.10) : Colors.white.withValues(alpha: 0.5);
+    final soft = Colors.white.withValues(alpha: dark ? 0.05 : 0.28);
+
+    switch (kind) {
+      case _FxKind.rain:
+      case _FxKind.storm:
+        final p = Paint()
+          ..color = white
+          ..strokeWidth = 1.2
+          ..strokeCap = StrokeCap.round;
+        final n = kind == _FxKind.storm ? 36 : 60;
+        for (var i = 0; i < n; i++) {
+          final x = rnd.nextDouble() * w;
+          final sp = 0.25 + rnd.nextDouble() * 0.4;
+          final len = 6 + rnd.nextDouble() * 10;
+          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
+          canvas.drawLine(Offset(x, y), Offset(x - 1.5, y + len), p);
+        }
+        break;
+      case _FxKind.snow:
+        final p = Paint()..color = Colors.white.withValues(alpha: dark ? 0.3 : 0.75);
+        for (var i = 0; i < 46; i++) {
+          final x = rnd.nextDouble() * w + math.sin(t * 3 + i * 0.7) * 6;
+          final sp = 0.08 + rnd.nextDouble() * 0.15;
+          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
+          final r = 1.2 + rnd.nextDouble() * 1.6;
+          canvas.drawCircle(Offset(x, y), r, p);
+        }
+        break;
+      case _FxKind.fog:
+        final p = Paint();
+        for (var i = 0; i < 16; i++) {
+          final cx = (rnd.nextDouble() * 1.3 - 0.15) * w;
+          final cy = (0.1 + rnd.nextDouble() * 0.8) * h;
+          final rr = 24 + rnd.nextDouble() * 40;
+          final g = RadialGradient(colors: [
+            Colors.white.withValues(alpha: dark ? 0.05 : 0.22),
+            Colors.white.withValues(alpha: 0),
+          ]);
+          p.shader = g.createShader(
+              Rect.fromCircle(center: Offset(cx, cy), radius: rr));
+          canvas.drawCircle(Offset(cx, cy), rr, p);
+        }
+        break;
+      case _FxKind.clear:
+        final p = Paint()..color = soft;
+        for (var i = 0; i < 30; i++) {
+          final x = rnd.nextDouble() * w;
+          final sp = 0.02 + rnd.nextDouble() * 0.05;
+          final y = ((rnd.nextDouble() - t * sp) % 1.1 + 1.1) % 1.1 * h;
+          final r = 0.8 + rnd.nextDouble() * 1.6;
+          canvas.drawCircle(Offset(x, y), r, p);
+        }
+        break;
+      case _FxKind.cloudy:
+      case _FxKind.overcast:
+        final p = Paint()..color = soft;
+        for (var i = 0; i < 14; i++) {
+          final x = rnd.nextDouble() * w;
+          final sp = 0.03 + rnd.nextDouble() * 0.06;
+          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
+          canvas.drawOval(
+              Rect.fromCenter(
+                  center: Offset(x, y),
+                  width: 18 + rnd.nextDouble() * 26,
+                  height: 8),
+              p);
+        }
+        break;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _FxPainter old) =>
+      old.kind != kind || old.t != t;
+}
+
+/// 打开天气浮动面板（底部弹层）：天气 + 火腿建议 + 特效背景
 Future<void> showWeatherPanel(BuildContext context, AppState state) async {
   final hasPos = state.myHasFix && state.myLat != null && state.myLng != null;
   if (hasPos) {
@@ -318,155 +525,75 @@ Future<void> showWeatherPanel(BuildContext context, AppState state) async {
   );
 }
 
-class _WeatherPanel extends StatelessWidget {
+class _WeatherPanel extends StatefulWidget {
   final AppState state;
   final bool hasPos;
   const _WeatherPanel({required this.state, required this.hasPos});
+  @override
+  State<_WeatherPanel> createState() => _WeatherPanelState();
+}
+
+class _WeatherPanelState extends State<_WeatherPanel>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ac;
+
+  @override
+  void initState() {
+    super.initState();
+    _ac = AnimationController(vsync: this, duration: const Duration(seconds: 2))
+      ..repeat(); // 粒子循环动画
+  }
+
+  @override
+  void dispose() {
+    _ac.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.all(12),
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.circular(22),
-        ),
+        margin: const EdgeInsets.all(10),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
         child: ValueListenableBuilder<int>(
           valueListenable: WeatherCenter.instance.version,
           builder: (context, _, _) {
             final wc = WeatherCenter.instance;
-            final col = C.cyan;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 标题行
-                Row(children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: C.cyanBg,
-                      borderRadius: BorderRadius.circular(12),
+            final kind =
+                (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
+            final grad = _fxGradient(kind, dark);
+            return AnimatedBuilder(
+              animation: _ac,
+              builder: (context, _) {
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: grad,
                     ),
-                    child: const Icon(Icons.wb_cloudy_rounded,
-                        color: Color(0xFF0E7490), size: 21),
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('天气',
-                            style: ts(16, w: FontWeight.w800)),
-                        Text('和风天气 · 当前位置实时天气',
-                            style: ts(10.5, c: C.grey)),
-                      ],
-                    ),
-                  ),
-                  if (hasPos)
-                    GestureDetector(
-                    onTap: () {
-                      WeatherCenter.instance
-                          .load(state.myLat!, state.myLng!, force: true);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: C.cyanBg,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.refresh_rounded,
-                            size: 14, color: col),
-                        const SizedBox(width: 3),
-                        Text('刷新', style: ts(11, c: col, w: FontWeight.w700)),
-                      ]),
-                    ),
-                  ),
-                ]),
-                const SizedBox(height: 4),
-                if (!hasPos)
-                  _emptyHint('暂无定位：请在“我的电台”开启位置服务后查看天气')
-                else if (wc.loading && !wc.hasData)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: Center(
-                        child: CircularProgressIndicator(strokeWidth: 2.5)),
-                  )
-                else if (wc.now == null)
-                  _emptyHint(wc.error ?? '天气服务暂时不可用')
-                else ...[
-                  // 主体：城市 + 大图标 + 温度 + 现象
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12, bottom: 4),
-                    child: Row(children: [
-                      Icon(Icons.place_rounded, size: 16, color: C.grey),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          wc.now!.city ?? '当前位置',
-                          style: ts(13, c: C.slate, w: FontWeight.w700),
-                          overflow: TextOverflow.ellipsis,
+                  child: Stack(
+                    children: [
+                      // 物理特效层
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: _FxPainter(
+                                kind: kind, t: _ac.value, dark: dark),
+                          ),
                         ),
                       ),
-                      Text(
-                        '${wc.now!.text} · 观测 ${wc.now!.obsTimeShort}',
-                        style: ts(10.5, c: C.grey),
-                      ),
-                    ]),
-                  ),
-                  Row(
-                    children: [
-                      Icon(wc.now!.iconData, size: 58, color: col),
-                      const SizedBox(width: 14),
-                      Text('${wc.now!.tempDisplay}°',
-                          style: ts(44, w: FontWeight.w800)),
-                      const SizedBox(width: 10),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text('体感 ${wc.now!.feelsLike}°',
-                            style: ts(12, c: C.slate, w: FontWeight.w600)),
-                      ),
+                      // 内容层
+                      _panelBody(wc, dark),
                     ],
                   ),
-                  const SizedBox(height: 6),
-                  // 详情格
-                  Row(children: [
-                    _cell('湿度', '${wc.now!.humidity}%'),
-                    _cell('风向', wc.now!.windDir),
-                    _cell('风力', '${wc.now!.windScale} 级'),
-                  ]),
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    _cell('风速', '${wc.now!.windSpeed} km/h'),
-                    _cell('气压', '${wc.now!.pressure} hPa'),
-                    _cell('能见度', '${wc.now!.vis} km'),
-                  ]),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: C.bgSoft,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(children: [
-                      const Icon(Icons.opacity_rounded,
-                          size: 14, color: Color(0xFF0E7490)),
-                      const SizedBox(width: 6),
-                      Text('当前降水 ${wc.now!.precip} mm',
-                          style: ts(11, c: C.slate, w: FontWeight.w600)),
-                      const Spacer(),
-                      Text('数据由和风天气提供',
-                          style: ts(9.5, c: C.grey)),
-                    ]),
-                  ),
-                ],
-              ],
+                );
+              },
             );
           },
         ),
@@ -474,32 +601,267 @@ class _WeatherPanel extends StatelessWidget {
     );
   }
 
-  Widget _emptyHint(String msg) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 26),
-        child: Center(
-          child: Column(children: [
-            const Icon(Icons.cloud_off_rounded, color: Color(0xFFC2CAD8), size: 36),
-            const SizedBox(height: 10),
-            Text(msg, style: ts(12, c: C.grey)),
-          ]),
-        ),
-      );
+  Widget _panelBody(WeatherCenter wc, bool dark) {
+    final kind =
+        (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
+    final hasPos = widget.hasPos;
+    final st = widget.state;
+    final baseText = dark ? Colors.white : const Color(0xFF1B253C);
+    final subText = dark ? Colors.white70 : const Color(0xFF68748F);
+    final maxH = MediaQuery.of(context).size.height * 0.86;
 
-  Widget _cell(String k, String v) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxH),
+      child: SingleChildScrollView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 22),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 标题行
+          Row(children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: dark ? 0.14 : 0.7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(kind == _FxKind.clear
+                  ? Icons.wb_sunny_rounded
+                  : Icons.wb_cloudy_rounded, color: baseText, size: 21),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('天气 · 火腿建议',
+                      style: ts(16, w: FontWeight.w800, c: baseText)),
+                  Text('和风天气 · 当前位置',
+                      style: ts(10.5, c: subText)),
+                ],
+              ),
+            ),
+            if (hasPos)
+              GestureDetector(
+                onTap: () {
+                  if (st.myHasFix && st.myLat != null && st.myLng != null) {
+                    WeatherCenter.instance
+                        .load(st.myLat!, st.myLng!, force: true);
+                  }
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: dark ? 0.14 : 0.7),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.refresh_rounded, size: 14, color: baseText),
+                    const SizedBox(width: 3),
+                    Text('刷新', style: ts(11, c: baseText, w: FontWeight.w700)),
+                  ]),
+                ),
+              ),
+          ]),
+          const SizedBox(height: 14),
+          // 无定位 / 加载 / 无数据
+          if (!hasPos)
+            _hint(
+                Icons.gps_off_rounded, '暂无定位：请在“我的电台”开启位置服务后查看天气', subText)
+          else if (wc.loading && !wc.hasData)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 28),
+              child: Center(
+                  child: CircularProgressIndicator(strokeWidth: 2.5)),
+            )
+          else if (wc.now == null)
+            _hint(Icons.cloud_off_rounded, wc.error ?? '天气服务暂时不可用', subText)
+          else
+            _content(wc, kind, dark, baseText, subText),
+        ],
+      ),
+      ),
+    );
+  }
+
+  Widget _content(WeatherCenter wc, _FxKind kind, bool dark, Color baseText,
+      Color subText) {
+    final now = wc.now!;
+    final isStorm = kind == _FxKind.storm;
+    final accent = dark ? Colors.cyanAccent : const Color(0xFF0E7490);
+    final cardWhite = dark
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.white.withValues(alpha: 0.75);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ── 主体：城市 + 大图标 + 温度 ──
+        Row(children: [
+          Container(
+            width: 76,
+            height: 76,
+            decoration: BoxDecoration(
+              color: cardWhite,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Icon(now.iconData,
+                size: 46,
+                color: isStorm ? const Color(0xFFF59E0B) : accent),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Icon(Icons.place_rounded, size: 14, color: subText),
+                  const SizedBox(width: 3),
+                  Flexible(
+                    child: Text(now.city ?? '当前位置',
+                        style: ts(12.5, c: subText, w: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                ]),
+                const SizedBox(height: 2),
+                Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: '${now.tempDisplay}°',
+                      style: ts(38, w: FontWeight.w900, c: baseText)),
+                  TextSpan(
+                      text: '  ${now.text}',
+                      style: ts(14, w: FontWeight.w700, c: baseText)),
+                ])),
+                Text('体感 ${now.feelsLike}° · 观测 ${now.obsTimeShort}',
+                    style: ts(11, c: subText)),
+              ],
+            ),
+          ),
+        ]),
+        const SizedBox(height: 14),
+        // ── 火腿建议卡片 ──
+        _hamCard(_hamTips(now), dark, baseText),
+        const SizedBox(height: 12),
+        // ── 更多天气信息 ──
+        Row(children: [
+          _miniStat('云量', '${now.cloud}%', Icons.cloud_outlined, subText, baseText),
+          const SizedBox(width: 8),
+          _miniStat('露点', '${now.dew}°', Icons.device_thermostat_rounded, subText,
+              baseText),
+          const SizedBox(width: 8),
+          _miniStat('湿度', '${now.humidity}%', Icons.water_drop_outlined, subText,
+              baseText),
+        ]),
+        const SizedBox(height: 8),
+        Row(children: [
+          _miniStat('风向', now.windDir, Icons.explore_outlined, subText, baseText),
+          const SizedBox(width: 8),
+          _miniStat('风力', '${now.windScale} 级', Icons.air, subText, baseText),
+          const SizedBox(width: 8),
+          _miniStat('风速', '${now.windSpeed} km/h', Icons.speed_rounded, subText,
+              baseText),
+        ]),
+        const SizedBox(height: 8),
+        Row(children: [
+          _miniStat('气压', '${now.pressure} hPa', Icons.compress_rounded, subText,
+              baseText),
+          const SizedBox(width: 8),
+          _miniStat('能见度', '${now.vis} km', Icons.visibility_outlined, subText,
+              baseText),
+          const SizedBox(width: 8),
+          _miniStat('降水', '${now.precip} mm', Icons.opacity_rounded, subText,
+              baseText),
+        ]),
+        const SizedBox(height: 10),
+        Center(
+          child: Text('数据由和风天气提供 · APRSlocus',
+              style: ts(9.5, c: subText.withValues(alpha: 0.8))),
+        ),
+      ],
+    );
+  }
+
+  Widget _hamCard(List<_HamTip> tips, bool dark, Color baseText) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: dark ? 0.10 : 0.8),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.08)
+                : Colors.white),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.rss_feed_rounded,
+              size: 16,
+              color: dark ? Colors.cyanAccent : const Color(0xFF0E7490)),
+          const SizedBox(width: 6),
+          Text('业余无线电建议', style: ts(13, w: FontWeight.w800, c: baseText)),
+        ]),
+        const SizedBox(height: 8),
+        for (final tip in tips) ...[
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(tip.icon, size: 15, color: tip.color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(tip.text,
+                  style: ts(11.5,
+                      c: baseText.withValues(alpha: 0.92), h: 1.45)),
+            ),
+          ]),
+          if (tips.last != tip) const SizedBox(height: 7),
+        ],
+      ]),
+    );
+  }
+
+  Widget _miniStat(String label, String value, IconData icon, Color subText,
+      Color baseText) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
         decoration: BoxDecoration(
-          color: C.bgSoft,
-          borderRadius: BorderRadius.circular(12),
+          color: Colors.white.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(11),
         ),
         child: Column(children: [
-          Text(v, style: ts(14, w: FontWeight.w800, c: C.ink)),
-          const SizedBox(height: 2),
-          Text(k, style: ts(9.5, c: C.grey)),
+          Text(value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(13, w: FontWeight.w800, c: baseText)),
+          const SizedBox(height: 1),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 10, color: subText),
+            const SizedBox(width: 3),
+            Flexible(
+              child: Text(label,
+                  style: ts(9, c: subText), overflow: TextOverflow.ellipsis),
+            ),
+          ]),
         ]),
       ),
     );
   }
+
+  Widget _hint(IconData ic, String msg, Color subText) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Center(
+          child: Column(children: [
+            Icon(ic, color: subText, size: 34),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(msg,
+                  textAlign: TextAlign.center, style: ts(12, c: subText)),
+            ),
+          ]),
+        ),
+      );
 }
