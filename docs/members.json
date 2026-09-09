@@ -1,5 +1,5 @@
 {
-  "version": 24,
+  "version": 25,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1084,11 +1084,11 @@
       "c": "#E67E22"
     },
     {
-      "call": "BH7LCD",
+      "call": "BG7NMF",
       "who": {
-        "zh": "BH7LCD",
-        "zh-TW": "BH7LCD",
-        "en": "BH7LCD"
+        "zh": "BG7NMF",
+        "zh-TW": "BG7NMF",
+        "en": "BG7NMF"
       },
       "role": {
         "zh": "早期成员",
@@ -1108,11 +1108,11 @@
       "c": "#E67E22"
     },
     {
-      "call": "BG7NMF",
+      "call": "BH7LDC",
       "who": {
-        "zh": "BG7NMF",
-        "zh-TW": "BG7NMF",
-        "en": "BG7NMF"
+        "zh": "BH7LDC",
+        "zh-TW": "BH7LDC",
+        "en": "BH7LDC"
       },
       "role": {
         "zh": "早期成员",
