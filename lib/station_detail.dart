@@ -1069,7 +1069,9 @@ class _StationDetailState extends State<StationDetail> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => HonorWallPage(call,
-                            symbol: null, symbolTable: null)));
+                            symbol: null,
+                            symbolTable: null,
+                            showAchievements: false)));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

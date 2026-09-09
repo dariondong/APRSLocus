@@ -21,8 +21,11 @@ class HonorWallPage extends StatelessWidget {
   final String call;
   final String? symbol;
   final String? symbolTable;
+  /// 是否展示“我的成就”（仅查看自己呼号时 true；查看他人只显示徽章荣誉）
+  final bool showAchievements;
   const HonorWallPage(this.call,
-      {super.key, this.symbol, this.symbolTable});
+      {super.key, this.symbol, this.symbolTable,
+      this.showAchievements = true});
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +102,10 @@ class HonorWallPage extends StatelessWidget {
                                     letterSpacing: 1.5)),
                             const SizedBox(height: 4),
                             Text(
-                                '已点亮 $ownedCount/${wall.length} 徽章 · '
-                                '${AchievementCenter.instance.unlockedCount}/${AchievementCenter.all.length} 成就',
+                                showAchievements
+                                    ? '已点亮 $ownedCount/${wall.length} 徽章 · '
+                                      '${AchievementCenter.instance.unlockedCount}/${AchievementCenter.all.length} 成就'
+                                    : '已点亮 $ownedCount/${wall.length} 徽章',
                                 style: const TextStyle(
                                     fontSize: 12.5,
                                     color: Color(0xFF98A2B8))),
@@ -124,28 +129,31 @@ class HonorWallPage extends StatelessWidget {
                 ]),
                 const SizedBox(height: 12),
                 for (final w in wall) _honorTile(call, w.honor, w.owned),
-                const SizedBox(height: 18),
-                // 成就区
-                Row(children: const [
-                  Icon(Icons.emoji_events_outlined,
-                      size: 16, color: Color(0xFFE67E22)),
-                  SizedBox(width: 6),
-                  Text('成就',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF4B5873))),
-                  SizedBox(width: 8),
-                  Expanded(child: Divider(color: Color(0xFFE4E8F1), height: 1)),
-                ]),
-                const SizedBox(height: 12),
-                ValueListenableBuilder<int>(
-                  valueListenable: AchievementCenter.instance.version,
-                  builder: (context, _, _) => Column(children: [
-                    for (final a in AchievementCenter.all)
-                      _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
+                if (showAchievements) ...[
+                  const SizedBox(height: 18),
+                  // 成就区（仅查看自己时显示）
+                  Row(children: const [
+                    Icon(Icons.emoji_events_outlined,
+                        size: 16, color: Color(0xFFE67E22)),
+                    SizedBox(width: 6),
+                    Text('成就',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF4B5873))),
+                    SizedBox(width: 8),
+                    Expanded(
+                        child: Divider(color: Color(0xFFE4E8F1), height: 1)),
                   ]),
-                ),
+                  const SizedBox(height: 12),
+                  ValueListenableBuilder<int>(
+                    valueListenable: AchievementCenter.instance.version,
+                    builder: (context, _, _) => Column(children: [
+                      for (final a in AchievementCenter.all)
+                        _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
+                    ]),
+                  ),
+                ],
               ],
             );
           },
