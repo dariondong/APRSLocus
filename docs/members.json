@@ -1,5 +1,5 @@
 {
-  "version": 33,
+  "version": 34,
   "updated": "2026-09-09",
   "developers": [
     {
@@ -1246,6 +1246,30 @@
         "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
         "zh-TW": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
         "en": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。"
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BH6SXA",
+      "who": {
+        "zh": "BH6SXA",
+        "zh-TW": "BH6SXA",
+        "en": "BH6SXA"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候回響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Waited in the faintest static — watching a weak signal grow into a clear callsign."
       },
       "honors": [
         "earlyMember"
