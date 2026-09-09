@@ -500,6 +500,34 @@ List<_HamTip> _hamTips(WeatherNow? w, AppLocalizations s) {
 }
 
 /// 物理特效画笔：按天气类型绘制飘雨/落雪/光斑/雾
+/// 蓬松云团绘制：多个模糊圆叠加 → 边缘柔和、透气，取代生硬椭圆
+class _CloudPuffPainter {
+  /// 在 (cx, cy) 画一朵由模糊圆组成的云；scale 控制大小，alpha 控制不透明度
+  static void paint(Canvas canvas, double cx, double cy, double scale, double alpha, {Color? tint}) {
+    final color = (tint ?? Colors.white).withValues(alpha: alpha.clamp(0.0, 1.0));
+    final paint = Paint()
+      ..color = color
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7);
+    // 底部平、上部堆叠的云轮廓
+    final blobs = <(double, double, double)>[
+      (-26, 8, 20), // 左翼
+      (26, 8, 20),  // 右翼
+      (0, 0, 26),   // 主体
+      (-14, -10, 18),
+      (14, -12, 17),
+      (0, -18, 15),
+    ];
+    for (final (dx, dy, r) in blobs) {
+      canvas.drawCircle(Offset(cx + dx * scale, cy + dy * scale), r * scale, paint);
+    }
+    // 一层较淡的内芯让云更有体积
+    final core = Paint()
+      ..color = Colors.white.withValues(alpha: (alpha * 0.9).clamp(0.0, 1.0))
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+    canvas.drawCircle(Offset(cx + 2 * scale, cy - 4 * scale), 10 * scale, core);
+  }
+}
+
 class _FxPainter extends CustomPainter {
   final _FxKind kind;
   final double t; // 0..1 循环进度
@@ -512,75 +540,155 @@ class _FxPainter extends CustomPainter {
     final rnd = math.Random(7);
     final w = size.width;
     final h = size.height;
-    final soft = Colors.white.withValues(alpha: dark ? 0.05 : 0.28);
+    final whiteSoft = Colors.white.withValues(alpha: dark ? 0.10 : 0.35);
+    final cloudMain = dark ? const Color(0xFFB9C6D4) : const Color(0xFFFFFFFF);
+    final cloudDark = dark ? const Color(0xFF5B6B7C) : const Color(0xFFC9D6E4);
+    // 云的水平漂移：同一朵云整体缓慢平移
+    double drift(double seed) {
+      final dx = t * 60;
+      return (seed + dx) % (w + 160) - 80;
+    }
 
     switch (kind) {
       case _FxKind.rain:
       case _FxKind.storm:
-        final boost = 0.35 + rain * 0.65; // 雨大→更多更粗更长的雨丝
-        final alpha = dark ? 0.10 : 0.5;
-        final p = Paint()
-          ..color = Colors.white.withValues(alpha: (alpha * (0.8 + rain * 0.4)).clamp(0.0, 1.0))
-          ..strokeWidth = 1.0 + rain * 1.3
+        // ── 上部积雨云（低沉灰云，可作雨幕源头）──
+        final stormCloud = kind == _FxKind.storm;
+        final cloudAlpha = stormCloud ? (dark ? 0.30 : 0.55) : (dark ? 0.22 : 0.5);
+        final cloudTint = stormCloud ? const Color(0xFF46586B) : cloudDark;
+        // 2~3 朵积雨云沿顶部横移
+        for (var i = 0; i < 3; i++) {
+          final seedX = i * (w / 3) + (i.isEven ? 0 : 70);
+          final cx = drift(seedX);
+          final cy = 18 + i * 6.0;
+          final sc = 1.0 + (i % 2) * 0.35;
+          _CloudPuffPainter.paint(canvas, cx, cy, sc * 1.25,
+              cloudAlpha - (stormCloud ? 0 : i * 0.02), tint: cloudTint);
+        }
+        // ── 雨丝：远(细淡) + 近(粗亮) 两层 ──
+        final boost = 0.45 + rain * 0.55;
+        // 近景雨丝
+        final nearN = (stormCloud ? 46 : 40) * boost;
+        final nearPaint = Paint()
+          ..color = Colors.white.withValues(alpha:
+              ((dark ? 0.16 : 0.6) * (0.75 + rain * 0.45)).clamp(0.0, 1.0))
+          ..strokeWidth = (1.2 + rain * 1.6).clamp(1.0, 3.5)
           ..strokeCap = StrokeCap.round;
-        final baseN = kind == _FxKind.storm ? 40.0 : 50.0;
-        final n = (baseN * boost).round();
-        for (var i = 0; i < n; i++) {
-          final x = rnd.nextDouble() * w;
-          final sp = 0.2 + rnd.nextDouble() * 0.45;
-          final len = (5 + rnd.nextDouble() * 9) * (1 + rain * 1.1);
-          final y = ((rnd.nextDouble() + t * sp) % 1.15) * h;
-          canvas.drawLine(Offset(x, y), Offset(x - 1.5 - rain * 1.5, y + len), p);
+        for (var i = 0; i < nearN; i++) {
+          final sx = rnd.nextDouble();
+          final sp = 0.35 + rnd.nextDouble() * 0.35;
+          final len = (7 + rnd.nextDouble() * 8) * (1 + rain * 1.0);
+          final x = ((sx * w + t * 90) % (w + 40)) - 20;
+          final y = ((rnd.nextDouble() * 1.1 + t * sp) % 1.25) * h - h * 0.1;
+          // 斜雨：带轻微方向
+          final slant = (1.5 + rain * 2.0) + math.sin(i * 1.3) * 0.6;
+          canvas.drawLine(Offset(x, y), Offset(x - slant, y + len), nearPaint);
+        }
+        // 远景雨幕：极细极淡、铺满，形成「雨幕」
+        final farPaint = Paint()
+          ..color = Colors.white.withValues(alpha: dark ? 0.05 : 0.18)
+          ..strokeWidth = 0.8;
+        for (var i = 0; i < (stormCloud ? 34 : 46); i++) {
+          final sx = rnd.nextDouble();
+          final sp = 0.5 + rnd.nextDouble() * 0.3;
+          final len = 4 + rnd.nextDouble() * 5;
+          final x = ((sx * w + t * 55) % (w + 60)) - 30;
+          final y = ((rnd.nextDouble() + t * sp) % 1.2) * h;
+          canvas.drawLine(Offset(x, y), Offset(x - 1.2, y + len), farPaint);
+        }
+        // 雷雨：顶部偶尔一道闪电
+        if (stormCloud) {
+          final flash = (math.sin(t * math.pi * 2) > 0.72);
+          if (flash) {
+            final fp = Paint()
+              ..color = const Color(0xFFFFF3C4).withValues(alpha: 0.5)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1.4
+              ..strokeJoin = StrokeJoin.round;
+            final bx = w * 0.62 + math.sin(t * 12) * 6;
+            final path = Path()
+              ..moveTo(bx, h * 0.30)
+              ..lineTo(bx - 8, h * 0.40)
+              ..lineTo(bx + 3, h * 0.42)
+              ..lineTo(bx - 5, h * 0.52);
+            canvas.drawPath(path, fp);
+          }
         }
         break;
+
       case _FxKind.snow:
-        final p = Paint()..color = Colors.white.withValues(alpha: dark ? 0.3 : 0.75);
-        for (var i = 0; i < 46; i++) {
-          final x = rnd.nextDouble() * w + math.sin(t * 3 + i * 0.7) * 6;
-          final sp = 0.08 + rnd.nextDouble() * 0.15;
-          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
-          final r = 1.2 + rnd.nextDouble() * 1.6;
+        // 雪：近大远小，横向微摆更柔
+        for (var i = 0; i < 52; i++) {
+          final sx = rnd.nextDouble();
+          final sp = 0.06 + rnd.nextDouble() * 0.12;
+          final x = sx * w + math.sin(t * 2.2 + i * 0.8) * 7;
+          final y = ((rnd.nextDouble() + t * sp) % 1.15) * h;
+          final near = i % 3 == 0;
+          final r = near ? 1.8 + rnd.nextDouble() * 1.4 : 1.1 + rnd.nextDouble();
+          final p = Paint()
+            ..color = Colors.white.withValues(
+                alpha: near ? (dark ? 0.5 : 0.85) : (dark ? 0.25 : 0.5))
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, near ? 1.5 : 0.8);
           canvas.drawCircle(Offset(x, y), r, p);
         }
         break;
+
       case _FxKind.fog:
-        final p = Paint();
-        for (var i = 0; i < 16; i++) {
-          final cx = (rnd.nextDouble() * 1.3 - 0.15) * w;
-          final cy = (0.1 + rnd.nextDouble() * 0.8) * h;
-          final rr = 24 + rnd.nextDouble() * 40;
+        // 雾：用模糊椭团+径向渐变让雾团柔和缓慢漂移
+        for (var i = 0; i < 6; i++) {
+          final cx = drift(i * 140.0 + 20);
+          final cy = (0.15 + (i % 3) * 0.3) * h;
+          final rr = 46 + (i % 2) * 34;
           final g = RadialGradient(colors: [
-            Colors.white.withValues(alpha: dark ? 0.05 : 0.22),
+            Colors.white.withValues(alpha: dark ? 0.05 : 0.16),
             Colors.white.withValues(alpha: 0),
           ]);
-          p.shader = g.createShader(
-              Rect.fromCircle(center: Offset(cx, cy), radius: rr));
+          final p = Paint()
+            ..shader = g.createShader(
+                Rect.fromCircle(center: Offset(cx, cy), radius: rr));
           canvas.drawCircle(Offset(cx, cy), rr, p);
         }
-        break;
-      case _FxKind.clear:
-        final p = Paint()..color = soft;
-        for (var i = 0; i < 30; i++) {
-          final x = rnd.nextDouble() * w;
-          final sp = 0.02 + rnd.nextDouble() * 0.05;
-          final y = ((rnd.nextDouble() - t * sp) % 1.1 + 1.1) % 1.1 * h;
-          final r = 0.8 + rnd.nextDouble() * 1.6;
-          canvas.drawCircle(Offset(x, y), r, p);
+        // 底层细雾纹
+        final fp = Paint()
+          ..color = Colors.white.withValues(alpha: dark ? 0.04 : 0.14)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+        for (var i = 0; i < 26; i++) {
+          final y = (0.05 + rnd.nextDouble() * 0.95) * h;
+          final x = drift(i * 90.0 + rnd.nextDouble() * w * 0.5);
+          canvas.drawOval(
+              Rect.fromCenter(center: Offset(x, y),
+                  width: 40 + rnd.nextDouble() * 70, height: 10 + rnd.nextDouble() * 10),
+              fp);
         }
         break;
+
+      case _FxKind.clear:
+        // 晴：极淡光点，柔和上浮
+        for (var i = 0; i < 26; i++) {
+          final x = rnd.nextDouble() * w;
+          final sp = 0.015 + rnd.nextDouble() * 0.03;
+          final y = ((rnd.nextDouble() - t * sp) % 1.1 + 1.1) % 1.1 * h;
+          final r = 0.7 + rnd.nextDouble() * 1.4;
+          canvas.drawCircle(Offset(x, y), r,
+              Paint()..color = whiteSoft);
+        }
+        break;
+
       case _FxKind.cloudy:
       case _FxKind.overcast:
-        final p = Paint()..color = soft;
-        for (var i = 0; i < 14; i++) {
-          final x = rnd.nextDouble() * w;
-          final sp = 0.03 + rnd.nextDouble() * 0.06;
-          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
-          canvas.drawOval(
-              Rect.fromCenter(
-                  center: Offset(x, y),
-                  width: 18 + rnd.nextDouble() * 26,
-                  height: 8),
-              p);
+        // 蓬松白云 2~3 朵：深浅+远近平行漂移，不再硬椭圆
+        final n = kind == _FxKind.overcast ? 3 : 2;
+        for (var i = 0; i < n; i++) {
+          final seedX = i * (w / (n + 0.5)) + 30;
+          final cx = drift(seedX + (i.isEven ? 0 : 60));
+          final cy = 26 + i * 8.0;
+          final sc = 1.0 + i * 0.25;
+          // 晴间多云时更亮，阴天偏灰
+          final tint = kind == _FxKind.overcast ? cloudDark : cloudMain;
+          final alpha = kind == _FxKind.overcast
+              ? (dark ? 0.16 : 0.32)
+              : (dark ? 0.18 : 0.5);
+          _CloudPuffPainter.paint(canvas, cx, cy, sc, alpha - i * 0.03, tint: tint);
         }
         break;
     }
