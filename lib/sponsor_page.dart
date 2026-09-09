@@ -1,11 +1,85 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
 import 'widgets.dart';
 
-/// 赞助与鸣谢页面
-class SponsorPage extends StatelessWidget {
+/// 赞助与鸣谢页面（赞助名单从官网 sponsors.json 在线更新，离线用内置兜底）
+const String kSponsorsUrl = 'https://aprslocus.theez.top/sponsors.json';
+
+class SponsorPage extends StatefulWidget {
   const SponsorPage({super.key});
+  @override
+  State<SponsorPage> createState() => _SponsorPageState();
+}
+
+class _SponsorPageState extends State<SponsorPage> {
+  /// 在线赞助名单（kind, name, desc），默认内置
+  List<({String kind, String name, String desc})> _sponsors = [
+    (kind: 'group', name: 'STUDENT HAMS 群组', desc: '感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。'),
+    (kind: 'coffee', name: 'BG7PGW', desc: '感谢赞助的蜜雪冰城一杯 🧋'),
+    (kind: 'jade', name: 'BG7ORC', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
+    (kind: 'school', name: 'BA4JLD', desc: '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚'),
+    (kind: 'jade', name: 'BA4IUD', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
+    (kind: 'everyone', name: '每一位支持者', desc: '你们的每一份支持，都是 APRSlocus 继续发光的动力。'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSponsors();
+  }
+
+  Future<void> _loadSponsors() async {
+    try {
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 8);
+      try {
+        final req = await client
+            .getUrl(Uri.parse(kSponsorsUrl))
+            .timeout(const Duration(seconds: 8));
+        req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus');
+        final resp = await req.close().timeout(const Duration(seconds: 8));
+        if (resp.statusCode != 200) return;
+        final body = await resp.transform(utf8.decoder).join();
+        final d = jsonDecode(body);
+        if (d is! Map) return;
+        final list = d['sponsors'];
+        if (list is List && list.isNotEmpty) {
+          final parsed = <({String kind, String name, String desc})>[];
+          for (final it in list) {
+            if (it is Map) {
+              final name = it['name'];
+              final desc = it['desc'];
+              if (name is String && name.isNotEmpty) {
+                parsed.add((
+                  kind: (it['kind'] as String?) ?? 'fav',
+                  name: name,
+                  desc: (desc as String?) ?? ''
+                ));
+              }
+            }
+          }
+          if (parsed.isNotEmpty) {
+            if (mounted) setState(() => _sponsors = parsed);
+          }
+        }
+      } finally {
+        client.close(force: true);
+      }
+    } catch (_) {}
+  }
+
+  IconData _kindIcon(String kind) => switch (kind) {
+        'group' => Icons.group_rounded,
+        'coffee' => Icons.local_cafe_rounded,
+        'jade' => Icons.card_giftcard_rounded,
+        'school' => Icons.school_rounded,
+        _ => Icons.favorite_rounded,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +135,7 @@ class SponsorPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          // ── 赞助支持 ──
+          // ── 赞助支持（在线更新） ──
           _sectionHeader(
             S.of(context).sponsorSupport,
             Icons.volunteer_activism_rounded,
@@ -72,31 +146,8 @@ class SponsorPage extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
-                _feature(
-                  Icons.group_rounded,
-                  S.of(context).sponsorGroup,
-                  S.of(context).sponsorGroupItems,
-                ),
-                _feature(
-                  Icons.local_cafe_rounded,
-                  'BG7PGW',
-                  S.of(context).sponsorBgpItems,
-                ),
-                _feature(
-                  Icons.card_giftcard_rounded,
-                  'BG7ORC',
-                  '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
-                ),
-                _feature(
-                  Icons.school_rounded,
-                  'BA4JLD',
-                  '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚',
-                ),
-                _feature(
-                  Icons.favorite_rounded,
-                  S.of(context).sponsorEvery,
-                  S.of(context).sponsorEveryItems,
-                ),
+                for (final sp in _sponsors)
+                  _feature(_kindIcon(sp.kind), sp.name, sp.desc),
               ],
             ),
           ),

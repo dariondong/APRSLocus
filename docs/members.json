@@ -1,5 +1,5 @@
 {
-  "version": 29,
+  "version": 30,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1006,7 +1006,8 @@
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
       "honors": [
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "earlyMember",
       "grp": "test",
