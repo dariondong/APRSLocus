@@ -30,7 +30,7 @@ jobs:
         run: flutter pub get
 
       - name: Build macOS (Release)
-        flutter build macos --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
+        run: flutter build macos --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }}
 
       - name: Verify .app
         run: |
