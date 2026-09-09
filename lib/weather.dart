@@ -230,7 +230,13 @@ class WeatherCenter {
       if (resp.statusCode != 200) return null;
       final body = await resp.transform(utf8.decoder).join();
       final d = jsonDecode(body);
-      return d is Map ? d : null;
+      if (d is Map) {
+        // jsonDecode 返回 Map<dynamic,dynamic>，显式转 Map<String,dynamic>
+        final m = <String, dynamic>{};
+        d.forEach((k, v) => m[k.toString()] = v);
+        return m;
+      }
+      return null;
     } finally {
       client.close(force: true);
     }
