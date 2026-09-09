@@ -11,7 +11,6 @@ import 'state.dart';
 /// 数据：和风「实时天气」+「城市定位」；顶栏默认显示 图标+温度，点击弹浮动面板。
 /// 配置见 https://dev.qweather.com/docs
 const String kQwHost = 'pf4ewvjfqj.re.qweatherapi.com';
-const String kQwGeoHost = 'geoapi.qweather.com';
 const String kQwKey = '963cae25b17241aaab9d73e327ba5d4d';
 
 /// 实时天气（/v7/weather/now 返回的 now 对象 + 逆地理城市名）
@@ -171,8 +170,9 @@ class WeatherCenter {
   /// 逆地理：经纬度 → 城市名（geoapi；失败静默返回 null，不阻塞天气主流程）
   Future<String?> _fetchCity(double lat, double lng) async {
     try {
+      // 地理编码路径为同一 Host 下的 /geo/v2/city/lookup（已验证；默认 geoapi 域名对本 Key 404）
       final url =
-          'https://$kQwGeoHost/v2/city/lookup?location=$lng,$lat&key=$kQwKey';
+          'https://$kQwHost/geo/v2/city/lookup?location=$lng,$lat&key=$kQwKey';
       final d = await _getJson(url);
       if (d == null) return null;
       final list = d['location'];
