@@ -613,7 +613,6 @@ class _WeatherPanelState extends State<_WeatherPanel>
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxH),
       child: SingleChildScrollView(
-        shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 22),
       child: Column(
         mainAxisSize: MainAxisSize.min,
