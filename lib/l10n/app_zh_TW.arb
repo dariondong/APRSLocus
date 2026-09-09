@@ -1441,5 +1441,86 @@
   "quickTrackNoStations": "暫無已接收臺站，可直接手輸呼號（多個用逗號分隔）",
   "quickTrackManualHint": "手輸呼號，如 BG7PGW,BG7LMW",
   "quickTrackStart": "開始跟蹤",
-  "quickTrackNeedMembers": "請至少選擇或輸入一個呼號"
+  "quickTrackNeedMembers": "請至少選擇或輸入一個呼號",
+  "weatherPanelTitle": "天氣 · 火腿建議",
+  "weatherPanelSub": "和風天氣 · 當前位置",
+  "weatherRefresh": "重新整理",
+  "weatherPowered": "資料由和風天氣提供 · APRSlocus",
+  "weatherCurLoc": "當前位置",
+  "weatherNoLoc": "暫無定位：請在「我的電台」開啟位置服務後查看天氣",
+  "weatherUnavail": "天氣服務暫時不可用",
+  "weatherDataFail": "天氣資料獲取失敗",
+  "weatherConnFail": "天氣服務連線失敗",
+  "weatherCloud": "雲量",
+  "weatherDew": "露點",
+  "weatherHumidity": "濕度",
+  "weatherWindDir": "風向",
+  "weatherWindScale": "風力",
+  "weatherWindSpeed": "風速",
+  "weatherPressure": "氣壓",
+  "weatherVis": "能見度",
+  "weatherPrecip": "降水",
+  "weatherFeels": "體感 {v}°",
+  "@weatherFeels": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "weatherObserved": "觀測 {t}",
+  "@weatherObserved": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "hamTitle": "業餘無線電建議",
+  "hamNoData": "獲取天氣後，將給出適合架台/通聯/防雷的安全建議",
+  "hamStorm1": "雷雨天氣：請勿在室外架設/操作天線！斷開天線饋線，謹防雷擊感應損壞設備",
+  "hamStorm2": "如已架設，盡快收納拉倒；轉為室內收聽中繼與短波，注意設備防潮",
+  "hamRain": "有降水：戶外架台請備防雨罩/防水箱，接頭用膠帶或熱縮管密封，饋線避免積水",
+  "hamCold": "低溫/降雪：鋰電池容量明顯下降，多備電池並貼身保暖；天線結冰注意駐波變化",
+  "hamWind": "風力 {w} 級：架設天線務必拉好風繩加固，八木/長線收工時放倒，避免傾倒",
+  "@hamWind": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHot": "高溫 {t}°C：注意防暑補水，設備避免長時間滿功率發射導致過熱",
+  "@hamHot": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHumid": "濕度 {h}%：潮濕會降低絕緣與天線效率，VHF/UHF 訊號衰減偏大，注意接頭防鏽",
+  "@hamHumid": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      }
+    }
+  },
+  "hamFog": "能見度低（{v}km）：出行架台注意安全；霧天易形成大氣波導，可嘗試遠地 V/U 通聯",
+  "@hamFog": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "hamGood": "天氣良好，適合架台！UV 段可嘗試本地中繼與直頻；短波留意晚間電離層變化",
+  "hamWindExtra": "雖有 {w} 級風，仍建議為天線加固風繩，野外架台注意安全",
+  "@hamWindExtra": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  }
 }

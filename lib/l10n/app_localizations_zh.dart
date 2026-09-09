@@ -1571,6 +1571,116 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get weatherPanelTitle => '天气 · 火腿建议';
+
+  @override
+  String get weatherPanelSub => '和风天气 · 当前位置';
+
+  @override
+  String get weatherRefresh => '刷新';
+
+  @override
+  String get weatherPowered => '数据由和风天气提供 · APRSlocus';
+
+  @override
+  String get weatherCurLoc => '当前位置';
+
+  @override
+  String get weatherNoLoc => '暂无定位：请在“我的电台”开启位置服务后查看天气';
+
+  @override
+  String get weatherUnavail => '天气服务暂时不可用';
+
+  @override
+  String get weatherDataFail => '天气数据获取失败';
+
+  @override
+  String get weatherConnFail => '天气服务连接失败';
+
+  @override
+  String get weatherCloud => '云量';
+
+  @override
+  String get weatherDew => '露点';
+
+  @override
+  String get weatherHumidity => '湿度';
+
+  @override
+  String get weatherWindDir => '风向';
+
+  @override
+  String get weatherWindScale => '风力';
+
+  @override
+  String get weatherWindSpeed => '风速';
+
+  @override
+  String get weatherPressure => '气压';
+
+  @override
+  String get weatherVis => '能见度';
+
+  @override
+  String get weatherPrecip => '降水';
+
+  @override
+  String weatherFeels(String v) {
+    return '体感 $v°';
+  }
+
+  @override
+  String weatherObserved(String t) {
+    return '观测 $t';
+  }
+
+  @override
+  String get hamTitle => '业余无线电建议';
+
+  @override
+  String get hamNoData => '获取天气后，将给出适合架台/通联/防雷的安全建议';
+
+  @override
+  String get hamStorm1 => '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备';
+
+  @override
+  String get hamStorm2 => '如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮';
+
+  @override
+  String get hamRain => '有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水';
+
+  @override
+  String get hamCold => '低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化';
+
+  @override
+  String hamWind(String w) {
+    return '风力 $w 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒';
+  }
+
+  @override
+  String hamHot(String t) {
+    return '高温 $t°C：注意防暑补水，设备避免长时间满功率发射导致过热';
+  }
+
+  @override
+  String hamHumid(String h) {
+    return '湿度 $h%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈';
+  }
+
+  @override
+  String hamFog(String v) {
+    return '能见度低（$vkm）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联';
+  }
+
+  @override
+  String get hamGood => '天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化';
+
+  @override
+  String hamWindExtra(String w) {
+    return '虽有 $w 级风，仍建议为天线加固风绳，野外架台注意安全';
+  }
+
+  @override
   String get symbolLabel => '符号';
 
   @override

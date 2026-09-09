@@ -7,6 +7,7 @@ import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
 import 'early_member.dart';
+import 'weather.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -3084,6 +3085,66 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
   }
 
   /// 确认后重新运行设置向导
+  /// 天气模拟选择（开发者调试：预览不同天气的面板背景/粒子/火腿建议）
+  Widget _buildWeatherSim() {
+    final wc = WeatherCenter.instance;
+    const options = <(String?, String, String, String)>[
+      (null, '跟随实时', '--', '--'),      // 恢复真实
+      ('100', '晴', '26', '0'),
+      ('101', '多云', '24', '0'),
+      ('104', '阴', '22', '0'),
+      ('305', '小雨', '20', '1.2'),
+      ('306', '中雨', '19', '6.5'),
+      ('307', '大雨', '18', '14'),
+      ('310', '暴雨', '17', '32'),
+      ('302', '雷阵雨', '22', '8'),
+      ('400', '雪', '-2', '2'),
+      ('501', '雾', '16', '0'),
+    ];
+    return Container(
+      padding: const EdgeInsets.all(14),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.ac_unit_rounded, size: 16, color: C.cyan),
+          const SizedBox(width: 8),
+          Text('天气模拟（预览背景/特效/建议）',
+              style: ts(11, c: C.slate, w: FontWeight.w700)),
+        ]),
+        const SizedBox(height: 8),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (final (code, label, temp, precip) in options)
+            GestureDetector(
+              onTap: () {
+                wc.setSimulation(code,
+                    text: label, temp: temp, precip: precip);
+                setState(() {});
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: (wc.simIcon == code) ? C.cyanBg : C.bgSoft,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: (wc.simIcon == code) ? C.cyan : C.border,
+                  ),
+                ),
+                child: Text(label,
+                    style: ts(11,
+                        c: (wc.simIcon == code) ? C.cyan : C.slate,
+                        w: (wc.simIcon == code)
+                            ? FontWeight.w700
+                            : FontWeight.w500)),
+              ),
+            ),
+        ]),
+        const SizedBox(height: 6),
+        Text('选择后点顶栏天气胶囊预览；「跟随实时」恢复真实天气',
+            style: ts(9.5, c: C.grey)),
+      ]),
+    );
+  }
+
   void _confirmRestartOobe() {
     showDialog(
       context: context,
@@ -3149,6 +3210,8 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
           children: [
             SettingsSwitch('启用模拟数据（演示台站/数据包）', value: st.devMode,
                 onChanged: st.setDevMode),
+            Divider(height: 1, color: C.border),
+            _buildWeatherSim(),
             SettingsRow2('收包 / 发包', '${st.packetsRx} / ${st.packetsTx}'),
             SettingsRow2('台站数量', '${st.stations.length}'),
             SettingsRow2(S.of(context).connection, st.connInfo),

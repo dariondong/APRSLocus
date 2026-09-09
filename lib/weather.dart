@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'theme.dart';
 import 'state.dart';
+import 'widgets.dart';
+import 'l10n/app_localizations.dart';
 
 /// ─── 天气组件（和风天气 QWeather）───
 /// 数据：和风「实时天气」+「城市定位」；顶栏默认显示 图标+温度，点击弹浮动面板。
@@ -97,9 +99,57 @@ class WeatherCenter {
 
   WeatherNow? now;
   bool loading = false;
-  String? error;
+  /// 0=无错误 1=数据获取失败 2=连接失败（用于本地化展示）
+  int errorCode = 0;
   double? lat, lng;
   bool _busy = false;
+
+  // ── 天气模拟（开发者选项）──
+  String? simIcon; // 模拟用和风 icon code；null=跟随实时
+  String simText = '模拟';
+  String simTemp = '24';
+  String simPrecip = '0';
+
+  bool get simulating => simIcon != null;
+
+  /// 设置天气模拟（icon code 见和风文档；null=恢复实时）
+  void setSimulation(String? icon, {String text = '模拟', String temp = '24', String precip = '0'}) {
+    if (icon == null) {
+      simIcon = null;
+      version.value++;
+      return;
+    }
+    simIcon = icon;
+    simText = text;
+    simTemp = temp;
+    simPrecip = precip;
+    _applySimToNow();
+    version.value++;
+  }
+
+  void _applySimToNow() {
+    final nowT = DateTime.now();
+    now = WeatherNow(
+      temp: simTemp,
+      text: simText,
+      icon: simIcon!,
+      feelsLike: simTemp,
+      humidity: '50',
+      windDir: '--',
+      windScale: '2',
+      windSpeed: '8',
+      pressure: '1013',
+      vis: '20',
+      precip: simPrecip,
+      cloud: '40',
+      dew: simTemp,
+      obsTime: nowT.toIso8601String(),
+      city: null,
+    );
+    updated = nowT;
+    errorCode = 0;
+    loading = false;
+  }
 
   bool get hasData => now != null;
 
@@ -119,11 +169,12 @@ class WeatherCenter {
 
   /// 拉取天气（幂等）：同坐标缓存有效期内直接返回；移动超过 3km 或 30 分钟后重拉
   Future<void> load(double lat, double lng, {bool force = false}) async {
+    if (simulating) return; // 模拟模式不走网络
     if (_busy) return;
     if (!force && _withinTtl(lat, lng)) return;
     _busy = true;
     loading = true;
-    error = null;
+    errorCode = 0;
     this.lat = lat;
     this.lng = lng;
     version.value++;
@@ -150,10 +201,10 @@ class WeatherCenter {
         );
         updated = DateTime.now();
       } else {
-        error = '天气数据获取失败';
+        errorCode = 1;
       }
     } catch (_) {
-      error = '天气服务连接失败';
+      errorCode = 2;
     } finally {
       _busy = false;
       loading = false;
@@ -258,9 +309,10 @@ class WeatherBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasPos =
-        state.myHasFix && state.myLat != null && state.myLng != null;
-    if (hasPos) {
+    final sim = WeatherCenter.instance.simulating;
+    final hasPos = sim ||
+        (state.myHasFix && state.myLat != null && state.myLng != null);
+    if (!sim && hasPos) {
       // 幂等加载：命中缓存直接返回，不重复请求
       WeatherCenter.instance.load(state.myLat!, state.myLng!);
     }
@@ -326,8 +378,34 @@ _FxKind _fxKindOf(WeatherNow w) {
   return _FxKind.clear; // 100 / 150 晴（含夜间晴）
 }
 
-/// 面板背景渐变（按天气类型 + 明暗主题）
-List<Color> _fxGradient(_FxKind k, bool dark) {
+/// 降雨强度 0..1（供背景/粒子随雨量变化）
+double _rainLevel(WeatherNow w) {
+  final n = int.tryParse(w.icon) ?? -1;
+  double base;
+  switch (n) {
+    case 305: case 309: case 313: case 314:
+      base = 0.25; // 小雨/毛毛雨/冻雨/小到中雨
+    case 300: case 306: case 315:
+      base = 0.5; // 阵雨/中雨
+    case 301: case 307: case 316:
+      base = 0.75; // 强阵雨/大雨/中到大雨
+    default:
+      // 302 雷阵雨 / 303 / 304 / 308 极端 / 310-312 / 317-318 暴雨级
+      base = (n >= 302 && n <= 304) || (n >= 310 && n <= 312) || n == 308 || n == 317 || n == 318
+          ? 1.0
+          : 0.4;
+  }
+  // 用降水量微调
+  final p = double.tryParse(w.precip);
+  if (p != null && p > 0) {
+    final pm = (p / 25.0).clamp(0.0, 0.35);
+    base = (base + pm).clamp(0.15, 1.0);
+  }
+  return base;
+}
+
+/// 面板背景渐变（按天气类型 + 明暗主题 + 降雨强度）
+List<Color> _fxGradient(_FxKind k, bool dark, {double rain = 0}) {
   const light = <_FxKind, List<Color>>{
     _FxKind.clear: [Color(0xFFE8F6FF), Color(0xFFCFE8FF)],
     _FxKind.cloudy: [Color(0xFFEEF3F9), Color(0xFFD8E4F0)],
@@ -346,7 +424,18 @@ List<Color> _fxGradient(_FxKind k, bool dark) {
     _FxKind.snow: [Color(0xFF2C3642), Color(0xFF171E27)],
     _FxKind.fog: [Color(0xFF2B3138), Color(0xFF171B21)],
   };
-  return dark ? darkc[k]! : light[k]!;
+  final List<Color> base = dark ? darkc[k]! : light[k]!;
+  // 降雨强度：加深/压低渐变色，雨越大越暗沉
+  if (rain > 0.01 && (k == _FxKind.rain || k == _FxKind.storm)) {
+    final deep = dark
+        ? const Color(0xFF05080D)
+        : const Color(0xFF42586E);
+    return [
+      Color.lerp(base[0], deep, rain * 0.55)!,
+      Color.lerp(base[1], deep, rain * 0.7)!,
+    ];
+  }
+  return base;
 }
 
 /// 单条火腿建议
@@ -358,11 +447,10 @@ class _HamTip {
 }
 
 /// 根据天气生成业余无线电操作建议（无数据时返回通用提示）
-List<_HamTip> _hamTips(WeatherNow? w) {
+List<_HamTip> _hamTips(WeatherNow? w, AppLocalizations s) {
   if (w == null) {
-    return const [
-      _HamTip(Icons.info_outline_rounded,
-          '获取天气后，将给出适合架台/通联/防雷的安全建议', Color(0xFF94A0B2)),
+    return [
+      _HamTip(Icons.info_outline_rounded, s.hamNoData, const Color(0xFF94A0B2)),
     ];
   }
   final n = int.tryParse(w.icon) ?? -1;
@@ -373,49 +461,39 @@ List<_HamTip> _hamTips(WeatherNow? w) {
   final tips = <_HamTip>[];
   // 雷雨：最关键，排最前
   if (n >= 300 && n < 305) {
-    tips.add(const _HamTip(Icons.flash_on_rounded,
-        '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备', Color(0xFFE11D48)));
-    tips.add(const _HamTip(Icons.warning_amber_rounded,
-        '如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮', Color(0xFFD97706)));
+    tips.add(_HamTip(Icons.flash_on_rounded, s.hamStorm1, const Color(0xFFE11D48)));
+    tips.add(_HamTip(Icons.warning_amber_rounded, s.hamStorm2, const Color(0xFFD97706)));
   }
   // 降雨
   final precip = double.tryParse(w.precip);
   if ((n >= 300 && n < 400) || (precip != null && precip > 0)) {
-    tips.add(_HamTip(Icons.umbrella_rounded,
-        '有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水', Color(0xFF2563EB)));
+    tips.add(_HamTip(Icons.umbrella_rounded, s.hamRain, const Color(0xFF2563EB)));
   }
   // 雪 / 低温
   if (n >= 400 && n < 500 || t <= 2) {
-    tips.add(const _HamTip(Icons.ac_unit_rounded,
-        '低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化', Color(0xFF0E7490)));
+    tips.add(_HamTip(Icons.ac_unit_rounded, s.hamCold, const Color(0xFF0E7490)));
   }
   // 大风
   if (wind >= 5) {
-    tips.add(_HamTip(Icons.air_rounded,
-        '风力 $wind 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒', Color(0xFFEA580C)));
+    tips.add(_HamTip(Icons.air_rounded, s.hamWind('$wind'), const Color(0xFFEA580C)));
   }
   // 高温
   if (n < 300 && t >= 33) {
-    tips.add(_HamTip(Icons.local_fire_department_rounded,
-        '高温 ${t}°C：注意防暑补水，设备避免长时间满功率发射导致过热', const Color(0xFFD97706)));
+    tips.add(_HamTip(Icons.local_fire_department_rounded, s.hamHot('$t'), const Color(0xFFD97706)));
   }
   // 高湿
   if (hum >= 85) {
-    tips.add(_HamTip(Icons.water_drop_rounded,
-        '湿度 ${hum}%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈', const Color(0xFF0EA5B7)));
+    tips.add(_HamTip(Icons.water_drop_rounded, s.hamHumid('$hum'), const Color(0xFF0EA5B7)));
   }
   // 低能见度（雾/霾）
   if (vis < 3) {
-    tips.add(_HamTip(Icons.blur_on_rounded,
-        '能见度低（${w.vis}km）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联', const Color(0xFF7C3AED)));
+    tips.add(_HamTip(Icons.blur_on_rounded, s.hamFog(w.vis), const Color(0xFF7C3AED)));
   }
   // 天气良好
   if (tips.isEmpty) {
-    tips.add(_HamTip(Icons.rss_feed_rounded,
-        '天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化', const Color(0xFF16A34A)));
+    tips.add(_HamTip(Icons.rss_feed_rounded, s.hamGood, const Color(0xFF16A34A)));
     if (wind >= 4) {
-      tips.add(_HamTip(Icons.flag_rounded,
-          '虽有 $wind 级风，仍建议为天线加固风绳，野外架台注意安全', const Color(0xFFEA580C)));
+      tips.add(_HamTip(Icons.flag_rounded, s.hamWindExtra('$wind'), const Color(0xFFEA580C)));
     }
   }
   return tips.length > 4 ? tips.sublist(0, 4) : tips;
@@ -426,31 +504,33 @@ class _FxPainter extends CustomPainter {
   final _FxKind kind;
   final double t; // 0..1 循环进度
   final bool dark;
-  _FxPainter({required this.kind, required this.t, required this.dark});
+  final double rain; // 0..1 降雨强度（影响雨丝数量/粗细/长度）
+  _FxPainter({required this.kind, required this.t, required this.dark, this.rain = 0});
 
   @override
   void paint(Canvas canvas, Size size) {
     final rnd = math.Random(7);
     final w = size.width;
     final h = size.height;
-    final white =
-        dark ? Colors.white.withValues(alpha: 0.10) : Colors.white.withValues(alpha: 0.5);
     final soft = Colors.white.withValues(alpha: dark ? 0.05 : 0.28);
 
     switch (kind) {
       case _FxKind.rain:
       case _FxKind.storm:
+        final boost = 0.35 + rain * 0.65; // 雨大→更多更粗更长的雨丝
+        final alpha = dark ? 0.10 : 0.5;
         final p = Paint()
-          ..color = white
-          ..strokeWidth = 1.2
+          ..color = Colors.white.withValues(alpha: (alpha * (0.8 + rain * 0.4)).clamp(0.0, 1.0))
+          ..strokeWidth = 1.0 + rain * 1.3
           ..strokeCap = StrokeCap.round;
-        final n = kind == _FxKind.storm ? 36 : 60;
+        final baseN = kind == _FxKind.storm ? 40.0 : 50.0;
+        final n = (baseN * boost).round();
         for (var i = 0; i < n; i++) {
           final x = rnd.nextDouble() * w;
-          final sp = 0.25 + rnd.nextDouble() * 0.4;
-          final len = 6 + rnd.nextDouble() * 10;
-          final y = ((rnd.nextDouble() + t * sp) % 1.1) * h;
-          canvas.drawLine(Offset(x, y), Offset(x - 1.5, y + len), p);
+          final sp = 0.2 + rnd.nextDouble() * 0.45;
+          final len = (5 + rnd.nextDouble() * 9) * (1 + rain * 1.1);
+          final y = ((rnd.nextDouble() + t * sp) % 1.15) * h;
+          canvas.drawLine(Offset(x, y), Offset(x - 1.5 - rain * 1.5, y + len), p);
         }
         break;
       case _FxKind.snow:
@@ -508,13 +588,15 @@ class _FxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _FxPainter old) =>
-      old.kind != kind || old.t != t;
+      old.kind != kind || old.t != t || old.rain != rain;
 }
 
 /// 打开天气浮动面板（底部弹层）：天气 + 火腿建议 + 特效背景
 Future<void> showWeatherPanel(BuildContext context, AppState state) async {
-  final hasPos = state.myHasFix && state.myLat != null && state.myLng != null;
-  if (hasPos) {
+  final sim = WeatherCenter.instance.simulating;
+  final hasPos = sim ||
+      (state.myHasFix && state.myLat != null && state.myLng != null);
+  if (!sim && hasPos) {
     WeatherCenter.instance.load(state.myLat!, state.myLng!);
   }
   await showModalBottomSheet<void>(
@@ -564,7 +646,11 @@ class _WeatherPanelState extends State<_WeatherPanel>
             final wc = WeatherCenter.instance;
             final kind =
                 (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
-            final grad = _fxGradient(kind, dark);
+            final rain = (wc.now != null &&
+                    (kind == _FxKind.rain || kind == _FxKind.storm))
+                ? _rainLevel(wc.now!)
+                : 0.0;
+            final grad = _fxGradient(kind, dark, rain: rain);
             return AnimatedBuilder(
               animation: _ac,
               builder: (context, _) {
@@ -584,7 +670,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                         child: IgnorePointer(
                           child: CustomPaint(
                             painter: _FxPainter(
-                                kind: kind, t: _ac.value, dark: dark),
+                                kind: kind, t: _ac.value, dark: dark, rain: rain),
                           ),
                         ),
                       ),
@@ -606,6 +692,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
     final hasPos = widget.hasPos;
     final st = widget.state;
+    final s = S.of(context);
     final baseText = dark ? Colors.white : const Color(0xFF1B253C);
     final subText = dark ? Colors.white70 : const Color(0xFF68748F);
     final maxH = MediaQuery.of(context).size.height * 0.86;
@@ -636,9 +723,9 @@ class _WeatherPanelState extends State<_WeatherPanel>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('天气 · 火腿建议',
+                  Text(s.weatherPanelTitle,
                       style: ts(16, w: FontWeight.w800, c: baseText)),
-                  Text('和风天气 · 当前位置',
+                  Text(s.weatherPanelSub,
                       style: ts(10.5, c: subText)),
                 ],
               ),
@@ -661,7 +748,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(Icons.refresh_rounded, size: 14, color: baseText),
                     const SizedBox(width: 3),
-                    Text('刷新', style: ts(11, c: baseText, w: FontWeight.w700)),
+                    Text(s.weatherRefresh, style: ts(11, c: baseText, w: FontWeight.w700)),
                   ]),
                 ),
               ),
@@ -670,7 +757,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
           // 无定位 / 加载 / 无数据
           if (!hasPos)
             _hint(
-                Icons.gps_off_rounded, '暂无定位：请在“我的电台”开启位置服务后查看天气', subText)
+                Icons.gps_off_rounded, s.weatherNoLoc, subText)
           else if (wc.loading && !wc.hasData)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 28),
@@ -678,7 +765,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   child: CircularProgressIndicator(strokeWidth: 2.5)),
             )
           else if (wc.now == null)
-            _hint(Icons.cloud_off_rounded, wc.error ?? '天气服务暂时不可用', subText)
+            _hint(Icons.cloud_off_rounded, s.errorCode == 1 ? s.weatherDataFail : (s.errorCode == 2 ? s.weatherConnFail : s.weatherUnavail), subText)
           else
             _content(wc, kind, dark, baseText, subText),
         ],
@@ -689,6 +776,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   Widget _content(WeatherCenter wc, _FxKind kind, bool dark, Color baseText,
       Color subText) {
+    final s = S.of(context);
     final now = wc.now!;
     final isStorm = kind == _FxKind.storm;
     final accent = dark ? Colors.cyanAccent : const Color(0xFF0E7490);
@@ -721,7 +809,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   Icon(Icons.place_rounded, size: 14, color: subText),
                   const SizedBox(width: 3),
                   Flexible(
-                    child: Text(now.city ?? '当前位置',
+                    child: Text(now.city ?? s.weatherCurLoc,
                         style: ts(12.5, c: subText, w: FontWeight.w600),
                         overflow: TextOverflow.ellipsis),
                   ),
@@ -735,7 +823,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                       text: '  ${now.text}',
                       style: ts(14, w: FontWeight.w700, c: baseText)),
                 ])),
-                Text('体感 ${now.feelsLike}° · 观测 ${now.obsTimeShort}',
+                Text('${s.weatherFeels(now.feelsLike)} · ${s.weatherObserved(now.obsTimeShort)}',
                     style: ts(11, c: subText)),
               ],
             ),
@@ -747,37 +835,37 @@ class _WeatherPanelState extends State<_WeatherPanel>
         const SizedBox(height: 12),
         // ── 更多天气信息 ──
         Row(children: [
-          _miniStat('云量', '${now.cloud}%', Icons.cloud_outlined, subText, baseText),
+          _miniStat(s.weatherCloud, '${now.cloud}%', Icons.cloud_outlined, subText, baseText),
           const SizedBox(width: 8),
-          _miniStat('露点', '${now.dew}°', Icons.device_thermostat_rounded, subText,
+          _miniStat(s.weatherDew, '${now.dew}°', Icons.device_thermostat_rounded, subText,
               baseText),
           const SizedBox(width: 8),
-          _miniStat('湿度', '${now.humidity}%', Icons.water_drop_outlined, subText,
-              baseText),
-        ]),
-        const SizedBox(height: 8),
-        Row(children: [
-          _miniStat('风向', now.windDir, Icons.explore_outlined, subText, baseText),
-          const SizedBox(width: 8),
-          _miniStat('风力', '${now.windScale} 级', Icons.air, subText, baseText),
-          const SizedBox(width: 8),
-          _miniStat('风速', '${now.windSpeed} km/h', Icons.speed_rounded, subText,
+          _miniStat(s.weatherHumidity, '${now.humidity}%', Icons.water_drop_outlined, subText,
               baseText),
         ]),
         const SizedBox(height: 8),
         Row(children: [
-          _miniStat('气压', '${now.pressure} hPa', Icons.compress_rounded, subText,
+          _miniStat(s.weatherWindDir, now.windDir, Icons.explore_outlined, subText, baseText),
+          const SizedBox(width: 8),
+          _miniStat(s.weatherWindScale, '${now.windScale} 级', Icons.air, subText, baseText),
+          const SizedBox(width: 8),
+          _miniStat(s.weatherWindSpeed, '${now.windSpeed} km/h', Icons.speed_rounded, subText,
+              baseText),
+        ]),
+        const SizedBox(height: 8),
+        Row(children: [
+          _miniStat(s.weatherPressure, '${now.pressure} hPa', Icons.compress_rounded, subText,
               baseText),
           const SizedBox(width: 8),
-          _miniStat('能见度', '${now.vis} km', Icons.visibility_outlined, subText,
+          _miniStat(s.weatherVis, '${now.vis} km', Icons.visibility_outlined, subText,
               baseText),
           const SizedBox(width: 8),
-          _miniStat('降水', '${now.precip} mm', Icons.opacity_rounded, subText,
+          _miniStat(s.weatherPrecip, '${now.precip} mm', Icons.opacity_rounded, subText,
               baseText),
         ]),
         const SizedBox(height: 10),
         Center(
-          child: Text('数据由和风天气提供 · APRSlocus',
+          child: Text(s.weatherPowered,
               style: ts(9.5, c: subText.withValues(alpha: 0.8))),
         ),
       ],
@@ -785,6 +873,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
   }
 
   Widget _hamCard(List<_HamTip> tips, bool dark, Color baseText) {
+    final s = S.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
@@ -802,7 +891,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
               size: 16,
               color: dark ? Colors.cyanAccent : const Color(0xFF0E7490)),
           const SizedBox(width: 6),
-          Text('业余无线电建议', style: ts(13, w: FontWeight.w800, c: baseText)),
+          Text(s.hamTitle, style: ts(13, w: FontWeight.w800, c: baseText)),
         ]),
         const SizedBox(height: 8),
         for (final tip in tips) ...[

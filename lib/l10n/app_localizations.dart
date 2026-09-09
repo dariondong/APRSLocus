@@ -3012,6 +3012,40 @@ abstract class AppLocalizations {
   /// **'气象数据 · {data}'**
   String weatherDataValue(String data);
 
+  // ── 天气面板（weather.dart）──
+  String get weatherPanelTitle;
+  String get weatherPanelSub;
+  String get weatherRefresh;
+  String get weatherPowered;
+  String get weatherCurLoc;
+  String get weatherNoLoc;
+  String get weatherUnavail;
+  String get weatherDataFail;
+  String get weatherConnFail;
+  String get weatherCloud;
+  String get weatherDew;
+  String get weatherHumidity;
+  String get weatherWindDir;
+  String get weatherWindScale;
+  String get weatherWindSpeed;
+  String get weatherPressure;
+  String get weatherVis;
+  String get weatherPrecip;
+  String weatherFeels(String v);
+  String weatherObserved(String t);
+  String get hamTitle;
+  String get hamNoData;
+  String get hamStorm1;
+  String get hamStorm2;
+  String get hamRain;
+  String get hamCold;
+  String hamWind(String w);
+  String hamHot(String t);
+  String hamHumid(String h);
+  String hamFog(String v);
+  String get hamGood;
+  String hamWindExtra(String w);
+
   /// No description provided for @symbolLabel.
   ///
   /// In zh, this message translates to:

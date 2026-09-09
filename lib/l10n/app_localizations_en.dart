@@ -1596,6 +1596,116 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get weatherPanelTitle => 'Weather · Ham Tips';
+
+  @override
+  String get weatherPanelSub => 'QWeather · Current Location';
+
+  @override
+  String get weatherRefresh => 'Refresh';
+
+  @override
+  String get weatherPowered => 'Powered by QWeather · APRSlocus';
+
+  @override
+  String get weatherCurLoc => 'Current location';
+
+  @override
+  String get weatherNoLoc => 'No location yet — enable location in My Station to view weather';
+
+  @override
+  String get weatherUnavail => 'Weather service unavailable';
+
+  @override
+  String get weatherDataFail => 'Failed to fetch weather data';
+
+  @override
+  String get weatherConnFail => 'Weather service connection failed';
+
+  @override
+  String get weatherCloud => 'Cloud';
+
+  @override
+  String get weatherDew => 'Dew pt';
+
+  @override
+  String get weatherHumidity => 'Humidity';
+
+  @override
+  String get weatherWindDir => 'Wind dir';
+
+  @override
+  String get weatherWindScale => 'Wind';
+
+  @override
+  String get weatherWindSpeed => 'Wind spd';
+
+  @override
+  String get weatherPressure => 'Pressure';
+
+  @override
+  String get weatherVis => 'Visibility';
+
+  @override
+  String get weatherPrecip => 'Precip.';
+
+  @override
+  String weatherFeels(String v) {
+    return 'Feels $v°';
+  }
+
+  @override
+  String weatherObserved(String t) {
+    return 'Observed $t';
+  }
+
+  @override
+  String get hamTitle => 'Ham radio tips';
+
+  @override
+  String get hamNoData => 'Once weather is loaded, tips on antenna setup, operating and lightning safety will appear';
+
+  @override
+  String get hamStorm1 => 'Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage';
+
+  @override
+  String get hamStorm2 => 'If already set up, take it down promptly; switch to indoor repeater / HF listening and keep gear dry';
+
+  @override
+  String get hamRain => 'Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained';
+
+  @override
+  String get hamCold => 'Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas';
+
+  @override
+  String hamWind(String w) {
+    return 'Wind $w: guy and secure antennas firmly; lower beams / long wires when packing up';
+  }
+
+  @override
+  String hamHot(String t) {
+    return 'Heat $t°C: stay hydrated; avoid long full-power transmissions that overheat your gear';
+  }
+
+  @override
+  String hamHumid(String h) {
+    return 'Humidity $h%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free';
+  }
+
+  @override
+  String hamFog(String v) {
+    return 'Low visibility ($v km): drive carefully; fog can create ducts — try distant VHF/UHF contacts';
+  }
+
+  @override
+  String get hamGood => 'Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening';
+
+  @override
+  String hamWindExtra(String w) {
+    return 'Wind $w: still guy the antenna and stay safe in the field';
+  }
+
+  @override
   String get symbolLabel => 'Symbol';
 
   @override

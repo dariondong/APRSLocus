@@ -853,5 +853,86 @@
   "quickTrackNoStations": "No stations received yet — type callsigns below (comma separated)",
   "quickTrackManualHint": "Type callsigns, e.g. BG7PGW,BG7LMW",
   "quickTrackStart": "Start tracking",
-  "quickTrackNeedMembers": "Pick or type at least one callsign"
+  "quickTrackNeedMembers": "Pick or type at least one callsign",
+  "weatherPanelTitle": "Weather · Ham Tips",
+  "weatherPanelSub": "QWeather · Current Location",
+  "weatherRefresh": "Refresh",
+  "weatherPowered": "Powered by QWeather · APRSlocus",
+  "weatherCurLoc": "Current location",
+  "weatherNoLoc": "No location yet — enable location in My Station to view weather",
+  "weatherUnavail": "Weather service unavailable",
+  "weatherDataFail": "Failed to fetch weather data",
+  "weatherConnFail": "Weather service connection failed",
+  "weatherCloud": "Cloud",
+  "weatherDew": "Dew pt",
+  "weatherHumidity": "Humidity",
+  "weatherWindDir": "Wind dir",
+  "weatherWindScale": "Wind",
+  "weatherWindSpeed": "Wind spd",
+  "weatherPressure": "Pressure",
+  "weatherVis": "Visibility",
+  "weatherPrecip": "Precip.",
+  "weatherFeels": "Feels {v}°",
+  "@weatherFeels": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "weatherObserved": "Observed {t}",
+  "@weatherObserved": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "hamTitle": "Ham radio tips",
+  "hamNoData": "Once weather is loaded, tips on antenna setup, operating and lightning safety will appear",
+  "hamStorm1": "Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage",
+  "hamStorm2": "If already set up, take it down promptly; switch to indoor repeater / HF listening and keep gear dry",
+  "hamRain": "Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained",
+  "hamCold": "Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas",
+  "hamWind": "Wind {w}: guy and secure antennas firmly; lower beams / long wires when packing up",
+  "@hamWind": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHot": "Heat {t}°C: stay hydrated; avoid long full-power transmissions that overheat your gear",
+  "@hamHot": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHumid": "Humidity {h}%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free",
+  "@hamHumid": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      }
+    }
+  },
+  "hamFog": "Low visibility ({v} km): drive carefully; fog can create ducts — try distant VHF/UHF contacts",
+  "@hamFog": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "hamGood": "Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening",
+  "hamWindExtra": "Wind {w}: still guy the antenna and stay safe in the field",
+  "@hamWindExtra": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  }
 }
