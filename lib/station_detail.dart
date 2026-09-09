@@ -7,6 +7,8 @@ import 'models.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
+import 'early_member.dart';
+import 'honor_wall_page.dart';
 
 class StationDetail extends StatefulWidget {
   final AppState state;
@@ -240,6 +242,8 @@ class _StationDetailState extends State<StationDetail> {
                           ),
                         ],
                       ),
+                      // 台站荣誉徽章（该呼号在荣誉墙名单中时展示）
+                      _honorRow(s.call),
                       if (related.isNotEmpty) ...[
                         SizedBox(height: 14),
                         // 相关台站（同基础呼号）
@@ -1045,6 +1049,51 @@ class _StationDetailState extends State<StationDetail> {
       return s.aprslocus!;
     }
     return _aprslocusFromComment(s);
+  }
+
+  /// 台站荣誉徽章行：呼号命中荣誉名单时展示，点击进入荣誉墙
+  Widget _honorRow(String call) {
+    return ValueListenableBuilder<int>(
+      valueListenable: memberListVersion,
+      builder: (context, _, _) {
+        final honors = honorsOf(call);
+        if (honors.isEmpty) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              for (final h in honors)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => HonorWallPage(call,
+                            symbol: null, symbolTable: null)));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: h.color.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: h.color.withValues(alpha: 0.5)),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(h.icon, size: 14, color: h.color),
+                      const SizedBox(width: 5),
+                      Text(h.label,
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: h.color,
+                              fontWeight: FontWeight.w700)),
+                    ]),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _toast(String msg) {
