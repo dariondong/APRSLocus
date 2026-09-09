@@ -1,5 +1,5 @@
 {
-  "version": 26,
+  "version": 27,
   "updated": "2026-09-08",
   "developers": [
     {
@@ -1114,6 +1114,54 @@
         "zh": "BH7LDC",
         "zh-TW": "BH7LDC",
         "en": "BH7LDC"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BI7NQM",
+      "who": {
+        "zh": "BI7NQM",
+        "zh-TW": "BI7NQM",
+        "en": "BI7NQM"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。",
+        "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
+        "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
+      },
+      "honors": [
+        "kaishan"
+      ],
+      "primary": "kaishan",
+      "grp": "test",
+      "c": "#E67E22"
+    },
+    {
+      "call": "BG7OSQ",
+      "who": {
+        "zh": "BG7OSQ",
+        "zh-TW": "BG7OSQ",
+        "en": "BG7OSQ"
       },
       "role": {
         "zh": "早期成员",
