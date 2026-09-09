@@ -91,9 +91,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   /// 脉冲动画按需启停：没有移动/选中台站时停转，省掉每帧重建开销
   void _syncPulse() {
-    final need = _visible.any(
-      (s) => s.effectiveStatus == St.moving || (_selected?.call == s.call),
-    );
+    // 移动台站过多时（>12）停用脉冲动画，避免同一动画驱动大量实例每帧重绘卡顿
+    final sel = _selected?.call;
+    var moving = 0;
+    for (final s in _visible) {
+      if (s.effectiveStatus == St.moving) moving++;
+    }
+    final need = moving > 0 || sel != null;
+    if (moving > 12) {
+      if (_pulse.isAnimating) {
+        _pulse.stop();
+        _forceMarkerRebuild = true; // 移除已显示的脉冲圈，改静态
+      }
+      return;
+    }
     if (need && !_pulse.isAnimating) {
       _pulse.repeat();
     } else if (!need && _pulse.isAnimating) {
@@ -744,14 +755,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (_clusterEnabled && stations.length > clusterThreshold) {
       return _buildClusteredMarkers(stations, size, clusterRadius);
     }
-    return stations.map((s) {
+    // 先滤掉屏幕外台站（含少量留白），避免为不可见台站创建 widget
+    return stations.where((s) {
+      final p = _toScreen(s.lat, s.lng, size);
+      return p.dx >= -60 && p.dx <= size.width + 60 &&
+          p.dy >= -60 && p.dy <= size.height + 60;
+    }).map((s) {
       final pos = _toScreen(s.lat, s.lng, size);
-      if (pos.dx < -50 ||
-          pos.dx > size.width + 50 ||
-          pos.dy < -50 ||
-          pos.dy > size.height + 50) {
-        return const SizedBox.shrink();
-      }
       final sel = _selected?.call == s.call;
       final pulsing = s.effectiveStatus == St.moving || sel;
       final dx = pos.dx - 28;
@@ -821,42 +831,76 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     Size size,
     double radius,
   ) {
+    // ── O(n) 网格聚合：一次性投影 + 屏幕外裁剪，再按网格邻域合并 ──
+    // 旧实现每对台站都做 _toScreen（GCJ+三角投影）+ placed.contains(O(n))，属 O(n²)，
+    // 台站上千时每帧重建都会卡顿。这里先投影成屏幕坐标数组，再以 radius 为格子做
+    // 3×3 邻域贪心合并，整体线性。
+    final n = stations.length;
+    final sx = List<double>.filled(n, 0);
+    final sy = List<double>.filled(n, 0);
+    final onScreen = List<bool>.filled(n, false);
+    for (var i = 0; i < n; i++) {
+      final p0 = _toScreen(stations[i].lat, stations[i].lng, size);
+      sx[i] = p0.dx;
+      sy[i] = p0.dy;
+      onScreen[i] = !(p0.dx < -50 ||
+          p0.dx > size.width + 50 ||
+          p0.dy < -50 ||
+          p0.dy > size.height + 50);
+    }
+    final cell = radius > 0 ? radius : 40.0;
+    int cx0(int idx) => (sx[idx] / cell).floor();
+    int cy0(int idx) => (sy[idx] / cell).floor();
+    // 网格：cellKey -> 点索引列表（record 作 key，Dart 3 值语义哈希）
+    final grid = <(int, int), List<int>>{};
+    for (var i = 0; i < n; i++) {
+      if (!onScreen[i]) continue;
+      (grid[(cx0(i), cy0(i))] ??= <int>[]).add(i);
+    }
+    // 贪心成簇：取未分配点新建组，并入 3×3 邻域内距离 < radius 的未分配点
+    final group = List<int>.filled(n, -1);
+    var gid = 0;
+    for (var i = 0; i < n; i++) {
+      if (!onScreen[i] || group[i] != -1) continue;
+      group[i] = gid;
+      gid++;
+      final gx = cx0(i), gy = cy0(i);
+      final r2 = radius * radius;
+      for (var ox = -1; ox <= 1; ox++) {
+        for (var oy = -1; oy <= 1; oy++) {
+          final list = grid[(gx + ox, gy + oy)];
+          if (list == null) continue;
+          for (var k = 0; k < list.length; k++) {
+            final j = list[k];
+            if (group[j] != -1) continue;
+            final dx = sx[j] - sx[i];
+            final dy = sy[j] - sy[i];
+            if (dx * dx + dy * dy < r2) {
+              group[j] = group[i];
+            }
+          }
+        }
+      }
+    }
+    // 组装 cluster：按组号桶收集（一次遍历，O(n)），中心取组内屏幕坐标均值
+    final bucket = List.generate(gid, (_) => <int>[]);
+    for (var i = 0; i < n; i++) {
+      if (onScreen[i]) bucket[group[i]].add(i);
+    }
     final clusters = <({Offset center, List<Station> items})>[];
-    final placed = <int>[];
-
-    for (var i = 0; i < stations.length; i++) {
-      if (placed.contains(i)) continue;
-      final pos = _toScreen(stations[i].lat, stations[i].lng, size);
-      if (pos.dx < -50 ||
-          pos.dx > size.width + 50 ||
-          pos.dy < -50 ||
-          pos.dy > size.height + 50) {
-        continue;
+    for (var ids in bucket) {
+      if (ids.isEmpty) continue;
+      final items = <Station>[];
+      var sumX = 0.0, sumY = 0.0;
+      for (final idx in ids) {
+        items.add(stations[idx]);
+        sumX += sx[idx];
+        sumY += sy[idx];
       }
-      final group = <Station>[stations[i]];
-      placed.add(i);
-      for (var j = i + 1; j < stations.length; j++) {
-        if (placed.contains(j)) continue;
-        final p2 = _toScreen(stations[j].lat, stations[j].lng, size);
-        final d = (p2 - pos).distance;
-        if (d < radius) {
-          group.add(stations[j]);
-          placed.add(j);
-        }
-      }
-      // 聚合球中心：取组内屏幕坐标均值
-      var cx = pos.dx, cy = pos.dy;
-      if (group.length > 1) {
-        var sumX = pos.dx, sumY = pos.dy;
-        for (var k = 1; k < group.length; k++) {
-          final pk = _toScreen(group[k].lat, group[k].lng, size);
-          sumX += pk.dx;
-          sumY += pk.dy;
-        }
-        cx = sumX / group.length;
-        cy = sumY / group.length;
-      }
-      clusters.add((center: Offset(cx, cy), items: group));
+      clusters.add((
+        center: Offset(sumX / items.length, sumY / items.length),
+        items: items,
+      ));
     }
 
     return clusters.map((c) {
