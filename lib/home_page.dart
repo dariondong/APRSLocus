@@ -916,7 +916,7 @@ class _HomePageState extends State<HomePage> {
           final searchW = (constraints.maxWidth * 0.28).clamp(140.0, 260.0);
           return Row(
             children: [
-              Flexible(
+              Expanded(
                 child: Text(
                   _nav[_tab].$3,
                   style: T.h2,
@@ -924,7 +924,6 @@ class _HomePageState extends State<HomePage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Spacer(),
               if (wide) ...[
                 Container(
                   width: searchW,
