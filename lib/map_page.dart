@@ -738,8 +738,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   List<Widget> _buildMarkers(Size size) {
     // 聚合：当台站较多且缩放级别低时，把屏幕距离接近的台站合并为聚合球
     final clusterRadius = _zoom < 8 ? 56.0 : 40.0;
-    // 超过阈值才聚合（台站少时不聚合，保留单个标记体验）
-    final clusterThreshold = _zoom < 8 ? 30 : 60;
+    // 超过阈值才聚合；台站多时更早聚合，减少低缩放大量 marker 的卡顿
+    final clusterThreshold = _zoom < 8 ? 16 : 35;
     final stations = _visible;
     if (_clusterEnabled && stations.length > clusterThreshold) {
       return _buildClusteredMarkers(stations, size, clusterRadius);
@@ -772,9 +772,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 alignment: Alignment.center,
                 clipBehavior: Clip.none,
                 children: [
-                  // 脉冲扩散圈：只在移动/选中时动画，且只重建这一层
+                  // 脉冲扩散圈：单独 RepaintBoundary 隔离，动画帧不重绘图标/标签
                   if (pulsing)
-                    _PulseRing(color: s.color, sel: sel, anim: _pulse),
+                    RepaintBoundary(
+                        child: _PulseRing(color: s.color, sel: sel, anim: _pulse)),
                   // APRS 官方符号图标原图（不加圆底/描边圈）
                   SizedBox(
                     width: 56,
