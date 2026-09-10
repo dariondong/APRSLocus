@@ -225,7 +225,9 @@ class _StationDetailState extends State<StationDetail> {
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    StatusBadge(s.status),
+                                    // 用 effectiveStatus：超过 5 分钟未上报即显示离线，
+                                    // 避免标签一直停留在「在线」
+                                    StatusBadge(s.effectiveStatus),
                                   ],
                                 ),
                                 SizedBox(height: 3),

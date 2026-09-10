@@ -49,7 +49,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.58';
+  static const appVersion = '1.6.59';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1506,12 +1506,9 @@ class AppState extends ChangeNotifier {
   /// 组装信标备注：高度(/A=英尺) + 速度/方位角 + 电量 + 自定义备注 + 版本号
   String _beaconComment() {
     final parts = <String>[];
-    // 高度：APRS 标准 /A=ffffff（英尺）
-    if (myAlt != null && myAlt! >= 0) {
-      final ft = (myAlt! / 0.3048).round().clamp(0, 999999);
-      parts.add('/A=${ft.toString().padLeft(6, '0')}');
-    }
     // 标准 course/speed 格式：ddd/sss（度/节，各3位）
+    // 必须位于备注最前（APRS101 规定），否则 aprs.fi 等第三方地图
+    // 不会解析，会把速度/方位角当作普通备注文字显示。
     if (beaconIncludeSpeed &&
         beaconIncludeCourse &&
         myCourse != null &&
@@ -1523,6 +1520,11 @@ class AppState extends ChangeNotifier {
           .toString()
           .padLeft(3, '0');
       parts.add('$crs/$kt');
+    }
+    // 高度：APRS 标准 /A=ffffff（英尺）
+    if (myAlt != null && myAlt! >= 0) {
+      final ft = (myAlt! / 0.3048).round().clamp(0, 999999);
+      parts.add('/A=${ft.toString().padLeft(6, '0')}');
     }
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');
@@ -1612,7 +1614,13 @@ class AppState extends ChangeNotifier {
       var type = 'position';
       var info = body;
       if (body.startsWith(':')) type = 'message';
-      if (body.startsWith('@') || body.startsWith('=')) type = 'position';
+      if (body.startsWith('@') ||
+          body.startsWith('=') ||
+          body.startsWith('/') ||
+          body.startsWith("'") ||
+          body.startsWith('`')) {
+        type = 'position';
+      }
       if (body.startsWith('_')) type = 'weather';
       if (body.startsWith('>')) type = 'status';
       // 多跳转发识别：记录转发路径（如 WIDE1-1,WIDE2-1 或数字中继）
@@ -1682,10 +1690,14 @@ class AppState extends ChangeNotifier {
 
       // 解码位置数据包 → 更新/添加台站到地图
       // 注意：呼号可带 ssid 后缀（如 BV2AAA-9），必须解析
+      // 位置包：!/=/（含压缩、非压缩）+ /@（带时间戳）+ '`（Mic-E，纬度编码在目的呼号）
       if (body.startsWith('!') ||
           body.startsWith('=') ||
-          body.startsWith('@')) {
-        final p = parseAprsPosition(body);
+          body.startsWith('/') ||
+          body.startsWith('@') ||
+          body.startsWith("'") ||
+          body.startsWith('`')) {
+        final p = parseAprsPosition(body, dest: toCall);
         if (p != null) {
           _upsertStation(
             src,
@@ -2806,8 +2818,11 @@ class AppState extends ChangeNotifier {
       }
       if (body.startsWith('!') ||
           body.startsWith('=') ||
-          body.startsWith('@')) {
-        final p = parseAprsPosition(body);
+          body.startsWith('/') ||
+          body.startsWith('@') ||
+          body.startsWith("'") ||
+          body.startsWith('`')) {
+        final p = parseAprsPosition(body, dest: toCall);
         if (p != null) {
           _upsertStation(src, p, raw: raw, toCall: toCall);
           _pushPacket(
