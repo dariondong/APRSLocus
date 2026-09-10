@@ -1319,6 +1319,9 @@ Widget _hairline([double alpha = 0.08]) => Container(
       color: Colors.white.withValues(alpha: alpha),
     );
 
+/// 顶部区域承载的指标条数（其余留在底部卡片）
+const int _topMetricCount = 6;
+
 /// 面板文字阴影（仅用于弹层标题等仍需要独立的场合）
 const List<Shadow> _kTextShadow = [
   Shadow(color: Color(0x73000000), blurRadius: 8, offset: Offset(0, 1)),
@@ -1527,23 +1530,27 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   Widget _body(WeatherCenter wc, bool dark) {
     final s = S.of(context);
-    final maxH = MediaQuery.of(context).size.height * 0.88;
+    // 弹出时优先半屏（约 58%），不再一上来就占满屏幕；
+    // 内容超出时底部卡片区域可滚动，上半部分始终可见
+    final maxH = MediaQuery.of(context).size.height * 0.58;
     final hasPos = widget.hasPos;
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxH),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── 顶部：城市 / 大号温度 / 天气状况 / 空气质量胶囊 ──
+          // ── 顶部：城市 / 大号温度 / 天气状况 / 空气质量 + 关键指标 ──
           // 顶部暗角由 Stack 里的全幅渐变提供（不在此处套圆角方块）
+          // 顶部固定不滚动：保证温度与关键指标一直可见
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             child: (hasPos && wc.now != null)
-                ? _top(wc.now!, s)
+                ? _top(wc, s)
                 : _statusHint(wc, s, hasPos, dark),
           ),
           // ── 中部留白：动态背景展示区（云 / 雨在此区域可见）──
-          const SizedBox(height: 84),
+          // 顶部已承载主要信息密度，此处收窄，只留出背景展示空间
+          const SizedBox(height: 34),
           // ── 底部：半透明圆角卡片（无数据时仅保留动态背景）──
           Flexible(
             child: SingleChildScrollView(
@@ -1593,12 +1600,16 @@ class _WeatherPanelState extends State<_WeatherPanel>
     ]);
   }
 
-  /// 顶部信息区：城市名 + 空气质量胶囊 / 大号温度 + 天气状况
+  /// 顶部信息区：城市 / 空气质量胶囊 / 大号温度 / 天气状况 /
+  /// 今日高低温 · 体感 · 更新 / 关键指标（湿度·风·气压·能见度·露点·云量）
   ///
-  /// 排版要点：温度用「大数字 + 小度数符号」而非 52px 里塞一个巨大的 °；
-  /// 摆脱逐字阴影（发糊），改由顶部全幅渐变保证可读性。
-  Widget _top(WeatherNow now, AppLocalizations s) {
-    final aqi = WeatherCenter.instance.air?.aqiValue ?? -1;
+  /// 上半部分承载主要信息密度（原先沉在底部的指标上移至此，
+  /// 并且不在底部重复）；温度用「大数字 + 小度数符号」，
+  /// 不套逐字阴影（发糊），靠顶部全幅渐变保证可读性。
+  Widget _top(WeatherCenter wc, AppLocalizations s) {
+    final now = wc.now!;
+    final aqi = wc.air?.aqiValue ?? -1;
+    final d0 = wc.daily.isNotEmpty ? wc.daily.first : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1655,11 +1666,55 @@ class _WeatherPanelState extends State<_WeatherPanel>
             ],
           ),
         ),
-        const SizedBox(height: 5),
-        Text('${s.weatherFeels(now.feelsLike)} · ${s.weatherObserved(now.obsTimeShort)}',
-            style: ts(11.5, c: Colors.white.withValues(alpha: 0.62))),
+        const SizedBox(height: 6),
+        // 今日高低温 · 体感 · 观测时间（一行紧凑信息）
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(children: [
+            if (d0 != null) ...[
+              Text('${s.weatherToday} ${d0.tempMin}° ~ ${d0.tempMax}°',
+                  style: ts(11.5,
+                      w: FontWeight.w600,
+                      c: Colors.white.withValues(alpha: 0.86))),
+              Text('  ·  ',
+                  style: ts(11.5, c: Colors.white.withValues(alpha: 0.35))),
+            ],
+            Text(s.weatherFeels(now.feelsLike),
+                style: ts(11.5, c: Colors.white.withValues(alpha: 0.7))),
+            Text('  ·  ',
+                style: ts(11.5, c: Colors.white.withValues(alpha: 0.35))),
+            Text(s.weatherObserved(now.obsTimeShort),
+                style: ts(11.5, c: Colors.white.withValues(alpha: 0.7))),
+          ]),
+        ),
+        const SizedBox(height: 12),
+        // 关键指标：上半部分的信息密度来源（两列清单）
+        _topMetrics(wc, s),
       ],
     );
+  }
+
+  /// 顶部关键指标（两列清单，无分隔线，保持紧凑）
+  Widget _topMetrics(WeatherCenter wc, AppLocalizations s) {
+    final pairs = _metricPairs(wc, s);
+    final head = pairs.take(_topMetricCount).toList();
+    final rows = <Widget>[];
+    for (var i = 0; i < head.length; i += 2) {
+      rows.add(Padding(
+        padding: const EdgeInsets.only(bottom: 7),
+        child: Row(children: [
+          Expanded(child: _kvPair(head[i].$1, head[i].$2)),
+          const SizedBox(width: 18),
+          Expanded(
+            child: i + 1 < head.length
+                ? _kvPair(head[i + 1].$1, head[i + 1].$2)
+                : const SizedBox.shrink(),
+          ),
+        ]),
+      ));
+    }
+    return Column(children: rows);
   }
 
   /// 空气质量胶囊：深色底 + 等级色圆点（比整块高饱和色块更耐看，也更易读）
@@ -1961,24 +2016,24 @@ class _WeatherPanelState extends State<_WeatherPanel>
     );
   }
 
-  /// 详细数据：两列「标签 —— 数值」+ 细分隔线
-  /// （替代原先 12 个描边小方格的仪表盘式排布，对比更清晰、也更透气）
-  Widget _details(WeatherCenter wc, AppLocalizations s) {
+  /// 指标总表（顺序即展示顺序）。
+  /// 前 [_topMetricCount] 项上移到顶部区域，其余留在底部卡片，两处不重复。
+  List<(String, String)> _metricPairs(WeatherCenter wc, AppLocalizations s) {
     final n = wc.now;
-    if (n == null) return const SizedBox.shrink();
+    if (n == null) return const [];
     final air = wc.air;
     final d0 = wc.daily.isNotEmpty ? wc.daily.first : null;
     final hasAir = air != null && air.aqiValue >= 0;
-
-    final pairs = <(String, String)>[
+    return [
+      // ── 前 _topMetricCount 项：顶部常用指标 ──
       (s.weatherHumidity, '${n.humidity}%'),
-      (s.weatherDew, '${n.dew}°'),
-      (s.weatherCloud, '${n.cloud}%'),
-      (s.weatherWindDir, n.windDir),
-      (s.weatherWindScale, '${n.windScale} 级'),
-      (s.weatherWindSpeed, '${n.windSpeed} km/h'),
+      (s.weatherWindDir, '${n.windDir} ${n.windScale} 级'),
       (s.weatherPressure, '${n.pressure} hPa'),
       (s.weatherVis, '${n.vis} km'),
+      (s.weatherDew, '${n.dew}°'),
+      (s.weatherCloud, '${n.cloud}%'),
+      // ── 其余：留在底部卡片 ──
+      (s.weatherWindSpeed, '${n.windSpeed} km/h'),
       (s.weatherPrecip, '${n.precip} mm'),
       if (hasAir) ('PM2.5', air.pm2p5),
       if (hasAir) ('PM10', air.pm10),
@@ -1988,6 +2043,13 @@ class _WeatherPanelState extends State<_WeatherPanel>
       if (d0 != null) (s.weatherSunset, d0.sunset),
       if (d0 != null) (s.weatherUV, d0.uvIndex),
     ];
+  }
+
+  /// 底部详细数据：顶部已展示的指标不再重复
+  Widget _details(WeatherCenter wc, AppLocalizations s) {
+    final all = _metricPairs(wc, s);
+    if (all.length <= _topMetricCount) return const SizedBox.shrink();
+    final pairs = all.sublist(_topMetricCount);
 
     final rows = <Widget>[];
     for (var i = 0; i < pairs.length; i += 2) {
