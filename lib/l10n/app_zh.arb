@@ -1664,5 +1664,6 @@
   "clearSearch": "清除搜索",
   "activeConditions": "生效条件",
   "statsMovingCount": "移动台站",
-  "statsOnlineRate": "在线率"
+  "statsOnlineRate": "在线率",
+  "statsGridCountLabel": "大网格数"
 }

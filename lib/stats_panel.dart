@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'aprs_device.dart';
@@ -36,6 +38,8 @@ class _Stats {
   final String? farCall;
   final double? farKm;
   final DateTime? lastHeard;
+  /// 最近上报的台站呼号（便于核对，避免只给一个无法验证的时间）
+  final String? lastCall;
   const _Stats({
     required this.totalRx,
     required this.totalTx,
@@ -52,6 +56,7 @@ class _Stats {
     this.farCall,
     this.farKm,
     this.lastHeard,
+    this.lastCall,
   });
 
   /// 在线率（在线 / 接收范围内台站总数）。
@@ -63,6 +68,33 @@ class _Stats {
 class _StationStatsPanelState extends State<StationStatsPanel> {
   int _cacheSig = -1;
   _Stats? _cached;
+  Timer? _tick;
+
+  @override
+  void initState() {
+    super.initState();
+    // 「最近上报」是相对时间，必须秒级刷新。
+    // 台站页只有一个 StreamBuilder，仅当台站版本变化时才重建，
+    // 因此没有这个 tick 的话，「5 秒前」会一直停在「5 秒前」。
+    // 面板只在统计模式下挂载，可见时才计时，开销可忽。
+    _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
+  }
+
+  /// 坐标是否可用：排除越界与「空岛」（0,0）附近的无效上报。
+  /// 否则坐标解码异常/未定位的台站会把「最远」变成一个天文数字。
+  static bool _validCoord(double lat, double lng) {
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return false;
+    if (lat.abs() < 0.01 && lng.abs() < 0.01) return false;
+    return true;
+  }
 
   _Stats get _stats {
     final st = widget.state;
@@ -78,6 +110,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     String? farCall;
     double? farKm;
     DateTime? lastHeard;
+    String? lastCall;
 
     final hasMe = st.myHasFix && st.myLat != null && st.myLng != null;
 
@@ -116,10 +149,19 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       final g = maidenhead(s.lat, s.lng, 4);
       gridCount[g] = (gridCount[g] ?? 0) + 1;
 
+      // 最近上报：记下时间与呼号（呼号用于核对，避免只给一个无法验证的时间）
       if (lastHeard == null || s.lastHeard.isAfter(lastHeard)) {
         lastHeard = s.lastHeard;
+        lastCall = s.call;
       }
-      if (hasMe) {
+      // 最远台站：
+      // ① 仅统计「当前仍在线」的（5 分钟内上报，与列表口径一致）——
+      //    否则磁盘恢复的过期台站或早已离线台站也会被计入；
+      // ② 排除无效/空岛坐标，避免解码异常把「最远」拉成天文数字；
+      // ③ 同时记下呼号，供界面展示以便核对。
+      if (hasMe &&
+          s.effectiveStatus != St.offline &&
+          _validCoord(s.lat, s.lng)) {
         final d = haversine(st.myLat!, st.myLng!, s.lat, s.lng);
         if (farKm == null || d > farKm) {
           farKm = d;
@@ -166,6 +208,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       farCall: farCall,
       farKm: farKm,
       lastHeard: lastHeard,
+      lastCall: lastCall,
     );
     _cacheSig = sig;
     _cached = res;
@@ -258,23 +301,26 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
               Row(children: [
                 _stat(loc.statsCap, _num(st.maxStations), C.grey),
                 _stat(loc.statsAprslocusUsers, _num(s.aprslocus), C.purple),
-                _stat(
-                  loc.statsFarthest,
-                  s.farKm == null ? '--' : '${s.farKm!.round()} km',
-                  C.orange,
-                ),
+                _stat(loc.statsMovingCount, _num(s.moving), C.blue),
               ]),
-              if (st.myHasFix && st.myLat != null && st.myLng != null) ...[
-                const SizedBox(height: 10),
-                Row(children: [
+              const SizedBox(height: 10),
+              Row(children: [
+                if (st.myHasFix && st.myLat != null && st.myLng != null)
                   _stat(loc.statsMyGrid, maidenhead(st.myLat!, st.myLng!, 4),
-                      C.cyan),
-                  _stat(loc.statsLastHeard,
-                      s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc),
-                      C.green),
+                      C.cyan)
+                else
                   _stat(loc.statsMovingCount, _num(s.moving), C.blue),
-                ]),
-              ],
+                // 相对时间需秒级刷新（面板内置 1s tick）
+                _stat(loc.statsLastHeard,
+                    s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc), C.green,
+                    sub: s.lastCall),
+                // 显示呼号，便于核对数值是否合理
+                _stat(
+                    loc.statsFarthest,
+                    s.farKm == null ? '--' : '${s.farKm!.round()} km',
+                    C.orange,
+                    sub: s.farCall),
+              ]),
             ]),
           ),
           const SizedBox(height: 10),
@@ -340,13 +386,13 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
           const SizedBox(height: 10),
 
           // ── 其他指标 ──
+          // 注意：「最近上报 ┘已在总览区展示，此处不再重复
           _card(
             title: loc.statsOther,
             icon: Icons.speed_rounded,
             child: Row(children: [
               _stat(loc.statsOnlineRate, '${s.onlineRatePct}%', C.green),
-              _stat(loc.statsLastHeard,
-                  s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc), C.blue),
+              _stat(loc.statsGridCountLabel, _num(s.grids.length), C.cyan),
               _stat(loc.statsPackets, _num(st.packets.length), C.slate),
             ]),
           ),
@@ -446,7 +492,8 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
   }
 
   /// 次要指标：值在上、标签在下，无边框（比一排方框更干净也让层级更清楚）
-  Widget _stat(String label, String value, Color c) {
+  /// [sub] 用于附上呼号等可核对信息（如最远台站、最近上报）
+  Widget _stat(String label, String value, Color c, {String? sub}) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,6 +507,11 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: ts(9, c: C.grey)),
+          if (sub != null && sub.isNotEmpty)
+            Text(sub,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(9.5, w: FontWeight.w700, c: C.slate)),
         ],
       ),
     );

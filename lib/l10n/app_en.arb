@@ -1076,5 +1076,6 @@
   "clearSearch": "Clear search",
   "activeConditions": "Active conditions",
   "statsMovingCount": "Moving",
-  "statsOnlineRate": "Online rate"
+  "statsOnlineRate": "Online rate",
+  "statsGridCountLabel": "Grid squares"
 }

@@ -3355,4 +3355,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsOnlineRate => 'Online rate';
+
+  @override
+  String get statsGridCountLabel => 'Grid squares';
 }

@@ -5870,6 +5870,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'在线率'**
   String get statsOnlineRate;
+
+  /// No description provided for @statsGridCountLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'大网格数'**
+  String get statsGridCountLabel;
 }
 
 class _AppLocalizationsDelegate

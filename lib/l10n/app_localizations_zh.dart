@@ -3264,6 +3264,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statsOnlineRate => '在线率';
+
+  @override
+  String get statsGridCountLabel => '大网格数';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6526,4 +6529,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get statsOnlineRate => '在線率';
+
+  @override
+  String get statsGridCountLabel => '大網格數';
 }

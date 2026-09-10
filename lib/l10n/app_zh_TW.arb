@@ -1664,5 +1664,6 @@
   "clearSearch": "清除搜尋",
   "activeConditions": "生效條件",
   "statsMovingCount": "移動台站",
-  "statsOnlineRate": "在線率"
+  "statsOnlineRate": "在線率",
+  "statsGridCountLabel": "大網格數"
 }
