@@ -1309,7 +1309,17 @@ Future<void> showDaily15Sheet(BuildContext context) async {
   );
 }
 
-/// 面板文字统一纯白 + 阴影，保证在明亮/动态背景上依然清晰
+/// 细分隔线。
+/// 注意：不能用 `Divider` —— 在 `CrossAxisAlignment.start` 的 Column 里
+/// （以及默认居中的 Column）子项只拿到宽松约束，`Divider` 内部没有宽度的
+/// Container 会塔成 0 宽而完全不可见。这里显式给 `width: double.infinity`。
+Widget _hairline([double alpha = 0.08]) => Container(
+      width: double.infinity,
+      height: 1,
+      color: Colors.white.withValues(alpha: alpha),
+    );
+
+/// 面板文字阴影（仅用于弹层标题等仍需要独立的场合）
 const List<Shadow> _kTextShadow = [
   Shadow(color: Color(0x73000000), blurRadius: 8, offset: Offset(0, 1)),
 ];
@@ -1480,6 +1490,30 @@ class _WeatherPanelState extends State<_WeatherPanel>
                       ),
                     ),
                   ),
+                  // 顶部暗角：全幅渐变（无圆角、无边界），保证白字在明亮或
+                  // 动态背景上清晰，同时不出现「一块黑色圆角方块」的观感
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: IgnorePointer(
+                      child: Container(
+                        height: 280,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.36),
+                              Colors.black.withValues(alpha: 0.10),
+                              Colors.black.withValues(alpha: 0),
+                            ],
+                            stops: const [0.0, 0.55, 1.0],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   // 内容层：顶部信息 + 中部留白 + 底部半透明卡片
                   _body(wc, dark),
                 ],
@@ -1501,33 +1535,19 @@ class _WeatherPanelState extends State<_WeatherPanel>
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── 顶部：城市 / 大号温度 / 天气状况 / 空气质量胶囊 ──
-          // 顶部叠一层淡暗角：云/雨粒子经过时仍保证白字清晰
+          // 顶部暗角由 Stack 里的全幅渐变提供（不在此处套圆角方块）
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(6, 6, 6, 10),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.24),
-                    Colors.black.withValues(alpha: 0.0),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: (hasPos && wc.now != null)
-                  ? _top(wc.now!, s)
-                  : _statusHint(wc, s, hasPos, dark),
-            ),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: (hasPos && wc.now != null)
+                ? _top(wc.now!, s)
+                : _statusHint(wc, s, hasPos, dark),
           ),
           // ── 中部留白：动态背景展示区（云 / 雨在此区域可见）──
-          const SizedBox(height: 96),
+          const SizedBox(height: 84),
           // ── 底部：半透明圆角卡片（无数据时仅保留动态背景）──
           Flexible(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
               child: wc.now == null
                   ? const SizedBox.shrink()
                   : _bottomCard(wc, s, dark),
@@ -1548,7 +1568,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
       msg = s.weatherNoLoc;
     } else if (wc.loading) {
       return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 26),
+        padding: EdgeInsets.symmetric(vertical: 30),
         child: Center(
             child: CircularProgressIndicator(
                 strokeWidth: 2.5, color: Colors.white)),
@@ -1564,17 +1584,19 @@ class _WeatherPanelState extends State<_WeatherPanel>
       msg = s.weatherUnavail;
     }
     return Row(children: [
-      Icon(ic, color: Colors.white70, size: 30),
+      Icon(ic, color: Colors.white.withValues(alpha: 0.8), size: 28),
       const SizedBox(width: 12),
       Expanded(
         child: Text(msg,
-            style: ts(12, c: Colors.white.withValues(alpha: 0.88), h: 1.5)
-                .copyWith(shadows: _kTextShadow)),
+            style: ts(12.5, c: Colors.white.withValues(alpha: 0.9), h: 1.55)),
       ),
     ]);
   }
 
   /// 顶部信息区：城市名 + 空气质量胶囊 / 大号温度 + 天气状况
+  ///
+  /// 排版要点：温度用「大数字 + 小度数符号」而非 52px 里塞一个巨大的 °；
+  /// 摆脱逐字阴影（发糊），改由顶部全幅渐变保证可读性。
   Widget _top(WeatherNow now, AppLocalizations s) {
     final aqi = WeatherCenter.instance.air?.aqiValue ?? -1;
     return Column(
@@ -1582,19 +1604,20 @@ class _WeatherPanelState extends State<_WeatherPanel>
       children: [
         // 第一行：城市名（左）+ 空气质量胶囊（右）
         Row(children: [
-          const Icon(Icons.place_rounded, size: 14, color: Colors.white70),
-          const SizedBox(width: 3),
+          Icon(Icons.place_rounded,
+              size: 13, color: Colors.white.withValues(alpha: 0.72)),
+          const SizedBox(width: 4),
           Expanded(
             child: Text(now.city ?? s.weatherCurLoc,
-                style: ts(12.5,
-                        c: Colors.white.withValues(alpha: 0.9),
-                        w: FontWeight.w700)
-                    .copyWith(shadows: _kTextShadow),
+                style: ts(13,
+                    c: Colors.white.withValues(alpha: 0.94),
+                    w: FontWeight.w600,
+                    ls: 0.2),
                 overflow: TextOverflow.ellipsis),
           ),
-          if (aqi >= 0) ...[const SizedBox(width: 8), _aqiPill(aqi, s)],
+          if (aqi >= 0) ...[const SizedBox(width: 10), _aqiPill(aqi, s)],
         ]),
-        const SizedBox(height: 6),
+        const SizedBox(height: 10),
         // 第二行：大号温度 + 天气状况 + 天气图标（自适应缩放，避免窄屏溢出）
         FittedBox(
           fit: BoxFit.scaleDown,
@@ -1602,136 +1625,155 @@ class _WeatherPanelState extends State<_WeatherPanel>
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('${now.tempDisplay}°',
-                  style: ts(52, w: FontWeight.w900, c: Colors.white)
-                      .copyWith(shadows: _kTextShadow)),
-              const SizedBox(width: 10),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(now.text,
-                    style: ts(15,
+              // 大数字与度数符号分离：数字 58、度数 22 且抬高
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(now.tempDisplay,
+                      style: ts(58,
+                          w: FontWeight.w800, c: Colors.white, ls: -2)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Text('°',
+                        style: ts(24,
                             w: FontWeight.w700,
-                            c: Colors.white.withValues(alpha: 0.95))
-                        .copyWith(shadows: _kTextShadow)),
+                            c: Colors.white.withValues(alpha: 0.85))),
+                  ),
+                ],
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 14),
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Icon(now.iconData,
-                    size: 30, color: Colors.white.withValues(alpha: 0.92)),
+                child: Row(children: [
+                  Icon(now.iconData,
+                      size: 22, color: Colors.white.withValues(alpha: 0.95)),
+                  const SizedBox(width: 7),
+                  Text(now.text,
+                      style: ts(16, w: FontWeight.w600, c: Colors.white)),
+                ]),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 5),
         Text('${s.weatherFeels(now.feelsLike)} · ${s.weatherObserved(now.obsTimeShort)}',
-            style: ts(11, c: Colors.white.withValues(alpha: 0.75))
-                .copyWith(shadows: _kTextShadow)),
+            style: ts(11.5, c: Colors.white.withValues(alpha: 0.62))),
       ],
     );
   }
 
-  /// 空气质量胶囊
+  /// 空气质量胶囊：深色底 + 等级色圆点（比整块高饱和色块更耐看，也更易读）
   Widget _aqiPill(int aqi, AppLocalizations s) {
     final col = WeatherCenter.instance.air?.levelColor ?? Colors.white;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: col.withValues(alpha: 0.85),
+        color: Colors.black.withValues(alpha: 0.20),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(0, 2)),
-        ],
+        border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        const Icon(Icons.air_rounded, size: 12, color: Colors.white),
-        const SizedBox(width: 5),
-        Flexible(
-          child: Text('${s.weatherAir} $aqi · ${_airLabel(aqi, s)}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: ts(10.5, w: FontWeight.w800, c: Colors.white)),
+        Container(
+          width: 7,
+          height: 7,
+          decoration: BoxDecoration(color: col, shape: BoxShape.circle),
         ),
+        const SizedBox(width: 6),
+        Text('${s.weatherAir} $aqi',
+            style: ts(10.5, w: FontWeight.w700, c: Colors.white)),
+        const SizedBox(width: 5),
+        Text(_airLabel(aqi, s),
+            style: ts(10.5, c: Colors.white.withValues(alpha: 0.68))),
       ]),
     );
   }
 
   /// 底部半透明圆角卡片：三天预报 + 近 15 日按钮 + 火腿建议 + 详细数据
   Widget _bottomCard(WeatherCenter wc, AppLocalizations s, bool dark) {
-    final card = Colors.white.withValues(alpha: dark ? 0.12 : 0.20);
-    final border = Colors.white.withValues(alpha: 0.20);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       decoration: BoxDecoration(
-        // 半透明圆角卡片（不使用 BackdropFilter，避免每帧模糊带来的开销）
-        color: card,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: border),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x26000000), blurRadius: 14, offset: Offset(0, 6)),
-        ],
+        // 半透明圆角卡片：不使用 BackdropFilter（避免每帧模糊开销），
+        // 也不用黑色投影（叠在彩色渐变上会发灰变脏）
+        color: Colors.white.withValues(alpha: dark ? 0.10 : 0.15),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           _sectionTitle(Icons.calendar_month_rounded, s.weatherForecast3),
-          const SizedBox(height: 10),
+          const SizedBox(height: 4),
           ..._forecastRows(wc, s),
-          const SizedBox(height: 12),
-          // 查看近 15 日天气
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => showDaily15Sheet(context),
-              icon: const Icon(Icons.date_range_rounded, size: 16),
-              label: Text(s.weatherDaily15, style: ts(12.5, w: FontWeight.w700)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: BorderSide(color: Colors.white.withValues(alpha: 0.45)),
-                backgroundColor: Colors.white.withValues(alpha: 0.10),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-          ),
           const SizedBox(height: 14),
-          // 业余无线电建议
+          _daily15Button(s),
+          const SizedBox(height: 16),
           _hamCard(wc, s),
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
           _sectionTitle(Icons.tune_rounded, s.weatherDetails),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           _details(wc, s),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Center(
             child: Text(s.weatherPowered,
-                style: ts(9.5, c: Colors.white.withValues(alpha: 0.6))),
+                style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
           ),
         ],
       ),
     );
   }
 
+  /// 分组标题：小号 + 字距，弱化存在感、让内容成为主角
   Widget _sectionTitle(IconData ic, String text) => Row(children: [
-        Icon(ic, size: 14, color: Colors.white.withValues(alpha: 0.85)),
+        Icon(ic, size: 13, color: Colors.white.withValues(alpha: 0.62)),
         const SizedBox(width: 6),
         Text(text,
-            style: ts(12.5, w: FontWeight.w800, c: Colors.white)
-                .copyWith(shadows: _kTextShadow)),
+            style: ts(11.5,
+                w: FontWeight.w700, c: Colors.white.withValues(alpha: 0.8), ls: 0.8)),
       ]);
+
+  /// 「查看近 15 日天气」按钮：自定义（可控内边距与字重，比 OutlinedButton 利落）
+  Widget _daily15Button(AppLocalizations s) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showDaily15Sheet(context),
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: 44,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.date_range_rounded,
+                  size: 16, color: Colors.white.withValues(alpha: 0.9)),
+              const SizedBox(width: 8),
+              Text(s.weatherDaily15,
+                  style: ts(13, w: FontWeight.w600, c: Colors.white)),
+              const SizedBox(width: 6),
+              Icon(Icons.chevron_right_rounded,
+                  size: 17, color: Colors.white.withValues(alpha: 0.6)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   /// 三天预报行（日期 / 图标 / 最低温 / 温度进度条 / 最高温）
   List<Widget> _forecastRows(WeatherCenter wc, AppLocalizations s) {
     if (wc.daily.isEmpty) {
       return [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text(
-              wc.loading ? s.weatherPanelSub : s.weatherUnavail,
-              style: ts(11.5, c: Colors.white.withValues(alpha: 0.7))),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(wc.loading ? s.weatherPanelSub : s.weatherUnavail,
+              style: ts(11.5, c: Colors.white.withValues(alpha: 0.65))),
         ),
       ];
     }
@@ -1744,57 +1786,64 @@ class _WeatherPanelState extends State<_WeatherPanel>
     }
     final out = <Widget>[];
     for (var i = 0; i < list.length; i++) {
+      if (i > 0) out.add(_hairline());
       out.add(_dailyRow(i, list[i], lo, hi, s));
-      if (i != list.length - 1) out.add(const SizedBox(height: 9));
     }
     return out;
   }
 
   Widget _dailyRow(
       int i, WeatherDaily d, int lo, int hi, AppLocalizations s) {
-    return Row(children: [
-      SizedBox(
-        width: 54,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(_dayLabel(i, d.date, s),
-                style: ts(12, w: FontWeight.w700, c: Colors.white)),
-            Text(d.date == null ? '' : _md(d.date!),
-                style: ts(9, c: Colors.white.withValues(alpha: 0.6))),
-          ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 9),
+      child: Row(children: [
+        SizedBox(
+          width: 52,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(_dayLabel(i, d.date, s),
+                  style: ts(12.5, w: FontWeight.w700, c: Colors.white)),
+              const SizedBox(height: 1),
+              Text(d.date == null ? '' : _md(d.date!),
+                  style: ts(10, c: Colors.white.withValues(alpha: 0.5))),
+            ],
+          ),
         ),
-      ),
-      Icon(d.iconData, size: 20, color: Colors.white.withValues(alpha: 0.92)),
-      const SizedBox(width: 4),
-      SizedBox(
-        width: 30,
-        child: Text('${d.minV}°',
-            textAlign: TextAlign.right,
-            style: ts(11.5, c: Colors.white.withValues(alpha: 0.8))),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: SizedBox(
-          height: 7,
-          child: CustomPaint(
-            painter: _TempBarPainter(
-              min: d.minV,
-              max: d.maxV,
-              lo: lo,
-              hi: hi,
-              track: Colors.white.withValues(alpha: 0.22),
+        Icon(d.iconData,
+            size: 19, color: Colors.white.withValues(alpha: 0.9)),
+        const SizedBox(width: 12),
+        SizedBox(
+          width: 34,
+          child: Text('${d.minV}°',
+              textAlign: TextAlign.right,
+              style: ts(12,
+                  w: FontWeight.w600,
+                  c: Colors.white.withValues(alpha: 0.7))),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: SizedBox(
+            height: 6,
+            child: CustomPaint(
+              painter: _TempBarPainter(
+                min: d.minV,
+                max: d.maxV,
+                lo: lo,
+                hi: hi,
+                track: Colors.white.withValues(alpha: 0.18),
+              ),
             ),
           ),
         ),
-      ),
-      const SizedBox(width: 8),
-      SizedBox(
-        width: 30,
-        child: Text('${d.maxV}°',
-            style: ts(12.5, w: FontWeight.w800, c: Colors.white)),
-      ),
-    ]);
+        const SizedBox(width: 10),
+        SizedBox(
+          width: 34,
+          child: Text('${d.maxV}°',
+              style: ts(13, w: FontWeight.w800, c: Colors.white)),
+        ),
+      ]),
+    );
   }
 
   /// 火腿建议卡片（按级别排序，可展开全部）
@@ -1806,34 +1855,41 @@ class _WeatherPanelState extends State<_WeatherPanel>
         (_tipsExpanded || !showToggle) ? all : all.sublist(0, maxCollapsed);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
+        color: Colors.white.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            const Icon(Icons.rss_feed_rounded, size: 16, color: Colors.white),
-            const SizedBox(width: 6),
+            Icon(Icons.rss_feed_rounded,
+                size: 15, color: Colors.white.withValues(alpha: 0.85)),
+            const SizedBox(width: 7),
             Text(s.hamTitle,
-                style: ts(13, w: FontWeight.w800, c: Colors.white)
-                    .copyWith(shadows: _kTextShadow)),
+                style: ts(12.5, w: FontWeight.w800, c: Colors.white)),
+            const Spacer(),
+            if (all.isNotEmpty)
+              Text('${all.length}',
+                  style: ts(10.5,
+                      w: FontWeight.w700,
+                      c: Colors.white.withValues(alpha: 0.45))),
           ]),
-          const SizedBox(height: 9),
+          const SizedBox(height: 8),
           if (all.isEmpty)
-            Text(s.hamNoData,
-                style: ts(11.5,
-                    c: Colors.white.withValues(alpha: 0.85), h: 1.5))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(s.hamNoData,
+                  style: ts(12, c: Colors.white.withValues(alpha: 0.8), h: 1.55)),
+            )
           else
             for (var i = 0; i < shown.length; i++) ...[
+              if (i > 0) const SizedBox(height: 2),
               _tipRow(shown[i], s),
-              if (i != shown.length - 1) const SizedBox(height: 9),
             ],
           if (showToggle) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             _tipsToggle(all.length, s),
           ],
         ],
@@ -1841,52 +1897,40 @@ class _WeatherPanelState extends State<_WeatherPanel>
     );
   }
 
+  /// 单条建议：色点 + 「级别」小标签 + 正文；危险项仅用淡色底，不加描边方框
   Widget _tipRow(_HamTip tip, AppLocalizations s) {
     final danger = tip.level == _TipLevel.danger;
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 7, 8, 7),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
       decoration: BoxDecoration(
-        color: danger
-            ? tip.color.withValues(alpha: 0.16)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
+        color: danger ? tip.color.withValues(alpha: 0.15) : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 3,
-            height: 34,
-            margin: const EdgeInsets.only(top: 1),
-            decoration: BoxDecoration(
-              color: tip.color.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(2),
-            ),
+            width: 6,
+            height: 6,
+            margin: const EdgeInsets.only(top: 5),
+            decoration: BoxDecoration(color: tip.color, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 8),
-          Icon(tip.icon, size: 15, color: tip.color),
-          const SizedBox(width: 7),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: tip.color.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(5),
-                    border:
-                        Border.all(color: tip.color.withValues(alpha: 0.55)),
-                  ),
-                  child: Text(_levelLabel(tip.level, s),
-                      style: ts(8.5, w: FontWeight.w800, c: Colors.white)),
-                ),
+                Row(children: [
+                  Icon(tip.icon, size: 12, color: tip.color),
+                  const SizedBox(width: 5),
+                  Text(_levelLabel(tip.level, s),
+                      style: ts(9.5,
+                          w: FontWeight.w800, c: tip.color, ls: 0.7)),
+                ]),
                 const SizedBox(height: 4),
                 Text(tip.text,
-                    style: ts(11.5,
-                            c: Colors.white.withValues(alpha: 0.94), h: 1.5)
-                        .copyWith(shadows: _kTextShadow)),
+                    style: ts(12,
+                        c: Colors.white.withValues(alpha: 0.9), h: 1.55)),
               ],
             ),
           ),
@@ -1900,104 +1944,82 @@ class _WeatherPanelState extends State<_WeatherPanel>
       onTap: () => setState(() => _tipsExpanded = !_tipsExpanded),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(_tipsExpanded ? s.hamLess : s.hamMore('$n'),
-              style: ts(10.5,
-                  w: FontWeight.w700,
-                  c: Colors.white.withValues(alpha: 0.9))),
-          Icon(_tipsExpanded
-              ? Icons.keyboard_arrow_up_rounded
-              : Icons.keyboard_arrow_down_rounded,
-              size: 16, color: Colors.white.withValues(alpha: 0.9)),
+              style: ts(11,
+                  w: FontWeight.w600,
+                  c: Colors.white.withValues(alpha: 0.82))),
+          Icon(
+              _tipsExpanded
+                  ? Icons.keyboard_arrow_up_rounded
+                  : Icons.keyboard_arrow_down_rounded,
+              size: 16,
+              color: Colors.white.withValues(alpha: 0.82)),
         ]),
       ),
     );
   }
 
-  /// 详细数据网格
+  /// 详细数据：两列「标签 —— 数值」+ 细分隔线
+  /// （替代原先 12 个描边小方格的仪表盘式排布，对比更清晰、也更透气）
   Widget _details(WeatherCenter wc, AppLocalizations s) {
     final n = wc.now;
     if (n == null) return const SizedBox.shrink();
     final air = wc.air;
     final d0 = wc.daily.isNotEmpty ? wc.daily.first : null;
-    return Column(children: [
-      Row(children: [
-        _miniStat(s.weatherHumidity, '${n.humidity}%',
-            Icons.water_drop_outlined),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherDew, '${n.dew}°', Icons.device_thermostat_rounded),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherCloud, '${n.cloud}%', Icons.cloud_outlined),
-      ]),
-      const SizedBox(height: 8),
-      Row(children: [
-        _miniStat(s.weatherWindDir, n.windDir, Icons.explore_outlined),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherWindScale, n.windScale, Icons.air),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherWindSpeed, '${n.windSpeed} km/h', Icons.speed_rounded),
-      ]),
-      const SizedBox(height: 8),
-      Row(children: [
-        _miniStat(s.weatherPressure, '${n.pressure} hPa',
-            Icons.compress_rounded),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherVis, '${n.vis} km', Icons.visibility_outlined),
-        const SizedBox(width: 8),
-        _miniStat(s.weatherPrecip, '${n.precip} mm', Icons.opacity_rounded),
-      ]),
-      if (air != null && air.aqiValue >= 0) ...[
-        const SizedBox(height: 8),
-        Row(children: [
-          _miniStat('PM2.5', air.pm2p5, Icons.blur_on_rounded),
-          const SizedBox(width: 8),
-          _miniStat('PM10', air.pm10, Icons.blur_on_rounded),
-          const SizedBox(width: 8),
-          _miniStat(s.weatherAQIPrimary,
-              air.primary.isEmpty ? '—' : air.primary, Icons.science_outlined),
+    final hasAir = air != null && air.aqiValue >= 0;
+
+    final pairs = <(String, String)>[
+      (s.weatherHumidity, '${n.humidity}%'),
+      (s.weatherDew, '${n.dew}°'),
+      (s.weatherCloud, '${n.cloud}%'),
+      (s.weatherWindDir, n.windDir),
+      (s.weatherWindScale, '${n.windScale} 级'),
+      (s.weatherWindSpeed, '${n.windSpeed} km/h'),
+      (s.weatherPressure, '${n.pressure} hPa'),
+      (s.weatherVis, '${n.vis} km'),
+      (s.weatherPrecip, '${n.precip} mm'),
+      if (hasAir) ('PM2.5', air.pm2p5),
+      if (hasAir) ('PM10', air.pm10),
+      if (hasAir)
+        (s.weatherAQIPrimary, air.primary.isEmpty ? '—' : air.primary),
+      if (d0 != null) (s.weatherSunrise, d0.sunrise),
+      if (d0 != null) (s.weatherSunset, d0.sunset),
+      if (d0 != null) (s.weatherUV, d0.uvIndex),
+    ];
+
+    final rows = <Widget>[];
+    for (var i = 0; i < pairs.length; i += 2) {
+      if (i > 0) rows.add(_hairline());
+      rows.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(children: [
+          Expanded(child: _kvPair(pairs[i].$1, pairs[i].$2)),
+          const SizedBox(width: 20),
+          Expanded(
+            child: i + 1 < pairs.length
+                ? _kvPair(pairs[i + 1].$1, pairs[i + 1].$2)
+                : const SizedBox.shrink(),
+          ),
         ]),
-      ],
-      if (d0 != null) ...[
-        const SizedBox(height: 8),
-        Row(children: [
-          _miniStat(s.weatherSunrise, d0.sunrise, Icons.wb_twilight_rounded),
-          const SizedBox(width: 8),
-          _miniStat(s.weatherSunset, d0.sunset, Icons.nights_stay_rounded),
-          const SizedBox(width: 8),
-          _miniStat(s.weatherUV, d0.uvIndex, Icons.wb_sunny_rounded),
-        ]),
-      ],
-    ]);
+      ));
+    }
+    return Column(children: rows);
   }
 
-  Widget _miniStat(String label, String value, IconData icon) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Column(children: [
-          Text(value,
+  Widget _kvPair(String label, String value) => Row(children: [
+        Text(label,
+            style: ts(10.5, c: Colors.white.withValues(alpha: 0.58))),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(value,
+              textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: ts(13, w: FontWeight.w800, c: Colors.white)),
-          const SizedBox(height: 1),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(icon, size: 10, color: Colors.white.withValues(alpha: 0.7)),
-            const SizedBox(width: 3),
-            Flexible(
-              child: Text(label,
-                  style: ts(9, c: Colors.white.withValues(alpha: 0.7)),
-                  overflow: TextOverflow.ellipsis),
-            ),
-          ]),
-        ]),
-      ),
-    );
-  }
+              style: ts(12, w: FontWeight.w700, c: Colors.white)),
+        ),
+      ]);
 }
 
 /// ─── 近 15 日天气弹层 ───
@@ -2131,74 +2153,81 @@ class _Daily15SheetState extends State<_Daily15Sheet>
       if (d.minV < lo) lo = d.minV;
       if (d.maxV > hi) hi = d.maxV;
     }
+    // 与主页面板保持同一套排版：细分隔线、列宽对齐、字号统一
     return ListView.separated(
       shrinkWrap: true,
-      padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 18),
       itemCount: list.length,
-      separatorBuilder: (_, _) =>
-          Divider(height: 14, color: Colors.white.withValues(alpha: 0.16)),
+      separatorBuilder: (_, _) => _hairline(),
       itemBuilder: (context, i) {
         final d = list[i];
-        return Row(children: [
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(children: [
           SizedBox(
-            width: 74,
+            width: 58,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_dayLabel(i, d.date, s),
-                    style: ts(12, w: FontWeight.w700, c: Colors.white)),
+                    style: ts(12.5, w: FontWeight.w700, c: Colors.white)),
+                const SizedBox(height: 1),
                 Text(d.date == null ? '' : _md(d.date!),
-                    style: ts(9.5, c: Colors.white.withValues(alpha: 0.65))),
+                    style: ts(10, c: Colors.white.withValues(alpha: 0.5))),
               ],
             ),
           ),
-          Icon(d.iconData, size: 19, color: Colors.white.withValues(alpha: 0.92)),
-          const SizedBox(width: 6),
+          Icon(d.iconData,
+              size: 19, color: Colors.white.withValues(alpha: 0.9)),
+          const SizedBox(width: 12),
           SizedBox(
-            width: 30,
+            width: 34,
             child: Text('${d.minV}°',
                 textAlign: TextAlign.right,
-                style: ts(11.5, c: Colors.white.withValues(alpha: 0.8))),
+                style: ts(12,
+                    w: FontWeight.w600,
+                    c: Colors.white.withValues(alpha: 0.7))),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: SizedBox(
-              height: 7,
+              height: 6,
               child: CustomPaint(
                 painter: _TempBarPainter(
                   min: d.minV,
                   max: d.maxV,
                   lo: lo,
                   hi: hi,
-                  track: Colors.white.withValues(alpha: 0.22),
+                  track: Colors.white.withValues(alpha: 0.18),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           SizedBox(
-            width: 30,
+            width: 34,
             child: Text('${d.maxV}°',
-                style: ts(12.5, w: FontWeight.w800, c: Colors.white)),
+                style: ts(13, w: FontWeight.w800, c: Colors.white)),
           ),
           SizedBox(
-            width: 46,
+            width: 52,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(d.textDay,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ts(9.5,
-                        c: Colors.white.withValues(alpha: 0.8))),
+                    style: ts(10, c: Colors.white.withValues(alpha: 0.75))),
+                const SizedBox(height: 1),
                 Text('${d.precip}mm',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ts(9, c: Colors.white.withValues(alpha: 0.6))),
+                    style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
               ],
             ),
           ),
-        ]);
+          ]),
+        );
       },
     );
   }
