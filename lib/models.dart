@@ -195,6 +195,88 @@ class Station {
 
 enum TypeGroup { mobile, fixed, infra, wx, fmo, other }
 
+/// 台站筛选条件（台站面板的 chips + 设备筛选）。
+/// 由台站面板编辑；开启 [AppState.applyFilterToMap] 后同样作用于地图显示，
+/// 两处共用 [matches] 同一套判定，避免行为不一致。
+class StationFilter {
+  final String status; // all | online | moving | stopped | iss
+  final String type; // all | mobile | fixed | infra | wx
+  final String app; // all | aprslocus
+  final String dev; // all | 设备类别 key
+  final String model; // all | 设备显示名
+
+  const StationFilter({
+    this.status = 'all',
+    this.type = 'all',
+    this.app = 'all',
+    this.dev = 'all',
+    this.model = 'all',
+  });
+
+  /// 无任何生效筛选
+  bool get isEmpty =>
+      status == 'all' &&
+      type == 'all' &&
+      app == 'all' &&
+      dev == 'all' &&
+      model == 'all';
+
+  /// 缓存键：任一条件变化即失效
+  String get key => '$status|$type|$app|$dev|$model';
+
+  StationFilter copyWith({
+    String? status,
+    String? type,
+    String? app,
+    String? dev,
+    String? model,
+  }) =>
+      StationFilter(
+        status: status ?? this.status,
+        type: type ?? this.type,
+        app: app ?? this.app,
+        dev: dev ?? this.dev,
+        model: model ?? this.model,
+      );
+
+  /// 该台站是否命中当前筛选
+  bool matches(Station s) {
+    switch (status) {
+      case 'online':
+        if (s.effectiveStatus == St.offline) return false;
+        break;
+      case 'moving':
+        if (s.effectiveStatus != St.moving) return false;
+        break;
+      case 'stopped':
+        if (s.effectiveStatus != St.stopped) return false;
+        break;
+      case 'iss':
+        if (!s.isIss) return false;
+        break;
+    }
+    if (type != 'all') {
+      final tg = s.typeGroup;
+      final ok = (type == 'mobile' && tg == TypeGroup.mobile) ||
+          (type == 'fixed' && tg == TypeGroup.fixed) ||
+          (type == 'infra' && tg == TypeGroup.infra) ||
+          (type == 'wx' && tg == TypeGroup.wx);
+      if (!ok) return false;
+    }
+    if (dev != 'all' && s.deviceClassKey != dev) return false;
+    if (model != 'all' && (s.deviceName ?? '') != model) return false;
+    if (app == 'aprslocus') {
+      // 备注/呼号含 APRSlocus 的台站（同为 APRSlocus 用户）
+      final c = (s.comment ?? '').toLowerCase();
+      if (!c.contains('aprslocus') &&
+          !s.call.toUpperCase().contains('APRSLOCUS')) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
 class TrackPt {
   final double lat, lng;
   final DateTime time;

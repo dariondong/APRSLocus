@@ -1026,5 +1026,48 @@
   "airVeryUnhealthy": "Heavy pollution",
   "airHazardous": "Severe pollution",
   "weatherAir": "AQI",
-  "issStation": "ISS"
+  "issStation": "ISS",
+  "applyStationFilter": "Apply station filter to map",
+  "stationFilterOn": "Filtered by station panel",
+  "stationList": "Stations",
+  "statsPanel": "Statistics",
+  "statsOverview": "System overview",
+  "statsTotalRx": "Packets RX",
+  "statsTotalTx": "Packets TX",
+  "statsRate": "Rate",
+  "statsPerMin": "{n}/min",
+  "@statsPerMin": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "statsStationsTotal": "Stations",
+  "statsCap": "Capacity",
+  "statsConn": "Link",
+  "statsConnected": "Connected",
+  "statsDisconnected": "Offline",
+  "statsMyGrid": "My grid",
+  "statsAprslocusUsers": "APRSlocus users",
+  "statsFarthest": "Farthest",
+  "statsStatusDist": "Status breakdown",
+  "statsTypeDist": "Type breakdown",
+  "statsGridDist": "Grid square breakdown",
+  "statsGridHint": "Stations per Maidenhead field (4 chars), ranked",
+  "statsGridCount": "{n} grids",
+  "@statsGridCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "statsGridEmpty": "No station positions yet",
+  "statsDeviceDist": "Device classes",
+  "statsOther": "Other metrics",
+  "statsAvgSpeed": "Avg speed",
+  "statsLastHeard": "Last heard",
+  "statsPackets": "Packets (recent)",
+  "statsNoData": "No data"
 }

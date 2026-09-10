@@ -5654,6 +5654,180 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'ISS 空间站'**
   String get issStation;
+
+  /// No description provided for @applyStationFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站筛选应用到地图'**
+  String get applyStationFilter;
+
+  /// No description provided for @stationFilterOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已按台站面板筛选显示'**
+  String get stationFilterOn;
+
+  /// No description provided for @stationList.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站列表'**
+  String get stationList;
+
+  /// No description provided for @statsPanel.
+  ///
+  /// In zh, this message translates to:
+  /// **'统计面板'**
+  String get statsPanel;
+
+  /// No description provided for @statsOverview.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统总览'**
+  String get statsOverview;
+
+  /// No description provided for @statsTotalRx.
+  ///
+  /// In zh, this message translates to:
+  /// **'总接收数'**
+  String get statsTotalRx;
+
+  /// No description provided for @statsTotalTx.
+  ///
+  /// In zh, this message translates to:
+  /// **'总发送数'**
+  String get statsTotalTx;
+
+  /// No description provided for @statsRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'接收速率'**
+  String get statsRate;
+
+  /// No description provided for @statsPerMin.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n}/分'**
+  String statsPerMin(String n);
+
+  /// No description provided for @statsStationsTotal.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站总数'**
+  String get statsStationsTotal;
+
+  /// No description provided for @statsCap.
+  ///
+  /// In zh, this message translates to:
+  /// **'容量上限'**
+  String get statsCap;
+
+  /// No description provided for @statsConn.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接状态'**
+  String get statsConn;
+
+  /// No description provided for @statsConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接'**
+  String get statsConnected;
+
+  /// No description provided for @statsDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接'**
+  String get statsDisconnected;
+
+  /// No description provided for @statsMyGrid.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的大网格'**
+  String get statsMyGrid;
+
+  /// No description provided for @statsAprslocusUsers.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocus 用户'**
+  String get statsAprslocusUsers;
+
+  /// No description provided for @statsFarthest.
+  ///
+  /// In zh, this message translates to:
+  /// **'最远台站'**
+  String get statsFarthest;
+
+  /// No description provided for @statsStatusDist.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站状态分布'**
+  String get statsStatusDist;
+
+  /// No description provided for @statsTypeDist.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 类型分布'**
+  String get statsTypeDist;
+
+  /// No description provided for @statsGridDist.
+  ///
+  /// In zh, this message translates to:
+  /// **'大网格台站分布'**
+  String get statsGridDist;
+
+  /// No description provided for @statsGridHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'按 Maidenhead 大网格（4 位）统计台站数量并排序'**
+  String get statsGridHint;
+
+  /// No description provided for @statsGridCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 个网格'**
+  String statsGridCount(String n);
+
+  /// No description provided for @statsGridEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无台站位置数据'**
+  String get statsGridEmpty;
+
+  /// No description provided for @statsDeviceDist.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备类别分布'**
+  String get statsDeviceDist;
+
+  /// No description provided for @statsOther.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他指标'**
+  String get statsOther;
+
+  /// No description provided for @statsAvgSpeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'平均速度'**
+  String get statsAvgSpeed;
+
+  /// No description provided for @statsLastHeard.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近上报'**
+  String get statsLastHeard;
+
+  /// No description provided for @statsPackets.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据包(近期)'**
+  String get statsPackets;
+
+  /// No description provided for @statsNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无数据'**
+  String get statsNoData;
 }
 
 class _AppLocalizationsDelegate

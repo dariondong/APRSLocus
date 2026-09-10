@@ -3152,6 +3152,97 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get issStation => 'ISS 空间站';
+
+  @override
+  String get applyStationFilter => '台站筛选应用到地图';
+
+  @override
+  String get stationFilterOn => '已按台站面板筛选显示';
+
+  @override
+  String get stationList => '台站列表';
+
+  @override
+  String get statsPanel => '统计面板';
+
+  @override
+  String get statsOverview => '系统总览';
+
+  @override
+  String get statsTotalRx => '总接收数';
+
+  @override
+  String get statsTotalTx => '总发送数';
+
+  @override
+  String get statsRate => '接收速率';
+
+  @override
+  String statsPerMin(String n) {
+    return '$n/分';
+  }
+
+  @override
+  String get statsStationsTotal => '台站总数';
+
+  @override
+  String get statsCap => '容量上限';
+
+  @override
+  String get statsConn => '连接状态';
+
+  @override
+  String get statsConnected => '已连接';
+
+  @override
+  String get statsDisconnected => '未连接';
+
+  @override
+  String get statsMyGrid => '我的大网格';
+
+  @override
+  String get statsAprslocusUsers => 'APRSlocus 用户';
+
+  @override
+  String get statsFarthest => '最远台站';
+
+  @override
+  String get statsStatusDist => '台站状态分布';
+
+  @override
+  String get statsTypeDist => 'APRS 类型分布';
+
+  @override
+  String get statsGridDist => '大网格台站分布';
+
+  @override
+  String get statsGridHint => '按 Maidenhead 大网格（4 位）统计台站数量并排序';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n 个网格';
+  }
+
+  @override
+  String get statsGridEmpty => '暂无台站位置数据';
+
+  @override
+  String get statsDeviceDist => '设备类别分布';
+
+  @override
+  String get statsOther => '其他指标';
+
+  @override
+  String get statsAvgSpeed => '平均速度';
+
+  @override
+  String get statsLastHeard => '最近上报';
+
+  @override
+  String get statsPackets => '数据包(近期)';
+
+  @override
+  String get statsNoData => '暂无数据';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6302,4 +6393,95 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get issStation => 'ISS 太空站';
+
+  @override
+  String get applyStationFilter => '台站篩選套用到地圖';
+
+  @override
+  String get stationFilterOn => '已依台站面板篩選顯示';
+
+  @override
+  String get stationList => '台站列表';
+
+  @override
+  String get statsPanel => '統計面板';
+
+  @override
+  String get statsOverview => '系統總覽';
+
+  @override
+  String get statsTotalRx => '總接收數';
+
+  @override
+  String get statsTotalTx => '總發送數';
+
+  @override
+  String get statsRate => '接收速率';
+
+  @override
+  String statsPerMin(String n) {
+    return '$n/分';
+  }
+
+  @override
+  String get statsStationsTotal => '台站總數';
+
+  @override
+  String get statsCap => '容量上限';
+
+  @override
+  String get statsConn => '連線狀態';
+
+  @override
+  String get statsConnected => '已連線';
+
+  @override
+  String get statsDisconnected => '未連線';
+
+  @override
+  String get statsMyGrid => '我的大網格';
+
+  @override
+  String get statsAprslocusUsers => 'APRSlocus 使用者';
+
+  @override
+  String get statsFarthest => '最遠台站';
+
+  @override
+  String get statsStatusDist => '台站狀態分佈';
+
+  @override
+  String get statsTypeDist => 'APRS 類型分佈';
+
+  @override
+  String get statsGridDist => '大網格台站分佈';
+
+  @override
+  String get statsGridHint => '依 Maidenhead 大網格（4 位）統計台站數量並排序';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n 個網格';
+  }
+
+  @override
+  String get statsGridEmpty => '暫無台站位置資料';
+
+  @override
+  String get statsDeviceDist => '裝置類別分佈';
+
+  @override
+  String get statsOther => '其他指標';
+
+  @override
+  String get statsAvgSpeed => '平均速度';
+
+  @override
+  String get statsLastHeard => '最近上報';
+
+  @override
+  String get statsPackets => '資料包(近期)';
+
+  @override
+  String get statsNoData => '暫無資料';
 }

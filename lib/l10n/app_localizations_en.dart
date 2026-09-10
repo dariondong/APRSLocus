@@ -3242,4 +3242,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get issStation => 'ISS';
+
+  @override
+  String get applyStationFilter => 'Apply station filter to map';
+
+  @override
+  String get stationFilterOn => 'Filtered by station panel';
+
+  @override
+  String get stationList => 'Stations';
+
+  @override
+  String get statsPanel => 'Statistics';
+
+  @override
+  String get statsOverview => 'System overview';
+
+  @override
+  String get statsTotalRx => 'Packets RX';
+
+  @override
+  String get statsTotalTx => 'Packets TX';
+
+  @override
+  String get statsRate => 'Rate';
+
+  @override
+  String statsPerMin(String n) {
+    return '$n/min';
+  }
+
+  @override
+  String get statsStationsTotal => 'Stations';
+
+  @override
+  String get statsCap => 'Capacity';
+
+  @override
+  String get statsConn => 'Link';
+
+  @override
+  String get statsConnected => 'Connected';
+
+  @override
+  String get statsDisconnected => 'Offline';
+
+  @override
+  String get statsMyGrid => 'My grid';
+
+  @override
+  String get statsAprslocusUsers => 'APRSlocus users';
+
+  @override
+  String get statsFarthest => 'Farthest';
+
+  @override
+  String get statsStatusDist => 'Status breakdown';
+
+  @override
+  String get statsTypeDist => 'Type breakdown';
+
+  @override
+  String get statsGridDist => 'Grid square breakdown';
+
+  @override
+  String get statsGridHint => 'Stations per Maidenhead field (4 chars), ranked';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n grids';
+  }
+
+  @override
+  String get statsGridEmpty => 'No station positions yet';
+
+  @override
+  String get statsDeviceDist => 'Device classes';
+
+  @override
+  String get statsOther => 'Other metrics';
+
+  @override
+  String get statsAvgSpeed => 'Avg speed';
+
+  @override
+  String get statsLastHeard => 'Last heard';
+
+  @override
+  String get statsPackets => 'Packets (recent)';
+
+  @override
+  String get statsNoData => 'No data';
 }

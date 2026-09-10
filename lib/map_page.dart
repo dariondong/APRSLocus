@@ -301,6 +301,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       Object.hashAll(_hiddenTypes),
       Object.hashAll(widget.state.receiveCountries),
       widget.state.receiveOthers,
+      widget.state.applyFilterToMap,
+      widget.state.stationFilter.key,
     );
     if (sv == _visibleStationsVersion && filterHash == _visibleFilterHash) {
       return _visibleCache;
@@ -321,6 +323,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
     if (_hiddenTypes.isNotEmpty) {
       list = list.where((s) => !_hiddenTypes.contains(s.typeGroup)).toList();
+    }
+    // 台站面板筛选应用到地图（可选，默认关闭；两处共用 StationFilter.matches）
+    final st = widget.state;
+    if (st.applyFilterToMap && !st.stationFilter.isEmpty) {
+      list = list.where(st.stationFilter.matches).toList();
     }
     _visibleStationsVersion = sv;
     _visibleFilterHash = filterHash;
@@ -1878,6 +1885,78 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             ],
           ),
           SizedBox(height: 8),
+          // 将台站面板的筛选（状态/类型/同款软件/设备）应用到地图
+          GestureDetector(
+            onTap: () {
+              widget.state
+                  .setApplyFilterToMap(!widget.state.applyFilterToMap);
+              setMenuState(() {});
+              setState(() {});
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.filter_alt_rounded,
+                  size: 16,
+                  color: widget.state.applyFilterToMap ? C.blue : C.greyLight,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.of(context).applyStationFilter,
+                        style: ts(
+                          12,
+                          c: widget.state.applyFilterToMap ? C.ink : C.grey,
+                          w: FontWeight.w600,
+                        ),
+                      ),
+                      if (widget.state.applyFilterToMap &&
+                          !widget.state.stationFilter.isEmpty)
+                        Text(
+                          S.of(context).stationFilterOn,
+                          style: ts(9.5, c: C.blue),
+                        ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 40,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: widget.state.applyFilterToMap
+                        ? C.blue.withValues(alpha: 0.25)
+                        : C.greyBg,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Align(
+                    alignment: widget.state.applyFilterToMap
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      width: 18,
+                      height: 18,
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      decoration: BoxDecoration(
+                        color: widget.state.applyFilterToMap ? C.blue : C.grey,
+                        borderRadius: BorderRadius.circular(9),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(height: 14, color: C.border),
           for (final t in types)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),

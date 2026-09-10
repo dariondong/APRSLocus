@@ -49,7 +49,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.60';
+  static const appVersion = '1.6.61';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -514,6 +514,23 @@ class AppState extends ChangeNotifier {
     return false;
   }
 
+  /// 台站筛选条件（由台站面板编辑）：状态 / 类型 / 同款软件 / 设备
+  StationFilter stationFilter = const StationFilter();
+
+  /// 是否把台站面板的筛选同时应用到地图（默认关闭，避免误隐藏台站）
+  bool applyFilterToMap = false;
+
+  /// 更新台站筛选；推进台站版本让台站页与地图（共用同一条台站流）同步刷新
+  void setStationFilter(StationFilter f) {
+    stationFilter = f;
+    _bumpStationsVersion();
+  }
+
+  void setApplyFilterToMap(bool v) {
+    applyFilterToMap = v;
+    _bumpStationsVersion();
+  }
+
   void setMaxStations(int n) {
     maxStations = n < 50 ? 50 : n;
     // 立即裁剪超量台站（优先保留收藏/手动台站）
@@ -773,6 +790,9 @@ class AppState extends ChangeNotifier {
   int packetsRx = 0;
   int packetsTx = 0;
   final List<DateTime> _rxTimes = [];
+
+  /// 最近 60 秒内收到的数据包数（即当前接收速率，包/分）
+  int get rxPerMin => _rxTimes.length;
 
   /// 记录一条日志（最新在前，超出上限丢弃最旧）
   void _log(LogLevel level, String source, String message) {

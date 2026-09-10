@@ -8,6 +8,7 @@ import 'state.dart';
 import 'aprs_device.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
+import 'stats_panel.dart';
 
 class StationsPage extends StatefulWidget {
   final AppState state;
@@ -18,11 +19,15 @@ class StationsPage extends StatefulWidget {
 }
 
 class _StationsPageState extends State<StationsPage> {
-  String _filter = 'all'; // 状态筛选
-  String _type = 'all'; // 类型筛选
-  String _app = 'all'; // 软件筛选：all / aprslocus
-  String _dev = 'all'; // 设备类别筛选：all / 官方 tocalls 类别 key
-  String _model = 'all'; // 具体设备筛选：all / 识别出的 厂商型号(displayName)
+  // 台站筛选条件存放在 AppState：与地图共用同一份（见 applyFilterToMap），
+  // 面板本身不再各自持有一份，避免两处筛选不一致。
+  StationFilter get _f => widget.state.stationFilter;
+  void _setFilter(StationFilter f) => widget.state.setStationFilter(f);
+
+  /// 台站列表 / 统计面板切换。
+  /// 刻意**不做持久化**：每次进入台站面板都默认回到台站列表，
+  /// 不记忆上次选择（与需求一致）。
+  bool _statsMode = false;
   String _sort = 'call';
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce; // 搜索防抖：台站多时避免逐字重建列表
@@ -48,7 +53,7 @@ class _StationsPageState extends State<StationsPage> {
 
   List<Station> _list(AppState st) {
     final key =
-        '${st.stationsVersion}|$_filter|$_type|$_app|$_dev|$_model|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
+        '${st.stationsVersion}|${st.stationFilter.key}|$_sort|$_query|${st.receiveCountries.join(',')}|${st.receiveOthers}';
     if (key == _cacheKey && st.stationsVersion == _cacheVersion) {
       return _cacheList;
     }
@@ -68,53 +73,9 @@ class _StationsPageState extends State<StationsPage> {
           )
           .toList();
     }
-    switch (_filter) {
-      case 'online':
-        s = s.where((s) => s.effectiveStatus != St.offline).toList();
-        break;
-      case 'moving':
-        s = s.where((s) => s.effectiveStatus == St.moving).toList();
-        break;
-      case 'stopped':
-        s = s.where((s) => s.effectiveStatus == St.stopped).toList();
-        break;
-      case 'iss':
-        // 国际空间站（ISS / ARISS）台站
-        s = s.where((s) => s.isIss).toList();
-        break;
-    }
-    switch (_type) {
-      case 'mobile':
-        s = s.where((s) => s.typeGroup == TypeGroup.mobile).toList();
-        break;
-      case 'fixed':
-        s = s.where((s) => s.typeGroup == TypeGroup.fixed).toList();
-        break;
-      case 'infra':
-        s = s.where((s) => s.typeGroup == TypeGroup.infra).toList();
-        break;
-      case 'wx':
-        s = s.where((s) => s.typeGroup == TypeGroup.wx).toList();
-        break;
-    }
-    if (_dev != 'all') {
-      s = s.where((s) => s.deviceClassKey == _dev).toList();
-    }
-    if (_model != 'all') {
-      s = s.where((s) => (s.deviceName ?? '') == _model).toList();
-    }
-    switch (_app) {
-      case 'aprslocus':
-        // 备注/呼号含 APRSlocus 的台站（同为 APRSlocus 用户）
-        s = s
-            .where(
-              (s) =>
-                  (s.comment ?? '').toLowerCase().contains('aprslocus') ||
-                  s.call.toUpperCase().contains('APRSLOCUS'),
-            )
-            .toList();
-        break;
-    }
+    // 台站筛选（状态/类型/同款软件/设备）—— 与地图共用同一套判定
+    final f = st.stationFilter;
+    if (!f.isEmpty) s = s.where(f.matches).toList();
     final my = st.myStation;
     switch (_sort) {
       case 'recent':
@@ -214,9 +175,18 @@ class _StationsPageState extends State<StationsPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 14),
+              SizedBox(height: 10),
+              // 台站列表 / 统计面板 切换（同消息页瀑布流/会话的样式，不记忆选择）
+              Row(
+                children: [
+                  _modeToggle(),
+                  const Spacer(),
+                ],
+              ),
+              SizedBox(height: 10),
               // 统计 + 筛选合并在紧凑区域
-              Container(
+              if (!_statsMode)
+                Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 8,
@@ -264,9 +234,11 @@ class _StationsPageState extends State<StationsPage> {
                 ),
               ),
               SizedBox(height: 8),
-              // 列表
+              // 列表（或统计面板）
               Expanded(
-                child: list.isEmpty
+                child: _statsMode
+                    ? StationStatsPanel(state: st)
+                    : list.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -297,6 +269,46 @@ class _StationsPageState extends State<StationsPage> {
     );
   }
 
+  /// 台站列表 / 统计面板 切换（样式与消息页 瀑布流/会话 一致）
+  Widget _modeToggle() {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: C.bgSoft,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _modePill(false, S.of(context).stationList),
+          _modePill(true, S.of(context).statsPanel),
+        ],
+      ),
+    );
+  }
+
+  Widget _modePill(bool stats, String label) {
+    final sel = _statsMode == stats;
+    return GestureDetector(
+      onTap: () {
+        if (sel) return;
+        setState(() => _statsMode = stats);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: sel ? C.blue : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: ts(12, c: sel ? Colors.white : C.slate, w: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
   /// 筛选行：标签 + 可换行的 chips
   Widget _statMini(String label, String value, Color c) {
     return Padding(
@@ -320,22 +332,11 @@ class _StationsPageState extends State<StationsPage> {
   }
 
   /// 是否所有筛选均为空（无任何生效筛选）
-  bool get _nothingFiltered =>
-      _filter == 'all' &&
-      _type == 'all' &&
-      _app == 'all' &&
-      _dev == 'all' &&
-      _model == 'all';
+  bool get _nothingFiltered => _f.isEmpty;
 
   /// 重置全部筛选
   void _clearAll() {
-    setState(() {
-      _filter = 'all';
-      _type = 'all';
-      _app = 'all';
-      _dev = 'all';
-      _model = 'all';
-    });
+    setState(() => _setFilter(const StationFilter()));
   }
 
   bool _zh(BuildContext context) =>
@@ -349,7 +350,8 @@ class _StationsPageState extends State<StationsPage> {
       final k = s.deviceClassKey;
       if (k != null && k.isNotEmpty) present.add(k);
     }
-    if (_dev != 'all') present.add(_dev); // 已选类别即使暂无台站也保留
+    final f = widget.state.stationFilter;
+    if (f.dev != 'all') present.add(f.dev); // 已选类别即使暂无台站也保留
     final order = <String>[];
     for (final k in AprsDevice.instance.classKeys) {
       if (present.contains(k) && !order.contains(k)) order.add(k);
@@ -370,10 +372,11 @@ class _StationsPageState extends State<StationsPage> {
       final n = s.deviceName;
       if (n != null && n.isNotEmpty) counts[n] = (counts[n] ?? 0) + 1;
     }
-    if (_model != 'all' &&
-        (cls == null || _modelDeviceClass(st, _model) == cls) &&
-        !counts.containsKey(_model)) {
-      counts[_model] = 0;
+    final model = widget.state.stationFilter.model;
+    if (model != 'all' &&
+        (cls == null || _modelDeviceClass(st, model) == cls) &&
+        !counts.containsKey(model)) {
+      counts[model] = 0;
     }
     final list = counts.keys.toList()
       ..sort((a, b) {
@@ -400,15 +403,17 @@ class _StationsPageState extends State<StationsPage> {
         _miniChip(label, selected, c, onTap);
     Widget status(String label, String key, Color c) => chip(
           label,
-          _filter == key,
+          _f.status == key,
           c,
-          () => setState(() => _filter = _filter == key ? 'all' : key),
+          () => _setFilter(
+            _f.copyWith(status: _f.status == key ? 'all' : key),
+          ),
         );
     Widget typeC(String label, String key, Color c) => chip(
           label,
-          _type == key,
+          _f.type == key,
           c,
-          () => setState(() => _type = _type == key ? 'all' : key),
+          () => _setFilter(_f.copyWith(type: _f.type == key ? 'all' : key)),
         );
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -436,19 +441,21 @@ class _StationsPageState extends State<StationsPage> {
           const SizedBox(width: 8),
           chip(
             S.of(context).aprslocusOnly,
-            _app == 'aprslocus',
+            _f.app == 'aprslocus',
             C.purple,
-            () => setState(
-              () => _app = _app == 'aprslocus' ? 'all' : 'aprslocus',
+            () => _setFilter(
+              _f.copyWith(app: _f.app == 'aprslocus' ? 'all' : 'aprslocus'),
             ),
           ),
           const SizedBox(width: 4),
           // ISS 空间站台站（RS0ISS / NA1SS / OR4ISS）
           chip(
             S.of(context).issStation,
-            _filter == 'iss',
+            _f.status == 'iss',
             C.cyan,
-            () => setState(() => _filter = _filter == 'iss' ? 'all' : 'iss'),
+            () => _setFilter(
+              _f.copyWith(status: _f.status == 'iss' ? 'all' : 'iss'),
+            ),
           ),
           const SizedBox(width: 8),
           _divider(),
@@ -462,9 +469,9 @@ class _StationsPageState extends State<StationsPage> {
   /// 设备筛选入口 chip：未选中显示「设备筛选」；选中后显示当前类别/型号并高亮
   Widget _deviceEntryChip(BuildContext context) {
     final zh = _zh(context);
-    final active = _dev != 'all' || _model != 'all';
+    final active = _f.dev != 'all' || _f.model != 'all';
     final label = active
-        ? (_model != 'all' ? _model : DeviceClassNames.labelOf(_dev, zh))
+        ? (_f.model != 'all' ? _f.model : DeviceClassNames.labelOf(_f.dev, zh))
         : S.of(context).deviceFilter;
     return _miniChip(label, active, C.indigo, () => _openDeviceSheet(context));
   }
@@ -483,7 +490,7 @@ class _StationsPageState extends State<StationsPage> {
           // 型号联动：已选类别时只列该类别下的型号；未选则列全部
           final models = _deviceModelOptions(
             st,
-            cls: _dev == 'all' ? null : _dev,
+            cls: _f.dev == 'all' ? null : _f.dev,
           );
           Widget groupTitle(String t) => Padding(
                 padding: const EdgeInsets.only(top: 4, bottom: 8),
@@ -557,10 +564,9 @@ class _StationsPageState extends State<StationsPage> {
                       ),
                       Spacer(),
                       TextButton(
-                        onPressed: () => apply(() {
-                          _dev = 'all';
-                          _model = 'all';
-                        }),
+                        onPressed: () => apply(
+                          () => _setFilter(_f.copyWith(dev: 'all', model: 'all')),
+                        ),
                         child: Text(
                           S.of(sheetCtx).clearAll,
                           style: ts(12, c: C.grey),
@@ -586,22 +592,25 @@ class _StationsPageState extends State<StationsPage> {
                           children: [
                             opt(
                               S.of(sheetCtx).all,
-                              _dev == 'all',
+                              _f.dev == 'all',
                               C.indigo,
-                              () => apply(() => _dev = 'all'),
+                              () => apply(() => _setFilter(_f.copyWith(dev: 'all'))),
                             ),
                             for (final k in devKeys)
                               opt(
                                 DeviceClassNames.labelOf(k, zh),
-                                _dev == k,
+                                _f.dev == k,
                                 C.indigo,
                                 () => apply(() {
                                   // 切类别时若已选型号不属于新类别则清空，避免空列表
-                                  if (_model != 'all' &&
-                                      _modelDeviceClass(st, _model) != k) {
-                                    _model = 'all';
+                                  var m = _f.model;
+                                  if (m != 'all' && _modelDeviceClass(st, m) != k) {
+                                    m = 'all';
                                   }
-                                  _dev = _dev == k ? 'all' : k;
+                                  _setFilter(_f.copyWith(
+                                    dev: _f.dev == k ? 'all' : k,
+                                    model: m,
+                                  ));
                                 }),
                               ),
                           ],
@@ -615,18 +624,21 @@ class _StationsPageState extends State<StationsPage> {
                             children: [
                               opt(
                                 S.of(sheetCtx).all,
-                                _model == 'all',
+                                _f.model == 'all',
                                 C.blueDark,
-                                () => apply(() => _model = 'all'),
+                                () => apply(
+                                  () => _setFilter(_f.copyWith(model: 'all')),
+                                ),
                               ),
                               for (final m in models)
                                 opt(
                                   m,
-                                  _model == m,
+                                  _f.model == m,
                                   C.blueDark,
-                                  () => apply(
-                                    () => _model = _model == m ? 'all' : m,
-                                  ),
+                                  () => apply(() => _setFilter(
+                                        _f.copyWith(
+                                            model: _f.model == m ? 'all' : m),
+                                      )),
                                 ),
                             ],
                           ),

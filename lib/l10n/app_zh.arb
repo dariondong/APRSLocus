@@ -1614,5 +1614,48 @@
   "airVeryUnhealthy": "重度污染",
   "airHazardous": "严重污染",
   "weatherAir": "空气质量",
-  "issStation": "ISS 空间站"
+  "issStation": "ISS 空间站",
+  "applyStationFilter": "台站筛选应用到地图",
+  "stationFilterOn": "已按台站面板筛选显示",
+  "stationList": "台站列表",
+  "statsPanel": "统计面板",
+  "statsOverview": "系统总览",
+  "statsTotalRx": "总接收数",
+  "statsTotalTx": "总发送数",
+  "statsRate": "接收速率",
+  "statsPerMin": "{n}/分",
+  "@statsPerMin": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "statsStationsTotal": "台站总数",
+  "statsCap": "容量上限",
+  "statsConn": "连接状态",
+  "statsConnected": "已连接",
+  "statsDisconnected": "未连接",
+  "statsMyGrid": "我的大网格",
+  "statsAprslocusUsers": "APRSlocus 用户",
+  "statsFarthest": "最远台站",
+  "statsStatusDist": "台站状态分布",
+  "statsTypeDist": "APRS 类型分布",
+  "statsGridDist": "大网格台站分布",
+  "statsGridHint": "按 Maidenhead 大网格（4 位）统计台站数量并排序",
+  "statsGridCount": "{n} 个网格",
+  "@statsGridCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "statsGridEmpty": "暂无台站位置数据",
+  "statsDeviceDist": "设备类别分布",
+  "statsOther": "其他指标",
+  "statsAvgSpeed": "平均速度",
+  "statsLastHeard": "最近上报",
+  "statsPackets": "数据包(近期)",
+  "statsNoData": "暂无数据"
 }
