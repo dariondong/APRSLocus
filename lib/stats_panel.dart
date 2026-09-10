@@ -198,7 +198,6 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     final st = widget.state;
     final s = _stats;
     final loc = AppLocalizations.of(context);
-    final dark = C.dark;
     final zh =
         (Localizations.maybeLocaleOf(context)?.languageCode ?? 'zh') == 'zh';
 
@@ -229,64 +228,72 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     ];
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 2, bottom: 16),
+      padding: const EdgeInsets.only(top: 2, bottom: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── 系统总览 ──
+          // ── 系统总览：两个主指标（大数字）+ 次要指标 ──
           _card(
-            dark,
             title: loc.statsOverview,
             icon: Icons.insights_rounded,
             child: Column(children: [
               Row(children: [
-                _kv(loc.statsTotalRx, '${s.totalRx}', C.blue, dark),
-                _kv(loc.statsTotalTx, '${s.totalTx}', C.purple, dark),
-                _kv(
+                _hero(loc.statsTotalRx, _num(s.totalRx), C.blue),
+                const SizedBox(width: 10),
+                _hero(loc.statsStationsTotal, _num(s.total), C.ink),
+              ]),
+              const SizedBox(height: 14),
+              _hairline(),
+              const SizedBox(height: 12),
+              Row(children: [
+                _stat(loc.statsTotalTx, _num(s.totalTx), C.purple),
+                _stat(
                   loc.statsRate,
                   s.perMin > 0 ? loc.statsPerMin('${s.perMin}') : '0',
                   C.green,
-                  dark,
                 ),
-              ]),
-              const SizedBox(height: 8),
-              Row(children: [
-                _kv(loc.statsStationsTotal, '${s.total}', C.ink, dark),
-                _kv(loc.statsCap, '${st.maxStations}', C.grey, dark),
-                _kv(
+                _stat(
                   loc.statsConn,
                   st.connected ? loc.statsConnected : loc.statsDisconnected,
                   st.connected ? C.green : C.grey,
-                  dark,
+                ),
+              ]),
+              const SizedBox(height: 10),
+              Row(children: [
+                _stat(loc.statsCap, _num(st.maxStations), C.grey),
+                _stat(loc.statsAprslocusUsers, _num(s.aprslocus), C.purple),
+                _stat(
+                  loc.statsFarthest,
+                  s.farKm == null ? '--' : '${s.farKm!.round()} km',
+                  C.orange,
                 ),
               ]),
               if (st.myHasFix && st.myLat != null && st.myLng != null) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Row(children: [
-                  _kv(loc.statsMyGrid, maidenhead(st.myLat!, st.myLng!, 4),
-                      C.cyan, dark),
-                  _kv(
-                    loc.statsAprslocusUsers,
-                    '${s.aprslocus}',
-                    C.purple,
-                    dark,
+                  _stat(loc.statsMyGrid, maidenhead(st.myLat!, st.myLng!, 4),
+                      C.cyan),
+                  _stat(loc.statsLastHeard,
+                      s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc),
+                      C.green),
+                  _stat(
+                    loc.statsAvgSpeed,
+                    s.avgSpeedKmh == null
+                        ? '--'
+                        : '${s.avgSpeedKmh!.toStringAsFixed(0)} km/h',
+                    C.blue,
                   ),
-                  if (s.farKm != null)
-                    _kv(loc.statsFarthest, '${s.farKm!.round()} km', C.orange,
-                        dark),
                 ]),
               ],
             ]),
           ),
           const SizedBox(height: 10),
 
-          // ── 台站状态分布 ──
+          // ── 台站状态分布（带色点，无排名）──
           _card(
-            dark,
             title: loc.statsStatusDist,
             icon: Icons.pie_chart_rounded,
             child: _bars(
-              dark,
               [
                 _Dist(loc.online, s.online),
                 _Dist(loc.moving, s.moving),
@@ -302,28 +309,25 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
 
           // ── APRS 类型分布 ──
           _card(
-            dark,
             title: loc.statsTypeDist,
             icon: Icons.category_rounded,
             child: typeDists.isEmpty
                 ? _empty(loc.statsNoData)
-                : _bars(dark, typeDists,
+                : _bars(typeDists,
                     total: typeDists.fold(0, (a, b) => a + b.count)),
           ),
           const SizedBox(height: 10),
 
-          // ── 大网格分布 ──
+          // ── 大网格分布（带排名，前三名高亮）──
           _card(
-            dark,
             title: loc.statsGridDist,
             icon: Icons.grid_on_rounded,
             subtitle: loc.statsGridHint,
-            trailing: s.grids.isEmpty
-                ? null
-                : loc.statsGridCount('${s.grids.length}'),
+            trailing:
+                s.grids.isEmpty ? null : loc.statsGridCount('${s.grids.length}'),
             child: s.grids.isEmpty
                 ? _empty(loc.statsGridEmpty)
-                : _bars(dark, s.grids,
+                : _bars(s.grids,
                     total: s.grids.fold(0, (a, b) => a + b.count),
                     showRank: true),
           ),
@@ -331,13 +335,11 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
 
           // ── 设备类别分布 ──
           _card(
-            dark,
             title: loc.statsDeviceDist,
             icon: Icons.devices_other_rounded,
             child: s.devs.isEmpty
                 ? _empty(loc.statsNoData)
                 : _bars(
-                    dark,
                     [
                       for (final d in s.devs)
                         _Dist(DeviceClassNames.labelOf(d.name, zh), d.count),
@@ -349,27 +351,19 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
 
           // ── 其他指标 ──
           _card(
-            dark,
             title: loc.statsOther,
             icon: Icons.speed_rounded,
-            child: Column(children: [
-              Row(children: [
-                _kv(
-                  loc.statsAvgSpeed,
-                  s.avgSpeedKmh == null
-                      ? '--'
-                      : '${s.avgSpeedKmh!.toStringAsFixed(0)} km/h',
-                  C.blue,
-                  dark,
-                ),
-                _kv(
-                  loc.statsLastHeard,
-                  s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc),
-                  C.green,
-                  dark,
-                ),
-                _kv(loc.statsPackets, '${st.packets.length}', C.slate, dark),
-              ]),
+            child: Row(children: [
+              _stat(
+                loc.statsAvgSpeed,
+                s.avgSpeedKmh == null
+                    ? '--'
+                    : '${s.avgSpeedKmh!.toStringAsFixed(0)} km/h',
+                C.blue,
+              ),
+              _stat(loc.statsLastHeard,
+                  s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc), C.green),
+              _stat(loc.statsPackets, _num(st.packets.length), C.slate),
             ]),
           ),
         ],
@@ -385,8 +379,27 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     return loc.daysAgo(d.inDays);
   }
 
-  Widget _card(
-    bool dark, {
+  /// 千分位（大数字更好读）
+  static String _num(int v) {
+    final s = v.toString();
+    if (s.length <= 4) return s;
+    final b = StringBuffer();
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) b.write(',');
+      b.write(s[i]);
+    }
+    return b.toString();
+  }
+
+  /// 细分隔线（同天气面板：显式给宽度，避免在宽松约束下塌成 0 宽）
+  Widget _hairline() => Container(
+        width: double.infinity,
+        height: 1,
+        color: C.border,
+      );
+
+  /// 区块卡片：统一圆角 14、无描边（靠底色分层），内边距收紧
+  Widget _card({
     required String title,
     required IconData icon,
     required Widget child,
@@ -395,28 +408,28 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1B2230) : C.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: C.border),
+        color: C.white,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Icon(icon, size: 15, color: C.blue),
+            Icon(icon, size: 14, color: C.blue),
             const SizedBox(width: 6),
             Text(title, style: ts(12.5, w: FontWeight.w800)),
             const Spacer(),
-            if (trailing != null) Text(trailing, style: ts(10, c: C.grey)),
+            if (trailing != null)
+              Text(trailing, style: ts(10, c: C.grey, w: FontWeight.w600)),
           ]),
           if (subtitle != null)
             Padding(
               padding: const EdgeInsets.only(top: 2),
               child: Text(subtitle, style: ts(9.5, c: C.grey)),
             ),
-          const SizedBox(height: 9),
+          const SizedBox(height: 11),
           child,
         ],
       ),
@@ -428,16 +441,32 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
         child: Text(msg, style: ts(11, c: C.grey)),
       );
 
-  /// 键值小格
-  Widget _kv(String label, String value, Color c, bool dark) {
+  /// 主指标：大数字 + 小标签（等宽两列）
+  Widget _hero(String label, String value, Color c) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-        decoration: BoxDecoration(
-          color: dark ? const Color(0xFF222A39) : C.bgSoft,
-          borderRadius: BorderRadius.circular(9),
-        ),
-        child: Column(children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(26, w: FontWeight.w900, c: c, ls: -0.5)),
+          const SizedBox(height: 2),
+          Text(label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(10.5, c: C.grey)),
+        ],
+      ),
+    );
+  }
+
+  /// 次要指标：值在上、标签在下，无边框（比一排方框更干净也让层级更清楚）
+  Widget _stat(String label, String value, Color c) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -447,14 +476,14 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: ts(9, c: C.grey)),
-        ]),
+        ],
       ),
     );
   }
 
-  /// 带条形的分布列表（可排序展示，按数量降序）
+  /// 分布列表：色点 / 排名 + 名称 + 条形 + 数量
+  /// （条形本身已表达占比，故不再单列百分比，避免一行挤 5 列）
   Widget _bars(
-    bool dark,
     List<_Dist> items, {
     required int total,
     List<Color>? colors,
@@ -466,18 +495,36 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     for (var i = 0; i < items.length; i++) {
       final it = items[i];
       final col = colors != null ? colors[i % colors.length] : C.blue;
-      final pct = total > 0 ? (it.count / total * 100) : 0.0;
+      final frac = maxN > 0 ? it.count / maxN : 0.0;
+      // 前三名的排名徽章做高亮
+      final top3 = showRank && i < 3;
       out.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(children: [
           if (showRank)
-            SizedBox(
+            Container(
               width: 18,
+              height: 18,
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(right: 7),
+              decoration: BoxDecoration(
+                color: top3 ? C.blue.withValues(alpha: 0.14) : Colors.transparent,
+                borderRadius: BorderRadius.circular(6),
+              ),
               child: Text('${i + 1}',
-                  style: ts(9.5, c: C.greyLight, w: FontWeight.w700)),
+                  style: ts(9.5,
+                      w: FontWeight.w800,
+                      c: top3 ? C.blue : C.greyLight)),
+            )
+          else
+            Container(
+              width: 7,
+              height: 7,
+              margin: const EdgeInsets.only(left: 2, right: 9),
+              decoration: BoxDecoration(color: col, shape: BoxShape.circle),
             ),
           SizedBox(
-            width: showRank ? 42 : 62,
+            width: showRank ? 46 : 58,
             child: Text(it.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -485,30 +532,25 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
                     w: showRank ? FontWeight.w800 : FontWeight.w600,
                     ls: showRank ? 0.4 : 0)),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(3),
               child: LinearProgressIndicator(
-                value: maxN > 0 ? it.count / maxN : 0,
+                value: frac,
                 minHeight: 6,
-                backgroundColor: dark ? const Color(0xFF2A3344) : C.greyBg,
-                valueColor: AlwaysStoppedAnimation<Color>(col),
+                backgroundColor: C.greyBg,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    showRank && !top3 ? col.withValues(alpha: 0.45) : col),
               ),
             ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           SizedBox(
-            width: 34,
-            child: Text('${it.count}',
+            width: 36,
+            child: Text(_num(it.count),
                 textAlign: TextAlign.right,
-                style: ts(11, w: FontWeight.w700)),
-          ),
-          SizedBox(
-            width: 38,
-            child: Text('${pct.toStringAsFixed(0)}%',
-                textAlign: TextAlign.right,
-                style: ts(9, c: C.grey)),
+                style: ts(11.5, w: FontWeight.w700)),
           ),
         ]),
       ));
