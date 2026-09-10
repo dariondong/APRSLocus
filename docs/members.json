@@ -1,5 +1,5 @@
 {
-  "version": 40,
+  "version": 41,
   "updated": "2026-09-10",
   "developers": [
     {
@@ -1296,7 +1296,8 @@
         "en": "Waited in the faintest static — watching a weak signal grow into a clear callsign."
       },
       "honors": [
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "earlyMember",
       "grp": "test",
