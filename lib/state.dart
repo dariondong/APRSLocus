@@ -49,7 +49,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.61';
+  static const appVersion = '1.6.62';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -420,22 +420,25 @@ class AppState extends ChangeNotifier {
   /// 空列表表示不匹配任何国家（普通台站隐藏，仅保留收藏/手动与「其他台站」特殊类型）
   final Map<String, bool> _matchCache = {};
   bool _matchReceiveFilter(String call) {
+    // 未选择任何国家/地区 = 不做限制，全部接收。
+    // （与「接收其他台站」及上报入口的语义保持一致；此前返回 false 会让
+    //   台站虽已正常接收入库，却在台站列表/地图/统计上全部不可见。）
+    // 提前返回且不写缓存，避免缓存与筛选状态不一致。
+    if (receiveCountries.isEmpty) return true;
     final up = call.toUpperCase();
     final cached = _matchCache[up];
     if (cached != null) return cached;
     var ok = false;
-    if (receiveCountries.isNotEmpty) {
-      for (final code in receiveCountries) {
-        final prefixes = countryCallPrefixes[code];
-        if (prefixes == null) continue;
-        for (final p in prefixes) {
-          if (up.startsWith(p)) {
-            ok = true;
-            break;
-          }
+    for (final code in receiveCountries) {
+      final prefixes = countryCallPrefixes[code];
+      if (prefixes == null) continue;
+      for (final p in prefixes) {
+        if (up.startsWith(p)) {
+          ok = true;
+          break;
         }
-        if (ok) break;
       }
+      if (ok) break;
     }
     _matchCache[up] = ok;
     return ok;
@@ -502,6 +505,7 @@ class AppState extends ChangeNotifier {
   /// 高性能版本：直接传 Station 对象，避免 indexWhere 线性查找（列表遍历时使用）
   bool stationAllowedFor(Station s) {
     if (s.favorite || s.manual) return true;
+    // 未选择国家/地区时不限制（_matchReceiveFilter 内部已处理）
     if (_matchReceiveFilter(s.call)) return true;
     // 其他台站：接收特殊类型（中继/气象/FMO/APRSlocus 同款）台站
     if (receiveOthers) {

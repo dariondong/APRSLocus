@@ -1918,7 +1918,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 child: Column(children: [
                   Icon(Icons.public_off_rounded, size: 20, color: C.greyLight),
                   SizedBox(height: 6),
-                  Text('未选择国家/地区', style: ts(11, c: C.grey)),
+                  Text('未选择国家/地区 · 不做限制（接收全部台站）',
+                      style: ts(11, c: C.grey)),
                 ]),
               )
             else
