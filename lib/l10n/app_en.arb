@@ -934,5 +934,96 @@
         "type": "String"
       }
     }
-  }
+  },
+  "hamStorm3": "Lightning approaching: disconnect the antenna feedline from your rig, move it outdoors to a ground rod to bleed static, switch off and unplug mains power so surges cannot enter via AC or LAN; do not use outdoor antennas or corded phones",
+  "hamStorm4": "Static crashes (QRN) surge around thunderstorms and HF noise floor rises; wait about 30 minutes after lightning stops before raising antennas and transmitting again",
+  "hamExtreme": "Torrential/extreme rain: watch for flash floods, standing water and rockfall — never set up on riverbanks or low ground; add a drip loop where the feedline enters the wall",
+  "hamGale": "Wind force {w}: do NOT climb towers or masts! Lower or lay down Yagis and long wires, and check guy ropes, anchors and mast stays",
+  "@hamGale": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "hamIce": "Ice on antennas and feedlines raises SWR and adds ice loading: do not force full power, first check guy tension and wait until ice melts before normal operation",
+  "hamFrost": "Below 0℃: lithium battery capacity drops sharply — keep spares warm in a pocket; guard against frostbite on hands and face, carry hand warmers",
+  "hamHeat2": "Heat makes PAs and PSUs derate: lower power, shorten continuous transmissions and make sure there is proper ventilation",
+  "hamDust": "Dust storm: fine sand in connectors and insulators causes leakage and noise — use dust caps; dry friction builds static, so ensure a good ground bleed",
+  "hamAir": "Poor air quality: wear a mask outdoors and limit exertion; pollution films on antenna insulators add leakage noise, so clean the antenna afterwards",
+  "hamDew": "Dew point spread only {d}℃ — air is near saturation: gear and feedlines may condense moisture; let equipment warm up and dry before powering on to avoid shorts",
+  "@hamDew": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "hamUV": "UV index {u} (high): protect yourself from sunburn during field work — long exposure also ages coax jackets and cable ties quickly",
+  "@hamUV": {
+    "placeholders": {
+      "u": {
+        "type": "String"
+      }
+    }
+  },
+  "hamLowPressure": "Low pressure ({p} hPa): weather is becoming unsettled — for long field sessions keep an escape route and watch nearby warnings",
+  "@hamLowPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHighPressure": "High, steady pressure ({p} hPa): inversions form easily and VHF/UHF tropospheric ducting is possible — try beyond-line-of-sight direct or repeater contacts",
+  "@hamHighPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "hamGrayLine": "You are in the sunrise/sunset grey line: 20/40m HF propagation peaks now — the golden window for long-haul DX",
+  "hamNight": "D-layer fades at night: 80/40m absorption drops with lower noise — great for regional and nighttime long-distance work",
+  "hamRainFade": "Heavier rain causes rain fade above 1.2GHz: for microwave and EME work, drop to a lower band or wait for the rain to ease",
+  "hamShower": "Showers come and go quickly: bring a rain cover, watch the cloud movement, and stop transmitting before removing the feedline",
+  "hamLevelDanger": "Safety",
+  "hamLevelWarn": "Caution",
+  "hamLevelGood": "Propagation",
+  "hamLevelTip": "Tip",
+  "hamMore": "Show all {n} tips",
+  "@hamMore": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "hamLess": "Collapse",
+  "weatherForecast3": "3-Day Forecast",
+  "weatherDaily15": "View 15-day weather",
+  "weatherDaily15Title": "15-Day Weather Trend",
+  "weatherToday": "Today",
+  "weatherTomorrow": "Tomorrow",
+  "weatherDayAfter": "Day after",
+  "weatherWeekday": "{d, select, 1 {Mon} 2 {Tue} 3 {Wed} 4 {Thu} 5 {Fri} 6 {Sat} 7 {Sun} other {—}}",
+  "@weatherWeekday": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "weatherSunrise": "Sunrise",
+  "weatherSunset": "Sunset",
+  "weatherUV": "UV",
+  "weatherDetails": "Details",
+  "weatherAQIPrimary": "Primary",
+  "airExcellent": "Excellent",
+  "airGood": "Good",
+  "airModerate": "Light pollution",
+  "airUnhealthy": "Moderate pollution",
+  "airVeryUnhealthy": "Heavy pollution",
+  "airHazardous": "Severe pollution",
+  "weatherAir": "AQI"
 }

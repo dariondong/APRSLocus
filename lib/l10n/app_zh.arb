@@ -1522,5 +1522,96 @@
         "type": "String"
       }
     }
-  }
+  },
+  "hamStorm3": "雷电临近：把天线馈线从设备上拔下并移至室外接地端泄放，关闭电源并拔掉插头，避免浪涌经市电、网线窜入；不要使用室外天线与有线电话",
+  "hamStorm4": "雷暴前后静电噪声（QRN）骤增、短波底噪抬升；雷电活动结束后约 30 分钟再恢复架台与发射",
+  "hamExtreme": "暴雨/极端降水：注意山洪、积水与落石，勿在河岸、低洼处架台；馈线入墙处做滴水弯，防止雨水顺线灌入室内",
+  "hamGale": "风力 {w} 级：禁止上塔、爬杆作业！八木与长线天线务必放倒或降下，检查风绳、地锚与桅杆拉线",
+  "@hamGale": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "hamIce": "天线与馈线结冰会升高驻波（SWR）并增加冰载：切勿满功率硬发，先检查拉线受力，待化冰后再正常通联",
+  "hamFrost": "气温低于 0℃：锂电池容量骤降，备用电池请贴身保温；注意手部与面部冻伤，带上暖手宝",
+  "hamHeat2": "高温易使功放与电源过热降额：适当降低功率、缩短连续发射时间，并保证通风散热",
+  "hamDust": "沙尘天气：细沙渗入接头与绝缘子会造成泄漏和噪声，请加防尘罩；干燥摩擦易积累静电，注意接地泄放",
+  "hamAir": "空气质量差：户外架台请佩戴口罩并减少剧烈活动；污染物附着天线绝缘子会引入泄漏噪声，收工后清洁",
+  "hamDew": "露点差仅 {d}℃，空气接近饱和：设备与馈线易结露，收工后先缓温除湿再通电，避免短路",
+  "@hamDew": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "hamUV": "紫外线指数 {u}，强度偏高：野外架台注意防晒；长期暴晒会加速同轴电缆外皮与扎带老化",
+  "@hamUV": {
+    "placeholders": {
+      "u": {
+        "type": "String"
+      }
+    }
+  },
+  "hamLowPressure": "气压偏低（{p} hPa）：天气趋于不稳，长时间野外架台请留好退路并留意临近预警",
+  "@hamLowPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "hamHighPressure": "气压较高（{p} hPa）且稳定：易形成逆温层，VHF/UHF 可能出现大气波导，可尝试超视距远地直频或中继通联",
+  "@hamHighPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "hamGrayLine": "正值日出/日落灰线时段：20/40m 短波传播最佳，是跨洲远程（DX）通联的黄金窗口",
+  "hamNight": "夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信",
+  "hamRainFade": "较强降水对 1.2GHz 以上频段有雨衰影响：微波与 EME 通联建议改用较低频段或等雨势减弱",
+  "hamShower": "阵雨来去突然：架台请备好防雨罩并留意云团移动，收工前先断开发射再拆馈线",
+  "hamLevelDanger": "安全警示",
+  "hamLevelWarn": "注意",
+  "hamLevelGood": "通联机会",
+  "hamLevelTip": "操作提示",
+  "hamMore": "展开全部 {n} 条建议",
+  "@hamMore": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "hamLess": "收起",
+  "weatherForecast3": "三天预报",
+  "weatherDaily15": "查看近 15 日天气",
+  "weatherDaily15Title": "近 15 日天气趋势",
+  "weatherToday": "今天",
+  "weatherTomorrow": "明天",
+  "weatherDayAfter": "后天",
+  "weatherWeekday": "{d, select, 1 {周一} 2 {周二} 3 {周三} 4 {周四} 5 {周五} 6 {周六} 7 {周日} other {—}}",
+  "@weatherWeekday": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "weatherSunrise": "日出",
+  "weatherSunset": "日落",
+  "weatherUV": "紫外线",
+  "weatherDetails": "详细数据",
+  "weatherAQIPrimary": "首要污染物",
+  "airExcellent": "优",
+  "airGood": "良",
+  "airModerate": "轻度污染",
+  "airUnhealthy": "中度污染",
+  "airVeryUnhealthy": "重度污染",
+  "airHazardous": "严重污染",
+  "weatherAir": "空气质量"
 }

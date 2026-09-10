@@ -7,7 +7,6 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
-import 'app_localizations_zh_TW.dart';
 
 // ignore_for_file: type=lint
 
@@ -98,7 +97,6 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('zh'),
     Locale('zh', 'TW'),
-    Locale('zh', 'TW'),
   ];
 
   /// 应用名称
@@ -172,10 +170,35 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'设置'**
   String get settings;
+
+  /// No description provided for @greetMorning.
+  ///
+  /// In zh, this message translates to:
+  /// **'早上好，'**
   String get greetMorning;
+
+  /// No description provided for @greetNoon.
+  ///
+  /// In zh, this message translates to:
+  /// **'中午好，'**
   String get greetNoon;
+
+  /// No description provided for @greetAfternoon.
+  ///
+  /// In zh, this message translates to:
+  /// **'下午好，'**
   String get greetAfternoon;
+
+  /// No description provided for @greetEvening.
+  ///
+  /// In zh, this message translates to:
+  /// **'晚上好，'**
   String get greetEvening;
+
+  /// No description provided for @greetNight.
+  ///
+  /// In zh, this message translates to:
+  /// **'夜深了，'**
   String get greetNight;
 
   /// No description provided for @about.
@@ -503,6 +526,9 @@ abstract class AppLocalizations {
   String get languageEn;
 
   /// No description provided for @languageZhTw.
+  ///
+  /// In zh, this message translates to:
+  /// **'繁體中文'**
   String get languageZhTw;
 
   /// No description provided for @displaySettings.
@@ -904,13 +930,13 @@ abstract class AppLocalizations {
   /// No description provided for @groupChat.
   ///
   /// In zh, this message translates to:
-  /// **'群聊'**
+  /// **'群组'**
   String get groupChat;
 
   /// No description provided for @newGroup.
   ///
   /// In zh, this message translates to:
-  /// **'新建群聊'**
+  /// **'新建群组'**
   String get newGroup;
 
   /// No description provided for @sendTo.
@@ -1256,6 +1282,9 @@ abstract class AppLocalizations {
   String get codeContributionI18n;
 
   /// No description provided for @codeContributionZhTw.
+  ///
+  /// In zh, this message translates to:
+  /// **'繁体中文界面'**
   String get codeContributionZhTw;
 
   /// No description provided for @licenseSection.
@@ -1281,15 +1310,65 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'查看许可证'**
   String get licenseText;
+
+  /// No description provided for @oobeAgreeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户协议与许可'**
   String get oobeAgreeTitle;
+
+  /// No description provided for @oobeAgreeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'欢迎使用 APRSlocus！在使用前，请阅读并同意以下条款。请注意：APRS 数据是公开信息，一旦发送即代表其可能被全球 APRS 网络接收、存储与转发。'**
   String get oobeAgreeBody;
+
+  /// No description provided for @oobeAgreeCheck.
+  ///
+  /// In zh, this message translates to:
+  /// **'我已阅读并同意《用户协议》与 GPL-3.0 开源许可证'**
   String get oobeAgreeCheck;
+
+  /// No description provided for @oobeAgreeNeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先阅读并勾选同意《用户协议》'**
   String get oobeAgreeNeed;
+
+  /// No description provided for @oobeDeclineExit.
+  ///
+  /// In zh, this message translates to:
+  /// **'不同意并退出'**
   String get oobeDeclineExit;
+
+  /// No description provided for @userAgreement.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户协议'**
   String get userAgreement;
+
+  /// No description provided for @beaconWarnTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标间隔过短'**
   String get beaconWarnTitle;
+
+  /// No description provided for @beaconWarnBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 建议移动站信标间隔不低于 60 秒。过快的上报可能被视为滥用并导致服务器断开连接。是否仍要使用该间隔？'**
   String get beaconWarnBody;
+
+  /// No description provided for @beaconWarnKeep.
+  ///
+  /// In zh, this message translates to:
+  /// **'仍然使用'**
   String get beaconWarnKeep;
+
+  /// No description provided for @beaconWarnFix.
+  ///
+  /// In zh, this message translates to:
+  /// **'改回 60 秒'**
   String get beaconWarnFix;
 
   /// No description provided for @features.
@@ -1463,7 +1542,7 @@ abstract class AppLocalizations {
   /// No description provided for @smartBeacon.
   ///
   /// In zh, this message translates to:
-  /// **'智能信标(移动加速)'**
+  /// **'智能信标(按速度分档)'**
   String get smartBeacon;
 
   /// No description provided for @packetConsole.
@@ -2603,13 +2682,13 @@ abstract class AppLocalizations {
   /// No description provided for @groupInviteTitle.
   ///
   /// In zh, this message translates to:
-  /// **'群聊邀请'**
+  /// **'群组邀请'**
   String get groupInviteTitle;
 
   /// No description provided for @groupInviteFrom.
   ///
   /// In zh, this message translates to:
-  /// **'{from} 邀请你加入群聊'**
+  /// **'{from} 邀请你加入群组'**
   String groupInviteFrom(String from);
 
   /// No description provided for @groupNameValue.
@@ -2815,36 +2894,43 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'缩小地图后显示台站密度热力图'**
   String get heatmapHint;
+
   /// No description provided for @groupTracking.
   ///
   /// In zh, this message translates to:
   /// **'群组跟踪'**
   String get groupTracking;
+
   /// No description provided for @groupTrackingHint.
   ///
   /// In zh, this message translates to:
   /// **'把关心的呼号编成组，在大地图上持续跟踪（车队 / 好友结伴），支持横屏。'**
   String get groupTrackingHint;
+
   /// No description provided for @newTrackGroup.
   ///
   /// In zh, this message translates to:
   /// **'新建跟踪组'**
   String get newTrackGroup;
+
   /// No description provided for @trackGroupNameHint.
   ///
   /// In zh, this message translates to:
   /// **'组名，如：周末骑行'**
   String get trackGroupNameHint;
+
   /// No description provided for @editTrackGroup.
   ///
   /// In zh, this message translates to:
   /// **'编辑跟踪组'**
   String get editTrackGroup;
+
   /// No description provided for @deleteTrackGroup.
   ///
   /// In zh, this message translates to:
   /// **'删除跟踪组'**
   String get deleteTrackGroup;
+
   /// No description provided for @deleteTrackGroupConfirm.
   ///
   /// In zh, this message translates to:
@@ -2856,102 +2942,121 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'选择成员（勾选要跟踪的呼号）'**
   String get pickTrackMembers;
+
   /// No description provided for @saveAndTrack.
   ///
   /// In zh, this message translates to:
   /// **'保存并跟踪'**
   String get saveAndTrack;
+
   /// No description provided for @trackGroupsEmptyHint.
   ///
   /// In zh, this message translates to:
   /// **'还没有跟踪组，点「新建跟踪组」创建一组要跟踪的呼号。'**
   String get trackGroupsEmptyHint;
+
   /// No description provided for @trackMemberSub.
   ///
   /// In zh, this message translates to:
   /// **'{type} · {seen}'**
-  String trackMemberSub(Object type, Object seen);
+  String trackMemberSub(Object seen, Object type);
 
   /// No description provided for @trackGroupEmpty.
   ///
   /// In zh, this message translates to:
   /// **'组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。'**
   String get trackGroupEmpty;
+
   /// No description provided for @trackActive.
   ///
   /// In zh, this message translates to:
   /// **'在线'**
   String get trackActive;
+
   /// No description provided for @trackWaitingPos.
   ///
   /// In zh, this message translates to:
   /// **'等待位置…'**
   String get trackWaitingPos;
+
   /// No description provided for @offlineShort.
   ///
   /// In zh, this message translates to:
   /// **'离线'**
   String get offlineShort;
+
   /// No description provided for @stoppedShort.
   ///
   /// In zh, this message translates to:
   /// **'静止'**
   String get stoppedShort;
+
   /// No description provided for @trackHeader.
   ///
   /// In zh, this message translates to:
   /// **'{total} 人 · {online} 在线 · {fixed} 已定位'**
-  String trackHeader(Object total, Object online, Object fixed);
+  String trackHeader(Object fixed, Object online, Object total);
+
   /// No description provided for @groupChatShort.
   ///
   /// In zh, this message translates to:
-  /// **'群聊'**
+  /// **'群组'**
   String get groupChatShort;
+
   /// No description provided for @groupChatTitle.
   ///
   /// In zh, this message translates to:
-  /// **'群聊 · {name}'**
+  /// **'群组 · {name}'**
   String groupChatTitle(Object name);
+
   /// No description provided for @chatWithTitle.
   ///
   /// In zh, this message translates to:
   /// **'与 {call} 聊天'**
   String chatWithTitle(Object call);
+
   /// No description provided for @chatToGroupHint.
   ///
   /// In zh, this message translates to:
   /// **'发消息给全群…'**
   String get chatToGroupHint;
+
   /// No description provided for @chatToHint.
   ///
   /// In zh, this message translates to:
   /// **'发给 {call}…'**
   String chatToHint(Object call);
+
   /// No description provided for @noMessagesHint.
   ///
   /// In zh, this message translates to:
   /// **'暂无消息，发一条吧'**
   String get noMessagesHint;
+
   /// No description provided for @trackModeFollow.
   ///
   /// In zh, this message translates to:
   /// **'跟随 {call}'**
   String trackModeFollow(Object call);
+
   /// No description provided for @trackModeMe.
   ///
   /// In zh, this message translates to:
   /// **'跟随我'**
   String get trackModeMe;
+
   /// No description provided for @trackModeFitAll.
   ///
   /// In zh, this message translates to:
   /// **'全览保持中'**
   String get trackModeFitAll;
+
   /// No description provided for @fitAll.
   ///
   /// In zh, this message translates to:
   /// **'全览'**
   String get fitAll;
+
   /// No description provided for @noStationsYet.
   ///
   /// In zh, this message translates to:
@@ -3011,40 +3116,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'气象数据 · {data}'**
   String weatherDataValue(String data);
-
-  // ── 天气面板（weather.dart）──
-  String get weatherPanelTitle;
-  String get weatherPanelSub;
-  String get weatherRefresh;
-  String get weatherPowered;
-  String get weatherCurLoc;
-  String get weatherNoLoc;
-  String get weatherUnavail;
-  String get weatherDataFail;
-  String get weatherConnFail;
-  String get weatherCloud;
-  String get weatherDew;
-  String get weatherHumidity;
-  String get weatherWindDir;
-  String get weatherWindScale;
-  String get weatherWindSpeed;
-  String get weatherPressure;
-  String get weatherVis;
-  String get weatherPrecip;
-  String weatherFeels(String v);
-  String weatherObserved(String t);
-  String get hamTitle;
-  String get hamNoData;
-  String get hamStorm1;
-  String get hamStorm2;
-  String get hamRain;
-  String get hamCold;
-  String hamWind(String w);
-  String hamHot(String t);
-  String hamHumid(String h);
-  String hamFog(String v);
-  String get hamGood;
-  String hamWindExtra(String w);
 
   /// No description provided for @symbolLabel.
   ///
@@ -3241,7 +3312,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupNotFound.
   ///
   /// In zh, this message translates to:
-  /// **'群聊不存在'**
+  /// **'群组不存在'**
   String get groupNotFound;
 
   /// No description provided for @invite.
@@ -3259,7 +3330,7 @@ abstract class AppLocalizations {
   /// No description provided for @noGroupMessages.
   ///
   /// In zh, this message translates to:
-  /// **'群聊暂无消息'**
+  /// **'群组暂无消息'**
   String get noGroupMessages;
 
   /// No description provided for @selectConversation.
@@ -3331,7 +3402,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupNameHint.
   ///
   /// In zh, this message translates to:
-  /// **'输入群聊名称'**
+  /// **'输入群组名称'**
   String get groupNameHint;
 
   /// No description provided for @create.
@@ -4243,7 +4314,7 @@ abstract class AppLocalizations {
   /// No description provided for @oobePasscodeMissingDesc.
   ///
   /// In zh, this message translates to:
-  /// **'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群聊。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。'**
+  /// **'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群组。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。'**
   String get oobePasscodeMissingDesc;
 
   /// No description provided for @continueAnyway.
@@ -4327,7 +4398,7 @@ abstract class AppLocalizations {
   /// No description provided for @passcodeImportantDesc.
   ///
   /// In zh, this message translates to:
-  /// **'正确的 Passcode 是接收群聊消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。'**
+  /// **'正确的 Passcode 是接收群组消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。'**
   String get passcodeImportantDesc;
 
   /// No description provided for @lookupPasscode.
@@ -4441,7 +4512,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupChatExplain.
   ///
   /// In zh, this message translates to:
-  /// **'群聊使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。'**
+  /// **'群组使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。'**
   String get groupChatExplain;
 
   /// No description provided for @noMembersSelected.
@@ -4507,13 +4578,13 @@ abstract class AppLocalizations {
   /// No description provided for @systemMemberJoined.
   ///
   /// In zh, this message translates to:
-  /// **'{call} 加入了群聊'**
+  /// **'{call} 加入了群组'**
   String systemMemberJoined(String call);
 
   /// No description provided for @systemMemberLeft.
   ///
   /// In zh, this message translates to:
-  /// **'{call} 离开了群聊'**
+  /// **'{call} 离开了群组'**
   String systemMemberLeft(String call);
 
   /// No description provided for @systemInviteDeclined.
@@ -5009,67 +5080,574 @@ abstract class AppLocalizations {
   String get eggBg2hcb;
 
   /// No description provided for @deviceInfoTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备识别'**
   String get deviceInfoTitle;
 
   /// No description provided for @deviceToCall.
+  ///
+  /// In zh, this message translates to:
+  /// **'目的呼号'**
   String get deviceToCall;
 
   /// No description provided for @deviceModel.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备型号'**
   String get deviceModel;
 
   /// No description provided for @deviceClass.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备类别'**
   String get deviceClass;
 
   /// No description provided for @deviceFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备筛选'**
   String get deviceFilter;
 
   /// No description provided for @lookupQrz.
+  ///
+  /// In zh, this message translates to:
+  /// **'QRZ 呼号'**
   String get lookupQrz;
 
   /// No description provided for @lookupAprsFi.
+  ///
+  /// In zh, this message translates to:
+  /// **'aprs.fi 位置'**
   String get lookupAprsFi;
 
   /// No description provided for @linkOpenFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开链接'**
   String get linkOpenFailed;
 
-  /// No description provided for @quickTrackCreate.
-  String get quickTrackCreate;
-
-  /// No description provided for @quickTrackHint.
-  String get quickTrackHint;
-
-  /// No description provided for @quickTrackName.
-  String get quickTrackName;
-
-  /// No description provided for @quickTrackPickLabel.
-  String get quickTrackPickLabel;
-
-  /// No description provided for @quickTrackNoStations.
-  String get quickTrackNoStations;
-
-  /// No description provided for @quickTrackManualHint.
-  String get quickTrackManualHint;
-
-  /// No description provided for @quickTrackStart.
-  String get quickTrackStart;
-
-  /// No description provided for @quickTrackNeedMembers.
-  String get quickTrackNeedMembers;
-
   /// No description provided for @beaconAutoAskTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接成功，自动上报位置？'**
   String get beaconAutoAskTitle;
 
   /// No description provided for @beaconAutoAskDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'是否让 APRSlocus 在连接后自动定时上报你的位置（信标）？移动台建议开启；若只想接收消息与看周边台站，可关闭（随时可手动上报一次）。'**
   String get beaconAutoAskDesc;
 
   /// No description provided for @beaconAutoYes.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动上报'**
   String get beaconAutoYes;
 
   /// No description provided for @beaconAutoNo.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂不，仅接收'**
   String get beaconAutoNo;
 
   /// No description provided for @beaconOffChip.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动上报已关闭'**
   String get beaconOffChip;
+
+  /// No description provided for @quickTrackCreate.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建跟踪组'**
+  String get quickTrackCreate;
+
+  /// No description provided for @quickTrackHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'从已接收台站勾选成员，也可手输呼号补充；直接在地图上跟踪这些人，不需要先建聊天群。'**
+  String get quickTrackHint;
+
+  /// No description provided for @quickTrackName.
+  ///
+  /// In zh, this message translates to:
+  /// **'组名（可选）'**
+  String get quickTrackName;
+
+  /// No description provided for @quickTrackPickLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择要跟踪的台站'**
+  String get quickTrackPickLabel;
+
+  /// No description provided for @quickTrackNoStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无已接收台站，可直接手输呼号（多个用逗号分隔）'**
+  String get quickTrackNoStations;
+
+  /// No description provided for @quickTrackManualHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'手输呼号，如 BG7PGW,BG7LMW'**
+  String get quickTrackManualHint;
+
+  /// No description provided for @quickTrackStart.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始跟踪'**
+  String get quickTrackStart;
+
+  /// No description provided for @quickTrackNeedMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'请至少选择或输入一个呼号'**
+  String get quickTrackNeedMembers;
+
+  /// No description provided for @weatherPanelTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气 · 火腿建议'**
+  String get weatherPanelTitle;
+
+  /// No description provided for @weatherPanelSub.
+  ///
+  /// In zh, this message translates to:
+  /// **'和风天气 · 当前位置'**
+  String get weatherPanelSub;
+
+  /// No description provided for @weatherRefresh.
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新'**
+  String get weatherRefresh;
+
+  /// No description provided for @weatherPowered.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据由和风天气提供 · APRSlocus'**
+  String get weatherPowered;
+
+  /// No description provided for @weatherCurLoc.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前位置'**
+  String get weatherCurLoc;
+
+  /// No description provided for @weatherNoLoc.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无定位：请在“我的电台”开启位置服务后查看天气'**
+  String get weatherNoLoc;
+
+  /// No description provided for @weatherUnavail.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气服务暂时不可用'**
+  String get weatherUnavail;
+
+  /// No description provided for @weatherDataFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气数据获取失败'**
+  String get weatherDataFail;
+
+  /// No description provided for @weatherConnFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气服务连接失败'**
+  String get weatherConnFail;
+
+  /// No description provided for @weatherCloud.
+  ///
+  /// In zh, this message translates to:
+  /// **'云量'**
+  String get weatherCloud;
+
+  /// No description provided for @weatherDew.
+  ///
+  /// In zh, this message translates to:
+  /// **'露点'**
+  String get weatherDew;
+
+  /// No description provided for @weatherHumidity.
+  ///
+  /// In zh, this message translates to:
+  /// **'湿度'**
+  String get weatherHumidity;
+
+  /// No description provided for @weatherWindDir.
+  ///
+  /// In zh, this message translates to:
+  /// **'风向'**
+  String get weatherWindDir;
+
+  /// No description provided for @weatherWindScale.
+  ///
+  /// In zh, this message translates to:
+  /// **'风力'**
+  String get weatherWindScale;
+
+  /// No description provided for @weatherWindSpeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'风速'**
+  String get weatherWindSpeed;
+
+  /// No description provided for @weatherPressure.
+  ///
+  /// In zh, this message translates to:
+  /// **'气压'**
+  String get weatherPressure;
+
+  /// No description provided for @weatherVis.
+  ///
+  /// In zh, this message translates to:
+  /// **'能见度'**
+  String get weatherVis;
+
+  /// No description provided for @weatherPrecip.
+  ///
+  /// In zh, this message translates to:
+  /// **'降水'**
+  String get weatherPrecip;
+
+  /// No description provided for @weatherFeels.
+  ///
+  /// In zh, this message translates to:
+  /// **'体感 {v}°'**
+  String weatherFeels(String v);
+
+  /// No description provided for @weatherObserved.
+  ///
+  /// In zh, this message translates to:
+  /// **'观测 {t}'**
+  String weatherObserved(String t);
+
+  /// No description provided for @hamTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'业余无线电建议'**
+  String get hamTitle;
+
+  /// No description provided for @hamNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取天气后，将给出适合架台/通联/防雷的安全建议'**
+  String get hamNoData;
+
+  /// No description provided for @hamStorm1.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备'**
+  String get hamStorm1;
+
+  /// No description provided for @hamStorm2.
+  ///
+  /// In zh, this message translates to:
+  /// **'如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮'**
+  String get hamStorm2;
+
+  /// No description provided for @hamRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水'**
+  String get hamRain;
+
+  /// No description provided for @hamCold.
+  ///
+  /// In zh, this message translates to:
+  /// **'低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化'**
+  String get hamCold;
+
+  /// No description provided for @hamWind.
+  ///
+  /// In zh, this message translates to:
+  /// **'风力 {w} 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒'**
+  String hamWind(String w);
+
+  /// No description provided for @hamHot.
+  ///
+  /// In zh, this message translates to:
+  /// **'高温 {t}°C：注意防暑补水，设备避免长时间满功率发射导致过热'**
+  String hamHot(String t);
+
+  /// No description provided for @hamHumid.
+  ///
+  /// In zh, this message translates to:
+  /// **'湿度 {h}%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈'**
+  String hamHumid(String h);
+
+  /// No description provided for @hamFog.
+  ///
+  /// In zh, this message translates to:
+  /// **'能见度低（{v}km）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联'**
+  String hamFog(String v);
+
+  /// No description provided for @hamGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化'**
+  String get hamGood;
+
+  /// No description provided for @hamWindExtra.
+  ///
+  /// In zh, this message translates to:
+  /// **'虽有 {w} 级风，仍建议为天线加固风绳，野外架台注意安全'**
+  String hamWindExtra(String w);
+
+  /// No description provided for @hamStorm3.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷电临近：把天线馈线从设备上拔下并移至室外接地端泄放，关闭电源并拔掉插头，避免浪涌经市电、网线窜入；不要使用室外天线与有线电话'**
+  String get hamStorm3;
+
+  /// No description provided for @hamStorm4.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷暴前后静电噪声（QRN）骤增、短波底噪抬升；雷电活动结束后约 30 分钟再恢复架台与发射'**
+  String get hamStorm4;
+
+  /// No description provided for @hamExtreme.
+  ///
+  /// In zh, this message translates to:
+  /// **'暴雨/极端降水：注意山洪、积水与落石，勿在河岸、低洼处架台；馈线入墙处做滴水弯，防止雨水顺线灌入室内'**
+  String get hamExtreme;
+
+  /// No description provided for @hamGale.
+  ///
+  /// In zh, this message translates to:
+  /// **'风力 {w} 级：禁止上塔、爬杆作业！八木与长线天线务必放倒或降下，检查风绳、地锚与桅杆拉线'**
+  String hamGale(String w);
+
+  /// No description provided for @hamIce.
+  ///
+  /// In zh, this message translates to:
+  /// **'天线与馈线结冰会升高驻波（SWR）并增加冰载：切勿满功率硬发，先检查拉线受力，待化冰后再正常通联'**
+  String get hamIce;
+
+  /// No description provided for @hamFrost.
+  ///
+  /// In zh, this message translates to:
+  /// **'气温低于 0℃：锂电池容量骤降，备用电池请贴身保温；注意手部与面部冻伤，带上暖手宝'**
+  String get hamFrost;
+
+  /// No description provided for @hamHeat2.
+  ///
+  /// In zh, this message translates to:
+  /// **'高温易使功放与电源过热降额：适当降低功率、缩短连续发射时间，并保证通风散热'**
+  String get hamHeat2;
+
+  /// No description provided for @hamDust.
+  ///
+  /// In zh, this message translates to:
+  /// **'沙尘天气：细沙渗入接头与绝缘子会造成泄漏和噪声，请加防尘罩；干燥摩擦易积累静电，注意接地泄放'**
+  String get hamDust;
+
+  /// No description provided for @hamAir.
+  ///
+  /// In zh, this message translates to:
+  /// **'空气质量差：户外架台请佩戴口罩并减少剧烈活动；污染物附着天线绝缘子会引入泄漏噪声，收工后清洁'**
+  String get hamAir;
+
+  /// No description provided for @hamDew.
+  ///
+  /// In zh, this message translates to:
+  /// **'露点差仅 {d}℃，空气接近饱和：设备与馈线易结露，收工后先缓温除湿再通电，避免短路'**
+  String hamDew(String d);
+
+  /// No description provided for @hamUV.
+  ///
+  /// In zh, this message translates to:
+  /// **'紫外线指数 {u}，强度偏高：野外架台注意防晒；长期暴晒会加速同轴电缆外皮与扎带老化'**
+  String hamUV(String u);
+
+  /// No description provided for @hamLowPressure.
+  ///
+  /// In zh, this message translates to:
+  /// **'气压偏低（{p} hPa）：天气趋于不稳，长时间野外架台请留好退路并留意临近预警'**
+  String hamLowPressure(String p);
+
+  /// No description provided for @hamHighPressure.
+  ///
+  /// In zh, this message translates to:
+  /// **'气压较高（{p} hPa）且稳定：易形成逆温层，VHF/UHF 可能出现大气波导，可尝试超视距远地直频或中继通联'**
+  String hamHighPressure(String p);
+
+  /// No description provided for @hamGrayLine.
+  ///
+  /// In zh, this message translates to:
+  /// **'正值日出/日落灰线时段：20/40m 短波传播最佳，是跨洲远程（DX）通联的黄金窗口'**
+  String get hamGrayLine;
+
+  /// No description provided for @hamNight.
+  ///
+  /// In zh, this message translates to:
+  /// **'夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信'**
+  String get hamNight;
+
+  /// No description provided for @hamRainFade.
+  ///
+  /// In zh, this message translates to:
+  /// **'较强降水对 1.2GHz 以上频段有雨衰影响：微波与 EME 通联建议改用较低频段或等雨势减弱'**
+  String get hamRainFade;
+
+  /// No description provided for @hamShower.
+  ///
+  /// In zh, this message translates to:
+  /// **'阵雨来去突然：架台请备好防雨罩并留意云团移动，收工前先断开发射再拆馈线'**
+  String get hamShower;
+
+  /// No description provided for @hamLevelDanger.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全警示'**
+  String get hamLevelDanger;
+
+  /// No description provided for @hamLevelWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'注意'**
+  String get hamLevelWarn;
+
+  /// No description provided for @hamLevelGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'通联机会'**
+  String get hamLevelGood;
+
+  /// No description provided for @hamLevelTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'操作提示'**
+  String get hamLevelTip;
+
+  /// No description provided for @hamMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'展开全部 {n} 条建议'**
+  String hamMore(String n);
+
+  /// No description provided for @hamLess.
+  ///
+  /// In zh, this message translates to:
+  /// **'收起'**
+  String get hamLess;
+
+  /// No description provided for @weatherForecast3.
+  ///
+  /// In zh, this message translates to:
+  /// **'三天预报'**
+  String get weatherForecast3;
+
+  /// No description provided for @weatherDaily15.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看近 15 日天气'**
+  String get weatherDaily15;
+
+  /// No description provided for @weatherDaily15Title.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 15 日天气趋势'**
+  String get weatherDaily15Title;
+
+  /// No description provided for @weatherToday.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天'**
+  String get weatherToday;
+
+  /// No description provided for @weatherTomorrow.
+  ///
+  /// In zh, this message translates to:
+  /// **'明天'**
+  String get weatherTomorrow;
+
+  /// No description provided for @weatherDayAfter.
+  ///
+  /// In zh, this message translates to:
+  /// **'后天'**
+  String get weatherDayAfter;
+
+  /// No description provided for @weatherWeekday.
+  ///
+  /// In zh, this message translates to:
+  /// **'{d, select, 1 {周一} 2 {周二} 3 {周三} 4 {周四} 5 {周五} 6 {周六} 7 {周日} other {—}}'**
+  String weatherWeekday(String d);
+
+  /// No description provided for @weatherSunrise.
+  ///
+  /// In zh, this message translates to:
+  /// **'日出'**
+  String get weatherSunrise;
+
+  /// No description provided for @weatherSunset.
+  ///
+  /// In zh, this message translates to:
+  /// **'日落'**
+  String get weatherSunset;
+
+  /// No description provided for @weatherUV.
+  ///
+  /// In zh, this message translates to:
+  /// **'紫外线'**
+  String get weatherUV;
+
+  /// No description provided for @weatherDetails.
+  ///
+  /// In zh, this message translates to:
+  /// **'详细数据'**
+  String get weatherDetails;
+
+  /// No description provided for @weatherAQIPrimary.
+  ///
+  /// In zh, this message translates to:
+  /// **'首要污染物'**
+  String get weatherAQIPrimary;
+
+  /// No description provided for @airExcellent.
+  ///
+  /// In zh, this message translates to:
+  /// **'优'**
+  String get airExcellent;
+
+  /// No description provided for @airGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'良'**
+  String get airGood;
+
+  /// No description provided for @airModerate.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻度污染'**
+  String get airModerate;
+
+  /// No description provided for @airUnhealthy.
+  ///
+  /// In zh, this message translates to:
+  /// **'中度污染'**
+  String get airUnhealthy;
+
+  /// No description provided for @airVeryUnhealthy.
+  ///
+  /// In zh, this message translates to:
+  /// **'重度污染'**
+  String get airVeryUnhealthy;
+
+  /// No description provided for @airHazardous.
+  ///
+  /// In zh, this message translates to:
+  /// **'严重污染'**
+  String get airHazardous;
+
+  /// No description provided for @weatherAir.
+  ///
+  /// In zh, this message translates to:
+  /// **'空气质量'**
+  String get weatherAir;
 }
 
 class _AppLocalizationsDelegate
@@ -5090,17 +5668,24 @@ class _AppLocalizationsDelegate
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-  // zh 分繁简：zh_TW / zh_Hant → 繁体，否则简体
-  if (locale.languageCode == 'zh') {
-    final st =
-        (locale.scriptCode ?? locale.countryCode ?? '').toUpperCase();
-    if (st == 'TW' || st == 'HANT') return AppLocalizationsZhTw();
-    return AppLocalizationsZh();
+  // Lookup logic when language+country codes are specified.
+  switch (locale.languageCode) {
+    case 'zh':
+      {
+        switch (locale.countryCode) {
+          case 'TW':
+            return AppLocalizationsZhTw();
+        }
+        break;
+      }
   }
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
@@ -5109,6 +5694,4 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.',
   );
-
-
 }

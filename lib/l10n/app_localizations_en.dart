@@ -44,10 +44,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
   String get greetMorning => 'Good morning, ';
+
+  @override
   String get greetNoon => 'Good noon, ';
+
+  @override
   String get greetAfternoon => 'Good afternoon, ';
+
+  @override
   String get greetEvening => 'Good evening, ';
+
+  @override
   String get greetNight => 'Hello, ';
 
   @override
@@ -609,15 +619,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenseText => 'View license';
+
+  @override
   String get oobeAgreeTitle => 'User Agreement & License';
-  String get oobeAgreeBody => 'Welcome to APRSlocus! Please read and agree to the terms below before using the app. Note that APRS data is public: once sent, it may be received, stored and forwarded by the global APRS network.';
-  String get oobeAgreeCheck => 'I have read and agree to the User Agreement and the GPL-3.0 license';
-  String get oobeAgreeNeed => 'Please read and agree to the User Agreement first';
+
+  @override
+  String get oobeAgreeBody =>
+      'Welcome to APRSlocus! Please read and agree to the terms below before using the app. Note that APRS data is public: once sent, it may be received, stored and forwarded by the global APRS network.';
+
+  @override
+  String get oobeAgreeCheck =>
+      'I have read and agree to the User Agreement and the GPL-3.0 license';
+
+  @override
+  String get oobeAgreeNeed =>
+      'Please read and agree to the User Agreement first';
+
+  @override
   String get oobeDeclineExit => 'Decline and exit';
+
+  @override
   String get userAgreement => 'User Agreement';
+
+  @override
   String get beaconWarnTitle => 'Beacon interval too short';
-  String get beaconWarnBody => 'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';
+
+  @override
+  String get beaconWarnBody =>
+      'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';
+
+  @override
   String get beaconWarnKeep => 'Keep anyway';
+
+  @override
   String get beaconWarnFix => 'Set to 60 s';
 
   @override
@@ -898,7 +932,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapHelpLocate =>
-      'Locate: tap \u201cLocate me\u201d (bottom-right) to return to your position';
+      'Locate: tap “Locate me” (bottom-right) to return to your position';
 
   @override
   String get mapHelpSearch =>
@@ -1471,7 +1505,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupTracking => 'Group tracking';
 
   @override
-  String get groupTrackingHint => 'Group callsigns you care about and track them on a big map (caravan / friends). Landscape friendly.';
+  String get groupTrackingHint =>
+      'Group callsigns you care about and track them on a big map (caravan / friends). Landscape friendly.';
 
   @override
   String get newTrackGroup => 'New track group';
@@ -1486,7 +1521,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteTrackGroup => 'Delete track group';
 
   @override
-  String deleteTrackGroupConfirm(Object name) => 'Delete track group \u201c$name\u201d?';
+  String deleteTrackGroupConfirm(Object name) {
+    return 'Delete track group “$name”?';
+  }
 
   @override
   String get pickTrackMembers => 'Pick members (check callsigns to track)';
@@ -1495,13 +1532,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveAndTrack => 'Save & track';
 
   @override
-  String get trackGroupsEmptyHint => 'No track groups yet. Tap \u201cNew track group\u201d to create one.';
+  String get trackGroupsEmptyHint =>
+      'No track groups yet. Tap “New track group” to create one.';
 
   @override
-  String trackMemberSub(Object type, Object seen) => '$type · $seen';
+  String trackMemberSub(Object seen, Object type) {
+    return '$type · $seen';
+  }
 
   @override
-  String get trackGroupEmpty => 'Members have no position data yet (not received or not beaconing).';
+  String get trackGroupEmpty =>
+      'Members have no position data yet (not received or not beaconing).';
 
   @override
   String get trackActive => 'Active';
@@ -1516,29 +1557,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stoppedShort => 'Stopped';
 
   @override
-  String trackHeader(Object total, Object online, Object fixed) =>
-      '$total members · $online online · $fixed fixed';
+  String trackHeader(Object fixed, Object online, Object total) {
+    return '$total members · $online online · $fixed fixed';
+  }
 
   @override
   String get groupChatShort => 'Chat';
 
   @override
-  String groupChatTitle(Object name) => 'Group · $name';
+  String groupChatTitle(Object name) {
+    return 'Group · $name';
+  }
 
   @override
-  String chatWithTitle(Object call) => 'Chat with $call';
+  String chatWithTitle(Object call) {
+    return 'Chat with $call';
+  }
 
   @override
   String get chatToGroupHint => 'Message the group…';
 
   @override
-  String chatToHint(Object call) => 'Message $call…';
+  String chatToHint(Object call) {
+    return 'Message $call…';
+  }
 
   @override
   String get noMessagesHint => 'No messages yet — say hi!';
 
   @override
-  String trackModeFollow(Object call) => 'Following $call';
+  String trackModeFollow(Object call) {
+    return 'Following $call';
+  }
 
   @override
   String get trackModeMe => 'Following me';
@@ -1550,7 +1600,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fitAll => 'Fit all';
 
   @override
-  String get noStationsYet => 'No station data yet. Connect to APRS-IS to pick members.';
+  String get noStationsYet =>
+      'No station data yet. Connect to APRS-IS to pick members.';
 
   @override
   String get noPackets => 'No packets yet';
@@ -1593,116 +1644,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String weatherDataValue(String data) {
     return 'Weather · $data';
-  }
-
-  @override
-  String get weatherPanelTitle => 'Weather · Ham Tips';
-
-  @override
-  String get weatherPanelSub => 'QWeather · Current Location';
-
-  @override
-  String get weatherRefresh => 'Refresh';
-
-  @override
-  String get weatherPowered => 'Powered by QWeather · APRSlocus';
-
-  @override
-  String get weatherCurLoc => 'Current location';
-
-  @override
-  String get weatherNoLoc => 'No location yet — enable location in My Station to view weather';
-
-  @override
-  String get weatherUnavail => 'Weather service unavailable';
-
-  @override
-  String get weatherDataFail => 'Failed to fetch weather data';
-
-  @override
-  String get weatherConnFail => 'Weather service connection failed';
-
-  @override
-  String get weatherCloud => 'Cloud';
-
-  @override
-  String get weatherDew => 'Dew pt';
-
-  @override
-  String get weatherHumidity => 'Humidity';
-
-  @override
-  String get weatherWindDir => 'Wind dir';
-
-  @override
-  String get weatherWindScale => 'Wind';
-
-  @override
-  String get weatherWindSpeed => 'Wind spd';
-
-  @override
-  String get weatherPressure => 'Pressure';
-
-  @override
-  String get weatherVis => 'Visibility';
-
-  @override
-  String get weatherPrecip => 'Precip.';
-
-  @override
-  String weatherFeels(String v) {
-    return 'Feels $v°';
-  }
-
-  @override
-  String weatherObserved(String t) {
-    return 'Observed $t';
-  }
-
-  @override
-  String get hamTitle => 'Ham radio tips';
-
-  @override
-  String get hamNoData => 'Once weather is loaded, tips on antenna setup, operating and lightning safety will appear';
-
-  @override
-  String get hamStorm1 => 'Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage';
-
-  @override
-  String get hamStorm2 => 'If already set up, take it down promptly; switch to indoor repeater / HF listening and keep gear dry';
-
-  @override
-  String get hamRain => 'Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained';
-
-  @override
-  String get hamCold => 'Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas';
-
-  @override
-  String hamWind(String w) {
-    return 'Wind $w: guy and secure antennas firmly; lower beams / long wires when packing up';
-  }
-
-  @override
-  String hamHot(String t) {
-    return 'Heat $t°C: stay hydrated; avoid long full-power transmissions that overheat your gear';
-  }
-
-  @override
-  String hamHumid(String h) {
-    return 'Humidity $h%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free';
-  }
-
-  @override
-  String hamFog(String v) {
-    return 'Low visibility ($v km): drive carefully; fog can create ducts — try distant VHF/UHF contacts';
-  }
-
-  @override
-  String get hamGood => 'Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening';
-
-  @override
-  String hamWindExtra(String w) {
-    return 'Wind $w: still guy the antenna and stay safe in the field';
   }
 
   @override
@@ -2993,21 +2934,309 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconOffChip => 'Auto-report off';
+
   @override
   String get quickTrackCreate => 'New track group';
+
   @override
-  String get quickTrackHint => 'Pick stations you received, or type callsigns — track them on the map directly, no chat group required.';
+  String get quickTrackHint =>
+      'Pick stations you received, or type callsigns — track them on the map directly, no chat group required.';
+
   @override
   String get quickTrackName => 'Name (optional)';
+
   @override
   String get quickTrackPickLabel => 'Choose stations to track';
+
   @override
-  String get quickTrackNoStations => 'No stations received yet — type callsigns below (comma separated)';
+  String get quickTrackNoStations =>
+      'No stations received yet — type callsigns below (comma separated)';
+
   @override
   String get quickTrackManualHint => 'Type callsigns, e.g. BG7PGW,BG7LMW';
+
   @override
   String get quickTrackStart => 'Start tracking';
+
   @override
   String get quickTrackNeedMembers => 'Pick or type at least one callsign';
 
+  @override
+  String get weatherPanelTitle => 'Weather · Ham Tips';
+
+  @override
+  String get weatherPanelSub => 'QWeather · Current Location';
+
+  @override
+  String get weatherRefresh => 'Refresh';
+
+  @override
+  String get weatherPowered => 'Powered by QWeather · APRSlocus';
+
+  @override
+  String get weatherCurLoc => 'Current location';
+
+  @override
+  String get weatherNoLoc =>
+      'No location yet — enable location in My Station to view weather';
+
+  @override
+  String get weatherUnavail => 'Weather service unavailable';
+
+  @override
+  String get weatherDataFail => 'Failed to fetch weather data';
+
+  @override
+  String get weatherConnFail => 'Weather service connection failed';
+
+  @override
+  String get weatherCloud => 'Cloud';
+
+  @override
+  String get weatherDew => 'Dew pt';
+
+  @override
+  String get weatherHumidity => 'Humidity';
+
+  @override
+  String get weatherWindDir => 'Wind dir';
+
+  @override
+  String get weatherWindScale => 'Wind';
+
+  @override
+  String get weatherWindSpeed => 'Wind spd';
+
+  @override
+  String get weatherPressure => 'Pressure';
+
+  @override
+  String get weatherVis => 'Visibility';
+
+  @override
+  String get weatherPrecip => 'Precip.';
+
+  @override
+  String weatherFeels(String v) {
+    return 'Feels $v°';
+  }
+
+  @override
+  String weatherObserved(String t) {
+    return 'Observed $t';
+  }
+
+  @override
+  String get hamTitle => 'Ham radio tips';
+
+  @override
+  String get hamNoData =>
+      'Once weather is loaded, tips on antenna setup, operating and lightning safety will appear';
+
+  @override
+  String get hamStorm1 =>
+      'Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage';
+
+  @override
+  String get hamStorm2 =>
+      'If already set up, take it down promptly; switch to indoor repeater / HF listening and keep gear dry';
+
+  @override
+  String get hamRain =>
+      'Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained';
+
+  @override
+  String get hamCold =>
+      'Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas';
+
+  @override
+  String hamWind(String w) {
+    return 'Wind $w: guy and secure antennas firmly; lower beams / long wires when packing up';
+  }
+
+  @override
+  String hamHot(String t) {
+    return 'Heat $t°C: stay hydrated; avoid long full-power transmissions that overheat your gear';
+  }
+
+  @override
+  String hamHumid(String h) {
+    return 'Humidity $h%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free';
+  }
+
+  @override
+  String hamFog(String v) {
+    return 'Low visibility ($v km): drive carefully; fog can create ducts — try distant VHF/UHF contacts';
+  }
+
+  @override
+  String get hamGood =>
+      'Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening';
+
+  @override
+  String hamWindExtra(String w) {
+    return 'Wind $w: still guy the antenna and stay safe in the field';
+  }
+
+  @override
+  String get hamStorm3 =>
+      'Lightning approaching: disconnect the antenna feedline from your rig, move it outdoors to a ground rod to bleed static, switch off and unplug mains power so surges cannot enter via AC or LAN; do not use outdoor antennas or corded phones';
+
+  @override
+  String get hamStorm4 =>
+      'Static crashes (QRN) surge around thunderstorms and HF noise floor rises; wait about 30 minutes after lightning stops before raising antennas and transmitting again';
+
+  @override
+  String get hamExtreme =>
+      'Torrential/extreme rain: watch for flash floods, standing water and rockfall — never set up on riverbanks or low ground; add a drip loop where the feedline enters the wall';
+
+  @override
+  String hamGale(String w) {
+    return 'Wind force $w: do NOT climb towers or masts! Lower or lay down Yagis and long wires, and check guy ropes, anchors and mast stays';
+  }
+
+  @override
+  String get hamIce =>
+      'Ice on antennas and feedlines raises SWR and adds ice loading: do not force full power, first check guy tension and wait until ice melts before normal operation';
+
+  @override
+  String get hamFrost =>
+      'Below 0℃: lithium battery capacity drops sharply — keep spares warm in a pocket; guard against frostbite on hands and face, carry hand warmers';
+
+  @override
+  String get hamHeat2 =>
+      'Heat makes PAs and PSUs derate: lower power, shorten continuous transmissions and make sure there is proper ventilation';
+
+  @override
+  String get hamDust =>
+      'Dust storm: fine sand in connectors and insulators causes leakage and noise — use dust caps; dry friction builds static, so ensure a good ground bleed';
+
+  @override
+  String get hamAir =>
+      'Poor air quality: wear a mask outdoors and limit exertion; pollution films on antenna insulators add leakage noise, so clean the antenna afterwards';
+
+  @override
+  String hamDew(String d) {
+    return 'Dew point spread only $d℃ — air is near saturation: gear and feedlines may condense moisture; let equipment warm up and dry before powering on to avoid shorts';
+  }
+
+  @override
+  String hamUV(String u) {
+    return 'UV index $u (high): protect yourself from sunburn during field work — long exposure also ages coax jackets and cable ties quickly';
+  }
+
+  @override
+  String hamLowPressure(String p) {
+    return 'Low pressure ($p hPa): weather is becoming unsettled — for long field sessions keep an escape route and watch nearby warnings';
+  }
+
+  @override
+  String hamHighPressure(String p) {
+    return 'High, steady pressure ($p hPa): inversions form easily and VHF/UHF tropospheric ducting is possible — try beyond-line-of-sight direct or repeater contacts';
+  }
+
+  @override
+  String get hamGrayLine =>
+      'You are in the sunrise/sunset grey line: 20/40m HF propagation peaks now — the golden window for long-haul DX';
+
+  @override
+  String get hamNight =>
+      'D-layer fades at night: 80/40m absorption drops with lower noise — great for regional and nighttime long-distance work';
+
+  @override
+  String get hamRainFade =>
+      'Heavier rain causes rain fade above 1.2GHz: for microwave and EME work, drop to a lower band or wait for the rain to ease';
+
+  @override
+  String get hamShower =>
+      'Showers come and go quickly: bring a rain cover, watch the cloud movement, and stop transmitting before removing the feedline';
+
+  @override
+  String get hamLevelDanger => 'Safety';
+
+  @override
+  String get hamLevelWarn => 'Caution';
+
+  @override
+  String get hamLevelGood => 'Propagation';
+
+  @override
+  String get hamLevelTip => 'Tip';
+
+  @override
+  String hamMore(String n) {
+    return 'Show all $n tips';
+  }
+
+  @override
+  String get hamLess => 'Collapse';
+
+  @override
+  String get weatherForecast3 => '3-Day Forecast';
+
+  @override
+  String get weatherDaily15 => 'View 15-day weather';
+
+  @override
+  String get weatherDaily15Title => '15-Day Weather Trend';
+
+  @override
+  String get weatherToday => 'Today';
+
+  @override
+  String get weatherTomorrow => 'Tomorrow';
+
+  @override
+  String get weatherDayAfter => 'Day after';
+
+  @override
+  String weatherWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'Mon',
+      '2': 'Tue',
+      '3': 'Wed',
+      '4': 'Thu',
+      '5': 'Fri',
+      '6': 'Sat',
+      '7': 'Sun',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get weatherSunrise => 'Sunrise';
+
+  @override
+  String get weatherSunset => 'Sunset';
+
+  @override
+  String get weatherUV => 'UV';
+
+  @override
+  String get weatherDetails => 'Details';
+
+  @override
+  String get weatherAQIPrimary => 'Primary';
+
+  @override
+  String get airExcellent => 'Excellent';
+
+  @override
+  String get airGood => 'Good';
+
+  @override
+  String get airModerate => 'Light pollution';
+
+  @override
+  String get airUnhealthy => 'Moderate pollution';
+
+  @override
+  String get airVeryUnhealthy => 'Heavy pollution';
+
+  @override
+  String get airHazardous => 'Severe pollution';
+
+  @override
+  String get weatherAir => 'AQI';
 }
