@@ -260,10 +260,48 @@ class AprsDevice {
         ..addAll(classSet)
         ..add('other');
       _cache.clear();
-      _loadedCount = devices.length;
+      // 追加本应用自用的目的呼号标识（官方 tocalls 未收录）
+      _appendBuiltins();
+      _loadedCount = _devices.length;
+      // 返回值语义保持不变：报告「解析出的库是否非空」，
+      // 不把内置补充条目算进去，以免空库被误判为加载成功而跳过 asset 兜底
       return devices.isNotEmpty;
     } catch (_) {
       return false;
+    }
+  }
+
+  /// 官方 tocalls 未收录、但本应用自己使用/需识别的目的呼号标识。
+  ///
+  /// 本机信标的 path 首段为 `APALOC`（见 state.dart `_sendBeaconNow`），
+  /// 而官方设备库里没有该条目 —— 结果是自己（以及其他 APRSlocus 用户）
+  /// 的 toCall 查不到设备，台站列表里**不显示设备标签**。
+  /// 这里内置一份映射，让 APRSlocus 台站能像其它台站一样显示设备信息。
+  ///
+  /// 格式：(pattern, vendor, model, cls)
+  static const List<(String, String, String, String)> _builtinEntries = [
+    ('APALOC', 'APRSlocus', 'APRSlocus', 'app'),
+    // 兼容少数实现用完整名/旧写法作为 toCall 的情况
+    ('APRSLOCUS', 'APRSlocus', 'APRSlocus', 'app'),
+    ('APOLOCUS', 'APRSlocus', 'APRSlocus', 'app'),
+  ];
+
+  /// 把内置条目追加到库末尾。
+  /// 每次解析设备库后都执行，因此远端刷新（会整体覆盖 `_devices`）
+  /// 不会把这些条目冲掉。
+  void _appendBuiltins() {
+    final seen = _devices.map((e) => '${e.pattern}|${e.model}').toSet();
+    for (final (pat, vendor, model, cls) in _builtinEntries) {
+      if (!seen.add('$pat|$model')) continue;
+      _devices.add(
+        _DeviceEntry(pattern: pat, vendor: vendor, model: model, cls: cls),
+      );
+      if (cls.isNotEmpty && !_classKeys.contains(cls)) {
+        // 'other' 保持在末位，新增类别插在它之前
+        _classKeys.remove('other');
+        _classKeys.add(cls);
+        _classKeys.add('other');
+      }
     }
   }
 

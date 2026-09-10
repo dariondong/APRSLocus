@@ -1,5 +1,28 @@
 # 更新日志
 
+## [1.6.70] - 2026-09-10
+
+### 🐛 天气面板：点击面板外的空白处无法关闭
+- 根因在 `DraggableScrollableSheet` 的 `expand` 参数。Flutter 源码里：
+  `widget.expand ? SizedBox.expand(child: sheet) : sheet` ——
+  我此前设了 `expand: true`（也是默认值），sheet 被 `SizedBox.expand`
+  **撑满整个屏幕**，面板的渲染树因此盖住全屏；点击「面板外」的空白处
+  落到的是面板自己的树，**永远到不了下层遮罩**，所以点空白退不出去
+- 改为 `expand: false`：sheet 只占 58%，上方空白归还给遮罩，点击即关闭。
+  `snap` 吸附不受影响（吸附位置按 `constraints.biggest.height` 计算）
+- 另显式声明 `isDismissible: true` / `enableDrag: true`，并给出可见遮罩
+  （黑色 28%），让「点外部可关闭」这件事可被感知
+
+### 🐛 台站列表不显示自己台站的设备信息
+- 本机信标的 `path` 首段是 `APALOC`（本应用专用标识），而**官方 tocalls
+  设备库里没有该条目** → `toCall` 查不到设备 → `deviceName` 为 null
+  → 台站列表里自己（以及其他 APRSlocus 用户）**不渲染设备标签**
+- 在设备库里内置一份补充映射（`APALOC` / `APRSLOCUS` / `APOLOCUS`
+  → APRSlocus，类别 `app`），每次解析库后追加，
+  **远端刷新（会整体覆盖 `_devices`）不会把它冲掉**
+- 效果：自己的台站在列表/详情里显示「APRSlocus」设备标签，
+  并出现在「设备类别」筛选中（手机 App）
+
 ## [1.6.69] - 2026-09-10
 
 ### 📍 修复 iOS / macOS 无法定位（两个平台各自不同的根因）

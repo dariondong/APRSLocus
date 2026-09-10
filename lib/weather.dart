@@ -1310,6 +1310,11 @@ Future<void> showWeatherPanel(BuildContext context, AppState state) async {
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
+    // 点击面板外的空白处关闭（默认即 true，这里显式声明避免后续被误改）
+    isDismissible: true,
+    enableDrag: true,
+    // 给出可见的遮罩，让“点外部可关闭”这件事可被感知
+    barrierColor: Colors.black.withValues(alpha: 0.28),
     builder: (ctx) => DraggableScrollableSheet(
       // 优先半屏弹出；向上滑动可展开覆盖更多（吸附到半屏 / 近满屏两档）
       initialChildSize: 0.58,
@@ -1317,7 +1322,14 @@ Future<void> showWeatherPanel(BuildContext context, AppState state) async {
       maxChildSize: 0.94,
       snap: true,
       snapSizes: const [0.58, 0.94],
-      expand: true,
+      // 必须为 false：true 时 DraggableScrollableSheet 内部会用
+      // `SizedBox.expand` 把 sheet 撑满整个屏幕（见 Flutter 源码
+      // draggable_scrollable_sheet.dart: `widget.expand ? SizedBox.expand(child: sheet) : sheet`），
+      // 于是面板的渲染树盖住全屏，点击“面板外空白处”落到的是面板自己的树、
+      // 永远到不了下层遮罩 → 点空白无法退出。
+      // 置 false 后 sheet 只占 58%，上方空白归还给遮罩即可点击关闭；
+      // snap 不受影响（吸附位置按 LayoutBuilder 的 constraints.biggest.height 计算）。
+      expand: false,
       builder: (ctx2, controller) => _WeatherPanel(
         state: state,
         hasPos: hasPos,
