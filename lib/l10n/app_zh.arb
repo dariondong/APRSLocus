@@ -1665,5 +1665,9 @@
   "activeConditions": "生效条件",
   "statsMovingCount": "移动台站",
   "statsOnlineRate": "在线率",
-  "statsGridCountLabel": "大网格数"
+  "statsGridCountLabel": "大网格数",
+  "maxPackets": "数据包保留条数",
+  "maxPacketsTip": "数据包页面保留的历史条数（默认 2000，提高会占用更多内存）",
+  "maxTrackPts": "轨迹点数上限",
+  "maxTrackPtsTip": "每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）"
 }

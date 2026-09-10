@@ -1407,6 +1407,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   late final TextEditingController _filterLng;
   late final TextEditingController _filterRadius;
   late final TextEditingController _maxStations;
+  late final TextEditingController _maxPackets;
+  late final TextEditingController _maxTrackPts;
 
   bool _configDirty = false;
   String _origServer = '';
@@ -1431,6 +1433,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _filterLng = TextEditingController(text: st.filterLng.toStringAsFixed(2));
     _filterRadius = TextEditingController(text: '${st.filterRadius}');
     _maxStations = TextEditingController(text: '${st.maxStations}');
+    _maxPackets = TextEditingController(text: '${st.maxPackets}');
+    _maxTrackPts = TextEditingController(text: '${st.maxTrackPts}');
     _origServer = st.aprs.server;
     _origPort = st.aprs.port;
     _origPass = st.aprs.passcode;
@@ -1451,6 +1455,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     _filterLng.dispose();
     _filterRadius.dispose();
     _maxStations.dispose();
+    _maxPackets.dispose();
+    _maxTrackPts.dispose();
     super.dispose();
   }
 
@@ -1778,6 +1784,18 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             onChanged: (v) {
           final n = int.tryParse(v);
           if (n != null) st.setMaxStations(n);
+        }),
+        // 数据包保留条数（原先硬编码 200，偏少）
+        SettingsInput(S.of(context).maxPackets, _maxPackets,
+            tip: S.of(context).maxPacketsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxPackets(n);
+        }),
+        // 单台站轨迹点数上限（原先硬编码 60，导致轨迹很短）
+        SettingsInput(S.of(context).maxTrackPts, _maxTrackPts,
+            tip: S.of(context).maxTrackPtsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxTrackPts(n);
         }),
         Padding(
           padding: const EdgeInsets.all(14),

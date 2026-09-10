@@ -49,7 +49,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.70';
+  static const appVersion = '1.6.71';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -535,6 +535,33 @@ class AppState extends ChangeNotifier {
     _bumpStationsVersion();
   }
 
+  /// 数据包列表上限（下限 100，防止设成 0 把历史全清掉）
+  void setMaxPackets(int n) {
+    maxPackets = n < 100 ? 100 : n;
+    if (packets.length > maxPackets) {
+      packets.removeRange(maxPackets, packets.length);
+    }
+    persist();
+    _notify();
+  }
+
+  /// 轨迹点数上限（下限 20，防止轨迹退化成一条直线）
+  void setMaxTrackPts(int n) {
+    maxTrackPts = n < 20 ? 20 : n;
+    // 立即裁剪超量轨迹，避免旧数据继续占用内存
+    for (final s in stations) {
+      if (s.track.length > maxTrackPts) {
+        s.track = s.track.sublist(s.track.length - maxTrackPts);
+      }
+    }
+    if (myTrack.length > maxTrackPts) {
+      myTrack.removeRange(0, myTrack.length - maxTrackPts);
+    }
+    _bumpStationsVersion();
+    persist();
+    _notify();
+  }
+
   void setMaxStations(int n) {
     maxStations = n < 50 ? 50 : n;
     // 立即裁剪超量台站（优先保留收藏/手动台站）
@@ -704,6 +731,12 @@ class AppState extends ChangeNotifier {
   double filterLng = 116.4074;
   int filterRadius = 300; // km
   int maxStations = 100000; // 台站上限（默认无限制，可下调）
+
+  /// 数据包列表上限（历史记录条数）。原先硬编码 200，偏少。
+  int maxPackets = 2000;
+
+  /// 单个台站的轨迹点数上限。原先硬编码 60，导致运动轨迹显示很不完整。
+  int maxTrackPts = 300;
   bool filterFollow = true; // 过滤中心跟随我的位置
 
   /// 未连接时的待发送队列（重连成功后补发）
@@ -892,6 +925,8 @@ class AppState extends ChangeNotifier {
       filterLng = p.getDouble('filterLng') ?? filterLng;
       filterRadius = p.getInt('filterRadius') ?? filterRadius;
       maxStations = p.getInt('maxStations') ?? maxStations;
+      maxPackets = p.getInt('maxPackets') ?? maxPackets;
+      maxTrackPts = p.getInt('maxTrackPts') ?? maxTrackPts;
       filterFollow = p.getBool('filterFollow') ?? filterFollow;
       // 按国家接收
       try {
@@ -1009,6 +1044,8 @@ class AppState extends ChangeNotifier {
           p.setDouble('filterLng', filterLng);
           p.setInt('filterRadius', filterRadius);
           p.setInt('maxStations', maxStations);
+          p.setInt('maxPackets', maxPackets);
+          p.setInt('maxTrackPts', maxTrackPts);
           p.setBool('filterFollow', filterFollow);
           p.setStringList('receiveCountries', receiveCountries);
           p.setBool('receiveOthers', receiveOthers);
@@ -1445,12 +1482,12 @@ class AppState extends ChangeNotifier {
     mySpeed = speed * 3.6;
     if (bearing >= 0) myCourse = bearing;
     locStatus = '已定位';
-    // 记录我的轨迹（限最近 200 点，间隔>20m 才记录避免冗余）
+    // 记录我的轨迹（上限 maxTrackPts，间隔 >20m 才记录避免冗余）
     final last = myTrack.isEmpty ? null : myTrack.last;
     if (last == null || haversine(last.lat, last.lng, lat, lng) > 0.02) {
       myTrack.add(TrackPt(lat, lng, DateTime.now()));
-      if (myTrack.length > 200) {
-        myTrack.removeRange(0, myTrack.length - 200);
+      if (myTrack.length > maxTrackPts) {
+        myTrack.removeRange(0, myTrack.length - maxTrackPts);
       }
     }
     // 过滤中心跟随我的位置
@@ -2202,10 +2239,14 @@ class AppState extends ChangeNotifier {
       if (p.speed != null) {
         s.status = p.speed! > 1.0 ? St.moving : St.stopped;
       }
+      // 记录条件：位移超过 20m（避免静止时堆积重复点）。
+      // 上限由 maxTrackPts 控制（原先硬编码 60，轨迹因此很短）。
       if (s.track.isEmpty ||
           haversine(s.track.last.lat, s.track.last.lng, p.lat, p.lng) > 0.02) {
         s.track = [...s.track, TrackPt(p.lat, p.lng, now)];
-        if (s.track.length > 60) s.track = s.track.sublist(s.track.length - 60);
+        if (s.track.length > maxTrackPts) {
+          s.track = s.track.sublist(s.track.length - maxTrackPts);
+        }
       }
       // 记录速度/高度遥测采样（每次位置包都记，供详情页变化图表）
       s.telemetry = [
@@ -2321,7 +2362,7 @@ class AppState extends ChangeNotifier {
     // 顺带清理超过 60 秒的记录，防止 _rxTimes 无界增长
     final now = DateTime.now();
     _rxTimes.removeWhere((t) => now.difference(t).inSeconds > 60);
-    if (packets.length > 200) packets.removeLast();
+    if (packets.length > maxPackets) packets.removeLast();
     _notifyRx();
   }
 
@@ -2913,7 +2954,9 @@ class AppState extends ChangeNotifier {
       s.lng += (math.Random().nextDouble() - 0.5) * 0.004;
       s.lastHeard = DateTime.now();
       s.track = [...s.track, TrackPt(s.lat, s.lng, DateTime.now())];
-      if (s.track.length > 60) s.track = s.track.sublist(s.track.length - 60);
+      if (s.track.length > maxTrackPts) {
+        s.track = s.track.sublist(s.track.length - maxTrackPts);
+      }
     }
     _bumpStationsVersion();
     _notify();

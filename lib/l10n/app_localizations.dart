@@ -5876,6 +5876,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'大网格数'**
   String get statsGridCountLabel;
+
+  /// No description provided for @maxPackets.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据包保留条数'**
+  String get maxPackets;
+
+  /// No description provided for @maxPacketsTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据包页面保留的历史条数（默认 2000，提高会占用更多内存）'**
+  String get maxPacketsTip;
+
+  /// No description provided for @maxTrackPts.
+  ///
+  /// In zh, this message translates to:
+  /// **'轨迹点数上限'**
+  String get maxTrackPts;
+
+  /// No description provided for @maxTrackPtsTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）'**
+  String get maxTrackPtsTip;
 }
 
 class _AppLocalizationsDelegate

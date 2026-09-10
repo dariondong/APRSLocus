@@ -1665,5 +1665,9 @@
   "activeConditions": "生效條件",
   "statsMovingCount": "移動台站",
   "statsOnlineRate": "在線率",
-  "statsGridCountLabel": "大網格數"
+  "statsGridCountLabel": "大網格數",
+  "maxPackets": "資料包保留條數",
+  "maxPacketsTip": "資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）",
+  "maxTrackPts": "軌跡點數上限",
+  "maxTrackPtsTip": "每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）"
 }

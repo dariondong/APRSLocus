@@ -3267,6 +3267,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statsGridCountLabel => '大网格数';
+
+  @override
+  String get maxPackets => '数据包保留条数';
+
+  @override
+  String get maxPacketsTip => '数据包页面保留的历史条数（默认 2000，提高会占用更多内存）';
+
+  @override
+  String get maxTrackPts => '轨迹点数上限';
+
+  @override
+  String get maxTrackPtsTip => '每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6532,4 +6544,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get statsGridCountLabel => '大網格數';
+
+  @override
+  String get maxPackets => '資料包保留條數';
+
+  @override
+  String get maxPacketsTip => '資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）';
+
+  @override
+  String get maxTrackPts => '軌跡點數上限';
+
+  @override
+  String get maxTrackPtsTip => '每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）';
 }

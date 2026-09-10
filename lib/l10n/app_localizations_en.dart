@@ -3358,4 +3358,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsGridCountLabel => 'Grid squares';
+
+  @override
+  String get maxPackets => 'Packet history limit';
+
+  @override
+  String get maxPacketsTip =>
+      'How many packets to keep on the packets page (default 2000; higher uses more memory)';
+
+  @override
+  String get maxTrackPts => 'Track point limit';
+
+  @override
+  String get maxTrackPtsTip =>
+      'Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)';
 }

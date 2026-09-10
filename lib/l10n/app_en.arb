@@ -1077,5 +1077,9 @@
   "activeConditions": "Active conditions",
   "statsMovingCount": "Moving",
   "statsOnlineRate": "Online rate",
-  "statsGridCountLabel": "Grid squares"
+  "statsGridCountLabel": "Grid squares",
+  "maxPackets": "Packet history limit",
+  "maxPacketsTip": "How many packets to keep on the packets page (default 2000; higher uses more memory)",
+  "maxTrackPts": "Track point limit",
+  "maxTrackPtsTip": "Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)"
 }
