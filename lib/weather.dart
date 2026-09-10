@@ -1085,53 +1085,69 @@ class _FxPainter extends CustomPainter {
         }
 
         // ── 雨 ──
-        final nearN = 30 + (inten * 18).round();
-        final farN = 24 + (inten * 14).round();
+        // 数量较之前收敛（近 20–34 / 远 14–26），配合细线与低透明度，
+        // 观感从「满屏粗线」变成一层轻薄雨幕
+        final nearN = 20 + (inten * 14).round();
+        final farN = 14 + (inten * 12).round();
         _ensureRain(nearN, farN);
 
-        // 近景雨丝：合并为一条 Path，一次绘制
-        final nearPaint = _cached(
-          'nr${dark ? 1 : 0}${(inten * 10).round()}',
+        // 近景雨丝：分「实 / 虚」两档透明度，制造纵深；
+        // 细线 + 低透明度 + 长度收敛，避免「粗而杂乱」
+        final nw = (0.75 + inten * 0.75).clamp(0.75, 1.5); // 原 1.0–2.8，明显变细
+        final na = ((dark ? 0.09 : 0.18) + inten * 0.12).clamp(0.05, 0.30);
+        final nearHi = _cached(
+          'nrh${dark ? 1 : 0}${(inten * 10).round()}',
           () => Paint()
             // 必须显式 stroke：drawPath 默认是 fill，开放的两点路径会被
             // 当成“零面积填充”而完全不渲染（drawLine 不受 style 影响，
             // 所以 v1.6.56 把 drawLine 批量改成 Path 后雨丝就消失了）
             ..style = PaintingStyle.stroke
-            ..color = Colors.white.withValues(
-                alpha: ((dark ? 0.20 : 0.42) + inten * 0.26).clamp(0.05, 0.85))
+            ..color = Colors.white.withValues(alpha: na)
             ..strokeCap = StrokeCap.round
-            ..strokeWidth = (1.1 + inten * 1.5).clamp(1.0, 2.8),
+            ..strokeWidth = nw,
         );
-        final np = Path();
+        final nearLo = _cached(
+          'nrl${dark ? 1 : 0}${(inten * 10).round()}',
+          () => Paint()
+            ..style = PaintingStyle.stroke
+            ..color = Colors.white.withValues(alpha: na * 0.45)
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = nw * 0.75,
+        );
+        final npHi = Path();
+        final npLo = Path();
         for (var i = 0; i < _rcN; i++) {
           final p = (t * _rsp![i] + _rph![i]) % 1.0;
           final y = p * (h + 60) - 30;
-          final x = _rxs![i] * w + _sway(_rsh![i], 0.35, 4);
-          final len = (14 + _rsh![i] * 14) * (1 + inten * 0.5);
-          final slant = (2.0 + inten * 2.0) * (storm ? 1.35 : 1.0);
-          np.moveTo(x, y);
-          np.lineTo(x - slant, y + len);
+          final x = _rxs![i] * w + _sway(_rsh![i], 0.28, 3);
+          // 长度由 14–42px 收敛到 9–17px（×强度），长短差异小了就不显乱
+          final len = (9 + _rsh![i] * 8) * (1 + inten * 0.35);
+          final slant = (1.2 + inten * 1.1) * (storm ? 1.3 : 1.0);
+          final path = _rsh![i] > 0.55 ? npHi : npLo;
+          path.moveTo(x, y);
+          path.lineTo(x - slant, y + len);
         }
-        canvas.drawPath(np, nearPaint);
+        canvas.drawPath(npLo, nearLo);
+        canvas.drawPath(npHi, nearHi);
 
-        // 远景雨幕：更细更淡
+        // 远景雨幕：极细极淡，只做气氛
+        final fa = ((dark ? 0.04 : 0.08) + inten * 0.05).clamp(0.03, 0.14);
         final farPaint = _cached(
           'fr${dark ? 1 : 0}${(inten * 10).round()}',
           () => Paint()
             ..style = PaintingStyle.stroke // 同上：不加则雨幕完全不可见
-            ..color = Colors.white.withValues(
-                alpha: ((dark ? 0.06 : 0.14) + inten * 0.08).clamp(0.04, 0.26))
-            ..strokeWidth = 0.7
+            ..color = Colors.white.withValues(alpha: fa)
+            ..strokeWidth = 0.5
             ..strokeCap = StrokeCap.round,
         );
         final fp = Path();
         for (var i = 0; i < _fcN; i++) {
           final p = (t * _fsp![i] + _fph![i]) % 1.0;
           final y = p * (h + 40) - 20;
-          final x = _fxs![i] * w + _sway(_fsh![i], 0.3, 3);
-          final len = (7 + _fsh![i] * 8) * (1 + inten * 0.4);
+          final x = _fxs![i] * w + _sway(_fsh![i], 0.25, 2);
+          final len = (6 + _fsh![i] * 5) * (1 + inten * 0.3);
           fp.moveTo(x, y);
-          fp.lineTo(x - 1.4, y + len);
+          fp.lineTo(x - 1.0, y + len);
         }
         canvas.drawPath(fp, farPaint);
 
@@ -1513,6 +1529,25 @@ class _WeatherPanelState extends State<_WeatherPanel>
                       ),
                     ),
                   ),
+                  // 背景纱层：给动态背景统一压一层极淡的纱，
+                  // 让云/雨稳定处于「背景」地位（不抢主体文字），
+                  // 也顺带柔化云团边缘。仅一次 fill，开销可忽略。
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: dark ? 0.10 : 0.05),
+                              Colors.black.withValues(alpha: dark ? 0.16 : 0.09),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   // 内容层（可滚动，向上拖动展开面板）
                   // 顶部暗角渐变随内容一起滚动，见 _body 中的顶部块
                   _body(wc, dark),
@@ -1754,8 +1789,9 @@ class _WeatherPanelState extends State<_WeatherPanel>
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       decoration: BoxDecoration(
         // 半透明圆角卡片：不使用 BackdropFilter（避免每帧模糊开销），
-        // 也不用黑色投影（叠在彩色渐变上会发灰变脏）
-        color: Colors.white.withValues(alpha: dark ? 0.10 : 0.15),
+        // 也不用黑色投影（叠在彩色渐变上会发灰变脏）。
+        // 底色略提高，保证雨丝飘过时文字依然压得住
+        color: Colors.white.withValues(alpha: dark ? 0.14 : 0.19),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
       ),
@@ -1917,7 +1953,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
+        color: Colors.white.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(

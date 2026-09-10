@@ -213,14 +213,23 @@ class AprsFmt {
     return '$d$m${v >= 0 ? 'E' : 'W'}';
   }
 
-  /// 位置数据包：CALL>APRS,TCPIP*:!DDMM.HHN/DDDMM.HHW/符号表+符号码
+  /// 位置数据包：CALL>APRS,TCPIP*:!DDMM.HHN/DDDMM.HHW符号表+符号码+注释
+  ///
   /// symbol 参数为符号码（如 '>'）；符号表使用默认主表 '/'
   /// path 可自定义（如 APALOC 标识 APRSlocus 台站）
+  ///
+  /// **注释字段必须紧跟符号，中间不能加空格**。APRS101 规定注释数据
+  /// （含 CsT：`ddd/sss` 航向/速度）紧接位置字段，没有分隔符；
+  /// 一旦插入空格，第三方解析器（aprs.fi 等，普遍用 `^(\d{3})/(\d{3})`
+  /// 锚定注释行首）就匹配不上，会把 `ddd/sss` 当成普通备注文字显示，
+  /// 即「速度与方位角出现在备注里」。
+  /// 实测：带空格 → course/speed 解析为 None；无空格 → 正常解析。
   static String position(
       String call, double latitude, double longitude, String symbol,
       {String? comment, String path = 'APRS,TCPIP*'}) {
     final body = '!${lat(latitude)}/${lng(longitude)}$symbol';
-    return '$call>$path:$body${comment != null ? ' $comment' : ''}';
+    final c = comment?.trim() ?? '';
+    return '$call>$path:$body$c';
   }
 
   /// 消息数据包：CALL>APRS,TCPIP*::DEST  :text{id
