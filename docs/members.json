@@ -1,5 +1,5 @@
 {
-  "version": 38,
+  "version": 39,
   "updated": "2026-09-10",
   "developers": [
     {
@@ -1366,6 +1366,30 @@
         "zh": "在最早的那段频率上留下回响，一路见证它从微弱信号长成清晰呼号。",
         "zh-TW": "在最早的那段頻率上留下回響，一路見證它從微弱訊號長成清晰呼號。",
         "en": "Left an echo on the earliest frequencies — watching a faint signal grow into a clear callsign."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BD3QYZ",
+      "who": {
+        "zh": "BD3QYZ",
+        "zh-TW": "BD3QYZ",
+        "en": "BD3QYZ"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "不等现成的果实，他亲手编译一粒种子，让它在苹果的园子里长成一座信标。",
+        "zh-TW": "不等現成的果實，他親手編譯一粒種子，讓它在蘋果的園子裡長成一座信標。",
+        "en": "He did not wait for fruit to ripen — he compiled the seed by hand, and let it grow into a beacon in Apple’s orchard."
       },
       "honors": [
         "earlyMember"
