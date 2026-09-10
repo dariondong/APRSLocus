@@ -294,7 +294,8 @@ class _StationsPageState extends State<StationsPage> {
   }
 
   /// 当前生效的筛选条件（用于空状态提示，让用户知道是什么把台站挡掉了）
-  List<String> _activeConditions(AppState st, AppLocalizations s) {
+  /// 注意：本文件未直接 import l10n，本地化类型用 widgets.dart 的别名 [S]。
+  List<String> _activeConditions(AppState st, S s) {
     final f = st.stationFilter;
     final out = <String>[];
     switch (f.status) {
