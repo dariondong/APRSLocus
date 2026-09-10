@@ -36,6 +36,7 @@ class Honor {
     'firstFix': Icons.military_tech_rounded,
     'jadeGift': Icons.card_giftcard_rounded,
     'sower': Icons.eco_rounded,
+    'iSelfReliant': Icons.terminal_rounded, // 亲手编译
   };
 
   static IconData iconFor(String key) =>
@@ -56,6 +57,7 @@ const List<String> kHonorOrder = [
   'firstFix',
   'jadeGift',
   'sower',
+  'iSelfReliant',
 ];
 
 /// 当前全量展示顺序：优先在线定义键序（members.json honors 书写顺序），
@@ -90,6 +92,11 @@ final Map<String, Honor> _defaultHonorDefs = {
   'sower': const Honor('sower', '播种',
       '在旷野埋下种子，等待遍地开花。',
       Color(0xFF2E9E5B), Icons.eco_rounded),
+  // 离线兜底定义：缺此项时（第 146/152 行有空判断）徽章会在
+  // members.json 加载前整个不显示，而非仅缺少图标
+  'iSelfReliant': const Honor('iSelfReliant', 'i力更生',
+      '不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。',
+      Color(0xFF8E8E93), Icons.terminal_rounded),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);

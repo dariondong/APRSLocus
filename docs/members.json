@@ -1,5 +1,5 @@
 {
-  "version": 39,
+  "version": 40,
   "updated": "2026-09-10",
   "developers": [
     {
@@ -1392,9 +1392,10 @@
         "en": "He did not wait for fruit to ripen — he compiled the seed by hand, and let it grow into a beacon in Apple’s orchard."
       },
       "honors": [
-        "earlyMember"
+        "earlyMember",
+        "iSelfReliant"
       ],
-      "primary": "earlyMember",
+      "primary": "iSelfReliant",
       "grp": "test",
       "c": "#B08A34"
     }
@@ -1515,6 +1516,18 @@
       },
       "color": "#2E9E5B",
       "icon": "sower"
+    },
+    "iSelfReliant": {
+      "zh": "i力更生",
+      "zh-TW": "i力更生",
+      "en": "iSelf-Reliant",
+      "desc": {
+        "zh": "不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。",
+        "zh-TW": "不求現成的果實，親手編譯一粒種子，讓它在蘋果的園子裡長成一座信標。",
+        "en": "Rather than wait for ripened fruit, they compiled the seed themselves — and let it grow into a beacon in Apple’s orchard."
+      },
+      "color": "#8E8E93",
+      "icon": "iSelfReliant"
     }
   }
 }

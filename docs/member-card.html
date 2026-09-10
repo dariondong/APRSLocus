@@ -268,7 +268,8 @@ let HONOR_DEFS={
  mostBrain:{zh:"最强大脑","zh-TW":"最強大腦",en:"Brightest mind",color:"#0EA5C4"},
  firstFix:{zh:"FIRST FIX · 至高荣誉","zh-TW":"FIRST FIX · 至高榮譽",en:"FIRST FIX · Supreme Honor",color:"#C9A227"},
  jadeGift:{zh:"赠我以琼琚","zh-TW":"贈我以瓊琚",en:"Gifted with Jade",color:"#0EA5B7"},
- sower:{zh:"播种","zh-TW":"播種",en:"Sower",color:"#2E9E5B"}
+ sower:{zh:"播种","zh-TW":"播種",en:"Sower",color:"#2E9E5B"},
+ iSelfReliant:{zh:"i力更生","zh-TW":"i力更生",en:"iSelf-Reliant",color:"#8E8E93"}
 };
 let FIRSTFIX_HOLDERS=new Set();
 function isFF(call){const b=String(call||"").toUpperCase().split("-")[0];return FIRSTFIX_HOLDERS.has(b);}
@@ -313,7 +314,7 @@ function wallSection(hkey, people){
   </div></div>`;}
 function walls(){
  // 按徽章分类展示（替代按角色分组）
- const honorOrder=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift","sower"];
+ const honorOrder=["kaishan","developer","earlyMember","mostBrain","firstFix","jadeGift","sower","iSelfReliant"];
  let html="";
  for(const hk of honorOrder){
    const holders=PEOPLE.filter(p=>honorDefsOf(p).includes(hk));
