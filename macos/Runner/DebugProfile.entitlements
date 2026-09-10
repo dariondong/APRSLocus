@@ -6,7 +6,14 @@
 	<true/>
 	<key>com.apple.security.cs.allow-jit</key>
 	<true/>
+	<!-- 出网权限：沙箱下缺此键会阻断一切对外连接，导致
+	     APRS-IS 连不上服务器、IP 网络定位失效、天气/检查更新全部失败 -->
+	<key>com.apple.security.network.client</key>
+	<true/>
 	<key>com.apple.security.network.server</key>
+	<true/>
+	<!-- 系统定位服务权限（沙盒下必需） -->
+	<key>com.apple.security.personal-information.location</key>
 	<true/>
 </dict>
 </plist>

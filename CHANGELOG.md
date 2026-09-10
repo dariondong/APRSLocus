@@ -1,5 +1,47 @@
 # 更新日志
 
+## [1.6.69] - 2026-09-10
+
+### 📍 修复 iOS / macOS 无法定位（两个平台各自不同的根因）
+
+**macOS：缺少沙箱出网权限，整个网络是死的**
+- `DebugProfile.entitlements` 与 `Release.entitlements` 均开启了
+  `com.apple.security.app-sandbox`，但**都没有 `com.apple.security.network.client`**。
+  沙箱下缺少该键会阻断**一切对外连接** —— 所以不只是定位：
+  APRS-IS 连不上服务器、天气、检查更新全部失败
+- 已补 `com.apple.security.network.client`（两个 entitlements）
+- 另补 `com.apple.security.personal-information.location` + `NSLocationUsageDescription`
+
+**iOS：定位通道从未实现**
+- `ios/Runner/` 里**没有 `com.aprslocus/location` 通道的任何实现**，
+  `Info.plist` 也**没有 `NSLocationWhenInUseUsageDescription`**
+- 而 Dart 端 iOS 走原生分支 → `checkPermissions` 抛 `MissingPluginException`
+  被 catch 当作「未授权」→ 永远停在「请授予定位权限…」，实际永远不可能授权
+- 已补：`NSLocationWhenInUseUsageDescription` / `NSLocationAlwaysAndWhenInUseUsageDescription`
+  / `UIBackgroundModes: [location]`
+
+### ✨ macOS 改为原生系统定位（原先只有城市级 IP 定位）
+- 原先 macOS 被归入「桌面 → IP 网络定位」，误差常在数百公里，对 APRS 上报无意义
+- 新增 `macos/Runner/LocationPlugin.swift`（CLLocationManager，含 Wi-Fi 定位），
+  由 `MainFlutterWindow.awakeFromNib` 用引擎 messenger 注册
+- 现在 macOS 与 iOS 共用同一套通道契约与单位（alt 米 / speed 米每秒 / bearing 度、无效 -1）
+
+### ✨ iOS 新增原生定位实现
+- 新增 `ios/Runner/LocationPlugin.swift`：
+  `isAvailable` / `checkPermissions` / `requestPermissions` / `startService` /
+  `stopService` / `setLocationMode` + 事件通道上报定位
+- 由 `AppDelegate.didInitializeImplicitFlutterEngine` 通过
+  `engineBridge.applicationRegistrar.messenger()` 注册（引擎头文件中该属性即
+  面向「应用级方法通道」的入口），不改动会被重新生成的 `GeneratedPluginRegistrant`
+- 丢弃系统首次回调的过期缓存定位（>15s），避免定位瞬间跳到很久以前的位置
+
+### 🛟 兜底：原生通道缺席时自动回退 IP 定位
+- `LocService.start()` 在 iOS / macOS 先探测通道是否存在
+  （仅这两端探测：Android 的 `checkPermissions` 返回真实权限状态且不抛异常）
+- 通道缺席时回退 IP 网络定位并提示「系统定位不可用，改用网络定位…」，
+  不再出现「永远等待授权」的死状态
+- 两个 Swift 文件已加入各自 Xcode 工程的 Sources 编译阶段
+
 ## [1.6.68] - 2026-09-10
 
 ### 📊 统计面板：「最近上报」「最远距离」不够精准

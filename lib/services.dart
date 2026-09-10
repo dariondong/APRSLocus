@@ -28,11 +28,10 @@ class LocService {
   /// 启动持续定位，返回是否成功
   Future<bool> start() async {
     if (_running) return true;
-    // 桌面平台：无系统 GPS，改用 IP 网络定位（纯 Dart，不依赖原生通道）
+    // Windows/Linux 无系统定位能力：直接用 IP 网络定位（纯 Dart，不走原生通道）
     if (!kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.windows ||
-            defaultTargetPlatform == TargetPlatform.linux ||
-            defaultTargetPlatform == TargetPlatform.macOS)) {
+            defaultTargetPlatform == TargetPlatform.linux)) {
       return _startIpLocate();
     }
     try {
@@ -40,6 +39,19 @@ class LocService {
         // Web 平台暂未实现
         onStatus?.call('Web 平台暂不支持自动定位，请手动输入坐标');
         return false;
+      }
+      // iOS / macOS：优先走原生定位（GPS / 系统定位服务）。
+      // 若原生通道缺席（未注册或未编译进包），必须回退到 IP 网络定位：
+      // 否则 checkPermissions 会抛 MissingPluginException 并被当作「未授权」，
+      // 表现为永远停在「请授予定位权限…」而实际永远不可能授权。
+      // 仅在这两个平台探测：Android 的 checkPermissions 返回真实权限状态且
+      // 不抛异常，在 Android 上做无谓探测只会增加噪。
+      if (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS) {
+        if (!await _channelAvailable()) {
+          onStatus?.call('系统定位不可用，改用网络定位…');
+          return _startIpLocate();
+        }
       }
       // 检查权限；若未授予，触发权限弹窗（AppState 会每秒重试）
       var hasPerm = await _checkPerm();
@@ -148,6 +160,20 @@ class LocService {
       return await _channel.invokeMethod<bool>('checkPermissions') ?? false;
     } catch (_) {
       return false;
+    }
+  }
+
+  /// 探测原生定位通道是否可用（**仅在 iOS 调用**）。
+  /// 返回 false 仅当通道本身未注册（MissingPluginException）；
+  /// 通道存在但方法未实现时仍视为可用，避免误降级。
+  Future<bool> _channelAvailable() async {
+    try {
+      await _channel.invokeMethod<bool>('isAvailable');
+      return true;
+    } on MissingPluginException {
+      return false;
+    } catch (_) {
+      return true;
     }
   }
 

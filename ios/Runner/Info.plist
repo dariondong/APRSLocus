@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>用于在 APRS 地图上显示您的位置、上报信标并计算与台站的距离</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>锁屏或切到后台时继续上报信标（APRS 追踪需要持续定位）</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

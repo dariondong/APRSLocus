@@ -28,5 +28,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSLocationUsageDescription</key>
+	<string>用于在 APRS 地图上显示您的位置、上报信标并计算与台站的距离</string>
 </dict>
 </plist>
