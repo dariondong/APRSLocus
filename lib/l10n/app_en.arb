@@ -1069,5 +1069,10 @@
   "statsAvgSpeed": "Avg speed",
   "statsLastHeard": "Last heard",
   "statsPackets": "Packets (recent)",
-  "statsNoData": "No data"
+  "statsNoData": "No data",
+  "noStationsFiltered": "No stations match the current filter",
+  "noStationsFilteredHint": "The filter or receive range is too narrow. Clear the filter to retry; the receive range lives in Settings.",
+  "clearStationFilter": "Clear filter",
+  "clearSearch": "Clear search",
+  "activeConditions": "Active conditions"
 }

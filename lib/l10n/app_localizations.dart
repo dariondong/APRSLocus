@@ -5828,6 +5828,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'暂无数据'**
   String get statsNoData;
+
+  /// No description provided for @noStationsFiltered.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前筛选条件下没有台站'**
+  String get noStationsFiltered;
+
+  /// No description provided for @noStationsFilteredHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。'**
+  String get noStationsFilteredHint;
+
+  /// No description provided for @clearStationFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除筛选'**
+  String get clearStationFilter;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除搜索'**
+  String get clearSearch;
+
+  /// No description provided for @activeConditions.
+  ///
+  /// In zh, this message translates to:
+  /// **'生效条件'**
+  String get activeConditions;
 }
 
 class _AppLocalizationsDelegate

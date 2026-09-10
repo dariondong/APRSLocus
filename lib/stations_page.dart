@@ -239,23 +239,7 @@ class _StationsPageState extends State<StationsPage> {
                 child: _statsMode
                     ? StationStatsPanel(state: st)
                     : list.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.radar_rounded,
-                              size: 44,
-                              color: C.greyLight,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              S.of(context).notFound,
-                              style: ts(14, c: C.grey),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? _emptyState(st)
                     : ListView.separated(
                         itemCount: list.length,
                         separatorBuilder: (_, _) => const SizedBox(height: 8),
@@ -304,6 +288,152 @@ class _StationsPageState extends State<StationsPage> {
         child: Text(
           label,
           style: ts(12, c: sel ? Colors.white : C.slate, w: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  /// 当前生效的筛选条件（用于空状态提示，让用户知道是什么把台站挡掉了）
+  List<String> _activeConditions(AppState st, AppLocalizations s) {
+    final f = st.stationFilter;
+    final out = <String>[];
+    switch (f.status) {
+      case 'online':
+        out.add(s.online);
+        break;
+      case 'moving':
+        out.add(s.moving);
+        break;
+      case 'stopped':
+        out.add(s.stationary);
+        break;
+      case 'iss':
+        out.add(s.issStation);
+        break;
+    }
+    switch (f.type) {
+      case 'mobile':
+        out.add(s.mobile);
+        break;
+      case 'fixed':
+        out.add(s.fixed);
+        break;
+      case 'infra':
+        out.add(s.infrastructure);
+        break;
+      case 'wx':
+        out.add(s.weather);
+        break;
+    }
+    if (f.app == 'aprslocus') out.add(s.aprslocusOnly);
+    if (f.dev != 'all') out.add(DeviceClassNames.labelOf(f.dev, _zh(context)));
+    if (f.model != 'all') out.add(f.model);
+    final q = _query;
+    if (q.isNotEmpty) out.add('${s.search}: $q');
+    if (st.receiveCountries.isNotEmpty) {
+      out.add('${s.filter} ×${st.receiveCountries.length}');
+    }
+    return out;
+  }
+
+  /// 列表空状态。
+  /// 区分「确实没收到台站」与「被筛选/接收范围挡掉」：后者列出生效条件
+  /// 并给出清除入口，否则用户只会看到一句「未找到台站」而无法判断原因。
+  Widget _emptyState(AppState st) {
+    final s = S.of(context);
+    final conds = _activeConditions(st, s);
+    final narrowed = conds.isNotEmpty;
+    final canClearFilter = !st.stationFilter.isEmpty;
+    final canClearSearch = _searchCtrl.text.trim().isNotEmpty;
+
+    Widget pill(String t) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+          decoration: BoxDecoration(
+            color: C.bgSoft,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: C.border),
+          ),
+          child: Text(t, style: ts(11, c: C.slate, w: FontWeight.w600)),
+        );
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              narrowed ? Icons.filter_alt_off_rounded : Icons.radar_rounded,
+              size: 40,
+              color: C.greyLight,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              narrowed ? s.noStationsFiltered : s.notFound,
+              textAlign: TextAlign.center,
+              style: ts(14, w: FontWeight.w700, c: C.slate),
+            ),
+            if (narrowed) ...[
+              const SizedBox(height: 6),
+              Text(
+                s.noStationsFilteredHint,
+                textAlign: TextAlign.center,
+                style: ts(11.5, c: C.grey, h: 1.5),
+              ),
+              const SizedBox(height: 10),
+              Text(s.activeConditions,
+                  style: ts(10, c: C.greyLight, w: FontWeight.w700, ls: 0.6)),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                alignment: WrapAlignment.center,
+                children: [for (final t in conds) pill(t)],
+              ),
+              if (canClearFilter || canClearSearch) ...[
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    if (canClearFilter)
+                      OutlinedButton.icon(
+                        onPressed: _clearAll,
+                        icon: const Icon(Icons.filter_alt_off_rounded, size: 15),
+                        label: Text(s.clearStationFilter,
+                            style: ts(12, w: FontWeight.w700)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.blue,
+                          side: BorderSide(color: C.blue.withValues(alpha: 0.4)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    if (canClearSearch)
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          _searchCtrl.clear();
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.backspace_outlined, size: 15),
+                        label: Text(s.clearSearch,
+                            style: ts(12, w: FontWeight.w700)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.slate,
+                          side: BorderSide(color: C.border),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ],
+          ],
         ),
       ),
     );

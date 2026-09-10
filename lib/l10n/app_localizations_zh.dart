@@ -3243,6 +3243,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statsNoData => '暂无数据';
+
+  @override
+  String get noStationsFiltered => '当前筛选条件下没有台站';
+
+  @override
+  String get noStationsFilteredHint => '筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。';
+
+  @override
+  String get clearStationFilter => '清除筛选';
+
+  @override
+  String get clearSearch => '清除搜索';
+
+  @override
+  String get activeConditions => '生效条件';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6484,4 +6499,19 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get statsNoData => '暫無資料';
+
+  @override
+  String get noStationsFiltered => '目前篩選條件下沒有台站';
+
+  @override
+  String get noStationsFilteredHint => '篩選或接收範圍過窄。可清除篩選後重試，接收範圍見「設定 → 接收範圍」。';
+
+  @override
+  String get clearStationFilter => '清除篩選';
+
+  @override
+  String get clearSearch => '清除搜尋';
+
+  @override
+  String get activeConditions => '生效條件';
 }

@@ -1657,5 +1657,10 @@
   "statsAvgSpeed": "平均速度",
   "statsLastHeard": "最近上报",
   "statsPackets": "数据包(近期)",
-  "statsNoData": "暂无数据"
+  "statsNoData": "暂无数据",
+  "noStationsFiltered": "当前筛选条件下没有台站",
+  "noStationsFilteredHint": "筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。",
+  "clearStationFilter": "清除筛选",
+  "clearSearch": "清除搜索",
+  "activeConditions": "生效条件"
 }

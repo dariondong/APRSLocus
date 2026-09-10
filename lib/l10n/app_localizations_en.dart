@@ -3333,4 +3333,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsNoData => 'No data';
+
+  @override
+  String get noStationsFiltered => 'No stations match the current filter';
+
+  @override
+  String get noStationsFilteredHint =>
+      'The filter or receive range is too narrow. Clear the filter to retry; the receive range lives in Settings.';
+
+  @override
+  String get clearStationFilter => 'Clear filter';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get activeConditions => 'Active conditions';
 }
