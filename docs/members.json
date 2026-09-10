@@ -1,5 +1,5 @@
 {
-  "version": 36,
+  "version": 37,
   "updated": "2026-09-09",
   "developers": [
     {
@@ -1308,6 +1308,30 @@
         "zh": "BG7OTH",
         "zh-TW": "BG7OTH",
         "en": "BG7OTH"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候回響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Waited in the faintest static — watching a weak signal grow into a clear callsign."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BI4APF",
+      "who": {
+        "zh": "BI4APF",
+        "zh-TW": "BI4APF",
+        "en": "BI4APF"
       },
       "role": {
         "zh": "早期成员",
