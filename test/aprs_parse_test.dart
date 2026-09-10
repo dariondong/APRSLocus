@@ -86,4 +86,37 @@ void main() {
     // Mic-E 缺少目的呼号：无法取到纬度编码，应放弃
     expect(parseAprsPosition("'p3ol \x1c#1]Georgia"), isNull);
   });
+
+  test('CsT 必须锚定备注开头：不得把 iGate 频率/DF 报告误判为航向速度', () {
+    // 全部取自真实 APRS-IS 报文语料
+    // ① iGate 频率 "438.650/144.640MHz" —— 旧实现会误判 speed=144节=266km/h 并删掉原文
+    final a = parseAprsPosition(
+        '!3821.72NT00025.22W& APRS iGate 438.650/144.640MHz 1200bps');
+    expect(a, isNotNull);
+    expect(a!.speed, isNull, reason: '不应把频率当速度');
+    expect(a.course, isNull, reason: '不应把频率当方位角');
+    expect(a.comment, contains('438.650/144.640MHz'),
+        reason: '备注原文必须完整保留');
+
+    // ② DF 报告的 /031/000 —— 旧实现会误判 course=31 并删掉
+    final b = parseAprsPosition('!3904.25N/11624.44E>/031/000/A=000064Don');
+    expect(b, isNotNull);
+    expect(b!.course, isNull, reason: 'DF 报告不应被当作方位角');
+    expect(b.comment, contains('/031/000'), reason: '备注原文必须完整保留');
+
+    // ③ 规范格式（CsT 在备注最前）仍必须正确解析
+    final c = parseAprsPosition('!3904.25N/11624.44E>151/052/A=004801 37C');
+    expect(c!.course, closeTo(151, 0.5));
+    expect(c.speed, closeTo(96.3, 0.5));
+    expect(c.comment, '37C');
+
+    // ④ 兼容旧版/第三方缺陷格式：注释前多一个空格（本应用 v1.6.68 前的真实信标）
+    final d = parseAprsPosition(
+        '!3114.52N/12125.85E[ /A=000046 255/003 Bat:35% APRSlocus 移动台');
+    expect(d, isNotNull);
+    expect(d!.course, closeTo(255, 0.5), reason: '旧版报文仍应能解析');
+    expect(d.speed, closeTo(5.556, 0.5));
+    expect(d.comment, 'Bat:35% APRSlocus 移动台');
+    expect(RegExp(r'\d{3}/\d{3}').hasMatch(d.comment ?? ''), isFalse);
+  });
 }

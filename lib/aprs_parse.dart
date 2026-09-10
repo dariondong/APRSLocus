@@ -304,11 +304,16 @@ _Extras _parseExtras(String c) {
     if (ft != null) alt = ft * 0.3048;
     body = am.group(1)! + am.group(3)!;
   }
-  // 航向/速度：ddd/sss（度 / 节）。规范要求位于备注开头，但部分第三方/旧版
-  // 固件（含本应用旧版信标）把 /A= 放在前面，因此兼容“任意位置”：
-  // 前后不得紧邻数字，避免误吃 PHG3280/1K2 这类文本。000 表示无效。
+  // 航向/速度：CsT = `ddd/sss`（度 / 节）。
+  //
+  // APRS101 规定 CsT 紧接符号、位于备注**最前**。部分第三方/旧版固件
+  // （含本应用 v1.6.68 以前）会在注释前多一个空格，故容忍前导空白。
+  //
+  // 必须锚定在备注开头，**不能任意位置匹配**：真实语料里曾把
+  // 「APRS iGate 438.650/144.640MHz」中的 `650/144` 误判为 144 节
+  // （266 km/h）、把 DF 报告的 `/031/000` 误判为方位角，并删掉原文。
   double? course, speed;
-  final cm = RegExp(r'(?<![0-9])(\d{3})/(\d{2,3})(?![0-9])').firstMatch(body);
+  final cm = RegExp(r'^\s*(\d{3})/(\d{2,3})(?![0-9])').firstMatch(body);
   if (cm != null) {
     final cs = cm.group(1)!;
     final sp = cm.group(2)!;
