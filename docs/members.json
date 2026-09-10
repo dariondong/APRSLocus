@@ -1,6 +1,6 @@
 {
-  "version": 37,
-  "updated": "2026-09-09",
+  "version": 38,
+  "updated": "2026-09-10",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1342,6 +1342,30 @@
         "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
         "zh-TW": "在最朦朧的電波裡守候回響，陪它從微弱訊號長成清晰呼號。",
         "en": "Waited in the faintest static — watching a weak signal grow into a clear callsign."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG7ODE",
+      "who": {
+        "zh": "BG7ODE",
+        "zh-TW": "BG7ODE",
+        "en": "BG7ODE"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最早的那段频率上留下回响，一路见证它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最早的那段頻率上留下回響，一路見證它從微弱訊號長成清晰呼號。",
+        "en": "Left an echo on the earliest frequencies — watching a faint signal grow into a clear callsign."
       },
       "honors": [
         "earlyMember"

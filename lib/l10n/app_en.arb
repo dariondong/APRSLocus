@@ -1074,5 +1074,7 @@
   "noStationsFilteredHint": "The filter or receive range is too narrow. Clear the filter to retry; the receive range lives in Settings.",
   "clearStationFilter": "Clear filter",
   "clearSearch": "Clear search",
-  "activeConditions": "Active conditions"
+  "activeConditions": "Active conditions",
+  "statsMovingCount": "Moving",
+  "statsOnlineRate": "Online rate"
 }

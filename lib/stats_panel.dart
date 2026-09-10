@@ -35,7 +35,6 @@ class _Stats {
   final int aprslocus;
   final String? farCall;
   final double? farKm;
-  final double? avgSpeedKmh;
   final DateTime? lastHeard;
   const _Stats({
     required this.totalRx,
@@ -52,9 +51,13 @@ class _Stats {
     required this.aprslocus,
     this.farCall,
     this.farKm,
-    this.avgSpeedKmh,
     this.lastHeard,
   });
+
+  /// 在线率（在线 / 接收范围内台站总数）。
+  /// 比原先的「平均速度」有意义：后者把不同时段、不同运动状态的台站速度
+  /// 混在一起求平均，数值本身无法解释，已移除。
+  int get onlineRatePct => total <= 0 ? 0 : (online * 100 / total).round();
 }
 
 class _StationStatsPanelState extends State<StationStatsPanel> {
@@ -72,8 +75,6 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
     final typeCount = <TypeGroup, int>{};
     final devCount = <String, int>{};
     var aprslocus = 0;
-    var speedSum = 0.0;
-    var speedN = 0;
     String? farCall;
     double? farKm;
     DateTime? lastHeard;
@@ -115,10 +116,6 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       final g = maidenhead(s.lat, s.lng, 4);
       gridCount[g] = (gridCount[g] ?? 0) + 1;
 
-      if (s.speed != null && s.speed! > 0.5) {
-        speedSum += s.speed!;
-        speedN++;
-      }
       if (lastHeard == null || s.lastHeard.isAfter(lastHeard)) {
         lastHeard = s.lastHeard;
       }
@@ -168,7 +165,6 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       aprslocus: aprslocus,
       farCall: farCall,
       farKm: farKm,
-      avgSpeedKmh: speedN > 0 ? speedSum / speedN : null,
       lastHeard: lastHeard,
     );
     _cacheSig = sig;
@@ -276,13 +272,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
                   _stat(loc.statsLastHeard,
                       s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc),
                       C.green),
-                  _stat(
-                    loc.statsAvgSpeed,
-                    s.avgSpeedKmh == null
-                        ? '--'
-                        : '${s.avgSpeedKmh!.toStringAsFixed(0)} km/h',
-                    C.blue,
-                  ),
+                  _stat(loc.statsMovingCount, _num(s.moving), C.blue),
                 ]),
               ],
             ]),
@@ -354,15 +344,9 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
             title: loc.statsOther,
             icon: Icons.speed_rounded,
             child: Row(children: [
-              _stat(
-                loc.statsAvgSpeed,
-                s.avgSpeedKmh == null
-                    ? '--'
-                    : '${s.avgSpeedKmh!.toStringAsFixed(0)} km/h',
-                C.blue,
-              ),
+              _stat(loc.statsOnlineRate, '${s.onlineRatePct}%', C.green),
               _stat(loc.statsLastHeard,
-                  s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc), C.green),
+                  s.lastHeard == null ? '--' : _ago(s.lastHeard!, loc), C.blue),
               _stat(loc.statsPackets, _num(st.packets.length), C.slate),
             ]),
           ),

@@ -1662,5 +1662,7 @@
   "noStationsFilteredHint": "筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。",
   "clearStationFilter": "清除筛选",
   "clearSearch": "清除搜索",
-  "activeConditions": "生效条件"
+  "activeConditions": "生效条件",
+  "statsMovingCount": "移动台站",
+  "statsOnlineRate": "在线率"
 }

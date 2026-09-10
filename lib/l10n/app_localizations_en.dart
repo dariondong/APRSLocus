@@ -3349,4 +3349,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activeConditions => 'Active conditions';
+
+  @override
+  String get statsMovingCount => 'Moving';
+
+  @override
+  String get statsOnlineRate => 'Online rate';
 }

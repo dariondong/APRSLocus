@@ -3258,6 +3258,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get activeConditions => '生效条件';
+
+  @override
+  String get statsMovingCount => '移动台站';
+
+  @override
+  String get statsOnlineRate => '在线率';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6514,4 +6520,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get activeConditions => '生效條件';
+
+  @override
+  String get statsMovingCount => '移動台站';
+
+  @override
+  String get statsOnlineRate => '在線率';
 }

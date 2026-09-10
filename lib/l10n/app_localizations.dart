@@ -5858,6 +5858,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'生效条件'**
   String get activeConditions;
+
+  /// No description provided for @statsMovingCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动台站'**
+  String get statsMovingCount;
+
+  /// No description provided for @statsOnlineRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线率'**
+  String get statsOnlineRate;
 }
 
 class _AppLocalizationsDelegate

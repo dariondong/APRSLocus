@@ -1294,7 +1294,20 @@ Future<void> showWeatherPanel(BuildContext context, AppState state) async {
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (ctx) => _WeatherPanel(state: state, hasPos: hasPos),
+    builder: (ctx) => DraggableScrollableSheet(
+      // 优先半屏弹出；向上滑动可展开覆盖更多（吸附到半屏 / 近满屏两档）
+      initialChildSize: 0.58,
+      minChildSize: 0.32,
+      maxChildSize: 0.94,
+      snap: true,
+      snapSizes: const [0.58, 0.94],
+      expand: true,
+      builder: (ctx2, controller) => _WeatherPanel(
+        state: state,
+        hasPos: hasPos,
+        scrollController: controller,
+      ),
+    ),
   );
 }
 
@@ -1427,7 +1440,14 @@ class _TempBarPainter extends CustomPainter {
 class _WeatherPanel extends StatefulWidget {
   final AppState state;
   final bool hasPos;
-  const _WeatherPanel({required this.state, required this.hasPos});
+
+  /// 由 DraggableScrollableSheet 提供：内容必须绑定它，向上拖动才能展开面板
+  final ScrollController scrollController;
+  const _WeatherPanel({
+    required this.state,
+    required this.hasPos,
+    required this.scrollController,
+  });
   @override
   State<_WeatherPanel> createState() => _WeatherPanelState();
 }
@@ -1493,31 +1513,8 @@ class _WeatherPanelState extends State<_WeatherPanel>
                       ),
                     ),
                   ),
-                  // 顶部暗角：全幅渐变（无圆角、无边界），保证白字在明亮或
-                  // 动态背景上清晰，同时不出现「一块黑色圆角方块」的观感
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: IgnorePointer(
-                      child: Container(
-                        height: 280,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black.withValues(alpha: 0.36),
-                              Colors.black.withValues(alpha: 0.10),
-                              Colors.black.withValues(alpha: 0),
-                            ],
-                            stops: const [0.0, 0.55, 1.0],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // 内容层：顶部信息 + 中部留白 + 底部半透明卡片
+                  // 内容层（可滚动，向上拖动展开面板）
+                  // 顶部暗角渐变随内容一起滚动，见 _body 中的顶部块
                   _body(wc, dark),
                 ],
               ),
@@ -1530,38 +1527,45 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   Widget _body(WeatherCenter wc, bool dark) {
     final s = S.of(context);
-    // 弹出时优先半屏（约 58%），不再一上来就占满屏幕；
-    // 内容超出时底部卡片区域可滚动，上半部分始终可见
-    final maxH = MediaQuery.of(context).size.height * 0.58;
     final hasPos = widget.hasPos;
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: maxH),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── 顶部：城市 / 大号温度 / 天气状况 / 空气质量 + 关键指标 ──
-          // 顶部暗角由 Stack 里的全幅渐变提供（不在此处套圆角方块）
-          // 顶部固定不滚动：保证温度与关键指标一直可见
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            child: (hasPos && wc.now != null)
-                ? _top(wc, s)
-                : _statusHint(wc, s, hasPos, dark),
-          ),
-          // ── 中部留白：动态背景展示区（云 / 雨在此区域可见）──
-          // 顶部已承载主要信息密度，此处收窄，只留出背景展示空间
-          const SizedBox(height: 34),
-          // ── 底部：半透明圆角卡片（无数据时仅保留动态背景）──
-          Flexible(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
-              child: wc.now == null
-                  ? const SizedBox.shrink()
-                  : _bottomCard(wc, s, dark),
+    final topInfo = (hasPos && wc.now != null)
+        ? _top(wc, s)
+        : _statusHint(wc, s, hasPos, dark);
+    // 整页内容交给 DraggableScrollableSheet 的 controller：
+    // 在任意位置向上拖动即可展开面板（半屏 → 近满屏），向下拖动收起
+    return ListView(
+      controller: widget.scrollController,
+      padding: EdgeInsets.zero,
+      children: [
+        // ── 顶部：城市 / 大号温度 / 天气状况 / 空气质量 + 关键指标 ──
+        // 暗角用「随内容滚动」的渐变：底部淡出到全透明，
+        // 因此不会出现「一块黑色圆角方块」的硬边界
+        Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withValues(alpha: 0.34),
+                Colors.black.withValues(alpha: 0.10),
+                Colors.black.withValues(alpha: 0),
+              ],
+              stops: const [0.0, 0.55, 1.0],
             ),
           ),
-        ],
-      ),
+          child: topInfo,
+        ),
+        // ── 中部留白：动态背景展示区（云 / 雨在此区域可见）──
+        const SizedBox(height: 56),
+        // ── 底部：半透明圆角卡片（无数据时仅保留动态背景）──
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 18),
+          child: wc.now == null
+              ? const SizedBox.shrink()
+              : _bottomCard(wc, s, dark),
+        ),
+      ],
     );
   }
 
@@ -1759,13 +1763,14 @@ class _WeatherPanelState extends State<_WeatherPanel>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // 业余无线电建议排在三天预报之前（更贴近「架台/通联决策」的场景）
+          _hamCard(wc, s),
+          const SizedBox(height: 18),
           _sectionTitle(Icons.calendar_month_rounded, s.weatherForecast3),
           const SizedBox(height: 4),
           ..._forecastRows(wc, s),
           const SizedBox(height: 14),
           _daily15Button(s),
-          const SizedBox(height: 16),
-          _hamCard(wc, s),
           const SizedBox(height: 18),
           _sectionTitle(Icons.tune_rounded, s.weatherDetails),
           const SizedBox(height: 6),
