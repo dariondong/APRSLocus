@@ -323,14 +323,6 @@ _Extras _parseExtras(String c) {
   return _Extras(s.isEmpty ? null : s, speed, course, alt);
 }
 
-bool _allDigits(String s) {
-  if (s.isEmpty) return false;
-  for (var i = 0; i < s.length; i++) {
-    final o = s.codeUnitAt(i);
-    if (o < 0x30 || o > 0x39) return false;
-  }
-  return true;
-}
 
 /// 清理备注：仅保留可读文字（附加字段已在 _parseExtras 中剥离）
 String? _cleanComment(String? c) {

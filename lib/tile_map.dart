@@ -39,6 +39,28 @@ String _gaodeUrl(int tx, int ty, int z, {int style = 7}) {
       '?lang=zh_cn&size=1&scale=1&style=$style&x=$tx&y=$ty&z=$z';
 }
 
+/// 该图源是否为 GCJ-02（火星坐标）瓦片。
+/// 国内图源（高德/腾讯）均为 GCJ-02，而 APRS 数据是 WGS-84，
+/// 必须做坐标纠偏标记才能落准。
+bool isGcjMapType(MapType t) =>
+    t == MapType.gaode ||
+    t == MapType.gaode_sat ||
+    t == MapType.tencent ||
+    t == MapType.tencent_sat;
+
+/// 腾讯瓦片（GCJ-02）。注意其 **y 轴为 TMS**，与 XYZ 相反，
+/// 需用 2^z-1-ty 翻转，否则整张图上下颠倒/错位。
+/// 街道：realtimerender；卫星：sateTiles（按 16×16 分块路径）。
+String _tencentUrl(int tx, int ty, int z, {bool sat = false}) {
+  final tmsY = (1 << z) - 1 - ty;
+  if (sat) {
+    return 'https://p0.map.gtimg.com/sateTiles/$z/${tx ~/ 16}/${tmsY ~/ 16}'
+        '/${tx}_$tmsY.jpg';
+  }
+  return 'https://rt0.map.gtimg.com/realtimerender'
+      '?z=$z&x=$tx&y=$tmsY&type=vector&style=0';
+}
+
 // 各图源瓦片模板（Carto raster basemaps 需 API key，其余免 key）
 const _cartoLightUrl =
     'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key='
@@ -62,6 +84,9 @@ const _esriSatUrl =
 enum MapType {
   gaode('高德地图', group: '高德'),
   gaode_sat('高德卫星', group: '高德'),
+  // 腾讯同为国内 GCJ-02 图源（分组键沿用 '高德'，界面显示为「国内地图」）
+  tencent('腾讯地图', group: '高德'),
+  tencent_sat('腾讯卫星', group: '高德'),
   vector('矢量地图', group: '其他'),
   vector_positron('Carto Positron(浅色矢量)', group: '其他'),
   carto('Carto 浅色', group: '其他'),
@@ -239,9 +264,8 @@ class _TileMapViewState extends State<TileMapView> {
                       pan: widget.pan,
                       centerLat: widget.centerLat,
                       centerLng: widget.centerLng,
-                      // 高德瓦片为 GCJ-02，国际图源为 WGS-84
-                      gcj: widget.mapType == MapType.gaode ||
-                          widget.mapType == MapType.gaode_sat,
+                      // 国内图源（高德/腾讯）为 GCJ-02，国际图源为 WGS-84
+                      gcj: isGcjMapType(widget.mapType),
                     ),
                   ),
                   ...tiles,
@@ -427,6 +451,10 @@ class _Tile extends StatelessWidget {
         return _gaodeUrl(tx, ty, z, style: 7);
       case MapType.gaode_sat:
         return _gaodeUrl(tx, ty, z, style: 6);
+      case MapType.tencent:
+        return _tencentUrl(tx, ty, z);
+      case MapType.tencent_sat:
+        return _tencentUrl(tx, ty, z, sat: true);
       case MapType.carto:
         return _fmt(_cartoLightUrl);
       case MapType.carto_dark:

@@ -94,6 +94,17 @@ class Station {
     return St.online;
   }
 
+  /// 是否国际空间站（ISS / ARISS）台站。
+  /// ISS 使用固定呼号：RS0ISS（俄罗斯段，最常见的 ISS 中继/信标）、
+  /// NA1SS（美国段）、OR4ISS（ARISS 教育通联）。
+  bool get isIss {
+    final c = baseCall.toUpperCase();
+    if (c == 'RS0ISS' || c == 'NA1SS' || c == 'OR4ISS') return true;
+    // 部分网关以 ISS 字样转发（如 ISS-FAN / ARISS 对象台）
+    return (comment ?? '').toUpperCase().contains('ARISS') ||
+        alias.toUpperCase().contains('ARISS');
+  }
+
   /// 基础呼号（去掉 -SSID 后缀）
   String get baseCall =>
       call.contains('-') ? call.substring(0, call.indexOf('-')) : call;

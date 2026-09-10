@@ -1025,5 +1025,6 @@
   "airUnhealthy": "Moderate pollution",
   "airVeryUnhealthy": "Heavy pollution",
   "airHazardous": "Severe pollution",
-  "weatherAir": "AQI"
+  "weatherAir": "AQI",
+  "issStation": "ISS"
 }

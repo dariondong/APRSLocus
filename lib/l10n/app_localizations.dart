@@ -5648,6 +5648,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'空气质量'**
   String get weatherAir;
+
+  /// No description provided for @issStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'ISS 空间站'**
+  String get issStation;
 }
 
 class _AppLocalizationsDelegate

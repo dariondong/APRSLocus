@@ -131,9 +131,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // ─── 投影 ───
   // 瓦片底图坐标系：高德瓦片为 GCJ-02；国际图源（Carto/OSM/Esri/OpenTopo）为 WGS-84。
   // 投影基准必须与底图一致，否则标记整体偏移。
-  bool get _isGcjTile =>
-      !_usePluginMap &&
-      (_currentMapType == MapType.gaode || _currentMapType == MapType.gaode_sat);
+  // 国内图源（高德/腾讯）为 GCJ-02，需要坐标纠偏
+  bool get _isGcjTile => !_usePluginMap && isGcjMapType(_currentMapType);
 
   /// 投影基准坐标：高德→GCJ 天安门；国际 WGS→原始 WGS-84 天安门
   (double, double) get _projBase =>

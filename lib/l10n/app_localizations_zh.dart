@@ -3149,6 +3149,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherAir => '空气质量';
+
+  @override
+  String get issStation => 'ISS 空间站';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6296,4 +6299,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get weatherAir => '空氣品質';
+
+  @override
+  String get issStation => 'ISS 太空站';
 }

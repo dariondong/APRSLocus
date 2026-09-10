@@ -3239,4 +3239,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weatherAir => 'AQI';
+
+  @override
+  String get issStation => 'ISS';
 }

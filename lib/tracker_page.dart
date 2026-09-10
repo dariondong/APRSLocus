@@ -53,7 +53,8 @@ class _TrackerPageState extends State<TrackerPage>
     return MapType.gaode;
   }
 
-  bool get _isGcj => _mapType == MapType.gaode || _mapType == MapType.gaode_sat;
+  // 国内图源（高德/腾讯）为 GCJ-02，需要坐标纠偏
+  bool get _isGcj => isGcjMapType(_mapType);
   (double, double) get _base => _isGcj ? _gcjBase : (_baseLat, _baseLng);
 
   /// 当前跟踪锁定（跟随）的呼号；null = 全览/自由

@@ -1613,5 +1613,6 @@
   "airUnhealthy": "中度污染",
   "airVeryUnhealthy": "重度污染",
   "airHazardous": "严重污染",
-  "weatherAir": "空气质量"
+  "weatherAir": "空气质量",
+  "issStation": "ISS 空间站"
 }

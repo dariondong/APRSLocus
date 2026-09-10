@@ -78,6 +78,10 @@ class _StationsPageState extends State<StationsPage> {
       case 'stopped':
         s = s.where((s) => s.effectiveStatus == St.stopped).toList();
         break;
+      case 'iss':
+        // 国际空间站（ISS / ARISS）台站
+        s = s.where((s) => s.isIss).toList();
+        break;
     }
     switch (_type) {
       case 'mobile':
@@ -437,6 +441,14 @@ class _StationsPageState extends State<StationsPage> {
             () => setState(
               () => _app = _app == 'aprslocus' ? 'all' : 'aprslocus',
             ),
+          ),
+          const SizedBox(width: 4),
+          // ISS 空间站台站（RS0ISS / NA1SS / OR4ISS）
+          chip(
+            S.of(context).issStation,
+            _filter == 'iss',
+            C.cyan,
+            () => setState(() => _filter = _filter == 'iss' ? 'all' : 'iss'),
           ),
           const SizedBox(width: 8),
           _divider(),
