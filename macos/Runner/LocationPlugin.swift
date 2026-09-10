@@ -69,7 +69,8 @@ final class MacLocationPlugin: NSObject, CLLocationManagerDelegate {
         if self.isAuthorized {
           result(true)
         } else if self.manager.authorizationStatus == .notDetermined {
-          // macOS 10.15+ 支持 when-in-use；部署目标 12.0 故无需兜底
+          // macOS 上该方法与 requestAlwaysAuthorization 行为一致，
+          // 授予后状态即 authorizedAlways（见 isAuthorized 注释）
           self.manager.requestWhenInUseAuthorization()
           result(false)
         } else {
@@ -101,9 +102,11 @@ final class MacLocationPlugin: NSObject, CLLocationManagerDelegate {
     }
   }
 
+  /// macOS 上**不存在** `CLAuthorizationStatus.authorizedWhenInUse`
+  /// （编译器报 "'authorizedWhenInUse' is unavailable in macOS"）。
+  /// macOS 无论请求哪种授权，授予后状态都报 `authorizedAlways`，故只判定它。
   private var isAuthorized: Bool {
-    let status = manager.authorizationStatus
-    return status == .authorizedAlways || status == .authorizedWhenInUse
+    manager.authorizationStatus == .authorizedAlways
   }
 
   private func start(mode: String) {
