@@ -124,13 +124,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 IntrinsicHeight(
                   child: Row(
                     children: [
+                      // 原「聊天」入口已替换为「设备」（聊天记录清除已并入数据页）
                       Expanded(
                         child: _catCard(
-                          icon: Icons.forum_rounded,
-                          color: C.orange,
-                          title: S.of(context).chatCat,
-                          desc: S.of(context).chatCatDesc,
-                          onTap: () => _push(ChatSettingsPage(state: st)),
+                          icon: Icons.radio_rounded,
+                          color: C.indigo,
+                          title: S.of(context).deviceCat,
+                          desc: S.of(context).deviceCatDesc,
+                          onTap: () => _push(DeviceSettingsPage(state: st)),
                         ),
                       ),
                       SizedBox(width: 10),

@@ -2853,7 +2853,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsServerSubtitle => 'APRS-IS server and passcode';
 
   @override
-  String get settingsFilterSubtitle => 'Receive range and station limit';
+  String get settingsFilterSubtitle => 'Filter center and radius';
 
   @override
   String get settingsReceivePrefSubtitle =>
@@ -3372,4 +3372,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get maxTrackPtsTip =>
       'Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)';
+
+  @override
+  String get chatRecords => 'Chat history';
+
+  @override
+  String get chatRecordsCleared => 'Chat history cleared';
+
+  @override
+  String get deviceCat => 'Device';
+
+  @override
+  String get deviceCatDesc => 'Radio gear · coming soon';
+
+  @override
+  String get deviceSettings2 => 'Device settings';
+
+  @override
+  String get deviceSettingsSubtitle => 'Connect your radio equipment';
+
+  @override
+  String get underConstruction => 'Under construction — not open yet';
+
+  @override
+  String get underConstructionHint =>
+      'This feature is still being built. Please stay tuned.';
+
+  @override
+  String get storageLimit => 'Data limits';
+
+  @override
+  String get storageLimitSubtitle => 'How much data to keep locally';
+
+  @override
+  String get connectionCard2 => 'APRS-IS connection';
 }

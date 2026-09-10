@@ -1473,24 +1473,28 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            // 连接状态卡片
-            _connStatusCard(),
+            // ① APRS-IS 连接（连接状态 + 服务器参数，原为两张重复卡）
+            _connectionCard(),
             const SizedBox(height: 16),
-            // 服务器配置卡片
-            _serverCard(),
-            const SizedBox(height: 16),
+            // ② 过滤中心：只管「取哪些台站」
             _filterCard(),
             const SizedBox(height: 16),
+            // ③ 存储上限：只管「保留多少数据」（原误放在过滤卡片内）
+            _storageCard(),
+            const SizedBox(height: 16),
+            // ④ 接收筛选：按国家/地区
             _receivePrefCard(),
           ]),
       );
     });
   }
 
-  /// 连接状态卡片（独立简洁）
-  Widget _connStatusCard() {
+  /// APRS-IS 连接卡片。
+  /// 原先拆成「服务器（连接状态）」+「服务器配置」两张卡，标题都指向服务器、
+  /// 语义重复；现合并为一张：连接状态 → 服务器参数 → 配置变更提示。
+  Widget _connectionCard() {
     return SettingsSectionCard(
-      title: S.of(context).server,
+      title: S.of(context).connectionCard2,
       subtitle: S.of(context).settingsConnStatusSubtitle,
       icon: Icons.dns_rounded,
       color: C.purple,
@@ -1498,18 +1502,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
         _connBanner(),
         Divider(height: 1, color: C.border),
         SettingsRow2(S.of(context).connection, st.connInfo),
-      ],
-    );
-  }
-
-  /// 服务器配置卡片（含重连）
-  Widget _serverCard() {
-    return SettingsSectionCard(
-      title: '服务器配置',
-      subtitle: S.of(context).settingsServerSubtitle,
-      icon: Icons.settings_ethernet_rounded,
-      color: C.purple,
-      children: [
+        Divider(height: 1, color: C.border),
         SettingsInput(S.of(context).server, _server,
             onChanged: (v) {
           st.aprs.server = v.trim();
@@ -1779,24 +1772,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ],
           ),
         ),
-        SettingsInput(S.of(context).maxStations, _maxStations,
-            tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
-            onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxStations(n);
-        }),
-        // 数据包保留条数（原先硬编码 200，偏少）
-        SettingsInput(S.of(context).maxPackets, _maxPackets,
-            tip: S.of(context).maxPacketsTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxPackets(n);
-        }),
-        // 单台站轨迹点数上限（原先硬编码 60，导致轨迹很短）
-        SettingsInput(S.of(context).maxTrackPts, _maxTrackPts,
-            tip: S.of(context).maxTrackPtsTip, onChanged: (v) {
-          final n = int.tryParse(v);
-          if (n != null) st.setMaxTrackPts(n);
-        }),
         Padding(
           padding: const EdgeInsets.all(14),
           child: OutlinedButton.icon(
@@ -1882,6 +1857,39 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       ],
     );
   }
+
+  /// 存储上限卡片。
+  /// 原先这三项被放在「过滤」卡片里 —— 它们与「取哪些台站」无关，
+  /// 而是「本地保留多少数据」，故按职责独立成卡。
+  Widget _storageCard() {
+    return SettingsSectionCard(
+      title: S.of(context).storageLimit,
+      subtitle: S.of(context).storageLimitSubtitle,
+      icon: Icons.sd_storage_rounded,
+      color: C.slate,
+      children: [
+        SettingsInput(S.of(context).maxStations, _maxStations,
+            tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
+            onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxStations(n);
+        }),
+        // 数据包保留条数（原先硬编码 200，偏少）
+        SettingsInput(S.of(context).maxPackets, _maxPackets,
+            tip: S.of(context).maxPacketsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxPackets(n);
+        }),
+        // 单台站轨迹点数上限（原先硬编码 60，导致轨迹很短）
+        SettingsInput(S.of(context).maxTrackPts, _maxTrackPts,
+            tip: S.of(context).maxTrackPtsTip, onChanged: (v) {
+          final n = int.tryParse(v);
+          if (n != null) st.setMaxTrackPts(n);
+        }),
+      ],
+    );
+  }
+
 
   /// 接收呼号筛选卡片：按国家/地区分组 + 精确呼号接收
   Widget _receivePrefCard() {
@@ -2466,488 +2474,43 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
 }
 
 /// ─── 聊天记录设置 ───
-class ChatSettingsPage extends StatefulWidget {
+/// ─── 设备设置（占位：尚未开放）───
+class DeviceSettingsPage extends StatelessWidget {
   final AppState state;
-  const ChatSettingsPage({super.key, required this.state});
-  @override
-  State<ChatSettingsPage> createState() => _ChatSettingsPageState();
-}
-
-class _ChatSettingsPageState extends State<ChatSettingsPage> {
-  AppState get st => widget.state;
+  const DeviceSettingsPage({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: st,
-      builder: (context, _) => SettingsPageShell(
-        title: S.of(context).msgHistory,
-        subtitle: '消息、联系人与聊天数据',
-        icon: Icons.forum_rounded,
-        color: C.purple,
-        body: Column(children: [
-          SettingsSectionCard(
-          title: S.of(context).statistics,
-          subtitle: S.of(context).settingsChatStatsSubtitle,
-          icon: Icons.analytics_rounded,
-          color: C.purple,
-          children: [
-            SettingsRow2('消息条数', '${st.messages.length} 条'),
-            SettingsRow2(S.of(context).contactList,
-                '${st.stations.where((s) => s.favorite || s.manual).length} 个'),
-          ],
-        ),
-        SizedBox(height: 16),
+    final s = S.of(context);
+    return SettingsPageShell(
+      title: s.deviceSettings2,
+      subtitle: s.deviceSettingsSubtitle,
+      icon: Icons.radio_rounded,
+      color: C.indigo,
+      body: Column(children: [
         SettingsSectionCard(
-          title: '管理',
-          subtitle: S.of(context).settingsChatManageSubtitle,
-          icon: Icons.manage_search_rounded,
-          color: C.blue,
+          title: s.deviceSettings2,
+          subtitle: s.deviceSettingsSubtitle,
+          icon: Icons.construction_rounded,
+          color: C.orange,
           children: [
-            _navRow(
-              icon: Icons.people_alt_rounded,
-              iconColor: C.purple,
-              title: '管理联系人',
-              onTap: () => _showContactManager(),
-            ),
-            _navRow(
-              icon: Icons.delete_sweep_rounded,
-              iconColor: C.red,
-              title: S.of(context).clearMessages,
-              titleColor: C.red,
-              borderColor: C.red.withValues(alpha: 0.3),
-              onTap: () => _confirmClearMessages(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
+              child: Column(children: [
+                Icon(Icons.construction_rounded,
+                    size: 54, color: C.orange.withValues(alpha: 0.6)),
+                const SizedBox(height: 16),
+                Text(s.underConstruction,
+                    style: ts(15, w: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text(s.underConstructionHint,
+                    textAlign: TextAlign.center,
+                    style: ts(12, c: C.grey, h: 1.7)),
+              ]),
             ),
           ],
         ),
       ]),
-      ),
-    );
-  }
-
-  Widget _navRow({
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required VoidCallback onTap,
-    Color? titleColor,
-    Color? borderColor,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        margin: const EdgeInsets.fromLTRB(14, 4, 14, 4),
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: borderColor ?? C.border),
-        ),
-        child: Row(children: [
-          Icon(icon, size: 16, color: iconColor),
-          SizedBox(width: 8),
-          Text(title, style: ts(12, c: titleColor ?? C.slate)),
-          Spacer(),
-          Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
-        ]),
-      ),
-    );
-  }
-
-  void _confirmClearMessages() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(S.of(context).clearMessages, style: ts(16, w: FontWeight.w700)),
-        content: Text('确定要删除全部 ${st.messages.length} 条聊天记录吗？此操作不可恢复。',
-            style: ts(13, c: C.slate)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-          FilledButton(
-            onPressed: () {
-              st.clearMessages();
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('聊天记录已清空')),
-              );
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: C.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text(S.of(context).clear, style: ts(13, c: Colors.white, w: FontWeight.w600)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showContactManager() {
-    final searchCtrl = TextEditingController();
-    String filter = 'all';
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setModalState) {
-          var contacts = st.stations
-              .where((s) => s.favorite || s.manual)
-              .toList();
-          final q = searchCtrl.text.trim().toUpperCase();
-          if (q.isNotEmpty) {
-            contacts =
-                contacts.where((s) => s.call.toUpperCase().contains(q)).toList();
-          }
-          if (filter == 'fav') {
-            contacts = contacts.where((s) => s.favorite).toList();
-          } else if (filter == 'online') {
-            contacts = contacts.where((s) => s.status != St.offline).toList();
-          }
-          contacts.sort((a, b) {
-            final aOn = a.status != St.offline;
-            final bOn = b.status != St.offline;
-            if (aOn != bOn) return aOn ? -1 : 1;
-            if (a.favorite != b.favorite) return a.favorite ? -1 : 1;
-            return a.call.compareTo(b.call);
-          });
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.72,
-            decoration: BoxDecoration(
-              color: C.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: Column(children: [
-              Container(width: 36, height: 4, decoration: BoxDecoration(
-                  color: C.greyLight, borderRadius: BorderRadius.circular(2))),
-              SizedBox(height: 12),
-              Row(children: [
-                Container(
-                  width: 36, height: 36,
-                  decoration: BoxDecoration(
-                    color: C.purple.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(Icons.people_alt_rounded, size: 18, color: C.purple),
-                ),
-                SizedBox(width: 10),
-                Expanded(child: Text('管理联系人', style: ts(16, w: FontWeight.w700))),
-                Text('${contacts.length} 个', style: ts(12, c: C.purple, w: FontWeight.w700)),
-                SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => _addContactDialog(setModalState),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: C.blue,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.person_add_rounded, size: 14, color: Colors.white),
-                      SizedBox(width: 4),
-                      Text('添加', style: ts(12, c: Colors.white, w: FontWeight.w700)),
-                    ]),
-                  ),
-                ),
-              ]),
-              SizedBox(height: 12),
-              TextField(
-                controller: searchCtrl,
-                onChanged: (_) => setModalState(() {}),
-                style: ts(13),
-                decoration: InputDecoration(
-                  hintText: '搜索呼号…',
-                  hintStyle: ts(12, c: C.greyLight),
-                  prefixIcon:
-                      Icon(Icons.search_rounded, size: 18, color: C.grey),
-                  isDense: true,
-                  filled: true,
-                  fillColor: C.bgSoft,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Row(children: [
-                _contactFilterChip(S.of(context).all, filter == 'all',
-                    () => setModalState(() => filter = 'all')),
-                SizedBox(width: 6),
-                _contactFilterChip(S.of(context).favorite, filter == 'fav',
-                    () => setModalState(() => filter = 'fav')),
-                SizedBox(width: 6),
-                _contactFilterChip(S.of(context).online, filter == 'online',
-                    () => setModalState(() => filter = 'online')),
-              ]),
-              SizedBox(height: 10),
-              Expanded(
-                child: contacts.isEmpty
-                    ? Center(child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.person_off_outlined, size: 44, color: C.greyLight),
-                          SizedBox(height: 8),
-                          Text('暂无联系人', style: ts(13, c: C.grey)),
-                          SizedBox(height: 4),
-                          Text('点击右上角「添加」或在地图上收藏台站',
-                              style: ts(11, c: C.greyLight)),
-                        ],
-                      ))
-                    : ListView.separated(
-                        itemCount: contacts.length,
-                        separatorBuilder: (_, __) =>
-                            const Divider(height: 1, indent: 52),
-                        itemBuilder: (_, i) {
-                          final s = contacts[i];
-                          final online = s.status != St.offline;
-                          return ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 6),
-                            leading: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  width: 38, height: 38,
-                                  decoration: BoxDecoration(
-                                    color: online
-                                        ? C.green.withValues(alpha: 0.12)
-                                        : C.purple.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(11),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      s.call.length >= 2
-                                          ? s.call.substring(s.call.length - 2)
-                                          : s.call,
-                                      style: ts(11,
-                                          c: online ? C.green : C.purple,
-                                          w: FontWeight.w700),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  right: -2, bottom: -2,
-                                  child: Container(
-                                    width: 12, height: 12,
-                                    decoration: BoxDecoration(
-                                      color: online ? C.green : C.greyLight,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: C.white, width: 2),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            title: Row(children: [
-                              Flexible(
-                                child: Text(s.call,
-                                    style: ts(13, w: FontWeight.w700),
-                                    overflow: TextOverflow.ellipsis),
-                              ),
-                              if (s.favorite) ...[
-                                SizedBox(width: 4),
-                                Icon(Icons.star_rounded,
-                                    size: 15, color: C.orange),
-                              ],
-                              if (s.manual) ...[
-                                SizedBox(width: 4),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 1),
-                                  decoration: BoxDecoration(
-                                    color: C.blueBg,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text('手动',
-                                      style: ts(8, c: C.blue, w: FontWeight.w600)),
-                                ),
-                              ],
-                            ]),
-                            subtitle: Text(
-                              online
-                                  ? (s.status == St.moving
-                                      ? '移动中 · ${s.speedStr}'
-                                      : S.of(context).online)
-                                  : '${S.of(context).offline}${s.lastSeen}',
-                              style: ts(11,
-                                  c: online ? C.green : C.grey,
-                                  w: FontWeight.w500),
-                            ),
-                            trailing: Row(
-                                mainAxisSize: MainAxisSize.min, children: [
-                              GestureDetector(
-                                onTap: () {
-                                  st.toggleFavorite(s.call);
-                                  setModalState(() {});
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: s.favorite
-                                        ? C.orange.withValues(alpha: 0.12)
-                                        : C.bgSoft,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    s.favorite
-                                        ? Icons.star_rounded
-                                        : Icons.star_border_rounded,
-                                    size: 18,
-                                    color: s.favorite ? C.orange : C.grey,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 6),
-                              GestureDetector(
-                                onTap: () =>
-                                    _confirmRemoveContact(s.call, () {
-                                  setModalState(() {});
-                                }),
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: C.red.withValues(alpha: 0.08),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                      Icons.delete_outline_rounded,
-                                      size: 18, color: C.red),
-                                ),
-                              ),
-                            ]),
-                          );
-                        },
-                      ),
-              ),
-            ]),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _contactFilterChip(String label, bool sel, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-        decoration: BoxDecoration(
-          color: sel ? C.purple : C.bgSoft,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(label,
-            style: ts(11,
-                c: sel ? Colors.white : C.slate,
-                w: FontWeight.w600)),
-      ),
-    );
-  }
-
-  void _addContactDialog(void Function(VoidCallback) setModalState) {
-    final ctrl = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('添加联系人', style: ts(16, w: FontWeight.w700)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('输入呼号手动添加到联系人列表', style: ts(12, c: C.grey)),
-            SizedBox(height: 12),
-            TextField(
-              controller: ctrl,
-              autofocus: true,
-              textCapitalization: TextCapitalization.characters,
-              style: ts(14),
-              onSubmitted: (_) => _addContactSubmit(ctrl, setModalState),
-              decoration: InputDecoration(
-                hintText: '呼号，如 BG7ABC',
-                hintStyle: ts(13, c: C.greyLight),
-                filled: true,
-                fillColor: C.bgSoft,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-          FilledButton(
-            onPressed: () => _addContactSubmit(ctrl, setModalState),
-            style: FilledButton.styleFrom(
-              backgroundColor: C.blue,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text('添加', style: ts(13, c: Colors.white, w: FontWeight.w700)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _addContactSubmit(TextEditingController ctrl,
-      void Function(VoidCallback) setModalState) {
-    final call = ctrl.text.trim().toUpperCase();
-    if (call.isEmpty) return;
-    if (call.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('呼号至少 3 个字符')),
-      );
-      return;
-    }
-    st.addManualStation(call);
-    Navigator.pop(context);
-    setModalState(() {});
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('已添加联系人 $call'), duration: const Duration(seconds: 2)),
-    );
-  }
-
-  void _confirmRemoveContact(String call, VoidCallback onDone) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('删除联系人', style: ts(16, w: FontWeight.w700)),
-        content: Text('确定删除联系人 $call ？', style: ts(13)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-          FilledButton(
-            onPressed: () {
-              st.removeContact(call);
-              Navigator.pop(context);
-              onDone();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('已删除 $call'), duration: const Duration(seconds: 2)),
-              );
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: C.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text(S.of(context).delete, style: ts(13, c: Colors.white, w: FontWeight.w700)),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -2973,6 +2536,41 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         icon: Icons.storage_rounded,
         color: C.red,
         body: Column(children: [
+        // 单项：聊天记录（由原「聊天设置」页合并而来）
+        SettingsSectionCard(
+          title: S.of(context).chatRecords,
+          subtitle: S.of(context).settingsChatManageSubtitle,
+          icon: Icons.forum_rounded,
+          color: C.purple,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                _clearDataItem('聊天记录', '${st.messages.length} 条'),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _confirmClearMessages,
+                    icon: const Icon(Icons.delete_sweep_rounded, size: 16),
+                    label: Text(S.of(context).clearMessages),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.red,
+                      side: BorderSide(color: C.red.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      textStyle: ts(12, w: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
         SettingsSectionCard(
           title: '清除所有数据',
           subtitle: S.of(context).settingsClearDataSubtitle,
@@ -3039,6 +2637,40 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         Spacer(),
         Text(count, style: ts(11, c: C.grey, w: FontWeight.w600)),
       ]),
+    );
+  }
+
+  /// 清空全部聊天记录（由原「聊天设置」页迁入）
+  void _confirmClearMessages() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(S.of(context).clearMessages, style: ts(16, w: FontWeight.w700)),
+        content: Text('确定要删除全部 ${st.messages.length} 条聊天记录吗？此操作不可恢复。',
+            style: ts(13, c: C.slate)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+          ),
+          FilledButton(
+            onPressed: () {
+              st.clearMessages();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(S.of(context).chatRecordsCleared)),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: C.red,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(S.of(context).clear,
+                style: ts(13, c: Colors.white, w: FontWeight.w600)),
+          ),
+        ],
+      ),
     );
   }
 

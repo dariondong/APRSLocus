@@ -5004,7 +5004,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFilterSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'接收范围与台站上限'**
+  /// **'过滤中心与接收半径'**
   String get settingsFilterSubtitle;
 
   /// No description provided for @settingsReceivePrefSubtitle.
@@ -5900,6 +5900,72 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）'**
   String get maxTrackPtsTip;
+
+  /// No description provided for @chatRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'聊天记录'**
+  String get chatRecords;
+
+  /// No description provided for @chatRecordsCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'聊天记录已清空'**
+  String get chatRecordsCleared;
+
+  /// No description provided for @deviceCat.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备'**
+  String get deviceCat;
+
+  /// No description provided for @deviceCatDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台设备 · 待开放'**
+  String get deviceCatDesc;
+
+  /// No description provided for @deviceSettings2.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备设置'**
+  String get deviceSettings2;
+
+  /// No description provided for @deviceSettingsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接你的电台设备'**
+  String get deviceSettingsSubtitle;
+
+  /// No description provided for @underConstruction.
+  ///
+  /// In zh, this message translates to:
+  /// **'前方施工，尚未开放'**
+  String get underConstruction;
+
+  /// No description provided for @underConstructionHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'该功能正在开发中，敬请期待'**
+  String get underConstructionHint;
+
+  /// No description provided for @storageLimit.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据上限'**
+  String get storageLimit;
+
+  /// No description provided for @storageLimitSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地保留的数据量'**
+  String get storageLimitSubtitle;
+
+  /// No description provided for @connectionCard2.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 连接'**
+  String get connectionCard2;
 }
 
 class _AppLocalizationsDelegate

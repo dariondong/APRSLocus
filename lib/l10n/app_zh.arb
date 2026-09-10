@@ -1408,7 +1408,7 @@
   "settingsManualLocHint": "无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。",
   "settingsConnStatusSubtitle": "连接状态与信息",
   "settingsServerSubtitle": "APRS-IS 服务器与验证码",
-  "settingsFilterSubtitle": "接收范围与台站上限",
+  "settingsFilterSubtitle": "过滤中心与接收半径",
   "settingsReceivePrefSubtitle": "按国家/地区或呼号接收",
   "settingsGeneralSubtitle": "主题、语言与坐标显示",
   "settingsMapSubtitle": "地图类型与显示",
@@ -1669,5 +1669,16 @@
   "maxPackets": "数据包保留条数",
   "maxPacketsTip": "数据包页面保留的历史条数（默认 2000，提高会占用更多内存）",
   "maxTrackPts": "轨迹点数上限",
-  "maxTrackPtsTip": "每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）"
+  "maxTrackPtsTip": "每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）",
+  "chatRecords": "聊天记录",
+  "chatRecordsCleared": "聊天记录已清空",
+  "deviceCat": "设备",
+  "deviceCatDesc": "电台设备 · 待开放",
+  "deviceSettings2": "设备设置",
+  "deviceSettingsSubtitle": "连接你的电台设备",
+  "underConstruction": "前方施工，尚未开放",
+  "underConstructionHint": "该功能正在开发中，敬请期待",
+  "storageLimit": "数据上限",
+  "storageLimitSubtitle": "本地保留的数据量",
+  "connectionCard2": "APRS-IS 连接"
 }

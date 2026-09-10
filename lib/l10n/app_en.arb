@@ -820,7 +820,7 @@
   "settingsManualLocHint": "When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.",
   "settingsConnStatusSubtitle": "Connection status and info",
   "settingsServerSubtitle": "APRS-IS server and passcode",
-  "settingsFilterSubtitle": "Receive range and station limit",
+  "settingsFilterSubtitle": "Filter center and radius",
   "settingsReceivePrefSubtitle": "Receive by country/region or callsign",
   "settingsGeneralSubtitle": "Theme, language and coordinate display",
   "settingsMapSubtitle": "Map type and display",
@@ -1081,5 +1081,16 @@
   "maxPackets": "Packet history limit",
   "maxPacketsTip": "How many packets to keep on the packets page (default 2000; higher uses more memory)",
   "maxTrackPts": "Track point limit",
-  "maxTrackPtsTip": "Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)"
+  "maxTrackPtsTip": "Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)",
+  "chatRecords": "Chat history",
+  "chatRecordsCleared": "Chat history cleared",
+  "deviceCat": "Device",
+  "deviceCatDesc": "Radio gear · coming soon",
+  "deviceSettings2": "Device settings",
+  "deviceSettingsSubtitle": "Connect your radio equipment",
+  "underConstruction": "Under construction — not open yet",
+  "underConstructionHint": "This feature is still being built. Please stay tuned.",
+  "storageLimit": "Data limits",
+  "storageLimitSubtitle": "How much data to keep locally",
+  "connectionCard2": "APRS-IS connection"
 }

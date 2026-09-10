@@ -2787,7 +2787,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsServerSubtitle => 'APRS-IS 服务器与验证码';
 
   @override
-  String get settingsFilterSubtitle => '接收范围与台站上限';
+  String get settingsFilterSubtitle => '过滤中心与接收半径';
 
   @override
   String get settingsReceivePrefSubtitle => '按国家/地区或呼号接收';
@@ -3279,6 +3279,39 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get maxTrackPtsTip => '每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）';
+
+  @override
+  String get chatRecords => '聊天记录';
+
+  @override
+  String get chatRecordsCleared => '聊天记录已清空';
+
+  @override
+  String get deviceCat => '设备';
+
+  @override
+  String get deviceCatDesc => '电台设备 · 待开放';
+
+  @override
+  String get deviceSettings2 => '设备设置';
+
+  @override
+  String get deviceSettingsSubtitle => '连接你的电台设备';
+
+  @override
+  String get underConstruction => '前方施工，尚未开放';
+
+  @override
+  String get underConstructionHint => '该功能正在开发中，敬请期待';
+
+  @override
+  String get storageLimit => '数据上限';
+
+  @override
+  String get storageLimitSubtitle => '本地保留的数据量';
+
+  @override
+  String get connectionCard2 => 'APRS-IS 连接';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6064,7 +6097,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get settingsServerSubtitle => 'APRS-IS 伺服器與驗證碼';
 
   @override
-  String get settingsFilterSubtitle => '接收範圍與臺站上限';
+  String get settingsFilterSubtitle => '過濾中心與接收半徑';
 
   @override
   String get settingsReceivePrefSubtitle => '按國家/地區或呼號接收';
@@ -6556,4 +6589,37 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get maxTrackPtsTip => '每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）';
+
+  @override
+  String get chatRecords => '聊天記錄';
+
+  @override
+  String get chatRecordsCleared => '聊天記錄已清空';
+
+  @override
+  String get deviceCat => '裝置';
+
+  @override
+  String get deviceCatDesc => '電台裝置 · 待開放';
+
+  @override
+  String get deviceSettings2 => '裝置設定';
+
+  @override
+  String get deviceSettingsSubtitle => '連接你的電台裝置';
+
+  @override
+  String get underConstruction => '前方施工，尚未開放';
+
+  @override
+  String get underConstructionHint => '該功能正在開發中，敬請期待';
+
+  @override
+  String get storageLimit => '資料上限';
+
+  @override
+  String get storageLimitSubtitle => '本機保留的資料量';
+
+  @override
+  String get connectionCard2 => 'APRS-IS 連線';
 }
