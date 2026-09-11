@@ -39,7 +39,11 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   static const _baseLng = 116.4074;
   static final (double, double) _gcjBase = Gcj.wgsToGcj(_baseLat, _baseLng);
 
-  double _zoom = 15.0;
+  /// 初始缩放：取区域级（而非街道级 15）。
+  /// 本页以我为中心，若用 15 只有 ~1km 内的台站会进画面，
+  /// 而「其它台站」恰恰是这里的背景参照 —— 取 12 可看到数十公里的
+  /// 台站分布（典型 APRS 覆盖范围）；需要街道级细节时自行放大即可。
+  double _zoom = 12.0;
 
   /// 手动平移量（仅 [_follow] 为 false 时生效；跟随时每相由我的位置算出）
   Offset _manualPan = Offset.zero;
