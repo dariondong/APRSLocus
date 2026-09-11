@@ -69,6 +69,9 @@ class DeviceClassNames {
       'ht': '手持电台',
       'app': '手机 App',
       'software': '桌面软件',
+      // APRSlocus 自身：Android/iOS/Windows/macOS 全平台，
+      // 归入「手机 App」或「桌面软件」都不准确，单独一类
+      'multiplatform': '多平台软件',
       'daemon': '后台软件',
       'service': '网络服务',
       'network': '网络硬件',
@@ -87,6 +90,7 @@ class DeviceClassNames {
       'ht': 'HT',
       'app': 'App',
       'software': 'Software',
+      'multiplatform': 'Multi-platform',
       'daemon': 'Daemon',
       'service': 'Service',
       'network': 'Network',
@@ -280,10 +284,10 @@ class AprsDevice {
   ///
   /// 格式：(pattern, vendor, model, cls)
   static const List<(String, String, String, String)> _builtinEntries = [
-    ('APALOC', 'APRSlocus', 'APRSlocus', 'app'),
+    ('APALOC', 'APRSlocus', 'APRSlocus', 'multiplatform'),
     // 兼容少数实现用完整名/旧写法作为 toCall 的情况
-    ('APRSLOCUS', 'APRSlocus', 'APRSlocus', 'app'),
-    ('APOLOCUS', 'APRSlocus', 'APRSlocus', 'app'),
+    ('APRSLOCUS', 'APRSlocus', 'APRSlocus', 'multiplatform'),
+    ('APOLOCUS', 'APRSlocus', 'APRSlocus', 'multiplatform'),
   ];
 
   /// 把内置条目追加到库末尾。

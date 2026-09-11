@@ -3336,6 +3336,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get unlocated => '未定位';
+
+  @override
+  String get platform => '平台';
+
+  @override
+  String get nearbyStations => '附近台站';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6670,4 +6676,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get unlocated => '未定位';
+
+  @override
+  String get platform => '平台';
+
+  @override
+  String get nearbyStations => '附近台站';
 }

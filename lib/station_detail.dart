@@ -1033,6 +1033,16 @@ class _StationDetailState extends State<StationDetail> {
       caseSensitive: false,
     ).firstMatch(c);
     if (vm != null) map[S.of(context).version] = 'v${vm.group(1)}';
+    final pm = RegExp(
+      r'APRSLOCUS\s*v?[\d.]+\s+(Win|Mac|iOS|Android|Linux|Web|Fuchsia)',
+      caseSensitive: false,
+    ).firstMatch(c);
+    if (pm != null) {
+      final raw = pm.group(1)!;
+      map[S.of(context).platform] = raw.toLowerCase() == 'ios'
+          ? 'iOS'
+          : raw[0].toUpperCase() + raw.substring(1).toLowerCase();
+    }
     final bm = RegExp(r'Bat:(\d+)%', caseSensitive: false).firstMatch(c);
     if (bm != null) map[S.of(context).phoneBattery] = '${bm.group(1)}%';
     // 高度/速度来自台站已解析字段（s.alt/s.speed 米、km/h）

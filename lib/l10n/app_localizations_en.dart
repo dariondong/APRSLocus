@@ -3431,4 +3431,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlocated => 'No fix';
+
+  @override
+  String get platform => 'Platform';
+
+  @override
+  String get nearbyStations => 'Nearby stations';
 }

@@ -1688,5 +1688,7 @@
   "followMe": "跟隨我",
   "beaconCountdown": "發送倒數",
   "beaconOff": "未開啟",
-  "unlocated": "未定位"
+  "unlocated": "未定位",
+  "platform": "平台",
+  "nearbyStations": "附近台站"
 }

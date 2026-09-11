@@ -583,9 +583,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 缩放（位于地图按钮下方）
                 Positioned(right: 14, top: 146, child: _zoomCtrl()),
                 // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
+                //
+                // 位置说明：原放在 right:14 / top:236，但右侧 `_zoomCtrl()`
+                // 实际含 6 个按钮（占用 146 → 404），会把它整个盖住。
+                // 改为左侧 top:58 —— 左上 `_infoChip` 只占 14~50，
+                // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
                 Positioned(
-                  right: 14,
-                  top: 236,
+                  left: 14,
+                  top: 58,
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,

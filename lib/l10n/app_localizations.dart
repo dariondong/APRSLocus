@@ -6014,6 +6014,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'未定位'**
   String get unlocated;
+
+  /// No description provided for @platform.
+  ///
+  /// In zh, this message translates to:
+  /// **'平台'**
+  String get platform;
+
+  /// No description provided for @nearbyStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'附近台站'**
+  String get nearbyStations;
 }
 
 class _AppLocalizationsDelegate

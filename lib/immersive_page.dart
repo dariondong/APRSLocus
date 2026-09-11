@@ -53,6 +53,9 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   Size _canvas = Size.zero;
 
   bool _headingUp = true;
+
+  /// 左侧「附近台站」小面板开关（默认开；可一键隐藏，避免干扰导航）
+  bool _showNearby = true;
   /// 屏幕展示用连续角度（弧度，-航向）；见 [_nearest] 保证跨 0/360 不绕远
   double _rot = 0;
   late final Ticker _ticker;
@@ -327,6 +330,28 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         .toList();
   }
 
+  /// 附近台站（按距离升序）。仅取有效坐标且通过接收范围的台站，
+  /// 与地图口径一致；不含我自己。
+  List<(Station, double)> _nearby(AppState st) {
+    final lat = st.myLat;
+    final lng = st.myLng;
+    if (lat == null || lng == null) return const [];
+    final me = st.myFullCall.toUpperCase();
+    final list = <(Station, double)>[];
+    for (final s in st.stations) {
+      if (s.call.toUpperCase() == me) continue;
+      if (s.lat == 0 && s.lng == 0) continue;
+      if (!st.stationAllowedFor(s)) continue;
+      list.add((s, haversine(lat, lng, s.lat, s.lng)));
+    }
+    list.sort((a, b) => a.$2.compareTo(b.$2));
+    return list;
+  }
+
+  /// 距离显示：<1km 保留一位小数，其余取整
+  static String _km(double v) =>
+      v < 1 ? '${v.toStringAsFixed(1)}km' : '${v.round()}km';
+
   // ════════════════════════ HUD ════════════════════════
 
   Widget _hud(Size size, AppState st) {
@@ -375,11 +400,18 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
           const SizedBox(height: 8),
           _roundBtn(Icons.map_rounded, _pickMapType, tooltip: s.mapType),
           const SizedBox(height: 8),
+          _roundBtn(Icons.format_list_bulleted_rounded,
+              () => setState(() => _showNearby = !_showNearby),
+              tooltip: s.nearbyStations, active: _showNearby),
+          const SizedBox(height: 8),
           _roundBtn(Icons.add_rounded, () => _zoomBy(1)),
           const SizedBox(height: 8),
           _roundBtn(Icons.remove_rounded, () => _zoomBy(-1)),
         ]),
       ),
+
+      // ── 左侧中部：附近台站（纯参照，不拦截手势）──
+      if (_showNearby) _nearbyPanel(st, s, size, pad, gap),
 
       // ── 左下：信标发送倒计时 ──
       Positioned(
@@ -395,6 +427,90 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         child: _speedCard(st, s),
       ),
     ]);
+  }
+
+  /// 左侧「附近台站」面板。
+  ///
+  /// 设计取舍：整块包 `IgnorePointer`，**不拦截地图手势**；
+  /// 垂直居中、窄幅（116px）且半透明，作为背景参照而不抢主体；
+  /// 行数按可用高度自适应，避免矮屏上与四角 HUD 打架。
+  Widget _nearbyPanel(
+      AppState st, AppLocalizations s, Size size, EdgeInsets pad, double gap) {
+    final all = _nearby(st);
+    if (all.isEmpty) return const SizedBox.shrink();
+    // 自适应行数：够高就多显示几行，矮屏（横屏）少显示
+    final maxRows = size.height >= 700
+        ? 7
+        : size.height >= 520
+            ? 5
+            : 3;
+    final shown = all.take(maxRows).toList();
+    return Positioned(
+      left: gap + pad.left,
+      top: 0,
+      bottom: 0,
+      child: IgnorePointer(
+        child: Center(
+          child: Container(
+            width: 116,
+            padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.46),
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Icon(Icons.near_me_rounded,
+                      size: 11, color: Colors.white.withValues(alpha: 0.7)),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(s.nearbyStations,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ts(9.5,
+                            w: FontWeight.w700,
+                            c: Colors.white.withValues(alpha: 0.75))),
+                  ),
+                  Text('${all.length}',
+                      style: ts(9, c: Colors.white.withValues(alpha: 0.45))),
+                ]),
+                const SizedBox(height: 6),
+                for (final e in shown)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(children: [
+                      Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: e.$1.effectiveStatus == St.offline
+                              ? C.slate.withValues(alpha: 0.5)
+                              : C.blue.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(e.$1.call,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ts(10, w: FontWeight.w700, c: Colors.white)),
+                      ),
+                      Text(_km(e.$2),
+                          style: ts(9,
+                              c: Colors.white.withValues(alpha: 0.6))),
+                    ]),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   /// 左下：上报倒计时（主）+ 连接状态 + 累计次数

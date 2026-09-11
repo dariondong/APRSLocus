@@ -50,7 +50,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.74';
+  static const appVersion = '1.6.75';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1615,7 +1615,8 @@ class AppState extends ChangeNotifier {
       parts.add(myComment.trim());
     }
     // 版本号始终追加在末尾
-    parts.add('APRSlocus v$appVersion');
+    // 末尾带上运行平台，便于识别端侧（同一份报文也供第三方解析）
+    parts.add('APRSlocus v$appVersion $platformTag');
     return parts.join(' ');
   }
 
@@ -2208,6 +2209,18 @@ class AppState extends ChangeNotifier {
       ).firstMatch(p.comment!);
       if (vm != null) apInfo['版本'] = 'v${vm.group(1)}';
       apInfo['软件'] = 'APRSlocus';
+      // 平台：APRSlocus v1.6.74 Win / iOS / Mac / Android / Linux / Web
+      final pm = RegExp(
+        r'APRSLOCUS\s*v?[\d.]+\s+(Win|Mac|iOS|Android|Linux|Web|Fuchsia)',
+        caseSensitive: false,
+      ).firstMatch(p.comment!);
+      if (pm != null) {
+        final raw = pm.group(1)!;
+        // 规范成统一写法（大小写不敏感匹配到的可能是 win / WINDOWS 等）
+        apInfo['平台'] = raw.toLowerCase() == 'ios'
+            ? 'iOS'
+            : raw[0].toUpperCase() + raw.substring(1).toLowerCase();
+      }
       // 是否有高度/速度等
       if (p.alt != null) apInfo['高度'] = '${p.alt!.toStringAsFixed(0)}m';
       if (p.speed != null) apInfo['速度'] = '${p.speed!.toStringAsFixed(0)}km/h';

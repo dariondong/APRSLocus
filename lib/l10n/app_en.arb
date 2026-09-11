@@ -1100,5 +1100,7 @@
   "followMe": "Follow me",
   "beaconCountdown": "Next beacon",
   "beaconOff": "off",
-  "unlocated": "No fix"
+  "unlocated": "No fix",
+  "platform": "Platform",
+  "nearbyStations": "Nearby stations"
 }
