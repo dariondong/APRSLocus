@@ -516,72 +516,46 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 图例（矮横屏隐藏，减少遮挡）
                 if (!shortWide)
                   Positioned(top: 14, right: 60, child: _legend()),
-                // 图层筛选按钮（覆盖在右上角）
+                // ── 右侧工具列（合并为单个 Column）──
+                // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
+                // 而 `_zoomCtrl()` 实际含 6 个按钮（放大/缩小/轨迹/聚合/热力图/定位，
+                // 一直排到 404），矮屏上与其它元素必然打架。
+                // 改为单列顺序排布后，结构上不可能再出现相互重叠。
                 Positioned(
                   right: 14,
                   top: 14,
-                  child: GestureDetector(
-                    onTap: () => _showLayerMenu(context),
-                    child: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-                        border: Border.all(
-                          color: _hiddenTypes.isNotEmpty ? C.blue : C.border,
-                        ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _toolBtn(
+                        icon: Icons.layers_rounded,
+                        onTap: () => _showLayerMenu(context),
+                        bg: _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
+                        fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
+                        border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
                       ),
-                      child: Icon(
-                        Icons.layers_rounded,
-                        size: 20,
-                        color: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
+                      const SizedBox(height: 6),
+                      _toolBtn(
+                        icon: Icons.group_rounded,
+                        onTap: () => showTrackGroupPicker(context, widget.state),
+                        bg: C.orangeBg,
+                        fg: C.orange,
+                        border: C.orange.withValues(alpha: 0.4),
                       ),
-                    ),
+                      const SizedBox(height: 6),
+                      _toolBtn(
+                        icon: Icons.map_rounded,
+                        onTap: _showMapTypeMenu,
+                        bg: C.white,
+                        fg: C.slate,
+                        border: C.border,
+                      ),
+                      const SizedBox(height: 6),
+                      // 缩放 / 轨迹 / 聚合 / 热力图 / 定位
+                      _zoomCtrl(),
+                    ],
                   ),
                 ),
-                // 群组跟踪按钮
-                Positioned(
-                  right: 14,
-                  top: 58,
-                  child: GestureDetector(
-                    onTap: () => showTrackGroupPicker(context, widget.state),
-                    child: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: C.orangeBg,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-                        border: Border.all(color: C.orange.withValues(alpha: 0.4)),
-                      ),
-                      child: Icon(Icons.group_rounded,
-                          size: 20, color: C.orange),
-                    ),
-                  ),
-                ),
-                // 地图类型切换按钮
-                Positioned(
-                  right: 14,
-                  top: 102,
-                  child: GestureDetector(
-                    onTap: _showMapTypeMenu,
-                    child: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: C.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-                        border: Border.all(color: C.border),
-                      ),
-                      child: Icon(Icons.map_rounded, size: 20, color: C.slate),
-                    ),
-                  ),
-                ),
-                // 缩放（位于地图按钮下方）
-                Positioned(right: 14, top: 146, child: _zoomCtrl()),
                 // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
                 //
                 // 位置说明：原放在 right:14 / top:236，但右侧 `_zoomCtrl()`
@@ -1673,6 +1647,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
     final z = (_zoom + 1).clamp(3.0, 19.0);
     _animateTo(z, _panForCenter(z));
+  }
+
+  /// 右侧工具列的单颗按钮（统一 38×38 / 圆角 12 / 柔和投影）。
+  /// 抽出来是为了让工具列能写成单个 Column 顺序排布，
+  /// 避免多个硬编码 top 的 Positioned 在矮屏上互相重叠。
+  Widget _toolBtn({
+    required IconData icon,
+    required VoidCallback onTap,
+    required Color bg,
+    required Color fg,
+    required Color border,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+          border: Border.all(color: border),
+        ),
+        child: Icon(icon, size: 20, color: fg),
+      ),
+    );
   }
 
   Widget _zoomCtrl() {

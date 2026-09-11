@@ -39,11 +39,15 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   static const _baseLng = 116.4074;
   static final (double, double) _gcjBase = Gcj.wgsToGcj(_baseLat, _baseLng);
 
-  /// 初始缩放：取区域级（而非街道级 15）。
-  /// 本页以我为中心，若用 15 只有 ~1km 内的台站会进画面，
-  /// 而「其它台站」恰恰是这里的背景参照 —— 取 12 可看到数十公里的
-  /// 台站分布（典型 APRS 覆盖范围）；需要街道级细节时自行放大即可。
-  double _zoom = 12.0;
+  /// 初始缩放。
+  ///
+  /// 该页以我为中心，可见范围很紧：画布虽取屏幕对角线（旋转不露白），
+  /// 但**可见屏窗口只占对角画布的约 45%**，所以实际可见跨度约为
+  /// `屏幕px / 256 · 360° / 2^zoom`。实测（400×800 屏）：
+  /// zoom 15 ≈ ±1km、zoom 12 ≈ ±6km、zoom 10 ≈ ±25km、zoom 9 ≈ ±50km。
+  /// 「其它台站」在此页是背景地理参照，取 10 才能覆盖典型 APRS
+  /// 范围（几十公里）；需要街道级细节时自行放大即可。
+  double _zoom = 10.0;
 
   /// 手动平移量（仅 [_follow] 为 false 时生效；跟随时每相由我的位置算出）
   Offset _manualPan = Offset.zero;
@@ -683,10 +687,14 @@ class _ImmersivePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 其它台站：小淡点（仅参照，不可交互）──
-    // 在线＝常规淡蓝灰；离线＝更暗更小，保持层级但不会「看不见」
-    final dotOnline = Paint()..color = C.slate.withValues(alpha: 0.55);
-    final dotOffline = Paint()..color = C.slate.withValues(alpha: 0.28);
+    // ── 其它台站：小圆点（仅参照，不可交互）──
+    //
+    // 可见性优先：此前用 C.slate @0.55 / 半径 3.2，在花哨底图上几乎看不见。
+    // 现改为「深色描边 + 亮色实心」，浅街道图 / 深卫星图上都醒目；
+    // 离线台站用偏暗实心色，保留层级但不会整片消失。
+    final dotEdge = Paint()..color = const Color(0xCC1B2333);
+    final dotOnline = Paint()..color = const Color(0xFF29B6F6); // 亮青
+    final dotOffline = Paint()..color = const Color(0xFF90A4AE); // 偏灰
     for (final s in others) {
       final o = toScreen(s.lat, s.lng);
       if (o.dx < -20 ||
@@ -696,8 +704,9 @@ class _ImmersivePainter extends CustomPainter {
         continue;
       }
       final offline = s.effectiveStatus == St.offline;
-      canvas.drawCircle(
-          o, offline ? 2.4 : 3.2, offline ? dotOffline : dotOnline);
+      final r = offline ? 3.0 : 4.0;
+      canvas.drawCircle(o, r + 1.2, dotEdge); // 描边 → 任何底图都可读
+      canvas.drawCircle(o, r, offline ? dotOffline : dotOnline);
     }
 
     final m = me;
