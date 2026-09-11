@@ -1,12 +1,41 @@
 {
-  "version": 1,
-  "updated": "2026-09-09",
+  "version": 2,
+  "updated": "2026-09-11",
   "sponsors": [
-    { "kind": "group", "name": "STUDENT HAMS 群组", "desc": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。" },
-    { "kind": "coffee", "name": "BG7PGW", "desc": "感谢赞助的蜜雪冰城一杯 🧋" },
-    { "kind": "jade", "name": "BG7ORC", "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音" },
-    { "kind": "school", "name": "BA4JLD", "desc": "青科大学业余无线电爱好者俱乐部 · 赠我以琼琚" },
-    { "kind": "jade", "name": "BA4IUD", "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音" },
-    { "kind": "everyone", "name": "每一位支持者", "desc": "你们的每一份支持，都是 APRSlocus 继续发光的动力。" }
+    {
+      "kind": "group",
+      "name": "STUDENT HAMS 群组",
+      "desc": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。"
+    },
+    {
+      "kind": "coffee",
+      "name": "BG7PGW",
+      "desc": "感谢赞助的蜜雪冰城一杯 🧋"
+    },
+    {
+      "kind": "jade",
+      "name": "BG7ORC",
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+    },
+    {
+      "kind": "school",
+      "name": "BA4JLD",
+      "desc": "青科大学业余无线电爱好者俱乐部 · 赠我以琼琚"
+    },
+    {
+      "kind": "jade",
+      "name": "BA4IUD",
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+    },
+    {
+      "kind": "jade",
+      "name": "BD1FEH",
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+    },
+    {
+      "kind": "everyone",
+      "name": "每一位支持者",
+      "desc": "你们的每一份支持，都是 APRSlocus 继续发光的动力。"
+    }
   ]
 }

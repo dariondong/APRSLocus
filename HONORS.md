@@ -11,6 +11,7 @@
 |---|---|---|
 | **① 授予已有称号**（最常见） | 1（`docs/members.json`） | ❌ 不需要 |
 | **② 新增一个称号** | 7（`docs/` + `lib/`） | ✅ **需要**（`lib/` 那 3 处） |
+| **③ 上赞助墙**（见文末，独立于称号） | 5 | ❌ 不需要 |
 
 **称号（honor）** 与 **成员（member）** 是两层概念：
 
@@ -197,6 +198,48 @@ iSelfReliant:'<path d="M4.5 5h15v14h-15zM8 9.5l3 3-3 3M13.5 15.5h3"/>'
 
 ---
 
+## ③ 上赞助墙（与称号**相互独立**）
+
+> ⚠️ **授予 `jadeGift`（赠我以琼琚）称号 ≠ 上赞助墙。**
+> 两者是**完全独立的数据**：称号在 `members.json`，赞助墙在 `sponsors.json`
+> ＋ 官网 HTML 里**写死**。只改一个会出现「有称号但赞助墙看不到」。
+
+需要同步 **5 处**：
+
+| # | 文件 | 位置 |
+|---|---|---|
+| 1 | `docs/sponsors.json` | `sponsors[]` 追加 `{kind, name, desc}`（App 数据源） |
+| 2 | `docs/index.html` | 「赞助」段落里追加 contributor 块 |
+| 3 | `docs/en/index.html` | 「Sponsors」段落 |
+| 4 | `docs/zh-TW/index.html` | 「贊助」段落 |
+| 5 | `lib/sponsor_page.dart` | 内置**兜底名单**（离线时用） |
+
+`kind` 取值与图标（App 端 `_kindIcon`）：
+
+| kind | 图标 | 图标 |
+|---|---|---|
+| `group` | 群组 | `Icons.group_rounded` |
+| `coffee` | 赞助/咖啡 | `Icons.local_cafe_rounded` |
+| `jade` | 赠我以琼琚 | `Icons.card_giftcard_rounded` |
+| `school` | 学校/社团 | `Icons.school_rounded` |
+| 其他 | 兜底 | `Icons.favorite_rounded` |
+
+官网 contributor 块模板（注意各语言 `c-role` 文案不同）：
+
+```html
+<span class="contributor">
+  <span class="avatar" style="background:linear-gradient(135deg,#0ea5b7,#0b7285)">F</span>
+  <span><span class="c-name">BD1FEH</span><span class="c-role">赠我以琼琚</span></span>
+</span>
+```
+
+- `avatar` 字母惯例：**呼号数字段之后的首字母**（`BA4IUD→I`、`BA4JLD→J`、`BG7ORC→O`）
+  —— 少数历史条目不一致（如 `BG4LZY→I`）、作者用名字首字母（`BG7LZQ (Darion)→D`），
+  但新人按上述惯例即可
+- `sponsors.json` 请把「每一位支持者 / everyone」这类总结条目**始终放在末位**
+
+---
+
 ## ✅ 提交前校验清单
 
 ```bash
@@ -268,6 +311,7 @@ flutter analyze   # 或交给 CI
 | 文件 | 说明 |
 |---|---|
 | `docs/members.json` | 成员与称号数据（唯一真源） |
+| `docs/sponsors.json` | 赞助名单（App 赞助页数据源；官网赞助墙另在 HTML 写死） |
 | `docs/member-card.html` | 官网会员卡（个人页） |
 | `docs/badge.html` | 徽章专属页 `badge.html?honor=<key>` |
 | `docs/firstfix.json` | FIRST FIX 至高荣誉的授勋名单（独立文件） |

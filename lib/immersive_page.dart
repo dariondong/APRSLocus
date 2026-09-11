@@ -305,16 +305,21 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
     );
   }
 
-  /// 其它台站仅作淡色参照（不参与交互）
+  /// 其它台站仅作淡色参照（不参与交互）。
+  ///
+  /// **不要过滤离线台站** —— 主地图（`_visible`）也只按接收范围/筛选过滤，
+  /// 离线台站照样显示（灰显）。此前这里多加了 `!= offline` 判断，
+  /// 导致台站数据较旧时（全部处于离线）地图上一个点都不画。
+  /// 离线台站改由绘制层用更暗的颜色处理：既保留层级，也不会整片消失。
   List<Station> _otherStations() {
     final st = widget.state;
     final me = st.myFullCall.toUpperCase();
     return st.stations
         .where((s) =>
             s.call.toUpperCase() != me &&
-            s.effectiveStatus != St.offline &&
+            st.stationAllowedFor(s) &&
             !(s.lat == 0 && s.lng == 0))
-        .take(300)
+        .take(400)
         .toList();
   }
 
@@ -559,7 +564,9 @@ class _ImmersivePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // ── 其它台站：小淡点（仅参照，不可交互）──
-    final dot = Paint()..color = C.slate.withValues(alpha: 0.55);
+    // 在线＝常规淡蓝灰；离线＝更暗更小，保持层级但不会「看不见」
+    final dotOnline = Paint()..color = C.slate.withValues(alpha: 0.55);
+    final dotOffline = Paint()..color = C.slate.withValues(alpha: 0.28);
     for (final s in others) {
       final o = toScreen(s.lat, s.lng);
       if (o.dx < -20 ||
@@ -568,7 +575,9 @@ class _ImmersivePainter extends CustomPainter {
           o.dy > size.height + 20) {
         continue;
       }
-      canvas.drawCircle(o, 3.0, dot);
+      final offline = s.effectiveStatus == St.offline;
+      canvas.drawCircle(
+          o, offline ? 2.4 : 3.2, offline ? dotOffline : dotOnline);
     }
 
     final m = me;

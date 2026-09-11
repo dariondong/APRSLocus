@@ -1,5 +1,32 @@
 # 更新日志
 
+## [1.6.74] - 2026-09-11
+
+### 🏅 BD1FEH 上「赞助墙」（此前遗漏）
+- **根因**：`sponsors.json`（赞助名单）与 `members.json`（称号/成员）是**两套独立数据**。
+  之前只把 BD1FEH 加进 `members.json` 授予「赠我以琼琚」称号，
+  **从未加进赞助名单**，所以赞助墙上看不到 —— 两者不是一回事
+- 已补 **5 处**（赞助墙在官网是写死在 HTML 里的，不在 JSON 中）：
+  `docs/sponsors.json`（v2）/ `docs/index.html` / `docs/en/index.html` /
+  `docs/zh-TW/index.html` / `lib/sponsor_page.dart`（App 离线兜底名单）
+- 顺带把这条写进 `HONORS.md`：新增「③ 上赞助墙」章节，
+  明确「**授予 jadeGift 称号 ≠ 上赞助墙**」并列出 5 处同步点、
+  `kind` 图标映射、官网 contributor 块模板、avatar 字母惯例
+
+### 🛰️ CONNECT 在线帧带上运行平台
+- `>APRSLocus CONNECT` 后追加平台字段，便于在 APRS-IS 上区分端侧：
+  `>APRSLocus CONNECT Win` / `iOS` / `Mac` / `Android` / `Linux` / `Web`
+- 新增 `AppState.platformTag`（`kIsWeb` 优先，其余按 `defaultTargetPlatform` 映射；
+  Windows 简写 `Win`、macOS 简写 `Mac`）
+
+### 🗺️ 沉浸地图：修「其它台站一个都不显示」
+- **根因**：`_otherStations()` 里我多加了 `effectiveStatus != St.offline` 过滤，
+  而**主地图并不过滤离线台站**（只灰显）。台站数据较旧时全部处于离线，
+  结果地图上一个点都不画
+- 现在与主地图口径一致：**只按接收范围过滤**（`stationAllowedFor`），
+  离线台站由绘制层用**更暗更小**的点表示（保留层级，但不会整片消失）
+- 上限 300 → 400
+
 ## [1.6.73] - 2026-09-11
 
 ### 🧭 新增「沉浸地图」页（导航风格）

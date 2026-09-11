@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.73';
+  static const appVersion = '1.6.74';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -58,6 +59,26 @@ class AppState extends ChangeNotifier {
 
   /// 完整呼号（含 SSID 后缀）
   String get myFullCall => mySsid == 0 ? myCall : '$myCall-$mySsid';
+
+  /// 运行平台短名：用于 CONNECT 在线状态帧，便于在 APRS-IS 上区分端侧。
+  /// Android / iOS 用系统名，Windows 简写 Win、macOS 简写 Mac。
+  static String get platformTag {
+    if (kIsWeb) return 'Web';
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'Android';
+      case TargetPlatform.iOS:
+        return 'iOS';
+      case TargetPlatform.windows:
+        return 'Win';
+      case TargetPlatform.macOS:
+        return 'Mac';
+      case TargetPlatform.linux:
+        return 'Linux';
+      case TargetPlatform.fuchsia:
+        return 'Fuchsia';
+    }
+  }
 
   /// 收到新消息时回调（src, text, groupId），用于顶部气泡通知
   void Function(String src, String text, String? groupId)? onNewMessage;
@@ -1159,7 +1180,7 @@ class AppState extends ChangeNotifier {
       if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
       // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
       // body=APRSLocus CONNECT（区分于位置信标；不再用非标 “保持连接”）
-      final raw = '$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT';
+      final raw = '$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT $platformTag';
       aprs.send(raw);
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
@@ -1293,7 +1314,7 @@ class AppState extends ChangeNotifier {
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
-      aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT');
+      aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT $platformTag');
       // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
       // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
       if (!beaconAutoAsked && beaconEnabled) {

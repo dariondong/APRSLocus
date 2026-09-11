@@ -24,6 +24,7 @@ class _SponsorPageState extends State<SponsorPage> {
     (kind: 'jade', name: 'BG7ORC', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
     (kind: 'school', name: 'BA4JLD', desc: '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚'),
     (kind: 'jade', name: 'BA4IUD', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
+    (kind: 'jade', name: 'BD1FEH', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
     (kind: 'everyone', name: '每一位支持者', desc: '你们的每一份支持，都是 APRSlocus 继续发光的动力。'),
   ];
 
