@@ -3312,6 +3312,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get connectionCard2 => 'APRS-IS 连接';
+
+  @override
+  String get immersiveMap => '沉浸地图';
+
+  @override
+  String get immersiveMapTip => '导航风格：以我为中心、航向朝上、四角 HUD';
+
+  @override
+  String get headingUp => '航向朝上';
+
+  @override
+  String get northUp => '正北朝上';
+
+  @override
+  String get followMe => '跟随我';
+
+  @override
+  String get beaconCountdown => '发送倒计时';
+
+  @override
+  String get beaconOff => '未开启';
+
+  @override
+  String get unlocated => '未定位';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6622,4 +6646,28 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get connectionCard2 => 'APRS-IS 連線';
+
+  @override
+  String get immersiveMap => '沉浸地圖';
+
+  @override
+  String get immersiveMapTip => '導航風格：以我為中心、航向朝上、四角 HUD';
+
+  @override
+  String get headingUp => '航向朝上';
+
+  @override
+  String get northUp => '正北朝上';
+
+  @override
+  String get followMe => '跟隨我';
+
+  @override
+  String get beaconCountdown => '發送倒數';
+
+  @override
+  String get beaconOff => '未開啟';
+
+  @override
+  String get unlocated => '未定位';
 }

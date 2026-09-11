@@ -1680,5 +1680,13 @@
   "underConstructionHint": "該功能正在開發中，敬請期待",
   "storageLimit": "資料上限",
   "storageLimitSubtitle": "本機保留的資料量",
-  "connectionCard2": "APRS-IS 連線"
+  "connectionCard2": "APRS-IS 連線",
+  "immersiveMap": "沉浸地圖",
+  "immersiveMapTip": "導航風格：以我為中心、航向朝上、四角 HUD",
+  "headingUp": "航向朝上",
+  "northUp": "正北朝上",
+  "followMe": "跟隨我",
+  "beaconCountdown": "發送倒數",
+  "beaconOff": "未開啟",
+  "unlocated": "未定位"
 }

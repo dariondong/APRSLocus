@@ -1680,5 +1680,13 @@
   "underConstructionHint": "该功能正在开发中，敬请期待",
   "storageLimit": "数据上限",
   "storageLimitSubtitle": "本地保留的数据量",
-  "connectionCard2": "APRS-IS 连接"
+  "connectionCard2": "APRS-IS 连接",
+  "immersiveMap": "沉浸地图",
+  "immersiveMapTip": "导航风格：以我为中心、航向朝上、四角 HUD",
+  "headingUp": "航向朝上",
+  "northUp": "正北朝上",
+  "followMe": "跟随我",
+  "beaconCountdown": "发送倒计时",
+  "beaconOff": "未开启",
+  "unlocated": "未定位"
 }

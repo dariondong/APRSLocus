@@ -1092,5 +1092,13 @@
   "underConstructionHint": "This feature is still being built. Please stay tuned.",
   "storageLimit": "Data limits",
   "storageLimitSubtitle": "How much data to keep locally",
-  "connectionCard2": "APRS-IS connection"
+  "connectionCard2": "APRS-IS connection",
+  "immersiveMap": "Immersive map",
+  "immersiveMapTip": "Navigation style: centered on you, heading-up, corner HUD",
+  "headingUp": "Heading up",
+  "northUp": "North up",
+  "followMe": "Follow me",
+  "beaconCountdown": "Next beacon",
+  "beaconOff": "off",
+  "unlocated": "No fix"
 }

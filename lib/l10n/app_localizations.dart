@@ -5966,6 +5966,54 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'APRS-IS 连接'**
   String get connectionCard2;
+
+  /// No description provided for @immersiveMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'沉浸地图'**
+  String get immersiveMap;
+
+  /// No description provided for @immersiveMapTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'导航风格：以我为中心、航向朝上、四角 HUD'**
+  String get immersiveMapTip;
+
+  /// No description provided for @headingUp.
+  ///
+  /// In zh, this message translates to:
+  /// **'航向朝上'**
+  String get headingUp;
+
+  /// No description provided for @northUp.
+  ///
+  /// In zh, this message translates to:
+  /// **'正北朝上'**
+  String get northUp;
+
+  /// No description provided for @followMe.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随我'**
+  String get followMe;
+
+  /// No description provided for @beaconCountdown.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送倒计时'**
+  String get beaconCountdown;
+
+  /// No description provided for @beaconOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启'**
+  String get beaconOff;
+
+  /// No description provided for @unlocated.
+  ///
+  /// In zh, this message translates to:
+  /// **'未定位'**
+  String get unlocated;
 }
 
 class _AppLocalizationsDelegate

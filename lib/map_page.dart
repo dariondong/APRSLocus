@@ -10,6 +10,7 @@ import 'widgets.dart';
 import 'station_detail.dart';
 import 'tile_map.dart';
 import 'vector_map.dart';
+import 'immersive_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
 
@@ -581,6 +582,34 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ),
                 // 缩放（位于地图按钮下方）
                 Positioned(right: 14, top: 146, child: _zoomCtrl()),
+                // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
+                Positioned(
+                  right: 14,
+                  top: 236,
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ImmersiveMapPage(state: widget.state)),
+                    ),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: C.black.withValues(alpha: 0.82),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.18),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.18)),
+                      ),
+                      child: Tooltip(
+                        message: S.of(context).immersiveMapTip,
+                        child: const Icon(Icons.navigation_rounded,
+                            size: 20, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
                 // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
                 if (size.height > size.width &&
                     widget.state.connected &&

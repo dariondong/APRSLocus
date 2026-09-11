@@ -3406,4 +3406,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionCard2 => 'APRS-IS connection';
+
+  @override
+  String get immersiveMap => 'Immersive map';
+
+  @override
+  String get immersiveMapTip =>
+      'Navigation style: centered on you, heading-up, corner HUD';
+
+  @override
+  String get headingUp => 'Heading up';
+
+  @override
+  String get northUp => 'North up';
+
+  @override
+  String get followMe => 'Follow me';
+
+  @override
+  String get beaconCountdown => 'Next beacon';
+
+  @override
+  String get beaconOff => 'off';
+
+  @override
+  String get unlocated => 'No fix';
 }
