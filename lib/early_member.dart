@@ -635,7 +635,8 @@ class _HonorWallSheet extends StatelessWidget {
                     return ListView(
                       controller: scrollCtrl,
                       children: [
-                        for (final w in wall) _badgeTile(call, w.honor, w.owned),
+                        for (final w in wall)
+                          _badgeTile(context, call, w.honor, w.owned),
                         const SizedBox(height: 8),
                         Row(children: const [
                           Icon(Icons.emoji_events_outlined, size: 15, color: Color(0xFF9AA3B7)),
@@ -667,7 +668,9 @@ class _HonorWallSheet extends StatelessWidget {
 }
 
 /// 单行徽章（固定 72 高 icon 46 框，统一样式；点亮可点开专属卡）
-Widget _badgeTile(String call, Honor h, bool owned) {
+///
+/// 顶层函数没有 `context`，必须显式传入（否则 analyze 报 undefined_identifier）
+Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
   final c = owned ? h.color : const Color(0xFFC2CAD8);
   final col = owned ? h.color : const Color(0xFFAEB7C7);
   return GestureDetector(

@@ -19,6 +19,14 @@
     countryCode/scriptCode）
 - 台站详情、设置页里的徽章名也改为语言感知
 
+### 🔧 修正上一版引入的编译错误（CI 报错）
+- `HonorWallPage` 与 `_HonorWallSheet` 都是 **StatelessWidget**，自身**没有**
+  `context` getter；顶层函数 `_badgeTile` 同样无 context。
+  上一版在这些位置直接写了 `honorLangOf(context)` / `S.of(context)`，
+  导致 analyze 报 6 处 `undefined_identifier`
+- 已把 `context` 改为**显式参数**传入（`_honorTile` / `_achTile` /
+  `_badgeTile`），调用处同步传参
+
 ### 🐛 沉浸地图：右侧按钮与速度卡重叠（结构性修复）
 - **根因**：右侧按钮列（贴顶）与速度卡（贴底）各自 `Positioned`，
   按钮 6 个共约 280px ⇒ 矮屏（尤其横屏 360~450）必然重叠

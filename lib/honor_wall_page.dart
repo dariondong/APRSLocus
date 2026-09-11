@@ -131,7 +131,8 @@ class HonorWallPage extends StatelessWidget {
                       child: Divider(color: Color(0xFFE4E8F1), height: 1)),
                 ]),
                 const SizedBox(height: 12),
-                for (final w in wall) _honorTile(call, w.honor, w.owned),
+                for (final w in wall)
+                  _honorTile(context, call, w.honor, w.owned),
                 if (showAchievements) ...[
                   const SizedBox(height: 18),
                   // 成就区（仅查看自己时显示）
@@ -153,7 +154,8 @@ class HonorWallPage extends StatelessWidget {
                     valueListenable: AchievementCenter.instance.version,
                     builder: (context, _, _) => Column(children: [
                       for (final a in AchievementCenter.all)
-                        _achTile(a, AchievementCenter.instance.isUnlocked(a.key)),
+                        _achTile(context, a,
+                            AchievementCenter.instance.isUnlocked(a.key)),
                     ]),
                   ),
                 ],
@@ -191,7 +193,10 @@ class HonorWallPage extends StatelessWidget {
     return img;
   }
 
-  Widget _honorTile(String call, Honor h, bool owned) {
+  // 注意：本类为 StatelessWidget，自身没有 `context` getter，
+  // 故必须把 context 作为参数显式传入（否则 analyze 报 undefined_identifier）
+  Widget _honorTile(
+      BuildContext context, String call, Honor h, bool owned) {
     final lang = honorLangOf(context);
     final c = owned ? h.color : const Color(0xFFC2CAD8);
     final col = owned ? h.color : const Color(0xFFAEB7C7);
@@ -253,7 +258,7 @@ class HonorWallPage extends StatelessWidget {
     );
   }
 
-  Widget _achTile(Achievement a, bool unlocked) {
+  Widget _achTile(BuildContext context, Achievement a, bool unlocked) {
     final lang = honorLangOf(context);
     final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
     final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
