@@ -8,11 +8,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 单个成就定义
 class Achievement {
   final String key;
+  /// 中文基准标题（兼容旧调用；多语言请用 [titleOf]）
   final String title;
+  /// 中文基准说明（兼容旧调用；多语言请用 [descOf]）
   final String desc;
   final IconData icon;
   final Color color;
-  const Achievement(this.key, this.title, this.desc, this.icon, this.color);
+  /// 三语标题 / 说明（key: zh / zh-TW / en），缺失回落中文
+  final Map<String, String>? titles;
+  final Map<String, String>? descs;
+
+  const Achievement(this.key, this.title, this.desc, this.icon, this.color,
+      {this.titles, this.descs});
+
+  String titleOf(String lang) => titles?[lang] ?? title;
+  String descOf(String lang) => descs?[lang] ?? desc;
 }
 
 /// 各成就解锁阈值（计数型）
@@ -36,26 +46,82 @@ class AchievementCenter {
   /// 全部成就（固定顺序展示）
   static const List<Achievement> all = [
     Achievement('sendCoord', '坐标发送·请求打击',
-        '使用 APRSlocus 累计发送 500 次坐标', Icons.near_me_rounded, Color(0xFF16A34A)),
+        '使用 APRSlocus 累计发送 500 次坐标', Icons.near_me_rounded, Color(0xFF16A34A),
+        titles: {
+          'zh': '坐标发送·请求打击',
+          'zh-TW': '座標發送·請求打擊',
+          'en': 'Beacon sent · Strike requested',
+        },
+        descs: {
+          'zh': '使用 APRSlocus 累计发送 500 次坐标',
+          'zh-TW': '使用 APRSlocus 累計發送 500 次座標',
+          'en': 'Sent 500 position beacons with APRSlocus',
+        }),
     Achievement('receiveMsg', '听没听到',
-        '累计接收到 50 条 APRS 短信', Icons.mark_chat_unread_rounded, Color(0xFF2563EB)),
+        '累计接收到 50 条 APRS 短信', Icons.mark_chat_unread_rounded, Color(0xFF2563EB),
+        titles: {'zh': '听没听到', 'zh-TW': '聽沒聽到', 'en': 'Did anyone hear me?'},
+        descs: {
+          'zh': '累计接收到 50 条 APRS 短信',
+          'zh-TW': '累計接收到 50 條 APRS 簡訊',
+          'en': 'Received 50 APRS messages',
+        }),
     Achievement('sendMsg', '我发出去了吗？',
-        '累计发送 50 条 APRS 短信', Icons.send_rounded, Color(0xFF0E7490)),
+        '累计发送 50 条 APRS 短信', Icons.send_rounded, Color(0xFF0E7490),
+        titles: {'zh': '我发出去了吗？', 'zh-TW': '我發出去了嗎？', 'en': 'Did mine go out?'},
+        descs: {
+          'zh': '累计发送 50 条 APRS 短信',
+          'zh-TW': '累計發送 50 條 APRS 簡訊',
+          'en': 'Sent 50 APRS messages',
+        }),
     Achievement('bigRadius', 'Big? Big!',
-        '将接收范围调到 5000 公里以上', Icons.public_rounded, Color(0xFFEA580C)),
+        '将接收范围调到 5000 公里以上', Icons.public_rounded, Color(0xFFEA580C),
+        titles: {'zh': 'Big? Big!', 'zh-TW': 'Big? Big!', 'en': 'Big? Big!'},
+        descs: {
+          'zh': '将接收范围调到 5000 公里以上',
+          'zh-TW': '將接收範圍調到 5000 公里以上',
+          'en': 'Set the receive range beyond 5000 km',
+        }),
     Achievement('worldListener', '世界聆听者',
-        '累计接收超过 5 万个数据包', Icons.earbuds_rounded, Color(0xFF7C3AED)),
+        '累计接收超过 5 万个数据包', Icons.earbuds_rounded, Color(0xFF7C3AED),
+        titles: {'zh': '世界聆听者', 'zh-TW': '世界聆聽者', 'en': 'World listener'},
+        descs: {
+          'zh': '累计接收超过 5 万个数据包',
+          'zh-TW': '累計接收超過 5 萬個資料包',
+          'en': 'Received over 50,000 packets',
+        }),
     Achievement('flowerWorld', '花花世界',
-        '累计看到超过 1500 个台站', Icons.radar_rounded, Color(0xFFDB2777)),
+        '累计看到超过 1500 个台站', Icons.radar_rounded, Color(0xFFDB2777),
+        titles: {'zh': '花花世界', 'zh-TW': '花花世界', 'en': 'A world of flowers'},
+        descs: {
+          'zh': '累计看到超过 1500 个台站',
+          'zh-TW': '累計看到超過 1500 個台站',
+          'en': 'Seen more than 1,500 stations',
+        }),
     Achievement('gather', '紧急集合！',
-        '累计组建 5 个 APRSlocus 群组', Icons.groups_rounded, Color(0xFFE11D48)),
+        '累计组建 5 个 APRSlocus 群组', Icons.groups_rounded, Color(0xFFE11D48),
+        titles: {'zh': '紧急集合！', 'zh-TW': '緊急集合！', 'en': 'Rally!'},
+        descs: {
+          'zh': '累计组建 5 个 APRSlocus 群组',
+          'zh-TW': '累計組建 5 個 APRSlocus 群組',
+          'en': 'Created 5 APRSlocus groups',
+        }),
   ];
 
   /// 至高荣誉（需解锁全部成就 + 名单命中）
   static const Achievement firstFix = Achievement(
       'firstFix', 'FIRST FIX · 至高荣誉',
       'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请',
-      Icons.military_tech_rounded, Color(0xFFC9A227));
+      Icons.military_tech_rounded, Color(0xFFC9A227),
+      titles: {
+        'zh': 'FIRST FIX · 至高荣誉',
+        'zh-TW': 'FIRST FIX · 至高榮譽',
+        'en': 'FIRST FIX · Supreme Honor',
+      },
+      descs: {
+        'zh': 'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请',
+        'zh-TW': 'APRSlocus 1.7.0 開放 —— 完成全部成就後向開發團隊申請',
+        'en': 'Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team',
+      });
 
   final ValueNotifier<int> version = ValueNotifier<int>(0);
   final Set<String> _unlocked = {};

@@ -6026,6 +6026,48 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'附近台站'**
   String get nearbyStations;
+
+  /// No description provided for @honorWall.
+  ///
+  /// In zh, this message translates to:
+  /// **'荣誉墙'**
+  String get honorWall;
+
+  /// No description provided for @accountHonors.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号荣誉'**
+  String get accountHonors;
+
+  /// No description provided for @achievementsSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'成就'**
+  String get achievementsSection;
+
+  /// No description provided for @notLit.
+  ///
+  /// In zh, this message translates to:
+  /// **'未点亮'**
+  String get notLit;
+
+  /// No description provided for @badgeFallback.
+  ///
+  /// In zh, this message translates to:
+  /// **'徽章'**
+  String get badgeFallback;
+
+  /// No description provided for @honoredBadges.
+  ///
+  /// In zh, this message translates to:
+  /// **'已点亮 {n}/{m} 徽章'**
+  String honoredBadges(String n, String m);
+
+  /// No description provided for @achievementsProgress.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n}/{m} 成就'**
+  String achievementsProgress(String n, String m);
 }
 
 class _AppLocalizationsDelegate

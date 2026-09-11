@@ -3437,4 +3437,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nearbyStations => 'Nearby stations';
+
+  @override
+  String get honorWall => 'Honors';
+
+  @override
+  String get accountHonors => 'Account honors';
+
+  @override
+  String get achievementsSection => 'Achievements';
+
+  @override
+  String get notLit => 'Not yet';
+
+  @override
+  String get badgeFallback => 'Badge';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '$n/$m badges unlocked';
+  }
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m achievements';
+  }
 }

@@ -3342,6 +3342,31 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nearbyStations => '附近台站';
+
+  @override
+  String get honorWall => '荣誉墙';
+
+  @override
+  String get accountHonors => '账号荣誉';
+
+  @override
+  String get achievementsSection => '成就';
+
+  @override
+  String get notLit => '未点亮';
+
+  @override
+  String get badgeFallback => '徽章';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '已点亮 $n/$m 徽章';
+  }
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m 成就';
+  }
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6682,4 +6707,29 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get nearbyStations => '附近台站';
+
+  @override
+  String get honorWall => '榮譽牆';
+
+  @override
+  String get accountHonors => '帳號榮譽';
+
+  @override
+  String get achievementsSection => '成就';
+
+  @override
+  String get notLit => '未點亮';
+
+  @override
+  String get badgeFallback => '徽章';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '已點亮 $n/$m 徽章';
+  }
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m 成就';
+  }
 }

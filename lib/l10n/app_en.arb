@@ -1102,5 +1102,14 @@
   "beaconOff": "off",
   "unlocated": "No fix",
   "platform": "Platform",
-  "nearbyStations": "Nearby stations"
+  "nearbyStations": "Nearby stations",
+  "honorWall": "Honors",
+  "accountHonors": "Account honors",
+  "achievementsSection": "Achievements",
+  "notLit": "Not yet",
+  "badgeFallback": "Badge",
+  "honoredBadges": "{n}/{m} badges unlocked",
+  "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "achievementsProgress": "{n}/{m} achievements",
+  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}
 }

@@ -191,7 +191,8 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
                       child: Row(children: [
                         Icon(h.icon, size: 20, color: h.color),
                         const SizedBox(width: 12),
-                        Text(h.label, style: ts(14, w: FontWeight.w700)),
+                        Text(h.labelOf(honorLangOf(context)),
+                            style: ts(14, w: FontWeight.w700)),
                         const Spacer(),
                         if (cur == h.key)
                           Icon(Icons.check_circle_rounded, size: 20, color: h.color),

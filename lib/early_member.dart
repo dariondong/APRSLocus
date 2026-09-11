@@ -9,23 +9,50 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'achievements.dart';
 import 'honor_wall_page.dart';
+import 'l10n/app_localizations.dart';
 
 /// ─── APRSlocus 荣誉徽章体系 ───
 /// 一个呼号可拥有多个称号徽章；徽章定义/授予/优先徽章均由官网 members.json 维护。
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
+
+/// 当前界面语言 → 荣誉/成就文案语言键（'zh' / 'zh-TW' / 'en'）
+String honorLangOf(BuildContext context) {
+  final l = Localizations.maybeLocaleOf(context);
+  if (l == null) return 'zh';
+  if (l.languageCode == 'zh') {
+    final tw = l.countryCode == 'TW' ||
+        l.scriptCode == 'Hant' ||
+        l.toString().toLowerCase().contains('tw');
+    return tw ? 'zh-TW' : 'zh';
+  }
+  return l.languageCode;
+}
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
 
 /// 单个徽章
 class Honor {
   final String key;
+  /// 中文基准名（兼容旧调用与旧缓存；多语言请用 [labelOf]）
   final String label;
+  /// 中文基准描述（兼容旧调用与旧缓存；多语言请用 [descOf]）
   final String desc;
   final Color color;
   final IconData icon;
   /// 在线定义可携带的图标名（members.json honors[].icon），无则按 key 映射
   final String? iconName;
+  /// 三语名称 / 描述（key: zh / zh-TW / en）。
+  /// 可选：未提供时 [labelOf] / [descOf] 回落到 [label] / [desc]（中文）。
+  final Map<String, String>? labels;
+  final Map<String, String>? descs;
+
   const Honor(this.key, this.label, this.desc, this.color, this.icon,
-      {this.iconName});
+      {this.iconName, this.labels, this.descs});
+
+  /// 指定语言下的徽章名（缺失回落中文）
+  String labelOf(String lang) => labels?[lang] ?? label;
+
+  /// 指定语言下的徽章描述（缺失回落中文）
+  String descOf(String lang) => descs?[lang] ?? desc;
 
   /// 图标名 → Material 图标（key 与 members.json honors[].icon 共用同一命名空间）
   static const Map<String, IconData> iconMap = {
@@ -75,28 +102,126 @@ List<String> get displayHonorKeys {
 
 /// 默认徽章定义（联网兜底）
 final Map<String, Honor> _defaultHonorDefs = {
-  'kaishan': const Honor('kaishan', '开山', '群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。',
-      Color(0xFFE67E22), Icons.terrain_rounded),
-  'developer': const Honor('developer', '开发人员', '以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。',
-      Color(0xFF1D6FF2), Icons.code_rounded),
-  'earlyMember': const Honor('earlyMember', '早期成员', '在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。',
-      Color(0xFFB08A34), Icons.workspace_premium_rounded),
-  'mostBrain': const Honor('mostBrain', '最强大脑',
-      '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。', Color(0xFF0EA5C4), Icons.psychology_rounded),
-  'firstFix': const Honor('firstFix', 'FIRST FIX · 至高荣誉',
-      'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。',
-      Color(0xFFC9A227), Icons.military_tech_rounded),
-  'jadeGift': const Honor('jadeGift', '赠我以琼琚',
-      '承君厚赠，藏之于心；唯有砥砺，以报清音。',
-      Color(0xFF0EA5B7), Icons.card_giftcard_rounded),
-  'sower': const Honor('sower', '播种',
-      '在旷野埋下种子，等待遍地开花。',
-      Color(0xFF2E9E5B), Icons.eco_rounded),
-  // 离线兜底定义：缺此项时（第 146/152 行有空判断）徽章会在
-  // members.json 加载前整个不显示，而非仅缺少图标
-  'iSelfReliant': const Honor('iSelfReliant', 'i力更生',
-      '不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。',
-      Color(0xFF8E8E93), Icons.terminal_rounded),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'kaishan': const Honor('kaishan',
+      '开山', '群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。',
+      Color(0xFFE67E22), Icons.terrain_rounded,
+      labels: {
+        'zh': '开山',
+        'zh-TW': '開山',
+        'en': 'Founding pioneer',
+      },
+      descs: {
+        'zh': '群山之始，你我曾一同点亮第一座灯塔；山高水长，此呼号为证。',
+        'zh-TW': '群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。',
+        'en': 'Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills.',
+      },
+      iconName: 'kaishan'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'developer': const Honor('developer',
+      '开发人员', '以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。',
+      Color(0xFF1D6FF2), Icons.code_rounded,
+      labels: {
+        'zh': '开发人员',
+        'zh-TW': '開發人員',
+        'en': 'Developer',
+      },
+      descs: {
+        'zh': '以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。',
+        'zh-TW': '以程式為槳、翻譯為橋，一磚一瓦把 APRSlocus 推向更遠的頻率。',
+        'en': 'Oars of code and bridges of translation — brick by brick, tuned APRSlocus to farther frequencies.',
+      },
+      iconName: 'developer'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'earlyMember': const Honor('earlyMember',
+      '早期成员', '在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。',
+      Color(0xFFB08A34), Icons.workspace_premium_rounded,
+      labels: {
+        'zh': '早期成员',
+        'zh-TW': '早期成員',
+        'en': 'Early member',
+      },
+      descs: {
+        'zh': '在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。',
+        'zh-TW': '在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。',
+        'en': 'Kept watch in the faintest signals, growing with it from a whisper to a clear call.',
+      },
+      iconName: 'earlyMember'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'mostBrain': const Honor('mostBrain',
+      '最强大脑', '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。',
+      Color(0xFF0EA5C4), Icons.psychology_rounded,
+      labels: {
+        'zh': '最强大脑',
+        'zh-TW': '最強大腦',
+        'en': 'Brightest mind',
+      },
+      descs: {
+        'zh': '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。',
+        'zh-TW': '隱藏成就：於無聲處托舉算力洪流——為專案點亮超過半數的光。',
+        'en': 'Hidden: silently channeled the tide of compute — lighting more than half the project\'s sky.',
+      },
+      iconName: 'mostBrain'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'firstFix': const Honor('firstFix',
+      'FIRST FIX · 至高荣誉', 'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。',
+      Color(0xFFC9A227), Icons.military_tech_rounded,
+      labels: {
+        'zh': 'FIRST FIX · 至高荣誉',
+        'zh-TW': 'FIRST FIX · 至高榮譽',
+        'en': 'FIRST FIX · Supreme Honor',
+      },
+      descs: {
+        'zh': 'APRSlocus 1.7.0 开放 —— 完成全部成就后向开发团队申请，获颁至高荣誉。',
+        'zh-TW': 'APRSlocus 1.7.0 開放 —— 完成全部成就後向開發團隊申請，獲頒至高榮譽。',
+        'en': 'Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team for this supreme honor.',
+      },
+      iconName: 'firstFix'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'jadeGift': const Honor('jadeGift',
+      '赠我以琼琚', '承君厚赠，藏之于心；唯有砥砺，以报清音。',
+      Color(0xFF0EA5B7), Icons.card_giftcard_rounded,
+      labels: {
+        'zh': '赠我以琼琚',
+        'zh-TW': '贈我以瓊琚',
+        'en': 'Gifted with Jade',
+      },
+      descs: {
+        'zh': '承君厚赠，藏之于心；唯有砥砺，以报清音。',
+        'zh-TW': '承君厚贈，藏之於心；唯有砥礪，以報清音。',
+        'en': 'Your gift is treasured in my heart; the only return I can offer is to strive, and answer your kindness with good work.',
+      },
+      iconName: 'jadeGift'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'sower': const Honor('sower',
+      '播种', '在旷野埋下种子，等待遍地开花。',
+      Color(0xFF2E9E5B), Icons.eco_rounded,
+      labels: {
+        'zh': '播种',
+        'zh-TW': '播種',
+        'en': 'Sower',
+      },
+      descs: {
+        'zh': '在旷野埋下种子，等待遍地开花。',
+        'zh-TW': '在曠野埋下種子，等待遍地開花。',
+        'en': 'Sowing seeds in the open field — waiting for blossoms everywhere.',
+      },
+      iconName: 'sower'),
+  // 三语文案与官网 members.json 保持一致（离线兜底）
+  'iSelfReliant': const Honor('iSelfReliant',
+      'i力更生', '不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。',
+      Color(0xFF8E8E93), Icons.terminal_rounded,
+      labels: {
+        'zh': 'i力更生',
+        'zh-TW': 'i力更生',
+        'en': 'iSelf-Reliant',
+      },
+      descs: {
+        'zh': '不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。',
+        'zh-TW': '不求現成的果實，親手編譯一粒種子，讓它在蘋果的園子裡長成一座信標。',
+        'en': 'Rather than wait for ripened fruit, they compiled the seed themselves — and let it grow into a beacon in Apple’s orchard.',
+      },
+      iconName: 'iSelfReliant'),
 };
 
 Map<String, Honor> _honorDefs = Map.of(_defaultHonorDefs);
@@ -213,14 +338,27 @@ void _parseMembers(Map d) {
     final m = <String, Honor>{};
     hDefs.forEach((k, v) {
       if (v is Map) {
-        final zh = v['zh'] ?? k;
-        var desc = '';
+        // 名称与描述都取三语（zh 为基准，缺失回落 zh）
+        String pick(Map src, String lang, String fb) =>
+            (src[lang] ?? fb).toString();
+        final zh = pick(v, 'zh', k.toString());
         final dm = v['desc'];
-        if (dm is Map) desc = (dm['zh'] ?? '').toString();
-        m[k.toString()] = Honor(k.toString(), zh.toString(), desc,
+        final dmap = dm is Map ? dm : const {};
+        final descZh = pick(dmap, 'zh', '');
+        m[k.toString()] = Honor(k.toString(), zh, descZh,
             _parseColor(v['color']),
             Honor.iconForName(v['icon']?.toString(), k.toString()),
-            iconName: v['icon']?.toString());
+            iconName: v['icon']?.toString(),
+            labels: {
+              'zh': zh,
+              'zh-TW': pick(v, 'zh-TW', zh),
+              'en': pick(v, 'en', zh),
+            },
+            descs: {
+              'zh': descZh,
+              'zh-TW': pick(dmap, 'zh-TW', descZh),
+              'en': pick(dmap, 'en', descZh),
+            });
       }
     });
     if (m.isNotEmpty) {
@@ -291,8 +429,13 @@ Future<void> refreshMembers() async {
 }
 
 Map<String, dynamic> _serializeDefs() => _honorDefs.map((k, h) => MapEntry(k, {
+      // 三语一并持久化，离线也能按界面语言显示
       'label': h.label,
+      'labelZhTw': h.labelOf('zh-TW'),
+      'labelEn': h.labelOf('en'),
       'desc': h.desc,
+      'descZhTw': h.descOf('zh-TW'),
+      'descEn': h.descOf('en'),
       'color': '#${h.color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
       'icon': h.iconName ?? k,
     }));
@@ -321,13 +464,26 @@ Future<void> ensureMembersLoaded() async {
         final dm = <String, Honor>{};
         dd.forEach((k, v) {
           if (v is Map) {
+            String t(String key, String fb) => (v[key] ?? fb).toString();
+            final lzh = t('label', k.toString());
+            final dzh = t('desc', '');
             dm[k.toString()] = Honor(
               k.toString(),
-              (v['label'] ?? k).toString(),
-              (v['desc'] ?? '').toString(),
+              lzh,
+              dzh,
               _parseColor(v['color']),
               Honor.iconForName(v['icon']?.toString(), k.toString()),
               iconName: v['icon']?.toString(),
+              labels: {
+                'zh': lzh,
+                'zh-TW': t('labelZhTw', lzh),
+                'en': t('labelEn', lzh),
+              },
+              descs: {
+                'zh': dzh,
+                'zh-TW': t('descZhTw', dzh),
+                'en': t('descEn', dzh),
+              },
             );
           }
         });
@@ -394,7 +550,9 @@ class HonorBadge extends StatelessWidget {
               Icon(ic, size: 14, color: col),
               const SizedBox(width: 4),
               // 显示具体徽章名（可读性优先，不画成纯图标）
-              Text(pri?.label ?? '徽章',
+              Text(
+                  pri?.labelOf(honorLangOf(context)) ??
+                      AppLocalizations.of(context).badgeFallback,
                   style: ts(11, c: col, w: FontWeight.w800)),
               if (keys.length > 1) ...[const SizedBox(width: 3),
                 Text('+${keys.length - 1}',
@@ -461,8 +619,11 @@ class _HonorWallSheet extends StatelessWidget {
             final wall = allHonorsWithState(call);
             final ownedCount = wall.where((w) => w.owned).length;
             return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('已点亮 $ownedCount/${wall.length}',
-                  style: const TextStyle(fontSize: 12.5, color: Color(0xFF98A2B8))),
+              Text(
+                  AppLocalizations.of(context)
+                      .honoredBadges('$ownedCount', '${wall.length}'),
+                  style: const TextStyle(
+                      fontSize: 12.5, color: Color(0xFF98A2B8))),
               const SizedBox(height: 12),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.62,
@@ -490,7 +651,7 @@ class _HonorWallSheet extends StatelessWidget {
                         ]),
                         const SizedBox(height: 10),
                         for (final a in AchievementCenter.all)
-                          _achievementTile(a, ach.isUnlocked(a.key)),
+                          _achievementTile(context, a, ach.isUnlocked(a.key)),
                         const SizedBox(height: 8),
                       ],
                     );
@@ -533,7 +694,7 @@ Widget _badgeTile(String call, Honor h, bool owned) {
         const SizedBox(width: 13),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(h.label,
+            Text(h.labelOf(honorLangOf(context)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -541,7 +702,10 @@ Widget _badgeTile(String call, Honor h, bool owned) {
                     fontWeight: FontWeight.w800,
                     color: owned ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
             const SizedBox(height: 3),
-            Text(owned ? h.desc : '未点亮',
+            Text(
+                owned
+                    ? h.descOf(honorLangOf(context))
+                    : AppLocalizations.of(context).notLit,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -563,7 +727,9 @@ Widget _badgeTile(String call, Honor h, bool owned) {
 
 
 /// 成就行：已解锁点亮（图标+标题+说明），未解锁灰显锁
-Widget _achievementTile(Achievement a, bool unlocked) {
+Widget _achievementTile(
+    BuildContext context, Achievement a, bool unlocked) {
+  final lang = honorLangOf(context);
   final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
   final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
   return Container(
@@ -588,7 +754,7 @@ Widget _achievementTile(Achievement a, bool unlocked) {
       const SizedBox(width: 13),
       Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(a.title,
+          Text(a.titleOf(lang),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -596,7 +762,7 @@ Widget _achievementTile(Achievement a, bool unlocked) {
                   fontWeight: FontWeight.w800,
                   color: unlocked ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
           const SizedBox(height: 3),
-          Text(a.desc,
+          Text(a.descOf(lang),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

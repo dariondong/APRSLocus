@@ -385,50 +385,63 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         ),
       ),
 
-      // ── 右上：操作列 ──
+      // ── 右侧：操作列（上）+ 速度卡（下）**合成同一个 Column** ──
+      //
+      // 原先两者各自 Positioned（一个贴顶部、一个贴底部），矮屏（尤其是
+      // 横屏 360~450）上必然重叠。合成单列后结构上不可能重叠；
+      // 再用 FittedBox(scaleDown) 兜底：总高超出时整体等比缩小，
+      // 既不会重叠也不会溢出（只在极矮屏生效）。
       Positioned(
         right: gap + pad.right,
         top: gap + pad.top,
-        child: Column(children: [
-          _roundBtn(
-            _headingUp
-                ? Icons.explore_rounded
-                : Icons.navigation_outlined,
-            () => setState(() => _headingUp = !_headingUp),
-            tooltip: _headingUp ? s.headingUp : s.northUp,
-            active: _headingUp,
+        bottom: gap + pad.bottom,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Column(children: [
+                _roundBtn(
+                  _headingUp
+                      ? Icons.explore_rounded
+                      : Icons.navigation_outlined,
+                  () => setState(() => _headingUp = !_headingUp),
+                  tooltip: _headingUp ? s.headingUp : s.northUp,
+                  active: _headingUp,
+                ),
+                const SizedBox(height: 8),
+                _roundBtn(Icons.my_location_rounded, _recenter,
+                    tooltip: s.followMe, active: _follow),
+                const SizedBox(height: 8),
+                _roundBtn(Icons.map_rounded, _pickMapType, tooltip: s.mapType),
+                const SizedBox(height: 8),
+                _roundBtn(Icons.format_list_bulleted_rounded,
+                    () => setState(() => _showNearby = !_showNearby),
+                    tooltip: s.nearbyStations, active: _showNearby),
+                const SizedBox(height: 8),
+                _roundBtn(Icons.add_rounded, () => _zoomBy(1)),
+                const SizedBox(height: 8),
+                _roundBtn(Icons.remove_rounded, () => _zoomBy(-1)),
+              ]),
+              // 上组（按钮）与下组（速度卡）之间拉开距离；
+              // 极矮屏时由外层 FittedBox 统一缩小
+              const SizedBox(height: 16),
+              _speedCard(st, s),
+            ],
           ),
-          const SizedBox(height: 8),
-          _roundBtn(Icons.my_location_rounded, _recenter,
-              tooltip: s.followMe, active: _follow),
-          const SizedBox(height: 8),
-          _roundBtn(Icons.map_rounded, _pickMapType, tooltip: s.mapType),
-          const SizedBox(height: 8),
-          _roundBtn(Icons.format_list_bulleted_rounded,
-              () => setState(() => _showNearby = !_showNearby),
-              tooltip: s.nearbyStations, active: _showNearby),
-          const SizedBox(height: 8),
-          _roundBtn(Icons.add_rounded, () => _zoomBy(1)),
-          const SizedBox(height: 8),
-          _roundBtn(Icons.remove_rounded, () => _zoomBy(-1)),
-        ]),
+        ),
       ),
 
       // ── 左侧中部：附近台站（纯参照，不拦截手势）──
-      if (_showNearby) _nearbyPanel(st, s, size, pad, gap),
+      // 极矮屏（如矮横屏）隐藏，避免与左侧上下两组 HUD 争位置
+      if (_showNearby && size.height >= 380) _nearbyPanel(st, s, size, pad, gap),
 
       // ── 左下：信标发送倒计时 ──
       Positioned(
         left: gap + pad.left,
         bottom: gap + pad.bottom,
         child: _beaconCard(st, s),
-      ),
-
-      // ── 右下：速度 / 航向 / 海拔 ──
-      Positioned(
-        right: gap + pad.right,
-        bottom: gap + pad.bottom,
-        child: _speedCard(st, s),
       ),
     ]);
   }

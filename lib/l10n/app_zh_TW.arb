@@ -1690,5 +1690,14 @@
   "beaconOff": "未開啟",
   "unlocated": "未定位",
   "platform": "平台",
-  "nearbyStations": "附近台站"
+  "nearbyStations": "附近台站",
+  "honorWall": "榮譽牆",
+  "accountHonors": "帳號榮譽",
+  "achievementsSection": "成就",
+  "notLit": "未點亮",
+  "badgeFallback": "徽章",
+  "honoredBadges": "已點亮 {n}/{m} 徽章",
+  "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "achievementsProgress": "{n}/{m} 成就",
+  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}
 }

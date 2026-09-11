@@ -48,8 +48,8 @@ class HonorWallPage extends StatelessWidget {
                   fontFamily: 'monospace',
                   letterSpacing: 1.2)),
           const SizedBox(width: 8),
-          const Text('· 荣誉墙',
-              style: TextStyle(
+          Text('· ${S.of(context).honorWall}',
+              style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF98A2B8))),
@@ -103,9 +103,11 @@ class HonorWallPage extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                                 showAchievements
-                                    ? '已点亮 $ownedCount/${wall.length} 徽章 · '
-                                      '${AchievementCenter.instance.unlockedCount}/${AchievementCenter.all.length} 成就'
-                                    : '已点亮 $ownedCount/${wall.length} 徽章',
+                                    ? '${S.of(context).honoredBadges('$ownedCount', '${wall.length}')}'
+                                      ' · '
+                                      '${S.of(context).achievementsProgress('${AchievementCenter.instance.unlockedCount}', '${AchievementCenter.all.length}')}'
+                                    : S.of(context).honoredBadges(
+                                        '$ownedCount', '${wall.length}'),
                                 style: const TextStyle(
                                     fontSize: 12.5,
                                     color: Color(0xFF98A2B8))),
@@ -115,29 +117,30 @@ class HonorWallPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 22),
                 // 账号荣誉区
-                Row(children: const [
-                  Icon(Icons.workspace_premium_rounded,
+                Row(children: [
+                  const Icon(Icons.workspace_premium_rounded,
                       size: 16, color: Color(0xFFB08A34)),
-                  SizedBox(width: 6),
-                  Text('账号荣誉',
-                      style: TextStyle(
+                  const SizedBox(width: 6),
+                  Text(S.of(context).accountHonors,
+                      style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
                           color: Color(0xFF4B5873))),
-                  SizedBox(width: 8),
-                  Expanded(child: Divider(color: Color(0xFFE4E8F1), height: 1)),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                      child: Divider(color: Color(0xFFE4E8F1), height: 1)),
                 ]),
                 const SizedBox(height: 12),
                 for (final w in wall) _honorTile(call, w.honor, w.owned),
                 if (showAchievements) ...[
                   const SizedBox(height: 18),
                   // 成就区（仅查看自己时显示）
-                  Row(children: const [
-                    Icon(Icons.emoji_events_outlined,
+                  Row(children: [
+                    const Icon(Icons.emoji_events_outlined,
                         size: 16, color: Color(0xFFE67E22)),
-                    SizedBox(width: 6),
-                    Text('成就',
-                        style: TextStyle(
+                    const SizedBox(width: 6),
+                    Text(S.of(context).achievementsSection,
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: Color(0xFF4B5873))),
@@ -189,6 +192,7 @@ class HonorWallPage extends StatelessWidget {
   }
 
   Widget _honorTile(String call, Honor h, bool owned) {
+    final lang = honorLangOf(context);
     final c = owned ? h.color : const Color(0xFFC2CAD8);
     final col = owned ? h.color : const Color(0xFFAEB7C7);
     return GestureDetector(
@@ -217,7 +221,7 @@ class HonorWallPage extends StatelessWidget {
           const SizedBox(width: 13),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(h.label,
+              Text(h.labelOf(lang),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -227,7 +231,7 @@ class HonorWallPage extends StatelessWidget {
                           ? const Color(0xFF1B253C)
                           : const Color(0xFF98A2B8))),
               const SizedBox(height: 3),
-              Text(owned ? h.desc : '未点亮',
+              Text(owned ? h.descOf(lang) : S.of(context).notLit,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -250,6 +254,7 @@ class HonorWallPage extends StatelessWidget {
   }
 
   Widget _achTile(Achievement a, bool unlocked) {
+    final lang = honorLangOf(context);
     final Color c = unlocked ? a.color : const Color(0xFFC2CAD8);
     final Color col = unlocked ? a.color : const Color(0xFFAEB7C7);
     return Container(
@@ -278,7 +283,7 @@ class HonorWallPage extends StatelessWidget {
         const SizedBox(width: 13),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(a.title,
+            Text(a.titleOf(lang),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -288,7 +293,7 @@ class HonorWallPage extends StatelessWidget {
                         ? const Color(0xFF1B253C)
                         : const Color(0xFF98A2B8))),
             const SizedBox(height: 3),
-            Text(a.desc,
+            Text(a.descOf(lang),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

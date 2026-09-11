@@ -1095,7 +1095,7 @@ class _StationDetailState extends State<StationDetail> {
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(h.icon, size: 14, color: h.color),
                       const SizedBox(width: 5),
-                      Text(h.label,
+                      Text(h.labelOf(honorLangOf(context)),
                           style: TextStyle(
                               fontSize: 11,
                               color: h.color,
