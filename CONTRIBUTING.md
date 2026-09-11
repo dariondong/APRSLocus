@@ -16,6 +16,7 @@
 | README | `README.md` / `README.en.md` / `README.zh-TW.md` | 三语 |
 | 官网 | `docs/` | GitHub Pages：`docs/index.html`(简中)、`docs/en/`、`docs/zh-TW/` |
 | 更新日志 | `CHANGELOG.md` | 顶部为最新版 |
+| 荣誉 / 称号维护 | `HONORS.md` | **授予荣誉**、**新增称号**的完整流程与校验清单（7 处登记点） |
 
 ---
 
