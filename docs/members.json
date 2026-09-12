@@ -1,6 +1,6 @@
 {
-  "version": 41,
-  "updated": "2026-09-10",
+  "version": 42,
+  "updated": "2026-09-12",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1397,6 +1397,30 @@
         "iSelfReliant"
       ],
       "primary": "iSelfReliant",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "YF3CJU",
+      "who": {
+        "zh": "YF3CJU",
+        "zh-TW": "YF3CJU",
+        "en": "YF3CJU"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
+        "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
+        "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
       "grp": "test",
       "c": "#B08A34"
     }
