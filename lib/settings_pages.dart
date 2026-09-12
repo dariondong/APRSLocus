@@ -645,7 +645,7 @@ List<(String, List<(String, IconData)>)> _symCategories(S s) => [
       (')', Icons.accessible_rounded),
     ]),
     (s.symCatAirWater, [
-      ('\'', s.symSmallAircraft, Icons.airplanemode_active_rounded),
+      ('\'', Icons.airplanemode_active_rounded),
       ('^', Icons.flight_rounded),
       ('g', Icons.flight_rounded),
       ('O', Icons.radio_rounded),
@@ -1135,8 +1135,9 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           ),
         ]),
         SizedBox(height: 2),
-        Text(S.of(context).speedTierDesc
-            S.of(context).speedTierShortIntervalWarn,
+        // 原文案是两个相邻字符串拼接成的一段话，这里保持「一段」语义
+        Text('${S.of(context).speedTierDesc}'
+            '${S.of(context).speedTierShortIntervalWarn}',
             style: ts(9, c: C.slate)),
         SizedBox(height: 6),
         for (int i = 0; i < st.smartTiers.length; i++) _tierRow(i),
