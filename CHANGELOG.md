@@ -1,5 +1,35 @@
 # 更新日志
 
+## [1.6.89] - 2026-09-12
+
+### 💬 会话管理：对齐与布局修正 / Chat management: alignment & layout fixes
+- **修正「管理」按钮错位**：计数徽章与「管理」按钮此前用了**不同的内边距**（3 / 4），
+  两个高度不同的胶囊并排 → 文字基线不齐。现统一为**固定高度 26 + 垂直居中**，
+  并统一圆角，「管理」/「完成」与计数徽章严格对齐
+- **修正切换管理时的列表跳动**：管理模式标题原为 16px、普通模式为 20px，
+  两种模式行高不同 → 切换时下方列表上下跳。现统一标题字号
+- **重做管理工具栏**：管理模式**整行切换**为「已选 N 项 + 全选 + 删除 + 完成」，
+  不再与标题挤在同一行；按钮改为等高图标按钮，窄屏（横屏列表栏仅 280 宽）也不挤
+- **新增左滑删除**：会话列表项**左滑即出现删除**，与「管理」多选互补——
+  既能快速单删，也能批量删（管理模式下自动禁用左滑，避免勾选时误删）
+- 选中标记统一为红色，与选中行的红底/红边构成同一个「待删除」信号
+
+- **Fixed the misaligned Manage button**: the count badge and the Manage button used
+  **different vertical padding** (3 vs 4), so two unequal-height pills sat side by side
+  with mismatched baselines. Both are now a **fixed height of 26, vertically centred**,
+  with matching corner radii — the badge, Manage and Done line up exactly.
+- **Fixed the list jumping when entering manage mode**: the manage title was 16px while the
+  normal title was 20px, so the header changed height and the list below shifted. Both
+  modes now use the same title size.
+- **Rebuilt the manage toolbar**: manage mode swaps the **whole row** for
+  “N selected + select all + delete + done” instead of cramming controls beside the title;
+  controls are equal-height icon buttons that fit even at 280px wide.
+- **Added swipe-to-delete**: swiping a conversation left reveals **Delete**, complementing
+  multi-select — quick single deletes and batch deletes both work. Swipe is disabled in
+  manage mode so ticking rows can’t be deleted by accident.
+- Selection ticks are now red, matching the red row tint for one consistent
+  “to be deleted” signal.
+
 ## [1.6.88] - 2026-09-12
 
 ### 📡 台站面板：新增台站操作菜单（收藏 / 复制呼号 / 删除台站） / Station panel: actions menu

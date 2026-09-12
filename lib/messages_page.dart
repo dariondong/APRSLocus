@@ -603,65 +603,15 @@ class _MessagesPageState extends State<MessagesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    // 窄屏/横屏（列表栏仅 280 宽）下标题需可缩，否则加了
-                    // 「管理」按钮后英文 Conversations 会溢出
-                    Flexible(
-                      child: Text(
-                        S.of(context).conversations,
-                        style: T.h2,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: C.blueBg,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${st.messages.length}',
-                        style: ts(11, c: C.blue, w: FontWeight.w700),
-                      ),
-                    ),
-                    if (st.chatGroups.isNotEmpty || partners.isNotEmpty) ...[
-                      SizedBox(width: 6),
-                      // 可见的「管理」入口：不依赖长按这类隐藏手势
-                      GestureDetector(
-                        onTap: () => _toggleManage(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 9,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _manageMode ? C.blue : C.bgSoft,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _manageMode
-                                ? S.of(context).done
-                                : S.of(context).manage,
-                            style: ts(
-                              11,
-                              c: _manageMode ? Colors.white : C.slate,
-                              w: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                SizedBox(height: 10),
+                // 管理模式与普通模式整行切换，避免两套控件挤在同一行
+                // 两种模式内的胶囊/按钮都固定高度 26，杜绝字体度量差异造成的错位
                 if (_manageMode)
-                  _manageBar(st, partners)
+                  _manageHead(st, partners)
+                else
+                  _listHead(st, partners),
+                const SizedBox(height: 10),
+                if (_manageMode)
+                  Text(S.of(context).chatManageHint, style: ts(10, c: C.grey))
                 else
                   // 快捷操作：新建会话 / 群发 / 新建群聊
                   Row(
@@ -713,10 +663,22 @@ class _MessagesPageState extends State<MessagesPage> {
                       // 群聊在前，单聊在后
                       if (i < st.chatGroups.length) {
                         final g = st.chatGroups[i];
-                        return _groupListItem(st, g);
+                        return _swipeable(
+                          key: 'grp-${g.id}',
+                          onDelete: () => _confirmDeleteConversation(
+                            st,
+                            g.groupCall,
+                            (id: g.id, name: g.name),
+                          ),
+                          child: _groupListItem(st, g),
+                        );
                       }
                       final p = partners[i - st.chatGroups.length];
-                      return _chatListItem(st, p);
+                      return _swipeable(
+                        key: 'conv-$p',
+                        onDelete: () => _confirmDeleteConversation(st, p, null),
+                        child: _chatListItem(st, p),
+                      );
                     },
                   ),
           ),
@@ -758,44 +720,180 @@ class _MessagesPageState extends State<MessagesPage> {
     });
   }
 
-  /// 管理工具栏：提示 + 全选 + 删除
-  Widget _manageBar(AppState st, List<String> partners) {
-    final total = st.chatGroups.length + partners.length;
-    final all = total > 0 && _selCount >= total;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(S.of(context).chatManageHint, style: ts(10, c: C.grey)),
-        SizedBox(height: 8),
-        Row(
-          children: [
-            _convActionBtn(
-              all ? Icons.remove_done_rounded : Icons.done_all_rounded,
-              all ? S.of(context).deselectAll : S.of(context).selectAll,
-              C.slate,
-              () => _toggleSelectAll(st, partners),
-            ),
-            SizedBox(width: 6),
-            _convActionBtn(
-              Icons.delete_outline_rounded,
-              S.of(context).deleteSelected(_selCount),
-              _selCount > 0 ? C.red : C.greyLight,
-              _selCount > 0 ? () => _deleteSelectedConversations(st) : () {},
-            ),
-          ],
+  // ─── 列表头部 / 管理头部 ───
+  // 统一固定高度 26：计数徽章、「管理」、「完成」、图标按钮彼此严格对齐
+
+  /// 等高胶囊：计数徽章 / 「管理」 / 「完成」共用
+  Widget _pill(
+    String label,
+    Color fg,
+    Color bg, {
+    VoidCallback? onTap,
+    bool bold = true,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 26,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(13),
         ),
+        child: Text(
+          label,
+          maxLines: 1,
+          style: ts(11, c: fg, w: bold ? FontWeight.w700 : FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  /// 等高方形图标按钮（管理模式），与胶囊严格同高
+  Widget _iconBtn(
+    IconData icon,
+    String tip,
+    Color fg,
+    Color bg,
+    VoidCallback? onTap,
+  ) {
+    return Tooltip(
+      message: tip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 26,
+          width: 34,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 15, color: fg),
+        ),
+      ),
+    );
+  }
+
+  /// 普通模式头部：标题 + 消息计数 + 管理入口
+  Widget _listHead(AppState st, List<String> partners) {
+    return Row(
+      children: [
+        // 窄屏/横屏（列表栏仅 280 宽）下标题需可缩，否则加了
+        // 「管理」按钮后英文 Conversations 会溢出
+        Flexible(
+          child: Text(
+            S.of(context).conversations,
+            style: T.h2,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const Spacer(),
+        _pill('${st.messages.length}', C.blue, C.blueBg),
+        if (st.chatGroups.isNotEmpty || partners.isNotEmpty) ...[
+          const SizedBox(width: 6),
+          // 可见的「管理」入口：不依赖长按这类隐藏手势
+          _pill(
+            S.of(context).manage,
+            C.slate,
+            C.bgSoft,
+            onTap: _toggleManage,
+            bold: false,
+          ),
+        ],
       ],
     );
   }
 
+  /// 管理模式头部：已选数量 + 全选 + 删除 + 完成
+  Widget _manageHead(AppState st, List<String> partners) {
+    final total = st.chatGroups.length + partners.length;
+    final all = total > 0 && _selCount >= total;
+    final s = S.of(context);
+    final has = _selCount > 0;
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            s.selectedCount(_selCount),
+            // 与普通模式标题同字号：两种模式头部行高一致，
+            // 切换管理时下方列表不会因头部变矮而跳动
+            style: T.h2,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const Spacer(),
+        _iconBtn(
+          all ? Icons.remove_done_rounded : Icons.done_all_rounded,
+          all ? s.deselectAll : s.selectAll,
+          C.slate,
+          C.bgSoft,
+          () => _toggleSelectAll(st, partners),
+        ),
+        const SizedBox(width: 6),
+        _iconBtn(
+          Icons.delete_outline_rounded,
+          s.deleteSelected(_selCount),
+          has ? C.red : C.greyLight,
+          has ? C.redBg : C.bgSoft,
+          has ? () => _deleteSelectedConversations(st) : null,
+        ),
+        const SizedBox(width: 6),
+        _pill(s.done, Colors.white, C.blue, onTap: _toggleManage),
+      ],
+    );
+  }
+
+  /// 左滑删除（管理模式下禁用，避免选择时误删）
+  /// 与「管理」入口互补：既能快速单删，也能批量删
+  Widget _swipeable({
+    required String key,
+    required Future<void> Function() onDelete,
+    required Widget child,
+  }) {
+    return Dismissible(
+      key: ValueKey(key),
+      direction: _manageMode
+          ? DismissDirection.none
+          : DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        color: C.redBg,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.delete_outline_rounded, size: 18, color: C.red),
+            const SizedBox(width: 6),
+            Text(
+              S.of(context).delete,
+              style: ts(12, c: C.red, w: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+      // 复用现成的确认流程；返回 false 让行由数据变更自然消失，
+      // 避免 Dismissible 自身的移除动画与列表重建竞争
+      confirmDismiss: (_) async {
+        await onDelete();
+        return false;
+      },
+      child: child,
+    );
+  }
+
   /// 选中标记（管理模式）
-  Widget _selCheck(bool on, Color c) {
+  /// 选中统一用红色，与选中行的红底/红边构成同一个「待删除」信号
+  Widget _selCheck(bool on) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Icon(
         on ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
         size: 20,
-        color: on ? c : C.greyLight,
+        color: on ? C.red : C.greyLight,
       ),
     );
   }
@@ -920,7 +1018,7 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
         child: Row(
           children: [
-            if (_manageMode) _selCheck(checked, C.orange),
+            if (_manageMode) _selCheck(checked),
             Container(
               width: 38,
               height: 38,
@@ -1038,7 +1136,7 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
         child: Row(
           children: [
-            if (_manageMode) _selCheck(checked, C.blue),
+            if (_manageMode) _selCheck(checked),
             Container(
               width: 38,
               height: 38,
