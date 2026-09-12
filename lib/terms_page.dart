@@ -143,12 +143,12 @@ class _TermsPageState extends State<TermsPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            tooltip: _en ? 'Refresh' : '刷新',
+            tooltip: S.of(context).weatherRefresh,
             icon: Icon(Icons.refresh_rounded, color: C.blue, size: 20),
             onPressed: _reload,
           ),
           IconButton(
-            tooltip: _en ? 'Open in browser' : '在浏览器打开',
+            tooltip: S.of(context).openInBrowser,
             icon: Icon(Icons.open_in_new_rounded, color: C.blue, size: 18),
             onPressed: () => launchUrl(
               Uri.parse('$_kTermsBase$_webPath'),
@@ -310,7 +310,7 @@ class _TermsPageState extends State<TermsPage> {
             FilledButton.icon(
               onPressed: _reload,
               icon: const Icon(Icons.refresh_rounded, size: 16),
-              label: Text(_en ? 'Retry' : '重试'),
+              label: Text(S.of(context).retry),
               style: FilledButton.styleFrom(backgroundColor: C.blue),
             ),
           ],

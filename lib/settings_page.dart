@@ -459,12 +459,13 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('取消', style: ts(13, c: C.slate)),
+            child: Text(S.of(context).cancel,
+                style: ts(13, c: C.slate)),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: C.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('退出', style: ts(13)),
+            child: Text(S.of(context).logout, style: ts(13)),
           ),
         ],
       ),

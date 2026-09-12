@@ -6032,6 +6032,9 @@ abstract class AppLocalizations {
   String get quitAppDesc;
 
   String get symCar;
+  String get openInBrowser;
+  String get badgeWall;
+  String get achievementWall;
   String get mapTypeCartoPositron;
   String get mapTypeCarto;
   String get mapTypeCartoDark;

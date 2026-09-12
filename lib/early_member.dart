@@ -606,8 +606,8 @@ class _HonorWallSheet extends StatelessWidget {
                   letterSpacing: 1.5,
                   height: 1.1)),
           const SizedBox(width: 12),
-          const Text('徽章墙',
-              style: TextStyle(
+          Text(S.of(context).badgeWall,
+              style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF98A2B8))),
@@ -638,11 +638,12 @@ class _HonorWallSheet extends StatelessWidget {
                         for (final w in wall)
                           _badgeTile(context, call, w.honor, w.owned),
                         const SizedBox(height: 8),
-                        Row(children: const [
-                          Icon(Icons.emoji_events_outlined, size: 15, color: Color(0xFF9AA3B7)),
-                          SizedBox(width: 6),
-                          Text('成就墙',
-                              style: TextStyle(
+                        Row(children: [
+                          const Icon(Icons.emoji_events_outlined,
+                              size: 15, color: Color(0xFF9AA3B7)),
+                          const SizedBox(width: 6),
+                          Text(S.of(context).achievementWall,
+                              style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                   color: Color(0xFF6A7590))),

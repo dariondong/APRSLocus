@@ -3563,6 +3563,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get symCar => 'Car';
+  String get openInBrowser => 'Open in browser';
+  String get badgeWall => 'Badge wall';
+  String get achievementWall => 'Achievement wall';
   String get mapTypeCartoPositron => 'Carto Positron (light vector)';
   String get mapTypeCarto => 'Carto Light';
   String get mapTypeCartoDark => 'Carto Dark';

@@ -316,7 +316,8 @@ class _VectorMapViewState extends State<VectorMapView> {
                 Icon(Icons.error_outline_rounded, size: 16, color: C.red),
                 SizedBox(width: 6),
                 Flexible(
-                  child: Text('矢量地图加载失败\n$_styleError',
+                  child: Text(
+                      S.of(context).vectorMapLoadFailed('$_styleError'),
                       style: ts(11, c: C.red, w: FontWeight.w600)),
                 ),
               ]),
@@ -333,7 +334,8 @@ class _VectorMapViewState extends State<VectorMapView> {
         children: [
           CircularProgressIndicator(strokeWidth: 2.5),
           SizedBox(height: 10),
-          Text('加载矢量地图…', style: TextStyle(color: C.grey, fontSize: 12)),
+          Text(S.of(context).loadingVectorMap,
+              style: TextStyle(color: C.grey, fontSize: 12)),
         ],
       ),
     );

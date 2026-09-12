@@ -387,7 +387,8 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.grid_view_rounded, size: 15, color: C.blue),
                   SizedBox(width: 6),
-                  Text('更多符号', style: ts(12, c: C.blue, w: FontWeight.w600)),
+                  Text(S.of(context).moreSymbols,
+                      style: ts(12, c: C.blue, w: FontWeight.w600)),
                   SizedBox(width: 4),
                   Icon(Icons.chevron_right_rounded, size: 16, color: C.blue),
                 ]),
@@ -889,7 +890,8 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                         final lng = double.tryParse(_myLng.text.trim());
                         if (lat == null || lng == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('请输入有效经纬度')),
+                            SnackBar(
+                                content: Text(S.of(context).invalidLatLng)),
                           );
                           return;
                         }

@@ -1,5 +1,32 @@
 # 更新日志
 
+## [1.6.83] - 2026-09-12
+
+### 🌐 中文硬编码清理 · 第五批：补上一批我漏掉的 
+
+审计时发现一个**验证方式的缺陷**：我用「字面量是否等于某个 ARB 值」判断是否已本地化，
+但有些键的值**恰好等于字面量本身**（如 `moreSymbols` 的值就是 `更多符号`），
+于是这些「本就该替换却没替换」的位置被当成「已有本地化」跳过了。本批把这 11 处补齐：
+
+| 位置 | 情况 |
+|---|---|
+| `early_member.dart` 徒章墙 / 成就墙 | 这两处**连键都没有**（新增 `badgeWall` / `achievementWall`），且原本是 `const Text` → 去 `const` 才能用 l10n |
+| `terms_page.dart` 刷新 / 在浏览器打开 / 重试 | 自写 `_en ? 'Refresh' : '刷新'` **二元式**，**繁體用户只能看到简体** → 改走 l10n（新增 `openInBrowser`） |
+| `settings_pages.dart` 更多符号 / 请输入有效经纬度 | 键（`moreSymbols` / `invalidLatLng`）早已存在，只是没用 |
+| `settings_page.dart` 取消 / 退出 | 同上（`cancel` / `logout`） |
+| `vector_map.dart` 加载失败 / 加载中 | 同上（`vectorMapLoadFailed` / `loadingVectorMap`） |
+
+提交前自检**当场拓到一个真实错误**：我凭印象写的 `openInBrowser` 键名**并不存在**
+（这正是那次“一次就过”的反例，也是自检价值的体现）。
+
+- **Fifth batch**: my audit had a flaw — it treated a literal as "already localized"
+  whenever its text equalled some ARB value, but for keys like `moreSymbols` the
+  *value is the literal itself*, so genuinely-untranslated sites were skipped.
+  This batch fixes those 11 sites (incl. `terms_page`'s hand-rolled
+  `_en ? 'Refresh' : '刷新'` binary that left Traditional-Chinese users with
+  Simplified text) and adds the missing `badgeWall` / `achievementWall` /
+  `openInBrowser` keys. Two sites were `const Text` and needed the `const` removed.
+
 ## [1.6.82] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第四批：修好「有本地化包但没用上」的地方

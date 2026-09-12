@@ -3469,6 +3469,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get symCar => '汽车';
+  String get openInBrowser => '在浏览器打开';
+  String get badgeWall => '徽章墙';
+  String get achievementWall => '成就墙';
   String get mapTypeCartoPositron => 'Carto Positron(浅色矢量)';
   String get mapTypeCarto => 'Carto 浅色';
   String get mapTypeCartoDark => 'Carto 深色';
@@ -7245,6 +7248,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get symCar => '汽車';
+  String get openInBrowser => '在瀏覽器開啟';
+  String get badgeWall => '徽章牆';
+  String get achievementWall => '成就牆';
   String get mapTypeCartoPositron => 'Carto Positron(淺色向量)';
   String get mapTypeCarto => 'Carto 淺色';
   String get mapTypeCartoDark => 'Carto 深色';
