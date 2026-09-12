@@ -3,9 +3,14 @@
 ## [1.6.89] - 2026-09-12
 
 ### 💬 会话管理：对齐与布局修正 / Chat management: alignment & layout fixes
-- **修正「管理」按钮错位**：计数徽章与「管理」按钮此前用了**不同的内边距**（3 / 4），
+- **修正「管理」按钮错位（垂直）**：计数徽章与「管理」按钮此前用了**不同的内边距**（3 / 4），
   两个高度不同的胶囊并排 → 文字基线不齐。现统一为**固定高度 26 + 垂直居中**，
   并统一圆角，「管理」/「完成」与计数徽章严格对齐
+- **修正「管理」按钮偏移（水平）**：标题此前用 `Flexible` 且其后跟 `Spacer`，两者 flex
+  都是 1 → 各分走一半空白；而 `Flexible` 用不完的那份会被留到最右侧，导致尾部的
+  计数/管理按钮**离右边缘有 37.5px 空隙**（中文短标题「会话」实测；英文标题够长
+  会占满份额，碰巧掩盖了这个 bug）。现改用 `Expanded` 吃掉全部剩余宽度，
+  按钮**严格贴右**（实测空隙 0）；并新增布局回归测试钉住该不变量
 - **修正切换管理时的列表跳动**：管理模式标题原为 16px、普通模式为 20px，
   两种模式行高不同 → 切换时下方列表上下跳。现统一标题字号
 - **重做管理工具栏**：管理模式**整行切换**为「已选 N 项 + 全选 + 删除 + 完成」，
@@ -14,10 +19,17 @@
   既能快速单删，也能批量删（管理模式下自动禁用左滑，避免勾选时误删）
 - 选中标记统一为红色，与选中行的红底/红边构成同一个「待删除」信号
 
-- **Fixed the misaligned Manage button**: the count badge and the Manage button used
-  **different vertical padding** (3 vs 4), so two unequal-height pills sat side by side
-  with mismatched baselines. Both are now a **fixed height of 26, vertically centred**,
-  with matching corner radii — the badge, Manage and Done line up exactly.
+- **Fixed the misaligned Manage button (vertical)**: the count badge and the Manage button
+  used **different vertical padding** (3 vs 4), so two unequal-height pills sat side by
+  side with mismatched baselines. Both are now a **fixed height of 26, vertically
+  centred**, with matching corner radii — the badge, Manage and Done line up exactly.
+- **Fixed the offset Manage button (horizontal)**: the title used `Flexible` followed by a
+  `Spacer`, both with flex 1, so they split the free space in half — and the title’s unused
+  share was left at the far right, pushing the count/Manage buttons **37.5px away from the
+  right edge** (measured with the short Chinese title 「会话」; the longer English title only
+  hid the bug by filling its share). The title is now an `Expanded` that consumes all
+  remaining width, so the buttons sit **flush right** (measured gap 0), with a layout
+  regression test pinning the invariant.
 - **Fixed the list jumping when entering manage mode**: the manage title was 16px while the
   normal title was 20px, so the header changed height and the list below shifted. Both
   modes now use the same title size.

@@ -782,7 +782,11 @@ class _MessagesPageState extends State<MessagesPage> {
       children: [
         // 窄屏/横屏（列表栏仅 280 宽）下标题需可缩，否则加了
         // 「管理」按钮后英文 Conversations 会溢出
-        Flexible(
+        // 必须用 Expanded（不要 Flexible + Spacer）：两者 flex 都是 1，
+        // 会各分走一半空白；Flexible 没占满的那份又被留到最右侧，
+        // 于是尾部的计数/管理按钮被顶离右边缘 —— 中文短标题「会话」实测偏 37.5px
+        // （英文标题够长会占满份额，碰巧掩盖这个 bug）。Expanded 吃掉全部剩余宽度。
+        Expanded(
           child: Text(
             S.of(context).conversations,
             style: T.h2,
@@ -790,7 +794,6 @@ class _MessagesPageState extends State<MessagesPage> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
         _pill('${st.messages.length}', C.blue, C.blueBg),
         if (st.chatGroups.isNotEmpty || partners.isNotEmpty) ...[
           const SizedBox(width: 6),
@@ -815,7 +818,8 @@ class _MessagesPageState extends State<MessagesPage> {
     final has = _selCount > 0;
     return Row(
       children: [
-        Flexible(
+        // 同 _listHead：用 Expanded 而非 Flexible + Spacer，否则尾部按钮不贴右
+        Expanded(
           child: Text(
             s.selectedCount(_selCount),
             // 与普通模式标题同字号：两种模式头部行高一致，
@@ -825,7 +829,6 @@ class _MessagesPageState extends State<MessagesPage> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
         _iconBtn(
           all ? Icons.remove_done_rounded : Icons.done_all_rounded,
           all ? s.deselectAll : s.selectAll,
