@@ -647,6 +647,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageId => 'Bahasa Indonesia';
 
   @override
+  String get languageEs => '西班牙语';
+
+  @override
   String get displaySettings => '显示设置';
 
   @override
@@ -4624,6 +4627,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get languageId => 'Bahasa Indonesia';
+
+  @override
+  String get languageEs => '西班牙語';
 
   @override
   String get displaySettings => '顯示設定';

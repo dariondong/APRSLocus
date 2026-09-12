@@ -657,6 +657,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get languageId => 'Bahasa Indonesia';
 
   @override
+  String get languageEs => 'Spanyol';
+
+  @override
   String get displaySettings => 'Pengaturan tampilan';
 
   @override

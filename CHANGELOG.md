@@ -1,5 +1,42 @@
 # 更新日志
 
+## [1.6.94] - 2026-09-13
+
+### 🇪🇸 新增西班牙语 / Spanish
+- 新增 **西班牙语（es）** 界面，**1187 个文案键全部翻译完成**（无回落英文的遗漏项）
+- 设置页与首次启动向导（OOBE）的语言选项新增「**Español**」
+- 4 个 ICU select 逐语言补齐：**APRS 符号名 62 例**、符号分类 7 例、
+  **国家/地区 27 例**、星期 7 例
+- 语言选项在**两处入口**都已加（设置页 + OOBE）
+
+- Added a **Spanish (es)** interface with **all 1,187 message keys translated** (nothing left
+  falling back to English). The language picker in Settings and in the first-run wizard now
+  offers **Español**, and all four ICU selects were expanded per locale (62 APRS symbol names,
+  7 symbol categories, 27 countries/regions, 7 weekdays).
+
+### 🌐 荣誉墙 / 赞助墙：西班牙语回落英文 / Honors & sponsors fall back to English
+荣誉、成就与赞助文案由 `members.json` / `sponsors.json` 下发，**只维护 zh / zh-TW / en 三套**，
+所以西班牙语界面下这些内容会**显示英文**（而非中文）—— 与日语/印尼语的处理一致。
+
+Honor, achievement and sponsor copy ships in **zh / zh-TW / en only**, so under Spanish those
+sections display **English** rather than Chinese — the same behaviour as Japanese and Indonesian.
+
+### 🔧 顺带修复：版本号不一致 / Fix: inconsistent version string
+- 上一版（v1.6.93）发布时 **`lib/state.dart` 的 `appVersion` 漏提交**，
+  导致代码里仍是 `1.6.92` 而 `pubspec.yaml` 已是 `1.6.93`（两处不一致）。现已同步
+- 影响面很小（`appVersion` 用于信标/识别时的版本上报），但属真实疏忽，已改正
+
+- In v1.6.93 the **`appVersion` constant in `lib/state.dart` was left out of the commit**, so
+  the code still reported 1.6.92 while `pubspec.yaml` said 1.6.93. Now synchronised.
+
+> ⚠️ **译文质量说明**：西语译文为**机器翻译质量的首版**，术语按统一口径处理
+> （indicativo / baliza / cuadrícula / digipeater 等），但**我无法自评其地道程度**。
+> 如发现不自然的表述，请告知具体键或句子，修正很快。
+>
+> **Translation quality**: this first Spanish pass is machine-translation quality with consistent
+> terminology (indicativo, baliza, cuadrícula, digipeater…), but **I cannot judge how natural it
+> sounds to a native speaker**. Report any awkward wording and it is quick to fix.
+
 ## [1.6.93] - 2026-09-13
 
 ### 🏫 赞助页：合作院校改用全称 / Sponsor page: partner university full name

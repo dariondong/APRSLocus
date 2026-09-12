@@ -351,6 +351,7 @@ class _OobePageState extends State<OobePage> {
       ('en', S.of(context).languageEn),
       ('ja', S.of(context).languageJa),
       ('id', S.of(context).languageId),
+      ('es', S.of(context).languageEs),
     ];
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),

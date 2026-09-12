@@ -657,6 +657,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageId => 'Bahasa Indonesia';
 
   @override
+  String get languageEs => 'Spanish';
+
+  @override
   String get displaySettings => 'Display settings';
 
   @override

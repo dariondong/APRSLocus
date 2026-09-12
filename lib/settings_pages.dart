@@ -2309,6 +2309,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       ('en', S.of(context).languageEn),
       ('ja', S.of(context).languageJa),
       ('id', S.of(context).languageId),
+      ('es', S.of(context).languageEs),
     ];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
