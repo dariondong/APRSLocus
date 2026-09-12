@@ -226,6 +226,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageZhTw => '繁體中文';
 
   @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
+
+  @override
   String get displaySettings => 'Display settings';
 
   @override

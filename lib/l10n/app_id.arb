@@ -1,155 +1,148 @@
 {
-  "@@locale": "en",
+  "@@locale": "id",
   "appName": "APRSlocus",
   "ok": "OK",
-  "cancel": "Cancel",
-  "save": "Save",
-  "delete": "Delete",
-  "confirm": "Confirm",
-  "back": "Back",
-  "next": "Next",
-  "finish": "Finish & Connect",
-  "previous": "Previous",
-  "search": "Search",
-  "settings": "Settings",
-  "greetMorning": "Good morning, ",
-  "greetNoon": "Good noon, ",
-  "greetAfternoon": "Good afternoon, ",
-  "greetEvening": "Good evening, ",
-  "greetNight": "Hello, ",
-  "about": "About",
-  "logout": "Exit",
-  "retry": "Retry",
-  "all": "All",
+  "cancel": "Batal",
+  "save": "Simpan",
+  "delete": "Hapus",
+  "confirm": "Konfirmasi",
+  "back": "Kembali",
+  "next": "Berikutnya",
+  "finish": "Selesai & Sambungkan",
+  "previous": "Sebelumnya",
+  "search": "Cari",
+  "settings": "Pengaturan",
+  "greetMorning": "Selamat pagi, ",
+  "greetNoon": "Selamat siang, ",
+  "greetAfternoon": "Selamat sore, ",
+  "greetEvening": "Selamat malam, ",
+  "greetNight": "Selamat malam, ",
+  "about": "Tentang",
+  "logout": "Keluar",
+  "retry": "Coba lagi",
+  "all": "Semua",
   "online": "Online",
   "offline": "Offline",
-  "moving": "Moving",
-  "emergency": "Emergency",
-  "fixed": "Fixed",
+  "moving": "Bergerak",
+  "emergency": "Darurat",
+  "fixed": "Tetap",
   "infrastructure": "Digipeater",
-  "weather": "Weather",
+  "weather": "Cuaca",
   "fmo": "FMO",
   "mobile": "Mobile",
-  "favorite": "Favorite",
+  "favorite": "Favorit",
   "grid": "Grid",
-  "callsign": "Callsign",
-  "speed": "Speed",
-  "altitude": "Altitude",
-  "course": "Course",
-  "distance": "Distance",
-  "bearing": "Bearing",
-  "lastSeen": "Last heard",
-  "latitude": "Latitude",
-  "longitude": "Longitude",
-  "station": "Station",
-  "stations": "Stations",
-  "messages": "Messages",
-  "packets": "Packets",
-  "map": "Map",
-  "home": "Home",
-  "connection": "Connection",
-  "connected": "Connected",
-  "disconnected": "Disconnected",
-  "connecting": "Connecting",
-  "reconnect": "Reconnect",
+  "callsign": "Tanda panggil",
+  "speed": "Kecepatan",
+  "altitude": "Ketinggian",
+  "course": "Arah",
+  "distance": "Jarak",
+  "bearing": "Azimut",
+  "lastSeen": "Terakhir terdengar",
+  "latitude": "Lintang",
+  "longitude": "Bujur",
+  "station": "Stasiun",
+  "stations": "Stasiun",
+  "messages": "Pesan",
+  "packets": "Paket",
+  "map": "Peta",
+  "home": "Beranda",
+  "connection": "Koneksi",
+  "connected": "Terhubung",
+  "disconnected": "Terputus",
+  "connecting": "Menghubungkan",
+  "reconnect": "Sambung ulang",
   "server": "Server",
   "port": "Port",
   "passcode": "Passcode",
-  "beacon": "Position beacon",
-  "beaconInterval": "Beacon interval (sec)",
-  "nextBeacon": "Next beacon",
-  "beaconsSent": "Beacons sent",
-  "symCatVehicles": "Vehicles / Traffic",
-  "symCatBuildings": "Buildings / Facilities",
-  "symCatNature": "Weather / Nature",
-  "symCatAirWater": "Air / Water",
-  "symCatComms": "Comms / Other",
-  "homeBadgeLabel": "Badge shown on home",
-  "homeBadgePickTitle": "Choose a badge for home",
-  "homeBadgePickDesc": "Pick one earned badge to keep on your home screen",
-  "simLocationHint": "Use a simulated location (no GPS needed)",
-  "speedTierRules": "Speed tiers",
-  "restoreDefaults": "Restore defaults",
-  "speedTierDesc": "The faster you move, the more often you report; each tier can have its own interval and icon (blank = my symbol).",
-  "speedTierShortIntervalWarn": "Intervals under 60 s noticeably increase server load; 60 s or more is recommended.",
-  "addSpeedTier": "Add speed tier",
-  "maxSpeedTiers": "Up to 5 speed tiers",
-  "iconDefaultMySymbol": "Icon · Default (my symbol)",
-  "iconNamed": "Icon · {name}",
-  "@iconNamed": {"placeholders": {"name": {"type": "String"}}},
-  "everyNSeconds": "Every {sec} s",
-  "@everyNSeconds": {"placeholders": {"sec": {"type": "String"}}},
-  "tierIdleTitle": "Edit · Idle/low-speed tier",
-  "tierSpeedTitle": "Edit · Speed tier",
-  "minSpeedKmh": "Minimum speed (km/h)",
-  "intervalSeconds": "Report interval (s)",
-  "idleTierDesc": "Speeds below the first moving tier are reported with this tier",
+  "beacon": "Beacon posisi",
+  "beaconInterval": "Interval kirim (dtk)",
+  "nextBeacon": "Beacon berikutnya",
+  "beaconsSent": "Beacon terkirim",
+  "symCatVehicles": "Kendaraan / Lalu lintas",
+  "symCatBuildings": "Bangunan / Fasilitas",
+  "symCatNature": "Cuaca / Alam",
+  "symCatAirWater": "Udara / Perairan",
+  "symCatComms": "Komunikasi / Lainnya",
+  "homeBadgeLabel": "Lencana di beranda",
+  "homeBadgePickTitle": "Pilih lencana untuk beranda",
+  "homeBadgePickDesc": "Pilih satu lencana yang sudah diperoleh untuk ditampilkan di beranda",
+  "simLocationHint": "Gunakan lokasi simulasi (tanpa GPS)",
+  "speedTierRules": "Aturan tingkat kecepatan",
+  "restoreDefaults": "Kembalikan bawaan",
+  "speedTierDesc": "Semakin cepat bergerak, semakin sering lapor; tiap tingkat dapat punya interval dan ikon sendiri (kosong = simbol saya).",
+  "speedTierShortIntervalWarn": "Interval di bawah 60 dtk menambah beban server secara signifikan; disarankan ≥60 dtk.",
+  "addSpeedTier": "Tambah tingkat kecepatan",
+  "maxSpeedTiers": "Maksimal 5 tingkat kecepatan",
+  "iconDefaultMySymbol": "Ikon · Bawaan (simbol saya)",
+  "iconNamed": "Ikon · {name}",
+  "everyNSeconds": "Setiap {sec} dtk",
+  "tierIdleTitle": "Edit · Tingkat diam/lambat",
+  "tierSpeedTitle": "Edit · Tingkat kecepatan",
+  "minSpeedKmh": "Kecepatan minimum (km/j)",
+  "intervalSeconds": "Interval kirim (dtk)",
+  "idleTierDesc": "Kecepatan di bawah tingkat bergerak pertama dikirim memakai tingkat ini",
   "intervalLabel": "Interval",
-  "unitSeconds": "s",
-  "pickBeaconIconDesc": "Pick a beacon icon · \"Default\" keeps my symbol",
-  "defaultLabel": "Default",
-  "deleteThisTier": "Delete this tier",
-  "idleTierNotDeletable": "The idle tier cannot be deleted",
-  "errMinSpeedInt": "Minimum speed must be an integer >= 1",
-  "errIntervalInt": "Interval must be an integer of at least 5 s",
-  "errTierDuplicate": "That speed tier already exists; thresholds must be unique",
-  "wsUrlOptional": "WebSocket URL (optional)",
-  "countryUnrestricted": "No country selected · no restriction (all stations)",
-  "weatherWidget": "Weather widget",
-  "groupChatLabel": "Group chats",
+  "unitSeconds": "dtk",
+  "pickBeaconIconDesc": "Pilih ikon beacon · \"Bawaan\" = pakai simbol saya",
+  "defaultLabel": "Bawaan",
+  "deleteThisTier": "Hapus tingkat ini",
+  "idleTierNotDeletable": "Tingkat diam tidak dapat dihapus",
+  "errMinSpeedInt": "Kecepatan minimum harus bilangan bulat ≥ 1",
+  "errIntervalInt": "Interval kirim harus bilangan bulat minimal 5 dtk",
+  "errTierDuplicate": "Tingkat kecepatan itu sudah ada; nilai ambang harus berbeda",
+  "wsUrlOptional": "URL WebSocket (opsional)",
+  "countryUnrestricted": "Tanpa negara/region · tanpa batas (terima semua stasiun)",
+  "weatherWidget": "Widget cuaca",
+  "groupChatLabel": "Obrolan grup",
   "nItems": "{n}",
-  "@nItems": {"placeholders": {"n": {"type": "String"}}},
   "nMessages": "{n}",
-  "@nMessages": {"placeholders": {"n": {"type": "String"}}},
-  "confirmDeleteMessages": "Delete all {n} chat messages? This cannot be undone.",
-  "@confirmDeleteMessages": {"placeholders": {"n": {"type": "String"}}},
-  "weatherSimFollowLive": "Follow live",
-  "wxClear": "Clear",
-  "wxCloudy": "Cloudy",
-  "wxOvercast": "Overcast",
-  "wxLightRain": "Light rain",
-  "wxModerateRain": "Moderate rain",
-  "wxHeavyRain": "Heavy rain",
-  "wxStormRain": "Torrential rain",
-  "wxThunder": "Thundershower",
-  "wxSnow": "Snow",
-  "wxFog": "Fog",
-  "weatherSimTitle": "Weather simulation (preview background/effects/advice)",
-  "weatherSimDesc": "After choosing, tap the weather pill in the top bar to preview; \"Follow live\" restores real weather",
-  "restartWizardConfirm": "The first-run wizard will open again so you can reset your callsign, receive area and more.\\nYour current settings are kept; continue using the app after finishing the wizard.",
-  "restartWizardButton": "Run again",
-  "pasteAprsPacketHint": "Paste a raw APRS packet, e.g.\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test",
-  "beaconsSentCount": "{n}",
-  "@beaconsSentCount": {"placeholders": {"n": {"type": "String"}}},
-  "myBadgesAndAchievements": "My badges and achievements",
-  "quitApp": "Quit app",
-  "quitAppDesc": "Quitting stops location reporting and background reception, and ends the process.",
-  "symCar": "Car",
-  "openInBrowser": "Open in browser",
-  "badgeWall": "Badge wall",
-  "achievementWall": "Achievement wall",
-  "mapTypeCartoPositron": "Carto Positron (light vector)",
-  "mapTypeCarto": "Carto Light",
-  "mapTypeCartoDark": "Carto Dark",
+  "confirmDeleteMessages": "Hapus semua {n} riwayat obrolan? Tindakan ini tidak dapat dibatalkan.",
+  "weatherSimFollowLive": "Ikuti waktu nyata",
+  "wxClear": "Cerah",
+  "wxCloudy": "Berawan",
+  "wxOvercast": "Mendung",
+  "wxLightRain": "Hujan ringan",
+  "wxModerateRain": "Hujan sedang",
+  "wxHeavyRain": "Hujan lebat",
+  "wxStormRain": "Hujan sangat lebat",
+  "wxThunder": "Hujan petir",
+  "wxSnow": "Salju",
+  "wxFog": "Kabut",
+  "weatherSimTitle": "Simulasi cuaca (pratinjau latar/efek/saran)",
+  "weatherSimDesc": "Setelah memilih, ketuk kapsul cuaca di bilah atas untuk pratinjau; \"Ikuti waktu nyata\" mengembalikan cuaca asli",
+  "restartWizardConfirm": "Panduan awal akan dibuka lagi sehingga Anda dapat mengatur ulang tanda panggil, area terima, dan lainnya.\nPengaturan Anda saat ini tetap tersimpan; lanjutkan memakai aplikasi setelah panduan selesai.",
+  "restartWizardButton": "Jalankan lagi",
+  "pasteAprsPacketHint": "Tempel paket APRS mentah, mis.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Stasiun uji",
+  "beaconsSentCount": "{n} kali",
+  "myBadgesAndAchievements": "Lencana dan pencapaian saya",
+  "quitApp": "Keluar dari aplikasi",
+  "quitAppDesc": "Keluar akan menghentikan pelaporan lokasi dan penerimaan di latar belakang, lalu mengakhiri proses.",
+  "symCar": "Mobil",
+  "openInBrowser": "Buka di browser",
+  "badgeWall": "Dinding lencana",
+  "achievementWall": "Dinding pencapaian",
+  "mapTypeCartoPositron": "Carto Positron (vektor terang)",
+  "mapTypeCarto": "Carto Terang",
+  "mapTypeCartoDark": "Carto Gelap",
   "mapTypeCartoVoyager": "Carto Voyager",
-  "mapTypeOsm": "OSM Standard",
+  "mapTypeOsm": "OSM Standar",
   "mapTypeOsmHot": "OSM Humanitarian",
   "mapTypeOpenTopo": "OpenTopo Terrain",
   "mapTypeEsriStreet": "Esri Streets",
-  "mapTypeEsriSat": "Esri Imagery",
-  "simulatedKeepAlive": "Simulated location · keep-alive",
-  "symCatEmergency": "Emergency",
-  "symSmallAircraft": "Small aircraft",
-  "myPositionSet": "My position set, grid {grid}",
-  "@myPositionSet": {"placeholders": {"grid": {"type": "String"}}},
-  "tierIdleShort": "Idle/low",
-  "symHouse": "House",
-  "symPerson": "Person",
-  "symTruck": "Truck",
-  "symBicycle": "Bicycle",
+  "mapTypeEsriSat": "Esri Citra",
+  "simulatedKeepAlive": "Lokasi simulasi · tetap aktif",
+  "symCatEmergency": "Tanggap darurat",
+  "symSmallAircraft": "Pesawat kecil",
+  "myPositionSet": "Lokasi saya tersimpan, grid {grid}",
+  "tierIdleShort": "Diam/lambat",
+  "symHouse": "Rumah",
+  "symPerson": "Orang",
+  "symTruck": "Truk",
+  "symBicycle": "Sepeda",
   "symRv": "RV",
-  "symWxStation": "Weather station",
-  "symPolice": "Police",
+  "symWxStation": "Stasiun cuaca",
+  "symPolice": "Polisi",
   "symMotorcycle": "Motorcycle",
   "symSemi": "Semi-trailer",
   "symVan": "Van",
@@ -571,9 +564,6 @@
   "runInstaller": "Run installer",
   "downloadUpdateTip": "Download the update and open it",
   "openDownloadFolder": "Open downloads folder",
-  "@appName": {
-    "description": "Application name"
-  },
   "groupBubble": "Group · {name}",
   "groupInviteTitle": "Group chat invitation",
   "groupInviteFrom": "{from} invited you to a group chat",
@@ -1015,21 +1005,7 @@
   "weatherVis": "Visibility",
   "weatherPrecip": "Precip.",
   "weatherFeels": "Feels {v}°",
-  "@weatherFeels": {
-    "placeholders": {
-      "v": {
-        "type": "String"
-      }
-    }
-  },
   "weatherObserved": "Observed {t}",
-  "@weatherObserved": {
-    "placeholders": {
-      "t": {
-        "type": "String"
-      }
-    }
-  },
   "hamTitle": "Ham radio tips",
   "hamNoData": "Once weather is loaded, tips on antenna setup, operating and lightning safety will appear",
   "hamStorm1": "Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage",
@@ -1037,94 +1013,24 @@
   "hamRain": "Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained",
   "hamCold": "Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas",
   "hamWind": "Wind {w}: guy and secure antennas firmly; lower beams / long wires when packing up",
-  "@hamWind": {
-    "placeholders": {
-      "w": {
-        "type": "String"
-      }
-    }
-  },
   "hamHot": "Heat {t}°C: stay hydrated; avoid long full-power transmissions that overheat your gear",
-  "@hamHot": {
-    "placeholders": {
-      "t": {
-        "type": "String"
-      }
-    }
-  },
   "hamHumid": "Humidity {h}%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free",
-  "@hamHumid": {
-    "placeholders": {
-      "h": {
-        "type": "String"
-      }
-    }
-  },
   "hamFog": "Low visibility ({v} km): drive carefully; fog can create ducts — try distant VHF/UHF contacts",
-  "@hamFog": {
-    "placeholders": {
-      "v": {
-        "type": "String"
-      }
-    }
-  },
   "hamGood": "Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening",
   "hamWindExtra": "Wind {w}: still guy the antenna and stay safe in the field",
-  "@hamWindExtra": {
-    "placeholders": {
-      "w": {
-        "type": "String"
-      }
-    }
-  },
   "hamStorm3": "Lightning approaching: disconnect the antenna feedline from your rig, move it outdoors to a ground rod to bleed static, switch off and unplug mains power so surges cannot enter via AC or LAN; do not use outdoor antennas or corded phones",
   "hamStorm4": "Static crashes (QRN) surge around thunderstorms and HF noise floor rises; wait about 30 minutes after lightning stops before raising antennas and transmitting again",
   "hamExtreme": "Torrential/extreme rain: watch for flash floods, standing water and rockfall — never set up on riverbanks or low ground; add a drip loop where the feedline enters the wall",
   "hamGale": "Wind force {w}: do NOT climb towers or masts! Lower or lay down Yagis and long wires, and check guy ropes, anchors and mast stays",
-  "@hamGale": {
-    "placeholders": {
-      "w": {
-        "type": "String"
-      }
-    }
-  },
   "hamIce": "Ice on antennas and feedlines raises SWR and adds ice loading: do not force full power, first check guy tension and wait until ice melts before normal operation",
   "hamFrost": "Below 0℃: lithium battery capacity drops sharply — keep spares warm in a pocket; guard against frostbite on hands and face, carry hand warmers",
   "hamHeat2": "Heat makes PAs and PSUs derate: lower power, shorten continuous transmissions and make sure there is proper ventilation",
   "hamDust": "Dust storm: fine sand in connectors and insulators causes leakage and noise — use dust caps; dry friction builds static, so ensure a good ground bleed",
   "hamAir": "Poor air quality: wear a mask outdoors and limit exertion; pollution films on antenna insulators add leakage noise, so clean the antenna afterwards",
   "hamDew": "Dew point spread only {d}℃ — air is near saturation: gear and feedlines may condense moisture; let equipment warm up and dry before powering on to avoid shorts",
-  "@hamDew": {
-    "placeholders": {
-      "d": {
-        "type": "String"
-      }
-    }
-  },
   "hamUV": "UV index {u} (high): protect yourself from sunburn during field work — long exposure also ages coax jackets and cable ties quickly",
-  "@hamUV": {
-    "placeholders": {
-      "u": {
-        "type": "String"
-      }
-    }
-  },
   "hamLowPressure": "Low pressure ({p} hPa): weather is becoming unsettled — for long field sessions keep an escape route and watch nearby warnings",
-  "@hamLowPressure": {
-    "placeholders": {
-      "p": {
-        "type": "String"
-      }
-    }
-  },
   "hamHighPressure": "High, steady pressure ({p} hPa): inversions form easily and VHF/UHF tropospheric ducting is possible — try beyond-line-of-sight direct or repeater contacts",
-  "@hamHighPressure": {
-    "placeholders": {
-      "p": {
-        "type": "String"
-      }
-    }
-  },
   "hamGrayLine": "You are in the sunrise/sunset grey line: 20/40m HF propagation peaks now — the golden window for long-haul DX",
   "hamNight": "D-layer fades at night: 80/40m absorption drops with lower noise — great for regional and nighttime long-distance work",
   "hamRainFade": "Heavier rain causes rain fade above 1.2GHz: for microwave and EME work, drop to a lower band or wait for the rain to ease",
@@ -1134,13 +1040,6 @@
   "hamLevelGood": "Propagation",
   "hamLevelTip": "Tip",
   "hamMore": "Show all {n} tips",
-  "@hamMore": {
-    "placeholders": {
-      "n": {
-        "type": "String"
-      }
-    }
-  },
   "hamLess": "Collapse",
   "weatherForecast3": "3-Day Forecast",
   "weatherDaily15": "View 15-day weather",
@@ -1149,13 +1048,6 @@
   "weatherTomorrow": "Tomorrow",
   "weatherDayAfter": "Day after",
   "weatherWeekday": "{d, select, 1 {Mon} 2 {Tue} 3 {Wed} 4 {Thu} 5 {Fri} 6 {Sat} 7 {Sun} other {—}}",
-  "@weatherWeekday": {
-    "placeholders": {
-      "d": {
-        "type": "String"
-      }
-    }
-  },
   "weatherSunrise": "Sunrise",
   "weatherSunset": "Sunset",
   "weatherUV": "UV",
@@ -1178,13 +1070,6 @@
   "statsTotalTx": "Packets TX",
   "statsRate": "Rate",
   "statsPerMin": "{n}/min",
-  "@statsPerMin": {
-    "placeholders": {
-      "n": {
-        "type": "String"
-      }
-    }
-  },
   "statsStationsTotal": "Stations",
   "statsCap": "Capacity",
   "statsConn": "Link",
@@ -1198,13 +1083,6 @@
   "statsGridDist": "Grid square breakdown",
   "statsGridHint": "Stations per Maidenhead field (4 chars), ranked",
   "statsGridCount": "{n} grids",
-  "@statsGridCount": {
-    "placeholders": {
-      "n": {
-        "type": "String"
-      }
-    }
-  },
   "statsGridEmpty": "No station positions yet",
   "statsDeviceDist": "Device classes",
   "statsOther": "Other metrics",
@@ -1253,22 +1131,228 @@
   "notLit": "Not yet",
   "badgeFallback": "Badge",
   "honoredBadges": "{n}/{m} badges unlocked",
-  "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "achievementsProgress": "{n}/{m} achievements",
-  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "beaconNotConnected": "Not connected",
   "beaconWaitingFix": "Waiting for fix",
   "beaconSoon": "Due now",
   "beaconNextIn": "Next report in {s}",
-  "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},
   "beaconImminent": "Reporting now…",
   "notifConnected": "Connected",
   "notifConnecting": "Connecting",
   "notifDisconnected": "Disconnected",
   "notifOnline": "{n} online",
-  "@notifOnline": {"placeholders": {"n": {"type": "String"}}},
   "notifRx": "RX {n}",
-  "@notifRx": {"placeholders": {"n": {"type": "String"}}},
   "notifBeacon": "Beacon {v}",
-  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}}
+  "@iconNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@everyNSeconds": {
+    "placeholders": {
+      "sec": {
+        "type": "String"
+      }
+    }
+  },
+  "@nItems": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@nMessages": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@confirmDeleteMessages": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconsSentCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@myPositionSet": {
+    "placeholders": {
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "@appName": {
+    "description": "Application name"
+  },
+  "@weatherFeels": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "@weatherObserved": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamWind": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamHot": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamHumid": {
+    "placeholders": {
+      "h": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamFog": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamWindExtra": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamGale": {
+    "placeholders": {
+      "w": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamDew": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamUV": {
+    "placeholders": {
+      "u": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamLowPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamHighPressure": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "@hamMore": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@weatherWeekday": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "@statsPerMin": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@statsGridCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@honoredBadges": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@achievementsProgress": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      }
+    }
+  },
+  "@beaconNextIn": {
+    "placeholders": {
+      "s": {
+        "type": "String"
+      }
+    }
+  },
+  "@notifOnline": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@notifRx": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "@notifBeacon": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  }
 }

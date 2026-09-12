@@ -71,10 +71,9 @@ class _TermsPageState extends State<TermsPage> {
     // 默认协议语言跟随 App 当前语言：英文→en；
     // 中文繁体（含 Hant 脚本，如港澳 zh-Hant-HK）→zh_TW；其余→zh
     final loc = Localizations.localeOf(context);
-    _lang = loc.languageCode == 'en'
+    _lang = loc.languageCode != 'zh'
         ? 'en'
-        : (loc.languageCode == 'zh' &&
-                (loc.countryCode == 'TW' || loc.scriptCode == 'Hant'))
+        : (loc.countryCode == 'TW' || loc.scriptCode == 'Hant')
             ? 'zh_TW'
             : 'zh';
     _future = _load();

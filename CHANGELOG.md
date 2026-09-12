@@ -1,5 +1,41 @@
 # 更新日志
 
+## [1.6.85] - 2026-09-12
+
+### 🌐 新增日语与印尼语（基础建设完成，译文分批进行中）
+
+新增 **日本語** 与 **Bahasa Indonesia** 两种界面语言，共 1143 个文案键。
+
+**本批完成的是「骨架」**：语言可选、能正确解析、全链路已验证。
+**译文目前完成 143 / 1143 条**（第 1 批），其余暂**回落英文**——
+在译文补齐前**不建议发版**（否则 ja/id 用户会看到大片英文）。
+
+改动内容：
+- 新增 `app_ja.arb` / `app_id.arb`（键集与 zh/en/zh_TW 完全一致）
+- 新增 `app_localizations_ja.dart` / `app_localizations_id.dart`
+  （**由 `flutter gen-l10n` 生成**，非手写——我用它重新生成现有三种语言，
+  产物与仓库里手工维护的文件**键集完全一致零差异**，确认工具可靠）
+- `supportedLocales` / `isSupported` / `lookupAppLocalizations` 接入 ja、id
+- 语言选项：**设置页 + OOBE 两处**都加上（原先只有 中/繁/英）
+- `AppState.l10n`（无 BuildContext 场合）加 ja/id 分支
+- `terms_page`：非中文语言的协议正文回落到**英文**（原先会回落中文；
+  目前只有中英两套协议正文，日语/印尼语协议待补）
+
+流程保障（避免再让 CI 挂）：译文逐条做 **JSON 转义往返校验**，
+并断言**占位符集合与中文原文完全一致**（`{name}` 少一个就会输出错乱）。
+
+- Added **Japanese** and **Indonesian** UI locales (1143 keys each).
+- **This commit lands the plumbing**: both locales are selectable, resolve
+  correctly and are verified end-to-end. **Translation is 143 / 1143 so far**;
+  the rest falls back to English for now — **please don't cut a release until the
+  translations are complete**, or ja/id users will see large stretches of English.
+- New ARBs + generated Dart classes (`flutter gen-l10n` — verified by regenerating
+  the three existing locales and diffing: identical key sets, zero drift).
+- Wired into `supportedLocales` / `isSupported` / `lookupAppLocalizations`, both
+  language pickers (settings + OOBE) and `AppState.l10n`.
+- `terms_page` now falls back to the **English** terms text for non-Chinese locales
+  (ja/id terms documents are still to be written).
+
 ## [1.6.84] - 2026-09-12
 
 ### 🐛 修复「APRSlocus 同款软件」识别失效（v1.6.80 引入的回归）

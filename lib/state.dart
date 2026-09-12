@@ -20,6 +20,8 @@ import 'l10n/app_localizations.dart';
 // app_localizations.dart 只导出抽象基类。状态层（无 BuildContext）需要直接构造
 // 具体实例，故必须显式 import 这两个生成文件，否则报 undefined_method。
 import 'l10n/app_localizations_en.dart';
+import 'l10n/app_localizations_id.dart';
+import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'early_member.dart';
@@ -57,7 +59,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.84';
+  static const appVersion = '1.6.85';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3126,6 +3128,10 @@ class AppState extends ChangeNotifier {
     switch (locale) {
       case 'en':
         return AppLocalizationsEn();
+      case 'ja':
+        return AppLocalizationsJa();
+      case 'id':
+        return AppLocalizationsId();
       case 'zh_TW':
       case 'zh-TW':
         return AppLocalizationsZhTw();

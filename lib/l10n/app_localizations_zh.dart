@@ -226,6 +226,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageZhTw => '繁體中文';
 
   @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
+
+  @override
   String get displaySettings => '显示设置';
 
   @override
@@ -4002,6 +4008,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get languageZhTw => '繁體中文';
+
+  @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
 
   @override
   String get displaySettings => '顯示設定';
