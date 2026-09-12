@@ -6,9 +6,39 @@ import 'package:flutter/material.dart';
 
 import 'theme.dart';
 import 'widgets.dart';
+// honorLangOf：荣誉/成就/赞助共用同一套语言回落（ja/id → 英文）
+import 'early_member.dart';
 
 /// 赞助与鸣谢页面（赞助名单从官网 sponsors.json 在线更新，离线用内置兜底）
 const String kSponsorsUrl = 'https://aprslocus.theez.top/sponsors.json';
+
+/// 一条赞助记录。
+///
+/// [name] / [desc] 是**中文基准**（兼容旧 sponsors.json 与旧调用）；
+/// [names] / [descs] 是可选的多语言覆盖（key: zh / zh-TW / en）。
+/// 荣誉与成就同理：**只维护 zh / zh-TW / en**，日语、印尼语等统一取英文。
+typedef SponsorItem = ({
+  String kind,
+  String name,
+  Map<String, String> names,
+  String desc,
+  Map<String, String> descs,
+});
+
+/// 按语言取文案：该语言 → **英文** → 中文基准
+String sponsorText(Map<String, String> m, String base, String lang) =>
+    m[lang] ?? m['en'] ?? base;
+
+/// 从 sponsors.json 的一项里取多语言字段（无则空表）
+Map<String, String> _langMap(Object? v) {
+  if (v is Map) {
+    return {
+      for (final e in v.entries)
+        if (e.value is String) '${e.key}': e.value as String,
+    };
+  }
+  return const {};
+}
 
 class SponsorPage extends StatefulWidget {
   const SponsorPage({super.key});
@@ -17,15 +47,78 @@ class SponsorPage extends StatefulWidget {
 }
 
 class _SponsorPageState extends State<SponsorPage> {
-  /// 在线赞助名单（kind, name, desc），默认内置
-  List<({String kind, String name, String desc})> _sponsors = [
-    (kind: 'group', name: 'STUDENT HAMS 群组', desc: '感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。'),
-    (kind: 'coffee', name: 'BG7PGW', desc: '感谢赞助的蜜雪冰城一杯 🧋'),
-    (kind: 'jade', name: 'BG7ORC', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
-    (kind: 'school', name: 'BA4JLD', desc: '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚'),
-    (kind: 'jade', name: 'BA4IUD', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
-    (kind: 'jade', name: 'BD1FEH', desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音'),
-    (kind: 'everyone', name: '每一位支持者', desc: '你们的每一份支持，都是 APRSlocus 继续发光的动力。'),
+  /// 在线赞助名单，默认内置（中文基准 + 可选多语言覆盖）
+  List<SponsorItem> _sponsors = [
+    (
+      kind: 'group',
+      name: 'STUDENT HAMS 群组',
+      names: const {'en': 'STUDENT HAMS community'},
+      desc: '感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。',
+      descs: const {
+        'zh-TW': '感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。',
+        'en': 'Thanks to the group for funding APRSlocus development and operations.',
+      },
+    ),
+    (
+      kind: 'coffee',
+      name: 'BG7PGW',
+      names: const {},
+      desc: '感谢赞助的蜜雪冰城一杯 🧋',
+      descs: const {
+        'zh-TW': '感謝贊助的蜜雪冰城一杯 🧋',
+        'en': 'Thanks for sponsoring a Mixue drink 🧋',
+      },
+    ),
+    (
+      kind: 'jade',
+      name: 'BG7ORC',
+      names: const {},
+      desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
+      descs: const {
+        'zh-TW': '贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音',
+        'en': 'Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work.',
+      },
+    ),
+    (
+      kind: 'school',
+      name: 'BA4JLD',
+      names: const {},
+      desc: '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚',
+      descs: const {
+        'zh-TW': '青科大學業餘無線電愛好者俱樂部 · 贈我以瓊琚',
+        'en': 'Qingdao University of Science and Technology Amateur Radio Club · Gifted with jade',
+      },
+    ),
+    (
+      kind: 'jade',
+      name: 'BA4IUD',
+      names: const {},
+      desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
+      descs: const {
+        'zh-TW': '贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音',
+        'en': 'Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work.',
+      },
+    ),
+    (
+      kind: 'jade',
+      name: 'BD1FEH',
+      names: const {},
+      desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
+      descs: const {
+        'zh-TW': '贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音',
+        'en': 'Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work.',
+      },
+    ),
+    (
+      kind: 'everyone',
+      name: '每一位支持者',
+      names: const {'en': 'Every supporter'},
+      desc: '你们的每一份支持，都是 APRSlocus 继续发光的动力。',
+      descs: const {
+        'zh-TW': '你們的每一份支持，都是 APRSlocus 繼續發光的動力。',
+        'en': 'Every bit of your support keeps APRSlocus shining.',
+      },
+    ),
   ];
 
   @override
@@ -50,7 +143,7 @@ class _SponsorPageState extends State<SponsorPage> {
         if (d is! Map) return;
         final list = d['sponsors'];
         if (list is List && list.isNotEmpty) {
-          final parsed = <({String kind, String name, String desc})>[];
+          final parsed = <SponsorItem>[];
           for (final it in list) {
             if (it is Map) {
               final name = it['name'];
@@ -59,7 +152,10 @@ class _SponsorPageState extends State<SponsorPage> {
                 parsed.add((
                   kind: (it['kind'] as String?) ?? 'fav',
                   name: name,
-                  desc: (desc as String?) ?? ''
+                  // 可选多语言字段（names / descs）；未提供则该语言走英文→中文基准
+                  names: _langMap(it['names']),
+                  desc: (desc as String?) ?? '',
+                  descs: _langMap(it['descs']),
                 ));
               }
             }
@@ -148,7 +244,11 @@ class _SponsorPageState extends State<SponsorPage> {
             child: Column(
               children: [
                 for (final sp in _sponsors)
-                  _feature(_kindIcon(sp.kind), sp.name, sp.desc),
+                  _feature(
+                    _kindIcon(sp.kind),
+                    sponsorText(sp.names, sp.name, honorLangOf(context)),
+                    sponsorText(sp.descs, sp.desc, honorLangOf(context)),
+                  ),
               ],
             ),
           ),

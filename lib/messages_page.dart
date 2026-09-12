@@ -694,6 +694,9 @@ class _MessagesPageState extends State<MessagesPage> {
           _showList = false;
         });
       },
+      // 长按清空该群聊的聊天记录（群组保留）
+      onLongPress: () =>
+          _confirmDeleteConversation(st, g.groupCall, (id: g.id, name: g.name)),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
@@ -795,6 +798,8 @@ class _MessagesPageState extends State<MessagesPage> {
           _showList = false;
         });
       },
+      // 长按删除该会话的聊天记录
+      onLongPress: () => _confirmDeleteConversation(st, p, null),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
@@ -1327,6 +1332,70 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   /// 会话页快捷操作按钮
+  /// 长按会话 → 删除聊天记录。
+  ///
+  /// - 单聊（[group] 为 null）：删除与 [call] 的全部消息，会话从列表消失
+  ///   （除非该呼号是收藏/手动联系人）。
+  /// - 群聊：只清空该群的消息，**群组本身保留**（解散群组仍在群详情里，
+  ///   是另一个更重的操作，不混在此处）。
+  Future<void> _confirmDeleteConversation(
+    AppState st,
+    String call,
+    ({String id, String name})? group,
+  ) async {
+    // 先把文案取好，避免 await 之后再碰 context（use_build_context_synchronously）
+    final s = S.of(context);
+    final isGroup = group != null;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.deleteConversation, style: T.h2),
+        content: Text(
+          isGroup
+              ? s.clearGroupChatConfirm(group.name)
+              : s.deleteConversationConfirm(call),
+          style: ts(13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.cancel, style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.delete, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+
+    if (isGroup) {
+      st.clearGroupConversation(group.id);
+    } else {
+      st.deleteConversation(call);
+    }
+
+    if (!mounted) return;
+    // 单聊被删后，若当前正停留在该会话上，退回会话列表，
+    // 否则会停在一个已不存在的会话里（头部还挂着已删除的呼号）
+    if (!isGroup && _selected == call && _selectedGroupId == null) {
+      setState(() => _showList = true);
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(s.chatCleared),
+        backgroundColor: C.blue,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
   Widget _convActionBtn(
     IconData icon,
     String label,

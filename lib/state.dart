@@ -59,7 +59,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.86';
+  static const appVersion = '1.6.87';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2637,6 +2637,33 @@ class AppState extends ChangeNotifier {
     _readAt.clear();
     _saveMessages();
     _notify();
+  }
+
+  /// 删除与某呼号的单聊会话（仅删该会话的消息，不影响群聊）。
+  /// 呼号比较用大写（APRS 呼号大小写不敏感）。
+  void deleteConversation(String call) {
+    final target = call.trim().toUpperCase();
+    if (target.isEmpty) return;
+    messages.removeWhere((m) =>
+        m.from.toUpperCase() == target || m.to.toUpperCase() == target);
+    // 已读时间点一并清掉，否则重建同名会话时会沿用旧的已读位置
+    _readAt.remove(call);
+    _readAt.remove(target);
+    _recalcUnread();
+    _saveMessages();
+    _notify();
+    _log(LogLevel.info, '消息', '已删除与 $target 的聊天记录');
+  }
+
+  /// 清空某群聊的聊天记录（**保留群组本身**，仅清消息）。
+  void clearGroupConversation(String groupId) {
+    if (groupId.isEmpty) return;
+    messages.removeWhere((m) => m.groupId == groupId);
+    _groupReadAt.remove(groupId);
+    _recalcUnread();
+    _saveMessages();
+    _notify();
+    _log(LogLevel.info, '消息', '已清空群聊聊天记录');
   }
 
   /// 某会话的未读数（该呼号收到的、晚于已读时间点的消息数）

@@ -1,5 +1,5 @@
 {
-  "version": 42,
+  "version": 43,
   "updated": "2026-09-12",
   "developers": [
     {
@@ -739,9 +739,10 @@
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
       "honors": [
+        "kaishan",
         "earlyMember"
       ],
-      "primary": "earlyMember",
+      "primary": "kaishan",
       "grp": "test",
       "c": "#B08A34"
     },
@@ -1416,6 +1417,30 @@
         "zh": "在最朦胧的电波里守候回响，陪它从微弱信号长成清晰呼号。",
         "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BI4BNF",
+      "who": {
+        "zh": "BI4BNF",
+        "zh-TW": "BI4BNF",
+        "en": "BI4BNF"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在同频的清晨与深夜里守着，把每一声呼叫都记成了坐标。",
+        "zh-TW": "在同頻的清晨與深夜裡守著，把每一聲呼叫都記成了座標。",
+        "en": "Keeping watch through the small hours on the same frequency — every call logged as a coordinate."
       },
       "honors": [
         "earlyMember"

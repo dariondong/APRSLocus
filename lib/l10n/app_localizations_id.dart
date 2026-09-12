@@ -2269,6 +2269,15 @@ class AppLocalizationsId extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return 'Hapus “$name”? Tindakan ini tidak dapat dibatalkan.';
   }
+  @override
+  String get deleteConversation => 'Hapus obrolan';
+
+  @override
+  String deleteConversationConfirm(String call) => 'Hapus riwayat obrolan dengan {call}? Tindakan ini tidak dapat dibatalkan.';
+
+  @override
+  String clearGroupChatConfirm(String name) => 'Hapus riwayat obrolan “{name}”? Tindakan ini tidak dapat dibatalkan.';
+
 
   @override
   String memberOnlineCount(int members, int online) {

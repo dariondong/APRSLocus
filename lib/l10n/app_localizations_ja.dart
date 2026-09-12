@@ -2229,6 +2229,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return '「$name」を削除しますか？この操作は取り消せません。';
   }
+  @override
+  String get deleteConversation => 'チャットを削除';
+
+  @override
+  String deleteConversationConfirm(String call) => '{call} とのチャット履歴を削除しますか？この操作は取り消せません。';
+
+  @override
+  String clearGroupChatConfirm(String name) => '「{name}」のチャット履歴を消去しますか？この操作は取り消せません。';
+
 
   @override
   String memberOnlineCount(int members, int online) {

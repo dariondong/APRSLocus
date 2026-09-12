@@ -1803,6 +1803,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return '确定删除「$name」？此操作不可撤销。';
   }
+  @override
+  String get deleteConversation => '删除会话';
+
+  @override
+  String deleteConversationConfirm(String call) => '确定删除与 {call} 的聊天记录吗？此操作不可恢复。';
+
+  @override
+  String clearGroupChatConfirm(String name) => '确定清空「{name}」的聊天记录吗？此操作不可恢复。';
+
 
   @override
   String memberOnlineCount(int members, int online) {
@@ -5587,6 +5596,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String deleteGroupConfirm(String name) {
     return '確定刪除「$name」？此操作無法復原。';
   }
+  @override
+  String get deleteConversation => '刪除會話';
+
+  @override
+  String deleteConversationConfirm(String call) => '確定刪除與 {call} 的聊天記錄嗎？此操作不可恢復。';
+
+  @override
+  String clearGroupChatConfirm(String name) => '確定清空「{name}」的聊天記錄嗎？此操作不可恢復。';
+
 
   @override
   String memberOnlineCount(int members, int online) {

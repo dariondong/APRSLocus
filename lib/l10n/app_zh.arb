@@ -704,6 +704,9 @@
   "inviteMembers": "邀请成员",
   "deleteGroup": "删除群组",
   "deleteGroupConfirm": "确定删除「{name}」？此操作不可撤销。",
+  "deleteConversation": "删除会话",
+  "deleteConversationConfirm": "确定删除与 {call} 的聊天记录吗？此操作不可恢复。",
+  "clearGroupChatConfirm": "确定清空「{name}」的聊天记录吗？此操作不可恢复。",
   "memberOnlineCount": "{members} 名成员 · {online} 在线",
   "leaveGroup": "退出群组",
   "leaveGroupConfirm": "确定退出「{name}」？你将不再收到该群的消息。",
@@ -922,6 +925,8 @@
     }
   },
   "@deleteGroupConfirm": {
+  "@deleteConversationConfirm": {"placeholders": {"call": {"type": "String"}}},
+  "@clearGroupChatConfirm": {"placeholders": {"name": {"type": "String"}}},
     "placeholders": {
       "name": {
         "type": "String"

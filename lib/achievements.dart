@@ -21,8 +21,13 @@ class Achievement {
   const Achievement(this.key, this.title, this.desc, this.icon, this.color,
       {this.titles, this.descs});
 
-  String titleOf(String lang) => titles?[lang] ?? title;
-  String descOf(String lang) => descs?[lang] ?? desc;
+  /// 指定语言下的成就标题。
+  /// 回落顺序：该语言 → **英文** → 中文基准（ja/id 无专属文案时取英文）。
+  String titleOf(String lang) => titles?[lang] ?? titles?['en'] ?? title;
+
+  /// 指定语言下的成就说明。
+  /// 回落顺序：该语言 → **英文** → 中文基准。
+  String descOf(String lang) => descs?[lang] ?? descs?['en'] ?? desc;
 }
 
 /// 各成就解锁阈值（计数型）

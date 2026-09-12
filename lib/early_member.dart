@@ -15,7 +15,11 @@ import 'l10n/app_localizations.dart';
 /// 一个呼号可拥有多个称号徽章；徽章定义/授予/优先徽章均由官网 members.json 维护。
 const String kMembersJsonUrl = 'https://aprslocus.theez.top/members.json';
 
-/// 当前界面语言 → 荣誉/成就文案语言键（'zh' / 'zh-TW' / 'en'）
+/// 当前界面语言 → 荣誉/成就/赞助文案语言键（'zh' / 'zh-TW' / 'en'）。
+///
+/// 荣誉、成就、赞助墙的文案目前**只维护 zh / zh-TW / en 三套**（它们由
+/// members.json / sponsors.json 下发，不在 l10n 的 ARB 里）。
+/// 日语、印尼语等其它语言**统一使用英文**，而不是回落中文。
 String honorLangOf(BuildContext context) {
   final l = Localizations.maybeLocaleOf(context);
   if (l == null) return 'zh';
@@ -25,7 +29,8 @@ String honorLangOf(BuildContext context) {
         l.toString().toLowerCase().contains('tw');
     return tw ? 'zh-TW' : 'zh';
   }
-  return l.languageCode;
+  // 只认 en；ja / id 等其余语言一律走英文
+  return 'en';
 }
 const String kMemberCardBase = 'https://aprslocus.theez.top/member-card.html';
 
@@ -48,11 +53,13 @@ class Honor {
   const Honor(this.key, this.label, this.desc, this.color, this.icon,
       {this.iconName, this.labels, this.descs});
 
-  /// 指定语言下的徽章名（缺失回落中文）
-  String labelOf(String lang) => labels?[lang] ?? label;
+  /// 指定语言下的徽章名。
+  /// 回落顺序：该语言 → **英文** → 中文基准（ja/id 无专属文案时取英文）。
+  String labelOf(String lang) => labels?[lang] ?? labels?['en'] ?? label;
 
-  /// 指定语言下的徽章描述（缺失回落中文）
-  String descOf(String lang) => descs?[lang] ?? desc;
+  /// 指定语言下的徽章描述。
+  /// 回落顺序：该语言 → **英文** → 中文基准。
+  String descOf(String lang) => descs?[lang] ?? descs?['en'] ?? desc;
 
   /// 图标名 → Material 图标（key 与 members.json honors[].icon 共用同一命名空间）
   static const Map<String, IconData> iconMap = {

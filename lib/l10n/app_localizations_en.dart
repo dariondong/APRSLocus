@@ -1839,6 +1839,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return 'Delete “$name”? This cannot be undone.';
   }
+  @override
+  String get deleteConversation => 'Delete chat';
+
+  @override
+  String deleteConversationConfirm(String call) => 'Delete the chat history with {call}? This cannot be undone.';
+
+  @override
+  String clearGroupChatConfirm(String name) => 'Clear the chat history of “{name}”? This cannot be undone.';
+
 
   @override
   String memberOnlineCount(int members, int online) {

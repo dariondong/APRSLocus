@@ -3462,6 +3462,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'确定删除「{name}」？此操作不可撤销。'**
   String deleteGroupConfirm(String name);
+  String get deleteConversation;
+
+  String deleteConversationConfirm(String call);
+
+  String clearGroupChatConfirm(String name);
+
 
   /// No description provided for @memberOnlineCount.
   ///

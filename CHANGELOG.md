@@ -1,5 +1,42 @@
 # 更新日志
 
+## [1.6.87] - 2026-09-12
+
+### 🗑️ 消息会话列表：新增删除聊天 / Delete a chat from the conversation list
+- **长按**会话列表项即可删除该会话的聊天记录
+- **单聊**：删除与该呼号的全部消息，会话从列表消失（收藏 / 手动联系人仍保留）
+- **群聊**：只清空该群的消息，**群组本身保留**（解散群组仍在群详情里，是更重的操作，不混在此处）
+- 若当前正停留在被删除的会话上，自动退回会话列表（否则会停在一个已不存在的会话里，
+  头部还挂着已删除的呼号）
+
+- **Long-press** a conversation to delete its chat history.
+- **1:1 chats**: every message with that callsign is removed and the row disappears
+  (favourites / manual contacts stay listed).
+- **Group chats**: only the messages are cleared — the **group itself is kept**
+  (dissolving a group still lives in group details and is a heavier action).
+- If you were viewing the deleted conversation, you are returned to the list.
+
+### 🌐 荣誉墙 / 赞助墙：日语、印尼语改用英文 / Honors & sponsors use English for ja/id
+- 荣誉、成就、赞助墙的文案由 `members.json` / `sponsors.json` 下发，目前只维护
+  **zh / zh-TW / en 三套**；此前日语、印尼语界面会**回落成中文**
+- 现改为**统一回落英文**（`honorLangOf` 只认 en），并给 `Honor` / `Achievement` /
+  赞助条目加上「该语言 → **英文** → 中文基准」的逐级回落
+- 内置的赞助兜底名单补齐 zh-TW / en 文案（并支持 sponsors.json 下发多语言字段）
+
+- Honor, achievement and sponsor copy ships in **zh / zh-TW / en** only; Japanese and
+  Indonesian used to **fall back to Chinese**. They now fall back to **English**
+  instead, via a per-language → English → Chinese chain in `Honor` / `Achievement` /
+  sponsor entries. The built-in sponsor fallback list gained zh-TW / en copy and can
+  now take multilingual fields from `sponsors.json`.
+
+### 🏅 荣誉授予 / Honors granted
+- **BI4BNF** 授予「早期成员」（`members.json` v43）
+- **BH6RIZ** 追加「开山」（`primary` 取「开山」，与最初三位创始人一致）
+- 两者均为纯数据改动，App 与官网**运行时拉取，即时生效，无需发版**
+
+- **BI4BNF** granted *Early member*; **BH6RIZ** additionally granted *Founding pioneer*
+  (`members.json` v43). Pure data changes — fetched at runtime, effective immediately.
+
 ## [1.6.86] - 2026-09-12
 
 > 自 v1.6.82 起的改动合并为此版发布（v1.6.82~v1.6.85 未单独发版）。
