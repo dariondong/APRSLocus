@@ -606,7 +606,7 @@ class _HonorWallSheet extends StatelessWidget {
                   letterSpacing: 1.5,
                   height: 1.1)),
           const SizedBox(width: 12),
-          Text(S.of(context).badgeWall,
+          Text(AppLocalizations.of(context).badgeWall,
               style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -642,7 +642,7 @@ class _HonorWallSheet extends StatelessWidget {
                           const Icon(Icons.emoji_events_outlined,
                               size: 15, color: Color(0xFF9AA3B7)),
                           const SizedBox(width: 6),
-                          Text(S.of(context).achievementWall,
+                          Text(AppLocalizations.of(context).achievementWall,
                               style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
