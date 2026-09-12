@@ -1082,6 +1082,8 @@
   "maxPacketsTip": "How many packets to keep on the packets page (default 2000; higher uses more memory)",
   "maxTrackPts": "Track point limit",
   "maxTrackPtsTip": "Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)",
+  "onlineWindow": "Online window (minutes)",
+  "onlineWindowTip": "A station with no report for longer than this is treated as offline (default 5 minutes)",
   "chatRecords": "Chat history",
   "chatRecordsCleared": "Chat history cleared",
   "deviceCat": "Device",

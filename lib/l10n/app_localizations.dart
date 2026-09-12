@@ -5901,6 +5901,12 @@ abstract class AppLocalizations {
   /// **'每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）'**
   String get maxTrackPtsTip;
 
+  /// No description provided for @onlineWindow.
+  String get onlineWindow;
+
+  /// No description provided for @onlineWindowTip.
+  String get onlineWindowTip;
+
   /// No description provided for @chatRecords.
   ///
   /// In zh, this message translates to:

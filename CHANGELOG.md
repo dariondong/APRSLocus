@@ -1,5 +1,61 @@
 # 更新日志
 
+## [1.6.80] - 2026-09-12
+
+### 🌐 中文硬编码清理 · 第二批 / Hardcoded-Chinese cleanup, batch 2
+- 补齐 v1.6.79 遗漏的三处：设置页符号表中 `const` 上下文内的字面量已还原
+  （顶层 `const` 符号表里根本没有 `context` 可用，需先做结构性改造）
+- **Fixed the three spots v1.6.79 missed**: literals inside the top-level `const`
+  symbol tables were restored — those tables have no `context` in scope at all, so
+  they need a structural change before they can be localized.
+
+### 💬 聊天输入栏：元素分隔 / Chat composer spacing
+- 输入栏原先内边距 12、输入框与发送键间距仅 8，且底部没有安全区，
+  在手势导航机型上与系统导航条贴死
+- 现在：包一层 `SafeArea`、内边距 14/10、间距 10、输入框加描边、
+  发送键 42→44 —— 输入框与发送键成为两个可分辨的独立控件
+- **Composer spacing**: wrapped in a `SafeArea`, larger padding (14/10), a 10 px
+  gap, an outline on the field, and a 42→44 px send button so the field and the
+  button read as two distinct controls.
+
+### 🔔 模拟位置模式的后台保活 / Keep-alive in simulated-location mode
+- 原先选「模拟位置」会 `loc.stop()` 停掉 **前台服务**，切到后台后进程被冻结：
+  APRS-IS 连接断开、信标定时器停摆、通知也没有了
+- 新增 Android 前台服务 `keepalive` 模式：**不需要定位权限**、不注册任何
+  provider 监听（不额外耗电），仅保留前台服务 + WakeLock，让连接与定时器存活
+- **Simulated location used to kill the foreground service**, so the process got
+  frozen in the background: the APRS-IS link dropped, beacon timers stopped and
+  the notification disappeared. A new `keepalive` foreground-service mode needs
+  **no location permission** and registers no provider listeners (no extra drain)
+  while keeping the service and wake-lock alive.
+
+### 📝 站台备注默认清空 / Empty default station comment
+- 默认备注由 `'APRSlocus 移动台'` 改为**空**；老用户若从未改过该值，
+  升级后自动视为空（其余自定义备注不受影响）
+- **The default comment is now empty** (was `'APRSlocus 移动台'`). Existing users
+  who never changed it are migrated to empty; custom comments are untouched.
+
+### 🏷️ 版本号改由状态数据包上报 / Version tag moved to the status packet
+- 版本号/平台原先追加在**位置数据包**的备注末尾，会污染第三方地图上的备注显示
+- 现改由**状态数据包**上报：`>APRSlocus CONNECT vX.Y.Z 平台`
+- 解析端同时容忍新旧两种格式（可选 `CONNECT`），所以台站详情里的
+  「版本 / 平台」照旧显示；旧版客户端报的台站也不会读不到
+- **The version/platform tag used to be appended to the position packet comment**,
+  which polluted the comment shown on third-party maps. It is now reported in the
+  **status packet** (`>APRSlocus CONNECT vX.Y.Z platform`). The parser accepts both
+  new and old forms (optional `CONNECT`), so station-detail version/platform still
+  shows, including for stations running older builds.
+
+### ⏱️ 在线判定时长可自定义 / Configurable online window
+- 原先写死「5 分钟内上报为在线」。现新增设置项「在线判定时长（分钟）」，
+  范围 1–240，默认仍为 5
+- 实现上由 `Station.effectiveStatus` 读取统一的静态窗口，因此台站列表、
+  地图圆点、统计面板口径完全一致（不会出现「列表离线、地图在线」）
+- **Configurable online window**: previously hard-coded at 5 minutes; there is now
+  an "Online window (minutes)" setting (1–240, default 5). A single shared window
+  feeds `Station.effectiveStatus`, so the station list, map dots and stats panel
+  agree — no more "offline in the list, online on the map".
+
 ## [1.6.79] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第一批：设置页 / Hardcoded-Chinese cleanup, batch 1: settings

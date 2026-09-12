@@ -81,6 +81,15 @@ class LocationService : Service() {
         const val ACTION_TOGGLE_CONNECT = "com.aprslocus.action.TOGGLE_CONNECT"
         const val ACTION_EXIT = "com.aprslocus.action.EXIT"
         const val EXTRA_MODE = "location_mode"
+        const val MODE_GPS = "gps"
+        const val MODE_GPS_NETWORK = "gps_network"
+        /**
+         * 仅保活：不采集任何定位（用户在「模拟位置」模式下使用），
+         * 但保留前台服务 + WakeLock，使 APRS-IS 连接与信标定时器能在后台存活。
+         */
+        const val MODE_KEEPALIVE = "keepalive"
+        /** 是否处于仅保活模式（不启动任何 provider 监听） */
+        val keepAliveOnly: Boolean get() = mode == MODE_KEEPALIVE
         /** 定位模式：gps = 纯 GPS；gps_network = GPS + 网络辅助 */
         @Volatile var mode: String = "gps_network"
         /** 接受定位的精度上限（米）。超过则丢弃，避免基站/Wi-Fi 粗点引起漂移 */
@@ -99,7 +108,14 @@ class LocationService : Service() {
             if (mode == newMode) return
             mode = newMode
             instance?.let {
-                it.restartLocationUpdates()
+                if (newMode == MODE_KEEPALIVE) {
+                    // 切到仅保活：注销 provider 监听并停掉兜底轮询
+                    // （前台服务与 WakeLock 保留，供 APRS 连接保活）
+                    it.stopLocationUpdates()
+                    it.lastKnownPoll.removeCallbacks(it.lastKnownRunnable)
+                } else {
+                    it.restartLocationUpdates()
+                }
             }
         }
     }
@@ -147,7 +163,7 @@ class LocationService : Service() {
         }
         // 读取定位模式（Flutter 启动服务时传入）
         intent?.getStringExtra(EXTRA_MODE)?.let {
-            if (it == "gps" || it == "gps_network") mode = it
+            if (it == MODE_GPS || it == MODE_GPS_NETWORK || it == MODE_KEEPALIVE) mode = it
         }
         val notification = buildNotification("APRSlocus 运行中")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -164,10 +180,22 @@ class LocationService : Service() {
             }
         } catch (_: Exception) {}
         // 通知 Flutter 链路已通（证明服务活着）
-        LocationBus.emit(mapOf("status" to "定位服务已启动，等待定位…"))
-        startLocationUpdates()
-        // 定期用"最后已知位置"兜底，网络定位可用时也能出位置
-        lastKnownPoll.postDelayed(lastKnownRunnable, 10000L)
+        LocationBus.emit(
+            mapOf(
+                "status" to if (keepAliveOnly) "模拟位置 · 后台保活已启动"
+                else "定位服务已启动，等待定位…"
+            )
+        )
+        if (keepAliveOnly) {
+            // 仅保活：不注册任何 provider 监听（无谓耗电），也不启动
+            // "最后已知位置"轮询——位置完全由 Dart 侧的模拟坐标决定。
+            stopLocationUpdates()
+            lastKnownPoll.removeCallbacks(lastKnownRunnable)
+        } else {
+            startLocationUpdates()
+            // 定期用"最后已知位置"兜底，网络定位可用时也能出位置
+            lastKnownPoll.postDelayed(lastKnownRunnable, 10000L)
+        }
         return START_STICKY
     }
 

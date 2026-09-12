@@ -57,12 +57,34 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.79';
+  static const appVersion = '1.6.80';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
   String mySymbol = '>';
-  String myComment = 'APRSlocus 移动台';
+  // 备注默认**为空**（用户要求）：新装用户不会再被塞一段默认文字。
+  // 历史版本曾默认 'APRSlocus 移动台'，老用户升级后由 _loadPrefs 迁移清零。
+  String myComment = '';
+
+  /// 历史版本的内置默认备注。升级时若仍是这个值（用户从未改过）则视为空。
+  static const _legacyDefaultComment = 'APRSlocus 移动台';
+
+  /// 在线判定时长（分钟）：台站最后上报距今超过该值即视为离线。
+  /// 原先是写死的 5 分钟，现改为用户可配置（步进见设置页）。
+  int onlineWindowMin = 5;
+
+  /// 把在线判定时长同步到模型层（`Station.effectiveStatus` 读它）。
+  /// 加载设置与用户修改时都要调用，否则地图圆点等无上下文处仍按旧窗口判定。
+  void _applyOnlineWindow() {
+    Station.onlineWindowSec = onlineWindowMin * 60;
+  }
+
+  void setOnlineWindowMin(int v) {
+    onlineWindowMin = v.clamp(1, 240);
+    _applyOnlineWindow();
+    persist();
+    _notify();
+  }
 
   /// 完整呼号（含 SSID 后缀）
   String get myFullCall => mySsid == 0 ? myCall : '$myCall-$mySsid';
@@ -706,8 +728,8 @@ class AppState extends ChangeNotifier {
   void setUseSimLocation(bool v) {
     useSimLocation = v;
     if (v) {
-      // 切换到模拟：停止 GPS
-      loc.stop();
+      // 切换到模拟：不再需要 GPS，但需要前台服务保活（见 startTracking）
+      unawaited(startTracking());
       if (myLat == null || myLng == null) {
         // 无手动坐标时用默认演示坐标
         setMyPosition(39.9042, 116.4074);
@@ -916,6 +938,9 @@ class AppState extends ChangeNotifier {
       mySsid = p.getInt('mySsid') ?? mySsid;
       mySymbol = p.getString('mySymbol') ?? mySymbol;
       myComment = p.getString('myComment') ?? myComment;
+      // 迁移：老版本会把 'APRSlocus 移动台' 当作默认备注存下来。
+      // 用户从未改过它的话，现在视为「空」，以符合「备注默认清空」的预期。
+      if (myComment == _legacyDefaultComment) myComment = '';
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
       beaconAutoAsked = p.getBool('beaconAutoAsked') ?? beaconAutoAsked;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
@@ -954,6 +979,9 @@ class AppState extends ChangeNotifier {
       filterRadius = p.getInt('filterRadius') ?? filterRadius;
       maxStations = p.getInt('maxStations') ?? maxStations;
       maxPackets = p.getInt('maxPackets') ?? maxPackets;
+      onlineWindowMin = p.getInt('onlineWindowMin') ?? onlineWindowMin;
+      // 同步到模型层，供 effectiveStatus / 地图绘制使用
+      _applyOnlineWindow();
       maxTrackPts = p.getInt('maxTrackPts') ?? maxTrackPts;
       filterFollow = p.getBool('filterFollow') ?? filterFollow;
       // 按国家接收
@@ -1073,6 +1101,7 @@ class AppState extends ChangeNotifier {
           p.setInt('filterRadius', filterRadius);
           p.setInt('maxStations', maxStations);
           p.setInt('maxPackets', maxPackets);
+          p.setInt('onlineWindowMin', onlineWindowMin);
           p.setInt('maxTrackPts', maxTrackPts);
           p.setBool('filterFollow', filterFollow);
           p.setStringList('receiveCountries', receiveCountries);
@@ -1187,7 +1216,8 @@ class AppState extends ChangeNotifier {
       if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
       // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
       // body=APRSLocus CONNECT（区分于位置信标；不再用非标 “保持连接”）
-      final raw = '$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT $platformTag';
+      final raw =
+          '$myFullCall>APALOC,TCPIP*:>APRSlocus CONNECT v$appVersion $platformTag';
       aprs.send(raw);
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
@@ -1321,7 +1351,7 @@ class AppState extends ChangeNotifier {
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
-      aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT $platformTag');
+      aprs.send('$myFullCall>APALOC,TCPIP*:>APRSLocus CONNECT v$appVersion $platformTag');
       // 连接成功：若主界面已就绪且尚未问过“是否自动上报”，延迟触发询问。
       // 不在此置位 beaconAutoAsked —— 用户做出选择后才记位，避免漏弹后永久丢失。
       if (!beaconAutoAsked && beaconEnabled) {
@@ -1468,7 +1498,11 @@ class AppState extends ChangeNotifier {
   // ─── 定位 ───
   Future<bool> startTracking() async {
     if (useSimLocation) {
-      locStatus = '模拟位置';
+      // 模拟位置不读 GPS，但**仍要启动前台服务保活**：
+      // 否则切到后台后 APRS-IS 连接会被冻结、信标定时器停摆。
+      // 该调用不需要定位权限（Android 侧 keepalive 模式已豁免）。
+      await loc.startKeepAlive();
+      locStatus = '模拟位置 · 后台保活';
       _notify();
       return true;
     }
@@ -1621,9 +1655,8 @@ class AppState extends ChangeNotifier {
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());
     }
-    // 版本号始终追加在末尾
-    // 末尾带上运行平台，便于识别端侧（同一份报文也供第三方解析）
-    parts.add('APRSlocus v$appVersion $platformTag');
+    // 版本号/平台**不再**放在位置数据包备注里（会污染第三方地图上的备注），
+    // 改由状态数据包上报：`>APRSlocus CONNECT vX.Y.Z 平台`。
     return parts.join(' ');
   }
 
@@ -1720,6 +1753,10 @@ class AppState extends ChangeNotifier {
         // 转发路径作为附加信息展示，不覆盖原 info
         info = '$info  ·  [via $path]';
       }
+
+      // APRSlocus 状态包：>APRSlocus CONNECT vX.Y.Z 平台
+      // （版本号自 v1.6.80 起从位置包移到这里，见 _mergeApStatus）
+      if (body.startsWith('>')) _mergeApStatus(src, body);
 
       // FMO 状态包：>地区,状态,在线/峰值,描述（路径含 APFMO）
       if (body.startsWith('>') && line.contains('APFMO')) {
@@ -2098,7 +2135,45 @@ class AppState extends ChangeNotifier {
   /// 待合并的 FMO 状态信息（位置包到达前先缓存）
   final Map<String, Map<String, String>> _pendingFmo = {};
 
+  /// APRSlocus 状态包缓存：呼号 → {版本, 平台}。
+  ///
+  /// 自 v1.6.80 起版本号/平台由**状态包**上报
+  /// （`>APRSlocus CONNECT vX.Y.Z 平台`），而不再是位置包的备注。
+  /// 位置包里拿不到这些信息，所以这里缓存下来，在 `_upsertStation`
+  /// 合并到台站的 aprslocus 字段，保证第三方台站的版本照样能显示。
+  final Map<String, Map<String, String>> _apStatusCache = {};
+
   /// 解析 FMO 状态包体 `>地区,状态,在线/峰值:29/54,描述`
+  /// 解析 APRSlocus 状态包（`>APRSlocus CONNECT vX.Y.Z 平台`），
+  /// 缓存版本/平台并合入已有台站。
+  ///
+  /// 位置包旧格式 `APRSlocus v1.2.6 Win` 仍由 `_upsertStation` 解析，
+  /// 两个正则都容忍可选的 `CONNECT`，因此新旧版本互通。
+  void _mergeApStatus(String call, String body) {
+    final up = body.toUpperCase();
+    if (!up.contains('APRSLOCUS') && !up.contains('APOLOCUS')) return;
+    final info = <String, String>{'软件': 'APRSlocus'};
+    final vm = RegExp(r'APRSLOCUS(?:\s+CONNECT)?\s*v?(\d[\d.]*)',
+            caseSensitive: false)
+        .firstMatch(body);
+    if (vm != null) info['版本'] = 'v${vm.group(1)}';
+    final pm = RegExp(
+            r'APRSLOCUS(?:\s+CONNECT)?\s*v?[\d.]+\s+(Win|Mac|iOS|Android|Linux|Web|Fuchsia)',
+            caseSensitive: false)
+        .firstMatch(body);
+    if (pm != null) {
+      final raw = pm.group(1)!;
+      info['平台'] = raw.toLowerCase() == 'ios'
+          ? 'iOS'
+          : raw[0].toUpperCase() + raw.substring(1).toLowerCase();
+    }
+    _apStatusCache[call] = info;
+    final idx = stations.indexWhere((s) => s.call == call);
+    if (idx >= 0) {
+      stations[idx].aprslocus = {...?stations[idx].aprslocus, ...info};
+    }
+  }
+
   Map<String, String>? _parseFmoStatus(String body) {
     final text = body.substring(1).trim();
     if (text.isEmpty) return null;
@@ -2211,14 +2286,14 @@ class AppState extends ChangeNotifier {
       apInfo = <String, String>{};
       // 版本：APRSlocus v1.2.6
       final vm = RegExp(
-        r'APRSLOCUS\s*v?(\d[\d.]*)',
+        r'APRSLOCUS(?:\s+CONNECT)?\s*v?(\d[\d.]*)',
         caseSensitive: false,
       ).firstMatch(p.comment!);
       if (vm != null) apInfo['版本'] = 'v${vm.group(1)}';
       apInfo['软件'] = 'APRSlocus';
       // 平台：APRSlocus v1.6.74 Win / iOS / Mac / Android / Linux / Web
       final pm = RegExp(
-        r'APRSLOCUS\s*v?[\d.]+\s+(Win|Mac|iOS|Android|Linux|Web|Fuchsia)',
+        r'APRSLOCUS(?:\s+CONNECT)?\s*v?[\d.]+\s+(Win|Mac|iOS|Android|Linux|Web|Fuchsia)',
         caseSensitive: false,
       ).firstMatch(p.comment!);
       if (pm != null) {
@@ -2252,6 +2327,10 @@ class AppState extends ChangeNotifier {
     } else if (isFmo) {
       fmoInfo = <String, String>{'类型': 'FMO'};
     }
+    // 合并此前由状态包缓存的版本/平台（自 v1.6.80 起版本号随状态包上报，
+    // 见 _mergeApStatus），否则其它 APRSlocus 台站的版本会显示不出来。
+    final cachedAp = _apStatusCache[call];
+    if (cachedAp != null) apInfo = {...?apInfo, ...cachedAp};
     final idx = stations.indexWhere((s) => s.call == call);
     final now = DateTime.now();
     if (idx >= 0) {

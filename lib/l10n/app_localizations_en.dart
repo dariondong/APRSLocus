@@ -3374,6 +3374,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)';
 
   @override
+  String get onlineWindow => 'Online window (minutes)';
+
+  @override
+  String get onlineWindowTip =>
+      'A station with no report for longer than this is treated as offline (default 5 minutes)';
+
+  @override
   String get chatRecords => 'Chat history';
 
   @override

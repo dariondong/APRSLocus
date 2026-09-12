@@ -26,10 +26,16 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "startService" -> {
-                    if (!hasPermissions()) {
+                    val mode = call.argument<String>("mode") ?: "gps_network"
+                    if (mode == LocationService.MODE_KEEPALIVE) {
+                        // 模拟位置模式：不需要定位权限，但**仍需前台服务**，
+                        // 否则应用一切到后台就会被冻结/回收：
+                        // APRS-IS 连接断开、信标定时器停摆、地图不再刷新。
+                        startLocationService(mode)
+                        result.success(true)
+                    } else if (!hasPermissions()) {
                         result.error("NO_PERMISSION", "缺少定位权限", null)
                     } else {
-                        val mode = call.argument<String>("mode") ?: "gps_network"
                         startLocationService(mode)
                         result.success(true)
                     }
@@ -197,7 +203,7 @@ class MainActivity : FlutterActivity() {
         return fine || coarse
     }
 
-    private fun startLocationService(mode: String = "gps_network") {
+    private fun startLocationService(mode: String = LocationService.MODE_GPS_NETWORK) {
         val intent = Intent(this, LocationService::class.java).apply {
             putExtra(LocationService.EXTRA_MODE, mode)
         }

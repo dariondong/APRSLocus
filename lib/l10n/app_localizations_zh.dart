@@ -3281,6 +3281,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get maxTrackPtsTip => '每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）';
 
   @override
+  String get onlineWindow => '在线判定时长（分钟）';
+
+  @override
+  String get onlineWindowTip => '台站最后上报超过该时长即视为离线（默认 5 分钟）';
+
+  @override
   String get chatRecords => '聊天记录';
 
   @override
@@ -6685,6 +6691,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get maxTrackPtsTip => '每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）';
+
+  @override
+  String get onlineWindow => '在線判定時長（分鐘）';
+
+  @override
+  String get onlineWindowTip => '台站最後上報超過該時長即視為離線（預設 5 分鐘）';
 
   @override
   String get chatRecords => '聊天記錄';

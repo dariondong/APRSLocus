@@ -1670,6 +1670,8 @@
   "maxPacketsTip": "数据包页面保留的历史条数（默认 2000，提高会占用更多内存）",
   "maxTrackPts": "轨迹点数上限",
   "maxTrackPtsTip": "每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）",
+  "onlineWindow": "在线判定时长（分钟）",
+  "onlineWindowTip": "台站最后上报超过该时长即视为离线（默认 5 分钟）",
   "chatRecords": "聊天记录",
   "chatRecordsCleared": "聊天记录已清空",
   "deviceCat": "设备",

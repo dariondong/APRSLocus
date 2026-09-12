@@ -84,11 +84,20 @@ class Station {
     return '${lastHeard.year}-${lastHeard.month.toString().padLeft(2, '0')}';
   }
 
-  /// 有效状态：5 分钟内上报为在线（保留移动/静止），否则为离线
+  /// 在线判定时长（秒）：最后上报距今 ≥ 该值即判为离线。
+  ///
+  /// 由 `AppState` 按用户设置写入（见 `setOnlineWindowMin`）。
+  /// 这里用静态字段而不是构造参数，是因为 `effectiveStatus` 必须在
+  /// **没有 BuildContext / AppState** 的场合也能正确判定——例如地图的
+  /// CustomPainter 在逐点绘制时拿不到任何 widget 上下文。若改由调用方传参，
+  /// 很容易漏传，出现「列表已显示离线、地图圆点还是在线」的不一致。
+  static int onlineWindowSec = 300;
+
+  /// 有效状态：在 [onlineWindowSec] 内上报过即为在线（保留移动/静止），否则离线。
   St get effectiveStatus {
     final d = DateTime.now().difference(lastHeard);
-    if (d.inMinutes >= 5) return St.offline;
-    // 5 分钟内：保留移动/静止；原本在线/其他归为在线
+    if (d.inSeconds >= onlineWindowSec) return St.offline;
+    // 窗口内：保留移动/静止；原本在线/其他归为在线
     if (status == St.moving) return St.moving;
     if (status == St.stopped) return St.stopped;
     return St.online;

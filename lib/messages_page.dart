@@ -522,54 +522,67 @@ class _MessagesPageState extends State<MessagesPage> {
         ? S.of(context).sendToCallHint(_selected)
         : S.of(context).selectMessageReply;
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: C.border)),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _input,
-              focusNode: _inputFocus,
-              textInputAction: TextInputAction.send,
-              style: ts(13),
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: ts(13, c: C.grey),
-                filled: true,
-                fillColor: C.bgSoft,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+      // 输入栏原先所有元素紧紧挤在一起（内边距 12、输入框与发送键间距 8），
+      // 且底部没有留安全区，在手势导航的机型上与系统导航条贴死。
+      // 这里：① 包一层安全区；② 加大内边距与间距；③ 输入框加描边，
+      // 让「输入框」和「发送键」成为两个可分辨的独立控件。
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _input,
+                  focusNode: _inputFocus,
+                  textInputAction: TextInputAction.send,
+                  style: ts(13),
+                  decoration: InputDecoration(
+                    hintText: hintText,
+                    hintStyle: ts(13, c: C.grey),
+                    filled: true,
+                    fillColor: C.bgSoft,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: C.border, width: 0.6),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: C.border, width: 0.6),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                  ),
+                  onSubmitted: (_) => _send(),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 11,
+              ),
+              const SizedBox(width: 10),
+              GestureDetector(
+                onTap: _send,
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: C.blue,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: softShadow(blur: 12, alpha: 0.2),
+                  ),
+                  child: const Icon(
+                    Icons.send_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
-              onSubmitted: (_) => _send(),
-            ),
+            ],
           ),
-          SizedBox(width: 8),
-          GestureDetector(
-            onTap: _send,
-            child: Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: C.blue,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: softShadow(blur: 12, alpha: 0.2),
-              ),
-              child: const Icon(
-                Icons.send_rounded,
-                color: Colors.white,
-                size: 18,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
