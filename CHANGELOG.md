@@ -4,22 +4,24 @@
 
 ### 🌐 中文硬编码清理 · 第一批：设置页 / Hardcoded-Chinese cleanup, batch 1: settings
 
-- 设置页 **73 处**界面文案改为走 l10n，覆盖「电台身份 / 显示信息 / 定位来源 /
+- 设置页 **70 处**界面文案改为走 l10n，覆盖「电台身份 / 显示信息 / 定位来源 /
   信标上报 / 数据维护 / 高级设置」等区块的标题、按钮、提示与开关说明
 - 这批**只替换「ARB 里已存在同名键」的字面量**，因此**零新增翻译**、无回归风险
-- 74 处延续项：符号名表、带插值的文案、以及位于 `const` 表达式内的文案，
-  需新增文案或改动结构，将在后续版本分批处理
+- 该文件仍有 **93 处**待处理：符号名表（约 150 项，位于顶层 `const` 表中，
+  需先改结构才能取到 `context`）、带插值的模板文案、无现成键的文案，
+  以及 3 处 `const` 上下文，将在后续版本分批处理
 - 做法：逐行定点替换 + 自动校验（比较语境检测 / 键存在性 / 括号配平 /
   残留检测），避免误改「中文串当键/当状态」的写法
 
-- **73** hardcoded UI strings in the settings pages now go through l10n
+- **70** hardcoded UI strings in the settings pages now go through l10n
   (section titles, buttons, hints and switch captions in the station, display,
   beacon, data-maintenance and advanced pages).
 - Only literals whose text already had a matching ARB key were swapped, so this
   batch adds **zero new translations** and carries no regression risk.
-- 74 sites remain (symbol-name tables, interpolated strings, and literals inside
-  `const` expressions); they need new copy or a structural change and will ship
-  in follow-up releases.
+- **93** sites in this file remain: the symbol-name tables (which live in
+  top-level `const` lists and therefore have no `context` in scope, so they need a
+  structural change first), interpolated strings, and 3 literals inside `const`
+  contexts; they will ship in follow-up releases.
 - Done with per-line targeted replacement plus automated checks
   (comparison-context detection, key existence, bracket balance, leftover
   detection) so that "Chinese string used as a key/state" patterns are never

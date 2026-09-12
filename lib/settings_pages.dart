@@ -564,7 +564,7 @@ const _symCategories = <(String, List<(String, String, IconData)>)>[
     ]),
     ('气象 / 自然', [
       ('W', '气象站', Icons.cloud_rounded),
-      ('_', S.of(context).weather, Icons.cloud_rounded),
+      ('_', '气象', Icons.cloud_rounded),
       ('w', '供水站', Icons.water_drop_rounded),
       ('@', '飓风', Icons.cyclone_rounded),
       ('=', '火车', Icons.train_rounded),
@@ -602,9 +602,9 @@ const _symCategories = <(String, List<(String, String, IconData)>)>[
       ('&', 'HF 网关', Icons.satellite_alt_rounded),
       ('?', '文件服务器', Icons.dns_rounded),
       ('\$', '电话', Icons.call_rounded),
-      ('q', S.of(context).grid, Icons.grid_4x4_rounded),
+      ('q', '网格', Icons.grid_4x4_rounded),
       ('x', 'X/Unix', Icons.terminal_rounded),
-      ('i', S.of(context).featureFmo, Icons.radio_rounded),
+      ('i', 'FMO 台站', Icons.radio_rounded),
     ]),
   ];
 const _smartQuickSymbols = <(String, String, IconData)>[
