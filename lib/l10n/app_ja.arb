@@ -1371,5 +1371,17 @@
   "unfavorite": "お気に入りを解除",
   "copyCallsign": "コールサインをコピー",
   "callsignCopied": "コールサインをコピーしました",
-  "stationDeleted": "局を削除しました"
+  "stationDeleted": "局を削除しました",
+  "exportAdif": "ADIF をエクスポート",
+  "exportAdifDesc": "会話を ADIF ログファイルとしてエクスポートします。Log4OM や N3FJP などのログソフトに読み込めます",
+  "export": "エクスポート",
+  "adifHint": "各レコードにはコールサインと最初のメッセージ時刻（UTC）のみを含みます。モードとバンドは含みません",
+  "adifNoSelection": "エクスポートする会話を選択してください",
+  "adifExported": "{n} 件のレコードをエクスポートしました",
+  "adifExportFailed": "エクスポートに失敗しました。ストレージの権限や空き容量を確認してください",
+  "adifSavedTo": "保存先：{path}",
+  "adifCopyPath": "パスをコピー",
+  "adifPathCopied": "パスをコピーしました",
+  "chatShortLabel": "個別",
+  "adifLogFile": "会話をログファイルに保存"
 }

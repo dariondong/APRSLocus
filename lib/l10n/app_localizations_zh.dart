@@ -3900,6 +3900,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get stationDeleted => '已删除台站';
+
+  @override
+  String get exportAdif => '导出 ADIF';
+
+  @override
+  String get exportAdifDesc => '把会话导出为 ADIF 日志文件，可导入 Log4OM、N3FJP 等日志软件';
+
+  @override
+  String get export => '导出';
+
+  @override
+  String get adifHint => '每条记录只含呼号与首条消息时间（UTC），不含模式与频段';
+
+  @override
+  String get adifNoSelection => '请先选择要导出的会话';
+
+  @override
+  String adifExported(int n) {
+    return '已导出 $n 条记录';
+  }
+
+  @override
+  String get adifExportFailed => '导出失败，请检查存储权限或剩余空间';
+
+  @override
+  String adifSavedTo(String path) {
+    return '已保存到：$path';
+  }
+
+  @override
+  String get adifCopyPath => '复制路径';
+
+  @override
+  String get adifPathCopied => '路径已复制';
+
+  @override
+  String get chatShortLabel => '单聊';
+
+  @override
+  String get adifLogFile => '会话导出为日志文件';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -7798,4 +7838,44 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get stationDeleted => '已刪除台站';
+
+  @override
+  String get exportAdif => '匯出 ADIF';
+
+  @override
+  String get exportAdifDesc => '把會話匯出為 ADIF 日誌檔案，可匯入 Log4OM、N3FJP 等日誌軟體';
+
+  @override
+  String get export => '匯出';
+
+  @override
+  String get adifHint => '每筆記錄只含呼號與首則訊息時間（UTC），不含模式與頻段';
+
+  @override
+  String get adifNoSelection => '請先選擇要匯出的會話';
+
+  @override
+  String adifExported(int n) {
+    return '已匯出 $n 筆記錄';
+  }
+
+  @override
+  String get adifExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';
+
+  @override
+  String adifSavedTo(String path) {
+    return '已儲存至：$path';
+  }
+
+  @override
+  String get adifCopyPath => '複製路徑';
+
+  @override
+  String get adifPathCopied => '路徑已複製';
+
+  @override
+  String get chatShortLabel => '單聊';
+
+  @override
+  String get adifLogFile => '會話匯出為日誌檔案';
 }

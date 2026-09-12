@@ -1287,5 +1287,17 @@
   "unfavorite": "Remove from favorites",
   "copyCallsign": "Copy callsign",
   "callsignCopied": "Callsign copied",
-  "stationDeleted": "Station deleted"
+  "stationDeleted": "Station deleted",
+  "exportAdif": "Export ADIF",
+  "exportAdifDesc": "Export conversations as an ADIF log file, importable into Log4OM, N3FJP and similar",
+  "export": "Export",
+  "adifHint": "Each record contains only the callsign and the first message time (UTC); mode and band are omitted",
+  "adifNoSelection": "Select at least one conversation to export",
+  "adifExported": "Exported {n} records",
+  "adifExportFailed": "Export failed — check storage permission or free space",
+  "adifSavedTo": "Saved to: {path}",
+  "adifCopyPath": "Copy path",
+  "adifPathCopied": "Path copied",
+  "chatShortLabel": "Chat",
+  "adifLogFile": "Export chats as a log file"
 }

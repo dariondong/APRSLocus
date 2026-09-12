@@ -4006,4 +4006,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stationDeleted => 'Station deleted';
+
+  @override
+  String get exportAdif => 'Export ADIF';
+
+  @override
+  String get exportAdifDesc =>
+      'Export conversations as an ADIF log file, importable into Log4OM, N3FJP and similar';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get adifHint =>
+      'Each record contains only the callsign and the first message time (UTC); mode and band are omitted';
+
+  @override
+  String get adifNoSelection => 'Select at least one conversation to export';
+
+  @override
+  String adifExported(int n) {
+    return 'Exported $n records';
+  }
+
+  @override
+  String get adifExportFailed =>
+      'Export failed — check storage permission or free space';
+
+  @override
+  String adifSavedTo(String path) {
+    return 'Saved to: $path';
+  }
+
+  @override
+  String get adifCopyPath => 'Copy path';
+
+  @override
+  String get adifPathCopied => 'Path copied';
+
+  @override
+  String get chatShortLabel => 'Chat';
+
+  @override
+  String get adifLogFile => 'Export chats as a log file';
 }

@@ -1,5 +1,46 @@
 # 更新日志
 
+## [1.6.90] - 2026-09-12
+
+### 📤 新增「导出 ADIF」（设置页 → 在「关于」上方） / ADIF export (Settings → above About)
+- 设置页新增 **「导出 ADIF」** 入口，位于 **「关于」上方**
+- 进入后可**勾选会话**（群聊 + 单聊），支持**全选 / 取消全选**，点「导出」生成 `.adi` 文件
+- 每条记录只写 **呼号 + 时间**（CALL / QSO_DATE / TIME_ON），**不写模式与频段** ——
+  APRS 的频段 App 无从得知，写入错误信息比留空更麻烦；导入后自行补即可
+- 时间取该会话**首条消息**时刻，且按 ADIF 规范写作 **UTC**
+- 只列出**有消息的会话**：ADIF 每条记录都要求通联时间，从未通联过的收藏联系人拿不到时间，
+  列出来只会导出一条时间错误的日志，所以直接不列
+- 兼容 ADIF 3.x（`<名称:长度>值`，长度为 **UTF-8 字节数**），可直接导入 Log4OM、N3FJP 等日志软件
+
+- **Settings → Export ADIF**, placed **above About**. Tick conversations (group + 1:1), use
+  **select all / deselect all**, then export a `.adi` file. Each record contains **only the
+  callsign and time** (CALL / QSO_DATE / TIME_ON) — **no mode or band**, because the band is
+  not knowable from APRS and wrong data is worse than none. The time is the conversation's
+  **first message**, written in **UTC** per the ADIF spec. Only conversations **with
+  messages** are listed, since ADIF requires a contact time. Compliant with ADIF 3.x
+  (`<NAME:len>value`, len = **UTF-8 byte count**) and importable into Log4OM, N3FJP, etc.
+
+### 💾 文件保存位置 / Where the file is saved
+- **Android**：「下载」目录。Android 10 及以上走 MediaStore，**无需任何存储权限**；
+  Android 9 及以下写入应用外部目录（同样免权限，且该系统版本下可被文件管理器直接看到）
+- **Windows / 桌面**：写入「文档」目录
+- 保存后在页内显示完整路径，并提供「**复制路径**」
+
+- **Android**: the **Downloads** folder. On Android 10+ this uses MediaStore and needs
+  **no storage permission at all**; on Android 9 and below it writes to the app's external
+  folder (also permission-free, and browsable by file managers on those versions).
+- **Windows / desktop**: the **Documents** folder. The full path is shown afterwards,
+  with a **Copy path** button.
+
+### 🧪 回归测试 / Regression tests
+- 新增 `test/adif_test.dart`（14 项）：钉住 ADIF 最易错且**不会报错、只会静默解析错乱**的两点 ——
+  **字段长度是 UTF-8 字节数（非字符数）**、**日期时间必须是 UTC**；并在 UTC 与
+  非 UTC 时区下各跑一遍验证
+
+- Added `test/adif_test.dart` (14 tests) pinning ADIF's two silent-failure traps:
+  **field lengths are UTF-8 byte counts (not character counts)** and **timestamps must be
+  UTC**; verified under both UTC and a non-UTC timezone.
+
 ## [1.6.89] - 2026-09-12
 
 ### 💬 会话管理：对齐与布局修正 / Chat management: alignment & layout fixes

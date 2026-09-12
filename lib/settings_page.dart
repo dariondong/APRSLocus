@@ -13,6 +13,7 @@ import 'exit_app.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'settings_pages.dart';
+import 'export_adif_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final AppState state;
@@ -217,6 +218,58 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(height: 12),
                 // QQ 交流群
                 _qqBanner(),
+                SizedBox(height: 12),
+                // 导出 ADIF（按需求置于「关于」上方）
+                GestureDetector(
+                  onTap: () => _push(ExportAdifPage(state: widget.state)),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF16A34A), Color(0xFF0B7A37)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: const Icon(
+                            Icons.file_download_rounded,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).exportAdif,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).adifLogFile,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF98A2B8),
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(height: 12),
                 // 关于
                 GestureDetector(

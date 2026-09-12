@@ -3933,4 +3933,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get stationDeleted => '局を削除しました';
+
+  @override
+  String get exportAdif => 'ADIF をエクスポート';
+
+  @override
+  String get exportAdifDesc =>
+      '会話を ADIF ログファイルとしてエクスポートします。Log4OM や N3FJP などのログソフトに読み込めます';
+
+  @override
+  String get export => 'エクスポート';
+
+  @override
+  String get adifHint => '各レコードにはコールサインと最初のメッセージ時刻（UTC）のみを含みます。モードとバンドは含みません';
+
+  @override
+  String get adifNoSelection => 'エクスポートする会話を選択してください';
+
+  @override
+  String adifExported(int n) {
+    return '$n 件のレコードをエクスポートしました';
+  }
+
+  @override
+  String get adifExportFailed => 'エクスポートに失敗しました。ストレージの権限や空き容量を確認してください';
+
+  @override
+  String adifSavedTo(String path) {
+    return '保存先：$path';
+  }
+
+  @override
+  String get adifCopyPath => 'パスをコピー';
+
+  @override
+  String get adifPathCopied => 'パスをコピーしました';
+
+  @override
+  String get chatShortLabel => '個別';
+
+  @override
+  String get adifLogFile => '会話をログファイルに保存';
 }

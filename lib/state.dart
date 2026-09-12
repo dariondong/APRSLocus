@@ -59,7 +59,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.89';
+  static const appVersion = '1.6.90';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2630,6 +2630,35 @@ class AppState extends ChangeNotifier {
   }
 
   // ─── 消息 ───
+  /// 会话列表的「单聊」部分：消息中出现过的对方呼号 + 收藏/手动联系人。
+  /// （群聊另见 [chatGroups]，群呼号不算单聊。）
+  ///
+  /// 抽成静态纯函数的目的是让**会话列表**与**ADIF 导出**共用同一套规则：
+  /// 这类判定一旦被复制成两份就会漂移（APRSlocus 台站识别就这么翻过车）。
+  static List<String> partnersOf(
+    List<AprsMsg> messages,
+    List<ChatGroup> groups,
+    List<Station> stations,
+  ) {
+    final s = <String>{};
+    for (final m in messages) {
+      // 排除群聊消息（有 groupId 或收发件人是群呼号）
+      if (m.groupId != null) continue;
+      final isGroupCall = groups.any(
+        (g) =>
+            g.groupCall.toUpperCase() == m.to.toUpperCase() ||
+            g.groupCall.toUpperCase() == m.from.toUpperCase(),
+      );
+      if (isGroupCall) continue;
+      s.add(m.sent ? m.to : m.from);
+    }
+    // 收藏 / 手动联系人也显示在会话列表
+    for (final st in stations) {
+      if (st.favorite || st.manual) s.add(st.call);
+    }
+    return s.toList();
+  }
+
   /// 清空全部聊天记录
   void clearMessages() {
     messages.clear();

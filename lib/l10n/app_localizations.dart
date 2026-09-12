@@ -7062,6 +7062,78 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'已删除台站'**
   String get stationDeleted;
+
+  /// No description provided for @exportAdif.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出 ADIF'**
+  String get exportAdif;
+
+  /// No description provided for @exportAdifDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'把会话导出为 ADIF 日志文件，可导入 Log4OM、N3FJP 等日志软件'**
+  String get exportAdifDesc;
+
+  /// No description provided for @export.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出'**
+  String get export;
+
+  /// No description provided for @adifHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'每条记录只含呼号与首条消息时间（UTC），不含模式与频段'**
+  String get adifHint;
+
+  /// No description provided for @adifNoSelection.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先选择要导出的会话'**
+  String get adifNoSelection;
+
+  /// No description provided for @adifExported.
+  ///
+  /// In zh, this message translates to:
+  /// **'已导出 {n} 条记录'**
+  String adifExported(int n);
+
+  /// No description provided for @adifExportFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出失败，请检查存储权限或剩余空间'**
+  String get adifExportFailed;
+
+  /// No description provided for @adifSavedTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存到：{path}'**
+  String adifSavedTo(String path);
+
+  /// No description provided for @adifCopyPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制路径'**
+  String get adifCopyPath;
+
+  /// No description provided for @adifPathCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'路径已复制'**
+  String get adifPathCopied;
+
+  /// No description provided for @chatShortLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'单聊'**
+  String get chatShortLabel;
+
+  /// No description provided for @adifLogFile.
+  ///
+  /// In zh, this message translates to:
+  /// **'会话导出为日志文件'**
+  String get adifLogFile;
 }
 
 class _AppLocalizationsDelegate

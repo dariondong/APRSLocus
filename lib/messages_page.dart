@@ -99,23 +99,13 @@ class _MessagesPageState extends State<MessagesPage> {
         '${st.messages.length}|${st.messages.isEmpty ? 0 : st.messages.first.time.millisecondsSinceEpoch}|${st.stationsVersion}|${st.chatGroups.length}';
     if (key == _partnersKey) return _partnersCache;
     _partnersKey = key;
-    final s = <String>{};
-    for (final m in st.messages) {
-      // 排除群聊消息（有 groupId 或收件人是群呼号）
-      if (m.groupId != null) continue;
-      final isGroupCall = st.chatGroups.any(
-        (g) =>
-            g.groupCall.toUpperCase() == m.to.toUpperCase() ||
-            g.groupCall.toUpperCase() == m.from.toUpperCase(),
-      );
-      if (isGroupCall) continue;
-      s.add(m.sent ? m.to : m.from);
-    }
-    // 收藏/手动联系人也显示在会话列表
-    for (final st2 in st.stations) {
-      if (st2.favorite || st2.manual) s.add(st2.call);
-    }
-    _partnersCache = s.toList();
+    // 规则集中在 AppState.partnersOf：会话列表与 ADIF 导出共用，避免两处漂移。
+    // （这里仍保留上面的 key 缓存 —— 会话页重建很频繁，不能每次全量扫描。）
+    _partnersCache = AppState.partnersOf(
+      st.messages,
+      st.chatGroups,
+      st.stations,
+    );
     return _partnersCache;
   }
 

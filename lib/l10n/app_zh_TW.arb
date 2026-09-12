@@ -1875,5 +1875,17 @@
   "unfavorite": "取消收藏",
   "copyCallsign": "複製呼號",
   "callsignCopied": "呼號已複製",
-  "stationDeleted": "已刪除台站"
+  "stationDeleted": "已刪除台站",
+  "exportAdif": "匯出 ADIF",
+  "exportAdifDesc": "把會話匯出為 ADIF 日誌檔案，可匯入 Log4OM、N3FJP 等日誌軟體",
+  "export": "匯出",
+  "adifHint": "每筆記錄只含呼號與首則訊息時間（UTC），不含模式與頻段",
+  "adifNoSelection": "請先選擇要匯出的會話",
+  "adifExported": "已匯出 {n} 筆記錄",
+  "adifExportFailed": "匯出失敗，請檢查儲存權限或剩餘空間",
+  "adifSavedTo": "已儲存至：{path}",
+  "adifCopyPath": "複製路徑",
+  "adifPathCopied": "路徑已複製",
+  "chatShortLabel": "單聊",
+  "adifLogFile": "會話匯出為日誌檔案"
 }

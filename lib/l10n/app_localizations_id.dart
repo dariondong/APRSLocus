@@ -4018,4 +4018,47 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get stationDeleted => 'Stasiun dihapus';
+
+  @override
+  String get exportAdif => 'Ekspor ADIF';
+
+  @override
+  String get exportAdifDesc =>
+      'Ekspor obrolan sebagai berkas log ADIF, dapat diimpor ke Log4OM, N3FJP, dan sejenisnya';
+
+  @override
+  String get export => 'Ekspor';
+
+  @override
+  String get adifHint =>
+      'Setiap catatan hanya berisi tanda panggil dan waktu pesan pertama (UTC); mode dan band tidak disertakan';
+
+  @override
+  String get adifNoSelection => 'Pilih setidaknya satu obrolan untuk diekspor';
+
+  @override
+  String adifExported(int n) {
+    return '$n catatan diekspor';
+  }
+
+  @override
+  String get adifExportFailed =>
+      'Ekspor gagal — periksa izin penyimpanan atau ruang kosong';
+
+  @override
+  String adifSavedTo(String path) {
+    return 'Disimpan ke: $path';
+  }
+
+  @override
+  String get adifCopyPath => 'Salin jalur';
+
+  @override
+  String get adifPathCopied => 'Jalur disalin';
+
+  @override
+  String get chatShortLabel => 'Pribadi';
+
+  @override
+  String get adifLogFile => 'Ekspor obrolan ke berkas log';
 }

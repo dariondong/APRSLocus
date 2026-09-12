@@ -1,10 +1,13 @@
 package com.aprslocus.aprslocus
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
@@ -141,6 +144,62 @@ class MainActivity : FlutterActivity() {
                 }
                 else -> result.notImplemented()
             }
+        }
+
+        // 导出通道：把文本文件写入「下载」目录（供 ADIF 导出使用）
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/export").setMethodCallHandler { call, result ->
+            when (call.method) {
+                "saveToDownloads" -> {
+                    val filename = call.argument<String>("filename") ?: "export.adi"
+                    val content = call.argument<String>("content") ?: ""
+                    val path = saveToDownloads(filename, content)
+                    if (path == null) {
+                        result.error("SAVE_FAILED", "保存失败", null)
+                    } else {
+                        result.success(path)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    /// 把文本写入「下载」目录，返回用户可见的路径；失败返回 null。
+    ///
+    /// - Android 10（API 29）及以上：走 MediaStore，**无需任何存储权限**
+    ///   （应用向 Downloads 集合插入自己的内容不需要 WRITE_EXTERNAL_STORAGE）。
+    /// - Android 9 及以下：写入应用的外部私有目录（同样无需权限；
+    ///   在那些系统版本上该目录可被文件管理器直接浏览）。
+    private fun saveToDownloads(filename: String, content: String): String? {
+        // 文件名来自 Dart，做一次净化，避免路径穿越
+        val safe = filename.replace('/', '_').replace('\\', '_')
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, safe)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                    put(
+                        MediaStore.MediaColumns.RELATIVE_PATH,
+                        Environment.DIRECTORY_DOWNLOADS
+                    )
+                }
+                val resolver = contentResolver
+                val uri = resolver.insert(
+                    MediaStore.Downloads.EXTERNAL_CONTENT_URI, values
+                ) ?: return null
+                resolver.openOutputStream(uri)?.use { out ->
+                    out.write(content.toByteArray(Charsets.UTF_8))
+                    out.flush()
+                } ?: return null
+                "Download/$safe"
+            } else {
+                val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
+                val f = File(dir, safe)
+                f.writeText(content, Charsets.UTF_8)
+                f.absolutePath
+            }
+        } catch (_: Exception) {
+            null
         }
     }
 

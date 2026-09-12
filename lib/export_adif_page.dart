@@ -1,0 +1,476 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'adif.dart';
+import 'models.dart';
+import 'state.dart';
+import 'theme.dart';
+import 'widgets.dart';
+
+/// ADIF 导出页：勾选会话 → 生成 `.adi` 文件。
+///
+/// 只有**至少有一条消息**的会话才会列出 —— ADIF 的每条记录都要求 QSO_DATE /
+/// TIME_ON，而没有消息的会话（例如仅收藏、从未通联过的台站）拿不到通联时间，
+/// 硬导会产出时间错误的日志。所以这里直接不列，而不是列出来再失败。
+class ExportAdifPage extends StatefulWidget {
+  final AppState state;
+  const ExportAdifPage({super.key, required this.state});
+  @override
+  State<ExportAdifPage> createState() => _ExportAdifPageState();
+}
+
+class _ExportAdifPageState extends State<ExportAdifPage> {
+  static const _channel = MethodChannel('com.aprslocus/export');
+
+  final Set<String> _selCalls = {};
+  final Set<String> _selGroups = {};
+  bool _busy = false;
+  String? _lastPath;
+
+  AppState get st => widget.state;
+
+  /// 该单聊会话的首条消息时间（无消息返回 null）
+  DateTime? _firstTimeOfCall(String call) {
+    final c = call.toUpperCase();
+    DateTime? t;
+    for (final m in st.messages) {
+      if (m.groupId != null) continue;
+      // 群呼号不算单聊
+      final isGroup = st.chatGroups.any(
+        (g) =>
+            g.groupCall.toUpperCase() == m.to.toUpperCase() ||
+            g.groupCall.toUpperCase() == m.from.toUpperCase(),
+      );
+      if (isGroup) continue;
+      if (m.from.toUpperCase() != c && m.to.toUpperCase() != c) continue;
+      if (t == null || m.time.isBefore(t)) t = m.time;
+    }
+    return t;
+  }
+
+  /// 该群聊的首条消息时间（无消息返回 null）
+  DateTime? _firstTimeOfGroup(String groupId) {
+    DateTime? t;
+    for (final m in st.messages) {
+      if (m.groupId != groupId) continue;
+      if (t == null || m.time.isBefore(t)) t = m.time;
+    }
+    return t;
+  }
+
+  /// 该单聊会话的消息条数
+  int _countOfCall(String call) {
+    final c = call.toUpperCase();
+    return st.messages.where((m) {
+      if (m.groupId != null) return false;
+      final isGroup = st.chatGroups.any(
+        (g) =>
+            g.groupCall.toUpperCase() == m.to.toUpperCase() ||
+            g.groupCall.toUpperCase() == m.from.toUpperCase(),
+      );
+      if (isGroup) return false;
+      return m.from.toUpperCase() == c || m.to.toUpperCase() == c;
+    }).length;
+  }
+
+  int _countOfGroup(String groupId) =>
+      st.messages.where((m) => m.groupId == groupId).length;
+
+  /// 可导出的会话（有消息的）快照
+  (List<ChatGroup>, List<String>) _exportables() {
+    final groups = st.chatGroups
+        .where((g) => _firstTimeOfGroup(g.id) != null)
+        .toList();
+    final calls = AppState.partnersOf(st.messages, st.chatGroups, st.stations)
+        .where((p) => _firstTimeOfCall(p) != null)
+        .toList();
+    return (groups, calls);
+  }
+
+  int get _selCount => _selCalls.length + _selGroups.length;
+
+  /// 保存文本到用户可见位置。
+  /// - Android：原生通道写入「下载」目录（10+ 走 MediaStore，免存储权限）
+  /// - Windows / 其它桌面：写入「文档」目录
+  Future<String?> _save(String filename, String content) async {
+    if (kIsWeb) return null;
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        return await _channel.invokeMethod<String>('saveToDownloads', {
+          'filename': filename,
+          'content': content,
+        });
+      } catch (_) {
+        return null;
+      }
+    }
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final f = File('${dir.path}${Platform.pathSeparator}$filename');
+      await f.writeAsString(content, flush: true);
+      return f.path;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _toast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  Future<void> _export() async {
+    if (_busy) return;
+    final (groups, calls) = _exportables();
+
+    final records = <AdifRecord>[];
+    for (final g in groups) {
+      if (!_selGroups.contains(g.id)) continue;
+      final t = _firstTimeOfGroup(g.id);
+      if (t != null) records.add(AdifRecord(call: g.groupCall, timeOn: t));
+    }
+    for (final p in calls) {
+      if (!_selCalls.contains(p)) continue;
+      final t = _firstTimeOfCall(p);
+      if (t != null) records.add(AdifRecord(call: p, timeOn: t));
+    }
+    if (records.isEmpty) {
+      _toast(S.of(context).adifNoSelection);
+      return;
+    }
+
+    // 先把文案取好，避免 await 之后再碰 context
+    final loc = S.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final text = Adif.encode(records, programVersion: AppState.appVersion);
+    final path = await _save(Adif.fileName(DateTime.now()), text);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _lastPath = path;
+    });
+
+    if (path == null) {
+      _toast(loc.adifExportFailed);
+      return;
+    }
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(loc.adifExported(records.length)),
+        backgroundColor: C.blue,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final (groups, calls) = _exportables();
+    final total = groups.length + calls.length;
+    final all = total > 0 && _selCount >= total;
+
+    return Scaffold(
+      backgroundColor: C.greyBg,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(s.exportAdif),
+      ),
+      body: total == 0
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text(
+                  s.noConversations,
+                  textAlign: TextAlign.center,
+                  style: ts(13, c: C.grey),
+                ),
+              ),
+            )
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _hintCard(s),
+                const SizedBox(height: 12),
+                _toolbar(s, total, all),
+                const SizedBox(height: 12),
+                // 群聊在前、单聊在后，与消息页会话列表顺序一致
+                for (final g in groups) _groupRow(s, g),
+                for (final p in calls) _callRow(s, p),
+                const SizedBox(height: 16),
+                _exportButton(s),
+                if (_lastPath != null) ...[
+                  const SizedBox(height: 12),
+                  _savedCard(s, _lastPath!),
+                ],
+              ],
+            ),
+    );
+  }
+
+  Widget _hintCard(S s) => Container(
+    padding: const EdgeInsets.all(14),
+    decoration: cardDeco(),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.info_outline_rounded, size: 16, color: C.blue),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                s.exportAdifDesc,
+                style: ts(12, c: C.slate, w: FontWeight.w600, h: 1.4),
+              ),
+              const SizedBox(height: 4),
+              Text(s.adifHint, style: ts(11, c: C.grey, h: 1.4)),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _toolbar(S s, int total, bool all) => Row(
+    children: [
+      Text(s.selectedCount(_selCount), style: T.h3),
+      const Spacer(),
+      TextButton(
+        onPressed: () {
+          setState(() {
+            if (all) {
+              _selCalls.clear();
+              _selGroups.clear();
+            } else {
+              final (groups, calls) = _exportables();
+              _selGroups
+                ..clear()
+                ..addAll(groups.map((g) => g.id));
+              _selCalls
+                ..clear()
+                ..addAll(calls);
+            }
+          });
+        },
+        child: Text(
+          all ? s.deselectAll : s.selectAll,
+          style: ts(12, c: C.blue, w: FontWeight.w600),
+        ),
+      ),
+    ],
+  );
+
+  Widget _tile({
+    required IconData icon,
+    required Color color,
+    required Color bg,
+    required String title,
+    required String subtitle,
+    required bool checked,
+    required String chip,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(6, 10, 14, 10),
+            decoration: cardDeco().copyWith(
+              color: checked ? C.blueBg : C.white,
+            ),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: checked,
+                  activeColor: C.blue,
+                  onChanged: (_) => onTap(),
+                ),
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: bg,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: color, size: 18),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: ts(13, w: FontWeight.w600),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: bg,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              chip,
+                              style: ts(8, c: color, w: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ts(11, c: C.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 时间戳：`2026-09-12 13:15`
+  String _fmt(DateTime t) {
+    String p(int v) => v.toString().padLeft(2, '0');
+    return '${t.year}-${p(t.month)}-${p(t.day)} ${p(t.hour)}:${p(t.minute)}';
+  }
+
+  Widget _groupRow(S s, ChatGroup g) {
+    final checked = _selGroups.contains(g.id);
+    final t = _firstTimeOfGroup(g.id)!;
+    return _tile(
+      icon: Icons.group_rounded,
+      color: C.orange,
+      bg: C.orangeBg,
+      title: g.name,
+      subtitle: '${s.messageTotal(_countOfGroup(g.id))} · ${_fmt(t)}',
+      chip: s.groupShortLabel,
+      checked: checked,
+      onTap: () => setState(() {
+        checked ? _selGroups.remove(g.id) : _selGroups.add(g.id);
+      }),
+    );
+  }
+
+  Widget _callRow(S s, String p) {
+    final checked = _selCalls.contains(p);
+    final t = _firstTimeOfCall(p)!;
+    return _tile(
+      icon: Icons.person_rounded,
+      color: C.blue,
+      bg: C.blueBg,
+      title: p,
+      subtitle: '${s.messageTotal(_countOfCall(p))} · ${_fmt(t)}',
+      chip: s.chatShortLabel,
+      checked: checked,
+      onTap: () => setState(() {
+        checked ? _selCalls.remove(p) : _selCalls.add(p);
+      }),
+    );
+  }
+
+  Widget _exportButton(S s) {
+    final enabled = _selCount > 0 && !_busy;
+    return SizedBox(
+      height: 46,
+      child: FilledButton.icon(
+        style: FilledButton.styleFrom(
+          backgroundColor: enabled ? C.blue : C.greyLight,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: enabled ? _export : null,
+        icon: _busy
+            ? const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(Icons.file_download_rounded, size: 18),
+        label: Text(
+          s.export,
+          style: ts(14, c: Colors.white, w: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+
+  Widget _savedCard(S s, String path) => Container(
+    padding: const EdgeInsets.all(14),
+    decoration: cardDeco(),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.check_circle_rounded, size: 16, color: C.green),
+            const SizedBox(width: 6),
+            Text(
+              s.adifSavedTo(''),
+              style: ts(12, c: C.green, w: FontWeight.w700),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () async {
+                await Clipboard.setData(ClipboardData(text: path));
+                if (!mounted) return;
+                _toast(s.adifPathCopied);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: C.blueBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  s.adifCopyPath,
+                  style: ts(11, c: C.blue, w: FontWeight.w600),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        SelectableText(path, style: ts(11, c: C.slate, h: 1.4)),
+      ],
+    ),
+  );
+}

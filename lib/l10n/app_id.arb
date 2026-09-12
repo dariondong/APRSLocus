@@ -1371,5 +1371,17 @@
   "unfavorite": "Hapus dari favorit",
   "copyCallsign": "Salin tanda panggil",
   "callsignCopied": "Tanda panggil disalin",
-  "stationDeleted": "Stasiun dihapus"
+  "stationDeleted": "Stasiun dihapus",
+  "exportAdif": "Ekspor ADIF",
+  "exportAdifDesc": "Ekspor obrolan sebagai berkas log ADIF, dapat diimpor ke Log4OM, N3FJP, dan sejenisnya",
+  "export": "Ekspor",
+  "adifHint": "Setiap catatan hanya berisi tanda panggil dan waktu pesan pertama (UTC); mode dan band tidak disertakan",
+  "adifNoSelection": "Pilih setidaknya satu obrolan untuk diekspor",
+  "adifExported": "{n} catatan diekspor",
+  "adifExportFailed": "Ekspor gagal — periksa izin penyimpanan atau ruang kosong",
+  "adifSavedTo": "Disimpan ke: {path}",
+  "adifCopyPath": "Salin jalur",
+  "adifPathCopied": "Jalur disalin",
+  "chatShortLabel": "Pribadi",
+  "adifLogFile": "Ekspor obrolan ke berkas log"
 }
