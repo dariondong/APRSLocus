@@ -1,5 +1,34 @@
 # 更新日志
 
+## [1.6.81] - 2026-09-12
+
+### 🌐 设置页中文硬编码清完（第三批，收尾）/ Settings page fully localized (batch 3)
+- 设置页剩余中文全部改走 l10n，共 **142 处**（新增 121 个文案键，三语齐全）
+- **符号名表**是本次的大头（共 162 行、57 个符号）：原先是**顶层 `const` 表**，
+  顶层没有 `context`，所以把表改成接收 `S` 的函数（`_symCategories(s)` /
+  `_smartQuickSymbols(s)`），名称统一由新增的顶层 `symName(s, code)` 解析；
+  符号码—图标数据不变，只是不再内嵌中文
+- 其余覆盖：主页徽章选择、速度分档规则编辑器（13 处）、天气模拟 11 项、
+  数据清理条目、重新运行向导、WebSocket 提示、退出应用弹窗等
+- 顺带清掉一处重复文案：本次新增的 `radiusSaveHint` 与项目**已有的**
+  `radiusTip` 含义完全相同，已改用既有键（避免两套同义文案）
+- 结果：`settings_pages.dart` + `settings_page.dart` 的可本地化中文字面量 **归零**
+
+- Every remaining hardcoded Chinese string in the settings pages now goes through
+  l10n: **142 sites**, 121 new keys (all three languages).
+- The bulk was the **APRS symbol table** (162 rows / 57 symbols). It was a
+  top-level `const` list, and a top-level constant has no `context`, so the tables
+  became functions taking `S` (`_symCategories(s)` / `_smartQuickSymbols(s)`) with
+  names resolved by a new top-level `symName(s, code)`. The symbol-code/icon data
+  is unchanged — it simply no longer embeds Chinese text.
+- Also covered: home badge picker, the speed-tier editor (13 sites), the 11 weather
+  simulation entries, data-cleanup rows, the wizard-restart dialog, the WebSocket
+  hint and the quit dialog.
+- Removed one duplicate: the newly added `radiusSaveHint` said exactly the same
+  thing as the pre-existing `radiusTip`, so the existing key is used instead.
+- Net result: **zero** localizable Chinese literals left in `settings_pages.dart`
+  and `settings_page.dart`.
+
 ## [1.6.80] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第二批 / Hardcoded-Chinese cleanup, batch 2

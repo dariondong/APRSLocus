@@ -3288,6 +3288,360 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chatRecords => '聊天记录';
+  @override
+  String get symCatVehicles => '车辆 / 交通';
+
+  @override
+  String get symCatBuildings => '建筑 / 设施';
+
+  @override
+  String get symCatNature => '气象 / 自然';
+
+  @override
+  String get symCatAirWater => '飞行 / 水域';
+
+  @override
+  String get symCatComms => '通信 / 其他';
+
+  @override
+  String get homeBadgeLabel => '主页展示徽章';
+
+  @override
+  String get homeBadgePickTitle => '选择主页展示徽章';
+
+  @override
+  String get homeBadgePickDesc => '在以下已获得的徽章中选一个，作为主页常驻展示';
+
+  @override
+  String get simLocationHint => '使用模拟位置，无需 GPS';
+
+  @override
+  String get speedTierRules => '速度分档规则';
+
+  @override
+  String get restoreDefaults => '恢复默认';
+
+  @override
+  String get speedTierDesc => '速度越快上报越频繁；每档可自定义间隔与图标（留空=我的符号）。';
+
+  @override
+  String get speedTierShortIntervalWarn => '间隔低于 60 秒会显著增加服务器负载，建议 ≥60 秒。';
+
+  @override
+  String get addSpeedTier => '添加速度档';
+
+  @override
+  String get maxSpeedTiers => '最多 5 个速度档';
+
+  @override
+  String get iconDefaultMySymbol => '图标 · 默认(我的符号)';
+
+  @override
+  String iconNamed(String name) => '图标 · {name}';
+
+  @override
+  String everyNSeconds(String sec) => '每 {sec} 秒';
+
+  @override
+  String get tierIdleTitle => '编辑 · 静止/低速档';
+
+  @override
+  String get tierSpeedTitle => '编辑 · 速度档';
+
+  @override
+  String get minSpeedKmh => '最低速度 (km/h)';
+
+  @override
+  String get intervalSeconds => '上报间隔 (秒)';
+
+  @override
+  String get idleTierDesc => '低于第一移动档的速度都按此档上报';
+
+  @override
+  String get intervalLabel => '间隔';
+
+  @override
+  String get unitSeconds => '秒';
+
+  @override
+  String get pickBeaconIconDesc => '选择信标图标 ·「默认」= 沿用我的符号';
+
+  @override
+  String get defaultLabel => '默认';
+
+  @override
+  String get deleteThisTier => '删除此档';
+
+  @override
+  String get idleTierNotDeletable => '静止档不可删除';
+
+  @override
+  String get errMinSpeedInt => '最低速度需为 ≥1 的整数';
+
+  @override
+  String get errIntervalInt => '上报间隔需为 ≥5 秒的整数';
+
+  @override
+  String get errTierDuplicate => '该速度档已存在，速度值需互不相同';
+
+  @override
+  String get wsUrlOptional => 'WebSocket URL(可选)';
+
+  @override
+
+  @override
+  String get countryUnrestricted => '未选择国家/地区 · 不做限制（接收全部台站）';
+
+  @override
+  String get weatherWidget => '天气组件';
+
+  @override
+  String get groupChatLabel => '群聊';
+
+  @override
+  String nItems(String n) => '{n} 个';
+
+  @override
+  String nMessages(String n) => '{n} 条';
+
+  @override
+  String confirmDeleteMessages(String n) => '确定要删除全部 {n} 条聊天记录吗？此操作不可恢复。';
+
+  @override
+  String get weatherSimFollowLive => '跟随实时';
+
+  @override
+  String get wxClear => '晴';
+
+  @override
+  String get wxCloudy => '多云';
+
+  @override
+  String get wxOvercast => '阴';
+
+  @override
+  String get wxLightRain => '小雨';
+
+  @override
+  String get wxModerateRain => '中雨';
+
+  @override
+  String get wxHeavyRain => '大雨';
+
+  @override
+  String get wxStormRain => '暴雨';
+
+  @override
+  String get wxThunder => '雷阵雨';
+
+  @override
+  String get wxSnow => '雪';
+
+  @override
+  String get wxFog => '雾';
+
+  @override
+  String get weatherSimTitle => '天气模拟（预览背景/特效/建议）';
+
+  @override
+  String get weatherSimDesc => '选择后点顶栏天气胶囊预览；「跟随实时」恢复真实天气';
+
+  @override
+  String get restartWizardConfirm => '将重新进入首次启动向导，可重新设置呼号、接收地区等。\\n当前设置不会丢失，完成向导后继续使用。';
+
+  @override
+  String get restartWizardButton => '重新运行';
+
+  @override
+  String get pasteAprsPacketHint => '粘贴原始 APRS 包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>测试台';
+
+  @override
+  String beaconsSentCount(String n) => '{n} 次';
+
+  @override
+  String get myBadgesAndAchievements => '我的徽章与成就';
+
+  @override
+  String get quitApp => '退出应用';
+
+  @override
+  String get quitAppDesc => '退出后 APRSlocus 将停止定位上报与后台接收，并结束进程。';
+
+  @override
+  String get symCar => '汽车';
+  String get symCatEmergency => '应急救援';
+  String get symSmallAircraft => '小型飞机';
+  String myPositionSet(String grid) => '已设置我的位置，网格 {grid}';
+  String get tierIdleShort => '静止/低速';
+
+  @override
+  String get symHouse => '房屋';
+
+  @override
+  String get symPerson => '人';
+
+  @override
+  String get symTruck => '卡车';
+
+  @override
+  String get symBicycle => '自行车';
+
+  @override
+  String get symRv => '房车';
+
+  @override
+  String get symWxStation => '气象站';
+
+  @override
+  String get symPolice => '警局';
+
+  @override
+  String get symMotorcycle => '摩托';
+
+  @override
+  String get symSemi => '半挂车';
+
+  @override
+  String get symVan => '面包车';
+
+  @override
+  String get symJeep => '吉普';
+
+  @override
+  String get symBus => '公交';
+
+  @override
+  String get symTruckStop => '卡车停靠';
+
+  @override
+  String get symTrain => '火车';
+
+  @override
+  String get symFireTruck => '消防车';
+
+  @override
+  String get symPoliceCar => '警车';
+
+  @override
+  String get symSnowmobile => '雪地摩托';
+
+  @override
+  String get symYagi => '八木屋';
+
+  @override
+  String get symHospital => '医院';
+
+  @override
+  String get symAmbulance => '救护车';
+
+  @override
+  String get symFireStation => '消防站';
+
+  @override
+  String get symSchool => '学校';
+
+  @override
+  String get symMotel => '旅馆';
+
+  @override
+  String get symHotel => '酒店';
+
+  @override
+  String get symLaptop => '笔记本';
+
+  @override
+  String get symPostOffice => '邮局';
+
+  @override
+  String get symWeather => '气象';
+
+  @override
+  String get symWater => '供水站';
+
+  @override
+  String get symHurricane => '飓风';
+
+  @override
+  String get symHorse => '骑马';
+
+  @override
+  String get symDog => '狗';
+
+  @override
+  String get symCamping => '露营';
+
+  @override
+  String get symShelter => '避难所';
+
+  @override
+  String get symRedCross => '红十字';
+
+  @override
+  String get symFireAlarm => '火警';
+
+  @override
+  String get symEmergCenter => '应急中心';
+
+  @override
+  String get symCmdCenter => '指挥中心';
+
+  @override
+  String get symHandicap => '残障';
+
+  @override
+  String get symBigAircraft => '大型飞机';
+
+  @override
+  String get symGlider => '滑翔机';
+
+  @override
+  String get symBalloon => '气球';
+
+  @override
+  String get symShip => '船';
+
+  @override
+  String get symSailboat => '帆船';
+
+  @override
+  String get symMobileSat => '移动卫星';
+
+  @override
+  String get symSatAntenna => '卫星天线';
+
+  @override
+  String get symDigi => '数字中继';
+
+  @override
+  String get symDigiTower => '中继塔';
+
+  @override
+  String get symMicE => 'Mic-E 中继';
+
+  @override
+  String get symNode => '节点';
+
+  @override
+  String get symDxCluster => 'DX 集群';
+
+  @override
+  String get symHfGateway => 'HF 网关';
+
+  @override
+  String get symFileServer => '文件服务器';
+
+  @override
+  String get symTelephone => '电话';
+
+  @override
+  String get symGrid => '网格';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symFmoStation => 'FMO 台站';
+
 
   @override
   String get chatRecordsCleared => '聊天记录已清空';
@@ -6700,6 +7054,360 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get chatRecords => '聊天記錄';
+  @override
+  String get symCatVehicles => '車輛 / 交通';
+
+  @override
+  String get symCatBuildings => '建築 / 設施';
+
+  @override
+  String get symCatNature => '氣象 / 自然';
+
+  @override
+  String get symCatAirWater => '飛行 / 水域';
+
+  @override
+  String get symCatComms => '通訊 / 其他';
+
+  @override
+  String get homeBadgeLabel => '首頁展示徽章';
+
+  @override
+  String get homeBadgePickTitle => '選擇首頁展示徽章';
+
+  @override
+  String get homeBadgePickDesc => '在以下已獲得的徽章中選一個，作為首頁常駐展示';
+
+  @override
+  String get simLocationHint => '使用模擬位置，無需 GPS';
+
+  @override
+  String get speedTierRules => '速度分檔規則';
+
+  @override
+  String get restoreDefaults => '恢復預設';
+
+  @override
+  String get speedTierDesc => '速度越快上報越頻繁；每檔可自訂間隔與圖示（留空=我的符號）。';
+
+  @override
+  String get speedTierShortIntervalWarn => '間隔低於 60 秒會顯著增加伺服器負載，建議 ≥60 秒。';
+
+  @override
+  String get addSpeedTier => '新增速度檔';
+
+  @override
+  String get maxSpeedTiers => '最多 5 個速度檔';
+
+  @override
+  String get iconDefaultMySymbol => '圖示 · 預設(我的符號)';
+
+  @override
+  String iconNamed(String name) => '圖示 · {name}';
+
+  @override
+  String everyNSeconds(String sec) => '每 {sec} 秒';
+
+  @override
+  String get tierIdleTitle => '編輯 · 靜止/低速檔';
+
+  @override
+  String get tierSpeedTitle => '編輯 · 速度檔';
+
+  @override
+  String get minSpeedKmh => '最低速度 (km/h)';
+
+  @override
+  String get intervalSeconds => '上報間隔 (秒)';
+
+  @override
+  String get idleTierDesc => '低於第一移動檔的速度都按此檔上報';
+
+  @override
+  String get intervalLabel => '間隔';
+
+  @override
+  String get unitSeconds => '秒';
+
+  @override
+  String get pickBeaconIconDesc => '選擇信標圖示 ·「預設」= 沿用我的符號';
+
+  @override
+  String get defaultLabel => '預設';
+
+  @override
+  String get deleteThisTier => '刪除此檔';
+
+  @override
+  String get idleTierNotDeletable => '靜止檔不可刪除';
+
+  @override
+  String get errMinSpeedInt => '最低速度需為 ≥1 的整數';
+
+  @override
+  String get errIntervalInt => '上報間隔需為 ≥5 秒的整數';
+
+  @override
+  String get errTierDuplicate => '該速度檔已存在，速度值需互不相同';
+
+  @override
+  String get wsUrlOptional => 'WebSocket URL(可選)';
+
+  @override
+
+  @override
+  String get countryUnrestricted => '未選擇國家/地區 · 不做限制（接收全部台站）';
+
+  @override
+  String get weatherWidget => '天氣元件';
+
+  @override
+  String get groupChatLabel => '群組聊天';
+
+  @override
+  String nItems(String n) => '{n} 個';
+
+  @override
+  String nMessages(String n) => '{n} 條';
+
+  @override
+  String confirmDeleteMessages(String n) => '確定要刪除全部 {n} 條聊天記錄嗎？此操作不可恢復。';
+
+  @override
+  String get weatherSimFollowLive => '跟隨即時';
+
+  @override
+  String get wxClear => '晴';
+
+  @override
+  String get wxCloudy => '多雲';
+
+  @override
+  String get wxOvercast => '陰';
+
+  @override
+  String get wxLightRain => '小雨';
+
+  @override
+  String get wxModerateRain => '中雨';
+
+  @override
+  String get wxHeavyRain => '大雨';
+
+  @override
+  String get wxStormRain => '暴雨';
+
+  @override
+  String get wxThunder => '雷陣雨';
+
+  @override
+  String get wxSnow => '雪';
+
+  @override
+  String get wxFog => '霧';
+
+  @override
+  String get weatherSimTitle => '天氣模擬（預覽背景/特效/建議）';
+
+  @override
+  String get weatherSimDesc => '選擇後點頂欄天氣膠囊預覽；「跟隨即時」恢復真實天氣';
+
+  @override
+  String get restartWizardConfirm => '將重新進入首次啟動精靈，可重新設定呼號、接收地區等。\\n目前設定不會遺失，完成精靈後繼續使用。';
+
+  @override
+  String get restartWizardButton => '重新執行';
+
+  @override
+  String get pasteAprsPacketHint => '貼上原始 APRS 封包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>測試台';
+
+  @override
+  String beaconsSentCount(String n) => '{n} 次';
+
+  @override
+  String get myBadgesAndAchievements => '我的徽章與成就';
+
+  @override
+  String get quitApp => '結束應用程式';
+
+  @override
+  String get quitAppDesc => '結束後 APRSlocus 將停止定位上報與背景接收，並結束行程。';
+
+  @override
+  String get symCar => '汽車';
+  String get symCatEmergency => '應急救援';
+  String get symSmallAircraft => '小型飛機';
+  String myPositionSet(String grid) => '已設定我的位置，網格 {grid}';
+  String get tierIdleShort => '靜止/低速';
+
+  @override
+  String get symHouse => '房屋';
+
+  @override
+  String get symPerson => '人';
+
+  @override
+  String get symTruck => '卡車';
+
+  @override
+  String get symBicycle => '自行車';
+
+  @override
+  String get symRv => '房車';
+
+  @override
+  String get symWxStation => '氣象站';
+
+  @override
+  String get symPolice => '警局';
+
+  @override
+  String get symMotorcycle => '摩托';
+
+  @override
+  String get symSemi => '半掛車';
+
+  @override
+  String get symVan => '麵包車';
+
+  @override
+  String get symJeep => '吉普';
+
+  @override
+  String get symBus => '公車';
+
+  @override
+  String get symTruckStop => '卡車停靠';
+
+  @override
+  String get symTrain => '火車';
+
+  @override
+  String get symFireTruck => '消防車';
+
+  @override
+  String get symPoliceCar => '警車';
+
+  @override
+  String get symSnowmobile => '雪地摩托';
+
+  @override
+  String get symYagi => '八木屋';
+
+  @override
+  String get symHospital => '醫院';
+
+  @override
+  String get symAmbulance => '救護車';
+
+  @override
+  String get symFireStation => '消防站';
+
+  @override
+  String get symSchool => '學校';
+
+  @override
+  String get symMotel => '旅館';
+
+  @override
+  String get symHotel => '酒店';
+
+  @override
+  String get symLaptop => '筆記型電腦';
+
+  @override
+  String get symPostOffice => '郵局';
+
+  @override
+  String get symWeather => '氣象';
+
+  @override
+  String get symWater => '供水站';
+
+  @override
+  String get symHurricane => '颶風';
+
+  @override
+  String get symHorse => '騎馬';
+
+  @override
+  String get symDog => '狗';
+
+  @override
+  String get symCamping => '露營';
+
+  @override
+  String get symShelter => '避難所';
+
+  @override
+  String get symRedCross => '紅十字';
+
+  @override
+  String get symFireAlarm => '火警';
+
+  @override
+  String get symEmergCenter => '應急中心';
+
+  @override
+  String get symCmdCenter => '指揮中心';
+
+  @override
+  String get symHandicap => '殘障';
+
+  @override
+  String get symBigAircraft => '大型飛機';
+
+  @override
+  String get symGlider => '滑翔機';
+
+  @override
+  String get symBalloon => '氣球';
+
+  @override
+  String get symShip => '船';
+
+  @override
+  String get symSailboat => '帆船';
+
+  @override
+  String get symMobileSat => '移動衛星';
+
+  @override
+  String get symSatAntenna => '衛星天線';
+
+  @override
+  String get symDigi => '數位中繼';
+
+  @override
+  String get symDigiTower => '中繼塔';
+
+  @override
+  String get symMicE => 'Mic-E 中繼';
+
+  @override
+  String get symNode => '節點';
+
+  @override
+  String get symDxCluster => 'DX 叢集';
+
+  @override
+  String get symHfGateway => 'HF 閘道';
+
+  @override
+  String get symFileServer => '檔案伺服器';
+
+  @override
+  String get symTelephone => '電話';
+
+  @override
+  String get symGrid => '網格';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symFmoStation => 'FMO 台站';
+
 
   @override
   String get chatRecordsCleared => '聊天記錄已清空';

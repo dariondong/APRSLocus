@@ -5912,6 +5912,243 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'聊天记录'**
   String get chatRecords;
+  String get symCatVehicles;
+
+  String get symCatBuildings;
+
+  String get symCatNature;
+
+  String get symCatAirWater;
+
+  String get symCatComms;
+
+  String get homeBadgeLabel;
+
+  String get homeBadgePickTitle;
+
+  String get homeBadgePickDesc;
+
+  String get simLocationHint;
+
+  String get speedTierRules;
+
+  String get restoreDefaults;
+
+  String get speedTierDesc;
+
+  String get speedTierShortIntervalWarn;
+
+  String get addSpeedTier;
+
+  String get maxSpeedTiers;
+
+  String get iconDefaultMySymbol;
+
+  String iconNamed(String name);
+
+  String everyNSeconds(String sec);
+
+  String get tierIdleTitle;
+
+  String get tierSpeedTitle;
+
+  String get minSpeedKmh;
+
+  String get intervalSeconds;
+
+  String get idleTierDesc;
+
+  String get intervalLabel;
+
+  String get unitSeconds;
+
+  String get pickBeaconIconDesc;
+
+  String get defaultLabel;
+
+  String get deleteThisTier;
+
+  String get idleTierNotDeletable;
+
+  String get errMinSpeedInt;
+
+  String get errIntervalInt;
+
+  String get errTierDuplicate;
+
+  String get wsUrlOptional;
+
+
+  String get countryUnrestricted;
+
+  String get weatherWidget;
+
+  String get groupChatLabel;
+
+  String nItems(String n);
+
+  String nMessages(String n);
+
+  String confirmDeleteMessages(String n);
+
+  String get weatherSimFollowLive;
+
+  String get wxClear;
+
+  String get wxCloudy;
+
+  String get wxOvercast;
+
+  String get wxLightRain;
+
+  String get wxModerateRain;
+
+  String get wxHeavyRain;
+
+  String get wxStormRain;
+
+  String get wxThunder;
+
+  String get wxSnow;
+
+  String get wxFog;
+
+  String get weatherSimTitle;
+
+  String get weatherSimDesc;
+
+  String get restartWizardConfirm;
+
+  String get restartWizardButton;
+
+  String get pasteAprsPacketHint;
+
+  String beaconsSentCount(String n);
+
+  String get myBadgesAndAchievements;
+
+  String get quitApp;
+
+  String get quitAppDesc;
+
+  String get symCar;
+  String get symCatEmergency;
+  String get symSmallAircraft;
+  String myPositionSet(String grid);
+  String get tierIdleShort;
+
+  String get symHouse;
+
+  String get symPerson;
+
+  String get symTruck;
+
+  String get symBicycle;
+
+  String get symRv;
+
+  String get symWxStation;
+
+  String get symPolice;
+
+  String get symMotorcycle;
+
+  String get symSemi;
+
+  String get symVan;
+
+  String get symJeep;
+
+  String get symBus;
+
+  String get symTruckStop;
+
+  String get symTrain;
+
+  String get symFireTruck;
+
+  String get symPoliceCar;
+
+  String get symSnowmobile;
+
+  String get symYagi;
+
+  String get symHospital;
+
+  String get symAmbulance;
+
+  String get symFireStation;
+
+  String get symSchool;
+
+  String get symMotel;
+
+  String get symHotel;
+
+  String get symLaptop;
+
+  String get symPostOffice;
+
+  String get symWeather;
+
+  String get symWater;
+
+  String get symHurricane;
+
+  String get symHorse;
+
+  String get symDog;
+
+  String get symCamping;
+
+  String get symShelter;
+
+  String get symRedCross;
+
+  String get symFireAlarm;
+
+  String get symEmergCenter;
+
+  String get symCmdCenter;
+
+  String get symHandicap;
+
+  String get symBigAircraft;
+
+  String get symGlider;
+
+  String get symBalloon;
+
+  String get symShip;
+
+  String get symSailboat;
+
+  String get symMobileSat;
+
+  String get symSatAntenna;
+
+  String get symDigi;
+
+  String get symDigiTower;
+
+  String get symMicE;
+
+  String get symNode;
+
+  String get symDxCluster;
+
+  String get symHfGateway;
+
+  String get symFileServer;
+
+  String get symTelephone;
+
+  String get symGrid;
+
+  String get symXUnix;
+
+  String get symFmoStation;
+
 
   /// No description provided for @chatRecordsCleared.
   ///
