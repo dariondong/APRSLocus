@@ -2,6 +2,10 @@
 
 ## [1.6.94] - 2026-09-13
 
+> 📌 本版**包含 v1.6.93 的全部改动**（该版本未单独发版），以下一并列出。
+>
+> This release also **includes everything from v1.6.93**, which was never published on its own.
+
 ### 🇪🇸 新增西班牙语 / Spanish
 - 新增 **西班牙语（es）** 界面，**1187 个文案键全部翻译完成**（无回落英文的遗漏项）
 - 设置页与首次启动向导（OOBE）的语言选项新增「**Español**」
@@ -22,12 +26,13 @@ Honor, achievement and sponsor copy ships in **zh / zh-TW / en only**, so under 
 sections display **English** rather than Chinese — the same behaviour as Japanese and Indonesian.
 
 ### 🔧 顺带修复：版本号不一致 / Fix: inconsistent version string
-- 上一版（v1.6.93）发布时 **`lib/state.dart` 的 `appVersion` 漏提交**，
-  导致代码里仍是 `1.6.92` 而 `pubspec.yaml` 已是 `1.6.93`（两处不一致）。现已同步
+- 开发过程中曾出现 **`lib/state.dart` 的 `appVersion` 漏提交**，导致代码里是 `1.6.92`
+  而 `pubspec.yaml` 已是 `1.6.93`（两处不一致；**未影响任何已发布版本**）。现已同步
 - 影响面很小（`appVersion` 用于信标/识别时的版本上报），但属真实疏忽，已改正
 
-- In v1.6.93 the **`appVersion` constant in `lib/state.dart` was left out of the commit**, so
-  the code still reported 1.6.92 while `pubspec.yaml` said 1.6.93. Now synchronised.
+- During development the **`appVersion` constant in `lib/state.dart` was left out of a commit**,
+  so the code reported 1.6.92 while `pubspec.yaml` said 1.6.93 (**no released build was
+  affected**). Now synchronised.
 
 > ⚠️ **译文质量说明**：西语译文为**机器翻译质量的首版**，术语按统一口径处理
 > （indicativo / baliza / cuadrícula / digipeater 等），但**我无法自评其地道程度**。
@@ -36,8 +41,6 @@ sections display **English** rather than Chinese — the same behaviour as Japan
 > **Translation quality**: this first Spanish pass is machine-translation quality with consistent
 > terminology (indicativo, baliza, cuadrícula, digipeater…), but **I cannot judge how natural it
 > sounds to a native speaker**. Report any awkward wording and it is quick to fix.
-
-## [1.6.93] - 2026-09-13
 
 ### 🏫 赞助页：合作院校改用全称 / Sponsor page: partner university full name
 - 青岛科技大学业余无线电俱乐部（BA4JLD）的名称由「青科大学业余无线电爱好者俱乐部」
