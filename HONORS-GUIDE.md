@@ -70,7 +70,7 @@ APRSlocus 的荣誉分**两类**，逻辑完全不同 —— 很多人以为是�
 | **最强大脑** | Brightest mind | **隐藏成就**：为项目提供 **超过 50%** 的算力支持 |
 | **赠我以琼琚** | Gifted with Jade | **馈赠 / 赞助**项目 |
 | **i力更生** | iSelf-Reliant | **自己编译** APRSlocus 跑在**苹果设备**上 |
-| **播种** | Sower | 见下方说明 |
+| **播种** | Sower | 在**社交媒体**上积极**分享** APRSlocus |
 | **FIRST FIX** | Supreme Honor | 完成全部成就后申请（见上一节） |
 
 **逐条补充**
@@ -81,7 +81,8 @@ APRSlocus 的荣誉分**两类**，逻辑完全不同 —— 很多人以为是�
 - **赠我以琼琚**：与官网的「**赞助墙**」是**两件事** —— 拿到这枚称号 ≠ 出现在赞助墙，两者分别维护
 - **i力更生**：不依赖现成安装包，**自己从源码编译**并在 **iOS / macOS** 上跑起来
 
-> ⚠️ **「播种」这枚我没有查到公开的客观条件**。项目里只有一句诗意描述（「在旷野埋下种子，等待遍地开花」），目前仅**创始人**持有。我不清楚它的确切标准，**不想编一个给你** —— 如果要把这一页发布出去，请补上它的真实条件。
+- **播种**：在**社交媒体**上**积极分享** APRSlocus（发帖、安利给身边的火腿）——
+  目的是让更多人知道这个项目，与「赠我以琼琚」的资金支持不同，这枚看重的是**传播**
 
 ---
 
@@ -97,6 +98,7 @@ APRSlocus 的荣誉分**两类**，逻辑完全不同 —— 很多人以为是�
 | 馈赠 / 赞助项目 | 赠我以琼琚 |
 | 自己编译并跑在苹果设备上 | i力更生 |
 | 提供算力支持 | 最强大脑 |
+| **在社交媒体上分享 APRSlocus** | **播种** |
 
 **怎么联系开发团队**（申请 FIRST FIX、或确认贡献）：
 
@@ -183,16 +185,17 @@ Opens in **APRSlocus 1.7.0**. This is the only honor with a **public, applicable
 | **Brightest mind** | *Hidden* — provided **over 50%** of the project's compute |
 | **Gifted with Jade** | **Gifted / sponsored** the project |
 | **iSelf-Reliant** | **Compiled it yourself** and ran it on **Apple devices** |
-| **Sower** | *Criteria not publicly documented* |
+| **Sower** | Actively **sharing** APRSlocus on **social media** |
 | **FIRST FIX** | Complete all achievements, then apply |
 
-> **Sower**: only a poetic description exists in the project, and only the founder holds it.
-> Its exact criteria are not documented — **we won't invent one**.
+> **Sower**: actively **sharing** APRSlocus on **social media** (posting about it, telling
+> fellow hams). Unlike *Gifted with Jade*, which recognises financial support, this one
+> recognises **spreading the word**.
 
 ## 5. What to do
 
 Contribute first: join testing, submit code/translations/PRs, report bugs, gift or sponsor the
-project, or compile it for Apple devices. Reach the team at the
+project, compile it for Apple devices, or **share it on social media**. Reach the team at the
 **QQ group** (<https://qm.qq.com/q/8pL6vc5YA0>) or on
 **GitHub** (<https://github.com/dariondong/APRSlocus>).
 
