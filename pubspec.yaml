@@ -37,4 +37,5 @@ flutter:
     - assets/WechatPay.jpg
     - assets/bg2hcb.jpg
     - assets/terms_zh.txt
+    - assets/terms_zh_TW.txt
     - assets/terms_en.txt

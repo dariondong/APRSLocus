@@ -22,12 +22,41 @@ class TermsPage extends StatefulWidget {
 }
 
 class _TermsPageState extends State<TermsPage> {
-  bool _en = false;
+  /// 协议语言：'zh' 简体；'zh_TW' 繁體；'en' English
+  /// （与 App locale 同码制，见 app.dart `_localeOf` 与 state.dart `l10n`）。
+  String _lang = 'zh';
+
+  /// 是否英文：页面 chrome 文案（tooltip/徽章/错误页）只分中/英两档，
+  /// zh_TW 沿用简体文案——chrome 繁体化记 follow-up，本次只修文档正文本体。
+  bool get _en => _lang == 'en';
+
   bool _inited = false;
   late Future<_TermsResult> _future;
 
-  String get _file => _en ? 'terms_en.txt' : 'terms_zh.txt';
+  String get _file {
+    switch (_lang) {
+      case 'en':
+        return 'terms_en.txt';
+      case 'zh_TW':
+        return 'terms_zh_TW.txt';
+      default:
+        return 'terms_zh.txt';
+    }
+  }
+
   String get _localKey => 'assets/$_file';
+
+  /// 官网在线文档路径（docs/en/、docs/zh-TW/terms.html 与根 terms.html 对应）
+  String get _webPath {
+    switch (_lang) {
+      case 'en':
+        return 'en/terms.html';
+      case 'zh_TW':
+        return 'zh-TW/terms.html';
+      default:
+        return 'terms.html';
+    }
+  }
 
   @override
   void initState() {
@@ -39,17 +68,24 @@ class _TermsPageState extends State<TermsPage> {
     super.didChangeDependencies();
     if (_inited) return;
     _inited = true;
-    // 默认协议语言跟随 App 当前语言
-    _en = Localizations.localeOf(context).languageCode == 'en';
+    // 默认协议语言跟随 App 当前语言：英文→en；
+    // 中文繁体（含 Hant 脚本，如港澳 zh-Hant-HK）→zh_TW；其余→zh
+    final loc = Localizations.localeOf(context);
+    _lang = loc.languageCode == 'en'
+        ? 'en'
+        : (loc.languageCode == 'zh' &&
+                (loc.countryCode == 'TW' || loc.scriptCode == 'Hant'))
+            ? 'zh_TW'
+            : 'zh';
     _future = _load();
   }
 
   void _reload() => setState(() => _future = _load());
 
-  void _switchLang(bool en) {
-    if (_en == en) return;
+  void _switchLang(String lang) {
+    if (_lang == lang) return;
     setState(() {
-      _en = en;
+      _lang = lang;
       _future = _load();
     });
   }
@@ -115,7 +151,7 @@ class _TermsPageState extends State<TermsPage> {
             tooltip: _en ? 'Open in browser' : '在浏览器打开',
             icon: Icon(Icons.open_in_new_rounded, color: C.blue, size: 18),
             onPressed: () => launchUrl(
-              Uri.parse('$_kTermsBase${_en ? 'en/terms.html' : 'terms.html'}'),
+              Uri.parse('$_kTermsBase$_webPath'),
               mode: LaunchMode.externalApplication,
             ),
           ),
@@ -187,17 +223,18 @@ class _TermsPageState extends State<TermsPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _langBtn('中文', false),
-          _langBtn('English', true),
+          _langBtn(S.of(context).languageZh, 'zh'),
+          _langBtn(S.of(context).languageZhTw, 'zh_TW'),
+          _langBtn(S.of(context).languageEn, 'en'),
         ],
       ),
     );
   }
 
-  Widget _langBtn(String label, bool en) {
-    final active = _en == en;
+  Widget _langBtn(String label, String lang) {
+    final active = _lang == lang;
     return GestureDetector(
-      onTap: () => _switchLang(en),
+      onTap: () => _switchLang(lang),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
