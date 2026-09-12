@@ -1,5 +1,51 @@
 # 更新日志
 
+## [1.6.84] - 2026-09-12
+
+### 🐛 修复「APRSlocus 同款软件」识别失效（v1.6.80 引入的回归）
+
+你反馈「分类标签好像不起效了」——查证属实，而且**根因是我自己在 v1.6.80 造成的**。
+
+当时的判定是「备注或呼号含 `APRSlocus`」，但同一个版本里我又把**版本号从位置包
+备注移到了状态包**、且**备注默认留空** ——于是 APRSlocus 台站的备注里再也不可能出现
+「APRSlocus」→ 判定全部落空。
+
+受害面比筛选更大（同一个判定被复制成两处）：
+
+| 使用处 | 症状 |
+|---|---|
+| 台站筛选「APRSlocus」chip | 命中 **0** |
+| 统计面板的 APRSlocus 计数 | 恒为 **0** |
+| `stationAllowedFor`（开启「接收其他台站」时） | APRSlocus 台站被**误过滤掉** |
+| 台站详情「APRSlocus 信息」区块 | 不显示 |
+
+数据本身没丢（入库时的判定认 `APALOC`，一直是对的），只是**没人去用它**。
+
+**修法**：改成多信号判定并按可靠性排序，同时把两份重复逻辑**收敛为一处**（这是它
+会漂移的根因）：
+
+1. `toCall == APALOC/APRSLOCUS/APOLOCUS` —— 报文路径首段的官方标识，最可靠，已持久化
+2. `aprslocus` 字段存在 —— 解析出的专属信息兜底（已持久化）
+3. 备注/呼号关键字 —— 兼容旧版本报文
+
+另外：因为 `toCall` 与 `aprslocus` **都已持久化**，这个修复对**已缓存的历史台站同样生效**，
+不需要等重新收包。
+
+新增 5 项回归测试（含「筛选判定须与 Station 判定一致」，专门防止两套逻辑再漂移）。
+
+- Fixed the broken "APRSlocus same software" detection — a regression I introduced in
+  v1.6.80. The check looked for `APRSlocus` in the comment/callsign, but that same
+  release moved the version tag from the position-packet comment into the status
+  packet and made the comment empty by default — so the text could never match again.
+  It affected the station filter (0 hits), the stats counter (always 0),
+  `stationAllowedFor` (APRSlocus stations wrongly filtered out when "receive other
+  stations" is on) and the station-detail info block.
+- The detection now uses several signals in order of reliability (`toCall`, the parsed
+  `aprslocus` field, then comment/callsign for legacy packets) and the duplicated logic
+  has been collapsed into a single place — that duplication is why it drifted.
+- Because `toCall` and `aprslocus` are both persisted, the fix also applies to already
+  cached stations without waiting for new packets. 5 regression tests added.
+
 ## [1.6.83] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第五批：补上一批我漏掉的 

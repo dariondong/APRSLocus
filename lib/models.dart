@@ -127,8 +127,20 @@ class Station {
   String get typeName => AprsSym.name(symbol);
   Color get color => statusColor(status);
 
-  /// 是否为 APRSlocus 同款软件台站（备注/呼号含关键字，与筛选一致）
+  /// APRSlocus 本应用官方注册的 tocall（数据包路径首段）。
+  /// 自 v1.6.80 起位置包备注里**不再包含** "APRSlocus"（版本号已移到状态包，
+  /// 且备注默认留空），所以**不能只靠备注判定**，否则筛选/统计会全部落空。
+  static const aprslocusToCalls = {'APALOC', 'APRSLOCUS', 'APOLOCUS'};
+
+  /// 是否为 APRSlocus 同款软件台站。
+  ///
+  /// 判定信号（任一命中即可），按可靠性排序：
+  ///  ① [toCall] —— 报文路径首段的官方标识（APALOC），最可靠，已持久化
+  ///  ② [aprslocus] —— 状态包/位置包解析出的 APRSlocus 专属信息（已持久化）
+  ///  ③ 备注/呼号关键字 —— 兼容旧版本报文
   bool get isAprslocusStation =>
+      aprslocusToCalls.contains((toCall ?? '').toUpperCase()) ||
+      (aprslocus?.containsKey('软件') ?? false) ||
       (comment?.toLowerCase().contains('aprslocus') ?? false) ||
       call.toUpperCase().contains('APRSLOCUS');
 
@@ -274,14 +286,10 @@ class StationFilter {
     }
     if (dev != 'all' && s.deviceClassKey != dev) return false;
     if (model != 'all' && (s.deviceName ?? '') != model) return false;
-    if (app == 'aprslocus') {
-      // 备注/呼号含 APRSlocus 的台站（同为 APRSlocus 用户）
-      final c = (s.comment ?? '').toLowerCase();
-      if (!c.contains('aprslocus') &&
-          !s.call.toUpperCase().contains('APRSLOCUS')) {
-        return false;
-      }
-    }
+    // 同款软件（APRSlocus）：复用 Station 上的单一判定，
+    // 避免此处与 Station.isAprslocusStation 两套逻辑各自漂移
+    // （v1.6.80 备注不再含 "APRSlocus" 后，此处曾因只查备注而完全失效）。
+    if (app == 'aprslocus' && !s.isAprslocusStation) return false;
     return true;
   }
 }

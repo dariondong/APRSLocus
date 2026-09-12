@@ -9,6 +9,7 @@ Station _mk(
   TypeGroup? tg,
   String? comment,
   String? toCall,
+  Map<String, String>? aprslocus,
   double? speed,
   DateTime? heard,
 }) {
@@ -20,6 +21,7 @@ Station _mk(
     speed: speed,
     comment: comment,
     toCall: toCall,
+    aprslocus: aprslocus,
     lastHeard: heard ?? DateTime.now(),
     status: status,
   );
@@ -159,6 +161,50 @@ void _moreTests() {
       const f = StationFilter(status: 'online', type: 'mobile');
       expect(list.where(f.matches), isEmpty);
       expect(f.key, 'online|mobile|all|all|all');
+    });
+  });
+
+  // ────────────────────────────────────────────────────────────────────────
+  // 「APRSlocus 同款软件」识别的回归保护。
+  //
+  // 背景（v1.6.80 引入的真实回归）：位置包的备注里不再包含 "APRSlocus"
+  // （版本号已移到状态包、备注默认留空），而当时的判定**只看备注/呼号**，
+  // 于是：筛选命中 0、统计计数恒为 0、receiveOthers 下台站还会被误过滤。
+  // 修复后判定改用 toCall（官方 APALOC 标识）/ aprslocus 字段，备注仅作兼容。
+  group('APRSlocus 同款软件识别', () {
+    const f = StationFilter(app: 'aprslocus');
+
+    test('toCall=APALOC 应命中（备注为空，模拟 v1.6.80 后的真实报文）', () {
+      final s = _mk('BA1AAA-7', toCall: 'APALOC');
+      expect(s.isAprslocusStation, isTrue);
+      expect(f.matches(s), isTrue);
+    });
+
+    test('aprslocus 字段存在应命中（toCall 丢失时兜底）', () {
+      final s = _mk('BA1AAA-7', aprslocus: {'软件': 'APRSlocus'});
+      expect(s.isAprslocusStation, isTrue);
+      expect(f.matches(s), isTrue);
+    });
+
+    test('旧版备注关键字仍兼容', () {
+      final s = _mk('BA1AAA-7', comment: 'APRSlocus v1.6.57');
+      expect(s.isAprslocusStation, isTrue);
+    });
+
+    test('普通台站不应被误命中', () {
+      final s = _mk('BG7PGW-9', toCall: 'APRS', comment: '在路上');
+      expect(s.isAprslocusStation, isFalse);
+      expect(f.matches(s), isFalse);
+    });
+
+    test('筛选与 Station 判定同源（不会再各自漂移）', () {
+      // 空备注 + 仅靠 toCall：这是唯一能区分「两套逻辑是否一致」的组合
+      final ok = _mk('BA1AAA-7', toCall: 'APALOC');
+      final no = _mk('BG7PGW-9', toCall: 'APRS');
+      for (final s in [ok, no]) {
+        expect(f.matches(s), s.isAprslocusStation,
+            reason: '${s.call}: 筛选判定须与 Station 判定一致');
+      }
     });
   });
 }
