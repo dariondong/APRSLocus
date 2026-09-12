@@ -7200,6 +7200,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'多数日志软件（含 QRZ）要求 MODE，缺少会被拒收'**
   String get adifModeRequiredHint;
+
+  /// No description provided for @adifFreq.
+  ///
+  /// In zh, this message translates to:
+  /// **'频率（FREQ）'**
+  String get adifFreq;
+
+  /// No description provided for @adifFreqHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'单位 MHz，留空则不写'**
+  String get adifFreqHint;
+
+  /// No description provided for @adifFreqInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入 MHz 数字，如 144.640'**
+  String get adifFreqInvalid;
 }
 
 class _AppLocalizationsDelegate

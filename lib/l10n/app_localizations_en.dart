@@ -4083,4 +4083,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get adifModeRequiredHint =>
       'Most logbooks (including QRZ) require MODE; records without it are rejected';
+
+  @override
+  String get adifFreq => 'Frequency (FREQ)';
+
+  @override
+  String get adifFreqHint => 'In MHz; leave blank to omit';
+
+  @override
+  String get adifFreqInvalid => 'Enter a number in MHz, e.g. 144.640';
 }

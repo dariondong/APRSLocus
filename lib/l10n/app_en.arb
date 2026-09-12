@@ -1310,5 +1310,8 @@
   "adifBand": "Band (BAND)",
   "adifStripSsid": "Write base callsign only (drop -SSID)",
   "adifPreview": "Preview (record to be written)",
-  "adifModeRequiredHint": "Most logbooks (including QRZ) require MODE; records without it are rejected"
+  "adifModeRequiredHint": "Most logbooks (including QRZ) require MODE; records without it are rejected",
+  "adifFreq": "Frequency (FREQ)",
+  "adifFreqHint": "In MHz; leave blank to omit",
+  "adifFreqInvalid": "Enter a number in MHz, e.g. 144.640"
 }

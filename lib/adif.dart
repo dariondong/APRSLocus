@@ -32,6 +32,12 @@ class AdifOptions {
   /// 默认不写 —— APRS 的实际频段 App 无从得知，写错会污染日志。
   final String? band;
 
+  /// `FREQ` 值（**MHz**，如 `144.640`）。`null` = 不写。
+  ///
+  /// 默认不写、由用户自行填写 —— 各地 APRS 频率不同，App 无从得知。
+  /// 传入前必须已由 [Adif.normalizeFreq] 规范化（小数分隔符为 `.`）。
+  final String? freq;
+
   /// 是否只写**基础呼号**（去掉 `-SSID`）。
   ///
   /// 会话里的呼号带 SSID（如 `BG7PGW-2`），而部分日志软件的呼号校验
@@ -43,6 +49,7 @@ class AdifOptions {
     this.mode = 'PKT',
     this.subModeAprs = true,
     this.band,
+    this.freq,
     this.stripSsid = false,
   });
 
@@ -50,11 +57,13 @@ class AdifOptions {
     Object? mode = _unset,
     bool? subModeAprs,
     Object? band = _unset,
+    Object? freq = _unset,
     bool? stripSsid,
   }) => AdifOptions(
     mode: identical(mode, _unset) ? this.mode : mode as String?,
     subModeAprs: subModeAprs ?? this.subModeAprs,
     band: identical(band, _unset) ? this.band : band as String?,
+    freq: identical(freq, _unset) ? this.freq : freq as String?,
     stripSsid: stripSsid ?? this.stripSsid,
   );
 
@@ -81,6 +90,39 @@ class Adif {
 
   /// 可选的 `BAND` 值（含 `null` = 不写）。均为 ADIF 标准写法。
   static const bandChoices = <String?>[null, '2m', '70cm', '1.25m', '23cm', '6m'];
+
+  /// 常用 APRS 频率（MHz），供界面一键填入；**用户仍可手改任意值**。
+  ///
+  /// 依次为 VHF 上各地常用的 APRS 信道：中国 144.640、欧洲 144.800、
+  /// 北美 144.390、国际空间站 145.825。
+  /// 之所以只做「预设」而不做固定下拉：APRS 频率随地区/中继而异，
+  /// 写死列表一定会漏掉某些地区，所以预设只当快捷方式。
+  static const freqPresets = <String>['144.640', '144.800', '144.390', '145.825'];
+
+  /// 规范化用户输入的频率（**MHz**）。返回 `null` = 格式无效。
+  ///
+  /// 宽容处理三件事（用户常直接从频率表复制粘贴）：
+  /// - 去掉首尾空白
+  /// - 去掉误粘的单位后缀 `MHz`
+  /// - 把欧式逗号小数（`144,640`）改成点
+  ///
+  /// **为什么必须把逗号改成点**：ADIF 规定小数分隔符是 `.`，
+  /// 与操作系统语言环境无关。若原样写 `<FREQ:7>144,640`，
+  /// 欧/法语区的日志软件会当成非法数字或解析错位。
+  static String? normalizeFreq(String raw) {
+    var s = raw.trim();
+    if (s.isEmpty) return null;
+    // 注意：Dart 的 RegExp 是 ECMAScript 语法，**不支持 `(?i)` 内联标志**
+    // （写 `(?i)` 会直接抛 FormatException: Invalid group）——
+    // 大小写不敏感必须用 caseSensitive 参数。
+    s = s.replaceAll(RegExp(r'\s*mhz$', caseSensitive: false), '').trim();
+    s = s.replaceAll(',', '.');
+    // 只接受十进制正数（必须有前导数字，避免 `.5` 这类歧义写法）
+    if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(s)) return null;
+    final v = double.tryParse(s);
+    if (v == null || v <= 0 || v > 30000) return null;
+    return s;
+  }
 
   /// 去掉呼号尾部的 `-SSID`：`BG7PGW-2` → `BG7PGW`（无 SSID 时原样返回）
   static String stripSsid(String call) {
@@ -132,6 +174,8 @@ class Adif {
       if (options.subModeAprs) b.write(_field('SUBMODE', 'APRS'));
     }
     if (options.band != null) b.write(_field('BAND', options.band!));
+    // FREQ 是数值型，单位 MHz（小数分隔符固定用 `.`，见 normalizeFreq）
+    if (options.freq != null) b.write(_field('FREQ', options.freq!));
     b
       ..write('<EOR>')
       ..write('\n');

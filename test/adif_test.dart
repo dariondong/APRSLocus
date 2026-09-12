@@ -249,6 +249,74 @@ void main() {
     });
   });
 
+  group('ADIF 导出选项：频率 FREQ', () {
+    final r = AdifRecord(call: 'BG6XVJ', timeOn: DateTime.utc(2026, 9, 12));
+
+    test('默认不写 FREQ（各地 APRS 频率不同，App 无从得知）', () {
+      expect(Adif.encode([r]).contains('FREQ'), isFalse);
+    });
+
+    test('指定 FREQ 时按 MHz 写出，且长度按字节数正确', () {
+      expect(
+        Adif.encode([r], options: const AdifOptions(freq: '144.640'))
+            .contains('<FREQ:7>144.640'),
+        isTrue,
+      );
+      // HF 频率位数较少
+      expect(
+        Adif.encode([r], options: const AdifOptions(freq: '7.035'))
+            .contains('<FREQ:5>7.035'),
+        isTrue,
+      );
+    });
+
+    test('FREQ 与 BAND 可同时存在，且都写在 EOR 之前', () {
+      final out = Adif.encode(
+        [r],
+        options: const AdifOptions(band: '2m', freq: '144.640'),
+      );
+      expect(out.contains('<BAND:2>2m'), isTrue);
+      expect(out.contains('<FREQ:7>144.640'), isTrue);
+      expect(out.indexOf('FREQ') < out.indexOf('<EOR>'), isTrue);
+    });
+
+    test('规范化：去空白 / 去 MHz 后缀 / 逗号转点', () {
+      expect(Adif.normalizeFreq('144.640'), '144.640');
+      expect(Adif.normalizeFreq('  144.640  '), '144.640');
+      expect(Adif.normalizeFreq('144,640'), '144.640');
+      expect(Adif.normalizeFreq('144.640MHz'), '144.640');
+      expect(Adif.normalizeFreq('144.640 MHz'), '144.640');
+      expect(Adif.normalizeFreq('144'), '144');
+    });
+
+    test('逗号必须被转成点（ADIF 与语言环境无关）', () {
+      // 若原样写 <FREQ:7>144,640，欧/法语区日志软件会解析错位
+      final n = Adif.normalizeFreq('144,640');
+      expect(n, isNotNull);
+      expect(n!.contains(','), isFalse);
+      final out = Adif.encode([r], options: AdifOptions(freq: n));
+      expect(out.contains(','), isFalse);
+    });
+
+    test('非法输入一律返回 null（宁可不写，不写错值）', () {
+      for (final bad in [
+        '', '   ', 'abc', '144.', '.5', '0', '0.0', '-144',
+        '144.640.1', '99999', '1e3', '３６５',
+      ]) {
+        expect(Adif.normalizeFreq(bad), isNull, reason: '应拒绝: $bad');
+      }
+      // 上边界允许
+      expect(Adif.normalizeFreq('30000'), '30000');
+    });
+
+    test('常用频率预设本身都是合法值（否则快选会填进非法值）', () {
+      expect(Adif.freqPresets, isNotEmpty);
+      for (final f in Adif.freqPresets) {
+        expect(Adif.normalizeFreq(f), f, reason: '预设不合法: $f');
+      }
+    });
+  });
+
   group('界面「预览」与实际写出必须完全一致', () {
     test('record() 是 encode() 输出的组成部分', () {
       // 预览如果和实际写出走两条代码路径，就会骗人 ——
@@ -259,6 +327,7 @@ void main() {
         AdifOptions(mode: null, subModeAprs: false),
         AdifOptions(mode: 'FM', subModeAprs: false, band: '2m'),
         AdifOptions(stripSsid: true, band: '70cm'),
+        AdifOptions(band: '2m', freq: '144.640'),
       ]) {
         final full = Adif.encode(
           [r],

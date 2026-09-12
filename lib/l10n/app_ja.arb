@@ -1394,5 +1394,8 @@
   "adifBand": "バンド（BAND）",
   "adifStripSsid": "基本コールサインのみ（-SSID を除去）",
   "adifPreview": "プレビュー（書き出されるレコード）",
-  "adifModeRequiredHint": "多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます"
+  "adifModeRequiredHint": "多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます",
+  "adifFreq": "周波数（FREQ）",
+  "adifFreqHint": "単位 MHz、空欄なら書き込みません",
+  "adifFreqInvalid": "MHz の数値を入力してください（例 144.640）"
 }

@@ -4007,4 +4007,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adifModeRequiredHint => '多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます';
+
+  @override
+  String get adifFreq => '周波数（FREQ）';
+
+  @override
+  String get adifFreqHint => '単位 MHz、空欄なら書き込みません';
+
+  @override
+  String get adifFreqInvalid => 'MHz の数値を入力してください（例 144.640）';
 }

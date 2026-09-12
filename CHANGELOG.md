@@ -1,5 +1,38 @@
 # 更新日志
 
+## [1.6.92] - 2026-09-13
+
+### 📶 导出 ADIF：新增「频率（FREQ）」，可自定义 / ADIF export: custom FREQ
+- 导出页新增 **频率（FREQ）** 输入框（单位 **MHz**），由你自己填写（各地 APRS 频率不同，App 无从得知）
+- 提供**常用频率快选**：**144.640 / 144.800 / 144.390 / 145.825**（中国 / 欧洲 / 北美 / 国际空间站）
+  —— 点一下填入，**仍可手改任意值**（只做快捷方式，不做固定下拉：写死列表一定会漏地区）
+- **宽容规范化**：自动去首尾空白、去掉误粘的单位后缀 `MHz`、把欧式逗号小数自动改正
+- **小数分隔符一律用 `.`**：ADIF 规定与操作系统语言环境无关；若原样写 `<FREQ:7>144,640`，
+  欧/法语区的日志软件会解析错位
+- **格式非法时禁用导出并就地提示**（如填了 `abc`），而不是静默丢掉你填的值
+- **与 BAND 相互独立**，可同时写入（很多日志软件两者都要）；选项会被记住
+
+- The export page now has a **Frequency (FREQ)** field in **MHz**, which you fill in yourself
+  (APRS frequencies vary by region and the app cannot know yours).
+- **Quick presets**: **144.640 / 144.800 / 144.390 / 145.825** (China / Europe / North America / ISS)
+  — one tap to fill, and you can still type any value. Presets only, no fixed dropdown, because a
+  hard-coded list will always miss some region.
+- **Lenient normalisation**: trims whitespace, drops a pasted `MHz` suffix, and fixes
+  comma decimals.
+- **The decimal separator is always `.`**: ADIF is locale-independent; writing
+  `<FREQ:7>144,640` would misparse in European/French logbooks.
+- **Invalid input disables the export button with an inline hint** instead of silently dropping
+  what you typed.
+- **Independent of BAND** — both can be written at once, and your choices are remembered.
+
+### 🧪 回归测试 / Regression tests
+- `test/adif_test.dart` 扩到 **34 项**：新增 7 项 FREQ 用例，包括「**逗号必须被转成点**」
+  （语言环境陷阱）与「**非法输入一律拒绝**」；仍在 UTC 与 Asia/Shanghai 两时区下各验一遍
+
+- `test/adif_test.dart` grew to **34 tests**, adding 7 FREQ cases including
+  "**commas must become dots**" (the locale trap) and "**invalid input is always rejected**";
+  still verified under both UTC and Asia/Shanghai.
+
 ## [1.6.91] - 2026-09-12
 
 ### 📤 导出 ADIF：新增可选导出选项（修好导入被拒） / ADIF export: selectable options (fixes import rejection)

@@ -60,7 +60,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.91';
+  static const appVersion = '1.6.92';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -787,6 +787,8 @@ class AppState extends ChangeNotifier {
   bool adifSubMode = true;
   /// BAND 值；空串 = 不写
   String adifBand = '';
+  /// FREQ 值（MHz，已规范化）；空串 = 不写
+  String adifFreq = '';
   bool adifStripSsid = false;
 
   /// 组装为编码器使用的选项
@@ -794,6 +796,7 @@ class AppState extends ChangeNotifier {
     mode: adifMode.isEmpty ? null : adifMode,
     subModeAprs: adifSubMode,
     band: adifBand.isEmpty ? null : adifBand,
+    freq: adifFreq.isEmpty ? null : adifFreq,
     stripSsid: adifStripSsid,
   );
 
@@ -801,6 +804,7 @@ class AppState extends ChangeNotifier {
     adifMode = o.mode ?? '';
     adifSubMode = o.subModeAprs;
     adifBand = o.band ?? '';
+    adifFreq = o.freq ?? '';
     adifStripSsid = o.stripSsid;
     persist();
     _notify();
@@ -1004,6 +1008,7 @@ class AppState extends ChangeNotifier {
       adifMode = p.getString('adifMode') ?? adifMode;
       adifSubMode = p.getBool('adifSubMode') ?? adifSubMode;
       adifBand = p.getString('adifBand') ?? adifBand;
+      adifFreq = p.getString('adifFreq') ?? adifFreq;
       adifStripSsid = p.getBool('adifStripSsid') ?? adifStripSsid;
       locationMode = p.getString('locationMode') ?? locationMode;
       loc.mode = locationMode;
@@ -1131,6 +1136,7 @@ class AppState extends ChangeNotifier {
           p.setString('adifMode', adifMode);
           p.setBool('adifSubMode', adifSubMode);
           p.setString('adifBand', adifBand);
+          p.setString('adifFreq', adifFreq);
           p.setBool('adifStripSsid', adifStripSsid);
           p.setString('locationMode', locationMode);
           p.setBool('useSimLocation', useSimLocation);

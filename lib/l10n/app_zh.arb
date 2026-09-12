@@ -1907,5 +1907,8 @@
   "adifBand": "频段（BAND）",
   "adifStripSsid": "只写基础呼号（去掉 -SSID）",
   "adifPreview": "预览（将写出的记录）",
-  "adifModeRequiredHint": "多数日志软件（含 QRZ）要求 MODE，缺少会被拒收"
+  "adifModeRequiredHint": "多数日志软件（含 QRZ）要求 MODE，缺少会被拒收",
+  "adifFreq": "频率（FREQ）",
+  "adifFreqHint": "单位 MHz，留空则不写",
+  "adifFreqInvalid": "请输入 MHz 数字，如 144.640"
 }

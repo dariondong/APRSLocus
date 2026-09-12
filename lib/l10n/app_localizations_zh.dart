@@ -3973,6 +3973,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adifModeRequiredHint => '多数日志软件（含 QRZ）要求 MODE，缺少会被拒收';
+
+  @override
+  String get adifFreq => '频率（FREQ）';
+
+  @override
+  String get adifFreqHint => '单位 MHz，留空则不写';
+
+  @override
+  String get adifFreqInvalid => '请输入 MHz 数字，如 144.640';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -7944,4 +7953,13 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get adifModeRequiredHint => '多數日誌軟體（含 QRZ）要求 MODE，缺少會被拒收';
+
+  @override
+  String get adifFreq => '頻率（FREQ）';
+
+  @override
+  String get adifFreqHint => '單位 MHz，留空則不寫';
+
+  @override
+  String get adifFreqInvalid => '請輸入 MHz 數字，如 144.640';
 }

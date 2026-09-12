@@ -35,13 +35,45 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
   /// 导出选项（初值取用户上次的选择，改动即持久化）
   late AdifOptions _opts;
 
+  /// FREQ 输入框：文本是唯一真源，选项里的 freq 由它实时解析而来
+  late final TextEditingController _freqCtrl;
+  late final FocusNode _freqFocus;
+  String _freqText = '';
+
   AppState get st => widget.state;
 
   @override
   void initState() {
     super.initState();
     _opts = st.adifOptions;
+    _freqText = _opts.freq ?? '';
+    _freqCtrl = TextEditingController(text: _freqText);
+    // 落盘放在「失焦」而非每次按键：避免每敲一个字符就写一次
+    // SharedPreferences（预览是实时的，不依赖落盘）
+    _freqFocus = FocusNode()
+      ..addListener(() {
+        if (!_freqFocus.hasFocus) st.setAdifOptions(_opts);
+      });
   }
+
+  @override
+  void dispose() {
+    _freqCtrl.dispose();
+    _freqFocus.dispose();
+    super.dispose();
+  }
+
+  /// FREQ 输入：实时同步进选项（格式无效时按「不写」处理，由 UI 提示）
+  void _onFreqChanged(String v) {
+    setState(() {
+      _freqText = v;
+      _opts = _opts.copyWith(freq: Adif.normalizeFreq(v));
+    });
+  }
+
+  /// 输入框有内容但格式非法 —— 此时禁用导出，避免静默丢弃用户填的频率
+  bool get _freqInvalid =>
+      _freqText.trim().isNotEmpty && Adif.normalizeFreq(_freqText) == null;
 
   /// 改动选项：本地刷新 + 写回（下次进入仍是这套设置）
   void _setOpts(AdifOptions o) {
@@ -184,6 +216,12 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
       _toast(S.of(context).adifNoSelection);
       return;
     }
+    if (_freqInvalid) {
+      _toast(S.of(context).adifFreqInvalid);
+      return;
+    }
+    // 导出即落盘（用户可能直接退出而不触发失焦）
+    st.setAdifOptions(_opts);
 
     // 先把文案取好，避免 await 之后再碰 context
     final loc = S.of(context);
@@ -564,6 +602,7 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
               _opts.copyWith(band: (v == null || v.isEmpty) ? null : v),
             ),
           ),
+          _freqRow(s),
           _rowSwitch(
             title: s.adifStripSsid,
             value: _opts.stripSsid,
@@ -571,6 +610,97 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
           ),
         ],
       ),
+    );
+  }
+
+  /// FREQ 行：输入框（MHz）+ 常用频率快选
+  ///
+  /// 只做「预设」而不是固定下拉 —— APRS 频率随地区与中继而异，
+  /// 写死列表一定会漏，所以预设只当快捷方式，任何时候都能手填。
+  Widget _freqRow(S s) {
+    final invalid = _freqInvalid;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(s.adifFreq, style: ts(12, c: C.slate, w: FontWeight.w600)),
+            const Spacer(),
+            SizedBox(
+              width: 120,
+              child: TextField(
+                controller: _freqCtrl,
+                focusNode: _freqFocus,
+                textAlign: TextAlign.right,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                style: ts(12),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: '144.640',
+                  hintStyle: ts(12, c: C.greyLight),
+                  filled: true,
+                  fillColor: C.bgSoft,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: invalid ? C.red : C.blue,
+                      width: 1.2,
+                    ),
+                  ),
+                ),
+                onChanged: _onFreqChanged,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            for (final f in Adif.freqPresets)
+              GestureDetector(
+                onTap: () {
+                  _freqCtrl.text = f;
+                  _onFreqChanged(f);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _freqText.trim() == f ? C.blue : C.bgSoft,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    f,
+                    style: ts(
+                      11,
+                      c: _freqText.trim() == f ? Colors.white : C.slate,
+                      w: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          invalid ? s.adifFreqInvalid : s.adifFreqHint,
+          style: ts(10, c: invalid ? C.red : C.grey, h: 1.4),
+        ),
+      ],
     );
   }
 
@@ -608,7 +738,7 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
   }
 
   Widget _exportButton(S s) {
-    final enabled = _selCount > 0 && !_busy;
+    final enabled = _selCount > 0 && !_busy && !_freqInvalid;
     return SizedBox(
       height: 46,
       child: FilledButton.icon(

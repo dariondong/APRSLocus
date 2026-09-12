@@ -1394,5 +1394,8 @@
   "adifBand": "Band (BAND)",
   "adifStripSsid": "Tulis panggilan dasar saja (hapus -SSID)",
   "adifPreview": "Pratinjau (catatan yang akan ditulis)",
-  "adifModeRequiredHint": "Sebagian besar logbook (termasuk QRZ) mewajibkan MODE; tanpa itu akan ditolak"
+  "adifModeRequiredHint": "Sebagian besar logbook (termasuk QRZ) mewajibkan MODE; tanpa itu akan ditolak",
+  "adifFreq": "Frekuensi (FREQ)",
+  "adifFreqHint": "Dalam MHz; kosongkan untuk tidak menulis",
+  "adifFreqInvalid": "Masukkan angka dalam MHz, mis. 144.640"
 }
