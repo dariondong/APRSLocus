@@ -1,5 +1,49 @@
 # 更新日志
 
+## [1.6.91] - 2026-09-12
+
+### 📤 导出 ADIF：新增可选导出选项（修好导入被拒） / ADIF export: selectable options (fixes import rejection)
+- **修好上一版导不进去的问题**：上一版只写 `CALL` / `QSO_DATE` / `TIME_ON`，**不写 `MODE`**；
+  而 `MODE` 是多数日志软件的**必需**字段，QRZ Logbook 会因为「缺少 MODE」**拒收全部记录**
+- 导出页新增**「导出选项」**，可自行选择：
+  - **MODE**：`PKT`（数据包，**默认**，QRZ 推荐）/ `FM`（语音）/ `DATA`（数据）/ 不写
+  - **附加 SUBMODE=APRS**：开关，默认开（未选 MODE 时自动置灰 —— ADIF 规定 SUBMODE 不能脱离 MODE）
+  - **BAND**：不写（默认）/ 2m / 70cm / 1.25m / 23cm / 6m
+  - **只写基础呼号（去掉 -SSID）**：默认关；开启后 `BG7PGW-2` → `BG7PGW`
+    （部分日志软件的呼号校验只认基础呼号）
+- 选项会被**记住**，下次进入仍是上次的选择
+- 新增**预览**：直接显示即将写出的那条记录，可先核对再导出
+- 字段长度仍按 **UTF-8 字节数**、时间仍写 **UTC**（未变）
+
+- **Fixed the previous version being un-importable**: it wrote only `CALL` / `QSO_DATE` /
+  `TIME_ON` and **omitted `MODE`** — but `MODE` is **required** by most logbooks, so QRZ
+  Logbook rejected every record with “missing MODE”.
+- The export page now has **Export options**:
+  - **MODE**: `PKT` (packet, **default**, recommended for QRZ) / `FM` / `DATA` / omit
+  - **Add SUBMODE=APRS**: default on (greyed out when no MODE is chosen, since ADIF forbids
+    SUBMODE without MODE)
+  - **BAND**: omit (default) / 2m / 70cm / 1.25m / 23cm / 6m
+  - **Base callsign only (drop -SSID)**: default off; when on, `BG7PGW-2` → `BG7PGW`
+- Your choices are **remembered** for next time, and a **preview** shows the exact record
+  that will be written.
+
+### 🔧 顺带修复：导出文件名被追加 `.txt` / Fix: exported filename gained a `.txt` suffix
+- Android 导出到「下载」时，部分系统会按 MIME 类型给文件名**追加 `.txt`**，
+  使 `APRSlocus_….adi` 变成 `APRSlocus_….adi.txt`；现在写入后核对实际文件名并改回
+
+- On Android, some systems **appended `.txt`** to the exported file (because of its
+  `text/plain` MIME type), turning `APRSlocus_….adi` into `APRSlocus_….adi.txt`. The actual
+  display name is now read back and corrected.
+
+### 🧪 回归测试 / Regression tests
+- `test/adif_test.dart` 扩到 **27 项**：新增 MODE/SUBMODE/BAND/去SSID 的用例，
+  其中两条专门钉住「**默认必写 MODE**」与「**SUBMODE 不得脱离 MODE**」，
+  另有一条断言**预览与实际写出内容同源**（预览若另走一套拼接就会骗人）
+
+- `test/adif_test.dart` grew to **27 tests**, adding MODE / SUBMODE / BAND / SSID cases —
+  including “**MODE is written by default**”, “**SUBMODE never appears without MODE**”, and
+  an assertion that the **preview and the real output share one code path**.
+
 ## [1.6.90] - 2026-09-12
 
 ### 📤 新增「导出 ADIF」（设置页 → 在「关于」上方） / ADIF export (Settings → above About)

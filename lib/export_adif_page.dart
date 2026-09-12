@@ -32,7 +32,47 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
   bool _busy = false;
   String? _lastPath;
 
+  /// 导出选项（初值取用户上次的选择，改动即持久化）
+  late AdifOptions _opts;
+
   AppState get st => widget.state;
+
+  @override
+  void initState() {
+    super.initState();
+    _opts = st.adifOptions;
+  }
+
+  /// 改动选项：本地刷新 + 写回（下次进入仍是这套设置）
+  void _setOpts(AdifOptions o) {
+    setState(() => _opts = o);
+    st.setAdifOptions(o);
+  }
+
+  /// 预览用样本：优先取「已选中」的第一个，否则取列表第一条可导出会话。
+  /// 复用 _firstTimeOf* 与 Adif.record() —— 保证预览与真正写出的内容**完全同源**。
+  AdifRecord? _sampleRecord() {
+    final (groups, calls) = _exportables();
+    for (final g in groups) {
+      if (!_selGroups.contains(g.id)) continue;
+      final t = _firstTimeOfGroup(g.id);
+      if (t != null) return AdifRecord(call: g.groupCall, timeOn: t);
+    }
+    for (final p in calls) {
+      if (!_selCalls.contains(p)) continue;
+      final t = _firstTimeOfCall(p);
+      if (t != null) return AdifRecord(call: p, timeOn: t);
+    }
+    if (groups.isNotEmpty) {
+      final t = _firstTimeOfGroup(groups.first.id);
+      if (t != null) return AdifRecord(call: groups.first.groupCall, timeOn: t);
+    }
+    if (calls.isNotEmpty) {
+      final t = _firstTimeOfCall(calls.first);
+      if (t != null) return AdifRecord(call: calls.first, timeOn: t);
+    }
+    return null;
+  }
 
   /// 该单聊会话的首条消息时间（无消息返回 null）
   DateTime? _firstTimeOfCall(String call) {
@@ -149,7 +189,11 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
     final loc = S.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
-    final text = Adif.encode(records, programVersion: AppState.appVersion);
+    final text = Adif.encode(
+      records,
+      options: _opts,
+      programVersion: AppState.appVersion,
+    );
     final path = await _save(Adif.fileName(DateTime.now()), text);
     if (!mounted) return;
     setState(() {
@@ -177,6 +221,7 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
     final (groups, calls) = _exportables();
     final total = groups.length + calls.length;
     final all = total > 0 && _selCount >= total;
+    final sample = _sampleRecord();
 
     return Scaffold(
       backgroundColor: C.greyBg,
@@ -204,6 +249,12 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
                 const SizedBox(height: 12),
                 _toolbar(s, total, all),
                 const SizedBox(height: 12),
+                _optionsCard(s),
+                const SizedBox(height: 12),
+                if (sample != null) ...[
+                  _previewCard(s, sample),
+                  const SizedBox(height: 12),
+                ],
                 // 群聊在前、单聊在后，与消息页会话列表顺序一致
                 for (final g in groups) _groupRow(s, g),
                 for (final p in calls) _callRow(s, p),
@@ -397,6 +448,162 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
       onTap: () => setState(() {
         checked ? _selCalls.remove(p) : _selCalls.add(p);
       }),
+    );
+  }
+
+  // ─── 导出选项 ───
+  // 下拉框用空串当「不写」哨兵值：DropdownButton 规定 null 表示「未选择」，
+  // 所以 null 不能作为一个可选项传进去。
+
+  List<String> get _modeItems => [for (final v in Adif.modeChoices) v ?? ''];
+  List<String> get _bandItems => [for (final v in Adif.bandChoices) v ?? ''];
+
+  String _modeLabel(S s, String v) {
+    switch (v) {
+      case 'PKT':
+        return s.adifModePkt;
+      case 'FM':
+        return s.adifModeFm;
+      case 'DATA':
+        return s.adifModeData;
+      default:
+        return v;
+    }
+  }
+
+  Widget _dropRow({
+    required String label,
+    required String value,
+    required List<String> items,
+    required String Function(String) labelOf,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Row(
+      children: [
+        Text(label, style: ts(12, c: C.slate, w: FontWeight.w600)),
+        const Spacer(),
+        DropdownButton<String>(
+          value: value,
+          underline: const SizedBox.shrink(),
+          borderRadius: BorderRadius.circular(10),
+          style: ts(12),
+          items: [
+            for (final it in items)
+              DropdownMenuItem<String>(
+                value: it,
+                child: Text(labelOf(it), style: ts(12)),
+              ),
+          ],
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
+  Widget _rowSwitch({
+    required String title,
+    required bool value,
+    required VoidCallback? onTap,
+  }) => InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Expanded(child: Text(title, style: ts(12, c: C.slate, w: FontWeight.w600))),
+          Switch(
+            value: value,
+            activeThumbColor: C.blue,
+            onChanged: onTap == null ? null : (_) => onTap(),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _optionsCard(S s) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: cardDeco(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.tune_rounded, size: 16, color: C.blue),
+              const SizedBox(width: 6),
+              Text(s.adifOptions, style: ts(12, w: FontWeight.w800)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(s.adifModeRequiredHint, style: ts(10, c: C.grey, h: 1.4)),
+          const SizedBox(height: 10),
+          _dropRow(
+            label: s.adifMode,
+            value: _opts.mode ?? '',
+            items: _modeItems,
+            labelOf: (v) => v.isEmpty ? s.adifNotWritten : _modeLabel(s, v),
+            onChanged: (v) => _setOpts(
+              _opts.copyWith(mode: (v == null || v.isEmpty) ? null : v),
+            ),
+          ),
+          // SUBMODE 依附于 MODE：没有 MODE 时置灰（ADIF 不允许单独出现）
+          _rowSwitch(
+            title: s.adifSubModeAprs,
+            value: _opts.subModeAprs && _opts.mode != null,
+            onTap: _opts.mode == null
+                ? null
+                : () => _setOpts(_opts.copyWith(subModeAprs: !_opts.subModeAprs)),
+          ),
+          _dropRow(
+            label: s.adifBand,
+            value: _opts.band ?? '',
+            items: _bandItems,
+            labelOf: (v) => v.isEmpty ? s.adifNotWritten : v,
+            onChanged: (v) => _setOpts(
+              _opts.copyWith(band: (v == null || v.isEmpty) ? null : v),
+            ),
+          ),
+          _rowSwitch(
+            title: s.adifStripSsid,
+            value: _opts.stripSsid,
+            onTap: () => _setOpts(_opts.copyWith(stripSsid: !_opts.stripSsid)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 预览：直接调用 Adif.record()，与真正写出的内容同源（不是另写一套拼接）
+  Widget _previewCard(S s, AdifRecord r) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: cardDeco(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.visibility_rounded, size: 16, color: C.cyan),
+              const SizedBox(width: 6),
+              Text(s.adifPreview, style: ts(12, w: FontWeight.w800)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: C.bgSoft,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: SelectableText(
+              Adif.record(r, _opts).trim(),
+              style: mono(11, c: C.slate),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

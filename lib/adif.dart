@@ -1,10 +1,6 @@
 import 'dart:convert';
 
 /// ADIF（Amateur Data Interchange Format）记录。
-///
-/// 本导出**只写呼号与时间**（CALL / QSO_DATE / TIME_ON），
-/// 不写 MODE / BAND —— APRS 的频段 App 无从得知，写错反而会污染日志；
-/// 留空让用户在自己的日志软件里统一补，比写入错误信息更安全。
 class AdifRecord {
   /// 对方呼号（导出时统一转大写）
   final String call;
@@ -15,24 +11,90 @@ class AdifRecord {
   const AdifRecord({required this.call, required this.timeOn});
 }
 
+/// 导出选项 —— 由用户在导出页选择。
+///
+/// 为什么需要这些选项：ADIF 的 `MODE` 是**必需**字段，很多日志软件
+/// （含 QRZ Logbook）在缺少 `MODE` 时会**直接拒收整条记录**
+/// —— 报错是「缺少 MODE」，而不是呼号或时间有问题。
+/// 早期版本为了「不写入不确定的信息」而完全省略 MODE，结果文件导不进去，
+/// 所以现在改为：给一个**默认有 MODE**、且可让用户自行调整的方案。
+class AdifOptions {
+  /// `MODE` 值。`null` = 不写（不推荐：多数日志软件会拒收）。
+  /// 默认 `PKT`（Packet radio）—— 它是 ADIF 标准词表里的合法值，
+  /// 也正是 APRS 的传输方式。
+  final String? mode;
+
+  /// 是否在 `MODE` 之外附加 `SUBMODE: APRS`。
+  /// 仅在 [mode] 非空时生效（ADIF 规定 SUBMODE 不能脱离 MODE 单独出现）。
+  final bool subModeAprs;
+
+  /// `BAND` 值（如 `2m` / `70cm`）。`null` = 不写。
+  /// 默认不写 —— APRS 的实际频段 App 无从得知，写错会污染日志。
+  final String? band;
+
+  /// 是否只写**基础呼号**（去掉 `-SSID`）。
+  ///
+  /// 会话里的呼号带 SSID（如 `BG7PGW-2`），而部分日志软件的呼号校验
+  /// 只认基础呼号；打开后写成 `BG7PGW`。
+  /// 默认关闭 —— 不做任何猜测性改写，用户明确需要时才开。
+  final bool stripSsid;
+
+  const AdifOptions({
+    this.mode = 'PKT',
+    this.subModeAprs = true,
+    this.band,
+    this.stripSsid = false,
+  });
+
+  AdifOptions copyWith({
+    Object? mode = _unset,
+    bool? subModeAprs,
+    Object? band = _unset,
+    bool? stripSsid,
+  }) => AdifOptions(
+    mode: identical(mode, _unset) ? this.mode : mode as String?,
+    subModeAprs: subModeAprs ?? this.subModeAprs,
+    band: identical(band, _unset) ? this.band : band as String?,
+    stripSsid: stripSsid ?? this.stripSsid,
+  );
+
+  /// 供 copyWith 区分「没传」与「显式传 null」
+  static const _unset = Object();
+}
+
 /// ADIF 文本生成器。
 ///
 /// 规范要点（都已在实现中遵守，并有单元测试钉住）：
 /// - 每个字段写作 `<名称:长度>值`，**长度是值的 UTF-8 字节数**，不是字符数。
-///   呼号是 ASCII 时两者恰好相等，但代码不依赖这一点（值里出现非 ASCII 时会算错）。
 /// - 日期为 `YYYYMMDD`、时间为 `HHMMSS`，且**必须是 UTC**。
 /// - 头部以 `<EOH>` 结束，每条记录以 `<EOR>` 结束。
+/// - `SUBMODE` 不能脱离 `MODE` 单独出现。
 class Adif {
   Adif._();
 
   /// 写入头部的 ADIF 版本
   static const version = '3.1.4';
 
+  /// 可选的 `MODE` 值（含 `null` = 不写），供 UI 下拉框使用。
+  /// 只列与本应用相关的几种，避免把整个 ADIF 词表塞进界面。
+  static const modeChoices = <String?>['PKT', 'FM', 'DATA', null];
+
+  /// 可选的 `BAND` 值（含 `null` = 不写）。均为 ADIF 标准写法。
+  static const bandChoices = <String?>[null, '2m', '70cm', '1.25m', '23cm', '6m'];
+
+  /// 去掉呼号尾部的 `-SSID`：`BG7PGW-2` → `BG7PGW`（无 SSID 时原样返回）
+  static String stripSsid(String call) {
+    final c = call.trim();
+    final i = c.indexOf('-');
+    return i <= 0 ? c : c.substring(0, i);
+  }
+
   /// 生成 ADIF 文本。
   ///
   /// [created] 为生成时间（头部 CREATED_TIMESTAMP），默认取当前时间。
   static String encode(
     List<AdifRecord> records, {
+    AdifOptions options = const AdifOptions(),
     String programId = 'APRSlocus',
     String programVersion = '',
     DateTime? created,
@@ -50,14 +112,29 @@ class Adif {
       ..write('\n');
 
     for (final r in records) {
-      final t = r.timeOn.toUtc();
-      b
-        ..write(_field('CALL', r.call.trim().toUpperCase()))
-        ..write(_field('QSO_DATE', dateOf(t)))
-        ..write(_field('TIME_ON', timeOf(t)))
-        ..write('<EOR>')
-        ..write('\n');
+      b.write(record(r, options));
     }
+    return b.toString();
+  }
+
+  /// 单条记录的文本（供导出拼装，也供界面「预览」直接复用，
+  /// 保证预览与实际写出的内容**必然一致**）。
+  static String record(AdifRecord r, AdifOptions options) {
+    final t = r.timeOn.toUtc();
+    final call = r.call.trim().toUpperCase();
+    final b = StringBuffer()
+      ..write(_field('CALL', options.stripSsid ? stripSsid(call) : call))
+      ..write(_field('QSO_DATE', dateOf(t)))
+      ..write(_field('TIME_ON', timeOf(t)));
+    // MODE 是多数日志软件的必需字段；SUBMODE 必须依附于 MODE
+    if (options.mode != null) {
+      b.write(_field('MODE', options.mode!));
+      if (options.subModeAprs) b.write(_field('SUBMODE', 'APRS'));
+    }
+    if (options.band != null) b.write(_field('BAND', options.band!));
+    b
+      ..write('<EOR>')
+      ..write('\n');
     return b.toString();
   }
 

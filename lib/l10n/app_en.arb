@@ -1299,5 +1299,16 @@
   "adifCopyPath": "Copy path",
   "adifPathCopied": "Path copied",
   "chatShortLabel": "Chat",
-  "adifLogFile": "Export chats as a log file"
+  "adifLogFile": "Export chats as a log file",
+  "adifOptions": "Export options",
+  "adifMode": "Mode (MODE)",
+  "adifNotWritten": "Omit",
+  "adifModePkt": "PKT (packet, recommended)",
+  "adifModeFm": "FM (voice)",
+  "adifModeData": "DATA (data)",
+  "adifSubModeAprs": "Add SUBMODE=APRS",
+  "adifBand": "Band (BAND)",
+  "adifStripSsid": "Write base callsign only (drop -SSID)",
+  "adifPreview": "Preview (record to be written)",
+  "adifModeRequiredHint": "Most logbooks (including QRZ) require MODE; records without it are rejected"
 }

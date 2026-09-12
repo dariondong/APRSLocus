@@ -1383,5 +1383,16 @@
   "adifCopyPath": "パスをコピー",
   "adifPathCopied": "パスをコピーしました",
   "chatShortLabel": "個別",
-  "adifLogFile": "会話をログファイルに保存"
+  "adifLogFile": "会話をログファイルに保存",
+  "adifOptions": "エクスポート設定",
+  "adifMode": "モード（MODE）",
+  "adifNotWritten": "書き込まない",
+  "adifModePkt": "PKT（パケット、推奨）",
+  "adifModeFm": "FM（音声）",
+  "adifModeData": "DATA（データ）",
+  "adifSubModeAprs": "SUBMODE=APRS を追加",
+  "adifBand": "バンド（BAND）",
+  "adifStripSsid": "基本コールサインのみ（-SSID を除去）",
+  "adifPreview": "プレビュー（書き出されるレコード）",
+  "adifModeRequiredHint": "多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます"
 }

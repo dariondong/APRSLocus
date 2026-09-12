@@ -4049,4 +4049,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adifLogFile => 'Export chats as a log file';
+
+  @override
+  String get adifOptions => 'Export options';
+
+  @override
+  String get adifMode => 'Mode (MODE)';
+
+  @override
+  String get adifNotWritten => 'Omit';
+
+  @override
+  String get adifModePkt => 'PKT (packet, recommended)';
+
+  @override
+  String get adifModeFm => 'FM (voice)';
+
+  @override
+  String get adifModeData => 'DATA (data)';
+
+  @override
+  String get adifSubModeAprs => 'Add SUBMODE=APRS';
+
+  @override
+  String get adifBand => 'Band (BAND)';
+
+  @override
+  String get adifStripSsid => 'Write base callsign only (drop -SSID)';
+
+  @override
+  String get adifPreview => 'Preview (record to be written)';
+
+  @override
+  String get adifModeRequiredHint =>
+      'Most logbooks (including QRZ) require MODE; records without it are rejected';
 }

@@ -3940,6 +3940,39 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adifLogFile => '会话导出为日志文件';
+
+  @override
+  String get adifOptions => '导出选项';
+
+  @override
+  String get adifMode => '模式（MODE）';
+
+  @override
+  String get adifNotWritten => '不写';
+
+  @override
+  String get adifModePkt => 'PKT（数据包，推荐）';
+
+  @override
+  String get adifModeFm => 'FM（语音）';
+
+  @override
+  String get adifModeData => 'DATA（数据）';
+
+  @override
+  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+
+  @override
+  String get adifBand => '频段（BAND）';
+
+  @override
+  String get adifStripSsid => '只写基础呼号（去掉 -SSID）';
+
+  @override
+  String get adifPreview => '预览（将写出的记录）';
+
+  @override
+  String get adifModeRequiredHint => '多数日志软件（含 QRZ）要求 MODE，缺少会被拒收';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -7878,4 +7911,37 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get adifLogFile => '會話匯出為日誌檔案';
+
+  @override
+  String get adifOptions => '匯出選項';
+
+  @override
+  String get adifMode => '模式（MODE）';
+
+  @override
+  String get adifNotWritten => '不寫';
+
+  @override
+  String get adifModePkt => 'PKT（資料包，推薦）';
+
+  @override
+  String get adifModeFm => 'FM（語音）';
+
+  @override
+  String get adifModeData => 'DATA（資料）';
+
+  @override
+  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+
+  @override
+  String get adifBand => '頻段（BAND）';
+
+  @override
+  String get adifStripSsid => '只寫基礎呼號（去掉 -SSID）';
+
+  @override
+  String get adifPreview => '預覽（將寫出的記錄）';
+
+  @override
+  String get adifModeRequiredHint => '多數日誌軟體（含 QRZ）要求 MODE，缺少會被拒收';
 }

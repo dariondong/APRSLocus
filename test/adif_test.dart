@@ -6,13 +6,14 @@ import 'package:aprslocus/adif.dart';
 
 /// ADIF 导出的回归测试。
 ///
-/// 背景：ADIF 是**长度前缀**格式（`<名称:长度>值`），而长度是
+/// 背景一：ADIF 是**长度前缀**格式（`<名称:长度>值`），而长度是
 /// **值的 UTF-8 字节数、不是字符数**。这类错误不会抛异常，
-/// 只会让日志软件静默解析错乱 —— 是最难靠肉眼发现的一类问题，
-/// 所以这里用测试钉住：
-///   - 字节长度（含非 ASCII 值）
-///   - 日期 / 时间的 **UTC** 语义（写成本地时间会让 QSO 时间整体偏移）
-///   - 头部 / EOH / EOR 结构
+/// 只会让日志软件静默解析错乱 —— 最难靠肉眼发现，所以用测试钉住。
+///
+/// 背景二（真实踩坑）：早期版本为了「不写入不确定的信息」而**完全省略 MODE**，
+/// 结果 QRZ Logbook 报「缺少 MODE」并**拒收全部记录**。所以现在默认写
+/// `MODE=PKT` + `SUBMODE=APRS`，且做成用户可选。本文件把
+/// 「默认必须有 MODE」「SUBMODE 不得脱离 MODE」都钉住。
 void main() {
   group('ADIF 字段编码', () {
     test('长度是 UTF-8 字节数，不是字符数', () {
@@ -41,10 +42,13 @@ void main() {
     });
 
     test('每个字段的长度与紧随其后的值自洽（全串扫描）', () {
-      final out = Adif.encode([
-        AdifRecord(call: 'BG7ABC', timeOn: DateTime.utc(2026, 9, 12, 1, 2, 3)),
-        AdifRecord(call: 'BH6RIZ', timeOn: DateTime.utc(2026, 1, 2, 3, 4, 5)),
-      ]);
+      final out = Adif.encode(
+        [
+          AdifRecord(call: 'BG7ABC', timeOn: DateTime.utc(2026, 9, 12, 1, 2, 3)),
+          AdifRecord(call: 'BH6RIZ', timeOn: DateTime.utc(2026, 1, 2, 3, 4, 5)),
+        ],
+        options: const AdifOptions(mode: 'PKT', subModeAprs: true),
+      );
       final re = RegExp(r'<([A-Z_]+):(\d+)>');
       var n = 0;
       for (final m in re.allMatches(out)) {
@@ -52,7 +56,6 @@ void main() {
         final len = int.parse(m.group(2)!);
         final start = m.end;
         final value = out.substring(start, start + len);
-        // 值必须以字段分隔符开头，且其真实字节数等于声明长度
         expect(
           utf8.encode(value).length,
           len,
@@ -61,10 +64,10 @@ void main() {
         n++;
       }
       // 本调用未传 programVersion，故头部字段为 3 个
-      // （ADIF_VER / PROGRAMID / CREATED_TIMESTAMP），
-      // 加 2 条记录 × 3 字段 = 9。
+      // （ADIF_VER / PROGRAMID / CREATED_TIMESTAMP）；
+      // 每条记录 5 个字段（CALL/QSO_DATE/TIME_ON/MODE/SUBMODE），2 条 = 10。
       // 断言精确值：将来若增删字段会主动暴露，而不是静默溜过。
-      expect(n, 9);
+      expect(n, 13);
     });
   });
 
@@ -101,31 +104,27 @@ void main() {
         AdifRecord(call: 'BG7ABC', timeOn: DateTime.utc(2026, 9, 12, 1, 2, 3)),
         AdifRecord(call: 'BH6RIZ', timeOn: DateTime.utc(2026, 9, 13, 4, 5, 6)),
       ],
-      programVersion: '1.6.90',
+      programVersion: '1.6.91',
       created: DateTime.utc(2026, 9, 12, 13, 15, 0),
     );
 
     test('头部含 ADIF_VER / PROGRAMID / PROGRAMVERSION / CREATED_TIMESTAMP', () {
       expect(out.contains('<ADIF_VER:5>3.1.4'), isTrue);
       expect(out.contains('<PROGRAMID:9>APRSlocus'), isTrue);
-      expect(out.contains('<PROGRAMVERSION:6>1.6.90'), isTrue);
+      expect(out.contains('<PROGRAMVERSION:6>1.6.91'), isTrue);
       expect(out.contains('<CREATED_TIMESTAMP:15>20260912 131500'), isTrue);
     });
 
     test('头部以 EOH 结束，记录数与 EOR 数一致且无多余记录', () {
       expect(out.contains('<EOH>'), isTrue);
       expect('<EOR>'.allMatches(out).length, 2);
-      // EOH 必须在所有记录之前
       expect(out.indexOf('<EOH>') < out.indexOf('<EOR>'), isTrue);
     });
 
-    test('每条记录都含 CALL / QSO_DATE / TIME_ON，且不含 MODE / BAND', () {
+    test('每条记录都含 CALL / QSO_DATE / TIME_ON', () {
       expect('<CALL:'.allMatches(out).length, 2);
       expect('<QSO_DATE:'.allMatches(out).length, 2);
       expect('<TIME_ON:'.allMatches(out).length, 2);
-      // 按用户要求：只写呼号与时间，不写 MODE / BAND（避免写入错误信息）
-      expect(out.contains('MODE'), isFalse);
-      expect(out.contains('BAND'), isFalse);
     });
 
     test('空记录列表仍产出合法头部（不产生 EOR）', () {
@@ -137,6 +136,141 @@ void main() {
     test('不写 PROGRAMVERSION 时该字段整体不出现', () {
       final noVer = Adif.encode([], created: DateTime.utc(2026, 9, 12));
       expect(noVer.contains('PROGRAMVERSION'), isFalse);
+    });
+  });
+
+  // ─── 用户可选选项（本次新增，直接对应 QRZ 拒收问题）───
+  group('ADIF 导出选项：MODE / SUBMODE', () {
+    final r = AdifRecord(call: 'BG6XVJ', timeOn: DateTime.utc(2026, 9, 12, 13, 58));
+
+    test('默认必写 MODE=PKT 与 SUBMODE=APRS（修复 QRZ 拒收）', () {
+      final out = Adif.encode([r]);
+      expect(out.contains('<MODE:3>PKT'), isTrue);
+      expect(out.contains('<SUBMODE:4>APRS'), isTrue);
+    });
+
+    test('MODE 值长度按字节数正确（PKT=3 / FM=2 / DATA=4）', () {
+      expect(
+        Adif.encode([r], options: const AdifOptions(mode: 'PKT'))
+            .contains('<MODE:3>PKT'),
+        isTrue,
+      );
+      expect(
+        Adif.encode([r], options: const AdifOptions(mode: 'FM'))
+            .contains('<MODE:2>FM'),
+        isTrue,
+      );
+      expect(
+        Adif.encode([r], options: const AdifOptions(mode: 'DATA'))
+            .contains('<MODE:4>DATA'),
+        isTrue,
+      );
+    });
+
+    test('mode 为 null 时 MODE 与 SUBMODE 都不写', () {
+      final out = Adif.encode([r], options: const AdifOptions(mode: null));
+      expect(out.contains('MODE'), isFalse);
+    });
+
+    test('SUBMODE 不得脱离 MODE 单独出现（ADIF 规定）', () {
+      // 即使显式要求 subModeAprs，只要没有 MODE 就必须一并省略
+      final out = Adif.encode(
+        [r],
+        options: const AdifOptions(mode: null, subModeAprs: true),
+      );
+      expect(out.contains('SUBMODE'), isFalse);
+    });
+
+    test('关闭 subModeAprs 时只写 MODE', () {
+      final out = Adif.encode(
+        [r],
+        options: const AdifOptions(mode: 'PKT', subModeAprs: false),
+      );
+      expect(out.contains('<MODE:3>PKT'), isTrue);
+      expect(out.contains('SUBMODE'), isFalse);
+    });
+
+    test('用户可选的 MODE / BAND 候选值都产出合法字段', () {
+      for (final m in Adif.modeChoices) {
+        final out = Adif.encode([r], options: AdifOptions(mode: m));
+        expect(out.contains('MODE'), m != null);
+        expect(out.contains('SUBMODE'), m != null);
+      }
+      for (final b in Adif.bandChoices) {
+        final out = Adif.encode([r], options: AdifOptions(band: b));
+        expect(out.contains('BAND'), b != null);
+      }
+    });
+  });
+
+  group('ADIF 导出选项：BAND', () {
+    final r = AdifRecord(call: 'BG6XVJ', timeOn: DateTime.utc(2026, 9, 12));
+
+    test('默认不写 BAND（APRS 实际频段 App 无从得知）', () {
+      expect(Adif.encode([r]).contains('BAND'), isFalse);
+    });
+
+    test('指定 BAND 时按 ADIF 标准写法输出', () {
+      expect(
+        Adif.encode([r], options: const AdifOptions(band: '2m'))
+            .contains('<BAND:2>2m'),
+        isTrue,
+      );
+      expect(
+        Adif.encode([r], options: const AdifOptions(band: '70cm'))
+            .contains('<BAND:4>70cm'),
+        isTrue,
+      );
+    });
+  });
+
+  group('ADIF 导出选项：呼号 SSID', () {
+    test('stripSsid 去掉 -SSID，保留基础呼号', () {
+      expect(Adif.stripSsid('BG7PGW-2'), 'BG7PGW');
+      expect(Adif.stripSsid('PY1RV-7'), 'PY1RV');
+    });
+
+    test('无 SSID 的呼号原样返回', () {
+      expect(Adif.stripSsid('BG6XVJ'), 'BG6XVJ');
+    });
+
+    test('畸形输入（连字符在首位）不被破坏', () {
+      // 防御性：不应把 '-2' 截成空串
+      expect(Adif.stripSsid('-2'), '-2');
+    });
+
+    test('默认不改写呼号；开启后写出基础呼号且长度正确', () {
+      final r = AdifRecord(call: 'BG7PGW-2', timeOn: DateTime.utc(2026, 9, 12));
+      expect(Adif.encode([r]).contains('<CALL:8>BG7PGW-2'), isTrue);
+      final stripped = Adif.encode([r], options: const AdifOptions(stripSsid: true));
+      // BG7PGW = 6 字符（不是 7）
+      expect(stripped.contains('<CALL:6>BG7PGW'), isTrue);
+      expect(stripped.contains('BG7PGW-2'), isFalse);
+    });
+  });
+
+  group('界面「预览」与实际写出必须完全一致', () {
+    test('record() 是 encode() 输出的组成部分', () {
+      // 预览如果和实际写出走两条代码路径，就会骗人 ——
+      // 这条断言保证两者同源。
+      final r = AdifRecord(call: 'BG7PGW-2', timeOn: DateTime.utc(2026, 9, 12, 1, 2, 3));
+      for (final o in const [
+        AdifOptions(),
+        AdifOptions(mode: null, subModeAprs: false),
+        AdifOptions(mode: 'FM', subModeAprs: false, band: '2m'),
+        AdifOptions(stripSsid: true, band: '70cm'),
+      ]) {
+        final full = Adif.encode(
+          [r],
+          options: o,
+          created: DateTime.utc(2026, 9, 12),
+        );
+        expect(
+          full.contains(Adif.record(r, o)),
+          isTrue,
+          reason: '预览与实际输出不一致：$o',
+        );
+      }
     });
   });
 

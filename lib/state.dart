@@ -14,6 +14,7 @@ import 'mock_data.dart';
 import 'services.dart';
 import 'aprs_parse.dart';
 import 'aprs_device.dart';
+import 'adif.dart';
 import 'l10n/app_localizations.dart';
 // 说明：AppLocalizationsZh / AppLocalizationsZhTw / AppLocalizationsEn 是 gen-l10n
 // 生成在 app_localizations_zh.dart / app_localizations_en.dart 里的**具体实现类**，
@@ -59,7 +60,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.90';
+  static const appVersion = '1.6.91';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -778,6 +779,33 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // ─── ADIF 导出选项 ───
+  // 记忆用户上次的选择，避免每次导出台都要重设。
+  // 空串（而非 null）表示「不写」—— SharedPreferences 没有 null 语义。
+  /// MODE 值；空串 = 不写
+  String adifMode = 'PKT';
+  bool adifSubMode = true;
+  /// BAND 值；空串 = 不写
+  String adifBand = '';
+  bool adifStripSsid = false;
+
+  /// 组装为编码器使用的选项
+  AdifOptions get adifOptions => AdifOptions(
+    mode: adifMode.isEmpty ? null : adifMode,
+    subModeAprs: adifSubMode,
+    band: adifBand.isEmpty ? null : adifBand,
+    stripSsid: adifStripSsid,
+  );
+
+  void setAdifOptions(AdifOptions o) {
+    adifMode = o.mode ?? '';
+    adifSubMode = o.subModeAprs;
+    adifBand = o.band ?? '';
+    adifStripSsid = o.stripSsid;
+    persist();
+    _notify();
+  }
+
   // 接收范围过滤（APRS-IS filter: r/lat/lng/radius_km）
   double filterLat = 39.9042;
   double filterLng = 116.4074;
@@ -973,6 +1001,10 @@ class AppState extends ChangeNotifier {
       themeColor = p.getString('themeColor') ?? themeColor;
       uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
+      adifMode = p.getString('adifMode') ?? adifMode;
+      adifSubMode = p.getBool('adifSubMode') ?? adifSubMode;
+      adifBand = p.getString('adifBand') ?? adifBand;
+      adifStripSsid = p.getBool('adifStripSsid') ?? adifStripSsid;
       locationMode = p.getString('locationMode') ?? locationMode;
       loc.mode = locationMode;
       useSimLocation = p.getBool('useSimLocation') ?? useSimLocation;
@@ -1096,6 +1128,10 @@ class AppState extends ChangeNotifier {
           p.setDouble('uiScale', uiScale);
           p.setString('mapType', mapType);
           p.setString('updateChannel', updateChannel);
+          p.setString('adifMode', adifMode);
+          p.setBool('adifSubMode', adifSubMode);
+          p.setString('adifBand', adifBand);
+          p.setBool('adifStripSsid', adifStripSsid);
           p.setString('locationMode', locationMode);
           p.setBool('useSimLocation', useSimLocation);
           p.setDouble('filterLat', filterLat);

@@ -191,6 +191,24 @@ class MainActivity : FlutterActivity() {
                     out.write(content.toByteArray(Charsets.UTF_8))
                     out.flush()
                 } ?: return null
+                // 部分实现会根据 MIME（text/plain）给文件名**追加 .txt**，
+                // 使 APRSlocus_….adi 变成 APRSlocus_….adi.txt。
+                // 这里读回实际名字，不一致就改回原名（.adi 是 ADIF 的惯用扩展名）。
+                val actual = displayNameOf(uri)
+                if (actual != null && actual != safe) {
+                    try {
+                        resolver.update(
+                            uri,
+                            ContentValues().apply {
+                                put(MediaStore.MediaColumns.DISPLAY_NAME, safe)
+                            },
+                            null,
+                            null
+                        )
+                    } catch (_: Exception) {
+                        // 改不回去也不影响导出成功（内容已写入）
+                    }
+                }
                 "Download/$safe"
             } else {
                 val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
@@ -201,6 +219,19 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
             null
         }
+    }
+
+    /// 查询 MediaStore 条目的实际显示名
+    private fun displayNameOf(uri: Uri): String? = try {
+        contentResolver.query(
+            uri,
+            arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
+            null,
+            null,
+            null
+        )?.use { c -> if (c.moveToFirst()) c.getString(0) else null }
+    } catch (_: Exception) {
+        null
     }
 
     /// 系统分享面板：分享文本到其他 App（微信 / QQ / 短信等）

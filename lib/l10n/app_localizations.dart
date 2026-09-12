@@ -7134,6 +7134,72 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'会话导出为日志文件'**
   String get adifLogFile;
+
+  /// No description provided for @adifOptions.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出选项'**
+  String get adifOptions;
+
+  /// No description provided for @adifMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'模式（MODE）'**
+  String get adifMode;
+
+  /// No description provided for @adifNotWritten.
+  ///
+  /// In zh, this message translates to:
+  /// **'不写'**
+  String get adifNotWritten;
+
+  /// No description provided for @adifModePkt.
+  ///
+  /// In zh, this message translates to:
+  /// **'PKT（数据包，推荐）'**
+  String get adifModePkt;
+
+  /// No description provided for @adifModeFm.
+  ///
+  /// In zh, this message translates to:
+  /// **'FM（语音）'**
+  String get adifModeFm;
+
+  /// No description provided for @adifModeData.
+  ///
+  /// In zh, this message translates to:
+  /// **'DATA（数据）'**
+  String get adifModeData;
+
+  /// No description provided for @adifSubModeAprs.
+  ///
+  /// In zh, this message translates to:
+  /// **'附加 SUBMODE=APRS'**
+  String get adifSubModeAprs;
+
+  /// No description provided for @adifBand.
+  ///
+  /// In zh, this message translates to:
+  /// **'频段（BAND）'**
+  String get adifBand;
+
+  /// No description provided for @adifStripSsid.
+  ///
+  /// In zh, this message translates to:
+  /// **'只写基础呼号（去掉 -SSID）'**
+  String get adifStripSsid;
+
+  /// No description provided for @adifPreview.
+  ///
+  /// In zh, this message translates to:
+  /// **'预览（将写出的记录）'**
+  String get adifPreview;
+
+  /// No description provided for @adifModeRequiredHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'多数日志软件（含 QRZ）要求 MODE，缺少会被拒收'**
+  String get adifModeRequiredHint;
 }
 
 class _AppLocalizationsDelegate

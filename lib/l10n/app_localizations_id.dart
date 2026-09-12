@@ -4061,4 +4061,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get adifLogFile => 'Ekspor obrolan ke berkas log';
+
+  @override
+  String get adifOptions => 'Opsi ekspor';
+
+  @override
+  String get adifMode => 'Mode (MODE)';
+
+  @override
+  String get adifNotWritten => 'Kosongkan';
+
+  @override
+  String get adifModePkt => 'PKT (paket, disarankan)';
+
+  @override
+  String get adifModeFm => 'FM (suara)';
+
+  @override
+  String get adifModeData => 'DATA (data)';
+
+  @override
+  String get adifSubModeAprs => 'Tambahkan SUBMODE=APRS';
+
+  @override
+  String get adifBand => 'Band (BAND)';
+
+  @override
+  String get adifStripSsid => 'Tulis panggilan dasar saja (hapus -SSID)';
+
+  @override
+  String get adifPreview => 'Pratinjau (catatan yang akan ditulis)';
+
+  @override
+  String get adifModeRequiredHint =>
+      'Sebagian besar logbook (termasuk QRZ) mewajibkan MODE; tanpa itu akan ditolak';
 }

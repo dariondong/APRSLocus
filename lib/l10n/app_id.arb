@@ -1383,5 +1383,16 @@
   "adifCopyPath": "Salin jalur",
   "adifPathCopied": "Jalur disalin",
   "chatShortLabel": "Pribadi",
-  "adifLogFile": "Ekspor obrolan ke berkas log"
+  "adifLogFile": "Ekspor obrolan ke berkas log",
+  "adifOptions": "Opsi ekspor",
+  "adifMode": "Mode (MODE)",
+  "adifNotWritten": "Kosongkan",
+  "adifModePkt": "PKT (paket, disarankan)",
+  "adifModeFm": "FM (suara)",
+  "adifModeData": "DATA (data)",
+  "adifSubModeAprs": "Tambahkan SUBMODE=APRS",
+  "adifBand": "Band (BAND)",
+  "adifStripSsid": "Tulis panggilan dasar saja (hapus -SSID)",
+  "adifPreview": "Pratinjau (catatan yang akan ditulis)",
+  "adifModeRequiredHint": "Sebagian besar logbook (termasuk QRZ) mewajibkan MODE; tanpa itu akan ditolak"
 }

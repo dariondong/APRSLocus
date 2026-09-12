@@ -3974,4 +3974,37 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adifLogFile => '会話をログファイルに保存';
+
+  @override
+  String get adifOptions => 'エクスポート設定';
+
+  @override
+  String get adifMode => 'モード（MODE）';
+
+  @override
+  String get adifNotWritten => '書き込まない';
+
+  @override
+  String get adifModePkt => 'PKT（パケット、推奨）';
+
+  @override
+  String get adifModeFm => 'FM（音声）';
+
+  @override
+  String get adifModeData => 'DATA（データ）';
+
+  @override
+  String get adifSubModeAprs => 'SUBMODE=APRS を追加';
+
+  @override
+  String get adifBand => 'バンド（BAND）';
+
+  @override
+  String get adifStripSsid => '基本コールサインのみ（-SSID を除去）';
+
+  @override
+  String get adifPreview => 'プレビュー（書き出されるレコード）';
+
+  @override
+  String get adifModeRequiredHint => '多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます';
 }

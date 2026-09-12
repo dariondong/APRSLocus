@@ -1896,5 +1896,16 @@
   "adifCopyPath": "复制路径",
   "adifPathCopied": "路径已复制",
   "chatShortLabel": "单聊",
-  "adifLogFile": "会话导出为日志文件"
+  "adifLogFile": "会话导出为日志文件",
+  "adifOptions": "导出选项",
+  "adifMode": "模式（MODE）",
+  "adifNotWritten": "不写",
+  "adifModePkt": "PKT（数据包，推荐）",
+  "adifModeFm": "FM（语音）",
+  "adifModeData": "DATA（数据）",
+  "adifSubModeAprs": "附加 SUBMODE=APRS",
+  "adifBand": "频段（BAND）",
+  "adifStripSsid": "只写基础呼号（去掉 -SSID）",
+  "adifPreview": "预览（将写出的记录）",
+  "adifModeRequiredHint": "多数日志软件（含 QRZ）要求 MODE，缺少会被拒收"
 }
