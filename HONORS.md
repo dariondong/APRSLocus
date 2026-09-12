@@ -2,6 +2,8 @@
 
 > 面向维护者：**授予荣誉**、**新增称号**的完整流程与校验清单。
 > 数据源：`docs/members.json`（App 与官网运行时拉取，改完推送即生效，通常无需发版）。
+>
+> 🔧 **想看代码层面「数据怎么解析、怎么查、缓存在哪」** → 见 [`HONORS-TECH.md`](HONORS-TECH.md)。
 
 ---
 
@@ -317,4 +319,5 @@ flutter analyze   # 或交给 CI
 | `docs/firstfix.json` | FIRST FIX 至高荣誉的授勋名单（独立文件） |
 | `lib/early_member.dart` | App 侧：称号定义、兜底、在线拉取与解析 |
 | `lib/honor_wall_page.dart` | App 内荣誉墙页面 |
+| [`HONORS-TECH.md`](HONORS-TECH.md) | **技术说明**：解析与获取链路、查询 API、缓存键、易错点 |
 | `docs/index.html` | 官网首页（含荣誉墙入口） |
