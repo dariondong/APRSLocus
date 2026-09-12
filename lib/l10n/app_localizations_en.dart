@@ -3563,6 +3563,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get symCar => 'Car';
+  String get mapTypeCartoPositron => 'Carto Positron (light vector)';
+  String get mapTypeCarto => 'Carto Light';
+  String get mapTypeCartoDark => 'Carto Dark';
+  String get mapTypeCartoVoyager => 'Carto Voyager';
+  String get mapTypeOsm => 'OSM Standard';
+  String get mapTypeOsmHot => 'OSM Humanitarian';
+  String get mapTypeOpenTopo => 'OpenTopo Terrain';
+  String get mapTypeEsriStreet => 'Esri Streets';
+  String get mapTypeEsriSat => 'Esri Imagery';
+  String get simulatedKeepAlive => 'Simulated location · keep-alive';
   String get symCatEmergency => 'Emergency';
   String get symSmallAircraft => 'Small aircraft';
   String myPositionSet(String grid) => 'My position set, grid {grid}';

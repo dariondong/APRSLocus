@@ -113,6 +113,7 @@ String localizedLocationStatus(BuildContext context, String value) {
   if (value == '未定位') return s.locationNotFixed;
   if (value == '模拟位置') return s.simulatedLocation;
   if (value == '已保存位置') return s.savedLocation;
+  if (value == '模拟位置 · 后台保活') return s.simulatedKeepAlive;
   if (value == '定位失败') return s.locationFailed;
   if (value == '定位已停止') return s.locationStopped;
   if (value == '已定位') return s.locationFixed;
@@ -159,15 +160,15 @@ String localizedMapTypeLabel(BuildContext context, String name) =>
       'gaode' => S.of(context).mapTypeAmap,
       'gaode_sat' => S.of(context).mapTypeAmapSatellite,
       'vector' => S.of(context).mapTypeVector,
-      'vector_positron' => 'Carto Positron(浅色矢量)',
-      'carto' => 'Carto 浅色',
-      'carto_dark' => 'Carto 深色',
-      'carto_voyager' => 'Carto 航行者',
-      'osm' => 'OSM 标准',
-      'osm_hot' => 'OSM 人道',
-      'open_topo' => 'OpenTopo 地形',
-      'esri_street' => 'Esri 街道',
-      'esri_sat' => 'Esri 影像',
+      'vector_positron' => S.of(context).mapTypeCartoPositron,
+      'carto' => S.of(context).mapTypeCarto,
+      'carto_dark' => S.of(context).mapTypeCartoDark,
+      'carto_voyager' => S.of(context).mapTypeCartoVoyager,
+      'osm' => S.of(context).mapTypeOsm,
+      'osm_hot' => S.of(context).mapTypeOsmHot,
+      'open_topo' => S.of(context).mapTypeOpenTopo,
+      'esri_street' => S.of(context).mapTypeEsriStreet,
+      'esri_sat' => S.of(context).mapTypeEsriSat,
       _ => name,
     };
 

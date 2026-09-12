@@ -232,7 +232,7 @@ class _StationDetailState extends State<StationDetail> {
                                 ),
                                 SizedBox(height: 3),
                                 Text(
-                                  '${s.typeName} · ${s.comment ?? ''}',
+                                  '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
                                   style: ts(12, c: C.slate),
                                 ),
                               ],

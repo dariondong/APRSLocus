@@ -1461,7 +1461,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                     style: ts(13, w: FontWeight.w600),
                                   ),
                                   Spacer(),
-                                  Text(s.typeName, style: ts(10, c: C.grey)),
+                                  Text(localizedAprsSymbolName(context, s.symbol),
+                                      style: ts(10, c: C.grey)),
                                 ],
                               ),
                             ),
@@ -1744,7 +1745,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                         ),
                                         Spacer(),
                                         Text(
-                                          s.typeName,
+                                          localizedAprsSymbolName(
+                                            context, s.symbol),
                                           style: ts(10, c: C.grey),
                                         ),
                                       ],
@@ -2176,7 +2178,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                         ),
                                         Spacer(),
                                         Text(
-                                          s.typeName,
+                                          localizedAprsSymbolName(
+                                            context, s.symbol),
                                           style: ts(10, c: C.grey),
                                         ),
                                       ],

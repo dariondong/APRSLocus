@@ -1163,7 +1163,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           style: ts(16, w: FontWeight.w800),
                         ),
                         Text(
-                          st.locStatus,
+                          localizedLocationStatus(context, st.locStatus),
                           style: ts(11, c: st.myHasFix ? C.green : C.yellow),
                         ),
                       ],

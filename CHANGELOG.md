@@ -1,5 +1,55 @@
 # 更新日志
 
+## [1.6.82] - 2026-09-12
+
+### 🌐 中文硬编码清理 · 第四批：修好「有本地化包但没用上」的地方
+
+查证后发现，剩余中文里有很大一部分**并非缺翻译，而是 UI 没用现成的本地化包** ——
+`widgets.dart` 早就提供了 `localizedLocationStatus` / `localizedConnectionInfo` /
+`localizedAprsSymbolName` / `localizedMapTypeLabel`，但多处界面直接渲染了原始中文：
+
+- **定位状态**（2 处）：地图「我的位置」面板、沉浸地图四角信息 —— 原先只在地图首页
+  经过了本地化，其余位置直接输出 `未定位` / `已定位` 等中文
+- **连接状态**（3 处）：连接页信息行、连接横幅、开发者页状态 —— 已从 1 处扩到全部
+  4 处（均走 `localizedConnectionInfo`）
+- **符号/设备名**（4 处）：消息页台站行（3）与台站详情副标题（1）原先用
+  `s.typeName`（直接输出中文符号名）
+- **地图类型标签**（9 处）：`localizedMapTypeLabel` 里 `Carto 浅色` / `OSM 标准` /
+  `Esri 影像` 等 9 个名称是硬编码中文 → 新增 9 个 l10n 键
+- **地图分组标题**（2 处）：设置页地图选择器的「国内地图 / 国际地图」走 l10n
+  > 注：分组判别符 `'高德' / '其他'` **保留不动** —— 它是 `MapType.group` 的
+  > 数据实参，直接换成 l10n 文案会让分组失效（这是项目里「中文字符串当键」
+  > 的典型坑），已加注释说明。
+
+### 🐛 顺带补一个我自己上一版留下的漏
+
+v1.6.80 新增的定位状态串 `模拟位置 · 后台保活` **不在映射表里** → 会直接把中文
+漏到界面（选择「模拟位置」后地图状态就显示中文）。已补 l10n 键 + 映射。
+
+### 📝 说明
+
+本批所在文件里其余中文属于**有意保留**：
+- `state.dart` 的国家/地区表与 `_log()` 日志（帮助，非必须）
+- `mock_data.dart` 演示数据、`tile_map.dart` 城市标签（北京城区/海淀…）
+- `aprs_device.dart` 的设备类别名已走 `deviceClassLabel(context)`
+- 台站列表/地图的**搜索匹配**仍用中文名（因为它是被搜索的**数据**本身）
+
+- **Fourth batch**: a large part of the remaining Chinese wasn't missing
+  translation at all — the UI simply wasn't using the localization helpers that
+  already existed (`localizedLocationStatus` / `localizedConnectionInfo` /
+  `localizedAprsSymbolName` / `localizedMapTypeLabel`).
+- **Location status** (2), **connection status** (3, now all 4 call sites),
+  **symbol/device names** (4), **map type labels** (9, nine new keys) and the
+  **map group headings** (2) now all go through l10n.
+- The group discriminator `'高德' / '其他'` is deliberately left alone: it is the
+  *data* value of `MapType.group`, so translating it would break the grouping
+  (a textbook case of this project's "Chinese string used as a key" pitfall).
+- **Also fixed a leak I introduced in v1.6.80**: the new location-status string
+  `模拟位置 · 后台保活` had no mapping, so it showed Chinese in the UI.
+- Chinese that remains in these files is intentional: the country table and
+  `_log()` messages in `state.dart`, demo data in `mock_data.dart`, city labels
+  in `tile_map.dart`, and the station-search **matching data** itself.
+
 ## [1.6.81] - 2026-09-12
 
 ### 🌐 设置页中文硬编码清完（第三批，收尾）/ Settings page fully localized (batch 3)

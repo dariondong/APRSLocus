@@ -6032,6 +6032,16 @@ abstract class AppLocalizations {
   String get quitAppDesc;
 
   String get symCar;
+  String get mapTypeCartoPositron;
+  String get mapTypeCarto;
+  String get mapTypeCartoDark;
+  String get mapTypeCartoVoyager;
+  String get mapTypeOsm;
+  String get mapTypeOsmHot;
+  String get mapTypeOpenTopo;
+  String get mapTypeEsriStreet;
+  String get mapTypeEsriSat;
+  String get simulatedKeepAlive;
   String get symCatEmergency;
   String get symSmallAircraft;
   String myPositionSet(String grid);

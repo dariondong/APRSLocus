@@ -1019,7 +1019,8 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 ],
               ),
             ),
-            SettingsRow2(S.of(context).locationStatus, st.locStatus),
+            SettingsRow2(S.of(context).locationStatus,
+                localizedLocationStatus(context, st.locStatus)),
             SettingsRow2(S.of(context).beaconsSent,
             S.of(context).beaconsSentCount('${st.beaconsSent}')),
             SettingsRow2(S.of(context).nextBeacon, st.nextBeaconIn),
@@ -1576,7 +1577,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       children: [
         _connBanner(),
         Divider(height: 1, color: C.border),
-        SettingsRow2(S.of(context).connection, st.connInfo),
+        SettingsRow2(S.of(context).connection,
+            localizedConnectionInfo(context, st.connInfo)),
         Divider(height: 1, color: C.border),
         SettingsInput(S.of(context).server, _server,
             onChanged: (v) {
@@ -1724,7 +1726,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                       : S.of(context).disconnected,
               style: ts(13, c: col, w: FontWeight.w700),
             ),
-            Text(st.connInfo, style: ts(11, c: col.withValues(alpha: 0.8))),
+            Text(localizedConnectionInfo(context, st.connInfo),
+                style: ts(11, c: col.withValues(alpha: 0.8))),
           ]),
         ),
         SizedBox(width: 8),
@@ -2467,12 +2470,17 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         children: [
           Text(S.of(context).mapType, style: ts(12, c: C.slate)),
           SizedBox(height: 8),
-          for (final group in ['高德', '其他']) ...[
+          // 注意：这里用 MapType.group 的原始判别值（'高德'/'其他'）做分组，
+          // 它们同时是数据实参——不能替换成 l10n 文案，否则分组会失效；
+          // 展示用的标题改走 domesticMaps / internationalMaps。
+          for (final group in const ['高德', '其他']) ...[
             if (MapType.values.any((t) => t.group == group)) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: Text(
-                  group == '高德' ? '国内地图' : '国际地图',
+                  group == '高德'
+                      ? S.of(context).domesticMaps
+                      : S.of(context).internationalMaps,
                   style: ts(10, c: C.grey, w: FontWeight.w700),
                 ),
               ),
@@ -2955,7 +2963,8 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
             _buildWeatherSim(),
             SettingsRow2(S.of(context).rxTx, '${st.packetsRx} / ${st.packetsTx}'),
             SettingsRow2(S.of(context).stationCount2, '${st.stations.length}'),
-            SettingsRow2(S.of(context).connection, st.connInfo),
+            SettingsRow2(S.of(context).connection,
+            localizedConnectionInfo(context, st.connInfo)),
             Divider(height: 1, color: C.border),
             InkWell(
               onTap: () {

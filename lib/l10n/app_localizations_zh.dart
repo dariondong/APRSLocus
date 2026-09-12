@@ -3469,6 +3469,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get symCar => '汽车';
+  String get mapTypeCartoPositron => 'Carto Positron(浅色矢量)';
+  String get mapTypeCarto => 'Carto 浅色';
+  String get mapTypeCartoDark => 'Carto 深色';
+  String get mapTypeCartoVoyager => 'Carto 航行者';
+  String get mapTypeOsm => 'OSM 标准';
+  String get mapTypeOsmHot => 'OSM 人道';
+  String get mapTypeOpenTopo => 'OpenTopo 地形';
+  String get mapTypeEsriStreet => 'Esri 街道';
+  String get mapTypeEsriSat => 'Esri 影像';
+  String get simulatedKeepAlive => '模拟位置 · 后台保活';
   String get symCatEmergency => '应急救援';
   String get symSmallAircraft => '小型飞机';
   String myPositionSet(String grid) => '已设置我的位置，网格 {grid}';
@@ -7235,6 +7245,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get symCar => '汽車';
+  String get mapTypeCartoPositron => 'Carto Positron(淺色向量)';
+  String get mapTypeCarto => 'Carto 淺色';
+  String get mapTypeCartoDark => 'Carto 深色';
+  String get mapTypeCartoVoyager => 'Carto 航行者';
+  String get mapTypeOsm => 'OSM 標準';
+  String get mapTypeOsmHot => 'OSM 人道';
+  String get mapTypeOpenTopo => 'OpenTopo 地形';
+  String get mapTypeEsriStreet => 'Esri 街道';
+  String get mapTypeEsriSat => 'Esri 影像';
+  String get simulatedKeepAlive => '模擬位置 · 背景保活';
   String get symCatEmergency => '應急救援';
   String get symSmallAircraft => '小型飛機';
   String myPositionSet(String grid) => '已設定我的位置，網格 {grid}';

@@ -378,7 +378,9 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                   ? Icons.gps_fixed_rounded
                   : Icons.gps_off_rounded,
               color: st.myHasFix ? C.green : C.yellow,
-              value: st.myHasFix ? st.locStatus : s.unlocated,
+              value: st.myHasFix
+                  ? localizedLocationStatus(context, st.locStatus)
+                  : s.unlocated,
               sub: st.myHasFix && st.myLat != null ? st.myGrid : null,
             ),
           ],
