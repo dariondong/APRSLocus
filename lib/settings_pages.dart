@@ -43,18 +43,18 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       listenable: st,
       builder: (context, _) => SettingsPageShell(
         title: S.of(context).stationSettings2,
-        subtitle: '呼号、SSID、符号与备注',
+        subtitle: S.of(context).stationSettingsDetail,
         icon: Icons.person_rounded,
         color: C.blue,
         body: Column(children: [
         SettingsSectionCard(
-          title: '电台身份',
+          title: S.of(context).stationIdentity,
           subtitle: S.of(context).settingsStationIdentitySubtitle,
           icon: Icons.badge_rounded,
           color: C.blue,
           children: [
             SettingsInput(S.of(context).callsign, _call,
-                tip: 'APRS 呼号，如 BV2AAA',
+                tip: S.of(context).aprsCallsignHint,
                 onChanged: (v) {
               if (v.trim().isNotEmpty) {
                 st.myCall = v.trim().toUpperCase();
@@ -73,7 +73,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
         ),
         SizedBox(height: 16),
         SettingsSectionCard(
-          title: '显示信息',
+          title: S.of(context).displayInfo,
           subtitle: S.of(context).settingsDisplayInfoSubtitle,
           icon: Icons.info_outline_rounded,
           color: C.purple,
@@ -98,10 +98,10 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
         child: Row(children: [
           Icon(Icons.tag_rounded, size: 16, color: C.blue),
           SizedBox(width: 8),
-          Text('SSID 后缀', style: ts(12, c: C.slate)),
+          Text(S.of(context).ssidSuffix, style: ts(12, c: C.slate)),
           Spacer(),
           Text(
-            st.mySsid == 0 ? '无' : '-${st.mySsid}',
+            st.mySsid == 0 ? S.of(context).none : '-${st.mySsid}',
             style: ts(13, c: C.blue, w: FontWeight.w700),
           ),
           SizedBox(width: 4),
@@ -205,7 +205,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: Text('取消', style: ts(13, c: C.slate))),
+                child: Text(S.of(context).cancel, style: ts(13, c: C.slate))),
           ],
         );
       },
@@ -227,7 +227,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
             Container(width: 36, height: 4, decoration: BoxDecoration(
                 color: C.greyLight, borderRadius: BorderRadius.circular(2))),
             SizedBox(height: 14),
-            Text('选择 SSID 后缀', style: ts(16, w: FontWeight.w700)),
+            Text(S.of(context).chooseSsidSuffix, style: ts(16, w: FontWeight.w700)),
             SizedBox(height: 4),
             Text(S.of(context).ssidDesc,
                 style: ts(11, c: C.grey), textAlign: TextAlign.center),
@@ -254,7 +254,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
                         border: Border.all(
                             color: st.mySsid == val ? C.blue : C.border),
                       ),
-                      child: Text(val == 0 ? '无' : '-$val',
+                      child: Text(val == 0 ? S.of(context).none : '-$val',
                           textAlign: TextAlign.center,
                           style: ts(13,
                               c: st.mySsid == val ? Colors.white : C.slate,
@@ -480,7 +480,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
             child: Row(children: [
-              Text('全部 APRS 符号', style: ts(15, w: FontWeight.w700)),
+              Text(S.of(context).allAprsSymbols, style: ts(15, w: FontWeight.w700)),
               Spacer(),
               IconButton(
                 icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
@@ -564,7 +564,7 @@ const _symCategories = <(String, List<(String, String, IconData)>)>[
     ]),
     ('气象 / 自然', [
       ('W', '气象站', Icons.cloud_rounded),
-      ('_', '气象', Icons.cloud_rounded),
+      ('_', S.of(context).weather, Icons.cloud_rounded),
       ('w', '供水站', Icons.water_drop_rounded),
       ('@', '飓风', Icons.cyclone_rounded),
       ('=', '火车', Icons.train_rounded),
@@ -602,9 +602,9 @@ const _symCategories = <(String, List<(String, String, IconData)>)>[
       ('&', 'HF 网关', Icons.satellite_alt_rounded),
       ('?', '文件服务器', Icons.dns_rounded),
       ('\$', '电话', Icons.call_rounded),
-      ('q', '网格', Icons.grid_4x4_rounded),
+      ('q', S.of(context).grid, Icons.grid_4x4_rounded),
       ('x', 'X/Unix', Icons.terminal_rounded),
-      ('i', 'FMO 台站', Icons.radio_rounded),
+      ('i', S.of(context).featureFmo, Icons.radio_rounded),
     ]),
   ];
 const _smartQuickSymbols = <(String, String, IconData)>[
@@ -727,12 +727,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
       listenable: st,
       builder: (context, _) => SettingsPageShell(
         title: S.of(context).beaconSettings,
-        subtitle: 'GPS 来源、信标与手动定位',
+        subtitle: S.of(context).beaconSettingsDetail,
         icon: Icons.my_location_rounded,
         color: C.green,
         body: Column(children: [
           SettingsSectionCard(
-          title: '定位来源',
+          title: S.of(context).locationSource,
           subtitle: S.of(context).settingsLocSourceSubtitle,
           icon: Icons.gps_fixed_rounded,
           color: C.green,
@@ -744,7 +744,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   child: _locSourceCard(
                     title: S.of(context).location,
                     icon: Icons.gps_fixed_rounded,
-                    desc: '使用设备定位',
+                    desc: S.of(context).useDeviceLocation,
                     selected: !st.useSimLocation,
                     onTap: () => st.setUseSimLocation(false),
                   ),
@@ -752,9 +752,9 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 SizedBox(width: 10),
                 Expanded(
                   child: _locSourceCard(
-                    title: '模拟位置',
+                    title: S.of(context).simulatedLocation,
                     icon: Icons.gps_off_rounded,
-                    desc: '手动输入坐标',
+                    desc: S.of(context).manualCoordinates,
                     selected: st.useSimLocation,
                     onTap: () => st.setUseSimLocation(true),
                   ),
@@ -769,7 +769,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           SizedBox(height: 16),
           // 手动定位
           SettingsFold(
-            title: '手动定位',
+            title: S.of(context).manualLocation,
             subtitle: S.of(context).settingsManualLocSubtitle,
             icon: Icons.gps_off_rounded,
             color: C.orange,
@@ -785,7 +785,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       style: ts(12),
                       decoration: InputDecoration(
-                        hintText: '纬度 39.9042',
+                        hintText: S.of(context).latitudeHint,
                         hintStyle: ts(12, c: C.grey),
                         isDense: true,
                         filled: true,
@@ -804,7 +804,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       style: ts(12),
                       decoration: InputDecoration(
-                        hintText: '经度 116.4074',
+                        hintText: S.of(context).longitudeHint,
                         hintStyle: ts(12, c: C.grey),
                         isDense: true,
                         filled: true,
@@ -838,7 +838,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                         );
                       },
                       icon: Icon(Icons.my_location_rounded, size: 15),
-                      label: Text('应用坐标'),
+                      label: Text(S.of(context).applyCoordinates),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: C.blue,
                         side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
@@ -856,7 +856,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                         st.startPick();
                       },
                       icon: Icon(Icons.edit_location_alt_rounded, size: 15),
-                      label: Text('在地图选点'),
+                      label: Text(S.of(context).pickOnMap),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: C.orange,
                         side: BorderSide(color: C.orange.withValues(alpha: 0.5)),
@@ -913,7 +913,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         ],
         SizedBox(height: 16),
         SettingsSectionCard(
-          title: '信标上报',
+          title: S.of(context).beaconingSection,
           subtitle: S.of(context).settingsBeaconSubtitle,
           icon: Icons.radio_rounded,
           color: C.blue,
@@ -923,7 +923,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             // 固定间隔：仅在关闭智能信标时作为兜底使用
             if (!st.smartBeaconEnabled)
               SettingsInput(S.of(context).beaconInterval, _interval,
-                  tip: '位置信标的发送间隔，至少 5 秒',
+                  tip: S.of(context).beaconIntervalTip,
                   focusNode: _intervalFocus,
                   onEditingComplete: () {
                     // 回车=确认：立即收起键盘并校验
@@ -941,21 +941,21 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   Row(children: [
                     Icon(Icons.tune_rounded, size: 15, color: C.green),
                     SizedBox(width: 6),
-                    Text('信标上报内容', style: ts(12, c: C.green, w: FontWeight.w700)),
+                    Text(S.of(context).beaconContent, style: ts(12, c: C.green, w: FontWeight.w700)),
                   ]),
                   SizedBox(height: 2),
-                  Text('随位置信标一起发送', style: ts(10, c: C.slate)),
+                  Text(S.of(context).beaconContentDesc, style: ts(10, c: C.slate)),
                   SizedBox(height: 4),
                   SettingsMiniSwitch(S.of(context).speed, value: st.beaconIncludeSpeed,
                       onChanged: st.setBeaconIncludeSpeed),
                   SettingsMiniSwitch(S.of(context).bearing, value: st.beaconIncludeCourse,
                       onChanged: st.setBeaconIncludeCourse),
-                  SettingsMiniSwitch('手机电量', value: st.beaconIncludeBattery,
+                  SettingsMiniSwitch(S.of(context).phoneBattery, value: st.beaconIncludeBattery,
                       onChanged: st.setBeaconIncludeBattery),
                 ],
               ),
             ),
-            SettingsRow2('定位状态', st.locStatus),
+            SettingsRow2(S.of(context).locationStatus, st.locStatus),
             SettingsRow2(S.of(context).beaconsSent, '${st.beaconsSent} 次'),
             SettingsRow2(S.of(context).nextBeacon, st.nextBeaconIn),
             // 模拟位置模式：不显示 GPS 启动按钮，改为提示
@@ -977,7 +977,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   child: OutlinedButton.icon(
                     onPressed: st.startTracking,
                     icon: Icon(Icons.gps_fixed_rounded, size: 16),
-                    label: Text(st.myHasFix ? '重新定位' : '开启 GPS 定位'),
+                    label: Text(st.myHasFix ? S.of(context).relocate : S.of(context).startGps),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: C.blue,
                       side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
@@ -993,7 +993,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 child: Row(children: [
                   Icon(Icons.gps_fixed_rounded, color: C.green, size: 16),
                   SizedBox(width: 8),
-                  Text('定位运行中，正在持续上报位置',
+                  Text(S.of(context).trackingBeaconing,
                       style: ts(12, c: C.green, w: FontWeight.w600)),
                 ]),
               ),
@@ -1257,7 +1257,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   Spacer(),
                   OutlinedButton(
                     onPressed: close,
-                    child: Text('取消', style: ts(12)),
+                    child: Text(S.of(context).cancel, style: ts(12)),
                   ),
                   SizedBox(width: 8),
                   FilledButton(
@@ -1296,7 +1296,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       );
                       close();
                     },
-                    child: Text('保存', style: ts(12)),
+                    child: Text(S.of(context).save, style: ts(12)),
                   ),
                 ]),
               ],
@@ -1533,9 +1533,9 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('配置已修改',
+                      Text(S.of(context).configChanged,
                           style: ts(13, c: C.orange, w: FontWeight.w700)),
-                      Text('重新连接后生效',
+                      Text(S.of(context).reconnectToApply,
                           style: ts(11,
                               c: C.orange.withValues(alpha: 0.8))),
                     ]),
@@ -1552,8 +1552,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(st.connected
-                            ? '已重新连接'
-                            : '连接失败，请检查配置'),
+                            ? S.of(context).reconnected
+                            : S.of(context).connectFailedCheckConfig),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
@@ -1586,7 +1586,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 color: C.orangeBg,
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Text('未验证',
+              child: Text(S.of(context).unverified,
                   style: ts(9, c: C.orange, w: FontWeight.w700)),
             ),
           ],
@@ -1600,7 +1600,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             _checkConfigDirty();
           },
           decoration: InputDecoration(
-            hintText: '-1 未验证',
+            hintText: S.of(context).passcodeUnverifiedHint,
             hintStyle: ts(13, c: C.greyLight),
             isDense: true,
             filled: true,
@@ -1612,7 +1612,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           ),
         ),
         const SizedBox(height: 4),
-        Text('APRS-IS 登录验证码，填 -1 无法正常收发消息',
+        Text(S.of(context).passcodeMessageWarning,
             style: ts(10, c: C.grey)),
       ]),
     );
@@ -1675,7 +1675,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       color: C.cyan,
       children: [
         SettingsHint(S.of(context).settingsFilterHint),
-        SettingsSwitch('过滤中心跟随我的位置', value: st.filterFollow, color: C.cyan,
+        SettingsSwitch(S.of(context).filterCenterFollows, value: st.filterFollow, color: C.cyan,
             onChanged: (v) {
           st.filterFollow = v;
           _checkConfigDirty();
@@ -1870,7 +1870,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       color: C.slate,
       children: [
         SettingsInput(S.of(context).maxStations, _maxStations,
-            tip: '内存中保留的最大台站数量（默认不限制，可设更大值）',
+            tip: S.of(context).maxStationsTip,
             onChanged: (v) {
           final n = int.tryParse(v);
           if (n != null) st.setMaxStations(n);
@@ -1921,7 +1921,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.add_rounded, size: 13, color: C.cyan),
                   SizedBox(width: 3),
-                  Text('添加', style: ts(11, c: C.cyan, w: FontWeight.w700)),
+                  Text(S.of(context).add, style: ts(11, c: C.cyan, w: FontWeight.w700)),
                 ]),
               ),
             ),
@@ -1930,7 +1930,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('按呼号前缀批量接收某国家/地区全部台站',
+            Text(S.of(context).receiveCountryDesc,
                 style: ts(10, c: C.grey)),
             SizedBox(height: 8),
             if (st.receiveCountries.isEmpty)
@@ -2001,7 +2001,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                     children: [
                       Text(S.of(context).receiveOthers, style: ts(13, w: FontWeight.w700)),
                       SizedBox(height: 2),
-                      Text('接收不匹配所选国家的特殊呼号台站',
+                      Text(S.of(context).receiveOthersDesc,
                           style: ts(11, c: C.grey)),
                     ]),
               ),
@@ -2026,7 +2026,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       builder: (ctx) => AlertDialog(
         backgroundColor: C.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('添加国家/地区', style: ts(16, w: FontWeight.w700)),
+        title: Text(S.of(context).addCountry, style: ts(16, w: FontWeight.w700)),
         content: SizedBox(
           width: 340,
           height: MediaQuery.of(context).size.height * 0.55,
@@ -2132,7 +2132,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               _themeColorSelector(st),
               _languageSelector(st),
               _uiScaleSelector(st),
-              SettingsRow2(S.of(context).unit, '公制 (km/h, m)'),
+              SettingsRow2(S.of(context).unit, S.of(context).metricUnits),
               SettingsRow2(S.of(context).grid, 'Maidenhead'),
               _datumSelector(),
             ],
@@ -2442,7 +2442,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
       child: Row(children: [
-        Text('坐标显示', style: ts(12, c: C.slate)),
+        Text(S.of(context).coordDisplay, style: ts(12, c: C.slate)),
         SizedBox(width: 12),
         Expanded(
           child: SegmentedButton<String>(
@@ -2532,8 +2532,8 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
-        title: '数据维护',
-        subtitle: '清除本地数据',
+        title: S.of(context).dataMaintenance,
+        subtitle: S.of(context).dataCatDesc,
         icon: Icons.storage_rounded,
         color: C.red,
         body: Column(children: [
@@ -2549,7 +2549,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                _clearDataItem('聊天记录', '${st.messages.length} 条'),
+                _clearDataItem(S.of(context).chatHistory, '${st.messages.length} 条'),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -2573,7 +2573,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         ),
         const SizedBox(height: 16),
         SettingsSectionCard(
-          title: '清除所有数据',
+          title: S.of(context).clearAllData,
           subtitle: S.of(context).settingsClearDataSubtitle,
           icon: Icons.delete_forever_rounded,
           color: C.red,
@@ -2581,13 +2581,13 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('此操作将删除以下所有本地数据：', style: ts(13)),
+                Text(S.of(context).clearAllDataIntro, style: ts(13)),
                 SizedBox(height: 8),
-                _clearDataItem('台站列表', '${st.stations.length} 个'),
-                _clearDataItem('聊天记录', '${st.messages.length} 条'),
+                _clearDataItem(S.of(context).stationList, '${st.stations.length} 个'),
+                _clearDataItem(S.of(context).chatHistory, '${st.messages.length} 条'),
                 _clearDataItem('群聊', '${st.chatGroups.length} 个'),
-                _clearDataItem('日志', '${st.logs.length} 条'),
-                _clearDataItem('数据包', '${st.packets.length} 个'),
+                _clearDataItem(S.of(context).logs, '${st.logs.length} 条'),
+                _clearDataItem(S.of(context).packets, '${st.packets.length} 个'),
                 SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -2599,7 +2599,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
                     Icon(Icons.info_outline_rounded, size: 14, color: C.yellow),
                     SizedBox(width: 6),
                     Expanded(
-                      child: Text('此操作不可恢复，连接设置和呼号不会被删除。',
+                      child: Text(S.of(context).irreversibleKeepSettings,
                           style: ts(11, c: C.yellow, w: FontWeight.w500)),
                     ),
                   ]),
@@ -2610,7 +2610,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
                   child: FilledButton.icon(
                     onPressed: () => _confirmClearAll(),
                     icon: Icon(Icons.delete_forever_rounded, size: 18),
-                    label: Text('确认清除所有数据'),
+                    label: Text(S.of(context).confirmClearAllData),
                     style: FilledButton.styleFrom(
                       backgroundColor: C.red,
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -2683,9 +2683,9 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
         title: Row(children: [
           Icon(Icons.warning_amber_rounded, color: C.red, size: 22),
           SizedBox(width: 8),
-          Text('清除所有数据', style: ts(16, w: FontWeight.w700)),
+          Text(S.of(context).clearAllData, style: ts(16, w: FontWeight.w700)),
         ]),
-        content: Text('确定要清除全部本地数据吗？此操作不可恢复。', style: ts(13)),
+        content: Text(S.of(context).clearAllDataConfirm, style: ts(13)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -2697,7 +2697,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('所有数据已清除'),
+                  content: Text(S.of(context).allDataCleared),
                   backgroundColor: C.green,
                 ),
               );
@@ -2706,7 +2706,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
               backgroundColor: C.red,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: Text('确认清除', style: ts(13, c: Colors.white, w: FontWeight.w700)),
+            child: Text(S.of(context).confirmClear, style: ts(13, c: Colors.white, w: FontWeight.w700)),
           ),
         ],
       ),
@@ -2803,7 +2803,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
       builder: (ctx) => AlertDialog(
         backgroundColor: C.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('重新运行设置向导？', style: ts(16, w: FontWeight.w700)),
+        title: Text(S.of(context).restartWizardTitle, style: ts(16, w: FontWeight.w700)),
         content: Text('将重新进入首次启动向导，可重新设置呼号、接收地区等。\n当前设置不会丢失，完成向导后继续使用。',
             style: ts(13, c: C.slate, h: 1.6)),
         actions: [
@@ -2846,7 +2846,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
           open: _labOpen,
           onToggle: () => setState(() => _labOpen = !_labOpen),
           children: [
-            SettingsSwitch('允许手机横屏显示', value: st.labLandscape, color: C.cyan,
+            SettingsSwitch(S.of(context).allowLandscape, value: st.labLandscape, color: C.cyan,
                 onChanged: st.setLabLandscape),
             SettingsHint(S.of(context).labDesc),
           ],
@@ -2860,12 +2860,12 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
           open: _devOpen,
           onToggle: () => setState(() => _devOpen = !_devOpen),
           children: [
-            SettingsSwitch('启用模拟数据（演示台站/数据包）', value: st.devMode,
+            SettingsSwitch(S.of(context).simData, value: st.devMode,
                 onChanged: st.setDevMode),
             Divider(height: 1, color: C.border),
             _buildWeatherSim(),
-            SettingsRow2('收包 / 发包', '${st.packetsRx} / ${st.packetsTx}'),
-            SettingsRow2('台站数量', '${st.stations.length}'),
+            SettingsRow2(S.of(context).rxTx, '${st.packetsRx} / ${st.packetsTx}'),
+            SettingsRow2(S.of(context).stationCount2, '${st.stations.length}'),
             SettingsRow2(S.of(context).connection, st.connInfo),
             Divider(height: 1, color: C.border),
             InkWell(
@@ -2907,7 +2907,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('数据包解析测试',
+                  Text(S.of(context).packetParseTest,
                       style: ts(11, c: C.slate, w: FontWeight.w700)),
                   SizedBox(height: 6),
                   TextField(
@@ -2934,7 +2934,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                           setState(() => _devResult = r);
                         },
                         icon: Icon(Icons.play_arrow_rounded, size: 16),
-                        label: Text('解析并应用'),
+                        label: Text(S.of(context).parseAndApply),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: C.purple,
                           side: BorderSide(color: C.purple.withValues(alpha: 0.5)),
@@ -2948,10 +2948,10 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                       child: OutlinedButton.icon(
                         onPressed: () {
                           st.clearPackets();
-                          setState(() => _devResult = '已清除数据包');
+                          setState(() => _devResult = S.of(context).clearedPackets);
                         },
                         icon: Icon(Icons.delete_sweep_rounded, size: 16),
-                        label: Text('清除数据包'),
+                        label: Text(S.of(context).clearPackets),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: C.slate,
                           side: BorderSide(color: C.borderStrong),
