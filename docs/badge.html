@@ -36,6 +36,12 @@
   .card .desc{margin:0 auto;padding:22px 26px 10px;max-width:600px}
   .card .desc p{color:#44506b;font-size:16px;line-height:2;position:relative}
   .card .desc p::before{content:"“";font-size:44px;color:#c9d0dd;display:block;height:.5;font-family:Georgia,serif;line-height:.4}
+  /* 获得条件：做成淡底卡片行，与上面的诗意描述视觉区分 */
+  .card .criteria{display:flex;justify-content:center;padding:2px 26px 24px}
+  .card .criteria .inner{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+    background:#f4f7fc;border:1px solid #e6eaf3;border-radius:14px;padding:10px 18px;max-width:520px}
+  .card .criteria .cl{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#8b95a9;white-space:nowrap}
+  .card .criteria .cv{font-size:14px;font-weight:700;color:#2f3b57}
   /* 持有者 */
   .holders{margin-top:20px;width:100%}
   .holders h2{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:2px;color:#8b95a9;font-weight:700;margin-bottom:14px}
@@ -74,9 +80,9 @@
 
 <script>
 const TX={
- "zh":{holders:"拥有此徽章的成员",back:"← 返回成员墙",locked:"暂无"},
- "zh-TW":{holders:"擁有此徽章的成員",back:"← 返回成員牆",locked:"暫無"},
- "en":{holders:"Members holding this badge",back:"← Back to members",locked:"None yet"}
+ "zh":{holders:"拥有此徽章的成员",back:"← 返回成员墙",locked:"暂无",criteria:"获得条件"},
+ "zh-TW":{holders:"擁有此徽章的成員",back:"← 返回成員牆",locked:"暫無",criteria:"獲得條件"},
+ "en":{holders:"Members holding this badge",back:"← Back to members",locked:"None yet",criteria:"How to earn"}
 };
 const ICONS={
  kaishan:'<path d="M3 20h18M5 20c0-6 3-11 7-13 0 0 4-2 6 1 1-2 3-2 4 0 0 2-1 4-4 5-2 1-4 1-6 3-2 1-4 4-7 4z"/>',
@@ -109,7 +115,8 @@ function render(){
      <div class="badge-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[key]||ICONS.earlyMember}</svg></div>
      <h1>${T(def)}</h1>
    </div>
-   <div class="desc"><p>${def.desc?T(def.desc):""}</p></div>`;
+   <div class="desc"><p>${def.desc?T(def.desc):""}</p></div>
+   ${def.criteria?`<div class="criteria"><div class="inner"><span class="cl">${TX[lang].criteria}</span><span class="cv">${T(def.criteria)}</span></div></div>`:""}`;
  const holderBox=document.getElementById("holders");
  holderBox.innerHTML=holders.length? holders.map(x=>`
    <a class="hcard" href="member-card.html?call=${x.call}">

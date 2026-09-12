@@ -1,6 +1,6 @@
 {
-  "version": 43,
-  "updated": "2026-09-12",
+  "version": 44,
+  "updated": "2026-09-13",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1498,6 +1498,11 @@
         "zh-TW": "群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。",
         "en": "Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills."
       },
+      "criteria": {
+        "zh": "参与极早期内测",
+        "zh-TW": "參與極早期內測",
+        "en": "Took part in the very early closed beta"
+      },
       "color": "#E67E22"
     },
     "developer": {
@@ -1508,6 +1513,11 @@
         "zh": "以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。",
         "zh-TW": "以程式為槳、翻譯為橋，一磚一瓦把 APRSlocus 推向更遠的頻率。",
         "en": "Oars of code and bridges of translation — brick by brick, tuned APRSlocus to farther frequencies."
+      },
+      "criteria": {
+        "zh": "贡献代码、翻译或 PR",
+        "zh-TW": "貢獻程式碼、翻譯或 PR",
+        "en": "Contributed code, translations, or pull requests"
       },
       "color": "#1D6FF2"
     },
@@ -1520,6 +1530,11 @@
         "zh-TW": "在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。",
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
+      "criteria": {
+        "zh": "参与早期公测",
+        "zh-TW": "參與早期公測",
+        "en": "Took part in the early public beta"
+      },
       "color": "#B08A34"
     },
     "mostBrain": {
@@ -1530,6 +1545,11 @@
         "zh": "隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。",
         "zh-TW": "隱藏成就：於無聲處托舉算力洪流——為專案點亮超過半數的光。",
         "en": "Hidden: silently channeled the tide of compute — lighting more than half the project's sky."
+      },
+      "criteria": {
+        "zh": "为项目提供超过 50% 的算力支持（隐藏成就）",
+        "zh-TW": "為專案提供超過 50% 的算力支援（隱藏成就）",
+        "en": "Provided more than 50% of the project's compute (hidden)"
       },
       "color": "#0EA5C4"
     },
@@ -1542,6 +1562,11 @@
         "zh-TW": "APRSlocus 1.7.0 開放 —— 完成全部成就後向開發團隊申請，獲頒至高榮譽。",
         "en": "Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team for this supreme honor."
       },
+      "criteria": {
+        "zh": "完成全部成就后向开发团队申请",
+        "zh-TW": "完成全部成就後向開發團隊申請",
+        "en": "Complete every achievement, then apply to the dev team"
+      },
       "color": "#C9A227"
     },
     "jadeGift": {
@@ -1552,6 +1577,11 @@
         "zh": "承君厚赠，藏之于心；唯有砥砺，以报清音。",
         "zh-TW": "承君厚贈，藏之於心；唯有砥礪，以報清音。",
         "en": "Your gift is treasured in my heart; the only return I can offer is to strive, and answer your kindness with good work."
+      },
+      "criteria": {
+        "zh": "馈赠或赞助项目",
+        "zh-TW": "饋贈或贊助專案",
+        "en": "Gifted or sponsored the project"
       },
       "color": "#0EA5B7"
     },
@@ -1564,6 +1594,11 @@
         "zh-TW": "在曠野埋下種子，等待遍地開花。",
         "en": "Sowing seeds in the open field — waiting for blossoms everywhere."
       },
+      "criteria": {
+        "zh": "在社交媒体上积极分享 APRSlocus",
+        "zh-TW": "在社群媒體上積極分享 APRSlocus",
+        "en": "Actively share APRSlocus on social media"
+      },
       "color": "#2E9E5B",
       "icon": "sower"
     },
@@ -1575,6 +1610,11 @@
         "zh": "不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。",
         "zh-TW": "不求現成的果實，親手編譯一粒種子，讓它在蘋果的園子裡長成一座信標。",
         "en": "Rather than wait for ripened fruit, they compiled the seed themselves — and let it grow into a beacon in Apple’s orchard."
+      },
+      "criteria": {
+        "zh": "亲自编译 APRSlocus 并在苹果设备上运行",
+        "zh-TW": "親自編譯 APRSlocus 並在蘋果裝置上執行",
+        "en": "Compile APRSlocus yourself and run it on Apple devices"
       },
       "color": "#8E8E93",
       "icon": "iSelfReliant"

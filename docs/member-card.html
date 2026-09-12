@@ -283,6 +283,8 @@ function honorDefsOf(p){
 }
 function honorColor(key){ return (HONOR_DEFS[key]&&HONOR_DEFS[key].color)||"#8a94ab"; }
 function honorLabel(key){ const d=HONOR_DEFS[key]; return d? (d[lang]||d.zh||key) : key; }
+// 获得条件（来自 members.json 的 criteria；缺则返回空串，title 不显示工具提示）
+function honorCriteria(key){ const d=HONOR_DEFS[key]; const c=d&&d.criteria; return c? (c[lang]||c.zh||"") : ""; }
 function setLang(l){lang=l;const u=new URL(location);if(l!=="zh")u.searchParams.set("lang",l);else u.searchParams.delete("lang");history.replaceState(null,"",u);ui();walls();draw();profile();}
 function pick(i){idx=((i%CARDS.length)+CARDS.length)%CARDS.length;
  const c=cur();const u=new URL(location);
@@ -404,7 +406,7 @@ function profile(){
    <div class="p-id">
      <div class="p-call">${m.call}</div>
      <div class="p-who">${who} · ${role}</div>
-     <div class="p-honors">${honorDefsOf(m).map(k=>`<a class="honor" style="color:${honorColor(k)};border-color:${honorColor(k)}" href="badge.html?honor=${k}"><span class="hd" style="background:${honorColor(k)}"></span>${honorLabel(k)}</a>`).join("")}</div>
+     <div class="p-honors">${honorDefsOf(m).map(k=>`<a class="honor" title="${honorCriteria(k)}" style="color:${honorColor(k)};border-color:${honorColor(k)}" href="badge.html?honor=${k}"><span class="hd" style="background:${honorColor(k)}"></span>${honorLabel(k)}</a>`).join("")}</div>
    </div>
   </div>
   <div class="p-hr"></div>

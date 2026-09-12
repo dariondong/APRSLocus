@@ -175,6 +175,10 @@ if (hDefs is Map && hDefs.isNotEmpty) {          // 空表不清空旧定义（�
   `Icons.emoji_events_rounded`。
 - **`putIfAbsent` 的方向**：**在线定义优先**，本地 `_defaultHonorDefs` 只补缺。
   所以线上改了颜色/文案会立即覆盖本地兜底。
+- **`criteria` 不被 App 解析**：`members.json` 的 `honors[].criteria`（三语「获得条件」，
+  v44 起）是**官网专用**展示字段 —— `_parseMembers` 只取 `zh` / `desc` / `color` / `icon`，
+  **Dart 侧完全不读**。所以增改 `criteria` 只影响官网（`badge.html` 显示、
+  `member-card.html` 胶囊 `title`），**不改变 App 行为**。
 
 ### 4.3 成员授予解析
 
