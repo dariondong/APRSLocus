@@ -605,7 +605,16 @@ class _MessagesPageState extends State<MessagesPage> {
               children: [
                 Row(
                   children: [
-                    Text(S.of(context).conversations, style: T.h2),
+                    // 窄屏/横屏（列表栏仅 280 宽）下标题需可缩，否则加了
+                    // 「管理」按钮后英文 Conversations 会溢出
+                    Flexible(
+                      child: Text(
+                        S.of(context).conversations,
+                        style: T.h2,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
