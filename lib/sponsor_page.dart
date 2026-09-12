@@ -52,7 +52,11 @@ class _SponsorPageState extends State<SponsorPage> {
     (
       kind: 'group',
       name: 'STUDENT HAMS 群组',
-      names: const {'en': 'STUDENT HAMS community'},
+      names: const {
+        'zh': 'STUDENT HAMS 群组',
+        'zh-TW': 'STUDENT HAMS 群組',
+        'en': 'STUDENT HAMS community',
+      },
       desc: '感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。',
       descs: const {
         'zh-TW': '感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。',
@@ -83,9 +87,9 @@ class _SponsorPageState extends State<SponsorPage> {
       kind: 'school',
       name: 'BA4JLD',
       names: const {},
-      desc: '青科大学业余无线电爱好者俱乐部 · 赠我以琼琚',
+      desc: '青岛科技大学业余无线电俱乐部 · 赠我以琼琚',
       descs: const {
-        'zh-TW': '青科大學業餘無線電愛好者俱樂部 · 贈我以瓊琚',
+        'zh-TW': '青島科技大學業餘無線電俱樂部 · 贈我以瓊琚',
         'en': 'Qingdao University of Science and Technology Amateur Radio Club · Gifted with jade',
       },
     ),
@@ -112,7 +116,11 @@ class _SponsorPageState extends State<SponsorPage> {
     (
       kind: 'everyone',
       name: '每一位支持者',
-      names: const {'en': 'Every supporter'},
+      names: const {
+        'zh': '每一位支持者',
+        'zh-TW': '每一位支持者',
+        'en': 'Every supporter',
+      },
       desc: '你们的每一份支持，都是 APRSlocus 继续发光的动力。',
       descs: const {
         'zh-TW': '你們的每一份支持，都是 APRSlocus 繼續發光的動力。',

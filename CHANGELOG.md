@@ -1,5 +1,47 @@
 # 更新日志
 
+## [1.6.93] - 2026-09-13
+
+### 🏫 赞助页：合作院校改用全称 / Sponsor page: partner university full name
+- 青岛科技大学业余无线电俱乐部（BA4JLD）的名称由「青科大学业余无线电爱好者俱乐部」
+  更正为「**青岛科技大学业余无线电俱乐部**」
+  - 「青科大学」实为**笔误**：同一条目的英文一直写作
+    `Qingdao University of Science and Technology Amateur Radio Club`（官网缩写 QUST），
+    中文却少了「岛」字
+  - 官网页三处（简体 / 繁體 / English）+ App 数据源 + App 内置兜底，**共 5 处已统一**
+  - 官网与 App 的排版都会**自动换行**（无 `nowrap`、无省略号截断），故按需求采用**全称**
+    而不是简称
+- 顺带统一「爱好者」的不一致：App/JSON 原写「业余无线电**爱好者**俱乐部」，但同一条目的
+  英文写 `Amateur Radio Club`、官网两处也写「俱乐部」——现统一为「俱乐部」
+
+- The partner club for BA4JLD was corrected to its **full name,
+  青岛科技大学业余无线电俱乐部** (Qingdao University of Science and Technology Amateur
+  Radio Club). The previous Chinese text was missing a character — the English in the very
+  same entry always spelled the university out in full. All five places (three website pages,
+  the app data source, and the app's built-in fallback) are now consistent. Both the website
+  and the app wrap this text rather than truncating it, so the full name is used as requested.
+
+### 🌐 修复赞助名单的多语言缺失（真 bug）/ Fixed missing translations in sponsors.json
+- `sponsors.json` 原先每条**只有中文字段 `desc`**，而 App 在线加载成功后会**整体替换**
+  内置兜底 → 于是**所有非中文语言都显示中文**；也就是说，之前「日语 / 印尼语赞助页
+  改用英文」的修复**对在线数据实际并未生效**（只对离线兜底有效）
+- 现为全部 **7 条**补齐 `descs` 与 `names`（均含 zh / zh-TW / en）
+- 关键细节：`descs` **必须包含 `zh`**。App 的取值链是 `m[lang] ?? m['en'] ?? base`，
+  若只给 `en` / `zh-TW`，则 `lang='zh'` 时会直接落到**英文**，反而把中文用户变成英文
+
+- Every entry in `sponsors.json` previously carried **only a Chinese `desc`**. Because the
+  app **replaces** its built-in fallback once the online list loads, every non-Chinese
+  language showed Chinese — so the earlier "ja/id sponsors in English" fix was in fact
+  **not in effect for the live data** (offline only). All **7 entries** now carry `descs` and
+  `names` in zh / zh-TW / en. Note that `descs` **must include `zh`**: the lookup chain is
+  `m[lang] ?? m['en'] ?? base`, so providing only `en`/`zh-TW` would send Chinese users to
+  English instead.
+
+> 官网与 `sponsors.json` **推送后约 1 分钟即生效**；App 的**内置兜底**需随本版本更新。
+>
+> The website and `sponsors.json` take effect about a minute after push; the app's **built-in
+> fallback** ships with this release.
+
 ## [1.6.92] - 2026-09-13
 
 ### 📶 导出 ADIF：新增「频率（FREQ）」，可自定义 / ADIF export: custom FREQ

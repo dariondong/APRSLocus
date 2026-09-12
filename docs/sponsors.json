@@ -1,41 +1,86 @@
 {
-  "version": 2,
-  "updated": "2026-09-11",
+  "version": 3,
+  "updated": "2026-09-13",
   "sponsors": [
     {
       "kind": "group",
       "name": "STUDENT HAMS 群组",
-      "desc": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。"
+      "desc": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。",
+      "descs": {
+        "zh": "感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。",
+        "zh-TW": "感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。",
+        "en": "Thanks to the group for funding APRSlocus development and operations."
+      },
+      "names": {
+        "zh": "STUDENT HAMS 群组",
+        "zh-TW": "STUDENT HAMS 群組",
+        "en": "STUDENT HAMS community"
+      }
     },
     {
       "kind": "coffee",
       "name": "BG7PGW",
-      "desc": "感谢赞助的蜜雪冰城一杯 🧋"
+      "desc": "感谢赞助的蜜雪冰城一杯 🧋",
+      "descs": {
+        "zh": "感谢赞助的蜜雪冰城一杯 🧋",
+        "zh-TW": "感謝贊助的蜜雪冰城一杯 🧋",
+        "en": "Thanks for sponsoring a Mixue drink 🧋"
+      }
     },
     {
       "kind": "jade",
       "name": "BG7ORC",
-      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+      "descs": {
+        "zh": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+        "zh-TW": "贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音",
+        "en": "Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work."
+      }
     },
     {
       "kind": "school",
       "name": "BA4JLD",
-      "desc": "青科大学业余无线电爱好者俱乐部 · 赠我以琼琚"
+      "desc": "青岛科技大学业余无线电俱乐部 · 赠我以琼琚",
+      "descs": {
+        "zh": "青岛科技大学业余无线电俱乐部 · 赠我以琼琚",
+        "zh-TW": "青島科技大學業餘無線電俱樂部 · 贈我以瓊琚",
+        "en": "Qingdao University of Science and Technology Amateur Radio Club · Gifted with jade"
+      }
     },
     {
       "kind": "jade",
       "name": "BA4IUD",
-      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+      "descs": {
+        "zh": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+        "zh-TW": "贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音",
+        "en": "Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work."
+      }
     },
     {
       "kind": "jade",
       "name": "BD1FEH",
-      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音"
+      "desc": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+      "descs": {
+        "zh": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
+        "zh-TW": "贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音",
+        "en": "Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work."
+      }
     },
     {
       "kind": "everyone",
       "name": "每一位支持者",
-      "desc": "你们的每一份支持，都是 APRSlocus 继续发光的动力。"
+      "desc": "你们的每一份支持，都是 APRSlocus 继续发光的动力。",
+      "descs": {
+        "zh": "你们的每一份支持，都是 APRSlocus 继续发光的动力。",
+        "zh-TW": "你們的每一份支持，都是 APRSlocus 繼續發光的動力。",
+        "en": "Every bit of your support keeps APRSlocus shining."
+      },
+      "names": {
+        "zh": "每一位支持者",
+        "zh-TW": "每一位支持者",
+        "en": "Every supporter"
+      }
     }
   ]
 }
