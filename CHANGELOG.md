@@ -1,16 +1,20 @@
 # 更新日志
 
-## [1.6.85] - 2026-09-12
+## [1.6.86] - 2026-09-12
 
-### 🌐 新增日语与印尼语（基础建设完成，译文分批进行中）
+> 自 v1.6.82 起的改动合并为此版发布（v1.6.82~v1.6.85 未单独发版）。
+> Changes since v1.6.82 are all released together in this version
+> (v1.6.82~v1.6.85 were not released on their own).
+
+### 🌐 新增日语与印尼语（译文已全部完成）
 
 新增 **日本語** 与 **Bahasa Indonesia** 两种界面语言，共 1143 个文案键。
 
-**本批完成的是「骨架」**：语言可选、能正确解析、全链路已验证。
-**译文目前完成 429 / 1143 条**（前 3 批），其余暂**回落英文**——
-在译文补齐前**不建议发版**（否则 ja/id 用户会看到大片英文）。
+**译文已 1143 / 1143 条全部完成**（日、印尼各一套）。
+配套的语言选项、解析链路、生成类、校验全部就绪。
 
 改动内容：
+
 - 新增 `app_ja.arb` / `app_id.arb`（键集与 zh/en/zh_TW 完全一致）
 - 新增 `app_localizations_ja.dart` / `app_localizations_id.dart`
   （**由 `flutter gen-l10n` 生成**，非手写——我用它重新生成现有三种语言，
@@ -26,10 +30,9 @@
 
 - Added **Japanese** and **Indonesian** UI locales (1143 keys each).
 - **This commit lands the plumbing**: both locales are selectable, resolve
-  correctly and are verified end-to-end. **Translation is 429 / 1143 so far**
-  (first three batches); the rest falls back to English for now — **please don't
-  cut a release until the translations are complete**, or ja/id users will see
-  large stretches of English.
+  correctly and verified end-to-end. **Translation is complete: 1143 / 1143 keys**
+  for both Japanese and Indonesian, along with the language pickers, resolution
+  chain and generated classes.
 - New ARBs + generated Dart classes (`flutter gen-l10n` — verified by regenerating
   the three existing locales and diffing: identical key sets, zero drift).
 - Wired into `supportedLocales` / `isSupported` / `lookupAppLocalizations`, both
@@ -37,7 +40,6 @@
 - `terms_page` now falls back to the **English** terms text for non-Chinese locales
   (ja/id terms documents are still to be written).
 
-## [1.6.84] - 2026-09-12
 
 ### 🐛 修复「APRSlocus 同款软件」识别失效（v1.6.80 引入的回归）
 
@@ -83,7 +85,6 @@
 - Because `toCall` and `aprslocus` are both persisted, the fix also applies to already
   cached stations without waiting for new packets. 5 regression tests added.
 
-## [1.6.83] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第五批：补上一批我漏掉的 
 
@@ -110,7 +111,6 @@
   Simplified text) and adds the missing `badgeWall` / `achievementWall` /
   `openInBrowser` keys. Two sites were `const Text` and needed the `const` removed.
 
-## [1.6.82] - 2026-09-12
 
 ### 🌐 中文硬编码清理 · 第四批：修好「有本地化包但没用上」的地方
 

@@ -1361,220 +1361,219 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get mapHelpLayer =>
-      'Layers & style: top-right buttons filter station types / switch basemap';
+      'Lapisan & gaya: tombol kanan atas menyaring jenis stasiun / mengganti peta dasar';
 
   @override
   String get mapHelpLocate =>
-      'Locate: tap “Locate me” (bottom-right) to return to your position';
+      'Lokasi: ketuk “Lokasi” (kanan bawah) untuk kembali ke posisi Anda';
 
   @override
   String get mapHelpSearch =>
-      'Search: type a callsign in the top search box to jump to it';
+      'Cari: ketik tanda panggil di kotak pencarian atas untuk melompat ke stasiun itu';
 
   @override
-  String get allChangelog => 'All changelogs';
+  String get allChangelog => 'Semua catatan rilis';
 
   @override
-  String get tapToView => 'Tap to view';
+  String get tapToView => 'Ketuk untuk melihat';
 
   @override
-  String get beaconNow => 'Beacon now';
+  String get beaconNow => 'Beacon sekarang';
 
   @override
-  String get meLabel => 'Me';
+  String get meLabel => 'Saya';
 
   @override
-  String get mapZoomIn => 'Zoom in';
+  String get mapZoomIn => 'Perbesar';
 
   @override
-  String get mapZoomOut => 'Zoom out';
+  String get mapZoomOut => 'Perkecil';
 
   @override
-  String get mapHome => 'Recenter';
+  String get mapHome => 'Kembali ke pusat';
 
   @override
-  String get mapLocate => 'Locate';
+  String get mapLocate => 'Lokasi';
 
   @override
-  String get mapLayers => 'Layers';
+  String get mapLayers => 'Lapisan';
 
   @override
-  String get featureLiveMap => 'AMap';
+  String get featureLiveMap => 'AMAP';
 
   @override
   String get featureLiveMapDesc =>
-      'GCJ-02 coordinates with smooth zooming and panning';
+      'Koordinat GCJ-02, zoom dan geser yang lancar';
 
   @override
-  String get featureGps => 'GPS positioning';
+  String get featureGps => 'Positioning GPS';
 
   @override
-  String get featureGpsDesc =>
-      'Native Android location, no Google services required';
+  String get featureGpsDesc => 'Lokasi native Android, tanpa layanan Google';
 
   @override
   String get featureBeacon => 'Beaconing';
 
   @override
   String get featureBeaconDesc =>
-      'Custom content, rate, and symbol with APRS-standard formatting';
+      'Kustomisasi isi, frekuensi, dan simbol dengan format standar APRS';
 
   @override
-  String get featureMsg => 'Messages';
+  String get featureMsg => 'Pesan';
 
   @override
   String get featureMsgDesc =>
-      'Feed + conversation views with Unicode text and auto-reply support';
+      'Tampilan feed + percakapan dengan teks Unicode dan balasan otomatis';
 
   @override
-  String get featureAutoConnect => 'Auto-connect';
+  String get featureAutoConnect => 'Sambung otomatis';
 
   @override
   String get featureAutoConnectDesc =>
-      'Automatically connects to a public server and stays online in the background';
+      'Otomatis menyambung ke server publik dan tetap online di latar belakang';
 
   @override
-  String get featureLayerFilter => 'Layer filter';
+  String get featureLayerFilter => 'Filter lapisan';
 
   @override
   String get featureLayerFilterDesc =>
-      'Filter: mobile, fixed, digipeater, weather, FMO';
+      'Filter: bergerak, tetap, digipeater, cuaca, FMO';
 
   @override
-  String get featureFmo => 'FMO stations';
+  String get featureFmo => 'Stasiun FMO';
 
   @override
   String get featureFmoDesc =>
-      'Automatically detects FMO data and shows structured details';
+      'Otomatis mengenali data FMO dan menampilkan detail terstruktur';
 
   @override
   String get osFlutter => 'Flutter';
 
   @override
-  String get osFlutterDesc => 'Google cross-platform UI framework';
+  String get osFlutterDesc => 'Kerangka UI lintas platform dari Google';
 
   @override
-  String get osAmap => 'AMap';
+  String get osAmap => 'AMAP';
 
   @override
-  String get osAmapDesc => 'Map tile service';
+  String get osAmapDesc => 'Layanan tile peta';
 
   @override
   String get osAprs => 'APRS-IS';
 
   @override
-  String get osAprsDesc => 'Global APRS data network';
+  String get osAprsDesc => 'Jaringan data APRS global';
 
   @override
-  String get osHam => 'Amateur radio';
+  String get osHam => 'Radio amatir';
 
   @override
-  String get osHamDesc => 'Contributions from the APRS amateur radio community';
+  String get osHamDesc => 'Kontribusi dari komunitas radio amatir APRS';
 
   @override
   String get authorName => 'Darion';
 
   @override
-  String get authorCall => 'Callsign';
+  String get authorCall => 'Tanda panggil';
 
   @override
-  String get website => 'Website';
+  String get website => 'Situs web';
 
   @override
-  String get sponsorAuthor => 'Author BG7LZQ';
+  String get sponsorAuthor => 'Penulis BG7LZQ';
 
   @override
   String get sponsorAuthorItems =>
-      'Develops and maintains this project in spare time';
+      'Mengembangkan dan memelihara proyek ini di waktu luang';
 
   @override
   String get sponsorGroup => 'STUDENT HAMS';
 
   @override
-  String get sponsorGroupItems => 'Thanks to the group for financial support';
+  String get sponsorGroupItems => 'Terima kasih atas dukungan dana dari grup';
 
   @override
   String get sponsorBgp => 'BG7PGW';
 
   @override
-  String get sponsorBgpItems => 'Thanks for sponsoring a Mixue drink 🧋';
+  String get sponsorBgpItems => 'Terima kasih atas sponsor minuman Mixue 🧋';
 
   @override
-  String get sponsorEvery => 'Every supporter';
+  String get sponsorEvery => 'Setiap pendukung';
 
   @override
   String get sponsorEveryItems =>
-      'Every contribution helps keep the project going';
+      'Setiap dukungan Anda adalah semangat bagi kami';
 
   @override
-  String get donateWechat => 'WeChat donation';
+  String get donateWechat => 'Donasi WeChat';
 
   @override
   String get donateWechatDesc =>
-      'Long-press to save the QR code · tap to enlarge';
+      'Tekan lama untuk menyimpan kode QR · ketuk untuk memperbesar';
 
   @override
-  String get donateAlipay => 'Alipay donation';
+  String get donateAlipay => 'Donasi Alipay';
 
   @override
-  String get donateAlipayDesc => 'Contact the author for the donation QR code';
+  String get donateAlipayDesc => 'Hubungi penulis untuk kode QR donasi';
 
   @override
   String get nonprofitNote =>
-      'Non-profit learning and community project\nDonations only cover server and development costs';
+      'Proyek ini bersifat non-profit untuk pembelajaran dan komunitas.\nDonasi hanya untuk biaya server dan pengembangan';
 
   @override
-  String get myStation => 'My station';
+  String get myStation => 'Stasiun saya';
 
   @override
-  String get callSsid => 'Callsign · SSID';
+  String get callSsid => 'Tanda panggil · SSID';
 
   @override
   String get ssid => 'SSID';
 
   @override
   String get ssidDesc =>
-      'SSID is a callsign suffix for devices, e.g. -9 in BG7ABC-9';
+      'SSID adalah akhiran tanda panggil untuk perangkat, mis. -9 pada BG7ABC-9';
 
   @override
-  String get callComment => 'Station comment';
+  String get callComment => 'Komentar stasiun';
 
   @override
-  String get callCommentHint => 'Comment sent with position beacons';
+  String get callCommentHint => 'Komentar yang dikirim bersama beacon posisi';
 
   @override
-  String get callSymbol => 'Station symbol';
+  String get callSymbol => 'Simbol stasiun';
 
   @override
-  String get callSymbolDesc => 'Symbol sent with position beacons';
+  String get callSymbolDesc => 'Simbol dikirim bersama beacon posisi';
 
   @override
-  String get autoReply => 'Auto-reply';
+  String get autoReply => 'Balasan otomatis';
 
   @override
-  String get sendBeacon => 'Send beacon';
+  String get sendBeacon => 'Kirim beacon';
 
   @override
   String get mapTypeDesc =>
-      '\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; AMap raster/satellite uses online tiles.';
+      '“Peta 2.0 (vektor)” merender vektor di perangkat sehingga hemat data dan tetap tajam saat zoom; AMAP vektor/satelit memakai tile raster daring.';
 
   @override
-  String get msgHistory => 'Message history';
+  String get msgHistory => 'Riwayat pesan';
 
   @override
-  String get statistics => 'Statistics';
+  String get statistics => 'Statistik';
 
   @override
-  String get clearData => 'Clear data';
+  String get clearData => 'Hapus data';
 
   @override
-  String get favorites => 'Favorites / Manual';
+  String get favorites => 'Favorit / Manual';
 
   @override
-  String get favoriteStations => 'Favorite stations';
+  String get favoriteStations => 'Stasiun favorit';
 
   @override
-  String get manualStations => 'Manual stations';
+  String get manualStations => 'Stasiun manual';
 
   @override
   String get wgs84 => 'WGS-84';
@@ -1583,258 +1582,258 @@ class AppLocalizationsId extends AppLocalizations {
   String get gcj02 => 'GCJ-02';
 
   @override
-  String get onlyWgs84 => 'WGS-84 only';
+  String get onlyWgs84 => 'Hanya WGS-84';
 
   @override
-  String get contactList => 'Contacts';
+  String get contactList => 'Kontak';
 
   @override
-  String get contactDesc => 'Message/contact filtering rules';
+  String get contactDesc => 'Aturan filter pesan/kontak';
 
   @override
   String get dataClearDesc =>
-      'Clear local messages, packets, stations, and other data';
+      'Hapus pesan, paket, stasiun, dan data lokal lainnya';
 
   @override
-  String get advancedDesc => 'Lab & developer tools';
+  String get advancedDesc => 'Lab & alat pengembang';
 
   @override
   String get labDesc =>
-      'Lab features are experimental and may affect usability. Portrait orientation is locked by default; enable this to allow landscape.';
+      'Fitur lab masih diuji dan dapat memengaruhi pengalaman. Orientasi potret dikunci secara bawaan; aktifkan ini untuk mengizinkan lanskap.';
 
   @override
-  String get systemLog => 'System log';
+  String get systemLog => 'Log sistem';
 
   @override
-  String get devDesc => 'Developer tools';
+  String get devDesc => 'Alat debug pengembang';
 
   @override
-  String get simData => 'Enable demo data (sample stations/packets)';
+  String get simData => 'Aktifkan data demo (contoh stasiun/paket)';
 
   @override
   String get rxTx => 'RX / TX';
 
   @override
-  String get stationCount2 => 'Stations';
+  String get stationCount2 => 'Jumlah stasiun';
 
   @override
-  String get appInfo => 'App info';
+  String get appInfo => 'Info aplikasi';
 
   @override
-  String get clearMessages => 'Clear all chat history';
+  String get clearMessages => 'Hapus semua riwayat obrolan';
 
   @override
-  String get clearPackets2 => 'Clear packets';
+  String get clearPackets2 => 'Hapus paket';
 
   @override
-  String get clearStations => 'Clear station list';
+  String get clearStations => 'Hapus daftar stasiun';
 
   @override
-  String get clearCache => 'Clear cache';
+  String get clearCache => 'Hapus cache';
 
   @override
-  String get resetAll => 'Reset all settings';
+  String get resetAll => 'Reset semua pengaturan';
 
   @override
-  String get resetAllDesc => 'Factory reset';
+  String get resetAllDesc => 'Kembalikan ke pengaturan pabrik';
 
   @override
-  String get dataPersistence => 'Station persistence';
+  String get dataPersistence => 'Penyimpanan stasiun';
 
   @override
-  String get autoSaveStations => 'Save station data automatically';
+  String get autoSaveStations => 'Simpan data stasiun otomatis';
 
   @override
-  String get gridFormat => 'Grid format';
+  String get gridFormat => 'Format grid';
 
   @override
-  String get coordsFormat => 'Coord format';
+  String get coordsFormat => 'Format koordinat';
 
   @override
-  String get appVersion => 'Version';
+  String get appVersion => 'Versi';
 
   @override
-  String get appVersionDesc => 'Current app version';
+  String get appVersionDesc => 'Versi aplikasi saat ini';
 
   @override
-  String get stationDetail => 'Station detail';
+  String get stationDetail => 'Detail stasiun';
 
   @override
-  String get backToTop => 'Back to top';
+  String get backToTop => 'Kembali ke atas';
 
   @override
-  String get installApk => 'Install APRSlocus';
+  String get installApk => 'Pasang APRSlocus';
 
   @override
-  String get install => 'Install';
+  String get install => 'Pasang';
 
   @override
-  String get cancelInstall => 'Cancel';
+  String get cancelInstall => 'Batal';
 
   @override
-  String get openFolder => 'Open folder';
+  String get openFolder => 'Buka folder';
 
   @override
-  String get browse => 'Browse';
+  String get browse => 'Telusuri';
 
   @override
-  String get downloadUpdate => 'Download update';
+  String get downloadUpdate => 'Unduh pembaruan';
 
   @override
-  String get downloadNow => 'Download now';
+  String get downloadNow => 'Unduh sekarang';
 
   @override
-  String get downloading => 'Downloading';
+  String get downloading => 'Mengunduh';
 
   @override
   String downloadProgress(Object p) {
-    return 'Downloading $p%';
+    return 'Mengunduh $p%';
   }
 
   @override
-  String get downloadComplete => 'Download complete';
+  String get downloadComplete => 'Unduhan selesai';
 
   @override
-  String get downloadFailed => 'Download failed';
+  String get downloadFailed => 'Unduhan gagal';
 
   @override
-  String get installNow => 'Install now';
+  String get installNow => 'Pasang sekarang';
 
   @override
-  String get installComplete => 'Install complete';
+  String get installComplete => 'Pemasangan selesai';
 
   @override
-  String get openInstallDir => 'Open install folder';
+  String get openInstallDir => 'Buka folder pemasangan';
 
   @override
-  String get deletePackage => 'Delete package';
+  String get deletePackage => 'Hapus paket';
 
   @override
   String deletePackageConfirm(Object file) {
-    return 'Delete package $file?';
+    return 'Hapus paket $file?';
   }
 
   @override
-  String get deleteAllPackages => 'Delete all packages';
+  String get deleteAllPackages => 'Hapus semua paket';
 
   @override
   String deleteAllPackagesWithCount(Object count) {
-    return 'Delete all packages ($count)';
+    return 'Hapus semua paket ($count)';
   }
 
   @override
   String deleteAllPackagesConfirm(Object count, Object size) {
-    return 'Delete $count downloaded packages ($size)? This cannot be undone.';
+    return 'Hapus $count paket terunduh ($size)? Tindakan ini tidak dapat dibatalkan.';
   }
 
   @override
-  String get historyVersions => 'History';
+  String get historyVersions => 'Riwayat versi';
 
   @override
-  String get current => 'Current';
+  String get current => 'Saat ini';
 
   @override
-  String get newVersion => 'New version';
+  String get newVersion => 'Versi baru';
 
   @override
-  String get latestVersion => 'You are up to date';
+  String get latestVersion => 'Anda sudah menggunakan versi terbaru';
 
   @override
-  String get currentVersion => 'Current APRSlocus version';
+  String get currentVersion => 'Versi APRSlocus saat ini';
 
   @override
-  String get checking => 'Checking for updates…';
+  String get checking => 'Memeriksa pembaruan…';
 
   @override
-  String get checkingGitCode => 'Checking GitCode repository';
+  String get checkingGitCode => 'Memeriksa repositori GitCode';
 
   @override
-  String get updateFailed => 'Update check failed';
+  String get updateFailed => 'Pemeriksaan pembaruan gagal';
 
   @override
-  String get noUpdateFound => 'You are up to date';
+  String get noUpdateFound => 'Anda sudah menggunakan versi terbaru';
 
   @override
-  String get newVersionFound => 'New version available';
+  String get newVersionFound => 'Versi baru tersedia';
 
   @override
-  String get downloadAgain => 'Download package again';
+  String get downloadAgain => 'Unduh ulang paket';
 
   @override
-  String get openDownloads => 'Open downloads folder';
+  String get openDownloads => 'Buka folder unduhan';
 
   @override
-  String get releaseNotes => 'Release notes';
+  String get releaseNotes => 'Catatan rilis';
 
   @override
   String currentVsRepo(Object local, Object remote) {
-    return 'Installed v$local · Latest v$remote';
+    return 'Terpasang v$local · Terbaru v$remote';
   }
 
   @override
   String installSize(Object os, Object size) {
-    return '$os package size: $size';
+    return 'Ukuran paket $os: $size';
   }
 
   @override
-  String get alreadyDownloaded => 'Package downloaded';
+  String get alreadyDownloaded => 'Paket sudah diunduh';
 
   @override
-  String get downloadReady => 'Download installation package';
+  String get downloadReady => 'Unduh paket pemasangan';
 
   @override
-  String get appInstallDir => 'Install folder';
+  String get appInstallDir => 'Folder pemasangan';
 
   @override
-  String get runInstaller => 'Run installer';
+  String get runInstaller => 'Jalankan installer';
 
   @override
-  String get downloadUpdateTip => 'Download the update and open it';
+  String get downloadUpdateTip => 'Unduh pembaruan lalu buka otomatis';
 
   @override
-  String get openDownloadFolder => 'Open downloads folder';
+  String get openDownloadFolder => 'Buka folder unduhan';
 
   @override
   String groupBubble(String name) {
-    return 'Group · $name';
+    return 'Grup · $name';
   }
 
   @override
-  String get groupInviteTitle => 'Group chat invitation';
+  String get groupInviteTitle => 'Undangan obrolan grup';
 
   @override
   String groupInviteFrom(String from) {
-    return '$from invited you to a group chat';
+    return '$from mengundang Anda ke obrolan grup';
   }
 
   @override
   String groupNameValue(String name) {
-    return 'Group: $name';
+    return 'Nama grup: $name';
   }
 
   @override
   String groupCallsignValue(String call) {
-    return 'Group callsign: $call';
+    return 'Tanda panggil grup: $call';
   }
 
   @override
   String groupInviteAccepted(String name) {
-    return 'Joined $name';
+    return 'Bergabung ke $name';
   }
 
   @override
-  String get accept => 'Accept';
+  String get accept => 'Terima';
 
   @override
   String groupInviteRejected(String name) {
-    return 'Declined invitation to $name';
+    return 'Menolak undangan ke $name';
   }
 
   @override
-  String get reject => 'Decline';
+  String get reject => 'Tolak';
 
   @override
-  String get appTagline => 'APRS tracking';
+  String get appTagline => 'Pelacakan APRS';
 
   @override
   String gridValue(String grid) {
@@ -1843,7 +1842,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String packetsPerMinute(int count) {
-    return '$count/min';
+    return '$count/mnt';
   }
 
   @override
@@ -1851,122 +1850,124 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String nextBeaconIn(String time) {
-    return 'Next beacon $time';
+    return 'Beacon berikutnya $time';
   }
 
   @override
   String beaconCount(int count) {
-    return 'Beacons $count';
+    return 'Beacon $count';
   }
 
   @override
   String beaconSentAprsIs(String grid) {
-    return 'Position beacon sent · Grid $grid · Sent to APRS-IS';
+    return 'Beacon posisi terkirim · Grid $grid · Terkirim ke APRS-IS';
   }
 
   @override
   String beaconSentDemo(String grid) {
-    return 'Position beacon sent · Grid $grid · Demo';
+    return 'Beacon posisi terkirim · Grid $grid · Demo';
   }
 
   @override
-  String get getLocation => 'Get location';
+  String get getLocation => 'Dapatkan lokasi';
 
   @override
-  String get disconnect => 'Disconnect';
+  String get disconnect => 'Putuskan';
 
   @override
-  String get connectAprsIs => 'Connect APRS-IS';
+  String get connectAprsIs => 'Sambungkan APRS-IS';
 
   @override
   String get packetsReceived => 'RX';
 
   @override
-  String get passcodeUnverified => 'Passcode not verified';
+  String get passcodeUnverified => 'Passcode belum diverifikasi';
 
   @override
   String get passcodeWarning =>
-      'The login passcode may be incorrect; messages may not work';
+      'Passcode login mungkin salah; pesan mungkin tidak berfungsi';
 
   @override
-  String get goSettings => 'Settings';
+  String get goSettings => 'Pengaturan';
 
   @override
-  String get connectingServer => 'Connecting to server…';
+  String get connectingServer => 'Menghubungkan ke server…';
 
   @override
-  String get notConnectedAprsServer => 'Not connected to APRS-IS';
+  String get notConnectedAprsServer => 'Belum tersambung ke APRS-IS';
 
   @override
   String connectingToServer(String server, int port) {
-    return 'Connecting to $server:$port…';
+    return 'Menghubungkan ke $server:$port…';
   }
 
   @override
   String get connectNearbyDesc =>
-      'Connect to receive nearby station positions and messages';
+      'Setelah tersambung, Anda menerima posisi dan pesan stasiun di sekitar';
 
   @override
-  String get connectAction => 'Connect';
+  String get connectAction => 'Sambungkan';
 
   @override
   String get backgroundRunTip =>
-      'Background operation: allow APRSlocus to run in the background, disable battery optimization, and allow autostart to keep beaconing active.';
+      'Tips latar belakang: agar pelaporan posisi tetap berjalan, izinkan APRSlocus berjalan di latar belakang, nonaktifkan optimasi baterai, dan izinkan autostart.';
 
   @override
-  String get connectedAprsIs => 'Connected to APRS-IS';
+  String get connectedAprsIs => 'Tersambung ke APRS-IS';
 
   @override
-  String get qqGroupDesc => 'APRSlocus · Feedback and discussion';
+  String get qqGroupDesc => 'APRSlocus · Masukan dan diskusi';
 
   @override
-  String get reselectPoint => 'Pick again';
+  String get reselectPoint => 'Pilih ulang';
 
   @override
-  String get disableClustering => 'Disable clustering';
+  String get disableClustering => 'Nonaktifkan pengelompokan';
 
   @override
-  String get enableClustering => 'Enable clustering';
+  String get enableClustering => 'Aktifkan pengelompokan';
 
   @override
-  String get heatmap => 'Station heatmap';
+  String get heatmap => 'Peta panas stasiun';
 
   @override
-  String get heatmapHint => 'Show station density heatmap when zoomed out';
+  String get heatmapHint =>
+      'Tampilkan peta panas kepadatan stasiun saat zoom diperkecil';
 
   @override
-  String get groupTracking => 'Group tracking';
+  String get groupTracking => 'Pelacakan grup';
 
   @override
   String get groupTrackingHint =>
-      'Group callsigns you care about and track them on a big map (caravan / friends). Landscape friendly.';
+      'Kelompokkan tanda panggil yang Anda pantau dan lacak di peta besar (konvoi / bersama teman). Mendukung lanskap.';
 
   @override
-  String get newTrackGroup => 'New track group';
+  String get newTrackGroup => 'Grup pelacakan baru';
 
   @override
-  String get trackGroupNameHint => 'Name, e.g. Weekend Ride';
+  String get trackGroupNameHint => 'Nama, mis. Bersepeda Akhir Pekan';
 
   @override
-  String get editTrackGroup => 'Edit track group';
+  String get editTrackGroup => 'Edit grup pelacakan';
 
   @override
-  String get deleteTrackGroup => 'Delete track group';
+  String get deleteTrackGroup => 'Hapus grup pelacakan';
 
   @override
   String deleteTrackGroupConfirm(Object name) {
-    return 'Delete track group “$name”?';
+    return 'Hapus grup pelacakan “$name”?';
   }
 
   @override
-  String get pickTrackMembers => 'Pick members (check callsigns to track)';
+  String get pickTrackMembers =>
+      'Pilih anggota (centang tanda panggil yang dilacak)';
 
   @override
-  String get saveAndTrack => 'Save & track';
+  String get saveAndTrack => 'Simpan & lacak';
 
   @override
   String get trackGroupsEmptyHint =>
-      'No track groups yet. Tap “New track group” to create one.';
+      'Belum ada grup pelacakan. Ketuk “Grup pelacakan baru” untuk membuatnya.';
 
   @override
   String trackMemberSub(Object seen, Object type) {
@@ -1975,372 +1976,375 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get trackGroupEmpty =>
-      'Members have no position data yet (not received or not beaconing).';
+      'Anggota belum memiliki data posisi (belum diterima atau belum beacon). Ketuk di bawah untuk mengedit anggota.';
 
   @override
-  String get trackActive => 'Active';
+  String get trackActive => 'Online';
 
   @override
-  String get trackWaitingPos => 'Waiting for position…';
+  String get trackWaitingPos => 'Menunggu posisi…';
 
   @override
   String get offlineShort => 'Offline';
 
   @override
-  String get stoppedShort => 'Stopped';
+  String get stoppedShort => 'Berhenti';
 
   @override
   String trackHeader(Object fixed, Object online, Object total) {
-    return '$total members · $online online · $fixed fixed';
+    return '$total anggota · $online online · $fixed terposisi';
   }
 
   @override
-  String get groupChatShort => 'Chat';
+  String get groupChatShort => 'Obrolan';
 
   @override
   String groupChatTitle(Object name) {
-    return 'Group · $name';
+    return 'Grup · $name';
   }
 
   @override
   String chatWithTitle(Object call) {
-    return 'Chat with $call';
+    return 'Obrolan dengan $call';
   }
 
   @override
-  String get chatToGroupHint => 'Message the group…';
+  String get chatToGroupHint => 'Kirim pesan ke grup…';
 
   @override
   String chatToHint(Object call) {
-    return 'Message $call…';
+    return 'Pesan ke $call…';
   }
 
   @override
-  String get noMessagesHint => 'No messages yet — say hi!';
+  String get noMessagesHint => 'Belum ada pesan — sapa dulu!';
 
   @override
   String trackModeFollow(Object call) {
-    return 'Following $call';
+    return 'Mengikuti $call';
   }
 
   @override
-  String get trackModeMe => 'Following me';
+  String get trackModeMe => 'Mengikuti saya';
 
   @override
-  String get trackModeFitAll => 'Keep-fit all';
+  String get trackModeFitAll => 'Tetap muat semua';
 
   @override
-  String get fitAll => 'Fit all';
+  String get fitAll => 'Muat semua';
 
   @override
   String get noStationsYet =>
-      'No station data yet. Connect to APRS-IS to pick members.';
+      'Belum ada data stasiun. Sambungkan ke APRS-IS untuk memilih anggota.';
 
   @override
-  String get noPackets => 'No packets yet';
+  String get noPackets => 'Belum ada paket';
 
   @override
   String secondsAgo(int count) {
-    return '${count}s ago';
+    return '$count dtk lalu';
   }
 
   @override
   String minutesAgo(int count) {
-    return '${count}m ago';
+    return '$count mnt lalu';
   }
 
   @override
   String hoursAgo(int count) {
-    return '${count}h ago';
+    return '$count jam lalu';
   }
 
   @override
   String daysAgo(int count) {
-    return '${count}d ago';
+    return '$count hari lalu';
   }
 
   @override
   String copiedCoordsValue(String coords) {
-    return 'Coordinates copied: $coords';
+    return 'Koordinat tersalin: $coords';
   }
 
   @override
   String copiedGridValue(String grid) {
-    return 'Grid copied: $grid';
+    return 'Grid tersalin: $grid';
   }
 
   @override
   String distanceBearing(String distance, String bearing) {
-    return '$distance km away · Bearing $bearing°';
+    return '$distance km dari saya · Azimut $bearing°';
   }
 
   @override
   String weatherDataValue(String data) {
-    return 'Weather · $data';
+    return 'Cuaca · $data';
   }
 
   @override
-  String get symbolLabel => 'Symbol';
+  String get symbolLabel => 'Simbol';
 
   @override
   String get digipeaterTapHint =>
-      'Tap a digipeater to open its station details';
+      'Ketuk digipeater untuk membuka detail stasiunnya';
 
   @override
-  String get copiedFmoInfo => 'FMO info copied';
+  String get copiedFmoInfo => 'Info FMO tersalin';
 
   @override
-  String get copiedAprslocusInfo => 'APRSlocus info copied';
+  String get copiedAprslocusInfo => 'Info APRSlocus tersalin';
 
   @override
   String trackPoints(int count) {
-    return 'Track ($count points)';
+    return 'Jejak ($count titik)';
   }
 
   @override
   String sendMessageTo(String call) {
-    return 'Message $call…';
+    return 'Pesan ke $call…';
   }
 
   @override
   String get navigationUnavailable =>
-      'AMap is not installed and no other map app could be opened';
+      'AMAP tidak terpasang dan tidak ada aplikasi peta lain yang bisa dibuka';
 
   @override
   String stationNoData(String call) {
-    return 'No data received from $call yet';
+    return 'Belum ada data diterima dari $call';
   }
 
   @override
-  String get software => 'Software';
+  String get software => 'Perangkat lunak';
 
   @override
-  String get close => 'Close';
+  String get close => 'Tutup';
 
   @override
-  String get nameLabel => 'Name';
+  String get nameLabel => 'Nama';
 
   @override
-  String get viewSponsorDetails => 'View author and sponsor details →';
+  String get viewSponsorDetails => 'Lihat detail penulis dan sponsor →';
 
   @override
-  String get thanks => 'Thanks';
+  String get thanks => 'Terima kasih';
 
   @override
   String get qqSoftwareName => 'APRSlocus';
 
   @override
   String get usageNotice =>
-      'For amateur-radio learning and communication only\nFollow your local radio regulations';
+      'Hanya untuk pembelajaran dan komunikasi radio amatir.\nPatuhi peraturan radio setempat';
 
   @override
   String get licenseNotice => 'GNU GPL v3 · Copyright © BG7LZQ';
 
   @override
   String appInfoText(String version) {
-    return 'APRSlocus v$version\nAuthor: BG7LZQ (Darion)\nWebsite: Theez.top';
+    return 'APRSlocus v$version\nPenulis: BG7LZQ (Darion)\nSitus web: Theez.top';
   }
 
   @override
-  String get eggBg7lzq => 'Hey, what are you doing~';
+  String get eggBg7lzq => 'Eh, kamu ngapain~';
 
   @override
-  String get eggBg7pgw => 'Seriously?';
+  String get eggBg7pgw => 'Serius?';
 
   @override
-  String get eggBg7lmw => 'Quiet as ever...';
+  String get eggBg7lmw => 'Diam saja...';
 
   @override
-  String get eggBg7osl => 'You have got some nerve';
+  String get eggBg7osl => 'Nekat sekali';
 
   @override
-  String get manualCallsignHint => 'Enter callsign manually';
+  String get manualCallsignHint => 'Masukkan tanda panggil secara manual';
 
   @override
-  String get noPacketReceived => 'No packets received';
+  String get noPacketReceived => 'Belum ada paket diterima';
 
   @override
   String get feedMode => 'Feed';
 
   @override
-  String get conversationMode => 'Chats';
+  String get conversationMode => 'Obrolan';
 
   @override
-  String get messageFeed => 'Message feed';
+  String get messageFeed => 'Feed pesan';
 
   @override
   String messageTotal(int count) {
-    return '$count messages';
+    return '$count pesan';
   }
 
   @override
-  String get noMessages => 'No messages yet';
+  String get noMessages => 'Belum ada pesan';
 
   @override
-  String get copiedClipboard => 'Copied to clipboard';
+  String get copiedClipboard => 'Tersalin ke papan klip';
 
   @override
-  String get groupShortLabel => 'Group';
+  String get groupShortLabel => 'Grup';
 
   @override
-  String get conversations => 'Chats';
+  String get conversations => 'Obrolan';
 
   @override
-  String get noConversations => 'No conversations yet';
+  String get noConversations => 'Belum ada percakapan';
 
   @override
-  String get groupNotFound => 'Group chat not found';
+  String get groupNotFound => 'Grup tidak ditemukan';
 
   @override
-  String get invite => 'Invite';
+  String get invite => 'Undang';
 
   @override
-  String get manage => 'Manage';
+  String get manage => 'Kelola';
 
   @override
-  String get noGroupMessages => 'No group messages yet';
+  String get noGroupMessages => 'Belum ada pesan grup';
 
   @override
-  String get selectConversation => 'Select a conversation to start chatting';
+  String get selectConversation => 'Pilih percakapan untuk mulai mengobrol';
 
   @override
-  String get newConversation => 'New conversation';
+  String get newConversation => 'Percakapan baru';
 
   @override
-  String get newConversationDesc => 'Enter a callsign to start a conversation';
+  String get newConversationDesc =>
+      'Masukkan tanda panggil untuk memulai percakapan';
 
   @override
-  String get callsignExample => 'Callsign, e.g. BG7ABC';
+  String get callsignExample => 'Tanda panggil, mis. BG7ABC';
 
   @override
-  String get start => 'Start';
+  String get start => 'Mulai';
 
   @override
-  String get broadcastMessage => 'Broadcast message';
+  String get broadcastMessage => 'Pesan siaran';
 
   @override
-  String get noStations => 'No stations';
+  String get noStations => 'Tidak ada stasiun';
 
   @override
   String get broadcastHint =>
-      'Each message is sent separately to every recipient';
+      'Setiap pesan dikirim terpisah ke setiap penerima';
 
   @override
   String broadcastSent(int count) {
-    return 'Sent to $count recipients';
+    return 'Terkirim ke $count penerima';
   }
 
   @override
-  String get searchCallsign => 'Search callsign…';
+  String get searchCallsign => 'Cari tanda panggil…';
 
   @override
-  String get broadcastContentHint => 'Enter message to broadcast…';
+  String get broadcastContentHint => 'Masukkan pesan untuk disiarkan…';
 
   @override
-  String get groupNameHint => 'Enter group name';
+  String get groupNameHint => 'Masukkan nama grup';
 
   @override
-  String get create => 'Create';
+  String get create => 'Buat';
 
   @override
   String groupCallsignLine(String call) {
-    return 'Group callsign: $call';
+    return 'Tanda panggil grup: $call';
   }
 
   @override
-  String get noMembers => 'No members';
+  String get noMembers => 'Belum ada anggota';
 
   @override
-  String get inviteMembersHint => 'Tap “Invite members” below to add people';
+  String get inviteMembersHint =>
+      'Ketuk “Undang anggota” di bawah untuk menambahkan';
 
   @override
-  String get remove => 'Remove';
+  String get remove => 'Hapus';
 
   @override
-  String get inviteMembers => 'Invite members';
+  String get inviteMembers => 'Undang anggota';
 
   @override
-  String get deleteGroup => 'Delete group';
+  String get deleteGroup => 'Hapus grup';
 
   @override
   String deleteGroupConfirm(String name) {
-    return 'Delete “$name”? This cannot be undone.';
+    return 'Hapus “$name”? Tindakan ini tidak dapat dibatalkan.';
   }
 
   @override
   String memberOnlineCount(int members, int online) {
-    return '$members members · $online online';
+    return '$members anggota · $online online';
   }
 
   @override
-  String get leaveGroup => 'Leave group';
+  String get leaveGroup => 'Keluar dari grup';
 
   @override
   String leaveGroupConfirm(String name) {
-    return 'Leave “$name”? You will stop receiving messages from this group.';
+    return 'Keluar dari “$name”? Anda tidak akan menerima pesan dari grup ini.';
   }
 
   @override
   String leftGroup(String name) {
-    return 'Left $name';
+    return 'Keluar dari $name';
   }
 
   @override
-  String get leave => 'Leave';
+  String get leave => 'Keluar';
 
   @override
   String inviteMembersTo(String name) {
-    return 'Invite members to $name';
+    return 'Undang anggota ke $name';
   }
 
   @override
-  String get manualCallsign => 'Enter callsign manually';
+  String get manualCallsign => 'Masukkan tanda panggil manual';
 
   @override
   String inviteSent(String call) {
-    return 'Invitation sent to $call';
+    return 'Undangan terkirim ke $call';
   }
 
   @override
-  String get noMoreOnlineStations => 'No more online stations';
+  String get noMoreOnlineStations => 'Tidak ada lagi stasiun online';
 
   @override
-  String get invited => 'Invited';
+  String get invited => 'Diundang';
 
   @override
-  String get tapToInvite => 'Tap to invite';
+  String get tapToInvite => 'Ketuk untuk mengundang';
 
   @override
-  String get done => 'Done';
+  String get done => 'Selesai';
 
   @override
-  String get addContact => 'Add contact';
+  String get addContact => 'Tambah kontak';
 
   @override
-  String get addContactDesc => 'Enter a callsign to add it to contacts';
+  String get addContactDesc =>
+      'Masukkan tanda panggil untuk menambahkannya ke kontak';
 
   @override
   String contactAdded(String call) {
-    return 'Added contact $call';
+    return 'Kontak $call ditambahkan';
   }
 
   @override
-  String get add => 'Add';
+  String get add => 'Tambah';
 
   @override
-  String get stationary => 'Stationary';
+  String get stationary => 'Diam';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => 'Tidak diketahui';
 
   @override
-  String get none => 'None';
+  String get none => 'Tidak ada';
 
   @override
   String get manual => 'Manual';
 
   @override
-  String get management => 'Manage';
+  String get management => 'Kelola';
 
   @override
   String get debugLabel => 'Debug';
@@ -2349,14 +2353,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get information => 'Info';
 
   @override
-  String get warning => 'Warning';
+  String get warning => 'Peringatan';
 
   @override
-  String get errorLabel => 'Error';
+  String get errorLabel => 'Kesalahan';
 
   @override
   String countTimes(int count) {
-    return '$count times';
+    return '$count kali';
   }
 
   @override
@@ -2372,69 +2376,69 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String aprsSymbolName(String symbol) {
     String _temp0 = intl.Intl.selectLogic(symbol, {
-      'car': 'Car',
-      'police': 'Police',
-      'person': 'Person',
-      'digitalRepeater': 'Digipeater',
-      'telephone': 'Telephone',
-      'dxCluster': 'DX cluster',
-      'hfGateway': 'HF gateway',
-      'smallAircraft': 'Small aircraft',
-      'mobileSatellite': 'Mobile satellite',
-      'disabled': 'Accessibility',
-      'snowmobile': 'Snowmobile',
-      'redCross': 'Red Cross',
-      'scouts': 'Scouts',
-      'house': 'House',
-      'redX': 'Red X',
-      'redDot': 'Red dot',
-      'fire': 'Fire',
-      'campground': 'Campground',
-      'motorcycle': 'Motorcycle',
-      'train': 'Train',
-      'fileServer': 'File server',
-      'hurricane': 'Hurricane',
-      'dfTriangle': 'DF triangle',
-      'postOffice': 'Post office',
-      'largeAircraft': 'Large aircraft',
-      'weatherStation': 'Weather station',
-      'satelliteDish': 'Satellite dish',
-      'ambulance': 'Ambulance',
-      'bicycle': 'Bicycle',
-      'commandPost': 'Command post',
-      'fireStation': 'Fire station',
-      'horse': 'Horse',
-      'fireTruck': 'Fire truck',
-      'glider': 'Glider',
-      'hospital': 'Hospital',
-      'fmoStation': 'FMO station',
+      'car': 'Mobil',
+      'police': 'Polisi',
+      'person': 'Orang',
+      'digitalRepeater': 'Digipeater digital',
+      'telephone': 'Telepon',
+      'dxCluster': 'Kluster DX',
+      'hfGateway': 'Gateway HF',
+      'smallAircraft': 'Pesawat kecil',
+      'mobileSatellite': 'Satelit bergerak',
+      'disabled': 'Difabel',
+      'snowmobile': 'Mobil salju',
+      'redCross': 'Palang merah',
+      'scouts': 'Pramuka',
+      'house': 'Rumah',
+      'redX': 'Tanda silang merah',
+      'redDot': 'Titik merah',
+      'fire': 'Kebakaran',
+      'campground': 'Berkemah',
+      'motorcycle': 'Sepeda motor',
+      'train': 'Kereta',
+      'fileServer': 'Server berkas',
+      'hurricane': 'Badai',
+      'dfTriangle': 'Segitiga DF',
+      'postOffice': 'Kantor pos',
+      'largeAircraft': 'Pesawat besar',
+      'weatherStation': 'Stasiun cuaca',
+      'satelliteDish': 'Antena satelit',
+      'ambulance': 'Ambulans',
+      'bicycle': 'Sepeda',
+      'commandPost': 'Pusat komando',
+      'fireStation': 'Pos pemadam',
+      'horse': 'Berkuda',
+      'fireTruck': 'Mobil pemadam',
+      'glider': 'Pesawat layang',
+      'hospital': 'Rumah sakit',
+      'fmoStation': 'Stasiun FMO',
       'jeep': 'Jeep',
-      'truck': 'Truck',
+      'truck': 'Truk',
       'laptop': 'Laptop',
-      'micERepeater': 'Mic-E digipeater',
+      'micERepeater': 'Digipeater Mic-E',
       'node': 'Node',
-      'emergencyOps': 'Emergency operations',
-      'dog': 'Dog',
-      'gridSquare': 'Grid square',
-      'repeaterTower': 'Repeater tower',
-      'boat': 'Boat',
-      'truckStop': 'Truck stop',
-      'semiTrailer': 'Semi-trailer',
+      'emergencyOps': 'Operasi darurat',
+      'dog': 'Anjing',
+      'gridSquare': 'Grid',
+      'repeaterTower': 'Menara repeater',
+      'boat': 'Kapal',
+      'truckStop': 'Tempat istirahat truk',
+      'semiTrailer': 'Truk gandeng',
       'van': 'Van',
-      'waterStation': 'Water station',
-      'yagi': 'Yagi antenna',
-      'shelter': 'Shelter',
+      'waterStation': 'Stasiun air',
+      'yagi': 'Antena Yagi',
+      'shelter': 'Tempat berlindung',
       'rv': 'RV',
-      'weatherSymbol': 'Weather station',
-      'balloon': 'Balloon',
+      'weatherSymbol': 'Stasiun cuaca',
+      'balloon': 'Balon',
       'bus': 'Bus',
-      'shuttle': 'Space shuttle',
-      'policeCar': 'Police car',
-      'sailboat': 'Sailboat',
-      'school': 'School',
-      'lodging': 'Lodging',
+      'shuttle': 'Pesawat ulang-alik',
+      'policeCar': 'Mobil polisi',
+      'sailboat': 'Kapal layar',
+      'school': 'Sekolah',
+      'lodging': 'Penginapan',
       'hotel': 'Hotel',
-      'other': 'Unknown',
+      'other': 'Tidak diketahui',
     });
     return '$_temp0';
   }
@@ -2442,13 +2446,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String symbolCategoryName(String category) {
     String _temp0 = intl.Intl.selectLogic(category, {
-      'vehicles': 'Vehicles / transport',
-      'facilities': 'Buildings / facilities',
-      'weatherNature': 'Weather / nature',
-      'emergencyRescue': 'Emergency / rescue',
-      'airWater': 'Air / water',
-      'communications': 'Communications / other',
-      'other': 'Other',
+      'vehicles': 'Kendaraan / Lalu lintas',
+      'facilities': 'Bangunan / Fasilitas',
+      'weatherNature': 'Cuaca / Alam',
+      'emergencyRescue': 'Tanggap darurat',
+      'airWater': 'Udara / Perairan',
+      'communications': 'Komunikasi / Lainnya',
+      'other': 'Lainnya',
     });
     return '$_temp0';
   }
@@ -2456,147 +2460,147 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String countryName(String code) {
     String _temp0 = intl.Intl.selectLogic(code, {
-      'CN': 'China',
-      'KR': 'South Korea',
-      'JP': 'Japan',
-      'US': 'United States',
-      'CA': 'Canada',
-      'GB': 'United Kingdom',
-      'DE': 'Germany',
-      'FR': 'France',
-      'IT': 'Italy',
-      'ES': 'Spain',
-      'RU': 'Russia',
+      'CN': 'Tiongkok',
+      'KR': 'Korea Selatan',
+      'JP': 'Jepang',
+      'US': 'Amerika Serikat',
+      'CA': 'Kanada',
+      'GB': 'Britania Raya',
+      'DE': 'Jerman',
+      'FR': 'Prancis',
+      'IT': 'Italia',
+      'ES': 'Spanyol',
+      'RU': 'Rusia',
       'AU': 'Australia',
-      'NZ': 'New Zealand',
-      'BR': 'Brazil',
+      'NZ': 'Selandia Baru',
+      'BR': 'Brasil',
       'AR': 'Argentina',
-      'MX': 'Mexico',
-      'ZA': 'South Africa',
+      'MX': 'Meksiko',
+      'ZA': 'Afrika Selatan',
       'IN': 'India',
       'TH': 'Thailand',
-      'SG': 'Singapore',
+      'SG': 'Singapura',
       'MY': 'Malaysia',
       'ID': 'Indonesia',
-      'PH': 'Philippines',
+      'PH': 'Filipina',
       'TW': 'Taiwan',
       'HK': 'Hong Kong',
-      'MO': 'Macao',
-      'other': 'Unknown',
+      'MO': 'Makau',
+      'other': 'Tidak diketahui',
     });
     return '$_temp0';
   }
 
   @override
-  String get locationNotFixed => 'Not located';
+  String get locationNotFixed => 'Belum ada posisi';
 
   @override
-  String get simulatedLocation => 'Simulated location';
+  String get simulatedLocation => 'Lokasi simulasi';
 
   @override
-  String get savedLocation => 'Saved location';
+  String get savedLocation => 'Lokasi tersimpan';
 
   @override
-  String get locationFailed => 'Location failed';
+  String get locationFailed => 'Gagal menentukan lokasi';
 
   @override
-  String get locationStopped => 'Location stopped';
+  String get locationStopped => 'Lokasi dihentikan';
 
   @override
-  String get locationFixed => 'Location acquired';
+  String get locationFixed => 'Posisi didapat';
 
   @override
-  String get locationPermission => 'Grant location permission…';
+  String get locationPermission => 'Izinkan akses lokasi…';
 
   @override
-  String get gpsLocating => 'Acquiring GPS location…';
+  String get gpsLocating => 'Mendapatkan lokasi GPS…';
 
   @override
   String get webLocationUnsupported =>
-      'Automatic location is unavailable on the web; enter coordinates manually';
+      'Lokasi otomatis tidak tersedia di web; masukkan koordinat manual';
 
   @override
   String locationStreamError(String error) {
-    return 'Location stream error: $error';
+    return 'Galat aliran lokasi: $error';
   }
 
   @override
   String locationInitError(String error) {
-    return 'Location initialization failed: $error';
+    return 'Inisialisasi lokasi gagal: $error';
   }
 
   @override
-  String get beaconDisabled => 'Disabled';
+  String get beaconDisabled => 'Nonaktif';
 
   @override
-  String get waitingForLocation => 'Waiting for location';
+  String get waitingForLocation => 'Menunggu lokasi';
 
   @override
-  String get imminent => 'Soon';
+  String get imminent => 'Segera';
 
   @override
-  String get connTapToConnect => 'Not connected · Tap connect to join APRS-IS';
+  String get connTapToConnect =>
+      'Belum tersambung · masuk APRS-IS dengan tombol sambungkan';
 
   @override
-  String get connManuallyDisconnected =>
-      'Not connected · Manually disconnected';
+  String get connManuallyDisconnected => 'Belum tersambung · diputus manual';
 
   @override
   String connAutoReconnect(int seconds) {
-    return 'Connection lost · Reconnecting in ${seconds}s…';
+    return 'Koneksi terputus · menyambung ulang dalam $seconds dtk…';
   }
 
   @override
   String connConnectingTarget(String target) {
-    return 'Connecting to $target…';
+    return 'Menghubungkan ke $target…';
   }
 
   @override
   String connOnline(String call) {
-    return 'Connected · $call online';
+    return 'Tersambung · $call online';
   }
 
   @override
   String connRetry(int seconds) {
-    return 'Connection failed · Retrying in ${seconds}s…';
+    return 'Koneksi gagal · mencoba lagi dalam $seconds dtk…';
   }
 
   @override
   String connPositionSent(String call) {
-    return 'Connected · Position beacon sent ($call)';
+    return 'Tersambung · beacon posisi terkirim ($call)';
   }
 
   @override
   String get connDemoBeacon =>
-      'Not connected · Position beacon recorded (demo)';
+      'Belum tersambung · beacon posisi tercatat (demo)';
 
   @override
   String get connPasscodeInvalid =>
-      'Connected · Unverified (Passcode may be incorrect)';
+      'Tersambung · belum diverifikasi (Passcode mungkin salah)';
 
   @override
-  String get mapTypeAmap => 'AMap';
+  String get mapTypeAmap => 'AMAP';
 
   @override
-  String get mapTypeAmapSatellite => 'AMap Satellite';
+  String get mapTypeAmapSatellite => 'AMAP Satelit';
 
   @override
-  String get mapTypeVector => 'Vector map';
+  String get mapTypeVector => 'Peta vektor';
 
   @override
-  String get amapGroup => 'AMap';
+  String get amapGroup => 'AMAP';
 
   @override
-  String get domesticMaps => 'China maps';
+  String get domesticMaps => 'Peta Tiongkok';
 
   @override
-  String get internationalMaps => 'Global maps';
+  String get internationalMaps => 'Peta global';
 
   @override
-  String get metricUnits => 'Metric (km/h, m)';
+  String get metricUnits => 'Metrik (km/j, m)';
 
   @override
-  String get coordDisplay => 'Coordinate display';
+  String get coordDisplay => 'Tampilan koordinat';
 
   @override
   String mapDefaultCoord(int level) {
@@ -2605,155 +2609,154 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String secondsValue(int count) {
-    return '$count sec';
+    return '$count dtk';
   }
 
   @override
-  String get stationSettingsDetail => 'Callsign, SSID, symbol & comment';
+  String get stationSettingsDetail => 'Tanda panggil, SSID, simbol & komentar';
 
   @override
-  String get stationIdentity => 'Station identity';
+  String get stationIdentity => 'Identitas stasiun';
 
   @override
-  String get aprsCallsignHint => 'APRS callsign, e.g. BV2AAA';
+  String get aprsCallsignHint => 'Tanda panggil APRS, mis. BV2AAA';
 
   @override
-  String get displayInfo => 'Station info';
+  String get displayInfo => 'Info stasiun';
 
   @override
-  String get ssidSuffix => 'SSID suffix';
+  String get ssidSuffix => 'Akhiran SSID';
 
   @override
-  String get chooseSsidSuffix => 'Choose SSID suffix';
+  String get chooseSsidSuffix => 'Pilih akhiran SSID';
 
   @override
-  String get mySymbol => 'My symbol';
+  String get mySymbol => 'Simbol saya';
 
   @override
-  String get moreSymbols => 'More symbols';
+  String get moreSymbols => 'Simbol lainnya';
 
   @override
-  String get allAprsSymbols => 'All APRS symbols';
+  String get allAprsSymbols => 'Semua simbol APRS';
 
   @override
-  String get beaconSettingsDetail => 'GPS source, beaconing & manual location';
+  String get beaconSettingsDetail => 'Sumber GPS, beacon & posisi manual';
 
   @override
-  String get locationSource => 'Location source';
+  String get locationSource => 'Sumber lokasi';
 
   @override
-  String get useDeviceLocation => 'Use device location';
+  String get useDeviceLocation => 'Gunakan lokasi perangkat';
 
   @override
-  String get manualCoordinates => 'Enter coordinates manually';
+  String get manualCoordinates => 'Masukkan koordinat manual';
 
   @override
-  String get locationMode => 'Location mode';
+  String get locationMode => 'Mode lokasi';
 
   @override
-  String get settingsLocModeSubtitle => 'Choose location method';
+  String get settingsLocModeSubtitle => 'Pilih metode lokasi';
 
   @override
-  String get locModeGps => 'GPS only';
+  String get locModeGps => 'Hanya GPS';
 
   @override
-  String get locModeGpsDesc => 'Satellite only, saves battery';
+  String get locModeGpsDesc => 'Hanya satelit, hemat baterai';
 
   @override
-  String get locModeGpsNetwork => 'GPS + Network';
+  String get locModeGpsNetwork => 'GPS + Jaringan';
 
   @override
-  String get locModeGpsNetworkDesc => 'Network-assisted, faster fix';
+  String get locModeGpsNetworkDesc => 'Berbantuan jaringan, lebih cepat';
 
   @override
   String get beaconingSection => 'Beaconing';
 
   @override
-  String get beaconIntervalTip => 'Position beacon interval, minimum 5 seconds';
+  String get beaconIntervalTip => 'Interval beacon posisi, minimal 5 detik';
 
   @override
-  String get beaconContent => 'Beacon contents';
+  String get beaconContent => 'Isi beacon';
 
   @override
-  String get beaconContentDesc => 'Sent with each position beacon';
+  String get beaconContentDesc => 'Dikirim bersama setiap beacon posisi';
 
   @override
-  String get phoneBattery => 'Phone battery';
+  String get phoneBattery => 'Baterai ponsel';
 
   @override
-  String get locationStatus => 'Location status';
+  String get locationStatus => 'Status lokasi';
 
   @override
-  String get relocate => 'Relocate';
+  String get relocate => 'Cari ulang';
 
   @override
-  String get startGps => 'Start GPS';
+  String get startGps => 'Mulai GPS';
 
   @override
   String get trackingBeaconing =>
-      'Location is active and position beacons are being sent';
+      'Lokasi aktif dan beacon posisi terus dikirim';
 
   @override
-  String get manualLocation => 'Manual location';
+  String get manualLocation => 'Posisi manual';
 
   @override
-  String get latitudeHint => 'Latitude 39.9042';
+  String get latitudeHint => 'Lintang 39.9042';
 
   @override
-  String get longitudeHint => 'Longitude 116.4074';
+  String get longitudeHint => 'Bujur 116.4074';
 
   @override
-  String get invalidLatLng => 'Enter valid latitude and longitude';
+  String get invalidLatLng => 'Masukkan lintang dan bujur yang valid';
 
   @override
   String myLocationSetGrid(String grid) {
-    return 'Location set · Grid $grid';
+    return 'Lokasi ditetapkan · Grid $grid';
   }
 
   @override
-  String get applyCoordinates => 'Apply coordinates';
+  String get applyCoordinates => 'Terapkan koordinat';
 
   @override
-  String get pickOnMap => 'Pick on map';
+  String get pickOnMap => 'Pilih di peta';
 
   @override
   String get manualLocationHelp =>
-      'If automatic location is unavailable, enter coordinates or pick a point on the map for beaconing and distance calculations.';
+      'Jika lokasi otomatis tidak tersedia, masukkan koordinat atau pilih titik di peta untuk beaconing dan perhitungan jarak.';
 
   @override
   String get passcodeTip =>
-      'APRS-IS login passcode; generate it online. Use -1 for unverified login';
+      'Passcode login APRS-IS; buat online. Isi -1 untuk login belum diverifikasi';
 
   @override
-  String get websocketOptional => 'WebSocket URL (optional)';
+  String get websocketOptional => 'URL WebSocket (opsional)';
 
   @override
-  String get configChanged => 'Configuration changed';
+  String get configChanged => 'Konfigurasi diubah';
 
   @override
-  String get reconnectToApply => 'Reconnect to apply';
+  String get reconnectToApply => 'Sambung ulang untuk menerapkan';
 
   @override
-  String get reconnected => 'Reconnected';
+  String get reconnected => 'Tersambung ulang';
 
   @override
-  String get connectFailedCheckConfig =>
-      'Connection failed; check the configuration';
+  String get connectFailedCheckConfig => 'Koneksi gagal; periksa konfigurasi';
 
   @override
   String get rangeFilterDesc =>
-      'Receive only station packets within the configured range';
+      'Terima hanya paket stasiun dalam jangkauan yang ditentukan';
 
   @override
-  String get filterCenterFollows => 'Follow my location for filter center';
+  String get filterCenterFollows => 'Ikuti lokasi saya untuk pusat filter';
 
   @override
   String get radiusTip =>
-      'Receive radius (km); tap “Save & apply filter” to apply';
+      'Radius terima (km); ketuk “Simpan & terapkan filter” untuk menerapkan';
 
   @override
   String get maxStationsTip =>
-      'Maximum stations kept in memory (unlimited by default; increase as needed)';
+      'Jumlah maksimum stasiun di memori (bawaan tanpa batas; bisa dinaikkan)';
 
   @override
   String filterSavedRadius(String saved, int radius) {
@@ -2762,574 +2765,578 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get receiveFilterDesc2 =>
-      'In addition to the range filter, receive stations by country/region or exact callsign';
+      'Selain filter jangkauan, terima stasiun berdasarkan negara/wilayah atau tanda panggil persis';
 
   @override
   String get receiveCountryDesc =>
-      'Receive all stations from a country/region by callsign prefix';
+      'Terima semua stasiun dari suatu negara/wilayah berdasarkan prefiks tanda panggil';
 
   @override
-  String get noCountriesSelected => 'No countries or regions selected';
+  String get noCountriesSelected => 'Belum ada negara/wilayah dipilih';
 
   @override
   String get receiveOthersDesc =>
-      'Receive special stations whose callsigns do not match selected countries';
+      'Terima stasiun dengan tanda panggil khusus yang tidak cocok dengan negara terpilih';
 
   @override
-  String get addCountry => 'Add country/region';
+  String get addCountry => 'Tambah negara/wilayah';
 
   @override
-  String get chatSettingsDetail => 'Messages, contacts & chat data';
+  String get chatSettingsDetail => 'Pesan, kontak & data obrolan';
 
   @override
-  String get messageCountLabel => 'Messages';
+  String get messageCountLabel => 'Pesan';
 
   @override
-  String get manageContacts => 'Manage contacts';
+  String get manageContacts => 'Kelola kontak';
 
   @override
   String deleteAllChatsConfirm(int count) {
-    return 'Delete all $count chat messages? This cannot be undone.';
+    return 'Hapus semua $count riwayat obrolan? Tindakan ini tidak dapat dibatalkan.';
   }
 
   @override
-  String get chatCleared => 'Chat history cleared';
+  String get chatCleared => 'Riwayat obrolan dihapus';
 
   @override
-  String get noContacts => 'No contacts';
+  String get noContacts => 'Belum ada kontak';
 
   @override
   String get addOrFavoriteContact =>
-      'Tap “Add” above or favorite a station on the map';
+      'Ketuk “Tambah” di atas atau favoritkan stasiun di peta';
 
   @override
   String movingWithSpeed(String speed) {
-    return 'Moving · $speed';
+    return 'Bergerak · $speed';
   }
 
   @override
-  String get callsignMin3 => 'Callsign must be at least 3 characters';
+  String get callsignMin3 => 'Tanda panggil minimal 3 karakter';
 
   @override
-  String get deleteContact => 'Delete contact';
+  String get deleteContact => 'Hapus kontak';
 
   @override
   String deleteContactConfirm(String call) {
-    return 'Delete contact $call?';
+    return 'Hapus kontak $call?';
   }
 
   @override
   String contactDeleted(String call) {
-    return 'Deleted $call';
+    return '$call dihapus';
   }
 
   @override
-  String get dataMaintenance => 'Data maintenance';
+  String get dataMaintenance => 'Pemeliharaan data';
 
   @override
-  String get clearAllData => 'Clear all data';
+  String get clearAllData => 'Hapus semua data';
 
   @override
-  String get clearAllDataIntro => 'This will delete all local data below:';
+  String get clearAllDataIntro =>
+      'Ini akan menghapus semua data lokal berikut:';
 
   @override
-  String get chatHistory => 'Chat history';
+  String get chatHistory => 'Riwayat obrolan';
 
   @override
-  String get logs => 'Logs';
+  String get logs => 'Log';
 
   @override
   String get irreversibleKeepSettings =>
-      'This cannot be undone. Connection settings and callsign will be kept.';
+      'Tindakan ini tidak dapat dibatalkan. Pengaturan koneksi dan tanda panggil tetap disimpan.';
 
   @override
-  String get confirmClearAllData => 'Clear all data';
+  String get confirmClearAllData => 'Hapus semua data';
 
   @override
   String get clearAllDataConfirm =>
-      'Clear all local data? This cannot be undone.';
+      'Hapus semua data lokal? Tindakan ini tidak dapat dibatalkan.';
 
   @override
-  String get allDataCleared => 'All local data cleared';
+  String get allDataCleared => 'Semua data lokal dihapus';
 
   @override
-  String get confirmClear => 'Clear';
+  String get confirmClear => 'Hapus';
 
   @override
-  String get allowLandscape => 'Allow landscape orientation';
+  String get allowLandscape => 'Izinkan orientasi lanskap';
 
   @override
-  String get packetParseTest => 'Packet parser test';
+  String get packetParseTest => 'Tes parser paket';
 
   @override
   String get packetParseHint =>
-      'Paste a raw APRS packet, e.g.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+      'Tempel paket APRS mentah, mis.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Stasiun uji';
 
   @override
-  String get parseAndApply => 'Parse & apply';
+  String get parseAndApply => 'Parsing & terapkan';
 
   @override
-  String get oobePasscodeMissing => 'Passcode not entered';
+  String get oobePasscodeMissing => 'Passcode belum diisi';
 
   @override
   String get oobePasscodeMissingDesc =>
-      'The Passcode is the APRS-IS login verification code for your callsign.\n\nThe default -1 allows an unverified connection, but messages and group chat will not work normally.\n\nLook up the correct Passcode for your callsign at https://aprs.cool/AprsPG.';
+      'Passcode adalah kode verifikasi login APRS-IS untuk tanda panggil Anda.\n\nNilai bawaan -1 (belum diverifikasi) dapat tersambung, tetapi pesan dan obrolan grup tidak akan berfungsi normal.\n\nCari Passcode yang benar untuk tanda panggil Anda di https://aprs.cool/AprsPG.';
 
   @override
-  String get continueAnyway => 'Continue anyway';
+  String get continueAnyway => 'Lanjutkan saja';
 
   @override
-  String get fillPasscode => 'Enter Passcode';
+  String get fillPasscode => 'Isi Passcode';
 
   @override
   String get oobeMapFeatureDesc =>
-      'AMap tiles with nearby APRS stations and tracks';
+      'Tile AMAP dengan stasiun APRS dan jejak di sekitar';
 
   @override
   String get oobeGpsFeatureDesc =>
-      'Acquire your location and send position beacons to APRS-IS';
+      'Dapatkan lokasi Anda dan kirim beacon posisi ke APRS-IS';
 
   @override
   String get oobeMsgFeatureDesc =>
-      'Exchange station messages with auto-reply support';
+      'Bertukar pesan dengan stasiun, mendukung balasan otomatis';
 
   @override
   String get oobeIsFeatureDesc =>
-      'Connect to a public server and receive global APRS station data';
+      'Sambung ke server publik dan terima data stasiun APRS sedunia';
 
   @override
   String get oobeBackgroundTip =>
-      'Tip: allow APRSlocus to run in the background, disable battery optimization, and allow autostart to keep beaconing active.';
+      'Tips: izinkan APRSlocus berjalan di latar belakang, nonaktifkan optimasi baterai, dan izinkan autostart agar beaconing tetap aktif.';
 
   @override
   String get oobeNextSteps =>
-      'Complete the basic setup in the next few steps. You can change it later in Settings.';
+      'Selesaikan penyiapan dasar dalam beberapa langkah berikutnya. Anda dapat mengubahnya kapan saja di Pengaturan.';
 
   @override
   String get ssidDescShort =>
-      'SSID is the numeric callsign suffix, such as -9 in BG7ABC-9';
+      'SSID adalah akhiran angka pada tanda panggil, mis. -9 pada BG7ABC-9';
 
   @override
-  String get ssidOptional => 'SSID suffix (optional)';
+  String get ssidOptional => 'Akhiran SSID (opsional)';
 
   @override
-  String get noSsid => 'No suffix (base callsign)';
+  String get noSsid => 'Tanpa akhiran (tanda panggil dasar)';
 
   @override
   String fullCallsign(String call) {
-    return 'Full callsign: $call';
+    return 'Tanda panggil lengkap: $call';
   }
 
   @override
-  String get passcodeImportant => 'Passcode is important';
+  String get passcodeImportant => 'Passcode itu penting';
 
   @override
   String get passcodeImportantDesc =>
-      'A correct Passcode is required to receive group messages and send acknowledgements. -1 can connect, but messaging will not work normally.';
+      'Passcode yang benar diperlukan untuk menerima pesan grup dan mengirim konfirmasi. -1 dapat tersambung, tetapi pesan tidak akan berfungsi normal.';
 
   @override
-  String get lookupPasscode => 'Look up your Passcode →';
+  String get lookupPasscode => 'Cari Passcode Anda →';
 
   @override
-  String get passcodeLookupHint => 'Enter your callsign, e.g. BV2AAA';
+  String get passcodeLookupHint => 'Masukkan tanda panggil Anda, mis. BV2AAA';
 
   @override
   String sendToGroupHint(String group) {
-    return 'Send to $group…';
+    return 'Kirim ke $group…';
   }
 
   @override
   String sendToCallHint(String call) {
-    return 'Send to $call…';
+    return 'Kirim ke $call…';
   }
 
   @override
-  String get selectMessageReply => 'Select a message to reply…';
+  String get selectMessageReply => 'Pilih pesan untuk membalas…';
 
   @override
-  String get broadcastShort => 'Broadcast';
+  String get broadcastShort => 'Siaran';
 
   @override
   String memberCount(int count) {
-    return '$count members';
+    return '$count anggota';
   }
 
   @override
   String memberCountTap(int count) {
-    return '$count members · Tap to view';
+    return '$count anggota · ketuk untuk melihat';
   }
 
   @override
-  String get stepRecipients => 'Recipients';
+  String get stepRecipients => 'Penerima';
 
   @override
-  String get stepContent => 'Message';
+  String get stepContent => 'Pesan';
 
   @override
-  String get selectAllOnline => 'Select all online';
+  String get selectAllOnline => 'Pilih semua yang online';
 
   @override
-  String get clearSelection => 'Clear selection';
+  String get clearSelection => 'Kosongkan pilihan';
 
   @override
-  String get onlineOnly => 'Online only';
+  String get onlineOnly => 'Hanya online';
 
   @override
-  String get noRecipients => 'No recipients selected';
+  String get noRecipients => 'Belum ada penerima dipilih';
 
   @override
   String selectedRecipients(int count) {
-    return '$count selected';
+    return '$count dipilih';
   }
 
   @override
   String sendRecipientsList(int count, String calls) {
-    return 'Sending to $count: $calls';
+    return 'Mengirim ke $count: $calls';
   }
 
   @override
-  String get stepName => 'Name';
+  String get stepName => 'Nama';
 
   @override
-  String get stepMembers => 'Members';
+  String get stepMembers => 'Anggota';
 
   @override
   String get groupChatExplain =>
-      'Group chats broadcast to a group callsign so every member can receive them. A group callsign is generated automatically and invitations are sent to the members you select.';
+      'Obrolan grup menyiarkan ke tanda panggil grup sehingga semua anggota menerimanya. Tanda panggil grup dibuat otomatis dan undangan dikirim ke anggota yang Anda pilih.';
 
   @override
-  String get noMembersSelected => 'No members selected';
+  String get noMembersSelected => 'Belum ada anggota dipilih';
 
   @override
-  String get memberBlocked => 'Blocked';
+  String get memberBlocked => 'Diblokir';
 
   @override
-  String get memberJoined => 'Joined';
+  String get memberJoined => 'Bergabung';
 
   @override
-  String get memberPending => 'Pending';
+  String get memberPending => 'Menunggu';
 
   @override
-  String get memberDeclined => 'Declined';
+  String get memberDeclined => 'Ditolak';
 
   @override
-  String get memberLeft => 'Left';
+  String get memberLeft => 'Keluar';
 
   @override
-  String get memberTimeout => 'Timed out';
+  String get memberTimeout => 'Waktu habis';
 
   @override
-  String get unblock => 'Unblock';
+  String get unblock => 'Buka blokir';
 
   @override
-  String get block => 'Block';
+  String get block => 'Blokir';
 
   @override
-  String get groupOwner => 'Owner';
+  String get groupOwner => 'Pemilik';
 
   @override
   String systemMemberJoined(String call) {
-    return '$call joined the group';
+    return '$call bergabung ke grup';
   }
 
   @override
   String systemMemberLeft(String call) {
-    return '$call left the group';
+    return '$call keluar dari grup';
   }
 
   @override
   String systemInviteDeclined(String call) {
-    return '$call declined the invitation';
+    return '$call menolak undangan';
   }
 
   @override
-  String get copyAllLogs => 'Copy all logs';
+  String get copyAllLogs => 'Salin semua log';
 
   @override
   String copiedLogs(int count) {
-    return 'Copied $count log entries';
+    return '$count entri log tersalin';
   }
 
   @override
-  String get clearLogs => 'Clear logs';
+  String get clearLogs => 'Hapus log';
 
   @override
-  String get noLogs => 'No logs yet';
+  String get noLogs => 'Belum ada log';
 
   @override
-  String get supportProject => 'Your support helps the project go further';
+  String get supportProject =>
+      'Dukungan Anda membuat proyek ini melangkah lebih jauh';
 
   @override
-  String get continuousIteration => 'Continuous improvement';
+  String get continuousIteration => 'Perbaikan berkelanjutan';
 
   @override
   String get continuousIterationDesc =>
-      'Continuously improving APRSlocus features and experience';
+      'Terus meningkatkan fitur dan pengalaman APRSlocus';
 
   @override
-  String get sponsorSupport => 'Sponsor support';
+  String get sponsorSupport => 'Dukungan sponsor';
 
   @override
-  String get sponsorMethods => 'Ways to support';
+  String get sponsorMethods => 'Cara mendukung';
 
   @override
   String qrCodeTitle(String title) {
-    return '$title QR code';
+    return 'Kode QR $title';
   }
 
   @override
-  String get qrLoadFailed => 'QR code image failed to load';
+  String get qrLoadFailed => 'Gambar kode QR gagal dimuat';
 
   @override
-  String get qrSaveWechat => 'Long-press to save · Scan with WeChat to support';
+  String get qrSaveWechat =>
+      'Tekan lama untuk menyimpan · pindai dengan WeChat untuk mendukung';
 
   @override
-  String get tapAnywhereClose => 'Tap anywhere to close';
+  String get tapAnywhereClose => 'Ketuk di mana saja untuk menutup';
 
   @override
   String vectorMapLoadFailed(String error) {
-    return 'Vector map failed to load\n$error';
+    return 'Peta vektor gagal dimuat\n$error';
   }
 
   @override
-  String get loadingVectorMap => 'Loading vector map…';
+  String get loadingVectorMap => 'Memuat peta vektor…';
 
   @override
-  String get updateChannel => 'Update channel';
+  String get updateChannel => 'Saluran pembaruan';
 
   @override
   String serverReturned(int code) {
-    return 'Server returned $code';
+    return 'Server mengembalikan $code';
   }
 
   @override
-  String get invalidResponseData => 'Invalid response format';
+  String get invalidResponseData => 'Format respons tidak valid';
 
   @override
-  String get noVersionsFound => 'No releases found';
+  String get noVersionsFound => 'Tidak ada rilis ditemukan';
 
   @override
-  String get noWindowsInstaller => 'No Windows installer for this release';
+  String get noWindowsInstaller =>
+      'Tidak ada installer Windows untuk rilis ini';
 
   @override
-  String get noApkInstaller => 'No APK for this release';
+  String get noApkInstaller => 'Tidak ada APK untuk rilis ini';
 
   @override
-  String get connectingEllipsis => 'Connecting…';
+  String get connectingEllipsis => 'Menghubungkan…';
 
   @override
   String downloadHttpError(int code) {
-    return 'Download failed: HTTP $code';
+    return 'Unduhan gagal: HTTP $code';
   }
 
   @override
   String downloadedBytes(String received, String total) {
-    return 'Downloaded $received / $total';
+    return 'Terunduh $received / $total';
   }
 
   @override
   String androidInstallHelp(String path) {
-    return 'Package downloaded to:\n$path\n\nTap “Install” to open the system installer.\n\nIf Android blocks unknown apps, allow APRSlocus to install unknown apps in system settings.';
+    return 'Paket terunduh ke:\n$path\n\nKetuk “Pasang” untuk membuka installer sistem.\n\nJika Android memblokir aplikasi tidak dikenal, izinkan APRSlocus memasang aplikasi tidak dikenal di pengaturan sistem.';
   }
 
   @override
   String windowsInstallHelp(String path) {
-    return 'Installer saved to:\n$path\n\nTap “Run now” to launch it, or open the containing folder.';
+    return 'Installer disimpan ke:\n$path\n\nKetuk “Jalankan sekarang” untuk meluncurkannya, atau buka folder penyimpanannya.';
   }
 
   @override
-  String get openContainingFolder => 'Open containing folder';
+  String get openContainingFolder => 'Buka folder penyimpanan';
 
   @override
-  String get runNow => 'Run now';
+  String get runNow => 'Jalankan sekarang';
 
   @override
   String get cannotRunInstaller =>
-      'Could not start the installer. Open it manually from the containing folder.';
+      'Tidak dapat menjalankan installer. Buka manual dari folder penyimpanannya.';
 
   @override
   String get cannotLaunchInstaller =>
-      'Could not launch the installer. Open the package manually.';
+      'Tidak dapat meluncurkan installer. Buka paket secara manual.';
 
   @override
-  String get openPackageManually => 'Open the package in a file manager';
+  String get openPackageManually => 'Buka paket di pengelola berkas';
 
   @override
   String cannotOpenPackage(String error) {
-    return 'Could not open package: $error';
+    return 'Tidak dapat membuka paket: $error';
   }
 
   @override
-  String get installPermissionTitle => 'Allow app installation';
+  String get installPermissionTitle => 'Izinkan pemasangan aplikasi';
 
   @override
   String get installPermissionDesc =>
-      'APRSlocus is not allowed to install apps.\n\nTap “Settings”, allow this app to install unknown apps, then return and try again.';
+      'APRSlocus tidak diizinkan memasang aplikasi.\n\nKetuk “Pengaturan”, izinkan aplikasi ini memasang aplikasi tidak dikenal, lalu kembali dan coba lagi.';
 
   @override
-  String get recheck => 'Check again';
+  String get recheck => 'Periksa lagi';
 
   @override
   String newVersionTitle(String version) {
-    return 'New version v$version available';
+    return 'Versi baru v$version tersedia';
   }
 
   @override
   String repoLatestTitle(String version) {
-    return 'Latest repository version v$version';
+    return 'Versi terbaru repositori v$version';
   }
 
   @override
-  String get checkingLatest => 'Checking latest version…';
+  String get checkingLatest => 'Memeriksa versi terbaru…';
 
   @override
-  String get connectingGitCode => 'Connecting to GitCode';
+  String get connectingGitCode => 'Menghubungkan ke GitCode';
 
   @override
-  String get noReleaseNotes => 'No release notes';
+  String get noReleaseNotes => 'Tidak ada catatan rilis';
 
   @override
   String noInstallerHistoryHint(String platform) {
-    return 'No $platform package for this release. Choose a downloadable version from History.';
+    return 'Tidak ada paket $platform untuk rilis ini. Pilih versi yang bisa diunduh dari Riwayat.';
   }
 
   @override
-  String get latestVersionLabel => 'Latest version';
+  String get latestVersionLabel => 'Versi terbaru';
 
   @override
   String packageSize(String platform, String size) {
-    return '$platform package size: $size';
+    return 'Ukuran paket $platform: $size';
   }
 
   @override
-  String get updateContents => 'What’s new';
+  String get updateContents => 'Yang baru';
 
   @override
-  String get redownload => 'Download again';
+  String get redownload => 'Unduh ulang';
 
   @override
-  String get downloadInstaller => 'Download installer';
+  String get downloadInstaller => 'Unduh installer';
 
   @override
-  String get downloadAndInstall => 'Download & install';
+  String get downloadAndInstall => 'Unduh & pasang';
 
   @override
-  String get localPackageExists => 'A downloaded package is already available';
+  String get localPackageExists => 'Paket sudah tersedia secara lokal';
 
   @override
-  String get packageDeleted => 'Package deleted';
+  String get packageDeleted => 'Paket dihapus';
 
   @override
   String versionCount(int count) {
-    return '$count versions';
+    return '$count versi';
   }
 
   @override
-  String get noInstaller => 'No package';
+  String get noInstaller => 'Tidak ada paket';
 
   @override
-  String get download => 'Download';
+  String get download => 'Unduh';
 
   @override
-  String get viewChangelog => 'View changelog';
+  String get viewChangelog => 'Lihat catatan rilis';
 
   @override
   String versionChangelog(String version) {
-    return 'v$version changelog';
+    return 'Catatan rilis v$version';
   }
 
   @override
-  String get gotIt => 'Got it';
+  String get gotIt => 'Mengerti';
 
   @override
-  String get leaveAction => 'Leave';
+  String get leaveAction => 'Keluar';
 
   @override
   String localRepoVersion(Object latest, Object local) {
-    return 'Local v$local · Latest repository v$latest';
+    return 'Lokal v$local · Repositori terbaru v$latest';
   }
 
   @override
-  String get unverified => 'Unverified';
+  String get unverified => 'Belum diverifikasi';
 
   @override
-  String get passcodeUnverifiedHint => '-1 (unverified)';
+  String get passcodeUnverifiedHint => '-1 (belum diverifikasi)';
 
   @override
   String get passcodeMessageWarning =>
-      'APRS-IS login passcode. Using -1 prevents normal message send/receive.';
+      'Passcode login APRS-IS. Menggunakan -1 membuat pengiriman/penerimaan pesan tidak normal.';
 
   @override
-  String get settingsStationIdentitySubtitle => 'Callsign, SSID and comment';
+  String get settingsStationIdentitySubtitle =>
+      'Tanda panggil, SSID dan komentar';
 
   @override
-  String get settingsDisplayInfoSubtitle => 'My symbol and current position';
+  String get settingsDisplayInfoSubtitle => 'Simbol saya dan posisi saat ini';
 
   @override
-  String get settingsLocSourceSubtitle => 'Choose position source';
+  String get settingsLocSourceSubtitle => 'Pilih sumber posisi';
 
   @override
-  String get settingsBeaconSubtitle => 'Transmit interval & report content';
+  String get settingsBeaconSubtitle => 'Interval kirim & isi laporan';
 
   @override
   String get settingsManualLocSubtitle =>
-      'Manual input or map pick when no fix';
+      'Input manual atau pilih di peta bila tidak ada posisi';
 
   @override
   String get settingsManualLocHint =>
-      'When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.';
+      'Bila lokasi otomatis tidak tersedia, masukkan koordinat manual atau pilih di peta untuk pelaporan beacon dan perhitungan jarak stasiun.';
 
   @override
-  String get settingsConnStatusSubtitle => 'Connection status and info';
+  String get settingsConnStatusSubtitle => 'Status dan info koneksi';
 
   @override
-  String get settingsServerSubtitle => 'APRS-IS server and passcode';
+  String get settingsServerSubtitle => 'Server APRS-IS dan passcode';
 
   @override
-  String get settingsFilterSubtitle => 'Filter center and radius';
+  String get settingsFilterSubtitle => 'Pusat filter dan radius';
 
   @override
   String get settingsReceivePrefSubtitle =>
-      'Receive by country/region or callsign';
+      'Terima berdasarkan negara/wilayah atau tanda panggil';
 
   @override
-  String get settingsGeneralSubtitle =>
-      'Theme, language and coordinate display';
+  String get settingsGeneralSubtitle => 'Tema, bahasa dan tampilan koordinat';
 
   @override
-  String get settingsMapSubtitle => 'Map type and display';
+  String get settingsMapSubtitle => 'Jenis dan tampilan peta';
 
   @override
-  String get settingsChatStatsSubtitle => 'Message and contact statistics';
+  String get settingsChatStatsSubtitle => 'Statistik pesan dan kontak';
 
   @override
-  String get settingsChatManageSubtitle => 'Contacts and chat data';
+  String get settingsChatManageSubtitle => 'Kontak dan data obrolan';
 
   @override
-  String get settingsClearDataSubtitle => 'Delete local records';
+  String get settingsClearDataSubtitle => 'Hapus catatan lokal';
 
   @override
-  String get settingsLabSubtitle => 'Experimental features';
+  String get settingsLabSubtitle => 'Fitur eksperimental';
 
   @override
-  String get settingsDevSubtitle => 'Debugging and testing';
+  String get settingsDevSubtitle => 'Debug dan pengujian';
 
   @override
   String get settingsFilterHint =>
-      'Only receive station packets within the configured range';
+      'Hanya terima paket stasiun dalam jangkauan yang ditentukan';
 
   @override
   String get settingsReceivePrefHint =>
-      'Besides range filter, receive stations by country/region group or exact callsign';
+      'Selain filter jangkauan, terima stasiun berdasarkan grup negara/wilayah atau tanda panggil persis';
 
   @override
-  String get settingsContribCodeOptimization => 'Code optimization';
+  String get settingsContribCodeOptimization => 'Optimasi kode';
 
   @override
-  String get eggBg2hcb => 'Life is all meow-meow and mimi~';
+  String get eggBg2hcb => 'Hidup ini penuh meong-meong~';
 
   @override
-  String get deviceInfoTitle => 'Device identification';
+  String get deviceInfoTitle => 'Identifikasi perangkat';
 
   @override
   String get deviceToCall => 'To-call';
@@ -3338,337 +3345,338 @@ class AppLocalizationsId extends AppLocalizations {
   String get deviceModel => 'Model';
 
   @override
-  String get deviceClass => 'Device class';
+  String get deviceClass => 'Kelas perangkat';
 
   @override
-  String get deviceFilter => 'Device filter';
+  String get deviceFilter => 'Filter perangkat';
 
   @override
-  String get lookupQrz => 'QRZ callsign';
+  String get lookupQrz => 'Tanda panggil QRZ';
 
   @override
-  String get lookupAprsFi => 'aprs.fi position';
+  String get lookupAprsFi => 'Posisi aprs.fi';
 
   @override
-  String get linkOpenFailed => 'Unable to open link';
+  String get linkOpenFailed => 'Tidak dapat membuka tautan';
 
   @override
-  String get beaconAutoAskTitle => 'Connected — auto-report your position?';
+  String get beaconAutoAskTitle => 'Tersambung — laporkan posisi otomatis?';
 
   @override
   String get beaconAutoAskDesc =>
-      'Let APRSlocus automatically beacon your position while connected? Recommended for mobile use. Choose no to receive only (you can still send one manually anytime).';
+      'Biarkan APRSlocus otomatis melaporkan posisi Anda (beacon) saat tersambung? Disarankan untuk penggunaan bergerak. Pilih tidak untuk hanya menerima (Anda tetap bisa mengirim manual kapan saja).';
 
   @override
-  String get beaconAutoYes => 'Auto-report';
+  String get beaconAutoYes => 'Lapor otomatis';
 
   @override
-  String get beaconAutoNo => 'Receive only';
+  String get beaconAutoNo => 'Hanya terima';
 
   @override
-  String get beaconOffChip => 'Auto-report off';
+  String get beaconOffChip => 'Lapor otomatis nonaktif';
 
   @override
-  String get quickTrackCreate => 'New track group';
+  String get quickTrackCreate => 'Grup pelacakan baru';
 
   @override
   String get quickTrackHint =>
-      'Pick stations you received, or type callsigns — track them on the map directly, no chat group required.';
+      'Pilih stasiun yang Anda terima, atau ketik tanda panggil — lacak langsung di peta, tanpa perlu grup obrolan.';
 
   @override
-  String get quickTrackName => 'Name (optional)';
+  String get quickTrackName => 'Nama (opsional)';
 
   @override
-  String get quickTrackPickLabel => 'Choose stations to track';
+  String get quickTrackPickLabel => 'Pilih stasiun untuk dilacak';
 
   @override
   String get quickTrackNoStations =>
-      'No stations received yet — type callsigns below (comma separated)';
+      'Belum ada stasiun diterima — ketik tanda panggil di bawah (pisahkan dengan koma)';
 
   @override
-  String get quickTrackManualHint => 'Type callsigns, e.g. BG7PGW,BG7LMW';
+  String get quickTrackManualHint => 'Ketik tanda panggil, mis. BG7PGW,BG7LMW';
 
   @override
-  String get quickTrackStart => 'Start tracking';
+  String get quickTrackStart => 'Mulai melacak';
 
   @override
-  String get quickTrackNeedMembers => 'Pick or type at least one callsign';
+  String get quickTrackNeedMembers =>
+      'Pilih atau ketik minimal satu tanda panggil';
 
   @override
-  String get weatherPanelTitle => 'Weather · Ham Tips';
+  String get weatherPanelTitle => 'Cuaca · Tips Ham';
 
   @override
-  String get weatherPanelSub => 'QWeather · Current Location';
+  String get weatherPanelSub => 'QWeather · Lokasi Saat Ini';
 
   @override
-  String get weatherRefresh => 'Refresh';
+  String get weatherRefresh => 'Segarkan';
 
   @override
-  String get weatherPowered => 'Powered by QWeather · APRSlocus';
+  String get weatherPowered => 'Didukung oleh QWeather · APRSlocus';
 
   @override
-  String get weatherCurLoc => 'Current location';
+  String get weatherCurLoc => 'Lokasi saat ini';
 
   @override
   String get weatherNoLoc =>
-      'No location yet — enable location in My Station to view weather';
+      'Belum ada lokasi — aktifkan lokasi di Stasiun saya untuk melihat cuaca';
 
   @override
-  String get weatherUnavail => 'Weather service unavailable';
+  String get weatherUnavail => 'Layanan cuaca tidak tersedia';
 
   @override
-  String get weatherDataFail => 'Failed to fetch weather data';
+  String get weatherDataFail => 'Gagal mengambil data cuaca';
 
   @override
-  String get weatherConnFail => 'Weather service connection failed';
+  String get weatherConnFail => 'Koneksi layanan cuaca gagal';
 
   @override
-  String get weatherCloud => 'Cloud';
+  String get weatherCloud => 'Awan';
 
   @override
-  String get weatherDew => 'Dew pt';
+  String get weatherDew => 'Titik embun';
 
   @override
-  String get weatherHumidity => 'Humidity';
+  String get weatherHumidity => 'Kelembapan';
 
   @override
-  String get weatherWindDir => 'Wind dir';
+  String get weatherWindDir => 'Arah angin';
 
   @override
-  String get weatherWindScale => 'Wind';
+  String get weatherWindScale => 'Kekuatan angin';
 
   @override
-  String get weatherWindSpeed => 'Wind spd';
+  String get weatherWindSpeed => 'Kecepatan angin';
 
   @override
-  String get weatherPressure => 'Pressure';
+  String get weatherPressure => 'Tekanan';
 
   @override
-  String get weatherVis => 'Visibility';
+  String get weatherVis => 'Jarak pandang';
 
   @override
-  String get weatherPrecip => 'Precip.';
+  String get weatherPrecip => 'Presipitasi';
 
   @override
   String weatherFeels(String v) {
-    return 'Feels $v°';
+    return 'Terasa $v°';
   }
 
   @override
   String weatherObserved(String t) {
-    return 'Observed $t';
+    return 'Diamati $t';
   }
 
   @override
-  String get hamTitle => 'Ham radio tips';
+  String get hamTitle => 'Tips radio amatir';
 
   @override
   String get hamNoData =>
-      'Once weather is loaded, tips on antenna setup, operating and lightning safety will appear';
+      'Setelah cuaca dimuat, tips tentang pemasangan antena, operasi, dan keamanan petir akan muncul';
 
   @override
   String get hamStorm1 =>
-      'Thunderstorm: do NOT set up or operate antennas outdoors! Disconnect feed lines to avoid lightning surge damage';
+      'Cuaca badai petir: JANGAN memasang atau mengoperasikan antena di luar ruangan! Lepaskan kabel feeder untuk menghindari kerusakan akibat lonjakan petir';
 
   @override
   String get hamStorm2 =>
-      'If already set up, take it down promptly; switch to indoor repeater / HF listening and keep gear dry';
+      'Jika sudah terpasang, segera turunkan; beralih ke mendengarkan repeater / HF di dalam ruangan dan jaga peralatan tetap kering';
 
   @override
   String get hamRain =>
-      'Precipitation: bring rain covers / dry boxes, seal connectors with tape or heat-shrink, keep feed lines drained';
+      'Presipitasi: bawa penutup hujan / kotak kering, segel konektor dengan selotip atau heat-shrink, dan pastikan kabel feeder tidak tergenang';
 
   @override
   String get hamCold =>
-      'Cold / snow: Li-ion capacity drops — carry spare batteries kept warm; watch SWR if ice forms on antennas';
+      'Dingin / salju: kapasitas baterai Li-ion turun — bawa baterai cadangan, simpan tetap hangat; perhatikan SWR bila terbentuk es pada antena';
 
   @override
   String hamWind(String w) {
-    return 'Wind $w: guy and secure antennas firmly; lower beams / long wires when packing up';
+    return 'Angin $w: pasang guy dan kokohkan antena; turunkan beam / long wire saat beres-beres';
   }
 
   @override
   String hamHot(String t) {
-    return 'Heat $t°C: stay hydrated; avoid long full-power transmissions that overheat your gear';
+    return 'Panas $t°C: cukupi cairan; hindari transmisi daya penuh yang terlalu lama agar perangkat tidak panas berlebih';
   }
 
   @override
   String hamHumid(String h) {
-    return 'Humidity $h%: moisture hurts insulation and antenna efficiency; more VHF/UHF loss; keep connectors rust-free';
+    return 'Kelembapan $h%: uap air menurunkan isolasi dan efisiensi antena; rugi VHF/UHF lebih besar; jaga konektor bebas karat';
   }
 
   @override
   String hamFog(String v) {
-    return 'Low visibility ($v km): drive carefully; fog can create ducts — try distant VHF/UHF contacts';
+    return 'Jarak pandang rendah ($v km): berkendara hati-hati; kabut dapat membentuk ducting — coba kontak VHF/UHF jarak jauh';
   }
 
   @override
   String get hamGood =>
-      'Great weather for operating! Try repeaters / simplex on VHF-UHF; HF ionosphere shifts in the evening';
+      'Cuaca bagus untuk beroperasi! Coba repeater / simplex di VHF-UHF; ionosfer HF berubah pada malam hari';
 
   @override
   String hamWindExtra(String w) {
-    return 'Wind $w: still guy the antenna and stay safe in the field';
+    return 'Angin $w: tetap pasang guy pada antena dan utamakan keselamatan di lapangan';
   }
 
   @override
   String get hamStorm3 =>
-      'Lightning approaching: disconnect the antenna feedline from your rig, move it outdoors to a ground rod to bleed static, switch off and unplug mains power so surges cannot enter via AC or LAN; do not use outdoor antennas or corded phones';
+      'Petir mendekat: lepaskan kabel feeder antena dari rig, pindahkan ke pembumian di luar untuk melepas muatan, matikan dan cabut listrik agar lonjakan tidak masuk lewat AC atau LAN; jangan gunakan antena luar atau telepon kabel';
 
   @override
   String get hamStorm4 =>
-      'Static crashes (QRN) surge around thunderstorms and HF noise floor rises; wait about 30 minutes after lightning stops before raising antennas and transmitting again';
+      'QRN melonjak di sekitar badai petir dan noise floor HF naik; tunggu sekitar 30 menit setelah petir berhenti sebelum memasang antena dan memancar lagi';
 
   @override
   String get hamExtreme =>
-      'Torrential/extreme rain: watch for flash floods, standing water and rockfall — never set up on riverbanks or low ground; add a drip loop where the feedline enters the wall';
+      'Hujan sangat lebat: waspadai banjir bandang, genangan, dan batu jatuh — jangan memasang di tepi sungai atau tanah rendah; buat drip loop di tempat feeder masuk dinding';
 
   @override
   String hamGale(String w) {
-    return 'Wind force $w: do NOT climb towers or masts! Lower or lay down Yagis and long wires, and check guy ropes, anchors and mast stays';
+    return 'Kekuatan angin $w: JANGAN memanjat tower atau tiang! Turunkan atau baringkan Yagi dan long wire, serta periksa guy, angkur, dan stay tiang';
   }
 
   @override
   String get hamIce =>
-      'Ice on antennas and feedlines raises SWR and adds ice loading: do not force full power, first check guy tension and wait until ice melts before normal operation';
+      'Es pada antena dan feeder menaikkan SWR dan menambah beban es: jangan memaksa daya penuh, periksa ketegangan guy dulu, dan tunggu es mencair sebelum operasi normal';
 
   @override
   String get hamFrost =>
-      'Below 0℃: lithium battery capacity drops sharply — keep spares warm in a pocket; guard against frostbite on hands and face, carry hand warmers';
+      'Di bawah 0℃: kapasitas baterai litium turun tajam — simpan cadangan tetap hangat di kantong; waspadai radang dingin pada tangan dan wajah, bawa penghangat tangan';
 
   @override
   String get hamHeat2 =>
-      'Heat makes PAs and PSUs derate: lower power, shorten continuous transmissions and make sure there is proper ventilation';
+      'Panas membuat PA dan PSU mengalami derating: turunkan daya, perpendek transmisi berkelanjutan, dan pastikan ventilasi memadai';
 
   @override
   String get hamDust =>
-      'Dust storm: fine sand in connectors and insulators causes leakage and noise — use dust caps; dry friction builds static, so ensure a good ground bleed';
+      'Badai debu: pasir halus di konektor dan isolator menyebabkan kebocoran dan noise — gunakan penutup debu; gesekan kering menimbulkan listrik statis, jadi pastikan pembumian yang baik';
 
   @override
   String get hamAir =>
-      'Poor air quality: wear a mask outdoors and limit exertion; pollution films on antenna insulators add leakage noise, so clean the antenna afterwards';
+      'Kualitas udara buruk: kenakan masker di luar dan batasi aktivitas berat; lapisan polutan pada isolator antena menambah noise bocor, jadi bersihkan setelah selesai';
 
   @override
   String hamDew(String d) {
-    return 'Dew point spread only $d℃ — air is near saturation: gear and feedlines may condense moisture; let equipment warm up and dry before powering on to avoid shorts';
+    return 'Selisih titik embun hanya $d℃ — udara mendekati jenuh: peralatan dan feeder bisa berembun; biarkan peralatan menghangat dan kering sebelum dinyalakan untuk menghindari korsleting';
   }
 
   @override
   String hamUV(String u) {
-    return 'UV index $u (high): protect yourself from sunburn during field work — long exposure also ages coax jackets and cable ties quickly';
+    return 'Indeks UV $u (tinggi): lindungi diri dari sengatan matahari saat kerja lapangan — paparan lama juga mempercepat penuaan jaket coax dan cable tie';
   }
 
   @override
   String hamLowPressure(String p) {
-    return 'Low pressure ($p hPa): weather is becoming unsettled — for long field sessions keep an escape route and watch nearby warnings';
+    return 'Tekanan rendah ($p hPa): cuaca cenderung tidak stabil — untuk sesi lapangan yang panjang, siapkan jalur evakuasi dan pantau peringatan terdekat';
   }
 
   @override
   String hamHighPressure(String p) {
-    return 'High, steady pressure ($p hPa): inversions form easily and VHF/UHF tropospheric ducting is possible — try beyond-line-of-sight direct or repeater contacts';
+    return 'Tekanan tinggi dan stabil ($p hPa): inversi mudah terbentuk dan ducting troposfer VHF/UHF mungkin terjadi — coba kontak langsung atau via repeater di luar jangkauan pandang';
   }
 
   @override
   String get hamGrayLine =>
-      'You are in the sunrise/sunset grey line: 20/40m HF propagation peaks now — the golden window for long-haul DX';
+      'Anda berada di grey line matahari terbit/terbenam: propagasi HF 20/40m memuncak sekarang — jendela emas untuk DX jarak jauh';
 
   @override
   String get hamNight =>
-      'D-layer fades at night: 80/40m absorption drops with lower noise — great for regional and nighttime long-distance work';
+      'Lapisan D menghilang pada malam hari: absorpsi 80/40m turun dengan noise lebih rendah — bagus untuk komunikasi regional dan jarak jauh malam hari';
 
   @override
   String get hamRainFade =>
-      'Heavier rain causes rain fade above 1.2GHz: for microwave and EME work, drop to a lower band or wait for the rain to ease';
+      'Hujan lebat menyebabkan rain fade di atas 1.2GHz: untuk microwave dan EME, turunkan ke band lebih rendah atau tunggu hujan reda';
 
   @override
   String get hamShower =>
-      'Showers come and go quickly: bring a rain cover, watch the cloud movement, and stop transmitting before removing the feedline';
+      'Hujan lokal cepat datang dan pergi: bawa penutup hujan, perhatikan pergerakan awan, dan hentikan transmisi sebelum melepas feeder';
 
   @override
-  String get hamLevelDanger => 'Safety';
+  String get hamLevelDanger => 'Keselamatan';
 
   @override
-  String get hamLevelWarn => 'Caution';
+  String get hamLevelWarn => 'Perhatian';
 
   @override
-  String get hamLevelGood => 'Propagation';
+  String get hamLevelGood => 'Propagasi';
 
   @override
-  String get hamLevelTip => 'Tip';
+  String get hamLevelTip => 'Tips';
 
   @override
   String hamMore(String n) {
-    return 'Show all $n tips';
+    return 'Tampilkan semua $n tips';
   }
 
   @override
-  String get hamLess => 'Collapse';
+  String get hamLess => 'Ringkas';
 
   @override
-  String get weatherForecast3 => '3-Day Forecast';
+  String get weatherForecast3 => 'Prakiraan 3 Hari';
 
   @override
-  String get weatherDaily15 => 'View 15-day weather';
+  String get weatherDaily15 => 'Lihat cuaca 15 hari';
 
   @override
-  String get weatherDaily15Title => '15-Day Weather Trend';
+  String get weatherDaily15Title => 'Tren Cuaca 15 Hari';
 
   @override
-  String get weatherToday => 'Today';
+  String get weatherToday => 'Hari ini';
 
   @override
-  String get weatherTomorrow => 'Tomorrow';
+  String get weatherTomorrow => 'Besok';
 
   @override
-  String get weatherDayAfter => 'Day after';
+  String get weatherDayAfter => 'Lusa';
 
   @override
   String weatherWeekday(String d) {
     String _temp0 = intl.Intl.selectLogic(d, {
-      '1': 'Mon',
-      '2': 'Tue',
-      '3': 'Wed',
-      '4': 'Thu',
-      '5': 'Fri',
-      '6': 'Sat',
-      '7': 'Sun',
+      '1': 'Sen',
+      '2': 'Sel',
+      '3': 'Rab',
+      '4': 'Kam',
+      '5': 'Jum',
+      '6': 'Sab',
+      '7': 'Min',
       'other': '—',
     });
     return '$_temp0';
   }
 
   @override
-  String get weatherSunrise => 'Sunrise';
+  String get weatherSunrise => 'Matahari terbit';
 
   @override
-  String get weatherSunset => 'Sunset';
+  String get weatherSunset => 'Matahari terbenam';
 
   @override
   String get weatherUV => 'UV';
 
   @override
-  String get weatherDetails => 'Details';
+  String get weatherDetails => 'Detail';
 
   @override
-  String get weatherAQIPrimary => 'Primary';
+  String get weatherAQIPrimary => 'Polutan utama';
 
   @override
-  String get airExcellent => 'Excellent';
+  String get airExcellent => 'Sangat baik';
 
   @override
-  String get airGood => 'Good';
+  String get airGood => 'Baik';
 
   @override
-  String get airModerate => 'Light pollution';
+  String get airModerate => 'Polusi ringan';
 
   @override
-  String get airUnhealthy => 'Moderate pollution';
+  String get airUnhealthy => 'Polusi sedang';
 
   @override
-  String get airVeryUnhealthy => 'Heavy pollution';
+  String get airVeryUnhealthy => 'Polusi berat';
 
   @override
-  String get airHazardous => 'Severe pollution';
+  String get airHazardous => 'Polusi sangat berat';
 
   @override
   String get weatherAir => 'AQI';
@@ -3677,257 +3685,258 @@ class AppLocalizationsId extends AppLocalizations {
   String get issStation => 'ISS';
 
   @override
-  String get applyStationFilter => 'Apply station filter to map';
+  String get applyStationFilter => 'Terapkan filter stasiun ke peta';
 
   @override
-  String get stationFilterOn => 'Filtered by station panel';
+  String get stationFilterOn => 'Difilter oleh panel stasiun';
 
   @override
-  String get stationList => 'Stations';
+  String get stationList => 'Daftar stasiun';
 
   @override
-  String get statsPanel => 'Statistics';
+  String get statsPanel => 'Statistik';
 
   @override
-  String get statsOverview => 'System overview';
+  String get statsOverview => 'Ringkasan sistem';
 
   @override
-  String get statsTotalRx => 'Packets RX';
+  String get statsTotalRx => 'Paket RX';
 
   @override
-  String get statsTotalTx => 'Packets TX';
+  String get statsTotalTx => 'Paket TX';
 
   @override
-  String get statsRate => 'Rate';
+  String get statsRate => 'Laju';
 
   @override
   String statsPerMin(String n) {
-    return '$n/min';
+    return '$n/mnt';
   }
 
   @override
-  String get statsStationsTotal => 'Stations';
+  String get statsStationsTotal => 'Stasiun';
 
   @override
-  String get statsCap => 'Capacity';
+  String get statsCap => 'Kapasitas';
 
   @override
-  String get statsConn => 'Link';
+  String get statsConn => 'Tautan';
 
   @override
-  String get statsConnected => 'Connected';
+  String get statsConnected => 'Tersambung';
 
   @override
   String get statsDisconnected => 'Offline';
 
   @override
-  String get statsMyGrid => 'My grid';
+  String get statsMyGrid => 'Grid saya';
 
   @override
-  String get statsAprslocusUsers => 'APRSlocus users';
+  String get statsAprslocusUsers => 'Pengguna APRSlocus';
 
   @override
-  String get statsFarthest => 'Farthest';
+  String get statsFarthest => 'Terjauh';
 
   @override
-  String get statsStatusDist => 'Status breakdown';
+  String get statsStatusDist => 'Rincian status';
 
   @override
-  String get statsTypeDist => 'Type breakdown';
+  String get statsTypeDist => 'Rincian jenis';
 
   @override
-  String get statsGridDist => 'Grid square breakdown';
+  String get statsGridDist => 'Rincian grid';
 
   @override
-  String get statsGridHint => 'Stations per Maidenhead field (4 chars), ranked';
+  String get statsGridHint =>
+      'Stasiun per field Maidenhead (4 karakter), diurutkan';
 
   @override
   String statsGridCount(String n) {
-    return '$n grids';
+    return '$n grid';
   }
 
   @override
-  String get statsGridEmpty => 'No station positions yet';
+  String get statsGridEmpty => 'Belum ada posisi stasiun';
 
   @override
-  String get statsDeviceDist => 'Device classes';
+  String get statsDeviceDist => 'Kelas perangkat';
 
   @override
-  String get statsOther => 'Other metrics';
+  String get statsOther => 'Metrik lainnya';
 
   @override
-  String get statsAvgSpeed => 'Avg speed';
+  String get statsAvgSpeed => 'Rata-rata kecepatan';
 
   @override
-  String get statsLastHeard => 'Last heard';
+  String get statsLastHeard => 'Terakhir terdengar';
 
   @override
-  String get statsPackets => 'Packets (recent)';
+  String get statsPackets => 'Paket (terbaru)';
 
   @override
-  String get statsNoData => 'No data';
+  String get statsNoData => 'Tidak ada data';
 
   @override
-  String get noStationsFiltered => 'No stations match the current filter';
+  String get noStationsFiltered =>
+      'Tidak ada stasiun yang cocok dengan filter saat ini';
 
   @override
   String get noStationsFilteredHint =>
-      'The filter or receive range is too narrow. Clear the filter to retry; the receive range lives in Settings.';
+      'Filter atau jangkauan terima terlalu sempit. Kosongkan filter untuk mencoba lagi; jangkauan terima ada di Pengaturan.';
 
   @override
-  String get clearStationFilter => 'Clear filter';
+  String get clearStationFilter => 'Kosongkan filter';
 
   @override
-  String get clearSearch => 'Clear search';
+  String get clearSearch => 'Kosongkan pencarian';
 
   @override
-  String get activeConditions => 'Active conditions';
+  String get activeConditions => 'Kondisi aktif';
 
   @override
-  String get statsMovingCount => 'Moving';
+  String get statsMovingCount => 'Bergerak';
 
   @override
-  String get statsOnlineRate => 'Online rate';
+  String get statsOnlineRate => 'Rasio online';
 
   @override
-  String get statsGridCountLabel => 'Grid squares';
+  String get statsGridCountLabel => 'Jumlah grid';
 
   @override
-  String get maxPackets => 'Packet history limit';
+  String get maxPackets => 'Batas riwayat paket';
 
   @override
   String get maxPacketsTip =>
-      'How many packets to keep on the packets page (default 2000; higher uses more memory)';
+      'Berapa paket yang disimpan di halaman paket (bawaan 2000; lebih tinggi memakai lebih banyak memori)';
 
   @override
-  String get maxTrackPts => 'Track point limit';
+  String get maxTrackPts => 'Batas titik jejak';
 
   @override
   String get maxTrackPtsTip =>
-      'Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)';
+      'Titik jejak per stasiun (bawaan 300; menentukan seberapa jauh jejak bisa ditelusuri; titik dicatat hanya setelah bergerak 20 m)';
 
   @override
-  String get onlineWindow => 'Online window (minutes)';
+  String get onlineWindow => 'Jendela online (menit)';
 
   @override
   String get onlineWindowTip =>
-      'A station with no report for longer than this is treated as offline (default 5 minutes)';
+      'Stasiun tanpa laporan lebih lama dari ini dianggap offline (bawaan 5 menit)';
 
   @override
-  String get chatRecords => 'Chat history';
+  String get chatRecords => 'Riwayat obrolan';
 
   @override
-  String get chatRecordsCleared => 'Chat history cleared';
+  String get chatRecordsCleared => 'Riwayat obrolan dihapus';
 
   @override
-  String get deviceCat => 'Device';
+  String get deviceCat => 'Perangkat';
 
   @override
-  String get deviceCatDesc => 'Radio gear · coming soon';
+  String get deviceCatDesc => 'Peralatan radio · segera hadir';
 
   @override
-  String get deviceSettings2 => 'Device settings';
+  String get deviceSettings2 => 'Pengaturan perangkat';
 
   @override
-  String get deviceSettingsSubtitle => 'Connect your radio equipment';
+  String get deviceSettingsSubtitle => 'Sambungkan peralatan radio Anda';
 
   @override
-  String get underConstruction => 'Under construction — not open yet';
+  String get underConstruction => 'Sedang dibangun — belum tersedia';
 
   @override
-  String get underConstructionHint =>
-      'This feature is still being built. Please stay tuned.';
+  String get underConstructionHint => 'Fitur ini masih dikembangkan. Nantikan.';
 
   @override
-  String get storageLimit => 'Data limits';
+  String get storageLimit => 'Batas data';
 
   @override
-  String get storageLimitSubtitle => 'How much data to keep locally';
+  String get storageLimitSubtitle => 'Berapa banyak data yang disimpan lokal';
 
   @override
-  String get connectionCard2 => 'APRS-IS connection';
+  String get connectionCard2 => 'Koneksi APRS-IS';
 
   @override
-  String get immersiveMap => 'Immersive map';
+  String get immersiveMap => 'Peta imersif';
 
   @override
   String get immersiveMapTip =>
-      'Navigation style: centered on you, heading-up, corner HUD';
+      'Gaya navigasi: berpusat pada Anda, heading-up, HUD sudut';
 
   @override
-  String get headingUp => 'Heading up';
+  String get headingUp => 'Heading ke atas';
 
   @override
-  String get northUp => 'North up';
+  String get northUp => 'Utara ke atas';
 
   @override
-  String get followMe => 'Follow me';
+  String get followMe => 'Ikuti saya';
 
   @override
-  String get beaconCountdown => 'Next beacon';
+  String get beaconCountdown => 'Beacon berikutnya';
 
   @override
-  String get beaconOff => 'off';
+  String get beaconOff => 'nonaktif';
 
   @override
-  String get unlocated => 'No fix';
+  String get unlocated => 'Belum ada posisi';
 
   @override
   String get platform => 'Platform';
 
   @override
-  String get nearbyStations => 'Nearby stations';
+  String get nearbyStations => 'Stasiun sekitar';
 
   @override
-  String get honorWall => 'Honors';
+  String get honorWall => 'Kehormatan';
 
   @override
-  String get accountHonors => 'Account honors';
+  String get accountHonors => 'Kehormatan akun';
 
   @override
-  String get achievementsSection => 'Achievements';
+  String get achievementsSection => 'Pencapaian';
 
   @override
-  String get notLit => 'Not yet';
+  String get notLit => 'Belum';
 
   @override
-  String get badgeFallback => 'Badge';
+  String get badgeFallback => 'Lencana';
 
   @override
   String honoredBadges(String n, String m) {
-    return '$n/$m badges unlocked';
+    return '$n/$m lencana terbuka';
   }
 
   @override
   String achievementsProgress(String n, String m) {
-    return '$n/$m achievements';
+    return '$n/$m pencapaian';
   }
 
   @override
-  String get beaconNotConnected => 'Not connected';
+  String get beaconNotConnected => 'Belum tersambung';
 
   @override
-  String get beaconWaitingFix => 'Waiting for fix';
+  String get beaconWaitingFix => 'Menunggu posisi';
 
   @override
-  String get beaconSoon => 'Due now';
+  String get beaconSoon => 'Segera';
 
   @override
   String beaconNextIn(String s) {
-    return 'Next report in $s';
+    return 'Laporan berikutnya dalam $s';
   }
 
   @override
-  String get beaconImminent => 'Reporting now…';
+  String get beaconImminent => 'Segera melapor…';
 
   @override
-  String get notifConnected => 'Connected';
+  String get notifConnected => 'Tersambung';
 
   @override
-  String get notifConnecting => 'Connecting';
+  String get notifConnecting => 'Menghubungkan';
 
   @override
-  String get notifDisconnected => 'Disconnected';
+  String get notifDisconnected => 'Terputus';
 
   @override
   String notifOnline(String n) {
