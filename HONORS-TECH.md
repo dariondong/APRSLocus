@@ -2,6 +2,7 @@
 
 > **面向开发者**：荣誉数据「从哪来、怎么解析、怎么查、缓存在哪」的技术说明。
 > 授予操作与新增称号的流程请看 [`HONORS.md`](HONORS.md)（那是维护指南，本文是代码级说明）。
+> **面向用户的「怎么获得荣誉」**请看 [`HONORS-GUIDE.md`](HONORS-GUIDE.md)。
 >
 > 代码基线：**v1.6.91**｜主要实现：`lib/early_member.dart`（792 行）
 
@@ -520,6 +521,7 @@ FIRST FIX  firstfix.json → isFirstFixHolder() → 动态注入 'firstFix'
 | 文件 | 说明 |
 |---|---|
 | [`HONORS.md`](HONORS.md) | **维护指南**：授予称号 / 新增称号的 7 处登记点 / 校验清单 |
+| [`HONORS-GUIDE.md`](HONORS-GUIDE.md) | **面向用户**：成就条件 / 徽章含义 / 申请渠道 |
 | `docs/members.json` | 称号定义 + 成员授予（唯一真源） |
 | `docs/firstfix.json` | FIRST FIX 授勋名单 |
 | `docs/sponsors.json` | 赞助名单（独立于称号） |
