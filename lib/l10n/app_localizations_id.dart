@@ -465,10 +465,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get symPolice => 'Polisi';
 
   @override
-  String get symMotorcycle => 'Motorcycle';
+  String get symMotorcycle => 'Sepeda motor';
 
   @override
-  String get symSemi => 'Semi-trailer';
+  String get symSemi => 'Truk gandeng';
 
   @override
   String get symVan => 'Van';
@@ -480,34 +480,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get symBus => 'Bus';
 
   @override
-  String get symTruckStop => 'Truck stop';
+  String get symTruckStop => 'Tempat istirahat truk';
 
   @override
-  String get symTrain => 'Train';
+  String get symTrain => 'Kereta';
 
   @override
-  String get symFireTruck => 'Fire truck';
+  String get symFireTruck => 'Mobil pemadam';
 
   @override
-  String get symPoliceCar => 'Police car';
+  String get symPoliceCar => 'Mobil polisi';
 
   @override
-  String get symSnowmobile => 'Snowmobile';
+  String get symSnowmobile => 'Mobil salju';
 
   @override
-  String get symYagi => 'Yagi';
+  String get symYagi => 'Antena Yagi';
 
   @override
-  String get symHospital => 'Hospital';
+  String get symHospital => 'Rumah sakit';
 
   @override
-  String get symAmbulance => 'Ambulance';
+  String get symAmbulance => 'Ambulans';
 
   @override
-  String get symFireStation => 'Fire station';
+  String get symFireStation => 'Pos pemadam';
 
   @override
-  String get symSchool => 'School';
+  String get symSchool => 'Sekolah';
 
   @override
   String get symMotel => 'Motel';
@@ -519,88 +519,88 @@ class AppLocalizationsId extends AppLocalizations {
   String get symLaptop => 'Laptop';
 
   @override
-  String get symPostOffice => 'Post office';
+  String get symPostOffice => 'Kantor pos';
 
   @override
-  String get symWeather => 'Weather';
+  String get symWeather => 'Cuaca';
 
   @override
-  String get symWater => 'Water station';
+  String get symWater => 'Stasiun air';
 
   @override
-  String get symHurricane => 'Hurricane';
+  String get symHurricane => 'Badai';
 
   @override
-  String get symHorse => 'Horseback';
+  String get symHorse => 'Berkuda';
 
   @override
-  String get symDog => 'Dog';
+  String get symDog => 'Anjing';
 
   @override
-  String get symCamping => 'Camping';
+  String get symCamping => 'Berkemah';
 
   @override
-  String get symShelter => 'Shelter';
+  String get symShelter => 'Tempat berlindung';
 
   @override
-  String get symRedCross => 'Red Cross';
+  String get symRedCross => 'Palang merah';
 
   @override
-  String get symFireAlarm => 'Fire alarm';
+  String get symFireAlarm => 'Alarm kebakaran';
 
   @override
-  String get symEmergCenter => 'Emergency center';
+  String get symEmergCenter => 'Pusat darurat';
 
   @override
-  String get symCmdCenter => 'Command center';
+  String get symCmdCenter => 'Pusat komando';
 
   @override
-  String get symHandicap => 'Handicapped';
+  String get symHandicap => 'Difabel';
 
   @override
-  String get symBigAircraft => 'Large aircraft';
+  String get symBigAircraft => 'Pesawat besar';
 
   @override
-  String get symGlider => 'Glider';
+  String get symGlider => 'Pesawat layang';
 
   @override
-  String get symBalloon => 'Balloon';
+  String get symBalloon => 'Balon';
 
   @override
-  String get symShip => 'Ship';
+  String get symShip => 'Kapal';
 
   @override
-  String get symSailboat => 'Sailboat';
+  String get symSailboat => 'Kapal layar';
 
   @override
-  String get symMobileSat => 'Mobile satellite';
+  String get symMobileSat => 'Satelit bergerak';
 
   @override
-  String get symSatAntenna => 'Satellite antenna';
+  String get symSatAntenna => 'Antena satelit';
 
   @override
-  String get symDigi => 'Digital repeater';
+  String get symDigi => 'Digipeater';
 
   @override
-  String get symDigiTower => 'Repeater tower';
+  String get symDigiTower => 'Menara repeater';
 
   @override
-  String get symMicE => 'Mic-E repeater';
+  String get symMicE => 'Repeater Mic-E';
 
   @override
   String get symNode => 'Node';
 
   @override
-  String get symDxCluster => 'DX cluster';
+  String get symDxCluster => 'Kluster DX';
 
   @override
-  String get symHfGateway => 'HF gateway';
+  String get symHfGateway => 'Gateway HF';
 
   @override
-  String get symFileServer => 'File server';
+  String get symFileServer => 'Server berkas';
 
   @override
-  String get symTelephone => 'Telephone';
+  String get symTelephone => 'Telepon';
 
   @override
   String get symGrid => 'Grid';
@@ -609,37 +609,37 @@ class AppLocalizationsId extends AppLocalizations {
   String get symXUnix => 'X/Unix';
 
   @override
-  String get symFmoStation => 'FMO station';
+  String get symFmoStation => 'Stasiun FMO';
 
   @override
-  String get filter => 'Range filter';
+  String get filter => 'Filter jangkauan';
 
   @override
-  String get filterRadius => 'Radius (km)';
+  String get filterRadius => 'Radius filter (km)';
 
   @override
-  String get maxStations => 'Max stations';
+  String get maxStations => 'Maks. stasiun';
 
   @override
-  String get receiveFilter => 'Callsign filter';
+  String get receiveFilter => 'Filter tanda panggil';
 
   @override
-  String get receiveCountries => 'Countries';
+  String get receiveCountries => 'Negara/Wilayah';
 
   @override
-  String get receiveOthers => 'Other stations';
+  String get receiveOthers => 'Stasiun lain';
 
   @override
-  String get darkMode => 'Dark mode';
+  String get darkMode => 'Mode gelap';
 
   @override
-  String get themeColor => 'Theme color';
+  String get themeColor => 'Warna tema';
 
   @override
-  String get language => 'Language';
+  String get language => 'Bahasa';
 
   @override
-  String get languageSystem => 'Follow system';
+  String get languageSystem => 'Ikuti sistem';
 
   @override
   String get languageZh => '中文';
@@ -657,640 +657,641 @@ class AppLocalizationsId extends AppLocalizations {
   String get languageId => 'Bahasa Indonesia';
 
   @override
-  String get displaySettings => 'Display settings';
+  String get displaySettings => 'Pengaturan tampilan';
 
   @override
-  String get uiScale => 'UI scale';
+  String get uiScale => 'Skala UI';
 
   @override
-  String get reloadUi => 'Reload UI';
+  String get reloadUi => 'Muat ulang UI';
 
   @override
-  String get reloadDone => 'Reloaded';
+  String get reloadDone => 'Selesai dimuat ulang';
 
   @override
-  String get mapType => 'Map type';
+  String get mapType => 'Jenis peta';
 
   @override
-  String get unit => 'Unit';
+  String get unit => 'Satuan';
 
   @override
-  String get coordDatum => 'Datum';
+  String get coordDatum => 'Datum koordinat';
 
   @override
-  String get stationSettings => 'Station settings';
+  String get stationSettings => 'Pengaturan stasiun';
 
   @override
-  String get connectionSettings => 'Connection settings';
+  String get connectionSettings => 'Pengaturan koneksi';
 
   @override
-  String get chatSettings => 'Chat settings';
+  String get chatSettings => 'Pengaturan obrolan';
 
   @override
-  String get dataSettings => 'Data settings';
+  String get dataSettings => 'Pengaturan data';
 
   @override
-  String get advancedSettings => 'Advanced settings';
+  String get advancedSettings => 'Pengaturan lanjutan';
 
   @override
-  String get sponsors => 'Sponsors';
+  String get sponsors => 'Sponsor & ucapan terima kasih';
 
   @override
-  String get sponsorsThanks => 'Thanks to every supporter';
+  String get sponsorsThanks => 'Terima kasih kepada setiap pendukung';
 
   @override
-  String get send => 'Send';
+  String get send => 'Kirim';
 
   @override
-  String get receive => 'Receive';
+  String get receive => 'Terima';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Hapus';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Salin';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'Tersalin';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versi';
 
   @override
-  String get location => 'Location';
+  String get location => 'Lokasi';
 
   @override
-  String get gpsStatus => 'GPS status';
+  String get gpsStatus => 'Status GPS';
 
   @override
-  String get myLocation => 'My location';
+  String get myLocation => 'Lokasi saya';
 
   @override
-  String get track => 'Track';
+  String get track => 'Jejak';
 
   @override
-  String get forwardingPath => 'Path';
+  String get forwardingPath => 'Jalur';
 
   @override
-  String get relatedStations => 'Related stations';
+  String get relatedStations => 'Stasiun terkait';
 
   @override
-  String get openInMap => 'View on map';
+  String get openInMap => 'Lihat di peta';
 
   @override
-  String get navigate => 'Navigate';
+  String get navigate => 'Navigasi';
 
   @override
-  String get messageSent => 'Message sent';
+  String get messageSent => 'Pesan terkirim';
 
   @override
-  String get enterMessage => 'Type a message';
+  String get enterMessage => 'Ketik pesan';
 
   @override
-  String get noData => 'No data';
+  String get noData => 'Tidak ada data';
 
   @override
-  String get searchHint => 'Search callsign / type / grid / comment…';
+  String get searchHint => 'Cari tanda panggil / jenis / grid / komentar…';
 
   @override
-  String get notFound => 'No stations found';
+  String get notFound => 'Stasiun tidak ditemukan';
 
   @override
   String get totalStations => 'Total';
 
   @override
-  String get sortBy => 'Sort';
+  String get sortBy => 'Urutkan';
 
   @override
-  String get sortCall => 'Callsign';
+  String get sortCall => 'Tanda panggil';
 
   @override
-  String get sortRecent => 'Recent';
+  String get sortRecent => 'Terbaru';
 
   @override
-  String get sortDistance => 'Distance';
+  String get sortDistance => 'Jarak';
 
   @override
   String get sortStatus => 'Status';
 
   @override
-  String get typeFilter => 'Type';
+  String get typeFilter => 'Filter jenis';
 
   @override
   String get aprslocusOnly => 'APRSlocus';
 
   @override
-  String get confirmDelete => 'Delete this item?';
+  String get confirmDelete => 'Hapus ini?';
 
   @override
   String get confirmRestartOobe =>
-      'This will re-open the setup wizard to configure callsign, receive region, etc.\nYour current settings will be kept.';
+      'Panduan awal akan dibuka lagi; Anda dapat mengatur ulang tanda panggil, area terima, dan lainnya.\nPengaturan saat ini tetap tersimpan; lanjutkan memakai aplikasi setelah panduan selesai.';
 
   @override
-  String get restartWizard => 'Run setup wizard again';
+  String get restartWizard => 'Jalankan panduan lagi';
 
   @override
-  String get restartWizardTitle => 'Run setup wizard again?';
+  String get restartWizardTitle => 'Jalankan panduan lagi?';
 
   @override
-  String get oobeFilterTitle => 'Choose receive region';
+  String get oobeFilterTitle => 'Pilih area terima';
 
   @override
   String get oobeFilterDesc =>
-      'By default only Chinese callsigns are received. Add other countries as needed.';
+      'Secara bawaan hanya tanda panggil Tiongkok yang diterima. Tambahkan negara/wilayah lain sesuai kebutuhan';
 
   @override
-  String get oobeWelcomeTitle => 'Welcome to APRSlocus';
+  String get oobeWelcomeTitle => 'Selamat datang di APRSlocus';
 
   @override
-  String get oobeWelcomeRealMap => 'Live map';
+  String get oobeWelcomeRealMap => 'Peta waktu nyata';
 
   @override
-  String get oobeWelcomeGps => 'GPS position beaconing';
+  String get oobeWelcomeGps => 'Pelaporan posisi GPS';
 
   @override
-  String get oobeWelcomeMsg => 'APRS messages';
+  String get oobeWelcomeMsg => 'Pesan APRS';
 
   @override
-  String get oobeWelcomeIs => 'APRS-IS feed';
+  String get oobeWelcomeIs => 'Umpan APRS-IS';
 
   @override
-  String get oobeCallTitle => 'Set callsign';
+  String get oobeCallTitle => 'Tanda panggil Anda';
 
   @override
-  String get oobeSymbolTitle => 'Choose station symbol';
+  String get oobeSymbolTitle => 'Pilih simbol stasiun';
 
   @override
-  String get oobeServerTitle => 'Connect to APRS-IS server';
+  String get oobeServerTitle => 'Sambungkan ke server APRS-IS';
 
   @override
-  String get weatherData => 'Weather data';
+  String get weatherData => 'Data cuaca';
 
   @override
-  String get fmoInfo => 'FMO info';
+  String get fmoInfo => 'Info stasiun FMO';
 
   @override
-  String get aprslocusInfo => 'APRSlocus info';
+  String get aprslocusInfo => 'Info APRSlocus';
 
   @override
-  String get locationInfo => 'Location';
+  String get locationInfo => 'Lokasi';
 
   @override
-  String get recentPackets => 'Recent packets';
+  String get recentPackets => 'Paket terbaru';
 
   @override
-  String get quickActions => 'Quick actions';
+  String get quickActions => 'Aksi cepat';
 
   @override
-  String get copyCoords => 'Copy coords';
+  String get copyCoords => 'Salin koordinat';
 
   @override
-  String get copyGrid => 'Copy grid';
+  String get copyGrid => 'Salin grid';
 
   @override
-  String get sender => 'Sender';
+  String get sender => 'Pengirim';
 
   @override
-  String get time => 'Time';
+  String get time => 'Waktu';
 
   @override
-  String get message => 'Message';
+  String get message => 'Pesan';
 
   @override
-  String get groupChat => 'Group chat';
+  String get groupChat => 'Obrolan grup';
 
   @override
-  String get newGroup => 'New group';
+  String get newGroup => 'Grup baru';
 
   @override
-  String get sendTo => 'Send to';
+  String get sendTo => 'Kirim ke';
 
   @override
-  String get filterRule => 'Filter rule';
+  String get filterRule => 'Aturan filter';
 
   @override
-  String get saveAndApply => 'Save & apply filter';
+  String get saveAndApply => 'Simpan & terapkan filter';
 
   @override
-  String get useMyLocation => 'Use my position as filter center';
+  String get useMyLocation => 'Pakai posisi saya sebagai pusat filter';
 
   @override
-  String get noFixYet => 'No location fix yet; current position is unavailable';
+  String get noFixYet => 'Belum ada posisi; lokasi saat ini tidak tersedia';
 
   @override
-  String get invalidCoords => 'Enter valid latitude, longitude, and radius';
+  String get invalidCoords => 'Masukkan lintang, bujur, dan radius yang valid';
 
   @override
-  String get filterSaved => 'Filter saved and applied';
+  String get filterSaved => 'Filter tersimpan dan diterapkan';
 
   @override
-  String get stationsShown => 'Stations';
+  String get stationsShown => 'Stasiun';
 
   @override
-  String get settingsDesc => 'Configure station, location & connection';
+  String get settingsDesc => 'Atur stasiun, lokasi & koneksi';
 
   @override
-  String get radioCat => 'Station';
+  String get radioCat => 'Stasiun';
 
   @override
-  String get radioCatDesc => 'Callsign · SSID · Symbol';
+  String get radioCatDesc => 'Tanda panggil · SSID · Simbol';
 
   @override
-  String get beaconCat => 'Beaconing';
+  String get beaconCat => 'Pelaporan beacon';
 
   @override
-  String get beaconCatDesc => 'GPS · Beaconing · Manual position';
+  String get beaconCatDesc => 'GPS · Beacon · Posisi manual';
 
   @override
-  String get connectionCat => 'Connection';
+  String get connectionCat => 'Koneksi';
 
   @override
-  String get connectionCatDesc => 'Server · Range filter';
+  String get connectionCatDesc => 'Server · Jangkauan filter';
 
   @override
-  String get displayCat => 'Display';
+  String get displayCat => 'Tampilan';
 
   @override
-  String get displayCatDesc => 'Coords · Theme';
+  String get displayCatDesc => 'Koordinat · Tema';
 
   @override
-  String get chatCat => 'Chat';
+  String get chatCat => 'Obrolan';
 
   @override
-  String get chatCatDesc => 'History · Contacts';
+  String get chatCatDesc => 'Riwayat · Kontak';
 
   @override
   String get dataCat => 'Data';
 
   @override
-  String get dataCatDesc => 'Clear local data';
+  String get dataCatDesc => 'Hapus data lokal';
 
   @override
-  String get advancedCat => 'Advanced';
+  String get advancedCat => 'Lanjutan';
 
   @override
-  String get advancedCatDesc => 'Lab · Developer';
+  String get advancedCatDesc => 'Lab · Pengembang';
 
   @override
-  String get updateCat => 'Update';
+  String get updateCat => 'Pembaruan';
 
   @override
-  String get updateCatDesc => 'Check for updates';
+  String get updateCatDesc => 'Periksa versi baru';
 
   @override
-  String get checkUpdate => 'Check update';
+  String get checkUpdate => 'Periksa pembaruan';
 
   @override
-  String get myStationSettings => 'My station';
+  String get myStationSettings => 'Stasiun saya';
 
   @override
-  String get myStationSettingsDesc => 'Callsign · SSID · Symbol · Beaconing';
+  String get myStationSettingsDesc => 'Tanda panggil · SSID · Simbol · Beacon';
 
   @override
-  String get oobeWelcomeDesc => 'Start configuring your APRS station';
+  String get oobeWelcomeDesc => 'Mulai mengatur stasiun APRS Anda';
 
   @override
-  String get oobeCallDesc => 'Enter your callsign';
+  String get oobeCallDesc => 'Masukkan tanda panggil Anda';
 
   @override
   String get oobeSymbolDesc =>
-      'The symbol represents your station type and is sent with position beacons';
+      'Simbol menunjukkan jenis stasiun Anda dan dikirim bersama beacon posisi';
 
   @override
   String get oobeServerDesc =>
-      'Connect to receive APRS station data worldwide. The default settings work as-is.';
+      'Setelah tersambung, Anda menerima data stasiun APRS sedunia. Pengaturan bawaan bisa langsung dipakai';
 
   @override
-  String get wizard => 'Setup wizard';
+  String get wizard => 'Panduan penyiapan';
 
   @override
-  String get setStep => 'Step';
+  String get setStep => 'Langkah';
 
   @override
-  String get chooseSymbol => 'Choose station symbol';
+  String get chooseSymbol => 'Pilih simbol stasiun';
 
   @override
-  String get settingsSubtitle => 'Map coordinates & display preferences';
+  String get settingsSubtitle => 'Koordinat peta & preferensi tampilan';
 
   @override
-  String get stationSettingsSubtitle => 'Callsign, symbol & beaconing';
+  String get stationSettingsSubtitle => 'Tanda panggil, simbol & beacon';
 
   @override
-  String get connectionSettingsSubtitle => 'APRS-IS server & receive range';
+  String get connectionSettingsSubtitle => 'Server APRS-IS & jangkauan terima';
 
   @override
-  String get chatSettingsSubtitle => 'Message history & contacts';
+  String get chatSettingsSubtitle => 'Riwayat pesan & kontak';
 
   @override
-  String get dataSettingsSubtitle => 'Local data management';
+  String get dataSettingsSubtitle => 'Manajemen data lokal';
 
   @override
-  String get advancedSettingsSubtitle => 'Lab & developer tools';
+  String get advancedSettingsSubtitle => 'Lab & alat pengembang';
 
   @override
-  String get stationListTitle => 'Stations';
+  String get stationListTitle => 'Daftar stasiun';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Filter';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => 'Hapus semua';
 
   @override
   String get statusFilter => 'Status';
 
   @override
-  String get typeGroup => 'Type';
+  String get typeGroup => 'Jenis';
 
   @override
-  String get appFilter => 'App';
+  String get appFilter => 'Perangkat lunak';
 
   @override
-  String get mapMenu => 'Map menu';
+  String get mapMenu => 'Menu peta';
 
   @override
-  String get mapTypeTitle => 'Map type';
+  String get mapTypeTitle => 'Jenis peta';
 
   @override
-  String get selectMapType => 'Select map type';
+  String get selectMapType => 'Pilih jenis peta';
 
   @override
-  String get showTrails => 'Show tracks';
+  String get showTrails => 'Tampilkan jejak';
 
   @override
-  String get showStations => 'Show stations';
+  String get showStations => 'Tampilkan stasiun';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'Tentang';
 
   @override
-  String get aboutSubtitle => 'APRS tracking & mapping';
+  String get aboutSubtitle => 'Pelacakan & peta APRS';
 
   @override
-  String get author => 'Author';
+  String get author => 'Penulis';
 
   @override
-  String get codeContributions => 'Code contributions';
+  String get codeContributions => 'Kontribusi kode';
 
   @override
-  String get codeContributionI18n => 'Internationalization / English UI';
+  String get codeContributionI18n => 'Internasionalisasi / UI Inggris';
 
   @override
-  String get codeContributionZhTw => 'Traditional Chinese UI';
+  String get codeContributionZhTw => 'UI Tionghoa Tradisional';
 
   @override
-  String get licenseSection => 'License';
+  String get licenseSection => 'Lisensi';
 
   @override
   String get licenseName => 'GNU GPL v3';
 
   @override
   String get licenseStatement =>
-      'This software is released under the GNU GPL v3. You may run, study, modify, and redistribute it under the terms of the license; modified and redistributed versions must comply with the applicable GPL v3 requirements. This software is provided without warranty.';
+      'Perangkat lunak ini dirilis di bawah lisensi GNU GPL v3. Anda boleh menjalankan, mempelajari, memodifikasi, dan mendistribusikan ulang selama mematuhi ketentuan lisensi; versi modifikasi dan redistribusi wajib mematuhi kewajiban GPL v3 yang berlaku. Perangkat lunak ini disediakan tanpa jaminan apa pun.';
 
   @override
-  String get licenseText => 'View license';
+  String get licenseText => 'Lihat lisensi';
 
   @override
-  String get oobeAgreeTitle => 'User Agreement & License';
+  String get oobeAgreeTitle => 'Perjanjian Pengguna & Lisensi';
 
   @override
   String get oobeAgreeBody =>
-      'Welcome to APRSlocus! Please read and agree to the terms below before using the app. Note that APRS data is public: once sent, it may be received, stored and forwarded by the global APRS network.';
+      'Selamat datang di APRSlocus! Bacalah dan setujui ketentuan berikut sebelum menggunakan aplikasi. Perlu diketahui: data APRS bersifat publik — setelah dikirim, data dapat diterima, disimpan, dan diteruskan oleh jaringan APRS sedunia.';
 
   @override
   String get oobeAgreeCheck =>
-      'I have read and agree to the User Agreement and the GPL-3.0 license';
+      'Saya telah membaca dan menyetujui Perjanjian Pengguna dan lisensi GPL-3.0';
 
   @override
   String get oobeAgreeNeed =>
-      'Please read and agree to the User Agreement first';
+      'Baca dan centang persetujuan Perjanjian Pengguna terlebih dahulu';
 
   @override
-  String get oobeDeclineExit => 'Decline and exit';
+  String get oobeDeclineExit => 'Tolak dan keluar';
 
   @override
-  String get userAgreement => 'User Agreement';
+  String get userAgreement => 'Perjanjian Pengguna';
 
   @override
-  String get beaconWarnTitle => 'Beacon interval too short';
+  String get beaconWarnTitle => 'Interval beacon terlalu pendek';
 
   @override
   String get beaconWarnBody =>
-      'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';
+      'APRS-IS menyarankan interval beacon minimal 60 detik untuk stasiun bergerak. Pengiriman yang terlalu sering dapat dianggap penyalahgunaan dan menyebabkan koneksi diputus server. Tetap gunakan interval ini?';
 
   @override
-  String get beaconWarnKeep => 'Keep anyway';
+  String get beaconWarnKeep => 'Tetap gunakan';
 
   @override
-  String get beaconWarnFix => 'Set to 60 s';
+  String get beaconWarnFix => 'Kembalikan ke 60 dtk';
 
   @override
-  String get features => 'Features';
+  String get features => 'Fitur';
 
   @override
-  String get openSource => 'Open-source acknowledgements';
+  String get openSource => 'Ucapan terima kasih open source';
 
   @override
-  String get feedback => 'Feedback';
+  String get feedback => 'Masukan pengguna';
 
   @override
-  String get officialWebsite => 'Official website';
+  String get officialWebsite => 'Situs resmi';
 
   @override
-  String get qqGroup => 'QQ group';
+  String get qqGroup => 'Grup QQ';
 
   @override
-  String get projectRepo => 'Repository';
+  String get projectRepo => 'Repositori';
 
   @override
-  String get testMembers => 'Test members';
+  String get testMembers => 'Anggota penguji';
 
   @override
-  String get aiSupport => 'AI compute support';
+  String get aiSupport => 'Dukungan komputasi AI';
 
   @override
-  String get copyAppInfo => 'Copy app info';
+  String get copyAppInfo => 'Salin info aplikasi';
 
   @override
-  String get appInfoCopied => 'App info copied';
+  String get appInfoCopied => 'Info aplikasi tersalin';
 
   @override
-  String get shareApp => 'Share APRSlocus';
+  String get shareApp => 'Bagikan APRSlocus';
 
   @override
-  String get shareToSystem => 'Share to system';
+  String get shareToSystem => 'Bagikan ke sistem';
 
   @override
-  String get shareToSystemDesc => 'WeChat, QQ, SMS, etc.';
+  String get shareToSystemDesc => 'WeChat, QQ, SMS, dll.';
 
   @override
-  String get copyShareText => 'Copy share text';
+  String get copyShareText => 'Salin teks berbagi';
 
   @override
-  String get openDownload => 'Open download page';
+  String get openDownload => 'Buka halaman unduhan';
 
   @override
-  String get shareTextCopied => 'Share text copied, paste it to your friends';
+  String get shareTextCopied =>
+      'Teks berbagi tersalin; tempel dan kirim ke teman';
 
   @override
   String get shareText =>
-      'APRSlocus — APRS Tracking & Mapping for amateur radio 📡\nReal-time station tracking, messaging & beaconing. Available on Android & Windows.\nWebsite: https://aprslocus.theez.top/\nDownload: https://github.com/dariondong/APRSLocus/releases';
+      'APRSlocus — Pelacakan & Peta APRS untuk radio amatir 📡\nPelacakan stasiun waktu nyata, pesan, dan beacon. Tersedia untuk Android / Windows.\nSitus web: https://aprslocus.theez.top/\nUnduh: https://github.com/dariondong/APRSLocus/releases';
 
   @override
-  String get enterCallsign => 'Please enter your callsign';
+  String get enterCallsign => 'Masukkan tanda panggil Anda';
 
   @override
-  String get enterValidCall => 'Please enter a valid callsign';
+  String get enterValidCall => 'Masukkan tanda panggil yang valid';
 
   @override
-  String get stationSettings2 => 'Station settings';
+  String get stationSettings2 => 'Pengaturan stasiun';
 
   @override
-  String get beaconSettings => 'Beaconing';
+  String get beaconSettings => 'Pelaporan beacon';
 
   @override
-  String get displaySettings2 => 'Display settings';
+  String get displaySettings2 => 'Pengaturan tampilan';
 
   @override
-  String get chatSettings2 => 'Chat settings';
+  String get chatSettings2 => 'Pengaturan obrolan';
 
   @override
-  String get dataSettings2 => 'Data settings';
+  String get dataSettings2 => 'Pengaturan data';
 
   @override
-  String get advancedSettings2 => 'Advanced settings';
+  String get advancedSettings2 => 'Pengaturan lanjutan';
 
   @override
-  String get connectionSettings2 => 'Connection settings';
+  String get connectionSettings2 => 'Pengaturan koneksi';
 
   @override
-  String get myCallsign => 'My callsign';
+  String get myCallsign => 'Tanda panggil saya';
 
   @override
-  String get beaconEnabled => 'Enable beaconing';
+  String get beaconEnabled => 'Aktifkan beacon posisi';
 
   @override
-  String get smartBeacon => 'SmartBeacon (by speed)';
+  String get smartBeacon => 'SmartBeacon (berdasarkan kecepatan)';
 
   @override
-  String get packetConsole => 'Packet console';
+  String get packetConsole => 'Konsol paket';
 
   @override
-  String get rawMode => 'Raw mode';
+  String get rawMode => 'Mode mentah';
 
   @override
-  String get parsedMode => 'Parsed mode';
+  String get parsedMode => 'Mode terurai';
 
   @override
-  String get position => 'Position';
+  String get position => 'Posisi';
 
   @override
   String get statusType => 'Status';
 
   @override
-  String get objectType => 'Object';
+  String get objectType => 'Objek';
 
   @override
   String packetStats(Object ppm, Object rx, Object tx) {
-    return 'RX $rx · TX $tx · $ppm/min';
+    return 'Terima $rx · Kirim $tx · $ppm/mnt';
   }
 
   @override
-  String get searchPacket => 'Search callsign, dest or raw…';
+  String get searchPacket => 'Cari tanda panggil, tujuan, atau data mentah…';
 
   @override
-  String get noMatchingPackets => 'No matching packets';
+  String get noMatchingPackets => 'Tidak ada paket yang cocok';
 
   @override
-  String get inject => 'Inject';
+  String get inject => 'Suntik';
 
   @override
-  String get manualInject => 'Inject raw APRS packet';
+  String get manualInject => 'Suntikkan paket APRS mentah';
 
   @override
-  String get injected => 'Packet injected';
+  String get injected => 'Paket tersuntik';
 
   @override
-  String get clearedPackets => 'Packets cleared';
+  String get clearedPackets => 'Paket terhapus';
 
   @override
-  String get clearPackets => 'Clear packets';
+  String get clearPackets => 'Hapus paket';
 
   @override
   String noPositionInfo(Object call) {
-    return 'No position information for $call (packet contains no position)';
+    return 'Tidak ada info posisi untuk $call (paket tidak memuat posisi)';
   }
 
   @override
-  String get copiedPacket => 'Packet copied';
+  String get copiedPacket => 'Paket tersalin';
 
   @override
-  String get mapPickMode => 'Map position picker';
+  String get mapPickMode => 'Mode pemilih posisi';
 
   @override
-  String get mapPickDesc => 'Tap the map to set your position';
+  String get mapPickDesc => 'Ketuk peta untuk menetapkan posisi Anda';
 
   @override
   String foundStations(Object count, Object q) {
-    return 'Found $count stations matching \"$q\"';
+    return 'Ditemukan $count stasiun cocok “$q”';
   }
 
   @override
-  String get tapMapHint => 'Tap map for stations · pinch to zoom';
+  String get tapMapHint => 'Ketuk peta untuk stasiun · cubit untuk zoom';
 
   @override
   String myLocationPanel(Object call) {
-    return 'My location · $call';
+    return 'Lokasi saya · $call';
   }
 
   @override
-  String get speedLabel => 'Speed';
+  String get speedLabel => 'Kecepatan';
 
   @override
-  String get courseLabel => 'Course';
+  String get courseLabel => 'Arah';
 
   @override
-  String get telemetryTitle => 'Speed / Altitude';
+  String get telemetryTitle => 'Kecepatan / Ketinggian';
 
   @override
-  String get range10m => '10 min';
+  String get range10m => '10 menit';
 
   @override
-  String get range30m => '30 min';
+  String get range30m => '30 menit';
 
   @override
-  String get range1h => '1 h';
+  String get range1h => '1 jam';
 
   @override
-  String get range3h => '3 h';
+  String get range3h => '3 jam';
 
   @override
-  String get rangeAll => 'All';
+  String get rangeAll => 'Semua';
 
   @override
   String get beaconIntervalLabel => 'Interval';
 
   @override
-  String get beaconsSentLabel => 'Sent';
+  String get beaconsSentLabel => 'Terkirim';
 
   @override
-  String get nextBeaconLabel => 'Next';
+  String get nextBeaconLabel => 'Berikutnya';
 
   @override
   String positionBeacon(Object grid) {
-    return 'Position beacon · Grid $grid';
+    return 'Beacon posisi · Grid $grid';
   }
 
   @override
-  String get manualBeacon => 'Beacon now';
+  String get manualBeacon => 'Beacon sekarang';
 
   @override
-  String get mapPickNow => 'Pick on map';
+  String get mapPickNow => 'Pilih di peta';
 
   @override
   String pickedCoord(Object grid, Object lat, Object lng) {
-    return 'Position set · $lat, $lng · Grid $grid';
+    return 'Posisi ditetapkan · $lat, $lng · Grid $grid';
   }
 
   @override
@@ -1300,25 +1301,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String movingCount(Object count) {
-    return '$count moving';
+    return '$count bergerak';
   }
 
   @override
   String stationCount(Object count) {
-    return '$count stations';
+    return '$count stasiun';
   }
 
   @override
-  String get locateMe => 'Locate';
+  String get locateMe => 'Lokasi';
 
   @override
-  String get layerFilter => 'Layers';
+  String get layerFilter => 'Lapisan';
 
   @override
-  String get showAll => 'Show all';
+  String get showAll => 'Tampilkan semua';
 
   @override
-  String get otherType => 'Other';
+  String get otherType => 'Lainnya';
 
   @override
   String zoomLevel(Object z) {
@@ -1326,7 +1327,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02 (AMap)';
+  String get datumGcj => 'GCJ-02 (AMAP)';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -1337,25 +1338,26 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get noStationInView => 'No stations here · tap to show all';
+  String get noStationInView =>
+      'Tidak ada stasiun di sini · ketuk untuk tampilkan semua';
 
   @override
-  String get noStationHelp => 'No stations here · tap for help';
+  String get noStationHelp => 'Tidak ada stasiun di sini · ketuk untuk bantuan';
 
   @override
-  String get mapHelpTitle => 'Map help';
+  String get mapHelpTitle => 'Bantuan peta';
 
   @override
   String get mapHelpIntro =>
-      'No stations in view. Possible reasons: not connected to APRS-IS, small receive range, or no active stations nearby.';
+      'Tidak ada stasiun dalam tampilan. Kemungkinan: belum tersambung ke APRS-IS, jangkauan terima kecil, atau tidak ada stasiun aktif di sekitar.';
 
   @override
   String get mapHelpMove =>
-      'Move / zoom: drag to pan, pinch or scroll-wheel to zoom';
+      'Geser / zoom: seret dengan satu jari, cubit atau roda gulir untuk zoom';
 
   @override
   String get mapHelpStation =>
-      'Stations: tap a marker to select & center, double-tap for details';
+      'Stasiun: ketuk penanda untuk memilih & memusatkan, ketuk dua kali untuk detail';
 
   @override
   String get mapHelpLayer =>

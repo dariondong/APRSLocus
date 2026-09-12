@@ -7,7 +7,7 @@
 新增 **日本語** 与 **Bahasa Indonesia** 两种界面语言，共 1143 个文案键。
 
 **本批完成的是「骨架」**：语言可选、能正确解析、全链路已验证。
-**译文目前完成 143 / 1143 条**（第 1 批），其余暂**回落英文**——
+**译文目前完成 429 / 1143 条**（前 3 批），其余暂**回落英文**——
 在译文补齐前**不建议发版**（否则 ja/id 用户会看到大片英文）。
 
 改动内容：
@@ -26,9 +26,10 @@
 
 - Added **Japanese** and **Indonesian** UI locales (1143 keys each).
 - **This commit lands the plumbing**: both locales are selectable, resolve
-  correctly and are verified end-to-end. **Translation is 143 / 1143 so far**;
-  the rest falls back to English for now — **please don't cut a release until the
-  translations are complete**, or ja/id users will see large stretches of English.
+  correctly and are verified end-to-end. **Translation is 429 / 1143 so far**
+  (first three batches); the rest falls back to English for now — **please don't
+  cut a release until the translations are complete**, or ja/id users will see
+  large stretches of English.
 - New ARBs + generated Dart classes (`flutter gen-l10n` — verified by regenerating
   the three existing locales and diffing: identical key sets, zero drift).
 - Wired into `supportedLocales` / `isSupported` / `lookupAppLocalizations`, both

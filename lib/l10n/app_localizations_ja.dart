@@ -458,181 +458,181 @@ class AppLocalizationsJa extends AppLocalizations {
   String get symPolice => '警察署';
 
   @override
-  String get symMotorcycle => 'Motorcycle';
+  String get symMotorcycle => 'オートバイ';
 
   @override
-  String get symSemi => 'Semi-trailer';
+  String get symSemi => 'セミトレーラー';
 
   @override
-  String get symVan => 'Van';
+  String get symVan => 'バン';
 
   @override
-  String get symJeep => 'Jeep';
+  String get symJeep => 'ジープ';
 
   @override
-  String get symBus => 'Bus';
+  String get symBus => 'バス';
 
   @override
-  String get symTruckStop => 'Truck stop';
+  String get symTruckStop => 'トラックステーション';
 
   @override
-  String get symTrain => 'Train';
+  String get symTrain => '列車';
 
   @override
-  String get symFireTruck => 'Fire truck';
+  String get symFireTruck => '消防車';
 
   @override
-  String get symPoliceCar => 'Police car';
+  String get symPoliceCar => 'パトカー';
 
   @override
-  String get symSnowmobile => 'Snowmobile';
+  String get symSnowmobile => 'スノーモービル';
 
   @override
-  String get symYagi => 'Yagi';
+  String get symYagi => '八木アンテナ';
 
   @override
-  String get symHospital => 'Hospital';
+  String get symHospital => '病院';
 
   @override
-  String get symAmbulance => 'Ambulance';
+  String get symAmbulance => '救急車';
 
   @override
-  String get symFireStation => 'Fire station';
+  String get symFireStation => '消防署';
 
   @override
-  String get symSchool => 'School';
+  String get symSchool => '学校';
 
   @override
-  String get symMotel => 'Motel';
+  String get symMotel => 'モーテル';
 
   @override
-  String get symHotel => 'Hotel';
+  String get symHotel => 'ホテル';
 
   @override
-  String get symLaptop => 'Laptop';
+  String get symLaptop => 'ノートPC';
 
   @override
-  String get symPostOffice => 'Post office';
+  String get symPostOffice => '郵便局';
 
   @override
-  String get symWeather => 'Weather';
+  String get symWeather => '気象';
 
   @override
-  String get symWater => 'Water station';
+  String get symWater => '給水所';
 
   @override
-  String get symHurricane => 'Hurricane';
+  String get symHurricane => 'ハリケーン';
 
   @override
-  String get symHorse => 'Horseback';
+  String get symHorse => '乗馬';
 
   @override
-  String get symDog => 'Dog';
+  String get symDog => '犬';
 
   @override
-  String get symCamping => 'Camping';
+  String get symCamping => 'キャンプ';
 
   @override
-  String get symShelter => 'Shelter';
+  String get symShelter => '避難所';
 
   @override
-  String get symRedCross => 'Red Cross';
+  String get symRedCross => '赤十字';
 
   @override
-  String get symFireAlarm => 'Fire alarm';
+  String get symFireAlarm => '火災報知';
 
   @override
-  String get symEmergCenter => 'Emergency center';
+  String get symEmergCenter => '緊急対策本部';
 
   @override
-  String get symCmdCenter => 'Command center';
+  String get symCmdCenter => '指揮所';
 
   @override
-  String get symHandicap => 'Handicapped';
+  String get symHandicap => '身体障害者';
 
   @override
-  String get symBigAircraft => 'Large aircraft';
+  String get symBigAircraft => '大型機';
 
   @override
-  String get symGlider => 'Glider';
+  String get symGlider => 'グライダー';
 
   @override
-  String get symBalloon => 'Balloon';
+  String get symBalloon => '気球';
 
   @override
-  String get symShip => 'Ship';
+  String get symShip => '船舶';
 
   @override
-  String get symSailboat => 'Sailboat';
+  String get symSailboat => 'ヨット';
 
   @override
-  String get symMobileSat => 'Mobile satellite';
+  String get symMobileSat => '移動衛星';
 
   @override
-  String get symSatAntenna => 'Satellite antenna';
+  String get symSatAntenna => '衛星アンテナ';
 
   @override
-  String get symDigi => 'Digital repeater';
+  String get symDigi => 'デジピーター';
 
   @override
-  String get symDigiTower => 'Repeater tower';
+  String get symDigiTower => '中継タワー';
 
   @override
-  String get symMicE => 'Mic-E repeater';
+  String get symMicE => 'Mic-E 中継';
 
   @override
-  String get symNode => 'Node';
+  String get symNode => 'ノード';
 
   @override
-  String get symDxCluster => 'DX cluster';
+  String get symDxCluster => 'DX クラスタ';
 
   @override
-  String get symHfGateway => 'HF gateway';
+  String get symHfGateway => 'HF ゲートウェイ';
 
   @override
-  String get symFileServer => 'File server';
+  String get symFileServer => 'ファイルサーバー';
 
   @override
-  String get symTelephone => 'Telephone';
+  String get symTelephone => '電話';
 
   @override
-  String get symGrid => 'Grid';
+  String get symGrid => 'グリッド';
 
   @override
   String get symXUnix => 'X/Unix';
 
   @override
-  String get symFmoStation => 'FMO station';
+  String get symFmoStation => 'FMO 局';
 
   @override
-  String get filter => 'Range filter';
+  String get filter => '受信範囲フィルター';
 
   @override
-  String get filterRadius => 'Radius (km)';
+  String get filterRadius => 'フィルター半径 (km)';
 
   @override
-  String get maxStations => 'Max stations';
+  String get maxStations => '最大局数';
 
   @override
-  String get receiveFilter => 'Callsign filter';
+  String get receiveFilter => '受信コールサイン絞り込み';
 
   @override
-  String get receiveCountries => 'Countries';
+  String get receiveCountries => '国・地域';
 
   @override
-  String get receiveOthers => 'Other stations';
+  String get receiveOthers => 'その他の局';
 
   @override
-  String get darkMode => 'Dark mode';
+  String get darkMode => 'ダークモード';
 
   @override
-  String get themeColor => 'Theme color';
+  String get themeColor => 'テーマカラー';
 
   @override
-  String get language => 'Language';
+  String get language => '言語';
 
   @override
-  String get languageSystem => 'Follow system';
+  String get languageSystem => 'システムに従う';
 
   @override
   String get languageZh => '中文';
@@ -650,676 +650,671 @@ class AppLocalizationsJa extends AppLocalizations {
   String get languageId => 'Bahasa Indonesia';
 
   @override
-  String get displaySettings => 'Display settings';
+  String get displaySettings => '表示設定';
 
   @override
-  String get uiScale => 'UI scale';
+  String get uiScale => 'UI 拡大率';
 
   @override
-  String get reloadUi => 'Reload UI';
+  String get reloadUi => 'UI を再読み込み';
 
   @override
-  String get reloadDone => 'Reloaded';
+  String get reloadDone => '再読み込みしました';
 
   @override
-  String get mapType => 'Map type';
+  String get mapType => '地図の種類';
 
   @override
-  String get unit => 'Unit';
+  String get unit => '単位';
 
   @override
-  String get coordDatum => 'Datum';
+  String get coordDatum => '測地系';
 
   @override
-  String get stationSettings => 'Station settings';
+  String get stationSettings => '無線局設定';
 
   @override
-  String get connectionSettings => 'Connection settings';
+  String get connectionSettings => '接続設定';
 
   @override
-  String get chatSettings => 'Chat settings';
+  String get chatSettings => 'チャット設定';
 
   @override
-  String get dataSettings => 'Data settings';
+  String get dataSettings => 'データ設定';
 
   @override
-  String get advancedSettings => 'Advanced settings';
+  String get advancedSettings => '詳細設定';
 
   @override
-  String get sponsors => 'Sponsors';
+  String get sponsors => 'スポンサー・謝辞';
 
   @override
-  String get sponsorsThanks => 'Thanks to every supporter';
+  String get sponsorsThanks => 'すべての支援者に感謝します';
 
   @override
-  String get send => 'Send';
+  String get send => '送信';
 
   @override
-  String get receive => 'Receive';
+  String get receive => '受信';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'クリア';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'コピー';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'コピーしました';
 
   @override
-  String get version => 'Version';
+  String get version => 'バージョン';
 
   @override
-  String get location => 'Location';
+  String get location => '位置情報';
 
   @override
-  String get gpsStatus => 'GPS status';
+  String get gpsStatus => 'GPS 状態';
 
   @override
-  String get myLocation => 'My location';
+  String get myLocation => '自分の位置';
 
   @override
-  String get track => 'Track';
+  String get track => '軌跡';
 
   @override
-  String get forwardingPath => 'Path';
+  String get forwardingPath => '転送経路';
 
   @override
-  String get relatedStations => 'Related stations';
+  String get relatedStations => '関連局';
 
   @override
-  String get openInMap => 'View on map';
+  String get openInMap => '地図で見る';
 
   @override
-  String get navigate => 'Navigate';
+  String get navigate => 'ナビ';
 
   @override
-  String get messageSent => 'Message sent';
+  String get messageSent => 'メッセージを送信しました';
 
   @override
-  String get enterMessage => 'Type a message';
+  String get enterMessage => 'メッセージを入力';
 
   @override
-  String get noData => 'No data';
+  String get noData => 'データなし';
 
   @override
-  String get searchHint => 'Search callsign / type / grid / comment…';
+  String get searchHint => 'コールサイン / 種類 / グリッド / メモ…';
 
   @override
-  String get notFound => 'No stations found';
+  String get notFound => '局が見つかりません';
 
   @override
-  String get totalStations => 'Total';
+  String get totalStations => '合計';
 
   @override
-  String get sortBy => 'Sort';
+  String get sortBy => '並べ替え';
 
   @override
-  String get sortCall => 'Callsign';
+  String get sortCall => 'コールサイン';
 
   @override
-  String get sortRecent => 'Recent';
+  String get sortRecent => '最近';
 
   @override
-  String get sortDistance => 'Distance';
+  String get sortDistance => '距離';
 
   @override
-  String get sortStatus => 'Status';
+  String get sortStatus => '状態';
 
   @override
-  String get typeFilter => 'Type';
+  String get typeFilter => '種類フィルター';
 
   @override
   String get aprslocusOnly => 'APRSlocus';
 
   @override
-  String get confirmDelete => 'Delete this item?';
+  String get confirmDelete => '削除しますか？';
 
   @override
   String get confirmRestartOobe =>
-      'This will re-open the setup wizard to configure callsign, receive region, etc.\nYour current settings will be kept.';
+      '初回起動ウィザードを再度開きます。コールサインや受信地域などを再設定できます。\n現在の設定は失われません。ウィザード完了後もそのままご利用いただけます。';
 
   @override
-  String get restartWizard => 'Run setup wizard again';
+  String get restartWizard => 'セットアップウィザードを再実行';
 
   @override
-  String get restartWizardTitle => 'Run setup wizard again?';
+  String get restartWizardTitle => 'セットアップウィザードを再実行しますか？';
 
   @override
-  String get oobeFilterTitle => 'Choose receive region';
+  String get oobeFilterTitle => '受信地域を選択';
 
   @override
-  String get oobeFilterDesc =>
-      'By default only Chinese callsigns are received. Add other countries as needed.';
+  String get oobeFilterDesc => '既定では中国のコールサインのみ受信します。必要に応じて他の国・地域を追加できます';
 
   @override
-  String get oobeWelcomeTitle => 'Welcome to APRSlocus';
+  String get oobeWelcomeTitle => 'APRSlocus へようこそ';
 
   @override
-  String get oobeWelcomeRealMap => 'Live map';
+  String get oobeWelcomeRealMap => 'リアルタイム地図';
 
   @override
-  String get oobeWelcomeGps => 'GPS position beaconing';
+  String get oobeWelcomeGps => 'GPS 位置送信';
 
   @override
-  String get oobeWelcomeMsg => 'APRS messages';
+  String get oobeWelcomeMsg => 'APRS メッセージ';
 
   @override
-  String get oobeWelcomeIs => 'APRS-IS feed';
+  String get oobeWelcomeIs => 'APRS-IS 接続';
 
   @override
-  String get oobeCallTitle => 'Set callsign';
+  String get oobeCallTitle => 'あなたのコールサイン';
 
   @override
-  String get oobeSymbolTitle => 'Choose station symbol';
+  String get oobeSymbolTitle => '局のシンボルを選択';
 
   @override
-  String get oobeServerTitle => 'Connect to APRS-IS server';
+  String get oobeServerTitle => 'APRS-IS サーバーに接続';
 
   @override
-  String get weatherData => 'Weather data';
+  String get weatherData => '気象データ';
 
   @override
-  String get fmoInfo => 'FMO info';
+  String get fmoInfo => 'FMO 局情報';
 
   @override
-  String get aprslocusInfo => 'APRSlocus info';
+  String get aprslocusInfo => 'APRSlocus 情報';
 
   @override
-  String get locationInfo => 'Location';
+  String get locationInfo => '位置情報';
 
   @override
-  String get recentPackets => 'Recent packets';
+  String get recentPackets => '最近のパケット';
 
   @override
-  String get quickActions => 'Quick actions';
+  String get quickActions => 'クイック操作';
 
   @override
-  String get copyCoords => 'Copy coords';
+  String get copyCoords => '座標をコピー';
 
   @override
-  String get copyGrid => 'Copy grid';
+  String get copyGrid => 'グリッドをコピー';
 
   @override
-  String get sender => 'Sender';
+  String get sender => '送信元';
 
   @override
-  String get time => 'Time';
+  String get time => '時刻';
 
   @override
-  String get message => 'Message';
+  String get message => 'メッセージ';
 
   @override
-  String get groupChat => 'Group chat';
+  String get groupChat => 'グループ';
 
   @override
-  String get newGroup => 'New group';
+  String get newGroup => 'グループを作成';
 
   @override
-  String get sendTo => 'Send to';
+  String get sendTo => '送信先';
 
   @override
-  String get filterRule => 'Filter rule';
+  String get filterRule => 'フィルター規則';
 
   @override
-  String get saveAndApply => 'Save & apply filter';
+  String get saveAndApply => 'フィルターを保存して適用';
 
   @override
-  String get useMyLocation => 'Use my position as filter center';
+  String get useMyLocation => '自分の位置をフィルター中心にする';
 
   @override
-  String get noFixYet => 'No location fix yet; current position is unavailable';
+  String get noFixYet => 'まだ測位していないため、現在地を取得できません';
 
   @override
-  String get invalidCoords => 'Enter valid latitude, longitude, and radius';
+  String get invalidCoords => '有効な緯度・経度・半径を入力してください';
 
   @override
-  String get filterSaved => 'Filter saved and applied';
+  String get filterSaved => 'フィルターを保存して適用しました';
 
   @override
-  String get stationsShown => 'Stations';
+  String get stationsShown => '局';
 
   @override
-  String get settingsDesc => 'Configure station, location & connection';
+  String get settingsDesc => '無線局・位置情報・接続を設定';
 
   @override
-  String get radioCat => 'Station';
+  String get radioCat => '無線局';
 
   @override
-  String get radioCatDesc => 'Callsign · SSID · Symbol';
+  String get radioCatDesc => 'コールサイン · SSID · シンボル';
 
   @override
-  String get beaconCat => 'Beaconing';
+  String get beaconCat => '位置ビーコン送信';
 
   @override
-  String get beaconCatDesc => 'GPS · Beaconing · Manual position';
+  String get beaconCatDesc => 'GPS · ビーコン · 手動位置';
 
   @override
-  String get connectionCat => 'Connection';
+  String get connectionCat => '接続';
 
   @override
-  String get connectionCatDesc => 'Server · Range filter';
+  String get connectionCatDesc => 'サーバー · フィルター範囲';
 
   @override
-  String get displayCat => 'Display';
+  String get displayCat => '表示';
 
   @override
-  String get displayCatDesc => 'Coords · Theme';
+  String get displayCatDesc => '座標 · テーマ';
 
   @override
-  String get chatCat => 'Chat';
+  String get chatCat => 'チャット';
 
   @override
-  String get chatCatDesc => 'History · Contacts';
+  String get chatCatDesc => '履歴 · 連絡先';
 
   @override
-  String get dataCat => 'Data';
+  String get dataCat => 'データ';
 
   @override
-  String get dataCatDesc => 'Clear local data';
+  String get dataCatDesc => 'ローカルデータの消去';
 
   @override
-  String get advancedCat => 'Advanced';
+  String get advancedCat => '詳細';
 
   @override
-  String get advancedCatDesc => 'Lab · Developer';
+  String get advancedCatDesc => 'ラボ · 開発者';
 
   @override
-  String get updateCat => 'Update';
+  String get updateCat => '更新';
 
   @override
-  String get updateCatDesc => 'Check for updates';
+  String get updateCatDesc => '新しいバージョンを確認';
 
   @override
-  String get checkUpdate => 'Check update';
+  String get checkUpdate => '更新を確認';
 
   @override
-  String get myStationSettings => 'My station';
+  String get myStationSettings => 'マイ無線局';
 
   @override
-  String get myStationSettingsDesc => 'Callsign · SSID · Symbol · Beaconing';
+  String get myStationSettingsDesc => 'コールサイン · SSID · シンボル · ビーコン';
 
   @override
-  String get oobeWelcomeDesc => 'Start configuring your APRS station';
+  String get oobeWelcomeDesc => 'APRS 無線局の設定を始めましょう';
 
   @override
-  String get oobeCallDesc => 'Enter your callsign';
+  String get oobeCallDesc => 'コールサインを入力してください';
 
   @override
-  String get oobeSymbolDesc =>
-      'The symbol represents your station type and is sent with position beacons';
+  String get oobeSymbolDesc => 'シンボルは局の種類を表し、位置ビーコンと一緒に送信されます';
 
   @override
-  String get oobeServerDesc =>
-      'Connect to receive APRS station data worldwide. The default settings work as-is.';
+  String get oobeServerDesc => '接続すると世界中の APRS 局のデータを受信できます。既定の設定のままでも使えます';
 
   @override
-  String get wizard => 'Setup wizard';
+  String get wizard => 'セットアップウィザード';
 
   @override
-  String get setStep => 'Step';
+  String get setStep => 'ステップ';
 
   @override
-  String get chooseSymbol => 'Choose station symbol';
+  String get chooseSymbol => '局のシンボルを選択';
 
   @override
-  String get settingsSubtitle => 'Map coordinates & display preferences';
+  String get settingsSubtitle => '地図座標と表示の好み';
 
   @override
-  String get stationSettingsSubtitle => 'Callsign, symbol & beaconing';
+  String get stationSettingsSubtitle => 'コールサイン・シンボル・ビーコン';
 
   @override
-  String get connectionSettingsSubtitle => 'APRS-IS server & receive range';
+  String get connectionSettingsSubtitle => 'APRS-IS サーバーと受信範囲';
 
   @override
-  String get chatSettingsSubtitle => 'Message history & contacts';
+  String get chatSettingsSubtitle => 'メッセージ履歴と連絡先';
 
   @override
-  String get dataSettingsSubtitle => 'Local data management';
+  String get dataSettingsSubtitle => 'ローカルデータの管理';
 
   @override
-  String get advancedSettingsSubtitle => 'Lab & developer tools';
+  String get advancedSettingsSubtitle => 'ラボと開発者ツール';
 
   @override
-  String get stationListTitle => 'Stations';
+  String get stationListTitle => '局リスト';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'フィルター';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => 'すべてクリア';
 
   @override
-  String get statusFilter => 'Status';
+  String get statusFilter => '状態';
 
   @override
-  String get typeGroup => 'Type';
+  String get typeGroup => '種類';
 
   @override
-  String get appFilter => 'App';
+  String get appFilter => 'ソフトウェア';
 
   @override
-  String get mapMenu => 'Map menu';
+  String get mapMenu => '地図メニュー';
 
   @override
-  String get mapTypeTitle => 'Map type';
+  String get mapTypeTitle => '地図の種類';
 
   @override
-  String get selectMapType => 'Select map type';
+  String get selectMapType => '地図の種類を選択';
 
   @override
-  String get showTrails => 'Show tracks';
+  String get showTrails => '軌跡を表示';
 
   @override
-  String get showStations => 'Show stations';
+  String get showStations => '局を表示';
 
   @override
-  String get aboutTitle => 'About';
+  String get aboutTitle => 'このアプリについて';
 
   @override
-  String get aboutSubtitle => 'APRS tracking & mapping';
+  String get aboutSubtitle => 'APRS 追跡と地図';
 
   @override
-  String get author => 'Author';
+  String get author => '作者';
 
   @override
-  String get codeContributions => 'Code contributions';
+  String get codeContributions => 'コード貢献';
 
   @override
-  String get codeContributionI18n => 'Internationalization / English UI';
+  String get codeContributionI18n => '国際化 / 英語 UI';
 
   @override
-  String get codeContributionZhTw => 'Traditional Chinese UI';
+  String get codeContributionZhTw => '繁体字中国語 UI';
 
   @override
-  String get licenseSection => 'License';
+  String get licenseSection => 'ライセンス';
 
   @override
   String get licenseName => 'GNU GPL v3';
 
   @override
   String get licenseStatement =>
-      'This software is released under the GNU GPL v3. You may run, study, modify, and redistribute it under the terms of the license; modified and redistributed versions must comply with the applicable GPL v3 requirements. This software is provided without warranty.';
+      '本ソフトウェアは GNU GPL v3 に基づいて公開されています。ライセンス条項を守る限り、実行・調査・改変・再配布が可能です。改変・再配布の際は GPL v3 の該当義務を守る必要があります。本ソフトウェアはいかなる保証も伴いません。';
 
   @override
-  String get licenseText => 'View license';
+  String get licenseText => 'ライセンスを表示';
 
   @override
-  String get oobeAgreeTitle => 'User Agreement & License';
+  String get oobeAgreeTitle => '利用規約とライセンス';
 
   @override
   String get oobeAgreeBody =>
-      'Welcome to APRSlocus! Please read and agree to the terms below before using the app. Note that APRS data is public: once sent, it may be received, stored and forwarded by the global APRS network.';
+      'APRSlocus へようこそ！ご利用前に以下の条項をお読みいただき、同意してください。APRS データは公開情報です。送信した時点で、世界中の APRS ネットワークに受信・保存・転送される可能性があります。';
 
   @override
-  String get oobeAgreeCheck =>
-      'I have read and agree to the User Agreement and the GPL-3.0 license';
+  String get oobeAgreeCheck => '「利用規約」および GPL-3.0 ライセンスを読み、同意します';
 
   @override
-  String get oobeAgreeNeed =>
-      'Please read and agree to the User Agreement first';
+  String get oobeAgreeNeed => '先に「利用規約」をお読みいただき、同意にチェックを入れてください';
 
   @override
-  String get oobeDeclineExit => 'Decline and exit';
+  String get oobeDeclineExit => '同意せず終了';
 
   @override
-  String get userAgreement => 'User Agreement';
+  String get userAgreement => '利用規約';
 
   @override
-  String get beaconWarnTitle => 'Beacon interval too short';
+  String get beaconWarnTitle => 'ビーコン間隔が短すぎます';
 
   @override
   String get beaconWarnBody =>
-      'APRS-IS recommends a minimum 60-second beacon interval for mobile stations. Sending faster may be considered abuse and could lead to disconnection. Keep this interval anyway?';
+      'APRS-IS では移動局のビーコン間隔を 60 秒以上にすることが推奨されています。短すぎる送信は濫用と見なされ、サーバーから切断される場合があります。この間隔のまま使用しますか？';
 
   @override
-  String get beaconWarnKeep => 'Keep anyway';
+  String get beaconWarnKeep => 'このまま使用';
 
   @override
-  String get beaconWarnFix => 'Set to 60 s';
+  String get beaconWarnFix => '60 秒に戻す';
 
   @override
-  String get features => 'Features';
+  String get features => '機能';
 
   @override
-  String get openSource => 'Open-source acknowledgements';
+  String get openSource => 'オープンソース謝辞';
 
   @override
-  String get feedback => 'Feedback';
+  String get feedback => 'フィードバック';
 
   @override
-  String get officialWebsite => 'Official website';
+  String get officialWebsite => '公式サイト';
 
   @override
-  String get qqGroup => 'QQ group';
+  String get qqGroup => 'QQ グループ';
 
   @override
-  String get projectRepo => 'Repository';
+  String get projectRepo => 'リポジトリ';
 
   @override
-  String get testMembers => 'Test members';
+  String get testMembers => 'テストメンバー';
 
   @override
-  String get aiSupport => 'AI compute support';
+  String get aiSupport => 'AI 計算リソース提供';
 
   @override
-  String get copyAppInfo => 'Copy app info';
+  String get copyAppInfo => 'アプリ情報をコピー';
 
   @override
-  String get appInfoCopied => 'App info copied';
+  String get appInfoCopied => 'アプリ情報をコピーしました';
 
   @override
-  String get shareApp => 'Share APRSlocus';
+  String get shareApp => 'APRSlocus を共有';
 
   @override
-  String get shareToSystem => 'Share to system';
+  String get shareToSystem => 'システムへ共有';
 
   @override
-  String get shareToSystemDesc => 'WeChat, QQ, SMS, etc.';
+  String get shareToSystemDesc => 'WeChat / QQ / SMS など';
 
   @override
-  String get copyShareText => 'Copy share text';
+  String get copyShareText => '共有テキストをコピー';
 
   @override
-  String get openDownload => 'Open download page';
+  String get openDownload => 'ダウンロードページを開く';
 
   @override
-  String get shareTextCopied => 'Share text copied, paste it to your friends';
+  String get shareTextCopied => '共有テキストをコピーしました。友達に貼り付けて送信できます';
 
   @override
   String get shareText =>
-      'APRSlocus — APRS Tracking & Mapping for amateur radio 📡\nReal-time station tracking, messaging & beaconing. Available on Android & Windows.\nWebsite: https://aprslocus.theez.top/\nDownload: https://github.com/dariondong/APRSLocus/releases';
+      'APRSlocus — アマチュア無線 APRS 追跡・地図アプリ 📡\nリアルタイムな局の追跡、メッセージの送受信、ビーコン送信。Android / Windows に対応。\n公式サイト：https://aprslocus.theez.top/\nダウンロード：https://github.com/dariondong/APRSLocus/releases';
 
   @override
-  String get enterCallsign => 'Please enter your callsign';
+  String get enterCallsign => 'コールサインを入力してください';
 
   @override
-  String get enterValidCall => 'Please enter a valid callsign';
+  String get enterValidCall => '有効なコールサインを入力してください';
 
   @override
-  String get stationSettings2 => 'Station settings';
+  String get stationSettings2 => '無線局設定';
 
   @override
-  String get beaconSettings => 'Beaconing';
+  String get beaconSettings => '位置ビーコン送信';
 
   @override
-  String get displaySettings2 => 'Display settings';
+  String get displaySettings2 => '表示設定';
 
   @override
-  String get chatSettings2 => 'Chat settings';
+  String get chatSettings2 => 'チャット設定';
 
   @override
-  String get dataSettings2 => 'Data settings';
+  String get dataSettings2 => 'データ設定';
 
   @override
-  String get advancedSettings2 => 'Advanced settings';
+  String get advancedSettings2 => '詳細設定';
 
   @override
-  String get connectionSettings2 => 'Connection settings';
+  String get connectionSettings2 => '接続設定';
 
   @override
-  String get myCallsign => 'My callsign';
+  String get myCallsign => 'マイコールサイン';
 
   @override
-  String get beaconEnabled => 'Enable beaconing';
+  String get beaconEnabled => '位置ビーコンを有効化';
 
   @override
-  String get smartBeacon => 'SmartBeacon (by speed)';
+  String get smartBeacon => 'スマートビーコン（速度別）';
 
   @override
-  String get packetConsole => 'Packet console';
+  String get packetConsole => 'パケットコンソール';
 
   @override
-  String get rawMode => 'Raw mode';
+  String get rawMode => '生データ';
 
   @override
-  String get parsedMode => 'Parsed mode';
+  String get parsedMode => '解析済み';
 
   @override
-  String get position => 'Position';
+  String get position => '位置';
 
   @override
-  String get statusType => 'Status';
+  String get statusType => '状態';
 
   @override
-  String get objectType => 'Object';
+  String get objectType => 'オブジェクト';
 
   @override
   String packetStats(Object ppm, Object rx, Object tx) {
-    return 'RX $rx · TX $tx · $ppm/min';
+    return '受信 $rx · 送信 $tx · $ppm/分';
   }
 
   @override
-  String get searchPacket => 'Search callsign, dest or raw…';
+  String get searchPacket => 'コールサイン・宛先・生データを検索…';
 
   @override
-  String get noMatchingPackets => 'No matching packets';
+  String get noMatchingPackets => '一致するパケットがありません';
 
   @override
-  String get inject => 'Inject';
+  String get inject => '注入';
 
   @override
-  String get manualInject => 'Inject raw APRS packet';
+  String get manualInject => 'APRS パケットを手動注入';
 
   @override
-  String get injected => 'Packet injected';
+  String get injected => 'パケットを注入しました';
 
   @override
-  String get clearedPackets => 'Packets cleared';
+  String get clearedPackets => 'パケットを消去しました';
 
   @override
-  String get clearPackets => 'Clear packets';
+  String get clearPackets => 'パケットを消去';
 
   @override
   String noPositionInfo(Object call) {
-    return 'No position information for $call (packet contains no position)';
+    return '$call の位置情報がありません（パケットに位置が含まれていません）';
   }
 
   @override
-  String get copiedPacket => 'Packet copied';
+  String get copiedPacket => 'パケットをコピーしました';
 
   @override
-  String get mapPickMode => 'Map position picker';
+  String get mapPickMode => '地図で位置を選択';
 
   @override
-  String get mapPickDesc => 'Tap the map to set your position';
+  String get mapPickDesc => '地図をタップして位置を設定';
 
   @override
   String foundStations(Object count, Object q) {
-    return 'Found $count stations matching \"$q\"';
+    return '「$q」に一致する局が $count 件';
   }
 
   @override
-  String get tapMapHint => 'Tap map for stations · pinch to zoom';
+  String get tapMapHint => '地図をタップで局表示 · ピンチでズーム';
 
   @override
   String myLocationPanel(Object call) {
-    return 'My location · $call';
+    return '自分の位置 · $call';
   }
 
   @override
-  String get speedLabel => 'Speed';
+  String get speedLabel => '速度';
 
   @override
-  String get courseLabel => 'Course';
+  String get courseLabel => 'コース';
 
   @override
-  String get telemetryTitle => 'Speed / Altitude';
+  String get telemetryTitle => '速度 / 高度の推移';
 
   @override
-  String get range10m => '10 min';
+  String get range10m => '10 分';
 
   @override
-  String get range30m => '30 min';
+  String get range30m => '30 分';
 
   @override
-  String get range1h => '1 h';
+  String get range1h => '1 時間';
 
   @override
-  String get range3h => '3 h';
+  String get range3h => '3 時間';
 
   @override
-  String get rangeAll => 'All';
+  String get rangeAll => 'すべて';
 
   @override
-  String get beaconIntervalLabel => 'Interval';
+  String get beaconIntervalLabel => '送信間隔';
 
   @override
-  String get beaconsSentLabel => 'Sent';
+  String get beaconsSentLabel => '送信済み';
 
   @override
-  String get nextBeaconLabel => 'Next';
+  String get nextBeaconLabel => '次回送信';
 
   @override
   String positionBeacon(Object grid) {
-    return 'Position beacon · Grid $grid';
+    return '位置ビーコン · グリッド $grid';
   }
 
   @override
-  String get manualBeacon => 'Beacon now';
+  String get manualBeacon => '今すぐ送信';
 
   @override
-  String get mapPickNow => 'Pick on map';
+  String get mapPickNow => '地図で選択';
 
   @override
   String pickedCoord(Object grid, Object lat, Object lng) {
-    return 'Position set · $lat, $lng · Grid $grid';
+    return '地図で位置を設定 · $lat, $lng · グリッド $grid';
   }
 
   @override
   String onlineCount(Object count) {
-    return '$count online';
+    return '$count オンライン';
   }
 
   @override
   String movingCount(Object count) {
-    return '$count moving';
+    return '$count 移動';
   }
 
   @override
   String stationCount(Object count) {
-    return '$count stations';
+    return '$count 局';
   }
 
   @override
-  String get locateMe => 'Locate';
+  String get locateMe => '現在地';
 
   @override
-  String get layerFilter => 'Layers';
+  String get layerFilter => 'レイヤー';
 
   @override
-  String get showAll => 'Show all';
+  String get showAll => 'すべて表示';
 
   @override
-  String get otherType => 'Other';
+  String get otherType => 'その他';
 
   @override
   String zoomLevel(Object z) {
-    return 'Zoom $z';
+    return 'ズーム $z';
   }
 
   @override
-  String get datumGcj => 'GCJ-02 (AMap)';
+  String get datumGcj => 'GCJ-02（AMAP）';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -1330,25 +1325,23 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get noStationInView => 'No stations here · tap to show all';
+  String get noStationInView => 'この地域に局がありません · タップで全表示';
 
   @override
-  String get noStationHelp => 'No stations here · tap for help';
+  String get noStationHelp => 'この地域に局がありません · タップでヘルプ';
 
   @override
-  String get mapHelpTitle => 'Map help';
+  String get mapHelpTitle => '地図のヘルプ';
 
   @override
   String get mapHelpIntro =>
-      'No stations in view. Possible reasons: not connected to APRS-IS, small receive range, or no active stations nearby.';
+      '現在の表示範囲に局がありません。考えられる原因：APRS-IS に未接続、受信範囲が狭い、近くに活動中の局がない。';
 
   @override
-  String get mapHelpMove =>
-      'Move / zoom: drag to pan, pinch or scroll-wheel to zoom';
+  String get mapHelpMove => '移動 / ズーム：1 本指でドラッグ、ピンチまたはホイールでズーム';
 
   @override
-  String get mapHelpStation =>
-      'Stations: tap a marker to select & center, double-tap for details';
+  String get mapHelpStation => '局の表示：マーカーをタップで選択・中央寄せ、ダブルタップで詳細';
 
   @override
   String get mapHelpLayer =>
