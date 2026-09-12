@@ -187,6 +187,431 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconsSent => 'Beacons sent';
 
   @override
+  String get symCatVehicles => 'Vehicles / Traffic';
+
+  @override
+  String get symCatBuildings => 'Buildings / Facilities';
+
+  @override
+  String get symCatNature => 'Weather / Nature';
+
+  @override
+  String get symCatAirWater => 'Air / Water';
+
+  @override
+  String get symCatComms => 'Comms / Other';
+
+  @override
+  String get homeBadgeLabel => 'Badge shown on home';
+
+  @override
+  String get homeBadgePickTitle => 'Choose a badge for home';
+
+  @override
+  String get homeBadgePickDesc =>
+      'Pick one earned badge to keep on your home screen';
+
+  @override
+  String get simLocationHint => 'Use a simulated location (no GPS needed)';
+
+  @override
+  String get speedTierRules => 'Speed tiers';
+
+  @override
+  String get restoreDefaults => 'Restore defaults';
+
+  @override
+  String get speedTierDesc =>
+      'The faster you move, the more often you report; each tier can have its own interval and icon (blank = my symbol).';
+
+  @override
+  String get speedTierShortIntervalWarn =>
+      'Intervals under 60 s noticeably increase server load; 60 s or more is recommended.';
+
+  @override
+  String get addSpeedTier => 'Add speed tier';
+
+  @override
+  String get maxSpeedTiers => 'Up to 5 speed tiers';
+
+  @override
+  String get iconDefaultMySymbol => 'Icon · Default (my symbol)';
+
+  @override
+  String iconNamed(String name) {
+    return 'Icon · $name';
+  }
+
+  @override
+  String everyNSeconds(String sec) {
+    return 'Every $sec s';
+  }
+
+  @override
+  String get tierIdleTitle => 'Edit · Idle/low-speed tier';
+
+  @override
+  String get tierSpeedTitle => 'Edit · Speed tier';
+
+  @override
+  String get minSpeedKmh => 'Minimum speed (km/h)';
+
+  @override
+  String get intervalSeconds => 'Report interval (s)';
+
+  @override
+  String get idleTierDesc =>
+      'Speeds below the first moving tier are reported with this tier';
+
+  @override
+  String get intervalLabel => 'Interval';
+
+  @override
+  String get unitSeconds => 's';
+
+  @override
+  String get pickBeaconIconDesc =>
+      'Pick a beacon icon · \"Default\" keeps my symbol';
+
+  @override
+  String get defaultLabel => 'Default';
+
+  @override
+  String get deleteThisTier => 'Delete this tier';
+
+  @override
+  String get idleTierNotDeletable => 'The idle tier cannot be deleted';
+
+  @override
+  String get errMinSpeedInt => 'Minimum speed must be an integer >= 1';
+
+  @override
+  String get errIntervalInt => 'Interval must be an integer of at least 5 s';
+
+  @override
+  String get errTierDuplicate =>
+      'That speed tier already exists; thresholds must be unique';
+
+  @override
+  String get wsUrlOptional => 'WebSocket URL (optional)';
+
+  @override
+  String get countryUnrestricted =>
+      'No country selected · no restriction (all stations)';
+
+  @override
+  String get weatherWidget => 'Weather widget';
+
+  @override
+  String get groupChatLabel => 'Group chats';
+
+  @override
+  String nItems(String n) {
+    return '$n';
+  }
+
+  @override
+  String nMessages(String n) {
+    return '$n';
+  }
+
+  @override
+  String confirmDeleteMessages(String n) {
+    return 'Delete all $n chat messages? This cannot be undone.';
+  }
+
+  @override
+  String get weatherSimFollowLive => 'Follow live';
+
+  @override
+  String get wxClear => 'Clear';
+
+  @override
+  String get wxCloudy => 'Cloudy';
+
+  @override
+  String get wxOvercast => 'Overcast';
+
+  @override
+  String get wxLightRain => 'Light rain';
+
+  @override
+  String get wxModerateRain => 'Moderate rain';
+
+  @override
+  String get wxHeavyRain => 'Heavy rain';
+
+  @override
+  String get wxStormRain => 'Torrential rain';
+
+  @override
+  String get wxThunder => 'Thundershower';
+
+  @override
+  String get wxSnow => 'Snow';
+
+  @override
+  String get wxFog => 'Fog';
+
+  @override
+  String get weatherSimTitle =>
+      'Weather simulation (preview background/effects/advice)';
+
+  @override
+  String get weatherSimDesc =>
+      'After choosing, tap the weather pill in the top bar to preview; \"Follow live\" restores real weather';
+
+  @override
+  String get restartWizardConfirm =>
+      'The first-run wizard will open again so you can reset your callsign, receive area and more.\\nYour current settings are kept; continue using the app after finishing the wizard.';
+
+  @override
+  String get restartWizardButton => 'Run again';
+
+  @override
+  String get pasteAprsPacketHint =>
+      'Paste a raw APRS packet, e.g.\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test';
+
+  @override
+  String beaconsSentCount(String n) {
+    return '$n';
+  }
+
+  @override
+  String get myBadgesAndAchievements => 'My badges and achievements';
+
+  @override
+  String get quitApp => 'Quit app';
+
+  @override
+  String get quitAppDesc =>
+      'Quitting stops location reporting and background reception, and ends the process.';
+
+  @override
+  String get symCar => 'Car';
+
+  @override
+  String get openInBrowser => 'Open in browser';
+
+  @override
+  String get badgeWall => 'Badge wall';
+
+  @override
+  String get achievementWall => 'Achievement wall';
+
+  @override
+  String get mapTypeCartoPositron => 'Carto Positron (light vector)';
+
+  @override
+  String get mapTypeCarto => 'Carto Light';
+
+  @override
+  String get mapTypeCartoDark => 'Carto Dark';
+
+  @override
+  String get mapTypeCartoVoyager => 'Carto Voyager';
+
+  @override
+  String get mapTypeOsm => 'OSM Standard';
+
+  @override
+  String get mapTypeOsmHot => 'OSM Humanitarian';
+
+  @override
+  String get mapTypeOpenTopo => 'OpenTopo Terrain';
+
+  @override
+  String get mapTypeEsriStreet => 'Esri Streets';
+
+  @override
+  String get mapTypeEsriSat => 'Esri Imagery';
+
+  @override
+  String get simulatedKeepAlive => 'Simulated location · keep-alive';
+
+  @override
+  String get symCatEmergency => 'Emergency';
+
+  @override
+  String get symSmallAircraft => 'Small aircraft';
+
+  @override
+  String myPositionSet(String grid) {
+    return 'My position set, grid $grid';
+  }
+
+  @override
+  String get tierIdleShort => 'Idle/low';
+
+  @override
+  String get symHouse => 'House';
+
+  @override
+  String get symPerson => 'Person';
+
+  @override
+  String get symTruck => 'Truck';
+
+  @override
+  String get symBicycle => 'Bicycle';
+
+  @override
+  String get symRv => 'RV';
+
+  @override
+  String get symWxStation => 'Weather station';
+
+  @override
+  String get symPolice => 'Police';
+
+  @override
+  String get symMotorcycle => 'Motorcycle';
+
+  @override
+  String get symSemi => 'Semi-trailer';
+
+  @override
+  String get symVan => 'Van';
+
+  @override
+  String get symJeep => 'Jeep';
+
+  @override
+  String get symBus => 'Bus';
+
+  @override
+  String get symTruckStop => 'Truck stop';
+
+  @override
+  String get symTrain => 'Train';
+
+  @override
+  String get symFireTruck => 'Fire truck';
+
+  @override
+  String get symPoliceCar => 'Police car';
+
+  @override
+  String get symSnowmobile => 'Snowmobile';
+
+  @override
+  String get symYagi => 'Yagi';
+
+  @override
+  String get symHospital => 'Hospital';
+
+  @override
+  String get symAmbulance => 'Ambulance';
+
+  @override
+  String get symFireStation => 'Fire station';
+
+  @override
+  String get symSchool => 'School';
+
+  @override
+  String get symMotel => 'Motel';
+
+  @override
+  String get symHotel => 'Hotel';
+
+  @override
+  String get symLaptop => 'Laptop';
+
+  @override
+  String get symPostOffice => 'Post office';
+
+  @override
+  String get symWeather => 'Weather';
+
+  @override
+  String get symWater => 'Water station';
+
+  @override
+  String get symHurricane => 'Hurricane';
+
+  @override
+  String get symHorse => 'Horseback';
+
+  @override
+  String get symDog => 'Dog';
+
+  @override
+  String get symCamping => 'Camping';
+
+  @override
+  String get symShelter => 'Shelter';
+
+  @override
+  String get symRedCross => 'Red Cross';
+
+  @override
+  String get symFireAlarm => 'Fire alarm';
+
+  @override
+  String get symEmergCenter => 'Emergency center';
+
+  @override
+  String get symCmdCenter => 'Command center';
+
+  @override
+  String get symHandicap => 'Handicapped';
+
+  @override
+  String get symBigAircraft => 'Large aircraft';
+
+  @override
+  String get symGlider => 'Glider';
+
+  @override
+  String get symBalloon => 'Balloon';
+
+  @override
+  String get symShip => 'Ship';
+
+  @override
+  String get symSailboat => 'Sailboat';
+
+  @override
+  String get symMobileSat => 'Mobile satellite';
+
+  @override
+  String get symSatAntenna => 'Satellite antenna';
+
+  @override
+  String get symDigi => 'Digital repeater';
+
+  @override
+  String get symDigiTower => 'Repeater tower';
+
+  @override
+  String get symMicE => 'Mic-E repeater';
+
+  @override
+  String get symNode => 'Node';
+
+  @override
+  String get symDxCluster => 'DX cluster';
+
+  @override
+  String get symHfGateway => 'HF gateway';
+
+  @override
+  String get symFileServer => 'File server';
+
+  @override
+  String get symTelephone => 'Telephone';
+
+  @override
+  String get symGrid => 'Grid';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symFmoStation => 'FMO station';
+
+  @override
   String get filter => 'Range filter';
 
   @override
@@ -1839,15 +2264,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return 'Delete “$name”? This cannot be undone.';
   }
+
   @override
   String get deleteConversation => 'Delete chat';
 
   @override
-  String deleteConversationConfirm(String call) => 'Delete the chat history with {call}? This cannot be undone.';
+  String deleteConversationConfirm(Object call) {
+    return 'Delete the chat history with $call? This cannot be undone.';
+  }
 
   @override
-  String clearGroupChatConfirm(String name) => 'Clear the chat history of “{name}”? This cannot be undone.';
-
+  String clearGroupChatConfirm(Object name) {
+    return 'Clear the chat history of “$name”? This cannot be undone.';
+  }
 
   @override
   String memberOnlineCount(int members, int online) {
@@ -3397,373 +3826,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatRecords => 'Chat history';
-  @override
-  String get symCatVehicles => 'Vehicles / Traffic';
-
-  @override
-  String get symCatBuildings => 'Buildings / Facilities';
-
-  @override
-  String get symCatNature => 'Weather / Nature';
-
-  @override
-  String get symCatAirWater => 'Air / Water';
-
-  @override
-  String get symCatComms => 'Comms / Other';
-
-  @override
-  String get homeBadgeLabel => 'Badge shown on home';
-
-  @override
-  String get homeBadgePickTitle => 'Choose a badge for home';
-
-  @override
-  String get homeBadgePickDesc => 'Pick one earned badge to keep on your home screen';
-
-  @override
-  String get simLocationHint => 'Use a simulated location (no GPS needed)';
-
-  @override
-  String get speedTierRules => 'Speed tiers';
-
-  @override
-  String get restoreDefaults => 'Restore defaults';
-
-  @override
-  String get speedTierDesc => 'The faster you move, the more often you report; each tier can have its own interval and icon (blank = my symbol).';
-
-  @override
-  String get speedTierShortIntervalWarn => 'Intervals under 60 s noticeably increase server load; 60 s or more is recommended.';
-
-  @override
-  String get addSpeedTier => 'Add speed tier';
-
-  @override
-  String get maxSpeedTiers => 'Up to 5 speed tiers';
-
-  @override
-  String get iconDefaultMySymbol => 'Icon · Default (my symbol)';
-
-  @override
-  String iconNamed(String name) => 'Icon · {name}';
-
-  @override
-  String everyNSeconds(String sec) => 'Every {sec} s';
-
-  @override
-  String get tierIdleTitle => 'Edit · Idle/low-speed tier';
-
-  @override
-  String get tierSpeedTitle => 'Edit · Speed tier';
-
-  @override
-  String get minSpeedKmh => 'Minimum speed (km/h)';
-
-  @override
-  String get intervalSeconds => 'Report interval (s)';
-
-  @override
-  String get idleTierDesc => 'Speeds below the first moving tier are reported with this tier';
-
-  @override
-  String get intervalLabel => 'Interval';
-
-  @override
-  String get unitSeconds => 's';
-
-  @override
-  String get pickBeaconIconDesc => 'Pick a beacon icon · "Default" keeps my symbol';
-
-  @override
-  String get defaultLabel => 'Default';
-
-  @override
-  String get deleteThisTier => 'Delete this tier';
-
-  @override
-  String get idleTierNotDeletable => 'The idle tier cannot be deleted';
-
-  @override
-  String get errMinSpeedInt => 'Minimum speed must be an integer >= 1';
-
-  @override
-  String get errIntervalInt => 'Interval must be an integer of at least 5 s';
-
-  @override
-  String get errTierDuplicate => 'That speed tier already exists; thresholds must be unique';
-
-  @override
-  String get wsUrlOptional => 'WebSocket URL (optional)';
-
-  @override
-
-  @override
-  String get countryUnrestricted => 'No country selected · no restriction (all stations)';
-
-  @override
-  String get weatherWidget => 'Weather widget';
-
-  @override
-  String get groupChatLabel => 'Group chats';
-
-  @override
-  String nItems(String n) => '{n}';
-
-  @override
-  String nMessages(String n) => '{n}';
-
-  @override
-  String confirmDeleteMessages(String n) => 'Delete all {n} chat messages? This cannot be undone.';
-
-  @override
-  String get weatherSimFollowLive => 'Follow live';
-
-  @override
-  String get wxClear => 'Clear';
-
-  @override
-  String get wxCloudy => 'Cloudy';
-
-  @override
-  String get wxOvercast => 'Overcast';
-
-  @override
-  String get wxLightRain => 'Light rain';
-
-  @override
-  String get wxModerateRain => 'Moderate rain';
-
-  @override
-  String get wxHeavyRain => 'Heavy rain';
-
-  @override
-  String get wxStormRain => 'Torrential rain';
-
-  @override
-  String get wxThunder => 'Thundershower';
-
-  @override
-  String get wxSnow => 'Snow';
-
-  @override
-  String get wxFog => 'Fog';
-
-  @override
-  String get weatherSimTitle => 'Weather simulation (preview background/effects/advice)';
-
-  @override
-  String get weatherSimDesc => 'After choosing, tap the weather pill in the top bar to preview; "Follow live" restores real weather';
-
-  @override
-  String get restartWizardConfirm => 'The first-run wizard will open again so you can reset your callsign, receive area and more.\\nYour current settings are kept; continue using the app after finishing the wizard.';
-
-  @override
-  String get restartWizardButton => 'Run again';
-
-  @override
-  String get pasteAprsPacketHint => 'Paste a raw APRS packet, e.g.\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test';
-
-  @override
-  String beaconsSentCount(String n) => '{n}';
-
-  @override
-  String get myBadgesAndAchievements => 'My badges and achievements';
-
-  @override
-  String get quitApp => 'Quit app';
-
-  @override
-  String get quitAppDesc => 'Quitting stops location reporting and background reception, and ends the process.';
-
-  @override
-  String get symCar => 'Car';
-  String get openInBrowser => 'Open in browser';
-  String get badgeWall => 'Badge wall';
-  String get achievementWall => 'Achievement wall';
-  String get mapTypeCartoPositron => 'Carto Positron (light vector)';
-  String get mapTypeCarto => 'Carto Light';
-  String get mapTypeCartoDark => 'Carto Dark';
-  String get mapTypeCartoVoyager => 'Carto Voyager';
-  String get mapTypeOsm => 'OSM Standard';
-  String get mapTypeOsmHot => 'OSM Humanitarian';
-  String get mapTypeOpenTopo => 'OpenTopo Terrain';
-  String get mapTypeEsriStreet => 'Esri Streets';
-  String get mapTypeEsriSat => 'Esri Imagery';
-  String get simulatedKeepAlive => 'Simulated location · keep-alive';
-  String get symCatEmergency => 'Emergency';
-  String get symSmallAircraft => 'Small aircraft';
-  String myPositionSet(String grid) => 'My position set, grid {grid}';
-  String get tierIdleShort => 'Idle/low';
-
-  @override
-  String get symHouse => 'House';
-
-  @override
-  String get symPerson => 'Person';
-
-  @override
-  String get symTruck => 'Truck';
-
-  @override
-  String get symBicycle => 'Bicycle';
-
-  @override
-  String get symRv => 'RV';
-
-  @override
-  String get symWxStation => 'Weather station';
-
-  @override
-  String get symPolice => 'Police';
-
-  @override
-  String get symMotorcycle => 'Motorcycle';
-
-  @override
-  String get symSemi => 'Semi-trailer';
-
-  @override
-  String get symVan => 'Van';
-
-  @override
-  String get symJeep => 'Jeep';
-
-  @override
-  String get symBus => 'Bus';
-
-  @override
-  String get symTruckStop => 'Truck stop';
-
-  @override
-  String get symTrain => 'Train';
-
-  @override
-  String get symFireTruck => 'Fire truck';
-
-  @override
-  String get symPoliceCar => 'Police car';
-
-  @override
-  String get symSnowmobile => 'Snowmobile';
-
-  @override
-  String get symYagi => 'Yagi';
-
-  @override
-  String get symHospital => 'Hospital';
-
-  @override
-  String get symAmbulance => 'Ambulance';
-
-  @override
-  String get symFireStation => 'Fire station';
-
-  @override
-  String get symSchool => 'School';
-
-  @override
-  String get symMotel => 'Motel';
-
-  @override
-  String get symHotel => 'Hotel';
-
-  @override
-  String get symLaptop => 'Laptop';
-
-  @override
-  String get symPostOffice => 'Post office';
-
-  @override
-  String get symWeather => 'Weather';
-
-  @override
-  String get symWater => 'Water station';
-
-  @override
-  String get symHurricane => 'Hurricane';
-
-  @override
-  String get symHorse => 'Horseback';
-
-  @override
-  String get symDog => 'Dog';
-
-  @override
-  String get symCamping => 'Camping';
-
-  @override
-  String get symShelter => 'Shelter';
-
-  @override
-  String get symRedCross => 'Red Cross';
-
-  @override
-  String get symFireAlarm => 'Fire alarm';
-
-  @override
-  String get symEmergCenter => 'Emergency center';
-
-  @override
-  String get symCmdCenter => 'Command center';
-
-  @override
-  String get symHandicap => 'Handicapped';
-
-  @override
-  String get symBigAircraft => 'Large aircraft';
-
-  @override
-  String get symGlider => 'Glider';
-
-  @override
-  String get symBalloon => 'Balloon';
-
-  @override
-  String get symShip => 'Ship';
-
-  @override
-  String get symSailboat => 'Sailboat';
-
-  @override
-  String get symMobileSat => 'Mobile satellite';
-
-  @override
-  String get symSatAntenna => 'Satellite antenna';
-
-  @override
-  String get symDigi => 'Digital repeater';
-
-  @override
-  String get symDigiTower => 'Repeater tower';
-
-  @override
-  String get symMicE => 'Mic-E repeater';
-
-  @override
-  String get symNode => 'Node';
-
-  @override
-  String get symDxCluster => 'DX cluster';
-
-  @override
-  String get symHfGateway => 'HF gateway';
-
-  @override
-  String get symFileServer => 'File server';
-
-  @override
-  String get symTelephone => 'Telephone';
-
-  @override
-  String get symGrid => 'Grid';
-
-  @override
-  String get symXUnix => 'X/Unix';
-
-  @override
-  String get symFmoStation => 'FMO station';
-
 
   @override
   String get chatRecordsCleared => 'Chat history cleared';
@@ -3892,4 +3954,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String notifBeacon(String v) {
     return 'Beacon $v';
   }
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get deselectAll => 'Deselect all';
+
+  @override
+  String selectedCount(int n) {
+    return '$n selected';
+  }
+
+  @override
+  String deleteSelected(int n) {
+    return 'Delete ($n)';
+  }
+
+  @override
+  String deleteSelectedConfirm(int n) {
+    return 'Delete the $n selected chats? This cannot be undone.';
+  }
+
+  @override
+  String get chatManageHint => 'Tap a chat to select; long-press also selects';
+
+  @override
+  String conversationsDeleted(int n) {
+    return 'Deleted $n chats';
+  }
+
+  @override
+  String get stationActions => 'Station actions';
+
+  @override
+  String get deleteStation => 'Delete station';
+
+  @override
+  String deleteStationConfirm(String name) {
+    return 'Delete station $name? It will be removed from the station list and will reappear if its packets are received again.';
+  }
+
+  @override
+  String get unfavorite => 'Remove from favorites';
+
+  @override
+  String get copyCallsign => 'Copy callsign';
+
+  @override
+  String get callsignCopied => 'Callsign copied';
+
+  @override
+  String get stationDeleted => 'Station deleted';
 }

@@ -1,5 +1,42 @@
 # 更新日志
 
+## [1.6.88] - 2026-09-12
+
+### 📡 台站面板：新增台站操作菜单（收藏 / 复制呼号 / 删除台站） / Station panel: actions menu
+- 台站详情面板右上角新增**可见的「⋮」菜单**，不再把操作藏在手势里
+- **收藏 / 取消收藏**：一键标记常看的台站
+- **复制呼号**：复制到剪贴板，方便粘贴到日志或消息
+- **删除台站**：二次确认后从台站列表移除；若再次收到其报文会重新出现
+  （若该台站是收藏 / 手动联系人，删除会一并移除）
+
+- The station detail sheet now has a **visible “⋮” menu** instead of hiding actions
+  behind gestures: **favourite / unfavourite**, **copy callsign**, and **delete station**
+  (with a confirmation). A deleted station reappears if its packets are heard again;
+  deleting also removes it from favourites / manual contacts.
+
+### 💬 会话管理：不再只有长按删除 / Conversation management: no more long-press-only delete
+- 会话列表右上角新增**可见的「管理」按钮**（此前只能长按删除，界面没有任何提示，很难发现）
+- 进入管理后可**多选**会话：点按选中 / 取消，并支持**全选 / 取消全选**
+- 工具栏显示**已选数量**与**删除**按钮，可一次删除多个会话（带二次确认）
+- **长按**会话现在 = 进入管理并选中该项（保留快捷操作，但不再直接删除，避免误触）
+- 单聊删除全部消息；群聊只清消息、**保留群组本身**
+- 已读时间点一并清理；若正停留在被删除的会话上会自动退回会话列表
+
+- The conversation list header now has a **visible Manage button** (previously deletion
+  was long-press-only with no affordance at all). Manage mode supports **multi-select**,
+  **select all / deselect all**, and a toolbar showing the **selected count** plus a
+  **delete** action with confirmation. **Long-press** now enters manage mode and selects
+  that row — still quick, but no longer a destructive surprise. 1:1 chats delete all
+  messages; groups clear messages but **keep the group itself**.
+
+### 🌐 新增 14 条界面文案（中 / 繁 / 英 / 日 / 印尼） / 14 new UI strings (zh / zh-TW / en / ja / id)
+- 覆盖「管理、全选 / 取消全选、已选数量、删除确认、台站操作、复制呼号、删除台站」等
+- 新文案已补齐全部 5 种语言，与既有键集保持一致（每语 1160 键）
+
+- Covers manage / select-all / selected-count / delete confirmation / station actions /
+  copy callsign / delete station. All five locales are complete and consistent
+  (1160 keys each).
+
 ## [1.6.87] - 2026-09-12
 
 ### 🗑️ 消息会话列表：新增删除聊天 / Delete a chat from the conversation list

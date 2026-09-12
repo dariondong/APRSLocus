@@ -1357,5 +1357,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "selectAll": "Pilih semua",
+  "deselectAll": "Batal pilih semua",
+  "selectedCount": "{n} dipilih",
+  "deleteSelected": "Hapus ({n})",
+  "deleteSelectedConfirm": "Hapus {n} obrolan yang dipilih? Tindakan ini tidak dapat dibatalkan.",
+  "chatManageHint": "Ketuk obrolan untuk memilih; tekan lama juga memilih",
+  "conversationsDeleted": "{n} obrolan dihapus",
+  "stationActions": "Tindakan stasiun",
+  "deleteStation": "Hapus stasiun",
+  "deleteStationConfirm": "Hapus stasiun {name}? Stasiun akan dihapus dari daftar dan muncul kembali jika paketnya diterima lagi.",
+  "unfavorite": "Hapus dari favorit",
+  "copyCallsign": "Salin tanda panggil",
+  "callsignCopied": "Tanda panggil disalin",
+  "stationDeleted": "Stasiun dihapus"
 }

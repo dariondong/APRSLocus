@@ -457,6 +457,804 @@ abstract class AppLocalizations {
   /// **'信标发送次数'**
   String get beaconsSent;
 
+  /// No description provided for @symCatVehicles.
+  ///
+  /// In zh, this message translates to:
+  /// **'车辆 / 交通'**
+  String get symCatVehicles;
+
+  /// No description provided for @symCatBuildings.
+  ///
+  /// In zh, this message translates to:
+  /// **'建筑 / 设施'**
+  String get symCatBuildings;
+
+  /// No description provided for @symCatNature.
+  ///
+  /// In zh, this message translates to:
+  /// **'气象 / 自然'**
+  String get symCatNature;
+
+  /// No description provided for @symCatAirWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'飞行 / 水域'**
+  String get symCatAirWater;
+
+  /// No description provided for @symCatComms.
+  ///
+  /// In zh, this message translates to:
+  /// **'通信 / 其他'**
+  String get symCatComms;
+
+  /// No description provided for @homeBadgeLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'主页展示徽章'**
+  String get homeBadgeLabel;
+
+  /// No description provided for @homeBadgePickTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择主页展示徽章'**
+  String get homeBadgePickTitle;
+
+  /// No description provided for @homeBadgePickDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'在以下已获得的徽章中选一个，作为主页常驻展示'**
+  String get homeBadgePickDesc;
+
+  /// No description provided for @simLocationHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用模拟位置，无需 GPS'**
+  String get simLocationHint;
+
+  /// No description provided for @speedTierRules.
+  ///
+  /// In zh, this message translates to:
+  /// **'速度分档规则'**
+  String get speedTierRules;
+
+  /// No description provided for @restoreDefaults.
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认'**
+  String get restoreDefaults;
+
+  /// No description provided for @speedTierDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'速度越快上报越频繁；每档可自定义间隔与图标（留空=我的符号）。'**
+  String get speedTierDesc;
+
+  /// No description provided for @speedTierShortIntervalWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'间隔低于 60 秒会显著增加服务器负载，建议 ≥60 秒。'**
+  String get speedTierShortIntervalWarn;
+
+  /// No description provided for @addSpeedTier.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加速度档'**
+  String get addSpeedTier;
+
+  /// No description provided for @maxSpeedTiers.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多 5 个速度档'**
+  String get maxSpeedTiers;
+
+  /// No description provided for @iconDefaultMySymbol.
+  ///
+  /// In zh, this message translates to:
+  /// **'图标 · 默认(我的符号)'**
+  String get iconDefaultMySymbol;
+
+  /// No description provided for @iconNamed.
+  ///
+  /// In zh, this message translates to:
+  /// **'图标 · {name}'**
+  String iconNamed(String name);
+
+  /// No description provided for @everyNSeconds.
+  ///
+  /// In zh, this message translates to:
+  /// **'每 {sec} 秒'**
+  String everyNSeconds(String sec);
+
+  /// No description provided for @tierIdleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑 · 静止/低速档'**
+  String get tierIdleTitle;
+
+  /// No description provided for @tierSpeedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑 · 速度档'**
+  String get tierSpeedTitle;
+
+  /// No description provided for @minSpeedKmh.
+  ///
+  /// In zh, this message translates to:
+  /// **'最低速度 (km/h)'**
+  String get minSpeedKmh;
+
+  /// No description provided for @intervalSeconds.
+  ///
+  /// In zh, this message translates to:
+  /// **'上报间隔 (秒)'**
+  String get intervalSeconds;
+
+  /// No description provided for @idleTierDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'低于第一移动档的速度都按此档上报'**
+  String get idleTierDesc;
+
+  /// No description provided for @intervalLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'间隔'**
+  String get intervalLabel;
+
+  /// No description provided for @unitSeconds.
+  ///
+  /// In zh, this message translates to:
+  /// **'秒'**
+  String get unitSeconds;
+
+  /// No description provided for @pickBeaconIconDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择信标图标 ·「默认」= 沿用我的符号'**
+  String get pickBeaconIconDesc;
+
+  /// No description provided for @defaultLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认'**
+  String get defaultLabel;
+
+  /// No description provided for @deleteThisTier.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除此档'**
+  String get deleteThisTier;
+
+  /// No description provided for @idleTierNotDeletable.
+  ///
+  /// In zh, this message translates to:
+  /// **'静止档不可删除'**
+  String get idleTierNotDeletable;
+
+  /// No description provided for @errMinSpeedInt.
+  ///
+  /// In zh, this message translates to:
+  /// **'最低速度需为 ≥1 的整数'**
+  String get errMinSpeedInt;
+
+  /// No description provided for @errIntervalInt.
+  ///
+  /// In zh, this message translates to:
+  /// **'上报间隔需为 ≥5 秒的整数'**
+  String get errIntervalInt;
+
+  /// No description provided for @errTierDuplicate.
+  ///
+  /// In zh, this message translates to:
+  /// **'该速度档已存在，速度值需互不相同'**
+  String get errTierDuplicate;
+
+  /// No description provided for @wsUrlOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'WebSocket URL(可选)'**
+  String get wsUrlOptional;
+
+  /// No description provided for @countryUnrestricted.
+  ///
+  /// In zh, this message translates to:
+  /// **'未选择国家/地区 · 不做限制（接收全部台站）'**
+  String get countryUnrestricted;
+
+  /// No description provided for @weatherWidget.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气组件'**
+  String get weatherWidget;
+
+  /// No description provided for @groupChatLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊'**
+  String get groupChatLabel;
+
+  /// No description provided for @nItems.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 个'**
+  String nItems(String n);
+
+  /// No description provided for @nMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 条'**
+  String nMessages(String n);
+
+  /// No description provided for @confirmDeleteMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要删除全部 {n} 条聊天记录吗？此操作不可恢复。'**
+  String confirmDeleteMessages(String n);
+
+  /// No description provided for @weatherSimFollowLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随实时'**
+  String get weatherSimFollowLive;
+
+  /// No description provided for @wxClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'晴'**
+  String get wxClear;
+
+  /// No description provided for @wxCloudy.
+  ///
+  /// In zh, this message translates to:
+  /// **'多云'**
+  String get wxCloudy;
+
+  /// No description provided for @wxOvercast.
+  ///
+  /// In zh, this message translates to:
+  /// **'阴'**
+  String get wxOvercast;
+
+  /// No description provided for @wxLightRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'小雨'**
+  String get wxLightRain;
+
+  /// No description provided for @wxModerateRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'中雨'**
+  String get wxModerateRain;
+
+  /// No description provided for @wxHeavyRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'大雨'**
+  String get wxHeavyRain;
+
+  /// No description provided for @wxStormRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'暴雨'**
+  String get wxStormRain;
+
+  /// No description provided for @wxThunder.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷阵雨'**
+  String get wxThunder;
+
+  /// No description provided for @wxSnow.
+  ///
+  /// In zh, this message translates to:
+  /// **'雪'**
+  String get wxSnow;
+
+  /// No description provided for @wxFog.
+  ///
+  /// In zh, this message translates to:
+  /// **'雾'**
+  String get wxFog;
+
+  /// No description provided for @weatherSimTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气模拟（预览背景/特效/建议）'**
+  String get weatherSimTitle;
+
+  /// No description provided for @weatherSimDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择后点顶栏天气胶囊预览；「跟随实时」恢复真实天气'**
+  String get weatherSimDesc;
+
+  /// No description provided for @restartWizardConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'将重新进入首次启动向导，可重新设置呼号、接收地区等。\\n当前设置不会丢失，完成向导后继续使用。'**
+  String get restartWizardConfirm;
+
+  /// No description provided for @restartWizardButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新运行'**
+  String get restartWizardButton;
+
+  /// No description provided for @pasteAprsPacketHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'粘贴原始 APRS 包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>测试台'**
+  String get pasteAprsPacketHint;
+
+  /// No description provided for @beaconsSentCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 次'**
+  String beaconsSentCount(String n);
+
+  /// No description provided for @myBadgesAndAchievements.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的徽章与成就'**
+  String get myBadgesAndAchievements;
+
+  /// No description provided for @quitApp.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出应用'**
+  String get quitApp;
+
+  /// No description provided for @quitAppDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出后 APRSlocus 将停止定位上报与后台接收，并结束进程。'**
+  String get quitAppDesc;
+
+  /// No description provided for @symCar.
+  ///
+  /// In zh, this message translates to:
+  /// **'汽车'**
+  String get symCar;
+
+  /// No description provided for @openInBrowser.
+  ///
+  /// In zh, this message translates to:
+  /// **'在浏览器打开'**
+  String get openInBrowser;
+
+  /// No description provided for @badgeWall.
+  ///
+  /// In zh, this message translates to:
+  /// **'徽章墙'**
+  String get badgeWall;
+
+  /// No description provided for @achievementWall.
+  ///
+  /// In zh, this message translates to:
+  /// **'成就墙'**
+  String get achievementWall;
+
+  /// No description provided for @mapTypeCartoPositron.
+  ///
+  /// In zh, this message translates to:
+  /// **'Carto Positron(浅色矢量)'**
+  String get mapTypeCartoPositron;
+
+  /// No description provided for @mapTypeCarto.
+  ///
+  /// In zh, this message translates to:
+  /// **'Carto 浅色'**
+  String get mapTypeCarto;
+
+  /// No description provided for @mapTypeCartoDark.
+  ///
+  /// In zh, this message translates to:
+  /// **'Carto 深色'**
+  String get mapTypeCartoDark;
+
+  /// No description provided for @mapTypeCartoVoyager.
+  ///
+  /// In zh, this message translates to:
+  /// **'Carto 航行者'**
+  String get mapTypeCartoVoyager;
+
+  /// No description provided for @mapTypeOsm.
+  ///
+  /// In zh, this message translates to:
+  /// **'OSM 标准'**
+  String get mapTypeOsm;
+
+  /// No description provided for @mapTypeOsmHot.
+  ///
+  /// In zh, this message translates to:
+  /// **'OSM 人道'**
+  String get mapTypeOsmHot;
+
+  /// No description provided for @mapTypeOpenTopo.
+  ///
+  /// In zh, this message translates to:
+  /// **'OpenTopo 地形'**
+  String get mapTypeOpenTopo;
+
+  /// No description provided for @mapTypeEsriStreet.
+  ///
+  /// In zh, this message translates to:
+  /// **'Esri 街道'**
+  String get mapTypeEsriStreet;
+
+  /// No description provided for @mapTypeEsriSat.
+  ///
+  /// In zh, this message translates to:
+  /// **'Esri 影像'**
+  String get mapTypeEsriSat;
+
+  /// No description provided for @simulatedKeepAlive.
+  ///
+  /// In zh, this message translates to:
+  /// **'模拟位置 · 后台保活'**
+  String get simulatedKeepAlive;
+
+  /// No description provided for @symCatEmergency.
+  ///
+  /// In zh, this message translates to:
+  /// **'应急救援'**
+  String get symCatEmergency;
+
+  /// No description provided for @symSmallAircraft.
+  ///
+  /// In zh, this message translates to:
+  /// **'小型飞机'**
+  String get symSmallAircraft;
+
+  /// No description provided for @myPositionSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置我的位置，网格 {grid}'**
+  String myPositionSet(String grid);
+
+  /// No description provided for @tierIdleShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'静止/低速'**
+  String get tierIdleShort;
+
+  /// No description provided for @symHouse.
+  ///
+  /// In zh, this message translates to:
+  /// **'房屋'**
+  String get symHouse;
+
+  /// No description provided for @symPerson.
+  ///
+  /// In zh, this message translates to:
+  /// **'人'**
+  String get symPerson;
+
+  /// No description provided for @symTruck.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡车'**
+  String get symTruck;
+
+  /// No description provided for @symBicycle.
+  ///
+  /// In zh, this message translates to:
+  /// **'自行车'**
+  String get symBicycle;
+
+  /// No description provided for @symRv.
+  ///
+  /// In zh, this message translates to:
+  /// **'房车'**
+  String get symRv;
+
+  /// No description provided for @symWxStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'气象站'**
+  String get symWxStation;
+
+  /// No description provided for @symPolice.
+  ///
+  /// In zh, this message translates to:
+  /// **'警局'**
+  String get symPolice;
+
+  /// No description provided for @symMotorcycle.
+  ///
+  /// In zh, this message translates to:
+  /// **'摩托'**
+  String get symMotorcycle;
+
+  /// No description provided for @symSemi.
+  ///
+  /// In zh, this message translates to:
+  /// **'半挂车'**
+  String get symSemi;
+
+  /// No description provided for @symVan.
+  ///
+  /// In zh, this message translates to:
+  /// **'面包车'**
+  String get symVan;
+
+  /// No description provided for @symJeep.
+  ///
+  /// In zh, this message translates to:
+  /// **'吉普'**
+  String get symJeep;
+
+  /// No description provided for @symBus.
+  ///
+  /// In zh, this message translates to:
+  /// **'公交'**
+  String get symBus;
+
+  /// No description provided for @symTruckStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡车停靠'**
+  String get symTruckStop;
+
+  /// No description provided for @symTrain.
+  ///
+  /// In zh, this message translates to:
+  /// **'火车'**
+  String get symTrain;
+
+  /// No description provided for @symFireTruck.
+  ///
+  /// In zh, this message translates to:
+  /// **'消防车'**
+  String get symFireTruck;
+
+  /// No description provided for @symPoliceCar.
+  ///
+  /// In zh, this message translates to:
+  /// **'警车'**
+  String get symPoliceCar;
+
+  /// No description provided for @symSnowmobile.
+  ///
+  /// In zh, this message translates to:
+  /// **'雪地摩托'**
+  String get symSnowmobile;
+
+  /// No description provided for @symYagi.
+  ///
+  /// In zh, this message translates to:
+  /// **'八木屋'**
+  String get symYagi;
+
+  /// No description provided for @symHospital.
+  ///
+  /// In zh, this message translates to:
+  /// **'医院'**
+  String get symHospital;
+
+  /// No description provided for @symAmbulance.
+  ///
+  /// In zh, this message translates to:
+  /// **'救护车'**
+  String get symAmbulance;
+
+  /// No description provided for @symFireStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'消防站'**
+  String get symFireStation;
+
+  /// No description provided for @symSchool.
+  ///
+  /// In zh, this message translates to:
+  /// **'学校'**
+  String get symSchool;
+
+  /// No description provided for @symMotel.
+  ///
+  /// In zh, this message translates to:
+  /// **'旅馆'**
+  String get symMotel;
+
+  /// No description provided for @symHotel.
+  ///
+  /// In zh, this message translates to:
+  /// **'酒店'**
+  String get symHotel;
+
+  /// No description provided for @symLaptop.
+  ///
+  /// In zh, this message translates to:
+  /// **'笔记本'**
+  String get symLaptop;
+
+  /// No description provided for @symPostOffice.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮局'**
+  String get symPostOffice;
+
+  /// No description provided for @symWeather.
+  ///
+  /// In zh, this message translates to:
+  /// **'气象'**
+  String get symWeather;
+
+  /// No description provided for @symWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'供水站'**
+  String get symWater;
+
+  /// No description provided for @symHurricane.
+  ///
+  /// In zh, this message translates to:
+  /// **'飓风'**
+  String get symHurricane;
+
+  /// No description provided for @symHorse.
+  ///
+  /// In zh, this message translates to:
+  /// **'骑马'**
+  String get symHorse;
+
+  /// No description provided for @symDog.
+  ///
+  /// In zh, this message translates to:
+  /// **'狗'**
+  String get symDog;
+
+  /// No description provided for @symCamping.
+  ///
+  /// In zh, this message translates to:
+  /// **'露营'**
+  String get symCamping;
+
+  /// No description provided for @symShelter.
+  ///
+  /// In zh, this message translates to:
+  /// **'避难所'**
+  String get symShelter;
+
+  /// No description provided for @symRedCross.
+  ///
+  /// In zh, this message translates to:
+  /// **'红十字'**
+  String get symRedCross;
+
+  /// No description provided for @symFireAlarm.
+  ///
+  /// In zh, this message translates to:
+  /// **'火警'**
+  String get symFireAlarm;
+
+  /// No description provided for @symEmergCenter.
+  ///
+  /// In zh, this message translates to:
+  /// **'应急中心'**
+  String get symEmergCenter;
+
+  /// No description provided for @symCmdCenter.
+  ///
+  /// In zh, this message translates to:
+  /// **'指挥中心'**
+  String get symCmdCenter;
+
+  /// No description provided for @symHandicap.
+  ///
+  /// In zh, this message translates to:
+  /// **'残障'**
+  String get symHandicap;
+
+  /// No description provided for @symBigAircraft.
+  ///
+  /// In zh, this message translates to:
+  /// **'大型飞机'**
+  String get symBigAircraft;
+
+  /// No description provided for @symGlider.
+  ///
+  /// In zh, this message translates to:
+  /// **'滑翔机'**
+  String get symGlider;
+
+  /// No description provided for @symBalloon.
+  ///
+  /// In zh, this message translates to:
+  /// **'气球'**
+  String get symBalloon;
+
+  /// No description provided for @symShip.
+  ///
+  /// In zh, this message translates to:
+  /// **'船'**
+  String get symShip;
+
+  /// No description provided for @symSailboat.
+  ///
+  /// In zh, this message translates to:
+  /// **'帆船'**
+  String get symSailboat;
+
+  /// No description provided for @symMobileSat.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动卫星'**
+  String get symMobileSat;
+
+  /// No description provided for @symSatAntenna.
+  ///
+  /// In zh, this message translates to:
+  /// **'卫星天线'**
+  String get symSatAntenna;
+
+  /// No description provided for @symDigi.
+  ///
+  /// In zh, this message translates to:
+  /// **'数字中继'**
+  String get symDigi;
+
+  /// No description provided for @symDigiTower.
+  ///
+  /// In zh, this message translates to:
+  /// **'中继塔'**
+  String get symDigiTower;
+
+  /// No description provided for @symMicE.
+  ///
+  /// In zh, this message translates to:
+  /// **'Mic-E 中继'**
+  String get symMicE;
+
+  /// No description provided for @symNode.
+  ///
+  /// In zh, this message translates to:
+  /// **'节点'**
+  String get symNode;
+
+  /// No description provided for @symDxCluster.
+  ///
+  /// In zh, this message translates to:
+  /// **'DX 集群'**
+  String get symDxCluster;
+
+  /// No description provided for @symHfGateway.
+  ///
+  /// In zh, this message translates to:
+  /// **'HF 网关'**
+  String get symHfGateway;
+
+  /// No description provided for @symFileServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件服务器'**
+  String get symFileServer;
+
+  /// No description provided for @symTelephone.
+  ///
+  /// In zh, this message translates to:
+  /// **'电话'**
+  String get symTelephone;
+
+  /// No description provided for @symGrid.
+  ///
+  /// In zh, this message translates to:
+  /// **'网格'**
+  String get symGrid;
+
+  /// No description provided for @symXUnix.
+  ///
+  /// In zh, this message translates to:
+  /// **'X/Unix'**
+  String get symXUnix;
+
+  /// No description provided for @symFmoStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'FMO 台站'**
+  String get symFmoStation;
+
   /// No description provided for @filter.
   ///
   /// In zh, this message translates to:
@@ -536,9 +1334,15 @@ abstract class AppLocalizations {
   String get languageZhTw;
 
   /// No description provided for @languageJa.
+  ///
+  /// In zh, this message translates to:
+  /// **'日本語'**
   String get languageJa;
 
   /// No description provided for @languageId.
+  ///
+  /// In zh, this message translates to:
+  /// **'Bahasa Indonesia'**
   String get languageId;
 
   /// No description provided for @displaySettings.
@@ -3462,12 +4266,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'确定删除「{name}」？此操作不可撤销。'**
   String deleteGroupConfirm(String name);
+
+  /// No description provided for @deleteConversation.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除会话'**
   String get deleteConversation;
 
-  String deleteConversationConfirm(String call);
+  /// No description provided for @deleteConversationConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除与 {call} 的聊天记录吗？此操作不可恢复。'**
+  String deleteConversationConfirm(Object call);
 
-  String clearGroupChatConfirm(String name);
-
+  /// No description provided for @clearGroupChatConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空「{name}」的聊天记录吗？此操作不可恢复。'**
+  String clearGroupChatConfirm(Object name);
 
   /// No description provided for @memberOnlineCount.
   ///
@@ -5918,9 +6734,15 @@ abstract class AppLocalizations {
   String get maxTrackPtsTip;
 
   /// No description provided for @onlineWindow.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线判定时长（分钟）'**
   String get onlineWindow;
 
   /// No description provided for @onlineWindowTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站最后上报超过该时长即视为离线（默认 5 分钟）'**
   String get onlineWindowTip;
 
   /// No description provided for @chatRecords.
@@ -5928,256 +6750,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'聊天记录'**
   String get chatRecords;
-  String get symCatVehicles;
-
-  String get symCatBuildings;
-
-  String get symCatNature;
-
-  String get symCatAirWater;
-
-  String get symCatComms;
-
-  String get homeBadgeLabel;
-
-  String get homeBadgePickTitle;
-
-  String get homeBadgePickDesc;
-
-  String get simLocationHint;
-
-  String get speedTierRules;
-
-  String get restoreDefaults;
-
-  String get speedTierDesc;
-
-  String get speedTierShortIntervalWarn;
-
-  String get addSpeedTier;
-
-  String get maxSpeedTiers;
-
-  String get iconDefaultMySymbol;
-
-  String iconNamed(String name);
-
-  String everyNSeconds(String sec);
-
-  String get tierIdleTitle;
-
-  String get tierSpeedTitle;
-
-  String get minSpeedKmh;
-
-  String get intervalSeconds;
-
-  String get idleTierDesc;
-
-  String get intervalLabel;
-
-  String get unitSeconds;
-
-  String get pickBeaconIconDesc;
-
-  String get defaultLabel;
-
-  String get deleteThisTier;
-
-  String get idleTierNotDeletable;
-
-  String get errMinSpeedInt;
-
-  String get errIntervalInt;
-
-  String get errTierDuplicate;
-
-  String get wsUrlOptional;
-
-
-  String get countryUnrestricted;
-
-  String get weatherWidget;
-
-  String get groupChatLabel;
-
-  String nItems(String n);
-
-  String nMessages(String n);
-
-  String confirmDeleteMessages(String n);
-
-  String get weatherSimFollowLive;
-
-  String get wxClear;
-
-  String get wxCloudy;
-
-  String get wxOvercast;
-
-  String get wxLightRain;
-
-  String get wxModerateRain;
-
-  String get wxHeavyRain;
-
-  String get wxStormRain;
-
-  String get wxThunder;
-
-  String get wxSnow;
-
-  String get wxFog;
-
-  String get weatherSimTitle;
-
-  String get weatherSimDesc;
-
-  String get restartWizardConfirm;
-
-  String get restartWizardButton;
-
-  String get pasteAprsPacketHint;
-
-  String beaconsSentCount(String n);
-
-  String get myBadgesAndAchievements;
-
-  String get quitApp;
-
-  String get quitAppDesc;
-
-  String get symCar;
-  String get openInBrowser;
-  String get badgeWall;
-  String get achievementWall;
-  String get mapTypeCartoPositron;
-  String get mapTypeCarto;
-  String get mapTypeCartoDark;
-  String get mapTypeCartoVoyager;
-  String get mapTypeOsm;
-  String get mapTypeOsmHot;
-  String get mapTypeOpenTopo;
-  String get mapTypeEsriStreet;
-  String get mapTypeEsriSat;
-  String get simulatedKeepAlive;
-  String get symCatEmergency;
-  String get symSmallAircraft;
-  String myPositionSet(String grid);
-  String get tierIdleShort;
-
-  String get symHouse;
-
-  String get symPerson;
-
-  String get symTruck;
-
-  String get symBicycle;
-
-  String get symRv;
-
-  String get symWxStation;
-
-  String get symPolice;
-
-  String get symMotorcycle;
-
-  String get symSemi;
-
-  String get symVan;
-
-  String get symJeep;
-
-  String get symBus;
-
-  String get symTruckStop;
-
-  String get symTrain;
-
-  String get symFireTruck;
-
-  String get symPoliceCar;
-
-  String get symSnowmobile;
-
-  String get symYagi;
-
-  String get symHospital;
-
-  String get symAmbulance;
-
-  String get symFireStation;
-
-  String get symSchool;
-
-  String get symMotel;
-
-  String get symHotel;
-
-  String get symLaptop;
-
-  String get symPostOffice;
-
-  String get symWeather;
-
-  String get symWater;
-
-  String get symHurricane;
-
-  String get symHorse;
-
-  String get symDog;
-
-  String get symCamping;
-
-  String get symShelter;
-
-  String get symRedCross;
-
-  String get symFireAlarm;
-
-  String get symEmergCenter;
-
-  String get symCmdCenter;
-
-  String get symHandicap;
-
-  String get symBigAircraft;
-
-  String get symGlider;
-
-  String get symBalloon;
-
-  String get symShip;
-
-  String get symSailboat;
-
-  String get symMobileSat;
-
-  String get symSatAntenna;
-
-  String get symDigi;
-
-  String get symDigiTower;
-
-  String get symMicE;
-
-  String get symNode;
-
-  String get symDxCluster;
-
-  String get symHfGateway;
-
-  String get symFileServer;
-
-  String get symTelephone;
-
-  String get symGrid;
-
-  String get symXUnix;
-
-  String get symFmoStation;
-
 
   /// No description provided for @chatRecordsCleared.
   ///
@@ -6406,6 +6978,90 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'信标 {v}'**
   String notifBeacon(String v);
+
+  /// No description provided for @selectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选'**
+  String get selectAll;
+
+  /// No description provided for @deselectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消全选'**
+  String get deselectAll;
+
+  /// No description provided for @selectedCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已选 {n} 项'**
+  String selectedCount(int n);
+
+  /// No description provided for @deleteSelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除 ({n})'**
+  String deleteSelected(int n);
+
+  /// No description provided for @deleteSelectedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除选中的 {n} 个会话？此操作不可恢复。'**
+  String deleteSelectedConfirm(int n);
+
+  /// No description provided for @chatManageHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击会话进行选择，长按也可选中'**
+  String get chatManageHint;
+
+  /// No description provided for @conversationsDeleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除 {n} 个会话'**
+  String conversationsDeleted(int n);
+
+  /// No description provided for @stationActions.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站操作'**
+  String get stationActions;
+
+  /// No description provided for @deleteStation.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除台站'**
+  String get deleteStation;
+
+  /// No description provided for @deleteStationConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除台站 {name} 吗？删除后将从台站列表移除；若再次收到其报文会重新出现。'**
+  String deleteStationConfirm(String name);
+
+  /// No description provided for @unfavorite.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消收藏'**
+  String get unfavorite;
+
+  /// No description provided for @copyCallsign.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制呼号'**
+  String get copyCallsign;
+
+  /// No description provided for @callsignCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'呼号已复制'**
+  String get callsignCopied;
+
+  /// No description provided for @stationDeleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除台站'**
+  String get stationDeleted;
 }
 
 class _AppLocalizationsDelegate

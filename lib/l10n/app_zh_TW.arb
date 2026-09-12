@@ -1861,5 +1861,19 @@
   "notifRx": "收 {n}",
   "@notifRx": {"placeholders": {"n": {"type": "String"}}},
   "notifBeacon": "信標 {v}",
-  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}}
+  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}},
+  "selectAll": "全選",
+  "deselectAll": "取消全選",
+  "selectedCount": "已選 {n} 項",
+  "deleteSelected": "刪除 ({n})",
+  "deleteSelectedConfirm": "確定刪除選中的 {n} 個會話？此操作不可恢復。",
+  "chatManageHint": "點擊會話進行選擇，長按也可選中",
+  "conversationsDeleted": "已刪除 {n} 個會話",
+  "stationActions": "台站操作",
+  "deleteStation": "刪除台站",
+  "deleteStationConfirm": "確定刪除台站 {name} 嗎？刪除後將從台站列表移除；若再次收到其報文會重新出現。",
+  "unfavorite": "取消收藏",
+  "copyCallsign": "複製呼號",
+  "callsignCopied": "呼號已複製",
+  "stationDeleted": "已刪除台站"
 }

@@ -59,7 +59,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.87';
+  static const appVersion = '1.6.88';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2664,6 +2664,36 @@ class AppState extends ChangeNotifier {
     _saveMessages();
     _notify();
     _log(LogLevel.info, '消息', '已清空群聊聊天记录');
+  }
+
+  /// 批量删除会话（单聊呼号集合 + 群聊 ID 集合），一次性保存与通知。
+  /// 单聊：删该呼号的全部消息；群聊：只清消息，保留群组本身。
+  /// 呼号一律按大写比对（APRS 呼号大小写不敏感）。
+  void deleteConversations(Iterable<String> calls, Iterable<String> groupIds) {
+    final cs = calls
+        .map((e) => e.trim().toUpperCase())
+        .where((e) => e.isNotEmpty)
+        .toSet();
+    final gs = groupIds.where((e) => e.isNotEmpty).toSet();
+    if (cs.isEmpty && gs.isEmpty) return;
+    messages.removeWhere((m) {
+      if (m.groupId != null) return gs.contains(m.groupId);
+      return cs.contains(m.from.toUpperCase()) ||
+          cs.contains(m.to.toUpperCase());
+    });
+    // 已读时间点一并清掉；键的大小写未必统一，按大写比对
+    _readAt.removeWhere((k, _) => cs.contains(k.toUpperCase()));
+    for (final g in gs) {
+      _groupReadAt.remove(g);
+    }
+    _recalcUnread();
+    _saveMessages();
+    _notify();
+    _log(
+      LogLevel.info,
+      '消息',
+      '已删除 ${cs.length} 个单聊、${gs.length} 个群聊的聊天记录',
+    );
   }
 
   /// 某会话的未读数（该呼号收到的、晚于已读时间点的消息数）

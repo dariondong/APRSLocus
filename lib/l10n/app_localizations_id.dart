@@ -2269,15 +2269,19 @@ class AppLocalizationsId extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return 'Hapus “$name”? Tindakan ini tidak dapat dibatalkan.';
   }
+
   @override
   String get deleteConversation => 'Hapus obrolan';
 
   @override
-  String deleteConversationConfirm(String call) => 'Hapus riwayat obrolan dengan {call}? Tindakan ini tidak dapat dibatalkan.';
+  String deleteConversationConfirm(Object call) {
+    return 'Hapus riwayat obrolan dengan $call? Tindakan ini tidak dapat dibatalkan.';
+  }
 
   @override
-  String clearGroupChatConfirm(String name) => 'Hapus riwayat obrolan “{name}”? Tindakan ini tidak dapat dibatalkan.';
-
+  String clearGroupChatConfirm(Object name) {
+    return 'Hapus riwayat obrolan “$name”? Tindakan ini tidak dapat dibatalkan.';
+  }
 
   @override
   String memberOnlineCount(int members, int online) {
@@ -3961,4 +3965,57 @@ class AppLocalizationsId extends AppLocalizations {
   String notifBeacon(String v) {
     return 'Beacon $v';
   }
+
+  @override
+  String get selectAll => 'Pilih semua';
+
+  @override
+  String get deselectAll => 'Batal pilih semua';
+
+  @override
+  String selectedCount(int n) {
+    return '$n dipilih';
+  }
+
+  @override
+  String deleteSelected(int n) {
+    return 'Hapus ($n)';
+  }
+
+  @override
+  String deleteSelectedConfirm(int n) {
+    return 'Hapus $n obrolan yang dipilih? Tindakan ini tidak dapat dibatalkan.';
+  }
+
+  @override
+  String get chatManageHint =>
+      'Ketuk obrolan untuk memilih; tekan lama juga memilih';
+
+  @override
+  String conversationsDeleted(int n) {
+    return '$n obrolan dihapus';
+  }
+
+  @override
+  String get stationActions => 'Tindakan stasiun';
+
+  @override
+  String get deleteStation => 'Hapus stasiun';
+
+  @override
+  String deleteStationConfirm(String name) {
+    return 'Hapus stasiun $name? Stasiun akan dihapus dari daftar dan muncul kembali jika paketnya diterima lagi.';
+  }
+
+  @override
+  String get unfavorite => 'Hapus dari favorit';
+
+  @override
+  String get copyCallsign => 'Salin tanda panggil';
+
+  @override
+  String get callsignCopied => 'Tanda panggil disalin';
+
+  @override
+  String get stationDeleted => 'Stasiun dihapus';
 }

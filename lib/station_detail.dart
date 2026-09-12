@@ -238,6 +238,76 @@ class _StationDetailState extends State<StationDetail> {
                               ],
                             ),
                           ),
+                          // 台站操作：收藏 / 复制呼号 / 删除台站
+                          // 用可见的菜单入口，不依赖隐藏手势（长按等）
+                          PopupMenuButton<String>(
+                            icon: Icon(
+                              Icons.more_vert_rounded,
+                              color: C.grey,
+                            ),
+                            tooltip: S.of(context).stationActions,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            onSelected: (v) => _onStationAction(v, s),
+                            itemBuilder: (ctx) => [
+                              PopupMenuItem(
+                                value: 'fav',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      s.favorite
+                                          ? Icons.star_rounded
+                                          : Icons.star_border_rounded,
+                                      size: 18,
+                                      color: C.orange,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      s.favorite
+                                          ? S.of(ctx).unfavorite
+                                          : S.of(ctx).favorite,
+                                      style: ts(13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'copy',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.copy_rounded,
+                                      size: 18,
+                                      color: C.blue,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      S.of(ctx).copyCallsign,
+                                      style: ts(13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_outline_rounded,
+                                      size: 18,
+                                      color: C.red,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      S.of(ctx).deleteStation,
+                                      style: ts(13, c: C.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                           IconButton(
                             icon: Icon(Icons.close_rounded, color: C.grey),
                             onPressed: () => Navigator.pop(context),
@@ -1113,6 +1183,55 @@ class _StationDetailState extends State<StationDetail> {
   void _toast(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  /// 台站操作菜单：收藏 / 复制呼号 / 删除台站
+  Future<void> _onStationAction(String action, Station s) async {
+    final st = widget.state;
+    if (action == 'fav') {
+      st.toggleFavorite(s.call);
+      if (!mounted) return;
+      setState(() {});
+      return;
+    }
+    if (action == 'copy') {
+      await Clipboard.setData(ClipboardData(text: s.call));
+      if (!mounted) return;
+      _toast(S.of(context).callsignCopied);
+      return;
+    }
+    if (action != 'delete') return;
+    // 先把文案与 messenger 取好，避免 await 之后再碰 context
+    final loc = S.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(loc.deleteStation, style: T.h2),
+        content: Text(loc.deleteStationConfirm(s.call), style: ts(13)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(loc.cancel, style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(loc.delete, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    st.removeContact(s.call);
+    if (!mounted) return;
+    Navigator.pop(context);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(loc.stationDeleted),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 

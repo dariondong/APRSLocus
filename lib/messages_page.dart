@@ -37,6 +37,11 @@ class _MessagesPageState extends State<MessagesPage> {
   String _partnersKey = '';
   List<String> _partnersCache = const [];
 
+  // 会话管理（多选删除）：可见的「管理」入口，不依赖长按
+  bool _manageMode = false;
+  final Set<String> _selCalls = {}; // 选中的单聊呼号
+  final Set<String> _selGroups = {}; // 选中的群聊 ID
+
   Widget get _manualAddField => TextField(
     controller: _manualAddCtrl,
     style: ts(12),
@@ -616,40 +621,70 @@ class _MessagesPageState extends State<MessagesPage> {
                         style: ts(11, c: C.blue, w: FontWeight.w700),
                       ),
                     ),
+                    if (st.chatGroups.isNotEmpty || partners.isNotEmpty) ...[
+                      SizedBox(width: 6),
+                      // 可见的「管理」入口：不依赖长按这类隐藏手势
+                      GestureDetector(
+                        onTap: () => _toggleManage(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 9,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _manageMode ? C.blue : C.bgSoft,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _manageMode
+                                ? S.of(context).done
+                                : S.of(context).manage,
+                            style: ts(
+                              11,
+                              c: _manageMode ? Colors.white : C.slate,
+                              w: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 SizedBox(height: 10),
-                // 快捷操作：新建会话 / 群发 / 新建群聊
-                Row(
-                  children: [
-                    _convActionBtn(
-                      Icons.add_comment_rounded,
-                      S.of(context).newConversation,
-                      C.blue,
-                      () {
-                        _showAddConversationDialog(st);
-                      },
-                    ),
-                    SizedBox(width: 6),
-                    _convActionBtn(
-                      Icons.campaign_rounded,
-                      S.of(context).broadcastShort,
-                      C.purple,
-                      () {
-                        _showBroadcastDialog(st);
-                      },
-                    ),
-                    SizedBox(width: 6),
-                    _convActionBtn(
-                      Icons.group_add_rounded,
-                      S.of(context).newGroup,
-                      C.orange,
-                      () {
-                        _showCreateGroupDialog(st);
-                      },
-                    ),
-                  ],
-                ),
+                if (_manageMode)
+                  _manageBar(st, partners)
+                else
+                  // 快捷操作：新建会话 / 群发 / 新建群聊
+                  Row(
+                    children: [
+                      _convActionBtn(
+                        Icons.add_comment_rounded,
+                        S.of(context).newConversation,
+                        C.blue,
+                        () {
+                          _showAddConversationDialog(st);
+                        },
+                      ),
+                      SizedBox(width: 6),
+                      _convActionBtn(
+                        Icons.campaign_rounded,
+                        S.of(context).broadcastShort,
+                        C.purple,
+                        () {
+                          _showBroadcastDialog(st);
+                        },
+                      ),
+                      SizedBox(width: 6),
+                      _convActionBtn(
+                        Icons.group_add_rounded,
+                        S.of(context).newGroup,
+                        C.orange,
+                        () {
+                          _showCreateGroupDialog(st);
+                        },
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -681,12 +716,171 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
+  // ─── 会话管理（多选删除） ───
+  /// 选中项总数
+  int get _selCount => _selCalls.length + _selGroups.length;
+
+  /// 进入 / 退出管理模式
+  void _toggleManage() {
+    setState(() {
+      _manageMode = !_manageMode;
+      if (!_manageMode) {
+        _selCalls.clear();
+        _selGroups.clear();
+      }
+    });
+  }
+
+  /// 全选 / 取消全选
+  void _toggleSelectAll(AppState st, List<String> partners) {
+    setState(() {
+      final total = st.chatGroups.length + partners.length;
+      if (total > 0 && _selCount >= total) {
+        _selCalls.clear();
+        _selGroups.clear();
+      } else {
+        _selGroups
+          ..clear()
+          ..addAll(st.chatGroups.map((g) => g.id));
+        _selCalls
+          ..clear()
+          ..addAll(partners);
+      }
+    });
+  }
+
+  /// 管理工具栏：提示 + 全选 + 删除
+  Widget _manageBar(AppState st, List<String> partners) {
+    final total = st.chatGroups.length + partners.length;
+    final all = total > 0 && _selCount >= total;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(S.of(context).chatManageHint, style: ts(10, c: C.grey)),
+        SizedBox(height: 8),
+        Row(
+          children: [
+            _convActionBtn(
+              all ? Icons.remove_done_rounded : Icons.done_all_rounded,
+              all ? S.of(context).deselectAll : S.of(context).selectAll,
+              C.slate,
+              () => _toggleSelectAll(st, partners),
+            ),
+            SizedBox(width: 6),
+            _convActionBtn(
+              Icons.delete_outline_rounded,
+              S.of(context).deleteSelected(_selCount),
+              _selCount > 0 ? C.red : C.greyLight,
+              _selCount > 0 ? () => _deleteSelectedConversations(st) : () {},
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// 选中标记（管理模式）
+  Widget _selCheck(bool on, Color c) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Icon(
+        on ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+        size: 20,
+        color: on ? c : C.greyLight,
+      ),
+    );
+  }
+
+  /// 删除选中的会话（单聊删消息；群聊只清消息，保留群组）
+  Future<void> _deleteSelectedConversations(AppState st) async {
+    final n = _selCount;
+    if (n == 0) return;
+    // 只选中一个时走原有的单会话确认流程（文案更具体，复用已有键与提示）
+    if (n == 1) {
+      if (_selCalls.length == 1) {
+        await _confirmDeleteConversation(st, _selCalls.first, null);
+      } else {
+        final g = st.chatGroups
+            .where((x) => x.id == _selGroups.first)
+            .firstOrNull;
+        if (g == null) return;
+        await _confirmDeleteConversation(
+          st,
+          g.groupCall,
+          (id: g.id, name: g.name),
+        );
+      }
+      if (!mounted) return;
+      setState(() {
+        _manageMode = false;
+        _selCalls.clear();
+        _selGroups.clear();
+      });
+      return;
+    }
+    final loc = S.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(loc.deleteConversation, style: T.h2),
+        content: Text(loc.deleteSelectedConfirm(n), style: ts(13)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(loc.cancel, style: ts(13, c: C.slate)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(loc.delete, style: ts(13)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final calls = Set<String>.from(_selCalls);
+    final groups = Set<String>.from(_selGroups);
+    st.deleteConversations(calls, groups);
+    if (!mounted) return;
+    setState(() {
+      _manageMode = false;
+      _selCalls.clear();
+      _selGroups.clear();
+      // 若当前正停留在被删掉的会话上，退回列表
+      final hitCall = _selected.isNotEmpty &&
+          calls.any((c) => c.toUpperCase() == _selected.toUpperCase());
+      final hitGroup =
+          _selectedGroupId != null && groups.contains(_selectedGroupId);
+      if (hitCall || hitGroup) _showList = true;
+    });
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(loc.conversationsDeleted(n)),
+        backgroundColor: C.blue,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
   Widget _groupListItem(AppState st, ChatGroup g) {
     final unread = _groupUnreadCount(st, g);
     final last = _groupLastMsg(st, g);
     final sel = _selectedGroupId == g.id;
+    final checked = _selGroups.contains(g.id);
     return GestureDetector(
       onTap: () {
+        // 管理模式下：点击 = 选中/取消，而不是打开会话
+        if (_manageMode) {
+          setState(() {
+            checked ? _selGroups.remove(g.id) : _selGroups.add(g.id);
+          });
+          return;
+        }
         st.markGroupRead(g.id);
         setState(() {
           _selectedGroupId = g.id;
@@ -694,22 +888,30 @@ class _MessagesPageState extends State<MessagesPage> {
           _showList = false;
         });
       },
-      // 长按清空该群聊的聊天记录（群组保留）
-      onLongPress: () =>
-          _confirmDeleteConversation(st, g.groupCall, (id: g.id, name: g.name)),
+      // 长按 = 进入管理模式并选中该项（不再直接删除，避免误触又难发现）
+      onLongPress: () {
+        if (_manageMode) return;
+        setState(() {
+          _manageMode = true;
+          _selGroups.add(g.id);
+        });
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: sel ? C.orangeBg : Colors.transparent,
+          color: checked ? C.redBg : (sel ? C.orangeBg : Colors.transparent),
           border: Border(
             left: BorderSide(
-              color: sel ? C.orange : Colors.transparent,
+              color: checked
+                  ? C.red
+                  : (sel ? C.orange : Colors.transparent),
               width: 3,
             ),
           ),
         ),
         child: Row(
           children: [
+            if (_manageMode) _selCheck(checked, C.orange),
             Container(
               width: 38,
               height: 38,
@@ -789,8 +991,16 @@ class _MessagesPageState extends State<MessagesPage> {
     final last = msgs.isNotEmpty ? msgs.first : null;
     final unread = st.conversationUnread(p);
     final sel = _selected == p && _selectedGroupId == null;
+    final checked = _selCalls.contains(p);
     return GestureDetector(
       onTap: () {
+        // 管理模式下：点击 = 选中/取消，而不是打开会话
+        if (_manageMode) {
+          setState(() {
+            checked ? _selCalls.remove(p) : _selCalls.add(p);
+          });
+          return;
+        }
         widget.state.markConversationRead(p);
         setState(() {
           _selected = p;
@@ -798,21 +1008,28 @@ class _MessagesPageState extends State<MessagesPage> {
           _showList = false;
         });
       },
-      // 长按删除该会话的聊天记录
-      onLongPress: () => _confirmDeleteConversation(st, p, null),
+      // 长按 = 进入管理模式并选中该项
+      onLongPress: () {
+        if (_manageMode) return;
+        setState(() {
+          _manageMode = true;
+          _selCalls.add(p);
+        });
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: sel ? C.blueBg : Colors.transparent,
+          color: checked ? C.redBg : (sel ? C.blueBg : Colors.transparent),
           border: Border(
             left: BorderSide(
-              color: sel ? C.blue : Colors.transparent,
+              color: checked ? C.red : (sel ? C.blue : Colors.transparent),
               width: 3,
             ),
           ),
         ),
         child: Row(
           children: [
+            if (_manageMode) _selCheck(checked, C.blue),
             Container(
               width: 38,
               height: 38,
@@ -1331,8 +1548,7 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
-  /// 会话页快捷操作按钮
-  /// 长按会话 → 删除聊天记录。
+  /// 确认并删除单个会话（管理模式中只选中一个时走此路径）。
   ///
   /// - 单聊（[group] 为 null）：删除与 [call] 的全部消息，会话从列表消失
   ///   （除非该呼号是收藏/手动联系人）。

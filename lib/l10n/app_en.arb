@@ -1273,5 +1273,19 @@
   "notifRx": "RX {n}",
   "@notifRx": {"placeholders": {"n": {"type": "String"}}},
   "notifBeacon": "Beacon {v}",
-  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}}
+  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}},
+  "selectAll": "Select all",
+  "deselectAll": "Deselect all",
+  "selectedCount": "{n} selected",
+  "deleteSelected": "Delete ({n})",
+  "deleteSelectedConfirm": "Delete the {n} selected chats? This cannot be undone.",
+  "chatManageHint": "Tap a chat to select; long-press also selects",
+  "conversationsDeleted": "Deleted {n} chats",
+  "stationActions": "Station actions",
+  "deleteStation": "Delete station",
+  "deleteStationConfirm": "Delete station {name}? It will be removed from the station list and will reappear if its packets are received again.",
+  "unfavorite": "Remove from favorites",
+  "copyCallsign": "Copy callsign",
+  "callsignCopied": "Callsign copied",
+  "stationDeleted": "Station deleted"
 }

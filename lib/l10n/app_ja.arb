@@ -1357,5 +1357,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "selectAll": "すべて選択",
+  "deselectAll": "すべて解除",
+  "selectedCount": "{n} 件選択中",
+  "deleteSelected": "削除 ({n})",
+  "deleteSelectedConfirm": "選択した {n} 件のチャットを削除しますか？この操作は取り消せません。",
+  "chatManageHint": "チャットをタップして選択（長押しでも選択可）",
+  "conversationsDeleted": "{n} 件のチャットを削除しました",
+  "stationActions": "局の操作",
+  "deleteStation": "局を削除",
+  "deleteStationConfirm": "局 {name} を削除しますか？リストから削除されます。再度そのパケットを受信すると再表示されます。",
+  "unfavorite": "お気に入りを解除",
+  "copyCallsign": "コールサインをコピー",
+  "callsignCopied": "コールサインをコピーしました",
+  "stationDeleted": "局を削除しました"
 }

@@ -2229,15 +2229,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String deleteGroupConfirm(String name) {
     return '「$name」を削除しますか？この操作は取り消せません。';
   }
+
   @override
   String get deleteConversation => 'チャットを削除';
 
   @override
-  String deleteConversationConfirm(String call) => '{call} とのチャット履歴を削除しますか？この操作は取り消せません。';
+  String deleteConversationConfirm(Object call) {
+    return '$call とのチャット履歴を削除しますか？この操作は取り消せません。';
+  }
 
   @override
-  String clearGroupChatConfirm(String name) => '「{name}」のチャット履歴を消去しますか？この操作は取り消せません。';
-
+  String clearGroupChatConfirm(Object name) {
+    return '「$name」のチャット履歴を消去しますか？この操作は取り消せません。';
+  }
 
   @override
   String memberOnlineCount(int members, int online) {
@@ -3877,4 +3881,56 @@ class AppLocalizationsJa extends AppLocalizations {
   String notifBeacon(String v) {
     return 'ビーコン $v';
   }
+
+  @override
+  String get selectAll => 'すべて選択';
+
+  @override
+  String get deselectAll => 'すべて解除';
+
+  @override
+  String selectedCount(int n) {
+    return '$n 件選択中';
+  }
+
+  @override
+  String deleteSelected(int n) {
+    return '削除 ($n)';
+  }
+
+  @override
+  String deleteSelectedConfirm(int n) {
+    return '選択した $n 件のチャットを削除しますか？この操作は取り消せません。';
+  }
+
+  @override
+  String get chatManageHint => 'チャットをタップして選択（長押しでも選択可）';
+
+  @override
+  String conversationsDeleted(int n) {
+    return '$n 件のチャットを削除しました';
+  }
+
+  @override
+  String get stationActions => '局の操作';
+
+  @override
+  String get deleteStation => '局を削除';
+
+  @override
+  String deleteStationConfirm(String name) {
+    return '局 $name を削除しますか？リストから削除されます。再度そのパケットを受信すると再表示されます。';
+  }
+
+  @override
+  String get unfavorite => 'お気に入りを解除';
+
+  @override
+  String get copyCallsign => 'コールサインをコピー';
+
+  @override
+  String get callsignCopied => 'コールサインをコピーしました';
+
+  @override
+  String get stationDeleted => '局を削除しました';
 }
