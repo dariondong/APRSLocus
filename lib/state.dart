@@ -14,6 +14,7 @@ import 'mock_data.dart';
 import 'services.dart';
 import 'aprs_parse.dart';
 import 'aprs_device.dart';
+import 'l10n/app_localizations.dart';
 import 'net/aprs.dart';
 import 'early_member.dart';
 import 'achievements.dart';
@@ -50,7 +51,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.77';
+  static const appVersion = '1.6.78';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3029,33 +3030,78 @@ class AppState extends ChangeNotifier {
 
   String get myGrid => myHasFix ? maidenhead(myLat!, myLng!) : '--';
 
-  String get nextBeaconIn {
-    if (!beaconEnabled) return '已关闭';
-    if (!connected) return '未连接';
-    if (!myHasFix) return '等待定位';
+  /// 按当前 [locale] 取本地化实例。
+  /// 状态层没有 BuildContext（ChangeNotifier），故这里直接按语言构造；
+  /// 供通知栏等无法拿到 context 的场合使用。
+  AppLocalizations get l10n {
+    switch (locale) {
+      case 'en':
+        return AppLocalizationsEn();
+      case 'zh-TW':
+        return AppLocalizationsZhTw();
+      default:
+        return AppLocalizationsZh();
+    }
+  }
+
+  /// 距下次自动上报剩余秒数（仅在 [BeaconPhase.counting] 时有意义）
+  int get beaconSecondsLeft {
     final remain =
         beaconIntervalNow - DateTime.now().difference(_lastBeacon).inSeconds;
-    return remain > 0 ? '${remain}s' : '即将';
+    return remain > 0 ? remain : 0;
+  }
+
+  /// 自动上报所处阶段。
+  ///
+  /// **不要用中文字符串表示状态**：此前 `nextBeaconIn` 直接返回
+  /// '未连接'/'已关闭'/'等待定位'/'45s'/'即将'，UI 还得拿 `== '即将'` 比较，
+  /// 既无法本地化又极易出错。现改为结构化枚举，由 UI 负责本地化。
+  BeaconPhase get beaconPhase {
+    if (!beaconEnabled) return BeaconPhase.off;
+    if (!connected) return BeaconPhase.disconnected;
+    if (!myHasFix) return BeaconPhase.waitingFix;
+    return beaconSecondsLeft > 0 ? BeaconPhase.counting : BeaconPhase.imminent;
+  }
+
+  /// 信标倒计时文案（已本地化）。保留此 getter 供通知栏/设置页等直接使用。
+  String get nextBeaconIn {
+    final l = l10n;
+    switch (beaconPhase) {
+      case BeaconPhase.off:
+        return l.beaconDisabled;
+      case BeaconPhase.disconnected:
+        return l.beaconNotConnected;
+      case BeaconPhase.waitingFix:
+        return l.beaconWaitingFix;
+      case BeaconPhase.imminent:
+        return l.beaconSoon;
+      case BeaconPhase.counting:
+        return '${beaconSecondsLeft}s';
+    }
   }
 
   /// 更新状态栏通知（前台服务常驻通知）
   void _updateNotification() {
+    final l = l10n;
     final parts = <String>[];
     if (connected) {
-      parts.add('已连接');
+      parts.add(l.notifConnected);
     } else if (connecting) {
-      parts.add('连接中');
+      parts.add(l.notifConnecting);
     } else {
-      parts.add('未连接');
+      parts.add(l.notifDisconnected);
     }
     if (myHasFix) {
       parts.add('GPS·$myGrid');
     }
-    parts.add('$online在线');
-    parts.add('收$packetsRx');
+    parts.add(l.notifOnline('$online'));
+    parts.add(l.notifRx('$packetsRx'));
     if (beaconEnabled) {
-      parts.add('信标$nextBeaconIn');
+      parts.add(l.notifBeacon(nextBeaconIn));
     }
     loc.updateNotification(parts.join(' · '));
   }
 }
+
+/// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）
+enum BeaconPhase { off, disconnected, waitingFix, counting, imminent }

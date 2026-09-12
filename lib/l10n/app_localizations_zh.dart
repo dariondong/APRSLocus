@@ -3367,6 +3367,47 @@ class AppLocalizationsZh extends AppLocalizations {
   String achievementsProgress(String n, String m) {
     return '$n/$m 成就';
   }
+
+  @override
+  String get beaconNotConnected => '未连接';
+
+  @override
+  String get beaconWaitingFix => '等待定位';
+
+  @override
+  String get beaconSoon => '即将';
+
+  @override
+  String beaconNextIn(String s) {
+    return '距下次上报 $s';
+  }
+
+  @override
+  String get beaconImminent => '即将上报…';
+
+  @override
+  String get notifConnected => '已连接';
+
+  @override
+  String get notifConnecting => '连接中';
+
+  @override
+  String get notifDisconnected => '未连接';
+
+  @override
+  String notifOnline(String n) {
+    return '$n 在线';
+  }
+
+  @override
+  String notifRx(String n) {
+    return '收 $n';
+  }
+
+  @override
+  String notifBeacon(String v) {
+    return '信标 $v';
+  }
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -6731,5 +6772,46 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String achievementsProgress(String n, String m) {
     return '$n/$m 成就';
+  }
+
+  @override
+  String get beaconNotConnected => '未連線';
+
+  @override
+  String get beaconWaitingFix => '等待定位';
+
+  @override
+  String get beaconSoon => '即將';
+
+  @override
+  String beaconNextIn(String s) {
+    return '距下次上報 $s';
+  }
+
+  @override
+  String get beaconImminent => '即將上報…';
+
+  @override
+  String get notifConnected => '已連線';
+
+  @override
+  String get notifConnecting => '連線中';
+
+  @override
+  String get notifDisconnected => '未連線';
+
+  @override
+  String notifOnline(String n) {
+    return '$n 在線';
+  }
+
+  @override
+  String notifRx(String n) {
+    return '收 $n';
+  }
+
+  @override
+  String notifBeacon(String v) {
+    return '信標 $v';
   }
 }

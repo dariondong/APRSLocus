@@ -1699,5 +1699,20 @@
   "honoredBadges": "已点亮 {n}/{m} 徽章",
   "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "achievementsProgress": "{n}/{m} 成就",
-  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}
+  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "beaconNotConnected": "未连接",
+  "beaconWaitingFix": "等待定位",
+  "beaconSoon": "即将",
+  "beaconNextIn": "距下次上报 {s}",
+  "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},
+  "beaconImminent": "即将上报…",
+  "notifConnected": "已连接",
+  "notifConnecting": "连接中",
+  "notifDisconnected": "未连接",
+  "notifOnline": "{n} 在线",
+  "@notifOnline": {"placeholders": {"n": {"type": "String"}}},
+  "notifRx": "收 {n}",
+  "@notifRx": {"placeholders": {"n": {"type": "String"}}},
+  "notifBeacon": "信标 {v}",
+  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}}
 }

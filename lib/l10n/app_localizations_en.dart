@@ -3462,4 +3462,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String achievementsProgress(String n, String m) {
     return '$n/$m achievements';
   }
+
+  @override
+  String get beaconNotConnected => 'Not connected';
+
+  @override
+  String get beaconWaitingFix => 'Waiting for fix';
+
+  @override
+  String get beaconSoon => 'Due now';
+
+  @override
+  String beaconNextIn(String s) {
+    return 'Next report in $s';
+  }
+
+  @override
+  String get beaconImminent => 'Reporting now…';
+
+  @override
+  String get notifConnected => 'Connected';
+
+  @override
+  String get notifConnecting => 'Connecting';
+
+  @override
+  String get notifDisconnected => 'Disconnected';
+
+  @override
+  String notifOnline(String n) {
+    return '$n online';
+  }
+
+  @override
+  String notifRx(String n) {
+    return 'RX $n';
+  }
+
+  @override
+  String notifBeacon(String v) {
+    return 'Beacon $v';
+  }
 }

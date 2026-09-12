@@ -2070,11 +2070,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _beaconBar() {
     final st = widget.state;
     final on = st.beaconEnabled;
-    final next = st.nextBeaconIn; // '未连接' / '已关闭' / '等待定位' / '45s' / '即将'
     final c = on ? C.green : C.slate;
     // 连接但信标关 → 显示未上报；信标开 → 倒计时
+    // 用结构化的 beaconPhase 判断，**不再拿中文字符串做 == 比较**
     final label = on
-        ? (next == '即将' ? '即将上报…' : '距下次上报 $next')
+        ? (st.beaconPhase == BeaconPhase.imminent
+            ? S.of(context).beaconImminent
+            : S.of(context).beaconNextIn(st.nextBeaconIn))
         : S.of(context).beaconOffChip;
     return GestureDetector(
       onTap: _showMyPanel,

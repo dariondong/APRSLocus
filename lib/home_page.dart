@@ -745,15 +745,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Icon(Icons.timer_rounded, size: 12, color: C.grey),
               SizedBox(width: 4),
+              // 注意：AppState.nextBeaconIn 已经本地化（内部按 locale 取 l10n），
+              // 不要再包一层 localizedNextBeaconValue —— 那个助手是按「中文
+              // 状态串」做映射的旧模式，传入已本地化文案会匹配不上。
               Text(
-                S
-                    .of(context)
-                    .nextBeaconIn(
-                      localizedNextBeaconValue(
-                        context,
-                        widget.state.nextBeaconIn,
-                      ),
-                    ),
+                S.of(context).nextBeaconIn(widget.state.nextBeaconIn),
                 style: ts(10, c: C.slate),
               ),
               Spacer(),

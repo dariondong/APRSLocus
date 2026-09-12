@@ -244,6 +244,63 @@ class _StationDetailState extends State<StationDetail> {
                           ),
                         ],
                       ),
+                      // 发送消息（详情面板最常用操作，置于头部之后，避免沉到页面底部）
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _msg,
+                              style: ts(13),
+                              decoration: InputDecoration(
+                                hintText: S.of(context).sendMessageTo(s.call),
+                                hintStyle: ts(13, c: C.grey),
+                                filled: true,
+                                fillColor: C.bgSoft,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              if (_msg.text.isNotEmpty) {
+                                widget.state.sendMessage(
+                                  s.call,
+                                  _msg.text.trim(),
+                                );
+                                _msg.clear();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(S.of(context).messageSent),
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: C.blue,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: softShadow(blur: 12, alpha: 0.2),
+                              ),
+                              child: const Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       // 台站荣誉徽章（该呼号在荣誉墙名单中时展示）
                       _honorRow(s.call),
                       if (related.isNotEmpty) ...[
@@ -817,63 +874,6 @@ class _StationDetailState extends State<StationDetail> {
                         ),
                         SizedBox(height: 8),
                       ],
-                      // 快捷操作
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _msg,
-                              style: ts(13),
-                              decoration: InputDecoration(
-                                hintText: S.of(context).sendMessageTo(s.call),
-                                hintStyle: ts(13, c: C.grey),
-                                filled: true,
-                                fillColor: C.bgSoft,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () {
-                              if (_msg.text.isNotEmpty) {
-                                widget.state.sendMessage(
-                                  s.call,
-                                  _msg.text.trim(),
-                                );
-                                _msg.clear();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(S.of(context).messageSent),
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                              }
-                            },
-                            child: Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                color: C.blue,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: softShadow(blur: 12, alpha: 0.2),
-                              ),
-                              child: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),

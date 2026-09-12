@@ -251,8 +251,15 @@ class _MessagesPageState extends State<MessagesPage> {
                     // 页面标题 + 瀑布流/会话切换
                     Row(
                       children: [
-                        Text(S.of(context).messages, style: T.h1),
-                        const Spacer(),
+                        // 英文下 "Messages" + "Feed/Chats" 同占一行会挤爆窄屏：
+                        // 标题改为 Expanded + ellipsis，把剩余宽度让给切换器
+                        Expanded(
+                          child: Text(S.of(context).messages,
+                              style: T.h1,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                        const SizedBox(width: 8),
                         _modeToggle(),
                       ],
                     ),
@@ -313,13 +320,16 @@ class _MessagesPageState extends State<MessagesPage> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        // 英文标签较长时收紧横向内边距，避免两个 pill 把标题挤下去
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           color: sel ? C.blue : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: ts(12, c: sel ? Colors.white : C.slate, w: FontWeight.w600),
         ),
       ),
@@ -1325,9 +1335,15 @@ class _MessagesPageState extends State<MessagesPage> {
             children: [
               Icon(icon, size: 14, color: color),
               const SizedBox(width: 4),
-              Text(
-                label,
-                style: ts(11, c: color, w: FontWeight.w700),
+              // 英文标签明显更长（New conversation / Broadcast / New group），
+              // 必须 Flexible + ellipsis，否则会溢出 Expanded 分到的宽度
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: ts(11, c: color, w: FontWeight.w700),
+                ),
               ),
             ],
           ),

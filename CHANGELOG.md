@@ -1,5 +1,43 @@
 # 更新日志
 
+## [1.6.78] - 2026-09-12
+
+> 说明：自本版起更新日志采用**中英双语**。
+> Note: from this release onward the changelog is bilingual (Chinese + English).
+
+### 🚚 台站详情：发送消息入口提前 / Move the message box to the top
+- 「发送消息」原先沉在页面**最底部**（数据包列表之后），几乎找不到；
+  现移到**头部之后**（呼号/状态下方），进入详情即可直接发消息
+- The "send message" input used to sit at the very **bottom** of the station
+  detail panel (below the packet list) and was hard to find. It now sits
+  directly **under the header**, so it is visible as soon as the panel opens.
+
+### 📐 消息页：英文标签溢出修复 / Fix overflowing English labels
+- **标题行**：`Messages` 与 `Feed/Chats` 切换器同处一行，英文下挤爆窄屏
+  → 标题改为 `Expanded` + ellipsis，剩余宽度让给切换器
+- **快捷操作按钮**：`New conversation` / `Broadcast` / `New group` 明显长于中文，
+  按钮内 `Text` 无省略 → 加 `Flexible` + `maxLines:1` + ellipsis；切换器内边距收紧
+- **Title row**: `Messages` plus the `Feed`/`Chats` toggle overflowed narrow
+  screens in English → title is now `Expanded` + ellipsis.
+- **Quick-action buttons**: the English labels are much longer; their `Text`
+  had no ellipsis → wrapped in `Flexible` with `maxLines: 1` + ellipsis.
+
+### 🏗️ 信标倒计时：状态结构化（i18n 架构修复）
+### / Beacon countdown: structured state (i18n refactor)
+- `AppState.nextBeaconIn` 原先**返回中文字符串**（`'已关闭'`/`'未连接'`/
+  `'等待定位'`/`'45s'`/`'即将'`），UI 还得用 `== '即将'` 去比较 —— 既无法
+  本地化、又极易出错
+- 新增结构化的 `BeaconPhase`（off / disconnected / waitingFix / counting /
+  imminent）与 `beaconSecondsLeft`；UI 改为按 phase 判断 + l10n 渲染
+- `nextBeaconIn` 保留但改为按 `AppState.locale` 自行本地化；
+  通知栏文案（已连接/连接中/在线/收包/信标）一并本地化
+- 移除 `widgets.dart` 里按中文串映射的旧助手 `localizedNextBeaconValue()`
+- `AppState.nextBeaconIn` used to **return Chinese strings** and the UI even
+  compared with `== '即将'` — unlocalizable and error-prone. Added a structured
+  `BeaconPhase` enum + `beaconSecondsLeft`; the UI now switches on the phase and
+  renders via l10n. Notification-bar texts are localized too, and the legacy
+  Chinese-string-mapping helper was removed.
+
 ## [1.6.77] - 2026-09-11
 
 ### 🌐 荣誉墙多语言（此前只有中文）

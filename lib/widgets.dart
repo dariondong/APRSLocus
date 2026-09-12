@@ -128,12 +128,10 @@ String localizedLocationStatus(BuildContext context, String value) {
   return value;
 }
 
-String localizedNextBeaconValue(BuildContext context, String value) {
-  if (value == '已关闭') return S.of(context).beaconDisabled;
-  if (value == '等待定位') return S.of(context).waitingForLocation;
-  if (value == '即将') return S.of(context).imminent;
-  return value;
-}
+// 说明：原 `localizedNextBeaconValue()` 已移除。
+// 它属于「状态层返回中文串 → 此处映射回本地化文案」的旧模式；
+// 现 AppState.nextBeaconIn 已按 locale 自行本地化（并新增结构化的
+// AppState.beaconPhase / beaconSecondsLeft），故此映射不再需要。
 
 String localizedConnectionInfo(BuildContext context, String value) {
   final s = S.of(context);

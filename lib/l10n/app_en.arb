@@ -1111,5 +1111,20 @@
   "honoredBadges": "{n}/{m} badges unlocked",
   "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
   "achievementsProgress": "{n}/{m} achievements",
-  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}}
+  "@achievementsProgress": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},
+  "beaconNotConnected": "Not connected",
+  "beaconWaitingFix": "Waiting for fix",
+  "beaconSoon": "Due now",
+  "beaconNextIn": "Next report in {s}",
+  "@beaconNextIn": {"placeholders": {"s": {"type": "String"}}},
+  "beaconImminent": "Reporting now…",
+  "notifConnected": "Connected",
+  "notifConnecting": "Connecting",
+  "notifDisconnected": "Disconnected",
+  "notifOnline": "{n} online",
+  "@notifOnline": {"placeholders": {"n": {"type": "String"}}},
+  "notifRx": "RX {n}",
+  "@notifRx": {"placeholders": {"n": {"type": "String"}}},
+  "notifBeacon": "Beacon {v}",
+  "@notifBeacon": {"placeholders": {"v": {"type": "String"}}}
 }

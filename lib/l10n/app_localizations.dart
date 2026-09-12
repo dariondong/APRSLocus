@@ -6068,6 +6068,72 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{n}/{m} 成就'**
   String achievementsProgress(String n, String m);
+
+  /// No description provided for @beaconNotConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接'**
+  String get beaconNotConnected;
+
+  /// No description provided for @beaconWaitingFix.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待定位'**
+  String get beaconWaitingFix;
+
+  /// No description provided for @beaconSoon.
+  ///
+  /// In zh, this message translates to:
+  /// **'即将'**
+  String get beaconSoon;
+
+  /// No description provided for @beaconNextIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'距下次上报 {s}'**
+  String beaconNextIn(String s);
+
+  /// No description provided for @beaconImminent.
+  ///
+  /// In zh, this message translates to:
+  /// **'即将上报…'**
+  String get beaconImminent;
+
+  /// No description provided for @notifConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接'**
+  String get notifConnected;
+
+  /// No description provided for @notifConnecting.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接中'**
+  String get notifConnecting;
+
+  /// No description provided for @notifDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接'**
+  String get notifDisconnected;
+
+  /// No description provided for @notifOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 在线'**
+  String notifOnline(String n);
+
+  /// No description provided for @notifRx.
+  ///
+  /// In zh, this message translates to:
+  /// **'收 {n}'**
+  String notifRx(String n);
+
+  /// No description provided for @notifBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标 {v}'**
+  String notifBeacon(String v);
 }
 
 class _AppLocalizationsDelegate
