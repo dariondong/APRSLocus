@@ -15,6 +15,12 @@ import 'services.dart';
 import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'l10n/app_localizations.dart';
+// 说明：AppLocalizationsZh / AppLocalizationsZhTw / AppLocalizationsEn 是 gen-l10n
+// 生成在 app_localizations_zh.dart / app_localizations_en.dart 里的**具体实现类**，
+// app_localizations.dart 只导出抽象基类。状态层（无 BuildContext）需要直接构造
+// 具体实例，故必须显式 import 这两个生成文件，否则报 undefined_method。
+import 'l10n/app_localizations_en.dart';
+import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'early_member.dart';
 import 'achievements.dart';
@@ -3033,10 +3039,15 @@ class AppState extends ChangeNotifier {
   /// 按当前 [locale] 取本地化实例。
   /// 状态层没有 BuildContext（ChangeNotifier），故这里直接按语言构造；
   /// 供通知栏等无法拿到 context 的场合使用。
+  ///
+  /// ⚠️ 本应用存储的语言码是**下划线**形式：'' / 'zh' / 'zh_TW' / 'en'
+  /// （见 OOBE 与设置页的 options；app.dart 的 `_localeOf` 也是按 '_' 切分）。
+  /// 不是 BCP-47 的 'zh-TW'——此处两种都认，避免繁體用户回落成简体。
   AppLocalizations get l10n {
     switch (locale) {
       case 'en':
         return AppLocalizationsEn();
+      case 'zh_TW':
       case 'zh-TW':
         return AppLocalizationsZhTw();
       default:

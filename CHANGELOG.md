@@ -32,11 +32,16 @@
 - `nextBeaconIn` 保留但改为按 `AppState.locale` 自行本地化；
   通知栏文案（已连接/连接中/在线/收包/信标）一并本地化
 - 移除 `widgets.dart` 里按中文串映射的旧助手 `localizedNextBeaconValue()`
+- 修正繁體中文（`zh_TW`）取本地化实例的判断：本应用语言码用**下划线**
+  （`zh_TW`），此前误写成 `zh-TW`，会让繁體用户回落成简体文案
 - `AppState.nextBeaconIn` used to **return Chinese strings** and the UI even
   compared with `== '即将'` — unlocalizable and error-prone. Added a structured
   `BeaconPhase` enum + `beaconSecondsLeft`; the UI now switches on the phase and
   renders via l10n. Notification-bar texts are localized too, and the legacy
   Chinese-string-mapping helper was removed.
+- Fixed the `zh_TW` locale lookup: the app stores language codes with an
+  underscore (`zh_TW`, not `zh-TW`), so Traditional Chinese no longer fell back
+  to Simplified.
 
 ## [1.6.77] - 2026-09-11
 
