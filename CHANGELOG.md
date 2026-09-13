@@ -1,5 +1,96 @@
 # 更新日志
 
+## [1.6.101] - 2026-09-13
+
+> 📌 本版专注把**翻译真正做得可用**：免密钥接口从 1 个变成一整套候选链，
+> 并堵住「接口返回原文却被当成翻译成功」这个会让人误以为功能坏掉的漏洞。
+>
+> This release focuses on making translation **actually work**: a single keyless
+> endpoint becomes a whole candidate chain, and an endpoint echoing the source text back
+> is no longer accepted as a successful translation.
+
+### 🔍 实测结论：没有单一可靠的免密钥接口 / Measured reality: no single keyless endpoint is reliable
+
+本版首先是把各接口**实测**了一遍（结论已写进代码注释）：
+
+- **Google 公开端点**：质量好，但会被限流（实测 429 / 拦截页）
+- **MyMemory**：官方免密钥，但本质是**翻译记忆库** —— 实测 `en→ja` 返回
+  `hello-world`、`en→ko` 返回 `Hello World`，即**原文照抄**
+- **LibreTranslate 公共实例**：已要求 API Key，且语言列表里**没有中文**
+- **Lingva 公共实例**：三个全 403/500，已停服
+- **百度**：可达、语种码正确，标准版即支持印尼语（`id`）
+
+因此本版不再找「更可靠的免费接口」（不存在），而是靠工程手段提高可靠性。
+
+- This version starts by **measuring** each endpoint (findings are recorded in code
+  comments): Google's public endpoint is rate-limited (observed 429), MyMemory is a
+  **translation memory** that echoes the source back (`en→ja` → `hello-world`), public
+  LibreTranslate instances now demand an API key and often lack Chinese, and the Lingva
+  instances are all dead (403/500). Baidu is reachable with correct language codes and
+  supports Indonesian (`id`) even on the standard tier. So instead of hunting for a
+  “more reliable free endpoint” (there isn't one), reliability is engineered in.
+
+### 🔀 接口从 4 个增到 7 个，默认改为「自动」 / 7 providers now, with Automatic as the default
+
+- 可选：**自动**（默认）/ Google 公开端点 / MyMemory /
+  **LibreTranslate（可自建）** / Google Cloud / 百度 / 自定义
+- **「自动」按 Google 公开 → MyMemory → LibreTranslate 依次尝试**，
+  取第一个真正翻译成功的结果 —— 这是可靠性的主要来源
+- **LibreTranslate 支持自建**（填实例地址 + 可选密钥），并会读 `/languages`
+  **探测该实例的真实语种范围**，避免发出注定 400 的请求
+- 每个接口在设置里都标出**已知限制**（如「Google 公开端点可能被限流」、
+  「MyMemory 无匹配语料时返回原文」）—— 不写清楚的话，用户只会以为应用坏了
+- 自动模式下显示**本次实际使用的接口**
+
+- Choices are now: **Automatic** (default), Google's public endpoint, MyMemory,
+  **LibreTranslate (self-hostable)**, Google Cloud, Baidu and Custom. **Automatic tries
+  Google-public → MyMemory → LibreTranslate** and keeps the first real translation, which
+  is where the reliability comes from. LibreTranslate can be **self-hosted** (instance URL
+  plus optional key) and its `/languages` endpoint is queried to **detect the instance's
+  actual language coverage**, avoiding requests bound to fail with 400. Every provider
+  shows its **known limits** in settings (e.g. “Google's public endpoint may be
+  rate-limited”, “MyMemory echoes the source when it has no match”) — without that, users
+  just assume the app is broken. In Automatic mode the provider that was **actually used**
+  is shown.
+
+### ✅ 译文有效性校验：裆住「返回原文」的假成功 / Rejecting the “echoed source” fake success
+
+- 完全相同的输出（忽略大小写/标点/空白）**判为未翻译**
+- 目标是非拉丁文字（中/日/韩/泰/阿/俄）却只回 ASCII 字母 → **判为未翻译**
+- **指定单一接口时同样校验**：否则用户看到「翻译＝原文」还以为成功了
+- 判定失败时**自动尝试下一个接口**，而不是把假结果展示出去
+- 已用真实 MyMemory 响应验证：`hello-world` 被正确识破
+- To make this concrete: identical output (ignoring case, punctuation and whitespace) is
+  **treated as untranslated**; a non-Latin target (Chinese/Japanese/Korean/Thai/Arabic/
+  Russian) that comes back as pure ASCII letters is **treated as untranslated**; and the
+  same validation applies **even when a single provider is selected**, otherwise
+  “translation == original” would look like success. On rejection the next candidate is
+  tried instead of showing a fake result. Verified against a live MyMemory response.
+
+### 🌐 语言名称国际化与语言码正确性 / Localized language names and correct language codes
+
+- 语言名现在**跟随界面语言**：中文界面显示「日语」，英文界面显示 “Japanese”
+  （15 种语言 × 6 个界面语言）—— 之前永远显示各语言的自称
+- **阿拉伯语等 RTL 名称单独包 Directionality**：不处理的话标点在混排时会跳到错误一侧
+- 语言码**按接口分别映射**（`zh-TW` 在百度是 `cht`、Google 是 `zh-TW`、
+  LibreTranslate 是 `zt`、MyMemory 是 `zh-TW`），并用单测锁住三点：
+  同一接口内**无冲突**（否则反向解析歧义）、**简繁必须区分**、形状合 BCP-47
+- **百度错误码 → 人话**（58001 语种不支持、54001 签名错误、54003 频率限制、
+  54004 余额不足等）—— 原来只招数字码，用户无从下手
+- **语种不支持 → 可行动提示**：百度 58001 / Google 400 Invalid Value /
+  LibreTranslate 不支持语种统一归类，提示「可改用自动或其它接口」，
+  而不是用一条 400 把问题搪塞过去
+- Language names now **follow the UI language** (a Chinese UI shows 「日语」, an English
+  UI shows “Japanese”; 15 languages × 6 UI languages) instead of always showing
+  endonyms, and **RTL names such as Arabic are wrapped in a Directionality** so punctuation
+  does not jump sides when mixed. Language codes are **mapped per provider** (`zh-TW` is
+  `cht` on Baidu, `zh-TW` on Google, `zt` on LibreTranslate), pinned by tests for no
+  collisions within a provider, Simplified/Traditional being distinct, and BCP-47 shape.
+  **Baidu error codes are translated into plain language** (58001 unsupported direction,
+  54001 bad signature, 54003 rate limit, 54004 no balance) because raw numbers give users
+  nothing to act on, and **an unsupported language becomes an actionable hint** (“try
+  Automatic or another provider”) rather than a bare 400.
+
 ## [1.6.100] - 2026-09-13
 
 > 📌 本版包含：蓝牙 TNC 数据来源（含完整 KISS 控制）、聊天翻译（**默认免密钥免费接口**）、
