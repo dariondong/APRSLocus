@@ -1,5 +1,53 @@
 # 更新日志
 
+## [1.6.102] - 2026-09-13
+
+### 🐛 群聊翻译不可用（与「数字被误判」同根） / Group chat translation was broken — same root cause as numbers being misjudged
+
+- **现象**：群里翻译任何消息都失败，最后提示「所有免密钥接口都不可用」
+- **根因**：中文界面下目标语言就是中文，而群聊消息本来就是中文 →
+  接口返回的内容与原文相同 → 而上一版把「译文＝原文」**当成失败并自动跳到
+  下一个接口** → 三个候选都「失败」→ 报错。**数字、呼号、坐标同理**。
+- **修法**（也就是你说得对的那件事）：
+  - 「译文与原文相同」**不再算失败、不再跳接口**，只作为一个标记
+  - 界面不再把原文再抄一遍，而是如实说明：
+    「译文与原文相同 · 可能无需翻译，或该接口未能翻译」
+- **不在群聊里加「发送前翻译」**：群里多位成员、对方语言不唯一，强做会发错（仍然只有私聊有该开关）
+- Symptom: translating any message in a group chat failed with “all keyless endpoints
+  failed”. Root cause: with a Chinese UI the target language is Chinese and the group
+  messages are already Chinese, so the provider echoed the source — and the previous build
+  **treated “translation == original” as a failure and jumped to the next provider**, so all
+  three candidates “failed”. **Numbers, callsigns and coordinates hit the same path.**
+  Fixed as it should have been: an echoed result is **no longer a failure and no longer
+  switches providers**; it becomes a flag, and the UI says so honestly (“Translation is
+  identical to the original · may need no translation, or the provider failed to
+  translate”) instead of repeating the original text. “Translate before sending” stays
+  **off for group chats** (several members, no single other language).
+
+### 🔢 无需翻译的内容不再请求接口 / No pointless requests for content that needs no translation
+
+- 新增**预检**：纯数字 / 坐标 / 标点符号 / emoji / 纯呼号（如 `BG7LZQ-9`）
+  **直接使用原文，连请求都不发** —— 省额度，也不再拿到无意义的 echo
+- 自动翻译在预检阶段就跳过这类消息
+- 你主动长按点「翻译」时，若内容无需翻译，会明确提示
+  「该内容无需翻译（数字 / 符号 / 呼号）」，而不是没反应
+- Adds a **pre-check**: pure numbers, coordinates, punctuation, emoji and bare callsigns
+  (`BG7LZQ-9`) **use the original text without any request at all**, saving quota and
+  avoiding meaningless echoes. Auto-translate skips such messages at the pre-check, and if
+  you explicitly long-press → translate on them, the app says “Nothing to translate here
+  (numbers / symbols / callsigns)” instead of silently doing nothing.
+
+### 🔧 顺带修正 / Also fixed
+
+- 翻译**我发出的**内容时会把源语言（我的语言）明确传给接口，
+  使 MyMemory 这类「要求指定源语言」的接口也能用上
+- 提示文案不再断言「原文已是目标语言」——同样相同的结果也可能是接口没翻，
+  现在的措辞两种可能都包含
+- When translating **your own** content the source language (yours) is now passed
+  explicitly, so providers that require it (MyMemory) become usable; and the hint no
+  longer asserts “already in the target language”, since an identical result may equally
+  mean the provider did not translate.
+
 ## [1.6.101] - 2026-09-13
 
 > 📌 本版专注把**翻译真正做得可用**：免密钥接口从 1 个变成一整套候选链，
