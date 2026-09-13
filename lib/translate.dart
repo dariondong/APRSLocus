@@ -371,20 +371,29 @@ class TransDirection {
 
 // ───────────────────────── 翻译服务 ─────────────────────────
 
-/// 译文有效性判断。
+/// 译文处理策略。
 ///
-/// **为什么必须有这个**：MyMemory 本质是翻译记忆库，没有匹配语料时会把
-/// **原文照抄**返回（实测 `en→ja` 返回 "hello-world"、`en→ko` 返回
-/// "Hello World"）。若把它当成成功，用户会看到「翻译＝原文」，
-/// 既不知道失败、也不会去换接口 —— 这是最坏的一种「看起来正常」。
+/// 这里记录两条**实测得来**的教训，改动前请先读完：
+///
+/// 1. **「返回原文」不能当成失败，更不能因此切换接口。**
+///    原文与译文相同有两种完全正当的情形：
+///      - 内容本来就不需要翻译（数字、坐标、呼号、URL、纯符号）
+///      - 源语言已经是目标语言（中文群里中文用户看中文消息）
+///    曾经把 echo 判为失败并自动跳到下一个接口，结果是：中文群聊里
+///    每条消息都会「翻译失败 → 跳接口 → 三个都失败」，群聊看起来完全不能用。
+///    现在 echo 只作为一个**软标记**交给界面如实说明，绝不触发跳接口。
+///
+/// 2. **连接口都不该调的输入要提前拦掉**：数字/符号/呼号调翻译 API
+///    既浪费额度又必然拿到 echo。
 class TransSanity {
   TransSanity._();
 
-  /// 归一化：去掉空白、标点、大小写差异后比较
-  static String _norm(String s) =>
-      s.toLowerCase().replaceAll(RegExp(r'[\s\p{P}\p{S}]', unicode: true), '');
+  /// 归一化：去掉空白、标点、符号，并统一小写
+  static String _norm(String s) => s
+      .toLowerCase()
+      .replaceAll(RegExp(r'[\s\p{P}\p{S}]', unicode: true), '');
 
-  /// 输出是否等于输入（即「没翻」）
+  /// 输出是否与输入实质相同（忽略大小写/标点/空白）
   static bool isEcho(String src, String out) {
     final a = _norm(src);
     final b = _norm(out);
@@ -392,25 +401,53 @@ class TransSanity {
     return a == b;
   }
 
+  /// 是否像业余无线电呼号（含 SSID）：`BG7LZQ` / `BG7LZQ-9` / `JA1XYZ`
+  ///
+  /// APRS 消息里大量出现呼号，这类内容翻不出东西，
+  /// 提前识别可省掉一次注定无用的请求。
+  static final RegExp _callsign =
+      RegExp(r'^[A-Za-z]{1,2}[0-9][A-Za-z]{1,4}(-[0-9]{1,2})?$');
+
+  static bool looksLikeCallsign(String s) =>
+      _callsign.hasMatch(s.trim());
+
+  /// 该内容是否**需要**翻译。
+  ///
+  /// 返回 false 时调用方应直接使用原文、不请求任何接口。
+  /// 判据：里面得至少有一个字母；纯数字/标点/符号/emoji 没有可翻译的内容。
+  static bool needsTranslation(String text) {
+    final t = text.trim();
+    if (t.isEmpty) return false;
+    // 纯呼号直接跳过（本应用场景高频出现）
+    if (looksLikeCallsign(t)) return false;
+    // 需要至少一个「字母类」字符（任何文种，含中日韩）
+    return RegExp(r'[\p{L}]', unicode: true).hasMatch(t);
+  }
+
   /// 目标语言是否属「非拉丁文字」体系
-  static bool _needsNonLatin(String lang) =>
+  static bool needsNonLatin(String lang) =>
       const {'zh', 'zh-TW', 'ja', 'ko', 'th', 'ar', 'ru'}.contains(lang);
 
-  /// 综合判定：结果是否可信为「确实翻译过」
-  static bool looksTranslated(String src, String out, String target) {
-    if (out.trim().isEmpty) return false;
-    if (isEcho(src, out)) return false;
-    // 目标是非拉丁文字，译文却全是 ASCII 字母/数字 → 基本没翻
-    if (_needsNonLatin(target) &&
+  /// **仅供参考**的「看起来没有真正翻译」判断。
+  ///
+  /// 注意：**绝不可以用它来判失败或切换接口** —— 它无法区分
+  /// 「接口没翻」与「本来就该一样」（数字、同语言）。仅用于在界面上
+  /// 给用户一句如实的说明。
+  static bool looksUntranslated(String src, String out, String target) {
+    if (out.trim().isEmpty) return true;
+    if (isEcho(src, out)) return true;
+    // 目标是中日韩等文种，却只回来 ASCII 字母 → 很可能没翻
+    if (needsNonLatin(target) &&
         !RegExp(r'[^\x00-\x7F]').hasMatch(out) &&
-        RegExp(r'[A-Za-z]').hasMatch(out)) {
-      return false;
+        RegExp(r'[A-Za-z]').hasMatch(out) &&
+        !looksLikeCallsign(src)) {
+      return true;
     }
-    return true;
+    return false;
   }
 }
 
-/// 翻译结果 + 接口识别出的源语言
+/// 翻译结果 + 接口识别出的源语言/// 翻译结果 + 接口识别出的源语言
 ///
 /// 为什么要带识别结果：本应用支持「翻译成**对方的**语言」，而对方说什么
 /// 语言用户通常并不知道。三家接口在 `from=auto` 时都会回传识别结果
@@ -423,7 +460,18 @@ class TranslateResult {
   /// 接口识别出的源语言（内部短码）；接口未回传时为 null
   final String? detected;
 
-  const TranslateResult(this.text, {this.detected});
+  /// **无需翻译**（数字/符号/呼号等），[text] 即原文，未请求任何接口
+  final bool skipped;
+
+  /// 接口返回的内容与原文实质相同（可能是正常的，也可能未翻译）
+  final bool sameAsSource;
+
+  const TranslateResult(
+    this.text, {
+    this.detected,
+    this.skipped = false,
+    this.sameAsSource = false,
+  });
 }
 
 class TranslateException implements Exception {
@@ -555,13 +603,11 @@ class TranslateService {
 
   /// 翻译。失败抛 [TranslateException]（消息已是可读文本）。
   ///
-  /// 返回 [TranslateResult]：除译文外还带接口**识别出的源语言** ——
-  /// 这是「翻译成对方语言」能自动工作的关键。
-  ///
-  /// 两条路径：
-  ///   - `provider == auto`：按 [TransProvider.autoChain] 依次尝试，取第一个
-  ///     通过 [TransSanity] 校验的结果（这是可靠性的主要来源）
-  ///   - 指定接口：只调它，但**同样做校验** —— 返回原文不算成功
+  /// 流程（顺序很重要）：
+  ///   ① **预检**：数字/符号/呼号等无需翻译的内容直接返回原文，
+  ///      **连接口都不调**（省额度、也避免拿到无意义的 echo）
+  ///   ② 自动模式按候选链尝试；**只在硬失败（网络/HTTP/解析）时才换下一个接口**
+  ///   ③ 结果与原文相同时**不判失败**，只标记 `sameAsSource` 交给界面说明
   Future<TranslateResult> translate(
     String text, {
     String from = 'auto',
@@ -570,12 +616,21 @@ class TranslateService {
     final target = to ?? config.targetLang;
     final src = text.trim();
     if (src.isEmpty) return const TranslateResult('');
+    // ① 预检：没有可翻译的内容（纯数字/符号/呼号）→ 原样返回，不发请求
+    if (!TransSanity.needsTranslation(src)) {
+      return TranslateResult(src, skipped: true, detected: from == 'auto' ? null : from);
+    }
     if (!config.ready) {
       throw TranslateException('not-configured:${config.missingField}');
     }
-    final key = _cacheKey(src, from, target);
-    final hit = _cache[key];
-    if (hit != null) return TranslateResult(hit);
+    final cacheKey = _cacheKey(src, from, target);
+    final hit = _cache[cacheKey];
+    if (hit != null) {
+      return TranslateResult(
+        hit,
+        sameAsSource: TransSanity.looksUntranslated(src, hit, target),
+      );
+    }
 
     requestCount++;
     try {
@@ -583,20 +638,28 @@ class TranslateService {
           ? await _viaAutoChain(src, from, target)
           : await _viaOne(config.provider, src, from, target);
       final out = r.text.trim();
-      _cache[key] = out;
+      _cache[cacheKey] = out;
       unawaited(_persistCache());
-      return TranslateResult(out, detected: r.detected);
+      // ③ echo 只作软标记：绝大多数情况是「本来就无需翻译」或
+      //    「源语言已是目标语言」，不该报错、更不该换接口
+      return TranslateResult(
+        out,
+        detected: r.detected,
+        sameAsSource:
+            TransSanity.looksUntranslated(src, out, target),
+      );
     } catch (e) {
       failureCount++;
       rethrow;
     }
   }
 
-  /// 自动模式：逐个尝试免密钥接口，返回第一个「确实翻译过」的结果。
+  /// 自动模式：按候选链尝试，返回第一个**硬成功**的结果。
   ///
-  /// 每个接口单独捕异常继续下一个；**同时**对结果做有效性校验 ——
-  /// 需要校验的原因见 [TransSanity]（MyMemory 会原样返回输入）。
-  /// 全部失败时抛出汇总信息，让用户知道到底试过哪些。
+  /// **只在硬失败时才换下一个接口**（超时/网络/HTTP 错误/解析失败）。
+  /// 不因为「译文与原文相同」而换接口 —— 那种情况往往是内容本来就无需
+  /// 翻译（数字、呼号）或源语言已是目标语言，换接口既浪费额度，
+  /// 还会把本来正常的结果变成「全部失败」。详见 [TransSanity] 的说明。
   Future<TranslateResult> _viaAutoChain(
       String text, String from, String to) async {
     final tried = <String>[];
@@ -604,11 +667,8 @@ class TranslateService {
       if (p == TransProvider.libre && config.libreUrl.trim().isEmpty) continue;
       try {
         final r = await _viaOne(p, text, from, to);
-        if (TransSanity.looksTranslated(text, r.text, to)) {
-          lastProviderUsed = p;
-          return r;
-        }
-        tried.add('$p:untranslated');
+        lastProviderUsed = p;
+        return r;
       } catch (e) {
         tried.add('$p:${_short(e)}');
       }
@@ -655,11 +715,9 @@ class TranslateService {
       }
       rethrow;
     }
-    // 指定单一接口时也要校验：MyMemory 这类会原样返回，
-    // 不校验的话用户看到的是「翻译＝原文」还以为成功了
-    if (!TransSanity.looksTranslated(text, r.text, to)) {
-      throw TranslateException('untranslated:$provider');
-    }
+    // 注意：这里**不再**因为「译文与原文相同」而判失败或换接口。
+    // 那会把「数字/呼号/同语言」这类正常情况误报成失败，
+    // 并在自动模式下连锁跳到全部接口失败。软标记交给上层（见 translate）。
     lastProviderUsed = provider;
     return r;
   }

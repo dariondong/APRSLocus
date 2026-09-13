@@ -1395,7 +1395,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get translateLangAuto => '自动检测';
 
   @override
-  String get translateSameLang => '原文已是目标语言';
+  String get translateSameLang => '译文与原文相同 · 可能无需翻译，或该接口未能翻译';
+
+  @override
+  String get translateNotNeeded => '该内容无需翻译（数字 / 符号 / 呼号）';
 
   @override
   String translateBubbleCount(int n) {
@@ -5973,7 +5976,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get translateLangAuto => '自動偵測';
 
   @override
-  String get translateSameLang => '原文已是目標語言';
+  String get translateSameLang => '譯文與原文相同 · 可能無需翻譯，或該介面未能翻譯';
+
+  @override
+  String get translateNotNeeded => '該內容無需翻譯（數字 / 符號 / 呼號）';
 
   @override
   String translateBubbleCount(int n) {

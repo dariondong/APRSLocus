@@ -244,35 +244,73 @@ void main() {
     });
   });
 
-  group('译文有效性校验（挡住「返回原文」的假成功）', () {
-    test('完全相同的输出判为未翻译', () {
+  group('无需翻译的预检（数字/呼号不该调接口）', () {
+    test('纯数字 / 符号 / emoji 判为无需翻译', () {
+      for (final t in ['12345', '3.14159', '+86', '---', '!!!', '🙂🙂', '12:30', '100%']) {
+        expect(TransSanity.needsTranslation(t), isFalse, reason: '「$t」不该翻译');
+      }
+    });
+
+    test('含字母（任何文种）才需要翻译', () {
+      for (final t in ['hello', '你好', 'こんにちは', 'مرحبا', 'Привет', 'Hello 123']) {
+        expect(TransSanity.needsTranslation(t), isTrue, reason: '「$t」需要翻译');
+      }
+    });
+
+    test('纯呼号跳过（APRS 场景高频，翻不出东西）', () {
+      for (final t in ['BG7LZQ', 'BG7LZQ-9', 'JA1XYZ', 'N0CALL-15']) {
+        expect(TransSanity.looksLikeCallsign(t), isTrue, reason: t);
+        expect(TransSanity.needsTranslation(t), isFalse, reason: t);
+      }
+      // 呼号里夹了别的内容就不是纯呼号了
+      expect(TransSanity.needsTranslation('BG7LZQ hello'), isTrue);
+      expect(TransSanity.looksLikeCallsign('BG7LZQ hello'), isFalse);
+    });
+
+    test('空串 / 纯空白判为无需翻译', () {
+      expect(TransSanity.needsTranslation(''), isFalse);
+      expect(TransSanity.needsTranslation('   '), isFalse);
+    });
+  });
+
+  group('echo 只作软标记，绝不用来判失败', () {
+    test('isEcho：忽略大小写/标点/空白', () {
       expect(TransSanity.isEcho('hello', 'hello'), isTrue);
-      // 仅大小写/标点/空白不同 → 仍算未翻译
       expect(TransSanity.isEcho('Hello, world!', 'hello world'), isTrue);
       expect(TransSanity.isEcho('hello', '你好'), isFalse);
     });
 
-    test('looksTranslated：非拉丁目标语言却回纯 ASCII → 判为未翻译', () {
-      // 这是 MyMemory 的典型表现（实测 en→ja 返回 "hello-world"）
-      expect(TransSanity.looksTranslated('hello world', 'hello-world', 'ja'),
-          isFalse);
-      expect(TransSanity.looksTranslated('hello world', 'Hello World', 'ko'),
-          isFalse);
-      // 正常译文通过
-      expect(TransSanity.looksTranslated('hello world', '你好，世界', 'zh'),
+    test('looksUntranslated 覆盖 echo 与非拉丁目标回 ASCII', () {
+      // echo（可能是「本来就一样」，也可能是没翻）
+      expect(TransSanity.looksUntranslated('hello', 'hello', 'fr'), isTrue);
+      // 目标日文却回纯 ASCII
+      expect(TransSanity.looksUntranslated('hello world', 'hello-world', 'ja'),
           isTrue);
-      expect(TransSanity.looksTranslated('hello', 'ハロー', 'ja'), isTrue);
+      expect(TransSanity.looksUntranslated('hello world', 'Hello World', 'ko'),
+          isTrue);
+      // 正常译文不算
+      expect(TransSanity.looksUntranslated('hello world', '你好，世界', 'zh'),
+          isFalse);
+      expect(TransSanity.looksUntranslated('hello', 'ハロー', 'ja'), isFalse);
+      // 源本身是呼号时不该误报（呼号翻成任何语言都还是原样）
+      expect(TransSanity.looksUntranslated('BG7LZQ', 'BG7LZQ', 'ja'), isTrue);
     });
 
-    test('拉丁目标语言不误判（英译法只差重音也算翻过）', () {
-      expect(TransSanity.looksTranslated('hello', 'bonjour', 'fr'), isTrue);
-      // 但原样返回仍然要判失败
-      expect(TransSanity.looksTranslated('hello', 'hello', 'fr'), isFalse);
+    test('**关键回归**：数字结果的 sameAsSource 不应导致失败', () {
+      // 「12345」在预检阶段就被拦下，根本不会走到接口
+      expect(TransSanity.needsTranslation('12345'), isFalse);
+      // 即便某个接口把数字原样返回，也只是软标记，不构成失败
+      expect(TransSanity.looksUntranslated('12345', '12345', 'zh'), isTrue);
     });
 
-    test('空输出判为失败', () {
-      expect(TransSanity.looksTranslated('hello', '', 'zh'), isFalse);
-      expect(TransSanity.looksTranslated('hello', '   ', 'zh'), isFalse);
+    test('**关键回归**：同语言内容（中文群里的中文消息）不判失败', () {
+      // 中文界面 + 中文消息 → 目标语言也是中文 → 译文与原文相同。
+      // 以前这里会被判失败并连锁跳到所有接口都失败，导致群聊完全不可用。
+      const msg = '今晚八点在老地方集合';
+      expect(TransSanity.isEcho(msg, msg), isTrue);
+      // 但「需要翻译」仍为真（有字母），所以会正常请求接口，
+      // 只是拿到相同结果时不会报错
+      expect(TransSanity.needsTranslation(msg), isTrue);
     });
   });
 

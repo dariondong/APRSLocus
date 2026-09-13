@@ -45,7 +45,24 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   /// 当前会话键：群聊按 groupId、私聊按呼号
+  /// （与 state 的 convKeyOfMsg 同一套前缀，便于「当前会话」判定）
   String get _convKey => convKeyOf(groupId: _selectedGroupId, call: _selected);
+
+  /// 把「当前正在看的会话」同步给状态层。
+  ///
+  /// 未读数会据此跳过当前会话 —— 否则「正看着的会话来新消息」会留下一个
+  /// 必须退出再进才能消掉的红点（用户反馈的「小红点有时候不消」之一）。
+  /// 页面不在前台（isActive=false）或停在列表上时传 null。
+  void _syncActiveConversation() {
+    if (!widget.isActive || _showList || _feedMode) {
+      widget.state.setActiveConversation();
+      return;
+    }
+    widget.state.setActiveConversation(
+      groupId: _selectedGroupId,
+      call: _selected.isEmpty ? null : _selected,
+    );
+  }
 
   /// 发送前翻译的预览：原文 → 译文。
   ///
@@ -265,6 +282,8 @@ class _MessagesPageState extends State<MessagesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 每次重建都把「当前会话」同步给状态层（很便宜：键相同就直接返回）
+    _syncActiveConversation();
     return ListenableBuilder(
       listenable: widget.state,
       builder: (context, _) {
@@ -585,6 +604,8 @@ class _MessagesPageState extends State<MessagesPage> {
   /// 自动翻译（按会话开关）：只处理收到的消息
   void _maybeAutoTranslate(AprsMsg m) {
     if (m.system || m.sent) return;
+    // 无需翻译的内容（数字/符号/呼号）在自动模式下直接跳过，连请求都不发
+    if (!TransSanity.needsTranslation(m.text)) return;
     final st = _trans;
     final key = msgKey(m);
     if (st.has(key) || st.pending.contains(key)) return;
@@ -1784,6 +1805,16 @@ class _MessagesPageState extends State<MessagesPage> {
       );
     }
     // ─── 单聊视图 ───
+    // 与群聊一致：**每次重建都标记已读**。
+    // 原来只在点开会话时标一次，于是「会话开着时来了新消息」会一直计为未读，
+    // 必须退出再进才消 —— 这是红点不消的另一个来源。
+    if (_selected.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _selectedGroupId == null && _selected.isNotEmpty) {
+          widget.state.markConversationRead(_selected);
+        }
+      });
+    }
     return _selected.isEmpty
         ? Center(
             child: Column(

@@ -2754,8 +2754,14 @@ abstract class AppLocalizations {
   /// No description provided for @translateSameLang.
   ///
   /// In zh, this message translates to:
-  /// **'原文已是目标语言'**
+  /// **'译文与原文相同 · 可能无需翻译，或该接口未能翻译'**
   String get translateSameLang;
+
+  /// No description provided for @translateNotNeeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'该内容无需翻译（数字 / 符号 / 呼号）'**
+  String get translateNotNeeded;
 
   /// No description provided for @translateBubbleCount.
   ///

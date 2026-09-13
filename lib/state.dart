@@ -63,7 +63,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.102';
+  static const appVersion = '1.6.103';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2200,9 +2200,12 @@ class AppState extends ChangeNotifier {
         _saveChatGroups();
       }
     }
-    if (!isGroupMsg) {
-      unreadMessages++;
-    }
+    // 未读数改为**派生重算**，而不是在这里手动 ++。
+    //
+    // 手动 ++ 与「已读时间点」是两套状态，必然脱节：曾经群消息完全不 ++，
+    // 于是红点要等别的操作触发重算才突然冒出，而读了群又不消（表现为
+    // 「小红点有时候不消」）。统一在 _recalcUnread 里算，就不会再有分歧。
+    _recalcUnread();
     _saveMessages();
     AchievementCenter.instance.bump('receiveMsg'); // 听没听到
     onNewMessage?.call(src, text, groupId);
@@ -3017,12 +3020,46 @@ class AppState extends ChangeNotifier {
     );
   }
 
+  /// 呼号归一化。
+  ///
+  /// APRS 呼号大小写不敏感，而各处来源不一（手动添加会 toUpperCase、
+  /// 报文里的可能原样小写）—— 不归一化就会出现「已读写在 A 键、
+  /// 统计时看 B 键」这种红点永不消除的情况。
+  static String normCall(String call) => call.trim().toUpperCase();
+
+  /// 消息属于哪个会话（'c:呼号' 或 'g:群ID'）
+  static String convKeyOfMsg(AprsMsg m) => m.groupId != null
+      ? 'g:${m.groupId}'
+      : 'c:${normCall(m.from)}';
+
+  /// 当前正在查看的会话键（null = 不在任何会话里）。
+  ///
+  /// 由消息页设置。未读计算会**跳过它** —— 否则「正看着的会话来了一条新消息」
+  /// 会产生一个必须退出再进才能消掉的红点。
+  String? _activeConvKey;
+
+  /// 设置当前查看的会话（消息页调用；传 null 表示回到列表/切走标签页）
+  void setActiveConversation({String? call, String? groupId}) {
+    final String? k;
+    if (groupId != null) {
+      k = 'g:$groupId';
+    } else if (call != null && call.trim().isNotEmpty) {
+      k = 'c:${normCall(call)}';
+    } else {
+      k = null;
+    }
+    if (k == _activeConvKey) return;
+    _activeConvKey = k;
+    _recalcUnread();
+  }
+
   /// 某会话的未读数（该呼号收到的、晚于已读时间点的消息数）
   int conversationUnread(String call) {
-    final readAt = _readAt[call];
+    final key = normCall(call);
+    final readAt = _readAt[key];
     int n = 0;
     for (final m in messages) {
-      if (!m.sent && m.from == call) {
+      if (!m.sent && m.groupId == null && normCall(m.from) == key) {
         if (readAt == null || m.time.isAfter(readAt)) n++;
       }
     }
@@ -3031,7 +3068,7 @@ class AppState extends ChangeNotifier {
 
   /// 标记某会话已读
   void markConversationRead(String call) {
-    _readAt[call] = DateTime.now();
+    _readAt[normCall(call)] = DateTime.now();
     _recalcUnread();
     _saveMessages();
   }
@@ -3051,22 +3088,30 @@ class AppState extends ChangeNotifier {
   /// 标记某群聊已读
   void markGroupRead(String groupId) {
     _groupReadAt[groupId] = DateTime.now();
+    // 原先这里**漏了重算**：只写已读时间点、不更新 unreadMessages，
+    // 于是「读完群聊，底部红点不消失」。
+    _recalcUnread();
     _saveMessages();
   }
 
-  /// 重新计算全局未读数
+  /// 供测试驱动未读重算（生产代码不要调用 —— 未读会在收消息/标记已读时自动重算）
+  @visibleForTesting
+  void recalcUnreadForTest() => _recalcUnread();
+
+  /// 重新计算全局未读数（**未读数的唯一真源**）
+  ///
+  /// 两条规则：
+  ///   ① 呼号归一化后比对，避免大小写导致「已读却仍算未读」
+  ///   ② **跳过当前正在查看的会话** —— 用户正看着它，不该有红点
   void _recalcUnread() {
     int n = 0;
     for (final m in messages) {
       if (m.sent || m.system) continue;
-      if (m.groupId != null) {
-        // 群聊消息：按群已读时间点
-        final readAt = _groupReadAt[m.groupId];
-        if (readAt == null || m.time.isAfter(readAt)) n++;
-      } else {
-        final readAt = _readAt[m.from];
-        if (readAt == null || m.time.isAfter(readAt)) n++;
-      }
+      if (_activeConvKey != null && convKeyOfMsg(m) == _activeConvKey) continue;
+      final readAt = m.groupId != null
+          ? _groupReadAt[m.groupId]
+          : _readAt[normCall(m.from)];
+      if (readAt == null || m.time.isAfter(readAt)) n++;
     }
     if (n != unreadMessages) {
       unreadMessages = n;
@@ -3077,17 +3122,20 @@ class AppState extends ChangeNotifier {
   /// 清零全部未读消息（进入消息页时调用）
   void clearUnread() {
     if (unreadMessages == 0) return;
-    unreadMessages = 0;
     final now = DateTime.now();
     for (final m in messages) {
       if (!m.sent) {
         if (m.groupId != null) {
           _groupReadAt[m.groupId!] = now;
         } else {
-          _readAt[m.from] = now;
+          // 归一化：与 _recalcUnread 用同一个键
+          _readAt[normCall(m.from)] = now;
         }
       }
     }
+    // 统一交给重算，而不是直接写 0 —— 否则可能与真实状态脱节
+    unreadMessages = 0;
+    _recalcUnread();
     _notify();
   }
 

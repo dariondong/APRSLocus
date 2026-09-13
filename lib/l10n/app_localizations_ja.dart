@@ -1408,7 +1408,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get translateLangAuto => '自動検出';
 
   @override
-  String get translateSameLang => 'すでに翻訳先の言語です';
+  String get translateSameLang => '訳文が原文と同じです · 翻訳不要か、プロバイダが翻訳できなかった可能性があります';
+
+  @override
+  String get translateNotNeeded => '翻訳の必要がない内容です（数字 / 記号 / コールサイン）';
 
   @override
   String translateBubbleCount(int n) {

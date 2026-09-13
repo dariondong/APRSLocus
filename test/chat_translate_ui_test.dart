@@ -419,4 +419,76 @@ void main() {
       expect((resp[2] as String), 'zh-CN');
     });
   });
+  group('译文与原文相同时的展示（群聊/数字场景）', () {
+    testWidgets('sameAsSource → 显示如实说明，而不是把原文再抄一遍',
+        (tester) async {
+      final m = msg('今晚八点集合');
+      final st = ConvTransState();
+      final pref = ConvTranslatePref(targetLang: 'zh');
+      // 同语言内容：接口把原文原样返回
+      st.setTranslated(msgKey(m), '今晚八点集合', 'zh', sameAsSource: true);
+
+      await pumpBlock(tester, (ctx) => translationBlock(
+        context: ctx,
+        m: m,
+        st: st,
+        pref: pref,
+      ));
+      // 不应重复显示原文
+      expect(find.text('今晚八点集合'), findsNothing);
+      // 应给出说明
+      expect(find.textContaining('相同'), findsOneWidget);
+    });
+
+    testWidgets('notNeeded（数字/呼号）→ 完全不显示译文块', (tester) async {
+      final m = msg('12345');
+      final st = ConvTransState()..setNotNeeded(msgKey(m));
+      final pref = ConvTranslatePref(targetLang: 'zh');
+
+      await pumpBlock(tester, (ctx) => translationBlock(
+        context: ctx,
+        m: m,
+        st: st,
+        pref: pref,
+      ));
+      expect(find.textContaining('12345'), findsNothing);
+      expect(find.textContaining('相同'), findsNothing);
+      expect(find.textContaining('翻译'), findsNothing);
+    });
+
+    testWidgets('正常译文仍然是双语对照（回归）', (tester) async {
+      final m = msg('Hello');
+      final st = ConvTransState();
+      st.setTranslated(msgKey(m), '你好', 'zh');
+      await pumpBlock(tester, (ctx) => translationBlock(
+        context: ctx,
+        m: m,
+        st: st,
+        pref: ConvTranslatePref(targetLang: 'zh'),
+      ));
+      expect(find.text('你好'), findsOneWidget);
+      expect(find.textContaining('相同'), findsNothing);
+    });
+
+    test('clear() 同时清掉 sameAsSource / notNeeded（否则换语言后残留）', () {
+      final m = msg('x');
+      final st = ConvTransState();
+      st.setTranslated(msgKey(m), 'x', 'zh', sameAsSource: true);
+      expect(st.sameAsSource, isNotEmpty);
+      st.clear();
+      expect(st.sameAsSource, isEmpty);
+      expect(st.notNeeded, isEmpty);
+      expect(st.translations, isEmpty);
+    });
+
+    test('setTranslated 会清掉同键的 sameAsSource/notNeeded（状态不打架）', () {
+      final m = msg('x');
+      final st = ConvTransState();
+      st.setNotNeeded(msgKey(m));
+      expect(st.notNeeded, contains(msgKey(m)));
+      st.setTranslated(msgKey(m), '译文', 'zh');
+      expect(st.notNeeded, isNot(contains(msgKey(m))));
+      expect(st.sameAsSource, isNot(contains(msgKey(m))));
+    });
+  });
 }

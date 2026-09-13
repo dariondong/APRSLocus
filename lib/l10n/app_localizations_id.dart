@@ -1428,7 +1428,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get translateLangAuto => 'Deteksi otomatis';
 
   @override
-  String get translateSameLang => 'Sudah dalam bahasa target';
+  String get translateSameLang =>
+      'Terjemahan sama dengan aslinya · mungkin tidak perlu diterjemahkan, atau penyedia gagal';
+
+  @override
+  String get translateNotNeeded =>
+      'Tidak ada yang perlu diterjemahkan (angka / simbol / tanda panggil)';
 
   @override
   String translateBubbleCount(int n) {

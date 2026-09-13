@@ -1435,7 +1435,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get translateLangAuto => 'Detectar automáticamente';
 
   @override
-  String get translateSameLang => 'Ya está en el idioma de destino';
+  String get translateSameLang =>
+      'La traducción es idéntica al original · puede que no necesite traducción o que el proveedor fallara';
+
+  @override
+  String get translateNotNeeded =>
+      'Aquí no hay nada que traducir (números / símbolos / indicativos)';
 
   @override
   String translateBubbleCount(int n) {

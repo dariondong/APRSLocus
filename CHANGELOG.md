@@ -1,5 +1,36 @@
 # 更新日志
 
+## [1.6.103] - 2026-09-13
+
+### 🔴 修复：消息小红点有时候不会消除 / Fixed: the unread badge sometimes would not clear
+
+这是一组相互关联的缺陷，根因是**未读数靠手动 `++` 维护**，
+与「已读时间点」是两套状态，必然脱节。已改为**派生值**（单一真源）。
+
+- **读完群聊不消**：`markGroupRead` 只写已读时间点、**漏了重算未读**
+- **群消息根本不加角标**：收消息时是 `if (!isGroupMsg) unreadMessages++` ——
+  于是群消息要等别的操作触发重算才**突然冒出**，而读了又消不掉
+- **正看着的会话来消息**：私聊只在**点开时**标一次已读（群聊是每次重建都标），
+  所以开着会话时收到的消息会一直计为未读，必须退出再进
+- **大小写**：APRS 呼号大小写不敏感，但已读键与统计键来源不一致，
+  会出现「已读写在 A 键、统计时看 B 键」—— 永不消除
+- 现在的行为（每一条都有回归测试，且验证过「测试能真的抓出对应 bug」）：
+  - 未读数**统一由一次重算得出**，收消息/标已读/切会话都会重算
+  - **正在看的会话不计未读**；离开后重新计入
+  - 呼号统一归一化比对；已读之后到达的消息仍计未读，旧消息不再一直红着
+- This is a cluster of related defects with one root cause: the unread count was kept
+  by hand (`unreadMessages++`) alongside a separate “last read” timestamp, so the two
+  drifted apart. It is now a **derived value** with a single source of truth: reading a
+  group never recalculated the badge; incoming group messages never incremented it (so
+  the badge appeared late and then would not clear); a private chat was only marked read
+  **once on open** (groups were marked on every rebuild), so messages arriving while you
+  were looking at the chat stayed unread until you left and re-entered; and callsigns were
+  compared case-sensitively even though APRS callsigns are case-insensitive, so the read
+  mark could be written under one key and looked up under another. Now one recalculation
+  produces the count, the **currently open conversation is excluded**, and callsigns are
+  normalised. Every rule has a regression test, and each test was verified to actually
+  fail when the corresponding bug is reintroduced.
+
 ## [1.6.102] - 2026-09-13
 
 ### 🐛 群聊翻译不可用（与「数字被误判」同根） / Group chat translation was broken — same root cause as numbers being misjudged
