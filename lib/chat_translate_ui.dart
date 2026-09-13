@@ -199,6 +199,7 @@ Future<void> showMessageActions({
   required ConvTransState st,
   required String convKey,
   void Function()? onChanged,
+  VoidCallback? onOpenSettings,
 }) async {
   final key = msgKey(m);
   final s = S.of(context);
@@ -217,6 +218,9 @@ Future<void> showMessageActions({
   final peerLabel = pref.peerLang.isEmpty
       ? s.translateLangAuto
       : TransLang.labelOf(pref.peerLang);
+  // 接口未配置时，翻译必然失败。与其让用户点一下只得到一句报错，
+  // 不如在面板上就给出「去配置」的入口。
+  final configured = svc.config.ready;
 
   await showModalBottomSheet<void>(
     context: context,
@@ -258,13 +262,41 @@ Future<void> showMessageActions({
               ),
             ]),
             const SizedBox(height: 10),
+            if (!configured) ...[
+              // 未配置：翻译按钮变成「去配置」，并说明原因
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: C.orangeBg,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(children: [
+                  Icon(Icons.info_outline_rounded, size: 15, color: C.orange),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(s.translateNeedConfig,
+                        style: ts(11, c: C.orange, h: 1.4)),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 8),
+            ],
             _action(
-              icon: Icons.translate_rounded,
-              color: C.cyan,
-              title: translated ? s.translateRetry : s.translateText,
-              subtitle: targetLabel,
+              icon: configured
+                  ? Icons.translate_rounded
+                  : Icons.settings_rounded,
+              color: configured ? C.cyan : C.orange,
+              title: translated && configured
+                  ? s.translateRetry
+                  : (configured ? s.translateText : s.translateSettings),
+              subtitle: configured ? targetLabel : null,
               onTap: () {
                 Navigator.pop(ctx);
+                if (!configured) {
+                  // 直接带用户去配置，而不是发一次注定失败的请求
+                  onOpenSettings?.call();
+                  return;
+                }
                 unawaited(translateMessage(
                   context: context,
                   m: m,

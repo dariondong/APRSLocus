@@ -481,6 +481,7 @@ class _MessagesPageState extends State<MessagesPage> {
         onChanged: () {
           if (mounted) setState(() {});
         },
+        onOpenSettings: _openTranslateSettings,
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
@@ -544,6 +545,7 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                   SizedBox(height: 2),
                   _urlRichText(m.text, ts(12, c: C.ink)),
+                  // 译文块：见 _bubble 处的同款说明（两个气泡都要有）
                   translationBlock(
                     context: context,
                     m: m,
@@ -622,6 +624,16 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
+  /// 跳转翻译设置页（长按面板与会话面板共用）
+  void _openTranslateSettings() {
+    if (!mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TranslateSettingsPage(state: widget.state),
+      ),
+    );
+  }
+
   /// 打开会话翻译设置面板
   Future<void> _openTransSheet({required String title}) async {
     await showConvTranslateSheet(
@@ -634,13 +646,7 @@ class _MessagesPageState extends State<MessagesPage> {
       onChanged: () {
         if (mounted) setState(() {});
       },
-      onOpenSettings: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => TranslateSettingsPage(state: widget.state),
-          ),
-        );
-      },
+      onOpenSettings: _openTranslateSettings,
     );
   }
 
@@ -1736,6 +1742,7 @@ class _MessagesPageState extends State<MessagesPage> {
           onChanged: () {
             if (mounted) setState(() {});
           },
+          onOpenSettings: _openTranslateSettings,
         ),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
@@ -1785,6 +1792,14 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
               _urlRichText(m.text, ts(13)),
+              // 译文块：会话/群聊气泡与瀑布流气泡**必须都渲染**，
+              // 否则会出现「长按翻译成功但界面不显示」（曾经的实际 bug）
+              translationBlock(
+                context: context,
+                m: m,
+                st: _trans,
+                pref: _pref,
+              ),
               SizedBox(height: 4),
               Row(
                 mainAxisSize: MainAxisSize.min,

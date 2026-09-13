@@ -1,5 +1,40 @@
 # 更新日志
 
+## [未发版 · tnc 分支] - 2026-09-13（第四轮）
+
+### 🐛 修复：翻译成功后界面不显示 / Fixed: translation succeeded but nothing showed
+
+- **根因**：只有**消息瀑布流**的气泡渲染了译文块，**会话/群聊气泡漏了** ——
+  状态里确实拿到了译文（长按面板也会变成「重新翻译」），但气泡里永远不显示，
+  看上去像「翻译功能没反应」
+- 现两个气泡都渲染译文块；并加了一条**源码级防回归测试**
+  （断言 `_bubble` 与 `_feedBubble` 都调用 `translationBlock`）——
+  这类「编译通过、无异常、界面静默少一块」的漏接只能靠测试挡住。
+  该测试已验证「删掉译文块时会精确失败」
+- 另修两个会造成「看起来没翻译」的问题：
+  - **默认「我的语言」现在跟随界面语言**（以前固定回落 zh，中文界面下把中文译成中文
+    = 原文照抄，看起来像没翻译）
+  - **接口未配置时给出可操作引导**：长按面板会显示提示，且「翻译」按钮直接变成
+    「翻译设置」带你过去，而不是发一次注定失败的请求
+- 新增 `test/chat_translate_ui_test.dart`（16 例）：译文块的对照/隐藏/翻译中/失败/无译文
+  与方向标签、两个气泡的接续、会话键与消息指纹、双向目标语言解析
+
+- **Root cause**: only the **message feed** bubble rendered the translation block; the
+  **conversation/group bubble did not**. The state really held the translation (the
+  long-press sheet even switched to “Translate again”), but nothing ever appeared in the
+  bubble, making the feature look dead. Both bubbles now render it, and a
+  **source-level regression test** asserts that `_bubble` and `_feedBubble` both call
+  `translationBlock` — this class of “compiles, no exception, silently missing UI” can only
+  be caught by a test. The test was verified to fail precisely when the block is removed.
+  Also fixed two issues that made translation look broken: **“my language” now defaults to
+  the UI language** (it used to fall back to zh, so a Chinese UI translated Chinese into
+  Chinese — verbatim, looking like nothing happened), and **an unconfigured provider is
+  now actionable**: the long-press sheet explains it and turns the translate action into
+  “Translation settings”, instead of firing a request that is bound to fail. Adds
+  `test/chat_translate_ui_test.dart` (16 cases) covering the contrast/hidden/pending/
+  failed/absent states, the direction tag, both bubbles, conversation keys and message
+  fingerprints, and two-way target resolution.
+
 ## [未发版 · tnc 分支] - 2026-09-13（第三轮）
 
 ### 🔄 翻译改为双向：可翻成「对方的语言」 / Two-way translation: translate into the other party's language

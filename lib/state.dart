@@ -734,6 +734,8 @@ class AppState extends ChangeNotifier {
   /// 切换界面语言
   void setLocale(String lang) {
     locale = lang;
+    // 界面语言变了，翻译的默认目标语言也要跟着变
+    TranslateService.instance.setUiLocale(lang);
     persist();
     _notify();
   }
@@ -1275,6 +1277,8 @@ class AppState extends ChangeNotifier {
     // 翻译配置（接口、密钥、语言、每会话偏好）在启动时载入：
     // 消息页可能在用户还没进设置前就要用它（自动翻译）。
     unawaited(TranslateService.instance.load());
+    // 翻译的「我的语言」默认跟随界面语言（见 TranslateService.uiLocale）
+    TranslateService.instance.setUiLocale(locale);
     unawaited(ensureMembersLoaded());
     unawaited(AchievementCenter.instance.ensureLoaded());
     _loadPrefs();

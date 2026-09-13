@@ -313,6 +313,21 @@ class TranslateService {
   /// 是否已从磁盘加载
   bool loaded = false;
 
+  /// 当前界面语言（l10n 的 locale 写法）。
+  ///
+  /// 用来给新会话的「我的语言」取默认值：**必须跟随界面语言**，
+  /// 否则中文界面 + 默认 targetLang=zh 时，把中文消息翻成中文
+  /// = 原文照抄，用户会以为「翻译没生效」。
+  String uiLocale = 'zh';
+
+  void setUiLocale(String locale) {
+    if (locale.isEmpty || locale == uiLocale) return;
+    uiLocale = locale;
+  }
+
+  /// 新会话的默认目标语言（= 我的语言 = 界面语言）
+  String get defaultTarget => TransLang.fromUiLocale(uiLocale);
+
   /// 统计（供设置页展示，让用户对「有没有真的在调接口」有感知）
   int requestCount = 0;
   int failureCount = 0;
@@ -340,7 +355,7 @@ class TranslateService {
         try {
           _prefs[key.substring(_kPrefPrefix.length)] = ConvTranslatePref.fromJson(
             jsonDecode(raw),
-            TranslateConfig().targetLang,
+            defaultTarget,
           );
         } catch (_) {}
       }
@@ -374,7 +389,8 @@ class TranslateService {
 
   ConvTranslatePref prefFor(String convKey) => _prefs.putIfAbsent(
         convKey,
-        () => ConvTranslatePref(targetLang: config.targetLang),
+        // 默认「我的语言」= 界面语言；「对方的语言」留空由接口识别
+        () => ConvTranslatePref(targetLang: defaultTarget),
       );
 
   Future<void> savePref(String convKey) async {
