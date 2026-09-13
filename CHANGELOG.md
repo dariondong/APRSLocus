@@ -1,5 +1,55 @@
 # 更新日志
 
+## [1.6.95] - 2026-09-13
+
+### 🌏 首次启动向导：不再默认勾选「中国」 / Setup wizard: no longer pre-selects China
+- **接收范围**改为**默认不勾选任何国家/地区**。不勾选 = **不做限制、接收全部台站**
+  —— 原先默认 `['CN']` 会让**海外用户开箱只见中国台站**，得自己找到设置去改
+- 向导里的**说明文案**相应改写，明确「勾选要接收的国家/地区；不勾选则接收全部台站」
+
+- The **receive range** now starts with **no country/region selected**. Nothing selected means
+  **no restriction — all stations are received**. The previous default `['CN']` meant
+  **users outside China saw only Chinese stations** out of the box. The wizard's explanatory
+  text was rewritten accordingly.
+
+### 🔀 「其他台站」开关前移到国家列表之前 / “Other stations” moved above the country list
+- 该开关是「**是否也接收未勾选国家的台站**」的总开关，而国家列表有 **25 项** ——
+  原位置在列表**底部**，要滑很久才看得到
+- **向导与设置页两处**都把它移到了国家列表**上方**
+
+- This switch controls whether stations from **unselected** countries are also received, yet it
+  sat **below** a **25-item** country list. It now appears **above** the list, in **both** the
+  setup wizard and Settings.
+
+### 🗑️ 删除会话：同时移出会话列表 / Deleting a chat now also removes it from the list
+- 修正「删除后行仍在列表里」：**收藏 / 手动联系人**即使一条消息都没有也会出现在会话列表里，
+  只删消息它们会继续留着，看起来像没删掉
+- 现在删除会话会**一并撤下这两个标记**（`_clearContactFlags`），行确实消失
+  - 只清标记、**不删台站本身** —— 台站仍可能通过 APRS 报文收到；把它从台站列表抹掉是
+    台站面板「删除台站」的事，两者语义不同
+  - 同时推进 `stationsVersion`（会话列表缓存键的一部分），否则列表不会刷新
+- **批量删除**同样处理；确认框文案也补充了「该会话将从列表中移除」
+
+- Fixed rows lingering after deletion: **favourites / manual contacts** show up in the chat list
+  even with zero messages, so deleting only the messages left them visible. Deleting a chat now
+  **also clears those two flags**, so the row really disappears. Only the flags are cleared —
+  **the station itself is kept** (it may still be heard over APRS; removing it from the station
+  list is a separate action in the station panel). `stationsVersion` is bumped so the list
+  actually refreshes. Batch delete behaves the same, and the confirmation text now says the chat
+  will be removed from the list.
+
+### 📤 ADIF 导出：完成后弹出选择提示 / ADIF export: action dialog on completion
+- 导出成功后不再只弹一条 SnackBar，改为**选择对话框**：
+  **复制路径** / **打开所在目录** / **完成**，并显示已保存的完整路径
+- 「打开所在目录」**仅在 Windows 提供** —— 那里拿到的是真实文件路径，可用资源管理器定位；
+  Android 存的是 MediaStore 相对路径（`Download/xxx.adi`），**不是可定位的真实路径**，
+  显示该按钮会点了没反应
+
+- A successful export now shows an **action dialog** (copy path / open containing folder / done)
+  with the full saved path, instead of a transient SnackBar. **Open containing folder is
+  Windows-only**: there we have a real path that Explorer can reveal, whereas Android stores a
+  MediaStore relative path (`Download/xxx.adi`) where the button would do nothing.
+
 ## [1.6.94] - 2026-09-13
 
 > 📌 本版**包含 v1.6.93 的全部改动**（该版本未单独发版），以下一并列出。

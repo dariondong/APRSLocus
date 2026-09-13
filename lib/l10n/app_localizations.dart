@@ -1632,7 +1632,7 @@ abstract class AppLocalizations {
   /// No description provided for @oobeFilterDesc.
   ///
   /// In zh, this message translates to:
-  /// **'默认只接收中国呼号台站，可按需添加其他国家/地区'**
+  /// **'勾选要接收的国家/地区；不勾选则接收全部台站，不做限制'**
   String get oobeFilterDesc;
 
   /// No description provided for @oobeWelcomeTitle.
@@ -4284,7 +4284,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteConversationConfirm.
   ///
   /// In zh, this message translates to:
-  /// **'确定删除与 {call} 的聊天记录吗？此操作不可恢复。'**
+  /// **'确定删除与 {call} 的聊天记录吗？该会话将从列表中移除，此操作不可恢复。'**
   String deleteConversationConfirm(Object call);
 
   /// No description provided for @clearGroupChatConfirm.
@@ -7106,6 +7106,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'已导出 {n} 条记录'**
   String adifExported(int n);
+
+  /// No description provided for @adifExportDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出完成'**
+  String get adifExportDone;
 
   /// No description provided for @adifExportFailed.
   ///

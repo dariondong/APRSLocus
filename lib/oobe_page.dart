@@ -33,8 +33,10 @@ class _OobePageState extends State<OobePage> {
   int _ssid = 0;
   // 界面语言：'' = 跟随系统；'zh' 中文；'en' English
   String _lang = '';
-  // 接收筛选：默认接受中国呼号
-  List<String> _filterCountries = ['CN'];
+  // 接收筛选：**不再默认勾选任何国家/地区**。
+  // 不勾选 = 不做限制、接收全部台站 —— 对非中国用户更合理（原先默认 ['CN']
+  // 会让海外用户开箱只见中国台站）。
+  List<String> _filterCountries = [];
   bool _receiveOthers = false;
   // 用户协议：已阅读并同意
   bool _agreed = false;
@@ -107,7 +109,7 @@ class _OobePageState extends State<OobePage> {
         widget.state.persist();
         break;
       case 5:
-        // 接收筛选步骤：把选择的国家写入 state（默认已选中国）
+        // 接收筛选步骤：把选择的国家写入 state（默认不勾选 = 不做限制）
         _applyFilterCountries();
         break;
     }
@@ -942,7 +944,7 @@ class _OobePageState extends State<OobePage> {
   }
 
   // ─── 第 6 步：接收筛选 ───
-  /// 接收筛选：按国家/地区选择接收台站（默认中国）
+  /// 接收筛选：按国家/地区选择接收台站（默认不勾选 = 不做限制）
   Widget _filterPick() {
     final entries = AppState.countryNames.entries.toList()
       ..sort((a, b) => a.value.compareTo(b.value));
@@ -963,7 +965,46 @@ class _OobePageState extends State<OobePage> {
             textAlign: TextAlign.center,
             style: ts(12, c: C.slate, h: 1.6),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 16),
+          // 「其他台站」开关**前移到国家列表之前** ——
+          // 它是「是否也接收未勾选国家的台站」的总开关；国家列表有 25 项，
+          // 放在列表底部要滑很久才看得到。
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: C.purpleBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: C.purple.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.blur_circular_rounded, size: 18, color: C.purple),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.of(context).receiveOthers,
+                        style: ts(13, w: FontWeight.w700),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        S.of(context).receiveOthersDesc,
+                        style: ts(11, c: C.slate),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: _receiveOthers,
+                  activeColor: C.purple,
+                  onChanged: (v) => setState(() => _receiveOthers = v),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
           ...entries.map((e) {
             final on = _filterCountries.contains(e.key);
             return GestureDetector(
@@ -1012,43 +1053,6 @@ class _OobePageState extends State<OobePage> {
               ),
             );
           }),
-          SizedBox(height: 12),
-          // 其他台站开关
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              color: C.purpleBg,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: C.purple.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.blur_circular_rounded, size: 18, color: C.purple),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).receiveOthers,
-                        style: ts(13, w: FontWeight.w700),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        S.of(context).receiveOthersDesc,
-                        style: ts(11, c: C.slate),
-                      ),
-                    ],
-                  ),
-                ),
-                Switch(
-                  value: _receiveOthers,
-                  activeColor: C.purple,
-                  onChanged: (v) => setState(() => _receiveOthers = v),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

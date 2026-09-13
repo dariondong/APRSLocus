@@ -800,7 +800,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get oobeFilterDesc =>
-      'Secara bawaan hanya tanda panggil Tiongkok yang diterima. Tambahkan negara/wilayah lain sesuai kebutuhan';
+      'Pilih negara/wilayah yang ingin diterima. Jika tidak ada yang dipilih, semua stasiun akan diterima tanpa batasan.';
 
   @override
   String get oobeWelcomeTitle => 'Selamat datang di APRSlocus';
@@ -2278,7 +2278,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return 'Hapus riwayat obrolan dengan $call? Tindakan ini tidak dapat dibatalkan.';
+    return 'Hapus riwayat obrolan dengan $call? Obrolan juga akan dihapus dari daftar. Tindakan ini tidak dapat dibatalkan.';
   }
 
   @override
@@ -4043,6 +4043,9 @@ class AppLocalizationsId extends AppLocalizations {
   String adifExported(int n) {
     return '$n catatan diekspor';
   }
+
+  @override
+  String get adifExportDone => 'Ekspor selesai';
 
   @override
   String get adifExportFailed =>

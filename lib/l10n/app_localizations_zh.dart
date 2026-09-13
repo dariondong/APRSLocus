@@ -789,7 +789,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get oobeFilterTitle => '选择接收地区';
 
   @override
-  String get oobeFilterDesc => '默认只接收中国呼号台站，可按需添加其他国家/地区';
+  String get oobeFilterDesc => '勾选要接收的国家/地区；不勾选则接收全部台站，不做限制';
 
   @override
   String get oobeWelcomeTitle => '欢迎使用 APRSlocus';
@@ -2227,7 +2227,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return '确定删除与 $call 的聊天记录吗？此操作不可恢复。';
+    return '确定删除与 $call 的聊天记录吗？该会话将从列表中移除，此操作不可恢复。';
   }
 
   @override
@@ -3925,6 +3925,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get adifExportDone => '导出完成';
+
+  @override
   String get adifExportFailed => '导出失败，请检查存储权限或剩余空间';
 
   @override
@@ -4771,7 +4774,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get oobeFilterTitle => '選擇接收地區';
 
   @override
-  String get oobeFilterDesc => '預設只接收中國呼號臺站，可按需新增其他國家/地區';
+  String get oobeFilterDesc => '勾選要接收的國家/地區；不勾選則接收全部臺站，不做限制';
 
   @override
   String get oobeWelcomeTitle => '歡迎使用 APRSlocus';
@@ -6209,7 +6212,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return '確定刪除與 $call 的聊天記錄嗎？此操作不可恢復。';
+    return '確定刪除與 $call 的聊天記錄嗎？該會話將從列表中移除，此操作不可恢復。';
   }
 
   @override
@@ -7906,6 +7909,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String adifExported(int n) {
     return '已匯出 $n 筆記錄';
   }
+
+  @override
+  String get adifExportDone => '匯出完成';
 
   @override
   String get adifExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';

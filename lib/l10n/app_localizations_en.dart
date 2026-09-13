@@ -800,7 +800,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oobeFilterDesc =>
-      'By default only Chinese callsigns are received. Add other countries as needed.';
+      'Tick the countries/regions to receive. Leave all unselected to receive every station with no restriction.';
 
   @override
   String get oobeWelcomeTitle => 'Welcome to APRSlocus';
@@ -2273,7 +2273,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return 'Delete the chat history with $call? This cannot be undone.';
+    return 'Delete the chat history with $call? The conversation will also be removed from the list. This cannot be undone.';
   }
 
   @override
@@ -4031,6 +4031,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String adifExported(int n) {
     return 'Exported $n records';
   }
+
+  @override
+  String get adifExportDone => 'Export complete';
 
   @override
   String get adifExportFailed =>

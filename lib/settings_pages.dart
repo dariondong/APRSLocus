@@ -1986,6 +1986,43 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       color: C.cyan,
       children: [
         SettingsHint(S.of(context).settingsReceivePrefHint),
+        // ── 其他台站（前移到国家列表之前）──
+        // 它是「是否也接收未勾选国家的台站」的总开关；
+        // 国家列表有 25 项，放在列表底部要滑很久才看得到。
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: C.purpleBg,
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Icon(Icons.blur_circular_rounded,
+                    size: 16, color: C.purple),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(S.of(context).receiveOthers, style: ts(13, w: FontWeight.w700)),
+                      SizedBox(height: 2),
+                      Text(S.of(context).receiveOthersDesc,
+                          style: ts(11, c: C.grey)),
+                    ]),
+              ),
+              Switch(
+                value: st.receiveOthers,
+                activeColor: C.purple,
+                onChanged: (v) => st.setReceiveOthers(v),
+              ),
+            ]),
+          ]),
+        ),
+        Divider(height: 16, color: C.border),
         // ── 国家/地区分组 ──
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
@@ -2061,41 +2098,6 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                     ),
                 ],
               ),
-          ]),
-        ),
-        Divider(height: 16, color: C.border),
-        // ── 其他台站 ──
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: C.purpleBg,
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Icon(Icons.blur_circular_rounded,
-                    size: 16, color: C.purple),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).receiveOthers, style: ts(13, w: FontWeight.w700)),
-                      SizedBox(height: 2),
-                      Text(S.of(context).receiveOthersDesc,
-                          style: ts(11, c: C.grey)),
-                    ]),
-              ),
-              Switch(
-                value: st.receiveOthers,
-                activeColor: C.purple,
-                onChanged: (v) => st.setReceiveOthers(v),
-              ),
-            ]),
           ]),
         ),
       ],

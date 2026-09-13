@@ -61,7 +61,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.94';
+  static const appVersion = '1.6.95';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2711,7 +2711,32 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  /// 删除与某呼号的单聊会话（仅删该会话的消息，不影响群聊）。
+  /// 把给定呼号从「收藏 / 手动联系人」中撤下。
+  ///
+  /// 这两类台站**即使一条消息都没有**也会出现在会话列表里（见 partnersOf），
+  /// 所以「删除会话」若只删消息，它们会**继续留在列表里**，看起来像没删掉。
+  ///
+  /// 只清这两个标记、**不删台站本身** —— 台站仍可能通过 APRS 报文被收到，
+  /// 把它从台站列表里抹掉是另一件事，由台站面板的「删除台站」负责。
+  void _clearContactFlags(Set<String> targets) {
+    if (targets.isEmpty) return;
+    var touched = false;
+    for (final s in stations) {
+      if (targets.contains(s.call.toUpperCase()) && (s.favorite || s.manual)) {
+        s.favorite = false;
+        s.manual = false;
+        touched = true;
+      }
+    }
+    if (touched) {
+      // stationsVersion 是会话列表缓存键的一部分（messages_page._partners），
+      // 必须推进它，否则列表不刷新、行仍然在。
+      _bumpStationsVersion();
+      _saveStations();
+    }
+  }
+
+  /// 删除与某呼号的单聊会话（删该会话消息 + **移出会话列表**，不影响群聊）。
   /// 呼号比较用大写（APRS 呼号大小写不敏感）。
   void deleteConversation(String call) {
     final target = call.trim().toUpperCase();
@@ -2721,6 +2746,8 @@ class AppState extends ChangeNotifier {
     // 已读时间点一并清掉，否则重建同名会话时会沿用旧的已读位置
     _readAt.remove(call);
     _readAt.remove(target);
+    // 收藏/手动联系人也要撤下，否则没有消息了却仍留在会话列表里
+    _clearContactFlags({target});
     _recalcUnread();
     _saveMessages();
     _notify();
@@ -2739,7 +2766,7 @@ class AppState extends ChangeNotifier {
   }
 
   /// 批量删除会话（单聊呼号集合 + 群聊 ID 集合），一次性保存与通知。
-  /// 单聊：删该呼号的全部消息；群聊：只清消息，保留群组本身。
+  /// 单聊：删该呼号的全部消息 + 移出会话列表；群聊：只清消息，保留群组本身。
   /// 呼号一律按大写比对（APRS 呼号大小写不敏感）。
   void deleteConversations(Iterable<String> calls, Iterable<String> groupIds) {
     final cs = calls
@@ -2758,6 +2785,8 @@ class AppState extends ChangeNotifier {
     for (final g in gs) {
       _groupReadAt.remove(g);
     }
+    // 同上：收藏/手动联系人也撤下，保证选中的会话行确实从列表消失
+    _clearContactFlags(cs);
     _recalcUnread();
     _saveMessages();
     _notify();

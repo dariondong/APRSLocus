@@ -802,7 +802,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get oobeFilterDesc =>
-      'De forma predeterminada solo se reciben indicativos chinos. Añade otros países según sea necesario.';
+      'Marca los países o regiones que quieras recibir. Si no marcas ninguno, recibirás todas las estaciones sin restricción.';
 
   @override
   String get oobeWelcomeTitle => 'Te damos la bienvenida a APRSlocus';
@@ -2291,7 +2291,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return '¿Eliminar el historial de chat con $call? Esta acción no se puede deshacer.';
+    return '¿Eliminar el historial de chat con $call? La conversación también se quitará de la lista. Esta acción no se puede deshacer.';
   }
 
   @override
@@ -4067,6 +4067,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String adifExported(int n) {
     return '$n registros exportados';
   }
+
+  @override
+  String get adifExportDone => 'Exportación completada';
 
   @override
   String get adifExportFailed =>

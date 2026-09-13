@@ -225,7 +225,6 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
 
     // 先把文案取好，避免 await 之后再碰 context
     final loc = S.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     final text = Adif.encode(
       records,
@@ -243,14 +242,68 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
       _toast(loc.adifExportFailed);
       return;
     }
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(loc.adifExported(records.length)),
-        backgroundColor: C.blue,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    // 导出成功 → 弹出选择提示（复制路径 / 打开所在目录 / 完成）
+    await _showExportDoneDialog(loc, path, records.length);
+  }
+
+  /// 导出完成后的选择提示。
+  ///
+  /// 「打开所在目录」只在 Windows 提供：那里拿到的是真实文件路径，
+  /// 可用 `explorer /select,` 定位到文件。
+  /// Android 保存后在 MediaStore 里是相对路径（`Download/xxx.adi`），
+  /// 不是可定位的真实路径，所以不显示该按钮（避免点了没反应）。
+  Future<void> _showExportDoneDialog(S loc, String path, int n) async {
+    final canOpenFolder =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.windows;
+    final act = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(loc.adifExportDone, style: T.h2),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(loc.adifExported(n), style: ts(13, w: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Text(loc.adifSavedTo(path), style: ts(11, c: C.slate, h: 1.4)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'copy'),
+            child: Text(loc.adifCopyPath, style: ts(13, c: C.blue)),
+          ),
+          if (canOpenFolder)
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 'open'),
+              child: Text(
+                loc.openContainingFolder,
+                style: ts(13, c: C.blue),
+              ),
+            ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: C.blue),
+            onPressed: () => Navigator.pop(ctx, 'done'),
+            child: Text(loc.done, style: ts(13)),
+          ),
+        ],
       ),
     );
+    if (!mounted) return;
+    if (act == 'copy') {
+      await Clipboard.setData(ClipboardData(text: path));
+      if (!mounted) return;
+      _toast(loc.adifPathCopied);
+    } else if (act == 'open') {
+      _openFolder(path);
+    }
+  }
+
+  /// Windows：在资源管理器中定位到刚导出的文件
+  void _openFolder(String path) {
+    try {
+      Process.run('explorer', ['/select,', path]);
+    } catch (_) {}
   }
 
   @override

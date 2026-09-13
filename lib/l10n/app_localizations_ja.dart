@@ -792,7 +792,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get oobeFilterTitle => '受信地域を選択';
 
   @override
-  String get oobeFilterDesc => '既定では中国のコールサインのみ受信します。必要に応じて他の国・地域を追加できます';
+  String get oobeFilterDesc => '受信する国・地域を選択してください。未選択の場合はすべての局を受信します（制限なし）';
 
   @override
   String get oobeWelcomeTitle => 'APRSlocus へようこそ';
@@ -2238,7 +2238,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String deleteConversationConfirm(Object call) {
-    return '$call とのチャット履歴を削除しますか？この操作は取り消せません。';
+    return '$call とのチャット履歴を削除しますか？会話はリストからも削除されます。この操作は取り消せません。';
   }
 
   @override
@@ -3957,6 +3957,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String adifExported(int n) {
     return '$n 件のレコードをエクスポートしました';
   }
+
+  @override
+  String get adifExportDone => 'エクスポート完了';
 
   @override
   String get adifExportFailed => 'エクスポートに失敗しました。ストレージの権限や空き容量を確認してください';
