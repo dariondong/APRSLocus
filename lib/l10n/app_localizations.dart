@@ -2193,6 +2193,102 @@ abstract class AppLocalizations {
   /// **'连接超时'**
   String get tncErrTimeout;
 
+  /// No description provided for @translateMyLang.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的语言'**
+  String get translateMyLang;
+
+  /// No description provided for @translateMyLangHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方发来的消息翻成它'**
+  String get translateMyLangHint;
+
+  /// No description provided for @translatePeerLang.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方的语言'**
+  String get translatePeerLang;
+
+  /// No description provided for @translatePeerUnknownHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'收到对方消息后由翻译接口自动识别'**
+  String get translatePeerUnknownHint;
+
+  /// No description provided for @translateLearned.
+  ///
+  /// In zh, this message translates to:
+  /// **'已自动识别'**
+  String get translateLearned;
+
+  /// No description provided for @translatePeerUnknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'还不知道对方使用什么语言 · 先在翻译设置里指定，或收几条对方消息后会自动识别'**
+  String get translatePeerUnknown;
+
+  /// No description provided for @translateSideIncoming.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方发来'**
+  String get translateSideIncoming;
+
+  /// No description provided for @translateSideOutgoing.
+  ///
+  /// In zh, this message translates to:
+  /// **'我发出'**
+  String get translateSideOutgoing;
+
+  /// No description provided for @translateToMeTag.
+  ///
+  /// In zh, this message translates to:
+  /// **'译给我看'**
+  String get translateToMeTag;
+
+  /// No description provided for @translateToPeerTag.
+  ///
+  /// In zh, this message translates to:
+  /// **'对方将读到'**
+  String get translateToPeerTag;
+
+  /// No description provided for @translateContrast.
+  ///
+  /// In zh, this message translates to:
+  /// **'对照显示原文与译文'**
+  String get translateContrast;
+
+  /// No description provided for @translateContrastTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后只显示译文（原文仍可通过长按查看）'**
+  String get translateContrastTip;
+
+  /// No description provided for @dateToday.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天'**
+  String get dateToday;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In zh, this message translates to:
+  /// **'昨天'**
+  String get dateYesterday;
+
+  /// No description provided for @dateDividerFull.
+  ///
+  /// In zh, this message translates to:
+  /// **'{y}年{m}月{d}日 {w}'**
+  String dateDividerFull(int y, int m, int d, String w);
+
+  /// No description provided for @dateWeekday.
+  ///
+  /// In zh, this message translates to:
+  /// **'{d, select, 1 {周一} 2 {周二} 3 {周三} 4 {周四} 5 {周五} 6 {周六} 7 {周日} other {—}}'**
+  String dateWeekday(String d);
+
   /// No description provided for @translate.
   ///
   /// In zh, this message translates to:

@@ -7,6 +7,7 @@ import 'models.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'translate.dart';
+import 'l10n/app_localizations.dart';
 import 'widgets.dart';
 
 /// ─── 会话翻译的 UI 部分 ───
@@ -14,12 +15,17 @@ import 'widgets.dart';
 /// 与消息页解耦成独立文件的原因：翻译是一整套「状态 + 弹层 + 气泡装饰」，
 /// 塞进已经 3600 行的 messages_page.dart 会让它更难维护。
 ///
-/// 设计取舍：
-///   - **译文不落盘**（`AprsMsg` 不动）：翻译是「查看时的一次加工」，
-///     不是消息本身。落盘会导致：换目标语言后旧译文仍显示、清缓存后仍残留。
-///     代价是重启应用后需要重新翻译 —— 但结果缓存（TranslateService）
-///     是落盘的，同一句话再翻一次不会再调接口，也就不再计费。
-///   - 译文存本页 State 的 Map（key 用消息指纹），切会话不丢。
+/// 设计要点：
+///   - **双向翻译**：收到对方消息 → 翻成「我的语言」；自己发的消息 →
+///     翻成「对方的语言」。后者是「我这样发出去，对方会读到什么」的预演。
+///   - **对方的语言会自动学出来**：接口在 `from=auto` 时回传识别结果
+///     （Google 的 `detectedSourceLanguage` / 百度的 `from`），
+///     用它回填 [ConvTranslatePref.peerLang]，无需用户手填。
+///   - **对照显示**：原文与译文同屏，各自带语言标签，便于核对；
+///     可关掉改成「译文替换原文」。
+///   - **译文不落盘**（`AprsMsg` 不动）：翻译是查看时的一次加工，不是消息本身。
+///     落盘会导致换语言后旧译文残留。代价是重启后需重新翻 ——
+///     但结果缓存（[TranslateService]）是落盘的，同一句话不会再调接口。
 
 /// 消息指纹：呼号 + 方向 + 时间 + 文本，足够稳定地区分同一条消息
 String msgKey(AprsMsg m) =>
@@ -29,10 +35,22 @@ String msgKey(AprsMsg m) =>
 String convKeyOf({String? groupId, String? call}) =>
     groupId != null ? 'g:$groupId' : 'c:${(call ?? '').toUpperCase()}';
 
+/// 翻译方向
+enum TransSide {
+  /// 对方发来的消息 → 翻成我的语言
+  incoming,
+
+  /// 我发出的消息 → 翻成对方的语言
+  outgoing,
+}
+
 /// 翻译状态（每个会话一份）
 class ConvTransState extends ChangeNotifier {
   /// 消息指纹 → 译文
   final Map<String, String> translations = {};
+
+  /// 消息指纹 → 该译文对应的目标语言（对照显示时标注用）
+  final Map<String, String> targets = {};
 
   /// 消息指纹 → 正在翻译中
   final Set<String> pending = {};
@@ -40,15 +58,16 @@ class ConvTransState extends ChangeNotifier {
   /// 消息指纹 → 失败原因（可读文本）
   final Map<String, String> errors = {};
 
-  /// 正在显示原文（用户点了「显示原文」）
+  /// 正在显示原文（用户点了「显示原文」，即暂时隐藏译文）
   final Set<String> showingOriginal = {};
 
   bool has(String key) => translations.containsKey(key);
 
   int get count => translations.length;
 
-  void setTranslated(String key, String text) {
+  void setTranslated(String key, String text, String target) {
     translations[key] = text;
+    targets[key] = target;
     pending.remove(key);
     errors.remove(key);
     notifyListeners();
@@ -72,8 +91,13 @@ class ConvTransState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 指定语言下是否已有译文（用户「翻译成另一种语言」时用来判断要不要重翻）
+  bool hasFor(String key, String lang) =>
+      translations.containsKey(key) && targets[key] == lang;
+
   void clear() {
     translations.clear();
+    targets.clear();
     pending.clear();
     errors.clear();
     showingOriginal.clear();
@@ -97,50 +121,73 @@ class ConvTransRegistry {
   }
 }
 
-/// 翻译一条消息；结果写入 [st]。
+/// 翻译一条消息，结果写入 [st]。
 ///
-/// 统一入口，保证「长按翻译」「自动翻译」「重新翻译」走同一条路径
-/// （否则很容易出现某一入口没有 pending/错误处理）。
+/// 统一入口，保证「长按翻译」「自动翻译」「重新翻译」走同一条路径。
+/// [side] 决定方向 —— 这是双向翻译的分叉点：
+///   incoming → 目标 = 我的语言；outgoing → 目标 = 对方的语言。
+/// 翻译对方消息时若接口回传了识别语言，会**顺手回填** pref.peerLang，
+/// 于是「对方的语言」用过几次就自动知道了。
 Future<void> translateMessage({
   required BuildContext context,
   required AprsMsg m,
-  required String to,
+  required TransSide side,
+  required ConvTranslatePref pref,
   required ConvTransState st,
   required String convKey,
+  bool persistLearned = true,
+  void Function()? onPeerLangLearned,
 }) async {
   final key = msgKey(m);
   final svc = TranslateService.instance;
   final s = S.of(context);
+  final fallback = svc.config.targetLang;
+  final target = side == TransSide.incoming
+      ? TransDirection.targetForIncoming(pref, fallback)
+      : TransDirection.targetForOutgoing(pref, fallback);
+
+  if (side == TransSide.outgoing && pref.peerLang.isEmpty) {
+    // 还不知道对方说什么：不硬翻（翻了可能是同一种语言），
+    // 提示用户去会话翻译设置里指定 —— 但用起来后接口会自动学会。
+    st.setError(key, s.translatePeerUnknown);
+    return;
+  }
   if (st.pending.contains(key)) return;
-  // 命中缓存则直接出结果，不显示「翻译中」（否则会闪一下）
-  final cached = svc.cached(m.text, 'auto', to);
+
+  // 命中缓存直接出结果，不显示「翻译中」（否则会闪一下）
+  final cached = svc.cached(m.text, 'auto', target);
   if (cached != null) {
-    st.setTranslated(key, cached);
+    st.setTranslated(key, cached, target);
     return;
   }
   st.setPending(key);
   try {
-    final out = await svc.translate(m.text, to: to);
-    st.setTranslated(key, out);
+    final r = await svc.translate(m.text, to: target);
+    st.setTranslated(key, r.text, target);
+    // 学习对方的语言：仅在翻译「对方消息」时回填，且只在确实识别出
+    // 且与已知值不同时才写盘（避免每翻一条就写一次 SharedPreferences）
+    final det = r.detected;
+    if (persistLearned &&
+        side == TransSide.incoming &&
+        det != null &&
+        det.isNotEmpty &&
+        det != pref.peerLang &&
+        pref.targetLang != det) {
+      pref.peerLang = det;
+      await svc.savePref(convKey);
+      onPeerLangLearned?.call();
+    }
   } on TranslateException catch (e) {
-    st.setError(key, _explain(s, e));
+    st.setError(key, explainTranslateError(s, e));
   } catch (e) {
     st.setError(key, s.translateFailed('$e'));
   }
 }
 
-/// 把接口错误翻译成用户能理解的说法。
-///
-/// 直接抛原始错误（如 `not-configured:googleApiKey`、`HTTP 403`）对用户
-/// 没有意义，这里把最常见的几种情况换成「下一步该做什么」。
-String _explain(S s, TranslateException e) {
+/// 把接口错误翻译成用户能理解的说法（原始错误码对用户没有意义）
+String explainTranslateError(S s, TranslateException e) {
   final msg = e.message;
-  if (msg.startsWith('not-configured')) {
-    return s.translateNeedConfig;
-  }
-  if (msg == 'timeout') {
-    return s.translateFailed('timeout');
-  }
+  if (msg.startsWith('not-configured')) return s.translateNeedConfig;
   return s.translateFailed(msg);
 }
 
@@ -148,15 +195,28 @@ String _explain(S s, TranslateException e) {
 Future<void> showMessageActions({
   required BuildContext context,
   required AprsMsg m,
-  required String targetLang,
+  required ConvTranslatePref pref,
   required ConvTransState st,
   required String convKey,
-  VoidCallback? onResend,
+  void Function()? onChanged,
 }) async {
   final key = msgKey(m);
   final s = S.of(context);
+  final svc = TranslateService.instance;
+  final fallback = svc.config.targetLang;
+  // 方向由「这条消息是谁发的」决定，而不是由用户选 —— 用户选
+  // 「翻译成对方语言」时其实是想看自己发出去的那句在对面是什么样。
+  final side = m.sent ? TransSide.outgoing : TransSide.incoming;
+  final targetLabel = TransLang.labelOf(
+    side == TransSide.incoming
+        ? TransDirection.targetForIncoming(pref, fallback)
+        : TransDirection.targetForOutgoing(pref, fallback),
+  );
   final translated = st.has(key);
   final showingOriginal = st.showingOriginal.contains(key);
+  final peerLabel = pref.peerLang.isEmpty
+      ? s.translateLangAuto
+      : TransLang.labelOf(pref.peerLang);
 
   await showModalBottomSheet<void>(
     context: context,
@@ -173,30 +233,50 @@ Future<void> showMessageActions({
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 目标语言提示：让用户知道「翻译」会翻成什么
             Row(children: [
               Icon(Icons.translate_rounded, size: 16, color: C.cyan),
               const SizedBox(width: 8),
-              Text('${s.translate} → ${TransLang.labelOf(targetLang)}',
-                  style: ts(13, w: FontWeight.w700)),
+              Expanded(
+                child: Text(
+                  '${side == TransSide.incoming ? s.translateMyLang : s.translatePeerLang}'
+                  ' → $targetLabel',
+                  style: ts(13, w: FontWeight.w700),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: C.cyanBg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  side == TransSide.incoming
+                      ? s.translateSideIncoming
+                      : s.translateSideOutgoing,
+                  style: ts(9, c: C.cyan, w: FontWeight.w700),
+                ),
+              ),
             ]),
             const SizedBox(height: 10),
             _action(
               icon: Icons.translate_rounded,
               color: C.cyan,
               title: translated ? s.translateRetry : s.translateText,
-              subtitle: TransLang.labelOf(targetLang),
+              subtitle: targetLabel,
               onTap: () {
                 Navigator.pop(ctx);
                 unawaited(translateMessage(
                   context: context,
                   m: m,
-                  to: targetLang,
+                  side: side,
+                  pref: pref,
                   st: st,
                   convKey: convKey,
+                  onPeerLangLearned: onChanged,
                 ));
               },
             ),
+            // 对照显示开关：一次点击即可在「原文+译文」与「只看译文」之间切换
             if (translated)
               _action(
                 icon: showingOriginal
@@ -209,6 +289,7 @@ Future<void> showMessageActions({
                 onTap: () {
                   Navigator.pop(ctx);
                   st.toggleOriginal(key);
+                  onChanged?.call();
                 },
               ),
             _action(
@@ -230,6 +311,15 @@ Future<void> showMessageActions({
                   _copy(context, st.translations[key] ?? '', s.copiedClipboard);
                 },
               ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                '${s.translatePeerLang}: $peerLabel'
+                '${pref.peerLang.isEmpty ? '（${s.translatePeerUnknownHint}）' : ''}',
+                style: ts(10, c: C.grey),
+              ),
+            ),
           ],
         ),
       ),
@@ -284,12 +374,18 @@ Widget _action({
   );
 }
 
-/// 会话右上角的翻译设置面板（语言 + 自动翻译）
+/// 会话右上角的翻译设置面板
+///
+/// 两块语言设置是核心：
+///   - 「我的语言」= 收到对方消息翻成什么
+///   - 「对方的语言」= 我发的消息翻成什么；留「自动」则由接口识别结果回填
 Future<void> showConvTranslateSheet({
   required BuildContext context,
-  required AppState appState,
   required String convKey,
   required String title,
+  required IconData icon,
+  required Color color,
+  required String myUiLocale,
   required VoidCallback onChanged,
   VoidCallback? onOpenSettings,
 }) async {
@@ -298,6 +394,7 @@ Future<void> showConvTranslateSheet({
   await showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
+    isScrollControlled: true,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setSheet) {
         final s = S.of(ctx);
@@ -307,6 +404,9 @@ Future<void> showConvTranslateSheet({
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.78,
+          ),
           child: SafeArea(
             top: false,
             child: SingleChildScrollView(
@@ -319,11 +419,10 @@ Future<void> showConvTranslateSheet({
                       width: 34,
                       height: 34,
                       decoration: BoxDecoration(
-                        color: C.cyanBg,
+                        color: color.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(Icons.translate_rounded,
-                          size: 17, color: C.cyan),
+                      child: Icon(icon, size: 17, color: color),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -341,70 +440,103 @@ Future<void> showConvTranslateSheet({
                     ),
                   ]),
                   const SizedBox(height: 14),
-                  Text(s.translateTargetLang,
-                      style: ts(12, c: C.cyan, w: FontWeight.w700)),
-                  const SizedBox(height: 8),
+
+                  // 我的语言
+                  _langHeader(s.translateMyLang, s.translateMyLangHint),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      for (final l in TransLang.all.where((l) => l.code != 'auto'))
-                        GestureDetector(
+                      for (final l in _langOptions)
+                        _langChip(
+                          label: l.label,
+                          selected: pref.targetLang == l.code,
                           onTap: () async {
                             pref.targetLang = l.code;
                             await svc.savePref(convKey);
                             setSheet(() {});
                             onChanged();
                           },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: pref.targetLang == l.code
-                                  ? C.cyanBg
-                                  : C.bgSoft,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: pref.targetLang == l.code
-                                    ? C.cyan
-                                    : C.border,
-                                width: pref.targetLang == l.code ? 1.5 : 1,
-                              ),
-                            ),
-                            child: Text(
-                              l.label,
-                              style: ts(11,
-                                  c: pref.targetLang == l.code
-                                      ? C.cyan
-                                      : C.slate,
-                                  w: pref.targetLang == l.code
-                                      ? FontWeight.w700
-                                      : FontWeight.w500),
-                            ),
-                          ),
                         ),
                     ],
                   ),
                   const SizedBox(height: 14),
+
+                  // 对方的语言
+                  _langHeader(
+                    s.translatePeerLang,
+                    pref.peerLang.isEmpty
+                        ? s.translatePeerUnknownHint
+                        : s.translateLearned,
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _langChip(
+                        label: s.translateLangAuto,
+                        selected: pref.peerLang.isEmpty,
+                        onTap: () async {
+                          pref.peerLang = '';
+                          await svc.savePref(convKey);
+                          setSheet(() {});
+                          onChanged();
+                        },
+                      ),
+                      for (final l in _langOptions)
+                        _langChip(
+                          label: l.label,
+                          selected: pref.peerLang == l.code,
+                          onTap: () async {
+                            pref.peerLang = l.code;
+                            await svc.savePref(convKey);
+                            setSheet(() {});
+                            onChanged();
+                          },
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // 开关
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       color: C.bgSoft,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: pref.auto,
-                      activeThumbColor: C.green,
-                      title: Text(s.translateAuto, style: ts(13, w: FontWeight.w700)),
-                      subtitle: Text(s.translateAutoTip, style: ts(10, c: C.grey)),
-                      onChanged: (v) async {
-                        pref.auto = v;
-                        await svc.savePref(convKey);
-                        setSheet(() {});
-                        onChanged();
-                      },
-                    ),
+                    child: Column(children: [
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        value: pref.auto,
+                        activeThumbColor: C.green,
+                        title: Text(s.translateAuto,
+                            style: ts(13, w: FontWeight.w700)),
+                        subtitle:
+                            Text(s.translateAutoTip, style: ts(10, c: C.grey)),
+                        onChanged: (v) async {
+                          pref.auto = v;
+                          await svc.savePref(convKey);
+                          setSheet(() {});
+                          onChanged();
+                        },
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        value: pref.contrast,
+                        activeThumbColor: C.cyan,
+                        title: Text(s.translateContrast,
+                            style: ts(13, w: FontWeight.w700)),
+                        subtitle: Text(s.translateContrastTip,
+                            style: ts(10, c: C.grey)),
+                        onChanged: (v) async {
+                          pref.contrast = v;
+                          await svc.savePref(convKey);
+                          setSheet(() {});
+                          onChanged();
+                        },
+                      ),
+                    ]),
                   ),
                   const SizedBox(height: 10),
                   Row(children: [
@@ -422,7 +554,7 @@ Future<void> showConvTranslateSheet({
                         ),
                       ),
                     ),
-                    if (st_translatedCount(convKey) > 0) ...[
+                    if (ConvTransRegistry.instance.of(convKey).count > 0) ...[
                       const SizedBox(width: 8),
                       TextButton(
                         onPressed: () {
@@ -444,14 +576,58 @@ Future<void> showConvTranslateSheet({
   );
 }
 
-int st_translatedCount(String convKey) =>
-    ConvTransRegistry.instance.of(convKey).count;
+List<TransLang> get _langOptions =>
+    TransLang.all.where((l) => l.code != 'auto').toList();
 
-/// 译文展示块：附在气泡里（原文下方一条细分隔线 + 译文）
+Widget _langHeader(String title, String hint) => Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(children: [
+        Text(title, style: ts(12, c: C.cyan, w: FontWeight.w700)),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(hint,
+              style: ts(10, c: C.grey),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ),
+      ]),
+    );
+
+Widget _langChip({
+  required String label,
+  required bool selected,
+  required VoidCallback onTap,
+}) =>
+    GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? C.cyanBg : C.bgSoft,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: selected ? C.cyan : C.border,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: ts(11,
+              c: selected ? C.cyan : C.slate,
+              w: selected ? FontWeight.w700 : FontWeight.w500),
+        ),
+      ),
+    );
+
+/// 译文展示块（对照翻译）
+///
+/// 对照模式：原文（气泡内）+ 分隔线 + 译文（带语言标签）—— 二者同屏便于核对。
+/// 非对照模式：只显示译文，原文隐藏（气泡里的原文会被替换掉，见调用方）。
 Widget translationBlock({
   required BuildContext context,
   required AprsMsg m,
   required ConvTransState st,
+  required ConvTranslatePref pref,
 }) {
   final key = msgKey(m);
   final s = S.of(context);
@@ -487,13 +663,26 @@ Widget translationBlock({
   }
   final t = st.translations[key];
   if (t == null) return const SizedBox.shrink();
-  if (st.showingOriginal.contains(key)) return const SizedBox.shrink();
+  if (!pref.contrast || st.showingOriginal.contains(key)) {
+    return const SizedBox.shrink();
+  }
+  final target = st.targets[key] ?? '';
   return Padding(
     padding: const EdgeInsets.only(top: 6),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(height: 1, color: C.border),
+        // 分隔线 + 语言标签：让「下半段是译文」一眼可辨，且知道译成了什么语言
+        Row(children: [
+          Expanded(child: Container(height: 1, color: C.border)),
+          const SizedBox(width: 6),
+          if (target.isNotEmpty)
+            Text(
+              '${m.sent ? s.translateToPeerTag : s.translateToMeTag}'
+              ' · ${TransLang.labelOf(target)}',
+              style: ts(9, c: C.grey),
+            ),
+        ]),
         const SizedBox(height: 5),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,6 +692,58 @@ Widget translationBlock({
             Expanded(child: Text(t, style: ts(12, c: C.cyan, h: 1.4))),
           ],
         ),
+      ],
+    ),
+  );
+}
+
+/// 非对照模式：译文替换原文时用于渲染正文
+String? displayTranslationOf({
+  required AprsMsg m,
+  required ConvTransState st,
+  required ConvTranslatePref pref,
+}) {
+  if (pref.contrast) return null;
+  final key = msgKey(m);
+  if (st.showingOriginal.contains(key)) return null;
+  return st.translations[key];
+}
+
+/// 会话列表/头部的翻译按钮，带已翻译条数角标
+Widget translateChip({
+  required BuildContext context,
+  required int count,
+  required VoidCallback onTap,
+  Color? color,
+}) {
+  final c = color ?? C.cyan;
+  return GestureDetector(
+    onTap: onTap,
+    child: Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          decoration: BoxDecoration(
+            color: c.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(Icons.translate_rounded, size: 15, color: c),
+        ),
+        if (count > 0)
+          Positioned(
+            right: -4,
+            top: -4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: c,
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Text('$count',
+                  style: ts(8, c: Colors.white, w: FontWeight.w700)),
+            ),
+          ),
       ],
     ),
   );

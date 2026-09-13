@@ -1,5 +1,57 @@
 # 更新日志
 
+## [未发版 · tnc 分支] - 2026-09-13（第三轮）
+
+### 🔄 翻译改为双向：可翻成「对方的语言」 / Two-way translation: translate into the other party's language
+
+- 会话翻译设置从单一「目标语言」改为**两个方向**：
+  - **我的语言** —— 对方发来的消息翻成它（读别人的话）
+  - **对方的语言** —— 我发出的消息翻成它（预览「对方会读到什么」）
+- **对方的语言会自动学出来**，不用用户手填：接口在 `from=auto` 时都会回传识别结果
+  （Google 的 `detectedSourceLanguage`、百度的 `from`），翻译过对方几条消息后
+  自动回填并落盘；也仍可手动指定
+- 长按面板会标明方向（「对方发来」/「我发出」）与目标语言；
+  对方语言未知时，对自己发的消息会明确提示而不是硬翻（翻了往往是同一种语言）
+
+- The conversation translate sheet now has **two directions** instead of one target
+  language: **My language** (messages from the other side are translated into it) and
+  **Their language** (your own messages are translated into it — a preview of what they
+  will read). **Their language is learned automatically**: every provider returns the
+  detection result when `from=auto` (Google's `detectedSourceLanguage`, Baidu's `from`),
+  so after a few incoming messages it is filled in and persisted; manual override still
+  works. The long-press sheet shows the direction (“received”/“sent”) and the target
+  language, and when their language is still unknown your outgoing messages say so
+  instead of being translated blindly (which usually means translating into the same
+  language).
+
+### 📖 对照翻译 / Side-by-side contrast display
+
+- 译文不再只是替换原文，而是**与原文同屏对照**：气泡里原文在下、分隔线以上标注
+  「译给我看 / 对方将读到 + 语言名」、下方是译文
+- 会话设置里可关掉「对照显示」，改为只显示译文（原文仍可长按查看）
+- 分隔线上的语言标签让「这段是译文、且翻成了什么语言」一眼可辨
+
+- Translations are no longer a replacement but shown **alongside the original**: the
+  bubble keeps the original text, a divider labels the direction and language name
+  (“for me” / “what they read”, plus the language), and the translation follows below.
+  Contrast display can be turned off per conversation to show only the translation
+  (long-press still reveals the original). The language tag on the divider makes it
+  obvious that the lower block is a translation and into which language.
+
+### 📅 聊天日期分界线 / Date dividers in conversations
+
+- 会话、群聊与消息瀑布流的前面均按天插入**日期分界线**：今天 / 昨天 /
+  「2026年9月11日 周五」（各语言各自的日期与星期格式）
+- 分组按**视觉顺序**而非数组下标判断：「该天最早一条」的上方才是日期真正变换处；
+  按下标递增比较会把分界线插错位置。此逻辑已用 12 例单测锁住
+  （含跳月、跳年、闰日号相同等边界）
+
+- One-to-one chats, group chats and the message feed now insert a **date divider** per
+  day: Today / Yesterday / “2026-09-11 Fri”, formatted per language. Grouping is decided
+  by **visual order**, not array index — the divider belongs above the earliest message
+  of each day, and comparing indices in order would place it wrongly. The logic is
+  pinned by 12 unit tests covering month/year rollovers and same-day-of-month cases.
+
 ## [未发版 · tnc 分支] - 2026-09-13（第二轮）
 
 ### 🌐 修掉 TNC 功能里的中文外泄 / Fixed Chinese leaking through in the TNC features

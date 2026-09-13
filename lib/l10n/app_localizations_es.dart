@@ -1102,6 +1102,72 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tncErrTimeout => 'tiempo agotado';
 
   @override
+  String get translateMyLang => 'Mi idioma';
+
+  @override
+  String get translateMyLangHint =>
+      'Los mensajes recibidos se traducen a este idioma';
+
+  @override
+  String get translatePeerLang => 'Idioma de la otra parte';
+
+  @override
+  String get translatePeerUnknownHint =>
+      'Se detecta automáticamente en sus mensajes';
+
+  @override
+  String get translateLearned => 'Detectado automáticamente';
+
+  @override
+  String get translatePeerUnknown =>
+      'Aún no se conoce el idioma de la otra parte: indícalo en los ajustes de traducción o se detectará tras varios mensajes suyos';
+
+  @override
+  String get translateSideIncoming => 'recibido';
+
+  @override
+  String get translateSideOutgoing => 'enviado';
+
+  @override
+  String get translateToMeTag => 'para mí';
+
+  @override
+  String get translateToPeerTag => 'lo que leerán';
+
+  @override
+  String get translateContrast => 'Mostrar original y traducción juntos';
+
+  @override
+  String get translateContrastTip =>
+      'Si está desactivado solo se ve la traducción (el original sigue en pulsación larga)';
+
+  @override
+  String get dateToday => 'Hoy';
+
+  @override
+  String get dateYesterday => 'Ayer';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$d/$m/$y $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'lun',
+      '2': 'mar',
+      '3': 'mié',
+      '4': 'jue',
+      '5': 'vie',
+      '6': 'sáb',
+      '7': 'dom',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get translate => 'Traducir';
 
   @override

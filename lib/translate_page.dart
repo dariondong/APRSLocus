@@ -97,10 +97,15 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       _testResult = '';
     });
     try {
-      final out = await svc.translate(
+      final r = await svc.translate(
         'Hello, this is APRSlocus.',
         to: cfg.targetLang,
       );
+      // 顺手把识别结果显示出来：用户能据此确认接口真的在回传语言信息，
+      // 而「对方的语言」正是靠这个字段自动学出来的
+      final out = r.detected == null
+          ? r.text
+          : '${r.text}  [${TransLang.labelOf(r.detected!)}]';
       if (mounted) {
         setState(() {
           _testOk = true;

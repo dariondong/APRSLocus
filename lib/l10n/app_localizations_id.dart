@@ -1095,6 +1095,71 @@ class AppLocalizationsId extends AppLocalizations {
   String get tncErrTimeout => 'waktu habis';
 
   @override
+  String get translateMyLang => 'Bahasa saya';
+
+  @override
+  String get translateMyLangHint =>
+      'Pesan dari lawan bicara diterjemahkan ke bahasa ini';
+
+  @override
+  String get translatePeerLang => 'Bahasa lawan bicara';
+
+  @override
+  String get translatePeerUnknownHint => 'Dikenali otomatis dari pesan mereka';
+
+  @override
+  String get translateLearned => 'Terdeteksi otomatis';
+
+  @override
+  String get translatePeerUnknown =>
+      'Bahasa lawan bicara belum diketahui — atur di pengaturan terjemahan, atau akan terdeteksi setelah beberapa pesan mereka';
+
+  @override
+  String get translateSideIncoming => 'diterima';
+
+  @override
+  String get translateSideOutgoing => 'terkirim';
+
+  @override
+  String get translateToMeTag => 'untuk saya';
+
+  @override
+  String get translateToPeerTag => 'yang mereka baca';
+
+  @override
+  String get translateContrast => 'Tampilkan asli dan terjemahan bersama';
+
+  @override
+  String get translateContrastTip =>
+      'Jika mati hanya terjemahan yang tampil (aslinya lewat tekan lama)';
+
+  @override
+  String get dateToday => 'Hari ini';
+
+  @override
+  String get dateYesterday => 'Kemarin';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$d/$m/$y $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'Sen',
+      '2': 'Sel',
+      '3': 'Rab',
+      '4': 'Kam',
+      '5': 'Jum',
+      '6': 'Sab',
+      '7': 'Min',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get translate => 'Terjemahkan';
 
   @override

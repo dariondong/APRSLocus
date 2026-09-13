@@ -83,6 +83,21 @@ class TransLang {
         _ => 'auto',
       };
 
+  /// 「对方的语言」哨兵值：表示目标语言不是固定的一种，而是**跟着对方走**。
+  /// 实际解析见 [TransDirection]（收到对方消息 → 我的语言；自己发的 → 对方语言）。
+  static const String peer = '@peer';
+
+  /// 界面 locale（l10n 的用法，如 zh / zh_TW / en）→ 本模块短码
+  static String fromUiLocale(String uiLocale) => switch (uiLocale) {
+        'zh' => 'zh',
+        'zh_TW' => 'zh-TW',
+        'en' => 'en',
+        'ja' => 'ja',
+        'id' => 'id',
+        'es' => 'es',
+        _ => 'en',
+      };
+
   /// 界面语言 → 默认翻译目标语言（当前界面语言已是目标时没必要翻译）
   static String defaultTargetFor(String uiLocale) => switch (uiLocale) {
         'zh' => 'en',
@@ -112,6 +127,9 @@ class TranslateConfig {
   String customHeaders; // JSON 对象文本
   String customBody; // 含 {text} {from} {to} 占位符
   String customResultPath; // 如 data.translations.0.translatedText
+  /// 自定义接口返回「识别出的源语言」的字段路径（可选）。
+  /// 留空则该接口不参与「对方语言」的自动学习。
+  String customDetectPath;
   /// 自定义接口若把结果放在响应头/纯文本，可把 path 留空 → 直接取整个响应体
   bool customPlainText;
 
@@ -126,6 +144,7 @@ class TranslateConfig {
     this.customHeaders = '{"Content-Type": "application/json"}',
     this.customBody = '{"q": "{text}", "source": "{from}", "target": "{to}"}',
     this.customResultPath = '',
+    this.customDetectPath = '',
     this.customPlainText = false,
   });
 
@@ -140,6 +159,7 @@ class TranslateConfig {
         'customHeaders': customHeaders,
         'customBody': customBody,
         'customResultPath': customResultPath,
+        'customDetectPath': customDetectPath,
         'customPlainText': customPlainText,
       };
 
@@ -158,6 +178,7 @@ class TranslateConfig {
       customHeaders: s('customHeaders', c.customHeaders),
       customBody: s('customBody', c.customBody),
       customResultPath: s('customResultPath', c.customResultPath),
+      customDetectPath: s('customDetectPath', c.customDetectPath),
       customPlainText: j['customPlainText'] == true,
     );
   }
@@ -181,25 +202,89 @@ class TranslateConfig {
 
 // ───────────────────────── 单条会话的翻译设置 ─────────────────────────
 
-/// 每个会话（私聊按呼号、群聊按 groupId）独立的目标语言与自动翻译开关
+/// 每个会话（私聊按呼号、群聊按 groupId）独立的语言与自动翻译设置
+///
+/// 双向模型（这是「翻译成对方语言」的基础）：
+///   - [peerLang]：**对方的**语言。空串表示还不知道 → 由接口在翻译对方消息时
+///     自动识别并回填（见 [TranslateService] 的识别结果），用户也可手动指定。
+///     空串 + 自动识别都拿不到时，翻译我方消息会回落到 [targetLang]。
+///   - [targetLang]：**我**要看的语言（收到对方消息时翻成它）。
+///     默认取当前界面语言，因为用户最可能就是想用界面语言读。
+///   - [auto]：收到对方消息时自动翻译（只翻收到的，不翻自己发的）。
+///   - [contrast]：对照显示 —— 原文与译文同时保留（关掉则译文替换原文显示）。
 class ConvTranslatePref {
+  /// 我的语言：收到对方消息翻译成它
   String targetLang;
+
+  /// 对方的语言：'' = 未知（自动识别）；也可手填
+  String peerLang;
+
   bool auto;
 
-  ConvTranslatePref({required this.targetLang, this.auto = false});
+  /// 对照显示（原文 + 译文同屏）
+  bool contrast;
 
-  Map<String, dynamic> toJson() => {'targetLang': targetLang, 'auto': auto};
+  ConvTranslatePref({
+    required this.targetLang,
+    this.peerLang = '',
+    this.auto = false,
+    this.contrast = true,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'targetLang': targetLang,
+        'peerLang': peerLang,
+        'auto': auto,
+        'contrast': contrast,
+      };
 
   static ConvTranslatePref fromJson(Object? j, String fallbackLang) {
     if (j is! Map) return ConvTranslatePref(targetLang: fallbackLang);
     return ConvTranslatePref(
       targetLang: j['targetLang']?.toString() ?? fallbackLang,
+      peerLang: j['peerLang']?.toString() ?? '',
       auto: j['auto'] == true,
+      contrast: j['contrast'] != false,
     );
   }
 }
 
+/// 翻译方向 → 实际目标语言。
+///
+/// 抽成纯函数是为了可单测：这里一旦算错，表现是「翻译出来是同一个语言」
+/// 或「拿自己的语言当对方语言」，都不是一眼能看出来的错误。
+class TransDirection {
+  /// 翻译**对方发来的**消息 → 目标是我的语言
+  static String targetForIncoming(ConvTranslatePref p, String fallback) =>
+      p.targetLang.isNotEmpty ? p.targetLang : fallback;
+
+  /// 翻译**我发出的**消息 → 目标是对方的语言（未知时回落）
+  static String targetForOutgoing(ConvTranslatePref p, String fallback) =>
+      p.peerLang.isNotEmpty ? p.peerLang : fallback;
+
+  /// 该会话是否值得自动翻译（不知道对方说什么、也还没配过目标语言时，
+  /// 自动翻出来可能是同一种语言，白费一次请求）
+  static bool worthAuto(ConvTranslatePref p) =>
+      p.targetLang.isNotEmpty && p.targetLang != 'auto';
+}
+
 // ───────────────────────── 翻译服务 ─────────────────────────
+
+/// 翻译结果 + 接口识别出的源语言
+///
+/// 为什么要带识别结果：本应用支持「翻译成**对方的**语言」，而对方说什么
+/// 语言用户通常并不知道。三家接口在 `from=auto` 时都会回传识别结果
+/// （Google 的 `detectedSourceLanguage`、百度的 `from`），
+/// 于是「对方的语言」可以自己学出来，无需用户手填。
+class TranslateResult {
+  /// 译文
+  final String text;
+
+  /// 接口识别出的源语言（内部短码）；接口未回传时为 null
+  final String? detected;
+
+  const TranslateResult(this.text, {this.detected});
+}
 
 class TranslateException implements Exception {
   final String message;
@@ -274,6 +359,7 @@ class TranslateService {
       ..customHeaders = from.customHeaders
       ..customBody = from.customBody
       ..customResultPath = from.customResultPath
+      ..customDetectPath = from.customDetectPath
       ..customPlainText = from.customPlainText;
   }
 
@@ -310,38 +396,45 @@ class TranslateService {
       _cache[_cacheKey(text, from, to)];
 
   /// 翻译。失败抛 [TranslateException]（消息已是可读文本）。
-  Future<String> translate(
+  ///
+  /// 返回 [TranslateResult]：除译文外还带接口**识别出的源语言** ——
+  /// 这是「翻译成对方语言」能自动工作的关键（见 [TranslateResult] 的说明）。
+  Future<TranslateResult> translate(
     String text, {
     String from = 'auto',
     String? to,
   }) async {
     final target = to ?? config.targetLang;
     final src = text.trim();
-    if (src.isEmpty) return '';
+    if (src.isEmpty) return const TranslateResult('');
     if (!config.ready) {
       throw TranslateException('not-configured:${config.missingField}');
     }
     final key = _cacheKey(src, from, target);
     final hit = _cache[key];
-    if (hit != null) return hit;
+    if (hit != null) return TranslateResult(hit);
 
     requestCount++;
     try {
-      final result = switch (config.provider) {
+      final r = switch (config.provider) {
         'google' => await _google(src, from, target),
         'baidu' => await _baidu(src, from, target),
         'custom' => await _custom(src, from, target),
         _ => throw TranslateException('unknown-provider:${config.provider}'),
       };
-      final out = result.trim();
+      final out = r.text.trim();
       _cache[key] = out;
       unawaited(_persistCache());
-      return out;
+      return TranslateResult(out, detected: r.detected);
     } catch (e) {
       failureCount++;
       rethrow;
     }
   }
+
+  /// 只要译文的便捷入口
+  Future<String> translateText(String text, {String from = 'auto', String? to}) async =>
+      (await translate(text, from: from, to: to)).text;
 
   Future<void> _persistCache() async {
     try {
@@ -373,7 +466,7 @@ class TranslateService {
   /// POST https://translation.googleapis.com/language/translate/v2?key=KEY
   /// body {q, target, format, [source]}
   /// → data.translations[0].translatedText（HTML 实体需反转义）
-  Future<String> _google(String text, String from, String to) async {
+  Future<TranslateResult> _google(String text, String from, String to) async {
     final uri = Uri.parse(
       'https://translation.googleapis.com/language/translate/v2'
       '?key=${Uri.encodeQueryComponent(config.googleApiKey.trim())}',
@@ -393,8 +486,16 @@ class TranslateService {
     final map = _decodeJson(resp);
     final list = _dig(map, 'data.translations');
     if (list is List && list.isNotEmpty) {
-      final t = (list.first as Map)['translatedText'];
-      if (t != null) return _unescapeHtml('$t');
+      final first = list.first as Map;
+      final t = first['translatedText'];
+      if (t != null) {
+        // from=auto 时 Google 会回传 detectedSourceLanguage，用它学习对方语言
+        final det = first['detectedSourceLanguage']?.toString();
+        return TranslateResult(
+          _unescapeHtml('$t'),
+          detected: _googleToShort(det),
+        );
+      }
     }
     throw TranslateException(_fail('google', resp));
   }
@@ -403,7 +504,7 @@ class TranslateService {
   /// GET/POST https://fanyi-api.baidu.com/api/trans/vip/translate
   /// q / from / to / appid / salt / sign=MD5(appid+q+salt+密钥)
   /// → trans_result[0].dst
-  Future<String> _baidu(String text, String from, String to) async {
+  Future<TranslateResult> _baidu(String text, String from, String to) async {
     final appid = config.baiduAppId.trim();
     final key = config.baiduKey.trim();
     final salt = DateTime.now().millisecondsSinceEpoch.toString();
@@ -437,13 +538,16 @@ class TranslateService {
     final list = _dig(map, 'trans_result');
     if (list is List && list.isNotEmpty) {
       final d = (list.first as Map)['dst'];
-      if (d != null) return '$d';
+      if (d != null) {
+        // 百度的识别结果在响应根的 from 字段
+        return TranslateResult('$d', detected: _baiduToShort(map['from']?.toString()));
+      }
     }
     throw TranslateException(_fail('baidu', resp));
   }
 
   /// 自定义接口：URL / 方法 / 请求头 / 请求体模板 / 结果字段路径全部由用户给定
-  Future<String> _custom(String text, String from, String to) async {
+  Future<TranslateResult> _custom(String text, String from, String to) async {
     final url = config.customUrl.trim();
     if (url.isEmpty) throw TranslateException('custom-url-empty');
     String subst(String tpl) => tpl
@@ -468,7 +572,7 @@ class TranslateService {
     final resp = await _send(method, target, headers: headers, body: body);
     if (config.customPlainText || config.customResultPath.trim().isEmpty) {
       // 未指定路径 → 整个响应体就是译文（部分自建接口如此）
-      return resp;
+      return TranslateResult(resp);
     }
     final decoded = _decodeJson(resp);
     final v = _dig(decoded, config.customResultPath.trim());
@@ -477,7 +581,13 @@ class TranslateService {
         'custom-path-miss:${config.customResultPath} in ${_trunc(resp)}',
       );
     }
-    return v is String ? v : jsonEncode(v);
+    // 自定义接口若按同一约定返回识别语言，也能参与「对方语言」学习
+    String? det;
+    final p = config.customDetectPath.trim();
+    if (p.isNotEmpty) {
+      det = _dig(decoded, p)?.toString();
+    }
+    return TranslateResult(v is String ? v : jsonEncode(v), detected: det);
   }
 
   // ─── HTTP 与工具 ───
@@ -542,6 +652,26 @@ class TranslateService {
       if (cur == null) return null;
     }
     return cur;
+  }
+
+  /// Google 的语言码（zh-CN / zh-TW / en …）→ 内部短码
+  static String? _googleToShort(String? code) {
+    if (code == null || code.isEmpty) return null;
+    final c = code.replaceAll('_', '-');
+    if (c == 'zh-CN' || c == 'zh-Hans' || c == 'zh') return 'zh';
+    if (c == 'zh-TW' || c == 'zh-Hant' || c == 'zh-HK') return 'zh-TW';
+    // 其余（en / ja / es / ko / fr …）两边写法一致
+    return TransLang.byCode(c) != null ? c : c.split('-').first;
+  }
+
+  /// 百度的语言码（zh / cht / jp / kor / spa …）→ 内部短码（[toBaidu] 的逆映射）
+  static String? _baiduToShort(String? code) {
+    if (code == null || code.isEmpty) return null;
+    for (final l in TransLang.all) {
+      if (l.code == 'auto') continue;
+      if (TransLang.toBaidu(l.code) == code) return l.code;
+    }
+    return TransLang.byCode(code) != null ? code : null;
   }
 
   /// Google 在 format=text 下仍可能返回 HTML 实体（&quot; &#39; 等）

@@ -1081,6 +1081,68 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tncErrTimeout => '连接超时';
 
   @override
+  String get translateMyLang => '我的语言';
+
+  @override
+  String get translateMyLangHint => '对方发来的消息翻成它';
+
+  @override
+  String get translatePeerLang => '对方的语言';
+
+  @override
+  String get translatePeerUnknownHint => '收到对方消息后由翻译接口自动识别';
+
+  @override
+  String get translateLearned => '已自动识别';
+
+  @override
+  String get translatePeerUnknown => '还不知道对方使用什么语言 · 先在翻译设置里指定，或收几条对方消息后会自动识别';
+
+  @override
+  String get translateSideIncoming => '对方发来';
+
+  @override
+  String get translateSideOutgoing => '我发出';
+
+  @override
+  String get translateToMeTag => '译给我看';
+
+  @override
+  String get translateToPeerTag => '对方将读到';
+
+  @override
+  String get translateContrast => '对照显示原文与译文';
+
+  @override
+  String get translateContrastTip => '关闭后只显示译文（原文仍可通过长按查看）';
+
+  @override
+  String get dateToday => '今天';
+
+  @override
+  String get dateYesterday => '昨天';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$y年$m月$d日 $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': '周一',
+      '2': '周二',
+      '3': '周三',
+      '4': '周四',
+      '5': '周五',
+      '6': '周六',
+      '7': '周日',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get translate => '翻译';
 
   @override
@@ -5456,6 +5518,68 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tncErrTimeout => '連線逾時';
+
+  @override
+  String get translateMyLang => '我的語言';
+
+  @override
+  String get translateMyLangHint => '對方傳來的訊息翻成它';
+
+  @override
+  String get translatePeerLang => '對方的語言';
+
+  @override
+  String get translatePeerUnknownHint => '收到對方訊息後由翻譯介面自動識別';
+
+  @override
+  String get translateLearned => '已自動識別';
+
+  @override
+  String get translatePeerUnknown => '還不知道對方使用什麼語言 · 先在翻譯設定裡指定，或收幾條對方訊息後會自動識別';
+
+  @override
+  String get translateSideIncoming => '對方傳來';
+
+  @override
+  String get translateSideOutgoing => '我發出';
+
+  @override
+  String get translateToMeTag => '譯給我看';
+
+  @override
+  String get translateToPeerTag => '對方將讀到';
+
+  @override
+  String get translateContrast => '對照顯示原文與譯文';
+
+  @override
+  String get translateContrastTip => '關閉後只顯示譯文（原文仍可透過長按查看）';
+
+  @override
+  String get dateToday => '今天';
+
+  @override
+  String get dateYesterday => '昨天';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$y年$m月$d日 $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': '週一',
+      '2': '週二',
+      '3': '週三',
+      '4': '週四',
+      '5': '週五',
+      '6': '週六',
+      '7': '週日',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
 
   @override
   String get translate => '翻譯';

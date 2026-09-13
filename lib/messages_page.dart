@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'models.dart';
 import 'state.dart';
+import 'chat_dates.dart';
 import 'chat_translate_ui.dart';
 import 'translate.dart';
 import 'translate_page.dart';
@@ -401,13 +402,23 @@ class _MessagesPageState extends State<MessagesPage> {
                       style: TextStyle(color: C.grey, fontSize: 13),
                     ),
                   )
-                : ListView.builder(
-                    controller: _scrollFeed,
-                    reverse: true,
-                    padding: const EdgeInsets.all(12),
-                    itemCount: st.messages.length,
-                    itemBuilder: (_, i) {
-                      final m = st.messages[i];
+                : Builder(builder: (context) {
+                    // 瀑布流跨会话，日期分界线同样必要（否则翻历史不知道跨度）
+                    final rows = buildChatRows<AprsMsg>(
+                      st.messages,
+                      (m) => m.time,
+                    );
+                    return ListView.builder(
+                      controller: _scrollFeed,
+                      reverse: true,
+                      padding: const EdgeInsets.all(12),
+                      itemCount: rows.length,
+                      itemBuilder: (_, i) {
+                      final row = rows[i];
+                      if (row.isDivider) {
+                        return ChatDateDivider.build(context, row.divider!);
+                      }
+                      final m = row.item!;
                       return GestureDetector(
                         onTap: () {
                           // 群聊消息 → 打开对应群聊；私聊 → 打开对应联系人
@@ -433,7 +444,8 @@ class _MessagesPageState extends State<MessagesPage> {
                         child: _feedBubble(m),
                       );
                     },
-                  ),
+                    );
+                  }),
           ),
           _inputBar(st),
         ],
@@ -463,9 +475,12 @@ class _MessagesPageState extends State<MessagesPage> {
       onLongPress: () => showMessageActions(
         context: context,
         m: m,
-        targetLang: TranslateService.instance.prefFor(mConv).targetLang,
+        pref: TranslateService.instance.prefFor(mConv),
         st: ConvTransRegistry.instance.of(mConv),
         convKey: mConv,
+        onChanged: () {
+          if (mounted) setState(() {});
+        },
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
@@ -533,8 +548,8 @@ class _MessagesPageState extends State<MessagesPage> {
                     context: context,
                     m: m,
                     st: ConvTransRegistry.instance.of(mConv),
+                    pref: TranslateService.instance.prefFor(mConv),
                   ),
-                  translationBlock(context: context, m: m, st: _trans),
                 ],
               ),
             ),
@@ -551,6 +566,7 @@ class _MessagesPageState extends State<MessagesPage> {
     final key = msgKey(m);
     if (st.has(key) || st.pending.contains(key)) return;
     if (!_pref.auto) return;
+    if (!TransDirection.worthAuto(_pref)) return;
     if (!TranslateService.instance.config.ready) return;
     // 在首帧后发起：避免在 build 过程中 setState
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -558,9 +574,14 @@ class _MessagesPageState extends State<MessagesPage> {
       unawaited(translateMessage(
         context: context,
         m: m,
-        to: _pref.targetLang,
+        side: TransSide.incoming,
+        pref: _pref,
         st: st,
         convKey: _convKey,
+        // 接口识别出「对方的语言」后立即刷新（角标/标签会变）
+        onPeerLangLearned: () {
+          if (mounted) setState(() {});
+        },
       ));
     });
   }
@@ -605,9 +626,11 @@ class _MessagesPageState extends State<MessagesPage> {
   Future<void> _openTransSheet({required String title}) async {
     await showConvTranslateSheet(
       context: context,
-      appState: widget.state,
       convKey: _convKey,
       title: title,
+      icon: Icons.chat_bubble_rounded,
+      color: C.cyan,
+      myUiLocale: widget.state.locale,
       onChanged: () {
         if (mounted) setState(() {});
       },
@@ -1536,22 +1559,32 @@ class _MessagesPageState extends State<MessagesPage> {
                         style: ts(13, c: C.grey),
                       ),
                     )
-                  : ListView.builder(
-                      controller: _scrollGroup,
-                      reverse: true,
-                      padding: const EdgeInsets.all(14),
-                      itemCount: msgs.length,
-                      itemBuilder: (_, i) {
-                        final (msg, sender) = msgs[i];
-                        return _bubble(
-                          msg,
-                          groupSender: sender,
-                          onSenderTap: sender == S.of(context).meLabel
-                              ? null
-                              : () => _openStation(st, sender),
-                        );
-                      },
-                    ),
+                  : Builder(builder: (context) {
+                      final rows = buildChatRows<(AprsMsg, String)>(
+                        msgs,
+                        (e) => e.$1.time,
+                      );
+                      return ListView.builder(
+                        controller: _scrollGroup,
+                        reverse: true,
+                        padding: const EdgeInsets.all(14),
+                        itemCount: rows.length,
+                        itemBuilder: (_, i) {
+                          final row = rows[i];
+                          if (row.isDivider) {
+                            return ChatDateDivider.build(context, row.divider!);
+                          }
+                          final (msg, sender) = row.item!;
+                          return _bubble(
+                            msg,
+                            groupSender: sender,
+                            onSenderTap: sender == S.of(context).meLabel
+                                ? null
+                                : () => _openStation(st, sender),
+                          );
+                        },
+                      );
+                    }),
             ),
             _inputBar(st),
           ],
@@ -1640,15 +1673,28 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
                 Expanded(
-                  child: ListView(
-                    controller: _scrollChat,
-                    reverse: true,
-                    padding: const EdgeInsets.all(14),
-                    children: _chatWith(
-                      st,
-                      _selected,
-                    ).map((m) => _bubble(m)).toList(),
-                  ),
+                  child: Builder(builder: (context) {
+                    // 日期分界线。列表本身是时间倒序（最新在前）+ reverse 渲染，
+                    // 因此下标 0 在视觉最底部，按数组顺序摊平即可 ——
+                    // 详见 buildChatRows 里关于「按视觉顺序分组」的说明。
+                    final rows = buildChatRows<AprsMsg>(
+                      _chatWith(st, _selected),
+                      (m) => m.time,
+                    );
+                    return ListView.builder(
+                      controller: _scrollChat,
+                      reverse: true,
+                      padding: const EdgeInsets.all(14),
+                      itemCount: rows.length,
+                      itemBuilder: (_, i) {
+                        final row = rows[i];
+                        if (row.isDivider) {
+                          return ChatDateDivider.build(context, row.divider!);
+                        }
+                        return _bubble(row.item!);
+                      },
+                    );
+                  }),
                 ),
                 _inputBar(st),
               ],
@@ -1684,9 +1730,12 @@ class _MessagesPageState extends State<MessagesPage> {
         onLongPress: () => showMessageActions(
           context: context,
           m: m,
-          targetLang: _pref.targetLang,
+          pref: _pref,
           st: _trans,
           convKey: _convKey,
+          onChanged: () {
+            if (mounted) setState(() {});
+          },
         ),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),

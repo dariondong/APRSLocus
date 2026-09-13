@@ -1095,6 +1095,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tncErrTimeout => 'timed out';
 
   @override
+  String get translateMyLang => 'My language';
+
+  @override
+  String get translateMyLangHint =>
+      'Messages from the other side are translated into this';
+
+  @override
+  String get translatePeerLang => 'The other party\'s language';
+
+  @override
+  String get translatePeerUnknownHint =>
+      'Detected automatically from their messages';
+
+  @override
+  String get translateLearned => 'Auto-detected';
+
+  @override
+  String get translatePeerUnknown =>
+      'The other party\'s language is still unknown — set it in translation settings, or it will be detected after a few of their messages';
+
+  @override
+  String get translateSideIncoming => 'received';
+
+  @override
+  String get translateSideOutgoing => 'sent';
+
+  @override
+  String get translateToMeTag => 'for me';
+
+  @override
+  String get translateToPeerTag => 'what they read';
+
+  @override
+  String get translateContrast => 'Show original and translation together';
+
+  @override
+  String get translateContrastTip =>
+      'When off only the translation shows (long-press still reveals the original)';
+
+  @override
+  String get dateToday => 'Today';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$m/$d/$y $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'Mon',
+      '2': 'Tue',
+      '3': 'Wed',
+      '4': 'Thu',
+      '5': 'Fri',
+      '6': 'Sat',
+      '7': 'Sun',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get translate => 'Translate';
 
   @override

@@ -98,6 +98,100 @@ DATA = {
         'zh': '连接超时', 'zh_TW': '連線逾時', 'en': 'timed out',
         'ja': 'タイムアウト', 'id': 'waktu habis', 'es': 'tiempo agotado',
     },
+    # ── 双向翻译 + 对照显示 ──
+    'translateMyLang': {
+        'zh': '我的语言', 'zh_TW': '我的語言', 'en': 'My language',
+        'ja': '自分の言語', 'id': 'Bahasa saya', 'es': 'Mi idioma',
+    },
+    'translateMyLangHint': {
+        'zh': '对方发来的消息翻成它',
+        'zh_TW': '對方傳來的訊息翻成它',
+        'en': 'Messages from the other side are translated into this',
+        'ja': '相手からのメッセージはこれを訳先にします',
+        'id': 'Pesan dari lawan bicara diterjemahkan ke bahasa ini',
+        'es': 'Los mensajes recibidos se traducen a este idioma',
+    },
+    'translatePeerLang': {
+        'zh': '对方的语言', 'zh_TW': '對方的語言',
+        'en': "The other party's language",
+        'ja': '相手の言語', 'id': 'Bahasa lawan bicara',
+        'es': 'Idioma de la otra parte',
+    },
+    'translatePeerUnknownHint': {
+        'zh': '收到对方消息后由翻译接口自动识别',
+        'zh_TW': '收到對方訊息後由翻譯介面自動識別',
+        'en': 'Detected automatically from their messages',
+        'ja': '相手のメッセージから自動判定します',
+        'id': 'Dikenali otomatis dari pesan mereka',
+        'es': 'Se detecta automáticamente en sus mensajes',
+    },
+    'translateLearned': {
+        'zh': '已自动识别', 'zh_TW': '已自動識別',
+        'en': 'Auto-detected', 'ja': '自動判定済み',
+        'id': 'Terdeteksi otomatis', 'es': 'Detectado automáticamente',
+    },
+    'translatePeerUnknown': {
+        'zh': '还不知道对方使用什么语言 · 先在翻译设置里指定，或收几条对方消息后会自动识别',
+        'zh_TW': '還不知道對方使用什麼語言 · 先在翻譯設定裡指定，或收幾條對方訊息後會自動識別',
+        'en': "The other party's language is still unknown — set it in translation settings, or it will be detected after a few of their messages",
+        'ja': '相手の言語が不明です。翻訳設定で指定するか、相手のメッセージを数件受信すると自動判定されます',
+        'id': 'Bahasa lawan bicara belum diketahui — atur di pengaturan terjemahan, atau akan terdeteksi setelah beberapa pesan mereka',
+        'es': 'Aún no se conoce el idioma de la otra parte: indícalo en los ajustes de traducción o se detectará tras varios mensajes suyos',
+    },
+    'translateSideIncoming': {
+        'zh': '对方发来', 'zh_TW': '對方傳來', 'en': 'received',
+        'ja': '受信', 'id': 'diterima', 'es': 'recibido',
+    },
+    'translateSideOutgoing': {
+        'zh': '我发出', 'zh_TW': '我發出', 'en': 'sent',
+        'ja': '送信', 'id': 'terkirim', 'es': 'enviado',
+    },
+    'translateToMeTag': {
+        'zh': '译给我看', 'zh_TW': '譯給我看', 'en': 'for me',
+        'ja': '自分向け', 'id': 'untuk saya', 'es': 'para mí',
+    },
+    'translateToPeerTag': {
+        'zh': '对方将读到', 'zh_TW': '對方將讀到',
+        'en': 'what they read', 'ja': '相手が読む文',
+        'id': 'yang mereka baca', 'es': 'lo que leerán',
+    },
+    'translateContrast': {
+        'zh': '对照显示原文与译文', 'zh_TW': '對照顯示原文與譯文',
+        'en': 'Show original and translation together',
+        'ja': '原文と訳文を並べて表示',
+        'id': 'Tampilkan asli dan terjemahan bersama',
+        'es': 'Mostrar original y traducción juntos',
+    },
+    'translateContrastTip': {
+        'zh': '关闭后只显示译文（原文仍可通过长按查看）',
+        'zh_TW': '關閉後只顯示譯文（原文仍可透過長按查看）',
+        'en': 'When off only the translation shows (long-press still reveals the original)',
+        'ja': 'オフにすると訳文のみ表示（原文は長押しで確認できます）',
+        'id': 'Jika mati hanya terjemahan yang tampil (aslinya lewat tekan lama)',
+        'es': 'Si está desactivado solo se ve la traducción (el original sigue en pulsación larga)',
+    },
+    # ── 聊天日期分界线 ──
+    'dateToday': {
+        'zh': '今天', 'zh_TW': '今天', 'en': 'Today',
+        'ja': '今日', 'id': 'Hari ini', 'es': 'Hoy',
+    },
+    'dateYesterday': {
+        'zh': '昨天', 'zh_TW': '昨天', 'en': 'Yesterday',
+        'ja': '昨日', 'id': 'Kemarin', 'es': 'Ayer',
+    },
+    'dateDividerFull': {
+        'zh': '{y}年{m}月{d}日 {w}', 'zh_TW': '{y}年{m}月{d}日 {w}',
+        'en': '{m}/{d}/{y} {w}', 'ja': '{y}年{m}月{d}日 {w}',
+        'id': '{d}/{m}/{y} {w}', 'es': '{d}/{m}/{y} {w}',
+    },
+    'dateWeekday': {
+        'zh': '{d, select, 1 {周一} 2 {周二} 3 {周三} 4 {周四} 5 {周五} 6 {周六} 7 {周日} other {—}}',
+        'zh_TW': '{d, select, 1 {週一} 2 {週二} 3 {週三} 4 {週四} 5 {週五} 6 {週六} 7 {週日} other {—}}',
+        'en': '{d, select, 1 {Mon} 2 {Tue} 3 {Wed} 4 {Thu} 5 {Fri} 6 {Sat} 7 {Sun} other {—}}',
+        'ja': '{d, select, 1 {月} 2 {火} 3 {水} 4 {木} 5 {金} 6 {土} 7 {日} other {—}}',
+        'id': '{d, select, 1 {Sen} 2 {Sel} 3 {Rab} 4 {Kam} 5 {Jum} 6 {Sab} 7 {Min} other {—}}',
+        'es': '{d, select, 1 {lun} 2 {mar} 3 {mié} 4 {jue} 5 {vie} 6 {sáb} 7 {dom} other {—}}',
+    },
     # ── 翻译：通用 ──
     'translate': {
         'zh': '翻译', 'zh_TW': '翻譯', 'en': 'Translate',
@@ -333,6 +427,10 @@ PLACEHOLDERS = {
     'translateTestOk': {'text': 'String'},
     'translateFailed': {'e': 'String'},
     'translateBubbleCount': {'n': 'int'},
+    'dateDividerFull': {'y': 'int', 'm': 'int', 'd': 'int', 'w': 'String'},
+    # gen-l10n 要求 select 的占位符是 String（与既有 weatherWeekday 一致），
+    # 所以 weekday 以字符串形式传入
+    'dateWeekday': {'d': 'String'},
 }
 
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'id', 'es']

@@ -1085,6 +1085,69 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tncErrTimeout => 'タイムアウト';
 
   @override
+  String get translateMyLang => '自分の言語';
+
+  @override
+  String get translateMyLangHint => '相手からのメッセージはこれを訳先にします';
+
+  @override
+  String get translatePeerLang => '相手の言語';
+
+  @override
+  String get translatePeerUnknownHint => '相手のメッセージから自動判定します';
+
+  @override
+  String get translateLearned => '自動判定済み';
+
+  @override
+  String get translatePeerUnknown =>
+      '相手の言語が不明です。翻訳設定で指定するか、相手のメッセージを数件受信すると自動判定されます';
+
+  @override
+  String get translateSideIncoming => '受信';
+
+  @override
+  String get translateSideOutgoing => '送信';
+
+  @override
+  String get translateToMeTag => '自分向け';
+
+  @override
+  String get translateToPeerTag => '相手が読む文';
+
+  @override
+  String get translateContrast => '原文と訳文を並べて表示';
+
+  @override
+  String get translateContrastTip => 'オフにすると訳文のみ表示（原文は長押しで確認できます）';
+
+  @override
+  String get dateToday => '今日';
+
+  @override
+  String get dateYesterday => '昨日';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$y年$m月$d日 $w';
+  }
+
+  @override
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': '月',
+      '2': '火',
+      '3': '水',
+      '4': '木',
+      '5': '金',
+      '6': '土',
+      '7': '日',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get translate => '翻訳';
 
   @override
