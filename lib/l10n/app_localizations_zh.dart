@@ -1032,6 +1032,179 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionTranslation => '翻译';
 
   @override
+  String connTncConnected(String arg) {
+    return 'TNC 已连接 · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC 已连接 · 位置已发送 ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC 连接失败 · ${n}s 后重试…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC 连接失败（$e）· ${n}s 后重试…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC 链路断开 · $n秒后自动重连…';
+  }
+
+  @override
+  String get tncErrNoDevice => '未绑定 TNC 设备';
+
+  @override
+  String get tncErrUnsupported => '当前平台不支持';
+
+  @override
+  String get tncErrNotConnected => '链路未连接';
+
+  @override
+  String get tncErrOpenRead => '无法打开设备（读）';
+
+  @override
+  String get tncErrOpenWrite => '无法打开设备（写）—— Windows 的 COM 口是独占设备，检查是否被其他软件占用';
+
+  @override
+  String get tncErrBadFormat => '报文格式不合法';
+
+  @override
+  String get tncErrFrameTooLong => '帧长超出上限';
+
+  @override
+  String get tncErrTimeout => '连接超时';
+
+  @override
+  String get translate => '翻译';
+
+  @override
+  String get translateText => '翻译文本';
+
+  @override
+  String get translateSettings => '翻译设置';
+
+  @override
+  String get translateSettingsSubtitle => '翻译接口、语言与自动翻译';
+
+  @override
+  String get translateProvider => '翻译接口';
+
+  @override
+  String get translateProviderGoogle => 'Google 翻译';
+
+  @override
+  String get translateProviderBaidu => '百度翻译';
+
+  @override
+  String get translateProviderCustom => '自定义';
+
+  @override
+  String get translateGoogleKey => 'Google API Key';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Google Cloud Translation v2 的 API Key，需要自行到 Google Cloud 控制台申请';
+
+  @override
+  String get translateBaiduAppId => '百度 App ID';
+
+  @override
+  String get translateBaiduKey => '百度密钥';
+
+  @override
+  String get translateBaiduTip => '在百度翻译开放平台申请「通用文本翻译」，密钥只保存在本机';
+
+  @override
+  String get translateCustomUrl => '接口地址';
+
+  @override
+  String get translateCustomMethod => '请求方式';
+
+  @override
+  String get translateCustomHeaders => '请求头 (JSON)';
+
+  @override
+  String get translateCustomBody => '请求体模板';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return '可用占位符：$text 原文、$from 源语言、$to 目标语言。选择 GET 时忽略此项';
+  }
+
+  @override
+  String get translateCustomResultPath => '结果字段路径';
+
+  @override
+  String get translateCustomResultPathTip =>
+      '用点号表示层级，数组用序号，如 data.translations.0.translatedText';
+
+  @override
+  String get translateTest => '测试翻译';
+
+  @override
+  String translateTestOk(String text) {
+    return '接口可用：$text';
+  }
+
+  @override
+  String get translateNeedConfig => '请先填写翻译接口配置';
+
+  @override
+  String translateFailed(String e) {
+    return '翻译失败：$e';
+  }
+
+  @override
+  String get translateTargetLang => '翻译为';
+
+  @override
+  String get translateSourceLang => '原文语言';
+
+  @override
+  String get translateAuto => '自动翻译收到的消息';
+
+  @override
+  String get translateAutoTip => '仅对本会话生效；只翻译对方发来的消息';
+
+  @override
+  String get translateShowOriginal => '显示原文';
+
+  @override
+  String get translateShowTranslation => '显示译文';
+
+  @override
+  String get translateRetry => '重新翻译';
+
+  @override
+  String get translateTranslating => '正在翻译…';
+
+  @override
+  String get translateCopyOriginal => '复制原文';
+
+  @override
+  String get translateCopyResult => '复制译文';
+
+  @override
+  String get translateLangAuto => '自动检测';
+
+  @override
+  String get translateSameLang => '原文已是目标语言';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '已翻译 $n 条';
+  }
+
+  @override
+  String get translatePrivacyNote => '翻译会把消息文本发送到你选择的第三方接口，请自行评估隐私';
+
+  @override
   String get notifTncConnected => 'TNC 已连接';
 
   @override
@@ -5234,6 +5407,179 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionTranslation => '翻譯';
+
+  @override
+  String connTncConnected(String arg) {
+    return 'TNC 已連線 · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC 已連線 · 位置已傳送 ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC 連線失敗 · ${n}s 後重試…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC 連線失敗（$e）· ${n}s 後重試…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC 鏈路中斷 · $n秒後自動重連…';
+  }
+
+  @override
+  String get tncErrNoDevice => '未綁定 TNC 裝置';
+
+  @override
+  String get tncErrUnsupported => '目前平台不支援';
+
+  @override
+  String get tncErrNotConnected => '鏈路未連線';
+
+  @override
+  String get tncErrOpenRead => '無法開啟裝置（讀）';
+
+  @override
+  String get tncErrOpenWrite => '無法開啟裝置（寫）—— Windows 的 COM 埠是獨佔裝置，檢查是否被其他軟體佔用';
+
+  @override
+  String get tncErrBadFormat => '報文格式不合法';
+
+  @override
+  String get tncErrFrameTooLong => '幀長超出上限';
+
+  @override
+  String get tncErrTimeout => '連線逾時';
+
+  @override
+  String get translate => '翻譯';
+
+  @override
+  String get translateText => '翻譯文字';
+
+  @override
+  String get translateSettings => '翻譯設定';
+
+  @override
+  String get translateSettingsSubtitle => '翻譯介面、語言與自動翻譯';
+
+  @override
+  String get translateProvider => '翻譯介面';
+
+  @override
+  String get translateProviderGoogle => 'Google 翻譯';
+
+  @override
+  String get translateProviderBaidu => '百度翻譯';
+
+  @override
+  String get translateProviderCustom => '自訂';
+
+  @override
+  String get translateGoogleKey => 'Google API Key';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Google Cloud Translation v2 的 API Key，需自行到 Google Cloud 主控台申請';
+
+  @override
+  String get translateBaiduAppId => '百度 App ID';
+
+  @override
+  String get translateBaiduKey => '百度密鑰';
+
+  @override
+  String get translateBaiduTip => '在百度翻譯開放平台申請「通用文本翻譯」，密鑰只保存在本機';
+
+  @override
+  String get translateCustomUrl => '介面網址';
+
+  @override
+  String get translateCustomMethod => '請求方式';
+
+  @override
+  String get translateCustomHeaders => '請求標頭 (JSON)';
+
+  @override
+  String get translateCustomBody => '請求主體範本';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return '可用佔位符：$text 原文、$from 來源語言、$to 目標語言。選擇 GET 時忽略此項';
+  }
+
+  @override
+  String get translateCustomResultPath => '結果欄位路徑';
+
+  @override
+  String get translateCustomResultPathTip =>
+      '用點號表示層級，陣列用序號，如 data.translations.0.translatedText';
+
+  @override
+  String get translateTest => '測試翻譯';
+
+  @override
+  String translateTestOk(String text) {
+    return '介面可用：$text';
+  }
+
+  @override
+  String get translateNeedConfig => '請先填寫翻譯介面設定';
+
+  @override
+  String translateFailed(String e) {
+    return '翻譯失敗：$e';
+  }
+
+  @override
+  String get translateTargetLang => '翻譯為';
+
+  @override
+  String get translateSourceLang => '原文語言';
+
+  @override
+  String get translateAuto => '自動翻譯收到的訊息';
+
+  @override
+  String get translateAutoTip => '僅對本對話生效；只翻譯對方傳來的訊息';
+
+  @override
+  String get translateShowOriginal => '顯示原文';
+
+  @override
+  String get translateShowTranslation => '顯示譯文';
+
+  @override
+  String get translateRetry => '重新翻譯';
+
+  @override
+  String get translateTranslating => '正在翻譯…';
+
+  @override
+  String get translateCopyOriginal => '複製原文';
+
+  @override
+  String get translateCopyResult => '複製譯文';
+
+  @override
+  String get translateLangAuto => '自動偵測';
+
+  @override
+  String get translateSameLang => '原文已是目標語言';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '已翻譯 $n 條';
+  }
+
+  @override
+  String get translatePrivacyNote => '翻譯會把訊息文字傳送到你選擇的第三方介面，請自行評估隱私';
 
   @override
   String get notifTncConnected => 'TNC 已連線';

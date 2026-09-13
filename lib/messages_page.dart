@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
@@ -7,6 +9,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'models.dart';
 import 'state.dart';
+import 'chat_translate_ui.dart';
+import 'translate.dart';
+import 'translate_page.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
 import 'tracker_page.dart';
@@ -20,6 +25,30 @@ class MessagesPage extends StatefulWidget {
 }
 
 class _MessagesPageState extends State<MessagesPage> {
+  /// 当前会话的翻译状态（按会话键取，切会话不丢译文）
+  ConvTransState get _trans {
+    final key = _convKey;
+    final st = ConvTransRegistry.instance.of(key);
+    // 首次取用时挂监听，译文/状态变化会重建气泡
+    if (!_watched.contains(key)) {
+      _watched.add(key);
+      st.addListener(_onTransChanged);
+    }
+    return st;
+  }
+
+  final Set<String> _watched = {};
+
+  void _onTransChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// 当前会话键：群聊按 groupId、私聊按呼号
+  String get _convKey => convKeyOf(groupId: _selectedGroupId, call: _selected);
+
+  /// 本会话的翻译偏好（目标语言 + 自动翻译）
+  ConvTranslatePref get _pref => TranslateService.instance.prefFor(_convKey);
+
   String _selected = '';
   bool _showList = true;
   bool _feedMode = true; // 瀑布流模式（默认）
@@ -91,6 +120,11 @@ class _MessagesPageState extends State<MessagesPage> {
     _scrollGroup.dispose();
     _scrollChat.dispose();
     _manualAddCtrl.dispose();
+    // 翻译状态监听要显式摘掉：注册表是全局单例，不摘会在页面销毁后
+    // 仍持有回调并触发对已卸载 State 的 setState。
+    for (final k in _watched) {
+      ConvTransRegistry.instance.of(k).removeListener(_onTransChanged);
+    }
     super.dispose();
   }
 
@@ -419,21 +453,20 @@ class _MessagesPageState extends State<MessagesPage> {
         }
       }
     }
+    // 瀑布流里每条消息属于各自会话，翻译偏好也应按**该消息所属会话**取，
+    // 而不是当前打开的那个会话（瀑布流里可能同时显示多个会话）。
+    final mConv = convKeyOf(
+      groupId: m.groupId,
+      call: m.sent ? m.to : m.from,
+    );
     return GestureDetector(
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: m.text));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).copiedClipboard),
-            backgroundColor: C.blue,
-            duration: const Duration(seconds: 1),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
-      },
+      onLongPress: () => showMessageActions(
+        context: context,
+        m: m,
+        targetLang: TranslateService.instance.prefFor(mConv).targetLang,
+        st: ConvTransRegistry.instance.of(mConv),
+        convKey: mConv,
+      ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -496,12 +529,95 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                   SizedBox(height: 2),
                   _urlRichText(m.text, ts(12, c: C.ink)),
+                  translationBlock(
+                    context: context,
+                    m: m,
+                    st: ConvTransRegistry.instance.of(mConv),
+                  ),
+                  translationBlock(context: context, m: m, st: _trans),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  /// 自动翻译（按会话开关）：只处理收到的消息
+  void _maybeAutoTranslate(AprsMsg m) {
+    if (m.system || m.sent) return;
+    final st = _trans;
+    final key = msgKey(m);
+    if (st.has(key) || st.pending.contains(key)) return;
+    if (!_pref.auto) return;
+    if (!TranslateService.instance.config.ready) return;
+    // 在首帧后发起：避免在 build 过程中 setState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(translateMessage(
+        context: context,
+        m: m,
+        to: _pref.targetLang,
+        st: st,
+        convKey: _convKey,
+      ));
+    });
+  }
+
+  /// 会话头部的翻译入口。
+  /// 已翻译条数做成角标：否则用户看不出「这个开关到底生效没」。
+  Widget _transBtn({required VoidCallback onTap}) {
+    final n = _trans.count;
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            decoration: BoxDecoration(
+              color: C.cyanBg,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.translate_rounded, size: 15, color: C.cyan),
+          ),
+          if (n > 0)
+            Positioned(
+              right: -4,
+              top: -4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                decoration: BoxDecoration(
+                  color: C.cyan,
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Text('$n',
+                    style: ts(8, c: Colors.white, w: FontWeight.w700)),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 打开会话翻译设置面板
+  Future<void> _openTransSheet({required String title}) async {
+    await showConvTranslateSheet(
+      context: context,
+      appState: widget.state,
+      convKey: _convKey,
+      title: title,
+      onChanged: () {
+        if (mounted) setState(() {});
+      },
+      onOpenSettings: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TranslateSettingsPage(state: widget.state),
+          ),
+        );
+      },
     );
   }
 
@@ -1300,6 +1416,12 @@ class _MessagesPageState extends State<MessagesPage> {
                       ),
                     ),
                   ),
+                  _transBtn(
+                    onTap: () => _openTransSheet(
+                      title: group.name,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
                   // 邀请按钮（仅群主可见）
                   if (group.isOwner(st.myCall))
                     GestureDetector(
@@ -1495,6 +1617,10 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                       ),
                       Spacer(),
+                      _transBtn(
+                        onTap: () => _openTransSheet(title: _selected),
+                      ),
+                      const SizedBox(width: 10),
                       GestureDetector(
                         onTap: () => st.toggleFavorite(_selected),
                         child: Icon(
@@ -1549,23 +1675,19 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
       );
     }
+    // 自动翻译：只翻对方发来的消息（自己发的没必要翻），
+    // 且同一条消息只排一次（pending/已完成都不重复排）。
+    _maybeAutoTranslate(m);
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: GestureDetector(
-        onLongPress: () {
-          Clipboard.setData(ClipboardData(text: m.text));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.of(context).copiedClipboard),
-              backgroundColor: C.blue,
-              duration: const Duration(seconds: 1),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
-        },
+        onLongPress: () => showMessageActions(
+          context: context,
+          m: m,
+          targetLang: _pref.targetLang,
+          st: _trans,
+          convKey: _convKey,
+        ),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

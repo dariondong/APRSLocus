@@ -2115,6 +2115,312 @@ abstract class AppLocalizations {
   /// **'翻译'**
   String get codeContributionTranslation;
 
+  /// No description provided for @connTncConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 已连接 · {arg}'**
+  String connTncConnected(String arg);
+
+  /// No description provided for @connTncPositionSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 已连接 · 位置已发送 ({arg})'**
+  String connTncPositionSent(String arg);
+
+  /// No description provided for @connRetryTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 连接失败 · {n}s 后重试…'**
+  String connRetryTnc(int n);
+
+  /// No description provided for @connRetryTncDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 连接失败（{e}）· {n}s 后重试…'**
+  String connRetryTncDetail(String e, int n);
+
+  /// No description provided for @connTncLinkLost.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 链路断开 · {n}秒后自动重连…'**
+  String connTncLinkLost(int n);
+
+  /// No description provided for @tncErrNoDevice.
+  ///
+  /// In zh, this message translates to:
+  /// **'未绑定 TNC 设备'**
+  String get tncErrNoDevice;
+
+  /// No description provided for @tncErrUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持'**
+  String get tncErrUnsupported;
+
+  /// No description provided for @tncErrNotConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路未连接'**
+  String get tncErrNotConnected;
+
+  /// No description provided for @tncErrOpenRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开设备（读）'**
+  String get tncErrOpenRead;
+
+  /// No description provided for @tncErrOpenWrite.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开设备（写）—— Windows 的 COM 口是独占设备，检查是否被其他软件占用'**
+  String get tncErrOpenWrite;
+
+  /// No description provided for @tncErrBadFormat.
+  ///
+  /// In zh, this message translates to:
+  /// **'报文格式不合法'**
+  String get tncErrBadFormat;
+
+  /// No description provided for @tncErrFrameTooLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'帧长超出上限'**
+  String get tncErrFrameTooLong;
+
+  /// No description provided for @tncErrTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接超时'**
+  String get tncErrTimeout;
+
+  /// No description provided for @translate.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译'**
+  String get translate;
+
+  /// No description provided for @translateText.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译文本'**
+  String get translateText;
+
+  /// No description provided for @translateSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译设置'**
+  String get translateSettings;
+
+  /// No description provided for @translateSettingsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译接口、语言与自动翻译'**
+  String get translateSettingsSubtitle;
+
+  /// No description provided for @translateProvider.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译接口'**
+  String get translateProvider;
+
+  /// No description provided for @translateProviderGoogle.
+  ///
+  /// In zh, this message translates to:
+  /// **'Google 翻译'**
+  String get translateProviderGoogle;
+
+  /// No description provided for @translateProviderBaidu.
+  ///
+  /// In zh, this message translates to:
+  /// **'百度翻译'**
+  String get translateProviderBaidu;
+
+  /// No description provided for @translateProviderCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get translateProviderCustom;
+
+  /// No description provided for @translateGoogleKey.
+  ///
+  /// In zh, this message translates to:
+  /// **'Google API Key'**
+  String get translateGoogleKey;
+
+  /// No description provided for @translateGoogleKeyTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'Google Cloud Translation v2 的 API Key，需要自行到 Google Cloud 控制台申请'**
+  String get translateGoogleKeyTip;
+
+  /// No description provided for @translateBaiduAppId.
+  ///
+  /// In zh, this message translates to:
+  /// **'百度 App ID'**
+  String get translateBaiduAppId;
+
+  /// No description provided for @translateBaiduKey.
+  ///
+  /// In zh, this message translates to:
+  /// **'百度密钥'**
+  String get translateBaiduKey;
+
+  /// No description provided for @translateBaiduTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'在百度翻译开放平台申请「通用文本翻译」，密钥只保存在本机'**
+  String get translateBaiduTip;
+
+  /// No description provided for @translateCustomUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口地址'**
+  String get translateCustomUrl;
+
+  /// No description provided for @translateCustomMethod.
+  ///
+  /// In zh, this message translates to:
+  /// **'请求方式'**
+  String get translateCustomMethod;
+
+  /// No description provided for @translateCustomHeaders.
+  ///
+  /// In zh, this message translates to:
+  /// **'请求头 (JSON)'**
+  String get translateCustomHeaders;
+
+  /// No description provided for @translateCustomBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'请求体模板'**
+  String get translateCustomBody;
+
+  /// No description provided for @translateCustomBodyTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'可用占位符：{text} 原文、{from} 源语言、{to} 目标语言。选择 GET 时忽略此项'**
+  String translateCustomBodyTip(String text, String from, String to);
+
+  /// No description provided for @translateCustomResultPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'结果字段路径'**
+  String get translateCustomResultPath;
+
+  /// No description provided for @translateCustomResultPathTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'用点号表示层级，数组用序号，如 data.translations.0.translatedText'**
+  String get translateCustomResultPathTip;
+
+  /// No description provided for @translateTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试翻译'**
+  String get translateTest;
+
+  /// No description provided for @translateTestOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口可用：{text}'**
+  String translateTestOk(String text);
+
+  /// No description provided for @translateNeedConfig.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先填写翻译接口配置'**
+  String get translateNeedConfig;
+
+  /// No description provided for @translateFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译失败：{e}'**
+  String translateFailed(String e);
+
+  /// No description provided for @translateTargetLang.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译为'**
+  String get translateTargetLang;
+
+  /// No description provided for @translateSourceLang.
+  ///
+  /// In zh, this message translates to:
+  /// **'原文语言'**
+  String get translateSourceLang;
+
+  /// No description provided for @translateAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动翻译收到的消息'**
+  String get translateAuto;
+
+  /// No description provided for @translateAutoTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅对本会话生效；只翻译对方发来的消息'**
+  String get translateAutoTip;
+
+  /// No description provided for @translateShowOriginal.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示原文'**
+  String get translateShowOriginal;
+
+  /// No description provided for @translateShowTranslation.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示译文'**
+  String get translateShowTranslation;
+
+  /// No description provided for @translateRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新翻译'**
+  String get translateRetry;
+
+  /// No description provided for @translateTranslating.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在翻译…'**
+  String get translateTranslating;
+
+  /// No description provided for @translateCopyOriginal.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制原文'**
+  String get translateCopyOriginal;
+
+  /// No description provided for @translateCopyResult.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制译文'**
+  String get translateCopyResult;
+
+  /// No description provided for @translateLangAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动检测'**
+  String get translateLangAuto;
+
+  /// No description provided for @translateSameLang.
+  ///
+  /// In zh, this message translates to:
+  /// **'原文已是目标语言'**
+  String get translateSameLang;
+
+  /// No description provided for @translateBubbleCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已翻译 {n} 条'**
+  String translateBubbleCount(int n);
+
+  /// No description provided for @translatePrivacyNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译会把消息文本发送到你选择的第三方接口，请自行评估隐私'**
+  String get translatePrivacyNote;
+
   /// No description provided for @notifTncConnected.
   ///
   /// In zh, this message translates to:

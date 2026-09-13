@@ -13,6 +13,7 @@ import 'exit_app.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'settings_pages.dart';
+import 'translate_page.dart';
 import 'export_adif_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -218,6 +219,50 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(height: 12),
                 // QQ 交流群
                 _qqBanner(),
+                SizedBox(height: 12),
+                // 翻译设置
+                GestureDetector(
+                  onTap: () => _push(TranslateSettingsPage(state: st)),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF0E7490), Color(0xFF155E75)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: const Icon(Icons.translate_rounded,
+                              color: Colors.white, size: 17),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(S.of(context).translateSettings,
+                                  style: ts(13, w: FontWeight.w700)),
+                              SizedBox(height: 2),
+                              Text(S.of(context).translateSettingsSubtitle,
+                                  style: ts(10, c: C.grey),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded,
+                            color: C.grey, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(height: 12),
                 // 导出 ADIF（按需求置于「关于」上方）
                 GestureDetector(

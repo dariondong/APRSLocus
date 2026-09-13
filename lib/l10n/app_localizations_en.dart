@@ -1045,6 +1045,184 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionTranslation => 'Translation';
 
   @override
+  String connTncConnected(String arg) {
+    return 'TNC connected · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC connected · position sent ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC connection failed · retrying in ${n}s…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC connection failed ($e) · retrying in ${n}s…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC link lost · reconnecting in ${n}s…';
+  }
+
+  @override
+  String get tncErrNoDevice => 'no TNC device bound';
+
+  @override
+  String get tncErrUnsupported => 'unsupported on this platform';
+
+  @override
+  String get tncErrNotConnected => 'link not connected';
+
+  @override
+  String get tncErrOpenRead => 'cannot open device for reading';
+
+  @override
+  String get tncErrOpenWrite =>
+      'cannot open device for writing — Windows COM ports are exclusive; check for another app holding it';
+
+  @override
+  String get tncErrBadFormat => 'malformed packet';
+
+  @override
+  String get tncErrFrameTooLong => 'frame exceeds the size limit';
+
+  @override
+  String get tncErrTimeout => 'timed out';
+
+  @override
+  String get translate => 'Translate';
+
+  @override
+  String get translateText => 'Translate text';
+
+  @override
+  String get translateSettings => 'Translation settings';
+
+  @override
+  String get translateSettingsSubtitle =>
+      'Provider, languages and auto-translate';
+
+  @override
+  String get translateProvider => 'Provider';
+
+  @override
+  String get translateProviderGoogle => 'Google Translate';
+
+  @override
+  String get translateProviderBaidu => 'Baidu Translate';
+
+  @override
+  String get translateProviderCustom => 'Custom';
+
+  @override
+  String get translateGoogleKey => 'Google API key';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'API key for Google Cloud Translation v2 — create one in the Google Cloud console';
+
+  @override
+  String get translateBaiduAppId => 'Baidu App ID';
+
+  @override
+  String get translateBaiduKey => 'Baidu secret key';
+
+  @override
+  String get translateBaiduTip =>
+      'Apply for general text translation on the Baidu Translate platform; the key stays on this device';
+
+  @override
+  String get translateCustomUrl => 'Endpoint URL';
+
+  @override
+  String get translateCustomMethod => 'HTTP method';
+
+  @override
+  String get translateCustomHeaders => 'Headers (JSON)';
+
+  @override
+  String get translateCustomBody => 'Body template';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return 'Placeholders: $text, $from, $to. Ignored when the method is GET';
+  }
+
+  @override
+  String get translateCustomResultPath => 'Result JSON path';
+
+  @override
+  String get translateCustomResultPathTip =>
+      'Dot-separated path with array indexes, e.g. data.translations.0.translatedText';
+
+  @override
+  String get translateTest => 'Test translation';
+
+  @override
+  String translateTestOk(String text) {
+    return 'Provider works: $text';
+  }
+
+  @override
+  String get translateNeedConfig => 'Configure the translation provider first';
+
+  @override
+  String translateFailed(String e) {
+    return 'Translation failed: $e';
+  }
+
+  @override
+  String get translateTargetLang => 'Translate into';
+
+  @override
+  String get translateSourceLang => 'Source language';
+
+  @override
+  String get translateAuto => 'Auto-translate incoming messages';
+
+  @override
+  String get translateAutoTip =>
+      'Applies to this conversation only; translates received messages only';
+
+  @override
+  String get translateShowOriginal => 'Show original';
+
+  @override
+  String get translateShowTranslation => 'Show translation';
+
+  @override
+  String get translateRetry => 'Translate again';
+
+  @override
+  String get translateTranslating => 'Translating…';
+
+  @override
+  String get translateCopyOriginal => 'Copy original';
+
+  @override
+  String get translateCopyResult => 'Copy translation';
+
+  @override
+  String get translateLangAuto => 'Auto detect';
+
+  @override
+  String get translateSameLang => 'Already in the target language';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '$n translated';
+  }
+
+  @override
+  String get translatePrivacyNote =>
+      'Translation sends message text to the third-party provider you choose; assess privacy accordingly';
+
+  @override
   String get notifTncConnected => 'TNC connected';
 
   @override

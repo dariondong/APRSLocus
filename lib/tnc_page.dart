@@ -139,7 +139,7 @@ class _TncSettingsPageState extends State<TncSettingsPage> {
       await tnc.disconnect();
       // 同步 AppState 的连接状态（首页状态栏读的是它）
       st.connected = false;
-      st.connInfo = '未连接 · TNC';
+      st.setConnStatus(ConnPhase.manual);
     } else {
       if (tnc.device == null) {
         setState(() => _busy = false);
@@ -155,10 +155,12 @@ class _TncSettingsPageState extends State<TncSettingsPage> {
       final ok = await tnc.connect();
       if (ok) {
         st.connected = true;
-        st.connInfo = 'TNC 已连接 · ${tnc.device?.label ?? ''}';
+        st.setConnStatus(ConnPhase.tncConnected,
+            arg: tnc.device?.label ?? '');
       } else {
         st.connected = false;
-        st.connInfo = 'TNC 连接失败 · ${tnc.lastError}';
+        st.setConnStatus(ConnPhase.retryTnc,
+            arg: tnc.lastError, seconds: 8);
         if (tnc.status == TncStatus.openFailed) {
           _toast(S.of(context).tncOpenFailedHint, color: C.red);
         } else {

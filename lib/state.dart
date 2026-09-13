@@ -27,6 +27,7 @@ import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'tnc.dart';
+import 'translate.dart';
 import 'early_member.dart';
 import 'achievements.dart';
 
@@ -646,7 +647,23 @@ class AppState extends ChangeNotifier {
   /// 因此上层（连接卡片、状态栏、通知）无需分辨数据来源 —— 详见 [_syncConnFromLink]。
   bool connected = false;
   bool connecting = false;
-  String connInfo = '未连接 · 点击播放按钮连接 APRS-IS';
+  /// 连接状态（结构化）。
+  ///
+  /// **不要用中文字符串表示状态**：此前 `connInfo` 存中文，UI 侧靠
+  /// `localizedConnectionInfo()` 拿中文当哨兵再映射回 l10n —— 一旦新增
+  /// 状态忘了登记映射，界面在所有语言下都会漏出中文（这正是 TNC 状态
+  /// 串当初的表现）。改为结构化枚举 + 参数，由本类的 [connInfo] 直接
+  /// 用当前语言生成文案，与 `BeaconPhase` 同一套做法。
+  ConnStatus _conn = const ConnStatus(ConnPhase.idle);
+
+  /// 设置连接状态（自动通知刷新）
+  void setConnStatus(ConnPhase phase, {String arg = '', int seconds = 0}) {
+    _conn = ConnStatus(phase, arg: arg, seconds: seconds);
+    _notify();
+  }
+
+  /// 当前连接状态说明（**已按当前界面语言本地化**）
+  String get connInfo => _conn.localized(l10n);
   // Passcode 是否被服务器判定无效（logresp unverified）
   bool passcodeInvalid = false;
 
@@ -686,7 +703,7 @@ class AppState extends ChangeNotifier {
     _reconnectTimer?.cancel();
     aprs.disconnect();
     await tnc.disconnect(manual: false);
-    connInfo = next == srcTnc ? '未连接 · TNC（电台）' : '未连接 · 已手动断开';
+    setConnStatus(ConnPhase.manual);
     _log(LogLevel.info, '连接',
         '数据来源切换为 ${next == srcTnc ? 'TNC（电台）' : 'APRS-IS'}');
     persist();
@@ -1255,6 +1272,9 @@ class AppState extends ChangeNotifier {
 
   AppState() : stations = <Station>[], messages = <AprsMsg>[] {
     _initDeviceDb();
+    // 翻译配置（接口、密钥、语言、每会话偏好）在启动时载入：
+    // 消息页可能在用户还没进设置前就要用它（自动翻译）。
+    unawaited(TranslateService.instance.load());
     unawaited(ensureMembersLoaded());
     unawaited(AchievementCenter.instance.ensureLoaded());
     _loadPrefs();
@@ -1274,7 +1294,8 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       connected = false;
       final manual = _userDisconnected;
-      connInfo = manual ? '未连接 · 已手动断开' : '连接已断开 · 8秒后自动重连…';
+      setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostServer,
+          seconds: 8);
       _log(
         manual ? LogLevel.info : LogLevel.warn,
         '连接',
@@ -1442,7 +1463,8 @@ class AppState extends ChangeNotifier {
       if (_disposed || !usingTnc) return;
       connected = false;
       final manual = _userDisconnected;
-      connInfo = manual ? '未连接 · 已手动断开' : 'TNC 链路断开 · 稍后自动重连…';
+      setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostTnc,
+          seconds: 8);
       _log(
         manual ? LogLevel.info : LogLevel.warn,
         '连接',
@@ -1467,7 +1489,8 @@ class AppState extends ChangeNotifier {
   Future<void> _connect() async {
     if (usingTnc) return _connectTnc();
     connecting = true;
-    connInfo = '正在连接 ${aprs.server}:${aprs.port}…';
+    setConnStatus(ConnPhase.connectingServer,
+        arg: '${aprs.server}:${aprs.port}');
     _log(LogLevel.info, '连接', '正在连接 ${aprs.server}:${aprs.port}…');
     _notify();
     _updateNotification();
@@ -1482,7 +1505,7 @@ class AppState extends ChangeNotifier {
       passcodeInvalid = false; // 连接成功后重置，等待服务器验证
       _lastTx = DateTime.now();
       _lastFilter = aprs.filter; // 记录本次连接的过滤器
-      connInfo = '已连接 · $myCall 在线';
+      setConnStatus(ConnPhase.online, arg: myCall);
       _log(LogLevel.info, '连接', '已连接 · $myCall 在线 (过滤: $filterString)');
       _flushPendingTx();
       // 连接成功即发一次身份状态帧（APRS 惯例：上报在线/客户端标识）
@@ -1498,7 +1521,7 @@ class AppState extends ChangeNotifier {
     } else {
       connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
-      connInfo = '连接失败 · ${backoff}s 后重试…';
+      setConnStatus(ConnPhase.retryServer, seconds: backoff);
       _log(LogLevel.error, '连接', '连接失败，${backoff} 秒后自动重试');
     }
     _notify();
@@ -1515,7 +1538,7 @@ class AppState extends ChangeNotifier {
   Future<void> _connectTnc() async {
     connecting = true;
     final name = tnc.device?.label ?? '未绑定设备';
-    connInfo = '正在连接 TNC…';
+    setConnStatus(ConnPhase.connectingTnc, arg: name);
     _log(LogLevel.info, '连接', '正在连接 TNC：$name');
     _notify();
     _updateNotification();
@@ -1527,7 +1550,7 @@ class AppState extends ChangeNotifier {
       _reconnectAttempt = 0;
       passcodeInvalid = false;
       _lastTx = DateTime.now();
-      connInfo = 'TNC 已连接 · $name';
+      setConnStatus(ConnPhase.tncConnected, arg: name);
       _log(LogLevel.info, '连接', 'TNC 已连接 · $name（KISS 参数已下发）');
       _flushPendingTx();
       if (beaconEnabled && !tnc.config.rfBeacon) {
@@ -1537,7 +1560,8 @@ class AppState extends ChangeNotifier {
     } else {
       connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
-      connInfo = 'TNC 连接失败 · ${backoff}s 后重试…';
+      setConnStatus(ConnPhase.retryTnc,
+          arg: tnc.lastError, seconds: backoff);
       _log(LogLevel.error, '连接',
           'TNC 连接失败（${tnc.lastError}），${backoff} 秒后自动重试');
     }
@@ -1823,11 +1847,12 @@ class AppState extends ChangeNotifier {
     if (connected) {
       _sendRaw(raw);
       _lastTx = DateTime.now();
-      connInfo = usingTnc
-          ? 'TNC 已连接 · 位置已发送 ($myCall)'
-          : '已连接 · 位置已上传 ($myCall)';
+      setConnStatus(
+        usingTnc ? ConnPhase.positionSentTnc : ConnPhase.positionSent,
+        arg: myCall,
+      );
     } else {
-      connInfo = '未连接 · 位置已上报(模拟)';
+      setConnStatus(ConnPhase.demoBeacon);
     }
     beaconsSent++;
     _lastBeacon = DateTime.now();
@@ -1890,7 +1915,8 @@ class AppState extends ChangeNotifier {
       await tnc.restart();
       if (connected) {
         _userDisconnected = false;
-        connInfo = 'TNC 已连接 · ${tnc.device?.label ?? ''}';
+        setConnStatus(ConnPhase.tncConnected,
+            arg: tnc.device?.label ?? '');
       }
       _notify();
       _updateNotification();
@@ -1914,7 +1940,7 @@ class AppState extends ChangeNotifier {
         aprs.disconnect();
       }
       connected = false;
-      connInfo = '未连接 · 已手动断开';
+      setConnStatus(ConnPhase.manual);
       _notify();
       _updateNotification();
       return;
@@ -1938,7 +1964,7 @@ class AppState extends ChangeNotifier {
             passcodeInvalid = true;
             _log(LogLevel.warn, '连接', '登录未验证：passcode 可能错误（unverified）');
             if (connected) {
-              connInfo = '已连接 · 未验证（passcode 可能错误）';
+              setConnStatus(ConnPhase.unverified);
               _notify();
               _updateNotification();
             }
@@ -3579,3 +3605,89 @@ class AppState extends ChangeNotifier {
 
 /// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）
 enum BeaconPhase { off, disconnected, waitingFix, counting, imminent }
+
+/// 连接状态阶段（结构化，供 UI 本地化；见 [AppState.connInfo]）
+enum ConnPhase {
+  idle,
+  connectingServer,
+  connectingTnc,
+  online,
+  tncConnected,
+  unverified,
+  retryServer,
+  retryTnc,
+  linkLostServer,
+  linkLostTnc,
+  manual,
+  positionSent,
+  positionSentTnc,
+  demoBeacon,
+}
+
+/// TNC 链路错误码 → 可读文案。
+///
+/// 数据层只暴露稳定的**错误码**（`open-write-failed` 等），不是句子 ——
+/// 这样错误文本不会散落在各平台实现里，也不会漏掉本地化。
+String tncErrorText(AppLocalizations l, String code) {
+  final c = code.toLowerCase();
+  if (c.contains('no-device')) return l.tncErrNoDevice;
+  if (c.contains('unsupported')) return l.tncErrUnsupported;
+  if (c.contains('not-connected')) return l.tncErrNotConnected;
+  if (c.contains('open-read')) return l.tncErrOpenRead;
+  if (c.contains('open-write')) return l.tncErrOpenWrite;
+  if (c.contains('bad-format')) return l.tncErrBadFormat;
+  if (c.contains('frame-too-long')) return l.tncErrFrameTooLong;
+  if (c.contains('timeout')) return l.tncErrTimeout;
+  // 未识别的（如系统原始异常）：保留原文，便于上报排查
+  return code;
+}
+
+/// 连接状态 + 参数。文案在这里按语言生成，UI 不再需要任何哨兵映射。
+class ConnStatus {
+  final ConnPhase phase;
+
+  /// 目标主机 / 呼号 / 设备名 / 错误详情
+  final String arg;
+  final int seconds;
+
+  const ConnStatus(this.phase, {this.arg = '', this.seconds = 0});
+
+  String localized(AppLocalizations l) {
+    switch (phase) {
+      case ConnPhase.idle:
+        return l.connTapToConnect;
+      case ConnPhase.connectingServer:
+        return l.connConnectingTarget(arg);
+      case ConnPhase.connectingTnc:
+        return l.connectingToTnc(arg);
+      case ConnPhase.online:
+        return l.connOnline(arg);
+      case ConnPhase.tncConnected:
+        return l.connTncConnected(arg);
+      case ConnPhase.unverified:
+        return l.connPasscodeInvalid;
+      case ConnPhase.retryServer:
+        return l.connRetry(seconds);
+      case ConnPhase.retryTnc:
+        // 带错误详情：射频连接失败的常见原因各不相同（权限、设备被占用、
+        // 平台不支持…），只写「失败」用户无从排查；但直接把
+        // `open-write-failed: ...` 这种内部串抛给用户同样没用，
+        // 所以先经 [tncErrorText] 换成「下一步该做什么」。
+        return arg.isEmpty
+            ? l.connRetryTnc(seconds)
+            : l.connRetryTncDetail(tncErrorText(l, arg), seconds);
+      case ConnPhase.linkLostServer:
+        return l.connAutoReconnect(seconds);
+      case ConnPhase.linkLostTnc:
+        return l.connTncLinkLost(seconds);
+      case ConnPhase.manual:
+        return l.connManuallyDisconnected;
+      case ConnPhase.positionSent:
+        return l.connPositionSent(arg);
+      case ConnPhase.positionSentTnc:
+        return l.connTncPositionSent(arg);
+      case ConnPhase.demoBeacon:
+        return l.connDemoBeacon;
+    }
+  }
+}

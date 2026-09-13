@@ -1052,6 +1052,185 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionTranslation => 'Traducción';
 
   @override
+  String connTncConnected(String arg) {
+    return 'TNC conectado · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC conectado · posición enviada ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'Falló la conexión TNC · reintentando en ${n}s…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'Falló la conexión TNC ($e) · reintentando en ${n}s…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'Enlace TNC perdido · reconectando en ${n}s…';
+  }
+
+  @override
+  String get tncErrNoDevice => 'ningún dispositivo TNC emparejado';
+
+  @override
+  String get tncErrUnsupported => 'no compatible con esta plataforma';
+
+  @override
+  String get tncErrNotConnected => 'enlace sin conectar';
+
+  @override
+  String get tncErrOpenRead => 'no se puede abrir el dispositivo para lectura';
+
+  @override
+  String get tncErrOpenWrite =>
+      'no se puede abrir el dispositivo para escritura: los puertos COM son exclusivos; comprueba si otra app lo usa';
+
+  @override
+  String get tncErrBadFormat => 'paquete mal formado';
+
+  @override
+  String get tncErrFrameTooLong => 'la trama supera el límite de tamaño';
+
+  @override
+  String get tncErrTimeout => 'tiempo agotado';
+
+  @override
+  String get translate => 'Traducir';
+
+  @override
+  String get translateText => 'Traducir texto';
+
+  @override
+  String get translateSettings => 'Ajustes de traducción';
+
+  @override
+  String get translateSettingsSubtitle =>
+      'Proveedor, idiomas y traducción automática';
+
+  @override
+  String get translateProvider => 'Proveedor';
+
+  @override
+  String get translateProviderGoogle => 'Google Translate';
+
+  @override
+  String get translateProviderBaidu => 'Baidu Translate';
+
+  @override
+  String get translateProviderCustom => 'Personalizado';
+
+  @override
+  String get translateGoogleKey => 'Clave de API de Google';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Clave de API de Google Cloud Translation v2: créala en la consola de Google Cloud';
+
+  @override
+  String get translateBaiduAppId => 'App ID de Baidu';
+
+  @override
+  String get translateBaiduKey => 'Clave secreta de Baidu';
+
+  @override
+  String get translateBaiduTip =>
+      'Solicita traducción de texto general en la plataforma de Baidu; la clave se guarda solo en este dispositivo';
+
+  @override
+  String get translateCustomUrl => 'URL del endpoint';
+
+  @override
+  String get translateCustomMethod => 'Método HTTP';
+
+  @override
+  String get translateCustomHeaders => 'Cabeceras (JSON)';
+
+  @override
+  String get translateCustomBody => 'Plantilla del cuerpo';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return 'Marcadores: $text, $from, $to. Se ignora con el método GET';
+  }
+
+  @override
+  String get translateCustomResultPath => 'Ruta JSON del resultado';
+
+  @override
+  String get translateCustomResultPathTip =>
+      'Ruta con puntos e índices de array, p. ej. data.translations.0.translatedText';
+
+  @override
+  String get translateTest => 'Probar traducción';
+
+  @override
+  String translateTestOk(String text) {
+    return 'El proveedor funciona: $text';
+  }
+
+  @override
+  String get translateNeedConfig =>
+      'Configura primero el proveedor de traducción';
+
+  @override
+  String translateFailed(String e) {
+    return 'Falló la traducción: $e';
+  }
+
+  @override
+  String get translateTargetLang => 'Traducir a';
+
+  @override
+  String get translateSourceLang => 'Idioma de origen';
+
+  @override
+  String get translateAuto => 'Traducir automáticamente los mensajes entrantes';
+
+  @override
+  String get translateAutoTip =>
+      'Se aplica solo a esta conversación y solo traduce los mensajes recibidos';
+
+  @override
+  String get translateShowOriginal => 'Ver original';
+
+  @override
+  String get translateShowTranslation => 'Ver traducción';
+
+  @override
+  String get translateRetry => 'Traducir de nuevo';
+
+  @override
+  String get translateTranslating => 'Traduciendo…';
+
+  @override
+  String get translateCopyOriginal => 'Copiar original';
+
+  @override
+  String get translateCopyResult => 'Copiar traducción';
+
+  @override
+  String get translateLangAuto => 'Detectar automáticamente';
+
+  @override
+  String get translateSameLang => 'Ya está en el idioma de destino';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '$n traducidos';
+  }
+
+  @override
+  String get translatePrivacyNote =>
+      'La traducción envía el texto de los mensajes al proveedor externo que elijas; valora la privacidad';
+
+  @override
   String get notifTncConnected => 'TNC conectado';
 
   @override

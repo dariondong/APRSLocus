@@ -1035,6 +1035,182 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionTranslation => '翻訳';
 
   @override
+  String connTncConnected(String arg) {
+    return 'TNC 接続済み · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC 接続済み · 位置を送信しました ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC 接続失敗 · $n 秒後に再試行…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC 接続失敗（$e）· $n 秒後に再試行…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC リンク切断 · $n 秒後に自動再接続…';
+  }
+
+  @override
+  String get tncErrNoDevice => 'TNC デバイスが未登録';
+
+  @override
+  String get tncErrUnsupported => 'このプラットフォームは未対応';
+
+  @override
+  String get tncErrNotConnected => 'リンク未接続';
+
+  @override
+  String get tncErrOpenRead => 'デバイスを読み取り用に開けません';
+
+  @override
+  String get tncErrOpenWrite =>
+      'デバイスを書き込み用に開けません。Windows の COM ポートは占有型です。他のソフトが使用していないか確認してください';
+
+  @override
+  String get tncErrBadFormat => 'パケット形式が不正';
+
+  @override
+  String get tncErrFrameTooLong => 'フレーム長が上限を超えています';
+
+  @override
+  String get tncErrTimeout => 'タイムアウト';
+
+  @override
+  String get translate => '翻訳';
+
+  @override
+  String get translateText => 'テキストを翻訳';
+
+  @override
+  String get translateSettings => '翻訳設定';
+
+  @override
+  String get translateSettingsSubtitle => '翻訳プロバイダ、言語、自動翻訳';
+
+  @override
+  String get translateProvider => '翻訳プロバイダ';
+
+  @override
+  String get translateProviderGoogle => 'Google 翻訳';
+
+  @override
+  String get translateProviderBaidu => 'Baidu 翻訳';
+
+  @override
+  String get translateProviderCustom => 'カスタム';
+
+  @override
+  String get translateGoogleKey => 'Google API キー';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Google Cloud Translation v2 の API キー。Google Cloud コンソールで取得してください';
+
+  @override
+  String get translateBaiduAppId => 'Baidu App ID';
+
+  @override
+  String get translateBaiduKey => 'Baidu シークレットキー';
+
+  @override
+  String get translateBaiduTip =>
+      'Baidu 翻訳オープンプラットフォームで「汎用テキスト翻訳」を申請してください。キーは端末内のみに保存されます';
+
+  @override
+  String get translateCustomUrl => 'エンドポイント URL';
+
+  @override
+  String get translateCustomMethod => 'HTTP メソッド';
+
+  @override
+  String get translateCustomHeaders => 'ヘッダー (JSON)';
+
+  @override
+  String get translateCustomBody => 'ボディテンプレート';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return '使用可能なプレースホルダ：$text 原文、$from 元の言語、$to 翻訳先の言語。GET の場合は無視されます';
+  }
+
+  @override
+  String get translateCustomResultPath => '結果の JSON パス';
+
+  @override
+  String get translateCustomResultPathTip =>
+      'ドット区切りのパス、配列は番号。例 data.translations.0.translatedText';
+
+  @override
+  String get translateTest => '翻訳をテスト';
+
+  @override
+  String translateTestOk(String text) {
+    return 'プロバイダは利用可能：$text';
+  }
+
+  @override
+  String get translateNeedConfig => '先に翻訳プロバイダを設定してください';
+
+  @override
+  String translateFailed(String e) {
+    return '翻訳に失敗：$e';
+  }
+
+  @override
+  String get translateTargetLang => '翻訳先';
+
+  @override
+  String get translateSourceLang => '原文の言語';
+
+  @override
+  String get translateAuto => '受信メッセージを自動翻訳';
+
+  @override
+  String get translateAutoTip => 'この会話のみに適用されます。受信メッセージだけを翻訳します';
+
+  @override
+  String get translateShowOriginal => '原文を表示';
+
+  @override
+  String get translateShowTranslation => '訳文を表示';
+
+  @override
+  String get translateRetry => '再翻訳';
+
+  @override
+  String get translateTranslating => '翻訳中…';
+
+  @override
+  String get translateCopyOriginal => '原文をコピー';
+
+  @override
+  String get translateCopyResult => '訳文をコピー';
+
+  @override
+  String get translateLangAuto => '自動検出';
+
+  @override
+  String get translateSameLang => 'すでに翻訳先の言語です';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '$n 件を翻訳';
+  }
+
+  @override
+  String get translatePrivacyNote =>
+      '翻訳はメッセージ本文を選択した第三者のサービスへ送信します。プライバシーはご自身でご判断ください';
+
+  @override
   String get notifTncConnected => 'TNC 接続済み';
 
   @override

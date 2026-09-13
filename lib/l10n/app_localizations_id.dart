@@ -1045,6 +1045,185 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
+  String connTncConnected(String arg) {
+    return 'TNC terhubung · $arg';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC terhubung · posisi terkirim ($arg)';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'Koneksi TNC gagal · mencoba lagi dalam ${n}s…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'Koneksi TNC gagal ($e) · mencoba lagi dalam ${n}s…';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'Tautan TNC terputus · menyambung ulang dalam ${n}s…';
+  }
+
+  @override
+  String get tncErrNoDevice => 'belum ada perangkat TNC';
+
+  @override
+  String get tncErrUnsupported => 'tidak didukung di platform ini';
+
+  @override
+  String get tncErrNotConnected => 'tautan belum tersambung';
+
+  @override
+  String get tncErrOpenRead => 'tidak bisa membuka perangkat untuk membaca';
+
+  @override
+  String get tncErrOpenWrite =>
+      'tidak bisa membuka perangkat untuk menulis — port COM Windows bersifat eksklusif; periksa aplikasi lain';
+
+  @override
+  String get tncErrBadFormat => 'paket tidak valid';
+
+  @override
+  String get tncErrFrameTooLong => 'bingkai melebihi batas ukuran';
+
+  @override
+  String get tncErrTimeout => 'waktu habis';
+
+  @override
+  String get translate => 'Terjemahkan';
+
+  @override
+  String get translateText => 'Terjemahkan teks';
+
+  @override
+  String get translateSettings => 'Pengaturan terjemahan';
+
+  @override
+  String get translateSettingsSubtitle =>
+      'Penyedia, bahasa, dan terjemahan otomatis';
+
+  @override
+  String get translateProvider => 'Penyedia';
+
+  @override
+  String get translateProviderGoogle => 'Google Terjemahan';
+
+  @override
+  String get translateProviderBaidu => 'Baidu Terjemahan';
+
+  @override
+  String get translateProviderCustom => 'Kustom';
+
+  @override
+  String get translateGoogleKey => 'Kunci API Google';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Kunci API untuk Google Cloud Translation v2 — buat di konsol Google Cloud';
+
+  @override
+  String get translateBaiduAppId => 'App ID Baidu';
+
+  @override
+  String get translateBaiduKey => 'Kunci rahasia Baidu';
+
+  @override
+  String get translateBaiduTip =>
+      'Ajukan terjemahan teks umum di platform Baidu Translate; kunci hanya disimpan di perangkat ini';
+
+  @override
+  String get translateCustomUrl => 'URL endpoint';
+
+  @override
+  String get translateCustomMethod => 'Metode HTTP';
+
+  @override
+  String get translateCustomHeaders => 'Header (JSON)';
+
+  @override
+  String get translateCustomBody => 'Templat body';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return 'Placeholder: $text, $from, $to. Diabaikan bila metode GET';
+  }
+
+  @override
+  String get translateCustomResultPath => 'Jalur JSON hasil';
+
+  @override
+  String get translateCustomResultPathTip =>
+      'Jalur dengan titik dan indeks larik, mis. data.translations.0.translatedText';
+
+  @override
+  String get translateTest => 'Uji terjemahan';
+
+  @override
+  String translateTestOk(String text) {
+    return 'Penyedia berfungsi: $text';
+  }
+
+  @override
+  String get translateNeedConfig =>
+      'Konfigurasikan penyedia terjemahan lebih dulu';
+
+  @override
+  String translateFailed(String e) {
+    return 'Terjemahan gagal: $e';
+  }
+
+  @override
+  String get translateTargetLang => 'Terjemahkan ke';
+
+  @override
+  String get translateSourceLang => 'Bahasa sumber';
+
+  @override
+  String get translateAuto => 'Terjemahkan pesan masuk otomatis';
+
+  @override
+  String get translateAutoTip =>
+      'Berlaku hanya untuk percakapan ini; hanya menerjemahkan pesan masuk';
+
+  @override
+  String get translateShowOriginal => 'Tampilkan asli';
+
+  @override
+  String get translateShowTranslation => 'Tampilkan terjemahan';
+
+  @override
+  String get translateRetry => 'Terjemahkan ulang';
+
+  @override
+  String get translateTranslating => 'Menerjemahkan…';
+
+  @override
+  String get translateCopyOriginal => 'Salin asli';
+
+  @override
+  String get translateCopyResult => 'Salin terjemahan';
+
+  @override
+  String get translateLangAuto => 'Deteksi otomatis';
+
+  @override
+  String get translateSameLang => 'Sudah dalam bahasa target';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '$n diterjemahkan';
+  }
+
+  @override
+  String get translatePrivacyNote =>
+      'Terjemahan mengirim teks pesan ke penyedia pihak ketiga pilihan Anda; pertimbangkan privasi';
+
+  @override
   String get notifTncConnected => 'TNC terhubung';
 
   @override

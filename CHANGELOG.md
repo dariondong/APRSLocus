@@ -1,5 +1,72 @@
 # 更新日志
 
+## [未发版 · tnc 分支] - 2026-09-13（第二轮）
+
+### 🌐 修掉 TNC 功能里的中文外泄 / Fixed Chinese leaking through in the TNC features
+
+- 根因：`connInfo` 以前存的是**中文字符串**，界面侧靠
+  `localizedConnectionInfo()` 把中文当哨兵再映射回 l10n —— TNC 新增的一批
+  状态串没登记进那张映射表，于是**所有语言下都漏出中文**
+- 现改为**结构化连接状态**（`ConnPhase` + `ConnStatus`），文案在状态层按当前
+  语言直接生成，不再有任何哨兵映射；与先前 `beaconPhase` 的做法一致
+- 同时把 TNC 的**机器错误码**（`open-write-failed` 等）换成可读文案，
+  而不是把内部串抛给用户（例如 Windows COM 口被占用会明确提示）
+- 新增 14 个连接状态/错误文案键 × 6 语言
+
+- Root cause: `connInfo` used to hold a **Chinese string**, and the UI mapped it
+  back to l10n with `localizedConnectionInfo()` using Chinese text as a sentinel. The
+  batch of TNC status strings was never registered in that table, so **Chinese showed
+  up in every language**. It is now a **structured connection state** (`ConnPhase` +
+  `ConnStatus`) that renders in the current language directly, with no sentinel mapping
+  left — matching the existing `beaconPhase` approach. TNC **machine error codes**
+  (`open-write-failed`, …) are also turned into readable text instead of being thrown
+  at the user raw (e.g. an occupied Windows COM port now says so). Adds 14 connection
+  status/error keys × 6 languages.
+
+### 🔤 聊天翻译 / Chat translation
+
+- **长按任意消息** → 弹出操作面板：翻译 / 显示原文 / 复制原文 / 复制译文
+  （原来是长按直接复制，没有翻译入口）
+- **会话右上角新增翻译入口**（带已翻译条数角标）：面板内选该会话的
+  **目标语言**、开关**自动翻译**、一键清除本会话译文；也能直接跳到翻译设置
+- **设置页新增「翻译设置」**，支持三家接口：
+  - **Google** Cloud Translation v2（API Key）
+  - **百度**翻译开放平台（App ID + 密钥，`sign = MD5(appid+q+salt+key)`）
+  - **自定义**接口：URL / GET 或 POST / 请求头 JSON / 请求体模板
+    （`{text}` `{from}` `{to}` 占位符）/ 结果字段路径（如
+    `data.translations.0.translatedText`）
+- 页面内提供**测试翻译**按钮：三家接口都要用户自己申请凭据，配完立刻能验证
+- 细节考虑：
+  - 译文**不落盘**（翻译是查看时的加工，不是消息本身），但结果缓存落盘 ——
+    同一句话不会重复计费
+  - 语言码**按接口分别映射**（Google 用 `zh-CN`、百度用 `cht`/`jp`），
+    避免把接口方言散落到 UI
+  - 自动翻译只翻**对方发来的**消息，且**按会话**独立开关
+  - 翻译会把文本发往第三方，设置页有隐私提示
+- 仓库无 `crypto` 依赖，`MD5` 为自研实现，已用 **RFC 1321 标准向量**与
+  11 组独立生成的跨块边界向量锁住（`test/translate_test.dart`，14 例全过）
+
+- **Long-press any message** to get an action sheet: translate / show original /
+  copy original / copy translation (previously long-press just copied). A **new
+  translate entry sits in the conversation header** with a badge showing how many
+  messages are translated; its sheet sets the conversation's **target language**,
+  toggles **auto-translate**, clears this conversation's translations and links to the
+  settings. **Settings gains a “Translation settings” page** covering three providers:
+  **Google** Cloud Translation v2 (API key), **Baidu** Translate (App ID + secret,
+  `sign = MD5(appid+q+salt+key)`) and a **custom** endpoint (URL, GET/POST, JSON
+  headers, body template with `{text}`/`{from}`/`{to}`, and a result path such as
+  `data.translations.0.translatedText`). A **test translation** button is included
+  because all three providers need credentials the user must obtain themselves.
+  Translations are deliberately **not persisted** (translating is a view-time
+  operation, not part of the message) while the result cache is, so the same sentence
+  is never billed twice; language codes are **mapped per provider** (Google `zh-CN` vs
+  Baidu `cht`/`jp`) instead of leaking provider dialects into the UI; auto-translate only
+  handles **received** messages and is toggled **per conversation**; and the settings
+  page warns that text is sent to a third party. With no `crypto` dependency in the
+  repo, MD5 is implemented here and pinned by the **RFC 1321 vectors** plus 11
+  independently generated block-boundary vectors in `test/translate_test.dart`
+  (14 cases, all passing).
+
 ## [未发版 · tnc 分支] - 2026-09-13
 
 > 📌 该条目位于 `tnc` 分支，**尚未发版**。发版时请把标题改为版本号并与主分支合并。
