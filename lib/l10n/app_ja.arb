@@ -1136,6 +1136,7 @@
   "accountHonors": "アカウントの栄誉",
   "achievementsSection": "実績",
   "notLit": "未点灯",
+  "honorCriteriaLine": "獲得条件：{c}",
   "badgeFallback": "バッジ",
   "honoredBadges": "バッジ {n}/{m} 点灯",
   "achievementsProgress": "実績 {n}/{m}",

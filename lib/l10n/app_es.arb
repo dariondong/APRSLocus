@@ -1135,6 +1135,7 @@
   "accountHonors": "Honores de la cuenta",
   "achievementsSection": "Logros",
   "notLit": "Aún no",
+  "honorCriteriaLine": "Cómo obtenerlo: {c}",
   "badgeFallback": "Insignia",
   "honoredBadges": "{n}/{m} insignias desbloqueadas",
   "achievementsProgress": "{n}/{m} logros",

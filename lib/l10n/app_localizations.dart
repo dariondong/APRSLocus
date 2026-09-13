@@ -6921,6 +6921,12 @@ abstract class AppLocalizations {
   /// **'未点亮'**
   String get notLit;
 
+  /// No description provided for @honorCriteriaLine.
+  ///
+  /// In zh, this message translates to:
+  /// **'获得条件：{c}'**
+  String honorCriteriaLine(String c);
+
   /// No description provided for @badgeFallback.
   ///
   /// In zh, this message translates to:

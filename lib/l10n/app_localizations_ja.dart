@@ -3841,6 +3841,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notLit => '未点灯';
 
   @override
+  String honorCriteriaLine(String c) {
+    return '獲得条件：$c';
+  }
+
+  @override
   String get badgeFallback => 'バッジ';
 
   @override

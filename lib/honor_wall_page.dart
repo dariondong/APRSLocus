@@ -245,6 +245,25 @@ class HonorWallPage extends StatelessWidget {
                       color: owned
                           ? const Color(0xFF68748F)
                           : const Color(0xFFB4BCCB))),
+              // 获得条件（怎么拿到这枚徽章）—— 未点亮时是最有用的信息，
+              // 已点亮时也一并展示（与官网 badge.html 口径一致）。
+              // 无 criteria 时整行隐藏，不显示空白占位。
+              if (h.criteriaOf(lang).isNotEmpty) ...[
+                const SizedBox(height: 5),
+                Text(
+                  S.of(context).honorCriteriaLine(h.criteriaOf(lang)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    height: 1.35,
+                    // 单一颜色兼顾两种状态：
+                    // 已点亮时比 desc 淡（层级更低）；
+                    // 未点亮时比「未点亮」深（它是可执行的信息，该更显眼）。
+                    color: Color(0xFF8B95A9),
+                  ),
+                ),
+              ],
             ]),
           ),
           const SizedBox(width: 10),

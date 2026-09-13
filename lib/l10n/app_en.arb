@@ -1258,6 +1258,7 @@
   "accountHonors": "Account honors",
   "achievementsSection": "Achievements",
   "notLit": "Not yet",
+  "honorCriteriaLine": "How to earn: {c}",
   "badgeFallback": "Badge",
   "honoredBadges": "{n}/{m} badges unlocked",
   "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},

@@ -3925,6 +3925,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get notLit => 'Belum';
 
   @override
+  String honorCriteriaLine(String c) {
+    return 'Cara mendapatkan: $c';
+  }
+
+  @override
   String get badgeFallback => 'Lencana';
 
   @override

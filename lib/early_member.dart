@@ -49,9 +49,12 @@ class Honor {
   /// 可选：未提供时 [labelOf] / [descOf] 回落到 [label] / [desc]（中文）。
   final Map<String, String>? labels;
   final Map<String, String>? descs;
+  /// 三语「获得条件」（key: zh / zh-TW / en），来自 members.json honors[].criteria。
+  /// 可选：未提供时 [criteriaOf] 返回空串，界面据此隐藏该行。
+  final Map<String, String>? criteria;
 
   const Honor(this.key, this.label, this.desc, this.color, this.icon,
-      {this.iconName, this.labels, this.descs});
+      {this.iconName, this.labels, this.descs, this.criteria});
 
   /// 指定语言下的徽章名。
   /// 回落顺序：该语言 → **英文** → 中文基准（ja/id 无专属文案时取英文）。
@@ -60,6 +63,12 @@ class Honor {
   /// 指定语言下的徽章描述。
   /// 回落顺序：该语言 → **英文** → 中文基准。
   String descOf(String lang) => descs?[lang] ?? descs?['en'] ?? desc;
+
+  /// 指定语言下的「获得条件」（怎么拿到这枚徽章）。
+  /// 回落顺序与 [labelOf] / [descOf] 一致：该语言 → 英文 → 中文基准；
+  /// 三者都没有时返回空串（界面据此隐藏该行，而不是留一行空白）。
+  String criteriaOf(String lang) =>
+      criteria?[lang] ?? criteria?['en'] ?? criteria?['zh'] ?? '';
 
   /// 图标名 → Material 图标（key 与 members.json honors[].icon 共用同一命名空间）
   static const Map<String, IconData> iconMap = {
@@ -123,6 +132,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh-TW': '群山之始，你我曾一同點亮第一座燈塔；山高水長，此呼號為證。',
         'en': 'Where the peaks begin — we lit the first beacon together; the callsign bears witness across the hills.',
       },
+      criteria: {
+        'zh': '参与极早期内测',
+        'zh-TW': '參與極早期內測',
+        'en': 'Took part in the very early closed beta',
+      },
       iconName: 'kaishan'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
   'developer': const Honor('developer',
@@ -137,6 +151,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh': '以代码为桨、翻译为桥，一砖一瓦把 APRSlocus 推向更远的频率。',
         'zh-TW': '以程式為槳、翻譯為橋，一磚一瓦把 APRSlocus 推向更遠的頻率。',
         'en': 'Oars of code and bridges of translation — brick by brick, tuned APRSlocus to farther frequencies.',
+      },
+      criteria: {
+        'zh': '贡献代码、翻译或 PR',
+        'zh-TW': '貢獻程式碼、翻譯或 PR',
+        'en': 'Contributed code, translations, or pull requests',
       },
       iconName: 'developer'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
@@ -153,6 +172,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh-TW': '在最朦朧的電波裡守候迴響，陪它從微弱訊號長成清晰呼號。',
         'en': 'Kept watch in the faintest signals, growing with it from a whisper to a clear call.',
       },
+      criteria: {
+        'zh': '参与早期公测',
+        'zh-TW': '參與早期公測',
+        'en': 'Took part in the early public beta',
+      },
       iconName: 'earlyMember'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
   'mostBrain': const Honor('mostBrain',
@@ -167,6 +191,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh': '隐藏成就：于无声处托举算力洪流——为项目点亮超半数的光。',
         'zh-TW': '隱藏成就：於無聲處托舉算力洪流——為專案點亮超過半數的光。',
         'en': 'Hidden: silently channeled the tide of compute — lighting more than half the project\'s sky.',
+      },
+      criteria: {
+        'zh': '为项目提供超过 50% 的算力支持（隐藏成就）',
+        'zh-TW': '為專案提供超過 50% 的算力支援（隱藏成就）',
+        'en': 'Provided more than 50% of the project\'s compute (hidden)',
       },
       iconName: 'mostBrain'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
@@ -183,6 +212,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh-TW': 'APRSlocus 1.7.0 開放 —— 完成全部成就後向開發團隊申請，獲頒至高榮譽。',
         'en': 'Opening in APRSlocus 1.7.0 — complete every achievement, then apply to the dev team for this supreme honor.',
       },
+      criteria: {
+        'zh': '完成全部成就后向开发团队申请',
+        'zh-TW': '完成全部成就後向開發團隊申請',
+        'en': 'Complete every achievement, then apply to the dev team',
+      },
       iconName: 'firstFix'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
   'jadeGift': const Honor('jadeGift',
@@ -197,6 +231,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh': '承君厚赠，藏之于心；唯有砥砺，以报清音。',
         'zh-TW': '承君厚贈，藏之於心；唯有砥礪，以報清音。',
         'en': 'Your gift is treasured in my heart; the only return I can offer is to strive, and answer your kindness with good work.',
+      },
+      criteria: {
+        'zh': '馈赠或赞助项目',
+        'zh-TW': '饋贈或贊助專案',
+        'en': 'Gifted or sponsored the project',
       },
       iconName: 'jadeGift'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
@@ -213,6 +252,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh-TW': '在曠野埋下種子，等待遍地開花。',
         'en': 'Sowing seeds in the open field — waiting for blossoms everywhere.',
       },
+      criteria: {
+        'zh': '在社交媒体上积极分享 APRSlocus',
+        'zh-TW': '在社群媒體上積極分享 APRSlocus',
+        'en': 'Actively share APRSlocus on social media',
+      },
       iconName: 'sower'),
   // 三语文案与官网 members.json 保持一致（离线兜底）
   'iSelfReliant': const Honor('iSelfReliant',
@@ -227,6 +271,11 @@ final Map<String, Honor> _defaultHonorDefs = {
         'zh': '不求现成的果实，亲手编译一粒种子，让它在苹果的园子里长成一座信标。',
         'zh-TW': '不求現成的果實，親手編譯一粒種子，讓它在蘋果的園子裡長成一座信標。',
         'en': 'Rather than wait for ripened fruit, they compiled the seed themselves — and let it grow into a beacon in Apple’s orchard.',
+      },
+      criteria: {
+        'zh': '亲自编译 APRSlocus 并在苹果设备上运行',
+        'zh-TW': '親自編譯 APRSlocus 並在蘋果裝置上執行',
+        'en': 'Compile APRSlocus yourself and run it on Apple devices',
       },
       iconName: 'iSelfReliant'),
 };
@@ -352,6 +401,9 @@ void _parseMembers(Map d) {
         final dm = v['desc'];
         final dmap = dm is Map ? dm : const {};
         final descZh = pick(dmap, 'zh', '');
+        // 获得条件（members.json v44 起）；缺失时留空 map，界面自动隐藏该行
+        final cm = v['criteria'];
+        final cmap = cm is Map ? cm : const {};
         m[k.toString()] = Honor(k.toString(), zh, descZh,
             _parseColor(v['color']),
             Honor.iconForName(v['icon']?.toString(), k.toString()),
@@ -365,7 +417,14 @@ void _parseMembers(Map d) {
               'zh': descZh,
               'zh-TW': pick(dmap, 'zh-TW', descZh),
               'en': pick(dmap, 'en', descZh),
-            });
+            },
+            criteria: cmap.isEmpty
+                ? null
+                : {
+                    'zh': pick(cmap, 'zh', ''),
+                    'zh-TW': pick(cmap, 'zh-TW', pick(cmap, 'zh', '')),
+                    'en': pick(cmap, 'en', pick(cmap, 'zh', '')),
+                  });
       }
     });
     if (m.isNotEmpty) {
@@ -444,6 +503,7 @@ Map<String, dynamic> _serializeDefs() => _honorDefs.map((k, h) => MapEntry(k, {
       'descZhTw': h.descOf('zh-TW'),
       'descEn': h.descOf('en'),
       'color': '#${h.color.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+      'criteria': h.criteria,
       'icon': h.iconName ?? k,
     }));
 
@@ -474,6 +534,8 @@ Future<void> ensureMembersLoaded() async {
             String t(String key, String fb) => (v[key] ?? fb).toString();
             final lzh = t('label', k.toString());
             final dzh = t('desc', '');
+            final cRaw = v['criteria'];
+            final cmap = cRaw is Map ? cRaw : const {};
             dm[k.toString()] = Honor(
               k.toString(),
               lzh,
@@ -491,6 +553,14 @@ Future<void> ensureMembersLoaded() async {
                 'zh-TW': t('descZhTw', dzh),
                 'en': t('descEn', dzh),
               },
+              criteria: cmap.isEmpty
+                  ? null
+                  : {
+                      'zh': (cmap['zh'] ?? '').toString(),
+                      'zh-TW':
+                          (cmap['zh-TW'] ?? cmap['zh'] ?? '').toString(),
+                      'en': (cmap['en'] ?? cmap['zh'] ?? '').toString(),
+                    },
             );
           }
         });

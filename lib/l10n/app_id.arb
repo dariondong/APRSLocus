@@ -1136,6 +1136,7 @@
   "accountHonors": "Kehormatan akun",
   "achievementsSection": "Pencapaian",
   "notLit": "Belum",
+  "honorCriteriaLine": "Cara mendapatkan: {c}",
   "badgeFallback": "Lencana",
   "honoredBadges": "{n}/{m} lencana terbuka",
   "achievementsProgress": "{n}/{m} pencapaian",

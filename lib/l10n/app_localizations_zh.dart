@@ -3808,6 +3808,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notLit => '未点亮';
 
   @override
+  String honorCriteriaLine(String c) {
+    return '获得条件：$c';
+  }
+
+  @override
   String get badgeFallback => '徽章';
 
   @override
@@ -7801,6 +7806,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get notLit => '未點亮';
+
+  @override
+  String honorCriteriaLine(String c) {
+    return '獲得條件：$c';
+  }
 
   @override
   String get badgeFallback => '徽章';

@@ -1,5 +1,27 @@
 # 更新日志
 
+## [1.6.97] - 2026-09-13
+
+### 🏅 荣誉墙：显示每枚徽章的「获得条件」 / Honor wall: how to earn each badge
+- 荣誉墙的每一枚徽章新增一行 **「获得条件」**（**未点亮的也显示**）——
+  此前只显示诗意描述，想知道「怎么拿到」只能去官网
+- 条件来自 `members.json` 的 `honors[].criteria`，与官网 `badge.html` **同一数据源**，
+  所以官网改了条件、App 下次启动即同步（**无需发版**）
+- 回退链与徽章名 / 描述一致：**该语言 → 英文 → 中文基准**；
+  **三者都没有时整行隐藏**（不留空白行）
+- **离线可用**：8 枚徽章的三语条件已内置为兜底，与官网口径一致
+- 已点亮徽章同样显示（与官网一致，便于回顾自己的来路）
+- 新增 1 个文案键 × 6 语言（zh / zh-TW / en / ja / id / es）
+
+- Every badge on the honor wall now shows a **“How to earn”** line — **including locked
+  badges**, which previously showed only a poetic description and left you to visit the
+  website to find out how to get one. Criteria come from `honors[].criteria` in
+  `members.json`, the **same source as the website's `badge.html`**, so edits there reach the
+  app on next launch **without a release**. The fallback chain matches the badge
+  name/description (**this language → English → Chinese baseline**), and the whole line is
+  hidden when none is available rather than leaving a blank row. The eight badges' criteria
+  ship as an offline fallback, and unlocked badges show them too.
+
 ## [1.6.96] - 2026-09-13
 
 ### 📡 台站面板：新增「APRS.tv」查看 / Station panel: APRS.tv lookup

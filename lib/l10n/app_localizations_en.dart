@@ -3914,6 +3914,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notLit => 'Not yet';
 
   @override
+  String honorCriteriaLine(String c) {
+    return 'How to earn: $c';
+  }
+
+  @override
   String get badgeFallback => 'Badge';
 
   @override

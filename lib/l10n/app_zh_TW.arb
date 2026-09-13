@@ -1846,6 +1846,7 @@
   "accountHonors": "帳號榮譽",
   "achievementsSection": "成就",
   "notLit": "未點亮",
+  "honorCriteriaLine": "獲得條件：{c}",
   "badgeFallback": "徽章",
   "honoredBadges": "已點亮 {n}/{m} 徽章",
   "@honoredBadges": {"placeholders": {"n": {"type": "String"}, "m": {"type": "String"}}},

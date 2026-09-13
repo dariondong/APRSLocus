@@ -3948,6 +3948,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notLit => 'Aún no';
 
   @override
+  String honorCriteriaLine(String c) {
+    return 'Cómo obtenerlo: $c';
+  }
+
+  @override
   String get badgeFallback => 'Insignia';
 
   @override
