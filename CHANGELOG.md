@@ -2,6 +2,10 @@
 
 ## [1.6.97] - 2026-09-13
 
+> 📌 本版**包含 v1.6.96 的全部改动**（该版本未单独发版），以下一并列出。
+>
+> This release also **includes everything from v1.6.96**, which was never published on its own.
+
 ### 🏅 荣誉墙：显示每枚徽章的「获得条件」 / Honor wall: how to earn each badge
 - 荣誉墙的每一枚徽章新增一行 **「获得条件」**（**未点亮的也显示**）——
   此前只显示诗意描述，想知道「怎么拿到」只能去官网
@@ -21,8 +25,6 @@
   name/description (**this language → English → Chinese baseline**), and the whole line is
   hidden when none is available rather than leaving a blank row. The eight badges' criteria
   ship as an offline fallback, and unlocked badges show them too.
-
-## [1.6.96] - 2026-09-13
 
 ### 📡 台站面板：新增「APRS.tv」查看 / Station panel: APRS.tv lookup
 - 快捷操作区新增 **APRS.tv** 按钮，点击**弹出底部面板**选择入口：
