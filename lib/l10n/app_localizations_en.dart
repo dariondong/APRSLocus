@@ -3364,6 +3364,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lookupAprsFi => 'aprs.fi position';
 
   @override
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => 'Station page';
+
+  @override
+  String get aprsTvMap => 'View on map';
+
+  @override
   String get linkOpenFailed => 'Unable to open link';
 
   @override

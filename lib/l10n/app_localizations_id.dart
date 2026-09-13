@@ -3373,6 +3373,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get lookupAprsFi => 'Posisi aprs.fi';
 
   @override
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => 'Halaman detail';
+
+  @override
+  String get aprsTvMap => 'Lihat di peta';
+
+  @override
   String get linkOpenFailed => 'Tidak dapat membuka tautan';
 
   @override

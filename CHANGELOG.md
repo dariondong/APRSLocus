@@ -1,5 +1,25 @@
 # 更新日志
 
+## [1.6.96] - 2026-09-13
+
+### 📡 台站面板：新增「APRS.tv」查看 / Station panel: APRS.tv lookup
+- 快捷操作区新增 **APRS.tv** 按钮，点击**弹出底部面板**选择入口：
+  - **详情页** → `aprs.tv/info/<呼号>`
+  - **在地图上查看** → `aprs.tv/?call=<呼号>`
+- 两个入口不是同一件事（一个是台站资料页、一个是地图定位），所以**不直接跳转**，
+  先让用户选；面板每行还显示实际链接（去掉 `https://` 前缀），便于核对
+- 呼号用**完整呼号（含 SSID）**，与 aprs.fi 查询一致 —— APRS 服务靠 SSID 区分同一
+  操作员的多个设备（如 `BG7ABC-9` 车载台 / `BG7ABC-7` 手持）
+- 新增 3 个文案键 × 6 语言（zh / zh-TW / en / ja / id / es）
+
+- The quick-actions row now has an **APRS.tv** button that opens a **bottom sheet** with two
+  entry points: **Station page** (`aprs.tv/info/<call>`) and **View on map**
+  (`aprs.tv/?call=<call>`). They are not the same destination, so the app asks rather than
+  guessing; each row also shows the actual URL (with the `https://` prefix stripped) for
+  verification. The **full callsign including SSID** is used, matching the aprs.fi lookup —
+  APRS services rely on the SSID to tell an operator's devices apart
+  (e.g. `BG7ABC-9` mobile vs `BG7ABC-7` handheld).
+
 ## [1.6.95] - 2026-09-13
 
 ### 🌏 首次启动向导：不再默认勾选「中国」 / Setup wizard: no longer pre-selects China

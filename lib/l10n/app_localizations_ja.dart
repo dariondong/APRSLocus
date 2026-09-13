@@ -3300,6 +3300,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lookupAprsFi => 'aprs.fi の位置';
 
   @override
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => '詳細ページ';
+
+  @override
+  String get aprsTvMap => '地図で表示';
+
+  @override
   String get linkOpenFailed => 'リンクを開けません';
 
   @override

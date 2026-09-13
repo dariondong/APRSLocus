@@ -3284,6 +3284,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get lookupAprsFi => 'aprs.fi 位置';
 
   @override
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => '详情页';
+
+  @override
+  String get aprsTvMap => '在地图上查看';
+
+  @override
   String get linkOpenFailed => '无法打开链接';
 
   @override
@@ -7268,6 +7277,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get lookupAprsFi => 'aprs.fi 位置';
+
+  @override
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => '詳細頁';
+
+  @override
+  String get aprsTvMap => '在地圖上查看';
 
   @override
   String get linkOpenFailed => '無法開啟連結';

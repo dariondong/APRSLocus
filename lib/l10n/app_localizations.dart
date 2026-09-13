@@ -5961,6 +5961,24 @@ abstract class AppLocalizations {
   /// **'aprs.fi 位置'**
   String get lookupAprsFi;
 
+  /// No description provided for @aprsTv.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS.tv'**
+  String get aprsTv;
+
+  /// No description provided for @aprsTvInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'详情页'**
+  String get aprsTvInfo;
+
+  /// No description provided for @aprsTvMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'在地图上查看'**
+  String get aprsTvMap;
+
   /// No description provided for @linkOpenFailed.
   ///
   /// In zh, this message translates to:

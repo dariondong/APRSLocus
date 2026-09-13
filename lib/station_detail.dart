@@ -553,6 +553,12 @@ class _StationDetailState extends State<StationDetail> {
                               'https://aprs.fi/info/a/${s.call}',
                             ),
                           ),
+                          // APRS.tv：点击后弹面板再选「详情页 / 地图」
+                          _action(
+                            Icons.travel_explore_rounded,
+                            S.of(context).aprsTv,
+                            () => _showAprsTvSheet(s),
+                          ),
                         ],
                       ),
                       // 设备识别信息（官方 tocalls 目的呼号识别）
@@ -1025,7 +1031,134 @@ class _StationDetailState extends State<StationDetail> {
     );
   }
 
-  /// 用系统浏览器打开外站查询链接（QRZ / aprs.fi），失败提示
+  /// APRS.tv 查看：先弹底部面板让用户选入口，再交给系统浏览器。
+  ///
+  /// 两个入口不是同一件事，所以不直接跳：
+  /// - `aprs.tv/info/<呼号>` —— 该台站的详情页
+  /// - `aprs.tv/?call=<呼号>` —— 在地图上定位该台站
+  ///
+  /// 呼号用**完整呼号（含 SSID）**，与 aprs.fi 一致；APRS 服务需要靠 SSID
+  /// 区分同一操作员的多个设备（如 `BG7ABC-9` 车载台 / `BG7ABC-7` 手持）。
+  Future<void> _showAprsTvSheet(Station s) async {
+    final loc = S.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        // 不能加 const：C.white 是 static 字段（非常量）
+        decoration: BoxDecoration(
+          color: C.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 拖动指示条（与其他面板一致）
+              Container(
+                margin: const EdgeInsets.only(top: 10),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: C.greyLight,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.travel_explore_rounded,
+                      size: 18,
+                      color: C.blue,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(loc.aprsTv, style: T.h3),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        s.call,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ts(12, c: C.grey, w: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              _aprsTvOption(
+                ctx,
+                icon: Icons.article_rounded,
+                label: loc.aprsTvInfo,
+                url: 'https://aprs.tv/info/${s.call}',
+              ),
+              _aprsTvOption(
+                ctx,
+                icon: Icons.map_rounded,
+                label: loc.aprsTvMap,
+                url: 'https://aprs.tv/?call=${s.call}',
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// APRS.tv 面板里的一行：图标 + 名称 + 实际链接（便于核对）
+  Widget _aprsTvOption(
+    BuildContext sheetCtx, {
+    required IconData icon,
+    required String label,
+    required String url,
+  }) {
+    return InkWell(
+      onTap: () {
+        // 先关面板再开外链：否则回来后仍停在这层面板上
+        Navigator.pop(sheetCtx);
+        _openUrl(url);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: C.blueBg,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, size: 18, color: C.blue),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: ts(13, w: FontWeight.w700)),
+                  const SizedBox(height: 1),
+                  // 去掉 https:// 前缀，避免长 URL 被挤掉关键部分
+                  Text(
+                    url.replaceFirst('https://', ''),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ts(10, c: C.grey),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.open_in_new_rounded, size: 16, color: C.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 用系统浏览器打开外站查询链接（QRZ / aprs.fi / APRS.tv），失败提示
   Future<void> _openUrl(String url) async {
     try {
       final uri = Uri.parse(url);
