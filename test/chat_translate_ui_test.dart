@@ -337,10 +337,12 @@ void main() {
       expect(find.textContaining('Hello'), findsNothing);
     });
   });
-  group('免费接口（免密钥）', () {
-    test('默认就是免费接口，且无需任何凭据即 ready', () {
+  group('免密钥接口', () {
+    test('默认是「自动」模式，无需任何凭据即 ready', () {
+      // 默认不再是单一接口，而是「自动链」——实测任何单一免密钥接口
+      // 都不可靠（Google 公开端点会 429、MyMemory 对部分语对返回原文）
       final c = TranslateConfig();
-      expect(c.provider, 'free');
+      expect(c.provider, TransProvider.auto);
       expect(c.ready, isTrue);
       expect(c.missingField, '');
     });
@@ -352,10 +354,12 @@ void main() {
       expect(g.ready, isTrue);
     });
 
-    test('provider 可 JSON 往返（默认值不写盘也能回落为 free）', () {
-      expect(TranslateConfig.fromJson({}).provider, 'free');
-      final c = TranslateConfig(provider: 'free', targetLang: 'ja');
-      expect(TranslateConfig.fromJson(c.toJson()).provider, 'free');
+    test('provider 可 JSON 往返（不写盘时回落为 auto）', () {
+      expect(TranslateConfig.fromJson({}).provider, TransProvider.auto);
+      final c = TranslateConfig(
+          provider: TransProvider.mymemory, targetLang: 'ja');
+      expect(TranslateConfig.fromJson(c.toJson()).provider,
+          TransProvider.mymemory);
     });
   });
 

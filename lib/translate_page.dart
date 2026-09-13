@@ -6,6 +6,7 @@ import 'l10n/app_localizations.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
+import 'chat_translate_ui.dart';
 import 'translate.dart';
 import 'widgets.dart';
 
@@ -26,6 +27,8 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
   late final TextEditingController _googleKey;
   late final TextEditingController _baiduId;
   late final TextEditingController _baiduKey;
+  late final TextEditingController _libreUrl;
+  late final TextEditingController _libreKey;
   late final TextEditingController _customUrl;
   late final TextEditingController _customHeaders;
   late final TextEditingController _customBody;
@@ -44,6 +47,8 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
     _googleKey = TextEditingController(text: cfg.googleApiKey);
     _baiduId = TextEditingController(text: cfg.baiduAppId);
     _baiduKey = TextEditingController(text: cfg.baiduKey);
+    _libreUrl = TextEditingController(text: cfg.libreUrl);
+    _libreKey = TextEditingController(text: cfg.libreApiKey);
     _customUrl = TextEditingController(text: cfg.customUrl);
     _customHeaders = TextEditingController(text: cfg.customHeaders);
     _customBody = TextEditingController(text: cfg.customBody);
@@ -54,6 +59,7 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
   void dispose() {
     for (final c in [
       _googleKey, _baiduId, _baiduKey,
+      _libreUrl, _libreKey,
       _customUrl, _customHeaders, _customBody, _customPath,
     ]) {
       c.dispose();
@@ -66,6 +72,8 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       ..googleApiKey = _googleKey.text.trim()
       ..baiduAppId = _baiduId.text.trim()
       ..baiduKey = _baiduKey.text.trim()
+      ..libreUrl = _libreUrl.text.trim()
+      ..libreApiKey = _libreKey.text.trim()
       ..customUrl = _customUrl.text.trim()
       ..customHeaders = _customHeaders.text.trim()
       ..customBody = _customBody.text.trim()
@@ -84,6 +92,18 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       ),
     );
   }
+
+  /// provider 标识 → 界面名称
+  String _providerLabel(S s, String p) => switch (p) {
+        TransProvider.auto => s.translateProviderAuto,
+        TransProvider.googlePublic => s.translateProviderGooglePublic,
+        TransProvider.mymemory => s.translateProviderMyMemory,
+        TransProvider.libre => s.translateProviderLibre,
+        TransProvider.google => s.translateProviderGoogle,
+        TransProvider.baidu => s.translateProviderBaidu,
+        TransProvider.custom => s.translateProviderCustom,
+        _ => p,
+      };
 
   Future<void> _test() async {
     await _collect();
@@ -105,7 +125,7 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       // 而「对方的语言」正是靠这个字段自动学出来的
       final out = r.detected == null
           ? r.text
-          : '${r.text}  [${TransLang.labelOf(r.detected!)}]';
+          : '${r.text}  [${langName(context, r.detected!)}]';
       if (mounted) {
         setState(() {
           _testOk = true;
@@ -156,16 +176,10 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       icon: Icons.language_rounded,
       color: C.blue,
       children: [
-        SettingsRow2(s.translateTargetLang, TransLang.labelOf(cfg.targetLang)),
+        SettingsRow2(s.translateTargetLang, langName(context, cfg.targetLang)),
         SettingsRow2(
           s.translateProvider,
-          cfg.provider == 'free'
-              ? s.translateProviderFree
-              : (cfg.provider == 'google'
-                  ? s.translateProviderGoogle
-                  : (cfg.provider == 'baidu'
-                      ? s.translateProviderBaidu
-                      : s.translateProviderCustom)),
+          _providerLabel(s, cfg.provider),
           valueColor: cfg.ready ? C.green : C.orange,
         ),
         Padding(
@@ -187,6 +201,7 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
             ],
           ),
         ),
+        SettingsHint(s.translateLangScopeNote),
         SettingsHint(s.translatePrivacyNote, color: C.orange,
             icon: Icons.privacy_tip_rounded),
       ],
@@ -222,19 +237,30 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
 
   /// 接口选择
   Widget _providerCard(S s) {
-    // 免费接口放首位：它是默认值，也让「不想申请密钥」的用户第一眼就看到
-    final items = [
-      ('free', s.translateProviderFree, Icons.bolt_rounded),
-      ('google', s.translateProviderGoogle, Icons.g_mobiledata_rounded),
-      ('baidu', s.translateProviderBaidu, Icons.translate_rounded),
-      ('custom', s.translateProviderCustom, Icons.settings_ethernet_rounded),
+    // 顺序即推荐度：自动（默认）→ 各免密钥 → 需密钥 → 自定义
+    final items = <(String, String, String, IconData)>[
+      (TransProvider.auto, s.translateProviderAuto, s.translateProviderAutoDesc,
+          Icons.auto_awesome_rounded),
+      (TransProvider.googlePublic, s.translateProviderGooglePublic,
+          s.translateProviderGooglePublicDesc, Icons.g_mobiledata_rounded),
+      (TransProvider.mymemory, s.translateProviderMyMemory,
+          s.translateProviderMyMemoryDesc, Icons.memory_rounded),
+      (TransProvider.libre, s.translateProviderLibre,
+          s.translateProviderLibreDesc, Icons.dns_rounded),
+      (TransProvider.google, s.translateProviderGoogle,
+          s.translateGoogleKeyTip, Icons.cloud_rounded),
+      (TransProvider.baidu, s.translateProviderBaidu, s.translateBaiduTip,
+          Icons.translate_rounded),
+      (TransProvider.custom, s.translateProviderCustom,
+          s.translateCustomBodyTip('{text}', '{from}', '{to}'),
+          Icons.settings_ethernet_rounded),
     ];
     return SettingsSectionCard(
       title: s.translateProvider,
       icon: Icons.cloud_sync_rounded,
       color: C.cyan,
       children: [
-        for (final (key, label, icon) in items)
+        for (final (key, label, desc, icon) in items)
           InkWell(
             onTap: () async {
               cfg.provider = key;
@@ -242,7 +268,7 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
               if (mounted) setState(() => _testResult = '');
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: C.border, width: 0.4),
@@ -254,11 +280,25 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
                     color: cfg.provider == key ? C.cyan : C.grey),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    label,
-                    style: ts(13,
-                        w: cfg.provider == key ? FontWeight.w700 : FontWeight.w500,
-                        c: cfg.provider == key ? C.cyan : C.ink),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: ts(13,
+                            w: cfg.provider == key
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            c: cfg.provider == key ? C.cyan : C.ink),
+                      ),
+                      const SizedBox(height: 1),
+                      // 每个接口的可靠性/限制都写清楚：实测差异很大，
+                      // 不说明的话用户只会以为是「应用坏了」
+                      Text(desc,
+                          style: ts(10, c: C.grey, h: 1.35),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis),
+                    ],
                   ),
                 ),
                 if (cfg.provider == key)
@@ -276,16 +316,33 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
   /// 凭据：按接口只显示相关字段，避免一屏无关输入框
   Widget _credentialsCard(S s) {
     return SettingsSectionCard(
-      title: cfg.provider == 'free'
-          ? s.translateProviderFree
-          : s.translateProvider,
+      title: _providerLabel(s, cfg.provider),
       icon: Icons.key_rounded,
       color: C.slate,
       children: [
-        if (cfg.provider == 'free') ...[
-          // 免密钥：这里不放任何输入框，只说明它的性质与取舍
-          SettingsHint(s.translateProviderFreeDesc, color: C.green,
-              icon: Icons.bolt_rounded),
+        if (cfg.provider == TransProvider.auto) ...[
+          SettingsHint(s.translateProviderAutoDesc, color: C.green,
+              icon: Icons.auto_awesome_rounded),
+          if (svc.lastProviderUsed.isNotEmpty)
+            SettingsRow2(s.translateUsedProvider,
+                _providerLabel(s, svc.lastProviderUsed),
+                valueColor: C.green),
+        ] else if (cfg.provider == TransProvider.googlePublic ||
+            cfg.provider == TransProvider.mymemory) ...[
+          // 免密钥：不放输入框，只说明它的性质与限制
+          SettingsHint(
+            cfg.provider == TransProvider.googlePublic
+                ? s.translateProviderGooglePublicDesc
+                : s.translateProviderMyMemoryDesc,
+            color: C.green,
+            icon: Icons.bolt_rounded,
+          ),
+        ] else if (cfg.provider == TransProvider.libre) ...[
+          SettingsHint(s.translateProviderLibreDesc),
+          SettingsInput(s.translateLibreUrl, _libreUrl,
+              onChanged: (_) => unawaited(_collect())),
+          SettingsInput(s.translateLibreKey, _libreKey,
+              onChanged: (_) => unawaited(_collect())),
         ] else if (cfg.provider == 'google') ...[
           SettingsInput(s.translateGoogleKey, _googleKey,
               tip: s.translateGoogleKeyTip, onChanged: (_) => unawaited(_collect())),

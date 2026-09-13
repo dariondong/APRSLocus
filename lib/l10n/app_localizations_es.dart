@@ -1154,6 +1154,107 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get translateProviderAuto => 'Automático (recomendado)';
+
+  @override
+  String get translateProviderAutoDesc =>
+      'Prueba varios endpoints sin clave y usa la primera traducción válida';
+
+  @override
+  String get translateProviderGooglePublic =>
+      'Endpoint público de Google (sin clave)';
+
+  @override
+  String get translateProviderGooglePublicDesc =>
+      'Buena calidad, pero puede limitarse (se observó 429)';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory (sin clave)';
+
+  @override
+  String get translateProviderMyMemoryDesc =>
+      'API gratuita oficial, pero es una memoria de traducción: devuelve el original si no hay coincidencia';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate (autoalojable)';
+
+  @override
+  String get translateProviderLibreDesc =>
+      'Código abierto; lo más fiable es autoalojarlo. Las instancias públicas ya piden clave y a menudo no tienen chino';
+
+  @override
+  String get translateLibreUrl => 'URL de la instancia';
+
+  @override
+  String get translateLibreKey =>
+      'Clave de API de la instancia (necesaria en públicas; vacía si es propia)';
+
+  @override
+  String get translateUsedProvider => 'Usado realmente';
+
+  @override
+  String get translateUntranslated =>
+      'El endpoint no tradujo realmente (devolvió el original); se probó el siguiente';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return 'Fallaron todos los endpoints sin clave ($e) · usa una clave de Google/Baidu o tu propia instancia en los ajustes';
+  }
+
+  @override
+  String get translateLangUnsupported =>
+      'Este proveedor no puede traducir a ese idioma · prueba «Automático» u otro proveedor';
+
+  @override
+  String get translateLangScopeNote =>
+      'Cada proveedor cubre idiomas distintos (p. ej. Baidu estándar admite indonesio «id», pero no todas las direcciones) — si no se admite, la app sugiere Automático u otro proveedor';
+
+  @override
+  String get langNameZh => 'chino simplificado';
+
+  @override
+  String get langNameZhTw => 'chino tradicional';
+
+  @override
+  String get langNameEn => 'inglés';
+
+  @override
+  String get langNameJa => 'japonés';
+
+  @override
+  String get langNameKo => 'coreano';
+
+  @override
+  String get langNameEs => 'español';
+
+  @override
+  String get langNameFr => 'francés';
+
+  @override
+  String get langNameDe => 'alemán';
+
+  @override
+  String get langNameRu => 'ruso';
+
+  @override
+  String get langNamePt => 'portugués';
+
+  @override
+  String get langNameIt => 'italiano';
+
+  @override
+  String get langNameId => 'indonesio';
+
+  @override
+  String get langNameTh => 'tailandés';
+
+  @override
+  String get langNameVi => 'vietnamita';
+
+  @override
+  String get langNameAr => 'árabe';
+
+  @override
   String get translateOutgoing => 'Traducir a su idioma antes de enviar';
 
   @override

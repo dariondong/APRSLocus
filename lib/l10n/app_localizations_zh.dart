@@ -1128,6 +1128,99 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get translateProviderAuto => '自动（推荐）';
+
+  @override
+  String get translateProviderAutoDesc => '依次尝试多个免密钥接口，取第一个真正翻译成功的结果';
+
+  @override
+  String get translateProviderGooglePublic => 'Google 公开端点（免密钥）';
+
+  @override
+  String get translateProviderGooglePublicDesc => '质量较好，但可能被限流（实测会返回 429）';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory（免密钥）';
+
+  @override
+  String get translateProviderMyMemoryDesc => '官方免费接口，但本质是翻译记忆库：无匹配语料时会返回原文';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate（可自建）';
+
+  @override
+  String get translateProviderLibreDesc => '开源、可自建最可靠；公共实例现已要求密钥且常不支持中文';
+
+  @override
+  String get translateLibreUrl => '实例地址';
+
+  @override
+  String get translateLibreKey => '实例 API Key（公共实例需要，自建可留空）';
+
+  @override
+  String get translateUsedProvider => '本次实际使用';
+
+  @override
+  String get translateUntranslated => '接口没有真正翻译（返回了原文）· 已自动尝试下一个接口';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return '所有免密钥接口都不可用（$e）· 建议在设置里改用 Google / 百度密钥或自建实例';
+  }
+
+  @override
+  String get translateLangUnsupported => '该接口不支持翻译成这一语言 · 可改用「自动」或其它接口';
+
+  @override
+  String get translateLangScopeNote =>
+      '各接口支持的语种范围不同（例如百度标准版支持印尼语 id，但并非所有方向都支持）· 遇到不支持时会提示改用自动或其它接口';
+
+  @override
+  String get langNameZh => '简体中文';
+
+  @override
+  String get langNameZhTw => '繁体中文';
+
+  @override
+  String get langNameEn => '英语';
+
+  @override
+  String get langNameJa => '日语';
+
+  @override
+  String get langNameKo => '韩语';
+
+  @override
+  String get langNameEs => '西班牙语';
+
+  @override
+  String get langNameFr => '法语';
+
+  @override
+  String get langNameDe => '德语';
+
+  @override
+  String get langNameRu => '俄语';
+
+  @override
+  String get langNamePt => '葡萄牙语';
+
+  @override
+  String get langNameIt => '意大利语';
+
+  @override
+  String get langNameId => '印尼语';
+
+  @override
+  String get langNameTh => '泰语';
+
+  @override
+  String get langNameVi => '越南语';
+
+  @override
+  String get langNameAr => '阿拉伯语';
+
+  @override
   String get translateOutgoing => '发送前翻译成对方的语言';
 
   @override
@@ -5611,6 +5704,99 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String translateFreeFailed(String e) {
     return '免費介面暫時無法使用（$e）· 可在設定裡改用 Google / 百度 / 自訂介面';
   }
+
+  @override
+  String get translateProviderAuto => '自動（推薦）';
+
+  @override
+  String get translateProviderAutoDesc => '依次嘗試多個免密鑰介面，取第一個真正翻譯成功的結果';
+
+  @override
+  String get translateProviderGooglePublic => 'Google 公開端點（免密鑰）';
+
+  @override
+  String get translateProviderGooglePublicDesc => '品質較好，但可能被限流（實測會回傳 429）';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory（免密鑰）';
+
+  @override
+  String get translateProviderMyMemoryDesc => '官方免費介面，但本質是翻譯記憶庫：無匹配語料時會回傳原文';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate（可自建）';
+
+  @override
+  String get translateProviderLibreDesc => '開源、可自建最可靠；公共實例現已要求密鑰且常不支援中文';
+
+  @override
+  String get translateLibreUrl => '實例網址';
+
+  @override
+  String get translateLibreKey => '實例 API Key（公共實例需要，自建可留空）';
+
+  @override
+  String get translateUsedProvider => '本次實際使用';
+
+  @override
+  String get translateUntranslated => '介面沒有真正翻譯（回傳了原文）· 已自動嘗試下一個介面';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return '所有免密鑰介面都無法使用（$e）· 建議在設定裡改用 Google / 百度密鑰或自建實例';
+  }
+
+  @override
+  String get translateLangUnsupported => '該介面不支援翻譯成這一語言 · 可改用「自動」或其它介面';
+
+  @override
+  String get translateLangScopeNote =>
+      '各介面支援的語種範圍不同（例如百度標準版支援印尼語 id，但並非所有方向都支援）· 遇到不支援時會提示改用自動或其它介面';
+
+  @override
+  String get langNameZh => '簡體中文';
+
+  @override
+  String get langNameZhTw => '繁體中文';
+
+  @override
+  String get langNameEn => '英語';
+
+  @override
+  String get langNameJa => '日語';
+
+  @override
+  String get langNameKo => '韓語';
+
+  @override
+  String get langNameEs => '西班牙語';
+
+  @override
+  String get langNameFr => '法語';
+
+  @override
+  String get langNameDe => '德語';
+
+  @override
+  String get langNameRu => '俄語';
+
+  @override
+  String get langNamePt => '葡萄牙語';
+
+  @override
+  String get langNameIt => '義大利語';
+
+  @override
+  String get langNameId => '印尼語';
+
+  @override
+  String get langNameTh => '泰語';
+
+  @override
+  String get langNameVi => '越南語';
+
+  @override
+  String get langNameAr => '阿拉伯語';
 
   @override
   String get translateOutgoing => '傳送前翻譯成對方的語言';

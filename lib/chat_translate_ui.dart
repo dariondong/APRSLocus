@@ -27,6 +27,52 @@ import 'widgets.dart';
 ///     落盘会导致换语言后旧译文残留。代价是重启后需重新翻 ——
 ///     但结果缓存（[TranslateService]）是落盘的，同一句话不会再调接口。
 
+/// 语言名的本地化显示（供全应用复用）。
+///
+/// 两个要点：
+///   ① 名称跟随**界面语言**（中文界面看到「日语」，英文界面看到 "Japanese"），
+///      而不是永远显示该语言的自称；
+///   ② 阿拉伯语要从右往左排 —— 直接混进 LTR 文本会让标点跳到错误一侧，
+///      所以 RTL 名称单独包一层 Directionality。
+Widget langLabel(BuildContext context, String code) {
+  final name = S.of(context).transLangName(code);
+  if (!TransLang.isRtl(code)) {
+    return Text(name);
+  }
+  return Directionality(textDirection: TextDirection.rtl, child: Text(name));
+}
+
+/// 语言名（纯字符串，用于拼进已有 Text，不处理方向）
+String langName(BuildContext context, String code) =>
+    S.of(context).transLangName(code);
+
+/// 语言名 → 界面语言下的名称。
+///
+/// 放在 UI 层（而不是 translate.dart 数据层）是因为：Dart 没有结构化类型，
+/// 生成的 AppLocalizations 不会自动满足数据层自定义的接口 —— 硬要复用
+/// 就得让数据层 import l10n 生成物，反而更脏。这里用 extension 最贴合。
+extension TransLangNameX on AppLocalizations {
+  String transLangName(String code) => switch (code) {
+        'zh' => langNameZh,
+        'zh-TW' => langNameZhTw,
+        'en' => langNameEn,
+        'ja' => langNameJa,
+        'ko' => langNameKo,
+        'es' => langNameEs,
+        'fr' => langNameFr,
+        'de' => langNameDe,
+        'ru' => langNameRu,
+        'pt' => langNamePt,
+        'it' => langNameIt,
+        'id' => langNameId,
+        'th' => langNameTh,
+        'vi' => langNameVi,
+        'ar' => langNameAr,
+        // 未收录的语言码：退回该语言的自称（endonym），总比显示裸码好
+        _ => code,
+      };
+}
+
 /// 消息指纹：呼号 + 方向 + 时间 + 文本，足够稳定地区分同一条消息
 String msgKey(AprsMsg m) =>
     '${m.from}|${m.to}|${m.time.millisecondsSinceEpoch}|${m.text}';
@@ -190,6 +236,23 @@ String explainTranslateError(S s, TranslateException e) {
   if (msg.startsWith('not-configured')) return s.translateNeedConfig;
   // 免费接口被限流/被墙时，最有用的信息是「可以换接口」，而不是原始报文
   if (msg.startsWith('free-unavailable')) return s.translateFreeFailed(msg);
+  // 自动模式下全部候选失败：告诉用户还能怎么办（换密钥/自建），
+  // 否则「试了三个都失败」对用户等于没有信息
+  if (msg.startsWith('auto-all-failed')) return s.translateAutoAllFailed(msg);
+  // 接口「返回原文」不算成功 —— 这类失败最容易让人误以为翻译是坏的
+  if (msg.startsWith('untranslated:') || msg.contains('untranslated')) {
+    return s.translateUntranslated;
+  }
+  if (msg.startsWith('mymemory-needs-source')) {
+    return s.translateProviderMyMemoryDesc;
+  }
+  if (msg.startsWith('libre-unsupported-lang')) {
+    return s.translateProviderLibreDesc;
+  }
+  // 语种不支持：这是各接口最实际的差异，必须给出「换接口」的可行动建议
+  if (msg.startsWith('lang-unsupported')) {
+    return s.translateLangUnsupported;
+  }
   return s.translateFailed(msg);
 }
 
@@ -210,7 +273,8 @@ Future<void> showMessageActions({
   // 方向由「这条消息是谁发的」决定，而不是由用户选 —— 用户选
   // 「翻译成对方语言」时其实是想看自己发出去的那句在对面是什么样。
   final side = m.sent ? TransSide.outgoing : TransSide.incoming;
-  final targetLabel = TransLang.labelOf(
+  final targetLabel = langName(
+    context,
     side == TransSide.incoming
         ? TransDirection.targetForIncoming(pref, fallback)
         : TransDirection.targetForOutgoing(pref, fallback),
@@ -219,7 +283,7 @@ Future<void> showMessageActions({
   final showingOriginal = st.showingOriginal.contains(key);
   final peerLabel = pref.peerLang.isEmpty
       ? s.translateLangAuto
-      : TransLang.labelOf(pref.peerLang);
+      : langName(context, pref.peerLang);
   // 接口未配置时，翻译必然失败。与其让用户点一下只得到一句报错，
   // 不如在面板上就给出「去配置」的入口。
   final configured = svc.config.ready;
@@ -731,7 +795,7 @@ Widget translationBlock({
           if (target.isNotEmpty)
             Text(
               '${m.sent ? s.translateToPeerTag : s.translateToMeTag}'
-              ' · ${TransLang.labelOf(target)}',
+              ' · ${langName(context, target)}',
               style: ts(9, c: C.grey),
             ),
         ]),

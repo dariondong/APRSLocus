@@ -2283,6 +2283,186 @@ abstract class AppLocalizations {
   /// **'免费接口暂时不可用（{e}）· 可在设置里改用 Google / 百度 / 自定义接口'**
   String translateFreeFailed(String e);
 
+  /// No description provided for @translateProviderAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动（推荐）'**
+  String get translateProviderAuto;
+
+  /// No description provided for @translateProviderAutoDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'依次尝试多个免密钥接口，取第一个真正翻译成功的结果'**
+  String get translateProviderAutoDesc;
+
+  /// No description provided for @translateProviderGooglePublic.
+  ///
+  /// In zh, this message translates to:
+  /// **'Google 公开端点（免密钥）'**
+  String get translateProviderGooglePublic;
+
+  /// No description provided for @translateProviderGooglePublicDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'质量较好，但可能被限流（实测会返回 429）'**
+  String get translateProviderGooglePublicDesc;
+
+  /// No description provided for @translateProviderMyMemory.
+  ///
+  /// In zh, this message translates to:
+  /// **'MyMemory（免密钥）'**
+  String get translateProviderMyMemory;
+
+  /// No description provided for @translateProviderMyMemoryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'官方免费接口，但本质是翻译记忆库：无匹配语料时会返回原文'**
+  String get translateProviderMyMemoryDesc;
+
+  /// No description provided for @translateProviderLibre.
+  ///
+  /// In zh, this message translates to:
+  /// **'LibreTranslate（可自建）'**
+  String get translateProviderLibre;
+
+  /// No description provided for @translateProviderLibreDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'开源、可自建最可靠；公共实例现已要求密钥且常不支持中文'**
+  String get translateProviderLibreDesc;
+
+  /// No description provided for @translateLibreUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'实例地址'**
+  String get translateLibreUrl;
+
+  /// No description provided for @translateLibreKey.
+  ///
+  /// In zh, this message translates to:
+  /// **'实例 API Key（公共实例需要，自建可留空）'**
+  String get translateLibreKey;
+
+  /// No description provided for @translateUsedProvider.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次实际使用'**
+  String get translateUsedProvider;
+
+  /// No description provided for @translateUntranslated.
+  ///
+  /// In zh, this message translates to:
+  /// **'接口没有真正翻译（返回了原文）· 已自动尝试下一个接口'**
+  String get translateUntranslated;
+
+  /// No description provided for @translateAutoAllFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'所有免密钥接口都不可用（{e}）· 建议在设置里改用 Google / 百度密钥或自建实例'**
+  String translateAutoAllFailed(String e);
+
+  /// No description provided for @translateLangUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'该接口不支持翻译成这一语言 · 可改用「自动」或其它接口'**
+  String get translateLangUnsupported;
+
+  /// No description provided for @translateLangScopeNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'各接口支持的语种范围不同（例如百度标准版支持印尼语 id，但并非所有方向都支持）· 遇到不支持时会提示改用自动或其它接口'**
+  String get translateLangScopeNote;
+
+  /// No description provided for @langNameZh.
+  ///
+  /// In zh, this message translates to:
+  /// **'简体中文'**
+  String get langNameZh;
+
+  /// No description provided for @langNameZhTw.
+  ///
+  /// In zh, this message translates to:
+  /// **'繁体中文'**
+  String get langNameZhTw;
+
+  /// No description provided for @langNameEn.
+  ///
+  /// In zh, this message translates to:
+  /// **'英语'**
+  String get langNameEn;
+
+  /// No description provided for @langNameJa.
+  ///
+  /// In zh, this message translates to:
+  /// **'日语'**
+  String get langNameJa;
+
+  /// No description provided for @langNameKo.
+  ///
+  /// In zh, this message translates to:
+  /// **'韩语'**
+  String get langNameKo;
+
+  /// No description provided for @langNameEs.
+  ///
+  /// In zh, this message translates to:
+  /// **'西班牙语'**
+  String get langNameEs;
+
+  /// No description provided for @langNameFr.
+  ///
+  /// In zh, this message translates to:
+  /// **'法语'**
+  String get langNameFr;
+
+  /// No description provided for @langNameDe.
+  ///
+  /// In zh, this message translates to:
+  /// **'德语'**
+  String get langNameDe;
+
+  /// No description provided for @langNameRu.
+  ///
+  /// In zh, this message translates to:
+  /// **'俄语'**
+  String get langNameRu;
+
+  /// No description provided for @langNamePt.
+  ///
+  /// In zh, this message translates to:
+  /// **'葡萄牙语'**
+  String get langNamePt;
+
+  /// No description provided for @langNameIt.
+  ///
+  /// In zh, this message translates to:
+  /// **'意大利语'**
+  String get langNameIt;
+
+  /// No description provided for @langNameId.
+  ///
+  /// In zh, this message translates to:
+  /// **'印尼语'**
+  String get langNameId;
+
+  /// No description provided for @langNameTh.
+  ///
+  /// In zh, this message translates to:
+  /// **'泰语'**
+  String get langNameTh;
+
+  /// No description provided for @langNameVi.
+  ///
+  /// In zh, this message translates to:
+  /// **'越南语'**
+  String get langNameVi;
+
+  /// No description provided for @langNameAr.
+  ///
+  /// In zh, this message translates to:
+  /// **'阿拉伯语'**
+  String get langNameAr;
+
   /// No description provided for @translateOutgoing.
   ///
   /// In zh, this message translates to:

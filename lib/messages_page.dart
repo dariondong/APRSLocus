@@ -807,7 +807,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 tooLong && limit > 0
                     ? s.translateTooLongAfter(limit)
                     : s.translateOutPreviewHint(
-                        TransLang.labelOf(_outPreviewLang ?? '')),
+                        langName(context, _outPreviewLang ?? '')),
                 style: ts(10,
                     c: tooLong
                         ? C.orange.withValues(alpha: 0.9)

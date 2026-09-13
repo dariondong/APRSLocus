@@ -1147,6 +1147,107 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get translateProviderAuto => 'Automatic (recommended)';
+
+  @override
+  String get translateProviderAutoDesc =>
+      'Tries several keyless endpoints in turn and keeps the first real translation';
+
+  @override
+  String get translateProviderGooglePublic =>
+      'Google public endpoint (keyless)';
+
+  @override
+  String get translateProviderGooglePublicDesc =>
+      'Good quality, but may be rate-limited (observed 429)';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory (keyless)';
+
+  @override
+  String get translateProviderMyMemoryDesc =>
+      'Official free API, but it is a translation memory: returns the source text when it has no match';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate (self-hostable)';
+
+  @override
+  String get translateProviderLibreDesc =>
+      'Open source and most reliable self-hosted; public instances now need a key and often lack Chinese';
+
+  @override
+  String get translateLibreUrl => 'Instance URL';
+
+  @override
+  String get translateLibreKey =>
+      'Instance API key (needed for public instances; leave empty when self-hosted)';
+
+  @override
+  String get translateUsedProvider => 'Actually used';
+
+  @override
+  String get translateUntranslated =>
+      'The endpoint did not actually translate (it returned the source text) — tried the next one';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return 'All keyless endpoints failed ($e) · switch to a Google/Baidu key or your own instance in settings';
+  }
+
+  @override
+  String get translateLangUnsupported =>
+      'This provider cannot translate into that language · try “Automatic” or another provider';
+
+  @override
+  String get translateLangScopeNote =>
+      'Providers differ in language coverage (e.g. Baidu standard supports Indonesian “id”, but not every direction) — when unsupported, the app suggests Automatic or another provider';
+
+  @override
+  String get langNameZh => 'Chinese (Simplified)';
+
+  @override
+  String get langNameZhTw => 'Chinese (Traditional)';
+
+  @override
+  String get langNameEn => 'English';
+
+  @override
+  String get langNameJa => 'Japanese';
+
+  @override
+  String get langNameKo => 'Korean';
+
+  @override
+  String get langNameEs => 'Spanish';
+
+  @override
+  String get langNameFr => 'French';
+
+  @override
+  String get langNameDe => 'German';
+
+  @override
+  String get langNameRu => 'Russian';
+
+  @override
+  String get langNamePt => 'Portuguese';
+
+  @override
+  String get langNameIt => 'Italian';
+
+  @override
+  String get langNameId => 'Indonesian';
+
+  @override
+  String get langNameTh => 'Thai';
+
+  @override
+  String get langNameVi => 'Vietnamese';
+
+  @override
+  String get langNameAr => 'Arabic';
+
+  @override
   String get translateOutgoing =>
       'Translate into their language before sending';
 

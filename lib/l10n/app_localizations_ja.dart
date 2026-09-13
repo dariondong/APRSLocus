@@ -1133,6 +1133,105 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get translateProviderAuto => '自動（推奨）';
+
+  @override
+  String get translateProviderAutoDesc =>
+      '複数のキー不要エンドポイントを順に試し、実際に翻訳できた結果を採用します';
+
+  @override
+  String get translateProviderGooglePublic => 'Google 公開エンドポイント（キー不要）';
+
+  @override
+  String get translateProviderGooglePublicDesc =>
+      '品質は良好ですが、レート制限（429）を受けることがあります';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory（キー不要）';
+
+  @override
+  String get translateProviderMyMemoryDesc =>
+      '公式の無料 API ですが翻訳メモリであり、一致がないと原文をそのまま返します';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate（自前ホスト可）';
+
+  @override
+  String get translateProviderLibreDesc =>
+      'オープンソースで自前ホストが最も確実。公共インスタンスはキーが必要で中国語非対応のことも多い';
+
+  @override
+  String get translateLibreUrl => 'インスタンス URL';
+
+  @override
+  String get translateLibreKey => 'インスタンス API キー（公共は必要、自前ホストは空で可）';
+
+  @override
+  String get translateUsedProvider => '今回の使用先';
+
+  @override
+  String get translateUntranslated =>
+      'エンドポイントが実際には翻訳していません（原文を返しました）。次の候補を試しました';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return 'キー不要のエンドポイントがすべて失敗しました（$e）· 設定で Google / Baidu のキーか自前インスタンスに切り替えてください';
+  }
+
+  @override
+  String get translateLangUnsupported =>
+      'このプロバイダはその言語への翻訳に対応していません · 「自動」か別のプロバイダをお試しください';
+
+  @override
+  String get translateLangScopeNote =>
+      'プロバイダごとに対応語種が異なります（例：Baidu 標準版はインドネシア語 id に対応。ただし全方向ではありません）。非対応の場合は自動か別プロバイダを案内します';
+
+  @override
+  String get langNameZh => '中国語（簡体）';
+
+  @override
+  String get langNameZhTw => '中国語（繁体）';
+
+  @override
+  String get langNameEn => '英語';
+
+  @override
+  String get langNameJa => '日本語';
+
+  @override
+  String get langNameKo => '韓国語';
+
+  @override
+  String get langNameEs => 'スペイン語';
+
+  @override
+  String get langNameFr => 'フランス語';
+
+  @override
+  String get langNameDe => 'ドイツ語';
+
+  @override
+  String get langNameRu => 'ロシア語';
+
+  @override
+  String get langNamePt => 'ポルトガル語';
+
+  @override
+  String get langNameIt => 'イタリア語';
+
+  @override
+  String get langNameId => 'インドネシア語';
+
+  @override
+  String get langNameTh => 'タイ語';
+
+  @override
+  String get langNameVi => 'ベトナム語';
+
+  @override
+  String get langNameAr => 'アラビア語';
+
+  @override
   String get translateOutgoing => '送信前に相手の言語へ翻訳';
 
   @override

@@ -1146,6 +1146,107 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get translateProviderAuto => 'Otomatis (disarankan)';
+
+  @override
+  String get translateProviderAutoDesc =>
+      'Mencoba beberapa endpoint tanpa kunci dan memakai hasil terjemahan pertama yang válid';
+
+  @override
+  String get translateProviderGooglePublic =>
+      'Endpoint publik Google (tanpa kunci)';
+
+  @override
+  String get translateProviderGooglePublicDesc =>
+      'Kualitas baik, tetapi bisa dibatasi (teramati 429)';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory (tanpa kunci)';
+
+  @override
+  String get translateProviderMyMemoryDesc =>
+      'API gratis resmi, tetapi berupa memori terjemahan: mengembalikan teks asli bila tidak ada kecocokan';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate (bisa self-host)';
+
+  @override
+  String get translateProviderLibreDesc =>
+      'Open source; paling andal bila di-self-host. Instans publik kini butuh kunci dan sering tanpa bahasa Tionghoa';
+
+  @override
+  String get translateLibreUrl => 'URL instans';
+
+  @override
+  String get translateLibreKey =>
+      'Kunci API instans (perlu untuk publik; kosongkan bila self-host)';
+
+  @override
+  String get translateUsedProvider => 'Yang dipakai';
+
+  @override
+  String get translateUntranslated =>
+      'Endpoint tidak benar-benar menerjemahkan (mengembalikan teks asli) — mencoba yang berikutnya';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return 'Semua endpoint tanpa kunci gagal ($e) · beralih ke kunci Google/Baidu atau instans sendiri di pengaturan';
+  }
+
+  @override
+  String get translateLangUnsupported =>
+      'Penyedia ini tidak bisa menerjemahkan ke bahasa itu · coba “Otomatis” atau penyedia lain';
+
+  @override
+  String get translateLangScopeNote =>
+      'Cakupan bahasa tiap penyedia berbeda (mis. Baidu standar mendukung bahasa Indonesia “id”, tetapi tidak semua arah) — bila tidak didukung, aplikasi menyarankan Otomatis atau penyedia lain';
+
+  @override
+  String get langNameZh => 'Tionghoa Sederhana';
+
+  @override
+  String get langNameZhTw => 'Tionghoa Tradisional';
+
+  @override
+  String get langNameEn => 'Inggris';
+
+  @override
+  String get langNameJa => 'Jepang';
+
+  @override
+  String get langNameKo => 'Korea';
+
+  @override
+  String get langNameEs => 'Spanyol';
+
+  @override
+  String get langNameFr => 'Prancis';
+
+  @override
+  String get langNameDe => 'Jerman';
+
+  @override
+  String get langNameRu => 'Rusia';
+
+  @override
+  String get langNamePt => 'Portugis';
+
+  @override
+  String get langNameIt => 'Italia';
+
+  @override
+  String get langNameId => 'Indonesia';
+
+  @override
+  String get langNameTh => 'Thai';
+
+  @override
+  String get langNameVi => 'Vietnam';
+
+  @override
+  String get langNameAr => 'Arab';
+
+  @override
   String get translateOutgoing =>
       'Terjemahkan ke bahasa mereka sebelum mengirim';
 
