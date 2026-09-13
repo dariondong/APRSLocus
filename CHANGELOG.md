@@ -1,165 +1,13 @@
 # 更新日志
 
-## [未发版 · tnc 分支] - 2026-09-13（第四轮）
+## [1.7.0] - 2026-09-13
 
-### 🐛 修复：翻译成功后界面不显示 / Fixed: translation succeeded but nothing showed
-
-- **根因**：只有**消息瀑布流**的气泡渲染了译文块，**会话/群聊气泡漏了** ——
-  状态里确实拿到了译文（长按面板也会变成「重新翻译」），但气泡里永远不显示，
-  看上去像「翻译功能没反应」
-- 现两个气泡都渲染译文块；并加了一条**源码级防回归测试**
-  （断言 `_bubble` 与 `_feedBubble` 都调用 `translationBlock`）——
-  这类「编译通过、无异常、界面静默少一块」的漏接只能靠测试挡住。
-  该测试已验证「删掉译文块时会精确失败」
-- 另修两个会造成「看起来没翻译」的问题：
-  - **默认「我的语言」现在跟随界面语言**（以前固定回落 zh，中文界面下把中文译成中文
-    = 原文照抄，看起来像没翻译）
-  - **接口未配置时给出可操作引导**：长按面板会显示提示，且「翻译」按钮直接变成
-    「翻译设置」带你过去，而不是发一次注定失败的请求
-- 新增 `test/chat_translate_ui_test.dart`（16 例）：译文块的对照/隐藏/翻译中/失败/无译文
-  与方向标签、两个气泡的接续、会话键与消息指纹、双向目标语言解析
-
-- **Root cause**: only the **message feed** bubble rendered the translation block; the
-  **conversation/group bubble did not**. The state really held the translation (the
-  long-press sheet even switched to “Translate again”), but nothing ever appeared in the
-  bubble, making the feature look dead. Both bubbles now render it, and a
-  **source-level regression test** asserts that `_bubble` and `_feedBubble` both call
-  `translationBlock` — this class of “compiles, no exception, silently missing UI” can only
-  be caught by a test. The test was verified to fail precisely when the block is removed.
-  Also fixed two issues that made translation look broken: **“my language” now defaults to
-  the UI language** (it used to fall back to zh, so a Chinese UI translated Chinese into
-  Chinese — verbatim, looking like nothing happened), and **an unconfigured provider is
-  now actionable**: the long-press sheet explains it and turns the translate action into
-  “Translation settings”, instead of firing a request that is bound to fail. Adds
-  `test/chat_translate_ui_test.dart` (16 cases) covering the contrast/hidden/pending/
-  failed/absent states, the direction tag, both bubbles, conversation keys and message
-  fingerprints, and two-way target resolution.
-
-## [未发版 · tnc 分支] - 2026-09-13（第三轮）
-
-### 🔄 翻译改为双向：可翻成「对方的语言」 / Two-way translation: translate into the other party's language
-
-- 会话翻译设置从单一「目标语言」改为**两个方向**：
-  - **我的语言** —— 对方发来的消息翻成它（读别人的话）
-  - **对方的语言** —— 我发出的消息翻成它（预览「对方会读到什么」）
-- **对方的语言会自动学出来**，不用用户手填：接口在 `from=auto` 时都会回传识别结果
-  （Google 的 `detectedSourceLanguage`、百度的 `from`），翻译过对方几条消息后
-  自动回填并落盘；也仍可手动指定
-- 长按面板会标明方向（「对方发来」/「我发出」）与目标语言；
-  对方语言未知时，对自己发的消息会明确提示而不是硬翻（翻了往往是同一种语言）
-
-- The conversation translate sheet now has **two directions** instead of one target
-  language: **My language** (messages from the other side are translated into it) and
-  **Their language** (your own messages are translated into it — a preview of what they
-  will read). **Their language is learned automatically**: every provider returns the
-  detection result when `from=auto` (Google's `detectedSourceLanguage`, Baidu's `from`),
-  so after a few incoming messages it is filled in and persisted; manual override still
-  works. The long-press sheet shows the direction (“received”/“sent”) and the target
-  language, and when their language is still unknown your outgoing messages say so
-  instead of being translated blindly (which usually means translating into the same
-  language).
-
-### 📖 对照翻译 / Side-by-side contrast display
-
-- 译文不再只是替换原文，而是**与原文同屏对照**：气泡里原文在下、分隔线以上标注
-  「译给我看 / 对方将读到 + 语言名」、下方是译文
-- 会话设置里可关掉「对照显示」，改为只显示译文（原文仍可长按查看）
-- 分隔线上的语言标签让「这段是译文、且翻成了什么语言」一眼可辨
-
-- Translations are no longer a replacement but shown **alongside the original**: the
-  bubble keeps the original text, a divider labels the direction and language name
-  (“for me” / “what they read”, plus the language), and the translation follows below.
-  Contrast display can be turned off per conversation to show only the translation
-  (long-press still reveals the original). The language tag on the divider makes it
-  obvious that the lower block is a translation and into which language.
-
-### 📅 聊天日期分界线 / Date dividers in conversations
-
-- 会话、群聊与消息瀑布流的前面均按天插入**日期分界线**：今天 / 昨天 /
-  「2026年9月11日 周五」（各语言各自的日期与星期格式）
-- 分组按**视觉顺序**而非数组下标判断：「该天最早一条」的上方才是日期真正变换处；
-  按下标递增比较会把分界线插错位置。此逻辑已用 12 例单测锁住
-  （含跳月、跳年、闰日号相同等边界）
-
-- One-to-one chats, group chats and the message feed now insert a **date divider** per
-  day: Today / Yesterday / “2026-09-11 Fri”, formatted per language. Grouping is decided
-  by **visual order**, not array index — the divider belongs above the earliest message
-  of each day, and comparing indices in order would place it wrongly. The logic is
-  pinned by 12 unit tests covering month/year rollovers and same-day-of-month cases.
-
-## [未发版 · tnc 分支] - 2026-09-13（第二轮）
-
-### 🌐 修掉 TNC 功能里的中文外泄 / Fixed Chinese leaking through in the TNC features
-
-- 根因：`connInfo` 以前存的是**中文字符串**，界面侧靠
-  `localizedConnectionInfo()` 把中文当哨兵再映射回 l10n —— TNC 新增的一批
-  状态串没登记进那张映射表，于是**所有语言下都漏出中文**
-- 现改为**结构化连接状态**（`ConnPhase` + `ConnStatus`），文案在状态层按当前
-  语言直接生成，不再有任何哨兵映射；与先前 `beaconPhase` 的做法一致
-- 同时把 TNC 的**机器错误码**（`open-write-failed` 等）换成可读文案，
-  而不是把内部串抛给用户（例如 Windows COM 口被占用会明确提示）
-- 新增 14 个连接状态/错误文案键 × 6 语言
-
-- Root cause: `connInfo` used to hold a **Chinese string**, and the UI mapped it
-  back to l10n with `localizedConnectionInfo()` using Chinese text as a sentinel. The
-  batch of TNC status strings was never registered in that table, so **Chinese showed
-  up in every language**. It is now a **structured connection state** (`ConnPhase` +
-  `ConnStatus`) that renders in the current language directly, with no sentinel mapping
-  left — matching the existing `beaconPhase` approach. TNC **machine error codes**
-  (`open-write-failed`, …) are also turned into readable text instead of being thrown
-  at the user raw (e.g. an occupied Windows COM port now says so). Adds 14 connection
-  status/error keys × 6 languages.
-
-### 🔤 聊天翻译 / Chat translation
-
-- **长按任意消息** → 弹出操作面板：翻译 / 显示原文 / 复制原文 / 复制译文
-  （原来是长按直接复制，没有翻译入口）
-- **会话右上角新增翻译入口**（带已翻译条数角标）：面板内选该会话的
-  **目标语言**、开关**自动翻译**、一键清除本会话译文；也能直接跳到翻译设置
-- **设置页新增「翻译设置」**，支持三家接口：
-  - **Google** Cloud Translation v2（API Key）
-  - **百度**翻译开放平台（App ID + 密钥，`sign = MD5(appid+q+salt+key)`）
-  - **自定义**接口：URL / GET 或 POST / 请求头 JSON / 请求体模板
-    （`{text}` `{from}` `{to}` 占位符）/ 结果字段路径（如
-    `data.translations.0.translatedText`）
-- 页面内提供**测试翻译**按钮：三家接口都要用户自己申请凭据，配完立刻能验证
-- 细节考虑：
-  - 译文**不落盘**（翻译是查看时的加工，不是消息本身），但结果缓存落盘 ——
-    同一句话不会重复计费
-  - 语言码**按接口分别映射**（Google 用 `zh-CN`、百度用 `cht`/`jp`），
-    避免把接口方言散落到 UI
-  - 自动翻译只翻**对方发来的**消息，且**按会话**独立开关
-  - 翻译会把文本发往第三方，设置页有隐私提示
-- 仓库无 `crypto` 依赖，`MD5` 为自研实现，已用 **RFC 1321 标准向量**与
-  11 组独立生成的跨块边界向量锁住（`test/translate_test.dart`，14 例全过）
-
-- **Long-press any message** to get an action sheet: translate / show original /
-  copy original / copy translation (previously long-press just copied). A **new
-  translate entry sits in the conversation header** with a badge showing how many
-  messages are translated; its sheet sets the conversation's **target language**,
-  toggles **auto-translate**, clears this conversation's translations and links to the
-  settings. **Settings gains a “Translation settings” page** covering three providers:
-  **Google** Cloud Translation v2 (API key), **Baidu** Translate (App ID + secret,
-  `sign = MD5(appid+q+salt+key)`) and a **custom** endpoint (URL, GET/POST, JSON
-  headers, body template with `{text}`/`{from}`/`{to}`, and a result path such as
-  `data.translations.0.translatedText`). A **test translation** button is included
-  because all three providers need credentials the user must obtain themselves.
-  Translations are deliberately **not persisted** (translating is a view-time
-  operation, not part of the message) while the result cache is, so the same sentence
-  is never billed twice; language codes are **mapped per provider** (Google `zh-CN` vs
-  Baidu `cht`/`jp`) instead of leaking provider dialects into the UI; auto-translate only
-  handles **received** messages and is toggled **per conversation**; and the settings
-  page warns that text is sent to a third party. With no `crypto` dependency in the
-  repo, MD5 is implemented here and pinned by the **RFC 1321 vectors** plus 11
-  independently generated block-boundary vectors in `test/translate_test.dart`
-  (14 cases, all passing).
-
-## [未发版 · tnc 分支] - 2026-09-13
-
-> 📌 该条目位于 `tnc` 分支，**尚未发版**。发版时请把标题改为版本号并与主分支合并。
+> 📌 本版是 **1.7.0 功能版**，包含四个部分：蓝牙 TNC 数据来源、聊天翻译、
+> 双向翻译与对照显示、以及中文外泄与译文不显示的修复。
 >
-> This entry lives on the `tnc` branch and is **not released yet**. Rename it to a version
-> number and merge into `main` when you ship it.
+> This is the **1.7.0 feature release**, covering four parts: the Bluetooth TNC data
+> source, chat translation, two-way translation with contrast display, and fixes for
+> leaked Chinese text and translations not showing up.
 
 ### 📻 新增数据来源：蓝牙 TNC（含完整 KISS 控制） / New data source: Bluetooth TNC with full KISS control
 
@@ -211,6 +59,174 @@
   no protocol rewrite or release. Adds `test/kiss_test.dart` (30 cases) covering escape
   boundaries, split/partial frames, address shifting and SSID, UI byte order, digipeater
   filtering, UTF-8 round-trips for Chinese text and unit conversion.
+---
+
+---
+
+### 🌐 修掉 TNC 功能里的中文外泄 / Fixed Chinese leaking through in the TNC features
+
+- 根因：`connInfo` 以前存的是**中文字符串**，界面侧靠
+  `localizedConnectionInfo()` 把中文当哨兵再映射回 l10n —— TNC 新增的一批
+  状态串没登记进那张映射表，于是**所有语言下都漏出中文**
+- 现改为**结构化连接状态**（`ConnPhase` + `ConnStatus`），文案在状态层按当前
+  语言直接生成，不再有任何哨兵映射；与先前 `beaconPhase` 的做法一致
+- 同时把 TNC 的**机器错误码**（`open-write-failed` 等）换成可读文案，
+  而不是把内部串抛给用户（例如 Windows COM 口被占用会明确提示）
+- 新增 14 个连接状态/错误文案键 × 6 语言
+
+- Root cause: `connInfo` used to hold a **Chinese string**, and the UI mapped it
+  back to l10n with `localizedConnectionInfo()` using Chinese text as a sentinel. The
+  batch of TNC status strings was never registered in that table, so **Chinese showed
+  up in every language**. It is now a **structured connection state** (`ConnPhase` +
+  `ConnStatus`) that renders in the current language directly, with no sentinel mapping
+  left — matching the existing `beaconPhase` approach. TNC **machine error codes**
+  (`open-write-failed`, …) are also turned into readable text instead of being thrown
+  at the user raw (e.g. an occupied Windows COM port now says so). Adds 14 connection
+  status/error keys × 6 languages.
+
+---
+
+### 🔤 聊天翻译 / Chat translation
+
+- **长按任意消息** → 弹出操作面板：翻译 / 显示原文 / 复制原文 / 复制译文
+  （原来是长按直接复制，没有翻译入口）
+- **会话右上角新增翻译入口**（带已翻译条数角标）：面板内选该会话的
+  **目标语言**、开关**自动翻译**、一键清除本会话译文；也能直接跳到翻译设置
+- **设置页新增「翻译设置」**，支持三家接口：
+  - **Google** Cloud Translation v2（API Key）
+  - **百度**翻译开放平台（App ID + 密钥，`sign = MD5(appid+q+salt+key)`）
+  - **自定义**接口：URL / GET 或 POST / 请求头 JSON / 请求体模板
+    （`{text}` `{from}` `{to}` 占位符）/ 结果字段路径（如
+    `data.translations.0.translatedText`）
+- 页面内提供**测试翻译**按钮：三家接口都要用户自己申请凭据，配完立刻能验证
+- 细节考虑：
+  - 译文**不落盘**（翻译是查看时的加工，不是消息本身），但结果缓存落盘 ——
+    同一句话不会重复计费
+  - 语言码**按接口分别映射**（Google 用 `zh-CN`、百度用 `cht`/`jp`），
+    避免把接口方言散落到 UI
+  - 自动翻译只翻**对方发来的**消息，且**按会话**独立开关
+  - 翻译会把文本发往第三方，设置页有隐私提示
+- 仓库无 `crypto` 依赖，`MD5` 为自研实现，已用 **RFC 1321 标准向量**与
+  11 组独立生成的跨块边界向量锁住（`test/translate_test.dart`，14 例全过）
+
+- **Long-press any message** to get an action sheet: translate / show original /
+  copy original / copy translation (previously long-press just copied). A **new
+  translate entry sits in the conversation header** with a badge showing how many
+  messages are translated; its sheet sets the conversation's **target language**,
+  toggles **auto-translate**, clears this conversation's translations and links to the
+  settings. **Settings gains a “Translation settings” page** covering three providers:
+  **Google** Cloud Translation v2 (API key), **Baidu** Translate (App ID + secret,
+  `sign = MD5(appid+q+salt+key)`) and a **custom** endpoint (URL, GET/POST, JSON
+  headers, body template with `{text}`/`{from}`/`{to}`, and a result path such as
+  `data.translations.0.translatedText`). A **test translation** button is included
+  because all three providers need credentials the user must obtain themselves.
+  Translations are deliberately **not persisted** (translating is a view-time
+  operation, not part of the message) while the result cache is, so the same sentence
+  is never billed twice; language codes are **mapped per provider** (Google `zh-CN` vs
+  Baidu `cht`/`jp`) instead of leaking provider dialects into the UI; auto-translate only
+  handles **received** messages and is toggled **per conversation**; and the settings
+  page warns that text is sent to a third party. With no `crypto` dependency in the
+  repo, MD5 is implemented here and pinned by the **RFC 1321 vectors** plus 11
+  independently generated block-boundary vectors in `test/translate_test.dart`
+  (14 cases, all passing).
+
+> 📌 该条目位于 `tnc` 分支，**尚未发版**。发版时请把标题改为版本号并与主分支合并。
+>
+> This entry lives on the `tnc` branch and is **not released yet**. Rename it to a version
+> number and merge into `main` when you ship it.
+
+---
+
+### 🔄 翻译改为双向：可翻成「对方的语言」 / Two-way translation: translate into the other party's language
+
+- 会话翻译设置从单一「目标语言」改为**两个方向**：
+  - **我的语言** —— 对方发来的消息翻成它（读别人的话）
+  - **对方的语言** —— 我发出的消息翻成它（预览「对方会读到什么」）
+- **对方的语言会自动学出来**，不用用户手填：接口在 `from=auto` 时都会回传识别结果
+  （Google 的 `detectedSourceLanguage`、百度的 `from`），翻译过对方几条消息后
+  自动回填并落盘；也仍可手动指定
+- 长按面板会标明方向（「对方发来」/「我发出」）与目标语言；
+  对方语言未知时，对自己发的消息会明确提示而不是硬翻（翻了往往是同一种语言）
+
+- The conversation translate sheet now has **two directions** instead of one target
+  language: **My language** (messages from the other side are translated into it) and
+  **Their language** (your own messages are translated into it — a preview of what they
+  will read). **Their language is learned automatically**: every provider returns the
+  detection result when `from=auto` (Google's `detectedSourceLanguage`, Baidu's `from`),
+  so after a few incoming messages it is filled in and persisted; manual override still
+  works. The long-press sheet shows the direction (“received”/“sent”) and the target
+  language, and when their language is still unknown your outgoing messages say so
+  instead of being translated blindly (which usually means translating into the same
+  language).
+
+---
+
+### 📖 对照翻译 / Side-by-side contrast display
+
+- 译文不再只是替换原文，而是**与原文同屏对照**：气泡里原文在下、分隔线以上标注
+  「译给我看 / 对方将读到 + 语言名」、下方是译文
+- 会话设置里可关掉「对照显示」，改为只显示译文（原文仍可长按查看）
+- 分隔线上的语言标签让「这段是译文、且翻成了什么语言」一眼可辨
+
+- Translations are no longer a replacement but shown **alongside the original**: the
+  bubble keeps the original text, a divider labels the direction and language name
+  (“for me” / “what they read”, plus the language), and the translation follows below.
+  Contrast display can be turned off per conversation to show only the translation
+  (long-press still reveals the original). The language tag on the divider makes it
+  obvious that the lower block is a translation and into which language.
+
+---
+
+### 📅 聊天日期分界线 / Date dividers in conversations
+
+- 会话、群聊与消息瀑布流的前面均按天插入**日期分界线**：今天 / 昨天 /
+  「2026年9月11日 周五」（各语言各自的日期与星期格式）
+- 分组按**视觉顺序**而非数组下标判断：「该天最早一条」的上方才是日期真正变换处；
+  按下标递增比较会把分界线插错位置。此逻辑已用 12 例单测锁住
+  （含跳月、跳年、闰日号相同等边界）
+
+- One-to-one chats, group chats and the message feed now insert a **date divider** per
+  day: Today / Yesterday / “2026-09-11 Fri”, formatted per language. Grouping is decided
+  by **visual order**, not array index — the divider belongs above the earliest message
+  of each day, and comparing indices in order would place it wrongly. The logic is
+  pinned by 12 unit tests covering month/year rollovers and same-day-of-month cases.
+---
+
+---
+
+### 🐛 修复：翻译成功后界面不显示 / Fixed: translation succeeded but nothing showed
+
+- **根因**：只有**消息瀑布流**的气泡渲染了译文块，**会话/群聊气泡漏了** ——
+  状态里确实拿到了译文（长按面板也会变成「重新翻译」），但气泡里永远不显示，
+  看上去像「翻译功能没反应」
+- 现两个气泡都渲染译文块；并加了一条**源码级防回归测试**
+  （断言 `_bubble` 与 `_feedBubble` 都调用 `translationBlock`）——
+  这类「编译通过、无异常、界面静默少一块」的漏接只能靠测试挡住。
+  该测试已验证「删掉译文块时会精确失败」
+- 另修两个会造成「看起来没翻译」的问题：
+  - **默认「我的语言」现在跟随界面语言**（以前固定回落 zh，中文界面下把中文译成中文
+    = 原文照抄，看起来像没翻译）
+  - **接口未配置时给出可操作引导**：长按面板会显示提示，且「翻译」按钮直接变成
+    「翻译设置」带你过去，而不是发一次注定失败的请求
+- 新增 `test/chat_translate_ui_test.dart`（16 例）：译文块的对照/隐藏/翻译中/失败/无译文
+  与方向标签、两个气泡的接续、会话键与消息指纹、双向目标语言解析
+
+- **Root cause**: only the **message feed** bubble rendered the translation block; the
+  **conversation/group bubble did not**. The state really held the translation (the
+  long-press sheet even switched to “Translate again”), but nothing ever appeared in the
+  bubble, making the feature look dead. Both bubbles now render it, and a
+  **source-level regression test** asserts that `_bubble` and `_feedBubble` both call
+  `translationBlock` — this class of “compiles, no exception, silently missing UI” can only
+  be caught by a test. The test was verified to fail precisely when the block is removed.
+  Also fixed two issues that made translation look broken: **“my language” now defaults to
+  the UI language** (it used to fall back to zh, so a Chinese UI translated Chinese into
+  Chinese — verbatim, looking like nothing happened), and **an unconfigured provider is
+  now actionable**: the long-press sheet explains it and turns the translate action into
+  “Translation settings”, instead of firing a request that is bound to fail. Adds
+  `test/chat_translate_ui_test.dart` (16 cases) covering the contrast/hidden/pending/
+  failed/absent states, the direction tag, both bubbles, conversation keys and message
+  fingerprints, and two-way target resolution.
+---
 
 ## [1.6.98] - 2026-09-13
 
