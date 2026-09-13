@@ -1042,6 +1042,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionZhTw => 'Traditional Chinese UI';
 
   @override
+  String get codeContributionTranslation => 'Translation';
+
+  @override
   String get licenseSection => 'License';
 
   @override

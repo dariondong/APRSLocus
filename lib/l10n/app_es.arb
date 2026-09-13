@@ -333,6 +333,7 @@
   "codeContributions": "Contribuciones de código",
   "codeContributionI18n": "Internacionalización / interfaz en inglés",
   "codeContributionZhTw": "Interfaz en chino tradicional",
+  "codeContributionTranslation": "Traducción",
   "licenseSection": "Licencia",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "Este software se publica bajo la licencia GNU GPL v3. Puedes ejecutarlo, estudiarlo, modificarlo y redistribuirlo conforme a los términos de la licencia; las versiones modificadas y redistribuidas deben cumplir las obligaciones aplicables de la GPL v3. Este software se ofrece sin garantía alguna.",

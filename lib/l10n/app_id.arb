@@ -334,6 +334,7 @@
   "codeContributions": "Kontribusi kode",
   "codeContributionI18n": "Internasionalisasi / UI Inggris",
   "codeContributionZhTw": "UI Tionghoa Tradisional",
+  "codeContributionTranslation": "Terjemahan",
   "licenseSection": "Lisensi",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "Perangkat lunak ini dirilis di bawah lisensi GNU GPL v3. Anda boleh menjalankan, mempelajari, memodifikasi, dan mendistribusikan ulang selama mematuhi ketentuan lisensi; versi modifikasi dan redistribusi wajib mematuhi kewajiban GPL v3 yang berlaku. Perangkat lunak ini disediakan tanpa jaminan apa pun.",

@@ -334,6 +334,7 @@
   "codeContributions": "コード貢献",
   "codeContributionI18n": "国際化 / 英語 UI",
   "codeContributionZhTw": "繁体字中国語 UI",
+  "codeContributionTranslation": "翻訳",
   "licenseSection": "ライセンス",
   "licenseName": "GNU GPL v3",
   "licenseStatement": "本ソフトウェアは GNU GPL v3 に基づいて公開されています。ライセンス条項を守る限り、実行・調査・改変・再配布が可能です。改変・再配布の際は GPL v3 の該当義務を守る必要があります。本ソフトウェアはいかなる保証も伴いません。",

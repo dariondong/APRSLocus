@@ -1049,6 +1049,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionZhTw => 'Interfaz en chino tradicional';
 
   @override
+  String get codeContributionTranslation => 'Traducción';
+
+  @override
   String get licenseSection => 'Licencia';
 
   @override

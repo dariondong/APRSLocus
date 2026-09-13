@@ -1,5 +1,5 @@
 {
-  "version": 44,
+  "version": 45,
   "updated": "2026-09-13",
   "developers": [
     {
@@ -205,6 +205,54 @@
         "earlyMember"
       ],
       "primary": "kaishan"
+    },
+    {
+      "call": "BA7KSM",
+      "who": {
+        "zh": "BA7KSM",
+        "zh-TW": "BA7KSM",
+        "en": "BA7KSM"
+      },
+      "role": {
+        "zh": "翻译",
+        "zh-TW": "翻譯",
+        "en": "Translation"
+      },
+      "brief": {
+        "zh": "把 APRSlocus 说给更多同好听",
+        "zh-TW": "把 APRSlocus 說給更多同好聽",
+        "en": "Told APRSlocus' story in one more language"
+      },
+      "contrib": {
+        "zh": "承担界面文案的翻译工作，让更多语言的业余无线电爱好者能用自己的母语顺畅使用 APRSlocus。",
+        "zh-TW": "承擔介面文案的翻譯工作，讓更多語言的業餘無線電愛好者能用自己的母語順暢使用 APRSlocus。",
+        "en": "Translated the interface copy so hams in one more language can use APRSlocus in their mother tongue."
+      },
+      "quote": {
+        "zh": "多一种语言，就多一群能听懂的朋友。",
+        "zh-TW": "多一種語言，就多一群能聽懂的朋友。",
+        "en": "One more language, one more circle of friends who understand."
+      },
+      "tags": {
+        "zh": [
+          "翻译",
+          "本地化"
+        ],
+        "zh-TW": [
+          "翻譯",
+          "本地化"
+        ],
+        "en": [
+          "Translation",
+          "L10n"
+        ]
+      },
+      "c": "#0ea5e9",
+      "grp": "core",
+      "honors": [
+        "developer"
+      ],
+      "primary": "developer"
     }
   ],
   "earlyMembers": [

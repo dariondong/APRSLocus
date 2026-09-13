@@ -1042,6 +1042,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionZhTw => 'UI Tionghoa Tradisional';
 
   @override
+  String get codeContributionTranslation => 'Terjemahan';
+
+  @override
   String get licenseSection => 'Lisensi';
 
   @override

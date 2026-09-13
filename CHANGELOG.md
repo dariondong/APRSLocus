@@ -1,5 +1,24 @@
 # 更新日志
 
+## [1.6.98] - 2026-09-13
+
+### 🏅 授予 BA7KSM「开发人员」/ BA7KSM granted the Developer badge
+- `members.json` v45：BA7KSM 以**开发人员**（`developer`）身份加入 `developers` 名单，
+  官网会员卡 / 荣誉墙推送后即可见（**无需发版**）
+- App 侧同步登记**离线兜底**（`_seedDefaults`），断网时徽章同样显示 ——
+  否则未拉到 `members.json` 前该徽章会被整条跳过
+- 关于页「代码贡献」新增 **翻译 · BA7KSM** 一行；同时补齐官网三语贡献者块与
+  README 三语致谢名单
+- 新增 1 个文案键 × 6 语言（`codeContributionTranslation`）
+
+- `members.json` v45: BA7KSM joins the `developers` list with the **Developer** badge
+  (`developer`); the website member card and honor wall pick it up right after the push
+  (**no release needed**). The app also registers an **offline fallback** so the badge shows
+  without network — otherwise the whole badge is skipped until `members.json` arrives. The
+  About page's “Code contributions” card gains a **Translation · BA7KSM** row, and the
+  website contributor blocks plus the three README thanks-lists are updated. Adds 1 message
+  key × 6 languages (`codeContributionTranslation`).
+
 ## [1.6.97] - 2026-09-13
 
 > 📌 本版**包含 v1.6.96 的全部改动**（该版本未单独发版），以下一并列出。

@@ -1032,6 +1032,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionZhTw => '繁体字中国語 UI';
 
   @override
+  String get codeContributionTranslation => '翻訳';
+
+  @override
   String get licenseSection => 'ライセンス';
 
   @override

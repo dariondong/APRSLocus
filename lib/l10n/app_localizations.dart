@@ -2109,6 +2109,12 @@ abstract class AppLocalizations {
   /// **'繁体中文界面'**
   String get codeContributionZhTw;
 
+  /// No description provided for @codeContributionTranslation.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译'**
+  String get codeContributionTranslation;
+
   /// No description provided for @licenseSection.
   ///
   /// In zh, this message translates to:

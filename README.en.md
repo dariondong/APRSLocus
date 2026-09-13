@@ -381,6 +381,7 @@ Since 1.5.2 Android uses the official release signature, identical between CI an
 - [OpenFreeMap](https://openfreemap.org) — free vector tiles
 - **BD3QID** — i18n contributions
 - **BA4UAX** — Traditional Chinese translation
+- **BA7KSM** — Translation
 - **imThree** — bug reports & feedback
 - **清零 (BG2HCB)** — settings code optimization
 - **Testers**: BG7PGW, BG7LMW, BG7OSL, BD3QID

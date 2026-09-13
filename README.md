@@ -381,6 +381,7 @@ Android 端使用前台服务持续定位以保持 APRS 在线，可在"定位 /
 - [OpenFreeMap](https://openfreemap.org) — 免费矢量瓦片底图
 - **BD3QID** — 国际化（i18n）贡献
 - **BA4UAX** — 繁体中文翻译
+- **BA7KSM** — 翻译
 - **imThree** — Bug 提交与反馈
 - **清零（BG2HCB）** — 设置页代码优化
 - **测试成员**：BG7PGW、BG7LMW、BG7OSL、BD3QID

@@ -1029,6 +1029,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionZhTw => '繁体中文界面';
 
   @override
+  String get codeContributionTranslation => '翻译';
+
+  @override
   String get licenseSection => '许可证声明';
 
   @override
@@ -5026,6 +5029,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionZhTw => '繁體中文介面';
+
+  @override
+  String get codeContributionTranslation => '翻譯';
 
   @override
   String get licenseSection => '許可證宣告';

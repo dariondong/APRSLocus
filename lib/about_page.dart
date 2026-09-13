@@ -580,6 +580,10 @@ class _AboutPageState extends State<AboutPage>
                             S.of(context).codeContributionZhTw,
                             'BA4UAX',
                           ),
+                          _eggRow(
+                            S.of(context).codeContributionTranslation,
+                            'BA7KSM',
+                          ),
                           _row(
                             S.of(context).settingsContribCodeOptimization,
                             '清零（BG2HCB）',
