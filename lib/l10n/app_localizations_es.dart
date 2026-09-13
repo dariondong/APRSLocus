@@ -1142,6 +1142,55 @@ class AppLocalizationsEs extends AppLocalizations {
       'Si está desactivado solo se ve la traducción (el original sigue en pulsación larga)';
 
   @override
+  String get translateProviderFree => 'Gratis (sin clave)';
+
+  @override
+  String get translateProviderFreeDesc =>
+      'Funciona sin configurar · usa un endpoint público que puede limitarse o ser inestable';
+
+  @override
+  String translateFreeFailed(String e) {
+    return 'El endpoint gratuito no está disponible ($e) · cambia a Google / Baidu / personalizado en los ajustes';
+  }
+
+  @override
+  String get translateOutgoing => 'Traducir a su idioma antes de enviar';
+
+  @override
+  String get translateOutgoingTip =>
+      'Si está activado, al enviar se traduce el texto a su idioma: comprueba que puedan leerlo';
+
+  @override
+  String get translateInput => 'Traducir lo escrito';
+
+  @override
+  String translateOutPreview(String text) {
+    return 'Se enviará: $text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return 'Traducido a $lang · toca enviar para transmitir esto';
+  }
+
+  @override
+  String get translateOutCancel => 'Cancelar traducción';
+
+  @override
+  String get translateOutNeedPeer =>
+      'Aún no se conoce su idioma: indícalo en los ajustes de traducción de la conversación';
+
+  @override
+  String translateSentAs(String text) {
+    return 'Enviado en su idioma: $text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return 'La traducción supera el límite ($n caracteres); no se envió';
+  }
+
+  @override
   String get dateToday => 'Hoy';
 
   @override

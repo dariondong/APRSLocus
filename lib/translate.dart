@@ -113,7 +113,9 @@ class TransLang {
 // ───────────────────────── 配置 ─────────────────────────
 
 class TranslateConfig {
-  /// 'google' | 'baidu' | 'custom'
+  /// 'free' | 'google' | 'baidu' | 'custom'
+  ///
+  /// 默认 **free**：免密钥、开箱即用。需要更高配额/稳定性时再自备密钥。
   String provider;
 
   String targetLang;
@@ -134,7 +136,7 @@ class TranslateConfig {
   bool customPlainText;
 
   TranslateConfig({
-    this.provider = 'google',
+    this.provider = 'free',
     this.targetLang = 'zh',
     this.googleApiKey = '',
     this.baiduAppId = '',
@@ -185,6 +187,8 @@ class TranslateConfig {
 
   /// 当前接口是否已配置到「可发起请求」的程度
   bool get ready => switch (provider) {
+        // 免费接口不需要任何凭据
+        'free' => true,
         'google' => googleApiKey.trim().isNotEmpty,
         'baidu' => baiduAppId.trim().isNotEmpty && baiduKey.trim().isNotEmpty,
         'custom' => customUrl.trim().isNotEmpty,
@@ -193,6 +197,7 @@ class TranslateConfig {
 
   /// 配置缺失的具体原因（用于界面提示，非本地化文本 → 由 UI 转文案）
   String get missingField => switch (provider) {
+        'free' => '',
         'google' => 'googleApiKey',
         'baidu' => baiduAppId.trim().isEmpty ? 'baiduAppId' : 'baiduKey',
         'custom' => 'customUrl',
@@ -224,11 +229,18 @@ class ConvTranslatePref {
   /// 对照显示（原文 + 译文同屏）
   bool contrast;
 
+  /// 发送前把输入译成对方的语言再发出。
+  ///
+  /// 默认**关闭**：这会改变真正发到空中的内容，属「会发出去的不可撤销操作」，
+  /// 必须由用户显式开启（并可在发送前预览）。
+  bool translateOutgoing;
+
   ConvTranslatePref({
     required this.targetLang,
     this.peerLang = '',
     this.auto = false,
     this.contrast = true,
+    this.translateOutgoing = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -236,6 +248,7 @@ class ConvTranslatePref {
         'peerLang': peerLang,
         'auto': auto,
         'contrast': contrast,
+        'translateOutgoing': translateOutgoing,
       };
 
   static ConvTranslatePref fromJson(Object? j, String fallbackLang) {
@@ -245,6 +258,7 @@ class ConvTranslatePref {
       peerLang: j['peerLang']?.toString() ?? '',
       auto: j['auto'] == true,
       contrast: j['contrast'] != false,
+      translateOutgoing: j['translateOutgoing'] == true,
     );
   }
 }
@@ -266,6 +280,15 @@ class TransDirection {
   /// 自动翻出来可能是同一种语言，白费一次请求）
   static bool worthAuto(ConvTranslatePref p) =>
       p.targetLang.isNotEmpty && p.targetLang != 'auto';
+
+  /// 能否把「我写的内容」译成对方的语言：必须知道对方的语言，
+  /// 且不能等于我自己要读的语言（否则译了等于没译）。
+  static bool canTranslateOutgoing(ConvTranslatePref p) =>
+      p.peerLang.isNotEmpty && p.peerLang != p.targetLang;
+
+  /// 译文的长度是否超出当前模式的上限（0 = 不限）
+  static bool exceedsLimit(String text, int limit) =>
+      limit > 0 && text.trim().length > limit;
 }
 
 // ───────────────────────── 翻译服务 ─────────────────────────
@@ -433,6 +456,7 @@ class TranslateService {
     requestCount++;
     try {
       final r = switch (config.provider) {
+        'free' => await _free(src, from, target),
         'google' => await _google(src, from, target),
         'baidu' => await _baidu(src, from, target),
         'custom' => await _custom(src, from, target),
@@ -477,6 +501,92 @@ class TranslateService {
   }
 
   // ─── 各接口实现 ───
+
+  /// 免密钥接口。
+  ///
+  /// 主用 Google 翻译网页端同款公开端点（`translate_a/single`）：
+  ///   - 无需密钥，支持 `sl=auto` 自动识别（识别结果能回填「对方的语言」）
+  ///   - **非官方**：可能被限流、被墙或随时变动，故失败后还有一层回退
+  /// 回退 MyMemory：同样免密钥，但它要求**明确指定源语言**，
+  /// 因此只在 `from != auto` 时尝试（否则请求本身就无意义）。
+  ///
+  /// 明确不做的：把失败静默成空译文 —— 用户会以为「翻译出来是空的」。
+  Future<TranslateResult> _free(String text, String from, String to) async {
+    Object? firstError;
+    try {
+      return await _googlePublic(text, from, to);
+    } catch (e) {
+      firstError = e;
+    }
+    if (from != 'auto') {
+      try {
+        return await _myMemory(text, from, to);
+      } catch (_) {}
+    }
+    throw TranslateException('free-unavailable:$firstError');
+  }
+
+  /// Google 公开端点（网页版 translate.googleapis.com）
+  ///
+  /// 响应是嵌套数组：`[[["译文","原文",...],...],null,"en",...]`
+  /// 长文本会被拆成多段（`root[0]` 是段落数组），必须**全部拼接**，
+  /// 只取第一段会得到半截译文。
+  /// 识别出的源语言在 `root[2]`。
+  Future<TranslateResult> _googlePublic(
+      String text, String from, String to) async {
+    final uri = Uri.https('translate.googleapis.com', '/translate_a/single', {
+      'client': 'gtx',
+      'sl': from == 'auto' ? 'auto' : TransLang.toGoogle(from),
+      'tl': TransLang.toGoogle(to),
+      'dt': 't',
+      'q': text,
+    });
+    final resp = await _send('GET', uri);
+    Object? root;
+    try {
+      root = jsonDecode(resp);
+    } catch (e) {
+      throw TranslateException('free-bad-json:$e');
+    }
+    if (root is! List || root.isEmpty) {
+      throw TranslateException('free-bad-shape:${_trunc(resp)}');
+    }
+    final segs = root[0];
+    if (segs is! List || segs.isEmpty) {
+      throw TranslateException('free-empty:${_trunc(resp)}');
+    }
+    final sb = StringBuffer();
+    for (final seg in segs) {
+      if (seg is List && seg.isNotEmpty && seg[0] != null) {
+        sb.write('${seg[0]}');
+      }
+    }
+    final out = sb.toString();
+    if (out.trim().isEmpty) {
+      throw TranslateException('free-empty:${_trunc(resp)}');
+    }
+    final det = root.length > 2 ? root[2]?.toString() : null;
+    return TranslateResult(out, detected: _googleToShort(det));
+  }
+
+  /// MyMemory（免密钥，需明确源语言；匿名额度有限）
+  Future<TranslateResult> _myMemory(
+      String text, String from, String to) async {
+    final uri = Uri.https('api.mymemory.translated.net', '/get', {
+      'q': text,
+      'langpair': '${TransLang.toGoogle(from)}|${TransLang.toGoogle(to)}',
+    });
+    final resp = await _send('GET', uri);
+    final map = _decodeJson(resp);
+    final data = map['responseData'];
+    if (data is Map && data['translatedText'] != null) {
+      final t = '${data['translatedText']}';
+      if (t.trim().isNotEmpty) {
+        return TranslateResult(t, detected: from);
+      }
+    }
+    throw TranslateException('mymemory-empty:${_trunc(resp)}');
+  }
 
   /// Google Cloud Translation v2：
   /// POST https://translation.googleapis.com/language/translate/v2?key=KEY

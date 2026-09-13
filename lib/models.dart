@@ -316,6 +316,17 @@ class AprsMsg {
   final String? groupId; // 群聊ID（可选）
   final bool system; // 系统消息（如"XX 已加入群聊"）
   bool acked;
+
+  /// **实际发到空中的文本**（仅在「发送前翻译」时与 [text] 不同）。
+  ///
+  /// 语义分工：[text] 是用户写的内容（聊天记录应按他的话显示），
+  /// [sentAs] 是真正发出的报文内容。两者都留着 —— 只存一个都会丢信息：
+  /// 只存译文则用户看不懂自己的聊天记录；只存原文则无法核对到底发出了什么。
+  final String? sentAs;
+
+  /// 是否译发过
+  bool get translated => sentAs != null && sentAs!.isNotEmpty && sentAs != text;
+
   AprsMsg(
     this.from,
     this.to,
@@ -326,6 +337,7 @@ class AprsMsg {
     this.acked = false,
     this.groupId,
     this.system = false,
+    this.sentAs,
   });
 
   Map<String, dynamic> toJson() => {
@@ -338,6 +350,7 @@ class AprsMsg {
     'acked': acked,
     if (groupId != null) 'groupId': groupId,
     if (system) 'system': system,
+    if (sentAs != null) 'sentAs': sentAs,
   };
 
   factory AprsMsg.fromJson(Map<String, dynamic> j) => AprsMsg(
@@ -350,6 +363,7 @@ class AprsMsg {
     acked: j['acked'] as bool? ?? false,
     groupId: j['groupId'] as String?,
     system: j['system'] as bool? ?? false,
+    sentAs: j['sentAs'] as String?,
   );
 }
 

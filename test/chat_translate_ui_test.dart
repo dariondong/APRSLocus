@@ -228,4 +228,191 @@ void main() {
       expect(TransLang.fromUiLocale('zh'), 'zh');
     });
   });
+  group('发送前翻译', () {
+    test('canTranslateOutgoing：必须知道对方语言，且不能等于我的语言', () {
+      // 未知对方语言 → 不能译（否则可能译成同一种语言，等于没译）
+      expect(
+        TransDirection.canTranslateOutgoing(
+            ConvTranslatePref(targetLang: 'zh', peerLang: '')),
+        isFalse,
+      );
+      // 对方语言 == 我的语言 → 也没有意义
+      expect(
+        TransDirection.canTranslateOutgoing(
+            ConvTranslatePref(targetLang: 'zh', peerLang: 'zh')),
+        isFalse,
+      );
+      expect(
+        TransDirection.canTranslateOutgoing(
+            ConvTranslatePref(targetLang: 'zh', peerLang: 'en')),
+        isTrue,
+      );
+    });
+
+    test('exceedsLimit：0 表示不限；按译文（而非原文）判定', () {
+      expect(TransDirection.exceedsLimit('a' * 200, 0), isFalse);
+      expect(TransDirection.exceedsLimit('a' * 67, 67), isFalse);
+      expect(TransDirection.exceedsLimit('a' * 68, 67), isTrue);
+      // 关键：射频模式的上限是对「空中内容」的，译文超长必须拦住
+      expect(TransDirection.exceedsLimit('a' * 80, 67), isTrue);
+    });
+
+    test('translateOutgoing 默认关闭（改空中内容，必须显式开启）', () {
+      expect(ConvTranslatePref(targetLang: 'zh').translateOutgoing, isFalse);
+    });
+
+    test('translateOutgoing 可 JSON 往返', () {
+      final p = ConvTranslatePref(
+        targetLang: 'zh',
+        peerLang: 'ja',
+        translateOutgoing: true,
+      );
+      final back = ConvTranslatePref.fromJson(p.toJson(), 'zh');
+      expect(back.translateOutgoing, isTrue);
+      expect(back.peerLang, 'ja');
+      expect(ConvTranslatePref.fromJson({}, 'zh').translateOutgoing, isFalse);
+    });
+  });
+
+  group('已译发记录（AprsMsg.sentAs）', () {
+    AprsMsg mk(String text, {String? sentAs}) => AprsMsg(
+          'BG7LZQ',
+          'JA1XYZ',
+          text,
+          DateTime(2026, 9, 13, 10),
+          sent: true,
+          sentAs: sentAs,
+        );
+
+    test('原文与译文分开保存：聊天记录按原文，核对按译文', () {
+      final m = mk('你好，这里是测试', sentAs: 'Hello, this is a test');
+      expect(m.text, '你好，这里是测试');
+      expect(m.sentAs, 'Hello, this is a test');
+      expect(m.translated, isTrue);
+    });
+
+    test('未译发时 translated 为 false（不显示标记）', () {
+      expect(mk('你好').translated, isFalse);
+      // 译文与原文相同的「假译发」也不显示
+      expect(mk('hello', sentAs: 'hello').translated, isFalse);
+    });
+
+    test('sentAs 可 JSON 往返（重启后仍能核对当时发了什么）', () {
+      final m = mk('你好', sentAs: 'Hello');
+      final back = AprsMsg.fromJson(m.toJson());
+      expect(back.text, '你好');
+      expect(back.sentAs, 'Hello');
+      expect(back.translated, isTrue);
+    });
+
+    test('旧数据没有 sentAs 字段也能解析（向后兼容）', () {
+      final j = mk('你好').toJson();
+      j.remove('sentAs');
+      final back = AprsMsg.fromJson(j);
+      expect(back.sentAs, isNull);
+      expect(back.translated, isFalse);
+    });
+
+    testWidgets('sentAsBlock 渲染「已译发」文本；未译发时不占位', (tester) async {
+      final m = mk('你好', sentAs: 'Hello');
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(builder: (ctx) => sentAsBlock(context: ctx, m: m)),
+        ),
+      ));
+      expect(find.textContaining('Hello'), findsOneWidget);
+
+      final plain = mk('你好');
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(builder: (ctx) => sentAsBlock(context: ctx, m: plain)),
+        ),
+      ));
+      expect(find.textContaining('Hello'), findsNothing);
+    });
+  });
+  group('免费接口（免密钥）', () {
+    test('默认就是免费接口，且无需任何凭据即 ready', () {
+      final c = TranslateConfig();
+      expect(c.provider, 'free');
+      expect(c.ready, isTrue);
+      expect(c.missingField, '');
+    });
+
+    test('切到收费接口后才要求凭据', () {
+      final g = TranslateConfig(provider: 'google');
+      expect(g.ready, isFalse);
+      g.googleApiKey = 'k';
+      expect(g.ready, isTrue);
+    });
+
+    test('provider 可 JSON 往返（默认值不写盘也能回落为 free）', () {
+      expect(TranslateConfig.fromJson({}).provider, 'free');
+      final c = TranslateConfig(provider: 'free', targetLang: 'ja');
+      expect(TranslateConfig.fromJson(c.toJson()).provider, 'free');
+    });
+  });
+
+  group('Google 公开端点响应解析（免费接口的核心）', () {
+    // 该端点返回嵌套数组，长文本会被拆成多段 —— 只取第一段会得到半截译文。
+    // 这里用与 service 中 _googlePublic 相同的拼接规则做等价校验。
+    test('多段必须全部拼接（否则译文被截断）', () {
+      String join(List<dynamic> resp) {
+        final segs = resp[0] as List;
+        final sb = StringBuffer();
+        for (final seg in segs) {
+          if (seg is List && seg.isNotEmpty && seg[0] != null) {
+            sb.write('${seg[0]}');
+          }
+        }
+        return sb.toString();
+      }
+
+      expect(
+        join([
+          [
+            ['Hello ', '你好 ', null, null, 10],
+            ['world', '世界', null, null, 10],
+          ],
+          null,
+          'zh-CN',
+        ]),
+        'Hello world',
+      );
+      // 单段
+      expect(join([
+        [
+          ['Hi', '嗨', null, null, 10],
+        ],
+        null,
+        'zh-CN',
+      ]), 'Hi');
+      // 空段被跳过
+      expect(join([
+        [
+          ['Hi', '嗨', null, null, 10],
+          [null, 'x', null, null, 10],
+        ],
+        null,
+        'zh-CN',
+      ]), 'Hi');
+    });
+
+    test('识别出的源语言在 root[2]（用于学习对方语言）', () {
+      final resp = [
+        [
+          ['Hi', '嗨', null, null, 10],
+        ],
+        null,
+        'zh-CN',
+      ];
+      expect((resp[2] as String), 'zh-CN');
+    });
+  });
 }

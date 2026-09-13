@@ -1117,6 +1117,52 @@ class AppLocalizationsZh extends AppLocalizations {
   String get translateContrastTip => '关闭后只显示译文（原文仍可通过长按查看）';
 
   @override
+  String get translateProviderFree => '免费接口（无需密钥）';
+
+  @override
+  String get translateProviderFreeDesc => '开箱即用 · 使用公开端点，可能被限流或不稳定';
+
+  @override
+  String translateFreeFailed(String e) {
+    return '免费接口暂时不可用（$e）· 可在设置里改用 Google / 百度 / 自定义接口';
+  }
+
+  @override
+  String get translateOutgoing => '发送前翻译成对方的语言';
+
+  @override
+  String get translateOutgoingTip => '开启后按发送会先把内容译成对方的语言再发出；请确认对方能读懂该语言';
+
+  @override
+  String get translateInput => '翻译输入内容';
+
+  @override
+  String translateOutPreview(String text) {
+    return '将发送：$text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return '已译为 $lang · 点发送即按此发出';
+  }
+
+  @override
+  String get translateOutCancel => '取消翻译';
+
+  @override
+  String get translateOutNeedPeer => '还不知道对方使用什么语言 · 先在会话翻译设置里指定';
+
+  @override
+  String translateSentAs(String text) {
+    return '已按对方语言发出：$text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return '译文超出长度上限（$n 字符），未发送';
+  }
+
+  @override
   String get dateToday => '今天';
 
   @override
@@ -5554,6 +5600,52 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get translateContrastTip => '關閉後只顯示譯文（原文仍可透過長按查看）';
+
+  @override
+  String get translateProviderFree => '免費介面（無需密鑰）';
+
+  @override
+  String get translateProviderFreeDesc => '開箱即用 · 使用公開端點，可能被限流或不穩定';
+
+  @override
+  String translateFreeFailed(String e) {
+    return '免費介面暫時無法使用（$e）· 可在設定裡改用 Google / 百度 / 自訂介面';
+  }
+
+  @override
+  String get translateOutgoing => '傳送前翻譯成對方的語言';
+
+  @override
+  String get translateOutgoingTip => '開啟後按傳送會先把內容譯成對方的語言再發出；請確認對方能讀懂該語言';
+
+  @override
+  String get translateInput => '翻譯輸入內容';
+
+  @override
+  String translateOutPreview(String text) {
+    return '將傳送：$text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return '已譯為 $lang · 點傳送即按此發出';
+  }
+
+  @override
+  String get translateOutCancel => '取消翻譯';
+
+  @override
+  String get translateOutNeedPeer => '還不知道對方使用什麼語言 · 先在對話翻譯設定裡指定';
+
+  @override
+  String translateSentAs(String text) {
+    return '已按對方語言發出：$text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return '譯文超出長度上限（$n 字元），未傳送';
+  }
 
   @override
   String get dateToday => '今天';

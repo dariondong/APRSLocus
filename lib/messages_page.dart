@@ -47,6 +47,26 @@ class _MessagesPageState extends State<MessagesPage> {
   /// 当前会话键：群聊按 groupId、私聊按呼号
   String get _convKey => convKeyOf(groupId: _selectedGroupId, call: _selected);
 
+  /// 发送前翻译的预览：原文 → 译文。
+  ///
+  /// 必须记录 [String] 的**原文**（[_outPreviewSrc]），因为用户可能在
+  /// 预览之后继续改字 —— 那时旧译文就不再对应当前输入，必须失效。
+  /// 直接拿预览当发送内容而不管输入变化，会把「你以为发的是新改的内容」
+  /// 变成「实际发的是旧译文」，这在射频上是不可撤销的。
+  String? _outPreview;
+  String? _outPreviewLang;
+  String _outPreviewSrc = '';
+  bool _outBusy = false;
+
+  void _clearOutPreview() {
+    if (_outPreview == null && _outPreviewLang == null) return;
+    setState(() {
+      _outPreview = null;
+      _outPreviewLang = null;
+      _outPreviewSrc = '';
+    });
+  }
+
   /// 本会话的翻译偏好（目标语言 + 自动翻译）
   ConvTranslatePref get _pref => TranslateService.instance.prefFor(_convKey);
 
@@ -545,7 +565,8 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                   SizedBox(height: 2),
                   _urlRichText(m.text, ts(12, c: C.ink)),
-                  // 译文块：见 _bubble 处的同款说明（两个气泡都要有）
+                  // 「已译发」与译文块：见 _bubble 处的同款说明（两个气泡都要有）
+                  sentAsBlock(context: context, m: m),
                   translationBlock(
                     context: context,
                     m: m,
@@ -643,6 +664,8 @@ class _MessagesPageState extends State<MessagesPage> {
       icon: Icons.chat_bubble_rounded,
       color: C.cyan,
       myUiLocale: widget.state.locale,
+      // 群聊对方语言不唯一，不提供「发送前翻译」
+      allowOutgoing: _selectedGroupId == null,
       onChanged: () {
         if (mounted) setState(() {});
       },
@@ -651,6 +674,157 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   // ─── 输入栏（瀑布流 / 会话共用） ───
+  /// 「译发」按钮：把当前输入译成对方的语言
+  Widget _outTranslateButton(AppState st) {
+    final pref = _pref;
+    final enabled = st.msgLenLimit >= 0; // 始终可点，上下文不足时给出提示
+    return GestureDetector(
+      onTap: !enabled || _outBusy ? null : () => _translateInput(st),
+      child: Tooltip(
+        message: S.of(context).translateInput,
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: _outPreview != null ? C.cyanBg : C.bgSoft,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: _outPreview != null
+                  ? C.cyan.withValues(alpha: 0.5)
+                  : C.border,
+            ),
+          ),
+          child: _outBusy
+              ? const Center(
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : Icon(
+                  Icons.translate_rounded,
+                  size: 18,
+                  color: _outPreview != null
+                      ? C.cyan
+                      : (TransDirection.canTranslateOutgoing(pref)
+                          ? C.slate
+                          : C.greyLight),
+                ),
+        ),
+      ),
+    );
+  }
+
+  /// 翻译当前输入（不发送）。结果进了预览，用户可确认后再按发送。
+  Future<void> _translateInput(AppState st) async {
+    final s = S.of(context);
+    final text = _input.text.trim();
+    if (text.isEmpty) return;
+    final pref = _pref;
+    if (!TransDirection.canTranslateOutgoing(pref)) {
+      // 不知道对方的语言就译不了 —— 给出可操作的提示，而不是静默失败
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.translateOutNeedPeer),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    final svc = TranslateService.instance;
+    if (!svc.config.ready) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.translateNeedConfig),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    setState(() => _outBusy = true);
+    try {
+      final r = await svc.translate(text, to: pref.peerLang);
+      if (!mounted) return;
+      setState(() {
+        _outPreview = r.text;
+        _outPreviewLang = pref.peerLang;
+        _outPreviewSrc = text;
+      });
+      // 译完顺手检查长度：射频上有 67 字符上限，等到发送时才拦会白打一遍字
+      final limit = st.msgLenLimit;
+      if (TransDirection.exceedsLimit(r.text, limit)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(s.translateTooLongAfter(limit)),
+            backgroundColor: C.orange,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } on TranslateException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(explainTranslateError(s, e)),
+          backgroundColor: C.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _outBusy = false);
+    }
+  }
+
+  /// 发送前翻译的预览条（在输入栏上方）
+  Widget _outPreviewBar(AppState st) {
+    final t = _outPreview;
+    if (t == null) return const SizedBox.shrink();
+    final s = S.of(context);
+    final limit = st.msgLenLimit;
+    final tooLong = TransDirection.exceedsLimit(t, limit);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 8, 6, 8),
+      decoration: BoxDecoration(
+        color: tooLong ? C.orangeBg : C.cyanBg,
+        border: Border(top: BorderSide(color: C.border)),
+      ),
+      child: Row(children: [
+        Icon(Icons.translate_rounded,
+            size: 14, color: tooLong ? C.orange : C.cyan),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(s.translateOutPreview(t),
+                  style: ts(11,
+                      c: tooLong ? C.orange : C.cyan,
+                      w: FontWeight.w700,
+                      h: 1.3)),
+              const SizedBox(height: 2),
+              Text(
+                tooLong && limit > 0
+                    ? s.translateTooLongAfter(limit)
+                    : s.translateOutPreviewHint(
+                        TransLang.labelOf(_outPreviewLang ?? '')),
+                style: ts(10,
+                    c: tooLong
+                        ? C.orange.withValues(alpha: 0.9)
+                        : C.cyan.withValues(alpha: 0.85)),
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.close_rounded, size: 16, color: C.grey),
+          tooltip: s.translateOutCancel,
+          onPressed: _clearOutPreview,
+        ),
+      ]),
+    );
+  }
+
   Widget _inputBar(AppState st) {
     final inGroupChat = _selectedGroupId != null;
     final group = inGroupChat
@@ -694,6 +868,8 @@ class _MessagesPageState extends State<MessagesPage> {
         : const SizedBox.shrink();
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
+      // 译发预览在输入栏正上方：用户能同时看到「要发的译文」与输入框里的原文
+      _outPreviewBar(st),
       tncBanner,
       Container(
       decoration: BoxDecoration(
@@ -734,9 +910,19 @@ class _MessagesPageState extends State<MessagesPage> {
                     ),
                   ),
                   onSubmitted: (_) => _send(),
+                  // 输入一旦改动，之前基于旧文本的译文就失效 —— 否则会出现
+                  // 「改了字却发出去旧译文」（射频上不可撤销）
+                  onChanged: (v) {
+                    if (_outPreview != null && v.trim() != _outPreviewSrc) {
+                      _clearOutPreview();
+                    }
+                  },
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
+              // 译发按钮：把当前输入译成对方语言（RFC：对方语言未知时提示去设置）
+              _outTranslateButton(st),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: _send,
                 child: Container(
@@ -1792,6 +1978,8 @@ class _MessagesPageState extends State<MessagesPage> {
                   ),
                 ),
               _urlRichText(m.text, ts(13)),
+              // 「已译发」：这条当时是按对方语言发出的，显示实际发出的文本
+              sentAsBlock(context: context, m: m),
               // 译文块：会话/群聊气泡与瀑布流气泡**必须都渲染**，
               // 否则会出现「长按翻译成功但界面不显示」（曾经的实际 bug）
               translationBlock(
@@ -3820,7 +4008,7 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 
-  void _send() {
+  Future<void> _send() async {
     if (_input.text.isEmpty) return;
     // 群聊发送
     if (_selectedGroupId != null) {
@@ -3849,7 +4037,35 @@ class _MessagesPageState extends State<MessagesPage> {
       return;
     }
     if (_selected.isEmpty) return;
-    widget.state.sendMessage(_selected, _input.text.trim());
+    final typed = _input.text.trim();
+    // 发送内容：若当前预览正是这段原文，则发译文（用户已确认）；
+    // 否则按「发送前翻译」开关决定是否即时翻译。
+    final pref = _pref;
+    String? sentAs;
+    if (_outPreview != null && _outPreviewSrc == typed) {
+      sentAs = _outPreview;
+    } else if (pref.translateOutgoing &&
+        TransDirection.canTranslateOutgoing(pref) &&
+        TranslateService.instance.config.ready) {
+      try {
+        sentAs = (await TranslateService.instance
+                .translate(typed, to: pref.peerLang))
+            .text;
+      } on TranslateException catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(explainTranslateError(S.of(context), e)),
+            backgroundColor: C.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return; // 译不了就不发原文 —— 否则会误发成对方看不懂的内容
+      }
+    }
+    if (!mounted) return;
+    widget.state.sendMessage(_selected, typed, sentAs: sentAs);
+    _clearOutPreview();
     _input.clear();
     Future.delayed(const Duration(milliseconds: 80), () {
       if (_scrollChat.hasClients) {

@@ -188,6 +188,8 @@ Future<void> translateMessage({
 String explainTranslateError(S s, TranslateException e) {
   final msg = e.message;
   if (msg.startsWith('not-configured')) return s.translateNeedConfig;
+  // 免费接口被限流/被墙时，最有用的信息是「可以换接口」，而不是原始报文
+  if (msg.startsWith('free-unavailable')) return s.translateFreeFailed(msg);
   return s.translateFailed(msg);
 }
 
@@ -420,6 +422,8 @@ Future<void> showConvTranslateSheet({
   required String myUiLocale,
   required VoidCallback onChanged,
   VoidCallback? onOpenSettings,
+  /// 是否允许「发送前翻译」：群聊有多位成员、对方语言不唯一，故不提供
+  bool allowOutgoing = false,
 }) async {
   final svc = TranslateService.instance;
   final pref = svc.prefFor(convKey);
@@ -568,6 +572,22 @@ Future<void> showConvTranslateSheet({
                           onChanged();
                         },
                       ),
+                      if (allowOutgoing)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: pref.translateOutgoing,
+                          activeThumbColor: C.green,
+                          title: Text(s.translateOutgoing,
+                              style: ts(13, w: FontWeight.w700)),
+                          subtitle: Text(s.translateOutgoingTip,
+                              style: ts(10, c: C.grey)),
+                          onChanged: (v) async {
+                            pref.translateOutgoing = v;
+                            await svc.savePref(convKey);
+                            setSheet(() {});
+                            onChanged();
+                          },
+                        ),
                     ]),
                   ),
                   const SizedBox(height: 10),
@@ -723,6 +743,36 @@ Widget translationBlock({
             const SizedBox(width: 4),
             Expanded(child: Text(t, style: ts(12, c: C.cyan, h: 1.4))),
           ],
+        ),
+      ],
+    ),
+  );
+}
+
+/// 「已译发」标记：这条消息当时按对方语言发出，这里如实显示发出去的文本。
+///
+/// 与翻译块的区别：翻译块是**本地查看时**的加工（可重复、可换语言），
+/// 而这里是**已经发生的事实**（报文真的那样发出去了），所以不复用翻译块，
+/// 也不随目标语言变化而消失 —— 否则用户再也无法核对当时到底发了什么。
+Widget sentAsBlock({
+  required BuildContext context,
+  required AprsMsg m,
+}) {
+  final text = m.sentAs;
+  if (text == null || !m.translated) return const SizedBox.shrink();
+  final s = S.of(context);
+  return Padding(
+    padding: const EdgeInsets.only(top: 5),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.outbox_rounded, size: 11, color: C.green),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            s.translateSentAs(text),
+            style: ts(10, c: C.green, h: 1.35),
+          ),
         ),
       ],
     ),

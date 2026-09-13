@@ -1135,6 +1135,56 @@ class AppLocalizationsEn extends AppLocalizations {
       'When off only the translation shows (long-press still reveals the original)';
 
   @override
+  String get translateProviderFree => 'Free (no key needed)';
+
+  @override
+  String get translateProviderFreeDesc =>
+      'Works out of the box · uses a public endpoint that may be rate-limited or unstable';
+
+  @override
+  String translateFreeFailed(String e) {
+    return 'The free endpoint is unavailable ($e) · switch to Google / Baidu / a custom endpoint in settings';
+  }
+
+  @override
+  String get translateOutgoing =>
+      'Translate into their language before sending';
+
+  @override
+  String get translateOutgoingTip =>
+      'With this on, sending first translates the text into their language — make sure they can read it';
+
+  @override
+  String get translateInput => 'Translate the input';
+
+  @override
+  String translateOutPreview(String text) {
+    return 'Will send: $text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return 'Translated into $lang · tap send to transmit this';
+  }
+
+  @override
+  String get translateOutCancel => 'Cancel translation';
+
+  @override
+  String get translateOutNeedPeer =>
+      'Their language is still unknown — set it in the conversation\'s translation settings';
+
+  @override
+  String translateSentAs(String text) {
+    return 'Sent in their language: $text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return 'Translation exceeds the length limit ($n chars) — not sent';
+  }
+
+  @override
   String get dateToday => 'Today';
 
   @override

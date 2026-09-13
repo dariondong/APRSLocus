@@ -63,7 +63,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.7.0';
+  static const appVersion = '1.6.100';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -3099,7 +3099,13 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  void sendMessage(String to, String text) {
+  /// 发送私聊消息。
+  ///
+  /// [text] 是**用户写的原文**（聊天记录按它显示）；
+  /// [sentAs] 是**实际发到空中的文本**（发送前翻译时传入译文）。
+  /// 空中的报文用 `sentAs ?? text`，长度限制也按空中内容判定 ——
+  /// 否则会出现「原文 60 字符通过、译文 80 字符被对端丢弃」这种静默失败。
+  void sendMessage(String to, String text, {String? sentAs}) {
     if (text.trim().isEmpty) return;
     // 防止误发给群呼号：重定向到对应群聊
     for (final g in chatGroups) {
@@ -3108,19 +3114,21 @@ class AppState extends ChangeNotifier {
         return;
       }
     }
+    final wire = (sentAs ?? text).trim();
     // TNC（射频）模式下的长度限制：APRS101 规定消息文本上限 67 字符。
     // 超长时报文会被对端 TNC/网关丢弃，与其静默失败不如在源头拦住。
-    if (usingTnc && text.trim().length > tncMaxMsgLen) {
+    if (usingTnc && wire.length > tncMaxMsgLen) {
       _log(LogLevel.warn, '消息',
-          'TNC 模式下单条消息限 $tncMaxMsgLen 字符，已中止发送（${text.trim().length} 字符）');
+          'TNC 模式下单条消息限 $tncMaxMsgLen 字符，已中止发送（${wire.length} 字符）');
       _notify();
       return;
     }
     final id = AprsFmt.randId();
-    final raw = AprsFmt.message(myFullCall, to, text.trim(), id, path: txPath);
+    final raw = AprsFmt.message(myFullCall, to, wire, id, path: txPath);
     messages.insert(
       0,
-      AprsMsg(myFullCall, to, text.trim(), DateTime.now(), sent: true, id: id),
+      AprsMsg(myFullCall, to, text.trim(), DateTime.now(),
+          sent: true, id: id, sentAs: sentAs == null ? null : wire),
     );
     _saveMessages();
     packetsTx++;

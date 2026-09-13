@@ -1,13 +1,15 @@
 # 更新日志
 
-## [1.7.0] - 2026-09-13
+## [1.6.100] - 2026-09-13
 
-> 📌 本版是 **1.7.0 功能版**，包含四个部分：蓝牙 TNC 数据来源、聊天翻译、
-> 双向翻译与对照显示、以及中文外泄与译文不显示的修复。
+> 📌 本版包含：蓝牙 TNC 数据来源（含完整 KISS 控制）、聊天翻译（**默认免密钥免费接口**）、
+> 发送前把输入译成对方语言、双向翻译与对照显示、聊天日期分界线，
+> 以及「中文外泄」与「译文不显示」两个修复。
 >
-> This is the **1.7.0 feature release**, covering four parts: the Bluetooth TNC data
-> source, chat translation, two-way translation with contrast display, and fixes for
-> leaked Chinese text and translations not showing up.
+> This release covers the Bluetooth TNC data source (with full KISS control), chat
+> translation (**free keyless endpoint by default**), translating your own input into the
+> other party's language before sending, two-way translation with contrast display, chat
+> date dividers, and two fixes: leaked Chinese text and translations not showing up.
 
 ### 📻 新增数据来源：蓝牙 TNC（含完整 KISS 控制） / New data source: Bluetooth TNC with full KISS control
 
@@ -136,6 +138,63 @@
 > number and merge into `main` when you ship it.
 
 ---
+
+### ⚡ 翻译默认走免费接口（无需任何密钥）/ Translation works out of the box on a free endpoint
+
+- 新增 **免费接口** 并设为**默认**：使用 Google 翻译网页端同款公开端点，**不需要
+  API Key**，装好即可翻译 —— 不必先去申请 Google / 百度的凭据
+- 该端点支持自动识别源语言，**识别结果同样用于学习「对方的语言」**
+- 长文本会被拆成多段返回，已按段**全部拼接**（只取第一段会得到半截译文，已用单测锁住）
+- 免费端点可能被限流、被墙或随时变动，因此：失败时**自动回退** MyMemory
+  （同样免密钥，但它要求明确源语言，故仅在源语言已知时使用），
+  仍失败则给出「可改用 Google / 百度 / 自定义」的明确提示，而不是静默输出空译文
+- 需要更高配额或稳定性时，仍可在设置里换成自带密钥的 Google / 百度，或自定义接口
+
+- A **free endpoint** was added and made the **default**: it uses the same public endpoint
+  as Google's web translator, so **no API key is required** and translation works right
+  after install — you no longer have to apply for Google/Baidu credentials first. It
+  supports auto-detection, and the detection result is used to learn “their language”
+  too. Long text comes back split into segments and is now **fully joined** (taking only
+  the first segment yields a truncated translation — pinned by a unit test). Because free
+  endpoints can be rate-limited, blocked or changed at any time, a failure **falls back to
+  MyMemory** (also keyless, but it requires an explicit source language, so it is only
+  used when the source is known) and otherwise tells you to switch to Google/Baidu/custom
+  rather than silently returning an empty translation. If you need more quota or
+  stability, you can still switch to Google/Baidu with your own key or a custom endpoint.
+
+### ✉️ 发送前翻译：把自己的输入译成对方的语言再发出 / Translate your own input before sending
+
+- 输入栏新增**译发按钮**：把当前输入译成**对方的语言**，并显示**发送前预览**
+  （「将发送：…」+ 译成什么语言），确认后再按发送
+- 会话翻译设置里可开**「发送前翻译成对方的语言」**（默认关）：开启后直接按发送
+  会先翻译再发出 —— **默认关闭是有意的**，因为它改变了真正发到空中的内容
+- 发送会**如实记录实际发出的译文**（`AprsMsg.sentAs`），气泡里以「已按对方语言发出：…」
+  标出。与「对照翻译」不同：那是查看时的加工（可重复、可换语言），
+  这是**已经发生的事实**，所以独立保存、不随目标语言变化而消失
+- 两处防误发：
+  - **改字即让旧译文失效** —— 否则会出现「改了内容却发出去旧译文」，射频上不可撤销
+  - **译文超长不发送**：射频 67 字符上限按**译文**判定（原文 60 字符通过、
+    译文 80 字符被对端丢弃是最典型的静默失败）；译完即提示，不让用户白打一遍字
+- 翻译失败时**不发原文**：否则会把对方看不懂的内容发出去
+- 仅私聊提供该开关：群聊有多个成员，对方的语言不唯一
+
+- The input bar gains a **translate button** that renders your text in **their language**
+  with a **pre-send preview** (“Will send: …” plus the target language) for confirmation
+  before you tap send. A **“translate into their language before sending”** switch (off by
+  default) lives in the conversation's translation settings; it is **off on purpose**
+  because it changes what actually goes on air. The text that was really transmitted is
+  recorded verbatim (`AprsMsg.sentAs`) and shown in the bubble as “Sent in their language:
+  …”. Unlike the contrast translation — a view-time operation you can redo or re-target —
+  this is **a fact that already happened**, so it is stored separately and never disappears
+  when the target language changes. Two safeguards against sending the wrong thing:
+  **editing the text invalidates the old translation** (otherwise you would change your
+  text and transmit the previous translation, which is irreversible on air), and **an
+  over-long translation is not sent** — the radio's 67-character limit is checked against
+  the **translation** (a 60-character original passing while an 80-character translation
+  gets dropped is the classic silent failure), reported right after translating. If
+  translation fails, the original is **not** sent, so the other side never receives text
+  they cannot read. The switch is offered for one-to-one chats only, since a group has
+  several members with no single “their language”.
 
 ### 🔄 翻译改为双向：可翻成「对方的语言」 / Two-way translation: translate into the other party's language
 

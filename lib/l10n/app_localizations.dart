@@ -2265,6 +2265,78 @@ abstract class AppLocalizations {
   /// **'关闭后只显示译文（原文仍可通过长按查看）'**
   String get translateContrastTip;
 
+  /// No description provided for @translateProviderFree.
+  ///
+  /// In zh, this message translates to:
+  /// **'免费接口（无需密钥）'**
+  String get translateProviderFree;
+
+  /// No description provided for @translateProviderFreeDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'开箱即用 · 使用公开端点，可能被限流或不稳定'**
+  String get translateProviderFreeDesc;
+
+  /// No description provided for @translateFreeFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'免费接口暂时不可用（{e}）· 可在设置里改用 Google / 百度 / 自定义接口'**
+  String translateFreeFailed(String e);
+
+  /// No description provided for @translateOutgoing.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送前翻译成对方的语言'**
+  String get translateOutgoing;
+
+  /// No description provided for @translateOutgoingTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后按发送会先把内容译成对方的语言再发出；请确认对方能读懂该语言'**
+  String get translateOutgoingTip;
+
+  /// No description provided for @translateInput.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译输入内容'**
+  String get translateInput;
+
+  /// No description provided for @translateOutPreview.
+  ///
+  /// In zh, this message translates to:
+  /// **'将发送：{text}'**
+  String translateOutPreview(String text);
+
+  /// No description provided for @translateOutPreviewHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'已译为 {lang} · 点发送即按此发出'**
+  String translateOutPreviewHint(String lang);
+
+  /// No description provided for @translateOutCancel.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消翻译'**
+  String get translateOutCancel;
+
+  /// No description provided for @translateOutNeedPeer.
+  ///
+  /// In zh, this message translates to:
+  /// **'还不知道对方使用什么语言 · 先在会话翻译设置里指定'**
+  String get translateOutNeedPeer;
+
+  /// No description provided for @translateSentAs.
+  ///
+  /// In zh, this message translates to:
+  /// **'已按对方语言发出：{text}'**
+  String translateSentAs(String text);
+
+  /// No description provided for @translateTooLongAfter.
+  ///
+  /// In zh, this message translates to:
+  /// **'译文超出长度上限（{n} 字符），未发送'**
+  String translateTooLongAfter(int n);
+
   /// No description provided for @dateToday.
   ///
   /// In zh, this message translates to:

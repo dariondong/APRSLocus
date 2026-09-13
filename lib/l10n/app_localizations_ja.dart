@@ -1122,6 +1122,53 @@ class AppLocalizationsJa extends AppLocalizations {
   String get translateContrastTip => 'オフにすると訳文のみ表示（原文は長押しで確認できます）';
 
   @override
+  String get translateProviderFree => '無料（キー不要）';
+
+  @override
+  String get translateProviderFreeDesc => 'すぐ使えます · 公開エンドポイントのため制限や不安定さがあります';
+
+  @override
+  String translateFreeFailed(String e) {
+    return '無料エンドポイントが利用できません（$e）· 設定で Google / Baidu / カスタムに切り替えられます';
+  }
+
+  @override
+  String get translateOutgoing => '送信前に相手の言語へ翻訳';
+
+  @override
+  String get translateOutgoingTip =>
+      'オンにすると送信時に相手の言語へ翻訳してから送信します。相手が読める言語か確認してください';
+
+  @override
+  String get translateInput => '入力を翻訳';
+
+  @override
+  String translateOutPreview(String text) {
+    return '送信内容：$text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return '$lang に翻訳済み · 送信でこの内容を発信します';
+  }
+
+  @override
+  String get translateOutCancel => '翻訳を取消';
+
+  @override
+  String get translateOutNeedPeer => '相手の言語が不明です。会話の翻訳設定で指定してください';
+
+  @override
+  String translateSentAs(String text) {
+    return '相手の言語で送信：$text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return '訳文が長さ上限（$n 文字）を超えたため送信しません';
+  }
+
+  @override
   String get dateToday => '今日';
 
   @override

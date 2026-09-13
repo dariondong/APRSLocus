@@ -157,6 +157,17 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
       color: C.blue,
       children: [
         SettingsRow2(s.translateTargetLang, TransLang.labelOf(cfg.targetLang)),
+        SettingsRow2(
+          s.translateProvider,
+          cfg.provider == 'free'
+              ? s.translateProviderFree
+              : (cfg.provider == 'google'
+                  ? s.translateProviderGoogle
+                  : (cfg.provider == 'baidu'
+                      ? s.translateProviderBaidu
+                      : s.translateProviderCustom)),
+          valueColor: cfg.ready ? C.green : C.orange,
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 6, 14, 10),
           child: Wrap(
@@ -211,7 +222,9 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
 
   /// 接口选择
   Widget _providerCard(S s) {
+    // 免费接口放首位：它是默认值，也让「不想申请密钥」的用户第一眼就看到
     final items = [
+      ('free', s.translateProviderFree, Icons.bolt_rounded),
       ('google', s.translateProviderGoogle, Icons.g_mobiledata_rounded),
       ('baidu', s.translateProviderBaidu, Icons.translate_rounded),
       ('custom', s.translateProviderCustom, Icons.settings_ethernet_rounded),
@@ -263,11 +276,17 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
   /// 凭据：按接口只显示相关字段，避免一屏无关输入框
   Widget _credentialsCard(S s) {
     return SettingsSectionCard(
-      title: s.translateProvider,
+      title: cfg.provider == 'free'
+          ? s.translateProviderFree
+          : s.translateProvider,
       icon: Icons.key_rounded,
       color: C.slate,
       children: [
-        if (cfg.provider == 'google') ...[
+        if (cfg.provider == 'free') ...[
+          // 免密钥：这里不放任何输入框，只说明它的性质与取舍
+          SettingsHint(s.translateProviderFreeDesc, color: C.green,
+              icon: Icons.bolt_rounded),
+        ] else if (cfg.provider == 'google') ...[
           SettingsInput(s.translateGoogleKey, _googleKey,
               tip: s.translateGoogleKeyTip, onChanged: (_) => unawaited(_collect())),
           SettingsHint(s.translateGoogleKeyTip),

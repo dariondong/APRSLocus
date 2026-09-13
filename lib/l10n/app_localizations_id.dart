@@ -1134,6 +1134,56 @@ class AppLocalizationsId extends AppLocalizations {
       'Jika mati hanya terjemahan yang tampil (aslinya lewat tekan lama)';
 
   @override
+  String get translateProviderFree => 'Gratis (tanpa kunci)';
+
+  @override
+  String get translateProviderFreeDesc =>
+      'Langsung pakai · memakai endpoint publik yang bisa dibatasi atau tidak stabil';
+
+  @override
+  String translateFreeFailed(String e) {
+    return 'Endpoint gratis sedang tidak tersedia ($e) · ganti ke Google / Baidu / kustom di pengaturan';
+  }
+
+  @override
+  String get translateOutgoing =>
+      'Terjemahkan ke bahasa mereka sebelum mengirim';
+
+  @override
+  String get translateOutgoingTip =>
+      'Jika aktif, teks diterjemahkan ke bahasa mereka sebelum dikirim — pastikan mereka bisa membacanya';
+
+  @override
+  String get translateInput => 'Terjemahkan isi';
+
+  @override
+  String translateOutPreview(String text) {
+    return 'Akan dikirim: $text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return 'Diterjemahkan ke $lang · ketuk kirim untuk mengirim ini';
+  }
+
+  @override
+  String get translateOutCancel => 'Batalkan terjemahan';
+
+  @override
+  String get translateOutNeedPeer =>
+      'Bahasa mereka belum diketahui — atur di pengaturan terjemahan percakapan';
+
+  @override
+  String translateSentAs(String text) {
+    return 'Dikirim dalam bahasa mereka: $text';
+  }
+
+  @override
+  String translateTooLongAfter(int n) {
+    return 'Terjemahan melebihi batas panjang ($n karakter) — tidak dikirim';
+  }
+
+  @override
   String get dateToday => 'Hari ini';
 
   @override
