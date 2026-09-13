@@ -1045,6 +1045,227 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
+  String get notifTncConnected => 'TNC terhubung';
+
+  @override
+  String get notifTncDisconnected => 'TNC terputus';
+
+  @override
+  String get dataSourceTitle => 'Sumber data';
+
+  @override
+  String get dataSourceSubtitle => 'Dari mana paket berasal';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => 'Jaringan APRS global lewat internet';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc =>
+      'Kirim dan terima lewat udara via TNC Bluetooth atau serial';
+
+  @override
+  String get dataSourceSwitchHint =>
+      'Mengganti sumber data akan memutus koneksi saat ini';
+
+  @override
+  String get tncBindTitle => 'TNC Bluetooth';
+
+  @override
+  String get tncBindSubtitle => 'Pasangkan dan hubungkan TNC di radio Anda';
+
+  @override
+  String get tncBoundDevice => 'Perangkat terpasang';
+
+  @override
+  String get tncNotBound => 'Belum ada perangkat';
+
+  @override
+  String get tncScanPaired => 'Pindai perangkat terpasang';
+
+  @override
+  String get tncNoPaired =>
+      'Tidak ada perangkat — pasangkan TNC di pengaturan Bluetooth sistem lebih dulu';
+
+  @override
+  String get tncUnbind => 'Lepas';
+
+  @override
+  String get tncConnectAction => 'Hubungkan TNC';
+
+  @override
+  String get tncRestart => 'Mulai ulang tautan';
+
+  @override
+  String get tncSupportedNo => 'Tautan TNC belum didukung di platform ini';
+
+  @override
+  String get tncNeedPermission =>
+      'Izin Bluetooth diperlukan — berikan lalu coba lagi';
+
+  @override
+  String get tncOpenFailedHint =>
+      'Gagal membuka perangkat — port COM Windows bersifat eksklusif; pastikan tidak dipakai aplikasi lain';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '$rx bingkai diterima · $tx terkirim';
+  }
+
+  @override
+  String get tncLog => 'Log tautan';
+
+  @override
+  String get tncLogEmpty => 'Belum ada log';
+
+  @override
+  String get kissParamsTitle => 'Parameter KISS';
+
+  @override
+  String get kissParamsSubtitle =>
+      'Pengaturan lapisan tautan yang dikirim langsung ke TNC';
+
+  @override
+  String get kissTxDelay => 'Tunda TX (ms)';
+
+  @override
+  String get kissTxDelayTip =>
+      'KISS TXDELAY dalam satuan 10 ms — waktu PTT sebelum data dikirim';
+
+  @override
+  String get kissTxTail => 'Ekor TX (ms)';
+
+  @override
+  String get kissTxTailTip =>
+      'KISS TXTAIL dalam satuan 10 ms — sebagian radio perlu ekor agar terdengar utuh';
+
+  @override
+  String get kissPersistence => 'Persistensi';
+
+  @override
+  String get kissPersistenceTip =>
+      'KISS PERSISTENCE, 0–255 — makin kecil makin sopan dan mengurangi tabrakan di kanal bersama';
+
+  @override
+  String get kissSlotTime => 'Waktu slot (ms)';
+
+  @override
+  String get kissSlotTimeTip =>
+      'KISS SLOTTIME dalam satuan 10 ms — bekerja bersama persistensi mengatur akses kanal';
+
+  @override
+  String get kissFullDuplex => 'Dupleks penuh';
+
+  @override
+  String get kissFullDuplexTip =>
+      'KISS FULLDUPLEX — matikan untuk radio biasa (TX/RX bersamaan saling mengganggu)';
+
+  @override
+  String get kissChannel => 'Kanal / porta KISS';
+
+  @override
+  String get kissChannelTip =>
+      'Hanya TNC multikanal punya beberapa port; biarkan 0 untuk radio satu kanal';
+
+  @override
+  String get kissMaxFrame => 'Ukuran bingkai maks (bita)';
+
+  @override
+  String get kissMaxFrameTip =>
+      'Paket yang lebih panjang tidak dikirim (pada 1200 baud bingkai AX.25 sekitar 330 bita)';
+
+  @override
+  String get kissHardwareCmd => 'Perintah vendor';
+
+  @override
+  String get kissHardwareVal => 'Nilai';
+
+  @override
+  String get kissHardwareTip =>
+      'KISS SETHARDWARE (0x06), khusus vendor; -1 berarti tidak dikirim';
+
+  @override
+  String get kissApplyParams => 'Kirim parameter';
+
+  @override
+  String get kissParamsSent => 'Parameter KISS terkirim';
+
+  @override
+  String get kissBackToCommand => 'Kembali ke mode perintah TNC';
+
+  @override
+  String get kissBackToCommandTip =>
+      'Mengirim RETURN (0x0F). Sebagian besar TNC KISS berhenti meneruskan sampai tautan dimulai ulang';
+
+  @override
+  String get kissRfPath => 'Jalur digipeater RF';
+
+  @override
+  String get kissRfPathTip =>
+      'Digipeater yang dipakai di udara, mis. WIDE1-1,WIDE2-1; kosongkan bila tidak perlu';
+
+  @override
+  String get kissRfBeacon => 'Izinkan beacon RF';
+
+  @override
+  String get kissRfBeaconTip =>
+      'Hanya setelah aktif posisi dikirim lewat udara. Memancar memerlukan lisensi dan tanda panggil Anda';
+
+  @override
+  String get kissAutoAck => 'ACK otomatis';
+
+  @override
+  String get kissAutoAckTip =>
+      'Jika mati, pesan masuk tidak di-ACK — kanal lebih sepi';
+
+  @override
+  String get kissAutoReconnect => 'Sambung ulang otomatis';
+
+  @override
+  String get kissNeedConnected => 'Hubungkan TNC lebih dulu';
+
+  @override
+  String get tncSwitchOn => 'Aktif';
+
+  @override
+  String get tncSwitchOff => 'Nonaktif';
+
+  @override
+  String get connTncSourceHint =>
+      'Mode TNC tidak memakai server atau filter, jadi pengaturan itu dinonaktifkan';
+
+  @override
+  String get connectTncBar => 'Ketuk Hubungkan untuk membuka tautan TNC';
+
+  @override
+  String connectingToTnc(String name) {
+    return 'Menghubungkan TNC · $name';
+  }
+
+  @override
+  String get tncMsgTitle => 'Mode radio (TNC)';
+
+  @override
+  String get tncMsgDesc =>
+      'Kanal radio dipakai bersama, jadi perpesanan dibatasi';
+
+  @override
+  String get tncGroupDisabled => 'Siaran grup tidak tersedia di mode radio';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '$n karakter per pesan (spesifikasi APRS)';
+  }
+
+  @override
+  String get tncMsgTooLong => 'Melebihi batas panjang pesan untuk mode radio';
+
+  @override
   String get licenseSection => 'Lisensi';
 
   @override

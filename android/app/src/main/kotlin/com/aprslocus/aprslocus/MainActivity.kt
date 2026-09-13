@@ -22,6 +22,9 @@ class MainActivity : FlutterActivity() {
     private val EVENT_CHANNEL = "com.aprslocus/location_events"
     private var permCompleter: MethodChannel.Result? = null
 
+    // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
+    private var tnc: TncManager? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -92,6 +95,70 @@ class MainActivity : FlutterActivity() {
                 }
             }
         )
+
+        // 蓝牙 TNC 通道：列出已配对设备 / 连接 / 收发字节
+        val tncManager = TncManager(this)
+        tnc = tncManager
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, TncManager.METHOD_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isSupported" -> result.success(tncManager.isSupported())
+                    "listBondedDevices" -> {
+                        try {
+                            result.success(tncManager.listBondedDevices())
+                        } catch (e: Exception) {
+                            result.error("BT_LIST_FAILED", e.message ?: "列出蓝牙设备失败", null)
+                        }
+                    }
+                    "connect" -> {
+                        val address = call.argument<String>("address")
+                        if (address.isNullOrEmpty()) {
+                            result.error("NO_ADDRESS", "缺少设备地址", null)
+                        } else {
+                            try {
+                                tncManager.connect(address)
+                                result.success(true)
+                            } catch (e: Exception) {
+                                result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
+                            }
+                        }
+                    }
+                    "disconnect" -> {
+                        try {
+                            tncManager.disconnect()
+                        } catch (_: Exception) {
+                        }
+                        result.success(true)
+                    }
+                    "send" -> {
+                        val data = call.argument<ByteArray>("data")
+                        if (data == null) {
+                            result.error("NO_DATA", "缺少数据", null)
+                        } else {
+                            try {
+                                tncManager.send(data)
+                                result.success(true)
+                            } catch (e: Exception) {
+                                result.error("BT_SEND_FAILED", e.message ?: "发送失败", null)
+                            }
+                        }
+                    }
+                    "requestPermissions" -> tncManager.requestPermissions(result)
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, TncManager.EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                        tncManager.setEventSink(events)
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        tncManager.setEventSink(null)
+                    }
+                }
+            )
 
         // 安装器通道：安装 APK 更新包
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/installer").setMethodCallHandler { call, result ->
@@ -278,6 +345,9 @@ class MainActivity : FlutterActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // 蓝牙权限请求走 TncManager 自己的 requestCode，勿与定位权限混淆
+        tnc?.onRequestPermissionsResult(requestCode, grantResults)
+        if (requestCode != 100) return
         val ok = hasPermissions()
         permCompleter?.success(ok)
         permCompleter = null
@@ -360,6 +430,11 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        try {
+            tnc?.dispose()
+        } catch (_: Exception) {
+        }
+        tnc = null
         LocationBus.sink = null
         super.onDestroy()
     }

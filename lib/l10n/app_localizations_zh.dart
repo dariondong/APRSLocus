@@ -1032,6 +1032,208 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionTranslation => '翻译';
 
   @override
+  String get notifTncConnected => 'TNC 已连接';
+
+  @override
+  String get notifTncDisconnected => 'TNC 未连接';
+
+  @override
+  String get dataSourceTitle => '数据来源';
+
+  @override
+  String get dataSourceSubtitle => '报文从哪里来';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => '通过互联网接入全球 APRS 网络';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc => '通过蓝牙或串口的 TNC 与电台直接收发';
+
+  @override
+  String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
+
+  @override
+  String get tncBindTitle => '蓝牙 TNC';
+
+  @override
+  String get tncBindSubtitle => '绑定并连接电台侧的 TNC';
+
+  @override
+  String get tncBoundDevice => '已绑定设备';
+
+  @override
+  String get tncNotBound => '未绑定设备';
+
+  @override
+  String get tncScanPaired => '扫描已配对设备';
+
+  @override
+  String get tncNoPaired => '未找到设备 · 请先在系统蓝牙设置里配对 TNC';
+
+  @override
+  String get tncUnbind => '解除绑定';
+
+  @override
+  String get tncConnectAction => '连接 TNC';
+
+  @override
+  String get tncRestart => '重启链路';
+
+  @override
+  String get tncSupportedNo => '当前平台暂不支持 TNC 链路';
+
+  @override
+  String get tncNeedPermission => '需要蓝牙权限，请授权后重试';
+
+  @override
+  String get tncOpenFailedHint => '打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '收 $rx 帧 · 发 $tx 帧';
+  }
+
+  @override
+  String get tncLog => '链路日志';
+
+  @override
+  String get tncLogEmpty => '暂无日志';
+
+  @override
+  String get kissParamsTitle => 'KISS 参数';
+
+  @override
+  String get kissParamsSubtitle => '直接下发到 TNC 的链路层参数';
+
+  @override
+  String get kissTxDelay => '发射延时 (ms)';
+
+  @override
+  String get kissTxDelayTip => 'KISS TXDELAY，单位 10ms。发射前留给自己 PTT 建立的时间';
+
+  @override
+  String get kissTxTail => '发射尾音 (ms)';
+
+  @override
+  String get kissTxTailTip => 'KISS TXTAIL，单位 10ms。某些电台需要尾部保持才能收全';
+
+  @override
+  String get kissPersistence => '持续度 P';
+
+  @override
+  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越礼让，共用信道时能减少碰撞';
+
+  @override
+  String get kissSlotTime => '时隙 (ms)';
+
+  @override
+  String get kissSlotTimeTip => 'KISS SLOTTIME，单位 10ms。与持续度共同决定信道竞争节奏';
+
+  @override
+  String get kissFullDuplex => '全双工';
+
+  @override
+  String get kissFullDuplexTip => 'KISS FULLDUPLEX，普通电台必须关闭（同时收发会互相干扰）';
+
+  @override
+  String get kissChannel => '信道 / KISS 端口';
+
+  @override
+  String get kissChannelTip => '多信道 TNC 才有多端口，单信道电台保持 0';
+
+  @override
+  String get kissMaxFrame => '帧长上限 (字节)';
+
+  @override
+  String get kissMaxFrameTip => '超过此长度的报文不会发出（1200bd 下 AX.25 单帧约 330 字节）';
+
+  @override
+  String get kissHardwareCmd => '厂商命令码';
+
+  @override
+  String get kissHardwareVal => '参数值';
+
+  @override
+  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，厂商自定义；-1 表示不下发';
+
+  @override
+  String get kissApplyParams => '下发参数';
+
+  @override
+  String get kissParamsSent => 'KISS 参数已下发';
+
+  @override
+  String get kissBackToCommand => '回到 TNC 命令模式';
+
+  @override
+  String get kissBackToCommandTip =>
+      '发送 RETURN (0x0F)。多数 KISS TNC 会就此停止转发，需重启链路才恢复';
+
+  @override
+  String get kissRfPath => '射频中继路径';
+
+  @override
+  String get kissRfPathTip => '射频上使用的中继，如 WIDE1-1,WIDE2-1；留空则不指定';
+
+  @override
+  String get kissRfBeacon => '允许射频信标';
+
+  @override
+  String get kissRfBeaconTip => '打开后才会在射频上定时发射位置。发射需以自己的呼号并在执照范围内操作';
+
+  @override
+  String get kissAutoAck => '自动回复 ACK';
+
+  @override
+  String get kissAutoAckTip => '关闭后不回应收到的消息回执，可减少射频占用';
+
+  @override
+  String get kissAutoReconnect => '断开后自动重连';
+
+  @override
+  String get kissNeedConnected => '请先连接 TNC';
+
+  @override
+  String get tncSwitchOn => '已开启';
+
+  @override
+  String get tncSwitchOff => '已关闭';
+
+  @override
+  String get connTncSourceHint => 'TNC 模式下不使用服务器与过滤器，相关设置已停用';
+
+  @override
+  String get connectTncBar => '点「连接」建立 TNC 链路';
+
+  @override
+  String connectingToTnc(String name) {
+    return '正在连接 TNC · $name';
+  }
+
+  @override
+  String get tncMsgTitle => '射频（TNC）模式';
+
+  @override
+  String get tncMsgDesc => '射频信道是共享资源，消息能力相应受限';
+
+  @override
+  String get tncGroupDisabled => '射频模式不支持群聊广播';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '单条限 $n 字符（APRS 消息规范）';
+  }
+
+  @override
+  String get tncMsgTooLong => '超出射频模式单条消息长度上限';
+
+  @override
   String get licenseSection => '许可证声明';
 
   @override
@@ -5032,6 +5234,208 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionTranslation => '翻譯';
+
+  @override
+  String get notifTncConnected => 'TNC 已連線';
+
+  @override
+  String get notifTncDisconnected => 'TNC 未連線';
+
+  @override
+  String get dataSourceTitle => '資料來源';
+
+  @override
+  String get dataSourceSubtitle => '報文從哪裡來';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => '透過網際網路接入全球 APRS 網路';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc => '透過藍牙或串列的 TNC 與電台直接收發';
+
+  @override
+  String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get tncBindTitle => '藍牙 TNC';
+
+  @override
+  String get tncBindSubtitle => '綁定並連接電台端的 TNC';
+
+  @override
+  String get tncBoundDevice => '已綁定裝置';
+
+  @override
+  String get tncNotBound => '未綁定裝置';
+
+  @override
+  String get tncScanPaired => '掃描已配對裝置';
+
+  @override
+  String get tncNoPaired => '未找到裝置 · 請先在系統藍牙設定裡配對 TNC';
+
+  @override
+  String get tncUnbind => '解除綁定';
+
+  @override
+  String get tncConnectAction => '連接 TNC';
+
+  @override
+  String get tncRestart => '重啟鏈路';
+
+  @override
+  String get tncSupportedNo => '目前平台暫不支援 TNC 鏈路';
+
+  @override
+  String get tncNeedPermission => '需要藍牙權限，請授權後重試';
+
+  @override
+  String get tncOpenFailedHint => '開啟裝置失敗 · Windows 的 COM 埠是獨佔裝置，請確認沒有被其他軟體佔用';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '收 $rx 幀 · 發 $tx 幀';
+  }
+
+  @override
+  String get tncLog => '鏈路日誌';
+
+  @override
+  String get tncLogEmpty => '暫無日誌';
+
+  @override
+  String get kissParamsTitle => 'KISS 參數';
+
+  @override
+  String get kissParamsSubtitle => '直接下發到 TNC 的鏈路層參數';
+
+  @override
+  String get kissTxDelay => '發射延時 (ms)';
+
+  @override
+  String get kissTxDelayTip => 'KISS TXDELAY，單位 10ms。發射前留給自己 PTT 建立的時間';
+
+  @override
+  String get kissTxTail => '發射尾音 (ms)';
+
+  @override
+  String get kissTxTailTip => 'KISS TXTAIL，單位 10ms。某些電台需要尾部保持才能收全';
+
+  @override
+  String get kissPersistence => '持續度 P';
+
+  @override
+  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越禮讓，共用信道時能減少碰撞';
+
+  @override
+  String get kissSlotTime => '時隙 (ms)';
+
+  @override
+  String get kissSlotTimeTip => 'KISS SLOTTIME，單位 10ms。與持續度共同決定信道競爭節奏';
+
+  @override
+  String get kissFullDuplex => '全雙工';
+
+  @override
+  String get kissFullDuplexTip => 'KISS FULLDUPLEX，一般電台必須關閉（同時收發會互相干擾）';
+
+  @override
+  String get kissChannel => '信道 / KISS 埠';
+
+  @override
+  String get kissChannelTip => '多信道 TNC 才有多埠，單信道電台保持 0';
+
+  @override
+  String get kissMaxFrame => '幀長上限 (位元組)';
+
+  @override
+  String get kissMaxFrameTip => '超過此長度的報文不會發出（1200bd 下 AX.25 單幀約 330 位元組）';
+
+  @override
+  String get kissHardwareCmd => '廠商命令碼';
+
+  @override
+  String get kissHardwareVal => '參數值';
+
+  @override
+  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發';
+
+  @override
+  String get kissApplyParams => '下發參數';
+
+  @override
+  String get kissParamsSent => 'KISS 參數已下發';
+
+  @override
+  String get kissBackToCommand => '回到 TNC 命令模式';
+
+  @override
+  String get kissBackToCommandTip =>
+      '發送 RETURN (0x0F)。多數 KISS TNC 會就此停止轉發，需重啟鏈路才恢復';
+
+  @override
+  String get kissRfPath => '射頻中繼路徑';
+
+  @override
+  String get kissRfPathTip => '射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定';
+
+  @override
+  String get kissRfBeacon => '允許射頻信標';
+
+  @override
+  String get kissRfBeaconTip => '打開後才會在射頻上定時發射位置。發射需以自己的呼號並在執照範圍內操作';
+
+  @override
+  String get kissAutoAck => '自動回覆 ACK';
+
+  @override
+  String get kissAutoAckTip => '關閉後不回覆收到的訊息回執，可減少射頻佔用';
+
+  @override
+  String get kissAutoReconnect => '斷開後自動重連';
+
+  @override
+  String get kissNeedConnected => '請先連接 TNC';
+
+  @override
+  String get tncSwitchOn => '已開啟';
+
+  @override
+  String get tncSwitchOff => '已關閉';
+
+  @override
+  String get connTncSourceHint => 'TNC 模式下不使用伺服器與過濾器，相關設定已停用';
+
+  @override
+  String get connectTncBar => '點「連接」建立 TNC 鏈路';
+
+  @override
+  String connectingToTnc(String name) {
+    return '正在連接 TNC · $name';
+  }
+
+  @override
+  String get tncMsgTitle => '射頻（TNC）模式';
+
+  @override
+  String get tncMsgDesc => '射頻信道是共享資源，訊息能力相應受限';
+
+  @override
+  String get tncGroupDisabled => '射頻模式不支援群聊廣播';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '單條限 $n 字元（APRS 訊息規範）';
+  }
+
+  @override
+  String get tncMsgTooLong => '超出射頻模式單條訊息長度上限';
 
   @override
   String get licenseSection => '許可證宣告';

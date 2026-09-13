@@ -2115,6 +2115,396 @@ abstract class AppLocalizations {
   /// **'翻译'**
   String get codeContributionTranslation;
 
+  /// No description provided for @notifTncConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 已连接'**
+  String get notifTncConnected;
+
+  /// No description provided for @notifTncDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 未连接'**
+  String get notifTncDisconnected;
+
+  /// No description provided for @dataSourceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据来源'**
+  String get dataSourceTitle;
+
+  /// No description provided for @dataSourceSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'报文从哪里来'**
+  String get dataSourceSubtitle;
+
+  /// No description provided for @dataSourceAprsIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS'**
+  String get dataSourceAprsIs;
+
+  /// No description provided for @dataSourceAprsIsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过互联网接入全球 APRS 网络'**
+  String get dataSourceAprsIsDesc;
+
+  /// No description provided for @dataSourceTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC'**
+  String get dataSourceTnc;
+
+  /// No description provided for @dataSourceTncDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过蓝牙或串口的 TNC 与电台直接收发'**
+  String get dataSourceTncDesc;
+
+  /// No description provided for @dataSourceSwitchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换数据来源会断开当前连接'**
+  String get dataSourceSwitchHint;
+
+  /// No description provided for @tncBindTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝牙 TNC'**
+  String get tncBindTitle;
+
+  /// No description provided for @tncBindSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'绑定并连接电台侧的 TNC'**
+  String get tncBindSubtitle;
+
+  /// No description provided for @tncBoundDevice.
+  ///
+  /// In zh, this message translates to:
+  /// **'已绑定设备'**
+  String get tncBoundDevice;
+
+  /// No description provided for @tncNotBound.
+  ///
+  /// In zh, this message translates to:
+  /// **'未绑定设备'**
+  String get tncNotBound;
+
+  /// No description provided for @tncScanPaired.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫描已配对设备'**
+  String get tncScanPaired;
+
+  /// No description provided for @tncNoPaired.
+  ///
+  /// In zh, this message translates to:
+  /// **'未找到设备 · 请先在系统蓝牙设置里配对 TNC'**
+  String get tncNoPaired;
+
+  /// No description provided for @tncUnbind.
+  ///
+  /// In zh, this message translates to:
+  /// **'解除绑定'**
+  String get tncUnbind;
+
+  /// No description provided for @tncConnectAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接 TNC'**
+  String get tncConnectAction;
+
+  /// No description provided for @tncRestart.
+  ///
+  /// In zh, this message translates to:
+  /// **'重启链路'**
+  String get tncRestart;
+
+  /// No description provided for @tncSupportedNo.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台暂不支持 TNC 链路'**
+  String get tncSupportedNo;
+
+  /// No description provided for @tncNeedPermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'需要蓝牙权限，请授权后重试'**
+  String get tncNeedPermission;
+
+  /// No description provided for @tncOpenFailedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用'**
+  String get tncOpenFailedHint;
+
+  /// No description provided for @tncStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'收 {rx} 帧 · 发 {tx} 帧'**
+  String tncStats(String rx, String tx);
+
+  /// No description provided for @tncLog.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路日志'**
+  String get tncLog;
+
+  /// No description provided for @tncLogEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无日志'**
+  String get tncLogEmpty;
+
+  /// No description provided for @kissParamsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS 参数'**
+  String get kissParamsTitle;
+
+  /// No description provided for @kissParamsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'直接下发到 TNC 的链路层参数'**
+  String get kissParamsSubtitle;
+
+  /// No description provided for @kissTxDelay.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射延时 (ms)'**
+  String get kissTxDelay;
+
+  /// No description provided for @kissTxDelayTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS TXDELAY，单位 10ms。发射前留给自己 PTT 建立的时间'**
+  String get kissTxDelayTip;
+
+  /// No description provided for @kissTxTail.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射尾音 (ms)'**
+  String get kissTxTail;
+
+  /// No description provided for @kissTxTailTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS TXTAIL，单位 10ms。某些电台需要尾部保持才能收全'**
+  String get kissTxTailTip;
+
+  /// No description provided for @kissPersistence.
+  ///
+  /// In zh, this message translates to:
+  /// **'持续度 P'**
+  String get kissPersistence;
+
+  /// No description provided for @kissPersistenceTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS PERSISTENCE，0-255。越小越礼让，共用信道时能减少碰撞'**
+  String get kissPersistenceTip;
+
+  /// No description provided for @kissSlotTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'时隙 (ms)'**
+  String get kissSlotTime;
+
+  /// No description provided for @kissSlotTimeTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS SLOTTIME，单位 10ms。与持续度共同决定信道竞争节奏'**
+  String get kissSlotTimeTip;
+
+  /// No description provided for @kissFullDuplex.
+  ///
+  /// In zh, this message translates to:
+  /// **'全双工'**
+  String get kissFullDuplex;
+
+  /// No description provided for @kissFullDuplexTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS FULLDUPLEX，普通电台必须关闭（同时收发会互相干扰）'**
+  String get kissFullDuplexTip;
+
+  /// No description provided for @kissChannel.
+  ///
+  /// In zh, this message translates to:
+  /// **'信道 / KISS 端口'**
+  String get kissChannel;
+
+  /// No description provided for @kissChannelTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'多信道 TNC 才有多端口，单信道电台保持 0'**
+  String get kissChannelTip;
+
+  /// No description provided for @kissMaxFrame.
+  ///
+  /// In zh, this message translates to:
+  /// **'帧长上限 (字节)'**
+  String get kissMaxFrame;
+
+  /// No description provided for @kissMaxFrameTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'超过此长度的报文不会发出（1200bd 下 AX.25 单帧约 330 字节）'**
+  String get kissMaxFrameTip;
+
+  /// No description provided for @kissHardwareCmd.
+  ///
+  /// In zh, this message translates to:
+  /// **'厂商命令码'**
+  String get kissHardwareCmd;
+
+  /// No description provided for @kissHardwareVal.
+  ///
+  /// In zh, this message translates to:
+  /// **'参数值'**
+  String get kissHardwareVal;
+
+  /// No description provided for @kissHardwareTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS SETHARDWARE (0x06)，厂商自定义；-1 表示不下发'**
+  String get kissHardwareTip;
+
+  /// No description provided for @kissApplyParams.
+  ///
+  /// In zh, this message translates to:
+  /// **'下发参数'**
+  String get kissApplyParams;
+
+  /// No description provided for @kissParamsSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS 参数已下发'**
+  String get kissParamsSent;
+
+  /// No description provided for @kissBackToCommand.
+  ///
+  /// In zh, this message translates to:
+  /// **'回到 TNC 命令模式'**
+  String get kissBackToCommand;
+
+  /// No description provided for @kissBackToCommandTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送 RETURN (0x0F)。多数 KISS TNC 会就此停止转发，需重启链路才恢复'**
+  String get kissBackToCommandTip;
+
+  /// No description provided for @kissRfPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频中继路径'**
+  String get kissRfPath;
+
+  /// No description provided for @kissRfPathTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频上使用的中继，如 WIDE1-1,WIDE2-1；留空则不指定'**
+  String get kissRfPathTip;
+
+  /// No description provided for @kissRfBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许射频信标'**
+  String get kissRfBeacon;
+
+  /// No description provided for @kissRfBeaconTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开后才会在射频上定时发射位置。发射需以自己的呼号并在执照范围内操作'**
+  String get kissRfBeaconTip;
+
+  /// No description provided for @kissAutoAck.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动回复 ACK'**
+  String get kissAutoAck;
+
+  /// No description provided for @kissAutoAckTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不回应收到的消息回执，可减少射频占用'**
+  String get kissAutoAckTip;
+
+  /// No description provided for @kissAutoReconnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'断开后自动重连'**
+  String get kissAutoReconnect;
+
+  /// No description provided for @kissNeedConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先连接 TNC'**
+  String get kissNeedConnected;
+
+  /// No description provided for @tncSwitchOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已开启'**
+  String get tncSwitchOn;
+
+  /// No description provided for @tncSwitchOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'已关闭'**
+  String get tncSwitchOff;
+
+  /// No description provided for @connTncSourceHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 模式下不使用服务器与过滤器，相关设置已停用'**
+  String get connTncSourceHint;
+
+  /// No description provided for @connectTncBar.
+  ///
+  /// In zh, this message translates to:
+  /// **'点「连接」建立 TNC 链路'**
+  String get connectTncBar;
+
+  /// No description provided for @connectingToTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 TNC · {name}'**
+  String connectingToTnc(String name);
+
+  /// No description provided for @tncMsgTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频（TNC）模式'**
+  String get tncMsgTitle;
+
+  /// No description provided for @tncMsgDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频信道是共享资源，消息能力相应受限'**
+  String get tncMsgDesc;
+
+  /// No description provided for @tncGroupDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频模式不支持群聊广播'**
+  String get tncGroupDisabled;
+
+  /// No description provided for @tncMsgLimitHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'单条限 {n} 字符（APRS 消息规范）'**
+  String tncMsgLimitHint(String n);
+
+  /// No description provided for @tncMsgTooLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'超出射频模式单条消息长度上限'**
+  String get tncMsgTooLong;
+
   /// No description provided for @licenseSection.
   ///
   /// In zh, this message translates to:

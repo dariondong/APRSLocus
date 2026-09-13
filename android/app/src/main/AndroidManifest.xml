@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- APRSlocus 权限 -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -11,6 +12,21 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <!-- 蓝牙 TNC（经典蓝牙 SPP）：
+         Android 12（API 31）起蓝牙权限拆分为运行时权限 BLUETOOTH_CONNECT / _SCAN；
+         旧版本仍用 BLUETOOTH / BLUETOOTH_ADMIN，故用 maxSdkVersion 限定作用域。
+         本应用只用「已配对设备 + 建立 RFCOMM」，不做蓝牙扫描发现，
+         neverForLocation 明确声明不用于推断位置（避免额外索要定位权限）。 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
+
     <application
         android:label="APRSlocus"
         android:name="${applicationName}"

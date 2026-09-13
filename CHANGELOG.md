@@ -1,5 +1,63 @@
 # 更新日志
 
+## [未发版 · tnc 分支] - 2026-09-13
+
+> 📌 该条目位于 `tnc` 分支，**尚未发版**。发版时请把标题改为版本号并与主分支合并。
+>
+> This entry lives on the `tnc` branch and is **not released yet**. Rename it to a version
+> number and merge into `main` when you ship it.
+
+### 📻 新增数据来源：蓝牙 TNC（含完整 KISS 控制） / New data source: Bluetooth TNC with full KISS control
+
+- 此前只能从 **APRS-IS（互联网）** 收发报文。现在「连接」页与「设备」页都能在
+  **APRS-IS / TNC** 之间切换数据来源，TNC 模式下报文直接经蓝牙 TNC 与电台收发
+- **设备绑定**：Android 走原生经典蓝牙 SPP（RFCOMM）——列出已配对设备、绑定、连接、
+  解除绑定、重启链路；Windows / Linux / macOS 走串口 TNC（COM 口 / `/dev/ttyUSB*`）。
+  绑定结果会记住，下次启动直接带出
+- **完整 KISS 控制**：TXDELAY、TXTAIL、PERSISTENCE、SLOTTIME、FULLDUPLEX、
+  信道（KISS 端口）、SETHARDWARE 厂商命令、帧长上限、射频中继路径、
+  RETURN 回到命令模式、重启链路；单位换算（ms ↔ 10ms）在数据层完成，界面上直接写 ms
+- **安全开关**：射频发射需持照操作，所以 **TNC 模式下默认不会自动发射位置信标**，
+  必须在设备页手动打开「允许射频信标」；自动回复 ACK 也可关闭
+- **射频适配**（不是把 APRS-IS 的写法换个通道）：
+  - 不再发送 `>APRSlocus CONNECT` 保活帧（射频上播客户端版本号毫无意义、只占信道）
+  - 不再带 `TCPIP*` 路径（那是 IP 网关的路径项，射频中继不识别）
+  - 位置/消息报头改用 `APALOC,<中继路径>`，中继路径可配置
+- **消息限制**：射频信道是共享资源，TNC 模式下——
+  - 单条消息限 **67 字符**（APRS101），输入提示与说明条会直接写明，超长在源头拦下
+  - **群聊广播不可用**（一次邀请就占大量时隙，且群呼号在射频上收不到回应），
+    入口保留但会解释原因
+- **协议实现全部在 Dart 侧**（`lib/kiss.dart`）：KISS 转义/组帧、AX.25 UI 帧编解码。
+  原生层只搬字节 —— 协议只有一份实现、可单元测试，将来加串口或 KISS-over-TCP
+  无需重写，也无需为了协议改动而发版
+- **单元测试**：新增 `test/kiss_test.dart`（30 例）—— 转义边界、半帧/跨块拼接、
+  地址字段位移与 SSID、UI 帧字节序、中继过滤、中文 UTF-8 往返、单位换算
+
+- Until now packets could only flow over **APRS-IS**. Both the Connection and Device
+  pages can now switch the data source between **APRS-IS and TNC**, where packets go
+  straight through a Bluetooth TNC to your radio. Android uses native classic Bluetooth
+  SPP (RFCOMM) — list paired devices, bind, connect, unbind, restart the link — while
+  Windows / Linux / macOS use a serial TNC (COM port / `/dev/ttyUSB*`). The bound device
+  is remembered across launches. **Full KISS control** covers TXDELAY, TXTAIL,
+  PERSISTENCE, SLOTTIME, FULLDUPLEX, channel (KISS port), vendor SETHARDWARE command,
+  frame-size limit, RF digipeater path, RETURN-to-command-mode and link restart; unit
+  conversion (ms ↔ 10 ms) happens in the data layer, so the UI speaks milliseconds.
+  Because transmitting requires a licence, **RF beaconing is off by default in TNC mode**
+  and must be enabled on the Device page; auto-ACK can likewise be turned off. The radio
+  path is genuinely adapted rather than re-routed: no `>APRSlocus CONNECT` keep-alive
+  frames (a client version string on air is pure channel occupancy), no `TCPIP*` path
+  entry (that is an IP-gateway token digipeaters ignore), and headers become
+  `APALOC,<digi path>` with a configurable path. Messaging is limited accordingly —
+  **67 characters** per message (APRS101), shown up front and enforced at the source,
+  and **group broadcasts are unavailable** (one invite burns a lot of slots and group
+  callsigns get no answers on air); the entry point stays visible and explains why.
+  The whole protocol lives on the Dart side (`lib/kiss.dart`) — KISS framing/escaping
+  and AX.25 UI encoding — while the native layer only moves bytes, so there is one
+  implementation, it is unit-tested, and future serial or KISS-over-TCP transports need
+  no protocol rewrite or release. Adds `test/kiss_test.dart` (30 cases) covering escape
+  boundaries, split/partial frames, address shifting and SSID, UI byte order, digipeater
+  filtering, UTF-8 round-trips for Chinese text and unit conversion.
+
 ## [1.6.98] - 2026-09-13
 
 ### 🏅 授予 BA7KSM「开发人员」/ BA7KSM granted the Developer badge

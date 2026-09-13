@@ -6,6 +6,7 @@ import 'widgets.dart';
 import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
+import 'tnc_page.dart';
 import 'early_member.dart';
 import 'weather.dart';
 
@@ -1551,16 +1552,25 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            // ① APRS-IS 连接（连接状态 + 服务器参数，原为两张重复卡）
-            _connectionCard(),
+            // ⓪ 数据来源：TNC 模式下列表里的服务器/过滤/存储三项都不适用，
+            //    所以先让用户确认来源，再决定下面显示什么 —— 比「灰掉一片
+            //    用户看不懂的输入框」清楚得多。
+            DataSourceCard(state: st),
             const SizedBox(height: 16),
-            // ② 过滤中心：只管「取哪些台站」
-            _filterCard(),
+            if (st.usingTnc)
+              _tncCard()
+            else ...[
+              // ① APRS-IS 连接（连接状态 + 服务器参数，原为两张重复卡）
+              _connectionCard(),
+              const SizedBox(height: 16),
+              // ② 过滤中心：只管「取哪些台站」
+              _filterCard(),
+              const SizedBox(height: 16),
+              // ③ 存储上限：只管「保留多少数据」（原误放在过滤卡片内）
+              _storageCard(),
+            ],
             const SizedBox(height: 16),
-            // ③ 存储上限：只管「保留多少数据」（原误放在过滤卡片内）
-            _storageCard(),
-            const SizedBox(height: 16),
-            // ④ 接收筛选：按国家/地区
+            // ④ 接收筛选：按国家或地区（客户端本地筛选，两个来源都适用）
             _receivePrefCard(),
           ]),
       );
@@ -1697,6 +1707,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   }
 
   Widget _connBanner() {
+    // 数据来源标签：射频模式下写「APRS-IS」会误导用户以为走的是网络
+    final srcLabel = st.usingTnc ? S.of(context).dataSourceTnc : 'APRS-IS';
     final col = st.connected
         ? C.green
         : st.connecting
@@ -1722,7 +1734,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               st.connected
-                  ? '${S.of(context).connected} APRS-IS'
+                  ? '${S.of(context).connected} $srcLabel'
                   : st.connecting
                       ? S.of(context).connecting
                       : S.of(context).disconnected,
@@ -1743,6 +1755,67 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           onPressed: st.toggleConnect,
         ),
       ]),
+    );
+  }
+
+  /// TNC（射频）模式下的连接卡片。
+  ///
+  /// 刻意不复用 `_connectionCard()`：那张卡片里全是服务器地址、端口、
+  /// passcode、过滤器 —— 在射频模式下它们一个都不生效，留着只会让人以为
+  /// 「填了就能用」。这里只保留链路状态 + 设备 + 跳转到设备页的入口。
+  Widget _tncCard() {
+    final name = st.tnc.device?.label;
+    return SettingsSectionCard(
+      title: S.of(context).connectionCard2,
+      subtitle: S.of(context).dataSourceTncDesc,
+      icon: Icons.settings_input_antenna_rounded,
+      color: C.purple,
+      children: [
+        _connBanner(),
+        Divider(height: 1, color: C.border),
+        SettingsRow2(
+          S.of(context).tncBoundDevice,
+          name ?? S.of(context).tncNotBound,
+          valueColor: name == null ? C.grey : C.ink,
+        ),
+        if (st.tnc.connected)
+          SettingsRow2(
+            S.of(context).connection,
+            S.of(context).tncStats(
+              '${st.tnc.rxFrames}',
+              '${st.tnc.txFrames}',
+            ),
+          ),
+        // 射频信标状态：这是「会不会真的发射」的关键信息，
+        // 放在连接卡片里比藏进设备页更容易被看到。
+        SettingsRow2(
+          S.of(context).kissRfBeacon,
+          st.tnc.config.rfBeacon ? S.of(context).tncSwitchOn : S.of(context).tncSwitchOff,
+          valueColor: st.tnc.config.rfBeacon ? C.green : C.grey,
+        ),
+        SettingsHint(S.of(context).connTncSourceHint),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => DeviceSettingsPage(state: st),
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded, size: 16),
+              label: Text(S.of(context).kissParamsTitle),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.indigo,
+                side: BorderSide(color: C.indigo.withValues(alpha: 0.5)),
+                textStyle: ts(12, w: FontWeight.w600),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -2571,44 +2644,16 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
 
 /// ─── 聊天记录设置 ───
 /// ─── 设备设置（占位：尚未开放）───
+/// ─── 设备（TNC）───
+///
+/// 完整实现在 `tnc_page.dart`：蓝牙/串口 TNC 绑定 + KISS 参数下发。
+/// 这里只做转发，避免把 3000 行的 settings_pages.dart 继续撑大。
 class DeviceSettingsPage extends StatelessWidget {
   final AppState state;
   const DeviceSettingsPage({super.key, required this.state});
 
   @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return SettingsPageShell(
-      title: s.deviceSettings2,
-      subtitle: s.deviceSettingsSubtitle,
-      icon: Icons.radio_rounded,
-      color: C.indigo,
-      body: Column(children: [
-        SettingsSectionCard(
-          title: s.deviceSettings2,
-          subtitle: s.deviceSettingsSubtitle,
-          icon: Icons.construction_rounded,
-          color: C.orange,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
-              child: Column(children: [
-                Icon(Icons.construction_rounded,
-                    size: 54, color: C.orange.withValues(alpha: 0.6)),
-                const SizedBox(height: 16),
-                Text(s.underConstruction,
-                    style: ts(15, w: FontWeight.w800)),
-                const SizedBox(height: 8),
-                Text(s.underConstructionHint,
-                    textAlign: TextAlign.center,
-                    style: ts(12, c: C.grey, h: 1.7)),
-              ]),
-            ),
-          ],
-        ),
-      ]),
-    );
-  }
+  Widget build(BuildContext context) => TncSettingsPage(state: state);
 }
 
 /// ─── 数据维护 ───

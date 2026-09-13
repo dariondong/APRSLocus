@@ -511,12 +511,46 @@ class _MessagesPageState extends State<MessagesPage> {
     final group = inGroupChat
         ? st.chatGroups.where((g) => g.id == _selectedGroupId).firstOrNull
         : null;
+    // TNC（射频）模式：单条消息上限 67 字符（APRS101）。
+    // 直接写进输入提示，比「打完发送才发现被拦」友好。
+    final limit = st.msgLenLimit;
     final hintText = inGroupChat
         ? S.of(context).sendToGroupHint(group?.name ?? S.of(context).groupChat)
+        : limit > 0
+        ? S.of(context).tncMsgLimitHint('$limit')
         : _selected.isNotEmpty
         ? S.of(context).sendToCallHint(_selected)
         : S.of(context).selectMessageReply;
-    return Container(
+    // 射频模式的限制说明：紧贴输入栏，解释「为什么这里能做的事变少了」。
+    final tncBanner = limit > 0
+        ? Container(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+            decoration: BoxDecoration(
+              color: C.orangeBg,
+              border: Border(top: BorderSide(color: C.border)),
+            ),
+            child: Row(children: [
+              Icon(Icons.settings_input_antenna_rounded,
+                  size: 14, color: C.orange),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(S.of(context).tncMsgTitle,
+                        style: ts(10, c: C.orange, w: FontWeight.w700)),
+                    Text(S.of(context).tncGroupDisabled,
+                        style: ts(10, c: C.orange.withValues(alpha: 0.85))),
+                  ],
+                ),
+              ),
+            ]),
+          )
+        : const SizedBox.shrink();
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      tncBanner,
+      Container(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: C.border)),
       ),
@@ -579,6 +613,8 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
         ),
       ),
+      ),
+      ],
     );
   }
 
@@ -629,7 +665,18 @@ class _MessagesPageState extends State<MessagesPage> {
                         S.of(context).newGroup,
                         C.orange,
                         () {
-                          _showCreateGroupDialog(st);
+                          if (!st.groupChatAllowed) {
+                            // 射频模式下群聊广播不可用：入口保留但说明原因，
+                            // 直接隐藏会让用户以为「功能被砍了」。
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context).tncGroupDisabled),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          } else {
+                                                    _showCreateGroupDialog(st);
+                          }
                         },
                       ),
                     ],

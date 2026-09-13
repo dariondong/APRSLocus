@@ -1045,6 +1045,229 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionTranslation => 'Translation';
 
   @override
+  String get notifTncConnected => 'TNC connected';
+
+  @override
+  String get notifTncDisconnected => 'TNC disconnected';
+
+  @override
+  String get dataSourceTitle => 'Data source';
+
+  @override
+  String get dataSourceSubtitle => 'Where packets come from';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => 'Global APRS network over the internet';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc =>
+      'Send and receive on air through a Bluetooth or serial TNC';
+
+  @override
+  String get dataSourceSwitchHint =>
+      'Switching the data source disconnects the current link';
+
+  @override
+  String get tncBindTitle => 'Bluetooth TNC';
+
+  @override
+  String get tncBindSubtitle => 'Bind and connect the TNC on your radio';
+
+  @override
+  String get tncBoundDevice => 'Bound device';
+
+  @override
+  String get tncNotBound => 'No bound device';
+
+  @override
+  String get tncScanPaired => 'Scan paired devices';
+
+  @override
+  String get tncNoPaired =>
+      'No devices found — pair the TNC in the system Bluetooth settings first';
+
+  @override
+  String get tncUnbind => 'Unbind';
+
+  @override
+  String get tncConnectAction => 'Connect TNC';
+
+  @override
+  String get tncRestart => 'Restart link';
+
+  @override
+  String get tncSupportedNo =>
+      'TNC links are not supported on this platform yet';
+
+  @override
+  String get tncNeedPermission =>
+      'Bluetooth permission is required — grant it and try again';
+
+  @override
+  String get tncOpenFailedHint =>
+      'Could not open the device — Windows COM ports are exclusive; make sure no other app holds it';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '$rx frames received · $tx sent';
+  }
+
+  @override
+  String get tncLog => 'Link log';
+
+  @override
+  String get tncLogEmpty => 'No log entries yet';
+
+  @override
+  String get kissParamsTitle => 'KISS parameters';
+
+  @override
+  String get kissParamsSubtitle =>
+      'Link-layer settings pushed straight to the TNC';
+
+  @override
+  String get kissTxDelay => 'TX delay (ms)';
+
+  @override
+  String get kissTxDelayTip =>
+      'KISS TXDELAY in 10 ms units — time for your PTT to settle before data';
+
+  @override
+  String get kissTxTail => 'TX tail (ms)';
+
+  @override
+  String get kissTxTailTip =>
+      'KISS TXTAIL in 10 ms units — some radios need the tail to be heard fully';
+
+  @override
+  String get kissPersistence => 'Persistence';
+
+  @override
+  String get kissPersistenceTip =>
+      'KISS PERSISTENCE, 0–255 — lower is more polite and avoids collisions on a shared channel';
+
+  @override
+  String get kissSlotTime => 'Slot time (ms)';
+
+  @override
+  String get kissSlotTimeTip =>
+      'KISS SLOTTIME in 10 ms units — works with persistence to pace channel access';
+
+  @override
+  String get kissFullDuplex => 'Full duplex';
+
+  @override
+  String get kissFullDuplexTip =>
+      'KISS FULLDUPLEX — leave off for ordinary radios (simultaneous TX/RX interferes)';
+
+  @override
+  String get kissChannel => 'Channel / KISS port';
+
+  @override
+  String get kissChannelTip =>
+      'Only multi-channel TNCs have several ports; keep 0 for single-channel radios';
+
+  @override
+  String get kissMaxFrame => 'Max frame size (bytes)';
+
+  @override
+  String get kissMaxFrameTip =>
+      'Longer packets are not sent at all (at 1200 baud an AX.25 frame is ~330 bytes)';
+
+  @override
+  String get kissHardwareCmd => 'Vendor command';
+
+  @override
+  String get kissHardwareVal => 'Value';
+
+  @override
+  String get kissHardwareTip =>
+      'KISS SETHARDWARE (0x06), vendor-specific; -1 means do not send';
+
+  @override
+  String get kissApplyParams => 'Push parameters';
+
+  @override
+  String get kissParamsSent => 'KISS parameters sent';
+
+  @override
+  String get kissBackToCommand => 'Return to TNC command mode';
+
+  @override
+  String get kissBackToCommandTip =>
+      'Sends RETURN (0x0F). Most KISS TNCs stop forwarding until the link is restarted';
+
+  @override
+  String get kissRfPath => 'RF digipeater path';
+
+  @override
+  String get kissRfPathTip =>
+      'Digipeaters used on air, e.g. WIDE1-1,WIDE2-1; leave empty for none';
+
+  @override
+  String get kissRfBeacon => 'Allow RF beaconing';
+
+  @override
+  String get kissRfBeaconTip =>
+      'Only then will positions be transmitted on air. Transmitting requires your own licence and callsign';
+
+  @override
+  String get kissAutoAck => 'Auto-acknowledge';
+
+  @override
+  String get kissAutoAckTip =>
+      'When off, incoming messages are not acknowledged — keeps the channel quieter';
+
+  @override
+  String get kissAutoReconnect => 'Reconnect automatically';
+
+  @override
+  String get kissNeedConnected => 'Connect the TNC first';
+
+  @override
+  String get tncSwitchOn => 'On';
+
+  @override
+  String get tncSwitchOff => 'Off';
+
+  @override
+  String get connTncSourceHint =>
+      'TNC mode does not use a server or filters, so those settings are disabled';
+
+  @override
+  String get connectTncBar => 'Tap Connect to open the TNC link';
+
+  @override
+  String connectingToTnc(String name) {
+    return 'Connecting TNC · $name';
+  }
+
+  @override
+  String get tncMsgTitle => 'Radio (TNC) mode';
+
+  @override
+  String get tncMsgDesc =>
+      'The radio channel is shared, so messaging is limited accordingly';
+
+  @override
+  String get tncGroupDisabled =>
+      'Group broadcasts are unavailable in radio mode';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '$n characters per message (APRS spec)';
+  }
+
+  @override
+  String get tncMsgTooLong => 'Exceeds the message length limit for radio mode';
+
+  @override
   String get licenseSection => 'License';
 
   @override

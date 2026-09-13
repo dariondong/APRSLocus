@@ -1035,6 +1035,214 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionTranslation => '翻訳';
 
   @override
+  String get notifTncConnected => 'TNC 接続済み';
+
+  @override
+  String get notifTncDisconnected => 'TNC 未接続';
+
+  @override
+  String get dataSourceTitle => 'データソース';
+
+  @override
+  String get dataSourceSubtitle => 'パケットの取得元';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => 'インターネット経由で世界の APRS 網に接続';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc => 'Bluetooth／シリアルの TNC 経由で無線機から直接送受信';
+
+  @override
+  String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
+
+  @override
+  String get tncBindTitle => 'Bluetooth TNC';
+
+  @override
+  String get tncBindSubtitle => '無線機側の TNC を登録して接続します';
+
+  @override
+  String get tncBoundDevice => '登録済みデバイス';
+
+  @override
+  String get tncNotBound => '未登録';
+
+  @override
+  String get tncScanPaired => 'ペアリング済みを取得';
+
+  @override
+  String get tncNoPaired =>
+      'デバイスが見つかりません。先にシステムの Bluetooth 設定で TNC をペアリングしてください';
+
+  @override
+  String get tncUnbind => '登録解除';
+
+  @override
+  String get tncConnectAction => 'TNC に接続';
+
+  @override
+  String get tncRestart => 'リンクを再起動';
+
+  @override
+  String get tncSupportedNo => 'このプラットフォームは TNC リンクに未対応です';
+
+  @override
+  String get tncNeedPermission => 'Bluetooth の権限が必要です。許可して再試行してください';
+
+  @override
+  String get tncOpenFailedHint =>
+      'デバイスを開けません。Windows の COM ポートは占有型です。他のソフトが使用していないか確認してください';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '受信 $rx フレーム · 送信 $tx フレーム';
+  }
+
+  @override
+  String get tncLog => 'リンクログ';
+
+  @override
+  String get tncLogEmpty => 'ログはまだありません';
+
+  @override
+  String get kissParamsTitle => 'KISS パラメータ';
+
+  @override
+  String get kissParamsSubtitle => 'TNC に直接送るリンク層パラメータ';
+
+  @override
+  String get kissTxDelay => '送信遅延 (ms)';
+
+  @override
+  String get kissTxDelayTip =>
+      'KISS TXDELAY（10ms 単位）。データ送出前に PTT が立ち上がるまでの待ち時間';
+
+  @override
+  String get kissTxTail => '送信テール (ms)';
+
+  @override
+  String get kissTxTailTip => 'KISS TXTAIL（10ms 単位）。無線機によっては末尾の保持が必要';
+
+  @override
+  String get kissPersistence => 'パーシステンス P';
+
+  @override
+  String get kissPersistenceTip =>
+      'KISS PERSISTENCE（0〜255）。小さいほど譲り合い、共有チャネルの衝突を減らせます';
+
+  @override
+  String get kissSlotTime => 'スロットタイム (ms)';
+
+  @override
+  String get kissSlotTimeTip =>
+      'KISS SLOTTIME（10ms 単位）。パーシステンスと共にチャネルアクセスを調整します';
+
+  @override
+  String get kissFullDuplex => '全二重';
+
+  @override
+  String get kissFullDuplexTip => 'KISS FULLDUPLEX。通常の無線機では必ずオフ（同時送受信は干渉します）';
+
+  @override
+  String get kissChannel => 'チャネル / KISS ポート';
+
+  @override
+  String get kissChannelTip => 'マルチチャネル TNC のみ複数ポート。単一チャネルの無線機は 0 のまま';
+
+  @override
+  String get kissMaxFrame => '最大フレーム長 (バイト)';
+
+  @override
+  String get kissMaxFrameTip =>
+      'これを超えるパケットは送信しません（1200bd で AX.25 フレームは約 330 バイト）';
+
+  @override
+  String get kissHardwareCmd => 'ベンダーコマンド';
+
+  @override
+  String get kissHardwareVal => '値';
+
+  @override
+  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)。ベンダー固有。-1 で送信しません';
+
+  @override
+  String get kissApplyParams => 'パラメータを送信';
+
+  @override
+  String get kissParamsSent => 'KISS パラメータを送信しました';
+
+  @override
+  String get kissBackToCommand => 'TNC コマンドモードへ戻る';
+
+  @override
+  String get kissBackToCommandTip =>
+      'RETURN (0x0F) を送ります。多くの KISS TNC は転送を停止し、リンク再起動が必要です';
+
+  @override
+  String get kissRfPath => 'RF デジピータパス';
+
+  @override
+  String get kissRfPathTip => 'オンエアで使うデジピータ（例 WIDE1-1,WIDE2-1）。空欄なら指定しません';
+
+  @override
+  String get kissRfBeacon => 'RF ビーコンを許可';
+
+  @override
+  String get kissRfBeaconTip => 'オンにすると位置を定期的に送信します。送信はご自身の免許とコールサインで行ってください';
+
+  @override
+  String get kissAutoAck => '自動 ACK';
+
+  @override
+  String get kissAutoAckTip => 'オフにすると受信メッセージに ACK を返さず、チャネルの占有を減らせます';
+
+  @override
+  String get kissAutoReconnect => '切断後に自動再接続';
+
+  @override
+  String get kissNeedConnected => '先に TNC に接続してください';
+
+  @override
+  String get tncSwitchOn => 'オン';
+
+  @override
+  String get tncSwitchOff => 'オフ';
+
+  @override
+  String get connTncSourceHint => 'TNC モードではサーバーとフィルタを使わないため、該当設定は無効です';
+
+  @override
+  String get connectTncBar => '「接続」で TNC リンクを開きます';
+
+  @override
+  String connectingToTnc(String name) {
+    return 'TNC に接続中 · $name';
+  }
+
+  @override
+  String get tncMsgTitle => 'RF（TNC）モード';
+
+  @override
+  String get tncMsgDesc => 'RF チャネルは共有資源のため、メッセージ機能は制限されます';
+
+  @override
+  String get tncGroupDisabled => 'RF モードではグループ配信は利用できません';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '1 通あたり $n 文字（APRS 仕様）';
+  }
+
+  @override
+  String get tncMsgTooLong => 'RF モードの 1 通あたりの文字数上限を超えています';
+
+  @override
   String get licenseSection => 'ライセンス';
 
   @override

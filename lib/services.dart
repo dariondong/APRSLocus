@@ -291,13 +291,19 @@ class AprsFmt {
   }
 
   /// 消息数据包：CALL>APRS,TCPIP*::DEST  :text{id
-  static String message(String call, String dest, String text, String id) {
-    return '$call>APRS,TCPIP*::${dest.padRight(9)}:$text{$id';
+  ///
+  /// [path] 为报头路径段（目的呼号 + 中继列表）。APRS-IS 用默认值；
+  /// 射频（TNC）模式传 `APALOC,WIDE1-1` 之类的实际中继路径 ——
+  /// 射频上不能带 `TCPIP*`（IP 网关才有的路径，中继不识别）。
+  static String message(String call, String dest, String text, String id,
+      {String path = 'APRS,TCPIP*'}) {
+    return '$call>$path::${dest.padRight(9)}:$text{$id';
   }
 
   /// 无需 ack 的消息数据包（群聊广播用）：`{id_` 结尾
-  static String messageNoAck(String call, String dest, String text, String id) {
-    return '$call>APRS,TCPIP*::${dest.padRight(9)}:$text{${id}_';
+  static String messageNoAck(String call, String dest, String text, String id,
+      {String path = 'APRS,TCPIP*'}) {
+    return '$call>$path::${dest.padRight(9)}:$text{${id}_';
   }
   static String randId() {
     final r = DateTime.now().millisecondsSinceEpoch;

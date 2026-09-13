@@ -1052,6 +1052,229 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionTranslation => 'Traducción';
 
   @override
+  String get notifTncConnected => 'TNC conectado';
+
+  @override
+  String get notifTncDisconnected => 'TNC desconectado';
+
+  @override
+  String get dataSourceTitle => 'Fuente de datos';
+
+  @override
+  String get dataSourceSubtitle => 'De dónde vienen los paquetes';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => 'Red APRS global por internet';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc =>
+      'Envía y recibe por radio mediante un TNC Bluetooth o serie';
+
+  @override
+  String get dataSourceSwitchHint =>
+      'Cambiar la fuente de datos desconecta el enlace actual';
+
+  @override
+  String get tncBindTitle => 'TNC Bluetooth';
+
+  @override
+  String get tncBindSubtitle => 'Empareja y conecta el TNC de tu radio';
+
+  @override
+  String get tncBoundDevice => 'Dispositivo emparejado';
+
+  @override
+  String get tncNotBound => 'Sin dispositivo emparejado';
+
+  @override
+  String get tncScanPaired => 'Buscar dispositivos emparejados';
+
+  @override
+  String get tncNoPaired =>
+      'No se encontraron dispositivos: empareja el TNC en los ajustes de Bluetooth del sistema';
+
+  @override
+  String get tncUnbind => 'Desemparejar';
+
+  @override
+  String get tncConnectAction => 'Conectar TNC';
+
+  @override
+  String get tncRestart => 'Reiniciar enlace';
+
+  @override
+  String get tncSupportedNo => 'Este sistema aún no admite enlaces TNC';
+
+  @override
+  String get tncNeedPermission =>
+      'Se requiere permiso de Bluetooth: concédelo e inténtalo de nuevo';
+
+  @override
+  String get tncOpenFailedHint =>
+      'No se pudo abrir el dispositivo: los puertos COM de Windows son exclusivos; comprueba que ninguna otra app lo use';
+
+  @override
+  String tncStats(String rx, String tx) {
+    return '$rx tramas recibidas · $tx enviadas';
+  }
+
+  @override
+  String get tncLog => 'Registro del enlace';
+
+  @override
+  String get tncLogEmpty => 'Todavía no hay registros';
+
+  @override
+  String get kissParamsTitle => 'Parámetros KISS';
+
+  @override
+  String get kissParamsSubtitle =>
+      'Ajustes de capa de enlace enviados directamente al TNC';
+
+  @override
+  String get kissTxDelay => 'Retardo de TX (ms)';
+
+  @override
+  String get kissTxDelayTip =>
+      'KISS TXDELAY en unidades de 10 ms: tiempo para que el PTT se establezca';
+
+  @override
+  String get kissTxTail => 'Cola de TX (ms)';
+
+  @override
+  String get kissTxTailTip =>
+      'KISS TXTAIL en unidades de 10 ms: algunas radios necesitan la cola para oírse completas';
+
+  @override
+  String get kissPersistence => 'Persistencia';
+
+  @override
+  String get kissPersistenceTip =>
+      'KISS PERSISTENCE, 0-255: cuanto menor, más cede y menos colisiones en un canal compartido';
+
+  @override
+  String get kissSlotTime => 'Tiempo de ranura (ms)';
+
+  @override
+  String get kissSlotTimeTip =>
+      'KISS SLOTTIME en unidades de 10 ms: junto con la persistencia regula el acceso al canal';
+
+  @override
+  String get kissFullDuplex => 'Dúplex completo';
+
+  @override
+  String get kissFullDuplexTip =>
+      'KISS FULLDUPLEX: déjalo desactivado en radios normales (TX/RX simultáneos interfieren)';
+
+  @override
+  String get kissChannel => 'Canal / puerto KISS';
+
+  @override
+  String get kissChannelTip =>
+      'Solo los TNC multicanal tienen varios puertos; deja 0 en radios de un canal';
+
+  @override
+  String get kissMaxFrame => 'Tamaño máximo de trama (bytes)';
+
+  @override
+  String get kissMaxFrameTip =>
+      'Los paquetes más largos no se envían (a 1200 baudios una trama AX.25 ronda 330 bytes)';
+
+  @override
+  String get kissHardwareCmd => 'Comando del fabricante';
+
+  @override
+  String get kissHardwareVal => 'Valor';
+
+  @override
+  String get kissHardwareTip =>
+      'KISS SETHARDWARE (0x06), específico del fabricante; -1 significa no enviar';
+
+  @override
+  String get kissApplyParams => 'Enviar parámetros';
+
+  @override
+  String get kissParamsSent => 'Parámetros KISS enviados';
+
+  @override
+  String get kissBackToCommand => 'Volver al modo de comandos del TNC';
+
+  @override
+  String get kissBackToCommandTip =>
+      'Envía RETURN (0x0F). La mayoría de los TNC KISS dejan de reenviar hasta reiniciar el enlace';
+
+  @override
+  String get kissRfPath => 'Ruta de digipeadores RF';
+
+  @override
+  String get kissRfPathTip =>
+      'Digipeadores usados en el aire, p. ej. WIDE1-1,WIDE2-1; déjalo vacío para ninguno';
+
+  @override
+  String get kissRfBeacon => 'Permitir balizas por RF';
+
+  @override
+  String get kissRfBeaconTip =>
+      'Solo entonces se transmitirán posiciones por radio. Transmitir requiere tu licencia e indicativo';
+
+  @override
+  String get kissAutoAck => 'Confirmar automáticamente';
+
+  @override
+  String get kissAutoAckTip =>
+      'Si se desactiva, los mensajes entrantes no se confirman: el canal queda más libre';
+
+  @override
+  String get kissAutoReconnect => 'Reconectar automáticamente';
+
+  @override
+  String get kissNeedConnected => 'Conecta primero el TNC';
+
+  @override
+  String get tncSwitchOn => 'Activado';
+
+  @override
+  String get tncSwitchOff => 'Desactivado';
+
+  @override
+  String get connTncSourceHint =>
+      'El modo TNC no usa servidor ni filtros, así que esos ajustes están desactivados';
+
+  @override
+  String get connectTncBar => 'Toca Conectar para abrir el enlace TNC';
+
+  @override
+  String connectingToTnc(String name) {
+    return 'Conectando TNC · $name';
+  }
+
+  @override
+  String get tncMsgTitle => 'Modo radio (TNC)';
+
+  @override
+  String get tncMsgDesc =>
+      'El canal de radio es compartido, por lo que la mensajería está limitada';
+
+  @override
+  String get tncGroupDisabled =>
+      'Las difusiones de grupo no están disponibles en modo radio';
+
+  @override
+  String tncMsgLimitHint(String n) {
+    return '$n caracteres por mensaje (norma APRS)';
+  }
+
+  @override
+  String get tncMsgTooLong =>
+      'Supera el límite de longitud de mensaje en modo radio';
+
+  @override
   String get licenseSection => 'Licencia';
 
   @override

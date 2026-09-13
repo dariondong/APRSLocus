@@ -875,6 +875,8 @@ class _HomePageState extends State<HomePage> {
                         ? S.of(context).disconnect
                         : widget.state.connecting
                         ? S.of(context).connecting
+                        : widget.state.usingTnc
+                        ? S.of(context).tncConnectAction
                         : S.of(context).connectAprsIs,
                   ),
                   style: OutlinedButton.styleFrom(
@@ -1118,6 +1120,26 @@ class _HomePageState extends State<HomePage> {
         }
         if (st.connected) return const SizedBox.shrink();
         final connecting = st.connecting;
+        // TNC 模式下标题/副标题都要改口径：不再有「服务器」，
+        // 否则用户会以为填个地址就能连上。
+        final tncMode = st.usingTnc;
+        final tncName = st.tnc.device?.label ?? S.of(context).tncNotBound;
+        final title = connecting
+            ? (tncMode
+                ? S.of(context).dataSourceTnc
+                : S.of(context).connectingServer)
+            : (tncMode
+                ? S.of(context).connectTncBar
+                : S.of(context).notConnectedAprsServer);
+        final subtitle = connecting
+            ? (tncMode
+                ? S.of(context).connectingToTnc(tncName)
+                : S
+                    .of(context)
+                    .connectingToServer(st.aprs.server, st.aprs.port))
+            : (tncMode
+                ? S.of(context).dataSourceTncDesc
+                : S.of(context).connectNearbyDesc);
         return Container(
           margin: EdgeInsets.fromLTRB(
               compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
@@ -1155,20 +1177,11 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      connecting
-                          ? S.of(context).connectingServer
-                          : S.of(context).notConnectedAprsServer,
+                      title,
                       style: ts(13, c: Colors.white, w: FontWeight.w700),
                     ),
                     Text(
-                      connecting
-                          ? S
-                                .of(context)
-                                .connectingToServer(
-                                  st.aprs.server,
-                                  st.aprs.port,
-                                )
-                          : S.of(context).connectNearbyDesc,
+                      subtitle,
                       style: ts(10, c: Colors.white.withValues(alpha: 0.8)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
