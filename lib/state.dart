@@ -680,11 +680,20 @@ class AppState extends ChangeNotifier {
   static const String srcAprsIs = 'aprsis';
   static const String srcTnc = 'tnc';
 
-  /// 射频中继路径：TNC 模式下目的呼号用本应用的 toCall（APALOC），
-  /// 后接用户配置的中继（如 WIDE1-1,WIDE2-1）；
-  /// APRS-IS 模式仍是 `APRS,TCPIP*`。
+  /// 发射路径 —— 报头目的呼号统一用本应用的 toCall `APALOC`。
+  ///
+  /// 两种数据来源都用 `APALOC`，这样第三方（aprs.fi 过滤、统计站、地图站
+  /// 以及本应用的台站识别）都能凭 tocall 精确筛出 APRSLocus 台站，
+  /// 不会与其它 APRS 软件（同样用 `APRS` 作目的呼号）混淆：
+  ///   * APRS-IS：`APALOC,TCPIP*`
+  ///   * TNC（射频）：`APALOC` 后接用户配置的中继（如 WIDE1-1,WIDE2-1）
+  ///
+  /// ⚠️ 勿改回 `APRS`：v1.6.103 曾误将 APRS-IS 模式写成 `APRS,TCPIP*`，
+  /// 导致按 `u/APALOC` 订阅的第三方统计站只能收到状态包、收不到位置包
+  /// （表现为这些台站在统计站上没有位置）。回归测试见
+  /// test/beacon_format_test.dart「发射路径的目的呼号」。
   String get txPath {
-    if (!usingTnc) return 'APRS,TCPIP*';
+    if (!usingTnc) return 'APALOC,TCPIP*';
     final p = tnc.config.path.trim();
     // 去掉头部逗号/空格，避免出现 `APALOC,,WIDE1-1`
     final cleaned = p.replaceAll(RegExp(r'^[,\s]+'), '');

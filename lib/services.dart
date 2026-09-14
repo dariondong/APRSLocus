@@ -271,10 +271,17 @@ class AprsFmt {
     return '$d$m${v >= 0 ? 'E' : 'W'}';
   }
 
-  /// 位置数据包：CALL>APRS,TCPIP*:!DDMM.HHN/DDDMM.HHW符号表+符号码+注释
+  /// 位置数据包：CALL>APALOC,TCPIP*:!DDMM.HHN/DDDMM.HHW符号表+符号码+注释
   ///
   /// symbol 参数为符号码（如 '>'）；符号表使用默认主表 '/'
-  /// path 可自定义（如 APALOC 标识 APRSlocus 台站）
+  ///
+  /// [path] 默认 `APALOC,TCPIP*` —— 报头目的呼号固定用本应用的 toCall
+  /// `APALOC`，第三方（aprs.fi 过滤、统计站）才能凭 tocall 精确筛出
+  /// APRSLocus 台站。射频（TNC）模式由 [AppState.txPath] 传入不含
+  /// `TCPIP*` 的实际中继路径。
+  ///
+  /// ⚠️ 默认值勿改回 `APRS`：那会让本应用的报文与其它 APRS 软件
+  /// 混为一谈，按 `u/APALOC` 订阅的统计站会全部收不到（v1.6.103 事故）。
   ///
   /// **注释字段必须紧跟符号，中间不能加空格**。APRS101 规定注释数据
   /// （含 CsT：`ddd/sss` 航向/速度）紧接位置字段，没有分隔符；
@@ -284,25 +291,26 @@ class AprsFmt {
   /// 实测：带空格 → course/speed 解析为 None；无空格 → 正常解析。
   static String position(
       String call, double latitude, double longitude, String symbol,
-      {String? comment, String path = 'APRS,TCPIP*'}) {
+      {String? comment, String path = 'APALOC,TCPIP*'}) {
     final body = '!${lat(latitude)}/${lng(longitude)}$symbol';
     final c = comment?.trim() ?? '';
     return '$call>$path:$body$c';
   }
 
-  /// 消息数据包：CALL>APRS,TCPIP*::DEST  :text{id
+  /// 消息数据包：CALL>APALOC,TCPIP*::DEST  :text{id
   ///
-  /// [path] 为报头路径段（目的呼号 + 中继列表）。APRS-IS 用默认值；
-  /// 射频（TNC）模式传 `APALOC,WIDE1-1` 之类的实际中继路径 ——
-  /// 射频上不能带 `TCPIP*`（IP 网关才有的路径，中继不识别）。
+  /// [path] 为报头路径段（目的呼号 + 中继列表）。APRS-IS 用默认值
+  /// （目的呼号 = 本应用 toCall `APALOC`）；射频（TNC）模式传
+  /// `APALOC,WIDE1-1` 之类的实际中继路径 —— 射频上不能带 `TCPIP*`
+  /// （IP 网关才有的路径，中继不识别）。
   static String message(String call, String dest, String text, String id,
-      {String path = 'APRS,TCPIP*'}) {
+      {String path = 'APALOC,TCPIP*'}) {
     return '$call>$path::${dest.padRight(9)}:$text{$id';
   }
 
   /// 无需 ack 的消息数据包（群聊广播用）：`{id_` 结尾
   static String messageNoAck(String call, String dest, String text, String id,
-      {String path = 'APRS,TCPIP*'}) {
+      {String path = 'APALOC,TCPIP*'}) {
     return '$call>$path::${dest.padRight(9)}:$text{${id}_';
   }
   static String randId() {
