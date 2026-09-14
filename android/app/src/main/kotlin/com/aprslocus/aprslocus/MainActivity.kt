@@ -136,7 +136,17 @@ class MainActivity : FlutterActivity() {
                     "send" -> {
                         val data = call.argument<ByteArray>("data")
                         if (data == null) {
-                            result.error("NO_DATA", "缺少数据", null)
+                            // 明确的诊断信息：Dart 侧若传 List<int>（而不是 Uint8List），
+                            // StandardMessageCodec 会编成 ArrayList，这里必然取不到
+                            // ByteArray —— 曾经因此「蓝牙能收不能发且毫无提示」。
+                            val raw = call.argument<Any>("data")
+                            result.error(
+                                "NO_DATA",
+                                "缺少数据：期望 ByteArray，实际收到 " +
+                                    (raw?.javaClass?.name ?: "null") +
+                                    "。Dart 侧必须传 Uint8List（见 Kiss.escape 注释）",
+                                null
+                            )
                         } else {
                             try {
                                 tncManager.send(data)

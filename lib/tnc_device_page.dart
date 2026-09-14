@@ -207,7 +207,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
   Future<void> _txSelfTest() async {
     final s = S.of(context);
     await _collect();
-    final err = tnc.txSelfTest(st.myFullCall, st.txPath);
+    final err = await tnc.txSelfTest(st.myFullCall, st.txPath);
     if (!mounted) return;
     setState(() {
       _txTestResult =

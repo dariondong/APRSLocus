@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -161,15 +162,24 @@ class TncStatus {
 }
 
 class TncLink {
-  TncLink() {
+  /// [transport] 仅测试注入用；生产环境走条件导入的平台实现。
+  TncLink({TncTransport? transport})
+      : _t = transport ?? createTncTransport() {
     _t.onBytes = _onBytes;
     _t.onClosed = _onClosed;
     _t.onStatus = (s) {
       lastDetail = s;
     };
+    _t.onTxFailed = (reason) {
+      txErrors++;
+      lastTxError = reason;
+      // 进链路日志：这是排查「发不出去」最关键的一条，必须留痕
+      _log('发送失败：$reason');
+      onStateChanged?.call();
+    };
   }
 
-  final TncTransport _t = createTncTransport();
+  final TncTransport _t;
   final KissDecoder _dec = KissDecoder();
 
   final TncConfig config = TncConfig();
@@ -198,6 +208,14 @@ class TncLink {
 
   /// 最近一次失败原因（'frame-too-long' / 'not-connected' 等）
   String lastError = '';
+
+  /// 链路层写入失败次数（原生拒收 / 串口异常）。
+  ///
+  /// 与 [lastError] 的区别：lastError 是**调用前**的校验失败（格式、长度、
+  /// 未连接），而这个是「已经交给链路、但字节没送出去」——两者混在一起
+  /// 会让「发射不出去」无从定位。
+  int txErrors = 0;
+  String lastTxError = '';
 
   /// 链路日志（环形，最多 100 条；供「设备」页排查用）
   final List<String> log = [];
@@ -385,8 +403,9 @@ class TncLink {
         .where((l) => l.isNotEmpty)
         .toList();
     for (final line in lines) {
-      // 初始化串是**明文命令**（不进 KISS 转义），TNC 只在命令模式下认它
-      _t.send(<int>[...utf8.encode(line), 0x0D, 0x0A]);
+      // 初始化串是**明文命令**（不进 KISS 转义），TNC 只在命令模式下认它。
+      // 同样必须是 Uint8List，理由见 Kiss.escape 的注释。
+      _t.send(Uint8List.fromList(<int>[...utf8.encode(line), 0x0D, 0x0A]));
       _log('初始化：$line');
       final d = config.initDelayMs;
       if (d > 0) await Future.delayed(Duration(milliseconds: d));
@@ -398,22 +417,37 @@ class TncLink {
 
   /// 发射自检：发一帧测试包，报告「链路层到底有没有把字节送出去」。
   ///
-  /// 为什么需要：用户报「能收不能发」时，症状完全无法区分下面几种原因，
-  /// 而这个自检能把它们分开：
-  ///   * 没连上 / 帧长超限 / 报文格式错 → 同步返回错误码，一眼可见；
-  ///   * 写失败（socket 已断）→ 抛异常并被捕获成 'send-failed: …'；
-  ///   * 写成功但 TNC 不发射 → 自检通过，说明问题在 TNC 侧（未进 KISS
-  ///     模式 / 参数不对 / 模块问题），据此提示去配置初始化串。
+  /// 为什么需要：用户报「能收不能发」时，症状无法区分下面几种原因，
+  /// 这个自检把它们分开：
+  ///   * 没连上 / 帧长超限 / 报文格式错 → 立刻返回错误码；
+  ///   * **字节没送出去**（原生拒收，例如 Dart 传的字节类型不对使
+  ///     Kotlin 取不到 ByteArray）→ 等 [settle] 纳秒内捕获到
+  ///     `onTxFailed`，返回 'send-failed'；
+  ///   * 写成功但电台不发射 → 自检通过，说明问题在 TNC 侧（未进 KISS
+  ///     模式 / 参数不对 / 模块问题），据此提示配置初始化串。
   ///
-  /// 注意：用的是**状态包**（不含坐标），不会把台站挪到某个位置。
-  String? txSelfTest(String fullCall, String path) {
+  /// ⚠️ 必须等这一拍：写入是异步的。此前直接看 `txFrames++`
+  /// （发送后无条件自增）会**误报成功** —— 明明一个字节都没出去。
+  ///
+  /// 用的是**状态包**（不含坐标），不会把台站挪到某个位置。
+  Future<String?> txSelfTest(
+    String fullCall,
+    String path, {
+    Duration settle = const Duration(milliseconds: 400),
+  }) async {
     if (!connected) return 'not-connected';
-    final before = txFrames;
+    final errsBefore = txErrors;
     final raw = '$fullCall>$path:>APRSlocus TXTEST';
     final err = sendTnc2(raw);
     if (err != null) return err;
-    if (txFrames == before) return 'send-failed';
-    _log('发射自检：已向 TNC 写入一帧（累计 $txFrames 帧 / $txBytes 字节）');
+    // 等链路层回话：有错就是没出去，没错才算递交成功
+    await Future.delayed(settle);
+    if (txErrors > errsBefore) {
+      _log('发射自检失败：链路层报错（$lastTxError）');
+      return 'send-failed: $lastTxError';
+    }
+    _log('发射自检：链路层已接收一帧（累计 $txFrames 帧 / $txBytes 字节，'
+        '写入失败 $txErrors 次）');
     return null;
   }
 

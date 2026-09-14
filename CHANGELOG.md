@@ -1,5 +1,62 @@
 # 更新日志
 
+## [1.6.106] - 2026-09-14
+
+### 🔴 真正修好「蓝牙 TNC 只能接收、不能发射」（Android）/ The actual fix for “Bluetooth TNC receives but will not transmit” (Android)
+
+上一版（1.6.105）我只做了兼容性对齐和几个新能力，**没有修好这个问题** —— 因为
+真正的根因在 Dart → 原生的**字节数组类型**上，而且它把错误吞得一点痕迹都没有。
+
+**根因**：发送路径是 `Dart → MethodChannel → Kotlin → BluetoothSocket`。
+Flutter 的 `StandardMessageCodec` 对字节数组有**两条不同的编码分支**：
+
+| Dart 侧类型 | 编码标记 | Kotlin 侧拿到的 |
+|---|---|---|
+| `Uint8List` | `_valueUint8List` | **`byte[]`** ✅ |
+| `List<int>` | `_valueList` | `ArrayList` ❌ |
+
+我们的 `Kiss.escape()/dataFrame()/paramFrame()/commandFrame()` 全部返回
+`List<int>`（`final out = <int>[]`），于是 Kotlin 侧
+`call.argument<ByteArray>("data")` 拿到 **null** → 抛 `NO_DATA`。而
+`invokeMethod` 的失败是**异步**抛出的，被包在同步 `try/catch (_) {}` 里 ——
+**完全静默**。所以表现就是：收得到（接收方向我们写了
+`raw is Uint8List` / `raw is List` 双容错）、发不出去、而且毫无提示。
+桌面串口走 `dart:io` 的 `writeFrom(List<int>)`，不做类型转换，所以只有
+Android 蓝牙中招 —— 这也是它一直没被发现的原因。APRSdroid 是 Kotlin 直接
+持有 `OutputStream`，**根本没有跨语言编解码这一层**，不可能踩这个坑。
+
+**修法（用类型钉死，不靠「记得转换」）**：
+- `Kiss` 四个组帧函数改为返回 `Uint8List`；初始化串的字节同样处理；
+- `TncTransport.send` 签名改为 `Uint8List` —— 以后任何地方再传 `List<int>`
+  会**编译失败**；
+- 发送失败不再吞掉：原生失败经 `onTxFailed` 上报，写入链路日志
+  （设备页可见），Kotlin 侧的错误信息也带上「期望 ByteArray，实际收到 X」；
+- **修正上一版「发射自检」的误报**：它此前直接看 `txFrames++`（发送后
+  无条件自增），字节全丢了也报「已写入」。现在改为等链路层回话
+  （`Future` + 400ms），有错就如实报失败。
+
+**回归测试**（`test/tnc_send_type_test.dart`、`test/tnc_tx_selftest_test.dart`）：
+用**真实的 `StandardMessageCodec`** 复现两条编码分支的差异，并断言
+`Kiss.*` 的返回类型必须是 `Uint8List`；另一个用假传输层断言「字节没出去时
+自检必须报失败」。这样这条坑再被踩到会立刻测试失败。
+
+Last release only added compatibility tweaks and new capabilities — it did
+**not** fix this, because the real cause is the *byte-array type* crossing
+Dart → platform, and it swallowed every error silently. `StandardMessageCodec`
+encodes `Uint8List` as `byte[]` but `List<int>` as `ArrayList`; our KISS
+builders returned `List<int>`, so Kotlin's `call.argument<ByteArray>("data")`
+got `null` → `NO_DATA` — and since `invokeMethod` fails **asynchronously**,
+the synchronous `try/catch (_) {}` hid it completely. Hence: receives fine
+(the receive path tolerates both types), transmits nothing, no error shown.
+Desktop serial uses `writeFrom(List<int>)` with no such conversion, which is
+why only Bluetooth was affected. APRSdroid holds the `OutputStream` directly in
+Kotlin and has no cross-language codec layer at all. The fix pins the type at
+compile time (`Kiss` returns `Uint8List`, `send(Uint8List)`), surfaces write
+failures through `onTxFailed` into the link log, and corrects the previous
+release's TX self-test, which had been reporting “written” even when every byte
+was dropped.
+
+
 ## [1.6.105] - 2026-09-14
 
 ### 🎛 设备设置页重构：一个「什么都有」的页面 → 按问题分层的三页 / Device settings refactor: one catch-all page → three pages organised by the question you are asking

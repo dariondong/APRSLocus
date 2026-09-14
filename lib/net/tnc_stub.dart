@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'tnc_base.dart';
 
 /// 占位实现（Web 等无匹配平台）
@@ -20,6 +22,9 @@ class TncStub implements TncTransport {
   void Function()? onClosed;
 
   @override
+  void Function(String reason)? onTxFailed;
+
+  @override
   Future<List<TncDevice>> listDevices() async => const [];
 
   @override
@@ -32,7 +37,7 @@ class TncStub implements TncTransport {
   Future<void> disconnect() async {}
 
   @override
-  void send(List<int> bytes) {
+  void send(Uint8List bytes) {
     _noop?.call();
   }
 }

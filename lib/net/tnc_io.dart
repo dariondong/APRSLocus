@@ -44,6 +44,9 @@ class TncNativeBluetooth implements TncTransport {
   @override
   void Function()? onClosed;
 
+  @override
+  void Function(String reason)? onTxFailed;
+
   bool _probed = false;
   bool _supported = false;
 
@@ -137,11 +140,20 @@ class TncNativeBluetooth implements TncTransport {
   }
 
   @override
-  void send(List<int> bytes) {
+  void send(Uint8List bytes) {
     if (!connected) return;
-    try {
-      _ch.invokeMethod<bool>('send', {'data': bytes});
-    } catch (_) {}
+    // 两个要点，都是「蓝牙 TNC 能收不能发」事故的直接教训：
+    //   ① 传的必须是 Uint8List：StandardMessageCodec 只把它编成平台的
+    //      byte[]；List<int> 会编成 ArrayList，Kotlin 侧
+    //      `call.argument<ByteArray>("data")` 得到 null → NO_DATA。
+    //   ② invokeMethod 的失败是**异步**的，同步 try/catch 抓不到 ——
+    //      必须 catchError，否则发送失败完全静默（用户只会看到
+    //      「倒计时走完没反应」）。
+    _ch.invokeMethod<bool>('send', {'data': bytes}).catchError((Object e) {
+      onStatus?.call('$e');
+      onTxFailed?.call('$e');
+      return false;
+    });
   }
 
   /// 请求系统蓝牙权限（Android 12+ 需要 BLUETOOTH_CONNECT）
@@ -186,6 +198,9 @@ class TncDesktopSerial implements TncTransport {
 
   @override
   void Function()? onClosed;
+
+  @override
+  void Function(String reason)? onTxFailed;
 
   @override
   Future<bool> get supported async => !kIsWeb;
@@ -325,12 +340,19 @@ class TncDesktopSerial implements TncTransport {
   }
 
   @override
-  void send(List<int> bytes) {
+  void send(Uint8List bytes) {
     final w = _write;
-    if (w == null) return;
+    if (w == null) {
+      onStatus?.call('串口未打开，丢弃 ${bytes.length} 字节');
+      return;
+    }
     try {
       w.writeFrom(bytes);
-    } catch (_) {}
+    } catch (e) {
+      // 串口写失败同样要可见（此前被吞掉）
+      onStatus?.call('串口写入失败：$e');
+      onTxFailed?.call('$e');
+    }
   }
 
 }

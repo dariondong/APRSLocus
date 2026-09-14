@@ -5,6 +5,8 @@
 /// （Android/iOS → 原生蓝牙 SPP；Windows/Linux/macOS → 串口；Web → 占位）。
 library;
 
+import 'dart:typed_data';
+
 /// 一个可绑定的 TNC 设备
 ///
 /// - Android：`id` 为蓝牙 MAC 地址（经典 SPP / RFCOMM）
@@ -75,6 +77,13 @@ abstract class TncTransport {
   /// 链路被动断开（对端掉线 / 读循环结束）
   void Function()? onClosed;
 
+  /// 写入失败（原生侧拒收、串口写异常等）。
+  ///
+  /// 为什么单独一个回调：写入是**异步**的（MethodChannel 的失败不会从
+  /// 同步 try/catch 抛出），而「字节没送出去」必须能被上层看见 ——
+  /// 否则发射自检会给出「已写入」的假结论（历史上就这样撒过谎）。
+  void Function(String reason)? onTxFailed;
+
   /// 列出可绑定设备
   Future<List<TncDevice>> listDevices();
 
@@ -88,6 +97,12 @@ abstract class TncTransport {
   /// 断开链路（幂等）
   Future<void> disconnect();
 
-  /// 写入字节（调用方保证已完成 KISS 转义）
-  void send(List<int> bytes);
+  /// 写入字节（调用方保证已完成 KISS 转义）。
+  ///
+  /// **参数类型是 `Uint8List` 而不是 `List<int>`，这是刻意的**：
+  /// MethodChannel 的 `StandardMessageCodec` 只把 `Uint8List` 编成平台的
+  /// `byte[]`，`List<int>` 会编成 `ArrayList`，Kotlin 侧
+  /// `call.argument<ByteArray>("data")` 取到 null（表现为发送静默失败）。
+  /// 用类型把这条约束钉在编译期，比「记得转换」可靠。
+  void send(Uint8List bytes);
 }

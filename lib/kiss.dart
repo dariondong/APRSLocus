@@ -14,6 +14,7 @@
 library;
 
 import 'dart:convert' show utf8;
+import 'dart:typed_data';
 
 /// KISS 常量与编解码
 class Kiss {
@@ -34,8 +35,15 @@ class Kiss {
   static const int cmdReturn = 0x0F; // 退出 KISS，回到 TNC 命令模式
   static const int cmdUnknown = 0x0F; // 0x0F 兼作「未识别」
 
-  /// 把数据包体转义并加上首尾 FEND
-  static List<int> escape(List<int> data) {
+  /// 把数据包体转义并加上首尾 FEND。
+  ///
+  /// ⚠️ **必须返回 `Uint8List`，不能是 `List<int>`**：这些字节最终经
+  /// MethodChannel 交给原生写串口/蓝牙。`StandardMessageCodec` 只把
+  /// `Uint8List` 编码成平台的 `byte[]`；`List<int>` 会走 `_valueList`
+  /// 编成 `ArrayList`，Kotlin 侧 `call.argument<ByteArray>("data")` 得到
+  /// **null** → 报 `NO_DATA`（而该错误是异步的，曾被静默吞掉）→
+  /// 「蓝牙 TNC 能收不能发」。桌面串口走 dart:io 不做类型转换，所以不受影响。
+  static Uint8List escape(List<int> data) {
     final out = <int>[fend];
     for (final b in data) {
       if (b == fend) {
@@ -47,20 +55,20 @@ class Kiss {
       }
     }
     out.add(fend);
-    return out;
+    return Uint8List.fromList(out);
   }
 
   /// 数据帧（KISS type 0，即 AX.25 帧）
-  static List<int> dataFrame(int port, List<int> ax25) =>
+  static Uint8List dataFrame(int port, List<int> ax25) =>
       escape(<int>[(port & 0x0F) << 4] + ax25);
 
   /// 参数帧：命令字 + 参数值。注意 **TxDelay / TxTail / SlotTime 的单位是 10ms**，
   /// 由调用方换算；本函数只负责组帧。
-  static List<int> paramFrame(int port, int command, int value) =>
+  static Uint8List paramFrame(int port, int command, int value) =>
       escape(<int>[(port & 0x0F) << 4 | (command & 0x0F), value & 0xFF]);
 
   /// 无参数命令帧（如 RETURN）
-  static List<int> commandFrame(int port, int command) =>
+  static Uint8List commandFrame(int port, int command) =>
       escape(<int>[(port & 0x0F) << 4 | (command & 0x0F)]);
 }
 
