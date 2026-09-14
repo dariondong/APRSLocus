@@ -875,6 +875,8 @@ class _HomePageState extends State<HomePage> {
                         ? S.of(context).disconnect
                         : widget.state.connecting
                         ? S.of(context).connecting
+                        : widget.state.usingAudio
+                        ? S.of(context).audioCaptureStart
                         : widget.state.usingTnc
                         ? S.of(context).tncConnectAction
                         : S.of(context).connectAprsIs,
@@ -1123,23 +1125,35 @@ class _HomePageState extends State<HomePage> {
         // TNC 模式下标题/副标题都要改口径：不再有「服务器」，
         // 否则用户会以为填个地址就能连上。
         final tncMode = st.usingTnc;
-        final tncName = st.tnc.device?.label ?? S.of(context).tncNotBound;
+        final audioMode = st.usingAudio;
+        // 音频来源没有「设备」概念，改成展示采样率（用户真正关心的参数）
+        final tncName = audioMode
+            ? '${st.audio.config.afsk.sampleRate}Hz'
+            : (st.tnc.device?.label ?? S.of(context).tncNotBound);
         final title = connecting
-            ? (tncMode
-                ? S.of(context).dataSourceTnc
-                : S.of(context).connectingServer)
-            : (tncMode
-                ? S.of(context).connectTncBar
-                : S.of(context).notConnectedAprsServer);
+            ? (audioMode
+                ? S.of(context).dataSourceAudio
+                : (tncMode
+                    ? S.of(context).dataSourceTnc
+                    : S.of(context).connectingServer))
+            : (audioMode
+                ? S.of(context).audioCaptureStart
+                : (tncMode
+                    ? S.of(context).connectTncBar
+                    : S.of(context).notConnectedAprsServer));
         final subtitle = connecting
-            ? (tncMode
-                ? S.of(context).connectingToTnc(tncName)
-                : S
-                    .of(context)
-                    .connectingToServer(st.aprs.server, st.aprs.port))
-            : (tncMode
-                ? S.of(context).dataSourceTncDesc
-                : S.of(context).connectNearbyDesc);
+            ? (audioMode
+                ? S.of(context).connConnectingAudio(tncName)
+                : (tncMode
+                    ? S.of(context).connectingToTnc(tncName)
+                    : S
+                        .of(context)
+                        .connectingToServer(st.aprs.server, st.aprs.port)))
+            : (audioMode
+                ? S.of(context).dataSourceAudioDesc
+                : (tncMode
+                    ? S.of(context).dataSourceTncDesc
+                    : S.of(context).connectNearbyDesc));
         return Container(
           margin: EdgeInsets.fromLTRB(
               compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),
