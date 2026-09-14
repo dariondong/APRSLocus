@@ -1,5 +1,94 @@
 # 更新日志
 
+## [1.6.104] - 2026-09-14
+
+### 📻 新增数据来源「音频（声卡 TNC）」：用麦克风/扬声器收发 AFSK 1200 / New data source: Audio (soundcard TNC) — AFSK 1200 over mic/speaker
+
+数据来源从两个变成三个：APRS-IS（互联网）、TNC（KISS over 蓝牙/串口）、
+**音频（AFSK 1200 / Bell 202）**。音频链路与 TNC 一样是「经电台上空」的射频
+来源，因此共用同一套约束：目的呼号 `APALOC`（不加 `TCPIP*`）、单条消息 67 字符
+上限、禁用群聊广播、自动周期发射需显式打开「射频信标」（默认关），并且
+**发射前先听信道（CSMA）**，不与其它台站抢时隙。
+
+- **协议层是纯 Dart 的**（`lib/afsk.dart`）：Bell 202 调制（1200/2200Hz、
+  相位连续）、NRZI、HDLC 位填充、CRC-16/X.25（FCS）、一比特窗复数相关解调 +
+  数字锁相（DPLL）。收发数据都走**与另两个来源完全相同的解析管线**，
+  所以台站上图、消息收发、过滤、成就不会出现「音频模式下不工作」的分叉。
+- **音频 I/O 零新增依赖**：Android 用原生 `AudioRecord`/`AudioTrack`
+  （优先 UNPROCESSED 音源绕开 AGC/降噪）；Windows 用 `dart:ffi` 直调系统
+  自带的 winmm（`waveIn`/`waveOut`）；Linux/macOS 暂无实时后端，改用 WAV 文件模式。
+- **WAV 文件模式**：导入一段录音离线解码（现场没接上音频线也能事后分析），
+  或把报文导出成 WAV 再由外部设备播放发射。Android 导出到「下载/APRSlocusAudio」。
+- **半双工**：发射期间不喂解调器（否则会把自己的报文当外来报文收一遍，
+  还会打乱 DPLL 锁定），丢弃的字节数在音频页可见。
+- **Android 后台采集**：前台服务按需声明 `microphone` 类型（Android 14+ 必须，
+  否则切后台就被系统掐断麦克风），并新增 `RECORD_AUDIO` 等权限。
+- i18n：新增 100+ 键 × 6 种语言（简体/繁体/英/日/印尼/西）。
+
+The data source list grows from two to three: APRS-IS, TNC (KISS over
+Bluetooth/serial) and **Audio (AFSK 1200 / Bell 202)**. Audio is an on-air
+source like TNC, so it shares the same rules: `APALOC` destination (no
+`TCPIP*`), the 67-character message limit, no group broadcast, automatic
+beaconing behind an explicit “RF beacon” switch (off by default) and
+**listen-before-transmit (CSMA)** so it never grabs a slot from another station.
+
+- The protocol layer is **pure Dart** (`lib/afsk.dart`): Bell 202 modulation
+  (1200/2200 Hz, phase-continuous), NRZI, HDLC bit stuffing, CRC-16/X.25 and a
+  one-bit-window complex-correlation demodulator with a digital PLL. Decoded
+  packets enter **exactly the same pipeline** as the other two sources, so
+  stations, messages, filters and achievements cannot silently break in audio mode.
+- **No new dependencies for audio I/O**: Android uses native `AudioRecord` /
+  `AudioTrack` (UNPROCESSED source first, to bypass AGC/noise suppression);
+  Windows calls the built-in winmm (`waveIn`/`waveOut`) through `dart:ffi`.
+  Linux/macOS fall back to the WAV file mode.
+- **WAV file mode**: decode a recording offline, or export a packet as audio to
+  be played by an external device. On Android it lands in Downloads/APRSlocusAudio.
+- **Half duplex**: the demodulator is fed nothing while transmitting, otherwise
+  the app would receive its own packet and disturb the PLL lock.
+- **Android background capture**: the foreground service declares the
+  `microphone` type on demand (required from Android 14), plus `RECORD_AUDIO`.
+
+### 🔍 新增「链路自检」：TNC 与音频都能一键分层排查 / New “Link self-test” for both TNC and audio
+
+射频链路出问题时，用户看到的只有「连不上 / 收不到」，原因却横跨协议、平台、
+权限、设备、接线好几层。自检把每一层变成一条**可独立判断**的结论：
+
+- **协议回路**（不需要接电台）：KISS 转义 + AX.25 编解码 + FCS 校验；
+  音频侧还会真的做一次「调制 → 解调」端到端比对。
+- **平台与权限**：后端是否可用（winmm / native）、录音权限是否已授予。
+- **实时收发**：采集是否真的有 PCM 数据上来；扬声器能否播出测试音（1200Hz，
+  **不发射报文**）；WAV 写入→读出→解调回路。
+- **测试发射**：发一条**状态**报文（`>` 开头，不含坐标）—— 不会把台站在
+  aprs.fi 上挪到某个坐标，但足以在对方/网关的原始报文里确认链路真的通了。
+  这是真实发射，界面上有醒目提示。
+
+When an RF link fails, all the user sees is “cannot connect / nothing
+received”, while the cause may sit in the protocol, the platform, permissions,
+the device or the wiring. The self-test turns each layer into an independently
+judgeable result: protocol loops that run **without a radio** (KISS escaping,
+AX.25 framing, FCS, and a real modulate→demodulate round trip for audio),
+platform/permission probes, a live capture probe, a speaker test tone
+(1200 Hz, **no packet transmitted**) and a WAV write→read→decode loop. The
+“test transmit” action sends a **status** packet (no coordinates), so it proves
+the link without moving your station on aprs.fi.
+
+### ✅ 交叉验证：用一份独立实现校验调制解调 / Cross-verified against an independent implementation
+
+「自己编、自己解」最容易把同一个理解错误两头都掩盖掉，所以另写了一份独立的
+Python 参考实现（`tool/afsk_reference.py`，暴力时钟搜索 + FCS 裁决）互相校验，
+并把它生成的录音（含噪声、直流偏置、+25Hz 频偏、静音）固化为回归测试
+（`test/reference/afsk1200_reference.wav`）。**这套校验当场抓出一个真 bug**：
+NRZI 变号被写在了逐采样循环里（应为每比特一次），等效于在 0 比特期间发出
+近奈奎斯特的噪声 —— 两边都解不出任何帧。修正后双向校验通过。
+
+A pure-Dart modem is easy to “self-verify” wrongly, so a completely separate
+Python reference implementation (`tool/afsk_reference.py`) cross-checks both
+directions, and its generated recording (with noise, DC offset, +25 Hz offset
+and silence) is committed as a regression fixture. **It caught a real bug
+immediately**: the NRZI toggle was applied per sample instead of per bit, which
+emits near-Nyquist noise during 0 bits and made the signal undecodable.
+
+
 ## [1.6.103] - 2026-09-13
 
 ### 🔴 修复：消息小红点有时候不会消除 / Fixed: the unread badge sometimes would not clear

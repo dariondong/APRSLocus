@@ -2115,6 +2115,666 @@ abstract class AppLocalizations {
   /// **'翻译'**
   String get codeContributionTranslation;
 
+  /// No description provided for @diagTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路自检'**
+  String get diagTitle;
+
+  /// No description provided for @diagSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'逐层确认协议、权限、设备到底哪一环有问题'**
+  String get diagSubtitle;
+
+  /// No description provided for @diagRun.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始自检'**
+  String get diagRun;
+
+  /// No description provided for @diagRunning.
+  ///
+  /// In zh, this message translates to:
+  /// **'自检中…'**
+  String get diagRunning;
+
+  /// No description provided for @diagPassed.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过 {n} 项'**
+  String diagPassed(int n);
+
+  /// No description provided for @diagFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'失败 {n} 项'**
+  String diagFailed(int n);
+
+  /// No description provided for @diagHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'协议回路不接电台也能跑：先确认软件层没问题，再去查设备与接线'**
+  String get diagHint;
+
+  /// No description provided for @diagTncSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC（KISS / AX.25）'**
+  String get diagTncSection;
+
+  /// No description provided for @diagAudioSection.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频（AFSK 1200）'**
+  String get diagAudioSection;
+
+  /// No description provided for @diagKissEscape.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS 转义'**
+  String get diagKissEscape;
+
+  /// No description provided for @diagKissEscapeFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS 转义还原失败（软件层问题，换设备也没用）'**
+  String get diagKissEscapeFail;
+
+  /// No description provided for @diagAx25.
+  ///
+  /// In zh, this message translates to:
+  /// **'AX.25 帧编解码'**
+  String get diagAx25;
+
+  /// No description provided for @diagAx25Fail.
+  ///
+  /// In zh, this message translates to:
+  /// **'AX.25 编码失败（报文格式不合法）'**
+  String get diagAx25Fail;
+
+  /// No description provided for @diagAx25Mismatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'AX.25 回路不一致，解回：{got}'**
+  String diagAx25Mismatch(String got);
+
+  /// No description provided for @diagFcs.
+  ///
+  /// In zh, this message translates to:
+  /// **'FCS 校验'**
+  String get diagFcs;
+
+  /// No description provided for @diagFcsFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'FCS 校验异常（改动一个字节本应被拒收）'**
+  String get diagFcsFail;
+
+  /// No description provided for @diagTncLoopback.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 协议回路'**
+  String get diagTncLoopback;
+
+  /// No description provided for @diagTncLoopbackOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'KISS/AX.25 编解码往返一致（{len} 字节）'**
+  String diagTncLoopbackOk(int len);
+
+  /// No description provided for @diagAfskLoopback.
+  ///
+  /// In zh, this message translates to:
+  /// **'AFSK 调制解调回路'**
+  String get diagAfskLoopback;
+
+  /// No description provided for @diagAfskLoopbackOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'调制→解调一致（{samples} 采样 @{rate}Hz）'**
+  String diagAfskLoopbackOk(int samples, int rate);
+
+  /// No description provided for @diagAfskLoopbackFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'解出 {n} 帧（应为 1 帧）'**
+  String diagAfskLoopbackFail(int n);
+
+  /// No description provided for @diagAfskLevelFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'波形幅度过低（调制结果接近静音）'**
+  String get diagAfskLevelFail;
+
+  /// No description provided for @diagPlatform.
+  ///
+  /// In zh, this message translates to:
+  /// **'平台能力'**
+  String get diagPlatform;
+
+  /// No description provided for @diagPlatformOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'可用 · 后端 {name}'**
+  String diagPlatformOk(String name);
+
+  /// No description provided for @diagTncPlatformNo.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持 TNC 链路'**
+  String get diagTncPlatformNo;
+
+  /// No description provided for @diagAudioPlatformWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'不支持实时音频 · 仍可用 WAV 文件模式'**
+  String get diagAudioPlatformWarn;
+
+  /// No description provided for @diagNoRealtime.
+  ///
+  /// In zh, this message translates to:
+  /// **'非实时'**
+  String get diagNoRealtime;
+
+  /// No description provided for @diagPermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'录音权限'**
+  String get diagPermission;
+
+  /// No description provided for @diagPermissionOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'已授权'**
+  String get diagPermissionOk;
+
+  /// No description provided for @diagSkipped.
+  ///
+  /// In zh, this message translates to:
+  /// **'已跳过（平台不支持）'**
+  String get diagSkipped;
+
+  /// No description provided for @diagCapture.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频采集'**
+  String get diagCapture;
+
+  /// No description provided for @diagCaptureOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'收到 {bytes} 字节 @{rate}Hz'**
+  String diagCaptureOk(int bytes, int rate);
+
+  /// No description provided for @diagCaptureNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有收到任何音频数据 · 检查输入设备与权限'**
+  String get diagCaptureNoData;
+
+  /// No description provided for @diagCaptureFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开采集失败：{err}'**
+  String diagCaptureFailed(String err);
+
+  /// No description provided for @diagSpeaker.
+  ///
+  /// In zh, this message translates to:
+  /// **'扬声器输出'**
+  String get diagSpeaker;
+
+  /// No description provided for @diagSpeakerOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试音已播放'**
+  String get diagSpeakerOk;
+
+  /// No description provided for @diagSpeakerFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放失败：{err}'**
+  String diagSpeakerFail(String err);
+
+  /// No description provided for @diagFileIo.
+  ///
+  /// In zh, this message translates to:
+  /// **'WAV 文件读写'**
+  String get diagFileIo;
+
+  /// No description provided for @diagFileIoOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'写入→读出→解调一致 @{rate}Hz'**
+  String diagFileIoOk(int rate);
+
+  /// No description provided for @diagFileWriteFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件写入失败：{err}'**
+  String diagFileWriteFail(String err);
+
+  /// No description provided for @diagFileReadFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件读取失败'**
+  String get diagFileReadFail;
+
+  /// No description provided for @diagFileDecodeFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件里的音频解不出报文（可能不是 AFSK 1200 录音）'**
+  String get diagFileDecodeFail;
+
+  /// No description provided for @connAudioSourceHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频模式下不使用服务器、过滤器与 KISS 参数'**
+  String get connAudioSourceHint;
+
+  /// No description provided for @testTxTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试发射'**
+  String get testTxTitle;
+
+  /// No description provided for @testTxDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'发一条状态报文，验证链路真的通到空中'**
+  String get testTxDesc;
+
+  /// No description provided for @testTxAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射测试帧'**
+  String get testTxAction;
+
+  /// No description provided for @testTxSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试帧已交给链路'**
+  String get testTxSent;
+
+  /// No description provided for @testTxFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'测试帧发送失败：{err}'**
+  String testTxFail(String err);
+
+  /// No description provided for @testTxNeedsConnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先连接链路'**
+  String get testTxNeedsConnect;
+
+  /// No description provided for @testTxHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'这是**真实发射**（状态报文，不含坐标）。射频发射请确认在自己的呼号与执照范围内'**
+  String get testTxHint;
+
+  /// No description provided for @audioStatsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频统计'**
+  String get audioStatsTitle;
+
+  /// No description provided for @audioStatRx.
+  ///
+  /// In zh, this message translates to:
+  /// **'收 {n} 帧'**
+  String audioStatRx(int n);
+
+  /// No description provided for @audioStatTx.
+  ///
+  /// In zh, this message translates to:
+  /// **'发 {n} 帧'**
+  String audioStatTx(int n);
+
+  /// No description provided for @audioStatDrop.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射期间丢弃 {n} 字节'**
+  String audioStatDrop(int n);
+
+  /// No description provided for @audioRestart.
+  ///
+  /// In zh, this message translates to:
+  /// **'重启音频链路'**
+  String get audioRestart;
+
+  /// No description provided for @audioTxDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'「允许发射」已关闭，仅接收'**
+  String get audioTxDisabled;
+
+  /// No description provided for @audioLoopbackHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'自检会真的做一次调制→解调；提示「发射期间丢弃」属正常半双工行为'**
+  String get audioLoopbackHint;
+
+  /// No description provided for @notifAudioConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路在线'**
+  String get notifAudioConnected;
+
+  /// No description provided for @notifAudioDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路已断开'**
+  String get notifAudioDisconnected;
+
+  /// No description provided for @connConnectingAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在打开音频（{name}）…'**
+  String connConnectingAudio(String name);
+
+  /// No description provided for @connAudioConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路在线 · {rate}'**
+  String connAudioConnected(String rate);
+
+  /// No description provided for @connRetryAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路打开失败 · {seconds}s 后重试…'**
+  String connRetryAudio(int seconds);
+
+  /// No description provided for @connRetryAudioDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频打开失败（{detail}）· {seconds}s 后重试…'**
+  String connRetryAudioDetail(String detail, int seconds);
+
+  /// No description provided for @connAudioLinkLost.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频链路中断 · {seconds}秒后自动重连…'**
+  String connAudioLinkLost(int seconds);
+
+  /// No description provided for @connAudioPositionSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频已发射 · 位置已发送 ({call})'**
+  String connAudioPositionSent(String call);
+
+  /// No description provided for @dataSourceAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频（声卡）'**
+  String get dataSourceAudio;
+
+  /// No description provided for @dataSourceAudioDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'用麦克风/扬声器或声卡线接电台，收发 AFSK 1200'**
+  String get dataSourceAudioDesc;
+
+  /// No description provided for @audioSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频（声卡 TNC）'**
+  String get audioSettings;
+
+  /// No description provided for @audioSettingsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用声卡收发 AFSK 1200 报文'**
+  String get audioSettingsSubtitle;
+
+  /// No description provided for @audioBackend.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频后端'**
+  String get audioBackend;
+
+  /// No description provided for @audioUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持实时音频（可用 WAV 文件模式）'**
+  String get audioUnsupported;
+
+  /// No description provided for @audioNeedPermission.
+  ///
+  /// In zh, this message translates to:
+  /// **'需要录音权限（RECORD_AUDIO），请授权后重试'**
+  String get audioNeedPermission;
+
+  /// No description provided for @audioCaptureTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频采集'**
+  String get audioCaptureTitle;
+
+  /// No description provided for @audioCaptureDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'从麦克风/线路输入解调 AFSK 1200'**
+  String get audioCaptureDesc;
+
+  /// No description provided for @audioCaptureStart.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开采集'**
+  String get audioCaptureStart;
+
+  /// No description provided for @audioCaptureStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止采集'**
+  String get audioCaptureStop;
+
+  /// No description provided for @audioSampleRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'采样率'**
+  String get audioSampleRate;
+
+  /// No description provided for @audioSampleRateTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'22050Hz 是声卡 TNC 常用值；设备不支持时改用 44100/48000。修改会重启采集'**
+  String get audioSampleRateTip;
+
+  /// No description provided for @audioLevel.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入电平'**
+  String get audioLevel;
+
+  /// No description provided for @audioLevelTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'有信号时电平条会抬起；收到 AFSK 时「解调锁定」会点亮'**
+  String get audioLevelTip;
+
+  /// No description provided for @audioSynced.
+  ///
+  /// In zh, this message translates to:
+  /// **'解调锁定'**
+  String get audioSynced;
+
+  /// No description provided for @audioUnlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'未锁定'**
+  String get audioUnlocked;
+
+  /// No description provided for @audioBadFrames.
+  ///
+  /// In zh, this message translates to:
+  /// **'解码中止 {n} 次（噪声/失步）'**
+  String audioBadFrames(int n);
+
+  /// No description provided for @audioBaud.
+  ///
+  /// In zh, this message translates to:
+  /// **'比特率'**
+  String get audioBaud;
+
+  /// No description provided for @audioTones.
+  ///
+  /// In zh, this message translates to:
+  /// **'音调（标/空）'**
+  String get audioTones;
+
+  /// No description provided for @audioTxTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频发射'**
+  String get audioTxTitle;
+
+  /// No description provided for @audioTxDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前先听信道，避免与其它台站碰撞'**
+  String get audioTxDesc;
+
+  /// No description provided for @audioTxEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许发射'**
+  String get audioTxEnabled;
+
+  /// No description provided for @audioTxEnabledTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后只接收不发射（只想听信标时最省心）'**
+  String get audioTxEnabledTip;
+
+  /// No description provided for @audioTxDelayTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前导时长：给对端解调器锁定时间、给电台 PTT 建立时间'**
+  String get audioTxDelayTip;
+
+  /// No description provided for @audioToneMark.
+  ///
+  /// In zh, this message translates to:
+  /// **'标号频率 (Hz)'**
+  String get audioToneMark;
+
+  /// No description provided for @audioToneSpace.
+  ///
+  /// In zh, this message translates to:
+  /// **'空号频率 (Hz)'**
+  String get audioToneSpace;
+
+  /// No description provided for @audioMarkTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'Bell 202 规定标号 1200Hz、空号 2200Hz；只有 ±几 Hz 的容差，不要随意改'**
+  String get audioMarkTip;
+
+  /// No description provided for @audioSpaceTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'空号音调。与标号音调一起决定 FSK 频偏（标准为 1000Hz）'**
+  String get audioSpaceTip;
+
+  /// No description provided for @audioBaudTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300'**
+  String get audioBaudTip;
+
+  /// No description provided for @audioTxDelayLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前导 (ms)'**
+  String get audioTxDelayLabel;
+
+  /// No description provided for @audioTnc2Tip.
+  ///
+  /// In zh, this message translates to:
+  /// **'格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST'**
+  String get audioTnc2Tip;
+
+  /// No description provided for @audioCsmaWait.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前等待信道空闲 (ms)'**
+  String get audioCsmaWait;
+
+  /// No description provided for @audioCsmaWaitTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'检测到信道占用时最多等待多久；0 = 不等待直接发射'**
+  String get audioCsmaWaitTip;
+
+  /// No description provided for @audioStopTx.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止发射'**
+  String get audioStopTx;
+
+  /// No description provided for @audioWavTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'WAV 文件模式'**
+  String get audioWavTitle;
+
+  /// No description provided for @audioWavDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'离线解码一段录音，或把报文导出成音频文件'**
+  String get audioWavDesc;
+
+  /// No description provided for @audioWavPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件路径'**
+  String get audioWavPath;
+
+  /// No description provided for @audioWavDecodeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'解码此 WAV'**
+  String get audioWavDecodeAction;
+
+  /// No description provided for @audioWavExportAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出此报文'**
+  String get audioWavExportAction;
+
+  /// No description provided for @audioWavTnC2.
+  ///
+  /// In zh, this message translates to:
+  /// **'待导出报文 (TNC2)'**
+  String get audioWavTnC2;
+
+  /// No description provided for @audioWavNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未解出报文（可能不是 AFSK 1200 录音）'**
+  String get audioWavNone;
+
+  /// No description provided for @audioWavFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'解出 {n} 条报文'**
+  String audioWavFound(int n);
+
+  /// No description provided for @audioWavWritten.
+  ///
+  /// In zh, this message translates to:
+  /// **'已写入 {path}'**
+  String audioWavWritten(String path);
+
+  /// No description provided for @audioWavFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件读写失败：{err}'**
+  String audioWavFailed(String err);
+
   /// No description provided for @connTncConnected.
   ///
   /// In zh, this message translates to:

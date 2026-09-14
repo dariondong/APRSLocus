@@ -98,6 +98,21 @@ class LocationService : Service() {
         const val NET_FALLBACK_GAP_MS = 20000L
         private var instance: LocationService? = null
 
+        /**
+         * 音频（声卡 TNC）是否在采集。
+         *
+         * Android 14（API 34）起，应用在前台服务中访问麦克风时该服务必须声明
+         * microphone 类型，否则系统会**掐断麦克风**（表现：切到后台就再也收不到
+         * 报文）。因此音频采集开关变化时要用新的类型重新 startForeground。
+         */
+        @Volatile private var audioActive = false
+
+        fun setAudioActiveStatic(active: Boolean) {
+            if (audioActive == active) return
+            audioActive = active
+            instance?.refreshForegroundType()
+        }
+
         /// 更新前台服务通知（同进程直连，MainActivity 调用）
         fun updateNotificationStatic(text: String) {
             instance?.updateNotification(text)
@@ -120,6 +135,8 @@ class LocationService : Service() {
         }
     }
 
+    /// 最近一次通知文本：刷新前台服务类型时要复用同一通知（不能凭空造一条）
+    private var lastNotificationText = "APRSlocus 运行中"
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
     private var wakeLock: PowerManager.WakeLock? = null
@@ -210,6 +227,29 @@ class LocationService : Service() {
         super.onDestroy()
     }
 
+    /**
+     * 按当前是否需要麦克风重新声明前台服务类型。
+     *
+     * 单纯在清单里写 `location|microphone` 是不够的：startForeground 时若声明了
+     * microphone 类型，系统会要求此刻确实持有麦克风权限；反过来，只声明 location
+     * 时后台录音会被拦截。所以按实际状态切换。
+     */
+    private fun refreshForegroundType() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        try {
+            val type = if (audioActive) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            } else {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            }
+            startForeground(NOTIFICATION_ID, buildNotification(lastNotificationText), type)
+        } catch (_: Exception) {
+            // 个别 ROM 不允许运行中重复声明类型；失败时保持原类型即可 ——
+            // 前台服务与 APRS 连接不受影响，最坏情况是后台录音被系统限制。
+        }
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -270,6 +310,8 @@ class LocationService : Service() {
     }
 
     fun updateNotification(text: String) {
+        // 记下来：刷新前台服务类型（音频采集开关）时要用同一份文本重新 startForeground
+        lastNotificationText = text
         val nm = getSystemService(NotificationManager::class.java)
         nm.notify(NOTIFICATION_ID, buildNotification(text))
     }

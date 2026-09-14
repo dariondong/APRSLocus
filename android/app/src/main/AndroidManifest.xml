@@ -27,6 +27,16 @@
         tools:targetApi="s"/>
     <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
 
+    <!-- 音频数据来源（声卡 TNC / AFSK 1200）：
+         RECORD_AUDIO 采集电台/声卡的音频做解调；MODIFY_AUDIO_SETTINGS 用于读取
+         音频参数。Android 14（API 34）起，带 microphone 类型的前台服务还需
+         单独声明 FOREGROUND_SERVICE_MICROPHONE，否则应用退到后台后会被系统
+         掐断麦克风（表现：切后台就再也收不到报文）。 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <uses-feature android:name="android.hardware.microphone" android:required="false"/>
+
     <application
         android:label="APRSlocus"
         android:name="${applicationName}"
@@ -61,7 +71,7 @@
         <service
             android:name=".LocationService"
             android:exported="false"
-            android:foregroundServiceType="location"
+            android:foregroundServiceType="location|microphone"
             android:stopWithTask="false" />
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -1035,6 +1035,391 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionTranslation => '翻訳';
 
   @override
+  String get diagTitle => 'リンク自己診断';
+
+  @override
+  String get diagSubtitle => 'プロトコル・権限・デバイスのどこに問題があるか順に確認します';
+
+  @override
+  String get diagRun => '自己診断を実行';
+
+  @override
+  String get diagRunning => '診断中…';
+
+  @override
+  String diagPassed(int n) {
+    return '$n 項目合格';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '$n 項目失敗';
+  }
+
+  @override
+  String get diagHint => 'プロトコル回路は無線機なしでも実行できます。まずソフト側を切り分け、次にデバイスと配線を確認';
+
+  @override
+  String get diagTncSection => 'TNC（KISS / AX.25）';
+
+  @override
+  String get diagAudioSection => 'オーディオ（AFSK 1200）';
+
+  @override
+  String get diagKissEscape => 'KISS エスケープ';
+
+  @override
+  String get diagKissEscapeFail => 'KISS エスケープの復元に失敗（ソフト側の問題。デバイスを替えても解決しません）';
+
+  @override
+  String get diagAx25 => 'AX.25 フレーム';
+
+  @override
+  String get diagAx25Fail => 'AX.25 符号化に失敗（パケット形式が不正）';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 の往復が不一致。復号結果：$got';
+  }
+
+  @override
+  String get diagFcs => 'FCS 検査';
+
+  @override
+  String get diagFcsFail => 'FCS 検査が異常（1 バイト変更は拒否されるべきです）';
+
+  @override
+  String get diagTncLoopback => 'TNC プロトコル回路';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 の往復が一致（$len バイト）';
+  }
+
+  @override
+  String get diagAfskLoopback => 'AFSK 変復調回路';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return '変調→復調が一致（$samples サンプル @${rate}Hz）';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '$n フレームを復調（期待値は 1）';
+  }
+
+  @override
+  String get diagAfskLevelFail => '波形の振幅が低すぎます（ほぼ無音）';
+
+  @override
+  String get diagPlatform => 'プラットフォーム対応';
+
+  @override
+  String diagPlatformOk(String name) {
+    return '利用可能 · バックエンド $name';
+  }
+
+  @override
+  String get diagTncPlatformNo => 'このプラットフォームは TNC リンクに未対応です';
+
+  @override
+  String get diagAudioPlatformWarn => 'リアルタイム音声は非対応 · WAV ファイル方式は利用できます';
+
+  @override
+  String get diagNoRealtime => '非リアルタイム';
+
+  @override
+  String get diagPermission => '録音権限';
+
+  @override
+  String get diagPermissionOk => '許可済み';
+
+  @override
+  String get diagSkipped => 'スキップ（未対応プラットフォーム）';
+
+  @override
+  String get diagCapture => 'オーディオ入力';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return '$bytes バイト受信 @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData => '音声データが届きません。入力デバイスと権限を確認してください';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return '入力を開始できません：$err';
+  }
+
+  @override
+  String get diagSpeaker => 'スピーカー出力';
+
+  @override
+  String get diagSpeakerOk => 'テスト音を再生しました';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return '再生に失敗：$err';
+  }
+
+  @override
+  String get diagFileIo => 'WAV ファイル入出力';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return '書き込み→読み出し→復調が一致 @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return 'ファイル書き込みに失敗：$err';
+  }
+
+  @override
+  String get diagFileReadFail => 'ファイル読み出しに失敗';
+
+  @override
+  String get diagFileDecodeFail =>
+      'ファイル内の音声からパケットを復調できません（AFSK 1200 の録音ではない可能性）';
+
+  @override
+  String get connAudioSourceHint => 'オーディオモードではサーバー・フィルタ・KISS 設定は使いません';
+
+  @override
+  String get testTxTitle => 'テスト送信';
+
+  @override
+  String get testTxDesc => 'ステータスパケットを送信し、実際に電波に出るか確認します';
+
+  @override
+  String get testTxAction => 'テストフレームを送信';
+
+  @override
+  String get testTxSent => 'テストフレームをリンクに渡しました';
+
+  @override
+  String testTxFail(String err) {
+    return 'テストフレーム送信に失敗：$err';
+  }
+
+  @override
+  String get testTxNeedsConnect => '先にリンクを接続してください';
+
+  @override
+  String get testTxHint =>
+      'これは**実際の送信**です（ステータスパケット、位置情報なし）。自分のコールサインと免許の範囲内で運用してください';
+
+  @override
+  String get audioStatsTitle => 'オーディオ統計';
+
+  @override
+  String audioStatRx(int n) {
+    return '受信 $n フレーム';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '送信 $n フレーム';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '送信中に $n バイト破棄';
+  }
+
+  @override
+  String get audioRestart => 'オーディオリンクを再起動';
+
+  @override
+  String get audioTxDisabled => '「送信を許可」がオフ — 受信のみ';
+
+  @override
+  String get audioLoopbackHint => '自己診断は実際に変調→復調を行います。「送信中に破棄」は半二重として正常です';
+
+  @override
+  String get notifAudioConnected => 'オーディオリンク接続中';
+
+  @override
+  String get notifAudioDisconnected => 'オーディオリンク切断';
+
+  @override
+  String connConnectingAudio(String name) {
+    return 'オーディオを開いています（$name）…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return 'オーディオリンク接続 · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return 'オーディオを開けません · $seconds秒後に再試行…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return 'オーディオ失敗（$detail）· $seconds秒後に再試行…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return 'オーディオリンク切断 · $seconds秒後に再接続…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return 'オーディオ送信 · 位置を送信しました ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => 'オーディオ（サウンドカード）';
+
+  @override
+  String get dataSourceAudioDesc => 'マイク／スピーカーまたはサウンドカード接続で AFSK 1200 を送受信';
+
+  @override
+  String get audioSettings => 'オーディオ（サウンドカード TNC）';
+
+  @override
+  String get audioSettingsSubtitle => 'サウンドカードで AFSK 1200 パケットを送受信';
+
+  @override
+  String get audioBackend => 'オーディオバックエンド';
+
+  @override
+  String get audioUnsupported => 'このプラットフォームはリアルタイム音声に未対応です（WAV ファイル方式は利用可）';
+
+  @override
+  String get audioNeedPermission => '録音権限（RECORD_AUDIO）が必要です。許可して再試行してください';
+
+  @override
+  String get audioCaptureTitle => 'オーディオ入力';
+
+  @override
+  String get audioCaptureDesc => 'マイク／ライン入力から AFSK 1200 を復調';
+
+  @override
+  String get audioCaptureStart => '入力を開始';
+
+  @override
+  String get audioCaptureStop => '入力を停止';
+
+  @override
+  String get audioSampleRate => 'サンプルレート';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz はサウンドカード TNC の一般的な値です。非対応なら 44100/48000 を使用。変更すると入力が再起動します';
+
+  @override
+  String get audioLevel => '入力レベル';
+
+  @override
+  String get audioLevelTip => '信号があるとメーターが上がり、AFSK を受信すると「復調ロック」が点灯します';
+
+  @override
+  String get audioSynced => '復調ロック';
+
+  @override
+  String get audioUnlocked => '未ロック';
+
+  @override
+  String audioBadFrames(int n) {
+    return '復調中断 $n 回（ノイズ／同期外れ）';
+  }
+
+  @override
+  String get audioBaud => 'ビットレート';
+
+  @override
+  String get audioTones => 'トーン（マーク／スペース）';
+
+  @override
+  String get audioTxTitle => 'オーディオ送信';
+
+  @override
+  String get audioTxDesc => '送信前にチャネルを監視して衝突を避けます';
+
+  @override
+  String get audioTxEnabled => '送信を許可';
+
+  @override
+  String get audioTxEnabledTip => 'オフにすると受信のみ。ビーコンを聞くだけのときに便利です';
+
+  @override
+  String get audioTxDelayTip => '送信前のプリアンブル長。相手の復調ロックと無線機 PTT 立ち上げに必要です';
+
+  @override
+  String get audioToneMark => 'マーク周波数 (Hz)';
+
+  @override
+  String get audioToneSpace => 'スペース周波数 (Hz)';
+
+  @override
+  String get audioMarkTip => 'Bell 202 はマーク 1200Hz／スペース 2200Hz。許容は数 Hz のみです';
+
+  @override
+  String get audioSpaceTip => 'スペース音。マークと合わせて FSK シフト（標準 1000Hz）を決めます';
+
+  @override
+  String get audioBaudTip => 'VHF の APRS は常に 1200 bd（Bell 202）。300 は HF 用です';
+
+  @override
+  String get audioTxDelayLabel => '送信プリアンブル (ms)';
+
+  @override
+  String get audioTnc2Tip => '形式 SRC>DEST,PATH:info（例：BG7LZQ-9>APALOC:>TEST）';
+
+  @override
+  String get audioCsmaWait => 'チャネル空き待ち (ms)';
+
+  @override
+  String get audioCsmaWaitTip => 'チャネル使用中に待つ最大時間。0 で即時送信';
+
+  @override
+  String get audioStopTx => '送信を停止';
+
+  @override
+  String get audioWavTitle => 'WAV ファイル方式';
+
+  @override
+  String get audioWavDesc => '録音をオフライン復調、またはパケットを音声ファイルに書き出し';
+
+  @override
+  String get audioWavPath => 'ファイルパス';
+
+  @override
+  String get audioWavDecodeAction => 'この WAV を復調';
+
+  @override
+  String get audioWavExportAction => 'このパケットを書き出し';
+
+  @override
+  String get audioWavTnC2 => '書き出すパケット (TNC2)';
+
+  @override
+  String get audioWavNone => 'パケットを復調できません（AFSK 1200 の録音ではない可能性）';
+
+  @override
+  String audioWavFound(int n) {
+    return '$n 件のパケットを復調';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return '$path に書き出しました';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return 'ファイル入出力に失敗：$err';
+  }
+
+  @override
   String connTncConnected(String arg) {
     return 'TNC 接続済み · $arg';
   }

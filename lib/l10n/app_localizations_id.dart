@@ -1045,6 +1045,416 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
+  String get diagTitle => 'Uji mandiri tautan';
+
+  @override
+  String get diagSubtitle =>
+      'Memeriksa protokol, izin, dan perangkat lapis demi lapis';
+
+  @override
+  String get diagRun => 'Jalankan uji';
+
+  @override
+  String get diagRunning => 'Menguji…';
+
+  @override
+  String diagPassed(int n) {
+    return '$n lulus';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '$n gagal';
+  }
+
+  @override
+  String get diagHint =>
+      'Uji protokol bisa jalan tanpa radio: pastikan perangkat lunak dulu, lalu cek perangkat dan kabel';
+
+  @override
+  String get diagTncSection => 'TNC (KISS / AX.25)';
+
+  @override
+  String get diagAudioSection => 'Audio (AFSK 1200)';
+
+  @override
+  String get diagKissEscape => 'Escape KISS';
+
+  @override
+  String get diagKissEscapeFail =>
+      'Gagal membalik escape KISS (masalah perangkat lunak — ganti perangkat tidak membantu)';
+
+  @override
+  String get diagAx25 => 'Pembingkaian AX.25';
+
+  @override
+  String get diagAx25Fail => 'Pengodean AX.25 gagal (format paket salah)';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'Hasil bolak-balik AX.25 tidak cocok: $got';
+  }
+
+  @override
+  String get diagFcs => 'Pemeriksaan FCS';
+
+  @override
+  String get diagFcsFail =>
+      'Pemeriksaan FCS salah (perubahan satu byte harus ditolak)';
+
+  @override
+  String get diagTncLoopback => 'Loop protokol TNC';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'Bolak-balik KISS/AX.25 identik ($len byte)';
+  }
+
+  @override
+  String get diagAfskLoopback => 'Loop modem AFSK';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return 'Modulasi → demodulasi identik ($samples sampel @${rate}Hz)';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '$n bingkai terdekode — seharusnya 1';
+  }
+
+  @override
+  String get diagAfskLevelFail =>
+      'Level gelombang terlalu rendah (hampir senyap)';
+
+  @override
+  String get diagPlatform => 'Dukungan platform';
+
+  @override
+  String diagPlatformOk(String name) {
+    return 'Tersedia · backend $name';
+  }
+
+  @override
+  String get diagTncPlatformNo => 'Tautan TNC tidak didukung di platform ini';
+
+  @override
+  String get diagAudioPlatformWarn =>
+      'Tanpa audio waktu-nyata — mode berkas WAV tetap tersedia';
+
+  @override
+  String get diagNoRealtime => 'bukan waktu-nyata';
+
+  @override
+  String get diagPermission => 'Izin mikrofon';
+
+  @override
+  String get diagPermissionOk => 'Diberikan';
+
+  @override
+  String get diagSkipped => 'Dilewati (platform tidak didukung)';
+
+  @override
+  String get diagCapture => 'Penangkapan audio';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return 'Menerima $bytes byte @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData =>
+      'Tidak ada data audio — periksa perangkat masukan dan izin';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return 'Gagal memulai penangkapan: $err';
+  }
+
+  @override
+  String get diagSpeaker => 'Keluaran speaker';
+
+  @override
+  String get diagSpeakerOk => 'Nada uji diputar';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return 'Pemutaran gagal: $err';
+  }
+
+  @override
+  String get diagFileIo => 'I/O berkas WAV';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return 'Tulis → baca → dekode identik @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return 'Gagal menulis berkas: $err';
+  }
+
+  @override
+  String get diagFileReadFail => 'Gagal membaca berkas';
+
+  @override
+  String get diagFileDecodeFail =>
+      'Tidak ada paket terdekode dari berkas (mungkin bukan rekaman AFSK 1200)';
+
+  @override
+  String get connAudioSourceHint =>
+      'Mode audio tidak memakai server, filter, atau setelan KISS';
+
+  @override
+  String get testTxTitle => 'Uji pancar';
+
+  @override
+  String get testTxDesc =>
+      'Mengirim paket status untuk membuktikan tautan benar-benar ke udara';
+
+  @override
+  String get testTxAction => 'Pancarkan bingkai uji';
+
+  @override
+  String get testTxSent => 'Bingkai uji diberikan ke tautan';
+
+  @override
+  String testTxFail(String err) {
+    return 'Bingkai uji gagal: $err';
+  }
+
+  @override
+  String get testTxNeedsConnect => 'Hubungkan tautan dulu';
+
+  @override
+  String get testTxHint =>
+      'Ini **benar-benar memancar** (paket status, tanpa koordinat). Pastikan sesuai lisensi dan tanda panggil Anda';
+
+  @override
+  String get audioStatsTitle => 'Statistik audio';
+
+  @override
+  String audioStatRx(int n) {
+    return '$n bingkai diterima';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '$n bingkai terkirim';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '$n byte dibuang saat memancar';
+  }
+
+  @override
+  String get audioRestart => 'Mulai ulang tautan audio';
+
+  @override
+  String get audioTxDisabled => '\"Izinkan pancar\" mati — hanya menerima';
+
+  @override
+  String get audioLoopbackHint =>
+      'Uji mandiri benar-benar memodulasi lalu mendemodulasi; \"dibuang saat memancar\" normal pada half-duplex';
+
+  @override
+  String get notifAudioConnected => 'Tautan audio aktif';
+
+  @override
+  String get notifAudioDisconnected => 'Tautan audio terputus';
+
+  @override
+  String connConnectingAudio(String name) {
+    return 'Membuka audio ($name)…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return 'Tautan audio aktif · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return 'Gagal membuka audio · coba lagi dalam ${seconds}s…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return 'Audio gagal ($detail) · coba lagi dalam ${seconds}s…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return 'Tautan audio terputus · menyambung ulang dalam ${seconds}s…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return 'Terkirim via audio · posisi terkirim ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => 'Audio (kartu suara)';
+
+  @override
+  String get dataSourceAudioDesc =>
+      'AFSK 1200 ke/dari radio lewat mic/speaker atau kabel kartu suara';
+
+  @override
+  String get audioSettings => 'Audio (TNC kartu suara)';
+
+  @override
+  String get audioSettingsSubtitle =>
+      'Kirim/terima paket AFSK 1200 dengan kartu suara';
+
+  @override
+  String get audioBackend => 'Backend audio';
+
+  @override
+  String get audioUnsupported =>
+      'Audio waktu-nyata tidak didukung di platform ini (mode berkas WAV tersedia)';
+
+  @override
+  String get audioNeedPermission =>
+      'Izin mikrofon (RECORD_AUDIO) diperlukan — berikan lalu coba lagi';
+
+  @override
+  String get audioCaptureTitle => 'Penangkapan audio';
+
+  @override
+  String get audioCaptureDesc => 'Demodulasi AFSK 1200 dari masukan mic/line';
+
+  @override
+  String get audioCaptureStart => 'Mulai tangkap';
+
+  @override
+  String get audioCaptureStop => 'Hentikan';
+
+  @override
+  String get audioSampleRate => 'Laju sampel';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz adalah nilai umum TNC kartu suara; pakai 44100/48000 bila tidak didukung. Mengubahnya memulai ulang penangkapan';
+
+  @override
+  String get audioLevel => 'Level masukan';
+
+  @override
+  String get audioLevelTip =>
+      'Meter naik saat ada sinyal; \"Demod terkunci\" menyala saat AFSK terdeteksi';
+
+  @override
+  String get audioSynced => 'Demod terkunci';
+
+  @override
+  String get audioUnlocked => 'Tidak terkunci';
+
+  @override
+  String audioBadFrames(int n) {
+    return '$n dekode dibatalkan (derau/kehilangan sinkron)';
+  }
+
+  @override
+  String get audioBaud => 'Laju bit';
+
+  @override
+  String get audioTones => 'Nada (mark/space)';
+
+  @override
+  String get audioTxTitle => 'Pemancaran audio';
+
+  @override
+  String get audioTxDesc =>
+      'Mendengarkan sebelum memancar untuk menghindari tabrakan';
+
+  @override
+  String get audioTxEnabled => 'Izinkan pancar';
+
+  @override
+  String get audioTxEnabledTip =>
+      'Jika mati, hanya menerima — praktis bila hanya ingin memantau beacon';
+
+  @override
+  String get audioTxDelayTip =>
+      'Panjang preamble: memberi waktu demod lawan mengunci dan PTT radio aktif';
+
+  @override
+  String get audioToneMark => 'Nada mark (Hz)';
+
+  @override
+  String get audioToneSpace => 'Nada space (Hz)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 menetapkan mark 1200Hz / space 2200Hz; toleransinya hanya beberapa Hz';
+
+  @override
+  String get audioSpaceTip =>
+      'Nada space. Bersama mark menentukan shift FSK (nominal 1000Hz)';
+
+  @override
+  String get audioBaudTip =>
+      'APRS di VHF selalu 1200 bd (Bell 202); 300 untuk HF';
+
+  @override
+  String get audioTxDelayLabel => 'Preamble Tx (ms)';
+
+  @override
+  String get audioTnc2Tip =>
+      'Format SRC>DEST,PATH:info, mis. BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioCsmaWait => 'Tunggu kanal bebas (ms)';
+
+  @override
+  String get audioCsmaWaitTip =>
+      'Berapa lama menunggu saat kanal sibuk; 0 = langsung pancar';
+
+  @override
+  String get audioStopTx => 'Hentikan pancar';
+
+  @override
+  String get audioWavTitle => 'Mode berkas WAV';
+
+  @override
+  String get audioWavDesc =>
+      'Dekode rekaman secara offline, atau ekspor paket sebagai audio';
+
+  @override
+  String get audioWavPath => 'Jalur berkas';
+
+  @override
+  String get audioWavDecodeAction => 'Dekode WAV ini';
+
+  @override
+  String get audioWavExportAction => 'Ekspor paket ini';
+
+  @override
+  String get audioWavTnC2 => 'Paket untuk ekspor (TNC2)';
+
+  @override
+  String get audioWavNone =>
+      'Tidak ada paket terdekode (mungkin bukan rekaman AFSK 1200)';
+
+  @override
+  String audioWavFound(int n) {
+    return '$n paket terdekode';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return 'Ditulis ke $path';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return 'Gagal baca/tulis berkas: $err';
+  }
+
+  @override
   String connTncConnected(String arg) {
     return 'TNC terhubung · $arg';
   }

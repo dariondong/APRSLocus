@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'audio_page.dart';
 import 'l10n/app_localizations.dart';
+import 'link_test_card.dart';
 import 'net/tnc.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
@@ -214,6 +216,10 @@ class _TncSettingsPageState extends State<TncSettingsPage> {
           _kissCard(s),
           const SizedBox(height: 16),
           _rfCard(s),
+          const SizedBox(height: 16),
+          LinkTestCard(state: st, source: LinkTestSource.tnc),
+          const SizedBox(height: 16),
+          _audioEntryCard(s),
           const SizedBox(height: 16),
           _logCard(s),
           const SizedBox(height: 24),
@@ -486,6 +492,40 @@ class _TncSettingsPageState extends State<TncSettingsPage> {
     );
   }
 
+  /// ④.5 音频入口：声卡 TNC 与蓝牙/串口 TNC 是并列的两种射频链路，
+  /// 入口放在同一页可以顺着「射频数据来源」这条线找到，不用记两个地方。
+  Widget _audioEntryCard(S s) {
+    return SettingsSectionCard(
+      title: s.audioSettings,
+      subtitle: s.audioSettingsSubtitle,
+      icon: Icons.graphic_eq_rounded,
+      color: C.cyan,
+      children: [
+        SettingsHint(s.dataSourceAudioDesc),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 2, 14, 12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AudioSettingsPage(state: st),
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded, size: 16),
+              label: Text(s.audioSettings, style: ts(12, w: FontWeight.w600)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.cyan,
+                side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   /// ⑤ 链路日志
   Widget _logCard(S s) {
     final logs = tnc.logs;
@@ -556,6 +596,12 @@ class DataSourceCard extends StatelessWidget {
           title: s.dataSourceTnc,
           desc: s.dataSourceTncDesc,
           icon: Icons.settings_input_antenna_rounded,
+        ),
+        _tile(
+          key: AppState.srcAudio,
+          title: s.dataSourceAudio,
+          desc: s.dataSourceAudioDesc,
+          icon: Icons.graphic_eq_rounded,
         ),
         if (extra != null) SettingsHint(extra!),
       ],

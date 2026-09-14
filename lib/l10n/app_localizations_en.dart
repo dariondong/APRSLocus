@@ -1045,6 +1045,416 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionTranslation => 'Translation';
 
   @override
+  String get diagTitle => 'Link self-test';
+
+  @override
+  String get diagSubtitle =>
+      'Checks protocol, permissions and devices layer by layer';
+
+  @override
+  String get diagRun => 'Run self-test';
+
+  @override
+  String get diagRunning => 'Testing…';
+
+  @override
+  String diagPassed(int n) {
+    return '$n passed';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '$n failed';
+  }
+
+  @override
+  String get diagHint =>
+      'Protocol loops run without a radio: rule out software first, then check devices and wiring';
+
+  @override
+  String get diagTncSection => 'TNC (KISS / AX.25)';
+
+  @override
+  String get diagAudioSection => 'Audio (AFSK 1200)';
+
+  @override
+  String get diagKissEscape => 'KISS escaping';
+
+  @override
+  String get diagKissEscapeFail =>
+      'KISS unescaping failed (software issue — changing hardware will not help)';
+
+  @override
+  String get diagAx25 => 'AX.25 framing';
+
+  @override
+  String get diagAx25Fail => 'AX.25 encoding failed (malformed packet)';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 round-trip mismatch, decoded: $got';
+  }
+
+  @override
+  String get diagFcs => 'FCS check';
+
+  @override
+  String get diagFcsFail =>
+      'FCS check is wrong (a one-byte change must be rejected)';
+
+  @override
+  String get diagTncLoopback => 'TNC protocol loop';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 round-trip identical ($len bytes)';
+  }
+
+  @override
+  String get diagAfskLoopback => 'AFSK modem loop';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return 'Modulate → demodulate identical ($samples samples @${rate}Hz)';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return 'Decoded $n frame(s) — expected 1';
+  }
+
+  @override
+  String get diagAfskLevelFail =>
+      'Waveform level too low (output is nearly silent)';
+
+  @override
+  String get diagPlatform => 'Platform support';
+
+  @override
+  String diagPlatformOk(String name) {
+    return 'Available · backend $name';
+  }
+
+  @override
+  String get diagTncPlatformNo =>
+      'TNC links are not supported on this platform';
+
+  @override
+  String get diagAudioPlatformWarn =>
+      'No real-time audio — WAV file mode is still available';
+
+  @override
+  String get diagNoRealtime => 'not real-time';
+
+  @override
+  String get diagPermission => 'Mic permission';
+
+  @override
+  String get diagPermissionOk => 'Granted';
+
+  @override
+  String get diagSkipped => 'Skipped (unsupported platform)';
+
+  @override
+  String get diagCapture => 'Audio capture';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return 'Received $bytes bytes @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData =>
+      'No audio data received — check the input device and permissions';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return 'Could not start capture: $err';
+  }
+
+  @override
+  String get diagSpeaker => 'Speaker output';
+
+  @override
+  String get diagSpeakerOk => 'Test tone played';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return 'Playback failed: $err';
+  }
+
+  @override
+  String get diagFileIo => 'WAV file I/O';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return 'Write → read → decode identical @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return 'File write failed: $err';
+  }
+
+  @override
+  String get diagFileReadFail => 'File read failed';
+
+  @override
+  String get diagFileDecodeFail =>
+      'No packet decoded from the file (maybe not an AFSK 1200 recording)';
+
+  @override
+  String get connAudioSourceHint =>
+      'Audio mode does not use the server, filters or KISS settings';
+
+  @override
+  String get testTxTitle => 'Test transmit';
+
+  @override
+  String get testTxDesc =>
+      'Sends a status packet to prove the link really reaches the air';
+
+  @override
+  String get testTxAction => 'Transmit test frame';
+
+  @override
+  String get testTxSent => 'Test frame handed to the link';
+
+  @override
+  String testTxFail(String err) {
+    return 'Test frame failed: $err';
+  }
+
+  @override
+  String get testTxNeedsConnect => 'Connect the link first';
+
+  @override
+  String get testTxHint =>
+      'This **really transmits** (a status packet, no coordinates). Make sure you are operating within your licence and callsign';
+
+  @override
+  String get audioStatsTitle => 'Audio statistics';
+
+  @override
+  String audioStatRx(int n) {
+    return '$n frames received';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '$n frames sent';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '$n bytes dropped while transmitting';
+  }
+
+  @override
+  String get audioRestart => 'Restart audio link';
+
+  @override
+  String get audioTxDisabled => '\"Allow transmit\" is off — receiving only';
+
+  @override
+  String get audioLoopbackHint =>
+      'The self-test really modulates and demodulates; \"dropped while transmitting\" is normal half-duplex behaviour';
+
+  @override
+  String get notifAudioConnected => 'Audio link online';
+
+  @override
+  String get notifAudioDisconnected => 'Audio link disconnected';
+
+  @override
+  String connConnectingAudio(String name) {
+    return 'Opening audio ($name)…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return 'Audio link online · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return 'Could not open audio · retrying in ${seconds}s…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return 'Audio failed ($detail) · retrying in ${seconds}s…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return 'Audio link lost · reconnecting in ${seconds}s…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return 'Sent over audio · position transmitted ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => 'Audio (soundcard)';
+
+  @override
+  String get dataSourceAudioDesc =>
+      'AFSK 1200 to/from a radio via mic/speaker or a soundcard cable';
+
+  @override
+  String get audioSettings => 'Audio (soundcard TNC)';
+
+  @override
+  String get audioSettingsSubtitle =>
+      'Send and receive AFSK 1200 packets with your soundcard';
+
+  @override
+  String get audioBackend => 'Audio backend';
+
+  @override
+  String get audioUnsupported =>
+      'Real-time audio is not supported on this platform (WAV file mode is available)';
+
+  @override
+  String get audioNeedPermission =>
+      'Microphone permission (RECORD_AUDIO) is required — grant it and try again';
+
+  @override
+  String get audioCaptureTitle => 'Audio capture';
+
+  @override
+  String get audioCaptureDesc => 'Demodulate AFSK 1200 from the mic/line input';
+
+  @override
+  String get audioCaptureStart => 'Start capture';
+
+  @override
+  String get audioCaptureStop => 'Stop capture';
+
+  @override
+  String get audioSampleRate => 'Sample rate';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050 Hz is the usual soundcard-TNC rate; use 44100/48000 if unsupported. Changing it restarts capture';
+
+  @override
+  String get audioLevel => 'Input level';
+
+  @override
+  String get audioLevelTip =>
+      'The meter rises with a signal; \"Demod locked\" lights up when AFSK is detected';
+
+  @override
+  String get audioSynced => 'Demod locked';
+
+  @override
+  String get audioUnlocked => 'Not locked';
+
+  @override
+  String audioBadFrames(int n) {
+    return '$n aborted decodes (noise / out of sync)';
+  }
+
+  @override
+  String get audioBaud => 'Bit rate';
+
+  @override
+  String get audioTones => 'Tones (mark/space)';
+
+  @override
+  String get audioTxTitle => 'Audio transmit';
+
+  @override
+  String get audioTxDesc => 'Listens before transmitting to avoid collisions';
+
+  @override
+  String get audioTxEnabled => 'Allow transmit';
+
+  @override
+  String get audioTxEnabledTip =>
+      'When off, receive only — handy if you just want to monitor beacons';
+
+  @override
+  String get audioTxDelayTip =>
+      'Preamble length: lets the far-end demod lock and the radio key up';
+
+  @override
+  String get audioToneMark => 'Mark tone (Hz)';
+
+  @override
+  String get audioToneSpace => 'Space tone (Hz)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 specifies mark 1200 Hz / space 2200 Hz; the tolerance is only a few Hz';
+
+  @override
+  String get audioSpaceTip =>
+      'Space tone. Together with mark it sets the FSK shift (1000 Hz nominal)';
+
+  @override
+  String get audioBaudTip =>
+      'APRS on VHF is always 1200 bd (Bell 202); 300 bd is for HF';
+
+  @override
+  String get audioTxDelayLabel => 'Tx preamble (ms)';
+
+  @override
+  String get audioTnc2Tip =>
+      'Format SRC>DEST,PATH:info, e.g. BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioCsmaWait => 'Wait for a clear channel (ms)';
+
+  @override
+  String get audioCsmaWaitTip =>
+      'How long to wait when the channel is busy; 0 = transmit immediately';
+
+  @override
+  String get audioStopTx => 'Stop transmit';
+
+  @override
+  String get audioWavTitle => 'WAV file mode';
+
+  @override
+  String get audioWavDesc =>
+      'Decode a recording offline, or export a packet as audio';
+
+  @override
+  String get audioWavPath => 'File path';
+
+  @override
+  String get audioWavDecodeAction => 'Decode this WAV';
+
+  @override
+  String get audioWavExportAction => 'Export this packet';
+
+  @override
+  String get audioWavTnC2 => 'Packet to export (TNC2)';
+
+  @override
+  String get audioWavNone =>
+      'No packets decoded (maybe not an AFSK 1200 recording)';
+
+  @override
+  String audioWavFound(int n) {
+    return 'Decoded $n packet(s)';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return 'Written to $path';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return 'File I/O failed: $err';
+  }
+
+  @override
   String connTncConnected(String arg) {
     return 'TNC connected · $arg';
   }

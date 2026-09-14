@@ -1052,6 +1052,419 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionTranslation => 'Traducción';
 
   @override
+  String get diagTitle => 'Autodiagnóstico del enlace';
+
+  @override
+  String get diagSubtitle =>
+      'Comprueba protocolo, permisos y dispositivos capa por capa';
+
+  @override
+  String get diagRun => 'Ejecutar prueba';
+
+  @override
+  String get diagRunning => 'Probando…';
+
+  @override
+  String diagPassed(int n) {
+    return '$n correctas';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '$n fallidas';
+  }
+
+  @override
+  String get diagHint =>
+      'Los bucles de protocolo funcionan sin radio: descarta el software y luego revisa dispositivos y cableado';
+
+  @override
+  String get diagTncSection => 'TNC (KISS / AX.25)';
+
+  @override
+  String get diagAudioSection => 'Audio (AFSK 1200)';
+
+  @override
+  String get diagKissEscape => 'Escape KISS';
+
+  @override
+  String get diagKissEscapeFail =>
+      'Fallo al deshacer el escape KISS (problema de software: cambiar el dispositivo no ayuda)';
+
+  @override
+  String get diagAx25 => 'Tramado AX.25';
+
+  @override
+  String get diagAx25Fail =>
+      'Fallo de codificación AX.25 (paquete mal formado)';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'El ida y vuelta AX.25 no coincide: $got';
+  }
+
+  @override
+  String get diagFcs => 'Comprobación FCS';
+
+  @override
+  String get diagFcsFail =>
+      'La comprobación FCS es incorrecta (un cambio de un byte debe rechazarse)';
+
+  @override
+  String get diagTncLoopback => 'Bucle de protocolo TNC';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'Ida y vuelta KISS/AX.25 idéntico ($len bytes)';
+  }
+
+  @override
+  String get diagAfskLoopback => 'Bucle de módem AFSK';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return 'Modular → demodular idéntico ($samples muestras @${rate}Hz)';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '$n trama(s) decodificada(s): se esperaba 1';
+  }
+
+  @override
+  String get diagAfskLevelFail =>
+      'Nivel de onda demasiado bajo (casi silencio)';
+
+  @override
+  String get diagPlatform => 'Compatibilidad de plataforma';
+
+  @override
+  String diagPlatformOk(String name) {
+    return 'Disponible · motor $name';
+  }
+
+  @override
+  String get diagTncPlatformNo => 'Este sistema no admite enlaces TNC';
+
+  @override
+  String get diagAudioPlatformWarn =>
+      'Sin audio en tiempo real: el modo WAV sigue disponible';
+
+  @override
+  String get diagNoRealtime => 'no en tiempo real';
+
+  @override
+  String get diagPermission => 'Permiso de micrófono';
+
+  @override
+  String get diagPermissionOk => 'Concedido';
+
+  @override
+  String get diagSkipped => 'Omitido (plataforma no compatible)';
+
+  @override
+  String get diagCapture => 'Captura de audio';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return 'Recibidos $bytes bytes @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData =>
+      'No se recibieron datos de audio: revisa el dispositivo de entrada y los permisos';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return 'No se pudo iniciar la captura: $err';
+  }
+
+  @override
+  String get diagSpeaker => 'Salida de altavoz';
+
+  @override
+  String get diagSpeakerOk => 'Tono de prueba reproducido';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return 'Fallo de reproducción: $err';
+  }
+
+  @override
+  String get diagFileIo => 'E/S de archivo WAV';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return 'Escritura → lectura → decodificación idénticas @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return 'Fallo de escritura: $err';
+  }
+
+  @override
+  String get diagFileReadFail => 'Fallo de lectura del archivo';
+
+  @override
+  String get diagFileDecodeFail =>
+      'No se decodificó ningún paquete del archivo (¿no es una grabación AFSK 1200?)';
+
+  @override
+  String get connAudioSourceHint =>
+      'El modo de audio no usa servidor, filtros ni ajustes KISS';
+
+  @override
+  String get testTxTitle => 'Transmisión de prueba';
+
+  @override
+  String get testTxDesc =>
+      'Envía un paquete de estado para comprobar que el enlace llega al aire';
+
+  @override
+  String get testTxAction => 'Transmitir trama de prueba';
+
+  @override
+  String get testTxSent => 'Trama de prueba entregada al enlace';
+
+  @override
+  String testTxFail(String err) {
+    return 'Fallo de la trama de prueba: $err';
+  }
+
+  @override
+  String get testTxNeedsConnect => 'Conecta primero el enlace';
+
+  @override
+  String get testTxHint =>
+      'Esto **transmite de verdad** (paquete de estado, sin coordenadas). Asegúrate de operar dentro de tu licencia e indicativo';
+
+  @override
+  String get audioStatsTitle => 'Estadísticas de audio';
+
+  @override
+  String audioStatRx(int n) {
+    return '$n tramas recibidas';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '$n tramas enviadas';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '$n bytes descartados durante la transmisión';
+  }
+
+  @override
+  String get audioRestart => 'Reiniciar enlace de audio';
+
+  @override
+  String get audioTxDisabled =>
+      '\"Permitir transmisión\" desactivado: solo recepción';
+
+  @override
+  String get audioLoopbackHint =>
+      'La prueba modula y demodula de verdad; \"descartados durante la transmisión\" es normal en semidúplex';
+
+  @override
+  String get notifAudioConnected => 'Enlace de audio en línea';
+
+  @override
+  String get notifAudioDisconnected => 'Enlace de audio desconectado';
+
+  @override
+  String connConnectingAudio(String name) {
+    return 'Abriendo audio ($name)…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return 'Enlace de audio en línea · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return 'No se pudo abrir el audio · reintentando en ${seconds}s…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return 'Fallo de audio ($detail) · reintentando en ${seconds}s…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return 'Enlace de audio perdido · reconectando en ${seconds}s…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return 'Enviado por audio · posición transmitida ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => 'Audio (tarjeta de sonido)';
+
+  @override
+  String get dataSourceAudioDesc =>
+      'AFSK 1200 hacia/desde una radio por micrófono/altavoz o cable de sonido';
+
+  @override
+  String get audioSettings => 'Audio (TNC de tarjeta de sonido)';
+
+  @override
+  String get audioSettingsSubtitle =>
+      'Envía y recibe paquetes AFSK 1200 con la tarjeta de sonido';
+
+  @override
+  String get audioBackend => 'Motor de audio';
+
+  @override
+  String get audioUnsupported =>
+      'Este sistema no admite audio en tiempo real (el modo WAV sí está disponible)';
+
+  @override
+  String get audioNeedPermission =>
+      'Se requiere permiso de micrófono (RECORD_AUDIO): concédelo e inténtalo de nuevo';
+
+  @override
+  String get audioCaptureTitle => 'Captura de audio';
+
+  @override
+  String get audioCaptureDesc =>
+      'Demodula AFSK 1200 desde la entrada de micrófono/línea';
+
+  @override
+  String get audioCaptureStart => 'Iniciar captura';
+
+  @override
+  String get audioCaptureStop => 'Detener captura';
+
+  @override
+  String get audioSampleRate => 'Frecuencia de muestreo';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050 Hz es lo habitual en TNC de tarjeta de sonido; usa 44100/48000 si no se admite. Cambiarlo reinicia la captura';
+
+  @override
+  String get audioLevel => 'Nivel de entrada';
+
+  @override
+  String get audioLevelTip =>
+      'El medidor sube con señal; \"Demodulación sincronizada\" se ilumina al detectar AFSK';
+
+  @override
+  String get audioSynced => 'Demodulación sincronizada';
+
+  @override
+  String get audioUnlocked => 'Sin sincronizar';
+
+  @override
+  String audioBadFrames(int n) {
+    return '$n decodificaciones abortadas (ruido/desincronización)';
+  }
+
+  @override
+  String get audioBaud => 'Velocidad en baudios';
+
+  @override
+  String get audioTones => 'Tonos (mark/space)';
+
+  @override
+  String get audioTxTitle => 'Transmisión de audio';
+
+  @override
+  String get audioTxDesc =>
+      'Escucha antes de transmitir para evitar colisiones';
+
+  @override
+  String get audioTxEnabled => 'Permitir transmisión';
+
+  @override
+  String get audioTxEnabledTip =>
+      'Si está desactivado, solo recepción: útil si solo quieres escuchar balizas';
+
+  @override
+  String get audioTxDelayTip =>
+      'Duración del preámbulo: da tiempo al demodulador remoto y al PTT';
+
+  @override
+  String get audioToneMark => 'Tono mark (Hz)';
+
+  @override
+  String get audioToneSpace => 'Tono space (Hz)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 define mark 1200 Hz y space 2200 Hz; la tolerancia es de unos pocos Hz';
+
+  @override
+  String get audioSpaceTip =>
+      'Tono space. Junto con mark define el desplazamiento FSK (1000 Hz nominal)';
+
+  @override
+  String get audioBaudTip =>
+      'APRS en VHF es siempre 1200 bd (Bell 202); 300 bd es para HF';
+
+  @override
+  String get audioTxDelayLabel => 'Preámbulo Tx (ms)';
+
+  @override
+  String get audioTnc2Tip =>
+      'Formato SRC>DEST,PATH:info, p. ej. BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioCsmaWait => 'Esperar canal libre (ms)';
+
+  @override
+  String get audioCsmaWaitTip =>
+      'Cuánto esperar si el canal está ocupado; 0 = transmitir de inmediato';
+
+  @override
+  String get audioStopTx => 'Detener transmisión';
+
+  @override
+  String get audioWavTitle => 'Modo de archivo WAV';
+
+  @override
+  String get audioWavDesc =>
+      'Decodifica una grabación sin conexión o exporta un paquete como audio';
+
+  @override
+  String get audioWavPath => 'Ruta del archivo';
+
+  @override
+  String get audioWavDecodeAction => 'Decodificar este WAV';
+
+  @override
+  String get audioWavExportAction => 'Exportar este paquete';
+
+  @override
+  String get audioWavTnC2 => 'Paquete a exportar (TNC2)';
+
+  @override
+  String get audioWavNone =>
+      'No se decodificó ningún paquete (¿no es una grabación AFSK 1200?)';
+
+  @override
+  String audioWavFound(int n) {
+    return '$n paquete(s) decodificado(s)';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return 'Guardado en $path';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return 'Fallo de E/S: $err';
+  }
+
+  @override
   String connTncConnected(String arg) {
     return 'TNC conectado · $arg';
   }

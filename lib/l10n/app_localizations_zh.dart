@@ -1032,6 +1032,390 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionTranslation => '翻译';
 
   @override
+  String get diagTitle => '链路自检';
+
+  @override
+  String get diagSubtitle => '逐层确认协议、权限、设备到底哪一环有问题';
+
+  @override
+  String get diagRun => '开始自检';
+
+  @override
+  String get diagRunning => '自检中…';
+
+  @override
+  String diagPassed(int n) {
+    return '通过 $n 项';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '失败 $n 项';
+  }
+
+  @override
+  String get diagHint => '协议回路不接电台也能跑：先确认软件层没问题，再去查设备与接线';
+
+  @override
+  String get diagTncSection => 'TNC（KISS / AX.25）';
+
+  @override
+  String get diagAudioSection => '音频（AFSK 1200）';
+
+  @override
+  String get diagKissEscape => 'KISS 转义';
+
+  @override
+  String get diagKissEscapeFail => 'KISS 转义还原失败（软件层问题，换设备也没用）';
+
+  @override
+  String get diagAx25 => 'AX.25 帧编解码';
+
+  @override
+  String get diagAx25Fail => 'AX.25 编码失败（报文格式不合法）';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 回路不一致，解回：$got';
+  }
+
+  @override
+  String get diagFcs => 'FCS 校验';
+
+  @override
+  String get diagFcsFail => 'FCS 校验异常（改动一个字节本应被拒收）';
+
+  @override
+  String get diagTncLoopback => 'TNC 协议回路';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 编解码往返一致（$len 字节）';
+  }
+
+  @override
+  String get diagAfskLoopback => 'AFSK 调制解调回路';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return '调制→解调一致（$samples 采样 @${rate}Hz）';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '解出 $n 帧（应为 1 帧）';
+  }
+
+  @override
+  String get diagAfskLevelFail => '波形幅度过低（调制结果接近静音）';
+
+  @override
+  String get diagPlatform => '平台能力';
+
+  @override
+  String diagPlatformOk(String name) {
+    return '可用 · 后端 $name';
+  }
+
+  @override
+  String get diagTncPlatformNo => '当前平台不支持 TNC 链路';
+
+  @override
+  String get diagAudioPlatformWarn => '不支持实时音频 · 仍可用 WAV 文件模式';
+
+  @override
+  String get diagNoRealtime => '非实时';
+
+  @override
+  String get diagPermission => '录音权限';
+
+  @override
+  String get diagPermissionOk => '已授权';
+
+  @override
+  String get diagSkipped => '已跳过（平台不支持）';
+
+  @override
+  String get diagCapture => '音频采集';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return '收到 $bytes 字节 @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData => '没有收到任何音频数据 · 检查输入设备与权限';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return '打开采集失败：$err';
+  }
+
+  @override
+  String get diagSpeaker => '扬声器输出';
+
+  @override
+  String get diagSpeakerOk => '测试音已播放';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return '播放失败：$err';
+  }
+
+  @override
+  String get diagFileIo => 'WAV 文件读写';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return '写入→读出→解调一致 @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return '文件写入失败：$err';
+  }
+
+  @override
+  String get diagFileReadFail => '文件读取失败';
+
+  @override
+  String get diagFileDecodeFail => '文件里的音频解不出报文（可能不是 AFSK 1200 录音）';
+
+  @override
+  String get connAudioSourceHint => '音频模式下不使用服务器、过滤器与 KISS 参数';
+
+  @override
+  String get testTxTitle => '测试发射';
+
+  @override
+  String get testTxDesc => '发一条状态报文，验证链路真的通到空中';
+
+  @override
+  String get testTxAction => '发射测试帧';
+
+  @override
+  String get testTxSent => '测试帧已交给链路';
+
+  @override
+  String testTxFail(String err) {
+    return '测试帧发送失败：$err';
+  }
+
+  @override
+  String get testTxNeedsConnect => '请先连接链路';
+
+  @override
+  String get testTxHint => '这是**真实发射**（状态报文，不含坐标）。射频发射请确认在自己的呼号与执照范围内';
+
+  @override
+  String get audioStatsTitle => '音频统计';
+
+  @override
+  String audioStatRx(int n) {
+    return '收 $n 帧';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '发 $n 帧';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '发射期间丢弃 $n 字节';
+  }
+
+  @override
+  String get audioRestart => '重启音频链路';
+
+  @override
+  String get audioTxDisabled => '「允许发射」已关闭，仅接收';
+
+  @override
+  String get audioLoopbackHint => '自检会真的做一次调制→解调；提示「发射期间丢弃」属正常半双工行为';
+
+  @override
+  String get notifAudioConnected => '音频链路在线';
+
+  @override
+  String get notifAudioDisconnected => '音频链路已断开';
+
+  @override
+  String connConnectingAudio(String name) {
+    return '正在打开音频（$name）…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return '音频链路在线 · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return '音频链路打开失败 · ${seconds}s 后重试…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return '音频打开失败（$detail）· ${seconds}s 后重试…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return '音频链路中断 · $seconds秒后自动重连…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return '音频已发射 · 位置已发送 ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => '音频（声卡）';
+
+  @override
+  String get dataSourceAudioDesc => '用麦克风/扬声器或声卡线接电台，收发 AFSK 1200';
+
+  @override
+  String get audioSettings => '音频（声卡 TNC）';
+
+  @override
+  String get audioSettingsSubtitle => '用声卡收发 AFSK 1200 报文';
+
+  @override
+  String get audioBackend => '音频后端';
+
+  @override
+  String get audioUnsupported => '当前平台不支持实时音频（可用 WAV 文件模式）';
+
+  @override
+  String get audioNeedPermission => '需要录音权限（RECORD_AUDIO），请授权后重试';
+
+  @override
+  String get audioCaptureTitle => '音频采集';
+
+  @override
+  String get audioCaptureDesc => '从麦克风/线路输入解调 AFSK 1200';
+
+  @override
+  String get audioCaptureStart => '打开采集';
+
+  @override
+  String get audioCaptureStop => '停止采集';
+
+  @override
+  String get audioSampleRate => '采样率';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz 是声卡 TNC 常用值；设备不支持时改用 44100/48000。修改会重启采集';
+
+  @override
+  String get audioLevel => '输入电平';
+
+  @override
+  String get audioLevelTip => '有信号时电平条会抬起；收到 AFSK 时「解调锁定」会点亮';
+
+  @override
+  String get audioSynced => '解调锁定';
+
+  @override
+  String get audioUnlocked => '未锁定';
+
+  @override
+  String audioBadFrames(int n) {
+    return '解码中止 $n 次（噪声/失步）';
+  }
+
+  @override
+  String get audioBaud => '比特率';
+
+  @override
+  String get audioTones => '音调（标/空）';
+
+  @override
+  String get audioTxTitle => '音频发射';
+
+  @override
+  String get audioTxDesc => '发射前先听信道，避免与其它台站碰撞';
+
+  @override
+  String get audioTxEnabled => '允许发射';
+
+  @override
+  String get audioTxEnabledTip => '关闭后只接收不发射（只想听信标时最省心）';
+
+  @override
+  String get audioTxDelayTip => '发射前导时长：给对端解调器锁定时间、给电台 PTT 建立时间';
+
+  @override
+  String get audioToneMark => '标号频率 (Hz)';
+
+  @override
+  String get audioToneSpace => '空号频率 (Hz)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 规定标号 1200Hz、空号 2200Hz；只有 ±几 Hz 的容差，不要随意改';
+
+  @override
+  String get audioSpaceTip => '空号音调。与标号音调一起决定 FSK 频偏（标准为 1000Hz）';
+
+  @override
+  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
+
+  @override
+  String get audioTxDelayLabel => '发射前导 (ms)';
+
+  @override
+  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioCsmaWait => '发射前等待信道空闲 (ms)';
+
+  @override
+  String get audioCsmaWaitTip => '检测到信道占用时最多等待多久；0 = 不等待直接发射';
+
+  @override
+  String get audioStopTx => '停止发射';
+
+  @override
+  String get audioWavTitle => 'WAV 文件模式';
+
+  @override
+  String get audioWavDesc => '离线解码一段录音，或把报文导出成音频文件';
+
+  @override
+  String get audioWavPath => '文件路径';
+
+  @override
+  String get audioWavDecodeAction => '解码此 WAV';
+
+  @override
+  String get audioWavExportAction => '导出此报文';
+
+  @override
+  String get audioWavTnC2 => '待导出报文 (TNC2)';
+
+  @override
+  String get audioWavNone => '未解出报文（可能不是 AFSK 1200 录音）';
+
+  @override
+  String audioWavFound(int n) {
+    return '解出 $n 条报文';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return '已写入 $path';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return '文件读写失败：$err';
+  }
+
+  @override
   String connTncConnected(String arg) {
     return 'TNC 已连接 · $arg';
   }
@@ -5611,6 +5995,390 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionTranslation => '翻譯';
+
+  @override
+  String get diagTitle => '鏈路自檢';
+
+  @override
+  String get diagSubtitle => '逐層確認協定、權限、裝置到底哪一環有問題';
+
+  @override
+  String get diagRun => '開始自檢';
+
+  @override
+  String get diagRunning => '自檢中…';
+
+  @override
+  String diagPassed(int n) {
+    return '通過 $n 項';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '失敗 $n 項';
+  }
+
+  @override
+  String get diagHint => '協定迴路不接電台也能跑：先確認軟體層沒問題，再去查裝置與接線';
+
+  @override
+  String get diagTncSection => 'TNC（KISS / AX.25）';
+
+  @override
+  String get diagAudioSection => '音訊（AFSK 1200）';
+
+  @override
+  String get diagKissEscape => 'KISS 跳脫';
+
+  @override
+  String get diagKissEscapeFail => 'KISS 跳脫還原失敗（軟體層問題，換裝置也沒用）';
+
+  @override
+  String get diagAx25 => 'AX.25 幀編解碼';
+
+  @override
+  String get diagAx25Fail => 'AX.25 編碼失敗（報文格式不合法）';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 迴路不一致，解回：$got';
+  }
+
+  @override
+  String get diagFcs => 'FCS 校驗';
+
+  @override
+  String get diagFcsFail => 'FCS 校驗異常（改動一個位元組本應被拒收）';
+
+  @override
+  String get diagTncLoopback => 'TNC 協定迴路';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 編解碼往返一致（$len 位元組）';
+  }
+
+  @override
+  String get diagAfskLoopback => 'AFSK 調變解調迴路';
+
+  @override
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return '調變→解調一致（$samples 取樣 @${rate}Hz）';
+  }
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '解出 $n 幀（應為 1 幀）';
+  }
+
+  @override
+  String get diagAfskLevelFail => '波形幅度過低（調變結果接近靜音）';
+
+  @override
+  String get diagPlatform => '平台能力';
+
+  @override
+  String diagPlatformOk(String name) {
+    return '可用 · 後端 $name';
+  }
+
+  @override
+  String get diagTncPlatformNo => '目前平台不支援 TNC 鏈路';
+
+  @override
+  String get diagAudioPlatformWarn => '不支援即時音訊 · 仍可用 WAV 檔案模式';
+
+  @override
+  String get diagNoRealtime => '非即時';
+
+  @override
+  String get diagPermission => '錄音權限';
+
+  @override
+  String get diagPermissionOk => '已授權';
+
+  @override
+  String get diagSkipped => '已跳過（平台不支援）';
+
+  @override
+  String get diagCapture => '音訊擷取';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return '收到 $bytes 位元組 @${rate}Hz';
+  }
+
+  @override
+  String get diagCaptureNoData => '沒有收到任何音訊資料 · 檢查輸入裝置與權限';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return '開啟擷取失敗：$err';
+  }
+
+  @override
+  String get diagSpeaker => '揚聲器輸出';
+
+  @override
+  String get diagSpeakerOk => '測試音已播放';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return '播放失敗：$err';
+  }
+
+  @override
+  String get diagFileIo => 'WAV 檔案讀寫';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return '寫入→讀出→解調一致 @${rate}Hz';
+  }
+
+  @override
+  String diagFileWriteFail(String err) {
+    return '檔案寫入失敗：$err';
+  }
+
+  @override
+  String get diagFileReadFail => '檔案讀取失敗';
+
+  @override
+  String get diagFileDecodeFail => '檔案裡的音訊解不出報文（可能不是 AFSK 1200 錄音）';
+
+  @override
+  String get connAudioSourceHint => '音訊模式下不使用伺服器、過濾器與 KISS 參數';
+
+  @override
+  String get testTxTitle => '測試發射';
+
+  @override
+  String get testTxDesc => '發一條狀態報文，驗證鏈路真的通到空中';
+
+  @override
+  String get testTxAction => '發射測試幀';
+
+  @override
+  String get testTxSent => '測試幀已交給鏈路';
+
+  @override
+  String testTxFail(String err) {
+    return '測試幀發送失敗：$err';
+  }
+
+  @override
+  String get testTxNeedsConnect => '請先連接鏈路';
+
+  @override
+  String get testTxHint => '這是**真實發射**（狀態報文，不含座標）。射頻發射請確認在自己的呼號與執照範圍內';
+
+  @override
+  String get audioStatsTitle => '音訊統計';
+
+  @override
+  String audioStatRx(int n) {
+    return '收 $n 幀';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '發 $n 幀';
+  }
+
+  @override
+  String audioStatDrop(int n) {
+    return '發射期間丟棄 $n 位元組';
+  }
+
+  @override
+  String get audioRestart => '重啟音訊鏈路';
+
+  @override
+  String get audioTxDisabled => '「允許發射」已關閉，僅接收';
+
+  @override
+  String get audioLoopbackHint => '自檢會真的做一次調變→解調；提示「發射期間丟棄」屬正常半雙工行為';
+
+  @override
+  String get notifAudioConnected => '音訊鏈路線上';
+
+  @override
+  String get notifAudioDisconnected => '音訊鏈路已中斷';
+
+  @override
+  String connConnectingAudio(String name) {
+    return '正在開啟音訊（$name）…';
+  }
+
+  @override
+  String connAudioConnected(String rate) {
+    return '音訊鏈路線上 · $rate';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return '音訊鏈路開啟失敗 · ${seconds}s 後重試…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return '音訊開啟失敗（$detail）· ${seconds}s 後重試…';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return '音訊鏈路中斷 · $seconds秒後自動重連…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return '音訊已發射 · 位置已傳送 ($call)';
+  }
+
+  @override
+  String get dataSourceAudio => '音訊（音效卡）';
+
+  @override
+  String get dataSourceAudioDesc => '用麥克風/揚聲器或音效卡線接電台，收發 AFSK 1200';
+
+  @override
+  String get audioSettings => '音訊（音效卡 TNC）';
+
+  @override
+  String get audioSettingsSubtitle => '用音效卡收發 AFSK 1200 報文';
+
+  @override
+  String get audioBackend => '音訊後端';
+
+  @override
+  String get audioUnsupported => '目前平台不支援即時音訊（可用 WAV 檔案模式）';
+
+  @override
+  String get audioNeedPermission => '需要錄音權限（RECORD_AUDIO），請授權後重試';
+
+  @override
+  String get audioCaptureTitle => '音訊擷取';
+
+  @override
+  String get audioCaptureDesc => '從麥克風/線路輸入解調 AFSK 1200';
+
+  @override
+  String get audioCaptureStart => '開啟擷取';
+
+  @override
+  String get audioCaptureStop => '停止擷取';
+
+  @override
+  String get audioSampleRate => '取樣率';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz 是音效卡 TNC 常用值；裝置不支援時改用 44100/48000。修改會重啟擷取';
+
+  @override
+  String get audioLevel => '輸入電平';
+
+  @override
+  String get audioLevelTip => '有訊號時電平條會抬起；收到 AFSK 時「解調鎖定」會點亮';
+
+  @override
+  String get audioSynced => '解調鎖定';
+
+  @override
+  String get audioUnlocked => '未鎖定';
+
+  @override
+  String audioBadFrames(int n) {
+    return '解碼中止 $n 次（雜訊/失步）';
+  }
+
+  @override
+  String get audioBaud => '位元率';
+
+  @override
+  String get audioTones => '音調（標/空）';
+
+  @override
+  String get audioTxTitle => '音訊發射';
+
+  @override
+  String get audioTxDesc => '發射前先聽通道，避免與其他台站碰撞';
+
+  @override
+  String get audioTxEnabled => '允許發射';
+
+  @override
+  String get audioTxEnabledTip => '關閉後只接收不發射（只想聽信標時最省心）';
+
+  @override
+  String get audioTxDelayTip => '發射前導時長：給對端解調器鎖定時間、給電台 PTT 建立時間';
+
+  @override
+  String get audioToneMark => '標號頻率 (Hz)';
+
+  @override
+  String get audioToneSpace => '空號頻率 (Hz)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 規定標號 1200Hz、空號 2200Hz；只有 ±幾 Hz 的容差，不要隨意改';
+
+  @override
+  String get audioSpaceTip => '空號音調。與標號音調一起決定 FSK 頻偏（標準為 1000Hz）';
+
+  @override
+  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
+
+  @override
+  String get audioTxDelayLabel => '發射前導 (ms)';
+
+  @override
+  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioCsmaWait => '發射前等待通道空閒 (ms)';
+
+  @override
+  String get audioCsmaWaitTip => '偵測到通道佔用時最多等待多久；0 = 不等待直接發射';
+
+  @override
+  String get audioStopTx => '停止發射';
+
+  @override
+  String get audioWavTitle => 'WAV 檔案模式';
+
+  @override
+  String get audioWavDesc => '離線解碼一段錄音，或把報文匯出成音訊檔案';
+
+  @override
+  String get audioWavPath => '檔案路徑';
+
+  @override
+  String get audioWavDecodeAction => '解碼此 WAV';
+
+  @override
+  String get audioWavExportAction => '匯出此報文';
+
+  @override
+  String get audioWavTnC2 => '待匯出報文 (TNC2)';
+
+  @override
+  String get audioWavNone => '未解出報文（可能不是 AFSK 1200 錄音）';
+
+  @override
+  String audioWavFound(int n) {
+    return '解出 $n 條報文';
+  }
+
+  @override
+  String audioWavWritten(String path) {
+    return '已寫入 $path';
+  }
+
+  @override
+  String audioWavFailed(String err) {
+    return '檔案讀寫失敗：$err';
+  }
 
   @override
   String connTncConnected(String arg) {

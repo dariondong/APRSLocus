@@ -25,6 +25,9 @@ class MainActivity : FlutterActivity() {
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
     private var tnc: TncManager? = null
 
+    // 声卡 TNC（AFSK 1200）：同样只搬 PCM 采样，调制解调在 Dart 侧
+    private var audio: AudioManager? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -160,6 +163,53 @@ class MainActivity : FlutterActivity() {
                 }
             )
 
+        // 音频通道（声卡 TNC）：采集 PCM16 上传 / 接收 PCM16 播放
+        val audioManager = AudioManager(this)
+        audio = audioManager
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, AudioManager.METHOD_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isSupported" -> result.success(audioManager.isSupported())
+                    "requestPermissions" -> audioManager.requestPermissions(result)
+                    "startCapture" -> {
+                        val rate = call.argument<Int>("sampleRate") ?: 22050
+                        result.success(audioManager.startCapture(rate))
+                    }
+                    "stopCapture" -> {
+                        audioManager.stopCapture()
+                        result.success(true)
+                    }
+                    "play" -> {
+                        val data = call.argument<ByteArray>("data")
+                        val rate = call.argument<Int>("sampleRate") ?: 22050
+                        if (data == null) {
+                            result.error("NO_DATA", "缺少音频数据", null)
+                        } else {
+                            result.success(audioManager.play(data, rate))
+                        }
+                    }
+                    "stopPlayback" -> {
+                        audioManager.stopPlayback()
+                        result.success(true)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, AudioManager.EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                        audioManager.setEventSink(events)
+                        setAudioCaptureActive(true)
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        audioManager.setEventSink(null)
+                        setAudioCaptureActive(false)
+                    }
+                }
+            )
+
         // 安装器通道：安装 APK 更新包
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/installer").setMethodCallHandler { call, result ->
             when (call.method) {
@@ -251,6 +301,15 @@ class MainActivity : FlutterActivity() {
                     )
                 }
                 val resolver = contentResolver
+                // 音频 WAV 属于音乐/音频类型：放进 Downloads 的 Audio 子目录更整齐，
+                // 也让系统文件管理器的分类视图能直接找到。
+                val isAudio = safe.lowercase().endsWith(".wav")
+                if (isAudio) {
+                    values.put(
+                        MediaStore.MediaColumns.RELATIVE_PATH,
+                        Environment.DIRECTORY_DOWNLOADS + "/APRSlocusAudio"
+                    )
+                }
                 val uri = resolver.insert(
                     MediaStore.Downloads.EXTERNAL_CONTENT_URI, values
                 ) ?: return null
@@ -262,6 +321,8 @@ class MainActivity : FlutterActivity() {
                 // 使 APRSlocus_….adi 变成 APRSlocus_….adi.txt。
                 // 这里读回实际名字，不一致就改回原名（.adi 是 ADIF 的惯用扩展名）。
                 val actual = displayNameOf(uri)
+                // 媒体类型下部分系统会给音频文件补 .wav/.mp3 之类的后缀，
+                // 与文本同理：写回原名，保证与自检/日志里报告的路径一致。
                 if (actual != null && actual != safe) {
                     try {
                         resolver.update(
@@ -345,8 +406,9 @@ class MainActivity : FlutterActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // 蓝牙权限请求走 TncManager 自己的 requestCode，勿与定位权限混淆
+        // 蓝牙/录音权限请求走各自的 requestCode，勿与定位权限混淆
         tnc?.onRequestPermissionsResult(requestCode, grantResults)
+        audio?.onRequestPermissionsResult(requestCode, grantResults)
         if (requestCode != 100) return
         val ok = hasPermissions()
         permCompleter?.success(ok)
@@ -384,6 +446,21 @@ class MainActivity : FlutterActivity() {
 
     private fun updateServiceNotification(text: String) {
         LocationService.updateNotificationStatic(text)
+    }
+
+    /// 音频采集会把麦克风带进前台服务：Android 14+ 必须让服务声明 microphone
+    /// 类型，否则切到后台后系统直接掐断录音（表现为「后台收不到报文」）。
+    /// 这里跟随音频 EventChannel 的监听状态切换 —— 有监听者就意味着音频链路在使用。
+    private fun setAudioCaptureActive(active: Boolean) {
+        try {
+            LocationService.setAudioActiveStatic(active)
+            if (active) {
+                // 服务可能尚未启动（纯音频模式、未开定位）：确保前台服务存在，
+                // 否则后台采集没有前台服务兜底会被冻结。
+                startLocationService()
+            }
+        } catch (_: Exception) {
+        }
     }
 
     private fun openInstallSettings() {
@@ -435,6 +512,11 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         tnc = null
+        try {
+            audio?.dispose()
+        } catch (_: Exception) {
+        }
+        audio = null
         LocationBus.sink = null
         super.onDestroy()
     }

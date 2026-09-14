@@ -6,6 +6,7 @@ import 'widgets.dart';
 import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
+import 'audio_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
 import 'weather.dart';
@@ -1559,6 +1560,8 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             const SizedBox(height: 16),
             if (st.usingTnc)
               _tncCard()
+            else if (st.usingAudio)
+              _audioCard()
             else ...[
               // ① APRS-IS 连接（连接状态 + 服务器参数，原为两张重复卡）
               _connectionCard(),
@@ -1708,7 +1711,9 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
 
   Widget _connBanner() {
     // 数据来源标签：射频模式下写「APRS-IS」会误导用户以为走的是网络
-    final srcLabel = st.usingTnc ? S.of(context).dataSourceTnc : 'APRS-IS';
+    final srcLabel = st.usingTnc
+        ? S.of(context).dataSourceTnc
+        : (st.usingAudio ? S.of(context).dataSourceAudio : 'APRS-IS');
     final col = st.connected
         ? C.green
         : st.connecting
@@ -1811,6 +1816,66 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 foregroundColor: C.indigo,
                 side: BorderSide(color: C.indigo.withValues(alpha: 0.5)),
                 textStyle: ts(12, w: FontWeight.w600),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 音频（声卡 TNC）模式下的连接卡片。
+  ///
+  /// 与 `_tncCard()` 同样的取舍：不复用服务器那张卡片（地址/端口/passcode/
+  /// 过滤器在音频模式下全不生效），只放「链路状态 + 音频关键信息 + 进入音频页」。
+  Widget _audioCard() {
+    final a = st.audio;
+    return SettingsSectionCard(
+      title: S.of(context).connectionCard2,
+      subtitle: S.of(context).dataSourceAudioDesc,
+      icon: Icons.graphic_eq_rounded,
+      color: C.cyan,
+      children: [
+        _connBanner(),
+        Divider(height: 1, color: C.border),
+        SettingsRow2(
+          S.of(context).audioBackend,
+          a.backendName,
+        ),
+        SettingsRow2(
+          S.of(context).audioSampleRate,
+          '${a.config.afsk.sampleRate} Hz',
+        ),
+        if (st.connected)
+          SettingsRow2(
+            S.of(context).connection,
+            S.of(context).tncStats('${a.rxFrames}', '${a.txFrames}'),
+          ),
+        // 「会不会真的发射」是关键信息，放在连接卡片里比藏进音频页更容易被看到
+        SettingsRow2(
+          S.of(context).kissRfBeacon,
+          a.config.rfBeacon
+              ? S.of(context).tncSwitchOn
+              : S.of(context).tncSwitchOff,
+          valueColor: a.config.rfBeacon ? C.green : C.grey,
+        ),
+        SettingsHint(S.of(context).connAudioSourceHint),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AudioSettingsPage(state: st),
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded, size: 16),
+              label: Text(S.of(context).audioSettings, style: ts(12, w: FontWeight.w600)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.cyan,
+                side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
               ),
             ),
           ),

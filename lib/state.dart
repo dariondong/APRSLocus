@@ -26,6 +26,8 @@ import 'l10n/app_localizations_id.dart';
 import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
+import 'audio.dart';
+import 'diag.dart';
 import 'tnc.dart';
 import 'translate.dart';
 import 'early_member.dart';
@@ -63,7 +65,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.103';
+  static const appVersion = '1.6.104';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -667,18 +669,41 @@ class AppState extends ChangeNotifier {
   // Passcode 是否被服务器判定无效（logresp unverified）
   bool passcodeInvalid = false;
 
-  // ─── 数据来源：APRS-IS（互联网）/ TNC（电台） ───
-  /// 'aprsis' | 'tnc'
+  // ─── 数据来源：APRS-IS（互联网）/ TNC（电台）/ 音频（声卡 TNC） ───
+  /// 'aprsis' | 'tnc' | 'audio'
   String dataSource = 'aprsis';
 
   /// TNC 链路（KISS 参数、绑定设备、收发统计）
   final TncLink tnc = TncLink();
 
+  /// 音频链路（AFSK 1200 声卡 TNC：采样/调制解调/收发统计）
+  final AudioLink audio = AudioLink();
+
   /// 是否使用 TNC（射频）作为数据来源
   bool get usingTnc => dataSource == 'tnc';
 
+  /// 是否使用音频（声卡 TNC）作为数据来源
+  bool get usingAudio => dataSource == 'audio';
+
+  /// 是否为「射频频段」来源（TNC / 音频）。
+  ///
+  /// 二者在协议与合规上完全同类：都经电台上空、都用 APALOC 目的呼号、
+  /// 都受 67 字符消息上限、都禁用群聊广播、自动发射都要显式开关。
+  /// 因此射频相关判断统一用本 getter，避免只改 TNC 漏改音频
+  /// （那会导致音频模式下群聊被放行、限长失效这类静默错误）。
+  bool get usingRf => usingTnc || usingAudio;
+
+  /// 当前射频来源的中继路径配置
+  String get _rfPath => usingAudio ? audio.config.path : tnc.config.path;
+
+  /// 数据来源的中文名（日志用；界面文案一律走 l10n）
+  String _sourceName(String s) => s == srcTnc
+      ? 'TNC（电台）'
+      : (s == srcAudio ? '音频（声卡）' : 'APRS-IS');
+
   static const String srcAprsIs = 'aprsis';
   static const String srcTnc = 'tnc';
+  static const String srcAudio = 'audio';
 
   /// 发射路径 —— 报头目的呼号统一用本应用的 toCall `APALOC`。
   ///
@@ -686,15 +711,15 @@ class AppState extends ChangeNotifier {
   /// 以及本应用的台站识别）都能凭 tocall 精确筛出 APRSLocus 台站，
   /// 不会与其它 APRS 软件（同样用 `APRS` 作目的呼号）混淆：
   ///   * APRS-IS：`APALOC,TCPIP*`
-  ///   * TNC（射频）：`APALOC` 后接用户配置的中继（如 WIDE1-1,WIDE2-1）
+  ///   * TNC / 音频（射频）：`APALOC` 后接用户配置的中继（如 WIDE1-1,WIDE2-1）
   ///
   /// ⚠️ 勿改回 `APRS`：v1.6.103 曾误将 APRS-IS 模式写成 `APRS,TCPIP*`，
   /// 导致按 `u/APALOC` 订阅的第三方统计站只能收到状态包、收不到位置包
   /// （表现为这些台站在统计站上没有位置）。回归测试见
   /// test/beacon_format_test.dart「发射路径的目的呼号」。
   String get txPath {
-    if (!usingTnc) return 'APALOC,TCPIP*';
-    final p = tnc.config.path.trim();
+    if (!usingRf) return 'APALOC,TCPIP*';
+    final p = _rfPath.trim();
     // 去掉头部逗号/空格，避免出现 `APALOC,,WIDE1-1`
     final cleaned = p.replaceAll(RegExp(r'^[,\s]+'), '');
     return cleaned.isEmpty ? 'APALOC' : 'APALOC,$cleaned';
@@ -703,7 +728,9 @@ class AppState extends ChangeNotifier {
   /// 切换数据来源。切换会断开当前链路 —— 两个来源不能同时占用
   /// 发送通路（同一个 myFullCall 从两条网络发出去会造成重复报文）。
   Future<void> setDataSource(String src) async {
-    final next = src == srcTnc ? srcTnc : srcAprsIs;
+    final next = src == srcTnc
+        ? srcTnc
+        : (src == srcAudio ? srcAudio : srcAprsIs);
     if (next == dataSource) return;
     final wasConnected = connected;
     dataSource = next;
@@ -712,9 +739,9 @@ class AppState extends ChangeNotifier {
     _reconnectTimer?.cancel();
     aprs.disconnect();
     await tnc.disconnect(manual: false);
+    await audio.disconnect(manual: false);
     setConnStatus(ConnPhase.manual);
-    _log(LogLevel.info, '连接',
-        '数据来源切换为 ${next == srcTnc ? 'TNC（电台）' : 'APRS-IS'}');
+    _log(LogLevel.info, '连接', '数据来源切换为 ${_sourceName(next)}');
     persist();
     _notify();
     _updateNotification();
@@ -1115,7 +1142,14 @@ class AppState extends ChangeNotifier {
       aprs.port = p.getInt('port') ?? aprs.port;
       aprs.passcode = p.getString('passcode') ?? aprs.passcode;
       dataSource = p.getString('dataSource') ?? dataSource;
+      // 容错：非法/旧值一律回落 APRS-IS，避免三处来源判断失配
+      if (dataSource != srcAprsIs &&
+          dataSource != srcTnc &&
+          dataSource != srcAudio) {
+        dataSource = srcAprsIs;
+      }
       await tnc.load();
+      await audio.load();
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
       if (savedLat != null && savedLng != null) {
@@ -1320,6 +1354,7 @@ class AppState extends ChangeNotifier {
       if (!_userDisconnected) _scheduleReconnect();
     };
     _wireTnc();
+    _wireAudio();
     _simTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (devMode) _simTick();
     });
@@ -1346,7 +1381,7 @@ class AppState extends ChangeNotifier {
       // TNC（射频）模式下**不发保活帧**：射频频段是全共享资源，
       // 每 15 秒播一次客户端版本号纯属占用信道（且与「信标」语义不同，
       // 会被其他台站当成无意义报文），故仅在 APRS-IS 下生效。
-      if (usingTnc) return;
+      if (usingRf) return;
       if (!connected || _userDisconnected) return;
       if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
       // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
@@ -1495,12 +1530,42 @@ class AppState extends ChangeNotifier {
     };
   }
 
-  /// 是否允许自动周期上报（TNC 模式下需用户显式开启「射频信标」）
-  bool get canAutoBeacon =>
-      connected && beaconEnabled && (!usingTnc || tnc.config.rfBeacon);
+  /// 把音频链路接入既有报文管线（与 [_wireTnc] 同一套做法）。
+  ///
+  /// 关键点同 TNC：音频解出的报文直接交给 [_onAprsLine]，三个数据来源
+  /// 共用同一条解析路径，因此不会出现「音频模式下台站不上图」这类分叉。
+  void _wireAudio() {
+    audio.onLine = _onAprsLine;
+    audio.onClosed = () {
+      if (_disposed || !usingAudio) return;
+      connected = false;
+      final manual = _userDisconnected;
+      setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostAudio,
+          seconds: 8);
+      _log(
+        manual ? LogLevel.info : LogLevel.warn,
+        '连接',
+        manual ? '已手动断开音频链路' : '音频采集被中断，稍后自动重连',
+      );
+      _notify();
+      _updateNotification();
+      if (!_userDisconnected && audio.config.autoReconnect) _scheduleReconnect();
+    };
+    // 接收计数/电平由 AudioLink 自行维护，这里只做 UI 节流刷新
+    audio.onStateChanged = () {
+      if (_disposed) return;
+      if (usingAudio) _notifyRx();
+    };
+  }
+
+  /// 是否允许自动周期上报（射频来源需用户显式开启「射频信标」）
+  bool get canAutoBeacon => connected &&
+      beaconEnabled &&
+      (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
   Future<void> _connect() async {
     if (usingTnc) return _connectTnc();
+    if (usingAudio) return _connectAudio();
     connecting = true;
     setConnStatus(ConnPhase.connectingServer,
         arg: '${aprs.server}:${aprs.port}');
@@ -1583,7 +1648,45 @@ class AppState extends ChangeNotifier {
     if (!connected && !_userDisconnected) _scheduleReconnect();
   }
 
-  /// 统一发送入口：按当前数据来源路由到 APRS-IS 或 TNC。
+  /// 音频（声卡 TNC）连接。与 TNC 的差异：没有「绑定设备」，连上即开始采集；
+  /// 相同点：不发 APRSlocus CONNECT 身份帧、不注册过滤器、passcode 不适用。
+  Future<void> _connectAudio() async {
+    connecting = true;
+    setConnStatus(ConnPhase.connectingAudio, arg: audio.backendName);
+    _log(LogLevel.info, '连接', '正在打开音频采集（${audio.backendName}）…');
+    _notify();
+    _updateNotification();
+    final ok = await audio.connect();
+    connecting = false;
+    if (ok) {
+      connected = true;
+      _userDisconnected = false;
+      _reconnectAttempt = 0;
+      passcodeInvalid = false;
+      _lastTx = DateTime.now();
+      final rate = audio.config.afsk.sampleRate;
+      setConnStatus(ConnPhase.audioConnected, arg: '${rate}Hz');
+      _log(LogLevel.info, '连接',
+          '音频链路已建立 · AFSK 1200 @${rate}Hz（${audio.backendName}）');
+      _flushPendingTx();
+      if (beaconEnabled && !audio.config.rfBeacon) {
+        _log(LogLevel.warn, '信标',
+            '音频模式下射频信标开关未打开，不会自动发射位置（可在音频页开启）');
+      }
+    } else {
+      connected = false;
+      final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
+      setConnStatus(ConnPhase.retryAudio,
+          arg: audio.lastError, seconds: backoff);
+      _log(LogLevel.error, '连接',
+          '音频链路打开失败（${audio.lastError}），${backoff} 秒后自动重试');
+    }
+    _notify();
+    _updateNotification();
+    if (!connected && !_userDisconnected) _scheduleReconnect();
+  }
+
+  /// 统一发送入口：按当前数据来源路由到 APRS-IS / TNC / 音频。
   ///
   /// 所有发报路径都必须经过它 —— 否则 TNC 模式下会出现
   /// 「界面上报成功、实际报文走 APRS-IS 发出」这类静默错误。
@@ -1595,7 +1698,47 @@ class AppState extends ChangeNotifier {
       }
       return;
     }
+    if (usingAudio) {
+      // 音频发射是异步的（先 CSMA 再播放整段音频），这里只做「能否接受」
+      // 的同步校验；真正的失败由 AudioLink 记日志并通过 onStateChanged 通知
+      final err = audio.sendTnc2(raw);
+      if (err != null) {
+        _log(LogLevel.warn, '音频', '发送失败（$err）：${_trunc(raw)}');
+      }
+      return;
+    }
     aprs.send(raw);
+  }
+
+  /// 测试发射：发一条**状态**报文（`>` 开头，不含坐标）。
+  ///
+  /// 为什么用状态包而不是位置包：测试不该改变本台站在 aprs.fi 等地图上的
+  /// 位置，但不影响验证 —— 对方/网关的原始报文里能看到它，足以确认链路通。
+  /// 返回 null 表示已交给链路，否则返回错误码（供 UI 本地化）。
+  String? sendTestFrame() {
+    if (!connected) return 'not-connected';
+    final raw = LinkDiag.testFrame(myFullCall, txPath, appVersion);
+    if (usingTnc) {
+      final err = tnc.sendTnc2(raw);
+      if (err != null) return err;
+    } else if (usingAudio) {
+      final err = audio.sendTnc2(raw);
+      if (err != null) return err;
+    } else {
+      aprs.send(raw);
+    }
+    _lastTx = DateTime.now();
+    _log(LogLevel.info, '测试', '已发出测试帧：${_trunc(raw)}');
+    _pushPacket(Packet(
+      raw,
+      myFullCall,
+      'APRS',
+      'status',
+      DateTime.now(),
+      info: '链路测试',
+    ));
+    _notify();
+    return null;
   }
 
   /// 报头里的目的呼号（不含中继列表）。
@@ -1608,7 +1751,8 @@ class AppState extends ChangeNotifier {
 
   /// 是否自动回复 ack。TNC 模式下可由用户在设备页关闭 ——
   /// 射频信道上每个 ack 都是一次真实发射，共用信道时需要能关掉。
-  bool get _autoAckEnabled => !usingTnc || tnc.config.autoAck;
+  bool get _autoAckEnabled =>
+      !usingRf || (usingTnc ? tnc.config.autoAck : audio.config.autoAck);
 
   // ─── TNC（射频）模式的消息能力限制 ───
 
@@ -1616,13 +1760,13 @@ class AppState extends ChangeNotifier {
   static const int tncMaxMsgLen = 67;
 
   /// 当前数据来源下单条消息的长度上限；0 表示不限
-  int get msgLenLimit => usingTnc ? tncMaxMsgLen : 0;
+  int get msgLenLimit => usingRf ? tncMaxMsgLen : 0;
 
   /// 群聊是否可用。射频模式下禁用（见 [sendGroupMessage] 的说明）
-  bool get groupChatAllowed => !usingTnc;
+  bool get groupChatAllowed => !usingRf;
 
   /// 当前是否处于「有实际发射能力」的状态（用于 UI 提示）
-  bool get rfActive => usingTnc && connected;
+  bool get rfActive => usingRf && connected;
 
   bool _disposed = false;
 
@@ -1861,7 +2005,11 @@ class AppState extends ChangeNotifier {
       _sendRaw(raw);
       _lastTx = DateTime.now();
       setConnStatus(
-        usingTnc ? ConnPhase.positionSentTnc : ConnPhase.positionSent,
+        usingTnc
+            ? ConnPhase.positionSentTnc
+            : (usingAudio
+                ? ConnPhase.positionSentAudio
+                : ConnPhase.positionSent),
         arg: myCall,
       );
     } else {
@@ -1920,6 +2068,21 @@ class AppState extends ChangeNotifier {
     _userDisconnected = false;
     _reconnectTimer?.cancel();
     _lastFilter = ''; // 重置，确保下次连接后更新
+    if (usingAudio) {
+      // 音频：重开采集并重建解调器（采样率可能刚改过）
+      connected = false;
+      _notify();
+      _updateNotification();
+      await audio.restart();
+      if (connected) {
+        _userDisconnected = false;
+        setConnStatus(ConnPhase.audioConnected,
+            arg: '${audio.config.afsk.sampleRate}Hz');
+      }
+      _notify();
+      _updateNotification();
+      return;
+    }
     if (usingTnc) {
       // TNC：重启链路（断开重连并重下发 KISS 参数）而不是只重开套接字
       connected = false;
@@ -1949,6 +2112,8 @@ class AppState extends ChangeNotifier {
       _reconnectTimer?.cancel();
       if (usingTnc) {
         await tnc.disconnect();
+      } else if (usingAudio) {
+        await audio.disconnect();
       } else {
         aprs.disconnect();
       }
@@ -3174,9 +3339,9 @@ class AppState extends ChangeNotifier {
     final wire = (sentAs ?? text).trim();
     // TNC（射频）模式下的长度限制：APRS101 规定消息文本上限 67 字符。
     // 超长时报文会被对端 TNC/网关丢弃，与其静默失败不如在源头拦住。
-    if (usingTnc && wire.length > tncMaxMsgLen) {
+    if (usingRf && wire.length > tncMaxMsgLen) {
       _log(LogLevel.warn, '消息',
-          'TNC 模式下单条消息限 $tncMaxMsgLen 字符，已中止发送（${wire.length} 字符）');
+          '射频模式下单条消息限 $tncMaxMsgLen 字符，已中止发送（${wire.length} 字符）');
       _notify();
       return;
     }
@@ -3215,8 +3380,8 @@ class AppState extends ChangeNotifier {
     // TNC（射频）模式禁用群发：
     //   ① 群聊靠 no-ack 广播 + 批量邀请，在共享信道上一次邀请就占大量时隙；
     //   ② 群呼号不是真实台站，射频上无人能回答，实际是单向噪声。
-    if (usingTnc) {
-      _log(LogLevel.warn, '群发', 'TNC（射频）模式不支持群聊广播，已中止发送');
+    if (usingRf) {
+      _log(LogLevel.warn, '群发', '射频（TNC/音频）模式不支持群聊广播，已中止发送');
       _notify();
       return 0;
     }
@@ -3648,24 +3813,31 @@ class AppState extends ChangeNotifier {
     if (connected) {
       // TNC 模式：明确标出「射频」，否则用户会以为走的是网络，
       // 从而忽略「发射要在自己呼号/执照下操作」这件事。
-      parts.add(usingTnc ? l.notifTncConnected : l.notifConnected);
+      parts.add(usingTnc
+          ? l.notifTncConnected
+          : (usingAudio ? l.notifAudioConnected : l.notifConnected));
     } else if (connecting) {
       parts.add(l.notifConnecting);
     } else {
-      parts.add(usingTnc ? l.notifTncDisconnected : l.notifDisconnected);
+      parts.add(usingTnc
+          ? l.notifTncDisconnected
+          : (usingAudio ? l.notifAudioDisconnected : l.notifDisconnected));
     }
     if (myHasFix) {
       parts.add('GPS·$myGrid');
     }
     if (usingTnc) {
       parts.add('RF·${tnc.rxFrames}/${tnc.txFrames}');
+    } else if (usingAudio) {
+      parts.add('AFSK·${audio.rxFrames}/${audio.txFrames}');
     } else {
       parts.add(l.notifOnline('$online'));
       parts.add(l.notifRx('$packetsRx'));
     }
     // 信标倒计时仅在真会发射时显示：TNC 模式下未开启射频信标时显示倒计时
     // 会让用户误以为正在发射。
-    if (beaconEnabled && (!usingTnc || tnc.config.rfBeacon)) {
+    if (beaconEnabled &&
+        (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon))) {
       parts.add(l.notifBeacon(nextBeaconIn));
     }
     loc.updateNotification(parts.join(' · '));
@@ -3680,26 +3852,33 @@ enum ConnPhase {
   idle,
   connectingServer,
   connectingTnc,
+  connectingAudio,
   online,
   tncConnected,
+  audioConnected,
   unverified,
   retryServer,
   retryTnc,
+  retryAudio,
   linkLostServer,
   linkLostTnc,
+  linkLostAudio,
   manual,
   positionSent,
   positionSentTnc,
+  positionSentAudio,
   demoBeacon,
 }
 
-/// TNC 链路错误码 → 可读文案。
+/// 链路（TNC / 音频）错误码 → 可读文案。
 ///
 /// 数据层只暴露稳定的**错误码**（`open-write-failed` 等），不是句子 ——
 /// 这样错误文本不会散落在各平台实现里，也不会漏掉本地化。
-String tncErrorText(AppLocalizations l, String code) {
+String linkErrorText(AppLocalizations l, String code) {
   final c = code.toLowerCase();
   if (c.contains('no-device')) return l.tncErrNoDevice;
+  if (c.contains('no-permission')) return l.audioNeedPermission;
+  if (c.contains('tx-disabled')) return l.tncErrNotConnected;
   if (c.contains('unsupported')) return l.tncErrUnsupported;
   if (c.contains('not-connected')) return l.tncErrNotConnected;
   if (c.contains('open-read')) return l.tncErrOpenRead;
@@ -3729,32 +3908,45 @@ class ConnStatus {
         return l.connConnectingTarget(arg);
       case ConnPhase.connectingTnc:
         return l.connectingToTnc(arg);
+      case ConnPhase.connectingAudio:
+        return l.connConnectingAudio(arg);
       case ConnPhase.online:
         return l.connOnline(arg);
       case ConnPhase.tncConnected:
         return l.connTncConnected(arg);
+      case ConnPhase.audioConnected:
+        return l.connAudioConnected(arg);
       case ConnPhase.unverified:
         return l.connPasscodeInvalid;
       case ConnPhase.retryServer:
         return l.connRetry(seconds);
+      case ConnPhase.retryAudio:
+        // 与 retryTnc 同样：先把内部错误码换成「下一步该做什么」，再拼进句子
+        return arg.isEmpty
+            ? l.connRetryAudio(seconds)
+            : l.connRetryAudioDetail(linkErrorText(l, arg), seconds);
       case ConnPhase.retryTnc:
         // 带错误详情：射频连接失败的常见原因各不相同（权限、设备被占用、
         // 平台不支持…），只写「失败」用户无从排查；但直接把
         // `open-write-failed: ...` 这种内部串抛给用户同样没用，
-        // 所以先经 [tncErrorText] 换成「下一步该做什么」。
+        // 所以先经 [linkErrorText] 换成「下一步该做什么」。
         return arg.isEmpty
             ? l.connRetryTnc(seconds)
-            : l.connRetryTncDetail(tncErrorText(l, arg), seconds);
+            : l.connRetryTncDetail(linkErrorText(l, arg), seconds);
       case ConnPhase.linkLostServer:
         return l.connAutoReconnect(seconds);
       case ConnPhase.linkLostTnc:
         return l.connTncLinkLost(seconds);
+      case ConnPhase.linkLostAudio:
+        return l.connAudioLinkLost(seconds);
       case ConnPhase.manual:
         return l.connManuallyDisconnected;
       case ConnPhase.positionSent:
         return l.connPositionSent(arg);
       case ConnPhase.positionSentTnc:
         return l.connTncPositionSent(arg);
+      case ConnPhase.positionSentAudio:
+        return l.connAudioPositionSent(arg);
       case ConnPhase.demoBeacon:
         return l.connDemoBeacon;
     }
