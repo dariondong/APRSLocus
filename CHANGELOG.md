@@ -1,5 +1,133 @@
 # 更新日志
 
+## [1.6.105] - 2026-09-14
+
+### 🎛 设备设置页重构：一个「什么都有」的页面 → 按问题分层的三页 / Device settings refactor: one catch-all page → three pages organised by the question you are asking
+
+原来一页里堆了：数据来源、TNC 绑定、9 项 KISS 参数、射频行为、链路自检、
+音频入口、链路日志 —— 最常做的事（看当前链路通不通）要划过一屏参数才能看到，
+调参时又要来回滚。现在按「使用者的问题」拆开：
+
+- **设备（概览）**：数据来源 + 当前链路只读摘要 + 链路自检 + 按来源自动切换的日志
+- **TNC 设备与参数**：绑定/扫描/连接/重启、初始化串、KISS 参数、发射自检、射频行为
+- **音频**：声卡链路的参数与 WAV 文件模式
+- 连接页与设置首页的入口不变（`DeviceSettingsPage` 仍指向概览页），因此用户
+  习惯的路径没有被改动；变的只是「进去以后不再迷路」。
+- 顺带修掉：概览页此前**只显示 TNC 日志**，音频模式下看不到任何链路日志。
+
+The old page mixed the data source, TNC binding, nine KISS parameters, RF
+behaviour, self-test, the audio entry and the link log, so the most common task
+— “is my link up?” — required scrolling past a screenful of parameters. It is
+now split by the question you are asking: **Devices (overview)**, **TNC device &
+parameters** and **Audio**, with the log following the active source (previously
+the audio link had no visible log at all).
+
+### 💬 群聊重构：协议层收口成一个状态机 / Group chat refactor: the protocol now goes through a single parser
+
+群聊是 APRS 之上的自订协议（群呼号广播 + 发往群主的私信命令）。原实现把协议
+判定散在四个函数里，各自 `startsWith` + **按固定长度 `substring`** 取值。这类
+写法会实实在在产生 bug，本次修掉的四处：
+
+- **同一语义两处判断**：群内 `【JOIN】` 与私信 `JOIN_CONFIRM` 是同一件事，却写在
+  两个分支里 —— 只补一处就漏另一处。现在统一由 `GroupProto.parse` 解析一次，
+  按 `GroupKind` 分派。
+- **建群后群主自己不在群成员里**：`createGroup` 把**所有人（含群主）**都置为
+  `pending`，而收件人只取 `joined` —— 于是群主自己都收不到群消息。现在群主立即
+  `joined`。
+- **点了「同意加入」却没进群**：`sendJoinConfirm`/`sendLeave` 只发包、不更新本地
+  状态，成员表里自己一直停在 `pending`。现在本地状态与发包同时更新。
+- **重复送达导致重复提示**：同一帧可能经多路径送达（同时连 APRS-IS 与射频、或经
+  iGate 回环），同一次「确认加入」会反复插系统消息、反复弹通知；而邀请每次收到
+  都弹一次确认框。现在协议消息 2 分钟内去重，邀请只对首次弹窗，成员状态不变时
+  不再重复提示。
+- 另外：群名/群呼号在源头校验（空、含冒号/换行、超长会破坏 APRS 报文结构或让
+  AX.25 地址被截断）；建群后会明确回执邀请发给了几人。
+- 新增 `lib/group_chat.dart`（纯协议，12 项回归测试），并把上面每个 bug 都钉住。
+
+The group chat is a custom protocol on top of APRS messages. Its parsing was
+spread across four functions using `startsWith` and **fixed-length `substring`**
+slicing, which produced four real bugs — all fixed and covered by tests: the same
+semantic was parsed in two places (`【JOIN】` vs `JOIN_CONFIRM`); `createGroup`
+marked **everyone including the owner** as `pending` while recipients only
+include `joined`, so the owner missed their own group's messages;
+`sendJoinConfirm`/`sendLeave` sent the packet but never updated local state, so
+“I accepted but I am not in the group”; and duplicate delivery (multi-path or
+iGate loop-back) re-inserted system messages and re-opened the invite dialog.
+Protocol messages are now de-duplicated for two minutes, invites only prompt on
+first receipt, and group names/callsigns are validated at the source.
+
+### 📡 蓝牙 TNC「能收不能发」：逐字节比对参考实现 + 补齐 APRSdroid 的能力 / Bluetooth TNC “receives but will not transmit”: byte-level comparison and the missing APRSdroid capability
+
+拿 APRSdroid 与 direwolf 的源码逐项核对后，**先排除**了几处常见嫌疑：KISS 帧
+格式、写后 `flush`、以及「KISS 载荷是否含 FCS」（`kiss.c` 明确写“not including
+the FCS”，我们本来就不含，空中 HDLC 才加）。随后做了三件有实际意义的事：
+
+- **地址 C 位对齐参考实现**：direwolf 组帧时目的地址 SSID 字节为
+  `0x80|0x60 = 0xE0`（C 位 = 1），源地址为 `0x60`（C 位 = 0）；我们此前对所有
+  地址都写 `0x60`。现已按角色区分。**说明**：direwolf 自己的注释也说「APRS 里
+  四种组合都有人用、大家都忽略它」，所以这是兼容性对齐，不敢保证就是根因。
+- **新增「TNC 初始化串」**（等价 APRSdroid 的 `kiss.init`，支持多行 + 行间延时）
+  —— 这是我们此前**完全没有**的能力，也是「能收不能发」最值得先试的一招：
+  不少蓝牙/串口 TNC 模块上电停在命令模式，要先收到 `KISS ON`/`RESTART` 才会
+  进入 KISS 转发。
+- **KISS 参数改为默认不下发**：APRSdroid 默认一个参数帧都不发，而我们连上就强推
+  TxDelay/P/SlotTime/TxTail/FullDuplex —— 推错值会让 TNC 在共享信道上一直退避
+  而不发射。现在默认不推（可在设备页显式打开），需要时仍可手动下发一次。
+- **新增「发射自检」**：向 TNC 写一帧状态包（不含坐标，不会挪动 aprs.fi 上的
+  位置），把「没连上 / 帧超限 / 格式错 / 写失败 / 写成功但电台不发射」区分开，
+  并直接给出下一步（试初始化串、查 TxDelay）。
+
+Byte-level comparison against APRSdroid and direwolf ruled out the usual
+suspects first (KISS framing, `flush` after write, and whether the KISS payload
+carries the FCS — `kiss.c` says “not including the FCS”, which is what we do).
+Three substantive changes followed: the destination address C bit now matches the
+reference (`0xE0` for destination, `0x60` for source — though direwolf's own
+comment notes APRS ignores it, so this is compatibility, not a proven root
+cause); a **TNC init string** (the `kiss.init` equivalent we were missing) is now
+supported with per-line delays; KISS parameters are **no longer pushed by
+default** (pushing wrong TxDelay/Persistence can make a TNC back off forever);
+and a **TX self-test** now separates “not connected / frame too long / bad format
+/ write failed / written but not transmitted”.
+
+### ⏱ 修复「倒计时结束没有发射」（音频 / TNC）/ Fixed: the countdown finished but nothing was transmitted (audio / TNC)
+
+射频来源的自动发射被 `canAutoBeacon` 门控在「射频信标」开关之后（默认关），
+但倒计时 UI 只判断 `beaconEnabled/connected/myHasFix` —— 于是**倒计时一路走到 0
+却什么也不发射，界面也从不说原因**。现在把「是否会发射」收敛成一个条件
+`rfBeaconEnabled`，倒计时与自动发射共用它：不会发射时显示「射频信标未开启」
+并在设置页给出「一键开启」（仍保持显式授权，不会偷偷开始发射）。四个界面
+（设置页/地图胶囊/沉浸页/首页）全部一致。附 4 项回归测试。
+
+Automatic transmission on an RF source is gated behind the “RF beacon” switch
+(off by default), but the countdown only looked at `beaconEnabled/connected/
+myHasFix` — so it ran to zero and nothing happened, with no explanation. Whether
+we will transmit is now a single condition (`rfBeaconEnabled`) shared by the
+countdown and the transmitter: when it cannot transmit, the UI says “RF beacon is
+off” and offers a one-tap enable (still an explicit user action). All four
+surfaces (settings, map chip, immersive page, home) agree.
+
+### 🔤 APRS-IS 聊天文本过长提示 / Long-message warnings for APRS-IS chat
+
+射频侧一直有 67 字符上限提示，APRS-IS 侧**完全没有**长度预检 —— 长文本看起来
+发出去了，对方却解析不出来（或服务器整包丢弃）。现在把「太长」按后果分成两种：
+
+- **超 67 字符（规范上限）**：多数客户端仍能读，属于「可能解析不出来」→ 发送前
+  弹窗确认，而不是硬拦；
+- **整包超 512 字节（APRS-IS 单行上限）**：服务器可能整包丢弃、连报头都送不到
+  → 直接拦下并说明还差多少字节。
+- 输入框旁新增实时计数器（字符 / 整包字节），打字过程中就能看到自己在逼近哪条线；
+- 校验用的是**实际发出的正文**（译发时是译文），避免「拿原文校验放过超长译文」。
+- 新增 `lib/msg_limit.dart`（7 项回归测试）。
+
+The RF side had a 67-character limit; APRS-IS had **no** length check at all, so
+long text appeared to send but could not be parsed (or was dropped by the
+server). Oversize is now split by consequence: over the 67-character spec limit
+warns and asks for confirmation; a packet over the 512-byte APRS-IS line limit is
+blocked outright with the exact number of bytes to trim. A live counter next to
+the input shows characters and packet bytes while typing, and validation uses the
+text that will actually be sent (the translation, when translating).
+
+
 ## [1.6.104] - 2026-09-14
 
 ### 📻 新增数据来源「音频（声卡 TNC）」：用麦克风/扬声器收发 AFSK 1200 / New data source: Audio (soundcard TNC) — AFSK 1200 over mic/speaker

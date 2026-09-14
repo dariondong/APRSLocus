@@ -55,6 +55,27 @@ class TncConfig {
   /// 链路断开后自动重连
   bool autoReconnect;
 
+  /// TNC 初始化串（多行，逐行发送，行尾补 CRLF）。
+  ///
+  /// 对应 APRSdroid 的 `kiss.init`（见其 KotlinProto/KissProto.scala：
+  /// 逐行 write + `\r\n` + sleep(initdelay)）。为什么需要它：
+  /// 不少蓝牙/串口 TNC 模块上电后停在**命令模式**，必须先收
+  /// `KISS ON` / `RESTART` 之类指令才会进入 KISS 转发状态。
+  /// 这类模块的典型症状正是「能收不能发」——收是因为芯片仍在把解调结果
+  /// 吐出来，发是因为它根本没在 KISS 模式下监听主机下行。
+  String initString;
+
+  /// 初始化串每行之间的等待（ms）。模块处理命令需要时间，太短会丢命令。
+  int initDelayMs;
+
+  /// 连接后是否主动下发 KISS 参数（TxDelay/P/SlotTime/TxTail/FullDuplex）。
+  ///
+  /// **默认关闭**，与 APRSdroid 的行为一致（它默认一个参数帧都不发）。
+  /// 原因：这些参数会覆盖 TNC 自己的配置，而每个 TNC 的
+  /// TxDelay/Persistence 合理值不同 —— 推错了可能让它在共享信道上
+  /// 一直退避而不发射。需要时可在设备页显式打开或手动下发一次。
+  bool pushKissParams;
+
   TncConfig({
     this.txDelayMs = 300,
     this.txTailMs = 50,
@@ -69,6 +90,9 @@ class TncConfig {
     this.hardwareCmd = -1,
     this.hardwareVal = 0,
     this.autoReconnect = true,
+    this.initString = '',
+    this.initDelayMs = 300,
+    this.pushKissParams = false,
   });
 
   /// ms → KISS 值（10ms 单位，封顶 255）
@@ -91,6 +115,9 @@ class TncConfig {
         'hardwareCmd': hardwareCmd,
         'hardwareVal': hardwareVal,
         'autoReconnect': autoReconnect,
+        'initString': initString,
+        'initDelayMs': initDelayMs,
+        'pushKissParams': pushKissParams,
       };
 
   static TncConfig fromJson(Object? j) {
@@ -113,6 +140,9 @@ class TncConfig {
       hardwareCmd: i('hardwareCmd', -1),
       hardwareVal: i('hardwareVal', 0).clamp(0, 255),
       autoReconnect: b('autoReconnect', c.autoReconnect),
+      initString: s('initString', ''),
+      initDelayMs: i('initDelayMs', c.initDelayMs).clamp(0, 5000),
+      pushKissParams: b('pushKissParams', c.pushKissParams),
     );
   }
 }
@@ -252,8 +282,17 @@ class TncLink {
     status = TncStatus.connected;
     lastError = '';
     _log('已连接 ${target.label}');
-    // 连上即下发一次 KISS 参数（TNC 断电后会丢参数，必须每次重建）
-    applyKiss();
+    // ① 初始化串必须在最前面：不少模块上电停在命令模式，要先收到
+    //    `KISS ON`/`RESTART` 之类指令才会进入 KISS 转发（否则能收不能发）。
+    await sendInitString();
+    // ② KISS 参数**默认不下发**（与 APRSdroid 一致）：这些参数会覆盖
+    //    TNC 自己的配置，推错值可能让它在共享信道上一直退避而不发射。
+    //    需要统一管理时可由用户在设备页显式打开。
+    if (config.pushKissParams) {
+      applyKiss();
+    } else {
+      _log('跳过 KISS 参数下发（可在设备页打开「连接后下发 KISS 参数」）');
+    }
     onStateChanged?.call();
     return true;
   }
@@ -325,6 +364,56 @@ class TncLink {
     lastTxAt = DateTime.now();
     lastError = '';
     onStateChanged?.call();
+    return null;
+  }
+
+  /// 发送 TNC 初始化串（多行，逐行 + CRLF + 行间延时）。
+  ///
+  /// 对齐 APRSdroid 的 `kiss.init` 行为（KissProto.scala：逐行
+  /// `write(line)` + `write('\r')` + `write('\n')` + `Thread.sleep(initdelay)`）。
+  /// 返回实际发出的行数（0 = 未配置）。
+  Future<int> sendInitString() async {
+    if (!connected) {
+      lastError = 'not-connected';
+      return 0;
+    }
+    final raw = config.initString.trim();
+    if (raw.isEmpty) return 0;
+    final lines = raw
+        .split(RegExp(r'\r?\n'))
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+    for (final line in lines) {
+      // 初始化串是**明文命令**（不进 KISS 转义），TNC 只在命令模式下认它
+      _t.send(<int>[...utf8.encode(line), 0x0D, 0x0A]);
+      _log('初始化：$line');
+      final d = config.initDelayMs;
+      if (d > 0) await Future.delayed(Duration(milliseconds: d));
+    }
+    _log('已发送 ${lines.length} 行 TNC 初始化串');
+    onStateChanged?.call();
+    return lines.length;
+  }
+
+  /// 发射自检：发一帧测试包，报告「链路层到底有没有把字节送出去」。
+  ///
+  /// 为什么需要：用户报「能收不能发」时，症状完全无法区分下面几种原因，
+  /// 而这个自检能把它们分开：
+  ///   * 没连上 / 帧长超限 / 报文格式错 → 同步返回错误码，一眼可见；
+  ///   * 写失败（socket 已断）→ 抛异常并被捕获成 'send-failed: …'；
+  ///   * 写成功但 TNC 不发射 → 自检通过，说明问题在 TNC 侧（未进 KISS
+  ///     模式 / 参数不对 / 模块问题），据此提示去配置初始化串。
+  ///
+  /// 注意：用的是**状态包**（不含坐标），不会把台站挪到某个位置。
+  String? txSelfTest(String fullCall, String path) {
+    if (!connected) return 'not-connected';
+    final before = txFrames;
+    final raw = '$fullCall>$path:>APRSlocus TXTEST';
+    final err = sendTnc2(raw);
+    if (err != null) return err;
+    if (txFrames == before) return 'send-failed';
+    _log('发射自检：已向 TNC 写入一帧（累计 $txFrames 帧 / $txBytes 字节）');
     return null;
   }
 
@@ -421,7 +510,10 @@ class TncLink {
       ..rfBeacon = from.rfBeacon
       ..hardwareCmd = from.hardwareCmd
       ..hardwareVal = from.hardwareVal
-      ..autoReconnect = from.autoReconnect;
+      ..autoReconnect = from.autoReconnect
+      ..initString = from.initString
+      ..initDelayMs = from.initDelayMs
+      ..pushKissParams = from.pushKissParams;
   }
 
   Future<void> persistConfig() async {

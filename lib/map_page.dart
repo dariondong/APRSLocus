@@ -2073,11 +2073,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final c = on ? C.green : C.slate;
     // 连接但信标关 → 显示未上报；信标开 → 倒计时
     // 用结构化的 beaconPhase 判断，**不再拿中文字符串做 == 比较**
-    final label = on
-        ? (st.beaconPhase == BeaconPhase.imminent
-            ? S.of(context).beaconImminent
-            : S.of(context).beaconNextIn(st.nextBeaconIn))
-        : S.of(context).beaconOffChip;
+    // 射频来源未开「射频信标」→ 显示原因（点一下可去开），不要显示一个
+    // 永远不会归零生效的倒计时
+    final label = !on
+        ? S.of(context).beaconOffChip
+        : (st.beaconNeedsRfEnable
+            ? S.of(context).beaconRfBeaconOff
+            : (st.beaconPhase == BeaconPhase.imminent
+                ? S.of(context).beaconImminent
+                : S.of(context).beaconNextIn(st.nextBeaconIn)));
     return GestureDetector(
       onTap: _showMyPanel,
       child: Container(

@@ -2115,6 +2115,300 @@ abstract class AppLocalizations {
   /// **'翻译'**
   String get codeContributionTranslation;
 
+  /// No description provided for @grpSysJoined.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 加入了群聊'**
+  String grpSysJoined(String call);
+
+  /// No description provided for @grpSysLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 离开了群聊'**
+  String grpSysLeft(String call);
+
+  /// No description provided for @grpSysJoinReq.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 申请加入群聊'**
+  String grpSysJoinReq(String call);
+
+  /// No description provided for @grpSysDeclined.
+  ///
+  /// In zh, this message translates to:
+  /// **'{call} 拒绝了邀请'**
+  String grpSysDeclined(String call);
+
+  /// No description provided for @grpInviteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊邀请'**
+  String get grpInviteTitle;
+
+  /// No description provided for @grpInviteBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'{from} 邀请你加入「{name}」'**
+  String grpInviteBody(String from, String name);
+
+  /// No description provided for @grpNameInvalid.
+  ///
+  /// In zh, this message translates to:
+  /// **'群名不能为空、不能包含冒号或换行'**
+  String get grpNameInvalid;
+
+  /// No description provided for @grpNameTooLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'群名最长 {max} 个字符（过长会让邀请报文超出 APRS 消息上限）'**
+  String grpNameTooLong(int max);
+
+  /// No description provided for @grpInviteSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已向 {n} 位成员发出邀请'**
+  String grpInviteSent(int n);
+
+  /// No description provided for @grpSelfPending.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待群主确认'**
+  String get grpSelfPending;
+
+  /// No description provided for @deviceOverviewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备'**
+  String get deviceOverviewTitle;
+
+  /// No description provided for @deviceOverviewSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据来源、链路状态与自检'**
+  String get deviceOverviewSubtitle;
+
+  /// No description provided for @deviceCurrentLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前链路'**
+  String get deviceCurrentLink;
+
+  /// No description provided for @deviceCurrentLinkDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'只读摘要 · 改参数请进对应子页'**
+  String get deviceCurrentLinkDesc;
+
+  /// No description provided for @deviceEntries.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备与参数'**
+  String get deviceEntries;
+
+  /// No description provided for @deviceEntriesDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'每条链路一个子页，各管各的参数'**
+  String get deviceEntriesDesc;
+
+  /// No description provided for @tncDeviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 设备与参数'**
+  String get tncDeviceTitle;
+
+  /// No description provided for @tncDeviceDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝牙/串口绑定、初始化串、KISS 参数与发射自检'**
+  String get tncDeviceDesc;
+
+  /// No description provided for @deviceLogTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路日志'**
+  String get deviceLogTitle;
+
+  /// No description provided for @deviceLogDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示当前来源的日志（TNC / 音频自动切换）'**
+  String get deviceLogDesc;
+
+  /// No description provided for @tncInitTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 初始化串'**
+  String get tncInitTitle;
+
+  /// No description provided for @tncInitSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接后逐行发送（等价 APRSdroid 的 kiss.init）'**
+  String get tncInitSubtitle;
+
+  /// No description provided for @tncInitTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'若 TNC「能收不能发」，先在这里试：很多蓝牙/串口 TNC 模块上电停在命令模式，必须先收到 KISS ON、RESTART 等指令才进入 KISS 转发状态。每行一条命令（发送时自动补 CRLF）。'**
+  String get tncInitTip;
+
+  /// No description provided for @tncInitDelay.
+  ///
+  /// In zh, this message translates to:
+  /// **'行间隔 (ms)'**
+  String get tncInitDelay;
+
+  /// No description provided for @tncInitDelayTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'每行命令之间的等待时间。模块处理命令需要时间，太短会丢命令'**
+  String get tncInitDelayTip;
+
+  /// No description provided for @tncInitSendAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即发送初始化串'**
+  String get tncInitSendAction;
+
+  /// No description provided for @tncInitSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发送 {n} 行初始化串'**
+  String tncInitSent(int n);
+
+  /// No description provided for @tncInitEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'未填写初始化串'**
+  String get tncInitEmpty;
+
+  /// No description provided for @tncPushParams.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接后下发 KISS 参数'**
+  String get tncPushParams;
+
+  /// No description provided for @tncPushParamsTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认关闭（与 APRSdroid 一致）。打开后连接时会把上面的参数推给 TNC，覆盖它自己的配置 —— 参数不合适可能让它一直退避而不发射，所以只在需要统一管理时打开。'**
+  String get tncPushParamsTip;
+
+  /// No description provided for @tncTxTestTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射自检'**
+  String get tncTxTestTitle;
+
+  /// No description provided for @tncTxTestSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'向 TNC 写一帧测试包，判断问题在链路还是 TNC'**
+  String get tncTxTestSubtitle;
+
+  /// No description provided for @tncTxTestHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发的是一帧状态包（不含坐标），不会把台站在 aprs.fi 上挪位置。若这里显示「已写入」却仍然不发射，问题在 TNC 侧：先试初始化串（KISS ON / RESTART），再检查 TxDelay 与信道占用。'**
+  String get tncTxTestHint;
+
+  /// No description provided for @tncTxTestAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'写入测试帧'**
+  String get tncTxTestAction;
+
+  /// No description provided for @tncTxTestOkPrefix.
+  ///
+  /// In zh, this message translates to:
+  /// **'已写入'**
+  String get tncTxTestOkPrefix;
+
+  /// No description provided for @tncTxTestOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'已写入 TNC（累计 {n} 帧）。若电台仍不发射，问题在 TNC 侧：试初始化串或检查 TxDelay。'**
+  String tncTxTestOk(String n);
+
+  /// No description provided for @tncTxTestFail.
+  ///
+  /// In zh, this message translates to:
+  /// **'未写入：{err}'**
+  String tncTxTestFail(String err);
+
+  /// No description provided for @tncNeedConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先连接 TNC'**
+  String get tncNeedConnected;
+
+  /// No description provided for @msgLenCounter.
+  ///
+  /// In zh, this message translates to:
+  /// **'{chars}/67 字符 · 整包 {bytes}/512 字节'**
+  String msgLenCounter(int chars, int bytes);
+
+  /// No description provided for @msgOverSpecAsk.
+  ///
+  /// In zh, this message translates to:
+  /// **'这条消息 {chars} 个字符，超过 APRS 规范的 67 字符上限。多数客户端仍能读出，但部分客户端/网关会截断或拒收，对方可能解析不出来。仍要发送吗？'**
+  String msgOverSpecAsk(int chars);
+
+  /// No description provided for @msgOverServerLimit.
+  ///
+  /// In zh, this message translates to:
+  /// **'整包 {bytes} 字节，超过 APRS-IS 单行上限 512 字节，服务器可能直接丢弃整包（连报头都送不到）。请缩短约 {over} 字节。'**
+  String msgOverServerLimit(int bytes, int over);
+
+  /// No description provided for @msgSendAnyway.
+  ///
+  /// In zh, this message translates to:
+  /// **'仍要发送'**
+  String get msgSendAnyway;
+
+  /// No description provided for @msgSpecLimitHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS 规范建议单条消息不超过 67 字符：超长文本在部分客户端上会显示不全或解析失败。'**
+  String get msgSpecLimitHint;
+
+  /// No description provided for @msgBlockedTooLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'已阻止发送：整包超出 APRS-IS 上限'**
+  String get msgBlockedTooLong;
+
+  /// No description provided for @beaconRfBeaconOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频信标未开启'**
+  String get beaconRfBeaconOff;
+
+  /// No description provided for @beaconRfEnableHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频来源的自动发射需要显式打开「射频信标」。在此之前不会自动发射位置（倒计时也不会走动）。'**
+  String get beaconRfEnableHint;
+
+  /// No description provided for @beaconRfEnableAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启射频信标'**
+  String get beaconRfEnableAction;
+
+  /// No description provided for @beaconRfEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已开启射频信标，将按间隔自动发射'**
+  String get beaconRfEnabled;
+
+  /// No description provided for @beaconRfEnableWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射将使用你的呼号，请在执照范围内操作'**
+  String get beaconRfEnableWarn;
+
   /// No description provided for @diagTitle.
   ///
   /// In zh, this message translates to:

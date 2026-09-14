@@ -7,6 +7,7 @@ import 'settings_widgets.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
 import 'audio_page.dart';
+import 'device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
 import 'weather.dart';
@@ -1028,6 +1029,44 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             SettingsRow2(S.of(context).beaconsSent,
             S.of(context).beaconsSentCount('${st.beaconsSent}')),
             SettingsRow2(S.of(context).nextBeacon, st.nextBeaconIn),
+            // 射频来源没开「射频信标」时，倒计时不会走动也不会发射。
+            // 这里直接把「为什么」和「怎么改」摆在同一条上：只显示
+            // 「射频信标未开启」会让人去找开关，而开关在另一张卡片里。
+            if (st.beaconNeedsRfEnable)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SettingsHint(S.of(context).beaconRfEnableHint,
+                        color: C.orange,
+                        icon: Icons.warning_amber_rounded),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: FilledButton.icon(
+                        onPressed: () async {
+                          await st.enableRfBeacon();
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  '${S.of(context).beaconRfEnabled}'
+                                  ' · ${S.of(context).beaconRfEnableWarn}'),
+                              backgroundColor: C.green,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+                        label: Text(S.of(context).beaconRfEnableAction,
+                            style: ts(12, c: Colors.white, w: FontWeight.w700)),
+                        style: FilledButton.styleFrom(backgroundColor: C.orange),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             // 模拟位置模式：不显示 GPS 启动按钮，改为提示
             if (st.useSimLocation)
               Padding(
@@ -2713,12 +2752,16 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
 ///
 /// 完整实现在 `tnc_page.dart`：蓝牙/串口 TNC 绑定 + KISS 参数下发。
 /// 这里只做转发，避免把 3000 行的 settings_pages.dart 继续撑大。
+/// 兼容旧入口名：实际实现已拆到 `lib/device_page.dart`（概览页）。
+///
+/// 保留这个名字是因为连接页 / 设置首页 / OOBE 都用它做跳转入口，
+/// 改名只会带来无意义的 churn。
 class DeviceSettingsPage extends StatelessWidget {
   final AppState state;
   const DeviceSettingsPage({super.key, required this.state});
 
   @override
-  Widget build(BuildContext context) => TncSettingsPage(state: state);
+  Widget build(BuildContext context) => DeviceOverviewPage(state: state);
 }
 
 /// ─── 数据维护 ───

@@ -1045,6 +1045,195 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
+  String grpSysJoined(String call) {
+    return '$call bergabung ke grup';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call keluar dari grup';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call meminta bergabung';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call menolak undangan';
+  }
+
+  @override
+  String get grpInviteTitle => 'Undangan grup';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from mengundang Anda ke \"$name\"';
+  }
+
+  @override
+  String get grpNameInvalid =>
+      'Nama grup tidak boleh kosong atau berisi titik dua/baris baru';
+
+  @override
+  String grpNameTooLong(int max) {
+    return 'Nama grup maksimal $max karakter (lebih panjang membuat undangan melebihi batas pesan APRS)';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return 'Undangan dikirim ke $n anggota';
+  }
+
+  @override
+  String get grpSelfPending => 'Menunggu pemilik grup';
+
+  @override
+  String get deviceOverviewTitle => 'Perangkat';
+
+  @override
+  String get deviceOverviewSubtitle =>
+      'Sumber data, status tautan, dan uji mandiri';
+
+  @override
+  String get deviceCurrentLink => 'Tautan saat ini';
+
+  @override
+  String get deviceCurrentLinkDesc =>
+      'Ringkasan hanya-baca — ubah parameter di sub-halaman';
+
+  @override
+  String get deviceEntries => 'Perangkat & parameter';
+
+  @override
+  String get deviceEntriesDesc =>
+      'Satu sub-halaman per tautan, setelannya masing-masing';
+
+  @override
+  String get tncDeviceTitle => 'Perangkat & parameter TNC';
+
+  @override
+  String get tncDeviceDesc =>
+      'Binding Bluetooth/serial, string init, parameter KISS, uji pancar';
+
+  @override
+  String get deviceLogTitle => 'Log tautan';
+
+  @override
+  String get deviceLogDesc =>
+      'Menampilkan log sumber saat ini (TNC / audio otomatis)';
+
+  @override
+  String get tncInitTitle => 'String init TNC';
+
+  @override
+  String get tncInitSubtitle =>
+      'Dikirim baris demi baris setelah terhubung (setara kiss.init APRSdroid)';
+
+  @override
+  String get tncInitTip =>
+      'Bila TNC menerima tetapi tidak memancar, coba di sini dulu: banyak modul TNC Bluetooth/serial menyala dalam mode perintah dan perlu KISS ON / RESTART agar mau meneruskan dalam KISS. Satu perintah per baris (CRLF ditambahkan otomatis).';
+
+  @override
+  String get tncInitDelay => 'Jeda per baris (ms)';
+
+  @override
+  String get tncInitDelayTip =>
+      'Jeda antar baris. Modul butuh waktu memproses perintah; terlalu singkat bisa terlewat';
+
+  @override
+  String get tncInitSendAction => 'Kirim string init sekarang';
+
+  @override
+  String tncInitSent(int n) {
+    return '$n baris init terkirim';
+  }
+
+  @override
+  String get tncInitEmpty => 'String init belum diisi';
+
+  @override
+  String get tncPushParams => 'Kirim parameter KISS saat terhubung';
+
+  @override
+  String get tncPushParamsTip =>
+      'Mati secara bawaan (sama seperti APRSdroid). Bila aktif, nilai di atas dikirim ke TNC saat terhubung dan menimpa konfigurasinya — nilai yang tidak cocok bisa membuatnya terus menunggu tanpa memancar, jadi aktifkan hanya bila ingin dikelola terpusat.';
+
+  @override
+  String get tncTxTestTitle => 'Uji pancar';
+
+  @override
+  String get tncTxTestSubtitle =>
+      'Menulis satu bingkai uji ke TNC untuk memisahkan masalah tautan vs TNC';
+
+  @override
+  String get tncTxTestHint =>
+      'Yang dikirim adalah bingkai status (tanpa koordinat), jadi tidak memindahkan stasiun Anda di aprs.fi. Bila tertulis \"tertulis\" tetapi tetap tidak memancar, masalahnya di sisi TNC: coba string init (KISS ON / RESTART) dulu, lalu periksa TxDelay dan okupansi kanal.';
+
+  @override
+  String get tncTxTestAction => 'Tulis bingkai uji';
+
+  @override
+  String get tncTxTestOkPrefix => 'Tertulis';
+
+  @override
+  String tncTxTestOk(String n) {
+    return 'Tertulis ke TNC (total $n bingkai). Bila radio tetap tidak memancar, masalahnya di sisi TNC: coba string init atau periksa TxDelay.';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return 'Tidak tertulis: $err';
+  }
+
+  @override
+  String get tncNeedConnected => 'Hubungkan TNC dulu';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 karakter · total $bytes/512 byte';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return 'Pesan ini $chars karakter, melebihi batas spesifikasi APRS yaitu 67. Sebagian besar klien masih bisa menampilkannya, tetapi sebagian klien/gateway memotong atau menolaknya, sehingga stasiun lawan mungkin tidak dapat mengurainya. Tetap kirim?';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return 'Paket berukuran $bytes byte, melebihi batas 512 byte per baris APRS-IS. Server mungkin membuang seluruh paket (bahkan header tidak sampai). Mohon perpendek sekitar $over byte.';
+  }
+
+  @override
+  String get msgSendAnyway => 'Tetap kirim';
+
+  @override
+  String get msgSpecLimitHint =>
+      'Spesifikasi APRS menyarankan pesan di bawah 67 karakter: teks yang lebih panjang dapat terpotong atau gagal diurai di sebagian klien.';
+
+  @override
+  String get msgBlockedTooLong =>
+      'Pengiriman diblokir: paket melebihi batas APRS-IS';
+
+  @override
+  String get beaconRfBeaconOff => 'Beacon RF mati';
+
+  @override
+  String get beaconRfEnableHint =>
+      'Pemancaran otomatis pada sumber RF memerlukan sakelar \"Beacon RF\". Sebelum itu posisi tidak dipancarkan otomatis (hitung mundur juga tidak berjalan).';
+
+  @override
+  String get beaconRfEnableAction => 'Aktifkan beacon RF';
+
+  @override
+  String get beaconRfEnabled => 'Beacon RF aktif — akan memancar sesuai jadwal';
+
+  @override
+  String get beaconRfEnableWarn =>
+      'Pemancaran memakai tanda panggil Anda — patuhi lisensi';
+
+  @override
   String get diagTitle => 'Uji mandiri tautan';
 
   @override

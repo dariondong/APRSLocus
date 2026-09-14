@@ -551,8 +551,13 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         const SizedBox(height: 6),
         Row(crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic, children: [
-          Text(st.nextBeaconIn,
-              style: ts(26, w: FontWeight.w900, c: Colors.white, ls: -0.5)),
+          Text(
+              // 未开射频信标时 nextBeaconIn 是「射频信标未开启」这句话，
+              // 用 26 号大字体显示会溢出；这里让数量级跟着内容走。
+              st.beaconNeedsRfEnable ? S.of(context).beaconRfBeaconOff : st.nextBeaconIn,
+              style: st.beaconNeedsRfEnable
+                  ? ts(13, w: FontWeight.w700, c: Colors.white)
+                  : ts(26, w: FontWeight.w900, c: Colors.white, ls: -0.5)),
           const SizedBox(width: 6),
           Padding(
             padding: const EdgeInsets.only(bottom: 3),

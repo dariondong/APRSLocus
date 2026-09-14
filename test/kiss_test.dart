@@ -145,6 +145,24 @@ void main() {
       expect(Ax25.splitCall('BG7LZQ-X'), ('BG7LZQ-X', 0)); // 非法 SSID 视为呼号一部分
     });
 
+    test('C 位：目的地址为 1（0xE0），源地址/中继为 0（0x60）', () {
+      // 依据 direwolf src/ax25_pad.c:428,431：
+      //   dest = SSID_H_MASK|SSID_RR_MASK = 0xE0
+      //   src/repeater = SSID_RR_MASK = 0x60
+      final dest = Ax25.address('APALOC', last: false, dest: true);
+      expect(dest[6] & 0x80, 0x80, reason: '目的地址 C 位必须为 1');
+      expect(dest[6] & 0x60, 0x60, reason: '保留位必须为 1');
+      final src = Ax25.address('BG7LZQ-9', last: true);
+      expect(src[6] & 0x80, 0, reason: '源地址 C 位必须为 0');
+      expect(src[6] & 0x60, 0x60);
+      // 编出的整帧里，目的字段（前 7 字节）第 6 字节应带 0x80
+      final f = Ax25.encodeTnc2('BG7LZQ>APALOC:!')!;
+      expect(f[6] & 0x80, 0x80, reason: '整帧目的地址 C 位丢失');
+      expect(f[13] & 0x80, 0, reason: '整帧源地址 C 位应为 0');
+      // 解出时 C 位不影响 SSID 解析
+      expect(Ax25.decodeToTnc2(f), 'BG7LZQ>APALOC:!');
+    });
+
     test('地址字段可往返', () {
       for (final c in ['BG7LZQ-9', 'APALOC', 'BA7KSM-15', 'N0CALL']) {
         final raw = Ax25.address(c, last: true);

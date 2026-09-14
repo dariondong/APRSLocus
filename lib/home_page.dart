@@ -749,8 +749,12 @@ class _HomePageState extends State<HomePage> {
               // 不要再包一层 localizedNextBeaconValue —— 那个助手是按「中文
               // 状态串」做映射的旧模式，传入已本地化文案会匹配不上。
               Text(
-                S.of(context).nextBeaconIn(widget.state.nextBeaconIn),
-                style: ts(10, c: C.slate),
+                // 射频未开信标时给出原因，而不是显示一个不会生效的倒计时
+                widget.state.beaconNeedsRfEnable
+                    ? S.of(context).beaconRfBeaconOff
+                    : S.of(context).nextBeaconIn(widget.state.nextBeaconIn),
+                style: ts(10,
+                    c: widget.state.beaconNeedsRfEnable ? C.orange : C.slate),
               ),
               Spacer(),
               Icon(Icons.sync_rounded, size: 12, color: C.grey),

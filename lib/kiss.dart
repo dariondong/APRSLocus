@@ -161,14 +161,31 @@ class Ax25 {
   /// 单个地址字段 7 字节：呼号 6 字节（左移 1 位，空格补齐）+ SSID 字节
   ///
   /// [last] 为 true 时 SSID 字节最低位置 1，标记地址字段结束。
-  static List<int> address(String callSsid, {required bool last}) {
+  ///
+  /// SSID 字节的位布局（AX.25 v2.2 §2.2.6，位序写作 `C R R SSID 0`）：
+  ///   * bit0 = 扩展位（[last]）
+  ///   * bit1-4 = SSID
+  ///   * bit5-6 = 保留位，未使用时置 1（即 0x60）
+  ///   * bit7 = C 位（命令/响应）
+  ///
+  /// **C 位必须按角色区分**（[dest]）：direwolf 的组帧代码写得很明确
+  /// （`src/ax25_pad.c:428,431`）——
+  ///   目的地址 `SSID_H_MASK|SSID_RR_MASK` = 0x80|0x60 = **0xE0**
+  ///   源地址/中继 `SSID_RR_MASK`        = 0x60
+  /// 我们此前对所有地址都写 0x60（目的 C 位为 0），与参考实现不一致。
+  /// direwolf 的注释也坦承「APRS 里四种组合都有人用、大家都忽略它」，
+  /// 所以这是**兼容性对齐**而不是故障根因 —— 但既然规范与参考实现都写 1，
+  /// 就没有理由继续偏离。
+  static List<int> address(String callSsid,
+      {required bool last, bool dest = false}) {
     final (call, ssid) = splitCall(callSsid);
     final out = <int>[];
     final padded = call.padRight(6).substring(0, 6);
     for (var i = 0; i < 6; i++) {
       out.add((padded.codeUnitAt(i) << 1) & 0xFF);
     }
-    out.add(0x60 | ((ssid & 0x0F) << 1) | (last ? 1 : 0));
+    final cr = dest ? 0x80 : 0x00; // C 位：目的 = 1，源/中继 = 0
+    out.add(cr | 0x60 | ((ssid & 0x0F) << 1) | (last ? 1 : 0));
     return out;
   }
 
@@ -223,7 +240,7 @@ class Ax25 {
     required String info,
   }) {
     final out = <int>[];
-    out.addAll(address(dest, last: false));
+    out.addAll(address(dest, last: false, dest: true));
     out.addAll(address(source, last: digis.isEmpty));
     for (var i = 0; i < digis.length; i++) {
       // 中继是否「已使用」由 TNC/中继自己标记，这里统一发未使用

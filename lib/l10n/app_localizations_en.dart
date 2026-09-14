@@ -1045,6 +1045,194 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionTranslation => 'Translation';
 
   @override
+  String grpSysJoined(String call) {
+    return '$call joined the group';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call left the group';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call asked to join';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call declined the invite';
+  }
+
+  @override
+  String get grpInviteTitle => 'Group invite';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from invited you to “$name”';
+  }
+
+  @override
+  String get grpNameInvalid =>
+      'Group name cannot be empty or contain a colon or newline';
+
+  @override
+  String grpNameTooLong(int max) {
+    return 'Group name is limited to $max characters (longer makes the invite exceed the APRS message limit)';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return 'Invite sent to $n member(s)';
+  }
+
+  @override
+  String get grpSelfPending => 'Waiting for the owner';
+
+  @override
+  String get deviceOverviewTitle => 'Devices';
+
+  @override
+  String get deviceOverviewSubtitle => 'Data source, link status and self-test';
+
+  @override
+  String get deviceCurrentLink => 'Current link';
+
+  @override
+  String get deviceCurrentLinkDesc =>
+      'Read-only summary — edit parameters in the sub-pages';
+
+  @override
+  String get deviceEntries => 'Devices & parameters';
+
+  @override
+  String get deviceEntriesDesc =>
+      'One sub-page per link, each with its own settings';
+
+  @override
+  String get tncDeviceTitle => 'TNC device & parameters';
+
+  @override
+  String get tncDeviceDesc =>
+      'Bluetooth/serial binding, init string, KISS parameters and TX self-test';
+
+  @override
+  String get deviceLogTitle => 'Link log';
+
+  @override
+  String get deviceLogDesc =>
+      'Shows the log of the current source (TNC / audio switches automatically)';
+
+  @override
+  String get tncInitTitle => 'TNC init string';
+
+  @override
+  String get tncInitSubtitle =>
+      'Sent line by line after connecting (same as APRSdroid kiss.init)';
+
+  @override
+  String get tncInitTip =>
+      'If the TNC receives but will not transmit, try here first: many Bluetooth/serial TNC modules boot into command mode and need KISS ON / RESTART before they will forward in KISS. One command per line (CRLF is appended automatically).';
+
+  @override
+  String get tncInitDelay => 'Delay per line (ms)';
+
+  @override
+  String get tncInitDelayTip =>
+      'Wait between lines. Modules need time to process commands; too short drops them';
+
+  @override
+  String get tncInitSendAction => 'Send init string now';
+
+  @override
+  String tncInitSent(int n) {
+    return 'Sent $n init line(s)';
+  }
+
+  @override
+  String get tncInitEmpty => 'No init string configured';
+
+  @override
+  String get tncPushParams => 'Push KISS parameters on connect';
+
+  @override
+  String get tncPushParamsTip =>
+      'Off by default (same as APRSdroid). When on, the values above are pushed to the TNC on connect, overriding its own configuration — inappropriate values can make it back off forever without transmitting, so enable only if you want centralised control.';
+
+  @override
+  String get tncTxTestTitle => 'TX self-test';
+
+  @override
+  String get tncTxTestSubtitle =>
+      'Writes one test frame to the TNC to tell link problems from TNC problems';
+
+  @override
+  String get tncTxTestHint =>
+      'It sends a status frame (no coordinates), so it will not move your station on aprs.fi. If it reports \"written\" but nothing is transmitted, the problem is on the TNC side: try the init string (KISS ON / RESTART) first, then check TxDelay and channel occupancy.';
+
+  @override
+  String get tncTxTestAction => 'Write test frame';
+
+  @override
+  String get tncTxTestOkPrefix => 'Written';
+
+  @override
+  String tncTxTestOk(String n) {
+    return 'Written to the TNC ($n frames total). If the radio still does not transmit, the issue is on the TNC side: try the init string or check TxDelay.';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return 'Not written: $err';
+  }
+
+  @override
+  String get tncNeedConnected => 'Connect the TNC first';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 chars · $bytes/512 bytes total';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return 'This message is $chars characters, over the APRS spec limit of 67. Most clients will still show it, but some clients/gateways truncate or reject it, so the other station may not be able to parse it. Send anyway?';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return 'The packet is $bytes bytes, over the 512-byte APRS-IS line limit. The server may drop it entirely (not even the header arrives). Please shorten by about $over bytes.';
+  }
+
+  @override
+  String get msgSendAnyway => 'Send anyway';
+
+  @override
+  String get msgSpecLimitHint =>
+      'The APRS spec recommends keeping a message under 67 characters: longer text may be truncated or fail to parse in some clients.';
+
+  @override
+  String get msgBlockedTooLong =>
+      'Send blocked: packet exceeds the APRS-IS limit';
+
+  @override
+  String get beaconRfBeaconOff => 'RF beacon is off';
+
+  @override
+  String get beaconRfEnableHint =>
+      'Automatic transmission on an RF source requires the “RF beacon” switch. Until then no position is transmitted automatically (and the countdown does not run).';
+
+  @override
+  String get beaconRfEnableAction => 'Enable RF beacon';
+
+  @override
+  String get beaconRfEnabled => 'RF beacon enabled — will transmit on schedule';
+
+  @override
+  String get beaconRfEnableWarn =>
+      'Transmission uses your callsign — operate within your licence';
+
+  @override
   String get diagTitle => 'Link self-test';
 
   @override

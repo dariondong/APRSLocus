@@ -28,6 +28,7 @@ import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'audio.dart';
 import 'diag.dart';
+import 'group_chat.dart';
 import 'tnc.dart';
 import 'translate.dart';
 import 'early_member.dart';
@@ -65,7 +66,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.104';
+  static const appVersion = '1.6.105';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1010,7 +1011,13 @@ class AppState extends ChangeNotifier {
   final List<LogEntry> logs = [];
   int unreadMessages = 0; // 未读消息数（侧边栏/底部导航角标）
   final Map<String, DateTime> _readAt = {}; // 会话已读时间点（呼号 → 时间）
-  final Map<String, DateTime> _groupReadAt = {}; // 群聊已读时间点（groupId → 时间）
+  final Map<String, DateTime> _groupReadAt = {};
+
+  /// 群聊协议消息去重表：`呼号|原文` → 上次处理时间。
+  ///
+  /// 同一帧可能经多条路径重复送达（同时连 APRS-IS 与射频、或经 iGate 回环），
+  /// 没有这层过滤时同一次「确认加入」会反复插系统消息、反复弹通知。
+  final Map<String, DateTime> _seenProtoMsgs = {}; // 群聊已读时间点（groupId → 时间）
   static const int _maxLogs = 500;
   int packetsRx = 0;
   int packetsTx = 0;
@@ -1556,6 +1563,36 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       if (usingAudio) _notifyRx();
     };
+  }
+
+  /// 当前来源是否已打开「射频信标」。
+  ///
+  /// APRS-IS 无此概念（恒为 true）；TNC / 音频各自独立配置 —— 声卡接手持台
+  /// 与蓝牙接车台的中继策略、发射许可常常不同，共用一个开关会互相干扰。
+  bool get rfBeaconEnabled =>
+      !usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon);
+
+  /// 射频来源下「信标开着、但射频信标没开」——即倒计时不会走动、也不会发射。
+  ///
+  /// 单独抽出来是因为三个界面（设置页/地图胶囊/沉浸页）都要用它来决定
+  /// 「显示倒计时还是显示原因 + 开启入口」；各写一遍必然漂移。
+  bool get beaconNeedsRfEnable => beaconEnabled && usingRf && !rfBeaconEnabled;
+
+  /// 打开当前来源的「射频信标」。供「倒计时不动」的提示条一键修复用。
+  ///
+  /// 刻意做成**显式动作**而不是收到定位就自动打开：射频发射需要持照操作，
+  /// 必须由用户点这一下才算知情同意（见 canAutoBeacon 的注释）。
+  Future<void> enableRfBeacon() async {
+    if (usingTnc) {
+      tnc.config.rfBeacon = true;
+      await tnc.persistConfig();
+    } else if (usingAudio) {
+      audio.config.rfBeacon = true;
+      await audio.save();
+    }
+    _log(LogLevel.info, '信标', '已打开射频信标（${_sourceName(dataSource)}）');
+    _notify();
+    _updateNotification();
   }
 
   /// 是否允许自动周期上报（射频来源需用户显式开启「射频信标」）
@@ -2346,15 +2383,24 @@ class AppState extends ChangeNotifier {
       _notify();
       return null;
     }
-    // ─── 协议消息处理 ───
-    if (isGroupMsg && groupId != null) {
-      final handled = _handleGroupProtocol(src, groupId, text);
+    // ─── 协议消息处理（唯一入口：lib/group_chat.dart 已解析一次）───
+    final proto = GroupProto.parse(text);
+    if (proto != null) {
+      // 去重：同一帧可能被重复送达 —— 同时开着 APRS-IS 与射频、
+      // 或经 iGate 回环时都会发生。没有这层去重，同一次「确认加入」会
+      // 反复插入系统消息、反复弹通知，看起来就像「消息重复/乱序」。
+      final key = '${src.toUpperCase()}|${text.toUpperCase()}';
+      final now = DateTime.now();
+      final seen = _seenProtoMsgs[key];
+      if (seen != null && now.difference(seen).inSeconds < 120) {
+        return null; // 2 分钟内的同一协议消息视为重发
+      }
+      _seenProtoMsgs[key] = now;
+      if (_seenProtoMsgs.length > 200) {
+        _seenProtoMsgs.remove(_seenProtoMsgs.keys.first);
+      }
+      final handled = _handleGroupProtocol(src, groupId, proto);
       if (handled) return null; // 协议消息不进入聊天列表
-    }
-    // 处理私信协议（INVITE/JOIN_CONFIRM 等）
-    if (!isGroupMsg) {
-      final handled = _handlePrivateProtocol(src, text);
-      if (handled) return null;
     }
     // ─── 加入会话列表 ───
     final msg = AprsMsg(
@@ -2407,84 +2453,72 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  bool _handleGroupProtocol(String src, String groupId, String text) {
-    final g = chatGroups.where((g) => g.id == groupId).firstOrNull;
-    if (g == null) return false;
-    final upper = text.toUpperCase().trim();
-    // 成员发送的 JOIN 声明
-    if (upper.startsWith('【JOIN】') || upper.startsWith('[JOIN]')) {
-      final joiner = text.substring(text.indexOf('】') + 1).trim();
-      if (joiner.isNotEmpty) {
-        g.activeMembers.add(joiner.toUpperCase());
+  /// 处理群聊协议消息（[proto] 已由 [GroupProto.parse] 解析好）。
+  ///
+  /// 旧实现把「群内【JOIN】/【LEAVE】」与「私信 JOIN_CONFIRM/DECLINE/…」
+  /// 分成两个函数各自判断，同一语义写两遍 —— 结果只补一处就漏另一处。
+  /// 现在两种来路都进这里，按 [GroupKind] 分派。
+  ///
+  /// 返回 true 表示「这是一条协议消息，不要进聊天列表」。
+  bool _handleGroupProtocol(String src, String? groupId, GroupMsg proto) {
+    final s = l10n;
+    switch (proto.kind) {
+      // ── 群内广播：某人加入/离开 ──
+      case GroupKind.memberJoined:
+      case GroupKind.memberLeft:
+        if (groupId == null) return false;
+        final g = chatGroups.where((g) => g.id == groupId).firstOrNull;
+        if (g == null) return false;
+        final who = proto.name;
+        if (who.isEmpty) return true;
+        final joined = proto.kind == GroupKind.memberJoined;
+        if (joined) {
+          g.activeMembers.add(who);
+          g.memberStatus[who] = GroupMemberStatus.joined;
+        } else {
+          g.activeMembers.remove(who);
+          g.memberStatus[who] = GroupMemberStatus.left;
+        }
         _saveChatGroups();
-        _log(LogLevel.info, '群聊', '${g.name}：${joiner} 加入');
-        _addGroupSystemMsg(groupId, '$joiner 加入了群聊');
-      }
-      return true;
-    }
-    // 成员发送的 LEAVE 声明
-    if (upper.startsWith('【LEAVE】') || upper.startsWith('[LEAVE]')) {
-      final leaver = text.substring(text.indexOf('】') + 1).trim();
-      if (leaver.isNotEmpty) {
-        g.activeMembers.remove(leaver.toUpperCase());
-        _saveChatGroups();
-        _log(LogLevel.info, '群聊', '${g.name}：${leaver} 离开');
-        _addGroupSystemMsg(groupId, '$leaver 离开了群聊');
-      }
-      return true;
-    }
-    // 普通群聊消息：不是协议消息，不拦截
-    return false;
-  }
+        _log(LogLevel.info, '群聊',
+            '${g.name}：$who ${joined ? '加入' : '离开'}');
+        _addGroupSystemMsg(groupId,
+            joined ? s.grpSysJoined(who) : s.grpSysLeft(who));
+        _notify();
+        return true;
 
-  // ─── 私信协议消息处理 ───
-  bool _handlePrivateProtocol(String src, String text) {
-    final upper = text.toUpperCase().trim();
-    // INVITE {群呼号} {群名}
-    if (upper.startsWith('INVITE ')) {
-      final parts = text.substring(7).trim().split(RegExp(r'\s+'));
-      if (parts.length >= 2) {
-        final groupCall = parts[0].toUpperCase();
-        final name = parts.sublist(1).join(' ');
-        _processInvite(src, groupCall, name);
-      }
-      return true;
+      // ── 邀请（可能是私信，也可能直接发在群里）──
+      case GroupKind.invite:
+        _processInvite(src, proto.groupCall, proto.name);
+        return true;
+
+      // ── 以下是「发给群主」的私信命令，必须校验群主身份 ──
+      case GroupKind.joinConfirm:
+        _processJoinConfirm(src, proto.groupCall);
+        return true;
+      case GroupKind.decline:
+        _processDecline(src, proto.groupCall);
+        return true;
+      case GroupKind.joinRequest:
+        _processJoinReq(src, proto.groupCall);
+        return true;
+      case GroupKind.leave:
+        _processMemberLeft(src, proto.groupCall);
+        return true;
     }
-    // JOIN_CONFIRM {群呼号}
-    if (upper.startsWith('JOIN_CONFIRM ')) {
-      final groupCall = upper.substring(13).trim();
-      _processJoinConfirm(src, groupCall);
-      return true;
-    }
-    // DECLINE {群呼号}
-    if (upper.startsWith('DECLINE ')) {
-      final groupCall = upper.substring(8).trim();
-      _processDecline(src, groupCall);
-      return true;
-    }
-    // LEFT {群呼号}
-    if (upper.startsWith('LEFT ')) {
-      final groupCall = upper.substring(5).trim();
-      _processMemberLeft(src, groupCall);
-      return true;
-    }
-    // JOIN_REQ {群呼号}（成员主动申请）
-    if (upper.startsWith('JOIN_REQ ')) {
-      final groupCall = upper.substring(9).trim();
-      _processJoinReq(src, groupCall);
-      return true;
-    }
-    // REMIND / REINVITE — 收到后不做特殊处理，只是普通消息
-    // JOINED_ACK / LEAVE_ACK — 确认消息，不做特殊处理
-    return false;
   }
 
   /// 处理邀请（我是成员，收到群主的邀请）
   void _processInvite(String from, String groupCall, String name) {
-    // 查找是否已有此群
+    // 群名/群呼号非法时不要建群：会得到一个永远发不出去、也进不去的群
+    if (GroupProto.validateGroupCall(groupCall) != null) {
+      _log(LogLevel.warn, '群聊', '忽略非法邀请：群呼号 $groupCall');
+      return;
+    }
     var g = chatGroups
         .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
         .firstOrNull;
+    final isNew = g == null;
     if (g == null) {
       // 创建本地群组记录（我是成员，不是群主）
       g = createGroup(
@@ -2499,10 +2533,13 @@ class AppState extends ChangeNotifier {
       _saveChatGroups();
     }
     _log(LogLevel.info, '群聊', '收到 ${from} 的邀请：${g.name}');
-    // 系统通知（前后台都提示邀请）
-    loc.showGroupNotification('群聊邀请', '$from 邀请你加入「$name」');
-    // 触发 UI 弹窗
-    onInviteReceived?.call(from, groupCall, name);
+    // 只有**首次**收到邀请才弹通知与确认框。
+    // 旧实现在每次收到 INVITE 时都弹一遍 —— 对方重发/多路径送达时
+    // 会连弹多次，用户点完还会再弹，看起来像「弹窗死循环」。
+    if (isNew) {
+      loc.showGroupNotification(l10n.grpInviteTitle, l10n.grpInviteBody(from, g.name));
+      onInviteReceived?.call(from, groupCall, name);
+    }
     _notify();
   }
 
@@ -2512,8 +2549,12 @@ class AppState extends ChangeNotifier {
         .where((g) => g.groupCall.toUpperCase() == groupCall.toUpperCase())
         .firstOrNull;
     if (g != null && g.isOwner(myCall)) {
-      g.memberStatus[from.toUpperCase()] = GroupMemberStatus.joined;
-      g.activeMembers.add(from.toUpperCase());
+      final who = from.toUpperCase();
+      final changed =
+          g.memberStatus[who] != GroupMemberStatus.joined || !g.activeMembers.contains(who);
+      g.memberStatus[who] = GroupMemberStatus.joined;
+      g.activeMembers.add(who);
+      if (!changed) return; // 重复的确认（重发/多路径）不再重复提示
       _saveChatGroups();
       _log(LogLevel.info, '群聊', '${g.name}：${from} 确认加入');
       _addGroupSystemMsg(g.id, '$from 加入了群聊');
@@ -3437,9 +3478,16 @@ class AppState extends ChangeNotifier {
       groupCall: gc,
       owner: owner ?? myCall,
     );
-    // 初始化成员状态
+    // 初始化成员状态。
+    //
+    // 旧实现把**所有人**（含群主自己）都置为 pending，于是成员列表里
+    // 「群主」显示成「待确认」，而 recipients 只收 joined → 群主自己
+    // 反而不在收件人里。现在：群主立即 joined，其余人 pending。
+    g.memberStatus[g.owner.toUpperCase()] = GroupMemberStatus.joined;
     for (final m in members) {
-      g.memberStatus[m.toUpperCase()] = GroupMemberStatus.pending;
+      final who = m.toUpperCase();
+      if (who == g.owner.toUpperCase()) continue;
+      g.memberStatus[who] = GroupMemberStatus.pending;
     }
     chatGroups.add(g);
     _saveChatGroups();
@@ -3492,6 +3540,17 @@ class AppState extends ChangeNotifier {
       path: txPath,
     );
     _trySend(raw);
+    // 同时更新本地状态：否则「我点了同意」但成员表里自己仍是 pending，
+    // 群里也看不到自己加入 —— 表现为「确认了却没进群」。
+    final g = chatGroups
+        .where((x) => x.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
+    if (g != null) {
+      g.memberStatus[myCall.toUpperCase()] = GroupMemberStatus.joined;
+      _saveChatGroups();
+      _addGroupSystemMsg(g.id, l10n.grpSysJoined(myCall.toUpperCase()));
+      _notify();
+    }
     _log(LogLevel.info, '群聊', '确认加入 $groupCall');
   }
 
@@ -3505,6 +3564,16 @@ class AppState extends ChangeNotifier {
       path: txPath,
     );
     _trySend(raw);
+    final g = chatGroups
+        .where((x) => x.groupCall.toUpperCase() == groupCall.toUpperCase())
+        .firstOrNull;
+    if (g != null) {
+      g.memberStatus[myCall.toUpperCase()] = GroupMemberStatus.left;
+      g.activeMembers.remove(myCall.toUpperCase());
+      _saveChatGroups();
+      _addGroupSystemMsg(g.id, l10n.grpSysLeft(myCall.toUpperCase()));
+      _notify();
+    }
     _log(LogLevel.info, '群聊', '离开 $groupCall');
   }
 
@@ -3785,6 +3854,11 @@ class AppState extends ChangeNotifier {
   BeaconPhase get beaconPhase {
     if (!beaconEnabled) return BeaconPhase.off;
     if (!connected) return BeaconPhase.disconnected;
+    // 射频来源没开「射频信标」时**绝不能显示倒计时**：tick 里的 canAutoBeacon
+    // 会直接跳过发射，倒计时却照走 —— 用户看到的正是「倒计时结束什么也没发生」。
+    // 这一类 bug 的根因是把「是否会发射」判断散落在两处，所以此处必须与
+    // canAutoBeacon 用同一个条件（rfBeaconEnabled）。
+    if (!rfBeaconEnabled) return BeaconPhase.rfDisabled;
     if (!myHasFix) return BeaconPhase.waitingFix;
     return beaconSecondsLeft > 0 ? BeaconPhase.counting : BeaconPhase.imminent;
   }
@@ -3797,6 +3871,8 @@ class AppState extends ChangeNotifier {
         return l.beaconDisabled;
       case BeaconPhase.disconnected:
         return l.beaconNotConnected;
+      case BeaconPhase.rfDisabled:
+        return l.beaconRfBeaconOff;
       case BeaconPhase.waitingFix:
         return l.beaconWaitingFix;
       case BeaconPhase.imminent:
@@ -3845,7 +3921,17 @@ class AppState extends ChangeNotifier {
 }
 
 /// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）
-enum BeaconPhase { off, disconnected, waitingFix, counting, imminent }
+enum BeaconPhase {
+  off,
+  disconnected,
+
+  /// 射频来源（TNC / 音频）未打开「射频信标」——此时不会自动发射，
+  /// UI 必须显示原因并提供一键开启，而不是继续倒计时。
+  rfDisabled,
+  waitingFix,
+  counting,
+  imminent,
+}
 
 /// 连接状态阶段（结构化，供 UI 本地化；见 [AppState.connInfo]）
 enum ConnPhase {

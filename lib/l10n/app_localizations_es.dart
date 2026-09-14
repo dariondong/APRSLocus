@@ -1052,6 +1052,196 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionTranslation => 'Traducción';
 
   @override
+  String grpSysJoined(String call) {
+    return '$call se unió al grupo';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call salió del grupo';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call pidió unirse';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call rechazó la invitación';
+  }
+
+  @override
+  String get grpInviteTitle => 'Invitación a grupo';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from te invitó a «$name»';
+  }
+
+  @override
+  String get grpNameInvalid =>
+      'El nombre del grupo no puede estar vacío ni contener dos puntos o saltos de línea';
+
+  @override
+  String grpNameTooLong(int max) {
+    return 'El nombre del grupo se limita a $max caracteres (más largo hace que la invitación supere el límite de APRS)';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return 'Invitación enviada a $n miembro(s)';
+  }
+
+  @override
+  String get grpSelfPending => 'Esperando al propietario';
+
+  @override
+  String get deviceOverviewTitle => 'Dispositivos';
+
+  @override
+  String get deviceOverviewSubtitle =>
+      'Fuente de datos, estado del enlace y autodiagnóstico';
+
+  @override
+  String get deviceCurrentLink => 'Enlace actual';
+
+  @override
+  String get deviceCurrentLinkDesc =>
+      'Resumen de solo lectura: edita los parámetros en las subpáginas';
+
+  @override
+  String get deviceEntries => 'Dispositivos y parámetros';
+
+  @override
+  String get deviceEntriesDesc =>
+      'Una subpágina por enlace, cada una con sus ajustes';
+
+  @override
+  String get tncDeviceTitle => 'Dispositivo y parámetros TNC';
+
+  @override
+  String get tncDeviceDesc =>
+      'Emparejamiento Bluetooth/serie, cadena de inicio, parámetros KISS y autoprueba de TX';
+
+  @override
+  String get deviceLogTitle => 'Registro del enlace';
+
+  @override
+  String get deviceLogDesc =>
+      'Muestra el registro de la fuente actual (TNC/audio cambia solo)';
+
+  @override
+  String get tncInitTitle => 'Cadena de inicio del TNC';
+
+  @override
+  String get tncInitSubtitle =>
+      'Se envía línea a línea tras conectar (equivalente al kiss.init de APRSdroid)';
+
+  @override
+  String get tncInitTip =>
+      'Si el TNC recibe pero no transmite, prueba aquí primero: muchos módulos TNC Bluetooth/serie arrancan en modo comando y necesitan KISS ON / RESTART para reenviar en KISS. Un comando por línea (se añade CRLF automáticamente).';
+
+  @override
+  String get tncInitDelay => 'Retardo por línea (ms)';
+
+  @override
+  String get tncInitDelayTip =>
+      'Espera entre líneas. El módulo necesita tiempo; si es muy corto se pierden comandos';
+
+  @override
+  String get tncInitSendAction => 'Enviar cadena de inicio ahora';
+
+  @override
+  String tncInitSent(int n) {
+    return '$n línea(s) de inicio enviadas';
+  }
+
+  @override
+  String get tncInitEmpty => 'No hay cadena de inicio';
+
+  @override
+  String get tncPushParams => 'Enviar parámetros KISS al conectar';
+
+  @override
+  String get tncPushParamsTip =>
+      'Desactivado por defecto (igual que APRSdroid). Si se activa, los valores de arriba se envían al TNC al conectar y sobrescriben su configuración; valores inadecuados pueden hacer que nunca transmita, así que actívalo solo si quieres gestionarlo de forma centralizada.';
+
+  @override
+  String get tncTxTestTitle => 'Autoprueba de TX';
+
+  @override
+  String get tncTxTestSubtitle =>
+      'Escribe una trama de prueba al TNC para distinguir problemas de enlace o del TNC';
+
+  @override
+  String get tncTxTestHint =>
+      'Envía una trama de estado (sin coordenadas), así que no moverá tu estación en aprs.fi. Si indica \"escrito\" pero no se transmite, el problema está en el TNC: prueba primero la cadena de inicio (KISS ON / RESTART) y luego revisa TxDelay y la ocupación del canal.';
+
+  @override
+  String get tncTxTestAction => 'Escribir trama de prueba';
+
+  @override
+  String get tncTxTestOkPrefix => 'Escrito';
+
+  @override
+  String tncTxTestOk(String n) {
+    return 'Escrito en el TNC ($n tramas en total). Si la radio sigue sin transmitir, el problema está en el TNC: prueba la cadena de inicio o revisa TxDelay.';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return 'No escrito: $err';
+  }
+
+  @override
+  String get tncNeedConnected => 'Conecta primero el TNC';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 caracteres · $bytes/512 bytes en total';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return 'Este mensaje tiene $chars caracteres y supera el límite de 67 de la especificación APRS. La mayoría de los clientes aún lo mostrará, pero algunos clientes/pasarelas lo truncan o rechazan, así que la otra estación podría no poder interpretarlo. ¿Enviar igualmente?';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return 'El paquete tiene $bytes bytes y supera el límite de 512 bytes por línea de APRS-IS. El servidor podría descartarlo por completo (ni siquiera llegaría la cabecera). Acorta unos $over bytes.';
+  }
+
+  @override
+  String get msgSendAnyway => 'Enviar igualmente';
+
+  @override
+  String get msgSpecLimitHint =>
+      'La especificación APRS recomienda mensajes de menos de 67 caracteres: el texto más largo puede truncarse o no interpretarse en algunos clientes.';
+
+  @override
+  String get msgBlockedTooLong =>
+      'Envío bloqueado: el paquete supera el límite de APRS-IS';
+
+  @override
+  String get beaconRfBeaconOff => 'Baliza RF desactivada';
+
+  @override
+  String get beaconRfEnableHint =>
+      'La transmisión automática en una fuente de RF requiere activar «Baliza RF». Hasta entonces no se transmite la posición automáticamente (ni corre la cuenta atrás).';
+
+  @override
+  String get beaconRfEnableAction => 'Activar baliza RF';
+
+  @override
+  String get beaconRfEnabled =>
+      'Baliza RF activada: transmitirá según el intervalo';
+
+  @override
+  String get beaconRfEnableWarn =>
+      'La transmisión usa tu indicativo: opera dentro de tu licencia';
+
+  @override
   String get diagTitle => 'Autodiagnóstico del enlace';
 
   @override

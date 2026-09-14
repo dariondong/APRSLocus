@@ -1032,6 +1032,184 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionTranslation => '翻译';
 
   @override
+  String grpSysJoined(String call) {
+    return '$call 加入了群聊';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call 离开了群聊';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call 申请加入群聊';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call 拒绝了邀请';
+  }
+
+  @override
+  String get grpInviteTitle => '群聊邀请';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from 邀请你加入「$name」';
+  }
+
+  @override
+  String get grpNameInvalid => '群名不能为空、不能包含冒号或换行';
+
+  @override
+  String grpNameTooLong(int max) {
+    return '群名最长 $max 个字符（过长会让邀请报文超出 APRS 消息上限）';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return '已向 $n 位成员发出邀请';
+  }
+
+  @override
+  String get grpSelfPending => '等待群主确认';
+
+  @override
+  String get deviceOverviewTitle => '设备';
+
+  @override
+  String get deviceOverviewSubtitle => '数据来源、链路状态与自检';
+
+  @override
+  String get deviceCurrentLink => '当前链路';
+
+  @override
+  String get deviceCurrentLinkDesc => '只读摘要 · 改参数请进对应子页';
+
+  @override
+  String get deviceEntries => '设备与参数';
+
+  @override
+  String get deviceEntriesDesc => '每条链路一个子页，各管各的参数';
+
+  @override
+  String get tncDeviceTitle => 'TNC 设备与参数';
+
+  @override
+  String get tncDeviceDesc => '蓝牙/串口绑定、初始化串、KISS 参数与发射自检';
+
+  @override
+  String get deviceLogTitle => '链路日志';
+
+  @override
+  String get deviceLogDesc => '显示当前来源的日志（TNC / 音频自动切换）';
+
+  @override
+  String get tncInitTitle => 'TNC 初始化串';
+
+  @override
+  String get tncInitSubtitle => '连接后逐行发送（等价 APRSdroid 的 kiss.init）';
+
+  @override
+  String get tncInitTip =>
+      '若 TNC「能收不能发」，先在这里试：很多蓝牙/串口 TNC 模块上电停在命令模式，必须先收到 KISS ON、RESTART 等指令才进入 KISS 转发状态。每行一条命令（发送时自动补 CRLF）。';
+
+  @override
+  String get tncInitDelay => '行间隔 (ms)';
+
+  @override
+  String get tncInitDelayTip => '每行命令之间的等待时间。模块处理命令需要时间，太短会丢命令';
+
+  @override
+  String get tncInitSendAction => '立即发送初始化串';
+
+  @override
+  String tncInitSent(int n) {
+    return '已发送 $n 行初始化串';
+  }
+
+  @override
+  String get tncInitEmpty => '未填写初始化串';
+
+  @override
+  String get tncPushParams => '连接后下发 KISS 参数';
+
+  @override
+  String get tncPushParamsTip =>
+      '默认关闭（与 APRSdroid 一致）。打开后连接时会把上面的参数推给 TNC，覆盖它自己的配置 —— 参数不合适可能让它一直退避而不发射，所以只在需要统一管理时打开。';
+
+  @override
+  String get tncTxTestTitle => '发射自检';
+
+  @override
+  String get tncTxTestSubtitle => '向 TNC 写一帧测试包，判断问题在链路还是 TNC';
+
+  @override
+  String get tncTxTestHint =>
+      '发的是一帧状态包（不含坐标），不会把台站在 aprs.fi 上挪位置。若这里显示「已写入」却仍然不发射，问题在 TNC 侧：先试初始化串（KISS ON / RESTART），再检查 TxDelay 与信道占用。';
+
+  @override
+  String get tncTxTestAction => '写入测试帧';
+
+  @override
+  String get tncTxTestOkPrefix => '已写入';
+
+  @override
+  String tncTxTestOk(String n) {
+    return '已写入 TNC（累计 $n 帧）。若电台仍不发射，问题在 TNC 侧：试初始化串或检查 TxDelay。';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return '未写入：$err';
+  }
+
+  @override
+  String get tncNeedConnected => '请先连接 TNC';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 字符 · 整包 $bytes/512 字节';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return '这条消息 $chars 个字符，超过 APRS 规范的 67 字符上限。多数客户端仍能读出，但部分客户端/网关会截断或拒收，对方可能解析不出来。仍要发送吗？';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return '整包 $bytes 字节，超过 APRS-IS 单行上限 512 字节，服务器可能直接丢弃整包（连报头都送不到）。请缩短约 $over 字节。';
+  }
+
+  @override
+  String get msgSendAnyway => '仍要发送';
+
+  @override
+  String get msgSpecLimitHint =>
+      'APRS 规范建议单条消息不超过 67 字符：超长文本在部分客户端上会显示不全或解析失败。';
+
+  @override
+  String get msgBlockedTooLong => '已阻止发送：整包超出 APRS-IS 上限';
+
+  @override
+  String get beaconRfBeaconOff => '射频信标未开启';
+
+  @override
+  String get beaconRfEnableHint =>
+      '射频来源的自动发射需要显式打开「射频信标」。在此之前不会自动发射位置（倒计时也不会走动）。';
+
+  @override
+  String get beaconRfEnableAction => '开启射频信标';
+
+  @override
+  String get beaconRfEnabled => '已开启射频信标，将按间隔自动发射';
+
+  @override
+  String get beaconRfEnableWarn => '发射将使用你的呼号，请在执照范围内操作';
+
+  @override
   String get diagTitle => '链路自检';
 
   @override
@@ -5995,6 +6173,184 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionTranslation => '翻譯';
+
+  @override
+  String grpSysJoined(String call) {
+    return '$call 加入了群聊';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call 離開了群聊';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call 申請加入群聊';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call 拒絕了邀請';
+  }
+
+  @override
+  String get grpInviteTitle => '群聊邀請';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from 邀請你加入「$name」';
+  }
+
+  @override
+  String get grpNameInvalid => '群名不能為空、不能包含冒號或換行';
+
+  @override
+  String grpNameTooLong(int max) {
+    return '群名最長 $max 個字元（過長會讓邀請報文超出 APRS 訊息上限）';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return '已向 $n 位成員發出邀請';
+  }
+
+  @override
+  String get grpSelfPending => '等待群主確認';
+
+  @override
+  String get deviceOverviewTitle => '裝置';
+
+  @override
+  String get deviceOverviewSubtitle => '資料來源、鏈路狀態與自檢';
+
+  @override
+  String get deviceCurrentLink => '目前鏈路';
+
+  @override
+  String get deviceCurrentLinkDesc => '唯讀摘要 · 改參數請進對應子頁';
+
+  @override
+  String get deviceEntries => '裝置與參數';
+
+  @override
+  String get deviceEntriesDesc => '每條鏈路一個子頁，各管各的參數';
+
+  @override
+  String get tncDeviceTitle => 'TNC 裝置與參數';
+
+  @override
+  String get tncDeviceDesc => '藍牙/序列綁定、初始化串、KISS 參數與發射自檢';
+
+  @override
+  String get deviceLogTitle => '鏈路日誌';
+
+  @override
+  String get deviceLogDesc => '顯示目前來源的日誌（TNC / 音訊自動切換）';
+
+  @override
+  String get tncInitTitle => 'TNC 初始化字串';
+
+  @override
+  String get tncInitSubtitle => '連線後逐行傳送（等價 APRSdroid 的 kiss.init）';
+
+  @override
+  String get tncInitTip =>
+      '若 TNC「能收不能發」，先在這裡試：很多藍牙/序列 TNC 模組上電停在命令模式，必須先收到 KISS ON、RESTART 等指令才進入 KISS 轉發狀態。每行一條命令（傳送時自動補 CRLF）。';
+
+  @override
+  String get tncInitDelay => '行間隔 (ms)';
+
+  @override
+  String get tncInitDelayTip => '每行命令之間的等待時間。模組處理命令需要時間，太短會丟命令';
+
+  @override
+  String get tncInitSendAction => '立即傳送初始化字串';
+
+  @override
+  String tncInitSent(int n) {
+    return '已傳送 $n 行初始化字串';
+  }
+
+  @override
+  String get tncInitEmpty => '未填寫初始化字串';
+
+  @override
+  String get tncPushParams => '連線後下發 KISS 參數';
+
+  @override
+  String get tncPushParamsTip =>
+      '預設關閉（與 APRSdroid 一致）。打開後連線時會把上面的參數推給 TNC，覆蓋它自己的設定 —— 參數不合適可能讓它一直退避而不發射，所以只在需要統一管理時打開。';
+
+  @override
+  String get tncTxTestTitle => '發射自檢';
+
+  @override
+  String get tncTxTestSubtitle => '向 TNC 寫一幀測試包，判斷問題在鏈路還是 TNC';
+
+  @override
+  String get tncTxTestHint =>
+      '發的是一幀狀態包（不含座標），不會把台站在 aprs.fi 上挪位置。若這裡顯示「已寫入」卻仍然不發射，問題在 TNC 側：先試初始化字串（KISS ON / RESTART），再檢查 TxDelay 與通道佔用。';
+
+  @override
+  String get tncTxTestAction => '寫入測試幀';
+
+  @override
+  String get tncTxTestOkPrefix => '已寫入';
+
+  @override
+  String tncTxTestOk(String n) {
+    return '已寫入 TNC（累計 $n 幀）。若電台仍不發射，問題在 TNC 側：試初始化字串或檢查 TxDelay。';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return '未寫入：$err';
+  }
+
+  @override
+  String get tncNeedConnected => '請先連接 TNC';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 字元 · 整包 $bytes/512 位元組';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return '這則訊息 $chars 個字元，超過 APRS 規範的 67 字元上限。多數用戶端仍能讀出，但部分用戶端/閘道會截斷或拒收，對方可能解析不出來。仍要傳送嗎？';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return '整包 $bytes 位元組，超過 APRS-IS 單行上限 512 位元組，伺服器可能直接丟棄整包（連標頭都送不到）。請縮短約 $over 位元組。';
+  }
+
+  @override
+  String get msgSendAnyway => '仍要傳送';
+
+  @override
+  String get msgSpecLimitHint =>
+      'APRS 規範建議單則訊息不超過 67 字元：過長文字在部分用戶端上會顯示不全或解析失敗。';
+
+  @override
+  String get msgBlockedTooLong => '已阻止傳送：整包超出 APRS-IS 上限';
+
+  @override
+  String get beaconRfBeaconOff => '射頻信標未開啟';
+
+  @override
+  String get beaconRfEnableHint =>
+      '射頻來源的自動發射需要明確開啟「射頻信標」。在此之前不會自動發射位置（倒數也不會走動）。';
+
+  @override
+  String get beaconRfEnableAction => '開啟射頻信標';
+
+  @override
+  String get beaconRfEnabled => '已開啟射頻信標，將按間隔自動發射';
+
+  @override
+  String get beaconRfEnableWarn => '發射將使用你的呼號，請在執照範圍內操作';
 
   @override
   String get diagTitle => '鏈路自檢';

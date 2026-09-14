@@ -1035,6 +1035,185 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionTranslation => '翻訳';
 
   @override
+  String grpSysJoined(String call) {
+    return '$call がグループに参加しました';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call がグループを退出しました';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call が参加を希望しています';
+  }
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call が招待を辞退しました';
+  }
+
+  @override
+  String get grpInviteTitle => 'グループへの招待';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from が「$name」に招待しました';
+  }
+
+  @override
+  String get grpNameInvalid => 'グループ名は空にできず、コロンや改行も使えません';
+
+  @override
+  String grpNameTooLong(int max) {
+    return 'グループ名は最大 $max 文字です（長すぎると招待が APRS メッセージ上限を超えます）';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return '$n 名に招待を送信しました';
+  }
+
+  @override
+  String get grpSelfPending => '管理者の確認待ち';
+
+  @override
+  String get deviceOverviewTitle => 'デバイス';
+
+  @override
+  String get deviceOverviewSubtitle => 'データソース・リンク状態・自己診断';
+
+  @override
+  String get deviceCurrentLink => '現在のリンク';
+
+  @override
+  String get deviceCurrentLinkDesc => '読み取り専用の要約。パラメータ変更は各サブページで';
+
+  @override
+  String get deviceEntries => 'デバイスとパラメータ';
+
+  @override
+  String get deviceEntriesDesc => 'リンクごとに 1 ページ、設定もそれぞれ独立';
+
+  @override
+  String get tncDeviceTitle => 'TNC デバイスとパラメータ';
+
+  @override
+  String get tncDeviceDesc => 'Bluetooth／シリアル接続、初期化文字列、KISS パラメータ、送信自己診断';
+
+  @override
+  String get deviceLogTitle => 'リンクログ';
+
+  @override
+  String get deviceLogDesc => '現在のソースのログを表示（TNC／オーディオで自動切替）';
+
+  @override
+  String get tncInitTitle => 'TNC 初期化文字列';
+
+  @override
+  String get tncInitSubtitle => '接続後に 1 行ずつ送信（APRSdroid の kiss.init 相当）';
+
+  @override
+  String get tncInitTip =>
+      'TNC が「受信できるのに送信できない」場合はまずここを試してください。多くの Bluetooth／シリアル TNC は起動時にコマンドモードのままで、KISS ON／RESTART などを受け取って初めて KISS 転送に入ります。1 行 1 コマンド（CRLF は自動付加）。';
+
+  @override
+  String get tncInitDelay => '行ごとの間隔 (ms)';
+
+  @override
+  String get tncInitDelayTip => '行間の待ち時間。モジュールがコマンドを処理する時間が必要で、短すぎると取りこぼします';
+
+  @override
+  String get tncInitSendAction => '初期化文字列を今すぐ送信';
+
+  @override
+  String tncInitSent(int n) {
+    return '初期化文字列を $n 行送信しました';
+  }
+
+  @override
+  String get tncInitEmpty => '初期化文字列が未入力です';
+
+  @override
+  String get tncPushParams => '接続時に KISS パラメータを送信';
+
+  @override
+  String get tncPushParamsTip =>
+      '既定はオフ（APRSdroid と同じ）。オンにすると接続時に上記の値を TNC へ送り、TNC 自身の設定を上書きします。値が不適切だと送信せず待ち続けることがあるため、一元管理したいときだけ有効にしてください。';
+
+  @override
+  String get tncTxTestTitle => '送信自己診断';
+
+  @override
+  String get tncTxTestSubtitle =>
+      'テストフレームを 1 つ TNC に書き込み、問題がリンク側か TNC 側かを切り分けます';
+
+  @override
+  String get tncTxTestHint =>
+      '送るのはステータスフレーム（位置情報なし）なので、aprs.fi 上で局を移動させません。ここで「書き込み済み」と出るのに送信されない場合、問題は TNC 側です。まず初期化文字列（KISS ON／RESTART）を試し、次に TxDelay とチャネルの混雑を確認してください。';
+
+  @override
+  String get tncTxTestAction => 'テストフレームを書き込む';
+
+  @override
+  String get tncTxTestOkPrefix => '書き込み済み';
+
+  @override
+  String tncTxTestOk(String n) {
+    return 'TNC に書き込みました（累計 $n フレーム）。無線機が送信しない場合は TNC 側の問題です。初期化文字列を試すか TxDelay を確認してください。';
+  }
+
+  @override
+  String tncTxTestFail(String err) {
+    return '書き込み失敗：$err';
+  }
+
+  @override
+  String get tncNeedConnected => '先に TNC へ接続してください';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 文字 · パケット $bytes/512 バイト';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return 'このメッセージは $chars 文字で、APRS 規格の上限 67 文字を超えています。多くのクライアントは表示できますが、一部のクライアント／ゲートウェイは切り捨てまたは拒否するため、相手が解釈できない可能性があります。送信しますか？';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return 'パケットが $bytes バイトで、APRS-IS の 1 行上限 512 バイトを超えています。サーバーがパケットごと破棄する可能性があります（ヘッダーも届きません）。約 $over バイト短くしてください。';
+  }
+
+  @override
+  String get msgSendAnyway => 'それでも送信';
+
+  @override
+  String get msgSpecLimitHint =>
+      'APRS 規格では 1 通のメッセージは 67 文字以内が推奨です。長すぎる文本は一部のクライアントで欠けたり解析に失敗します。';
+
+  @override
+  String get msgBlockedTooLong => '送信を中止：パケットが APRS-IS の上限を超えています';
+
+  @override
+  String get beaconRfBeaconOff => 'RF ビーコンがオフ';
+
+  @override
+  String get beaconRfEnableHint =>
+      'RF ソースでの自動送信には「RF ビーコン」を明示的に有効にする必要があります。それまでは位置を自動送信しません（カウントダウンも進みません）。';
+
+  @override
+  String get beaconRfEnableAction => 'RF ビーコンを有効化';
+
+  @override
+  String get beaconRfEnabled => 'RF ビーコンを有効化しました（間隔どおり自動送信します）';
+
+  @override
+  String get beaconRfEnableWarn => '送信はあなたのコールサインで行われます。免許の範囲内で運用してください';
+
+  @override
   String get diagTitle => 'リンク自己診断';
 
   @override
