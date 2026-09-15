@@ -25,6 +25,12 @@ class MainActivity : FlutterActivity() {
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
     private var tnc: TncManager? = null
 
+    // PKWDWPL 链路（Kenwood `$PKWDWPL` 航点语句）：同样的字节搬运，
+    // 但走**独立通道 + 独立 socket** —— 与 TNC 是并列的两条链路，
+    // 可以同时开着（各连各的设备）。协议区别全在 Dart 侧
+    // （lib/pkwdwpl.dart 按行解析 NMEA，而不是解 KISS 帧）。
+    private var pkwdwpl: TncManager? = null
+
     // 声卡 TNC（AFSK 1200）：同样只搬 PCM 采样，调制解调在 Dart 侧
     private var audio: AudioManager? = null
 
@@ -99,79 +105,106 @@ class MainActivity : FlutterActivity() {
             }
         )
 
-        // 蓝牙 TNC 通道：列出已配对设备 / 连接 / 收发字节
+        // 蓝牙 SPP 链路通道。
+        //
+        // TNC 与 PKWDWPL 用的**是同一套字节搬运**（本管理类只搬字节，
+        // KISS/AX.25 与 NMEA 解析全在 Dart 侧）；差别只有通道名与套接字，
+        // 所以把「挂通道」抽成一个局部函数挂两次。
+        //
+        // 为什么必须两条独立通道：TncManager 内部只维护**一个** socket，
+        // 共用通道会让两条链路互抢同一条连接（开了 TNC，PKWDWPL 就断）。
+        // 各自独立之后可以同时运行，例如 TNC 接电台做 KISS 收发、
+        // PKWDWPL 接另一台电台只读航点。
+        fun wireSppLink(manager: TncManager, methodName: String, eventName: String) {
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, methodName)
+                .setMethodCallHandler { call, result ->
+                    when (call.method) {
+                        "isSupported" -> result.success(manager.isSupported())
+                        "listBondedDevices" -> {
+                            try {
+                                result.success(manager.listBondedDevices())
+                            } catch (e: Exception) {
+                                result.error("BT_LIST_FAILED", e.message ?: "列出蓝牙设备失败", null)
+                            }
+                        }
+                        "connect" -> {
+                            val address = call.argument<String>("address")
+                            if (address.isNullOrEmpty()) {
+                                result.error("NO_ADDRESS", "缺少设备地址", null)
+                            } else {
+                                try {
+                                    manager.connect(address)
+                                    result.success(true)
+                                } catch (e: Exception) {
+                                    result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
+                                }
+                            }
+                        }
+                        "disconnect" -> {
+                            try {
+                                manager.disconnect()
+                            } catch (_: Exception) {
+                            }
+                            result.success(true)
+                        }
+                        "send" -> {
+                            val data = call.argument<ByteArray>("data")
+                            if (data == null) {
+                                // 明确的诊断信息：Dart 侧若传 List<int>（而不是 Uint8List），
+                                // StandardMessageCodec 会编成 ArrayList，这里必然取不到
+                                // ByteArray —— 曾经因此「蓝牙能收不能发且毫无提示」。
+                                val raw = call.argument<Any>("data")
+                                result.error(
+                                    "NO_DATA",
+                                    "缺少数据：期望 ByteArray，实际收到 " +
+                                        (raw?.javaClass?.name ?: "null") +
+                                        "。Dart 侧必须传 Uint8List（见 Kiss.escape 注释）",
+                                    null
+                                )
+                            } else {
+                                try {
+                                    manager.send(data)
+                                    result.success(true)
+                                } catch (e: Exception) {
+                                    result.error("BT_SEND_FAILED", e.message ?: "发送失败", null)
+                                }
+                            }
+                        }
+                        "requestPermissions" -> manager.requestPermissions(result)
+                        else -> result.notImplemented()
+                    }
+                }
+            EventChannel(flutterEngine.dartExecutor.binaryMessenger, eventName)
+                .setStreamHandler(
+                    object : EventChannel.StreamHandler {
+                        override fun onListen(arguments: Any?, things: EventChannel.EventSink?) {
+                            manager.setEventSink(things)
+                        }
+
+                        override fun onCancel(arguments: Any?) {
+                            manager.setEventSink(null)
+                        }
+                    }
+                )
+        }
+
+        // ① TNC（KISS 收发）
         val tncManager = TncManager(this)
         tnc = tncManager
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, TncManager.METHOD_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                when (call.method) {
-                    "isSupported" -> result.success(tncManager.isSupported())
-                    "listBondedDevices" -> {
-                        try {
-                            result.success(tncManager.listBondedDevices())
-                        } catch (e: Exception) {
-                            result.error("BT_LIST_FAILED", e.message ?: "列出蓝牙设备失败", null)
-                        }
-                    }
-                    "connect" -> {
-                        val address = call.argument<String>("address")
-                        if (address.isNullOrEmpty()) {
-                            result.error("NO_ADDRESS", "缺少设备地址", null)
-                        } else {
-                            try {
-                                tncManager.connect(address)
-                                result.success(true)
-                            } catch (e: Exception) {
-                                result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
-                            }
-                        }
-                    }
-                    "disconnect" -> {
-                        try {
-                            tncManager.disconnect()
-                        } catch (_: Exception) {
-                        }
-                        result.success(true)
-                    }
-                    "send" -> {
-                        val data = call.argument<ByteArray>("data")
-                        if (data == null) {
-                            // 明确的诊断信息：Dart 侧若传 List<int>（而不是 Uint8List），
-                            // StandardMessageCodec 会编成 ArrayList，这里必然取不到
-                            // ByteArray —— 曾经因此「蓝牙能收不能发且毫无提示」。
-                            val raw = call.argument<Any>("data")
-                            result.error(
-                                "NO_DATA",
-                                "缺少数据：期望 ByteArray，实际收到 " +
-                                    (raw?.javaClass?.name ?: "null") +
-                                    "。Dart 侧必须传 Uint8List（见 Kiss.escape 注释）",
-                                null
-                            )
-                        } else {
-                            try {
-                                tncManager.send(data)
-                                result.success(true)
-                            } catch (e: Exception) {
-                                result.error("BT_SEND_FAILED", e.message ?: "发送失败", null)
-                            }
-                        }
-                    }
-                    "requestPermissions" -> tncManager.requestPermissions(result)
-                    else -> result.notImplemented()
-                }
-            }
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, TncManager.EVENT_CHANNEL)
-            .setStreamHandler(
-                object : EventChannel.StreamHandler {
-                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                        tncManager.setEventSink(events)
-                    }
+        wireSppLink(tncManager, TncManager.METHOD_CHANNEL, TncManager.EVENT_CHANNEL)
 
-                    override fun onCancel(arguments: Any?) {
-                        tncManager.setEventSink(null)
-                    }
-                }
-            )
+        // ② PKWDWPL（Kenwood 航点语句，只读）
+        val pkwdwplManager = TncManager(
+            this,
+            TncManager.METHOD_CHANNEL_PKWDWPL,
+            TncManager.EVENT_CHANNEL_PKWDWPL,
+        )
+        pkwdwpl = pkwdwplManager
+        wireSppLink(
+            pkwdwplManager,
+            TncManager.METHOD_CHANNEL_PKWDWPL,
+            TncManager.EVENT_CHANNEL_PKWDWPL,
+        )
 
         // 音频通道（声卡 TNC）：采集 PCM16 上传 / 接收 PCM16 播放
         val audioManager = AudioManager(this)
@@ -418,6 +451,7 @@ class MainActivity : FlutterActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // 蓝牙/录音权限请求走各自的 requestCode，勿与定位权限混淆
         tnc?.onRequestPermissionsResult(requestCode, grantResults)
+        pkwdwpl?.onRequestPermissionsResult(requestCode, grantResults)
         audio?.onRequestPermissionsResult(requestCode, grantResults)
         if (requestCode != 100) return
         val ok = hasPermissions()
@@ -522,6 +556,11 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         tnc = null
+        try {
+            pkwdwpl?.dispose()
+        } catch (_: Exception) {
+        }
+        pkwdwpl = null
         try {
             audio?.dispose()
         } catch (_: Exception) {

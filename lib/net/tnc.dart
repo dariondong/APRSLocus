@@ -9,3 +9,9 @@ import 'tnc_stub.dart'
     if (dart.library.html) 'tnc_web.dart' as impl;
 
 TncTransport createTncTransport() => impl.createTncTransport();
+
+/// PKWDWPL 链路（Kenwood 航点语句）的传输层工厂。
+///
+/// 与 TNC 共用字节搬运实现，但走**独立通道** → 原生侧独立实例、独立 socket，
+/// 因此两条链路可以同时开着互不干扰。
+TncTransport createPkwdwplTransport() => impl.createPkwdwplTransport();

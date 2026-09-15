@@ -8,6 +8,7 @@ import 'log_page.dart';
 import 'tile_map.dart';
 import 'audio_page.dart';
 import 'device_page.dart';
+import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
 import 'weather.dart';
@@ -1615,6 +1616,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               _audioCard(),
               const SizedBox(height: 16),
             ],
+            // PKWDWPL 是只读链路：有它自己的卡片（设备/统计/校验严格度），
+            // 且**不复用**服务器那张卡（地址/端口/passcode/过滤器全不生效）
+            if (st.pkwdwplOn) ...[
+              _pkwdwplCard(),
+              const SizedBox(height: 16),
+            ],
             const SizedBox(height: 16),
             // ④ 接收筛选：按国家或地区（客户端本地筛选，两个来源都适用）
             _receivePrefCard(),
@@ -1759,11 +1766,13 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       if (st.aprsIsOn) 'APRS-IS',
       if (st.tncOn) S.of(context).dataSourceTnc,
       if (st.audioOn) S.of(context).dataSourceAudio,
+      if (st.pkwdwplOn) S.of(context).dataSourcePkwdwpl,
     ];
     final txIdx = [
       if (st.aprsIsOn) AppState.srcAprsIs,
       if (st.tncOn) AppState.srcTnc,
       if (st.audioOn) AppState.srcAudio,
+      if (st.pkwdwplOn) AppState.srcPkwdwpl,
     ].indexOf(st.dataSource);
     final srcLabel = names.isEmpty
         ? 'APRS-IS'
@@ -1938,6 +1947,65 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               style: OutlinedButton.styleFrom(
                 foregroundColor: C.cyan,
                 side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// PKWDWPL（Kenwood 航点）模式下的连接卡片。
+  ///
+  /// 与 `_tncCard()` / `_audioCard()` 同一取舍：只放这条链路**真的有**的东西。
+  /// 额外多写一条「只收不发」—— 它没有发射开关、没有中继路径、没有 67 字符
+  /// 限长，不写明的话用户会一直找「怎么用它发位置」。
+  Widget _pkwdwplCard() {
+    final p = st.pkwdwpl;
+    return SettingsSectionCard(
+      title: S.of(context).connectionCard2,
+      subtitle: S.of(context).dataSourcePkwdwplDesc,
+      icon: Icons.route_rounded,
+      color: C.green,
+      children: [
+        _connBanner(),
+        Divider(height: 1, color: C.border),
+        SettingsRow2(
+          S.of(context).tncBoundDevice,
+          p.device?.label ?? S.of(context).tncNotBound,
+          valueColor: p.device == null ? C.grey : C.ink,
+        ),
+        SettingsRow2(
+          S.of(context).connection,
+          p.connected
+              ? S.of(context).pkwdwplStats('${p.rxFrames}')
+              : S.of(context).disconnected,
+          valueColor: p.connected ? C.green : C.slate,
+        ),
+        // 只收不发：这是它与 TNC 最大的区别，必须写在卡片里
+        SettingsRow2(
+          S.of(context).dataSourcePkwdwpl,
+          S.of(context).pkwdwplRxOnly,
+          valueColor: C.orange,
+        ),
+        SettingsHint(S.of(context).dataSourcePkwdwplHint, color: C.orange),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PkwdwplDevicePage(state: st),
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded, size: 16),
+              label: Text(S.of(context).pkwdwplDeviceTitle,
+                  style: ts(12, w: FontWeight.w600)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.green,
+                side: BorderSide(color: C.green.withValues(alpha: 0.5)),
               ),
             ),
           ),

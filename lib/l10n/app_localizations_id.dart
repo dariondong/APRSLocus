@@ -2123,6 +2123,78 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get dataSourcePkwdwpl => 'PKWDWPL (waypoint Kenwood)';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      'Baca kalimat waypoint Kenwood \$PKWDWPL dari radio lewat Bluetooth/serial (hanya terima)';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL adalah tautan **hanya terima**: menerima stasiun tetapi tidak pernah memancar (gunakan APRS-IS / TNC / audio untuk memancar)';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return 'Menghubungkan PKWDWPL ($arg)…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL terhubung · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'Perangkat PKWDWPL';
+
+  @override
+  String get pkwdwplDeviceDesc =>
+      'Pasangkan port radio dan lihat status penerimaan waypoint';
+
+  @override
+  String get pkwdwplBindTitle => 'Pemasangan perangkat dan status';
+
+  @override
+  String get pkwdwplBindSubtitle =>
+      'Pilih port serial atau Bluetooth yang mengeluarkan kalimat \$PKWDWPL';
+
+  @override
+  String get pkwdwplRxOnly => 'Hanya terima';
+
+  @override
+  String get pkwdwplTip =>
+      'Setel format keluaran port PC / GPS di radio ke \"\$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.';
+
+  @override
+  String get pkwdwplStrictChecksum => 'Checksum ketat (buang jika tidak cocok)';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      'Nonaktif secara bawaan: ketidakcocokan hanya ditandai dan dicatat, tidak dibuang, karena pada kabel lokal hal ini biasanya berarti format firmware berbeda dari manual. Membuang semuanya akan membuat layar kosong dan jauh lebih sulit ditelusuri.';
+
+  @override
+  String get pkwdwplErrReadOnly => 'tautan hanya terima tidak dapat memancar';
+
+  @override
+  String get pkwdwplStatTitle => 'Penerimaan waypoint';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '$rx waypoint diterima';
+  }
+
+  @override
+  String get pkwdwplStatRejected => 'Kalimat dibuang atau tidak valid';
+
+  @override
+  String get pkwdwplStatMismatch => 'Ketidakcocokan checksum';
+
+  @override
+  String get pkwdwplStatIgnored => 'Kalimat NMEA lain (diabaikan)';
+
+  @override
+  String get pkwdwplLogEmpty => 'Belum ada log PKWDWPL';
+
+  @override
   String get tncBindTitle => 'TNC Bluetooth';
 
   @override

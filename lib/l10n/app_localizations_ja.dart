@@ -2063,6 +2063,77 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get dataSourcePkwdwpl => 'PKWDWPL（ケンウッド航点）';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      'Bluetooth/シリアルで無線機が出力する Kenwood \$PKWDWPL 航点文を読み取ります（受信のみ）';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL は**受信専用**リンクです。局を受信しますが送信には使われません（送信は APRS-IS / TNC / オーディオを使用）';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return 'PKWDWPL に接続中（$arg）…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL 接続済み · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL デバイス';
+
+  @override
+  String get pkwdwplDeviceDesc => '無線機のポートを登録し、航点の受信状態を確認します';
+
+  @override
+  String get pkwdwplBindTitle => 'デバイス登録と状態';
+
+  @override
+  String get pkwdwplBindSubtitle =>
+      '\$PKWDWPL 文を出力するシリアル / Bluetooth ポートを選択します';
+
+  @override
+  String get pkwdwplRxOnly => '受信のみ';
+
+  @override
+  String get pkwdwplTip =>
+      '無線機のメニューで PC / GPS ポートの出力形式を \"\$PKWDWPL\" に設定してください（通常 4800 8N1）。このリンクは受信専用で、一切送信しません。';
+
+  @override
+  String get pkwdwplStrictChecksum => '厳格なチェックサム（不一致は破棄）';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      '既定ではオフ。不一致は破棄せず記録とログのみ行います。ローカル接続での不一致はファームウェアの書式差であることが多く、すべて破棄すると画面が空になり、かえって原因を追いにくくなります。';
+
+  @override
+  String get pkwdwplErrReadOnly => '受信専用リンクのため送信できません';
+
+  @override
+  String get pkwdwplStatTitle => '航点の受信';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '航点を $rx 件受信';
+  }
+
+  @override
+  String get pkwdwplStatRejected => '破棄/無効な文';
+
+  @override
+  String get pkwdwplStatMismatch => 'チェックサム不一致';
+
+  @override
+  String get pkwdwplStatIgnored => 'その他の NMEA 文（無視）';
+
+  @override
+  String get pkwdwplLogEmpty => 'PKWDWPL のログはまだありません';
+
+  @override
   String get tncBindTitle => 'Bluetooth TNC';
 
   @override

@@ -1130,6 +1130,9 @@ class _HomePageState extends State<HomePage> {
         // 否则用户会以为填个地址就能连上。
         final tncMode = st.usingTnc;
         final audioMode = st.usingAudio;
+        // PKWDWPL 永远不会成为发射来源（只读），所以它只可能出现在
+        // 「未连接」横幅下 —— 此时提示用户它需要单独绑定端口。
+        final pkwdwplMode = st.pkwdwplOn && !st.connected;
         // 音频来源没有「设备」概念，改成展示采样率（用户真正关心的参数）
         final tncName = audioMode
             ? '${st.audio.config.afsk.sampleRate}Hz'
@@ -1144,7 +1147,9 @@ class _HomePageState extends State<HomePage> {
                 ? S.of(context).audioCaptureStart
                 : (tncMode
                     ? S.of(context).connectTncBar
-                    : S.of(context).notConnectedAprsServer));
+                    : (pkwdwplMode
+                        ? S.of(context).dataSourcePkwdwpl
+                        : S.of(context).notConnectedAprsServer)));
         final subtitle = connecting
             ? (audioMode
                 ? S.of(context).connConnectingAudio(tncName)
@@ -1157,7 +1162,9 @@ class _HomePageState extends State<HomePage> {
                 ? S.of(context).dataSourceAudioDesc
                 : (tncMode
                     ? S.of(context).dataSourceTncDesc
-                    : S.of(context).connectNearbyDesc));
+                    : (pkwdwplMode
+                        ? S.of(context).dataSourcePkwdwplDesc
+                        : S.of(context).connectNearbyDesc)));
         return Container(
           margin: EdgeInsets.fromLTRB(
               compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),

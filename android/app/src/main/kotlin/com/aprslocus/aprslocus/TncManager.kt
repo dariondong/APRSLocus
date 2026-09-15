@@ -50,11 +50,28 @@ import java.util.concurrent.atomic.AtomicInteger
  *   ② 两帧并发写会让 KISS 字节流**交错**（FEND 出现在帧中间），
  *      部分 TNC 会把这当成非法帧甚至复位链路。
  */
-class TncManager(private val activity: Activity) {
+class TncManager(
+    private val activity: Activity,
+    /**
+     * 平台通道名。参数化而不是写死，是为了让 **PKWDWPL 链路**
+     * （Kenwood `$PKWDWPL` 航点语句）复用同一套字节搬运实现。
+     *
+     * 为什么不能共用通道：本类只维护**一个** socket，两条链路共用会出现
+     * 「开了 TNC 之后 PKWDWPL 断、来回争抢」—— 各自一个实例、一个通道才对，
+     * 而 SPP 的并发坑（代次隔离、写队列串行、权限回调）已经在这里踩完了，
+     * 复制一份必然漏掉其中某个修复。
+     */
+    private val methodChannelName: String = METHOD_CHANNEL,
+    private val eventChannelName: String = EVENT_CHANNEL,
+) {
 
     companion object {
         const val METHOD_CHANNEL = "com.aprslocus/tnc"
         const val EVENT_CHANNEL = "com.aprslocus/tnc_events"
+
+        /** PKWDWPL 链路（Kenwood 航点语句，只收不发）的独立通道 */
+        const val METHOD_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl"
+        const val EVENT_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl_events"
 
         /** 蓝牙串口服务（SPP）标准 UUID */
         private val SPP_UUID: UUID =

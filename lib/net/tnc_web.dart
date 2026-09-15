@@ -6,6 +6,9 @@ import 'tnc_base.dart';
 /// 本版本先不实现，返回「不支持」，UI 会给出提示。
 TncTransport createTncTransport() => TncStub();
 
+/// PKWDWPL 链路同样需要串口/蓝牙，Web 不支持（UI 会给出提示）
+TncTransport createPkwdwplTransport() => TncStub();
+
 class TncStub implements TncTransport {
   @override
   bool get connected => false;

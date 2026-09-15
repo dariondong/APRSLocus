@@ -56,6 +56,16 @@ class DataSourceCard extends StatelessWidget {
           desc: s.dataSourceTncDesc,
           icon: Icons.settings_input_antenna_rounded,
         ),
+        // PKWDWPL（Kenwood 航点语句）与 TNC 并列：同一根线缆/蓝牙，
+        // 但线上是 NMEA 明文行、而且**只收不发**（canTx: false）
+        _tile(
+          context,
+          key: AppState.srcPkwdwpl,
+          title: s.dataSourcePkwdwpl,
+          desc: s.dataSourcePkwdwplDesc,
+          icon: Icons.route_rounded,
+          canTx: false,
+        ),
         _tile(
           context,
           key: AppState.srcAudio,
@@ -66,6 +76,8 @@ class DataSourceCard extends StatelessWidget {
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
         if (state.multiSource) SettingsHint(s.dataSourceTxHint),
         if (state.multiSource) SettingsHint(s.dataSourceIgateHint),
+        // PKWDWPL 是只读的，这句必须常驻：否则用户会奇怪为何它没有发射圆点
+        if (state.pkwdwplOn) SettingsHint(s.dataSourcePkwdwplHint),
         if (extra != null) SettingsHint(extra!),
       ],
     );
@@ -77,11 +89,14 @@ class DataSourceCard extends StatelessWidget {
     required String title,
     required String desc,
     required IconData icon,
+    bool canTx = true,
   }) {
     final s = S.of(context);
     final enabled = state.enabledSources.contains(key);
     final up = state.isUp(key);
-    final isTx = state.dataSource == key;
+    // 只读来源（PKWDWPL）永远不是发射来源，圆点也不显示 ——
+    // 否则用户会以为「选上它就能发」。
+    final isTx = canTx && state.dataSource == key;
     // 最后一条不允许取消勾选：全关掉应用就什么都不收，而界面没有任何提示
     final canToggleOff = state.enabledSources.length > 1 || !enabled;
     return InkWell(
@@ -145,8 +160,8 @@ class DataSourceCard extends StatelessWidget {
               ],
             ),
           ),
-          // 发射来源标记：只有启用的链路才有资格成为发射来源
-          if (enabled)
+          // 发射来源标记：只有启用的**可发射**链路才有资格
+          if (enabled && canTx)
             GestureDetector(
               onTap: isTx ? null : () => state.setTxSource(key),
               behavior: HitTestBehavior.opaque,

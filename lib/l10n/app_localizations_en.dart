@@ -2123,6 +2123,78 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get dataSourcePkwdwpl => 'PKWDWPL (Kenwood waypoints)';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      'Read the Kenwood \$PKWDWPL waypoint sentences from the radio over Bluetooth or serial (receive-only)';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL is a **receive-only** link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return 'Connecting to PKWDWPL ($arg)…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL connected · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL device';
+
+  @override
+  String get pkwdwplDeviceDesc =>
+      'Bind the radio port and check waypoint reception';
+
+  @override
+  String get pkwdwplBindTitle => 'Device binding and status';
+
+  @override
+  String get pkwdwplBindSubtitle =>
+      'Pick the serial or Bluetooth port that outputs \$PKWDWPL sentences';
+
+  @override
+  String get pkwdwplRxOnly => 'Receive-only';
+
+  @override
+  String get pkwdwplTip =>
+      'Set the PC / GPS port output format on the radio to \"\$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.';
+
+  @override
+  String get pkwdwplStrictChecksum => 'Strict checksum (drop mismatches)';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      'Off by default: a mismatch is flagged and logged instead of dropped, because on a local cable it usually means the firmware format differs from the manual. Dropping every sentence would leave the screen empty and make diagnosis much harder.';
+
+  @override
+  String get pkwdwplErrReadOnly => 'receive-only link cannot transmit';
+
+  @override
+  String get pkwdwplStatTitle => 'Waypoint reception';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '$rx waypoints received';
+  }
+
+  @override
+  String get pkwdwplStatRejected => 'Dropped or invalid sentences';
+
+  @override
+  String get pkwdwplStatMismatch => 'Checksum mismatches';
+
+  @override
+  String get pkwdwplStatIgnored => 'Other NMEA sentences (ignored)';
+
+  @override
+  String get pkwdwplLogEmpty => 'No PKWDWPL log yet';
+
+  @override
   String get tncBindTitle => 'Bluetooth TNC';
 
   @override

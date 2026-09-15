@@ -2047,6 +2047,76 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航点）';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      '用蓝牙/串口读取电台输出的 Kenwood \$PKWDWPL 航点语句（只收不发）';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL 是**只读**链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return '正在连接 PKWDWPL（$arg）…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL 已连接 · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL 设备';
+
+  @override
+  String get pkwdwplDeviceDesc => '绑定电台端口 · 查看航点接收状态';
+
+  @override
+  String get pkwdwplBindTitle => '设备绑定与状态';
+
+  @override
+  String get pkwdwplBindSubtitle => '选择输出 \$PKWDWPL 语句的那个串口 / 蓝牙端口';
+
+  @override
+  String get pkwdwplRxOnly => '只收不发';
+
+  @override
+  String get pkwdwplTip =>
+      '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
+
+  @override
+  String get pkwdwplStrictChecksum => '严格校验和（不符即丢弃）';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      '默认关闭：验证不符时只标注并记日志，不丢句子 —— 本地线缆上的不符多半是固件格式与手册有出入，整条丢弃会让界面「什么都不显示」，反而更难排查';
+
+  @override
+  String get pkwdwplErrReadOnly => '只读链路，不能发射';
+
+  @override
+  String get pkwdwplStatTitle => '航点接收';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '已收航点 $rx 条';
+  }
+
+  @override
+  String get pkwdwplStatRejected => '丢弃/无效语句';
+
+  @override
+  String get pkwdwplStatMismatch => '校验和不符';
+
+  @override
+  String get pkwdwplStatIgnored => '其它 NMEA 语句（已忽略）';
+
+  @override
+  String get pkwdwplLogEmpty => '暂无 PKWDWPL 日志';
+
+  @override
   String get tncBindTitle => '蓝牙 TNC';
 
   @override
@@ -7237,6 +7307,76 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航點）';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      '用藍牙/串列埠讀取電台輸出的 Kenwood \$PKWDWPL 航點語句（只收不發）';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL 是**唯讀**鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return '正在連線 PKWDWPL（$arg）…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL 已連線 · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL 裝置';
+
+  @override
+  String get pkwdwplDeviceDesc => '綁定電台連接埠 · 檢視航點接收狀態';
+
+  @override
+  String get pkwdwplBindTitle => '裝置綁定與狀態';
+
+  @override
+  String get pkwdwplBindSubtitle => '選擇輸出 \$PKWDWPL 語句的那個串列埠 / 藍牙埠';
+
+  @override
+  String get pkwdwplRxOnly => '只收不發';
+
+  @override
+  String get pkwdwplTip =>
+      '在電台選單裡把 PC / GPS 埠的輸出格式設為 \"\$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文';
+
+  @override
+  String get pkwdwplStrictChecksum => '嚴格校驗和（不符即丟棄）';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      '預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查';
+
+  @override
+  String get pkwdwplErrReadOnly => '唯讀鏈路，不能發射';
+
+  @override
+  String get pkwdwplStatTitle => '航點接收';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '已收航點 $rx 條';
+  }
+
+  @override
+  String get pkwdwplStatRejected => '丟棄/無效語句';
+
+  @override
+  String get pkwdwplStatMismatch => '校驗和不符';
+
+  @override
+  String get pkwdwplStatIgnored => '其它 NMEA 語句（已忽略）';
+
+  @override
+  String get pkwdwplLogEmpty => '暫無 PKWDWPL 日誌';
 
   @override
   String get tncBindTitle => '藍牙 TNC';

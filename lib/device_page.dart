@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'audio_page.dart';
 import 'link_test_card.dart';
+import 'pkwdwpl_device_page.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -17,7 +18,7 @@ import 'widgets.dart';
 ///   ① 我现在用哪些来源？        → 数据来源（多选）
 ///   ② 我要不要当网关？          → 网关
 ///   ③ 现在通不通？             → 链路（每来源一行）
-///   ④ 要改参数 / 排查 → 子页    → TNC 设备与参数 / 音频
+///   ④ 要改参数 / 排查 → 子页    → TNC 设备与参数 / 音频 / PKWDWPL
 ///   ⑤ 出问题了要证据            → 链路自检、日志（**折叠**）
 ///
 /// 上一版把这些平铺在一页里，其中「自检结果」与「日志」两块**很高又不常看**，
@@ -152,28 +153,44 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
   /// ③ 链路状态：每一行就是一条链路，不会混淆
   Widget _linksCard(BuildContext context, S s) {
     final rows = <Widget>[];
-    for (final src in [AppState.srcAprsIs, AppState.srcTnc, AppState.srcAudio]) {
+    for (final src in [
+      AppState.srcAprsIs,
+      AppState.srcTnc,
+      AppState.srcAudio,
+      AppState.srcPkwdwpl,
+    ]) {
       if (!state.enabledSources.contains(src)) continue;
       final up = state.isUp(src);
       final isTx = state.dataSource == src;
       final name = src == AppState.srcAprsIs
           ? s.dataSourceAprsIs
-          : (src == AppState.srcTnc ? s.dataSourceTnc : s.dataSourceAudio);
+          : (src == AppState.srcTnc
+              ? s.dataSourceTnc
+              : (src == AppState.srcAudio
+                  ? s.dataSourceAudio
+                  : s.dataSourcePkwdwpl));
       final detail = switch (src) {
         AppState.srcAprsIs => '${state.aprs.server}:${state.aprs.port}',
         AppState.srcTnc => state.tnc.device?.label ?? s.tncNotBound,
+        AppState.srcPkwdwpl =>
+          state.pkwdwpl.device?.label ?? s.tncNotBound,
         _ => '${state.audio.config.afsk.sampleRate} Hz · ${state.audio.backendName}',
       };
       final stats = switch (src) {
         AppState.srcAprsIs => s.notifRx('${state.packetsRx}'),
         AppState.srcTnc => s.tncStats(
             '${state.tnc.rxFrames}', '${state.tnc.txFrames}'),
+        AppState.srcPkwdwpl => s.pkwdwplStats('${state.pkwdwpl.rxFrames}'),
         _ => s.tncStats(
             '${state.audio.rxFrames}', '${state.audio.txFrames}'),
       };
+      // 只读链路额外标一下：否则「只有收没有发」看着像统计坏了
+      final badge = src == AppState.srcPkwdwpl
+          ? ' · ${s.pkwdwplRxOnly}'
+          : (isTx ? ' · ${s.dataSourceTxBadge}' : '');
       rows.add(SettingsRow2(
-        '$name${isTx ? ' · ${s.dataSourceTxBadge}' : ''}',
-        '$detail  ${up ? '· ${stats}' : ''}',
+        '$name$badge',
+        '$detail  ${up ? '· $stats' : ''}',
         valueColor: up ? C.green : C.slate,
       ));
     }
@@ -217,6 +234,14 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           title: s.audioSettings,
           desc: s.audioSettingsSubtitle,
           page: AudioSettingsPage(state: state),
+        ),
+        _entry(
+          context,
+          icon: Icons.route_rounded,
+          color: C.green,
+          title: s.pkwdwplDeviceTitle,
+          desc: s.pkwdwplDeviceDesc,
+          page: PkwdwplDevicePage(state: state),
         ),
       ],
     );
@@ -280,6 +305,9 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
     }
     if (state.tncOn) sections.add((s.dataSourceTnc, state.tnc.logs));
     if (state.audioOn) sections.add((s.dataSourceAudio, state.audio.logs));
+    if (state.pkwdwplOn) {
+      sections.add((s.dataSourcePkwdwpl, state.pkwdwpl.logs));
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

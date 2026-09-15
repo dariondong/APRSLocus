@@ -1,5 +1,68 @@
 # 更新日志
 
+## [1.6.108] - 2026-09-15
+
+### 🔗 新增「PKWDWPL」数据来源（Kenwood 航点语句，只收不发）/ New data source: PKWDWPL (Kenwood waypoints, receive-only)
+
+数据来源从 3 条变 4 条：**APRS-IS / TNC / 音频 / PKWDWPL**。前三条都要求
+报文是 APRS（KISS 帧里的 AX.25），而 Kenwood 电台还能把**收到的台站**从
+PC / GPS 端口以 NMEA 明文吐出来（`$PKWDWPL,...`，共 14 个字段）。这类输出
+以前在本应用里完全没有入口 —— 现在把它接成一条独立链路，台站直接上图。
+
+**刻意做成「只读」**（这是与其余三条最大的区别，代码里有两道防线）：
+
+- Kenwood 的航点语句是**电台单向输出**的，链路上没有任何可发的报文，
+  因此 `dataSource`（发射来源）永远不会是 `pkwdwpl`；界面上也不给它发射圆点，
+  即使旧配置里把它存成了发射来源，加载时也会回落到 APRS-IS。
+- 它单独开一条**独立通道**（蓝牙 SPP / 串口，与 TNC 各连各的设备），
+  两条链路可以同时开着互不干扰 —— 共用通道会互相拆掉对方的连接
+  （原生 `TncManager` 只维护一个 socket，所以那是必然的）。
+- 最后一条来源不允许取消勾选，且**不能只剩只读来源**：否则信标 / 消息 / 网关
+  全部成了空转，而界面上看不出异常（想单用它记台账请用同作者的 PKWDWPL Lite）。
+
+**解析**（`lib/pkwdwpl.dart`，纯 Dart）：
+
+- NMEA XOR 校验和（用 NMEA 0183 权威示例 `$GPGGA` 交叉验证算法本身）。
+- 度分 → 十进制：`3954.98` = 39°54.98′ = **39.9163°**；分值 ≥ 60 判为语句损坏。
+- 字段数有 **10 / 11 / 12** 三种（第 8 / 9 / 11 字段常为空），所以按固定下标硬取
+  是错的 —— 那会把字段少的**整条丢掉**，而里面就有校验和正确的正常语句。
+  改为左锚定 + 正则定位日期 + 右锚定呼号/图标。
+- 呼号格式校验（补 XOR 查不出字符换位：`BI4PGN1-1` 与 `BI4PGN-11` 校验和相同）。
+- 默认**不丢**校验不符的句子（只标注 + 记日志），可在设备页打开严格模式。
+  本地线缆上的不符多半是固件格式与手册有出入，整条丢弃会让界面「什么都不显示」，
+  反而更难排查。
+
+**分帧**（蓝牙回调不按行对齐）：一条语句可能被切成两三块、一次回调也可能挤进好几条。
+写测试时抓到一个真 bug：超长垃圾行溢出缓冲后，只清缓冲**不够** ——
+那条行的剩余字节会继续累积，于是下一条正常语句被拼上垃圾尾巴
+（收到 `A$PKWDWPL,X`，校验和必然不符，而线路其实是好的）。现在溢出后进入
+「重新同步」状态，丢掉字节直到看见 `$`（NMEA 语句只可能以 `$` 开头）。
+
+新增 31 项测试（`test/pkwdwpl_test.dart`），期望值取自 BI7NOR 采集的**真实语句**。
+
+The data sources went from three to four: **APRS-IS / TNC / audio / PKWDWPL**. The
+first three all carry APRS inside AX.25 frames, while Kenwood radios can also
+print the stations they hear as plain NMEA on the PC/GPS port
+(`$PKWDWPL,...`, 14 fields) — output this app previously had no way to read.
+
+It is deliberately **receive-only**, enforced in two places: the radio only ever
+writes those sentences, so `dataSource` is never `pkwdwpl` (the UI shows no
+transmit dot, and an old config storing it as the transmit source falls back to
+APRS-IS on load). It gets its **own platform channel** so TNC and PKWDWPL can both
+stay connected to different radios — sharing one channel would make them tear down
+each other's socket. The last enabled source can never be a receive-only one.
+
+Parsing lives in `lib/pkwdwpl.dart`: NMEA XOR checksum (cross-checked against the
+authoritative `$GPGGA` example), degrees-and-minutes conversion
+(`3954.98` → **39.9163°**, minutes ≥ 60 treated as corrupt), tolerance for the
+10/11/12-field variants that real captures show (hard-coded indices would drop
+whole valid sentences), callsign format validation (XOR cannot catch character
+transpositions), and a configurable strict mode. The line splitter — which the
+test suite caught a real bug in — now resynchronises on `$` after an oversized
+garbage run instead of gluing its tail onto the next valid sentence.
+
+---
+
 ## [1.6.107] - 2026-09-15
 
 ### 🌐 新增网关（iGate）+ 数据来源改为**多选** / New: gateway (iGate) + multi-select data sources

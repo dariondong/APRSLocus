@@ -3873,6 +3873,126 @@ abstract class AppLocalizations {
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
 
+  /// No description provided for @dataSourcePkwdwpl.
+  ///
+  /// In zh, this message translates to:
+  /// **'PKWDWPL（Kenwood 航点）'**
+  String get dataSourcePkwdwpl;
+
+  /// No description provided for @dataSourcePkwdwplDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'用蓝牙/串口读取电台输出的 Kenwood \$PKWDWPL 航点语句（只收不发）'**
+  String get dataSourcePkwdwplDesc;
+
+  /// No description provided for @dataSourcePkwdwplHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'PKWDWPL 是**只读**链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）'**
+  String get dataSourcePkwdwplHint;
+
+  /// No description provided for @connConnectingPkwdwpl.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接 PKWDWPL（{arg}）…'**
+  String connConnectingPkwdwpl(String arg);
+
+  /// No description provided for @connPkwdwplConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'PKWDWPL 已连接 · {arg}'**
+  String connPkwdwplConnected(String arg);
+
+  /// No description provided for @pkwdwplDeviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'PKWDWPL 设备'**
+  String get pkwdwplDeviceTitle;
+
+  /// No description provided for @pkwdwplDeviceDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'绑定电台端口 · 查看航点接收状态'**
+  String get pkwdwplDeviceDesc;
+
+  /// No description provided for @pkwdwplBindTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备绑定与状态'**
+  String get pkwdwplBindTitle;
+
+  /// No description provided for @pkwdwplBindSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择输出 \$PKWDWPL 语句的那个串口 / 蓝牙端口'**
+  String get pkwdwplBindSubtitle;
+
+  /// No description provided for @pkwdwplRxOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'只收不发'**
+  String get pkwdwplRxOnly;
+
+  /// No description provided for @pkwdwplTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文'**
+  String get pkwdwplTip;
+
+  /// No description provided for @pkwdwplStrictChecksum.
+  ///
+  /// In zh, this message translates to:
+  /// **'严格校验和（不符即丢弃）'**
+  String get pkwdwplStrictChecksum;
+
+  /// No description provided for @pkwdwplStrictChecksumTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认关闭：验证不符时只标注并记日志，不丢句子 —— 本地线缆上的不符多半是固件格式与手册有出入，整条丢弃会让界面「什么都不显示」，反而更难排查'**
+  String get pkwdwplStrictChecksumTip;
+
+  /// No description provided for @pkwdwplErrReadOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'只读链路，不能发射'**
+  String get pkwdwplErrReadOnly;
+
+  /// No description provided for @pkwdwplStatTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'航点接收'**
+  String get pkwdwplStatTitle;
+
+  /// No description provided for @pkwdwplStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'已收航点 {rx} 条'**
+  String pkwdwplStats(String rx);
+
+  /// No description provided for @pkwdwplStatRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'丢弃/无效语句'**
+  String get pkwdwplStatRejected;
+
+  /// No description provided for @pkwdwplStatMismatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'校验和不符'**
+  String get pkwdwplStatMismatch;
+
+  /// No description provided for @pkwdwplStatIgnored.
+  ///
+  /// In zh, this message translates to:
+  /// **'其它 NMEA 语句（已忽略）'**
+  String get pkwdwplStatIgnored;
+
+  /// No description provided for @pkwdwplLogEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无 PKWDWPL 日志'**
+  String get pkwdwplLogEmpty;
+
   /// No description provided for @tncBindTitle.
   ///
   /// In zh, this message translates to:

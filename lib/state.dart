@@ -27,6 +27,7 @@ import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'audio.dart';
+import 'pkwdwpl.dart';
 import 'diag.dart';
 import 'group_chat.dart';
 import 'igate.dart';
@@ -67,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.107';
+  static const appVersion = '1.6.108';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -348,6 +349,18 @@ class AppState extends ChangeNotifier {
     for (final g in chatGroups) {
       f += ' ~${g.groupCall}';
     }
+    // 双向网关必须额外请求**全部消息**（t/m）。
+    //
+    // 这是「网关不转发网络→信道」的根因：`r/lat/lng/r` 这个范围过滤器
+    // 只投递**源台站位置在范围内**的报文。而 IS→RF 要转的恰恰是
+    // 「远处的台站发给本地手台」的消息 —— 源台站在范围外，报文**根本
+    // 到不了本机**，客户端也就无从转发。
+    //
+    // APRS-IS 规范：多个过滤器是**并集**（官方示例 `filter r/33/-97/200 t/n`
+    // = 达拉斯附近 **加上** 全部 NWS 公告）；类型过滤器 `t/poimqstunw` 中
+    // `m = Message`，且按类型**全量**投递、不受地理位置限制。
+    // 因此这里追加 `t/m` 才能收到全球发给本地台站的消息。
+    if (igateEnabled && igateTwoWay) f += ' t/m';
     return f;
   }
 
@@ -682,6 +695,10 @@ class AppState extends ChangeNotifier {
   //   * 为什么发射不能也多选：同一个 myFullCall 从两条链路同时发出会造成
   //     重复报文（射频上还白占一次时隙），而且 ack 会回两次。
   /// 当前**发射**来源：'aprsis' | 'tnc' | 'audio'
+  ///
+  /// ⚠️ **不含 'pkwdwpl'**：那条链路是**只读**的（电台单向输出 Kenwood
+  /// 航点语句），不可能发报。因此 [enabledSources] 里出现 pkwdwpl 时它
+  /// 只能“收”，发射永远落在另外三条之一上。
   String dataSource = 'aprsis';
 
   /// 已启用的来源集合（至少一个；发射来源必须在此集合内）
@@ -722,6 +739,12 @@ class AppState extends ChangeNotifier {
   /// 音频链路（AFSK 1200 声卡 TNC：采样/调制解调/收发统计）
   final AudioLink audio = AudioLink();
 
+  /// PKWDWPL 链路（Kenwood `$PKWDWPL` 航点语句，**只收不发**）。
+  ///
+  /// 与 TNC 并列：同样走蓝牙 SPP / 串口，但线上是 NMEA 明文而行不是 KISS 帧，
+  /// 且电台只单向输出。因此它参与「收」（台站上图/台账），不参与「发」。
+  final PkwdwplLink pkwdwpl = PkwdwplLink();
+
   /// 发射是否走 TNC（射频）
   bool get usingTnc => dataSource == 'tnc';
 
@@ -732,6 +755,7 @@ class AppState extends ChangeNotifier {
   bool get aprsIsOn => enabledSources.contains(srcAprsIs);
   bool get tncOn => enabledSources.contains(srcTnc);
   bool get audioOn => enabledSources.contains(srcAudio);
+  bool get pkwdwplOn => enabledSources.contains(srcPkwdwpl);
 
   /// 是否有多条链路在同时工作（此时界面需要区分「发射来源」）
   bool get multiSource => enabledSources.length > 1;
@@ -771,11 +795,25 @@ class AppState extends ChangeNotifier {
   /// 数据来源的中文名（日志用；界面文案一律走 l10n）
   String _sourceName(String s) => s == srcTnc
       ? 'TNC（电台）'
-      : (s == srcAudio ? '音频（声卡）' : 'APRS-IS');
+      : (s == srcAudio
+          ? '音频（声卡）'
+          : (s == srcPkwdwpl ? 'PKWDWPL（Kenwood）' : 'APRS-IS'));
 
   static const String srcAprsIs = 'aprsis';
   static const String srcTnc = 'tnc';
   static const String srcAudio = 'audio';
+
+  /// PKWDWPL（Kenwood 航点语句）——**只收不发**的来源
+  static const String srcPkwdwpl = 'pkwdwpl';
+
+  /// 可发射的来源（用于「至少要保留一条能发射的链路」与各种发射守卫）。
+  ///
+  /// 写成集合而不是各处硬写三个比较，是因为以后再加只读来源时
+  /// 漏改一处就会出现「发射走了只读链路」这类静默错误。
+  static const Set<String> txCapableSources = {srcAprsIs, srcTnc, srcAudio};
+
+  /// 某个来源能否发射
+  static bool canTransmit(String src) => txCapableSources.contains(src);
 
   /// 发射路径 —— 报头目的呼号统一用本应用的 toCall `APALOC`。
   ///
@@ -812,6 +850,14 @@ class AppState extends ChangeNotifier {
         _log(LogLevel.warn, '连接', '至少要保留一个数据来源');
         return;
       }
+      // 不能只剩「只读来源」：APRSLocus 的核心是联网收发与地图，
+      // 只留 PKWDWPL 的话信标/消息/网关全部成了空转，而界面上看不出异常。
+      // （想单用 PKWDWPL 记台账请用同作者的 PKWDWPL Lite。）
+      final rest = enabledSources.where((s) => s != s0).toSet();
+      if (!rest.any(canTransmit)) {
+        _log(LogLevel.warn, '连接', '至少要保留一个可发射的数据来源（APRS-IS / TNC / 音频）');
+        return;
+      }
       enabledSources.remove(s0);
       // 关掉的正好是发射来源 → 换一个还在用的
       if (dataSource == s0) dataSource = enabledSources.first;
@@ -826,6 +872,8 @@ class AppState extends ChangeNotifier {
   void setTxSource(String src) {
     final s0 = _normalizeSrc(src);
     if (!enabledSources.contains(s0) || dataSource == s0) return;
+    // 只读来源永远不能成为发射来源（UI 也不给它圆点，这是第二道防线）
+    if (!canTransmit(s0)) return;
     dataSource = s0;
     _log(LogLevel.info, '连接', '发射来源切换为 ${_sourceName(s0)}');
     persist();
@@ -836,7 +884,9 @@ class AppState extends ChangeNotifier {
 
   String _normalizeSrc(String src) => src == srcTnc
       ? srcTnc
-      : (src == srcAudio ? srcAudio : srcAprsIs);
+      : (src == srcAudio
+          ? srcAudio
+          : (src == srcPkwdwpl ? srcPkwdwpl : srcAprsIs));
 
   /// 让「实际链路」与「已启用集合」对齐：新启用的连上，取消启用的断开。
   ///
@@ -854,8 +904,12 @@ class AppState extends ChangeNotifier {
     }
     if (!tncOn && isUp(srcTnc)) await tnc.disconnect(manual: false);
     if (!audioOn && isUp(srcAudio)) await audio.disconnect(manual: false);
+    if (!pkwdwplOn && isUp(srcPkwdwpl)) {
+      await pkwdwpl.disconnect(manual: false);
+    }
     _setLinkUp(srcTnc, tnc.connected);
     _setLinkUp(srcAudio, audio.connected);
+    _setLinkUp(srcPkwdwpl, pkwdwpl.connected);
     // 连上新启用的（仅当本来就在工作）
     if (wasActive && !_userDisconnected) await _connect();
   }
@@ -873,6 +927,20 @@ class AppState extends ChangeNotifier {
   /// 生产代码不要用它 —— 正常路径是各条链路的连接逻辑调用 [_setLinkUp]。
   @visibleForTesting
   void debugSetLinkUp(String src, bool up) => _setLinkUp(src, up);
+
+  /// 把 PKWDWPL 链路的实际连接状态同步给 [AppState]。
+  ///
+  /// 需要的场景只有一个：用户在**设备页手动**点连接/断开时，链路的变动
+  /// 发生在 `AppState` 之外，得把它同步回 `_linkUp` 表 —— 否则「当前链路」
+  /// 那行和日志会与事实不符（页面显示已连接、状态表里还是断的）。
+  ///
+  /// ⚠️ 不能让设备页直接改 `connected`（TNC 设备页那样做是因为 TNC 是
+  /// 可发射来源，`connected` 恰好表示它）；PKWDWPL 是只读来源，
+  /// 它的可用性绝不能影响「发射来源是否可用」。
+  void syncPkwdwplLink() {
+    _setLinkUp(srcPkwdwpl, pkwdwpl.connected);
+    _notify();
+  }
 
   void _setLinkUp(String src, bool up) {
     _linkUp[src] = up;
@@ -1286,10 +1354,9 @@ class AppState extends ChangeNotifier {
       aprs.port = p.getInt('port') ?? aprs.port;
       aprs.passcode = p.getString('passcode') ?? aprs.passcode;
       dataSource = p.getString('dataSource') ?? dataSource;
-      // 容错：非法/旧值一律回落 APRS-IS，避免多来源判断失配
-      if (dataSource != srcAprsIs &&
-          dataSource != srcTnc &&
-          dataSource != srcAudio) {
+      // 容错：非法/旧值一律回落 APRS-IS，避免多来源判断失配。
+      // pkwdwpl 是**只读**来源，即使旧配置里存了它也不能当发射来源。
+      if (!canTransmit(dataSource)) {
         dataSource = srcAprsIs;
       }
       // 多选来源：旧版本只存了单个 dataSource，这里做一次迁移
@@ -1304,14 +1371,19 @@ class AppState extends ChangeNotifier {
       } else {
         enabledSources.add(dataSource);
       }
-      // 发射来源必须落在已启用集合里，否则启动后永远连不上
+      // 发射来源必须落在已启用集合里，否则启动后永远连不上。
+      // 注意不能直接取 first：集合里可能只有 pkwdwpl（只读），那样发射就没有落点。
       if (!enabledSources.contains(dataSource)) {
-        dataSource = enabledSources.first;
+        dataSource = enabledSources.firstWhere(
+          canTransmit,
+          orElse: () => srcAprsIs,
+        );
       }
       igateEnabled = p.getBool('igateEnabled') ?? igateEnabled;
       igateTwoWay = p.getBool('igateTwoWay') ?? igateTwoWay;
       await tnc.load();
       await audio.load();
+      await pkwdwpl.load();
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
       if (savedLat != null && savedLng != null) {
@@ -1520,6 +1592,7 @@ class AppState extends ChangeNotifier {
     };
     _wireTnc();
     _wireAudio();
+    _wirePkwdwpl();
     _simTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (devMode) _simTick();
     });
@@ -1763,30 +1836,86 @@ class AppState extends ChangeNotifier {
   ///
   /// **会真实发射**，所以需要 [igateTwoWay] 显式打开。只转点对点消息
   /// （位置/天气等广播报文转了只会占满信道，判据见 [Igate.toRf]）。
+  /// 最近一次 IS→RF 未转递的原因（供界面显示，避免「静默不工作」）
+  String igateLastReject = '';
+
+  /// 「射频听到过」的台站数（界面用来判断 heard 列表是否为空）
+  int get igateHeardCount => _heardCache.length;
+
+  /// 「听到过」集合缓存。
+  ///
+  /// 追加 `t/m` 之后会收到**全球**消息，如果每来一条就重建一次
+  /// 「听到过」集合（`HeardList.active()` 是 O(n)），流量大时纯属浪费。
+  /// 这里按秒缓存：1 秒的滞后对「最近听到过」的语义毫无影响。
+  Set<String> _heardCache = {};
+  DateTime _heardCacheAt = DateTime.fromMillisecondsSinceEpoch(0);
+
+  Set<String> _heardActive() {
+    final now = DateTime.now();
+    if (now.difference(_heardCacheAt).inMilliseconds > 1000) {
+      _heardCache = _heard.active();
+      _heardCacheAt = now;
+    }
+    return _heardCache;
+  }
+
   void _gateIsToRf(String line) {
     if (!igateEnabled || !igateTwoWay) return;
     final rfSrc = activeRfSource;
-    if (rfSrc == null) return;
+    if (rfSrc == null) {
+      igateLastReject = 'no-rf-link';
+      return;
+    }
     final d = Igate.toRf(
       tnc2: line,
-      heardOnRf: _heard.active(),
+      heardOnRf: _heardActive(),
       myFullCall: myFullCall,
       allowMessages: true,
     );
-    if (!d.ok) return;
+    if (!d.ok) {
+      igateLastReject = d.reason;
+      // 只对「本该转却没转」的情形留痕（not-a-message 是绝大多数广播包，
+      // 全部记下来会把日志刷爆）
+      if (d.reason != 'not-a-message') {
+        if (_gateRejectLog++ % 20 == 1) {
+          _log(LogLevel.debug, '网关', '未转递（${d.reason}）：${_trunc(line)}');
+        }
+      }
+      return;
+    }
     final out = Igate.toRfLine(tnc2: line, rfPath: rfPathOf(rfSrc));
-    if (out == null) return;
-    _sendVia(rfSrc, out);
+    if (out == null) {
+      igateLastReject = 'malformed';
+      return;
+    }
+    // **只有真的交给链路才计数**。
+    // 之前无论成败都 `igateToRf++`，于是「允许发射」关掉时界面照样显示
+    // 「已转递 N 条」，而信道上一个字节都没出去 —— 这正是本次要修的
+    // 那类「看起来在工作」的假象。
+    final err = _sendVia(rfSrc, out);
+    if (err != null) {
+      igateLastReject = 'tx-refused: $err';
+      _log(LogLevel.warn, '网关', '转递射频失败（$err）：${_trunc(out)}');
+      return;
+    }
     igateToRf++;
+    igateLastReject = '';
     _log(LogLevel.info, '网关', '已转递 $igateToRf 条 → 射频（${
         rfSrc == srcTnc ? 'TNC' : '音频'}）');
   }
+
+  int _gateRejectLog = 0;
 
   /// 记录射频上听到的台站（IS→RF 转递的依据）
   void _noteHeard(String line) {
     final gt = line.indexOf('>');
     if (gt <= 0) return;
-    _heard.heard(line.substring(0, gt).trim());
+    final call = line.substring(0, gt).trim();
+    _heard.heard(call);
+    // 立刻反映到缓存：否则「刚听到就有一条发给它的消息」会因为缓存
+    // 还是旧的而被判成 addressee-not-heard
+    _heardCache = {..._heardCache, call.toUpperCase()};
+    _heardCacheAt = DateTime.now();
   }
 
   /// 开关网关
@@ -1808,6 +1937,7 @@ class AppState extends ChangeNotifier {
     persist();
     _notify();
     _updateNotification();
+    _refreshFilter();
   }
 
   /// 开关双向网关（IS→RF，会真实发射）
@@ -1819,6 +1949,9 @@ class AppState extends ChangeNotifier {
     persist();
     _notify();
     _updateNotification();
+    // 过滤器跟着变了（双向网关会追加 t/m）→ 必须让服务器重新下发，
+    // 否则用户得自己想到「手动重连一次」才能真正生效。
+    _refreshFilter();
   }
 
   /// 清空网关统计
@@ -1857,6 +1990,81 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       if (usingAudio) _notifyRx();
     };
+  }
+
+  /// 把 PKWDWPL 链路接入既有台站管线。
+  ///
+  /// 与 TNC/音频的**根本差别**：那些链路解出来的是 APRS 报文（TNC2 文本），
+  /// 所以能直接丢给 `_onAprsLine` 共用整套解析；而 PKWDWPL 是 Kenwood 自己的
+  /// NMEA 语句，字段与 APRS 报文不同构，所以这里把它**转成 `ParsedPos`** 后
+  /// 走同一个 `_upsertStation` —— 台站上图、筛选、台账、成就全部共用，
+  /// 不会出现「另一个来源的台站不上图」这类分叉。
+  ///
+  /// 只收不发：本函数里没有任何 `_sendVia` 调用，且 [AppState.dataSource]
+  /// 永远不会是 pkwdwpl（见 [canTransmit]）。
+  void _wirePkwdwpl() {
+    pkwdwpl.onFix = (fix) {
+      if (_disposed) return;
+      _onPkwdwplFix(fix);
+    };
+    pkwdwpl.onClosed = () {
+      if (_disposed) return;
+      _setLinkUp(srcPkwdwpl, false);
+      // PKWDWPL 从不参与发射，所以它断了不影响「发射来源」是否可用：
+      // 不要在这里改 connStatus，否则会把 TNC/APRS-IS 的正常状态盖掉。
+      final manual = _userDisconnected;
+      _log(
+        manual ? LogLevel.info : LogLevel.warn,
+        '连接',
+        manual ? '已手动断开 PKWDWPL 链路' : 'PKWDWPL 链路断开，稍后自动重连',
+      );
+      _notify();
+      _updateNotification();
+      if (!_userDisconnected && pkwdwpl.config.autoReconnect) {
+        _scheduleReconnect();
+      }
+    };
+    pkwdwpl.onStateChanged = () {
+      if (_disposed) return;
+      if (pkwdwplOn) _notifyRx();
+    };
+  }
+
+  /// 一条 `$PKWDWPL` 语句 → 台站 + 报文记录。
+  void _onPkwdwplFix(PkwdwplFix fix) {
+    final p = ParsedPos(
+      lat: fix.latitude,
+      lng: fix.longitude,
+      symbol: fix.symbolCode,
+      symbolTable: fix.symbolTable,
+      comment: fix.comment,
+      course: fix.courseDegrees,
+      alt: fix.altitudeMeters,
+      format: 'pkwdwpl',
+    );
+    _upsertStation(
+      fix.callsign,
+      p,
+      // raw 原样存：详情页要能看到原始 NMEA 语句（排查电台输出格式用）
+      raw: fix.raw,
+      path: 'PKWDWPL',
+      toCall: 'PKWDWPL',
+    );
+    _pushPacket(Packet(
+      fix.raw,
+      fix.callsign,
+      'PKWDWPL',
+      'position',
+      DateTime.now(),
+      info: '${fix.latitude.toStringAsFixed(4)}, '
+          '${fix.longitude.toStringAsFixed(4)}'
+          '${fix.courseDegrees == null ? '' : ' · ${fix.courseDegrees!.toStringAsFixed(0)}°'}'
+          '${fix.checksumValid ? '' : ' · 校验不符'}',
+    ));
+    if (!fix.statusValid) {
+      _log(LogLevel.debug, 'PKWDWPL', '${fix.callsign} 状态为 V（GPS 未定位）');
+    }
+    _notify();
   }
 
   /// 当前来源是否已打开「射频信标」。
@@ -1908,6 +2116,7 @@ class AppState extends ChangeNotifier {
       if (aprsIsOn) await _connectAprsIs();
       if (tncOn) await _connectTnc();
       if (audioOn) await _connectAudio();
+      if (pkwdwplOn) await _connectPkwdwpl();
     } finally {
       _connectingAll = false;
     }
@@ -2035,21 +2244,64 @@ class AppState extends ChangeNotifier {
     _scheduleReconnectIfNeeded();
   }
 
+  /// PKWDWPL（Kenwood 航点语句）连接。
+  ///
+  /// 与其他射频链路一样：不发身份帧、不注册过滤器、passcode 不适用。
+  /// 差别是它连上后什么都不用下发 —— 电台自己会持续输出语句，
+  /// 我们只需要静静地分帧、校验、解析。
+  Future<void> _connectPkwdwpl() async {
+    connecting = true;
+    final name = pkwdwpl.device?.label ?? '未绑定设备';
+    setConnStatus(ConnPhase.connectingPkwdwpl, arg: name);
+    _log(LogLevel.info, '连接', '正在连接 PKWDWPL：$name');
+    _notify();
+    _updateNotification();
+    final ok = await pkwdwpl.connect();
+    connecting = false;
+    _setLinkUp(srcPkwdwpl, ok);
+    if (ok) {
+      _userDisconnected = false;
+      _reconnectAttempt = 0;
+      setConnStatus(ConnPhase.pkwdwplConnected, arg: name);
+      _log(LogLevel.info, '连接', 'PKWDWPL 链路已建立 · $name（只收不发）');
+    } else {
+      // 只读链路失败不应占用「发射来源」的连接状态文案：
+      // 记日志 + 自己的状态码就够了（界面上链路那行会显示红点）。
+      _log(LogLevel.error, '连接',
+          'PKWDWPL 连接失败（${pkwdwpl.lastError}），稍后自动重试');
+    }
+    _notify();
+    _updateNotification();
+    _scheduleReconnectIfNeeded();
+  }
+
   /// 统一发送入口：按当前数据来源路由到 APRS-IS / TNC / 音频。
   ///
   /// 所有发报路径都必须经过它 —— 否则 TNC 模式下会出现
   /// 「界面上报成功、实际报文走 APRS-IS 发出」这类静默错误。
-  void _sendRaw(String raw) => _sendVia(dataSource, raw);
+  void _sendRaw(String raw) {
+    _sendVia(dataSource, raw);
+  }
 
   /// 按指定来源发送（网关向射频转递时需要指定，而不是走「发射来源」——
-  /// 否则把消息转给射频时会错误地从 APRS-IS 发出去，等于没转）
-  void _sendVia(String src, String raw) {
+  /// 否则把消息转给射频时会错误地从 APRS-IS 发出去，等于没转）。
+  ///
+  /// 返回 null 表示已交给链路，否则是错误码。返回值专门为网关而加：
+  /// 网关必须知道「到底发出去了没有」，否则会像以前那样把失败也计入
+  /// 「已转递」。
+  String? _sendVia(String src, String raw) {
+    // 只读链路：明确拒绝并留日志，而不是静默丢弃 ——
+    // 「以为发出去了其实没发」比报错难查得多。
+    if (!canTransmit(src)) {
+      _log(LogLevel.warn, _sourceName(src), '该链路为只读，已拒绝发送：${_trunc(raw)}');
+      return 'read-only';
+    }
     if (src == srcTnc) {
       final err = tnc.sendTnc2(raw);
       if (err != null) {
         _log(LogLevel.warn, 'TNC', '发送失败（$err）：${_trunc(raw)}');
       }
-      return;
+      return err;
     }
     if (src == srcAudio) {
       // 音频发射是异步的（先 CSMA 再播放整段音频），这里只做「能否接受」
@@ -2058,9 +2310,10 @@ class AppState extends ChangeNotifier {
       if (err != null) {
         _log(LogLevel.warn, '音频', '发送失败（$err）：${_trunc(raw)}');
       }
-      return;
+      return err;
     }
     aprs.send(raw);
+    return null;
   }
 
   /// 测试发射：发一条**状态**报文（`>` 开头，不含坐标）。
@@ -2441,6 +2694,11 @@ class AppState extends ChangeNotifier {
             arg: tnc.device?.label ?? '');
       }
     }
+    if (pkwdwplOn) {
+      // PKWDWPL：只要断连重连（没有参数需要重下发）
+      await pkwdwpl.restart();
+      _setLinkUp(srcPkwdwpl, pkwdwpl.connected);
+    }
     if (!aprsIsOn) {
       _notify();
       _updateNotification();
@@ -2463,6 +2721,7 @@ class AppState extends ChangeNotifier {
       if (aprsIsOn) aprs.disconnect();
       if (tncOn || isUp(srcTnc)) await tnc.disconnect();
       if (audioOn || isUp(srcAudio)) await audio.disconnect();
+      if (pkwdwplOn || isUp(srcPkwdwpl)) await pkwdwpl.disconnect();
       _linkUp.clear();
       _refreshConnected();
       setConnStatus(ConnPhase.manual);
@@ -4259,9 +4518,18 @@ enum ConnPhase {
   connectingServer,
   connectingTnc,
   connectingAudio,
+
+  /// PKWDWPL（Kenwood 航点语句，只收不发）。
+  ///
+  /// 只保留「连接中 / 已连接」两个阶段：失败与掉线**故意不占用主横幅**
+  /// —— 多来源下横幅表达的是「发射链路通不通」，一条只读链路失败
+  /// 却把横幅变红，会让人以为整个应用都连不上（而实际上只是收不到台账）。
+  /// 它的连通状态在「设备 → 当前链路」那行与自己的卡片上显示。
+  connectingPkwdwpl,
   online,
   tncConnected,
   audioConnected,
+  pkwdwplConnected,
   unverified,
   retryServer,
   retryTnc,
@@ -4285,6 +4553,8 @@ String linkErrorText(AppLocalizations l, String code) {
   if (c.contains('no-device')) return l.tncErrNoDevice;
   if (c.contains('no-permission')) return l.audioNeedPermission;
   if (c.contains('tx-disabled')) return l.tncErrNotConnected;
+  // 只读链路（PKWDWPL）被要求发射：明确告知原因，而不是报「未连接」
+  if (c.contains('read-only')) return l.pkwdwplErrReadOnly;
   if (c.contains('unsupported')) return l.tncErrUnsupported;
   if (c.contains('not-connected')) return l.tncErrNotConnected;
   if (c.contains('open-read')) return l.tncErrOpenRead;
@@ -4316,12 +4586,16 @@ class ConnStatus {
         return l.connectingToTnc(arg);
       case ConnPhase.connectingAudio:
         return l.connConnectingAudio(arg);
+      case ConnPhase.connectingPkwdwpl:
+        return l.connConnectingPkwdwpl(arg);
       case ConnPhase.online:
         return l.connOnline(arg);
       case ConnPhase.tncConnected:
         return l.connTncConnected(arg);
       case ConnPhase.audioConnected:
         return l.connAudioConnected(arg);
+      case ConnPhase.pkwdwplConnected:
+        return l.connPkwdwplConnected(arg);
       case ConnPhase.unverified:
         return l.connPasscodeInvalid;
       case ConnPhase.retryServer:

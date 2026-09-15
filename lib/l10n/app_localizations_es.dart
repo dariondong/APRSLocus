@@ -2134,6 +2134,80 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get dataSourcePkwdwpl => 'PKWDWPL (puntos de ruta Kenwood)';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      'Lee las sentencias Kenwood \$PKWDWPL que emite el equipo por Bluetooth o serie (solo recepción)';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL es un enlace de **solo recepción**: recibe estaciones pero nunca transmite (para transmitir usa APRS-IS / TNC / audio)';
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return 'Conectando a PKWDWPL ($arg)…';
+  }
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL conectado · $arg';
+  }
+
+  @override
+  String get pkwdwplDeviceTitle => 'Dispositivo PKWDWPL';
+
+  @override
+  String get pkwdwplDeviceDesc =>
+      'Vincula el puerto del equipo y revisa la recepción de puntos de ruta';
+
+  @override
+  String get pkwdwplBindTitle => 'Vinculación y estado';
+
+  @override
+  String get pkwdwplBindSubtitle =>
+      'Elige el puerto serie o Bluetooth que emite sentencias \$PKWDWPL';
+
+  @override
+  String get pkwdwplRxOnly => 'Solo recepción';
+
+  @override
+  String get pkwdwplTip =>
+      'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
+
+  @override
+  String get pkwdwplStrictChecksum =>
+      'Suma de comprobación estricta (descarta si no coincide)';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      'Desactivado por defecto: una discrepancia se marca y se registra en lugar de descartarse, porque en un cable local suele significar que el formato del firmware difiere del manual. Descartar todo dejaría la pantalla vacía y dificultaría mucho el diagnóstico.';
+
+  @override
+  String get pkwdwplErrReadOnly =>
+      'el enlace de solo recepción no puede transmitir';
+
+  @override
+  String get pkwdwplStatTitle => 'Recepción de puntos de ruta';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '$rx puntos de ruta recibidos';
+  }
+
+  @override
+  String get pkwdwplStatRejected => 'Sentencias descartadas o inválidas';
+
+  @override
+  String get pkwdwplStatMismatch => 'Discrepancias de suma';
+
+  @override
+  String get pkwdwplStatIgnored => 'Otras sentencias NMEA (ignoradas)';
+
+  @override
+  String get pkwdwplLogEmpty => 'Aún no hay registro de PKWDWPL';
+
+  @override
   String get tncBindTitle => 'TNC Bluetooth';
 
   @override

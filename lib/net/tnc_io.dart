@@ -23,12 +23,45 @@ TncTransport createTncTransport() {
   }
 }
 
+/// PKWDWPL 链路（Kenwood `$PKWDWPL` 航点语句）的平台实现。
+///
+/// 与 TNC **同一套字节搬运**（蓝牙 SPP / 串口），差别只在协议层：
+/// TNC 收到的是 KISS 帧，PKWDWPL 收到的是明文的 NMEA 行。
+///
+/// ⚠️ 通道名必须与 TNC 不同：原生 `TncManager` 只维护**一条** socket，
+/// 两个链路共用一个通道会互相拆掉对方的连接（表现为「开了 TNC 之后
+/// PKWDWPL 就断，来回争抢」）。所以这里用独立通道 → 原生侧是独立实例。
+TncTransport createPkwdwplTransport() {
+  if (kIsWeb) return TncDesktopSerial();
+  switch (defaultTargetPlatform) {
+    case TargetPlatform.android:
+    case TargetPlatform.iOS:
+      return TncNativeBluetooth(
+        methodChannel: 'com.aprslocus/pkwdwpl',
+        eventChannel: 'com.aprslocus/pkwdwpl_events',
+      );
+    default:
+      return TncDesktopSerial();
+  }
+}
+
 /// ─── Android / iOS：原生蓝牙 SPP ───
 ///
 /// Dart 侧不做任何协议处理，只搬运字节；KISS 组帧在 `kiss.dart`。
 class TncNativeBluetooth implements TncTransport {
-  static const MethodChannel _ch = MethodChannel('com.aprslocus/tnc');
-  static const EventChannel _ev = EventChannel('com.aprslocus/tnc_events');
+  /// 平台通道名。
+  ///
+  /// 参数化而不是写死常量，是为了让 **PKWDWPL 链路**复用这套**已经踩过所有坑**
+  /// 的蓝牙实现（代次隔离、写队列、权限回调），只换通道名 ——
+  /// 复制一份必然漏掉其中某个修复。默认值仍是原来的 TNC 通道。
+  final MethodChannel _ch;
+  final EventChannel _ev;
+
+  TncNativeBluetooth({
+    String methodChannel = 'com.aprslocus/tnc',
+    String eventChannel = 'com.aprslocus/tnc_events',
+  })  : _ch = MethodChannel(methodChannel),
+        _ev = EventChannel(eventChannel);
 
   StreamSubscription<dynamic>? _sub;
 
