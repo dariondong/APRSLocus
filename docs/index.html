@@ -42,7 +42,7 @@
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
 <link rel="canonical" href="https://aprslocus.theez.top/">
 <link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
@@ -75,13 +75,14 @@
       <span class="brand-name">APRSlocus</span>
     </a>
     <nav class="nav-links" id="navLinks">
+      <a href="#announce" class="nav-new">公告</a>
       <a href="#features">功能</a>
       <a href="#platforms">平台</a>
       <a href="#changelog">更新</a>
       <a href="#getting-started">上手</a>
       <a href="#faq">问答</a>
       <a href="#community">社区</a>
-      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载 v1.6.18</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">2.0 BETA</a>
       <span class="lang-switch-group"><a class="lang-switch" href="./" hreflang="zh-Hans">简中</a><a class="lang-switch" href="zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="en/" hreflang="en">EN</a></span>
     </nav>
     <button class="nav-burger" id="navBurger" aria-label="菜单">
@@ -93,17 +94,24 @@
 <!-- ═══════════ HERO ═══════════ -->
 <section class="hero" id="hero">
   <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <div class="sky-aurora" aria-hidden="true"></div>
   <div class="hero-grid"></div>
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <span class="hero-badge"><span class="pulse-dot"></span><b>APRSlocus 1.0</b></span>
-      <div class="hero-wordmark">FIRST FIX</div>
+      <span class="hero-badge sky"><span class="pulse-dot"></span><b>APRSlocus 2.0 BETA</b><span class="sep"></span><span class="rel-tag">TOUCH SKY</span></span>
+      <div class="hero-wordmark">TOUCH SKY</div>
       <p class="hero-slogan">APRS <span class="grad">定位追踪</span> 与 <span class="grad">地图</span></p>
       <p class="hero-sub">
         一个给业余无线电爱好者用的 APRS 客户端。<br>
-        打开就能看到附近的台站，位置、消息、信标都在同一张图上，Android 和 Windows 都能跑。
+        打开就能看到附近的台站，位置、消息、信标都在同一张图上，Android 和 Windows 都能跑。<br>
+        2.0「TOUCH SKY」起步：从纯网络走向射频，把「已连接」写成「已听见」。
       </p>
+      <div class="hero-tags">
+        <span class="hero-tag"><i></i>2.0 BETA 开发中</span>
+        <span class="hero-tag"><i></i>射频 · 音频 / TNC / iGate</span>
+        <span class="hero-tag"><i></i>FIRST FIX → TOUCH SKY</span>
+      </div>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-mobile-screen"></i>
@@ -251,6 +259,46 @@
   </div>
 
   <a class="hero-scroll" href="#features" aria-label="向下滚动"><span></span></a>
+</section>
+
+<!-- ═══════════ 公告 · TOUCH SKY ═══════════ -->
+<section class="section announce" id="announce">
+  <div class="announce-card reveal">
+    <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
+
+    <header class="announce-head">
+      <p class="announce-kicker">APRSLocus 2.0 BETA 开发启程</p>
+      <h2 class="announce-title">TOUCH SKY<span class="announce-en">感谢公告 · A Thank-You Letter</span></h2>
+      <p class="announce-sub">从纯网络到射频，从「看见」到「抵达」。</p>
+    </header>
+
+    <div class="announce-body">
+      <p class="announce-greet">亲爱的 APRSLocus 同行者：</p>
+      <p>当 <b>FIRST FIX</b> 第一次亮起，我们还在网络的深处寻找一枚坐标。屏幕里的光点，穿过云端与服务器，落在地图上，像第一次呼吸。如今，<b>TOUCH SKY</b> 让信号离开线缆，进入空气，越过山脊，穿过城市，落在射频的波纹里。从纯网络到射频，不只是技术的迁移，更是从「看见」到「抵达」的旅程。</p>
+      <p>感谢 APRS 社群、中继站、iGate、服务器维护者、地图与数据提供者，以及所有开源项目与业余无线电前辈。你们是看不见的桥，是沉默的岸，让网络与射频之间有了路，让每一次定位都能抵达更远的地方。</p>
+      <p>1.0「<b>FIRST FIX</b>」让我们站稳，2.0「<b>TOUCH SKY</b>」让我们仰望。从纯网络到射频，我们把「已连接」写成「已听见」，把「数据抵达」写成「天空回应」。而现在，我们正式转向 <b>APRSLocus 2.0 BETA</b> 开发。TOUCH SKY 不是终点，而是下一段航程的起点。</p>
+      <p>欢迎测试者、HAM 友与开发者加入 <b>2.0 BETA</b>。你的日志、建议、复现与耐心，仍是这条路上最亮的信号。</p>
+      <p class="announce-quote">FIRST FIX 是起点，TOUCH SKY 是致意。2.0 BETA，是下一次出发。<br>天空很大，我们继续同行。</p>
+
+      <div class="announce-sign">
+        <span class="ann-sign-line">电波无限，感谢同行！73！</span>
+        <span class="ann-sign-team">APRSLocus 开发团队</span>
+        <span class="ann-sign-date">2026 年 9 月 15 日</span>
+      </div>
+    </div>
+
+    <div class="announce-actions">
+      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
+        <i class="fa-solid fa-flask"></i>
+        加入 2.0 BETA 测试
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
+        <i class="fa-solid fa-comment-dots"></i>
+        反馈与建议
+      </a>
+      <a class="btn btn-text" href="#community">进群聊聊<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════ 功能特性 ═══════════ -->
@@ -440,6 +488,18 @@
   </div>
 
   <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag beta">2.0 BETA</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>TOUCH SKY：从纯网络走向射频，2.0 BETA 开发正式启程</div>
+        <div class="cl-item"><span class="cl-dot new"></span>感谢 APRS 社群、中继站、iGate、服务器维护者与所有开源项目</div>
+        <div class="cl-item"><span class="cl-dot up"></span>欢迎测试者、HAM 友与开发者加入 2.0 BETA</div>
+      </div>
+    </div>
+
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.18</span>
@@ -729,6 +789,7 @@
         </div>
       </div>
       <div class="footer-links">
+        <a href="#announce">公告</a>
         <a href="#features">功能</a>
         <a href="#platforms">平台</a>
         <a href="#getting-started">上手</a>

@@ -41,7 +41,7 @@
 <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/">
 <link rel="canonical" href="https://aprslocus.theez.top/en/">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=2">
+<link rel="stylesheet" href="../css/style.css?v=3">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
@@ -73,13 +73,14 @@
       <span class="brand-name">APRSlocus</span>
     </a>
     <nav class="nav-links" id="navLinks">
+      <a href="#announce" class="nav-new">News</a>
       <a href="#features">Features</a>
       <a href="#platforms">Platforms</a>
       <a href="#changelog">Changelog</a>
       <a href="#getting-started">Getting Started</a>
       <a href="#faq">FAQ</a>
       <a href="#community">Community</a>
-      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download v1.6.18</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">2.0 BETA</a>
       <span class="lang-switch-group"><a class="lang-switch" href="../" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="./" hreflang="en">EN</a></span>
     </nav>
     <button class="nav-burger" id="navBurger" aria-label="Menu">
@@ -91,17 +92,24 @@
 <!-- ═══════════ HERO ═══════════ -->
 <section class="hero" id="hero">
   <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <div class="sky-aurora" aria-hidden="true"></div>
   <div class="hero-grid"></div>
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <span class="hero-badge"><span class="pulse-dot"></span><b>APRSlocus 1.0</b></span>
-      <div class="hero-wordmark">FIRST FIX</div>
+      <span class="hero-badge sky"><span class="pulse-dot"></span><b>APRSlocus 2.0 BETA</b><span class="sep"></span><span class="rel-tag">TOUCH SKY</span></span>
+      <div class="hero-wordmark">TOUCH SKY</div>
       <p class="hero-slogan">APRS <span class="grad">Tracking</span> &amp; <span class="grad">Mapping</span></p>
       <p class="hero-sub">
         An APRS client for amateur radio operators.<br>
-        Open it up and see nearby stations — positions, messages, and beacons all on one map. Runs on Android and Windows.
+        Open it up and see nearby stations — positions, messages, and beacons all on one map. Runs on Android and Windows.<br>
+        2.0 "TOUCH SKY" begins: from network-only to radio — writing "connected" as "heard".
       </p>
+      <div class="hero-tags">
+        <span class="hero-tag"><i></i>2.0 BETA in development</span>
+        <span class="hero-tag"><i></i>RF · Audio / TNC / iGate</span>
+        <span class="hero-tag"><i></i>FIRST FIX → TOUCH SKY</span>
+      </div>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-mobile-screen"></i>
@@ -246,6 +254,46 @@
   </div>
 
   <a class="hero-scroll" href="#features" aria-label="Scroll down"><span></span></a>
+</section>
+
+<!-- ═══════════ Announcement · TOUCH SKY ═══════════ -->
+<section class="section announce" id="announce">
+  <div class="announce-card reveal">
+    <div class="announce-ribbon"><span class="ar-dot"></span>Announcement</div>
+
+    <header class="announce-head">
+      <p class="announce-kicker">APRSLocus 2.0 BETA — Development Begins</p>
+      <h2 class="announce-title">TOUCH SKY<span class="announce-en">A Thank-You Letter</span></h2>
+      <p class="announce-sub">From network-only to radio frequency — from "seeing" to "reaching".</p>
+    </header>
+
+    <div class="announce-body">
+      <p class="announce-greet">Dear fellow travelers of APRSLocus,</p>
+      <p>When <b>FIRST FIX</b> lit up for the first time, we were still searching for a coordinate deep inside the network. A bright dot crossed clouds and servers and landed on the map, like a first breath. Now <b>TOUCH SKY</b> lets the signal leave the cable, enter the air, cross mountain ridges and cities, and land in the ripples of RF. Going from pure network to radio is more than a technical migration — it is a journey from "seeing" to "reaching".</p>
+      <p>Thanks to the APRS community, digipeaters, iGates, server maintainers, map and data providers, and all open-source projects and amateur-radio pioneers. You are the invisible bridges and the silent shores; you built the road between network and radio, letting every fix travel farther.</p>
+      <p>1.0 "<b>FIRST FIX</b>" gave us our footing; 2.0 "<b>TOUCH SKY</b>" makes us look up. From pure network to radio, we write "connected" as "heard", and "data arrived" as "the sky answered". And now we are officially moving into <b>APRSLocus 2.0 BETA</b> development. TOUCH SKY is not the destination — it is the starting point of the next voyage.</p>
+      <p>Testers, HAMs and developers are all welcome to join the <b>2.0 BETA</b>. Your logs, suggestions, reproductions and patience remain the brightest signal on this road.</p>
+      <p class="announce-quote">FIRST FIX is where we started; TOUCH SKY is a salute. 2.0 BETA is the next departure.<br>The sky is vast — let's keep going together.</p>
+
+      <div class="announce-sign">
+        <span class="ann-sign-line">Radio waves never end — thanks for traveling with us! 73!</span>
+        <span class="ann-sign-team">The APRSLocus Team</span>
+        <span class="ann-sign-date">September 15, 2026</span>
+      </div>
+    </div>
+
+    <div class="announce-actions">
+      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
+        <i class="fa-solid fa-flask"></i>
+        Join the 2.0 BETA
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
+        <i class="fa-solid fa-comment-dots"></i>
+        Feedback &amp; Suggestions
+      </a>
+      <a class="btn btn-text" href="#community">Join the community<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════ Features ═══════════ -->
@@ -435,6 +483,18 @@
   </div>
 
   <div class="changelog-list">
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag beta">2.0 BETA</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>TOUCH SKY: from network-only to radio — 2.0 BETA development officially begins</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Thanks to the APRS community, digipeaters, iGates, server maintainers and all open-source projects</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Testers, HAMs and developers are welcome to join the 2.0 BETA</div>
+      </div>
+    </div>
+
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.18</span>
@@ -716,6 +776,7 @@
         </div>
       </div>
       <div class="footer-links">
+        <a href="#announce">News</a>
         <a href="#features">Features</a>
         <a href="#platforms">Platforms</a>
         <a href="#getting-started">Getting Started</a>

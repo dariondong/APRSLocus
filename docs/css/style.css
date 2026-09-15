@@ -34,7 +34,8 @@
   --green: #10b981;
   --amber: #d97706;
   --red: #ef4444;
-  --grad: linear-gradient(120deg, #0ea5e9, #0284c7);
+  --grad: linear-gradient(120deg, #0ea5e9, #6366f1 55%, #a855f7);
+  --grad-sky: linear-gradient(120deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
   --radius: 18px;
   --shadow: 0 18px 50px rgba(45, 70, 120, .14);
   --shadow-hover: 0 26px 64px rgba(45, 70, 120, .22);
@@ -47,6 +48,7 @@ body {
   font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background:
     radial-gradient(1200px 700px at 85% -10%, rgba(56, 189, 248, .16), transparent 60%),
+    radial-gradient(1100px 640px at 12% -6%, rgba(139, 92, 246, .14), transparent 62%),
     radial-gradient(1000px 600px at 0% 40%, rgba(37, 99, 235, .10), transparent 60%),
     radial-gradient(1100px 700px at 90% 100%, rgba(16, 185, 129, .10), transparent 60%),
     linear-gradient(180deg, #f3f6fd 0%, #eaf0fb 100%);
@@ -85,6 +87,8 @@ code {
 
 /* ── 03. 通用容器 / 区块头 ── */
 .section { position: relative; z-index: 1; padding: 108px clamp(20px, 6vw, 96px); }
+section[id] { scroll-margin-top: 92px; }
+.hero[id] { scroll-margin-top: 0; }
 .section.alt {
   background: linear-gradient(180deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, .16));
   border-top: 1px solid rgba(255, 255, 255, .5);
@@ -199,7 +203,7 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .hero-wordmark {
   font-size: clamp(48px, 6.6vw, 96px); font-weight: 900; letter-spacing: -.04em;
   line-height: .95; margin: 6px 0 14px;
-  background: linear-gradient(120deg,#0f172a 0%,#075985 45%,#0284c7 100%);
+  background: linear-gradient(120deg,#0f172a 0%,#4338ca 42%,#0284c7 68%,#7c3aed 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   filter: drop-shadow(0 14px 34px rgba(2,132,199,.20));
 }
@@ -750,12 +754,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   animation-play-state: paused;
   animation-fill-mode: both;
 }
-/* 各元素登场：FIRST FIX 主视觉用“冲击式”放大渐显，其余依次上浮 */
-.hero-copy > *:nth-child(1) { animation: heroUp .8s var(--ease) both; animation-delay: .0s; }
+/* 各元素登场：主视觉用“冲击式”放大渐显，其余依次上浮。
+   注意：默认给全部子元素挂上动画，只按序号改延迟。
+   早先只写到第 5 个 :nth-child，任何新增元素（如 2.0 的 .hero-tags）
+   都会把后面的按钮挤出动画范围而永远停留在 opacity: 0 —— 按钮直接看不见。 */
+.hero-copy > * { animation: heroUp .8s var(--ease) both; }
+.hero-copy > *:nth-child(1) { animation-delay: .0s; }
 .hero-copy > *:nth-child(2) { animation: heroBoom .85s cubic-bezier(.2,.9,.25,1.2) both; animation-delay: .15s; }
-.hero-copy > *:nth-child(3) { animation: heroUp .8s var(--ease) both; animation-delay: .45s; }
-.hero-copy > *:nth-child(4) { animation: heroUp .8s var(--ease) both; animation-delay: .6s; }
-.hero-copy > *:nth-child(5) { animation: heroUp .8s var(--ease) both; animation-delay: .75s; }
+.hero-copy > *:nth-child(3) { animation-delay: .45s; }
+.hero-copy > *:nth-child(4) { animation-delay: .6s; }
+.hero-copy > *:nth-child(5) { animation-delay: .75s; }
+.hero-copy > *:nth-child(6) { animation-delay: .9s; }
+.hero-copy > *:nth-child(n+7) { animation-delay: 1.05s; }
 .hero-phone { animation: heroPop 1s var(--ease) both; animation-delay: .55s; }
 /* 仅在遮罩消失(loaded)后开始播放 */
 body.loaded .hero-copy > *,
@@ -858,3 +868,132 @@ body.loaded .hero-phone {
 .cgroup-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .contributors { justify-content: flex-start; }
 @media (max-width: 640px) { .cgroup { margin-bottom: 20px; } }
+
+/* ════════════════════════════════════════════════════════════════
+   19. TOUCH SKY 主题 · 2.0 BETA 公告视觉
+   —— 从纯网络到射频：天光/极光、信号涟漪、致意信笺
+   ════════════════════════════════════════════════════════════════ */
+
+/* 天光/极光背景（Hero 氛围层，兼容浅色主题） */
+.sky-aurora {
+  position: absolute; inset: -4% -2%; z-index: 0; pointer-events: none; opacity: .62;
+  background:
+    radial-gradient(58% 42% at 14% 22%, rgba(56, 189, 248, .38), transparent 70%),
+    radial-gradient(46% 38% at 86% 20%, rgba(139, 92, 246, .30), transparent 70%),
+    radial-gradient(50% 40% at 58% 102%, rgba(244, 114, 182, .16), transparent 72%);
+  filter: blur(10px);
+  animation: auroraShift 20s ease-in-out infinite alternate;
+}
+@keyframes auroraShift {
+  from { transform: translate3d(-1%, 0, 0) scale(1.02); }
+  to   { transform: translate3d(1.5%, -1.4%, 0) scale(1.07); }
+}
+body.loaded .sky-aurora { opacity: .62; }
+
+/* Hero 徽章：TOUCH SKY 版本 */
+.hero-badge.sky {
+  background: linear-gradient(120deg, #0b1220, #312e81 52%, #0c4a6e);
+  border-color: rgba(167, 139, 250, .42);
+  box-shadow: 0 12px 34px rgba(99, 102, 241, .38);
+}
+.hero-badge.sky .rel-tag {
+  color: #ddd6fe; border-color: rgba(196, 181, 253, .45);
+  background: rgba(109, 40, 217, .26);
+}
+
+/* Hero 主题标签行（BETA / 射频 / 多来源） */
+.hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: -14px 0 24px; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+  color: var(--text-dim); padding: 7px 13px; border-radius: 999px;
+  background: rgba(255, 255, 255, .62); border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 6px 18px rgba(76, 60, 160, .08);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.hero-tag:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(76, 60, 160, .14); }
+.hero-tag i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad-sky); display: inline-block; }
+
+/* 导航「公告」入口 */
+.nav-links a.nav-new { font-weight: 700; color: #6d28d9; }
+.nav-links a.nav-new::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; display: inline-block;
+  margin-right: 7px; vertical-align: middle; background: var(--grad-sky);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, .14);
+  animation: navPulse 2.2s ease-in-out infinite;
+}
+@keyframes navPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.45); opacity: .55; } }
+
+/* 更新日志：2.0 BETA 标签 */
+.cl-tag.beta { background: linear-gradient(120deg, #4f46e5, #7c3aed); box-shadow: 0 10px 26px rgba(109, 40, 217, .34); }
+
+/* ── 公告信笺 ── */
+.announce { padding-top: 96px; }
+.announce-card {
+  position: relative; overflow: hidden; max-width: 1000px; margin: 0 auto;
+  padding: clamp(30px, 5vw, 64px) clamp(24px, 5vw, 68px);
+  border-radius: 30px;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(168, 85, 247, .15), transparent 55%),
+    radial-gradient(95% 85% at 0% 100%, rgba(56, 189, 248, .20), transparent 60%),
+    rgba(255, 255, 255, .68);
+  border: 1px solid rgba(255, 255, 255, .78);
+  box-shadow: 0 30px 84px rgba(76, 60, 160, .18);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+}
+.announce-card::before {
+  content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 4px;
+  background: var(--grad-sky);
+}
+.announce-card::after {
+  content: ""; position: absolute; right: -130px; bottom: -150px; width: 400px; height: 400px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(139, 92, 246, .26), transparent 65%);
+}
+.announce-ribbon {
+  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 9px;
+  font-size: 11.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  color: #0369a1; background: rgba(224, 242, 254, .88);
+  border: 1px solid rgba(125, 211, 252, .6); padding: 6px 15px; border-radius: 999px;
+}
+.announce-ribbon .ar-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green); position: relative;
+}
+.announce-ribbon .ar-dot::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 1.5px solid var(--green); animation: pulse 1.8s ease-out infinite;
+}
+.announce-head { position: relative; z-index: 1; margin: 22px 0 30px; }
+.announce-kicker { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--text-faint); margin-bottom: 10px; }
+.announce-title {
+  font-size: clamp(34px, 5.6vw, 62px); font-weight: 900; letter-spacing: -.03em; line-height: 1.02;
+  background: var(--grad-sky); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 12px 30px rgba(99, 102, 241, .22));
+}
+.announce-title .announce-en {
+  display: block; margin-top: 12px; font-size: clamp(15px, 2vw, 20px); font-weight: 700;
+  letter-spacing: .05em; color: var(--text-dim); -webkit-text-fill-color: var(--text-dim);
+}
+.announce-sub { margin-top: 12px; color: var(--cyan); font-weight: 600; font-size: 15px; }
+.announce-body { position: relative; z-index: 1; }
+.announce-body p { color: var(--text-dim); font-size: clamp(15px, 1.7vw, 17px); line-height: 1.95; margin-bottom: 18px; }
+.announce-body p b { color: var(--text); font-weight: 800; }
+.announce-greet { font-weight: 800; color: var(--text) !important; font-size: clamp(16px, 1.9vw, 19px) !important; }
+.announce-quote {
+  margin: 26px 0 6px; padding: 18px 22px; border-left: 3px solid;
+  border-image: var(--grad-sky) 1; border-radius: 0 14px 14px 0;
+  background: linear-gradient(120deg, rgba(56, 189, 248, .10), rgba(168, 85, 247, .10));
+  color: var(--text) !important; font-weight: 700;
+}
+.announce-sign { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-top: 24px; text-align: right; }
+.ann-sign-line { font-weight: 800; color: var(--text); }
+.ann-sign-team { font-size: 14px; color: var(--text-dim); }
+.ann-sign-date { font-size: 13px; color: var(--text-faint); }
+.announce-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 34px; }
+.announce-actions .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+@media (max-width: 640px) {
+  .announce-card { border-radius: 22px; }
+  .announce-sign { align-items: flex-start; text-align: left; }
+  .announce-actions .btn { width: 100%; justify-content: center; }
+}
