@@ -221,7 +221,11 @@ class TncManager(
             socket = sock
             startWriter(sock, gen)
             startReader(sock, gen)
-            emitState("connected")
+            // 只有真的活着才广播 connected。
+            // startWriter / startReader 在里面拿不到流时会 teardown()（清掉 socket
+            // 并推进代次），此时再无条件广播 connected 会让界面显示「已连接」
+            // 而链路其实是废的 —— 正是这个“看着正常、实际不通”的状态让问题难查。
+            if (isConnected()) emitState("connected")
         } finally {
             connecting.set(false)
         }
@@ -237,7 +241,11 @@ class TncManager(
         val inp: InputStream = try {
             sock.inputStream
         } catch (e: Exception) {
-            emitState("closed")
+            // 拿不到 inputStream：这条链路等于废了。必须 teardown 而不仅仅是
+            // 广播 closed —— 否则 socket 引用还在，send() 会继续通过校验、
+            // 把字节入队到已经没人消费的队列里（＝界面显示发送成功但实际没发）。
+            teardown()
+            main.post { emitState("closed") }
             return
         }
         reader = Thread {
@@ -263,6 +271,23 @@ class TncManager(
                 // （旧实现正是在这里把新链路误判为断开）。
                 if (reason != null && generation.compareAndSet(gen, gen + 1)) {
                     writeQueue.clear()
+                    // 关键：把 socket / 线程引用一并清掉。
+                    //
+                    // 只清队列是不够的 —— send() 的判据是
+                    //   `gen <= 0 || socket?.isConnected != true`
+                    // 而此处 socket 仍非 null、isConnected 仍为 true，于是后续
+                    // send() 会**通过校验并成功入队**，但写线程已在上面因代次
+                    // 不匹配退出 —— 队列再也不会被消费。
+                    //
+                    // 后果就是用户报的「**能发不能收**」：每次发射都在界面上
+                    // 显示成功，实际一个字节都没出去，同时接收早已死掉，
+                    // 而且两端都没有任何报错可供定位。
+                    //
+                    // CAS 成功说明我们仍是当前代次（新建连接会再次 +1 使 CAS 失败），
+                    // 所以这里清掉引用不会误伤新链路。
+                    socket = null
+                    reader = null
+                    writer = null
                     main.post { emitState("closed") }
                 }
             }
@@ -284,7 +309,10 @@ class TncManager(
         val out: OutputStream = try {
             sock.outputStream
         } catch (e: Exception) {
-            emitState("closed")
+            // 同上：拿不到 outputStream 也不能只广播 closed，
+            // 否则 send() 仍会误以为能发，把数据入队给一个已退出的写线程。
+            teardown()
+            main.post { emitState("closed") }
             return
         }
         writer = Thread {

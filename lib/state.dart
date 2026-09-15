@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.111';
+  static const appVersion = '1.6.112';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1908,15 +1908,30 @@ class AppState extends ChangeNotifier {
     tnc.onClosed = () {
       if (_disposed) return;
       _setLinkUp(srcTnc, false);
-      if (!usingTnc && !multiSource) return;
       final manual = _userDisconnected;
-      setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostTnc,
-          seconds: 8);
-      _log(
-        manual ? LogLevel.info : LogLevel.warn,
-        '连接',
-        manual ? '已手动断开 TNC' : 'TNC 链路断开，稍后自动重连',
-      );
+      // ⚠️ 重连绝不能被「要不要改横幅」的条件挡住。
+      //
+      // 原写法在这里 `if (!usingTnc && !multiSource) return;` 直接返回，把
+      // 后面的 _scheduleReconnect() 一起跳过了 —— 而**默认配置正好命中这个
+      // 条件**（只启用 APRS-IS，dataSource=aprsis）。后果是 TNC 链路一旦断开
+      // 就**静默地永不重连**：不写日志、不改连接状态、不重连，用户只能看到
+      // 「收不到报文了」，而界面上找不到任何线索。
+      //
+      // 那个条件的本意只是：横幅表达的是「发射来源通不通」，一条非发射来源
+      // 断了不必去改横幅。所以它只应该影响日志/状态文案，而不是整个流程。
+      final bannerRelevant = usingTnc || multiSource;
+      if (bannerRelevant) {
+        setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostTnc,
+            seconds: 8);
+        _log(
+          manual ? LogLevel.info : LogLevel.warn,
+          '连接',
+          manual ? '已手动断开 TNC' : 'TNC 链路断开，稍后自动重连',
+        );
+      } else if (!manual) {
+        // 非发射来源也要留日志：这条链路静默死掉过，日志是唯一能回溯的证据。
+        _log(LogLevel.warn, '连接', 'TNC 链路断开（当前不是发射来源），稍后自动重连');
+      }
       // 诊断：链路是不是**刚发射完就断**。射频频段上这个相关性很关键 ——
       // 要么是模块在半双工切换时掉线（硬件/供电），要么是写失败后
       // socket 被关闭（此时 lastTxError 会写明原因）。把证据落到日志里，

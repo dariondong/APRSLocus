@@ -1,5 +1,98 @@
 # 更新日志
 
+## [1.6.112] - 2026-09-15
+
+### 🚨 找到「TNC 能发不能收」的真正原因（与 PKWDWPL 无关）
+### The actual cause of "TNC transmits but receives nothing" (nothing to do with PKWDWPL)
+
+**先纠正我上一版的判断。** 我把「能发不能收」归因为「TNC 与 PKWDWPL 绑定了同一台
+设备、接收字节流被瓜分」。但用户提供的现象推翻了它：**在从未绑定过 PKWDWPL 设备
+的情况下，TNC 同样收不到**。那个冲突是真实存在的缺陷（已修），但它**不是**这个
+问题的原因。
+
+我用 `git diff v1.6.107 HEAD` 逐文件核对，确认 `lib/tnc.dart`、`lib/kiss.dart`
+**一行未改**，`state.dart` 的接收路径（`onLine` / `_wireTnc` / `_onAprsLine`）
+也**完全没动** —— 所以问题不在协议层，而在**接收线程死亡之后**的处理。真正的
+原因有两处，两者叠加正好构成「能发不能收」：
+
+**① 原生侧：reader 线程死了，socket 引用却没清（`TncManager.kt`）**
+
+reader 线程在只读循环里发现链路断了之后，会推进代次、清空写队列、广播 `closed`
+—— 但**没有把 `socket` 置空**。而 `send()` 的校验是：
+
+```kotlin
+if (gen <= 0 || socket?.isConnected != true) throw IllegalStateException("链路未连接")
+```
+
+`socket` 还在、`isConnected` 还是 true → **校验通过，字节成功入队**。可是写线程
+已经在同一时刻因代次不匹配退出了，**队列再也不会有人消费**。
+
+表现就是：每次发射界面都显示成功，实际**一个字节都没出去**；而接收线程早已死掉。
+两端都没有任何报错可查。
+
+**② Dart 侧：断开后永不重连（`state.dart` 的 `_wireTnc`）**
+
+```dart
+if (!usingTnc && !multiSource) return;   // ← 本意只是「非发射来源断了不必改横幅」
+...
+if (!_userDisconnected && tnc.config.autoReconnect) _scheduleReconnect();  // 永远到不了
+```
+
+这句 `return` 把后面的 `_scheduleReconnect()` 一起跳过了。而**默认配置正好命中
+这个条件**（只启用 APRS-IS，`dataSource = aprsis`）—— 于是 TNC 链路一旦断开就
+**静默地永不重连**：不写日志（因为日志也在 return 之后）、不改连接状态、不重连。
+
+**为什么这个 bug 这么难查**：症状是「发送正常、接收没了」，且没有任何提示；
+排查时最容易怀疑电台、线缆、TNC 参数，而真正的原因是**两个静默失败叠在一起**
+（发送假成功 + 重连被跳过）。
+
+**修复**
+
+- reader 线程死亡时**清掉 `socket` / `reader` / `writer` 引用** —— 之后 `send()`
+  会如实抛「链路未连接」，而不是假装成功（CAS 成功即证明仍是当前代次，不会误伤
+  新建链路）。
+- `startReader` / `startWriter` 拿不到输入/输出流时改为 `teardown()`，而不是只广播
+  `closed`（否则同样会留下「能发不能收」的假象）。
+- `connect()` 里改为**只有链路真的活着才广播 `connected`** —— 否则会显示「已连接」
+  而链路是废的。
+- `onClosed` 里把「要不要改横幅」与「要不要重连」彻底分开：重连不再被任何条件
+  挡住；非发射来源断开时也留一条日志（这是唯一能回溯的证据）。
+
+**回归护栏**：新增 `test/tnc_reconnect_guard_test.dart`，断言 `_wireTnc` 的
+`onClosed` 里不得在安排重连之前 `return`（只看代码行、排除注释 —— 注释里会引用
+旧写法做说明），以及退出/销毁时必须释放三条射频链路。
+
+---
+
+**First, a correction.** I attributed "transmits but receives nothing" to TNC and PKWDWPL
+being bound to the same device. The user's report disproved it: TNC fails to receive **even
+when a PKWDWPL device was never bound**. That conflict was a real defect (and is fixed), but
+it was not the cause of this.
+
+`git diff v1.6.107 HEAD` confirms `lib/tnc.dart` and `lib/kiss.dart` are **unchanged**, and
+the receive path in `state.dart` (`onLine` / `_wireTnc` / `_onAprsLine`) was never touched —
+so the fault lies *after* the receive thread dies. Two bugs combine to produce the symptom:
+
+**Android side:** when the reader thread exits after a read error, it advances the generation
+and broadcasts `closed` but **leaves `socket` non-null**. `send()` validates
+`socket?.isConnected != true`, which still passes — so bytes are enqueued successfully into a
+queue whose writer thread has just exited. Every transmit reports success; not a single byte
+leaves the device. Nothing errors anywhere.
+
+**Dart side:** `onClosed` contained `if (!usingTnc && !multiSource) return;` — intended only to
+skip a banner update for a non-transmit source, but the `return` also skipped
+`_scheduleReconnect()`. The default configuration matches that condition exactly, so the TNC
+link, once dropped, **silently never reconnects** — no log line (it sits after the return), no
+status change, no retry.
+
+The fixes clear the socket references when the reader dies (so `send()` honestly reports
+"not connected"), tear down properly when streams cannot be obtained, only broadcast
+`connected` when the link is genuinely alive, and separate "should the banner change" from
+"should we reconnect" so reconnection can never be skipped — while still logging a dropped
+non-transmit link, since that log is the only trace available afterwards.
+
+---
+
 ## [1.6.111] - 2026-09-15
 
 ### 🔍 全面复查设备机制：又找到 4 个「界面与事实不符」的问题
