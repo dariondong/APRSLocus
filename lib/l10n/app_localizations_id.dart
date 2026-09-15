@@ -2161,6 +2161,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get pkwdwplRxOnly => 'Hanya terima';
 
   @override
+  String get pkwdwplReadOnly =>
+      'Hanya terima · perangkat ini tidak memancarkan apa pun';
+
+  @override
   String get pkwdwplTip =>
       'Setel format keluaran port PC / GPS di radio ke \"\$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.';
 

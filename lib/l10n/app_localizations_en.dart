@@ -2161,6 +2161,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pkwdwplRxOnly => 'Receive-only';
 
   @override
+  String get pkwdwplReadOnly => 'Receive-only · this device transmits nothing';
+
+  @override
   String get pkwdwplTip =>
       'Set the PC / GPS port output format on the radio to \"\$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.';
 

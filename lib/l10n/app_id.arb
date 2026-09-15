@@ -694,6 +694,7 @@
   "pkwdwplBindTitle": "Pemasangan perangkat dan status",
   "pkwdwplBindSubtitle": "Pilih port serial atau Bluetooth yang mengeluarkan kalimat $PKWDWPL",
   "pkwdwplRxOnly": "Hanya terima",
+  "pkwdwplReadOnly": "Hanya terima · perangkat ini tidak memancarkan apa pun",
   "pkwdwplTip": "Setel format keluaran port PC / GPS di radio ke \"$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.",
   "pkwdwplStrictChecksum": "Checksum ketat (buang jika tidak cocok)",
   "pkwdwplStrictChecksumTip": "Nonaktif secara bawaan: ketidakcocokan hanya ditandai dan dicatat, tidak dibuang, karena pada kabel lokal hal ini biasanya berarti format firmware berbeda dari manual. Membuang semuanya akan membuat layar kosong dan jauh lebih sulit ditelusuri.",

@@ -1,5 +1,71 @@
 # 更新日志
 
+## [1.6.109] - 2026-09-15
+
+### 🔘 主页按钮加大 + 允许「只收不发」的纯接收配置 / Bigger home buttons + receive-only setups allowed
+
+**1. 主页「手动上报」按钮加大**
+
+这是主页最高频的动作，原来只有 34px 高、11 号字，在手机上偏小。
+
+- 高度 **34 → 44**（44 是 Material 的最小可点区域，手指不容易点偏）
+- 字号 **11 → 13**、图标 15 → 18、字重加粗
+- 「连接」按钮同步调整 —— 两个按钮并排，一大一小会显得很怪
+- 加回归测试 `test/home_buttons_layout_test.dart`：在 320dp 窄屏下断言**不溢出**
+  且高度 ≥ 44，并锁住 13 号字（改小会让测试失败，避免被无意改回去）
+
+**2. 可以只留 PKWDWPL 一条来源了（纯接收）**
+
+上一个版本（1.6.108）把「只剩只读来源」当成配置错误**挡掉了** —— 理由是怕
+信标/消息/网关空转而界面看不出来。**这个判断是错的，本次放开**：拿电台当
+纯接收机用（挂机收台站、记台账）完全合理，那时应用依然完整可用（地图、
+台账、距离方位都在），只是不发射。
+
+放开后必须处理一个真问题：`connected` 的真实含义一直是「**发射链路**可用」
+（全应用的 `if (connected)` 守卫都只服务于发射：信标、消息、ack、保活），
+所以只读模式下它必须是 `false` —— 否则会直接引发误发射。但界面又不能因此
+显示「未连接」（报文其实一直在收）。因此新增两个明确的 getter 把这个区别
+写进类型里：
+
+| getter | 含义 | 只读模式下的值 |
+| --- | --- | --- |
+| `connected` / `txSourceUp` | 发射链路可用（能不能发） | **false** |
+| `rxActive` | 任一已启用链路在收（有没有在工作） | **true** |
+| `readOnlyMode` | 没有任何可发射的已启用来源 | **true** |
+
+界面据此显示「**只读接收中 · 本机不会发射任何报文**」+ 已收航点数，而不是
+「未连接」；「手动上报」按钮**置灰**并把文案改成「只收不发」（不隐藏：位置
+突然少一个按钮会让人找不到，置灰+说明反而直接回答了「为什么发不出去」）；
+系统通知栏同样显示「只读接收」而不是「未连接」。
+
+顺带修掉一个多来源下的计数漏报：通知栏原来用 if/else 二选一显示链路计数，
+同时开 APRS-IS 与 PKWDWPL 时会漏掉一条，现在改为分别追加。
+
+新增 5 项测试，其中「只读模式下依然拒绝发射」与「`connected=false` 但
+`rxActive=true`」两条是这次改动最要紧的护栏。
+
+The manual-beacon button is the most used action on the home page, yet it was only
+34px tall with an 11px label. It is now 44px tall (Material's minimum touch
+target) with a 13px bold label, and the adjacent connect button matches so the
+pair stays visually even. A layout regression test asserts no overflow on a 320dp
+screen and locks the 13px size.
+
+**Receive-only setups are now allowed.** The previous release treated "only a
+read-only source remains" as a misconfiguration and blocked it. That was wrong
+and has been reverted: using a radio purely as a receiver (logging stations
+without ever transmitting) is entirely reasonable, and the app stays fully
+functional for it. The subtlety is that `connected` has always meant "the
+*transmit* link is up" — every `if (connected)` guard serves transmitting only —
+so under a receive-only config it must stay `false`, or the app would try to
+transmit. The UI therefore distinguishes the two states through `txSourceUp`,
+`rxActive` and `readOnlyMode`, showing "receive-only · this device transmits
+nothing" plus the waypoint count instead of "disconnected", greying out the
+beacon button with a matching label, and passing the same wording to the system
+notification. A multi-source counting bug in the notification (an if/else that
+dropped one link's stats) was fixed in passing.
+
+---
+
 ## [1.6.108] - 2026-09-15
 
 ### 🔗 新增「PKWDWPL」数据来源（Kenwood 航点语句，只收不发）/ New data source: PKWDWPL (Kenwood waypoints, receive-only)

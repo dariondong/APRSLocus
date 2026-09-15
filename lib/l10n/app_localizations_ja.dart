@@ -2100,6 +2100,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pkwdwplRxOnly => '受信のみ';
 
   @override
+  String get pkwdwplReadOnly => '受信専用 · 本機は一切送信しません';
+
+  @override
   String get pkwdwplTip =>
       '無線機のメニューで PC / GPS ポートの出力形式を \"\$PKWDWPL\" に設定してください（通常 4800 8N1）。このリンクは受信専用で、一切送信しません。';
 

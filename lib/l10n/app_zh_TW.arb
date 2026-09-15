@@ -701,6 +701,7 @@
   "pkwdwplBindTitle": "裝置綁定與狀態",
   "pkwdwplBindSubtitle": "選擇輸出 $PKWDWPL 語句的那個串列埠 / 藍牙埠",
   "pkwdwplRxOnly": "只收不發",
+  "pkwdwplReadOnly": "唯讀接收中 · 本機不會發射任何報文",
   "pkwdwplTip": "在電台選單裡把 PC / GPS 埠的輸出格式設為 \"$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文",
   "pkwdwplStrictChecksum": "嚴格校驗和（不符即丟棄）",
   "pkwdwplStrictChecksumTip": "預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查",

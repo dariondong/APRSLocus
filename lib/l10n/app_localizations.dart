@@ -3933,6 +3933,12 @@ abstract class AppLocalizations {
   /// **'只收不发'**
   String get pkwdwplRxOnly;
 
+  /// No description provided for @pkwdwplReadOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'只读接收中 · 本机不会发射任何报文'**
+  String get pkwdwplReadOnly;
+
   /// No description provided for @pkwdwplTip.
   ///
   /// In zh, this message translates to:

@@ -2083,6 +2083,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pkwdwplRxOnly => '只收不发';
 
   @override
+  String get pkwdwplReadOnly => '只读接收中 · 本机不会发射任何报文';
+
+  @override
   String get pkwdwplTip =>
       '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
 
@@ -7343,6 +7346,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get pkwdwplRxOnly => '只收不發';
+
+  @override
+  String get pkwdwplReadOnly => '唯讀接收中 · 本機不會發射任何報文';
 
   @override
   String get pkwdwplTip =>

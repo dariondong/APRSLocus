@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.108';
+  static const appVersion = '1.6.109';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -763,6 +763,28 @@ class AppState extends ChangeNotifier {
   /// 某条链路的连通状态
   bool isUp(String src) => _linkUp[src] == true;
 
+  /// **发射来源**那条链路是否可用。
+  ///
+  /// 这是 [connected] 的真实含义（`connected = isUp(dataSource)`）：
+  /// 全应用的 `if (connected)` 守卫都只服务于**发射**（信标、消息、ack、
+  /// 保活、连接状态文案），所以它表示「现在能不能发」才是对的。
+  bool get txSourceUp => isUp(dataSource);
+
+  /// 是否有任意一条**已启用**链路在收报文。
+  ///
+  /// 与 [connected] 的区别就是[只读模式]：只启用 PKWDWPL 时
+  /// `connected` 为 false（没有发射链路），但报文照样在收 ——
+  /// 通知栏、状态显示这类「有没有在工作」的判断必须用本 getter，
+  /// 否则会显示成「未连接」，而实际台站已经在上图了。
+  bool get rxActive => enabledSources.any(isUp);
+
+  /// 只读模式：没有任何**可发射**的已启用来源（当前只可能是「只启用 PKWDWPL」）。
+  ///
+  /// 此时应用仍然完整可用（接收、地图、台账、距离方位），只是不会发射任何
+  /// 报文。界面必须**明确说出来**，否则用户看到「位置未上报」「未连接」
+  /// 会以为是坏了。
+  bool get readOnlyMode => !enabledSources.any(canTransmit);
+
   /// 是否有任意一条链路可用
   bool get anyLinkUp => enabledSources.any(isUp);
 
@@ -850,17 +872,20 @@ class AppState extends ChangeNotifier {
         _log(LogLevel.warn, '连接', '至少要保留一个数据来源');
         return;
       }
-      // 不能只剩「只读来源」：APRSLocus 的核心是联网收发与地图，
-      // 只留 PKWDWPL 的话信标/消息/网关全部成了空转，而界面上看不出异常。
-      // （想单用 PKWDWPL 记台账请用同作者的 PKWDWPL Lite。）
-      final rest = enabledSources.where((s) => s != s0).toSet();
-      if (!rest.any(canTransmit)) {
-        _log(LogLevel.warn, '连接', '至少要保留一个可发射的数据来源（APRS-IS / TNC / 音频）');
-        return;
-      }
       enabledSources.remove(s0);
-      // 关掉的正好是发射来源 → 换一个还在用的
-      if (dataSource == s0) dataSource = enabledSources.first;
+      // 关掉的正好是发射来源 → 换一个还在用的。
+      //
+      // 优先换**能发射**的来源；一个都没有时（例如只留了 PKWDWPL）就保持原值
+      // 不动 —— 此时进入 [readOnlyMode]，台站照收、照上图，只是不再发射。
+      //
+      // ⚠️ 这里**刻意允许**只剩只读来源：拿电台当纯接收机用（挂机收台站/
+      // 记台账）是完全合理的用法，早期版本把它当成配置错误挡掉了，是过度的
+      // 家长式判断。只留只读来源带来的后果（不会发射）由界面明说，见
+      // [readOnlyMode] 与主页横幅。
+      if (dataSource == s0) {
+        dataSource =
+            enabledSources.firstWhere(canTransmit, orElse: () => dataSource);
+      }
     }
     _reconcileSources();
     persist();
@@ -4473,6 +4498,11 @@ class AppState extends ChangeNotifier {
           : (usingAudio ? l.notifAudioConnected : l.notifConnected));
     } else if (connecting) {
       parts.add(l.notifConnecting);
+    } else if (readOnlyMode) {
+      // 只读模式：没有发射链路，但报文在收。
+      // 这里必须说「只读接收」而不是「未连接」—— 台站已经在图上，
+      // 通知栏却写「未连接」会让人以为链路坏了。
+      parts.add(l.pkwdwplReadOnly);
     } else {
       parts.add(usingTnc
           ? l.notifTncDisconnected
@@ -4481,17 +4511,24 @@ class AppState extends ChangeNotifier {
     if (myHasFix) {
       parts.add('GPS·$myGrid');
     }
+    // 各条链路的收/发计数**分别追加**（而不是 if/else 二选一）：
+    // 多选下可能同时开着 APRS-IS 与 PKWDWPL，二选一会漏报一条。
     if (usingTnc) {
       parts.add('RF·${tnc.rxFrames}/${tnc.txFrames}');
     } else if (usingAudio) {
       parts.add('AFSK·${audio.rxFrames}/${audio.txFrames}');
-    } else {
+    }
+    if (aprsIsOn) {
       parts.add(l.notifOnline('$online'));
       parts.add(l.notifRx('$packetsRx'));
     }
+    if (pkwdwplOn) {
+      parts.add('PKWDWPL·${pkwdwpl.rxFrames}');
+    }
     // 信标倒计时仅在真会发射时显示：TNC 模式下未开启射频信标时显示倒计时
-    // 会让用户误以为正在发射。
+    // 会让用户误以为正在发射；只读模式下同理（压根没有发射链路）。
     if (beaconEnabled &&
+        !readOnlyMode &&
         (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon))) {
       parts.add(l.notifBeacon(nextBeaconIn));
     }

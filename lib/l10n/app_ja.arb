@@ -694,6 +694,7 @@
   "pkwdwplBindTitle": "デバイス登録と状態",
   "pkwdwplBindSubtitle": "$PKWDWPL 文を出力するシリアル / Bluetooth ポートを選択します",
   "pkwdwplRxOnly": "受信のみ",
+  "pkwdwplReadOnly": "受信専用 · 本機は一切送信しません",
   "pkwdwplTip": "無線機のメニューで PC / GPS ポートの出力形式を \"$PKWDWPL\" に設定してください（通常 4800 8N1）。このリンクは受信専用で、一切送信しません。",
   "pkwdwplStrictChecksum": "厳格なチェックサム（不一致は破棄）",
   "pkwdwplStrictChecksumTip": "既定ではオフ。不一致は破棄せず記録とログのみ行います。ローカル接続での不一致はファームウェアの書式差であることが多く、すべて破棄すると画面が空になり、かえって原因を追いにくくなります。",

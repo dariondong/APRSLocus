@@ -313,13 +313,62 @@ void main() {
       expect(st.usingRf, isFalse, reason: '射频判断不该把只读链路算进去');
     });
 
-    test('不能让「只读链路」成为唯一来源（否则发射没有落点）', () async {
+    test('可以只启用只读链路（离线记台账是合理用法）', () async {
       final st = await fresh();
       await st.toggleSource(AppState.srcPkwdwpl, true);
-      // 现在关掉 APRS-IS 会只剩 pkwdwpl → 必须被拒绝
       await st.toggleSource(AppState.srcAprsIs, false);
-      expect(st.aprsIsOn, isTrue, reason: '必须保留一个可发射来源');
-      expect(st.enabledSources, contains(AppState.srcAprsIs));
+      // 早期版本把它当配置错误挡掉了，那是过度的家长式判断：
+      // 挂机收台站 / 记台账完全合理，只是不会发射。
+      expect(st.enabledSources, {AppState.srcPkwdwpl});
+      expect(st.pkwdwplOn, isTrue);
+    });
+
+    test('只读模式下 connected=false 但 rxActive=true（关键区分）', () async {
+      final st = await fresh();
+      await st.toggleSource(AppState.srcPkwdwpl, true);
+      await st.toggleSource(AppState.srcAprsIs, false);
+      st.debugSetLinkUp(AppState.srcPkwdwpl, true);
+
+      expect(st.readOnlyMode, isTrue);
+      // connected 的真实含义是「发射链路可用」，它必须仍为 false ——
+      // 所有 `if (connected)` 守卫都只服务于**发射**（信标/消息/ack/保活），
+      // 让它在只读模式下变 true 会直接引发误发射。
+      expect(st.connected, isFalse, reason: '只读模式绝不能声称能发射');
+      expect(st.txSourceUp, isFalse);
+      // 但报文确实在收，界面必须据此显示「只读接收」而不是「未连接」
+      expect(st.rxActive, isTrue);
+      expect(st.isUp(AppState.srcPkwdwpl), isTrue);
+    });
+
+    test('只读模式下依然拒绝发射（三道防线都不需要界面配合）', () async {
+      final st = await fresh();
+      await st.toggleSource(AppState.srcPkwdwpl, true);
+      await st.toggleSource(AppState.srcAprsIs, false);
+      st.debugSetLinkUp(AppState.srcPkwdwpl, true);
+      final before = st.packetsTx;
+      st.sendTestFrame();
+      st.sendBeacon();
+      expect(st.packetsTx, before, reason: '只读模式下不应产生任何发射');
+    });
+
+    test('只读模式：重新启用可发射来源后正常恢复', () async {
+      final st = await fresh();
+      await st.toggleSource(AppState.srcPkwdwpl, true);
+      await st.toggleSource(AppState.srcAprsIs, false);
+      expect(st.readOnlyMode, isTrue);
+      await st.toggleSource(AppState.srcAprsIs, true);
+      expect(st.readOnlyMode, isFalse, reason: '有可发射来源就退出只读模式');
+      st.debugSetLinkUp(AppState.srcAprsIs, true);
+      expect(st.connected, isTrue);
+      expect(st.txSourceUp, isTrue);
+    });
+
+    test('保留「最后一条来源不可取消」的守卫（这个是对的）', () async {
+      final st = await fresh();
+      // 只剩一条时不允许关掉：全关掉应用什么都不收，而界面没有任何提示
+      await st.toggleSource(AppState.srcAprsIs, false);
+      expect(st.aprsIsOn, isTrue);
+      expect(st.enabledSources.length, 1);
     });
 
     test('关掉不发射的 pkwdwpl 不影响发射来源', () async {

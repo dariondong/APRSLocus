@@ -766,56 +766,89 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 10),
-          // 位置上报状态行：是否向 APRS-IS 自动上报位置（连接后可见）
-          if (widget.state.connected) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: widget.state.beaconEnabled
-                    ? C.greenBg
-                    : C.greyBg,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    widget.state.beaconEnabled
-                        ? Icons.send_rounded
-                        : Icons.notifications_off_rounded,
-                    size: 13,
-                    color: widget.state.beaconEnabled ? C.green : C.grey,
-                  ),
-                  SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      widget.state.beaconEnabled
-                          ? (widget.state.smartBeaconEnabled
-                              ? '自动上报中 · 智能分档(每 ${widget.state.beaconIntervalNow}s)'
-                              : '自动上报中 · 每 ${widget.state.beaconInterval}s')
-                          : '位置未上报 · 仅接收',
-                      style: ts(
-                        10.5,
-                        c: widget.state.beaconEnabled ? C.green : C.slate,
-                        w: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  if (!widget.state.beaconEnabled)
-                    GestureDetector(
-                      onTap: () {
-                        widget.state.setBeaconEnabled(true);
-                        if (widget.state.myHasFix) {
-                          widget.state.sendBeacon();
-                        }
-                      },
+          // 位置上报状态行：连接后可见。
+          //
+          // 这里用 [AppState.txSourceUp] 而不是 `connected`：只读模式（只开
+          // PKWDWPL）下没有发射链路，但仍要让用户看到「正在收航点」——
+          // 否则主页会把一个正在正常工作的应用显示成完全没连上。
+          if (widget.state.txSourceUp || widget.state.pkwdwplOn) ...[
+            // 只读模式（只启用 PKWDWPL）：位置上报那套开关对它没有任何意义，
+            // 所以换行「只读接收」+ 已收航点数，而不是摆一个按了不会发射的
+            // 「开启自动上报」。
+            if (!widget.state.txSourceUp)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: C.orangeBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.download_rounded, size: 13, color: C.orange),
+                    SizedBox(width: 6),
+                    Expanded(
                       child: Text(
-                        '开启自动上报',
-                        style: ts(10.5, c: C.blue, w: FontWeight.w700),
+                        S.of(context).pkwdwplReadOnly,
+                        style: ts(10.5, c: C.orange, w: FontWeight.w600),
                       ),
                     ),
-                ],
+                    Text(
+                      S.of(context)
+                          .beaconCount(widget.state.pkwdwpl.rxFrames),
+                      style: ts(10.5, c: C.slate, w: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: widget.state.beaconEnabled ? C.greenBg : C.greyBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      widget.state.beaconEnabled
+                          ? Icons.send_rounded
+                          : Icons.notifications_off_rounded,
+                      size: 13,
+                      color: widget.state.beaconEnabled ? C.green : C.grey,
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        widget.state.beaconEnabled
+                            ? (widget.state.smartBeaconEnabled
+                                ? '自动上报中 · 智能分档(每 ${widget.state.beaconIntervalNow}s)'
+                                : '自动上报中 · 每 ${widget.state.beaconInterval}s')
+                            : '位置未上报 · 仅接收',
+                        style: ts(
+                          10.5,
+                          c: widget.state.beaconEnabled ? C.green : C.slate,
+                          w: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    if (!widget.state.beaconEnabled)
+                      GestureDetector(
+                        onTap: () {
+                          widget.state.setBeaconEnabled(true);
+                          if (widget.state.myHasFix) {
+                            widget.state.sendBeacon();
+                          }
+                        },
+                        child: Text(
+                          '开启自动上报',
+                          style: ts(10.5, c: C.blue, w: FontWeight.w700),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
             SizedBox(height: 10),
           ],
           // 操作按钮
@@ -823,41 +856,63 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    if (widget.state.myHasFix) {
-                      widget.state.sendBeacon();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            widget.state.connected
-                                ? S
-                                      .of(context)
-                                      .beaconSentAprsIs(widget.state.myGrid)
-                                : S
-                                      .of(context)
-                                      .beaconSentDemo(widget.state.myGrid),
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    } else {
-                      widget.state.startTracking();
-                    }
-                  },
-                  icon: Icon(Icons.send_rounded, size: 15),
-                  label: Text(
+                  // 只读模式（只启用 PKWDWPL）下没有发射链路，按钮**置灰**
+                  // 并在文案里说明原因。不隐藏它：位置突然少一个按钮会让人
+                  // 找不到，而置灰 + 说明反而能直接回答「为什么发不出去」。
+                  onPressed: widget.state.readOnlyMode
+                      ? null
+                      : () {
+                          if (widget.state.myHasFix) {
+                            widget.state.sendBeacon();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  widget.state.connected
+                                      ? S
+                                            .of(context)
+                                            .beaconSentAprsIs(
+                                                widget.state.myGrid)
+                                      : S
+                                            .of(context)
+                                            .beaconSentDemo(
+                                                widget.state.myGrid),
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          } else {
+                            widget.state.startTracking();
+                          }
+                        },
+                  icon: Icon(
                     widget.state.myHasFix
-                        ? S.of(context).beaconNow
-                        : S.of(context).getLocation,
+                        ? Icons.send_rounded
+                        : Icons.my_location_rounded,
+                    size: 18,
+                  ),
+                  label: Text(
+                    widget.state.readOnlyMode
+                        ? S.of(context).pkwdwplRxOnly
+                        : (widget.state.myHasFix
+                            ? S.of(context).beaconNow
+                            : S.of(context).getLocation),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: widget.state.myHasFix ? C.green : C.blue,
+                    foregroundColor: widget.state.readOnlyMode
+                        ? C.grey
+                        : (widget.state.myHasFix ? C.green : C.blue),
                     side: BorderSide(
-                      color: (widget.state.myHasFix ? C.green : C.blue)
+                      color: (widget.state.readOnlyMode
+                              ? C.greyLight
+                              : (widget.state.myHasFix ? C.green : C.blue))
                           .withValues(alpha: 0.5),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    textStyle: ts(11, w: FontWeight.w600),
+                    // 手动上报是主页最高频的动作，给足触摸目标
+                    // （44 高 ≈ Material 的最小可点区域，原 8 内边距只有 34）
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
+                    textStyle: ts(13, w: FontWeight.w700),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -891,8 +946,11 @@ class _HomePageState extends State<HomePage> {
                       color: (widget.state.connected ? C.red : C.blue)
                           .withValues(alpha: 0.5),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    textStyle: ts(11, w: FontWeight.w600),
+                    // 与「手动上报」对齐：两个按钮并排，一大一小会显得很怪
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
+                    textStyle: ts(13, w: FontWeight.w700),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -1132,7 +1190,10 @@ class _HomePageState extends State<HomePage> {
         final audioMode = st.usingAudio;
         // PKWDWPL 永远不会成为发射来源（只读），所以它只可能出现在
         // 「未连接」横幅下 —— 此时提示用户它需要单独绑定端口。
-        final pkwdwplMode = st.pkwdwplOn && !st.connected;
+        // 只读模式（只启用 PKWDWPL）：没有发射链路，但一直在收航点。
+        // 横幅改成「PKWDWPL · 只读接收」，而不是「未连接」——后者会让
+        // 用户以为需要去点连接。
+        final pkwdwplMode = st.pkwdwplOn && !st.txSourceUp;
         // 音频来源没有「设备」概念，改成展示采样率（用户真正关心的参数）
         final tncName = audioMode
             ? '${st.audio.config.afsk.sampleRate}Hz'

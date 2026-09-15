@@ -693,6 +693,7 @@
   "pkwdwplBindTitle": "Vinculación y estado",
   "pkwdwplBindSubtitle": "Elige el puerto serie o Bluetooth que emite sentencias $PKWDWPL",
   "pkwdwplRxOnly": "Solo recepción",
+  "pkwdwplReadOnly": "Solo recepción · este equipo no transmite nada",
   "pkwdwplTip": "Configura el formato de salida del puerto PC / GPS del equipo como \"$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.",
   "pkwdwplStrictChecksum": "Suma de comprobación estricta (descarta si no coincide)",
   "pkwdwplStrictChecksumTip": "Desactivado por defecto: una discrepancia se marca y se registra en lugar de descartarse, porque en un cable local suele significar que el formato del firmware difiere del manual. Descartar todo dejaría la pantalla vacía y dificultaría mucho el diagnóstico.",

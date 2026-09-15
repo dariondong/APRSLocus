@@ -2172,6 +2172,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pkwdwplRxOnly => 'Solo recepción';
 
   @override
+  String get pkwdwplReadOnly =>
+      'Solo recepción · este equipo no transmite nada';
+
+  @override
   String get pkwdwplTip =>
       'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
 

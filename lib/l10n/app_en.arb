@@ -719,6 +719,7 @@
   "pkwdwplBindTitle": "Device binding and status",
   "pkwdwplBindSubtitle": "Pick the serial or Bluetooth port that outputs $PKWDWPL sentences",
   "pkwdwplRxOnly": "Receive-only",
+  "pkwdwplReadOnly": "Receive-only · this device transmits nothing",
   "pkwdwplTip": "Set the PC / GPS port output format on the radio to \"$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.",
   "pkwdwplStrictChecksum": "Strict checksum (drop mismatches)",
   "pkwdwplStrictChecksumTip": "Off by default: a mismatch is flagged and logged instead of dropped, because on a local cable it usually means the firmware format differs from the manual. Dropping every sentence would leave the screen empty and make diagnosis much harder.",
