@@ -34,8 +34,9 @@
   --green: #10b981;
   --amber: #d97706;
   --red: #ef4444;
-  --grad: linear-gradient(120deg, #0ea5e9, #6366f1 55%, #a855f7);
-  --grad-sky: linear-gradient(120deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+  --grad: linear-gradient(120deg, #0ea5e9, #0284c7);
+  /* 公告信笺顶部标线：与 --grad 同色系、亮一档，不另立色板 */
+  --grad-rule: linear-gradient(120deg, #38bdf8, #0284c7);
   --radius: 18px;
   --shadow: 0 18px 50px rgba(45, 70, 120, .14);
   --shadow-hover: 0 26px 64px rgba(45, 70, 120, .22);
@@ -48,7 +49,6 @@ body {
   font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background:
     radial-gradient(1200px 700px at 85% -10%, rgba(56, 189, 248, .16), transparent 60%),
-    radial-gradient(1100px 640px at 12% -6%, rgba(139, 92, 246, .14), transparent 62%),
     radial-gradient(1000px 600px at 0% 40%, rgba(37, 99, 235, .10), transparent 60%),
     radial-gradient(1100px 700px at 90% 100%, rgba(16, 185, 129, .10), transparent 60%),
     linear-gradient(180deg, #f3f6fd 0%, #eaf0fb 100%);
@@ -203,7 +203,7 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .hero-wordmark {
   font-size: clamp(48px, 6.6vw, 96px); font-weight: 900; letter-spacing: -.04em;
   line-height: .95; margin: 6px 0 14px;
-  background: linear-gradient(120deg,#0f172a 0%,#4338ca 42%,#0284c7 68%,#7c3aed 100%);
+  background: linear-gradient(120deg,#0f172a 0%,#075985 45%,#0284c7 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   filter: drop-shadow(0 14px 34px rgba(2,132,199,.20));
 }
@@ -755,9 +755,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   animation-fill-mode: both;
 }
 /* 各元素登场：主视觉用“冲击式”放大渐显，其余依次上浮。
-   注意：默认给全部子元素挂上动画，只按序号改延迟。
-   早先只写到第 5 个 :nth-child，任何新增元素（如 2.0 的 .hero-tags）
-   都会把后面的按钮挤出动画范围而永远停留在 opacity: 0 —— 按钮直接看不见。 */
+   默认给全部子元素挂上动画、只按序号改延迟，新增 hero 子元素不必再改这里。
+   反面教材：早先只写到第 5 个 :nth-child，后来插入新元素把「下载」按钮
+   挤到第 6 个，超出范围就不挂动画，而基础规则是 opacity: 0 —— 按钮直接消失。 */
 .hero-copy > * { animation: heroUp .8s var(--ease) both; }
 .hero-copy > *:nth-child(1) { animation-delay: .0s; }
 .hero-copy > *:nth-child(2) { animation: heroBoom .85s cubic-bezier(.2,.9,.25,1.2) both; animation-delay: .15s; }
@@ -870,91 +870,51 @@ body.loaded .hero-phone {
 @media (max-width: 640px) { .cgroup { margin-bottom: 20px; } }
 
 /* ════════════════════════════════════════════════════════════════
-   19. TOUCH SKY 主题 · 2.0 BETA 公告视觉
-   —— 从纯网络到射频：天光/极光、信号涟漪、致意信笺
+   19. 2.0 BETA「TOUCH SKY」公告
+   —— 只做两件小事：导航给个提示点，公告写成一张干净的信笺。
+      刻意不引入新色板：全站继续用青→蓝主色，避免和原有玻璃态打架。
    ════════════════════════════════════════════════════════════════ */
 
-/* 天光/极光背景（Hero 氛围层，兼容浅色主题） */
-.sky-aurora {
-  position: absolute; inset: -4% -2%; z-index: 0; pointer-events: none; opacity: .62;
-  background:
-    radial-gradient(58% 42% at 14% 22%, rgba(56, 189, 248, .38), transparent 70%),
-    radial-gradient(46% 38% at 86% 20%, rgba(139, 92, 246, .30), transparent 70%),
-    radial-gradient(50% 40% at 58% 102%, rgba(244, 114, 182, .16), transparent 72%);
-  filter: blur(10px);
-  animation: auroraShift 20s ease-in-out infinite alternate;
-}
-@keyframes auroraShift {
-  from { transform: translate3d(-1%, 0, 0) scale(1.02); }
-  to   { transform: translate3d(1.5%, -1.4%, 0) scale(1.07); }
-}
-body.loaded .sky-aurora { opacity: .62; }
+/* 曾试过一层「天光 / 极光」氛围叠层（.sky-aurora）：青 + 紫 + 粉三团大范围径向
+   渐变压在 Hero 上，和原本干净的浅色玻璃态冲突，整页发灰发紫，已移除。
+   Hero 原本就有 .hero::after 中心辉光，氛围足够，不再叠第二层。 */
 
-/* Hero 徽章：TOUCH SKY 版本 */
-.hero-badge.sky {
-  background: linear-gradient(120deg, #0b1220, #312e81 52%, #0c4a6e);
-  border-color: rgba(167, 139, 250, .42);
-  box-shadow: 0 12px 34px rgba(99, 102, 241, .38);
-}
-.hero-badge.sky .rel-tag {
-  color: #ddd6fe; border-color: rgba(196, 181, 253, .45);
-  background: rgba(109, 40, 217, .26);
-}
-
-/* Hero 主题标签行（BETA / 射频 / 多来源） */
-.hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: -14px 0 24px; }
-.hero-tag {
-  display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
-  color: var(--text-dim); padding: 7px 13px; border-radius: 999px;
-  background: rgba(255, 255, 255, .62); border: 1px solid rgba(255, 255, 255, .85);
-  box-shadow: 0 6px 18px rgba(76, 60, 160, .08);
-  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
-}
-.hero-tag:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(76, 60, 160, .14); }
-.hero-tag i { width: 8px; height: 8px; border-radius: 50%; background: var(--grad-sky); display: inline-block; }
-
-/* 导航「公告」入口 */
-.nav-links a.nav-new { font-weight: 700; color: #6d28d9; }
+/* 导航「公告」入口：一个会呼吸的小圆点，提示有新公告 */
+.nav-links a.nav-new { font-weight: 700; color: var(--cyan); }
 .nav-links a.nav-new::before {
   content: ""; width: 7px; height: 7px; border-radius: 50%; display: inline-block;
-  margin-right: 7px; vertical-align: middle; background: var(--grad-sky);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, .14);
+  margin-right: 7px; vertical-align: middle; background: var(--cyan);
   animation: navPulse 2.2s ease-in-out infinite;
 }
-@keyframes navPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.45); opacity: .55; } }
+@keyframes navPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 
-/* 更新日志：2.0 BETA 标签 */
-.cl-tag.beta { background: linear-gradient(120deg, #4f46e5, #7c3aed); box-shadow: 0 10px 26px rgba(109, 40, 217, .34); }
+/* 更新日志：2.0 BETA 标签沿用站点主色，不另起一套色板 */
+.cl-tag.beta { box-shadow: 0 10px 26px rgba(2, 132, 199, .28); }
 
 /* ── 公告信笺 ── */
 .announce { padding-top: 96px; }
+/* 直接沿用站内既有的玻璃卡片配方（--glass / --line / 16px 模糊），
+   不自创背景。与 .cl-version 同一种质感，放在一起才像同一个站点。 */
 .announce-card {
-  position: relative; overflow: hidden; max-width: 1000px; margin: 0 auto;
-  padding: clamp(30px, 5vw, 64px) clamp(24px, 5vw, 68px);
-  border-radius: 30px;
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgba(168, 85, 247, .15), transparent 55%),
-    radial-gradient(95% 85% at 0% 100%, rgba(56, 189, 248, .20), transparent 60%),
-    rgba(255, 255, 255, .68);
-  border: 1px solid rgba(255, 255, 255, .78);
-  box-shadow: 0 30px 84px rgba(76, 60, 160, .18);
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  position: relative; overflow: hidden; max-width: 940px; margin: 0 auto;
+  padding: clamp(28px, 4.4vw, 56px) clamp(24px, 5vw, 62px);
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 50px rgba(45, 70, 120, .12);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
+/* 顶部一道 3px 主色标线：整张信笺唯一的装饰 */
 .announce-card::before {
-  content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 4px;
-  background: var(--grad-sky);
-}
-.announce-card::after {
-  content: ""; position: absolute; right: -130px; bottom: -150px; width: 400px; height: 400px;
-  border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle, rgba(139, 92, 246, .26), transparent 65%);
+  content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 3px;
+  background: var(--grad-rule);
 }
 .announce-ribbon {
   position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 9px;
-  font-size: 11.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
-  color: #0369a1; background: rgba(224, 242, 254, .88);
-  border: 1px solid rgba(125, 211, 252, .6); padding: 6px 15px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: #0369a1; background: rgba(240, 249, 255, .9);
+  border: 1px solid rgba(186, 230, 253, .9); padding: 6px 15px; border-radius: 999px;
 }
 .announce-ribbon .ar-dot {
   width: 8px; height: 8px; border-radius: 50%; background: var(--green); position: relative;
@@ -966,13 +926,12 @@ body.loaded .sky-aurora { opacity: .62; }
 .announce-head { position: relative; z-index: 1; margin: 22px 0 30px; }
 .announce-kicker { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--text-faint); margin-bottom: 10px; }
 .announce-title {
-  font-size: clamp(34px, 5.6vw, 62px); font-weight: 900; letter-spacing: -.03em; line-height: 1.02;
-  background: var(--grad-sky); -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 12px 30px rgba(99, 102, 241, .22));
+  font-size: clamp(32px, 4.6vw, 50px); font-weight: 900; letter-spacing: -.03em; line-height: 1.05;
+  color: var(--text);
 }
 .announce-title .announce-en {
-  display: block; margin-top: 12px; font-size: clamp(15px, 2vw, 20px); font-weight: 700;
-  letter-spacing: .05em; color: var(--text-dim); -webkit-text-fill-color: var(--text-dim);
+  display: block; margin-top: 10px; font-size: clamp(14px, 1.6vw, 17px); font-weight: 600;
+  letter-spacing: .04em; color: var(--text-dim);
 }
 .announce-sub { margin-top: 12px; color: var(--cyan); font-weight: 600; font-size: 15px; }
 .announce-body { position: relative; z-index: 1; }
@@ -980,9 +939,9 @@ body.loaded .sky-aurora { opacity: .62; }
 .announce-body p b { color: var(--text); font-weight: 800; }
 .announce-greet { font-weight: 800; color: var(--text) !important; font-size: clamp(16px, 1.9vw, 19px) !important; }
 .announce-quote {
-  margin: 26px 0 6px; padding: 18px 22px; border-left: 3px solid;
-  border-image: var(--grad-sky) 1; border-radius: 0 14px 14px 0;
-  background: linear-gradient(120deg, rgba(56, 189, 248, .10), rgba(168, 85, 247, .10));
+  margin: 26px 0 6px; padding: 16px 20px; border-left: 3px solid var(--cyan);
+  border-radius: 0 12px 12px 0;
+  background: rgba(56, 189, 248, .07);
   color: var(--text) !important; font-weight: 700;
 }
 .announce-sign { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-top: 24px; text-align: right; }
@@ -993,7 +952,6 @@ body.loaded .sky-aurora { opacity: .62; }
 .announce-actions .btn svg { width: 18px; height: 18px; fill: currentColor; }
 
 @media (max-width: 640px) {
-  .announce-card { border-radius: 22px; }
   .announce-sign { align-items: flex-start; text-align: left; }
   .announce-actions .btn { width: 100%; justify-content: center; }
 }
