@@ -1052,6 +1052,56 @@ class AppLocalizationsEs extends AppLocalizations {
   String get codeContributionTranslation => 'Traducción';
 
   @override
+  String get dataSourceTxHint =>
+      'Puedes activar varios enlaces para recibir, pero **solo uno transmite** (el punto a la derecha). Enviar el mismo indicativo por dos enlaces duplicaría paquetes.';
+
+  @override
+  String get dataSourceTxBadge => 'TX';
+
+  @override
+  String get dataSourceIgateHint =>
+      'Para actuar como pasarela (reenviar paquetes de RF a internet), activa APRS-IS y TNC/audio, y luego enciende «Pasarela» abajo.';
+
+  @override
+  String get igateTitle => 'Pasarela (iGate)';
+
+  @override
+  String get igateSubtitle => 'Reenvía a APRS-IS los paquetes oídos por RF';
+
+  @override
+  String get igateEnable => 'Activar pasarela';
+
+  @override
+  String get igateHint =>
+      'Los paquetes oídos por RF se reenvían a APRS-IS, marcados con qAr/qAR y tu indicativo. Requiere APRS-IS y una fuente de RF (TNC/audio) activas.';
+
+  @override
+  String get igateNeedRf =>
+      'Falta una fuente de RF: marca TNC o audio en «Fuente de datos» arriba.';
+
+  @override
+  String get igateNeedIs => 'APRS-IS no está activo: márcalo arriba.';
+
+  @override
+  String get igateTwoWay => 'Pasarela bidireccional (reenviar mensajes a RF)';
+
+  @override
+  String get igateTwoWayHint =>
+      'Si está activo, **transmite por RF**: solo mensajes punto a punto destinados a una estación oída recientemente por RF. Si está desactivado, solo RF→IS.';
+
+  @override
+  String get igateStatToIs => 'Reenviados → APRS-IS';
+
+  @override
+  String get igateStatToRf => 'Reenviados → RF';
+
+  @override
+  String get igateStatDup => 'Duplicados descartados';
+
+  @override
+  String get igateResetStats => 'Reiniciar contadores';
+
+  @override
   String grpSysJoined(String call) {
     return '$call se unió al grupo';
   }

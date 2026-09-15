@@ -175,7 +175,15 @@ class TncLink {
       lastTxError = reason;
       // 进链路日志：这是排查「发不出去」最关键的一条，必须留痕
       _log('发送失败：$reason');
+      _txWait?.complete(-1);
+      _txWait = null;
       onStateChanged?.call();
+    };
+    _t.onTxAck = (size) {
+      txAckedBytes += size;
+      lastTxAckAt = DateTime.now();
+      _txWait?.complete(size);
+      _txWait = null;
     };
   }
 
@@ -216,6 +224,13 @@ class TncLink {
   /// 会让「发射不出去」无从定位。
   int txErrors = 0;
   String lastTxError = '';
+
+  /// 已被链路层**确认写出**的字节数（与 [txBytes] 的区别：txBytes 是入队量）
+  int txAckedBytes = 0;
+  DateTime? lastTxAckAt;
+
+  /// 发射自检用的「等链路层回话」句柄：写出成功给 size，失败给 -1
+  Completer<int>? _txWait;
 
   /// 链路日志（环形，最多 100 条；供「设备」页排查用）
   final List<String> log = [];
@@ -264,6 +279,16 @@ class TncLink {
 
   Future<bool> connect([TncDevice? d]) async {
     final target = d ?? device;
+    // 并发保护：两次 connect 同时跑时，后一次会关掉前一次刚建好的 socket，
+    // 表现就是「刚连上又断」。已在连接中直接拒绝，让调用方稍后重试。
+    if (connecting) {
+      lastError = 'busy';
+      _log('已在连接中，忽略本次连接请求');
+      return false;
+    }
+    if (connected && target != null && device?.id == target.id) {
+      return true; // 幂等：同设备已连上，不必重连
+    }
     if (target == null) {
       status = TncStatus.noDevice;
       lastError = 'no-device';
@@ -316,19 +341,25 @@ class TncLink {
   }
 
   Future<void> disconnect({bool manual = true}) async {
-    await _t.disconnect();
+    // **先**把 connected 置 false，再拆传输层：
+    // 传输层拆卸过程中会（异步）抛出 closed 事件，若那时 connected 仍为
+    // true，就会被当成「链路意外丢失」→ 上层自动重连 ——「用户点了断开，
+    // 8 秒后自己又连上」正是这么来的。
     connected = false;
     connecting = false;
     status = TncStatus.idle;
+    await _t.disconnect();
     if (manual) _log('已断开');
     onStateChanged?.call();
   }
 
   void _onClosed() {
-    final was = connected;
+    // 已经在断开流程里（connected 已为 false）→ 这是预期内的事件，不上报。
+    // 只有「我们以为还连着」时到达的 closed 才是真的链路丢失。
+    if (!connected) return;
     connected = false;
     status = TncStatus.closed;
-    if (was) _log('链路断开');
+    _log('链路断开');
     onStateChanged?.call();
     onClosed?.call();
   }
@@ -433,21 +464,37 @@ class TncLink {
   Future<String?> txSelfTest(
     String fullCall,
     String path, {
-    Duration settle = const Duration(milliseconds: 400),
+    Duration settle = const Duration(milliseconds: 800),
   }) async {
     if (!connected) return 'not-connected';
-    final errsBefore = txErrors;
     final raw = '$fullCall>$path:>APRSlocus TXTEST';
+    // 挂上等待器后再发，避免写出太快导致错过确认
+    final wait = Completer<int>();
+    _txWait = wait;
     final err = sendTnc2(raw);
-    if (err != null) return err;
-    // 等链路层回话：有错就是没出去，没错才算递交成功
-    await Future.delayed(settle);
-    if (txErrors > errsBefore) {
+    if (err != null) {
+      _txWait = null;
+      return err;
+    }
+    // -1 = 链路层报错；>=0 = 确认写出 N 字节；-2 = 超时未见回话
+    final r = await Future.any<int>([
+      wait.future,
+      Future<int>.delayed(settle, () => -2),
+    ]);
+    _txWait = null;
+    if (r == -1) {
       _log('发射自检失败：链路层报错（$lastTxError）');
       return 'send-failed: $lastTxError';
     }
-    _log('发射自检：链路层已接收一帧（累计 $txFrames 帧 / $txBytes 字节，'
-        '写入失败 $txErrors 次）');
+    if (r == -2) {
+      // 队列里还没轮到（writer 正忙）或者链路层没回报。不算失败，
+      // 但要把这个区别写进日志，避免又变成「看起来成功了」。
+      _log('发射自检：已入队但 ${settle.inMilliseconds}ms 内未收到写出确认'
+          '（排队 ${txBytes - txAckedBytes} 字节未确认）');
+      return null;
+    }
+    _log('发射自检：链路层确认写出 $r 字节'
+        '（累计发 ${txFrames} 帧 / 确认 ${txAckedBytes} 字节 / 写失败 $txErrors 次）');
     return null;
   }
 

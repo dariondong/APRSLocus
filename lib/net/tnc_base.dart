@@ -84,6 +84,12 @@ abstract class TncTransport {
   /// 否则发射自检会给出「已写入」的假结论（历史上就这样撒过谎）。
   void Function(String reason)? onTxFailed;
 
+  /// 写入**已真实落到链路**（写出 N 字节）。
+  ///
+  /// 与 [onTxFailed] 配对：有了它，发射自检才能区分
+  /// 「已写出」/「写入失败」/「还在排队」，而不是靠等一段时间猜。
+  void Function(int size)? onTxAck;
+
   /// 列出可绑定设备
   Future<List<TncDevice>> listDevices();
 

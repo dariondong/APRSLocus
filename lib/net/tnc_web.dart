@@ -26,6 +26,9 @@ class TncStub implements TncTransport {
   void Function(String reason)? onTxFailed;
 
   @override
+  void Function(int size)? onTxAck;
+
+  @override
   Future<List<TncDevice>> listDevices() async => const [];
 
   @override

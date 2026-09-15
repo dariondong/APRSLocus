@@ -6,22 +6,36 @@ import 'link_test_card.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
-import 'tnc_page.dart';
 import 'tnc_device_page.dart';
+import 'tnc_page.dart';
 import 'widgets.dart';
 
-/// ─── 设备页（概览）：数据来源 + 当前链路状态 + 自检 + 子页入口 ───
+/// ─── 设备页（概览）：数据来源 + 网关 + 链路状态 + 子页入口 ───
 ///
-/// 为什么拆：原来一个页面里堆了数据来源、TNC 绑定、9 项 KISS 参数、射频行为、
-/// 链路自检、音频入口、链路日志 —— 用户最常做的事（看当前链路通不通）要划过
-/// 一屏参数才能看到，而调参时又要来回滚。现在按「使用者的问题」分层：
+/// 页面组织原则：**按「使用者此刻要回答的问题」排序，高级内容折叠**。
 ///
-///   * 本页 **概览** —— 「我现在用哪个来源、通不通、自检过不过」（只看结论）
-///   * `TncDevicePage` **TNC 设备与参数** —— 「设备要不要重连、参数怎么改」
-///   * `AudioSettingsPage` **音频** —— 声卡链路的参数与文件模式
-class DeviceOverviewPage extends StatelessWidget {
+///   ① 我现在用哪些来源？        → 数据来源（多选）
+///   ② 我要不要当网关？          → 网关
+///   ③ 现在通不通？             → 链路（每来源一行）
+///   ④ 要改参数 / 排查 → 子页    → TNC 设备与参数 / 音频
+///   ⑤ 出问题了要证据            → 链路自检、日志（**折叠**）
+///
+/// 上一版把这些平铺在一页里，其中「自检结果」与「日志」两块**很高又不常看**，
+/// 于是最常看的「通不通」被顶到需要滚动才能看到 —— 这就是「还是有点乱」的
+/// 来源。折叠后默认一屏内能看到 ①②③ 与两个入口。
+class DeviceOverviewPage extends StatefulWidget {
   final AppState state;
   const DeviceOverviewPage({super.key, required this.state});
+
+  @override
+  State<DeviceOverviewPage> createState() => _DeviceOverviewPageState();
+}
+
+class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
+  bool _testOpen = false;
+  bool _logOpen = false;
+
+  AppState get state => widget.state;
 
   @override
   Widget build(BuildContext context) {
@@ -34,66 +48,136 @@ class DeviceOverviewPage extends StatelessWidget {
         icon: Icons.devices_other_rounded,
         color: C.indigo,
         body: Column(children: [
-          // ① 数据来源：三选一，切了就断链（与连接页共用同一张卡片）
-          DataSourceCard(state: state, extra: s.dataSourceSwitchHint),
-          const SizedBox(height: 16),
-          // ② 当前来源状态：只读结论，避免在概览页误改参数
-          _statusCard(context, s),
-          const SizedBox(height: 16),
-          // ③ 两个链路的入口
-          _entriesCard(context, s),
-          const SizedBox(height: 16),
-          // ④ 自检：按当前来源换检查项（协议回路不接电台也能跑）
-          LinkTestCard(
+          // ① 数据来源（多选 + 发射来源）
+          DataSourceCard(
             state: state,
-            source: state.usingAudio
-                ? LinkTestSource.audio
-                : LinkTestSource.tnc,
+            extra: s.dataSourceSwitchHint,
           ),
           const SizedBox(height: 16),
-          _logCard(context, s),
+          // ② 网关
+          _igateCard(context, s),
+          const SizedBox(height: 16),
+          // ③ 每条链路的状态（只读结论，避免在概览页误改参数）
+          _linksCard(context, s),
+          const SizedBox(height: 16),
+          // ④ 子页入口
+          _entriesCard(context, s),
+          const SizedBox(height: 16),
+          // ⑤ 自检（折叠：结果很长，但排查时最有用）
+          SettingsFold(
+            title: s.diagTitle,
+            subtitle: s.diagSubtitle,
+            icon: Icons.health_and_safety_rounded,
+            color: C.cyan,
+            open: _testOpen,
+            onToggle: () => setState(() => _testOpen = !_testOpen),
+            children: [
+              LinkTestCard(
+                state: state,
+                source: state.audioOn && !state.tncOn
+                    ? LinkTestSource.audio
+                    : LinkTestSource.tnc,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // ⑥ 日志（折叠：平时不需要看，出问题才展开）
+          SettingsFold(
+            title: s.deviceLogTitle,
+            subtitle: s.deviceLogDesc,
+            icon: Icons.receipt_long_rounded,
+            color: C.slate,
+            open: _logOpen,
+            onToggle: () => setState(() => _logOpen = !_logOpen),
+            children: [_logBody(context, s)],
+          ),
           const SizedBox(height: 24),
         ]),
       ),
     );
   }
 
-  /// ② 当前来源的关键状态（TNC / 音频各自的指标，不混在一起显示）
-  Widget _statusCard(BuildContext context, S s) {
+  /// ② 网关（iGate）
+  Widget _igateCard(BuildContext context, S s) {
+    return SettingsSectionCard(
+      title: s.igateTitle,
+      subtitle: s.igateSubtitle,
+      icon: Icons.hub_rounded,
+      color: C.purple,
+      children: [
+        SettingsSwitch(
+          s.igateEnable,
+          value: state.igateEnabled,
+          color: C.purple,
+          onChanged: state.setIgateEnabled,
+        ),
+        SettingsHint(s.igateHint),
+        // 启用前置条件没满足时**明确说缺什么**，而不是静默不工作
+        if (state.igateEnabled && !state.igateReady)
+          SettingsHint(s.igateNeedRf, color: C.orange),
+        if (state.igateEnabled && !state.aprsIsOn)
+          SettingsHint(s.igateNeedIs, color: C.orange),
+        if (state.igateEnabled) ...[
+          SettingsSwitch(
+            s.igateTwoWay,
+            value: state.igateTwoWay,
+            color: C.orange,
+            onChanged: state.setIgateTwoWay,
+          ),
+          SettingsHint(s.igateTwoWayHint, color: C.orange),
+          SettingsRow2(s.igateStatToIs, '${state.igateGated}',
+              valueColor: state.igateGated > 0 ? C.green : C.grey),
+          SettingsRow2(
+            s.igateStatToRf,
+            '${state.igateToRf}',
+            valueColor: state.igateToRf > 0 ? C.green : C.grey,
+          ),
+          SettingsRow2(s.igateStatDup, '${state.igateDupDropped}'),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+            child: Row(children: [
+              TextButton.icon(
+                onPressed: state.resetIgateStats,
+                icon: const Icon(Icons.restart_alt_rounded, size: 15),
+                label: Text(s.igateResetStats, style: ts(12)),
+                style: TextButton.styleFrom(foregroundColor: C.grey),
+              ),
+            ]),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// ③ 链路状态：每一行就是一条链路，不会混淆
+  Widget _linksCard(BuildContext context, S s) {
     final rows = <Widget>[];
-    if (state.usingAudio) {
-      final a = state.audio;
-      rows.addAll([
-        SettingsRow2(s.connection,
-            a.connected ? s.connected : s.disconnected,
-            valueColor: a.connected ? C.green : C.slate),
-        SettingsRow2(s.audioBackend, a.backendName),
-        SettingsRow2(s.audioSampleRate, '${a.config.afsk.sampleRate} Hz'),
-        SettingsRow2(
-            s.audioStatsTitle, s.audioStatRx(a.rxFrames)),
-        SettingsRow2('', s.audioStatTx(a.txFrames)),
-      ]);
-    } else if (state.usingTnc) {
-      final t = state.tnc;
-      rows.addAll([
-        SettingsRow2(s.connection,
-            t.connected ? s.connected : s.disconnected,
-            valueColor: t.connected ? C.green : C.slate),
-        SettingsRow2(s.tncBoundDevice, t.device?.label ?? s.tncNotBound,
-            valueColor: t.device == null ? C.grey : C.ink),
-        SettingsRow2(s.tncStats('${t.rxFrames}', '${t.txFrames}'), ''),
-      ]);
-    } else {
-      rows.addAll([
-        SettingsRow2(s.connection,
-            state.connected ? s.connected : s.disconnected,
-            valueColor: state.connected ? C.green : C.slate),
-        SettingsRow2(s.server,
-            '${state.aprs.server}:${state.aprs.port}'),
-        SettingsRow2(s.callsign, state.myFullCall),
-      ]);
+    for (final src in [AppState.srcAprsIs, AppState.srcTnc, AppState.srcAudio]) {
+      if (!state.enabledSources.contains(src)) continue;
+      final up = state.isUp(src);
+      final isTx = state.dataSource == src;
+      final name = src == AppState.srcAprsIs
+          ? s.dataSourceAprsIs
+          : (src == AppState.srcTnc ? s.dataSourceTnc : s.dataSourceAudio);
+      final detail = switch (src) {
+        AppState.srcAprsIs => '${state.aprs.server}:${state.aprs.port}',
+        AppState.srcTnc => state.tnc.device?.label ?? s.tncNotBound,
+        _ => '${state.audio.config.afsk.sampleRate} Hz · ${state.audio.backendName}',
+      };
+      final stats = switch (src) {
+        AppState.srcAprsIs => s.notifRx('${state.packetsRx}'),
+        AppState.srcTnc => s.tncStats(
+            '${state.tnc.rxFrames}', '${state.tnc.txFrames}'),
+        _ => s.tncStats(
+            '${state.audio.rxFrames}', '${state.audio.txFrames}'),
+      };
+      rows.add(SettingsRow2(
+        '$name${isTx ? ' · ${s.dataSourceTxBadge}' : ''}',
+        '$detail  ${up ? '· ${stats}' : ''}',
+        valueColor: up ? C.green : C.slate,
+      ));
     }
-    // 「会不会真的发射」是射频来源最关键的一条，概览页必须能看到
+    // 「会不会真的发射」是射频来源最关键的一条
     if (state.usingRf) {
       rows.add(SettingsRow2(
         s.kissRfBeacon,
@@ -105,12 +189,12 @@ class DeviceOverviewPage extends StatelessWidget {
       title: s.deviceCurrentLink,
       subtitle: s.deviceCurrentLinkDesc,
       icon: Icons.sensors_rounded,
-      color: C.blue,
+      color: C.green,
       children: rows,
     );
   }
 
-  /// ③ 子页入口
+  /// ④ 子页入口
   Widget _entriesCard(BuildContext context, S s) {
     return SettingsSectionCard(
       title: s.deviceEntries,
@@ -147,8 +231,8 @@ class DeviceOverviewPage extends StatelessWidget {
     required Widget page,
   }) {
     return InkWell(
-      onTap: () => Navigator.of(context)
-          .push(MaterialPageRoute(builder: (_) => page)),
+      onTap: () =>
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => page)),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
@@ -181,51 +265,64 @@ class DeviceOverviewPage extends StatelessWidget {
     );
   }
 
-  /// ④ 链路日志：显示**当前来源**的日志。
-  ///
-  /// 之前设备页只显示 TNC 日志，音频模式下用户看不到任何链路日志 ——
-  /// 「音频收不到」时无从排查。现在按来源自动切换。
-  Widget _logCard(BuildContext context, S s) {
-    final logs = state.usingAudio ? state.audio.logs : state.tnc.logs;
-    return SettingsSectionCard(
-      title: s.deviceLogTitle,
-      subtitle: s.deviceLogDesc,
-      icon: Icons.receipt_long_rounded,
-      color: C.slate,
+  /// ⑥ 日志正文（TNC / 音频 / APRS-IS 三段，按当前启用的来源显示）
+  Widget _logBody(BuildContext context, S s) {
+    // 多选时可能同时在用两条链路，日志必须能分开看 —— 混在一起会把
+    // 「收不到」的排查彻底变成猜谜
+    // 两类日志的形态不同：AppState 是结构化 LogEntry（便于筛选/本地化级别），
+    // 链路层是纯文本（原生侧只给字符串）。这里统一转成可显示的行。
+    final sections = <(String, List<String>)>[];
+    if (state.aprsIsOn) {
+      sections.add((
+        s.dataSourceAprsIs,
+        state.logs.map((e) => '${e.source} ${e.message}').toList(),
+      ));
+    }
+    if (state.tncOn) sections.add((s.dataSourceTnc, state.tnc.logs));
+    if (state.audioOn) sections.add((s.dataSourceAudio, state.audio.logs));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (logs.isEmpty)
-          SettingsHint(s.tncLogEmpty)
-        else ...[
+        for (final (name, logs) in sections) ...[
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
             child: Row(children: [
+              Text(name, style: ts(11, c: C.slate, w: FontWeight.w700)),
+              const Spacer(),
               TextButton.icon(
-                onPressed: () => Clipboard.setData(
-                    ClipboardData(text: logs.join('\n'))),
-                icon: const Icon(Icons.copy_rounded, size: 15),
-                label: Text(s.copyAllLogs, style: ts(12)),
-                style: TextButton.styleFrom(foregroundColor: C.slate),
+                onPressed: () =>
+                    Clipboard.setData(ClipboardData(text: logs.join('\n'))),
+                icon: const Icon(Icons.copy_rounded, size: 14),
+                label: Text(s.copyAllLogs, style: ts(11)),
+                style: TextButton.styleFrom(
+                  foregroundColor: C.slate,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  minimumSize: const Size(0, 30),
+                ),
               ),
             ]),
           ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final l in logs.take(30))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Text(
-                      l,
-                      style: ts(10, c: C.slate, h: 1.35)
-                          .copyWith(fontFamily: 'monospace'),
+          if (logs.isEmpty)
+            SettingsHint(s.tncLogEmpty)
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final l in logs.take(20))
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      child: Text(
+                        l,
+                        style: ts(10, c: C.slate, h: 1.35)
+                            .copyWith(fontFamily: 'monospace'),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
         ],
       ],
     );

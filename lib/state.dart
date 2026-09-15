@@ -29,6 +29,7 @@ import 'net/aprs.dart';
 import 'audio.dart';
 import 'diag.dart';
 import 'group_chat.dart';
+import 'igate.dart';
 import 'tnc.dart';
 import 'translate.dart';
 import 'early_member.dart';
@@ -66,7 +67,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.106';
+  static const appVersion = '1.6.107';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -670,9 +671,50 @@ class AppState extends ChangeNotifier {
   // Passcode 是否被服务器判定无效（logresp unverified）
   bool passcodeInvalid = false;
 
-  // ─── 数据来源：APRS-IS（互联网）/ TNC（电台）/ 音频（声卡 TNC） ───
-  /// 'aprsis' | 'tnc' | 'audio'
+  // ─── 数据来源（可多选）+ 网关 ───
+  //
+  // 语义分工（改这里前务必看清，否则很容易把「多选」做成两套互相打架的状态）：
+  //   * [enabledSources] —— **同时连接哪几条链路**（多选）。多条链路可以一起
+  //     收包，收到的报文都进同一条解析管线。
+  //   * [dataSource]     —— **发射走哪条**（单选）。所有与发射有关的判断
+  //     （txPath / 消息限长 / 群聊禁用 / 射频信标 / 保活）都用它，因此这些
+  //     逻辑在多选改造中**一行都不用改**。
+  //   * 为什么发射不能也多选：同一个 myFullCall 从两条链路同时发出会造成
+  //     重复报文（射频上还白占一次时隙），而且 ack 会回两次。
+  /// 当前**发射**来源：'aprsis' | 'tnc' | 'audio'
   String dataSource = 'aprsis';
+
+  /// 已启用的来源集合（至少一个；发射来源必须在此集合内）
+  final Set<String> enabledSources = {srcAprsIs};
+
+  /// 每条链路的实际连通状态。键为 'aprsis'|'tnc'|'audio'。
+  ///
+  /// 与 [connected] 的关系：[connected] 仍然表示「**发射来源**的链路是否可用」，
+  /// 它的值由 [_refreshConnected] 从本表推导 —— 这样老代码（连接卡片、
+  /// 状态栏、通知）无需分辨多选，行为也不变。
+  final Map<String, bool> _linkUp = {};
+
+  // ─── 网关（iGate）───
+  /// 是否启用网关（把射频收到的报文送上 APRS-IS）
+  bool igateEnabled = false;
+
+  /// 双向网关：额外把 APRS-IS 上发往「刚在射频上听到过」的台站的消息
+  /// 送到射频。**会真实发射**，所以默认关闭，需用户显式打开。
+  bool igateTwoWay = false;
+
+  /// 网关已转递到 APRS-IS 的报文数
+  int igateGated = 0;
+
+  /// 网关已转递到射频的报文数
+  int igateToRf = 0;
+
+  /// 因去重被丢弃的重复报文数（同一帧经多路径到达）
+  int igateDupDropped = 0;
+
+  final GateDedupe _igateDedupe = GateDedupe();
+
+  /// 射频上近期听到过的台站（IS→RF 消息转递的依据）
+  final HeardList _heard = HeardList();
 
   /// TNC 链路（KISS 参数、绑定设备、收发统计）
   final TncLink tnc = TncLink();
@@ -680,11 +722,40 @@ class AppState extends ChangeNotifier {
   /// 音频链路（AFSK 1200 声卡 TNC：采样/调制解调/收发统计）
   final AudioLink audio = AudioLink();
 
-  /// 是否使用 TNC（射频）作为数据来源
+  /// 发射是否走 TNC（射频）
   bool get usingTnc => dataSource == 'tnc';
 
-  /// 是否使用音频（声卡 TNC）作为数据来源
+  /// 发射是否走音频（声卡 TNC）
   bool get usingAudio => dataSource == 'audio';
+
+  /// 各来源是否**已启用**（多选）
+  bool get aprsIsOn => enabledSources.contains(srcAprsIs);
+  bool get tncOn => enabledSources.contains(srcTnc);
+  bool get audioOn => enabledSources.contains(srcAudio);
+
+  /// 是否有多条链路在同时工作（此时界面需要区分「发射来源」）
+  bool get multiSource => enabledSources.length > 1;
+
+  /// 某条链路的连通状态
+  bool isUp(String src) => _linkUp[src] == true;
+
+  /// 是否有任意一条链路可用
+  bool get anyLinkUp => enabledSources.any(isUp);
+
+  /// 已启用且连上的射频来源（优先发射来源，其次 TNC，最后音频）
+  String? get activeRfSource {
+    if (usingRf && isUp(dataSource)) return dataSource;
+    if (tncOn && isUp(srcTnc)) return srcTnc;
+    if (audioOn && isUp(srcAudio)) return srcAudio;
+    return null;
+  }
+
+  /// 网关是否具备工作条件：既要有射频来源，又要有 APRS-IS
+  bool get igateReady => tncOn || audioOn;
+
+  /// 按来源取射频中继路径
+  String rfPathOf(String src) =>
+      src == srcAudio ? audio.config.path : tnc.config.path;
 
   /// 是否为「射频频段」来源（TNC / 音频）。
   ///
@@ -695,7 +766,7 @@ class AppState extends ChangeNotifier {
   bool get usingRf => usingTnc || usingAudio;
 
   /// 当前射频来源的中继路径配置
-  String get _rfPath => usingAudio ? audio.config.path : tnc.config.path;
+  String get _rfPath => rfPathOf(dataSource);
 
   /// 数据来源的中文名（日志用；界面文案一律走 l10n）
   String _sourceName(String s) => s == srcTnc
@@ -726,27 +797,93 @@ class AppState extends ChangeNotifier {
     return cleaned.isEmpty ? 'APALOC' : 'APALOC,$cleaned';
   }
 
-  /// 切换数据来源。切换会断开当前链路 —— 两个来源不能同时占用
-  /// 发送通路（同一个 myFullCall 从两条网络发出去会造成重复报文）。
-  Future<void> setDataSource(String src) async {
-    final next = src == srcTnc
-        ? srcTnc
-        : (src == srcAudio ? srcAudio : srcAprsIs);
-    if (next == dataSource) return;
-    final wasConnected = connected;
-    dataSource = next;
-    connected = false;
-    _userDisconnected = false;
-    _reconnectTimer?.cancel();
-    aprs.disconnect();
-    await tnc.disconnect(manual: false);
-    await audio.disconnect(manual: false);
-    setConnStatus(ConnPhase.manual);
-    _log(LogLevel.info, '连接', '数据来源切换为 ${_sourceName(next)}');
+  /// 启用/停用某条链路（多选）。
+  ///
+  /// 不能把最后一个来源关掉 —— 那样应用会变成「什么都不收」，
+  /// 而界面上又没有任何东西提示，比报错更难排查。
+  Future<void> toggleSource(String src, bool on) async {
+    final s0 = _normalizeSrc(src);
+    if (on) {
+      if (enabledSources.contains(s0)) return;
+      enabledSources.add(s0);
+    } else {
+      if (!enabledSources.contains(s0)) return;
+      if (enabledSources.length <= 1) {
+        _log(LogLevel.warn, '连接', '至少要保留一个数据来源');
+        return;
+      }
+      enabledSources.remove(s0);
+      // 关掉的正好是发射来源 → 换一个还在用的
+      if (dataSource == s0) dataSource = enabledSources.first;
+    }
+    _reconcileSources();
     persist();
     _notify();
     _updateNotification();
-    if (wasConnected) await _connect();
+  }
+
+  /// 指定**发射**来源（必须已启用）
+  void setTxSource(String src) {
+    final s0 = _normalizeSrc(src);
+    if (!enabledSources.contains(s0) || dataSource == s0) return;
+    dataSource = s0;
+    _log(LogLevel.info, '连接', '发射来源切换为 ${_sourceName(s0)}');
+    persist();
+    _refreshConnected();
+    _notify();
+    _updateNotification();
+  }
+
+  String _normalizeSrc(String src) => src == srcTnc
+      ? srcTnc
+      : (src == srcAudio ? srcAudio : srcAprsIs);
+
+  /// 让「实际链路」与「已启用集合」对齐：新启用的连上，取消启用的断开。
+  ///
+  /// 只在「本来就在工作」时才顺手连上新勾选的来源（[wasActive]）：
+  ///   * 用户已经连上在收报文时勾一条新链路 → 立刻连上，符合直觉；
+  ///   * 用户还没点连接（或刚手动断开）时勾选 → 只做准备、不偷偷发起连接。
+  ///     这一点很重要：否则「勾一下」会变成一次真实的网络/蓝牙操作，
+  ///     既意外（用户只是想改配置），也让人无法先配好再连。
+  Future<void> _reconcileSources() async {
+    final wasActive = anyLinkUp || _connectingAll;
+    // 断掉不再需要的
+    if (!aprsIsOn && isUp(srcAprsIs)) {
+      aprs.disconnect();
+      _setLinkUp(srcAprsIs, false);
+    }
+    if (!tncOn && isUp(srcTnc)) await tnc.disconnect(manual: false);
+    if (!audioOn && isUp(srcAudio)) await audio.disconnect(manual: false);
+    _setLinkUp(srcTnc, tnc.connected);
+    _setLinkUp(srcAudio, audio.connected);
+    // 连上新启用的（仅当本来就在工作）
+    if (wasActive && !_userDisconnected) await _connect();
+  }
+
+  /// 由各链路状态推导「发射来源是否可用」。
+  ///
+  /// 统一从这里推导，而不是让各条连接逻辑各自去写 `connected = true/false`
+  /// —— 多选之后那样写必然出现「IS 已断但界面显示已连接」这类错乱。
+  void _refreshConnected() {
+    connected = isUp(dataSource);
+  }
+
+  /// 仅测试用：直接设置某条链路的连通状态。
+  ///
+  /// 生产代码不要用它 —— 正常路径是各条链路的连接逻辑调用 [_setLinkUp]。
+  @visibleForTesting
+  void debugSetLinkUp(String src, bool up) => _setLinkUp(src, up);
+
+  void _setLinkUp(String src, bool up) {
+    _linkUp[src] = up;
+    _refreshConnected();
+  }
+
+  /// 任一已启用来源掉线就安排重连（不是只看发射来源）
+  void _scheduleReconnectIfNeeded() {
+    if (_userDisconnected) return;
+    if (enabledSources.every(isUp)) return;
+    _scheduleReconnect();
   }
 
   // 坐标显示：'wgs84' 标准 / 'gcj' 高德火星坐标
@@ -1149,12 +1286,30 @@ class AppState extends ChangeNotifier {
       aprs.port = p.getInt('port') ?? aprs.port;
       aprs.passcode = p.getString('passcode') ?? aprs.passcode;
       dataSource = p.getString('dataSource') ?? dataSource;
-      // 容错：非法/旧值一律回落 APRS-IS，避免三处来源判断失配
+      // 容错：非法/旧值一律回落 APRS-IS，避免多来源判断失配
       if (dataSource != srcAprsIs &&
           dataSource != srcTnc &&
           dataSource != srcAudio) {
         dataSource = srcAprsIs;
       }
+      // 多选来源：旧版本只存了单个 dataSource，这里做一次迁移
+      // （把旧值当成唯一启用项），避免升级后「什么都没启用」。
+      final savedSrcs = p.getStringList('enabledSources');
+      enabledSources.clear();
+      if (savedSrcs != null && savedSrcs.isNotEmpty) {
+        for (final v in savedSrcs) {
+          final n = _normalizeSrc(v);
+          enabledSources.add(n);
+        }
+      } else {
+        enabledSources.add(dataSource);
+      }
+      // 发射来源必须落在已启用集合里，否则启动后永远连不上
+      if (!enabledSources.contains(dataSource)) {
+        dataSource = enabledSources.first;
+      }
+      igateEnabled = p.getBool('igateEnabled') ?? igateEnabled;
+      igateTwoWay = p.getBool('igateTwoWay') ?? igateTwoWay;
       await tnc.load();
       await audio.load();
       final savedLat = p.getDouble('myLat');
@@ -1276,6 +1431,9 @@ class AppState extends ChangeNotifier {
           p.setInt('port', aprs.port);
           p.setString('passcode', aprs.passcode);
           p.setString('dataSource', dataSource);
+          p.setStringList('enabledSources', enabledSources.toList());
+          p.setBool('igateEnabled', igateEnabled);
+          p.setBool('igateTwoWay', igateTwoWay);
           if (myHasFix && myLat != null && myLng != null) {
             p.setDouble('myLat', myLat!);
             p.setDouble('myLng', myLng!);
@@ -1343,10 +1501,10 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       toggleConnect();
     };
-    aprs.onLine = _onAprsLine;
+    aprs.onLine = (l) => _onAprsLine(l, rf: false);
     aprs.onDisconnected = () {
       if (_disposed) return;
-      connected = false;
+      _setLinkUp(srcAprsIs, false);
       final manual = _userDisconnected;
       setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostServer,
           seconds: 8);
@@ -1388,7 +1546,10 @@ class AppState extends ChangeNotifier {
       // TNC（射频）模式下**不发保活帧**：射频频段是全共享资源，
       // 每 15 秒播一次客户端版本号纯属占用信道（且与「信标」语义不同，
       // 会被其他台站当成无意义报文），故仅在 APRS-IS 下生效。
-      if (usingRf) return;
+      // 判据是「APRS-IS 是否启用」而不是「发射来源是否射频」：
+      // 多选模式下可能是「APRS-IS + TNC」且发射走 TNC，此时 IS 链接
+      // 仍然需要保活帧，否则会被服务器踢掉（网关也就跟着断了）。
+      if (!aprsIsOn) return;
       if (!connected || _userDisconnected) return;
       if (DateTime.now().difference(_lastTx).inSeconds < 25) return;
       // 保活：发送身份/在线状态帧。tocall=APALOC（本应用官方注册标识），
@@ -1502,7 +1663,9 @@ class AppState extends ChangeNotifier {
     final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
     _reconnectAttempt++;
     _reconnectTimer = Timer(Duration(seconds: backoff), () {
-      if (_disposed || connected || _userDisconnected) return;
+      if (_disposed || _userDisconnected) return;
+      // 全部连上才算不需要重连（多选模式下只连上一半也要继续补）
+      if (enabledSources.every(isUp)) return;
       _connect();
     });
   }
@@ -1513,10 +1676,11 @@ class AppState extends ChangeNotifier {
   /// 解析路径。这样台站上图、消息收发、过滤、成就等逻辑无需为 TNC 再写一套，
   /// 也不会出现两个来源行为不一致的分叉。
   void _wireTnc() {
-    tnc.onLine = _onAprsLine;
+    tnc.onLine = (l) => _onAprsLine(l, rf: true);
     tnc.onClosed = () {
-      if (_disposed || !usingTnc) return;
-      connected = false;
+      if (_disposed) return;
+      _setLinkUp(srcTnc, false);
+      if (!usingTnc && !multiSource) return;
       final manual = _userDisconnected;
       setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostTnc,
           seconds: 8);
@@ -1525,6 +1689,21 @@ class AppState extends ChangeNotifier {
         '连接',
         manual ? '已手动断开 TNC' : 'TNC 链路断开，稍后自动重连',
       );
+      // 诊断：链路是不是**刚发射完就断**。射频频段上这个相关性很关键 ——
+      // 要么是模块在半双工切换时掉线（硬件/供电），要么是写失败后
+      // socket 被关闭（此时 lastTxError 会写明原因）。把证据落到日志里，
+      // 就不用靠猜「有概率」到底发生在哪一步。
+      final ack = tnc.lastTxAckAt;
+      if (!manual && ack != null) {
+        final gap = DateTime.now().difference(ack);
+        if (gap.inSeconds <= 5) {
+          _log(LogLevel.warn, '连接',
+              '链路在发射后 ${gap.inMilliseconds}ms 断开'
+              '（累计发 ${tnc.txFrames} 帧 / 确认写出 ${tnc.txAckedBytes} 字节'
+              '${tnc.txErrors > 0 ? ' / 写失败 ${tnc.txErrors} 次' : ''}'
+              '${tnc.lastTxError.isEmpty ? '' : ' / 最后错误：${tnc.lastTxError}'}）');
+        }
+      }
       _notify();
       _updateNotification();
       if (!_userDisconnected && tnc.config.autoReconnect) _scheduleReconnect();
@@ -1537,15 +1716,130 @@ class AppState extends ChangeNotifier {
     };
   }
 
+  // ─── 网关（iGate）───
+
+  /// RF → IS：把射频上收到的报文送上 APRS-IS。
+  ///
+  /// 判据与改写都在 [Igate] 里（纯函数、有测试），这里只负责
+  /// 「取条件 → 去重 → 发送 → 计账」。**去重是必须的**：同一帧会经不同
+  /// 中继路径多次到达，不去重会让互联网上出现多条一模一样的报文。
+  void _gateRfToIs(String line) {
+    if (!igateEnabled || !isUp(srcAprsIs)) return;
+    final d = Igate.toIs(tnc2: line, myFullCall: myFullCall);
+    if (!d.ok) {
+      // 环路相关的拒绝要留痕：如果日志里频繁出现 from-is / has-q-construct，
+      // 说明有人在射频上重放互联网报文，值得用户知道
+      if (d.reason == 'from-is' || d.reason == 'has-q-construct') {
+        if (igateBlocked++ % 20 == 1) {
+          _log(LogLevel.debug, '网关', '拒绝转递（${d.reason}）：${_trunc(line)}');
+        }
+      }
+      return;
+    }
+    if (!_igateDedupe.accept(Igate.dedupeKey(line),
+        window: Igate.dedupeWindow)) {
+      igateDupDropped++;
+      return;
+    }
+    final out = Igate.toIsLine(
+      tnc2: line,
+      myFullCall: myFullCall,
+      twoWay: igateTwoWay,
+    );
+    if (out == null) return;
+    aprs.send(out);
+    igateGated++;
+    _lastTx = DateTime.now();
+    if (_packetsGatedLog++ % 10 == 1) {
+      _log(LogLevel.info, '网关', '已转递 $igateGated 条 → APRS-IS');
+    }
+  }
+
+  /// 累计被拒的 RF→IS 转递数（含环路拒收），仅用于日志节流与诊断
+  int igateBlocked = 0;
+  int _packetsGatedLog = 0;
+
+  /// IS → RF：把 APRS-IS 上发往「刚在射频上听到过」的台站的消息送到射频。
+  ///
+  /// **会真实发射**，所以需要 [igateTwoWay] 显式打开。只转点对点消息
+  /// （位置/天气等广播报文转了只会占满信道，判据见 [Igate.toRf]）。
+  void _gateIsToRf(String line) {
+    if (!igateEnabled || !igateTwoWay) return;
+    final rfSrc = activeRfSource;
+    if (rfSrc == null) return;
+    final d = Igate.toRf(
+      tnc2: line,
+      heardOnRf: _heard.active(),
+      myFullCall: myFullCall,
+      allowMessages: true,
+    );
+    if (!d.ok) return;
+    final out = Igate.toRfLine(tnc2: line, rfPath: rfPathOf(rfSrc));
+    if (out == null) return;
+    _sendVia(rfSrc, out);
+    igateToRf++;
+    _log(LogLevel.info, '网关', '已转递 $igateToRf 条 → 射频（${
+        rfSrc == srcTnc ? 'TNC' : '音频'}）');
+  }
+
+  /// 记录射频上听到的台站（IS→RF 转递的依据）
+  void _noteHeard(String line) {
+    final gt = line.indexOf('>');
+    if (gt <= 0) return;
+    _heard.heard(line.substring(0, gt).trim());
+  }
+
+  /// 开关网关
+  void setIgateEnabled(bool v) {
+    igateEnabled = v;
+    if (!v) igateTwoWay = false; // 网关关了就不该还留着「往射频转」的开关
+    if (v) {
+      if (!igateReady) {
+        _log(LogLevel.warn, '网关',
+            '未启用射频来源（TNC / 音频），网关没有可转递的射频链路');
+      } else if (!aprsIsOn) {
+        _log(LogLevel.warn, '网关',
+            '未启用 APRS-IS，网关没有可转递的目标网络');
+      }
+      _igateDedupe.clear();
+      _heard.clear();
+    }
+    _log(LogLevel.info, '网关', v ? '已启用网关' : '已停用网关');
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 开关双向网关（IS→RF，会真实发射）
+  void setIgateTwoWay(bool v) {
+    igateTwoWay = v;
+    if (v && !igateEnabled) igateEnabled = true;
+    _log(LogLevel.info, '网关',
+        v ? '已启用双向网关（会向射频转递消息）' : '已关闭双向网关（仅 RF→IS）');
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 清空网关统计
+  void resetIgateStats() {
+    igateGated = 0;
+    igateToRf = 0;
+    igateDupDropped = 0;
+    _igateDedupe.clear();
+    _notify();
+  }
+
   /// 把音频链路接入既有报文管线（与 [_wireTnc] 同一套做法）。
   ///
   /// 关键点同 TNC：音频解出的报文直接交给 [_onAprsLine]，三个数据来源
   /// 共用同一条解析路径，因此不会出现「音频模式下台站不上图」这类分叉。
   void _wireAudio() {
-    audio.onLine = _onAprsLine;
+    audio.onLine = (l) => _onAprsLine(l, rf: true);
     audio.onClosed = () {
-      if (_disposed || !usingAudio) return;
-      connected = false;
+      if (_disposed) return;
+      _setLinkUp(srcAudio, false);
+      if (!usingAudio && !multiSource) return;
       final manual = _userDisconnected;
       setConnStatus(manual ? ConnPhase.manual : ConnPhase.linkLostAudio,
           seconds: 8);
@@ -1600,9 +1894,30 @@ class AppState extends ChangeNotifier {
       beaconEnabled &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
+  /// 连接**所有已启用**来源（多选）。
+  ///
+  /// 顺序 await 而不是并发：蓝牙与音频都会占用有限的系统资源，
+  /// 并发发起时先成功的那条容易被后一条的初始化打断；
+  /// 顺序连接虽然慢一点，但每条的成败都能单独判定与重试。
   Future<void> _connect() async {
-    if (usingTnc) return _connectTnc();
-    if (usingAudio) return _connectAudio();
+    // 重入保护：重连定时器、手动点连接、切来源可能在同一瞬间发起，
+    // 两次连接会互相拆掉对方刚建好的链路（表现为「刚连上就断」）。
+    if (_connectingAll) return;
+    _connectingAll = true;
+    try {
+      if (aprsIsOn) await _connectAprsIs();
+      if (tncOn) await _connectTnc();
+      if (audioOn) await _connectAudio();
+    } finally {
+      _connectingAll = false;
+    }
+  }
+
+  bool _connectingAll = false;
+
+  /// APRS-IS 连接（原来的 `_connect` 主体）
+  Future<void> _connectAprsIs() async {
+    if (connecting) return;
     connecting = true;
     setConnStatus(ConnPhase.connectingServer,
         arg: '${aprs.server}:${aprs.port}');
@@ -1613,8 +1928,8 @@ class AppState extends ChangeNotifier {
     aprs.filter = filterString;
     final ok = await aprs.connect();
     connecting = false;
+    _setLinkUp(srcAprsIs, ok);
     if (ok) {
-      connected = true;
       _userDisconnected = false;
       _reconnectAttempt = 0; // 连接成功，重置重试计数
       passcodeInvalid = false; // 连接成功后重置，等待服务器验证
@@ -1634,7 +1949,6 @@ class AppState extends ChangeNotifier {
         });
       }
     } else {
-      connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
       setConnStatus(ConnPhase.retryServer, seconds: backoff);
       _log(LogLevel.error, '连接', '连接失败，${backoff} 秒后自动重试');
@@ -1642,7 +1956,7 @@ class AppState extends ChangeNotifier {
     _notify();
     _updateNotification();
     // 失败继续自动重连
-    if (!connected && !_userDisconnected) _scheduleReconnect();
+    _scheduleReconnectIfNeeded();
   }
 
   /// TNC（射频）连接。与 APRS-IS 的关键差异：
@@ -1659,8 +1973,8 @@ class AppState extends ChangeNotifier {
     _updateNotification();
     final ok = await tnc.connect();
     connecting = false;
+    _setLinkUp(srcTnc, ok);
     if (ok) {
-      connected = true;
       _userDisconnected = false;
       _reconnectAttempt = 0;
       passcodeInvalid = false;
@@ -1673,7 +1987,6 @@ class AppState extends ChangeNotifier {
             'TNC 模式下射频信标开关未打开，不会自动发射位置（可在设备页开启）');
       }
     } else {
-      connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
       setConnStatus(ConnPhase.retryTnc,
           arg: tnc.lastError, seconds: backoff);
@@ -1682,7 +1995,7 @@ class AppState extends ChangeNotifier {
     }
     _notify();
     _updateNotification();
-    if (!connected && !_userDisconnected) _scheduleReconnect();
+    _scheduleReconnectIfNeeded();
   }
 
   /// 音频（声卡 TNC）连接。与 TNC 的差异：没有「绑定设备」，连上即开始采集；
@@ -1695,8 +2008,8 @@ class AppState extends ChangeNotifier {
     _updateNotification();
     final ok = await audio.connect();
     connecting = false;
+    _setLinkUp(srcAudio, ok);
     if (ok) {
-      connected = true;
       _userDisconnected = false;
       _reconnectAttempt = 0;
       passcodeInvalid = false;
@@ -1711,7 +2024,6 @@ class AppState extends ChangeNotifier {
             '音频模式下射频信标开关未打开，不会自动发射位置（可在音频页开启）');
       }
     } else {
-      connected = false;
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
       setConnStatus(ConnPhase.retryAudio,
           arg: audio.lastError, seconds: backoff);
@@ -1720,22 +2032,26 @@ class AppState extends ChangeNotifier {
     }
     _notify();
     _updateNotification();
-    if (!connected && !_userDisconnected) _scheduleReconnect();
+    _scheduleReconnectIfNeeded();
   }
 
   /// 统一发送入口：按当前数据来源路由到 APRS-IS / TNC / 音频。
   ///
   /// 所有发报路径都必须经过它 —— 否则 TNC 模式下会出现
   /// 「界面上报成功、实际报文走 APRS-IS 发出」这类静默错误。
-  void _sendRaw(String raw) {
-    if (usingTnc) {
+  void _sendRaw(String raw) => _sendVia(dataSource, raw);
+
+  /// 按指定来源发送（网关向射频转递时需要指定，而不是走「发射来源」——
+  /// 否则把消息转给射频时会错误地从 APRS-IS 发出去，等于没转）
+  void _sendVia(String src, String raw) {
+    if (src == srcTnc) {
       final err = tnc.sendTnc2(raw);
       if (err != null) {
         _log(LogLevel.warn, 'TNC', '发送失败（$err）：${_trunc(raw)}');
       }
       return;
     }
-    if (usingAudio) {
+    if (src == srcAudio) {
       // 音频发射是异步的（先 CSMA 再播放整段音频），这里只做「能否接受」
       // 的同步校验；真正的失败由 AudioLink 记日志并通过 onStateChanged 通知
       final err = audio.sendTnc2(raw);
@@ -2105,32 +2421,27 @@ class AppState extends ChangeNotifier {
     _userDisconnected = false;
     _reconnectTimer?.cancel();
     _lastFilter = ''; // 重置，确保下次连接后更新
-    if (usingAudio) {
+    // 多选：逐条重启，互不影响 —— 只重启「发射来源」会让另一条链路
+    // 停在坏状态（用户看到「重连了但还是收不到」）
+    if (audioOn) {
       // 音频：重开采集并重建解调器（采样率可能刚改过）
-      connected = false;
-      _notify();
-      _updateNotification();
       await audio.restart();
-      if (connected) {
-        _userDisconnected = false;
+      _setLinkUp(srcAudio, audio.connected);
+      if (audio.connected) {
         setConnStatus(ConnPhase.audioConnected,
             arg: '${audio.config.afsk.sampleRate}Hz');
       }
-      _notify();
-      _updateNotification();
-      return;
     }
-    if (usingTnc) {
+    if (tncOn) {
       // TNC：重启链路（断开重连并重下发 KISS 参数）而不是只重开套接字
-      connected = false;
-      _notify();
-      _updateNotification();
       await tnc.restart();
-      if (connected) {
-        _userDisconnected = false;
+      _setLinkUp(srcTnc, tnc.connected);
+      if (tnc.connected) {
         setConnStatus(ConnPhase.tncConnected,
             arg: tnc.device?.label ?? '');
       }
+    }
+    if (!aprsIsOn) {
       _notify();
       _updateNotification();
       return;
@@ -2143,18 +2454,17 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> toggleConnect() async {
-    if (connected) {
+    // 判据用 anyLinkUp：多选模式下「发射来源断了但别的还连着」时，
+    // 用户点这个按钮的意图仍然是「全部断开」，而不是再连一次。
+    if (anyLinkUp) {
       _userDisconnected = true;
       _reconnectAttempt = 0; // 手动断开，重置重试计数
       _reconnectTimer?.cancel();
-      if (usingTnc) {
-        await tnc.disconnect();
-      } else if (usingAudio) {
-        await audio.disconnect();
-      } else {
-        aprs.disconnect();
-      }
-      connected = false;
+      if (aprsIsOn) aprs.disconnect();
+      if (tncOn || isUp(srcTnc)) await tnc.disconnect();
+      if (audioOn || isUp(srcAudio)) await audio.disconnect();
+      _linkUp.clear();
+      _refreshConnected();
       setConnStatus(ConnPhase.manual);
       _notify();
       _updateNotification();
@@ -2164,7 +2474,14 @@ class AppState extends ChangeNotifier {
     await _connect();
   }
 
-  void _onAprsLine(String line) {
+  void _onAprsLine(String line, {required bool rf}) {
+    // 网关转递必须在**解析之前**做：无论这条报文能否解析成台站/消息，
+    // 只要它该被转递就得转递（很多报文类型本应用并不解析，但网关该转发）。
+    if (rf) {
+      _gateRfToIs(line);
+    } else {
+      _gateIsToRf(line);
+    }
     // 简单解析收到的 APRS 帧
     try {
       if (line.startsWith('#')) {
@@ -2195,6 +2512,9 @@ class AppState extends ChangeNotifier {
       if (sep < 0 || bodySep < 0) return;
       final src = line.substring(0, sep).trim();
       final body = line.substring(bodySep + 1);
+      // 射频上听到的台站记入「听到过」列表 —— 双向网关据此判断
+      // 一条互联网消息值不值得占用射频时隙
+      if (rf) _noteHeard(line);
       // 提取路径（src>dest,digi1,digi2:body），识别多跳转发链路
       String path = '';
       String toCall = ''; // 目的呼号（路径首段，APxxxx），设备识别依据

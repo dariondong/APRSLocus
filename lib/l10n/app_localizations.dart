@@ -2115,6 +2115,96 @@ abstract class AppLocalizations {
   /// **'翻译'**
   String get codeContributionTranslation;
 
+  /// No description provided for @dataSourceTxHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'可以同时勾选多条链路一起收报文，但**发射只有一条**（右侧圆点为发射来源）——同一个呼号从两条链路发出去会造成重复报文。'**
+  String get dataSourceTxHint;
+
+  /// No description provided for @dataSourceTxBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射'**
+  String get dataSourceTxBadge;
+
+  /// No description provided for @dataSourceIgateHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'想当网关（把射频收到的报文转到互联网）就同时勾选 APRS-IS 与 TNC/音频，然后在下面打开「网关」。'**
+  String get dataSourceIgateHint;
+
+  /// No description provided for @igateTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'网关（iGate）'**
+  String get igateTitle;
+
+  /// No description provided for @igateSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'把射频收到的报文送上 APRS-IS'**
+  String get igateSubtitle;
+
+  /// No description provided for @igateEnable.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用网关'**
+  String get igateEnable;
+
+  /// No description provided for @igateHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频上收到的报文会被送上 APRS-IS（自动加上 qAr/qAR 与你的呼号标识来路）。需要同时启用 APRS-IS 和一个射频来源（TNC / 音频）。'**
+  String get igateHint;
+
+  /// No description provided for @igateNeedRf.
+  ///
+  /// In zh, this message translates to:
+  /// **'还差一个射频来源：请在上面的「数据来源」里勾选 TNC 或音频，否则网关没有可转递的射频链路。'**
+  String get igateNeedRf;
+
+  /// No description provided for @igateNeedIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没启用 APRS-IS：请在上面勾选 APRS-IS，否则网关没有可转递的目标网络。'**
+  String get igateNeedIs;
+
+  /// No description provided for @igateTwoWay.
+  ///
+  /// In zh, this message translates to:
+  /// **'双向网关（向射频转递消息）'**
+  String get igateTwoWay;
+
+  /// No description provided for @igateTwoWayHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开后会**在射频上真实发射**：只转「发给最近在射频上听到过的台站」的点对点消息（位置/天气等广播不转，避免占满信道）。关闭时只做 RF→IS。'**
+  String get igateTwoWayHint;
+
+  /// No description provided for @igateStatToIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'已转递 → APRS-IS（条）'**
+  String get igateStatToIs;
+
+  /// No description provided for @igateStatToRf.
+  ///
+  /// In zh, this message translates to:
+  /// **'已转递 → 射频（条）'**
+  String get igateStatToRf;
+
+  /// No description provided for @igateStatDup.
+  ///
+  /// In zh, this message translates to:
+  /// **'重复丢弃（条）'**
+  String get igateStatDup;
+
+  /// No description provided for @igateResetStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空统计'**
+  String get igateResetStats;
+
   /// No description provided for @grpSysJoined.
   ///
   /// In zh, this message translates to:

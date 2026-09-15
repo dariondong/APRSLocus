@@ -1,5 +1,75 @@
 # 更新日志
 
+## [1.6.107] - 2026-09-15
+
+### 🌐 新增网关（iGate）+ 数据来源改为**多选** / New: gateway (iGate) + multi-select data sources
+
+**数据来源可以同时开几条了。** 这是一个刻意的语义分工，写在代码注释里以免日后
+被改坏：
+
+- `enabledSources` = **同时连接哪几条链路**（多选）。几条链路一起收报文，
+  收到的都进同一条解析管线。
+- `dataSource` = **发射走哪一条**（仍然单选）。所有与发射有关的判断
+  （txPath / 67 字符限长 / 群聊禁用 / 射频信标 / 保活帧）都还用它，
+  因此这部分逻辑在多选改造中一行未改。
+- 为什么发射不能也多选：同一个呼号从两条链路发出去会造成重复报文
+  （射频上还白占一次时隙），ack 也会回两次。
+- 界面上每条来源是一行复选框 + **实时连通状态点**，右侧圆点指定「发射来源」。
+  最后一条来源不允许取消勾选（全关掉应用就什么都不收，而界面不会有任何提示）。
+- 单选的旧配置会自动迁移（把旧值当成唯一启用项），升级后不会「什么都没启用」。
+
+**网关**（把射频收到的报文送上 APRS-IS，需要同时启用 APRS-IS 与一个射频来源）：
+
+- **RF→IS**：自动加上 `qAr`（单向）/ `qAR`（双向）与你的呼号标识来路，
+  去掉中继上的 `*`（那是本机听到的本地观察，不属于报文本身）。
+- **防环**（这一段最容易出错、也最致命）：含 `TCPIP*`/`TCPXX*` 的报文说明
+  它本来就来自互联网；含 **q 构造**的说明已被别的网关注入过 —— 两种都绝不
+  再送回 IS，否则同一条报文会在互联网上无限增殖。
+- **去重**：同一帧会经不同中继路径多次到达，30 秒窗口内只注入一次，
+  否则 IS 上会出现多条一模一样的报文（看起来像网关在刷屏）。
+- **IS→RF**（可选，默认关，**会真实发射**）：只转「发给最近在射频上听到过的
+  台站」的点对点消息；位置/天气这类广播不转（转了只会占满信道，这也是多数
+  网关被投诉的原因）。用到射频时按配置剥掉所有互联网专有路径项再接上本机中继。
+- 网关逻辑全部是**纯函数**（`lib/igate.dart`），26 项测试覆盖环路防护、
+  q 构造、去重窗口、「听到过」列表过期等。写测试时当场抓出两个真 bug：
+  ① 只丢 q 构造本身、**漏掉了它后面的网关呼号**（会被当成中继留在报文里，
+  凭空多出一个不存在的 digipeater）；② `A>:x` 这种没有目的呼号的畸形报文
+  会被放行灌进 IS。
+
+The data sources are now **multi-select**. `enabledSources` decides which links are
+connected at once (all their packets feed one pipeline); `dataSource` still decides
+which one **transmits**, so every transmit-related rule (txPath, the 67-character
+limit, group chat, RF beacon, keepalive) was left untouched. Transmit cannot be
+multi-select because sending one callsign over two links duplicates packets (and
+wastes an RF slot). The gateway relays RF→IS with proper `qAr`/`qAR` tagging,
+**loop protection** (packets carrying `TCPIP*`/`TCPXX*` or a q-construct are never
+sent back to IS), 30-second de-duplication of the same frame arriving via different
+digipeaters, and optional IS→RF message gating limited to stations recently heard
+on RF. All of it lives in pure functions with 26 tests — which immediately caught
+two real bugs: the gateway callsign following a q-construct was being kept as a
+digipeater, and malformed packets with no destination were passed through.
+
+### 🧹 设备页再收拾：默认一屏只看三件事 / Device page tidied further
+
+上一版拆成三页后，概览页仍然平铺了 6 张卡片，其中「自检结果」与「日志」又高又
+不常看，把最常看的「通不通」顶到了需要滚动的位置。现在：
+
+- **默认可见**：① 数据来源（多选 + 发射来源）② 网关 ③ 每条链路的状态行
+  ④ 两个子页入口
+- **折叠**：链路自检、链路日志（点标题展开）
+- 链路状态卡里每条来源一行（名称 · 发射标记 · 地址/设备 · 收帧数），
+  多选时不会混淆是哪条在收
+- 日志按来源**分段显示**（APRS-IS / TNC / 音频各一段并各自可复制），
+  多选时混在一起会把「收不到」的排查彻底变成猜谜
+
+After splitting into three pages, the overview still stacked six cards, and the
+tall-but-rarely-needed self-test and log pushed “is my link up?” below the fold.
+Now only the data source, gateway, per-link status and the two entries are visible
+by default; self-test and logs are collapsible folds. Link status has one row per
+enabled source, and logs are grouped per source (each copyable) so a multi-source
+setup stays debuggable.
+
+
 ## [1.6.106] - 2026-09-14
 
 ### 🔴 真正修好「蓝牙 TNC 只能接收、不能发射」（Android）/ The actual fix for “Bluetooth TNC receives but will not transmit” (Android)

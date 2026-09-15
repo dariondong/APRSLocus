@@ -1045,6 +1045,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeContributionTranslation => 'Translation';
 
   @override
+  String get dataSourceTxHint =>
+      'You can enable several links at once to receive from all of them, but **only one transmits** (the dot on the right). Sending the same callsign over two links would duplicate packets.';
+
+  @override
+  String get dataSourceTxBadge => 'TX';
+
+  @override
+  String get dataSourceIgateHint =>
+      'To run a gateway (relay RF packets to the internet), enable both APRS-IS and TNC/audio, then turn on “Gateway” below.';
+
+  @override
+  String get igateTitle => 'Gateway (iGate)';
+
+  @override
+  String get igateSubtitle => 'Relay packets heard on RF into APRS-IS';
+
+  @override
+  String get igateEnable => 'Enable gateway';
+
+  @override
+  String get igateHint =>
+      'Packets heard on RF are forwarded to APRS-IS, tagged with qAr/qAR and your callsign to mark their origin. Requires both APRS-IS and an RF source (TNC / audio) enabled.';
+
+  @override
+  String get igateNeedRf =>
+      'No RF source yet: tick TNC or audio under “Data source” above, otherwise the gateway has nothing to relay from.';
+
+  @override
+  String get igateNeedIs =>
+      'APRS-IS is not enabled: tick it above, otherwise the gateway has nowhere to relay to.';
+
+  @override
+  String get igateTwoWay => 'Two-way gateway (forward messages to RF)';
+
+  @override
+  String get igateTwoWayHint =>
+      'When on, this **transmits on RF**: only point-to-point messages addressed to a station recently heard on RF are forwarded (broadcasts such as positions/weather are not, to avoid filling the channel). When off, RF→IS only.';
+
+  @override
+  String get igateStatToIs => 'Relayed → APRS-IS';
+
+  @override
+  String get igateStatToRf => 'Relayed → RF';
+
+  @override
+  String get igateStatDup => 'Duplicates dropped';
+
+  @override
+  String get igateResetStats => 'Reset counters';
+
+  @override
   String grpSysJoined(String call) {
     return '$call joined the group';
   }

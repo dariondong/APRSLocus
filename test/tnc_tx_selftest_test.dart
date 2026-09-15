@@ -39,6 +39,9 @@ class _FakeTransport implements TncTransport {
   void Function(String reason)? onTxFailed;
 
   @override
+  void Function(int size)? onTxAck;
+
+  @override
   Future<List<TncDevice>> listDevices() async => const [];
 
   @override
@@ -63,6 +66,9 @@ class _FakeTransport implements TncTransport {
       return;
     }
     written.add(bytes);
+    // 真实链路会在 writer 线程写完后异步回报，这里同样异步，避免测试
+    // 依赖「回调先于 await」这种偶然顺序
+    scheduleMicrotask(() => onTxAck?.call(bytes.length));
   }
 }
 

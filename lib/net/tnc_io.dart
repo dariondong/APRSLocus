@@ -47,6 +47,9 @@ class TncNativeBluetooth implements TncTransport {
   @override
   void Function(String reason)? onTxFailed;
 
+  @override
+  void Function(int size)? onTxAck;
+
   bool _probed = false;
   bool _supported = false;
 
@@ -203,6 +206,9 @@ class TncDesktopSerial implements TncTransport {
   void Function(String reason)? onTxFailed;
 
   @override
+  void Function(int size)? onTxAck;
+
+  @override
   Future<bool> get supported async => !kIsWeb;
 
   @override
@@ -348,6 +354,7 @@ class TncDesktopSerial implements TncTransport {
     }
     try {
       w.writeFrom(bytes);
+      onTxAck?.call(bytes.length);
     } catch (e) {
       // 串口写失败同样要可见（此前被吞掉）
       onStatus?.call('串口写入失败：$e');

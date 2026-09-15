@@ -1035,6 +1035,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String get codeContributionTranslation => '翻訳';
 
   @override
+  String get dataSourceTxHint =>
+      '複数のリンクを同時に有効にして受信できますが、**送信は 1 つだけ**です（右側のドット）。同じコールサインを 2 つのリンクから送ると重複パケットになります。';
+
+  @override
+  String get dataSourceTxBadge => '送信';
+
+  @override
+  String get dataSourceIgateHint =>
+      'ゲートウェイとして使う（RF のパケットをインターネットへ中継する）には、APRS-IS と TNC／オーディオの両方を有効にして、下の「ゲートウェイ」をオンにします。';
+
+  @override
+  String get igateTitle => 'ゲートウェイ（iGate）';
+
+  @override
+  String get igateSubtitle => 'RF で受信したパケットを APRS-IS へ中継';
+
+  @override
+  String get igateEnable => 'ゲートウェイを有効化';
+
+  @override
+  String get igateHint =>
+      'RF で受信したパケットを APRS-IS へ転送します（qAr/qAR とあなたのコールサインで経路を明示）。APRS-IS と RF ソース（TNC／オーディオ）の両方が必要です。';
+
+  @override
+  String get igateNeedRf => 'RF ソースがありません。上の「データソース」で TNC かオーディオを有効にしてください。';
+
+  @override
+  String get igateNeedIs => 'APRS-IS が有効になっていません。上で有効にしてください。';
+
+  @override
+  String get igateTwoWay => '双方向ゲートウェイ（メッセージを RF へ転送）';
+
+  @override
+  String get igateTwoWayHint =>
+      'オンにすると**実際に RF で送信**します。「最近 RF で受信した局」宛のメッセージのみ転送（位置・気象などのブロードキャストは転送しません）。オフのときは RF→IS のみ。';
+
+  @override
+  String get igateStatToIs => '転送済み → APRS-IS';
+
+  @override
+  String get igateStatToRf => '転送済み → RF';
+
+  @override
+  String get igateStatDup => '重複として破棄';
+
+  @override
+  String get igateResetStats => 'カウンタをリセット';
+
+  @override
   String grpSysJoined(String call) {
     return '$call がグループに参加しました';
   }

@@ -1045,6 +1045,56 @@ class AppLocalizationsId extends AppLocalizations {
   String get codeContributionTranslation => 'Terjemahan';
 
   @override
+  String get dataSourceTxHint =>
+      'Beberapa tautan dapat diaktifkan sekaligus untuk menerima, tetapi **hanya satu yang memancar** (titik di kanan). Mengirim tanda panggil sama lewat dua tautan akan menduplikasi paket.';
+
+  @override
+  String get dataSourceTxBadge => 'TX';
+
+  @override
+  String get dataSourceIgateHint =>
+      'Untuk menjadi gateway (meneruskan paket RF ke internet), aktifkan APRS-IS dan TNC/audio, lalu nyalakan \"Gateway\" di bawah.';
+
+  @override
+  String get igateTitle => 'Gateway (iGate)';
+
+  @override
+  String get igateSubtitle => 'Teruskan paket RF ke APRS-IS';
+
+  @override
+  String get igateEnable => 'Aktifkan gateway';
+
+  @override
+  String get igateHint =>
+      'Paket yang diterima di RF diteruskan ke APRS-IS, ditandai qAr/qAR dan tanda panggil Anda. Perlu APRS-IS dan sumber RF (TNC/audio) aktif.';
+
+  @override
+  String get igateNeedRf =>
+      'Belum ada sumber RF: centang TNC atau audio di \"Sumber data\" di atas.';
+
+  @override
+  String get igateNeedIs => 'APRS-IS belum aktif: centang di atas.';
+
+  @override
+  String get igateTwoWay => 'Gateway dua arah (teruskan pesan ke RF)';
+
+  @override
+  String get igateTwoWayHint =>
+      'Bila aktif, ini **memancar di RF**: hanya pesan point-to-point untuk stasiun yang baru terdengar di RF yang diteruskan. Bila mati, hanya RF→IS.';
+
+  @override
+  String get igateStatToIs => 'Diteruskan → APRS-IS';
+
+  @override
+  String get igateStatToRf => 'Diteruskan → RF';
+
+  @override
+  String get igateStatDup => 'Duplikat dibuang';
+
+  @override
+  String get igateResetStats => 'Reset penghitung';
+
+  @override
   String grpSysJoined(String call) {
     return '$call bergabung ke grup';
   }

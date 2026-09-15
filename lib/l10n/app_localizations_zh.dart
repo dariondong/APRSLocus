@@ -1032,6 +1032,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get codeContributionTranslation => '翻译';
 
   @override
+  String get dataSourceTxHint =>
+      '可以同时勾选多条链路一起收报文，但**发射只有一条**（右侧圆点为发射来源）——同一个呼号从两条链路发出去会造成重复报文。';
+
+  @override
+  String get dataSourceTxBadge => '发射';
+
+  @override
+  String get dataSourceIgateHint =>
+      '想当网关（把射频收到的报文转到互联网）就同时勾选 APRS-IS 与 TNC/音频，然后在下面打开「网关」。';
+
+  @override
+  String get igateTitle => '网关（iGate）';
+
+  @override
+  String get igateSubtitle => '把射频收到的报文送上 APRS-IS';
+
+  @override
+  String get igateEnable => '启用网关';
+
+  @override
+  String get igateHint =>
+      '射频上收到的报文会被送上 APRS-IS（自动加上 qAr/qAR 与你的呼号标识来路）。需要同时启用 APRS-IS 和一个射频来源（TNC / 音频）。';
+
+  @override
+  String get igateNeedRf => '还差一个射频来源：请在上面的「数据来源」里勾选 TNC 或音频，否则网关没有可转递的射频链路。';
+
+  @override
+  String get igateNeedIs => '还没启用 APRS-IS：请在上面勾选 APRS-IS，否则网关没有可转递的目标网络。';
+
+  @override
+  String get igateTwoWay => '双向网关（向射频转递消息）';
+
+  @override
+  String get igateTwoWayHint =>
+      '打开后会**在射频上真实发射**：只转「发给最近在射频上听到过的台站」的点对点消息（位置/天气等广播不转，避免占满信道）。关闭时只做 RF→IS。';
+
+  @override
+  String get igateStatToIs => '已转递 → APRS-IS（条）';
+
+  @override
+  String get igateStatToRf => '已转递 → 射频（条）';
+
+  @override
+  String get igateStatDup => '重复丢弃（条）';
+
+  @override
+  String get igateResetStats => '清空统计';
+
+  @override
   String grpSysJoined(String call) {
     return '$call 加入了群聊';
   }
@@ -6173,6 +6222,55 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContributionTranslation => '翻譯';
+
+  @override
+  String get dataSourceTxHint =>
+      '可以同時勾選多條鏈路一起收報文，但**發射只有一條**（右側圓點為發射來源）——同一個呼號從兩條鏈路發出去會造成重複報文。';
+
+  @override
+  String get dataSourceTxBadge => '發射';
+
+  @override
+  String get dataSourceIgateHint =>
+      '想當閘道（把射頻收到的報文轉到網際網路）就同時勾選 APRS-IS 與 TNC/音訊，然後在下面打開「閘道」。';
+
+  @override
+  String get igateTitle => '閘道（iGate）';
+
+  @override
+  String get igateSubtitle => '把射頻收到的報文送上 APRS-IS';
+
+  @override
+  String get igateEnable => '啟用閘道';
+
+  @override
+  String get igateHint =>
+      '射頻上收到的報文會被送上 APRS-IS（自動加上 qAr/qAR 與你的呼號標識來路）。需要同時啟用 APRS-IS 和一個射頻來源（TNC / 音訊）。';
+
+  @override
+  String get igateNeedRf => '還差一個射頻來源：請在上面的「資料來源」裡勾選 TNC 或音訊，否則閘道沒有可轉遞的射頻鏈路。';
+
+  @override
+  String get igateNeedIs => '還沒啟用 APRS-IS：請在上面勾選 APRS-IS，否則閘道沒有可轉遞的目標網路。';
+
+  @override
+  String get igateTwoWay => '雙向閘道（向射頻轉遞訊息）';
+
+  @override
+  String get igateTwoWayHint =>
+      '打開後會**在射頻上真實發射**：只轉「發給最近在射頻上聽到過的台站」的點對點訊息（位置/天氣等廣播不轉，避免佔滿通道）。關閉時只做 RF→IS。';
+
+  @override
+  String get igateStatToIs => '已轉遞 → APRS-IS（條）';
+
+  @override
+  String get igateStatToRf => '已轉遞 → 射頻（條）';
+
+  @override
+  String get igateStatDup => '重複丟棄（條）';
+
+  @override
+  String get igateResetStats => '清空統計';
 
   @override
   String grpSysJoined(String call) {

@@ -1592,24 +1592,28 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            // ⓪ 数据来源：TNC 模式下列表里的服务器/过滤/存储三项都不适用，
-            //    所以先让用户确认来源，再决定下面显示什么 —— 比「灰掉一片
-            //    用户看不懂的输入框」清楚得多。
+            // ⓪ 数据来源：先让用户确认来源，再决定下面显示什么 —— 比
+            //    「灰掉一片用户看不懂的输入框」清楚得多。
             DataSourceCard(state: st),
             const SizedBox(height: 16),
-            if (st.usingTnc)
-              _tncCard()
-            else if (st.usingAudio)
-              _audioCard()
-            else ...[
-              // ① APRS-IS 连接（连接状态 + 服务器参数，原为两张重复卡）
+            // 多选：**每条已启用的来源都要有自己的卡片**，顺序固定为
+            // APRS-IS → TNC → 音频。此前只按「发射来源」显示一张，
+            // 于是「APRS-IS + TNC」时 TNC 的绑定状态/统计完全看不到。
+            if (st.aprsIsOn) ...[
               _connectionCard(),
               const SizedBox(height: 16),
-              // ② 过滤中心：只管「取哪些台站」
               _filterCard(),
               const SizedBox(height: 16),
-              // ③ 存储上限：只管「保留多少数据」（原误放在过滤卡片内）
               _storageCard(),
+              const SizedBox(height: 16),
+            ],
+            if (st.tncOn) ...[
+              _tncCard(),
+              const SizedBox(height: 16),
+            ],
+            if (st.audioOn) ...[
+              _audioCard(),
+              const SizedBox(height: 16),
             ],
             const SizedBox(height: 16),
             // ④ 接收筛选：按国家或地区（客户端本地筛选，两个来源都适用）
@@ -1749,10 +1753,29 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   }
 
   Widget _connBanner() {
-    // 数据来源标签：射频模式下写「APRS-IS」会误导用户以为走的是网络
-    final srcLabel = st.usingTnc
-        ? S.of(context).dataSourceTnc
-        : (st.usingAudio ? S.of(context).dataSourceAudio : 'APRS-IS');
+    // 数据来源标签：多选时把**全部已启用来源**列出来（只写发射来源会
+    // 让用户以为另一条没在工作），并标出发射是哪条。
+    final names = <String>[
+      if (st.aprsIsOn) 'APRS-IS',
+      if (st.tncOn) S.of(context).dataSourceTnc,
+      if (st.audioOn) S.of(context).dataSourceAudio,
+    ];
+    final txIdx = [
+      if (st.aprsIsOn) AppState.srcAprsIs,
+      if (st.tncOn) AppState.srcTnc,
+      if (st.audioOn) AppState.srcAudio,
+    ].indexOf(st.dataSource);
+    final srcLabel = names.isEmpty
+        ? 'APRS-IS'
+        : (names.length == 1
+            ? names.first
+            : names
+                .asMap()
+                .entries
+                .map((e) => e.key == txIdx
+                    ? '${e.value}(${S.of(context).dataSourceTxBadge})'
+                    : e.value)
+                .join(' + '));
     final col = st.connected
         ? C.green
         : st.connecting

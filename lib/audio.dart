@@ -265,6 +265,11 @@ class AudioLink {
   }
 
   Future<void> disconnect({bool manual = true}) async {
+    // 与 TncLink 同理：**先**把 connected 置 false 再停采集。
+    // 原生 `captureClosed` 事件是异步到达的，若那时 connected 仍为 true，
+    // 会被当成「采集被系统中断」→ 上层自动重连（用户点了停止却又自己开）。
+    connected = false;
+    connecting = false;
     await _t.stopCapture();
     await _t.stopPlayback();
     _txQueue.clear();
@@ -278,10 +283,11 @@ class AudioLink {
   }
 
   void _onClosed() {
-    final was = connected;
+    // 已经不在「已连接」状态 → 这是主动停止采集的回声，不是链路丢失
+    if (!connected) return;
     connected = false;
     status = AudioStatus.closed;
-    if (was) _log('音频采集被系统中断');
+    _log('音频采集被系统中断');
     onStateChanged?.call();
     onClosed?.call();
   }
