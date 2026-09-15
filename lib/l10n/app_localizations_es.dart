@@ -2176,6 +2176,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'Solo recepción · este equipo no transmite nada';
 
   @override
+  String get deviceConflictTitle =>
+      'Dos enlaces están vinculados al mismo dispositivo';
+
+  @override
+  String get deviceConflictDesc =>
+      'Cuando TNC y PKWDWPL apuntan al mismo dispositivo, los datos recibidos se reparten entre ambos — el síntoma es «transmite bien pero no recibe». Asigne otro dispositivo a uno de ellos. TNC tiene prioridad: PKWDWPL se negará a conectar.';
+
+  @override
+  String get deviceInUseByTnc =>
+      'En uso por TNC — no se puede vincular de nuevo';
+
+  @override
+  String get deviceInUseByPkwdwpl =>
+      'En uso por PKWDWPL — no se puede vincular de nuevo';
+
+  @override
   String get pkwdwplTip =>
       'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
 

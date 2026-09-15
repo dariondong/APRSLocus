@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.109';
+  static const appVersion = '1.6.110';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -784,6 +784,30 @@ class AppState extends ChangeNotifier {
   /// 报文。界面必须**明确说出来**，否则用户看到「位置未上报」「未连接」
   /// 会以为是坏了。
   bool get readOnlyMode => !enabledSources.any(canTransmit);
+
+  // ─── 设备占用检测（防止两条链路抢同一台设备）───
+  //
+  // 为什么必须有：TNC 与 PKWDWPL 都走 SPP / 串口，**两条链路连同一台设备时
+  // 接收字节流会被瓜分** ——
+  //   * 串口：两个句柄都能打开（共享模式），读到的字节各拿一部分；
+  //   * 蓝牙：第二条 RFCOMM 连接会直接顶掉第一条。
+  // 症状是「一条能发不能收」或两条都收不全，而**发送完全正常**，所以从界面上
+  // 根本看不出原因（用户只会看到「收不到台站了」）。所以宁可在选择与连接时
+  // 就拦住，而不是连上之后让人去猜。
+
+  /// 某设备当前被哪条链路**绑定**（null = 没被绑定）
+  String? deviceBoundBy(String? deviceId) {
+    if (deviceId == null || deviceId.isEmpty) return null;
+    if (tnc.device?.id == deviceId) return srcTnc;
+    if (pkwdwpl.device?.id == deviceId) return srcPkwdwpl;
+    return null;
+  }
+
+  /// TNC 与 PKWDWPL 是否绑定了同一台设备（冲突）
+  bool get tncPkwdwplConflict {
+    final a = tnc.device?.id;
+    return a != null && a.isNotEmpty && a == pkwdwpl.device?.id;
+  }
 
   /// 是否有任意一条链路可用
   bool get anyLinkUp => enabledSources.any(isUp);
@@ -2199,6 +2223,23 @@ class AppState extends ChangeNotifier {
   ///   - 不注册过滤器（过滤是 APRS-IS 服务端能力，射频频段只能全收）；
   ///   - passcode 不适用（RF 不过 APRS-IS 登录）。
   Future<void> _connectTnc() async {
+    // 设备冲突：TNC 是发射链路，**优先级更高**。
+    //
+    // 两条链路连同一台设备会把**接收**字节流瓜分（串口两个句柄各读一部分、
+    // 蓝牙第二条 RFCOMM 顶掉第一条）——症状正是「能发不能收」：发送走得通，
+    // 所以从界面上完全看不出原因。这里主动把 PKWDWPL 让出来，而不是连上去
+    // 之后让用户面对「收不到报文」。
+    if (tncPkwdwplConflict) {
+      _log(
+        LogLevel.warn,
+        '连接',
+        'TNC 与 PKWDWPL 绑定了同一台设备（${tnc.device?.label}）：'
+            '已先断开 PKWDWPL，把设备让给 TNC（两条链路同时连会瓜分接收数据，'
+            '表现为「能发不能收」）。',
+      );
+      await pkwdwpl.disconnect(manual: false);
+      _setLinkUp(srcPkwdwpl, false);
+    }
     connecting = true;
     final name = tnc.device?.label ?? '未绑定设备';
     setConnStatus(ConnPhase.connectingTnc, arg: name);
@@ -2275,6 +2316,22 @@ class AppState extends ChangeNotifier {
   /// 差别是它连上后什么都不用下发 —— 电台自己会持续输出语句，
   /// 我们只需要静静地分帧、校验、解析。
   Future<void> _connectPkwdwpl() async {
+    // 与 TNC 抢同一台设备时拒绝连接：TNC 是发射链路，让它先。
+    // 两条链路同时连会瓜分接收字节流（症状：TNC 能发不能收）。
+    if (tncPkwdwplConflict) {
+      pkwdwpl.lastError = 'device-in-use';
+      _setLinkUp(srcPkwdwpl, false);
+      _log(
+        LogLevel.warn,
+        '连接',
+        'PKWDWPL 与 TNC 绑定了同一台设备（${tnc.device?.label}），已拒绝连接：'
+            '两条链路同时连会互相抢走接收数据（发送正常、收不到报文）。'
+            '请到设备页给 PKWDWPL 换一台设备。',
+      );
+      _notify();
+      _updateNotification();
+      return;
+    }
     connecting = true;
     final name = pkwdwpl.device?.label ?? '未绑定设备';
     setConnStatus(ConnPhase.connectingPkwdwpl, arg: name);

@@ -2086,6 +2086,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pkwdwplReadOnly => '只读接收中 · 本机不会发射任何报文';
 
   @override
+  String get deviceConflictTitle => '两条链路绑定了同一台设备';
+
+  @override
+  String get deviceConflictDesc =>
+      'TNC 与 PKWDWPL 指向同一台设备时，接收到的数据会被两条链路瓜分 —— 表现是「能发不能收」（发送正常、收不到报文）。请给其中一条换一台设备。TNC 优先：PKWDWPL 会拒绝连接。';
+
+  @override
+  String get deviceInUseByTnc => '已被 TNC 使用，不能重复绑定';
+
+  @override
+  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重复绑定';
+
+  @override
   String get pkwdwplTip =>
       '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
 
@@ -7349,6 +7362,19 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get pkwdwplReadOnly => '唯讀接收中 · 本機不會發射任何報文';
+
+  @override
+  String get deviceConflictTitle => '兩條鏈路綁定了同一臺裝置';
+
+  @override
+  String get deviceConflictDesc =>
+      'TNC 與 PKWDWPL 指向同一臺裝置時，接收到的資料會被兩條鏈路瓜分 —— 表現是「能發不能收」（發送正常、收不到報文）。請給其中一條換一臺裝置。TNC 優先：PKWDWPL 會拒絕連線。';
+
+  @override
+  String get deviceInUseByTnc => '已被 TNC 使用，不能重複綁定';
+
+  @override
+  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重複綁定';
 
   @override
   String get pkwdwplTip =>

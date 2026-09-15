@@ -3939,6 +3939,30 @@ abstract class AppLocalizations {
   /// **'只读接收中 · 本机不会发射任何报文'**
   String get pkwdwplReadOnly;
 
+  /// No description provided for @deviceConflictTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'两条链路绑定了同一台设备'**
+  String get deviceConflictTitle;
+
+  /// No description provided for @deviceConflictDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 与 PKWDWPL 指向同一台设备时，接收到的数据会被两条链路瓜分 —— 表现是「能发不能收」（发送正常、收不到报文）。请给其中一条换一台设备。TNC 优先：PKWDWPL 会拒绝连接。'**
+  String get deviceConflictDesc;
+
+  /// No description provided for @deviceInUseByTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'已被 TNC 使用，不能重复绑定'**
+  String get deviceInUseByTnc;
+
+  /// No description provided for @deviceInUseByPkwdwpl.
+  ///
+  /// In zh, this message translates to:
+  /// **'已被 PKWDWPL 使用，不能重复绑定'**
+  String get deviceInUseByPkwdwpl;
+
   /// No description provided for @pkwdwplTip.
   ///
   /// In zh, this message translates to:

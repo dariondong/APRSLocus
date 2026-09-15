@@ -2103,6 +2103,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pkwdwplReadOnly => '受信専用 · 本機は一切送信しません';
 
   @override
+  String get deviceConflictTitle => '2 つのリンクが同じデバイスに割り当てられています';
+
+  @override
+  String get deviceConflictDesc =>
+      'TNC と PKWDWPL が同じデバイスを指すと、受信データが 2 つのリンクで分け合われます（送信はできるのに受信できない状態）。どちらかを別のデバイスに変更してください。TNC が優先され、PKWDWPL は接続を拒否します。';
+
+  @override
+  String get deviceInUseByTnc => 'TNC が使用中 — 重複して割り当てられません';
+
+  @override
+  String get deviceInUseByPkwdwpl => 'PKWDWPL が使用中 — 重複して割り当てられません';
+
+  @override
   String get pkwdwplTip =>
       '無線機のメニューで PC / GPS ポートの出力形式を \"\$PKWDWPL\" に設定してください（通常 4800 8N1）。このリンクは受信専用で、一切送信しません。';
 

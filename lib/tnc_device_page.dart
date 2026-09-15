@@ -252,6 +252,11 @@ class _TncDevicePageState extends State<TncDevicePage> {
       icon: Icons.bluetooth_rounded,
       color: C.indigo,
       children: [
+        // 冲突警告置顶：两条链路指向同一台设备时先把话说清楚，
+        // 否则用户只会看到「TNC 收到了了但收不到」而不知道是自己的配置造成的。
+        if (st.tncPkwdwplConflict)
+          SettingsHint('${s.deviceConflictTitle}：${s.deviceConflictDesc}',
+              color: C.red),
         SettingsRow2(
           s.tncBoundDevice,
           tnc.device?.label ?? s.tncNotBound,
@@ -343,12 +348,19 @@ class _TncDevicePageState extends State<TncDevicePage> {
   }
 
   Widget _deviceTile(TncDevice d) {
+    final s = S.of(context);
     final selected = tnc.device?.id == d.id;
+    // 该设备已被 PKWDWPL 绑定？两条链路连同一台设备会瓜分接收字节流，
+    // 症状是「TNC 能发不能收」。这里禁止重复绑定。
+    final usedByPkwdwpl =
+        !selected && st.deviceBoundBy(d.id) == AppState.srcPkwdwpl;
     return InkWell(
-      onTap: () async {
-        tnc.bind(d);
-        if (mounted) setState(() {});
-      },
+      onTap: usedByPkwdwpl
+          ? null
+          : () async {
+              tnc.bind(d);
+              if (mounted) setState(() {});
+            },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
@@ -359,14 +371,28 @@ class _TncDevicePageState extends State<TncDevicePage> {
           Icon(
             d.isBluetooth ? Icons.bluetooth_rounded : Icons.usb_rounded,
             size: 16,
-            color: selected ? C.indigo : C.grey,
+            color: usedByPkwdwpl
+                ? C.greyLight
+                : (selected ? C.indigo : C.grey),
           ),
           const SizedBox(width: 9),
           Expanded(
-            child: Text(d.label,
-                style: ts(12, w: selected ? FontWeight.w700 : FontWeight.w500),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(d.label,
+                    style: usedByPkwdwpl
+                        ? ts(12, w: FontWeight.w500, c: C.grey)
+                        : ts(12,
+                            w: selected
+                                ? FontWeight.w700
+                                : FontWeight.w500),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                if (usedByPkwdwpl)
+                  Text(s.deviceInUseByPkwdwpl, style: ts(10, c: C.orange)),
+              ],
+            ),
           ),
           if (selected)
             Icon(Icons.check_circle_rounded, size: 16, color: C.indigo),

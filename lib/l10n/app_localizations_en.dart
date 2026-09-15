@@ -2164,6 +2164,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pkwdwplReadOnly => 'Receive-only · this device transmits nothing';
 
   @override
+  String get deviceConflictTitle => 'Two links are bound to the same device';
+
+  @override
+  String get deviceConflictDesc =>
+      'When TNC and PKWDWPL point at the same device, the received data is split between them — the symptom is \"transmits fine but receives nothing\". Give one of them a different device. TNC takes priority: PKWDWPL will refuse to connect.';
+
+  @override
+  String get deviceInUseByTnc => 'In use by TNC — cannot bind again';
+
+  @override
+  String get deviceInUseByPkwdwpl => 'In use by PKWDWPL — cannot bind again';
+
+  @override
   String get pkwdwplTip =>
       'Set the PC / GPS port output format on the radio to \"\$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.';
 

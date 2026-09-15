@@ -2165,6 +2165,20 @@ class AppLocalizationsId extends AppLocalizations {
       'Hanya terima · perangkat ini tidak memancarkan apa pun';
 
   @override
+  String get deviceConflictTitle => 'Dua tautan terikat ke perangkat yang sama';
+
+  @override
+  String get deviceConflictDesc =>
+      'Bila TNC dan PKWDWPL menunjuk perangkat yang sama, data terima dibagi antara keduanya — gejalanya \"bisa kirim tetapi tidak bisa terima\". Gantilah salah satunya ke perangkat lain. TNC diprioritaskan: PKWDWPL akan menolak terhubung.';
+
+  @override
+  String get deviceInUseByTnc => 'Sedang dipakai TNC — tidak bisa diikat lagi';
+
+  @override
+  String get deviceInUseByPkwdwpl =>
+      'Sedang dipakai PKWDWPL — tidak bisa diikat lagi';
+
+  @override
   String get pkwdwplTip =>
       'Setel format keluaran port PC / GPS di radio ke \"\$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.';
 

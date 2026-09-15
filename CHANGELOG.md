@@ -1,5 +1,68 @@
 # 更新日志
 
+## [1.6.110] - 2026-09-15
+
+### 🚨 修复：TNC 与 PKWDWPL 绑定同一台设备，会把接收数据「瓜分」——表现为 TNC 能发不能收
+### Fix: TNC and PKWDWPL bound to the same device split the received data — TNC transmits but receives nothing
+
+**这是我上一版（1.6.108）引入的问题，责任在我。**
+
+1.6.108 新增 PKWDWPL 时，我特意给两条链路做了**独立通道**，理由是「共用一个 socket
+会互相拆连接」。这个判断本身没错，但**我漏掉了另一半**：既然两条链路能各自独立地
+连，它们就能各自连到**同一台设备**上 —— 而这时：
+
+| 连接方式 | 会发生什么 |
+| --- | --- |
+| 串口（Windows / Linux） | 两个句柄都能打开（共享模式），读到的字节**各拿一部分** |
+| 蓝牙 SPP（Android） | 第二条 RFCOMM 连接**顶掉**第一条 |
+
+两者的症状完全一样：**发送正常，接收没了**（或收得残缺）。而且因为发送走得通，
+从界面上根本看不出原因 —— 只会看到「台站不上图了」。你自己去查的话，最容易怀疑的
+是电台、线缆、TNC 参数，恰恰不会想到是另一条链路在抢字节。
+
+**新增三道防护：**
+
+1. **设备列表里禁止重复绑定**：TNC 与 PKWDWPL 的设备页会把「已被另一条链路占用」
+   的设备标灰并写明原因，点不动。
+2. **连接时的守卫**（防止旧配置绕过上一条）：
+   - **TNC 优先** —— 两条链路指向同一台设备时，TNC 连接会先把 PKWDWPL 断开让出
+     设备（TNC 是发射链路，不能让它失效），并写进日志说明原因；
+   - PKWDWPL 连接时遇到冲突则**拒绝连接**，错误码 `device-in-use`。
+3. **两处设备页顶部显示红色冲突警告**，把「能发不能收」的成因直接写在界面上。
+
+**如果你已经踩到了**（1.6.108 / 1.6.109 上 TNC 收不到报文）：升级到本版即可；急于恢复
+也可以先取消勾选「数据来源 → PKWDWPL」，或在设备页解绑 PKWDWPL 的设备。
+
+新增 3 项回归测试：冲突识别、非冲突不误报、冲突时 PKWDWPL 必须被拦在「发起连接之前」
+（断言错误码是 `device-in-use` 而不是底层的连接失败，否则说明守卫没生效）。
+
+---
+
+**This was introduced by my own change in 1.6.108, and it is on me.**
+
+When PKWDWPL was added, I deliberately gave the two links **separate platform channels**,
+reasoning that sharing one socket would make them tear down each other's connection. That
+reasoning was right, but **I missed the other half**: if the links connect independently,
+they can also independently connect to the *same device* — and then:
+
+| Connection | What happens |
+| --- | --- |
+| Serial (Windows / Linux) | Both handles open (shared mode) and the incoming bytes are **split between them** |
+| Bluetooth SPP (Android) | The second RFCOMM connection **displaces** the first |
+
+Both produce the same symptom: **transmit works, receive is gone** (or only partial). And
+because transmitting still works, nothing in the UI points at the cause — you just see
+stations stop appearing. When investigating, the obvious suspects are the radio, the cable
+and the TNC parameters, not another link quietly taking the bytes.
+
+**Three layers of protection were added:** the device list now refuses to bind a device that
+another link already holds (greyed out, with the reason stated); a connection-time guard
+backs that up (TNC takes priority and disconnects PKWDWPL first, while a conflicting PKWDWPL
+connection is refused with `device-in-use`); and both device pages show a red conflict warning
+at the top, so the cause is written on the screen rather than left to guesswork.
+
+---
+
 ## [1.6.109] - 2026-09-15
 
 ### 🔘 主页按钮加大 + 允许「只收不发」的纯接收配置 / Bigger home buttons + receive-only setups allowed

@@ -371,6 +371,49 @@ void main() {
       expect(st.enabledSources.length, 1);
     });
 
+    // ── 设备占用检测 ──
+    //
+    // 这两条是 v1.6.110 的回归护栏：TNC 与 PKWDWPL 都走 SPP / 串口，
+    // **两条链路连同一台设备时接收字节流会被瓜分** —— 串口两个句柄各读一部分、
+    // 蓝牙第二条 RFCOMM 顶掉第一条。症状是「发送正常、收不到报文」，
+    // 从界面上完全看不出原因。
+
+    test('设备占用检测：同一设备被两条链路绑定 → 识别为冲突', () async {
+      final st = await fresh();
+      const dev = TncDevice(id: 'AA:BB:CC:DD:EE:FF', name: 'Shared');
+      st.tnc.bind(dev);
+      st.pkwdwpl.bind(dev);
+      expect(st.tncPkwdwplConflict, isTrue);
+      // TNC 是发射链路，优先
+      expect(st.deviceBoundBy(dev.id), AppState.srcTnc);
+    });
+
+    test('设备占用检测：不同设备不算冲突', () async {
+      final st = await fresh();
+      st.tnc.bind(const TncDevice(id: 'AAA'));
+      st.pkwdwpl.bind(const TncDevice(id: 'BBB'));
+      expect(st.tncPkwdwplConflict, isFalse);
+      expect(st.deviceBoundBy('AAA'), AppState.srcTnc);
+      expect(st.deviceBoundBy('BBB'), AppState.srcPkwdwpl);
+      expect(st.deviceBoundBy('CCC'), isNull);
+      expect(st.deviceBoundBy(null), isNull);
+    });
+
+    test('冲突时 PKWDWPL 拒绝连接（否则会瓜分 TNC 的接收字节流）', () async {
+      final st = await fresh();
+      const dev = TncDevice(id: 'AA:BB:CC:DD:EE:FF', name: 'Shared');
+      st.tnc.bind(dev);
+      st.pkwdwpl.bind(dev);
+      // 只留 PKWDWPL 一条来源，避免测试去打真实 APRS-IS
+      await st.toggleSource(AppState.srcPkwdwpl, true);
+      await st.toggleSource(AppState.srcAprsIs, false);
+      await st.toggleConnect();
+      // 守卫必须拦在「发起连接之前」，并留下专属错误码 ——
+      // 若变成底层连接失败（no-device / open-failed），说明守卫没生效
+      expect(st.pkwdwpl.lastError, 'device-in-use');
+      expect(st.isUp(AppState.srcPkwdwpl), isFalse);
+    });
+
     test('关掉不发射的 pkwdwpl 不影响发射来源', () async {
       final st = await fresh();
       await st.toggleSource(AppState.srcPkwdwpl, true);
