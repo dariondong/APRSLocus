@@ -2177,6 +2177,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceInUseByPkwdwpl => 'In use by PKWDWPL — cannot bind again';
 
   @override
+  String rxOnlyBanner(String arg) {
+    return '$arg connected · receive-only (the transmit source is offline)';
+  }
+
+  @override
   String get pkwdwplTip =>
       'Set the PC / GPS port output format on the radio to \"\$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.';
 

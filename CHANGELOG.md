@@ -1,5 +1,95 @@
 # 更新日志
 
+## [1.6.111] - 2026-09-15
+
+### 🔍 全面复查设备机制：又找到 4 个「界面与事实不符」的问题
+### Full audit of the device layer: four more cases where the UI contradicted reality
+
+上一版修了「两条链路绑同一台设备」后我做了彻底复查，又发现四处
+**同一类根因**的问题 —— 症状都是「界面说的和实际情况不一样」：
+
+**① 设备页手动连接会绕过 AppState，连上却不被记账**
+
+两个设备页都是**直接**调链路对象的 `connect()`（不走 AppState 的自动连接路径），
+于是：
+
+- 手动连上后 `_linkUp` 表没更新，而 `connected` 是从它推导的
+  （任何 `_setLinkUp` 都会重算）→ 界面**又变回「未连接」**；
+- 我上一版加的**设备冲突守卫对设备页完全无效** —— 它只挂在那条不经过设备页的
+  路径上。
+
+现在设备页的连接/断开统一回落到 AppState：`guardDeviceConnect()`（连之前问）
++ `adoptDeviceLink()`（连之后记账并启用来源）。TNC 与 PKWDWPL 走同一条路。
+
+**② 横幅会说「未连接 APRS-IS 服务器」，而用户刚连上了别的链路**
+
+横幅原先只能表达「发射来源通不通」。设备页刚连上 TNC、而发射仍走未连接的
+APRS-IS 时，界面硬说「未连接」—— 与事实相反。现在有链路在收时显示
+「**XX 已连接 · 仅接收（当前发射来源未连接）**」。
+
+**③ 冲突会导致无限重连**
+
+重连判据是「所有已启用的链路都 up」，而被冲突拦下的 PKWDWPL 永远不可能 up
+→ 定时器 8→16→32→60 秒无休止重试。现在这类链路被判定为「不可能连上」而跳过
+（`blockedByConflict`），两个判断点收口到同一个 `_allExpectedLinksUp`，
+避免只改一处又漏。
+
+**④ 退出应用时射频链路没被释放**
+
+`shutdownForExit()` 与 `dispose()` 原先只断 APRS-IS。蓝牙 socket / 串口句柄
+不释放会占住电台，**下次打开应用可能连不上**。现在 TNC / 音频 / PKWDWPL
+一并断开。
+
+**另外：权限 requestCode 冲突（隔离漏洞）**
+
+`MainActivity` 把 `onRequestPermissionsResult` 转发给**两个** TncManager，
+而两边靠 requestCode 认领回调 —— 原先**共用同一个值**，于是在 A 链路请求权限
+会把 B 链路尚未完成的请求一并 resolve（用不属于它的结果）。现在两个实例
+各有自己的 code（`0x7A31` / `0x7A32`）。
+
+这是我上一版说「参数化通道名就能安全复用」时漏掉的**隐式共享状态**。
+隔离真正干净的只有三步：**通道名、socket、requestCode** —— 缺一不可。
+
+**顺带清掉一处死代码**：`syncPkwdwplLink()` 被 `adoptDeviceLink()` 取代后
+没有调用者，删掉而不是留着（留着的死代码会让下一个人以为设备页还在用它）。
+
+新增 4 项回归测试（pkwdwpl_test 38 → 41）。
+
+---
+
+**After fixing the shared-device problem, I audited the whole device layer and found four
+more issues with one shared root cause: the UI disagreeing with reality.**
+
+Both device pages call the link object's `connect()` **directly**, bypassing AppState's own
+connect path. As a result the `_linkUp` ledger was never updated (so `connected` — which is
+derived from it — flipped back to false, showing "not connected" again), and the device
+conflict guard added in the previous release **did not apply to the device pages at all**,
+since it only lived on the path they don't use. Device-page connects now route back through
+AppState via `guardDeviceConnect()` and `adoptDeviceLink()`.
+
+The connection banner could only express "is the transmit source up", so connecting a TNC
+while APRS-IS remained the transmit source produced "not connected to APRS-IS" — the
+opposite of the truth. It now says "**X connected · receive-only (the transmit source is
+offline)**" whenever a link is receiving.
+
+A conflict also caused an infinite reconnect loop: the criterion was "every enabled link is
+up", and the blocked PKWDWPL could never come up, so the backoff timer retried forever. Such
+links are now recognised as un-connectable and skipped, with both decision points funnelled
+through one `_allExpectedLinksUp` so a future edit cannot miss one.
+
+Finally, exiting the app only disconnected APRS-IS, leaving Bluetooth sockets and serial
+handles open — which holds the radio and can make the *next* launch fail to connect. TNC,
+audio and PKWDWPL are now released too.
+
+**Isolation hole:** `MainActivity` forwards `onRequestPermissionsResult` to *both* TncManager
+instances, and they claimed their callbacks by request code — which was **shared**. A
+permission request from one link would resolve the other's pending request with results that
+were not its own. Each instance now has its own code. This is precisely the kind of **implicit
+shared state** I missed when claiming that parameterising the channel name made reuse safe:
+isolation actually requires the channel name, the socket **and** the request code.
+
+---
+
 ## [1.6.110] - 2026-09-15
 
 ### 🚨 修复：TNC 与 PKWDWPL 绑定同一台设备，会把接收数据「瓜分」——表现为 TNC 能发不能收

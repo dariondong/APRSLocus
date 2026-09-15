@@ -35,6 +35,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <!-- 蓝牙 SPP（TNC / PKWDWPL）：与音频同一个坑 —— Android 14（API 34）起，
+         前台服务中访问蓝牙设备需声明 connectedDevice 类型，否则退到后台后
+         系统会限制蓝牙访问（表现：切后台就收不到报文 / 只能发不能收）。 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
 
     <application
@@ -71,7 +75,7 @@
         <service
             android:name=".LocationService"
             android:exported="false"
-            android:foregroundServiceType="location|microphone"
+            android:foregroundServiceType="location|microphone|connectedDevice"
             android:stopWithTask="false" />
         <provider
             android:name="androidx.core.content.FileProvider"

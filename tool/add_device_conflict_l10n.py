@@ -62,6 +62,22 @@ DATA = {
         'id': 'Sedang dipakai PKWDWPL — tidak bisa diikat lagi',
         'es': 'En uso por PKWDWPL — no se puede vincular de nuevo',
     },
+    # 横幅：有链路在收、但它不是发射来源。
+    # 不说清楚的话横幅会显示「未连接 APRS-IS 服务器」—— 而用户明明刚
+    # 在设备页连上了 TNC / PKWDWPL，界面与事实相反。
+    'rxOnlyBanner': {
+        'zh': '{arg} 已连接 · 仅接收（当前发射来源未连接）',
+        'zh_TW': '{arg} 已連線 · 僅接收（目前發射來源未連線）',
+        'en': '{arg} connected · receive-only (the transmit source is offline)',
+        'ja': '{arg} 接続済み · 受信のみ（送信元が未接続）',
+        'id': '{arg} terhubung · hanya terima (sumber kirim belum aktif)',
+        'es': '{arg} conectado · solo recepción (la fuente de transmisión está desconectada)',
+    },
+}
+
+# 带占位符的键（gen-l10n 要求声明类型）
+PLACEHOLDERS = {
+    'rxOnlyBanner': {'arg': 'String'},
 }
 
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'id', 'es']
@@ -73,11 +89,20 @@ def main():
         path = os.path.join(ROOT, 'lib/l10n/app_%s.arb' % lang)
         lines = io.open(path, encoding='utf-8').read().split('\n')
         keep = [ln for ln in lines
-                if not any(ln.strip().startswith('"%s"' % k) for k in DATA)]
+                if not any(ln.strip().startswith('"%s"' % k) for k in DATA)
+                and not any(ln.strip().startswith('"@%s"' % k)
+                            for k in PLACEHOLDERS)]
         idx = next(i for i, ln in enumerate(keep)
                    if ln.strip().startswith(ANCHOR))
         block = ['  "%s": %s,' % (k, json.dumps(tr[lang], ensure_ascii=False))
                  for k, tr in DATA.items()]
+        block += [
+            '  "@%s": %s,' % (
+                k,
+                json.dumps({'placeholders': {p: {'type': t} for p, t in ph.items()}},
+                           ensure_ascii=False))
+            for k, ph in PLACEHOLDERS.items()
+        ]
         keep[idx + 1:idx + 1] = block
         io.open(path, 'w', encoding='utf-8', newline='').write('\n'.join(keep))
         d = json.loads(io.open(path, encoding='utf-8').read())

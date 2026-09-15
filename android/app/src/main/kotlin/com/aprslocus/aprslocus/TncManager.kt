@@ -63,6 +63,18 @@ class TncManager(
      */
     private val methodChannelName: String = METHOD_CHANNEL,
     private val eventChannelName: String = EVENT_CHANNEL,
+    /**
+     * 运行时权限的 requestCode。
+     *
+     * **必须每个实例不同**：MainActivity 会把 onRequestPermissionsResult
+     * 转发给**两个** TncManager（TNC 与 PKWDWPL），而两边靠 requestCode
+     * 认领自己的回调。若共用一个值，两边的判断会**同时命中** ——
+     * 在 A 链路的页面请求权限，会把 B 链路尚未完成的 permResult 一并
+     * resolve（用不属于它的 grantResults），反之亦然。
+     *
+     * 这正是「参数化通道名就能复用」这种想法容易漏掉的那类**隐式共享状态**。
+     */
+    private val permRequestCode: Int = PERM_REQUEST,
 ) {
 
     companion object {
@@ -72,6 +84,9 @@ class TncManager(
         /** PKWDWPL 链路（Kenwood 航点语句，只收不发）的独立通道 */
         const val METHOD_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl"
         const val EVENT_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl_events"
+
+        /** PKWDWPL 实例专用的权限 requestCode（与 TNC 的 0x7A31 区分开） */
+        const val PERM_REQUEST_PKWDWPL = 0x7A32
 
         /** 蓝牙串口服务（SPP）标准 UUID */
         private val SPP_UUID: UUID =
@@ -135,11 +150,12 @@ class TncManager(
             return
         }
         permResult = result
-        ActivityCompat.requestPermissions(activity, BT_PERMISSIONS, PERM_REQUEST)
+        ActivityCompat.requestPermissions(activity, BT_PERMISSIONS, permRequestCode)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
-        if (requestCode != PERM_REQUEST) return
+        // 只认领自己的 requestCode —— 另一个实例的回调不归我处理
+        if (requestCode != permRequestCode) return
         val ok = grantResults.isNotEmpty() &&
                 grantResults.all { it == PackageManager.PERMISSION_GRANTED }
         permResult?.success(ok)
@@ -317,6 +333,14 @@ class TncManager(
             )
         }
     }
+
+    /**
+     * 链路是否仍处于**有效代次**上。
+     *
+     * 不能只看 `socket != null`：断开时 socket 已置 null 但代次还没推进的瞬间
+     * 会读到过期状态。代次 > 0 且 socket 在，才算真的连着。
+     */
+    fun isConnected(): Boolean = generation.get() > 0 && socket?.isConnected == true
 
     fun disconnect() {
         // 推进代次 + 拆链路：在飞的 reader/writer 会在下一轮循环退出，

@@ -113,6 +113,24 @@ class LocationService : Service() {
             instance?.refreshForegroundType()
         }
 
+        /**
+         * 蓝牙 SPP（TNC / PKWDWPL）是否在使用。
+         *
+         * 与音频同一个坑，但当初只修了音频：Android 14（API 34）起，应用在前台
+         * 服务中访问**蓝牙设备**时该服务必须声明 connectedDevice 类型，否则系统
+         * 会限制蓝牙访问（表现：退到后台就收不到报文，或只能发不能收）。
+         * 因此 TNC / PKWDWPL 连接状态变化时要用新的类型重新 startForeground。
+         *
+         * 注意 connectedDevice 是 API 34 才引入的类型，只有 34+ 才声明。
+         */
+        @Volatile private var btActive = false
+
+        fun setBtActiveStatic(active: Boolean) {
+            if (btActive == active) return
+            btActive = active
+            instance?.refreshForegroundType()
+        }
+
         /// 更新前台服务通知（同进程直连，MainActivity 调用）
         fun updateNotificationStatic(text: String) {
             instance?.updateNotification(text)
@@ -184,7 +202,16 @@ class LocationService : Service() {
         }
         val notification = buildNotification("APRSlocus 运行中")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            // 把当前已激活的能力一并声明：服务可能在蓝牙/音频已经在用之后才启动，
+            // 只声明 location 会让系统立刻限制蓝牙/麦克风访问。
+            var t = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            if (audioActive) t = t or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            // connectedDevice 是 API 34 才引入的类型：旧系统不认识这个位，
+            // 不能无条件传（有些 ROM 会直接抛异常导致服务起不来）。
+            if (btActive && Build.VERSION.SDK_INT >= 34) {
+                t = t or ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            }
+            startForeground(NOTIFICATION_ID, notification, t)
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
@@ -237,11 +264,11 @@ class LocationService : Service() {
     private fun refreshForegroundType() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         try {
-            val type = if (audioActive) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-            } else {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            var type = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            if (audioActive) type = type or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            // 同上：connectedDevice 仅 API 34+ 声明
+            if (btActive && Build.VERSION.SDK_INT >= 34) {
+                type = type or ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
             }
             startForeground(NOTIFICATION_ID, buildNotification(lastNotificationText), type)
         } catch (_: Exception) {

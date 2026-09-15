@@ -414,6 +414,46 @@ void main() {
       expect(st.isUp(AppState.srcPkwdwpl), isFalse);
     });
 
+    // ── 「连上却显示未连接」的修复（v1.6.110）──
+    //
+    // 设备页手动连接是不会走 toggleSource 的，所以来源仍是「未启用」。
+    // 而界面三处都只认 enabledSources / 发射链路：
+    //   * 主页横幅只能表达「发射来源通不通」→ 显示「未连接 APRS-IS 服务器」
+    //   * 设备页「当前链路」仅遍历 enabledSources → PKWDWPL 那行不渲染
+    //   * anyLinkUp 也只数已启用的链路
+    // 结果就是「链路在工作（台站能收到）但界面永远说未连接」。
+
+    test('设备页连上后自动启用来源（否则一直显示未连接）', () async {
+      final st = await fresh();
+      expect(st.pkwdwplOn, isFalse, reason: '默认不启用');
+      st.ensureSourceEnabled(AppState.srcPkwdwpl);
+      expect(st.pkwdwplOn, isTrue);
+      expect(st.enabledSources, contains(AppState.srcPkwdwpl));
+    });
+
+    test('ensureSourceEnabled 幂等，且不改发射来源', () async {
+      final st = await fresh();
+      st.ensureSourceEnabled(AppState.srcPkwdwpl);
+      st.ensureSourceEnabled(AppState.srcPkwdwpl);
+      expect(st.enabledSources.where((s) => s == AppState.srcPkwdwpl).length, 1);
+      expect(st.dataSource, AppState.srcAprsIs, reason: '只读链路不能变成发射来源');
+      expect(st.readOnlyMode, isFalse, reason: 'APRS-IS 还在，不是只读模式');
+    });
+
+
+    test('冲突链路被重连逻辑跳过（否则会无限重连）', () async {
+      final st = await fresh();
+      const dev = TncDevice(id: 'AA:BB:CC:DD:EE:FF', name: 'Shared');
+      st.tnc.bind(dev);
+      st.pkwdwpl.bind(dev);
+      await st.toggleSource(AppState.srcPkwdwpl, true);
+      // 冲突的 PKWDWPL 永远不可能 up，必须被判定为「不可能连上」，
+      // 否则 _scheduleReconnectIfNeeded 的 `every(isUp)` 永远不成立 →
+      // 定时器会 8→16→32→60 秒无休止重试。
+      expect(st.blockedByConflict(AppState.srcPkwdwpl), isTrue);
+      expect(st.blockedByConflict(AppState.srcTnc), isFalse);
+    });
+
     test('关掉不发射的 pkwdwpl 不影响发射来源', () async {
       final st = await fresh();
       await st.toggleSource(AppState.srcPkwdwpl, true);
@@ -425,7 +465,7 @@ void main() {
     test('只读链路同步状态：不改变「发射来源是否可用」', () async {
       final st = await fresh();
       await st.toggleSource(AppState.srcPkwdwpl, true);
-      st.syncPkwdwplLink();
+      st.adoptDeviceLink(AppState.srcPkwdwpl, st.isUp(AppState.srcPkwdwpl));
       expect(st.isUp(AppState.srcPkwdwpl), isFalse);
       expect(st.connected, isFalse, reason: 'connected 仍只表达发射来源');
       // 让「发射来源」连上，再验证 pkwdwpl 的状态不干扰它

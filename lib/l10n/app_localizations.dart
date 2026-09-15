@@ -3963,6 +3963,12 @@ abstract class AppLocalizations {
   /// **'已被 PKWDWPL 使用，不能重复绑定'**
   String get deviceInUseByPkwdwpl;
 
+  /// No description provided for @rxOnlyBanner.
+  ///
+  /// In zh, this message translates to:
+  /// **'{arg} 已连接 · 仅接收（当前发射来源未连接）'**
+  String rxOnlyBanner(String arg);
+
   /// No description provided for @pkwdwplTip.
   ///
   /// In zh, this message translates to:

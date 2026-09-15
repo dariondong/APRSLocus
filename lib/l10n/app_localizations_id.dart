@@ -2179,6 +2179,11 @@ class AppLocalizationsId extends AppLocalizations {
       'Sedang dipakai PKWDWPL — tidak bisa diikat lagi';
 
   @override
+  String rxOnlyBanner(String arg) {
+    return '$arg terhubung · hanya terima (sumber kirim belum aktif)';
+  }
+
+  @override
   String get pkwdwplTip =>
       'Setel format keluaran port PC / GPS di radio ke \"\$PKWDWPL\" (biasanya 4800 8N1). Tautan ini hanya baca dan tidak memancarkan apa pun.';
 

@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.110';
+  static const appVersion = '1.6.111';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -783,6 +783,20 @@ class AppState extends ChangeNotifier {
   /// 此时应用仍然完整可用（接收、地图、台账、距离方位），只是不会发射任何
   /// 报文。界面必须**明确说出来**，否则用户看到「位置未上报」「未连接」
   /// 会以为是坏了。
+  /// 当前正在收报文的链路名（用于「仅接收」横幅）。
+  ///
+  /// 优先说出**非发射来源**的那条 —— 发射来源未连时，用户最需要知道的是
+  /// 「那到底哪条在收」。
+  String get rxSourceLabel {
+    for (final s in [srcTnc, srcAudio, srcPkwdwpl, srcAprsIs]) {
+      if (s != dataSource && isUp(s)) return _sourceName(s);
+    }
+    for (final s in [srcAprsIs, srcTnc, srcAudio, srcPkwdwpl]) {
+      if (isUp(s)) return _sourceName(s);
+    }
+    return '—';
+  }
+
   bool get readOnlyMode => !enabledSources.any(canTransmit);
 
   // ─── 设备占用检测（防止两条链路抢同一台设备）───
@@ -917,6 +931,82 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
+  /// 确保某条链路处于「已启用」状态（幂等）。
+  ///
+  /// 给**设备页的手动连接**用：用户在那里点了「连接」，意图就是让这条链路上线
+  /// 工作，那就必须同时把它算作已启用 —— 否则会进入一个**自相矛盾的状态**：
+  /// 链路已连上、报文也在收，但界面上全部显示未连接。
+  ///
+  /// 为什么界面看不出来：「当前链路」卡遍历 [enabledSources]（未启用就整行不渲染）、
+  /// 主页横幅只能表达「发射来源通不通」、[anyLinkUp] 也只数已启用的链路。
+  /// 于是「PKWDWPL 已连上」这件事在主界面上没有任何地方能体现，
+  /// 用户看到的就是「一直显示未连接」。
+  ///
+  /// 不调 [_reconcileSources]：调用方刚连上，不需要再去对齐一次链路。
+  void ensureSourceEnabled(String src) {
+    final s0 = _normalizeSrc(src);
+    if (enabledSources.contains(s0)) return;
+    enabledSources.add(s0);
+    _log(LogLevel.info, '连接', '${_sourceName(s0)} 已加入数据来源（设备页手动连接）');
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+
+  /// 设备页**手动**连接某条链路之后调用：把结果同步回 AppState。
+  ///
+  /// 为什么必须有它：两个设备页都是**直接**调链路对象的 `connect()` /
+  /// `disconnect()` 的（不经过 [_connectTnc] / [_connectPkwdwpl] 那条自动连接
+  /// 路径），于是有两件事不会自动发生，而它们各自都会让界面与事实不符：
+  ///
+  ///   ① [_linkUp] 表不会更新。[connected] 是从它推导的
+  ///      （`connected = isUp(dataSource)`），而任何 _setLinkUp 都会重算一遍 ——
+  ///      所以手动连接后写 `connected = true` 只能维持到下一次重算，
+  ///      之后又变回 false，表现为「连上了却一直显示未连接」。
+  ///   ② 来源没置为启用时，「当前链路」卡整行不渲染（它遍历 enabledSources），
+  ///      主页横幅也只能说「未连接 APRS-IS 服务器」。
+  ///
+  /// 一句话：**设备页的连接事件必须回到 AppState 这台账本上**。
+  void adoptDeviceLink(String src, bool up) {
+    final s0 = _normalizeSrc(src);
+    if (up) ensureSourceEnabled(s0);
+    _setLinkUp(s0, up);
+    _notify();
+    _updateNotification();
+  }
+
+  /// 设备页连接**之前**的守卫：返回 null 表示可以连，否则返回不可连的原因。
+  ///
+  /// 为什么不能只把关卡放在 [_connectTnc] / [_connectPkwdwpl] 里：那两个方法
+  /// 只在 AppState 自己的自动连接路径上跑，而**设备页是直接调链路对象的**，
+  /// 不过那一关。所以设备页必须先问这个。
+  ///
+  /// 语义刻意不对称：
+  ///   * **TNC** 是发射链路，优先 —— 冲突时先把 PKWDWPL 断开让出设备，返回 null；
+  ///   * **PKWDWPL** 是只读链路 —— 冲突时直接拒绝，避免抢走 TNC 的接收字节流。
+  Future<String?> guardDeviceConnect(String src) async {
+    final s0 = _normalizeSrc(src);
+    if (!tncPkwdwplConflict) return null;
+    if (s0 == srcTnc) {
+      _log(
+        LogLevel.warn,
+        '连接',
+        'TNC 与 PKWDWPL 绑定了同一台设备（${tnc.device?.label}）：'
+            '已先断开 PKWDWPL，把设备让给 TNC（两条链路同时连会瓜分接收数据，'
+            '表现为「能发不能收」）。',
+      );
+      await pkwdwpl.disconnect(manual: false);
+      _setLinkUp(srcPkwdwpl, false);
+      return null;
+    }
+    if (s0 == srcPkwdwpl) {
+      pkwdwpl.lastError = 'device-in-use';
+      return 'device-in-use';
+    }
+    return null;
+  }
+
   /// 指定**发射**来源（必须已启用）
   void setTxSource(String src) {
     final s0 = _normalizeSrc(src);
@@ -977,29 +1067,31 @@ class AppState extends ChangeNotifier {
   @visibleForTesting
   void debugSetLinkUp(String src, bool up) => _setLinkUp(src, up);
 
-  /// 把 PKWDWPL 链路的实际连接状态同步给 [AppState]。
-  ///
-  /// 需要的场景只有一个：用户在**设备页手动**点连接/断开时，链路的变动
-  /// 发生在 `AppState` 之外，得把它同步回 `_linkUp` 表 —— 否则「当前链路」
-  /// 那行和日志会与事实不符（页面显示已连接、状态表里还是断的）。
-  ///
-  /// ⚠️ 不能让设备页直接改 `connected`（TNC 设备页那样做是因为 TNC 是
-  /// 可发射来源，`connected` 恰好表示它）；PKWDWPL 是只读来源，
-  /// 它的可用性绝不能影响「发射来源是否可用」。
-  void syncPkwdwplLink() {
-    _setLinkUp(srcPkwdwpl, pkwdwpl.connected);
-    _notify();
-  }
-
   void _setLinkUp(String src, bool up) {
     _linkUp[src] = up;
     _refreshConnected();
   }
 
+  /// 该链路是否因**设备冲突**而根本不可能连上。
+  ///
+  /// 用于让重连逻辑跳过它 —— 否则会变成**无限重连**：
+  /// [_scheduleReconnectIfNeeded] 的判据是「全部 enabledSources 都 up」，
+  /// 而被冲突拦下的 PKWDWPL 永远不可能 up，于是定时器会 8→16→32→60 秒
+  /// 无休止地重试下去（用户看不到任何变化，只浪费电）。
+  bool blockedByConflict(String src) =>
+      _normalizeSrc(src) == srcPkwdwpl && tncPkwdwplConflict;
+
+  /// 「该做的都做完了」：每条已启用链路要么通了、要么因冲突不可能通。
+  ///
+  /// 专门抽出来避免两处重连判断（排程时、定时器触发时）写得不一致 ——
+  /// 只改一处就会漏成无限重连。
+  bool get _allExpectedLinksUp =>
+      enabledSources.every((s) => isUp(s) || blockedByConflict(s));
+
   /// 任一已启用来源掉线就安排重连（不是只看发射来源）
   void _scheduleReconnectIfNeeded() {
     if (_userDisconnected) return;
-    if (enabledSources.every(isUp)) return;
+    if (_allExpectedLinksUp) return;
     _scheduleReconnect();
   }
 
@@ -1754,6 +1846,12 @@ class AppState extends ChangeNotifier {
     _tickTimer?.cancel();
     loc.stop();
     aprs.disconnect();
+    // 射频链路也要断开（原先只断 APRS-IS）：退出后蓝牙 socket / 串口句柄
+    // 应当立即释放，不能等进程被杀 —— BluetoothSocket 不关会占住电台，
+    // 下次打开应用重连会失败。
+    unawaited(pkwdwpl.disconnect(manual: false));
+    unawaited(tnc.disconnect(manual: false));
+    unawaited(audio.disconnect(manual: false));
     if (_stationsDirty) _saveStations();
     persist();
     // 留出时间让 SharedPreferences / 台站文件写入落盘
@@ -1772,6 +1870,12 @@ class AppState extends ChangeNotifier {
     _stationsCtrl.close();
     loc.stop();
     aprs.disconnect();
+    // 射频链路也要收尾（原先只释放了 APRS-IS）：
+    // pkwdwpl 的传输层持有一个 EventChannel 订阅，不释放会一直挂在平台通道上；
+    // TNC 同样有 reader/writer 线程与 socket。
+    unawaited(pkwdwpl.disconnect(manual: false));
+    unawaited(tnc.disconnect(manual: false));
+    unawaited(audio.disconnect(manual: false));
     // 退出前保存台站列表
     if (_stationsDirty) _saveStations();
     super.dispose();
@@ -1786,8 +1890,10 @@ class AppState extends ChangeNotifier {
     _reconnectAttempt++;
     _reconnectTimer = Timer(Duration(seconds: backoff), () {
       if (_disposed || _userDisconnected) return;
-      // 全部连上才算不需要重连（多选模式下只连上一半也要继续补）
-      if (enabledSources.every(isUp)) return;
+      // 全部连上（或因设备冲突不可能连上）才算不需要重连
+      // —— 多选模式下只连上一半也要继续补；但被冲突拦下的链路要跳过，
+      //    否则永远达不到「都连上」而变成无限重连。
+      if (_allExpectedLinksUp) return;
       _connect();
     });
   }
@@ -2070,7 +2176,9 @@ class AppState extends ChangeNotifier {
       _notify();
       _updateNotification();
       if (!_userDisconnected && pkwdwpl.config.autoReconnect) {
-        _scheduleReconnect();
+        // 用 IfNeeded 而不是直接重连：因**设备冲突**被主动断开时不该再排程重连
+        // —— 它永远连不上，只会反复写「稍后自动重连」的日志骗人。
+        _scheduleReconnectIfNeeded();
       }
     };
     pkwdwpl.onStateChanged = () {
@@ -2320,6 +2428,9 @@ class AppState extends ChangeNotifier {
     // 两条链路同时连会瓜分接收字节流（症状：TNC 能发不能收）。
     if (tncPkwdwplConflict) {
       pkwdwpl.lastError = 'device-in-use';
+      // lastDetail 也要写：设备页的错误提示读的是 lastDetail，
+      // 只设 lastError 会让 Toast 变成「连接失败，请检查配置：」后面空白。
+      pkwdwpl.lastDetail = 'device-in-use';
       _setLinkUp(srcPkwdwpl, false);
       _log(
         LogLevel.warn,

@@ -724,6 +724,8 @@
   "deviceConflictDesc": "When TNC and PKWDWPL point at the same device, the received data is split between them — the symptom is \"transmits fine but receives nothing\". Give one of them a different device. TNC takes priority: PKWDWPL will refuse to connect.",
   "deviceInUseByTnc": "In use by TNC — cannot bind again",
   "deviceInUseByPkwdwpl": "In use by PKWDWPL — cannot bind again",
+  "rxOnlyBanner": "{arg} connected · receive-only (the transmit source is offline)",
+  "@rxOnlyBanner": {"placeholders": {"arg": {"type": "String"}}},
   "pkwdwplTip": "Set the PC / GPS port output format on the radio to \"$PKWDWPL\" (usually 4800 8N1). This link is read-only and transmits nothing.",
   "pkwdwplStrictChecksum": "Strict checksum (drop mismatches)",
   "pkwdwplStrictChecksumTip": "Off by default: a mismatch is flagged and logged instead of dropped, because on a local cable it usually means the firmware format differs from the manual. Dropping every sentence would leave the screen empty and make diagnosis much harder.",

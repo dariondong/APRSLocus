@@ -81,7 +81,7 @@ class _PkwdwplDevicePageState extends State<PkwdwplDevicePage> {
     setState(() => _busy = true);
     if (link.connected) {
       await link.disconnect();
-      st.syncPkwdwplLink();
+      st.adoptDeviceLink(AppState.srcPkwdwpl, false);
       st.setConnStatus(ConnPhase.manual);
     } else {
       if (link.device == null) {
@@ -94,8 +94,19 @@ class _PkwdwplDevicePageState extends State<PkwdwplDevicePage> {
         _toast(s.tncNeedPermission, color: C.red);
         return;
       }
+      // 设备冲突守卫必须在 connect **之前**：设备页绕过 AppState 直接连，
+      // 只把守卫放在 _connectPkwdwpl 里对这里无效。
+      // PKWDWPL 是只读链路 —— 冲突时不让路（TNC 优先），直接拒绝。
+      final conflict = await st.guardDeviceConnect(AppState.srcPkwdwpl);
+      if (conflict != null) {
+        setState(() => _busy = false);
+        _toast(s.deviceConflictTitle, color: C.red);
+        return;
+      }
       final ok = await link.connect();
-      st.syncPkwdwplLink();
+      // 记回 AppState（_linkUp 表 + 来源启用）—— 否则会出现
+      // 「已连上但界面全说未连接」（「当前链路」卡不渲染、横幅说未连接）。
+      st.adoptDeviceLink(AppState.srcPkwdwpl, ok);
       if (ok) {
         st.setConnStatus(ConnPhase.pkwdwplConnected,
             arg: link.device?.label ?? '');
@@ -245,7 +256,7 @@ class _PkwdwplDevicePageState extends State<PkwdwplDevicePage> {
                 onPressed: () async {
                   setState(() => _busy = true);
                   await link.restart();
-                  st.syncPkwdwplLink();
+                  st.adoptDeviceLink(AppState.srcPkwdwpl, link.connected);
                   st.reloadUi();
                   if (mounted) setState(() => _busy = false);
                 },

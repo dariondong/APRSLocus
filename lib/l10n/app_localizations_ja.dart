@@ -2116,6 +2116,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deviceInUseByPkwdwpl => 'PKWDWPL が使用中 — 重複して割り当てられません';
 
   @override
+  String rxOnlyBanner(String arg) {
+    return '$arg 接続済み · 受信のみ（送信元が未接続）';
+  }
+
+  @override
   String get pkwdwplTip =>
       '無線機のメニューで PC / GPS ポートの出力形式を \"\$PKWDWPL\" に設定してください（通常 4800 8N1）。このリンクは受信専用で、一切送信しません。';
 

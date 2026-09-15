@@ -134,6 +134,10 @@ class MainActivity : FlutterActivity() {
                             } else {
                                 try {
                                     manager.connect(address)
+                                    // 蓝牙已接入：让前台服务声明 connectedDevice 类型。
+                                    // 与音频同一个坑 —— Android 14+ 不声明就会在退到
+                                    // 后台后限制蓝牙访问（表现为「切后台收不到报文」）。
+                                    setBtActive(true)
                                     result.success(true)
                                 } catch (e: Exception) {
                                     result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
@@ -145,6 +149,12 @@ class MainActivity : FlutterActivity() {
                                 manager.disconnect()
                             } catch (_: Exception) {
                             }
+                            // 只有两条 SPP 链路都断开时才撤销 connectedDevice 声明。
+                            // 判断用「另一个 manager 是否还连着」而不是各记各的状态 ——
+                            // 否则先断开的那条会把仍在工作的那条的类型声明撤掉，
+                            // 重新落回「后台被限制蓝牙」的坑里。
+                            val other = if (manager === tnc) pkwdwpl else tnc
+                            setBtActive(other?.isConnected() == true)
                             result.success(true)
                         }
                         "send" -> {
@@ -198,6 +208,10 @@ class MainActivity : FlutterActivity() {
             this,
             TncManager.METHOD_CHANNEL_PKWDWPL,
             TncManager.EVENT_CHANNEL_PKWDWPL,
+            // 权限 requestCode 必须与 TNC 不同：下面 onRequestPermissionsResult
+            // 会把结果转发给**两个**实例，共用同一个 code 会让两边同时命中，
+            // 把对方尚未完成的 permResult 误 resolve。
+            TncManager.PERM_REQUEST_PKWDWPL,
         )
         pkwdwpl = pkwdwplManager
         wireSppLink(
@@ -488,6 +502,23 @@ class MainActivity : FlutterActivity() {
         stopService(Intent(this, LocationService::class.java))
     }
 
+    /// 蓝牙是否在用 → 同步给前台服务（决定要不要声明 connectedDevice 类型）。
+    ///
+    /// 与音频的 setAudioCaptureActive 对应：Android 14（API 34）起，前台服务中
+    /// 访问蓝牙设备必须声明 connectedDevice 类型，否则系统会限制蓝牙访问 ——
+    /// 症状正是「能发不能收」或「退到后台就收不到」。当初只修了音频，漏了蓝牙。
+    private fun setBtActive(active: Boolean) {
+        try {
+            LocationService.setBtActiveStatic(active)
+            if (active) {
+                // 服务可能尚未启动（纯 TNC 模式、未开定位）：确保前台服务存在，
+                // 否则后台蓝牙读取没有前台服务兜底会被冻结。
+                startLocationService()
+            }
+        } catch (_: Exception) {
+        }
+    }
+
     private fun updateServiceNotification(text: String) {
         LocationService.updateNotificationStatic(text)
     }
@@ -566,6 +597,14 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         audio = null
+        // 撤销蓝牙/音频的前台服务类型声明：Activity 销毁后不该再声称在用这些设备，
+        // 否则服务会带着 connectedDevice/microphone 类型继续跑（系统可能因此在
+        // 下次启动时要求额外权限，也浪费电）。
+        setBtActive(false)
+        try {
+            LocationService.setAudioActiveStatic(false)
+        } catch (_: Exception) {
+        }
         LocationBus.sink = null
         super.onDestroy()
     }

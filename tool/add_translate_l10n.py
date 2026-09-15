@@ -699,12 +699,23 @@ DATA = {
         'ja': '自動検出', 'id': 'Deteksi otomatis',
         'es': 'Detectar automáticamente',
     },
+    # 措辞要如实：译文与原文相同既可能是「本来就无需翻译」，
+    # 也可能是「该接口没能翻译」，不能断言成前者的「已是目标语言」
     'translateSameLang': {
-        'zh': '原文已是目标语言', 'zh_TW': '原文已是目標語言',
-        'en': 'Already in the target language',
-        'ja': 'すでに翻訳先の言語です',
-        'id': 'Sudah dalam bahasa target',
-        'es': 'Ya está en el idioma de destino',
+        'zh': '译文与原文相同 · 可能无需翻译，或该接口未能翻译',
+        'zh_TW': '譯文與原文相同 · 可能無需翻譯，或該介面未能翻譯',
+        'en': 'Translation is identical to the original · may need no translation, or the provider failed to translate',
+        'ja': '訳文が原文と同じです · 翻訳不要か、プロバイダが翻訳できなかった可能性があります',
+        'id': 'Terjemahan sama dengan aslinya · mungkin tidak perlu diterjemahkan, atau penyedia gagal',
+        'es': 'La traducción es idéntica al original · puede que no necesite traducción o que el proveedor fallara',
+    },
+    'translateNotNeeded': {
+        'zh': '该内容无需翻译（数字 / 符号 / 呼号）',
+        'zh_TW': '該內容無需翻譯（數字 / 符號 / 呼號）',
+        'en': 'Nothing to translate here (numbers / symbols / callsigns)',
+        'ja': '翻訳の必要がない内容です（数字 / 記号 / コールサイン）',
+        'id': 'Tidak ada yang perlu diterjemahkan (angka / simbol / tanda panggil)',
+        'es': 'Aquí no hay nada que traducir (números / símbolos / indicativos)',
     },
     'translateBubbleCount': {
         'zh': '已翻译 {n} 条', 'zh_TW': '已翻譯 {n} 條',

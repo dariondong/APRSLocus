@@ -2099,6 +2099,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重复绑定';
 
   @override
+  String rxOnlyBanner(String arg) {
+    return '$arg 已连接 · 仅接收（当前发射来源未连接）';
+  }
+
+  @override
   String get pkwdwplTip =>
       '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
 
@@ -7375,6 +7380,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重複綁定';
+
+  @override
+  String rxOnlyBanner(String arg) {
+    return '$arg 已連線 · 僅接收（目前發射來源未連線）';
+  }
 
   @override
   String get pkwdwplTip =>

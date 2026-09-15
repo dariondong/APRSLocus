@@ -2192,6 +2192,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'En uso por PKWDWPL — no se puede vincular de nuevo';
 
   @override
+  String rxOnlyBanner(String arg) {
+    return '$arg conectado · solo recepción (la fuente de transmisión está desconectada)';
+  }
+
+  @override
   String get pkwdwplTip =>
       'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
 

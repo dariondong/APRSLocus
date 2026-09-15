@@ -145,7 +145,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
     setState(() => _busy = true);
     if (tnc.connected) {
       await tnc.disconnect();
-      st.connected = false;
+      st.adoptDeviceLink(AppState.srcTnc, false);
       st.setConnStatus(ConnPhase.manual);
     } else {
       if (tnc.device == null) {
@@ -158,14 +158,19 @@ class _TncDevicePageState extends State<TncDevicePage> {
         _toast(S.of(context).tncNeedPermission, color: C.red);
         return;
       }
+      // 设备冲突守卫必须在 connect **之前**：设备页是直接调 tnc.connect()
+      // 的，绕过了 AppState 的自动连接路径，那里的守卫到这里不生效。
+      await st.guardDeviceConnect(AppState.srcTnc);
       await _collect();
       final ok = await tnc.connect();
+      // 把结果记回 AppState（_linkUp 表 + 来源启用）。
+      // 不能直接写 `connected = true` —— 那只维持到下一次重算，
+      // 之后又会因为 _linkUp 里没有 tnc 而变回 false（＝显示未连接）。
+      st.adoptDeviceLink(AppState.srcTnc, ok);
       if (ok) {
-        st.connected = true;
         st.setConnStatus(ConnPhase.tncConnected,
             arg: tnc.device?.label ?? '');
       } else {
-        st.connected = false;
         st.setConnStatus(ConnPhase.retryTnc,
             arg: tnc.lastError, seconds: 8);
         if (tnc.status == TncStatus.openFailed) {

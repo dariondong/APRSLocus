@@ -1193,7 +1193,15 @@ class _HomePageState extends State<HomePage> {
         // 只读模式（只启用 PKWDWPL）：没有发射链路，但一直在收航点。
         // 横幅改成「PKWDWPL · 只读接收」，而不是「未连接」——后者会让
         // 用户以为需要去点连接。
-        final pkwdwplMode = st.pkwdwplOn && !st.txSourceUp;
+        //
+        // 条件里额外看 pkwdwpl.connected：设备页手动连上、但来源还未启用
+        // （旧配置/异常路径）时也不能说「未连接 APRS-IS 服务器」，那与事实相反。
+        final pkwdwplMode =
+            (st.pkwdwplOn || st.pkwdwpl.connected) && !st.txSourceUp;
+        // 更一般的情况：**有链路在收，但它不是发射来源**（例如设备页刚连上
+        // TNC，而发射仍走未连接的 APRS-IS）。这时也不能说「未连接」——
+        // 用户明明刚连上东西，界面却报未连接。
+        final rxOnly = st.rxActive && !st.txSourceUp && !pkwdwplMode;
         // 音频来源没有「设备」概念，改成展示采样率（用户真正关心的参数）
         final tncName = audioMode
             ? '${st.audio.config.afsk.sampleRate}Hz'
@@ -1210,7 +1218,7 @@ class _HomePageState extends State<HomePage> {
                     ? S.of(context).connectTncBar
                     : (pkwdwplMode
                         ? S.of(context).dataSourcePkwdwpl
-                        : S.of(context).notConnectedAprsServer)));
+                        : (rxOnly ? 'RX' : S.of(context).notConnectedAprsServer))));
         final subtitle = connecting
             ? (audioMode
                 ? S.of(context).connConnectingAudio(tncName)
@@ -1225,7 +1233,9 @@ class _HomePageState extends State<HomePage> {
                     ? S.of(context).dataSourceTncDesc
                     : (pkwdwplMode
                         ? S.of(context).dataSourcePkwdwplDesc
-                        : S.of(context).connectNearbyDesc)));
+                        : (rxOnly
+                            ? S.of(context).rxOnlyBanner(st.rxSourceLabel)
+                            : S.of(context).connectNearbyDesc))));
         return Container(
           margin: EdgeInsets.fromLTRB(
               compact ? 10 : 12, 0, compact ? 10 : 12, compact ? 6 : 10),

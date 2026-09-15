@@ -706,6 +706,8 @@
   "deviceConflictDesc": "TNC 與 PKWDWPL 指向同一臺裝置時，接收到的資料會被兩條鏈路瓜分 —— 表現是「能發不能收」（發送正常、收不到報文）。請給其中一條換一臺裝置。TNC 優先：PKWDWPL 會拒絕連線。",
   "deviceInUseByTnc": "已被 TNC 使用，不能重複綁定",
   "deviceInUseByPkwdwpl": "已被 PKWDWPL 使用，不能重複綁定",
+  "rxOnlyBanner": "{arg} 已連線 · 僅接收（目前發射來源未連線）",
+  "@rxOnlyBanner": {"placeholders": {"arg": {"type": "String"}}},
   "pkwdwplTip": "在電台選單裡把 PC / GPS 埠的輸出格式設為 \"$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文",
   "pkwdwplStrictChecksum": "嚴格校驗和（不符即丟棄）",
   "pkwdwplStrictChecksumTip": "預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查",
