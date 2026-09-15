@@ -117,7 +117,7 @@
         <a class="btn btn-text" href="#getting-started">开始使用<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
       </div>
       <div class="hero-meta">
-        <span>APRS-IS 自动连接</span>
+        <span>APRS-IS · TNC · 音频 · PKWDWPL 四种来源</span>
         <span>Android / Windows</span>
       </div>
     </div>
@@ -354,9 +354,47 @@
     <article class="card reveal">
       <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
       <h3>个性化体验</h3>
-      <p>简体中文 / 繁體中文 / English 可切换，支持深色模式和自定义主题色，界面可缩放 85% ~ 130%。首次启动有六步引导。</p>
-      <ul class="card-tags"><li>简 / 繁 / 英</li><li>深色模式</li><li>OOBE 引导</li></ul>
+      <p>简体中文 / 繁體中文 / English / 日本語 / Indonesia / Español 可切换，支持深色模式和自定义主题色，界面可缩放 85% ~ 130%。首次启动有六步引导。</p>
+      <ul class="card-tags"><li>六种语言</li><li>深色模式</li><li>OOBE 引导</li></ul>
     </article>
+<!-- site-sync:features -->
+    <article class="card reveal">
+      <div class="card-icon c9"><i class="fa-solid fa-tower-cell"></i></div>
+      <h3>四种数据来源</h3>
+      <p>互联网（APRS-IS）、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200（Bell 202 软 TNC），以及读取 Kenwood 电台输出的 <code>$PKWDWPL</code> 航点语句（只收不发）。几条链路可以同时收报文，发射来源单独指定一条。</p>
+      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>音频</li><li>PKWDWPL</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c10"><i class="fa-solid fa-right-left"></i></div>
+      <h3>网关（iGate）</h3>
+      <p>把射频收到的报文转到 APRS-IS，自动带 <code>qAr</code> / <code>qAR</code> 来路标识；带环路防护（含 <code>TCPIP*</code> 或已有 q 构造的报文绝不送回），同一帧 30 秒内只注入一次。可选双向模式会把网络侧发给「刚在射频上听到过」的台站的消息送到射频。</p>
+      <ul class="card-tags"><li>RF→IS</li><li>防环</li><li>去重</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c11"><i class="fa-solid fa-language"></i></div>
+      <h3>双向聊天翻译</h3>
+      <p>内置多引擎翻译，默认走免费接口、<b>无需任何密钥</b>。收到的和发出的消息都能译，可对照原文，也能在发送前先把自己的输入译成对方的语言。</p>
+      <ul class="card-tags"><li>免密钥</li><li>对照翻译</li><li>发送前翻译</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c12"><i class="fa-solid fa-compass"></i></div>
+      <h3>沉浸地图（导航风格）</h3>
+      <p>专为「边开车边看」设计的导航风格页面：大字号方向 / 距离 / 速度，左侧「附近台站」面板，目标台站居中，Android 与 Windows 都能用。</p>
+      <ul class="card-tags"><li>导航风格</li><li>附近台站</li><li>大字号</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c13"><i class="fa-solid fa-chart-line"></i></div>
+      <h3>天气 · 统计 · 荣誉</h3>
+      <p>天气面板（动态背景跟随实时天气强度变化）、台站统计面板（最近上报 / 最远距离 / 报文速率），以及荣誉墙。</p>
+      <ul class="card-tags"><li>天气面板</li><li>统计面板</li><li>荣誉墙</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c14"><i class="fa-solid fa-file-export"></i></div>
+      <h3>数据导出</h3>
+      <p>一键导出 ADIF —— 业余无线电通用的日志交换格式，频率可自定义，导出后可直接导入其它日志软件。</p>
+      <ul class="card-tags"><li>ADIF</li><li>频率自定义</li></ul>
+    </article>
+  <!-- /site-sync:features -->
   </div>
 </section>
 
@@ -477,10 +515,80 @@
 <section class="section" id="changelog">
   <div class="section-head reveal">
     <h2>更新日志</h2>
-    <p>近几个版本的主要变化。</p>
+    <p>近期重点版本的主要变化（中间数十个以修复为主的版本已合并，完整记录见 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a>）。</p>
   </div>
 
   <div class="changelog-list">
+<!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.109</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>主页「手动上报」与「连接」按钮加大（高度 44、字号 13，更好点按）</div>
+        <div class="cl-item"><span class="cl-dot new"></span>可以只留 PKWDWPL 一条来源：拿电台当纯接收机用，地图 / 台账照常，界面会明说「本机不会发射」</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.108</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增第 4 条数据来源「PKWDWPL」：读取 Kenwood 电台输出的 $PKWDWPL 航点语句，收到的台站直接上图（只读链路，不会发射）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.107</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增网关（iGate）：把射频收到的报文转到 APRS-IS，带 qAr / qAR 来路标识、环路防护与 30 秒去重</div>
+        <div class="cl-item"><span class="cl-dot new"></span>数据来源改为多选：几条链路可以一起收报文，发射来源仍单独指定一条</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.106</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>真正修好「蓝牙 TNC 只能接收、不能发射」（Android）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.105</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>设备设置页重构：从「一个什么都有的大页面」改为按问题分层的三页</div>
+        <div class="cl-item"><span class="cl-dot up"></span>群聊协议层收口成一个状态机（此前逻辑散落，边界情况容易出错）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.104</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增数据来源「音频（声卡 TNC）」：用麦克风 / 扬声器接电台收发 AFSK 1200</div>
+        <div class="cl-item"><span class="cl-dot new"></span>新增「链路自检」：TNC 与音频都能一键分层排查</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.100</span>
+        <span class="cl-date">2026-09-13</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增数据来源：蓝牙 TNC（含完整 KISS 控制）—— 从纯网络走向射频</div>
+        <div class="cl-item"><span class="cl-dot new"></span>聊天翻译：可双向、可对照、发送前先译成对方的语言</div>
+      </div>
+    </div>
+  <!-- /site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag beta">2.0 BETA</span>

@@ -115,7 +115,7 @@
         <a class="btn btn-text" href="#getting-started">Get Started<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
       </div>
       <div class="hero-meta">
-        <span>APRS-IS Auto Connect</span>
+        <span>APRS-IS · TNC · Audio · PKWDWPL</span>
         <span>Android / Windows</span>
       </div>
     </div>
@@ -349,9 +349,47 @@
     <article class="card reveal">
       <div class="card-icon c8"><i class="fa-solid fa-palette"></i></div>
       <h3>Personalization</h3>
-      <p>Simplified Chinese / Traditional Chinese / English UI, dark mode, custom accent colors, scalable UI (85%–130%). Six-step onboarding wizard on first launch.</p>
-      <ul class="card-tags"><li>ZH / ZH-TW / EN</li><li>Dark Mode</li><li>OOBE Wizard</li></ul>
+      <p>Simplified Chinese / Traditional Chinese / English / Japanese / Indonesian / Spanish UI, dark mode, custom accent colors, scalable UI (85%–130%). Six-step onboarding wizard on first launch.</p>
+      <ul class="card-tags"><li>Six Languages</li><li>Dark Mode</li><li>OOBE Wizard</li></ul>
     </article>
+<!-- site-sync:features -->
+    <article class="card reveal">
+      <div class="card-icon c9"><i class="fa-solid fa-tower-cell"></i></div>
+      <h3>Four Data Sources</h3>
+      <p>Internet (APRS-IS), Bluetooth / serial TNC over KISS, a sound-card AFSK 1200 (Bell 202) software TNC, and reading the <code>$PKWDWPL</code> waypoint sentences a Kenwood radio outputs (receive-only). Several links can receive at once, while the transmit source is picked separately.</p>
+      <ul class="card-tags"><li>APRS-IS</li><li>TNC</li><li>Audio</li><li>PKWDWPL</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c10"><i class="fa-solid fa-right-left"></i></div>
+      <h3>Gateway (iGate)</h3>
+      <p>Relays RF packets into APRS-IS, tagging them with <code>qAr</code> / <code>qAR</code>; loop protection is built in (packets already carrying <code>TCPIP*</code> or a q-construct are never echoed back), and the same frame is injected once per 30 seconds. Optional two-way mode sends messages to stations recently heard on RF.</p>
+      <ul class="card-tags"><li>RF→IS</li><li>Loop-safe</li><li>De-duplication</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c11"><i class="fa-solid fa-language"></i></div>
+      <h3>Two-way Chat Translation</h3>
+      <p>Built-in multi-engine translation that works out of the box on a free endpoint, <b>no API key required</b>. Translate both incoming and outgoing messages, compare against the original, or translate your text into the other station's language before sending.</p>
+      <ul class="card-tags"><li>No API key</li><li>Side-by-side</li><li>Pre-send</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c12"><i class="fa-solid fa-compass"></i></div>
+      <h3>Immersive Drive View</h3>
+      <p>A navigation-style page built for glancing at while driving: large heading / distance / speed readouts, a nearby-stations panel, and the target station centred.</p>
+      <ul class="card-tags"><li>Navigation style</li><li>Nearby stations</li><li>Large type</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c13"><i class="fa-solid fa-chart-line"></i></div>
+      <h3>Weather · Statistics · Honors</h3>
+      <p>A weather panel whose dynamic background follows the actual conditions, station statistics (latest spot, farthest distance, packet rate), and an honors wall.</p>
+      <ul class="card-tags"><li>Weather</li><li>Statistics</li><li>Honors</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c14"><i class="fa-solid fa-file-export"></i></div>
+      <h3>Data Export</h3>
+      <p>One-tap ADIF export — the standard amateur-radio log interchange format — with a configurable frequency, ready to import into other logging software.</p>
+      <ul class="card-tags"><li>ADIF</li><li>Custom frequency</li></ul>
+    </article>
+  <!-- /site-sync:features -->
   </div>
 </section>
 
@@ -472,10 +510,80 @@
 <section class="section" id="changelog">
   <div class="section-head reveal">
     <h2>Changelog</h2>
-    <p>Recent changes across the latest releases.</p>
+    <p>Highlights of recent releases — dozens of maintenance releases in between are folded in; see <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a> for the full history.</p>
   </div>
 
   <div class="changelog-list">
+<!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.109</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>Bigger home-page beacon / connect buttons (44px tall, 13px label)</div>
+        <div class="cl-item"><span class="cl-dot new"></span>A PKWDWPL-only setup is now allowed: use the radio as a pure receiver; the UI states plainly that nothing is transmitted</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.108</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New fourth data source "PKWDWPL": reads the $PKWDWPL waypoint sentences a Kenwood radio emits, plotting heard stations directly (receive-only, never transmits)</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.107</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New gateway (iGate): relays RF packets into APRS-IS with qAr / qAR tagging, loop protection and 30-second de-duplication</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Data sources became multi-select: several links can receive at once, while the transmit source stays a single choice</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.106</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>The actual fix for "Bluetooth TNC receives but will not transmit" (Android)</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.105</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>Device settings split from one catch-all page into three pages grouped by the question you are asking</div>
+        <div class="cl-item"><span class="cl-dot up"></span>Group-chat protocol consolidated into a single state machine</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.104</span>
+        <span class="cl-date">2026-09-14</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New "Audio (sound-card TNC)" data source: AFSK 1200 through your mic / speaker and a radio</div>
+        <div class="cl-item"><span class="cl-dot new"></span>New link self-test: layered one-tap diagnosis for both TNC and audio</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.100</span>
+        <span class="cl-date">2026-09-13</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New data source: Bluetooth TNC with full KISS control — the move from network-only towards RF</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Chat translation: two-way, side-by-side, and pre-send into the other station's language</div>
+      </div>
+    </div>
+  <!-- /site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag beta">2.0 BETA</span>

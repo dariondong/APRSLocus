@@ -456,6 +456,11 @@ body.loaded .hero::after { transform: translate(-50%,-50%) scale(1); opacity: 1;
 .c6 { background: linear-gradient(135deg, #f472b6, #db2777); }
 .c7 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
 .c8 { background: linear-gradient(135deg, #fb7185, #e11d48); }
+.c9 { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.c10 { background: linear-gradient(135deg, #38bdf8, #1d4ed8); }
+.c11 { background: linear-gradient(135deg, #22d3ee, #0891b2); }
+.c12 { background: linear-gradient(135deg, #4ade80, #16a34a); }
+.c13 { background: linear-gradient(135deg, #facc15, #ca8a04); }
 .card h3 { font-size: 19px; font-weight: 800; margin-bottom: 10px; }
 .card p { color: var(--text-dim); font-size: 14.5px; }
 .card-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
