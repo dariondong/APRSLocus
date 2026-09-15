@@ -1,6 +1,6 @@
 {
-  "version": 45,
-  "updated": "2026-09-13",
+  "version": 46,
+  "updated": "2026-09-15",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1489,6 +1489,30 @@
         "zh": "在同频的清晨与深夜里守着，把每一声呼叫都记成了坐标。",
         "zh-TW": "在同頻的清晨與深夜裡守著，把每一聲呼叫都記成了座標。",
         "en": "Keeping watch through the small hours on the same frequency — every call logged as a coordinate."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BA7OPF",
+      "who": {
+        "zh": "BA7OPF",
+        "zh-TW": "BA7OPF",
+        "en": "BA7OPF"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "在信号还稀疏的那些夜里守着频率，把每一次出现都变成了航迹。",
+        "zh-TW": "在訊號還稀疏的那些夜裡守著頻率，把每一次出現都變成了航跡。",
+        "en": "Held the frequency through the nights when signals were sparse — every appearance turned into a track."
       },
       "honors": [
         "earlyMember"
