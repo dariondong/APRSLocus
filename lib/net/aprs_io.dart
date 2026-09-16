@@ -26,6 +26,20 @@ class AprsIo extends AprsConnector {
 
   @override
   Future<bool> connect() async {
+    // ⚠️ 先**静默**收掉上一次的连接（不触发 onDisconnected）。
+    //
+    // 为什么必须有：下面的 `_sock = sock` / `_sub = sock.listen(...)` 会
+    // **直接覆盖**旧引用。若不先收掉旧连接，它就成了「孤儿」—— 引用没了，
+    // 谁也再关不掉它，而它**仍会继续把数据喂给 onLine**。
+    //
+    // 后果是**累积性**的：每多一次重复连接就多一个孤儿 socket，
+    // 于是同一条报文被重复处理 N 次，N 随时间增长 → 越用越卡、内存上涨。
+    //
+    // 触发条件很常见：只要有一条已启用的链路始终连不上（未绑定设备、
+    // 设备未开机、被设备冲突拦下…），重连定时器就会反复调用本方法。
+    _silentTeardown();
+    // 旧连接残留的半行不能带进新连接（否则新连接的第一条报文会被拼错）
+    _buf.clear();
     try {
       final sock = await Socket.connect(
         server,
@@ -67,6 +81,22 @@ class AprsIo extends AprsConnector {
     try {
       _sock?.write('$raw\r\n');
     } catch (_) {}
+  }
+
+  /// 静默收掉当前连接：清理资源但**不**触发 onDisconnected。
+  ///
+  /// 与 [_handleGone] 的区别：那个会回调 onDisconnected（用于「链路意外
+  /// 断开」，上层据此排重连）；在 connect() 内部调用它会误报一次断开、
+  /// 甚至再排一次重连。
+  void _silentTeardown() {
+    try {
+      _sub?.cancel();
+    } catch (_) {}
+    _sub = null;
+    try {
+      _sock?.destroy();
+    } catch (_) {}
+    _sock = null;
   }
 
   void _handleGone() {

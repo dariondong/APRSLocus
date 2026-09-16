@@ -51,6 +51,61 @@ void main() {
     );
   });
 
+  test('APRS-IS 已连接时不得被重建（否则累积孤儿 socket → 越用越卡）', () {
+    final io = File('lib/net/aprs_io.dart').readAsStringSync();
+    final state = File('lib/state.dart').readAsStringSync();
+
+    // ① 源头：connect() 必须先收掉上一次的连接。
+    //    `_sock = sock` / `_sub = sock.listen(...)` 会直接覆盖旧引用；
+    //    若不先收掉，旧 socket 成为孤儿 —— 引用没了，谁也关不掉它，
+    //    而它仍会继续把数据喂给 onLine，于是同一报文被重复处理 N 次，
+    //    N 随重复连接次数增长。
+    final ci = io.indexOf('Future<bool> connect() async {');
+    expect(ci, greaterThan(0));
+    final connBody = io.substring(ci, ci + 900);
+    expect(
+      connBody.contains('_silentTeardown()'),
+      isTrue,
+      reason: 'connect() 必须先静默收掉旧连接，否则每次重复连接都会漏一个孤儿 socket',
+    );
+    // 覆盖旧引用之前不能先赋值。
+    // 注意带分号：注释里会引用 `_sock = sock` 这行做说明，不带分号会误匹配注释。
+    final teardownAt = connBody.indexOf('_silentTeardown()');
+    final assignAt = connBody.indexOf('_sock = sock;');
+    expect(teardownAt, lessThan(assignAt),
+        reason: '_silentTeardown() 必须在 `_sock = sock` 之前调用');
+
+    // ② 闸门一：已连上就不再重建 APRS-IS
+    final ai = state.indexOf('Future<void> _connectAprsIs() async {');
+    expect(ai, greaterThan(0));
+    final aiBody = state.substring(ai, ai + 700);
+    expect(
+      aiBody.contains('if (isUp(srcAprsIs)) return;'),
+      isTrue,
+      reason: '_connectAprsIs 必须先判断「已经连着」，否则重连 tick 会反复重建 TCP 连接',
+    );
+
+    // ③ 闸门二：_connect() 只连没连着的链路
+    final ci2 = state.indexOf('Future<void> _connect() async {');
+    expect(ci2, greaterThan(0));
+    final connectBody = state.substring(ci2, ci2 + 1200);
+    for (final probe in [
+      'aprsIsOn && !isUp(srcAprsIs)',
+      'tncOn && !isUp(srcTnc)',
+      'audioOn && !isUp(srcAudio)',
+      'pkwdwplOn && !isUp(srcPkwdwpl)',
+    ]) {
+      expect(connectBody.contains(probe), isTrue,
+          reason: '_connect() 必须用「未连上」条件包住每条链路（缺：$probe）');
+    }
+
+    // ④ 闸门三：重试也没用的链路不该让定时器空转
+    expect(state.contains('bool _permanentlyDown(String src)'), isTrue,
+        reason: '需要 _permanentlyDown 识别「永久失败」的链路（未绑定设备等）');
+    expect(state.contains('|| _permanentlyDown(s));'), isTrue,
+        reason: '_allExpectedLinksUp 必须把永久失败的链路也算作「不用再重试」');
+  });
+
   test('射频链路在退出/销毁时必须被释放（不能只断 APRS-IS）', () {
     final src = File('lib/state.dart').readAsStringSync();
     // shutdownForExit 与 dispose 都应断开三条射频链路

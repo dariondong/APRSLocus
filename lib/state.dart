@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.112';
+  static const appVersion = '1.6.113';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1081,12 +1081,41 @@ class AppState extends ChangeNotifier {
   bool blockedByConflict(String src) =>
       _normalizeSrc(src) == srcPkwdwpl && tncPkwdwplConflict;
 
-  /// 「该做的都做完了」：每条已启用链路要么通了、要么因冲突不可能通。
+  /// 该链路是否处于「重试也没用」的失败状态。
+  ///
+  /// 为什么要单独判它：这类链路**永远不可能连上**，若照常排重连，定时器就
+  /// 会一直空转。空转不只是耗电 —— 每次 tick 都会走一遍 [_connect]，
+  /// 而旧实现里那会**反复重建 APRS-IS 连接并泄漏 socket**（见
+  /// `net/aprs_io.dart` 的 connect 注释），于是报文被重复处理、越用越卡。
+  ///
+  /// 只把**确定性**的原因算作永久失败：未绑定设备 / 平台不支持 /
+  /// 被设备冲突拦下。「没权限」不算 —— 用户授权后就能连上。
+  bool _permanentlyDown(String src) {
+    switch (_normalizeSrc(src)) {
+      case srcTnc:
+        return tnc.device == null ||
+            tnc.lastError == TncStatus.noDevice ||
+            tnc.lastError == TncStatus.unsupported;
+      case srcAudio:
+        // 音频没有「设备绑定」概念，只有「平台不支持」是永久性的
+        return audio.lastError == 'unsupported';
+      case srcPkwdwpl:
+        return blockedByConflict(srcPkwdwpl) ||
+            pkwdwpl.device == null ||
+            pkwdwpl.lastError == 'no-device' ||
+            pkwdwpl.lastError == 'unsupported' ||
+            pkwdwpl.lastError == 'device-in-use';
+      default:
+        return false;
+    }
+  }
+
+  /// 「该做的都做完了」：每条已启用链路要么通了、要么不可能通/重试也没用。
   ///
   /// 专门抽出来避免两处重连判断（排程时、定时器触发时）写得不一致 ——
   /// 只改一处就会漏成无限重连。
-  bool get _allExpectedLinksUp =>
-      enabledSources.every((s) => isUp(s) || blockedByConflict(s));
+  bool get _allExpectedLinksUp => enabledSources.every(
+      (s) => isUp(s) || blockedByConflict(s) || _permanentlyDown(s));
 
   /// 任一已启用来源掉线就安排重连（不是只看发射来源）
   void _scheduleReconnectIfNeeded() {
@@ -2285,10 +2314,20 @@ class AppState extends ChangeNotifier {
     if (_connectingAll) return;
     _connectingAll = true;
     try {
-      if (aprsIsOn) await _connectAprsIs();
-      if (tncOn) await _connectTnc();
-      if (audioOn) await _connectAudio();
-      if (pkwdwplOn) await _connectPkwdwpl();
+      // 只连**当前没连着**的链路。
+      //
+      // 这一步是防「反复重建」的关键闸门：重连定时器按「还有链路没上」触发，
+      // 但真正要重试的只是那条掉线的链路，已连上的不应当被拆掉重连。
+      //
+      // 注意这里**不**用 `_permanentlyDown` 做跳过 —— 那个只用来决定
+      // 「要不要再排重连」（见 [_allExpectedLinksUp]）。若在这里也跳过，
+      // _connectPkwdwpl 里那段「记录 device-in-use 错误」的代码就永远
+      // 到不了，用户点连接会没任何反馈。它的代价只是几个提前 return，
+      // 不会造成空转。
+      if (aprsIsOn && !isUp(srcAprsIs)) await _connectAprsIs();
+      if (tncOn && !isUp(srcTnc)) await _connectTnc();
+      if (audioOn && !isUp(srcAudio)) await _connectAudio();
+      if (pkwdwplOn && !isUp(srcPkwdwpl)) await _connectPkwdwpl();
     } finally {
       _connectingAll = false;
     }
@@ -2298,6 +2337,14 @@ class AppState extends ChangeNotifier {
 
   /// APRS-IS 连接（原来的 `_connect` 主体）
   Future<void> _connectAprsIs() async {
+    // 已经连着就别重建。
+    //
+    // 重连定时器每次 tick 都会走 [_connect]，而它无条件调本方法 ——
+    // 若一条**别的**链路始终连不上，定时器就会反复重建 APRS-IS：
+    // 每次新建一个 TCP socket、丢掉当前连接、重发过滤器与身份帧。
+    // 旧实现甚至会把旧 socket 变成孤儿（见 `net/aprs_io.dart` 的注释），
+    // 导致报文被重复处理、越用越卡。
+    if (isUp(srcAprsIs)) return;
     if (connecting) return;
     connecting = true;
     setConnStatus(ConnPhase.connectingServer,

@@ -1,5 +1,93 @@
 # 更新日志
 
+## [1.6.113] - 2026-09-15
+
+### ⚡ 修一个会「越用越卡」的累积性缺陷：APRS-IS 被反复重建 + socket 泄漏
+### Fixed an accumulating defect that made the app get slower the longer it ran
+
+**结论：有，而且是可以累积到很严重的卡顿。已经修掉。**
+
+**机制**（三处凑在一起才发作）：
+
+`lib/net/aprs_io.dart` 的 `connect()` 里：
+
+```dart
+final sock = await Socket.connect(...);
+_sock = sock;             // ← 旧 _sock 引用被覆盖，从未 destroy()
+_sub = sock.listen(...);  // ← 旧 _sub 被覆盖，从未 cancel()
+```
+
+而 `_connect()` 会**无条件**调用 `_connectAprsIs()`，后者**没有「已连接」检查**。
+于是：
+
+1. 只要有一条**已启用但连不上**的链路（未绑定设备、设备没开机、被设备冲突拦下…），
+   重连定时器就会一直按 8→16→32→60 秒重试；
+2. 每次重试都走一遍 `_connect()` → `_connectAprsIs()` → **新建一个 TCP 连接**，
+   旧 socket 失去引用变成**孤儿**，但**它仍在继续把数据喂给解析管线**；
+3. 于是同一条报文被重复处理 N 次，而 **N 随时间增长** —— 跑十分钟就有十几个
+   孤儿连接。表现就是**越用越卡**（而且连接数不会自己降下来）。
+
+**触发条件很常见**：数据来源是多选的，用户勾了 TNC 但还没绑设备（或设备没开），
+就已经满足条件了。
+
+**修复（四道）**
+
+1. **`AprsIo.connect()` 先静默收掉旧连接再建新的** —— 从源头杜绝孤儿 socket。
+   刻意用「静默」（不触发 `onDisconnected`），否则会误报一次断开、再排一次重连。
+2. **`_connectAprsIs()` 增加「已经连着就别重建」守卫** —— 重连 tick 不该拆掉
+   一条好好的 TCP 连接（那还会重发过滤器与身份帧）。
+3. **`_connect()` 只连「当前没连着」的链路** —— 要重试的只是那条掉线的链路。
+4. **新增 `_permanentlyDown()`**：把「重试也没用」的链路（未绑定设备 / 平台不支持 /
+   被设备冲突拦下）算作「不必再重试」，让重连定时器不再空转。**「没权限」不算** ——
+   用户授权后就能连上。
+
+**诚实说明两点**
+
+- 这三处缺陷**在 v1.6.107 就已存在**（我用 `git show v1.6.107:` 核对过 `_sock = sock`
+  与 `_connectAprsIs` 的原文），**不是新引入的**；
+- 但**我上一版（1.6.112）的修改把暴露面放宽了** —— 修好「断开后永不重连」之后，
+  重连不再被任何条件跳过，于是走到这个泄漏路径的机会比以前多。这一版把它堵上了。
+
+**还有一处我在修的过程中自己踩到的坑**（记录在此以免日后重犯）：我先给 `_connect()`
+的三条链路都加了 `&& !_permanentlyDown(...)`，结果**一条已有测试立刻失败** ——
+`_connectPkwdwpl()` 里那段「记录 `device-in-use` 错误」的代码**再也到不了**，
+用户点连接会完全没有反馈。已改成：`_permanentlyDown` **只用于决定要不要再排重连**，
+不用来决定要不要尝试连接（它的代价只是几个提前 return，不会空转）。
+
+新增 1 项源码级护栏（`test/tnc_reconnect_guard_test.dart` → 3 项）：断言
+`connect()` 必须先收旧连接再赋值、`_connectAprsIs` 必须有「已连着」守卫、
+`_connect()` 必须用「未连上」条件包住每条链路、以及 `_allExpectedLinksUp` 必须
+把永久失败的链路算作「不用再试」。
+
+---
+
+**Yes — there was, and it could accumulate into serious lag. Fixed.**
+
+`AprsIo.connect()` overwrites `_sock` and `_sub` without releasing the previous values, and
+`_connect()`/`_connectAprsIs()` had no "already connected" check. So any enabled link that
+stays down (no device bound, radio off, blocked by a device conflict…) made the retry timer
+fire every 8→16→32→60 seconds, and **each tick rebuilt the APRS-IS connection**: a new socket
+was created while the old one became an orphan that *still fed the parser*. Every packet was
+then processed N times, with N growing over time — the app got slower the longer it ran, and
+nothing brought the connection count back down.
+
+Four fixes: silently tear down the previous connection before reconnecting (at the source);
+skip rebuilding APRS-IS when it is already up; only connect links that are actually down; and
+treat "retrying cannot help" links (no device bound / unsupported / device conflict) as
+nothing-left-to-do so the retry timer stops spinning. "No permission" is deliberately *not*
+treated that way, since the user can fix it.
+
+Two honest notes: these defects are **pre-existing** (verified against v1.6.107, not
+introduced now) — but my previous release **widened the exposure** by making reconnection
+never skippable, so this release closes the path it opened.
+
+I also hit a real interaction while fixing it and documented it: adding `_permanentlyDown` to
+the link-skip condition made an existing test fail, because `_connectPkwdwpl()`'s code that
+records the `device-in-use` error became unreachable — leaving the user with no feedback.
+`_permanentlyDown` now only decides whether to *schedule another retry*.
+
+---
+
 ## [1.6.112] - 2026-09-15
 
 ### 🚨 找到「TNC 能发不能收」的真正原因（与 PKWDWPL 无关）
