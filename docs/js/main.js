@@ -254,4 +254,70 @@
       .catch(() => {});
   })();
 
+  /* ── 赞助名单：直接读 /sponsors.json ──
+
+     为什么动态渲染：这份名单原先在三个语言页里各手写一份，于是必然走样 ——
+     实际就漏了 STUDENT HAMS 群组、BG7PGW（咖啡）与「每一位支持者」。
+     现在以 sponsors.json 为唯一真源（App 内的「赞助与鸣谢」页读的也是它），
+     以后加赞助人只改那一个文件，官网自动跟上。
+
+     静态 HTML 里保留同一份名单作为兜底（JS 被禁用或取不到数据时照常显示）。 */
+  const renderSponsors = (() => {
+    const box = document.getElementById("sponsorList");
+    if (!box) return;
+    const lang = box.getAttribute("data-lang") || "zh";
+
+    // 按赞助类型给头像底色（与页面既有渐变风格一致）
+    const GRAD = {
+      group: "linear-gradient(135deg,#6366f1,#4338ca)",
+      coffee: "linear-gradient(135deg,#f59e0b,#b45309)",
+      jade: "linear-gradient(135deg,#c9a227,#8a6d1f)",
+      school: "linear-gradient(135deg,#0ea5b7,#0b7285)",
+      everyone: "linear-gradient(135deg,#ec4899,#be185d)",
+    };
+
+    // 头像里那个字：呼号取「地区号后面的字母」（BG7ORC → O），其余取首字。
+    // 用 Array.from 而不是 [0]，避免把 emoji / 代理对切成半个字符。
+    const initial = (name) => {
+      const m = /^[A-Za-z]{1,2}\d([A-Za-z])/.exec(name || "");
+      if (m) return m[1].toUpperCase();
+      return Array.from(String(name || "").trim())[0] || "·";
+    };
+
+    const esc = (v) =>
+      String(v == null ? "" : v).replace(/[&<>"]/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])
+      );
+
+    // 语言回落：该语言 → **中文基准**（不带英文）→ 英文。
+    // 顺序刻意如此：sponsors.json 里 `desc` 本身就是中文基准，若把英文插在它前面，
+    // 中文页会因为条目没写 `zh` 键而显示英文。
+    const pick = (map, base) =>
+      (map && map[lang]) || base || (map && map.en) || "";
+
+    // 绝对路径：/zh-TW/ 与 /en/ 下用相对路径会取不到
+    fetch("/sponsors.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data) => {
+        const list = data && data.sponsors;
+        if (!Array.isArray(list) || !list.length) return;
+        box.innerHTML = list
+          .map((sp) => {
+            const name = pick(sp.names, sp.name);
+            const desc = pick(sp.descs, sp.desc);
+            const grad = GRAD[sp.kind] || GRAD.everyone;
+            return (
+              '<span class="contributor">' +
+              '<span class="avatar" style="background:' + grad + '">' +
+              esc(initial(name)) + "</span>" +
+              '<span><span class="c-name">' + esc(name) +
+              '</span><span class="c-role">' + esc(desc) + "</span></span>" +
+              "</span>"
+            );
+          })
+          .join("");
+      })
+      .catch(() => {});
+  })();
+
 })();

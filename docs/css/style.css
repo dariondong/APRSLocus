@@ -857,6 +857,12 @@ body.loaded .hero-phone {
 }
 .contributor .c-name { font-size: 14px; font-weight: 700; color: var(--text); }
 .contributor .c-role { display: block; font-size: 11px; color: var(--text-faint); font-weight: 500; }
+
+/* ── 赞助名单（由 /sponsors.json 渲染）──
+   说明文字可能很长（如「赠我以琼瑶 · 承君厚赠，藏之于心；唯有砥砺，以报清音」），
+   所以限制宽度让文字换行，而不是把胶囊拉成一长条；圆角也相应收小。 */
+.contributors#sponsorList .contributor { max-width: 380px; border-radius: 16px; }
+.contributors#sponsorList .c-role { white-space: normal; }
 .cta-line { text-align: center; margin-top: 22px; font-size: 13.5px; color: var(--text-faint); }
 .cta-line a { color: var(--cyan); font-weight: 600; }
 .cta-line a:hover { text-decoration: underline; }
