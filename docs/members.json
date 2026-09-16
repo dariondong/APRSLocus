@@ -1,6 +1,6 @@
 {
-  "version": 46,
-  "updated": "2026-09-15",
+  "version": 47,
+  "updated": "2026-09-16",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -499,7 +499,8 @@
       "grp": "support",
       "honors": [
         "earlyMember",
-        "mostBrain"
+        "mostBrain",
+        "jadeGift"
       ],
       "primary": "earlyMember"
     },

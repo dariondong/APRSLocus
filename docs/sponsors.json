@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "updated": "2026-09-13",
+  "version": 4,
+  "updated": "2026-09-16",
   "sponsors": [
     {
       "kind": "group",
@@ -65,6 +65,16 @@
         "zh": "赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音",
         "zh-TW": "贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音",
         "en": "Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work."
+      }
+    },
+    {
+      "kind": "jade",
+      "name": "BA3RZL",
+      "desc": "赠我以琼琚 · 以算力为琼琚，燃此长夜灯火",
+      "descs": {
+        "zh": "赠我以琼琚 · 以算力为琼琚，燃此长夜灯火",
+        "zh-TW": "贈我以瓊琚 · 以算力為瓊琚，燃此長夜燈火",
+        "en": "Gifted with jade — compute given as jade, the light that keeps our long nights burning."
       }
     },
     {

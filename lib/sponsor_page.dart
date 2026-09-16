@@ -114,6 +114,16 @@ class _SponsorPageState extends State<SponsorPage> {
       },
     ),
     (
+      kind: 'jade',
+      name: 'BA3RZL',
+      names: const {},
+      desc: '赠我以琼琚 · 以算力为琼琚，燃此长夜灯火',
+      descs: const {
+        'zh-TW': '贈我以瓊琚 · 以算力為瓊琚，燃此長夜燈火',
+        'en': 'Gifted with jade — compute given as jade, the light that keeps our long nights burning.',
+      },
+    ),
+    (
       kind: 'everyone',
       name: '每一位支持者',
       names: const {

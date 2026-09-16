@@ -303,7 +303,7 @@ void _seedDefaults() {
     'BG7LMW': ['kaishan', 'earlyMember'],
     'BG7OSL': ['kaishan', 'earlyMember'],
     'BG4LZY': ['earlyMember'],
-    'BA3RZL': ['earlyMember', 'mostBrain'],
+    'BA3RZL': ['earlyMember', 'mostBrain', 'jadeGift'],
   };
   _primariesCache = {
     'BG7LZQ': 'kaishan',
