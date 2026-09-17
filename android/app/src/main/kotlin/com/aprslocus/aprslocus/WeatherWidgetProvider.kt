@@ -226,6 +226,24 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             ),
         )
 
+        /** 建议级别 → 圆点 drawable。
+         *
+         *  为什么是「换 drawable」而不是 `setInt(dot, "setColorFilter", c)`：
+         *  `setColorFilter` **只存在于 ImageView** —— View 和 TextView 都没有
+         *  （已对 AOSP 源码核实：View 0 处、TextView 0 处、ImageView 3 处）。
+         *  而圆点必须是 TextView（RemoteViews 不允许原生 `<View>`），所以那次调用
+         *  会抛 NoSuchMethodException → RemoteViews.apply() 抛 ActionException →
+         *  启动器直接显示「小组件加载失败」，**整个组件报废**（v1.6.114 的线上事故）。
+         *  必须给出 `else` 兜底：level 认不出时退回中性圆点（背景色不变、不报错），
+         *  而不是把 0 传给 setBackgroundResource（那样会把背景清掉，圆点整个消失）。
+         */
+        private val DOT_BY_LEVEL = mapOf(
+            "danger" to R.drawable.aw_dot_danger,
+            "warn" to R.drawable.aw_dot_warn,
+            "good" to R.drawable.aw_dot_good,
+            "tip" to R.drawable.aw_dot_tip,
+        )
+
         /** 天气档位 → 背景渐变。大小尺寸各一套（小档圆角更小，免得显得过圆） */
         private val BG_BY_KIND = mapOf(
             "clear" to R.drawable.aw_bg_clear,
@@ -477,9 +495,13 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             if (color != 0 && cell.level != 0) {
                 views.setTextColor(cell.level, color)
             }
-            // 圆点染成级别色（drawable 是纯白圆形，靠 setColorFilter 上色）
-            if (color != 0 && cell.dot != 0) {
-                views.setInt(cell.dot, "setColorFilter", color)
+            // 圆点换记色 drawable（不能 setColorFilter，见 DOT_BY_LEVEL 的说明）。
+            // `setTextColor` 是安全的：它在 TextView 上确实存在，而级别标签就是 TextView。
+            if (cell.dot != 0) {
+                views.setInt(
+                    cell.dot, "setBackgroundResource",
+                    DOT_BY_LEVEL[tip.optString("level")] ?: R.drawable.aw_dot,
+                )
             }
             // 危险级：整行底换成红底。RemoteViews 不支持 <selector>，
             // 所以「状态」是靠换 drawable 表达的，不是状态列表。
@@ -495,9 +517,11 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             setRowVisible(views, cell, tip != null)
             if (tip == null) return
             views.setTextViewText(cell.text, tip.read("text"))
-            val color = tip.optInt("color", 0)
-            if (color != 0 && cell.dot != 0) {
-                views.setInt(cell.dot, "setColorFilter", color)
+            if (cell.dot != 0) {
+                views.setInt(
+                    cell.dot, "setBackgroundResource",
+                    DOT_BY_LEVEL[tip.optString("level")] ?: R.drawable.aw_dot,
+                )
             }
         }
 
@@ -528,9 +552,14 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(cell.emoji, row.read("emoji"))
             }
             val color = row.optInt("color", 0)
-            if (color != 0) {
-                if (cell.level != 0) views.setTextColor(cell.level, color)
-                if (cell.dot != 0) views.setInt(cell.dot, "setColorFilter", color)
+            if (color != 0 && cell.level != 0) {
+                views.setTextColor(cell.level, color)
+            }
+            if (cell.dot != 0) {
+                views.setInt(
+                    cell.dot, "setBackgroundResource",
+                    DOT_BY_LEVEL[row.optString("level")] ?: R.drawable.aw_dot,
+                )
             }
 
             val singles = row.optJSONArray("singles")

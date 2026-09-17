@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <!-- tip 级圆点（#719AF2 = 面板原色往白提亮 35%，与级别文字同色） -->
+    <solid android:color="#719AF2" />
+</shape>

@@ -1,5 +1,160 @@
 # 更新日志
 
+## [1.6.115] - 2026-09-17
+
+### 🔴 修「小组件加载失败」：一个方法名写在了不支持的控件上，整个组件报废
+### Fixed "widget failed to load": one method name called on a view that doesn't have it
+
+**现象**：桌面小组件显示「小组件加载失败」（启动器的 problem-loading-widget 占位），
+4 档全部失效，整个组件不可用。**这是我上一版引入的回归。**
+
+**根因（已对 AOSP 源码核实）**：
+
+```kotlin
+views.setInt(cell.dot, "setColorFilter", color)   // ← 这一行
+```
+
+`setColorFilter` **只存在于 `ImageView`**：
+
+| 类 | `setColorFilter` 声明数 |
+|---|---|
+| `android.view.View` | **0** |
+| `android.widget.TextView` | **0** |
+| `android.widget.ImageView` | 3 |
+
+而那个级别圆点**只能是 `TextView`** —— RemoteViews 不允许原生 `<View>`
+（会抛 `android.view.View is not allowed`），所以我上一版把圆点做成了 `TextView`。
+于是这行在运行时抛 `NoSuchMethodException` → `RemoteViews.apply()` 抛
+`ActionException` → 启动器渲染自己的失败占位。
+
+**我错在哪**：我以为「`setInt` 方法名写错最多是那一处不生效、会优雅降级」。
+**不会** —— `RemoteViews` 的失败是**整块**的，一处 `ActionException` 就让
+整个组件报废。这也是为什么上一版（v1.6.113 那个「挤」的版本）能正常显示：
+它没用 `setColorFilter`，只用了 `setTextColor` / `setBackgroundResource`
+（这两个分别存在于 `TextView` 和 `View`，是安全的）。
+
+**修法**：改成**换 drawable** —— 生成 4 张记色圆点
+`aw_dot_{danger,warn,good,tip}.xml`，运行时按级别
+`setInt(dot, "setBackgroundResource", DOT_BY_LEVEL[level])`。
+「换 drawable」是 RemoteViews 里唯一可靠的换色手段，和危险行换红底是同一招。
+认不出的 level 退回中性白圆点（`?: R.drawable.aw_dot`），不把 0 传给
+`setBackgroundResource` —— 那样会把背景清掉、圆点整个消失。
+
+圆点颜色 = 面板级别原色往白提亮 35%，与级别文字**同一个值**
+（`widgetTipTextArgb` 与生成脚本的 `SEVERITY_DOTS` 对齐，由测试精确断言）。
+顺带把提亮算法从 `Color.lerp` 改成**整数分量运算**：浮点通道会让 235.5
+这类边界值差 1（实测 danger 得 `#EB6C88`，Python 侧算出 `#EC6C88`），
+整数运算两边结果确定一致，于是这个跨语言契约可以精确断言而不留容差。
+
+**为什么原来的检查没拦住它（这才是更该记的部分）**
+
+我上一版写了 `tool/check_android_res_ids.py` 专门核对 `setInt` 的字符串方法名，
+而且它当时是**通过**的。原因：那张方法名白名单是**我自己手写的**，我把
+`setColorFilter` 也写了进去 —— 名字对得上就放行。**名字级别的白名单根本管不了
+「这个方法在 `这个控件类型` 上存不存在」，而那才是关键。**
+
+现在改成**按控件类型校验**：从布局里读出每个 `@+id` 的控件类型，
+再把 `setInt` 的目标 id 解析成类型（包括把 `cell.dot` 这种字段名按
+`TipRow(row, dot, emoji, level, text)` 的实参顺序还原成具体 id），
+最后对照「方法 → 定义它的类」的表：
+
+- `setBackgroundResource` / `setBackgroundColor` → `View`（任何控件都行）
+- `setTextColor` → `TextView`
+- `setColorFilter` → `ImageView`（**只有它**）
+
+**并且我验证了这个检查真的能拦住这次的事故**：把有 bug 的那一版
+（`git show 5bedb2e:...WeatherWidgetProvider.kt`）喂给新检查器，
+它在 3 个调用点、共 15 条上全部报红。一个从不开火的检查等于没有检查，
+所以这一步必须做。
+
+**同一轮测试还抓出另一个静默 bug**：`compactRows` 的外层对象漏了 `level` 字段，
+于是 Kotlin 的 `optString("level")` 取到空串 → 圆点退回中性白 →
+小尺寸档的级别颜色**静默丢失**（不报错、只是不好看）。已补上，
+并加了一条「快照里出现的 level 只有 Kotlin 认识的那 4 个」的测试 ——
+将来 `weather.dart` 新增级别时它会红，而不是静默少个颜色。
+
+**另外修了生成脚本自身的一个错**：`dot()` 把颜色写死成 `#FFFFFF`，
+导致 `aw_dot_danger.xml` 的**注释写着 `#EC6C88`、实际渲染是白色**。
+注释与产物不一致比没有注释更坏（看代码的人会以为颜色已经对了，于是不去查），
+所以生成器现在自检「注释里的颜色必须真出现在产物里、记色圆点不能还是白色」。
+
+**测试**：`test/app_widget_test.dart` 34 项（+2：跨语言颜色契约、level 集合护栏）。
+
+**诚实说明**：本机没有 Android SDK，Android 侧**仍未本地编译验证**。
+这次的根因是查 AOSP 源码 + 对照你设备上的现象定位的，修复方式（换 drawable
++ `setBackgroundResource`）正是上一版在真机上**确实渲染出来过**的那条路径。
+但**我无法在本机复现或验证「装到手机上能显示」**，所以这次修复**必须在你
+的设备上确认**；CI 只能保证它编译得过。
+
+---
+
+**What happened**: the home-screen widget showed the launcher's
+problem-loading-widget placeholder ("小组件加载失败"); all four tiers were dead.
+**This was a regression I introduced in the previous version.**
+
+**Root cause** (verified against the AOSP sources): `views.setInt(cell.dot,
+"setColorFilter", color)`. `setColorFilter` exists **only on `ImageView`** —
+`android.view.View` declares it 0 times, `android.widget.TextView` 0 times,
+`android.widget.ImageView` 3 times. And that severity dot can **only** be a
+`TextView`, because RemoteViews rejects a plain `<View>` outright
+(`android.view.View is not allowed`). So the call threw `NoSuchMethodException`,
+`RemoteViews.apply()` wrapped it in an `ActionException`, and the launcher drew its
+failure placeholder.
+
+**Where I went wrong**: I assumed a bad `setInt` method name would degrade gracefully —
+that only that one bit of styling would be lost. **It does not.** A `RemoteViews`
+failure is all-or-nothing: a single `ActionException` kills the whole widget. That is
+also why the earlier revision (the cramped one) displayed fine — it never called
+`setColorFilter`, only `setTextColor` and `setBackgroundResource`, which do exist on
+`TextView` and `View` respectively.
+
+**The fix**: swap drawables instead of tinting. Four per-severity dots
+(`aw_dot_{danger,warn,good,tip}.xml`) are generated, and at runtime the provider does
+`setInt(dot, "setBackgroundResource", DOT_BY_LEVEL[level])` — the only reliable way to
+change colour in RemoteViews, the same trick already used for the danger row's red
+background. An unrecognised level falls back to the neutral dot rather than passing 0
+to `setBackgroundResource` (which would clear the background and make the dot vanish).
+
+**Why my own checker didn't catch it** — the more important lesson. The previous
+version shipped `tool/check_android_res_ids.py` specifically to validate `setInt`
+method names, and it **passed**. The reason: that whitelist was **hand-written by me**,
+and I put `setColorFilter` in it — a name-level whitelist simply cannot express
+"does this method exist on *this view type*", which was the actual question.
+
+It now validates **by view type**: it reads each `@+id`'s class from the layouts,
+resolves each `setInt` target to a type (including reconstructing `cell.dot`-style
+field references from the `TipRow(row, dot, emoji, level, text)` argument order), and
+checks against a "method → defining class" table (`setBackgroundResource`/`setBackgroundColor`
+→ `View`; `setTextColor` → `TextView`; `setColorFilter` → `ImageView` only).
+
+**And I verified the check actually catches this incident**: feeding the buggy revision
+(`git show 5bedb2e:...`) to the new checker reports all 15 violations across the 3 call
+sites. A check that never fires is no check at all, so that step is not optional.
+
+**The same test round caught a second silent bug**: `compactRows` omitted the `level`
+field on its outer object, so Kotlin's `optString("level")` returned empty, the dot fell
+back to neutral white, and severity colours were **silently lost** on the small tiers (no
+error, just less informative). Fixed, plus a test asserting that every `level` the
+snapshot can emit is one Kotlin knows — so a new severity in `weather.dart` turns the test
+red instead of quietly losing a colour.
+
+**Also fixed a bug in the generator itself**: `dot()` hard-coded `#FFFFFF`, so
+`aw_dot_danger.xml`'s **comment said `#EC6C88` while the file rendered white**. A comment
+that disagrees with the artifact is worse than no comment — the reader assumes the colour
+is already right and doesn't look. The generator now self-checks that the colour named in
+the comment actually appears in the output, and that per-severity dots are not still white.
+
+**Tests**: `test/app_widget_test.dart` now has 34 cases (+2: the cross-language colour
+contract, and the level-set guard).
+
+**Honest caveat**: there is still **no Android SDK on this machine**, so the Android side
+remains **not compile-verified locally**. This diagnosis came from the AOSP sources plus
+the behaviour on your device, and the fix uses the very path (drawable swap +
+`setBackgroundResource`) that the previous revision **did** successfully render on real
+hardware. But **I cannot reproduce or verify "it displays on a phone" from here** — this
+fix **needs confirmation on your device**; CI can only prove it compiles.
+
+
 ## [1.6.114] - 2026-09-17
 
 ### 📱 新增 Android 桌面小组件：可自由缩放，4 档尺寸自适应（天气 + 业余无线电提示）

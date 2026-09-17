@@ -1,27 +1,34 @@
 #!/usr/bin/env python3
-"""生成 Android 桌面小组件的背景/卡片 drawable（4 个尺寸档 + 共用零件）。
+"""生成 Android 桌面小组件的背景 / 卡片 / 圆点 drawable。
 
 **为什么要用脚本生成而不是手写**：组件背景渐变必须和天气面板
 （``lib/weather.dart`` 的 ``_fxGradient()``）**逐色一致**，否则会出现
 「面板是深蓝雨夜、桌面组件是浅灰」这种一眼就能看出来的割裂。
 调色板写在这里一份，改动时改这里 + 面板即可，不要两头手抄。
 
-4 个尺寸档（与 WeatherWidgetProvider 的 LAYOUT_BY_TIER 对应）：
-    compact  2×2 / 2×3   温度 + 天气 + 1 条最要紧的提示
-    row      4×1         一条通栏：天气 + 提示
-    tall     2×4         「小面板」：温度 + 天气 + 指标 + 3~5 条提示堆叠
-    tile     4×2         「主面板」：与 App 内天气面板同构的海报式排布
-
-用法：
-    python3 tool/gen_app_widget_drawables.py
-
 产物：
-    android/app/src/main/res/drawable/aw_bg_*.xml          浅色（默认）
-    android/app/src/main/res/drawable-night/aw_bg_*.xml    深色（系统夜间模式）
+    android/app/src/main/res/drawable/aw_bg_*.xml          天气背景（大圆角）
+    android/app/src/main/res/drawable/aw_bgs_*.xml         天气背景（小圆角，2×2 / 4×1 档用）
+    android/app/src/main/res/drawable-night/aw_bg*.xml     深色版（系统夜间模式）
     android/app/src/main/res/drawable/aw_tile.xml          指标格玻璃底
     android/app/src/main/res/drawable/aw_tile_danger.xml   危险提示行底
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
-    android/app/src/main/res/drawable/aw_dot.xml            提示行旁的级别色圆点（染成建议级别色）
+    android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（中性白，布局默认）
+    android/app/src/main/res/drawable/aw_dot_{level}.xml   提示行圆点（四个级别记色）
+
+**为什么要 4 张记色圆点，而不是运行时染色**（这是踩过的坑，记下来免得重犯）：
+
+最初写的是 ``setInt(dot, "setColorFilter", color)``。``setColorFilter`` **只存在于
+ImageView** —— ``View`` 和 ``TextView`` 都没有（已对 AOSP 源码核实：View 0 处、
+TextView 0 处、ImageView 3 处）。而圆点**只能**是 TextView（RemoteViews 不允许
+原生 ``<View>``，会抛 "android.view.View is not allowed"）。于是那次调用抛
+``NoSuchMethodException`` → ``RemoteViews.apply()`` 抛 ``ActionException`` →
+启动器直接显示「小组件加载失败」。**整个组件报废**，不是「颜色不生效」那种小毛病。
+
+「换 drawable」是 RemoteViews 里唯一可靠的换色手段（与危险行换红底同一招）。
+
+用法：
+    python3 tool/gen_app_widget_drawables.py
 """
 
 import os
@@ -47,52 +54,134 @@ DARK = {
     "fog":      ("#2B3138", "#171B21"),
 }
 
-# 圆角：主面板尺寸较大（约 320×160dp），20dp 合适；2×2 / 4×1 更小，用 16dp
-# 才不会显得「圆得只剩个球」。这与面板 Container 的 circular(24) 是同一种观感取向。
+# 圆角：主档尺寸较大（约 320×160dp），20dp 合适；2×2 / 4×1 更小，用 16dp
+# 才不会显得「圆得只剩个球」。与面板 Container 的 circular(24) 是同一种取向。
 RADIUS_LARGE = 20
 RADIUS_SMALL = 16
 RADIUS_TILE = 11
 RADIUS_PILL = 999
 
+# 四个建议级别的圆点颜色。
+#
+# 面板里级别色是 cDanger/#E11D48、cWarn/#D97706、cGood/#16A34A、cTip/#2563EB
+# （lib/weather.dart 的 `_hamTips`）；但那些色是压在**深色半透明卡片**上的，
+# 而组件的文字/圆点直接压在**天气渐变**上（晴天那段很亮），原色会糊在一起。
+# 所以统一往白色提亮 35%：只保留色相用于区分级别，亮度交给渐变背景。
+# 提亮公式 c*0.65 + 255*0.35，与 Dart 侧 widgetTipTextArgb() 的
+# Color.lerp(c, white, 0.35) 同口径 —— 圆点与级别文字因此是同一个颜色。
+SEVERITY_DOTS = {
+    # level 名   原色        提亮后（= 实际写进 drawable 的颜色）
+    "danger": ("#E11D48", "#EC6C88"),
+    "warn":   ("#D97706", "#E6A75D"),
+    "good":   ("#16A34A", "#68C389"),
+    "tip":    ("#2563EB", "#719AF2"),
+}
+
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
 NS = '<shape xmlns:android="http://schemas.android.com/apk/res/android"'
 
 
-def bg(name: str, start: str, end: str) -> str:
-    """天气背景：竖向线性渐变 + 大圆角。"""
+def bg_xml(comment: str, start: str, end: str, radius: int) -> str:
+    """竖向线性渐变 + 大圆角。"""
     return (
-        f"{HEADER}{NS} android:shape=\"rectangle\">\n"
-        f"    <!-- 天气档位：{name}（与 lib/weather.dart 的 _fxGradient 逐色对应） -->\n"
-        f"    <corners android:radius=\"{RADIUS_LARGE}dp\" />\n"
+        f'{HEADER}{NS} android:shape="rectangle">\n'
+        f"    <!-- {comment} -->\n"
+        f'    <corners android:radius="{radius}dp" />\n'
         f"    <!-- angle=270：从上到下。Android 角度里 0=左→右、90=下→上、270=上→下 -->\n"
         f"    <gradient\n"
-        f"        android:angle=\"270\"\n"
-        f"        android:type=\"linear\"\n"
-        f"        android:startColor=\"{start}\"\n"
-        f"        android:endColor=\"{end}\" />\n"
+        f'        android:angle="270"\n'
+        f'        android:type="linear"\n'
+        f'        android:startColor="{start}"\n'
+        f'        android:endColor="{end}" />\n'
         f"</shape>\n"
     )
 
 
-def solid(color: str, radius: int, comment: str) -> str:
+def solid_xml(comment: str, color: str, radius: int) -> str:
+    """圆角矩形纯色底。radius>=999 时输出 999dp（等效胶囊）。"""
     r = "999dp" if radius >= 999 else f"{radius}dp"
     return (
-        f"{HEADER}{NS} android:shape=\"rectangle\">\n"
+        f'{HEADER}{NS} android:shape="rectangle">\n'
         f"    <!-- {comment} -->\n"
-        f"    <corners android:radius=\"{r}\" />\n"
-        f"    <solid android:color=\"{color}\" />\n"
+        f'    <corners android:radius="{r}" />\n'
+        f'    <solid android:color="{color}" />\n'
         f"</shape>\n"
     )
 
 
-def dot(comment: str) -> str:
-    """提示行左侧的级别色圆点（底色纯白，运行时染色）。"""
+def dot_xml(comment: str, color: str) -> str:
+    """圆点（oval）。
+
+    [color] 必须显式传入。曾经这里把 #FFFFFF 写死过 —— 结果 aw_dot_danger.xml
+    的注释写着 #EC6C88、实际渲染是白色。注释与产物不一致比没有注释更坏：
+    看代码的人会以为颜色已经对了，于是不去查。下面的 self_check 专门盯这一点。
+    """
     return (
-        f"{HEADER}{NS} android:shape=\"oval\">\n"
+        f'{HEADER}{NS} android:shape="oval">\n'
         f"    <!-- {comment} -->\n"
-        f"    <solid android:color=\"#FFFFFF\" />\n"
+        f'    <solid android:color="{color}" />\n'
         f"</shape>\n"
     )
+
+
+def build_all() -> dict:
+    """返回 {相对路径: 内容}。"""
+    files: dict[str, str] = {}
+
+    for qualifier, table in (("drawable", LIGHT), ("drawable-night", DARK)):
+        for name, (start, end) in table.items():
+            files[f"{qualifier}/aw_bg_{name}.xml"] = bg_xml(
+                f"天气档位：{name}（与 lib/weather.dart 的 _fxGradient 逐色对应）",
+                start, end, RADIUS_LARGE)
+            files[f"{qualifier}/aw_bgs_{name}.xml"] = bg_xml(
+                f"天气档位：{name}（小尺寸版，圆角 {RADIUS_SMALL}dp；"
+                f"2×2 / 4×1 档用）",
+                start, end, RADIUS_SMALL)
+
+    files["drawable/aw_tile.xml"] = solid_xml(
+        "指标格 / 提示行的玻璃底（白 8%）", "#14FFFFFF", RADIUS_TILE)
+    files["drawable/aw_tile_danger.xml"] = solid_xml(
+        "危险级提示行底（红 24%，与面板 _tipRow 的危险底色同色）",
+        "#3DE11D48", RADIUS_TILE)
+    files["drawable/aw_pill.xml"] = solid_xml(
+        "AQI 胶囊底（白 16%）", "#29FFFFFF", RADIUS_PILL)
+    files["drawable/aw_dot.xml"] = dot_xml(
+        "提示行左侧的圆点（中性白）。布局里的默认背景；运行时由 "
+        "WeatherWidgetProvider 按建议级别换成 aw_dot_{danger,warn,good,tip}。",
+        "#FFFFFF")
+
+    for level, (_base, lit) in SEVERITY_DOTS.items():
+        files[f"drawable/aw_dot_{level}.xml"] = dot_xml(
+            f"{level} 级圆点（{lit} = 面板原色往白提亮 35%，"
+            f"与级别文字同色）", lit)
+
+    return files
+
+
+def self_check(files: dict) -> list:
+    """产物自检：圆点颜色必须与注释里写的一致。
+
+    这一条是专门为「dot_xml 把颜色写死」那个错误加的 —— 当时的产物
+    注释说 #EC6C88、实际是 #FFFFFF，而 XML 语法完全合法、解析器毫无怨言。
+    颜色与注释不一致是**看代码看不出来**的那类错，必须机器核。
+    """
+    problems = []
+    for level, (base, lit) in SEVERITY_DOTS.items():
+        key = f"drawable/aw_dot_{level}.xml"
+        content = files.get(key)
+        if content is None:
+            problems.append(f"{key} 缺失")
+            continue
+        if lit not in content:
+            problems.append(f"{key} 里没有出现预期颜色 {lit}（注释与产物不一致？）")
+        # 记色圆点不该还是白色
+        if 'android:color="#FFFFFF"' in content:
+            problems.append(f"{key} 仍是白色 —— 颜色被写死了")
+    # 背景渐变必须真是两色渐变
+    for key, content in files.items():
+        if "aw_bg" in key and "gradient" not in content:
+            problems.append(f"{key} 没有 gradient 节点")
+    return problems
 
 
 def main() -> int:
@@ -102,77 +191,24 @@ def main() -> int:
         print(f"找不到 res 目录：{res}", file=sys.stderr)
         return 1
 
-    written = []
+    files = build_all()
 
-    # 浅色 + 深色各一套天气渐变
-    for qualifier, table in (("drawable", LIGHT), ("drawable-night", DARK)):
-        out = os.path.join(res, qualifier)
-        os.makedirs(out, exist_ok=True)
-        for name, (start, end) in table.items():
-            p = os.path.join(out, f"aw_bg_{name}.xml")
-            with open(p, "w", encoding="utf-8") as f:
-                f.write(bg(name, start, end))
-            written.append(p)
+    problems = self_check(files)
+    if problems:
+        print("自检未通过，未写入任何文件：", file=sys.stderr)
+        for p in problems:
+            print(f"  ✗ {p}", file=sys.stderr)
+        return 1
 
-    plain = os.path.join(res, "drawable")
-    os.makedirs(plain, exist_ok=True)
-
-    # 小的两个尺寸档（2×2 / 4×1）用更小的圆角版本，避免在矮组件上显得过圆
-    for name, (start, end) in LIGHT.items():
-        p = os.path.join(plain, f"aw_bgs_{name}.xml")
-        with open(p, "w", encoding="utf-8") as f:
-            f.write(
-                f"{HEADER}{NS} android:shape=\"rectangle\">\n"
-                f"    <!-- 天气档位：{name}（小尺寸版，圆角 {RADIUS_SMALL}dp） -->\n"
-                f"    <corners android:radius=\"{RADIUS_SMALL}dp\" />\n"
-                f"    <gradient\n"
-                f"        android:angle=\"270\"\n"
-                f"        android:type=\"linear\"\n"
-                f"        android:startColor=\"{start}\"\n"
-                f"        android:endColor=\"{end}\" />\n"
-                f"</shape>\n"
-            )
-        written.append(p)
-
-    night = os.path.join(res, "drawable-night")
-    for name, (start, end) in DARK.items():
-        p = os.path.join(night, f"aw_bgs_{name}.xml")
-        with open(p, "w", encoding="utf-8") as f:
-            f.write(
-                f"{HEADER}{NS} android:shape=\"rectangle\">\n"
-                f"    <!-- 天气档位：{name}（小尺寸版，圆角 {RADIUS_SMALL}dp） -->\n"
-                f"    <corners android:radius=\"{RADIUS_SMALL}dp\" />\n"
-                f"    <gradient\n"
-                f"        android:angle=\"270\"\n"
-                f"        android:type=\"linear\"\n"
-                f"        android:startColor=\"{start}\"\n"
-                f"        android:endColor=\"{end}\" />\n"
-                f"</shape>\n"
-            )
-        written.append(p)
-
-    parts = [
-        ("aw_tile.xml", solid("#14FFFFFF", RADIUS_TILE,
-                              "指标格玻璃底（白 8%）")),
-        ("aw_tile_danger.xml", solid("#3DE11D48", RADIUS_TILE,
-                                     "危险级提示行底（红 24%，与面板 _tipRow 同色）")),
-        ("aw_pill.xml", solid("#29FFFFFF", RADIUS_PILL, "AQI 胶囊底（白 16%）")),
-        ("aw_dot.xml", dot(
-            "提示行左侧的级别色小圆点。与面板 _tipRow 的 6dp 圆点同尺寸；"
-            "底色纯白，运行时用 setColorFilter 染成建议级别色。"
-            "为什么不用「竖色条」：竖条要 height=match_parent 才能跟满两行文字，"
-            "而 match_parent 高度在 wrap_content 的横向 LinearLayout 里测量不可靠"
-            "（RemoteViews 里一旦测成 0 高，色条就整根消失）。圆点没这个风险。")),
-    ]
-    for fname, content in parts:
-        p = os.path.join(plain, fname)
-        with open(p, "w", encoding="utf-8") as f:
+    for rel, content in files.items():
+        path = os.path.join(res, *rel.split("/"))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
             f.write(content)
-        written.append(p)
 
-    for p in written:
-        print(os.path.relpath(p, root))
-    print(f"\n共生成 {len(written)} 个文件")
+    for rel in sorted(files):
+        print(f"res/{rel}")
+    print(f"\n共生成 {len(files)} 个文件")
     return 0
 
 

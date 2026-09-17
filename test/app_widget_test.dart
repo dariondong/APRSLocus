@@ -391,6 +391,48 @@ void main() {
       expect(colorToArgb(const Color(0x00000000)), 0x00000000);
     });
 
+    test('四个级别的提亮色 = 圆点 drawable 的颜色（跨语言契约）', () {
+      // 圆点颜色是**烤进 drawable** 的（4 张 aw_dot_{level}.xml，因为
+      // setColorFilter 在 TextView 上不存在，见 tool/gen_app_widget_drawables.py），
+      // 而级别文字的颜色在这里算。两者必须是同一个值，否则圆点和文字差一档色。
+      //
+      // 断言**精确值**、不留容差：widgetTipTextArgb 刻意用整数分量运算，
+      // 就是为了让 Dart 与 Python 两侧结果确定一致。
+      //
+      // ⚠ 改这几个值时必须同步改 tool/gen_app_widget_drawables.py 的
+      //   SEVERITY_DOTS —— 本测试就是那条链路的扣子。
+      const expected = {
+        0xFFE11D48: 0xFFEC6C88, // danger ← aw_dot_danger.xml
+        0xFFD97706: 0xFFE6A75D, // warn   ← aw_dot_warn.xml
+        0xFF16A34A: 0xFF68C389, // good   ← aw_dot_good.xml
+        0xFF2563EB: 0xFF719AF2, // tip    ← aw_dot_tip.xml
+      };
+      expected.forEach((base, lit) {
+        expect(widgetTipTextArgb(Color(base)), lit,
+            reason: '基准色 #${base.toRadixString(16)} 的提亮结果与 drawable 不一致');
+      });
+    });
+
+    test('快照里出现的 level 只有 Kotlin 认识的那 4 个', () {
+      // Kotlin 用 DOT_BY_LEVEL 选圆点 drawable，认不出的 level 会退回中性圆点。
+      // 所以 weather.dart 将来新增 TipLevel 时这里必须红 —— 否则新级别在组件上
+      // 没有自己的颜色，而且不会报错、只是不好看。
+      const known = {'danger', 'warn', 'good', 'tip'};
+      for (final icon in ['100', '104', '302', '305', '400', '501']) {
+        seed(icon: icon, temp: '36', humidity: '90', windScale: '7',
+            vis: '1', precip: '8');
+        final snap = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+        for (final t in snap['tips'] as List) {
+          expect(known, contains((t as Map)['level']),
+              reason: 'tips 里出现了 Kotlin 不认识的 level');
+        }
+        for (final r in snap['compactRows'] as List) {
+          expect(known, contains((r as Map)['level']),
+              reason: 'compactRows 里出现了 Kotlin 不认识的 level');
+        }
+      }
+    });
+
     test('提示文字色比原色更亮（压在天气渐变上要能看清）', () {
       const raw = Color(0xFF2563EB); // 深蓝，直接压在晴天渐变上会糊
       final shown = widgetTipTextArgb(raw);

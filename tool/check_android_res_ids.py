@@ -219,6 +219,141 @@ def check_ids_against_layouts(kotlin_dir: str, res_dir: str) -> list:
     return problems
 
 
+# ── 最要紧的一项：setInt 的「字符串方法名」是否真的存在于目标控件上 ──────
+#
+# 这一项是 v1.6.114 线上事故（「小组件加载失败」）的直接产物。
+#
+# 事故经过：代码里写了 `views.setInt(dot, "setColorFilter", color)`，
+# 而 `setColorFilter` **只存在于 ImageView** —— View 和 TextView 都没有
+# （已对 AOSP 源码核实：View 0 处、TextView 0 处、ImageView 3 处）。
+# 那个 dot 是 TextView（RemoteViews 不允许原生 <View>，所以只能用它），
+# 于是抛 NoSuchMethodException → RemoteViews.apply() 抛 ActionException →
+# 启动器直接显示「小组件加载失败」，**整个组件报废**。
+#
+# 当时为什么没被拦住：下面的 REMOTEVIEWS_METHODS 是**我手写的白名单**，
+# 我把 setColorFilter 也写了进去 —— 名字对了就放行。名字级别的白名单
+# 根本管不了「这个方法在**这个控件类型**上存不存在」，而那才是关键。
+#
+# 所以这里改成**按控件类型校验**：从布局里把每个 id 的控件类型读出来，
+# 再把 setInt 的目标 id 解析成类型，最后对照下表。
+# 这才能拦住「方法名合法、但目标控件上没这个方法」这类错。
+#
+# 顺带说明：为什么不能指望编译期拦住 —— setInt 的方法名是**字符串**，
+# 与目标控件完全没有类型关系，编译器无从检查。
+
+# 方法名 → 该方法的定义者（最宽松的那个类）。View 是所有控件的基类，
+# 所以要求 View 的，任何控件都满足；要求 TextView / ImageView 的则否。
+METHOD_OWNER = {
+    "setBackgroundResource": "View",     # View.setBackgroundResource(int)
+    "setBackgroundColor": "View",        # View.setBackgroundColor(int)
+    "setTextColor": "TextView",          # TextView.setTextColor(int)
+    "setColorFilter": "ImageView",       # 仅 ImageView 有（不是 View/TextView）
+}
+
+# 控件 → 它的类继承链（只列本项目会用到的）
+VIEW_PARENTS = {
+    "TextView": {"TextView", "View"},
+    "ImageView": {"ImageView", "View"},
+    "LinearLayout": {"LinearLayout", "View"},
+    "FrameLayout": {"FrameLayout", "View"},
+    "View": {"View"},
+}
+
+TIPROW_FIELDS = {"row": 0, "dot": 1, "emoji": 2, "level": 3, "text": 4}
+
+SETINT_ANY = re.compile(r'setInt\(\s*([^,]+?)\s*,\s*"(\w+)"')
+
+TIPROW_CTOR = re.compile(r"TipRow\(([^)]*)\)")
+ID_LITERAL = re.compile(r"(?<![.\w])R\.id\.(\w+)")
+
+# 事故教训：这个变量名一旦在 setInt 里出现就是待查项
+HOT_METHODS = {"setColorFilter"}
+
+
+def collect_layout_view_types(res_dir: str) -> dict:
+    """把每个 @+id 映射到它的控件类型（如 aw_tip0_dot → TextView）。
+
+    同一 id 在多个布局里类型一致时取任一；不一致则记为 None（表示不确定，
+    调用方应跳过检查而不是报假失败）。
+    """
+    types: dict[str, set] = {}
+    for path in glob.glob(os.path.join(res_dir, "layout", "*.xml")):
+        try:
+            root = ET.parse(path).getroot()
+        except ET.ParseError:
+            continue
+        for el in root.iter():
+            eid = el.get("{http://schemas.android.com/apk/res/android}id")
+            if not eid or not eid.startswith("@+id/"):
+                continue
+            types.setdefault(eid[len("@+id/"):], set()).add(el.tag)
+    return {k: (v.pop() if len(v) == 1 else None) for k, v in types.items()}
+
+
+def _tiprow_arg_ids(src: str) -> dict:
+    """解析所有 TipRow(...) 实参，返回 {字段名: {id,...}}（0 表示无控件）。"""
+    result: dict[str, set] = {name: set() for name in TIPROW_FIELDS}
+    for args in TIPROW_CTOR.findall(src):
+        parts = [p.strip() for p in args.split(",")]
+        for name, idx in TIPROW_FIELDS.items():
+            if idx < len(parts):
+                m = ID_LITERAL.search(parts[idx])
+                if m:
+                    result[name].add(m.group(1))
+    return result
+
+
+def check_setint_view_types(kotlin_dir: str, res_dir: str) -> list:
+    """校验 setInt(id, "方法名", …) 里的方法是否存在于该 id 的控件类型上。"""
+    id_types = collect_layout_view_types(res_dir)
+    if not id_types:
+        return []
+
+    problems = []
+    for path in glob.glob(os.path.join(kotlin_dir, "**", "*.kt"), recursive=True):
+        src = strip_kotlin_comments(read_raw(path))
+        tiprow = _tiprow_arg_ids(src)
+
+        for lineno, line in enumerate(src.splitlines(), 1):
+            for m in SETINT_ANY.finditer(line):
+                target, method = m.group(1), m.group(2)
+
+                # 解析目标 → 一组候选 id
+                ids: set = set()
+                if target.startswith("R.id."):
+                    ids = {target[len("R.id."):]}
+                else:
+                    fm = re.search(r"(\w+)\.(\w+)$", target)
+                    if fm and fm.group(2) in TIPROW_FIELDS:
+                        ids = tiprow.get(fm.group(2), set())
+                if not ids:
+                    continue  # 解析不出来（例如 ids.xxx 字段）：不报假失败
+
+                owner = METHOD_OWNER.get(method)
+                for vid in sorted(ids):
+                    tag = id_types.get(vid)
+                    if tag is None:
+                        continue  # 类型不确定，跳过
+                    if owner is None:
+                        continue  # 不在表里的方法交给名称白名单检查
+                    if owner not in VIEW_PARENTS.get(tag, {tag}):
+                        extra = ""
+                        if method in HOT_METHODS:
+                            extra = (f"。⚠ 这正是 v1.6.114 的线上事故："
+                                     f"{method} 只存在于 ImageView，在 {tag} 上调用会抛 "
+                                     f"NoSuchMethodException → 整个组件显示"
+                                     f"「小组件加载失败」")
+                        problems.append(
+                            f"  ✗ {os.path.basename(path)}:{lineno} "
+                            f'setInt("{method}") 需要 {owner}，'
+                            f"但 {vid} 是 {tag}{extra}")
+    return problems
+
+
+def read_raw(path: str) -> str:
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
 def main() -> int:
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     res_dir = os.path.join(root, "android", "app", "src", "main", "res")
@@ -248,6 +383,8 @@ def main() -> int:
          check_remoteviews_string_methods(kotlin_dir)),
         ("档位 IdS 与布局不匹配",
          check_ids_against_layouts(kotlin_dir, res_dir)),
+        ("setInt 方法在目标控件上不存在",
+         check_setint_view_types(kotlin_dir, res_dir)),
     ]
 
     failed = False

@@ -148,11 +148,26 @@ String widgetTipEmoji(IconData icon) =>
 /// 提示文字的显示色。
 ///
 /// 面板里提示文字压在**深色半透明卡片**上，直接用级别原色没问题；
-/// 组件里文字直接压在**天气渐变**上（晴天那段是 #2E86D6→#79C4F2，很亮），
+/// 组件里文字与圆点直接压在**天气渐变**上（晴天那段是 #2E86D6→#79C4F2，很亮），
 /// 原色里的深蓝 #2563EB / 深绿 #16A34A 会与渐变糊在一起。
-/// 所以统一往白色方向提亮 35%：只保留色相用来区分级别，亮度交给渐变。
-int widgetTipTextArgb(Color c) =>
-    colorToArgb(Color.lerp(c, Colors.white, 0.35)!);
+/// 所以统一往白色方向提亮 35%：只保留色相用于区分级别，亮度交给渐变。
+///
+/// ⚠ **必须与 `tool/gen_app_widget_drawables.py` 的 `SEVERITY_DOTS` 保持一致**：
+/// 圆点的颜色是烤进 4 张 drawable 的（不能用 setColorFilter，见那边的说明），
+/// 而级别文字的颜色在这里算 —— 两者得是同一个值，否则圆点和文字会差一档色。
+///
+/// 刻意用**整数分量运算**而不是 `Color.lerp(c, Colors.white, 0.35)`：
+/// 后者走浮点通道，235.5 这种边界值会因浮点表示差 1（实测 danger 得到
+/// #EB6C88，而 Python 侧算出 #EC6C88）。整数运算两边结果确定一致，
+/// 于是这个契约可以精确断言（见 test 里的「与圆点 drawable 同色」）。
+int widgetTipTextArgb(Color c) {
+  int mix(int channel) => (channel * 0.65 + 255 * 0.35).round();
+  final argb = colorToArgb(c);
+  return (0xFF << 24) |
+      (mix((argb >> 16) & 0xFF) << 16) |
+      (mix((argb >> 8) & 0xFF) << 8) |
+      mix(argb & 0xFF);
+}
 
 /// 与面板 `_fxKindOf()` 同口径的天气档位（决定组件背景渐变）。
 /// 面板那份是私有的，这里给组件用的公开版本；两处若不一致会「面板在下雨、
@@ -316,18 +331,23 @@ Map<String, Object?> buildAppWidgetSnapshot({
       },
   ];
   // 「单行形态」：小尺寸档（2×2 / 4×1）只有一格提示位，放不下整句，
-  // 用「级别 + 结论」压缩成一行（例：「⚡ 安全警示：雷雨天气：请勿在室外…」）。
-  // 只下发第 1 条（已经按级别排序，第 1 条就是最要紧的）。
+  // 用「级别 + 结论」压缩成一行。只下发前 3 条（已按级别排序，第 1 条最要紧）——
+  // 多给几条是为了让 Kotlin 在极窄宽度下还能往后退选下一条。
+  //
+  // ⚠ 外层也要带 `level`：Kotlin 用 DOT_BY_LEVEL[level] 选圆点 drawable，
+  //   只在内层 singles 上写 level 的话，外层查不到 → 退回中性白圆点，
+  //   级别颜色就静默丢了（不报错、只是不好看）。
   snap['compactRows'] = <Map<String, Object?>>[
     for (final tip in tips.take(3))
       <String, Object?>{
         'emoji': widgetTipEmoji(tip.icon),
+        'level': tip.level.name,
         'levelLabel': hamLevelLabel(tip.level, s),
         'color': widgetTipTextArgb(tip.color),
         'singles': <Map<String, Object?>>[
           // 同一句话的三种长度：宽度大就用长的，放不下就逐级退短。
-          // 在 Dart 里切好而不是让 Kotlin 数「第几个冒号」——切分规则
-          // （全角： / 半角:）是中英文文案的事，属于本地化范畴。
+          // 在 Dart 里切好而不是让 Kotlin 数字符 —— 切分规则
+          // （全角：/ 半角:、句末标点）是中英文文案的事，属本地化范畴。
           for (final part in compactTipVariants(tip.text))
             <String, Object?>{
               'emoji': widgetTipEmoji(tip.icon),
