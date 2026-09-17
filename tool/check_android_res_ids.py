@@ -50,20 +50,29 @@ def read_kotlin(path: str) -> str:
 
 
 def collect_resources(res_dir: str) -> dict:
-    """扫 res/ 收集各类资源名 → 定义位置列表。"""
+    """扫 res/ 收集各类资源名 → 定义位置列表。
+
+    ⚠ drawable 目录要按**任意扩展名**扫，不能只 glob `*.xml`：
+    组件的图标全是烘焙出来的 PNG，只扫 xml 的话每个图标引用都会被判成
+    「不存在」—— 一屏假失败会把真正的错埋掉（而且很容易让人干脆放宽规则）。
+    """
     found: dict[str, list[str]] = {}
 
     def add(kind: str, name: str, where: str):
         found.setdefault(f"{kind}/{name}", []).append(where)
 
-    for path in glob.glob(os.path.join(res_dir, "**", "*.xml"), recursive=True):
+    for path in glob.glob(os.path.join(res_dir, "**", "*"), recursive=True):
+        if not os.path.isfile(path):
+            continue
         rel = os.path.relpath(path, res_dir)
         qualifier = os.path.basename(os.path.dirname(rel))
         base = qualifier.split("-")[0]
-        stem = os.path.splitext(os.path.basename(rel))[0]
+        stem, ext = os.path.splitext(os.path.basename(rel))
 
-        if base in ("layout", "drawable", "xml"):
+        if base in ("layout", "drawable", "xml", "mipmap"):
             add(base, stem, rel)
+        if ext != ".xml":
+            continue
 
         try:
             text = open(path, encoding="utf-8").read()
@@ -103,11 +112,11 @@ def collect_kotlin_refs(kotlin_dir: str) -> list:
 
 
 def check_layout_refs(res_dir: str, resources: dict) -> list:
-    """布局里引用的 @drawable/@string/@xml 是否都存在。"""
+    """布局里引用的 @drawable/@string/@mipmap 是否都存在。"""
     problems = []
     for path in glob.glob(os.path.join(res_dir, "layout", "*.xml")):
         text = open(path, encoding="utf-8").read()
-        for m in re.finditer(r"@(drawable|string|xml)/(\w+)", text):
+        for m in re.finditer(r"@(drawable|string|xml|mipmap)/(\w+)", text):
             if f"{m.group(1)}/{m.group(2)}" not in resources:
                 problems.append(
                     f"  ✗ @{m.group(1)}/{m.group(2)}  "

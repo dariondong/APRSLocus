@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-    <!-- 提示行左侧的圆点（中性白）。布局里的默认背景；运行时由 WeatherWidgetProvider 按建议级别换成 aw_dot_{danger,warn,good,tip}。 -->
+    <!-- 提示行圆点（纯白）。运行时由 WeatherWidgetProvider 用 setColorFilter 染成建议级别色 —— 圆点是 ImageView，而 setColorFilter 只存在于 ImageView（View/TextView 都没有），这正是 v1.6.114 线上事故的成因：当时圆点是 TextView。 -->
     <solid android:color="#FFFFFF" />
 </shape>

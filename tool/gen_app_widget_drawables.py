@@ -10,11 +10,9 @@
     android/app/src/main/res/drawable/aw_bg_*.xml          天气背景（大圆角）
     android/app/src/main/res/drawable/aw_bgs_*.xml         天气背景（小圆角，2×2 / 4×1 档用）
     android/app/src/main/res/drawable-night/aw_bg*.xml     深色版（系统夜间模式）
-    android/app/src/main/res/drawable/aw_tile.xml          指标格玻璃底
-    android/app/src/main/res/drawable/aw_tile_danger.xml   危险提示行底
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
-    android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（中性白，布局默认）
-    android/app/src/main/res/drawable/aw_dot_{level}.xml   提示行圆点（四个级别记色）
+    android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（纯白，运行时 setColorFilter 染级别色）
+    android/app/src/main/res/drawable/aw_sep.xml           单行档的竖分隔线
 
 **为什么要 4 张记色圆点，而不是运行时染色**（这是踩过的坑，记下来免得重犯）：
 
@@ -60,22 +58,6 @@ RADIUS_LARGE = 20
 RADIUS_SMALL = 16
 RADIUS_TILE = 11
 RADIUS_PILL = 999
-
-# 四个建议级别的圆点颜色。
-#
-# 面板里级别色是 cDanger/#E11D48、cWarn/#D97706、cGood/#16A34A、cTip/#2563EB
-# （lib/weather.dart 的 `_hamTips`）；但那些色是压在**深色半透明卡片**上的，
-# 而组件的文字/圆点直接压在**天气渐变**上（晴天那段很亮），原色会糊在一起。
-# 所以统一往白色提亮 35%：只保留色相用于区分级别，亮度交给渐变背景。
-# 提亮公式 c*0.65 + 255*0.35，与 Dart 侧 widgetTipTextArgb() 的
-# Color.lerp(c, white, 0.35) 同口径 —— 圆点与级别文字因此是同一个颜色。
-SEVERITY_DOTS = {
-    # level 名   原色        提亮后（= 实际写进 drawable 的颜色）
-    "danger": ("#E11D48", "#EC6C88"),
-    "warn":   ("#D97706", "#E6A75D"),
-    "good":   ("#16A34A", "#68C389"),
-    "tip":    ("#2563EB", "#719AF2"),
-}
 
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
 NS = '<shape xmlns:android="http://schemas.android.com/apk/res/android"'
@@ -138,45 +120,29 @@ def build_all() -> dict:
                 f"2×2 / 4×1 档用）",
                 start, end, RADIUS_SMALL)
 
-    files["drawable/aw_tile.xml"] = solid_xml(
-        "指标格 / 提示行的玻璃底（白 8%）", "#14FFFFFF", RADIUS_TILE)
-    files["drawable/aw_tile_danger.xml"] = solid_xml(
-        "危险级提示行底（红 24%，与面板 _tipRow 的危险底色同色）",
-        "#3DE11D48", RADIUS_TILE)
     files["drawable/aw_pill.xml"] = solid_xml(
         "AQI 胶囊底（白 16%）", "#29FFFFFF", RADIUS_PILL)
+    files["drawable/aw_sep.xml"] = solid_xml(
+        "单行档的竖分隔线（白 20%，1dp 宽）", "#33FFFFFF", 0)
     files["drawable/aw_dot.xml"] = dot_xml(
-        "提示行左侧的圆点（中性白）。布局里的默认背景；运行时由 "
-        "WeatherWidgetProvider 按建议级别换成 aw_dot_{danger,warn,good,tip}。",
+        "提示行圆点（纯白）。运行时由 WeatherWidgetProvider 用 "
+        "setColorFilter 染成建议级别色 —— 圆点是 ImageView，而 "
+        "setColorFilter 只存在于 ImageView（View/TextView 都没有），"
+        "这正是 v1.6.114 线上事故的成因：当时圆点是 TextView。",
         "#FFFFFF")
-
-    for level, (_base, lit) in SEVERITY_DOTS.items():
-        files[f"drawable/aw_dot_{level}.xml"] = dot_xml(
-            f"{level} 级圆点（{lit} = 面板原色往白提亮 35%，"
-            f"与级别文字同色）", lit)
 
     return files
 
 
 def self_check(files: dict) -> list:
-    """产物自检：圆点颜色必须与注释里写的一致。
-
-    这一条是专门为「dot_xml 把颜色写死」那个错误加的 —— 当时的产物
-    注释说 #EC6C88、实际是 #FFFFFF，而 XML 语法完全合法、解析器毫无怨言。
-    颜色与注释不一致是**看代码看不出来**的那类错，必须机器核。
-    """
+    """产物自检：必需的零件都在，且背景真是一张渐变。"""
     problems = []
-    for level, (base, lit) in SEVERITY_DOTS.items():
-        key = f"drawable/aw_dot_{level}.xml"
-        content = files.get(key)
-        if content is None:
-            problems.append(f"{key} 缺失")
-            continue
-        if lit not in content:
-            problems.append(f"{key} 里没有出现预期颜色 {lit}（注释与产物不一致？）")
-        # 记色圆点不该还是白色
-        if 'android:color="#FFFFFF"' in content:
-            problems.append(f"{key} 仍是白色 —— 颜色被写死了")
+    # 单行档的竖分隔、AQI 胶囊底、圆点：这三个是布局会引用的，缺了就是运行时
+    # ResourceNotFound（组件白块），所以生成时就得确认在产物里。
+    for need in ("drawable/aw_sep.xml", "drawable/aw_pill.xml",
+                 "drawable/aw_dot.xml"):
+        if need not in files:
+            problems.append(f"{need} 缺失")
     # 背景渐变必须真是两色渐变
     for key, content in files.items():
         if "aw_bg" in key and "gradient" not in content:

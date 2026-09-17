@@ -1,13 +1,16 @@
 <!--
-  桌面小组件 · 单行档（4×1）
+  桌面小组件 · 单行档（3~4×1）
 
-  一条通栏：温度 + 天气现象 + 高低温 + 一条提示。
+  一条通栏：天气图标 + 温度 + 天气现象 / 高低温 ｜ 一条建议 ｜ 右端 logo。
   
-  高度只有 1 格（约 60dp），所以**一切都必须单行**。提示用 Dart 侧
-  预先切好的短版本（compactRows[0].singles），由 Kotlin 按可用宽度
-  从长到短挑第一个放得下的那个 —— 切分规则属于本地化范畴，不在 Kotlin 做。
+  高度只有 1 格（约 72dp），所以一切必须单行。建议用 Dart 侧预先切好的
+  短版本（compactRows[0].singles），由 Kotlin 按可用宽度从长到短挑第一个
+  放得下的 —— 切分规则（全角冒号 / 句末标点）属于本地化范畴，不在 Kotlin 做。
   
-  ⚠ 硬约束同 compact 档。
+  右端**只放 logo 不放名称**：一行里要挤下 温度/天气/高低温 再加一条建议，
+  再写「APRSlocus」会把建议截成「雷雨天气…」等于没给信息（预览里就是）。
+  
+  ⚠ 硬约束同主档。
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/aw_root"
@@ -20,76 +23,85 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="11dp"
-        android:paddingEnd="11dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_hero_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_big_thunderstorm" />
     <TextView
         android:id="@+id/aw_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="5dp"
         android:textColor="#FFFFFF"
-        android:textSize="21sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:letterSpacing="-0.02"
         android:singleLine="true"
         android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_deg"
+    <LinearLayout
+        android:id="@+id/aw_cond_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        android:text="°"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:layout_marginStart="5dp"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/aw_cond"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:textColor="#D9FFFFFF"
+        android:textColor="#E6FFFFFF"
         android:textSize="9.5sp"
-        android:maxWidth="92dp"
+        android:textStyle="bold"
         android:singleLine="true"
-        android:ellipsize="end"
         android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_range"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:textColor="#C4FFFFFF"
-        android:textSize="9.5sp"
+        android:textColor="#BDFFFFFF"
+        android:textSize="9sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
+    </LinearLayout>
     <TextView
         android:id="@+id/aw_sep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="#59FFFFFF"
-        android:textSize="9.5sp"
+        android:layout_width="1dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="11dp"
+        android:background="@drawable/aw_sep"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
-    <TextView
+    <ImageView
         android:id="@+id/aw_tip0_dot"
         android:layout_width="6dp"
         android:layout_height="6dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/aw_dot"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <ImageView
+        android:id="@+id/aw_tip0_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:layout_marginStart="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_rss_feed" />
+    <TextView
+        android:id="@+id/aw_tip0_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:textColor="#FFFFFF"
-        android:textSize="1sp"
+        android:textSize="8.5sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.04"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
@@ -103,6 +115,13 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_logo"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_logo" />
     </LinearLayout>
     <TextView
         android:id="@+id/aw_empty"

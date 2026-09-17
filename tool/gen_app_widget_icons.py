@@ -354,7 +354,52 @@ def main() -> int:
 
     for p in written:
         print(f"  {os.path.relpath(p, root)}  ({os.path.getsize(p)} B)")
-    print(f"\n共生成 {len(written)} 个文件")
+
+    # ── 顺带产出 Kotlin 的「图标名 → 资源」映射表 ────────────────────
+    #
+    # 为什么让**生成器**写这个文件：图标名是 Dart 侧发过来的字符串，Kotlin 拿它
+    # 查 R.drawable。两边名字一旦对不上，Kotlin 查不到就回退默认图标 ——
+    # 不报错、只是显示错图标（这类错最难发现）。让本脚本同时产出 PNG 与映射表，
+    # 两边就**不可能**漂移。
+    kt = os.path.join(root, "android", "app", "src", "main", "kotlin",
+                      "com", "aprslocus", "aprslocus", "WidgetIcons.kt")
+    L = [
+        "package com.aprslocus.aprslocus",
+        "",
+        "// 本文件由 tool/gen_app_widget_icons.py **自动生成**，不要手改。",
+        "//",
+        "// 把 Dart 传来的图标名映射到已烘焙的 PNG。图标名与 PNG、与",
+        "// lib/weather.dart 里的 Icons.xxx 一一对应（同一套 MaterialIcons 字形）。",
+        "//",
+        "// 生成器同时产出 PNG 与这张表，所以两边不会漂移；名字对不上时",
+        "// 宁可用兵底图标（rss_feed / cloud）也不要崩。",
+        "internal object WidgetIcons {",
+        "    /** 13dp 图标（提示行 / 指标 / 标题 / 城市点） */",
+        "    private val SMALL = mapOf(",
+    ]
+    L += [f'        "{n}" to R.drawable.aw_ic_{n},' for n in sorted(ICONS)]
+    L += [
+        "    )",
+        "",
+        "    /** 26dp 天气主图标（只给天气档位会用到的几个出一份大图） */",
+        "    private val BIG = mapOf(",
+    ]
+    L += [f'        "{n}" to R.drawable.aw_ic_big_{n},' for n in sorted(BIG_ICONS)]
+    L += [
+        "    )",
+        "",
+        "    fun small(name: String): Int =",
+        "        SMALL[name] ?: R.drawable.aw_ic_rss_feed",
+        "",
+        "    fun big(name: String): Int =",
+        "        BIG[name] ?: R.drawable.aw_ic_big_cloud",
+        "}",
+        "",
+    ]
+    with open(kt, "w", encoding="utf-8") as f:
+        f.write("\n".join(L))
+    print(f"  {os.path.relpath(kt, root)}  ({os.path.getsize(kt)} B)")
+    print(f"\n共生成 {len(written)} 个 PNG + 1 个 Kotlin 映射表")
     return 0
 
 

@@ -1,5 +1,181 @@
 # 更新日志
 
+## [1.6.116] - 2026-09-17
+
+### 🎨 桌面小组件重做设计：真 Material 图标 + 真 logo + 4 档自适应，并按定稿预览施工
+### Widget redesigned: real Material icons, real logo, 4 adaptive tiers — built against an approved preview
+
+上一版组件的设计是错的：用 **emoji**（🌤 💧 🌬）和**灰色小方块**凑出来的界面，
+跟 App 内天气面板完全不是一套设计语言。这一版重做，并且**先出可看的预览、
+确认后再写代码**——前两轮都是装到真机才发现「挤」「不像面板」「logo 错了」，
+每轮反馈都要走一遍 CI + 装 APK。
+
+**新设计（与面板同构）**
+
+```
+ 主档 4×2    📍北京        [logo] APRSlocus        顶栏：左城市 / 右品牌
+              ● AQI 42 优             观测 14:30    次行：左 AQI / 右 观测时刻
+             ⛈ 31°  雷阵雨    湿度      45%        主区：大温度（度数靠 App 侧给）
+                     12°/25°  风力      3 级        指标：label 左 / value 右
+              ─────────────────────────────────     （面板 _kvPair 的复刻，无底框）
+              ● ⚡ 安全警示                             提示：圆点 + 级别图标 + 级别
+                 雷雨天气：请勿在室外架设/操作天线！…      正文另起一行（面板 _tipRow）
+```
+
+**① 图标：把字体图标烘焙成 PNG（这是「像面板」的关键）**
+
+组件进程里**没有** Flutter 的 Material 图标字体，RemoteViews 也不认字体图标
+与矢量图。所以之前只能退而用 emoji —— 而 emoji 根本不是面板的设计语言。
+正解：构建期用 `tool/gen_app_widget_icons.py` 把 Flutter 自带的
+`MaterialIcons-Regular.otf` **预渲染成 34 个 PNG**（13dp + 26dp 两档），
+于是组件上的图标与面板里的 `Icons.xxx` 是**同一套字形**。
+
+图标名 → 资源的映射表由**同一个脚本**生成（`WidgetIcons.kt`），Dart 只传名字
+（如 `"flash_on"`）。两边名字不可能漂移；万一漂移，Kotlin 回退兜底图标并
+由测试盯住（「Dart 会发出的每个图标名，生成器都产出了」）。
+
+**② logo：圆弧（圆形），并按源图实测几何重画**
+
+用户反馈「logo 错了」。查下来是两件事叠在一起：
+
+- **拿错了文件**：`assets/osl.png` 不是 logo，是贡献者 BG7OSL 的**头像**
+  （一张黄色袋鼠表情包，在 `about_page.dart` 里当贡献者照片用）。上一版
+  把它当品牌 logo 烘进了组件。真正的品牌标识是启动器图标
+  （navy 圆角方块 + 同心电波），与官网 `docs/assets/logo.png` 同形。
+- **源图圆角外面不是透明的**，是 alpha≈166 的**半透明黑**（实测四角
+  `(0,0,0,166)`、中心 `(89,89,89,255)`）。缩到 17dp 压在天气渐变上就是
+  一圈**暗斑**，像 logo 外套了个脏方框。
+
+最后按源图**扫描实测**的几何与颜色重画成圆弧（4× 超采样，边缘无阶梯）：
+底色 navy 上 `#031F55` → 下 `#011840`；中心实心圆 `#595959` r=18/96；
+第 1 环 r=29/96 w=6/96；第 2 环 r=44.5/96 w=5/96；外环 `#A8C2F2` r=59/96 w=4/96；
+左右白点位于 r=54/96、直径 8/96。
+
+**③ 顺带修掉：圆点改用 ImageView + `setColorFilter`**
+
+`setColorFilter` **只存在于 ImageView**（View / TextView 都没有）。v1.6.114
+的线上事故就是把它用在了 TextView 做的圆点上 → 抛 `NoSuchMethodException` →
+`RemoteViews.apply()` 抛 `ActionException` → 启动器显示「小组件加载失败」，
+**整个组件报废**。
+
+这一版圆点与提示图标都是 **ImageView**，`setColorFilter` 用法正确；同时
+`tool/check_android_res_ids.py` 会**按目标控件类型**核对每个 `setInt` 字符串
+方法名（把出问题的那一版喂给它，3 个调用点共 15 条全部报红）。
+
+**④ 新增 preview 工具：写代码之前先看效果**
+
+`tool/preview_app_widget.py` 用**真实素材**（同一套 PNG 图标、同一组渐变色值、
+同一套字号/字重/透明度、按 3x 渲染）把四个档位画成 PNG，并**硬性报**「内容
+放不下」（退出码 1）。它在写 Kotlin 之前就抓出 7 个问题：
+
+1. 2×4 顶栏一行塞不下，logo 压住「APRSlocus」→ 拆成两行
+2. 4×2 的「观测 14:30」压在「气压」上并被截断 → 移到顶栏
+3. 2×4 出现**两个**「观测 14:30」→ 去重
+4. 2×4 内容 **323dp 超卡片 300dp** → 指标减到 3 项、建议每条 2 行
+5. 4×1 建议被截成「雷雨天气…」等于没信息 → 右端只放 logo 不放名称
+6. AQI 胶囊的圆点盖住首字，「AQI」看成「AGI」→ 文字起点让开圆点
+7. 指标 label 与 value 贴在一起「气压1013 hPa」→ 指标区加宽
+
+**⑤ 单行档的短文案不再猜宽度**
+
+4×1 只有一行约 150dp 放提示。让 Android 直接省略号会从句子中间切
+（「雷雨天气：请勿在室…」），所以 Dart 侧用 `shortTipText` 挑一个
+**完整短句**（「请勿在室外架设/操作天线！」）再交给系统。切分规则涉及全角冒号
+与句末标点，属于本地化范畴，所以放在 Dart —— Kotlin 不再做宽度估算
+（那本是脆弱的一环）。
+
+**⑥ 检查器补了一个真漏洞**
+
+`check_android_res_ids.py` 原来只 `glob("**/*.xml")` —— **PNG 图标从来没被
+登记**，于是每个图标引用都被判成「不存在」，一屏假失败。这种假失败最坏的结果
+是让人干脆放宽规则，从而漏掉真错。现已按任意扩展名扫 drawable 目录
+（139 个资源、159 处 Kotlin 引用全部对得上）。
+
+**测试**：`test/app_widget_test.dart` 33 项。新增/改写的关键几条：
+「字段名与 Kotlin 侧读的键一致」（键名改了而 Kotlin 没跟上时组件是**安静的
+空白**）、「全部图标名都在生成器产出的集合里」、「四个级别的提亮色 = 预览图
+用的色」（预览不能骗人）、「短文案是完整短句而不是从中间切」。
+
+**诚实说明**：本机没有 Android SDK，Android 侧**仍未本地编译验证**；设计是
+按预览确认后施工的，但**真机渲染仍需你确认**（预览是 3x 位图渲染，与 RemoteViews
+的实际测量会有几个百分点的出入）。CI 的 Build Android APK 只能保证编译。
+
+---
+
+**What it is**: the previous widget design was wrong — built out of **emoji** (🌤 💧 🌬)
+and **grey boxes**, which is not the in-app weather panel's design language at all. This
+revision redoes it, and — for the first time — **renders an approvable preview first and
+only then writes code**, because the previous two rounds each cost a full CI run plus an APK
+install before finding out that it was cramped / unlike the panel / had the wrong logo.
+
+**New design (structurally the same as the panel)**
+
+```
+ main 4×2    📍Beijing      [logo] APRSlocus        header: city left / brand right
+             ● AQI 42 Good          Observed 14:30  second row: AQI left / time right
+             ⛈ 31°  Thunderstorm  Humidity   45%    hero: large temperature
+                     12°/25°       Wind        3 bft  metrics: label left / value right
+             ────────────────────────────────────   (panel's _kvPair, no boxes)
+             ● ⚡ Safety alert                         tips: dot + severity icon + label
+                 Thunderstorms: do not erect…           body on its own line (_tipRow)
+```
+
+**① Icons: font icons baked to PNG** (this is what makes it look like the panel). The
+widget process has **no** Material icon font, and RemoteViews cannot render font icons or
+vector drawables — which is why the previous version fell back to emoji, and emoji simply
+are not the panel's design language. The fix: `tool/gen_app_widget_icons.py` pre-renders
+Flutter's bundled `MaterialIcons-Regular.otf` into 34 PNGs (13dp and 26dp), so the widget's
+icons are **the same glyphs** as `Icons.xxx` in the panel. The name→resource map is emitted
+by that same script (`WidgetIcons.kt`) and Dart only sends names (`"flash_on"`), so the two
+sides cannot drift; if they ever did, Kotlin falls back and a test catches it.
+
+**② Logo: circular, redrawn from measured source geometry.** Two problems stacked:
+`assets/osl.png` is **not** the logo — it is contributor BG7OSL's **avatar** (a yellow
+kangaroo meme, used as a contributor photo in `about_page.dart`), and the previous version
+baked it in as the brand mark. And the launcher icon's rounded corners are **not
+transparent** — they are alpha≈166 semi-transparent black (measured: corners `(0,0,0,166)`,
+centre `(89,89,89,255)`), which on the weather gradient renders as a **dark smudge** like a
+dirty box behind the logo. It is now redrawn as a circle from scanned geometry and colours
+(4× supersampled, no stair-stepping).
+
+**③ Also fixed: the dot now uses an ImageView + `setColorFilter`.** `setColorFilter` exists
+**only on ImageView** (not View, not TextView) — and the v1.6.114 outage was calling it on a
+TextView dot, which threw `NoSuchMethodException`, made `RemoteViews.apply()` throw
+`ActionException`, and killed the entire widget ("widget failed to load"). Here both the dot
+and the tip icons are ImageViews, so the call is correct; and
+`check_android_res_ids.py` now validates every `setInt` string method name **by target view
+type** (feeding it the buggy revision reports all 15 violations across 3 call sites).
+
+**④ New preview tool.** `tool/preview_app_widget.py` renders all four tiers to PNG using the
+*real* assets (the same PNGs, the same gradient colours, the same type scale, at 3x) and
+**fails hard** if content does not fit. It caught seven problems before any Kotlin was
+written: the 2×4 header overflowing (logo over the name); the 4×2 observation time colliding
+with pressure and being truncated; a duplicated observation time on 2×4; 2×4 content
+**323dp in a 300dp card**; the 4×1 tip truncated to "Thunderstorms…" (no information); the
+AQI dot covering the first character (reading "AGI"); and label/value touching
+("气压1013 hPa").
+
+**⑤ The single-line tier no longer guesses widths.** One line of ~150dp for a tip: letting
+Android ellipsize cuts mid-sentence, so Dart's `shortTipText` picks a **complete short
+clause** first. The splitting rules involve full-width colons and sentence punctuation — a
+localisation concern — so they live in Dart, and Kotlin no longer estimates widths.
+
+**⑥ The checker had a real hole.** It only globbed `**/*.xml`, so **PNG icons were never
+registered** and every icon reference looked missing — a screen of false failures, whose
+worst outcome is loosening the rule and thereby hiding real errors. It now scans drawable
+dirs for any extension (139 resources, 159 Kotlin references, all resolved).
+
+**Tests**: 33 cases, including new contract tests: snapshot keys match what Kotlin reads (a
+renamed key shows up as a **silent blank** on the widget), every icon name Dart can emit is
+produced by the generator, the four severity tints match the preview (so the preview cannot
+lie), and the single-line short text is a complete clause rather than a mid-sentence cut.
+
+**Honest caveat**: there is still no Android SDK here, so the Android side is **not
+compile-verified locally**. The design was built against an approved preview, but **real-device
+rendering still needs your confirmation** — the preview is a 3x bitmap render and RemoteViews'
+actual measurement will differ by a few percent. CI's Build Android APK only proves it compiles.
+
+
 ## [1.6.115] - 2026-09-17
 
 ### 🔴 修「小组件加载失败」：一个方法名写在了不支持的控件上，整个组件报废

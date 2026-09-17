@@ -1,17 +1,17 @@
 <!--
-  桌面小组件 · 竖长档（2×4）—— 「小面板」
+  桌面小组件 · 小面板（2×4）
 
-  四个档位里**最像 App 内天气面板**的一个：
-    顶栏（城市 · AQI · 观测时刻）
-    大温度 + 天气现象 + 今日高低温
-    4 个指标格（2×2 网格）
-    业余无线电建议（通栏堆叠行，按级别排序，危险级红底）
+  四个档位里最像 App 内天气面板的一个：
+    顶栏两行（城市 | 品牌 / AQI | 观测）
+    天气图标 + 大温度 + 天气现象 + 高低温
+    3 行指标（label 左 / value 右）
+    「业余无线电建议」分组标题 + 2 条通栏建议
   
-  提示行与面板 _tipRow 同构：左侧 6dp 级别色圆点 + emoji 级别 + 正文。
-  圆点用 aw_dot + setColorFilter 染色（RemoteViews 不能给单个 view
-  设背景色，只能换 drawable 或染色）。
+  2×4 宽度只有约 126dp，顶栏一行放不下「城市+AQI」与「logo+名称」，
+  所以拆成两行（预览里发现 logo 会压住 APRSlocus）。
+  指标只放 3 项、每条建议 2 行：4 项 + 3 行实测超卡片高度 23dp。
   
-  ⚠ 硬约束同 compact 档。
+  ⚠ 硬约束同主档。
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/aw_root"
@@ -23,152 +23,221 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingStart="11dp"
-        android:paddingEnd="11dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
     <LinearLayout
-        android:id="@+id/aw_header"
+        android:id="@+id/aw_header1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_city_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_place" />
     <TextView
         android:id="@+id/aw_city"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="#F2FFFFFF"
-        android:textSize="11sp"
+        android:layout_marginStart="3dp"
+        android:textColor="#F0FFFFFF"
+        android:textSize="10.5sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
     <TextView
-        android:id="@+id/aw_aqi"
+        android:id="@+id/aw_spacer1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_logo"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_logo" />
+    <TextView
+        android:id="@+id/aw_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp"
+        android:text="APRSlocus"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_header2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <LinearLayout
+        android:id="@+id/aw_aqi_pill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/aw_pill"
+        android:paddingStart="7dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
+    <ImageView
+        android:id="@+id/aw_aqi_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <TextView
+        android:id="@+id/aw_aqi_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:background="@drawable/aw_pill"
         android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:paddingStart="6dp"
-        android:paddingEnd="6dp"
         android:includeFontPadding="false" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/aw_spacer2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_observed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:textColor="#B8FFFFFF"
+        android:textColor="#99FFFFFF"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
+    </LinearLayout>
     <LinearLayout
-        android:id="@+id/aw_t_hero"
+        android:id="@+id/aw_rule1_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1AFFFFFF" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_hero_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_hero_icon"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_big_thunderstorm" />
     <TextView
-        android:id="@+id/aw_t_emoji"
+        android:id="@+id/aw_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_t_temp_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_t_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="38sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:letterSpacing="-0.02"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
-        android:id="@+id/aw_t_deg"
-        android:layout_width="wrap_content"
+        android:id="@+id/aw_range"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="17sp"
-        android:text="°"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="#BDFFFFFF"
+        android:textSize="9sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
-    </LinearLayout>
     </LinearLayout>
     <TextView
         android:id="@+id/aw_cond"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="#D9FFFFFF"
+        android:layout_marginTop="3dp"
+        android:textColor="#E6FFFFFF"
         android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_range"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:textColor="#C4FFFFFF"
-        android:textSize="9.5sp"
+        android:textStyle="bold"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <LinearLayout
-        android:id="@+id/aw_t_metrics"
+        android:id="@+id/aw_rule2_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="9dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1AFFFFFF" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_metrics_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
         android:orientation="vertical">
     <LinearLayout
-        android:id="@+id/aw_mrow0"
+        android:id="@+id/aw_metrics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:orientation="vertical">
     <LinearLayout
         android:id="@+id/aw_m0"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginEnd="4dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/aw_tile"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-    <TextView
-        android:id="@+id/aw_m0_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="12.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_m0_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#C4FFFFFF"
-        android:textSize="8sp"
+        android:textColor="#94FFFFFF"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_m0_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -178,115 +247,95 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/aw_tile"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-    <TextView
-        android:id="@+id/aw_m1_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="12.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_m1_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#C4FFFFFF"
-        android:textSize="8sp"
+        android:textColor="#94FFFFFF"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_m1_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
     </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_mrow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
     <LinearLayout
         android:id="@+id/aw_m2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginEnd="4dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/aw_tile"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-    <TextView
-        android:id="@+id/aw_m2_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="12.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_m2_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#C4FFFFFF"
-        android:textSize="8sp"
+        android:textColor="#94FFFFFF"
+        android:textSize="9sp"
         android:singleLine="true"
-        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_m3"
+    <TextView
+        android:id="@+id/aw_m2_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/aw_tile"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-    <TextView
-        android:id="@+id/aw_m3_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:gravity="end"
         android:textColor="#FFFFFF"
-        android:textSize="12.5sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_m3_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#C4FFFFFF"
-        android:textSize="8sp"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
     </LinearLayout>
     </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_rule3_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1AFFFFFF" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_tips_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_tips_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_rss_feed" />
     <TextView
         android:id="@+id/aw_tips_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#E6FFFFFF"
+        android:layout_marginStart="4dp"
+        android:textColor="#CCFFFFFF"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:letterSpacing="0.06"
@@ -314,7 +363,7 @@
         android:id="@+id/aw_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
     <LinearLayout
         android:id="@+id/aw_tip0"
@@ -323,16 +372,13 @@
         android:gravity="top"
         android:orientation="horizontal"
         android:baselineAligned="false">
-    <TextView
+    <ImageView
         android:id="@+id/aw_tip0_dot"
         android:layout_width="6dp"
         android:layout_height="6dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/aw_dot"
-        android:textColor="#FFFFFF"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
     <LinearLayout
         android:id="@+id/aw_tip0_body"
         android:layout_width="0dp"
@@ -346,14 +392,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip0_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_tip0_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_rss_feed" />
     <TextView
         android:id="@+id/aw_tip0_level"
         android:layout_width="wrap_content"
@@ -373,7 +417,7 @@
         android:layout_marginTop="2dp"
         android:textColor="#EDFFFFFF"
         android:textSize="9.5sp"
-        android:maxLines="4"
+        android:maxLines="2"
         android:ellipsize="end"
         android:lineSpacingMultiplier="1.3"
         android:includeFontPadding="false" />
@@ -387,16 +431,13 @@
         android:gravity="top"
         android:orientation="horizontal"
         android:baselineAligned="false">
-    <TextView
+    <ImageView
         android:id="@+id/aw_tip1_dot"
         android:layout_width="6dp"
         android:layout_height="6dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/aw_dot"
-        android:textColor="#FFFFFF"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
     <LinearLayout
         android:id="@+id/aw_tip1_body"
         android:layout_width="0dp"
@@ -410,14 +451,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip1_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_tip1_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_rss_feed" />
     <TextView
         android:id="@+id/aw_tip1_level"
         android:layout_width="wrap_content"
@@ -437,233 +476,12 @@
         android:layout_marginTop="2dp"
         android:textColor="#EDFFFFFF"
         android:textSize="9.5sp"
-        android:maxLines="4"
+        android:maxLines="2"
         android:ellipsize="end"
         android:lineSpacingMultiplier="1.3"
         android:includeFontPadding="false" />
     </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_tip2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="top"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip2_dot"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/aw_dot"
-        android:textColor="#FFFFFF"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_tip2_body"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/aw_tip2_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip2_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_tip2_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
-        android:textSize="8.5sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.04"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <TextView
-        android:id="@+id/aw_tip2_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="#EDFFFFFF"
-        android:textSize="9.5sp"
-        android:maxLines="4"
-        android:ellipsize="end"
-        android:lineSpacingMultiplier="1.3"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_tip3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="top"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip3_dot"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/aw_dot"
-        android:textColor="#FFFFFF"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_tip3_body"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/aw_tip3_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip3_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_tip3_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
-        android:textSize="8.5sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.04"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <TextView
-        android:id="@+id/aw_tip3_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="#EDFFFFFF"
-        android:textSize="9.5sp"
-        android:maxLines="4"
-        android:ellipsize="end"
-        android:lineSpacingMultiplier="1.3"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_tip4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="top"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip4_dot"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/aw_dot"
-        android:textColor="#FFFFFF"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_tip4_body"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/aw_tip4_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_tip4_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_tip4_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
-        android:textSize="8.5sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.04"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <TextView
-        android:id="@+id/aw_tip4_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="#EDFFFFFF"
-        android:textSize="9.5sp"
-        android:maxLines="4"
-        android:ellipsize="end"
-        android:lineSpacingMultiplier="1.3"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_tip_compact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:visibility="gone">
-    <TextView
-        android:id="@+id/aw_tipc_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_tipc_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="5dp"
-        android:textColor="#EDFFFFFF"
-        android:textSize="9.5sp"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:includeFontPadding="false" />
     </LinearLayout>
     </LinearLayout>
     <TextView

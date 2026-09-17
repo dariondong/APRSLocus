@@ -7,7 +7,7 @@ import 'l10n/app_localizations.dart';
 import 'state.dart';
 import 'weather.dart';
 
-/// ─── Android 桌面小组件（4 列 × 2 行：天气 + 业余无线电提示）───
+/// ─── Android 桌面小组件（4 档尺寸自适应：天气 + 业余无线电提示）───
 ///
 /// 数据流向：
 ///   Flutter（唯一持有和风密钥、唯一实现判定规则的一侧）
@@ -21,26 +21,19 @@ import 'weather.dart';
 /// ② 火腿建议的判定规则（雷电/大风/低温/波导/灰线…）、AQI 的本地化分级、
 ///    3 日预报的解析全在 Dart 里，在 Kotlin 重写一遍必然与面板产生分歧
 ///    —— 同一份天气，面板说「注意」而组件说「良好」是最难查的那类 bug。
-/// 所以组件只负责「忠实显示最后一次同步到的快照」，并带上**观测时刻**，
-/// 让用户自己判断数据新不新鲜（而不是假装它总是最新的）。
 ///
-/// **图标**：组件进程里没有 Flutter 的 Material 图标字体（那是 app 的资源），
-/// 所以所有图标在这里映射成 emoji 随数据一起下发。这也和项目里
-/// `NotifHelper` 的 `"📻 $from"` 一致。
+/// **图标为什么传「名字」而不是 emoji**：
+/// 组件进程里没有 Material 图标字体，RemoteViews 也不认字体图标与矢量图。
+/// 所以构建期用 `tool/gen_app_widget_icons.py` 把 Flutter 自带的图标字体
+/// **预渲染成 PNG**，这里只传图标名（如 `"flash_on"`），Kotlin 侧用生成好的
+/// `WidgetIcons` 映射表查资源。于是组件上的图标与面板里的 `Icons.xxx` 是
+/// **同一套字形** —— 这是「像面板」的关键。
 ///
-/// **4 列 × 2 行的落位**：
-/// ```
-///   顶栏   📍北京  [AQI 42 优]                    观测 14:30
-///   ───────────────────────────────────────────────────────
-///   第 1 行 [🌤 23° 晴 12°/25°] [💧45% 湿度] [🌡1013 气压] [🌬3级 风力]
-///   第 2 行 [⚡ 雷电…]         [💧 馈线…]  [📶 雨衰…]      [🌙 夜间…]
-/// ```
-/// 第 1 行的 3 个指标格是**数据驱动**的：由 [buildAppWidgetSnapshot] 按当前
-/// 天气挑「此刻最该看的 3 项」（雾天推能见度、雨天推降水、低温推体感…），
-/// 而不是固定写死湿度/气压/风。
+/// **分工原则（避免两边分叉）**：排版在原生、内容在 Dart。
+/// 原生只知道尺寸，所以由它决定「显示几条」「哪一档用短文案」；
+/// 但「哪几条」「每种长度具体是什么字」都由这里算好并排序。
 ///
-/// 【协作提示】前端若改动天气面板，请顺带核对这里的映射与 [kWidgetTipEmoji]；
-/// 新增的 `HamTip` 图标若没进映射表，组件上会退化成默认的 📻（不会崩，但会失真）。
+/// 设计稿与尺寸核对见 `tool/preview_app_widget.py`（渲染成 PNG 并硬性报溢出）。
 
 /// 组件与原生之间的方法通道名（与 WeatherWidgetBridge.kt 必须一致）
 const String kAppWidgetChannel = 'com.aprslocus/app_widget';
@@ -48,16 +41,18 @@ const String kAppWidgetChannel = 'com.aprslocus/app_widget';
 /// 快照格式版本：原生侧据此判断能否解析（不匹配则只显示占位）
 const int kAppWidgetSnapshotVersion = 1;
 
-/// 提示区最多显示几条（4 列 × 2 行 → 第 2 行 4 格）
+/// 提示区最多下发几条（原生侧各档按自己的行数取前 N 条）
 const int kAppWidgetMaxTips = 4;
 
-/// 第 1 行除「天气主格」外的指标格数量
-///
-/// 4 格：tile/tall 档的指标区是 2×2 网格，正好 4 格。
-/// 数量必须和布局里声明的格子数一致 —— 多了会出现空格子，
-/// 少了则有一格永远空着（Kotlin 侧也会隐藏多余格，但根子上的数量对齐
-/// 应该在这里保证）。
+/// 指标格最多下发几项（主档 2×2 = 4 格，竖长档取前 3）
 const int kAppWidgetMetricCount = 4;
+
+/// 单行档（3~4×1）用的短文案长度上限（字符数）
+///
+/// 单行档只有一行、约 150dp 给提示，换算下来中文大约 20 字。超过就会被系统
+/// 省略号截断 —— 与其让系统从句子中间切（「雷雨天气：请勿在室…」），
+/// 不如在 Dart 侧先切成完整的短句（「请勿在室外架设/操作天线！」）。
+const int kAppWidgetShortTextMax = 20;
 
 /// 从天气数据取值：字符串 → 整数（解析失败给 [fallback]）
 int _intOf(String v, [int fallback = 0]) => int.tryParse(v) ?? fallback;
@@ -71,103 +66,77 @@ int colorToArgb(Color c) =>
     ((c.g * 255).round() << 8) |
     (c.b * 255).round();
 
-/// 和风 icon code → emoji（组件用；口径与 `qwIcon()` 保持一致）
+/// 和风 icon code → 图标名（与 [kAppWidgetIconNames] 里的名字对应）
 ///
-/// 刻意不按「一个 emoji 打天下」：白天/夜间要分（150 是夜间晴），
-/// 雨/雪/雾/霾也要分，否则组件上「🌧️」和「⛈️」同形，等于没传达信息。
-String widgetWeatherEmoji(String code) {
+/// 刻意不按「一个图标打天下」：白天/夜间要分（150 是夜间晴），雨/雪/雾/霾
+/// 也要分，否则组件上「雷雨」和「大雨」同形，等于没传达信息。
+String widgetWeatherIconName(String code) {
   final n = int.tryParse(code) ?? -1;
-  if (n == 150) return '🌙'; // 晴（夜间）
-  if (n == 151 || n == 152 || n == 153) return '☁️'; // 多云/阴（夜间）
-  if (n == 100) return '☀️'; // 晴
-  if (n == 101 || n == 102 || n == 103) return '🌤️'; // 多云/少云
-  if (n == 104) return '☁️'; // 阴
+  if (n == 150) return 'nights_stay'; // 晴（夜间）
+  if (n == 151 || n == 152 || n == 153) return 'wb_cloudy'; // 多云/阴（夜间）
+  if (n == 100) return 'wb_sunny'; // 晴
+  if (n == 101 || n == 102 || n == 103) return 'wb_cloudy'; // 多云/少云
+  if (n == 104) return 'cloud'; // 阴
   if (n >= 300 && n < 400) {
     // 302 雷阵雨 / 303 强雷雨 / 304 雷雨冰雹 → 雷；其余按雨量分档
-    if (n == 302 || n == 303 || n == 304) return '⛈️';
-    if (n == 305 || n == 309 || n == 313 || n == 314) return '🌦️'; // 小雨/毛毛雨
-    return '🌧️'; // 其余雨量级
+    if (n == 302 || n == 303 || n == 304) return 'thunderstorm';
+    if (n == 305 || n == 309 || n == 313 || n == 314) return 'grain'; // 小雨
+    return 'water_drop'; // 其余雨量级
   }
-  if (n >= 400 && n < 500) {
-    // 4xx 里的 456/457 等为雨夹雪
-    if (n == 404 || n == 405 || n == 406 || n == 456 || n == 457) {
-      return '🌨️';
-    }
-    return '❄️';
-  }
-  if (n == 503 || n == 504 || n == 507 || n == 508) return '🌪️'; // 扬沙/沙尘暴
-  if (n >= 500 && n < 600) return '🌫️'; // 雾 / 霾
-  return '☁️'; // 未知
+  if (n >= 400 && n < 500) return 'ac_unit'; // 雪 / 雨夹雪
+  if (n == 503 || n == 504 || n == 507 || n == 508) return 'grain'; // 沙尘
+  if (n >= 500 && n < 600) return 'blur_on'; // 雾 / 霾
+  return 'cloud'; // 未知
 }
 
-/// `HamTip.icon`（Material 图标）→ emoji。
+/// `HamTip.icon`（Material 图标）→ 图标名。
 ///
 /// 键是 `Icons.*` 常量，`IconData` 重载了 `==`（按 codePoint + fontFamily 比较），
 /// 所以能直接拿它当 Map 的键。
 ///
 /// 注意：**不能**写成 `const` map —— `IconData` 覆写了 `==`/`hashCode`，
-/// 而常量 map 的键在编译期就要做规范化与去重，语言层面禁止这种键
-/// （analyzer 会报 `const_map_key_not_primitive_equality`）。用 `final` 即可。
-final Map<IconData, String> kWidgetTipEmoji = <IconData, String>{
+/// 而常量 map 的键要在编译期规范化，语言层面禁止这种键
+/// （analyzer 报 `const_map_key_not_primitive_equality`）。用 `final` 即可。
+///
+/// ⚠ 名字必须与 `tool/gen_app_widget_icons.py` 的 `ICONS_WITH_CONST` 一致
+/// （那边同时产出 PNG 与 Kotlin 的 `WidgetIcons.kt` 映射表）。名字对不上时
+/// Kotlin 会回退到兜底图标 —— 不报错、只是显示错图标，所以由测试盯住。
+final Map<IconData, String> kAppWidgetIconNames = <IconData, String>{
   // 雷电 / 浪涌
-  Icons.flash_on_rounded: '⚡',
-  Icons.power_off_rounded: '🔌',
-  Icons.warning_amber_rounded: '⚠️',
-  Icons.graphic_eq_rounded: '📻',
-  Icons.water_rounded: '🌊',
-  Icons.air_rounded: '🌬️',
+  Icons.flash_on_rounded: 'flash_on',
+  Icons.power_off_rounded: 'power_off',
+  Icons.warning_amber_rounded: 'warning_amber',
+  Icons.graphic_eq_rounded: 'graphic_eq',
+  Icons.water_rounded: 'water',
+  Icons.air_rounded: 'air',
   // 天气防护
-  Icons.umbrella_rounded: '☂️',
-  Icons.wifi_tethering_rounded: '📶',
-  Icons.ac_unit_rounded: '❄️',
-  Icons.icecream_rounded: '🧊',
-  Icons.device_thermostat_rounded: '🌡️',
-  Icons.flag_rounded: '🚩',
-  Icons.local_fire_department_rounded: '🔥',
-  Icons.thermostat_rounded: '🌡️',
-  Icons.water_drop_rounded: '💧',
-  Icons.blur_on_rounded: '🌫️',
-  Icons.grain_rounded: '🌪️',
-  Icons.masks_rounded: '😷',
-  Icons.opacity_rounded: '💧',
-  Icons.wb_sunny_rounded: '☀️',
+  Icons.umbrella_rounded: 'umbrella',
+  Icons.wifi_tethering_rounded: 'wifi_tethering',
+  Icons.ac_unit_rounded: 'ac_unit',
+  Icons.icecream_rounded: 'icecream',
+  Icons.device_thermostat_rounded: 'device_thermostat',
+  Icons.flag_rounded: 'flag',
+  Icons.local_fire_department_rounded: 'local_fire_department',
+  Icons.thermostat_rounded: 'thermostat',
+  Icons.water_drop_rounded: 'water_drop',
+  Icons.blur_on_rounded: 'blur_on',
+  Icons.grain_rounded: 'grain',
+  Icons.masks_rounded: 'masks',
+  Icons.opacity_rounded: 'opacity',
+  Icons.wb_sunny_rounded: 'wb_sunny',
   // 传播机会
-  Icons.trending_down_rounded: '📉',
-  Icons.waves_rounded: '🌊',
-  Icons.wb_twilight_rounded: '🌅',
-  Icons.nightlight_round: '🌙',
-  Icons.rss_feed_rounded: '📡',
+  Icons.trending_down_rounded: 'trending_down',
+  Icons.waves_rounded: 'waves',
+  Icons.wb_twilight_rounded: 'wb_twilight',
+  Icons.nightlight_round: 'nightlight',
+  Icons.rss_feed_rounded: 'rss_feed',
 };
 
-/// 兜底 emoji（映射表没覆盖到的新图标）
-const String kWidgetTipEmojiFallback = '📻';
+/// 兜底图标名（映射表没覆盖到的新图标）
+const String kAppWidgetIconFallback = 'rss_feed';
 
-String widgetTipEmoji(IconData icon) =>
-    kWidgetTipEmoji[icon] ?? kWidgetTipEmojiFallback;
-
-/// 提示文字的显示色。
-///
-/// 面板里提示文字压在**深色半透明卡片**上，直接用级别原色没问题；
-/// 组件里文字与圆点直接压在**天气渐变**上（晴天那段是 #2E86D6→#79C4F2，很亮），
-/// 原色里的深蓝 #2563EB / 深绿 #16A34A 会与渐变糊在一起。
-/// 所以统一往白色方向提亮 35%：只保留色相用于区分级别，亮度交给渐变。
-///
-/// ⚠ **必须与 `tool/gen_app_widget_drawables.py` 的 `SEVERITY_DOTS` 保持一致**：
-/// 圆点的颜色是烤进 4 张 drawable 的（不能用 setColorFilter，见那边的说明），
-/// 而级别文字的颜色在这里算 —— 两者得是同一个值，否则圆点和文字会差一档色。
-///
-/// 刻意用**整数分量运算**而不是 `Color.lerp(c, Colors.white, 0.35)`：
-/// 后者走浮点通道，235.5 这种边界值会因浮点表示差 1（实测 danger 得到
-/// #EB6C88，而 Python 侧算出 #EC6C88）。整数运算两边结果确定一致，
-/// 于是这个契约可以精确断言（见 test 里的「与圆点 drawable 同色」）。
-int widgetTipTextArgb(Color c) {
-  int mix(int channel) => (channel * 0.65 + 255 * 0.35).round();
-  final argb = colorToArgb(c);
-  return (0xFF << 24) |
-      (mix((argb >> 16) & 0xFF) << 16) |
-      (mix((argb >> 8) & 0xFF) << 8) |
-      mix(argb & 0xFF);
-}
+String widgetTipIconName(IconData icon) =>
+    kAppWidgetIconNames[icon] ?? kAppWidgetIconFallback;
 
 /// 与面板 `_fxKindOf()` 同口径的天气档位（决定组件背景渐变）。
 /// 面板那份是私有的，这里给组件用的公开版本；两处若不一致会「面板在下雨、
@@ -183,18 +152,18 @@ String widgetWeatherKind(WeatherNow w) {
   return 'clear'; // 100 / 150 晴（含夜间晴）
 }
 
-/// 一条指标格的展示三元组
-typedef WidgetMetricTile = ({String emoji, String value, String label});
+/// 一条指标格的展示二元组（label 左 / value 右，与面板 `_kvPair` 同构）
+typedef WidgetMetricTile = ({String label, String value});
 
-/// 按当前天气排出「此刻最该看的 4 项指标」，**越靠前越要紧**。
+/// 按当前天气排出「此刻最该看的指标」，**越靠前越要紧**。
 ///
-/// 指标区是 2×2 网格（4 格），所以固定返回 4 项；顺序由天气决定：
-/// 雾天把能见度顶到第一格、雨天把降水量顶到第一格……
-/// 面板里这些指标是平铺的通用清单，而组件格子少，必须分主次。
+/// 组件格子少（主档 2×2 = 4 格，竖长档 3 格），必须分主次：
+/// 雾天把能见度顶上来、雨天把降水量顶上来…… 面板里这些指标是平铺的通用清单，
+/// 组件里得按当前天气重排。
 ///
-/// 注意只用**已有**的 l10n 文案（`weatherDew` 等都有独立键），不去蹭带
-/// 占位符的 `weatherFeels`（"体感 {v}°"）—— 那个键里没有可单独取出的
-/// 「体感」二字，硬切字符串在别的语言下必崩。
+/// 注意只用**已有**的 l10n 文案（`weatherDew` 等都有独立键），不去蹭带占位符的
+/// `weatherFeels`（"体感 {v}°"）—— 那个键里没有可单独取出的「体感」二字，
+/// 硬切字符串在别的语言下必崩。
 List<WidgetMetricTile> widgetMetricTiles(WeatherNow w, AppLocalizations s) {
   final n = _intOf(w.icon, -1);
   final t = _intOf(w.temp);
@@ -206,41 +175,104 @@ List<WidgetMetricTile> widgetMetricTiles(WeatherNow w, AppLocalizations s) {
   // 500–599 里 503/504/507/508 是扬沙/浮尘/沙尘暴，按沙尘处理而非雾
   final isFog = n >= 500 && n < 600 && n != 503 && n != 504;
 
-  final windTile = (emoji: '🌬️', value: '$wind 级', label: s.weatherWindScale);
-  final humTile =
-      (emoji: '💧', value: '${w.humidity}%', label: s.weatherHumidity);
-  final pressTile =
-      (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa');
-  final visTile = (emoji: '👁️', value: '${w.vis}km', label: s.weatherVis);
-  final precipTile = (
-    emoji: isSnow ? '❄️' : '🌧️',
-    value: '${w.precip}mm',
-    label: s.weatherPrecip,
-  );
+  final windTile = (label: s.weatherWindScale, value: '$wind 级');
+  final humTile = (label: s.weatherHumidity, value: '${w.humidity}%');
+  final pressTile = (label: s.weatherPressure, value: '${w.pressure} hPa');
+  final visTile = (label: s.weatherVis, value: '${w.vis} km');
+  final precipTile = (label: s.weatherPrecip, value: '${w.precip} mm');
+  final dewTile = (label: s.weatherDew, value: '${w.dew}°');
+  final cloudTile = (label: s.weatherCloud, value: '${w.cloud}%');
 
   // 雾 / 能见度低：能见度是第一信息（直接关系到能不能出门架台）
   if (isFog || vis < 5) {
     return [visTile, humTile, windTile, pressTile];
   }
-  // 降水：降水量顶到第一格（馈线防水、1.2GHz 以上雨衰判断）
+  // 降水：降水量顶到最前（馈线防水、1.2GHz 以上雨衰判断）
   if (isRain || isSnow) {
     return [precipTile, humTile, windTile, visTile];
   }
-  // 低温 / 结冰：露点顶到第一格（接近饱和易结露短路，比体感实用）
+  // 低温 / 结冰：露点顶到最前（接近饱和易结露短路，比体感实用）
   if (t <= 5) {
-    return [
-      (emoji: '💧', value: '${w.dew}°', label: s.weatherDew),
-      humTile,
-      windTile,
-      pressTile,
-    ];
+    return [dewTile, humTile, windTile, pressTile];
   }
   // 高温：湿度与气压变要紧（对流天气与设备散热降额）
   if (t >= 30) {
-    return [humTile, pressTile, windTile, visTile];
+    return [humTile, pressTile, windTile, cloudTile];
   }
   // 常规：气压（大气波导与天气转折）优先
   return [pressTile, humTile, windTile, visTile];
+}
+
+/// 把一条建议切成逐级变短的若干版本（供单行档挑一个「完整短句」）。
+///
+/// 建议文案的写法天然适合这样切：先给结论再给理由，例如
+/// 「雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备」
+/// → 「雷雨天气：请勿在室外架设/操作天线！」→「请勿在室外架设/操作天线！」
+/// → 「雷雨天气…」
+/// 返回顺序是**从长到短**（`shortTipText` 依赖这个顺序）。
+/// 公开出来是为了可测：这些切分规则是纯字符串逻辑，值得单测盯住。
+List<String> compactTipVariants(String text) {
+  final t = text.trim();
+  if (t.isEmpty) return const [];
+  final out = <String>[];
+
+  // ① 首个句末标点之前（「！」/「。」/「；」等）—— 中文建议的结论句几乎都在这里
+  final m = RegExp(r'[^！。；;!?？]+[！。；;!?？]?').firstMatch(t);
+  if (m != null && m.group(0)!.trim().isNotEmpty) {
+    final head = m.group(0)!.trim();
+    if (head != t) out.add(head);
+  }
+  // ② 冒号后的一半（「雷雨天气：」后面的正文）
+  for (final sep in const ['：', ':']) {
+    final i = t.indexOf(sep);
+    if (i > 0 && i + 1 < t.length) {
+      out.add(t.substring(i + 1).trim());
+      break;
+    }
+  }
+  // ③ 冒号前的一半（「雷雨天气」）
+  for (final sep in const ['：', ':']) {
+    final i = t.indexOf(sep);
+    if (i > 2) {
+      out.add(t.substring(0, i).trim());
+      break;
+    }
+  }
+
+  final seen = <String>{};
+  final uniq = <String>[];
+  for (final v in out) {
+    if (v.isEmpty || seen.contains(v)) continue;
+    seen.add(v);
+    uniq.add(v);
+  }
+  if (uniq.isEmpty) return [t];
+
+  // **按长度降序**，而不是按生成顺序：生成顺序是「句末标点前 → 冒号后 → 冒号前」，
+  // 三者之间**没有**长度关系（「冒号后」常比「句末标点前」长）。
+  // shortTipText 依赖「从长到短」逐个试配宽度，顺序错了就会挑到放不下的长句。
+  uniq.sort((a, b) => b.length.compareTo(a.length));
+
+  // 除最长那条外都补省略号，让人看出「还有下文」而不是以为漏字了
+  final longest = uniq.first.length;
+  return [
+    for (final v in uniq)
+      if (v.length == longest || v.endsWith('…')) v else '$v…',
+  ];
+}
+
+/// 单行档用的短文案：取「不超过 [kAppWidgetShortTextMax] 字的最长完整短句」。
+///
+/// 为什么不直接让 Android 省略号截断：那会从句子中间切（「雷雨天气：请勿在室…」），
+/// 而切成完整短句（「请勿在室外架设/操作天线！」）信息量完全不同。
+/// 切分规则涉及全角冒号与句末标点，属于本地化范畴，所以放在 Dart 而不是 Kotlin。
+String shortTipText(String text) {
+  final variants = compactTipVariants(text);
+  if (variants.isEmpty) return text;
+  for (final v in variants) {
+    if (v.length <= kAppWidgetShortTextMax) return v;
+  }
+  return variants.last; // 都超长：用最短的那个，交给系统省略号
 }
 
 /// 组装给桌面小组件的快照（纯函数，不碰平台通道，便于单测）。
@@ -272,16 +304,14 @@ Map<String, Object?> buildAppWidgetSnapshot({
       'observed': '',
     },
     'hero': <String, Object?>{
-      'emoji': '☁️',
+      'iconName': 'cloud',
       'temp': '--',
-      'sub': '',
+      'cond': '',
+      'range': '',
     },
     'metrics': <Map<String, Object?>>[],
     'tipsLabel': s.hamTitle,
     'tips': <Map<String, Object?>>[],
-    // 单行形态用的压缩文案；无数据时为空数组（而不是缺这个键）——
-    // 快照应该自描述：键齐全、值为空，比「缺键」让消费方更好处理
-    'compactRows': <Map<String, Object?>>[],
     'tipTotal': 0,
     // 组件的空状态：直接复用「暂无定位」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.weatherNoLoc,
@@ -300,130 +330,60 @@ Map<String, Object?> buildAppWidgetSnapshot({
     'aqi': aqi < 0 ? '' : '$aqi',
     'aqiLabel': aqi < 0 ? '' : airLabel(aqi, s),
     'aqiColor': aqi < 0 ? 0 : colorToArgb(wc.air!.levelColor),
-    // 用「观测 HH:mm」而不是本机当前时间：数据不新鲜时用户能一眼看出来，
+    // 用「观测 HH:mm」而不是本机当前时间：数据不新鲜时一眼可见，
     // 这比显示一个永远等于「现在」的时间戳诚实得多。
     'observed': s.weatherObserved(w.obsTimeShort),
   };
   snap['hero'] = <String, Object?>{
-    'emoji': widgetWeatherEmoji(w.icon),
+    'iconName': widgetWeatherIconName(w.icon),
     'temp': '${w.tempDisplay}°',
-    'sub': d0 == null
-        ? w.text
-        : '${w.text} · ${_intOf(d0.tempMin)}°/${_intOf(d0.tempMax)}°',
+    'cond': w.text,
+    'range': d0 == null
+        ? ''
+        : '${_intOf(d0.tempMin)}° / ${_intOf(d0.tempMax)}°',
   };
   snap['metrics'] = <Map<String, Object?>>[
     for (final m in widgetMetricTiles(w, s))
-      <String, Object?>{
-        'emoji': m.emoji,
-        'value': m.value,
-        'label': m.label,
-      },
+      <String, Object?>{'label': m.label, 'value': m.value},
   ];
   snap['tips'] = <Map<String, Object?>>[
     for (final tip in tips.take(kAppWidgetMaxTips))
       <String, Object?>{
-        'emoji': widgetTipEmoji(tip.icon),
+        'iconName': widgetTipIconName(tip.icon),
+        // 组件宽度不够时退化成「圆点 + 级别 + 图标」，靠这一行仍然能看懂
+        'levelLabel': hamLevelLabel(tip.level, s),
+        'color': widgetTipTextArgb(tip.color),
+        'level': tip.level.name,
         'text': tip.text,
-        // 组件宽度不够时退化成「emoji + 级别」，靠这一行仍然能看懂
-        'levelLabel': hamLevelLabel(tip.level, s),
-        'color': widgetTipTextArgb(tip.color),
-        'level': tip.level.name,
-      },
-  ];
-  // 「单行形态」：小尺寸档（2×2 / 4×1）只有一格提示位，放不下整句，
-  // 用「级别 + 结论」压缩成一行。只下发前 3 条（已按级别排序，第 1 条最要紧）——
-  // 多给几条是为了让 Kotlin 在极窄宽度下还能往后退选下一条。
-  //
-  // ⚠ 外层也要带 `level`：Kotlin 用 DOT_BY_LEVEL[level] 选圆点 drawable，
-  //   只在内层 singles 上写 level 的话，外层查不到 → 退回中性白圆点，
-  //   级别颜色就静默丢了（不报错、只是不好看）。
-  snap['compactRows'] = <Map<String, Object?>>[
-    for (final tip in tips.take(3))
-      <String, Object?>{
-        'emoji': widgetTipEmoji(tip.icon),
-        'level': tip.level.name,
-        'levelLabel': hamLevelLabel(tip.level, s),
-        'color': widgetTipTextArgb(tip.color),
-        'singles': <Map<String, Object?>>[
-          // 同一句话的三种长度：宽度大就用长的，放不下就逐级退短。
-          // 在 Dart 里切好而不是让 Kotlin 数字符 —— 切分规则
-          // （全角：/ 半角:、句末标点）是中英文文案的事，属本地化范畴。
-          for (final part in compactTipVariants(tip.text))
-            <String, Object?>{
-              'emoji': widgetTipEmoji(tip.icon),
-              'text': part,
-              'color': widgetTipTextArgb(tip.color),
-              'level': tip.level.name,
-            },
-        ],
+        // 单行档（3~4×1）用的完整短句
+        'shortText': shortTipText(tip.text),
       },
   ];
   snap['tipTotal'] = tips.length;
   return snap;
 }
 
-/// 把一条建议切成逐级变短的若干版本（供小尺寸组件按可用宽度挑选）。
+/// 提示文字/圆点/图标的显示色。
 ///
-/// 建议文案的写法天然适合这样切：先给结论再给理由，例如
-/// 「雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备」
-/// → 「雷雨天气：请勿在室外架设/操作天线！」→「请勿在室外架设/操作天线！」
-/// → 「雷雨天气…」
-/// 返回顺序是**从长到短**，且除最长那条外都带省略号收尾 —— 让用户看出
-/// 「这里还有下文」，而不是以为组件漏字了。
-/// 公开出来是为了可测：这些切分规则是纯字符串逻辑，值得单测盯住。
-List<String> compactTipVariants(String text) {
-  final t = text.trim();
-  if (t.isEmpty) return const [];
-  final out = <String>[];
-
-  // ① 首个句末标点之前（！/　。/；等）—— 中文建议的结论句几乎都在这里
-  final m = RegExp(r'[^！。；;!?？]+[！。；;!?？]?').firstMatch(t);
-  if (m != null && m.group(0)!.trim().isNotEmpty) {
-    final head = m.group(0)!.trim();
-    if (head != t) out.add(head);
-  }
-
-  // ② 冒号后的一半（「雷雨天气：」后面的正文）
-  for (final sep in const ['：', ':']) {
-    final i = t.indexOf(sep);
-    if (i > 0 && i + 1 < t.length) {
-      out.add(t.substring(i + 1).trim());
-      break;
-    }
-  }
-
-  // ③ 冒号前的一半（「雷雨天气」）
-  for (final sep in const ['：', ':']) {
-    final i = t.indexOf(sep);
-    if (i > 2) {
-      out.add(t.substring(0, i).trim());
-      break;
-    }
-  }
-
-  // 去重 + 去掉空串，并给非最长版本补省略号
-  final seen = <String>{};
-  final uniq = <String>[];
-  for (final v in out) {
-    if (v.isEmpty || seen.contains(v)) continue;
-    seen.add(v);
-    uniq.add(v);
-  }
-  if (uniq.isEmpty) return [t];
-
-  // **按长度降序**，而不是按生成顺序。
-  // 生成顺序是「句末标点前 → 冒号后 → 冒号前」，这三者之间**没有**长度关系：
-  // 例如「雷雨天气：请勿在室外架设/操作天线！断开天线馈线…」的
-  // 「冒号后」反而比「句末标点前」长。而 Kotlin 侧依赖「从长到短」
-  // 逐个试配宽度，顺序错了就会挑到一个放不下的长句 → 溢出错行。
-  uniq.sort((a, b) => b.length.compareTo(a.length));
-
-  // 除最长那条外都补省略号，让人看出「还有下文」而不是以为漏字了
-  final longest = uniq.first.length;
-  return [
-    for (final v in uniq)
-      if (v.length == longest || v.endsWith('…')) v else '$v…',
-  ];
+/// 面板里提示压在**深色半透明卡片**上，直接用级别原色没问题；组件里文字与图标
+/// 直接压在**天气渐变**上（晴天那段是 #2E86D6→#79C4F2，很亮），原色里的深蓝
+/// #2563EB / 深绿 #16A34A 会与渐变糊在一起。所以统一往白色提亮 35%：
+/// 只保留色相用于区分级别，亮度交给渐变。
+///
+/// ⚠ **必须与 `tool/preview_app_widget.py` 的 `LEVEL_LIT` 一致**：预览图与真机
+/// 用的是同一组色，否则预览会骗人。
+///
+/// 刻意用**整数分量运算**而不是 `Color.lerp(c, Colors.white, 0.35)`：
+/// 后者走浮点通道，235.5 这类边界值会因浮点表示差 1（实测 danger 得 #EB6C88，
+/// 而 Python 侧算出 #EC6C88）。整数运算两边结果确定一致，于是这个跨语言契约
+/// 可以精确断言（见 test 里的「与预览同色」）。
+int widgetTipTextArgb(Color c) {
+  int mix(int channel) => (channel * 0.65 + 255 * 0.35).round();
+  final argb = colorToArgb(c);
+  return (0xFF << 24) |
+      (mix((argb >> 16) & 0xFF) << 16) |
+      (mix((argb >> 8) & 0xFF) << 8) |
+      mix(argb & 0xFF);
 }
 
 /// 桌面小组件 ↔ Flutter 的桥。
@@ -455,7 +415,7 @@ class AppWidgetBridge {
       _lastFingerprint = payload;
     } on MissingPluginException {
       // 非 Android（Windows / Web / 桌面调试）没有这个通道。
-      // 照样记下指纹：否则每次 MediaQuery 变化都会重算一遍再白跑一次通道。
+      // 照样记下指纹：否则每次依赖变化都会重算一遍再白跑一次通道。
       _lastFingerprint = payload;
     } on PlatformException {
       // 刷新失败不记指纹，下次状态变化时还会再试（不静默丢掉这次数据）
@@ -498,6 +458,9 @@ class AppWidgetSync extends StatefulWidget {
 
 class _AppWidgetSyncState extends State<AppWidgetSync>
     with WidgetsBindingObserver {
+  /// 上次「无数据兜底加载」的时间（防自激，见下）
+  DateTime? _lastAutoLoad;
+
   @override
   void initState() {
     super.initState();
@@ -528,9 +491,6 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     WeatherCenter.instance.version.removeListener(_sync);
     super.dispose();
   }
-
-  /// 上次「无数据兜底加载」的时间（防自激，见下）
-  DateTime? _lastAutoLoad;
 
   /// 完全没有天气数据时，顺手触发一次加载。
   ///
