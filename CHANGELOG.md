@@ -1,5 +1,135 @@
 # 更新日志
 
+## [1.6.118] - 2026-09-17
+
+> 本次发布把 **v1.6.114 ~ v1.6.118** 累积的改动一起发出（v1.6.113 是上一个已发布的 tag，
+> 中间几版只在 CI 上验证过、没打 tag）。所以下面先讲本版改动，再列累积内容。
+
+### 🎨 短波组件改白底（并重排信息层级）；撤掉面板的星空
+
+**① 短波/电离层组件：白底 + 信息层级重做**
+
+你说「不够好看，背景用白色」——换了底色，同时修了三处让层级立起来：
+
+- **汇总做成「小标签 + 大数字」单行**：SFI / Kp / A 从 10sp 提到 **15sp 加粗**。
+  这三个数是这张卡最该被一眼看到的东西，之前挤成「label 左 / value 右」很不起眼。
+- **条件色改由圆点承担，文字用墨色**：白底上彩色小字对比度偏低；
+  现在圆点保留条件色（绿/橙/红/灰），正文一律墨色，既留住颜色语义又保证可读。
+  波段名墨色加粗。
+- **不设单独的表头行**，把「日 ｜ 夜」图例并进汇总行右端。
+- 分隔线改用 `C.border`（`#E5E9F0`），不再是白 10%（那只适用于彩色渐变底）。
+
+**白底必须换色值**——这点容易漏：天气组件压在彩色渐变上，所以之前把级别色
+**提亮 35%**（`widgetTipTextArgb`）才看得清；短波组件是白底，提亮色反而太淡
+（`#68C389` 在白底上几乎看不见）。所以白底档改用**基准色**，与面板本身的浅色
+UI（`theme.dart` 的 `C.ink` / `C.slate` / `C.border`）一致。
+
+这也是白底更好的一个理由：两个组件同时摆在桌面上时，一个彩色一个白，
+一眼能分辨谁是谁。
+
+**尺寸上是被 130dp 逼出来的**（每条都量化过，不是估的）：
+汇总做成单行（「数字一行 + 标签一行」要 47dp，整体超 35dp；单行 24dp）；
+不设单独表头（单开一行要 13.3dp，实测超 17.2dp）；顶部内边距 7dp、行距 0.5dp
+（共省约 5dp）才刚好装下。
+
+**② 撤掉面板的星空与大气层**
+
+你说明本意是留给短波面板的 —— 已把 `_StarLayer` / `_StarPainter` /
+`_atmosphere` 以及它们在面板背景 Stack 里的两层全部删除；预览工具里那个
+「面板背景示意」也一并删掉（不留一个已经不存在功能的示例图）。
+
+**③ 累积内容（v1.6.114 ~ v1.6.117）**
+
+- **新增天气桌面组件**：4 档自适应（4×2 主档 / 2×4 小面板 / 2×2 紧凑 / 4×1 单行），
+  图标是构建期把 Flutter 自带图标字体**烘焙成 PNG**（组件进程没有字体图标，
+  RemoteViews 也不认矢量图），所以与 App 内面板是同一套字形；背景渐变与面板
+  `_fxGradient()` 同源。右上角 logo 为**圆弧**形状。
+- **修「小组件加载失败」**：`setColorFilter` 只存在于 `ImageView`，当时用在了
+  用作圆点的 `TextView` 上，抛 `NoSuchMethodException` → `RemoteViews.apply()`
+  抛 `ActionException` → 启动器显示失败占位。**RemoteViews 的失败是整块的**，
+  不是「那处样式不生效」。现圆点与提示图标都是 ImageView。
+- **修天气组件真机溢出**：根因是预览工具**量错了** —— 文本高度按「墨迹」估
+  （中文约 1.0em）而 Android 行盒是字体 `ascent+descent`（Noto Sans SC 1.45em），
+  每行少算 ~4dp；且没算**圆角净空**（20dp 圆角下距底边 10dp 内的左右两侧已被切掉）。
+  两处都已修，并按量化结果重排主档（顶栏合成一行 / 指标 3 格单行 / 建议改
+  「级别+正文同行」且正文用完整短句）。
+- **新增短波/电离层传播**：面板新增区块（SFI · Kp · A · 太阳黑子 · X 射线 ·
+  太阳风 · 地磁 · 底噪）与**逐波段日间/夜间条件表**；数据源 hamqsl.com
+  （N0NBH，业余界标准 HF 传播源）。**无线电建议按电离层状态调整**
+  （地磁暴 / 地磁活跃 / SFI 偏高偏低 / 底噪偏高 / 某波段好差），
+  并**按级别归并**而不是首尾相接（否则会破坏「安全警示永远在最上」）。
+- **新增短波传播桌面组件**（固定 4×2）。
+
+**测试**：`test/app_widget_test.dart` 33 项 + `test/hf_widget_test.dart` 14 项，
+全量 **412 通过**。
+
+**诚实说明**：本机没有 Android SDK，Android 侧只能靠 CI 编译验证
+（这两轮确实抓到过 Kotlin 编译错误与资源错配）；星空已撤，不再涉及。
+白底短波组件的实际观感仍建议你装机看一眼。
+
+---
+
+**This release ships everything accumulated from v1.6.114 through v1.6.118** (v1.6.113 was the
+last tagged release; the intervening versions were only CI-verified). Current-version changes
+come first.
+
+**① The HF widget is now white, with the information hierarchy reworked.** You said it did not
+look good and asked for a white background — the background changed, and three things were
+fixed so the hierarchy actually reads: the summary became **a single row of small labels with
+large numbers** (SFI / Kp / A go from 10sp to **15sp bold**; these are the numbers that matter
+most at a glance, and they used to be squashed into label-left/value-right); **condition
+colour moved to the dots** while all body text is now ink-black (coloured small text on white
+has poor contrast — this keeps the colour semantics *and* readability); the separate header
+row is gone, with the "day | night" legend folded into the summary row; and the hairlines now
+use `C.border` (`#E5E9F0`) instead of white-at-10%-alpha (which only worked on the gradient).
+
+**White requires different colour values** — an easy thing to miss: the weather widget sits on
+a coloured gradient, so severity colours were **lightened by 35%** (`widgetTipTextArgb`) to
+stay legible; on white, lightened colours are far too pale (`#68C389` is nearly invisible).
+The white widget therefore uses the **base** colours, matching the panel's own light UI
+(`theme.dart`'s `C.ink` / `C.slate` / `C.border`). This is also an argument *for* white: with
+both widgets on the same home screen, one coloured and one white, you can tell them apart at
+a glance.
+
+**The sizing is forced by 130dp of usable height** (every step measured, not guessed): a
+single-row summary (numbers-on-one-line plus labels-on-another needs 47dp and overflowed by
+35dp; one row costs 24dp); no separate header row (it needs 13.3dp and overflowed by 17.2dp);
+7dp top padding and 0.5dp row gaps to claw back the last ~5dp.
+
+**② The panel's stars and atmosphere layer are removed.** You clarified they were meant for the
+HF widget — `_StarLayer`, `_StarPainter`, `_atmosphere` and their two layers in the panel's
+background stack are all deleted, along with the preview tool's "panel background" mockup (no
+point keeping a picture of a feature that no longer exists).
+
+**③ Cumulative from v1.6.114–v1.6.117**: the weather home-screen widget with four adaptive
+tiers (icons are Flutter's own icon font **baked to PNGs at build time**, because the widget
+process has no icon font and RemoteViews cannot render vector drawables — so the glyphs match
+the in-app panel exactly; gradients share the panel's `_fxGradient()` palette; the logo is a
+**circle**); the fix for "widget failed to load" (`setColorFilter` exists only on `ImageView`
+but was called on a `TextView` dot, throwing `NoSuchMethodException` → `RemoteViews.apply()`
+threw `ActionException` → the launcher showed its failure placeholder; **RemoteViews failures
+are all-or-nothing**, not "that one bit of styling is lost"); the fix for the weather widget's
+real-device overflow, whose root cause was my preview measuring wrong (text height estimated
+by ink extent — ~1.0em for Chinese — while Android's line box is the font's `ascent+descent`,
+1.45em for Noto Sans SC, under-counting ~4dp per line; and corner clearance was ignored,
+where a 20dp radius cuts the left and right edges within 10dp of the bottom); the new
+HF/ionospheric section in the panel (SFI · Kp · A · sunspots · X-ray · solar wind · geomagnetic
+state · noise, plus a **per-band day/night table**, sourced from hamqsl.com — N0NBH, the
+standard HF feed in amateur radio); advice that **responds to the ionosphere** (geomagnetic
+storm / active field / high or low SFI / high noise / per-band good or poor) merged **by
+severity** rather than concatenated (concatenating would put propagation "openings" above
+weather "operating tips" and break the deliberate "safety alerts always on top" ordering);
+and the HF home-screen widget (fixed 4×2).
+
+**Tests**: 33 cases in `test/app_widget_test.dart` plus 14 in `test/hf_widget_test.dart`,
+**412 passing** overall.
+
+**Honest caveat**: there is no Android SDK on this machine, so the Android side is verified only
+by CI compiling it (which did catch Kotlin compile errors and resource mismatches in these
+rounds). The stars are gone, so nothing there is in question; you may still want to install and
+eyeball the white HF widget.
+
+
 ## [1.6.117] - 2026-09-17
 
 ### 📻 新增短波/电离层传播：面板区块 + 逐波段条件 + 独立桌面组件；并修天气组件的「溢出」
