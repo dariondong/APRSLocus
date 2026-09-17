@@ -1,5 +1,210 @@
 # 更新日志
 
+## [1.6.117] - 2026-09-17
+
+### 📻 新增短波/电离层传播：面板区块 + 逐波段条件 + 独立桌面组件；并修天气组件的「溢出」
+### HF/ionospheric propagation: in-panel section, per-band conditions, a dedicated widget — plus the weather-widget overflow fix
+
+**① 天气组件的「溢出」——根因是我的预览量错了，不是设计**
+
+你反馈组件溢出。查下来是**我的预览工具**有两点系统性少算，所以预览一直说
+「放得下」：
+
+- **按「墨迹高度」估文本**：中文墨迹约 1.0em，而 Android 的 `TextView` 行盒
+  约等于字体的 `ascent + descent`（Noto Sans SC 是 **1.45em**，即
+  `includeFontPadding="false"` 也没用）。于是每行少算 ~4dp，十几行累计
+  少算 50dp。
+- **没算圆角净空**：20dp 圆角下，距底边 10dp 之内的左右两侧已经被切掉。
+  原判据只比「内容 vs 卡片高度」，于是 4×2 显示「137.3 / 140，余 2.7dp
+  放得下」，**真机上最后一行被圆角切了一半** —— 你看到的溢出就是这么来的。
+
+两处都已修（行盒按字体度量算、判据扣掉圆角净空；4×1 档内容垂直居中、
+不扣，否则误报）。修完按量化结果重排主档：
+
+| 改动 | 省下 | 为什么这么改 |
+|---|---|---|
+| 顶栏合成一行 | 13.4dp | 一行里 城市+AQI+观测+品牌 ≈ 260dp，在 272dp 内放得下 |
+| 指标 4 格两行 → 3 格单行 | ~14dp | 主档高度由天气主区决定，多一行指标不省主区、只白占 |
+| 建议「级别+正文同行」 | 26dp | 级别单独一行时每条 28.6dp，两条 57dp 放不下 |
+
+建议正文仍用 Dart 侧切好的**完整短句**（`shortText`），所以缩短的是措辞，
+而不是让系统把句子从中间截断成「请勿在室…」。
+
+顺带发现一个真问题：**布局里有两行顶栏，而预览只画了一行** —— 预览整整
+少算 13.4dp。预览与布局生成器现在按同一套尺寸推进。
+
+**② 面板新增「短波传播」区块**
+
+- 太阳/地磁指数：SFI · Kp · A · 太阳黑子 · X 射线 · 太阳风 · 地磁状态 · 底噪
+  （复用面板既有的两列 label/value 布局）
+- **逐波段日间/夜间条件**：80m/40m · 30m/20m · 17m/15m · 12m/10m，
+  每格「圆点 + 条件文字」，按 Good/Fair/Poor/Closed 分色
+  （绿/橙/红/灰，与面板级别色同一套取向）
+
+数据源 **hamqsl.com** 的 `solarxml.php`（业余无线电界标准的 HF 传播数据源，
+N0NBH 维护），由 `lib/hf.dart` 拉取、解析、30 分钟缓存。没有数据时**整块
+不显示** —— 宁可少一块，也不摆个空壳占半屏。
+
+**③ 无线电建议按电离层状态调整**
+
+`allHamTips` = 天气类建议（`hamTips`）+ 传播类建议（`hfTips`），
+**按级别归并**而不是首尾相接。这不是随手写的顺序：首尾相接会把传播类的
+「通联机会」插到天气类的「操作提示」前面，破坏「安全警示永远在最上」这个
+既定分级（安全优先是刻意设计的）。
+
+传播类建议覆盖：地磁暴（Kp≥5）、地磁活跃（Kp≥4）、SFI 偏低（高波段没戏）、
+SFI 偏高（高波段有戏）、底噪偏高（S 值取范围里最差的）、某波段条件好/差。
+
+**④ 面板背景：上方星空、下方天空蓝（大气层）**
+
+把背景读成「从外太空俯视大气层」：上半是深空星点（90 颗、固定种子、
+占上半 45%），下半由透明渐到天空蓝。
+
+- 星点是**静态**绘制并包 `RepaintBoundary`：数量多、每帧重绘没有收益，
+  而云雨那层才是需要动的。
+- 星点用**固定种子**：每次启动星图一致，不会「每次打开都不一样」。
+- 层级顺序：星空 → 大气层 → 云雨。云雨本来就发生在大气层里，
+  压在星空上就错了。
+- 大气层与最初预览不同：α **从 0 起**（预览第一版在 42% 处从透明跳到
+  α=0.35，会留一道可见的横向接缝）。
+
+**⑤ 短波传播桌面组件（4×2，与天气组件同一套设计语言）**
+
+```
+ ⚡ 短波传播                          [logo] APRSlocus
+ SFI   100        Kp    3        A     9      ← Kp≤3 绿 / 4 橙 / ≥5 红
+ ───────────────────────────────────────────
+ 波段        日间             夜间
+ 80m/40m     ● Poor          ● Fair
+ 30m/20m     ● Good          ● Good
+ 17m/15m     ● Fair          ● Fair
+ 12m/10m     ● Poor          ● Poor
+```
+
+**固定 4×2**（`resizeMode="none"`）是刻意的：内容是一张**表**（波段 × 昼夜），
+表不像列表能优雅降级 —— 挤到 2×2 就只剩波段名、没有条件值，等于砍掉最有用的
+信息。与其提供一个会被拖坏的组件，不如老实声明尺寸。（天气组件能自适应 4 档，
+是因为它的内容是「可以少给几条」的列表。）
+
+Kp/A 的染色阈值与 `lib/hf.dart` 的 `geomagActive`（K≥4）/`geomagStorm`（K≥5）
+**同一套** —— 否则会出现「组件标红、建议说没事」。
+
+**⑥ 顺带修掉的东西**
+
+- **CI 抓到两个 Kotlin 编译错误**（Build Android APK 失败），都是「半成品
+  改动」：
+  - `Ids` 类**从没声明过** `tipShort` 字段，而 `ID_TILE`/`ID_TALL` 已经在传、
+    render 里也在读 → 3 处报错；
+  - `cell.optInt(...)` 对 `JSONObject?` 直接调用成员函数（我那个 `read` 扩展
+    挂在可空接收者上所以合法，`optInt` 不行）→ 必须写 `cell?.optInt(...) ?: 0`。
+- 检查器补上这条：新增「Kotlin 具名实参在类声明里不存在」核对。
+  **并用回归样本验证它会报红**（把 `tipShort` 字段删掉后，它报出的 3 条与
+  CI 的 3 条完全对应）。本机没有 Android SDK、编不了 Kotlin，只能靠这种
+  「形状级」核对兜住最常见的半成品状态。
+- 写这条检查时我自己踩了同一类坑：`\(([^)]*)\)` 会在**第一个** `)` 处截断，
+  而声明里有 `IntArray = IntArray(0)` 这种带括号的默认值，于是后半段参数全被
+  漏掉、报出 6 条假失败。已改为配对括号解析 —— 检查器犯错的方式和它要检查的
+  代码一样，这种假失败必须先修对，否则真问题会被埋掉。
+- 两个 Provider 各自私有的 `JSONObject.read` 抽成 `WidgetJson.kt`（internal）：
+  原来两份同名实现，容易只改一份。
+- 预览的传播条件色改为**推导**而不是手抄（原来 Band Closed 手写 `#B9C4D4`，
+  而同一公式算出 `#B9C3D1`）—— 预览与真机差一点点颜色就违背「预览不能骗人」。
+
+**测试**：新增 `test/hf_widget_test.dart` 14 项（快照键名跨语言契约、波段行数
+上限、Band Closed 用灰、Kp/A 阈值与 hf.dart 一致、无数值不染色、无数据不造
+建议）。全量 **412 通过**。
+
+**诚实说明**：本机没有 Android SDK，Android 侧**只能靠 CI 验证编译**
+（这轮就是这么发现的）。面板背景的星空/大气层观感、短波组件的实际排版
+**仍需你在真机确认** —— 预览是 3x 位图渲染，与 RemoteViews 的实际测量会差
+几个百分点。
+
+---
+
+**① The weather widget's overflow — the root cause was my preview measuring wrong, not
+the design.** Two systematic under-counts, which is why the preview kept saying "it fits":
+
+- **Text height estimated by ink extent**: Chinese ink is ~1.0em, but an Android
+  `TextView`'s line box is roughly the font's `ascent + descent` — **1.45em** for Noto Sans
+  SC, and `includeFontPadding="false"` does not change that. So every line was
+  under-counted by ~4dp; over a dozen lines that is 50dp.
+- **Corner clearance was never accounted for**: with a 20dp radius, the left and right
+  edges within 10dp of the bottom are already cut away. The old check compared only
+  content height against card height, so 4×2 reported "137.3 / 140, 2.7dp to spare" while
+  **the last line was being sliced by the corner** on device — that is the overflow you saw.
+
+Both fixed (line boxes measured from font metrics; the check subtracts corner clearance,
+except for tiers whose content is vertically centred, which would otherwise false-alarm).
+The main tier was then re-laid-out against the measured numbers: header collapsed to one
+row (saves 13.4dp), metrics from 4 cells in two rows to 3 cells in one (~14dp — the tier's
+height is set by the weather hero, so an extra metric row only wastes space), and tips
+changed to put the severity label and body **on the same line** (saves 26dp; each was
+28.6dp otherwise and two of them did not fit). Tip bodies still use complete short clauses
+composed in Dart, so what shortens is the wording — not a mid-sentence chop.
+
+Also found a real bug: **the layout had two header rows while the preview drew one**, so the
+preview under-measured by 13.4dp. Preview and layout generator now advance by the same numbers.
+
+**② New "HF propagation" panel section**: SFI · Kp · A · sunspots · X-ray · solar wind ·
+geomagnetic state · noise floor, plus a **per-band day/night table** (80m/40m, 30m/20m,
+17m/15m, 12m/10m), each cell a coloured dot plus a localised condition
+(Good/Fair/Poor/Closed → green/orange/red/grey, the same palette as the panel's severity
+colours). Source: **hamqsl.com** `solarxml.php` (N0NBH — the standard HF propagation feed
+in amateur radio), fetched and parsed by `lib/hf.dart` with a 30-minute cache. With no data
+the block is hidden entirely rather than showing an empty shell.
+
+**③ Advice now accounts for the ionosphere.** `allHamTips` merges weather-based advice
+(`hamTips`) with propagation-based advice (`hfTips`), **grouped by severity** rather than
+concatenated — concatenating would slot propagation "openings" ahead of weather "operating
+tips" and break the existing "safety alerts always on top" ordering, which is deliberate.
+Propagation advice covers geomagnetic storms (Kp≥5), active field (Kp≥4), low SFI (high
+bands hopeless), high SFI (high bands promising), high noise (worst S-value in the reported
+range), and per-band good/poor conditions.
+
+**④ Panel background: stars above, sky-blue atmosphere below.** The background now reads as
+looking down at the atmosphere from space: deep-space stars in the top 45% (90 stars, fixed
+seed), fading into a sky-blue wash below. The star layer is **static** and wrapped in a
+`RepaintBoundary` (many points, nothing gained from repainting; the cloud/rain layer is the
+one that moves), and the seed is fixed so the star map is identical on every launch instead
+of flickering into a different arrangement. Layer order is stars → atmosphere → clouds/rain,
+because clouds and rain happen *inside* the atmosphere. Unlike my first preview, the
+atmosphere starts at alpha 0, avoiding a visible horizontal seam at 42%.
+
+**⑤ A dedicated HF propagation widget (4×2, same design language as the weather widget)** —
+header, an SFI/Kp/A summary row (Kp ≤3 green, 4 orange, ≥5 red), then the band × day/night
+table. It is **fixed at 4×2** (`resizeMode="none"`) deliberately: the content is a *table*,
+and tables do not degrade gracefully — squeezed to 2×2 all that remains is band names with
+no condition values, which is precisely the useful part. Better to declare the size than to
+ship a widget users can drag into uselessness. (The weather widget adapts across four tiers
+because its content is a list, which *can* be shortened.) The Kp/A tint thresholds are the
+**same** as `hf.dart`'s `geomagActive` (K≥4) and `geomagStorm` (K≥5), so the widget can never
+show red while the advice says all is well.
+
+**⑥ Also fixed**: **CI caught two Kotlin compile errors** (Build Android APK failed), both
+"half-finished edits" — `Ids` never declared the `tipShort` field that `ID_TILE`/`ID_TALL`
+were already passing and `render` was already reading (3 errors); and `cell.optInt(...)` called
+a member function on a `JSONObject?` (my `read` extension is *on* the nullable receiver, so
+that call is fine, but `optInt` is not — it needs `cell?.optInt(...) ?: 0`). The checker now
+verifies **named arguments against class declarations**, and I proved it fires: removing the
+`tipShort` field makes it report exactly the three errors CI reported. There is no Android SDK
+here, so shape-level checks like this are the only thing that can catch the most common
+half-finished state. Writing that check, I hit the same class of bug myself — `\(([^)]*)\)`
+truncates at the *first* `)`, and declarations contain `IntArray = IntArray(0)`, so six false
+failures appeared; it now parses balanced parentheses. Also: the two providers' private
+`JSONObject.read` extensions are now one `internal` `WidgetJson.kt` (two same-named
+implementations invite only-one-gets-updated bugs); and the preview's propagation colours are
+now **derived** rather than hand-copied (Band Closed was written as `#B9C4D4` while the same
+formula yields `#B9C3D1`) — a preview that is off by even a little is a preview that lies.
+
+**Tests**: 14 new cases in `test/hf_widget_test.dart`; **412 passing** overall.
+
+**Honest caveat**: there is no Android SDK here, so the Android side **can only be verified by
+CI compiling it** — which is exactly how this round's two errors were found. The look of the
+star/atmosphere background and the real-device layout of the HF widget **still need your
+confirmation**; the preview is a 3x bitmap render and will differ from RemoteViews' actual
+measurement by a few percent.
+
+
 ## [1.6.116] - 2026-09-17
 
 ### 🎨 桌面小组件重做设计：真 Material 图标 + 真 logo + 4 档自适应，并按定稿预览施工
