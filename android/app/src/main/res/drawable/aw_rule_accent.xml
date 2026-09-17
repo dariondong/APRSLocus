@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <!-- 提示旁的小色条。底色纯白，运行时用 setColorFilter 染成建议级别色 -->
-    <corners android:radius="2dp" />
-    <solid android:color="#FFFFFF" />
-</shape>

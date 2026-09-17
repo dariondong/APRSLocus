@@ -21,7 +21,7 @@
     android/app/src/main/res/drawable/aw_tile.xml          指标格玻璃底
     android/app/src/main/res/drawable/aw_tile_danger.xml   危险提示行底
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
-    android/app/src/main/res/drawable/aw_rule_accent.xml   提示旁的小色条（染成建议级别色）
+    android/app/src/main/res/drawable/aw_dot.xml            提示行旁的级别色圆点（染成建议级别色）
 """
 
 import os
@@ -52,7 +52,6 @@ DARK = {
 RADIUS_LARGE = 20
 RADIUS_SMALL = 16
 RADIUS_TILE = 11
-RADIUS_RULE = 2
 RADIUS_PILL = 999
 
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
