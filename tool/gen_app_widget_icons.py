@@ -115,6 +115,12 @@ ICONS_WITH_CONST = {
     "waves":                 ("waves_rounded",                 0xF02A8),
     "wb_twilight":           ("wb_twilight_rounded",           0xF02AF),
     "nightlight":            ("nightlight_round",              0xE42F),
+    # 短波 / 电离层（hf.dart 的建议会用到）
+    "public_off":       ("public_off_rounded",       0xF00C5),
+    "public":           ("public_rounded",           0xF00C6),
+    "auto_awesome":     ("auto_awesome_rounded",     0xF596),
+    "hearing_disabled": ("hearing_disabled_rounded", 0xF7E0),
+    "cell_tower":       ("cell_tower_rounded",       0xF02E6),
     # 天气主图标（会额外出一份 26dp 的大图）
     "nights_stay":  ("nights_stay_rounded",  0xF0008),
     "wb_cloudy":    ("wb_cloudy_rounded",    0xF02AA),

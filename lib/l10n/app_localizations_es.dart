@@ -4838,6 +4838,98 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weatherPowered => 'Datos de QWeather · APRSlocus';
 
   @override
+  String get hfTitle => 'Propagación HF';
+
+  @override
+  String get hfBand => 'Banda';
+
+  @override
+  String get hfDay => 'Día';
+
+  @override
+  String get hfNight => 'Noche';
+
+  @override
+  String get hfSfi => 'Flujo solar';
+
+  @override
+  String get hfKp => 'Índice Kp';
+
+  @override
+  String get hfAIndex => 'Índice A';
+
+  @override
+  String get hfSunspots => 'Manchas solares';
+
+  @override
+  String get hfXray => 'Rayos X';
+
+  @override
+  String get hfSolarWind => 'Viento solar';
+
+  @override
+  String get hfGeomag => 'Geomag';
+
+  @override
+  String get hfNoise => 'Ruido';
+
+  @override
+  String get hfMuf => 'MUF';
+
+  @override
+  String get hfNoData => 'Aún no hay datos de HF: se cargan al conectarse';
+
+  @override
+  String get hfUnavailable =>
+      'El servicio de propagación HF no está disponible';
+
+  @override
+  String get hfQGood => 'Buena';
+
+  @override
+  String get hfQFair => 'Regular';
+
+  @override
+  String get hfQPoor => 'Mala';
+
+  @override
+  String get hfQClosed => 'Cerrada';
+
+  @override
+  String get hfPowered =>
+      'Datos de propagación de hamqsl.com (N0NBH) · promedio global, no medición local';
+
+  @override
+  String get hfTipStorm =>
+      'Tormenta geomagnética (Kp≥5): las rutas HF polares se atenúan mucho y el DX transpolar casi desaparece; pruebe rutas de menor latitud o VHF/UHF local';
+
+  @override
+  String get hfTipGeomagActive =>
+      'Campo geomagnético inquieto: las rutas HF de alta latitud son menos estables; dé más tiempo de llamada al DX';
+
+  @override
+  String get hfTipLowSfi =>
+      'Actividad solar baja (SFI<100): poca vida diurna en 15/12/10m; prefiera 40/30/20m';
+
+  @override
+  String get hfTipHighSfi =>
+      'Actividad solar alta (SFI≥150): 15/12/10m diurnas deberían abrir para DX de larga distancia';
+
+  @override
+  String get hfTipHighNoise =>
+      'Ruido de fondo alto: las señales débiles cuestan; reduzca el ancho de banda y la ganancia de RF, use modos estrechos si hace falta';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b está abierta: prefiera esta banda para llamar';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b está mala: pruebe otra banda o espere la línea gris de amanecer/atardecer';
+  }
+
+  @override
   String get weatherCurLoc => 'Ubicación actual';
 
   @override

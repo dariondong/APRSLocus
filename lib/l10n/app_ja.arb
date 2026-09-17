@@ -1436,6 +1436,47 @@
   "weatherPanelSub": "和風天気（QWeather）· 現在地",
   "weatherRefresh": "更新",
   "weatherPowered": "データ提供：和風天気（QWeather）· APRSlocus",
+  "hfTitle": "HF 伝搬",
+  "hfBand": "バンド",
+  "hfDay": "昼",
+  "hfNight": "夜",
+  "hfSfi": "太陽フラックス",
+  "hfKp": "Kp 指数",
+  "hfAIndex": "A 指数",
+  "hfSunspots": "黒点数",
+  "hfXray": "X 線",
+  "hfSolarWind": "太陽風",
+  "hfGeomag": "地磁気",
+  "hfNoise": "ノイズ",
+  "hfMuf": "MUF",
+  "hfNoData": "HF 伝搬データがありません（オンライン時に自動取得します）",
+  "hfUnavailable": "HF 伝搬サービスを利用できません",
+  "hfQGood": "良好",
+  "hfQFair": "普通",
+  "hfQPoor": "不良",
+  "hfQClosed": "クローズ",
+  "hfPowered": "伝搬データ: hamqsl.com（N0NBH）· 全球平均であり現地実測ではありません",
+  "hfTipStorm": "地磁気嵐（Kp≥5）：極域の HF 伝搬は大きく減衰し、極横断 DX はほぼ途絶えます。低緯度経路かローカル VHF/UHF へ",
+  "hfTipGeomagActive": "地磁気がやや乱れています：高緯度の HF 伝搬は普段より不安定です。DX は呼び出し時間を多めに",
+  "hfTipLowSfi": "太陽活動が低調（SFI<100）：昼間の 15/12/10m は期待薄。40/30/20m を優先",
+  "hfTipHighSfi": "太陽活動が活発（SFI≥150）：昼間の 15/12/10m で遠距離 DX の見込み",
+  "hfTipHighNoise": "ノイズフロアが高い：弱い信号は取りにくいです。帯域を狭め、RF ゲインを下げ、必要なら狭帯域モードで",
+  "hfTipBandGood": "{b} の伝搬が良好：今はこのバンドを優先",
+  "@hfTipBandGood": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "hfTipBandPoor": "{b} の伝搬が不良：別のバンドへ、または日の出・日の入りのグレーライン待ち",
+  "@hfTipBandPoor": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "weatherCurLoc": "現在地",
   "weatherNoLoc": "位置情報がありません。「マイ無線局」で位置情報を有効にしてから天気をご覧ください",
   "weatherUnavail": "天気サービスは一時的に利用できません",

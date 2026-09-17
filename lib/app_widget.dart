@@ -124,6 +124,12 @@ final Map<IconData, String> kAppWidgetIconNames = <IconData, String>{
   Icons.masks_rounded: 'masks',
   Icons.opacity_rounded: 'opacity',
   Icons.wb_sunny_rounded: 'wb_sunny',
+  // 短波 / 电离层（hf.dart 的建议用）
+  Icons.public_off_rounded: 'public_off',
+  Icons.public_rounded: 'public',
+  Icons.auto_awesome_rounded: 'auto_awesome',
+  Icons.hearing_disabled_rounded: 'hearing_disabled',
+  Icons.cell_tower_rounded: 'cell_tower',
   // 传播机会
   Icons.trending_down_rounded: 'trending_down',
   Icons.waves_rounded: 'waves',

@@ -1436,6 +1436,47 @@
   "weatherPanelSub": "QWeather · Lokasi Saat Ini",
   "weatherRefresh": "Segarkan",
   "weatherPowered": "Didukung oleh QWeather · APRSlocus",
+  "hfTitle": "Propagasi HF",
+  "hfBand": "Band",
+  "hfDay": "Siang",
+  "hfNight": "Malam",
+  "hfSfi": "Fluks surya",
+  "hfKp": "Indeks Kp",
+  "hfAIndex": "Indeks A",
+  "hfSunspots": "Bintik matahari",
+  "hfXray": "Sinar-X",
+  "hfSolarWind": "Angin surya",
+  "hfGeomag": "Geomag",
+  "hfNoise": "Derau",
+  "hfMuf": "MUF",
+  "hfNoData": "Belum ada data HF — dimuat otomatis saat daring",
+  "hfUnavailable": "Layanan propagasi HF tidak tersedia",
+  "hfQGood": "Bagus",
+  "hfQFair": "Sedang",
+  "hfQPoor": "Buruk",
+  "hfQClosed": "Tutup",
+  "hfPowered": "Data propagasi oleh hamqsl.com (N0NBH) · rata-rata global, bukan pengukuran lokal",
+  "hfTipStorm": "Badai geomagnetik (Kp≥5): jalur HF kutub meredup parah dan DX lintas kutub hampir hilang — coba jalur lintang rendah atau VHF/UHF lokal",
+  "hfTipGeomagActive": "Medan geomagnetik tidak tenang: jalur HF lintang tinggi kurang stabil — beri waktu panggil lebih lama untuk DX",
+  "hfTipLowSfi": "Aktivitas surya rendah (SFI<100): 15/12/10m siang kurang hidup — utamakan 40/30/20m",
+  "hfTipHighSfi": "Aktivitas surya tinggi (SFI≥150): 15/12/10m siang berpeluang DX jarak jauh",
+  "hfTipHighNoise": "Derau tinggi: sinyal lemah sulit disalin — persempit bandwidth, turunkan gain RF, pakai mode sempit bila perlu",
+  "hfTipBandGood": "{b} terbuka: utamakan band ini untuk memanggil",
+  "@hfTipBandGood": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "hfTipBandPoor": "{b} buruk: coba band lain, atau tunggu garis kelabu fajar/senja",
+  "@hfTipBandPoor": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "weatherCurLoc": "Lokasi saat ini",
   "weatherNoLoc": "Belum ada lokasi — aktifkan lokasi di Stasiun saya untuk melihat cuaca",
   "weatherUnavail": "Layanan cuaca tidak tersedia",

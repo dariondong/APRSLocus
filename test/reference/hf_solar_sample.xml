@@ -1,0 +1,42 @@
+<solar>
+	<solardata>
+		<source url="http://www.hamqsl.com/solar.html">N0NBH</source>
+		<updated> 17 Sep 2026 0513 GMT</updated>
+		<solarflux>100</solarflux>
+		<aindex> 9</aindex>
+		<kindex> 3</kindex>
+		<kindexnt>No Report</kindexnt>
+		<xray>B2.2</xray>
+		<sunspots>23</sunspots>
+		<heliumline>109.2</heliumline>
+		<protonflux>NoRpt</protonflux>
+		<electonflux>NoRpt</electonflux>
+		<aurora> 2</aurora>
+		<normalization>1.99</normalization>
+		<latdegree>66.5</latdegree>
+		<solarwind>508.8</solarwind>
+		<magneticfield>  4.1</magneticfield>
+		<calculatedconditions>
+			<band name="80m-40m" time="day">Poor</band>
+			<band name="30m-20m" time="day">Good</band>
+			<band name="17m-15m" time="day">Fair</band>
+			<band name="12m-10m" time="day">Poor</band>
+			<band name="80m-40m" time="night">Fair</band>
+			<band name="30m-20m" time="night">Good</band>
+			<band name="17m-15m" time="night">Fair</band>
+			<band name="12m-10m" time="night">Poor</band>
+		</calculatedconditions>
+		<calculatedvhfconditions>
+			<phenomenon name="vhf-aurora" location="northern_hemi">Band Closed</phenomenon>
+			<phenomenon name="E-Skip" location="europe">Band Closed</phenomenon>
+			<phenomenon name="E-Skip" location="north_america">Band Closed</phenomenon>
+			<phenomenon name="E-Skip" location="europe_6m">Band Closed</phenomenon>
+			<phenomenon name="E-Skip" location="europe_4m">Band Closed</phenomenon>
+		</calculatedvhfconditions>
+		<geomagfield>UNSETTLD</geomagfield>
+		<signalnoise>S2-S3</signalnoise>
+		<fof2></fof2>
+		<muffactor></muffactor>
+		<muf>NoRpt</muf>
+	</solardata>
+</solar>

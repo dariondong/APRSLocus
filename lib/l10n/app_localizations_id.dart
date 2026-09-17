@@ -4808,6 +4808,97 @@ class AppLocalizationsId extends AppLocalizations {
   String get weatherPowered => 'Didukung oleh QWeather · APRSlocus';
 
   @override
+  String get hfTitle => 'Propagasi HF';
+
+  @override
+  String get hfBand => 'Band';
+
+  @override
+  String get hfDay => 'Siang';
+
+  @override
+  String get hfNight => 'Malam';
+
+  @override
+  String get hfSfi => 'Fluks surya';
+
+  @override
+  String get hfKp => 'Indeks Kp';
+
+  @override
+  String get hfAIndex => 'Indeks A';
+
+  @override
+  String get hfSunspots => 'Bintik matahari';
+
+  @override
+  String get hfXray => 'Sinar-X';
+
+  @override
+  String get hfSolarWind => 'Angin surya';
+
+  @override
+  String get hfGeomag => 'Geomag';
+
+  @override
+  String get hfNoise => 'Derau';
+
+  @override
+  String get hfMuf => 'MUF';
+
+  @override
+  String get hfNoData => 'Belum ada data HF — dimuat otomatis saat daring';
+
+  @override
+  String get hfUnavailable => 'Layanan propagasi HF tidak tersedia';
+
+  @override
+  String get hfQGood => 'Bagus';
+
+  @override
+  String get hfQFair => 'Sedang';
+
+  @override
+  String get hfQPoor => 'Buruk';
+
+  @override
+  String get hfQClosed => 'Tutup';
+
+  @override
+  String get hfPowered =>
+      'Data propagasi oleh hamqsl.com (N0NBH) · rata-rata global, bukan pengukuran lokal';
+
+  @override
+  String get hfTipStorm =>
+      'Badai geomagnetik (Kp≥5): jalur HF kutub meredup parah dan DX lintas kutub hampir hilang — coba jalur lintang rendah atau VHF/UHF lokal';
+
+  @override
+  String get hfTipGeomagActive =>
+      'Medan geomagnetik tidak tenang: jalur HF lintang tinggi kurang stabil — beri waktu panggil lebih lama untuk DX';
+
+  @override
+  String get hfTipLowSfi =>
+      'Aktivitas surya rendah (SFI<100): 15/12/10m siang kurang hidup — utamakan 40/30/20m';
+
+  @override
+  String get hfTipHighSfi =>
+      'Aktivitas surya tinggi (SFI≥150): 15/12/10m siang berpeluang DX jarak jauh';
+
+  @override
+  String get hfTipHighNoise =>
+      'Derau tinggi: sinyal lemah sulit disalin — persempit bandwidth, turunkan gain RF, pakai mode sempit bila perlu';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b terbuka: utamakan band ini untuk memanggil';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b buruk: coba band lain, atau tunggu garis kelabu fajar/senja';
+  }
+
+  @override
   String get weatherCurLoc => 'Lokasi saat ini';
 
   @override

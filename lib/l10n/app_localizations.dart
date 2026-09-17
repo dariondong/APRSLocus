@@ -8343,6 +8343,168 @@ abstract class AppLocalizations {
   /// **'数据由和风天气提供 · APRSlocus'**
   String get weatherPowered;
 
+  /// No description provided for @hfTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'短波传播'**
+  String get hfTitle;
+
+  /// No description provided for @hfBand.
+  ///
+  /// In zh, this message translates to:
+  /// **'波段'**
+  String get hfBand;
+
+  /// No description provided for @hfDay.
+  ///
+  /// In zh, this message translates to:
+  /// **'日间'**
+  String get hfDay;
+
+  /// No description provided for @hfNight.
+  ///
+  /// In zh, this message translates to:
+  /// **'夜间'**
+  String get hfNight;
+
+  /// No description provided for @hfSfi.
+  ///
+  /// In zh, this message translates to:
+  /// **'太阳通量'**
+  String get hfSfi;
+
+  /// No description provided for @hfKp.
+  ///
+  /// In zh, this message translates to:
+  /// **'地磁 Kp'**
+  String get hfKp;
+
+  /// No description provided for @hfAIndex.
+  ///
+  /// In zh, this message translates to:
+  /// **'A 指数'**
+  String get hfAIndex;
+
+  /// No description provided for @hfSunspots.
+  ///
+  /// In zh, this message translates to:
+  /// **'太阳黑子'**
+  String get hfSunspots;
+
+  /// No description provided for @hfXray.
+  ///
+  /// In zh, this message translates to:
+  /// **'X 射线'**
+  String get hfXray;
+
+  /// No description provided for @hfSolarWind.
+  ///
+  /// In zh, this message translates to:
+  /// **'太阳风速'**
+  String get hfSolarWind;
+
+  /// No description provided for @hfGeomag.
+  ///
+  /// In zh, this message translates to:
+  /// **'地磁'**
+  String get hfGeomag;
+
+  /// No description provided for @hfNoise.
+  ///
+  /// In zh, this message translates to:
+  /// **'底噪'**
+  String get hfNoise;
+
+  /// No description provided for @hfMuf.
+  ///
+  /// In zh, this message translates to:
+  /// **'最高可用频率'**
+  String get hfMuf;
+
+  /// No description provided for @hfNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无短波传播数据：联网后自动获取'**
+  String get hfNoData;
+
+  /// No description provided for @hfUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'短波传播服务暂时不可用'**
+  String get hfUnavailable;
+
+  /// No description provided for @hfQGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'好'**
+  String get hfQGood;
+
+  /// No description provided for @hfQFair.
+  ///
+  /// In zh, this message translates to:
+  /// **'一般'**
+  String get hfQFair;
+
+  /// No description provided for @hfQPoor.
+  ///
+  /// In zh, this message translates to:
+  /// **'差'**
+  String get hfQPoor;
+
+  /// No description provided for @hfQClosed.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭'**
+  String get hfQClosed;
+
+  /// No description provided for @hfPowered.
+  ///
+  /// In zh, this message translates to:
+  /// **'传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测'**
+  String get hfPowered;
+
+  /// No description provided for @hfTipStorm.
+  ///
+  /// In zh, this message translates to:
+  /// **'地磁暴（Kp≥5）：极区短波路径衰减明显，跨极地 DX 基本中断；改走低纬度路径或转本地 VHF/UHF'**
+  String get hfTipStorm;
+
+  /// No description provided for @hfTipGeomagActive.
+  ///
+  /// In zh, this message translates to:
+  /// **'地磁较活跃：短波高纬度路径不如平时稳定，DX 通联建议留出更多呼叫时间'**
+  String get hfTipGeomagActive;
+
+  /// No description provided for @hfTipLowSfi.
+  ///
+  /// In zh, this message translates to:
+  /// **'太阳活动偏低（SFI<100）：白天高波段（15m/12m/10m）机会少，优先 40m/30m/20m'**
+  String get hfTipLowSfi;
+
+  /// No description provided for @hfTipHighSfi.
+  ///
+  /// In zh, this message translates to:
+  /// **'太阳活动活跃（SFI≥150）：白天高波段（15m/12m/10m）有机会远距离 DX'**
+  String get hfTipHighSfi;
+
+  /// No description provided for @hfTipHighNoise.
+  ///
+  /// In zh, this message translates to:
+  /// **'底噪偏高：弱信号接收困难，建议收窄带宽、降低前置增益，必要时用窄带模式'**
+  String get hfTipHighNoise;
+
+  /// No description provided for @hfTipBandGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'{b} 传播条件好：本时段优先用这一段呼叫'**
+  String hfTipBandGood(String b);
+
+  /// No description provided for @hfTipBandPoor.
+  ///
+  /// In zh, this message translates to:
+  /// **'{b} 条件偏差：换到其它波段，或等日落/日出灰线再试'**
+  String hfTipBandPoor(String b);
+
   /// No description provided for @weatherCurLoc.
   ///
   /// In zh, this message translates to:

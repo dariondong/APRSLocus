@@ -1446,6 +1446,47 @@
   "weatherPanelSub": "QWeather · Current Location",
   "weatherRefresh": "Refresh",
   "weatherPowered": "Powered by QWeather · APRSlocus",
+  "hfTitle": "HF propagation",
+  "hfBand": "Band",
+  "hfDay": "Day",
+  "hfNight": "Night",
+  "hfSfi": "Solar flux",
+  "hfKp": "Kp index",
+  "hfAIndex": "A index",
+  "hfSunspots": "Sunspots",
+  "hfXray": "X-ray",
+  "hfSolarWind": "Solar wind",
+  "hfGeomag": "Geomag",
+  "hfNoise": "Noise",
+  "hfMuf": "MUF",
+  "hfNoData": "No HF data yet — it loads automatically when online",
+  "hfUnavailable": "HF propagation service is unavailable",
+  "hfQGood": "Good",
+  "hfQFair": "Fair",
+  "hfQPoor": "Poor",
+  "hfQClosed": "Closed",
+  "hfPowered": "Propagation data by hamqsl.com (N0NBH) · global average, not local measurement",
+  "hfTipStorm": "Geomagnetic storm (Kp≥5): polar HF paths fade badly and trans-polar DX is largely gone — try lower-latitude paths or local VHF/UHF",
+  "hfTipGeomagActive": "Geomagnetic field is unsettled: high-latitude HF paths are less stable than usual — allow more calling time for DX",
+  "hfTipLowSfi": "Low solar activity (SFI<100): little daytime life on 15/12/10m — favour 40/30/20m",
+  "hfTipHighSfi": "Solar activity is high (SFI≥150): daytime 15/12/10m should open for long-distance DX",
+  "hfTipHighNoise": "High noise floor: weak signals are hard to copy — narrow the bandwidth, reduce RF gain, use narrow modes if needed",
+  "hfTipBandGood": "{b} is open: favour this band for calling right now",
+  "@hfTipBandGood": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "hfTipBandPoor": "{b} is poor: try another band, or wait for the sunrise/sunset gray line",
+  "@hfTipBandPoor": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "weatherCurLoc": "Current location",
   "weatherNoLoc": "No location yet — enable location in My Station to view weather",
   "weatherUnavail": "Weather service unavailable",

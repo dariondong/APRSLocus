@@ -4632,6 +4632,93 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherPowered => '数据由和风天气提供 · APRSlocus';
 
   @override
+  String get hfTitle => '短波传播';
+
+  @override
+  String get hfBand => '波段';
+
+  @override
+  String get hfDay => '日间';
+
+  @override
+  String get hfNight => '夜间';
+
+  @override
+  String get hfSfi => '太阳通量';
+
+  @override
+  String get hfKp => '地磁 Kp';
+
+  @override
+  String get hfAIndex => 'A 指数';
+
+  @override
+  String get hfSunspots => '太阳黑子';
+
+  @override
+  String get hfXray => 'X 射线';
+
+  @override
+  String get hfSolarWind => '太阳风速';
+
+  @override
+  String get hfGeomag => '地磁';
+
+  @override
+  String get hfNoise => '底噪';
+
+  @override
+  String get hfMuf => '最高可用频率';
+
+  @override
+  String get hfNoData => '暂无短波传播数据：联网后自动获取';
+
+  @override
+  String get hfUnavailable => '短波传播服务暂时不可用';
+
+  @override
+  String get hfQGood => '好';
+
+  @override
+  String get hfQFair => '一般';
+
+  @override
+  String get hfQPoor => '差';
+
+  @override
+  String get hfQClosed => '关闭';
+
+  @override
+  String get hfPowered => '传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测';
+
+  @override
+  String get hfTipStorm =>
+      '地磁暴（Kp≥5）：极区短波路径衰减明显，跨极地 DX 基本中断；改走低纬度路径或转本地 VHF/UHF';
+
+  @override
+  String get hfTipGeomagActive => '地磁较活跃：短波高纬度路径不如平时稳定，DX 通联建议留出更多呼叫时间';
+
+  @override
+  String get hfTipLowSfi =>
+      '太阳活动偏低（SFI<100）：白天高波段（15m/12m/10m）机会少，优先 40m/30m/20m';
+
+  @override
+  String get hfTipHighSfi => '太阳活动活跃（SFI≥150）：白天高波段（15m/12m/10m）有机会远距离 DX';
+
+  @override
+  String get hfTipHighNoise => '底噪偏高：弱信号接收困难，建议收窄带宽、降低前置增益，必要时用窄带模式';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b 传播条件好：本时段优先用这一段呼叫';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b 条件偏差：换到其它波段，或等日落/日出灰线再试';
+  }
+
+  @override
   String get weatherCurLoc => '当前位置';
 
   @override
@@ -9914,6 +10001,93 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get weatherPowered => '資料由和風天氣提供 · APRSlocus';
+
+  @override
+  String get hfTitle => '短波傳播';
+
+  @override
+  String get hfBand => '波段';
+
+  @override
+  String get hfDay => '日間';
+
+  @override
+  String get hfNight => '夜間';
+
+  @override
+  String get hfSfi => '太陽通量';
+
+  @override
+  String get hfKp => '地磁 Kp';
+
+  @override
+  String get hfAIndex => 'A 指數';
+
+  @override
+  String get hfSunspots => '太陽黑子';
+
+  @override
+  String get hfXray => 'X 射線';
+
+  @override
+  String get hfSolarWind => '太陽風速';
+
+  @override
+  String get hfGeomag => '地磁';
+
+  @override
+  String get hfNoise => '底噪';
+
+  @override
+  String get hfMuf => '最高可用頻率';
+
+  @override
+  String get hfNoData => '暫無短波傳播資料：連網後自動取得';
+
+  @override
+  String get hfUnavailable => '短波傳播服務暫時無法使用';
+
+  @override
+  String get hfQGood => '好';
+
+  @override
+  String get hfQFair => '一般';
+
+  @override
+  String get hfQPoor => '差';
+
+  @override
+  String get hfQClosed => '關閉';
+
+  @override
+  String get hfPowered => '傳播資料由 hamqsl.com（N0NBH）提供 · 全球平均，非本地實測';
+
+  @override
+  String get hfTipStorm =>
+      '地磁暴（Kp≥5）：極區短波路徑衰減明顯，跨極地 DX 幾乎中斷；改走低緯度路徑或轉本地 VHF/UHF';
+
+  @override
+  String get hfTipGeomagActive => '地磁較活躍：短波高緯度路徑不如平時穩定，DX 通聯建議留出更多呼叫時間';
+
+  @override
+  String get hfTipLowSfi =>
+      '太陽活動偏低（SFI<100）：白天高頻段（15m/12m/10m）機會少，優先 40m/30m/20m';
+
+  @override
+  String get hfTipHighSfi => '太陽活動活躍（SFI≥150）：白天高頻段（15m/12m/10m）有機會遠距離 DX';
+
+  @override
+  String get hfTipHighNoise => '底噪偏高：弱信號接收困難，建議收窄頻寬、降低前置增益，必要時用窄帶模式';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b 傳播條件好：本時段優先使用這一段呼叫';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b 條件偏差：換到其他波段，或等日落/日出灰線再試';
+  }
 
   @override
   String get weatherCurLoc => '當前位置';

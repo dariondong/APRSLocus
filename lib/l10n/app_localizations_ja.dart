@@ -4669,6 +4669,94 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weatherPowered => 'データ提供：和風天気（QWeather）· APRSlocus';
 
   @override
+  String get hfTitle => 'HF 伝搬';
+
+  @override
+  String get hfBand => 'バンド';
+
+  @override
+  String get hfDay => '昼';
+
+  @override
+  String get hfNight => '夜';
+
+  @override
+  String get hfSfi => '太陽フラックス';
+
+  @override
+  String get hfKp => 'Kp 指数';
+
+  @override
+  String get hfAIndex => 'A 指数';
+
+  @override
+  String get hfSunspots => '黒点数';
+
+  @override
+  String get hfXray => 'X 線';
+
+  @override
+  String get hfSolarWind => '太陽風';
+
+  @override
+  String get hfGeomag => '地磁気';
+
+  @override
+  String get hfNoise => 'ノイズ';
+
+  @override
+  String get hfMuf => 'MUF';
+
+  @override
+  String get hfNoData => 'HF 伝搬データがありません（オンライン時に自動取得します）';
+
+  @override
+  String get hfUnavailable => 'HF 伝搬サービスを利用できません';
+
+  @override
+  String get hfQGood => '良好';
+
+  @override
+  String get hfQFair => '普通';
+
+  @override
+  String get hfQPoor => '不良';
+
+  @override
+  String get hfQClosed => 'クローズ';
+
+  @override
+  String get hfPowered => '伝搬データ: hamqsl.com（N0NBH）· 全球平均であり現地実測ではありません';
+
+  @override
+  String get hfTipStorm =>
+      '地磁気嵐（Kp≥5）：極域の HF 伝搬は大きく減衰し、極横断 DX はほぼ途絶えます。低緯度経路かローカル VHF/UHF へ';
+
+  @override
+  String get hfTipGeomagActive =>
+      '地磁気がやや乱れています：高緯度の HF 伝搬は普段より不安定です。DX は呼び出し時間を多めに';
+
+  @override
+  String get hfTipLowSfi => '太陽活動が低調（SFI<100）：昼間の 15/12/10m は期待薄。40/30/20m を優先';
+
+  @override
+  String get hfTipHighSfi => '太陽活動が活発（SFI≥150）：昼間の 15/12/10m で遠距離 DX の見込み';
+
+  @override
+  String get hfTipHighNoise =>
+      'ノイズフロアが高い：弱い信号は取りにくいです。帯域を狭め、RF ゲインを下げ、必要なら狭帯域モードで';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b の伝搬が良好：今はこのバンドを優先';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b の伝搬が不良：別のバンドへ、または日の出・日の入りのグレーライン待ち';
+  }
+
+  @override
   String get weatherCurLoc => '現在地';
 
   @override

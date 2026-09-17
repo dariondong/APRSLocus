@@ -4798,6 +4798,97 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherPowered => 'Powered by QWeather · APRSlocus';
 
   @override
+  String get hfTitle => 'HF propagation';
+
+  @override
+  String get hfBand => 'Band';
+
+  @override
+  String get hfDay => 'Day';
+
+  @override
+  String get hfNight => 'Night';
+
+  @override
+  String get hfSfi => 'Solar flux';
+
+  @override
+  String get hfKp => 'Kp index';
+
+  @override
+  String get hfAIndex => 'A index';
+
+  @override
+  String get hfSunspots => 'Sunspots';
+
+  @override
+  String get hfXray => 'X-ray';
+
+  @override
+  String get hfSolarWind => 'Solar wind';
+
+  @override
+  String get hfGeomag => 'Geomag';
+
+  @override
+  String get hfNoise => 'Noise';
+
+  @override
+  String get hfMuf => 'MUF';
+
+  @override
+  String get hfNoData => 'No HF data yet — it loads automatically when online';
+
+  @override
+  String get hfUnavailable => 'HF propagation service is unavailable';
+
+  @override
+  String get hfQGood => 'Good';
+
+  @override
+  String get hfQFair => 'Fair';
+
+  @override
+  String get hfQPoor => 'Poor';
+
+  @override
+  String get hfQClosed => 'Closed';
+
+  @override
+  String get hfPowered =>
+      'Propagation data by hamqsl.com (N0NBH) · global average, not local measurement';
+
+  @override
+  String get hfTipStorm =>
+      'Geomagnetic storm (Kp≥5): polar HF paths fade badly and trans-polar DX is largely gone — try lower-latitude paths or local VHF/UHF';
+
+  @override
+  String get hfTipGeomagActive =>
+      'Geomagnetic field is unsettled: high-latitude HF paths are less stable than usual — allow more calling time for DX';
+
+  @override
+  String get hfTipLowSfi =>
+      'Low solar activity (SFI<100): little daytime life on 15/12/10m — favour 40/30/20m';
+
+  @override
+  String get hfTipHighSfi =>
+      'Solar activity is high (SFI≥150): daytime 15/12/10m should open for long-distance DX';
+
+  @override
+  String get hfTipHighNoise =>
+      'High noise floor: weak signals are hard to copy — narrow the bandwidth, reduce RF gain, use narrow modes if needed';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b is open: favour this band for calling right now';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b is poor: try another band, or wait for the sunrise/sunset gray line';
+  }
+
+  @override
   String get weatherCurLoc => 'Current location';
 
   @override

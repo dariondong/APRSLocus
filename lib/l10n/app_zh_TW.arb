@@ -2034,6 +2034,47 @@
   "weatherPanelSub": "和風天氣 · 當前位置",
   "weatherRefresh": "重新整理",
   "weatherPowered": "資料由和風天氣提供 · APRSlocus",
+  "hfTitle": "短波傳播",
+  "hfBand": "波段",
+  "hfDay": "日間",
+  "hfNight": "夜間",
+  "hfSfi": "太陽通量",
+  "hfKp": "地磁 Kp",
+  "hfAIndex": "A 指數",
+  "hfSunspots": "太陽黑子",
+  "hfXray": "X 射線",
+  "hfSolarWind": "太陽風速",
+  "hfGeomag": "地磁",
+  "hfNoise": "底噪",
+  "hfMuf": "最高可用頻率",
+  "hfNoData": "暫無短波傳播資料：連網後自動取得",
+  "hfUnavailable": "短波傳播服務暫時無法使用",
+  "hfQGood": "好",
+  "hfQFair": "一般",
+  "hfQPoor": "差",
+  "hfQClosed": "關閉",
+  "hfPowered": "傳播資料由 hamqsl.com（N0NBH）提供 · 全球平均，非本地實測",
+  "hfTipStorm": "地磁暴（Kp≥5）：極區短波路徑衰減明顯，跨極地 DX 幾乎中斷；改走低緯度路徑或轉本地 VHF/UHF",
+  "hfTipGeomagActive": "地磁較活躍：短波高緯度路徑不如平時穩定，DX 通聯建議留出更多呼叫時間",
+  "hfTipLowSfi": "太陽活動偏低（SFI<100）：白天高頻段（15m/12m/10m）機會少，優先 40m/30m/20m",
+  "hfTipHighSfi": "太陽活動活躍（SFI≥150）：白天高頻段（15m/12m/10m）有機會遠距離 DX",
+  "hfTipHighNoise": "底噪偏高：弱信號接收困難，建議收窄頻寬、降低前置增益，必要時用窄帶模式",
+  "hfTipBandGood": "{b} 傳播條件好：本時段優先使用這一段呼叫",
+  "@hfTipBandGood": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "hfTipBandPoor": "{b} 條件偏差：換到其他波段，或等日落/日出灰線再試",
+  "@hfTipBandPoor": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "weatherCurLoc": "當前位置",
   "weatherNoLoc": "暫無定位：請在「我的電台」開啟位置服務後查看天氣",
   "weatherUnavail": "天氣服務暫時不可用",

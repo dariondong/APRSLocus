@@ -1435,6 +1435,47 @@
   "weatherPanelSub": "QWeather · Ubicación actual",
   "weatherRefresh": "Actualizar",
   "weatherPowered": "Datos de QWeather · APRSlocus",
+  "hfTitle": "Propagación HF",
+  "hfBand": "Banda",
+  "hfDay": "Día",
+  "hfNight": "Noche",
+  "hfSfi": "Flujo solar",
+  "hfKp": "Índice Kp",
+  "hfAIndex": "Índice A",
+  "hfSunspots": "Manchas solares",
+  "hfXray": "Rayos X",
+  "hfSolarWind": "Viento solar",
+  "hfGeomag": "Geomag",
+  "hfNoise": "Ruido",
+  "hfMuf": "MUF",
+  "hfNoData": "Aún no hay datos de HF: se cargan al conectarse",
+  "hfUnavailable": "El servicio de propagación HF no está disponible",
+  "hfQGood": "Buena",
+  "hfQFair": "Regular",
+  "hfQPoor": "Mala",
+  "hfQClosed": "Cerrada",
+  "hfPowered": "Datos de propagación de hamqsl.com (N0NBH) · promedio global, no medición local",
+  "hfTipStorm": "Tormenta geomagnética (Kp≥5): las rutas HF polares se atenúan mucho y el DX transpolar casi desaparece; pruebe rutas de menor latitud o VHF/UHF local",
+  "hfTipGeomagActive": "Campo geomagnético inquieto: las rutas HF de alta latitud son menos estables; dé más tiempo de llamada al DX",
+  "hfTipLowSfi": "Actividad solar baja (SFI<100): poca vida diurna en 15/12/10m; prefiera 40/30/20m",
+  "hfTipHighSfi": "Actividad solar alta (SFI≥150): 15/12/10m diurnas deberían abrir para DX de larga distancia",
+  "hfTipHighNoise": "Ruido de fondo alto: las señales débiles cuestan; reduzca el ancho de banda y la ganancia de RF, use modos estrechos si hace falta",
+  "hfTipBandGood": "{b} está abierta: prefiera esta banda para llamar",
+  "@hfTipBandGood": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "hfTipBandPoor": "{b} está mala: pruebe otra banda o espere la línea gris de amanecer/atardecer",
+  "@hfTipBandPoor": {
+    "placeholders": {
+      "b": {
+        "type": "String"
+      }
+    }
+  },
   "weatherCurLoc": "Ubicación actual",
   "weatherNoLoc": "Aún sin ubicación: activa el servicio de ubicación en «Mi estación» para ver el tiempo",
   "weatherUnavail": "El servicio meteorológico no está disponible",
