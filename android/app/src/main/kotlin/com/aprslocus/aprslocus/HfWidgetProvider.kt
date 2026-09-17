@@ -133,7 +133,9 @@ class HfWidgetProvider : AppWidgetProvider() {
                 val cell = sum?.optJSONObject(i)
                 views.setTextViewText(SUM_LABEL[i], cell.read("label"))
                 views.setTextViewText(SUM_VALUE[i], cell.read("value"))
-                val color = cell.optInt("color", 0)
+                // `cell` 是 JSONObject?：`optInt` 不像我那个 read 扩展那样
+                // 能挂在可空接收者上，必须写 `cell?.optInt(...) ?: 0`
+                val color = cell?.optInt("color", 0) ?: 0
                 if (color != 0) views.setTextColor(SUM_VALUE[i], color)
             }
 

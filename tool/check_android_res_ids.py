@@ -396,6 +396,68 @@ def check_layout_literal_providers(kotlin_dir, res_dir):
                         f"{layout}.xml 里没有这个 id（运行时该字段会静默不显示）")
     return problems
 
+
+# ── Kotlin 具名实参 vs 类声明 ──────────────────────────────────────
+# 这一条是为 v1.6.116 的一次 CI 失败加的：
+#   ID_TILE / ID_TALL 已经写了 `tipShort = true`，render 里也读了
+#   `ids.tipShort`，但 `Ids` 类里**从没声明过这个字段** —— 属于一个没写完的
+#   改动。Kotlin 编译报 3 处「No parameter with name 'tipShort' found /
+#   Unresolved reference」，而我的静态检查器全绿（它只查资源引用）。
+#
+# 本机没有 Android SDK、编不了 Kotlin，所以只能靠这种「形状级」核对兜住最容易
+# 犯的一类：**具名实参在类声明里不存在**。这不是类型检查（做不到），
+# 但恰好覆盖「加了用法忘了加字段」这种最常见的半成品状态。
+CLASS_DECL = re.compile(r"(?:private\s+)?class\s+(\w+)\s*\(([^)]*)\)", re.S)
+VAL_NAME = re.compile(r"\bval\s+(\w+)\s*:")
+NAMED_ARG = re.compile(r"\b(\w+)\s*=(?!=)")
+
+
+
+def _balanced(text, open_idx):
+    """返回从 text[open_idx]（应为 '('）到配对 ')' 之间的内容。"""
+    depth, i = 0, open_idx
+    while i < len(text):
+        if text[i] == "(":
+            depth += 1
+        elif text[i] == ")":
+            depth -= 1
+            if depth == 0:
+                return text[open_idx + 1:i]
+        i += 1
+    return text[open_idx + 1:]
+
+def check_named_args(kotlin_dir):
+    problems = []
+    for path in glob.glob(os.path.join(kotlin_dir, "**", "*.kt"), recursive=True):
+        text = read_kotlin(path)
+        # 收集本工程内的类声明 → 其构造参数名（用配对括号取参数串）
+        decls = {}
+        for m in re.finditer(r"(?:private\s+)?class\s+(\w+)\s*\(", text):
+            params = _balanced(text, m.end() - 1)
+            decls.setdefault(m.group(1), set()).update(VAL_NAME.findall(params))
+        if not decls:
+            continue
+        # 找 `Xxx(` 调用点里的具名实参，核对是否在该类声明里
+        for cls, params in decls.items():
+            if not params:
+                continue
+            # 跳过声明自身
+            decl_end = max((m.end() for m in CLASS_DECL.finditer(text)
+                            if m.group(1) == cls), default=0)
+            for m in re.finditer(rf"\b{cls}\(", text[decl_end:]):
+                body = _balanced(text, decl_end + m.end() - 1)
+                for am in NAMED_ARG.finditer(body):
+                    aname = am.group(1)
+                    # 只核「看起来像构造参数」的具名实参，跳过 lambda / 比较等
+                    if aname in ("if", "when", "return", "true", "false", "null"):
+                        continue
+                    if aname not in params:
+                        problems.append(
+                            f"  ✗ {os.path.basename(path)}: {cls}(...) 传了具名实参 "
+                            f"`{aname} =`，但 {cls} 类里没有这个字段"
+                            f"（这类「加了用法忘了加字段」的改动，Kotlin 编译会直接失败）")
+    return problems
+
 def main() -> int:
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     res_dir = os.path.join(root, "android", "app", "src", "main", "res")
@@ -429,6 +491,8 @@ def main() -> int:
          check_setint_view_types(kotlin_dir, res_dir)),
         ("单布局 Provider 的 ResId 与布局不匹配",
          check_layout_literal_providers(kotlin_dir, res_dir)),
+        ("Kotlin 具名实参在类声明里不存在",
+         check_named_args(kotlin_dir)),
     ]
 
     failed = False

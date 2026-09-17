@@ -113,6 +113,13 @@ class WeatherWidgetProvider : AppWidgetProvider() {
         val tipsHeader: Int = 0,
         val tipsTitle: Int = 0,
         val tipsCount: Int = 0,
+        /**
+         * 建议用**短文案**（Dart 侧切好的完整短句 `shortText`）还是完整文案。
+         *
+         * 主档（4×2）必须用短文案：它把「级别 + 正文」压在同一行，
+         * 完整句子放不下；竖长档（2×4）空间富余，用完整文案更好读。
+         */
+        val tipShort: Boolean = false,
     )
 
     companion object {
@@ -188,6 +195,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             tipsHeader = R.id.aw_tips_header,
             tipsTitle = R.id.aw_tips_title,
             tipsCount = R.id.aw_tips_count,
+            // 竖长档建议是「级别一行 + 正文两行」，空间够，用完整文案
+            tipShort = false,
         )
 
         private val ID_COMPACT = Ids(
