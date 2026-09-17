@@ -1,5 +1,85 @@
 # 更新日志
 
+## [1.6.120] - 2026-09-17
+
+### 🎨 短波组件重新设计：放弃「实心彩块」，改为 tonal chip（淡底 + 条件色字）
+
+你第二次说难看之后，我没有再让你从方案里挑，而是**先把前几版的毛病逐条列出来**
+（放大 3 倍看），再按设计原则重做。
+
+**诊断：问题的根不在配色，在「颜色的用量」和「层级」**
+
+1. **8 个饱和色块 = 红绿灯墙**。波段条件只是「4 档之一」这一个信息，
+   却给了整块饱和色 —— 颜色用量远大于它承载的信息量，于是观感是噪音而不是设计。
+2. **指数行的 Kp/A 也被染色**（绿色），和下面的表格**抢注意力** →
+   颜色被用在两处，反而没有重点。
+3. **字号只差四级**（12 / 11 / 9.5 / 8.5sp），层级几乎压平 → 整体看着「平」。
+4. **内边距全是 2~5dp 的「省出来的值」**（为塞进 4 行而一层层压缩）→ 没有呼吸感。
+
+**改法（三处结构性的，不是调参）**
+
+| | 改前 | 改后 |
+|---|---|---|
+| chip | 实心条件色块 + 白字 | **tonal chip**：条件色 **11% 淡底** + 条件色文字 |
+| 指数行 | Kp/A 染色（绿/橙） | **全部墨色** —— 颜色只留给波段条件这一件事 |
+| 层级 | 12 / 11 / 9.5 / 8.5 | 13/w800 标题 › 11/w600 指数值 › 10/w600 波段名 › 9/w700 条件 › 8/w600 列头（带字距） |
+
+**tonal chip 是 Material 3 里状态 chip 的标准做法**（淡底 + 彩字）：
+颜色用量降到大约 1/10，但**保留了对齐上的全部好处** —— chip 固定宽度、
+两列落在各自的竖线上、列头与 chip 列同一 x（这三条是 v1.6.119 才修好的，
+不能因为换色就丢掉）。
+
+**实现**：新增 4 张 `aw_chipsoft_*.xml`（`#1C条件色` 的 11% 淡底）；
+文字色由 `setTextColor` 设成条件基本色 —— 与 `lib/hf.dart` 的 `hfQualityColor`
+是同一组色，一处色板管到面板与组件两边。
+（注：**不能**用 `setColorFilter` 去染 chip —— chip 是 `TextView`，
+而那个方法只存在于 `ImageView`，v1.6.114 的线上事故就是这么来的。）
+
+**顺带**：给预览工具加了**字距**支持（PIL 没有 letterSpacing，改为逐字绘制并
+额外推进字距）—— 面板与组件都在用「小字号 + 字距」做弱化层级，预览不模拟这一点
+就会失真。
+
+**验证**：`flutter analyze` 无 error；全量 **413 通过**；三个生成器 OK；
+资源检查器 196 处引用全对；预览 6 档全部放得下（短波 126.3 / 130dp）。
+
+---
+
+**① The HF widget was redesigned: no more solid colour blocks — now tonal chips (pale fill + condition-coloured text).**
+After your second "still ugly", I did not ask you to pick from options again. Instead I listed what was
+wrong with the previous revisions (at 3x zoom) and reworked it against design principles.
+
+**The diagnosis: the problem was not the palette, it was how much colour was used and the lack of
+hierarchy.** Eight saturated blocks read as a traffic-light wall — a band condition is *one* piece of
+information ("one of four levels"), yet it was given a whole saturated block, so the amount of colour
+far exceeded the information it carried and the result reads as noise rather than design. The summary
+row also coloured Kp/A green, competing with the table below, so colour appeared in two places and
+therefore nowhere in particular. Type sizes spanned only four steps (12 / 11 / 9.5 / 8.5sp), flattening
+the hierarchy. And every padding was a 2–5dp "squeezed" value from cramming in four rows — no breathing room.
+
+**Three structural changes**: chips went from solid colour + white text to **tonal chips** (11% condition
+colour fill + condition-coloured text); the summary row gave up its colour entirely (ink only), leaving
+colour to mean exactly one thing — band conditions; and the type scale now has a real hierarchy
+(13/w800 title › 11/w600 index values › 10/w600 band names › 9/w700 conditions › 8/w600 letter-spaced
+column headers).
+
+**Tonal chips are Material 3's standard treatment for status chips** (pale fill + coloured label): colour
+usage drops to roughly a tenth while keeping *all* of the alignment benefits — fixed chip width, both
+columns on their own vertical lines, and column headers sharing an x with the chip columns. Those three
+were only fixed in v1.6.119 and must not be lost in a colour change.
+
+**Implementation**: four new `aw_chipsoft_*.xml` (an 11% `#1C`-prefixed tint); the text colour is applied
+via `setTextColor` using the same base colours as `lib/hf.dart`'s `hfQualityColor`, so one palette drives
+both the panel and the widget. Note that `setColorFilter` cannot be used to tint the chip — a chip is a
+`TextView`, and that method exists only on `ImageView`, which is exactly what caused the v1.6.114 outage.
+
+**Also**: the preview tool now supports letter spacing (PIL has no `letterSpacing`, so it draws character by
+character and advances the extra amount) — both the panel and the widget use "small type + letter spacing"
+to de-emphasise secondary text, and a preview that ignores that misrepresents the design.
+
+**Verified**: no analyzer errors; **413 tests passing**; all three generators OK; 196 resource references
+resolved; all six preview tiles fit (the HF widget at 126.3 of 130dp).
+
+
 ## [1.6.119] - 2026-09-17
 
 ### 🎨 短波组件重做（实心彩 chip · 你从 4 个方案里选的）；消息页去掉瀑布流；清掉高德描述

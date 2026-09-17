@@ -141,6 +141,22 @@ def build_all() -> dict:
             f"短波组件的 {level} 条件 chip（实心基准色 + 4dp 圆角 + 白字）",
             col, RADIUS_CHIP)
 
+    # 短波组件（定稿 D）的条件 chip：**tonal**（淡色底 + 条件色字）。
+    #
+    # 为什么不用实心饱和块：8 个饱和色块堆在一起是「红绿灯墙」——
+    # 条件只是「4 档之一」，不值得给整块饱和色。Material 3 的状态 chip
+    # 就是淡底 + 彩字，颜色用量降到约 1/10，但仍保留「固定宽度 + 落在同一竖线」
+    # 这两个对齐上的好处。
+    # 文字色不写在 drawable 里（drawable 只管底），由 Kotlin setTextColor
+    # 设成条件基本色 —— 这样一处色板（Dart 的 hfQualityColor）管到底。
+    TONAL = {"good": "#16A34A", "fair": "#D97706",
+             "poor": "#E11D48", "closed": "#94A3B8"}
+    for name, col in TONAL.items():
+        files[f"drawable/aw_chipsoft_{name}.xml"] = solid_xml(
+            f"传播条件 tonal chip 底：{name}（{col} 淡色 11%），"
+            f"文字色由 Kotlin 设为同色系基本色",
+            f"#1C{col[1:]}", 5)
+
     # 短波组件（方案 A）的条件 chip：实心条件色 + 圆角。
     # 基准色与 lib/hf.dart 的 hfQualityColor 一致（白底上不提亮）。
     CHIP = {"good": "#16A34A", "fair": "#D97706",

@@ -206,9 +206,29 @@ class Canvas:
 
     # ── 基础绘制 ──
     def text(self, x, y, s, size, alpha=1.0, bold=False, color="#FFFFFF",
-             anchor="la"):
-        self.d.text((round(x * SCALE), round(y * SCALE)), s, font=font(size, bold),
-                    fill=rgba(color, alpha), anchor=anchor)
+             anchor="la", spacing=None):
+        f = font(size, bold)
+        if not spacing:
+            self.d.text((round(x * SCALE), round(y * SCALE)), s, font=f,
+                        fill=rgba(color, alpha), anchor=anchor)
+            return
+        # 字距：逐字绘制并多推进 spacing*size 像素。
+        # PIL 没有字母间距参数，只能自己排；anchor 只按左对齐起画，
+        # 需要居中/右对齐时先量总宽再换算起始 x。
+        extra = spacing * size * SCALE
+        total = (sum(self.d.textlength(ch, font=f) for ch in s)
+                 + extra * max(0, len(s) - 1))
+        sx = round(x * SCALE)
+        if anchor[0] == 'm':
+            sx -= round(total / 2)
+        elif anchor[0] == 'r':
+            sx -= round(total)
+        yy = round(y * SCALE)
+        cx = sx
+        for ch in s:
+            self.d.text((cx, yy), ch, font=f, fill=rgba(color, alpha),
+                        anchor='l' + anchor[1])
+            cx += self.d.textlength(ch, font=f) + extra
 
     def measure(self, s, size, bold=False):
         return self.d.textbbox((0, 0), s, font=font(size, bold))[2] / SCALE
@@ -720,6 +740,102 @@ def render_hf_A2(w=296, h=140, dark=False):
         y = cy + CHIP_H + 1.5
     return c.out_clipped(20), y
 
+
+# ═══ 认真设计的一版（D）═══
+# 诊断（3x 放大后逐条看出来的）：
+#   ① 8 个饱和色块 = 红绿灯墙。颜色用量与信息量不匹配 —— 条件只是「4 档之一」，
+#      不值得给整块饱和色。
+#   ② 指数行的 Kp/A 也染色（绿），与表格的颜色抢注意力 → 干扰。
+#   ③ 字号只有 12/11/9.5/8.5 四级，层级几乎压平 → 看着「平」。
+#   ④ 内边距全是 2~5dp 的「省出来」值 → 没有呼吸感。
+#
+# 设计决策（不是调参）：
+#   · **tonal chip**（Material 3 的状态 chip 做法）：淡色底 10% + 条件色文字，
+#     而不是实心饱和块。对齐的好处（固定宽度、落在同一竖线）保留，颜色用量降到 1/10。
+#   · **指数行去色**：Kp/A 用墨色，颜色只留给「波段条件」这一件事。
+#   · **建立层级**：标题 13/w800 > 指数值 11/w600 > 波段名 10/w600 > 条件 9/w700
+#     > 列头 8/w600 + 字距。
+#   · **呼吸**：行高 14dp、表头与表格之间留 3dp、内边距 8/8。
+def _hf_shell(w, h, dark):
+    c = Canvas(w, h, "clear", dark=dark)
+    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
+    c.d = ImageDraw.Draw(c.layer)
+    return c
+
+
+def _hf_head(c, px, pw, title_size=13):
+    """顶栏 + 指数行。指数**不染色** —— 颜色只留给波段条件。"""
+    c.icon("waves", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(title_size, True) / 2, HF["hf_title"],
+           title_size, bold=True, color=INK, anchor="lm")
+    bw = 18 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(title_size, True)
+    # 指数：gray 标签 + 墨色值，用「·」分隔（比留白更紧凑也更像一句注脚）
+    y += 2
+    items = [("SFI", HF["sfi"]), ("Kp", HF["kp"]), ("A", HF["a"])]
+    x = px
+    base = y + line_h(11, True) / 2
+    for i, (lab, val) in enumerate(items):
+        if i:
+            c.text(x, base, "·", 9, color="#C3CCD9", anchor="lm")
+            x += c.measure("·", 9) + 7
+        c.text(x, base, lab, 9, color=SLATE, anchor="lm")
+        x += c.measure(lab, 9) + 4
+        c.text(x, base, val, 11, bold=True, color=INK, anchor="lm")
+        x += c.measure(val, 11, bold=True) + 7
+    return y + line_h(11, True)
+
+
+def render_hf_D(w=296, h=140, dark=False, tonal=True):
+    """**D · 认真设计版**：tonal chip（淡色底 + 条件色文字）。
+
+    [tonal] False 时改为「小圆点 + 条件色文字」（最克制的一档），用于对比取优。
+    """
+    c = _hf_shell(w, h, dark)
+    px, pw = 13, w - 26
+    y = _hf_head(c, px, pw)
+    y += 4
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 5
+    # 列头：与下面 chip 的左边缘**同一 x**（这是上一版最明显的问题）
+    BAND_W = 54
+    COL_W = (pw - BAND_W) / 2
+    CHIP_W, CHIP_H = 46, 14
+    base = y + line_h(8, True) / 2
+    c.text(px + BAND_W, base, HF3_DAY, 8, bold=True, color="#98A3B3",
+           anchor="lm", spacing=0.06)
+    c.text(px + BAND_W + COL_W, base, HF3_NIGHT, 8, bold=True, color="#98A3B3",
+           anchor="lm", spacing=0.06)
+    y += line_h(8, True) + 2
+    for i, (name, day, night) in enumerate(_hf_cells()):
+        if i:
+            c.d.rectangle([round(px * SCALE), round((y - 0.5) * SCALE),
+                           round((px + pw) * SCALE),
+                           round((y - 0.5) * SCALE) + SCALE - 1],
+                          fill=rgba(LINE, 0.75))
+        cy = y + 0.5
+        c.text(px, cy + CHIP_H / 2, name, 10, bold=True, color=INK,
+               anchor="lm")
+        for k, q in ((0, day), (1, night)):
+            cx = px + BAND_W + k * COL_W
+            col = QUALITY_COLORS_BASE[q]
+            if tonal:
+                c.paste(c.rounded(CHIP_W, CHIP_H, 5, col, 0.11), cx, cy)
+                c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 9, bold=True,
+                       color=col, anchor="mm")
+            else:
+                c.paste(c.circle(6, col), cx + 2, cy + CHIP_H / 2 - 3)
+                c.text(cx + 12, cy + CHIP_H / 2, q, 9, bold=True, color=col,
+                       anchor="lm")
+        y = cy + CHIP_H
+    return c.out_clipped(20), y
+
 def render_hf_B(w=296, h=140, dark=False):
     """**方案 B · 信号条**（业余无线电仪器感）
 
@@ -867,7 +983,7 @@ def main():
         ("天气组件 4×1 单行档", render_row, 296, 72, True),
         # 短波组件：定稿 = 方案 A（实心彩 chip）。探索用的 A2/B/C 仍在本文件里，
         # 用 --variants 时才输出，默认不打进图里（免得每次都要从一堆方案里找）。
-        ("短波传播组件 4×2（定稿·实心彩 chip）", render_hf_A, 296, 140, False),
+        ("短波传播组件 4×2（定稿 · tonal chip）", render_hf_D, 296, 140, False),
     ]
     # 圆角净空：卡片圆角越大，底部两侧收得越早。20dp 圆角下，距底边约
     # 10dp 之内的左右两边已经被切掉，所以内容必须停在 h-10dp 以上。

@@ -58,7 +58,7 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 #    与面板本身的浅色 UI 一致。
 INK = "#253044"
 # 波段名列宽（与预览 render_hf_A 的 BAND_W 一致）
-BAND_W = "52dp"      # C.ink    主文字
+BAND_W = "54dp"      # C.ink    主文字
 SLATE = "#637083"    # C.slate  次要文字
 LINE = "#E5E9F0"     # C.border 细分隔线
 
@@ -87,7 +87,7 @@ def open_layout(root_id, bg):
     )
 
 
-def text(tid, *, size, color="#FFFFFF", bold=False, max_lines=None,
+def text(tid, *, size, color=INK, bold=False, max_lines=None,
          ellipsize=False, gravity=None, spacing=None, pad_h=None, pad_v=None,
          min_width=None,
          width="wrap_content", height="wrap_content", weight=None,
@@ -381,7 +381,7 @@ def section_title():
     return out
 
 
-def empty_label(color="#FFFFFF", alpha=0.90):
+def empty_label(color=INK, alpha=0.90):
     """空状态：无定位 / 还没同步过数据。放在 aw_pad 之外，直接盖住整块。
 
     [color] 必须是**不带 alpha 的 #RRGGBB**，透明度走 [alpha] ——
@@ -692,14 +692,14 @@ def build_hf():
         # chip 列：外层是等分容器，chip 在其中左对齐（列头因此能对齐）
         s += linear(f"aw_band{i}_day_box", orientation="horizontal",
                     width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_day", size="8.5sp", bold=True, color="#FFFFFF",
-                  gravity="center", bg="aw_chip_good",
+        s += text(f"aw_band{i}_day", size="8.5sp", bold=True, color=INK,
+                  gravity="center", bg="aw_chipsoft_good",
                   min_width="44dp", pad_h="9dp", pad_v="3dp")
         s += CLOSE
         s += linear(f"aw_band{i}_night_box", orientation="horizontal",
                     width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_night", size="8.5sp", bold=True, color="#FFFFFF",
-                  gravity="center", bg="aw_chip_good",
+        s += text(f"aw_band{i}_night", size="8.5sp", bold=True, color=INK,
+                  gravity="center", bg="aw_chipsoft_good",
                   min_width="44dp", pad_h="9dp", pad_v="3dp")
         s += CLOSE
         s += CLOSE

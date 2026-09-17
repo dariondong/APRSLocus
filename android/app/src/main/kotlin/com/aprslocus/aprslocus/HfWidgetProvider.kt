@@ -98,10 +98,27 @@ class HfWidgetProvider : AppWidgetProvider() {
          * chip 变成看不见的白字。
          */
         private val CHIP_BY_LEVEL = mapOf(
-            "good" to R.drawable.aw_chip_good,
-            "fair" to R.drawable.aw_chip_fair,
-            "poor" to R.drawable.aw_chip_poor,
-            "closed" to R.drawable.aw_chip_closed,
+            "good" to R.drawable.aw_chipsoft_good,
+            "fair" to R.drawable.aw_chipsoft_fair,
+            "poor" to R.drawable.aw_chipsoft_poor,
+            "closed" to R.drawable.aw_chipsoft_closed,
+        )
+
+        /**
+         * 条件等级 → chip **文字**色（基本色）。
+         *
+         * 定稿是 tonal chip：淡色底 + 条件色文字。底色在 drawable 里（`#1C` 前缀
+         * 的 11% 淡色），文字色只能代码设 —— 而 `setTextColor` 是 TextView 的
+         * 成员方法，可以直接用（不像 `setColorFilter` 那样只存在于 ImageView）。
+         *
+         * 与 lib/hf.dart 的 `hfQualityColor` 是**同一组基准色** —— 那边负责面板，
+         * 这边负责组件；改色要两处一起改，测试里有契约盯着。
+         */
+        private val QUALITY_COLOR = mapOf(
+            "good" to 0xFF16A34A.toInt(),
+            "fair" to 0xFFD97706.toInt(),
+            "poor" to 0xFFE11D48.toInt(),
+            "closed" to 0xFF94A3B8.toInt(),
         )
 
         /** 波段行的容器（数据不足时整行收起，而不是留空行） */
@@ -187,12 +204,16 @@ class HfWidgetProvider : AppWidgetProvider() {
             band: JSONObject,
             prefix: String,
         ) {
+            val level = band.read("${prefix}Level")
             views.setTextViewText(target, band.read("${prefix}Label"))
             views.setInt(
                 target,
                 "setBackgroundResource",
-                CHIP_BY_LEVEL[band.read("${prefix}Level")]
-                    ?: R.drawable.aw_chip_closed,
+                CHIP_BY_LEVEL[level] ?: R.drawable.aw_chipsoft_closed,
+            )
+            // 文字色 = 该等级的基本色（与淡色底同色系，于是「淡底 + 彩字」成立）
+            views.setTextColor(
+                target, QUALITY_COLOR[level] ?: QUALITY_COLOR.getValue("closed"),
             )
         }
 
