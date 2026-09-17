@@ -1,25 +1,27 @@
 #!/usr/bin/env python3
-"""把桌面小组件的设计**渲染成 PNG 预览** —— 写代码之前先看效果。
+"""桌面小组件 + App 天气面板的**设计预览**：写代码之前先看效果。
 
-**为什么要有这个脚本**（三次返工的教训）：
+为什么要这个脚本（血泪史）：组件要装到真机才能看效果，一轮反馈 = CI + 装 APK。
+前几轮都是装上去才发现「挤 / 不像面板 / logo 错了 / 溢出」，每次重走一遍。
+这里用**真实素材**把设计渲染成 PNG：
 
-小组件要装到真机才能看效果，一轮反馈 = CI + 装 APK。前两版都是装上去才被
-判定「挤」「不像面板」，每次都重走一遍。这个脚本把设计渲染成本地 PNG，
-用的全是**真实素材**：
-
+- 真实 Material 图标（直接用 `res/drawable-xxhdpi/aw_ic_*.png`，即运行时那几张）
+- 真实 logo（`aw_logo.png`）
 - 真实天气渐变（与 `lib/weather.dart::_fxGradient()` 同一组色）
-- 真实 Material 图标（直接用 `res/drawable-xxhdpi/aw_ic_*.png`，
-  即组件运行时用的那几张图，不是另画的示意图形）
-- 真实 logo（`aw_logo.png`，源自启动器图标）
 - 真实字号/字重/透明度（照抄面板 `ts(12.5, w: w700, c: white 0.68)` 那一套）
-- 按 3x 渲染，与 xxhdpi 一致
+- 按 3x 渲染（与 xxhdpi 一致）
 
-**与真机的差距（诚实说明）**：字体度量。预览用 Noto Sans SC，设备上通常是
-厂商字体，字宽会有几个百分点出入。文字**长度与折行**是按实测字宽算的，
-所以「放不放得下」基本可信；但最终以真机为准。
+**并且硬性报「内容放不下」**（退出码 1）——这条是它最值钱的地方。
+
+⚠ 一个必须记住的坑：**文本高度要按字体行盒算，不是按墨迹算。**
+Android 的 TextView 行高 ≈ 字体 (ascent + descent)，即使设了
+`includeFontPadding="false"`（那只是去掉上下额外留白）。
+Noto Sans SC 的这个值是 **1.45em**，而中文墨迹只有约 1.0em。
+我第一版按墨迹算，每行少算约 4dp，十几行下来少算 50dp ——
+于是「预览说余 5.5dp、真机却溢出」。见 line_h()。
 
 用法：
-    python3 tool/preview_app_widget.py                 # 出全部档位
+    python3 tool/preview_app_widget.py               # 全部档位
     python3 tool/preview_app_widget.py --out /tmp/a.png
 """
 
@@ -33,7 +35,11 @@ except ImportError:
     print("需要 Pillow：pip install Pillow", file=sys.stderr)
     raise SystemExit(2)
 
-SCALE = 3  # 与 drawable-xxhdpi 一致
+SCALE = 3
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ICON_DIR = os.path.join(ROOT, "android", "app", "src", "main", "res",
+                        "drawable-xxhdpi")
 
 # 天气渐变（照抄 weather.dart::_fxGradient 的 light 表）
 LIGHT = {
@@ -45,45 +51,108 @@ LIGHT = {
     "snow":     ("#5C7FA8", "#A8C6E2"),
     "fog":      ("#6C7A87", "#A3AEB9"),
 }
-
-# 建议级别的提亮色（与 Dart widgetTipTextArgb / SEVERITY_DOTS 逐值一致）
-LEVEL_LIT = {
-    "danger": "#EC6C88",
-    "warn":   "#E6A75D",
-    "good":   "#68C389",
-    "tip":    "#719AF2",
+# 深色（照抄 darkc 表）
+DARK = {
+    "clear":    ("#26374A", "#141F2E"),
+    "cloudy":   ("#2A3444", "#161D28"),
+    "overcast": ("#313B49", "#1A212B"),
+    "rain":     ("#1F3143", "#0F1924"),
+    "storm":    ("#232E3A", "#0D131B"),
+    "snow":     ("#2C3642", "#171E27"),
+    "fog":      ("#2B3138", "#171B21"),
 }
+
+# 建议级别提亮色（与 Dart widgetTipTextArgb 逐值一致，整数字面量）
+LEVEL_LIT = {
+    "danger": "#EC6C88", "warn": "#E6A75D",
+    "good": "#68C389", "tip": "#719AF2",
+}
+TIP_LINE_MULT = 1.3   # 布局里提示正文的 lineSpacingMultiplier
 LEVEL_LABEL = {
     "danger": "安全警示", "warn": "注意", "good": "通联机会", "tip": "操作提示",
 }
 
-# 示例数据：挑雷阵雨，能同时体现危险级（红）与通联机会（绿）
-SAMPLE = {
-    "city": "北京",
-    "aqi": "42",
-    "aqi_label": "优",
-    "aqi_color": "#22C55E",
-    "observed": "观测 14:30",
-    "temp": "31°",
-    "cond": "雷阵雨",
-    "range": "12°/25°",
+# 传播质量 → 颜色（绿=好 黄=一般 橙=差 红=很差）
+QUALITY_COLORS = {
+    "Good": "#68C389", "Fair": "#E6A75D",
+    "Poor": "#EC6C88", "Band Closed": "#B9C4D4",
+}
+
+# ── 示例数据 ────────────────────────────────────────────────────────
+WEATHER = {
+    "city": "北京", "aqi": "42", "aqi_label": "优", "aqi_color": "#22C55E",
+    "observed": "观测 14:30", "temp": "31°", "cond": "雷阵雨", "range": "12°/25°",
     "weather_icon": "thunderstorm",
     "metrics": [("湿度", "45%"), ("风力", "3 级"),
                 ("气压", "1013 hPa"), ("能见度", "25 km")],
     "tips": [
         ("danger", "flash_on",
-         "雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备"),
+         "雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备",
+         "雷雨天气：请勿在室外架设/操作天线！"),
         ("good", "nightlight",
-         "夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信"),
+         "夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信",
+         "夜间 D 层消失：80/40m 吸收减小…"),
     ],
     "tips_title": "业余无线电建议",
     "app_name": "APRSlocus",
 }
 
-HAIRLINE = 0.10
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RES_ICON = os.path.join(ROOT, "android", "app", "src", "main", "res",
-                        "drawable-xxhdpi")
+# 短波/电离层数据（字段与 hamqsl.com/solarxml.php 对应）
+HF = {
+    "sfi": "100", "kp": "3", "a": "9", "sunspots": "23", "xray": "B2.2",
+    "solarwind": "508.8", "geomag": "UNSETTLD", "noise": "S2-S3",
+    "muf": "NoRpt", "updated": "05:13 GMT",
+    # 逐波段日/夜传播条件 —— 「各个波段的传播信息」
+    "bands": [
+        ("80m/40m", "Poor", "Fair"),
+        ("30m/20m", "Good", "Good"),
+        ("17m/15m", "Fair", "Fair"),
+        ("12m/10m", "Poor", "Poor"),
+    ],
+    "hf_title": "短波传播",
+}
+
+FALLBACK_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+
+
+def font(size_dp, bold=False):
+    name = "NotoSansSC-Bold.otf" if bold else "NotoSansSC-Regular.otf"
+    p = os.path.expanduser(os.path.join("~/.fonts", name))
+    if not os.path.exists(p):
+        p = FALLBACK_FONT
+    return ImageFont.truetype(p, max(1, round(size_dp * SCALE)))
+
+
+_METRICS = {}
+
+
+def line_h(size_dp, bold=False):
+    """一行文本在 Android 里占的高度（dp）。
+
+    这是本脚本最关键的一处「真相」：TextView 的行高 ≈ 字体 (ascent + descent)，
+    **不是**字符墨迹高度。Noto Sans SC 是 1.45em，中文墨迹约 1.0em ——
+    按墨迹算会每行少 4dp 左右，十几行就少 50dp，于是「预览说放得下、真机溢出」。
+    """
+    key = (size_dp, bold)
+    if key not in _METRICS:
+        asc, desc = font(size_dp, bold).getmetrics()
+        _METRICS[key] = (asc + desc) / SCALE
+    return _METRICS[key]
+
+
+def stack_h(*sizes):
+    """若干**上下堆叠**的文本行总高度。"""
+    return sum(line_h(s) for s in sizes)
+
+
+def block_lines_h(size_dp, n, mult=1.0):
+    """n 行文本块的高度。**必须**把 lineSpacingMultiplier 算进来：
+    布局里提示正文写的是 lineSpacingMultiplier="1.3"，Android 会按倍数拉开
+    后续行的间距，忽略它又是一处「预览偏乐观」。"""
+    if n <= 0:
+        return 0.0
+    lh = line_h(size_dp)
+    return lh + (n - 1) * lh * mult
 
 
 def hex2rgb(h):
@@ -95,22 +164,11 @@ def rgba(h, a):
     return hex2rgb(h) + (int(round(a * 255)),)
 
 
-def font(size_dp, bold=False):
-    name = "NotoSansSC-Bold.otf" if bold else "NotoSansSC-Regular.otf"
-    p = os.path.expanduser(os.path.join("~/.fonts", name))
-    if not os.path.exists(p):
-        p = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    return ImageFont.truetype(p, max(1, round(size_dp * SCALE)))
-
-
-def tw(draw, s, f):
-    return draw.textbbox((0, 0), s, font=f)[2]
-
-
 class Canvas:
-    def __init__(self, w_dp, h_dp, kind="clear", radius_dp=20):
+    def __init__(self, w_dp, h_dp, kind="clear", radius_dp=20, dark=False):
         w, h = round(w_dp * SCALE), round(h_dp * SCALE)
-        top, bot = hex2rgb(LIGHT[kind][0]), hex2rgb(LIGHT[kind][1])
+        table = DARK if dark else LIGHT
+        top, bot = hex2rgb(table[kind][0]), hex2rgb(table[kind][1])
         img = Image.new("RGB", (w, h))
         for y in range(h):
             t = y / max(1, h - 1)
@@ -123,19 +181,20 @@ class Canvas:
         self.base.paste(img, (0, 0), mask)
         self.layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         self.d = ImageDraw.Draw(self.layer)
+        self.size = (w_dp, h_dp)
 
-    # ── 基础绘制 ────────────────────────────────────────────────
+    # ── 基础绘制 ──
     def text(self, x, y, s, size, alpha=1.0, bold=False, color="#FFFFFF",
              anchor="la"):
-        self.d.text((round(x * SCALE), round(y * SCALE)), s,
-                    font=font(size, bold), fill=rgba(color, alpha), anchor=anchor)
+        self.d.text((round(x * SCALE), round(y * SCALE)), s, font=font(size, bold),
+                    fill=rgba(color, alpha), anchor=anchor)
 
     def measure(self, s, size, bold=False):
-        return tw(self.d, s, font(size, bold)) / SCALE
+        return self.d.textbbox((0, 0), s, font=font(size, bold))[2] / SCALE
 
     def icon(self, name, x, y, size, big=False, color=None):
         fn = f"aw_ic_big_{name}.png" if big else f"aw_ic_{name}.png"
-        im = Image.open(os.path.join(RES_ICON, fn)).convert("RGBA")
+        im = Image.open(os.path.join(ICON_DIR, fn)).convert("RGBA")
         side = round(size * SCALE)
         im = im.resize((side, side), Image.LANCZOS)
         if color:
@@ -145,7 +204,7 @@ class Canvas:
         self.layer.alpha_composite(im, (round(x * SCALE), round(y * SCALE)))
 
     def logo(self, x, y, size):
-        im = Image.open(os.path.join(RES_ICON, "aw_logo.png")).convert("RGBA")
+        im = Image.open(os.path.join(ICON_DIR, "aw_logo.png")).convert("RGBA")
         side = round(size * SCALE)
         sc = side / max(im.size)
         im = im.resize((max(1, round(im.width * sc)), max(1, round(im.height * sc))),
@@ -170,7 +229,7 @@ class Canvas:
         ImageDraw.Draw(im).ellipse([0, 0, d - 1, d - 1], fill=hex2rgb(color) + (255,))
         return im
 
-    def hairline(self, x, y, w, alpha=HAIRLINE):
+    def hairline(self, x, y, w, alpha=0.10):
         self.d.rectangle([round(x * SCALE), round(y * SCALE),
                           round((x + w) * SCALE), round(y * SCALE) + SCALE - 1],
                          fill=rgba("#FFFFFF", alpha))
@@ -181,11 +240,7 @@ class Canvas:
         return o
 
     def out_clipped(self, radius_dp):
-        """按圆角形状裁切后输出。
-
-        溢出必须**看得见**：内容排不下时就把超出部分切掉，而不是让它漫到
-        卡片外面 —— 预览里漫出去是假的，真机上会被组件边界直接裁掉。
-        """
+        """按圆角裁切输出：内容排不下时要**看得见**被切掉，而不是漫出卡片外。"""
         o = self.out()
         mask = Image.new("L", o.size, 0)
         ImageDraw.Draw(mask).rounded_rectangle(
@@ -194,22 +249,14 @@ class Canvas:
                                    Image.new("L", o.size, 0), mask))
         return o
 
-    def content_bottom(self):
-        """已绘制内容的实际底边（dp）—— 用来报「内容比卡片高多少」。"""
-        bbox = self.layer.getbbox()
-        return (bbox[3] / SCALE) if bbox else 0.0
 
-
-def wrap(c: Canvas, text, size, max_w, max_lines):
-    """按**实测字宽**折行，超出时末行加省略号。
-
-    刻意不用估算：预览的价值就在于诚实回答「放不放得下」；
-    估算会让预览比真机好看，那就白做了。
-    """
+def wrap(c, text, size, max_w, max_lines):
+    """按实测字宽折行，超出时末行加省略号。用实测而非估算：预览要诚实回答
+    「放不放得下」，估算会让预览比真机好看。"""
     f = font(size)
     lines, cur = [], ""
     for ch in text:
-        if tw(c.d, cur + ch, f) / SCALE <= max_w:
+        if c.d.textbbox((0, 0), cur + ch, font=f)[2] / SCALE <= max_w:
             cur += ch
         else:
             lines.append(cur)
@@ -220,222 +267,268 @@ def wrap(c: Canvas, text, size, max_w, max_lines):
         lines.append(cur)
     if sum(len(l) for l in lines) < len(text) and lines:
         last = lines[-1]
-        while last and tw(c.d, last + "…", f) / SCALE > max_w:
+        while last and c.d.textbbox((0, 0), last + "…", font=f)[2] / SCALE > max_w:
             last = last[:-1]
         lines[-1] = last + "…"
     return lines
 
 
-# ── 顶栏：左（城市 + AQI）· 右（logo + 名称）──────────────────────────
-def header(c: Canvas, x, y, w, *, glass=False, narrow=False):
-    """顶栏。宽档一行放下（城市 + AQI 在左、logo + 名称在右）；
-    窄档（2×4 / 2×2）一行放不下 logo+名称 与 城市+AQI，拆成两行。
+# ── 通用区块 ────────────────────────────────────────────────────────
+CITY_SIZE, APP_SIZE, OBS_SIZE, AQI_SIZE, TITLE_SIZE = 10.5, 11, 8.5, 8.5, 9.5
 
-    这是预览里发现的一个真问题：v1 把城市+AQI 和 logo+名称 硬塞一行，
-    2×4 档里 logo 直接压在名字上（图中可见「APRSlocus」与 logo 重叠）。
-    窄档一行只有 ~126dp，而 logo+名称就要 69dp、城市+AQI 要 103dp。
-    """
-    name = SAMPLE["app_name"]
-    brand_w = 21 + c.measure(name, 11, bold=True)
-    # ── 行 1：左城市，右品牌 ──
-    c.icon("place", x, y - 0.5, 11, color="#FFFFFF")
-    c.text(x + 13, y + 6.5, SAMPLE["city"], 10.5, alpha=0.94, bold=True,
-           anchor="lm")
+
+def header(c, x, y, w, s, *, narrow=False, glass=False):
+    """顶栏。宽档一行放下（城市+AQI 在左、logo+名称在右）；
+    窄档（2×4 / 2×2）一行放不下，拆两行 —— 否则 logo 会压住名称。"""
+    brand_w = 21 + c.measure(s["app_name"], APP_SIZE, bold=True)
+    c.icon("place", x, y - 0.5, 11)
+    c.text(x + 13, y + CITY_SIZE * 0.65, s["city"], CITY_SIZE, alpha=0.94,
+           bold=True, anchor="lm")
     c.logo(x + w - brand_w, y - 2, 17)
-    c.text(x + w - brand_w + 21, y + 6.5, name, 11, bold=True, anchor="lm")
-    y += 17
+    c.text(x + w - brand_w + 21, y + APP_SIZE * 0.65, s["app_name"], APP_SIZE,
+           bold=True, anchor="lm")
+    y += line_h(CITY_SIZE, True)
 
-    # ── 行 2：AQI 胶囊（宽档就并到行 1 的中间）──
-    pill = f"AQI {SAMPLE['aqi']} {SAMPLE['aqi_label']}"
-    pw = c.measure(pill, 8.5, bold=True) + 19
+    pill = f"AQI {s['aqi']} {s['aqi_label']}"
+    mw = c.measure(pill, AQI_SIZE, bold=True)
+    pw = mw + 19
     if narrow:
         c.paste(c.rounded(pw, 15, 7.5, "#000000" if glass else "#FFFFFF",
-                          0.20 if glass else 0.16), x, y - 3)
-        c.paste(c.circle(6, SAMPLE["aqi_color"]), x + 6, y + 0.5)
-        c.text(x + 13 + c.measure(pill, 8.5, bold=True) / 2, y + 4.5, pill, 8.5,
-           bold=True, anchor="mm")
-        obs = SAMPLE["observed"]
-        c.text(x + w, y + 4.5, obs, 8.5, alpha=0.62, anchor="rm")
-        return y + 12
-
-    # 宽档：AQI 紧跟城市，中间放观测时刻，右侧品牌
-    #
-    # 观测时刻**必须**放这一行。最初放在天气主区（温度右侧），结果右半边
-    # 是 2×2 指标格 —— 「观测 14:30」直接压在「气压」上还被截断成「观测 14:3」。
-    # 顶栏这一行算下来：城市43 + AQI 60 + 观测 55 + 品牌 79 = 237 < 272，放得下。
-    px = x + 13 + c.measure(SAMPLE["city"], 10.5, bold=True) + 7
+                          0.20 if glass else 0.16), x, y - 1)
+        c.paste(c.circle(6, s["aqi_color"]), x + 6, y + 2.5)
+        c.text(x + 13 + mw / 2, y + 6.5, pill, AQI_SIZE, bold=True, anchor="mm")
+        c.text(x + w, y + 6.5, s["observed"], OBS_SIZE, alpha=0.62, anchor="rm")
+        return y + line_h(OBS_SIZE) + 2
+    # 宽档：AQI 紧跟城市，中间是观测时刻，右端仍是品牌
+    px = x + 13 + c.measure(s["city"], CITY_SIZE, bold=True) + 7
     c.paste(c.rounded(pw, 15, 7.5, "#000000" if glass else "#FFFFFF",
                       0.20 if glass else 0.16), px, y - 8.5)
-    c.paste(c.circle(6, SAMPLE["aqi_color"]), px + 6, y - 5)
-    # 文字起点从 13 起（圆点占 6~12）：起点若早于 12，圆点会盖住首字
-    # （预览里「AQI」被盖成了「AGI」）。
-    c.text(px + 13 + c.measure(pill, 8.5, bold=True) / 2, y - 1, pill, 8.5,
-           bold=True, anchor="mm")
-    obs = SAMPLE["observed"]
-    # 留出 ≥8dp 的间隔：胶囊右缘与「观测」贴在一起会读成一串
-    ox = max(px + pw + 8, x + w - brand_w - 10 - c.measure(obs, 8.5))
-    c.text(ox, y - 1, obs, 8.5, alpha=0.60, anchor="lm")
+    c.paste(c.circle(6, s["aqi_color"]), px + 6, y - 5)
+    c.text(px + 13 + mw / 2, y - 1, pill, AQI_SIZE, bold=True, anchor="mm")
+    c.text(x + w - brand_w - 10 - c.measure(s["observed"], OBS_SIZE), y - 1,
+           s["observed"], OBS_SIZE, alpha=0.60, anchor="lm")
     return y
 
 
-def hero(c: Canvas, x, y, w, *, temp=30, icon=25, observed=False):
-    """天气主区：图标 + 大温度 + 现象 + 高低温。
-
-    观测时刻**不再**放这里（默认 False）：4×2 档右边是 2×2 指标格，
-    右对齐的观测时刻会直接压在「气压」上（预览里看得很清楚）。
-    改由 header() 把它放进顶栏那一行。
-    """
-    c.icon(SAMPLE["weather_icon"], x, y, icon, big=True)
+def hero(c, x, y, w, s, *, temp=30, icon=25):
+    """天气主区：图标 + 大温度 + 天气现象 / 高低温。返回块的底边 y。"""
+    c.icon(s["weather_icon"], x, y, icon, big=True)
     tx = x + icon + 5
-    c.text(tx, y + icon / 2, SAMPLE["temp"], temp, bold=True, anchor="lm")
-    tw_ = c.measure(SAMPLE["temp"], temp, bold=True)
-    c.text(tx + tw_ + 4, y + 1, SAMPLE["cond"], 9.5, alpha=0.9, bold=True)
-    c.text(tx + tw_ + 4, y + 13, SAMPLE["range"], 9, alpha=0.74)
-    if observed:
-        sx = tx + tw_ + 4 + c.measure(SAMPLE["range"], 9) + 6
-        c.text(sx, y + 13, SAMPLE["observed"], 8, alpha=0.55)
-    return y + icon
+    th = line_h(temp)
+    c.text(tx, y + th / 2 - 1, s["temp"], temp, bold=True, anchor="lm")
+    tw = c.measure(s["temp"], temp, bold=True)
+    c.text(tx + tw + 4, y + 1, s["cond"], 9.5, alpha=0.90, bold=True)
+    c.text(tx + tw + 4, y + line_h(9.5) + 1, s["range"], 9, alpha=0.74)
+    return y + max(icon, th)
 
 
-def kv(c: Canvas, x, y, w, label, value):
-    """面板 _kvPair 的复刻：标签左（白 0.58），值右（加粗纯白）。"""
-    c.text(x, y + 6, label, 9, alpha=0.58, anchor="lm")
-    c.text(x + w, y + 6, value, 10, bold=True, anchor="rm")
+def kv(c, x, y, w, label, value):
+    """面板 _kvPair 的复刻：标签左（白 0.58）/ 值右（加粗纯白）。返回底边 y。"""
+    lh = line_h(9)
+    c.text(x, y + lh / 2, label, 9, alpha=0.58, anchor="lm")
+    c.text(x + w, y + lh / 2, value, 10, bold=True, anchor="rm")
+    return y + lh + 1
 
 
-def tip(c: Canvas, x, y, w, level, icon, text, *, lines=2, size=9):
-    """一条通栏建议 —— 与面板 _tipRow 同构：圆点 + 图标 + 级别 + 正文。"""
+def tip(c, x, y, w, level, icon, text, *, lines=2, size=9):
+    """一条通栏建议，与面板 _tipRow 同构：圆点 + 图标 + 级别 / 正文另起一行。"""
     c.paste(c.circle(6, LEVEL_LIT[level]), x, y + 3)
     bx = x + 11
     c.icon(icon, bx, y, 11, color=LEVEL_LIT[level])
     c.text(bx + 14, y + 5.5, LEVEL_LABEL[level], 8.5, bold=True,
            color=LEVEL_LIT[level], anchor="lm")
-    fy = y + 12
-    for ln in wrap(c, text, size, w - 11, lines):
+    fy = y + line_h(8.5)
+    wrapped = wrap(c, text, size, w - 11, lines)
+    for ln in wrapped:
         c.text(bx, fy, ln, size, alpha=0.93)
-        fy += 12.5
-    return fy
+        fy += line_h(size) * TIP_LINE_MULT   # 布局里是 1.3
+    return y + line_h(8.5) + block_lines_h(size, len(wrapped), TIP_LINE_MULT)
 
 
-def section_title(c: Canvas, x, y, w, count=None):
-    """面板 _sectionTitle 同款：小号 + 加粗 + 白 0.8，前面一个图标。"""
-    c.icon("rss_feed", x, y, 11, color="#FFFFFF")
-    c.text(x + 14, y + 5.5, SAMPLE["tips_title"], 9.5, alpha=0.8, bold=True,
-           anchor="lm")
+def section_title(c, x, y, w, title, count=None, icon="rss_feed"):
+    c.icon(icon, x, y, 11)
+    c.text(x + 14, y + TITLE_SIZE * 0.6, title, TITLE_SIZE, alpha=0.80,
+           bold=True, anchor="lm")
     if count:
-        c.text(x + w, y + 5.5, count, 9, alpha=0.55, anchor="rm")
-    return y + 14
+        c.text(x + w, y + TITLE_SIZE * 0.6, count, 9, alpha=0.55, anchor="rm")
+    return y + line_h(TITLE_SIZE) + 2
 
 
-# ── 4×2 主档（方案 A · 平铺海报式：用户选定）──────────────────────────
-def render_tile(w=296, h=140, kind="clear", glass=False):
-    c = Canvas(w, h, kind)
-    pad = 12 if not glass else 18
-    x, iw = pad, w - pad * 2
-    if glass:
-        c.paste(c.rounded(w - 14, h - 14, 22, "#FFFFFF", 0.19, 0.14), 7, 7)
-    y = header(c, x, 9 if not glass else 12, iw, glass=glass)
-    c.hairline(x, y, iw)
-    y += 7
-    hero(c, x, y, iw, temp=30, icon=25, observed=False)
-    # 指标区从 42% 处起（原来 48%）：每格只有 ~60dp 时「气压」+「1013 hPa」
-    # 会挤到貼在一起（预览里就是「气压1013 hPa」）。放宽到 ~75dp/格后
-    # 标签与值之间才有余量；左栏仍有 ~99dp，放得下「图标 25 + 31° + 雷阵雨」。
-    rx = x + iw * 0.42
-    rw = x + iw - rx
-    for i, (lab, val) in enumerate(SAMPLE["metrics"]):
-        col, row = i % 2, i // 2
-        kv(c, rx + col * rw / 2, y + row * 14 - 1, rw / 2 - 10, lab, val)
-    y += 30
+# ── 天气组件四档 ────────────────────────────────────────────────────
+def render_tile(w=296, h=140, kind="clear", dark=False):
+    c = Canvas(w, h, kind, dark=dark)
+    x, iw = 12, w - 24
+    y = header(c, x, 8, iw, WEATHER)
     c.hairline(x, y, iw)
     y += 6
-    # 第一条完整两行；第二条一行（高度就这么多，宁可诚实地截断）
-    for idx, (level, icon, text) in enumerate(SAMPLE["tips"]):
-        y = tip(c, x, y, iw, level, icon, text,
-                lines=2 if idx == 0 else 1) + 2
+    y_hero = hero(c, x, y, iw, WEATHER, temp=30, icon=25)
+    rx = x + iw * 0.42
+    rw = x + iw - rx
+    y_kv = y
+    for i, (lab, val) in enumerate(WEATHER["metrics"]):
+        col, row = i % 2, i // 2
+        yy = kv(c, rx + col * rw / 2, y + row * (line_h(9) + 1), rw / 2 - 10,
+                lab, val)
+        y_kv = max(y_kv, yy)
+    y = max(y_hero, y_kv)
+    c.hairline(x, y + 1, iw)
+    y += 7
+    # 条建议各 **1 行**：140dp 装不下「2 行 + 1 行」的组合（实测超 17dp）。
+    # 用 Dart 侧预切好的完整短句（shortText），一行仍是一句完整的话，
+    # 而不是从句子中间被省略号切掉。
+    for level, icon, text, short in WEATHER["tips"]:
+        y = tip(c, x, y, iw, level, icon, short, lines=1) + 2
     return c.out_clipped(20), y
 
 
-# ── 2×4 竖长档（小面板）────────────────────────────────────────────
-def render_tall(w=150, h=300, kind="clear"):
-    c = Canvas(w, h, kind)
+def render_tall(w=150, h=300, kind="clear", dark=False):
+    c = Canvas(w, h, kind, dark=dark)
     x, iw = 12, w - 24
-    y = header(c, x, 10, iw, narrow=True)
+    y = header(c, x, 8, iw, WEATHER, narrow=True)
     c.hairline(x, y, iw)
-    y += 8
-    c.icon(SAMPLE["weather_icon"], x, y, 26, big=True)
+    y += 6
+    c.icon(WEATHER["weather_icon"], x, y, 26, big=True)
     y += 30
-    c.text(x, y + 12, SAMPLE["temp"], 32, bold=True, anchor="lm")
-    y += 26
-    c.text(x, y + 3, SAMPLE["cond"], 10, alpha=0.9, bold=True)
-    c.text(x + iw, y + 3, SAMPLE["range"], 9, alpha=0.74, anchor="ra")
-    y += 14
-    # 观测时刻已在 header 的窄档第二行里显示，这里**不再重复**。
-    # （预览里发现 2×4 档出现了两个「观测 14:30」。）
-    y += 1
+    c.text(x, y + line_h(32) / 2, WEATHER["temp"], 32, bold=True, anchor="lm")
+    y += line_h(32)
+    c.text(x, y + 3, WEATHER["cond"], 10, alpha=0.90, bold=True)
+    c.text(x + iw, y + 3, WEATHER["range"], 9, alpha=0.74, anchor="ra")
+    y += line_h(10) + 2
     c.hairline(x, y, iw)
     y += 7
-    # 指标只放 3 项、建议每条只给 2 行 —— 竖长档也不高，
-    # 4 项指标 + 2×3 行建议实测超 23dp（预览的高度门禁会报出来）。
-    # 宁可少一项，也不要让底部被裁掉半行字。
-    for lab, val in SAMPLE["metrics"][:3]:
-        kv(c, x, y, iw, lab, val)
-        y += 14
+    # 指标 2 行（原 3 行）：3 行 + 两行建议实测超 12.7dp。
+    # 竖长档的重点是「多给两条建议」，所以砍指标而不是砍建议。
+    for lab, val in WEATHER["metrics"][:2]:
+        y = kv(c, x, y, iw, lab, val)
     y += 3
     c.hairline(x, y, iw)
     y += 6
-    y = section_title(c, x, y, iw, count=str(len(SAMPLE["tips"])))
-    for level, icon, text in SAMPLE["tips"]:
+    y = section_title(c, x, y, iw, WEATHER["tips_title"],
+                      count=str(len(WEATHER["tips"])))
+    for level, icon, text, short in WEATHER["tips"]:
         y = tip(c, x, y, iw, level, icon, text, lines=2) + 4
     return c.out_clipped(20), y
 
 
-# ── 2×2 紧凑档 ──────────────────────────────────────────────────────
-def render_compact(w=150, h=150, kind="clear"):
-    c = Canvas(w, h, kind, radius_dp=16)
+def render_compact(w=150, h=150, kind="clear", dark=False):
+    c = Canvas(w, h, kind, dark=dark, radius_dp=16)
     x, iw = 11, w - 22
-    y = header(c, x, 9, iw, narrow=True)
+    y = header(c, x, 9, iw, WEATHER, narrow=True)
     c.hairline(x, y, iw)
     y += 7
-    hero(c, x, y, iw, temp=25, icon=21, observed=False)
-    y += 28
+    y = hero(c, x, y, iw, WEATHER, temp=25, icon=21)
+    y += 3
     c.hairline(x, y, iw)
     y += 5
-    level, icon, text = SAMPLE["tips"][0]
-    y = tip(c, x, y, iw, level, icon, text, lines=3, size=8.5)
+    level, icon, _full, text = WEATHER["tips"][0]
+    # 2 行（原 3 行）：超 1.1dp。这条建议是紧凑档唯一的内容点，所以不是砍它，
+    # 而是让它少折一行 —— 配合 Dart 侧的 shortText，一行到两行都是完整句子。
+    y = tip(c, x, y, iw, level, icon, text, lines=2, size=8.5)
     return c.out_clipped(16), y
 
 
-# ── 4×1 单行档 ──────────────────────────────────────────────────────
-def render_row(w=296, h=72, kind="clear"):
-    c = Canvas(w, h, kind, radius_dp=16)
+def render_row(w=296, h=72, kind="clear", dark=False):
+    c = Canvas(w, h, kind, dark=dark, radius_dp=16)
     x = 12
     y = (h - 22) / 2
-    c.icon(SAMPLE["weather_icon"], x, y, 22, big=True)
+    c.icon(WEATHER["weather_icon"], x, y, 22, big=True)
     x += 26
-    c.text(x, y + 12, SAMPLE["temp"], 20, bold=True, anchor="lm")
-    x += c.measure(SAMPLE["temp"], 20, bold=True) + 5
-    c.text(x, y + 7, SAMPLE["cond"], 9.5, alpha=0.9, bold=True, anchor="lm")
-    c.text(x, y + 18, SAMPLE["range"], 9, alpha=0.74, anchor="lm")
-    x += max(c.measure(SAMPLE["cond"], 9.5, bold=True),
-             c.measure(SAMPLE["range"], 9)) + 11
-    # 竖线分隔（宽度明显些，否则看不清）
+    c.text(x, y + line_h(20) / 2 - 1, WEATHER["temp"], 20, bold=True, anchor="lm")
+    x += c.measure(WEATHER["temp"], 20, bold=True) + 5
+    c.text(x, y + 1, WEATHER["cond"], 9.5, alpha=0.90, bold=True)
+    c.text(x, y + line_h(9.5) + 1, WEATHER["range"], 9, alpha=0.74)
+    x += max(c.measure(WEATHER["cond"], 9.5, bold=True),
+             c.measure(WEATHER["range"], 9)) + 11
     c.d.rectangle([round((x - 6) * SCALE), round((y + 2) * SCALE),
                    round((x - 6) * SCALE) + SCALE - 1, round((y + 20) * SCALE)],
                   fill=rgba("#FFFFFF", 0.22))
-    # 右端只放 logo，**不放 App 名称**：
-    # 4×1 只有 296dp 宽，一行里要挤下 温度/天气/高低温 再加一条建议。
-    # 如果再把「APRSlocus」也写上去，建议会被截成「雷雨天气…」—— 等于没给信息。
-    # logo 单独一个就足以表明这是谁的组件，把宽度还给建议。
-    brand_w = 17 + 8
-    avail = w - 12 - (x + 30) - brand_w - 6
-    level, icon, text = SAMPLE["tips"][0]
+    level, icon, _full, text = WEATHER["tips"][0]
     c.paste(c.circle(6, LEVEL_LIT[level]), x + 4, y + 9)
     c.icon(icon, x + 15, y + 6, 11, color=LEVEL_LIT[level])
+    avail = w - 12 - (x + 30) - 25
     lines = wrap(c, text, 9, avail - 11, 1)
-    c.text(x + 30, y + 12, lines[0] if lines else text, 9, alpha=0.93, anchor="lm")
+    c.text(x + 30, y + line_h(9) / 2 + 1, lines[0] if lines else text, 9,
+           alpha=0.93, anchor="lm")
     c.logo(w - 12 - 17, y + 5.5, 17)
     return c.out_clipped(16), h
+
+
+# ── 短波传播组件（4×2）──────────────────────────────────────────────
+def render_hf(w=296, h=140, dark=False):
+    """短波/电离层传播组件。逐波段给出日间/夜间条件 —— 「各个波段的传播信息」。"""
+    c = Canvas(w, h, "storm", dark=dark)
+    x, iw = 12, w - 24
+    # 顶栏：左标题 / 右品牌（复用天气组件的顶栏风格）
+    brand_w = 21 + c.measure(WEATHER["app_name"], APP_SIZE, bold=True)
+    c.icon("waves", x, 8, 14)
+    c.text(x + 18, 8 + APP_SIZE * 0.65, HF["hf_title"], 12, bold=True, anchor="lm")
+    c.logo(x + iw - brand_w, 7, 17)
+    c.text(x + iw - brand_w + 21, 8 + APP_SIZE * 0.65, WEATHER["app_name"],
+           APP_SIZE, bold=True, anchor="lm")
+    y = 8 + line_h(12, True) + 2
+    # 汇总指标行：SFI / Kp / A —— 与天气组件的「label 左 / value 右」同一套
+    # （面板 _kvPair 的复刻）。Kp 与 A 越小时传播越稳，用级别色提示。
+    cells = [("SFI", HF["sfi"], None),
+             ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+             ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    cw = iw / len(cells)
+    for i, (lab, val, tone) in enumerate(cells):
+        cx = x + i * cw
+        c.text(cx, y + 1, lab, 9, alpha=0.58)
+        c.text(cx + cw - 10, y + 1, val, 10, bold=True,
+               color=LEVEL_LIT[tone] if tone else "#FFFFFF", anchor="ra")
+    y += line_h(9) + 4
+    c.hairline(x, y, iw)
+    y += 6
+    # 逐波段：左波段名 / 中「日间」/ 右「夜间」，条件用颜色区分
+    c.text(x, y + 1, "波段", 8.5, alpha=0.5)
+    c.text(x + iw * 0.52, y + 1, "日间", 8.5, alpha=0.5)
+    c.text(x + iw, y + 1, "夜间", 8.5, alpha=0.5, anchor="ra")
+    y += line_h(8.5)
+    for name, day, night in HF["bands"]:
+        c.text(x, y + 2, name, 9.5, bold=True)
+        c.paste(c.circle(6, QUALITY_COLORS[day]), x + iw * 0.52 - 10, y + 5)
+        c.text(x + iw * 0.52, y + 2, day, 9, color=QUALITY_COLORS[day], bold=True)
+        c.paste(c.circle(6, QUALITY_COLORS[night]), x + iw - 42, y + 5)
+        c.text(x + iw, y + 2, night, 9, color=QUALITY_COLORS[night], bold=True,
+               anchor="ra")
+        y += line_h(9.5) + 1
+    return c.out_clipped(20), y
+
+
+# ── App 天气面板的新背景（星空 / 大气层）────────────────────────────
+def render_panel_bg(w=300, h=420, dark=False):
+    """按需求：上方星空、下方天空蓝（大气层）。
+    这里画的是**背景本身**的示意（不含内容），用于确认分层与配色。"""
+    c = Canvas(w, h, "clear", radius_dp=24, dark=dark)
+    cw, ch = round(w * SCALE), round(h * SCALE)
+    # 上 45%：星空（深蓝 → 近黑）；下 55%：天空蓝（大气层）
+    stars = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(stars)
+    import random
+    random.seed(7)
+    for _ in range(90):
+        sx = random.uniform(0, w)
+        sy = random.uniform(0, h * 0.45)
+        r = random.choice([0.6, 0.8, 1.0, 1.3])
+        # 越靠上（越外太空）星星越亮
+        a = 0.9 - (sy / (h * 0.45)) * 0.5
+        sd.ellipse([(sx - r) * SCALE, (sy - r) * SCALE,
+                    (sx + r) * SCALE, (sy + r) * SCALE],
+                   fill=(255, 255, 255, int(a * 255)))
+    c.layer.alpha_composite(stars)
+    # 大气层：从星空底部往下渐亮（模拟密度递增）
+    atm = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    ad = ImageDraw.Draw(atm)
+    y0 = h * 0.42
+    for i in range(round((h - y0) * SCALE)):
+        t = i / max(1, (h - y0) * SCALE)
+        col = (int(24 + 20 * t), int(52 + 78 * t), int(104 + 100 * t))
+        ad.rectangle([0, (y0 * SCALE) + i, cw, (y0 * SCALE) + i + 1],
+                     fill=col + (int(90 + 165 * t),))
+    c.layer.alpha_composite(atm)
+    c.text(12, 10, "面板背景：上＝星空 / 下＝大气层（示意）", 10, alpha=0.85)
+    return c.out_clipped(24), h
 
 
 def main():
@@ -444,48 +537,54 @@ def main():
     args = ap.parse_args()
 
     specs = [
-        ("4×2 主档 · 平铺海报式（已选定）", render_tile, 296, 140),
-        ("4×2 主档 · 同上（雷雨天气）", lambda **k: render_tile(kind="storm"), 296, 140),
-        ("2×4 竖长档（小面板）", render_tall, 150, 300),
-        ("2×2 紧凑档", render_compact, 150, 150),
-        ("4×1 单行档", render_row, 296, 72),
+        ("天气组件 4×2 主档", render_tile, 296, 140),
+        ("天气组件 4×2（雷雨）", lambda **k: render_tile(kind="storm"), 296, 140),
+        ("天气组件 2×4 小面板", render_tall, 150, 300),
+        ("天气组件 2×2 紧凑档", render_compact, 150, 150),
+        ("天气组件 4×1 单行档", render_row, 296, 72),
+        ("短波传播组件 4×2", render_hf, 296, 140),
     ]
-    tiles = []
-    print("内容高度 vs 卡片高度（溢出会被圆角裁掉，看到截断就是真排不下）：")
-    overflows = []
+    tiles, overflows = [], []
+    print("内容高度 vs 卡片高度（溢出会被圆角裁掉）：")
     for label, fn, w_dp, h_dp in specs:
         img, used = fn()
         over = used - h_dp
         if over > 1:
             overflows.append(f"{label} 超出 {over:.1f}dp")
-            print(f"  ✗ {label:26} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp  溢出！")
+            print(f"  ✗ {label:22} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp  溢出！")
         else:
-            print(f"  ✓ {label:26} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp  "
+            print(f"  ✓ {label:22} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp"
                   f"（余 {h_dp - used:.1f}dp）")
         tiles.append((label, img))
 
-    PAD, GAP, LH = 26, 22, 30
-    row1, row2 = tiles[:3], tiles[3:]
-    W = PAD * 2 + sum(im.width for _, im in row1) + GAP * (len(row1) - 1)
-    H = PAD + LH + max(im.height for _, im in row1) + GAP + LH + \
-        max(im.height for _, im in row2) + PAD
-    sheet = Image.new("RGBA", (W, H), (22, 26, 33, 255))
+    # 面板背景示意单独放一行
+    bg_img, _ = render_panel_bg()
+    bg_img = bg_img.resize((bg_img.width // 2, bg_img.height // 2), Image.LANCZOS)
+
+    PAD, GAP, LH = 24, 20, 28
+    row1 = tiles[:3]
+    row2 = tiles[3:]
+    W = max(PAD * 2 + sum(im.width for _, im in row1) + GAP * (len(row1) - 1),
+            PAD * 2 + bg_img.width)
+    row1h = max(im.height for _, im in row1)
+    row2h = max(im.height for _, im in row2)
+    H = PAD + LH + row1h + GAP + LH + row2h + PAD
+    sheet = Image.new("RGB", (W, H), (22, 26, 33))
     d = ImageDraw.Draw(sheet)
 
     def blit(items, y0):
-        x = PAD
+        xx = PAD
         for name, im in items:
-            d.text((x, y0), name, font=font(11, True), fill=(214, 223, 238, 255))
-            sheet.alpha_composite(im, (x, y0 + LH))
-            x += im.width + GAP
+            d.text((xx, y0), name, font=font(10, True), fill=(214, 223, 238))
+            sheet.paste(im, (xx, y0 + LH), im)
+            xx += im.width + GAP
     blit(row1, PAD)
-    blit(row2, PAD + LH + max(im.height for _, im in row1) + GAP)
+    y2 = PAD + LH + row1h + GAP
+    blit(row2, y2)
 
-    sheet.convert("RGB").save(args.out)
+    sheet.save(args.out)
     print("预览:", args.out, sheet.size)
     if overflows:
-        # 溢出必须让命令失败：否则「设计排不下」这件事会静静躺在输出里没人看，
-        # 直到装到手机上才发现底部被裁。
         print("\n❌ 有档位内容排不下：", file=sys.stderr)
         for o in overflows:
             print(f"  - {o}", file=sys.stderr)
