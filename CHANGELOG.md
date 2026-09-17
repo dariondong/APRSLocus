@@ -1,5 +1,74 @@
 # 更新日志
 
+## [1.6.122] - 2026-09-17
+
+### 🔤 短波条件「关闭」改「未开通」——它被误读成关闭按钮
+
+**现象**：短波组件上有一颗看起来像「关闭」按钮的圆角块。
+
+**原因**：那不是按钮，是 **「Band Closed」（波段未开通）这个条件标记**。
+它是圆角色块（形状与按钮一样），而中文文案恰好是**「关闭」**——
+「关闭」在中文里正是关闭弹窗的那个动词，于是它被读成了一颗关闭按钮。
+（核实过：组件与面板都没有任何关闭控件，也没有 `Icons.close`。）
+
+**修法**：按「该词在本语言里会不会被读成 UI 动作」逐个判断，而不是笼统全改：
+
+| 语言 | 原 | 现 | 理由 |
+|---|---|---|---|
+| zh | 关闭 | **未开通** | 「关闭」就是关闭弹窗的动词 |
+| zh_TW | 關閉 | **未開通** | 同上 |
+| ja | クローズ | **伝搬なし** | カタカナ借词在 UI 里同样是「关闭」 |
+| id | Tutup | **Tertutup** | `Tutup` 是祈使式（= 关闭按钮）；`Tertutup` 是状态形容词 |
+| es | Cerrada | 保留 | 已是与 banda 性数一致的分词形容词（祈使式才是 `Cerrar`） |
+| en | Closed | 保留 | 源数据 N0NBH 自己的分类就叫 *Band Closed*，是该领域惯用语 |
+
+新词都表示**状态**（「无传播」），形状仍像按钮也不会被读成动作。
+
+**同时修掉预览工具的一个保真度缺陷**：组件 chip 的**颜色**由质量 key 决定、
+**文字**由本地化函数决定，而预览一直拿英文 key 当文字显示 ——
+也就是说预览展示的是**英文界面**（Poor / Good / Fair / Band Closed）。
+这不但不准，还导致一个更隐蔽的问题：**我此前是按英文长度做版式判断的**，
+而中文 chip 文案短得多。现在预览区分这两件事，并补上中文文案映射。
+
+`Band Closed` 在 46dp chip 里本来就会溢出（约 54dp）——中文改短后（未开通 ≈ 26dp）
+反而更宽松。另加两条护栏测试：
+
+- **质量文案必须放得进 46dp chip**（不靠省略号；截断成「未开…」等于没给信息）；
+- **「Band Closed」的文案不得是该语言的 UI 关闭动词**（防它再被改回来）。
+
+---
+
+**Symptom**: the HF widget showed a rounded block that reads as a "Close" button.
+
+**Cause**: it is not a button — it is the **"Band Closed" condition marker**. It is a
+rounded colour block (the same shape as a button), and the Chinese label happened to be
+**「关闭」**, which is exactly the verb used for "close" in dialogs, so it read as a close
+button. (Verified: neither the widget nor the panel contains any close control, and there is
+no `Icons.close` anywhere.)
+
+**Fix**: decided per language by asking whether the word is read as a *UI action* in that
+language, rather than changing all of them wholesale. Chinese/Traditional Chinese/Japanese/Indonesian
+were changed (「关闭」→「未开通」, 「關閉」→「未開通」, クローズ→伝搬なし, Tutup→Tertutup — `Tutup`
+is the imperative form used on close buttons, while `Tertutup` is a state adjective). Spanish
+(`Cerrada`) and English (`Closed`) were **kept**: the Spanish word is already a participle
+agreeing with *banda* (the imperative is `Cerrar`), and *Band Closed* is the source feed's
+own category name, i.e. established terminology. The new words all denote a **state**
+("no propagation"), so the button-like shape no longer invites a click.
+
+**Also fixed a fidelity defect in the preview tool**: a chip's **colour** comes from the
+quality key while its **text** comes from the localisation function, but the preview had been
+drawing the English key as the label — meaning it was showing an **English interface**
+(Poor / Good / Fair / Band Closed). Besides being inaccurate, this hid a subtler problem:
+**earlier layout judgements had been made against English string lengths**, whereas the
+Chinese labels are much shorter. The preview now separates the two and carries the Chinese
+mapping.
+
+`Band Closed` overflowed the 46dp chip anyway (about 54dp); the shorter Chinese label
+(未开通 ≈ 26dp) fits comfortably. Two guards added: **quality labels must fit a 46dp chip**
+without ellipsis (a truncated 「未开…」 conveys nothing), and **the "Band Closed" label must not
+be the UI close verb in any language**, so it cannot be reverted to 「关闭」 by accident.
+
+
 ## [1.6.121] - 2026-09-17
 
 ### 📡 6m 波段预测 · 组件暗黑模式 · 系统状态组件

@@ -2058,7 +2058,7 @@
   "hfQGood": "好",
   "hfQFair": "一般",
   "hfQPoor": "差",
-  "hfQClosed": "关闭",
+  "hfQClosed": "未开通",
   "hfPowered": "传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测",
   "hfTipStorm": "地磁暴（Kp≥5）：极区短波路径衰减明显，跨极地 DX 基本中断；改走低纬度路径或转本地 VHF/UHF",
   "hfTipGeomagActive": "地磁较活跃：短波高纬度路径不如平时稳定，DX 通联建议留出更多呼叫时间",

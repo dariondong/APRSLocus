@@ -4735,7 +4735,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hfQPoor => '不良';
 
   @override
-  String get hfQClosed => 'クローズ';
+  String get hfQClosed => '伝搬なし';
 
   @override
   String get hfPowered => '伝搬データ: hamqsl.com（N0NBH）· 全球平均であり現地実測ではありません';

@@ -237,6 +237,42 @@ void main() {
     });
   });
 
+  group('质量文案（chip 内显示）', () {
+    /// chip 宽 46dp、字号 8.5sp：CJK 每字约 8.5dp，拉丁每字约 4.7dp。
+    double chipWidth(String v) {
+      final cjk = v.runes.where((r) => r > 0x2E80).length;
+      final lat = v.runes.length - cjk;
+      return cjk * 8.5 + lat * 4.7;
+    }
+
+    test('四种质量文案非空，且都能放进 chip（不靠省略号）', () {
+      // chip 是**固定宽度**的（对齐需要），所以文案一旦变长就会被省略号截断 ——
+      // 而截断的条件文字（「未开…」）等于没给信息。这条护栏盯住长度。
+      for (final s in [zh, en]) {
+        for (final label in [s.hfQGood, s.hfQFair, s.hfQPoor, s.hfQClosed]) {
+          expect(label, isNotEmpty);
+          expect(chipWidth(label), lessThanOrEqualTo(46),
+              reason: '「$label」约 ${chipWidth(label).toStringAsFixed(1)}dp，'
+                  '超出 chip 的 46dp，会被省略号截断');
+        }
+      }
+    });
+
+    test('「Band Closed」的文案不能是该语言的 UI 关闭动词', () {
+      // 回归护栏：中文曾用「关闭」，而 chip 是**圆角色块**（形状像按钮）——
+      // 于是那颗 chip 看起来就是一颗关闭按钮（用户实际这么反馈过）。
+      // 判据：不能等于「关闭」这类会被读成 UI 动作的词。
+      const uiCloseWords = {'关闭', '關閉', 'クローズ', 'Tutup', 'Close'};
+      for (final s in [zh, en]) {
+        expect(uiCloseWords.contains(s.hfQClosed), isFalse,
+            reason: '「${s.hfQClosed}」在 chip 里会被读成关闭按钮，'
+                '应改用表示「无传播」的状态词');
+      }
+      // 目前选用的词（未开通 / 未開通 / 伝搬なし / Tertutup …）都表示状态
+      expect(zh.hfQClosed, '未开通');
+    });
+  });
+
   group('短波建议接入面板', () {
     test('地磁暴会给出风暴级建议', () {
       // hfTips 的入口契约：Kp ≥5 必须能产出建议（面板靠它把传播风险讲清楚）

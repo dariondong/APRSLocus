@@ -8478,7 +8478,7 @@ abstract class AppLocalizations {
   /// No description provided for @hfQClosed.
   ///
   /// In zh, this message translates to:
-  /// **'关闭'**
+  /// **'未开通'**
   String get hfQClosed;
 
   /// No description provided for @hfPowered.

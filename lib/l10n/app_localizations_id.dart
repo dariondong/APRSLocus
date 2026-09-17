@@ -4874,7 +4874,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get hfQPoor => 'Buruk';
 
   @override
-  String get hfQClosed => 'Tutup';
+  String get hfQClosed => 'Tertutup';
 
   @override
   String get hfPowered =>

@@ -602,6 +602,13 @@ def qcol(q, dark):
 # 为什么白底要用**基准色**而不是提亮色：`widgetTipTextArgb` 提亮 35% 是为了
 # 「压在天气渐变上还能看清」；白底上提亮色会太淡（#68C389 在白底上几乎看不见）。
 # 面板本身就是浅色 UI，用的就是基准色 —— 白底组件跟着用基准色才一致。
+# 质量 key → chip 上显示的**本地化**文案。
+# 真机：chip 颜色由 level（key）决定，文字由 hfQualityLabel() 决定；
+# 预览必须把这两件事分开 —— 否则预览显示的是英文 key，不是真实的中文界面。
+Q_LABEL = {
+    "Good": "好", "Fair": "一般", "Poor": "差", "Band Closed": "未开通",
+}
+
 QUALITY_COLORS_BASE = {
     "Good": "#16A34A", "Fair": "#D97706",
     "Poor": "#E11D48", "Band Closed": "#94A3B8",
@@ -703,8 +710,8 @@ def render_hf_A(w=296, h=140, dark=False):
             cx = px + BAND_W + k * COL_W
             c.paste(c.rounded(CHIP_W, CHIP_H, 4, QUALITY_COLORS_BASE[q], 1.0),
                     cx, cy)
-            c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 8.5, bold=True,
-                   color="#FFFFFF", anchor="mm")
+            c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, Q_LABEL[q], 8.5,
+                   bold=True, color="#FFFFFF", anchor="mm")
         y = cy + CHIP_H + 1.5
     return c.out_clipped(20), y
 
@@ -867,12 +874,12 @@ def render_hf_D(w=296, h=140, dark=False, tonal=True):
             col = qcol(q, dark)
             if tonal:
                 c.paste(c.rounded(CHIP_W, CHIP_H, 5, col, 0.11), cx, cy)
-                c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 9, bold=True,
-                       color=col, anchor="mm")
+                c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, Q_LABEL[q], 9,
+                       bold=True, color=col, anchor="mm")
             else:
                 c.paste(c.circle(6, col), cx + 2, cy + CHIP_H / 2 - 3)
-                c.text(cx + 12, cy + CHIP_H / 2, q, 9, bold=True, color=col,
-                       anchor="lm")
+                c.text(cx + 12, cy + CHIP_H / 2, Q_LABEL[q], 9, bold=True,
+                       color=col, anchor="lm")
         y = cy + CHIP_H
     return c.out_clipped(20), y
 

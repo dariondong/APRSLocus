@@ -4699,7 +4699,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hfQPoor => '差';
 
   @override
-  String get hfQClosed => '关闭';
+  String get hfQClosed => '未开通';
 
   @override
   String get hfPowered => '传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测';
@@ -10118,7 +10118,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get hfQPoor => '差';
 
   @override
-  String get hfQClosed => '關閉';
+  String get hfQClosed => '未開通';
 
   @override
   String get hfPowered => '傳播資料由 hamqsl.com（N0NBH）提供 · 全球平均，非本地實測';

@@ -1458,7 +1458,7 @@
   "hfQGood": "良好",
   "hfQFair": "普通",
   "hfQPoor": "不良",
-  "hfQClosed": "クローズ",
+  "hfQClosed": "伝搬なし",
   "hfPowered": "伝搬データ: hamqsl.com（N0NBH）· 全球平均であり現地実測ではありません",
   "hfTipStorm": "地磁気嵐（Kp≥5）：極域の HF 伝搬は大きく減衰し、極横断 DX はほぼ途絶えます。低緯度経路かローカル VHF/UHF へ",
   "hfTipGeomagActive": "地磁気がやや乱れています：高緯度の HF 伝搬は普段より不安定です。DX は呼び出し時間を多めに",

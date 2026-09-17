@@ -1458,7 +1458,7 @@
   "hfQGood": "Bagus",
   "hfQFair": "Sedang",
   "hfQPoor": "Buruk",
-  "hfQClosed": "Tutup",
+  "hfQClosed": "Tertutup",
   "hfPowered": "Data propagasi oleh hamqsl.com (N0NBH) · rata-rata global, bukan pengukuran lokal",
   "hfTipStorm": "Badai geomagnetik (Kp≥5): jalur HF kutub meredup parah dan DX lintas kutub hampir hilang — coba jalur lintang rendah atau VHF/UHF lokal",
   "hfTipGeomagActive": "Medan geomagnetik tidak tenang: jalur HF lintang tinggi kurang stabil — beri waktu panggil lebih lama untuk DX",
