@@ -1437,6 +1437,10 @@
   "weatherRefresh": "Segarkan",
   "weatherPowered": "Didukung oleh QWeather · APRSlocus",
   "hfTitle": "Propagasi HF",
+  "hfSixMeter": "Band 6m",
+  "hfEs": "Es (E sporadis)",
+  "hfAurora": "Aurora",
+  "hfF2": "Lapisan F2",
   "hfBand": "Band",
   "hfDay": "Siang",
   "hfNight": "Malam",
@@ -1883,5 +1887,26 @@
   "adifModeRequiredHint": "Sebagian besar logbook (termasuk QRZ) mewajibkan MODE; tanpa itu akan ditolak",
   "adifFreq": "Frekuensi (FREQ)",
   "adifFreqHint": "Dalam MHz; kosongkan untuk tidak menulis",
-  "adifFreqInvalid": "Masukkan angka dalam MHz, mis. 144.640"
+  "adifFreqInvalid": "Masukkan angka dalam MHz, mis. 144.640",
+  "sysTitle": "Status sistem",
+  "sysLinkOff": "Nonaktif",
+  "sysRx": "Rx {n}",
+  "@sysRx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysTx": "Tx {n}",
+  "@sysTx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysBeacon": "Beacon {t}",
+  "@sysBeacon": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "sysStations": "Stasiun {n}",
+  "@sysStations": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysFixOk": "Terlokasi",
+  "sysLinkAudio": "Audio",
+  "sysEmpty": "Buka APRSlocus dan sambungkan untuk melihat status di sini"
 }

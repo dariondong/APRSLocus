@@ -166,7 +166,15 @@ def build_all() -> dict:
             f"传播条件 chip：{name}（实心 {col} + 圆角，白字压在它上面）",
             col, 4)
 
-    files["drawable/aw_bg_white.xml"] = solid_xml(
+    # 底走 @color/aw_surface：浅色白、夜间 #1E2530 ——
+    # drawable 里引 @color 是允许的，于是**不用两套布局**就拿到暗黑底。
+    files["drawable/aw_bg_white.xml"] = (
+        f'{HEADER}<shape xmlns:android="http://schemas.android.com/apk/res/android"'
+        f' android:shape="rectangle">\n'
+        f'    <!-- 短波组件底：@color/aw_surface（浅色白 / 夜间深底） -->\n'
+        f'    <corners android:radius="{RADIUS_LARGE}dp" />\n'
+        f'    <solid android:color="@color/aw_surface" />\n</shape>\n')
+    _unused_bg_white = solid_xml(
         "短波组件的白底（不透明纯白 + 圆角）", "#FFFFFFFF", RADIUS_LARGE)
     files["drawable/aw_sep.xml"] = solid_xml(
         "单行档的竖分隔线（白 20%，1dp 宽）", "#33FFFFFF", 0)
@@ -176,6 +184,58 @@ def build_all() -> dict:
         "setColorFilter 只存在于 ImageView（View/TextView 都没有），"
         "这正是 v1.6.114 线上事故的成因：当时圆点是 TextView。",
         "#FFFFFF")
+
+    # ─── 暗黑模式 ────────────────────────────────────────────────────
+    #
+    # 做法：**颜色走 @color 引用**，values/ 与 values-night/ 各一份 ——
+    # RemoteViews 由系统进程按当前配置解析资源，夜间模式会自动取到夜间值，
+    # 代码里不需要判断。
+    #
+    # 为什么不把颜色写死在布局里：那样夜间模式只能靠「再来一套夜间布局」，
+    # 而 RemoteViews 的布局是静态引用（initialLayout、RemoteViews(pkg, id)），
+    # 无法按主题换布局文件。这是这次改造要解决的问题。
+    # 三级前景与 theme.dart 的 C.* 对应。
+    ink, ink_night = "#253044", "#E6EAF2"
+    slate, slate_night = "#637083", "#AAB4C5"
+    line, line_night = "#E5E9F0", "#2A3344"
+    surf, surf_night = "#FFFFFF", "#1E2530"
+    for qualifier, (c_ink, c_slate, c_line, c_surf) in (
+            ("values", (ink, slate, line, surf)),
+            ("values-night", (ink_night, slate_night, line_night, surf_night))):
+        # chip 的文字色：浅色底上用**基准色**（够深、在白底上清晰）；
+        # 夜间深底上基准色偏暗，改用**向白提亮 35%** 的版本。
+        # 提亮公式与 Dart 的 widgetTipTextArgb 同一套整数运算。
+        def _lit(hex6: str) -> str:
+            r, g, b = (int(hex6[i:i + 2], 16) for i in (1, 3, 5))
+            m = lambda c: round(c * 0.65 + 255 * 0.35)  # noqa: E731
+            return "#%02X%02X%02X" % (m(r), m(g), m(b))
+
+        q_src = {"aw_q_good": "#16A34A", "aw_q_fair": "#D97706",
+                 "aw_q_poor": "#E11D48", "aw_q_closed": "#94A3B8"}
+        rows = [
+            f'    <color name="{k}">'
+            f'{v if qualifier == "values" else _lit(v)}</color>'
+            for k, v in q_src.items()
+        ]
+        rows += [
+            f'    <color name="aw_ink">{c_ink}</color>',
+            f'    <color name="aw_slate">{c_slate}</color>',
+            f'    <color name="aw_line">{c_line}</color>',
+            f'    <color name="aw_surface">{c_surf}</color>',
+            # 空状态文字：主文字色 + 85% alpha（分开一个键，便于整体调）
+            f'    <color name="aw_ink_dim">#D9{c_ink[1:]}</color>',
+        ]
+        files[f"{qualifier}/widget_colors.xml"] = (
+            HEADER
+            + "<!-- 小组件前景色。夜间变体在 values-night/，由系统按当前配置选择 -->\n"
+            + "<resources>\n" + "\n".join(rows) + "\n</resources>\n")
+
+    # 夜间 chip 的淡底要更浓：浅色 11% 压在近白底上够看，
+    # 但 #1E2530 这种深底上 11% 几乎不可见，提到 22%。
+    for level, col in CHIP.items():
+        files[f"drawable-night/aw_chipsoft_{level}.xml"] = solid_xml(
+            f"传播条件 tonal chip 底（夜间）：{level}，淡色 22%"
+            f"（深底上 11% 几乎不可见）", f"#38{col[1:]}", 5)
 
     return files
 

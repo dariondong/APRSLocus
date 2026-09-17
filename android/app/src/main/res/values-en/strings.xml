@@ -8,4 +8,8 @@
     <string name="app_widget_hf_label">HF propagation &amp; band conditions</string>
     <string name="app_widget_hf_desc">Day/night conditions per band plus solar indices (4×2)</string>
     <string name="app_widget_hf_empty">Open APRSlocus to fetch HF propagation data and band conditions will appear here</string>
+    <!-- System status widget -->
+    <string name="app_widget_sys_label">Station status</string>
+    <string name="app_widget_sys_desc">Position, four links, packet counters and beacon state (4×2)</string>
+    <string name="app_widget_sys_empty">Open APRSlocus and connect to see your station status here</string>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 小组件前景色。夜间变体在 values-night/，由系统按当前配置选择 -->
+<resources>
+    <color name="aw_q_good">#16A34A</color>
+    <color name="aw_q_fair">#D97706</color>
+    <color name="aw_q_poor">#E11D48</color>
+    <color name="aw_q_closed">#94A3B8</color>
+    <color name="aw_ink">#253044</color>
+    <color name="aw_slate">#637083</color>
+    <color name="aw_line">#E5E9F0</color>
+    <color name="aw_surface">#FFFFFF</color>
+    <color name="aw_ink_dim">#D9253044</color>
+</resources>

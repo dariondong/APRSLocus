@@ -562,6 +562,41 @@ def render_hf(w=296, h=140, dark=False):
 
 
 
+
+# ── 白底组件的取色（浅色 / 夜间两套）──
+# 与 android/app/src/main/res/values{,-night}/widget_colors.xml 一一对应 ——
+# 那两份是**真机**实际用的值，这里必须同步，否则预览的夜间效果是假的。
+SURFACE = {False: "#FFFFFF", True: "#1E2530"}
+INK_C = {False: "#253044", True: "#E6EAF2"}
+SLATE_C = {False: "#637083", True: "#AAB4C5"}
+LINE_C = {False: "#E5E9F0", True: "#2A3344"}
+Q_COLOR = {
+    False: {"Good": "#16A34A", "Fair": "#D97706", "Poor": "#E11D48",
+            "Band Closed": "#94A3B8"},
+    True: {"Good": "#68C389", "Fair": "#E6A75D", "Poor": "#EC6C88",
+           "Band Closed": "#B9C3D1"},
+}
+
+
+def surf(dark):
+    return SURFACE[bool(dark)]
+
+
+def ink_of(dark):
+    return INK_C[bool(dark)]
+
+
+def slate_of(dark):
+    return SLATE_C[bool(dark)]
+
+
+def line_of(dark):
+    return LINE_C[bool(dark)]
+
+
+def qcol(q, dark):
+    return Q_COLOR[bool(dark)][q]
+
 # ── 短波组件的**白底**方案 ─────────────────────────────────────────
 #
 # 为什么白底要用**基准色**而不是提亮色：`widgetTipTextArgb` 提亮 35% 是为了
@@ -758,14 +793,16 @@ def render_hf_A2(w=296, h=140, dark=False):
 #   · **呼吸**：行高 14dp、表头与表格之间留 3dp、内边距 8/8。
 def _hf_shell(w, h, dark):
     c = Canvas(w, h, "clear", dark=dark)
-    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.base = Image.new("RGBA", c.base.size,
+                       hex2rgb(surf(dark)) + (255,))
     c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
     c.d = ImageDraw.Draw(c.layer)
     return c
 
 
-def _hf_head(c, px, pw, title_size=13):
+def _hf_head(c, px, pw, title_size=13, dark=False):
     """顶栏 + 指数行。指数**不染色** —— 颜色只留给波段条件。"""
+    INK, SLATE = ink_of(dark), slate_of(dark)
     c.icon("waves", px, 8, 14, color=INK)
     c.text(px + 18, 8 + line_h(title_size, True) / 2, HF["hf_title"],
            title_size, bold=True, color=INK, anchor="lm")
@@ -796,8 +833,11 @@ def render_hf_D(w=296, h=140, dark=False, tonal=True):
     [tonal] False 时改为「小圆点 + 条件色文字」（最克制的一档），用于对比取优。
     """
     c = _hf_shell(w, h, dark)
+    # 按当前明暗取色（与真机的 values/values-night 对应）。
+    # 函数内赋值会遮蔽模块级常量，所以显式声明即可。
+    INK, SLATE, LINE = ink_of(dark), slate_of(dark), line_of(dark)
     px, pw = 13, w - 26
-    y = _hf_head(c, px, pw)
+    y = _hf_head(c, px, pw, dark=dark)
     y += 4
     c.d.rectangle([round(px * SCALE), round(y * SCALE),
                    round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
@@ -824,7 +864,7 @@ def render_hf_D(w=296, h=140, dark=False, tonal=True):
                anchor="lm")
         for k, q in ((0, day), (1, night)):
             cx = px + BAND_W + k * COL_W
-            col = QUALITY_COLORS_BASE[q]
+            col = qcol(q, dark)
             if tonal:
                 c.paste(c.rounded(CHIP_W, CHIP_H, 5, col, 0.11), cx, cy)
                 c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 9, bold=True,
@@ -966,6 +1006,77 @@ def render_hf_C(w=296, h=140, dark=False):
 
 
 
+
+# ── 系统状态组件（4×2）──────────────────────────────────────────────
+SYS_DEMO = {
+    "call": "BG7LZQ-7", "fix": "已定位", "grid": "OL62XC",
+    "links": [("APRS-IS", "已连接", True), ("TNC", "未启用", False),
+              ("音频", "连接中", None), ("PKWDWPL", "未启用", False)],
+    "rx": "收 1 284", "tx": "发 37", "beacon": "信标 45s", "stations": "台站 213",
+}
+
+
+def render_sys(w=296, h=140, dark=False):
+    """系统状态组件。布局与 aw_widget_sys.xml 一一对应（同一套尺寸令牌）。
+
+    链路点是**三态色**：已连接绿 / 已启用未连上橙 / 未启用灰 ——
+    这是本组件唯一比「连上没连上」多出来的信息，也是它最该被看清的地方。
+    """
+    c = _hf_shell(w, h, dark)
+    INK, SLATE, LINE = ink_of(dark), slate_of(dark), line_of(dark)
+    OK, PENDING, OFF = (qcol("Good", dark), qcol("Fair", dark),
+                        qcol("Band Closed", dark))
+    px, pw = 13, w - 26
+    c.icon("settings", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(13, True) / 2, "系统状态", 13, bold=True,
+           color=INK, anchor="lm")
+    bw = 18 + c.measure("APRSlocus", 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, "APRSlocus", 10,
+           bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(13, True) + 3
+    # 身份行
+    base = y + line_h(11, True) / 2
+    c.text(px, base, SYS_DEMO["call"], 11, bold=True, color=INK, anchor="lm")
+    x = px + c.measure(SYS_DEMO["call"], 11, bold=True) + 6
+    for txt in (SYS_DEMO["fix"], SYS_DEMO["grid"]):
+        c.text(x, base, "·", 9, color="#C3CCD9", anchor="lm")
+        x += c.measure("·", 9) + 6
+        c.text(x, base, txt, 9.5, color=SLATE, anchor="lm")
+        x += c.measure(txt, 9.5) + 6
+    y += line_h(11, True) + 4
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 5
+    # 链路 2×2
+    CW = (pw - 10) / 2
+    for i, (name, state, up) in enumerate(SYS_DEMO["links"]):
+        r, k = divmod(i, 2)
+        cx = px + k * (CW + 10)
+        cy = y + r * (6 + line_h(9.5))
+        col = OK if up is True else (PENDING if up is None else OFF)
+        c.paste(c.circle(7, col), cx, cy + line_h(9.5) / 2 - 3.5)
+        c.text(cx + 13, cy + line_h(9.5) / 2, name, 9.5, bold=True, color=INK,
+               anchor="lm")
+        c.text(cx + 13 + c.measure(name, 9.5, bold=True) + 5,
+               cy + line_h(9.5) / 2, state, 9, color=SLATE, anchor="lm")
+    y += 2 * (6 + line_h(9.5)) + 1
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 5
+    # 计数行
+    base = y + line_h(9.5) / 2
+    c.text(px, base, SYS_DEMO["rx"], 9.5, color=SLATE, anchor="lm")
+    x = px + c.measure(SYS_DEMO["rx"], 9.5) + 12
+    c.text(x, base, SYS_DEMO["tx"], 9.5, color=SLATE, anchor="lm")
+    c.text(px + pw, base, SYS_DEMO["stations"], 9.5, color=SLATE, anchor="rm")
+    bx = px + pw - c.measure(SYS_DEMO["stations"], 9.5) - 12 - \
+        c.measure(SYS_DEMO["beacon"], 9.5)
+    c.text(bx, base, SYS_DEMO["beacon"], 9.5, color=SLATE, anchor="lm")
+    return c.out_clipped(20), y + line_h(9.5)
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="/tmp/widget_preview.png")
@@ -984,6 +1095,9 @@ def main():
         # 短波组件：定稿 = 方案 A（实心彩 chip）。探索用的 A2/B/C 仍在本文件里，
         # 用 --variants 时才输出，默认不打进图里（免得每次都要从一堆方案里找）。
         ("短波传播组件 4×2（定稿 · tonal chip）", render_hf_D, 296, 140, False),
+        ("系统状态组件 4×2（浅色）", render_sys, 296, 140, False),
+        ("系统状态组件 4×2（夜间）",
+         lambda **k: render_sys(dark=True), 296, 140, False),
     ]
     # 圆角净空：卡片圆角越大，底部两侧收得越早。20dp 圆角下，距底边约
     # 10dp 之内的左右两边已经被切掉，所以内容必须停在 h-10dp 以上。
@@ -1011,13 +1125,16 @@ def main():
     PAD, GAP, LH = 24, 20, 28
     row1 = tiles[:3]
     row2 = tiles[3:5]
-    row3 = tiles[5:]
+    row3 = tiles[5:7]
+    row4 = tiles[7:]
     W = PAD * 2 + sum(im.width for _, im in row1) + GAP * (len(row1) - 1)
     row1h = max(im.height for _, im in row1)
     row2h = max(im.height for _, im in row2)
     row3h = max((im.height for _, im in row3), default=0)
+    row4h = max((im.height for _, im in row4), default=0)
     H = (PAD + LH + row1h + GAP + LH + row2h
-         + (GAP + LH + row3h if row3 else 0) + PAD)
+         + (GAP + LH + row3h if row3 else 0)
+         + (GAP + LH + row4h if row4 else 0) + PAD)
     sheet = Image.new("RGB", (W, H), (22, 26, 33))
     d = ImageDraw.Draw(sheet)
 
@@ -1030,8 +1147,11 @@ def main():
     blit(row1, PAD)
     y2 = PAD + LH + row1h + GAP
     blit(row2, y2)
+    y3 = y2 + LH + row2h + GAP
     if row3:
-        blit(row3, y2 + LH + row2h + GAP)
+        blit(row3, y3)
+    if row4:
+        blit(row4, y3 + LH + row3h + GAP)
 
     sheet.save(args.out)
     print("预览:", args.out, sheet.size)

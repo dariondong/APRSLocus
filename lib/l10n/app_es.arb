@@ -1436,6 +1436,10 @@
   "weatherRefresh": "Actualizar",
   "weatherPowered": "Datos de QWeather · APRSlocus",
   "hfTitle": "Propagación HF",
+  "hfSixMeter": "Banda de 6m",
+  "hfEs": "Es (E esporádica)",
+  "hfAurora": "Aurora",
+  "hfF2": "Capa F2",
   "hfBand": "Banda",
   "hfDay": "Día",
   "hfNight": "Noche",
@@ -1883,5 +1887,26 @@
   "adifFreq": "Frecuencia (FREQ)",
   "adifFreqHint": "En MHz; déjalo vacío para omitir",
   "adifFreqInvalid": "Introduce un número en MHz, p. ej. 144.640",
-  "languageEs": "Español"
+  "languageEs": "Español",
+  "sysTitle": "Estado del sistema",
+  "sysLinkOff": "Desactivado",
+  "sysRx": "Rx {n}",
+  "@sysRx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysTx": "Tx {n}",
+  "@sysTx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysBeacon": "Baliza {t}",
+  "@sysBeacon": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "sysStations": "Estaciones {n}",
+  "@sysStations": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysFixOk": "Ubicado",
+  "sysLinkAudio": "Audio",
+  "sysEmpty": "Abre APRSlocus y conéctate para ver el estado aquí"
 }

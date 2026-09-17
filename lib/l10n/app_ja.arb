@@ -1437,6 +1437,10 @@
   "weatherRefresh": "更新",
   "weatherPowered": "データ提供：和風天気（QWeather）· APRSlocus",
   "hfTitle": "HF 伝搬",
+  "hfSixMeter": "6m バンド",
+  "hfEs": "Es（スポラディック E）",
+  "hfAurora": "オーロラ",
+  "hfF2": "F2 層",
   "hfBand": "バンド",
   "hfDay": "昼",
   "hfNight": "夜",
@@ -1883,5 +1887,26 @@
   "adifModeRequiredHint": "多くのログソフト（QRZ 含む）は MODE が必須で、無いと拒否されます",
   "adifFreq": "周波数（FREQ）",
   "adifFreqHint": "単位 MHz、空欄なら書き込みません",
-  "adifFreqInvalid": "MHz の数値を入力してください（例 144.640）"
+  "adifFreqInvalid": "MHz の数値を入力してください（例 144.640）",
+  "sysTitle": "システム状態",
+  "sysLinkOff": "未使用",
+  "sysRx": "受信 {n}",
+  "@sysRx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysTx": "送信 {n}",
+  "@sysTx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysBeacon": "ビーコン {t}",
+  "@sysBeacon": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "sysStations": "局数 {n}",
+  "@sysStations": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysFixOk": "測位済み",
+  "sysLinkAudio": "オーディオ",
+  "sysEmpty": "APRSlocus を開いて接続すると、ここに運用状況が表示されます"
 }

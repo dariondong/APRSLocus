@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <!-- 短波组件的白底（不透明纯白 + 圆角） -->
+    <!-- 短波组件底：@color/aw_surface（浅色白 / 夜间深底） -->
     <corners android:radius="20dp" />
-    <solid android:color="#FFFFFFFF" />
+    <solid android:color="@color/aw_surface" />
 </shape>

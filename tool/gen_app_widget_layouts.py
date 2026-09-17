@@ -56,11 +56,15 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 
 # ── 短波组件（白底）用的前景色。取自 theme.dart 的 C.* 浅色值，
 #    与面板本身的浅色 UI 一致。
-INK = "#253044"
+# 为什么是 @color 而不是字面色值：RemoteViews 的布局是**静态引用**
+# （initialLayout / RemoteViews(pkg, id)），没法按主题换布局文件 ——
+# 所以颜色必须写成可解析的资源，夜间模式才能自动切到 values-night 的值。
+# 对应 theme.dart 的 C.ink / C.slate / C.border。
+INK = "@color/aw_ink"  # 主文字
 # 波段名列宽（与预览 render_hf_A 的 BAND_W 一致）
-BAND_W = "54dp"      # C.ink    主文字
-SLATE = "#637083"    # C.slate  次要文字
-LINE = "#E5E9F0"     # C.border 细分隔线
+BAND_W = "54dp"      # 波段名列宽
+SLATE = "@color/aw_slate"  # 次要文字
+LINE = "@color/aw_line"  # 细分隔线
 
 CITY = "10.5sp"
 APP_NAME = "11sp"
@@ -105,9 +109,14 @@ def text(tid, *, size, color=INK, bold=False, max_lines=None,
     if bg:
         a.append(f'android:background="@drawable/{bg}"')
     a.append(f'android:textColor="{color}"')
-    if alpha is not None:
+    if alpha is not None and not color.startswith('@'):
         # RemoteViews 不能给单个 view 设 alpha；用带 alpha 的 #AARRGGBB 文字色
         # 表达「弱化」层级（面板也是靠白色 + 低 alpha，不是灰色）。
+        #
+        # 但 `@color/xxx` 引用**拼不了** alpha —— 上一版就是漏了这个判断，
+        # 生成出 `#E6@COLOR/AW_INK_DIM` 这种畸形值（不报错、颜色全错）。
+        # 需要「@color + alpha」时，请另建一个已含 alpha 的颜色资源
+        # （如 aw_ink_dim）。
         a[-1] = f'android:textColor="{_with_alpha(color, alpha)}"'
     a.append(f'android:textSize="{size}"')
     if android_text is not None:
@@ -669,6 +678,14 @@ def build_hf():
         s += text(f"aw_idx{i}_label", size="8.5sp", color=SLATE)
         s += text(f"aw_idx{i}_value", size="11sp", bold=True, color=INK,
                   margin_start="3dp", margin_end="14dp")
+    # 6m chip 放在**本行右端**，而不是新增一行：波段表 4 行已占满高度，
+    # 再加一行会溢出。6m 是最「可行动」的一条（开通即值得上机），
+    # 与指数同高的位置比埋在表格里更合适。
+    s += text("aw_idx_spacer", size="1sp", width="0dp", height="1dp",
+              weight="1")
+    s += text("aw_six", size="8.5sp", bold=True, color=INK,
+              width="44dp", height="13dp", gravity="center",
+              bg="aw_chipsoft_good", ellipsize=True)
     s += CLOSE
     # ③ 细线
     s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
@@ -708,6 +725,103 @@ def build_hf():
                         margin_top="2dp")
             s += hairline(f"aw_band{i}_rule", LINE)
             s += CLOSE
+
+    s += CLOSE
+    s += CLOSE
+    s += empty_label(color="@color/aw_ink_dim")
+    s += "</FrameLayout>\n"
+    return s
+
+
+
+# ── 系统状态组件（4×2）──────────────────────────────────────────────
+def build_sys():
+    """APRS 台站的「一眼健康检查」：定位 / 四条链路 / 收发计数 / 信标与台站数。
+
+    为什么值得单独做一个组件：APRS 是**后台长期运行**的应用，用户最常问的
+    三个问题是「还在收吗」「我的位置有没有上报」「为什么没地图台站」。
+    这三件事分别由「链路是否 up」「信标是否在走」「台站数有没有涨」回答 ——
+    都要打开 App 才能看到，而它们恰恰是**放在桌面上更有用**的那类信息。
+
+    设计沿用短波组件的语言（白/深底 + 墨色字 + tonal 状态点），
+    这样三个组件摆在一起是同一套设计，而不是三种风格。
+    """
+    s = header_comment("桌面小组件 · 系统状态（4×2）", [
+        "顶栏    ：[齿轮] 系统状态                          [logo] APRSlocus",
+        "身份行  ：呼号 · 定位状态 · 网格",
+        "细线",
+        "链路区  ：2×2 四格 —— APRS-IS / TNC / 音频 / PKWDWPL",
+        "          每格「状态点 + 链路名 + 状态文字」；点色 = 已连接绿 / 未启用灰",
+        "细线",
+        "计数行  ：收 N · 发 N（左）    信标 Ns · 台站 N（右）",
+        "",
+        "想回答的三个问题（按优先级排布）：",
+        "  · 还在收吗               → 链路区的绿点 + 「收 N」",
+        "  · 我的位置有没有上报      → 身份行的定位状态 + 「信标 Ns」",
+        "  · 为什么地图没台站        → 「台站 N」",
+        "",
+        "⚠ 硬约束同其它组件：只用白名单控件（不用原生 <View>）、不用 <selector>、",
+        "不用 styles.xml 主题样式（字号颜色就地写死，颜色引用 @color/aw_* 以支持夜间）。",
+    ])
+    s += open_layout("aw_root", "aw_bg_white")
+    s += linear("aw_pad", orientation="vertical", height="match_parent",
+                pad_start="13dp", pad_end="13dp", pad_top="8dp", pad_bottom="9dp")
+    # 顶栏
+    s += linear("aw_sys_header", orientation="horizontal",
+                gravity="center_vertical", baseline=True)
+    s += image("aw_sys_icon", "aw_ic_settings", "14dp")
+    s += text("aw_sys_title", size="13sp", bold=True, color=INK,
+              margin_start="4dp")
+    s += text("aw_spacer", size="1sp", width="0dp", height="1dp", weight="1")
+    s += image("aw_logo", "aw_logo", "15dp")
+    s += text("aw_app_name", size="10sp", bold=True, color=INK,
+              margin_start="4dp", android_text="APRSlocus")
+    s += CLOSE
+    # 身份行：呼号 · 定位 · 网格
+    s += linear("aw_identity", orientation="horizontal", baseline=True,
+                margin_top="3dp")
+    s += text("aw_my_call", size="11sp", bold=True, color=INK)
+    s += text("aw_id_sep1", size="9sp", color=SLATE, margin_start="6dp",
+              margin_end="6dp", android_text="·")
+    s += text("aw_fix_state", size="9.5sp", color=SLATE)
+    s += text("aw_id_sep2", size="9sp", color=SLATE, margin_start="6dp",
+              margin_end="6dp", android_text="·")
+    s += text("aw_my_grid", size="9.5sp", color=SLATE)
+    s += CLOSE
+    s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
+    s += hairline("aw_rule1", LINE)
+    s += CLOSE
+    # 链路 2×2
+    s += linear("aw_links", orientation="vertical", margin_top="5dp")
+    for r in range(2):
+        s += linear(f"aw_lrow{r}", orientation="horizontal", baseline=True,
+                    margin_top=None if r == 0 else "6dp")
+        for c in range(2):
+            i = r * 2 + c
+            s += linear(f"aw_link{i}", orientation="horizontal", width="0dp",
+                        weight="1", gravity="center_vertical", baseline=True,
+                        margin_end="10dp" if c == 0 else None)
+            s += image(f"aw_link{i}_dot", "aw_dot", "7dp")
+            s += text(f"aw_link{i}_name", size="9.5sp", color=INK,
+                      margin_start="6dp", bold=True)
+            s += text(f"aw_link{i}_state", size="9sp", color=SLATE,
+                      margin_start="5dp", width="0dp", weight="1",
+                      ellipsize=True)
+            s += CLOSE
+        s += CLOSE
+    s += CLOSE
+    s += linear("aw_rule2_box", orientation="vertical", margin_top="5dp")
+    s += hairline("aw_rule2", LINE)
+    s += CLOSE
+    # 计数行
+    s += linear("aw_counters", orientation="horizontal", baseline=True,
+                margin_top="5dp")
+    s += text("aw_rx", size="9.5sp", color=SLATE)
+    s += text("aw_tx", size="9.5sp", color=SLATE, margin_start="12dp")
+    s += text("aw_cnt_spacer", size="1sp", width="0dp", height="1dp",
+              weight="1")
+    s += text("aw_beacon", size="9.5sp", color=SLATE)
+    s += text("aw_stations", size="9.5sp", color=SLATE, margin_start="12dp")
     s += CLOSE
     s += CLOSE
     s += empty_label(color=INK, alpha=0.85)
@@ -754,6 +868,7 @@ def main():
         "aw_widget_compact.xml": build_compact(),
         "aw_widget_row.xml": build_row(),
         "aw_widget_hf.xml": build_hf(),
+        "aw_widget_sys.xml": build_sys(),
     }
 
     problems = []

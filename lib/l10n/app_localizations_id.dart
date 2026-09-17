@@ -4811,6 +4811,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get hfTitle => 'Propagasi HF';
 
   @override
+  String get hfSixMeter => 'Band 6m';
+
+  @override
+  String get hfEs => 'Es (E sporadis)';
+
+  @override
+  String get hfAurora => 'Aurora';
+
+  @override
+  String get hfF2 => 'Lapisan F2';
+
+  @override
   String get hfBand => 'Band';
 
   @override
@@ -5583,4 +5595,40 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get adifFreqInvalid => 'Masukkan angka dalam MHz, mis. 144.640';
+
+  @override
+  String get sysTitle => 'Status sistem';
+
+  @override
+  String get sysLinkOff => 'Nonaktif';
+
+  @override
+  String sysRx(String n) {
+    return 'Rx $n';
+  }
+
+  @override
+  String sysTx(String n) {
+    return 'Tx $n';
+  }
+
+  @override
+  String sysBeacon(String t) {
+    return 'Beacon $t';
+  }
+
+  @override
+  String sysStations(String n) {
+    return 'Stasiun $n';
+  }
+
+  @override
+  String get sysFixOk => 'Terlokasi';
+
+  @override
+  String get sysLinkAudio => 'Audio';
+
+  @override
+  String get sysEmpty =>
+      'Buka APRSlocus dan sambungkan untuk melihat status di sini';
 }

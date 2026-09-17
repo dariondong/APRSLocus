@@ -122,6 +122,27 @@ Map<String, Object?> buildHfWidgetSnapshot({
   snap['bands'] = <Map<String, Object?>>[
     for (final b in h.bands.take(kHfWidgetBandRows)) _bandRow(b, s),
   ];
+  // ── 6m 段（只给「更高的档位」用）──
+  //
+  // 4×2 放不下：4 个 HF 波段对 + 指数行已经把 296×140dp 占满（实测 126.3/130）。
+  // 硬塞会把 chip 高与字号再压一轮 —— 而那正是前一版被判定「挤」的原因。
+  // 所以 6m 只在用户把组件拉高时显示（布局有 4×2 / 4×3 两档）。
+  //
+  // 6m 与 HF 波段的传播机理完全不同（Es / 极光 / F2），**不并进那张表** ——
+  // 它没有「日间/夜间」之分，硬并会让「6m 日间 Poor」这种组合读起来像同一机理。
+  final six = hfSixMeter(h);
+  snap['six'] = <String, Object?>{
+    'title': s.hfSixMeter,
+    'es': s.hfEs,
+    'esValue': six.es,
+    'aurora': s.hfAurora,
+    'auroraValue': six.aurora,
+    'f2': s.hfF2,
+    'f2Value': six.f2 ? s.hfQGood : HfNow.none,
+    'level': six.quality.name,
+    'label': hfQualityLabel(six.quality, s),
+    'color': colorToArgb(hfQualityColor(six.quality)),
+  };
   return snap;
 }
 

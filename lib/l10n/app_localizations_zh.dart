@@ -4636,6 +4636,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hfTitle => '短波传播';
 
   @override
+  String get hfSixMeter => '6m 波段';
+
+  @override
+  String get hfEs => 'Es 偶发 E 层';
+
+  @override
+  String get hfAurora => '极光';
+
+  @override
+  String get hfF2 => 'F2 层';
+
+  @override
   String get hfBand => '波段';
 
   @override
@@ -5374,6 +5386,41 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adifFreqInvalid => '请输入 MHz 数字，如 144.640';
+
+  @override
+  String get sysTitle => '系统状态';
+
+  @override
+  String get sysLinkOff => '未启用';
+
+  @override
+  String sysRx(String n) {
+    return '收 $n';
+  }
+
+  @override
+  String sysTx(String n) {
+    return '发 $n';
+  }
+
+  @override
+  String sysBeacon(String t) {
+    return '信标 $t';
+  }
+
+  @override
+  String sysStations(String n) {
+    return '台站 $n';
+  }
+
+  @override
+  String get sysFixOk => '已定位';
+
+  @override
+  String get sysLinkAudio => '音频';
+
+  @override
+  String get sysEmpty => '打开 APRSlocus 并连接后，这里会显示台站运行状态';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -10008,6 +10055,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get hfTitle => '短波傳播';
 
   @override
+  String get hfSixMeter => '6m 波段';
+
+  @override
+  String get hfEs => 'Es 偶發 E 層';
+
+  @override
+  String get hfAurora => '極光';
+
+  @override
+  String get hfF2 => 'F2 層';
+
+  @override
   String get hfBand => '波段';
 
   @override
@@ -10746,4 +10805,39 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get adifFreqInvalid => '請輸入 MHz 數字，如 144.640';
+
+  @override
+  String get sysTitle => '系統狀態';
+
+  @override
+  String get sysLinkOff => '未啟用';
+
+  @override
+  String sysRx(String n) {
+    return '收 $n';
+  }
+
+  @override
+  String sysTx(String n) {
+    return '發 $n';
+  }
+
+  @override
+  String sysBeacon(String t) {
+    return '信標 $t';
+  }
+
+  @override
+  String sysStations(String n) {
+    return '臺站 $n';
+  }
+
+  @override
+  String get sysFixOk => '已定位';
+
+  @override
+  String get sysLinkAudio => '音訊';
+
+  @override
+  String get sysEmpty => '開啟 APRSlocus 並連線後，這裡會顯示臺站執行狀態';
 }

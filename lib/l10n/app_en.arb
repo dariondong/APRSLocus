@@ -1447,6 +1447,10 @@
   "weatherRefresh": "Refresh",
   "weatherPowered": "Powered by QWeather · APRSlocus",
   "hfTitle": "HF propagation",
+  "hfSixMeter": "6m band",
+  "hfEs": "Es (sporadic E)",
+  "hfAurora": "Aurora",
+  "hfF2": "F2 layer",
   "hfBand": "Band",
   "hfDay": "Day",
   "hfNight": "Night",
@@ -1799,5 +1803,26 @@
   "adifModeRequiredHint": "Most logbooks (including QRZ) require MODE; records without it are rejected",
   "adifFreq": "Frequency (FREQ)",
   "adifFreqHint": "In MHz; leave blank to omit",
-  "adifFreqInvalid": "Enter a number in MHz, e.g. 144.640"
+  "adifFreqInvalid": "Enter a number in MHz, e.g. 144.640",
+  "sysTitle": "System status",
+  "sysLinkOff": "Off",
+  "sysRx": "Rx {n}",
+  "@sysRx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysTx": "Tx {n}",
+  "@sysTx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysBeacon": "Beacon {t}",
+  "@sysBeacon": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "sysStations": "Stations {n}",
+  "@sysStations": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysFixOk": "Located",
+  "sysLinkAudio": "Audio",
+  "sysEmpty": "Open APRSlocus and connect to see your station status here"
 }

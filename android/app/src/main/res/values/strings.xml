@@ -14,4 +14,8 @@
     <string name="app_widget_hf_label">短波传播与各波段条件</string>
     <string name="app_widget_hf_desc">各波段的日间/夜间传播条件与太阳指数（4×2）</string>
     <string name="app_widget_hf_empty">打开 APRSlocus 获取短波传播数据后，这里会显示各波段条件</string>
+    <!-- 系统状态组件 -->
+    <string name="app_widget_sys_label">台站系统状态</string>
+    <string name="app_widget_sys_desc">定位、四条链路、收发计数与信标状态（4×2）</string>
+    <string name="app_widget_sys_empty">打开 APRSlocus 并连接后，这里会显示台站运行状态</string>
 </resources>

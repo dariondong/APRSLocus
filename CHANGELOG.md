@@ -1,1157 +1,527 @@
 # 更新日志
 
-## [1.6.120] - 2026-09-17
+## [1.6.121] - 2026-09-17
 
-### 🎨 短波组件重新设计：放弃「实心彩块」，改为 tonal chip（淡底 + 条件色字）
+### 📡 6m 波段预测 · 组件暗黑模式 · 系统状态组件
 
-你第二次说难看之后，我没有再让你从方案里挑，而是**先把前几版的毛病逐条列出来**
-（放大 3 倍看），再按设计原则重做。
+**① 6m（50MHz）波段预测**
 
-**诊断：问题的根不在配色，在「颜色的用量」和「层级」**
+6m 的传播机理与 HF 波段**完全不同**，所以没有沿用「日间/夜间」那套模型，而是按三条独立通路判断后再合成：
 
-1. **8 个饱和色块 = 红绿灯墙**。波段条件只是「4 档之一」这一个信息，
-   却给了整块饱和色 —— 颜色用量远大于它承载的信息量，于是观感是噪音而不是设计。
-2. **指数行的 Kp/A 也被染色**（绿色），和下面的表格**抢注意力** →
-   颜色被用在两处，反而没有重点。
-3. **字号只差四级**（12 / 11 / 9.5 / 8.5sp），层级几乎压平 → 整体看着「平」。
-4. **内边距全是 2~5dp 的「省出来的值」**（为塞进 4 行而一层层压缩）→ 没有呼吸感。
-
-**改法（三处结构性的，不是调参）**
-
-| | 改前 | 改后 |
+| 通路 | 成因 | 判据 |
 |---|---|---|
-| chip | 实心条件色块 + 白字 | **tonal chip**：条件色 **11% 淡底** + 条件色文字 |
-| 指数行 | Kp/A 染色（绿/橙） | **全部墨色** —— 颜色只留给波段条件这一件事 |
-| 层级 | 12 / 11 / 9.5 / 8.5 | 13/w800 标题 › 11/w600 指数值 › 10/w600 波段名 › 9/w700 条件 › 8/w600 列头（带字距） |
+| **Es**（偶发 E 层） | 夏季常见，单跳可跨 1000–2000km，是 6m 的主要开通方式 | 源数据按区域给（含 6m/4m 专门项） |
+| **极光** | 地磁活跃时高纬出现，CW/SSB 有特征啸声 | Kp ≥ 4 且源数据报开通 |
+| **F2** | 需 MUF ≥ 50MHz，太阳活动高年偶发 | `muf` 字段 ≥ 50 |
 
-**tonal chip 是 Material 3 里状态 chip 的标准做法**（淡底 + 彩字）：
-颜色用量降到大约 1/10，但**保留了对齐上的全部好处** —— chip 固定宽度、
-两列落在各自的竖线上、列头与 chip 列同一 x（这三条是 v1.6.119 才修好的，
-不能因为换色就丢掉）。
+合成取三条中**最好**的一档而不是平均：三条是并列通路，任一开通就值得上机；
+取平均会把「开了」抹平成「关着」。同理，Es 取各区域里最好的一档而不是平均 ——
+Es 是局地现象，全球平均会把开通信号抹掉。
 
-**实现**：新增 4 张 `aw_chipsoft_*.xml`（`#1C条件色` 的 11% 淡底）；
-文字色由 `setTextColor` 设成条件基本色 —— 与 `lib/hf.dart` 的 `hfQualityColor`
-是同一组色，一处色板管到面板与组件两边。
-（注：**不能**用 `setColorFilter` 去染 chip —— chip 是 `TextView`，
-而那个方法只存在于 `ImageView`，v1.6.114 的线上事故就是这么来的。）
+数据来源 hamqsl.com 的 `calculatedvhfconditions`。落点两处：
+App 内的短波区块（独立成一段，不并进「日间/夜间」表 —— 硬并会让
+「6m 日间 Poor」这种组合读起来像同一机理），以及短波组件。
 
-**顺带**：给预览工具加了**字距**支持（PIL 没有 letterSpacing，改为逐字绘制并
-额外推进字距）—— 面板与组件都在用「小字号 + 字距」做弱化层级，预览不模拟这一点
-就会失真。
+`muf` 字段源数据常为 `NoRpt`，此时 F2 按「不成立」处理而不是猜 ——
+猜错会让用户白等一晚。
 
-**验证**：`flutter analyze` 无 error；全量 **413 通过**；三个生成器 OK；
-资源检查器 196 处引用全对；预览 6 档全部放得下（短波 126.3 / 130dp）。
+**② 全部组件支持暗黑模式**
+
+组件由系统进程渲染，读不到应用主题，所以深浅两套色必须走资源目录：
+
+- 新增 `values/widget_colors.xml` 与 `values-night/widget_colors.xml`，
+  前景色（主文字 / 次要文字 / 分隔线 / 表面 / 条件色）全部改为 `@color/aw_*`；
+- 系统处于深色模式时自动取 `values-night/` 的值，无需任何运行时代码。
+
+夜间不是把浅色简单反相，而是**重新取值**：
+
+| token | 浅色 | 夜间 |
+|---|---|---|
+| 表面 `aw_surface` | `#FFFFFF` | `#1E2530` |
+| 主文字 `aw_ink` | `#253044` | `#E6EAF2` |
+| 条件色 good/fair/poor | `#16A34A` / `#D97706` / `#E11D48` | `#68C389` / `#E6A75D` / `#EC6C88` |
+
+条件色在夜间要**提亮**（往白方向约 35%）—— 深底上原色对比不足。
+天气组件的背景渐变另有 `drawable-night/` 的深色版本；其上的半透明白分隔线
+（白 10%）在深浅两种底色上都成立，不需切换。
+
+**③ 新增系统状态组件（4×2）**
+
+回答台站运行的三个问题，按这个优先级排布：
+
+```
+ ⚙ 系统状态                                [logo] APRSlocus
+ BG7LZQ-7 · 已定位 · OL62XC
+ ──────────────────────────────────────────────────────
+ ● APRS-IS 已连接        ● TNC      未启用
+ ● 音频    连接中        ● PKWDWPL  未启用
+ ──────────────────────────────────────────────────────
+ 收 1 284   发 37              信标 45s   台站 213
+```
+
+| 问题 | 由什么回答 |
+|---|---|
+| 还在收吗 | 链路区的状态点 + 「收 N」 |
+| 我的位置有没有上报 | 身份行的定位状态 + 「信标 45s」 |
+| 为什么地图没台站 | 「台站 213」 |
+
+**链路是三态而非两态**：`未启用`（用户没开这条，不用管）/ `已连接` / `已启用未连上`
+（开了、连不上，要去查）。混成一个「未连接」会让人对着根本没启用的链路白折腾。
+三态三色，且**顺序固定**（APRS-IS / TNC / 音频 / PKWDWPL），不按状态排序 ——
+位置固定才能一眼扫到要看的那条。
+
+信标倒计时直接取状态层已本地化的 `nextBeaconIn`，不在组件侧再判一次
+「已关闭/未连接/等待定位/即将」—— 那套分支判断属于状态层，两处各判一次必然漂移。
+
+固定 4×2：内容分「身份 / 四条链路 / 计数」三段，压到 2×2 会把链路区挤掉，
+而那正是本组件的主要价值。
+
+**④ 组件快照的推送策略：重要变化立即、计数节流**
+
+`AppState` 每个报文都会通知，而系统状态里有「收 N / 发 N」这种必然跟着变的计数。
+照直推每秒要过十几次 MethodChannel。所以分两路：
+
+- **重要字段**（链路状态 / 定位 / 网格 / 信标 / 台站数）变化 → 立即推；
+- **只有计数变化** → 最多每 20 秒推一次。
+
+判据是「距上次推送的时间」而不是定时器 —— 定时器不受 dispose 管辖，
+会在 widget 测试里留下 pending timer 并造成假失败（此前踩过）。
+
+**⑤ 新增工具**
+
+- `tool/add_sys_widget_l10n.py`：为系统状态组件补 6 语言 l10n 键（9 个）。
+  手改 6×9=54 处漏一处就是「某语言下组件显示空字符串」，而组件不报错，只能机械操作。
+- 预览工具补**明暗两套取色**与**系统状态组件**，并修正：白底组件的底色此前硬写
+  白色，导致 `--dark` 对它们完全无效、看不到夜间效果。
 
 ---
 
-**① The HF widget was redesigned: no more solid colour blocks — now tonal chips (pale fill + condition-coloured text).**
-After your second "still ugly", I did not ask you to pick from options again. Instead I listed what was
-wrong with the previous revisions (at 3x zoom) and reworked it against design principles.
+**① 6m (50 MHz) band prediction.** 6m propagation does not follow the HF day/night model at
+all, so it is judged as three independent paths and then combined: **Es** (sporadic-E — the
+main way 6m opens, single hop covering 1000–2000 km, reported per region including dedicated
+6m/4m entries), **aurora** (appears at high latitudes when the field is active, with the
+characteristic raspy CW/SSB sound; requires Kp ≥ 4 *and* the source reporting it open), and
+**F2** (needs MUF ≥ 50 MHz, occasional in high solar years, from the `muf` field).
 
-**The diagnosis: the problem was not the palette, it was how much colour was used and the lack of
-hierarchy.** Eight saturated blocks read as a traffic-light wall — a band condition is *one* piece of
-information ("one of four levels"), yet it was given a whole saturated block, so the amount of colour
-far exceeded the information it carried and the result reads as noise rather than design. The summary
-row also coloured Kp/A green, competing with the table below, so colour appeared in two places and
-therefore nowhere in particular. Type sizes spanned only four steps (12 / 11 / 9.5 / 8.5sp), flattening
-the hierarchy. And every padding was a 2–5dp "squeezed" value from cramming in four rows — no breathing room.
+The combination takes the **best** of the three rather than an average: the three are parallel
+paths and any one opening justifies getting on the air, while averaging would flatten "open"
+into "closed". For the same reason Es takes the best region rather than an average — Es is a
+local phenomenon and a global mean erases the opening. Source: hamqsl.com's
+`calculatedvhfconditions`. It appears in two places: the in-app HF section (as its own block,
+*not* merged into the day/night table, since merging would produce combinations like "6m daytime
+Poor" that read as the same mechanism) and the HF widget. The `muf` field is often `NoRpt`, in
+which case F2 is treated as *not* satisfied rather than guessed — a wrong guess means waiting up
+all night for nothing.
 
-**Three structural changes**: chips went from solid colour + white text to **tonal chips** (11% condition
-colour fill + condition-coloured text); the summary row gave up its colour entirely (ink only), leaving
-colour to mean exactly one thing — band conditions; and the type scale now has a real hierarchy
-(13/w800 title › 11/w600 index values › 10/w600 band names › 9/w700 conditions › 8/w600 letter-spaced
-column headers).
+**② Dark mode for every widget.** Widgets are rendered by the system process and cannot read the
+app theme, so the two palettes must live in resource directories: `values/widget_colors.xml` and
+`values-night/widget_colors.xml`, with all foreground colours (primary text, secondary text,
+hairline, surface, condition colours) now referencing `@color/aw_*`. Android picks the night
+values automatically with no runtime code. Night is not an inversion but a re-derived palette —
+the condition colours are *lightened* (about 35% toward white) because the base colours lack
+contrast on a dark surface. The weather widget's gradient backgrounds have their own
+`drawable-night/` variants; the translucent white hairlines on top of them (white at 10%) work on
+both palettes and need no switching.
 
-**Tonal chips are Material 3's standard treatment for status chips** (pale fill + coloured label): colour
-usage drops to roughly a tenth while keeping *all* of the alignment benefits — fixed chip width, both
-columns on their own vertical lines, and column headers sharing an x with the chip columns. Those three
-were only fixed in v1.6.119 and must not be lost in a colour change.
+**③ A new system-status widget (4×2)**, answering three questions in priority order: *is it still
+receiving* (link status dots plus an Rx counter), *has my position been reported* (fix state plus
+the beacon countdown), and *why is the map empty* (station count). **Links have three states, not
+two** — `off`, `connected`, and `enabled but not connected` — because "you never turned this on"
+and "it is on but will not connect" call for completely different actions; collapsing them into
+one "not connected" sends people debugging a link they never enabled. The three states get three
+colours, and the order is fixed (APRS-IS / TNC / audio / PKWDWPL) rather than sorted by state, so
+a glance always finds the link you care about. The beacon countdown reuses the state layer's
+already-localised `nextBeaconIn` instead of re-deciding "disabled / not connected / waiting for
+fix / due now" on the widget side, since two copies of that branching will drift. Fixed at 4×2:
+the content is identity / four links / counters, and squeezing to 2×2 drops the link block, which
+is the widget's main value.
 
-**Implementation**: four new `aw_chipsoft_*.xml` (an 11% `#1C`-prefixed tint); the text colour is applied
-via `setTextColor` using the same base colours as `lib/hf.dart`'s `hfQualityColor`, so one palette drives
-both the panel and the widget. Note that `setColorFilter` cannot be used to tint the chip — a chip is a
-`TextView`, and that method exists only on `ImageView`, which is exactly what caused the v1.6.114 outage.
+**④ Snapshot push policy: important changes immediately, counters throttled.** `AppState`
+notifies on every packet, and the system widget shows Rx/Tx counters that necessarily change with
+it — pushing straight through would cross the MethodChannel dozens of times a second for numbers
+nobody reads that closely. So changes to important fields (link state, fix, grid, beacon, station
+count) push immediately, while counter-only changes push at most every 20 seconds. The criterion
+is elapsed time rather than a timer, because a timer outside `dispose`'s control leaves pending
+timers in widget tests and produces false failures — a trap hit earlier in this work.
 
-**Also**: the preview tool now supports letter spacing (PIL has no `letterSpacing`, so it draws character by
-character and advances the extra amount) — both the panel and the widget use "small type + letter spacing"
-to de-emphasise secondary text, and a preview that ignores that misrepresents the design.
+**⑤ New tooling.** `tool/add_sys_widget_l10n.py` adds the widget's nine strings across six
+languages (hand-editing 6×9 = 54 places, where one miss means a blank string in one language and
+the widget never reports an error). The preview tool gained light/dark palettes and the system
+widget, and a bug was fixed: the white-background widgets had their surface hard-coded to white,
+so `--dark` had no effect on them and their night appearance was invisible in previews.
 
-**Verified**: no analyzer errors; **413 tests passing**; all three generators OK; 196 resource references
-resolved; all six preview tiles fit (the HF widget at 126.3 of 130dp).
 
+## [1.6.120] - 2026-09-17
+
+### 🎨 短波组件：条件标记改为 tonal chip（淡底 + 条件色字）
+
+波段条件的呈现从**实心饱和色块**改为 **tonal chip**（条件色 11% 淡底 + 条件色文字）。
+理由：条件只是「四档之一」这一个信息，实心色块的颜色用量远大于其承载的信息量，
+八个并列时观感接近警示色堆叠；淡底 + 彩字把颜色用量降到约 1/10，同时保留
+v1.6.119 建立的对齐关系（chip 固定宽度、两列各在一条竖线上、列头与 chip 列同一 x）。
+
+同时调整：
+
+- **汇总指数去色**：SFI / Kp / A 一律墨色。此前 Kp / A 按阈值着色，与下方表格
+  争夺注意力，颜色出现在两处反而失去重点；现在颜色只用于表达波段条件。
+- **重建字号层级**：标题 13sp/w800 › 指数值 11sp/w600 › 波段名 10sp/w600 ›
+  条件 9sp/w700 › 列头 8sp/w600（带字距）。此前只有四级字号（12/11/9.5/8.5sp），
+  层级不明显。
+
+新增 `aw_chipsoft_{good,fair,poor,closed}.xml` 四张淡底 drawable；文字色由
+`setTextColor` 设为条件基本色，与 `lib/hf.dart` 的 `hfQualityColor` 共用同一组色值。
+
+> 实现注意：chip 是 `TextView`，**不能**用 `setColorFilter` 染色 —— 该方法只存在于
+> `ImageView`（v1.6.114 的故障即由此而来）。底走 `setBackgroundResource`，字走
+> `setTextColor`。
+
+预览工具补充**字距**支持：PIL 无 `letterSpacing` 参数，改为逐字绘制并额外推进。
+面板与组件均以「小字号 + 字距」弱化次级文字，预览若不模拟会失真。
+
+---
+
+**Condition markers changed from solid saturated blocks to tonal chips** (an 11% condition-colour
+fill with condition-coloured text). A band condition is a single piece of information ("one of four
+levels"), so a solid block used far more colour than that information warrants, and eight of them in a
+column read as stacked alert colours. A pale fill with coloured text cuts colour usage to roughly a
+tenth while preserving the alignment established in v1.6.119 (fixed chip width, each column on its own
+vertical line, column headers sharing an x with the chip columns).
+
+Also changed: the summary indices (SFI / Kp / A) are now ink-coloured rather than threshold-tinted —
+previously Kp/A competed with the table below, so colour appeared in two places and therefore carried
+no emphasis; colour now means band conditions and nothing else. And the type scale was rebuilt:
+13sp/w800 title › 11sp/w600 index values › 10sp/w600 band names › 9sp/w700 conditions › 8sp/w600
+letter-spaced column headers (previously only four steps, 12/11/9.5/8.5sp, so the hierarchy was flat).
+
+Four new pale-fill drawables (`aw_chipsoft_{good,fair,poor,closed}.xml`); the text colour is applied via
+`setTextColor` using the same base palette as `lib/hf.dart`'s `hfQualityColor`.
+
+> Implementation note: a chip is a `TextView`, so `setColorFilter` cannot be used to tint it — that method
+> exists only on `ImageView`, which is what caused the v1.6.114 failure. Background goes through
+> `setBackgroundResource`, text through `setTextColor`.
+
+The preview tool now supports letter spacing (PIL has no `letterSpacing`, so it draws character by
+character and advances the extra amount); both the panel and the widget de-emphasise secondary text with
+"small type + letter spacing", which a preview would otherwise misrepresent.
 
 ## [1.6.119] - 2026-09-17
 
-### 🎨 短波组件重做（实心彩 chip · 你从 4 个方案里选的）；消息页去掉瀑布流；清掉高德描述
+### 🎨 短波组件重排版；消息页移除瀑布流；清理高德地图文案
 
-**① 短波组件：推翻重做，不再微调**
+**短波组件**：条件标记改为实心彩色 chip（固定宽度 44dp、圆角 4dp、白字加粗），
+并修正上一版的四处排版问题：
 
-你上一版的评价是「真难看」。我没有再改一版单稿，而是先把旧版**逐条挑出问题**，
-再做出 **4 个本质上不同**的方案给你选：
+| 问题 | 处理 |
+|---|---|
+| 「日 ｜ 夜」图例位于汇总行右端，与下方两列不对齐 | 改为独立列头，与 chip 列同一 x |
+| 夜间列右对齐、日间列左对齐，两列参差 | 两列统一左对齐 |
+| 条件圆点的 x 随文字宽度浮动 | chip 固定宽度，所有 chip 落在两条竖线上 |
+| 波段名与条件之间空白过大 | 波段名列宽收到 52dp |
 
-| 方案 | 做法 | 我的评价 |
-|---|---|---|
-| **A · 实心彩 chip** | 条件色实心圆角块 + 白字加粗 | 扫视最强 ✅ **你选了它** |
-| A2 · 淡底彩字 | 色 16% 淡底 + 彩字（同面板标签） | 更克制，但颜色存在感弱 |
-| B · 信号条 | 4 段小方块，好=4 格/一般=2/差=1 | 不给文字标签是硬伤（得数格子） |
-| C · 每波段卡片 | 2×2 卡片，卡里两个 chip | 两行高度不齐、「日/夜」重复 4 次 |
+新增 `aw_chip_{good,fair,poor,closed}.xml` 四张实心 drawable。
 
-旧版被挑出的 6 个问题（现在逐条对上）：
-1. 「日 ｜ 夜」图例挤在汇总行右端，**和下面两列并不对齐** → 等于没标
-   → 现在列头与 chip 列**同一 x**
-2. 夜间列右对齐、日间列左对齐 → 两列 zigzag
-   → 现在两列都左对齐
-3. 圆点的 x 随条件文字宽度浮动 → 点不在一条竖线上
-   → 现在 chip 固定宽度，所有 chip 在两条竖线上
-4. 圆点只占 6dp，颜色信号很弱，条件其实靠读字
-   → 现在整块 chip 是条件色，红黄绿一眼分
-5. 波段名与条件之间一大片空白，横向扫视要跨很远 → 收到 52dp 列宽内
-6. 4 行一模一样、没有结构线 → 行间加 1dp 极淡分隔线
+**消息页**：移除瀑布流模式，只保留会话模式。删除 `_feedPane`、`_feedBubble`、模式切换器、
+`_feedMode` 状态与其持久化、`_scrollFeed`（约 240 行）。切换器随功能一并移除，不留单边开关。
+「消息气泡必须渲染译文块」的源码级断言保留（改为断言唯一的 `_bubble`），
+它拦截的是「翻译成功但界面不显示」这类静默故障。
 
-**chip 为什么是 4 张预生成 drawable**：chip 是 `TextView`，而 `setColorFilter`
-**只存在于 ImageView** —— v1.6.114 的线上事故就是把 setColorFilter 用在 TextView
-上，抛异常后**整个组件报废**。TextView 换底只能用 `setBackgroundResource`，
-所以四个条件（good/fair/poor/closed）各一张 `aw_chip_*.xml`。
-
-**② 消息页：去掉瀑布流，只留会话模式**
-
-- 删掉瀑布流整段（`_feedPane` / `_feedBubble` / 模式切换器 / `_feedMode` 状态与
-  持久化 / `_scrollFeed`），共约 240 行。
-- 切换器**整体删掉**，而不是留一个只有一边的开关 —— 那比没有更让人困惑。
-- 顶部未读判定、`inChatDetail`、点消息进会话等逻辑同步去掉了 `_feedMode` 分支。
-- 那条「气泡必须渲染译文块」的源码级护栏**保留**（改成「唯一的 `_bubble` 必须接」）——
-  它挡的是「长按翻译成功、界面却不显示」那类**静默** bug，与有没有瀑布流无关。
-
-**③ 清掉高德地图的「描述」（保留地图选项与开源致谢）**
-
-改了 6 种语言 × 7 个键：
-
-| 键 | 改前 | 改后 |
-|---|---|---|
-| `featureLiveMap` | 高德地图 | 在线地图 |
-| `datumGcj` / `gcj02` | 高德火星 | GCJ-02 |
-| `mapTypeDesc` | …；高德矢量/卫星为在线栅格瓦片 | …；栅格图源为在线瓦片，画质取决于网络 |
-| `oobeMapFeatureDesc` | 高德地图瓦片，… | 在线地图瓦片，… |
-| `navigationUnavailable` | 未安装**高德地图**，… | 未安装**地图应用**，…（这条本来就与高德无关） |
-| `amapGroup` | 高德 | 国内地图 |
-
-**刻意保留的两处**（不是漏改，请你确认）：
-- `mapTypeAmap` / `mapTypeAmapSatellite` —— 这是**地图选项本身的名字**，
-  你明确说了「除了地图选项」；
-- `osAmap`（在关于页的**「开源致谢」**里）—— 我们确实在使用该瓦片服务
-  （`tile_map.dart` 里还带着它的 Referer 头），把署名删掉不合适。
-  **若你确实要去掉，说一声我就改。**
-- 代码内部的 `MapType.group == '高德'` 判别值是**数据实参**（不是文案），
-  界面显示走 `domesticMaps`；它不能改，改了分组会失效。
-
-**④ 过程中我自己踩的 4 个坑（都记下来）**
-
-1. **删代码删多了两次**：第一次按「下一个段注释」当边界，一口气吞掉 700 行
-   （把 `_listPane`、`_inputBar`、`_transBtn` 等共用方法也删了）。教训：**删大段代码
-   要用「断言边界 + 从下往上删」**，不能靠「找下一个注释」这种模糊规则。
-2. **`grep -c` 匹配 0 行时退出码是 1**，把 `&&` 链短路，后面的命令整段没跑，
-   我却以为跑过了（于是「删了但文件没变」）。判断「有没有匹配」不能用
-   `grep -c ... && ...`。
-3. 曾误判文件是 CRLF（其实全是 LF），白查了一轮。
-4. 断言里把行号与期望值写反（把「函数收尾 `}`」当成「空行」）。
-
-**测试**：短波组件 15 项（chip 等级契约改为「有明确条件的一侧不能落灰底」——
-之前那条「两边都落灰」是我写错的断言，源数据本来就无数据时全灰才是对的）；
-消息页相关照常。全量 **413 通过**。
-
-**诚实说明**：本机没有 Android SDK，Android 侧仍只能靠 CI 验证编译。
+**地图文案**：清理 6 种语言共 7 个键中的第三方地图品牌描述 ——
+功能列表标题改为「在线地图」、「高德火星」改为 `GCJ-02`、图源说明不再点名、
+引导页文案改为「在线地图瓦片」、导航失败提示改为「未安装地图应用」（该提示与具体地图应用无关）、
+地图分组标题改为「国内地图」。**保留**地图选项自身的名称与关于页的开源致谢
+（该项目实际使用该瓦片服务）；代码中 `MapType.group == '高德'` 是分组数据实参而非文案，
+界面显示走 `domesticMaps`，改动会导致分组失效。
 
 ---
 
-**① The HF widget was rebuilt from scratch — no more tweaking a single draft.** Your verdict on the
-previous version was "genuinely ugly". So instead of another revision, I first listed what was
-wrong with it, then made **four fundamentally different** options for you to choose from: **A**
-solid coloured chips (you picked this), A2 pale-tinted chips with coloured text (matching the
-panel's own labels), B signal bars (4 segments — good/fair/poor as length), and C one card per
-band. B's flaw is having no text label (you have to count segments); C's is uneven card heights
-and "day/night" repeated four times.
+**HF widget**: condition markers became solid colour chips (fixed 44dp width, 4dp radius, bold white
+text), fixing four layout problems from the previous revision — the "day | night" legend sat at the right
+end of the summary row and did not line up with the two columns below (now a proper column header sharing
+an x with the chip columns); the night column was right-aligned while the day column was left-aligned (both
+now left-aligned); the condition dots' x position drifted with text width (chips are fixed-width, so every
+chip lands on one of two vertical lines); and the gap between band name and conditions was excessive (band
+column narrowed to 52dp). Four solid drawables were added (`aw_chip_{good,fair,poor,closed}.xml`).
 
-The six specific problems in the old version, each now addressed: the day/night legend was parked
-at the right edge of the summary row and **did not line up with the columns below** (now the
-column headers and the chip columns share an x); the night column was right-aligned while the day
-column was left-aligned, so the two columns zig-zagged (both now left-aligned); the dots' x
-position drifted with the width of the condition text (chips are now fixed-width, so every chip
-sits on one of two vertical lines); a 6dp dot carried almost no colour signal, so conditions were
-really read as text (the whole chip is now the condition colour); the gap between band name and
-conditions was huge (now within a 52dp column); and four identical rows with no structure got 1dp
-hairlines between them.
+**Messages page**: the feed mode was removed, leaving conversation mode only. `_feedPane`, `_feedBubble`,
+the mode toggle, the `_feedMode` state and its persistence, and `_scrollFeed` were deleted (about 240
+lines); the toggle went with the feature rather than remaining as a one-sided switch. The source-level
+assertion that "the message bubble must render the translation block" was kept (now asserting the single
+`_bubble`), because it guards a silent failure mode — translation succeeding while nothing appears.
 
-**Why the chips are four pre-generated drawables**: a chip is a `TextView`, and `setColorFilter`
-exists **only on ImageView** — the v1.6.114 outage was exactly that call on a TextView, which threw
-and **killed the whole widget**. A TextView can only swap backgrounds via `setBackgroundResource`,
-hence one `aw_chip_*.xml` per condition.
-
-**② The messages page lost its feed mode**, keeping only conversation mode: the whole feed section
-(`_feedPane`, `_feedBubble`, the mode toggle, the `_feedMode` state and its persistence,
-`_scrollFeed`) is gone, about 240 lines. The toggle was removed outright rather than left as a
-one-sided switch, which is more confusing than nothing. The unread check, `inChatDetail` and
-tap-to-open-conversation no longer branch on feed mode. The source-level guard that "the bubble
-must render the translation block" **stays** (now "the single `_bubble` must") — it guards a
-**silent** bug (translation succeeds, nothing appears) that has nothing to do with feed mode.
-
-**③ AMap references were removed from descriptive copy** across 6 languages × 7 keys: the feature
-headline becomes "Online map", "高德火星" becomes "GCJ-02", the map-source hint no longer names
-AMap, the OOBE line says "online map tiles", and the navigation failure toast now says "no map app
-is installed" (it was never about AMap anyway). **Deliberately kept**, and please confirm: the map
-picker's own option names (`mapTypeAmap` / `mapTypeAmapSatellite`) — you asked to keep the map
-options; and `osAmap` in the About page's **open-source acknowledgements**, since we genuinely use
-that tile service (its Referer header is still in `tile_map.dart`). Say the word and I will remove
-it too. The internal `MapType.group == '高德'` discriminator is a **data argument**, not copy —
-the UI shows `domesticMaps` for it — and changing it would break the grouping.
-
-**④ Four mistakes I made along the way**: I over-deleted code twice (once swallowing 700 lines
-including shared methods like `_listPane` and `_inputBar`, because I used "the next section
-comment" as a boundary — the lesson is to assert boundaries and delete bottom-up rather than rely
-on a fuzzy rule); `grep -c` exits 1 when it matches nothing, which short-circuited an `&&` chain so
-the following commands never ran while I assumed they had; I briefly misdiagnosed the files as CRLF
-when they are LF; and I mixed up a line number with its expected content in an assertion.
-
-**Tests**: 15 for the HF widget (the chip-level contract is now "a side with an explicit condition
-must not fall back to grey" — the previous "both sides grey" assertion was my own mistake, since
-all-grey is correct when the source reports no data). **413 passing** overall.
-
-**Honest caveat**: there is still no Android SDK here, so the Android side remains CI-verified only.
-
+**Map copy**: third-party map branding was removed from 7 keys across 6 languages — the feature-list
+headline is now "Online map", "高德火星" became `GCJ-02`, the map-source note no longer names a provider,
+the onboarding line says "online map tiles", the navigation failure toast says "no map app is installed"
+(that message was never specific to any provider), and the map group heading became "国内地图". The map
+picker's own option names and the About page's open-source acknowledgements were **kept** (the project
+does use that tile service); the internal `MapType.group == '高德'` value is a grouping argument rather
+than copy — the UI displays `domesticMaps` for it — and changing it would break the grouping.
 
 ## [1.6.118] - 2026-09-17
 
-> 本次发布把 **v1.6.114 ~ v1.6.118** 累积的改动一起发出（v1.6.113 是上一个已发布的 tag，
-> 中间几版只在 CI 上验证过、没打 tag）。所以下面先讲本版改动，再列累积内容。
+### 📦 v1.6.114–118 合并发布；短波组件改白底；撤掉面板星空层
 
-### 🎨 短波组件改白底（并重排信息层级）；撤掉面板的星空
+本版发布的 tag 覆盖 v1.6.114 至 v1.6.118 的全部改动（v1.6.113 是上一个发布 tag，
+中间各版仅经 CI 验证、未单独打 tag）。
 
-**① 短波/电离层组件：白底 + 信息层级重做**
+**短波组件改为白底**：与天气组件（彩色渐变）形成明确区分，同时白底配深色文字的可读性
+优于彩色小字压深色底。相应调整：
 
-你说「不够好看，背景用白色」——换了底色，同时修了三处让层级立起来：
+- 新增 `aw_bg_white.xml`；分隔线改用 `C.border`（`#E5E9F0`），不再用白色低透明度
+  （后者只适用于彩色渐变底）；空状态文字改墨色（白字在白底上不可见）。
+- **色值改为基准色**：条件色原为「级别色提亮 35%」，那是为压在彩色渐变上做的补偿；
+  白底上提亮色过淡，改用与面板浅色 UI 一致的基准色。
+- 汇总行改为单行「小标签 + 大数字」（SFI/Kp/A 由 10sp 提到 15sp 加粗）；
+  不设独立表头，「日 ｜ 夜」图例并入汇总行右端（130dp 可用高度下，
+  独立表头会使内容超出 17.2dp）。
 
-- **汇总做成「小标签 + 大数字」单行**：SFI / Kp / A 从 10sp 提到 **15sp 加粗**。
-  这三个数是这张卡最该被一眼看到的东西，之前挤成「label 左 / value 右」很不起眼。
-- **条件色改由圆点承担，文字用墨色**：白底上彩色小字对比度偏低；
-  现在圆点保留条件色（绿/橙/红/灰），正文一律墨色，既留住颜色语义又保证可读。
-  波段名墨色加粗。
-- **不设单独的表头行**，把「日 ｜ 夜」图例并进汇总行右端。
-- 分隔线改用 `C.border`（`#E5E9F0`），不再是白 10%（那只适用于彩色渐变底）。
-
-**白底必须换色值**——这点容易漏：天气组件压在彩色渐变上，所以之前把级别色
-**提亮 35%**（`widgetTipTextArgb`）才看得清；短波组件是白底，提亮色反而太淡
-（`#68C389` 在白底上几乎看不见）。所以白底档改用**基准色**，与面板本身的浅色
-UI（`theme.dart` 的 `C.ink` / `C.slate` / `C.border`）一致。
-
-这也是白底更好的一个理由：两个组件同时摆在桌面上时，一个彩色一个白，
-一眼能分辨谁是谁。
-
-**尺寸上是被 130dp 逼出来的**（每条都量化过，不是估的）：
-汇总做成单行（「数字一行 + 标签一行」要 47dp，整体超 35dp；单行 24dp）；
-不设单独表头（单开一行要 13.3dp，实测超 17.2dp）；顶部内边距 7dp、行距 0.5dp
-（共省约 5dp）才刚好装下。
-
-**② 撤掉面板的星空与大气层**
-
-你说明本意是留给短波面板的 —— 已把 `_StarLayer` / `_StarPainter` /
-`_atmosphere` 以及它们在面板背景 Stack 里的两层全部删除；预览工具里那个
-「面板背景示意」也一并删掉（不留一个已经不存在功能的示例图）。
-
-**③ 累积内容（v1.6.114 ~ v1.6.117）**
-
-- **新增天气桌面组件**：4 档自适应（4×2 主档 / 2×4 小面板 / 2×2 紧凑 / 4×1 单行），
-  图标是构建期把 Flutter 自带图标字体**烘焙成 PNG**（组件进程没有字体图标，
-  RemoteViews 也不认矢量图），所以与 App 内面板是同一套字形；背景渐变与面板
-  `_fxGradient()` 同源。右上角 logo 为**圆弧**形状。
-- **修「小组件加载失败」**：`setColorFilter` 只存在于 `ImageView`，当时用在了
-  用作圆点的 `TextView` 上，抛 `NoSuchMethodException` → `RemoteViews.apply()`
-  抛 `ActionException` → 启动器显示失败占位。**RemoteViews 的失败是整块的**，
-  不是「那处样式不生效」。现圆点与提示图标都是 ImageView。
-- **修天气组件真机溢出**：根因是预览工具**量错了** —— 文本高度按「墨迹」估
-  （中文约 1.0em）而 Android 行盒是字体 `ascent+descent`（Noto Sans SC 1.45em），
-  每行少算 ~4dp；且没算**圆角净空**（20dp 圆角下距底边 10dp 内的左右两侧已被切掉）。
-  两处都已修，并按量化结果重排主档（顶栏合成一行 / 指标 3 格单行 / 建议改
-  「级别+正文同行」且正文用完整短句）。
-- **新增短波/电离层传播**：面板新增区块（SFI · Kp · A · 太阳黑子 · X 射线 ·
-  太阳风 · 地磁 · 底噪）与**逐波段日间/夜间条件表**；数据源 hamqsl.com
-  （N0NBH，业余界标准 HF 传播源）。**无线电建议按电离层状态调整**
-  （地磁暴 / 地磁活跃 / SFI 偏高偏低 / 底噪偏高 / 某波段好差），
-  并**按级别归并**而不是首尾相接（否则会破坏「安全警示永远在最上」）。
-- **新增短波传播桌面组件**（固定 4×2）。
-
-**测试**：`test/app_widget_test.dart` 33 项 + `test/hf_widget_test.dart` 14 项，
-全量 **412 通过**。
-
-**诚实说明**：本机没有 Android SDK，Android 侧只能靠 CI 编译验证
-（这两轮确实抓到过 Kotlin 编译错误与资源错配）；星空已撤，不再涉及。
-白底短波组件的实际观感仍建议你装机看一眼。
+**撤掉面板的星空与大气层**：删除 `_StarLayer`、`_StarPainter`、`_atmosphere`
+及其在面板背景 Stack 中的两层，预览工具中对应的示意图一并删除。
 
 ---
 
-**This release ships everything accumulated from v1.6.114 through v1.6.118** (v1.6.113 was the
-last tagged release; the intervening versions were only CI-verified). Current-version changes
-come first.
+**This tag ships everything from v1.6.114 through v1.6.118** (v1.6.113 was the previous released tag;
+the intervening versions were CI-verified only).
 
-**① The HF widget is now white, with the information hierarchy reworked.** You said it did not
-look good and asked for a white background — the background changed, and three things were
-fixed so the hierarchy actually reads: the summary became **a single row of small labels with
-large numbers** (SFI / Kp / A go from 10sp to **15sp bold**; these are the numbers that matter
-most at a glance, and they used to be squashed into label-left/value-right); **condition
-colour moved to the dots** while all body text is now ink-black (coloured small text on white
-has poor contrast — this keeps the colour semantics *and* readability); the separate header
-row is gone, with the "day | night" legend folded into the summary row; and the hairlines now
-use `C.border` (`#E5E9F0`) instead of white-at-10%-alpha (which only worked on the gradient).
+**The HF widget now uses a white background**, which distinguishes it clearly from the weather widget's
+coloured gradient, and dark text on white is more legible than small coloured text on a dark ground.
+Supporting changes: a new `aw_bg_white.xml`; hairlines switched to `C.border` (`#E5E9F0`) instead of
+low-alpha white (which only works on the gradient); and the empty-state text became ink (white would be
+invisible on white). **Colour values switched to the base palette** — condition colours had been
+"base colour lightened 35%", a compensation for sitting on the coloured gradient, and that lightened
+version is too pale on white, so the widget now uses the same base colours as the panel's light UI. The
+summary became a single row of small labels with large numbers (SFI/Kp/A from 10sp to 15sp bold), and the
+separate header row was dropped with the "day | night" legend folded into that row, because at 130dp of
+usable height a separate header overflowed by 17.2dp.
 
-**White requires different colour values** — an easy thing to miss: the weather widget sits on
-a coloured gradient, so severity colours were **lightened by 35%** (`widgetTipTextArgb`) to
-stay legible; on white, lightened colours are far too pale (`#68C389` is nearly invisible).
-The white widget therefore uses the **base** colours, matching the panel's own light UI
-(`theme.dart`'s `C.ink` / `C.slate` / `C.border`). This is also an argument *for* white: with
-both widgets on the same home screen, one coloured and one white, you can tell them apart at
-a glance.
-
-**The sizing is forced by 130dp of usable height** (every step measured, not guessed): a
-single-row summary (numbers-on-one-line plus labels-on-another needs 47dp and overflowed by
-35dp; one row costs 24dp); no separate header row (it needs 13.3dp and overflowed by 17.2dp);
-7dp top padding and 0.5dp row gaps to claw back the last ~5dp.
-
-**② The panel's stars and atmosphere layer are removed.** You clarified they were meant for the
-HF widget — `_StarLayer`, `_StarPainter`, `_atmosphere` and their two layers in the panel's
-background stack are all deleted, along with the preview tool's "panel background" mockup (no
-point keeping a picture of a feature that no longer exists).
-
-**③ Cumulative from v1.6.114–v1.6.117**: the weather home-screen widget with four adaptive
-tiers (icons are Flutter's own icon font **baked to PNGs at build time**, because the widget
-process has no icon font and RemoteViews cannot render vector drawables — so the glyphs match
-the in-app panel exactly; gradients share the panel's `_fxGradient()` palette; the logo is a
-**circle**); the fix for "widget failed to load" (`setColorFilter` exists only on `ImageView`
-but was called on a `TextView` dot, throwing `NoSuchMethodException` → `RemoteViews.apply()`
-threw `ActionException` → the launcher showed its failure placeholder; **RemoteViews failures
-are all-or-nothing**, not "that one bit of styling is lost"); the fix for the weather widget's
-real-device overflow, whose root cause was my preview measuring wrong (text height estimated
-by ink extent — ~1.0em for Chinese — while Android's line box is the font's `ascent+descent`,
-1.45em for Noto Sans SC, under-counting ~4dp per line; and corner clearance was ignored,
-where a 20dp radius cuts the left and right edges within 10dp of the bottom); the new
-HF/ionospheric section in the panel (SFI · Kp · A · sunspots · X-ray · solar wind · geomagnetic
-state · noise, plus a **per-band day/night table**, sourced from hamqsl.com — N0NBH, the
-standard HF feed in amateur radio); advice that **responds to the ionosphere** (geomagnetic
-storm / active field / high or low SFI / high noise / per-band good or poor) merged **by
-severity** rather than concatenated (concatenating would put propagation "openings" above
-weather "operating tips" and break the deliberate "safety alerts always on top" ordering);
-and the HF home-screen widget (fixed 4×2).
-
-**Tests**: 33 cases in `test/app_widget_test.dart` plus 14 in `test/hf_widget_test.dart`,
-**412 passing** overall.
-
-**Honest caveat**: there is no Android SDK on this machine, so the Android side is verified only
-by CI compiling it (which did catch Kotlin compile errors and resource mismatches in these
-rounds). The stars are gone, so nothing there is in question; you may still want to install and
-eyeball the white HF widget.
-
+**The panel's star field and atmosphere layer were removed**, along with the corresponding mockup in the
+preview tool.
 
 ## [1.6.117] - 2026-09-17
 
-### 📻 新增短波/电离层传播：面板区块 + 逐波段条件 + 独立桌面组件；并修天气组件的「溢出」
-### HF/ionospheric propagation: in-panel section, per-band conditions, a dedicated widget — plus the weather-widget overflow fix
+### 📻 短波与电离层传播：面板区块、独立组件；修正天气组件在真机上的溢出
 
-**① 天气组件的「溢出」——根因是我的预览量错了，不是设计**
+**新增短波/电离层传播数据**（`lib/hf.dart`）：数据源为 hamqsl.com 的 `solarxml.php`
+（N0NBH 维护，业余无线电界通用的 HF 传播数据源），30 分钟缓存。解析字段：SFI、A 指数、
+K 指数、X 射线通量、太阳黑子数、太阳风速、地磁状态、噪声底噪、MUF，以及
+`calculatedconditions` 中的四个波段对（80m/40m、30m/20m、17m/15m、12m/10m）各自的
+日间与夜间条件。注意该接口需使用 HTTPS（HTTP 会 301 重定向）。
 
-你反馈组件溢出。查下来是**我的预览工具**有两点系统性少算，所以预览一直说
-「放得下」：
+**面板新增传播区块**：太阳与地磁指数（两列 label/value 布局），以及逐波段的
+日间/夜间条件表（每格圆点 + 条件文字，按 Good/Fair/Poor/Closed 分色）。
+无数据时整块不渲染。
 
-- **按「墨迹高度」估文本**：中文墨迹约 1.0em，而 Android 的 `TextView` 行盒
-  约等于字体的 `ascent + descent`（Noto Sans SC 是 **1.45em**，即
-  `includeFontPadding="false"` 也没用）。于是每行少算 ~4dp，十几行累计
-  少算 50dp。
-- **没算圆角净空**：20dp 圆角下，距底边 10dp 之内的左右两侧已经被切掉。
-  原判据只比「内容 vs 卡片高度」，于是 4×2 显示「137.3 / 140，余 2.7dp
-  放得下」，**真机上最后一行被圆角切了一半** —— 你看到的溢出就是这么来的。
+**无线电建议纳入传播状态**：新增 `allHamTips` = 天气类建议 + 传播类建议，
+**按级别归并**而非首尾相接 —— 后者会把传播类的「通联机会」插到天气类的
+「操作提示」之前，破坏既定的「安全警示优先」排序。传播类建议覆盖地磁暴（K≥5）、
+地磁活跃（K≥4）、SFI 偏低/偏高、底噪偏高、单波段条件好/差。
 
-两处都已修（行盒按字体度量算、判据扣掉圆角净空；4×1 档内容垂直居中、
-不扣，否则误报）。修完按量化结果重排主档：
+**新增短波传播桌面组件**（4×2，固定尺寸）：固定尺寸的原因是内容为「波段 × 昼夜」
+二维表，无法像列表那样降级显示 —— 缩到 2×2 只剩波段名而无条件值。
 
-| 改动 | 省下 | 为什么这么改 |
-|---|---|---|
-| 顶栏合成一行 | 13.4dp | 一行里 城市+AQI+观测+品牌 ≈ 260dp，在 272dp 内放得下 |
-| 指标 4 格两行 → 3 格单行 | ~14dp | 主档高度由天气主区决定，多一行指标不省主区、只白占 |
-| 建议「级别+正文同行」 | 26dp | 级别单独一行时每条 28.6dp，两条 57dp 放不下 |
+**修正天气组件在真机上的溢出**。根因是预览工具的两处系统性低估：
 
-建议正文仍用 Dart 侧切好的**完整短句**（`shortText`），所以缩短的是措辞，
-而不是让系统把句子从中间截断成「请勿在室…」。
+1. 文本高度按「墨迹高度」估算，而 `TextView` 的行盒高度取决于字体
+   `ascent + descent`（Noto Sans SC 为 1.45em，中文墨迹仅约 1.0em，
+   `includeFontPadding="false"` 不改变行盒），每行低估约 4dp。
+2. 未计算**圆角净空** —— 20dp 圆角下距底边 10dp 内的左右两侧已被裁掉，
+   而判据此前只比较内容高度与卡片高度。
 
-顺带发现一个真问题：**布局里有两行顶栏，而预览只画了一行** —— 预览整整
-少算 13.4dp。预览与布局生成器现在按同一套尺寸推进。
-
-**② 面板新增「短波传播」区块**
-
-- 太阳/地磁指数：SFI · Kp · A · 太阳黑子 · X 射线 · 太阳风 · 地磁状态 · 底噪
-  （复用面板既有的两列 label/value 布局）
-- **逐波段日间/夜间条件**：80m/40m · 30m/20m · 17m/15m · 12m/10m，
-  每格「圆点 + 条件文字」，按 Good/Fair/Poor/Closed 分色
-  （绿/橙/红/灰，与面板级别色同一套取向）
-
-数据源 **hamqsl.com** 的 `solarxml.php`（业余无线电界标准的 HF 传播数据源，
-N0NBH 维护），由 `lib/hf.dart` 拉取、解析、30 分钟缓存。没有数据时**整块
-不显示** —— 宁可少一块，也不摆个空壳占半屏。
-
-**③ 无线电建议按电离层状态调整**
-
-`allHamTips` = 天气类建议（`hamTips`）+ 传播类建议（`hfTips`），
-**按级别归并**而不是首尾相接。这不是随手写的顺序：首尾相接会把传播类的
-「通联机会」插到天气类的「操作提示」前面，破坏「安全警示永远在最上」这个
-既定分级（安全优先是刻意设计的）。
-
-传播类建议覆盖：地磁暴（Kp≥5）、地磁活跃（Kp≥4）、SFI 偏低（高波段没戏）、
-SFI 偏高（高波段有戏）、底噪偏高（S 值取范围里最差的）、某波段条件好/差。
-
-**④ 面板背景：上方星空、下方天空蓝（大气层）**
-
-把背景读成「从外太空俯视大气层」：上半是深空星点（90 颗、固定种子、
-占上半 45%），下半由透明渐到天空蓝。
-
-- 星点是**静态**绘制并包 `RepaintBoundary`：数量多、每帧重绘没有收益，
-  而云雨那层才是需要动的。
-- 星点用**固定种子**：每次启动星图一致，不会「每次打开都不一样」。
-- 层级顺序：星空 → 大气层 → 云雨。云雨本来就发生在大气层里，
-  压在星空上就错了。
-- 大气层与最初预览不同：α **从 0 起**（预览第一版在 42% 处从透明跳到
-  α=0.35，会留一道可见的横向接缝）。
-
-**⑤ 短波传播桌面组件（4×2，与天气组件同一套设计语言）**
-
-```
- ⚡ 短波传播                          [logo] APRSlocus
- SFI   100        Kp    3        A     9      ← Kp≤3 绿 / 4 橙 / ≥5 红
- ───────────────────────────────────────────
- 波段        日间             夜间
- 80m/40m     ● Poor          ● Fair
- 30m/20m     ● Good          ● Good
- 17m/15m     ● Fair          ● Fair
- 12m/10m     ● Poor          ● Poor
-```
-
-**固定 4×2**（`resizeMode="none"`）是刻意的：内容是一张**表**（波段 × 昼夜），
-表不像列表能优雅降级 —— 挤到 2×2 就只剩波段名、没有条件值，等于砍掉最有用的
-信息。与其提供一个会被拖坏的组件，不如老实声明尺寸。（天气组件能自适应 4 档，
-是因为它的内容是「可以少给几条」的列表。）
-
-Kp/A 的染色阈值与 `lib/hf.dart` 的 `geomagActive`（K≥4）/`geomagStorm`（K≥5）
-**同一套** —— 否则会出现「组件标红、建议说没事」。
-
-**⑥ 顺带修掉的东西**
-
-- **CI 抓到两个 Kotlin 编译错误**（Build Android APK 失败），都是「半成品
-  改动」：
-  - `Ids` 类**从没声明过** `tipShort` 字段，而 `ID_TILE`/`ID_TALL` 已经在传、
-    render 里也在读 → 3 处报错；
-  - `cell.optInt(...)` 对 `JSONObject?` 直接调用成员函数（我那个 `read` 扩展
-    挂在可空接收者上所以合法，`optInt` 不行）→ 必须写 `cell?.optInt(...) ?: 0`。
-- 检查器补上这条：新增「Kotlin 具名实参在类声明里不存在」核对。
-  **并用回归样本验证它会报红**（把 `tipShort` 字段删掉后，它报出的 3 条与
-  CI 的 3 条完全对应）。本机没有 Android SDK、编不了 Kotlin，只能靠这种
-  「形状级」核对兜住最常见的半成品状态。
-- 写这条检查时我自己踩了同一类坑：`\(([^)]*)\)` 会在**第一个** `)` 处截断，
-  而声明里有 `IntArray = IntArray(0)` 这种带括号的默认值，于是后半段参数全被
-  漏掉、报出 6 条假失败。已改为配对括号解析 —— 检查器犯错的方式和它要检查的
-  代码一样，这种假失败必须先修对，否则真问题会被埋掉。
-- 两个 Provider 各自私有的 `JSONObject.read` 抽成 `WidgetJson.kt`（internal）：
-  原来两份同名实现，容易只改一份。
-- 预览的传播条件色改为**推导**而不是手抄（原来 Band Closed 手写 `#B9C4D4`，
-  而同一公式算出 `#B9C3D1`）—— 预览与真机差一点点颜色就违背「预览不能骗人」。
-
-**测试**：新增 `test/hf_widget_test.dart` 14 项（快照键名跨语言契约、波段行数
-上限、Band Closed 用灰、Kp/A 阈值与 hf.dart 一致、无数值不染色、无数据不造
-建议）。全量 **412 通过**。
-
-**诚实说明**：本机没有 Android SDK，Android 侧**只能靠 CI 验证编译**
-（这轮就是这么发现的）。面板背景的星空/大气层观感、短波组件的实际排版
-**仍需你在真机确认** —— 预览是 3x 位图渲染，与 RemoteViews 的实际测量会差
-几个百分点。
+两处均已修正，并据此重排主档：顶栏合并为一行、指标由 4 格 2 行改为 3 格 1 行、
+建议改为「级别与正文同行」（正文使用完整短句，缩短的是措辞而非截断句子）。
 
 ---
 
-**① The weather widget's overflow — the root cause was my preview measuring wrong, not
-the design.** Two systematic under-counts, which is why the preview kept saying "it fits":
+**New HF/ionospheric propagation data** (`lib/hf.dart`) sourced from hamqsl.com's `solarxml.php`
+(maintained by N0NBH, the standard HF propagation feed in amateur radio), cached for 30 minutes. It parses
+SFI, A/K indices, X-ray flux, sunspot number, solar wind speed, geomagnetic state, noise floor, MUF, and
+the day/night condition for each of the four band pairs in `calculatedconditions` (80m/40m, 30m/20m,
+17m/15m, 12m/10m). The endpoint requires HTTPS (HTTP returns a 301).
 
-- **Text height estimated by ink extent**: Chinese ink is ~1.0em, but an Android
-  `TextView`'s line box is roughly the font's `ascent + descent` — **1.45em** for Noto Sans
-  SC, and `includeFontPadding="false"` does not change that. So every line was
-  under-counted by ~4dp; over a dozen lines that is 50dp.
-- **Corner clearance was never accounted for**: with a 20dp radius, the left and right
-  edges within 10dp of the bottom are already cut away. The old check compared only
-  content height against card height, so 4×2 reported "137.3 / 140, 2.7dp to spare" while
-  **the last line was being sliced by the corner** on device — that is the overflow you saw.
+**New propagation section in the panel**: solar and geomagnetic indices in the existing two-column
+label/value layout, plus a per-band day/night condition table (a dot and a condition label per cell,
+coloured by Good/Fair/Poor/Closed). The whole block is omitted when there is no data.
 
-Both fixed (line boxes measured from font metrics; the check subtracts corner clearance,
-except for tiers whose content is vertically centred, which would otherwise false-alarm).
-The main tier was then re-laid-out against the measured numbers: header collapsed to one
-row (saves 13.4dp), metrics from 4 cells in two rows to 3 cells in one (~14dp — the tier's
-height is set by the weather hero, so an extra metric row only wastes space), and tips
-changed to put the severity label and body **on the same line** (saves 26dp; each was
-28.6dp otherwise and two of them did not fit). Tip bodies still use complete short clauses
-composed in Dart, so what shortens is the wording — not a mid-sentence chop.
+**Radio advice now accounts for propagation**: `allHamTips` merges weather advice with propagation advice
+**grouped by severity** rather than concatenated, because concatenating would place propagation "openings"
+above weather "operating tips" and break the established "safety first" ordering. Propagation advice covers
+geomagnetic storms (K≥5), active field (K≥4), low and high SFI, high noise, and per-band good/poor
+conditions.
 
-Also found a real bug: **the layout had two header rows while the preview drew one**, so the
-preview under-measured by 13.4dp. Preview and layout generator now advance by the same numbers.
+**New HF propagation home-screen widget** (4×2, fixed size). The size is fixed because the content is a
+two-dimensional band-by-day/night table, which cannot degrade like a list — at 2×2 only band names would
+remain, without any condition values.
 
-**② New "HF propagation" panel section**: SFI · Kp · A · sunspots · X-ray · solar wind ·
-geomagnetic state · noise floor, plus a **per-band day/night table** (80m/40m, 30m/20m,
-17m/15m, 12m/10m), each cell a coloured dot plus a localised condition
-(Good/Fair/Poor/Closed → green/orange/red/grey, the same palette as the panel's severity
-colours). Source: **hamqsl.com** `solarxml.php` (N0NBH — the standard HF propagation feed
-in amateur radio), fetched and parsed by `lib/hf.dart` with a 30-minute cache. With no data
-the block is hidden entirely rather than showing an empty shell.
-
-**③ Advice now accounts for the ionosphere.** `allHamTips` merges weather-based advice
-(`hamTips`) with propagation-based advice (`hfTips`), **grouped by severity** rather than
-concatenated — concatenating would slot propagation "openings" ahead of weather "operating
-tips" and break the existing "safety alerts always on top" ordering, which is deliberate.
-Propagation advice covers geomagnetic storms (Kp≥5), active field (Kp≥4), low SFI (high
-bands hopeless), high SFI (high bands promising), high noise (worst S-value in the reported
-range), and per-band good/poor conditions.
-
-**④ Panel background: stars above, sky-blue atmosphere below.** The background now reads as
-looking down at the atmosphere from space: deep-space stars in the top 45% (90 stars, fixed
-seed), fading into a sky-blue wash below. The star layer is **static** and wrapped in a
-`RepaintBoundary` (many points, nothing gained from repainting; the cloud/rain layer is the
-one that moves), and the seed is fixed so the star map is identical on every launch instead
-of flickering into a different arrangement. Layer order is stars → atmosphere → clouds/rain,
-because clouds and rain happen *inside* the atmosphere. Unlike my first preview, the
-atmosphere starts at alpha 0, avoiding a visible horizontal seam at 42%.
-
-**⑤ A dedicated HF propagation widget (4×2, same design language as the weather widget)** —
-header, an SFI/Kp/A summary row (Kp ≤3 green, 4 orange, ≥5 red), then the band × day/night
-table. It is **fixed at 4×2** (`resizeMode="none"`) deliberately: the content is a *table*,
-and tables do not degrade gracefully — squeezed to 2×2 all that remains is band names with
-no condition values, which is precisely the useful part. Better to declare the size than to
-ship a widget users can drag into uselessness. (The weather widget adapts across four tiers
-because its content is a list, which *can* be shortened.) The Kp/A tint thresholds are the
-**same** as `hf.dart`'s `geomagActive` (K≥4) and `geomagStorm` (K≥5), so the widget can never
-show red while the advice says all is well.
-
-**⑥ Also fixed**: **CI caught two Kotlin compile errors** (Build Android APK failed), both
-"half-finished edits" — `Ids` never declared the `tipShort` field that `ID_TILE`/`ID_TALL`
-were already passing and `render` was already reading (3 errors); and `cell.optInt(...)` called
-a member function on a `JSONObject?` (my `read` extension is *on* the nullable receiver, so
-that call is fine, but `optInt` is not — it needs `cell?.optInt(...) ?: 0`). The checker now
-verifies **named arguments against class declarations**, and I proved it fires: removing the
-`tipShort` field makes it report exactly the three errors CI reported. There is no Android SDK
-here, so shape-level checks like this are the only thing that can catch the most common
-half-finished state. Writing that check, I hit the same class of bug myself — `\(([^)]*)\)`
-truncates at the *first* `)`, and declarations contain `IntArray = IntArray(0)`, so six false
-failures appeared; it now parses balanced parentheses. Also: the two providers' private
-`JSONObject.read` extensions are now one `internal` `WidgetJson.kt` (two same-named
-implementations invite only-one-gets-updated bugs); and the preview's propagation colours are
-now **derived** rather than hand-copied (Band Closed was written as `#B9C4D4` while the same
-formula yields `#B9C3D1`) — a preview that is off by even a little is a preview that lies.
-
-**Tests**: 14 new cases in `test/hf_widget_test.dart`; **412 passing** overall.
-
-**Honest caveat**: there is no Android SDK here, so the Android side **can only be verified by
-CI compiling it** — which is exactly how this round's two errors were found. The look of the
-star/atmosphere background and the real-device layout of the HF widget **still need your
-confirmation**; the preview is a 3x bitmap render and will differ from RemoteViews' actual
-measurement by a few percent.
-
+**Fixed a real-device overflow in the weather widget.** The root cause was two systematic under-estimates
+in the preview tool: text height was estimated from ink extent, whereas a `TextView`'s line box follows the
+font's `ascent + descent` (1.45em for Noto Sans SC, against roughly 1.0em of Chinese ink, and
+`includeFontPadding="false"` does not change the line box), under-counting about 4dp per line; and
+**corner clearance was not accounted for** — with a 20dp radius the left and right edges within 10dp of the
+bottom are already clipped, while the check compared content height against card height only. Both were
+corrected and the main tier re-laid out accordingly: the header collapsed to one row, metrics went from four
+cells in two rows to three cells in one row, and tips place the severity label and body on one line (with
+bodies drawn from complete short clauses, shortening the wording rather than truncating the sentence).
 
 ## [1.6.116] - 2026-09-17
 
-### 🎨 桌面小组件重做设计：真 Material 图标 + 真 logo + 4 档自适应，并按定稿预览施工
-### Widget redesigned: real Material icons, real logo, 4 adaptive tiers — built against an approved preview
+### 🎨 小组件改用真实图标与图形 logo；新增设计预览工具
 
-上一版组件的设计是错的：用 **emoji**（🌤 💧 🌬）和**灰色小方块**凑出来的界面，
-跟 App 内天气面板完全不是一套设计语言。这一版重做，并且**先出可看的预览、
-确认后再写代码**——前两轮都是装到真机才发现「挤」「不像面板」「logo 错了」，
-每轮反馈都要走一遍 CI + 装 APK。
+**图标改为预烘焙的位图**：组件进程不具备应用内的 Material 图标字体，RemoteViews 也不支持字体图标与
+矢量图。此前因此退化为使用 emoji，而 emoji 与面板的图标语言不一致。现于构建期用
+`tool/gen_app_widget_icons.py` 将 Flutter 自带的 `MaterialIcons-Regular.otf` 渲染为 PNG
+（13dp / 26dp 两档，共 39 个），组件图标因此与面板 `Icons.*` 为同一套字形。
+「图标名 → 资源」映射表由同一脚本生成（`WidgetIcons.kt`），Dart 侧只传名称。
 
-**新设计（与面板同构）**
+**logo 改为圆形**：源图取自 `mipmap-xxxhdpi/ic_launcher.png`。该图标的圆角外部并非全透明，
+而是 alpha≈166 的半透明黑，直接缩放会在彩色渐变上形成暗边；且源图仅 192px，裁圆后边缘呈阶梯状。
+现按其**实测几何与颜色**重绘（4× 超采样）：底色 `#031F55`→`#011840`、中心圆 `#595959` 半径 18/96、
+两道灰环半径 29/96 与 44.5/96、外环 `#A8C2F2` 半径 59/96、左右白点半径 54/96。
 
-```
- 主档 4×2    📍北京        [logo] APRSlocus        顶栏：左城市 / 右品牌
-              ● AQI 42 优             观测 14:30    次行：左 AQI / 右 观测时刻
-             ⛈ 31°  雷阵雨    湿度      45%        主区：大温度（度数靠 App 侧给）
-                     12°/25°  风力      3 级        指标：label 左 / value 右
-              ─────────────────────────────────     （面板 _kvPair 的复刻，无底框）
-              ● ⚡ 安全警示                             提示：圆点 + 级别图标 + 级别
-                 雷雨天气：请勿在室外架设/操作天线！…      正文另起一行（面板 _tipRow）
-```
+**新增设计预览工具** `tool/preview_app_widget.py`：使用真实素材（同一批 PNG 图标、同一组渐变色值、
+同一套字号）渲染全部档位，并将「内容是否放得下」作为**硬性失败**（退出码 1）。
+该工具在编码前即发现 7 处排版问题（顶栏溢出、观测时刻与指标重叠、内容超出卡片高度等）。
 
-**① 图标：把字体图标烘焙成 PNG（这是「像面板」的关键）**
-
-组件进程里**没有** Flutter 的 Material 图标字体，RemoteViews 也不认字体图标
-与矢量图。所以之前只能退而用 emoji —— 而 emoji 根本不是面板的设计语言。
-正解：构建期用 `tool/gen_app_widget_icons.py` 把 Flutter 自带的
-`MaterialIcons-Regular.otf` **预渲染成 34 个 PNG**（13dp + 26dp 两档），
-于是组件上的图标与面板里的 `Icons.xxx` 是**同一套字形**。
-
-图标名 → 资源的映射表由**同一个脚本**生成（`WidgetIcons.kt`），Dart 只传名字
-（如 `"flash_on"`）。两边名字不可能漂移；万一漂移，Kotlin 回退兜底图标并
-由测试盯住（「Dart 会发出的每个图标名，生成器都产出了」）。
-
-**② logo：圆弧（圆形），并按源图实测几何重画**
-
-用户反馈「logo 错了」。查下来是两件事叠在一起：
-
-- **拿错了文件**：`assets/osl.png` 不是 logo，是贡献者 BG7OSL 的**头像**
-  （一张黄色袋鼠表情包，在 `about_page.dart` 里当贡献者照片用）。上一版
-  把它当品牌 logo 烘进了组件。真正的品牌标识是启动器图标
-  （navy 圆角方块 + 同心电波），与官网 `docs/assets/logo.png` 同形。
-- **源图圆角外面不是透明的**，是 alpha≈166 的**半透明黑**（实测四角
-  `(0,0,0,166)`、中心 `(89,89,89,255)`）。缩到 17dp 压在天气渐变上就是
-  一圈**暗斑**，像 logo 外套了个脏方框。
-
-最后按源图**扫描实测**的几何与颜色重画成圆弧（4× 超采样，边缘无阶梯）：
-底色 navy 上 `#031F55` → 下 `#011840`；中心实心圆 `#595959` r=18/96；
-第 1 环 r=29/96 w=6/96；第 2 环 r=44.5/96 w=5/96；外环 `#A8C2F2` r=59/96 w=4/96；
-左右白点位于 r=54/96、直径 8/96。
-
-**③ 顺带修掉：圆点改用 ImageView + `setColorFilter`**
-
-`setColorFilter` **只存在于 ImageView**（View / TextView 都没有）。v1.6.114
-的线上事故就是把它用在了 TextView 做的圆点上 → 抛 `NoSuchMethodException` →
-`RemoteViews.apply()` 抛 `ActionException` → 启动器显示「小组件加载失败」，
-**整个组件报废**。
-
-这一版圆点与提示图标都是 **ImageView**，`setColorFilter` 用法正确；同时
-`tool/check_android_res_ids.py` 会**按目标控件类型**核对每个 `setInt` 字符串
-方法名（把出问题的那一版喂给它，3 个调用点共 15 条全部报红）。
-
-**④ 新增 preview 工具：写代码之前先看效果**
-
-`tool/preview_app_widget.py` 用**真实素材**（同一套 PNG 图标、同一组渐变色值、
-同一套字号/字重/透明度、按 3x 渲染）把四个档位画成 PNG，并**硬性报**「内容
-放不下」（退出码 1）。它在写 Kotlin 之前就抓出 7 个问题：
-
-1. 2×4 顶栏一行塞不下，logo 压住「APRSlocus」→ 拆成两行
-2. 4×2 的「观测 14:30」压在「气压」上并被截断 → 移到顶栏
-3. 2×4 出现**两个**「观测 14:30」→ 去重
-4. 2×4 内容 **323dp 超卡片 300dp** → 指标减到 3 项、建议每条 2 行
-5. 4×1 建议被截成「雷雨天气…」等于没信息 → 右端只放 logo 不放名称
-6. AQI 胶囊的圆点盖住首字，「AQI」看成「AGI」→ 文字起点让开圆点
-7. 指标 label 与 value 贴在一起「气压1013 hPa」→ 指标区加宽
-
-**⑤ 单行档的短文案不再猜宽度**
-
-4×1 只有一行约 150dp 放提示。让 Android 直接省略号会从句子中间切
-（「雷雨天气：请勿在室…」），所以 Dart 侧用 `shortTipText` 挑一个
-**完整短句**（「请勿在室外架设/操作天线！」）再交给系统。切分规则涉及全角冒号
-与句末标点，属于本地化范畴，所以放在 Dart —— Kotlin 不再做宽度估算
-（那本是脆弱的一环）。
-
-**⑥ 检查器补了一个真漏洞**
-
-`check_android_res_ids.py` 原来只 `glob("**/*.xml")` —— **PNG 图标从来没被
-登记**，于是每个图标引用都被判成「不存在」，一屏假失败。这种假失败最坏的结果
-是让人干脆放宽规则，从而漏掉真错。现已按任意扩展名扫 drawable 目录
-（139 个资源、159 处 Kotlin 引用全部对得上）。
-
-**测试**：`test/app_widget_test.dart` 33 项。新增/改写的关键几条：
-「字段名与 Kotlin 侧读的键一致」（键名改了而 Kotlin 没跟上时组件是**安静的
-空白**）、「全部图标名都在生成器产出的集合里」、「四个级别的提亮色 = 预览图
-用的色」（预览不能骗人）、「短文案是完整短句而不是从中间切」。
-
-**诚实说明**：本机没有 Android SDK，Android 侧**仍未本地编译验证**；设计是
-按预览确认后施工的，但**真机渲染仍需你确认**（预览是 3x 位图渲染，与 RemoteViews
-的实际测量会有几个百分点的出入）。CI 的 Build Android APK 只能保证编译。
+**其它**：两个组件 Provider 各自的 `JSONObject.read` 扩展合并为 `WidgetJson.kt`。
 
 ---
 
-**What it is**: the previous widget design was wrong — built out of **emoji** (🌤 💧 🌬)
-and **grey boxes**, which is not the in-app weather panel's design language at all. This
-revision redoes it, and — for the first time — **renders an approvable preview first and
-only then writes code**, because the previous two rounds each cost a full CI run plus an APK
-install before finding out that it was cramped / unlike the panel / had the wrong logo.
+**Icons are now pre-baked bitmaps**: the widget process has no access to the app's Material icon font, and
+RemoteViews supports neither font icons nor vector drawables — which is why earlier revisions fell back to
+emoji, whose visual language does not match the panel. `tool/gen_app_widget_icons.py` now renders Flutter's
+bundled `MaterialIcons-Regular.otf` to PNGs at build time (13dp and 26dp, 39 icons), so widget icons and the
+panel's `Icons.*` share the same glyphs. The name-to-resource map is emitted by the same script
+(`WidgetIcons.kt`), and Dart sends names only.
 
-**New design (structurally the same as the panel)**
+**The logo is now circular.** The source (`mipmap-xxxhdpi/ic_launcher.png`) is not fully transparent outside
+its rounded corners — those pixels are semi-transparent black at alpha≈166 — so scaling it down produces a
+dark halo on the coloured gradient; and at 192px, cropping to a circle leaves a stair-stepped edge. It is now
+redrawn from measured geometry and colours (4× supersampled): `#031F55`→`#011840` background, a `#595959`
+centre circle at radius 18/96, two grey rings at 29/96 and 44.5/96, a `#A8C2F2` outer ring at 59/96, and white
+dots at radius 54/96.
 
-```
- main 4×2    📍Beijing      [logo] APRSlocus        header: city left / brand right
-             ● AQI 42 Good          Observed 14:30  second row: AQI left / time right
-             ⛈ 31°  Thunderstorm  Humidity   45%    hero: large temperature
-                     12°/25°       Wind        3 bft  metrics: label left / value right
-             ────────────────────────────────────   (panel's _kvPair, no boxes)
-             ● ⚡ Safety alert                         tips: dot + severity icon + label
-                 Thunderstorms: do not erect…           body on its own line (_tipRow)
-```
+**New design preview tool** (`tool/preview_app_widget.py`) renders every tier from real assets (the same PNG
+icons, the same gradient values, the same type scale) and treats "content does not fit" as a **hard failure**
+(exit code 1). It surfaced seven layout problems before any code was written.
 
-**① Icons: font icons baked to PNG** (this is what makes it look like the panel). The
-widget process has **no** Material icon font, and RemoteViews cannot render font icons or
-vector drawables — which is why the previous version fell back to emoji, and emoji simply
-are not the panel's design language. The fix: `tool/gen_app_widget_icons.py` pre-renders
-Flutter's bundled `MaterialIcons-Regular.otf` into 34 PNGs (13dp and 26dp), so the widget's
-icons are **the same glyphs** as `Icons.xxx` in the panel. The name→resource map is emitted
-by that same script (`WidgetIcons.kt`) and Dart only sends names (`"flash_on"`), so the two
-sides cannot drift; if they ever did, Kotlin falls back and a test catches it.
-
-**② Logo: circular, redrawn from measured source geometry.** Two problems stacked:
-`assets/osl.png` is **not** the logo — it is contributor BG7OSL's **avatar** (a yellow
-kangaroo meme, used as a contributor photo in `about_page.dart`), and the previous version
-baked it in as the brand mark. And the launcher icon's rounded corners are **not
-transparent** — they are alpha≈166 semi-transparent black (measured: corners `(0,0,0,166)`,
-centre `(89,89,89,255)`), which on the weather gradient renders as a **dark smudge** like a
-dirty box behind the logo. It is now redrawn as a circle from scanned geometry and colours
-(4× supersampled, no stair-stepping).
-
-**③ Also fixed: the dot now uses an ImageView + `setColorFilter`.** `setColorFilter` exists
-**only on ImageView** (not View, not TextView) — and the v1.6.114 outage was calling it on a
-TextView dot, which threw `NoSuchMethodException`, made `RemoteViews.apply()` throw
-`ActionException`, and killed the entire widget ("widget failed to load"). Here both the dot
-and the tip icons are ImageViews, so the call is correct; and
-`check_android_res_ids.py` now validates every `setInt` string method name **by target view
-type** (feeding it the buggy revision reports all 15 violations across 3 call sites).
-
-**④ New preview tool.** `tool/preview_app_widget.py` renders all four tiers to PNG using the
-*real* assets (the same PNGs, the same gradient colours, the same type scale, at 3x) and
-**fails hard** if content does not fit. It caught seven problems before any Kotlin was
-written: the 2×4 header overflowing (logo over the name); the 4×2 observation time colliding
-with pressure and being truncated; a duplicated observation time on 2×4; 2×4 content
-**323dp in a 300dp card**; the 4×1 tip truncated to "Thunderstorms…" (no information); the
-AQI dot covering the first character (reading "AGI"); and label/value touching
-("气压1013 hPa").
-
-**⑤ The single-line tier no longer guesses widths.** One line of ~150dp for a tip: letting
-Android ellipsize cuts mid-sentence, so Dart's `shortTipText` picks a **complete short
-clause** first. The splitting rules involve full-width colons and sentence punctuation — a
-localisation concern — so they live in Dart, and Kotlin no longer estimates widths.
-
-**⑥ The checker had a real hole.** It only globbed `**/*.xml`, so **PNG icons were never
-registered** and every icon reference looked missing — a screen of false failures, whose
-worst outcome is loosening the rule and thereby hiding real errors. It now scans drawable
-dirs for any extension (139 resources, 159 Kotlin references, all resolved).
-
-**Tests**: 33 cases, including new contract tests: snapshot keys match what Kotlin reads (a
-renamed key shows up as a **silent blank** on the widget), every icon name Dart can emit is
-produced by the generator, the four severity tints match the preview (so the preview cannot
-lie), and the single-line short text is a complete clause rather than a mid-sentence cut.
-
-**Honest caveat**: there is still no Android SDK here, so the Android side is **not
-compile-verified locally**. The design was built against an approved preview, but **real-device
-rendering still needs your confirmation** — the preview is a 3x bitmap render and RemoteViews'
-actual measurement will differ by a few percent. CI's Build Android APK only proves it compiles.
-
+**Also**: the two providers' separate `JSONObject.read` extensions were merged into `WidgetJson.kt`.
 
 ## [1.6.115] - 2026-09-17
 
-### 🔴 修「小组件加载失败」：一个方法名写在了不支持的控件上，整个组件报废
-### Fixed "widget failed to load": one method name called on a view that doesn't have it
+### 🔴 修复「小组件加载失败」：一个方法名用在了不支持该方法的控件上
 
-**现象**：桌面小组件显示「小组件加载失败」（启动器的 problem-loading-widget 占位），
-4 档全部失效，整个组件不可用。**这是我上一版引入的回归。**
+**故障现象**：桌面组件显示启动器的「加载失败」占位，四档布局全部失效。
 
-**根因（已对 AOSP 源码核实）**：
+**根因**：条件圆点使用 `TextView` 实现，而代码对其调用
+`setInt(viewId, "setColorFilter", color)`。该方法**仅存在于 `ImageView`**
+（`android.view.View` 与 `android.widget.TextView` 均无此方法），因此运行时抛出
+`NoSuchMethodException`，`RemoteViews.apply()` 随之抛出 `ActionException`，
+启动器渲染失败占位。
 
-```kotlin
-views.setInt(cell.dot, "setColorFilter", color)   // ← 这一行
-```
+需要强调的是：**RemoteViews 的失败是整块的**，并非「该处样式不生效」——
+单个无效调用即导致整个组件不可用。这也是 v1.6.114 之前的版本能够正常显示的原因：
+那些版本未使用 `setColorFilter`。
 
-`setColorFilter` **只存在于 `ImageView`**：
+**修复**：改用**更换 drawable** 表达级别色 —— 新增
+`aw_dot_{danger,warn,good,tip}.xml` 四张记色圆点，运行时以
+`setInt(dot, "setBackgroundResource", …)` 切换。这是 RemoteViews 中唯一可靠的换色手段，
+与危险级提示行更换红底同属一种做法。级别名无法识别时回退到中性圆点，
+而不是传入 0（传 0 会清除背景，圆点消失）。
 
-| 类 | `setColorFilter` 声明数 |
-|---|---|
-| `android.view.View` | **0** |
-| `android.widget.TextView` | **0** |
-| `android.widget.ImageView` | 3 |
+圆点颜色为级别原色向白色提亮 35%，与级别文字同值；提亮算法由 `Color.lerp` 改为
+**整数分量运算**，以消除浮点表示在边界值上的 1 单位偏差，使 Dart 与 Python 两侧结果
+可精确断言。
 
-而那个级别圆点**只能是 `TextView`** —— RemoteViews 不允许原生 `<View>`
-（会抛 `android.view.View is not allowed`），所以我上一版把圆点做成了 `TextView`。
-于是这行在运行时抛 `NoSuchMethodException` → `RemoteViews.apply()` 抛
-`ActionException` → 启动器渲染自己的失败占位。
+**同时补强静态检查**：`tool/check_android_res_ids.py` 增加**按目标控件类型**校验
+`setInt` 字符串方法名的规则（方法名 → 定义该方法的类：`setTextColor`→`TextView`、
+`setColorFilter`→`ImageView`、`setBackgroundResource`→`View`）。
+此前该检查只有一份手写的**方法名白名单**，而 `setColorFilter` 恰在其中 ——
+名字级别的白名单无法表达「该方法在该控件类型上是否存在」，因而未能拦住此故障。
+新规则已用 v1.6.114 的代码验证会报错（3 个调用点、共 15 条）。
 
-**我错在哪**：我以为「`setInt` 方法名写错最多是那一处不生效、会优雅降级」。
-**不会** —— `RemoteViews` 的失败是**整块**的，一处 `ActionException` 就让
-整个组件报废。这也是为什么上一版（v1.6.113 那个「挤」的版本）能正常显示：
-它没用 `setColorFilter`，只用了 `setTextColor` / `setBackgroundResource`
-（这两个分别存在于 `TextView` 和 `View`，是安全的）。
-
-**修法**：改成**换 drawable** —— 生成 4 张记色圆点
-`aw_dot_{danger,warn,good,tip}.xml`，运行时按级别
-`setInt(dot, "setBackgroundResource", DOT_BY_LEVEL[level])`。
-「换 drawable」是 RemoteViews 里唯一可靠的换色手段，和危险行换红底是同一招。
-认不出的 level 退回中性白圆点（`?: R.drawable.aw_dot`），不把 0 传给
-`setBackgroundResource` —— 那样会把背景清掉、圆点整个消失。
-
-圆点颜色 = 面板级别原色往白提亮 35%，与级别文字**同一个值**
-（`widgetTipTextArgb` 与生成脚本的 `SEVERITY_DOTS` 对齐，由测试精确断言）。
-顺带把提亮算法从 `Color.lerp` 改成**整数分量运算**：浮点通道会让 235.5
-这类边界值差 1（实测 danger 得 `#EB6C88`，Python 侧算出 `#EC6C88`），
-整数运算两边结果确定一致，于是这个跨语言契约可以精确断言而不留容差。
-
-**为什么原来的检查没拦住它（这才是更该记的部分）**
-
-我上一版写了 `tool/check_android_res_ids.py` 专门核对 `setInt` 的字符串方法名，
-而且它当时是**通过**的。原因：那张方法名白名单是**我自己手写的**，我把
-`setColorFilter` 也写了进去 —— 名字对得上就放行。**名字级别的白名单根本管不了
-「这个方法在 `这个控件类型` 上存不存在」，而那才是关键。**
-
-现在改成**按控件类型校验**：从布局里读出每个 `@+id` 的控件类型，
-再把 `setInt` 的目标 id 解析成类型（包括把 `cell.dot` 这种字段名按
-`TipRow(row, dot, emoji, level, text)` 的实参顺序还原成具体 id），
-最后对照「方法 → 定义它的类」的表：
-
-- `setBackgroundResource` / `setBackgroundColor` → `View`（任何控件都行）
-- `setTextColor` → `TextView`
-- `setColorFilter` → `ImageView`（**只有它**）
-
-**并且我验证了这个检查真的能拦住这次的事故**：把有 bug 的那一版
-（`git show 5bedb2e:...WeatherWidgetProvider.kt`）喂给新检查器，
-它在 3 个调用点、共 15 条上全部报红。一个从不开火的检查等于没有检查，
-所以这一步必须做。
-
-**同一轮测试还抓出另一个静默 bug**：`compactRows` 的外层对象漏了 `level` 字段，
-于是 Kotlin 的 `optString("level")` 取到空串 → 圆点退回中性白 →
-小尺寸档的级别颜色**静默丢失**（不报错、只是不好看）。已补上，
-并加了一条「快照里出现的 level 只有 Kotlin 认识的那 4 个」的测试 ——
-将来 `weather.dart` 新增级别时它会红，而不是静默少个颜色。
-
-**另外修了生成脚本自身的一个错**：`dot()` 把颜色写死成 `#FFFFFF`，
-导致 `aw_dot_danger.xml` 的**注释写着 `#EC6C88`、实际渲染是白色**。
-注释与产物不一致比没有注释更坏（看代码的人会以为颜色已经对了，于是不去查），
-所以生成器现在自检「注释里的颜色必须真出现在产物里、记色圆点不能还是白色」。
-
-**测试**：`test/app_widget_test.dart` 34 项（+2：跨语言颜色契约、level 集合护栏）。
-
-**诚实说明**：本机没有 Android SDK，Android 侧**仍未本地编译验证**。
-这次的根因是查 AOSP 源码 + 对照你设备上的现象定位的，修复方式（换 drawable
-+ `setBackgroundResource`）正是上一版在真机上**确实渲染出来过**的那条路径。
-但**我无法在本机复现或验证「装到手机上能显示」**，所以这次修复**必须在你
-的设备上确认**；CI 只能保证它编译得过。
+**另修**：`compactRows` 外层缺少 `level` 字段，导致 Kotlin 取到空串、小尺寸档的级别颜色
+静默丢失；生成脚本 `dot()` 将颜色写死为 `#FFFFFF`，使 `aw_dot_danger.xml` 的注释与实际
+渲染颜色不一致（已加自检：注释中声明的颜色必须出现在产物中）。
 
 ---
 
-**What happened**: the home-screen widget showed the launcher's
-problem-loading-widget placeholder ("小组件加载失败"); all four tiers were dead.
-**This was a regression I introduced in the previous version.**
+**Symptom**: the home-screen widget showed the launcher's failure placeholder and all four tiers were dead.
 
-**Root cause** (verified against the AOSP sources): `views.setInt(cell.dot,
-"setColorFilter", color)`. `setColorFilter` exists **only on `ImageView`** —
-`android.view.View` declares it 0 times, `android.widget.TextView` 0 times,
-`android.widget.ImageView` 3 times. And that severity dot can **only** be a
-`TextView`, because RemoteViews rejects a plain `<View>` outright
-(`android.view.View is not allowed`). So the call threw `NoSuchMethodException`,
-`RemoteViews.apply()` wrapped it in an `ActionException`, and the launcher drew its
-failure placeholder.
+**Root cause**: the condition dot was a `TextView`, and the code called
+`setInt(viewId, "setColorFilter", color)` on it. That method exists **only on `ImageView`** (neither
+`android.view.View` nor `android.widget.TextView` has it), so it threw `NoSuchMethodException`,
+`RemoteViews.apply()` threw `ActionException`, and the launcher rendered its failure placeholder.
 
-**Where I went wrong**: I assumed a bad `setInt` method name would degrade gracefully —
-that only that one bit of styling would be lost. **It does not.** A `RemoteViews`
-failure is all-or-nothing: a single `ActionException` kills the whole widget. That is
-also why the earlier revision (the cramped one) displayed fine — it never called
-`setColorFilter`, only `setTextColor` and `setBackgroundResource`, which do exist on
-`TextView` and `View` respectively.
+It is worth stressing that **a RemoteViews failure is all-or-nothing** — not "that bit of styling is lost".
+A single invalid call makes the entire widget unusable, which is also why the revisions before v1.6.114
+displayed correctly: they never called `setColorFilter`.
 
-**The fix**: swap drawables instead of tinting. Four per-severity dots
-(`aw_dot_{danger,warn,good,tip}.xml`) are generated, and at runtime the provider does
-`setInt(dot, "setBackgroundResource", DOT_BY_LEVEL[level])` — the only reliable way to
-change colour in RemoteViews, the same trick already used for the danger row's red
-background. An unrecognised level falls back to the neutral dot rather than passing 0
-to `setBackgroundResource` (which would clear the background and make the dot vanish).
+**Fix**: severity colour is now expressed by **swapping drawables** — four tinted dots
+(`aw_dot_{danger,warn,good,tip}.xml`) selected at runtime with
+`setInt(dot, "setBackgroundResource", …)`. In RemoteViews this is the only reliable way to change colour, and
+it is the same technique already used to give the danger row a red background. An unrecognised severity falls
+back to the neutral dot rather than passing 0 (which clears the background and makes the dot vanish).
 
-**Why my own checker didn't catch it** — the more important lesson. The previous
-version shipped `tool/check_android_res_ids.py` specifically to validate `setInt`
-method names, and it **passed**. The reason: that whitelist was **hand-written by me**,
-and I put `setColorFilter` in it — a name-level whitelist simply cannot express
-"does this method exist on *this view type*", which was the actual question.
+The dot colours are the severity colours lightened 35% toward white, matching the severity labels; the
+lightening was also changed from `Color.lerp` to **integer component arithmetic** to remove a one-unit
+floating-point discrepancy at boundary values, making the Dart and Python results exactly assertable.
 
-It now validates **by view type**: it reads each `@+id`'s class from the layouts,
-resolves each `setInt` target to a type (including reconstructing `cell.dot`-style
-field references from the `TipRow(row, dot, emoji, level, text)` argument order), and
-checks against a "method → defining class" table (`setBackgroundResource`/`setBackgroundColor`
-→ `View`; `setTextColor` → `TextView`; `setColorFilter` → `ImageView` only).
+**Static checks were strengthened**: `tool/check_android_res_ids.py` now validates `setInt` string method
+names **by target view type** (method → defining class: `setTextColor`→`TextView`,
+`setColorFilter`→`ImageView`, `setBackgroundResource`→`View`). The previous check used a hand-written
+**method-name whitelist**, which happened to include `setColorFilter` — a name-level whitelist cannot express
+"does this method exist on this view type", so it could not have caught this failure. The new rule was verified
+against the v1.6.114 code, where it reports all 15 violations across three call sites.
 
-**And I verified the check actually catches this incident**: feeding the buggy revision
-(`git show 5bedb2e:...`) to the new checker reports all 15 violations across the 3 call
-sites. A check that never fires is no check at all, so that step is not optional.
-
-**The same test round caught a second silent bug**: `compactRows` omitted the `level`
-field on its outer object, so Kotlin's `optString("level")` returned empty, the dot fell
-back to neutral white, and severity colours were **silently lost** on the small tiers (no
-error, just less informative). Fixed, plus a test asserting that every `level` the
-snapshot can emit is one Kotlin knows — so a new severity in `weather.dart` turns the test
-red instead of quietly losing a colour.
-
-**Also fixed a bug in the generator itself**: `dot()` hard-coded `#FFFFFF`, so
-`aw_dot_danger.xml`'s **comment said `#EC6C88` while the file rendered white**. A comment
-that disagrees with the artifact is worse than no comment — the reader assumes the colour
-is already right and doesn't look. The generator now self-checks that the colour named in
-the comment actually appears in the output, and that per-severity dots are not still white.
-
-**Tests**: `test/app_widget_test.dart` now has 34 cases (+2: the cross-language colour
-contract, and the level-set guard).
-
-**Honest caveat**: there is still **no Android SDK on this machine**, so the Android side
-remains **not compile-verified locally**. This diagnosis came from the AOSP sources plus
-the behaviour on your device, and the fix uses the very path (drawable swap +
-`setBackgroundResource`) that the previous revision **did** successfully render on real
-hardware. But **I cannot reproduce or verify "it displays on a phone" from here** — this
-fix **needs confirmation on your device**; CI can only prove it compiles.
-
+**Also fixed**: `compactRows` omitted the outer `level` field, so Kotlin read an empty string and the small
+tiers silently lost their severity colours; and the generator's `dot()` hard-coded `#FFFFFF`, leaving
+`aw_dot_danger.xml`'s comment disagreeing with the colour it actually rendered (a self-check now ensures the
+colour named in a comment appears in the output).
 
 ## [1.6.114] - 2026-09-17
 
-### 📱 新增 Android 桌面小组件：可自由缩放，4 档尺寸自适应（天气 + 业余无线电提示）
-### New resizable Android home-screen widget with 4 adaptive size tiers (weather + amateur-radio tips)
+### 📱 新增 Android 桌面小组件：天气 + 业余无线电提示（4 档自适应）
 
-在手机主屏上放一块组件，一眼看到当前天气和**此刻该注意什么**，并可按主屏空间自由缩放：
-
-```
- 4×2 主面板    📍北京 [AQI 42 优]                       观测 14:30
-              ┌──────────────┐  ┌──────┐ ┌──────┐
-              │ 🌤 31° 晴     │  │💧45% │ │🌬3级 │
-              │ 12°/25°      │  ├──────┤ ├──────┤
-              └──────────────┘  │🌡1013│ │👁25km│
-              ● 安全警示 ⚡ 雷雨天气：请勿在室外架设/操作天线！断开天线馈线…
-              ● 通联机会 🌙 夜间 D 层消失：80/40m 吸收减小、噪声较低…
-
- 2×4 小面板    竖长布局，提示可堆叠 3~5 条（最接近 App 内天气面板）
- 2×2 紧凑档    温度 + 天气 + 只给「最要紧」的那一条
- 4×1 单行档    一整条通栏：温度 + 天气 + 高低温 + 一条提示
-```
-
-**四个档位不是四套文案，而是同一份数据的四种排布**。缩放时自动换布局
-（`WeatherWidgetProvider.tierFor`，优先用 `appWidgetWidthCells/HeightCells`）：
+主屏组件，显示当前天气与**此刻需要注意的无线电操作事项**，按主屏可用空间自动切换四档布局：
 
 | 档位 | 格子 | 内容 |
 |---|---|---|
-| `tile` | 3~4×2 | 左温度 / 右 2×2 指标 / 底 2 条提示 |
-| `tall` | 2×4 | 温度 + 指标 + 堆叠提示（**最像 App 面板**）|
-| `compact` | 2×2~2×3 | 温度 + 天气 + 1 条最要紧的提示 |
-| `row` | 3~4×1 | 单行：温度 + 天气 + 高低温 + 提示 |
+| 主档 | 3~4×2 | 天气主区（图标、温度、天气现象、今日高低温）+ 指标格 + 通栏建议 |
+| 竖长档 | 2×4 | 温度 + 指标 + 堆叠式建议（最接近应用内面板的排布） |
+| 紧凑档 | 2×2 | 温度 + 天气现象 + 单条最要紧的建议 |
+| 单行档 | 3~4×1 | 一行显示温度、天气现象与一条建议 |
 
-**为什么第一版「又挤又不像面板」（记录教训）**
+**架构：数据单向推送，组件不自行请求天气。** 和风天气密钥在构建期通过
+`--dart-define=QWEATHER_KEY` 注入 Dart 侧，原生侧无法获取 —— 为一个组件在 Kotlin 中
+再保存一份密钥会引入额外的泄漏面，且两份密钥不同步时会出现「应用有天气、组件没有」。
+更关键的是判定规则：火腿建议的整套逻辑（雷电、大风、低温、高湿、沙尘、大气波导、
+灰线）、空气质量分级、逐日预报解析均实现在 `lib/weather.dart`，
+在 Kotlin 中重写必然与面板产生分歧，且两处分别看都成立，属难以排查的一类缺陷。
+因此由 Flutter 侧（`lib/app_widget.dart`）组装一份**已计算、已本地化**的快照 JSON
+推送给原生，原生仅负责渲染。
 
-第一版把 4 条提示塞进 4 个窄列、每格约 60dp 宽，正文压到 8sp 还折三行。
-根因是**照抄了「4 列 × 2 行」的字面意思，没有照抄面板的结构**：面板里
-每条建议是**一整行通栏**（级别色圆点 + 图标级别 + 正文，正文 12sp），
-把它拆成窄列就必然挤。这一版改成通栏堆叠行，与面板 `_tipRow` 同构。
-
-另一个原因是**档位选错了**：4×2 只有 2 格高，塞完温度与指标后剩给提示的
-高度只够 2 行。所以这一版**宁可少给两条**（只显示 2 条），也要让给出的两条
-读得舒服 —— 完整列表点进 App 看。要 4 条提示就把组件拉到 2×4。
-
-**组件不自己联网取天气**（这是最关键的设计决定，未变）
-
-最直觉的做法是让 `AppWidgetProvider` 自己请求和风 API。**没这么做**，因为：
-
-1. 和风密钥是**构建期**用 `--dart-define=QWEATHER_KEY` 注入 Dart 侧的，原生侧拿不到。
-   为一个桌面组件把密钥再抄一份进 Kotlin（还得进 `local.properties`/Gradle 配置），
-   等于凭空多出一个泄漏面，而且两处密钥一旦不同步就是「App 有天气、组件没有」。
-2. 更要命的是**判定规则**：雷电/大风/低温/高湿/沙尘/波导/灰线这一整套火腿建议的
-   逻辑、AQI 的本地化分级、3 日预报的解析，全都实现在 `lib/weather.dart` 里。
-   在 Kotlin 重写一遍**必然**会与面板分叉 —— 同一份天气，面板说「注意」、
-   桌面组件说「天气良好，适合架台」，这种 bug 极难发现，因为两边各自看都「对」。
-
-所以数据是**单向推**的：Flutter 侧（`lib/app_widget.dart::AppWidgetBridge`）把一份
-**已经算好、已经本地化**的快照 JSON 推给原生。Kotlin 侧**一条业务判断都没有**。
-
-**那「自适应」是谁在决定？**——是**排版**在原生、**内容**在 Dart，二者分工明确：
-
-- 原生侧只知道尺寸，所以由它决定「显示几条」「用哪一档长度的文案」；
-- 但「哪几条」「每种长度具体是什么字」已经在 Dart 侧算好并排好序，
-  原生只是「从前往后取 n 条」「从长到短挑第一个放得下的」。
-
-小尺寸档放不下一整句建议，所以在 Dart 侧把每条建议**切成逐级变短的若干版本**
-（`compactTipVariants`），例如：
-
-```
-雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备
-  → 雷雨天气：请勿在室外架设/操作天线！
-  → 请勿在室外架设/操作天线！
-  → 雷雨天气…
-```
-
-切分规则（全角冒号 `：` / 半角 `:` / 句末标点）是**中英文文案**的事，
-属于本地化范畴，所以切分在 Dart 做、Kotlin 只挑选。短的版本带省略号收尾，
-让人看出「还有下文」，而不是以为组件漏字了。
-
-**指标格按天气切换名次**
-
-面板里指标是平铺的通用清单（湿度·风向·气压·能见度·降水·露点…），
-组件格子少（2×2 = 4 格），必须分主次：
-
-| 天气 | 排在第一格 | 理由 |
-|---|---|---|
-| 雾 / 能见度 < 5km | 能见度 | 能不能出门架台，先看能见度 |
-| 雨 / 雪 | 降水量 | 馈线防水与 1.2GHz 以上雨衰判断 |
-| 低温 ≤5° | 露点 | 露点差小 → 结露短路，比体感更实用 |
-| 高温 ≥30° | 湿度 | 对流天气与设备散热降额 |
-| 常规 | 气压 | 大气波导与天气转折 |
-
-**背景渐变与天气面板同源**：7 档背景（晴/多云/阴/雨/雷/雪/雾 × 浅色/深色）
-由 `tool/gen_app_widget_drawables.py` 从**同一张调色板**生成，色值和
-`lib/weather.dart::_fxGradient()` 逐色一致，避免「面板是深蓝雨夜、桌面组件是大晴天」。
-改配色要改脚本，别手改 XML。
-
-**踩到的 Android 坑（都写进注释了，以免日后重犯）**
-
-1. **`<View>` 不能用在 RemoteViews 里** —— 原生 `View` 不在允许的 View 列表内，
-   inflate 时抛 `android.view.View is not allowed`，整个组件变白块。
-   撑宽度用的占位改成了 0dp 的 `TextView`。
-2. **不能用 `<selector>` / ripple 当背景** —— RemoteViews 由系统进程 inflate，
-   状态选择器会直接抛异常。所以「危险级提示行」是换一张 drawable
-   （`aw_tile_danger`），不是加 selector。
-3. **不能用 `styles.xml` 里的主题样式** —— 同理，未知属性直接崩。字号颜色只能就地写死。
-4. **`match_parent` 高度在 `wrap_content` 的横向 LinearLayout 里不可靠** ——
-   第一版提示行左边想放「竖色条」，靠 `height=match_parent` 跟满两行文字，
-   一旦被测量成 0 高就整根消失。改成与面板一致的 **6dp 圆点**（`aw_dot` +
-   `setColorFilter` 染色），没有这个风险。
-5. **`IconData` 不能当 `const` map 的键** —— 它覆写了 `==`/`hashCode`，而常量 map
-   的键要在编译期规范化，analyzer 报 `const_map_key_not_primitive_equality`。改 `final`。
-6. **组件上不能用 Material 图标**（那是 App 的字体资源，组件进程里没有），
-   所以所有图标在 Dart 侧映射成 emoji 随数据下发；这也和 `NotifHelper` 里
-   `"📻 $from"` 的做法一致。
-
-**顺带修掉一个自激隐患**
-
-`WeatherCenter.load()` 失败时**不会更新 `updated`**（TTL 判据），但**仍会** `version.value++`。
-如果同步器无条件跟着 `version` 再调 `load()`，就会转成「通知 → 加载 → 失败 → 通知」
-的无限重试，把用户流量烧在「没定位 / 服务器宕了」这类必然失败的场景上。
-现在：(a) 同步器只在**完全没有数据**时兜底加载；(b) 兜底带 2 分钟时间戳防自激；
-(c) 数据过期的刷新交给顶栏胶囊 `WeatherBadge`，用户点组件打开 App 时它自然会拉，
-拉完驱动同步器把新快照推给组件。
-
-**新增工具（都不依赖 Android SDK）**
-
-- `tool/gen_app_widget_layouts.py`：生成 4 档布局，并在**生成时自检**
-  （白名单控件 / 标签闭合 / 不用 selector）。第一次写就漏了一个 `</LinearLayout>`，
-  是 XML 解析器才告诉我的 —— 这种低级错误该由脚本挡住。
-  自检还必须**先剥掉注释再扫**：注释里为了说明约束会写到 `<View>`、`<selector>`
-  这些字面量，不剥就会把自己的说明文档判成违规。
-- `tool/gen_app_widget_drawables.py`：从与面板同一张调色板生成 7 档×2 主题背景。
-- `tool/check_android_res_ids.py`：机械核对 Kotlin 的资源引用，含两类
-  **编译期全绿、运行时才炸**的问题：① `setInt(viewId, "setBackgroundResource", …)`
-  这类**字符串方法名**；② **ResId 与布局配错** —— 把 `aw_t5_temp` 填进 tile 档的
-  ResId 表，那个 id 在 `aw_widget_tile.xml` 里不存在，编译通过、运行时静默不显示。
-  四档布局 × 各自约 30 个 id，人眼核对必然出错。现在 82 个引用逐一对照所属布局。
-- `tool/ci_status.py`：查 Actions 运行状态。之前用一行流 `echo "$JSON" | python3 -c`
-  时，GitHub 返回的大 JSON 里含控制字符，`json.load` 抛
-  "Invalid control character"，把真正的状态信息淹没在一屏 traceback 里。
-
-**测试**：`test/app_widget_test.dart` 从 21 项扩到 **32 项**。新增的 11 项盯住这次
-改动最容易错的地方：指标格数量必须等于布局格子数（2×2 → 4）、指标名次随天气变化、
-以及文案压缩的**排序契约**（必须从长到短，否则 Kotlin 会挑到放不下的长句）和
-「每一版都是原文子串」（防止凭空造词）。这两个契约正是我在写的时候搞错的地方 ——
-顺序按生成顺序而非长度排，测试当场就红了。
-
-**诚实说明两点**
-
-- 本机**没有 Android SDK**（只有 Flutter SDK），所以 Android 侧**未经本地编译验证**：
-  Kotlin 语法、`RemoteViews` 白名单控件用法、资源引用是逐条按文档核对 + 用
-  `check_android_res_ids.py` 机械对账的。**v1.6.113 的组件版本已由 CI 的
-  Build Android APK 验证通过**（analyze / Windows / Android 三 job 全绿），
-  本次重构沿用同一套约束与校验方式，但**最终仍以 CI 编译为准**。
-- 组件**不会**在 App 关闭时自行更新天气（它没有密钥，见上）。打开 App（或点组件）
-  就会刷新，顶栏的「观测 HH:mm」让这一点是可见的，而不是假装数据总是最新的。
-- 时钟：`updatePeriodMillis` 取系统允许的最小值 30 分钟，它**不联网**，
-  只是重渲染已有快照，顺带让组件在存储/数据异常后能自愈。
+**字号与颜色层级对齐应用内面板**：提示行的级别色、分隔线透明度、文字弱化方式均取自
+面板既有数值。小尺寸档放不下一整句建议，因此 Dart 侧将建议切为逐级变短的若干版本，
+由原生按可用宽度选取 —— 切分规则涉及全角冒号与句末标点，属本地化范畴。
 
 ---
 
-**What it is**: a home-screen widget showing current weather plus *what to watch out for
-right now*, freely resizable, with four adaptive layouts:
+A home-screen widget showing current weather plus **what needs attention right now**, switching
+automatically between four layouts based on available space: a 3–4×2 main tier (weather hero, metric cells,
+full-width tips), a 2×4 tall tier (stacked tips, closest to the in-app panel), a 2×2 compact tier, and a
+3–4×1 single-row tier.
 
-```
- 4×2 main    📍Beijing [AQI 42 Good]                   Observed 14:30
-             ┌──────────────┐  ┌──────┐ ┌──────┐
-             │ 🌤 31° Clear │  │💧45% │ │🌬3bft│
-             │ 12°/25°      │  ├──────┤ ├──────┤
-             └──────────────┘  │🌡1013│ │👁25km│
-             ● Safety alert ⚡ Thunderstorms: do not erect antennas outdoors…
-             ● Opening 🌙 D-layer gone: 80/40m absorption drops, low noise…
+**Architecture: one-way data push; the widget never fetches weather itself.** The QWeather key is injected
+into Dart at build time via `--dart-define=QWEATHER_KEY` and is not available to native code — keeping a second
+copy in Kotlin for the widget would add a leak surface, and drift between the two copies would produce
+"app has weather, widget does not". More importantly, every rule lives in `lib/weather.dart` (the ham-advice
+logic for storms, gales, cold, humidity, dust, ducting and gray-line; AQI grading; daily forecast parsing),
+and reimplementing it in Kotlin would inevitably diverge from the panel — with each side looking correct on
+its own, which makes such defects hard to diagnose. Flutter therefore composes an **already computed and
+already localised** snapshot JSON and pushes it to the native side, which only renders it.
 
- 2×4 tall    vertical; stacks 3–5 tips (closest to the in-app weather panel)
- 2×2 compact temperature + conditions + only the single most important tip
- 4×1 row     one full-width line: temperature + conditions + high/low + one tip
-```
-
-The four tiers are **not four sets of copy** — they are four arrangements of the same
-data. The layout switches automatically as you resize (`WeatherWidgetProvider.tierFor`,
-preferring `appWidgetWidthCells/HeightCells`).
-
-**Why the first version was cramped and unlike the panel** (lesson recorded): it packed
-4 tips into 4 narrow columns of ~60dp each, squeezing body text to 8sp over 3 lines. The
-root cause was **copying the literal meaning of "4 columns × 2 rows" without copying the
-panel's structure** — in the panel each tip is a **full-width row** (severity dot + icon
-label + body, 12sp). Splitting that into narrow columns is guaranteed to be cramped. This
-version uses full-width stacked rows, structurally the same as the panel's `_tipRow`. The
-second cause was **picking the wrong tier**: a 4×2 widget is only 2 cells tall, and after
-the temperature and metrics there is room for just 2 tip rows — so this version
-**deliberately shows fewer tips** (2) and lets those two breathe. Want 4? Resize to 2×4.
-
-**The widget does not fetch weather itself** (the key decision, unchanged): the QWeather
-key is injected into Dart at build time via `--dart-define=QWEATHER_KEY` and is simply not
-available to native code — copying it into Kotlin (and into `local.properties`/Gradle) adds
-a whole new leak surface, and the copies drifting apart means "app has weather, widget
-doesn't". More importantly, **every rule lives in Dart** — the storm/gale/cold/humidity/
-dust/ducting/gray-line ham-advice logic, localised AQI grading, 3-day forecast parsing.
-Reimplementing it in Kotlin **would** drift from the panel: same weather, panel says
-"caution", widget says "great conditions" — the kind of bug that is very hard to find,
-because each side looks correct alone. So data flows **one way**, and the native side
-contains **not a single business decision**.
-
-**So who decides "adaptive"?** Layout on the native side, content in Dart:
-
-- Native is the only side that knows the size, so it decides *how many* tips and *which
-  length variant* fits;
-- but *which* tips and *what each variant says* is already computed and ordered in Dart;
-  native merely takes "the first n" and "the first variant that fits, longest first".
-
-Small tiers cannot fit a whole sentence, so each tip is **pre-sliced into progressively
-shorter variants** in Dart (`compactTipVariants`): the takeaway sentence first, then the
-part after the colon, then the part before it. The splitting rules (full-width `：` vs
-half-width `:`, sentence-ending punctuation) are a matter of **Chinese/English copy**,
-i.e. localisation, so splitting happens in Dart and native only picks. Shorter variants end
-in an ellipsis so it reads as "there's more" rather than "the widget dropped words".
-
-**Metric cells are ranked by weather**: a 2×2 grid has room for 4, so the first cell is
-whatever matters most (fog → visibility; rain/snow → precipitation; ≤5°C → dew point;
-≥30°C → humidity; otherwise pressure).
-
-**Gradients share the panel's palette**: the 7 backgrounds × 2 themes are generated by
-`tool/gen_app_widget_drawables.py` from the *same* palette as
-`lib/weather.dart::_fxGradient()`, so you never get "dark blue rainy night in the panel,
-sunny day in the widget".
-
-**Android pitfalls hit** (all documented in comments): a plain `<View>` is **not** allowed
-in RemoteViews (the whole widget goes blank); `<selector>`/ripple drawables throw during
-RemoteViews inflation (so the danger row swaps to a different drawable); `styles.xml` theme
-styles are unreadable by the system process; `match_parent` height inside a `wrap_content`
-horizontal LinearLayout is unreliable — the first version's vertical accent bars could
-measure to zero height and vanish, replaced by the panel's own 6dp coloured dot;
-`IconData` cannot be a `const` map key because it overrides `==`/`hashCode`; and Material
-icons are unavailable in the widget process, so icons ship as emoji from Dart (matching the
-existing `"📻 $from"` convention in `NotifHelper`).
-
-**A latent self-oscillation was fixed**: `WeatherCenter.load()` does **not** update
-`updated` when the fetch fails (that is the TTL criterion) yet **still** bumps `version` —
-an unconditional reload would spin in a "notify → load → fail → notify" loop, burning
-mobile data on cases that cannot succeed. Now it only loads as a fallback when there is
-**no data at all**, guarded by a 2-minute timestamp, and staleness refreshing is left to
-the top-bar `WeatherBadge`.
-
-**New tooling** (none of it needs an Android SDK): a layout generator that self-checks
-(allowed views / tag balance / no selectors — it caught a missing `</LinearLayout>` I had
-just written, and it must strip comments first, since the comments deliberately quote
-`<View>` and `<selector>` to document the constraints); a drawable generator sharing the
-panel palette; `check_android_res_ids.py`, which verifies Kotlin's resource references
-including the two classes of bug that are **green at compile time and explode at runtime**
-(string method names in `setInt`, and ResId/layout mismatches across the four tiers — 82
-references cross-checked against their own layout); and `ci_status.py`, because the earlier
-one-liner JSON pipeline choked on control characters and buried the status in a traceback.
-
-**Tests**: `test/app_widget_test.dart` grew from 21 to **32** cases. The new ones target
-exactly what this change was most likely to get wrong: metric count must equal the layout's
-grid (2×2 → 4), metric ranking must follow the weather, and the copy-compression **ordering
-contract** (longest first, or native picks an overflowing string) plus "every variant is a
-substring of the original" (no invented words). Both contracts were things I got wrong while
-writing it — the test went red immediately.
-
-**Two honest caveats**: there is **no Android SDK on this machine**, so the Android side was
-**not compile-verified locally** — Kotlin syntax, RemoteViews-allowed views and resource
-references were checked against the docs and reconciled mechanically by the script above.
-The previous widget revision **was** validated by CI's Build Android APK (analyze / Windows
-/ Android all green); this refactor keeps the same constraints and validation, but **CI's
-build remains the real gate**. And the widget **does not** update weather on its own while
-the app is closed; opening the app (or tapping the widget) refreshes it, and the
-"Observed HH:mm" in the header makes that visible rather than pretending the data is always
-current.
+**Type and colour hierarchy follows the in-app panel** (severity colours, hairline opacity, and text
+de-emphasis all reuse the panel's existing values). Because the smaller tiers cannot fit a full sentence, Dart
+pre-slices each tip into progressively shorter variants and the native side selects by available width — the
+splitting rules involve full-width colons and sentence punctuation, which is a localisation concern.
 
 ## [1.6.113] - 2026-09-15
 
@@ -1999,7 +1369,7 @@ emits near-Nyquist noise during 0 bits and made the signal undecodable.
 - **根因**：中文界面下目标语言就是中文，而群聊消息本来就是中文 →
   接口返回的内容与原文相同 → 而上一版把「译文＝原文」**当成失败并自动跳到
   下一个接口** → 三个候选都「失败」→ 报错。**数字、呼号、坐标同理**。
-- **修法**（也就是你说得对的那件事）：
+- **修法**：
   - 「译文与原文相同」**不再算失败、不再跳接口**，只作为一个标记
   - 界面不再把原文再抄一遍，而是如实说明：
     「译文与原文相同 · 可能无需翻译，或该接口未能翻译」
@@ -3331,8 +2701,7 @@ v1.6.80 新增的定位状态串 `模拟位置 · 后台保活` **不在映射�
   清空按钮 + 二次确认弹窗）
 - **原「聊天」入口替换为「设备」**：新增 `DeviceSettingsPage`，点开显示
   「前方施工，尚未开放」占位（图标 + 提示文案），为后续电台设备接入预留
-- 按你的确认，**「管理联系人」一并移除**（消息页仍可添加/收藏联系人，
-  但不再有删除入口）
+- **「管理联系人」一并移除**（消息页仍可添加/收藏联系人，但不再有删除入口）
 
 **② 整理「连接」设置页**（原先 4 张卡片职责混乱）
 - **「服务器（连接状态）」+「服务器配置」→ 合并为「APRS-IS 连接」**

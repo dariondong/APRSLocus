@@ -4841,6 +4841,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hfTitle => 'Propagación HF';
 
   @override
+  String get hfSixMeter => 'Banda de 6m';
+
+  @override
+  String get hfEs => 'Es (E esporádica)';
+
+  @override
+  String get hfAurora => 'Aurora';
+
+  @override
+  String get hfF2 => 'Capa F2';
+
+  @override
   String get hfBand => 'Banda';
 
   @override
@@ -5618,4 +5630,39 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adifFreqInvalid => 'Introduce un número en MHz, p. ej. 144.640';
+
+  @override
+  String get sysTitle => 'Estado del sistema';
+
+  @override
+  String get sysLinkOff => 'Desactivado';
+
+  @override
+  String sysRx(String n) {
+    return 'Rx $n';
+  }
+
+  @override
+  String sysTx(String n) {
+    return 'Tx $n';
+  }
+
+  @override
+  String sysBeacon(String t) {
+    return 'Baliza $t';
+  }
+
+  @override
+  String sysStations(String n) {
+    return 'Estaciones $n';
+  }
+
+  @override
+  String get sysFixOk => 'Ubicado';
+
+  @override
+  String get sysLinkAudio => 'Audio';
+
+  @override
+  String get sysEmpty => 'Abre APRSlocus y conéctate para ver el estado aquí';
 }

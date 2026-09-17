@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'hf.dart';
 import 'hf_widget.dart';
+import 'sys_widget.dart';
 import 'l10n/app_localizations.dart';
 import 'state.dart';
 import 'weather.dart';
@@ -469,6 +470,26 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
   /// 上次「无数据兜底加载」的时间（防自激，见下）
   DateTime? _lastAutoLoad;
 
+  /// 系统状态组件的**计数节流**时间戳。
+  ///
+  /// 为什么需要节流：`AppState` 每个报文都会 notify，而系统状态里有
+  /// 「收 N / 发 N」这种**必然**跟着变的计数。照直推的话每秒要过十几次
+  /// MethodChannel —— 组件上那点计数值根本不值得这个开销。
+  ///
+  /// 但**不能对所有变化都节流**：链路断开、定位丢失这类状态变化
+  /// 必须立刻反映，否则用户盯着组件以为一切正常。所以分两路：
+  ///   · 「重要字段」（链路状态 / 定位 / 网格 / 信标 / 台站数）变了 → 立即推；
+  ///   · 只有计数变了 → 最多每 [kSysCountInterval] 推一次。
+  /// 用「距上次推送的时间」判断而不是定时器 —— 定时器不受 dispose 管辖，
+  /// 会在 widget 测试里留下 pending timer（这个坑踩过）。
+  DateTime? _lastSysPush;
+
+  /// 计数类变化的最小推送间隔
+  static const Duration kSysCountInterval = Duration(seconds: 20);
+
+  /// 上次推送时的「重要字段」指纹（不含收发计数）
+  String? _lastSysImportant;
+
   /// 上次触发短波拉取的时间。
   ///
   /// 短波数据（hamqsl）与天气是**两条独立的数据链**，刷新节奏也不同
@@ -486,6 +507,8 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     WidgetsBinding.instance.addObserver(this);
     WeatherCenter.instance.version.addListener(_sync);
     HfCenter.instance.version.addListener(_sync);
+    // 系统状态组件跟着 AppState（链路/定位/计数都在它身上）
+    widget.state.addListener(_syncSys);
     // 首帧之后再推：此时 Localizations 已就绪
     WidgetsBinding.instance.addPostFrameCallback((_) => _sync());
   }
@@ -510,6 +533,7 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     WidgetsBinding.instance.removeObserver(this);
     WeatherCenter.instance.version.removeListener(_sync);
     HfCenter.instance.version.removeListener(_sync);
+    widget.state.removeListener(_syncSys);
     super.dispose();
   }
 
@@ -565,6 +589,30 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     // 不 await：推送是副作用，不该拖慢首帧
     AppWidgetBridge.push(s: s, wc: WeatherCenter.instance);
     HfWidgetBridge.push(s: s, hf: HfCenter.instance);
+    // 首帧与语言变化时也要出一次系统状态快照（语言变了文案就变）
+    _syncSys(force: true);
+  }
+
+  /// 推系统状态快照。详见 [_lastSysPush] 的说明（重要变化立即、计数节流）。
+  void _syncSys({bool force = false}) {
+    if (!mounted) return;
+    final st = widget.state;
+    final s = AppLocalizations.of(context);
+    // 「重要字段」指纹：链路状态 + 定位 + 网格 + 信标 + 台站数。
+    // 刻意**不含**收发计数 —— 计数走时间节流。
+    final important = [
+      for (final t in sysLinkTiles(st, s)) '${t.name}=${t.state}',
+      '${st.myHasFix}', st.myGrid, st.nextBeaconIn, '${st.stations.length}',
+    ].join('|');
+    final now = DateTime.now();
+    final last = _lastSysPush;
+    final changed = important != _lastSysImportant;
+    if (!force && !changed) {
+      if (last != null && now.difference(last) < kSysCountInterval) return;
+    }
+    _lastSysImportant = important;
+    _lastSysPush = now;
+    SysWidgetBridge.push(s: s, st: st);
   }
 
   @override

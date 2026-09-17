@@ -8349,6 +8349,30 @@ abstract class AppLocalizations {
   /// **'短波传播'**
   String get hfTitle;
 
+  /// No description provided for @hfSixMeter.
+  ///
+  /// In zh, this message translates to:
+  /// **'6m 波段'**
+  String get hfSixMeter;
+
+  /// No description provided for @hfEs.
+  ///
+  /// In zh, this message translates to:
+  /// **'Es 偶发 E 层'**
+  String get hfEs;
+
+  /// No description provided for @hfAurora.
+  ///
+  /// In zh, this message translates to:
+  /// **'极光'**
+  String get hfAurora;
+
+  /// No description provided for @hfF2.
+  ///
+  /// In zh, this message translates to:
+  /// **'F2 层'**
+  String get hfF2;
+
   /// No description provided for @hfBand.
   ///
   /// In zh, this message translates to:
@@ -9674,6 +9698,60 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'请输入 MHz 数字，如 144.640'**
   String get adifFreqInvalid;
+
+  /// No description provided for @sysTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统状态'**
+  String get sysTitle;
+
+  /// No description provided for @sysLinkOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'未启用'**
+  String get sysLinkOff;
+
+  /// No description provided for @sysRx.
+  ///
+  /// In zh, this message translates to:
+  /// **'收 {n}'**
+  String sysRx(String n);
+
+  /// No description provided for @sysTx.
+  ///
+  /// In zh, this message translates to:
+  /// **'发 {n}'**
+  String sysTx(String n);
+
+  /// No description provided for @sysBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标 {t}'**
+  String sysBeacon(String t);
+
+  /// No description provided for @sysStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站 {n}'**
+  String sysStations(String n);
+
+  /// No description provided for @sysFixOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'已定位'**
+  String get sysFixOk;
+
+  /// No description provided for @sysLinkAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频'**
+  String get sysLinkAudio;
+
+  /// No description provided for @sysEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开 APRSlocus 并连接后，这里会显示台站运行状态'**
+  String get sysEmpty;
 }
 
 class _AppLocalizationsDelegate

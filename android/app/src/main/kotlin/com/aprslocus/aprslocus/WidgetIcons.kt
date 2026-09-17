@@ -35,6 +35,7 @@ internal object WidgetIcons {
         "public" to R.drawable.aw_ic_public,
         "public_off" to R.drawable.aw_ic_public_off,
         "rss_feed" to R.drawable.aw_ic_rss_feed,
+        "settings" to R.drawable.aw_ic_settings,
         "thermostat" to R.drawable.aw_ic_thermostat,
         "thunderstorm" to R.drawable.aw_ic_thunderstorm,
         "trending_down" to R.drawable.aw_ic_trending_down,

@@ -1,0 +1,395 @@
+<!--
+  桌面小组件 · 系统状态（4×2）
+
+  顶栏    ：[齿轮] 系统状态                          [logo] APRSlocus
+  身份行  ：呼号 · 定位状态 · 网格
+  细线
+  链路区  ：2×2 四格 —— APRS-IS / TNC / 音频 / PKWDWPL
+            每格「状态点 + 链路名 + 状态文字」；点色 = 已连接绿 / 未启用灰
+  细线
+  计数行  ：收 N · 发 N（左）    信标 Ns · 台站 N（右）
+  
+  想回答的三个问题（按优先级排布）：
+    · 还在收吗               → 链路区的绿点 + 「收 N」
+    · 我的位置有没有上报      → 身份行的定位状态 + 「信标 Ns」
+    · 为什么地图没台站        → 「台站 N」
+  
+  ⚠ 硬约束同其它组件：只用白名单控件（不用原生 <View>）、不用 <selector>、
+  不用 styles.xml 主题样式（字号颜色就地写死，颜色引用 @color/aw_* 以支持夜间）。
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/aw_bg_white">
+    <LinearLayout
+        android:id="@+id/aw_pad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="13dp"
+        android:paddingEnd="13dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="9dp">
+    <LinearLayout
+        android:id="@+id/aw_sys_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_sys_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_settings" />
+    <TextView
+        android:id="@+id/aw_sys_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_spacer"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_logo"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_logo" />
+    <TextView
+        android:id="@+id/aw_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="10sp"
+        android:text="APRSlocus"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_identity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_my_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_ink"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_id_sep1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:text="·"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_fix_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_id_sep2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:text="·"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_my_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_rule1_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/aw_line" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_links"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/aw_lrow0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <LinearLayout
+        android:id="@+id/aw_link0"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_link0_dot"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <TextView
+        android:id="@+id/aw_link0_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_link0_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_link1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_link1_dot"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <TextView
+        android:id="@+id/aw_link1_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_link1_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_lrow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <LinearLayout
+        android:id="@+id/aw_link2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_link2_dot"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <TextView
+        android:id="@+id/aw_link2_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_link2_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_link3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_link3_dot"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <TextView
+        android:id="@+id/aw_link3_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_link3_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_rule2_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/aw_line" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_counters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_rx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_tx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_cnt_spacer"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_beacon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_stations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/aw_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@color/aw_ink"
+        android:textSize="10sp"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.35"
+        android:visibility="gone"
+        android:includeFontPadding="false" />
+</FrameLayout>

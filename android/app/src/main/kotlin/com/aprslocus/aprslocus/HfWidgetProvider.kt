@@ -115,10 +115,10 @@ class HfWidgetProvider : AppWidgetProvider() {
          * 这边负责组件；改色要两处一起改，测试里有契约盯着。
          */
         private val QUALITY_COLOR = mapOf(
-            "good" to 0xFF16A34A.toInt(),
-            "fair" to 0xFFD97706.toInt(),
-            "poor" to 0xFFE11D48.toInt(),
-            "closed" to 0xFF94A3B8.toInt(),
+            "good" to R.color.aw_q_good,
+            "fair" to R.color.aw_q_fair,
+            "poor" to R.color.aw_q_poor,
+            "closed" to R.color.aw_q_closed,
         )
 
         /** 波段行的容器（数据不足时整行收起，而不是留空行） */
@@ -172,6 +172,25 @@ class HfWidgetProvider : AppWidgetProvider() {
                 if (color != 0) views.setTextColor(IDX_VALUE[i], color)
             }
 
+            // 6m 展望（指数行右端的 chip）。无条件时收起，不显示空 chip。
+            val six = snap.optJSONObject("six")
+            if (six != null) {
+                val lv = six.read("level")
+                if (lv.isEmpty() || lv == "unknown") {
+                    views.setViewVisibility(R.id.aw_six, View.INVISIBLE)
+                } else {
+                    views.setTextViewText(R.id.aw_six, six.read("label"))
+                    views.setInt(
+                        R.id.aw_six, "setBackgroundResource",
+                        CHIP_BY_LEVEL[lv] ?: R.drawable.aw_chipsoft_closed,
+                    )
+                    views.setTextColor(
+                        R.id.aw_six,
+                        context.getColor(QUALITY_COLOR[lv] ?: R.color.aw_q_closed),
+                    )
+                }
+            }
+
             // 逐波段：日间 / 夜间
             val bands = snap.optJSONArray("bands")
             for (i in 0 until BAND_ROWS) {
@@ -179,17 +198,22 @@ class HfWidgetProvider : AppWidgetProvider() {
                 val vis = if (row != null) View.VISIBLE else View.GONE
                 views.setViewVisibility(BAND_ROWS_ID[i], vis)
                 if (row == null) continue
-                fillBand(views, BAND_IDS[i], row)
+                fillBand(context, views, BAND_IDS[i], row)
             }
 
             manager.updateAppWidget(id, views)
         }
 
         /** 填一行波段：波段名 + 两个条件 chip */
-        private fun fillBand(views: RemoteViews, ids: IntArray, band: JSONObject) {
+        private fun fillBand(
+            context: Context,
+            views: RemoteViews,
+            ids: IntArray,
+            band: JSONObject,
+        ) {
             views.setTextViewText(ids[0], band.read("name"))
-            chip(views, ids[1], band, "day")
-            chip(views, ids[2], band, "night")
+            chip(context, views, ids[1], band, "day")
+            chip(context, views, ids[2], band, "night")
         }
 
         /**
@@ -199,6 +223,7 @@ class HfWidgetProvider : AppWidgetProvider() {
          * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 CHIP_BY_LEVEL）。
          */
         private fun chip(
+            context: Context,
             views: RemoteViews,
             target: Int,
             band: JSONObject,
@@ -211,9 +236,14 @@ class HfWidgetProvider : AppWidgetProvider() {
                 "setBackgroundResource",
                 CHIP_BY_LEVEL[level] ?: R.drawable.aw_chipsoft_closed,
             )
-            // 文字色 = 该等级的基本色（与淡色底同色系，于是「淡底 + 彩字」成立）
+            // 文字色 = 该等级的条件色。走**资源**而不是写死常量：
+            // 夜间模式由资源系统自动取 values-night 里的提亮版本
+            // （深底上基准色偏暗），组件里不需要判断 uiMode。
             views.setTextColor(
-                target, QUALITY_COLOR[level] ?: QUALITY_COLOR.getValue("closed"),
+                target,
+                context.getColor(
+                    QUALITY_COLOR[level] ?: R.color.aw_q_closed
+                ),
             )
         }
 

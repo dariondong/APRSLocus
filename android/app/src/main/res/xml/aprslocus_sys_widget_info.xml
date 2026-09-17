@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  APRSlocus 系统状态 桌面小组件（4×2）
+
+  固定尺寸（resizeMode=none）：内容是「身份 / 四条链路 / 计数」三段，
+  与短波组件同理 —— 挤到 2×2 会把链路区压掉，而那正是本组件的主要价值。
+  与其提供一个会被拖坏的组件，不如老实声明尺寸。
+
+  updatePeriodMillis 取系统最小值 30 分钟：它**不联网**，只重渲染已有快照，
+  顺带让组件在存储异常后能自愈。真正刷新由 App 侧推送。
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="none"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/aw_widget_sys"
+    android:previewLayout="@layout/aw_widget_sys"
+    android:description="@string/app_widget_sys_desc"
+    android:widgetCategory="home_screen" />

@@ -88,6 +88,9 @@ ICONS_WITH_CONST = {
     "tune":           ("tune_rounded",           0xF0258),
     "rss_feed":       ("rss_feed_rounded",       0xF0119),
     "history":        ("history_rounded",        0xF7EF),
+    # 系统状态组件（标题齿轮）。与天气/短波组件的标题图标一样，
+    # 是构建期烘焙的 PNG —— 组件进程没有图标字体。
+    "settings":       ("settings_rounded",        0xF0164),
     "calendar_month": ("calendar_month_rounded", 0xF06C8),
     # 指标用图标（与面板 _metricPairs 的语义对应）
     "water_drop":       ("water_drop_rounded",       0xF03B4),

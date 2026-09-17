@@ -101,6 +101,19 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/aprslocus_hf_widget_info" />
         </receiver>
+        <!-- 系统状态组件（4×2 固定尺寸）：定位 / 四条链路 / 收发计数 / 信标。
+             exported=true 必须（系统实例化）；它只读自己进程内的
+             SharedPreferences、不接受外部数据，没有暴露面。 -->
+        <receiver
+            android:name=".SysWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/aprslocus_sys_widget_info" />
+        </receiver>
         <service
             android:name=".LocationService"
             android:exported="false"

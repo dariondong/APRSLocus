@@ -2037,6 +2037,10 @@
   "weatherRefresh": "刷新",
   "weatherPowered": "数据由和风天气提供 · APRSlocus",
   "hfTitle": "短波传播",
+  "hfSixMeter": "6m 波段",
+  "hfEs": "Es 偶发 E 层",
+  "hfAurora": "极光",
+  "hfF2": "F2 层",
   "hfBand": "波段",
   "hfDay": "日间",
   "hfNight": "夜间",
@@ -2397,5 +2401,26 @@
   "adifModeRequiredHint": "多数日志软件（含 QRZ）要求 MODE，缺少会被拒收",
   "adifFreq": "频率（FREQ）",
   "adifFreqHint": "单位 MHz，留空则不写",
-  "adifFreqInvalid": "请输入 MHz 数字，如 144.640"
+  "adifFreqInvalid": "请输入 MHz 数字，如 144.640",
+  "sysTitle": "系统状态",
+  "sysLinkOff": "未启用",
+  "sysRx": "收 {n}",
+  "@sysRx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysTx": "发 {n}",
+  "@sysTx": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysBeacon": "信标 {t}",
+  "@sysBeacon": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "sysStations": "台站 {n}",
+  "@sysStations": {
+    "placeholders": {"n": {"type": "String"}}
+  },
+  "sysFixOk": "已定位",
+  "sysLinkAudio": "音频",
+  "sysEmpty": "打开 APRSlocus 并连接后，这里会显示台站运行状态"
 }

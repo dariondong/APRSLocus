@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="12sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -57,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_weight="1"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="1sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="10sp"
         android:text="APRSlocus"
         android:textStyle="bold"
@@ -91,7 +91,7 @@
         android:id="@+id/aw_idx0_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="3dp"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="11sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -110,7 +110,7 @@
         android:id="@+id/aw_idx1_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -120,7 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="3dp"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="11sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -129,7 +129,7 @@
         android:id="@+id/aw_idx2_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -139,10 +139,31 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="14dp"
         android:layout_marginStart="3dp"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="11sp"
         android:textStyle="bold"
         android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_idx_spacer"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_six"
+        android:layout_width="44dp"
+        android:layout_height="13dp"
+        android:gravity="center"
+        android:background="@drawable/aw_chipsoft_good"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -155,7 +176,7 @@
         android:id="@+id/aw_rule1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E5E9F0" />
+        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_colhead"
@@ -168,7 +189,7 @@
         android:id="@+id/aw_ch_band"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -177,7 +198,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -186,7 +207,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#637083"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
@@ -208,7 +229,7 @@
         android:id="@+id/aw_band0_name"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -227,7 +248,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -251,7 +272,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -273,7 +294,7 @@
         android:id="@+id/aw_band0_rule"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E5E9F0" />
+        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band1"
@@ -287,7 +308,7 @@
         android:id="@+id/aw_band1_name"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -306,7 +327,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -330,7 +351,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -352,7 +373,7 @@
         android:id="@+id/aw_band1_rule"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E5E9F0" />
+        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band2"
@@ -366,7 +387,7 @@
         android:id="@+id/aw_band2_name"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -385,7 +406,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -409,7 +430,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -431,7 +452,7 @@
         android:id="@+id/aw_band2_rule"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E5E9F0" />
+        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band3"
@@ -445,7 +466,7 @@
         android:id="@+id/aw_band3_name"
         android:layout_width="54dp"
         android:layout_height="wrap_content"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -464,7 +485,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -488,7 +509,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:background="@drawable/aw_chipsoft_good"
-        android:textColor="#253044"
+        android:textColor="@color/aw_ink"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:minWidth="44dp"
@@ -507,7 +528,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="#D9253044"
+        android:textColor="@color/aw_ink_dim"
         android:textSize="10sp"
         android:maxLines="4"
         android:ellipsize="end"

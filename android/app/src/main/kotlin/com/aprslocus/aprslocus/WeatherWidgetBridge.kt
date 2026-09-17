@@ -58,6 +58,24 @@ class WeatherWidgetBridge(
                     result.success(true)
                 }
 
+                // 系统状态组件：与前两个同通道的另一个方法
+                "updateSys" -> {
+                    val json = call.arguments as? String
+                    if (json.isNullOrEmpty()) {
+                        result.error("bad_args", "updateSys 需要一个非空 JSON 字符串", null)
+                        return@setMethodCallHandler
+                    }
+                    SysWidgetStore.save(context, json)
+                    SysWidgetProvider.refreshAll(context)
+                    result.success(true)
+                }
+
+                "clearSys" -> {
+                    SysWidgetStore.clear(context)
+                    SysWidgetProvider.refreshAll(context)
+                    result.success(true)
+                }
+
                 "clear" -> {
                     WeatherWidgetStore.clear(context)
                     WeatherWidgetProvider.refreshAll(context)

@@ -50,17 +50,20 @@ class HfBand {
   String get best =>
       _rank(day) >= _rank(night) ? day : night;
 
-  static int _rank(String q) {
-    switch (q.toLowerCase()) {
-      case 'good':
-        return 3;
-      case 'fair':
-        return 2;
-      case 'poor':
-        return 1;
-      default:
-        return 0; // Band Closed / 未知
-    }
+  static int _rank(String q) => hfQualityRank(q);
+}
+
+/// 条件 → 排序权重（越大越好）。给「取最好的一档」这类比较用。
+int hfQualityRank(String q) {
+  switch (q.trim().toLowerCase()) {
+    case 'good':
+      return 3;
+    case 'fair':
+      return 2;
+    case 'poor':
+      return 1;
+    default:
+      return 0; // Band Closed / 未知
   }
 }
 
@@ -76,6 +79,8 @@ class HfNow {
   final String noise; // 噪声底噪，如 "S2-S3"
   final String muf; // 最高可用频率（源数据常为 NoRpt）
   final List<HfBand> bands;
+  /// VHF 条件（6m/4m 的 Es 与极光）。源数据缺该节点时 `hasData` 为 false。
+  final HfVhf vhf;
   final String updated; // 源数据里的更新时间字符串（GMT）
 
   const HfNow({
@@ -89,6 +94,7 @@ class HfNow {
     required this.noise,
     required this.muf,
     required this.bands,
+    this.vhf = const HfVhf(),
     required this.updated,
   });
 
@@ -186,6 +192,27 @@ HfNow? parseHamQsl(String xml) {
     bands.putIfAbsent(name, () => {})[time] = cond;
   }
 
+  // VHF 条件：<phenomenon name="E-Skip" location="europe_6m">Band Closed</phenomenon>
+  // name 有两种：'E-Skip'（含 6m/4m 专门项）与 'vhf-aurora'。
+  final es = <String, String>{};
+  var aurora = '';
+  final phRe = RegExp(
+    r'<phenomenon\s+name="([^"]+)"\s+location="([^"]+)"\s*>([^<]*)</phenomenon\s*>',
+    caseSensitive: false,
+  );
+  for (final m in phRe.allMatches(xml)) {
+    final name = m.group(1)!.trim();
+    final loc = m.group(2)!.trim();
+    final cond = m.group(3)!.trim();
+    if (cond.isEmpty) continue;
+    if (name.toLowerCase().contains('aurora')) {
+      aurora = cond;
+    } else if (name.toLowerCase().contains('e-skip')) {
+      es[loc] = cond;
+    }
+  }
+  final vhf = HfVhf(eSkip: es, aurora: aurora);
+
   final list = <HfBand>[
     for (final e in bands.entries)
       if (e.value.containsKey('day') || e.value.containsKey('night'))
@@ -209,6 +236,7 @@ HfNow? parseHamQsl(String xml) {
     noise: tag('signalnoise'),
     muf: tag('muf'),
     bands: list,
+    vhf: vhf,
     updated: tag('updated'),
   );
 }
@@ -220,6 +248,67 @@ int _bandOrder(String name) {
   final first = name.split('-').first.toLowerCase();
   final i = order.indexOf(first);
   return i < 0 ? order.length : i;
+}
+
+
+/// VHF 条件（hamqsl 的 `calculatedvhfconditions`）。
+///
+/// 6m 与 4m 的传播机理与 HF 完全不同，**不能**沿用「日间/夜间」那套：
+///  - **Es（ sporadic-E，偶发 E 层）**：夏季最常见，单跳可跨 1000–2000km，
+///    是 6m 的主要开通方式；源数据里按区域给（europe / north_america / …，
+///    以及 6m/4m 专门项）。
+///  - **极光（aurora）**：地磁活跃时高纬出现，用 CW/SSB 有特征性的
+///    嘶哑音色 —— 这是「地磁越差、极光路径反而越好」的少数情况。
+///  - **F2**：需要 MUF ≥ 50MHz（太阳活动高年偶发），源数据用 muf 字段判断。
+class HfVhf {
+  /// 各区 E-skip 状态：区域名 → 条件（Good/Fair/Poor/Band Closed…）
+  final Map<String, String> eSkip;
+
+  /// 极光状态（北半球）
+  final String aurora;
+
+  const HfVhf({this.eSkip = const {}, this.aurora = ''});
+
+  bool get hasData => eSkip.isNotEmpty || aurora.isNotEmpty;
+
+  /// 6m 的 Es 取值：优先 6m 专门项，其次取所有区域里最好的一档。
+  ///
+  /// 为什么取「最好」而不是平均：Es 是**局地**现象，某区开通就说明当天
+  /// 有 Es 活动层。全球平均会把「开了」抹成「关着」，反而更没用。
+  String get es6m {
+    for (final e in eSkip.entries) {
+      if (e.key.contains('6m')) return e.value;
+    }
+    var best = '';
+    for (final v in eSkip.values) {
+      if (hfQualityRank(v) > hfQualityRank(best)) best = v;
+    }
+    return best;
+  }
+
+  String get es4m {
+    for (final e in eSkip.entries) {
+      if (e.key.contains('4m')) return e.value;
+    }
+    return '';
+  }
+}
+
+/// 6m 展望的构成（给 UI 用：分项 + 合成结论）。
+class HfSixMeter {
+  /// Es（偶发 E 层）—— 6m 的主要开通方式
+  final String es;
+  /// 极光路径
+  final String aurora;
+  /// F2（需 MUF ≥ 50MHz）
+  final bool f2;
+  final HfQuality quality;
+  const HfSixMeter({
+    required this.es,
+    required this.aurora,
+    required this.f2,
+    required this.quality,
+  });
 }
 
 /// 传播质量 → 级别（给 UI 选色，也用于生成建议）
@@ -268,6 +357,57 @@ Color hfQualityColor(HfQuality q) {
     case HfQuality.closed:
     case HfQuality.unknown:
       return const Color(0xFF94A3B8);
+  }
+}
+
+
+/// 6m 展望：把 Es / 极光 / F2 三条路径合成为一个结论。
+///
+/// 三条路径的**成因完全不同**，所以要分别判断再合成，不能只看一个数：
+///   1. **Es（偶发 E 层）** —— 6m 的主要开通方式，源数据直接给（[HfVhf.es6m]）；
+///   2. **极光** —— 地磁活跃（K≥4）时高纬出现；注意这是「地磁差反而有戏」
+///      的少数情况，所以判据是「Kp 高 **且** 源数据说极光开通」；
+///   3. **F2** —— 需要 MUF ≥ 50MHz（太阳活动高年偶发），源数据 muf 常为 NoRpt。
+///
+/// 合成取三者中**最好**的一档：这三条是**并列**的通路，任一条开通就值得上机，
+/// 取平均会把「开了」抹平（和 [HfVhf.es6m] 取最好的理由一致）。
+HfSixMeter hfSixMeter(HfNow? hf) {
+  if (hf == null) {
+    return const HfSixMeter(
+        es: HfNow.none, aurora: HfNow.none, f2: false, quality: HfQuality.unknown);
+  }
+  final es = hf.vhf.es6m.isEmpty ? HfNow.none : hf.vhf.es6m;
+  final auroraRaw = hf.vhf.aurora;
+  // 极光只在「地磁活跃」时才有意义 —— 平静时源数据也会写 Band Closed，
+  // 但若源数据说开通而 Kp 低，那是数据滞后，仍按开通处理（宁可提示上机）。
+  final aurora = auroraRaw.isEmpty ? HfNow.none : auroraRaw;
+
+  // F2：MUF ≥ 50MHz。源数据常为 NoRpt，此时无法判断，按「不成立」处理，
+  // 而不是猜 —— 猜错会让用户白等一晚。
+  final muf = double.tryParse(hf.muf);
+  final f2 = muf != null && muf >= 50;
+
+  // 合成：取三条通路里最好的一档（Band Closed / 未知 的自带权重为 0，
+  // 所以「关着」的那几条不会把开通的那条压下去）。
+  var q = hfQualityOf(es);
+  final qa = hfQualityOf(aurora);
+  if (_qualityRankOf(qa) > _qualityRankOf(q)) q = qa;
+  if (f2) q = HfQuality.good;
+
+  return HfSixMeter(es: es, aurora: aurora, f2: f2, quality: q);
+}
+
+int _qualityRankOf(HfQuality q) {
+  switch (q) {
+    case HfQuality.good:
+      return 3;
+    case HfQuality.fair:
+      return 2;
+    case HfQuality.poor:
+      return 1;
+    case HfQuality.closed:
+    case HfQuality.unknown:
+      return 0;
   }
 }
 

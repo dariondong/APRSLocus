@@ -2195,6 +2195,9 @@ class _WeatherPanelState extends State<_WeatherPanel>
         ],
         _hfBandHead(s),
         for (final b in hf.bands) _hfBandRow(b, s),
+        // 6m 单独一段：它的传播机理与 HF 波段**完全不同**（Es / 极光 / F2），
+        // 塞进上面那张「日间-夜间」表会误导 —— 6m 没有「日间/夜间」之分。
+        if (hf.vhf.hasData) ..._hfSixRows(hf, s),
         const SizedBox(height: 10),
         Center(
           child: Text(s.hfPowered,
@@ -2202,6 +2205,44 @@ class _WeatherPanelState extends State<_WeatherPanel>
         ),
       ],
     );
+  }
+
+
+  /// 6m 波段展望：分项列出三条通路，再给一个合成结论。
+  ///
+  /// 为什么单独一段而不并进上面的表：6m 的成因是 Es / 极光 / F2，
+  /// 与 HF 的「日间-夜间」电离层吸收是两回事，硬并会让「6m 日间 P」这种
+  /// 组合读起来像是同一个机理。
+  List<Widget> _hfSixRows(HfNow hf, AppLocalizations s) {
+    final six = hfSixMeter(hf);
+    return [
+      _hairline(),
+      Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 2),
+        child: Row(children: [
+          Text(s.hfSixMeter,
+              style: ts(12, w: FontWeight.w700, c: Colors.white)),
+          const Spacer(),
+          _hfQualityCell(six.quality, s, end: true),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 2, bottom: 6),
+        child: Row(children: [
+          Expanded(child: _kvPair(s.hfEs, six.es)),
+          const SizedBox(width: 20),
+          Expanded(child: _kvPair(s.hfAurora, six.aurora)),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(children: [
+          Expanded(child: _kvPair(s.hfF2, six.f2 ? s.hfQGood : '--')),
+          const SizedBox(width: 20),
+          const Expanded(child: SizedBox.shrink()),
+        ]),
+      ),
+    ];
   }
 
   /// 逐波段表的表头：波段 / 日间 / 夜间（小号 + 低透明度，与面板其它小标题一致）

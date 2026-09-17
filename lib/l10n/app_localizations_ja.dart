@@ -4672,6 +4672,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hfTitle => 'HF 伝搬';
 
   @override
+  String get hfSixMeter => '6m バンド';
+
+  @override
+  String get hfEs => 'Es（スポラディック E）';
+
+  @override
+  String get hfAurora => 'オーロラ';
+
+  @override
+  String get hfF2 => 'F2 層';
+
+  @override
   String get hfBand => 'バンド';
 
   @override
@@ -5428,4 +5440,39 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adifFreqInvalid => 'MHz の数値を入力してください（例 144.640）';
+
+  @override
+  String get sysTitle => 'システム状態';
+
+  @override
+  String get sysLinkOff => '未使用';
+
+  @override
+  String sysRx(String n) {
+    return '受信 $n';
+  }
+
+  @override
+  String sysTx(String n) {
+    return '送信 $n';
+  }
+
+  @override
+  String sysBeacon(String t) {
+    return 'ビーコン $t';
+  }
+
+  @override
+  String sysStations(String n) {
+    return '局数 $n';
+  }
+
+  @override
+  String get sysFixOk => '測位済み';
+
+  @override
+  String get sysLinkAudio => 'オーディオ';
+
+  @override
+  String get sysEmpty => 'APRSlocus を開いて接続すると、ここに運用状況が表示されます';
 }
