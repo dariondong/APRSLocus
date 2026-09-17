@@ -143,17 +143,22 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             temp = R.id.aw_temp,
             cond = R.id.aw_cond,
             range = R.id.aw_range,
-            metricBoxes = intArrayOf(R.id.aw_m0, R.id.aw_m1, R.id.aw_m2, R.id.aw_m3),
+            // 主档只有 **3 格指标、单行**（不是 4 格两行）：主档高度由天气主区
+            // 决定，指标多一行不省主区高度、只白占 14dp；而扣掉底部圆角净空后
+            // 4×2 只剩 130dp 可用。这是 tool/preview_app_widget.py 量化后砍的。
+            metricBoxes = intArrayOf(R.id.aw_m0, R.id.aw_m1, R.id.aw_m2),
             metricLabels = intArrayOf(R.id.aw_m0_label, R.id.aw_m1_label,
-                R.id.aw_m2_label, R.id.aw_m3_label),
+                R.id.aw_m2_label),
             metricValues = intArrayOf(R.id.aw_m0_value, R.id.aw_m1_value,
-                R.id.aw_m2_value, R.id.aw_m3_value),
+                R.id.aw_m2_value),
             tipRows = arrayOf(
                 TipRow(R.id.aw_tip0, R.id.aw_tip0_dot, R.id.aw_tip0_icon,
                     R.id.aw_tip0_level, R.id.aw_tip0_text),
                 TipRow(R.id.aw_tip1, R.id.aw_tip1_dot, R.id.aw_tip1_icon,
                     R.id.aw_tip1_level, R.id.aw_tip1_text),
             ),
+            // 主档的建议行都是 1 行 → 用短文案（完整短句）
+            tipShort = true,
         )
 
         private val ID_TALL = Ids(
@@ -169,12 +174,11 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             temp = R.id.aw_temp,
             cond = R.id.aw_cond,
             range = R.id.aw_range,
-            // 竖长档只放 3 行指标：4 行 + 3 行建议实测超卡片高度 23dp
-            metricBoxes = intArrayOf(R.id.aw_m0, R.id.aw_m1, R.id.aw_m2),
-            metricLabels = intArrayOf(R.id.aw_m0_label, R.id.aw_m1_label,
-                R.id.aw_m2_label),
-            metricValues = intArrayOf(R.id.aw_m0_value, R.id.aw_m1_value,
-                R.id.aw_m2_value),
+            // 竖长档只放 2 行指标：2 项 + 两行建议实测超 12.7dp（由预览量出）。
+            // 竖长档的重点是「多给两条建议」，所以砍指标而不是砍建议。
+            metricBoxes = intArrayOf(R.id.aw_m0, R.id.aw_m1),
+            metricLabels = intArrayOf(R.id.aw_m0_label, R.id.aw_m1_label),
+            metricValues = intArrayOf(R.id.aw_m0_value, R.id.aw_m1_value),
             tipRows = arrayOf(
                 TipRow(R.id.aw_tip0, R.id.aw_tip0_dot, R.id.aw_tip0_icon,
                     R.id.aw_tip0_level, R.id.aw_tip0_text),
@@ -220,6 +224,8 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 TipRow(0, R.id.aw_tip0_dot, R.id.aw_tip0_icon,
                     R.id.aw_tip0_level, R.id.aw_tip0_text),
             ),
+            // 单行档只有一行 → 必须用短文案
+            tipShort = true,
         )
 
         /** 天气档位 → 背景渐变。大小尺寸各一套（小档圆角更小，免得显得过圆） */
@@ -441,7 +447,10 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     cell.icon, WidgetIcons.small(tip.read("iconName")),
                 )
                 views.setTextViewText(cell.level, tip.read("levelLabel"))
-                views.setTextViewText(cell.text, tip.read("text"))
+                views.setTextViewText(
+                    cell.text,
+                    tip.read(if (ids.tipShort) "shortText" else "text"),
+                )
             }
         }
 
@@ -488,16 +497,4 @@ class WeatherWidgetProvider : AppWidgetProvider() {
             return obj
         }
     }
-}
-
-/**
- * 从 JSONObject 安全取字符串。
- *
- * 组件宁可少显示一个字段，也不能因为某个 key 缺失/类型不符就抛异常 ——
- * AppWidgetProvider 里未捕获的异常会直接让组件变成白块，
- * 而用户没有任何自救途径（只能删掉重加）。
- */
-private fun JSONObject?.read(key: String): String {
-    if (this == null || !has(key) || isNull(key)) return ""
-    return optString(key, "")
 }

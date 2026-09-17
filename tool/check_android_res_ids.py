@@ -192,7 +192,12 @@ def check_ids_against_layouts(kotlin_dir: str, res_dir: str) -> list:
         src = f.read()
 
     problems = []
+    # 被引用的 id 取**全局**（所有 Kotlin 文件），不是只看天气组件的 IDS 表 ——
+    # 否则短波组件（HfWidgetProvider，用的是 SUM_LABEL/BAND_IDS 这类数组而不是
+    # Ids 表）填的 id 会被当成「没人填」，一屏假失败。
     referenced_anywhere = set()
+    for kt in glob.glob(os.path.join(kotlin_dir, "**", "*.kt"), recursive=True):
+        referenced_anywhere |= set(ID_IN_BLOCK.findall(read_kotlin(kt)))
 
     for block_name, block in TIER_BLOCK.findall(src):
         lm = LAYOUT_OF_TIER.search(block)
@@ -363,6 +368,34 @@ def read_raw(path: str) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
 
+
+# ── 短波组件这类「单布局 Provider」的核对 ─────────────────────────
+# WeatherWidgetProvider 用 `RemoteViews(pkg, ids.layout)`（布局是变量），
+# 由上面的档位表逐档核对；而 HfWidgetProvider 直接写
+# `RemoteViews(context.packageName, R.layout.aw_widget_hf)` —— 布局是字面量，
+# 于是可以读出来，把这个文件里出现的每个 R.id.* 都对照那份布局核一遍。
+LAYOUT_LITERAL = re.compile(r"RemoteViews\([^,]+,\s*R\.layout\.(\w+)\)")
+
+
+def check_layout_literal_providers(kotlin_dir, res_dir):
+    problems = []
+    for path in glob.glob(os.path.join(kotlin_dir, "**", "*.kt"), recursive=True):
+        text = read_kotlin(path)
+        for layout in set(LAYOUT_LITERAL.findall(text)):
+            layout_file = os.path.join(res_dir, "layout", f"{layout}.xml")
+            if not os.path.exists(layout_file):
+                problems.append(f"  ✗ {os.path.basename(path)} 引用的布局不存在："
+                                f"{layout}.xml")
+                continue
+            with open(layout_file, encoding="utf-8") as f:
+                layout_ids = set(re.findall(r"@\+id/(\w+)", f.read()))
+            for name in sorted(set(ID_IN_BLOCK.findall(text))):
+                if name not in layout_ids:
+                    problems.append(
+                        f"  ✗ {os.path.basename(path)} 用了 R.id.{name}，但 "
+                        f"{layout}.xml 里没有这个 id（运行时该字段会静默不显示）")
+    return problems
+
 def main() -> int:
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     res_dir = os.path.join(root, "android", "app", "src", "main", "res")
@@ -394,6 +427,8 @@ def main() -> int:
          check_ids_against_layouts(kotlin_dir, res_dir)),
         ("setInt 方法在目标控件上不存在",
          check_setint_view_types(kotlin_dir, res_dir)),
+        ("单布局 Provider 的 ResId 与布局不匹配",
+         check_layout_literal_providers(kotlin_dir, res_dir)),
     ]
 
     failed = False

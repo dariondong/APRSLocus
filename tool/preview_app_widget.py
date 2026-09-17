@@ -73,9 +73,30 @@ LEVEL_LABEL = {
 }
 
 # 传播质量 → 颜色（绿=好 黄=一般 橙=差 红=很差）
+def _lit(base_hex):
+    """把基准色往白提亮 35% —— **必须**与 Dart 的 widgetTipTextArgb 用同一套
+    整数运算（c*0.65 + 255*0.35，逐通道 round）。
+
+    这里刻意**算**而不是手抄：原来 "Band Closed" 手写了 #B9C4D4，而同一公式
+    算出的是 #B9C3D1 —— 预览与真机差一点点颜色，就违背了「预览不能骗人」
+    这条契约（而且测试会按精确值断言 Dart 侧，根本发现不了预览这边抄错）。
+    """
+    # 自己解析而不调 hex2rgb：hex2rgb 定义在本文件靠后的「工具」区，
+    # 而这段常量在文件更上面 —— 依赖定义顺序是那种「换个顺序就炸」的坑，
+    # 就地解析三行更稳。
+    h = base_hex.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    m = lambda c: round(c * 0.65 + 255 * 0.35)  # noqa: E731
+    return "#%02X%02X%02X" % (m(r), m(g), m(b))
+
+
+# 传播条件 → 颜色。基准色与 lib/hf.dart 的 hfQualityColor 一致，提亮后即
+# 组件上圆点/文字的实际颜色（Dart 侧调 widgetTipTextArgb 得到同一个值）。
 QUALITY_COLORS = {
-    "Good": "#68C389", "Fair": "#E6A75D",
-    "Poor": "#EC6C88", "Band Closed": "#B9C4D4",
+    "Good": _lit("#16A34A"),
+    "Fair": _lit("#D97706"),
+    "Poor": _lit("#E11D48"),
+    "Band Closed": _lit("#94A3B8"),
 }
 
 # ── 示例数据 ────────────────────────────────────────────────────────
@@ -345,6 +366,24 @@ def tip(c, x, y, w, level, icon, text, *, lines=2, size=9):
     return y + line_h(8.5) + block_lines_h(size, len(wrapped), TIP_LINE_MULT)
 
 
+def tip_inline(c, x, y, w, level, icon, text, *, size=9):
+    """一条**单行**建议：圆点 + 图标 + 级别 + 正文都在同一行。
+
+    与 tip()（级别一行、正文另起一行）的区别就是省掉那一行。
+    4×2 主档高度不够，必须用这个版本；2×4 竖长档空间富余，仍用两行版
+    （级别单独一行更醒目）。正文用 Dart 侧切好的 shortText。
+    """
+    c.paste(c.circle(6, LEVEL_LIT[level]), x, y + line_h(size) / 2 - 3)
+    bx = x + 11
+    c.icon(icon, bx, y + 1, 11, color=LEVEL_LIT[level])
+    lx = bx + 14
+    c.text(lx, y + line_h(size) / 2, LEVEL_LABEL[level], size - 0.5,
+           bold=True, color=LEVEL_LIT[level], anchor="lm")
+    tx = lx + c.measure(LEVEL_LABEL[level], size - 0.5, bold=True) + 6
+    c.text(tx, y + line_h(size) / 2, text, size, alpha=0.93, anchor="lm")
+    return y + line_h(size) + 2
+
+
 def section_title(c, x, y, w, title, count=None, icon="rss_feed"):
     c.icon(icon, x, y, 11)
     c.text(x + 14, y + TITLE_SIZE * 0.6, title, TITLE_SIZE, alpha=0.80,
@@ -362,13 +401,15 @@ def render_tile(w=296, h=140, kind="clear", dark=False):
     c.hairline(x, y, iw)
     y += 6
     y_hero = hero(c, x, y, iw, WEATHER, temp=30, icon=25)
+    # 指标 **3 格单行**（原来 4 格两行）。
+    # 主档只有 140dp，却要装「顶栏两行 + 天气主区 + 指标 + 2 条建议」；
+    # 4 格要两行，扣掉圆角净空后放不下最后一行文字。少给一格、省下 14dp，
+    # 比把最后一行切一半好。与竖长档（2×4，也是 3 项指标）保持一致。
     rx = x + iw * 0.42
     rw = x + iw - rx
     y_kv = y
-    for i, (lab, val) in enumerate(WEATHER["metrics"]):
-        col, row = i % 2, i // 2
-        yy = kv(c, rx + col * rw / 2, y + row * (line_h(9) + 1), rw / 2 - 10,
-                lab, val)
+    for i, (lab, val) in enumerate(WEATHER["metrics"][:3]):
+        yy = kv(c, rx + i * (rw / 3), y + 1, rw / 3 - 8, lab, val)
         y_kv = max(y_kv, yy)
     y = max(y_hero, y_kv)
     c.hairline(x, y + 1, iw)
@@ -376,8 +417,10 @@ def render_tile(w=296, h=140, kind="clear", dark=False):
     # 条建议各 **1 行**：140dp 装不下「2 行 + 1 行」的组合（实测超 17dp）。
     # 用 Dart 侧预切好的完整短句（shortText），一行仍是一句完整的话，
     # 而不是从句子中间被省略号切掉。
-    for level, icon, text, short in WEATHER["tips"]:
-        y = tip(c, x, y, iw, level, icon, short, lines=1) + 2
+    # 用**单行**建议（级别与正文同行）：主档 140dp 放不下「级别一行 +
+    # 正文一行」×2 条（实测每条要 28.6dp）。正文仍用 Dart 侧切好的完整短句。
+    for level, icon, _text, short in WEATHER["tips"]:
+        y = tip_inline(c, x, y, iw, level, icon, short)
     return c.out_clipped(20), y
 
 
@@ -395,18 +438,20 @@ def render_tall(w=150, h=300, kind="clear", dark=False):
     c.text(x + iw, y + 3, WEATHER["range"], 9, alpha=0.74, anchor="ra")
     y += line_h(10) + 2
     c.hairline(x, y, iw)
-    y += 7
+    y += 6
     # 指标 2 行（原 3 行）：3 行 + 两行建议实测超 12.7dp。
     # 竖长档的重点是「多给两条建议」，所以砍指标而不是砍建议。
     for lab, val in WEATHER["metrics"][:2]:
         y = kv(c, x, y, iw, lab, val)
-    y += 3
+    y += 2
     c.hairline(x, y, iw)
-    y += 6
+    y += 5
     y = section_title(c, x, y, iw, WEATHER["tips_title"],
                       count=str(len(WEATHER["tips"])))
+    # 行距 4→2：2×4 扣掉圆角净空后只剩 290dp，原来 294.3dp 超出 4.3dp。
+    # 建议行本来就靠「圆点 + 级别」分隔，行距缩 2dp 不影响可读性。
     for level, icon, text, short in WEATHER["tips"]:
-        y = tip(c, x, y, iw, level, icon, text, lines=2) + 4
+        y = tip(c, x, y, iw, level, icon, text, lines=2) + 2
     return c.out_clipped(20), y
 
 
@@ -521,11 +566,13 @@ def render_panel_bg(w=300, h=420, dark=False):
     atm = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
     ad = ImageDraw.Draw(atm)
     y0 = h * 0.42
+    # α 从 0 起（原来从 0.35 起，会在 42% 处留一道可见接缝）。
+    # weather.dart 的 _atmosphere 也是这么写的，两边必须一致。
     for i in range(round((h - y0) * SCALE)):
         t = i / max(1, (h - y0) * SCALE)
         col = (int(24 + 20 * t), int(52 + 78 * t), int(104 + 100 * t))
         ad.rectangle([0, (y0 * SCALE) + i, cw, (y0 * SCALE) + i + 1],
-                     fill=col + (int(90 + 165 * t),))
+                     fill=col + (int(255 * t),))
     c.layer.alpha_composite(atm)
     c.text(12, 10, "面板背景：上＝星空 / 下＝大气层（示意）", 10, alpha=0.85)
     return c.out_clipped(24), h
@@ -536,25 +583,38 @@ def main():
     ap.add_argument("--out", default="/tmp/widget_preview.png")
     args = ap.parse_args()
 
+    # (名称, 渲染函数, 宽dp, 高dp, 内容是否垂直居中)
+    # 居中的档位（4×1 单行）不受底部圆角影响，所以不扣净空 —— 不加区分地
+    # 一律扣会误报，而误报会让人干脆放宽规则。
     specs = [
-        ("天气组件 4×2 主档", render_tile, 296, 140),
-        ("天气组件 4×2（雷雨）", lambda **k: render_tile(kind="storm"), 296, 140),
-        ("天气组件 2×4 小面板", render_tall, 150, 300),
-        ("天气组件 2×2 紧凑档", render_compact, 150, 150),
-        ("天气组件 4×1 单行档", render_row, 296, 72),
-        ("短波传播组件 4×2", render_hf, 296, 140),
+        ("天气组件 4×2 主档", render_tile, 296, 140, False),
+        ("天气组件 4×2（雷雨）", lambda **k: render_tile(kind="storm"),
+         296, 140, False),
+        ("天气组件 2×4 小面板", render_tall, 150, 300, False),
+        ("天气组件 2×2 紧凑档", render_compact, 150, 150, False),
+        ("天气组件 4×1 单行档", render_row, 296, 72, True),
+        ("短波传播组件 4×2", render_hf, 296, 140, False),
     ]
+    # 圆角净空：卡片圆角越大，底部两侧收得越早。20dp 圆角下，距底边约
+    # 10dp 之内的左右两边已经被切掉，所以内容必须停在 h-10dp 以上。
+    #
+    # **这条是补上的漏洞**：原来只比「内容 vs 卡片高度」，于是 4×2 显示
+    # 「137.3/140，余 2.7dp 放得下」，而真机上最后一行被圆角切了一半 ——
+    # 用户看到的「溢出」就是这么来的。
+    CORNER_CLEARANCE = 10.0
+
     tiles, overflows = [], []
-    print("内容高度 vs 卡片高度（溢出会被圆角裁掉）：")
-    for label, fn, w_dp, h_dp in specs:
+    print(f"内容高度 vs 卡片可用高度（已扣掉圆角净空 {CORNER_CLEARANCE:.0f}dp）：")
+    for label, fn, w_dp, h_dp, centered in specs:
         img, used = fn()
-        over = used - h_dp
+        usable = h_dp if centered else h_dp - CORNER_CLEARANCE
+        over = used - usable
         if over > 1:
-            overflows.append(f"{label} 超出 {over:.1f}dp")
-            print(f"  ✗ {label:22} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp  溢出！")
+            overflows.append(f"{label} 超出可用高度 {over:.1f}dp")
+            print(f"  ✗ {label:22} 内容 {used:5.1f}dp / 可用 {usable:5.1f}dp  溢出！")
         else:
-            print(f"  ✓ {label:22} 内容 {used:5.1f}dp / 卡片 {h_dp:3d}dp"
-                  f"（余 {h_dp - used:.1f}dp）")
+            print(f"  ✓ {label:22} 内容 {used:5.1f}dp / 可用 {usable:5.1f}dp"
+                  f"（余 {usable - used:.1f}dp）")
         tiles.append((label, img))
 
     # 面板背景示意单独放一行

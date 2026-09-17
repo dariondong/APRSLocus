@@ -20,8 +20,8 @@
         android:orientation="vertical"
         android:paddingStart="11dp"
         android:paddingEnd="11dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
     <LinearLayout
         android:id="@+id/aw_header1"
         android:layout_width="match_parent"
@@ -261,7 +261,7 @@
         android:layout_marginTop="2dp"
         android:textColor="#EDFFFFFF"
         android:textSize="8.5sp"
-        android:maxLines="3"
+        android:maxLines="2"
         android:ellipsize="end"
         android:lineSpacingMultiplier="1.3"
         android:includeFontPadding="false" />

@@ -28,6 +28,7 @@
     android/app/src/main/res/drawable-xxhdpi/aw_logo.png            顶栏 App logo
 """
 
+import json
 import os
 import re
 import sys
@@ -405,6 +406,21 @@ def main() -> int:
     with open(kt, "w", encoding="utf-8") as f:
         f.write("\n".join(L))
     print(f"  {os.path.relpath(kt, root)}  ({os.path.getsize(kt)} B)")
+
+    # 再产出「图标名清单」给 Dart 测试读。
+    #
+    # 为什么要有这个文件：测试原本把图标名清单**手抄**在 test 里，于是每加一个
+    # 图标都要记得改测试 —— 我这轮加 5 个图标时就忘了，测试立刻红。
+    # 让生成器产出清单、测试读文件，两边就不可能再漂移。
+    names = os.path.join(root, "test", "reference", "widget_icon_names.json")
+    os.makedirs(os.path.dirname(names), exist_ok=True)
+    with open(names, "w", encoding="utf-8") as f:
+        json.dump({
+            "small": sorted(ICONS),
+            "big": sorted(BIG_ICONS),
+        }, f, ensure_ascii=False, indent=2, sort_keys=True)
+        f.write("\n")
+    print(f"  {os.path.relpath(names, root)}  ({os.path.getsize(names)} B)")
     print(f"\n共生成 {len(written)} 个 PNG + 1 个 Kotlin 映射表")
     return 0
 

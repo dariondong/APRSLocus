@@ -4,4 +4,8 @@
     <string name="app_widget_weather_label">Weather &amp; radio tips</string>
     <string name="app_widget_weather_desc">Local weather and amateur-radio operating tips (4×2)</string>
     <string name="app_widget_weather_empty">Open APRSlocus and get a position fix to see weather and radio tips here</string>
+    <!-- HF / ionospheric propagation widget -->
+    <string name="app_widget_hf_label">HF propagation &amp; band conditions</string>
+    <string name="app_widget_hf_desc">Day/night conditions per band plus solar indices (4×2)</string>
+    <string name="app_widget_hf_empty">Open APRSlocus to fetch HF propagation data and band conditions will appear here</string>
 </resources>

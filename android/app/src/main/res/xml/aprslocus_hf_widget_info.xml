@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  APRSlocus 短波 / 电离层传播 桌面小组件（4×2）
+
+  **为什么固定尺寸**（`resizeMode="none"`）：
+  这个组件的内容是一张**表**（波段 × 昼夜）。表不像列表那样能优雅降级 ——
+  挤到 2×2 就只剩波段名而没有条件值，等于把最有用的信息砍掉。与其提供一个
+  会被用户拖坏的组件，不如老实声明「它就是这个尺寸」。
+  （天气组件能自适应 4 档，是因为它的内容是「可以少给几条」的列表。）
+
+  尺寸口径与天气组件一致：
+  - `targetCellWidth/Height` 是给 API 31+ 的正式声明（4 格宽 2 格高）；
+  - `minWidth/minHeight` 给旧版本兜底，按 (74×格子数 − 16) 换算，4×2 ≈ 280×132dp。
+
+  `updatePeriodMillis` 取系统允许的最小值 30 分钟：它**不联网**
+  （组件不持有数据源，见 lib/hf_widget.dart），只是重渲染已有快照，
+  顺带让组件在存储/数据异常后能自愈。真正的刷新由 App 侧推送。
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="none"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/aw_widget_hf"
+    android:previewLayout="@layout/aw_widget_hf"
+    android:description="@string/app_widget_hf_desc"
+    android:widgetCategory="home_screen" />

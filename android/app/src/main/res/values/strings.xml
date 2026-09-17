@@ -10,4 +10,8 @@
     <string name="app_widget_weather_label">天气与无线电提示</string>
     <string name="app_widget_weather_desc">显示当前位置天气与业余无线电操作提示（4×2）</string>
     <string name="app_widget_weather_empty">打开 APRSlocus 并完成定位后，这里会显示天气与业余无线电提示</string>
+    <!-- 短波/电离层传播组件 -->
+    <string name="app_widget_hf_label">短波传播与各波段条件</string>
+    <string name="app_widget_hf_desc">各波段的日间/夜间传播条件与太阳指数（4×2）</string>
+    <string name="app_widget_hf_empty">打开 APRSlocus 获取短波传播数据后，这里会显示各波段条件</string>
 </resources>

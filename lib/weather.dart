@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import 'hf.dart';
 import 'theme.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -862,6 +863,24 @@ List<HamTip> hamTips(WeatherCenter wc, AppLocalizations s) {
   return [...danger, ...warn, ...good, ...tip];
 }
 
+/// 天气类建议 + 短波/电离层传播类建议，按级别归并。
+///
+/// 两个维度都要看：安全（雷电/大风）与传播（SFI/地磁）互不替代。
+///
+/// 归并**按级别分组**，而不是把两个列表首尾相接 —— 后者会把传播类的
+/// 「通联机会」插到天气类的「操作提示」前面，破坏「安全警示永远在最上」
+/// 这个既定顺序（安全永远优先，是 `hamTips` 里刻意的分级）。
+List<HamTip> allHamTips(WeatherCenter wc, AppLocalizations s) {
+  final merged = <HamTip>[
+    ...hamTips(wc, s),
+    ...hfTips(HfCenter.instance.now, s),
+  ];
+  return <HamTip>[
+    for (final lv in TipLevel.values)
+      ...merged.where((t) => t.level == lv),
+  ];
+}
+
 /// ─── 天气动态背景（轻量：不引入任何 3D 引擎 / 重型动画库）───
 ///
 /// 性能要点（卡顿根因与对策）：
@@ -1298,6 +1317,103 @@ class _FxPainter extends CustomPainter {
       old.kind != kind || old.intensity != intensity || old.dark != dark;
 }
 
+
+/// ─── 星空层（面板上半部）───
+///
+/// 需求：「面板背景上方是星空、下方天空蓝（大气层）」，即把面板的背景读成
+/// 「从外太空俯视大气层」——上半是深空星点，下半是大气密度递增的蓝。
+///
+/// **刻意是静态的**（不随 `anim` 抖动）：星点数量多、每帧重绘没有收益，
+/// 而这一层已经包在 `RepaintBoundary` 里 —— 静态绘制只发生一次，
+/// 滑动面板时不会连带重绘（云雨那层才需要动，它们本来就是动的）。
+/// 星点位置用固定种子生成，保证每次启动星图一致（不会「每次打开都不一样」
+/// 那种廉价闪烁感），也与预览图 tool/preview_app_widget.py 的星图一致。
+class _StarLayer extends StatelessWidget {
+  final bool dark;
+  const _StarLayer({required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _StarPainter(dark: dark),
+        size: Size.infinite,
+      ),
+    );
+  }
+}
+
+class _StarPainter extends CustomPainter {
+  final bool dark;
+  const _StarPainter({required this.dark});
+
+  /// 星点数量与预览图一致（90 颗，seed=7）
+  static const int _count = 90;
+  static const int _seed = 7;
+
+  /// 星空只占上半部（与预览的 0.45 一致）
+  static const double _starZone = 0.45;
+
+  /// 星点位置是**确定性**的，算一次缓存起来。
+  /// 用 `_cache` 而不是每次 paint 现算：paint 可能被调用多次（尺寸变化、
+  /// 主题切换），而星图不该跟着变。
+  static List<Offset>? _cache;
+
+  List<Offset> _stars() {
+    final hit = _cache;
+    if (hit != null) return hit;
+    final rnd = math.Random(_seed);
+    final list = <Offset>[
+      for (var i = 0; i < _count; i++)
+        // 归一化坐标（0–1），绘制时再乘实际尺寸 —— 这样不同面板尺寸下
+        // 星图是「同一片星空的不同取景」，而不是重新撒一遍
+        Offset(rnd.nextDouble(), rnd.nextDouble() * _starZone),
+    ];
+    _cache = list;
+    return list;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 半径与透明度按预览的分布：小星多、大星少；越靠上（越外太空）越亮
+    final rnd = math.Random(_seed + 1);
+    final paint = Paint()..style = PaintingStyle.fill;
+    for (final s in _stars()) {
+      final r = 0.6 + rnd.nextDouble() * 0.7; // 0.6–1.3
+      // 越靠近星空区底部越暗（下面就要进入大气层了）
+      final fade = 1.0 - (s.dy / _starZone);
+      final a = (0.9 - fade * 0.5) * (dark ? 1.0 : 0.85);
+      paint.color = Colors.white.withValues(alpha: a.clamp(0.0, 1.0));
+      canvas.drawCircle(Offset(s.dx * size.width, s.dy * size.height), r, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _StarPainter old) => old.dark != dark;
+}
+
+/// 大气层：下半部由透明渐到天空蓝（模仿大气密度递增）。
+///
+/// 与预览的差别（有意）：预览第一版在 42% 处从**透明直接跳到 α=0.35**，
+/// 那会留一道可见的横向接缝；这里让 α 从 0 起（`stops` 前两段同色），
+/// 于是「星空 → 大气」是连续过渡而不是一条线。
+Widget _atmosphere(bool dark) => IgnorePointer(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0x00000000),
+              const Color(0x00203468),
+              Color.fromRGBO(44, 130, 204, dark ? 0.90 : 1.0),
+            ],
+            stops: const [0.0, 0.42, 1.0],
+          ),
+        ),
+      ),
+    );
+
 /// 打开天气浮动面板（底部弹层）：天气 + 火腿建议 + 特效背景
 Future<void> showWeatherPanel(BuildContext context, AppState state) async {
   final sim = WeatherCenter.instance.simulating;
@@ -1306,6 +1422,9 @@ Future<void> showWeatherPanel(BuildContext context, AppState state) async {
   if (!sim && hasPos) {
     WeatherCenter.instance.load(state.myLat!, state.myLng!);
   }
+  // 短波/电离层与位置无关，打开面板就拉一次（HfCenter 内部有 30 分钟 TTL
+  // 与 _busy 守卫，重复调用会直接返回，不会打太多请求）
+  HfCenter.instance.load();
   await showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
@@ -1507,9 +1626,14 @@ class _WeatherPanelState extends State<_WeatherPanel>
         margin: const EdgeInsets.all(10),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
-        child: ValueListenableBuilder<int>(
-          valueListenable: WeatherCenter.instance.version,
-          builder: (context, _, _) {
+        // 同时监听天气与短波两个数据源：短波是独立的一条链（hamqsl），
+        // 它回来时面板也要重画，否则要等下一次天气变化才看到传播信息。
+        child: ListenableBuilder(
+          listenable: Listenable.merge([
+            WeatherCenter.instance.version,
+            HfCenter.instance.version,
+          ]),
+          builder: (context, _) {
             final wc = WeatherCenter.instance;
             final kind = (wc.now != null) ? _fxKindOf(wc.now!) : _FxKind.cloudy;
             final intensity = (wc.now != null) ? weatherIntensity(wc.now!) : 0.0;
@@ -1528,6 +1652,11 @@ class _WeatherPanelState extends State<_WeatherPanel>
               ),
               child: Stack(
                 children: [
+                  // 星空（上）＋ 大气层（下）：把背景读成「从太空俯视大气层」。
+                  // 顺序很关键 —— 先星空、再大气、最后才是云雨特效：
+                  // 云雨本来就发生在大气层里，压在星空上就错了。
+                  Positioned.fill(child: IgnorePointer(child: _StarLayer(dark: dark))),
+                  Positioned.fill(child: _atmosphere(dark)),
                   // 动态背景层（云 / 雨 / 雪 / 雾，强度驱动；不引入 3D 引擎）
                   // _FxLayer 内部包 RepaintBoundary：每帧只重绘背景这一层，
                   // 不连带上方文字/卡片一起重光栅化
@@ -1813,6 +1942,12 @@ class _WeatherPanelState extends State<_WeatherPanel>
         children: [
           // 业余无线电建议排在三天预报之前（更贴近「架台/通联决策」的场景）
           _hamCard(wc, s),
+          // 短波/电离层紧跟在建议之后：建议里已经含传播类结论，
+          // 这里给出「为什么」——逐波段条件与太阳指数。
+          if (HfCenter.instance.now != null) ...[
+            const SizedBox(height: 18),
+            _hfCard(HfCenter.instance.now!, s),
+          ],
           const SizedBox(height: 18),
           _sectionTitle(Icons.calendar_month_rounded, s.weatherForecast3),
           const SizedBox(height: 4),
@@ -1956,7 +2091,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   /// 火腿建议卡片（按级别排序，可展开全部）
   Widget _hamCard(WeatherCenter wc, AppLocalizations s) {
-    final all = hamTips(wc, s);
+    final all = allHamTips(wc, s);
     const maxCollapsed = 4;
     final showToggle = all.length > maxCollapsed;
     final shown =
@@ -2121,6 +2256,110 @@ class _WeatherPanelState extends State<_WeatherPanel>
       ));
     }
     return Column(children: rows);
+  }
+
+  /// 短波 / 电离层传播卡片：汇总指数 + **逐波段日间/夜间条件**。
+  ///
+  /// 数据来自 hamqsl.com（业余界标准的 HF 传播源），由 [HfCenter] 拉取并缓存。
+  /// 没有数据时**整块不显示** —— 宁可少一块，也不要摆个空壳占掉半屏。
+  Widget _hfCard(HfNow hf, AppLocalizations s) {
+    final pairs = <(String, String)>[
+      (s.hfSfi, hf.sfi),
+      (s.hfKp, hf.kIndex),
+      (s.hfAIndex, hf.aIndex),
+      (s.hfSunspots, hf.sunspots),
+      (s.hfXray, hf.xray),
+      (s.hfSolarWind, '${hf.solarWind} km/s'),
+      (s.hfGeomag, hf.geomag),
+      (s.hfNoise, hf.noise),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionTitle(Icons.waves_rounded, s.hfTitle),
+        const SizedBox(height: 6),
+        // 汇总指数：复用 _details 同款的两列 label/value 布局
+        for (var i = 0; i < pairs.length; i += 2) ...[
+          if (i > 0) _hairline(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(children: [
+              Expanded(child: _kvPair(pairs[i].$1, pairs[i].$2)),
+              const SizedBox(width: 20),
+              Expanded(
+                child: i + 1 < pairs.length
+                    ? _kvPair(pairs[i + 1].$1, pairs[i + 1].$2)
+                    : const SizedBox.shrink(),
+              ),
+            ]),
+          ),
+        ],
+        _hfBandHead(s),
+        for (final b in hf.bands) _hfBandRow(b, s),
+        const SizedBox(height: 10),
+        Center(
+          child: Text(s.hfPowered,
+              style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
+        ),
+      ],
+    );
+  }
+
+  /// 逐波段表的表头：波段 / 日间 / 夜间（小号 + 低透明度，与面板其它小标题一致）
+  Widget _hfBandHead(AppLocalizations s) {
+    final st = ts(10.5, c: Colors.white.withValues(alpha: 0.58));
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 2),
+      child: Row(children: [
+        Expanded(flex: 11, child: Text(s.hfBand, style: st)),
+        Expanded(flex: 10, child: Text(s.hfDay, style: st)),
+        Expanded(
+          flex: 11,
+          child: Text(s.hfNight, style: st, textAlign: TextAlign.end),
+        ),
+      ]),
+    );
+  }
+
+  /// 一行波段：左侧波段名，右侧日间/夜间两格条件（圆点 + 文字同色）
+  Widget _hfBandRow(HfBand b, AppLocalizations s) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(children: [
+          Expanded(
+            flex: 11,
+            child: Text(b.label,
+                style: ts(12, w: FontWeight.w700, c: Colors.white)),
+          ),
+          Expanded(flex: 10, child: _hfQualityCell(hfQualityOf(b.day), s)),
+          Expanded(
+            flex: 11,
+            child: _hfQualityCell(hfQualityOf(b.night), s, end: true),
+          ),
+        ]),
+      );
+
+  /// 一格传播条件。颜色用 `hfQualityColor`（好=绿 / 一般=橙 / 差=红 / 关闭=灰），
+  /// 与面板的级别色同一套取向，也与组件上的圆点同色。
+  Widget _hfQualityCell(HfQuality q, AppLocalizations s, {bool end = false}) {
+    final col = hfQualityColor(q);
+    return Row(
+      mainAxisAlignment:
+          end ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(color: col, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(hfQualityLabel(q, s),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: ts(11.5, w: FontWeight.w700, c: col)),
+        ),
+      ],
+    );
   }
 
   Widget _kvPair(String label, String value) => Row(children: [

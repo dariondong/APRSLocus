@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'hf.dart';
+import 'hf_widget.dart';
 import 'l10n/app_localizations.dart';
 import 'state.dart';
 import 'weather.dart';
@@ -467,11 +469,23 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
   /// 上次「无数据兜底加载」的时间（防自激，见下）
   DateTime? _lastAutoLoad;
 
+  /// 上次触发短波拉取的时间。
+  ///
+  /// 短波数据（hamqsl）与天气是**两条独立的数据链**，刷新节奏也不同
+  /// （天气跟随定位 15 分钟、短波源约每小时更新、我们按 30 分钟 TTL）。
+  /// 这里用时间戳而**不是**监听 `HfCenter.version` 来触发拉取：
+  /// `HfCenter.load()` 在开始与结束各 `version++` 一次，如果拉取失败
+  /// （`fresh` 仍为 false）而拉取又由 version 变化驱动，就会变成
+  /// 「失败 → version++ → 再拉 → 再失败」的无限重试，把用户流量烧光。
+  /// 时间戳把重试压到最多 2 分钟一次，且与 version 变化无关。
+  DateTime? _lastHfLoad;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WeatherCenter.instance.version.addListener(_sync);
+    HfCenter.instance.version.addListener(_sync);
     // 首帧之后再推：此时 Localizations 已就绪
     WidgetsBinding.instance.addPostFrameCallback((_) => _sync());
   }
@@ -495,6 +509,7 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     WeatherCenter.instance.version.removeListener(_sync);
+    HfCenter.instance.version.removeListener(_sync);
     super.dispose();
   }
 
@@ -528,12 +543,28 @@ class _AppWidgetSyncState extends State<AppWidgetSync>
     wc.load(st.myLat!, st.myLng!);
   }
 
+  /// 触发短波拉取（带时间戳防自激，理由见 [_lastHfLoad] 的说明）。
+  void _maybeLoadHf() {
+    final hf = HfCenter.instance;
+    // loading 也要拦：load() 开头就 version++，不拦会在一次拉取期间被反复触发
+    if (hf.loading || hf.fresh) return;
+    final now = DateTime.now();
+    final last = _lastHfLoad;
+    if (last != null && now.difference(last) < const Duration(minutes: 2)) {
+      return;
+    }
+    _lastHfLoad = now;
+    hf.load();
+  }
+
   void _sync() {
     if (!mounted) return;
     _maybeLoad();
+    _maybeLoadHf();
     final s = AppLocalizations.of(context);
     // 不 await：推送是副作用，不该拖慢首帧
     AppWidgetBridge.push(s: s, wc: WeatherCenter.instance);
+    HfWidgetBridge.push(s: s, hf: HfCenter.instance);
   }
 
   @override

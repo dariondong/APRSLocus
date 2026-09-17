@@ -88,6 +88,19 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/aprslocus_weather_widget_info" />
         </receiver>
+        <!-- 短波/电离层传播组件（4×2 固定尺寸）。
+             exported=true 必须：组件由系统实例化。它只读自己进程内的
+             SharedPreferences、不接受外部数据，所以没有暴露面。 -->
+        <receiver
+            android:name=".HfWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/aprslocus_hf_widget_info" />
+        </receiver>
         <service
             android:name=".LocationService"
             android:exported="false"

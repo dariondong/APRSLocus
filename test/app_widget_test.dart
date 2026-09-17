@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -318,22 +319,21 @@ void main() {
     });
 
     test('全部图标名都在生成器产出的集合里（跨语言契约）', () {
-      // 这些名字必须与 tool/gen_app_widget_icons.py 的 ICONS_WITH_CONST
-      // （进而与 WidgetIcons.kt、与 drawable-xxhdpi 里的 PNG）一致。
-      // 生成器会逐个核对码位，这里核对名字集合 —— 名字对不上时 Kotlin 会
-      // 安静地回退兜底图标，所以必须机器盯住。
-      const produced = {
-        'ac_unit', 'air', 'blur_on', 'calendar_month', 'cloud',
-        'device_thermostat', 'flag', 'flash_on', 'grain', 'graphic_eq',
-        'history', 'icecream', 'local_fire_department', 'masks', 'nightlight',
-        'nights_stay', 'opacity', 'place', 'power_off', 'rss_feed',
-        'thermostat', 'thunderstorm', 'trending_down', 'tune', 'umbrella',
-        'visibility', 'water', 'water_drop', 'waves', 'wb_cloudy', 'wb_sunny',
-        'wb_twilight', 'warning_amber', 'wifi_tethering',
+      // 清单由 tool/gen_app_widget_icons.py 产出（test/reference/
+      // widget_icon_names.json），测试读文件 —— **不手抄**。
+      // 原本这份清单是手写在测试里的，于是每加一个图标都要记得改测试，
+      // 我这轮加 5 个图标就忘了、测试立刻红。让生成器产出、测试读，
+      // 两边就不可能再漂移。
+      final produced = {
+        ...?(jsonDecode(File('test/reference/widget_icon_names.json')
+                .readAsStringSync())['small'] as List?)
+            ?.cast<String>(),
       };
+      expect(produced, isNotEmpty, reason: '图标名清单是空的，生成器没跑？');
       for (final name in kAppWidgetIconNames.values) {
         expect(produced, contains(name),
-            reason: 'Dart 会发出图标名 "$name"，但生成器没有产出它');
+            reason: 'Dart 会发出图标名 "$name"，但生成器没有产出它'
+                '（组件上会静默退化成兜底图标）');
       }
       for (final code in ['100', '150', '101', '104', '302', '305', '307',
         '400', '503', '501']) {

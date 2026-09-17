@@ -38,6 +38,26 @@ class WeatherWidgetBridge(
                     result.success(true)
                 }
 
+                // 短波/电离层组件用**同一个通道的另一个方法**，而不是新开通道：
+                // 两者都由 Dart 侧的 AppWidgetSync 推送，同一个 Lifecycle，
+                // 分通道只会多一份 attach/错误处理。
+                "updateHf" -> {
+                    val json = call.arguments as? String
+                    if (json.isNullOrEmpty()) {
+                        result.error("bad_args", "updateHf 需要一个非空 JSON 字符串", null)
+                        return@setMethodCallHandler
+                    }
+                    HfWidgetStore.save(context, json)
+                    HfWidgetProvider.refreshAll(context)
+                    result.success(true)
+                }
+
+                "clearHf" -> {
+                    HfWidgetStore.clear(context)
+                    HfWidgetProvider.refreshAll(context)
+                    result.success(true)
+                }
+
                 "clear" -> {
                     WeatherWidgetStore.clear(context)
                     WeatherWidgetProvider.refreshAll(context)
