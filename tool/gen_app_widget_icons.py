@@ -177,7 +177,80 @@ def render_icon(font_path: str, codepoint: int, target_px: int) -> Image.Image:
     return out
 
 
+# ── 圆弧 logo 的尺寸（dp）。17dp 与顶栏 11sp 的 App 名称视觉高度相当 ──
+LOGO_DP = 17
+
+
+def render_logo(target_px: int) -> Image.Image:
+    """画出 App logo 的**圆弧（圆形）**版本。
+
+    为什么不直接缩小启动器图标（踩过的坑，按顺序）：
+      ① 启动器图标的圆角**外面**不是全透明，而是 alpha≈166 的半透明黑
+         （实测四角 (0,0,0,166)、中心 (89,89,89,255)）。缩到 17dp 压在天气
+         渐变上就是**一圈暗斑**，像 logo 外套了个脏方框。
+      ② 把那圈光晕二值化丢掉后，源图只到圆角方块的边 → 裁成圆形要在
+         192px 上做一次硬边蒙版，缩到 17dp 后边缘**阶梯状**（放大看得见）。
+      ③ 源图只有 192px，缩到 51px 后细环会糊成一团橄榄色。
+
+    所以改成按源图**实测的几何与颜色重画**，任意尺寸都干净：
+    源图 192px、中心 (96,96)，竖向/水平扫描得到的环半径、环宽、颜色如下。
+
+    配色与几何全部来自源图扫描：
+      navy 底色上 #031F55 → 下 #011840（竖向微渐变，取自四角采样）
+      中心实心圆 #595959 半径 18/96
+      第 1 环 #595959 半径 29/96 宽 6/96
+      第 2 环 #595959 半径 44.5/96 宽 5/96
+      外环 #A8C2F2（浅蓝）半径 59/96 宽 4/96
+      左右两颗白点位于半径 54/96，直径 8/96
+    """
+    SS = 4  # 超采样：先 4 倍画再缩，边缘不会有阶梯
+    S = target_px * SS
+    c = S / 2
+
+    def f(v: float) -> float:
+        """源图半宽 = 96px，把源图坐标换算到当前画布"""
+        return v / 96.0
+
+    navy_top, navy_bot = (3, 31, 85), (1, 24, 64)
+    gray, lightblue, white = (89, 89, 89), (168, 194, 242), (255, 255, 255)
+
+    img = Image.new("RGB", (S, S))
+    for y in range(S):
+        t = y / max(1, S - 1)
+        img.paste(tuple(int(navy_top[i] + (navy_bot[i] - navy_top[i]) * t)
+                        for i in range(3)), (0, y, S, y + 1))
+
+    layer = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+
+    r = f(18) * c
+    d.ellipse([c - r, c - r, c + r, c + r], fill=gray + (255,))
+
+    def ring(radius_src: float, width_src: float, color) -> None:
+        rr = f(radius_src) * c
+        w = max(1, round(f(width_src) * c))
+        d.ellipse([c - rr, c - rr, c + rr, c + rr],
+                  outline=color + (255,), width=w)
+
+    ring(29, 6, gray)
+    ring(44.5, 5, gray)
+    ring(59, 4, lightblue)
+
+    dr = f(8) * c / 2
+    for sign in (-1, 1):
+        x = c + sign * f(54) * c
+        d.ellipse([x - dr, c - dr, x + dr, c + dr], fill=white + (255,))
+
+    out = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    mask = Image.new("L", (S, S), 0)
+    ImageDraw.Draw(mask).ellipse([0, 0, S - 1, S - 1], fill=255)
+    out.paste(img, (0, 0), mask)
+    out.alpha_composite(layer)
+    return out.resize((target_px, target_px), Image.LANCZOS)
+
+
 def verify_with_flutter() -> int:
+
     """如果本机能找到 Flutter 的 icons.dart，就逐个核对上面的码位表。
 
     这是为「手抄码位抄错」那个错误加的（place / history 各错一次，都不报错、
@@ -251,6 +324,8 @@ def main() -> int:
     #   App 图标是同一张图；同时保持 aw_* 命名，便于统一维护。
     logo_src = os.path.join(root, "android", "app", "src", "main", "res",
                             "mipmap-xxxhdpi", "ic_launcher.png")
+
+    LOGO_DP = 17
     if not os.path.exists(logo_src):
         print(f"找不到 logo 源：{logo_src}", file=sys.stderr)
         return 1
@@ -258,13 +333,7 @@ def main() -> int:
         print("logo 源指向了 assets/osl.png —— 那是贡献者头像，不是 logo",
               file=sys.stderr)
         return 1
-    logo = Image.open(logo_src).convert("RGBA")
-    LOGO_DP = 17
-    side = LOGO_DP * DENSITY_SCALE
-    # 等比缩放而不是拉伸：logo 若不是正方形，拉伸会变形
-    sc = side / max(logo.size)
-    logo = logo.resize((max(1, round(logo.width * sc)),
-                        max(1, round(logo.height * sc))), Image.LANCZOS)
+    logo = render_logo(LOGO_DP * DENSITY_SCALE)
 
     # 完整性自检：logo 必须真是一张有内容的图。
     # 「拿错图」这类错不会报错、也不会崩，只是界面上多个莫名其妙的东西 ——
