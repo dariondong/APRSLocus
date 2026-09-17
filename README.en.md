@@ -104,10 +104,14 @@ Author: [BG7LZQ (Darion)](https://theez.top) · Website: [aprslocus.theez.top](h
 - Fun easter eggs on details / settings pages
 
 ### 📱 Home-screen Widget (Android)
-- **4 columns × 2 rows**: current weather plus *what to watch out for right now* at a glance
-- Row 1: weather (icon / temperature / conditions / today's high–low) + 3 metric cells (humidity, pressure, wind, visibility, precipitation, dew point… picking the three that matter most for the current conditions)
-- Row 2: **amateur-radio operating tips** ×4, sorted by severity (safety alert → caution → opening → tip; danger highlighted in red), driven by exactly the same rules as the in-app weather panel
-- Background gradient follows the weather and the system dark mode, sharing its palette with the weather panel
+- **Freely resizable**, with four layouts chosen automatically to fit the space:
+  - **4×2 main**: large temperature on the left, a 2×2 metric grid on the right, 2 tips at the bottom
+  - **2×4 tall**: vertical arrangement stacking 3–5 tips (closest to the in-app weather panel)
+  - **2×2 compact**: temperature + conditions + only the single most important tip
+  - **4×1 row**: one full-width line — temperature + conditions + today's high/low + one tip
+- **Amateur-radio operating tips** driven by **exactly the same rules as the in-app weather panel** (safety alert → caution → opening → tip); danger is marked with a red dot and a red background
+- **Metrics ranked by weather**: fog puts visibility first, rain/snow puts precipitation first, cold puts dew point first, otherwise pressure — a small grid has to prioritise rather than dump a generic list
+- **Background gradient follows the weather (7 variants) and the system dark mode**, sharing its palette with the weather panel
 - The header shows the **observation time**, so stale data is visible at a glance instead of pretending to be current; tapping the widget opens the app
 
 ### 🚀 Auto Update

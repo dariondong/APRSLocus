@@ -52,7 +52,12 @@ const int kAppWidgetSnapshotVersion = 1;
 const int kAppWidgetMaxTips = 4;
 
 /// 第 1 行除「天气主格」外的指标格数量
-const int kAppWidgetMetricCount = 3;
+///
+/// 4 格：tile/tall 档的指标区是 2×2 网格，正好 4 格。
+/// 数量必须和布局里声明的格子数一致 —— 多了会出现空格子，
+/// 少了则有一格永远空着（Kotlin 侧也会隐藏多余格，但根子上的数量对齐
+/// 应该在这里保证）。
+const int kAppWidgetMetricCount = 4;
 
 /// 从天气数据取值：字符串 → 整数（解析失败给 [fallback]）
 int _intOf(String v, [int fallback = 0]) => int.tryParse(v) ?? fallback;
@@ -166,13 +171,15 @@ String widgetWeatherKind(WeatherNow w) {
 /// 一条指标格的展示三元组
 typedef WidgetMetricTile = ({String emoji, String value, String label});
 
-/// 按当前天气挑「此刻最该看的 3 项指标」。
+/// 按当前天气排出「此刻最该看的 4 项指标」，**越靠前越要紧**。
 ///
-/// 组件第 1 行只有 3 个指标格，若固定写死湿度/气压/风，会在真正要紧的时候缺项：
-/// 雾天看不到能见度、暴雨看不到降水量、结冰天看不到露点。所以按天气切换。
-/// 注意这里刻意只用**已有**的 l10n 文案（如 `weatherDew` 已有独立的「露点」键），
-/// 而不去蹭带占位符的 `weatherFeels`（"体感 {v}°"）—— 那个键里没有可单独
-/// 取出的「体感」二字，硬切字符串在别的语言下必崩。
+/// 指标区是 2×2 网格（4 格），所以固定返回 4 项；顺序由天气决定：
+/// 雾天把能见度顶到第一格、雨天把降水量顶到第一格……
+/// 面板里这些指标是平铺的通用清单，而组件格子少，必须分主次。
+///
+/// 注意只用**已有**的 l10n 文案（`weatherDew` 等都有独立键），不去蹭带
+/// 占位符的 `weatherFeels`（"体感 {v}°"）—— 那个键里没有可单独取出的
+/// 「体感」二字，硬切字符串在别的语言下必崩。
 List<WidgetMetricTile> widgetMetricTiles(WeatherNow w, AppLocalizations s) {
   final n = _intOf(w.icon, -1);
   final t = _intOf(w.temp);
@@ -187,51 +194,38 @@ List<WidgetMetricTile> widgetMetricTiles(WeatherNow w, AppLocalizations s) {
   final windTile = (emoji: '🌬️', value: '$wind 级', label: s.weatherWindScale);
   final humTile =
       (emoji: '💧', value: '${w.humidity}%', label: s.weatherHumidity);
+  final pressTile =
+      (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa');
+  final visTile = (emoji: '👁️', value: '${w.vis}km', label: s.weatherVis);
+  final precipTile = (
+    emoji: isSnow ? '❄️' : '🌧️',
+    value: '${w.precip}mm',
+    label: s.weatherPrecip,
+  );
 
   // 雾 / 能见度低：能见度是第一信息（直接关系到能不能出门架台）
   if (isFog || vis < 5) {
-    return [
-      (emoji: '👁️', value: '${w.vis}km', label: s.weatherVis),
-      humTile,
-      windTile,
-    ];
+    return [visTile, humTile, windTile, pressTile];
   }
-  // 降水：降水量 + 湿度（馈线防水、雨衰判断）
+  // 降水：降水量顶到第一格（馈线防水、1.2GHz 以上雨衰判断）
   if (isRain || isSnow) {
-    return [
-      (
-        emoji: isSnow ? '❄️' : '🌧️',
-        value: '${w.precip}mm',
-        label: s.weatherPrecip,
-      ),
-      humTile,
-      windTile,
-    ];
+    return [precipTile, humTile, windTile, visTile];
   }
-  // 低温：露点（接近饱和易结露短路）比体感更有用。
-  // 注意这里不再重复判断 isSnow —— 下雪已经被上面「降水」那支接走了，
-  // 留着只会让人以为两处都有份。（这类死条件是最难看出来的一种混乱）
+  // 低温 / 结冰：露点顶到第一格（接近饱和易结露短路，比体感实用）
   if (t <= 5) {
     return [
       (emoji: '💧', value: '${w.dew}°', label: s.weatherDew),
       humTile,
       windTile,
+      pressTile,
     ];
   }
-  // 高温：湿度 + 气压（对流天气与设备散热降额）
+  // 高温：湿度与气压变要紧（对流天气与设备散热降额）
   if (t >= 30) {
-    return [
-      humTile,
-      windTile,
-      (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa'),
-    ];
+    return [humTile, pressTile, windTile, visTile];
   }
-  // 常规：气压（关注波导/天气转折） + 湿度 + 风力
-  return [
-    (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa'),
-    humTile,
-    windTile,
-  ];
+  // 常规：气压（大气波导与天气转折）优先
+  return [pressTile, humTile, windTile, visTile];
 }
 
 /// 组装给桌面小组件的快照（纯函数，不碰平台通道，便于单测）。
@@ -270,6 +264,9 @@ Map<String, Object?> buildAppWidgetSnapshot({
     'metrics': <Map<String, Object?>>[],
     'tipsLabel': s.hamTitle,
     'tips': <Map<String, Object?>>[],
+    // 单行形态用的压缩文案；无数据时为空数组（而不是缺这个键）——
+    // 快照应该自描述：键齐全、值为空，比「缺键」让消费方更好处理
+    'compactRows': <Map<String, Object?>>[],
     'tipTotal': 0,
     // 组件的空状态：直接复用「暂无定位」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.weatherNoLoc,
@@ -318,8 +315,95 @@ Map<String, Object?> buildAppWidgetSnapshot({
         'level': tip.level.name,
       },
   ];
+  // 「单行形态」：小尺寸档（2×2 / 4×1）只有一格提示位，放不下整句，
+  // 用「级别 + 结论」压缩成一行（例：「⚡ 安全警示：雷雨天气：请勿在室外…」）。
+  // 只下发第 1 条（已经按级别排序，第 1 条就是最要紧的）。
+  snap['compactRows'] = <Map<String, Object?>>[
+    for (final tip in tips.take(3))
+      <String, Object?>{
+        'emoji': widgetTipEmoji(tip.icon),
+        'levelLabel': hamLevelLabel(tip.level, s),
+        'color': widgetTipTextArgb(tip.color),
+        'singles': <Map<String, Object?>>[
+          // 同一句话的三种长度：宽度大就用长的，放不下就逐级退短。
+          // 在 Dart 里切好而不是让 Kotlin 数「第几个冒号」——切分规则
+          // （全角： / 半角:）是中英文文案的事，属于本地化范畴。
+          for (final part in compactTipVariants(tip.text))
+            <String, Object?>{
+              'emoji': widgetTipEmoji(tip.icon),
+              'text': part,
+              'color': widgetTipTextArgb(tip.color),
+              'level': tip.level.name,
+            },
+        ],
+      },
+  ];
   snap['tipTotal'] = tips.length;
   return snap;
+}
+
+/// 把一条建议切成逐级变短的若干版本（供小尺寸组件按可用宽度挑选）。
+///
+/// 建议文案的写法天然适合这样切：先给结论再给理由，例如
+/// 「雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备」
+/// → 「雷雨天气：请勿在室外架设/操作天线！」→「请勿在室外架设/操作天线！」
+/// → 「雷雨天气…」
+/// 返回顺序是**从长到短**，且除最长那条外都带省略号收尾 —— 让用户看出
+/// 「这里还有下文」，而不是以为组件漏字了。
+/// 公开出来是为了可测：这些切分规则是纯字符串逻辑，值得单测盯住。
+List<String> compactTipVariants(String text) {
+  final t = text.trim();
+  if (t.isEmpty) return const [];
+  final out = <String>[];
+
+  // ① 首个句末标点之前（！/　。/；等）—— 中文建议的结论句几乎都在这里
+  final m = RegExp(r'[^！。；;!?？]+[！。；;!?？]?').firstMatch(t);
+  if (m != null && m.group(0)!.trim().isNotEmpty) {
+    final head = m.group(0)!.trim();
+    if (head != t) out.add(head);
+  }
+
+  // ② 冒号后的一半（「雷雨天气：」后面的正文）
+  for (final sep in const ['：', ':']) {
+    final i = t.indexOf(sep);
+    if (i > 0 && i + 1 < t.length) {
+      out.add(t.substring(i + 1).trim());
+      break;
+    }
+  }
+
+  // ③ 冒号前的一半（「雷雨天气」）
+  for (final sep in const ['：', ':']) {
+    final i = t.indexOf(sep);
+    if (i > 2) {
+      out.add(t.substring(0, i).trim());
+      break;
+    }
+  }
+
+  // 去重 + 去掉空串，并给非最长版本补省略号
+  final seen = <String>{};
+  final uniq = <String>[];
+  for (final v in out) {
+    if (v.isEmpty || seen.contains(v)) continue;
+    seen.add(v);
+    uniq.add(v);
+  }
+  if (uniq.isEmpty) return [t];
+
+  // **按长度降序**，而不是按生成顺序。
+  // 生成顺序是「句末标点前 → 冒号后 → 冒号前」，这三者之间**没有**长度关系：
+  // 例如「雷雨天气：请勿在室外架设/操作天线！断开天线馈线…」的
+  // 「冒号后」反而比「句末标点前」长。而 Kotlin 侧依赖「从长到短」
+  // 逐个试配宽度，顺序错了就会挑到一个放不下的长句 → 溢出错行。
+  uniq.sort((a, b) => b.length.compareTo(a.length));
+
+  // 除最长那条外都补省略号，让人看出「还有下文」而不是以为漏字了
+  final longest = uniq.first.length;
+  return [
+    for (final v in uniq)
+      if (v.length == longest || v.endsWith('…')) v else '$v…',
+  ];
 }
 
 /// 桌面小组件 ↔ Flutter 的桥。

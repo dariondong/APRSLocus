@@ -95,6 +95,18 @@ void main() {
       expect(() => jsonEncode(snap), returnsNormally);
     });
 
+    test('指标格数量与布局里的格子数一致（2×2 网格 → 4 格）', () {
+      // 布局 aw_widget_tile / aw_widget_tall 的指标区是 2×2 网格。
+      // 数量对不上的后果：少了 → 网格里永久留一个空白块；
+      // 多了 → Kotlin 会把多余格隐藏（补救），但根子上的数量对齐该在这里保证。
+      expect(kAppWidgetMetricCount, 4);
+      for (final icon in ['100', '104', '302', '400', '501']) {
+        seed(icon: icon, precip: '1');
+        final snap = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+        expect((snap['metrics'] as List).length, 4, reason: 'icon=$icon');
+      }
+    });
+
     test('提示最多下发 4 条（第 2 行只有 4 格）', () {
       // 雷暴 + 大风 + 高湿 + 低能见度，一次凑出远超 4 条建议
       seed(
@@ -197,6 +209,18 @@ void main() {
       expect(firstLabel(snap), contains(zh.weatherPressure));
     });
 
+    test('每项指标的名次随天气变化（最要紧的排第一格）', () {
+      // 同一组数值下，雾天把能见度顶上来、雨天把降水量顶上来 ——
+      // 组件格子少，必须分主次，不能像面板那样平铺一份通用清单。
+      seed(icon: '501', temp: '20', vis: '0.8', precip: '1');
+      final fog = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+      expect(firstLabel(fog), zh.weatherVis);
+
+      seed(icon: '305', temp: '20', vis: '25', precip: '4');
+      final rain = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+      expect(firstLabel(rain), zh.weatherPrecip);
+    });
+
     test('每个指标格三项都不为空（否则格子里会出现空白）', () {
       for (final icon in ['100', '104', '305', '302', '400', '501']) {
         seed(icon: icon, precip: '1');
@@ -280,6 +304,84 @@ void main() {
             reason: '图标 ${tip.icon} 没有对应的 emoji，组件上会退化成 '
                 '$kWidgetTipEmojiFallback');
       }
+    });
+  });
+
+  group('单行形态的文案压缩（2×2 / 4×1 档用）', () {
+    const full = '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备';
+
+    test('切出从长到短的多个版本，且都是原文的子串', () {
+      final v = compactTipVariants(full);
+      expect(v, isNotEmpty);
+      for (final s in v) {
+        expect(full.contains(s.replaceAll('…', '')), isTrue,
+            reason: '「$s」不是原文的子串，等于凭空造词');
+      }
+    });
+
+    test('每一版都比原文短（否则压缩没意义）', () {
+      for (final s in compactTipVariants(full)) {
+        expect(s.length, lessThan(full.length));
+      }
+    });
+
+    test('按长到短排列（Kotlin 从前往后挑第一个放得下的）', () {
+      final v = compactTipVariants(full);
+      for (var i = 1; i < v.length; i++) {
+        expect(v[i].length, lessThanOrEqualTo(v[i - 1].length),
+            reason: '第 $i 项比前一项长，挑选逻辑会挑错');
+      }
+    });
+
+    test('长版本会带省略号，用户能看出还有下文', () {
+      expect(compactTipVariants(full).any((s) => s.endsWith('…')), isTrue);
+    });
+
+    test('没有标点和冒号的短句：原样返回，不能返回空', () {
+      final v = compactTipVariants('天气良好');
+      expect(v, isNotEmpty);
+      expect(v.first, '天气良好');
+    });
+
+    test('空串不炸', () {
+      expect(compactTipVariants(''), isEmpty);
+      expect(compactTipVariants('   '), isEmpty);
+    });
+
+    test('英文文案（半角冒号）也能切', () {
+      const en = 'High pressure with a stable airmass: tropospheric ducting may '
+          'form, try long-distance VHF/UHF contacts';
+      final v = compactTipVariants(en);
+      expect(v, isNotEmpty);
+      for (final s in v) {
+        expect(en.contains(s.replaceAll('…', '')), isTrue);
+      }
+    });
+
+    test('快照里的 compactRows 带上压缩版本（供小尺寸档用）', () {
+      seed(icon: '302', text: '雷阵雨');
+      final snap = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+      final rows = snap['compactRows'] as List;
+      expect(rows, isNotEmpty);
+
+      final first = rows.first as Map;
+      expect(first['emoji'], '⚡');
+      expect(first['levelLabel'], zh.hamLevelDanger);
+      final singles = first['singles'] as List;
+      expect(singles, isNotEmpty);
+      for (final s in singles) {
+        final m = s as Map;
+        expect(m['text'], isNotEmpty);
+        expect(m['emoji'], isNotEmpty);
+        expect(m['color'], isA<int>());
+      }
+      expect(() => jsonEncode(snap), returnsNormally);
+    });
+
+    test('没有天气数据时 compactRows 为空（占位态不该显示提示）', () {
+      seedNoData();
+      final snap = buildAppWidgetSnapshot(wc: WeatherCenter.instance, s: zh);
+      expect(snap['compactRows'], isEmpty);
     });
   });
 

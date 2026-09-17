@@ -1,0 +1,119 @@
+<!--
+  桌面小组件 · 单行档（4×1）
+
+  一条通栏：温度 + 天气现象 + 高低温 + 一条提示。
+  
+  高度只有 1 格（约 60dp），所以**一切都必须单行**。提示用 Dart 侧
+  预先切好的短版本（compactRows[0].singles），由 Kotlin 按可用宽度
+  从长到短挑第一个放得下的那个 —— 切分规则属于本地化范畴，不在 Kotlin 做。
+  
+  ⚠ 硬约束同 compact 档。
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/aw_bgs_cloudy">
+    <LinearLayout
+        android:id="@+id/aw_pad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="11dp"
+        android:paddingEnd="11dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="#FFFFFF"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:letterSpacing="-0.02"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_deg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="°"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_cond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="#D9FFFFFF"
+        android:textSize="9.5sp"
+        android:maxWidth="92dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textColor="#C4FFFFFF"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_sep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="#59FFFFFF"
+        android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_tip0_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/aw_dot"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_tip0_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="6dp"
+        android:textColor="#EDFFFFFF"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/aw_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#E6FFFFFF"
+        android:textSize="10sp"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.35"
+        android:visibility="gone"
+        android:includeFontPadding="false" />
+</FrameLayout>

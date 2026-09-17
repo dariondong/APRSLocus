@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <!-- 提示行左侧的级别色小圆点。与面板 _tipRow 的 6dp 圆点同尺寸；底色纯白，运行时用 setColorFilter 染成建议级别色。为什么不用「竖色条」：竖条要 height=match_parent 才能跟满两行文字，而 match_parent 高度在 wrap_content 的横向 LinearLayout 里测量不可靠（RemoteViews 里一旦测成 0 高，色条就整根消失）。圆点没这个风险。 -->
+    <solid android:color="#FFFFFF" />
+</shape>

@@ -1,0 +1,184 @@
+<!--
+  桌面小组件 · 紧凑档（2×2 / 2×3）
+
+  温度 + 天气现象 + 今日高低温，下面一条「最要紧」的提示。
+  
+  提示只给一条：小尺寸下把 4 条并列等于每条都看不清，
+  所以这里只显示排序后的第 1 条（危险 → 注意 → 通联机会 → 操作提示）。
+  
+  ⚠ 硬约束：只用 RemoteViews 白名单控件（FrameLayout / LinearLayout /
+  TextView）；不用 <selector>；不用 styles.xml 主题样式；不用原生 <View>
+  （会抛 android.view.View is not allowed，整块变白）。
+  背景由 Kotlin 按天气档位换成 aw_bgs_*（小圆角版本）。
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aw_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/aw_bgs_cloudy">
+    <LinearLayout
+        android:id="@+id/aw_pad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
+    <LinearLayout
+        android:id="@+id/aw_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#F2FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:maxWidth="72dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_aqi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/aw_pill"
+        android:textColor="#FFFFFF"
+        android:textSize="8.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_spacer"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_observed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#B8FFFFFF"
+        android:textSize="8sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_c_hero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_c_emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <LinearLayout
+        android:id="@+id/aw_c_temp_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_c_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:letterSpacing="-0.02"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_c_deg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="°"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/aw_cond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:textColor="#D9FFFFFF"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:textColor="#C4FFFFFF"
+        android:textSize="9sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <LinearLayout
+        android:id="@+id/aw_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_tip0_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/aw_dot"
+        android:textColor="#FFFFFF"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_tip0_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="7dp"
+        android:textColor="#EDFFFFFF"
+        android:textSize="8.5sp"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.25"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/aw_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#E6FFFFFF"
+        android:textSize="10sp"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.35"
+        android:visibility="gone"
+        android:includeFontPadding="false" />
+</FrameLayout>

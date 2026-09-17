@@ -2,22 +2,47 @@
 
 ## [1.6.114] - 2026-09-17
 
-### 📱 新增 Android 桌面小组件（4 列 × 2 行）：天气 + 业余无线电提示
-### New Android home-screen widget (4 columns × 2 rows): weather + amateur-radio tips
+### 📱 新增 Android 桌面小组件：可自由缩放，4 档尺寸自适应（天气 + 业余无线电提示）
+### New resizable Android home-screen widget with 4 adaptive size tiers (weather + amateur-radio tips)
 
-在手机主屏上放一块 4 格宽 × 2 格高的组件，一眼看到当前天气和**此刻该注意什么**：
+在手机主屏上放一块组件，一眼看到当前天气和**此刻该注意什么**，并可按主屏空间自由缩放：
 
 ```
-  📍北京  [AQI 42 优]                            观测 14:30
- ────────────────────────────────────────────────────────────
- 第 1 行  🌤 23° 晴 · 12°/25°   💧45% 湿度   🌡1013 气压   🌬3级 风力
- 第 2 行  ⚡ 安全警示 / 雷雨天气：…   ×4（按级别排序，危险优先）
+ 4×2 主面板    📍北京 [AQI 42 优]                       观测 14:30
+              ┌──────────────┐  ┌──────┐ ┌──────┐
+              │ 🌤 31° 晴     │  │💧45% │ │🌬3级 │
+              │ 12°/25°      │  ├──────┤ ├──────┤
+              └──────────────┘  │🌡1013│ │👁25km│
+              ● 安全警示 ⚡ 雷雨天气：请勿在室外架设/操作天线！断开天线馈线…
+              ● 通联机会 🌙 夜间 D 层消失：80/40m 吸收减小、噪声较低…
+
+ 2×4 小面板    竖长布局，提示可堆叠 3~5 条（最接近 App 内天气面板）
+ 2×2 紧凑档    温度 + 天气 + 只给「最要紧」的那一条
+ 4×1 单行档    一整条通栏：温度 + 天气 + 高低温 + 一条提示
 ```
 
-顶栏显示的是**观测时刻**而不是本机时间 —— 数据不新鲜时用户能一眼看出来，
-这比显示一个永远等于「现在」的时间戳诚实得多。点整块组件打开 App。
+**四个档位不是四套文案，而是同一份数据的四种排布**。缩放时自动换布局
+（`WeatherWidgetProvider.tierFor`，优先用 `appWidgetWidthCells/HeightCells`）：
 
-**为什么组件不自己联网取天气**（这是这个功能最关键的设计决定）
+| 档位 | 格子 | 内容 |
+|---|---|---|
+| `tile` | 3~4×2 | 左温度 / 右 2×2 指标 / 底 2 条提示 |
+| `tall` | 2×4 | 温度 + 指标 + 堆叠提示（**最像 App 面板**）|
+| `compact` | 2×2~2×3 | 温度 + 天气 + 1 条最要紧的提示 |
+| `row` | 3~4×1 | 单行：温度 + 天气 + 高低温 + 提示 |
+
+**为什么第一版「又挤又不像面板」（记录教训）**
+
+第一版把 4 条提示塞进 4 个窄列、每格约 60dp 宽，正文压到 8sp 还折三行。
+根因是**照抄了「4 列 × 2 行」的字面意思，没有照抄面板的结构**：面板里
+每条建议是**一整行通栏**（级别色圆点 + 图标级别 + 正文，正文 12sp），
+把它拆成窄列就必然挤。这一版改成通栏堆叠行，与面板 `_tipRow` 同构。
+
+另一个原因是**档位选错了**：4×2 只有 2 格高，塞完温度与指标后剩给提示的
+高度只够 2 行。所以这一版**宁可少给两条**（只显示 2 条），也要让给出的两条
+读得舒服 —— 完整列表点进 App 看。要 4 条提示就把组件拉到 2×4。
+
+**组件不自己联网取天气**（这是最关键的设计决定，未变）
 
 最直觉的做法是让 `AppWidgetProvider` 自己请求和风 API。**没这么做**，因为：
 
@@ -30,41 +55,62 @@
    桌面组件说「天气良好，适合架台」，这种 bug 极难发现，因为两边各自看都「对」。
 
 所以数据是**单向推**的：Flutter 侧（`lib/app_widget.dart::AppWidgetBridge`）把一份
-**已经算好、已经本地化**的快照 JSON 推给原生，Kotlin 只负责「把字符串放进对应的格子」。
-原生侧一条业务判断都没有 —— 包括「该显示湿度还是降水量」这种选择也在 Dart。
+**已经算好、已经本地化**的快照 JSON 推给原生。Kotlin 侧**一条业务判断都没有**。
 
-**指标格是数据驱动的，不是写死的**
+**那「自适应」是谁在决定？**——是**排版**在原生、**内容**在 Dart，二者分工明确：
 
-第 1 行除天气主格外的 3 个格子，按当前天气切换成**此刻最该看的三项**：
+- 原生侧只知道尺寸，所以由它决定「显示几条」「用哪一档长度的文案」；
+- 但「哪几条」「每种长度具体是什么字」已经在 Dart 侧算好并排好序，
+  原生只是「从前往后取 n 条」「从长到短挑第一个放得下的」。
 
-| 天气 | 三格显示 | 理由 |
+小尺寸档放不下一整句建议，所以在 Dart 侧把每条建议**切成逐级变短的若干版本**
+（`compactTipVariants`），例如：
+
+```
+雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备
+  → 雷雨天气：请勿在室外架设/操作天线！
+  → 请勿在室外架设/操作天线！
+  → 雷雨天气…
+```
+
+切分规则（全角冒号 `：` / 半角 `:` / 句末标点）是**中英文文案**的事，
+属于本地化范畴，所以切分在 Dart 做、Kotlin 只挑选。短的版本带省略号收尾，
+让人看出「还有下文」，而不是以为组件漏字了。
+
+**指标格按天气切换名次**
+
+面板里指标是平铺的通用清单（湿度·风向·气压·能见度·降水·露点…），
+组件格子少（2×2 = 4 格），必须分主次：
+
+| 天气 | 排在第一格 | 理由 |
 |---|---|---|
-| 雾 / 能见度 < 5km | 能见度 · 湿度 · 风力 | 能不能出门架台，先看能见度 |
-| 雨 / 雪 | 降水量 · 湿度 · 风力 | 馈线防水与 1.2GHz 以上雨衰判断 |
-| 低温 / 结冰 | 露点 · 湿度 · 风力 | 露点差小 → 结露短路，比体感更实用 |
-| 高温 ≥30° | 湿度 · 风力 · 气压 | 对流天气与设备散热降额 |
-| 常规 | 气压 · 湿度 · 风力 | 气压看大气波导与天气转折 |
+| 雾 / 能见度 < 5km | 能见度 | 能不能出门架台，先看能见度 |
+| 雨 / 雪 | 降水量 | 馈线防水与 1.2GHz 以上雨衰判断 |
+| 低温 ≤5° | 露点 | 露点差小 → 结露短路，比体感更实用 |
+| 高温 ≥30° | 湿度 | 对流天气与设备散热降额 |
+| 常规 | 气压 | 大气波导与天气转折 |
 
-写死「湿度/气压/风」的话，真正要紧的时候恰好会缺项。
+**背景渐变与天气面板同源**：7 档背景（晴/多云/阴/雨/雷/雪/雾 × 浅色/深色）
+由 `tool/gen_app_widget_drawables.py` 从**同一张调色板**生成，色值和
+`lib/weather.dart::_fxGradient()` 逐色一致，避免「面板是深蓝雨夜、桌面组件是大晴天」。
+改配色要改脚本，别手改 XML。
 
-**背景渐变与天气面板同源**
-
-7 档背景（晴/多云/阴/雨/雷/雪/雾 × 浅色/深色）由 `tool/gen_app_widget_drawables.py`
-从**同一张调色板**生成，色值和 `lib/weather.dart::_fxGradient()` 逐色一致，
-避免出现「面板是深蓝雨夜、桌面组件是大晴天」。改配色要改脚本，别手改 XML。
-
-**踩到的几个 Android 坑（都写进注释了，以免日后重犯）**
+**踩到的 Android 坑（都写进注释了，以免日后重犯）**
 
 1. **`<View>` 不能用在 RemoteViews 里** —— 原生 `View` 不在允许的 View 列表内，
-   inflate 时抛 `android.view.View is not allowed`，表现是整个组件变白块。
-   撑开宽度用的占位改成了 0dp 的 `TextView`。
+   inflate 时抛 `android.view.View is not allowed`，整个组件变白块。
+   撑宽度用的占位改成了 0dp 的 `TextView`。
 2. **不能用 `<selector>` / ripple 当背景** —— RemoteViews 由系统进程 inflate，
-   状态选择器会直接抛异常。「危险级提示格」因此是换一张 drawable（`aw_tile_danger`），
-   而不是加 selector。
-3. **不能用 `styles.xml` 里的主题样式** —— 同理，未知属性直接崩，字号颜色只能就地写死。
-4. **`IconData` 不能当 `const` map 的键** —— 它覆写了 `==`/`hashCode`，而常量 map
+   状态选择器会直接抛异常。所以「危险级提示行」是换一张 drawable
+   （`aw_tile_danger`），不是加 selector。
+3. **不能用 `styles.xml` 里的主题样式** —— 同理，未知属性直接崩。字号颜色只能就地写死。
+4. **`match_parent` 高度在 `wrap_content` 的横向 LinearLayout 里不可靠** ——
+   第一版提示行左边想放「竖色条」，靠 `height=match_parent` 跟满两行文字，
+   一旦被测量成 0 高就整根消失。改成与面板一致的 **6dp 圆点**（`aw_dot` +
+   `setColorFilter` 染色），没有这个风险。
+5. **`IconData` 不能当 `const` map 的键** —— 它覆写了 `==`/`hashCode`，而常量 map
    的键要在编译期规范化，analyzer 报 `const_map_key_not_primitive_equality`。改 `final`。
-5. **组件上不能用 Material 图标**（那是 App 的字体资源，组件进程里没有），
+6. **组件上不能用 Material 图标**（那是 App 的字体资源，组件进程里没有），
    所以所有图标在 Dart 侧映射成 emoji 随数据下发；这也和 `NotifHelper` 里
    `"📻 $from"` 的做法一致。
 
@@ -77,116 +123,151 @@
 (c) 数据过期的刷新交给顶栏胶囊 `WeatherBadge`，用户点组件打开 App 时它自然会拉，
 拉完驱动同步器把新快照推给组件。
 
-另外原本给推送加的 1.5s `Future.delayed` 节流**已删除**：它留下的定时器不受
-`dispose` 管辖，会在 widget 测试里变成「A Timer is still pending」那种越查越远的假失败，
-而快照指纹去重本来就够用（实测去掉后 `widget_test.dart` 的 pending timer 列表里
-不再出现 `app_widget.dart`）。
+**新增工具（都不依赖 Android SDK）**
 
-**测试**
+- `tool/gen_app_widget_layouts.py`：生成 4 档布局，并在**生成时自检**
+  （白名单控件 / 标签闭合 / 不用 selector）。第一次写就漏了一个 `</LinearLayout>`，
+  是 XML 解析器才告诉我的 —— 这种低级错误该由脚本挡住。
+  自检还必须**先剥掉注释再扫**：注释里为了说明约束会写到 `<View>`、`<selector>`
+  这些字面量，不剥就会把自己的说明文档判成违规。
+- `tool/gen_app_widget_drawables.py`：从与面板同一张调色板生成 7 档×2 主题背景。
+- `tool/check_android_res_ids.py`：机械核对 Kotlin 的资源引用，含两类
+  **编译期全绿、运行时才炸**的问题：① `setInt(viewId, "setBackgroundResource", …)`
+  这类**字符串方法名**；② **ResId 与布局配错** —— 把 `aw_t5_temp` 填进 tile 档的
+  ResId 表，那个 id 在 `aw_widget_tile.xml` 里不存在，编译通过、运行时静默不显示。
+  四档布局 × 各自约 30 个 id，人眼核对必然出错。现在 82 个引用逐一对照所属布局。
+- `tool/ci_status.py`：查 Actions 运行状态。之前用一行流 `echo "$JSON" | python3 -c`
+  时，GitHub 返回的大 JSON 里含控制字符，`json.load` 抛
+  "Invalid control character"，把真正的状态信息淹没在一屏 traceback 里。
 
-新增 `test/app_widget_test.dart`（21 项）：快照结构与可 JSON 编码、无数据占位、
-提示截断到 4 条且危险级排最前、城市缺失回落、观测时刻、中英文文案切换、
-6 种天气的指标切换、天气档位与面板同口径、emoji 覆盖、**以及一条
-「面板用到的每个 `HamTip` 图标都在映射表里」的护栏**（新加建议图标忘了登记就会红）、
-ARGB 编码、提示色提亮。
-
-新增 `tool/check_android_res_ids.py`：机械核对 Kotlin 里每个 `R.<type>.<name>`（含
-`setInt(viewId, "setBackgroundResource", …)` 这类**字符串方法名**调用）、布局里的
-`@drawable/@string`、清单里的组件类是否都能落地。这一步补的是「本地没有 Android SDK
-时无法编译验证」的空档 —— ResId 写错是编译期错误，但字符串方法名写错只在运行时炸。
+**测试**：`test/app_widget_test.dart` 从 21 项扩到 **32 项**。新增的 11 项盯住这次
+改动最容易错的地方：指标格数量必须等于布局格子数（2×2 → 4）、指标名次随天气变化、
+以及文案压缩的**排序契约**（必须从长到短，否则 Kotlin 会挑到放不下的长句）和
+「每一版都是原文子串」（防止凭空造词）。这两个契约正是我在写的时候搞错的地方 ——
+顺序按生成顺序而非长度排，测试当场就红了。
 
 **诚实说明两点**
 
 - 本机**没有 Android SDK**（只有 Flutter SDK），所以 Android 侧**未经本地编译验证**：
-  Kotlin 语法、`RemoteViews` 白名单控件用法、资源引用是逐条按文档核对 + 用上面那个
-  脚本机械对账的，**最终以 CI 的 Build Android APK 为准**。
+  Kotlin 语法、`RemoteViews` 白名单控件用法、资源引用是逐条按文档核对 + 用
+  `check_android_res_ids.py` 机械对账的。**v1.6.113 的组件版本已由 CI 的
+  Build Android APK 验证通过**（analyze / Windows / Android 三 job 全绿），
+  本次重构沿用同一套约束与校验方式，但**最终仍以 CI 编译为准**。
 - 组件**不会**在 App 关闭时自行更新天气（它没有密钥，见上）。打开 App（或点组件）
   就会刷新，顶栏的「观测 HH:mm」让这一点是可见的，而不是假装数据总是最新的。
+- 时钟：`updatePeriodMillis` 取系统允许的最小值 30 分钟，它**不联网**，
+  只是重渲染已有快照，顺带让组件在存储/数据异常后能自愈。
 
 ---
 
-**What it is**: a 4-cell-wide × 2-cell-tall widget for the home screen showing the current
-weather plus *what to watch out for right now*:
+**What it is**: a home-screen widget showing current weather plus *what to watch out for
+right now*, freely resizable, with four adaptive layouts:
 
 ```
-  📍Beijing  [AQI 42 Good]                        Observed 14:30
- ───────────────────────────────────────────────────────────────
- Row 1   🌤 23° Clear · 12°/25°   💧45% RH   🌡1013 hPa   🌬3 bft
- Row 2   ⚡ Safety alert / Thunderstorms: …   ×4  (sorted, danger first)
+ 4×2 main    📍Beijing [AQI 42 Good]                   Observed 14:30
+             ┌──────────────┐  ┌──────┐ ┌──────┐
+             │ 🌤 31° Clear │  │💧45% │ │🌬3bft│
+             │ 12°/25°      │  ├──────┤ ├──────┤
+             └──────────────┘  │🌡1013│ │👁25km│
+             ● Safety alert ⚡ Thunderstorms: do not erect antennas outdoors…
+             ● Opening 🌙 D-layer gone: 80/40m absorption drops, low noise…
+
+ 2×4 tall    vertical; stacks 3–5 tips (closest to the in-app weather panel)
+ 2×2 compact temperature + conditions + only the single most important tip
+ 4×1 row     one full-width line: temperature + conditions + high/low + one tip
 ```
 
-The header shows the **observation time**, not the phone's clock — so stale data is visible
-at a glance instead of hiding behind a timestamp that always reads "now". Tapping the
-widget opens the app.
+The four tiers are **not four sets of copy** — they are four arrangements of the same
+data. The layout switches automatically as you resize (`WeatherWidgetProvider.tierFor`,
+preferring `appWidgetWidthCells/HeightCells`).
 
-**Why the widget does not fetch weather itself** (the key decision here)
+**Why the first version was cramped and unlike the panel** (lesson recorded): it packed
+4 tips into 4 narrow columns of ~60dp each, squeezing body text to 8sp over 3 lines. The
+root cause was **copying the literal meaning of "4 columns × 2 rows" without copying the
+panel's structure** — in the panel each tip is a **full-width row** (severity dot + icon
+label + body, 12sp). Splitting that into narrow columns is guaranteed to be cramped. This
+version uses full-width stacked rows, structurally the same as the panel's `_tipRow`. The
+second cause was **picking the wrong tier**: a 4×2 widget is only 2 cells tall, and after
+the temperature and metrics there is room for just 2 tip rows — so this version
+**deliberately shows fewer tips** (2) and lets those two breathe. Want 4? Resize to 2×4.
 
-The obvious approach is to let `AppWidgetProvider` call the QWeather API. I did not do
-that, because: (1) the QWeather key is injected into Dart at **build time** via
-`--dart-define=QWEATHER_KEY` and simply is not available to native code — copying it into
-Kotlin (and into `local.properties`/Gradle) adds a whole new leak surface, and the two
-copies drifting apart means "app has weather, widget doesn't"; and (2), more importantly,
-**every rule lives in Dart** — the storm/gale/cold/humidity/dust/ducting/gray-line ham-advice
-logic, the localised AQI grading, the 3-day forecast parsing. Reimplementing that in Kotlin
-**would** drift from the panel: same weather, panel says "caution", widget says "great
-conditions" — the kind of bug that is very hard to find, because each side looks correct alone.
+**The widget does not fetch weather itself** (the key decision, unchanged): the QWeather
+key is injected into Dart at build time via `--dart-define=QWEATHER_KEY` and is simply not
+available to native code — copying it into Kotlin (and into `local.properties`/Gradle) adds
+a whole new leak surface, and the copies drifting apart means "app has weather, widget
+doesn't". More importantly, **every rule lives in Dart** — the storm/gale/cold/humidity/
+dust/ducting/gray-line ham-advice logic, localised AQI grading, 3-day forecast parsing.
+Reimplementing it in Kotlin **would** drift from the panel: same weather, panel says
+"caution", widget says "great conditions" — the kind of bug that is very hard to find,
+because each side looks correct alone. So data flows **one way**, and the native side
+contains **not a single business decision**.
 
-So data flows **one way**: Flutter (`lib/app_widget.dart::AppWidgetBridge`) hands over a
-snapshot JSON that is **already computed and already localised**, and Kotlin only places
-strings into cells. There is not a single business decision on the native side — even
-"show humidity or precipitation here" is decided in Dart.
+**So who decides "adaptive"?** Layout on the native side, content in Dart:
 
-**The metric cells are data-driven, not hard-coded**: the three cells beside the weather
-hero switch to whatever matters for the current conditions (fog → visibility; rain/snow →
-precipitation; freezing → dew point; ≥30°C → humidity/wind/pressure; otherwise
-pressure/humidity/wind). Hard-coding "humidity/pressure/wind" would mean missing exactly
-the field that matters when it matters.
+- Native is the only side that knows the size, so it decides *how many* tips and *which
+  length variant* fits;
+- but *which* tips and *what each variant says* is already computed and ordered in Dart;
+  native merely takes "the first n" and "the first variant that fits, longest first".
 
-**Gradients share the panel's palette**: the 7 backgrounds (clear/cloudy/overcast/rain/
-storm/snow/fog × light/dark) are generated by `tool/gen_app_widget_drawables.py` from the
-*same* palette as `lib/weather.dart::_fxGradient()`, so you never get "dark blue rainy night
-in the panel, sunny day in the widget". Change the script, not the XML.
+Small tiers cannot fit a whole sentence, so each tip is **pre-sliced into progressively
+shorter variants** in Dart (`compactTipVariants`): the takeaway sentence first, then the
+part after the colon, then the part before it. The splitting rules (full-width `：` vs
+half-width `:`, sentence-ending punctuation) are a matter of **Chinese/English copy**,
+i.e. localisation, so splitting happens in Dart and native only picks. Shorter variants end
+in an ellipsis so it reads as "there's more" rather than "the widget dropped words".
 
-**Android pitfalls hit along the way** (all documented in comments): a plain `<View>` is
-**not** allowed in RemoteViews (throws `android.view.View is not allowed` — the whole widget
-goes blank; the spacer is a 0dp `TextView` now); `<selector>`/ripple drawables throw during
-RemoteViews inflation (so the danger cell swaps to a different drawable rather than using a
-state list); `styles.xml` theme styles are not readable by the system process (fonts/colours
-are inlined); `IconData` cannot be a `const` map key because it overrides `==`/`hashCode`;
-and Material icons are unavailable in the widget process, so every icon is mapped to an emoji
-in Dart (matching the existing `"📻 $from"` convention in `NotifHelper`).
+**Metric cells are ranked by weather**: a 2×2 grid has room for 4, so the first cell is
+whatever matters most (fog → visibility; rain/snow → precipitation; ≤5°C → dew point;
+≥30°C → humidity; otherwise pressure).
 
-**A latent self-oscillation was fixed**: `WeatherCenter.load()` does **not** update `updated`
-when the fetch fails (that is the TTL criterion) yet **still** bumps `version`. A synchroniser
-that unconditionally reloads on `version` would spin in a "notify → load → fail → notify" loop,
-burning mobile data on cases that cannot succeed (no fix / server down). Now it only loads as
-a fallback when there is **no data at all**, guarded by a 2-minute timestamp, and staleness
-refreshing is left to the top-bar `WeatherBadge` — opening the app refreshes, and that pushes
-a fresh snapshot to the widget.
+**Gradients share the panel's palette**: the 7 backgrounds × 2 themes are generated by
+`tool/gen_app_widget_drawables.py` from the *same* palette as
+`lib/weather.dart::_fxGradient()`, so you never get "dark blue rainy night in the panel,
+sunny day in the widget".
 
-The 1.5s `Future.delayed` throttle originally added to the push path was **removed**: it left
-a timer outside `dispose`'s control, which shows up in widget tests as the hard-to-trace
-"A Timer is still pending" false failure, while the snapshot fingerprint already deduplicates
-(verified: `app_widget.dart` no longer appears in `widget_test.dart`'s pending-timer trace).
+**Android pitfalls hit** (all documented in comments): a plain `<View>` is **not** allowed
+in RemoteViews (the whole widget goes blank); `<selector>`/ripple drawables throw during
+RemoteViews inflation (so the danger row swaps to a different drawable); `styles.xml` theme
+styles are unreadable by the system process; `match_parent` height inside a `wrap_content`
+horizontal LinearLayout is unreliable — the first version's vertical accent bars could
+measure to zero height and vanish, replaced by the panel's own 6dp coloured dot;
+`IconData` cannot be a `const` map key because it overrides `==`/`hashCode`; and Material
+icons are unavailable in the widget process, so icons ship as emoji from Dart (matching the
+existing `"📻 $from"` convention in `NotifHelper`).
 
-**Tests**: `test/app_widget_test.dart` (21 cases) covers snapshot shape and JSON-encodability,
-the no-data placeholder, tip truncation to 4 with danger first, city fallback, observation time,
-zh/en switching, metric switching across 6 weather kinds, parity of weather kind with the panel,
-emoji coverage, a **guard that every `HamTip` icon the panel can emit is in the mapping table**
-(adding a new advice icon without registering it turns this red), ARGB encoding, and tip-colour
-brightening. `tool/check_android_res_ids.py` mechanically verifies every `R.<type>.<name>` in
-Kotlin — including string-method-name calls like `setInt(viewId, "setBackgroundResource", …)` —
-plus `@drawable/@string` in layouts and manifest component classes, filling the gap left by
-having no Android SDK locally: a wrong ResId is a compile error, but a wrong string method name
-only explodes at runtime.
+**A latent self-oscillation was fixed**: `WeatherCenter.load()` does **not** update
+`updated` when the fetch fails (that is the TTL criterion) yet **still** bumps `version` —
+an unconditional reload would spin in a "notify → load → fail → notify" loop, burning
+mobile data on cases that cannot succeed. Now it only loads as a fallback when there is
+**no data at all**, guarded by a 2-minute timestamp, and staleness refreshing is left to
+the top-bar `WeatherBadge`.
 
-**Two honest caveats**: there is **no Android SDK on this machine** (only the Flutter SDK), so
-the Android side was **not compile-verified locally** — Kotlin syntax, RemoteViews-allowed
-view usage and resource references were checked against the docs and reconciled mechanically by
-the script above, and **CI's Build Android APK is the real gate**. And the widget **does not**
-update weather on its own while the app is closed (it holds no key, see above); opening the app
-(or tapping the widget) refreshes it, and the "Observed HH:mm" in the header makes that visible
-rather than pretending the data is always current.
+**New tooling** (none of it needs an Android SDK): a layout generator that self-checks
+(allowed views / tag balance / no selectors — it caught a missing `</LinearLayout>` I had
+just written, and it must strip comments first, since the comments deliberately quote
+`<View>` and `<selector>` to document the constraints); a drawable generator sharing the
+panel palette; `check_android_res_ids.py`, which verifies Kotlin's resource references
+including the two classes of bug that are **green at compile time and explode at runtime**
+(string method names in `setInt`, and ResId/layout mismatches across the four tiers — 82
+references cross-checked against their own layout); and `ci_status.py`, because the earlier
+one-liner JSON pipeline choked on control characters and buried the status in a traceback.
+
+**Tests**: `test/app_widget_test.dart` grew from 21 to **32** cases. The new ones target
+exactly what this change was most likely to get wrong: metric count must equal the layout's
+grid (2×2 → 4), metric ranking must follow the weather, and the copy-compression **ordering
+contract** (longest first, or native picks an overflowing string) plus "every variant is a
+substring of the original" (no invented words). Both contracts were things I got wrong while
+writing it — the test went red immediately.
+
+**Two honest caveats**: there is **no Android SDK on this machine**, so the Android side was
+**not compile-verified locally** — Kotlin syntax, RemoteViews-allowed views and resource
+references were checked against the docs and reconciled mechanically by the script above.
+The previous widget revision **was** validated by CI's Build Android APK (analyze / Windows
+/ Android all green); this refactor keeps the same constraints and validation, but **CI's
+build remains the real gate**. And the widget **does not** update weather on its own while
+the app is closed; opening the app (or tapping the widget) refreshes it, and the
+"Observed HH:mm" in the header makes that visible rather than pretending the data is always
+current.
 
 ## [1.6.113] - 2026-09-15
 
