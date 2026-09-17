@@ -1318,102 +1318,6 @@ class _FxPainter extends CustomPainter {
 }
 
 
-/// ─── 星空层（面板上半部）───
-///
-/// 需求：「面板背景上方是星空、下方天空蓝（大气层）」，即把面板的背景读成
-/// 「从外太空俯视大气层」——上半是深空星点，下半是大气密度递增的蓝。
-///
-/// **刻意是静态的**（不随 `anim` 抖动）：星点数量多、每帧重绘没有收益，
-/// 而这一层已经包在 `RepaintBoundary` 里 —— 静态绘制只发生一次，
-/// 滑动面板时不会连带重绘（云雨那层才需要动，它们本来就是动的）。
-/// 星点位置用固定种子生成，保证每次启动星图一致（不会「每次打开都不一样」
-/// 那种廉价闪烁感），也与预览图 tool/preview_app_widget.py 的星图一致。
-class _StarLayer extends StatelessWidget {
-  final bool dark;
-  const _StarLayer({required this.dark});
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: CustomPaint(
-        painter: _StarPainter(dark: dark),
-        size: Size.infinite,
-      ),
-    );
-  }
-}
-
-class _StarPainter extends CustomPainter {
-  final bool dark;
-  const _StarPainter({required this.dark});
-
-  /// 星点数量与预览图一致（90 颗，seed=7）
-  static const int _count = 90;
-  static const int _seed = 7;
-
-  /// 星空只占上半部（与预览的 0.45 一致）
-  static const double _starZone = 0.45;
-
-  /// 星点位置是**确定性**的，算一次缓存起来。
-  /// 用 `_cache` 而不是每次 paint 现算：paint 可能被调用多次（尺寸变化、
-  /// 主题切换），而星图不该跟着变。
-  static List<Offset>? _cache;
-
-  List<Offset> _stars() {
-    final hit = _cache;
-    if (hit != null) return hit;
-    final rnd = math.Random(_seed);
-    final list = <Offset>[
-      for (var i = 0; i < _count; i++)
-        // 归一化坐标（0–1），绘制时再乘实际尺寸 —— 这样不同面板尺寸下
-        // 星图是「同一片星空的不同取景」，而不是重新撒一遍
-        Offset(rnd.nextDouble(), rnd.nextDouble() * _starZone),
-    ];
-    _cache = list;
-    return list;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // 半径与透明度按预览的分布：小星多、大星少；越靠上（越外太空）越亮
-    final rnd = math.Random(_seed + 1);
-    final paint = Paint()..style = PaintingStyle.fill;
-    for (final s in _stars()) {
-      final r = 0.6 + rnd.nextDouble() * 0.7; // 0.6–1.3
-      // 越靠近星空区底部越暗（下面就要进入大气层了）
-      final fade = 1.0 - (s.dy / _starZone);
-      final a = (0.9 - fade * 0.5) * (dark ? 1.0 : 0.85);
-      paint.color = Colors.white.withValues(alpha: a.clamp(0.0, 1.0));
-      canvas.drawCircle(Offset(s.dx * size.width, s.dy * size.height), r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _StarPainter old) => old.dark != dark;
-}
-
-/// 大气层：下半部由透明渐到天空蓝（模仿大气密度递增）。
-///
-/// 与预览的差别（有意）：预览第一版在 42% 处从**透明直接跳到 α=0.35**，
-/// 那会留一道可见的横向接缝；这里让 α 从 0 起（`stops` 前两段同色），
-/// 于是「星空 → 大气」是连续过渡而不是一条线。
-Widget _atmosphere(bool dark) => IgnorePointer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0x00000000),
-              const Color(0x00203468),
-              Color.fromRGBO(44, 130, 204, dark ? 0.90 : 1.0),
-            ],
-            stops: const [0.0, 0.42, 1.0],
-          ),
-        ),
-      ),
-    );
-
 /// 打开天气浮动面板（底部弹层）：天气 + 火腿建议 + 特效背景
 Future<void> showWeatherPanel(BuildContext context, AppState state) async {
   final sim = WeatherCenter.instance.simulating;
@@ -1652,11 +1556,6 @@ class _WeatherPanelState extends State<_WeatherPanel>
               ),
               child: Stack(
                 children: [
-                  // 星空（上）＋ 大气层（下）：把背景读成「从太空俯视大气层」。
-                  // 顺序很关键 —— 先星空、再大气、最后才是云雨特效：
-                  // 云雨本来就发生在大气层里，压在星空上就错了。
-                  Positioned.fill(child: IgnorePointer(child: _StarLayer(dark: dark))),
-                  Positioned.fill(child: _atmosphere(dark)),
                   // 动态背景层（云 / 雨 / 雪 / 雾，强度驱动；不引入 3D 引擎）
                   // _FxLayer 内部包 RepaintBoundary：每帧只重绘背景这一层，
                   // 不连带上方文字/卡片一起重光栅化

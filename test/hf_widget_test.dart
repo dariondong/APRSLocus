@@ -58,8 +58,8 @@ void main() {
       expect(snap['v'], kHfWidgetSnapshotVersion);
       expect((snap['emptyLabel'] as String).isNotEmpty, isTrue);
       expect(snap['bands'], isEmpty);
-      // 表头即使没数据也要有（Kotlin 会照填，不该出现空标签）
-      expect((snap['bandHead'] as List).length, 3);
+      // 列图例即使没数据也要有（Kotlin 会照填，不该出现空标签）
+      expect((snap['legend'] as String).isNotEmpty, isTrue);
       expect(() => jsonEncode(snap), returnsNormally);
     });
 
@@ -87,7 +87,7 @@ void main() {
       seedHf(sample());
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
 
-      for (final k in ['v', 'hasData', 'title', 'summary', 'bandHead', 'bands',
+      for (final k in ['v', 'hasData', 'title', 'summary', 'legend', 'bands',
         'emptyLabel']) {
         expect(snap.containsKey(k), isTrue, reason: '快照缺 $k');
       }
@@ -138,8 +138,8 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
       final last = (snap['bands'] as List).last as Map;
       expect(last['nightLabel'], zh.hfQClosed);
-      // 灰 (#94A3B8 提亮后 = #B9C3D1)，不该等于绿/橙/红
-      expect(last['nightColor'], 0xFFB9C3D1);
+      // 灰 #94A3B8（白底用基准色，不提亮），不该等于绿/橙/红
+      expect(last['nightColor'], 0xFF94A3B8); // 基准灰（白底）
     });
   });
 
@@ -157,9 +157,9 @@ void main() {
     }
 
     test('Kp ≤3 绿、=4 橙、≥5 红（与 hf.dart 的 geomagActive/Storm 同阈值）', () {
-      const green = 0xFF68C389; // hfQualityColor(good) 提亮后
-      const orange = 0xFFE6A75D;
-      const red = 0xFFEC6C88;
+      const green = 0xFF16A34A; // 基准色（白底上用基准色，不提亮）
+      const orange = 0xFFD97706;
+      const red = 0xFFE11D48;
       expect(kpColor(0), green);
       expect(kpColor(3), green);
       expect(kpColor(4), orange);
@@ -168,9 +168,9 @@ void main() {
     });
 
     test('A ≤15 绿、≤30 橙、>30 红', () {
-      const green = 0xFF68C389;
-      const orange = 0xFFE6A75D;
-      const red = 0xFFEC6C88;
+      const green = 0xFF16A34A;
+      const orange = 0xFFD97706;
+      const red = 0xFFE11D48;
       expect(aColor(5), green);
       expect(aColor(15), green);
       expect(aColor(16), orange);

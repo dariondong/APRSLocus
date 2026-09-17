@@ -1,12 +1,12 @@
 <!--
-  桌面小组件 · 短波/电离层传播（4×2）
+  桌面小组件 · 短波/电离层传播（4×2 · 白底）
 
-  顶栏    ：[电波图标] 短波传播                        [logo] APRSlocus
-  汇总行  ：SFI <值>        Kp <值>        A <值>（Kp/A 越大传播越差，用级别色）
-  细线    ：面板 _hairline 同款
-  表头    ：波段            日间              夜间
-  4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m，
-            每格「圆点 + 条件文字」，颜色按 Good/Fair/Poor/Closed 分档
+  顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus
+  汇总行  ：SFI 100    Kp 3    A 9            日 ｜ 夜
+            ↑ 小标签 + 大数字（15sp）      ↑ 列图例并进此行，不占额外高度
+  细线    ：C.border 同款（#E5E9F0）
+  4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m
+            波段名墨色加粗；日间/夜间 = 条件色圆点 + 墨色条件文字
   
   数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），
   由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。
@@ -18,15 +18,15 @@
     android:id="@+id/aw_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/aw_bg_storm">
+    android:background="@drawable/aw_bg_white">
     <LinearLayout
         android:id="@+id/aw_pad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="9dp"
+        android:paddingStart="13dp"
+        android:paddingEnd="13dp"
+        android:paddingTop="7dp"
         android:paddingBottom="9dp">
     <LinearLayout
         android:id="@+id/aw_hf_header"
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:textColor="#253044"
         android:textSize="12sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -62,8 +62,8 @@
         android:includeFontPadding="false" />
     <ImageView
         android:id="@+id/aw_logo"
-        android:layout_width="17dp"
-        android:layout_height="17dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:scaleType="fitCenter"
         android:src="@drawable/aw_logo" />
     <TextView
@@ -71,163 +71,119 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
-        android:textSize="11sp"
+        android:textColor="#253044"
+        android:textSize="10sp"
         android:text="APRSlocus"
         android:textStyle="bold"
         android:singleLine="true"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/aw_rule1_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_rule1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E5E9F0" />
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/aw_sum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <LinearLayout
-        android:id="@+id/aw_sum0"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="10dp"
-        android:gravity="center_vertical"
+        android:gravity="bottom"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_sum0_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#94FFFFFF"
-        android:textSize="9sp"
+        android:textColor="#637083"
+        android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_sum0_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="end"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_sum1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_sum1_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#94FFFFFF"
-        android:textSize="9sp"
+        android:textColor="#637083"
+        android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_sum1_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="end"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_sum2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_sum2_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#94FFFFFF"
-        android:textSize="9sp"
+        android:textColor="#637083"
+        android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_sum2_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_legend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="end"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        android:textStyle="bold"
+        android:textColor="#637083"
+        android:textSize="8.5sp"
+        android:text="日 ｜ 夜"
         android:singleLine="true"
-        android:ellipsize="end"
         android:includeFontPadding="false" />
     </LinearLayout>
-    </LinearLayout>
     <LinearLayout
-        android:id="@+id/aw_rule_box"
+        android:id="@+id/aw_rule2_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:orientation="vertical">
     <TextView
-        android:id="@+id/aw_rule"
+        android:id="@+id/aw_rule2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#1AFFFFFF" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_bh_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:textColor="#80FFFFFF"
-        android:textSize="8.5sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_bh_day"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:textColor="#80FFFFFF"
-        android:textSize="8.5sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_bh_night"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:gravity="end"
-        android:textColor="#80FFFFFF"
-        android:textSize="8.5sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:background="#E5E9F0" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_bands"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:orientation="vertical">
     <LinearLayout
         android:id="@+id/aw_band0"
@@ -240,8 +196,8 @@
         android:id="@+id/aw_band0_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:textColor="#FFFFFF"
+        android:layout_weight="1.05"
+        android:textColor="#253044"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -251,7 +207,7 @@
         android:id="@+id/aw_band0_day_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -265,10 +221,9 @@
         android:id="@+id/aw_band0_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -277,7 +232,7 @@
         android:id="@+id/aw_band0_night_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
+        android:layout_weight="1"
         android:gravity="end"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -291,10 +246,9 @@
         android:id="@+id/aw_band0_night"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -312,8 +266,8 @@
         android:id="@+id/aw_band1_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:textColor="#FFFFFF"
+        android:layout_weight="1.05"
+        android:textColor="#253044"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -323,7 +277,7 @@
         android:id="@+id/aw_band1_day_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -337,10 +291,9 @@
         android:id="@+id/aw_band1_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -349,7 +302,7 @@
         android:id="@+id/aw_band1_night_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
+        android:layout_weight="1"
         android:gravity="end"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -363,10 +316,9 @@
         android:id="@+id/aw_band1_night"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -384,8 +336,8 @@
         android:id="@+id/aw_band2_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:textColor="#FFFFFF"
+        android:layout_weight="1.05"
+        android:textColor="#253044"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -395,7 +347,7 @@
         android:id="@+id/aw_band2_day_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -409,10 +361,9 @@
         android:id="@+id/aw_band2_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -421,7 +372,7 @@
         android:id="@+id/aw_band2_night_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
+        android:layout_weight="1"
         android:gravity="end"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -435,10 +386,9 @@
         android:id="@+id/aw_band2_night"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -456,8 +406,8 @@
         android:id="@+id/aw_band3_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
-        android:textColor="#FFFFFF"
+        android:layout_weight="1.05"
+        android:textColor="#253044"
         android:textSize="9.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -467,7 +417,7 @@
         android:id="@+id/aw_band3_day_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -481,10 +431,9 @@
         android:id="@+id/aw_band3_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -493,7 +442,7 @@
         android:id="@+id/aw_band3_night_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.1"
+        android:layout_weight="1"
         android:gravity="end"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -507,10 +456,9 @@
         android:id="@+id/aw_band3_night"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="#FFFFFF"
+        android:layout_marginStart="5dp"
+        android:textColor="#253044"
         android:textSize="9sp"
-        android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
@@ -523,7 +471,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="#E6FFFFFF"
+        android:textColor="#D9253044"
         android:textSize="10sp"
         android:maxLines="4"
         android:ellipsize="end"

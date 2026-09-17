@@ -28,6 +28,16 @@ const int kHfWidgetSummaryCells = 3;
 /// 波段行数上限（与 aw_widget_hf.xml 的行数一致；源数据是 4 个波段对）
 const int kHfWidgetBandRows = 4;
 
+/// 白底组件用的**基准色**（不提亮）。
+///
+/// 与天气组件的关键区别：天气组件压在**彩色渐变**上，所以要 `widgetTipTextArgb`
+/// 提亮 35% 才看得清；短波组件是**白底**，提亮色反而太淡
+/// （`#68C389` 在白底上几乎看不见）。面板本身就是浅色 UI、用的就是这组基准色，
+/// 所以白底组件跟着用基准色才一致。
+const Color _kGood = Color(0xFF16A34A);
+const Color _kFair = Color(0xFFD97706);
+const Color _kPoor = Color(0xFFE11D48);
+
 /// Kp 指数 → 提示色。
 ///
 /// Kp 是**地磁活动**强度（0–9）：越大越糟 —— 地磁扰动会抬高低纬吸收、
@@ -35,17 +45,17 @@ const int kHfWidgetBandRows = 4;
 /// 阈值与 lib/hf.dart 的 `HfNow.geomagActive`（K≥4）/ `geomagStorm`（K≥5）一致。
 int _kpArgb(int k) {
   if (k < 0) return 0; // 无数据：不染色
-  if (k <= 3) return widgetTipTextArgb(const Color(0xFF16A34A));
-  if (k == 4) return widgetTipTextArgb(const Color(0xFFD97706));
-  return widgetTipTextArgb(const Color(0xFFE11D48));
+  if (k <= 3) return colorToArgb(_kGood);
+  if (k == 4) return colorToArgb(_kFair);
+  return colorToArgb(_kPoor);
 }
 
 /// A 指数 → 提示色。A 是 Kp 的日累计（越大越糟），阈值按业界习惯取 15/30。
 int _aArgb(int a) {
   if (a < 0) return 0;
-  if (a <= 15) return widgetTipTextArgb(const Color(0xFF16A34A));
-  if (a <= 30) return widgetTipTextArgb(const Color(0xFFD97706));
-  return widgetTipTextArgb(const Color(0xFFE11D48));
+  if (a <= 15) return colorToArgb(_kGood);
+  if (a <= 30) return colorToArgb(_kFair);
+  return colorToArgb(_kPoor);
 }
 
 /// 一条波段行的展示数据（日间 / 夜间各自带本地化文案与颜色）
@@ -55,9 +65,10 @@ Map<String, Object?> _bandRow(HfBand b, AppLocalizations s) {
   return <String, Object?>{
     'name': b.label,
     'dayLabel': hfQualityLabel(dq, s),
-    'dayColor': widgetTipTextArgb(hfQualityColor(dq)),
+    // 圆点用基准色（白底上提亮色太淡）
+    'dayColor': colorToArgb(hfQualityColor(dq)),
     'nightLabel': hfQualityLabel(nq, s),
-    'nightColor': widgetTipTextArgb(hfQualityColor(nq)),
+    'nightColor': colorToArgb(hfQualityColor(nq)),
   };
 }
 
@@ -77,8 +88,8 @@ Map<String, Object?> buildHfWidgetSnapshot({
     'hasData': false,
     'title': s.hfTitle,
     'summary': <Map<String, Object?>>[],
-    // 表头三列：波段 / 日间 / 夜间
-    'bandHead': <String>[s.hfBand, s.hfDay, s.hfNight],
+    // 列图例：白底版把它并进汇总行右端（不占额外高度）
+    'legend': '${s.hfDay} ｜ ${s.hfNight}',
     'bands': <Map<String, Object?>>[],
     // 空状态：直接复用「暂无数据」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.hfNoData,

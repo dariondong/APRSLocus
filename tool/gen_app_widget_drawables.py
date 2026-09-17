@@ -122,6 +122,8 @@ def build_all() -> dict:
 
     files["drawable/aw_pill.xml"] = solid_xml(
         "AQI 胶囊底（白 16%）", "#29FFFFFF", RADIUS_PILL)
+    files["drawable/aw_bg_white.xml"] = solid_xml(
+        "短波组件的白底（不透明纯白 + 圆角）", "#FFFFFFFF", RADIUS_LARGE)
     files["drawable/aw_sep.xml"] = solid_xml(
         "单行档的竖分隔线（白 20%，1dp 宽）", "#33FFFFFF", 0)
     files["drawable/aw_dot.xml"] = dot_xml(
@@ -143,10 +145,20 @@ def self_check(files: dict) -> list:
                  "drawable/aw_dot.xml"):
         if need not in files:
             problems.append(f"{need} 缺失")
-    # 背景渐变必须真是两色渐变
-    for key, content in files.items():
-        if "aw_bg" in key and "gradient" not in content:
-            problems.append(f"{key} 没有 gradient 节点")
+    # **天气档位**的背景必须真是两色渐变。
+    # 注意这里按「是不是档位名」判断，而不是 `"aw_bg" in key` —— 后者会把
+    # aw_bg_white 也算进去（那是纯色底，本来就该没有 gradient），
+    # 于是一加白底就误报。判据要贴着语义写，别贴名字前缀写。
+    for qualifier in ("drawable", "drawable-night"):
+        for kind in LIGHT:
+            key = f"{qualifier}/aw_bg_{kind}.xml"
+            if key not in files:
+                problems.append(f"{key} 缺失")
+            elif "gradient" not in files[key]:
+                problems.append(f"{key} 没有 gradient 节点")
+            skey = f"{qualifier}/aw_bgs_{kind}.xml"
+            if skey in files and "gradient" not in files[skey]:
+                problems.append(f"{skey} 没有 gradient 节点")
     return problems
 
 

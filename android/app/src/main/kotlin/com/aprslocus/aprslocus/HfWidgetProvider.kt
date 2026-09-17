@@ -122,10 +122,9 @@ class HfWidgetProvider : AppWidgetProvider() {
 
             // 标题与表头文案都由 Dart 侧本地化好（6 种语言）
             views.setTextViewText(R.id.aw_hf_title, snap.read("title"))
-            val head = snap.optJSONArray("bandHead")
-            views.setTextViewText(R.id.aw_bh_name, head.read(0))
-            views.setTextViewText(R.id.aw_bh_day, head.read(1))
-            views.setTextViewText(R.id.aw_bh_night, head.read(2))
+            // 白底版把「日 ｜ 夜」图例并进了汇总行右端（单独开一行表头要 13.3dp，
+            // 而可用高度只有 130dp），所以这里没有表头要填。
+            views.setTextViewText(R.id.aw_legend, snap.read("legend"))
 
             // 汇总：SFI / Kp / A。颜色由 Dart 侧按阈值算好（Kp/A 越大越差）
             val sum = snap.optJSONArray("summary")

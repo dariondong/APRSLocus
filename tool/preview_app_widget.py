@@ -541,42 +541,90 @@ def render_hf(w=296, h=140, dark=False):
     return c.out_clipped(20), y
 
 
-# ── App 天气面板的新背景（星空 / 大气层）────────────────────────────
-def render_panel_bg(w=300, h=420, dark=False):
-    """按需求：上方星空、下方天空蓝（大气层）。
-    这里画的是**背景本身**的示意（不含内容），用于确认分层与配色。"""
-    c = Canvas(w, h, "clear", radius_dp=24, dark=dark)
-    cw, ch = round(w * SCALE), round(h * SCALE)
-    # 上 45%：星空（深蓝 → 近黑）；下 55%：天空蓝（大气层）
-    stars = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
-    sd = ImageDraw.Draw(stars)
-    import random
-    random.seed(7)
-    for _ in range(90):
-        sx = random.uniform(0, w)
-        sy = random.uniform(0, h * 0.45)
-        r = random.choice([0.6, 0.8, 1.0, 1.3])
-        # 越靠上（越外太空）星星越亮
-        a = 0.9 - (sy / (h * 0.45)) * 0.5
-        sd.ellipse([(sx - r) * SCALE, (sy - r) * SCALE,
-                    (sx + r) * SCALE, (sy + r) * SCALE],
-                   fill=(255, 255, 255, int(a * 255)))
-    c.layer.alpha_composite(stars)
-    # 大气层：从星空底部往下渐亮（模拟密度递增）
-    atm = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
-    ad = ImageDraw.Draw(atm)
-    y0 = h * 0.42
-    # α 从 0 起（原来从 0.35 起，会在 42% 处留一道可见接缝）。
-    # weather.dart 的 _atmosphere 也是这么写的，两边必须一致。
-    for i in range(round((h - y0) * SCALE)):
-        t = i / max(1, (h - y0) * SCALE)
-        col = (int(24 + 20 * t), int(52 + 78 * t), int(104 + 100 * t))
-        ad.rectangle([0, (y0 * SCALE) + i, cw, (y0 * SCALE) + i + 1],
-                     fill=col + (int(255 * t),))
-    c.layer.alpha_composite(atm)
-    c.text(12, 10, "面板背景：上＝星空 / 下＝大气层（示意）", 10, alpha=0.85)
-    return c.out_clipped(24), h
 
+# ── 短波组件的**白底**方案 ─────────────────────────────────────────
+#
+# 为什么白底要用**基准色**而不是提亮色：`widgetTipTextArgb` 提亮 35% 是为了
+# 「压在天气渐变上还能看清」；白底上提亮色会太淡（#68C389 在白底上几乎看不见）。
+# 面板本身就是浅色 UI，用的就是基准色 —— 白底组件跟着用基准色才一致。
+QUALITY_COLORS_BASE = {
+    "Good": "#16A34A", "Fair": "#D97706",
+    "Poor": "#E11D48", "Band Closed": "#94A3B8",
+}
+
+# 白底组件的前景层级（取自 theme.dart 的 C.* 浅色值）
+INK = "#253044"      # C.ink    主文字
+SLATE = "#637083"    # C.slate  次要文字
+LINE = "#E5E9F0"     # C.border 细分隔线
+
+
+def render_hf_white(w=296, h=140, dark=False):
+    """短波组件 · 白底版。
+
+    与深色版的三点设计差异：
+      ① **白底 + 深色文字**：与天气组件（彩色渐变）明确区分。两个组件同时摆在
+         桌面上时，一个彩色一个白，一眼能分辨谁是谁。
+      ② **汇总改成「大数字 + 小标签」三格**：SFI/Kp/A 是这张卡最该被一眼看到的
+         东西，值得给大字号（原来 label 左 / value 右 挤在一行，数字很不起眼）。
+      ③ **条件文字用墨色、颜色靠圆点传达**：白底上彩色小字对比度偏低，
+         保留圆点的条件色即可，正文用深色保证可读。
+    """
+    c = Canvas(w, h, "clear", dark=dark)
+    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
+    c.d = ImageDraw.Draw(c.layer)
+
+    # 顶部内边距取 7（不是 9）：白底方案可用高度只有 130dp，这几处
+    # 2dp 的收边刚好把它放进卡片。
+    x, iw = 13, w - 26
+    c.icon("waves", x, 7, 14, color=INK)
+    c.text(x + 18, 7 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+           color=INK, anchor="lm")
+    brand_w = 19 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(x + iw - brand_w, 6, 16)
+    c.text(x + iw - brand_w + 19, 7 + line_h(10, True) / 2,
+           WEATHER["app_name"], 10, bold=True, color=INK, anchor="lm")
+    y = 7 + line_h(12, True) + 2
+    c.d.rectangle([round(x * SCALE), round(y * SCALE),
+                   round((x + iw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 5
+
+    # 汇总：**单行**「小标签 + 大数字」并排。
+    # 试过「大数字一行 + 标签一行」，那要 47dp，白底方案会超 35dp；
+    # 单行只要 24dp，而数字仍比深色版的 10sp 显眼。
+    # 三格等宽，数字基线对齐（anchor="ls" 都是同一条基线）。
+    cells = [("SFI", HF["sfi"], None),
+             ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+             ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    cw = iw / 3
+    base = y + line_h(15)
+    for i, (lab, val, tone) in enumerate(cells):
+        cx = x + i * cw
+        col = (QUALITY_COLORS_BASE["Good"] if tone == "good"
+               else QUALITY_COLORS_BASE["Fair"] if tone == "warn" else INK)
+        c.text(cx, base, lab, 8.5, color=SLATE, anchor="ls")
+        c.text(cx + c.measure(lab, 8.5) + 5, base, val, 15, bold=True,
+               color=col, anchor="ls")
+    # 「日 / 夜」图例并进这一行的右端 —— 单独开一行表头要 13.3dp 高度，
+    # 而白底方案只有 130dp 可用（试过：超 17.2dp）。
+    c.text(x + iw, base, "日 ｜ 夜", 8.5, color=SLATE, anchor="rs")
+    y = base + line_h(8.5) * 0.35 + 4
+    c.d.rectangle([round(x * SCALE), round(y * SCALE),
+                   round((x + iw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 6
+    for name, day, night in HF["bands"]:
+        yy = y + line_h(9.5) / 2
+        c.text(x, yy, name, 9.5, bold=True, color=INK, anchor="lm")
+        c.paste(c.circle(6, QUALITY_COLORS_BASE[day]), x + iw * 0.52 - 9, yy - 3)
+        c.text(x + iw * 0.52, yy, day, 9, color=INK, anchor="lm")
+        c.paste(c.circle(6, QUALITY_COLORS_BASE[night]), x + iw - 41, yy - 3)
+        c.text(x + iw, yy, night, 9, color=INK, anchor="rm")
+        # 行距 0.5（不是 1）：4 行共省 2dp，而 9.5sp 的行盒本身有 14dp，
+        # 0.5dp 的额外间距完全看不出来
+        y += line_h(9.5) + 0.5
+    return c.out_clipped(20), y
 
 def main():
     ap = argparse.ArgumentParser()
@@ -593,7 +641,8 @@ def main():
         ("天气组件 2×4 小面板", render_tall, 150, 300, False),
         ("天气组件 2×2 紧凑档", render_compact, 150, 150, False),
         ("天气组件 4×1 单行档", render_row, 296, 72, True),
-        ("短波传播组件 4×2", render_hf, 296, 140, False),
+        ("短波传播组件 4×2（当前·深色）", render_hf, 296, 140, False),
+        ("短波传播组件 4×2（白底方案）", render_hf_white, 296, 140, False),
     ]
     # 圆角净空：卡片圆角越大，底部两侧收得越早。20dp 圆角下，距底边约
     # 10dp 之内的左右两边已经被切掉，所以内容必须停在 h-10dp 以上。
@@ -617,18 +666,17 @@ def main():
                   f"（余 {usable - used:.1f}dp）")
         tiles.append((label, img))
 
-    # 面板背景示意单独放一行
-    bg_img, _ = render_panel_bg()
-    bg_img = bg_img.resize((bg_img.width // 2, bg_img.height // 2), Image.LANCZOS)
 
     PAD, GAP, LH = 24, 20, 28
     row1 = tiles[:3]
-    row2 = tiles[3:]
-    W = max(PAD * 2 + sum(im.width for _, im in row1) + GAP * (len(row1) - 1),
-            PAD * 2 + bg_img.width)
+    row2 = tiles[3:5]
+    row3 = tiles[5:]
+    W = PAD * 2 + sum(im.width for _, im in row1) + GAP * (len(row1) - 1)
     row1h = max(im.height for _, im in row1)
     row2h = max(im.height for _, im in row2)
-    H = PAD + LH + row1h + GAP + LH + row2h + PAD
+    row3h = max((im.height for _, im in row3), default=0)
+    H = (PAD + LH + row1h + GAP + LH + row2h
+         + (GAP + LH + row3h if row3 else 0) + PAD)
     sheet = Image.new("RGB", (W, H), (22, 26, 33))
     d = ImageDraw.Draw(sheet)
 
@@ -641,6 +689,8 @@ def main():
     blit(row1, PAD)
     y2 = PAD + LH + row1h + GAP
     blit(row2, y2)
+    if row3:
+        blit(row3, y2 + LH + row2h + GAP)
 
     sheet.save(args.out)
     print("预览:", args.out, sheet.size)
