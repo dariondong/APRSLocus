@@ -2715,7 +2715,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02 (AMap)';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -2787,7 +2787,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapLayers => 'Capas';
 
   @override
-  String get featureLiveMap => 'AMap';
+  String get featureLiveMap => 'Mapa en línea';
 
   @override
   String get featureLiveMapDesc =>
@@ -2948,7 +2948,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mapTypeDesc =>
-      '«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; AMap vectorial/satélite usa teselas en línea.';
+      '«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; las fuentes ráster usan teselas en línea, así que la calidad depende de la red.';
 
   @override
   String get msgHistory => 'Historial de mensajes';
@@ -3500,7 +3500,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get navigationUnavailable =>
-      'No se pudo abrir AMap ni otra aplicación de mapas';
+      'No hay ninguna app de mapas instalada y no se pudo abrir otra';
 
   @override
   String stationNoData(String call) {
@@ -3996,7 +3996,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapTypeVector => 'Mapa vectorial';
 
   @override
-  String get amapGroup => 'AMap';
+  String get amapGroup => 'Nacional';
 
   @override
   String get domesticMaps => 'Mapas de China';
@@ -4299,7 +4299,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get oobeMapFeatureDesc =>
-      'Teselas de AMap con estaciones APRS y rastros cercanos';
+      'Teselas de mapa en línea con estaciones APRS y rastros cercanos';
 
   @override
   String get oobeGpsFeatureDesc =>

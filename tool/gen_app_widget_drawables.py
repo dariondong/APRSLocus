@@ -13,6 +13,7 @@
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
     android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（纯白，运行时 setColorFilter 染级别色）
     android/app/src/main/res/drawable/aw_sep.xml           单行档的竖分隔线
+    android/app/src/main/res/drawable/aw_chip_*.xml        短波组件的条件 chip（4 色）
 
 **为什么要 4 张记色圆点，而不是运行时染色**（这是踩过的坑，记下来免得重犯）：
 
@@ -58,6 +59,8 @@ RADIUS_LARGE = 20
 RADIUS_SMALL = 16
 RADIUS_TILE = 11
 RADIUS_PILL = 999
+# chip 圆角 4dp：比胶囊方、比直角柔，与面板的小标签同量级
+RADIUS_CHIP = 4
 
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
 NS = '<shape xmlns:android="http://schemas.android.com/apk/res/android"'
@@ -122,6 +125,31 @@ def build_all() -> dict:
 
     files["drawable/aw_pill.xml"] = solid_xml(
         "AQI 胶囊底（白 16%）", "#29FFFFFF", RADIUS_PILL)
+    # 短波组件的**彩色 chip** 底（方案 A：实心色块 + 白字）。
+    #
+    # 为什么必须预生成 4 张、而不是运行时染色：chip 是 **TextView**，
+    # 而 `setColorFilter` **只存在于 ImageView**（View/TextView 都没有）——
+    # v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，抛异常后
+    # **整个组件报废**。TextView 换底只能用 `setBackgroundResource`（View 的方法），
+    # 所以四个条件各给一张 drawable。
+    #
+    # 颜色用**基准色**：白底上提亮色（提亮 35%）几乎看不见。
+    _CHIP = {"good": "#16A34A", "fair": "#D97706",
+             "poor": "#E11D48", "closed": "#94A3B8"}
+    for level, col in _CHIP.items():
+        files[f"drawable/aw_chip_{level}.xml"] = solid_xml(
+            f"短波组件的 {level} 条件 chip（实心基准色 + 4dp 圆角 + 白字）",
+            col, RADIUS_CHIP)
+
+    # 短波组件（方案 A）的条件 chip：实心条件色 + 圆角。
+    # 基准色与 lib/hf.dart 的 hfQualityColor 一致（白底上不提亮）。
+    CHIP = {"good": "#16A34A", "fair": "#D97706",
+            "poor": "#E11D48", "closed": "#94A3B8"}
+    for name, col in CHIP.items():
+        files[f"drawable/aw_chip_{name}.xml"] = solid_xml(
+            f"传播条件 chip：{name}（实心 {col} + 圆角，白字压在它上面）",
+            col, 4)
+
     files["drawable/aw_bg_white.xml"] = solid_xml(
         "短波组件的白底（不透明纯白 + 圆角）", "#FFFFFFFF", RADIUS_LARGE)
     files["drawable/aw_sep.xml"] = solid_xml(

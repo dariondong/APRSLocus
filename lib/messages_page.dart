@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
@@ -56,7 +55,7 @@ class _MessagesPageState extends State<MessagesPage> {
   /// 必须退出再进才能消掉的红点（用户反馈的「小红点有时候不消」之一）。
   /// 页面不在前台（isActive=false）或停在列表上时传 null。
   void _syncActiveConversation() {
-    if (!widget.isActive || _showList || _feedMode) {
+    if (!widget.isActive || _showList) {
       widget.state.setActiveConversation();
       return;
     }
@@ -91,13 +90,11 @@ class _MessagesPageState extends State<MessagesPage> {
 
   String _selected = '';
   bool _showList = true;
-  bool _feedMode = true; // 瀑布流模式（默认）
   String? _selectedGroupId; // 当前打开的群聊ID
   final Set<String> _groupRecipients = {}; // 临时群发目标（创建群聊用）
   final _input = TextEditingController();
   final _inputFocus = FocusNode();
   final _scroll = ScrollController();
-  final _scrollFeed = ScrollController();
   final _scrollGroup = ScrollController();
   final _scrollChat = ScrollController();
   final _manualAddCtrl = TextEditingController(); // 手动添加呼号
@@ -138,17 +135,6 @@ class _MessagesPageState extends State<MessagesPage> {
   @override
   void initState() {
     super.initState();
-    _loadFeedMode();
-  }
-
-  Future<void> _loadFeedMode() async {
-    final p = await SharedPreferences.getInstance();
-    setState(() => _feedMode = p.getBool('msg_feed_mode') ?? true);
-  }
-
-  Future<void> _saveFeedMode(bool v) async {
-    final p = await SharedPreferences.getInstance();
-    await p.setBool('msg_feed_mode', v);
   }
 
   @override
@@ -156,7 +142,6 @@ class _MessagesPageState extends State<MessagesPage> {
     _input.dispose();
     _inputFocus.dispose();
     _scroll.dispose();
-    _scrollFeed.dispose();
     _scrollGroup.dispose();
     _scrollChat.dispose();
     _manualAddCtrl.dispose();
@@ -300,7 +285,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 MediaQuery.of(context).orientation == Orientation.landscape;
             final narrow = !landscape && constraints.maxWidth < 720;
             // 是否处于"聊天详情"（窄屏下非列表页）
-            final inChatDetail = !_feedMode && narrow && !_showList;
+            final inChatDetail = narrow && !_showList;
             // 非活动 tab（IndexedStack 隐藏时）不拦截返回键
             final interceptBack = widget.isActive && inChatDetail;
             return PopScope(
@@ -319,26 +304,15 @@ class _MessagesPageState extends State<MessagesPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 页面标题 + 瀑布流/会话切换
-                    Row(
-                      children: [
-                        // 英文下 "Messages" + "Feed/Chats" 同占一行会挤爆窄屏：
-                        // 标题改为 Expanded + ellipsis，把剩余宽度让给切换器
-                        Expanded(
-                          child: Text(S.of(context).messages,
-                              style: T.h1,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
-                        ),
-                        const SizedBox(width: 8),
-                        _modeToggle(),
-                      ],
-                    ),
+                    // 页面标题。（原来这里还有「瀑布流 / 会话」切换器；瀑布流已按需求移除，
+                    // 只剩会话模式，切换器随之删掉 —— 一个只有一边的开关比没有更让人困惑。）
+                    Text(S.of(context).messages,
+                        style: T.h1,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 14),
                     Expanded(
-                      child: _feedMode
-                          ? _feedPane(st)
-                          : narrow
+                      child: narrow
                           ? (_showList
                                 ? _listPane(st, partners)
                                 : _chatPane(st))
@@ -361,245 +335,6 @@ class _MessagesPageState extends State<MessagesPage> {
           },
         );
       },
-    );
-  }
-
-  // ─── 瀑布流 / 会话 切换 ───
-  Widget _modeToggle() {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: C.bgSoft,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _modePill(true, S.of(context).feedMode),
-          _modePill(false, S.of(context).conversationMode),
-        ],
-      ),
-    );
-  }
-
-  Widget _modePill(bool feed, String label) {
-    final sel = _feedMode == feed;
-    return GestureDetector(
-      onTap: () {
-        setState(() => _feedMode = feed);
-        _saveFeedMode(feed);
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        // 英文标签较长时收紧横向内边距，避免两个 pill 把标题挤下去
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: sel ? C.blue : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: ts(12, c: sel ? Colors.white : C.slate, w: FontWeight.w600),
-        ),
-      ),
-    );
-  }
-
-  // ─── 瀑布流：全部消息连续滚动 ───
-  Widget _feedPane(AppState st) {
-    return SoftCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: C.border)),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.waves_rounded, size: 16, color: C.blue),
-                SizedBox(width: 6),
-                Text(
-                  S.of(context).messageFeed,
-                  style: ts(12, c: C.blue, w: FontWeight.w700),
-                ),
-                Spacer(),
-                Text(
-                  S.of(context).messageTotal(st.messages.length),
-                  style: ts(11, c: C.grey),
-                ),
-              ],
-            ),
-          ),
-          // 列表：reverse=true，新消息在最底部，自动跟随
-          Expanded(
-            child: st.messages.isEmpty
-                ? Center(
-                    child: Text(
-                      S.of(context).noMessages,
-                      style: TextStyle(color: C.grey, fontSize: 13),
-                    ),
-                  )
-                : Builder(builder: (context) {
-                    // 瀑布流跨会话，日期分界线同样必要（否则翻历史不知道跨度）
-                    final rows = buildChatRows<AprsMsg>(
-                      st.messages,
-                      (m) => m.time,
-                    );
-                    return ListView.builder(
-                      controller: _scrollFeed,
-                      reverse: true,
-                      padding: const EdgeInsets.all(12),
-                      itemCount: rows.length,
-                      itemBuilder: (_, i) {
-                      final row = rows[i];
-                      if (row.isDivider) {
-                        return ChatDateDivider.build(context, row.divider!);
-                      }
-                      final m = row.item!;
-                      return GestureDetector(
-                        onTap: () {
-                          // 群聊消息 → 打开对应群聊；私聊 → 打开对应联系人
-                          // 同时退出瀑布流模式进入会话模式
-                          if (m.groupId != null) {
-                            setState(() {
-                              _feedMode = false;
-                              _saveFeedMode(false);
-                              _selectedGroupId = m.groupId;
-                              _selected = '';
-                              _showList = false;
-                            });
-                          } else {
-                            setState(() {
-                              _feedMode = false;
-                              _saveFeedMode(false);
-                              _selectedGroupId = null;
-                              _selected = m.sent ? m.to : m.from;
-                              _showList = false;
-                            });
-                          }
-                        },
-                        child: _feedBubble(m),
-                      );
-                    },
-                    );
-                  }),
-          ),
-          _inputBar(st),
-        ],
-      ),
-    );
-  }
-
-  Widget _feedBubble(AprsMsg m) {
-    final mine = m.sent;
-    // 群聊名称
-    String? groupName;
-    if (m.groupId != null) {
-      for (final g in widget.state.chatGroups) {
-        if (g.id == m.groupId) {
-          groupName = g.name;
-          break;
-        }
-      }
-    }
-    // 瀑布流里每条消息属于各自会话，翻译偏好也应按**该消息所属会话**取，
-    // 而不是当前打开的那个会话（瀑布流里可能同时显示多个会话）。
-    final mConv = convKeyOf(
-      groupId: m.groupId,
-      call: m.sent ? m.to : m.from,
-    );
-    return GestureDetector(
-      onLongPress: () => showMessageActions(
-        context: context,
-        m: m,
-        pref: TranslateService.instance.prefFor(mConv),
-        st: ConvTransRegistry.instance.of(mConv),
-        convKey: mConv,
-        onChanged: () {
-          if (mounted) setState(() {});
-        },
-        onOpenSettings: _openTranslateSettings,
-      ),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: mine ? C.blueBg : C.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: mine ? C.blue.withValues(alpha: 0.2) : C.border,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${m.time.hour.toString().padLeft(2, '0')}:'
-              '${m.time.minute.toString().padLeft(2, '0')}:'
-              '${m.time.second.toString().padLeft(2, '0')}',
-              style: mono(9, c: C.grey),
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      if (m.groupId != null)
-                        Container(
-                          margin: const EdgeInsets.only(right: 4),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.orangeBg,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            groupName ?? S.of(context).groupShortLabel,
-                            style: ts(8, c: C.orange, w: FontWeight.w700),
-                          ),
-                        ),
-                      Text(
-                        mine ? '→ ${m.to}' : '← ${m.from}',
-                        style: ts(
-                          10,
-                          c: mine ? C.blue : C.green,
-                          w: FontWeight.w700,
-                        ),
-                      ),
-                      if (mine && m.groupId == null) ...[
-                        SizedBox(width: 4),
-                        Icon(
-                          m.acked ? Icons.done_all_rounded : Icons.done_rounded,
-                          size: 11,
-                          color: m.acked ? C.blue : C.greyLight,
-                        ),
-                      ],
-                    ],
-                  ),
-                  SizedBox(height: 2),
-                  _urlRichText(m.text, ts(12, c: C.ink)),
-                  // 「已译发」与译文块：见 _bubble 处的同款说明（两个气泡都要有）
-                  sentAsBlock(context: context, m: m),
-                  translationBlock(
-                    context: context,
-                    m: m,
-                    st: ConvTransRegistry.instance.of(mConv),
-                    pref: TranslateService.instance.prefFor(mConv),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -2380,8 +2115,6 @@ class _MessagesPageState extends State<MessagesPage> {
     st.addManualStation(call);
     Navigator.pop(context);
     setState(() {
-      _feedMode = false;
-      _saveFeedMode(false);
       _selectedGroupId = null;
       _selected = call;
       _showList = false;

@@ -56,7 +56,9 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 
 # ── 短波组件（白底）用的前景色。取自 theme.dart 的 C.* 浅色值，
 #    与面板本身的浅色 UI 一致。
-INK = "#253044"      # C.ink    主文字
+INK = "#253044"
+# 波段名列宽（与预览 render_hf_A 的 BAND_W 一致）
+BAND_W = "52dp"      # C.ink    主文字
 SLATE = "#637083"    # C.slate  次要文字
 LINE = "#E5E9F0"     # C.border 细分隔线
 
@@ -86,7 +88,8 @@ def open_layout(root_id, bg):
 
 
 def text(tid, *, size, color="#FFFFFF", bold=False, max_lines=None,
-         ellipsize=False, gravity=None, spacing=None, pad_h=None,
+         ellipsize=False, gravity=None, spacing=None, pad_h=None, pad_v=None,
+         min_width=None,
          width="wrap_content", height="wrap_content", weight=None,
          margin_end=None, margin_start=None, margin_top=None,
          max_width=None, visibility=None, line_mult=None, alpha=None,
@@ -115,6 +118,8 @@ def text(tid, *, size, color="#FFFFFF", bold=False, max_lines=None,
         a.append(f'android:letterSpacing="{spacing}"')
     if max_width:
         a.append(f'android:maxWidth="{max_width}"')
+    if min_width:
+        a.append(f'android:minWidth="{min_width}"')
     if max_lines is not None:
         a.append(f'android:maxLines="{max_lines}"')
     else:
@@ -126,6 +131,9 @@ def text(tid, *, size, color="#FFFFFF", bold=False, max_lines=None,
     if pad_h:
         a.append(f'android:paddingStart="{pad_h}"')
         a.append(f'android:paddingEnd="{pad_h}"')
+    if pad_v:
+        a.append(f'android:paddingTop="{pad_v}"')
+        a.append(f'android:paddingBottom="{pad_v}"')
     if visibility:
         a.append(f'android:visibility="{visibility}"')
     a.append('android:includeFontPadding="false"')
@@ -595,36 +603,45 @@ def build_row():
 
 
 
-# ── 短波/电离层传播组件（4×2，固定尺寸，**白底**）────────────────────
+# ── 短波/电离层传播组件（4×2，固定尺寸 · 白底 · 彩色 chip）────────────
 def build_hf():
     """逐波段给出日间/夜间传播条件 —— 「各个波段的传播信息」。
 
-    **为什么是白底**（用户要求，也是视觉上更清楚的选法）：
-      · 与天气组件（彩色渐变）明确区分 —— 两个组件同时摆桌面上，一个彩色一个白，
-        一眼能分辨谁是谁，不会看混。
-      · 白底 + 深色文字的可读性优于「彩色小字压深蓝底」：条件色改由**圆点**承担，
-        正文用墨色，于是既保留了颜色语义、又把可读性拉满。
-      · 面板本身就是浅色 UI（theme.dart 的 C.ink/#253044 等），白底组件与之一致。
+    **这一版是「方案 A · 彩色 chip 矩阵」**（用户从 4 个方案里选的）。
+    上一版（圆点 + 深色文字的表格）被用户判定「真难看」，逐条问题是：
+      ① 「日 ｜ 夜」图例挤在汇总行右端、**和下面两列并不对齐** → 等于没标
+      ② 夜间列右对齐、日间列左对齐 → 两列内容 zigzag
+      ③ 圆点的 x 随条件文字宽度浮动 → 点不在一条竖线上
+      ④ 圆点只占 6dp → 颜色信号很弱，条件其实靠读字
+      ⑤ 波段名与条件之间一大片空白，横向扫视要跨很远
+      ⑥ 4 行一模一样、没有结构线，像把表格直接倒上去
+    方案 A 的解法：
+      · **彩色 chip**（实心条件色 + 白字加粗）代替圆点 —— 颜色面积从 6dp
+        变成整块，红黄绿一眼分；条件不再靠读字，只靠看色块；
+      · chip **列宽固定 + 列头对齐**：列头「日间 / 夜间」和下面 chip 的
+        左边缘在同一条竖线上（这是上一版最明显的毛病）；
+      · 波段名与 chip 之间不留空档，横向距离缩短；
+      · 行间加 1dp 极淡分隔线给结构（和面板 `_hairline` 同一语言）。
 
-    **布局上的三处取舍**（都被 130dp 可用高度逼出来的，逐条量过）：
-      ① 汇总做成**单行**「小标签 + 大数字」。试过「数字一行 + 标签一行」要 47dp，
-         整体超 35dp；单行 24dp，而 15sp 的数字仍比原来的 10sp 显眼得多。
-      ② **不设单独的表头行**，把「日 ｜ 夜」图例并进汇总行右端 —— 单开一行要
-         13.3dp，而白底方案只有 130dp（试过：超 17.2dp）。
-      ③ 顶部内边距 7dp、波段行距 0.5dp（不是 9/1），共省约 5dp 才装下。
+    **chip 为什么是 4 张预生成 drawable**：chip 是 TextView，而
+    `setColorFilter` **只存在于 ImageView** —— v1.6.114 的线上事故就是把
+    setColorFilter 用在 TextView 上，抛异常后**整个组件报废**。
+    TextView 换底只能用 `setBackgroundResource`，所以四个条件各一张。
 
-    **为什么固定 4×2**（resizeMode=none）：内容是一张**表**（波段 × 昼夜）。
-    表不像列表能优雅降级 —— 挤到 2×2 就只剩波段名、没有条件值，等于把最有用的
-    信息砍掉。与其提供一个会被拖坏的组件，不如老实声明尺寸。
+    **为什么固定 4×2**（resizeMode=none）：内容是一张表（波段 × 昼夜）。
+    表不能优雅降级 —— 挤到 2×2 只剩波段名、没有条件，等于砍掉最有用的信息。
+
+    设计稿见 tool/preview_app_widget.py 的 render_hf_A（同一套尺寸令牌）。
     """
     rows = 4
-    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · 白底）", [
+    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · 方案 A 彩色 chip）", [
         "顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus",
-        "汇总行  ：SFI 100    Kp 3    A 9            日 ｜ 夜",
-        "          ↑ 小标签 + 大数字（15sp）      ↑ 列图例并进此行，不占额外高度",
-        "细线    ：C.border 同款（#E5E9F0）",
+        "指数行  ：SFI 100   Kp 3   A 9        ← 小字次要信息（Kp/A 按阈值着色）",
+        "细线    ：C.border（#E5E9F0）",
+        "列头    ：        日间            夜间   ← 与下面 chip 左边缘**同一条竖线**",
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
-        "          波段名墨色加粗；日间/夜间 = 条件色圆点 + 墨色条件文字",
+        "          每格 = 实心条件色 chip + 白字加粗（aw_chip_{good,fair,poor,closed}）",
+        "          行间 1dp 淡分隔线给结构",
         "",
         "数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），",
         "由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。",
@@ -634,57 +651,63 @@ def build_hf():
     ])
     s += open_layout("aw_root", "aw_bg_white")
     s += linear("aw_pad", orientation="vertical", height="match_parent",
-                pad_start="13dp", pad_end="13dp", pad_top="7dp", pad_bottom="9dp")
-    # 顶栏：左标题 / 右品牌
+                pad_start="12dp", pad_end="12dp", pad_top="8dp", pad_bottom="9dp")
+    # ① 顶栏
     s += linear("aw_hf_header", orientation="horizontal",
                 gravity="center_vertical", baseline=True)
     s += image("aw_hf_icon", "aw_ic_waves", "14dp")
-    s += text("aw_hf_title", size="12sp", bold=True, color=INK,
-              margin_start="4dp")
+    s += text("aw_hf_title", size="12sp", bold=True, color=INK, margin_start="4dp")
     s += text("aw_spacer", size="1sp", width="0dp", height="1dp", weight="1")
-    s += image("aw_logo", "aw_logo", "16dp")
+    s += image("aw_logo", "aw_logo", "15dp")
     s += text("aw_app_name", size="10sp", bold=True, color=INK,
               margin_start="4dp", android_text="APRSlocus")
     s += CLOSE
-    s += linear("aw_rule1_box", orientation="vertical", margin_top="5dp")
+    # ② 指数行（次要信息：小标签 + 稍大的值；Kp/A 按阈值着色）
+    s += linear("aw_idx", orientation="horizontal", gravity="bottom",
+                baseline=True, margin_top="3dp")
+    for i in range(3):
+        s += text(f"aw_idx{i}_label", size="8.5sp", color=SLATE)
+        s += text(f"aw_idx{i}_value", size="11sp", bold=True, color=INK,
+                  margin_start="3dp", margin_end="14dp")
+    s += CLOSE
+    # ③ 细线
+    s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
     s += hairline("aw_rule1", LINE)
     s += CLOSE
-    # 汇总：单行「小标签 + 大数字」，右端带列图例
-    s += linear("aw_sum", orientation="horizontal", baseline=True,
-                margin_top="5dp", gravity="bottom")
-    for i in range(3):
-        s += text(f"aw_sum{i}_label", size="8.5sp", color=SLATE)
-        s += text(f"aw_sum{i}_value", size="15sp", bold=True, color=INK,
-                  margin_start="5dp", margin_end="14dp")
-    s += text("aw_legend", size="8.5sp", color=SLATE, width="0dp", weight="1",
-              gravity="end", android_text="日 ｜ 夜")
+    # ④ 列头：波段列固定 52dp，两个 chip 列等分 —— 与下面 chip 严格对齐
+    s += linear("aw_colhead", orientation="horizontal", baseline=True,
+                margin_top="4dp")
+    s += text("aw_ch_band", size="8.5sp", color=SLATE, width=BAND_W)
+    s += text("aw_ch_day", size="8.5sp", color=SLATE, width="0dp", weight="1")
+    s += text("aw_ch_night", size="8.5sp", color=SLATE, width="0dp", weight="1")
     s += CLOSE
-    s += linear("aw_rule2_box", orientation="vertical", margin_top="5dp")
-    s += hairline("aw_rule2", LINE)
-    s += CLOSE
-    # 4 行波段
-    s += linear("aw_bands", orientation="vertical", margin_top="4dp")
+    # ⑤ 4 行波段
+    s += linear("aw_bands", orientation="vertical", margin_top="1dp")
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top=None if i == 0 else "1dp")
+                    margin_top=None if i == 0 else "2dp")
         s += text(f"aw_band{i}_name", size="9.5sp", bold=True, color=INK,
-                  width="0dp", weight="1.05", ellipsize=True)
-        # 日间：条件色圆点（ImageView → setColorFilter）+ 墨色条件文字
-        s += linear(f"aw_band{i}_day_box", orientation="horizontal", width="0dp",
-                    weight="1", gravity="center_vertical", baseline=True)
-        s += image(f"aw_band{i}_day_dot", "aw_dot", "6dp")
-        s += text(f"aw_band{i}_day", size="9sp", color=INK, margin_start="5dp",
-                  ellipsize=True)
+                  width=BAND_W, ellipsize=True)
+        # chip 列：外层是等分容器，chip 在其中左对齐（列头因此能对齐）
+        s += linear(f"aw_band{i}_day_box", orientation="horizontal",
+                    width="0dp", weight="1", gravity="center_vertical")
+        s += text(f"aw_band{i}_day", size="8.5sp", bold=True, color="#FFFFFF",
+                  gravity="center", bg="aw_chip_good",
+                  min_width="44dp", pad_h="9dp", pad_v="3dp")
         s += CLOSE
-        # 夜间
         s += linear(f"aw_band{i}_night_box", orientation="horizontal",
-                    width="0dp", weight="1", gravity="end", baseline=True)
-        s += image(f"aw_band{i}_night_dot", "aw_dot", "6dp")
-        s += text(f"aw_band{i}_night", size="9sp", color=INK, margin_start="5dp",
-                  ellipsize=True)
+                    width="0dp", weight="1", gravity="center_vertical")
+        s += text(f"aw_band{i}_night", size="8.5sp", bold=True, color="#FFFFFF",
+                  gravity="center", bg="aw_chip_good",
+                  min_width="44dp", pad_h="9dp", pad_v="3dp")
         s += CLOSE
         s += CLOSE
+        if i < rows - 1:
+            s += linear(f"aw_band{i}_rule_box", orientation="vertical",
+                        margin_top="2dp")
+            s += hairline(f"aw_band{i}_rule", LINE)
+            s += CLOSE
     s += CLOSE
     s += CLOSE
     s += empty_label(color=INK, alpha=0.85)

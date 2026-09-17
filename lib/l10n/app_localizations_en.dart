@@ -2697,7 +2697,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02 (AMap)';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -2768,7 +2768,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapLayers => 'Layers';
 
   @override
-  String get featureLiveMap => 'AMap';
+  String get featureLiveMap => 'Online map';
 
   @override
   String get featureLiveMapDesc =>
@@ -2925,7 +2925,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapTypeDesc =>
-      '\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; AMap raster/satellite uses online tiles.';
+      '\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; raster sources use online tiles, so quality depends on the network.';
 
   @override
   String get msgHistory => 'Message history';
@@ -3473,7 +3473,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navigationUnavailable =>
-      'AMap is not installed and no other map app could be opened';
+      'No map app is installed and no other map app could be opened';
 
   @override
   String stationNoData(String call) {
@@ -3966,7 +3966,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTypeVector => 'Vector map';
 
   @override
-  String get amapGroup => 'AMap';
+  String get amapGroup => 'Domestic';
 
   @override
   String get domesticMaps => 'China maps';
@@ -4265,7 +4265,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oobeMapFeatureDesc =>
-      'AMap tiles with nearby APRS stations and tracks';
+      'Online map tiles with nearby APRS stations and tracks';
 
   @override
   String get oobeGpsFeatureDesc =>

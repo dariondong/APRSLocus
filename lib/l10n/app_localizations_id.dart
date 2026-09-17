@@ -2698,7 +2698,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02 (AMAP)';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -2770,7 +2770,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get mapLayers => 'Lapisan';
 
   @override
-  String get featureLiveMap => 'AMAP';
+  String get featureLiveMap => 'Peta daring';
 
   @override
   String get featureLiveMapDesc =>
@@ -2926,7 +2926,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get mapTypeDesc =>
-      '“Peta 2.0 (vektor)” merender vektor di perangkat sehingga hemat data dan tetap tajam saat zoom; AMAP vektor/satelit memakai tile raster daring.';
+      '“Peta 2.0 (vektor)” merender vektor di perangkat sehingga hemat data dan tetap tajam saat zoom; sumber raster memakai tile daring, jadi kualitasnya bergantung jaringan.';
 
   @override
   String get msgHistory => 'Riwayat pesan';
@@ -3476,7 +3476,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get navigationUnavailable =>
-      'AMAP tidak terpasang dan tidak ada aplikasi peta lain yang bisa dibuka';
+      'Tidak ada aplikasi peta terpasang dan tidak ada aplikasi peta lain yang bisa dibuka';
 
   @override
   String stationNoData(String call) {
@@ -3972,7 +3972,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get mapTypeVector => 'Peta vektor';
 
   @override
-  String get amapGroup => 'AMAP';
+  String get amapGroup => 'Domestik';
 
   @override
   String get domesticMaps => 'Peta Tiongkok';
@@ -4271,7 +4271,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get oobeMapFeatureDesc =>
-      'Tile AMAP dengan stasiun APRS dan jejak di sekitar';
+      'Tile peta daring dengan stasiun APRS dan jejak di sekitar';
 
   @override
   String get oobeGpsFeatureDesc =>

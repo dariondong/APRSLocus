@@ -4890,7 +4890,7 @@ abstract class AppLocalizations {
   /// No description provided for @datumGcj.
   ///
   /// In zh, this message translates to:
-  /// **'高德火星'**
+  /// **'GCJ-02'**
   String get datumGcj;
 
   /// No description provided for @datumWgs.
@@ -5016,7 +5016,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureLiveMap.
   ///
   /// In zh, this message translates to:
-  /// **'高德地图'**
+  /// **'在线地图'**
   String get featureLiveMap;
 
   /// No description provided for @featureLiveMapDesc.
@@ -5304,7 +5304,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapTypeDesc.
   ///
   /// In zh, this message translates to:
-  /// **'「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；高德矢量/卫星为在线栅格瓦片。'**
+  /// **'「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。'**
   String get mapTypeDesc;
 
   /// No description provided for @msgHistory.
@@ -5352,7 +5352,7 @@ abstract class AppLocalizations {
   /// No description provided for @gcj02.
   ///
   /// In zh, this message translates to:
-  /// **'高德火星'**
+  /// **'GCJ-02'**
   String get gcj02;
 
   /// No description provided for @onlyWgs84.
@@ -6234,7 +6234,7 @@ abstract class AppLocalizations {
   /// No description provided for @navigationUnavailable.
   ///
   /// In zh, this message translates to:
-  /// **'未安装高德地图，且无法打开其他地图应用'**
+  /// **'未安装地图应用，且无法打开其他地图应用'**
   String get navigationUnavailable;
 
   /// No description provided for @stationNoData.
@@ -6894,7 +6894,7 @@ abstract class AppLocalizations {
   /// No description provided for @amapGroup.
   ///
   /// In zh, this message translates to:
-  /// **'高德'**
+  /// **'国内地图'**
   String get amapGroup;
 
   /// No description provided for @domesticMaps.
@@ -7428,7 +7428,7 @@ abstract class AppLocalizations {
   /// No description provided for @oobeMapFeatureDesc.
   ///
   /// In zh, this message translates to:
-  /// **'高德地图瓦片，查看附近 APRS 台站与轨迹'**
+  /// **'在线地图瓦片，查看附近 APRS 台站与轨迹'**
   String get oobeMapFeatureDesc;
 
   /// No description provided for @oobeGpsFeatureDesc.

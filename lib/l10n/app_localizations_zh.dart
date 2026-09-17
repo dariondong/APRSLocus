@@ -2598,7 +2598,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => '高德火星';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -2663,7 +2663,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mapLayers => '图层';
 
   @override
-  String get featureLiveMap => '高德地图';
+  String get featureLiveMap => '在线地图';
 
   @override
   String get featureLiveMapDesc => 'GCJ-02 坐标，流畅的缩放与拖拽体验';
@@ -2807,7 +2807,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sendBeacon => '发送信标';
 
   @override
-  String get mapTypeDesc => '「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；高德矢量/卫星为在线栅格瓦片。';
+  String get mapTypeDesc =>
+      '「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。';
 
   @override
   String get msgHistory => '消息记录';
@@ -2831,7 +2832,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get wgs84 => 'WGS-84';
 
   @override
-  String get gcj02 => '高德火星';
+  String get gcj02 => 'GCJ-02';
 
   @override
   String get onlyWgs84 => '仅标准 WGS-84';
@@ -3345,7 +3346,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get navigationUnavailable => '未安装高德地图，且无法打开其他地图应用';
+  String get navigationUnavailable => '未安装地图应用，且无法打开其他地图应用';
 
   @override
   String stationNoData(String call) {
@@ -3832,7 +3833,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mapTypeVector => '矢量地图';
 
   @override
-  String get amapGroup => '高德';
+  String get amapGroup => '国内地图';
 
   @override
   String get domesticMaps => '国内地图';
@@ -4117,7 +4118,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fillPasscode => '去填写';
 
   @override
-  String get oobeMapFeatureDesc => '高德地图瓦片，查看附近 APRS 台站与轨迹';
+  String get oobeMapFeatureDesc => '在线地图瓦片，查看附近 APRS 台站与轨迹';
 
   @override
   String get oobeGpsFeatureDesc => '自动获取位置并发送信标到 APRS-IS';
@@ -7968,7 +7969,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get datumGcj => '高德火星';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -8033,7 +8034,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get mapLayers => '圖層';
 
   @override
-  String get featureLiveMap => '高德地圖';
+  String get featureLiveMap => '線上地圖';
 
   @override
   String get featureLiveMapDesc => 'GCJ-02 座標，流暢的縮放與拖拽體驗';
@@ -8177,7 +8178,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get sendBeacon => '傳送信標';
 
   @override
-  String get mapTypeDesc => '「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；高德向量/衛星為線上柵格瓦片。';
+  String get mapTypeDesc =>
+      '「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。';
 
   @override
   String get msgHistory => '訊息記錄';
@@ -8201,7 +8203,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get wgs84 => 'WGS-84';
 
   @override
-  String get gcj02 => '高德火星';
+  String get gcj02 => 'GCJ-02';
 
   @override
   String get onlyWgs84 => '僅標準 WGS-84';
@@ -8715,7 +8717,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get navigationUnavailable => '未安裝高德地圖，且無法開啟其他地圖應用程式';
+  String get navigationUnavailable => '未安裝地圖應用程式，且無法開啟其他地圖應用程式';
 
   @override
   String stationNoData(String call) {
@@ -9202,7 +9204,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get mapTypeVector => '向量地圖';
 
   @override
-  String get amapGroup => '高德';
+  String get amapGroup => '國內地圖';
 
   @override
   String get domesticMaps => '國內地圖';
@@ -9487,7 +9489,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get fillPasscode => '去填寫';
 
   @override
-  String get oobeMapFeatureDesc => '高德地圖圖磚，檢視附近 APRS 臺站與軌跡';
+  String get oobeMapFeatureDesc => '線上地圖圖磚，檢視附近 APRS 臺站與軌跡';
 
   @override
   String get oobeGpsFeatureDesc => '自動取得位置並傳送信標到 APRS-IS';

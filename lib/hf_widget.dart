@@ -65,10 +65,13 @@ Map<String, Object?> _bandRow(HfBand b, AppLocalizations s) {
   return <String, Object?>{
     'name': b.label,
     'dayLabel': hfQualityLabel(dq, s),
-    // 圆点用基准色（白底上提亮色太淡）
-    'dayColor': colorToArgb(hfQualityColor(dq)),
+    // chip 底色靠这个 level 名选（Kotlin 的 CHIP_BY_LEVEL → aw_chip_*）。
+    // 用**枚举名**而不是色值：白底 chip 是「实心色块 + 白字」，
+    // 换底只能换 drawable（TextView 没有 setColorFilter），
+    // 所以这里给的是「哪一张 drawable」而不是「什么颜色」。
+    'dayLevel': dq.name,
     'nightLabel': hfQualityLabel(nq, s),
-    'nightColor': colorToArgb(hfQualityColor(nq)),
+    'nightLevel': nq.name,
   };
 }
 
@@ -87,9 +90,11 @@ Map<String, Object?> buildHfWidgetSnapshot({
     'ts': (now ?? DateTime.now()).millisecondsSinceEpoch,
     'hasData': false,
     'title': s.hfTitle,
-    'summary': <Map<String, Object?>>[],
-    // 列图例：白底版把它并进汇总行右端（不占额外高度）
-    'legend': '${s.hfDay} ｜ ${s.hfNight}',
+    'indices': <Map<String, Object?>>[],
+    // 列头两列：位置由布局的等分列决定（与下面 chip 左边缘对齐），
+    // 文案要本地化所以由这里给
+    'dayLabel': s.hfDay,
+    'nightLabel': s.hfNight,
     'bands': <Map<String, Object?>>[],
     // 空状态：直接复用「暂无数据」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.hfNoData,
@@ -101,7 +106,7 @@ Map<String, Object?> buildHfWidgetSnapshot({
   snap['hasData'] = true;
   // 汇总行：SFI 不染色（它只是「太阳活动强度」，高低各有玩法，不是好坏）；
   // Kp / A 染色，因为它们是「传播今天稳不稳」的直接指标。
-  snap['summary'] = <Map<String, Object?>>[
+  snap['indices'] = <Map<String, Object?>>[
     <String, Object?>{'label': s.hfSfi, 'value': h.sfi, 'color': 0},
     <String, Object?>{
       'label': s.hfKp,

@@ -62,30 +62,46 @@ class HfWidgetProvider : AppWidgetProvider() {
         /** 波段行数（与 aw_widget_hf.xml 里的行数必须一致） */
         private const val BAND_ROWS = 4
 
-        /** 汇总指数个数（SFI / Kp / A） */
-        private const val SUM_CELLS = 3
+        /** 指数个数（SFI / Kp / A） */
+        private const val IDX_CELLS = 3
 
         /** ← 与 lib/hf_widget.dart 的 kHfWidgetSnapshotVersion 必须一致 */
         private const val SNAPSHOT_VERSION = 1
 
-        /** 汇总格：每格是 (label, value) */
-        private val SUM_LABEL = intArrayOf(
-            R.id.aw_sum0_label, R.id.aw_sum1_label, R.id.aw_sum2_label,
+        /** 指数行：每格是 (label, value)；值的颜色由 Dart 按阈值算好 */
+        private val IDX_LABEL = intArrayOf(
+            R.id.aw_idx0_label, R.id.aw_idx1_label, R.id.aw_idx2_label,
         )
-        private val SUM_VALUE = intArrayOf(
-            R.id.aw_sum0_value, R.id.aw_sum1_value, R.id.aw_sum2_value,
+        private val IDX_VALUE = intArrayOf(
+            R.id.aw_idx0_value, R.id.aw_idx1_value, R.id.aw_idx2_value,
         )
 
-        /** 波段行：每行是 (name, dayDot, dayLabel, nightDot, nightLabel) */
+        /** 波段行：每行是 (波段名, 日间 chip, 夜间 chip) */
         private val BAND_IDS = arrayOf(
-            intArrayOf(R.id.aw_band0_name, R.id.aw_band0_day_dot,
-                R.id.aw_band0_day, R.id.aw_band0_night_dot, R.id.aw_band0_night),
-            intArrayOf(R.id.aw_band1_name, R.id.aw_band1_day_dot,
-                R.id.aw_band1_day, R.id.aw_band1_night_dot, R.id.aw_band1_night),
-            intArrayOf(R.id.aw_band2_name, R.id.aw_band2_day_dot,
-                R.id.aw_band2_day, R.id.aw_band2_night_dot, R.id.aw_band2_night),
-            intArrayOf(R.id.aw_band3_name, R.id.aw_band3_day_dot,
-                R.id.aw_band3_day, R.id.aw_band3_night_dot, R.id.aw_band3_night),
+            intArrayOf(R.id.aw_band0_name, R.id.aw_band0_day, R.id.aw_band0_night),
+            intArrayOf(R.id.aw_band1_name, R.id.aw_band1_day, R.id.aw_band1_night),
+            intArrayOf(R.id.aw_band2_name, R.id.aw_band2_day, R.id.aw_band2_night),
+            intArrayOf(R.id.aw_band3_name, R.id.aw_band3_day, R.id.aw_band3_night),
+        )
+
+        /**
+         * 条件等级 → chip 底色。
+         *
+         * **为什么是 4 张预生成 drawable、而不是运行时染色**：chip 是 TextView，
+         * 而 `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
+         * v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，
+         * 抛 NoSuchMethodException → `RemoteViews.apply()` 抛 ActionException →
+         * **整个组件报废**。TextView 换底只能用 `setBackgroundResource`（View 方法），
+         * 所以四个等级各给一张。
+         *
+         * 未知等级回退到 closed（灰）而不是 0 —— 传 0 会把背景清掉，
+         * chip 变成看不见的白字。
+         */
+        private val CHIP_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_chip_good,
+            "fair" to R.drawable.aw_chip_fair,
+            "poor" to R.drawable.aw_chip_poor,
+            "closed" to R.drawable.aw_chip_closed,
         )
 
         /** 波段行的容器（数据不足时整行收起，而不是留空行） */
@@ -122,20 +138,21 @@ class HfWidgetProvider : AppWidgetProvider() {
 
             // 标题与表头文案都由 Dart 侧本地化好（6 种语言）
             views.setTextViewText(R.id.aw_hf_title, snap.read("title"))
-            // 白底版把「日 ｜ 夜」图例并进了汇总行右端（单独开一行表头要 13.3dp，
-            // 而可用高度只有 130dp），所以这里没有表头要填。
-            views.setTextViewText(R.id.aw_legend, snap.read("legend"))
+            // 列头「日间 / 夜间」的文案也要本地化（6 种语言），所以由 Dart 给。
+            // 它们的**位置**与下面 chip 的左边缘对齐，靠布局的等分列实现。
+            views.setTextViewText(R.id.aw_ch_day, snap.read("dayLabel"))
+            views.setTextViewText(R.id.aw_ch_night, snap.read("nightLabel"))
 
-            // 汇总：SFI / Kp / A。颜色由 Dart 侧按阈值算好（Kp/A 越大越差）
-            val sum = snap.optJSONArray("summary")
-            for (i in 0 until SUM_CELLS) {
-                val cell = sum?.optJSONObject(i)
-                views.setTextViewText(SUM_LABEL[i], cell.read("label"))
-                views.setTextViewText(SUM_VALUE[i], cell.read("value"))
+            // 指数行：SFI / Kp / A。颜色由 Dart 侧按阈值算好（Kp/A 越大越差）
+            val idx = snap.optJSONArray("indices")
+            for (i in 0 until IDX_CELLS) {
+                val cell = idx?.optJSONObject(i)
+                views.setTextViewText(IDX_LABEL[i], cell.read("label"))
+                views.setTextViewText(IDX_VALUE[i], cell.read("value"))
                 // `cell` 是 JSONObject?：`optInt` 不像我那个 read 扩展那样
                 // 能挂在可空接收者上，必须写 `cell?.optInt(...) ?: 0`
                 val color = cell?.optInt("color", 0) ?: 0
-                if (color != 0) views.setTextColor(SUM_VALUE[i], color)
+                if (color != 0) views.setTextColor(IDX_VALUE[i], color)
             }
 
             // 逐波段：日间 / 夜间
@@ -151,27 +168,32 @@ class HfWidgetProvider : AppWidgetProvider() {
             manager.updateAppWidget(id, views)
         }
 
-        /** 填一行波段：圆点与文字都按条件色着色 */
+        /** 填一行波段：波段名 + 两个条件 chip */
         private fun fillBand(views: RemoteViews, ids: IntArray, band: JSONObject) {
             views.setTextViewText(ids[0], band.read("name"))
-            paint(views, ids[1], ids[2], band, "day")
-            paint(views, ids[3], ids[4], band, "night")
+            chip(views, ids[1], band, "day")
+            chip(views, ids[2], band, "night")
         }
 
-        /** 圆点换色（ImageView → setColorFilter）+ 条件文字同色 */
-        private fun paint(
+        /**
+         * 填一个条件 chip：文字（已本地化）+ 按等级换底。
+         *
+         * 换底走 `setBackgroundResource`（View 的方法，TextView 可用）。
+         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 CHIP_BY_LEVEL）。
+         */
+        private fun chip(
             views: RemoteViews,
-            dot: Int,
-            label: Int,
+            target: Int,
             band: JSONObject,
             prefix: String,
         ) {
-            views.setTextViewText(label, band.read("${prefix}Label"))
-            val color = band.optInt("${prefix}Color", 0)
-            if (color != 0) {
-                views.setInt(dot, "setColorFilter", color)
-                views.setTextColor(label, color)
-            }
+            views.setTextViewText(target, band.read("${prefix}Label"))
+            views.setInt(
+                target,
+                "setBackgroundResource",
+                CHIP_BY_LEVEL[band.read("${prefix}Level")]
+                    ?: R.drawable.aw_chip_closed,
+            )
         }
 
         private fun openApp(context: Context): PendingIntent {

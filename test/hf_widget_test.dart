@@ -58,8 +58,9 @@ void main() {
       expect(snap['v'], kHfWidgetSnapshotVersion);
       expect((snap['emptyLabel'] as String).isNotEmpty, isTrue);
       expect(snap['bands'], isEmpty);
-      // 列图例即使没数据也要有（Kotlin 会照填，不该出现空标签）
-      expect((snap['legend'] as String).isNotEmpty, isTrue);
+      // 两列列头即使没数据也要有（Kotlin 会照填，不该出现空标签）
+      expect((snap['dayLabel'] as String).isNotEmpty, isTrue);
+      expect((snap['nightLabel'] as String).isNotEmpty, isTrue);
       expect(() => jsonEncode(snap), returnsNormally);
     });
 
@@ -68,7 +69,7 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
 
       expect(snap['hasData'], isTrue);
-      final sum = snap['summary'] as List;
+      final sum = snap['indices'] as List;
       expect(sum.length, kHfWidgetSummaryCells);
       expect((sum[0] as Map)['label'], zh.hfSfi);
       expect((sum[1] as Map)['label'], zh.hfKp);
@@ -87,17 +88,18 @@ void main() {
       seedHf(sample());
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
 
-      for (final k in ['v', 'hasData', 'title', 'summary', 'legend', 'bands',
+      for (final k in ['v', 'hasData', 'title', 'indices', 'dayLabel', 'nightLabel',
+        'bands',
         'emptyLabel']) {
         expect(snap.containsKey(k), isTrue, reason: '快照缺 $k');
       }
-      for (final c in snap['summary'] as List) {
+      for (final c in snap['indices'] as List) {
         expect((c as Map).keys.toSet(), {'label', 'value', 'color'});
       }
       for (final b in snap['bands'] as List) {
         final map = b as Map;
-        for (final k in ['name', 'dayLabel', 'dayColor', 'nightLabel',
-          'nightColor']) {
+        for (final k in ['name', 'dayLabel', 'dayLevel', 'nightLabel',
+          'nightLevel']) {
           expect(map.containsKey(k), isTrue, reason: '波段行缺 $k');
         }
       }
@@ -130,7 +132,7 @@ void main() {
       expect(zhRow['dayLabel'], isNot(enRow['dayLabel']),
           reason: '中英文案应该不同');
       // 颜色与语言无关
-      expect(zhRow['dayColor'], enRow['dayColor']);
+      expect(zhRow['dayLevel'], enRow['dayLevel']);
     });
 
     test('Band Closed 用灰色，不是红/绿', () {
@@ -138,8 +140,44 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
       final last = (snap['bands'] as List).last as Map;
       expect(last['nightLabel'], zh.hfQClosed);
-      // 灰 #94A3B8（白底用基准色，不提亮），不该等于绿/橙/红
-      expect(last['nightColor'], 0xFF94A3B8); // 基准灰（白底）
+      // 契约是**等级名**（Kotlin 用 CHIP_BY_LEVEL 选 aw_chip_closed），
+      // 不再是色值 —— chip 是实心色块，换底靠换 drawable
+      // （TextView 没有 setColorFilter，那是 ImageView 独有的）。
+      expect(last['nightLevel'], 'closed');
+    });
+  });
+
+  group('chip 等级契约', () {
+    test('level 名落在 Kotlin 认识的集合里', () {
+      // Kotlin 的 CHIP_BY_LEVEL 只认 good/fair/poor/closed，认不出会回退灰底。
+      // hf.dart 的 HfQuality 还多一个 unknown（"no report"/"--" 这类无数据），
+      // 它没有专属 chip —— 这是**有意的**：unknown 也走灰底，语义就是「没数据」。
+      const known = {'good', 'fair', 'poor', 'closed', 'unknown'};
+      const chipLevels = {'good', 'fair', 'poor', 'closed'};
+      for (final (day, night) in const [
+        ('Good', 'Poor'),
+        ('Fair', 'Band Closed'),
+        ('no report', 'NoRpt'),
+        ('--', 'Band Closed'),
+      ]) {
+        seedHf(sample(bands: [HfBand(name: 'x', day: day, night: night)]));
+        final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+        final row = (snap['bands'] as List).first as Map;
+        for (final key in ['dayLevel', 'nightLevel']) {
+          expect(known, contains(row[key]),
+              reason: 'level=${row[key]} 不在允许集合里');
+        }
+        // 契约：**凡是源数据给了明确条件的一侧，就必须落到有专属 chip 的等级上**
+        // （不能落 unknown，否则这一侧的 chip 是灰的、看不出条件）。
+        // 注意不能要求「两边都非 unknown」—— 第 3/4 组样本两边本来就都是
+        // 「无数据」（no report / --），全灰才是正确行为。
+        for (final (raw, key) in [(day, 'dayLevel'), (night, 'nightLevel')]) {
+          final q = hfQualityOf(raw);
+          if (q == HfQuality.unknown) continue; // 源数据没给，灰底是对的
+          expect(chipLevels, contains(row[key]),
+              reason: '源数据 $raw 有明确条件，却落到了灰底（${row[key]}）');
+        }
+      }
     });
   });
 
@@ -147,13 +185,13 @@ void main() {
     int kpColor(int k) {
       seedHf(sample(kIndex: '$k'));
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
-      return ((snap['summary'] as List)[1] as Map)['color'] as int;
+      return ((snap['indices'] as List)[1] as Map)['color'] as int;
     }
 
     int aColor(int a) {
       seedHf(sample(aIndex: '$a'));
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
-      return ((snap['summary'] as List)[2] as Map)['color'] as int;
+      return ((snap['indices'] as List)[2] as Map)['color'] as int;
     }
 
     test('Kp ≤3 绿、=4 橙、≥5 红（与 hf.dart 的 geomagActive/Storm 同阈值）', () {
@@ -188,14 +226,14 @@ void main() {
     test('没有数值时不染色（color = 0），而不是误染绿', () {
       seedHf(sample(kIndex: '--', aIndex: '--'));
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
-      expect(((snap['summary'] as List)[1] as Map)['color'], 0);
-      expect(((snap['summary'] as List)[2] as Map)['color'], 0);
+      expect(((snap['indices'] as List)[1] as Map)['color'], 0);
+      expect(((snap['indices'] as List)[2] as Map)['color'], 0);
     });
 
     test('SFI 不染色（它只是太阳活动强度，高低各有玩法）', () {
       seedHf(sample(sfi: '250'));
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
-      expect(((snap['summary'] as List)[0] as Map)['color'], 0);
+      expect(((snap['indices'] as List)[0] as Map)['color'], 0);
     });
   });
 

@@ -148,18 +148,17 @@ void main() {
     /// 源码级断言。这不是「测试实现细节」，而是挡住一类
     /// 「编译通过、运行无异常、界面静默少一块」的漏接 ——
     /// 曾经就只接了瀑布流那一处。
-    test('_bubble 与 _feedBubble 都调用 translationBlock', () {
+    ///
+    /// 注：瀑布流模式已按需求整体移除（消息页现在只有会话模式），
+    /// 所以断言从「两个气泡都要接」改为「**唯一的**气泡必须接」。
+    /// 这条护栏不能删 —— 它挡的是「长按翻译成功、界面却不显示」那类静默 bug，
+    /// 与有没有瀑布流无关。
+    test('会话/群聊气泡调用 translationBlock', () {
       final src = File('lib/messages_page.dart').readAsStringSync();
-      final iFeed = src.indexOf('Widget _feedBubble');
       final iBubble = src.indexOf('Widget _bubble(');
-      expect(iFeed, greaterThan(0), reason: '找不到 _feedBubble');
-      expect(iBubble, greaterThan(iFeed), reason: '找不到 _bubble');
+      expect(iBubble, greaterThan(0), reason: '找不到 _bubble');
 
-      final feed = src.substring(iFeed, iBubble);
       final bubble = src.substring(iBubble);
-
-      expect(feed.contains('translationBlock('), isTrue,
-          reason: '瀑布流气泡漏了译文块');
       expect(bubble.contains('translationBlock('), isTrue,
           reason: '会话/群聊气泡漏了译文块（曾导致「翻译了但不显示」）');
     });

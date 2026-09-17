@@ -553,78 +553,302 @@ QUALITY_COLORS_BASE = {
 }
 
 # 白底组件的前景层级（取自 theme.dart 的 C.* 浅色值）
+HF3_DAY, HF3_NIGHT = "日间", "夜间"
 INK = "#253044"      # C.ink    主文字
 SLATE = "#637083"    # C.slate  次要文字
 LINE = "#E5E9F0"     # C.border 细分隔线
 
 
-def render_hf_white(w=296, h=140, dark=False):
-    """短波组件 · 白底版。
+# ── 短波组件的三个重做方案 ─────────────────────────────────────────
+#
+# 旧版（单稿调参）的问题，逐条：
+#   ① 「日 ｜ 夜」图例挤在汇总行右端，**和下面两列并不对齐** → 等于没起作用
+#   ② 夜间列右对齐、日间列左对齐 → 两列内容 zigzag，扫视对不齐
+#   ③ 圆点的 x 随条件文字宽度浮动 → 点不在一条竖线上
+#   ④ 圆点只占 6dp，颜色信号很弱，条件其实靠读字
+#   ⑤ 波段名与条件之间一大片空白，横向扫视要跨很远
+#   ⑥ 4 行一模一样、没有结构线，像把表格直接倒上去
+#
+# 三个方案分别针对这些问题的不同解法，不是换个颜色。
 
-    与深色版的三点设计差异：
-      ① **白底 + 深色文字**：与天气组件（彩色渐变）明确区分。两个组件同时摆在
-         桌面上时，一个彩色一个白，一眼能分辨谁是谁。
-      ② **汇总改成「大数字 + 小标签」三格**：SFI/Kp/A 是这张卡最该被一眼看到的
-         东西，值得给大字号（原来 label 左 / value 右 挤在一行，数字很不起眼）。
-      ③ **条件文字用墨色、颜色靠圆点传达**：白底上彩色小字对比度偏低，
-         保留圆点的条件色即可，正文用深色保证可读。
+# 方案 A/B 共用的数据
+def _hf_cells():
+    return [(name, day, night) for name, day, night in HF["bands"]]
+
+
+def render_hf_A(w=296, h=140, dark=False):
+    """**方案 A · 彩色 chip 矩阵**（推荐）
+
+    解法：
+      · 用**彩色圆角 chip**（条件色填充 + 白字加粗）代替「圆点 + 深色文字」——
+        颜色面积从 6dp 变成整块 chip，一眼扫过去就是红黄绿；
+      · chip **固定宽度**，两列各在自己的固定 x 上，列头「日间 / 夜间」与
+        chip 列**严格对齐**（旧版图例浮在右端，等于没标）；
+      · 波段名与 chip 之间不留空档：把三列收成「窄名 + 两列 chip」，
+        横向扫视距离缩短；
+      · 行间用 1dp 极淡分隔线给结构（面板 _hairline 的语言），
+        不再靠「一片白」堆行。
     """
     c = Canvas(w, h, "clear", dark=dark)
     c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
     c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
     c.d = ImageDraw.Draw(c.layer)
 
-    # 顶部内边距取 7（不是 9）：白底方案可用高度只有 130dp，这几处
-    # 2dp 的收边刚好把它放进卡片。
-    x, iw = 13, w - 26
-    c.icon("waves", x, 7, 14, color=INK)
-    c.text(x + 18, 7 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+    px, pw = 12, w - 24           # 内边距与可用宽
+    # ① 顶栏
+    c.icon("waves", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
            color=INK, anchor="lm")
-    brand_w = 19 + c.measure(WEATHER["app_name"], 10, bold=True)
-    c.logo(x + iw - brand_w, 6, 16)
-    c.text(x + iw - brand_w + 19, 7 + line_h(10, True) / 2,
-           WEATHER["app_name"], 10, bold=True, color=INK, anchor="lm")
-    y = 7 + line_h(12, True) + 2
-    c.d.rectangle([round(x * SCALE), round(y * SCALE),
-                   round((x + iw) * SCALE), round(y * SCALE) + SCALE - 1],
-                  fill=rgba(LINE, 1.0))
-    y += 5
-
-    # 汇总：**单行**「小标签 + 大数字」并排。
-    # 试过「大数字一行 + 标签一行」，那要 47dp，白底方案会超 35dp；
-    # 单行只要 24dp，而数字仍比深色版的 10sp 显眼。
-    # 三格等宽，数字基线对齐（anchor="ls" 都是同一条基线）。
-    cells = [("SFI", HF["sfi"], None),
-             ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
-             ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
-    cw = iw / 3
-    base = y + line_h(15)
-    for i, (lab, val, tone) in enumerate(cells):
-        cx = x + i * cw
+    bw = 18 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(12, True)
+    # ② 指数一行（次要信息，不再抢大字号；波段条件才是主角）
+    y += 2
+    ic = [("SFI", HF["sfi"], None),
+          ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+          ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    ix = px
+    for lab, val, tone in ic:
+        c.text(ix, y + line_h(11) / 2, lab, 8.5, color=SLATE, anchor="lm")
+        ix += c.measure(lab, 8.5) + 3
         col = (QUALITY_COLORS_BASE["Good"] if tone == "good"
                else QUALITY_COLORS_BASE["Fair"] if tone == "warn" else INK)
-        c.text(cx, base, lab, 8.5, color=SLATE, anchor="ls")
-        c.text(cx + c.measure(lab, 8.5) + 5, base, val, 15, bold=True,
-               color=col, anchor="ls")
-    # 「日 / 夜」图例并进这一行的右端 —— 单独开一行表头要 13.3dp 高度，
-    # 而白底方案只有 130dp 可用（试过：超 17.2dp）。
-    c.text(x + iw, base, "日 ｜ 夜", 8.5, color=SLATE, anchor="rs")
-    y = base + line_h(8.5) * 0.35 + 4
-    c.d.rectangle([round(x * SCALE), round(y * SCALE),
-                   round((x + iw) * SCALE), round(y * SCALE) + SCALE - 1],
+        c.text(ix, y + line_h(11) / 2, val, 11, bold=True, color=col,
+               anchor="lm")
+        ix += c.measure(val, 11, bold=True) + 14
+    y += line_h(11)
+    y += 3
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
                   fill=rgba(LINE, 1.0))
-    y += 6
-    for name, day, night in HF["bands"]:
-        yy = y + line_h(9.5) / 2
-        c.text(x, yy, name, 9.5, bold=True, color=INK, anchor="lm")
-        c.paste(c.circle(6, QUALITY_COLORS_BASE[day]), x + iw * 0.52 - 9, yy - 3)
-        c.text(x + iw * 0.52, yy, day, 9, color=INK, anchor="lm")
-        c.paste(c.circle(6, QUALITY_COLORS_BASE[night]), x + iw - 41, yy - 3)
-        c.text(x + iw, yy, night, 9, color=INK, anchor="rm")
-        # 行距 0.5（不是 1）：4 行共省 2dp，而 9.5sp 的行盒本身有 14dp，
-        # 0.5dp 的额外间距完全看不出来
-        y += line_h(9.5) + 0.5
+    y += 4
+    # ③ 列头：与下面 chip 列**严格对齐**
+    BAND_W = 52
+    COL_W = (pw - BAND_W) / 2
+    CHIP_W, CHIP_H = 44, 13
+    c.text(px + BAND_W, y + line_h(8.5) / 2, HF3_DAY, 8.5, color=SLATE,
+           anchor="lm")
+    c.text(px + BAND_W + COL_W, y + line_h(8.5) / 2, HF3_NIGHT, 8.5,
+           color=SLATE, anchor="lm")
+    y += line_h(8.5) + 1
+    # ④ 4 行波段
+    for i, (name, day, night) in enumerate(_hf_cells()):
+        if i:
+            c.d.rectangle([round(px * SCALE),
+                           round((y - 1) * SCALE),
+                           round((px + pw) * SCALE),
+                           round((y - 1) * SCALE) + SCALE - 1],
+                          fill=rgba(LINE, 1.0))
+        cy = y + 1
+        c.text(px, cy + CHIP_H / 2, name, 9.5, bold=True, color=INK,
+               anchor="lm")
+        for k, q in ((0, day), (1, night)):
+            cx = px + BAND_W + k * COL_W
+            c.paste(c.rounded(CHIP_W, CHIP_H, 4, QUALITY_COLORS_BASE[q], 1.0),
+                    cx, cy)
+            c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 8.5, bold=True,
+                   color="#FFFFFF", anchor="mm")
+        y = cy + CHIP_H + 1.5
     return c.out_clipped(20), y
+
+
+
+def render_hf_A2(w=296, h=140, dark=False):
+    """**方案 A2 · 淡底 chip**（与面板标签同一语言）
+
+    面板里的标签用「色 15% 底 + 彩字」（见 weather.dart 的 `_tipRow`：
+    danger 时 `tip.color.withValues(alpha: 0.15)` 底 + 彩色文字）。
+    这里把 A 的实心 chip 换成同一套写法，整体更轻、更贴面板；
+    代价是白底上「淡色底」的色块面积视觉上比实心弱一些。
+    """
+    c = Canvas(w, h, "clear", dark=dark)
+    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
+    c.d = ImageDraw.Draw(c.layer)
+
+    px, pw = 12, w - 24
+    c.icon("waves", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+           color=INK, anchor="lm")
+    bw = 18 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(12, True) + 2
+    ic = [("SFI", HF["sfi"], None),
+          ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+          ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    ix = px
+    for lab, val, tone in ic:
+        c.text(ix, y + line_h(11) / 2, lab, 8.5, color=SLATE, anchor="lm")
+        ix += c.measure(lab, 8.5) + 3
+        col = (QUALITY_COLORS_BASE["Good"] if tone == "good"
+               else QUALITY_COLORS_BASE["Fair"] if tone == "warn" else INK)
+        c.text(ix, y + line_h(11) / 2, val, 11, bold=True, color=col,
+               anchor="lm")
+        ix += c.measure(val, 11, bold=True) + 14
+    y += line_h(11) + 3
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 4
+    BAND_W = 52
+    COL_W = (pw - BAND_W) / 2
+    CHIP_W, CHIP_H = 44, 13
+    c.text(px + BAND_W, y + line_h(8.5) / 2, HF3_DAY, 8.5, color=SLATE,
+           anchor="lm")
+    c.text(px + BAND_W + COL_W, y + line_h(8.5) / 2, HF3_NIGHT, 8.5,
+           color=SLATE, anchor="lm")
+    y += line_h(8.5) + 1
+    for i, (name, day, night) in enumerate(_hf_cells()):
+        if i:
+            c.d.rectangle([round(px * SCALE), round((y - 1) * SCALE),
+                           round((px + pw) * SCALE),
+                           round((y - 1) * SCALE) + SCALE - 1],
+                          fill=rgba(LINE, 1.0))
+        cy = y + 1
+        c.text(px, cy + CHIP_H / 2, name, 9.5, bold=True, color=INK,
+               anchor="lm")
+        for k, q in ((0, day), (1, night)):
+            cx = px + BAND_W + k * COL_W
+            base = QUALITY_COLORS_BASE[q]
+            c.paste(c.rounded(CHIP_W, CHIP_H, 4, base, 0.16), cx, cy)
+            c.text(cx + CHIP_W / 2, cy + CHIP_H / 2, q, 8.5, bold=True,
+                   color=base, anchor="mm")
+        y = cy + CHIP_H + 1.5
+    return c.out_clipped(20), y
+
+def render_hf_B(w=296, h=140, dark=False):
+    """**方案 B · 信号条**（业余无线电仪器感）
+
+    解法：把「质量」画成**长度**而不是文字 + 圆点 —— 4 段小方块，
+    好=4 格、一般=2 格、差=1 格、关闭=0 格，颜色随质量。
+    好处：不依赖读字（对多语言更友好），强弱是**长短**一眼可比；
+    代价：不给文字标签，需要列头 + 一点直觉。
+    """
+    c = Canvas(w, h, "clear", dark=dark)
+    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
+    c.d = ImageDraw.Draw(c.layer)
+
+    px, pw = 12, w - 24
+    c.icon("waves", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+           color=INK, anchor="lm")
+    bw = 18 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(12, True) + 2
+    ic = [("SFI", HF["sfi"], None),
+          ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+          ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    ix = px
+    for lab, val, tone in ic:
+        c.text(ix, y + line_h(11) / 2, lab, 8.5, color=SLATE, anchor="lm")
+        ix += c.measure(lab, 8.5) + 3
+        col = (QUALITY_COLORS_BASE["Good"] if tone == "good"
+               else QUALITY_COLORS_BASE["Fair"] if tone == "warn" else INK)
+        c.text(ix, y + line_h(11) / 2, val, 11, bold=True, color=col,
+               anchor="lm")
+        ix += c.measure(val, 11, bold=True) + 14
+    y += line_h(11) + 3
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 4
+    BAND_W = 52
+    COL_W = (pw - BAND_W) / 2
+    SEG, SEG_GAP, SEG_H = 9, 2, 9
+    c.text(px + BAND_W, y + line_h(8.5) / 2, HF3_DAY, 8.5, color=SLATE,
+           anchor="lm")
+    c.text(px + BAND_W + COL_W, y + line_h(8.5) / 2, HF3_NIGHT, 8.5,
+           color=SLATE, anchor="lm")
+    y += line_h(8.5) + 1
+    for i, (name, day, night) in enumerate(_hf_cells()):
+        if i:
+            c.d.rectangle([round(px * SCALE), round((y - 1) * SCALE),
+                           round((px + pw) * SCALE),
+                           round((y - 1) * SCALE) + SCALE - 1],
+                          fill=rgba(LINE, 1.0))
+        cy = y + 1
+        c.text(px, cy + SEG_H / 2, name, 9.5, bold=True, color=INK,
+               anchor="lm")
+        for k, q in ((0, day), (1, night)):
+            cx = px + BAND_W + k * COL_W
+            filled = {"Good": 4, "Fair": 2, "Poor": 1}.get(q, 0)
+            for s in range(4):
+                col = QUALITY_COLORS_BASE[q] if s < filled else "#DFE4EC"
+                c.paste(c.rounded(SEG, SEG_H, 2, col, 1.0),
+                        cx + s * (SEG + SEG_GAP), cy)
+        y = cy + SEG_H + 2
+    return c.out_clipped(20), y
+
+
+def render_hf_C(w=296, h=140, dark=False):
+    """**方案 C · 每波段一张小卡片**（2×2 网格）
+
+    解法：把「波段」当成一张卡，卡里「日间 / 夜间」两个 chip。
+    好处：分组最清楚、留白最多，看着最「设计感」；
+    代价：卡边框占掉一些空间，4 张卡的信息密度比矩阵低。
+    """
+    c = Canvas(w, h, "clear", dark=dark)
+    c.base = Image.new("RGBA", c.base.size, (255, 255, 255, 255))
+    c.layer = Image.new("RGBA", c.base.size, (0, 0, 0, 0))
+    c.d = ImageDraw.Draw(c.layer)
+
+    px, pw = 12, w - 24
+    c.icon("waves", px, 8, 14, color=INK)
+    c.text(px + 18, 8 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+           color=INK, anchor="lm")
+    bw = 18 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 7, 15)
+    c.text(px + pw - bw + 18, 8 + line_h(10, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(12, True) + 2
+    ic = [("SFI", HF["sfi"], None),
+          ("Kp", HF["kp"], "good" if int(HF["kp"]) <= 3 else "warn"),
+          ("A", HF["a"], "good" if int(HF["a"]) <= 15 else "warn")]
+    ix = px
+    for lab, val, tone in ic:
+        c.text(ix, y + line_h(11) / 2, lab, 8.5, color=SLATE, anchor="lm")
+        ix += c.measure(lab, 8.5) + 3
+        col = (QUALITY_COLORS_BASE["Good"] if tone == "good"
+               else QUALITY_COLORS_BASE["Fair"] if tone == "warn" else INK)
+        c.text(ix, y + line_h(11) / 2, val, 11, bold=True, color=col,
+               anchor="lm")
+        ix += c.measure(val, 11, bold=True) + 14
+    y += line_h(11) + 3
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 5
+    cells = _hf_cells()
+    CW = (pw - 6) / 2
+    CH = (h - y - 10 - 5) / 2
+    for i, (name, day, night) in enumerate(cells):
+        r, k = divmod(i, 2)
+        cx = px + k * (CW + 6)
+        cy = y + r * (CH + 5)
+        c.paste(c.rounded(CW, CH, 6, "#F5F7FA", 1.0, 0.0), cx, cy)
+        c.text(cx + 7, cy + 4, name, 9.5, bold=True, color=INK)
+        chip_w = (CW - 14 - 5) / 2
+        for j, (lab, q) in enumerate(((HF3_DAY, day), (HF3_NIGHT, night))):
+            gx = cx + 7 + j * (chip_w + 5)
+            # 卡里必须自带「日/夜」标注：不然两个 chip 一样大，
+            # 根本不知道哪个是日间 —— 这是方案 C 原先的真缺陷。
+            c.text(gx + chip_w / 2, cy + 4 + line_h(9.5) + 2, lab, 7.5,
+                   color=SLATE, anchor="mm")
+            gy = cy + 4 + line_h(9.5) + line_h(7.5) + 1
+            c.paste(c.rounded(chip_w, 13, 4, QUALITY_COLORS_BASE[q], 1.0),
+                    gx, gy)
+            c.text(gx + chip_w / 2, gy + 6.5, q, 8, bold=True, color="#FFFFFF",
+                   anchor="mm")
+    return c.out_clipped(20), y + 2 * CH + 5
+
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -641,8 +865,9 @@ def main():
         ("天气组件 2×4 小面板", render_tall, 150, 300, False),
         ("天气组件 2×2 紧凑档", render_compact, 150, 150, False),
         ("天气组件 4×1 单行档", render_row, 296, 72, True),
-        ("短波传播组件 4×2（当前·深色）", render_hf, 296, 140, False),
-        ("短波传播组件 4×2（白底方案）", render_hf_white, 296, 140, False),
+        # 短波组件：定稿 = 方案 A（实心彩 chip）。探索用的 A2/B/C 仍在本文件里，
+        # 用 --variants 时才输出，默认不打进图里（免得每次都要从一堆方案里找）。
+        ("短波传播组件 4×2（定稿·实心彩 chip）", render_hf_A, 296, 140, False),
     ]
     # 圆角净空：卡片圆角越大，底部两侧收得越早。20dp 圆角下，距底边约
     # 10dp 之内的左右两边已经被切掉，所以内容必须停在 h-10dp 以上。

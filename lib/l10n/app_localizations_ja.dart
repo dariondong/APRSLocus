@@ -2621,7 +2621,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get datumGcj => 'GCJ-02（AMAP）';
+  String get datumGcj => 'GCJ-02';
 
   @override
   String get datumWgs => 'WGS-84';
@@ -2687,7 +2687,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mapLayers => 'レイヤー';
 
   @override
-  String get featureLiveMap => 'AMAP 地図';
+  String get featureLiveMap => 'オンライン地図';
 
   @override
   String get featureLiveMapDesc => 'GCJ-02 座標。スムーズなズームとドラッグ';
@@ -2832,7 +2832,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mapTypeDesc =>
-      '「マップ 2.0（ベクター）」は端末側でベクターを描画するため通信量が少なく、拡大しても鮮明です。AMAP のベクター／衛星はオンラインのラスタータイルです。';
+      '「マップ 2.0（ベクター）」は端末側でベクターを描画するため通信量が少なく、拡大しても鮮明です。ラスター図源はオンラインタイルのため、画質は回線に依存します。';
 
   @override
   String get msgHistory => 'メッセージ履歴';
@@ -3375,7 +3375,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get navigationUnavailable => 'AMAP がインストールされておらず、他の地図アプリも開けませんでした';
+  String get navigationUnavailable => '地図アプリがインストールされておらず、他の地図アプリも開けませんでした';
 
   @override
   String stationNoData(String call) {
@@ -3863,7 +3863,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mapTypeVector => 'ベクター地図';
 
   @override
-  String get amapGroup => 'AMAP';
+  String get amapGroup => '国内';
 
   @override
   String get domesticMaps => '中国の地図';
@@ -4149,7 +4149,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get fillPasscode => '入力する';
 
   @override
-  String get oobeMapFeatureDesc => 'AMAP タイルで、近くの APRS 局と軌跡を表示';
+  String get oobeMapFeatureDesc => 'オンライン地図タイルで、近くの APRS 局と軌跡を表示';
 
   @override
   String get oobeGpsFeatureDesc => '位置を自動取得し、APRS-IS へビーコンを送信';

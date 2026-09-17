@@ -1,5 +1,143 @@
 # 更新日志
 
+## [1.6.119] - 2026-09-17
+
+### 🎨 短波组件重做（实心彩 chip · 你从 4 个方案里选的）；消息页去掉瀑布流；清掉高德描述
+
+**① 短波组件：推翻重做，不再微调**
+
+你上一版的评价是「真难看」。我没有再改一版单稿，而是先把旧版**逐条挑出问题**，
+再做出 **4 个本质上不同**的方案给你选：
+
+| 方案 | 做法 | 我的评价 |
+|---|---|---|
+| **A · 实心彩 chip** | 条件色实心圆角块 + 白字加粗 | 扫视最强 ✅ **你选了它** |
+| A2 · 淡底彩字 | 色 16% 淡底 + 彩字（同面板标签） | 更克制，但颜色存在感弱 |
+| B · 信号条 | 4 段小方块，好=4 格/一般=2/差=1 | 不给文字标签是硬伤（得数格子） |
+| C · 每波段卡片 | 2×2 卡片，卡里两个 chip | 两行高度不齐、「日/夜」重复 4 次 |
+
+旧版被挑出的 6 个问题（现在逐条对上）：
+1. 「日 ｜ 夜」图例挤在汇总行右端，**和下面两列并不对齐** → 等于没标
+   → 现在列头与 chip 列**同一 x**
+2. 夜间列右对齐、日间列左对齐 → 两列 zigzag
+   → 现在两列都左对齐
+3. 圆点的 x 随条件文字宽度浮动 → 点不在一条竖线上
+   → 现在 chip 固定宽度，所有 chip 在两条竖线上
+4. 圆点只占 6dp，颜色信号很弱，条件其实靠读字
+   → 现在整块 chip 是条件色，红黄绿一眼分
+5. 波段名与条件之间一大片空白，横向扫视要跨很远 → 收到 52dp 列宽内
+6. 4 行一模一样、没有结构线 → 行间加 1dp 极淡分隔线
+
+**chip 为什么是 4 张预生成 drawable**：chip 是 `TextView`，而 `setColorFilter`
+**只存在于 ImageView** —— v1.6.114 的线上事故就是把 setColorFilter 用在 TextView
+上，抛异常后**整个组件报废**。TextView 换底只能用 `setBackgroundResource`，
+所以四个条件（good/fair/poor/closed）各一张 `aw_chip_*.xml`。
+
+**② 消息页：去掉瀑布流，只留会话模式**
+
+- 删掉瀑布流整段（`_feedPane` / `_feedBubble` / 模式切换器 / `_feedMode` 状态与
+  持久化 / `_scrollFeed`），共约 240 行。
+- 切换器**整体删掉**，而不是留一个只有一边的开关 —— 那比没有更让人困惑。
+- 顶部未读判定、`inChatDetail`、点消息进会话等逻辑同步去掉了 `_feedMode` 分支。
+- 那条「气泡必须渲染译文块」的源码级护栏**保留**（改成「唯一的 `_bubble` 必须接」）——
+  它挡的是「长按翻译成功、界面却不显示」那类**静默** bug，与有没有瀑布流无关。
+
+**③ 清掉高德地图的「描述」（保留地图选项与开源致谢）**
+
+改了 6 种语言 × 7 个键：
+
+| 键 | 改前 | 改后 |
+|---|---|---|
+| `featureLiveMap` | 高德地图 | 在线地图 |
+| `datumGcj` / `gcj02` | 高德火星 | GCJ-02 |
+| `mapTypeDesc` | …；高德矢量/卫星为在线栅格瓦片 | …；栅格图源为在线瓦片，画质取决于网络 |
+| `oobeMapFeatureDesc` | 高德地图瓦片，… | 在线地图瓦片，… |
+| `navigationUnavailable` | 未安装**高德地图**，… | 未安装**地图应用**，…（这条本来就与高德无关） |
+| `amapGroup` | 高德 | 国内地图 |
+
+**刻意保留的两处**（不是漏改，请你确认）：
+- `mapTypeAmap` / `mapTypeAmapSatellite` —— 这是**地图选项本身的名字**，
+  你明确说了「除了地图选项」；
+- `osAmap`（在关于页的**「开源致谢」**里）—— 我们确实在使用该瓦片服务
+  （`tile_map.dart` 里还带着它的 Referer 头），把署名删掉不合适。
+  **若你确实要去掉，说一声我就改。**
+- 代码内部的 `MapType.group == '高德'` 判别值是**数据实参**（不是文案），
+  界面显示走 `domesticMaps`；它不能改，改了分组会失效。
+
+**④ 过程中我自己踩的 4 个坑（都记下来）**
+
+1. **删代码删多了两次**：第一次按「下一个段注释」当边界，一口气吞掉 700 行
+   （把 `_listPane`、`_inputBar`、`_transBtn` 等共用方法也删了）。教训：**删大段代码
+   要用「断言边界 + 从下往上删」**，不能靠「找下一个注释」这种模糊规则。
+2. **`grep -c` 匹配 0 行时退出码是 1**，把 `&&` 链短路，后面的命令整段没跑，
+   我却以为跑过了（于是「删了但文件没变」）。判断「有没有匹配」不能用
+   `grep -c ... && ...`。
+3. 曾误判文件是 CRLF（其实全是 LF），白查了一轮。
+4. 断言里把行号与期望值写反（把「函数收尾 `}`」当成「空行」）。
+
+**测试**：短波组件 15 项（chip 等级契约改为「有明确条件的一侧不能落灰底」——
+之前那条「两边都落灰」是我写错的断言，源数据本来就无数据时全灰才是对的）；
+消息页相关照常。全量 **413 通过**。
+
+**诚实说明**：本机没有 Android SDK，Android 侧仍只能靠 CI 验证编译。
+
+---
+
+**① The HF widget was rebuilt from scratch — no more tweaking a single draft.** Your verdict on the
+previous version was "genuinely ugly". So instead of another revision, I first listed what was
+wrong with it, then made **four fundamentally different** options for you to choose from: **A**
+solid coloured chips (you picked this), A2 pale-tinted chips with coloured text (matching the
+panel's own labels), B signal bars (4 segments — good/fair/poor as length), and C one card per
+band. B's flaw is having no text label (you have to count segments); C's is uneven card heights
+and "day/night" repeated four times.
+
+The six specific problems in the old version, each now addressed: the day/night legend was parked
+at the right edge of the summary row and **did not line up with the columns below** (now the
+column headers and the chip columns share an x); the night column was right-aligned while the day
+column was left-aligned, so the two columns zig-zagged (both now left-aligned); the dots' x
+position drifted with the width of the condition text (chips are now fixed-width, so every chip
+sits on one of two vertical lines); a 6dp dot carried almost no colour signal, so conditions were
+really read as text (the whole chip is now the condition colour); the gap between band name and
+conditions was huge (now within a 52dp column); and four identical rows with no structure got 1dp
+hairlines between them.
+
+**Why the chips are four pre-generated drawables**: a chip is a `TextView`, and `setColorFilter`
+exists **only on ImageView** — the v1.6.114 outage was exactly that call on a TextView, which threw
+and **killed the whole widget**. A TextView can only swap backgrounds via `setBackgroundResource`,
+hence one `aw_chip_*.xml` per condition.
+
+**② The messages page lost its feed mode**, keeping only conversation mode: the whole feed section
+(`_feedPane`, `_feedBubble`, the mode toggle, the `_feedMode` state and its persistence,
+`_scrollFeed`) is gone, about 240 lines. The toggle was removed outright rather than left as a
+one-sided switch, which is more confusing than nothing. The unread check, `inChatDetail` and
+tap-to-open-conversation no longer branch on feed mode. The source-level guard that "the bubble
+must render the translation block" **stays** (now "the single `_bubble` must") — it guards a
+**silent** bug (translation succeeds, nothing appears) that has nothing to do with feed mode.
+
+**③ AMap references were removed from descriptive copy** across 6 languages × 7 keys: the feature
+headline becomes "Online map", "高德火星" becomes "GCJ-02", the map-source hint no longer names
+AMap, the OOBE line says "online map tiles", and the navigation failure toast now says "no map app
+is installed" (it was never about AMap anyway). **Deliberately kept**, and please confirm: the map
+picker's own option names (`mapTypeAmap` / `mapTypeAmapSatellite`) — you asked to keep the map
+options; and `osAmap` in the About page's **open-source acknowledgements**, since we genuinely use
+that tile service (its Referer header is still in `tile_map.dart`). Say the word and I will remove
+it too. The internal `MapType.group == '高德'` discriminator is a **data argument**, not copy —
+the UI shows `domesticMaps` for it — and changing it would break the grouping.
+
+**④ Four mistakes I made along the way**: I over-deleted code twice (once swallowing 700 lines
+including shared methods like `_listPane` and `_inputBar`, because I used "the next section
+comment" as a boundary — the lesson is to assert boundaries and delete bottom-up rather than rely
+on a fuzzy rule); `grep -c` exits 1 when it matches nothing, which short-circuited an `&&` chain so
+the following commands never ran while I assumed they had; I briefly misdiagnosed the files as CRLF
+when they are LF; and I mixed up a line number with its expected content in an assertion.
+
+**Tests**: 15 for the HF widget (the chip-level contract is now "a side with an explicit condition
+must not fall back to grey" — the previous "both sides grey" assertion was my own mistake, since
+all-grey is correct when the source reports no data). **413 passing** overall.
+
+**Honest caveat**: there is still no Android SDK here, so the Android side remains CI-verified only.
+
+
 ## [1.6.118] - 2026-09-17
 
 > 本次发布把 **v1.6.114 ~ v1.6.118** 累积的改动一起发出（v1.6.113 是上一个已发布的 tag，
