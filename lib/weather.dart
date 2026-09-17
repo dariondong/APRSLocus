@@ -703,15 +703,15 @@ List<Color> _fxGradient(_FxKind k, bool dark, {double rain = 0}) {
 }
 
 /// 建议级别：安全警示 > 注意 > 通联机会 > 操作提示
-enum _TipLevel { danger, warn, good, tip }
+enum TipLevel { danger, warn, good, tip }
 
 /// 单条火腿建议（带级别，便于分级配色与分级排序）
-class _HamTip {
+class HamTip {
   final IconData icon;
   final String text;
   final Color color;
-  final _TipLevel level;
-  const _HamTip(this.icon, this.text, this.color, this.level);
+  final TipLevel level;
+  const HamTip(this.icon, this.text, this.color, this.level);
 }
 
 /// "HH:mm" 是否落在当前时刻 ±[win] 分钟内（用于灰线判定）
@@ -730,7 +730,7 @@ bool _nearClock(String hhmm, int nowMin, {int win = 60}) {
 /// 覆盖：雷电与浪涌防护、降水与馈线防水、结冰与低温电池、大风加固、高温降额、
 /// 高湿绝缘、沙尘/污染、低气压预警、大气波导与灰线/夜间等传播机会、露点结露、紫外线。
 /// 返回结果按级别排序：安全警示 → 注意 → 通联机会 → 操作提示。
-List<_HamTip> _hamTips(WeatherCenter wc, AppLocalizations s) {
+List<HamTip> hamTips(WeatherCenter wc, AppLocalizations s) {
   final w = wc.now;
   if (w == null) {
     return const [];
@@ -764,99 +764,99 @@ List<_HamTip> _hamTips(WeatherCenter wc, AppLocalizations s) {
   final nowD = DateTime.now();
   final nowMin = nowD.hour * 60 + nowD.minute;
 
-  final danger = <_HamTip>[];
-  final warn = <_HamTip>[];
-  final good = <_HamTip>[];
-  final tip = <_HamTip>[];
+  final danger = <HamTip>[];
+  final warn = <HamTip>[];
+  final good = <HamTip>[];
+  final tip = <HamTip>[];
 
   // ── 安全警示：雷电是最优先事项 ──
   if (isThunder) {
-    danger.add(_HamTip(Icons.flash_on_rounded, s.hamStorm1, cDanger, _TipLevel.danger));
-    danger.add(_HamTip(Icons.power_off_rounded, s.hamStorm3, cDanger, _TipLevel.danger));
-    warn.add(_HamTip(Icons.warning_amber_rounded, s.hamStorm2, cWarn, _TipLevel.warn));
-    warn.add(_HamTip(Icons.graphic_eq_rounded, s.hamStorm4, cWarn, _TipLevel.warn));
+    danger.add(HamTip(Icons.flash_on_rounded, s.hamStorm1, cDanger, TipLevel.danger));
+    danger.add(HamTip(Icons.power_off_rounded, s.hamStorm3, cDanger, TipLevel.danger));
+    warn.add(HamTip(Icons.warning_amber_rounded, s.hamStorm2, cWarn, TipLevel.warn));
+    warn.add(HamTip(Icons.graphic_eq_rounded, s.hamStorm4, cWarn, TipLevel.warn));
   }
   if (isExtreme) {
-    danger.add(_HamTip(Icons.water_rounded, s.hamExtreme, cDanger, _TipLevel.danger));
+    danger.add(HamTip(Icons.water_rounded, s.hamExtreme, cDanger, TipLevel.danger));
   }
   if (wind >= 6) {
-    danger.add(_HamTip(Icons.air_rounded, s.hamGale('$wind'), cDanger, _TipLevel.danger));
+    danger.add(HamTip(Icons.air_rounded, s.hamGale('$wind'), cDanger, TipLevel.danger));
   }
 
   // ── 天气本身的防护 ──
   if (isRain && !isShower) {
-    tip.add(_HamTip(Icons.umbrella_rounded, s.hamRain, cTip, _TipLevel.tip));
+    tip.add(HamTip(Icons.umbrella_rounded, s.hamRain, cTip, TipLevel.tip));
   }
   if (isShower) {
-    tip.add(_HamTip(Icons.umbrella_rounded, s.hamShower, cTip, _TipLevel.tip));
+    tip.add(HamTip(Icons.umbrella_rounded, s.hamShower, cTip, TipLevel.tip));
   }
   if ((n >= 300 && n < 400) && (n >= 310 || n == 301 || n == 307)) {
-    tip.add(_HamTip(Icons.wifi_tethering_rounded, s.hamRainFade, cTip, _TipLevel.tip));
+    tip.add(HamTip(Icons.wifi_tethering_rounded, s.hamRainFade, cTip, TipLevel.tip));
   }
   if (isSnow || t <= 2) {
-    warn.add(_HamTip(Icons.ac_unit_rounded, s.hamCold, cCold, _TipLevel.warn));
+    warn.add(HamTip(Icons.ac_unit_rounded, s.hamCold, cCold, TipLevel.warn));
   }
   if (isSnow) {
-    warn.add(_HamTip(Icons.icecream_rounded, s.hamIce, cCold, _TipLevel.warn));
+    warn.add(HamTip(Icons.icecream_rounded, s.hamIce, cCold, TipLevel.warn));
   }
   if (t <= 0) {
-    warn.add(_HamTip(
-        Icons.device_thermostat_rounded, s.hamFrost, cCold, _TipLevel.warn));
+    warn.add(HamTip(
+        Icons.device_thermostat_rounded, s.hamFrost, cCold, TipLevel.warn));
   }
   if (wind >= 5 && wind < 6) {
-    warn.add(_HamTip(Icons.air_rounded, s.hamWind('$wind'), cWarn, _TipLevel.warn));
+    warn.add(HamTip(Icons.air_rounded, s.hamWind('$wind'), cWarn, TipLevel.warn));
   }
   if (wind == 4) {
-    tip.add(_HamTip(Icons.flag_rounded, s.hamWindExtra('$wind'), cWarn, _TipLevel.tip));
+    tip.add(HamTip(Icons.flag_rounded, s.hamWindExtra('$wind'), cWarn, TipLevel.tip));
   }
   if (t >= 35) {
-    warn.add(_HamTip(Icons.local_fire_department_rounded, s.hamHot('$t'), cWarn, _TipLevel.warn));
-    warn.add(_HamTip(Icons.thermostat_rounded, s.hamHeat2, cWarn, _TipLevel.warn));
+    warn.add(HamTip(Icons.local_fire_department_rounded, s.hamHot('$t'), cWarn, TipLevel.warn));
+    warn.add(HamTip(Icons.thermostat_rounded, s.hamHeat2, cWarn, TipLevel.warn));
   } else if (t >= 33) {
-    tip.add(_HamTip(Icons.local_fire_department_rounded, s.hamHot('$t'), cWarn, _TipLevel.tip));
+    tip.add(HamTip(Icons.local_fire_department_rounded, s.hamHot('$t'), cWarn, TipLevel.tip));
   }
   if (hum >= 85) {
-    tip.add(_HamTip(Icons.water_drop_rounded, s.hamHumid('$hum'), cTip, _TipLevel.tip));
+    tip.add(HamTip(Icons.water_drop_rounded, s.hamHumid('$hum'), cTip, TipLevel.tip));
   }
   if (vis < 3) {
-    warn.add(_HamTip(Icons.blur_on_rounded, s.hamFog(w.vis), cViolet, _TipLevel.warn));
+    warn.add(HamTip(Icons.blur_on_rounded, s.hamFog(w.vis), cViolet, TipLevel.warn));
   }
   if (isDust) {
-    warn.add(_HamTip(Icons.grain_rounded, s.hamDust, cViolet, _TipLevel.warn));
+    warn.add(HamTip(Icons.grain_rounded, s.hamDust, cViolet, TipLevel.warn));
   }
   if (aqi > 150 || isHaze) {
-    warn.add(_HamTip(Icons.masks_rounded, s.hamAir, cViolet, _TipLevel.warn));
+    warn.add(HamTip(Icons.masks_rounded, s.hamAir, cViolet, TipLevel.warn));
   }
   // 露点差很小 → 接近饱和，易结露
   if (dew != null && (t - dew) <= 3) {
-    tip.add(_HamTip(Icons.opacity_rounded,
-        s.hamDew((t - dew).toStringAsFixed(0)), cTip, _TipLevel.tip));
+    tip.add(HamTip(Icons.opacity_rounded,
+        s.hamDew((t - dew).toStringAsFixed(0)), cTip, TipLevel.tip));
   }
   if (uv >= 8) {
-    tip.add(_HamTip(Icons.wb_sunny_rounded, s.hamUV('$uv'), cWarn, _TipLevel.tip));
+    tip.add(HamTip(Icons.wb_sunny_rounded, s.hamUV('$uv'), cWarn, TipLevel.tip));
   }
 
   // ── 气压预警 / 传播机会 ──
   if (pressure > 0 && pressure <= 1000) {
-    warn.add(_HamTip(Icons.trending_down_rounded, s.hamLowPressure(w.pressure), cWarn, _TipLevel.warn));
+    warn.add(HamTip(Icons.trending_down_rounded, s.hamLowPressure(w.pressure), cWarn, TipLevel.warn));
   }
   if (pressure >= 1020) {
-    good.add(_HamTip(Icons.waves_rounded, s.hamHighPressure(w.pressure), cGood, _TipLevel.good));
+    good.add(HamTip(Icons.waves_rounded, s.hamHighPressure(w.pressure), cGood, TipLevel.good));
   }
   // 灰线：日出/日落 ±1h
   if (wc.daily.isNotEmpty) {
     final d0 = wc.daily.first;
     if (_nearClock(d0.sunrise, nowMin) || _nearClock(d0.sunset, nowMin)) {
-      good.add(_HamTip(Icons.wb_twilight_rounded, s.hamGrayLine, cGood, _TipLevel.good));
+      good.add(HamTip(Icons.wb_twilight_rounded, s.hamGrayLine, cGood, TipLevel.good));
     }
   }
   // 夜间低波段
   if (nowD.hour >= 20 || nowD.hour < 5) {
-    good.add(_HamTip(Icons.nightlight_round, s.hamNight, cGood, _TipLevel.good));
+    good.add(HamTip(Icons.nightlight_round, s.hamNight, cGood, TipLevel.good));
   }
   // 天气良好：适合架台
   if (danger.isEmpty && warn.isEmpty && !isRain && !isSnow && vis >= 3) {
-    good.add(_HamTip(Icons.rss_feed_rounded, s.hamGood, cGood, _TipLevel.good));
+    good.add(HamTip(Icons.rss_feed_rounded, s.hamGood, cGood, TipLevel.good));
   }
 
   return [...danger, ...warn, ...good, ...tip];
@@ -1369,7 +1369,7 @@ const List<Shadow> _kTextShadow = [
 ];
 
 /// 空气质量等级文字（按 AQI 数值本地化，避免直接使用接口返回的单一语言）
-String _airLabel(int aqi, AppLocalizations s) {
+String airLabel(int aqi, AppLocalizations s) {
   if (aqi < 0) return '--';
   if (aqi <= 50) return s.airExcellent;
   if (aqi <= 100) return s.airGood;
@@ -1401,15 +1401,15 @@ String _dayLabel(int i, DateTime? d, AppLocalizations s) {
 }
 
 /// 建议级别文字
-String _levelLabel(_TipLevel l, AppLocalizations s) {
+String hamLevelLabel(TipLevel l, AppLocalizations s) {
   switch (l) {
-    case _TipLevel.danger:
+    case TipLevel.danger:
       return s.hamLevelDanger;
-    case _TipLevel.warn:
+    case TipLevel.warn:
       return s.hamLevelWarn;
-    case _TipLevel.good:
+    case TipLevel.good:
       return s.hamLevelGood;
-    case _TipLevel.tip:
+    case TipLevel.tip:
       return s.hamLevelTip;
   }
 }
@@ -1788,7 +1788,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         Text('${s.weatherAir} $aqi',
             style: ts(10.5, w: FontWeight.w700, c: Colors.white)),
         const SizedBox(width: 5),
-        Text(_airLabel(aqi, s),
+        Text(airLabel(aqi, s),
             style: ts(10.5, c: Colors.white.withValues(alpha: 0.68))),
       ]),
     );
@@ -1956,7 +1956,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   /// 火腿建议卡片（按级别排序，可展开全部）
   Widget _hamCard(WeatherCenter wc, AppLocalizations s) {
-    final all = _hamTips(wc, s);
+    final all = hamTips(wc, s);
     const maxCollapsed = 4;
     final showToggle = all.length > maxCollapsed;
     final shown =
@@ -2006,8 +2006,8 @@ class _WeatherPanelState extends State<_WeatherPanel>
   }
 
   /// 单条建议：色点 + 「级别」小标签 + 正文；危险项仅用淡色底，不加描边方框
-  Widget _tipRow(_HamTip tip, AppLocalizations s) {
-    final danger = tip.level == _TipLevel.danger;
+  Widget _tipRow(HamTip tip, AppLocalizations s) {
+    final danger = tip.level == TipLevel.danger;
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
       decoration: BoxDecoration(
@@ -2031,7 +2031,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                 Row(children: [
                   Icon(tip.icon, size: 12, color: tip.color),
                   const SizedBox(width: 5),
-                  Text(_levelLabel(tip.level, s),
+                  Text(hamLevelLabel(tip.level, s),
                       style: ts(9.5,
                           w: FontWeight.w800, c: tip.color, ls: 0.7)),
                 ]),

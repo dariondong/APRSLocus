@@ -1,0 +1,471 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'l10n/app_localizations.dart';
+import 'state.dart';
+import 'weather.dart';
+
+/// ─── Android 桌面小组件（4 列 × 2 行：天气 + 业余无线电提示）───
+///
+/// 数据流向：
+///   Flutter（唯一持有和风密钥、唯一实现判定规则的一侧）
+///     → [AppWidgetBridge.push] 把一份「已算好、已本地化」的快照 JSON
+///     → 原生 `com.aprslocus/app_widget` 通道 → 存进 SharedPreferences
+///     → WeatherWidgetProvider.kt 读快照 → 刷新 RemoteViews。
+///
+/// **为什么不让组件自己请求天气**：
+/// ① 和风密钥是构建期注入的（`--dart-define=QWEATHER_KEY`），原生侧拿不到，
+///    也不应该为了一个组件把密钥再抄一份进 Kotlin；
+/// ② 火腿建议的判定规则（雷电/大风/低温/波导/灰线…）、AQI 的本地化分级、
+///    3 日预报的解析全在 Dart 里，在 Kotlin 重写一遍必然与面板产生分歧
+///    —— 同一份天气，面板说「注意」而组件说「良好」是最难查的那类 bug。
+/// 所以组件只负责「忠实显示最后一次同步到的快照」，并带上**观测时刻**，
+/// 让用户自己判断数据新不新鲜（而不是假装它总是最新的）。
+///
+/// **图标**：组件进程里没有 Flutter 的 Material 图标字体（那是 app 的资源），
+/// 所以所有图标在这里映射成 emoji 随数据一起下发。这也和项目里
+/// `NotifHelper` 的 `"📻 $from"` 一致。
+///
+/// **4 列 × 2 行的落位**：
+/// ```
+///   顶栏   📍北京  [AQI 42 优]                    观测 14:30
+///   ───────────────────────────────────────────────────────
+///   第 1 行 [🌤 23° 晴 12°/25°] [💧45% 湿度] [🌡1013 气压] [🌬3级 风力]
+///   第 2 行 [⚡ 雷电…]         [💧 馈线…]  [📶 雨衰…]      [🌙 夜间…]
+/// ```
+/// 第 1 行的 3 个指标格是**数据驱动**的：由 [buildAppWidgetSnapshot] 按当前
+/// 天气挑「此刻最该看的 3 项」（雾天推能见度、雨天推降水、低温推体感…），
+/// 而不是固定写死湿度/气压/风。
+///
+/// 【协作提示】前端若改动天气面板，请顺带核对这里的映射与 [kWidgetTipEmoji]；
+/// 新增的 `HamTip` 图标若没进映射表，组件上会退化成默认的 📻（不会崩，但会失真）。
+
+/// 组件与原生之间的方法通道名（与 WeatherWidgetBridge.kt 必须一致）
+const String kAppWidgetChannel = 'com.aprslocus/app_widget';
+
+/// 快照格式版本：原生侧据此判断能否解析（不匹配则只显示占位）
+const int kAppWidgetSnapshotVersion = 1;
+
+/// 提示区最多显示几条（4 列 × 2 行 → 第 2 行 4 格）
+const int kAppWidgetMaxTips = 4;
+
+/// 第 1 行除「天气主格」外的指标格数量
+const int kAppWidgetMetricCount = 3;
+
+/// 从天气数据取值：字符串 → 整数（解析失败给 [fallback]）
+int _intOf(String v, [int fallback = 0]) => int.tryParse(v) ?? fallback;
+
+/// Color → 0xAARRGGBB。
+/// 用新的 `a/r/g/b` 分量（0–1 浮点）而不是已废弃的 `Color.value`，
+/// 避免 analyze 刷出一片 deprecation 噪音。
+int colorToArgb(Color c) =>
+    ((c.a * 255).round() << 24) |
+    ((c.r * 255).round() << 16) |
+    ((c.g * 255).round() << 8) |
+    (c.b * 255).round();
+
+/// 和风 icon code → emoji（组件用；口径与 `qwIcon()` 保持一致）
+///
+/// 刻意不按「一个 emoji 打天下」：白天/夜间要分（150 是夜间晴），
+/// 雨/雪/雾/霾也要分，否则组件上「🌧️」和「⛈️」同形，等于没传达信息。
+String widgetWeatherEmoji(String code) {
+  final n = int.tryParse(code) ?? -1;
+  if (n == 150) return '🌙'; // 晴（夜间）
+  if (n == 151 || n == 152 || n == 153) return '☁️'; // 多云/阴（夜间）
+  if (n == 100) return '☀️'; // 晴
+  if (n == 101 || n == 102 || n == 103) return '🌤️'; // 多云/少云
+  if (n == 104) return '☁️'; // 阴
+  if (n >= 300 && n < 400) {
+    // 302 雷阵雨 / 303 强雷雨 / 304 雷雨冰雹 → 雷；其余按雨量分档
+    if (n == 302 || n == 303 || n == 304) return '⛈️';
+    if (n == 305 || n == 309 || n == 313 || n == 314) return '🌦️'; // 小雨/毛毛雨
+    return '🌧️'; // 其余雨量级
+  }
+  if (n >= 400 && n < 500) {
+    // 4xx 里的 456/457 等为雨夹雪
+    if (n == 404 || n == 405 || n == 406 || n == 456 || n == 457) {
+      return '🌨️';
+    }
+    return '❄️';
+  }
+  if (n == 503 || n == 504 || n == 507 || n == 508) return '🌪️'; // 扬沙/沙尘暴
+  if (n >= 500 && n < 600) return '🌫️'; // 雾 / 霾
+  return '☁️'; // 未知
+}
+
+/// `HamTip.icon`（Material 图标）→ emoji。
+///
+/// 键是 `Icons.*` 常量，`IconData` 重载了 `==`（按 codePoint + fontFamily 比较），
+/// 所以能直接拿它当 Map 的键。
+///
+/// 注意：**不能**写成 `const` map —— `IconData` 覆写了 `==`/`hashCode`，
+/// 而常量 map 的键在编译期就要做规范化与去重，语言层面禁止这种键
+/// （analyzer 会报 `const_map_key_not_primitive_equality`）。用 `final` 即可。
+final Map<IconData, String> kWidgetTipEmoji = <IconData, String>{
+  // 雷电 / 浪涌
+  Icons.flash_on_rounded: '⚡',
+  Icons.power_off_rounded: '🔌',
+  Icons.warning_amber_rounded: '⚠️',
+  Icons.graphic_eq_rounded: '📻',
+  Icons.water_rounded: '🌊',
+  Icons.air_rounded: '🌬️',
+  // 天气防护
+  Icons.umbrella_rounded: '☂️',
+  Icons.wifi_tethering_rounded: '📶',
+  Icons.ac_unit_rounded: '❄️',
+  Icons.icecream_rounded: '🧊',
+  Icons.device_thermostat_rounded: '🌡️',
+  Icons.flag_rounded: '🚩',
+  Icons.local_fire_department_rounded: '🔥',
+  Icons.thermostat_rounded: '🌡️',
+  Icons.water_drop_rounded: '💧',
+  Icons.blur_on_rounded: '🌫️',
+  Icons.grain_rounded: '🌪️',
+  Icons.masks_rounded: '😷',
+  Icons.opacity_rounded: '💧',
+  Icons.wb_sunny_rounded: '☀️',
+  // 传播机会
+  Icons.trending_down_rounded: '📉',
+  Icons.waves_rounded: '🌊',
+  Icons.wb_twilight_rounded: '🌅',
+  Icons.nightlight_round: '🌙',
+  Icons.rss_feed_rounded: '📡',
+};
+
+/// 兜底 emoji（映射表没覆盖到的新图标）
+const String kWidgetTipEmojiFallback = '📻';
+
+String widgetTipEmoji(IconData icon) =>
+    kWidgetTipEmoji[icon] ?? kWidgetTipEmojiFallback;
+
+/// 提示文字的显示色。
+///
+/// 面板里提示文字压在**深色半透明卡片**上，直接用级别原色没问题；
+/// 组件里文字直接压在**天气渐变**上（晴天那段是 #2E86D6→#79C4F2，很亮），
+/// 原色里的深蓝 #2563EB / 深绿 #16A34A 会与渐变糊在一起。
+/// 所以统一往白色方向提亮 35%：只保留色相用来区分级别，亮度交给渐变。
+int widgetTipTextArgb(Color c) =>
+    colorToArgb(Color.lerp(c, Colors.white, 0.35)!);
+
+/// 与面板 `_fxKindOf()` 同口径的天气档位（决定组件背景渐变）。
+/// 面板那份是私有的，这里给组件用的公开版本；两处若不一致会「面板在下雨、
+/// 组件是大晴天」，所以改动其一务必同步另一处。
+String widgetWeatherKind(WeatherNow w) {
+  final n = _intOf(w.icon, -1);
+  if (n >= 300 && n < 305) return 'storm';
+  if (n >= 300 && n < 400) return 'rain';
+  if (n >= 400 && n < 500) return 'snow';
+  if (n >= 500 && n < 600) return 'fog';
+  if (n == 104 || n == 154) return 'overcast';
+  if ((n >= 101 && n <= 103) || (n >= 151 && n <= 153)) return 'cloudy';
+  return 'clear'; // 100 / 150 晴（含夜间晴）
+}
+
+/// 一条指标格的展示三元组
+typedef WidgetMetricTile = ({String emoji, String value, String label});
+
+/// 按当前天气挑「此刻最该看的 3 项指标」。
+///
+/// 组件第 1 行只有 3 个指标格，若固定写死湿度/气压/风，会在真正要紧的时候缺项：
+/// 雾天看不到能见度、暴雨看不到降水量、结冰天看不到露点。所以按天气切换。
+/// 注意这里刻意只用**已有**的 l10n 文案（如 `weatherDew` 已有独立的「露点」键），
+/// 而不去蹭带占位符的 `weatherFeels`（"体感 {v}°"）—— 那个键里没有可单独
+/// 取出的「体感」二字，硬切字符串在别的语言下必崩。
+List<WidgetMetricTile> widgetMetricTiles(WeatherNow w, AppLocalizations s) {
+  final n = _intOf(w.icon, -1);
+  final t = _intOf(w.temp);
+  final wind = _intOf(w.windScale);
+  final vis = double.tryParse(w.vis) ?? 30;
+  final precip = double.tryParse(w.precip) ?? 0;
+  final isRain = (n >= 300 && n < 400) || precip > 0;
+  final isSnow = n >= 400 && n < 500;
+  // 500–599 里 503/504/507/508 是扬沙/浮尘/沙尘暴，按沙尘处理而非雾
+  final isFog = n >= 500 && n < 600 && n != 503 && n != 504;
+
+  final windTile = (emoji: '🌬️', value: '$wind 级', label: s.weatherWindScale);
+  final humTile =
+      (emoji: '💧', value: '${w.humidity}%', label: s.weatherHumidity);
+
+  // 雾 / 能见度低：能见度是第一信息（直接关系到能不能出门架台）
+  if (isFog || vis < 5) {
+    return [
+      (emoji: '👁️', value: '${w.vis}km', label: s.weatherVis),
+      humTile,
+      windTile,
+    ];
+  }
+  // 降水：降水量 + 湿度（馈线防水、雨衰判断）
+  if (isRain || isSnow) {
+    return [
+      (
+        emoji: isSnow ? '❄️' : '🌧️',
+        value: '${w.precip}mm',
+        label: s.weatherPrecip,
+      ),
+      humTile,
+      windTile,
+    ];
+  }
+  // 低温：露点（接近饱和易结露短路）比体感更有用。
+  // 注意这里不再重复判断 isSnow —— 下雪已经被上面「降水」那支接走了，
+  // 留着只会让人以为两处都有份。（这类死条件是最难看出来的一种混乱）
+  if (t <= 5) {
+    return [
+      (emoji: '💧', value: '${w.dew}°', label: s.weatherDew),
+      humTile,
+      windTile,
+    ];
+  }
+  // 高温：湿度 + 气压（对流天气与设备散热降额）
+  if (t >= 30) {
+    return [
+      humTile,
+      windTile,
+      (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa'),
+    ];
+  }
+  // 常规：气压（关注波导/天气转折） + 湿度 + 风力
+  return [
+    (emoji: '🌡️', value: w.pressure, label: '${s.weatherPressure} hPa'),
+    humTile,
+    windTile,
+  ];
+}
+
+/// 组装给桌面小组件的快照（纯函数，不碰平台通道，便于单测）。
+///
+/// 所有面向用户的文案都在这里由 [AppLocalizations] 取好，原生侧**不做**任何
+/// 条件判断与本地化 —— Kotlin 只负责「把字符串放进对应的格子」。
+Map<String, Object?> buildAppWidgetSnapshot({
+  required WeatherCenter wc,
+  required AppLocalizations s,
+  DateTime? now,
+}) {
+  final t = now ?? DateTime.now();
+  final w = wc.now;
+  final d0 = wc.daily.isNotEmpty ? wc.daily.first : null;
+  final aqi = wc.air?.aqiValue ?? -1;
+
+  final snap = <String, Object?>{
+    'v': kAppWidgetSnapshotVersion,
+    // 快照生成时刻（调试与「无数据兜底」用）
+    'ts': t.millisecondsSinceEpoch,
+    'hasData': false,
+    // 背景渐变档位：clear / cloudy / overcast / rain / storm / snow / fog
+    'kind': 'cloudy',
+    'header': <String, Object?>{
+      'city': '',
+      'aqi': '',
+      'aqiLabel': '',
+      'aqiColor': 0,
+      'observed': '',
+    },
+    'hero': <String, Object?>{
+      'emoji': '☁️',
+      'temp': '--',
+      'sub': '',
+    },
+    'metrics': <Map<String, Object?>>[],
+    'tipsLabel': s.hamTitle,
+    'tips': <Map<String, Object?>>[],
+    'tipTotal': 0,
+    // 组件的空状态：直接复用「暂无定位」提示（它就是此刻最该说的一句话）
+    'emptyLabel': s.weatherNoLoc,
+  };
+
+  if (w == null) return snap;
+
+  final tips = hamTips(wc, s);
+
+  snap['hasData'] = true;
+  snap['kind'] = widgetWeatherKind(w);
+  snap['header'] = <String, Object?>{
+    'city': (w.city == null || w.city!.trim().isEmpty)
+        ? s.weatherCurLoc
+        : w.city!,
+    'aqi': aqi < 0 ? '' : '$aqi',
+    'aqiLabel': aqi < 0 ? '' : airLabel(aqi, s),
+    'aqiColor': aqi < 0 ? 0 : colorToArgb(wc.air!.levelColor),
+    // 用「观测 HH:mm」而不是本机当前时间：数据不新鲜时用户能一眼看出来，
+    // 这比显示一个永远等于「现在」的时间戳诚实得多。
+    'observed': s.weatherObserved(w.obsTimeShort),
+  };
+  snap['hero'] = <String, Object?>{
+    'emoji': widgetWeatherEmoji(w.icon),
+    'temp': '${w.tempDisplay}°',
+    'sub': d0 == null
+        ? w.text
+        : '${w.text} · ${_intOf(d0.tempMin)}°/${_intOf(d0.tempMax)}°',
+  };
+  snap['metrics'] = <Map<String, Object?>>[
+    for (final m in widgetMetricTiles(w, s))
+      <String, Object?>{
+        'emoji': m.emoji,
+        'value': m.value,
+        'label': m.label,
+      },
+  ];
+  snap['tips'] = <Map<String, Object?>>[
+    for (final tip in tips.take(kAppWidgetMaxTips))
+      <String, Object?>{
+        'emoji': widgetTipEmoji(tip.icon),
+        'text': tip.text,
+        // 组件宽度不够时退化成「emoji + 级别」，靠这一行仍然能看懂
+        'levelLabel': hamLevelLabel(tip.level, s),
+        'color': widgetTipTextArgb(tip.color),
+        'level': tip.level.name,
+      },
+  ];
+  snap['tipTotal'] = tips.length;
+  return snap;
+}
+
+/// 桌面小组件 ↔ Flutter 的桥。
+class AppWidgetBridge {
+  AppWidgetBridge._();
+
+  static const MethodChannel _ch = MethodChannel(kAppWidgetChannel);
+
+  /// 已推送快照的指纹：完全一致就不重复过通道。
+  ///
+  /// 这一条就够用了，**不要**再加「节流用的 Future.delayed」：
+  /// - 同一份数据重复推送本来就不会发生（指纹挡住了）；
+  /// - 而天气加载前后的两次 `version.value++` 里，第一次快照内容没变、
+  ///   同样被指纹挡住，节流并没有额外收益；
+  /// - 却会留下一个不受 dispose 管辖的定时器，在 widget 测试里表现为
+  ///   「A Timer is still pending」，是那种越查越远的假失败。
+  static String? _lastFingerprint;
+
+  /// 组装当前快照并推给原生（落盘 + 刷新 RemoteViews）。
+  static Future<void> push({
+    required AppLocalizations s,
+    required WeatherCenter wc,
+  }) async {
+    final payload = jsonEncode(buildAppWidgetSnapshot(wc: wc, s: s));
+    if (payload == _lastFingerprint) return;
+
+    try {
+      await _ch.invokeMethod<void>('update', payload);
+      _lastFingerprint = payload;
+    } on MissingPluginException {
+      // 非 Android（Windows / Web / 桌面调试）没有这个通道。
+      // 照样记下指纹：否则每次 MediaQuery 变化都会重算一遍再白跑一次通道。
+      _lastFingerprint = payload;
+    } on PlatformException {
+      // 刷新失败不记指纹，下次状态变化时还会再试（不静默丢掉这次数据）
+    }
+  }
+
+  /// 清空已保存的快照（组件会回到占位态）
+  static Future<void> clear() async {
+    _lastFingerprint = null;
+    try {
+      await _ch.invokeMethod<void>('clear');
+    } on MissingPluginException {
+      // 非 Android：忽略
+    } on PlatformException {
+      // 忽略
+    }
+  }
+}
+
+/// 快照同步挂件：挂在 `MaterialApp.builder` 里。
+///
+/// 位置很关键 —— `MaterialApp.builder` 的 context 位于 `Localizations` **之下**，
+/// 因此这里 `AppLocalizations.of(context)` 拿到的是**当前真正生效**的语言
+/// （包括「跟随系统」那一档）。换个位置就得自己重算 locale，一旦算错，
+/// 组件上的文字会和界面差一个语言。
+///
+/// 触发时机：
+/// ① 首帧（App 启动 / 切语言后重建）；
+/// ② `WeatherCenter.version` 变化（天气拉到、模拟天气切换）；
+/// ③ 依赖变化（`didChangeDependencies` 在语言或 MediaQuery 变化时触发）。
+class AppWidgetSync extends StatefulWidget {
+  const AppWidgetSync({super.key, required this.state, required this.child});
+
+  final AppState state;
+  final Widget child;
+
+  @override
+  State<AppWidgetSync> createState() => _AppWidgetSyncState();
+}
+
+class _AppWidgetSyncState extends State<AppWidgetSync>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WeatherCenter.instance.version.addListener(_sync);
+    // 首帧之后再推：此时 Localizations 已就绪
+    WidgetsBinding.instance.addPostFrameCallback((_) => _sync());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _sync();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // 切到后台前再同步一次：用户回到桌面时看到的就是最新的那份
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _sync();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    WeatherCenter.instance.version.removeListener(_sync);
+    super.dispose();
+  }
+
+  /// 上次「无数据兜底加载」的时间（防自激，见下）
+  DateTime? _lastAutoLoad;
+
+  /// 完全没有天气数据时，顺手触发一次加载。
+  ///
+  /// 为什么不无条件调 `load()`（像顶栏胶囊 `WeatherBadge` 那样）：
+  /// 胶囊在 `build()` 里调，靠 `WeatherCenter` 内部 15 分钟 TTL 拦重复请求。
+  /// 但 TTL 的判据是 `updated != null` —— **拉取失败时 `updated` 不会被更新**，
+  /// 而失败后 `load()` 仍会 `version.value++`；本类的 `version` 监听器又是
+  /// `_sync()`，于是会转成「通知 → 加载 → 失败 → 通知」的无限重试。
+  /// 所以这里加一道时间戳（不是节流优化，是防自激，也顺便不把用户流量烧在
+  /// 「没定位 / 服务器宕了」这类必然失败的场景上）。
+  ///
+  /// 注意：**只处理「一点数据都没有」的情况**。数据过期（超过 TTL）的刷新
+  /// 交给 `WeatherBadge` —— 用户点组件打开 App 时它自然会拉，拉完
+  /// `version` 变化再驱动本类把新快照推给组件。
+  void _maybeLoad() {
+    final st = widget.state;
+    final wc = WeatherCenter.instance;
+    // loading 也不能省：load() 会在开头 version.value++，
+    // 不拦住就变成「load → 通知 → load」。
+    if (wc.simulating || wc.loading || wc.now != null) return;
+    if (!st.myHasFix || st.myLat == null || st.myLng == null) return;
+
+    final now = DateTime.now();
+    final last = _lastAutoLoad;
+    if (last != null && now.difference(last) < const Duration(minutes: 2)) {
+      return;
+    }
+    _lastAutoLoad = now;
+    wc.load(st.myLat!, st.myLng!);
+  }
+
+  void _sync() {
+    if (!mounted) return;
+    _maybeLoad();
+    final s = AppLocalizations.of(context);
+    // 不 await：推送是副作用，不该拖慢首帧
+    AppWidgetBridge.push(s: s, wc: WeatherCenter.instance);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}

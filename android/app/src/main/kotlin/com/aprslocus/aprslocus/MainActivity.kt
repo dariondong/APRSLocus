@@ -37,6 +37,9 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        // 桌面小组件桥：Dart 把算好的天气快照推过来，这里落盘并刷新组件
+        WeatherWidgetBridge(this, flutterEngine.dartExecutor.binaryMessenger).attach()
+
         // 方法通道：控制定位服务 + 权限
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {

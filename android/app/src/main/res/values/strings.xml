@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      桌面小组件文案（Android 资源，只用于系统界面里显示的那几处：
+      「添加小组件」列表名称、长按 → 信息、以及从未同步过时的占位提示）。
+      组件内部的天气/建议文字全部由 Flutter 侧本地化后下发，
+      不走这里 —— 见 lib/app_widget.dart。
+      默认（values/）为中文；英文在 values-en/。
+    -->
+    <string name="app_widget_weather_label">天气与无线电提示</string>
+    <string name="app_widget_weather_desc">显示当前位置天气与业余无线电操作提示（4×2）</string>
+    <string name="app_widget_weather_empty">打开 APRSlocus 并完成定位后，这里会显示天气与业余无线电提示</string>
+</resources>

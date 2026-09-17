@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <!-- 天气档位：overcast（与 lib/weather.dart 的 _fxGradient 对应） -->
+    <corners android:radius="20dp" />
+    <!-- angle=270：从上到下。Android 的角度里 0=左→右、90=下→上、270=上→下 -->
+    <gradient
+        android:angle="270"
+        android:type="linear"
+        android:startColor="#313B49"
+        android:endColor="#1A212B" />
+</shape>

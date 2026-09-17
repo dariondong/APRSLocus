@@ -72,6 +72,22 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- 桌面小组件：天气 + 业余无线电提示（4 列 × 2 行）。
+             exported=true 是必须的 —— 组件由系统（Launcher / AppWidgetService）
+             实例化，不是本应用自己；但它只读自己进程内的 SharedPreferences、
+             不接受任何外部数据，所以没有暴露面。
+             不要给它加 android:permission，否则部分启动器会因缺少权限而无法
+             实例化组件（表现：列表里能看到，拖到桌面却没反应）。 -->
+        <receiver
+            android:name=".WeatherWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/aprslocus_weather_widget_info" />
+        </receiver>
         <service
             android:name=".LocationService"
             android:exported="false"

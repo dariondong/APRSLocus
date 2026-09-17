@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- See values/strings.xml for why this is a separate Android resource set. -->
+    <string name="app_widget_weather_label">Weather &amp; radio tips</string>
+    <string name="app_widget_weather_desc">Local weather and amateur-radio operating tips (4×2)</string>
+    <string name="app_widget_weather_empty">Open APRSlocus and get a position fix to see weather and radio tips here</string>
+</resources>

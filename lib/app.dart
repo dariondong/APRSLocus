@@ -5,6 +5,7 @@ import 'state.dart';
 import 'home_page.dart';
 import 'splash_page.dart';
 import 'oobe_page.dart';
+import 'app_widget.dart';
 import 'l10n/app_localizations.dart';
 
 /// 将设置里保存的语言码（如 'zh_TW'）解析成 Locale
@@ -111,7 +112,12 @@ class _AppState extends State<App> {
         return MediaQuery(
           data: MediaQuery.of(context)
               .copyWith(textScaler: TextScaler.linear(scale)),
-          child: child!,
+          // 桌面小组件同步器。挂在这里不是随便挑的位置：builder 的 context
+          // 位于 Localizations **之下**，所以 AppWidgetSync 里
+          // AppLocalizations.of(context) 拿到的就是当前真正生效的语言
+          // （包括「跟随系统」那档）。换到 App 层就得自己重算 locale，
+          // 一旦算错，组件上的文字会和界面差一个语言。
+          child: AppWidgetSync(state: _state, child: child!),
         );
       },
       home: ListenableBuilder(

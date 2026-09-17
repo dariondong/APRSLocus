@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  APRSlocus 天气 + 无线电提示 桌面小组件（4 列 × 2 行）
+
+  尺寸口径：`targetCellWidth/Height`（API 31+）用「格子数」描述，是给
+  启动器的正式声明；`minWidth/minHeight`（dp）是给旧版本的兜底。
+  另注意二者不是等价的 —— 旧版启动器按 (74×格子数 − 16) 换算，
+  4×2 对应 280×132dp；这里取 250×110dp 是为了让更多旧启动器也认这个
+  尺寸，实际绘制靠 layout_weight 自适应，不依赖绝对尺寸。
+
+  `updatePeriodMillis` 取系统允许的最小值 30 分钟：它**不会**重新联网取
+  天气（组件不持有和风密钥，见 lib/app_widget.dart 的说明），只是重新渲染
+  一遍已有快照，顺带让组件在数据/存储异常后能自愈。
+  真正的数据刷新由 App 侧推送（AppWidgetBridge.push）。
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/aprslocus_weather_widget"
+    android:previewLayout="@layout/aprslocus_weather_widget"
+    android:description="@string/app_widget_weather_desc"
+    android:widgetCategory="home_screen" />
