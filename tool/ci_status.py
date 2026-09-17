@@ -77,6 +77,9 @@ def main():
         run_id = int(args[1])
         for _ in range(80):
             r = api(f"actions/runs/{run_id}")
+            if "name" not in r:
+                sys.exit(f"run {run_id} 取不到（API 返回：{str(r)[:200]}）\n"
+                         f"多半是 run id 写错了 —— 用 `ci_status.py <sha前缀>` 先确认。")
             st = f"{r['status']} {r.get('conclusion')}"
             print(f"[{time.strftime('%H:%M:%S')}] {r['name']}: {st}")
             if r["status"] == "completed":
