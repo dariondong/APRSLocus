@@ -36,6 +36,7 @@
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 
 # ── 尺寸令牌：四档共用，改字号只改这里 ──────────────────────────────
 # 参照面板（正文 12.5sp / 温度 58sp / 度数 24sp）按可用空间等比缩小。
@@ -674,7 +675,8 @@ def build_hf():
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
         "          每格 = 条件色带（aw_track_*：淡底 14% + 左端 2.5dp 色标）",
         "                 档位文字在色带内左端，颜色 = 该档基本色",
-        "6m      ：无开通时显示「--」（不抢注意力）；开通时显示档位并变色",
+        "6m      ：无开通时显示灰色占位符（与 Dart 的 HfNow.none 一致）—— 不抢注意力；",
+        "          开通时显示档位并变色",
         "",
         "数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），",
         "由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。",
@@ -864,15 +866,36 @@ def build_sys():
 
 
 def self_check(name, xml):
-    """产物自检：标签闭合 + 只用白名单控件。
+    """产物自检：XML 良构 + 注释合法 + 标签闭合 + 只用白名单控件。
 
-    这两个问题都只在**运行时**才炸（组件白块），编译期全是绿的，必须在生成时挡住。
-    关键：**先剥掉注释再扫** —— 注释里为了说明约束会写到 `<View>`、`<selector>`
+    这些问题都只在**编译期或运行时**才炸，本地生成时全是绿的，必须在这里挡住。
+    关键：**先剥掉注释再扫控件** —— 注释里为了说明约束会写到 `<View>`、`<selector>`
     这些字面量，不剥就会把自己的说明文档当成违规（而且修它的人通常会去删说明，
     约束就又没人记得了）。
+
+    ⚠ 两条是踩过的坑，别再删：
+      · **XML 注释里不能出现 `--`**。我在注释里写占位符 `「--」`，AAPT 直接
+        `The string "--" is not permitted within comments` → Android 构建失败。
+        而这**本该在本地就发现**（见下一条）。
+      · **必须真的用 XML 解析器解析一遍**。只做字符串匹配（上面那些规则）看不出
+        良构问题，于是「本地全绿、CI 才炸」。ElementTree 一解析就报，代价为零。
     """
-    body = re.sub(r"<!--.*?-->", "", xml, flags=re.S)
     problems = []
+    # ① XML 良构：任何解析错误都是硬错（AAPT 也会拒）
+    try:
+        ET.fromstring(xml)
+    except ET.ParseError as e:
+        problems.append(f"{name}: XML 良构校验失败（AAPT 会拒绝）：{e}")
+    # ② 注释内容不得含 `--`（XML 规范禁止；AAPT 直接报错）
+    for m in re.finditer(r"<!--(.*?)-->", xml, flags=re.S):
+        if "--" in m.group(1):
+            bad = next((l.strip() for l in m.group(1).splitlines()
+                        if "--" in l), "")
+            problems.append(
+                f"{name}: XML 注释里出现 `--`（规范禁止，AAPT 会报 "
+                f"`not permitted within comments`）：{bad[:80]}")
+
+    body = re.sub(r"<!--.*?-->", "", xml, flags=re.S)
     for tag in re.findall(r"<([A-Za-z][\w.]*)", body):
         if tag not in ALLOWED_TAGS:
             problems.append(f"{name}: 出现了非白名单控件 <{tag}>"
