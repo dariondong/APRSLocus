@@ -62,12 +62,23 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 # 所以颜色必须写成可解析的资源，夜间模式才能自动切到 values-night 的值。
 # 对应 theme.dart 的 C.ink / C.slate / C.border。
 INK = "@color/aw_ink"  # 主文字
-# 进度条段高度
-SEG_H = "13dp"
+# 进度条段高度。13dp 时四行加起来只有 52dp，整块显得空 —— 用户要「拉高一点、更饱满」，
+# 提到 18dp（4 行共 72dp）。为此把几处 4/3dp 的间隔各收 1~2dp，
+# 总高仍低于 4×2 的内容预算（实测见预览工具的核对输出）。
+SEG_H = "18dp"
 # 日/夜两段之间的缝
 SEG_GAP = "2dp"
-# 日端/夜端的小图标（太阳 / 星星）
-SEG_ICON = "9dp"
+# 段内的太阳/月亮图标（挪到**条内**之后不再占条外宽度，也不用染色：
+# 白天段是满色、夜晚段是压暗色，白图在两者上都够清楚）
+SEG_ICON = "10dp"
+# 段内顶部的小白点：标出「现在」在哪一段。
+# 它**不再烘焙进 drawable** —— 那样每种「档位 × 昼夜 × 是否当前」都要一张图
+# （4×2×2=16 张/主题）。改成独立 ImageView 后，可见性由 Kotlin 控，
+# drawable 只需「档位 × 昼夜」4×2=8 张。
+SEG_PIP_W = "6dp"
+SEG_PIP_H = "3dp"
+# 段内图标离条左端的距离
+SEG_ICON_PAD = "7dp"
 # 每行右侧「现在这一档」的标块宽度
 NOW_W = "48dp"
 # 波段名列宽。**56dp 是算出来的，不是拍的**：最长的波段名（12m/10m）在
@@ -168,14 +179,17 @@ def text(tid, *, size, color=INK, bold=False, max_lines=None,
 
 
 def image(iid, src, size, *, margin_end=None, margin_start=None,
-          margin_top=None, gravity=None, width=None, height=None,
-          visibility=None, scale_type="fitCenter", bg=None):
+          margin_top=None, gravity=None, layout_gravity=None, width=None,
+          height=None, visibility=None, scale_type="fitCenter", bg=None):
     a = [f'android:id="@+id/{iid}"',
          f'android:layout_width="{width or size}"',
          f'android:layout_height="{height or size}"']
     for k, v in (("layout_marginEnd", margin_end),
                  ("layout_marginStart", margin_start),
-                 ("layout_marginTop", margin_top), ("gravity", gravity)):
+                 ("layout_marginTop", margin_top), ("gravity", gravity),
+                 # layout_gravity 是「在父容器里靠哪边」——FrameLayout 里
+                 # 摆位只能靠它（没有绝对定位，也没有百分比布局）
+                 ("layout_gravity", layout_gravity)):
         if v:
             a.append(f'android:{k}="{v}"')
     if bg:
@@ -225,6 +239,27 @@ def linear(lid, *, orientation, width="match_parent", height="wrap_content",
 
 
 CLOSE = "    </LinearLayout>\n"
+FRAME_CLOSE = "    </FrameLayout>\n"
+
+
+def frame(fid, *, width="match_parent", height="wrap_content", weight=None,
+          bg=None, margin_start=None, margin_end=None, margin_top=None):
+    """FrameLayout 容器：用来「在一个色块上叠图标/白点」。
+
+    进度条段需要「底色 + 段内图标 + 顶部白点」三层。LinearLayout 只能横向/纵向
+    排队，没法把白点摆到正中上方 —— 只有 FrameLayout 能用 layout_gravity 定位子元素。
+    """
+    a = [f'android:id="@+id/{fid}"',
+         f'android:layout_width="{width}"',
+         f'android:layout_height="{height}"']
+    for k, v in (("layout_weight", weight), ("layout_marginStart", margin_start),
+                 ("layout_marginEnd", margin_end),
+                 ("layout_marginTop", margin_top)):
+        if v:
+            a.append(f'android:{k}="{v}"')
+    if bg:
+        a.append(f'android:background="@drawable/{bg}"')
+    return f"    <FrameLayout\n        " + "\n        ".join(a) + ">\n"
 
 
 def _with_alpha(color, alpha):
@@ -687,7 +722,8 @@ def build_hf():
         "细线    ：C.border（#E5E9F0）",
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
         "          每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]",
-        "          段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）",
+        "          两段① aw_segday_*（亮 = 日）/ aw_segnight_*（暗 = 夜），",
+        "             段内放太阳/月亮图标；② 顶部白点（aw_dot）标出「现在」在哪段",
         "",
         "提示行  ：[圆点][级别图][级别] 一句话 —— 与 App 内面板的「业余无线电建议」",
         "          同源（Dart 复用 hfTips，取排序后的第一条）；此刻没有值得说的",
@@ -722,7 +758,7 @@ def build_hf():
     s += CLOSE
     # ② 指数行 + 右端「现在 夜间」（文案由 Dart 拼好下发 —— 原生不本地化）
     s += linear("aw_idx", orientation="horizontal", gravity="bottom",
-                baseline=True, margin_top="3dp")
+                baseline=True, margin_top="2dp")
     for i in range(3):
         s += text(f"aw_idx{i}_label", size="8.5sp", color=SLATE)
         s += text(f"aw_idx{i}_value", size="11sp", bold=True, color=INK,
@@ -735,40 +771,58 @@ def build_hf():
     # 无条件时显示灰色占位符（Dart 给 HfNow.none），开通时才变色。
     s += text("aw_six_tag", size="8.5sp", color=SLATE, android_text="6m",
               margin_start="8dp", margin_end="3dp")
-    s += text("aw_six", size="8.5sp", bold=True, color=SLATE,
+    s += text("aw_six", size="8.5sp", bold=True, color="#FFFFFF",
               width="48dp", height="13dp", gravity="center",
-              bg="aw_seg_closed", pad_start="3dp", pad_end="3dp",
+              bg="aw_segnight_closed", pad_start="3dp", pad_end="3dp",
               ellipsize=True)
     s += CLOSE
     # ③ 细线
-    s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
+    s += linear("aw_rule1_box", orientation="vertical", margin_top="3dp")
     s += hairline("aw_rule1", LINE)
     s += CLOSE
-    # ④ 4 行波段：名字 + 太阳 + 日间段 + 夜间段 + 星光 + 当前档位
+    # ④ 4 行波段：名字 + [白天段] + [夜晚段] + 当前档位块
+    #
+    # 每一段 = 一个 FrameLayout（底色 drawable + 段内图标 + 顶部白点）：
+    #   · 底色：白天 = aw_segday_*（亮）/ 夜晚 = aw_segnight_*（暗）——
+    #     **亮度表达时段**，这是用户点名的语义（「亮的是白天、暗的是晚上」）。
+    #     上一版是「当前时段实色、另一段淡底」，于是夜里那一段反而最亮。
+    #   · 段内图标：太阳/月亮**放进条里**（原来是条外的两个小图），
+    #     一眼就知道哪段是白天；宽度也让给条本身。
+    #   · 顶部白点：标出「现在」在哪一段。独立 ImageView（可见性由 Kotlin 控），
+    #     不做进 drawable —— 否则「档位 × 昼夜 × 是否当前」要 16 张图/主题。
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top="3dp")
+                    margin_top="2dp")
         s += text(f"aw_band{i}_name", size="9sp", bold=True, color=INK,
                   width=BAND_W, ellipsize=True)
-        # 两端的太阳/星星：白色 PNG，运行时由 Kotlin setColorFilter 染色
-        # （太阳 aw_sun / 星光 aw_slate）。不染色在白底卡片上等于隐形。
+        # ── 白天段 ──
+        s += frame(f"aw_band{i}_day", width="0dp", weight="1", height=SEG_H,
+                   bg="aw_segday_closed")
         s += image(f"aw_band{i}_dayicon", "aw_ic_wb_sunny", SEG_ICON,
-                   margin_end="2dp")
-        # 两段底：默认给「未开通」的淡底，运行时按档位换 aw_seg_* / aw_segnow_*。
-        # 段本身不显示文字（是纯色块），所以字号给 1sp 且不设 text。
-        s += text(f"aw_band{i}_day", size="1sp", width="0dp", weight="1",
-                  height=SEG_H, bg="aw_seg_closed")
-        s += text(f"aw_band{i}_night", size="1sp", width="0dp", weight="1",
-                  height=SEG_H, bg="aw_seg_closed", margin_start=SEG_GAP)
+                   layout_gravity="left|center_vertical",
+                   margin_start=SEG_ICON_PAD)
+        s += image(f"aw_band{i}_daypip", "aw_dot", SEG_PIP_W,
+                   width=SEG_PIP_W, height=SEG_PIP_H,
+                   layout_gravity="top|center_horizontal", margin_top="2dp")
+        s += FRAME_CLOSE
+        # ── 夜晚段 ──
         # 夜端用**月亮**（nights_stay）而不是「星光簇」（auto_awesome）：
-        # 后者是几颗大小不一的三角闪光，9dp 下糊成一团，又紧贴右边的档位块，
-        # 看上去像渲染毛刺。月亮与左端太阳语义成对，9dp 下轮廓仍清楚。
+        # 后者是几颗大小不一的三角闪光，10dp 下糊成一团，看上去像渲染毛刺。
+        s += frame(f"aw_band{i}_night", width="0dp", weight="1", height=SEG_H,
+                   bg="aw_segnight_closed", margin_start=SEG_GAP)
         s += image(f"aw_band{i}_nighticon", "aw_ic_nights_stay", SEG_ICON,
-                   margin_start="2dp")
-        s += text(f"aw_band{i}_now", size="8.5sp", bold=True, color=INK,
-                  width=NOW_W, height="15dp", gravity="center",
-                  bg="aw_seg_closed", margin_start="3dp", ellipsize=True)
+                   layout_gravity="left|center_vertical",
+                   margin_start=SEG_ICON_PAD)
+        s += image(f"aw_band{i}_nightpip", "aw_dot", SEG_PIP_W,
+                   width=SEG_PIP_W, height=SEG_PIP_H,
+                   layout_gravity="top|center_horizontal", margin_top="2dp")
+        s += FRAME_CLOSE
+        # 当前档位块：底色跟**当前时段**的明暗走（白天段=亮底 / 夜晚段=暗底），
+        # 文字由 Kotlin 设成白色 —— 与段内图标的处理一致。
+        s += text(f"aw_band{i}_now", size="8.5sp", bold=True, color="#FFFFFF",
+                  width=NOW_W, height=SEG_H, gravity="center",
+                  bg="aw_segday_closed", margin_start="3dp", ellipsize=True)
         s += CLOSE
 
     # ⑤ 通联提示（一行）：读完「哪个波段好」之后的下一步是「那我该干什么」。
@@ -778,11 +832,11 @@ def build_hf():
     #
     # 圆点与级别图标都是**白图 + 运行时染色**（setColorFilter 只存在于
     # ImageView —— v1.6.114 的线上事故正源于把它用在 TextView 上）。
-    s += linear("aw_tip_box", orientation="vertical", margin_top="4dp")
+    s += linear("aw_tip_box", orientation="vertical", margin_top="3dp")
     s += hairline("aw_tip_rule", LINE)
     s += CLOSE
     s += linear("aw_tip", orientation="horizontal", gravity="center_vertical",
-                baseline=True, margin_top="4dp")
+                baseline=True, margin_top="3dp")
     s += image("aw_tip_dot", "aw_dot", "6dp")
     s += image("aw_tip_icon", "aw_ic_rss_feed", "11dp", margin_start="5dp")
     s += text("aw_tip_level", size="8.5sp", bold=True, spacing="0.04",

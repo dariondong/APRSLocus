@@ -990,7 +990,8 @@ def _track(c, x, y, w, h, color, text, size, text_color, center=False, pad=8):
     左端 2.5dp 实色色标 + 档位文字。
 
     ⚠ F2 的 aw_track_* 资源已随 M1 一起删除（真机现在用 aw_seg_* /
-    aw_segnow_*），本函数只是把当时的设计画出来备用，不再对应任何真机资源。
+    aw_segday_* / aw_segnight_*），本函数只是把当时的设计画出来备用，
+    不再对应任何真机资源。
     """
     c.paste(c.rounded(w - 3, h, 3, color, 0.14), x, y)
     c.paste(c.rounded(2.5, 9, 1.2, color, 1.0), x, y + (h - 9) / 2)
@@ -1012,39 +1013,62 @@ def _track(c, x, y, w, h, color, text, size, text_color, center=False, pad=8):
 # ⚠ 坐标逐条对应真布局（android/.../layout/aw_widget_hf.xml）；这份几何同时充当
 #   「内容放不放得下」的核算，改布局必须同步改 _hf_m1_geometry()。
 HF_M1_NAME_W = 56        # 波段名列宽（与生成器的 BAND_W 一致）
-HF_M1_SEG_H = 13         # 段高
-HF_M1_ICON = 9           # 太阳/星光图标
+HF_M1_SEG_H = 18         # 段高（与生成器的 SEG_H 一致；13→18 让整块更饱满）
+HF_M1_ICON = 10          # 段内太阳/月亮图标
+HF_M1_ICON_PAD = 7       # 图标离条左端
 HF_M1_NOW_W = 48         # 右端档位块宽
-HF_M1_NOW_H = 15
+HF_M1_NOW_H = 18         # 档位块高 = 段高
 # 演示用的「现在」时段。真机上由原生按本机时钟判断（见 HfWidgetProvider）。
 HF_M1_NOW_IS_DAY = False
-# 行距（与生成器的 margin_top 一致：波段行 3dp）
-HF_M1_ROW_GAP = 3
+# 行距（与生成器的 margin_top 一致：波段行 2dp）
+HF_M1_ROW_GAP = 2
 # 演示用的通联提示（真机上由 Dart 的 hfTips 给，与面板同源）
 HF_M1_TIP_LEVEL = "操作提示"
 HF_M1_TIP_COLOR = "#2563EB"
 HF_M1_TIP_TEXT = "地磁较活跃：短波高纬度路径不如平时稳定，建议留出更多呼叫时间"
 
 
+def _mix(hex6, target, t):
+    """把 [hex6] 向 [target] 混 t —— 与生成器的 mix() 同一套算法。
+
+    预览必须**算**而不是手抄色值：色值一改就漂，而预览一漂就失去核对价值。
+    """
+    a = [int(hex6[i:i + 2], 16) for i in (1, 3, 5)]
+    b = [int(target[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#%02X%02X%02X" % tuple(
+        round(a[k] * (1 - t) + b[k] * t) for k in range(3))
+
+
+def _seg_night_fill(day_fill, dark):
+    """夜晚段的底色：浅色卡片上压向深色，深色卡片上压向卡片底色（变闷）。"""
+    return _mix(day_fill, "#243040" if dark else "#0B1220",
+                0.62 if dark else 0.52)
+
+
 def _hf_m1_geometry():
     """真布局的纵向几何（dp）。"""
     y = 8 + line_h(12, True)                  # pad_top + 顶栏
-    y += 3 + max(line_h(11, True), 13)        # 指数行（6m 格 13dp）
-    y += 4 + 1                                # 细线 box
+    y += 2 + max(line_h(11, True), 13)        # 指数行（margin 2；6m 格 13dp）
+    y += 3 + 1                                # 细线 box（margin 3）
     for _ in range(4):
-        # 行高 = max(波段名行盒, 段 13, 档位块 15)
+        # 行高 = max(波段名行盒, 段高, 档位块)
         y += HF_M1_ROW_GAP + max(line_h(9, True), HF_M1_SEG_H, HF_M1_NOW_H)
-    # 通联提示行：细线 box(4+1) + 行(margin 4 + max(圆点 6, 级别图 11, 行盒))
-    y += 4 + 1 + 4 + max(6, 11, line_h(9))
+    # 通联提示行：细线 box(3+1) + 行(margin 3 + max(圆点 6, 级别图 11, 行盒))
+    y += 3 + 1 + 3 + max(6, 11, line_h(9))
     return y + 9                              # pad_bottom
 
 
-def _seg(c, x, y, w, h, color, is_now):
-    """一段进度条：淡底（非当前）/ 实色 + 顶部小白点（当前）。"""
-    c.paste(c.rounded(w, h, 4, color, 1.0 if is_now else 0.30), x, y)
+def _seg(c, x, y, w, h, color, is_now, icon):
+    """一段进度条：底色 + 段内太阳/月亮 + 顶部小白点（当前那一段才有）。
+
+    底色由调用处决定：白天段=满色（亮）/ 夜晚段=压暗（暗）——
+    **亮度表达的是时段，不是「现在」**（用户点名的语义）。
+    """
+    c.paste(c.rounded(w, h, 4, color, 1.0), x, y)
+    c.icon(icon, x + HF_M1_ICON_PAD, y + (h - HF_M1_ICON) / 2, HF_M1_ICON,
+           color="#FFFFFF")
     if is_now:
-        # 小白点居中贴顶 —— 真机上是烘焙在 aw_segnow_* 里的一层
-        c.paste(c.rounded(3, 3, 1.5, "#FFFFFF", 1.0), x + (w - 3) / 2, y)
+        c.paste(c.rounded(6, 3, 1.5, "#FFFFFF", 1.0), x + (w - 6) / 2, y + 2)
 
 
 def render_hf_M1(w=296, h=140, dark=False, now_is_day=None):
@@ -1108,24 +1132,22 @@ def render_hf_M1(w=296, h=140, dark=False, now_is_day=None):
         rh = max(line_h(9, True), HF_M1_SEG_H, HF_M1_NOW_H)
         cy = y + (rh - HF_M1_SEG_H) / 2
         c.text(px, y + rh / 2, name, 9, bold=True, color=INK, anchor="lm")
-        # 太阳（日端）与星光（夜端）：固定色，不跟条件色走
-        c.icon("wb_sunny", px + HF_M1_NAME_W, y + (rh - HF_M1_ICON) / 2,
-               HF_M1_ICON, color="#D97706")
-        seg_x = px + HF_M1_NAME_W + HF_M1_ICON + 2
-        seg_w = (px + pw - HF_M1_NOW_W - 3 - HF_M1_ICON - 2 - seg_x - 2) / 2
-        _seg(c, seg_x, cy, seg_w, HF_M1_SEG_H, QCOL[day], is_day)
-        _seg(c, seg_x + seg_w + 2, cy, seg_w, HF_M1_SEG_H, QCOL[night],
-             not is_day)
-        # 夜端月亮：与真布局一致（aw_ic_nights_stay）；用冷色与太阳区分
-        c.icon("nights_stay", seg_x + 2 * seg_w + 2 + 2,
-               y + (rh - HF_M1_ICON) / 2, HF_M1_ICON, color="#64748B")
-        # 右端：当前时段的档位
+        # 图标已挪进条内（不再占条外宽度），两段直接铺满
+        seg_x = px + HF_M1_NAME_W
+        seg_w = (px + pw - HF_M1_NOW_W - 3 - seg_x - 2) / 2
+        # 白天段 = 满色（亮）；夜晚段 = 压暗（暗）—— 与「哪段是现在」无关
+        _seg(c, seg_x, cy, seg_w, HF_M1_SEG_H, QCOL[day], is_day, "wb_sunny")
+        _seg(c, seg_x + seg_w + 2, cy, seg_w, HF_M1_SEG_H,
+             _seg_night_fill(QCOL[night], bool(dark)), not is_day,
+             "nights_stay")
+        # 右端：当前时段的档位（压暗底 + 白字 —— 读值块不跟昼夜明暗走）
         q = day if is_day else night
         nx = px + pw - HF_M1_NOW_W
-        c.paste(c.rounded(HF_M1_NOW_W, HF_M1_NOW_H, 4, QCOL[q], 0.30), nx,
+        c.paste(c.rounded(HF_M1_NOW_W, HF_M1_NOW_H, 4,
+                          _seg_night_fill(QCOL[q], bool(dark)), 1.0), nx,
                 y + (rh - HF_M1_NOW_H) / 2)
         c.text(nx + HF_M1_NOW_W / 2, y + rh / 2, Q_LABEL[q], 8.5, bold=True,
-               color=QCOL[q], anchor="mm")
+               color="#FFFFFF", anchor="mm")
         y += rh + HF_M1_ROW_GAP
     # ⑤ 通联提示（一行）：细线 + [圆点][级别图][级别] 一句话
     y += 4 - HF_M1_ROW_GAP          # 行距已在循环里加过，这里补到 4dp

@@ -6,7 +6,8 @@
   细线    ：C.border（#E5E9F0）
   4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m
             每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]
-            段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）
+            两段① aw_segday_*（亮 = 日）/ aw_segnight_*（暗 = 夜），
+               段内放太阳/月亮图标；② 顶部白点（aw_dot）标出「现在」在哪段
   
   提示行  ：[圆点][级别图][级别] 一句话 —— 与 App 内面板的「业余无线电建议」
             同源（Dart 复用 hfTips，取排序后的第一条）；此刻没有值得说的
@@ -98,7 +99,7 @@
         android:id="@+id/aw_idx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="2dp"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -184,8 +185,8 @@
         android:layout_width="48dp"
         android:layout_height="13dp"
         android:gravity="center"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_slate"
+        android:background="@drawable/aw_segnight_closed"
+        android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -198,7 +199,7 @@
         android:id="@+id/aw_rule1_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:orientation="vertical">
     <TextView
         android:id="@+id/aw_rule1"
@@ -210,7 +211,7 @@
         android:id="@+id/aw_band0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -224,49 +225,61 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <ImageView
-        android:id="@+id/aw_band0_dayicon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginEnd="2dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/aw_ic_wb_sunny" />
-    <TextView
+    <FrameLayout
         android:id="@+id/aw_band0_day"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
+        android:background="@drawable/aw_segday_closed">
+    <ImageView
+        android:id="@+id/aw_band0_dayicon"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
+    <ImageView
+        android:id="@+id/aw_band0_daypip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/aw_band0_night"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:layout_marginStart="2dp"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:background="@drawable/aw_segnight_closed">
     <ImageView
         android:id="@+id/aw_band0_nighticon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginStart="2dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
         android:scaleType="fitCenter"
         android:src="@drawable/aw_ic_nights_stay" />
+    <ImageView
+        android:id="@+id/aw_band0_nightpip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
     <TextView
         android:id="@+id/aw_band0_now"
         android:layout_width="48dp"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
         android:layout_marginStart="3dp"
         android:gravity="center"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
+        android:background="@drawable/aw_segday_closed"
+        android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -277,7 +290,7 @@
         android:id="@+id/aw_band1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -291,49 +304,61 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <ImageView
-        android:id="@+id/aw_band1_dayicon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginEnd="2dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/aw_ic_wb_sunny" />
-    <TextView
+    <FrameLayout
         android:id="@+id/aw_band1_day"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
+        android:background="@drawable/aw_segday_closed">
+    <ImageView
+        android:id="@+id/aw_band1_dayicon"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
+    <ImageView
+        android:id="@+id/aw_band1_daypip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/aw_band1_night"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:layout_marginStart="2dp"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:background="@drawable/aw_segnight_closed">
     <ImageView
         android:id="@+id/aw_band1_nighticon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginStart="2dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
         android:scaleType="fitCenter"
         android:src="@drawable/aw_ic_nights_stay" />
+    <ImageView
+        android:id="@+id/aw_band1_nightpip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
     <TextView
         android:id="@+id/aw_band1_now"
         android:layout_width="48dp"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
         android:layout_marginStart="3dp"
         android:gravity="center"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
+        android:background="@drawable/aw_segday_closed"
+        android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -344,7 +369,7 @@
         android:id="@+id/aw_band2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -358,49 +383,61 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <ImageView
-        android:id="@+id/aw_band2_dayicon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginEnd="2dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/aw_ic_wb_sunny" />
-    <TextView
+    <FrameLayout
         android:id="@+id/aw_band2_day"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
+        android:background="@drawable/aw_segday_closed">
+    <ImageView
+        android:id="@+id/aw_band2_dayicon"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
+    <ImageView
+        android:id="@+id/aw_band2_daypip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/aw_band2_night"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:layout_marginStart="2dp"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:background="@drawable/aw_segnight_closed">
     <ImageView
         android:id="@+id/aw_band2_nighticon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginStart="2dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
         android:scaleType="fitCenter"
         android:src="@drawable/aw_ic_nights_stay" />
+    <ImageView
+        android:id="@+id/aw_band2_nightpip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
     <TextView
         android:id="@+id/aw_band2_now"
         android:layout_width="48dp"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
         android:layout_marginStart="3dp"
         android:gravity="center"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
+        android:background="@drawable/aw_segday_closed"
+        android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -411,7 +448,7 @@
         android:id="@+id/aw_band3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -425,49 +462,61 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <ImageView
-        android:id="@+id/aw_band3_dayicon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginEnd="2dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/aw_ic_wb_sunny" />
-    <TextView
+    <FrameLayout
         android:id="@+id/aw_band3_day"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
+        android:background="@drawable/aw_segday_closed">
+    <ImageView
+        android:id="@+id/aw_band3_dayicon"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
+    <ImageView
+        android:id="@+id/aw_band3_daypip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
+    <FrameLayout
         android:id="@+id/aw_band3_night"
         android:layout_width="0dp"
-        android:layout_height="13dp"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:layout_marginStart="2dp"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
-        android:textSize="1sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
+        android:background="@drawable/aw_segnight_closed">
     <ImageView
         android:id="@+id/aw_band3_nighticon"
-        android:layout_width="9dp"
-        android:layout_height="9dp"
-        android:layout_marginStart="2dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="7dp"
+        android:layout_gravity="left|center_vertical"
         android:scaleType="fitCenter"
         android:src="@drawable/aw_ic_nights_stay" />
+    <ImageView
+        android:id="@+id/aw_band3_nightpip"
+        android:layout_width="6dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="2dp"
+        android:layout_gravity="top|center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    </FrameLayout>
     <TextView
         android:id="@+id/aw_band3_now"
         android:layout_width="48dp"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
         android:layout_marginStart="3dp"
         android:gravity="center"
-        android:background="@drawable/aw_seg_closed"
-        android:textColor="@color/aw_ink"
+        android:background="@drawable/aw_segday_closed"
+        android:textColor="#FFFFFF"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
@@ -478,7 +527,7 @@
         android:id="@+id/aw_tip_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:orientation="vertical">
     <TextView
         android:id="@+id/aw_tip_rule"
@@ -490,7 +539,7 @@
         android:id="@+id/aw_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">

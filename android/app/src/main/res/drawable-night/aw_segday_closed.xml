@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <!-- 白天段（夜间档，closed）：提亮色 #B9C3D1（深底上基准色偏暗） -->
+    <corners android:radius="4dp" />
+    <solid android:color="#B9C3D1" />
+</shape>

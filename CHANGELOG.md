@@ -1,5 +1,84 @@
 # 更新日志
 
+## [1.6.132] - 2026-09-18
+
+### 📊 短波组件：**亮的是白天、暗的是晚上**；图标进条、条加高
+
+改三件事，都来自一个反馈：「亮暗反了，而且条看着太瘦」。
+
+**① 亮度改回表达「时段」，不再表达「现在」**
+
+上一版是「当前时段实色、另一段淡底」—— 于是**夜里那一段反而最亮**，
+而白天段是淡的。这确实反直觉：人对亮暗的第一反应是「日/夜」，不是「现在」。
+
+现在：**白天段恒亮（满色）、夜晚段恒暗（压暗）**。「现在」改由段内顶部
+的小白点表出（每行两个点，只亮当前那一个）。
+
+把「白点」与「明暗」拆开还有一个实际好处：以前的 drawable 要同时编码
+「档位 × 昼夜 × 是否当前」（4×2×2 = 16 张/主题），现在只编码「档位 × 昼夜」
+（4×2 = 8 张），白点交给一个独立 ImageView 控可见性。
+
+**② 太阳 / 月亮搬进条里**
+
+原来两个图标贴在条外侧，白占宽度、还要在运行时染色（`setColorFilter`）。
+搬进条内之后：宽度让给了条本身，而底色是满色或压暗色，**白图在两者上都够清楚，
+于是不再需要染色** —— 少两个颜色资源、少两处只在运行期才爆的 `setInt`。
+
+**③ 条高 13 → 18dp**
+
+原来四行加起来只有 52dp，整块显得空。提到 18dp（四行 72dp），
+再把几处 4/3dp 的间隔各收 1dp —— 总高 157dp，仍在 4×2 的内容预算内。
+
+**顺带**
+
+- 右端的「当前档位」块与 6m 格改用**压暗底 + 白字**。它们在语义上是**读值**
+  而不是「时段」，所以不跟昼夜明暗走；而亮底上的白字对比度不够
+  （fair 的橙 #D97706 只有约 2.9:1），压暗底 + 白字对四个档位都稳。
+- 生成器新增一条**语义自检**：按 BT.601 算亮度，**白天段必须比夜晚段亮 24 以上**。
+  写反了会直接报错，而不是等装到真机才发现又反了（已反向验证过会报红）。
+- 删除已死的 `aw_seg_*` / `aw_segnow_*` / `aw_sun` / `aw_moon`。
+
+---
+
+**HF widget: bright means day, dark means night; icons moved inside the bars; bars are taller.**
+
+Three changes, all from one piece of feedback: "the bright/dark is backwards, and the bars look too thin."
+
+**① Brightness now encodes the *time slot*, not *now***
+
+The previous version made the *current* slot solid and the other one pale — which left the **night
+segment as the brightest thing on the card** while the day segment was washed out. That is backwards:
+peoples' first reading of light vs dark is day vs night, not "now".
+
+Now the **day segment is always bright (full colour) and the night segment always dark (dimmed)**.
+"Now" moved to a small white pip at the top of whichever segment applies (two pips per row, only one lit).
+
+Separating the pip from the shading also pays off concretely: the drawables used to encode
+*level × slot × is-now* (4×2×2 = 16 per theme) and now encode only *level × slot* (4×2 = 8), with the pip
+handled by a separate ImageView whose visibility the widget controls.
+
+**② Sun and moon moved inside the bars**
+
+They used to sit outside, taking width and needing a runtime tint (`setColorFilter`). Inside the bar they
+no longer consume outside width, and because the fill is either full colour or dimmed, **white glyphs are
+legible on both — so the tint is gone**, along with two colour resources and two runtime-only `setInt` calls.
+
+**③ Bars grew from 13dp to 18dp**
+
+Four rows used to total only 52dp, which left the card looking empty. At 18dp they total 72dp, with a few
+4/3dp gaps trimmed by 1dp each — 157dp overall, still inside the 4×2 content budget.
+
+**Also**
+
+- The right-hand "current level" block and the 6m cell now use a **dimmed fill with white text**. They are
+  readings rather than time slots, so they deliberately do not follow the day/night shading; and white on a
+  bright fill does not have enough contrast (fair's orange #D97706 is about 2.9:1), whereas a dimmed fill is
+  safe across all four levels.
+- The generator gained a **semantic check**: luminance (BT.601) of the day segment must exceed the night one
+  by at least 24. Getting it backwards now fails the build instead of shipping and being noticed on the
+  device (verified by deliberately inverting it — it does fail).
+- Dead `aw_seg_*` / `aw_segnow_*` / `aw_sun` / `aw_moon` removed.
+
 ## [1.6.131] - 2026-09-18
 
 ### 🧩 三块桌面组件都不再「下面空空的」；天气主区不再挤

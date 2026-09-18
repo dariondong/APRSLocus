@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <!-- 传播条件段底（good）：#16A34A 淡色 30%，文字色由 Kotlin 设为同色系条件色 -->
+    <!-- 夜晚段（夜间档，closed）：向卡片底色压 62%（变闷，与白天段拉开） -->
     <corners android:radius="4dp" />
-    <solid android:color="#4D16A34A" />
+    <solid android:color="#5D6877" />
 </shape>

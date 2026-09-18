@@ -44,7 +44,7 @@ import java.util.Calendar
  * **本组件的换色机制**（分两种控件，别照抄混用）：
  *   进度条段与档位块都是 **TextView** → 换底只能走 `setBackgroundResource`
  *   （View 的方法）；在这里用 `setColorFilter` 会直接抛。每个条件两张
- *   drawable：aw_seg_*（淡底）与 aw_segnow_*（实色 + 顶部小白点），
+ *   drawable：aw_segday_*（满色 = 白天）/ aw_segnight_*（压暗 = 夜晚），
  *   由 tool/gen_app_widget_drawables.py 生成。文字色走 `setTextColor`
  *   （TextView 的成员方法，可用），取 @color/aw_q_*，夜间由资源系统给提亮版。
  *
@@ -133,51 +133,63 @@ class HfWidgetProvider : AppWidgetProvider() {
             R.id.aw_band2_now, R.id.aw_band3_now,
         )
 
-        /** 两端的语义标注图标：日端太阳 / 夜端星光（白色 PNG，须染色） */
-        private val BAND_DAY_ICON = intArrayOf(
-            R.id.aw_band0_dayicon, R.id.aw_band1_dayicon,
-            R.id.aw_band2_dayicon, R.id.aw_band3_dayicon,
+        /**
+         * 段内顶部的「现在」白点。
+         *
+         * 独立 ImageView（而不是烘焙进 drawable）：否则「档位 × 昼夜 × 是否当前」
+         * 要 4×2×2 = 16 张图/主题，而独立控件只要控可见性。
+         * 每行两个点（日段一个、夜段一个），同一时刻只亮一个。
+         */
+        private val BAND_DAY_PIP = intArrayOf(
+            R.id.aw_band0_daypip, R.id.aw_band1_daypip,
+            R.id.aw_band2_daypip, R.id.aw_band3_daypip,
         )
-        private val BAND_NIGHT_ICON = intArrayOf(
-            R.id.aw_band0_nighticon, R.id.aw_band1_nighticon,
-            R.id.aw_band2_nighticon, R.id.aw_band3_nighticon,
+        private val BAND_NIGHT_PIP = intArrayOf(
+            R.id.aw_band0_nightpip, R.id.aw_band1_nightpip,
+            R.id.aw_band2_nightpip, R.id.aw_band3_nightpip,
         )
 
         /**
-         * 条件等级 → **非当前时段**的段底 / 档位块底（aw_seg_*：淡色圆角块）。
+         * 条件等级 → **白天段**的底（aw_segday_*：满色 = 亮）。
          *
-         * **为什么必须预生成、而不是运行时染色**：段是 TextView，而
-         * `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
+         * **亮度表达「时段」，不表达「现在」**：上一版是「当前时段实色、另一段淡底」，
+         * 于是夜里那一段反而最亮 —— 用户反馈「反直觉，亮的应该是白天、暗的应该是
+         * 晚上」。现在白天段恒亮、夜晚段恒暗，「现在」改由段内顶部的小白点
+         * （BAND_DAY_PIP / BAND_NIGHT_PIP，独立 ImageView，控可见性）表示。
+         *
+         * **为什么必须预生成、而不是运行时染色**：段是 View（FrameLayout），
+         * 而 `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
          * v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，
          * 抛 NoSuchMethodException → `RemoteViews.apply()` 抛 ActionException →
-         * **整个组件报废**。TextView 换底只能用 `setBackgroundResource`（View 方法），
+         * **整个组件报废**。换底只能用 `setBackgroundResource`（View 方法），
          * 所以每个条件各给一张。
          *
          * 未知等级回退到 closed（灰）而不是 0 —— 传 0 会把背景清掉，
          * 段消失、只剩一行无处可归的色块。
          */
-        private val SEG_BY_LEVEL = mapOf(
-            "good" to R.drawable.aw_seg_good,
-            "fair" to R.drawable.aw_seg_fair,
-            "poor" to R.drawable.aw_seg_poor,
-            "closed" to R.drawable.aw_seg_closed,
+        private val SEGDAY_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_segday_good,
+            "fair" to R.drawable.aw_segday_fair,
+            "poor" to R.drawable.aw_segday_poor,
+            "closed" to R.drawable.aw_segday_closed,
         )
 
         /**
-         * 条件等级 → **当前时段**那一段的底（aw_segnow_*：实色圆角块 + 顶部小白点）。
+         * 条件等级 → **夜晚段**的底（aw_segnight_*：压暗 = 暗）。
          *
-         * 与 SEG_BY_LEVEL 的区别只有「实色 / 淡底」，但那正是「现在在哪一段」的
-         * 主要视觉信号 —— 所以是两张表而不是加一个布尔参数表：
-         * 表名本身就说明了用途，调用处不用再想「这个 true 是什么意思」。
+         * 两张表而不是加一个布尔参数：调用处不用再想「这个 true 是什么意思」，
+         * 表名本身就说明了用途。
          *
-         * 小白点是烘焙在 drawable 里的（见 segnow_xml）：RemoteViews 没有绝对
-         * 定位，加一个独立指示器控件既摆不到段的正中，又多一处运行期才爆的地方。
+         * 读值类的小块（右端「当前档位」与 6m 格）也一律用它 + 白字：
+         * 亮底上的白字对比度不够（尤其 fair 的橙 #D97706 只有约 2.9:1），
+         * 而压暗底 + 白字对四个档位都稳。它们的角色是**读值**，不是「时段」，
+         * 所以不跟昼夜明暗走。
          */
-        private val SEGNOW_BY_LEVEL = mapOf(
-            "good" to R.drawable.aw_segnow_good,
-            "fair" to R.drawable.aw_segnow_fair,
-            "poor" to R.drawable.aw_segnow_poor,
-            "closed" to R.drawable.aw_segnow_closed,
+        private val SEGNIGHT_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_segnight_good,
+            "fair" to R.drawable.aw_segnight_fair,
+            "poor" to R.drawable.aw_segnight_poor,
+            "closed" to R.drawable.aw_segnight_closed,
         )
 
         /**
@@ -277,9 +289,11 @@ class HfWidgetProvider : AppWidgetProvider() {
                     if (known) six.read("label") else SIX_NONE,
                 )
                 val key = if (known) lv else "closed"
+                // 压暗底 + 白字（见 SEGNIGHT_BY_LEVEL 的说明：读值块不跟昼夜明暗走，
+                // 因为亮底上的白字对 fair 的橙只有约 2.9:1）
                 views.setInt(
                     R.id.aw_six, "setBackgroundResource",
-                    SEG_BY_LEVEL[key] ?: R.drawable.aw_seg_closed,
+                    SEGNIGHT_BY_LEVEL[key] ?: R.drawable.aw_segnight_closed,
                 )
                 views.setTextColor(
                     R.id.aw_six,
@@ -340,22 +354,27 @@ class HfWidgetProvider : AppWidgetProvider() {
             views.setTextViewText(BAND_NAME[row], band.read("name"))
             val dayLv = band.read("dayLevel")
             val nightLv = band.read("nightLevel")
-            bandSeg(views, BAND_DAY[row], dayLv, isNow = isDay)
-            bandSeg(views, BAND_NIGHT[row], nightLv, isNow = !isDay)
+            // 段底按**时段**选（白天恒亮、夜晚恒暗），与「哪一段是现在」无关
+            bandSeg(views, BAND_DAY[row], dayLv, SEGDAY_BY_LEVEL,
+                R.drawable.aw_segday_closed)
+            bandSeg(views, BAND_NIGHT[row], nightLv, SEGNIGHT_BY_LEVEL,
+                R.drawable.aw_segnight_closed)
 
-            // 两端的语义标注：太阳标日间段、星光标夜间段。
-            // 它们不表达好坏，只表达「这一段是日 / 是夜」—— 所以用固定色，
-            // 不跟条件色走（否则会与段的颜色抢注意力）。
-            views.setInt(
-                BAND_DAY_ICON[row], "setColorFilter",
-                context.getColor(R.color.aw_sun),
+            // 「现在」的白点：只亮当前那一段那个点。
+            // 用 INVISIBLE 而不是 GONE —— GONE 会把点从布局里摘掉，
+            // 虽然 FrameLayout 里不会挤动别的控件，但保持占位语义更干净。
+            views.setViewVisibility(
+                BAND_DAY_PIP[row], if (isDay) View.VISIBLE else View.INVISIBLE,
             )
-            views.setInt(
-                BAND_NIGHT_ICON[row], "setColorFilter",
-                context.getColor(R.color.aw_moon),
+            views.setViewVisibility(
+                BAND_NIGHT_PIP[row], if (isDay) View.INVISIBLE else View.VISIBLE,
             )
 
-            // 右端的档位块：**当前时段**的档位（文字 + 条件色）。
+            // 段内图标无需运行时操作：布局里静态给了 aw_ic_wb_sunny /
+            // aw_ic_nights_stay，且**不染色**（白天段满色、夜晚段压暗色，
+            // 白图在两者上都够清楚）—— 所以这里没有任何 setInt。
+
+            // 右端的档位块：**当前时段**的档位（文字 + 压暗底 + 白字）。
             // 颜色之外再给一个词 —— 不靠颜色也能读出来。
             val lv = if (isDay) dayLv else nightLv
             views.setTextViewText(
@@ -364,34 +383,27 @@ class HfWidgetProvider : AppWidgetProvider() {
             )
             views.setInt(
                 BAND_NOW[row], "setBackgroundResource",
-                SEG_BY_LEVEL[lv] ?: R.drawable.aw_seg_closed,
+                SEGNIGHT_BY_LEVEL[lv] ?: R.drawable.aw_segnight_closed,
             )
-            // 文字色走**资源**而不是写死常量：夜间由资源系统自动取
-            // values-night 里的提亮版本（深底上基准色偏暗），不判断 uiMode。
-            views.setTextColor(
-                BAND_NOW[row],
-                context.getColor(QUALITY_COLOR[lv] ?: R.color.aw_q_closed),
-            )
+            views.setTextColor(BAND_NOW[row], android.graphics.Color.WHITE)
         }
 
         /**
          * 填一段进度条（纯色块，不显示文字）。
          *
-         * [isNow] 为 true 用实色版 aw_segnow_*（drawable 里带顶部小白点），
-         * 否则用淡底版 aw_seg_*。
+         * [table] / [fallback] 由调用处按「这是白天段还是夜晚段」传入 ——
+         * 明暗只表达时段，不表达「现在」（「现在」是段内那个白点的事）。
          *
-         * 换底走 `setBackgroundResource`（View 的方法，TextView 可用）；
-         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 SEG_BY_LEVEL）。
+         * 换底走 `setBackgroundResource`（View 的方法）；**不能**用
+         * `setColorFilter` —— 那是 ImageView 独有的（见 SEGDAY_BY_LEVEL）。
          */
         private fun bandSeg(
             views: RemoteViews,
             target: Int,
             level: String,
-            isNow: Boolean,
+            table: Map<String, Int>,
+            fallback: Int,
         ) {
-            val table = if (isNow) SEGNOW_BY_LEVEL else SEG_BY_LEVEL
-            val fallback =
-                if (isNow) R.drawable.aw_segnow_closed else R.drawable.aw_seg_closed
             views.setInt(
                 target, "setBackgroundResource",
                 table[level] ?: fallback,

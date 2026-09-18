@@ -13,8 +13,8 @@
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
     android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（纯白，运行时 setColorFilter 染级别色）
     android/app/src/main/res/drawable/aw_sep.xml           单行档的竖分隔线
-    android/app/src/main/res/drawable/aw_seg_*.xml         短波组件的日/夜段（淡底，4 色）
-    android/app/src/main/res/drawable/aw_segnow_*.xml      短波组件的「当前时段」段（实底 + 顶部小点，4 色）
+    android/app/src/main/res/drawable/aw_segday_*.xml      短波组件的**白天段**（亮：满色，4 档）
+    android/app/src/main/res/drawable/aw_segnight_*.xml    短波组件的**夜晚段**（暗：压暗，4 档）
 
 **为什么要 4 张记色圆点，而不是运行时染色**（这是踩过的坑，记下来免得重犯）：
 
@@ -65,8 +65,6 @@ RADIUS_CHIP = 4
 # 进度条段的圆角 4dp（与 chip 同量级）
 RADIUS_SEG = 4
 # 「现在」段顶部那颗小白点：标出当前时段落在哪一段
-SEG_PIP_W = "3dp"
-SEG_PIP_H = "3dp"
 
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
 NS = '<shape xmlns:android="http://schemas.android.com/apk/res/android"'
@@ -128,38 +126,17 @@ def lit(hex6: str) -> str:
     return "#%02X%02X%02X" % (m(r), m(g), m(b))
 
 
-def segnow_xml(comment: str, color: str) -> str:
-    """「当前时段」的进度条段：实色圆角底 + 顶部一颗小白点。
+def mix(hex6: str, target: str, t: float) -> str:
+    """把 [hex6] 向 [target] 混合 t（0~1）。用来做「压暗」与「压暗到卡片底色」。
 
-    白点是**烘焙进 drawable** 的，不是另加一个控件 —— 理由同下面那条：
-    RemoteViews 不允许原生 `<View>`，加一个指示器就要多一个控件、多一个 id、
-    多一行 setBackgroundResource，而且**没有绝对定位**可用来把它摆到段的正中。
-    把它做成 drawable 的一层，位置天然跟着段走（gravity=top|center_horizontal），
-    段多宽它就在多宽的正中。
+    为什么不用 HSL 调亮度：这里的语义是「向某个底色靠拢」——
+    浅色卡片上要靠向深色（变暗），深色卡片上要靠向卡片底色（变闷）。
+    直接按通道线性混合，两个方向都是同一段代码、结果可预期。
     """
-    return (
-        f'{HEADER}<layer-list '
-        f'xmlns:android="http://schemas.android.com/apk/res/android">\n'
-        f"    <!-- {comment} -->\n"
-        f"    <!-- ① 实色底：当前时段用满色，与另一段的淡底形成对比 -->\n"
-        f"    <item>\n"
-        f'        <shape android:shape="rectangle">\n'
-        f'            <corners android:radius="{RADIUS_SEG}dp" />\n'
-        f'            <solid android:color="{color}" />\n'
-        f"        </shape>\n"
-        f"    </item>\n"
-        f"    <!-- ② 顶部小白点：标出「现在」在哪一段 -->\n"
-        f"    <item\n"
-        f'        android:width="{SEG_PIP_W}"\n'
-        f'        android:height="{SEG_PIP_H}"\n'
-        f'        android:gravity="top|center_horizontal">\n'
-        f'        <shape android:shape="rectangle">\n'
-        f'            <corners android:radius="1.5dp" />\n'
-        f'            <solid android:color="#FFFFFF" />\n'
-        f"        </shape>\n"
-        f"    </item>\n"
-        f"</layer-list>\n"
-    )
+    a = [int(hex6[i:i + 2], 16) for i in (1, 3, 5)]
+    b = [int(target[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#%02X%02X%02X" % tuple(
+        round(a[k] * (1 - t) + b[k] * t) for k in range(3))
 
 
 def build_all() -> dict:
@@ -194,15 +171,19 @@ def build_all() -> dict:
     # 条件色 —— 这样一份色板（Dart 的 hfQualityColor）管到底。
     QUALITY = {"good": "#16A34A", "fair": "#D97706",
                "poor": "#E11D48", "closed": "#94A3B8"}
+    #
+    # **亮度表达「时段」而不是「现在」**（2026-09-18 改）：原来是「当前时段实色、
+    # 另一段淡底」，于是夜里那一段反而最亮 —— 用户反馈「反直觉：亮的应该是白天、
+    # 暗的应该是晚上」。现在改成：**白天段=满色（亮）/ 夜晚段=压暗（暗）**，
+    # 「现在」改由段内顶部的小白点（独立 ImageView，Kotlin 控可见性）表示。
     for name, col in QUALITY.items():
-        # 实色段（当前时段）
-        files[f"drawable/aw_segnow_{name}.xml"] = segnow_xml(
-            f"当前时段段（{name}）：实色 {col} + 顶部小白点", col)
-        # 淡底段（非当前时段；也用作 chip 底）
-        files[f"drawable/aw_seg_{name}.xml"] = solid_xml(
-            f"传播条件段底（{name}）：{col} 淡色 30%，"
-            f"文字色由 Kotlin 设为同色系条件色",
-            f"#4D{col[1:]}", RADIUS_SEG)
+        # 白天：满色 —— 在白底上就是「亮」
+        files[f"drawable/aw_segday_{name}.xml"] = solid_xml(
+            f"白天段（{name}）：{col} 满色（亮）", col, RADIUS_SEG)
+        # 夜晚：向深色压暗 52% —— 同一个色相、明显更暗，一眼分得出是「晚上」
+        files[f"drawable/aw_segnight_{name}.xml"] = solid_xml(
+            f"夜晚段（{name}）：{col} 压暗 52%（向 #0B1220 混）",
+            mix(col, "#0B1220", 0.52), RADIUS_SEG)
 
     # 底走 @color/aw_surface：浅色白、夜间 #1E2530 ——
     # drawable 里引 @color 是允许的，于是**不用两套布局**就拿到暗黑底。
@@ -246,13 +227,13 @@ def build_all() -> dict:
     slate, slate_night = "#637083", "#AAB4C5"
     line, line_night = "#E5E9F0", "#2A3344"
     surf, surf_night = "#FFFFFF", "#1E2530"
-    sun, sun_night = "#D97706", lit("#D97706")
-    # 月光：冷蓝灰。夜间档提亮（深底上要够亮才看得见）
-    moon, moon_night = "#64748B", lit("#64748B")
-    for qualifier, (c_ink, c_slate, c_line, c_surf, c_sun, c_moon) in (
-            ("values", (ink, slate, line, surf, sun, moon)),
-            ("values-night", (ink_night, slate_night, line_night, surf_night,
-                              sun_night, moon_night))):
+    # 注：曾经有 aw_sun / aw_moon 两个色值给「条外的太阳/月亮图标」染色。
+    # 图标挪进条内之后改为**不染色**（白天段满色、夜晚段压暗，白图够清楚），
+    # 于是这两个色连同两处 setColorFilter 一起删了 —— 少两个死资源、少两处
+    # 只在运行期才爆的调用。
+    for qualifier, (c_ink, c_slate, c_line, c_surf) in (
+            ("values", (ink, slate, line, surf)),
+            ("values-night", (ink_night, slate_night, line_night, surf_night))):
         # chip 的文字色：浅色底上用**基准色**（够深、在白底上清晰）；
         # 夜间深底上基准色偏暗，改用提亮版（lit()，与段的实色同源）。
         q_src = {"aw_q_good": "#16A34A", "aw_q_fair": "#D97706",
@@ -265,14 +246,6 @@ def build_all() -> dict:
         rows += [
             f'    <color name="aw_ink">{c_ink}</color>',
             f'    <color name="aw_slate">{c_slate}</color>',
-            # 太阳图标（日间那一段的左端）的染色。#D97706 是琥珀，
-            # 夜间用提亮版 —— 与 aw_q_fair 同值但**名字不同、用途不同**：
-            # 它表示的是「太阳」而不是「传播一般」。同一份色值硬要共用一个
-            # 语义名字，读代码的人迟早会以为改传播色就能改太阳。
-            f'    <color name="aw_sun">{c_sun}</color>',
-            # 月亮图标的染色。刻意用**冷色**：太阳与月亮若都是琥珀，
-            # 一眼看去像两个都归太阳管。月光是反射的，色温本就偏冷。
-            f'    <color name="aw_moon">{c_moon}</color>',
             f'    <color name="aw_line">{c_line}</color>',
             f'    <color name="aw_surface">{c_surf}</color>',
             # 空状态文字：主文字色 + 85% alpha（分开一个键，便于整体调）
@@ -286,15 +259,37 @@ def build_all() -> dict:
     # 夜间：淡底要更浓（30% 在近白底上够看，但 #1E2530 深底上几乎不可见，提到 45%）；
     # 实色段改用**提亮版**（深底上基准色偏暗，见 lit()）。
     # 提亮值与 values-night/widget_colors.xml 的 aw_q_* 同源（都由 lit() 算）。
+    #
+    # 深色卡片上「压暗」会直接看不见，所以夜间的对比改成**闷**：
+    # 白天段用提亮色（在深底上才够亮），夜晚段向卡片底色压 62%（变闷、明显更暗）。
     for name, col in QUALITY.items():
-        files[f"drawable-night/aw_seg_{name}.xml"] = solid_xml(
-            f"传播条件段底（夜间，{name}）：{col} 淡色 45%"
-            f"（深底上 30% 几乎不可见）", f"#73{col[1:]}", RADIUS_SEG)
-        files[f"drawable-night/aw_segnow_{name}.xml"] = segnow_xml(
-            f"当前时段段（夜间，{name}）：提亮色 {lit(col)} + 顶部小白点"
-            f"（深底上基准色偏暗）", lit(col))
+        files[f"drawable-night/aw_segday_{name}.xml"] = solid_xml(
+            f"白天段（夜间档，{name}）：提亮色 {lit(col)}（深底上基准色偏暗）",
+            lit(col), RADIUS_SEG)
+        files[f"drawable-night/aw_segnight_{name}.xml"] = solid_xml(
+            f"夜晚段（夜间档，{name}）：向卡片底色压 62%（变闷，与白天段拉开）",
+            mix(lit(col), "#243040", 0.62), RADIUS_SEG)
 
     return files
+
+
+def _luma(xml: str) -> float:
+    """取产物里第一个 <solid> 的感知亮度（0-255）。
+
+    权重用 ITU-R BT.601（0.299/0.587/0.114）—— 只用来比较「谁更亮」，
+    不需要精确的感知模型。
+    """
+    for ln in xml.splitlines():
+        ln = ln.strip()
+        if ln.startswith("<solid") and "#" in ln:
+            hexs = ln.split("#")[1].split('"')[0]
+            if len(hexs) == 8:      # #AARRGGBB → 只看颜色部分
+                hexs = hexs[2:]
+            if len(hexs) != 6:
+                return -1.0
+            r, g, b = (int(hexs[i:i + 2], 16) for i in (0, 2, 4))
+            return 0.299 * r + 0.587 * g + 0.114 * b
+    return -1.0
 
 
 def self_check(files: dict) -> list:
@@ -309,51 +304,24 @@ def self_check(files: dict) -> list:
     # 短波组件的日/夜段：布局与 Kotlin 都静态引用它们，缺一张就是运行时
     # ResourceNotFound（组件变白块）。同时盯住两条**语义**约束 —— 抄错一个
     # 十六进制值不会报错，只会在夜间档上变成隐形或看不清：
-    #   ① 夜间淡底必须比白天浓；
-    #   ② 「当前时段」段必须是实色（不是淡底），否则小白点落在淡底上、
-    #      与另一段没有对比，「现在在哪」就看不出来了。
+    #   ① **白天段必须比夜晚段亮**（用户明确要求「亮的是白天、暗的是晚上」）——
+    #      这条抄错颜色不会报错，只会让语义反过来，所以必须算亮度来判；
+    #   ② 两段都必须存在（布局静态引用它们，缺一张就是运行时白块）。
     for name in ("good", "fair", "poor", "closed"):
-        for qualifier in ("drawable", "drawable-night"):
-            seg = f"{qualifier}/aw_seg_{name}.xml"
-            now = f"{qualifier}/aw_segnow_{name}.xml"
-            for key in (seg, now):
+        for qualifier, tag in (("drawable", "浅色"), ("drawable-night", "夜间")):
+            dkey = f"{qualifier}/aw_segday_{name}.xml"
+            nkey = f"{qualifier}/aw_segnight_{name}.xml"
+            for key in (dkey, nkey):
                 if key not in files:
-                    problems.append(f"{key} 缺失（布局/代码引用了它）")
-            if now in files:
-                if "layer-list" not in files[now]:
-                    problems.append(f"{now} 不是 layer-list（实色 + 小白点两层）")
-                if files[now].count("<item") < 2:
-                    problems.append(f"{now} 只有一层，缺少小白点")
-    for name in ("good", "fair", "poor", "closed"):
-        day = files.get(f"drawable/aw_seg_{name}.xml", "")
-        night = files.get(f"drawable-night/aw_seg_{name}.xml", "")
+                    problems.append(f"{key} 缺失（布局引用了它）")
+            if dkey not in files or nkey not in files:
+                continue
+            l_day, l_night = _luma(files[dkey]), _luma(files[nkey])
+            if l_day <= l_night + 24:
+                problems.append(
+                    f"aw_seg*_{name}（{tag}）白天段亮度 {l_day:.0f} 必须明显高于"
+                    f"夜晚段 {l_night:.0f} —— 「亮的是白天、暗的是晚上」")
 
-        def _fill_alpha(txt: str) -> int:
-            """取第一个 <solid> 的不透明度。
-
-            ⚠ 必须按**位数**判断：#RRGGBB 是「不带 alpha」= 全不透明（0xFF），
-            只有 #AARRGGBB 才是带 alpha 的。我第一版一律取前两位，于是把
-            `#16A34A` 读成了 alpha=0x16 —— 检查因此对**正确**的产物报红。
-            这类「检查本身写错」比不写检查更坏：它会逼着人去放宽规则。
-            """
-            for ln in txt.splitlines():
-                ln = ln.strip()
-                if ln.startswith("<solid") and "#" in ln:
-                    hexs = ln.split("#")[1].split('"')[0]
-                    return 0xFF if len(hexs) == 6 else int(hexs[:2], 16)
-            return -1
-
-        a_day, a_night = _fill_alpha(day), _fill_alpha(night)
-        if not (0 <= a_day < a_night <= 255):
-            problems.append(
-                f"aw_seg_{name} 夜间淡底（{a_night:#04x}）必须比白天"
-                f"（{a_day:#04x}）浓 —— 否则夜间档上段隐形")
-        # 实色段：alpha 必须是 FF（写淡了「现在」就不突出）
-        now_day = files.get(f"drawable/aw_segnow_{name}.xml", "")
-        if now_day and _fill_alpha(now_day) != 0xFF:
-            problems.append(
-                f"aw_segnow_{name} 必须是实色（alpha=FF），"
-                f"现在读到 {_fill_alpha(now_day):#04x}")
     # **天气档位**的背景必须真是两色渐变。
     # 注意这里按「是不是档位名」判断，而不是 `"aw_bg" in key` —— 后者会把
     # aw_bg_white 也算进去（那是纯色底，本来就该没有 gradient），
