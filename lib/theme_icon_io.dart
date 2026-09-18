@@ -26,6 +26,8 @@ import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'theme_model.dart' show kThemePackMaxBytes;
+
 /// 当前平台是否支持「导入图片」
 bool get supportsFileIcons => !kIsWeb;
 
@@ -289,6 +291,106 @@ String _fnv1a(List<int> bytes) {
     h = (h * 0x01000193) & 0xFFFFFFFF;
   }
   return h.toRadixString(16).padLeft(8, '0');
+}
+
+// ─── 打包/解包嵌入图片（导出时把图片本体带上）───
+
+/// 读一张本地图片的 base64（用于导出带图片的主题）；读不到返回 null。
+///
+/// 有上限：主题文件是**文本**，一条 8MB 的 base64 就是 10.7MB 的字符串，
+/// 而导出路径上还可能有別的主题引用同一张图。超限的直接跳过并计数，
+/// 让它退化成「引用」而不是把导出撑爆。
+Future<String?> readImageBase64(String ref, {int maxBytes = kBackgroundMaxBytes}) async {
+  final path = await resolveImageRef(ref);
+  if (path == null) return null;
+  try {
+    final f = File(path);
+    if (await f.length() > maxBytes) return null;
+    return base64Encode(await f.readAsBytes());
+  } catch (_) {
+    return null;
+  }
+}
+
+/// 本地图片的字节数（给「导出会多大」的提示用）；读不到返回 0
+Future<int> imageByteSize(String ref) async {
+  final path = await resolveImageRef(ref);
+  if (path == null) return 0;
+  try {
+    return await File(path).length();
+  } catch (_) {
+    return 0;
+  }
+}
+
+/// 把主题包里嵌入的图片落盘，返回「原文件名 → 新文件名」映射。
+///
+/// 三道防线，每一道都是「不写就会出事」的：
+/// 1. **总预算** [kThemePackMaxBytes]：超过就丢弃多余的那几张（并计入 skipped），
+///    否则一份损坏/伪造的文件能带几百 MB base64 进来，解码那一刻直接把内存吃爆；
+/// 2. **逐张魔数校验**：嵌入的内容同样是不可信输入，扩展名与实际格式不符的、
+///    或者压根不是图片的，一律不落盘（`_detectFormat` 与选择器路径共用同一套判断）；
+/// 3. **按内容哈希命名**：导入后同一张图不会因为「对方叫什么名字」而多存一份，
+///    这也让「导入两次同一个主题包」不会攒出重复文件。
+///
+/// 落盘失败（目录不可用）返回空表 —— 调用方据此走「图片不可用」的回退，
+/// 而不是拿到一批指向不存在文件的引用。
+Future<IconImageImportOutcome> storeEmbeddedImages(
+  Map<String, String> base64ByName,
+) async {
+  final remap = <String, String>{};
+  var skipped = 0;
+  var used = 0;
+  final dir = await _ensureDir(kBackgroundDirName);
+  final iconDir = await _ensureDir(kIconDirName);
+  if (dir == null || iconDir == null) {
+    return IconImageImportOutcome(remap: remap, skipped: base64ByName.length);
+  }
+
+  for (final e in base64ByName.entries) {
+    Uint8List bytes;
+    try {
+      bytes = base64Decode(e.value);
+    } catch (_) {
+      skipped++;
+      continue;
+    }
+    if (bytes.isEmpty || used + bytes.length > kThemePackMaxBytes) {
+      skipped++;
+      continue;
+    }
+    final ext = _detectFormat(bytes);
+    if (ext == null) {
+      skipped++;
+      continue;
+    }
+    // 按大小归到对应的目录：图标进 theme_icons、其余进 theme_backgrounds。
+    // 分开放只是为了「眼睛一看就懂」；解析时两个目录都会查。
+    final isIcon = bytes.length <= kIconMaxBytes;
+    final target = isIcon ? iconDir : dir;
+    final stored = '${isIcon ? 'icon' : 'bg'}_${_fnv1a(bytes)}.$ext';
+    try {
+      final f = File('${target.path}${Platform.pathSeparator}$stored');
+      if (!await f.exists()) await f.writeAsBytes(bytes, flush: true);
+      remap[e.key] = stored;
+      used += bytes.length;
+    } catch (_) {
+      skipped++;
+    }
+  }
+  return IconImageImportOutcome(remap: remap, skipped: skipped);
+}
+
+class IconImageImportOutcome {
+  /// 原文件名 → 本地落盘后的文件名
+  final Map<String, String> remap;
+
+  /// 被跳过的张数（超预算 / 解码失败 / 不是图片 / 写盘失败）
+  final int skipped;
+
+  const IconImageImportOutcome({required this.remap, required this.skipped});
+
+  bool get isEmpty => remap.isEmpty && skipped == 0;
 }
 
 /// 渲染一个已导入的图片文件（图标与背景通用）。

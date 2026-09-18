@@ -2074,5 +2074,18 @@
   "themeBgNone": "未設定",
   "themeBgErrTooLarge": "背景画像が 8MB を超えています。圧縮してください（アイコンは 2MB まで）",
   "themeBgLocalOnly": "背景画像はこの端末にのみ保存されます。テーマファイルには参照だけが記録され、画像自体は含まれないため、共有した相手には背景なしのテーマが表示されます。",
-  "themeBgDisabledHint": "このテーマに背景画像はありません。背景は単色です"
+  "themeBgDisabledHint": "このテーマに背景画像はありません。背景は単色です",
+  "themeExportWithImages": "書き出しに画像を含める",
+  "themeExportWithImagesHint": "書き出しファイルに画像本体（約 {size}）が含まれ、受け取った側でも同じ背景とアイコンが表示されます。その代わり手編集には向かなくなります。",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "このテーマは画像を参照していません。書き出しには色と文字だけが含まれます",
+  "themeExportClipboardTooBig": "画像が大きいためクリップボードでは渡せません。「すべてのテーマを書き出す」でファイルに保存してください",
+  "themeImportImagesSkipped": "{n} 件の画像を読み込めませんでした（大きすぎるか未対応形式）",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "バックアップにテーマが参照する画像本体を含めます。含めない場合、復元後にテーマは内蔵アイコンに戻ります。",
+  "backupThemeImagesOff": "画像を含めません。バックアップは小さくなりますが、復元したテーマでは背景とカスタムアイコンが欠けます"
 }

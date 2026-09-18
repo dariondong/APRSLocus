@@ -2578,5 +2578,18 @@
   "themeBgNone": "未設定",
   "themeBgErrTooLarge": "背景圖超過 8MB，請先壓縮（圖示上限是 2MB）",
   "themeBgLocalOnly": "背景圖只存在本機：主題檔裡只記錄引用，不含圖片本身，分享給別人後對方會看到無背景的主題。",
-  "themeBgDisabledHint": "目前主題未使用背景圖，介面底為純色"
+  "themeBgDisabledHint": "目前主題未使用背景圖，介面底為純色",
+  "themeExportWithImages": "匯出時包含圖片",
+  "themeExportWithImagesHint": "匯出檔會包含圖片本體（約 {size}），對方匯入後能直接看到同樣的背景與圖示；檔案因此不再適合手動編輯。",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "目前主題沒有引用圖片，匯出檔只含配色與文字",
+  "themeExportClipboardTooBig": "圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案",
+  "themeImportImagesSkipped": "有 {n} 張圖片未匯入（過大或格式不支援）",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示",
+  "backupThemeImagesOff": "不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示"
 }

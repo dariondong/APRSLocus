@@ -6095,4 +6095,33 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get themeBgDisabledHint =>
       'Tema ini tanpa gambar latar; latarnya warna solid';
+
+  @override
+  String get themeExportWithImages => 'Sertakan gambar saat ekspor';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return 'Ekspor akan menyertakan gambar (sekitar $size), jadi penerima melihat latar dan ikon yang sama. Berkasnya jadi tidak lagi bisa diedit manual.';
+  }
+
+  @override
+  String get themeExportNoImages =>
+      'Tema ini tidak memakai gambar; ekspornya hanya berisi warna dan teks';
+
+  @override
+  String get themeExportClipboardTooBig =>
+      'Gambarnya terlalu besar untuk papan klip — gunakan “Ekspor semua tema” untuk menyimpan berkas';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '$n gambar tidak diimpor (terlalu besar atau tidak didukung)';
+  }
+
+  @override
+  String get backupThemeImagesHint =>
+      'Cadangan akan menyertakan gambar yang dipakai tema. Tanpanya, tema yang dipulihkan kembali ke ikon bawaan.';
+
+  @override
+  String get backupThemeImagesOff =>
+      'Tanpa gambar: cadangan lebih kecil, tetapi tema yang dipulihkan kehilangan latar dan ikon kustom';
 }

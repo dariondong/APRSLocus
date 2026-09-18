@@ -2074,5 +2074,18 @@
   "themeBgNone": "Sin definir",
   "themeBgErrTooLarge": "El fondo supera los 8 MB: comprímelo (los iconos tienen un límite de 2 MB)",
   "themeBgLocalOnly": "La imagen se queda en este dispositivo: el archivo de tema solo guarda una referencia, así que quien lo reciba verá el tema sin fondo.",
-  "themeBgDisabledHint": "Este tema no tiene fondo: el fondo es un color sólido"
+  "themeBgDisabledHint": "Este tema no tiene fondo: el fondo es un color sólido",
+  "themeExportWithImages": "Incluir imágenes al exportar",
+  "themeExportWithImagesHint": "La exportación incluirá las imágenes (unos {size}), así que quien la reciba verá el mismo fondo e iconos. El archivo deja de ser editable a mano.",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "Este tema no usa imágenes: la exportación solo lleva colores y texto",
+  "themeExportClipboardTooBig": "Las imágenes son demasiado grandes para el portapapeles: usa «Exportar todos los temas» para guardarlas en un archivo",
+  "themeImportImagesSkipped": "No se importaron {n} imagen(es) (demasiado grandes o no admitidas)",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "La copia incluirá las imágenes que usan tus temas. Sin ellas, al restaurar el tema vuelve a los iconos integrados.",
+  "backupThemeImagesOff": "Sin imágenes: copia más pequeña, pero al restaurar el tema le faltarán el fondo y los iconos personalizados"
 }

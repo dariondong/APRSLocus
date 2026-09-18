@@ -2588,5 +2588,18 @@
   "themeBgNone": "未设置",
   "themeBgErrTooLarge": "背景图超过 8MB，请先压缩（图标上限是 2MB）",
   "themeBgLocalOnly": "背景图只存在本机：主题文件里只记录引用，不含图片本身，分享给别人后对方会看到无背景的主题。",
-  "themeBgDisabledHint": "当前主题未使用背景图，界面底为纯色"
+  "themeBgDisabledHint": "当前主题未使用背景图，界面底为纯色",
+  "themeExportWithImages": "导出时包含图片",
+  "themeExportWithImagesHint": "导出文件会包含图片本体（约 {size}），对方导入后能直接看到同样的背景与图标；文件因此不再适合手工编辑。",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "当前主题没有引用图片，导出文件只含配色与文字",
+  "themeExportClipboardTooBig": "图片较大，无法通过剪贴板传递，请用「导出全部主题」保存为文件",
+  "themeImportImagesSkipped": "有 {n} 张图片未导入（过大或格式不支持）",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "备份会包含主题引用的图片本体；不包含时，换机恢复后主题会回退成内置图标",
+  "backupThemeImagesOff": "不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标"
 }

@@ -1990,5 +1990,18 @@
   "themeBgNone": "Not set",
   "themeBgErrTooLarge": "The background is larger than 8 MB — compress it first (icons are capped at 2 MB)",
   "themeBgLocalOnly": "The image stays on this device: the theme file records only a reference, not the image, so anyone you share it with sees the theme without a background.",
-  "themeBgDisabledHint": "This theme has no background image; the backdrop is a solid colour"
+  "themeBgDisabledHint": "This theme has no background image; the backdrop is a solid colour",
+  "themeExportWithImages": "Include images in the export",
+  "themeExportWithImagesHint": "The export will carry the images themselves (about {size}), so the recipient sees the same background and icons. The file is then no longer hand-editable.",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "This theme references no images; the export contains only colours and text",
+  "themeExportClipboardTooBig": "The images are too large for the clipboard — use \"Export all themes\" to save a file instead",
+  "themeImportImagesSkipped": "{n} image(s) were not imported (too large or unsupported)",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "The backup will embed the images your themes use. Without them, a restored theme falls back to built-in icons.",
+  "backupThemeImagesOff": "Images excluded: a smaller backup, but a restored theme will be missing its background and custom icons"
 }

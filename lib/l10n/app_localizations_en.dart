@@ -6086,4 +6086,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get themeBgDisabledHint =>
       'This theme has no background image; the backdrop is a solid colour';
+
+  @override
+  String get themeExportWithImages => 'Include images in the export';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return 'The export will carry the images themselves (about $size), so the recipient sees the same background and icons. The file is then no longer hand-editable.';
+  }
+
+  @override
+  String get themeExportNoImages =>
+      'This theme references no images; the export contains only colours and text';
+
+  @override
+  String get themeExportClipboardTooBig =>
+      'The images are too large for the clipboard — use \"Export all themes\" to save a file instead';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '$n image(s) were not imported (too large or unsupported)';
+  }
+
+  @override
+  String get backupThemeImagesHint =>
+      'The backup will embed the images your themes use. Without them, a restored theme falls back to built-in icons.';
+
+  @override
+  String get backupThemeImagesOff =>
+      'Images excluded: a smaller backup, but a restored theme will be missing its background and custom icons';
 }

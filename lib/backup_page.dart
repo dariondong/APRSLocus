@@ -8,6 +8,8 @@ import 'backup_io.dart' if (dart.library.html) 'backup_io_web.dart' as backup_io
 import 'exit_app.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
+import 'theme_store.dart';
+import 'theme_model.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -35,6 +37,9 @@ class _BackupPageState extends State<BackupPage> {
 
   bool _busy = false;
   String? _lastPath;
+
+  /// 备份里是否带上主题引用的图片本体（默认带：备份的用途就是「换机搬走」）
+  bool _withThemeImages = true;
 
   /// 本机各分组的条目数（用于告诉用户「这组有多少东西」）
   Map<BackupCategory, int> _counts = const {};
@@ -99,8 +104,19 @@ class _BackupPageState extends State<BackupPage> {
     try {
       await st.flushForBackup();
       final p = await SharedPreferences.getInstance();
+      final snap = snapshotFromPrefs(p);
+      // 主题分组里存的是「引用」（file:xxx.png），而那几张图本身在应用目录里。
+      // 不把它们嵌进来，换机恢复后主题会指向不存在的文件 —— 界面不会坏，
+      // 但用户会以为「备份没备全」。这里按用户的选择嵌进去。
+      if (_withThemeImages && _expCats.contains(BackupCategory.theme)) {
+        final raw = snap[ThemeController.kPrefsKey];
+        if (raw is String && raw.isNotEmpty) {
+          final images = await ThemeController.instance.collectImagesForExport();
+          if (images.isNotEmpty) snap[ThemeController.kPrefsKey] = attachImages(raw, images);
+        }
+      }
       json = buildBackupJson(
-        snapshot: snapshotFromPrefs(p),
+        snapshot: snap,
         categories: _expCats.toSet(),
         appVersion: AppState.appVersion,
         platform: defaultTargetPlatform.name,
@@ -467,6 +483,21 @@ class _BackupPageState extends State<BackupPage> {
                   s.backupSavedTo(_lastPath!),
                   C.green,
                   Icons.check_circle_outline_rounded,
+                ),
+              if (_expCats.contains(BackupCategory.theme))
+                SettingsSwitch(
+                  s.themeExportWithImages,
+                  value: _withThemeImages,
+                  color: C.green,
+                  onChanged: (v) => setState(() => _withThemeImages = v),
+                ),
+              if (_expCats.contains(BackupCategory.theme))
+                SettingsHint(
+                  _withThemeImages
+                      ? s.backupThemeImagesHint
+                      : s.backupThemeImagesOff,
+                  color: _withThemeImages ? C.green : C.orange,
+                  icon: Icons.info_outline_rounded,
                 ),
               _buttons(s: s, toFile: true),
             ],

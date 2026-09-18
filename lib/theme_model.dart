@@ -323,6 +323,94 @@ class AppTheme {
   }
 }
 
+/// ─── 打包图片（导出时把图片本体塞进 JSON）───
+///
+/// 为什么做成**可选的**：把图片嵌进 JSON 意味着 base64 膨胀 33%、文件从几十 KB
+/// 变成几 MB、而且再也没法用文本编辑器打开看。所以默认只存引用，用户明确勾了
+/// 「包含图片」才嵌。
+///
+/// 嵌入的字段名与形状：顶层 `images: { "bg_1a2b3c4d.png": "<base64>" }`。
+/// 放在**顶层而不是每个主题里**，是因为多个主题常引用同一张图 ——
+/// 按名字去重，导出的体积才不会被重复的图撑大。
+const String kThemeImagesField = 'images';
+
+/// 嵌入图片的总预算。超过就丢弃多余的那几张（并计数）。
+///
+/// 不设预算的话，一份伪造/损坏的主题文件能带几百 MB 的 base64 进来，
+/// 解码那一刻直接把内存吃爆 —— 而这是个「双击一个文件」就能触发的路径。
+const int kThemePackMaxBytes = 24 * 1024 * 1024;
+
+/// 把图片 base64 表附加到一份主题 JSON 上（json 必须是对象）
+String attachImages(String json, Map<String, String> images) {
+  if (images.isEmpty) return json;
+  Object? raw;
+  try {
+    raw = jsonDecode(json);
+  } catch (_) {
+    return json;
+  }
+  if (raw is! Map) return json;
+  final out = <String, Object?>{};
+  raw.forEach((k, v) => out['$k'] = v);
+  out[kThemeImagesField] = images;
+  return encodeThemeJson(out);
+}
+
+/// 从主题 JSON 里取出嵌入的图片（没有/不合法返回空表）
+///
+/// 只接受**形状合法**的条目：文件名要能过 [isValidIconRef] 那套规则（挡住路径穿越），
+/// 内容非空。形状不对就整条丢掉，而不是留给下游去猜。
+Map<String, String> embeddedImages(String json) {
+  final out = <String, String>{};
+  Object? raw;
+  try {
+    raw = jsonDecode(json);
+  } catch (_) {
+    return out;
+  }
+  if (raw is! Map) return out;
+  final m = raw[kThemeImagesField];
+  if (m is! Map) return out;
+  m.forEach((k, v) {
+    final name = '$k';
+    final data = '$v';
+    if (data.isEmpty) return;
+    if (!isValidIconRef('file:$name')) return;
+    out[name] = data;
+  });
+  return out;
+}
+
+/// 去掉嵌入的图片（保留其余内容）
+String stripImages(String json) {
+  Object? raw;
+  try {
+    raw = jsonDecode(json);
+  } catch (_) {
+    return json;
+  }
+  if (raw is! Map) return json;
+  if (!raw.containsKey(kThemeImagesField)) return json;
+  final out = <String, Object?>{};
+  raw.forEach((k, v) {
+    if ('$k' != kThemeImagesField) out['$k'] = v;
+  });
+  return encodeThemeJson(out);
+}
+
+/// 把所有 `file:<旧名>` 引用改成新名字。
+///
+/// 为什么需要它：图片按**内容哈希**落盘，同一张图在别人机器上的文件名与
+/// 导出时的不一样（甚至可能已有同样内容但不同前缀的文件）；导入时必须
+/// 把引用重新指向本地实际落下的那个名字，否则主题会指向一个不存在的文件。
+String? remapRef(String? ref, Map<String, String> oldToNew) {
+  if (ref == null) return null;
+  if (!ref.startsWith('file:')) return ref;
+  final name = ref.substring(5);
+  final hit = oldToNew[name];
+  return hit == null ? ref : 'file:$hit';
+}
+
 /// 图标引用：`lib:map_rounded` 或 `file:ab12cd34.png`
 bool isValidIconRef(String ref) {
   if (ref.startsWith('lib:')) {
@@ -393,11 +481,14 @@ class ThemeException implements Exception {
 
 /// 解析主题包 / 单个主题。
 ///
+/// [imageRemap] 是「导出时的文件名 → 本地落盘后的文件名」映射；
+/// 导入带图片的主题包时必传，否则引用会指向本机不存在的文件。
+///
 /// 两种形态都接受：
 /// - 单个主题：`{"kind":"aprslocus-theme","schema":1,"theme":{...}}`（编辑页导出）
 /// - 整包：`{"kind":"aprslocus-theme","schema":1,"themes":[...]}`（备份/分享）
 /// 这样「导出当前主题分享给别人」与「导出全部主题」都能被同一个入口导入。
-ThemeBundle parseThemeJson(String text) {
+ThemeBundle parseThemeJson(String text, {Map<String, String> imageRemap = const {}}) {
   Object? raw;
   try {
     raw = jsonDecode(text);
@@ -431,6 +522,16 @@ ThemeBundle parseThemeJson(String text) {
   }
   if (themes.isEmpty) {
     throw const ThemeException(ThemeErrorCode.noThemes);
+  }
+
+  // 引用重定向：必须在返回前做完，否则调用方（UI）会先看到一批坏引用
+  if (imageRemap.isNotEmpty) {
+    for (final t in themes) {
+      t.background = remapRef(t.background, imageRemap);
+      for (final e in t.icons.entries.toList()) {
+        t.icons[e.key] = remapRef(e.value, imageRemap) ?? e.value;
+      }
+    }
   }
 
   // 导入的主题一律视为「用户主题」：内置标记不可由文件授予，

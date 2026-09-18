@@ -41,6 +41,20 @@ class _ThemePageState extends State<ThemePage> {
 
   bool _busy = false;
 
+  /// 导出时是否把图片本体（base64）一并带走
+  bool _withImages = true;
+
+  /// 当前主题引用的图片总字节数（给体积提示用）
+  int _imgBytes = 0;
+
+  Future<void> _refreshImageSize() async {
+    try {
+      final n = await tc.imagesTotalBytes();
+      if (!mounted) return;
+      setState(() => _imgBytes = n);
+    } catch (_) {}
+  }
+
   void _toast(String msg) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -899,8 +913,26 @@ class _ThemePageState extends State<ThemePage> {
       icon: Icons.swap_vert_rounded,
       color: C.blue,
       children: [
+        // 是否带图片：默认带（用户导出主题的意图就是「把这套东西搬走」），
+        // 但要让他知道代价 —— base64 会让文件大一个量级，而且不再可手工编辑。
+        SettingsSwitch(
+          s.themeExportWithImages,
+          value: _withImages,
+          color: C.blue,
+          onChanged: (v) => setState(() => _withImages = v),
+        ),
+        SettingsHint(
+          _imgBytes > 0
+              ? s.themeExportWithImagesHint(_fmtBytes(_imgBytes))
+              : s.themeExportNoImages,
+          color: _imgBytes > 0 ? C.slate : C.grey,
+          icon: Icons.info_outline_rounded,
+        ),
+        if (_clipboardTooBig)
+          SettingsHint(s.themeExportClipboardTooBig, color: C.orange,
+              icon: Icons.warning_amber_rounded),
         Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+          padding: const EdgeInsets.fromLTRB(14, 6, 14, 4),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -909,8 +941,14 @@ class _ThemePageState extends State<ThemePage> {
                   () => unawaited(_exportAll(s))),
               _btn(s.themeImport, Icons.folder_open_rounded, C.green,
                   () => unawaited(_import())),
-              _btn(s.themeImportPaste, Icons.content_paste_rounded, C.green,
-                  () => unawaited(_import(fromClipboard: true))),
+              // 带图片时剪贴板会塞进几 MB 文本，多数平台上会直接被截断/失败 ——
+              // 与其让用户粘贴出一段坏 JSON，不如禁用并说明原因。
+              _btn(
+                s.themeImportPaste,
+                Icons.content_paste_rounded,
+                _clipboardTooBig ? C.grey : C.green,
+                _clipboardTooBig ? () {} : () => unawaited(_import(fromClipboard: true)),
+              ),
             ],
           ),
         ),
@@ -926,6 +964,15 @@ class _ThemePageState extends State<ThemePage> {
         ),
       ],
     );
+  }
+
+  /// 剪贴板装不下这么多文本（保守阈值 256KB，含 base64 膨胀）
+  bool get _clipboardTooBig => _withImages && _imgBytes > 192 * 1024;
+
+  String _fmtBytes(int b) {
+    if (b >= 1024 * 1024) return '${(b / 1048576).toStringAsFixed(1)} MB';
+    if (b >= 1024) return '${(b / 1024).toStringAsFixed(0)} KB';
+    return '$b B';
   }
 
   Widget _btn(String label, IconData icon, Color color, VoidCallback onTap) {
@@ -955,7 +1002,7 @@ class _ThemePageState extends State<ThemePage> {
     try {
       path = await text_io.saveBackupFile(
         themeFileName(DateTime.now()),
-        tc.exportBundleJson(),
+        await tc.exportBundleJson(includeImages: _withImages),
         mimeType: 'application/json',
       );
     } catch (_) {}
@@ -974,7 +1021,7 @@ class _ThemePageState extends State<ThemePage> {
     try {
       path = await text_io.saveBackupFile(
         themeFileName(DateTime.now()),
-        tc.exportOneJson(t),
+        await tc.exportOneJson(t, includeImages: _withImages),
         mimeType: 'application/json',
       );
     } catch (_) {}
@@ -1029,22 +1076,34 @@ class _ThemePageState extends State<ThemePage> {
       }
     }
     if (!mounted) return;
-    _applyImported(s, text ?? '');
+    await _applyImported(s, text ?? '');
   }
 
-  void _applyImported(S s, String text) {
+  Future<void> _applyImported(S s, String text) async {
     try {
-      final bundle = parseThemeJson(text);
+      // 先把嵌入的图片落盘，拿到「原文件名 → 本地文件名」映射；解析时据此
+      // 把引用重定向。顺序不能颠倒：先解析的话主题会短暂指向不存在的文件。
+      var absorb = const ThemeAbsorbResult({}, 0);
+      try {
+        absorb = await tc.absorbImages(text);
+      } catch (_) {}
+      final bundle = parseThemeJson(text, imageRemap: absorb.remap);
       for (final t in bundle.themes) {
         tc.upsert(t);
       }
       // 导入的第一条直接启用：用户的意图就是「用上它」
       tc.setActive(bundle.themes.first.id);
       _commit();
-      final extra = bundle.warnings.isEmpty
-          ? ''
-          : ' · ${s.backupSkipped(bundle.warnings.length)}';
-      _toast('${s.themeImportDone(bundle.themes.length)}$extra');
+      unawaited(_refreshImageSize());
+      final notes = <String>[];
+      if (bundle.warnings.isNotEmpty) {
+        notes.add(s.backupSkipped(bundle.warnings.length));
+      }
+      // 图片被跳过时说清楚是「几张图没进来」，而不是笼统的「有内容被跳过」——
+      // 用户据此才知道要么换个图、要么换台设备重导。
+      if (absorb.skipped > 0) notes.add(s.themeImportImagesSkipped(absorb.skipped));
+      _toast('${s.themeImportDone(bundle.themes.length)}'
+          '${notes.isEmpty ? '' : ' · ${notes.join(' · ')}'}');
     } on ThemeException catch (e) {
       switch (e.code) {
         case ThemeErrorCode.notJson:

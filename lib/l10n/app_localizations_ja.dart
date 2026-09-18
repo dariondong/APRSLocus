@@ -5916,4 +5916,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get themeBgDisabledHint => 'このテーマに背景画像はありません。背景は単色です';
+
+  @override
+  String get themeExportWithImages => '書き出しに画像を含める';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return '書き出しファイルに画像本体（約 $size）が含まれ、受け取った側でも同じ背景とアイコンが表示されます。その代わり手編集には向かなくなります。';
+  }
+
+  @override
+  String get themeExportNoImages => 'このテーマは画像を参照していません。書き出しには色と文字だけが含まれます';
+
+  @override
+  String get themeExportClipboardTooBig =>
+      '画像が大きいためクリップボードでは渡せません。「すべてのテーマを書き出す」でファイルに保存してください';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '$n 件の画像を読み込めませんでした（大きすぎるか未対応形式）';
+  }
+
+  @override
+  String get backupThemeImagesHint =>
+      'バックアップにテーマが参照する画像本体を含めます。含めない場合、復元後にテーマは内蔵アイコンに戻ります。';
+
+  @override
+  String get backupThemeImagesOff =>
+      '画像を含めません。バックアップは小さくなりますが、復元したテーマでは背景とカスタムアイコンが欠けます';
 }

@@ -20,6 +20,23 @@ import 'theme_model.dart';
 /// 与 AppState 的分工：
 /// - AppState 负责持久化时机（与其它偏好一起落盘）与通知刷新；
 /// - ThemeController 负责「当前主题是什么、某个插槽该画什么」。
+/// 解包嵌入图片的结果
+class ThemeAbsorbResult {
+  /// 「导出时的文件名 → 本地落盘后的文件名」。
+  ///
+  /// 由 IO 层算好后返回，**而不是在这里用 Platform 拼路径**：
+  /// theme_store.dart 必须在 Web 上也能编译，import dart:io 会直接把它废掉
+  /// （这类错误 flutter analyze 也发现不了 —— 它只解析非 Web 那一支）。
+  final Map<String, String> remap;
+
+  /// 被跳过的张数（超预算 / 解码失败 / 不是图片 / 写盘失败 / Web 无法写盘）
+  final int skipped;
+
+  const ThemeAbsorbResult(this.remap, this.skipped);
+
+  bool get isEmpty => remap.isEmpty && skipped == 0;
+}
+
 class ThemeController extends ChangeNotifier {
   ThemeController._();
 
@@ -147,7 +164,25 @@ class ThemeController extends ChangeNotifier {
     try {
       final raw = p.getString(kPrefsKey);
       if (raw != null && raw.isNotEmpty) {
-        final d = jsonDecode(raw);
+        // 偏好里可能躺着**带嵌入图片**的主题包（例如从备份恢复过来）。
+        // 这种状态不能久留：base64 存在 SharedPreferences 里会一直占着
+        // 几 MB，而且主题每次读写都要把它搬来搬去。所以在这里把图片落盘、
+        // 引用改成指向本地文件，然后把偏好里的 base64 剥掉重写回去。
+        final absorbed = await absorbImages(raw);
+        var effective = raw;
+        if (!absorbed.isEmpty) {
+          // 把图片落盘、引用改指到本地，再把 base64 从偏好里剥掉重写回去。
+          //
+          // 关键点：**即使一张都没落成（skipped > 0）也要剥掉**。否则那几 MB
+          // 的 base64 会永远躺在 SharedPreferences 里，而且每次保存主题都要
+          // 把它整串搬一遍 —— 看起来「能用」，实际是在持续为一次失败的导入
+          // 付存储与性能成本。
+          effective = _remapJson(raw, absorbed.remap);
+          try {
+            await p.setString(kPrefsKey, effective);
+          } catch (_) {}
+        }
+        final d = jsonDecode(effective);
         if (d is Map) {
           _user.clear();
           final list = d['themes'];
@@ -210,17 +245,105 @@ class ThemeController extends ChangeNotifier {
   /// **只导出用户主题**，不含内置预设：预设每台设备本来就有，导出去再导回来
   /// 只会让对方的主题列表平白多出 6 个重复项（而且它们会被降级成用户主题，
   /// 删起来还得一个个删）。想分享预设的单一样式，用 [exportOneJson]。
-  String exportBundleJson() =>
-      encodeThemeJson(ThemeBundle(themes: _user, activeId: _activeId)
-          .toJson(includeBuiltin: false));
+  ///
+  /// [includeImages] 为真时把引用到的图片本体（base64）一并塞进包里 ——
+  /// 这样对方导入后能直接看到同样的背景图/图标，而不需要自己再找图。
+  /// 代价是文件会大一个量级（base64 膨胀 33%），且不再是可手工编辑的文本，
+  /// 所以要用户明确选择，不能默默替他决定。
+  Future<String> exportBundleJson({bool includeImages = false}) async {
+    final json = encodeThemeJson(
+      ThemeBundle(themes: _user, activeId: _activeId)
+          .toJson(includeBuiltin: false),
+    );
+    if (!includeImages) return json;
+    return attachImages(json, await _collectImages(_user));
+  }
 
   /// 导出单个主题的 JSON
-  String exportOneJson(AppTheme t) => encodeThemeJson({
-        'kind': kThemeKind,
-        'schema': kThemeSchema,
-        'active': t.id,
-        'theme': t.toJson(),
-      });
+  Future<String> exportOneJson(AppTheme t, {bool includeImages = false}) async {
+    final json = encodeThemeJson({
+      'kind': kThemeKind,
+      'schema': kThemeSchema,
+      'active': t.id,
+      'theme': t.toJson(),
+    });
+    if (!includeImages) return json;
+    return attachImages(json, await _collectImages([t]));
+  }
+
+  /// 供备份页复用：把「当前全部用户主题」引用到的图片读成 base64
+  Future<Map<String, String>> collectImagesForExport() =>
+      _collectImages(_user);
+
+  /// 收集这些主题引用到的所有本地图片 → {文件名: base64}
+  ///
+  /// 按文件名去重：多个主题（或多个插槽）常用同一张图，不去重的话
+  /// 包里会有多份完全相同的 base64。
+  Future<Map<String, String>> _collectImages(List<AppTheme> themes) async {
+    final refs = <String>{};
+    for (final t in themes) {
+      final bg = t.background;
+      if (bg != null) refs.add(bg);
+      for (final v in t.icons.values) {
+        if (v.startsWith('file:')) refs.add(v);
+      }
+    }
+    final out = <String, String>{};
+    for (final ref in refs) {
+      final b64 = await icon_io.readImageBase64(ref);
+      if (b64 != null) out[ref.substring(5)] = b64;
+    }
+    return out;
+  }
+
+  /// 当前（用户主题引用的）图片总字节数 —— 给导出前的体积提示用
+  Future<int> imagesTotalBytes() async {
+    final refs = <String>{};
+    for (final t in _user) {
+      final bg = t.background;
+      if (bg != null) refs.add(bg);
+      for (final v in t.icons.values) {
+        if (v.startsWith('file:')) refs.add(v);
+      }
+    }
+    var total = 0;
+    for (final ref in refs) {
+      total += await icon_io.imageByteSize(ref);
+    }
+    return total;
+  }
+
+  /// 让主题包里的「图片文件名 → 本地文件名」映射生效（导出侧的反向操作）。
+  ///
+  /// 同时把嵌进去的图片落盘，并返回「跳过了几张」以便如实告知用户 ——
+  /// 超预算、解码失败、不是图片都会走到跳过分支，静默丢弃是最坏的处理。
+  Future<ThemeAbsorbResult> absorbImages(String rawJson) async {
+    final embedded = embeddedImages(rawJson);
+    if (embedded.isEmpty) return const ThemeAbsorbResult({}, 0);
+    final outcome = await icon_io.storeEmbeddedImages(embedded);
+    return ThemeAbsorbResult(outcome.remap, outcome.skipped);
+  }
+
+  /// 把 JSON 里所有图片引用按 [remap] 改指到本地文件，并返回**不含嵌入图片**的 JSON
+  String _remapJson(String json, Map<String, String> remap) {
+    final effective = stripImages(json);
+    if (remap.isEmpty) return effective;
+    try {
+      final bundle = parseThemeJson(effective);
+      for (final t in bundle.themes) {
+        t.background = remapRef(t.background, remap);
+        for (final e in t.icons.entries.toList()) {
+          t.icons[e.key] = remapRef(e.value, remap) ?? e.value;
+        }
+      }
+      return encodeThemeJson(
+        ThemeBundle(themes: bundle.themes, activeId: bundle.activeId)
+            .toJson(includeBuiltin: false),
+      );
+    } catch (_) {
+      return effective;
+    }
+  }
 
   // ─── 增删改 ───
 

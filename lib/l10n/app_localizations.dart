@@ -10586,6 +10586,48 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'当前主题未使用背景图，界面底为纯色'**
   String get themeBgDisabledHint;
+
+  /// No description provided for @themeExportWithImages.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出时包含图片'**
+  String get themeExportWithImages;
+
+  /// No description provided for @themeExportWithImagesHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出文件会包含图片本体（约 {size}），对方导入后能直接看到同样的背景与图标；文件因此不再适合手工编辑。'**
+  String themeExportWithImagesHint(String size);
+
+  /// No description provided for @themeExportNoImages.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前主题没有引用图片，导出文件只含配色与文字'**
+  String get themeExportNoImages;
+
+  /// No description provided for @themeExportClipboardTooBig.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片较大，无法通过剪贴板传递，请用「导出全部主题」保存为文件'**
+  String get themeExportClipboardTooBig;
+
+  /// No description provided for @themeImportImagesSkipped.
+  ///
+  /// In zh, this message translates to:
+  /// **'有 {n} 张图片未导入（过大或格式不支持）'**
+  String themeImportImagesSkipped(int n);
+
+  /// No description provided for @backupThemeImagesHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份会包含主题引用的图片本体；不包含时，换机恢复后主题会回退成内置图标'**
+  String get backupThemeImagesHint;
+
+  /// No description provided for @backupThemeImagesOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标'**
+  String get backupThemeImagesOff;
 }
 
 class _AppLocalizationsDelegate

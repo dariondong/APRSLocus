@@ -46,6 +46,30 @@ Future<String?> iconFilePath(String storedName) async => null;
 
 Future<String?> resolveImageRef(String ref) async => null;
 
+Future<String?> readImageBase64(String ref,
+        {int maxBytes = kBackgroundMaxBytes}) async =>
+    null;
+
+Future<int> imageByteSize(String ref) async => 0;
+
+/// Web 版落不了盘，所以嵌入的图片一律丢弃（调用方据此提示「图片未随包导入」）
+Future<IconImageImportOutcome> storeEmbeddedImages(
+  Map<String, String> base64ByName,
+) async =>
+    IconImageImportOutcome(
+      remap: const {},
+      skipped: base64ByName.length,
+    );
+
+class IconImageImportOutcome {
+  final Map<String, String> remap;
+  final int skipped;
+
+  const IconImageImportOutcome({required this.remap, required this.skipped});
+
+  bool get isEmpty => remap.isEmpty && skipped == 0;
+}
+
 Widget? buildFileImage(
   String ref, {
   double? size,

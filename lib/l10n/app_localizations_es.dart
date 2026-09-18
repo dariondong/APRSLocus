@@ -6133,4 +6133,33 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get themeBgDisabledHint =>
       'Este tema no tiene fondo: el fondo es un color sólido';
+
+  @override
+  String get themeExportWithImages => 'Incluir imágenes al exportar';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return 'La exportación incluirá las imágenes (unos $size), así que quien la reciba verá el mismo fondo e iconos. El archivo deja de ser editable a mano.';
+  }
+
+  @override
+  String get themeExportNoImages =>
+      'Este tema no usa imágenes: la exportación solo lleva colores y texto';
+
+  @override
+  String get themeExportClipboardTooBig =>
+      'Las imágenes son demasiado grandes para el portapapeles: usa «Exportar todos los temas» para guardarlas en un archivo';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return 'No se importaron $n imagen(es) (demasiado grandes o no admitidas)';
+  }
+
+  @override
+  String get backupThemeImagesHint =>
+      'La copia incluirá las imágenes que usan tus temas. Sin ellas, al restaurar el tema vuelve a los iconos integrados.';
+
+  @override
+  String get backupThemeImagesOff =>
+      'Sin imágenes: copia más pequeña, pero al restaurar el tema le faltarán el fondo y los iconos personalizados';
 }

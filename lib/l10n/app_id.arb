@@ -2074,5 +2074,18 @@
   "themeBgNone": "Belum diatur",
   "themeBgErrTooLarge": "Latar melebihi 8 MB — kompres dulu (ikon dibatasi 2 MB)",
   "themeBgLocalOnly": "Gambar tetap di perangkat ini: berkas tema hanya mencatat referensi, bukan gambarnya, jadi penerima akan melihat tema tanpa latar.",
-  "themeBgDisabledHint": "Tema ini tanpa gambar latar; latarnya warna solid"
+  "themeBgDisabledHint": "Tema ini tanpa gambar latar; latarnya warna solid",
+  "themeExportWithImages": "Sertakan gambar saat ekspor",
+  "themeExportWithImagesHint": "Ekspor akan menyertakan gambar (sekitar {size}), jadi penerima melihat latar dan ikon yang sama. Berkasnya jadi tidak lagi bisa diedit manual.",
+  "@themeExportWithImagesHint": {
+    "placeholders": {"size": {"type": "String"}}
+  },
+  "themeExportNoImages": "Tema ini tidak memakai gambar; ekspornya hanya berisi warna dan teks",
+  "themeExportClipboardTooBig": "Gambarnya terlalu besar untuk papan klip — gunakan “Ekspor semua tema” untuk menyimpan berkas",
+  "themeImportImagesSkipped": "{n} gambar tidak diimpor (terlalu besar atau tidak didukung)",
+  "@themeImportImagesSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupThemeImagesHint": "Cadangan akan menyertakan gambar yang dipakai tema. Tanpanya, tema yang dipulihkan kembali ke ikon bawaan.",
+  "backupThemeImagesOff": "Tanpa gambar: cadangan lebih kecil, tetapi tema yang dipulihkan kehilangan latar dan ikon kustom"
 }

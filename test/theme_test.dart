@@ -348,7 +348,7 @@ void main() {
         texts: {'map': '地图'},
         radius: 20,
       ));
-      final json = tc.exportBundleJson();
+      final json = await tc.exportBundleJson();
       final back = parseThemeJson(json);
       final t = back.byId('u11');
       expect(t, isNotNull);
@@ -360,9 +360,9 @@ void main() {
       expect(back.byId('builtin:default'), isNull);
     });
 
-    test('导出单个主题的 JSON 也能被导入（同一入口两种形态）', () {
+    test('导出单个主题的 JSON 也能被导入（同一入口两种形态）', () async {
       final tc = ThemeController.instance;
-      final one = tc.exportOneJson(ThemeController.builtinPresets[1]);
+      final one = await tc.exportOneJson(ThemeController.builtinPresets[1]);
       final back = parseThemeJson(one);
       expect(back.themes.length, 1);
       expect(back.themes.first.builtin, isFalse);
@@ -561,6 +561,135 @@ void main() {
       tc.applyColors(isDark: false, legacyPrimary: null);
       expect(C.hasBackground, isFalse);
       expect(C.surfaceFill, C.white);
+    });
+  });
+
+  group('导出带图片（base64 打包）', () {
+    test('attachImages 挂上 images 字段，embeddedImages 能取回', () {
+      final base = encodeThemeJson({
+        'kind': kThemeKind,
+        'schema': kThemeSchema,
+        'themes': [
+          {'id': 'u', 'name': 'u', 'background': 'file:bg_a.png'},
+        ],
+      });
+      final packed = attachImages(base, {'bg_a.png': 'QUJD'});
+      expect(embeddedImages(packed), {'bg_a.png': 'QUJD'});
+      // 原来的内容一个都不能丢
+      final b = parseThemeJson(packed);
+      expect(b.themes.first.background, 'file:bg_a.png');
+    });
+
+    test('没有图片时原样返回（不写空的 images 字段）', () {
+      final base = encodeThemeJson({'kind': kThemeKind, 'schema': 1});
+      expect(attachImages(base, const {}), base);
+      expect(base.contains('images'), isFalse);
+    });
+
+    test('非 JSON / 非对象输入不抛异常，原样返回（导出路径不能因为奇怪输入炸掉）',
+        () {
+      expect(attachImages('不是 JSON', {'a.png': 'x'}), '不是 JSON');
+      expect(attachImages('[]', {'a.png': 'x'}), '[]');
+      expect(embeddedImages('不是 JSON'), isEmpty);
+      expect(embeddedImages('[]'), isEmpty);
+      expect(embeddedImages('{"images": 5}'), isEmpty);
+    });
+
+    test('形状不合法的图片条目被丢掉（挡住路径穿越等）', () {
+      final packed = encodeThemeJson({
+        'kind': kThemeKind,
+        'schema': 1,
+        'images': {
+          'ok.png': 'QUJD',
+          '../../etc/passwd': 'QUJD',
+          'sub/dir.png': 'QUJD',
+          '': 'QUJD',
+          'empty.png': '',
+        },
+      });
+      expect(embeddedImages(packed), {'ok.png': 'QUJD'});
+    });
+
+    test('stripImages 去掉图片但保留其余内容', () {
+      final packed = attachImages(
+        encodeThemeJson({
+          'kind': kThemeKind,
+          'schema': 1,
+          'themes': [
+            {'id': 'u', 'name': 'u'},
+          ],
+        }),
+        {'a.png': 'QUJD'},
+      );
+      final back = stripImages(packed);
+      expect(back.contains('images'), isFalse);
+      expect(parseThemeJson(back).themes.length, 1);
+    });
+
+    test('remapRef 只改 file: 引用，且不认识的名字原样保留', () {
+      expect(remapRef('file:a.png', {'a.png': 'b.png'}), 'file:b.png');
+      expect(remapRef('file:c.png', {'a.png': 'b.png'}), 'file:c.png');
+      expect(remapRef('lib:map_rounded', {'a.png': 'b.png'}), 'lib:map_rounded');
+      expect(remapRef(null, {'a.png': 'b.png'}), isNull);
+    });
+
+    test('导入时按 remap 重定向背景与图标引用（对方机器上文件名必然不同）', () {
+      final packed = attachImages(
+        encodeThemeJson({
+          'kind': kThemeKind,
+          'schema': 1,
+          'themes': [
+            {
+              'id': 'u',
+              'name': 'u',
+              'background': 'file:bg_sender.png',
+              'icons': {'navMap': 'file:icon_sender.png'},
+            },
+          ],
+        }),
+        {'bg_sender.png': 'QUJD', 'icon_sender.png': 'QUJD'},
+      );
+      final b = parseThemeJson(
+        packed,
+        imageRemap: {'bg_sender.png': 'bg_localhash.png', 'icon_sender.png': 'icon_localhash.png'},
+      );
+      expect(b.themes.first.background, 'file:bg_localhash.png');
+      expect(b.themes.first.icons['navMap'], 'file:icon_localhash.png');
+    });
+
+    test('不带 remap 时引用保持原样（调用方忘了传不会把引用改坏）', () {
+      final packed = attachImages(
+        encodeThemeJson({
+          'kind': kThemeKind,
+          'schema': 1,
+          'themes': [
+            {'id': 'u', 'name': 'u', 'background': 'file:bg_x.png'},
+          ],
+        }),
+        {'bg_x.png': 'QUJD'},
+      );
+      expect(parseThemeJson(packed).themes.first.background, 'file:bg_x.png');
+    });
+
+    test('attachImages 后仍能被当作正常主题解析（图片字段不影响校验）', () {
+      final packed = attachImages(
+        encodeThemeJson({
+          'kind': kThemeKind,
+          'schema': 1,
+          'themes': [
+            {'id': 'u', 'name': 'u', 'colors': {'primary': 'FF0000'}},
+          ],
+        }),
+        {'a.png': 'QUJD'},
+      );
+      final b = parseThemeJson(packed);
+      expect(b.themes.first.colors['primary'], 'FF0000');
+      expect(b.warnings, isEmpty);
+    });
+
+    test('预算上限是个正数且小于 64MB（防解包把内存吃爆）', () {
+      expect(kThemePackMaxBytes, greaterThan(0));
+      expect(kThemePackMaxBytes, lessThan(64 * 1024 * 1024));
     });
   });
 }

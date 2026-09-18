@@ -5857,6 +5857,31 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get themeBgDisabledHint => '当前主题未使用背景图，界面底为纯色';
+
+  @override
+  String get themeExportWithImages => '导出时包含图片';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return '导出文件会包含图片本体（约 $size），对方导入后能直接看到同样的背景与图标；文件因此不再适合手工编辑。';
+  }
+
+  @override
+  String get themeExportNoImages => '当前主题没有引用图片，导出文件只含配色与文字';
+
+  @override
+  String get themeExportClipboardTooBig => '图片较大，无法通过剪贴板传递，请用「导出全部主题」保存为文件';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '有 $n 张图片未导入（过大或格式不支持）';
+  }
+
+  @override
+  String get backupThemeImagesHint => '备份会包含主题引用的图片本体；不包含时，换机恢复后主题会回退成内置图标';
+
+  @override
+  String get backupThemeImagesOff => '不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -11711,4 +11736,29 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get themeBgDisabledHint => '目前主題未使用背景圖，介面底為純色';
+
+  @override
+  String get themeExportWithImages => '匯出時包含圖片';
+
+  @override
+  String themeExportWithImagesHint(String size) {
+    return '匯出檔會包含圖片本體（約 $size），對方匯入後能直接看到同樣的背景與圖示；檔案因此不再適合手動編輯。';
+  }
+
+  @override
+  String get themeExportNoImages => '目前主題沒有引用圖片，匯出檔只含配色與文字';
+
+  @override
+  String get themeExportClipboardTooBig => '圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案';
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '有 $n 張圖片未匯入（過大或格式不支援）';
+  }
+
+  @override
+  String get backupThemeImagesHint => '備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示';
+
+  @override
+  String get backupThemeImagesOff => '不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示';
 }

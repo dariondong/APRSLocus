@@ -1,5 +1,161 @@
 # 更新日志
 
+## [1.6.126] - 2026-09-18
+
+### 📦 主题导出可以带上图片了：换机/分享不再是一套「没有图」的主题
+
+上一版的主题只存**引用**（`file:bg_xxx.png`），图本身在应用目录里。
+于是换机恢复、或把主题发给别人，对方拿到的是一套缺背景、缺自定义图标的东西 ——
+界面不会坏，但用户会以为主题做坏了。
+
+这一版把图片本体（base64）也能打进 JSON 里。
+
+**① 主题页：「导出时包含图片」开关（默认开）**
+
+开关下面直接写着这次会多大（例如「约 3.2 MB」），并提示「文件因此不再适合手工编辑」。
+用户导出主题的意图本来就是「把这套东西搬走」，所以默认带上；但代价必须说清楚，
+不能替他默默决定。
+
+没有引用任何图片时，这里显示的是另一句话（「导出文件只含配色与文字」），
+而不是一个「约 0 B」的开关 —— 后者只会让人怀疑功能坏了。
+
+**② 图片太大时，剪贴板导出的按钮会被禁用并说明原因**
+
+base64 让文本膨胀 33%，几 MB 的图过剪贴板在多数平台上会被截断或直接失败。
+与其让用户粘出一段坏 JSON（然后以为是主题文件坏了），不如禁用那个按钮、
+并指向「导出全部主题」保存为文件。
+
+**③ 「备份与恢复」也能带图片（默认开）**
+
+只有主题页能带图是不够的：备份恢复是**换机**的主路径。不把图嵌进备份，
+恢复后主题照样缺图。勾了「主题」分组时会出现同一个开关，
+关掉时提示会明确说「换机恢复后主题会缺少背景与自定义图标」。
+
+**④ 导入侧：先落盘、再重定向引用**
+
+导入顺序不能颠倒：
+
+```
+解出嵌入的图片 → 逐张按内容哈希落盘 → 拿到「原文件名 → 本地文件名」映射
+              → 解析主题时用该映射重写 background 与 icons 的引用
+```
+
+先解析的话，主题会短暂指向一批不存在的文件（用户会看到「图标变成问号」一闪）。
+
+**⑤ 三道防线（嵌入内容是**不可信输入**）**
+
+- **总预算 24MB**：超过就丢弃多余的那几张并计数。不设预算的话，一份损坏/伪造的
+  文件能带几百 MB base64 进来，解码那一刻直接把内存吃爆 —— 而这只需要双击一个文件；
+- **逐张魔数校验**：复用选择器那条路径的 `_detectFormat`，扩展名与实际格式不符的、
+  或压根不是图片的，一律不落盘；
+- **文件名形状校验**：`../../etc/passwd` 这类在解包前就被丢掉。
+
+被跳过的张数会如实告诉用户（「有 N 张图片未导入（过大或格式不支持）」）——
+用户据此才知道是要换个图、还是换台设备重导。
+
+**⑥ 偏好里不会长期躺着 base64**
+
+如果偏好里出现带嵌入图片的主题包（例如刚从备份恢复），`load()` 会把它解开落盘、
+把引用改指本地文件、**再把 base64 剥掉写回**。
+
+这一条容易漏：即使一张图都没落成（全部被跳过），也要剥掉 ——
+否则那几 MB 会永远留在 SharedPreferences 里，而且每次保存主题都要整串搬一遍，
+看起来「能用」，实际是在持续为一次失败的导入付存储与性能成本。
+
+**⑦ 一个真实踩到的坑：store 必须保持平台中立**
+
+我在 `theme_store.dart` 里用 `Platform.pathSeparator` 算本地文件名时，
+忘了它必须能在 Web 上编译（`import 'dart:io'` 会直接废掉 Web 构建）。
+改成由 IO 层算好映射再返回。这类错误 `flutter analyze` **发现不了** ——
+它只解析非 Web 那一支，而 CI 不构建 Web。
+
+`test/theme_test.dart` 43 → 53 条，新增的 10 条覆盖：attach/extract 往返、
+无图片时不写空字段、奇怪输入不抛异常、非法条目（路径穿越等）被丢掉、
+stripImages 保留其余内容、remapRef 只改 `file:` 引用、导入时背景与图标引用
+被正确重定向、不传 remap 时引用不被改坏、以及预算上限的合理性。
+
+---
+
+**Feature**: theme export can now carry the images themselves, so moving to a new
+device (or sharing a theme) no longer produces a theme with missing art.
+
+The previous version stored only *references* (`file:bg_xxx.png`) while the images
+lived in the app directory, so restoring on another machine or sending a theme to
+someone else gave them one without the background or custom icons. Nothing broke —
+it just looked like the theme had been built wrong.
+
+**① "Include images in the export" switch on the Theme page (on by default)**
+
+The hint below it states the resulting size (e.g. "about 3.2 MB") and warns the file
+is no longer hand-editable. Exporting a theme means "move the whole thing", so images
+are included by default — but the cost has to be visible rather than silently decided.
+
+When no images are referenced, a different sentence appears ("only colours and text")
+instead of a switch reading "about 0 B", which would just look broken.
+
+**② When the images are large, the clipboard button is disabled with the reason**
+
+base64 inflates text by 33%, and a few MB through the clipboard gets truncated or fails
+on most platforms. Rather than let users paste a broken JSON (and conclude the theme file
+is corrupt), the button is disabled and points at "Export all themes" for a file instead.
+
+**③ "Backup & restore" can carry images too (on by default)**
+
+Theme-page export alone is not enough: backup/restore is *the* device-migration path.
+Without embedding, a restored theme still lacks its art. Selecting the "Theme" group now
+reveals the same switch, and turning it off warns plainly that the restored theme will be
+missing its background and custom icons.
+
+**④ Import: store first, then redirect references**
+
+The order cannot be swapped:
+
+```
+extract embedded images → write each by content hash → build "old name → local name" map
+                        → parse themes, rewriting background and icons refs through it
+```
+
+Parsing first would leave the theme briefly pointing at files that do not exist (a visible
+flicker of broken icons).
+
+**⑤ Three guards (embedded content is untrusted input)**
+
+- **24 MB total budget**: excess images are dropped and counted. Without it, a corrupt or
+  forged file could carry hundreds of MB of base64 and blow up memory on decode — and all
+  that takes is double-clicking a file;
+- **Per-image magic-byte check**: reuses the picker path's `_detectFormat`, so anything whose
+  extension does not match its bytes, or that is not an image at all, is never written;
+- **Filename shape check**: `../../etc/passwd` and friends are dropped before unpacking.
+
+Skipped images are reported honestly ("N image(s) were not imported (too large or
+unsupported)") so the user knows whether to re-encode an image or re-export on another device.
+
+**⑥ base64 does not linger in preferences**
+
+If a theme bundle with embedded images ever lands in preferences (e.g. restored from a
+backup), `load()` unpacks it, writes the images, repoints the references, and **strips the
+base64 back out**.
+
+This is easy to miss: even when *no* image could be written (all skipped), stripping still
+has to happen — otherwise those megabytes sit in SharedPreferences forever and every theme
+save copies the whole string, which looks "fine" while quietly charging storage and CPU for
+a failed import.
+
+**⑦ A trap actually hit: the store must stay platform-neutral**
+
+Computing local filenames with `Platform.pathSeparator` inside `theme_store.dart` ignored
+that the file must compile for the web (`import 'dart:io'` breaks a web build outright).
+The mapping is now computed in the IO layer and returned. Note that `flutter analyze`
+**cannot** catch this class of mistake — it only resolves the non-web branch, and CI does
+not build for web.
+
+`test/theme_test.dart` went from 43 to 53 tests; the 10 new ones cover attach/extract
+round-trips, no empty `images` field when there is nothing to embed, odd input not throwing
+on the export path, invalid entries (path traversal etc.) being dropped, `stripImages`
+preserving everything else, `remapRef` only touching `file:` refs, import redirecting both
+background and icon references, references staying intact when no remap is passed, and the
+sanity of the pack budget.
+
 ## [1.6.125] - 2026-09-18
 
 ### 🖼️ 主题新增背景图：可以用自己的照片当界面底
