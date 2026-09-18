@@ -13,7 +13,7 @@
     android/app/src/main/res/drawable/aw_pill.xml          AQI 胶囊底
     android/app/src/main/res/drawable/aw_dot.xml           提示行圆点（纯白，运行时 setColorFilter 染级别色）
     android/app/src/main/res/drawable/aw_sep.xml           单行档的竖分隔线
-    android/app/src/main/res/drawable/aw_chip_*.xml        短波组件的条件 chip（4 色）
+    android/app/src/main/res/drawable/aw_track_*.xml       短波组件的条件色带（淡底 + 左端色标，4 色）
 
 **为什么要 4 张记色圆点，而不是运行时染色**（这是踩过的坑，记下来免得重犯）：
 
@@ -61,6 +61,11 @@ RADIUS_TILE = 11
 RADIUS_PILL = 999
 # chip 圆角 4dp：比胶囊方、比直角柔，与面板的小标签同量级
 RADIUS_CHIP = 4
+# 色带圆角 3dp：它是一条长条而不是小块，圆角大了会把左端色标挤变形
+RADIUS_TRACK = 3
+# 色带左端色标的宽高（色标比色带矮且居中 → 四角不会被色带的圆角切到）
+TRACK_BAR_W = "2.5dp"
+TRACK_BAR_H = "9dp"
 
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n'
 NS = '<shape xmlns:android="http://schemas.android.com/apk/res/android"'
@@ -109,6 +114,45 @@ def dot_xml(comment: str, color: str) -> str:
     )
 
 
+def track_xml(comment: str, color: str, fill_alpha: int) -> str:
+    """传播条件「色带」：淡色圆角底 + 左端一道实色竖标。
+
+    为什么是**一张 layer-list**、而不是「一个底 + 一个 2.5dp 的子 View」：
+    RemoteViews 不允许原生 `<View>`，色标只能用 TextView 或 ImageView 冒充 ——
+    那就要多一个控件、多一个 id、多一行 setBackgroundResource，每个都是只在
+    运行期才爆的地方。一张 layer-list 把两层合成一个背景，于是每格仍然只是
+    **一个 TextView**：setBackgroundResource 换色带、setTextColor 换字色，
+    这两个方法在 View/TextView 上**确实存在** —— 对照 setColorFilter 只存在于
+    ImageView 那个坑（v1.6.114 线上事故）。
+
+    [color] 为 #RRGGBB；[fill_alpha] 是淡底的不透明度（0-255）—— 浅色底上要淡
+    （14%），深色底上要浓（22%），否则 #1E2530 这种近黑底上几乎看不见。
+    """
+    return (
+        f'{HEADER}<layer-list '
+        f'xmlns:android="http://schemas.android.com/apk/res/android">\n'
+        f"    <!-- {comment} -->\n"
+        f"    <!-- ① 淡色圆角底（色带本体） -->\n"
+        f"    <item>\n"
+        f'        <shape android:shape="rectangle">\n'
+        f'            <corners android:radius="{RADIUS_TRACK}dp" />\n'
+        f'            <solid android:color="#{fill_alpha:02X}{color[1:]}" />\n'
+        f"        </shape>\n"
+        f"    </item>\n"
+        f"    <!-- ② 左端实色竖标：颜色集中在这 2.5dp 上，四行扫下来是一条竖线 -->\n"
+        f"    <item\n"
+        f'        android:width="{TRACK_BAR_W}"\n'
+        f'        android:height="{TRACK_BAR_H}"\n'
+        f'        android:gravity="left|center_vertical">\n'
+        f'        <shape android:shape="rectangle">\n'
+        f'            <corners android:radius="1.5dp" />\n'
+        f'            <solid android:color="{color}" />\n'
+        f"        </shape>\n"
+        f"    </item>\n"
+        f"</layer-list>\n"
+    )
+
+
 def build_all() -> dict:
     """返回 {相对路径: 内容}。"""
     files: dict[str, str] = {}
@@ -125,46 +169,24 @@ def build_all() -> dict:
 
     files["drawable/aw_pill.xml"] = solid_xml(
         "AQI 胶囊底（白 16%）", "#29FFFFFF", RADIUS_PILL)
-    # 短波组件的**彩色 chip** 底（方案 A：实心色块 + 白字）。
+    # ── 短波组件的「条件色带」（定稿 F2，2026-09-18 重做）──────────────
     #
-    # 为什么必须预生成 4 张、而不是运行时染色：chip 是 **TextView**，
-    # 而 `setColorFilter` **只存在于 ImageView**（View/TextView 都没有）——
+    # 为什么必须预生成 4 张、而不是运行时染色：色带是 **TextView**，而
+    # `setColorFilter` **只存在于 ImageView**（View/TextView 都没有）——
     # v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，抛异常后
     # **整个组件报废**。TextView 换底只能用 `setBackgroundResource`（View 的方法），
     # 所以四个条件各给一张 drawable。
     #
     # 颜色用**基准色**：白底上提亮色（提亮 35%）几乎看不见。
-    _CHIP = {"good": "#16A34A", "fair": "#D97706",
-             "poor": "#E11D48", "closed": "#94A3B8"}
-    for level, col in _CHIP.items():
-        files[f"drawable/aw_chip_{level}.xml"] = solid_xml(
-            f"短波组件的 {level} 条件 chip（实心基准色 + 4dp 圆角 + 白字）",
-            col, RADIUS_CHIP)
-
-    # 短波组件（定稿 D）的条件 chip：**tonal**（淡色底 + 条件色字）。
-    #
-    # 为什么不用实心饱和块：8 个饱和色块堆在一起是「红绿灯墙」——
-    # 条件只是「4 档之一」，不值得给整块饱和色。Material 3 的状态 chip
-    # 就是淡底 + 彩字，颜色用量降到约 1/10，但仍保留「固定宽度 + 落在同一竖线」
-    # 这两个对齐上的好处。
-    # 文字色不写在 drawable 里（drawable 只管底），由 Kotlin setTextColor
-    # 设成条件基本色 —— 这样一处色板（Dart 的 hfQualityColor）管到底。
-    TONAL = {"good": "#16A34A", "fair": "#D97706",
-             "poor": "#E11D48", "closed": "#94A3B8"}
-    for name, col in TONAL.items():
-        files[f"drawable/aw_chipsoft_{name}.xml"] = solid_xml(
-            f"传播条件 tonal chip 底：{name}（{col} 淡色 11%），"
+    # 文字色不写在 drawable 里（drawable 只管底），由 Kotlin setTextColor 设成
+    # 条件基本色 —— 这样一份色板（Dart 的 hfQualityColor）管到底。
+    QUALITY = {"good": "#16A34A", "fair": "#D97706",
+               "poor": "#E11D48", "closed": "#94A3B8"}
+    for name, col in QUALITY.items():
+        files[f"drawable/aw_track_{name}.xml"] = track_xml(
+            f"传播条件色带：{name}（{col} 淡色 14% + 左端 {TRACK_BAR_W} 色标）；"
             f"文字色由 Kotlin 设为同色系基本色",
-            f"#1C{col[1:]}", 5)
-
-    # 短波组件（方案 A）的条件 chip：实心条件色 + 圆角。
-    # 基准色与 lib/hf.dart 的 hfQualityColor 一致（白底上不提亮）。
-    CHIP = {"good": "#16A34A", "fair": "#D97706",
-            "poor": "#E11D48", "closed": "#94A3B8"}
-    for name, col in CHIP.items():
-        files[f"drawable/aw_chip_{name}.xml"] = solid_xml(
-            f"传播条件 chip：{name}（实心 {col} + 圆角，白字压在它上面）",
-            col, 4)
+            col, 0x24)
 
     # 底走 @color/aw_surface：浅色白、夜间 #1E2530 ——
     # drawable 里引 @color 是允许的，于是**不用两套布局**就拿到暗黑底。
@@ -176,6 +198,15 @@ def build_all() -> dict:
         f'    <solid android:color="@color/aw_surface" />\n</shape>\n')
     _unused_bg_white = solid_xml(
         "短波组件的白底（不透明纯白 + 圆角）", "#FFFFFFFF", RADIUS_LARGE)
+    # 夜间也要有一份 —— 否则夜间档下 drawable-night/aw_bg_white.xml 不存在，
+    # 只有 initialLayout 的第一帧会退回落日主题底色（约 200ms，随后被 Dart 推
+    # 的渐变盖住）。既然发现了就补上，别留一个「night 目录里没有它」的特例。
+    files["drawable-night/aw_bg_white.xml"] = (
+        f'{HEADER}<shape xmlns:android="http://schemas.android.com/apk/res/android"'
+        f' android:shape="rectangle">\n'
+        f'    <!-- 短波组件底（夜间）：@color/aw_surface 会自动取到夜间值 -->\n'
+        f'    <corners android:radius="{RADIUS_LARGE}dp" />\n'
+        f'    <solid android:color="@color/aw_surface" />\n</shape>\n')
     files["drawable/aw_sep.xml"] = solid_xml(
         "单行档的竖分隔线（白 20%，1dp 宽）", "#33FFFFFF", 0)
     files["drawable/aw_dot.xml"] = dot_xml(
@@ -230,12 +261,12 @@ def build_all() -> dict:
             + "<!-- 小组件前景色。夜间变体在 values-night/，由系统按当前配置选择 -->\n"
             + "<resources>\n" + "\n".join(rows) + "\n</resources>\n")
 
-    # 夜间 chip 的淡底要更浓：浅色 11% 压在近白底上够看，
-    # 但 #1E2530 这种深底上 11% 几乎不可见，提到 22%。
-    for level, col in CHIP.items():
-        files[f"drawable-night/aw_chipsoft_{level}.xml"] = solid_xml(
-            f"传播条件 tonal chip 底（夜间）：{level}，淡色 22%"
-            f"（深底上 11% 几乎不可见）", f"#38{col[1:]}", 5)
+    # 夜间色带的淡底要更浓：14% 压在近白底上够看，但 #1E2530 这种深底上
+    # 几乎不可见，提到 22%。左端色标本就够浓，两档同一个值。
+    for name, col in QUALITY.items():
+        files[f"drawable-night/aw_track_{name}.xml"] = track_xml(
+            f"传播条件色带（夜间）：{name}，淡色 22%"
+            f"（深底上 14% 几乎不可见）", col, 0x38)
 
     return files
 
@@ -249,6 +280,36 @@ def self_check(files: dict) -> list:
                  "drawable/aw_dot.xml"):
         if need not in files:
             problems.append(f"{need} 缺失")
+    # 短波组件的色带：布局静态引用它们，缺一张就是运行时 ResourceNotFound
+    # （组件变白块）。同时盯住「夜间淡底必须比白天浓」—— 这条是**语义**约束，
+    # 抄错一个十六进制值不会报错，只会在夜间档上变成隐形。
+    for name in ("good", "fair", "poor", "closed"):
+        for qualifier in ("drawable", "drawable-night"):
+            key = f"{qualifier}/aw_track_{name}.xml"
+            if key not in files:
+                problems.append(f"{key} 缺失（布局引用了它）")
+                continue
+            if "layer-list" not in files[key]:
+                problems.append(f"{key} 不是 layer-list（色带需要「底 + 色标」两层）")
+            # 两层 item：淡底 + 左端色标
+            if files[key].count("<item") < 2:
+                problems.append(f"{key} 只有一层，缺少左端色标")
+    for name in ("good", "fair", "poor", "closed"):
+        day = files.get(f"drawable/aw_track_{name}.xml", "")
+        night = files.get(f"drawable-night/aw_track_{name}.xml", "")
+        # 取淡底那一行的 alpha（#AARRGGBB 的前两位）
+        def _fill_alpha(x: str) -> int:
+            for ln in x.splitlines():
+                ln = ln.strip()
+                if ln.startswith("<solid") and "#" in ln:
+                    return int(ln.split("#")[1][:2], 16)
+            return -1
+
+        a_day, a_night = _fill_alpha(day), _fill_alpha(night)
+        if not (0 <= a_day < a_night <= 255):
+            problems.append(
+                f"aw_track_{name} 夜间淡底（{a_night:#04x}）必须比白天"
+                f"（{a_day:#04x}）浓 —— 否则夜间档上色带隐形")
     # **天气档位**的背景必须真是两色渐变。
     # 注意这里按「是不是档位名」判断，而不是 `"aw_bg" in key` —— 后者会把
     # aw_bg_white 也算进去（那是纯色底，本来就该没有 gradient），

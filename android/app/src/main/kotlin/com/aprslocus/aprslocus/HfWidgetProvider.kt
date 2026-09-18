@@ -17,7 +17,8 @@ import org.json.JSONObject
 /**
  * ─── 桌面小组件：短波 / 电离层传播（4×2）───
  *
- * 逐波段给出**日间 / 夜间**传播条件，以及 SFI / Kp / A 三个汇总指数。
+ * 逐波段给出**日间 / 夜间**传播条件（每格是一条条件色带：淡底 + 左端色标），
+ * 以及 SFI / Kp / A 三个汇总指数，指数行右端另有一个 6m 格。
  * 数据来自 hamqsl.com 的 `calculatedconditions`（业余界标准 HF 传播源），
  * 由 Dart 侧 `lib/hf.dart` 拉取、解析、**本地化**后推过来 —— 本类不联网、
  * 也不做任何判定与文案拼接。
@@ -36,6 +37,13 @@ import org.json.JSONObject
  *      圆点是 ImageView，所以 `setColorFilter` 可用 —— 它**只存在于 ImageView**
  *      （v1.6.114 的线上事故就是把 TextView 当圆点用，抛 NoSuchMethodException
  *      导致整个组件显示「小组件加载失败」）。
+ *
+ * **本组件的换色机制**（与天气组件的圆点**相反**，别照抄）：
+ * 条件色带是 **TextView**，换底只能走 `setBackgroundResource`（View 的方法）——
+ * `setColorFilter` 在这里用会直接抛。四个条件各一张 drawable
+ * （aw_track_{good,fair,poor,closed}），由 tool/gen_app_widget_drawables.py 生成。
+ * 文字色则走 `setTextColor`（TextView 的成员方法，可用），
+ * 取 @color/aw_q_* —— 夜间由资源系统自动给提亮版本。
  */
 class HfWidgetProvider : AppWidgetProvider() {
 
@@ -68,6 +76,16 @@ class HfWidgetProvider : AppWidgetProvider() {
         /** ← 与 lib/hf_widget.dart 的 kHfWidgetSnapshotVersion 必须一致 */
         private const val SNAPSHOT_VERSION = 1
 
+        /**
+         * 6m 无条件时格子里的占位文案 —— 与 Dart 侧的 `HfNow.none` 同一个值。
+         *
+         * 为什么是「显示 `--`」而不是旧的「整格隐藏」：隐藏会让这个格子时有时无，
+         * 而「6m 没开通」本身就是**常态且有信息量**（开通是例外）；反过来，
+         * 一个时隐时现的格子在组件里会造成宽度跳变。它跟 SFI/Kp/A 一行，
+         * 占位而非变色，不抢注意力。
+         */
+        private const val SIX_NONE = "--"
+
         /** 指数行：每格是 (label, value)；值的颜色由 Dart 按阈值算好 */
         private val IDX_LABEL = intArrayOf(
             R.id.aw_idx0_label, R.id.aw_idx1_label, R.id.aw_idx2_label,
@@ -85,9 +103,9 @@ class HfWidgetProvider : AppWidgetProvider() {
         )
 
         /**
-         * 条件等级 → chip 底色。
+         * 条件等级 → 色带底色（aw_track_*：淡色圆角底 + 左端 2.5dp 色标）。
          *
-         * **为什么是 4 张预生成 drawable、而不是运行时染色**：chip 是 TextView，
+         * **为什么是 4 张预生成 drawable、而不是运行时染色**：色带是 TextView，
          * 而 `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
          * v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，
          * 抛 NoSuchMethodException → `RemoteViews.apply()` 抛 ActionException →
@@ -95,13 +113,13 @@ class HfWidgetProvider : AppWidgetProvider() {
          * 所以四个等级各给一张。
          *
          * 未知等级回退到 closed（灰）而不是 0 —— 传 0 会把背景清掉，
-         * chip 变成看不见的白字。
+         * 色带消失、只剩一行无处可归的文字。
          */
-        private val CHIP_BY_LEVEL = mapOf(
-            "good" to R.drawable.aw_chipsoft_good,
-            "fair" to R.drawable.aw_chipsoft_fair,
-            "poor" to R.drawable.aw_chipsoft_poor,
-            "closed" to R.drawable.aw_chipsoft_closed,
+        private val TRACK_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_track_good,
+            "fair" to R.drawable.aw_track_fair,
+            "poor" to R.drawable.aw_track_poor,
+            "closed" to R.drawable.aw_track_closed,
         )
 
         /**
@@ -172,23 +190,27 @@ class HfWidgetProvider : AppWidgetProvider() {
                 if (color != 0) views.setTextColor(IDX_VALUE[i], color)
             }
 
-            // 6m 展望（指数行右端的 chip）。无条件时收起，不显示空 chip。
+            // 6m 展望（指数行右端、「6m」标签后面那一格）。
+            //
+            // 无条件**不隐藏**，而是显示灰色的 `--`：隐藏会让格子时有时无、
+            // 行宽跳变，而「6m 没开通」本身是常态且有信息量（开通才是例外）。
             val six = snap.optJSONObject("six")
             if (six != null) {
                 val lv = six.read("level")
-                if (lv.isEmpty() || lv == "unknown") {
-                    views.setViewVisibility(R.id.aw_six, View.INVISIBLE)
-                } else {
-                    views.setTextViewText(R.id.aw_six, six.read("label"))
-                    views.setInt(
-                        R.id.aw_six, "setBackgroundResource",
-                        CHIP_BY_LEVEL[lv] ?: R.drawable.aw_chipsoft_closed,
-                    )
-                    views.setTextColor(
-                        R.id.aw_six,
-                        context.getColor(QUALITY_COLOR[lv] ?: R.color.aw_q_closed),
-                    )
-                }
+                val known = lv.isNotEmpty() && lv != "unknown"
+                views.setTextViewText(
+                    R.id.aw_six,
+                    if (known) six.read("label") else SIX_NONE,
+                )
+                val key = if (known) lv else "closed"
+                views.setInt(
+                    R.id.aw_six, "setBackgroundResource",
+                    TRACK_BY_LEVEL[key] ?: R.drawable.aw_track_closed,
+                )
+                views.setTextColor(
+                    R.id.aw_six,
+                    context.getColor(QUALITY_COLOR[key] ?: R.color.aw_q_closed),
+                )
             }
 
             // 逐波段：日间 / 夜间
@@ -217,10 +239,10 @@ class HfWidgetProvider : AppWidgetProvider() {
         }
 
         /**
-         * 填一个条件 chip：文字（已本地化）+ 按等级换底。
+         * 填一格条件色带：文字（已本地化）+ 按等级换底。
          *
          * 换底走 `setBackgroundResource`（View 的方法，TextView 可用）。
-         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 CHIP_BY_LEVEL）。
+         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 TRACK_BY_LEVEL）。
          */
         private fun chip(
             context: Context,
@@ -234,7 +256,7 @@ class HfWidgetProvider : AppWidgetProvider() {
             views.setInt(
                 target,
                 "setBackgroundResource",
-                CHIP_BY_LEVEL[level] ?: R.drawable.aw_chipsoft_closed,
+                TRACK_BY_LEVEL[level] ?: R.drawable.aw_track_closed,
             )
             // 文字色 = 该等级的条件色。走**资源**而不是写死常量：
             // 夜间模式由资源系统自动取 values-night 里的提亮版本

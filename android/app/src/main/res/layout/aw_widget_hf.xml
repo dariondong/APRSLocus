@@ -1,13 +1,14 @@
 <!--
-  桌面小组件 · 短波/电离层传播（4×2 · 方案 A 彩色 chip）
+  桌面小组件 · 短波/电离层传播（4×2 · F2 条件色带）
 
   顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus
-  指数行  ：SFI 100   Kp 3   A 9        ← 小字次要信息（Kp/A 按阈值着色）
+  指数行  ：SFI 100 · Kp 3 · A 9                  [6m 色带]
   细线    ：C.border（#E5E9F0）
-  列头    ：        日间            夜间   ← 与下面 chip 左边缘**同一条竖线**
+  列头    ：          日间              夜间   ← 与色带左边缘**同一条竖线**
   4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m
-            每格 = 实心条件色 chip + 白字加粗（aw_chip_{good,fair,poor,closed}）
-            行间 1dp 淡分隔线给结构
+            每格 = 条件色带（aw_track_*：淡底 14% + 左端 2.5dp 色标）
+                   档位文字在色带内左端，颜色 = 该档基本色
+  6m      ：无开通时显示「--」（不抢注意力）；开通时显示档位并变色
   
   数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），
   由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。
@@ -99,7 +100,7 @@
         android:id="@+id/aw_idx0_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginStart="3dp"
         android:textColor="@color/aw_ink"
         android:textSize="11sp"
@@ -118,7 +119,7 @@
         android:id="@+id/aw_idx1_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginStart="3dp"
         android:textColor="@color/aw_ink"
         android:textSize="11sp"
@@ -137,7 +138,7 @@
         android:id="@+id/aw_idx2_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginStart="3dp"
         android:textColor="@color/aw_ink"
         android:textSize="11sp"
@@ -154,16 +155,28 @@
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
+        android:id="@+id/aw_six_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="8.5sp"
+        android:text="6m"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
         android:id="@+id/aw_six"
-        android:layout_width="44dp"
+        android:layout_width="46dp"
         android:layout_height="13dp"
         android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
-        android:textColor="@color/aw_ink"
+        android:background="@drawable/aw_track_closed"
+        android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -182,12 +195,12 @@
         android:id="@+id/aw_colhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_ch_band"
-        android:layout_width="54dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
@@ -199,7 +212,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/aw_slate"
-        android:textSize="8.5sp"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.06"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
@@ -208,7 +223,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/aw_slate"
-        android:textSize="8.5sp"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.06"
         android:singleLine="true"
         android:includeFontPadding="false" />
     </LinearLayout>
@@ -216,7 +233,7 @@
         android:id="@+id/aw_bands"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="2dp"
         android:orientation="vertical">
     <LinearLayout
         android:id="@+id/aw_band0"
@@ -227,7 +244,7 @@
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band0_name"
-        android:layout_width="54dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
@@ -245,18 +262,15 @@
     <TextView
         android:id="@+id/aw_band0_day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -269,44 +283,29 @@
     <TextView
         android:id="@+id/aw_band0_night"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band0_rule_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
-    <TextView
-        android:id="@+id/aw_band0_rule"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="1dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band1_name"
-        android:layout_width="54dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
@@ -324,18 +323,15 @@
     <TextView
         android:id="@+id/aw_band1_day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -348,44 +344,29 @@
     <TextView
         android:id="@+id/aw_band1_night"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band1_rule_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
-    <TextView
-        android:id="@+id/aw_band1_rule"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="1dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band2_name"
-        android:layout_width="54dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
@@ -403,18 +384,15 @@
     <TextView
         android:id="@+id/aw_band2_day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -427,44 +405,29 @@
     <TextView
         android:id="@+id/aw_band2_night"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band2_rule_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
-    <TextView
-        android:id="@+id/aw_band2_rule"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="1dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band3_name"
-        android:layout_width="54dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
         android:textSize="9.5sp"
@@ -482,18 +445,15 @@
     <TextView
         android:id="@+id/aw_band3_day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     <LinearLayout
@@ -506,18 +466,15 @@
     <TextView
         android:id="@+id/aw_band3_night"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@drawable/aw_chipsoft_good"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/aw_track_good"
         android:textColor="@color/aw_ink"
-        android:textSize="8.5sp"
+        android:textSize="9.5sp"
         android:textStyle="bold"
-        android:minWidth="44dp"
         android:singleLine="true"
-        android:paddingStart="9dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="5dp"
         android:includeFontPadding="false" />
     </LinearLayout>
     </LinearLayout>

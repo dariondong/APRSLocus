@@ -65,7 +65,7 @@ Map<String, Object?> _bandRow(HfBand b, AppLocalizations s) {
   return <String, Object?>{
     'name': b.label,
     'dayLabel': hfQualityLabel(dq, s),
-    // chip 底色靠这个 level 名选（Kotlin 的 CHIP_BY_LEVEL → aw_chip_*）。
+    // 色带底色靠这个 level 名选（Kotlin 的 TRACK_BY_LEVEL → aw_track_*）。
     // 用**枚举名**而不是色值：白底 chip 是「实心色块 + 白字」，
     // 换底只能换 drawable（TextView 没有 setColorFilter），
     // 所以这里给的是「哪一张 drawable」而不是「什么颜色」。

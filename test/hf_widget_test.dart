@@ -145,8 +145,8 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
       final last = (snap['bands'] as List).last as Map;
       expect(last['nightLabel'], zh.hfQClosed);
-      // 契约是**等级名**（Kotlin 用 CHIP_BY_LEVEL 选 aw_chip_closed），
-      // 不再是色值 —— chip 是实心色块，换底靠换 drawable
+      // 契约是**等级名**（Kotlin 用 TRACK_BY_LEVEL 选 aw_track_closed），
+      // 不再是色值 —— 换底靠换 drawable
       // （TextView 没有 setColorFilter，那是 ImageView 独有的）。
       expect(last['nightLevel'], 'closed');
     });
@@ -154,9 +154,9 @@ void main() {
 
   group('chip 等级契约', () {
     test('level 名落在 Kotlin 认识的集合里', () {
-      // Kotlin 的 CHIP_BY_LEVEL 只认 good/fair/poor/closed，认不出会回退灰底。
+      // Kotlin 的 TRACK_BY_LEVEL 只认 good/fair/poor/closed，认不出会回退灰底。
       // hf.dart 的 HfQuality 还多一个 unknown（"no report"/"--" 这类无数据），
-      // 它没有专属 chip —— 这是**有意的**：unknown 也走灰底，语义就是「没数据」。
+      // 它没有专属色带 —— 这是**有意的**：unknown 也走灰底，语义就是「没数据」。
       const known = {'good', 'fair', 'poor', 'closed', 'unknown'};
       const chipLevels = {'good', 'fair', 'poor', 'closed'};
       for (final (day, night) in const [

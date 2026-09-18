@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <!-- 传播条件 tonal chip 底（夜间）：poor，淡色 22%（深底上 11% 几乎不可见） -->
-    <corners android:radius="5dp" />
-    <solid android:color="#38E11D48" />
-</shape>

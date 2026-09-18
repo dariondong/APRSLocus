@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <!-- 传播条件 chip：fair（实心 #D97706 + 圆角，白字压在它上面） -->
-    <corners android:radius="4dp" />
-    <solid android:color="#D97706" />
-</shape>

@@ -61,8 +61,16 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 # 所以颜色必须写成可解析的资源，夜间模式才能自动切到 values-night 的值。
 # 对应 theme.dart 的 C.ink / C.slate / C.border。
 INK = "@color/aw_ink"  # 主文字
-# 波段名列宽（与预览 render_hf_A 的 BAND_W 一致）
-BAND_W = "54dp"      # 波段名列宽
+# 色带格左内边距：把档位文字推离左端 2.5dp 色标（色标贴在格子的最左边）
+TRACK_PAD_START = "8dp"
+TRACK_PAD_END = "5dp"
+# 色带格高度。20dp 是量出来的：4 行 × 20 + 列头 13 + 指数行 18 + 细线 10
+# + 顶栏 21 + 上下内边距 17 ≈ 159dp，正好填满 4×2 的可用高度（130dp 是
+# 卡片高度减去圆角净空，实际内容区约 160dp）而不溢出。
+TRACK_H = "20dp"
+# 波段名列宽：46dp 够放 "12m/10m"（9.5sp 加粗），比旧版 54dp 窄 ——
+# 省下的横向空间给色带，免得色带右端离卡片边缘太远、显得内容偏左。
+BAND_W = "46dp"
 SLATE = "@color/aw_slate"  # 次要文字
 LINE = "@color/aw_line"  # 细分隔线
 
@@ -93,6 +101,7 @@ def open_layout(root_id, bg):
 
 def text(tid, *, size, color=INK, bold=False, max_lines=None,
          ellipsize=False, gravity=None, spacing=None, pad_h=None, pad_v=None,
+         pad_start=None, pad_end=None,
          min_width=None,
          width="wrap_content", height="wrap_content", weight=None,
          margin_end=None, margin_start=None, margin_top=None,
@@ -143,6 +152,10 @@ def text(tid, *, size, color=INK, bold=False, max_lines=None,
     if pad_v:
         a.append(f'android:paddingTop="{pad_v}"')
         a.append(f'android:paddingBottom="{pad_v}"')
+    if pad_start:
+        a.append(f'android:paddingStart="{pad_start}"')
+    if pad_end:
+        a.append(f'android:paddingEnd="{pad_end}"')
     if visibility:
         a.append(f'android:visibility="{visibility}"')
     a.append('android:includeFontPadding="false"')
@@ -616,41 +629,52 @@ def build_row():
 def build_hf():
     """逐波段给出日间/夜间传播条件 —— 「各个波段的传播信息」。
 
-    **这一版是「方案 A · 彩色 chip 矩阵」**（用户从 4 个方案里选的）。
-    上一版（圆点 + 深色文字的表格）被用户判定「真难看」，逐条问题是：
-      ① 「日 ｜ 夜」图例挤在汇总行右端、**和下面两列并不对齐** → 等于没标
-      ② 夜间列右对齐、日间列左对齐 → 两列内容 zigzag
-      ③ 圆点的 x 随条件文字宽度浮动 → 点不在一条竖线上
-      ④ 圆点只占 6dp → 颜色信号很弱，条件其实靠读字
-      ⑤ 波段名与条件之间一大片空白，横向扫视要跨很远
-      ⑥ 4 行一模一样、没有结构线，像把表格直接倒上去
-    方案 A 的解法：
-      · **彩色 chip**（实心条件色 + 白字加粗）代替圆点 —— 颜色面积从 6dp
-        变成整块，红黄绿一眼分；条件不再靠读字，只靠看色块；
-      · chip **列宽固定 + 列头对齐**：列头「日间 / 夜间」和下面 chip 的
-        左边缘在同一条竖线上（这是上一版最明显的毛病）；
-      · 波段名与 chip 之间不留空档，横向距离缩短；
-      · 行间加 1dp 极淡分隔线给结构（和面板 `_hairline` 同一语言）。
+    **这一版是「F2 · 条件色带」**（用户在 4 个方向里选定的）。
+    上一版（D · tonal chip）被判定「还是好难看」，逐条诊断：
+      ① **8 个同形状的淡色药丸**：色块面积与信息量不匹配 —— 「一般」一行内
+         出现 3 次、「差」4 次；重复的图形不承载额外信息，只堆噪声；
+      ② **4 行完全同构**，没有层次，像把表格直接倒上去；
+      ③ 波段名与第一个 chip 之间约 40dp 空档，横向扫视要跨很远；
+      ④ 淡底 11% 远看是一片浅灰粉，颜色信号几乎无效。
+    F2 的解法（不是调参，是换结构）：
+      · 每行一条**色带**横贯整个日/夜列 —— 行的宽度即列宽，空档消失；
+      · 颜色集中到色带**左端一道 2.5dp 色标**：4 行扫下来是一条竖线，
+        像仪表的指示列，而不是 8 个孤立色块；
+      · 档位文字就在色带内**左端**（紧挨色标），颜色与文字同源、不用跨空档读；
+      · 「日间 / 夜间」列头与色带左边缘**同一 x**（旧版图例浮在右端，等于没标）。
 
-    **chip 为什么是 4 张预生成 drawable**：chip 是 TextView，而
-    `setColorFilter` **只存在于 ImageView** —— v1.6.114 的线上事故就是把
-    setColorFilter 用在 TextView 上，抛异常后**整个组件报废**。
-    TextView 换底只能用 `setBackgroundResource`，所以四个条件各一张。
+    **色带为什么是一张 layer-list、而不是「淡底容器 + 2.5dp 子 View」**：
+    RemoteViews 不允许原生 `<View>`；色标只能用 TextView/ImageView 冒充，那就要
+    多一个控件、多一个 id、多一行 setBackgroundResource —— 每个都是只在运行期
+    才爆的地方。一张 layer-list 把「淡底 + 色标」合成一个背景，于是每格仍然只是
+    **一个 TextView**：setBackgroundResource 换色带、setTextColor 换字色，这两个
+    方法在 View/TextView 上确实存在（对照 setColorFilter 只存在于 ImageView 那个
+    线上事故）。
+
+    **为什么必须预生成 4 张色带 drawable**：同上的 setColorFilter 限制 ——
+    TextView 换底只能用 setBackgroundResource，所以四个条件各一张
+    （aw_track_{good,fair,poor,closed}，由 tool/gen_app_widget_drawables.py 生成）。
+
+    **6m 段**在指数行右端（不在表里）：6m 没有「日间/夜间」之分，传播机理
+    （Es / 极光 / F2）与 HF 波段完全不同，并进那张表会让「6m 日间 Poor」读起来
+    像同一机理。它与指数同高、同一种色带外观 —— 无开通常态下只显示一个「--」，
+    不抢注意力；一旦开通就变色，是本组件里最「可行动」的一条。
 
     **为什么固定 4×2**（resizeMode=none）：内容是一张表（波段 × 昼夜）。
     表不能优雅降级 —— 挤到 2×2 只剩波段名、没有条件，等于砍掉最有用的信息。
 
-    设计稿见 tool/preview_app_widget.py 的 render_hf_A（同一套尺寸令牌）。
+    设计稿见 tool/preview_app_widget.py 的 render_hf_F2（同一套尺寸）。
     """
     rows = 4
-    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · 方案 A 彩色 chip）", [
+    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · F2 条件色带）", [
         "顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus",
-        "指数行  ：SFI 100   Kp 3   A 9        ← 小字次要信息（Kp/A 按阈值着色）",
+        "指数行  ：SFI 100 · Kp 3 · A 9                  [6m 色带]",
         "细线    ：C.border（#E5E9F0）",
-        "列头    ：        日间            夜间   ← 与下面 chip 左边缘**同一条竖线**",
+        "列头    ：          日间              夜间   ← 与色带左边缘**同一条竖线**",
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
-        "          每格 = 实心条件色 chip + 白字加粗（aw_chip_{good,fair,poor,closed}）",
-        "          行间 1dp 淡分隔线给结构",
+        "          每格 = 条件色带（aw_track_*：淡底 14% + 左端 2.5dp 色标）",
+        "                 档位文字在色带内左端，颜色 = 该档基本色",
+        "6m      ：无开通时显示「--」（不抢注意力）；开通时显示档位并变色",
         "",
         "数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），",
         "由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。",
@@ -671,67 +695,77 @@ def build_hf():
     s += text("aw_app_name", size="10sp", bold=True, color=INK,
               margin_start="4dp", android_text="APRSlocus")
     s += CLOSE
-    # ② 指数行（次要信息：小标签 + 稍大的值；Kp/A 按阈值着色）
+    # ② 指数行 + 右端 6m 色带。
+    #    6m 与指数同高、同一种色带外观：它是最「可行动」的一条（开通即值得上机），
+    #    但无开通是常态，所以此时只显示一个「--」，不用颜色抢注意力。
     s += linear("aw_idx", orientation="horizontal", gravity="bottom",
                 baseline=True, margin_top="3dp")
     for i in range(3):
         s += text(f"aw_idx{i}_label", size="8.5sp", color=SLATE)
         s += text(f"aw_idx{i}_value", size="11sp", bold=True, color=INK,
-                  margin_start="3dp", margin_end="14dp")
-    # 6m chip 放在**本行右端**，而不是新增一行：波段表 4 行已占满高度，
-    # 再加一行会溢出。6m 是最「可行动」的一条（开通即值得上机），
-    # 与指数同高的位置比埋在表格里更合适。
+                  margin_start="3dp", margin_end="10dp")
     s += text("aw_idx_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
-    s += text("aw_six", size="8.5sp", bold=True, color=INK,
-              width="44dp", height="13dp", gravity="center",
-              bg="aw_chipsoft_good", ellipsize=True)
+    # 「6m」这个说明文字**不能省**：一个带颜色的格子如果不标出处，用户只会看到
+    # 一个孤立的色块，不知道它在说什么。6m 是波段代号（和表里的 80m/40m 同性质），
+    # 不随语言变化，所以就地写死，不用本地化键。
+    #
+    # ⚠ 名字**不能**叫 aw_six_label：check_android_res_ids.py 把以 `_label` 结尾的
+    # id 一律当成「必须由某个档位填充的数据字段」，静态文案用这个名字会被判成
+    # 「布局加了控件却忘了配 IdS 表」。这条规则本身是对的（它拦的是真丢字段），
+    # 所以正确的做法是把名字改对，而不是去放宽规则。
+    s += text("aw_six_tag", size="8.5sp", color=SLATE,
+              android_text="6m", margin_end="3dp")
+    # 46dp：容得下最长的档位词（id 的 "Tertutup" ≈ 38dp + 左右 6dp 内边距）。
+    s += text("aw_six", size="8.5sp", bold=True, color=SLATE,
+              width="46dp", height="13dp", gravity="center",
+              bg="aw_track_closed", pad_start="3dp", pad_end="3dp",
+              ellipsize=True)
     s += CLOSE
     # ③ 细线
     s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
     s += hairline("aw_rule1", LINE)
     s += CLOSE
-    # ④ 列头：波段列固定 52dp，两个 chip 列等分 —— 与下面 chip 严格对齐
+    # ④ 列头：波段列固定宽，两条色带列等分 ——
+    #    列头左边缘与色带左边缘**同一条竖线**（靠等分列实现，不靠调 margin）。
     s += linear("aw_colhead", orientation="horizontal", baseline=True,
-                margin_top="4dp")
+                margin_top="3dp")
     s += text("aw_ch_band", size="8.5sp", color=SLATE, width=BAND_W)
-    s += text("aw_ch_day", size="8.5sp", color=SLATE, width="0dp", weight="1")
-    s += text("aw_ch_night", size="8.5sp", color=SLATE, width="0dp", weight="1")
+    s += text("aw_ch_day", size="8sp", color=SLATE, bold=True, spacing="0.06",
+              width="0dp", weight="1")
+    s += text("aw_ch_night", size="8sp", color=SLATE, bold=True, spacing="0.06",
+              width="0dp", weight="1")
     s += CLOSE
     # ⑤ 4 行波段
-    s += linear("aw_bands", orientation="vertical", margin_top="1dp")
+    s += linear("aw_bands", orientation="vertical", margin_top="2dp")
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top=None if i == 0 else "2dp")
+                    margin_top=None if i == 0 else "1dp")
         s += text(f"aw_band{i}_name", size="9.5sp", bold=True, color=INK,
                   width=BAND_W, ellipsize=True)
-        # chip 列：外层是等分容器，chip 在其中左对齐（列头因此能对齐）
+        # 色带格：外层等分容器决定列宽，色带铺满它（所以行的宽度 = 列宽）
         s += linear(f"aw_band{i}_day_box", orientation="horizontal",
                     width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_day", size="8.5sp", bold=True, color=INK,
-                  gravity="center", bg="aw_chipsoft_good",
-                  min_width="44dp", pad_h="9dp", pad_v="3dp")
+        s += text(f"aw_band{i}_day", size="9.5sp", bold=True, color=INK,
+                  gravity="center_vertical", bg="aw_track_good",
+                  height=TRACK_H, pad_start=TRACK_PAD_START,
+                  pad_end=TRACK_PAD_END)
         s += CLOSE
         s += linear(f"aw_band{i}_night_box", orientation="horizontal",
                     width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_night", size="8.5sp", bold=True, color=INK,
-                  gravity="center", bg="aw_chipsoft_good",
-                  min_width="44dp", pad_h="9dp", pad_v="3dp")
+        s += text(f"aw_band{i}_night", size="9.5sp", bold=True, color=INK,
+                  gravity="center_vertical", bg="aw_track_good",
+                  height=TRACK_H, pad_start=TRACK_PAD_START,
+                  pad_end=TRACK_PAD_END)
         s += CLOSE
         s += CLOSE
-        if i < rows - 1:
-            s += linear(f"aw_band{i}_rule_box", orientation="vertical",
-                        margin_top="2dp")
-            s += hairline(f"aw_band{i}_rule", LINE)
-            s += CLOSE
 
     s += CLOSE
     s += CLOSE
     s += empty_label(color="@color/aw_ink_dim")
     s += "</FrameLayout>\n"
     return s
-
 
 
 # ── 系统状态组件（4×2）──────────────────────────────────────────────

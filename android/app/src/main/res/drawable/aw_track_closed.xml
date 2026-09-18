@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 传播条件色带：closed（#94A3B8 淡色 14% + 左端 2.5dp 色标）；文字色由 Kotlin 设为同色系基本色 -->
+    <!-- ① 淡色圆角底（色带本体） -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="3dp" />
+            <solid android:color="#2494A3B8" />
+        </shape>
+    </item>
+    <!-- ② 左端实色竖标：颜色集中在这 2.5dp 上，四行扫下来是一条竖线 -->
+    <item
+        android:width="2.5dp"
+        android:height="9dp"
+        android:gravity="left|center_vertical">
+        <shape android:shape="rectangle">
+            <corners android:radius="1.5dp" />
+            <solid android:color="#94A3B8" />
+        </shape>
+    </item>
+</layer-list>

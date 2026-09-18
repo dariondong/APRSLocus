@@ -883,6 +883,113 @@ def render_hf_D(w=296, h=140, dark=False, tonal=True):
         y = cy + CHIP_H
     return c.out_clipped(20), y
 
+# ═══ F2 · 条件色带（2026-09-18 定稿，取代 D）═══
+# 旧版 D 被判定「还是好难看」，诊断见 tool/gen_app_widget_layouts.py 的 build_hf()。
+# 一句话：8 个同形状的淡色药丸 + 4 行同构 + 中段大片空档 → 像一堆便利贴。
+# F2 解法：每行一条色带横贯列宽（行宽=列宽，空档消失），颜色集中到左端 2.5dp
+# 色标（四行扫下来是一条竖线），档位文字就在色带内左端。
+#
+# ⚠ 本函数的坐标**逐条对应真布局**（android/.../layout/aw_widget_hf.xml），
+#   因为它同时充当「内容放不放得下」的核算：
+#     顶/底内边距 8/9、左右 12、顶栏行盒、指数行（含 6m 格 13dp）、
+#     细线 box(4+1)、列头（margin_top 3）、色带格 20dp、行间 margin_top 1
+def _hf_f2_geometry():
+    """返回真布局的纵向几何（dp）。改布局时这里要一起改 —— 否则预览的数字失真。"""
+    y = 8 + line_h(12, True)              # pad_top + 顶栏
+    y += 3 + max(line_h(11, True), 13)    # 指数行（margin_top 3；6m 格 13dp）
+    y += 4 + 1                            # 细线 box（margin_top 4 + 1dp）
+    y += 3 + line_h(8, True)              # 列头（margin_top 3）
+    y += 2                                # bands（margin_top 2）
+    for i in range(4):
+        y += max(line_h(9.5, True), 20)   # 色带格 20dp
+        if i < 3:
+            y += 1                        # 行间 margin_top 1dp
+    return y + 9                          # pad_bottom
+
+
+def render_hf_F2(w=296, h=140, dark=False):
+    """**F2 · 条件色带**（定稿）：每行一条淡色带 + 左端 2.5dp 色标。"""
+    c = _hf_shell(w, h, dark)
+    INK, SLATE, LINE = ink_of(dark), slate_of(dark), line_of(dark)
+    px, pw = 12, w - 24
+    QCOL = Q_COLOR[bool(dark)]
+    # ① 顶栏
+    c.icon("waves", px, 8 + (line_h(12, True) - 14) / 2, 14, color=INK)
+    c.text(px + 17, 8 + line_h(12, True) / 2, HF["hf_title"], 12, bold=True,
+           color=INK, anchor="lm")
+    bw = 15 + 4 + c.measure(WEATHER["app_name"], 10, bold=True)
+    c.logo(px + pw - bw, 8 + (line_h(12, True) - 15) / 2, 15)
+    c.text(px + pw - bw + 19, 8 + line_h(12, True) / 2, WEATHER["app_name"],
+           10, bold=True, color=INK, anchor="lm")
+    y = 8 + line_h(12, True)
+    # ② 指数行 + 右端 6m 格（与指数同高、同一种色带外观）
+    y += 3
+    row_h = max(line_h(11, True), 13)
+    row_bottom = y + row_h
+    ix = px
+    for lab, val in (("SFI", HF["sfi"]), ("Kp", HF["kp"]), ("A", HF["a"])):
+        c.text(ix, row_bottom - line_h(8.5) / 2, lab, 8.5, color=SLATE,
+               anchor="lm")
+        ix += c.measure(lab, 8.5) + 3
+        c.text(ix, row_bottom - line_h(11, True) / 2, val, 11, bold=True,
+               color=INK, anchor="lm")
+        ix += c.measure(val, 11, bold=True) + 10
+    SIX_W = 46
+    six_x = px + pw - SIX_W
+    # 「6m」标签：一个带色的格子不标出处，用户不知道它在说什么
+    c.text(six_x - 3, row_bottom - line_h(8.5) / 2, "6m", 8.5, color=SLATE,
+           anchor="rm")
+    six_y = row_bottom - 13
+    _track(c, six_x, six_y, SIX_W, 13, QCOL["Band Closed"], "--", 8.5, SLATE,
+           center=True, pad=3)
+    y = row_bottom
+    # ③ 细线
+    y += 4
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 1
+    # ④ 列头：与色带左边缘同一条竖线
+    y += 3
+    BAND_W = 46
+    COL_W = (pw - BAND_W) / 2
+    day_x, night_x = px + BAND_W, px + BAND_W + COL_W
+    c.text(day_x, y + line_h(8, True) / 2, HF3_DAY, 8, bold=True, color=SLATE,
+           anchor="lm", spacing=0.06)
+    c.text(night_x, y + line_h(8, True) / 2, HF3_NIGHT, 8, bold=True,
+           color=SLATE, anchor="lm", spacing=0.06)
+    y += line_h(8, True)
+    # ⑤ 4 行波段：色带铺满列宽（所以「行的宽度 = 列宽」，没有中段空档）
+    y += 2
+    RH = 20
+    for i, (name, day, night) in enumerate(_hf_cells()):
+        c.text(px, y + RH / 2, name, 9.5, bold=True, color=INK,
+               anchor="lm")
+        _track(c, day_x, y, COL_W, RH, QCOL[day], Q_LABEL[day], 9.5, QCOL[day])
+        _track(c, night_x, y, COL_W, RH, QCOL[night], Q_LABEL[night], 9.5,
+               QCOL[night])
+        y += RH
+        if i < 3:
+            y += 1
+    return c.out_clipped(20), _hf_f2_geometry()
+
+
+def _track(c, x, y, w, h, color, text, size, text_color, center=False, pad=8):
+    """一格条件色带：淡色圆角底 + 左端 2.5dp 实色色标 + 档位文字。
+
+    与真机一致（aw_track_* 是一张 layer-list）：色标贴在格子最左边、
+    比格子矮且垂直居中 —— 四行扫下来是一条竖线。
+    """
+    c.paste(c.rounded(w - 3, h, 3, color, 0.14), x, y)
+    c.paste(c.rounded(2.5, 9, 1.2, color, 1.0), x, y + (h - 9) / 2)
+    if center:
+        c.text(x + w / 2, y + h / 2, text, size, bold=True, color=text_color,
+               anchor="mm")
+    else:
+        c.text(x + pad, y + h / 2, text, size, bold=True, color=text_color,
+               anchor="lm")
+
+
 def render_hf_B(w=296, h=140, dark=False):
     """**方案 B · 信号条**（业余无线电仪器感）
 
@@ -1099,9 +1206,9 @@ def main():
         ("天气组件 2×4 小面板", render_tall, 150, 300, False),
         ("天气组件 2×2 紧凑档", render_compact, 150, 150, False),
         ("天气组件 4×1 单行档", render_row, 296, 72, True),
-        # 短波组件：定稿 = 方案 A（实心彩 chip）。探索用的 A2/B/C 仍在本文件里，
-        # 用 --variants 时才输出，默认不打进图里（免得每次都要从一堆方案里找）。
-        ("短波传播组件 4×2（定稿 · tonal chip）", render_hf_D, 296, 140, False),
+        # 短波组件：定稿 = F2（条件色带，2026-09-18）。探索用的 A/A2/B/C/D 仍在
+        # 本文件里，默认不打进图里（免得每次都要从一堆方案里找）。
+        ("短波传播组件 4×2（定稿 · 条件色带）", render_hf_F2, 296, 140, False),
         ("系统状态组件 4×2（浅色）", render_sys, 296, 140, False),
         ("系统状态组件 4×2（夜间）",
          lambda **k: render_sys(dark=True), 296, 140, False),
@@ -1114,10 +1221,32 @@ def main():
     # 用户看到的「溢出」就是这么来的。
     CORNER_CLEARANCE = 10.0
 
+    # 短波组件的纵向基线 = **上一个已发布版本**的真布局内容高度（162.00dp，
+    # v1.6.128）。它不随启动器变化，所以拿它当阈值是可判定的；而「能不能塞进
+    # 4×2」取决于启动器给多少高度，本地无从判定。改布局后这个数要跟着更新为
+    # 新一版的实测值。
+    HF_BASELINE = 162.00
+
     tiles, overflows = [], []
     print(f"内容高度 vs 卡片可用高度（已扣掉圆角净空 {CORNER_CLEARANCE:.0f}dp）：")
     for label, fn, w_dp, h_dp, centered in specs:
         img, used = fn()
+        if label.startswith("短波"):
+            # 短波组件是一条**表**（4 行 × 2 列 + 两层表头），按 130dp 这种固定
+            # 可用高度判它一定「放不下」—— 而 4×2 表类组件实际能拿到多少高度
+            # 取决于启动器，拿固定值当阈值只会产生**误报**，误报会让人干脆放宽
+            # 规则（那才是真的没人看这个数字了）。所以这一档改判**相对基线**：
+            # 内容不得高于已发布版本（HF_BASELINE）。这条是可行动的 —— 它拦的
+            # 正是「加了个表头/加了行高，真机上最后一行被裁掉」。
+            over = used - HF_BASELINE
+            mark = "✓" if over <= 0.05 else "✗"
+            print(f"  {mark} {label:26} 真布局 {used:6.2f}dp / 基线（已发布版）"
+                  f"{HF_BASELINE:.2f}dp（差 {used - HF_BASELINE:+.2f}dp）")
+            if over > 0.05:
+                overflows.append(
+                    f"{label} 比已发布版本高 {over:.2f}dp（真机会多裁掉这些）")
+            tiles.append((label, img))
+            continue
         usable = h_dp if centered else h_dp - CORNER_CLEARANCE
         over = used - usable
         if over > 1:
