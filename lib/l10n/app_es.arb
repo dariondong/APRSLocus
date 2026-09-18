@@ -1908,5 +1908,77 @@
   },
   "sysFixOk": "Ubicado",
   "sysLinkAudio": "Audio",
-  "sysEmpty": "Abre APRSlocus y conéctate para ver el estado aquí"
+  "sysEmpty": "Abre APRSlocus y conéctate para ver el estado aquí",
+  "backupTitle": "Copia de seguridad",
+  "backupSubtitle": "Exporta o importa ajustes y datos",
+  "backupEntryDesc": "Empaqueta ajustes y datos en JSON",
+  "backupDesc": "La copia es un archivo JSON que puedes restaurar al cambiar de dispositivo o reinstalar. La importación sobrescribe por grupo y no se puede deshacer.",
+  "backupExport": "Exportar copia",
+  "backupExportDesc": "Elige qué incluir y guárdalo en un archivo o cópialo",
+  "backupExportToFile": "Guardar en archivo",
+  "backupCopyJson": "Copiar al portapapeles",
+  "backupExportDone": "Copia exportada",
+  "backupExportFailed": "No se pudo exportar: revisa el permiso de almacenamiento o el espacio libre",
+  "backupCopyDone": "Copia copiada al portapapeles",
+  "backupSavedTo": "Guardado en: {path}",
+  "@backupSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "backupCatSettings": "Ajustes",
+  "backupCatSettingsDesc": "Estación, baliza, mapa, filtros, fuentes, servidor",
+  "backupCatStations": "Estaciones y contactos",
+  "backupCatStationsDesc": "Favoritos, contactos manuales y sus notas",
+  "backupCatMessages": "Mensajes",
+  "backupCatMessagesDesc": "Mensajes directos y posiciones leídas",
+  "backupCatChats": "Chats grupales",
+  "backupCatChatsDesc": "Grupos, miembros y estado leído",
+  "backupCatTranslate": "Ajustes de traducción",
+  "backupCatTranslateDesc": "Proveedores, claves y preferencias de idioma",
+  "backupCatHonors": "Logros y honores",
+  "backupCatHonorsDesc": "Desbloqueos, contadores y insignia predeterminada",
+  "backupItems": "{n} elementos",
+  "@backupItems": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSelectAll": "Seleccionar todo",
+  "backupNoSelection": "Selecciona al menos un grupo",
+  "backupImport": "Importar copia",
+  "backupImportDesc": "Elige un archivo JSON exportado antes",
+  "backupPickFile": "Elegir archivo",
+  "backupPaste": "Pegar del portapapeles",
+  "backupPasteEmpty": "No hay texto en el portapapeles",
+  "backupPreview": "Contenido de la copia",
+  "backupFromVersion": "Versión de origen {v}",
+  "@backupFromVersion": {
+    "placeholders": {"v": {"type": "String"}}
+  },
+  "backupExportedAt": "Exportado {t}",
+  "@backupExportedAt": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "backupImportSelected": "Importar selección",
+  "backupImportConfirmTitle": "¿Importar la copia?",
+  "backupImportConfirm": "Los grupos seleccionados se sobrescribirán y no se puede deshacer. Se recomienda exportar antes una copia de los datos actuales.",
+  "backupImported": "Se importaron {n} elementos",
+  "@backupImported": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSkipped": "Se omitieron {n} entradas desconocidas",
+  "@backupSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupImportNothing": "La copia no tiene datos de los grupos seleccionados",
+  "backupRestartTitle": "Importación completada",
+  "backupRestartHint": "Los datos están guardados; reinicia la app para que todo surta efecto (logros, traducción, conexión).",
+  "backupRestartNow": "Salir de la app",
+  "backupLater": "Más tarde",
+  "backupSecurityTip": "La copia incluye tu indicativo, la contraseña del servidor y claves API: guárdala bien.",
+  "backupWebHint": "En la web usa «copiar / pegar del portapapeles».",
+  "backupErrNotJson": "El archivo no es JSON válido",
+  "backupErrNotBackup": "No es una copia de APRSlocus",
+  "backupErrSchemaNewer": "La copia proviene de una versión más nueva de APRSlocus: actualiza la app primero",
+  "backupErrEmpty": "La copia no contiene nada que importar",
+  "backupErrTooLarge": "La copia supera los 32 MB y no se puede leer",
+  "backupErrRead": "No se pudo leer la copia",
+  "backupErrUnsupported": "Aquí no se pueden elegir archivos: pega desde el portapapeles"
 }

@@ -5475,4 +5475,183 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sysEmpty => 'APRSlocus を開いて接続すると、ここに運用状況が表示されます';
+
+  @override
+  String get backupTitle => 'バックアップと復元';
+
+  @override
+  String get backupSubtitle => '設定とデータの書き出し・読み込み';
+
+  @override
+  String get backupEntryDesc => '設定とデータを JSON にまとめる';
+
+  @override
+  String get backupDesc =>
+      'バックアップは JSON ファイルで、機種変更や再インストール後に復元できます。読み込みはグループ単位で上書きされ、元に戻せません。';
+
+  @override
+  String get backupExport => 'バックアップを書き出す';
+
+  @override
+  String get backupExportDesc => '含める内容を選び、ファイル保存またはクリップボードへコピー';
+
+  @override
+  String get backupExportToFile => 'ファイルに保存';
+
+  @override
+  String get backupCopyJson => 'クリップボードにコピー';
+
+  @override
+  String get backupExportDone => 'バックアップを書き出しました';
+
+  @override
+  String get backupExportFailed => '書き出しに失敗しました。ストレージの権限や空き容量を確認してください';
+
+  @override
+  String get backupCopyDone => 'バックアップをクリップボードにコピーしました';
+
+  @override
+  String backupSavedTo(String path) {
+    return '保存先：$path';
+  }
+
+  @override
+  String get backupCatSettings => '設定';
+
+  @override
+  String get backupCatSettingsDesc => '局、ビーコン、地図、フィルター、接続先、サーバー';
+
+  @override
+  String get backupCatStations => '局とコンタクト';
+
+  @override
+  String get backupCatStationsDesc => 'お気に入り・手動追加した局とメモ';
+
+  @override
+  String get backupCatMessages => 'メッセージ履歴';
+
+  @override
+  String get backupCatMessagesDesc => '個別メッセージと既読位置';
+
+  @override
+  String get backupCatChats => 'グループチャット';
+
+  @override
+  String get backupCatChatsDesc => 'グループ、メンバー、既読状態';
+
+  @override
+  String get backupCatTranslate => '翻訳設定';
+
+  @override
+  String get backupCatTranslateDesc => '翻訳サービス、API キー、言語設定';
+
+  @override
+  String get backupCatHonors => '実績と栄誉';
+
+  @override
+  String get backupCatHonorsDesc => '解除記録、カウント、既定バッジ';
+
+  @override
+  String backupItems(int n) {
+    return '$n 件';
+  }
+
+  @override
+  String get backupSelectAll => 'すべて選択';
+
+  @override
+  String get backupNoSelection => 'グループを 1 つ以上選んでください';
+
+  @override
+  String get backupImport => 'バックアップを読み込む';
+
+  @override
+  String get backupImportDesc => '以前書き出した JSON バックアップを選択';
+
+  @override
+  String get backupPickFile => 'バックアップを選択';
+
+  @override
+  String get backupPaste => 'クリップボードから貼り付け';
+
+  @override
+  String get backupPasteEmpty => 'クリップボードにテキストがありません';
+
+  @override
+  String get backupPreview => 'バックアップの内容';
+
+  @override
+  String backupFromVersion(String v) {
+    return '書き出し元 $v';
+  }
+
+  @override
+  String backupExportedAt(String t) {
+    return '書き出し日時 $t';
+  }
+
+  @override
+  String get backupImportSelected => '選択した項目を読み込む';
+
+  @override
+  String get backupImportConfirmTitle => '読み込みますか？';
+
+  @override
+  String get backupImportConfirm =>
+      '選択したグループは上書きされ、元に戻せません。先に現在のデータを書き出すことをおすすめします。';
+
+  @override
+  String backupImported(int n) {
+    return '$n 件を読み込みました';
+  }
+
+  @override
+  String backupSkipped(int n) {
+    return '不明な $n 件をスキップしました';
+  }
+
+  @override
+  String get backupImportNothing => '選択したグループのデータがバックアップにありません';
+
+  @override
+  String get backupRestartTitle => '読み込み完了';
+
+  @override
+  String get backupRestartHint =>
+      'データは保存されました。完全に反映するにはアプリを再起動してください（実績・翻訳・サーバー接続など）。';
+
+  @override
+  String get backupRestartNow => 'アプリを終了';
+
+  @override
+  String get backupLater => 'あとで';
+
+  @override
+  String get backupSecurityTip =>
+      'バックアップにはコールサイン、サーバーのパスコード、API キーが含まれます。大切に保管してください。';
+
+  @override
+  String get backupWebHint => 'Web 版では「クリップボードにコピー / 貼り付け」を使ってください。';
+
+  @override
+  String get backupErrNotJson => 'ファイルが有効な JSON ではありません';
+
+  @override
+  String get backupErrNotBackup => 'APRSlocus のバックアップではありません';
+
+  @override
+  String get backupErrSchemaNewer =>
+      '新しいバージョンの APRSlocus のバックアップです。アプリを更新してください';
+
+  @override
+  String get backupErrEmpty => '読み込める内容がありません';
+
+  @override
+  String get backupErrTooLarge => 'バックアップが 32 MB を超えているため読み込めません';
+
+  @override
+  String get backupErrRead => 'バックアップを読み込めませんでした';
+
+  @override
+  String get backupErrUnsupported => 'この環境ではファイル選択が使えません。クリップボードから貼り付けてください';
 }

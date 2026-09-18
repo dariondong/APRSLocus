@@ -5665,4 +5665,193 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sysEmpty => 'Abre APRSlocus y conéctate para ver el estado aquí';
+
+  @override
+  String get backupTitle => 'Copia de seguridad';
+
+  @override
+  String get backupSubtitle => 'Exporta o importa ajustes y datos';
+
+  @override
+  String get backupEntryDesc => 'Empaqueta ajustes y datos en JSON';
+
+  @override
+  String get backupDesc =>
+      'La copia es un archivo JSON que puedes restaurar al cambiar de dispositivo o reinstalar. La importación sobrescribe por grupo y no se puede deshacer.';
+
+  @override
+  String get backupExport => 'Exportar copia';
+
+  @override
+  String get backupExportDesc =>
+      'Elige qué incluir y guárdalo en un archivo o cópialo';
+
+  @override
+  String get backupExportToFile => 'Guardar en archivo';
+
+  @override
+  String get backupCopyJson => 'Copiar al portapapeles';
+
+  @override
+  String get backupExportDone => 'Copia exportada';
+
+  @override
+  String get backupExportFailed =>
+      'No se pudo exportar: revisa el permiso de almacenamiento o el espacio libre';
+
+  @override
+  String get backupCopyDone => 'Copia copiada al portapapeles';
+
+  @override
+  String backupSavedTo(String path) {
+    return 'Guardado en: $path';
+  }
+
+  @override
+  String get backupCatSettings => 'Ajustes';
+
+  @override
+  String get backupCatSettingsDesc =>
+      'Estación, baliza, mapa, filtros, fuentes, servidor';
+
+  @override
+  String get backupCatStations => 'Estaciones y contactos';
+
+  @override
+  String get backupCatStationsDesc =>
+      'Favoritos, contactos manuales y sus notas';
+
+  @override
+  String get backupCatMessages => 'Mensajes';
+
+  @override
+  String get backupCatMessagesDesc => 'Mensajes directos y posiciones leídas';
+
+  @override
+  String get backupCatChats => 'Chats grupales';
+
+  @override
+  String get backupCatChatsDesc => 'Grupos, miembros y estado leído';
+
+  @override
+  String get backupCatTranslate => 'Ajustes de traducción';
+
+  @override
+  String get backupCatTranslateDesc =>
+      'Proveedores, claves y preferencias de idioma';
+
+  @override
+  String get backupCatHonors => 'Logros y honores';
+
+  @override
+  String get backupCatHonorsDesc =>
+      'Desbloqueos, contadores y insignia predeterminada';
+
+  @override
+  String backupItems(int n) {
+    return '$n elementos';
+  }
+
+  @override
+  String get backupSelectAll => 'Seleccionar todo';
+
+  @override
+  String get backupNoSelection => 'Selecciona al menos un grupo';
+
+  @override
+  String get backupImport => 'Importar copia';
+
+  @override
+  String get backupImportDesc => 'Elige un archivo JSON exportado antes';
+
+  @override
+  String get backupPickFile => 'Elegir archivo';
+
+  @override
+  String get backupPaste => 'Pegar del portapapeles';
+
+  @override
+  String get backupPasteEmpty => 'No hay texto en el portapapeles';
+
+  @override
+  String get backupPreview => 'Contenido de la copia';
+
+  @override
+  String backupFromVersion(String v) {
+    return 'Versión de origen $v';
+  }
+
+  @override
+  String backupExportedAt(String t) {
+    return 'Exportado $t';
+  }
+
+  @override
+  String get backupImportSelected => 'Importar selección';
+
+  @override
+  String get backupImportConfirmTitle => '¿Importar la copia?';
+
+  @override
+  String get backupImportConfirm =>
+      'Los grupos seleccionados se sobrescribirán y no se puede deshacer. Se recomienda exportar antes una copia de los datos actuales.';
+
+  @override
+  String backupImported(int n) {
+    return 'Se importaron $n elementos';
+  }
+
+  @override
+  String backupSkipped(int n) {
+    return 'Se omitieron $n entradas desconocidas';
+  }
+
+  @override
+  String get backupImportNothing =>
+      'La copia no tiene datos de los grupos seleccionados';
+
+  @override
+  String get backupRestartTitle => 'Importación completada';
+
+  @override
+  String get backupRestartHint =>
+      'Los datos están guardados; reinicia la app para que todo surta efecto (logros, traducción, conexión).';
+
+  @override
+  String get backupRestartNow => 'Salir de la app';
+
+  @override
+  String get backupLater => 'Más tarde';
+
+  @override
+  String get backupSecurityTip =>
+      'La copia incluye tu indicativo, la contraseña del servidor y claves API: guárdala bien.';
+
+  @override
+  String get backupWebHint =>
+      'En la web usa «copiar / pegar del portapapeles».';
+
+  @override
+  String get backupErrNotJson => 'El archivo no es JSON válido';
+
+  @override
+  String get backupErrNotBackup => 'No es una copia de APRSlocus';
+
+  @override
+  String get backupErrSchemaNewer =>
+      'La copia proviene de una versión más nueva de APRSlocus: actualiza la app primero';
+
+  @override
+  String get backupErrEmpty => 'La copia no contiene nada que importar';
+
+  @override
+  String get backupErrTooLarge =>
+      'La copia supera los 32 MB y no se puede leer';
+
+  @override
+  String get backupErrRead => 'No se pudo leer la copia';
+
+  @override
+  String get backupErrUnsupported =>
+      'Aquí no se pueden elegir archivos: pega desde el portapapeles';
 }

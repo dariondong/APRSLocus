@@ -28,6 +28,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # 备份白名单与代码里真实读写的偏好键必须一致。
+      # 「新增偏好忘了归入备份分组」不会让编译失败、也不会让测试失败，
+      # 只会在用户换机那天丢一项设置，所以放在 CI 里每次推都查。
+      - name: Check backup preference keys
+        run: python3 tool/check_backup_keys.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

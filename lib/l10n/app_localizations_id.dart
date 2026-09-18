@@ -5631,4 +5631,190 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get sysEmpty =>
       'Buka APRSlocus dan sambungkan untuk melihat status di sini';
+
+  @override
+  String get backupTitle => 'Cadangkan & pulihkan';
+
+  @override
+  String get backupSubtitle => 'Ekspor atau impor pengaturan dan data';
+
+  @override
+  String get backupEntryDesc => 'Kemas pengaturan dan data ke JSON';
+
+  @override
+  String get backupDesc =>
+      'Cadangan berupa berkas JSON yang bisa dipulihkan setelah ganti perangkat atau pasang ulang. Impor menimpa per grup dan tidak bisa dibatalkan.';
+
+  @override
+  String get backupExport => 'Ekspor cadangan';
+
+  @override
+  String get backupExportDesc => 'Pilih isi, lalu simpan ke berkas atau salin';
+
+  @override
+  String get backupExportToFile => 'Simpan ke berkas';
+
+  @override
+  String get backupCopyJson => 'Salin ke papan klip';
+
+  @override
+  String get backupExportDone => 'Cadangan diekspor';
+
+  @override
+  String get backupExportFailed =>
+      'Ekspor gagal — periksa izin penyimpanan atau ruang yang tersisa';
+
+  @override
+  String get backupCopyDone => 'Cadangan disalin';
+
+  @override
+  String backupSavedTo(String path) {
+    return 'Disimpan ke: $path';
+  }
+
+  @override
+  String get backupCatSettings => 'Pengaturan';
+
+  @override
+  String get backupCatSettingsDesc =>
+      'Stasiun, beacon, peta, filter, sumber, server';
+
+  @override
+  String get backupCatStations => 'Stasiun & kontak';
+
+  @override
+  String get backupCatStationsDesc => 'Favorit, kontak manual, dan catatannya';
+
+  @override
+  String get backupCatMessages => 'Pesan';
+
+  @override
+  String get backupCatMessagesDesc => 'Pesan langsung dan posisi baca';
+
+  @override
+  String get backupCatChats => 'Obrolan grup';
+
+  @override
+  String get backupCatChatsDesc => 'Grup, anggota, dan status baca';
+
+  @override
+  String get backupCatTranslate => 'Pengaturan terjemahan';
+
+  @override
+  String get backupCatTranslateDesc => 'Penyedia, kunci, dan preferensi bahasa';
+
+  @override
+  String get backupCatHonors => 'Pencapaian & kehormatan';
+
+  @override
+  String get backupCatHonorsDesc => 'Bukaan, penghitung, dan lencana bawaan';
+
+  @override
+  String backupItems(int n) {
+    return '$n item';
+  }
+
+  @override
+  String get backupSelectAll => 'Pilih semua';
+
+  @override
+  String get backupNoSelection => 'Pilih minimal satu grup';
+
+  @override
+  String get backupImport => 'Impor cadangan';
+
+  @override
+  String get backupImportDesc =>
+      'Pilih berkas JSON cadangan yang pernah diekspor';
+
+  @override
+  String get backupPickFile => 'Pilih berkas cadangan';
+
+  @override
+  String get backupPaste => 'Tempel dari papan klip';
+
+  @override
+  String get backupPasteEmpty => 'Tidak ada teks di papan klip';
+
+  @override
+  String get backupPreview => 'Isi cadangan';
+
+  @override
+  String backupFromVersion(String v) {
+    return 'Dari versi $v';
+  }
+
+  @override
+  String backupExportedAt(String t) {
+    return 'Diekspor $t';
+  }
+
+  @override
+  String get backupImportSelected => 'Impor yang dipilih';
+
+  @override
+  String get backupImportConfirmTitle => 'Impor cadangan ini?';
+
+  @override
+  String get backupImportConfirm =>
+      'Grup terpilih akan ditimpa dan tidak bisa dibatalkan. Sebaiknya ekspor dulu data saat ini.';
+
+  @override
+  String backupImported(int n) {
+    return 'Mengimpor $n item';
+  }
+
+  @override
+  String backupSkipped(int n) {
+    return 'Melewati $n entri tak dikenal';
+  }
+
+  @override
+  String get backupImportNothing =>
+      'Cadangan tidak punya data untuk grup terpilih';
+
+  @override
+  String get backupRestartTitle => 'Impor selesai';
+
+  @override
+  String get backupRestartHint =>
+      'Data tersimpan; mulai ulang aplikasi agar semuanya berlaku (pencapaian, terjemahan, koneksi server).';
+
+  @override
+  String get backupRestartNow => 'Keluar aplikasi';
+
+  @override
+  String get backupLater => 'Nanti';
+
+  @override
+  String get backupSecurityTip =>
+      'Cadangan berisi callsign, passcode server, dan kunci API — simpan dengan aman.';
+
+  @override
+  String get backupWebHint =>
+      'Di web, gunakan “salin / tempel dari papan klip”.';
+
+  @override
+  String get backupErrNotJson => 'Berkas bukan JSON yang valid';
+
+  @override
+  String get backupErrNotBackup => 'Ini bukan berkas cadangan APRSlocus';
+
+  @override
+  String get backupErrSchemaNewer =>
+      'Cadangan berasal dari APRSlocus versi lebih baru — perbarui aplikasi dulu';
+
+  @override
+  String get backupErrEmpty => 'Cadangan tidak berisi apa pun untuk diimpor';
+
+  @override
+  String get backupErrTooLarge =>
+      'Cadangan melebihi 32 MB dan tidak bisa dibaca';
+
+  @override
+  String get backupErrRead => 'Gagal membaca berkas cadangan';
+
+  @override
+  String get backupErrUnsupported =>
+      'Memilih berkas tidak didukung di sini — tempel dari papan klip';
 }

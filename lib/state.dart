@@ -1625,90 +1625,108 @@ class AppState extends ChangeNotifier {
 
   /// 保存当前设置到本地（重启后保留）
   void persist() {
-    SharedPreferences.getInstance()
-        .then((p) {
-          p.setString('myCall', myCall);
-          p.setInt('mySsid', mySsid);
-          p.setString('mySymbol', mySymbol);
-          p.setString('myComment', myComment);
-          p.setBool('beacon', beaconEnabled);
-          p.setBool('beaconAutoAsked', beaconAutoAsked);
-          p.setInt('beaconInterval', beaconInterval);
-          _ensureSmartTiers();
-          p.setBool('smartBeaconOn', smartBeaconEnabled);
-          p.setString(
-              'smartTiers',
-              jsonEncode(smartTiers.map((t) => t.toJson()).toList()));
-          p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
-          p.setBool('beaconIncludeCourse', beaconIncludeCourse);
-          p.setBool('beaconIncludeBattery', beaconIncludeBattery);
-          p.setString('coordDatum', coordDatum);
-          p.setBool('darkMode', darkMode);
-          p.setBool('weatherEnabled', weatherEnabled);
-          p.setString('locale', locale);
-          p.setString('themeColor', themeColor);
-          p.setDouble('uiScale', uiScale);
-          p.setString('mapType', mapType);
-          p.setString('updateChannel', updateChannel);
-          p.setString('adifMode', adifMode);
-          p.setBool('adifSubMode', adifSubMode);
-          p.setString('adifBand', adifBand);
-          p.setString('adifFreq', adifFreq);
-          p.setBool('adifStripSsid', adifStripSsid);
-          p.setString('locationMode', locationMode);
-          p.setBool('useSimLocation', useSimLocation);
-          p.setDouble('filterLat', filterLat);
-          p.setDouble('filterLng', filterLng);
-          p.setInt('filterRadius', filterRadius);
-          p.setInt('maxStations', maxStations);
-          p.setInt('maxPackets', maxPackets);
-          p.setInt('onlineWindowMin', onlineWindowMin);
-          p.setInt('maxTrackPts', maxTrackPts);
-          p.setBool('filterFollow', filterFollow);
-          p.setStringList('receiveCountries', receiveCountries);
-          p.setBool('receiveOthers', receiveOthers);
-          p.setBool('labLandscape', labLandscape);
-          p.setBool('oobeDone', oobeDone);
-          p.setString('server', aprs.server);
-          p.setInt('port', aprs.port);
-          p.setString('passcode', aprs.passcode);
-          p.setString('dataSource', dataSource);
-          p.setStringList('enabledSources', enabledSources.toList());
-          p.setBool('igateEnabled', igateEnabled);
-          p.setBool('igateTwoWay', igateTwoWay);
-          if (myHasFix && myLat != null && myLng != null) {
-            p.setDouble('myLat', myLat!);
-            p.setDouble('myLng', myLng!);
-          }
-          // 保存消息
-          final msgsJson = jsonEncode(messages.map((m) => m.toJson()).toList());
-          p.setString('messages', msgsJson);
-          // 保存群聊
-          final groupsJson = jsonEncode(
-            chatGroups.map((g) => g.toJson()).toList(),
-          );
-          p.setString('chatGroups', groupsJson);
-        })
-        .catchError((_) {});
+    unawaited(persistNow());
     _notify();
+  }
+
+  /// 保存当前设置并**等到写入调用完成**。
+  ///
+  /// 与 [persist] 的区别：那个是「调用即返回」的顺手保存，适合 UI 上的每次改动；
+  /// 这个可以被 await —— 备份导出前必须用它。SharedPreferences 的 setX 会同步
+  /// 更新内存缓存（磁盘写入才是异步的），所以 await 到这里，导出读到的就一定是新值。
+  /// 少了这一步，刚改完设置就导出会**静默导出旧值**——比报错难发现得多。
+  Future<void> persistNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await _writePrefs(p);
+    } catch (_) {}
+  }
+
+  /// [persistNow] 的真正写入口（抽出来是为了让「导出前落盘」与「顺手保存」共用同一份键列表）
+  Future<void> _writePrefs(SharedPreferences p) async {
+    await p.setString('myCall', myCall);
+    await p.setInt('mySsid', mySsid);
+    await p.setString('mySymbol', mySymbol);
+    await p.setString('myComment', myComment);
+    await p.setBool('beacon', beaconEnabled);
+    await p.setBool('beaconAutoAsked', beaconAutoAsked);
+    await p.setInt('beaconInterval', beaconInterval);
+    _ensureSmartTiers();
+    await p.setBool('smartBeaconOn', smartBeaconEnabled);
+    await p.setString(
+        'smartTiers',
+        jsonEncode(smartTiers.map((t) => t.toJson()).toList()));
+    await p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
+    await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
+    await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
+    await p.setString('coordDatum', coordDatum);
+    await p.setBool('darkMode', darkMode);
+    await p.setBool('weatherEnabled', weatherEnabled);
+    await p.setString('locale', locale);
+    await p.setString('themeColor', themeColor);
+    await p.setDouble('uiScale', uiScale);
+    await p.setString('mapType', mapType);
+    await p.setString('updateChannel', updateChannel);
+    await p.setString('adifMode', adifMode);
+    await p.setBool('adifSubMode', adifSubMode);
+    await p.setString('adifBand', adifBand);
+    await p.setString('adifFreq', adifFreq);
+    await p.setBool('adifStripSsid', adifStripSsid);
+    await p.setString('locationMode', locationMode);
+    await p.setBool('useSimLocation', useSimLocation);
+    await p.setDouble('filterLat', filterLat);
+    await p.setDouble('filterLng', filterLng);
+    await p.setInt('filterRadius', filterRadius);
+    await p.setInt('maxStations', maxStations);
+    await p.setInt('maxPackets', maxPackets);
+    await p.setInt('onlineWindowMin', onlineWindowMin);
+    await p.setInt('maxTrackPts', maxTrackPts);
+    await p.setBool('filterFollow', filterFollow);
+    await p.setStringList('receiveCountries', receiveCountries);
+    await p.setBool('receiveOthers', receiveOthers);
+    await p.setBool('labLandscape', labLandscape);
+    await p.setBool('oobeDone', oobeDone);
+    await p.setString('server', aprs.server);
+    await p.setInt('port', aprs.port);
+    await p.setString('passcode', aprs.passcode);
+    await p.setString('dataSource', dataSource);
+    await p.setStringList('enabledSources', enabledSources.toList());
+    await p.setBool('igateEnabled', igateEnabled);
+    await p.setBool('igateTwoWay', igateTwoWay);
+    if (myHasFix && myLat != null && myLng != null) {
+      p.setDouble('myLat', myLat!);
+      p.setDouble('myLng', myLng!);
+    }
+    // 保存消息
+    final msgsJson = jsonEncode(messages.map((m) => m.toJson()).toList());
+    await p.setString('messages', msgsJson);
+    // 保存群聊
+    final groupsJson = jsonEncode(
+      chatGroups.map((g) => g.toJson()).toList(),
+    );
+    await p.setString('chatGroups', groupsJson);
   }
 
   /// 仅保存消息列表到本地
   void _saveMessages() {
-    SharedPreferences.getInstance()
-        .then((p) {
-          final json = jsonEncode(messages.map((m) => m.toJson()).toList());
-          p.setString('messages', json);
-          final readJson = jsonEncode(
-            _readAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
-          );
-          p.setString('readAt', readJson);
-          final groupReadJson = jsonEncode(
-            _groupReadAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
-          );
-          p.setString('groupReadAt', groupReadJson);
-        })
-        .catchError((_) {});
+    unawaited(_saveMessagesNow());
+  }
+
+  /// 消息列表 + 两套已读时间点落盘（可 await，供备份导出前强制刷新）
+  Future<void> _saveMessagesNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final json = jsonEncode(messages.map((m) => m.toJson()).toList());
+      p.setString('messages', json);
+      final readJson = jsonEncode(
+        _readAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
+      );
+      p.setString('readAt', readJson);
+      final groupReadJson = jsonEncode(
+        _groupReadAt.map((k, v) => MapEntry(k, v.millisecondsSinceEpoch)),
+      );
+      p.setString('groupReadAt', groupReadJson);
+    } catch (_) {}
   }
 
   /// 初始化官方 APRS 设备识别库：内置快照/本地缓存先行，随后静默拉取官方更新。
@@ -3849,31 +3867,34 @@ class AppState extends ChangeNotifier {
 
   /// 保存台站列表到本地
   void _saveStations() {
-    SharedPreferences.getInstance()
-        .then((p) {
-          final json = stations
-              .map(
-                (s) => {
-                  'call': s.call,
-                  'symbol': s.symbol,
-                  'lat': s.lat,
-                  'lng': s.lng,
-                  'lastHeard': s.lastHeard.millisecondsSinceEpoch,
-                  'status': s.status.index,
-                  'comment': s.comment,
-                  'favorite': s.favorite,
-                  'manual': s.manual,
-                  if (s.path != null) 'path': s.path,
-                  if (s.toCall != null && s.toCall!.isNotEmpty)
-                    'toCall': s.toCall,
-                  if (s.fmo != null) 'fmo': s.fmo,
-                  if (s.aprslocus != null) 'aprslocus': s.aprslocus,
-                },
-              )
-              .toList();
-          p.setString('stations', jsonEncode(json));
-        })
-        .catchError((_) {});
+    unawaited(_saveStationsNow());
+  }
+
+  /// 台站列表（收藏/手动联系人/备注）落盘（可 await，供备份导出前强制刷新）
+  Future<void> _saveStationsNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final json = stations
+          .map(
+            (s) => {
+              'call': s.call,
+              'symbol': s.symbol,
+              'lat': s.lat,
+              'lng': s.lng,
+              'lastHeard': s.lastHeard.millisecondsSinceEpoch,
+              'status': s.status.index,
+              'comment': s.comment,
+              'favorite': s.favorite,
+              'manual': s.manual,
+              if (s.path != null) 'path': s.path,
+              if (s.toCall != null && s.toCall!.isNotEmpty) 'toCall': s.toCall,
+              if (s.fmo != null) 'fmo': s.fmo,
+              if (s.aprslocus != null) 'aprslocus': s.aprslocus,
+            },
+          )
+          .toList();
+      p.setString('stations', jsonEncode(json));
+    } catch (_) {}
   }
 
   /// 加载台站列表（含收藏和手动添加的）
@@ -3942,6 +3963,37 @@ class AppState extends ChangeNotifier {
         }
       }
     } catch (_) {}
+  }
+
+  // ─── 备份 / 恢复 ───
+
+  /// 备份导出前的强制落盘：把只在内存里、还没写进偏好的东西先写下去。
+  ///
+  /// 不加这一步，用户「刚加完收藏就点导出」时导出的会是旧快照 —— 备份功能里
+  /// 这种静默缺失最致命：用户以为备份里有，直到恢复那天才发现没有。
+  Future<void> flushForBackup() async {
+    await persistNow();
+    await _saveMessagesNow();
+    await _saveStationsNow();
+    await _saveChatGroupsNow();
+  }
+
+  /// 导入备份并写回偏好之后，就地重载内存状态。
+  ///
+  /// 从偏好恢复的列表（消息/群聊/台站/已读点）必须先清空再 [_loadPrefs]：
+  /// 那些读取函数是「追加」语义，直接重载会得到重复台站/重复消息。
+  /// 注意：成就、翻译、服务器连接这些在各自单例里只加载一次，需重启才完全生效，
+  /// 所以导入完成后仍要提示用户重启。
+  Future<void> reloadFromPrefs() async {
+    messages.clear();
+    chatGroups.clear();
+    stations.clear();
+    _readAt.clear();
+    _groupReadAt.clear();
+    await _loadPrefs();
+    _recalcUnread();
+    _bumpStationsVersion();
+    _notify();
   }
 
   // ─── 消息 ───
@@ -4464,10 +4516,7 @@ class AppState extends ChangeNotifier {
   String _lastFilter = ''; // 上次连接使用的过滤器，避免无效重连
 
   void _saveChatGroups() {
-    SharedPreferences.getInstance().then((p) {
-      final json = jsonEncode(chatGroups.map((g) => g.toJson()).toList());
-      p.setString('chatGroups', json);
-    });
+    unawaited(_saveChatGroupsNow());
     // 群组变更 → 仅在过滤器实际变化时更新并重连
     if (connected) {
       final newFilter = filterString;
@@ -4477,6 +4526,15 @@ class AppState extends ChangeNotifier {
         reconnect();
       }
     }
+  }
+
+  /// 群聊列表落盘（可 await，供备份导出前强制刷新）
+  Future<void> _saveChatGroupsNow() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final json = jsonEncode(chatGroups.map((g) => g.toJson()).toList());
+      p.setString('chatGroups', json);
+    } catch (_) {}
   }
 
   /// 立即持久化群聊并通知刷新（群管理面板操作后调用）

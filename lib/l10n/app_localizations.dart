@@ -9752,6 +9752,330 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'打开 APRSlocus 并连接后，这里会显示台站运行状态'**
   String get sysEmpty;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份与恢复'**
+  String get backupTitle;
+
+  /// No description provided for @backupSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出或导入配置与数据'**
+  String get backupSubtitle;
+
+  /// No description provided for @backupEntryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'打包配置与数据为 JSON 文件'**
+  String get backupEntryDesc;
+
+  /// No description provided for @backupDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份文件是 JSON 文本，换机或重装后可恢复；导入按分组覆盖，无法撤销。'**
+  String get backupDesc;
+
+  /// No description provided for @backupExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出备份'**
+  String get backupExport;
+
+  /// No description provided for @backupExportDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择要包含的内容，然后保存为文件或复制到剪贴板'**
+  String get backupExportDesc;
+
+  /// No description provided for @backupExportToFile.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存为文件'**
+  String get backupExportToFile;
+
+  /// No description provided for @backupCopyJson.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制到剪贴板'**
+  String get backupCopyJson;
+
+  /// No description provided for @backupExportDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份已导出'**
+  String get backupExportDone;
+
+  /// No description provided for @backupExportFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出失败，请检查存储权限或剩余空间'**
+  String get backupExportFailed;
+
+  /// No description provided for @backupCopyDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份内容已复制到剪贴板'**
+  String get backupCopyDone;
+
+  /// No description provided for @backupSavedTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存到：{path}'**
+  String backupSavedTo(String path);
+
+  /// No description provided for @backupCatSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置配置'**
+  String get backupCatSettings;
+
+  /// No description provided for @backupCatSettingsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台、信标、地图、筛选、数据来源、服务器'**
+  String get backupCatSettingsDesc;
+
+  /// No description provided for @backupCatStations.
+  ///
+  /// In zh, this message translates to:
+  /// **'台站与联系人'**
+  String get backupCatStations;
+
+  /// No description provided for @backupCatStationsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏、手动添加的联系人及其备注'**
+  String get backupCatStationsDesc;
+
+  /// No description provided for @backupCatMessages.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息记录'**
+  String get backupCatMessages;
+
+  /// No description provided for @backupCatMessagesDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'单聊消息与已读位置'**
+  String get backupCatMessagesDesc;
+
+  /// No description provided for @backupCatChats.
+  ///
+  /// In zh, this message translates to:
+  /// **'群聊'**
+  String get backupCatChats;
+
+  /// No description provided for @backupCatChatsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'群组、成员与已读状态'**
+  String get backupCatChatsDesc;
+
+  /// No description provided for @backupCatTranslate.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译设置'**
+  String get backupCatTranslate;
+
+  /// No description provided for @backupCatTranslateDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'翻译接口、密钥与语言偏好'**
+  String get backupCatTranslateDesc;
+
+  /// No description provided for @backupCatHonors.
+  ///
+  /// In zh, this message translates to:
+  /// **'成就与荣誉'**
+  String get backupCatHonors;
+
+  /// No description provided for @backupCatHonorsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'解锁记录、计数与默认徽章'**
+  String get backupCatHonorsDesc;
+
+  /// No description provided for @backupItems.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 项'**
+  String backupItems(int n);
+
+  /// No description provided for @backupSelectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选'**
+  String get backupSelectAll;
+
+  /// No description provided for @backupNoSelection.
+  ///
+  /// In zh, this message translates to:
+  /// **'请至少选择一个分组'**
+  String get backupNoSelection;
+
+  /// No description provided for @backupImport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入备份'**
+  String get backupImport;
+
+  /// No description provided for @backupImportDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择之前导出的 JSON 备份文件'**
+  String get backupImportDesc;
+
+  /// No description provided for @backupPickFile.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择备份文件'**
+  String get backupPickFile;
+
+  /// No description provided for @backupPaste.
+  ///
+  /// In zh, this message translates to:
+  /// **'从剪贴板粘贴'**
+  String get backupPaste;
+
+  /// No description provided for @backupPasteEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'剪贴板里没有文本'**
+  String get backupPasteEmpty;
+
+  /// No description provided for @backupPreview.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份内容'**
+  String get backupPreview;
+
+  /// No description provided for @backupFromVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源版本 {v}'**
+  String backupFromVersion(String v);
+
+  /// No description provided for @backupExportedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出时间 {t}'**
+  String backupExportedAt(String t);
+
+  /// No description provided for @backupImportSelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入所选'**
+  String get backupImportSelected;
+
+  /// No description provided for @backupImportConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认导入？'**
+  String get backupImportConfirmTitle;
+
+  /// No description provided for @backupImportConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'所选分组会被备份里的内容覆盖，且无法撤销。建议先导出一次当前数据。'**
+  String get backupImportConfirm;
+
+  /// No description provided for @backupImported.
+  ///
+  /// In zh, this message translates to:
+  /// **'已导入 {n} 项'**
+  String backupImported(int n);
+
+  /// No description provided for @backupSkipped.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳过 {n} 项（本版本不认识的内容）'**
+  String backupSkipped(int n);
+
+  /// No description provided for @backupImportNothing.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份里不包含所选分组的数据'**
+  String get backupImportNothing;
+
+  /// No description provided for @backupRestartTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入完成'**
+  String get backupRestartTitle;
+
+  /// No description provided for @backupRestartHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据已写入，重启应用后完全生效（成就、翻译、服务器连接等）。'**
+  String get backupRestartHint;
+
+  /// No description provided for @backupRestartNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出应用'**
+  String get backupRestartNow;
+
+  /// No description provided for @backupLater.
+  ///
+  /// In zh, this message translates to:
+  /// **'稍后'**
+  String get backupLater;
+
+  /// No description provided for @backupSecurityTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份文件包含呼号、服务器口令与 API 密钥，请妥善保管。'**
+  String get backupSecurityTip;
+
+  /// No description provided for @backupWebHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 版请用「复制到剪贴板 / 从剪贴板粘贴」导入导出。'**
+  String get backupWebHint;
+
+  /// No description provided for @backupErrNotJson.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件不是有效的 JSON'**
+  String get backupErrNotJson;
+
+  /// No description provided for @backupErrNotBackup.
+  ///
+  /// In zh, this message translates to:
+  /// **'这不是 APRSlocus 的备份文件'**
+  String get backupErrNotBackup;
+
+  /// No description provided for @backupErrSchemaNewer.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份来自更新版本的 APRSlocus，请先升级应用'**
+  String get backupErrSchemaNewer;
+
+  /// No description provided for @backupErrEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份里没有可导入的内容'**
+  String get backupErrEmpty;
+
+  /// No description provided for @backupErrTooLarge.
+  ///
+  /// In zh, this message translates to:
+  /// **'备份文件超过 32 MB，无法读取'**
+  String get backupErrTooLarge;
+
+  /// No description provided for @backupErrRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'读取备份文件失败'**
+  String get backupErrRead;
+
+  /// No description provided for @backupErrUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台暂不支持选择文件，请改用剪贴板粘贴'**
+  String get backupErrUnsupported;
 }
 
 class _AppLocalizationsDelegate

@@ -2412,5 +2412,77 @@
   },
   "sysFixOk": "已定位",
   "sysLinkAudio": "音訊",
-  "sysEmpty": "開啟 APRSlocus 並連線後，這裡會顯示臺站執行狀態"
+  "sysEmpty": "開啟 APRSlocus 並連線後，這裡會顯示臺站執行狀態",
+  "backupTitle": "備份與還原",
+  "backupSubtitle": "匯出或匯入設定與資料",
+  "backupEntryDesc": "打包設定與資料為 JSON 檔",
+  "backupDesc": "備份檔是 JSON 文字，換機或重裝後可還原；匯入會依分組覆蓋，無法復原。",
+  "backupExport": "匯出備份",
+  "backupExportDesc": "選擇要包含的內容，再存成檔案或複製到剪貼簿",
+  "backupExportToFile": "存成檔案",
+  "backupCopyJson": "複製到剪貼簿",
+  "backupExportDone": "備份已匯出",
+  "backupExportFailed": "匯出失敗，請檢查儲存權限或剩餘空間",
+  "backupCopyDone": "備份內容已複製到剪貼簿",
+  "backupSavedTo": "已儲存到：{path}",
+  "@backupSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "backupCatSettings": "設定",
+  "backupCatSettingsDesc": "電台、信標、地圖、篩選、資料來源、伺服器",
+  "backupCatStations": "臺站與聯絡人",
+  "backupCatStationsDesc": "我的最愛、手動新增的聯絡人與備註",
+  "backupCatMessages": "訊息記錄",
+  "backupCatMessagesDesc": "單聊訊息與已讀位置",
+  "backupCatChats": "群組聊天",
+  "backupCatChatsDesc": "群組、成員與已讀狀態",
+  "backupCatTranslate": "翻譯設定",
+  "backupCatTranslateDesc": "翻譯介面、金鑰與語言偏好",
+  "backupCatHonors": "成就與榮譽",
+  "backupCatHonorsDesc": "解鎖記錄、計數與預設徽章",
+  "backupItems": "{n} 項",
+  "@backupItems": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSelectAll": "全選",
+  "backupNoSelection": "請至少選擇一個分組",
+  "backupImport": "匯入備份",
+  "backupImportDesc": "選擇先前匯出的 JSON 備份檔",
+  "backupPickFile": "選擇備份檔",
+  "backupPaste": "從剪貼簿貼上",
+  "backupPasteEmpty": "剪貼簿裡沒有文字",
+  "backupPreview": "備份內容",
+  "backupFromVersion": "來源版本 {v}",
+  "@backupFromVersion": {
+    "placeholders": {"v": {"type": "String"}}
+  },
+  "backupExportedAt": "匯出時間 {t}",
+  "@backupExportedAt": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "backupImportSelected": "匯入所選",
+  "backupImportConfirmTitle": "確認匯入？",
+  "backupImportConfirm": "所選分組會被備份內容覆蓋，且無法復原。建議先匯出一次目前的資料。",
+  "backupImported": "已匯入 {n} 項",
+  "@backupImported": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSkipped": "略過 {n} 項（本版本不認識的內容）",
+  "@backupSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupImportNothing": "備份裡不包含所選分組的資料",
+  "backupRestartTitle": "匯入完成",
+  "backupRestartHint": "資料已寫入，重新啟動後才會完全生效（成就、翻譯、伺服器連線等）。",
+  "backupRestartNow": "結束應用程式",
+  "backupLater": "稍後",
+  "backupSecurityTip": "備份檔包含呼號、伺服器密碼與 API 金鑰，請妥善保管。",
+  "backupWebHint": "Web 版請用「複製到剪貼簿 / 從剪貼簿貼上」匯入匯出。",
+  "backupErrNotJson": "檔案不是有效的 JSON",
+  "backupErrNotBackup": "這不是 APRSlocus 的備份檔",
+  "backupErrSchemaNewer": "備份來自較新版本的 APRSlocus，請先更新應用程式",
+  "backupErrEmpty": "備份裡沒有可匯入的內容",
+  "backupErrTooLarge": "備份檔超過 32 MB，無法讀取",
+  "backupErrRead": "讀取備份檔失敗",
+  "backupErrUnsupported": "目前平台不支援選擇檔案，請改用剪貼簿貼上"
 }

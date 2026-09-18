@@ -1,5 +1,178 @@
 # 更新日志
 
+## [1.6.123] - 2026-09-18
+
+### 💾 备份与恢复：把设置与数据导出成一个 JSON，换机/重装后导回来
+
+**入口**：设置页 → 「备份与恢复」（与「导出 ADIF」并列）。
+
+**① 分 6 组导出，导入时按组覆盖**
+
+| 分组 | 内容 |
+|---|---|
+| 设置配置 | 电台身份、信标（含智能信标档位）、主题/语言/缩放、地图、筛选、数据来源、服务器、ADIF 选项、位置 |
+| 台站与联系人 | 收藏、手动添加的联系人、备注 |
+| 消息记录 | 单聊消息 + 两套已读位置 |
+| 群聊 | 群组、成员状态 |
+| 翻译设置 | 翻译接口、密钥、每会话语言偏好 |
+| 成就与荣誉 | 解锁记录、计数、默认展示徽章 |
+
+导出默认全选（备份的常见诉求是「整份搬走」）；导入时只列出备份里**真实存在**的组，
+并默认勾选。选中哪几组，就只覆盖哪几组 —— 不想动消息的人不必动消息。
+
+**② 值带类型标签：`{"s":…}` / `{"b":…}` / `{"i":…}` / `{"d":…}` / `{"l":[…]}`**
+
+JSON 分不清 `int 1` 与 `double 1.0`，而 SharedPreferences 的 `getDouble`
+读到 int 值会直接抛类型错误。所以导出时不写裸值，而是带上类型标签；
+导入按标签调用对应的 setter。这样即使文件被手工编辑过（例如把 `0.0` 写成 `0`），
+最坏也只是这一项被跳过，而不会把应用写坏。测试里专门钉了一条
+「`0.0` 不会退化成 int」。
+
+**③ 只回写白名单里的键**
+
+备份文件是用户可见、可编辑、也可能来自别人分享的文本。如果无脑回写
+「文件里出现的任意键」，一份伪造的 JSON 就能改写应用里**任何**偏好
+（包括未来新增的内部状态键）。所以：
+
+- 键必须落在该分组的白名单内，白名单外的键**跳过并计数**（导入完成后如实显示「跳过 N 项」）；
+- 不认识的整组忽略 —— 更新版本导出的备份，在旧版本上不会整份崩掉；
+- `schema` 比当前高则直接**拒绝**并提示先升级应用，而不是猜着解析。
+
+**④ 导出前强制落盘（修掉一个静默丢数据的坑）**
+
+`persist()` / `_saveMessages()` 原本是「调用即返回」的顺手保存。
+用户「刚加完收藏就点导出」时，写入还排在队列里，导出的会是旧快照 ——
+备份功能里这种静默缺失最致命：用户以为备份里有，直到恢复那天才发现没有。
+现在新增 `persistNow()` / `flushForBackup()`，导出前逐项 await；
+且它与顺手保存**共用同一份键列表**（`_writePrefs`），两处不会漂移。
+
+**⑤ 导入后即时生效，并如实提示重启**
+
+写回偏好后会清空并重载消息/群聊/台站（这些都是「追加」语义的读取函数，
+不清空会产生重复数据）。但成就、翻译、服务器连接是在各自单例里只加载一次的，
+所以完成后会明确提示「重启后完全生效」，并给一个「退出应用」按钮 ——
+不假装一切已经生效。
+
+**⑥ 平台支持**
+
+| 平台 | 选文件 | 保存位置 |
+|---|---|---|
+| Android | 系统文件选择器（`ACTION_GET_CONTENT`，临时读权限） | 下载目录（MediaStore，免存储权限） |
+| Windows | PowerShell + WinForms 打开文件对话框（`-Sta`，UTF-8 输出） | 文档目录 |
+| Linux | zenity | 文档目录 |
+| macOS | osascript | 文档目录 |
+| Web | —（改用剪贴板） | 复制到剪贴板 |
+
+读文件有 32MB 上限（分块读取，超限即拒），避免误选一个大文件把内存吃爆。
+
+**⑦ 页面上的安全提示**
+
+备份里含呼号、服务器口令、翻译 API 密钥 —— 页面上直接写明，不藏着。
+
+**⑧ 新增静态检查并接入 CI：`tool/check_backup_keys.py`**
+
+「新增偏好时忘了把它归入备份分组」不会让编译失败、不会让测试失败，
+只会在用户换机那天少一项设置。所以加了一条**双向**静态检查：
+
+- lib/ 里所有 `getX('key')`/`setX('key')` 的键都必须被某个分组覆盖；
+- 白名单里的键必须在 lib/ 里仍然有人读写（防止删代码后留下死项）。
+
+检查器自己验证过会报红（临时塞一个 `brandNewFlag` → `MISSING brandNewFlag`）；
+解析白名单时用**配对括号**而不是 `\(([^)]*)\)`，避免嵌套括号截断造成假失败。
+这条检查已加进 CI 的 Analyze 作业。
+
+`test/backup_test.dart` 另钉了 15 条回归：类型标签往返、白名单越界、
+未知分组、schema 拒绝、分组覆盖不碰未选组、导出→导入→再导出一致。
+
+---
+
+**Feature**: back up settings and data to a single JSON file, and restore it — for
+switching devices or reinstalling.
+
+**Entry point**: Settings → "Backup & restore" (next to "Export ADIF").
+
+**① Six groups, imported group by group**
+
+| Group | Contents |
+|---|---|
+| Settings | Station identity, beacon (incl. smart-beacon tiers), theme/locale/scale, map, filters, data sources, server, ADIF options, location |
+| Stations & contacts | Favourites, manual contacts, notes |
+| Messages | Direct messages + both read-position maps |
+| Group chats | Groups and member state |
+| Translation | Providers, API keys, per-conversation language prefs |
+| Achievements & honours | Unlocks, counters, default badge |
+
+Export selects everything by default (the common case is "move it all"); import lists
+only the groups that are **actually present** in the file, pre-selected. Only the
+selected groups are overwritten — nobody has to touch their messages to move their
+settings.
+
+**② Typed values: `{"s":…}` / `{"b":…}` / `{"i":…}` / `{"d":…}` / `{"l":[…]}`**
+
+JSON cannot tell `int 1` from `double 1.0`, and SharedPreferences'
+`getDouble` throws if the stored value is an int. So values are written with a type
+tag and applied through the matching setter. If the file is hand-edited (say `0.0`
+becomes `0`), the worst case is one skipped entry instead of a broken preference —
+there is a dedicated test asserting `0.0` never degrades to an int.
+
+**③ Only whitelisted keys are written back**
+
+The backup is user-visible, editable text that may come from someone else. Blindly
+writing back "whatever keys appear in the file" would let a forged JSON change
+*any* preference, including internal keys added later. Therefore: keys must be in
+that group's whitelist (anything else is skipped **and counted**, and the result
+dialog reports "skipped N entries"); unknown groups are ignored (a backup from a
+newer version does not break an older app); and a higher `schema` is **rejected** with
+an "update the app first" message instead of being guessed at.
+
+**④ Force-flush before export (fixes a silent data-loss trap)**
+
+`persist()` and the `_save…()` helpers were fire-and-forget. If you added a
+favourite and immediately hit export, the write could still be queued and the export
+would capture the *old* snapshot — the worst kind of bug in a backup feature, since
+you only find out on restore day. There are now `persistNow()` / `flushForBackup()`
+which are awaited before export, sharing the very same key list (`_writePrefs`) with
+the ordinary save path so the two cannot drift apart.
+
+**⑤ Import takes effect immediately, and honestly says a restart is needed**
+
+After writing preferences, messages/chats/stations are cleared and reloaded (those
+loaders *append*, so not clearing them would duplicate data). Achievements,
+translation and the server connection are loaded once by their own singletons, so
+the dialog states plainly that a restart is required for everything to take effect —
+and offers a "Quit app" button rather than pretending otherwise.
+
+**⑥ Platforms**
+
+| Platform | Picking a file | Saving |
+|---|---|---|
+| Android | system file picker (`ACTION_GET_CONTENT`, temporary read grant) | Downloads (MediaStore, no storage permission) |
+| Windows | PowerShell + WinForms open dialog (`-Sta`, UTF-8 output) | Documents |
+| Linux | zenity | Documents |
+| macOS | osascript | Documents |
+| Web | — (clipboard instead) | copy to clipboard |
+
+Reading is capped at 32 MB (chunked, rejected above the cap) so a mis-picked huge
+file cannot exhaust memory.
+
+**⑦ Security note in the UI**
+
+The file contains your callsign, server passcode and translation API keys; the page
+says so instead of hiding it.
+
+**⑧ New static check wired into CI: `tool/check_backup_keys.py`**
+
+"Forgetting to put a new preference into a backup group" fails no build and no test;
+it just loses a setting on restore day. So there is now a **two-way** check: every
+`getX('key')`/`setX('key')` in lib/ must be covered by a group, and every whitelisted
+key must still be read/written somewhere in lib/ (catching leftovers after a
+deletion). The checker was verified to actually go red (temporary `brandNewFlag` →
+`MISSING brandNewFlag`), and it parses the whitelist with **matched parentheses**
+rather than `\(([^)]*)\)` so nested parentheses cannot truncate it into false
+failures. It now runs in the CI Analyze job. `test/backup_test.dart` adds 15 more
+regressions: type-tag round-trips, whitelist escapes, unknown groups, schema
+rejection, group-scoped overwrite, and export→import→export consistency.
+
 ## [1.6.122] - 2026-09-17
 
 ### 🔤 短波条件「关闭」改「未开通」——它被误读成关闭按钮

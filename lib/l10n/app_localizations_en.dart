@@ -5619,4 +5619,192 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sysEmpty =>
       'Open APRSlocus and connect to see your station status here';
+
+  @override
+  String get backupTitle => 'Backup & restore';
+
+  @override
+  String get backupSubtitle => 'Export or import settings and data';
+
+  @override
+  String get backupEntryDesc => 'Pack settings and data into a JSON file';
+
+  @override
+  String get backupDesc =>
+      'The backup is a JSON file you can restore after switching or reinstalling. Import overwrites per group and cannot be undone.';
+
+  @override
+  String get backupExport => 'Export backup';
+
+  @override
+  String get backupExportDesc =>
+      'Pick what to include, then save to a file or copy as text';
+
+  @override
+  String get backupExportToFile => 'Save to file';
+
+  @override
+  String get backupCopyJson => 'Copy to clipboard';
+
+  @override
+  String get backupExportDone => 'Backup exported';
+
+  @override
+  String get backupExportFailed =>
+      'Export failed — check storage permission or free space';
+
+  @override
+  String get backupCopyDone => 'Backup copied to clipboard';
+
+  @override
+  String backupSavedTo(String path) {
+    return 'Saved to: $path';
+  }
+
+  @override
+  String get backupCatSettings => 'Settings';
+
+  @override
+  String get backupCatSettingsDesc =>
+      'Station, beacon, map, filters, sources, server';
+
+  @override
+  String get backupCatStations => 'Stations & contacts';
+
+  @override
+  String get backupCatStationsDesc =>
+      'Favourites, manual contacts and their notes';
+
+  @override
+  String get backupCatMessages => 'Messages';
+
+  @override
+  String get backupCatMessagesDesc => 'Direct messages and read positions';
+
+  @override
+  String get backupCatChats => 'Group chats';
+
+  @override
+  String get backupCatChatsDesc => 'Groups, members and read state';
+
+  @override
+  String get backupCatTranslate => 'Translation settings';
+
+  @override
+  String get backupCatTranslateDesc =>
+      'Providers, keys and language preferences';
+
+  @override
+  String get backupCatHonors => 'Achievements & honours';
+
+  @override
+  String get backupCatHonorsDesc => 'Unlocks, counters and default badge';
+
+  @override
+  String backupItems(int n) {
+    return '$n items';
+  }
+
+  @override
+  String get backupSelectAll => 'Select all';
+
+  @override
+  String get backupNoSelection => 'Select at least one group';
+
+  @override
+  String get backupImport => 'Import backup';
+
+  @override
+  String get backupImportDesc => 'Choose a backup JSON file exported earlier';
+
+  @override
+  String get backupPickFile => 'Choose backup file';
+
+  @override
+  String get backupPaste => 'Paste from clipboard';
+
+  @override
+  String get backupPasteEmpty => 'No text in the clipboard';
+
+  @override
+  String get backupPreview => 'Backup contents';
+
+  @override
+  String backupFromVersion(String v) {
+    return 'From version $v';
+  }
+
+  @override
+  String backupExportedAt(String t) {
+    return 'Exported $t';
+  }
+
+  @override
+  String get backupImportSelected => 'Import selected';
+
+  @override
+  String get backupImportConfirmTitle => 'Import this backup?';
+
+  @override
+  String get backupImportConfirm =>
+      'The selected groups will be overwritten and this cannot be undone. Consider exporting a backup of the current data first.';
+
+  @override
+  String backupImported(int n) {
+    return 'Imported $n items';
+  }
+
+  @override
+  String backupSkipped(int n) {
+    return 'Skipped $n unknown entries';
+  }
+
+  @override
+  String get backupImportNothing =>
+      'The backup has no data for the selected groups';
+
+  @override
+  String get backupRestartTitle => 'Import complete';
+
+  @override
+  String get backupRestartHint =>
+      'Data is saved; restart the app for everything to take effect (achievements, translation, server connection).';
+
+  @override
+  String get backupRestartNow => 'Quit app';
+
+  @override
+  String get backupLater => 'Later';
+
+  @override
+  String get backupSecurityTip =>
+      'The backup contains your callsign, server passcode and API keys — keep it safe.';
+
+  @override
+  String get backupWebHint =>
+      'On the web, use “copy to clipboard / paste from clipboard”.';
+
+  @override
+  String get backupErrNotJson => 'The file is not valid JSON';
+
+  @override
+  String get backupErrNotBackup => 'This is not an APRSlocus backup file';
+
+  @override
+  String get backupErrSchemaNewer =>
+      'The backup comes from a newer APRSlocus — update the app first';
+
+  @override
+  String get backupErrEmpty => 'The backup contains nothing to import';
+
+  @override
+  String get backupErrTooLarge =>
+      'The backup is larger than 32 MB and cannot be read';
+
+  @override
+  String get backupErrRead => 'Could not read the backup file';
+
+  @override
+  String get backupErrUnsupported =>
+      'Picking files is not supported here — paste from the clipboard instead';
 }

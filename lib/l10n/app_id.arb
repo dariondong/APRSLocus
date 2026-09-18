@@ -1908,5 +1908,77 @@
   },
   "sysFixOk": "Terlokasi",
   "sysLinkAudio": "Audio",
-  "sysEmpty": "Buka APRSlocus dan sambungkan untuk melihat status di sini"
+  "sysEmpty": "Buka APRSlocus dan sambungkan untuk melihat status di sini",
+  "backupTitle": "Cadangkan & pulihkan",
+  "backupSubtitle": "Ekspor atau impor pengaturan dan data",
+  "backupEntryDesc": "Kemas pengaturan dan data ke JSON",
+  "backupDesc": "Cadangan berupa berkas JSON yang bisa dipulihkan setelah ganti perangkat atau pasang ulang. Impor menimpa per grup dan tidak bisa dibatalkan.",
+  "backupExport": "Ekspor cadangan",
+  "backupExportDesc": "Pilih isi, lalu simpan ke berkas atau salin",
+  "backupExportToFile": "Simpan ke berkas",
+  "backupCopyJson": "Salin ke papan klip",
+  "backupExportDone": "Cadangan diekspor",
+  "backupExportFailed": "Ekspor gagal — periksa izin penyimpanan atau ruang yang tersisa",
+  "backupCopyDone": "Cadangan disalin",
+  "backupSavedTo": "Disimpan ke: {path}",
+  "@backupSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "backupCatSettings": "Pengaturan",
+  "backupCatSettingsDesc": "Stasiun, beacon, peta, filter, sumber, server",
+  "backupCatStations": "Stasiun & kontak",
+  "backupCatStationsDesc": "Favorit, kontak manual, dan catatannya",
+  "backupCatMessages": "Pesan",
+  "backupCatMessagesDesc": "Pesan langsung dan posisi baca",
+  "backupCatChats": "Obrolan grup",
+  "backupCatChatsDesc": "Grup, anggota, dan status baca",
+  "backupCatTranslate": "Pengaturan terjemahan",
+  "backupCatTranslateDesc": "Penyedia, kunci, dan preferensi bahasa",
+  "backupCatHonors": "Pencapaian & kehormatan",
+  "backupCatHonorsDesc": "Bukaan, penghitung, dan lencana bawaan",
+  "backupItems": "{n} item",
+  "@backupItems": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSelectAll": "Pilih semua",
+  "backupNoSelection": "Pilih minimal satu grup",
+  "backupImport": "Impor cadangan",
+  "backupImportDesc": "Pilih berkas JSON cadangan yang pernah diekspor",
+  "backupPickFile": "Pilih berkas cadangan",
+  "backupPaste": "Tempel dari papan klip",
+  "backupPasteEmpty": "Tidak ada teks di papan klip",
+  "backupPreview": "Isi cadangan",
+  "backupFromVersion": "Dari versi {v}",
+  "@backupFromVersion": {
+    "placeholders": {"v": {"type": "String"}}
+  },
+  "backupExportedAt": "Diekspor {t}",
+  "@backupExportedAt": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "backupImportSelected": "Impor yang dipilih",
+  "backupImportConfirmTitle": "Impor cadangan ini?",
+  "backupImportConfirm": "Grup terpilih akan ditimpa dan tidak bisa dibatalkan. Sebaiknya ekspor dulu data saat ini.",
+  "backupImported": "Mengimpor {n} item",
+  "@backupImported": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSkipped": "Melewati {n} entri tak dikenal",
+  "@backupSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupImportNothing": "Cadangan tidak punya data untuk grup terpilih",
+  "backupRestartTitle": "Impor selesai",
+  "backupRestartHint": "Data tersimpan; mulai ulang aplikasi agar semuanya berlaku (pencapaian, terjemahan, koneksi server).",
+  "backupRestartNow": "Keluar aplikasi",
+  "backupLater": "Nanti",
+  "backupSecurityTip": "Cadangan berisi callsign, passcode server, dan kunci API — simpan dengan aman.",
+  "backupWebHint": "Di web, gunakan “salin / tempel dari papan klip”.",
+  "backupErrNotJson": "Berkas bukan JSON yang valid",
+  "backupErrNotBackup": "Ini bukan berkas cadangan APRSlocus",
+  "backupErrSchemaNewer": "Cadangan berasal dari APRSlocus versi lebih baru — perbarui aplikasi dulu",
+  "backupErrEmpty": "Cadangan tidak berisi apa pun untuk diimpor",
+  "backupErrTooLarge": "Cadangan melebihi 32 MB dan tidak bisa dibaca",
+  "backupErrRead": "Gagal membaca berkas cadangan",
+  "backupErrUnsupported": "Memilih berkas tidak didukung di sini — tempel dari papan klip"
 }

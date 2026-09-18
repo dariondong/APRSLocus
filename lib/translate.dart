@@ -486,7 +486,10 @@ class TranslateService {
   static final TranslateService instance = TranslateService._();
 
   static const _kConfig = 'translateConfigJson';
-  static const _kCache = 'translateCacheJson';
+  /// 翻译缓存键。对外可见（`kCachePrefKey`）是因为备份要**显式**把它排除：
+  /// 缓存随时能再生成，导入旧缓存会把新翻译顶掉。
+  static const kCachePrefKey = 'translateCacheJson';
+  static const _kCache = kCachePrefKey;
   static const _kPrefPrefix = 'transPref_';
 
   final TranslateConfig config = TranslateConfig();

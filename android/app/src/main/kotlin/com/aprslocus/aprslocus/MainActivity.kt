@@ -15,12 +15,26 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.aprslocus/location"
     private val EVENT_CHANNEL = "com.aprslocus/location_events"
     private var permCompleter: MethodChannel.Result? = null
+
+    // 备份导入的文件选择：系统文件选择器是异步的（先 startActivityForResult，
+    // 结果在 onActivityResult 里回来），所以这里要暂存 Dart 侧的 Result，
+    // 等选完再回。同一时刻只允许一个选择在飞（否则两个 Result 会互相踩）。
+    private var pickCompleter: MethodChannel.Result? = null
+    private companion object {
+        const val REQ_PICK_BACKUP = 4711
+
+        // 备份文本上限：读进来要整体转成 String 传给 Dart，
+        // 不设上限的话一个误选的几个 G 的文件就能把应用 OOM 掉。
+        // 32MB 对「设置+消息记录」来说已经极其宽松。
+        const val MAX_BACKUP_BYTES = 32 * 1024 * 1024
+    }
 
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
     private var tnc: TncManager? = null
@@ -323,21 +337,99 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // 导出通道：把文本文件写入「下载」目录（供 ADIF 导出使用）
+        // 导出通道：把文本文件写入「下载」目录（供 ADIF 导出 / 备份导出使用）
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/export").setMethodCallHandler { call, result ->
             when (call.method) {
                 "saveToDownloads" -> {
                     val filename = call.argument<String>("filename") ?: "export.adi"
                     val content = call.argument<String>("content") ?: ""
-                    val path = saveToDownloads(filename, content)
+                    // 备份是 application/json，ADIF/音频保持 text/plain。
+                    // 不能都写 text/plain：部分系统会据此给文件名追加 .txt。
+                    val mime = call.argument<String>("mimeType") ?: "text/plain"
+                    val path = saveToDownloads(filename, content, mime)
                     if (path == null) {
                         result.error("SAVE_FAILED", "保存失败", null)
                     } else {
                         result.success(path)
                     }
                 }
+                // 备份导入：拉起系统文件选择器，返回 {name, content}
+                // 用户取消返回 null；文件过大 / 读失败走 error
+                "pickTextFile" -> pickTextFile(result)
                 else -> result.notImplemented()
             }
+        }
+    }
+
+    /// 拉起系统文件选择器（ACTION_GET_CONTENT），把选中的文本文件读回 Dart。
+    ///
+    /// 用 GET_CONTENT 而不是 OPEN_DOCUMENT：前者任何文件管理器都支持，
+    /// 且拿到的是临时读权限，够读一次备份；不需要持久化权限。
+    private fun pickTextFile(result: MethodChannel.Result) {
+        if (pickCompleter != null) {
+            result.error("BUSY", "已有文件选择在进行中", null)
+            return
+        }
+        pickCompleter = result
+        try {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "*/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+                // 有些文件管理器对 .json 的 MIME 识别成 octet-stream，
+                // 所以 type 用 */* 兜底，只把 json/plain 作为优先提示。
+                putExtra(
+                    Intent.EXTRA_MIME_TYPES,
+                    arrayOf("application/json", "text/plain")
+                )
+            }
+            startActivityForResult(
+                Intent.createChooser(intent, "APRSlocus"),
+                REQ_PICK_BACKUP
+            )
+        } catch (e: Exception) {
+            pickCompleter = null
+            result.error("NO_PICKER", e.message, null)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_PICK_BACKUP) return
+        val completer = pickCompleter ?: return
+        pickCompleter = null
+        val uri = data?.data
+        if (resultCode != RESULT_OK || uri == null) {
+            // 用户取消：不是错误，回 null（Dart 侧据此区分「取消」与「读失败」）
+            completer.success(null)
+            return
+        }
+        try {
+            val text = readTextCapped(uri, MAX_BACKUP_BYTES)
+            if (text == null) {
+                completer.error("TOO_LARGE", "文件过大", null)
+                return
+            }
+            val name = displayNameOf(uri) ?: "backup.json"
+            completer.success(mapOf("name" to name, "content" to text))
+        } catch (e: Exception) {
+            completer.error("READ_FAILED", e.message, null)
+        }
+    }
+
+    /// 读取文本文件，超过 [max] 字节返回 null（继续读下去只会把内存吃爆）。
+    /// 用分块读取而不是 readBytes()：后者会先按不限长度分配。
+    private fun readTextCapped(uri: Uri, max: Int): String? {
+        val input = contentResolver.openInputStream(uri) ?: return null
+        input.use { ins ->
+            val buf = ByteArrayOutputStream()
+            val chunk = ByteArray(64 * 1024)
+            while (true) {
+                val n = ins.read(chunk)
+                if (n <= 0) break
+                if (buf.size() + n > max) return null
+                buf.write(chunk, 0, n)
+            }
+            return buf.toString(Charsets.UTF_8.name())
         }
     }
 
@@ -347,14 +439,18 @@ class MainActivity : FlutterActivity() {
     ///   （应用向 Downloads 集合插入自己的内容不需要 WRITE_EXTERNAL_STORAGE）。
     /// - Android 9 及以下：写入应用的外部私有目录（同样无需权限；
     ///   在那些系统版本上该目录可被文件管理器直接浏览）。
-    private fun saveToDownloads(filename: String, content: String): String? {
+    private fun saveToDownloads(
+        filename: String,
+        content: String,
+        mime: String = "text/plain"
+    ): String? {
         // 文件名来自 Dart，做一次净化，避免路径穿越
         val safe = filename.replace('/', '_').replace('\\', '_')
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val values = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, safe)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                    put(MediaStore.MediaColumns.MIME_TYPE, mime)
                     put(
                         MediaStore.MediaColumns.RELATIVE_PATH,
                         Environment.DIRECTORY_DOWNLOADS

@@ -1824,5 +1824,77 @@
   },
   "sysFixOk": "Located",
   "sysLinkAudio": "Audio",
-  "sysEmpty": "Open APRSlocus and connect to see your station status here"
+  "sysEmpty": "Open APRSlocus and connect to see your station status here",
+  "backupTitle": "Backup & restore",
+  "backupSubtitle": "Export or import settings and data",
+  "backupEntryDesc": "Pack settings and data into a JSON file",
+  "backupDesc": "The backup is a JSON file you can restore after switching or reinstalling. Import overwrites per group and cannot be undone.",
+  "backupExport": "Export backup",
+  "backupExportDesc": "Pick what to include, then save to a file or copy as text",
+  "backupExportToFile": "Save to file",
+  "backupCopyJson": "Copy to clipboard",
+  "backupExportDone": "Backup exported",
+  "backupExportFailed": "Export failed — check storage permission or free space",
+  "backupCopyDone": "Backup copied to clipboard",
+  "backupSavedTo": "Saved to: {path}",
+  "@backupSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "backupCatSettings": "Settings",
+  "backupCatSettingsDesc": "Station, beacon, map, filters, sources, server",
+  "backupCatStations": "Stations & contacts",
+  "backupCatStationsDesc": "Favourites, manual contacts and their notes",
+  "backupCatMessages": "Messages",
+  "backupCatMessagesDesc": "Direct messages and read positions",
+  "backupCatChats": "Group chats",
+  "backupCatChatsDesc": "Groups, members and read state",
+  "backupCatTranslate": "Translation settings",
+  "backupCatTranslateDesc": "Providers, keys and language preferences",
+  "backupCatHonors": "Achievements & honours",
+  "backupCatHonorsDesc": "Unlocks, counters and default badge",
+  "backupItems": "{n} items",
+  "@backupItems": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSelectAll": "Select all",
+  "backupNoSelection": "Select at least one group",
+  "backupImport": "Import backup",
+  "backupImportDesc": "Choose a backup JSON file exported earlier",
+  "backupPickFile": "Choose backup file",
+  "backupPaste": "Paste from clipboard",
+  "backupPasteEmpty": "No text in the clipboard",
+  "backupPreview": "Backup contents",
+  "backupFromVersion": "From version {v}",
+  "@backupFromVersion": {
+    "placeholders": {"v": {"type": "String"}}
+  },
+  "backupExportedAt": "Exported {t}",
+  "@backupExportedAt": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "backupImportSelected": "Import selected",
+  "backupImportConfirmTitle": "Import this backup?",
+  "backupImportConfirm": "The selected groups will be overwritten and this cannot be undone. Consider exporting a backup of the current data first.",
+  "backupImported": "Imported {n} items",
+  "@backupImported": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSkipped": "Skipped {n} unknown entries",
+  "@backupSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupImportNothing": "The backup has no data for the selected groups",
+  "backupRestartTitle": "Import complete",
+  "backupRestartHint": "Data is saved; restart the app for everything to take effect (achievements, translation, server connection).",
+  "backupRestartNow": "Quit app",
+  "backupLater": "Later",
+  "backupSecurityTip": "The backup contains your callsign, server passcode and API keys — keep it safe.",
+  "backupWebHint": "On the web, use “copy to clipboard / paste from clipboard”.",
+  "backupErrNotJson": "The file is not valid JSON",
+  "backupErrNotBackup": "This is not an APRSlocus backup file",
+  "backupErrSchemaNewer": "The backup comes from a newer APRSlocus — update the app first",
+  "backupErrEmpty": "The backup contains nothing to import",
+  "backupErrTooLarge": "The backup is larger than 32 MB and cannot be read",
+  "backupErrRead": "Could not read the backup file",
+  "backupErrUnsupported": "Picking files is not supported here — paste from the clipboard instead"
 }

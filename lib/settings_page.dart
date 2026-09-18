@@ -15,6 +15,7 @@ import 'honor_wall_page.dart';
 import 'settings_pages.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
+import 'backup_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final AppState state;
@@ -298,6 +299,58 @@ class _SettingsPageState extends State<SettingsPage> {
                         Expanded(
                           child: Text(
                             S.of(context).adifLogFile,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF98A2B8),
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                // 备份与恢复（与 ADIF 导出并列的数据出入口）
+                GestureDetector(
+                  onTap: () => _push(BackupPage(state: widget.state)),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF7C3AED), Color(0xFF5B21B6)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: const Icon(
+                            Icons.settings_backup_restore_rounded,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).backupTitle,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).backupEntryDesc,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

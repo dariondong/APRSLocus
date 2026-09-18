@@ -1908,5 +1908,77 @@
   },
   "sysFixOk": "測位済み",
   "sysLinkAudio": "オーディオ",
-  "sysEmpty": "APRSlocus を開いて接続すると、ここに運用状況が表示されます"
+  "sysEmpty": "APRSlocus を開いて接続すると、ここに運用状況が表示されます",
+  "backupTitle": "バックアップと復元",
+  "backupSubtitle": "設定とデータの書き出し・読み込み",
+  "backupEntryDesc": "設定とデータを JSON にまとめる",
+  "backupDesc": "バックアップは JSON ファイルで、機種変更や再インストール後に復元できます。読み込みはグループ単位で上書きされ、元に戻せません。",
+  "backupExport": "バックアップを書き出す",
+  "backupExportDesc": "含める内容を選び、ファイル保存またはクリップボードへコピー",
+  "backupExportToFile": "ファイルに保存",
+  "backupCopyJson": "クリップボードにコピー",
+  "backupExportDone": "バックアップを書き出しました",
+  "backupExportFailed": "書き出しに失敗しました。ストレージの権限や空き容量を確認してください",
+  "backupCopyDone": "バックアップをクリップボードにコピーしました",
+  "backupSavedTo": "保存先：{path}",
+  "@backupSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "backupCatSettings": "設定",
+  "backupCatSettingsDesc": "局、ビーコン、地図、フィルター、接続先、サーバー",
+  "backupCatStations": "局とコンタクト",
+  "backupCatStationsDesc": "お気に入り・手動追加した局とメモ",
+  "backupCatMessages": "メッセージ履歴",
+  "backupCatMessagesDesc": "個別メッセージと既読位置",
+  "backupCatChats": "グループチャット",
+  "backupCatChatsDesc": "グループ、メンバー、既読状態",
+  "backupCatTranslate": "翻訳設定",
+  "backupCatTranslateDesc": "翻訳サービス、API キー、言語設定",
+  "backupCatHonors": "実績と栄誉",
+  "backupCatHonorsDesc": "解除記録、カウント、既定バッジ",
+  "backupItems": "{n} 件",
+  "@backupItems": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSelectAll": "すべて選択",
+  "backupNoSelection": "グループを 1 つ以上選んでください",
+  "backupImport": "バックアップを読み込む",
+  "backupImportDesc": "以前書き出した JSON バックアップを選択",
+  "backupPickFile": "バックアップを選択",
+  "backupPaste": "クリップボードから貼り付け",
+  "backupPasteEmpty": "クリップボードにテキストがありません",
+  "backupPreview": "バックアップの内容",
+  "backupFromVersion": "書き出し元 {v}",
+  "@backupFromVersion": {
+    "placeholders": {"v": {"type": "String"}}
+  },
+  "backupExportedAt": "書き出し日時 {t}",
+  "@backupExportedAt": {
+    "placeholders": {"t": {"type": "String"}}
+  },
+  "backupImportSelected": "選択した項目を読み込む",
+  "backupImportConfirmTitle": "読み込みますか？",
+  "backupImportConfirm": "選択したグループは上書きされ、元に戻せません。先に現在のデータを書き出すことをおすすめします。",
+  "backupImported": "{n} 件を読み込みました",
+  "@backupImported": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupSkipped": "不明な {n} 件をスキップしました",
+  "@backupSkipped": {
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "backupImportNothing": "選択したグループのデータがバックアップにありません",
+  "backupRestartTitle": "読み込み完了",
+  "backupRestartHint": "データは保存されました。完全に反映するにはアプリを再起動してください（実績・翻訳・サーバー接続など）。",
+  "backupRestartNow": "アプリを終了",
+  "backupLater": "あとで",
+  "backupSecurityTip": "バックアップにはコールサイン、サーバーのパスコード、API キーが含まれます。大切に保管してください。",
+  "backupWebHint": "Web 版では「クリップボードにコピー / 貼り付け」を使ってください。",
+  "backupErrNotJson": "ファイルが有効な JSON ではありません",
+  "backupErrNotBackup": "APRSlocus のバックアップではありません",
+  "backupErrSchemaNewer": "新しいバージョンの APRSlocus のバックアップです。アプリを更新してください",
+  "backupErrEmpty": "読み込める内容がありません",
+  "backupErrTooLarge": "バックアップが 32 MB を超えているため読み込めません",
+  "backupErrRead": "バックアップを読み込めませんでした",
+  "backupErrUnsupported": "この環境ではファイル選択が使えません。クリップボードから貼り付けてください"
 }
