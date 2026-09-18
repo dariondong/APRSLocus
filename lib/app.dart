@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'theme.dart';
+import 'theme_store.dart';
 import 'state.dart';
 import 'home_page.dart';
 import 'splash_page.dart';
@@ -116,15 +117,28 @@ class _AppState extends State<App> {
       ],
       builder: (context, child) {
         final scale = _state.uiScale;
+        // 背景图在这里**一次性**生效：builder 位于 MaterialApp 之下、Navigator
+        // 之上，所以所有页面（含设置子页、push 出来的对话框页面）都盖到了，
+        // 不必逐个页面去改 —— 逐个改的结果必然是漏掉几个，而那几页看起来
+        // 就像「背景图有时候不生效」。
+        final bg = ThemeController.instance.buildAppBackground();
+        Widget content = AppWidgetSync(state: _state, child: child!);
+        if (bg != null) {
+          content = Stack(
+            children: [
+              Positioned.fill(child: bg),
+              Positioned.fill(child: content),
+            ],
+          );
+        }
         return MediaQuery(
           data: MediaQuery.of(context)
               .copyWith(textScaler: TextScaler.linear(scale)),
-          // 桌面小组件同步器。挂在这里不是随便挑的位置：builder 的 context
-          // 位于 Localizations **之下**，所以 AppWidgetSync 里
-          // AppLocalizations.of(context) 拿到的就是当前真正生效的语言
-          // （包括「跟随系统」那档）。换到 App 层就得自己重算 locale，
-          // 一旦算错，组件上的文字会和界面差一个语言。
-          child: AppWidgetSync(state: _state, child: child!),
+          // 说明：桌面小组件同步器 AppWidgetSync 也必须在 builder 的 context 下
+          // ——它位于 Localizations **之下**，所以里面 AppLocalizations.of(context)
+          // 拿到的就是当前真正生效的语言（包括「跟随系统」那档）。换到 App 层
+          // 就得自己重算 locale，一旦算错，组件上的文字会和界面差一个语言。
+          child: content,
         );
       },
       home: ListenableBuilder(

@@ -6026,4 +6026,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeTokenInfo => 'Info / accent';
+
+  @override
+  String get themeBg => 'Background image';
+
+  @override
+  String get themeBgDesc =>
+      'Use an image as the app backdrop; cards turn translucent automatically';
+
+  @override
+  String get themeBgPick => 'Choose image';
+
+  @override
+  String get themeBgReplace => 'Replace image';
+
+  @override
+  String get themeBgRemove => 'Remove background';
+
+  @override
+  String get themeBgOpacity => 'Opacity';
+
+  @override
+  String get themeBgOpacityDesc =>
+      'Also sets the veil strength: higher shows more image and risks unreadable text';
+
+  @override
+  String get themeBgBlur => 'Blur';
+
+  @override
+  String get themeBgBlurDesc =>
+      'Blurring removes photo detail so text on top stays legible';
+
+  @override
+  String get themeBgFit => 'Fill mode';
+
+  @override
+  String get themeBgFitCover => 'Cover';
+
+  @override
+  String get themeBgFitContain => 'Contain';
+
+  @override
+  String get themeBgFitStretch => 'Stretch';
+
+  @override
+  String get themeBgFitTile => 'Tile';
+
+  @override
+  String get themeBgNone => 'Not set';
+
+  @override
+  String get themeBgErrTooLarge =>
+      'The background is larger than 8 MB — compress it first (icons are capped at 2 MB)';
+
+  @override
+  String get themeBgLocalOnly =>
+      'The image stays on this device: the theme file records only a reference, not the image, so anyone you share it with sees the theme without a background.';
+
+  @override
+  String get themeBgDisabledHint =>
+      'This theme has no background image; the backdrop is a solid colour';
 }

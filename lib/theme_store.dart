@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -179,9 +180,11 @@ class ThemeController extends ChangeNotifier {
 
   Future<void> _warmIconStore() async {
     if (!icon_io.supportsFileIcons) return;
-    // 借一次「找文件」把目录准备好（iconFilePath 内部会创建目录）
     try {
-      await icon_io.iconFilePath('__warmup__');
+      // 两个目录（图标 / 背景）都要准备好：只建图标目录的话，
+      // 背景图在首次渲染时会因为「目录尚未就绪」而回退成无背景，
+      // 用户看到的是「设了图但一开始不显示」。
+      await icon_io.warmImageStore();
     } catch (_) {}
     if (icon_io.iconStoreReady) {
       revision++;
@@ -301,6 +304,77 @@ class ThemeController extends ChangeNotifier {
       tokens: tokens,
       radius: t.radius,
     );
+    // 卡片/页面底色是否该透出背景，取决于「这个主题有没有背景图」。
+    // 放在这里而不是 build 里：调色板是全局单例，它必须和主题同一时刻更新，
+    // 否则会出现「背景已生效但卡片还是不透明」的半截状态。
+    final had = C.hasBackground;
+    C.hasBackground = t.hasBackground;
+    if (had != C.hasBackground) {
+      // 表面色的语义变了，所有已构建的页面都得重画一次
+      revision++;
+    }
+  }
+
+  // ─── 背景图 ───
+
+  /// 背景层；主题没设背景图、或图已不可用 → 返回 null（调用方直接用原内容）。
+  ///
+  /// 三层的顺序是**有讲究**的，不是随手叠的：
+  /// 1. 图（按 fill 模式绘制）；
+  /// 2. 模糊：作用在**已画好的图**上，所以 SVG 也能模糊（它最终也是像素）；
+  /// 3. 遮罩：按深浅模式盖一层底色。
+  ///
+  /// 第 3 层不能省。没有它，用户拿一张中等亮度的照片当背景，无论深色还是
+  /// 浅色文字都会有一半看不清 —— 而「看不清」比「不好看」严重得多。
+  /// 遮罩的浓度直接取用户设的不透明度，所以调这个滑杆同时也在调对比度，
+  /// 这比再给一个「遮罩强度」旋钮更好理解。
+  Widget? buildAppBackground() {
+    final t = active;
+    if (!t.hasBackground) return null;
+    final ref = t.background!;
+
+    final layer = icon_io.buildBackgroundLayer(
+      ref,
+      fit: _boxFit(t.bgFit),
+      tile: t.bgFit == 'tile',
+      fallback: () => const SizedBox.shrink(),
+    );
+    if (layer == null) return null; // 图没了：当作没设背景，而不是给一块空白
+
+    Widget w = layer;
+    if (t.bgBlur > 0) {
+      w = ImageFiltered(
+        imageFilter: ImageFilter.blur(sigmaX: t.bgBlur, sigmaY: t.bgBlur),
+        child: w,
+      );
+    }
+    final veil = (C.dark ? C.black : C.white)
+        .withValues(alpha: t.bgOpacity.clamp(kThemeBgOpacityMin, kThemeBgOpacityMax));
+    return Stack(
+      children: [
+        Positioned.fill(child: w),
+        Positioned.fill(child: ColoredBox(color: veil)),
+      ],
+    );
+  }
+
+  /// 主题页里那张小预览图。
+  ///
+  /// 走 [icon_io] 而不是自己 Image.file：路径解析、文件名安全校验、
+  /// 「文件被删了怎么办」这些逻辑只在那一处有，复制一份出来必然漂移。
+  Widget? buildBgThumb(String ref) =>
+      icon_io.buildFileImage(ref, fit: BoxFit.cover);
+
+  BoxFit _boxFit(String fit) {
+    switch (fit) {
+      case 'contain':
+        return BoxFit.contain;
+      case 'stretch':
+        return BoxFit.fill;
+      case 'tile':
+        return BoxFit.none;
+    }
+    return BoxFit.cover;
   }
 
   /// 某个插槽该用哪个内置图标（已考虑覆写与回退）
@@ -317,6 +391,10 @@ class ThemeController extends ChangeNotifier {
         : (def?.defaultIcon ?? 'help_outline_rounded');
     return themeIconByName(name) ?? Icons.help_outline_rounded;
   }
+
+  /// 导入一张背景图（走与图标同一条通道，只是上限与目录不同）
+  Future<icon_io.IconImportResult> importBackground() =>
+      icon_io.importBackgroundFromPicker();
 
   /// 某个插槽是否引用了外部图片文件
   bool hasFileIcon(String slot) {

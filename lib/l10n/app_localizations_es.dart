@@ -6073,4 +6073,64 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get themeTokenInfo => 'Información / acento';
+
+  @override
+  String get themeBg => 'Imagen de fondo';
+
+  @override
+  String get themeBgDesc =>
+      'Usa una imagen como fondo; las tarjetas se vuelven transparentes automáticamente';
+
+  @override
+  String get themeBgPick => 'Elegir imagen';
+
+  @override
+  String get themeBgReplace => 'Cambiar imagen';
+
+  @override
+  String get themeBgRemove => 'Quitar fondo';
+
+  @override
+  String get themeBgOpacity => 'Opacidad';
+
+  @override
+  String get themeBgOpacityDesc =>
+      'También define el velo: más alto muestra más imagen y arriesga la legibilidad';
+
+  @override
+  String get themeBgBlur => 'Desenfoque';
+
+  @override
+  String get themeBgBlurDesc =>
+      'El desenfoque elimina detalle y hace legible el texto encima';
+
+  @override
+  String get themeBgFit => 'Modo de ajuste';
+
+  @override
+  String get themeBgFitCover => 'Cubrir';
+
+  @override
+  String get themeBgFitContain => 'Contener';
+
+  @override
+  String get themeBgFitStretch => 'Estirar';
+
+  @override
+  String get themeBgFitTile => 'Mosaico';
+
+  @override
+  String get themeBgNone => 'Sin definir';
+
+  @override
+  String get themeBgErrTooLarge =>
+      'El fondo supera los 8 MB: comprímelo (los iconos tienen un límite de 2 MB)';
+
+  @override
+  String get themeBgLocalOnly =>
+      'La imagen se queda en este dispositivo: el archivo de tema solo guarda una referencia, así que quien lo reciba verá el tema sin fondo.';
+
+  @override
+  String get themeBgDisabledHint =>
+      'Este tema no tiene fondo: el fondo es un color sólido';
 }

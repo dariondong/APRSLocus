@@ -233,7 +233,7 @@ class _OobePageState extends State<OobePage> {
   Widget build(BuildContext context) {
     final last = _step >= 6;
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: C.pageFill,
       body: SafeArea(
         child: Column(
           children: [

@@ -315,7 +315,7 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
     final sample = _sampleRecord();
 
     return Scaffold(
-      backgroundColor: C.greyBg,
+      backgroundColor: C.pageFill,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

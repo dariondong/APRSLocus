@@ -5861,4 +5861,59 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get themeTokenInfo => '情報・強調';
+
+  @override
+  String get themeBg => '背景画像';
+
+  @override
+  String get themeBgDesc => '画像をアプリ全体の背景に。カードは自動的に半透明になります';
+
+  @override
+  String get themeBgPick => '画像を選ぶ';
+
+  @override
+  String get themeBgReplace => '画像を変更';
+
+  @override
+  String get themeBgRemove => '背景を削除';
+
+  @override
+  String get themeBgOpacity => '不透明度';
+
+  @override
+  String get themeBgOpacityDesc => 'マスクの濃さも兼ねます。上げるほど画像が見え、文字が読みにくくなります';
+
+  @override
+  String get themeBgBlur => 'ぼかし';
+
+  @override
+  String get themeBgBlurDesc => 'ぼかすと写真の細部が消え、上の文字が読みやすくなります';
+
+  @override
+  String get themeBgFit => '表示方法';
+
+  @override
+  String get themeBgFitCover => '全面';
+
+  @override
+  String get themeBgFitContain => '全体表示';
+
+  @override
+  String get themeBgFitStretch => '引き伸ばし';
+
+  @override
+  String get themeBgFitTile => 'タイル';
+
+  @override
+  String get themeBgNone => '未設定';
+
+  @override
+  String get themeBgErrTooLarge => '背景画像が 8MB を超えています。圧縮してください（アイコンは 2MB まで）';
+
+  @override
+  String get themeBgLocalOnly =>
+      '背景画像はこの端末にのみ保存されます。テーマファイルには参照だけが記録され、画像自体は含まれないため、共有した相手には背景なしのテーマが表示されます。';
+
+  @override
+  String get themeBgDisabledHint => 'このテーマに背景画像はありません。背景は単色です';
 }

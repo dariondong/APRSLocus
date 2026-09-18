@@ -10478,6 +10478,114 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'信息/强调'**
   String get themeTokenInfo;
+
+  /// No description provided for @themeBg.
+  ///
+  /// In zh, this message translates to:
+  /// **'背景图'**
+  String get themeBg;
+
+  /// No description provided for @themeBgDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'用一张图片做整个界面的底；卡片会自动变得半透明'**
+  String get themeBgDesc;
+
+  /// No description provided for @themeBgPick.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择图片'**
+  String get themeBgPick;
+
+  /// No description provided for @themeBgReplace.
+  ///
+  /// In zh, this message translates to:
+  /// **'更换图片'**
+  String get themeBgReplace;
+
+  /// No description provided for @themeBgRemove.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除背景图'**
+  String get themeBgRemove;
+
+  /// No description provided for @themeBgOpacity.
+  ///
+  /// In zh, this message translates to:
+  /// **'不透明度'**
+  String get themeBgOpacity;
+
+  /// No description provided for @themeBgOpacityDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'同时决定遮罩浓度：调高更看见图，也更容易看不清文字'**
+  String get themeBgOpacityDesc;
+
+  /// No description provided for @themeBgBlur.
+  ///
+  /// In zh, this message translates to:
+  /// **'模糊'**
+  String get themeBgBlur;
+
+  /// No description provided for @themeBgBlurDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'模糊能把照片的细节压掉，让上面的文字更清楚'**
+  String get themeBgBlurDesc;
+
+  /// No description provided for @themeBgFit.
+  ///
+  /// In zh, this message translates to:
+  /// **'填充方式'**
+  String get themeBgFit;
+
+  /// No description provided for @themeBgFitCover.
+  ///
+  /// In zh, this message translates to:
+  /// **'铺满'**
+  String get themeBgFitCover;
+
+  /// No description provided for @themeBgFitContain.
+  ///
+  /// In zh, this message translates to:
+  /// **'完整显示'**
+  String get themeBgFitContain;
+
+  /// No description provided for @themeBgFitStretch.
+  ///
+  /// In zh, this message translates to:
+  /// **'拉伸'**
+  String get themeBgFitStretch;
+
+  /// No description provided for @themeBgFitTile.
+  ///
+  /// In zh, this message translates to:
+  /// **'平铺'**
+  String get themeBgFitTile;
+
+  /// No description provided for @themeBgNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get themeBgNone;
+
+  /// No description provided for @themeBgErrTooLarge.
+  ///
+  /// In zh, this message translates to:
+  /// **'背景图超过 8MB，请先压缩（图标上限是 2MB）'**
+  String get themeBgErrTooLarge;
+
+  /// No description provided for @themeBgLocalOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'背景图只存在本机：主题文件里只记录引用，不含图片本身，分享给别人后对方会看到无背景的主题。'**
+  String get themeBgLocalOnly;
+
+  /// No description provided for @themeBgDisabledHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前主题未使用背景图，界面底为纯色'**
+  String get themeBgDisabledHint;
 }
 
 class _AppLocalizationsDelegate

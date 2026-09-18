@@ -453,6 +453,218 @@ class _ThemePageState extends State<ThemePage> {
     _mutate((t) => t.colors[token.id] = hex);
   }
 
+  // ─── 背景图 ───
+
+  Widget _backgroundSection(S s) {
+    final t = _t;
+    final has = t.hasBackground;
+    return SettingsSectionCard(
+      title: s.themeBg,
+      subtitle: s.themeBgDesc,
+      icon: Icons.wallpaper_rounded,
+      color: C.indigo,
+      children: [
+        // 预览 + 选择/移除
+        InkWell(
+          onTap: _editable ? () => _pickBackground(s) : null,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+            ),
+            child: Row(
+              children: [
+                _bgThumb(t),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    has ? s.themeBgReplace : s.themeBgPick,
+                    style: ts(12.5, w: FontWeight.w600),
+                  ),
+                ),
+                if (has && _editable)
+                  TextButton(
+                    onPressed: () => _mutate((x) => x.background = null),
+                    child: Text(s.themeBgRemove, style: ts(11.5, c: C.red)),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (!has)
+          SettingsHint(s.themeBgDisabledHint, color: C.slate)
+        else ...[
+          // 不透明度：顺便当遮罩浓度用，所以文案里说清楚
+          _sliderRow(
+            s: s,
+            label: s.themeBgOpacity,
+            value: t.bgOpacity,
+            min: kThemeBgOpacityMin,
+            max: kThemeBgOpacityMax,
+            hint: s.themeBgOpacityDesc,
+            onChanged: (v) => _mutate((x) => x.bgOpacity = v),
+          ),
+          _sliderRow(
+            s: s,
+            label: s.themeBgBlur,
+            value: t.bgBlur,
+            min: 0,
+            max: kThemeBgBlurMax,
+            hint: s.themeBgBlurDesc,
+            onChanged: (v) => _mutate((x) => x.bgBlur = v),
+          ),
+          // 填充方式
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.themeBgFit, style: ts(12, c: C.slate)),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final fit in kThemeBgFits)
+                      _fitChip(s, fit),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // 诚实说明：图不随主题文件走。不说的话，用户把主题发给别人，
+          // 对方看到的是一套「没有背景」的主题，只会以为是坏的。
+          SettingsHint(s.themeBgLocalOnly, color: C.orange,
+              icon: Icons.info_outline_rounded),
+        ],
+      ],
+    );
+  }
+
+  Widget _bgThumb(AppTheme t) {
+    final ref = t.background;
+    return Container(
+      width: 56,
+      height: 40,
+      decoration: BoxDecoration(
+        color: C.greyBg,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: C.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ref == null
+          ? Icon(Icons.image_not_supported_outlined, size: 16, color: C.grey)
+          : (tc.buildBgThumb(ref) ??
+              Icon(Icons.broken_image_outlined, size: 16, color: C.grey)),
+    );
+  }
+
+  Widget _fitChip(S s, String fit) {
+    final on = _t.bgFit == fit;
+    return GestureDetector(
+      onTap: _editable ? () => _mutate((x) => x.bgFit = fit) : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: on ? C.indigo.withValues(alpha: 0.12) : C.greyBg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: on ? C.indigo : C.border,
+            width: on ? 1.2 : 0.8,
+          ),
+        ),
+        child: Text(
+          _fitName(s, fit),
+          style: ts(11.5, c: on ? C.indigo : C.slate, w: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  String _fitName(S s, String fit) {
+    switch (fit) {
+      case 'contain':
+        return s.themeBgFitContain;
+      case 'stretch':
+        return s.themeBgFitStretch;
+      case 'tile':
+        return s.themeBgFitTile;
+    }
+    return s.themeBgFitCover;
+  }
+
+  /// 通用「标签 + 滑杆 + 说明」行（圆角/不透明度/模糊共用）
+  Widget _sliderRow({
+    required S s,
+    required String label,
+    required double value,
+    required double min,
+    required double max,
+    String? hint,
+    required ValueChanged<double> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(label, style: ts(12, c: C.slate))),
+              Text(
+                value.toStringAsFixed(max <= 1 ? 2 : 0),
+                style: mono(11, c: C.grey),
+              ),
+            ],
+          ),
+          Slider(
+            value: value.clamp(min, max),
+            min: min,
+            max: max,
+            activeColor: C.indigo,
+            onChanged: _editable ? onChanged : null,
+          ),
+          if (hint != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(hint, style: ts(10, c: C.grey, h: 1.35)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickBackground(S s) async {
+    setState(() => _busy = true);
+    icon_io.IconImportResult r;
+    try {
+      r = await tc.importBackground();
+    } catch (_) {
+      r = const icon_io.IconImportResult.fail(
+          icon_io.IconImportError.failed);
+    }
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (r.isOk) {
+      _mutate((x) => x.background = r.ref);
+      return;
+    }
+    switch (r.error) {
+      case icon_io.IconImportError.cancelled:
+        return; // 用户自己取消
+      case icon_io.IconImportError.tooLarge:
+        // 背景图与图标上限不同，提示里要说清是哪一个，否则用户会拿着
+        // 「超过 2MB」的提示去压缩一张只用到 8MB 的图
+        _toast(s.themeBgErrTooLarge);
+      case icon_io.IconImportError.badFormat:
+        _toast(s.themeIconErrFormat);
+      case icon_io.IconImportError.unsupportedPlatform:
+        _toast(s.themeIconErrUnsupported);
+      default:
+        _toast(s.themeIconErrFailed);
+    }
+  }
+
   // ─── 圆角 ───
 
   Widget _radiusSection(S s) {
@@ -462,33 +674,15 @@ class _ThemePageState extends State<ThemePage> {
       icon: Icons.rounded_corner_rounded,
       color: C.purple,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 6, 14, 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: Slider(
-                  value: _t.radius.clamp(kThemeMinRadius, kThemeMaxRadius),
-                  min: kThemeMinRadius,
-                  max: kThemeMaxRadius,
-                  divisions: 14,
-                  label: _t.radius.round().toString(),
-                  activeColor: C.purple,
-                  onChanged:
-                      _editable ? (v) => _mutate((t) => t.radius = v) : null,
-                ),
-              ),
-              SizedBox(
-                width: 34,
-                child: Text(
-                  _t.radius.round().toString(),
-                  style: ts(12, c: C.slate, w: FontWeight.w600),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
-          ),
+        _sliderRow(
+          s: s,
+          label: s.themeRadius,
+          value: _t.radius,
+          min: kThemeMinRadius,
+          max: kThemeMaxRadius,
+          onChanged: (v) => _mutate((x) => x.radius = v),
         ),
+        const SizedBox(height: 6),
       ],
     );
   }
@@ -935,6 +1129,8 @@ class _ThemePageState extends State<ThemePage> {
             SettingsHint(s.themeBuiltinHint, color: C.orange)
           else ...[
             _colorsSection(s),
+            const SizedBox(height: 16),
+            _backgroundSection(s),
             const SizedBox(height: 16),
             _radiusSection(s),
             const SizedBox(height: 16),

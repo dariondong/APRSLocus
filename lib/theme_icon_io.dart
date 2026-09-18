@@ -1,15 +1,18 @@
-/// 主题「导入的图标文件」的平台实现（io 变体：Android / Windows / Linux / macOS）。
+/// 主题「导入的图片」的平台实现（io 变体：Android / Windows / Linux / macOS）。
 ///
 /// 为什么单独一个文件、还要有 web 变体：这里的每一件事（读磁盘、写应用目录、
 /// 渲染 `Image.file` / `SvgPicture.file`）都依赖 `dart:io`。把它们隔离在本文件里，
 /// 共享代码（theme_store.dart / theme_page.dart）就不必碰 `dart:io`，
 /// Web 构建也就不会因为一个 import 而失败。
 ///
-/// 存储位置：`<应用支持目录>/theme_icons/<内容哈希>.<扩展名>`。
-/// 用**内容哈希**而不是时间戳命名，有两个实际好处：
+/// 存储位置：`<应用支持目录>/<子目录>/<内容哈希>.<扩展名>`。用**内容哈希**而不是
+/// 时间戳命名，有两个实际好处：
 /// 1. 同一张图重复导入不会攒出一堆副本，磁盘占用不随操作次数增长；
 /// 2. 主题文件里存的是 `file:ab12cd34.png` 这种稳定名字，分享给别人时
 ///    不会因为「在他机器上是另一个时间戳」而失效（当然对方仍需自备图片）。
+///
+/// 图标与背景图共用这套机制，只是**子目录与大小上限不同**：
+/// 图标要塞进 22~40dp，2MB 足够；背景图是整屏的，给到 8MB。
 library;
 
 import 'dart:convert';
@@ -23,7 +26,7 @@ import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 
-/// 当前平台是否支持「导入图片当图标」
+/// 当前平台是否支持「导入图片」
 bool get supportsFileIcons => !kIsWeb;
 
 enum IconImportError { cancelled, unsupportedPlatform, badFormat, tooLarge, failed }
@@ -41,38 +44,35 @@ class IconImportResult {
   bool get isOk => ref != null;
 }
 
-/// 单个图标文件上限。图标是要塞进 22~40dp 位置的图，2MB 已经极其宽松；
+/// 图标文件上限：要塞进 22~40dp 的位置，2MB 已经极其宽松；
 /// 不设上限的话，一张手机原图（8MB）就会变成主题里一个巨大的资源。
 const int kIconMaxBytes = 2 * 1024 * 1024;
 
+/// 背景图上限：整屏图，8MB 允许常见的手机照片直接使用。
+const int kBackgroundMaxBytes = 8 * 1024 * 1024;
+
+const String kIconDirName = 'theme_icons';
+const String kBackgroundDirName = 'theme_backgrounds';
+
 const _exportChannel = MethodChannel('com.aprslocus/export');
 
-Directory? _iconDir;
-String? _iconDirError;
+final Map<String, Directory?> _dirs = {};
+final Map<String, String> _dirErrors = {};
 
-Future<Directory?> _ensureDir() async {
-  if (_iconDir != null) return _iconDir;
-  if (_iconDirError != null) return null;
+Future<Directory?> _ensureDir(String name) async {
+  if (_dirs.containsKey(name)) return _dirs[name];
+  if (_dirErrors.containsKey(name)) return null;
   try {
     final base = await getApplicationSupportDirectory();
-    final d = Directory('${base.path}${Platform.pathSeparator}theme_icons');
+    final d = Directory('${base.path}${Platform.pathSeparator}$name');
     if (!await d.exists()) await d.create(recursive: true);
-    _iconDir = d;
+    _dirs[name] = d;
     return d;
   } catch (e) {
     // 记下失败原因，避免每次渲染都重试一遍（失败是持久的，重试只会白耗 IO）
-    _iconDirError = '$e';
+    _dirErrors[name] = '$e';
     return null;
   }
-}
-
-/// 已导入图标的绝对路径（不存在返回 null）
-Future<String?> iconFilePath(String storedName) async {
-  if (!_isSafeName(storedName)) return null;
-  final d = await _ensureDir();
-  if (d == null) return null;
-  final p = '${d.path}${Platform.pathSeparator}$storedName';
-  return await File(p).exists() ? p : null;
 }
 
 /// 只接受「纯文件名」：主题文件是用户可编辑的，`../../foo` 这种必须挡住
@@ -83,27 +83,55 @@ bool _isSafeName(String name) =>
     !name.contains('..') &&
     RegExp(r'^[A-Za-z0-9._-]+$').hasMatch(name);
 
-/// 拉起选择器 → 校验 → 落盘 → 返回 `file:xxx` 引用
-Future<IconImportResult> importIconFromPicker() async {
-  // 文件选择是异步的（Android 尤其），失败一律归类报告，不抛给调用方
+/// 把 `file:xxx.png` 解析成绝对路径；文件不存在返回 null。
+///
+/// 两个子目录都查：主题里只存文件名，不存目录 —— 这样主题文件更干净，
+/// 用户换图时也不会留下一堆指向旧目录的死引用。
+Future<String?> resolveImageRef(String ref) async {
+  if (!ref.startsWith('file:')) return null;
+  final name = ref.substring(5);
+  if (!_isSafeName(name)) return null;
+  for (final dir in const [kIconDirName, kBackgroundDirName]) {
+    final d = await _ensureDir(dir);
+    if (d == null) continue;
+    final p = '${d.path}${Platform.pathSeparator}$name';
+    if (await File(p).exists()) return p;
+  }
+  return null;
+}
+
+/// 兼容旧调用点：图标的路径查询
+Future<String?> iconFilePath(String storedName) async =>
+    resolveImageRef('file:$storedName');
+
+/// 拉起选择器 → 校验 → 落盘 → 返回 `file:xxx` 引用。
+///
+/// [maxBytes] / [dirName] / [prefix] 让它同时服务图标与背景图：
+/// 两条路径唯一不同的就是这三个参数，没必要把「读字节、判魔数、算哈希、
+/// 写盘」这四步写两遍（复制两份的结果通常是其中一份忘了同步修）。
+Future<IconImportResult> importPickedImage({
+  required int maxBytes,
+  required String dirName,
+  required String prefix,
+}) async {
   try {
-    final picked = await _pickBytes();
+    final picked = await _pickBytes(maxBytes);
     if (picked == null) {
       return const IconImportResult.fail(IconImportError.cancelled);
     }
     final bytes = picked.bytes;
-    if (bytes.length > kIconMaxBytes) {
+    if (bytes.length > maxBytes) {
       return const IconImportResult.fail(IconImportError.tooLarge);
     }
     final ext = _detectFormat(bytes);
     if (ext == null) {
       return const IconImportResult.fail(IconImportError.badFormat);
     }
-    final d = await _ensureDir();
+    final d = await _ensureDir(dirName);
     if (d == null) {
       return const IconImportResult.fail(IconImportError.failed);
     }
-    final stored = '${_fnv1a(bytes)}.$ext';
+    final stored = '${prefix}_${_fnv1a(bytes)}.$ext';
     final f = File('${d.path}${Platform.pathSeparator}$stored');
     if (!await f.exists()) {
       await f.writeAsBytes(bytes, flush: true);
@@ -111,7 +139,7 @@ Future<IconImportResult> importIconFromPicker() async {
     return IconImportResult.ok('file:$stored', picked.name);
   } on _TooLarge {
     // 必须排在 catch-all 之前：否则「图太大」会被归成泛指失败，
-    // 用户得到的提示就从「图超过 2MB」变成「导入失败」，无从下手。
+    // 用户得到的提示就从「图超过 N MB」变成「导入失败」，无从下手。
     return const IconImportResult.fail(IconImportError.tooLarge);
   } on FileSystemException {
     return const IconImportResult.fail(IconImportError.failed);
@@ -120,6 +148,20 @@ Future<IconImportResult> importIconFromPicker() async {
   }
 }
 
+/// 导入一个图标
+Future<IconImportResult> importIconFromPicker() => importPickedImage(
+      maxBytes: kIconMaxBytes,
+      dirName: kIconDirName,
+      prefix: 'icon',
+    );
+
+/// 导入一张背景图
+Future<IconImportResult> importBackgroundFromPicker() => importPickedImage(
+      maxBytes: kBackgroundMaxBytes,
+      dirName: kBackgroundDirName,
+      prefix: 'bg',
+    );
+
 class _Picked {
   final String name;
   final Uint8List bytes;
@@ -127,17 +169,19 @@ class _Picked {
   const _Picked(this.name, this.bytes);
 }
 
-Future<_Picked?> _pickBytes() async {
+Future<_Picked?> _pickBytes(int maxBytes) async {
   if (defaultTargetPlatform == TargetPlatform.android) {
-    // Android：没有可用的文件路径（content:// URI），必须由原生侧读字节回来
+    // Android：没有可用的文件路径（content:// URI），必须由原生侧读字节回来。
+    // 上限也要传过去：原生侧得在**读之前**就知道该停在哪，否则大文件照样把内存吃爆。
     try {
-      final r = await _exportChannel
-          .invokeMapMethod<String, dynamic>('pickBinaryFile')
-          .timeout(const Duration(minutes: 5));
+      final r = await _exportChannel.invokeMapMethod<String, dynamic>(
+        'pickBinaryFile',
+        {'maxBytes': maxBytes},
+      ).timeout(const Duration(minutes: 5));
       if (r == null) return null;
       final b64 = '${r['data'] ?? ''}';
       if (b64.isEmpty) return null;
-      return _Picked('${r['name'] ?? 'icon.png'}', base64Decode(b64));
+      return _Picked('${r['name'] ?? 'image.png'}', base64Decode(b64));
     } on PlatformException catch (e) {
       // 原生侧区分「太大」与其它失败，好让提示更准确
       throw e.code == 'TOO_LARGE' ? const _TooLarge() : Exception(e.message);
@@ -147,7 +191,7 @@ Future<_Picked?> _pickBytes() async {
   if (path == null || path.trim().isEmpty) return null;
   final f = File(path.trim());
   if (!await f.exists()) return null;
-  if (await f.length() > kIconMaxBytes) throw const _TooLarge();
+  if (await f.length() > maxBytes) throw const _TooLarge();
   return _Picked(path.trim().split(Platform.pathSeparator).last,
       await f.readAsBytes());
 }
@@ -247,41 +291,96 @@ String _fnv1a(List<int> bytes) {
   return h.toRadixString(16).padLeft(8, '0');
 }
 
-/// 渲染一个已导入的图标；文件不在 / 渲染失败一律返回 null，
-/// 由调用方回退到内置图标（**主题坏掉不该让界面跟着坏**）。
-Widget? buildFileIcon(
-  String storedName, {
-  required double size,
-  required Widget Function() fallback,
+/// 渲染一个已导入的图片文件（图标与背景通用）。
+///
+/// 路径解析是**同步**的（用已缓存好的目录），这样渲染路径上不用 await。
+/// 文件不在 / 目录未就绪 / 渲染失败一律返回 null，由调用方回退 ——
+/// **图片坏掉不该让界面跟着坏**。
+Widget? buildFileImage(
+  String ref, {
+  double? size,
+  BoxFit fit = BoxFit.contain,
+  Widget Function()? fallback,
 }) {
-  final name = storedName;
+  if (!ref.startsWith('file:')) return null;
+  final name = ref.substring(5);
   if (!_isSafeName(name)) return null;
-  final dir = _iconDir;
-  if (dir == null) {
-    // 目录还没准备好（首次启动尚未 await）：先给回退图标，
-    // 目录就绪后 store 会 bump 版本触发重建。
-    return null;
-  }
-  final path = '${dir.path}${Platform.pathSeparator}$name';
+  final path = _pathFor(name);
+  if (path == null) return null;
   if (name.toLowerCase().endsWith('.svg')) {
     return SvgPicture.file(
       File(path),
       width: size,
       height: size,
+      fit: fit,
       // SVG 失败（文件损坏/被删）不能变红屏
-      errorBuilder: (_, _, _) => fallback(),
+      errorBuilder: (_, _, _) => fallback?.call() ?? const SizedBox.shrink(),
     );
   }
   return Image.file(
     File(path),
     width: size,
     height: size,
-    fit: BoxFit.contain,
-    // 不 tint：用户导入的是成品图（常为彩色 logo），
+    fit: fit,
+    // 不 tint：用户导入的是成品图（常为彩色 logo 或照片），
     // 强行染色会把图变成单色块。内置图标则会跟随主题色。
-    errorBuilder: (_, _, _) => fallback(),
+    errorBuilder: (_, _, _) => fallback?.call() ?? const SizedBox.shrink(),
   );
 }
 
-/// 是否已就绪（目录可用）。store 用它决定要不要 bump 版本重渲染。
-bool get iconStoreReady => _iconDir != null;
+/// 在已解析的目录里找这个文件名；两个目录都查（图标 / 背景）
+String? _pathFor(String name) {
+  for (final dir in const [kIconDirName, kBackgroundDirName]) {
+    final d = _dirs[dir];
+    if (d == null) continue;
+    final p = '${d.path}${Platform.pathSeparator}$name';
+    if (File(p).existsSync()) return p;
+  }
+  return null;
+}
+
+/// 渲染一个已导入的**图标**
+Widget? buildFileIcon(
+  String storedName, {
+  required double size,
+  required Widget Function() fallback,
+}) =>
+    buildFileImage('file:$storedName', size: size, fallback: fallback);
+
+/// 背景层绘制。
+///
+/// 单独一个入口是因为**平铺**没法用 Image 组件表达（它只有 BoxFit）——
+/// 要平铺必须走 DecorationImage 的 ImageRepeat。SVG 不支持平铺，
+/// 回退成铺满，而不是给用户一个空白的背景。
+Widget? buildBackgroundLayer(
+  String ref, {
+  required BoxFit fit,
+  required bool tile,
+  required Widget Function() fallback,
+}) {
+  if (tile) {
+    if (!ref.startsWith('file:')) return null;
+    final name = ref.substring(5);
+    if (!_isSafeName(name)) return null;
+    final path = _pathFor(name);
+    if (path == null) return null;
+    if (!name.toLowerCase().endsWith('.svg')) {
+      return Image.file(
+        File(path),
+        fit: BoxFit.none,
+        repeat: ImageRepeat.repeat,
+        errorBuilder: (_, _, _) => fallback(),
+      );
+    }
+  }
+  return buildFileImage(ref, fit: fit, fallback: fallback);
+}
+
+/// 是否已就绪（至少一个目录可用）。store 用它决定要不要 bump 版本重渲染。
+bool get iconStoreReady => _dirs.isNotEmpty;
+
+/// 预热：把两个目录都建好。store 在启动时调用一次。
+Future<void> warmImageStore() async {
+  await _ensureDir(kIconDirName);
+  await _ensureDir(kBackgroundDirName);
+}

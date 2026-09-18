@@ -6035,4 +6035,64 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get themeTokenInfo => 'Info / aksen';
+
+  @override
+  String get themeBg => 'Gambar latar';
+
+  @override
+  String get themeBgDesc =>
+      'Pakai gambar sebagai latar; kartu otomatis jadi semi-transparan';
+
+  @override
+  String get themeBgPick => 'Pilih gambar';
+
+  @override
+  String get themeBgReplace => 'Ganti gambar';
+
+  @override
+  String get themeBgRemove => 'Hapus latar';
+
+  @override
+  String get themeBgOpacity => 'Opasitas';
+
+  @override
+  String get themeBgOpacityDesc =>
+      'Sekaligus mengatur kerudung: makin tinggi makin terlihat gambarnya, makin berisiko teks tak terbaca';
+
+  @override
+  String get themeBgBlur => 'Buram';
+
+  @override
+  String get themeBgBlurDesc =>
+      'Pemburaman menghapus detail foto agar teks di atasnya tetap terbaca';
+
+  @override
+  String get themeBgFit => 'Mode isian';
+
+  @override
+  String get themeBgFitCover => 'Penuh';
+
+  @override
+  String get themeBgFitContain => 'Muat';
+
+  @override
+  String get themeBgFitStretch => 'Regangkan';
+
+  @override
+  String get themeBgFitTile => 'Ubin';
+
+  @override
+  String get themeBgNone => 'Belum diatur';
+
+  @override
+  String get themeBgErrTooLarge =>
+      'Latar melebihi 8 MB — kompres dulu (ikon dibatasi 2 MB)';
+
+  @override
+  String get themeBgLocalOnly =>
+      'Gambar tetap di perangkat ini: berkas tema hanya mencatat referensi, bukan gambarnya, jadi penerima akan melihat tema tanpa latar.';
+
+  @override
+  String get themeBgDisabledHint =>
+      'Tema ini tanpa gambar latar; latarnya warna solid';
 }

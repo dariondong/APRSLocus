@@ -19,9 +19,9 @@ class LogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: C.pageFill,
       appBar: AppBar(
-        backgroundColor: C.white,
+        backgroundColor: C.surfaceFillStrong,
         title: Text(S.of(context).systemLog),
         centerTitle: false,
         actions: [

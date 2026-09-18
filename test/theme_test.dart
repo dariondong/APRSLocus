@@ -419,4 +419,148 @@ void main() {
       expect(Tx(zh).byKey('stations'), zh.stations);
     });
   });
+
+  group('背景图', () {
+    test('引用 / 不透明度 / 模糊 / 填充 都能量化还原', () {
+      final t = AppTheme(
+        id: 'b1',
+        name: 'bg',
+        background: 'file:bg_1a2b3c4d.png',
+        bgOpacity: 0.42,
+        bgBlur: 12,
+        bgFit: 'tile',
+      );
+      final back = AppTheme.fromJson(jsonDecode(jsonEncode(t.toJson())))!;
+      expect(back.background, 'file:bg_1a2b3c4d.png');
+      expect(back.bgOpacity, 0.42);
+      expect(back.bgBlur, 12);
+      expect(back.bgFit, 'tile');
+      expect(back.hasBackground, isTrue);
+    });
+
+    test('没有背景图时，那三个参数不写进 JSON（主题文件要干净）', () {
+      final j = AppTheme(id: 'x', name: 'x').toJson();
+      expect(j.containsKey('background'), isFalse);
+      expect(j.containsKey('bgOpacity'), isFalse);
+      expect(j.containsKey('bgBlur'), isFalse);
+      expect(j.containsKey('bgFit'), isFalse);
+      expect(AppTheme(id: 'x', name: 'x').hasBackground, isFalse);
+    });
+
+    test('认不出的引用整个丢掉，不留「有背景但画不出来」的状态', () {
+      // 路径穿越 / 未知前缀 / 空串 都不该被接受
+      for (final bad in [
+        'file:../../etc/passwd',
+        'file:sub/dir.png',
+        'http://example.com/a.png',
+        'lib:map_rounded', // 背景只接受文件引用
+        '',
+      ]) {
+        final warns = <String>[];
+        final t = AppTheme.fromJson(
+            {'id': 'u', 'background': bad}, warnings: warns);
+        expect(t!.background, isNull, reason: '不该接受 $bad');
+        if (bad.isNotEmpty) expect(warns, contains('background'));
+      }
+    });
+
+    test('不透明度与模糊被夹到合法区间', () {
+      // 不透明度上限 0.6 不能放开：再高就直接盖住主题色，文字对比度不再受控
+      final hi = AppTheme.fromJson(
+          {'id': 'u', 'background': 'file:bg_a.png', 'bgOpacity': 5.0});
+      expect(hi!.bgOpacity, kThemeBgOpacityMax);
+      final lo = AppTheme.fromJson(
+          {'id': 'u', 'background': 'file:bg_a.png', 'bgOpacity': -1});
+      expect(lo!.bgOpacity, kThemeBgOpacityMin);
+      final blur = AppTheme.fromJson(
+          {'id': 'u', 'background': 'file:bg_a.png', 'bgBlur': 999});
+      expect(blur!.bgBlur, kThemeBgBlurMax);
+    });
+
+    test('未知填充方式回退 cover（而不是变成不铺满的怪样子）', () {
+      final t = AppTheme.fromJson(
+          {'id': 'u', 'background': 'file:bg_a.png', 'bgFit': 'whatever'});
+      expect(t!.bgFit, 'cover');
+      // 直接构造也一样
+      expect(AppTheme(id: 'u', name: 'u', bgFit: 'nope').bgFit, 'cover');
+    });
+
+    test('有背景图就不算「空主题」（否则会被当成没做任何自定义）', () {
+      expect(AppTheme(id: 'u', name: 'u').isEmpty, isTrue);
+      expect(
+        AppTheme(id: 'u', name: 'u', background: 'file:bg_a.png').isEmpty,
+        isFalse,
+      );
+    });
+
+    test('copy() 连背景一起复制（编辑页靠它回滚）', () {
+      final t = AppTheme(
+        id: 'u',
+        name: 'u',
+        background: 'file:bg_a.png',
+        bgOpacity: 0.5,
+        bgBlur: 3,
+        bgFit: 'contain',
+      );
+      final c = t.copy();
+      expect(c.background, 'file:bg_a.png');
+      expect(c.bgOpacity, 0.5);
+      expect(c.bgBlur, 3);
+      expect(c.bgFit, 'contain');
+      // 必须是深拷贝：改副本不能影响原对象
+      c.background = null;
+      expect(t.background, 'file:bg_a.png');
+    });
+
+    test('没背景图时 buildAppBackground 返回 null（调用方直接用原界面）', () async {
+      SharedPreferences.setMockInitialValues({});
+      final tc = ThemeController.instance;
+      await tc.load(await SharedPreferences.getInstance());
+      tc.setActive(ThemeController.builtinPresets.first.id);
+      expect(tc.buildAppBackground(), isNull);
+    });
+
+    test('设了背景图但文件不存在时返回 null（当作没设，而不是给一块空白）',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final tc = ThemeController.instance;
+      await tc.load(await SharedPreferences.getInstance());
+      tc.upsert(AppTheme(
+        id: 'u-bg-missing',
+        name: 'bg',
+        // 这个文件在本机并不存在：渲染路径必须**优雅回退**
+        background: 'file:bg_deadbeef.png',
+      ));
+      tc.setActive('u-bg-missing');
+      expect(tc.active.hasBackground, isTrue);
+      expect(tc.buildAppBackground(), isNull);
+    });
+
+    test('applyColors 会把 hasBackground 同步到调色板（卡片才会变半透明）',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final tc = ThemeController.instance;
+      await tc.load(await SharedPreferences.getInstance());
+
+      tc.setActive(ThemeController.builtinPresets.first.id);
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.hasBackground, isFalse);
+
+      tc.upsert(AppTheme(
+          id: 'u-bg2', name: 'bg', background: 'file:bg_deadbeef.png'));
+      tc.setActive('u-bg2');
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.hasBackground, isTrue);
+      // 有背景图时页面底色必须透（否则背景被不透明底色整个盖住）
+      expect(C.pageFill, const Color(0x00000000));
+      // 卡片表面半透明，但仍保留大部分遮盖力
+      expect(C.surfaceFill.a, greaterThan(0.5));
+      expect(C.surfaceFill.a, lessThan(1.0));
+
+      tc.setActive(ThemeController.builtinPresets.first.id);
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.hasBackground, isFalse);
+      expect(C.surfaceFill, C.white);
+    });
+  });
 }

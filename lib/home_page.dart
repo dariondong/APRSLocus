@@ -400,7 +400,7 @@ class _HomePageState extends State<HomePage> {
         MediaQuery.of(context).orientation == Orientation.landscape;
     final narrow = !landscape && w < 920;
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: C.pageFill,
       body: SafeArea(
         child: Stack(
           children: [

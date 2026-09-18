@@ -626,7 +626,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
   Widget build(BuildContext context) {
     final isWin = defaultTargetPlatform == TargetPlatform.windows;
     return Scaffold(
-      backgroundColor: C.greyBg,
+      backgroundColor: C.pageFill,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

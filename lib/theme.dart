@@ -65,6 +65,26 @@ class C {
 
   static const double kDefaultRadius = 16;
 
+  /// 是否设置了背景图（由 ThemeController 在 applyColors 时写入）。
+  ///
+  /// 有背景图时卡片表面必须**半透明**：不透明的话内容全被图盖住反而更不可读
+  /// （等于只是换了个更花的底色），透一点才能既看见图又看清内容。
+  static bool hasBackground = false;
+
+  /// 页面底色的实际填色。
+  ///
+  /// 有背景图时必须**透明**：页面底色是不透明的 C.bg，直接盖在背景层上，
+  /// 背景图会被完全遮住（用户只会看到「设了图但没变化」）。
+  static Color get pageFill => hasBackground ? Colors.transparent : bg;
+
+  /// 卡片表面的实际填色
+  static Color get surfaceFill =>
+      hasBackground ? white.withValues(alpha: 0.85) : white;
+
+  /// 顶栏/侧栏等「压在内容上层」的表面，比卡片更实一点，避免文字与图打架
+  static Color get surfaceFillStrong =>
+      hasBackground ? white.withValues(alpha: 0.93) : white;
+
   /// 输入框圆角：比卡片小一档，跟随卡片圆角但不小于 6
   static double get fieldRadius =>
       (radius - 4) < 6 ? 6 : (radius - 4);
@@ -207,13 +227,14 @@ List<BoxShadow> softShadow({double blur = 18, double y = 5, double alpha = 0.07}
 /// 卡片装饰。圆角默认取 [C.radius]（主题可调），显式传 [r] 则优先用 [r]。
 BoxDecoration cardDeco({Color? bg, double? r, bool shadow = true}) =>
     BoxDecoration(
-      color: bg ?? C.white,
+      // 默认取 surfaceFill：有背景图时自动半透明，调用点一个都不用改
+      color: bg ?? C.surfaceFill,
       borderRadius: BorderRadius.circular(r ?? C.radius),
       boxShadow: shadow ? softShadow() : null,
     );
 
 BoxDecoration fieldDeco() => BoxDecoration(
-      color: C.white,
+      color: C.surfaceFillStrong,
       borderRadius: BorderRadius.circular(C.fieldRadius),
       border: Border.all(color: C.border),
     );

@@ -1,5 +1,151 @@
 # 更新日志
 
+## [1.6.125] - 2026-09-18
+
+### 🖼️ 主题新增背景图：可以用自己的照片当界面底
+
+**入口**：设置页 → 「主题」→ 「背景图」。
+
+**① 一张图铺满整个界面，四个旋钮**
+
+- **不透明度** 0.05 ~ 0.6；
+- **模糊** 0 ~ 30；
+- **填充方式**：铺满 / 完整显示 / 拉伸 / 平铺；
+- **移除**（回到纯色底）。
+
+支持 PNG / JPG / WebP / GIF / BMP / SVG，单个 ≤ 8MB（图标仍是 2MB —— 两者上限不同，
+所以「图太大」的提示会说明是哪一种，否则用户会拿着「超过 2MB」的提示去压缩一张
+本来只用到 8MB 的照片）。
+
+**② 背景覆盖所有页面，而不是逐个页面去改**
+
+插入点是 `MaterialApp.builder`：它位于 MaterialApp 之下、Navigator 之上，
+所以主页面、设置子页、push 出来的页面全都被盖到。逐个页面改的结果必然是漏几个，
+而那几页看起来就像「背景图有时候不生效」。
+
+**③ 三层合成，顺序有讲究**
+
+```
+图（按填充方式绘制） → 模糊（ImageFiltered，作用在已画好的像素上）
+                    → 遮罩（按深浅模式盖一层底色，浓度为不透明度）
+```
+
+模糊放在中间这层有个附带好处：**SVG 也能模糊**，因为它最终也是像素。
+遮罩层不能省：没有它，一张中等亮度的照片会让深色/浅色文字之一失效。
+
+**④ 有背景图时，卡片自动变半透明**
+
+这是让背景图不毁掉可读性的关键：卡片表面从纯白变成 85% 白（顶栏/侧栏 93%）。
+不这么做的话有两条路都走不通 —— 要么卡片不透明（背景图只从卡片缝隙里露出来，
+等于换了个更花的底色），要么卡片透明（内容直接被照片盖住，更不可读）。
+
+实现上只改了 `C.surfaceFill` / `C.pageFill` 两个取值点 + `cardDeco` 的默认色，
+21 处 `cardDeco()` 调用与所有 `SoftCard` 一个都没动。页面底色同理由 `C.bg`
+换成 `C.pageFill`（有背景时透明），共 10 个页面 —— 不换的话不透明底色会把
+背景图整个盖住，用户只会看到「设了图但没变化」。
+
+**⑤ 图只存在本机，主题文件里只有引用**
+
+主题 JSON 里存的是 `file:bg_<内容哈希>.png`，不含图片本身。理由与图标一致：
+二进制会把几十 KB 的主题文件撑到几 MB，base64 也没法人工编辑。
+所以**把主题分享给别人，对方看到的是没有背景的版本** —— 页面上直接写明了这一点，
+不写的话对方只会以为主题是坏的。
+
+背景图与图标共用同一条导入通道（`importPickedImage`）：按魔数判格式、按内容哈希命名、
+只接受纯文件名、渲染失败回退。只把「上限 / 目录 / 文件名前缀」做成参数 ——
+把「读字节、判魔数、算哈希、写盘」这四步复制两份的结果，通常是其中一份忘了同步修。
+
+**⑥ 顺带验证了一处 CI 覆盖不到的角落**
+
+`dart.library.html` 的条件导入（`theme_icon_io.dart` / `_web.dart`）在
+`flutter analyze` 里只解析 **非 Web** 那一支，而 CI 不构建 Web ——
+也就是说 Web 分支的签名写错了要等真去构建 Web 才会发现。
+这次用一个临时探针文件（以 `theme_store.dart` 里真实的调用形状去调用
+**web 变体**）让分析器替我们验了一遍，确认两个分支的公共 API 完全一致；
+顺带确认所谓「不一致」的几项其实是各文件内部的私有成员（`_isSafeName` 等），
+本来就不需要一致。
+
+`test/theme_test.dart` 从 33 条加到 43 条，新增的 10 条覆盖：背景参数往返、
+无背景时不写那三个键、非法引用（路径穿越/未知前缀/`lib:` 前缀/空串）被丢掉、
+不透明度与模糊夹取、未知填充方式回退 cover、`copy()` 深拷贝、
+以及「有背景图 → 页面底色透明 + 卡片半透明」这条可读性保证。
+
+---
+
+**Feature**: themes gained a background image — use your own photo as the app backdrop.
+
+**Entry point**: Settings → "Theme" → "Background image".
+
+**① One image behind everything, four knobs**
+
+- **Opacity** 0.05–0.6;
+- **Blur** 0–30;
+- **Fill mode**: cover / contain / stretch / tile;
+- **Remove** (back to a solid backdrop).
+
+PNG / JPG / WebP / GIF / BMP / SVG, up to 8 MB each (icons stay at 2 MB — the two limits
+differ, so the "too large" message names which one applies; otherwise users would go
+compress a photo against a 2 MB figure when only 8 MB was in play).
+
+**② The background covers every page — without touching every page**
+
+It is inserted in `MaterialApp.builder`, which sits below MaterialApp and above the
+Navigator, so the home page, settings sub-pages and pushed routes are all covered.
+Editing page by page guarantees missing a few, and those pages then look like
+"the background sometimes doesn't apply".
+
+**③ Three layers, and the order matters**
+
+```
+image (drawn per fill mode) → blur (ImageFiltered, on the already-painted pixels)
+                            → veil (a tint per light/dark, strength = opacity)
+```
+
+Putting blur in the middle has a bonus: **SVG can be blurred too**, since by that point it
+is pixels. The veil cannot be dropped: without it, a mid-brightness photo makes either
+dark or light text unreadable.
+
+**④ With a background, cards turn translucent automatically**
+
+This is what keeps a background from destroying legibility: the card surface goes from
+solid white to 85% white (bars/rails 93%). Both alternatives fail — opaque cards let the
+image show only through the gaps (i.e. you just changed to a busier flat colour), and
+fully transparent cards put content straight on top of the photo, which is worse.
+
+The implementation touches only two value sites (`C.surfaceFill` / `C.pageFill`) plus
+`cardDeco`'s default colour; none of the 21 `cardDeco()` call sites and no `SoftCard`
+changed. Page backdrops likewise moved from `C.bg` to `C.pageFill` (transparent when a
+background is set) across 10 pages — without that, an opaque backdrop hides the image
+entirely and users just see "I set an image and nothing changed".
+
+**⑤ The image lives on this device; the theme file keeps only a reference**
+
+The theme JSON stores `file:bg_<contenthash>.png`, not the image. Same reasoning as icons:
+binary would inflate a few-dozen-KB theme to several MB, and base64 stays uneditable by
+hand. So **sharing a theme gives the other person the version without a background** — and
+the page says so, because otherwise they would assume the theme is broken.
+
+Backgrounds and icons share one import path (`importPickedImage`): magic-byte format
+detection, content-hash naming, bare-filename-only references, fallback on render failure.
+Only the size cap, directory and filename prefix are parameters — duplicating the
+read/verify/hash/write steps in two places usually means one copy silently misses a later fix.
+
+**⑥ Also verified a corner CI cannot reach**
+
+The `dart.library.html` conditional import (`theme_icon_io.dart` / `_web.dart`) is resolved
+by `flutter analyze` **only for the non-web branch**, and CI does not build for web — so a
+signature mistake in the web branch would surface only when someone actually builds web.
+A temporary probe file (calling the **web variant** with the exact call shapes used in
+`theme_store.dart`) let the analyzer check it; the two branches' public APIs match. The
+apparent mismatches the first pass reported were private per-file members (`_isSafeName`
+and friends), which do not need to match at all.
+
+`test/theme_test.dart` grew from 33 to 43 tests; the 10 new ones cover background parameter
+round-trips, the three keys being omitted when there is no background, invalid references
+(path traversal / unknown prefix / `lib:` prefix / empty) being dropped, opacity and blur
+clamping, unknown fill mode falling back to cover, `copy()` deep-copying the background, and
+the legibility guarantee ("background set → transparent page fill + translucent cards").
+
 ## [1.6.124] - 2026-09-18
 
 ### 🎨 主题：界面的颜色、图标、文字都能自己改，也能导出成 JSON 分享

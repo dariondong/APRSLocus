@@ -5802,6 +5802,61 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get themeTokenInfo => '信息/强调';
+
+  @override
+  String get themeBg => '背景图';
+
+  @override
+  String get themeBgDesc => '用一张图片做整个界面的底；卡片会自动变得半透明';
+
+  @override
+  String get themeBgPick => '选择图片';
+
+  @override
+  String get themeBgReplace => '更换图片';
+
+  @override
+  String get themeBgRemove => '移除背景图';
+
+  @override
+  String get themeBgOpacity => '不透明度';
+
+  @override
+  String get themeBgOpacityDesc => '同时决定遮罩浓度：调高更看见图，也更容易看不清文字';
+
+  @override
+  String get themeBgBlur => '模糊';
+
+  @override
+  String get themeBgBlurDesc => '模糊能把照片的细节压掉，让上面的文字更清楚';
+
+  @override
+  String get themeBgFit => '填充方式';
+
+  @override
+  String get themeBgFitCover => '铺满';
+
+  @override
+  String get themeBgFitContain => '完整显示';
+
+  @override
+  String get themeBgFitStretch => '拉伸';
+
+  @override
+  String get themeBgFitTile => '平铺';
+
+  @override
+  String get themeBgNone => '未设置';
+
+  @override
+  String get themeBgErrTooLarge => '背景图超过 8MB，请先压缩（图标上限是 2MB）';
+
+  @override
+  String get themeBgLocalOnly =>
+      '背景图只存在本机：主题文件里只记录引用，不含图片本身，分享给别人后对方会看到无背景的主题。';
+
+  @override
+  String get themeBgDisabledHint => '当前主题未使用背景图，界面底为纯色';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -11602,4 +11657,58 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get themeTokenInfo => '資訊/強調';
+
+  @override
+  String get themeBg => '背景圖';
+
+  @override
+  String get themeBgDesc => '用一張圖片做整個介面的底；卡片會自動變得半透明';
+
+  @override
+  String get themeBgPick => '選擇圖片';
+
+  @override
+  String get themeBgReplace => '更換圖片';
+
+  @override
+  String get themeBgRemove => '移除背景圖';
+
+  @override
+  String get themeBgOpacity => '不透明度';
+
+  @override
+  String get themeBgOpacityDesc => '同時決定遮罩濃度：調高更看見圖，也更容易看不清文字';
+
+  @override
+  String get themeBgBlur => '模糊';
+
+  @override
+  String get themeBgBlurDesc => '模糊能把照片的細節壓掉，讓上面的文字更清楚';
+
+  @override
+  String get themeBgFit => '填滿方式';
+
+  @override
+  String get themeBgFitCover => '鋪滿';
+
+  @override
+  String get themeBgFitContain => '完整顯示';
+
+  @override
+  String get themeBgFitStretch => '拉伸';
+
+  @override
+  String get themeBgFitTile => '並排';
+
+  @override
+  String get themeBgNone => '未設定';
+
+  @override
+  String get themeBgErrTooLarge => '背景圖超過 8MB，請先壓縮（圖示上限是 2MB）';
+
+  @override
+  String get themeBgLocalOnly => '背景圖只存在本機：主題檔裡只記錄引用，不含圖片本身，分享給別人後對方會看到無背景的主題。';
+
+  @override
+  String get themeBgDisabledHint => '目前主題未使用背景圖，介面底為純色';
 }

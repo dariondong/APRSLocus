@@ -31,6 +31,10 @@ class MainActivity : FlutterActivity() {
     // 当前这次选择要的是文本还是二进制。放在字段上而不是靠 requestCode 区分：
     // 两者用的是同一个 startActivityForResult，结果回调里分不出来。
     private var pickBinary = false
+
+    // 这次要读的字节上限。由 Dart 传进来：图标 2MB、背景图 8MB ——
+    // 上限必须**在读之前**就知道，否则大文件照样会把内存吃爆。
+    private var pickMaxBytes = MAX_ICON_BYTES
     private companion object {
         const val REQ_PICK_BACKUP = 4711
 
@@ -366,7 +370,10 @@ class MainActivity : FlutterActivity() {
                 // 主题自定义图标：同一条选择器，但要把**二进制**读回来。
                 // 不能复用 pickTextFile：图片按 UTF-8 解码会被替换字符破坏，
                 // 得到的是一堆「看起来像文本」的垃圾。这里改成 base64。
-                "pickBinaryFile" -> pickBinaryFile(result)
+                "pickBinaryFile" -> pickBinaryFile(
+                    result,
+                    call.argument<Int>("maxBytes") ?: MAX_ICON_BYTES
+                )
                 else -> result.notImplemented()
             }
         }
@@ -422,7 +429,7 @@ class MainActivity : FlutterActivity() {
             if (binary) {
                 // 上限用 MAX_ICON_BYTES（2MB）：图标要塞进 22~40dp 的位置，
                 // 2MB 已极宽松；不设限的话一张手机原图就能变成主题里的巨石。
-                val bytes = readBytesCapped(uri, MAX_ICON_BYTES)
+                val bytes = readBytesCapped(uri, pickMaxBytes)
                 if (bytes == null) {
                     completer.error("TOO_LARGE", "图片过大", null)
                     return
@@ -461,13 +468,14 @@ class MainActivity : FlutterActivity() {
     }
 
     /// 与 [pickTextFile] 同一条选择器，但以 base64 返回二进制（主题图标用）。
-    private fun pickBinaryFile(result: MethodChannel.Result) {
+    private fun pickBinaryFile(result: MethodChannel.Result, maxBytes: Int) {
         if (pickCompleter != null) {
             result.error("BUSY", "已有文件选择在进行中", null)
             return
         }
         pickCompleter = result
         pickBinary = true
+        pickMaxBytes = if (maxBytes > 0) maxBytes else MAX_ICON_BYTES
         try {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "image/*"

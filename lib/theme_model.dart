@@ -74,6 +74,25 @@ const double kThemeMinRadius = 0.0;
 const double kThemeMaxRadius = 28.0;
 const double kThemeDefaultRadius = 16.0;
 
+/// ─── 背景图 ───
+///
+/// 背景图是整个界面里**最容易把可用性搞坏**的一项个性化：一张深色照片配上
+/// 深色文字，界面立刻不可读。所以它只给四个旋钮，每个都有硬边界：
+///
+/// - [kBgOpacity] 上限 **0.6**：给再高就直接盖住主题色，文字对比度不再受控；
+/// - 附带**自动遮罩**（按明暗模式盖一层底色，见 theme_store），
+///   这条不能省 —— 没有它，任何中等亮度的图都会让浅色/深色文字之一失效；
+/// - 卡片会随之上浮成**半透明**表面，否则内容全被图盖住反而更不可读；
+/// - 模糊默认 6（用户可关到 0）。
+const double kThemeBgOpacityMin = 0.05;
+const double kThemeBgOpacityMax = 0.6;
+const double kThemeBgOpacityDefault = 0.3;
+const double kThemeBgBlurMax = 30.0;
+const double kThemeBgBlurDefault = 6.0;
+
+/// 背景填充方式
+const List<String> kThemeBgFits = ['cover', 'contain', 'stretch', 'tile'];
+
 /// 解析 `RRGGBB` / `#RRGGBB` / `AARRGGBB` → Color；不合法返回 null。
 Color? parseHexColor(String? raw) {
   final h = (raw ?? '').trim().replaceAll('#', '').toUpperCase();
@@ -120,6 +139,18 @@ class AppTheme {
   /// 插槽 id → 图标引用（`lib:<iconName>` 或 `file:<存放文件名>`）
   final Map<String, String> icons;
 
+  /// 页面背景图引用（`file:<存放文件名>`）；null = 不使用背景图
+  String? background;
+
+  /// 背景图不透明度（越小越透）
+  double bgOpacity;
+
+  /// 背景图模糊半径（0 = 不模糊）
+  double bgBlur;
+
+  /// 背景填充方式，见 [kThemeBgFits]
+  String bgFit;
+
   AppTheme({
     required this.id,
     required this.name,
@@ -129,13 +160,26 @@ class AppTheme {
     double? radius,
     Map<String, String>? texts,
     Map<String, String>? icons,
+    this.background,
+    double? bgOpacity,
+    double? bgBlur,
+    String? bgFit,
   })  : colors = colors ?? <String, String>{},
         radius = radius ?? kThemeDefaultRadius,
         texts = texts ?? <String, String>{},
-        icons = icons ?? <String, String>{};
+        icons = icons ?? <String, String>{},
+        bgOpacity = bgOpacity ?? kThemeBgOpacityDefault,
+        bgBlur = bgBlur ?? kThemeBgBlurDefault,
+        bgFit = (bgFit != null && kThemeBgFits.contains(bgFit)) ? bgFit : 'cover';
 
   bool get isEmpty =>
-      colors.isEmpty && texts.isEmpty && icons.isEmpty && radius == kThemeDefaultRadius;
+      colors.isEmpty &&
+      texts.isEmpty &&
+      icons.isEmpty &&
+      radius == kThemeDefaultRadius &&
+      background == null;
+
+  bool get hasBackground => background != null && background!.startsWith('file:');
 
   /// 深拷贝（编辑页里做「取消」时靠它回滚）
   AppTheme copy() => AppTheme(
@@ -147,6 +191,10 @@ class AppTheme {
         radius: radius,
         texts: Map<String, String>.from(texts),
         icons: Map<String, String>.from(icons),
+        background: background,
+        bgOpacity: bgOpacity,
+        bgBlur: bgBlur,
+        bgFit: bgFit,
       );
 
   /// 取某令牌在本主题下的颜色（未覆写 → 内置默认）
@@ -186,6 +234,14 @@ class AppTheme {
         if (radius != kThemeDefaultRadius) 'radius': radius,
         if (texts.isNotEmpty) 'texts': texts,
         if (icons.isNotEmpty) 'icons': icons,
+        // 背景相关只在真正用到时才写：没背景图的主题文件里不该出现
+        // opacity/blur/fit 这三行噪声
+        if (background != null) ...{
+          'background': background,
+          'bgOpacity': bgOpacity,
+          'bgBlur': bgBlur,
+          'bgFit': bgFit,
+        },
       };
 
   static AppTheme? fromJson(Object? raw, {List<String>? warnings}) {
@@ -229,6 +285,23 @@ class AppTheme {
         if (v.trim().isEmpty) continue;
         t.texts[key] = v;
       }
+    }
+    final bg = raw['background'];
+    if (bg is String && isValidIconRef(bg) && bg.startsWith('file:')) {
+      t.background = bg;
+      final o = raw['bgOpacity'];
+      if (o is num) {
+        t.bgOpacity = o.toDouble().clamp(kThemeBgOpacityMin, kThemeBgOpacityMax);
+      }
+      final b = raw['bgBlur'];
+      if (b is num) {
+        t.bgBlur = b.toDouble().clamp(0.0, kThemeBgBlurMax);
+      }
+      final f = raw['bgFit'];
+      if (f is String && kThemeBgFits.contains(f)) t.bgFit = f;
+    } else if (bg != null) {
+      // 认不出的引用宁可整个丢掉，也不要留一个「有背景但画不出来」的状态
+      warnings?.add('background');
     }
     final ic = raw['icons'];
     if (ic is Map) {

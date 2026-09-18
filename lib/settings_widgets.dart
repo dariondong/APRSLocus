@@ -24,9 +24,9 @@ class SettingsPageShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: C.pageFill,
       appBar: AppBar(
-        backgroundColor: C.white,
+        backgroundColor: C.surfaceFillStrong,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: C.slate),
