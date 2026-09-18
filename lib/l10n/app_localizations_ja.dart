@@ -5654,4 +5654,211 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupErrUnsupported => 'この環境ではファイル選択が使えません。クリップボードから貼り付けてください';
+
+  @override
+  String get themeTitle => 'テーマ';
+
+  @override
+  String get themeEntryDesc => '色・アイコン・文字をカスタマイズ';
+
+  @override
+  String get themeSubtitle => '配色・アイコン・よく使う文言を自分好みに';
+
+  @override
+  String get themePresets => 'プリセットと自分のテーマ';
+
+  @override
+  String get themePresetTag => 'プリセット';
+
+  @override
+  String get themeActive => '使用中';
+
+  @override
+  String get themePresetDefault => '既定';
+
+  @override
+  String get themePresetOcean => 'オーシャン';
+
+  @override
+  String get themePresetForest => 'フォレスト';
+
+  @override
+  String get themePresetMidnight => 'ミッドナイト';
+
+  @override
+  String get themePresetSunset => 'サンセット';
+
+  @override
+  String get themePresetContrast => 'ハイコントラスト';
+
+  @override
+  String get themeBuiltinHint => 'プリセットは編集できません。自分のテーマに複製してください';
+
+  @override
+  String get themeColors => '色';
+
+  @override
+  String get themeColorsDesc => '項目ごとに上書き（未変更は既定のまま）';
+
+  @override
+  String get themeRadius => 'カードの角丸';
+
+  @override
+  String get themeRadiusDesc => 'カードと入力欄に適用（小さなバッジは対象外）';
+
+  @override
+  String get themeIcons => 'アイコン';
+
+  @override
+  String get themeIconsDesc => 'タブバーと設定入口のアイコンを変更';
+
+  @override
+  String get themeTexts => '文字';
+
+  @override
+  String get themeTextsDesc => 'よく使う文言を上書き（ボタンとエラー表示は対象外。操作不能になるのを防ぐため）';
+
+  @override
+  String get themeNew => '新しいテーマ';
+
+  @override
+  String get themeDuplicate => '自分のテーマに複製';
+
+  @override
+  String get themeRename => '名前を変更';
+
+  @override
+  String get themeDelete => 'テーマを削除';
+
+  @override
+  String themeDeleteConfirm(String name) {
+    return 'テーマ「$name」を削除しますか？元に戻せません。';
+  }
+
+  @override
+  String get themeReset => '既定に戻す';
+
+  @override
+  String get themeResetAll => 'このテーマをリセット';
+
+  @override
+  String get themeSaved => 'テーマを保存しました';
+
+  @override
+  String get themeNameHint => 'テーマ名';
+
+  @override
+  String get themePickColor => '色を選ぶ';
+
+  @override
+  String get themePickIcon => 'アイコンを選ぶ';
+
+  @override
+  String get themePickIconSearch => 'アイコン名で検索';
+
+  @override
+  String get themeEditText => '文字を編集';
+
+  @override
+  String get themeTextHint => '空欄で既定に戻す';
+
+  @override
+  String get themeIconImport => '画像から読み込む';
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG、2MB まで';
+
+  @override
+  String themeIconImportDone(String name) {
+    return 'アイコンを読み込みました：$name';
+  }
+
+  @override
+  String get themeIconWebHint => 'Web 版では画像を読み込めません。内蔵アイコンを使ってください';
+
+  @override
+  String get themeIconErrFormat => '未対応の画像形式です（PNG/JPG/WebP/GIF/BMP/SVG）';
+
+  @override
+  String get themeIconErrTooLarge => '画像が 2MB を超えています。圧縮してください';
+
+  @override
+  String get themeIconErrFailed => 'アイコンの読み込みに失敗しました';
+
+  @override
+  String get themeIconErrUnsupported => 'この環境では画像の読み込みに対応していません';
+
+  @override
+  String get themeIo => '読み込みと書き出し';
+
+  @override
+  String get themeIoDesc => 'テーマは JSON テキスト。共有も手編集もできます';
+
+  @override
+  String get themeExport => 'このテーマを書き出す';
+
+  @override
+  String get themeExportAll => 'すべてのテーマを書き出す';
+
+  @override
+  String get themeImport => 'テーマを読み込む';
+
+  @override
+  String get themeImportPaste => 'クリップボードから読み込む';
+
+  @override
+  String themeImportDone(int n) {
+    return '$n 件のテーマを読み込みました';
+  }
+
+  @override
+  String get themeErrNotJson => 'ファイルが有効な JSON ではありません';
+
+  @override
+  String get themeErrNotTheme => 'APRSlocus のテーマファイルではありません';
+
+  @override
+  String get themeErrSchemaNewer => '新しいバージョンの APRSlocus のテーマです。アプリを更新してください';
+
+  @override
+  String get themeErrEmpty => '読み込めるテーマがありません';
+
+  @override
+  String get themeFixedPrimary => '現在のテーマがメインカラーを固定しています。「テーマ」ページで変更してください';
+
+  @override
+  String get themeTokenPrimary => 'メインカラー';
+
+  @override
+  String get themeTokenSurface => 'カード表面';
+
+  @override
+  String get themeTokenBackground => 'ページ背景';
+
+  @override
+  String get themeTokenBackgroundSoft => '副次的な背景';
+
+  @override
+  String get themeTokenTextPrimary => '本文';
+
+  @override
+  String get themeTokenTextSecondary => '副次的な文字';
+
+  @override
+  String get themeTokenTextMuted => '補助文字';
+
+  @override
+  String get themeTokenDivider => '区切り線';
+
+  @override
+  String get themeTokenSuccess => '成功・オンライン';
+
+  @override
+  String get themeTokenWarning => '警告';
+
+  @override
+  String get themeTokenDanger => '危険・オフライン';
+
+  @override
+  String get themeTokenInfo => '情報・強調';
 }

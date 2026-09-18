@@ -5854,4 +5854,223 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get backupErrUnsupported =>
       'Aquí no se pueden elegir archivos: pega desde el portapapeles';
+
+  @override
+  String get themeTitle => 'Tema';
+
+  @override
+  String get themeEntryDesc => 'Personaliza colores, iconos y texto';
+
+  @override
+  String get themeSubtitle =>
+      'Haz tuyos los colores, iconos y textos habituales';
+
+  @override
+  String get themePresets => 'Preajustes y mis temas';
+
+  @override
+  String get themePresetTag => 'preajuste';
+
+  @override
+  String get themeActive => 'En uso';
+
+  @override
+  String get themePresetDefault => 'Predeterminado';
+
+  @override
+  String get themePresetOcean => 'Océano';
+
+  @override
+  String get themePresetForest => 'Bosque';
+
+  @override
+  String get themePresetMidnight => 'Medianoche';
+
+  @override
+  String get themePresetSunset => 'Atardecer';
+
+  @override
+  String get themePresetContrast => 'Alto contraste';
+
+  @override
+  String get themeBuiltinHint =>
+      'Los preajustes no se editan: cópialos a tus temas';
+
+  @override
+  String get themeColors => 'Colores';
+
+  @override
+  String get themeColorsDesc =>
+      'Sobrescribe colores uno a uno; el resto queda por defecto';
+
+  @override
+  String get themeRadius => 'Redondeo de tarjetas';
+
+  @override
+  String get themeRadiusDesc =>
+      'Se aplica a tarjetas y campos (las insignias no cambian)';
+
+  @override
+  String get themeIcons => 'Iconos';
+
+  @override
+  String get themeIconsDesc =>
+      'Cambia los iconos de las pestañas y de los ajustes';
+
+  @override
+  String get themeTexts => 'Texto';
+
+  @override
+  String get themeTextsDesc =>
+      'Sobrescribe textos habituales (los botones y los mensajes de error se excluyen a propósito)';
+
+  @override
+  String get themeNew => 'Nuevo tema';
+
+  @override
+  String get themeDuplicate => 'Copiar a mis temas';
+
+  @override
+  String get themeRename => 'Renombrar';
+
+  @override
+  String get themeDelete => 'Eliminar tema';
+
+  @override
+  String themeDeleteConfirm(String name) {
+    return '¿Eliminar el tema «$name»? No se puede deshacer.';
+  }
+
+  @override
+  String get themeReset => 'Restablecer';
+
+  @override
+  String get themeResetAll => 'Restablecer este tema';
+
+  @override
+  String get themeSaved => 'Tema guardado';
+
+  @override
+  String get themeNameHint => 'Nombre del tema';
+
+  @override
+  String get themePickColor => 'Elegir color';
+
+  @override
+  String get themePickIcon => 'Elegir icono';
+
+  @override
+  String get themePickIconSearch => 'Buscar nombres de iconos';
+
+  @override
+  String get themeEditText => 'Editar texto';
+
+  @override
+  String get themeTextHint => 'Vacío para restablecer';
+
+  @override
+  String get themeIconImport => 'Importar imagen';
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG, hasta 2 MB';
+
+  @override
+  String themeIconImportDone(String name) {
+    return 'Icono importado: $name';
+  }
+
+  @override
+  String get themeIconWebHint =>
+      'En la web no se pueden importar imágenes: usa la biblioteca integrada';
+
+  @override
+  String get themeIconErrFormat =>
+      'Formato de imagen no admitido (PNG/JPG/WebP/GIF/BMP/SVG)';
+
+  @override
+  String get themeIconErrTooLarge => 'La imagen supera los 2 MB: comprímela';
+
+  @override
+  String get themeIconErrFailed => 'No se pudo importar el icono';
+
+  @override
+  String get themeIconErrUnsupported =>
+      'Esta plataforma no admite importar imágenes';
+
+  @override
+  String get themeIo => 'Importar y exportar';
+
+  @override
+  String get themeIoDesc =>
+      'Un tema es texto JSON: se puede compartir y editar a mano';
+
+  @override
+  String get themeExport => 'Exportar este tema';
+
+  @override
+  String get themeExportAll => 'Exportar todos los temas';
+
+  @override
+  String get themeImport => 'Importar temas';
+
+  @override
+  String get themeImportPaste => 'Importar del portapapeles';
+
+  @override
+  String themeImportDone(int n) {
+    return 'Se importaron $n temas';
+  }
+
+  @override
+  String get themeErrNotJson => 'El archivo no es JSON válido';
+
+  @override
+  String get themeErrNotTheme => 'No es un archivo de tema de APRSlocus';
+
+  @override
+  String get themeErrSchemaNewer =>
+      'El tema proviene de una versión más nueva de APRSlocus: actualiza la app';
+
+  @override
+  String get themeErrEmpty => 'El archivo no contiene ningún tema utilizable';
+
+  @override
+  String get themeFixedPrimary =>
+      'El tema activo fija el color principal: cámbialo en la página Tema';
+
+  @override
+  String get themeTokenPrimary => 'Principal';
+
+  @override
+  String get themeTokenSurface => 'Superficie de tarjeta';
+
+  @override
+  String get themeTokenBackground => 'Fondo de página';
+
+  @override
+  String get themeTokenBackgroundSoft => 'Fondo secundario';
+
+  @override
+  String get themeTokenTextPrimary => 'Texto principal';
+
+  @override
+  String get themeTokenTextSecondary => 'Texto secundario';
+
+  @override
+  String get themeTokenTextMuted => 'Texto atenuado';
+
+  @override
+  String get themeTokenDivider => 'Separador';
+
+  @override
+  String get themeTokenSuccess => 'Éxito / en línea';
+
+  @override
+  String get themeTokenWarning => 'Aviso';
+
+  @override
+  String get themeTokenDanger => 'Peligro / sin conexión';
+
+  @override
+  String get themeTokenInfo => 'Información / acento';
 }

@@ -16,6 +16,9 @@ import 'settings_pages.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
 import 'backup_page.dart';
+import 'theme_page.dart';
+import 'theme_store.dart';
+import 'theme_text.dart';
 
 class SettingsPage extends StatefulWidget {
   final AppState state;
@@ -78,8 +81,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.person_rounded,
+                          slot: 'catRadio',
                           color: C.blue,
-                          title: S.of(context).radioCat,
+                          title: Tx.of(context).byKey('radioCat'),
                           desc: S.of(context).radioCatDesc,
                           onTap: () => _push(StationSettingsPage(state: st)),
                         ),
@@ -88,8 +92,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.my_location_rounded,
+                          slot: 'catBeacon',
                           color: C.green,
-                          title: S.of(context).beaconCat,
+                          title: Tx.of(context).byKey('beaconCat'),
                           desc: S.of(context).beaconCatDesc,
                           onTap: () => _push(BeaconSettingsPage(state: st)),
                         ),
@@ -104,8 +109,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.wifi_rounded,
+                          slot: 'catConnection',
                           color: C.purple,
-                          title: S.of(context).connectionCat,
+                          title: Tx.of(context).byKey('connectionCat'),
                           desc: S.of(context).connectionCatDesc,
                           onTap: () => _push(ConnectionSettingsPage(state: st)),
                         ),
@@ -114,8 +120,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.palette_rounded,
+                          slot: 'catDisplay',
                           color: C.cyan,
-                          title: S.of(context).displayCat,
+                          title: Tx.of(context).byKey('displayCat'),
                           desc: S.of(context).displayCatDesc,
                           onTap: () => _push(DisplaySettingsPage(state: st)),
                         ),
@@ -131,8 +138,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.radio_rounded,
+                          slot: 'catDevice',
                           color: C.indigo,
-                          title: S.of(context).deviceCat,
+                          title: Tx.of(context).byKey('deviceCat'),
                           desc: S.of(context).deviceCatDesc,
                           onTap: () => _push(DeviceSettingsPage(state: st)),
                         ),
@@ -141,8 +149,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.storage_rounded,
+                          slot: 'catData',
                           color: C.red,
-                          title: S.of(context).dataCat,
+                          title: Tx.of(context).byKey('dataCat'),
                           desc: S.of(context).dataCatDesc,
                           onTap: () => _push(DataSettingsPage(state: st)),
                         ),
@@ -157,8 +166,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.tune_rounded,
+                          slot: 'catAdvanced',
                           color: C.slate,
-                          title: S.of(context).advancedCat,
+                          title: Tx.of(context).byKey('advancedCat'),
                           desc: S.of(context).advancedCatDesc,
                           onTap: () => _push(AdvancedSettingsPage(state: st)),
                         ),
@@ -167,8 +177,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: _catCard(
                           icon: Icons.system_update_rounded,
+                          slot: 'catUpdate',
                           color: const Color(0xFF0EA5A4),
-                          title: S.of(context).updateCat,
+                          title: Tx.of(context).byKey('updateCat'),
                           desc: S.of(context).updateCatDesc,
                           onTap: () => _push(CheckUpdatePage(state: st)),
                         ),
@@ -206,7 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               color: Colors.white, size: 17),
                         ),
                         SizedBox(width: 10),
-                        Text(S.of(context).honorWall, style: ts(13, w: FontWeight.w700)),
+                        Text(Tx.of(context).byKey('honorWall'), style: ts(13, w: FontWeight.w700)),
                         const SizedBox(width: 6),
                         Text(S.of(context).myBadgesAndAchievements,
                             style: TextStyle(fontSize: 10, color: Color(0xFF98A2B8))),
@@ -248,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(S.of(context).translateSettings,
+                              Text(Tx.of(context).byKey('translateSettings'),
                                   style: ts(13, w: FontWeight.w700)),
                               SizedBox(height: 2),
                               Text(S.of(context).translateSettingsSubtitle,
@@ -292,13 +303,65 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          S.of(context).exportAdif,
+                          Tx.of(context).byKey('exportAdif'),
                           style: ts(13, w: FontWeight.w700),
                         ),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
                             S.of(context).adifLogFile,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF98A2B8),
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                // 主题（自定义颜色 / 图标 / 文字）
+                GestureDetector(
+                  onTap: () => _push(ThemePage(state: widget.state)),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFDB2777), Color(0xFF9D174D)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          child: const Icon(
+                            Icons.brush_rounded,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).themeTitle,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).themeEntryDesc,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -344,7 +407,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          S.of(context).backupTitle,
+                          Tx.of(context).byKey('backupTitle'),
                           style: ts(13, w: FontWeight.w700),
                         ),
                         const SizedBox(width: 6),
@@ -399,7 +462,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          S.of(context).about,
+                          Tx.of(context).byKey('about'),
                           style: ts(13, w: FontWeight.w700),
                         ),
                         Spacer(),
@@ -466,6 +529,9 @@ class _SettingsPageState extends State<SettingsPage> {
     required String title,
     required String desc,
     required VoidCallback onTap,
+    /// 主题图标插槽 id。给了它，这张卡片的图标就能被主题替换；
+    /// 没给则永远用 [icon]（保持旧行为，不必为了接入主题改一圈调用点）。
+    String? slot,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -481,7 +547,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: color, size: 20),
+              child: slot == null
+                  ? Icon(icon, color: color, size: 20)
+                  : ThemeController.instance.buildSlotIcon(
+                      slot,
+                      size: 20,
+                      color: color,
+                      fallbackIcon: icon,
+                    ),
             ),
             SizedBox(width: 12),
             Expanded(

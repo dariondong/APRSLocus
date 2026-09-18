@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'state.dart';
 import 'widgets.dart';
+import 'theme_store.dart';
+import 'theme_text.dart';
+import 'theme_icons.dart';
 import 'map_page.dart';
 import 'stations_page.dart';
 import 'messages_page.dart';
@@ -317,27 +320,39 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  static const _navIcons = [
-    (Icons.map_outlined, Icons.map_rounded),
-    (Icons.cell_tower_outlined, Icons.cell_tower_rounded),
-    (Icons.chat_bubble_outline_rounded, Icons.chat_bubble_rounded),
-    (Icons.cable_outlined, Icons.cable_rounded),
-    (Icons.settings_outlined, Icons.settings_rounded),
+  /// 页签的图标与文案都来自主题：
+  /// - 文案：[Tx] 先问主题有没有覆写，没有才回退 l10n；
+  /// - 图标：交给 [ThemeController.buildSlotIcon]，它会在「用户导入了图片」
+  ///   与「内置图标」之间选择，并在图片坏掉时回退。
+  /// 元组第三项保留「默认图标名」，作为没装主题时的兜底，行为与旧版一致。
+  static const _navSlots = [
+    ('navMap', 'map_rounded'),
+    ('navStations', 'cell_tower_rounded'),
+    ('navMessages', 'chat_bubble_rounded'),
+    ('navPackets', 'cable_rounded'),
+    ('navSettings', 'settings_rounded'),
   ];
 
-  List<(IconData, IconData, String)> get _nav {
-    final s = S.of(context);
+  List<(String, String, String)> get _nav {
+    final tx = Tx.of(context);
     return [
-      (Icons.map_outlined, Icons.map_rounded, s.map),
-      (Icons.cell_tower_outlined, Icons.cell_tower_rounded, s.stations),
-      (
-        Icons.chat_bubble_outline_rounded,
-        Icons.chat_bubble_rounded,
-        s.messages,
-      ),
-      (Icons.cable_outlined, Icons.cable_rounded, s.packets),
-      (Icons.settings_outlined, Icons.settings_rounded, s.settings),
+      for (final sl in _navSlots) (sl.$1, sl.$2, _navLabel(tx, sl.$1)),
     ];
+  }
+
+  String _navLabel(Tx tx, String slot) {
+    switch (slot) {
+      case 'navMap':
+        return tx.navMap;
+      case 'navStations':
+        return tx.navStations;
+      case 'navMessages':
+        return tx.navMessages;
+      case 'navPackets':
+        return tx.navPackets;
+      default:
+        return tx.navSettings;
+    }
   }
 
   // 页面子树记忆化：仅当 tab / 搜索词变化时重建整个 IndexedStack。
@@ -566,10 +581,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: Row(
                           children: [
-                            Icon(
-                              sel ? item.$2 : item.$1,
-                              color: sel ? C.blue : C.slate,
+                            ThemeController.instance.buildSlotIcon(
+                              item.$1,
                               size: compact ? 18 : 20,
+                              color: sel ? C.blue : C.slate,
+                              fallbackIcon: themeIconByName(item.$2),
+                              selected: sel,
                             ),
                             SizedBox(width: 10),
                             Text(
@@ -1340,10 +1357,12 @@ class _HomePageState extends State<HomePage> {
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Icon(
-                            sel ? _nav[i].$2 : _nav[i].$1,
-                            color: sel ? C.blue : C.grey,
+                          ThemeController.instance.buildSlotIcon(
+                            _nav[i].$1,
                             size: 22,
+                            color: sel ? C.blue : C.grey,
+                            fallbackIcon: themeIconByName(_nav[i].$2),
+                            selected: sel,
                           ),
                           if (i == 2 && widget.state.unreadMessages > 0)
                             Positioned(

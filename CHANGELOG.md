@@ -1,5 +1,246 @@
 # 更新日志
 
+## [1.6.124] - 2026-09-18
+
+### 🎨 主题：界面的颜色、图标、文字都能自己改，也能导出成 JSON 分享
+
+**入口**：设置页 → 「主题」。
+
+**① 6 套内置预设 + 可自建主题**
+
+「默认 / 海洋 / 森林 / 暗夜 / 日落 / 高对比」。预设**不可直接编辑**，只能「复制为我的主题」
+再改 —— 否则用户改了一套预设又想要回原样时，只能靠逐项猜着恢复。每套主题还能
+「导出此主题」单独分享。
+
+**② 12 个配色令牌，只覆写你改过的那些**
+
+主色、卡片表面、页面背景、次层背景、主/次/弱化文字、分隔线、成功/警告/危险/信息色。
+
+主题是**覆写**而不是全量快照：升级时应用内置的默认值可以继续演进，用户只锁住自己想改的部分，
+导出的 JSON 也就短、可读、可手改。
+
+旧版的「自定义主题色」（单个 hex）**原样保留**：主题没有覆写主色时仍然用它 ——
+老用户升级后颜色不变，这是有意的兼容保证。反过来，主题已固定主色时，「显示」页的色板下面
+会直接写明去哪儿改，而不是让用户点了没反应以为坏了。
+
+配色刻意**不支持半透明**：半透明与背景叠加后对比度随主题变化，「看着还行」和「看不清」
+之间没有可靠判据，与其让用户踩坑不如只给不透明色。也刻意不暴露按字面理解的 `white`
+（它在深色模式下其实是深灰），要改表面色请用「卡片表面」。
+
+**③ 卡片圆角**
+
+一个滑杆。范围写清楚了：**只作用于卡片与输入框**，不改徽标那类小圆点 ——
+它们用的 2~10px 半径是形状语言的一部分，统一乘系数会把圆点变成菱形。
+
+**④ 13 个图标插槽 + 481 个内置图标**
+
+底部 5 个页签 + 设置页 8 个分类入口，可从内置图标库里搜索改选（显示它所服务的那条文案，
+比如「地图」「电台设置」，不必记插槽名）。
+
+图标库是**生成的常量表**（`tool/gen_theme_icons.py`）：Flutter 的图标 tree-shaking 只认字面量，
+运行时拼 `IconData` 要么编不过、要么把整套 MaterialIcons（约 1.6MB）打进包。
+收录范围 = lib/ 里已在用的 465 个（这些 glyph 本来就在包里，收录零成本）+ 人工挑选的候选。
+
+**⑤ 也能导入自己的图片当图标**
+
+PNG / JPG / WebP / GIF / BMP / SVG，单个 ≤ 2MB（Android：系统图片选择器；
+Windows：PowerShell 对话框；Linux：zenity；macOS：osascript）。
+
+几处细节都是「不这么写就会出错」的：
+
+- **按魔数判断格式，不看扩展名**：把 logo.jpg 改名成 logo.png 是常事，按扩展名判断就会
+  对着 JPEG 字节调 PNG 解码器，结果是「导入成功但显示不出来」；
+- **按内容哈希命名**（FNV-1a，不引 crypto 依赖）：同一张图重复导入不会攒出一堆副本，
+  主题文件里引用的名字也稳定；
+- **只接受纯文件名**：主题文件是用户可编辑的，`file:../../etc/passwd` 这类必须挡住；
+- **渲染失败一律回退内置图标**：图被删了、文件坏了，界面都不会跟着坏。
+
+Web 版不支持导入图片（浏览器里没有可写的应用目录），页面上直接说明并引导用内置图标库。
+
+**⑥ 26 条高频文案可覆写**
+
+页签名、设置分类名与说明、几个入口标题。**按钮动词与错误提示刻意不开放** ——
+它们是用户的操作依据，被改成不认识的词会让应用变得不可操作。这也是「白名单」而不是
+「全量覆写 1662 条」的根本原因。留空即恢复默认。
+
+**⑦ 导入与导出**
+
+JSON 文本，可导出整包（我的全部主题）或单个主题，也能从剪贴板导入。导入时：
+白名单外的项**跳过并计数**（导入完成会如实显示「跳过 N 项」）；`schema` 比当前高直接拒绝
+并提示升级应用；文件里的 `builtin` 标记一律清除 —— 否则一份文件就能造出「不可删除」的主题。
+整包**不含内置预设**：预设每台设备本来就有，导出去再导回来只会让对方平白多出 6 个重复项。
+
+**⑧ 主题并入备份（第 7 个分组）**
+
+「备份与恢复」新增「主题」分组，可单独勾选。注意**不含导入的图标图片文件本身**：
+那是二进制，塞进 JSON 会把备份从几十 KB 撑到几 MB，而 base64 也没法人工编辑。
+所以主题里的图片引用在**换机恢复后**会回退成内置图标 —— 界面不会坏，只是图标变默认。
+
+**⑨ 顺带修掉一个真实缺陷：TNC / 音频 / PKWDWPL 配置此前不在备份里**
+
+为了让「主题」这项不重蹈覆辙，我把 `tool/check_backup_keys.py` 补强成了三个方向：
+精确键、**常量键**、**动态前缀**。补强后它立刻报出 5 个键从未进过备份：
+
+```
+tncConfigJson / tncDeviceJson / audioConfigJson / pkwdwplConfigJson / pkwdwplDeviceJson
+```
+
+也就是说，v1.6.123 的备份**静默丢了整套链路配置**（蓝牙 TNC、声卡 TNC、Kenwood 航点），
+用户换机后得重新配设备。已一并归入「设置配置」分组。
+
+补强过程中还改掉两个检查器自身的毛病，都值得记下来：
+
+- **常量要按文件作用域解析**：`static const _kConfig` 在 tnc.dart / audio.dart / pkwdwpl.dart
+  里各有一份、值却不同；用一张全局表会让其中两个的键被算成第三个的值，
+  于是真问题被报成「别的键缺失」，白跑一趟。
+- **参数要用配对括号 + 顶层逗号切**，不能 `\(([^)]*)\)`：后者遇到 `jsonEncode(x, y)`
+  会在第一个 `)` 截断，把普通字面量误判成动态前缀 → 一屏假失败。
+  假失败比真失败更坏：修它的人通常会把规则放宽或删掉说明。
+
+三个方向都单独验证过**会报红**（临时塞未归组键 / 拿掉常量键 / 拿掉前缀声明），
+基线通过，并已接入 CI 的 Analyze 作业。
+
+**⑩ 新增依赖 `flutter_svg ^2.3.0`**
+
+只为 SVG 图标（纯 Dart、无平台通道，只多 3 个传递依赖）。若不需要 SVG 可以去掉：
+调用点集中在 `lib/theme_icon_io.dart` 一处。
+
+`test/theme_test.dart` 另钉 33 条：配色解析与互逆、白名单越界、空文字视为删覆写、
+圆角夹取、图标引用形状（含路径穿越）、schema 拒绝、builtin 不可伪造、整包/单主题两种形态、
+主题读写往返、偏好损坏时退回默认、图标名不认识时回退、id 撞车不遮蔽、
+以及「白名单里每个文案键在 Tx 里都有分支」（漏了不会报错，只会把 `radioCat` 这种内部键名显示出来）。
+
+---
+
+**Feature**: themes — recolour the UI, swap icons and rewrite common labels, with the whole
+thing exported as shareable, hand-editable JSON.
+
+**Entry point**: Settings → "Theme".
+
+**① Six built-in presets, plus your own themes**
+
+Default / Ocean / Forest / Midnight / Sunset / High contrast. Presets **cannot be edited
+directly** — you copy one into your themes first. Otherwise a user who tweaks a preset and
+wants the original back has to guess their way through "reset". Any theme can be exported on
+its own to share.
+
+**② Twelve colour tokens, and only the ones you changed are stored**
+
+Primary, card surface, page background, secondary background, primary/secondary/muted text,
+divider, success/warning/danger/info.
+
+A theme is an *overlay*, not a full snapshot: the built-in defaults can keep evolving on
+upgrade while users pin only what they actually want. It also keeps the exported JSON short
+and hand-editable.
+
+The old single-hex "theme colour" is **kept as-is**: it is still used whenever the active theme
+does not override the primary colour, so existing users see no change after upgrading — an
+intentional compatibility guarantee. Conversely, when the theme does pin the primary colour,
+the Display page now says where to change it instead of leaving users clicking a swatch that
+does nothing.
+
+Colours deliberately do **not** support alpha: over a background, semi-transparent colours make
+contrast vary per theme and there is no reliable line between "looks fine" and "unreadable".
+We also do not expose `white` by name (it is actually dark grey in dark mode) — use "card surface".
+
+**③ Card corner radius**
+
+One slider, with its scope stated honestly: **cards and inputs only**. Small radii (2–10px on
+badges and chips) are part of the shape language; scaling them all would turn dots into diamonds.
+
+**④ Thirteen icon slots + 481 built-in icons**
+
+The five bottom tabs and eight settings entries, searchable in the icon library. Rows are
+labelled with the text they serve ("Map", "Radio settings"), so you never have to know slot names.
+
+The library is a **generated const table** (`tool/gen_theme_icons.py`): Flutter's icon
+tree-shaking only understands literals, so a runtime-constructed `IconData` either fails to
+compile or drags the whole MaterialIcons font (~1.6 MB) into the bundle. Scope = the 465 glyphs
+already used somewhere in lib/ (zero marginal cost) plus a hand-picked selection.
+
+**⑤ Import your own images as icons**
+
+PNG / JPG / WebP / GIF / BMP / SVG, up to 2 MB each (Android: system image picker; Windows:
+PowerShell dialog; Linux: zenity; macOS: osascript).
+
+The details are all "got this wrong and it breaks in a way you cannot see":
+
+- **Format is detected from magic bytes, not the extension**: renaming logo.jpg to logo.png is
+  routine, and trusting the extension means decoding JPEG bytes with the PNG decoder — which
+  presents as "import succeeded but nothing shows";
+- **Files are named by content hash** (FNV-1a, no crypto dependency), so re-importing the same
+  image leaves no duplicates and references stay stable;
+- **Only bare filenames are accepted** — the theme file is user-editable, so `file:../../etc/passwd`
+  must be rejected;
+- **Any render failure falls back to the built-in icon**, so a deleted or corrupt file cannot
+  break the UI.
+
+Importing images is not available on the web (browsers have no writable app directory); the page
+says so and points at the built-in library.
+
+**⑥ Twenty-six common labels can be overridden**
+
+Tab names, settings category names and descriptions, and a few entry titles. **Button verbs and
+error messages are deliberately excluded** — they are what users act on, and replacing them with
+unrecognisable words makes the app unusable. This is the real reason for a whitelist rather than
+"override all 1662 strings". Clearing a field restores the default.
+
+**⑦ Import and export**
+
+JSON text: export the whole bundle or a single theme, or import from the clipboard. On import,
+entries outside the whitelist are **skipped and counted** (reported honestly as "skipped N entries"),
+a higher `schema` is rejected with an "update the app" message, and any `builtin` flag in the file
+is stripped — otherwise a file could forge an undeletable theme. The bundle **excludes built-in
+presets**: every install already has them, so round-tripping them would just add six duplicates.
+
+**⑧ Themes joined the backup (7th group)**
+
+"Backup & restore" gained a "Theme" group you can select independently. Note it **does not include
+the imported image files themselves**: they are binary, and embedding them would inflate a
+few-dozen-KB backup to several MB while base64 stays uneditable by hand. So after restoring on
+another device, image references fall back to built-in icons — the UI is fine, the icons are
+simply default.
+
+**⑨ While at it: a real defect fixed — TNC / audio / PKWDWPL settings were never backed up**
+
+So that "Theme" would not repeat that mistake, I extended `tool/check_backup_keys.py` to three
+directions: exact keys, **constant keys**, and **dynamic prefixes**. It immediately reported five
+keys that had never been in any backup group:
+
+```
+tncConfigJson / tncDeviceJson / audioConfigJson / pkwdwplConfigJson / pkwdwplDeviceJson
+```
+
+In other words, v1.6.123's backup **silently lost the entire link configuration** (Bluetooth TNC,
+sound-card TNC, Kenwood waypoint), forcing users to re-configure devices after switching devices.
+They are now part of the "Settings" group.
+
+Two flaws in the checker itself were fixed along the way, and both are worth recording:
+
+- **Constants must be resolved per file**: `static const _kConfig` exists in tnc.dart, audio.dart
+  and pkwdwpl.dart with *different* values. A single global table attributes two of them to the
+  third, so the real finding gets reported as "some other key is missing" — a wasted trip.
+- **Arguments must be split with matched brackets and top-level commas**, not `\(([^)]*)\)`:
+  the latter truncates at the first `)` in `jsonEncode(x, y)`, misclassifying ordinary literals as
+  dynamic prefixes → a screenful of false failures. False failures are worse than real ones,
+  because whoever fixes them usually loosens or deletes the rule.
+
+All three directions were individually verified to **actually go red** (temporary ungrouped key /
+removing a constant key / removing a prefix declaration), the baseline is green, and it runs in the
+CI Analyze job.
+
+**⑩ New dependency: `flutter_svg ^2.3.0`**
+
+Only for SVG icons (pure Dart, no platform channels, three transitive dependencies). If SVG is not
+wanted it can be dropped: the call site is a single place in `lib/theme_icon_io.dart`.
+
+`test/theme_test.dart` adds 33 more regressions: colour parsing and round-trips, whitelist escapes,
+empty text meaning "delete the override", radius clamping, icon-reference shape (including path
+traversal), schema rejection, unforgeable `builtin`, both bundle and single-theme shapes, theme
+read/write round-trips, falling back to default on corrupt preferences, unknown icon names falling
+back, id collisions not shadowing, and "every whitelisted label key has a branch in `Tx`"
+(missing one throws nothing — it just prints an internal name like `radioCat` on screen).
+
 ## [1.6.123] - 2026-09-18
 
 ### 💾 备份与恢复：把设置与数据导出成一个 JSON，换机/重装后导回来

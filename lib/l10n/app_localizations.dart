@@ -10076,6 +10076,408 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'当前平台暂不支持选择文件，请改用剪贴板粘贴'**
   String get backupErrUnsupported;
+
+  /// No description provided for @themeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题'**
+  String get themeTitle;
+
+  /// No description provided for @themeEntryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义颜色、图标与文字'**
+  String get themeEntryDesc;
+
+  /// No description provided for @themeSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'把界面配色、图标与常用文案改成你自己的'**
+  String get themeSubtitle;
+
+  /// No description provided for @themePresets.
+  ///
+  /// In zh, this message translates to:
+  /// **'预设与我的主题'**
+  String get themePresets;
+
+  /// No description provided for @themePresetTag.
+  ///
+  /// In zh, this message translates to:
+  /// **'预设'**
+  String get themePresetTag;
+
+  /// No description provided for @themeActive.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用中'**
+  String get themeActive;
+
+  /// No description provided for @themePresetDefault.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认'**
+  String get themePresetDefault;
+
+  /// No description provided for @themePresetOcean.
+  ///
+  /// In zh, this message translates to:
+  /// **'海洋'**
+  String get themePresetOcean;
+
+  /// No description provided for @themePresetForest.
+  ///
+  /// In zh, this message translates to:
+  /// **'森林'**
+  String get themePresetForest;
+
+  /// No description provided for @themePresetMidnight.
+  ///
+  /// In zh, this message translates to:
+  /// **'暗夜'**
+  String get themePresetMidnight;
+
+  /// No description provided for @themePresetSunset.
+  ///
+  /// In zh, this message translates to:
+  /// **'日落'**
+  String get themePresetSunset;
+
+  /// No description provided for @themePresetContrast.
+  ///
+  /// In zh, this message translates to:
+  /// **'高对比'**
+  String get themePresetContrast;
+
+  /// No description provided for @themeBuiltinHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'预设主题不可修改，复制为我的主题后即可自由编辑'**
+  String get themeBuiltinHint;
+
+  /// No description provided for @themeColors.
+  ///
+  /// In zh, this message translates to:
+  /// **'颜色'**
+  String get themeColors;
+
+  /// No description provided for @themeColorsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'逐项覆写配色；未修改的项跟随默认'**
+  String get themeColorsDesc;
+
+  /// No description provided for @themeRadius.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡片圆角'**
+  String get themeRadius;
+
+  /// No description provided for @themeRadiusDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'作用于卡片与输入框（小徽标等不受影响）'**
+  String get themeRadiusDesc;
+
+  /// No description provided for @themeIcons.
+  ///
+  /// In zh, this message translates to:
+  /// **'图标'**
+  String get themeIcons;
+
+  /// No description provided for @themeIconsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'为底部页签与设置入口换图标'**
+  String get themeIconsDesc;
+
+  /// No description provided for @themeTexts.
+  ///
+  /// In zh, this message translates to:
+  /// **'文字'**
+  String get themeTexts;
+
+  /// No description provided for @themeTextsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'覆写常用文案（按钮与错误提示不开放，避免界面变得不可操作）'**
+  String get themeTextsDesc;
+
+  /// No description provided for @themeNew.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建主题'**
+  String get themeNew;
+
+  /// No description provided for @themeDuplicate.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制为我的主题'**
+  String get themeDuplicate;
+
+  /// No description provided for @themeRename.
+  ///
+  /// In zh, this message translates to:
+  /// **'重命名'**
+  String get themeRename;
+
+  /// No description provided for @themeDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除主题'**
+  String get themeDelete;
+
+  /// No description provided for @themeDeleteConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除主题「{name}」？此操作无法撤销。'**
+  String themeDeleteConfirm(String name);
+
+  /// No description provided for @themeReset.
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认'**
+  String get themeReset;
+
+  /// No description provided for @themeResetAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'重置本主题'**
+  String get themeResetAll;
+
+  /// No description provided for @themeSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题已保存'**
+  String get themeSaved;
+
+  /// No description provided for @themeNameHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题名称'**
+  String get themeNameHint;
+
+  /// No description provided for @themePickColor.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择颜色'**
+  String get themePickColor;
+
+  /// No description provided for @themePickIcon.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择图标'**
+  String get themePickIcon;
+
+  /// No description provided for @themePickIconSearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索图标名（英文）'**
+  String get themePickIconSearch;
+
+  /// No description provided for @themeEditText.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改文字'**
+  String get themeEditText;
+
+  /// No description provided for @themeTextHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'留空即恢复默认'**
+  String get themeTextHint;
+
+  /// No description provided for @themeIconImport.
+  ///
+  /// In zh, this message translates to:
+  /// **'从图片导入'**
+  String get themeIconImport;
+
+  /// No description provided for @themeIconImportHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB'**
+  String get themeIconImportHint;
+
+  /// No description provided for @themeIconImportDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已导入图标：{name}'**
+  String themeIconImportDone(String name);
+
+  /// No description provided for @themeIconWebHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 版不支持导入图片，请使用内置图标库'**
+  String get themeIconWebHint;
+
+  /// No description provided for @themeIconErrFormat.
+  ///
+  /// In zh, this message translates to:
+  /// **'不支持的图片格式（支持 PNG/JPG/WebP/GIF/BMP/SVG）'**
+  String get themeIconErrFormat;
+
+  /// No description provided for @themeIconErrTooLarge.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片超过 2MB，请先压缩'**
+  String get themeIconErrTooLarge;
+
+  /// No description provided for @themeIconErrFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入图标失败'**
+  String get themeIconErrFailed;
+
+  /// No description provided for @themeIconErrUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不支持导入图片'**
+  String get themeIconErrUnsupported;
+
+  /// No description provided for @themeIo.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入与导出'**
+  String get themeIo;
+
+  /// No description provided for @themeIoDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题是 JSON 文本，可以分享给别人，也可以手工编辑'**
+  String get themeIoDesc;
+
+  /// No description provided for @themeExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出此主题'**
+  String get themeExport;
+
+  /// No description provided for @themeExportAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出全部主题'**
+  String get themeExportAll;
+
+  /// No description provided for @themeImport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入主题'**
+  String get themeImport;
+
+  /// No description provided for @themeImportPaste.
+  ///
+  /// In zh, this message translates to:
+  /// **'从剪贴板导入'**
+  String get themeImportPaste;
+
+  /// No description provided for @themeImportDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已导入 {n} 个主题'**
+  String themeImportDone(int n);
+
+  /// No description provided for @themeErrNotJson.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件不是有效的 JSON'**
+  String get themeErrNotJson;
+
+  /// No description provided for @themeErrNotTheme.
+  ///
+  /// In zh, this message translates to:
+  /// **'这不是 APRSlocus 主题文件'**
+  String get themeErrNotTheme;
+
+  /// No description provided for @themeErrSchemaNewer.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题来自更新版本的 APRSlocus，请先升级应用'**
+  String get themeErrSchemaNewer;
+
+  /// No description provided for @themeErrEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件里没有可用的主题'**
+  String get themeErrEmpty;
+
+  /// No description provided for @themeFixedPrimary.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前主题已固定主色，请到「主题」页修改'**
+  String get themeFixedPrimary;
+
+  /// No description provided for @themeTokenPrimary.
+  ///
+  /// In zh, this message translates to:
+  /// **'主色'**
+  String get themeTokenPrimary;
+
+  /// No description provided for @themeTokenSurface.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡片表面'**
+  String get themeTokenSurface;
+
+  /// No description provided for @themeTokenBackground.
+  ///
+  /// In zh, this message translates to:
+  /// **'页面背景'**
+  String get themeTokenBackground;
+
+  /// No description provided for @themeTokenBackgroundSoft.
+  ///
+  /// In zh, this message translates to:
+  /// **'次层背景'**
+  String get themeTokenBackgroundSoft;
+
+  /// No description provided for @themeTokenTextPrimary.
+  ///
+  /// In zh, this message translates to:
+  /// **'主文字'**
+  String get themeTokenTextPrimary;
+
+  /// No description provided for @themeTokenTextSecondary.
+  ///
+  /// In zh, this message translates to:
+  /// **'次要文字'**
+  String get themeTokenTextSecondary;
+
+  /// No description provided for @themeTokenTextMuted.
+  ///
+  /// In zh, this message translates to:
+  /// **'弱化文字'**
+  String get themeTokenTextMuted;
+
+  /// No description provided for @themeTokenDivider.
+  ///
+  /// In zh, this message translates to:
+  /// **'分隔线'**
+  String get themeTokenDivider;
+
+  /// No description provided for @themeTokenSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'成功/在线'**
+  String get themeTokenSuccess;
+
+  /// No description provided for @themeTokenWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'警告'**
+  String get themeTokenWarning;
+
+  /// No description provided for @themeTokenDanger.
+  ///
+  /// In zh, this message translates to:
+  /// **'危险/离线'**
+  String get themeTokenDanger;
+
+  /// No description provided for @themeTokenInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'信息/强调'**
+  String get themeTokenInfo;
 }
 
 class _AppLocalizationsDelegate

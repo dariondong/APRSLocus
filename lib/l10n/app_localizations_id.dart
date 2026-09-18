@@ -5817,4 +5817,222 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get backupErrUnsupported =>
       'Memilih berkas tidak didukung di sini — tempel dari papan klip';
+
+  @override
+  String get themeTitle => 'Tema';
+
+  @override
+  String get themeEntryDesc => 'Sesuaikan warna, ikon, dan teks';
+
+  @override
+  String get themeSubtitle => 'Jadikan warna, ikon, dan teks umum milik Anda';
+
+  @override
+  String get themePresets => 'Preset & tema saya';
+
+  @override
+  String get themePresetTag => 'preset';
+
+  @override
+  String get themeActive => 'Sedang dipakai';
+
+  @override
+  String get themePresetDefault => 'Bawaan';
+
+  @override
+  String get themePresetOcean => 'Samudra';
+
+  @override
+  String get themePresetForest => 'Hutan';
+
+  @override
+  String get themePresetMidnight => 'Tengah malam';
+
+  @override
+  String get themePresetSunset => 'Senja';
+
+  @override
+  String get themePresetContrast => 'Kontras tinggi';
+
+  @override
+  String get themeBuiltinHint =>
+      'Preset tidak bisa diubah — salin dulu ke tema Anda';
+
+  @override
+  String get themeColors => 'Warna';
+
+  @override
+  String get themeColorsDesc =>
+      'Timpa warna satu per satu; sisanya tetap bawaan';
+
+  @override
+  String get themeRadius => 'Sudut kartu';
+
+  @override
+  String get themeRadiusDesc =>
+      'Berlaku untuk kartu dan kolom isian (lencana kecil tidak)';
+
+  @override
+  String get themeIcons => 'Ikon';
+
+  @override
+  String get themeIconsDesc =>
+      'Ganti ikon tab bawah dan pintu masuk pengaturan';
+
+  @override
+  String get themeTexts => 'Teks';
+
+  @override
+  String get themeTextsDesc =>
+      'Timpa teks umum (tombol dan pesan galat sengaja dikecualikan)';
+
+  @override
+  String get themeNew => 'Tema baru';
+
+  @override
+  String get themeDuplicate => 'Salin ke tema saya';
+
+  @override
+  String get themeRename => 'Ganti nama';
+
+  @override
+  String get themeDelete => 'Hapus tema';
+
+  @override
+  String themeDeleteConfirm(String name) {
+    return 'Hapus tema “$name”? Tidak bisa dibatalkan.';
+  }
+
+  @override
+  String get themeReset => 'Setel ulang';
+
+  @override
+  String get themeResetAll => 'Setel ulang tema ini';
+
+  @override
+  String get themeSaved => 'Tema disimpan';
+
+  @override
+  String get themeNameHint => 'Nama tema';
+
+  @override
+  String get themePickColor => 'Pilih warna';
+
+  @override
+  String get themePickIcon => 'Pilih ikon';
+
+  @override
+  String get themePickIconSearch => 'Cari nama ikon';
+
+  @override
+  String get themeEditText => 'Ubah teks';
+
+  @override
+  String get themeTextHint => 'Kosongkan untuk menyetel ulang';
+
+  @override
+  String get themeIconImport => 'Impor gambar';
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG, maks 2 MB';
+
+  @override
+  String themeIconImportDone(String name) {
+    return 'Ikon diimpor: $name';
+  }
+
+  @override
+  String get themeIconWebHint =>
+      'Di web tidak bisa mengimpor gambar — gunakan pustaka ikon bawaan';
+
+  @override
+  String get themeIconErrFormat =>
+      'Format gambar tidak didukung (PNG/JPG/WebP/GIF/BMP/SVG)';
+
+  @override
+  String get themeIconErrTooLarge => 'Gambar melebihi 2 MB — kompres dulu';
+
+  @override
+  String get themeIconErrFailed => 'Gagal mengimpor ikon';
+
+  @override
+  String get themeIconErrUnsupported =>
+      'Platform ini tidak mendukung impor gambar';
+
+  @override
+  String get themeIo => 'Impor & ekspor';
+
+  @override
+  String get themeIoDesc =>
+      'Tema berupa teks JSON — bisa dibagikan dan diedit manual';
+
+  @override
+  String get themeExport => 'Ekspor tema ini';
+
+  @override
+  String get themeExportAll => 'Ekspor semua tema';
+
+  @override
+  String get themeImport => 'Impor tema';
+
+  @override
+  String get themeImportPaste => 'Impor dari papan klip';
+
+  @override
+  String themeImportDone(int n) {
+    return 'Mengimpor $n tema';
+  }
+
+  @override
+  String get themeErrNotJson => 'Berkas bukan JSON yang valid';
+
+  @override
+  String get themeErrNotTheme => 'Ini bukan berkas tema APRSlocus';
+
+  @override
+  String get themeErrSchemaNewer =>
+      'Tema berasal dari APRSlocus versi lebih baru — perbarui aplikasi dulu';
+
+  @override
+  String get themeErrEmpty => 'Berkas tidak berisi tema yang bisa dipakai';
+
+  @override
+  String get themeFixedPrimary =>
+      'Tema aktif mengunci warna utama — ubah di halaman Tema';
+
+  @override
+  String get themeTokenPrimary => 'Utama';
+
+  @override
+  String get themeTokenSurface => 'Permukaan kartu';
+
+  @override
+  String get themeTokenBackground => 'Latar halaman';
+
+  @override
+  String get themeTokenBackgroundSoft => 'Latar sekunder';
+
+  @override
+  String get themeTokenTextPrimary => 'Teks utama';
+
+  @override
+  String get themeTokenTextSecondary => 'Teks sekunder';
+
+  @override
+  String get themeTokenTextMuted => 'Teks redup';
+
+  @override
+  String get themeTokenDivider => 'Pemisah';
+
+  @override
+  String get themeTokenSuccess => 'Berhasil / daring';
+
+  @override
+  String get themeTokenWarning => 'Peringatan';
+
+  @override
+  String get themeTokenDanger => 'Bahaya / luring';
+
+  @override
+  String get themeTokenInfo => 'Info / aksen';
 }

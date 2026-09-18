@@ -31,7 +31,7 @@ const String kBackupKind = 'aprslocus-backup';
 const int kBackupSchema = 1;
 
 /// 备份内容分组。新增分组时同时补 [kBackupGroups] 与 l10n 文案。
-enum BackupCategory { settings, stations, messages, chats, translate, honors }
+enum BackupCategory { settings, stations, messages, chats, translate, honors, theme }
 
 /// 一个分组包含哪些 SharedPreferences 键。
 ///
@@ -65,6 +65,15 @@ const List<BackupGroupSpec> kBackupGroups = [
     'server', 'port', 'passcode', 'dataSource', 'enabledSources',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
+    // 链路配置（TNC / 声卡 TNC / PKWDWPL）与各自上次选的设备。
+    //
+    // 这 5 个键是 tool/check_backup_keys.py 补强后「查」出来的：原先只扫
+    // 字面量键，而这几个是通过 `static const _kConfig` 这类常量读写的，
+    // 于是整套链路配置在备份里**静默缺失** —— 用户换机后要重新配蓝牙
+    // 设备与串口。备份功能里这种缺失最致命：以为备了，直到恢复那天才发现。
+    'tncConfigJson', 'tncDeviceJson',
+    'audioConfigJson',
+    'pkwdwplConfigJson', 'pkwdwplDeviceJson',
   ]),
   // 台站与联系人：整份 stations JSON（收藏/手动添加/备注）
   BackupGroupSpec(BackupCategory.stations, ['stations']),
@@ -88,6 +97,15 @@ const List<BackupGroupSpec> kBackupGroups = [
     ],
     prefixes: ['honorPrimary_'],
   ),
+  // 主题：用户自建的全部主题 + 当前激活项（一份 JSON）。
+  //
+  // 注意**不含**导入的图标图片文件本身：那些是二进制，塞进 JSON 会把备份
+  // 从几十 KB 撑到几 MB，而字符串化的 base64 也无法人工编辑。所以主题里
+  // 的 `file:` 引用在异机恢复后会回退成内置图标（界面不会坏，只是图标变默认）。
+  //
+  // 键名通过 ThemeController.kPrefsKey 常量读写，因此静态检查器看不到字面量；
+  // 它已被登记在 tool/check_backup_keys.py 的说明里。
+  BackupGroupSpec(BackupCategory.theme, ['themeBundle']),
 ];
 
 BackupGroupSpec backupGroupSpec(BackupCategory id) =>

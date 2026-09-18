@@ -28,6 +28,7 @@ class _AppState extends State<App> {
   String _lastTheme = '';
   String _lastLocale = '';
   int _lastReloadTick = 0;
+  int _lastThemeRevision = 0;
 
   @override
   void initState() {
@@ -46,14 +47,20 @@ class _AppState extends State<App> {
     final tc = _state.themeColor;
     final loc = _state.locale;
     final rt = _state.reloadTick;
+    // 主题改动也要重建 MaterialApp：颜色/圆角写在 ThemeData 里，
+    // 但它们**不**需要换 key（换 key 会把导航栈整个丢掉，
+    // 主题页正在编辑时会被弹出去）。
+    final tr = _state.themeRevision;
     if (dark != _lastDark ||
         tc != _lastTheme ||
         loc != _lastLocale ||
-        rt != _lastReloadTick) {
+        rt != _lastReloadTick ||
+        tr != _lastThemeRevision) {
       _lastDark = dark;
       _lastTheme = tc;
       _lastLocale = loc;
       _lastReloadTick = rt;
+      _lastThemeRevision = tr;
       if (mounted) setState(() {});
     }
   }

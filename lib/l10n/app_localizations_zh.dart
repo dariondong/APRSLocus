@@ -5595,6 +5595,213 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupErrUnsupported => '当前平台暂不支持选择文件，请改用剪贴板粘贴';
+
+  @override
+  String get themeTitle => '主题';
+
+  @override
+  String get themeEntryDesc => '自定义颜色、图标与文字';
+
+  @override
+  String get themeSubtitle => '把界面配色、图标与常用文案改成你自己的';
+
+  @override
+  String get themePresets => '预设与我的主题';
+
+  @override
+  String get themePresetTag => '预设';
+
+  @override
+  String get themeActive => '使用中';
+
+  @override
+  String get themePresetDefault => '默认';
+
+  @override
+  String get themePresetOcean => '海洋';
+
+  @override
+  String get themePresetForest => '森林';
+
+  @override
+  String get themePresetMidnight => '暗夜';
+
+  @override
+  String get themePresetSunset => '日落';
+
+  @override
+  String get themePresetContrast => '高对比';
+
+  @override
+  String get themeBuiltinHint => '预设主题不可修改，复制为我的主题后即可自由编辑';
+
+  @override
+  String get themeColors => '颜色';
+
+  @override
+  String get themeColorsDesc => '逐项覆写配色；未修改的项跟随默认';
+
+  @override
+  String get themeRadius => '卡片圆角';
+
+  @override
+  String get themeRadiusDesc => '作用于卡片与输入框（小徽标等不受影响）';
+
+  @override
+  String get themeIcons => '图标';
+
+  @override
+  String get themeIconsDesc => '为底部页签与设置入口换图标';
+
+  @override
+  String get themeTexts => '文字';
+
+  @override
+  String get themeTextsDesc => '覆写常用文案（按钮与错误提示不开放，避免界面变得不可操作）';
+
+  @override
+  String get themeNew => '新建主题';
+
+  @override
+  String get themeDuplicate => '复制为我的主题';
+
+  @override
+  String get themeRename => '重命名';
+
+  @override
+  String get themeDelete => '删除主题';
+
+  @override
+  String themeDeleteConfirm(String name) {
+    return '删除主题「$name」？此操作无法撤销。';
+  }
+
+  @override
+  String get themeReset => '恢复默认';
+
+  @override
+  String get themeResetAll => '重置本主题';
+
+  @override
+  String get themeSaved => '主题已保存';
+
+  @override
+  String get themeNameHint => '主题名称';
+
+  @override
+  String get themePickColor => '选择颜色';
+
+  @override
+  String get themePickIcon => '选择图标';
+
+  @override
+  String get themePickIconSearch => '搜索图标名（英文）';
+
+  @override
+  String get themeEditText => '修改文字';
+
+  @override
+  String get themeTextHint => '留空即恢复默认';
+
+  @override
+  String get themeIconImport => '从图片导入';
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
+
+  @override
+  String themeIconImportDone(String name) {
+    return '已导入图标：$name';
+  }
+
+  @override
+  String get themeIconWebHint => 'Web 版不支持导入图片，请使用内置图标库';
+
+  @override
+  String get themeIconErrFormat => '不支持的图片格式（支持 PNG/JPG/WebP/GIF/BMP/SVG）';
+
+  @override
+  String get themeIconErrTooLarge => '图片超过 2MB，请先压缩';
+
+  @override
+  String get themeIconErrFailed => '导入图标失败';
+
+  @override
+  String get themeIconErrUnsupported => '当前平台不支持导入图片';
+
+  @override
+  String get themeIo => '导入与导出';
+
+  @override
+  String get themeIoDesc => '主题是 JSON 文本，可以分享给别人，也可以手工编辑';
+
+  @override
+  String get themeExport => '导出此主题';
+
+  @override
+  String get themeExportAll => '导出全部主题';
+
+  @override
+  String get themeImport => '导入主题';
+
+  @override
+  String get themeImportPaste => '从剪贴板导入';
+
+  @override
+  String themeImportDone(int n) {
+    return '已导入 $n 个主题';
+  }
+
+  @override
+  String get themeErrNotJson => '文件不是有效的 JSON';
+
+  @override
+  String get themeErrNotTheme => '这不是 APRSlocus 主题文件';
+
+  @override
+  String get themeErrSchemaNewer => '主题来自更新版本的 APRSlocus，请先升级应用';
+
+  @override
+  String get themeErrEmpty => '文件里没有可用的主题';
+
+  @override
+  String get themeFixedPrimary => '当前主题已固定主色，请到「主题」页修改';
+
+  @override
+  String get themeTokenPrimary => '主色';
+
+  @override
+  String get themeTokenSurface => '卡片表面';
+
+  @override
+  String get themeTokenBackground => '页面背景';
+
+  @override
+  String get themeTokenBackgroundSoft => '次层背景';
+
+  @override
+  String get themeTokenTextPrimary => '主文字';
+
+  @override
+  String get themeTokenTextSecondary => '次要文字';
+
+  @override
+  String get themeTokenTextMuted => '弱化文字';
+
+  @override
+  String get themeTokenDivider => '分隔线';
+
+  @override
+  String get themeTokenSuccess => '成功/在线';
+
+  @override
+  String get themeTokenWarning => '警告';
+
+  @override
+  String get themeTokenDanger => '危险/离线';
+
+  @override
+  String get themeTokenInfo => '信息/强调';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -11188,4 +11395,211 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get backupErrUnsupported => '目前平台不支援選擇檔案，請改用剪貼簿貼上';
+
+  @override
+  String get themeTitle => '主題';
+
+  @override
+  String get themeEntryDesc => '自訂顏色、圖示與文字';
+
+  @override
+  String get themeSubtitle => '把介面配色、圖示與常用文案改成你自己的';
+
+  @override
+  String get themePresets => '預設與我的主題';
+
+  @override
+  String get themePresetTag => '預設';
+
+  @override
+  String get themeActive => '使用中';
+
+  @override
+  String get themePresetDefault => '預設';
+
+  @override
+  String get themePresetOcean => '海洋';
+
+  @override
+  String get themePresetForest => '森林';
+
+  @override
+  String get themePresetMidnight => '暗夜';
+
+  @override
+  String get themePresetSunset => '日落';
+
+  @override
+  String get themePresetContrast => '高對比';
+
+  @override
+  String get themeBuiltinHint => '預設主題不可修改，複製為我的主題後即可自由編輯';
+
+  @override
+  String get themeColors => '顏色';
+
+  @override
+  String get themeColorsDesc => '逐項覆寫配色；未修改的項跟隨預設';
+
+  @override
+  String get themeRadius => '卡片圓角';
+
+  @override
+  String get themeRadiusDesc => '作用於卡片與輸入框（小徽標等不受影響）';
+
+  @override
+  String get themeIcons => '圖示';
+
+  @override
+  String get themeIconsDesc => '為底部頁籤與設定入口換圖示';
+
+  @override
+  String get themeTexts => '文字';
+
+  @override
+  String get themeTextsDesc => '覆寫常用文案（按鈕與錯誤提示不開放，避免介面變得不可操作）';
+
+  @override
+  String get themeNew => '新增主題';
+
+  @override
+  String get themeDuplicate => '複製為我的主題';
+
+  @override
+  String get themeRename => '重新命名';
+
+  @override
+  String get themeDelete => '刪除主題';
+
+  @override
+  String themeDeleteConfirm(String name) {
+    return '刪除主題「$name」？此操作無法復原。';
+  }
+
+  @override
+  String get themeReset => '恢復預設';
+
+  @override
+  String get themeResetAll => '重設本主題';
+
+  @override
+  String get themeSaved => '主題已儲存';
+
+  @override
+  String get themeNameHint => '主題名稱';
+
+  @override
+  String get themePickColor => '選擇顏色';
+
+  @override
+  String get themePickIcon => '選擇圖示';
+
+  @override
+  String get themePickIconSearch => '搜尋圖示名稱（英文）';
+
+  @override
+  String get themeEditText => '修改文字';
+
+  @override
+  String get themeTextHint => '留空即恢復預設';
+
+  @override
+  String get themeIconImport => '從圖片匯入';
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
+
+  @override
+  String themeIconImportDone(String name) {
+    return '已匯入圖示：$name';
+  }
+
+  @override
+  String get themeIconWebHint => 'Web 版不支援匯入圖片，請使用內建圖示庫';
+
+  @override
+  String get themeIconErrFormat => '不支援的圖片格式（支援 PNG/JPG/WebP/GIF/BMP/SVG）';
+
+  @override
+  String get themeIconErrTooLarge => '圖片超過 2MB，請先壓縮';
+
+  @override
+  String get themeIconErrFailed => '匯入圖示失敗';
+
+  @override
+  String get themeIconErrUnsupported => '目前平台不支援匯入圖片';
+
+  @override
+  String get themeIo => '匯入與匯出';
+
+  @override
+  String get themeIoDesc => '主題是 JSON 文字，可以分享給別人，也可以手動編輯';
+
+  @override
+  String get themeExport => '匯出此主題';
+
+  @override
+  String get themeExportAll => '匯出全部主題';
+
+  @override
+  String get themeImport => '匯入主題';
+
+  @override
+  String get themeImportPaste => '從剪貼簿匯入';
+
+  @override
+  String themeImportDone(int n) {
+    return '已匯入 $n 個主題';
+  }
+
+  @override
+  String get themeErrNotJson => '檔案不是有效的 JSON';
+
+  @override
+  String get themeErrNotTheme => '這不是 APRSlocus 主題檔';
+
+  @override
+  String get themeErrSchemaNewer => '主題來自較新版本的 APRSlocus，請先更新應用程式';
+
+  @override
+  String get themeErrEmpty => '檔案裡沒有可用的主題';
+
+  @override
+  String get themeFixedPrimary => '目前主題已固定主色，請到「主題」頁修改';
+
+  @override
+  String get themeTokenPrimary => '主色';
+
+  @override
+  String get themeTokenSurface => '卡片表面';
+
+  @override
+  String get themeTokenBackground => '頁面背景';
+
+  @override
+  String get themeTokenBackgroundSoft => '次層背景';
+
+  @override
+  String get themeTokenTextPrimary => '主文字';
+
+  @override
+  String get themeTokenTextSecondary => '次要文字';
+
+  @override
+  String get themeTokenTextMuted => '弱化文字';
+
+  @override
+  String get themeTokenDivider => '分隔線';
+
+  @override
+  String get themeTokenSuccess => '成功/上線';
+
+  @override
+  String get themeTokenWarning => '警告';
+
+  @override
+  String get themeTokenDanger => '危險/離線';
+
+  @override
+  String get themeTokenInfo => '資訊/強調';
 }

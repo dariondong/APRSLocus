@@ -27,6 +27,10 @@ class MainActivity : FlutterActivity() {
     // 结果在 onActivityResult 里回来），所以这里要暂存 Dart 侧的 Result，
     // 等选完再回。同一时刻只允许一个选择在飞（否则两个 Result 会互相踩）。
     private var pickCompleter: MethodChannel.Result? = null
+
+    // 当前这次选择要的是文本还是二进制。放在字段上而不是靠 requestCode 区分：
+    // 两者用的是同一个 startActivityForResult，结果回调里分不出来。
+    private var pickBinary = false
     private companion object {
         const val REQ_PICK_BACKUP = 4711
 
@@ -34,6 +38,9 @@ class MainActivity : FlutterActivity() {
         // 不设上限的话一个误选的几个 G 的文件就能把应用 OOM 掉。
         // 32MB 对「设置+消息记录」来说已经极其宽松。
         const val MAX_BACKUP_BYTES = 32 * 1024 * 1024
+
+        // 主题自定义图标的大小上限（与 Dart 侧 kIconMaxBytes 保持一致）
+        const val MAX_ICON_BYTES = 2 * 1024 * 1024
     }
 
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
@@ -356,6 +363,10 @@ class MainActivity : FlutterActivity() {
                 // 备份导入：拉起系统文件选择器，返回 {name, content}
                 // 用户取消返回 null；文件过大 / 读失败走 error
                 "pickTextFile" -> pickTextFile(result)
+                // 主题自定义图标：同一条选择器，但要把**二进制**读回来。
+                // 不能复用 pickTextFile：图片按 UTF-8 解码会被替换字符破坏，
+                // 得到的是一堆「看起来像文本」的垃圾。这里改成 base64。
+                "pickBinaryFile" -> pickBinaryFile(result)
                 else -> result.notImplemented()
             }
         }
@@ -371,6 +382,7 @@ class MainActivity : FlutterActivity() {
             return
         }
         pickCompleter = result
+        pickBinary = false
         try {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "*/*"
@@ -403,16 +415,76 @@ class MainActivity : FlutterActivity() {
             completer.success(null)
             return
         }
+        val binary = pickBinary
+        pickBinary = false
         try {
-            val text = readTextCapped(uri, MAX_BACKUP_BYTES)
-            if (text == null) {
-                completer.error("TOO_LARGE", "文件过大", null)
-                return
+            val name = displayNameOf(uri) ?: if (binary) "icon.png" else "backup.json"
+            if (binary) {
+                // 上限用 MAX_ICON_BYTES（2MB）：图标要塞进 22~40dp 的位置，
+                // 2MB 已极宽松；不设限的话一张手机原图就能变成主题里的巨石。
+                val bytes = readBytesCapped(uri, MAX_ICON_BYTES)
+                if (bytes == null) {
+                    completer.error("TOO_LARGE", "图片过大", null)
+                    return
+                }
+                val b64 = android.util.Base64.encodeToString(
+                    bytes, android.util.Base64.NO_WRAP
+                )
+                completer.success(mapOf("name" to name, "data" to b64))
+            } else {
+                val text = readTextCapped(uri, MAX_BACKUP_BYTES)
+                if (text == null) {
+                    completer.error("TOO_LARGE", "文件过大", null)
+                    return
+                }
+                completer.success(mapOf("name" to name, "content" to text))
             }
-            val name = displayNameOf(uri) ?: "backup.json"
-            completer.success(mapOf("name" to name, "content" to text))
         } catch (e: Exception) {
             completer.error("READ_FAILED", e.message, null)
+        }
+    }
+
+    /// 读取二进制，超过 [max] 字节返回 null（与文本版同样的分块思路）
+    private fun readBytesCapped(uri: Uri, max: Int): ByteArray? {
+        val input = contentResolver.openInputStream(uri) ?: return null
+        input.use { ins ->
+            val buf = ByteArrayOutputStream()
+            val chunk = ByteArray(64 * 1024)
+            while (true) {
+                val n = ins.read(chunk)
+                if (n <= 0) break
+                if (buf.size() + n > max) return null
+                buf.write(chunk, 0, n)
+            }
+            return buf.toByteArray()
+        }
+    }
+
+    /// 与 [pickTextFile] 同一条选择器，但以 base64 返回二进制（主题图标用）。
+    private fun pickBinaryFile(result: MethodChannel.Result) {
+        if (pickCompleter != null) {
+            result.error("BUSY", "已有文件选择在进行中", null)
+            return
+        }
+        pickCompleter = result
+        pickBinary = true
+        try {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "image/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+                // 部分机型把 svg/webp 识别成 octet-stream，所以只当提示用
+                putExtra(
+                    Intent.EXTRA_MIME_TYPES,
+                    arrayOf("image/*", "application/octet-stream")
+                )
+            }
+            startActivityForResult(
+                Intent.createChooser(intent, "APRSlocus"),
+                REQ_PICK_BACKUP
+            )
+        } catch (e: Exception) {
+            pickCompleter = null
+            result.error("NO_PICKER", e.message, null)
         }
     }
 

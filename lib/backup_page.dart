@@ -611,6 +611,10 @@ class _BackupPageState extends State<BackupPage> {
         return s.backupCatTranslate;
       case BackupCategory.honors:
         return s.backupCatHonors;
+      case BackupCategory.theme:
+        // 复用主题页自己的文案：同一件事在两处用同一个词，用户才不会以为
+        // 「主题」与「界面自定义」是两样东西。
+        return s.themeTitle;
     }
   }
 
@@ -628,6 +632,8 @@ class _BackupPageState extends State<BackupPage> {
         return s.backupCatTranslateDesc;
       case BackupCategory.honors:
         return s.backupCatHonorsDesc;
+      case BackupCategory.theme:
+        return s.themeEntryDesc;
     }
   }
 

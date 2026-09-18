@@ -55,8 +55,31 @@ class C {
   /// 深色模式
   static bool dark = false;
 
-  /// 应用主题：深色/自定义主色。调用后 C.* 颜色更新，下次 build 生效。
-  static void applyTheme({required bool isDark, Color? primary}) {
+  /// 卡片圆角（主题可调）。默认 16；`cardDeco` / `fieldDeco` 从这里取默认值。
+  ///
+  /// 只作用于**共用辅助函数**，而不是 383 处 `BorderRadius.circular(N)` ——
+  /// 那些 N 里有徽标用的 2、胶囊用的 999，统一乘一个系数会把小圆点变成
+  /// 菱形、把胶囊撑破。所以这里的语义就是「卡片与输入框的圆角」，
+  /// UI 上也是这么标称呼，不假装它是全局圆角。
+  static double radius = kDefaultRadius;
+
+  static const double kDefaultRadius = 16;
+
+  /// 输入框圆角：比卡片小一档，跟随卡片圆角但不小于 6
+  static double get fieldRadius =>
+      (radius - 4) < 6 ? 6 : (radius - 4);
+
+  /// 应用主题：深色 / 主色 / 令牌覆写。
+  ///
+  /// [tokens] 的键是 theme_model.dart 里的 [ThemeColorToken.id]。
+  /// 不传（或传空）时行为与旧版完全一致 —— 这是**有意的兼容保证**：
+  /// 老用户只有 `themeColor`，他们的界面不能被这次改动改掉。
+  static void applyTheme({
+    required bool isDark,
+    Color? primary,
+    Map<String, Color>? tokens,
+    double? radius,
+  }) {
     dark = isDark;
     if (primary != null) blue = primary;
     if (isDark) {
@@ -113,6 +136,41 @@ class C {
         blue = const Color(0xFF2563EB);
       }
     }
+    C.radius = radius ?? kDefaultRadius;
+    if (tokens != null && tokens.isNotEmpty) _applyTokens(tokens);
+  }
+
+  /// 把主题令牌写到对应的颜色字段上。
+  ///
+  /// 一个令牌可能对应多个字段（例如主色深浅），这里显式列出来，
+  /// 而不是让调用方去猜 —— 猜错的后果是「改了主色但某个角落没变」，
+  /// 用户只会觉得主题功能是坏的。
+  static void _applyTokens(Map<String, Color> t) {
+    Color? g(String k) => t[k];
+    if (g('primary') != null) {
+      blue = g('primary')!;
+      // 主色的深一档：直接压暗，避免再引入一个必须手工同步的令牌
+      blueDark = _darken(g('primary')!, 0.18);
+    }
+    if (g('surface') != null) white = g('surface')!;
+    if (g('background') != null) bg = g('background')!;
+    if (g('backgroundSoft') != null) bgSoft = g('backgroundSoft')!;
+    if (g('textPrimary') != null) ink = g('textPrimary')!;
+    if (g('textSecondary') != null) slate = g('textSecondary')!;
+    if (g('textMuted') != null) grey = g('textMuted')!;
+    if (g('divider') != null) {
+      border = g('divider')!;
+      borderStrong = _darken(g('divider')!, 0.10);
+    }
+    if (g('success') != null) green = g('success')!;
+    if (g('warning') != null) yellow = g('warning')!;
+    if (g('danger') != null) red = g('danger')!;
+    if (g('info') != null) cyan = g('info')!;
+  }
+
+  static Color _darken(Color c, double amount) {
+    HSLColor h = HSLColor.fromColor(c);
+    return h.withLightness((h.lightness - amount).clamp(0.0, 1.0)).toColor();
   }
 }
 
@@ -146,16 +204,17 @@ List<BoxShadow> softShadow({double blur = 18, double y = 5, double alpha = 0.07}
       ),
     ];
 
-BoxDecoration cardDeco({Color? bg, double r = 16, bool shadow = true}) =>
+/// 卡片装饰。圆角默认取 [C.radius]（主题可调），显式传 [r] 则优先用 [r]。
+BoxDecoration cardDeco({Color? bg, double? r, bool shadow = true}) =>
     BoxDecoration(
       color: bg ?? C.white,
-      borderRadius: BorderRadius.circular(r),
+      borderRadius: BorderRadius.circular(r ?? C.radius),
       boxShadow: shadow ? softShadow() : null,
     );
 
 BoxDecoration fieldDeco() => BoxDecoration(
       color: C.white,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(C.fieldRadius),
       border: Border.all(color: C.border),
     );
 

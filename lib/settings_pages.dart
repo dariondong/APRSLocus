@@ -12,6 +12,7 @@ import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
 import 'weather.dart';
+import 'theme_store.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -2485,6 +2486,10 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               SettingsSwitch(S.of(context).weatherWidget, value: st.weatherEnabled,
                   color: C.cyan, onChanged: (v) => st.setWeatherEnabled(v)),
               _themeColorSelector(st),
+              // 主题若已覆写主色，色板点了不会变 —— 与其让用户以为坏了，
+              // 不如直接说清楚去哪儿改。
+              if (ThemeController.instance.active.overridesColor('primary'))
+                SettingsHint(S.of(context).themeFixedPrimary, color: C.orange),
               _languageSelector(st),
               _uiScaleSelector(st),
               SettingsRow2(S.of(context).unit, S.of(context).metricUnits),

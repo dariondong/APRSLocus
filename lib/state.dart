@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'theme.dart';
 import 'models.dart';
 import 'mock_data.dart';
 import 'services.dart';
@@ -35,6 +34,7 @@ import 'tnc.dart';
 import 'translate.dart';
 import 'early_member.dart';
 import 'achievements.dart';
+import 'theme_store.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
 /// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
@@ -1178,15 +1178,24 @@ class AppState extends ChangeNotifier {
   /// 切换深色模式
   void setDarkMode(bool v) {
     darkMode = v;
-    C.applyTheme(isDark: v, primary: themeColorValue);
+    applySavedTheme();
     persist();
     _notify();
   }
 
   /// 设置自定义主题色
   void setThemeColor(String hex) {
-    themeColor = hex.trim().replaceAll('#', '');
-    C.applyTheme(isDark: darkMode, primary: themeColorValue);
+    final v = hex.trim().replaceAll('#', '').toUpperCase();
+    themeColor = v;
+    // 当前主题已经把主色固定下来时，同步改主题里的那一项 ——
+    // 否则用户在「显示」里点颜色会毫无反应（被主题覆写盖住），像功能坏了。
+    final tc = ThemeController.instance;
+    final a = tc.active;
+    if (a.overridesColor('primary') && !a.builtin) {
+      a.colors['primary'] = v;
+      tc.upsert(a);
+    }
+    applySavedTheme();
     persist();
     _notify();
   }
@@ -1200,10 +1209,19 @@ class AppState extends ChangeNotifier {
     return Color(0xFF000000 | v);
   }
 
-  /// 应用已保存的主题（App 启动时调用）
+  /// 应用已保存的主题（App 启动时调用）。
+  ///
+  /// 颜色来源分两层：**主题的令牌覆写优先，其次才是旧版的单一 themeColor**。
+  /// 保留第二层是有意的：老用户只存过 `themeColor`，升级后颜色必须原样不变。
   void applySavedTheme() {
-    C.applyTheme(isDark: darkMode, primary: themeColorValue);
+    ThemeController.instance.applyColors(
+      isDark: darkMode,
+      legacyPrimary: themeColorValue,
+    );
   }
+
+  /// 主题版本号：主题页改动后它 +1，App 据此重建 MaterialApp（不动导航栈）
+  int get themeRevision => ThemeController.instance.revision;
 
   // 定位来源：false = 系统 GPS；true = 模拟位置（手动坐标）
   bool useSimLocation = false;
@@ -1611,6 +1629,8 @@ class AppState extends ChangeNotifier {
       // 加载收藏/手动联系人
       _loadStations(p);
       // 应用保存的主题（深色/自定义色）——必须在 initialized 前，避免先渲染默认皮肤
+      // 主题要在 applySavedTheme 之前加载：后者会读当前主题的令牌覆写
+      await ThemeController.instance.load(p);
       applySavedTheme();
       initialized = true;
       _applyOrientation();
@@ -1705,6 +1725,8 @@ class AppState extends ChangeNotifier {
       chatGroups.map((g) => g.toJson()).toList(),
     );
     await p.setString('chatGroups', groupsJson);
+    // 主题（含用户自建的全部主题与当前激活项）
+    await ThemeController.instance.saveTo(p);
   }
 
   /// 仅保存消息列表到本地
