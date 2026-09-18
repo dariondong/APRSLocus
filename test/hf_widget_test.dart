@@ -17,6 +17,10 @@ import 'package:aprslocus/weather.dart';
 void main() {
   final zh = lookupAppLocalizations(const Locale('zh'));
   final en = lookupAppLocalizations(const Locale('en'));
+  // 最长档位词在 id（Tertutup）/ es（Cerrada）里 —— 只查 zh/en 的护栏
+  // 会漏掉真正会把格子撑爆的那两种语言。
+  final id = lookupAppLocalizations(const Locale('id'));
+  final es = lookupAppLocalizations(const Locale('es'));
 
   /// 造一份确定的短波状态（不联网）
   HfNow sample({
@@ -94,10 +98,16 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
 
       for (final k in ['v', 'hasData', 'title', 'indices', 'dayLabel', 'nightLabel',
-        'bands',
+        'nowPrefix', 'dayFrom', 'dayTo',
+        'bands', 'six',
         'emptyLabel']) {
         expect(snap.containsKey(k), isTrue, reason: '快照缺 $k');
       }
+      // 「现在」前缀与日间区间：Kotlin 拿它们拼「现在 夜间」并按本机时钟判断
+      // 当前时段。少了任一个，组件会渲染成「 夜间」（前缀空）或永远算作日间。
+      expect((snap['nowPrefix'] as String).isNotEmpty, isTrue);
+      expect(snap['dayFrom'], kHfDayFromHour);
+      expect(snap['dayTo'], kHfDayToHour);
       for (final c in snap['indices'] as List) {
         expect((c as Map).keys.toSet(), {'label', 'value', 'color'});
       }
@@ -145,18 +155,44 @@ void main() {
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
       final last = (snap['bands'] as List).last as Map;
       expect(last['nightLabel'], zh.hfQClosed);
-      // 契约是**等级名**（Kotlin 用 TRACK_BY_LEVEL 选 aw_track_closed），
+      // 契约是**等级名**（Kotlin 用 SEG_BY_LEVEL 选 aw_seg_closed），
       // 不再是色值 —— 换底靠换 drawable
       // （TextView 没有 setColorFilter，那是 ImageView 独有的）。
       expect(last['nightLevel'], 'closed');
     });
   });
 
+  group('昼夜判定（规则只有一处，钉住它）', () {
+    test('07:00–19:00 记作日间，两端闭合方向按 [from, to)', () {
+      expect(hfIsDaytime(DateTime(2026, 9, 18, 6, 59)), isFalse);
+      expect(hfIsDaytime(DateTime(2026, 9, 18, 7, 0)), isTrue);
+      expect(hfIsDaytime(DateTime(2026, 9, 18, 18, 59)), isTrue);
+      expect(hfIsDaytime(DateTime(2026, 9, 18, 19, 0)), isFalse);
+    });
+
+    test('bestBandAt 与建议用的是同一个判定（否则面板与组件会互相矛盾）', () {
+      // 20:00 → 夜间：bestBandAt 必须挑夜间好的那一段
+      final n = sample(bands: const [
+        HfBand(name: '80m-40m', day: 'Good', night: 'Poor'),
+      ]);
+      seedHf(n);
+      // bestBandAt 定义在 HfNow 上（不是 HfCenter）
+      final now = HfCenter.instance.now!;
+      final at20 = now.bestBandAt(DateTime(2026, 9, 18, 20));
+      final at10 = now.bestBandAt(DateTime(2026, 9, 18, 10));
+      // 只有一个波段时两者都返回它 —— 这里真正要钉的是**它不抛**且
+      // 判定与 hfIsDaytime 一致（同一函数），所以断言取值本身。
+      expect(at20?.name, '80m-40m');
+      expect(at10?.name, '80m-40m');
+    });
+  });
+
   group('chip 等级契约', () {
     test('level 名落在 Kotlin 认识的集合里', () {
-      // Kotlin 的 TRACK_BY_LEVEL 只认 good/fair/poor/closed，认不出会回退灰底。
+      // Kotlin 的 SEG_BY_LEVEL / SEGNOW_BY_LEVEL 只认 good/fair/poor/closed，
+      // 认不出会回退灰底。
       // hf.dart 的 HfQuality 还多一个 unknown（"no report"/"--" 这类无数据），
-      // 它没有专属色带 —— 这是**有意的**：unknown 也走灰底，语义就是「没数据」。
+      // 它没有专属段落 —— 这是**有意的**：unknown 也走灰底，语义就是「没数据」。
       const known = {'good', 'fair', 'poor', 'closed', 'unknown'};
       const chipLevels = {'good', 'fair', 'poor', 'closed'};
       for (final (day, night) in const [
@@ -368,23 +404,48 @@ void main() {
   });
 
   group('质量文案（chip 内显示）', () {
-    /// chip 宽 46dp、字号 8.5sp：CJK 每字约 8.5dp，拉丁每字约 4.7dp。
-    double chipWidth(String v) {
+    /// 估算文案宽度（dp）。
+    ///
+    /// ⚠ 判据必须与 aw_widget_hf.xml 的真实尺寸一致，且 em 系数要按**实测**校准
+    /// （来源：tool/preview_app_widget.py 用 Noto Sans SC 量得）：
+    ///   · 波段名全是 [0-9a-zA-Z/]，实测 9sp 加粗下 6.00dp/字符 = 0.667em；
+    ///   · 档位文案混有小写窄字母，实测 4.9–6.0dp/字符，取 0.60em 作保守估计。
+    /// 上一版这条护栏把格子当 46dp / 8.5sp（早已改成 48dp），拿过期常量去判会
+    /// 「通过」而真机在截断，比没有护栏更坏。
+    double textWidth(String v, double sizeSp, double em) {
       final cjk = v.runes.where((r) => r > 0x2E80).length;
       final lat = v.runes.length - cjk;
-      return cjk * 8.5 + lat * 4.7;
+      return (cjk + lat * em) * sizeSp;
     }
 
-    test('四种质量文案非空，且都能放进 chip（不靠省略号）', () {
-      // chip 是**固定宽度**的（对齐需要），所以文案一旦变长就会被省略号截断 ——
-      // 而截断的条件文字（「未开…」）等于没给信息。这条护栏盯住长度。
-      for (final s in [zh, en]) {
+    test('四种质量文案能放进两个格子（不靠省略号）', () {
+      // 档位文字出现在**两个**固定宽度的格子里（内宽都要扣掉左右各 3dp 内边距）：
+      //   · 每行右端的「当前时段档位块」：48dp → 内宽 42dp，8.5sp
+      //   · 指数行右端的 6m 格：        48dp → 内宽 42dp，8.5sp
+      // 文案变长会被省略号截断，而截断的条件文字（「未开…」）等于没给信息。
+      // 覆盖全部 6 种语言 —— 最长的两个（id 的 Tertutup / es 的 Cerrada）
+      // 恰好不在 zh/en 里，只查 zh/en 的护栏会漏掉真正会撑爆格子的那两个。
+      for (final s in [zh, en, id, es]) {
         for (final label in [s.hfQGood, s.hfQFair, s.hfQPoor, s.hfQClosed]) {
           expect(label, isNotEmpty);
-          expect(chipWidth(label), lessThanOrEqualTo(46),
-              reason: '「$label」约 ${chipWidth(label).toStringAsFixed(1)}dp，'
-                  '超出 chip 的 46dp，会被省略号截断');
+          final w = textWidth(label, 8.5, 0.60);
+          expect(w, lessThanOrEqualTo(42),
+              reason: '「$label」约 ${w.toStringAsFixed(1)}dp，'
+                  '超出格子的内宽 42dp（8.5sp），会被省略号截断');
         }
+      }
+    });
+
+    test('波段名放得下，且留出系统字体放大（1.3 倍）的余量', () {
+      // 这条是 v1.6.129 的**真实 bug**：列宽当时给 46dp，而 "12m/10m" 在 9sp 加粗下
+      // 实测 42.0dp —— 平时刚好、系统字体一放大（Android 上限 1.3 倍 → 55.3dp）
+      // 就被 ellipsize 成「12m/1…」，「这是哪个波段」这个**前置信息**就没了。
+      // 预览工具画文字不裁切，所以那版预览看不出来。现在列宽 56dp。
+      for (final name in ['80m/40m', '30m/20m', '17m/15m', '12m/10m']) {
+        final scaled = textWidth(name, 9 * 1.3, 0.667);
+        expect(scaled, lessThanOrEqualTo(56),
+            reason: '「$name」在字体放大 1.3 倍时约需 '
+                '${scaled.toStringAsFixed(1)}dp，超出 56dp 列宽会被截断');
       }
     });
 

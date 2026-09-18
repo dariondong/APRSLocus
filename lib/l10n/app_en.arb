@@ -1576,6 +1576,7 @@
   "hfBand": "Band",
   "hfDay": "Day",
   "hfNight": "Night",
+  "hfNow": "Now",
   "hfSfi": "Solar flux",
   "hfKp": "Kp index",
   "hfAIndex": "A index",

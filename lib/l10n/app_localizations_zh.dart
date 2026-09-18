@@ -4817,6 +4817,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hfNight => '夜间';
 
   @override
+  String get hfNow => '现在';
+
+  @override
   String get hfSfi => '太阳通量';
 
   @override
@@ -10996,6 +10999,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get hfNight => '夜間';
+
+  @override
+  String get hfNow => '現在';
 
   @override
   String get hfSfi => '太陽通量';

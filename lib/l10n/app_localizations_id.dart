@@ -5002,6 +5002,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get hfNight => 'Malam';
 
   @override
+  String get hfNow => 'Sekarang';
+
+  @override
   String get hfSfi => 'Fluks surya';
 
   @override

@@ -4991,6 +4991,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hfNight => 'Night';
 
   @override
+  String get hfNow => 'Now';
+
+  @override
   String get hfSfi => 'Solar flux';
 
   @override

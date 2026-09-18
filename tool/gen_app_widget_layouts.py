@@ -62,16 +62,20 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 # 所以颜色必须写成可解析的资源，夜间模式才能自动切到 values-night 的值。
 # 对应 theme.dart 的 C.ink / C.slate / C.border。
 INK = "@color/aw_ink"  # 主文字
-# 色带格左内边距：把档位文字推离左端 2.5dp 色标（色标贴在格子的最左边）
-TRACK_PAD_START = "8dp"
-TRACK_PAD_END = "5dp"
-# 色带格高度。20dp 是量出来的：4 行 × 20 + 列头 13 + 指数行 18 + 细线 10
-# + 顶栏 21 + 上下内边距 17 ≈ 159dp，正好填满 4×2 的可用高度（130dp 是
-# 卡片高度减去圆角净空，实际内容区约 160dp）而不溢出。
-TRACK_H = "20dp"
-# 波段名列宽：46dp 够放 "12m/10m"（9.5sp 加粗），比旧版 54dp 窄 ——
-# 省下的横向空间给色带，免得色带右端离卡片边缘太远、显得内容偏左。
-BAND_W = "46dp"
+# 进度条段高度
+SEG_H = "13dp"
+# 日/夜两段之间的缝
+SEG_GAP = "2dp"
+# 日端/夜端的小图标（太阳 / 星星）
+SEG_ICON = "9dp"
+# 每行右侧「现在这一档」的标块宽度
+NOW_W = "48dp"
+# 波段名列宽。**56dp 是算出来的，不是拍的**：最长的波段名（12m/10m）在
+# 9sp 加粗下实测约 42dp；Android 字体缩放最大 1.3 倍 → 42 × 1.3 ≈ 55dp。
+# 上一版给 46dp，系统字体一放大就把名字吃掉（ellipsize 成「12m/1…」）——
+# 而**预览工具画文字不裁切**，所以它看不出来，只有真机上才现形。
+# 宁可把 10dp 让给名字，也不让最关键的「这是哪个波段」消失。
+BAND_W = "56dp"
 SLATE = "@color/aw_slate"  # 次要文字
 LINE = "@color/aw_line"  # 细分隔线
 
@@ -628,58 +632,50 @@ def build_row():
 
 # ── 短波/电离层传播组件（4×2，固定尺寸 · 白底 · 彩色 chip）────────────
 def build_hf():
-    """逐波段给出日间/夜间传播条件 —— 「各个波段的传播信息」。
+    """短波/电离层传播：每个波段一条「日 → 夜」进度条 + 当前时段游标。
 
-    **这一版是「F2 · 条件色带」**（用户在 4 个方向里选定的）。
-    上一版（D · tonal chip）被判定「还是好难看」，逐条诊断：
-      ① **8 个同形状的淡色药丸**：色块面积与信息量不匹配 —— 「一般」一行内
-         出现 3 次、「差」4 次；重复的图形不承载额外信息，只堆噪声；
-      ② **4 行完全同构**，没有层次，像把表格直接倒上去；
-      ③ 波段名与第一个 chip 之间约 40dp 空档，横向扫视要跨很远；
-      ④ 淡底 11% 远看是一片浅灰粉，颜色信号几乎无效。
-    F2 的解法（不是调参，是换结构）：
-      · 每行一条**色带**横贯整个日/夜列 —— 行的宽度即列宽，空档消失；
-      · 颜色集中到色带**左端一道 2.5dp 色标**：4 行扫下来是一条竖线，
-        像仪表的指示列，而不是 8 个孤立色块；
-      · 档位文字就在色带内**左端**（紧挨色标），颜色与文字同源、不用跨空档读；
-      · 「日间 / 夜间」列头与色带左边缘**同一 x**（旧版图例浮在右端，等于没标）。
+    **这一版是「M1 · 双段 + 游标」**（用户在三个方向里选定的）。上一版
+    （F2 · 条件色带）虽然在结构上比「八个药丸」清楚了，但仍有两个硬伤：
+      ① 波段名被挤掉（列宽 46dp 放不下 9.5sp 加粗的 "12m/10m"，字体一放大
+         更甚）——「这是哪个波段」是整块的前置信息，它没了其余都白搭；
+      ② 两列表把「白天」与「夜间」并列成两列，用户还得自己心算现在该看哪列。
 
-    **色带为什么是一张 layer-list、而不是「淡底容器 + 2.5dp 子 View」**：
-    RemoteViews 不允许原生 `<View>`；色标只能用 TextView/ImageView 冒充，那就要
-    多一个控件、多一个 id、多一行 setBackgroundResource —— 每个都是只在运行期
-    才爆的地方。一张 layer-list 把「淡底 + 色标」合成一个背景，于是每格仍然只是
-    **一个 TextView**：setBackgroundResource 换色带、setTextColor 换字色，这两个
-    方法在 View/TextView 上确实存在（对照 setColorFilter 只存在于 ImageView 那个
-    线上事故）。
+    这一版直接把「现在」摆到台面上：
+      · 每个波段一条横贯的两段条：**左=日间、右=夜间**（顺序即时间顺序）；
+      · 两段各有自己的条件色 —— 一眼看出两个时段各自的通联程度；
+      · **当前时段那一段是实色 + 顶部一颗小白点**（小白点烘焙在 drawable 里，
+        见 gen_app_widget_drawables.segnow_xml），另一段是淡底 → 「现在」
+        不需要读字就看得出来；
+      · 两端各一个小图标作语义标注：日端 = 太阳（琥珀），夜端 = 星光（次要色）；
+      · 每行右端仍给一个档位块（好/一般/差），它是**当前时段**的档位 ——
+        颜色之外再给一个词，满足「不靠颜色也能读」。
+      · 指数行右端写「现在 夜间」，把「现在」这件事说清楚。
 
-    **为什么必须预生成 4 张色带 drawable**：同上的 setColorFilter 限制 ——
-    TextView 换底只能用 setBackgroundResource，所以四个条件各一张
-    （aw_track_{good,fair,poor,closed}，由 tool/gen_app_widget_drawables.py 生成）。
+    **当前时段由原生按本机时钟判断**（阈值由 Dart 随快照下发 dayFrom/dayTo）：
+    组件每 30 分钟自刷新时只重绘已存的快照，若在 Dart 侧把时段算死，用户
+    一整天不开 App 就会出现「19:00 之后还指着日间」—— 判错时段比不显示更糟。
 
-    **6m 段**在指数行右端（不在表里）：6m 没有「日间/夜间」之分，传播机理
-    （Es / 极光 / F2）与 HF 波段完全不同，并进那张表会让「6m 日间 Poor」读起来
-    像同一机理。它与指数同高、同一种色带外观 —— 无开通常态下只显示一个「--」，
-    不抢注意力；一旦开通就变色，是本组件里最「可行动」的一条。
+    尺寸（实测累计，见 tool/preview_app_widget.py 的 _hf_m1_geometry）：
+      pad 8/9 + 顶栏 17.7 + 指数行 13 + 细线 5 + 4 行 × (15 + 4) − 4 ≈ 128dp，
+      比上一版（158.7dp）更矮 —— 4×2 表类组件能拿到多少高度取决于启动器，
+      矮一点只会更安全。
 
-    **为什么固定 4×2**（resizeMode=none）：内容是一张表（波段 × 昼夜）。
-    表不能优雅降级 —— 挤到 2×2 只剩波段名、没有条件，等于砍掉最有用的信息。
-
-    设计稿见 tool/preview_app_widget.py 的 render_hf_F2（同一套尺寸）。
+    设计稿见 tool/preview_app_widget.py 的 render_hf_M1（同一套尺寸）。
     """
     rows = 4
-    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · F2 条件色带）", [
-        "顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus",
-        "指数行  ：SFI 100 · Kp 3 · A 9                  [6m 色带]",
+    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · M1 日/夜进度条）", [
+        "顶栏    ：[电波图标·墨色] 短波传播  现在 夜间    [logo] APRSlocus",
+        "指数行  ：SFI 100 · Kp 3 · A 9                        6m [档位]",
         "细线    ：C.border（#E5E9F0）",
-        "列头    ：          日间              夜间   ← 与色带左边缘**同一条竖线**",
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
-        "          每格 = 条件色带（aw_track_*：淡底 14% + 左端 2.5dp 色标）",
-        "                 档位文字在色带内左端，颜色 = 该档基本色",
-        "6m      ：无开通时显示灰色占位符（与 Dart 的 HfNow.none 一致）—— 不抢注意力；",
-        "          开通时显示档位并变色",
+        "          每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]",
+        "          段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）",
+        "          当前时段那一段用实色 + 小白点，另一段淡底",
+        "          档位块显示**当前时段**的档位（文字 + 条件色）",
         "",
         "数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），",
         "由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。",
+        "当前时段由原生按本机时钟判断，日间区间由 Dart 随快照下发。",
         "",
         "⚠ 硬约束同天气组件：只用白名单控件（不用原生 <View>）、不用 <selector>、",
         "不用 styles.xml 主题样式（字号颜色就地写死）。",
@@ -692,14 +688,17 @@ def build_hf():
                 gravity="center_vertical", baseline=True)
     s += image("aw_hf_icon", "aw_ic_waves", "14dp")
     s += text("aw_hf_title", size="12sp", bold=True, color=INK, margin_start="4dp")
+    # 「现在 夜间」放在**顶栏**而不是指数行：它是表头级的「这份数据对应当前哪个时段」，
+    # 且指数行已经被 SFI/Kp/A + 6m 占满 —— 实测西班牙语的「Ahora Noche」52.3dp、
+    # 印尼语的「Sekarang Malam」67.7dp，留在指数行会把 6m 格挤出去。
+    # 顶栏标题与品牌之间有大片空位，长度再长也放得下。
+    s += text("aw_now_tag", size="8.5sp", color=SLATE, margin_start="7dp")
     s += text("aw_spacer", size="1sp", width="0dp", height="1dp", weight="1")
     s += image("aw_logo", "aw_logo", "15dp")
     s += text("aw_app_name", size="10sp", bold=True, color=INK,
               margin_start="4dp", android_text="APRSlocus")
     s += CLOSE
-    # ② 指数行 + 右端 6m 色带。
-    #    6m 与指数同高、同一种色带外观：它是最「可行动」的一条（开通即值得上机），
-    #    但无开通是常态，所以此时只显示一个「--」，不用颜色抢注意力。
+    # ② 指数行 + 右端「现在 夜间」（文案由 Dart 拼好下发 —— 原生不本地化）
     s += linear("aw_idx", orientation="horizontal", gravity="bottom",
                 baseline=True, margin_top="3dp")
     for i in range(3):
@@ -708,62 +707,48 @@ def build_hf():
                   margin_start="3dp", margin_end="10dp")
     s += text("aw_idx_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
-    # 「6m」这个说明文字**不能省**：一个带颜色的格子如果不标出处，用户只会看到
-    # 一个孤立的色块，不知道它在说什么。6m 是波段代号（和表里的 80m/40m 同性质），
-    # 不随语言变化，所以就地写死，不用本地化键。
-    #
-    # ⚠ 名字**不能**叫 aw_six_label：check_android_res_ids.py 把以 `_label` 结尾的
-    # id 一律当成「必须由某个档位填充的数据字段」，静态文案用这个名字会被判成
-    # 「布局加了控件却忘了配 IdS 表」。这条规则本身是对的（它拦的是真丢字段），
-    # 所以正确的做法是把名字改对，而不是去放宽规则。
-    s += text("aw_six_tag", size="8.5sp", color=SLATE,
-              android_text="6m", margin_end="3dp")
-    # 46dp：容得下最长的档位词（id 的 "Tertutup" ≈ 38dp + 左右 6dp 内边距）。
+    # 6m 格：它是**另一件东西**（Es / 极光 / F2 三条通路，没有日/夜之分），
+    # 所以不进上面那张「日/夜进度条」的表，留在指数行右端当一个独立指标 ——
+    # 上一版（v1.6.128）刚把它做成常驻，这版不能因为改了表就把它挤掉。
+    # 无条件时显示灰色占位符（Dart 给 HfNow.none），开通时才变色。
+    s += text("aw_six_tag", size="8.5sp", color=SLATE, android_text="6m",
+              margin_start="8dp", margin_end="3dp")
     s += text("aw_six", size="8.5sp", bold=True, color=SLATE,
-              width="46dp", height="13dp", gravity="center",
-              bg="aw_track_closed", pad_start="3dp", pad_end="3dp",
+              width="48dp", height="13dp", gravity="center",
+              bg="aw_seg_closed", pad_start="3dp", pad_end="3dp",
               ellipsize=True)
     s += CLOSE
     # ③ 细线
     s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
     s += hairline("aw_rule1", LINE)
     s += CLOSE
-    # ④ 列头：波段列固定宽，两条色带列等分 ——
-    #    列头左边缘与色带左边缘**同一条竖线**（靠等分列实现，不靠调 margin）。
-    s += linear("aw_colhead", orientation="horizontal", baseline=True,
-                margin_top="3dp")
-    s += text("aw_ch_band", size="8.5sp", color=SLATE, width=BAND_W)
-    s += text("aw_ch_day", size="8sp", color=SLATE, bold=True, spacing="0.06",
-              width="0dp", weight="1")
-    s += text("aw_ch_night", size="8sp", color=SLATE, bold=True, spacing="0.06",
-              width="0dp", weight="1")
-    s += CLOSE
-    # ⑤ 4 行波段
-    s += linear("aw_bands", orientation="vertical", margin_top="2dp")
+    # ④ 4 行波段：名字 + 太阳 + 日间段 + 夜间段 + 星光 + 当前档位
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top=None if i == 0 else "1dp")
-        s += text(f"aw_band{i}_name", size="9.5sp", bold=True, color=INK,
+                    margin_top="4dp")
+        s += text(f"aw_band{i}_name", size="9sp", bold=True, color=INK,
                   width=BAND_W, ellipsize=True)
-        # 色带格：外层等分容器决定列宽，色带铺满它（所以行的宽度 = 列宽）
-        s += linear(f"aw_band{i}_day_box", orientation="horizontal",
-                    width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_day", size="9.5sp", bold=True, color=INK,
-                  gravity="center_vertical", bg="aw_track_good",
-                  height=TRACK_H, pad_start=TRACK_PAD_START,
-                  pad_end=TRACK_PAD_END)
-        s += CLOSE
-        s += linear(f"aw_band{i}_night_box", orientation="horizontal",
-                    width="0dp", weight="1", gravity="center_vertical")
-        s += text(f"aw_band{i}_night", size="9.5sp", bold=True, color=INK,
-                  gravity="center_vertical", bg="aw_track_good",
-                  height=TRACK_H, pad_start=TRACK_PAD_START,
-                  pad_end=TRACK_PAD_END)
-        s += CLOSE
+        # 两端的太阳/星星：白色 PNG，运行时由 Kotlin setColorFilter 染色
+        # （太阳 aw_sun / 星光 aw_slate）。不染色在白底卡片上等于隐形。
+        s += image(f"aw_band{i}_dayicon", "aw_ic_wb_sunny", SEG_ICON,
+                   margin_end="2dp")
+        # 两段底：默认给「未开通」的淡底，运行时按档位换 aw_seg_* / aw_segnow_*。
+        # 段本身不显示文字（是纯色块），所以字号给 1sp 且不设 text。
+        s += text(f"aw_band{i}_day", size="1sp", width="0dp", weight="1",
+                  height=SEG_H, bg="aw_seg_closed")
+        s += text(f"aw_band{i}_night", size="1sp", width="0dp", weight="1",
+                  height=SEG_H, bg="aw_seg_closed", margin_start=SEG_GAP)
+        # 夜端用**月亮**（nights_stay）而不是「星光簇」（auto_awesome）：
+        # 后者是几颗大小不一的三角闪光，9dp 下糊成一团，又紧贴右边的档位块，
+        # 看上去像渲染毛刺。月亮与左端太阳语义成对，9dp 下轮廓仍清楚。
+        s += image(f"aw_band{i}_nighticon", "aw_ic_nights_stay", SEG_ICON,
+                   margin_start="2dp")
+        s += text(f"aw_band{i}_now", size="8.5sp", bold=True, color=INK,
+                  width=NOW_W, height="15dp", gravity="center",
+                  bg="aw_seg_closed", margin_start="3dp", ellipsize=True)
         s += CLOSE
 
-    s += CLOSE
     s += CLOSE
     s += empty_label(color="@color/aw_ink_dim")
     s += "</FrameLayout>\n"

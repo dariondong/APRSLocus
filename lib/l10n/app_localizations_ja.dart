@@ -4854,6 +4854,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hfNight => '夜';
 
   @override
+  String get hfNow => '現在';
+
+  @override
   String get hfSfi => '太陽フラックス';
 
   @override

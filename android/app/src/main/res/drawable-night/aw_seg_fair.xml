@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <!-- 传播条件段底（夜间，fair）：#D97706 淡色 45%（深底上 30% 几乎不可见） -->
+    <corners android:radius="4dp" />
+    <solid android:color="#73D97706" />
+</shape>

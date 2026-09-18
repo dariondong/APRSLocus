@@ -20,7 +20,16 @@ import 'l10n/app_localizations.dart';
 /// （挤到 2×2 就只剩波段名、没有条件值）。所以原生侧声明 `resizeMode="none"`。
 
 /// 快照格式版本（与 HfWidgetProvider.kt 的 SNAPSHOT_VERSION 必须一致）
-const int kHfWidgetSnapshotVersion = 1;
+///
+/// v2（2026-09-18）：组件从「日/夜两列文字」改为「每波段一条 日→夜 进度条 +
+/// 当前时段游标」。新增字段：nowPrefix（「现在」的本地化说法）、
+/// dayFrom / dayTo（日间区间，供原生按本机时钟实时判断当前时段）。
+/// 根上的 dayLabel / nightLabel 保留，但语义变成「时段的名称」（日间/夜间），
+/// 用于右端那个「现在 夜间」标签，不再是列头。
+///
+/// 版本号必须同步升：字段语义变了而版本没升，就会出现「新框架读旧快照、
+/// 把错位的字段渲染出来」。Kotlin 侧读到版本不匹配会安静退回占位态 —— 那是对的。
+const int kHfWidgetSnapshotVersion = 2;
 
 /// 汇总指数格数（SFI / Kp / A）—— 与 aw_widget_hf.xml 的格子数一致
 const int kHfWidgetSummaryCells = 3;
@@ -65,9 +74,10 @@ Map<String, Object?> _bandRow(HfBand b, AppLocalizations s) {
   return <String, Object?>{
     'name': b.label,
     'dayLabel': hfQualityLabel(dq, s),
-    // 色带底色靠这个 level 名选（Kotlin 的 TRACK_BY_LEVEL → aw_track_*）。
-    // 用**枚举名**而不是色值：白底 chip 是「实心色块 + 白字」，
-    // 换底只能换 drawable（TextView 没有 setColorFilter），
+    // 日/夜段落底色靠这个 level 名选
+    // （Kotlin 的 SEG_BY_LEVEL / SEGNOW_BY_LEVEL → aw_seg_* / aw_segnow_*）。
+    // 用**枚举名**而不是色值：同一档还要分「实色（当前时段）/ 淡底」两种，
+    // 而换底只能换 drawable（TextView 没有 setColorFilter），
     // 所以这里给的是「哪一张 drawable」而不是「什么颜色」。
     'dayLevel': dq.name,
     'nightLabel': hfQualityLabel(nq, s),
@@ -91,10 +101,16 @@ Map<String, Object?> buildHfWidgetSnapshot({
     'hasData': false,
     'title': s.hfTitle,
     'indices': <Map<String, Object?>>[],
-    // 列头两列：位置由布局的等分列决定（与下面 chip 左边缘对齐），
-    // 文案要本地化所以由这里给
+    // 两个**时段的名称**（日间 / 夜间）。用在两处：右端「现在 夜间」标签，
+    // 以及指示条两端的太阳/星星图标旁的语义。文案要本地化所以由这里给。
     'dayLabel': s.hfDay,
     'nightLabel': s.hfNight,
+    // 「现在」的本地化说法（与时段名拼成「现在 夜间」）
+    'nowPrefix': s.hfNow,
+    // 日间区间：原生按**本机时钟**实时判断当前时段（见 kHfDayFromHour 的说明）。
+    // 下发的只有这两个数字，规则本身仍在 lib/hf.dart 一处定义。
+    'dayFrom': kHfDayFromHour,
+    'dayTo': kHfDayToHour,
     'bands': <Map<String, Object?>>[],
     // 空状态：直接复用「暂无数据」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.hfNoData,

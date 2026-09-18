@@ -13,12 +13,15 @@ import android.widget.RemoteViews
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.Calendar
 
 /**
  * ─── 桌面小组件：短波 / 电离层传播（4×2）───
  *
- * 逐波段给出**日间 / 夜间**传播条件（每格是一条条件色带：淡底 + 左端色标），
- * 以及 SFI / Kp / A 三个汇总指数，指数行右端另有一个 6m 格。
+ * 每个波段一条**日 → 夜**进度条：左段 = 日间、右段 = 夜间，各按该时段的
+ * 传播条件着色；**当前时段那一段用实色 + 顶部一颗小白点**（另一段淡底），
+ * 两端另有太阳 / 星光作语义标注，每行右端给出**当前时段**的档位。
+ * 另有 SFI / Kp / A 三个汇总指数，指数行右端是「现在 夜间」与一个 6m 格。
  * 数据来自 hamqsl.com 的 `calculatedconditions`（业余界标准 HF 传播源），
  * 由 Dart 侧 `lib/hf.dart` 拉取、解析、**本地化**后推过来 —— 本类不联网、
  * 也不做任何判定与文案拼接。
@@ -38,12 +41,18 @@ import org.json.JSONObject
  *      （v1.6.114 的线上事故就是把 TextView 当圆点用，抛 NoSuchMethodException
  *      导致整个组件显示「小组件加载失败」）。
  *
- * **本组件的换色机制**（与天气组件的圆点**相反**，别照抄）：
- * 条件色带是 **TextView**，换底只能走 `setBackgroundResource`（View 的方法）——
- * `setColorFilter` 在这里用会直接抛。四个条件各一张 drawable
- * （aw_track_{good,fair,poor,closed}），由 tool/gen_app_widget_drawables.py 生成。
- * 文字色则走 `setTextColor`（TextView 的成员方法，可用），
- * 取 @color/aw_q_* —— 夜间由资源系统自动给提亮版本。
+ * **本组件的换色机制**（分两种控件，别照抄混用）：
+ *   进度条段与档位块都是 **TextView** → 换底只能走 `setBackgroundResource`
+ *   （View 的方法）；在这里用 `setColorFilter` 会直接抛。每个条件两张
+ *   drawable：aw_seg_*（淡底）与 aw_segnow_*（实色 + 顶部小白点），
+ *   由 tool/gen_app_widget_drawables.py 生成。文字色走 `setTextColor`
+ *   （TextView 的成员方法，可用），取 @color/aw_q_*，夜间由资源系统给提亮版。
+ *
+ *   两端的太阳 / 星光图标是 **ImageView** → 它们是白色 PNG，在白底卡片上会
+ *   隐形，**必须** `setColorFilter` 染色（这正是 ImageView 独有的那个方法；
+ *   白天用它不算错，用在 TextView 上才是 v1.6.114 那次事故）。
+ *
+ * **当前时段按本机时钟现算，不读快照里烘焙的值** —— 见 render() 里的说明。
  */
 class HfWidgetProvider : AppWidgetProvider() {
 
@@ -74,7 +83,11 @@ class HfWidgetProvider : AppWidgetProvider() {
         private const val IDX_CELLS = 3
 
         /** ← 与 lib/hf_widget.dart 的 kHfWidgetSnapshotVersion 必须一致 */
-        private const val SNAPSHOT_VERSION = 1
+        /**
+         * v2（2026-09-18）：从「日/夜两列文字」改为「日/夜进度条 + 当前时段游标」。
+         * 必须与 lib/hf_widget.dart 的 kHfWidgetSnapshotVersion 同步升。
+         */
+        private const val SNAPSHOT_VERSION = 2
 
         /**
          * 6m 无条件时格子里的占位文案 —— 与 Dart 侧的 `HfNow.none` 同一个值。
@@ -94,32 +107,77 @@ class HfWidgetProvider : AppWidgetProvider() {
             R.id.aw_idx0_value, R.id.aw_idx1_value, R.id.aw_idx2_value,
         )
 
-        /** 波段行：每行是 (波段名, 日间 chip, 夜间 chip) */
-        private val BAND_IDS = arrayOf(
-            intArrayOf(R.id.aw_band0_name, R.id.aw_band0_day, R.id.aw_band0_night),
-            intArrayOf(R.id.aw_band1_name, R.id.aw_band1_day, R.id.aw_band1_night),
-            intArrayOf(R.id.aw_band2_name, R.id.aw_band2_day, R.id.aw_band2_night),
-            intArrayOf(R.id.aw_band3_name, R.id.aw_band3_day, R.id.aw_band3_night),
+        // 波段行的 6 组 id。**按用途分行列出**，而不是「每行一个数组」——
+        // 后者要靠数下标才能知道第 3 项是什么，而这里下标错了不会报错，
+        // 只会把颜色填到别的控件上（还很像对的）。
+        private val BAND_NAME = intArrayOf(
+            R.id.aw_band0_name, R.id.aw_band1_name,
+            R.id.aw_band2_name, R.id.aw_band3_name,
+        )
+
+        /** 日间段（进度条左半） */
+        private val BAND_DAY = intArrayOf(
+            R.id.aw_band0_day, R.id.aw_band1_day,
+            R.id.aw_band2_day, R.id.aw_band3_day,
+        )
+
+        /** 夜间段（进度条右半） */
+        private val BAND_NIGHT = intArrayOf(
+            R.id.aw_band0_night, R.id.aw_band1_night,
+            R.id.aw_band2_night, R.id.aw_band3_night,
+        )
+
+        /** 右端的「当前时段档位」块 */
+        private val BAND_NOW = intArrayOf(
+            R.id.aw_band0_now, R.id.aw_band1_now,
+            R.id.aw_band2_now, R.id.aw_band3_now,
+        )
+
+        /** 两端的语义标注图标：日端太阳 / 夜端星光（白色 PNG，须染色） */
+        private val BAND_DAY_ICON = intArrayOf(
+            R.id.aw_band0_dayicon, R.id.aw_band1_dayicon,
+            R.id.aw_band2_dayicon, R.id.aw_band3_dayicon,
+        )
+        private val BAND_NIGHT_ICON = intArrayOf(
+            R.id.aw_band0_nighticon, R.id.aw_band1_nighticon,
+            R.id.aw_band2_nighticon, R.id.aw_band3_nighticon,
         )
 
         /**
-         * 条件等级 → 色带底色（aw_track_*：淡色圆角底 + 左端 2.5dp 色标）。
+         * 条件等级 → **非当前时段**的段底 / 档位块底（aw_seg_*：淡色圆角块）。
          *
-         * **为什么是 4 张预生成 drawable、而不是运行时染色**：色带是 TextView，
-         * 而 `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
+         * **为什么必须预生成、而不是运行时染色**：段是 TextView，而
+         * `setColorFilter` **只存在于 ImageView**（View / TextView 都没有）——
          * v1.6.114 的线上事故正是把 setColorFilter 用在 TextView 上，
          * 抛 NoSuchMethodException → `RemoteViews.apply()` 抛 ActionException →
          * **整个组件报废**。TextView 换底只能用 `setBackgroundResource`（View 方法），
-         * 所以四个等级各给一张。
+         * 所以每个条件各给一张。
          *
          * 未知等级回退到 closed（灰）而不是 0 —— 传 0 会把背景清掉，
-         * 色带消失、只剩一行无处可归的文字。
+         * 段消失、只剩一行无处可归的色块。
          */
-        private val TRACK_BY_LEVEL = mapOf(
-            "good" to R.drawable.aw_track_good,
-            "fair" to R.drawable.aw_track_fair,
-            "poor" to R.drawable.aw_track_poor,
-            "closed" to R.drawable.aw_track_closed,
+        private val SEG_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_seg_good,
+            "fair" to R.drawable.aw_seg_fair,
+            "poor" to R.drawable.aw_seg_poor,
+            "closed" to R.drawable.aw_seg_closed,
+        )
+
+        /**
+         * 条件等级 → **当前时段**那一段的底（aw_segnow_*：实色圆角块 + 顶部小白点）。
+         *
+         * 与 SEG_BY_LEVEL 的区别只有「实色 / 淡底」，但那正是「现在在哪一段」的
+         * 主要视觉信号 —— 所以是两张表而不是加一个布尔参数表：
+         * 表名本身就说明了用途，调用处不用再想「这个 true 是什么意思」。
+         *
+         * 小白点是烘焙在 drawable 里的（见 segnow_xml）：RemoteViews 没有绝对
+         * 定位，加一个独立指示器控件既摆不到段的正中，又多一处运行期才爆的地方。
+         */
+        private val SEGNOW_BY_LEVEL = mapOf(
+            "good" to R.drawable.aw_segnow_good,
+            "fair" to R.drawable.aw_segnow_fair,
+            "poor" to R.drawable.aw_segnow_poor,
+            "closed" to R.drawable.aw_segnow_closed,
         )
 
         /**
@@ -171,12 +229,28 @@ class HfWidgetProvider : AppWidgetProvider() {
             views.setViewVisibility(R.id.aw_pad, View.VISIBLE)
             views.setViewVisibility(R.id.aw_empty, View.GONE)
 
-            // 标题与表头文案都由 Dart 侧本地化好（6 种语言）
+            // 标题文案由 Dart 侧本地化好（6 种语言）
             views.setTextViewText(R.id.aw_hf_title, snap.read("title"))
-            // 列头「日间 / 夜间」的文案也要本地化（6 种语言），所以由 Dart 给。
-            // 它们的**位置**与下面 chip 的左边缘对齐，靠布局的等分列实现。
-            views.setTextViewText(R.id.aw_ch_day, snap.read("dayLabel"))
-            views.setTextViewText(R.id.aw_ch_night, snap.read("nightLabel"))
+
+            // ── 当前时段：按本机时钟**现算** ──
+            //
+            // 组件每 30 分钟会自刷新一次，但那只是重绘**已存的快照**；用户一整天
+            // 不开 App，快照里烘焙的时段就是旧的（19:00 之后还指着日间）。
+            // 「一眼看出当前时段」正是这个组件要解决的问题 —— 判错时段比不显示
+            // 更糟，所以这里用本机时钟实时判断。
+            //
+            // 阈值不写死在本类：dayFrom / dayTo 由 Dart 随快照下发，规则仍只在
+            // lib/hf.dart 一处定义（本类只用不猜）。
+            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val dayFrom = snap.optInt("dayFrom", 7)
+            val dayTo = snap.optInt("dayTo", 19)
+            val isDay = hour >= dayFrom && hour < dayTo
+            // 「现在 夜间」：前缀与时段名都由 Dart 本地化好，这里只拼接
+            views.setTextViewText(
+                R.id.aw_now_tag,
+                "${snap.read("nowPrefix")} " +
+                    snap.read(if (isDay) "dayLabel" else "nightLabel"),
+            )
 
             // 指数行：SFI / Kp / A。颜色由 Dart 侧按阈值算好（Kp/A 越大越差）
             val idx = snap.optJSONArray("indices")
@@ -205,7 +279,7 @@ class HfWidgetProvider : AppWidgetProvider() {
                 val key = if (known) lv else "closed"
                 views.setInt(
                     R.id.aw_six, "setBackgroundResource",
-                    TRACK_BY_LEVEL[key] ?: R.drawable.aw_track_closed,
+                    SEG_BY_LEVEL[key] ?: R.drawable.aw_seg_closed,
                 )
                 views.setTextColor(
                     R.id.aw_six,
@@ -213,59 +287,89 @@ class HfWidgetProvider : AppWidgetProvider() {
                 )
             }
 
-            // 逐波段：日间 / 夜间
+            // 逐波段：日/夜进度条 + 当前时段游标
             val bands = snap.optJSONArray("bands")
             for (i in 0 until BAND_ROWS) {
                 val row = bands?.optJSONObject(i)
                 val vis = if (row != null) View.VISIBLE else View.GONE
                 views.setViewVisibility(BAND_ROWS_ID[i], vis)
                 if (row == null) continue
-                fillBand(context, views, BAND_IDS[i], row)
+                fillBand(context, views, i, row, isDay)
             }
 
             manager.updateAppWidget(id, views)
         }
 
-        /** 填一行波段：波段名 + 两个条件 chip */
+        /**
+         * 填一行波段：名字 + 两端的太阳 / 星光 + 两段进度条 + 当前档位块。
+         *
+         * [isDay] 决定哪一段是「现在」：那一段用实色（带小白点），另一段淡底。
+         */
         private fun fillBand(
             context: Context,
             views: RemoteViews,
-            ids: IntArray,
+            row: Int,
             band: JSONObject,
+            isDay: Boolean,
         ) {
-            views.setTextViewText(ids[0], band.read("name"))
-            chip(context, views, ids[1], band, "day")
-            chip(context, views, ids[2], band, "night")
+            views.setTextViewText(BAND_NAME[row], band.read("name"))
+            val dayLv = band.read("dayLevel")
+            val nightLv = band.read("nightLevel")
+            bandSeg(views, BAND_DAY[row], dayLv, isNow = isDay)
+            bandSeg(views, BAND_NIGHT[row], nightLv, isNow = !isDay)
+
+            // 两端的语义标注：太阳标日间段、星光标夜间段。
+            // 它们不表达好坏，只表达「这一段是日 / 是夜」—— 所以用固定色，
+            // 不跟条件色走（否则会与段的颜色抢注意力）。
+            views.setInt(
+                BAND_DAY_ICON[row], "setColorFilter",
+                context.getColor(R.color.aw_sun),
+            )
+            views.setInt(
+                BAND_NIGHT_ICON[row], "setColorFilter",
+                context.getColor(R.color.aw_moon),
+            )
+
+            // 右端的档位块：**当前时段**的档位（文字 + 条件色）。
+            // 颜色之外再给一个词 —— 不靠颜色也能读出来。
+            val lv = if (isDay) dayLv else nightLv
+            views.setTextViewText(
+                BAND_NOW[row],
+                band.read(if (isDay) "dayLabel" else "nightLabel"),
+            )
+            views.setInt(
+                BAND_NOW[row], "setBackgroundResource",
+                SEG_BY_LEVEL[lv] ?: R.drawable.aw_seg_closed,
+            )
+            // 文字色走**资源**而不是写死常量：夜间由资源系统自动取
+            // values-night 里的提亮版本（深底上基准色偏暗），不判断 uiMode。
+            views.setTextColor(
+                BAND_NOW[row],
+                context.getColor(QUALITY_COLOR[lv] ?: R.color.aw_q_closed),
+            )
         }
 
         /**
-         * 填一格条件色带：文字（已本地化）+ 按等级换底。
+         * 填一段进度条（纯色块，不显示文字）。
          *
-         * 换底走 `setBackgroundResource`（View 的方法，TextView 可用）。
-         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 TRACK_BY_LEVEL）。
+         * [isNow] 为 true 用实色版 aw_segnow_*（drawable 里带顶部小白点），
+         * 否则用淡底版 aw_seg_*。
+         *
+         * 换底走 `setBackgroundResource`（View 的方法，TextView 可用）；
+         * **不能**用 `setColorFilter` —— 那是 ImageView 独有的（见 SEG_BY_LEVEL）。
          */
-        private fun chip(
-            context: Context,
+        private fun bandSeg(
             views: RemoteViews,
             target: Int,
-            band: JSONObject,
-            prefix: String,
+            level: String,
+            isNow: Boolean,
         ) {
-            val level = band.read("${prefix}Level")
-            views.setTextViewText(target, band.read("${prefix}Label"))
+            val table = if (isNow) SEGNOW_BY_LEVEL else SEG_BY_LEVEL
+            val fallback =
+                if (isNow) R.drawable.aw_segnow_closed else R.drawable.aw_seg_closed
             views.setInt(
-                target,
-                "setBackgroundResource",
-                TRACK_BY_LEVEL[level] ?: R.drawable.aw_track_closed,
-            )
-            // 文字色 = 该等级的条件色。走**资源**而不是写死常量：
-            // 夜间模式由资源系统自动取 values-night 里的提亮版本
-            // （深底上基准色偏暗），组件里不需要判断 uiMode。
-            views.setTextColor(
-                target,
-                context.getColor(
-                    QUALITY_COLOR[level] ?: R.color.aw_q_closed
-                ),
+                target, "setBackgroundResource",
+                table[level] ?: fallback,
             )
         }
 

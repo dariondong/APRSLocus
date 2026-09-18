@@ -1,18 +1,18 @@
 <!--
-  桌面小组件 · 短波/电离层传播（4×2 · F2 条件色带）
+  桌面小组件 · 短波/电离层传播（4×2 · M1 日/夜进度条）
 
-  顶栏    ：[电波图标·墨色] 短波传播                [logo] APRSlocus
-  指数行  ：SFI 100 · Kp 3 · A 9                  [6m 色带]
+  顶栏    ：[电波图标·墨色] 短波传播  现在 夜间    [logo] APRSlocus
+  指数行  ：SFI 100 · Kp 3 · A 9                        6m [档位]
   细线    ：C.border（#E5E9F0）
-  列头    ：          日间              夜间   ← 与色带左边缘**同一条竖线**
   4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m
-            每格 = 条件色带（aw_track_*：淡底 14% + 左端 2.5dp 色标）
-                   档位文字在色带内左端，颜色 = 该档基本色
-  6m      ：无开通时显示灰色占位符（与 Dart 的 HfNow.none 一致）—— 不抢注意力；
-            开通时显示档位并变色
+            每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]
+            段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）
+            当前时段那一段用实色 + 小白点，另一段淡底
+            档位块显示**当前时段**的档位（文字 + 条件色）
   
   数据来自 hamqsl.com 的 calculatedconditions（业余界标准 HF 传播源），
   由 Dart 侧 lib/hf.dart 拉取、解析、本地化后推过来 —— 组件不联网。
+  当前时段由原生按本机时钟判断，日间区间由 Dart 随快照下发。
   
   ⚠ 硬约束同天气组件：只用白名单控件（不用原生 <View>）、不用 <selector>、
   不用 styles.xml 主题样式（字号颜色就地写死）。
@@ -52,6 +52,15 @@
         android:textColor="@color/aw_ink"
         android:textSize="12sp"
         android:textStyle="bold"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_now_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:textColor="@color/aw_slate"
+        android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
     <TextView
@@ -160,6 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dp"
+        android:layout_marginStart="8dp"
         android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:text="6m"
@@ -167,10 +177,10 @@
         android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_six"
-        android:layout_width="46dp"
+        android:layout_width="48dp"
         android:layout_height="13dp"
         android:gravity="center"
-        android:background="@drawable/aw_track_closed"
+        android:background="@drawable/aw_seg_closed"
         android:textColor="@color/aw_slate"
         android:textSize="8.5sp"
         android:textStyle="bold"
@@ -193,292 +203,272 @@
         android:background="@color/aw_line" />
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/aw_colhead"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-    <TextView
-        android:id="@+id/aw_ch_band"
-        android:layout_width="46dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/aw_slate"
-        android:textSize="8.5sp"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_ch_day"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/aw_slate"
-        android:textSize="8sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.06"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    <TextView
-        android:id="@+id/aw_ch_night"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/aw_slate"
-        android:textSize="8sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.06"
-        android:singleLine="true"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_bands"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
-    <LinearLayout
         android:id="@+id/aw_band0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band0_name"
-        android:layout_width="46dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="9sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_band0_day_box"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/aw_band0_dayicon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginEnd="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
     <TextView
         android:id="@+id/aw_band0_day"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
-        android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band0_night_box"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="13dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_band0_night"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
+        android:layout_width="0dp"
+        android:layout_height="13dp"
+        android:layout_weight="1"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/aw_seg_closed"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_band0_nighticon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginStart="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_nights_stay" />
+    <TextView
+        android:id="@+id/aw_band0_now"
+        android:layout_width="48dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="3dp"
+        android:gravity="center"
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
+        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band1_name"
-        android:layout_width="46dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="9sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_band1_day_box"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/aw_band1_dayicon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginEnd="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
     <TextView
         android:id="@+id/aw_band1_day"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
-        android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band1_night_box"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="13dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_band1_night"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
+        android:layout_width="0dp"
+        android:layout_height="13dp"
+        android:layout_weight="1"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/aw_seg_closed"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_band1_nighticon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginStart="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_nights_stay" />
+    <TextView
+        android:id="@+id/aw_band1_now"
+        android:layout_width="48dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="3dp"
+        android:gravity="center"
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
+        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band2_name"
-        android:layout_width="46dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="9sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_band2_day_box"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/aw_band2_dayicon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginEnd="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
     <TextView
         android:id="@+id/aw_band2_day"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
-        android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band2_night_box"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="13dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_band2_night"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
+        android:layout_width="0dp"
+        android:layout_height="13dp"
+        android:layout_weight="1"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/aw_seg_closed"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_band2_nighticon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginStart="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_nights_stay" />
+    <TextView
+        android:id="@+id/aw_band2_now"
+        android:layout_width="48dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="3dp"
+        android:gravity="center"
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
+        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/aw_band3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
         android:id="@+id/aw_band3_name"
-        android:layout_width="46dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="9sp"
         android:textStyle="bold"
         android:singleLine="true"
         android:ellipsize="end"
         android:includeFontPadding="false" />
-    <LinearLayout
-        android:id="@+id/aw_band3_day_box"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/aw_band3_dayicon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginEnd="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_wb_sunny" />
     <TextView
         android:id="@+id/aw_band3_day"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
-        android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
-        android:includeFontPadding="false" />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/aw_band3_night_box"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="13dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
     <TextView
         android:id="@+id/aw_band3_night"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/aw_track_good"
+        android:layout_width="0dp"
+        android:layout_height="13dp"
+        android:layout_weight="1"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/aw_seg_closed"
         android:textColor="@color/aw_ink"
-        android:textSize="9.5sp"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <ImageView
+        android:id="@+id/aw_band3_nighticon"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_marginStart="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_nights_stay" />
+    <TextView
+        android:id="@+id/aw_band3_now"
+        android:layout_width="48dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="3dp"
+        android:gravity="center"
+        android:background="@drawable/aw_seg_closed"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="5dp"
+        android:ellipsize="end"
         android:includeFontPadding="false" />
-    </LinearLayout>
-    </LinearLayout>
     </LinearLayout>
     </LinearLayout>
     <TextView

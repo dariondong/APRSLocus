@@ -3,7 +3,7 @@
 
 用法：
     python3 tool/check_apk_resources.py release.apk
-    python3 tool/check_apk_resources.py release.apk --expect aw_widget_sys aw_track_good
+    python3 tool/check_apk_resources.py release.apk --expect aw_widget_sys aw_seg_good
 
 为什么要单独写这个脚本：本机只有 Flutter SDK、没有 Android SDK，
 `aapt2` / `apksigner` / `apkanalyzer` 都不可用，于是「资源到底有没有编进去」

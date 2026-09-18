@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <!-- 传播条件段底（closed）：#94A3B8 淡色 30%，文字色由 Kotlin 设为同色系条件色 -->
+    <corners android:radius="4dp" />
+    <solid android:color="#4D94A3B8" />
+</shape>

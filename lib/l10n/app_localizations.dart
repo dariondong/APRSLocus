@@ -8673,6 +8673,12 @@ abstract class AppLocalizations {
   /// **'夜间'**
   String get hfNight;
 
+  /// No description provided for @hfNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'现在'**
+  String get hfNow;
+
   /// No description provided for @hfSfi.
   ///
   /// In zh, this message translates to:

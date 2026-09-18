@@ -146,7 +146,7 @@ class HfNow {
 
   /// 当前（按本地时间）最有戏的波段：日间看 day、夜间看 night
   HfBand? bestBandAt(DateTime t) {
-    final isDay = t.hour >= 7 && t.hour < 19;
+    final isDay = hfIsDaytime(t);
     HfBand? best;
     var bestRank = 0;
     for (final b in bands) {
@@ -312,6 +312,25 @@ class HfSixMeter {
 }
 
 /// 传播质量 → 级别（给 UI 选色，也用于生成建议）
+/// 日间的小时区间 `[from, to)`（本地时间）—— 07:00–19:00。
+///
+/// 这两个数字会**随桌面组件的快照一起下发**，由 Kotlin 侧按本机时钟实时判断：
+/// 组件每 30 分钟自刷新时只重绘已存的快照，若把「现在算日间还是夜间」在 Dart
+/// 侧算死，用户一整天不开 App 就会出现「19:00 之后组件还指着日间」——
+/// 而「一眼看出当前时段」正是这个组件要解决的问题，判错时段比不显示更糟。
+/// 规则仍只在这里定义一处，Kotlin 只用不猜。
+const int kHfDayFromHour = 7;
+const int kHfDayToHour = 19;
+
+/// 「现在算日间还是夜间」—— 见 [kHfDayFromHour] / [kHfDayToHour]。
+///
+/// **必须是唯一判据**：面板的「最有戏的波段」、给用户的建议、以及桌面组件上
+/// 的「现在」游标都要落在同一个时段上。此前这段表达式在文件里抄了两遍
+/// （bestBandAt 与建议生成各一份），多一个调用方就多一处漂移的地方 ——
+/// 而漂移的表现是「面板说 20m 好、组件游标却指在日间」，最难解释的那种不一致。
+bool hfIsDaytime(DateTime t) =>
+    t.hour >= kHfDayFromHour && t.hour < kHfDayToHour;
+
 enum HfQuality { good, fair, poor, closed, unknown }
 
 HfQuality hfQualityOf(String raw) {
@@ -462,7 +481,7 @@ List<HamTip> hfTips(HfNow? hf, AppLocalizations s, {DateTime? now}) {
   // ── 当前时段最有戏的波段（这是「各个波段传播信息」落到建议上的一步）──
   final best = hf.bestBandAt(t);
   if (best != null) {
-    final q = hfQualityOf(t.hour >= 7 && t.hour < 19 ? best.day : best.night);
+    final q = hfQualityOf(hfIsDaytime(t) ? best.day : best.night);
     if (q == HfQuality.good) {
       good.add(HamTip(Icons.cell_tower_rounded,
           s.hfTipBandGood(best.label), cGood, TipLevel.good));
