@@ -930,6 +930,128 @@
   "autoReply": "Balasan otomatis",
   "sendBeacon": "Kirim beacon",
   "mapTypeDesc": "“Peta 2.0 (vektor)” merender vektor di perangkat sehingga hemat data dan tetap tajam saat zoom; sumber raster memakai tile daring, jadi kualitasnya bergantung jaringan.",
+  "offlineLoading": "Memuat…",
+  "offlineMap": "Peta offline",
+  "offlineMapDesc": "Unduh ubin peta lebih dulu agar peta tetap tampil tanpa jaringan",
+  "offlineMapFooter": "Ubin hanya tersimpan di perangkat ini dan tidak diunggah; tiap sumber punya cache sendiri",
+  "offlineRegions": "Area offline",
+  "offlineRegionsDesc": "Area yang diunduh dapat dilihat di peta secara offline",
+  "offlineNew": "Area baru",
+  "offlineNoRegions": "Belum ada area offline",
+  "offlineNoRegionsHint": "Ketuk \"Area baru\" untuk mengunduh tempat yang sering Anda kunjungi",
+  "offlineCacheUsage": "Cache ubin",
+  "offlineCacheUsageDesc": "Otomatis di-cache saat menjelajah; area juga bisa diunduh manual",
+  "offlineClearCache": "Hapus semua cache ubin",
+  "offlineClearCacheConfirm": "Hapus semua ubin peta yang diunduh?",
+  "offlineClearCacheConfirmBody": "Ubin yang diunduh akan dihapus; catatan area tetap dan perlu diunduh ulang untuk offline.",
+  "offlineAreaHint": "Tampilan saat ini adalah area yang diunduh",
+  "offlineSource": "Sumber peta",
+  "offlineName": "Nama",
+  "offlineNameHint": "mis. Sekitar rumah",
+  "offlineStartDownload": "Mulai unduh",
+  "offlineStatusPending": "Menunggu",
+  "offlineStatusRunning": "Mengunduh",
+  "offlineStatusPaused": "Dijeda",
+  "offlineStatusDone": "Selesai",
+  "offlineStatusCanceled": "Dibatalkan",
+  "offlineStatusFailed": "Gagal",
+  "offlinePause": "Jeda",
+  "offlineResume": "Lanjutkan",
+  "offlineCancelDownload": "Batal",
+  "offlineDeleteKeepTiles": "Hapus catatan saja (ubin tetap ada)",
+  "offlineDeleteWithTiles": "Hapus catatan dan ubinnya",
+  "offlineDownloadBusy": "Ada unduhan lain yang berjalan — tunggu atau batalkan dulu",
+  "offlineCacheSwitch": "Cache ubin peta",
+  "offlineCacheSwitchDesc": "Simpan ubin saat menjelajah agar bisa dilihat offline nanti",
+  "offlineOnlySwitch": "Hanya ubin offline",
+  "offlineOnlySwitchDesc": "Tidak memuat ubin dari jaringan — hanya yang terunduh/ter-cache (hemat kuota)",
+  "offlineCacheDisabled": "Cache ubin tidak tersedia di platform ini",
+  "offlineSwitchFirst": "Aktifkan \"Cache ubin peta\" dulu",
+  "offlineOnlyWarn": "\"Hanya ubin offline\" aktif — sebagian peta mungkin tidak tampil",
+  "offlineTilesDownloaded": "{n} ubin terunduh",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "zoom {min}–{max}",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "sekitar {tiles} ubin · sekitar {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "Area terlalu besar (sekitar {tiles} ubin) — perkecil area atau turunkan zoom maksimum",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "Hapus area offline \"{name}\"?",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "Sekitar {n} ubin akan dihapus",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "Menghapus {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} gagal",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} ubin",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "Riwayat pesan",
   "statistics": "Statistik",
   "clearData": "Hapus data",

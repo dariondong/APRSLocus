@@ -2929,6 +2929,176 @@ class AppLocalizationsId extends AppLocalizations {
       '“Peta 2.0 (vektor)” merender vektor di perangkat sehingga hemat data dan tetap tajam saat zoom; sumber raster memakai tile daring, jadi kualitasnya bergantung jaringan.';
 
   @override
+  String get offlineLoading => 'Memuat…';
+
+  @override
+  String get offlineMap => 'Peta offline';
+
+  @override
+  String get offlineMapDesc =>
+      'Unduh ubin peta lebih dulu agar peta tetap tampil tanpa jaringan';
+
+  @override
+  String get offlineMapFooter =>
+      'Ubin hanya tersimpan di perangkat ini dan tidak diunggah; tiap sumber punya cache sendiri';
+
+  @override
+  String get offlineRegions => 'Area offline';
+
+  @override
+  String get offlineRegionsDesc =>
+      'Area yang diunduh dapat dilihat di peta secara offline';
+
+  @override
+  String get offlineNew => 'Area baru';
+
+  @override
+  String get offlineNoRegions => 'Belum ada area offline';
+
+  @override
+  String get offlineNoRegionsHint =>
+      'Ketuk \"Area baru\" untuk mengunduh tempat yang sering Anda kunjungi';
+
+  @override
+  String get offlineCacheUsage => 'Cache ubin';
+
+  @override
+  String get offlineCacheUsageDesc =>
+      'Otomatis di-cache saat menjelajah; area juga bisa diunduh manual';
+
+  @override
+  String get offlineClearCache => 'Hapus semua cache ubin';
+
+  @override
+  String get offlineClearCacheConfirm => 'Hapus semua ubin peta yang diunduh?';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      'Ubin yang diunduh akan dihapus; catatan area tetap dan perlu diunduh ulang untuk offline.';
+
+  @override
+  String get offlineAreaHint => 'Tampilan saat ini adalah area yang diunduh';
+
+  @override
+  String get offlineSource => 'Sumber peta';
+
+  @override
+  String get offlineName => 'Nama';
+
+  @override
+  String get offlineNameHint => 'mis. Sekitar rumah';
+
+  @override
+  String get offlineStartDownload => 'Mulai unduh';
+
+  @override
+  String get offlineStatusPending => 'Menunggu';
+
+  @override
+  String get offlineStatusRunning => 'Mengunduh';
+
+  @override
+  String get offlineStatusPaused => 'Dijeda';
+
+  @override
+  String get offlineStatusDone => 'Selesai';
+
+  @override
+  String get offlineStatusCanceled => 'Dibatalkan';
+
+  @override
+  String get offlineStatusFailed => 'Gagal';
+
+  @override
+  String get offlinePause => 'Jeda';
+
+  @override
+  String get offlineResume => 'Lanjutkan';
+
+  @override
+  String get offlineCancelDownload => 'Batal';
+
+  @override
+  String get offlineDeleteKeepTiles => 'Hapus catatan saja (ubin tetap ada)';
+
+  @override
+  String get offlineDeleteWithTiles => 'Hapus catatan dan ubinnya';
+
+  @override
+  String get offlineDownloadBusy =>
+      'Ada unduhan lain yang berjalan — tunggu atau batalkan dulu';
+
+  @override
+  String get offlineCacheSwitch => 'Cache ubin peta';
+
+  @override
+  String get offlineCacheSwitchDesc =>
+      'Simpan ubin saat menjelajah agar bisa dilihat offline nanti';
+
+  @override
+  String get offlineOnlySwitch => 'Hanya ubin offline';
+
+  @override
+  String get offlineOnlySwitchDesc =>
+      'Tidak memuat ubin dari jaringan — hanya yang terunduh/ter-cache (hemat kuota)';
+
+  @override
+  String get offlineCacheDisabled =>
+      'Cache ubin tidak tersedia di platform ini';
+
+  @override
+  String get offlineSwitchFirst => 'Aktifkan \"Cache ubin peta\" dulu';
+
+  @override
+  String get offlineOnlyWarn =>
+      '\"Hanya ubin offline\" aktif — sebagian peta mungkin tidak tampil';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '$n ubin terunduh';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return 'zoom $min–$max';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return 'sekitar $tiles ubin · sekitar $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return 'Area terlalu besar (sekitar $tiles ubin) — perkecil area atau turunkan zoom maksimum';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return 'Hapus area offline \"$name\"?';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return 'Sekitar $n ubin akan dihapus';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return 'Menghapus $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n gagal';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total ubin';
+  }
+
+  @override
   String get msgHistory => 'Riwayat pesan';
 
   @override

@@ -1268,6 +1268,25 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  // ─── 离线地图 ───
+  /// 浏览地图时把瓦片写入本机磁盘缓存（默认开；关掉则完全不落盘）
+  bool tileCacheOn = true;
+
+  void setTileCacheOn(bool v) {
+    tileCacheOn = v;
+    persist();
+    _notify();
+  }
+
+  /// 仅离线模式：只用已缓存/已下载的瓦片，一个网络请求都不发（野外省流量）
+  bool offlineOnly = false;
+
+  void setOfflineOnly(bool v) {
+    offlineOnly = v;
+    persist();
+    _notify();
+  }
+
   // 更新渠道：'gitcode' / 'github'
   String updateChannel = 'gitcode';
 
@@ -1508,6 +1527,9 @@ class AppState extends ChangeNotifier {
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
       uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
+      // 离线地图：缓存开关与「仅离线」模式
+      tileCacheOn = p.getBool('tileCacheOn') ?? tileCacheOn;
+      offlineOnly = p.getBool('offlineOnly') ?? offlineOnly;
       updateChannel = p.getString('updateChannel') ?? updateChannel;
       adifMode = p.getString('adifMode') ?? adifMode;
       adifSubMode = p.getBool('adifSubMode') ?? adifSubMode;
@@ -1686,6 +1708,8 @@ class AppState extends ChangeNotifier {
     await p.setString('themeColor', themeColor);
     await p.setDouble('uiScale', uiScale);
     await p.setString('mapType', mapType);
+    await p.setBool('tileCacheOn', tileCacheOn);
+    await p.setBool('offlineOnly', offlineOnly);
     await p.setString('updateChannel', updateChannel);
     await p.setString('adifMode', adifMode);
     await p.setBool('adifSubMode', adifSubMode);

@@ -2951,6 +2951,179 @@ class AppLocalizationsEs extends AppLocalizations {
       '«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; las fuentes ráster usan teselas en línea, así que la calidad depende de la red.';
 
   @override
+  String get offlineLoading => 'Cargando…';
+
+  @override
+  String get offlineMap => 'Mapas sin conexión';
+
+  @override
+  String get offlineMapDesc =>
+      'Descargue teselas de mapa con antelación para ver el mapa sin red';
+
+  @override
+  String get offlineMapFooter =>
+      'Las teselas solo se guardan en este dispositivo; cada fuente tiene su propia caché';
+
+  @override
+  String get offlineRegions => 'Zonas sin conexión';
+
+  @override
+  String get offlineRegionsDesc =>
+      'Las zonas descargadas se pueden ver en el mapa sin conexión';
+
+  @override
+  String get offlineNew => 'Zona nueva';
+
+  @override
+  String get offlineNoRegions => 'Aún no hay zonas sin conexión';
+
+  @override
+  String get offlineNoRegionsHint =>
+      'Toque \"Zona nueva\" para descargar los lugares que frecuenta';
+
+  @override
+  String get offlineCacheUsage => 'Caché de teselas';
+
+  @override
+  String get offlineCacheUsageDesc =>
+      'Se almacena al navegar; también puede descargar zonas manualmente';
+
+  @override
+  String get offlineClearCache => 'Borrar toda la caché de teselas';
+
+  @override
+  String get offlineClearCacheConfirm =>
+      '¿Borrar todas las teselas descargadas?';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      'Se eliminarán las teselas descargadas; las zonas se conservan y habrá que descargarlas de nuevo.';
+
+  @override
+  String get offlineAreaHint => 'La vista actual es la zona que se descargará';
+
+  @override
+  String get offlineSource => 'Fuente del mapa';
+
+  @override
+  String get offlineName => 'Nombre';
+
+  @override
+  String get offlineNameHint => 'p. ej. Cerca de casa';
+
+  @override
+  String get offlineStartDownload => 'Empezar descarga';
+
+  @override
+  String get offlineStatusPending => 'En espera';
+
+  @override
+  String get offlineStatusRunning => 'Descargando';
+
+  @override
+  String get offlineStatusPaused => 'En pausa';
+
+  @override
+  String get offlineStatusDone => 'Completado';
+
+  @override
+  String get offlineStatusCanceled => 'Cancelado';
+
+  @override
+  String get offlineStatusFailed => 'Falló';
+
+  @override
+  String get offlinePause => 'Pausar';
+
+  @override
+  String get offlineResume => 'Reanudar';
+
+  @override
+  String get offlineCancelDownload => 'Cancelar';
+
+  @override
+  String get offlineDeleteKeepTiles =>
+      'Eliminar solo el registro (conservar teselas)';
+
+  @override
+  String get offlineDeleteWithTiles => 'Eliminar el registro y sus teselas';
+
+  @override
+  String get offlineDownloadBusy =>
+      'Hay otra descarga en curso: espere o cancélela';
+
+  @override
+  String get offlineCacheSwitch => 'Guardar teselas en caché';
+
+  @override
+  String get offlineCacheSwitchDesc =>
+      'Guarda las teselas al navegar para verlas luego sin conexión';
+
+  @override
+  String get offlineOnlySwitch => 'Solo teselas sin conexión';
+
+  @override
+  String get offlineOnlySwitchDesc =>
+      'No carga teselas de la red: solo las descargadas o en caché (ahorra datos)';
+
+  @override
+  String get offlineCacheDisabled =>
+      'La caché de teselas no está disponible en esta plataforma';
+
+  @override
+  String get offlineSwitchFirst =>
+      'Active primero \"Guardar teselas en caché\"';
+
+  @override
+  String get offlineOnlyWarn =>
+      '\"Solo teselas sin conexión\" está activo: puede que falten partes del mapa';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '$n teselas descargadas';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return 'zoom $min–$max';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return 'unas $tiles teselas · unos $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return 'Zona demasiado grande (unas $tiles teselas): reduzca el área o el zoom máximo';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '¿Eliminar la zona sin conexión \"$name\"?';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return 'Se eliminarán unas $n teselas';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return 'Eliminando $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n fallidas';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total teselas';
+  }
+
+  @override
   String get msgHistory => 'Historial de mensajes';
 
   @override

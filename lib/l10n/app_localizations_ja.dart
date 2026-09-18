@@ -2835,6 +2835,167 @@ class AppLocalizationsJa extends AppLocalizations {
       '「マップ 2.0（ベクター）」は端末側でベクターを描画するため通信量が少なく、拡大しても鮮明です。ラスター図源はオンラインタイルのため、画質は回線に依存します。';
 
   @override
+  String get offlineLoading => '読み込み中…';
+
+  @override
+  String get offlineMap => 'オフラインマップ';
+
+  @override
+  String get offlineMapDesc => '地図タイルを事前に保存し、ネットワークなしでも地図を表示します';
+
+  @override
+  String get offlineMapFooter => 'タイルは端末内のみに保存され、送信されません。図源ごとに別々にキャッシュされます';
+
+  @override
+  String get offlineRegions => 'オフラインエリア';
+
+  @override
+  String get offlineRegionsDesc => 'ダウンロード済みの範囲はオフラインで地図表示できます';
+
+  @override
+  String get offlineNew => '新規エリア';
+
+  @override
+  String get offlineNoRegions => 'オフラインエリアがありません';
+
+  @override
+  String get offlineNoRegionsHint => '右上の「新規エリア」からよく行く場所を保存できます';
+
+  @override
+  String get offlineCacheUsage => 'タイルキャッシュ';
+
+  @override
+  String get offlineCacheUsageDesc => '地図閲覧時に自動保存。エリアを手動でダウンロードも可能';
+
+  @override
+  String get offlineClearCache => 'タイルキャッシュを全消去';
+
+  @override
+  String get offlineClearCacheConfirm => 'ダウンロード済みの地図タイルをすべて削除しますか？';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      'ダウンロード済みタイルは削除されます。エリア記録は残るため、再ダウンロードが必要です。';
+
+  @override
+  String get offlineAreaHint => '現在の表示範囲がダウンロード範囲です';
+
+  @override
+  String get offlineSource => '図源';
+
+  @override
+  String get offlineName => '名前';
+
+  @override
+  String get offlineNameHint => '例：自宅周辺';
+
+  @override
+  String get offlineStartDownload => 'ダウンロード開始';
+
+  @override
+  String get offlineStatusPending => '待機中';
+
+  @override
+  String get offlineStatusRunning => 'ダウンロード中';
+
+  @override
+  String get offlineStatusPaused => '一時停止';
+
+  @override
+  String get offlineStatusDone => '完了';
+
+  @override
+  String get offlineStatusCanceled => 'キャンセル済み';
+
+  @override
+  String get offlineStatusFailed => '失敗';
+
+  @override
+  String get offlinePause => '一時停止';
+
+  @override
+  String get offlineResume => '再開';
+
+  @override
+  String get offlineCancelDownload => 'キャンセル';
+
+  @override
+  String get offlineDeleteKeepTiles => '記録のみ削除（タイルは保持）';
+
+  @override
+  String get offlineDeleteWithTiles => '記録とタイルを削除';
+
+  @override
+  String get offlineDownloadBusy => '別のダウンロードが進行中です。完了かキャンセルを待ってください';
+
+  @override
+  String get offlineCacheSwitch => '地図タイルをキャッシュ';
+
+  @override
+  String get offlineCacheSwitchDesc => '地図閲覧時にタイルを端末へ保存し、後でオフライン表示できます';
+
+  @override
+  String get offlineOnlySwitch => 'オフラインタイルのみ';
+
+  @override
+  String get offlineOnlySwitchDesc =>
+      'ネットワークからタイルを読み込みません。保存済み/キャッシュのみ使用（通信量節約）';
+
+  @override
+  String get offlineCacheDisabled => 'このプラットフォームではタイルキャッシュを利用できません';
+
+  @override
+  String get offlineSwitchFirst => '先に「地図タイルをキャッシュ」をオンにしてください';
+
+  @override
+  String get offlineOnlyWarn => '「オフラインタイルのみ」がオンです。地図が一部表示されない場合があります';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '$n タイルを保存済み';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return 'ズーム $min–$max';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return '約 $tiles タイル · 約 $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return '範囲が広すぎます（約 $tiles タイル）。範囲を狭めるか最大ズームを下げてください';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return 'オフラインエリア「$name」を削除しますか？';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return '約 $n タイルを削除します';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return '削除中 $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n 件失敗';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total タイル';
+  }
+
+  @override
   String get msgHistory => 'メッセージ履歴';
 
   @override

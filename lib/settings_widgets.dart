@@ -216,6 +216,75 @@ class SettingsRow2 extends StatelessWidget {
   }
 }
 
+/// 可点击的设置行（进入子页面）
+///
+/// 与 [SettingsRow2] 的区别：这里带图标与副标题、且整行可点，
+/// 用于「离线地图」这类需要交代清楚「点进去能干什么」的入口 ——
+/// 只写一个名词的入口，用户得点进去才知道里面是什么。
+class SettingsNavRow extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final IconData icon;
+  final Color color;
+  final String? trailing;
+  final VoidCallback onTap;
+  const SettingsNavRow({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.icon,
+    required this.color,
+    this.trailing,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+        child: Row(children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Icon(icon, size: 16, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: ts(12.5, c: C.slate, w: FontWeight.w600)),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(subtitle!,
+                      style: ts(10, c: C.grey, h: 1.35),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ],
+            ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 8),
+            Text(trailing!, style: ts(11, c: C.grey)),
+          ],
+          const SizedBox(width: 4),
+          Icon(Icons.chevron_right_rounded, size: 18, color: C.greyLight),
+        ]),
+      ),
+    );
+  }
+}
+
 /// 分区内统一提示说明块
 class SettingsHint extends StatelessWidget {
   final String text;

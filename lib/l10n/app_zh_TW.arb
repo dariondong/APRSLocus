@@ -937,6 +937,128 @@
   "autoReply": "自動應答",
   "sendBeacon": "傳送信標",
   "mapTypeDesc": "「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。",
+  "offlineLoading": "載入中…",
+  "offlineMap": "離線地圖",
+  "offlineMapDesc": "先把地圖圖磚下載到本機，沒有網路時也能看地圖",
+  "offlineMapFooter": "圖磚只保存在本機，不會上傳；不同圖源的圖磚分開快取",
+  "offlineRegions": "離線區域",
+  "offlineRegionsDesc": "已下載的區域可在地圖上離線檢視",
+  "offlineNew": "新建區域",
+  "offlineNoRegions": "還沒有離線區域",
+  "offlineNoRegionsHint": "點右上角「新建區域」，把常去的地方下載下來",
+  "offlineCacheUsage": "圖磚快取",
+  "offlineCacheUsageDesc": "瀏覽地圖時自動快取，也可手動下載區域",
+  "offlineClearCache": "清除全部圖磚快取",
+  "offlineClearCacheConfirm": "清除全部已下載的地圖圖磚？",
+  "offlineClearCacheConfirmBody": "已下載的圖磚會被刪除，區域記錄會保留（需要重新下載才能離線檢視）。",
+  "offlineAreaHint": "目前畫面範圍就是下載範圍",
+  "offlineSource": "圖源",
+  "offlineName": "名稱",
+  "offlineNameHint": "例如：家附近",
+  "offlineStartDownload": "開始下載",
+  "offlineStatusPending": "等待下載",
+  "offlineStatusRunning": "下載中",
+  "offlineStatusPaused": "已暫停",
+  "offlineStatusDone": "已完成",
+  "offlineStatusCanceled": "已取消",
+  "offlineStatusFailed": "下載失敗",
+  "offlinePause": "暫停",
+  "offlineResume": "繼續",
+  "offlineCancelDownload": "取消",
+  "offlineDeleteKeepTiles": "僅刪除記錄（保留已下載圖磚）",
+  "offlineDeleteWithTiles": "刪除記錄並刪除圖磚",
+  "offlineDownloadBusy": "已有下載任務在進行，請先等待或取消",
+  "offlineCacheSwitch": "快取地圖圖磚",
+  "offlineCacheSwitchDesc": "瀏覽地圖時把圖磚存到本機，之後可離線檢視",
+  "offlineOnlySwitch": "僅使用離線圖磚",
+  "offlineOnlySwitchDesc": "不再從網路載入圖磚，只用已下載/已快取的圖（省流量）",
+  "offlineCacheDisabled": "圖磚快取無法使用（目前平台不支援）",
+  "offlineSwitchFirst": "請先開啟「快取地圖圖磚」",
+  "offlineOnlyWarn": "已開啟「僅使用離線圖磚」，地圖可能顯示不全",
+  "offlineTilesDownloaded": "已下載 {n} 張圖磚",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "{min}–{max} 級",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "約 {tiles} 張圖磚 · 約 {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "範圍太大（約 {tiles} 張圖磚），請縮小範圍或降低最大層級",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "刪除離線區域「{name}」？",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "將刪除約 {n} 張圖磚",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "正在刪除 {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} 張失敗",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} 張",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "訊息記錄",
   "statistics": "統計",
   "clearData": "清除資料",

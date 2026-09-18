@@ -2928,6 +2928,175 @@ class AppLocalizationsEn extends AppLocalizations {
       '\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; raster sources use online tiles, so quality depends on the network.';
 
   @override
+  String get offlineLoading => 'Loading…';
+
+  @override
+  String get offlineMap => 'Offline maps';
+
+  @override
+  String get offlineMapDesc =>
+      'Download map tiles ahead of time so the map works without a network';
+
+  @override
+  String get offlineMapFooter =>
+      'Tiles stay on this device and are never uploaded; each source keeps its own cache';
+
+  @override
+  String get offlineRegions => 'Offline areas';
+
+  @override
+  String get offlineRegionsDesc =>
+      'Downloaded areas can be viewed on the map offline';
+
+  @override
+  String get offlineNew => 'New area';
+
+  @override
+  String get offlineNoRegions => 'No offline areas yet';
+
+  @override
+  String get offlineNoRegionsHint =>
+      'Tap \"New area\" to download the places you visit often';
+
+  @override
+  String get offlineCacheUsage => 'Tile cache';
+
+  @override
+  String get offlineCacheUsageDesc =>
+      'Cached automatically while browsing; areas can also be downloaded manually';
+
+  @override
+  String get offlineClearCache => 'Clear all tile cache';
+
+  @override
+  String get offlineClearCacheConfirm => 'Clear all downloaded map tiles?';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      'Downloaded tiles will be deleted; area records stay and must be downloaded again for offline use.';
+
+  @override
+  String get offlineAreaHint => 'The current view is the area to download';
+
+  @override
+  String get offlineSource => 'Map source';
+
+  @override
+  String get offlineName => 'Name';
+
+  @override
+  String get offlineNameHint => 'e.g. Around home';
+
+  @override
+  String get offlineStartDownload => 'Start download';
+
+  @override
+  String get offlineStatusPending => 'Waiting';
+
+  @override
+  String get offlineStatusRunning => 'Downloading';
+
+  @override
+  String get offlineStatusPaused => 'Paused';
+
+  @override
+  String get offlineStatusDone => 'Done';
+
+  @override
+  String get offlineStatusCanceled => 'Canceled';
+
+  @override
+  String get offlineStatusFailed => 'Failed';
+
+  @override
+  String get offlinePause => 'Pause';
+
+  @override
+  String get offlineResume => 'Resume';
+
+  @override
+  String get offlineCancelDownload => 'Cancel';
+
+  @override
+  String get offlineDeleteKeepTiles => 'Delete the record only (keep tiles)';
+
+  @override
+  String get offlineDeleteWithTiles => 'Delete the record and its tiles';
+
+  @override
+  String get offlineDownloadBusy =>
+      'Another download is running — wait or cancel it first';
+
+  @override
+  String get offlineCacheSwitch => 'Cache map tiles';
+
+  @override
+  String get offlineCacheSwitchDesc =>
+      'Saves tiles while you browse, so they can be viewed offline later';
+
+  @override
+  String get offlineOnlySwitch => 'Offline tiles only';
+
+  @override
+  String get offlineOnlySwitchDesc =>
+      'Never load tiles from the network — only downloaded/cached ones (saves data)';
+
+  @override
+  String get offlineCacheDisabled => 'Tile cache unavailable on this platform';
+
+  @override
+  String get offlineSwitchFirst => 'Turn on \"Cache map tiles\" first';
+
+  @override
+  String get offlineOnlyWarn =>
+      '\"Offline tiles only\" is on — parts of the map may be missing';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '$n tiles downloaded';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return 'zoom $min–$max';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return 'about $tiles tiles · about $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return 'Area too large (about $tiles tiles) — narrow it or lower the max zoom';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return 'Delete offline area \"$name\"?';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return 'About $n tiles will be deleted';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return 'Deleting $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n failed';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total tiles';
+  }
+
+  @override
   String get msgHistory => 'Message history';
 
   @override

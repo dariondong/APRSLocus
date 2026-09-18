@@ -2811,6 +2811,166 @@ class AppLocalizationsZh extends AppLocalizations {
       '「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。';
 
   @override
+  String get offlineLoading => '加载中…';
+
+  @override
+  String get offlineMap => '离线地图';
+
+  @override
+  String get offlineMapDesc => '把地图瓦片预先下载到本机，没有网络时也能看地图';
+
+  @override
+  String get offlineMapFooter => '瓦片只保存在本机，不会上传；不同图源的瓦片分开缓存';
+
+  @override
+  String get offlineRegions => '离线区域';
+
+  @override
+  String get offlineRegionsDesc => '已下载的区域可在地图上离线查看';
+
+  @override
+  String get offlineNew => '新建区域';
+
+  @override
+  String get offlineNoRegions => '还没有离线区域';
+
+  @override
+  String get offlineNoRegionsHint => '点右上角「新建区域」，把常去的地方下载下来';
+
+  @override
+  String get offlineCacheUsage => '瓦片缓存';
+
+  @override
+  String get offlineCacheUsageDesc => '浏览地图时自动缓存，也可手动下载区域';
+
+  @override
+  String get offlineClearCache => '清除全部瓦片缓存';
+
+  @override
+  String get offlineClearCacheConfirm => '清除全部已下载的地图瓦片？';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      '已下载的瓦片会被删除，区域记录会保留（需要重新下载才能离线查看）。';
+
+  @override
+  String get offlineAreaHint => '当前画面范围就是下载范围';
+
+  @override
+  String get offlineSource => '图源';
+
+  @override
+  String get offlineName => '名称';
+
+  @override
+  String get offlineNameHint => '例如：家附近';
+
+  @override
+  String get offlineStartDownload => '开始下载';
+
+  @override
+  String get offlineStatusPending => '等待下载';
+
+  @override
+  String get offlineStatusRunning => '下载中';
+
+  @override
+  String get offlineStatusPaused => '已暂停';
+
+  @override
+  String get offlineStatusDone => '已完成';
+
+  @override
+  String get offlineStatusCanceled => '已取消';
+
+  @override
+  String get offlineStatusFailed => '下载失败';
+
+  @override
+  String get offlinePause => '暂停';
+
+  @override
+  String get offlineResume => '继续';
+
+  @override
+  String get offlineCancelDownload => '取消';
+
+  @override
+  String get offlineDeleteKeepTiles => '仅删除记录（保留已下载瓦片）';
+
+  @override
+  String get offlineDeleteWithTiles => '删除记录并删除瓦片';
+
+  @override
+  String get offlineDownloadBusy => '已有下载任务在进行，请先等待或取消';
+
+  @override
+  String get offlineCacheSwitch => '缓存地图瓦片';
+
+  @override
+  String get offlineCacheSwitchDesc => '浏览地图时把瓦片存到本机，之后可离线查看';
+
+  @override
+  String get offlineOnlySwitch => '仅使用离线瓦片';
+
+  @override
+  String get offlineOnlySwitchDesc => '不再从网络加载瓦片，只用已下载/已缓存的图（省流量）';
+
+  @override
+  String get offlineCacheDisabled => '瓦片缓存不可用（当前平台不支持）';
+
+  @override
+  String get offlineSwitchFirst => '请先打开「缓存地图瓦片」';
+
+  @override
+  String get offlineOnlyWarn => '已开启「仅使用离线瓦片」，地图可能显示不全';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '已下载 $n 张瓦片';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return '$min–$max 级';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return '约 $tiles 张瓦片 · 约 $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return '范围太大（约 $tiles 张瓦片），请缩小范围或降低最大层级';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '删除离线区域「$name」？';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return '将删除约 $n 张瓦片';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return '正在删除 $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n 张失败';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total 张';
+  }
+
+  @override
   String get msgHistory => '消息记录';
 
   @override
@@ -8829,6 +8989,166 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get mapTypeDesc =>
       '「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。';
+
+  @override
+  String get offlineLoading => '載入中…';
+
+  @override
+  String get offlineMap => '離線地圖';
+
+  @override
+  String get offlineMapDesc => '先把地圖圖磚下載到本機，沒有網路時也能看地圖';
+
+  @override
+  String get offlineMapFooter => '圖磚只保存在本機，不會上傳；不同圖源的圖磚分開快取';
+
+  @override
+  String get offlineRegions => '離線區域';
+
+  @override
+  String get offlineRegionsDesc => '已下載的區域可在地圖上離線檢視';
+
+  @override
+  String get offlineNew => '新建區域';
+
+  @override
+  String get offlineNoRegions => '還沒有離線區域';
+
+  @override
+  String get offlineNoRegionsHint => '點右上角「新建區域」，把常去的地方下載下來';
+
+  @override
+  String get offlineCacheUsage => '圖磚快取';
+
+  @override
+  String get offlineCacheUsageDesc => '瀏覽地圖時自動快取，也可手動下載區域';
+
+  @override
+  String get offlineClearCache => '清除全部圖磚快取';
+
+  @override
+  String get offlineClearCacheConfirm => '清除全部已下載的地圖圖磚？';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      '已下載的圖磚會被刪除，區域記錄會保留（需要重新下載才能離線檢視）。';
+
+  @override
+  String get offlineAreaHint => '目前畫面範圍就是下載範圍';
+
+  @override
+  String get offlineSource => '圖源';
+
+  @override
+  String get offlineName => '名稱';
+
+  @override
+  String get offlineNameHint => '例如：家附近';
+
+  @override
+  String get offlineStartDownload => '開始下載';
+
+  @override
+  String get offlineStatusPending => '等待下載';
+
+  @override
+  String get offlineStatusRunning => '下載中';
+
+  @override
+  String get offlineStatusPaused => '已暫停';
+
+  @override
+  String get offlineStatusDone => '已完成';
+
+  @override
+  String get offlineStatusCanceled => '已取消';
+
+  @override
+  String get offlineStatusFailed => '下載失敗';
+
+  @override
+  String get offlinePause => '暫停';
+
+  @override
+  String get offlineResume => '繼續';
+
+  @override
+  String get offlineCancelDownload => '取消';
+
+  @override
+  String get offlineDeleteKeepTiles => '僅刪除記錄（保留已下載圖磚）';
+
+  @override
+  String get offlineDeleteWithTiles => '刪除記錄並刪除圖磚';
+
+  @override
+  String get offlineDownloadBusy => '已有下載任務在進行，請先等待或取消';
+
+  @override
+  String get offlineCacheSwitch => '快取地圖圖磚';
+
+  @override
+  String get offlineCacheSwitchDesc => '瀏覽地圖時把圖磚存到本機，之後可離線檢視';
+
+  @override
+  String get offlineOnlySwitch => '僅使用離線圖磚';
+
+  @override
+  String get offlineOnlySwitchDesc => '不再從網路載入圖磚，只用已下載/已快取的圖（省流量）';
+
+  @override
+  String get offlineCacheDisabled => '圖磚快取無法使用（目前平台不支援）';
+
+  @override
+  String get offlineSwitchFirst => '請先開啟「快取地圖圖磚」';
+
+  @override
+  String get offlineOnlyWarn => '已開啟「僅使用離線圖磚」，地圖可能顯示不全';
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '已下載 $n 張圖磚';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return '$min–$max 級';
+  }
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return '約 $tiles 張圖磚 · 約 $size';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return '範圍太大（約 $tiles 張圖磚），請縮小範圍或降低最大層級';
+  }
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '刪除離線區域「$name」？';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return '將刪除約 $n 張圖磚';
+  }
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return '正在刪除 $done/$total';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n 張失敗';
+  }
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total 張';
+  }
 
   @override
   String get msgHistory => '訊息記錄';

@@ -937,6 +937,128 @@
   "autoReply": "Auto-reply",
   "sendBeacon": "Send beacon",
   "mapTypeDesc": "\"Map 2.0 (vector)\" renders vectors on-device for lower data use and sharp zooming; raster sources use online tiles, so quality depends on the network.",
+  "offlineLoading": "Loading…",
+  "offlineMap": "Offline maps",
+  "offlineMapDesc": "Download map tiles ahead of time so the map works without a network",
+  "offlineMapFooter": "Tiles stay on this device and are never uploaded; each source keeps its own cache",
+  "offlineRegions": "Offline areas",
+  "offlineRegionsDesc": "Downloaded areas can be viewed on the map offline",
+  "offlineNew": "New area",
+  "offlineNoRegions": "No offline areas yet",
+  "offlineNoRegionsHint": "Tap \"New area\" to download the places you visit often",
+  "offlineCacheUsage": "Tile cache",
+  "offlineCacheUsageDesc": "Cached automatically while browsing; areas can also be downloaded manually",
+  "offlineClearCache": "Clear all tile cache",
+  "offlineClearCacheConfirm": "Clear all downloaded map tiles?",
+  "offlineClearCacheConfirmBody": "Downloaded tiles will be deleted; area records stay and must be downloaded again for offline use.",
+  "offlineAreaHint": "The current view is the area to download",
+  "offlineSource": "Map source",
+  "offlineName": "Name",
+  "offlineNameHint": "e.g. Around home",
+  "offlineStartDownload": "Start download",
+  "offlineStatusPending": "Waiting",
+  "offlineStatusRunning": "Downloading",
+  "offlineStatusPaused": "Paused",
+  "offlineStatusDone": "Done",
+  "offlineStatusCanceled": "Canceled",
+  "offlineStatusFailed": "Failed",
+  "offlinePause": "Pause",
+  "offlineResume": "Resume",
+  "offlineCancelDownload": "Cancel",
+  "offlineDeleteKeepTiles": "Delete the record only (keep tiles)",
+  "offlineDeleteWithTiles": "Delete the record and its tiles",
+  "offlineDownloadBusy": "Another download is running — wait or cancel it first",
+  "offlineCacheSwitch": "Cache map tiles",
+  "offlineCacheSwitchDesc": "Saves tiles while you browse, so they can be viewed offline later",
+  "offlineOnlySwitch": "Offline tiles only",
+  "offlineOnlySwitchDesc": "Never load tiles from the network — only downloaded/cached ones (saves data)",
+  "offlineCacheDisabled": "Tile cache unavailable on this platform",
+  "offlineSwitchFirst": "Turn on \"Cache map tiles\" first",
+  "offlineOnlyWarn": "\"Offline tiles only\" is on — parts of the map may be missing",
+  "offlineTilesDownloaded": "{n} tiles downloaded",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "zoom {min}–{max}",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "about {tiles} tiles · about {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "Area too large (about {tiles} tiles) — narrow it or lower the max zoom",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "Delete offline area \"{name}\"?",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "About {n} tiles will be deleted",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "Deleting {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} failed",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} tiles",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "Message history",
   "statistics": "Statistics",
   "clearData": "Clear data",

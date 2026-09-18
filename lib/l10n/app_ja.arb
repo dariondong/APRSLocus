@@ -930,6 +930,128 @@
   "autoReply": "自動応答",
   "sendBeacon": "ビーコンを送信",
   "mapTypeDesc": "「マップ 2.0（ベクター）」は端末側でベクターを描画するため通信量が少なく、拡大しても鮮明です。ラスター図源はオンラインタイルのため、画質は回線に依存します。",
+  "offlineLoading": "読み込み中…",
+  "offlineMap": "オフラインマップ",
+  "offlineMapDesc": "地図タイルを事前に保存し、ネットワークなしでも地図を表示します",
+  "offlineMapFooter": "タイルは端末内のみに保存され、送信されません。図源ごとに別々にキャッシュされます",
+  "offlineRegions": "オフラインエリア",
+  "offlineRegionsDesc": "ダウンロード済みの範囲はオフラインで地図表示できます",
+  "offlineNew": "新規エリア",
+  "offlineNoRegions": "オフラインエリアがありません",
+  "offlineNoRegionsHint": "右上の「新規エリア」からよく行く場所を保存できます",
+  "offlineCacheUsage": "タイルキャッシュ",
+  "offlineCacheUsageDesc": "地図閲覧時に自動保存。エリアを手動でダウンロードも可能",
+  "offlineClearCache": "タイルキャッシュを全消去",
+  "offlineClearCacheConfirm": "ダウンロード済みの地図タイルをすべて削除しますか？",
+  "offlineClearCacheConfirmBody": "ダウンロード済みタイルは削除されます。エリア記録は残るため、再ダウンロードが必要です。",
+  "offlineAreaHint": "現在の表示範囲がダウンロード範囲です",
+  "offlineSource": "図源",
+  "offlineName": "名前",
+  "offlineNameHint": "例：自宅周辺",
+  "offlineStartDownload": "ダウンロード開始",
+  "offlineStatusPending": "待機中",
+  "offlineStatusRunning": "ダウンロード中",
+  "offlineStatusPaused": "一時停止",
+  "offlineStatusDone": "完了",
+  "offlineStatusCanceled": "キャンセル済み",
+  "offlineStatusFailed": "失敗",
+  "offlinePause": "一時停止",
+  "offlineResume": "再開",
+  "offlineCancelDownload": "キャンセル",
+  "offlineDeleteKeepTiles": "記録のみ削除（タイルは保持）",
+  "offlineDeleteWithTiles": "記録とタイルを削除",
+  "offlineDownloadBusy": "別のダウンロードが進行中です。完了かキャンセルを待ってください",
+  "offlineCacheSwitch": "地図タイルをキャッシュ",
+  "offlineCacheSwitchDesc": "地図閲覧時にタイルを端末へ保存し、後でオフライン表示できます",
+  "offlineOnlySwitch": "オフラインタイルのみ",
+  "offlineOnlySwitchDesc": "ネットワークからタイルを読み込みません。保存済み/キャッシュのみ使用（通信量節約）",
+  "offlineCacheDisabled": "このプラットフォームではタイルキャッシュを利用できません",
+  "offlineSwitchFirst": "先に「地図タイルをキャッシュ」をオンにしてください",
+  "offlineOnlyWarn": "「オフラインタイルのみ」がオンです。地図が一部表示されない場合があります",
+  "offlineTilesDownloaded": "{n} タイルを保存済み",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "ズーム {min}–{max}",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "約 {tiles} タイル · 約 {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "範囲が広すぎます（約 {tiles} タイル）。範囲を狭めるか最大ズームを下げてください",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "オフラインエリア「{name}」を削除しますか？",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "約 {n} タイルを削除します",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "削除中 {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} 件失敗",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} タイル",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "メッセージ履歴",
   "statistics": "統計",
   "clearData": "データを消去",

@@ -57,6 +57,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
     'uiScale', 'mapType', 'updateChannel',
+    // 离线地图：缓存开关、仅离线模式，以及**区域记录**（只有范围与进度，
+    // 瓦片本体是文件不随备份走 —— 换机后区域记录还在，重新点「继续」即可）
+    'tileCacheOn', 'offlineOnly', 'offlineRegions',
     'adifMode', 'adifSubMode', 'adifBand', 'adifFreq', 'adifStripSsid',
     'locationMode', 'useSimLocation',
     'filterLat', 'filterLng', 'filterRadius', 'maxStations', 'maxPackets',

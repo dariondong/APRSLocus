@@ -1,107 +1,20 @@
+import 'dart:async';
 import 'dart:math' as math;
+import 'dart:typed_data';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'theme.dart';
 import 'coord.dart';
+import 'map_math.dart';
+import 'tile_cache.dart';
+import 'net/http_send.dart';
 
-/// Web Mercator 投影工具（连续 zoom）
-class MapProj {
-  static Offset latLngToPx(double lat, double lng, num zoom) {
-    final n = 256 * math.pow(2, zoom);
-    final x = (lng + 180) / 360 * n;
-    final s = math.sin(lat * math.pi / 180);
-    final y =
-        (1 - math.log((1 + s) / (1 - s)) / (2 * math.pi)) / 2 * n;
-    return Offset(x.toDouble(), y.toDouble());
-  }
-
-  /// 逆投影：像素坐标 → 经纬度
-  static (double, double) pxToLatLng(Offset px, num zoom) {
-    final n = 256 * math.pow(2, zoom);
-    final lng = px.dx / n * 360 - 180;
-    final y = px.dy / n;
-    final a = math.exp(math.pi * (1 - 2 * y));
-    final lat = (2 * math.atan(a) - math.pi / 2) * 180 / math.pi;
-    return (lat.toDouble(), lng.toDouble());
-  }
-}
-
-/// 瓦片地址（浅色、支持 CORS），优先高德中文瓦片（多子域名轮询）
-const _tileHeaders = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36',
-  'Referer': 'https://www.amap.com/',
-};
-
-/// 高德瓦片：按 tx+ty 哈希轮询 4 个子域名，避免单域名限流
-String _gaodeUrl(int tx, int ty, int z, {int style = 7}) {
-  final s = ((tx * 7 + ty * 13) % 4) + 1;
-  return 'https://webrd0$s.is.autonavi.com/appmaptile'
-      '?lang=zh_cn&size=1&scale=1&style=$style&x=$tx&y=$ty&z=$z';
-}
-
-/// 该图源是否为 GCJ-02（火星坐标）瓦片。
-/// 国内图源（高德/腾讯）均为 GCJ-02，而 APRS 数据是 WGS-84，
-/// 必须做坐标纠偏标记才能落准。
-bool isGcjMapType(MapType t) =>
-    t == MapType.gaode ||
-    t == MapType.gaode_sat ||
-    t == MapType.tencent ||
-    t == MapType.tencent_sat;
-
-/// 腾讯瓦片（GCJ-02）。注意其 **y 轴为 TMS**，与 XYZ 相反，
-/// 需用 2^z-1-ty 翻转，否则整张图上下颠倒/错位。
-/// 街道：realtimerender；卫星：sateTiles（按 16×16 分块路径）。
-String _tencentUrl(int tx, int ty, int z, {bool sat = false}) {
-  final tmsY = (1 << z) - 1 - ty;
-  if (sat) {
-    return 'https://p0.map.gtimg.com/sateTiles/$z/${tx ~/ 16}/${tmsY ~/ 16}'
-        '/${tx}_$tmsY.jpg';
-  }
-  return 'https://rt0.map.gtimg.com/realtimerender'
-      '?z=$z&x=$tx&y=$tmsY&type=vector&style=0';
-}
-
-// 各图源瓦片模板（Carto raster basemaps 需 API key，其余免 key）
-const _cartoLightUrl =
-    'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key='
-    'cb1_2tpj_1_0a343408cea16e942cf61257';
-const _cartoDarkUrl =
-    'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key='
-    'cb1_2tpj_1_0a343408cea16e942cf61257';
-const _cartoVoyagerUrl =
-    'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key='
-    'cb1_2tpj_1_0a343408cea16e942cf61257';
-const _osmUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-const _osmHotUrl =
-    'https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png';
-const _openTopoUrl = 'https://tile.opentopomap.org/{z}/{x}/{y}.png';
-const _esriStreetUrl =
-    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
-const _esriSatUrl =
-    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-
-/// 地图类型
-enum MapType {
-  gaode('高德地图', group: '高德'),
-  gaode_sat('高德卫星', group: '高德'),
-  // 腾讯同为国内 GCJ-02 图源（分组键沿用 '高德'，界面显示为「国内地图」）
-  tencent('腾讯地图', group: '高德'),
-  tencent_sat('腾讯卫星', group: '高德'),
-  vector('矢量地图', group: '其他'),
-  vector_positron('Carto Positron(浅色矢量)', group: '其他'),
-  carto('Carto 浅色', group: '其他'),
-  carto_dark('Carto 深色', group: '其他'),
-  carto_voyager('Carto 航行者', group: '其他'),
-  osm('OSM 标准', group: '其他'),
-  osm_hot('OSM 人道', group: '其他'),
-  open_topo('OpenTopo 地形', group: '其他'),
-  esri_street('Esri 街道', group: '其他'),
-  esri_sat('Esri 影像', group: '其他');
-
-  const MapType(this.label, {this.group = '高德'});
-  final String label;
-  final String group;
-}
+// 地图数学（MapProj / GeoBounds / 瓦片编号）、图源枚举与瓦片 URL 已移到
+// map_math.dart —— 离线下载引擎要用同一份，不能再留在 Widget 文件里。
+// 这里 re-export，既有 `import 'tile_map.dart'` 的调用方无需改动。
+export 'map_math.dart';
 
 ///
 /// 任何情况下都有一层自绘矢量底图（环路/道路/水域），
@@ -118,6 +31,12 @@ class TileMapView extends StatefulWidget {
   final double minZoom, maxZoom;
   final MapType mapType;
 
+  /// 是否把在线瓦片写入磁盘缓存（用户可在设置里关掉）
+  final bool cacheEnabled;
+
+  /// 仅离线模式：只用缓存/已下载瓦片，不发网络请求
+  final bool offlineOnly;
+
   const TileMapView({
     super.key,
     required this.centerLat,
@@ -132,6 +51,8 @@ class TileMapView extends StatefulWidget {
     this.minZoom = 3,
     this.maxZoom = 19,
     this.mapType = MapType.gaode,
+    this.cacheEnabled = true,
+    this.offlineOnly = false,
   });
 
   @override
@@ -237,7 +158,9 @@ class _TileMapViewState extends State<TileMapView> {
               top: ty * tilePx - top,
               child: _Tile(
                   tx: wx, ty: ty, z: z, scale: scale,
-                  mapType: widget.mapType),
+                  mapType: widget.mapType,
+                  cacheEnabled: widget.cacheEnabled,
+                  offlineOnly: widget.offlineOnly),
             ));
           }
         }
@@ -422,86 +345,228 @@ class _FallbackPainter extends CustomPainter {
       old.zoom != zoom || old.pan != pan;
 }
 
-class _Tile extends StatelessWidget {
+/// 单张瓦片：缓存 → 在线 → 祖先瓦片放大 → 占位。
+///
+/// 四级降级不是列着好看的，每种都对应真实场景：
+///   1. **缓存**：下过离线区域、或之前浏览过 → 断网也能看；
+///   2. **在线**：正常情况（顺带写缓存）；
+///   3. **祖先瓦片放大**：只下到 z16、现场缩到 z17 时，整屏不该变白 ——
+///      这是离线地图「下载到 16 级」这个常见选择能不能用的关键；
+///   4. **占位**：连缓存都没有的新设备/图源 → 透出自绘矢量底图，地图仍可看可点。
+class _Tile extends StatefulWidget {
   final int tx, ty, z;
   final double scale;
   final MapType mapType;
+
+  /// 是否把在线瓦片写入磁盘缓存
+  final bool cacheEnabled;
+
+  /// 仅离线模式：完全不发网络请求（野外省流量）
+  final bool offlineOnly;
+
   const _Tile({
     required this.tx,
     required this.ty,
     required this.z,
     required this.scale,
     this.mapType = MapType.gaode,
+    this.cacheEnabled = true,
+    this.offlineOnly = false,
   });
 
-  /// 替换 {z}/{x}/{y}/{s}，{s} 为子域名轮询（a/b/c）
-  String _fmt(String tpl) {
-    final s = ['a', 'b', 'c'][(tx + ty) % 3];
-    return tpl
-        .replaceAll('{z}', '$z')
-        .replaceAll('{x}', '$tx')
-        .replaceAll('{y}', '$ty')
-        .replaceAll('{s}', s);
-  }
+  @override
+  State<_Tile> createState() => _TileState();
+}
 
-  /// 当前图源 URL（矢量地图不在此渲染，返回空串）
-  String _url(MapType t) {
-    switch (t) {
-      case MapType.gaode:
-        return _gaodeUrl(tx, ty, z, style: 7);
-      case MapType.gaode_sat:
-        return _gaodeUrl(tx, ty, z, style: 6);
-      case MapType.tencent:
-        return _tencentUrl(tx, ty, z);
-      case MapType.tencent_sat:
-        return _tencentUrl(tx, ty, z, sat: true);
-      case MapType.carto:
-        return _fmt(_cartoLightUrl);
-      case MapType.carto_dark:
-        return _fmt(_cartoDarkUrl);
-      case MapType.carto_voyager:
-        return _fmt(_cartoVoyagerUrl);
-      case MapType.osm:
-        return _fmt(_osmUrl);
-      case MapType.osm_hot:
-        return _fmt(_osmHotUrl);
-      case MapType.open_topo:
-        return _fmt(_openTopoUrl);
-      case MapType.esri_street:
-        return _fmt(_esriStreetUrl);
-      case MapType.esri_sat:
-        return _fmt(_esriSatUrl);
-      case MapType.vector:
-      case MapType.vector_positron:
-        // 矢量地图由 VectorMapView 渲染，此处返回空串走降级候选
-        return '';
-    }
+class _TileState extends State<_Tile> {
+  /// 已解析到的像素。null = 还没解析出来 / 最终没有可用的图
+  Uint8List? _bytes;
+
+  /// 0 = 本瓦片的原图；n>0 = 用向上 n 级的祖先瓦片放大顶替
+  int _upSteps = 0;
+
+  /// 顶替时本瓦片在祖先图内的象限位置（每格 = 1 个本瓦片边长）
+  (int, int) _quad = (0, 0);
+
+  /// 本次是否已尝试落盘：同一张瓦片被多次重建时不重复写
+  bool _triedWrite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolve();
   }
 
   @override
-  Widget build(BuildContext context) => _try(0);
+  void didUpdateWidget(covariant _Tile old) {
+    super.didUpdateWidget(old);
+    if (old.mapType != widget.mapType ||
+        old.offlineOnly != widget.offlineOnly ||
+        old.cacheEnabled != widget.cacheEnabled ||
+        old.z != widget.z ||
+        old.tx != widget.tx ||
+        old.ty != widget.ty) {
+      _bytes = null;
+      _upSteps = 0;
+      _triedWrite = false;
+      _resolve();
+    }
+    // 只有 scale 变化（捏合/滚轮缩放）时**不重新解析**：图还是同一张，
+    // 只是要按新的像素边长画。几何一律在 build() 里按当前 _px 现算 ——
+    // 若把「算好尺寸的 Widget」存起来，缩放动画中瓦片会停在旧尺寸上，
+    // 祖先放大那一路还会因裁切偏移仍按旧边长算而错位（离线缩放时最明显）。
+  }
 
-  Widget _try(int idx) {
-    final size = 256.0 * scale;
-    // 候选链：当前图源 → Carto 浅色 → OSM → 空白（逐级降级）
-    final candidates = <MapType>[
-      mapType,
-      if (mapType != MapType.carto) MapType.carto,
-      if (mapType != MapType.osm) MapType.osm,
-    ];
-    if (idx >= candidates.length) return const SizedBox.shrink();
-    final url = _url(candidates[idx]);
-    // 无 URL（如矢量地图）时继续降级到下一候选
-    if (url.isEmpty) return _try(idx + 1);
-    return Image.network(
-      url,
-      width: size,
-      height: size,
-      fit: BoxFit.fill,
-      gaplessPlayback: true,
-      filterQuality: FilterQuality.medium,
-      headers: _tileHeaders,
-      errorBuilder: (_, _, _) => _try(idx + 1),
+  bool _sameDatum(MapType other) =>
+      isGcjMapType(other) == isGcjMapType(widget.mapType);
+
+  /// 在线候选链：当前图源 → Carto 浅色 → OSM（逐级降级，与旧版一致，
+  /// 但只接受**同坐标系**的候选 —— 拿 WGS-84 的图源去填 GCJ-02 的瓦片
+  /// 会整整偏出 500 米，比留白更容易把人带错路）。
+  List<MapType> get _onlineCandidates => <MapType>[
+        widget.mapType,
+        if (widget.mapType != MapType.carto &&
+            _sameDatum(MapType.carto) &&
+            MapType.carto.canDownloadOffline)
+          MapType.carto,
+        if (widget.mapType != MapType.osm &&
+            _sameDatum(MapType.osm) &&
+            MapType.osm.canDownloadOffline)
+          MapType.osm,
+      ];
+
+  double get _px => 256.0 * widget.scale;
+
+  /// 记录解析结果。几何不在这里算 —— 见 [build] 与 [didUpdateWidget]。
+  void _setBytes(Uint8List? b, {int upSteps = 0, (int, int) quad = (0, 0)}) {
+    if (!mounted) return;
+    setState(() {
+      _bytes = b;
+      _upSteps = b == null ? 0 : upSteps;
+      _quad = quad;
+    });
+  }
+
+  /// 按**当前**缩放比现算尺寸的图像
+  Widget _tileImage() {
+    final px = _px;
+    final provider =
+        ResizeImage(MemoryImage(_bytes!), width: 256, allowUpscaling: true);
+    if (_upSteps == 0) {
+      return Image(
+        image: provider,
+        width: px,
+        height: px,
+        fit: BoxFit.fill,
+        gaplessPlayback: true,
+        filterQuality: FilterQuality.medium,
+      );
+    }
+    // 祖先图有 f×f 个本瓦片那么大，只露出本瓦片所在的那一格
+    final f = 1 << _upSteps;
+    return ClipRect(
+      child: OverflowBox(
+        maxWidth: px * f,
+        maxHeight: px * f,
+        alignment: Alignment.topLeft,
+        child: Transform.translate(
+          offset: Offset(-_quad.$1 * px, -_quad.$2 * px),
+          child: Image(
+            image: provider,
+            width: px * f,
+            height: px * f,
+            fit: BoxFit.fill,
+            gaplessPlayback: true,
+            filterQuality: FilterQuality.medium,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _resolve() async {
+    final src = widget.mapType.name;
+
+    // 1) 本图源缓存
+    if (TileCache.available) {
+      final hit = await TileCache.get(src, widget.z, widget.tx, widget.ty);
+      if (hit != null) return _setBytes(hit);
+    }
+
+    // 2) 在线
+    if (!widget.offlineOnly) {
+      for (final t in _onlineCandidates) {
+        final url = tileUrl(t, widget.tx, widget.ty, widget.z);
+        if (url.isEmpty) continue;
+        try {
+          final bytes = await httpGetBytes(
+            Uri.parse(url),
+            headers: tileHeaders,
+            timeout: const Duration(seconds: 15),
+          );
+          if (!looksLikeImage(bytes)) continue;
+          if (widget.cacheEnabled && !_triedWrite) {
+            _triedWrite = true;
+            // 落盘不阻塞显示：写盘失败（无权限/满盘）不该让瓦片显示不出来
+            unawaited(
+                TileCache.put(t.name, widget.z, widget.tx, widget.ty, bytes));
+          }
+          return _setBytes(bytes);
+        } catch (_) {
+          // 换下一个候选
+        }
+      }
+    }
+
+    // 3) 祖先瓦片放大（离线可用的关键兜底）
+    final up = await _upscaleFromAncestor();
+    if (up != null) {
+      return _setBytes(up.bytes, upSteps: up.upSteps, quad: up.quad);
+    }
+
+    // 4) 其它同坐标系图源的缓存（之前用别的图源浏览过这块区域）
+    if (TileCache.available) {
+      for (final t in MapType.values) {
+        if (t == widget.mapType || !_sameDatum(t)) continue;
+        final hit = await TileCache.get(t.name, widget.z, widget.tx, widget.ty);
+        if (hit != null) return _setBytes(hit);
+      }
+    }
+
+    // 5) 放弃：透出自绘底图
+    _setBytes(null);
+  }
+
+  /// 取最近的（最多向上 4 级）祖先瓦片，按象限裁切放大顶替本瓦片。
+  ///
+  /// 裁切是必须的：直接把整张祖先图铺进本格，会看到**邻居**的地图 ——
+  /// 位置全错，比空白更糟。这里用 OverflowBox + ClipRect 做「放大后平移再裁」，
+  /// 不引入自定义 ImageProvider，也让 Flutter 的 ImageCache 照常去重解码。
+  /// 只返回**数据**（字节 + 向上几级 + 象限），不返回 Widget：
+  /// 尺寸必须留到 build 时按当前缩放比现算，理由见 [didUpdateWidget]。
+  Future<({Uint8List bytes, int upSteps, (int, int) quad})?>
+      _upscaleFromAncestor() async {
+    if (!TileCache.available) return null;
+    final me = TileId(widget.z, widget.tx, widget.ty);
+    var cur = me.parent;
+    for (var steps = 1; steps <= 4 && cur != null; steps++) {
+      final hit =
+          await TileCache.get(widget.mapType.name, cur.z, cur.x, cur.y);
+      if (hit != null) {
+        return (bytes: hit, upSteps: steps, quad: me.quadIn(cur));
+      }
+      cur = cur.parent;
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 尺寸始终占住（避免 Stack 布局抖动）；几何按当前缩放比现算
+    return SizedBox(
+      width: _px,
+      height: _px,
+      child: _bytes == null ? const SizedBox.shrink() : _tileImage(),
     );
   }
 }

@@ -929,6 +929,128 @@
   "autoReply": "Respuesta automática",
   "sendBeacon": "Enviar baliza",
   "mapTypeDesc": "«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; las fuentes ráster usan teselas en línea, así que la calidad depende de la red.",
+  "offlineLoading": "Cargando…",
+  "offlineMap": "Mapas sin conexión",
+  "offlineMapDesc": "Descargue teselas de mapa con antelación para ver el mapa sin red",
+  "offlineMapFooter": "Las teselas solo se guardan en este dispositivo; cada fuente tiene su propia caché",
+  "offlineRegions": "Zonas sin conexión",
+  "offlineRegionsDesc": "Las zonas descargadas se pueden ver en el mapa sin conexión",
+  "offlineNew": "Zona nueva",
+  "offlineNoRegions": "Aún no hay zonas sin conexión",
+  "offlineNoRegionsHint": "Toque \"Zona nueva\" para descargar los lugares que frecuenta",
+  "offlineCacheUsage": "Caché de teselas",
+  "offlineCacheUsageDesc": "Se almacena al navegar; también puede descargar zonas manualmente",
+  "offlineClearCache": "Borrar toda la caché de teselas",
+  "offlineClearCacheConfirm": "¿Borrar todas las teselas descargadas?",
+  "offlineClearCacheConfirmBody": "Se eliminarán las teselas descargadas; las zonas se conservan y habrá que descargarlas de nuevo.",
+  "offlineAreaHint": "La vista actual es la zona que se descargará",
+  "offlineSource": "Fuente del mapa",
+  "offlineName": "Nombre",
+  "offlineNameHint": "p. ej. Cerca de casa",
+  "offlineStartDownload": "Empezar descarga",
+  "offlineStatusPending": "En espera",
+  "offlineStatusRunning": "Descargando",
+  "offlineStatusPaused": "En pausa",
+  "offlineStatusDone": "Completado",
+  "offlineStatusCanceled": "Cancelado",
+  "offlineStatusFailed": "Falló",
+  "offlinePause": "Pausar",
+  "offlineResume": "Reanudar",
+  "offlineCancelDownload": "Cancelar",
+  "offlineDeleteKeepTiles": "Eliminar solo el registro (conservar teselas)",
+  "offlineDeleteWithTiles": "Eliminar el registro y sus teselas",
+  "offlineDownloadBusy": "Hay otra descarga en curso: espere o cancélela",
+  "offlineCacheSwitch": "Guardar teselas en caché",
+  "offlineCacheSwitchDesc": "Guarda las teselas al navegar para verlas luego sin conexión",
+  "offlineOnlySwitch": "Solo teselas sin conexión",
+  "offlineOnlySwitchDesc": "No carga teselas de la red: solo las descargadas o en caché (ahorra datos)",
+  "offlineCacheDisabled": "La caché de teselas no está disponible en esta plataforma",
+  "offlineSwitchFirst": "Active primero \"Guardar teselas en caché\"",
+  "offlineOnlyWarn": "\"Solo teselas sin conexión\" está activo: puede que falten partes del mapa",
+  "offlineTilesDownloaded": "{n} teselas descargadas",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "zoom {min}–{max}",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "unas {tiles} teselas · unos {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "Zona demasiado grande (unas {tiles} teselas): reduzca el área o el zoom máximo",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "¿Eliminar la zona sin conexión \"{name}\"?",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "Se eliminarán unas {n} teselas",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "Eliminando {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} fallidas",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} teselas",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "Historial de mensajes",
   "statistics": "Estadísticas",
   "clearData": "Borrar datos",

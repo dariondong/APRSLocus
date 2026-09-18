@@ -5307,6 +5307,288 @@ abstract class AppLocalizations {
   /// **'「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。'**
   String get mapTypeDesc;
 
+  /// No description provided for @offlineLoading.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载中…'**
+  String get offlineLoading;
+
+  /// No description provided for @offlineMap.
+  ///
+  /// In zh, this message translates to:
+  /// **'离线地图'**
+  String get offlineMap;
+
+  /// No description provided for @offlineMapDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'把地图瓦片预先下载到本机，没有网络时也能看地图'**
+  String get offlineMapDesc;
+
+  /// No description provided for @offlineMapFooter.
+  ///
+  /// In zh, this message translates to:
+  /// **'瓦片只保存在本机，不会上传；不同图源的瓦片分开缓存'**
+  String get offlineMapFooter;
+
+  /// No description provided for @offlineRegions.
+  ///
+  /// In zh, this message translates to:
+  /// **'离线区域'**
+  String get offlineRegions;
+
+  /// No description provided for @offlineRegionsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'已下载的区域可在地图上离线查看'**
+  String get offlineRegionsDesc;
+
+  /// No description provided for @offlineNew.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建区域'**
+  String get offlineNew;
+
+  /// No description provided for @offlineNoRegions.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有离线区域'**
+  String get offlineNoRegions;
+
+  /// No description provided for @offlineNoRegionsHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点右上角「新建区域」，把常去的地方下载下来'**
+  String get offlineNoRegionsHint;
+
+  /// No description provided for @offlineCacheUsage.
+  ///
+  /// In zh, this message translates to:
+  /// **'瓦片缓存'**
+  String get offlineCacheUsage;
+
+  /// No description provided for @offlineCacheUsageDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'浏览地图时自动缓存，也可手动下载区域'**
+  String get offlineCacheUsageDesc;
+
+  /// No description provided for @offlineClearCache.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除全部瓦片缓存'**
+  String get offlineClearCache;
+
+  /// No description provided for @offlineClearCacheConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除全部已下载的地图瓦片？'**
+  String get offlineClearCacheConfirm;
+
+  /// No description provided for @offlineClearCacheConfirmBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'已下载的瓦片会被删除，区域记录会保留（需要重新下载才能离线查看）。'**
+  String get offlineClearCacheConfirmBody;
+
+  /// No description provided for @offlineAreaHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前画面范围就是下载范围'**
+  String get offlineAreaHint;
+
+  /// No description provided for @offlineSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'图源'**
+  String get offlineSource;
+
+  /// No description provided for @offlineName.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get offlineName;
+
+  /// No description provided for @offlineNameHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'例如：家附近'**
+  String get offlineNameHint;
+
+  /// No description provided for @offlineStartDownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始下载'**
+  String get offlineStartDownload;
+
+  /// No description provided for @offlineStatusPending.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待下载'**
+  String get offlineStatusPending;
+
+  /// No description provided for @offlineStatusRunning.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载中'**
+  String get offlineStatusRunning;
+
+  /// No description provided for @offlineStatusPaused.
+  ///
+  /// In zh, this message translates to:
+  /// **'已暂停'**
+  String get offlineStatusPaused;
+
+  /// No description provided for @offlineStatusDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'已完成'**
+  String get offlineStatusDone;
+
+  /// No description provided for @offlineStatusCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消'**
+  String get offlineStatusCanceled;
+
+  /// No description provided for @offlineStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载失败'**
+  String get offlineStatusFailed;
+
+  /// No description provided for @offlinePause.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂停'**
+  String get offlinePause;
+
+  /// No description provided for @offlineResume.
+  ///
+  /// In zh, this message translates to:
+  /// **'继续'**
+  String get offlineResume;
+
+  /// No description provided for @offlineCancelDownload.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get offlineCancelDownload;
+
+  /// No description provided for @offlineDeleteKeepTiles.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅删除记录（保留已下载瓦片）'**
+  String get offlineDeleteKeepTiles;
+
+  /// No description provided for @offlineDeleteWithTiles.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除记录并删除瓦片'**
+  String get offlineDeleteWithTiles;
+
+  /// No description provided for @offlineDownloadBusy.
+  ///
+  /// In zh, this message translates to:
+  /// **'已有下载任务在进行，请先等待或取消'**
+  String get offlineDownloadBusy;
+
+  /// No description provided for @offlineCacheSwitch.
+  ///
+  /// In zh, this message translates to:
+  /// **'缓存地图瓦片'**
+  String get offlineCacheSwitch;
+
+  /// No description provided for @offlineCacheSwitchDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'浏览地图时把瓦片存到本机，之后可离线查看'**
+  String get offlineCacheSwitchDesc;
+
+  /// No description provided for @offlineOnlySwitch.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅使用离线瓦片'**
+  String get offlineOnlySwitch;
+
+  /// No description provided for @offlineOnlySwitchDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'不再从网络加载瓦片，只用已下载/已缓存的图（省流量）'**
+  String get offlineOnlySwitchDesc;
+
+  /// No description provided for @offlineCacheDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'瓦片缓存不可用（当前平台不支持）'**
+  String get offlineCacheDisabled;
+
+  /// No description provided for @offlineSwitchFirst.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先打开「缓存地图瓦片」'**
+  String get offlineSwitchFirst;
+
+  /// No description provided for @offlineOnlyWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已开启「仅使用离线瓦片」，地图可能显示不全'**
+  String get offlineOnlyWarn;
+
+  /// No description provided for @offlineTilesDownloaded.
+  ///
+  /// In zh, this message translates to:
+  /// **'已下载 {n} 张瓦片'**
+  String offlineTilesDownloaded(String n);
+
+  /// No description provided for @offlineZoomLevels.
+  ///
+  /// In zh, this message translates to:
+  /// **'{min}–{max} 级'**
+  String offlineZoomLevels(String min, String max);
+
+  /// No description provided for @offlineEstimate.
+  ///
+  /// In zh, this message translates to:
+  /// **'约 {tiles} 张瓦片 · 约 {size}'**
+  String offlineEstimate(String tiles, String size);
+
+  /// No description provided for @offlineTooManyTiles.
+  ///
+  /// In zh, this message translates to:
+  /// **'范围太大（约 {tiles} 张瓦片），请缩小范围或降低最大层级'**
+  String offlineTooManyTiles(String tiles);
+
+  /// No description provided for @offlineDeleteRegionConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除离线区域「{name}」？'**
+  String offlineDeleteRegionConfirm(String name);
+
+  /// No description provided for @offlineDeleteTileCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'将删除约 {n} 张瓦片'**
+  String offlineDeleteTileCount(String n);
+
+  /// No description provided for @offlineDeletingTiles.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在删除 {done}/{total}'**
+  String offlineDeletingTiles(String done, String total);
+
+  /// No description provided for @offlineFailedCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{n} 张失败'**
+  String offlineFailedCount(String n);
+
+  /// No description provided for @offlineTileProgress.
+  ///
+  /// In zh, this message translates to:
+  /// **'{done}/{total} 张'**
+  String offlineTileProgress(String done, String total);
+
   /// No description provided for @msgHistory.
   ///
   /// In zh, this message translates to:

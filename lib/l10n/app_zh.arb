@@ -937,6 +937,128 @@
   "autoReply": "自动应答",
   "sendBeacon": "发送信标",
   "mapTypeDesc": "「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。",
+  "offlineLoading": "加载中…",
+  "offlineMap": "离线地图",
+  "offlineMapDesc": "把地图瓦片预先下载到本机，没有网络时也能看地图",
+  "offlineMapFooter": "瓦片只保存在本机，不会上传；不同图源的瓦片分开缓存",
+  "offlineRegions": "离线区域",
+  "offlineRegionsDesc": "已下载的区域可在地图上离线查看",
+  "offlineNew": "新建区域",
+  "offlineNoRegions": "还没有离线区域",
+  "offlineNoRegionsHint": "点右上角「新建区域」，把常去的地方下载下来",
+  "offlineCacheUsage": "瓦片缓存",
+  "offlineCacheUsageDesc": "浏览地图时自动缓存，也可手动下载区域",
+  "offlineClearCache": "清除全部瓦片缓存",
+  "offlineClearCacheConfirm": "清除全部已下载的地图瓦片？",
+  "offlineClearCacheConfirmBody": "已下载的瓦片会被删除，区域记录会保留（需要重新下载才能离线查看）。",
+  "offlineAreaHint": "当前画面范围就是下载范围",
+  "offlineSource": "图源",
+  "offlineName": "名称",
+  "offlineNameHint": "例如：家附近",
+  "offlineStartDownload": "开始下载",
+  "offlineStatusPending": "等待下载",
+  "offlineStatusRunning": "下载中",
+  "offlineStatusPaused": "已暂停",
+  "offlineStatusDone": "已完成",
+  "offlineStatusCanceled": "已取消",
+  "offlineStatusFailed": "下载失败",
+  "offlinePause": "暂停",
+  "offlineResume": "继续",
+  "offlineCancelDownload": "取消",
+  "offlineDeleteKeepTiles": "仅删除记录（保留已下载瓦片）",
+  "offlineDeleteWithTiles": "删除记录并删除瓦片",
+  "offlineDownloadBusy": "已有下载任务在进行，请先等待或取消",
+  "offlineCacheSwitch": "缓存地图瓦片",
+  "offlineCacheSwitchDesc": "浏览地图时把瓦片存到本机，之后可离线查看",
+  "offlineOnlySwitch": "仅使用离线瓦片",
+  "offlineOnlySwitchDesc": "不再从网络加载瓦片，只用已下载/已缓存的图（省流量）",
+  "offlineCacheDisabled": "瓦片缓存不可用（当前平台不支持）",
+  "offlineSwitchFirst": "请先打开「缓存地图瓦片」",
+  "offlineOnlyWarn": "已开启「仅使用离线瓦片」，地图可能显示不全",
+  "offlineTilesDownloaded": "已下载 {n} 张瓦片",
+  "@offlineTilesDownloaded": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineZoomLevels": "{min}–{max} 级",
+  "@offlineZoomLevels": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineEstimate": "约 {tiles} 张瓦片 · 约 {size}",
+  "@offlineEstimate": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTooManyTiles": "范围太大（约 {tiles} 张瓦片），请缩小范围或降低最大层级",
+  "@offlineTooManyTiles": {
+    "placeholders": {
+      "tiles": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteRegionConfirm": "删除离线区域「{name}」？",
+  "@offlineDeleteRegionConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeleteTileCount": "将删除约 {n} 张瓦片",
+  "@offlineDeleteTileCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineDeletingTiles": "正在删除 {done}/{total}",
+  "@offlineDeletingTiles": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineFailedCount": "{n} 张失败",
+  "@offlineFailedCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineTileProgress": "{done}/{total} 张",
+  "@offlineTileProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "msgHistory": "消息记录",
   "statistics": "统计",
   "clearData": "清除数据",

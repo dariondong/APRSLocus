@@ -11,6 +11,7 @@ import 'device_page.dart';
 import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
+import 'offline_map_page.dart';
 import 'weather.dart';
 import 'theme_store.dart';
 
@@ -2506,6 +2507,17 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
             children: [
               _mapTypeSelector(),
               SettingsHint(S.of(context).mapTypeDesc),
+              SettingsNavRow(
+                title: S.of(context).offlineMap,
+                subtitle: S.of(context).offlineMapDesc,
+                icon: Icons.download_for_offline_rounded,
+                color: C.blue,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => OfflineMapPage(state: st)),
+                ),
+              ),
             ],
           ),
         ]),
@@ -2970,6 +2982,26 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
                   ),
                 ),
               ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SettingsSectionCard(
+          title: S.of(context).offlineMap,
+          subtitle: S.of(context).offlineCacheUsageDesc,
+          icon: Icons.download_for_offline_rounded,
+          color: C.blue,
+          children: [
+            SettingsNavRow(
+              title: S.of(context).offlineRegions,
+              subtitle: S.of(context).offlineRegionsDesc,
+              icon: Icons.map_rounded,
+              color: C.blue,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => OfflineMapPage(state: st)),
+              ),
             ),
           ],
         ),

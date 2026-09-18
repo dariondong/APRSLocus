@@ -413,6 +413,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             onZoomRequest: (z, p) => _animateTo(z, p),
                             onTap: _handleMapTap,
                             mapType: _currentMapType,
+                            // 离线地图：缓存开关与「仅离线」模式（设置页可改）
+                            cacheEnabled: widget.state.tileCacheOn,
+                            offlineOnly: widget.state.offlineOnly,
                           ),
                   ),
                 ),
