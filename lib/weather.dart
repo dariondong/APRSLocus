@@ -2215,10 +2215,20 @@ class _WeatherPanelState extends State<_WeatherPanel>
   /// 组合读起来像是同一个机理。
   List<Widget> _hfSixRows(HfNow hf, AppLocalizations s) {
     final six = hfSixMeter(hf);
+    // 三通路的**细节只在有戏时才展开**。
+    //
+    // 缘由：偶发 E 层不开通才是常态（开通是例外），所以绝大多数时候三条通路
+    // 全是「未开通」—— 连列三行同一个词，占了版面却不增加任何信息。
+    // 而一旦某条开通，**是哪条**就变得关键（Es 与极光的上机策略完全不同：
+    // Es 打远方、极光要朝高纬），那时才值得展开三行。
+    //
+    // 所以：全部关闭（或数据缺失）时只留标题行 + 结论，有开通才展开。
+    final allClosed = six.quality == HfQuality.closed ||
+        six.quality == HfQuality.unknown;
     return [
       _hairline(),
       Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 2),
+        padding: EdgeInsets.only(top: 8, bottom: allClosed ? 6 : 2),
         child: Row(children: [
           Text(s.hfSixMeter,
               style: ts(12, w: FontWeight.w700, c: Colors.white)),
@@ -2226,18 +2236,22 @@ class _WeatherPanelState extends State<_WeatherPanel>
           _hfQualityCell(six.quality, s, end: true),
         ]),
       ),
-      Padding(
+      if (allClosed) const SizedBox.shrink() else Padding(
         padding: const EdgeInsets.only(top: 2, bottom: 6),
         child: Row(children: [
-          Expanded(child: _kvPair(s.hfEs, six.es)),
+          // 同组件侧：six.es / six.aurora 是源数据**原始串**，必须过
+          // hfQualityLabel 才本地化（否则中文界面露英文 'Band Closed'）。
+          Expanded(child: _kvPair(s.hfEs,
+              hfQualityLabel(hfQualityOf(six.es), s))),
           const SizedBox(width: 20),
-          Expanded(child: _kvPair(s.hfAurora, six.aurora)),
+          Expanded(child: _kvPair(s.hfAurora,
+              hfQualityLabel(hfQualityOf(six.aurora), s))),
         ]),
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: 4),
         child: Row(children: [
-          Expanded(child: _kvPair(s.hfF2, six.f2 ? s.hfQGood : '--')),
+          Expanded(child: _kvPair(s.hfF2, six.f2 ? s.hfQGood : HfNow.none)),
           const SizedBox(width: 20),
           const Expanded(child: SizedBox.shrink()),
         ]),

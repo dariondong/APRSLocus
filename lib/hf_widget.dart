@@ -134,9 +134,13 @@ Map<String, Object?> buildHfWidgetSnapshot({
   snap['six'] = <String, Object?>{
     'title': s.hfSixMeter,
     'es': s.hfEs,
-    'esValue': six.es,
+    // ⚠ 必须过 hfQualityLabel：这里是**源数据的原始串**（'Good'/'Band Closed'…），
+    //   直接下发会在中文界面里显示英文。原先就是漏了这一步 ——
+    //   而 'Band Closed' 恰恰是 6m 最常见的取值，等于长期露英文。
+    //   （对照：逐波段表的 dayLabel/nightLabel 一直是本地化的，只有这里漏了。）
+    'esValue': hfQualityLabel(hfQualityOf(six.es), s),
     'aurora': s.hfAurora,
-    'auroraValue': six.aurora,
+    'auroraValue': hfQualityLabel(hfQualityOf(six.aurora), s),
     'f2': s.hfF2,
     'f2Value': six.f2 ? s.hfQGood : HfNow.none,
     'level': six.quality.name,

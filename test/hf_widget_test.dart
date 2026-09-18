@@ -25,7 +25,11 @@ void main() {
     String kIndex = '3',
     String geomag = 'UNSETTLD',
     String noise = 'S2-S3',
+    String muf = 'NoRpt',
     List<HfBand>? bands,
+    // VHF 条件（6m 的 Es / 极光）。默认给空 —— 此时 6m 段应显示 '--'，
+    // 而不是把「无数据」误显示成「未开通」。
+    HfVhf vhf = const HfVhf(),
   }) =>
       HfNow(
         sfi: sfi,
@@ -36,7 +40,8 @@ void main() {
         solarWind: '508.8',
         geomag: geomag,
         noise: noise,
-        muf: 'NoRpt',
+        muf: muf,
+        vhf: vhf,
         bands: bands ??
             const [
               HfBand(name: '80m-40m', day: 'Poor', night: 'Fair'),
@@ -234,6 +239,131 @@ void main() {
       seedHf(sample(sfi: '250'));
       final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
       expect(((snap['indices'] as List)[0] as Map)['color'], 0);
+    });
+  });
+
+  group('6m 波段预测', () {
+    test('Es 优先取 6m 专门项，而不是欧洲区那项', () {
+      // 源数据里同时有 'europe'（给 4m/6m 的区域值）与 'europe_6m'（6m 专门项）。
+      // 6m 必须取专门项 —— 取区域值会把 4m 的条件混进来。
+      seedHf(sample(vhf: const HfVhf(
+        eSkip: {'europe': 'Poor', 'europe_6m': 'Good', 'europe_4m': 'Fair'},
+      )));
+      expect(hfSixMeter(HfCenter.instance.now).es, 'Good');
+    });
+
+    test('没有 6m 专门项时，取各区域里**最好**的一档', () {
+      // Es 是局地现象，某区开通就说明当天有 Es 活动层。
+      // 全球平均会把「开了」抹成「关着」，反而更没用。
+      seedHf(sample(vhf: const HfVhf(
+        eSkip: {'europe': 'Band Closed', 'north_america': 'Fair'},
+      )));
+      expect(hfSixMeter(HfCenter.instance.now).es, 'Fair');
+    });
+
+    test('合成结论取三条通路里最好的一档（任一开通就值得上机）', () {
+      // Es 关着，但极光开通 → 合成应是「一般」而不是「未开通」
+      seedHf(sample(
+        kIndex: '5',
+        vhf: const HfVhf(
+          eSkip: {'europe_6m': 'Band Closed'},
+          aurora: 'Fair',
+        ),
+      ));
+      final six = hfSixMeter(HfCenter.instance.now);
+      expect(six.quality, HfQuality.fair);
+      expect(six.es, 'Band Closed');
+      expect(six.aurora, 'Fair');
+    });
+
+    test('F2 需要 MUF ≥ 50MHz；NoRpt 时按不成立处理（不猜）', () {
+      // 猜错会让人白等一晚，所以源数据没给 MUF 时宁可说「不成立」。
+      seedHf(sample(muf: 'NoRpt'));
+      expect(hfSixMeter(HfCenter.instance.now).f2, isFalse);
+
+      seedHf(sample(muf: '48'));
+      expect(hfSixMeter(HfCenter.instance.now).f2, isFalse,
+          reason: '48 < 50，不够');
+
+      seedHf(sample(muf: '52'));
+      expect(hfSixMeter(HfCenter.instance.now).f2, isTrue);
+      // F2 成立即视为「好」——它本身就是难得的机会
+      expect(hfSixMeter(HfCenter.instance.now).quality, HfQuality.good);
+    });
+
+    test('没有 VHF 数据时，6m 三项都是 -- 而不是「未开通」', () {
+      // 「无数据」与「未开通」是两回事：前者是没拿到，后者是拿到了但关闭。
+      // 混为一谈会让用户以为「今天 6m 确定没戏」，而其实是数据缺失。
+      seedHf(sample(vhf: const HfVhf()));
+      final six = hfSixMeter(HfCenter.instance.now);
+      expect(six.es, HfNow.none);
+      expect(six.aurora, HfNow.none);
+      expect(six.quality, HfQuality.unknown);
+
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      final sixSnap = snap['six'] as Map;
+      expect(sixSnap['esValue'], HfNow.none);
+      expect(sixSnap['esValue'], isNot(zh.hfQClosed));
+    });
+  });
+
+  group('本地化完整性（防未翻译文本漏进快照）', () {
+    // 回归护栏：6m 段的 Es / 极光两个值曾经**直接用源数据原始串**下发，
+    // 于是中文界面里显示英文 'Band Closed' —— 而它恰恰是 6m 最常见的取值
+    // （几乎每次打开都是它），等于长期露英文。
+    // 逐波段表的 dayLabel/nightLabel 一直是本地化的，只有这两处漏了。
+    //
+    // 这条按「整份快照」检查，而不是只盯那两个字段 —— 同一类错误
+    // （把源数据原始串当展示文案）以后可能出现在任何新字段上。
+    test('中文快照里不残留英文质量词', () {
+      seedHf(sample(
+        // 四条都凑上：Good / Fair / Poor / Band Closed
+        bands: const [
+          HfBand(name: '80m-40m', day: 'Good', night: 'Fair'),
+          HfBand(name: '30m-20m', day: 'Poor', night: 'Band Closed'),
+          HfBand(name: '17m-15m', day: 'Fair', night: 'Good'),
+          HfBand(name: '12m-10m', day: 'Poor', night: 'Poor'),
+        ],
+      ));
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      final json = jsonEncode(snap);
+      // 只看**首字母大写**的英文质量词：level 键是小写的枚举名
+      // （'good'/'fair'…，那是给 Kotlin 选 chip 用的，不是展示文案），
+      // 所以大写形式一旦出现，就说明某个字段漏了本地化。
+      for (final w in ['Good', 'Fair', 'Poor', 'Band Closed', 'NoRpt']) {
+        expect(json.contains(w), isFalse,
+            reason: '中文快照里出现了未本地化的「$w」——'
+                '检查是否有字段直接把源数据原始串当展示文案下发');
+      }
+    });
+
+    test('英文快照里这些词是**正常**的（说明上一条不是把英文一刀切）', () {
+      seedHf(sample(bands: const [
+        HfBand(name: '80m-40m', day: 'Good', night: 'Fair'),
+      ]));
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: en);
+      final json = jsonEncode(snap);
+      expect(json.contains('Good'), isTrue,
+          reason: '英文界面本来就该显示 Good/Fair/Poor');
+    });
+
+    test('6m 段的 Es / 极光值已本地化，且与源数据取值一致', () {
+      // 「Band Closed」在中文里是「未开通」（v1.6.122 改的用词）
+      // 源数据里 E-skip / 极光的取值就是 Band Closed（最常见的状态）
+      seedHf(sample(
+        bands: const [HfBand(name: '80m-40m', day: 'Good', night: 'Good')],
+        vhf: const HfVhf(
+          eSkip: {'europe_6m': 'Band Closed', 'north_america': 'Band Closed'},
+          aurora: 'Band Closed',
+        ),
+      ));
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      final six = snap['six'] as Map;
+      // → 中文必须显示「未开通」，而不是英文 'Band Closed'
+      expect(six['esValue'], zh.hfQClosed);
+      expect(six['auroraValue'], zh.hfQClosed);
+      expect(six['esValue'], isNot('Band Closed'));
+      expect(six['label'], zh.hfQClosed, reason: '合成结论也应为未开通');
     });
   });
 
