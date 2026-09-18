@@ -1,5 +1,146 @@
 # 更新日志
 
+## [1.6.128] - 2026-09-18
+
+### 🗺️ 离线地图：按区域下载瓦片，断网也能看
+
+新增「离线地图」：**所见即所得地框选一片区域 → 一次把该区域的瓦片下到本机 → 之后断网、无信号也能看这片地图**。入口在「设置 → 显示 → 离线地图」（数据设置页也有入口）。
+
+**下载**
+
+- **下载范围 = 当前视图**：不画可拖拽的矩形框，而是把屏幕上看得见的那一屏当作下载范围（带边框提示）。
+  这样就没有「框选坐标系」与「下载坐标系」两套真值，不会出现「框选范围和实际下到的范围差半屏」这种最难解释的错。
+- 可调图源与层级范围（0–19 级），实时显示**张数与估算体积**；
+- 单区域上限 **20 万张瓦片**（约 3 GB）。超限直接拒绝并提示缩小范围 —— 这不是防呆：
+  再大一次要跑几小时，中途失败的概率比成功高；
+- **断点续传**：已存在的瓦片直接跳过，任何时刻中断（含被系统杀掉）都能接着下；
+- 并发 6 张、限速 20 张/秒；命中 429/503 时按失败次数**退避**（上限 30 秒）。
+  限速是必需的：被限流之后的重试会让请求速率更高，这是个正反馈，必须从源头掐住；
+- 暂停 / 取消在**每张瓦片之间**生效，点下去立刻停，不用等几百张；
+- 同时只跑一个区域。瓦片下载的瓶颈是共享的图源与带宽，并行下多个区域只会每个都变慢，
+  还会让「暂停」的语义变得含糊。
+
+**离线显示的四级降级**
+
+在线瓦片与离线瓦片走**同一份**图源定义与 URL 构造函数（`lib/map_math.dart`）。两处各写一份迟早会
+漂移成「下载得到的和显示要的不是同一张图」——这是「下好了却离线看不到」最常见的成因。渲染时按
+以下顺序取图：
+
+1. **缓存**（下过离线区域，或之前浏览过）→ 断网也能看；
+2. **在线**（顺带写缓存）；
+3. **祖先瓦片放大**：只下到 z16、现场缩到 z17 时，用最近的祖先瓦片**按象限裁切**放大顶替。
+  裁切是必须的：整张祖先图直接铺进本格会看到**邻居**的地图，位置全错，比空白更糟；
+4. **其它同坐标系图源的缓存** → 再不行就透出内置自绘底图，地图仍可看可点。
+
+在线降级候选（当前图源 → Carto → OSM）**只接受同坐标系的图源**：拿 WGS-84 的图去填 GCJ-02 的瓦片
+会整整偏出 500 米，比留白更容易把人带错路。
+
+**几个不写就会出事的地方**
+
+- **缓存键含图源**。同一组 z/x/y 在不同图源下是不同内容的图；共用一份缓存会让「切换图源」静默显示
+  上一个图源的瓦片；
+- **命中也要认字节**：只接受已知图片魔数（PNG/JPEG/GIF/WebP/BMP），挡掉 status 200 的 HTML/JSON
+  错误页；小于 300 B 的响应按「占位图」判失败不入库 —— 有的图源对不存在的瓦片返回一张很小的
+  全透明 PNG，存下来会让这块区域**在线时也一直空白**，比不缓存更坏；
+- **国内图源是 GCJ-02 瓦片**：下载范围必须先把 WGS-84 转成 GCJ-02 再算瓦片编号，否则整片偏移 500 米以上；
+- **元数据与瓦片分家**：区域记录（KB 级）存偏好设置，瓦片（几十 MB 的二进制）只存文件系统。
+  瓦片塞进偏好设置一开始能用，攒到几百 MB 时会以「读设置越来越慢」的形式表现出来，最后写不进去直接丢新记录；
+- **进度落盘要节流**（2 秒 / 3 秒一次）。一张瓦片写一次等于在一次下载里做几万次磁盘写 + JSON 编码；
+- 写盘走**临时文件 + 改名**，下载途中断电不会留下半张能被解码一半的坏图；
+- 删除某个区域时**逐张删**它范围内的瓦片，不按「图源/层级」整目录删 —— 后者会顺手删掉邻居区域
+  已下载的瓦片，属于「删一个区域、坏另一个区域」的隐形破坏。
+
+**开关**
+
+- **浏览时缓存瓦片**（默认开）：关掉后浏览完全不落盘；
+- **仅离线模式**（默认关）：只用已缓存/已下载的瓦片，一个网络请求都不发（野外省流量），界面上会明确提示。
+- 占用统计与「清空缓存」；区域可「删除记录但保留瓦片」或「连瓦片一起删」。
+- **Web 版不提供离线下载**：浏览器没有稳定的应用可写目录，整条链路安全降级为不可用（入口隐藏、
+  读取一律未命中回落到在线瓦片），而不是抛错让地图整块白屏。
+- 区域记录随「设置」分组进备份；瓦片本体不随备份走（几十 MB 级），换机后记录还在，点「继续」即可重新下。
+
+**顺带修复**
+
+6m（六米波）在中文界面里露英文：短波面板的三条通路与桌面组件下发的是图源**原始串**
+（`Band Closed` / `Good`…），漏了本地化这一步 —— 而 `Band Closed` 恰是 6m 最常见的取值，
+等于长期露英文。现已统一过 `hfQualityLabel`。同时：**三条通路全为「未开通」时不再连列三行同一个词**
+（开通是例外、不开通是常态），只在某条开通时才展开细节。
+
+---
+
+**Offline maps: download tiles by region and keep them when the network is gone**
+
+A new "Offline map" screen (Settings → Display → Offline map; there is also an entry in Data settings) lets you
+**download the tiles of an area once and keep viewing that map with no network at all**.
+
+**Downloading**
+
+- **The download area *is* the current view**: no draggable rectangle — whatever is visible on screen is what
+  gets downloaded (with a border to say so). That removes the second source of truth for coordinates, and with it
+  the "the box I drew and the area that was downloaded are half a screen apart" class of bug.
+- Choose the tile source and the zoom range (0–19) with a live **tile count and size estimate**.
+- A single region is capped at **200,000 tiles** (~3 GB). Over that it is refused with a hint to shrink the area:
+  such a run takes hours, and failing partway is likelier than finishing.
+- **Resumable**: tiles that already exist are skipped, so an interruption at any point (including the process
+  being killed) can be resumed.
+- 6 concurrent tiles, 20 tiles/second, with **backoff** on 429/503 (up to 30 s). The rate limit matters: retries
+  after throttling only raise the request rate — a positive feedback loop that has to be capped at the source.
+- Pause/cancel take effect **between tiles**, so they stop immediately instead of after a few hundred more.
+- One region at a time. The bottleneck is the shared tile source and bandwidth, so parallel regions would only
+  make each of them slower and blur what "pause" means.
+
+**Four-step fallback when rendering**
+
+Online and offline tiles share **one** tile-source definition and URL builder (`lib/map_math.dart`). Two copies
+would eventually drift into "what was downloaded is not what is displayed", the most common cause of
+"it downloaded but I still can't see it offline". Tiles are resolved as: **cache** (downloaded region, or seen
+before) → **online** (also writing to cache) → **upscaled ancestor tile** → **cache of another source with the
+same datum** → the built-in vector basemap.
+
+The ancestor step is what makes "downloaded up to z16" usable while viewing z17: the nearest ancestor is
+**cropped by quadrant** and upscaled. Cropping is not optional — pasting the whole ancestor into the cell would
+show the *neighbour's* map, which is far worse than blank.
+
+Online fallbacks (current source → Carto → OSM) only accept sources with the **same datum**: filling a GCJ-02
+tile with a WGS-84 image shifts it by 500 m, which misleads more than a blank tile does.
+
+**Details that break if done differently**
+
+- The cache key **includes the source** (same z/x/y is a different image per source).
+- A cache hit still validates the bytes: only known image magic numbers are accepted (PNG/JPEG/GIF/WebP/BMP),
+  which rejects `200 OK` HTML/JSON error pages; responses under 300 B count as placeholder images and are not
+  stored — some sources answer missing tiles with a tiny fully transparent PNG, and storing it would keep that
+  area **blank even online**, worse than not caching at all.
+- Chinese sources serve **GCJ-02** tiles, so the WGS-84 area is converted before tile numbering; otherwise the
+  whole region is off by more than 500 m.
+- **Metadata and tiles are kept apart**: region records (KB) live in preferences, tiles (tens of MB of binary)
+  only on the filesystem. Tiles in preferences appear to work at first, then surface as "settings get slower"
+  once a few hundred MB have accumulated, and finally fail to save, silently dropping new records.
+- Progress saving is **throttled** (every 2–3 s); one write per tile means tens of thousands of disk writes and
+  JSON encodings per download.
+- Writes go through a **temp file + rename**, so a power loss mid-download cannot leave a half-decodable image.
+- Deleting a region deletes **its own tiles one by one**, never the whole `source/zoom` directory, which would
+  silently damage neighbouring regions.
+
+**Switches**
+
+- *Cache tiles while browsing* (on by default); when off, browsing writes nothing to disk.
+- *Offline only* (off by default): use cached/downloaded tiles exclusively and send no requests at all
+  (saves data in the field), clearly indicated in the UI.
+- Usage statistics, "clear cache", and per-region *remove record but keep tiles* / *delete tiles too*.
+- **No offline download on Web**: browsers have no stable writable app directory, so the whole chain degrades
+  safely (entry hidden, lookups miss and fall back to online) instead of throwing and blanking the map.
+- Region records travel with the *settings* backup group; the tiles themselves do not (tens of MB), so after
+  switching devices the records are still there and "Resume" re-downloads them.
+
+**Also fixed**
+
+6 m band text leaked English into non-English UIs: the HF panel's three paths and the desktop widget shipped the
+**raw** source strings (`Band Closed`, `Good`, …) without localisation — and `Band Closed` is by far the most
+common 6 m value, so it leaked permanently. They now go through `hfQualityLabel`. In addition, when all three
+paths are closed they are no longer listed as three rows of the same word (closed is the norm, open the
+exception); the details expand only when something is open.
+
 ## [1.6.127] - 2026-09-18
 
 ### 🎛️ 更高自定义：更多令牌、界面松紧与字体、分页签强调色、背景对齐缩放
