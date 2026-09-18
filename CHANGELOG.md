@@ -1,5 +1,124 @@
 # 更新日志
 
+## [1.6.129] - 2026-09-18
+
+### 🎛️ 短波桌面组件重做：从「八个药丸」改为「条件色带」
+
+短波组件的逐波段表重新设计。上一版（淡色 tonal chip）的问题集中在一处：**8 个同形状、
+同大小的淡色药丸**——而「一般」一行内出现 3 次、「差」4 次，重复的图形不承载额外信息，
+只堆噪声；加上 4 行完全同构、没有层次，整块看起来像把一张表直接倒上去，
+波段名与第一个色块之间还横着约 40dp 空档，横向扫视要跨很远。
+
+**新结构：每行一条「条件色带」**
+
+- 色带**横贯整个日/夜列**（行的宽度就是列宽）——中段空档消失，扫视距离降到最短；
+- 颜色集中到色带**左端一道 2.5dp 色标**：四行扫下来是一条竖线，像仪表的指示列，
+  而不是 8 个孤立色块；
+- 档位文字就在色带内**左端**（紧挨色标），颜色与它说明的对象在同一处，不用跨空档去对；
+- 「日间 / 夜间」列头与色带左边缘**同一条竖线**（靠等分列实现，不靠调 margin）。
+
+**6m 段一起收拾**
+
+原来 6m 在「没有开通」时整格隐藏。改成**常驻**：没有开通时显示一个灰色的 `--`，
+并在前面补上「6m」这个说明文字。理由有两条：
+
+1. 「6m 没开通」本身就是**常态且有信息量**（开通是例外），隐藏等于把这个信息也藏了；
+2. 一个时有时无的格子在组件里会造成**宽度跳变**，反而更显眼。
+
+格子同时从 44dp 放宽到 46dp —— 原来容不下最长的档位词（印尼语的 `Tertutup` 约 38dp），
+会被省略号截掉。
+
+**实现：色带是一张 layer-list，每格仍只是一个 TextView**
+
+色带 = 淡色圆角底（14%）+ 左端实色竖标，两层合成一张 `layer-list` drawable
+（`aw_track_{good,fair,poor,closed}`）。这样每格仍然只是**一个 TextView**，
+靠 `setBackgroundResource` 换色带、`setTextColor` 换字色 —— 两个方法在
+`View`/`TextView` 上都确实存在。
+
+若改成「淡底容器 + 一个 2.5dp 的子 View」，就要多一个控件、多一个 id、多一行
+`setBackgroundResource`，而 RemoteViews 不允许原生 `<View>`（色标只能用
+TextView/ImageView 冒充）——每个都是**只在运行期才爆**的地方。
+
+夜间档的淡底从 14% 提到 22%：深底上 14% 几乎看不见。这一条现在是**生成时自检**：
+夜间不透明度必须大于白天，写反了会直接报错，而不是等你到夜间模式才发现色带隐形。
+
+**顺带修掉一个只在夜间第一帧出现的问题**
+
+`drawable-night/aw_bg_white.xml` 此前**不存在**（只有浅色版）。组件在夜间模式的
+第一帧（`initialLayout`）会退落到默认主题底色，约 200ms 后才被推送的渐变盖住。
+影响很小，但既已发现就补上，免得以后有人把它当「night 目录里都有一份」的前提去用。
+
+**预览工具：这一档的高度数字此前并不对应真机**
+
+短波组件按真布局逐项累加是 **162dp**，而预览工具一路报的是 **126.3dp** —— 它按自己
+理想的尺寸算，既没算顶/底内边距，也把色块高度取成了 14dp（真布局是 13+3+3=19dp）。
+也就是说这一档的「余 3.7dp」是个**看上去很安全、其实无从对应**的数字。
+
+现在改为按真布局的几何累加，并把判据换成**相对基线**：内容不得高于已发布版本
+（162.00dp）。因为 4×2 表类组件实际能拿到多少高度取决于启动器，拿固定值当阈值只会
+产生误报，而误报会让人干脆放宽规则。新布局实测 **158.67dp**，比线上版本还矮 3.33dp。
+
+---
+
+**The HF desktop widget was rebuilt: eight pills became condition tracks.**
+
+The previous version (pale tonal chips) had one dominant problem: **eight pills of identical
+shape and size** — with 「一般」 appearing three times and 「差」 four times, the repeated shapes
+carried no extra information, only noise. Combined with four identical rows and no hierarchy,
+the whole thing read as a table dumped onto the widget, and there was a ~40dp gap between a band
+name and its first chip, so scanning meant travelling a long way sideways.
+
+**New structure: one condition track per row**
+
+- The track spans **the full day/night column** (row width = column width), so the mid-row gap is
+  gone and the scan distance is minimal.
+- Colour is concentrated into a **2.5dp bar at the track's left edge**: across four rows that reads
+  as a single vertical indicator line rather than eight isolated blocks.
+- The condition text sits at the **left inside the track**, right next to the bar, so the colour and
+  the thing it describes are in the same place.
+- The day/night column headers share **the same x** as the track's left edge (via equal-weight
+  columns, not by tuning margins).
+
+**The 6m cell was reworked too**
+
+It used to hide entirely when 6m was closed. It is now **always present**, showing a grey `--` when
+closed, with a 「6m」 label in front. Two reasons: "6m is closed" is itself the common case *and*
+informative (being open is the exception), so hiding it hides information; and a cell that comes and
+goes makes the row width jump, which draws more attention, not less. The cell also grew from 44dp to
+46dp — 44dp could not hold the longest condition word (Indonesian `Tertutup`, ~38dp) and truncated it.
+
+**Implementation: the track is one layer-list; each cell is still a single TextView**
+
+A track is a pale 14% rounded fill plus a solid bar at the left edge, combined into one
+`layer-list` drawable (`aw_track_{good,fair,poor,closed}`). Each cell therefore remains **one
+TextView**, recoloured with `setBackgroundResource` and `setTextColor` — both of which really do
+exist on `View`/`TextView`. The alternative (a pale container plus a 2.5dp child View) would need
+another control, another id and another call, and RemoteViews forbids a native `<View>` (the bar
+could only be a TextView/ImageView stand-in) — each of those is a **runtime-only** failure mode.
+
+The night variant's fill goes from 14% to 22%, since 14% is nearly invisible on the dark surface.
+That is now a **generation-time check**: night opacity must exceed the day value, so getting it
+backwards fails the build instead of only showing up when the user switches to dark mode.
+
+**A bug that only appeared in night mode's first frame**
+
+`drawable-night/aw_bg_white.xml` did not exist (only the light version did). In night mode the
+widget's first frame (`initialLayout`) fell back to the default theme colour for ~200ms until the
+pushed gradient replaced it. The impact is small, but since it was found it is fixed, rather than
+leaving a "the night folder has a copy of everything" assumption for someone else to trip over.
+
+**The preview tool's height figure for this size never matched the device**
+
+Accumulating the real layout gives **162dp** for the HF widget, while the preview tool kept
+reporting **126.3dp** — it summed its own ideal sizes, ignoring the top/bottom padding and taking
+the chip height as 14dp (the real layout is 13+3+3=19dp). So this size's "3.7dp to spare" was a
+number that **looked safe but corresponded to nothing**. The tool now accumulates the real layout's
+geometry and judges against a **relative baseline** instead: the content may not exceed the
+previously released version (162.00dp). How much height a 4×2 table widget actually receives
+depends on the launcher, so a fixed threshold only produces false alarms — and false alarms are
+what make people stop trusting the check. The new layout measures **158.67dp**, i.e. 3.33dp shorter
+than the released one.
+
 ## [1.6.128] - 2026-09-18
 
 ### 🗺️ 离线地图：按区域下载瓦片，断网也能看
