@@ -6436,4 +6436,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themePresetAmber => 'Amber';
+
+  @override
+  String get sysRecentLabel => 'Last heard';
 }

@@ -63,6 +63,18 @@ List<SysLinkTile> sysLinkTiles(AppState st, AppLocalizations s) {
   ];
 }
 
+/// 「多久前」的人话。用仓库既有的 secondsAgo / minutesAgo / hoursAgo / daysAgo。
+///
+/// 阈值按常规习惯分档（<60s / <60min / <24h / 其余按天）—— 与
+/// `packets_page.dart` 里既有的那套**同一套分档**，免得同一个时间在两个
+/// 界面上说法不同（「45分前」与「0小时前」并存是最容易被截图吐槽的）。
+String _agoText(Duration d, AppLocalizations s) {
+  if (d.inSeconds < 60) return s.secondsAgo(d.inSeconds);
+  if (d.inMinutes < 60) return s.minutesAgo(d.inMinutes);
+  if (d.inHours < 24) return s.hoursAgo(d.inHours);
+  return s.daysAgo(d.inDays);
+}
+
 /// 组装系统状态快照（纯函数，不碰平台通道，便于单测）
 Map<String, Object?> buildSysWidgetSnapshot({
   required AppState st,
@@ -92,8 +104,30 @@ Map<String, Object?> buildSysWidgetSnapshot({
     // 组件侧再判一次就会两处漂移（那一类 bug 正是状态层刻意结构化的原因）。
     'beacon': s.sysBeacon(st.nextBeaconIn),
     'stations': s.sysStations('${st.stations.length}'),
+    // ── 最近收到的台站 ──
+    //
+    // 这一行回答的是「**还在收吗**」，而它比「收 N」更直接：计数只说明
+    // 「一共收过多少」，而「最近收到谁、多久前」说明「此刻还在不在收」——
+    // 卡住时计数是不动的，用户看计数看不出来。
+    //
+    // 取 lastHeard 最新的那条（线性扫一遍即可：台站列表本身有上限，
+    // 而这里在快照构造路径上，不值得为它排序整个列表）。
+    'recentLabel': s.sysRecentLabel,
+    'recentCall': '',
+    'recentAgo': '',
     'emptyLabel': s.sysEmpty,
   };
+  final list = st.stations;
+  if (list.isNotEmpty) {
+    var newest = list.first;
+    for (final each in list) {
+      if (each.lastHeard.isAfter(newest.lastHeard)) newest = each;
+    }
+    snap['recentCall'] = newest.call;
+    snap['recentAgo'] = _agoText(
+      (now ?? DateTime.now()).difference(newest.lastHeard), s,
+    );
+  }
   return snap;
 }
 

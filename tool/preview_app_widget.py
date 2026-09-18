@@ -113,6 +113,11 @@ WEATHER = {
         ("good", "nightlight",
          "夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信",
          "夜间 D 层消失：80/40m 吸收减小…"),
+        # 第 3 条（拆开主区/指标后腾出的位置）：建议是按
+        # 「安全警示 > 注意 > 通联机会 > 操作提示」排过序的，只给 2 条会把
+        # 后面整类丢掉 —— 例如只剩天气类，看不到传播类。
+        ("tip", "public", "地磁较活跃：短波高纬度路径不如平时稳定，建议留出更多呼叫时间",
+         "地磁较活跃：短波高纬度路径不如平时稳定…"),
     ],
     "tips_title": "业余无线电建议",
     "app_name": "APRSlocus",
@@ -352,14 +357,16 @@ def header(c, x, y, w, s, *, narrow=False, glass=False):
 
 
 def hero(c, x, y, w, s, *, temp=30, icon=25):
-    """天气主区：图标 + 大温度 + 天气现象 / 高低温。返回块的底边 y。"""
+    """天气主区：图标 + 大温度（左）…… 现象 / 高低温（右）。返回底边 y。"""
     c.icon(s["weather_icon"], x, y, icon, big=True)
     tx = x + icon + 5
     th = line_h(temp)
     c.text(tx, y + th / 2 - 1, s["temp"], temp, bold=True, anchor="lm")
-    tw = c.measure(s["temp"], temp, bold=True)
-    c.text(tx + tw + 4, y + 1, s["cond"], 9.5, alpha=0.90, bold=True)
-    c.text(tx + tw + 4, y + line_h(9.5) + 1, s["range"], 9, alpha=0.74)
+    # 现象/高低温右对齐到行尾（与生成器 hero() 一致）：独占一行后若还贴着
+    # 温度站，右侧会空掉一半 —— 面板是窄而高的一列，组件是宽而扁的一条。
+    rx = x + w
+    c.text(rx, y + 1, s["cond"], 9.5, alpha=0.90, bold=True, anchor="ra")
+    c.text(rx, y + line_h(9.5) + 1, s["range"], 9, alpha=0.74, anchor="ra")
     return y + max(icon, th)
 
 
@@ -420,18 +427,18 @@ def render_tile(w=296, h=140, kind="clear", dark=False):
     y = header(c, x, 8, iw, WEATHER)
     c.hairline(x, y, iw)
     y += 6
-    y_hero = hero(c, x, y, iw, WEATHER, temp=30, icon=25)
-    # 指标 **3 格单行**（原来 4 格两行）。
-    # 主档只有 140dp，却要装「顶栏两行 + 天气主区 + 指标 + 2 条建议」；
-    # 4 格要两行，扣掉圆角净空后放不下最后一行文字。少给一格、省下 14dp，
-    # 比把最后一行切一半好。与竖长档（2×4，也是 3 项指标）保持一致。
-    rx = x + iw * 0.42
-    rw = x + iw - rx
+    # 天气主区**独占一行**，指标另起一行（原来是并排 42%/58%）——
+    # 并排时 30sp 的大温度只剩约 110dp、湿度/风力/气压挤在一行，而卡片上半
+    # 其余地方全空，就是「上面挤、下面空」。
+    y = hero(c, x, y, iw, WEATHER, temp=30, icon=25)
+    y += 6
+    # 指标 **3 格单行**，占满整行宽度
+    rw = iw / 3
     y_kv = y
     for i, (lab, val) in enumerate(WEATHER["metrics"][:3]):
-        yy = kv(c, rx + i * (rw / 3), y + 1, rw / 3 - 8, lab, val)
+        yy = kv(c, x + i * rw, y + 1, rw - 10, lab, val)
         y_kv = max(y_kv, yy)
-    y = max(y_hero, y_kv)
+    y = y_kv
     c.hairline(x, y + 1, iw)
     y += 7
     # 条建议各 **1 行**：140dp 装不下「2 行 + 1 行」的组合（实测超 17dp）。
@@ -439,7 +446,8 @@ def render_tile(w=296, h=140, kind="clear", dark=False):
     # 而不是从句子中间被省略号切掉。
     # 用**单行**建议（级别与正文同行）：主档 140dp 放不下「级别一行 +
     # 正文一行」×2 条（实测每条要 28.6dp）。正文仍用 Dart 侧切好的完整短句。
-    for level, icon, _text, short in WEATHER["tips"]:
+    # 主档真布局有 3 条建议格（ID_TILE.tipRows 三项）
+    for level, icon, _text, short in WEATHER["tips"][:3]:
         y = tip_inline(c, x, y, iw, level, icon, short)
     return c.out_clipped(20), y
 
@@ -470,7 +478,9 @@ def render_tall(w=150, h=300, kind="clear", dark=False):
                       count=str(len(WEATHER["tips"])))
     # 行距 4→2：2×4 扣掉圆角净空后只剩 290dp，原来 294.3dp 超出 4.3dp。
     # 建议行本来就靠「圆点 + 级别」分隔，行距缩 2dp 不影响可读性。
-    for level, icon, text, short in WEATHER["tips"]:
+    # 竖长档（2×4）的真布局只有 2 条建议格（ID_TALL.tipRows 两项），
+    # 所以这里只画前 2 条 —— 演示数据的长度不控制档位内容。
+    for level, icon, text, short in WEATHER["tips"][:2]:
         y = tip(c, x, y, iw, level, icon, text, lines=2) + 2
     return c.out_clipped(20), y
 
@@ -1008,6 +1018,12 @@ HF_M1_NOW_W = 48         # 右端档位块宽
 HF_M1_NOW_H = 15
 # 演示用的「现在」时段。真机上由原生按本机时钟判断（见 HfWidgetProvider）。
 HF_M1_NOW_IS_DAY = False
+# 行距（与生成器的 margin_top 一致：波段行 3dp）
+HF_M1_ROW_GAP = 3
+# 演示用的通联提示（真机上由 Dart 的 hfTips 给，与面板同源）
+HF_M1_TIP_LEVEL = "操作提示"
+HF_M1_TIP_COLOR = "#2563EB"
+HF_M1_TIP_TEXT = "地磁较活跃：短波高纬度路径不如平时稳定，建议留出更多呼叫时间"
 
 
 def _hf_m1_geometry():
@@ -1017,7 +1033,9 @@ def _hf_m1_geometry():
     y += 4 + 1                                # 细线 box
     for _ in range(4):
         # 行高 = max(波段名行盒, 段 13, 档位块 15)
-        y += 4 + max(line_h(9, True), HF_M1_SEG_H, HF_M1_NOW_H)
+        y += HF_M1_ROW_GAP + max(line_h(9, True), HF_M1_SEG_H, HF_M1_NOW_H)
+    # 通联提示行：细线 box(4+1) + 行(margin 4 + max(圆点 6, 级别图 11, 行盒))
+    y += 4 + 1 + 4 + max(6, 11, line_h(9))
     return y + 9                              # pad_bottom
 
 
@@ -1108,7 +1126,25 @@ def render_hf_M1(w=296, h=140, dark=False, now_is_day=None):
                 y + (rh - HF_M1_NOW_H) / 2)
         c.text(nx + HF_M1_NOW_W / 2, y + rh / 2, Q_LABEL[q], 8.5, bold=True,
                color=QCOL[q], anchor="mm")
-        y += rh
+        y += rh + HF_M1_ROW_GAP
+    # ⑤ 通联提示（一行）：细线 + [圆点][级别图][级别] 一句话
+    y += 4 - HF_M1_ROW_GAP          # 行距已在循环里加过，这里补到 4dp
+    c.d.rectangle([round(px * SCALE), round(y * SCALE),
+                   round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
+                  fill=rgba(LINE, 1.0))
+    y += 1 + 4
+    ty = y + max(6, 11, line_h(9)) / 2
+    c.paste(c.circle(6, HF_M1_TIP_COLOR), px, ty - 3)
+    c.icon("rss_feed", px + 5, ty - 5.5, 11, color=HF_M1_TIP_COLOR)
+    lx = px + 5 + 11 + 4
+    c.text(lx, ty, HF_M1_TIP_LEVEL, 8.5, bold=True, color=HF_M1_TIP_COLOR,
+           anchor="lm", spacing=0.04)
+    tx = lx + c.measure(HF_M1_TIP_LEVEL, 8.5, True) + 5
+    avail = px + pw - tx
+    lines = wrap(c, HF_M1_TIP_TEXT, 9, avail, 1)
+    c.text(tx, ty, lines[0] if lines else HF_M1_TIP_TEXT, 9, alpha=0.93,
+           color=INK, anchor="lm")
+    y += max(6, 11, line_h(9))
     return c.out_clipped(20), _hf_m1_geometry()
 
 
@@ -1250,6 +1286,7 @@ SYS_DEMO = {
     "links": [("APRS-IS", "已连接", True), ("TNC", "未启用", False),
               ("音频", "连接中", None), ("PKWDWPL", "未启用", False)],
     "rx": "收 1 284", "tx": "发 37", "beacon": "信标 45s", "stations": "台站 213",
+    "recent_label": "最近收到", "recent_call": "BG7LZQ-7", "recent_ago": "45秒前",
 }
 
 
@@ -1281,28 +1318,28 @@ def render_sys(w=296, h=140, dark=False):
         x += c.measure("·", 9) + 6
         c.text(x, base, txt, 9.5, color=SLATE, anchor="lm")
         x += c.measure(txt, 9.5) + 6
-    y += line_h(11, True) + 4
+    y += line_h(11, True) + 3
     c.d.rectangle([round(px * SCALE), round(y * SCALE),
                    round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
                   fill=rgba(LINE, 1.0))
-    y += 5
+    y += 4
     # 链路 2×2
     CW = (pw - 10) / 2
     for i, (name, state, up) in enumerate(SYS_DEMO["links"]):
         r, k = divmod(i, 2)
         cx = px + k * (CW + 10)
-        cy = y + r * (6 + line_h(9.5))
+        cy = y + r * (5 + line_h(9.5))
         col = OK if up is True else (PENDING if up is None else OFF)
         c.paste(c.circle(7, col), cx, cy + line_h(9.5) / 2 - 3.5)
         c.text(cx + 13, cy + line_h(9.5) / 2, name, 9.5, bold=True, color=INK,
                anchor="lm")
         c.text(cx + 13 + c.measure(name, 9.5, bold=True) + 5,
                cy + line_h(9.5) / 2, state, 9, color=SLATE, anchor="lm")
-    y += 2 * (6 + line_h(9.5)) + 1
+    y += 2 * (5 + line_h(9.5)) + 1
     c.d.rectangle([round(px * SCALE), round(y * SCALE),
                    round((px + pw) * SCALE), round(y * SCALE) + SCALE - 1],
                   fill=rgba(LINE, 1.0))
-    y += 5
+    y += 4
     # 计数行
     base = y + line_h(9.5) / 2
     c.text(px, base, SYS_DEMO["rx"], 9.5, color=SLATE, anchor="lm")
@@ -1312,7 +1349,18 @@ def render_sys(w=296, h=140, dark=False):
     bx = px + pw - c.measure(SYS_DEMO["stations"], 9.5) - 12 - \
         c.measure(SYS_DEMO["beacon"], 9.5)
     c.text(bx, base, SYS_DEMO["beacon"], 9.5, color=SLATE, anchor="lm")
-    return c.out_clipped(20), y + line_h(9.5)
+    y += line_h(9.5)
+    # 最近收到的台站（左：标签 + 呼号；右：多久前）
+    y += 4
+    rbase = y + line_h(9.5) / 2
+    c.text(px, rbase, SYS_DEMO["recent_label"], 8.5, color=SLATE, anchor="lm")
+    rl = px + c.measure(SYS_DEMO["recent_label"], 8.5) + 5
+    c.text(rl, rbase, SYS_DEMO["recent_call"], 9.5, bold=True, color=INK,
+           anchor="lm")
+    c.text(px + pw, rbase, SYS_DEMO["recent_ago"], 8.5, color=SLATE,
+           anchor="rm")
+    y += line_h(9.5)
+    return c.out_clipped(20), y
 
 def main():
     ap = argparse.ArgumentParser()
@@ -1348,30 +1396,31 @@ def main():
     # 用户看到的「溢出」就是这么来的。
     CORNER_CLEARANCE = 10.0
 
-    # 短波组件的纵向基线 = **上一个已发布版本**的真布局内容高度。
-    # v1.6.128（两列文字）162.00dp → v1.6.129（F2 条件色带）158.67dp。
-    # 它不随启动器变化，所以拿它当阈值是可判定的；而「能不能塞进 4×2」取决于
-    # 启动器给多少高度，本地无从判定。改布局后这个数要跟着更新为新一版的实测值。
-    HF_BASELINE = 158.67
+    # ── 4×2 的判据：内容预算，而不是「可用高度 130dp」 ──
+    #
+    # 130dp 是「4 格 × 74 − 16 − 圆角净空」的**假设值**。把它当所有 4×2 组件的
+    # 硬阈值会产生误报，而误报会让人干脆放宽规则（那才是真的没人看这个数字了）。
+    #
+    # 证据：已发布的短波组件真布局是 **135dp**（v1.6.130），而用户反馈它
+    # 「下面有点空」—— 若实际可用只有 130dp，135dp 的内容早该被裁掉、而不是
+    # 显得空。所以真实可用高度 **> 135dp**（当初做短波时按 162dp 估过）。
+    #
+    # 因此 4×2 统一按**内容预算 160dp** 判（已有证据的上界，用来拦住明显过头的
+    # 排布）；每个档位都打印实际用量，便于对照调整。
+    TILE4x2_BUDGET = 160.0
 
     tiles, overflows = [], []
     print(f"内容高度 vs 卡片可用高度（已扣掉圆角净空 {CORNER_CLEARANCE:.0f}dp）：")
     for label, fn, w_dp, h_dp, centered in specs:
         img, used = fn()
-        if label.startswith("短波"):
-            # 短波组件是一条**表**（4 行 × 2 列 + 两层表头），按 130dp 这种固定
-            # 可用高度判它一定「放不下」—— 而 4×2 表类组件实际能拿到多少高度
-            # 取决于启动器，拿固定值当阈值只会产生**误报**，误报会让人干脆放宽
-            # 规则（那才是真的没人看这个数字了）。所以这一档改判**相对基线**：
-            # 内容不得高于已发布版本（HF_BASELINE）。这条是可行动的 —— 它拦的
-            # 正是「加了个表头/加了行高，真机上最后一行被裁掉」。
-            over = used - HF_BASELINE
-            mark = "✓" if over <= 0.05 else "✗"
-            print(f"  {mark} {label:26} 真布局 {used:6.2f}dp / 基线（已发布版）"
-                  f"{HF_BASELINE:.2f}dp（差 {used - HF_BASELINE:+.2f}dp）")
-            if over > 0.05:
-                overflows.append(
-                    f"{label} 比已发布版本高 {over:.2f}dp（真机会多裁掉这些）")
+        if "4×2" in label:
+            # 见 TILE4x2_BUDGET：4×2 只能按内容预算判（可用高度取决于启动器）。
+            over = used - TILE4x2_BUDGET
+            mark = "✓" if over <= 0 else "✗"
+            print(f"  {mark} {label:30} 内容 {used:6.2f}dp / 4×2 预算 "
+                  f"{TILE4x2_BUDGET:.0f}dp（余 {TILE4x2_BUDGET - used:+.2f}dp）")
+            if over > 0:
+                overflows.append(f"{label} 超出 4×2 内容预算 {over:.2f}dp")
             tiles.append((label, img))
             continue
         usable = h_dp if centered else h_dp - CORNER_CLEARANCE

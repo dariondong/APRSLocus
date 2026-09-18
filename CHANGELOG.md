@@ -1,5 +1,108 @@
 # 更新日志
 
+## [1.6.131] - 2026-09-18
+
+### 🧩 三块桌面组件都不再「下面空空的」；天气主区不再挤
+
+三块组件各自补上一行真正有用的信息，顺带把天气主区「上挤下空」的成因修掉。
+
+**① 短波组件：底部加「通联提示」**
+
+读完「哪个波段好」之后的下一步是「那我该干什么」，所以表下加一行提示：
+圆点 + 级别图标 + 级别 + 一句话。文案**复用 `hfTips()`**（与 App 内面板的
+「业余无线电建议」同一个来源）—— 组件上一眼看到的那句话，点进 App 也找得到；
+两处各写一份文案，迟早会出现「组件说 A、面板说 B」。
+
+取**排序后的第一条**（`hfTips` 内部已按「安全警示 > 注意 > 通联机会 > 操作提示」
+排好）：4×2 只放得下一行，而再挤就要从波段表里拿地方，而波段表是这个组件的主语。
+
+颜色用**基准色**而不是给天气组件用的提亮色 —— 提亮 35% 是「压在彩色渐变上」的
+补偿，本组件是白底，提亮色会淡到看不清。此刻没有值得说的时候**整行收起**。
+
+**② 天气组件：修「上部分挤、下部分空」**
+
+根因是天气主区与 3 格指标**并排**：主区只拿到约一半宽，而 `hero()` 内部本来就是
+按「占满整行」设计的（温度 + 弹性空隙 + 靠右的天气现象/高低温）—— 被压到一半宽
+之后，现象与高低温紧贴在温度右边，右半边又竖着三格指标，整块看上去就是「上面挤」。
+
+改成**主区独占一行、指标单独一行**后：温度与现象分列两端，指标三格摊平到
+整行宽度，下半部分也不再空。代价是多花约 17.5dp，从几处 6dp 间隔里收回，
+实测总高 148dp（预算 160dp）。
+
+**③ 系统状态组件：底部加「最近收到」**
+
+原来底部只有「收 N / 发 N / 信标 / 台站」这排计数，下面空一截。补的一行是
+「最近收到 <呼号> …… 多久前」。
+
+为什么是这一行而不是再堆一个计数：**它比「收 N」更直接地回答「还在收吗」**——
+计数只说明「一共收过多少」，链路卡住时计数是不动的，用户从计数上看不出异常；
+而「最近收到谁、多久前」说明此刻还在不在收。没有台站时**整行收起**，
+不留一个「最近收到 · 」的空壳（空壳会让人以为组件坏了）。
+
+「多久前」复用仓库既有的 `secondsAgo / minutesAgo / hoursAgo / daysAgo`，
+**与 `packets_page.dart` 同一套分档** —— 同一个时间在两个界面上说法不同
+（「45分前」与「0小时前」并存）是最容易被截图吐槽的。
+
+**共同项**
+
+- 「现在」时段仍由原生按本机时钟判断（阈值随快照下发），不受组件 30 分钟
+  自刷新周期的限制；
+- 圆点与级别图标都是 ImageView + `setColorFilter` 染色 —— 该方法**只存在于
+  ImageView**（v1.6.114 的线上事故就是把 TextView 当圆点用）；
+- 三块组件的内容高实测：天气 148dp、短波 153dp、系统状态 129dp，均在 160dp 预算内。
+
+---
+
+**All three desktop widgets now put something useful in the space they were wasting, and the weather widget's cramped top half is fixed.**
+
+**① HF widget: a propagation tip under the band table**
+
+After "which band is good", the next question is "so what do I do" — hence one line with a dot,
+a level icon, the level, and a sentence. The text **reuses `hfTips()`**, the same source as the
+in-app panel's "amateur radio advice", so the line you see on the widget is the same one you can
+find inside the app. Two copies of that copy would eventually drift into "the widget says A, the
+panel says B". The **first tip after sorting** is used (`hfTips` already orders them
+safety warning > caution > opportunity > operating note): a 4×2 fits one line, and squeezing in more
+would take space from the band table, which is this widget's subject.
+
+Colours use the **base** values rather than the lightened ones used by the weather widget — that
++35% lightening compensates for sitting on a coloured gradient, and on this widget's white ground it
+would be too pale to read. When there is nothing worth saying, the **row is hidden entirely**.
+
+**② Weather widget: the cramped top half**
+
+The cause was that the hero area and the three metrics sat **side by side**: the hero got only about
+half the width, while `hero()` is internally designed to span the whole row (temperature, a flexible
+spacer, then condition/high-low right-aligned). Squeezed into half a row, the condition and high/low
+hugged the temperature while three stacked metrics occupied the right half — which reads as a
+cramped top. Splitting them into **a hero row and a metrics row** puts the condition at the opposite
+end of the temperature and spreads the metrics across the full width, so the bottom half is no longer
+empty either. It costs about 17.5dp, clawed back from several 6dp gaps; the real content measures
+148dp against a 160dp budget.
+
+**③ System status widget: a "last heard" row**
+
+Previously the bottom held only the counters (Rx / Tx / beacon / stations), leaving a stretch of
+empty space. The added row reads "last heard <callsign> … <how long ago>".
+
+Why this and not another counter: **it answers "am I still receiving?" far more directly than
+"Rx N"**. A counter only says how many have arrived in total, and when a link stalls the counter
+simply stops moving — you cannot tell from it. "Who was heard most recently, and how long ago"
+does tell you. With no stations yet the **row hides entirely** rather than showing an empty
+"last heard ·" shell, which would look like a broken widget.
+
+The relative time reuses the existing `secondsAgo / minutesAgo / hoursAgo / daysAgo`, **the same
+buckets as `packets_page.dart`** — the same interval described differently on two screens ("45 min
+ago" next to "0 h ago") is the kind of thing that gets screenshotted.
+
+**In common**
+
+- The current day/night slot is still resolved natively from the device clock (thresholds downlinked
+  in the snapshot), so it is not limited by the widget's 30-minute self-refresh.
+- The dots and level icons are ImageViews tinted with `setColorFilter`, which **only exists on
+  ImageView** (the v1.6.114 outage was a TextView used as a dot).
+- Measured content heights: weather 148dp, HF 153dp, system status 129dp — all within the 160dp budget.
+
 ## [1.6.130] - 2026-09-18
 
 ### 📊 短波组件再重做：每个波段一条「日 → 夜」进度条，一眼看出**现在**该用哪段

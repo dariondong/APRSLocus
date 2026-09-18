@@ -6251,4 +6251,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get themePresetAmber => 'アンバー';
+
+  @override
+  String get sysRecentLabel => '直近受信';
 }

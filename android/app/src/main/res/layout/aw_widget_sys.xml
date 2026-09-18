@@ -8,6 +8,8 @@
             每格「状态点 + 链路名 + 状态文字」；点色 = 已连接绿 / 未启用灰
   细线
   计数行  ：收 N · 发 N（左）    信标 Ns · 台站 N（右）
+  最近行  ：最近收到 <呼号>（左）…… 多久前（右）—— 比「收 N」更直接地
+            回答「还在收吗」；没有台站时整行收起
   
   想回答的三个问题（按优先级排布）：
     · 还在收吗               → 链路区的绿点 + 「收 N」
@@ -140,7 +142,7 @@
         android:id="@+id/aw_rule1_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:orientation="vertical">
     <TextView
         android:id="@+id/aw_rule1"
@@ -152,7 +154,7 @@
         android:id="@+id/aw_links"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:orientation="vertical">
     <LinearLayout
         android:id="@+id/aw_lrow0"
@@ -238,7 +240,7 @@
         android:id="@+id/aw_lrow1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <LinearLayout
@@ -320,7 +322,7 @@
         android:id="@+id/aw_rule2_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:orientation="vertical">
     <TextView
         android:id="@+id/aw_rule2"
@@ -332,7 +334,7 @@
         android:id="@+id/aw_counters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:baselineAligned="false">
     <TextView
@@ -376,6 +378,50 @@
         android:layout_marginStart="12dp"
         android:textColor="@color/aw_slate"
         android:textSize="9.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <TextView
+        android:id="@+id/aw_recent_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="8.5sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_recent_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_recent_spacer"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:textColor="@color/aw_ink"
+        android:textSize="1sp"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_recent_ago"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/aw_slate"
+        android:textSize="8.5sp"
         android:singleLine="true"
         android:includeFontPadding="false" />
     </LinearLayout>

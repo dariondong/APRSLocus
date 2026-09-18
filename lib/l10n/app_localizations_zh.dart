@@ -6186,6 +6186,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get themePresetAmber => '琥珀';
+
+  @override
+  String get sysRecentLabel => '最近收到';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12369,4 +12372,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get themePresetAmber => '琥珀';
+
+  @override
+  String get sysRecentLabel => '最近收到';
 }

@@ -2257,5 +2257,6 @@
   "themePresetGraphite": "Grafito",
   "themePresetSakura": "Sakura",
   "themePresetTerminal": "Terminal",
-  "themePresetAmber": "Ámbar"
+  "themePresetAmber": "Ámbar",
+  "sysRecentLabel": "Última recepción"
 }

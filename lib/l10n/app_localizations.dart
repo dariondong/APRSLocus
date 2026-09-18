@@ -11198,6 +11198,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'琥珀'**
   String get themePresetAmber;
+
+  /// No description provided for @sysRecentLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近收到'**
+  String get sysRecentLabel;
 }
 
 class _AppLocalizationsDelegate

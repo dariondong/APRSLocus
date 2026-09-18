@@ -163,6 +163,12 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     R.id.aw_tip0_level, R.id.aw_tip0_text),
                 TipRow(R.id.aw_tip1, R.id.aw_tip1_dot, R.id.aw_tip1_icon,
                     R.id.aw_tip1_level, R.id.aw_tip1_text),
+                // 第 3 条：把 hero 与指标拆成两行后腾出了空间；而建议是按
+                // 「安全警示 > 注意 > 通联机会 > 操作提示」排过序的 ——
+                // 只给 2 条会把后面的类别整类丢掉（例如只剩天气类、看不到
+                // 传播类）。主档用短线（shortText），一条仍是一句完整的话。
+                TipRow(R.id.aw_tip2, R.id.aw_tip2_dot, R.id.aw_tip2_icon,
+                    R.id.aw_tip2_level, R.id.aw_tip2_text),
             ),
             // 主档的建议行都是 1 行 → 用短文案（完整短句）
             tipShort = true,

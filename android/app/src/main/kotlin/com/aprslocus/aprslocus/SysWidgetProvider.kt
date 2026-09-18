@@ -107,6 +107,21 @@ class SysWidgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.aw_beacon, snap.read("beacon"))
             views.setTextViewText(R.id.aw_stations, snap.read("stations"))
 
+            // 最近收到的台站：比「收 N」更直接地回答「还在收吗」。
+            // 没有台站时整行收起，而不是留一个「最近收到 · 」的空壳 ——
+            // 空壳会让人以为组件坏了，而真相只是「确实还没收到」。
+            val recentCall = snap.read("recentCall")
+            val hasRecent = recentCall.isNotEmpty()
+            views.setViewVisibility(
+                R.id.aw_recent,
+                if (hasRecent) View.VISIBLE else View.GONE,
+            )
+            if (hasRecent) {
+                views.setTextViewText(R.id.aw_recent_label, snap.read("recentLabel"))
+                views.setTextViewText(R.id.aw_recent_call, recentCall)
+                views.setTextViewText(R.id.aw_recent_ago, snap.read("recentAgo"))
+            }
+
             // 四条链路：点色由 Dart 给（三态三色），文字是已本地化的状态
             val links = snap.optJSONArray("links")
             for (i in 0 until LINK_CELLS) {

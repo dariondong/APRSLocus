@@ -99,7 +99,7 @@ void main() {
 
       for (final k in ['v', 'hasData', 'title', 'indices', 'dayLabel', 'nightLabel',
         'nowPrefix', 'dayFrom', 'dayTo',
-        'bands', 'six',
+        'bands', 'six', 'tip',
         'emptyLabel']) {
         expect(snap.containsKey(k), isTrue, reason: '快照缺 $k');
       }
@@ -184,6 +184,46 @@ void main() {
       // 判定与 hfIsDaytime 一致（同一函数），所以断言取值本身。
       expect(at20?.name, '80m-40m');
       expect(at10?.name, '80m-40m');
+    });
+  });
+
+  group('谈联提示（组件底部那一行）', () {
+    test('有数据时一定给出提示，且键名与 Kotlin 读取的一致', () {
+      // 这一行复用 hfTips()（与 App 内面板同源）。组件底部空着就白搭，
+      // 所以「有数据却没有提示」本身就是 bug —— 而它的表现是**安静的空行**。
+      seedHf(sample());
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      final tip = snap['tip'];
+      expect(tip, isNotNull, reason: 'Kp=3 / SFI=100 时应给出传播类提示');
+      final m = tip! as Map;
+      // Kotlin 侧读的就是这几个字面量键名
+      expect(m.keys.toSet(),
+          {'iconName', 'levelLabel', 'level', 'color', 'text', 'shortText'});
+      expect((m['text'] as String).isNotEmpty, isTrue);
+      expect((m['shortText'] as String).isNotEmpty, isTrue);
+      // 文案必须**已本地化**（与面板同源，不能在快照里留英文）。
+      // 这里只断言「是四个级别标签之一」而不写死某一个 —— 守的是
+      // 「levelLabel 一定来自本地化表」这条契约，而不是这份测试数据
+      // 恰好触发了哪一级（换一组数据就会变，写死了只会变成假失败）。
+      expect(
+        [zh.hamLevelDanger, zh.hamLevelWarn, zh.hamLevelGood, zh.hamLevelTip],
+        contains(m['levelLabel']),
+        reason: '级别文案必须是本地化标签，而不是英文枚举名',
+      );
+    });
+
+    test('提示与面板同源：地磁暴时给出风暴级提示', () {
+      seedHf(sample(geomag: 'STORM', kIndex: '6'));
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      final m = snap['tip']! as Map;
+      expect(m['level'], 'warn', reason: '地磁暴是「注意」级，应排在最前');
+      expect(m['text'], zh.hfTipStorm);
+    });
+
+    test('没有数据时 tip 为 null（整行收起，而不是留空壳）', () {
+      seedHf(null);
+      final snap = buildHfWidgetSnapshot(hf: HfCenter.instance, s: zh);
+      expect(snap['tip'], isNull);
     });
   });
 

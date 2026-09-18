@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'app_widget.dart';
 import 'hf.dart';
+import 'weather.dart';
 import 'l10n/app_localizations.dart';
 
 /// ─── 短波 / 电离层传播桌面小组件（Android，4×2）───
@@ -114,6 +115,8 @@ Map<String, Object?> buildHfWidgetSnapshot({
     'bands': <Map<String, Object?>>[],
     // 空状态：直接复用「暂无数据」提示（它就是此刻最该说的一句话）
     'emptyLabel': s.hfNoData,
+    // 通联提示：null 表示此刻没有值得说的（hfTips 在条件都平常时返回空）
+    'tip': null,
   };
 
   final h = hf.now;
@@ -138,6 +141,31 @@ Map<String, Object?> buildHfWidgetSnapshot({
   snap['bands'] = <Map<String, Object?>>[
     for (final b in h.bands.take(kHfWidgetBandRows)) _bandRow(b, s),
   ];
+  // ── 谈联提示（一行）──
+  //
+  // **复用 hfTips()**：它与 App 内面板的「业余无线电建议」是同一个来源 ——
+  // 组件上一眼看到的那句话，点进 App 也找得到。两处各写一份文案，迟早会出现
+  // 「组件说 A、面板说 B」，而那是最难解释的一类不一致。
+  //
+  // 取**第一条**而不是全给：4×2 只放得下一行（再多就要从波段表里挤地方，
+  // 而波段表是这个组件的主语）。hfTips 内部已按「安全警示 > 注意 > 通联机会 >
+  // 操作提示」排好序，所以第一条就是最该说的。
+  //
+  // 颜色用**基准色**（colorToArgb），不用 widgetTipTextArgb：后者是往白提亮
+  // 35%，那是给「压在天气渐变上」做的补偿；本组件是白底，提亮色会淡到看不清。
+  final tips = hfTips(h, s, now: now);
+  if (tips.isNotEmpty) {
+    final t = tips.first;
+    snap['tip'] = <String, Object?>{
+      'iconName': widgetTipIconName(t.icon),
+      'levelLabel': hamLevelLabel(t.level, s),
+      'level': t.level.name,
+      'color': colorToArgb(t.color),
+      'text': t.text,
+      // 单行放不下时的完整短句（与天气组件同一套切法）
+      'shortText': shortTipText(t.text),
+    };
+  }
   // ── 6m 段（只给「更高的档位」用）──
   //
   // 4×2 放不下：4 个 HF 波段对 + 指数行已经把 296×140dp 占满（实测 126.3/130）。

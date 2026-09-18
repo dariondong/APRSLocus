@@ -2761,5 +2761,6 @@
   "themePresetGraphite": "石墨",
   "themePresetSakura": "櫻花",
   "themePresetTerminal": "終端",
-  "themePresetAmber": "琥珀"
+  "themePresetAmber": "琥珀",
+  "sysRecentLabel": "最近收到"
 }

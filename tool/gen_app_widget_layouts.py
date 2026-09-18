@@ -44,7 +44,7 @@ import xml.etree.ElementTree as ET
 # 原来 2 行 + 1 行实测超 16.7dp（预览修好计量后量出来的）。
 TILE = dict(temp="30sp", icon="25dp", cond="9.5sp", range="9sp",
             kv_label="9sp", kv_value="10sp", tip="9.5sp", tip_level="8.5sp",
-            tip_icon="11dp", dot="6dp", tips=2, tip_lines=1)
+            tip_icon="11dp", dot="6dp", tips=3, tip_lines=1)
 TALL = dict(temp="32sp", icon="26dp", cond="10sp", range="9sp",
             kv_label="9sp", kv_value="10sp", tip="9.5sp", tip_level="8.5sp",
             tip_icon="11dp", dot="6dp", tips=2, tip_lines=2)
@@ -273,16 +273,26 @@ def aqi_pill(aqi_size, dot, margin_start=None):
 
 
 def hero(sz, *, observed_inline=False):
-    """天气主区：图标 + 大温度 + 天气现象 / 高低温。"""
+    """天气主区：图标 + 大温度（左）…… 天气现象 / 高低温（右）。
+
+    **「现象/高低温」靠右，而不是紧跟在温度后面**：主区独占一行后，如果它们
+    还贴着温度站，右侧会空掉一半（原来并排时看不出来，因为那一半被指标占着）。
+    这与 App 内面板的写法（温度与现象相邻）有意不同 —— 面板是**窄而高**的一列，
+    组件是**宽而扁**的一条，同一条规则套过来只会留空。
+    """
     out = linear("aw_hero", orientation="horizontal",
                  gravity="center_vertical", baseline=True)
     out += image("aw_hero_icon", "aw_ic_big_thunderstorm", sz["icon"])
     out += text("aw_temp", size=sz["temp"], bold=True, margin_start="5dp",
                 spacing="-0.02")
+    out += text("aw_hero_spacer", size="1sp", width="0dp", height="1dp",
+                weight="1")
     out += linear("aw_cond_box", orientation="vertical", width="wrap_content",
-                  margin_start="4dp")
-    out += text("aw_cond", size=sz["cond"], bold=True, alpha=0.90)
-    out += text("aw_range", size=sz["range"], alpha=0.74, margin_top="1dp")
+                  gravity="end", baseline=True)
+    out += text("aw_cond", size=sz["cond"], bold=True, alpha=0.90,
+                gravity="end")
+    out += text("aw_range", size=sz["range"], alpha=0.74, margin_top="1dp",
+                gravity="end")
     out += CLOSE
     out += CLOSE
     return out
@@ -432,7 +442,7 @@ def build_tile():
         "  顶栏    ：[城市点+城市] [AQI 胶囊] …… [观测 HH:mm] [logo + APRSlocus]",
         "  主区    ：天气图标 + 大温度 + 天气现象 / 高低温",
         "  指标    ：3 格单行「label 左 / value 右」（面板 _kvPair 的复刻，无底框）",
-        "  底部    ：2 条**单行**建议（圆点 + 级别图标 + 级别 + 正文同行）",
+        "  底部    ：3 条**单行**建议（圆点 + 级别图标 + 级别 + 正文同行）",
         "",
         "**这一档的每个取舍都是被 140dp 逼出来的**（都经过 tool/preview_app_widget.py",
         "的量化核对，不是拍脑袋）：",
@@ -462,13 +472,21 @@ def build_tile():
     s += linear("aw_rule1_box", orientation="vertical", margin_top="6dp")
     s += hairline("aw_rule1")
     s += CLOSE
-    s += linear("aw_main", orientation="horizontal", gravity="center_vertical",
-                baseline=True, margin_top="6dp")
-    s += linear("aw_left", orientation="vertical", width="0dp", weight="1.12",
-                gravity="center_vertical", margin_end="10dp")
+    # 天气主区**独占一行**，指标另起一行。
+    #
+    # 原来是并排：hero 占左列 42%、3 格指标占右列 58%。后果是 30sp 的大温度
+    # 只剩约 110dp、湿度/风力/气压被挤在同一行，而上半个卡片其余地方全空 ——
+    # 也就是用户说的「上面挤、下面空」。拆开后大温度拿回整行、指标也有了自己的
+    # 一行，两处都松了。
+    #
+    # 顺带一提：这不增加「信息的条数」，只改变排布 —— 所以底部补的是第 3 条
+    # 建议（见 tips=3），而不是再塞一个指标。
+    s += linear("aw_main", orientation="vertical", margin_top="6dp")
     s += hero(sz)
-    s += CLOSE
+    s += linear("aw_metrics_row", orientation="horizontal", baseline=True,
+                margin_top="6dp")
     s += kv_row3(sz)
+    s += CLOSE
     s += CLOSE
     s += linear("aw_rule2_box", orientation="vertical", margin_top="6dp")
     s += hairline("aw_rule2")
@@ -670,6 +688,10 @@ def build_hf():
         "4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m",
         "          每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]",
         "          段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）",
+        "",
+        "提示行  ：[圆点][级别图][级别] 一句话 —— 与 App 内面板的「业余无线电建议」",
+        "          同源（Dart 复用 hfTips，取排序后的第一条）；此刻没有值得说的",
+        "          时整行收起，不留空行。",
         "          当前时段那一段用实色 + 小白点，另一段淡底",
         "          档位块显示**当前时段**的档位（文字 + 条件色）",
         "",
@@ -726,7 +748,7 @@ def build_hf():
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top="4dp")
+                    margin_top="3dp")
         s += text(f"aw_band{i}_name", size="9sp", bold=True, color=INK,
                   width=BAND_W, ellipsize=True)
         # 两端的太阳/星星：白色 PNG，运行时由 Kotlin setColorFilter 染色
@@ -748,6 +770,26 @@ def build_hf():
                   width=NOW_W, height="15dp", gravity="center",
                   bg="aw_seg_closed", margin_start="3dp", ellipsize=True)
         s += CLOSE
+
+    # ⑤ 通联提示（一行）：读完「哪个波段好」之后的下一步是「那我该干什么」。
+    #
+    # 文案在 Dart 侧就取好了（hfTips 与面板同源），这里只摆位置 ——
+    # 原生不做任何判定，也不拼句子（组件进程没有 App 的上下文）。
+    #
+    # 圆点与级别图标都是**白图 + 运行时染色**（setColorFilter 只存在于
+    # ImageView —— v1.6.114 的线上事故正源于把它用在 TextView 上）。
+    s += linear("aw_tip_box", orientation="vertical", margin_top="4dp")
+    s += hairline("aw_tip_rule", LINE)
+    s += CLOSE
+    s += linear("aw_tip", orientation="horizontal", gravity="center_vertical",
+                baseline=True, margin_top="4dp")
+    s += image("aw_tip_dot", "aw_dot", "6dp")
+    s += image("aw_tip_icon", "aw_ic_rss_feed", "11dp", margin_start="5dp")
+    s += text("aw_tip_level", size="8.5sp", bold=True, spacing="0.04",
+              margin_start="4dp")
+    s += text("aw_tip_text", size="9sp", color=INK, alpha=0.93, max_lines=1,
+              ellipsize=True, margin_start="5dp", width="0dp", weight="1")
+    s += CLOSE
 
     s += CLOSE
     s += empty_label(color="@color/aw_ink_dim")
@@ -775,6 +817,8 @@ def build_sys():
         "          每格「状态点 + 链路名 + 状态文字」；点色 = 已连接绿 / 未启用灰",
         "细线",
         "计数行  ：收 N · 发 N（左）    信标 Ns · 台站 N（右）",
+        "最近行  ：最近收到 <呼号>（左）…… 多久前（右）—— 比「收 N」更直接地",
+        "          回答「还在收吗」；没有台站时整行收起",
         "",
         "想回答的三个问题（按优先级排布）：",
         "  · 还在收吗               → 链路区的绿点 + 「收 N」",
@@ -809,14 +853,14 @@ def build_sys():
               margin_end="6dp", android_text="·")
     s += text("aw_my_grid", size="9.5sp", color=SLATE)
     s += CLOSE
-    s += linear("aw_rule1_box", orientation="vertical", margin_top="4dp")
+    s += linear("aw_rule1_box", orientation="vertical", margin_top="3dp")
     s += hairline("aw_rule1", LINE)
     s += CLOSE
     # 链路 2×2
-    s += linear("aw_links", orientation="vertical", margin_top="5dp")
+    s += linear("aw_links", orientation="vertical", margin_top="4dp")
     for r in range(2):
         s += linear(f"aw_lrow{r}", orientation="horizontal", baseline=True,
-                    margin_top=None if r == 0 else "6dp")
+                    margin_top=None if r == 0 else "5dp")
         for c in range(2):
             i = r * 2 + c
             s += linear(f"aw_link{i}", orientation="horizontal", width="0dp",
@@ -831,18 +875,35 @@ def build_sys():
             s += CLOSE
         s += CLOSE
     s += CLOSE
-    s += linear("aw_rule2_box", orientation="vertical", margin_top="5dp")
+    s += linear("aw_rule2_box", orientation="vertical", margin_top="4dp")
     s += hairline("aw_rule2", LINE)
     s += CLOSE
     # 计数行
     s += linear("aw_counters", orientation="horizontal", baseline=True,
-                margin_top="5dp")
+                margin_top="4dp")
     s += text("aw_rx", size="9.5sp", color=SLATE)
     s += text("aw_tx", size="9.5sp", color=SLATE, margin_start="12dp")
     s += text("aw_cnt_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
     s += text("aw_beacon", size="9.5sp", color=SLATE)
     s += text("aw_stations", size="9.5sp", color=SLATE, margin_start="12dp")
+    s += CLOSE
+    # 最近收到的台站（左：标签 + 呼号；右：多久前）
+    #
+    # 为什么加这一行：它比「收 N」更直接地回答「**还在收吗**」—— 计数只说明
+    # 「一共收过多少」，卡住时计数是不动的，用户从计数上看不出来；而
+    # 「最近收到谁、多久前」说明此刻还在不在收。
+    #
+    # 没有台站时整行收起（Kotlin 侧按 recentCall 是否为空决定），
+    # 而不是留一个「最近收到  · 」的空壳。
+    s += linear("aw_recent", orientation="horizontal", baseline=True,
+                margin_top="4dp")
+    s += text("aw_recent_label", size="8.5sp", color=SLATE)
+    s += text("aw_recent_call", size="9.5sp", bold=True, color=INK,
+              margin_start="5dp", ellipsize=True)
+    s += text("aw_recent_spacer", size="1sp", width="0dp", height="1dp",
+              weight="1")
+    s += text("aw_recent_ago", size="8.5sp", color=SLATE)
     s += CLOSE
     s += CLOSE
     s += empty_label(color=INK, alpha=0.85)

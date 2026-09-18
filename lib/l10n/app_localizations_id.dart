@@ -6444,4 +6444,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get themePresetAmber => 'Amber';
+
+  @override
+  String get sysRecentLabel => 'Terakhir diterima';
 }

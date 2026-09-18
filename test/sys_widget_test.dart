@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:aprslocus/l10n/app_localizations.dart';
+import 'package:aprslocus/models.dart';
 import 'package:aprslocus/state.dart';
 import 'package:aprslocus/sys_widget.dart';
 
@@ -43,6 +44,40 @@ void main() {
       }
       expect((snap['links'] as List).length, 4);
       expect(kSysWidgetLinkCount, 4, reason: '与 aw_widget_sys.xml 的格子数一致');
+      // 「最近收到」那一行：Kotlin 读 recentLabel / recentCall / recentAgo
+      for (final k in ['recentLabel', 'recentCall', 'recentAgo']) {
+        expect(snap.containsKey(k), isTrue, reason: '快照缺 $k');
+      }
+    });
+
+    test('最近收到：取 lastHeard 最新的那条，并给出「多久前」', () {
+      // 这一行比「收 N」更直接地回答「还在听吗」—— 计数只说明一共收过多少，
+      // 卡住时计数不动、从计数上看不出来。所以取「最新的那条 + 多久前」。
+      final st = fresh();
+      final now = DateTime(2026, 9, 18, 12, 0, 0);
+      st.stations
+        ..clear()
+        ..addAll([
+          Station(call: 'OLD-1', symbol: '', lat: 0, lng: 0,
+              lastHeard: now.subtract(const Duration(hours: 3))),
+          Station(call: 'NEW-9', symbol: '', lat: 0, lng: 0,
+              lastHeard: now.subtract(const Duration(minutes: 45))),
+          Station(call: 'MID-5', symbol: '', lat: 0, lng: 0,
+              lastHeard: now.subtract(const Duration(hours: 1))),
+        ]);
+      final snap = buildSysWidgetSnapshot(st: st, s: zh, now: now);
+      expect(snap['recentCall'], 'NEW-9');
+      // 「多久前」必须走本地化文案（45 分 → 中文）
+      expect(snap['recentAgo'], zh.minutesAgo(45));
+      expect(snap['recentLabel'], zh.sysRecentLabel);
+    });
+
+    test('最近收到：没有台站时留下空串（Kotlin 据此整行收起）', () {
+      final st = fresh();
+      st.stations.clear();
+      final snap = buildSysWidgetSnapshot(st: st, s: zh);
+      expect(snap['recentCall'], '');
+      expect(snap['recentAgo'], '');
     });
 
     test('四条链路顺序固定（不按状态排序）', () {

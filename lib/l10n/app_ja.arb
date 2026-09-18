@@ -2257,5 +2257,6 @@
   "themePresetGraphite": "グラファイト",
   "themePresetSakura": "桜",
   "themePresetTerminal": "ターミナル",
-  "themePresetAmber": "アンバー"
+  "themePresetAmber": "アンバー",
+  "sysRecentLabel": "直近受信"
 }

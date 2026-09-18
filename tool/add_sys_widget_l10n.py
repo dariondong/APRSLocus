@@ -40,6 +40,10 @@ KEYS = {
                  'APRSlocus を開いて接続すると、ここに運用状況が表示されます',
                  'Abre APRSlocus y conéctate para ver el estado aquí',
                  'Buka APRSlocus dan sambungkan untuk melihat status di sini'),
+    # 最近收到的台站（「还在收吗」最直接的证据：最新那条 + 多久前）。
+    # 用 APRS/业余界的行话「Last heard」，而不是逐字直译的「Recently received」。
+    'sysRecentLabel': ('最近收到', '最近收到', 'Last heard', '直近受信',
+                       'Última recepción', 'Terakhir diterima'),
     # 定位状态（「等待定位」复用了既有的 beaconWaitingFix，不重复造）
     'sysFixOk': ('已定位', '已定位', 'Located', '測位済み', 'Ubicado',
                  'Terlokasi'),

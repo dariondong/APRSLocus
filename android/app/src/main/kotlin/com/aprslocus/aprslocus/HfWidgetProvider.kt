@@ -297,6 +297,31 @@ class HfWidgetProvider : AppWidgetProvider() {
                 fillBand(context, views, i, row, isDay)
             }
 
+            // 通联提示（一行）：与 App 内面板的「业余无线电建议」同源。
+            //
+            // 此刻没有值得说的时候（hfTips 在条件都平常时返回空）**整行收起**，
+            // 而不是留一个空行 —— 空行会让这张表看起来像少了东西。
+            // 要收起两个控件（细线所在的外壳 + 那一行本身），少收一个就会
+            // 在底部留一条孤零零的横线。
+            val tip = snap.optJSONObject("tip")
+            val tipVis = if (tip == null) View.GONE else View.VISIBLE
+            views.setViewVisibility(R.id.aw_tip_box, tipVis)
+            views.setViewVisibility(R.id.aw_tip, tipVis)
+            if (tip != null) {
+                val color = tip.optInt("color", 0)
+                if (color != 0) {
+                    // 圆点与级别图标是 ImageView，setColorFilter 可用（也**只能**
+                    // 用在 ImageView 上 —— 见类头那条 v1.6.114 的线上事故）
+                    views.setInt(R.id.aw_tip_dot, "setColorFilter", color)
+                    views.setInt(R.id.aw_tip_icon, "setColorFilter", color)
+                    views.setTextColor(R.id.aw_tip_level, color)
+                }
+                views.setTextViewText(R.id.aw_tip_level, tip.read("levelLabel"))
+                // 用 shortText（Dart 侧切好的完整短句）：宁可措辞短一点，
+                // 也不要让系统把句子从中间截断成「请勿在室…」那种读不出信息的形态
+                views.setTextViewText(R.id.aw_tip_text, tip.read("shortText"))
+            }
+
             manager.updateAppWidget(id, views)
         }
 

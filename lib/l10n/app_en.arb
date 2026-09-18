@@ -2173,5 +2173,6 @@
   "themePresetGraphite": "Graphite",
   "themePresetSakura": "Sakura",
   "themePresetTerminal": "Terminal",
-  "themePresetAmber": "Amber"
+  "themePresetAmber": "Amber",
+  "sysRecentLabel": "Last heard"
 }

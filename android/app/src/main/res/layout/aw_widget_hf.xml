@@ -7,6 +7,10 @@
   4 行波段：80m/40m / 30m/20m / 17m/15m / 12m/10m
             每行 = [波段名 56dp][太阳][日间段][夜间段][星光][档位块]
             段底 aw_seg_*（淡色）/ aw_segnow_*（实色 + 顶部小白点）
+  
+  提示行  ：[圆点][级别图][级别] 一句话 —— 与 App 内面板的「业余无线电建议」
+            同源（Dart 复用 hfTips，取排序后的第一条）；此刻没有值得说的
+            时整行收起，不留空行。
             当前时段那一段用实色 + 小白点，另一段淡底
             档位块显示**当前时段**的档位（文字 + 条件色）
   
@@ -206,7 +210,7 @@
         android:id="@+id/aw_band0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -273,7 +277,7 @@
         android:id="@+id/aw_band1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -340,7 +344,7 @@
         android:id="@+id/aw_band2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -407,7 +411,7 @@
         android:id="@+id/aw_band3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:baselineAligned="false">
@@ -467,6 +471,62 @@
         android:textSize="8.5sp"
         android:textStyle="bold"
         android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_tip_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/aw_tip_rule"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/aw_line" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/aw_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+    <ImageView
+        android:id="@+id/aw_tip_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_dot" />
+    <ImageView
+        android:id="@+id/aw_tip_icon"
+        android:layout_width="11dp"
+        android:layout_height="11dp"
+        android:layout_marginStart="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/aw_ic_rss_feed" />
+    <TextView
+        android:id="@+id/aw_tip_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="8.5sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.04"
+        android:singleLine="true"
+        android:includeFontPadding="false" />
+    <TextView
+        android:id="@+id/aw_tip_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/aw_ink"
+        android:textSize="9sp"
+        android:maxLines="1"
         android:ellipsize="end"
         android:includeFontPadding="false" />
     </LinearLayout>
