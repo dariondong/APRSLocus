@@ -83,6 +83,8 @@ Widget? buildBackgroundLayer(
   required BoxFit fit,
   required bool tile,
   required Widget Function() fallback,
+  Alignment alignment = Alignment.center,
+  double scale = 1.0,
 }) =>
     null;
 

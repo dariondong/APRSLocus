@@ -205,14 +205,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFC9A227), Color(0xFF8A6D1F)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFFC9A227), Color(0xFF8A6D1F)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(Icons.emoji_events_rounded,
                               color: Colors.white, size: 17),
                         ),
@@ -243,14 +239,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF0E7490), Color(0xFF155E75)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFF0E7490), Color(0xFF155E75)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(Icons.translate_rounded,
                               color: Colors.white, size: 17),
                         ),
@@ -287,14 +279,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF16A34A), Color(0xFF0B7A37)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFF16A34A), Color(0xFF0B7A37)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(
                             Icons.file_download_rounded,
                             color: Colors.white,
@@ -339,14 +327,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFDB2777), Color(0xFF9D174D)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFFDB2777), Color(0xFF9D174D)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(
                             Icons.brush_rounded,
                             color: Colors.white,
@@ -391,14 +375,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF7C3AED), Color(0xFF5B21B6)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFF7C3AED), Color(0xFF5B21B6)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(
                             Icons.settings_backup_restore_rounded,
                             color: Colors.white,
@@ -446,14 +426,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           width: 32,
                           height: 32,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF0A5CFF), Color(0xFF003D99)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          decoration: C.accentDeco(
+                            radius: 9,
+                            fallback: const [Color(0xFF0A5CFF), Color(0xFF003D99)],
                             ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
                           child: const Icon(
                             Icons.info_rounded,
                             color: Colors.white,

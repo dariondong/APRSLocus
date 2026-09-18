@@ -60,6 +60,17 @@ const List<ThemeColorToken> kThemeColorTokens = [
   ThemeColorToken('warning', Color(0xFFD97706), Color(0xFFD97706)),
   ThemeColorToken('danger', Color(0xFFE11D48), Color(0xFFE11D48)),
   ThemeColorToken('info', Color(0xFF0E7490), Color(0xFF0E7490)),
+  // ── 更深一层的自定义（v1.6.127）──
+  // 这三个令牌此前是写死的：次级面板底色、较重的描边、弹窗遮罩。
+  // 不开放的话，改完主色仍会看到「某些地方还是原来的灰」。
+  ThemeColorToken('surfaceAlt', Color(0xFFEDF0F5), Color(0xFF232B39)),
+  ThemeColorToken('dividerStrong', Color(0xFFD2DAE4), Color(0xFF39445A)),
+  ThemeColorToken('scrim', Color(0xFF141A26), Color(0xFF0C0F14)),
+  // 强调渐变：设置页各入口卡片的图标底色用它。原本每张卡片都写死了自己的
+  // 渐变色（8 组互不相同），主题改成统一的 from→to 两色即可 —— 这也是
+  // 「皮肤」最直观的一处观感来源。
+  ThemeColorToken('accentFrom', Color(0xFF2563EB), Color(0xFF2563EB)),
+  ThemeColorToken('accentTo', Color(0xFF1D4ED8), Color(0xFF1D4ED8)),
 ];
 
 ThemeColorToken? themeColorToken(String id) {
@@ -92,6 +103,63 @@ const double kThemeBgBlurDefault = 6.0;
 
 /// 背景填充方式
 const List<String> kThemeBgFits = ['cover', 'contain', 'stretch', 'tile'];
+
+/// 背景图对齐（仅在「完整显示」下明显；铺满时用于决定裁切重心）
+const List<String> kThemeBgAligns = [
+  'center', 'top', 'bottom', 'left', 'right',
+  'topLeft', 'topRight', 'bottomLeft', 'bottomRight',
+];
+
+/// 背景缩放倍率区间（1.0 = 原始尺寸；只在「完整显示/平铺」下有可见差别）
+const double kThemeBgScaleMin = 0.5;
+const double kThemeBgScaleMax = 2.0;
+
+/// 界面密度：只作用于**共用辅助函数**的留白（卡片内边距、条目行距），
+/// 不去改上百处硬编码的 EdgeInsets —— 那类改动的回归面太大。
+/// 语义上就是「界面松紧」，UI 里也这么称呼。
+const List<String> kThemeDensities = ['compact', 'normal', 'comfortable'];
+const Map<String, double> kThemeDensityScale = {
+  'compact': 0.85,
+  'normal': 1.0,
+  'comfortable': 1.2,
+};
+
+/// 可选界面字体。
+///
+/// **只用系统已装字体**，不内置字体文件：内置一款中文字体动辄 5~10MB，
+/// 而本应用已经因为图标库+SVG 涨过一轮体积。代价是各平台可用性不同，
+/// 所以每个选项都标了它依赖的系统字体名，缺失时 Flutter 会自然回退，
+/// 不会变成方框或乱码。
+class ThemeFontOption {
+  final String id;
+
+  /// 传给 TextStyle.fontFamily 的名字（null = 用平台默认）
+  final String? family;
+
+  const ThemeFontOption(this.id, this.family);
+}
+
+const List<ThemeFontOption> kThemeFonts = [
+  ThemeFontOption('default', null),
+  ThemeFontOption('systemUi', 'system-ui'),
+  ThemeFontOption('segoe', 'Segoe UI'),
+  ThemeFontOption('pingfang', 'PingFang SC'),
+  ThemeFontOption('yahei', 'Microsoft YaHei'),
+  ThemeFontOption('notoSans', 'Noto Sans'),
+  ThemeFontOption('mono', 'monospace'),
+];
+
+ThemeFontOption? themeFontOption(String id) {
+  for (final f in kThemeFonts) {
+    if (f.id == id) return f;
+  }
+  return null;
+}
+
+/// 分页签强调色的插槽（底部/侧栏导航的 5 个页签）
+const List<String> kThemeTabKeys = [
+  'tabMap', 'tabStations', 'tabMessages', 'tabPackets', 'tabSettings',
+];
 
 /// 解析 `RRGGBB` / `#RRGGBB` / `AARRGGBB` → Color；不合法返回 null。
 Color? parseHexColor(String? raw) {
@@ -151,6 +219,34 @@ class AppTheme {
   /// 背景填充方式，见 [kThemeBgFits]
   String bgFit;
 
+  /// 背景对齐，见 [kThemeBgAligns]
+  String bgAlign;
+
+  /// 背景缩放倍率
+  double bgScale;
+
+  /// 卡片表面的不透明度（1.0 = 完全不透明）。有背景图时默认 0.85。
+  double surfaceAlpha;
+
+  /// 界面密度，见 [kThemeDensities]
+  String density;
+
+  /// 界面字体 id，见 [kThemeFonts]
+  String font;
+
+  /// 每个页签的强调色（键见 [kThemeTabKeys]）；缺项则用主色。
+  final Map<String, String> tabColors;
+
+  /// 皮肤元信息（「皮肤」相对「主题」多出来的就是可流传的身份信息）
+  String author;
+  String description;
+
+  /// 强调渐变之外还要覆盖的卡片强调色（留空 = 用 accentFrom/To）
+  bool uniformAccent;
+
+  /// 预览色板（给皮肤列表展示用，按顺序最多 5 个 RRGGBB）
+  List<String> previewSwatches;
+
   AppTheme({
     required this.id,
     required this.name,
@@ -164,20 +260,44 @@ class AppTheme {
     double? bgOpacity,
     double? bgBlur,
     String? bgFit,
+    String? bgAlign,
+    double? bgScale,
+    double? surfaceAlpha,
+    String? density,
+    String? font,
+    Map<String, String>? tabColors,
+    this.author = '',
+    this.description = '',
+    bool? uniformAccent,
+    List<String>? previewSwatches,
   })  : colors = colors ?? <String, String>{},
         radius = radius ?? kThemeDefaultRadius,
         texts = texts ?? <String, String>{},
         icons = icons ?? <String, String>{},
         bgOpacity = bgOpacity ?? kThemeBgOpacityDefault,
         bgBlur = bgBlur ?? kThemeBgBlurDefault,
-        bgFit = (bgFit != null && kThemeBgFits.contains(bgFit)) ? bgFit : 'cover';
+        bgFit = (bgFit != null && kThemeBgFits.contains(bgFit)) ? bgFit : 'cover',
+        bgAlign =
+            (bgAlign != null && kThemeBgAligns.contains(bgAlign)) ? bgAlign : 'center',
+        bgScale = (bgScale ?? 1.0).clamp(kThemeBgScaleMin, kThemeBgScaleMax),
+        surfaceAlpha = (surfaceAlpha ?? 0.85).clamp(0.3, 1.0),
+        density =
+            (density != null && kThemeDensities.contains(density)) ? density : 'normal',
+        font = (font != null && themeFontOption(font) != null) ? font : 'default',
+        tabColors = tabColors ?? <String, String>{},
+        uniformAccent = uniformAccent ?? false,
+        previewSwatches = previewSwatches ?? <String>[];
 
   bool get isEmpty =>
       colors.isEmpty &&
       texts.isEmpty &&
       icons.isEmpty &&
       radius == kThemeDefaultRadius &&
-      background == null;
+      background == null &&
+      tabColors.isEmpty &&
+      density == 'normal' &&
+      font == 'default' &&
+      surfaceAlpha == 0.85;
 
   bool get hasBackground => background != null && background!.startsWith('file:');
 
@@ -195,6 +315,16 @@ class AppTheme {
         bgOpacity: bgOpacity,
         bgBlur: bgBlur,
         bgFit: bgFit,
+        bgAlign: bgAlign,
+        bgScale: bgScale,
+        surfaceAlpha: surfaceAlpha,
+        density: density,
+        font: font,
+        tabColors: Map<String, String>.from(tabColors),
+        author: author,
+        description: description,
+        uniformAccent: uniformAccent,
+        previewSwatches: List<String>.from(previewSwatches),
       );
 
   /// 取某令牌在本主题下的颜色（未覆写 → 内置默认）
@@ -234,6 +364,16 @@ class AppTheme {
         if (radius != kThemeDefaultRadius) 'radius': radius,
         if (texts.isNotEmpty) 'texts': texts,
         if (icons.isNotEmpty) 'icons': icons,
+        if (tabColors.isNotEmpty) 'tabColors': tabColors,
+        if (density != 'normal') 'density': density,
+        if (font != 'default') 'font': font,
+        if (surfaceAlpha != 0.85) 'surfaceAlpha': surfaceAlpha,
+        if (author.isNotEmpty) 'author': author,
+        if (description.isNotEmpty) 'description': description,
+        // 只在开启时才写：默认是 false，写出来只是噪声。
+        // （写反过一次：`if (!uniformAccent)` 会让 true 永远存不下去。）
+        if (uniformAccent) 'uniformAccent': true,
+        if (previewSwatches.isNotEmpty) 'previewSwatches': previewSwatches,
         // 背景相关只在真正用到时才写：没背景图的主题文件里不该出现
         // opacity/blur/fit 这三行噪声
         if (background != null) ...{
@@ -241,6 +381,8 @@ class AppTheme {
           'bgOpacity': bgOpacity,
           'bgBlur': bgBlur,
           'bgFit': bgFit,
+          if (bgAlign != 'center') 'bgAlign': bgAlign,
+          if (bgScale != 1.0) 'bgScale': bgScale,
         },
       };
 
@@ -299,9 +441,49 @@ class AppTheme {
       }
       final f = raw['bgFit'];
       if (f is String && kThemeBgFits.contains(f)) t.bgFit = f;
+      final al = raw['bgAlign'];
+      if (al is String && kThemeBgAligns.contains(al)) t.bgAlign = al;
+      final sc = raw['bgScale'];
+      if (sc is num) {
+        t.bgScale = sc.toDouble().clamp(kThemeBgScaleMin, kThemeBgScaleMax);
+      }
     } else if (bg != null) {
       // 认不出的引用宁可整个丢掉，也不要留一个「有背景但画不出来」的状态
       warnings?.add('background');
+    }
+    // 分页签强调色：只认白名单键 + 能解析的颜色
+    final tc = raw['tabColors'];
+    if (tc is Map) {
+      for (final e in tc.entries) {
+        final key = '${e.key}';
+        final val = '${e.value}';
+        if (!kThemeTabKeys.contains(key) || parseHexColor(val) == null) {
+          warnings?.add('tabColors.$key');
+          continue;
+        }
+        t.tabColors[key] = val.trim().replaceAll('#', '').toUpperCase();
+      }
+    }
+    final dn = raw['density'];
+    if (dn is String && kThemeDensities.contains(dn)) t.density = dn;
+    final fn = raw['font'];
+    if (fn is String && themeFontOption(fn) != null) t.font = fn;
+    final sa = raw['surfaceAlpha'];
+    if (sa is num) t.surfaceAlpha = sa.toDouble().clamp(0.3, 1.0);
+    final au = raw['author'];
+    if (au is String) t.author = au.trim();
+    final de = raw['description'];
+    if (de is String) t.description = de.trim();
+    if (raw['uniformAccent'] is bool) {
+      t.uniformAccent = raw['uniformAccent'] as bool;
+    }
+    final pv = raw['previewSwatches'];
+    if (pv is List) {
+      for (final e in pv) {
+        final v = '$e';
+        if (parseHexColor(v) != null) t.previewSwatches.add(v.toUpperCase());
+        if (t.previewSwatches.length >= 5) break;
+      }
     }
     final ic = raw['icons'];
     if (ic is Map) {

@@ -563,7 +563,12 @@ class _HomePageState extends State<HomePage> {
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   decoration: BoxDecoration(
-                    color: sel ? C.blueBg : Colors.transparent,
+                    color: sel
+                        ? (ThemeController.instance.tabAccent(item.$1,
+                                    isDark: C.dark) ??
+                                C.blue)
+                            .withValues(alpha: 0.12)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Material(
@@ -584,7 +589,11 @@ class _HomePageState extends State<HomePage> {
                             ThemeController.instance.buildSlotIcon(
                               item.$1,
                               size: compact ? 18 : 20,
-                              color: sel ? C.blue : C.slate,
+                              color: sel
+                                  ? (ThemeController.instance.tabAccent(item.$1,
+                                          isDark: C.dark) ??
+                                      C.blue)
+                                  : C.slate,
                               fallbackIcon: themeIconByName(item.$2),
                               selected: sel,
                             ),
@@ -593,7 +602,12 @@ class _HomePageState extends State<HomePage> {
                               item.$3,
                               style: ts(
                                 compact ? 12 : 13,
-                                c: sel ? C.blue : C.ink,
+                                c: sel
+                                    ? (ThemeController.instance.tabAccent(
+                                            item.$1,
+                                            isDark: C.dark) ??
+                                        C.blue)
+                                    : C.ink,
                                 w: sel ? FontWeight.w600 : FontWeight.w500,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -1360,7 +1374,12 @@ class _HomePageState extends State<HomePage> {
                           ThemeController.instance.buildSlotIcon(
                             _nav[i].$1,
                             size: 22,
-                            color: sel ? C.blue : C.grey,
+                            color: sel
+                                ? (ThemeController.instance.tabAccent(
+                                        _nav[i].$1,
+                                        isDark: C.dark) ??
+                                    C.blue)
+                                : C.grey,
                             fallbackIcon: themeIconByName(_nav[i].$2),
                             selected: sel,
                           ),
@@ -1377,7 +1396,12 @@ class _HomePageState extends State<HomePage> {
                         _nav[i].$3,
                         style: ts(
                           10,
-                          c: sel ? C.blue : C.grey,
+                          c: sel
+                              ? (ThemeController.instance.tabAccent(
+                                      _nav[i].$1,
+                                      isDark: C.dark) ??
+                                  C.blue)
+                              : C.grey,
                           w: sel ? FontWeight.w600 : FontWeight.w400,
                         ),
                       ),

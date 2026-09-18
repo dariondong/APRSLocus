@@ -5882,6 +5882,147 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupThemeImagesOff => '不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标';
+
+  @override
+  String get themeSurface => '卡片表面';
+
+  @override
+  String get themeSurfaceDesc => '有背景图时，卡片要多透才既看得见图又读得清字';
+
+  @override
+  String get themeSurfaceAlpha => '不透明度（越低越透）';
+
+  @override
+  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮盖力又透出一点背景；低于 0.6 文字容易糊';
+
+  @override
+  String get themeSurfaceNoBg => '当前没有背景图，这一项暂时看不出效果';
+
+  @override
+  String get themeLayout => '界面松紧与字体';
+
+  @override
+  String get themeLayoutDesc => '只作用于卡片与输入框的留白，不改各处细节间距';
+
+  @override
+  String get themeDensity => '松紧';
+
+  @override
+  String get themeDensityCompact => '紧凑';
+
+  @override
+  String get themeDensityNormal => '标准';
+
+  @override
+  String get themeDensityComfortable => '宽松';
+
+  @override
+  String get themeDensityHint => '改的是卡片内边距；若某项看起来没变，说明那处留白是单独写死的';
+
+  @override
+  String get themeFont => '字体';
+
+  @override
+  String get themeFontDefault => '跟随系统';
+
+  @override
+  String get themeFontSystem => '系统界面字体';
+
+  @override
+  String get themeFontMono => '等宽';
+
+  @override
+  String get themeFontHint => '只使用系统已装的字体；某台设备没装时会自动回退，不会变方框';
+
+  @override
+  String get themeTabs => '强调色';
+
+  @override
+  String get themeTabsDesc => '入口卡片的渐变色，以及每个页签自己的强调色';
+
+  @override
+  String get themeUniformAccent => '统一入口卡片配色';
+
+  @override
+  String get themeAccentFrom => '渐变起始色';
+
+  @override
+  String get themeAccentTo => '渐变结束色';
+
+  @override
+  String get themeOverridden => '已自定义';
+
+  @override
+  String get themeFollowsPrimary => '跟随主色';
+
+  @override
+  String get themeBgAlign => '对齐';
+
+  @override
+  String get themeAlignCenter => '居中';
+
+  @override
+  String get themeAlignTop => '上';
+
+  @override
+  String get themeAlignBottom => '下';
+
+  @override
+  String get themeAlignLeft => '左';
+
+  @override
+  String get themeAlignRight => '右';
+
+  @override
+  String get themeAlignTopLeft => '左上';
+
+  @override
+  String get themeAlignTopRight => '右上';
+
+  @override
+  String get themeAlignBottomLeft => '左下';
+
+  @override
+  String get themeAlignBottomRight => '右下';
+
+  @override
+  String get themeBgScale => '缩放';
+
+  @override
+  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用于「只取画面一角」';
+
+  @override
+  String get themeAuthor => '作者';
+
+  @override
+  String get themeDescription => '说明';
+
+  @override
+  String get themeSkinInfo => '皮肤信息';
+
+  @override
+  String get themeSkinInfoDesc => '分享给别人时，这两项会跟着皮肤一起走';
+
+  @override
+  String get themeAuthorHint => '你的呼号或昵称';
+
+  @override
+  String get themeDescHint => '一句话说明这套皮肤';
+
+  @override
+  String get themePreviewSwatches => '预览色板';
+
+  @override
+  String get themePresetGraphite => '石墨';
+
+  @override
+  String get themePresetSakura => '樱花';
+
+  @override
+  String get themePresetTerminal => '终端';
+
+  @override
+  String get themePresetAmber => '琥珀';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -11761,4 +11902,145 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get backupThemeImagesOff => '不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示';
+
+  @override
+  String get themeSurface => '卡片表面';
+
+  @override
+  String get themeSurfaceDesc => '有背景圖時，卡片要多透才既看得見圖又讀得清字';
+
+  @override
+  String get themeSurfaceAlpha => '不透明度（越低越透）';
+
+  @override
+  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮蓋力又透出一點背景；低於 0.6 文字容易糊';
+
+  @override
+  String get themeSurfaceNoBg => '目前沒有背景圖，這一項暫時看不出效果';
+
+  @override
+  String get themeLayout => '介面鬆緊與字體';
+
+  @override
+  String get themeLayoutDesc => '只作用於卡片與輸入框的留白，不改各處細節間距';
+
+  @override
+  String get themeDensity => '鬆緊';
+
+  @override
+  String get themeDensityCompact => '緊湊';
+
+  @override
+  String get themeDensityNormal => '標準';
+
+  @override
+  String get themeDensityComfortable => '寬鬆';
+
+  @override
+  String get themeDensityHint => '改的是卡片內邊距；若某項看起來沒變，說明那處留白是單獨寫死的';
+
+  @override
+  String get themeFont => '字體';
+
+  @override
+  String get themeFontDefault => '跟隨系統';
+
+  @override
+  String get themeFontSystem => '系統介面字體';
+
+  @override
+  String get themeFontMono => '等寬';
+
+  @override
+  String get themeFontHint => '只使用系統已裝的字體；某台裝置沒裝時會自動回退，不會變方框';
+
+  @override
+  String get themeTabs => '強調色';
+
+  @override
+  String get themeTabsDesc => '入口卡片的漸變色，以及每個頁籤自己的強調色';
+
+  @override
+  String get themeUniformAccent => '統一入口卡片配色';
+
+  @override
+  String get themeAccentFrom => '漸變起始色';
+
+  @override
+  String get themeAccentTo => '漸變結束色';
+
+  @override
+  String get themeOverridden => '已自訂';
+
+  @override
+  String get themeFollowsPrimary => '跟隨主色';
+
+  @override
+  String get themeBgAlign => '對齊';
+
+  @override
+  String get themeAlignCenter => '置中';
+
+  @override
+  String get themeAlignTop => '上';
+
+  @override
+  String get themeAlignBottom => '下';
+
+  @override
+  String get themeAlignLeft => '左';
+
+  @override
+  String get themeAlignRight => '右';
+
+  @override
+  String get themeAlignTopLeft => '左上';
+
+  @override
+  String get themeAlignTopRight => '右上';
+
+  @override
+  String get themeAlignBottomLeft => '左下';
+
+  @override
+  String get themeAlignBottomRight => '右下';
+
+  @override
+  String get themeBgScale => '縮放';
+
+  @override
+  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用於「只取畫面一角」';
+
+  @override
+  String get themeAuthor => '作者';
+
+  @override
+  String get themeDescription => '說明';
+
+  @override
+  String get themeSkinInfo => '皮膚資訊';
+
+  @override
+  String get themeSkinInfoDesc => '分享給別人時，這兩項會跟著皮膚一起走';
+
+  @override
+  String get themeAuthorHint => '你的呼號或暱稱';
+
+  @override
+  String get themeDescHint => '一句話說明這套皮膚';
+
+  @override
+  String get themePreviewSwatches => '預覽色板';
+
+  @override
+  String get themePresetGraphite => '石墨';
+
+  @override
+  String get themePresetSakura => '櫻花';
+
+  @override
+  String get themePresetTerminal => '終端';
+
+  @override
+  String get themePresetAmber => '琥珀';
 }

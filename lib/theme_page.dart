@@ -184,6 +184,14 @@ class _ThemePageState extends State<ThemePage> {
         return s.themePresetSunset;
       case 'builtin:contrast':
         return s.themePresetContrast;
+      case 'builtin:graphite':
+        return s.themePresetGraphite;
+      case 'builtin:sakura':
+        return s.themePresetSakura;
+      case 'builtin:terminal':
+        return s.themePresetTerminal;
+      case 'builtin:amber':
+        return s.themePresetAmber;
     }
     return t.name;
   }
@@ -369,9 +377,18 @@ class _ThemePageState extends State<ThemePage> {
     return id;
   }
 
-  Future<void> _pickColor(S s, ThemeColorToken token) async {
-    final isDark = _t.dark ?? st.darkMode;
-    var hex = hexOfColor(_t.colorOf(token.id, isDark: isDark));
+  /// 选色对话框（令牌 / 分页签 / 强调色共用）。
+  ///
+  /// 返回：null=取消，''=恢复默认，其余为 `RRGGBB`。
+  /// [allowReset] 为真才显示「恢复默认」——没有可恢复的东西时摆一个按钮
+  /// 只会让人点了没反应。
+  Future<String?> _pickColorDialog(
+    S s, {
+    required String title,
+    required String initial,
+    bool allowReset = false,
+  }) async {
+    var hex = initial;
     final ctrl = TextEditingController(text: hex);
     const palette = [
       '2563EB', '1D4ED8', '0EA5E9', '0E7490', '0EA5A4', '14B8A6',
@@ -383,7 +400,7 @@ class _ThemePageState extends State<ThemePage> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setD) => AlertDialog(
-          title: Text(s.themePickColor, style: T.h2),
+          title: Text(title, style: T.h2),
           content: SizedBox(
             width: 320,
             child: Column(
@@ -445,7 +462,7 @@ class _ThemePageState extends State<ThemePage> {
             ),
           ),
           actions: [
-            if (_t.overridesColor(token.id))
+            if (allowReset)
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
                 child: Text(s.themeReset, style: ts(13, c: C.grey)),
@@ -459,12 +476,380 @@ class _ThemePageState extends State<ThemePage> {
         ),
       ),
     );
-    if (ok == null) return;
-    if (ok == false) {
+    if (ok == null) return null;
+    if (ok == false) return '';
+    return hex;
+  }
+
+  Future<void> _pickColor(S s, ThemeColorToken token) async {
+    final isDark = _t.dark ?? st.darkMode;
+    final r = await _pickColorDialog(
+      s,
+      title: _tokenName(s, token.id),
+      initial: hexOfColor(_t.colorOf(token.id, isDark: isDark)),
+      allowReset: _t.overridesColor(token.id),
+    );
+    if (r == null) return;
+    if (r.isEmpty) {
       _mutate((t) => t.colors.remove(token.id));
       return;
     }
-    _mutate((t) => t.colors[token.id] = hex);
+    _mutate((t) => t.colors[token.id] = r);
+  }
+
+
+  /// 一行「标签 + 值」（可点编辑）
+  Widget _textRow({
+    required String label,
+    required String value,
+    required bool muted,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Text(label, style: ts(12, c: C.slate)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                value,
+                style: ts(12, c: muted ? C.greyLight : C.ink),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.edit_rounded, size: 14, color: C.greyLight),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _editSkinField(S s, {required bool author}) async {
+    final v = await _promptText(
+      title: author ? s.themeAuthor : s.themeDescription,
+      initial: author ? _t.author : _t.description,
+      hint: author ? s.themeAuthorHint : s.themeDescHint,
+    );
+    if (v == null) return;
+    _mutate((x) {
+      if (author) {
+        x.author = v;
+      } else {
+        x.description = v;
+      }
+    });
+  }
+
+  // ─── 表面 / 布局 / 分页签强调色 ───
+
+  /// 卡片表面不透明度（要有背景图才有可见效果）
+  Widget _surfaceSection(S s) {
+    return SettingsSectionCard(
+      title: s.themeSurface,
+      subtitle: s.themeSurfaceDesc,
+      icon: Icons.layers_rounded,
+      color: C.cyan,
+      children: [
+        _sliderRow(
+          s: s,
+          label: s.themeSurfaceAlpha,
+          value: _t.surfaceAlpha,
+          min: 0.3,
+          max: 1.0,
+          decimals: 2,
+          hint: _t.hasBackground ? s.themeSurfaceAlphaDesc : s.themeSurfaceNoBg,
+          onChanged: (v) => _mutate((x) => x.surfaceAlpha = v),
+        ),
+      ],
+    );
+  }
+
+  /// 界面密度 + 字体
+  Widget _layoutSection(S s) {
+    return SettingsSectionCard(
+      title: s.themeLayout,
+      subtitle: s.themeLayoutDesc,
+      icon: Icons.density_medium_rounded,
+      color: C.slate,
+      children: [
+        _chipGroup(
+          s: s,
+          label: s.themeDensity,
+          values: kThemeDensities,
+          current: _t.density,
+          nameOf: (v) => _densityName(s, v),
+          onPick: (v) => _mutate((x) => x.density = v),
+        ),
+        SettingsHint(s.themeDensityHint, color: C.slate),
+        const SizedBox(height: 4),
+        _chipGroup(
+          s: s,
+          label: s.themeFont,
+          values: kThemeFonts.map((f) => f.id).toList(),
+          current: _t.font,
+          nameOf: (v) => _fontName(s, v),
+          onPick: (v) => _mutate((x) => x.font = v),
+        ),
+        // 字体只用系统已装的：不内置字体文件（一款中文字体 5~10MB）。
+        // 所以要如实说明「缺失时会回退」，否则用户会以为选项没生效。
+        SettingsHint(s.themeFontHint,
+            color: C.slate, icon: Icons.info_outline_rounded),
+      ],
+    );
+  }
+
+  /// 统一强调渐变 + 分页签强调色
+  Widget _tabsSection(S s) {
+    return SettingsSectionCard(
+      title: s.themeTabs,
+      subtitle: s.themeTabsDesc,
+      icon: Icons.tab_rounded,
+      color: C.indigo,
+      children: [
+        SettingsSwitch(
+          s.themeUniformAccent,
+          value: _t.uniformAccent,
+          color: C.indigo,
+          onChanged: (v) => _mutate((x) => x.uniformAccent = v),
+        ),
+        if (_t.uniformAccent) ...[
+          _tokenRow(s, 'accentFrom', s.themeAccentFrom),
+          _tokenRow(s, 'accentTo', s.themeAccentTo),
+        ],
+        const Divider(height: 1),
+        for (final k in kThemeTabKeys) _tabColorRow(s, k),
+      ],
+    );
+  }
+
+  /// 单行颜色令牌（标签与令牌解耦，便于强调色这类专用项复用）
+  Widget _tokenRow(S s, String tokenId, String label) {
+    final isDark = _t.dark ?? st.darkMode;
+    final cur = _t.colorOf(tokenId, isDark: isDark);
+    return InkWell(
+      onTap: _editable ? () => _pickToken(s, tokenId, label) : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: cur,
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(color: C.borderStrong),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Text(label, style: ts(12, c: C.slate))),
+            Text(hexOfColor(cur), style: mono(10, c: C.grey)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 单个页签的强调色行。未指定时显示「跟随主色」而不是摆一个假颜色 ——
+  /// 后者会让用户以为已经被改过了。
+  Widget _tabColorRow(S s, String tabKey) {
+    final t = _t;
+    final overridden = t.tabColors.containsKey(tabKey);
+    final shown = overridden ? (parseHexColor(t.tabColors[tabKey]) ?? C.blue) : C.blue;
+    return InkWell(
+      onTap: _editable ? () => _pickTabColor(s, tabKey) : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: shown,
+                shape: BoxShape.circle,
+                border: Border.all(color: C.borderStrong),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: Text(_tabName(s, tabKey), style: ts(12, c: C.slate))),
+            Text(
+              overridden ? s.themeOverridden : s.themeFollowsPrimary,
+              style: ts(10, c: overridden ? C.grey : C.greyLight),
+            ),
+            if (overridden && _editable)
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                icon: Icon(Icons.restart_alt_rounded, size: 15, color: C.grey),
+                onPressed: () => _mutate((x) => x.tabColors.remove(tabKey)),
+              )
+            else
+              const SizedBox(width: 28),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _tabName(S s, String key) {
+    switch (key) {
+      case 'tabMap':
+        return s.map;
+      case 'tabStations':
+        return s.stations;
+      case 'tabMessages':
+        return s.messages;
+      case 'tabPackets':
+        return s.packets;
+    }
+    return s.settings;
+  }
+
+  Future<void> _pickTabColor(S s, String tabKey) async {
+    final r = await _pickColorDialog(
+      s,
+      title: _tabName(s, tabKey),
+      initial: _t.tabColors[tabKey] ?? hexOfColor(C.blue),
+      allowReset: _t.tabColors.containsKey(tabKey),
+    );
+    if (r == null) return;
+    if (r.isEmpty) {
+      _mutate((x) => x.tabColors.remove(tabKey));
+      return;
+    }
+    _mutate((x) => x.tabColors[tabKey] = r);
+  }
+
+  Future<void> _pickToken(S s, String tokenId, String label) async {
+    final isDark = _t.dark ?? st.darkMode;
+    final r = await _pickColorDialog(
+      s,
+      title: label,
+      initial: hexOfColor(_t.colorOf(tokenId, isDark: isDark)),
+      allowReset: _t.overridesColor(tokenId),
+    );
+    if (r == null) return;
+    if (r.isEmpty) {
+      _mutate((x) => x.colors.remove(tokenId));
+      return;
+    }
+    _mutate((x) => x.colors[tokenId] = r);
+  }
+
+  String _densityName(S s, String id) {
+    switch (id) {
+      case 'compact':
+        return s.themeDensityCompact;
+      case 'comfortable':
+        return s.themeDensityComfortable;
+    }
+    return s.themeDensityNormal;
+  }
+
+  String _fontName(S s, String id) {
+    switch (id) {
+      case 'systemUi':
+        return s.themeFontSystem;
+      case 'segoe':
+        return 'Segoe UI';
+      case 'pingfang':
+        return 'PingFang SC';
+      case 'yahei':
+        return 'Microsoft YaHei';
+      case 'notoSans':
+        return 'Noto Sans';
+      case 'mono':
+        return s.themeFontMono;
+    }
+    return s.themeFontDefault;
+  }
+
+  String _alignName(S s, String id) {
+    switch (id) {
+      case 'top':
+        return s.themeAlignTop;
+      case 'bottom':
+        return s.themeAlignBottom;
+      case 'left':
+        return s.themeAlignLeft;
+      case 'right':
+        return s.themeAlignRight;
+      case 'topLeft':
+        return s.themeAlignTopLeft;
+      case 'topRight':
+        return s.themeAlignTopRight;
+      case 'bottomLeft':
+        return s.themeAlignBottomLeft;
+      case 'bottomRight':
+        return s.themeAlignBottomRight;
+    }
+    return s.themeAlignCenter;
+  }
+
+  /// 一排可选项（填充方式 / 对齐 / 密度 / 字体 共用）
+  Widget _chipGroup({
+    required S s,
+    required String label,
+    required List<String> values,
+    required String current,
+    required String Function(String) nameOf,
+    required void Function(String) onPick,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: ts(12, c: C.slate)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final v in values)
+                _chip(v == current, nameOf(v), _editable ? () => onPick(v) : null),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _chip(bool on, String label, VoidCallback? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: on ? C.indigo.withValues(alpha: 0.12) : C.greyBg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: on ? C.indigo : C.border,
+            width: on ? 1.2 : 0.8,
+          ),
+        ),
+        child: Text(
+          label,
+          style: ts(11.5, c: on ? C.indigo : C.slate, w: FontWeight.w600),
+        ),
+      ),
+    );
   }
 
   // ─── 背景图 ───
@@ -478,7 +863,6 @@ class _ThemePageState extends State<ThemePage> {
       icon: Icons.wallpaper_rounded,
       color: C.indigo,
       children: [
-        // 预览 + 选择/移除
         InkWell(
           onTap: _editable ? () => _pickBackground(s) : null,
           child: Container(
@@ -508,13 +892,13 @@ class _ThemePageState extends State<ThemePage> {
         if (!has)
           SettingsHint(s.themeBgDisabledHint, color: C.slate)
         else ...[
-          // 不透明度：顺便当遮罩浓度用，所以文案里说清楚
           _sliderRow(
             s: s,
             label: s.themeBgOpacity,
             value: t.bgOpacity,
             min: kThemeBgOpacityMin,
             max: kThemeBgOpacityMax,
+            decimals: 2,
             hint: s.themeBgOpacityDesc,
             onChanged: (v) => _mutate((x) => x.bgOpacity = v),
           ),
@@ -524,32 +908,38 @@ class _ThemePageState extends State<ThemePage> {
             value: t.bgBlur,
             min: 0,
             max: kThemeBgBlurMax,
+            decimals: 0,
             hint: s.themeBgBlurDesc,
             onChanged: (v) => _mutate((x) => x.bgBlur = v),
           ),
-          // 填充方式
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(s.themeBgFit, style: ts(12, c: C.slate)),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final fit in kThemeBgFits)
-                      _fitChip(s, fit),
-                  ],
-                ),
-              ],
-            ),
+          _chipGroup(
+            s: s,
+            label: s.themeBgFit,
+            values: kThemeBgFits,
+            current: t.bgFit,
+            nameOf: (v) => _fitName(s, v),
+            onPick: (v) => _mutate((x) => x.bgFit = v),
           ),
-          // 诚实说明：图不随主题文件走。不说的话，用户把主题发给别人，
-          // 对方看到的是一套「没有背景」的主题，只会以为是坏的。
-          SettingsHint(s.themeBgLocalOnly, color: C.orange,
-              icon: Icons.info_outline_rounded),
+          _chipGroup(
+            s: s,
+            label: s.themeBgAlign,
+            values: kThemeBgAligns,
+            current: t.bgAlign,
+            nameOf: (v) => _alignName(s, v),
+            onPick: (v) => _mutate((x) => x.bgAlign = v),
+          ),
+          _sliderRow(
+            s: s,
+            label: s.themeBgScale,
+            value: t.bgScale,
+            min: kThemeBgScaleMin,
+            max: kThemeBgScaleMax,
+            decimals: 1,
+            hint: s.themeBgScaleDesc,
+            onChanged: (v) => _mutate((x) => x.bgScale = v),
+          ),
+          SettingsHint(s.themeBgLocalOnly,
+              color: C.orange, icon: Icons.info_outline_rounded),
         ],
       ],
     );
@@ -573,28 +963,6 @@ class _ThemePageState extends State<ThemePage> {
     );
   }
 
-  Widget _fitChip(S s, String fit) {
-    final on = _t.bgFit == fit;
-    return GestureDetector(
-      onTap: _editable ? () => _mutate((x) => x.bgFit = fit) : null,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: on ? C.indigo.withValues(alpha: 0.12) : C.greyBg,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: on ? C.indigo : C.border,
-            width: on ? 1.2 : 0.8,
-          ),
-        ),
-        child: Text(
-          _fitName(s, fit),
-          style: ts(11.5, c: on ? C.indigo : C.slate, w: FontWeight.w600),
-        ),
-      ),
-    );
-  }
-
   String _fitName(S s, String fit) {
     switch (fit) {
       case 'contain':
@@ -607,7 +975,10 @@ class _ThemePageState extends State<ThemePage> {
     return s.themeBgFitCover;
   }
 
-  /// 通用「标签 + 滑杆 + 说明」行（圆角/不透明度/模糊共用）
+  /// 通用「标签 + 滑杆 + 说明」行（圆角/不透明度/模糊/缩放共用）。
+  ///
+  /// [decimals] 决定显示精度：0.05~0.6 这种区间用两位才有意义，
+  /// 圆角 0~28 用整数即可 —— 一律写死 toFixed(0) 会让不透明度永远显示 0。
   Widget _sliderRow({
     required S s,
     required String label,
@@ -615,8 +986,11 @@ class _ThemePageState extends State<ThemePage> {
     required double min,
     required double max,
     String? hint,
+    int decimals = 0,
     required ValueChanged<double> onChanged,
   }) {
+    final shown =
+        decimals > 0 ? value.toStringAsFixed(decimals) : value.round().toString();
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
       child: Column(
@@ -625,10 +999,7 @@ class _ThemePageState extends State<ThemePage> {
           Row(
             children: [
               Expanded(child: Text(label, style: ts(12, c: C.slate))),
-              Text(
-                value.toStringAsFixed(max <= 1 ? 2 : 0),
-                style: mono(11, c: C.grey),
-              ),
+              Text(shown, style: mono(11, c: C.grey)),
             ],
           ),
           Slider(
@@ -654,8 +1025,7 @@ class _ThemePageState extends State<ThemePage> {
     try {
       r = await tc.importBackground();
     } catch (_) {
-      r = const icon_io.IconImportResult.fail(
-          icon_io.IconImportError.failed);
+      r = const icon_io.IconImportResult.fail(icon_io.IconImportError.failed);
     }
     if (!mounted) return;
     setState(() => _busy = false);
@@ -665,10 +1035,10 @@ class _ThemePageState extends State<ThemePage> {
     }
     switch (r.error) {
       case icon_io.IconImportError.cancelled:
-        return; // 用户自己取消
+        return;
       case icon_io.IconImportError.tooLarge:
-        // 背景图与图标上限不同，提示里要说清是哪一个，否则用户会拿着
-        // 「超过 2MB」的提示去压缩一张只用到 8MB 的图
+        // 背景图与图标上限不同，提示必须说清是哪一个，否则用户会拿着
+        // 「超过 2MB」去压缩一张本来只用到 8MB 的图
         _toast(s.themeBgErrTooLarge);
       case icon_io.IconImportError.badFormat:
         _toast(s.themeIconErrFormat);
@@ -1176,6 +1546,38 @@ class _ThemePageState extends State<ThemePage> {
       color: C.purple,
       body: Column(
         children: [
+          if (_editable)
+            SettingsSectionCard(
+              title: s.themeSkinInfo,
+              subtitle: s.themeSkinInfoDesc,
+              icon: Icons.badge_rounded,
+              color: C.purple,
+              children: [
+                _textRow(
+                  label: s.themeAuthor,
+                  value: _t.author.isEmpty ? s.themeAuthorHint : _t.author,
+                  muted: _t.author.isEmpty,
+                  onTap: () => _editSkinField(s, author: true),
+                ),
+                _textRow(
+                  label: s.themeDescription,
+                  value: _t.description.isEmpty
+                      ? s.themeDescHint
+                      : _t.description,
+                  muted: _t.description.isEmpty,
+                  onTap: () => _editSkinField(s, author: false),
+                ),
+                // 名字也要能改：复制出来的皮肤默认叫「默认 2」之类，
+                // 不改名的话列表里全是一串数字后缀
+                _textRow(
+                  label: s.themeRename,
+                  value: _themeName(s, _t),
+                  muted: false,
+                  onTap: () => _rename(s, _t),
+                ),
+              ],
+            ),
+          if (_editable) const SizedBox(height: 16),
           SettingsSectionCard(
             title: s.themePresets,
             subtitle: s.themeSubtitle,
@@ -1193,6 +1595,10 @@ class _ThemePageState extends State<ThemePage> {
             const SizedBox(height: 16),
             _radiusSection(s),
             const SizedBox(height: 16),
+            _surfaceSection(s),
+            _layoutSection(s),
+            const SizedBox(height: 16),
+            _tabsSection(s),
             _iconsSection(s),
             const SizedBox(height: 16),
             _textsSection(s),

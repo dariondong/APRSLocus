@@ -459,7 +459,24 @@ Widget? buildBackgroundLayer(
   required BoxFit fit,
   required bool tile,
   required Widget Function() fallback,
+  Alignment alignment = Alignment.center,
+  double scale = 1.0,
 }) {
+  // 缩放靠 Align + FractionallySizedBox 包一层实现，而不是去改图像的
+  // width/height：BoxFit 已经决定了「怎么适配」，再动尺寸会和它打架
+  // （典型表现是铺满时图被拉变形）。用变换只影响「多大/放哪」，语义清楚。
+  Widget wrap(Widget child) {
+    if (scale == 1.0 && alignment == Alignment.center) return child;
+    return Align(
+      alignment: alignment,
+      child: FractionallySizedBox(
+        widthFactor: scale.clamp(0.1, 4.0),
+        heightFactor: scale.clamp(0.1, 4.0),
+        child: child,
+      ),
+    );
+  }
+
   if (tile) {
     if (!ref.startsWith('file:')) return null;
     final name = ref.substring(5);
@@ -475,7 +492,8 @@ Widget? buildBackgroundLayer(
       );
     }
   }
-  return buildFileImage(ref, fit: fit, fallback: fallback);
+  final img = buildFileImage(ref, fit: fit, fallback: fallback);
+  return img == null ? null : wrap(img);
 }
 
 /// 是否已就绪（至少一个目录可用）。store 用它决定要不要 bump 版本重渲染。

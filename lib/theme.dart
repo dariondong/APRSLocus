@@ -79,11 +79,54 @@ class C {
 
   /// 卡片表面的实际填色
   static Color get surfaceFill =>
-      hasBackground ? white.withValues(alpha: 0.85) : white;
+      hasBackground ? white.withValues(alpha: surfaceAlpha) : white;
 
   /// 顶栏/侧栏等「压在内容上层」的表面，比卡片更实一点，避免文字与图打架
   static Color get surfaceFillStrong =>
       hasBackground ? white.withValues(alpha: 0.93) : white;
+
+  /// 卡片表面不透明度（主题可调；仅在真的透出背景时才有意义）
+  static double surfaceAlpha = 0.85;
+
+  /// 界面密度系数（0.85 紧凑 / 1.0 标准 / 1.2 宽松）。
+  /// 只作用于共用辅助函数算出来的留白，不去改硬编码的 EdgeInsets。
+  static double density = 1.0;
+
+  /// 界面字体族（null = 平台默认）
+  static String? uiFont;
+
+  /// 强调渐变（设置页入口卡片的图标底色）
+  static Color accentFrom = const Color(0xFF2563EB);
+  static Color accentTo = const Color(0xFF1D4ED8);
+
+  /// 皮肤是否把各入口卡片统一成同一套强调渐变。
+  /// 默认 false —— 保持每张卡片原本各自的配色，界面与旧版一模一样。
+  static bool uniformAccent = false;
+
+  /// 按密度缩放一个内边距
+  static EdgeInsets pad(double l, double t, double r, double b) =>
+      EdgeInsets.fromLTRB(l * density, t * density, r * density, b * density);
+
+  /// 按密度缩放一个统一内边距
+  static EdgeInsets padAll(double v) => EdgeInsets.all(v * density);
+
+  /// 强调渐变装饰（各入口卡片的图标块共用）。
+  ///
+  /// [fallback] 是该卡片**原本**的配色：皮肤没要求统一时原样用它，
+  /// 这样默认观感与旧版逐像素一致，皮肤开启统一后才换成 accentFrom/To。
+  static BoxDecoration accentDeco({double radius = 9, List<Color>? fallback}) {
+    final colors = (!uniformAccent && fallback != null)
+        ? fallback
+        : <Color>[accentFrom, accentTo];
+    return BoxDecoration(
+      gradient: LinearGradient(
+        colors: colors,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(radius),
+    );
+  }
 
   /// 输入框圆角：比卡片小一档，跟随卡片圆角但不小于 6
   static double get fieldRadius =>
@@ -157,6 +200,14 @@ class C {
       }
     }
     C.radius = radius ?? kDefaultRadius;
+    // 先复位到内置默认，再让令牌覆写覆盖 —— 顺序反了的话，换主题时
+    // 上一个主题设过的新令牌会残留（例如强调渐变还是旧皮肤的颜色）。
+    surfaceAlpha = 0.85;
+    density = 1.0;
+    uiFont = null;
+    uniformAccent = false;
+    accentFrom = const Color(0xFF2563EB);
+    accentTo = const Color(0xFF1D4ED8);
     if (tokens != null && tokens.isNotEmpty) _applyTokens(tokens);
   }
 
@@ -186,6 +237,27 @@ class C {
     if (g('warning') != null) yellow = g('warning')!;
     if (g('danger') != null) red = g('danger')!;
     if (g('info') != null) cyan = g('info')!;
+    // 次级面板底色：greyBg 与 greyLight 是同一族的两个深浅
+    if (g('surfaceAlt') != null) {
+      greyBg = g('surfaceAlt')!;
+      greyLight = _lighten(g('surfaceAlt')!, 0.10);
+    }
+    if (g('dividerStrong') != null) borderStrong = g('dividerStrong')!;
+    if (g('scrim') != null) black = g('scrim')!;
+    if (g('accentFrom') != null) accentFrom = g('accentFrom')!;
+    if (g('accentTo') != null) accentTo = g('accentTo')!;
+    // 强调渐变只给了一头时，另一头跟着走，避免出现「半截默认色」的怪渐变
+    if (g('accentFrom') != null && g('accentTo') == null) {
+      accentTo = _darken(g('accentFrom')!, 0.14);
+    }
+    if (g('accentTo') != null && g('accentFrom') == null) {
+      accentFrom = _lighten(g('accentTo')!, 0.14);
+    }
+  }
+
+  static Color _lighten(Color c, double amount) {
+    HSLColor h = HSLColor.fromColor(c);
+    return h.withLightness((h.lightness + amount).clamp(0.0, 1.0)).toColor();
   }
 
   static Color _darken(Color c, double amount) {
@@ -201,7 +273,7 @@ TextStyle ts(double s, {Color? c, FontWeight? w, double? h, double? ls}) =>
       fontWeight: w ?? FontWeight.w400,
       height: h,
       letterSpacing: ls,
-      fontFamily: _uiFont,
+      fontFamily: C.uiFont ?? _uiFont,
       fontFamilyFallback: const ['Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC'],
       package: null,
     );
@@ -225,6 +297,10 @@ List<BoxShadow> softShadow({double blur = 18, double y = 5, double alpha = 0.07}
     ];
 
 /// 卡片装饰。圆角默认取 [C.radius]（主题可调），显式传 [r] 则优先用 [r]。
+/// 卡片内容内边距（随密度缩放）。调用点若已写死 EdgeInsets 则保持原样 ——
+/// 只把「通用卡片」这一层交给密度控制，避免为一致性去改上百处。
+EdgeInsets cardPad([double v = 14]) => C.padAll(v);
+
 BoxDecoration cardDeco({Color? bg, double? r, bool shadow = true}) =>
     BoxDecoration(
       // 默认取 surfaceFill：有背景图时自动半透明，调用点一个都不用改

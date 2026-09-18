@@ -6124,4 +6124,151 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get backupThemeImagesOff =>
       'Tanpa gambar: cadangan lebih kecil, tetapi tema yang dipulihkan kehilangan latar dan ikon kustom';
+
+  @override
+  String get themeSurface => 'Permukaan kartu';
+
+  @override
+  String get themeSurfaceDesc => 'Saat ada latar, seberapa transparan kartu';
+
+  @override
+  String get themeSurfaceAlpha => 'Opasitas (makin rendah makin tembus)';
+
+  @override
+  String get themeSurfaceAlphaDesc =>
+      'Sekitar 0.85 menutup sekaligus memperlihatkan latar; di bawah 0.6 teks mulai kabur';
+
+  @override
+  String get themeSurfaceNoBg =>
+      'Belum ada gambar latar, jadi belum terlihat efeknya';
+
+  @override
+  String get themeLayout => 'Kerapatan & font';
+
+  @override
+  String get themeLayoutDesc =>
+      'Hanya memengaruhi padding kartu dan kolom isian';
+
+  @override
+  String get themeDensity => 'Kerapatan';
+
+  @override
+  String get themeDensityCompact => 'Padat';
+
+  @override
+  String get themeDensityNormal => 'Normal';
+
+  @override
+  String get themeDensityComfortable => 'Longgar';
+
+  @override
+  String get themeDensityHint =>
+      'Ini mengubah padding kartu; jika ada yang tak berubah, jaraknya ditetapkan terpisah';
+
+  @override
+  String get themeFont => 'Font';
+
+  @override
+  String get themeFontDefault => 'Bawaan sistem';
+
+  @override
+  String get themeFontSystem => 'Font antarmuka sistem';
+
+  @override
+  String get themeFontMono => 'Monospace';
+
+  @override
+  String get themeFontHint =>
+      'Hanya memakai font sistem; jika tidak ada, otomatis dialihkan';
+
+  @override
+  String get themeTabs => 'Warna aksen';
+
+  @override
+  String get themeTabsDesc => 'Gradien kartu masuk dan warna aksen per tab';
+
+  @override
+  String get themeUniformAccent => 'Samakan warna kartu masuk';
+
+  @override
+  String get themeAccentFrom => 'Awal gradien';
+
+  @override
+  String get themeAccentTo => 'Akhir gradien';
+
+  @override
+  String get themeOverridden => 'Kustom';
+
+  @override
+  String get themeFollowsPrimary => 'Ikut warna utama';
+
+  @override
+  String get themeBgAlign => 'Perataan';
+
+  @override
+  String get themeAlignCenter => 'Tengah';
+
+  @override
+  String get themeAlignTop => 'Atas';
+
+  @override
+  String get themeAlignBottom => 'Bawah';
+
+  @override
+  String get themeAlignLeft => 'Kiri';
+
+  @override
+  String get themeAlignRight => 'Kanan';
+
+  @override
+  String get themeAlignTopLeft => 'Kiri atas';
+
+  @override
+  String get themeAlignTopRight => 'Kanan atas';
+
+  @override
+  String get themeAlignBottomLeft => 'Kiri bawah';
+
+  @override
+  String get themeAlignBottomRight => 'Kanan bawah';
+
+  @override
+  String get themeBgScale => 'Skala';
+
+  @override
+  String get themeBgScaleDesc =>
+      '1.0 = ukuran asli; perbesar untuk menampilkan sebagian';
+
+  @override
+  String get themeAuthor => 'Penulis';
+
+  @override
+  String get themeDescription => 'Deskripsi';
+
+  @override
+  String get themeSkinInfo => 'Info skin';
+
+  @override
+  String get themeSkinInfoDesc => 'Keduanya ikut saat skin dibagikan';
+
+  @override
+  String get themeAuthorHint => 'Callsign atau nama panggilan Anda';
+
+  @override
+  String get themeDescHint => 'Satu baris tentang skin ini';
+
+  @override
+  String get themePreviewSwatches => 'Contoh warna';
+
+  @override
+  String get themePresetGraphite => 'Grafit';
+
+  @override
+  String get themePresetSakura => 'Sakura';
+
+  @override
+  String get themePresetTerminal => 'Terminal';
+
+  @override
+  String get themePresetAmber => 'Amber';
 }

@@ -128,11 +128,101 @@ class ThemeController extends ChangeNotifier {
         'textSecondary': '2B3445',
         'textMuted': '4A5568',
         'divider': '9AA5B5',
+        'dividerStrong': '6B7686',
         'success': '0F7A38',
         'warning': 'A65A00',
         'danger': 'C4103A',
       },
       radius: 8,
+    ),
+    // ── 以下为「皮肤」基调的内置预设：统一强调 + 更完整的令牌覆写 ──
+    AppTheme(
+      id: 'builtin:graphite',
+      name: '石墨',
+      builtin: true,
+      dark: true,
+      colors: {
+        'primary': '22D3EE',
+        'accentFrom': '22D3EE',
+        'accentTo': '0891B2',
+        'surface': '171B21',
+        'surfaceAlt': '1F242C',
+        'background': '0E1116',
+        'backgroundSoft': '171C23',
+        'textPrimary': 'E7EBF0',
+        'textSecondary': '9BA6B4',
+        'textMuted': '6B7684',
+        'divider': '262D36',
+        'dividerStrong': '39424E',
+        'scrim': '05070A',
+      },
+      radius: 10,
+      uniformAccent: true,
+    ),
+    AppTheme(
+      id: 'builtin:sakura',
+      name: '樱花',
+      builtin: true,
+      colors: {
+        'primary': 'DB2777',
+        'accentFrom': 'F472B6',
+        'accentTo': 'BE185D',
+        'background': 'FDF4F8',
+        'backgroundSoft': 'FAE8F1',
+        'surface': 'FFFFFF',
+        'surfaceAlt': 'F7E9F0',
+        'textPrimary': '3B1F2B',
+        'textSecondary': '7A5566',
+        'textMuted': 'A98C99',
+        'divider': 'F0DCE6',
+        'dividerStrong': 'E0C3D1',
+      },
+      radius: 18,
+      uniformAccent: true,
+    ),
+    AppTheme(
+      id: 'builtin:terminal',
+      name: '终端',
+      builtin: true,
+      dark: true,
+      colors: {
+        'primary': '4ADE80',
+        'accentFrom': '4ADE80',
+        'accentTo': '15803D',
+        'surface': '101510',
+        'surfaceAlt': '182018',
+        'background': '080B08',
+        'backgroundSoft': '101710',
+        'textPrimary': 'D7F5DE',
+        'textSecondary': '86A88E',
+        'textMuted': '5E7A66',
+        'divider': '1E2A1E',
+        'dividerStrong': '2F4030',
+        'scrim': '040604',
+      },
+      radius: 4,
+      uniformAccent: true,
+    ),
+    AppTheme(
+      id: 'builtin:amber',
+      name: '琥珀',
+      builtin: true,
+      colors: {
+        'primary': 'B45309',
+        'accentFrom': 'F59E0B',
+        'accentTo': '92400E',
+        'background': 'FBF6EE',
+        'backgroundSoft': 'F5EAD8',
+        'surface': 'FFFDF8',
+        'surfaceAlt': 'F3E7D3',
+        'textPrimary': '33240F',
+        'textSecondary': '6B5333',
+        'textMuted': '9A8666',
+        'divider': 'EBDFC9',
+        'dividerStrong': 'D8C6A6',
+      },
+      radius: 14,
+      uniformAccent: true,
     ),
   ];
 
@@ -421,12 +511,31 @@ class ThemeController extends ChangeNotifier {
         tokens[token.id] = t.colorOf(token.id, isDark: isDark);
       }
     }
+    // 皮肤没显式给强调渐变时，用主色推出来 —— 否则「统一卡片配色」会
+    // 把每张卡片都刷成内置的蓝，与用户刚改的主色对不上。
+    if (!t.overridesColor('accentFrom') && t.uniformAccent) {
+      tokens['accentFrom'] = t.colorOf('primary', isDark: isDark);
+    }
+    if (!t.overridesColor('accentTo') && t.uniformAccent) {
+      tokens['accentTo'] = t.colorOf('primary', isDark: isDark);
+    }
     C.applyTheme(
       isDark: isDark,
       primary: tokens['primary'] ?? legacyPrimary,
       tokens: tokens,
       radius: t.radius,
     );
+    // 密度 / 字体 / 统一强调：这三个是「皮肤」层面的整体观感，
+    // 与颜色一起在同一个时刻生效 —— 分两处设置会出现「颜色变了但字号没变」
+    // 这种半截状态。
+    C.density = kThemeDensityScale[t.density] ?? 1.0;
+    final fm = themeFontOption(t.font);
+    C.uiFont = fm?.family;
+    C.uniformAccent = t.uniformAccent;
+    // 表面不透明度只在「真的透出背景」时才有意义，但值本身总是同步过去，
+    // 这样用户先调不透明度、再加背景图时不用回头再调一次。
+    C.surfaceAlpha = t.surfaceAlpha;
+
     // 卡片/页面底色是否该透出背景，取决于「这个主题有没有背景图」。
     // 放在这里而不是 build 里：调色板是全局单例，它必须和主题同一时刻更新，
     // 否则会出现「背景已生效但卡片还是不透明」的半截状态。
@@ -460,6 +569,8 @@ class ThemeController extends ChangeNotifier {
       ref,
       fit: _boxFit(t.bgFit),
       tile: t.bgFit == 'tile',
+      alignment: _align(t.bgAlign),
+      scale: t.bgScale,
       fallback: () => const SizedBox.shrink(),
     );
     if (layer == null) return null; // 图没了：当作没设背景，而不是给一块空白
@@ -487,6 +598,29 @@ class ThemeController extends ChangeNotifier {
   /// 「文件被删了怎么办」这些逻辑只在那一处有，复制一份出来必然漂移。
   Widget? buildBgThumb(String ref) =>
       icon_io.buildFileImage(ref, fit: BoxFit.cover);
+
+  /// 背景对齐字符串 → Alignment（认不出回中心）
+  Alignment _align(String a) {
+    switch (a) {
+      case 'top':
+        return Alignment.topCenter;
+      case 'bottom':
+        return Alignment.bottomCenter;
+      case 'left':
+        return Alignment.centerLeft;
+      case 'right':
+        return Alignment.centerRight;
+      case 'topLeft':
+        return Alignment.topLeft;
+      case 'topRight':
+        return Alignment.topRight;
+      case 'bottomLeft':
+        return Alignment.bottomLeft;
+      case 'bottomRight':
+        return Alignment.bottomRight;
+    }
+    return Alignment.center;
+  }
 
   BoxFit _boxFit(String fit) {
     switch (fit) {
@@ -518,6 +652,14 @@ class ThemeController extends ChangeNotifier {
   /// 导入一张背景图（走与图标同一条通道，只是上限与目录不同）
   Future<icon_io.IconImportResult> importBackground() =>
       icon_io.importBackgroundFromPicker();
+
+  /// 某个页签的强调色（未被主题指定则返回 null，调用方回退 C.blue）
+  Color? tabAccent(String tabKey, {required bool isDark}) {
+    final t = active;
+    final hex = t.tabColors[tabKey];
+    if (hex == null) return null;
+    return parseHexColor(hex);
+  }
 
   /// 某个插槽是否引用了外部图片文件
   bool hasFileIcon(String slot) {

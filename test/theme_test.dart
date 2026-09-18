@@ -692,4 +692,189 @@ void main() {
       expect(kThemePackMaxBytes, lessThan(64 * 1024 * 1024));
     });
   });
+
+  group('皮肤（更高自定义）', () {
+    test('新字段全部往返：分页签强调色 / 密度 / 字体 / 表面不透明度 / 背景对齐缩放 / 元信息',
+        () {
+      final t = AppTheme(
+        id: 'skin1',
+        name: '皮肤',
+        author: 'BG7ABC',
+        description: '深海主题',
+        density: 'compact',
+        font: 'mono',
+        surfaceAlpha: 0.62,
+        bgAlign: 'bottomRight',
+        bgScale: 1.4,
+        uniformAccent: true,
+        tabColors: {'tabMap': '0EA5E9', 'tabMessages': 'DB2777'},
+        background: 'file:bg_a.png',
+      );
+      final back = AppTheme.fromJson(jsonDecode(jsonEncode(t.toJson())))!;
+      expect(back.author, 'BG7ABC');
+      expect(back.description, '深海主题');
+      expect(back.density, 'compact');
+      expect(back.font, 'mono');
+      expect(back.surfaceAlpha, 0.62);
+      expect(back.bgAlign, 'bottomRight');
+      expect(back.bgScale, 1.4);
+      expect(back.uniformAccent, isTrue);
+      expect(back.tabColors['tabMap'], '0EA5E9');
+      expect(back.tabColors['tabMessages'], 'DB2777');
+    });
+
+    test('分页签强调色只认白名单键，越界的跳过并计数', () {
+      final warns = <String>[];
+      final t = AppTheme.fromJson({
+        'id': 'u',
+        'tabColors': {
+          'tabMap': 'FF0000',
+          'tabNope': '00FF00',
+          'tabStations': 'not-a-color',
+        },
+      }, warnings: warns);
+      expect(t!.tabColors.keys, ['tabMap']);
+      expect(warns.length, 2);
+    });
+
+    test('未知密度/字体回退默认（不能让皮肤把界面搞成读不出来）', () {
+      final t = AppTheme.fromJson(
+          {'id': 'u', 'density': 'ultra-tight', 'font': 'comic-sans'})!;
+      expect(t.density, 'normal');
+      expect(t.font, 'default');
+      // 直接构造也一样
+      final t2 = AppTheme(id: 'u', name: 'u', density: 'x', font: 'y');
+      expect(t2.density, 'normal');
+      expect(t2.font, 'default');
+    });
+
+    test('表面不透明度夹在 0.3~1.0（太低等于把内容交给背景图）', () {
+      expect(
+        AppTheme.fromJson({'id': 'u', 'surfaceAlpha': 0.0})!.surfaceAlpha,
+        0.3,
+      );
+      expect(
+        AppTheme.fromJson({'id': 'u', 'surfaceAlpha': 5})!.surfaceAlpha,
+        1.0,
+      );
+    });
+
+    test('背景对齐/缩放夹取；未知对齐回 center', () {
+      final t = AppTheme.fromJson({
+        'id': 'u',
+        'background': 'file:bg_a.png',
+        'bgAlign': 'somewhere',
+        'bgScale': 99,
+      })!;
+      expect(t.bgAlign, 'center');
+      expect(t.bgScale, kThemeBgScaleMax);
+      final t2 = AppTheme(
+          id: 'u', name: 'u', background: 'file:bg_a.png', bgScale: 0.01);
+      expect(t2.bgScale, kThemeBgScaleMin);
+    });
+
+    test('预览色板最多 5 个，且非法色被丢掉', () {
+      final t = AppTheme.fromJson({
+        'id': 'u',
+        'previewSwatches': ['FF0000', '00FF00', 'nope', '0000FF', '111111',
+                            '222222', '333333'],
+      })!;
+      expect(t.previewSwatches.length, 5);
+      expect(t.previewSwatches.contains('nope'), isFalse);
+    });
+
+    test('copy() 深拷贝：改副本的分页签色不影响原件', () {
+      final t = AppTheme(
+        id: 'u',
+        name: 'u',
+        tabColors: {'tabMap': 'FF0000'},
+        previewSwatches: ['FF0000'],
+      );
+      final c = t.copy();
+      c.tabColors['tabMap'] = '00FF00';
+      c.previewSwatches.add('0000FF');
+      expect(t.tabColors['tabMap'], 'FF0000');
+      expect(t.previewSwatches.length, 1);
+    });
+
+    test('默认值的 isEmpty 判定要把新字段算进去', () {
+      expect(AppTheme(id: 'u', name: 'u').isEmpty, isTrue);
+      expect(AppTheme(id: 'u', name: 'u', density: 'compact').isEmpty, isFalse);
+      expect(AppTheme(id: 'u', name: 'u', font: 'mono').isEmpty, isFalse);
+      expect(
+        AppTheme(id: 'u', name: 'u', tabColors: {'tabMap': 'FF0000'}).isEmpty,
+        isFalse,
+      );
+      expect(
+        AppTheme(id: 'u', name: 'u', surfaceAlpha: 0.5).isEmpty,
+        isFalse,
+      );
+    });
+
+    test('内置皮肤 10 套，id 不重复，且都能解析', () {
+      final ids = ThemeController.builtinPresets.map((t) => t.id).toList();
+      expect(ids.toSet().length, ids.length);
+      expect(ids.length, greaterThanOrEqualTo(10));
+      for (final t in ThemeController.builtinPresets) {
+        final round = AppTheme.fromJson(jsonDecode(jsonEncode(t.toJson())))!;
+        expect(round.id, t.id);
+      }
+    });
+
+    test('内置皮肤的令牌与插槽都是白名单内的（打错字会静默失效）', () {
+      for (final t in ThemeController.builtinPresets) {
+        for (final k in t.colors.keys) {
+          expect(themeColorToken(k), isNotNull,
+              reason: '${t.id} 用了不存在的令牌 $k');
+        }
+        for (final k in t.tabColors.keys) {
+          expect(kThemeTabKeys.contains(k), isTrue,
+              reason: '${t.id} 用了不存在的页签键 $k');
+        }
+      }
+    });
+
+    test('统一强调时，强调渐变跟随主色（否则改了主色卡片还是旧蓝）', () {
+      final tc = ThemeController.instance;
+      tc.upsert(AppTheme(
+        id: 'u-uni',
+        name: 'u',
+        uniformAccent: true,
+        colors: {'primary': '16A34A'},
+      ));
+      tc.setActive('u-uni');
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.uniformAccent, isTrue);
+      expect(C.accentFrom, const Color(0xFF16A34A));
+      // 没开启统一时，界面用的仍是各卡片原本的配色
+      tc.upsert(AppTheme(id: 'u-nouni', name: 'u'));
+      tc.setActive('u-nouni');
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.uniformAccent, isFalse);
+    });
+
+    test('密度与字体同步进调色板，切回默认主题要复位', () {
+      final tc = ThemeController.instance;
+      tc.upsert(AppTheme(
+          id: 'u-dense', name: 'u', density: 'comfortable', font: 'mono'));
+      tc.setActive('u-dense');
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.density, greaterThan(1.0));
+      expect(C.uiFont, 'monospace');
+
+      tc.setActive(ThemeController.builtinPresets.first.id);
+      tc.applyColors(isDark: false, legacyPrimary: null);
+      expect(C.density, 1.0);
+      expect(C.uiFont, isNull);
+    });
+
+    test('分页签强调色：未指定返回 null，指定后返回该色', () {
+      final tc = ThemeController.instance;
+      tc.upsert(AppTheme(
+          id: 'u-tab', name: 'u', tabColors: {'tabMap': '0EA5E9'}));
+      tc.setActive('u-tab');
+      expect(tc.tabAccent('tabMap', isDark: false), const Color(0xFF0EA5E9));
+      expect(tc.tabAccent('tabStations', isDark: false), isNull);
+    });
+  });
 }

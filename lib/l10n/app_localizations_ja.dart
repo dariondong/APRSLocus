@@ -5944,4 +5944,147 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get backupThemeImagesOff =>
       '画像を含めません。バックアップは小さくなりますが、復元したテーマでは背景とカスタムアイコンが欠けます';
+
+  @override
+  String get themeSurface => 'カード表面';
+
+  @override
+  String get themeSurfaceDesc => '背景画像があるときのカードの透過度';
+
+  @override
+  String get themeSurfaceAlpha => '不透明度（低いほど透ける）';
+
+  @override
+  String get themeSurfaceAlphaDesc =>
+      '0.85 前後なら下地を透かしつつ読めます。0.6 未満は文字がにじみやすくなります';
+
+  @override
+  String get themeSurfaceNoBg => '背景画像がないため、今は効果が見えません';
+
+  @override
+  String get themeLayout => '余白とフォント';
+
+  @override
+  String get themeLayoutDesc => 'カードと入力欄の余白のみ。細かな間隔は変わりません';
+
+  @override
+  String get themeDensity => '余白';
+
+  @override
+  String get themeDensityCompact => '詰める';
+
+  @override
+  String get themeDensityNormal => '標準';
+
+  @override
+  String get themeDensityComfortable => 'ゆったり';
+
+  @override
+  String get themeDensityHint => 'カードの余白を変えます。変わらない箇所は個別に固定されています';
+
+  @override
+  String get themeFont => 'フォント';
+
+  @override
+  String get themeFontDefault => 'システム既定';
+
+  @override
+  String get themeFontSystem => 'システム UI フォント';
+
+  @override
+  String get themeFontMono => '等幅';
+
+  @override
+  String get themeFontHint =>
+      'システムにインストール済みのフォントのみ使用します。無い場合は自動的に代替され、豆腐にはなりません';
+
+  @override
+  String get themeTabs => 'アクセントカラー';
+
+  @override
+  String get themeTabsDesc => '入口カードのグラデーションと、タブごとのアクセントカラー';
+
+  @override
+  String get themeUniformAccent => '入口カードの配色を統一';
+
+  @override
+  String get themeAccentFrom => 'グラデ開始';
+
+  @override
+  String get themeAccentTo => 'グラデ終了';
+
+  @override
+  String get themeOverridden => 'カスタム';
+
+  @override
+  String get themeFollowsPrimary => 'メインカラーに追従';
+
+  @override
+  String get themeBgAlign => '位置';
+
+  @override
+  String get themeAlignCenter => '中央';
+
+  @override
+  String get themeAlignTop => '上';
+
+  @override
+  String get themeAlignBottom => '下';
+
+  @override
+  String get themeAlignLeft => '左';
+
+  @override
+  String get themeAlignRight => '右';
+
+  @override
+  String get themeAlignTopLeft => '左上';
+
+  @override
+  String get themeAlignTopRight => '右上';
+
+  @override
+  String get themeAlignBottomLeft => '左下';
+
+  @override
+  String get themeAlignBottomRight => '右下';
+
+  @override
+  String get themeBgScale => '拡大縮小';
+
+  @override
+  String get themeBgScaleDesc => '1.0 = 元のサイズ。拡大すると一部だけを見せられます';
+
+  @override
+  String get themeAuthor => '作者';
+
+  @override
+  String get themeDescription => '説明';
+
+  @override
+  String get themeSkinInfo => 'スキン情報';
+
+  @override
+  String get themeSkinInfoDesc => '共有すると、この 2 項も一緒に渡ります';
+
+  @override
+  String get themeAuthorHint => 'コールサインかニックネーム';
+
+  @override
+  String get themeDescHint => 'このスキンの一言説明';
+
+  @override
+  String get themePreviewSwatches => 'プレビュー色';
+
+  @override
+  String get themePresetGraphite => 'グラファイト';
+
+  @override
+  String get themePresetSakura => '桜';
+
+  @override
+  String get themePresetTerminal => 'ターミナル';
+
+  @override
+  String get themePresetAmber => 'アンバー';
 }

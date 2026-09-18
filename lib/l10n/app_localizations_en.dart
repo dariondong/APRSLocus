@@ -6115,4 +6115,153 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get backupThemeImagesOff =>
       'Images excluded: a smaller backup, but a restored theme will be missing its background and custom icons';
+
+  @override
+  String get themeSurface => 'Card surface';
+
+  @override
+  String get themeSurfaceDesc =>
+      'With a background image, how translucent cards should be';
+
+  @override
+  String get themeSurfaceAlpha => 'Opacity (lower is more see-through)';
+
+  @override
+  String get themeSurfaceAlphaDesc =>
+      'Around 0.85 keeps coverage while showing the backdrop; below 0.6 text starts to smear';
+
+  @override
+  String get themeSurfaceNoBg =>
+      'No background image is set, so this has no visible effect yet';
+
+  @override
+  String get themeLayout => 'Density & font';
+
+  @override
+  String get themeLayoutDesc =>
+      'Affects card and input padding only, not every spacing';
+
+  @override
+  String get themeDensity => 'Density';
+
+  @override
+  String get themeDensityCompact => 'Compact';
+
+  @override
+  String get themeDensityNormal => 'Normal';
+
+  @override
+  String get themeDensityComfortable => 'Comfortable';
+
+  @override
+  String get themeDensityHint =>
+      'This changes card padding; if something looks unchanged, its spacing is fixed individually';
+
+  @override
+  String get themeFont => 'Font';
+
+  @override
+  String get themeFontDefault => 'System default';
+
+  @override
+  String get themeFontSystem => 'System UI font';
+
+  @override
+  String get themeFontMono => 'Monospace';
+
+  @override
+  String get themeFontHint =>
+      'Uses system-installed fonts only; if one is missing it falls back automatically (no tofu boxes)';
+
+  @override
+  String get themeTabs => 'Accent colours';
+
+  @override
+  String get themeTabsDesc =>
+      'The entry-card gradient, and a per-tab accent colour';
+
+  @override
+  String get themeUniformAccent => 'Unify entry-card colours';
+
+  @override
+  String get themeAccentFrom => 'Gradient start';
+
+  @override
+  String get themeAccentTo => 'Gradient end';
+
+  @override
+  String get themeOverridden => 'Custom';
+
+  @override
+  String get themeFollowsPrimary => 'Follows primary';
+
+  @override
+  String get themeBgAlign => 'Alignment';
+
+  @override
+  String get themeAlignCenter => 'Center';
+
+  @override
+  String get themeAlignTop => 'Top';
+
+  @override
+  String get themeAlignBottom => 'Bottom';
+
+  @override
+  String get themeAlignLeft => 'Left';
+
+  @override
+  String get themeAlignRight => 'Right';
+
+  @override
+  String get themeAlignTopLeft => 'Top left';
+
+  @override
+  String get themeAlignTopRight => 'Top right';
+
+  @override
+  String get themeAlignBottomLeft => 'Bottom left';
+
+  @override
+  String get themeAlignBottomRight => 'Bottom right';
+
+  @override
+  String get themeBgScale => 'Scale';
+
+  @override
+  String get themeBgScaleDesc =>
+      '1.0 = original size; zoom in to show only part of the image';
+
+  @override
+  String get themeAuthor => 'Author';
+
+  @override
+  String get themeDescription => 'Description';
+
+  @override
+  String get themeSkinInfo => 'Skin info';
+
+  @override
+  String get themeSkinInfoDesc => 'Both travel with the skin when you share it';
+
+  @override
+  String get themeAuthorHint => 'Your callsign or nickname';
+
+  @override
+  String get themeDescHint => 'One line about this skin';
+
+  @override
+  String get themePreviewSwatches => 'Preview swatches';
+
+  @override
+  String get themePresetGraphite => 'Graphite';
+
+  @override
+  String get themePresetSakura => 'Sakura';
+
+  @override
+  String get themePresetTerminal => 'Terminal';
+
+  @override
+  String get themePresetAmber => 'Amber';
 }

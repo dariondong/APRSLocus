@@ -10628,6 +10628,288 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标'**
   String get backupThemeImagesOff;
+
+  /// No description provided for @themeSurface.
+  ///
+  /// In zh, this message translates to:
+  /// **'卡片表面'**
+  String get themeSurface;
+
+  /// No description provided for @themeSurfaceDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'有背景图时，卡片要多透才既看得见图又读得清字'**
+  String get themeSurfaceDesc;
+
+  /// No description provided for @themeSurfaceAlpha.
+  ///
+  /// In zh, this message translates to:
+  /// **'不透明度（越低越透）'**
+  String get themeSurfaceAlpha;
+
+  /// No description provided for @themeSurfaceAlphaDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'0.85 左右既保留遮盖力又透出一点背景；低于 0.6 文字容易糊'**
+  String get themeSurfaceAlphaDesc;
+
+  /// No description provided for @themeSurfaceNoBg.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前没有背景图，这一项暂时看不出效果'**
+  String get themeSurfaceNoBg;
+
+  /// No description provided for @themeLayout.
+  ///
+  /// In zh, this message translates to:
+  /// **'界面松紧与字体'**
+  String get themeLayout;
+
+  /// No description provided for @themeLayoutDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'只作用于卡片与输入框的留白，不改各处细节间距'**
+  String get themeLayoutDesc;
+
+  /// No description provided for @themeDensity.
+  ///
+  /// In zh, this message translates to:
+  /// **'松紧'**
+  String get themeDensity;
+
+  /// No description provided for @themeDensityCompact.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧凑'**
+  String get themeDensityCompact;
+
+  /// No description provided for @themeDensityNormal.
+  ///
+  /// In zh, this message translates to:
+  /// **'标准'**
+  String get themeDensityNormal;
+
+  /// No description provided for @themeDensityComfortable.
+  ///
+  /// In zh, this message translates to:
+  /// **'宽松'**
+  String get themeDensityComfortable;
+
+  /// No description provided for @themeDensityHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'改的是卡片内边距；若某项看起来没变，说明那处留白是单独写死的'**
+  String get themeDensityHint;
+
+  /// No description provided for @themeFont.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体'**
+  String get themeFont;
+
+  /// No description provided for @themeFontDefault.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随系统'**
+  String get themeFontDefault;
+
+  /// No description provided for @themeFontSystem.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统界面字体'**
+  String get themeFontSystem;
+
+  /// No description provided for @themeFontMono.
+  ///
+  /// In zh, this message translates to:
+  /// **'等宽'**
+  String get themeFontMono;
+
+  /// No description provided for @themeFontHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'只使用系统已装的字体；某台设备没装时会自动回退，不会变方框'**
+  String get themeFontHint;
+
+  /// No description provided for @themeTabs.
+  ///
+  /// In zh, this message translates to:
+  /// **'强调色'**
+  String get themeTabs;
+
+  /// No description provided for @themeTabsDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'入口卡片的渐变色，以及每个页签自己的强调色'**
+  String get themeTabsDesc;
+
+  /// No description provided for @themeUniformAccent.
+  ///
+  /// In zh, this message translates to:
+  /// **'统一入口卡片配色'**
+  String get themeUniformAccent;
+
+  /// No description provided for @themeAccentFrom.
+  ///
+  /// In zh, this message translates to:
+  /// **'渐变起始色'**
+  String get themeAccentFrom;
+
+  /// No description provided for @themeAccentTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'渐变结束色'**
+  String get themeAccentTo;
+
+  /// No description provided for @themeOverridden.
+  ///
+  /// In zh, this message translates to:
+  /// **'已自定义'**
+  String get themeOverridden;
+
+  /// No description provided for @themeFollowsPrimary.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随主色'**
+  String get themeFollowsPrimary;
+
+  /// No description provided for @themeBgAlign.
+  ///
+  /// In zh, this message translates to:
+  /// **'对齐'**
+  String get themeBgAlign;
+
+  /// No description provided for @themeAlignCenter.
+  ///
+  /// In zh, this message translates to:
+  /// **'居中'**
+  String get themeAlignCenter;
+
+  /// No description provided for @themeAlignTop.
+  ///
+  /// In zh, this message translates to:
+  /// **'上'**
+  String get themeAlignTop;
+
+  /// No description provided for @themeAlignBottom.
+  ///
+  /// In zh, this message translates to:
+  /// **'下'**
+  String get themeAlignBottom;
+
+  /// No description provided for @themeAlignLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'左'**
+  String get themeAlignLeft;
+
+  /// No description provided for @themeAlignRight.
+  ///
+  /// In zh, this message translates to:
+  /// **'右'**
+  String get themeAlignRight;
+
+  /// No description provided for @themeAlignTopLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'左上'**
+  String get themeAlignTopLeft;
+
+  /// No description provided for @themeAlignTopRight.
+  ///
+  /// In zh, this message translates to:
+  /// **'右上'**
+  String get themeAlignTopRight;
+
+  /// No description provided for @themeAlignBottomLeft.
+  ///
+  /// In zh, this message translates to:
+  /// **'左下'**
+  String get themeAlignBottomLeft;
+
+  /// No description provided for @themeAlignBottomRight.
+  ///
+  /// In zh, this message translates to:
+  /// **'右下'**
+  String get themeAlignBottomRight;
+
+  /// No description provided for @themeBgScale.
+  ///
+  /// In zh, this message translates to:
+  /// **'缩放'**
+  String get themeBgScale;
+
+  /// No description provided for @themeBgScaleDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'1.0 = 原始尺寸；放大可用于「只取画面一角」'**
+  String get themeBgScaleDesc;
+
+  /// No description provided for @themeAuthor.
+  ///
+  /// In zh, this message translates to:
+  /// **'作者'**
+  String get themeAuthor;
+
+  /// No description provided for @themeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'说明'**
+  String get themeDescription;
+
+  /// No description provided for @themeSkinInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'皮肤信息'**
+  String get themeSkinInfo;
+
+  /// No description provided for @themeSkinInfoDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享给别人时，这两项会跟着皮肤一起走'**
+  String get themeSkinInfoDesc;
+
+  /// No description provided for @themeAuthorHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'你的呼号或昵称'**
+  String get themeAuthorHint;
+
+  /// No description provided for @themeDescHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'一句话说明这套皮肤'**
+  String get themeDescHint;
+
+  /// No description provided for @themePreviewSwatches.
+  ///
+  /// In zh, this message translates to:
+  /// **'预览色板'**
+  String get themePreviewSwatches;
+
+  /// No description provided for @themePresetGraphite.
+  ///
+  /// In zh, this message translates to:
+  /// **'石墨'**
+  String get themePresetGraphite;
+
+  /// No description provided for @themePresetSakura.
+  ///
+  /// In zh, this message translates to:
+  /// **'樱花'**
+  String get themePresetSakura;
+
+  /// No description provided for @themePresetTerminal.
+  ///
+  /// In zh, this message translates to:
+  /// **'终端'**
+  String get themePresetTerminal;
+
+  /// No description provided for @themePresetAmber.
+  ///
+  /// In zh, this message translates to:
+  /// **'琥珀'**
+  String get themePresetAmber;
 }
 
 class _AppLocalizationsDelegate

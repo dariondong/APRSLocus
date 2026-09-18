@@ -6162,4 +6162,152 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get backupThemeImagesOff =>
       'Sin imágenes: copia más pequeña, pero al restaurar el tema le faltarán el fondo y los iconos personalizados';
+
+  @override
+  String get themeSurface => 'Superficie de tarjeta';
+
+  @override
+  String get themeSurfaceDesc =>
+      'Con imagen de fondo, cuán translúcidas son las tarjetas';
+
+  @override
+  String get themeSurfaceAlpha => 'Opacidad (más bajo = más transparente)';
+
+  @override
+  String get themeSurfaceAlphaDesc =>
+      'En torno a 0.85 cubre y deja ver el fondo; por debajo de 0.6 el texto se emborrona';
+
+  @override
+  String get themeSurfaceNoBg =>
+      'No hay imagen de fondo, así que aún no se nota';
+
+  @override
+  String get themeLayout => 'Densidad y tipografía';
+
+  @override
+  String get themeLayoutDesc => 'Solo afecta al relleno de tarjetas y campos';
+
+  @override
+  String get themeDensity => 'Densidad';
+
+  @override
+  String get themeDensityCompact => 'Compacta';
+
+  @override
+  String get themeDensityNormal => 'Normal';
+
+  @override
+  String get themeDensityComfortable => 'Amplia';
+
+  @override
+  String get themeDensityHint =>
+      'Cambia el relleno de las tarjetas; si algo no cambia, su espaciado está fijado aparte';
+
+  @override
+  String get themeFont => 'Tipografía';
+
+  @override
+  String get themeFontDefault => 'Predeterminada';
+
+  @override
+  String get themeFontSystem => 'Fuente del sistema';
+
+  @override
+  String get themeFontMono => 'Monoespaciada';
+
+  @override
+  String get themeFontHint =>
+      'Solo usa fuentes instaladas en el sistema; si falta alguna, se sustituye automáticamente';
+
+  @override
+  String get themeTabs => 'Colores de acento';
+
+  @override
+  String get themeTabsDesc =>
+      'El degradado de las tarjetas y un color de acento por pestaña';
+
+  @override
+  String get themeUniformAccent => 'Unificar colores de tarjetas';
+
+  @override
+  String get themeAccentFrom => 'Inicio del degradado';
+
+  @override
+  String get themeAccentTo => 'Fin del degradado';
+
+  @override
+  String get themeOverridden => 'Personalizado';
+
+  @override
+  String get themeFollowsPrimary => 'Sigue al principal';
+
+  @override
+  String get themeBgAlign => 'Alineación';
+
+  @override
+  String get themeAlignCenter => 'Centro';
+
+  @override
+  String get themeAlignTop => 'Arriba';
+
+  @override
+  String get themeAlignBottom => 'Abajo';
+
+  @override
+  String get themeAlignLeft => 'Izquierda';
+
+  @override
+  String get themeAlignRight => 'Derecha';
+
+  @override
+  String get themeAlignTopLeft => 'Arriba izq.';
+
+  @override
+  String get themeAlignTopRight => 'Arriba der.';
+
+  @override
+  String get themeAlignBottomLeft => 'Abajo izq.';
+
+  @override
+  String get themeAlignBottomRight => 'Abajo der.';
+
+  @override
+  String get themeBgScale => 'Escala';
+
+  @override
+  String get themeBgScaleDesc =>
+      '1.0 = tamaño original; amplía para mostrar solo una parte';
+
+  @override
+  String get themeAuthor => 'Autor';
+
+  @override
+  String get themeDescription => 'Descripción';
+
+  @override
+  String get themeSkinInfo => 'Información de la skin';
+
+  @override
+  String get themeSkinInfoDesc => 'Ambos viajan con la skin al compartirla';
+
+  @override
+  String get themeAuthorHint => 'Tu indicativo o apodo';
+
+  @override
+  String get themeDescHint => 'Una línea sobre esta skin';
+
+  @override
+  String get themePreviewSwatches => 'Muestras de color';
+
+  @override
+  String get themePresetGraphite => 'Grafito';
+
+  @override
+  String get themePresetSakura => 'Sakura';
+
+  @override
+  String get themePresetTerminal => 'Terminal';
+
+  @override
+  String get themePresetAmber => 'Ámbar';
 }

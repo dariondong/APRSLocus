@@ -1,5 +1,160 @@
 # 更新日志
 
+## [1.6.127] - 2026-09-18
+
+### 🎛️ 更高自定义：更多令牌、界面松紧与字体、分页签强调色、背景对齐缩放
+
+上一版把「颜色 / 图标 / 文字 / 背景图」都开放了，但界面里还有一批**写死**的东西：
+次级面板底色、较重的描边、弹窗遮罩、8 张设置入口卡片各自的渐变、卡片表面
+不透明度、每张卡片的留白 —— 改完主色后仍会看到「有些地方还是原来的样子」。
+这一版把这些也交出来，并给皮肤补上身份信息。
+
+**① 新增 5 个颜色令牌（共 17 个）**
+
+`surfaceAlt`（次级面板底色）、`dividerStrong`（较重描边）、`scrim`（遮罩）、
+`accentFrom` / `accentTo`（强调渐变）。
+
+**② 8 张设置入口卡片的渐变不再写死**
+
+原先每张卡片自带一组渐变（8 组互不相同）。现在皮肤可以打开「统一入口卡片配色」，
+把它们换成同一套 from→to；**默认关闭**，所以不装皮肤的界面与旧版逐像素一致。
+
+实现上只把 6 处写死渐变换成 `C.accentDeco(fallback: …)`：`fallback` 就是该卡片
+原本的配色，未开启统一时原样使用。这样「默认零回归」是结构性保证，而不是靠人工核对。
+
+开启统一但没给渐变时，强调色**跟随主色**推导 —— 否则用户刚把主色改成绿色，
+卡片却仍是内置的蓝。
+
+**③ 卡片表面不透明度可调（0.3 ~ 1.0）**
+
+原来写死 0.85。下限卡在 0.3：再低就等于把内容交给背景图了。没有背景图时，
+这一项下面会说明「暂时看不出效果」，而不是让用户以为坏了。
+
+**④ 界面松紧与字体**
+
+- **松紧**：紧凑 0.85 / 标准 1.0 / 宽松 1.2，作用于共用辅助函数算出来的留白
+  （卡片内边距）；
+- **字体**：跟随系统 / 系统界面字体 / Segoe UI / PingFang SC / Microsoft YaHei /
+  Noto Sans / 等宽。
+
+字体**只用系统已装的**：内置一款中文字体动辄 5~10MB，而本应用的包体已经因为
+图标库与 SVG 涨过一轮。因此选项里标注了它依赖的字体名，并明确写了「缺失时自动回退」——
+Flutter 找不到字体族会正常回退，不会出现方框或乱码。
+
+两处都如实说明了作用范围：密度「只改卡片内边距，没变的说明那处是单独写死的」、
+字体「某台设备没装就回退」。含糊其辞比范围小更糟 —— 用户会以为功能没生效。
+
+**⑤ 每个页签可以有自己的强调色**
+
+底部/侧栏 5 个页签的颜色可以逐个指定（未指定时显示「跟随主色」，而不是摆一个
+假颜色让人以为已改过）。侧栏的选中底色也跟着走。
+
+**⑥ 皮肤的身份信息**
+
+新增「作者」「说明」两个字段，可编辑、随皮肤一起导出；列表里也能直接改名
+（复制出来的皮肤默认叫「默认 2」，不改名列表全是一串后缀）。
+
+**⑦ 内置皮肤从 6 套扩到 10 套**
+
+新增**石墨**（深色 + 青强调）、**樱花**（粉、大圆角）、**终端**（深绿、方角）、
+**琥珀**（暖棕）。新增的这套都开启了「统一强调」，作为皮肤的样板。
+
+**⑧ 一个被测试抓到的真 bug**
+
+`uniformAccent` 的序列化条件写反了（`if (!uniformAccent) 'uniformAccent': false`），
+导致**打开统一强调后保存/导出会丢掉这个开关**——而且是静默的，重开界面就变回关闭。
+是「新字段往返」这条测试把它揪出来的：这类「写入时条件写反」的错，靠肉眼看 JSON
+很难发现，因为文件里确实**没有**那一行（看起来只是「用了默认值」）。
+
+`test/theme_test.dart` 53 → 66 条，新增的 13 条覆盖：新字段往返、分页签色白名单、
+未知密度/字体回退、表面不透明度与背景对齐缩放夹取、预览色板最多 5 个且滤非法色、
+`copy()` 深拷贝、`isEmpty` 判定包含新字段、内置皮肤 id 不重复且令牌都在白名单内、
+统一强调跟随主色、密度字体同步与复位、分页签色取值。
+
+---
+
+**Feature**: more customisation — extra colour tokens, UI density and font, per-tab accent
+colours, background alignment and zoom.
+
+The previous release opened up colours, icons, text and the background image, but a batch of
+things in the UI were still **hard-coded**: the secondary panel fill, the heavier stroke, the
+dialog scrim, the eight settings entry cards' individual gradients, the card surface opacity,
+and each card's padding. After changing the primary colour you would still see "some corners
+look unchanged". This release hands those over too, and gives skins an identity.
+
+**① Five new colour tokens (17 total)**
+
+`surfaceAlt` (secondary panel fill), `dividerStrong` (heavier stroke), `scrim` (dialog veil),
+`accentFrom` / `accentTo` (accent gradient).
+
+**② The eight settings entry cards' gradients are no longer hard-coded**
+
+Each card used to carry its own gradient (eight different pairs). A skin can now enable
+"unify entry-card colours" to replace them with one from→to pair; it is **off by default**, so
+without a skin the UI is pixel-identical to before.
+
+Only six hard-coded gradients changed, into `C.accentDeco(fallback: …)` where `fallback` is the
+card's original pair. "Zero regression by default" is therefore structural rather than something
+to verify by eye.
+
+When unification is on but no gradient is given, the accent is derived from the **primary**
+colour — otherwise a user who just turned the primary green would still see the built-in blue
+cards.
+
+**③ Card surface opacity is adjustable (0.3–1.0)**
+
+Previously fixed at 0.85. The floor is 0.3: any lower hands the content over to the background.
+With no background image the row explains that it has no visible effect yet, rather than looking
+broken.
+
+**④ UI density and font**
+
+- **Density**: compact 0.85 / normal 1.0 / comfortable 1.2, applied to padding computed by the
+  shared helpers (card padding);
+- **Font**: system default / system UI / Segoe UI / PingFang SC / Microsoft YaHei / Noto Sans /
+  monospace.
+
+Fonts use **system-installed families only**: bundling a CJK font costs 5–10 MB, and this app's
+bundle already grew once for the icon library and SVG. Each option therefore names the family it
+depends on, and the hint states plainly that a missing family falls back automatically — Flutter
+degrades gracefully here, no tofu boxes.
+
+Both settings state their own scope: density "changes card padding only; if something looks
+unchanged its spacing is fixed individually", font "falls back when not installed". Being vague
+is worse than a narrow scope — users conclude the feature does not work.
+
+**⑤ Per-tab accent colours**
+
+The five bottom/sidebar tabs can each have their own accent (when unset the row reads "follows
+primary" instead of showing a fake colour that implies it was already changed). The sidebar's
+selected background follows along.
+
+**⑥ Skins have an identity**
+
+New "Author" and "Description" fields, editable and exported with the skin; the list also allows
+renaming directly (a duplicated skin is called "Default 2" otherwise, leaving a list of suffixes).
+
+**⑦ Built-in skins grew from 6 to 10**
+
+Added **Graphite** (dark + cyan accent), **Sakura** (pink, large radii), **Terminal** (dark green,
+square corners) and **Amber** (warm brown). The new ones all enable "unify accent", as templates
+for what a skin can be.
+
+**⑧ A real bug the tests caught**
+
+`uniformAccent`'s serialisation condition was inverted
+(`if (!uniformAccent) 'uniformAccent': false`), so **enabling unified accents was silently lost
+on save/export** — reopening the UI showed it off again. The "new fields round-trip" test caught
+it. This class of "condition inverted on write" mistake is nearly invisible by eye, because the
+file genuinely does **not** contain the line (it just looks like a default).
+
+`test/theme_test.dart` went from 53 to 66 tests; the 13 new ones cover new-field round-trips, the
+per-tab colour whitelist, unknown density/font falling back, clamping of surface opacity and
+background alignment/zoom, preview swatches capped at 5 with invalid colours filtered, `copy()`
+deep-copying, `isEmpty` accounting for the new fields, built-in skins having unique ids and only
+whitelisted tokens, unified accent following the primary, density/font application and reset, and
+per-tab accent lookup.
+
 ## [1.6.126] - 2026-09-18
 
 ### 📦 主题导出可以带上图片了：换机/分享不再是一套「没有图」的主题
