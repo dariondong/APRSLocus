@@ -1,5 +1,96 @@
 # 更新日志
 
+## [1.6.130] - 2026-09-18
+
+### 📊 短波组件再重做：每个波段一条「日 → 夜」进度条，一眼看出**现在**该用哪段
+
+上一版（条件色带）虽然解决了同形状药丸堆叠的问题，但还剩两件要用户自己做的事：
+**① 波段名被挤掉** —— 列宽 46dp 放不下 9sp 加粗的 `12m/10m`（实测 42.0dp），平时
+刚好、系统字体一放大（Android 上限 1.3 倍 → 需 55.3dp）就被截成 `12m/1…`；
+而「这是哪个波段」是整块的**前置信息**，它没了其余都白搭。
+**② 还得心算「现在该看日间那列还是夜间那列」** —— 而「现在」正是这个组件要回答的问题。
+
+**新结构：每波段一条两段条，左 = 日间、右 = 夜间（顺序即时间顺序）**
+
+`[波段名 56dp][☀][日间段][夜间段][☾][当前档位]`
+
+- **当前时段那一段是实色 + 顶部一颗小白点**，另一段是淡底 —— 三重提示（色调 + 白点
+  + 右端档位）都落在「现在」上，不靠用户读字；
+- 两端用**太阳 / 月亮图标**标注时段语义（图标用 `setColorFilter` 染色 —— 那是
+  ImageView 才有的方法，v1.6.114 的事故就是把 TextView 当圆点用）；
+- 右端档位块给的是**当前时段**的档位（好 / 一般 / 差），不再需要横向对照两列；
+- 顶栏标题右侧直接写「**现在 日间 / 现在 夜间**」。
+
+**「当前时段」由原生按本机时钟判断**（阈值随快照下发：`dayFrom` / `dayTo`）
+
+组件每 30 分钟自刷新时只重绘已存的快照。若把「现在算日间还是夜间」在 Dart 侧**算死**，
+用户一整天不开 App 就会出现「19:00 之后组件还指着日间」。所以规则只在 Dart 定义一处
+（`hfIsDaytime()` + `kHfDayFromHour/ToHour`），Kotlin 只用不猜。
+
+这次顺带把它收成了**唯一判据**：此前 `07:00–19:00` 这个表达式在文件里抄了**两遍**
+（`bestBandAt` 与建议生成各一份），多一个调用方就多一处漂移的地方 —— 而漂移的表现是
+「面板说 20m 好、组件游标却指在日间」，最难解释的那种不一致。
+
+**回归护栏**
+
+- `波段名放得下，且留出系统字体放大（1.3 倍）的余量` —— 这条盯的正是上面那个 bug。
+  预览工具画文字**不裁切**，所以那版预览看不出来，只能靠断言；
+- `level 名落在 Kotlin 认识的集合里`：契约是**等级名**而不是色值，认不出会回退灰底；
+- 跨语言契约测试新增 `nowPrefix` / `dayFrom` / `dayTo` —— 少了任一个，组件会渲染成
+  「 夜间」（前缀空）或永远算作日间；
+- 真布局内容高度 **135.00dp**，比上一版（158.67dp）还矮 23.67dp，不会溢出。
+
+**顺带**：新增 `hfNow` 文案（6 种语言）；`aw_track_*` 等上一版的条件色带资源已随本版删除。
+
+---
+
+**The HF widget was rebuilt again: one 「day → night」 bar per band, so you can see at a glance which half applies *now*.**
+
+The previous version (condition tracks) fixed the eight-identical-pills problem but left two things to the user:
+**① band names were truncated** — the 46dp column could not hold `12m/10m` at 9sp bold (measured 42.0dp);
+that fits at the default font size, but Android allows up to 1.3× scaling (→ 55.3dp needed), which clipped it
+to `12m/1…`. "Which band is this" is the widget's *premise*, so losing it makes the rest useless.
+**② you still had to work out whether to read the day or the night column** — and "now" is precisely the
+question this widget exists to answer.
+
+**New structure: one two-segment bar per band, left = day, right = night (the order is chronological)**
+
+`[band name 56dp][☀][day segment][night segment][☾][current quality]`
+
+- **The segment for the current part of the day is solid with a small white pip at its top**, the other is a
+  pale fill — three cues (tint, pip, and the right-hand block) all point at "now", none of which requires
+  reading text.
+- **Sun / moon icons** at the two ends carry the time-of-day semantics (tinted via `setColorFilter`, which
+  only exists on ImageView — the v1.6.114 outage was a TextView used as a dot).
+- The right-hand block shows the quality of the **current** slot only, so there is no more scanning two
+  columns against each other.
+- The header states 「现在 日间 / 现在 夜间」 ("now: day/night") right next to the title.
+
+**The current slot is resolved natively from the device clock** (thresholds downlinked in the snapshot as
+`dayFrom` / `dayTo`). The widget redraws the stored snapshot every 30 minutes, so if Dart decided "day or
+night" up front, a user who never opens the app would see the widget still pointing at daytime after 19:00.
+The rule is therefore defined in exactly one place in Dart (`hfIsDaytime()` with
+`kHfDayFromHour`/`kHfDayToHour`) and Kotlin only consumes it.
+
+This change also collapses it into the **single predicate** it should always have been: the `07:00–19:00`
+expression had been duplicated (once in `bestBandAt`, once in tip generation), and every extra caller is
+another place to drift — drift that shows up as "the panel says 20m is good while the widget's pip points at
+daytime", the least explicable kind of inconsistency.
+
+**Regression guards**
+
+- `band names fit, with headroom for 1.3× system font scaling` — this targets exactly the bug above. The
+  preview tool does not clip text when drawing, so that version's preview could not reveal it; an assertion
+  can.
+- `level names fall inside the set Kotlin knows`: the contract is the *level name*, not a colour value, and
+  an unknown level falls back to grey.
+- The cross-language contract test now also covers `nowPrefix` / `dayFrom` / `dayTo` — missing any one of them
+  makes the widget render " night" (empty prefix) or treat every hour as daytime.
+- The real layout measures **135.00dp** tall, 23.67dp *shorter* than the previous version (158.67dp), so there
+  is no overflow.
+
+**Also**: new `hfNow` string in six languages; the previous version's `aw_track_*` resources are removed.
+
 ## [1.6.129] - 2026-09-18
 
 ### 🎛️ 短波桌面组件重做：从「八个药丸」改为「条件色带」
