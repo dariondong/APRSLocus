@@ -236,6 +236,7 @@ iSelfReliant:'<path d="M4.5 5h15v14h-15zM8 9.5l3 3-3 3M13.5 15.5h3"/>'
 | `coffee` | 赞助/咖啡 | `Icons.local_cafe_rounded` |
 | `jade` | 赠我以琼琚 | `Icons.card_giftcard_rounded` |
 | `school` | 学校/社团 | `Icons.school_rounded` |
+| `api` | 协议/接口支持 | `Icons.api_rounded` |
 | 其他 | 兜底 | `Icons.favorite_rounded` |
 
 官网 contributor 块模板（注意各语言 `c-role` 文案不同）：

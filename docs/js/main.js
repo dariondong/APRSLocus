@@ -273,6 +273,7 @@
       coffee: "linear-gradient(135deg,#f59e0b,#b45309)",
       jade: "linear-gradient(135deg,#c9a227,#8a6d1f)",
       school: "linear-gradient(135deg,#0ea5b7,#0b7285)",
+      api: "linear-gradient(135deg,#0891b2,#164e63)",
       everyone: "linear-gradient(135deg,#ec4899,#be185d)",
     };
 

@@ -124,6 +124,16 @@ class _SponsorPageState extends State<SponsorPage> {
       },
     ),
     (
+      kind: 'api',
+      name: 'BH7NOR',
+      names: const {},
+      desc: 'APRS.TV 协议接口支持',
+      descs: const {
+        'zh-TW': 'APRS.TV 協定介面支援',
+        'en': 'APRS.TV protocol interface support',
+      },
+    ),
+    (
       kind: 'everyone',
       name: '每一位支持者',
       names: const {
@@ -193,6 +203,7 @@ class _SponsorPageState extends State<SponsorPage> {
         'coffee' => Icons.local_cafe_rounded,
         'jade' => Icons.card_giftcard_rounded,
         'school' => Icons.school_rounded,
+        'api' => Icons.api_rounded,
         _ => Icons.favorite_rounded,
       };
 

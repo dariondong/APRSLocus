@@ -40,6 +40,7 @@ GRAD = {
     'coffee': '#f59e0b,#b45309',
     'jade': '#c9a227,#8a6d1f',
     'school': '#0ea5b7,#0b7285',
+    'api': '#0891b2,#164e63',
     'everyone': '#ec4899,#be185d',
 }
 FALLBACK_GRAD = GRAD['everyone']
