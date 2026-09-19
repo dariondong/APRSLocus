@@ -1,5 +1,141 @@
 # 更新日志
 
+## [1.6.137] - 2026-09-19
+
+### 🛠 修「网关传递统计一直是 0」：先把 0 说清楚，也别自己制造 0 / Fixing “the iGate counters are always 0” — explain the zero, and stop creating one
+
+用户报：网关传递统计一直是 0。逐层查下来，计数逻辑本身是好的（判据与改写都是
+纯函数 `Igate`，有测试），真正的问题是这个 `0` **四个含义长得一模一样**：
+
+① 射频根本没收到报文（TNC 没连上 / 线速不对）→ 链路问题；
+② 收到了，但 APRS-IS 没连上（没有可转递的目标）→ 网络问题；
+③ 收到了，但全被环路防护拒收（报文来自互联网）→ 其实**在正确工作**；
+④ 真的什么都没转。
+
+而界面上只有一串 0，四种情形的显示完全一样 —— 排查只能靠猜。这一版把它拆开。
+
+**新增两个数，把「没流量」和「没转递」分开**
+
+- **射频收到（条）**：**只要射频在收就计，与网关开不开、APRS-IS 通不通无关**。
+  它是唯一能自证的数字 —— 有了它，「射频到底有没有东西进来」不再需要靠日志猜。
+- **环路拒收（条）**：原先只在日志里且还按节流（20 条才打一行）。它一直涨，
+  「已转递 = 0」就是有原因的，得让人直接看见。
+
+**「不涨」时界面直接说缺哪一项**（这四种情形分开说，不合并成一句「不能用」）
+
+- 没勾射频来源 → 去勾 TNC / 音频；
+- 勾了但链路没连上（线速不对 / 设备没开机）→ 去查设备页，**而不是怀疑网关**；
+- APRS-IS 没连上 → 没有可转递的目标网络，等它连上数字才会涨；
+- 条件全齐、却一条都没收到 → 明说「这不是网关的问题，报文根本没进来」，
+  并指出上游该查什么（音量/静噪、天线、对方是否真的在发射）。
+- 全被环路防护拒收 → 说明这是**在正确工作**（那些报文本来就从互联网来，
+  再送回去会让同一条报文无限增殖），不是故障。
+
+**顺手修两个「由统计自己制造出来的 0」**
+
+它们比缺字段更隐蔽，因为表现和「一切正常但没流量」一模一样：
+
+- **开关一关一开就把统计清零**。而「数字不涨 → 关掉再打开」正是用户的第一反应，
+  于是数字立刻归零、再开回来也永远看不到它曾经涨过 —— 诊断路径被自己的界面堵死。
+  现在清空统计只认「清空统计」这个按钮（切换数据来源时也清，那是换了一套配置）。
+- **射频链路已经断了还在计「射频收到」**。链路是断的却还在冒数，只能说明有别的链路
+  在往同一条管线里灌（同时绑了同一台设备、APRS-IS 被当成射频…）。那时这个数就是假的 ——
+  而**假的自证数字比没有数字更糟**：用户会拿它去证明「射频没问题」，然后往错的方向查。
+
+**真正的功能 bug：串口线速被静默复位成 9600**
+
+`TncConfig._copy()` 是一段**手写的逐字段拷贝**，而**真正读配置走的就是它**
+（`TncLink.load()` → `_copy()`）。它漏抄了 `serialBaud` —— 于是串口 TNC 设了 38400，
+重启后又按 9600 打开，**一个字节都收不到**，症状正是「台站不上图、网关统计恒为 0」，
+而界面上任何地方都看不出线速变了。
+
+`toJson` / `fromJson` 都带着 `serialBaud`，测试也只验了 JSON 往返，所以看起来「早就修好了」——
+但那条路根本没人走。补上的同时还钉了一条**直接调 `load()`** 的回归测试，
+并把同一段拷贝里其它射频参数（`path` / `initString`）一起盯住：**漏字段 = 静默复位，
+与「没持久化」完全等价**。
+
+**顺带**：切换射频来源（换设备 / 线速 / 频段）时清掉去重表与「听到过」列表 ——
+旧表会把新链路上的**首包**当成重复丢弃，表现也是「网关统计一直是 0」（连「重复丢弃」
+都不涨时最难查）；但**统计不清**，用户正需要它来对比换配置前后。
+
+新增 6 条网关统计回归测试（`test/igate_state_test.dart`，含 `rf-down` 不计数、
+开关不清统计、切来路清表不清数、以及「解码器产物不被判成畸形」的接缝测试），
+新增 2 个文案键 ×6 语言。
+
+---
+
+**The iGate relay counters were always 0.** Layer by layer, the counting itself was fine
+(`Igate` is a pure function with its own tests); the real problem was that a single `0` had
+**four indistinguishable meanings**:
+
+① nothing was ever heard on RF (TNC down / wrong baud) — a link problem;
+② packets arrived but APRS-IS was down (nowhere to relay to) — a network problem;
+③ packets arrived but all were rejected by loop protection (they came from the internet) —
+the gateway **working correctly**;
+④ genuinely nothing was relayed.
+
+The UI showed the same row of zeros for all four, so troubleshooting was guesswork.
+
+**Two new counters to separate “no traffic” from “no relaying”**
+
+- **Heard on RF**: counted **whenever RF is receiving, regardless of whether the gateway is on
+  or APRS-IS is up**. It is the one self-proving number: “is anything at all arriving on RF”
+  no longer has to be inferred from the log.
+- **Loop-protection rejects**: previously log-only and throttled (one line per 20 packets).
+  If it keeps climbing, “relayed = 0” has a reason, and that reason should be visible.
+
+**When nothing is moving, the UI now names the missing piece** (four separate cases, not one
+vague “not available”)
+
+- No RF source ticked → tick TNC / audio.
+- Ticked but the link is not up (wrong baud, device off) → look at the device page,
+  **not at the gateway**.
+- APRS-IS not connected → there is nowhere to relay to; the numbers start moving once it is up.
+- Everything ready but not a single packet heard → it says plainly that this is not a gateway
+  problem and tells you what to check upstream (volume/squelch, antenna, whether anyone is
+  actually transmitting).
+- All rejected by loop protection → explained as **working correctly** (those packets came from
+  the internet; sending them back would multiply the same packet forever), not a fault.
+
+**Two “zeros the statistics created themselves”**
+
+These are sneakier than a missing field, because they look exactly like “everything is fine,
+just no traffic”:
+
+- **Toggling the gateway off and on used to wipe the counters.** And “it isn’t moving → turn it
+  off and on” is the user’s first reflex, so the numbers reset instantly and never show history
+  again — the UI sabotaged its own diagnostic path. Clearing is now only done by the
+  **“Clear statistics”** button (plus when switching data sources, i.e. a genuinely new setup).
+- **The RF link being down no longer counts as “Heard on RF”.** If the RF link is down and the
+  counter still climbs, something else is feeding the same pipeline (a shared device, APRS-IS
+  mistaken for RF…), and the number is a lie — and **a lying self-proof is worse than none**:
+  users use it to prove “RF is fine” and then search in the wrong direction.
+
+**The real functional bug: serial baud silently reset to 9600**
+
+`TncConfig._copy()` is a **hand-written field-by-field copy**, and it is exactly what the
+config-loading path uses (`TncLink.load()` → `_copy()`). It never copied `serialBaud` — so a
+serial TNC configured for 38400 was reopened at 9600 after a restart and **received not a
+single byte**, whose symptoms are precisely “stations never appear on the map and the iGate
+counters stay at 0”, with nothing in the UI to hint that the baud rate had changed.
+
+`toJson` / `fromJson` both carry `serialBaud`, and the tests only covered the JSON round trip,
+so it looked long fixed — but that path was never taken. Along with the fix, a regression test
+now calls `load()` directly and pins the other RF parameters in the same copy block
+(`path`, `initString`): **a missed field is a silent reset, exactly equivalent to never
+persisting it at all**.
+
+**Also**: switching the RF source (new device / baud / band) now clears the dedupe window and
+the “heard” list, because a stale window makes the **first** packet on the new link look like a
+duplicate — another way for the counters to sit at 0 (and the hardest to spot, since not even
+“duplicates dropped” moves). The statistics, however, are **not** cleared: comparing before and
+after the change is exactly what the user needs them for.
+
+Six new regression tests for the gateway counters (`test/igate_state_test.dart`, covering
+`rf-down` not counting, the switch not wiping stats, clearing tables but not numbers when the
+source changes, and the seam test that decoder output is never judged malformed), plus two new
+string keys ×6 languages.
+
 ## [1.6.136] - 2026-09-19
 
 ### 🔌 新增「硬件串口」：Android 支持 USB-OTG 串口线，桌面串口可设波特率 / New “hardware serial”: USB-OTG serial on Android, settable baud rate on desktop

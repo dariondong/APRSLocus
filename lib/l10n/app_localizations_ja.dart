@@ -1084,6 +1084,29 @@ class AppLocalizationsJa extends AppLocalizations {
   String get igateResetStats => 'カウンタをリセット';
 
   @override
+  String get igateStatRfSeen => 'RF 受信（件）';
+
+  @override
+  String get igateStatBlocked => 'ループ防止で拒否';
+
+  @override
+  String get igateRfDown =>
+      'RF リンクが未接続のため、ゲートウェイは何も中継できません。「RF 受信」が 0 のままならパケットがそもそも届いていません。TNC／オーディオの状態（シリアル速度・電源）を確認してください。';
+
+  @override
+  String get igateIsDown =>
+      'APRS-IS が未接続のため、転送先がありません。接続が確立するとカウンタが動き始めます（リンク状態カードを参照）。';
+
+  @override
+  String get igateNoRfTraffic =>
+      'RF でパケットを 1 件も受信していません。ゲートウェイの条件は揃っていますが'
+      '**中継するものがありません**。ゲートウェイの問題ではなく、パケットがアプリに届いていません。上流を確認してください：無線機の音量とスケルチ、アンテナ、相手が実際に送信しているか、ログページに RF パケットがあるか。';
+
+  @override
+  String get igateAllRejected =>
+      'RF パケットは届いていますが、すべてループ防止で拒否されました。TCPIP*/TCPXX* や q 構文を含む＝インターネット由来のため、APRS-IS に戻すと同一パケットが無限増殖します。**正常動作**です。';
+
+  @override
   String grpSysJoined(String call) {
     return '$call がグループに参加しました';
   }

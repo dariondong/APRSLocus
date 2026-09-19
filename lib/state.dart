@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.136';
+  static const appVersion = '1.6.137';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -719,6 +719,14 @@ class AppState extends ChangeNotifier {
   /// 送到射频。**会真实发射**，所以默认关闭，需用户显式打开。
   bool igateTwoWay = false;
 
+  /// 射频上收到的报文总数（无论网关开不开都计）。
+  ///
+  /// 为什么需要它：网关统计全是 0 时，用户无法区分下面两种完全不同的情况 ——
+  ///   * 射频根本没收到报文（TNC 没连上 / 线速不对 / 静噪？）= 链路问题；
+  ///   * 收到了但一条都没转递（被拒 / 去重）= 网关问题。
+  /// 没有这个分子，界面上只有一连串 0，排查只能靠猜。
+  int igateRfSeen = 0;
+
   /// 网关已转递到 APRS-IS 的报文数
   int igateGated = 0;
 
@@ -834,8 +842,38 @@ class AppState extends ChangeNotifier {
     return null;
   }
 
-  /// 网关是否具备工作条件：既要有射频来源，又要有 APRS-IS
+  /// 网关是否具备工作条件（**配置层面**）：勾了至少一个射频来源。
+  ///
+  /// 注意这是「配了没有」，不是「通不通」—— 真正能不能转递要看 [igateActive]。
+  /// 两者必须分开：勾选状态用来提示「去勾 TNC/音频」，连通状态用来提示
+  /// 「链路没连上」，两者混成一个判断会让提示指向错误的方向。
   bool get igateReady => tncOn || audioOn;
+
+  /// 射频来源是否**真的有链路在收**（与 [_gateRfToIs] 的真条件一致）。
+  bool get igateRfUp => (tncOn && isUp(srcTnc)) || (audioOn && isUp(srcAudio));
+
+  /// 网关此刻是否真的在转递：开关开着 + 射频在收 + APRS-IS 连着。
+  ///
+  /// [_gateRfToIs] 的守卫就是这三个条件，界面用它来判断「统计该不该涨」。
+  bool get igateActive => igateEnabled && igateRfUp && isUp(srcAprsIs);
+
+  /// 网关开了、条件却没齐时，返回**没齐的那一项**（界面直接显示）。
+  ///
+  /// 空字符串 = 条件齐了（此时统计不涨只能是因为没有射频流量或被拒，
+  /// 那由 igateRfSeen / igateBlocked 两个数说明）。
+  String get igateIdleReason {
+    if (!igateEnabled) return '';
+    if (igateActive) {
+      // 条件齐了还一条都没转出去，只可能是**全被环路防护拒收** ——
+      // 那是「在正确工作」，但用户看到 0 仍然会以为坏了，所以照样要说。
+      return (igateRfSeen > 0 && igateGated == 0 && igateBlocked > 0)
+          ? 'all-rejected'
+          : '';
+    }
+    if (!igateReady) return 'no-rf-source';
+    if (!igateRfUp) return 'rf-down';
+    return 'is-down';
+  }
 
   /// 按来源取射频中继路径
   String rfPathOf(String src) =>
@@ -924,6 +962,15 @@ class AppState extends ChangeNotifier {
         dataSource =
             enabledSources.firstWhere(canTransmit, orElse: () => dataSource);
       }
+    }
+    if (s0 == srcTnc || s0 == srcAudio) {
+      // 射频链路的去重表与「听到过」列表都是**跨会话累积**的：换了设备、
+      // 线速或频段之后，旧表会把新链路上的**首次**报文当成重复丢掉，
+      // 表现正是「网关统计一直是 0」（连「重复丢弃」也不涨时最难查）。
+      // 表该清；但**统计不该清** —— 用户正需要它来对比「换配置之前 / 之后」
+      // 到底有没有好转，清了就再也比不出来。
+      _igateDedupe.clear();
+      _heard.clear();
     }
     _reconcileSources();
     persist();
@@ -2060,6 +2107,15 @@ class AppState extends ChangeNotifier {
   /// 「取条件 → 去重 → 发送 → 计账」。**去重是必须的**：同一帧会经不同
   /// 中继路径多次到达，不去重会让互联网上出现多条一模一样的报文。
   void _gateRfToIs(String line) {
+    // 先记账再判条件：射频到底有没有收到报文，与网关开不开、IS 通不通无关。
+    // 这是「统计恒为 0」时唯一能自证的数字（见 [igateRfSeen] 的注释）。
+    //
+    // 但「链路没连上」这一条必须排在记账之前：射频链路是断的却还在冒数，
+    // 只能说明**有别的链路在往同一条管线里灌**（同时绑了同一台设备、
+    // APRS-IS 被当成射频…）。那时这个数就是假的 —— 而“假的自证数字”
+    // 比“没有数字”更糟：用户会拿它去证明「射频没问题」，然后往错的方向查。
+    if (!igateRfUp) return;
+    igateRfSeen++;
     if (!igateEnabled || !isUp(srcAprsIs)) return;
     final d = Igate.toIs(tnc2: line, myFullCall: myFullCall);
     if (!d.ok) {
@@ -2069,6 +2125,11 @@ class AppState extends ChangeNotifier {
         if (igateBlocked++ % 20 == 1) {
           _log(LogLevel.debug, '网关', '拒绝转递（${d.reason}）：${_trunc(line)}');
         }
+      } else if (_igateRejectLog++ % 50 == 1) {
+        // 其余拒绝（own-packet / malformed / empty-body）原先完全不留痕：
+        // 网关一条都没转，日志里却什么也看不到，只能靠猜。
+        _log(LogLevel.debug, '网关',
+            '未转递（${d.reason}）· 射频已收 $igateRfSeen 条：${_trunc(line)}');
       }
       return;
     }
@@ -2094,6 +2155,10 @@ class AppState extends ChangeNotifier {
   /// 累计被拒的 RF→IS 转递数（含环路拒收），仅用于日志节流与诊断
   int igateBlocked = 0;
   int _packetsGatedLog = 0;
+
+  /// RF→IS 的「未转递」日志节流计数（与 IS→RF 的 [_gateRejectLog] 分开：
+  /// 合用一个的话，两个方向的报文会互相抢节流额度）
+  int _igateRejectLog = 0;
 
   /// IS → RF：把 APRS-IS 上发往「刚在射频上听到过」的台站的消息送到射频。
   ///
@@ -2186,13 +2251,32 @@ class AppState extends ChangeNotifier {
     igateEnabled = v;
     if (!v) igateTwoWay = false; // 网关关了就不该还留着「往射频转」的开关
     if (v) {
+      // 三种「开了也白开」的情形要分开说：只报「没勾选」是不够的 ——
+      // 勾了但链路没连上（线速不对 / 设备没开机 / IS 掉线）同样转不了，
+      // 而那时的界面与日志与「已正常工作」完全一样（统计一直是 0）。
       if (!igateReady) {
         _log(LogLevel.warn, '网关',
             '未启用射频来源（TNC / 音频），网关没有可转递的射频链路');
-      } else if (!aprsIsOn) {
+      } else if (!igateRfUp) {
         _log(LogLevel.warn, '网关',
-            '未启用 APRS-IS，网关没有可转递的目标网络');
+            '射频来源已勾选但链路未连上（TNC / 音频），网关暂时转递不了任何报文');
       }
+      if (!aprsIsOn) {
+        _log(LogLevel.warn, '网关', '未启用 APRS-IS，网关没有可转递的目标网络');
+      } else if (!isUp(srcAprsIs)) {
+        _log(LogLevel.warn, '网关',
+            'APRS-IS 未连上，网关暂时没有可转递的目标网络');
+      }
+      if (igateActive) {
+        _log(LogLevel.info, '网关', '网关条件已齐：射频接收 → APRS-IS 开始转递');
+      }
+      // 这里**刻意不清空统计**。
+      //
+      // 清空统计是 [resetIgateStats] 的职责（按钮，以及切换数据来源时）。
+      // 若这里也清一遍，「统计一直是 0」就会被这个开关本身制造出来：
+      // 数字不涨 → 用户把网关关了再开（最自然的第一反应）→ 数字归零 →
+      // 再开回来也永远看不到它曾经涨过。诊断路径被自己的界面堵死，
+      // 而且看起来像是「网关重新开始工作但依然什么都不转」。
       _igateDedupe.clear();
       _heard.clear();
     }
@@ -2222,6 +2306,9 @@ class AppState extends ChangeNotifier {
     igateGated = 0;
     igateToRf = 0;
     igateDupDropped = 0;
+    igateRfSeen = 0;
+    igateBlocked = 0;
+    igateLastReject = '';
     _igateDedupe.clear();
     _notify();
   }

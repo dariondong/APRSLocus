@@ -7,6 +7,7 @@ import 'package:aprslocus/net/tnc_base.dart';
 import 'package:aprslocus/net/tnc_io.dart';
 import 'package:aprslocus/tnc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 硬件串口（Android USB-OTG / 桌面串口线速）回归测试
 ///
@@ -82,6 +83,9 @@ class FakeTransport implements TncTransport {
 }
 
 void main() {
+  // 读配置要碰 SharedPreferences（TncLink.load 的回归测试要用）
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('TncDevice：USB 与串口的识别', () {
     test('kind=usb 认作 USB 串口，需要设置线速', () {
       const d = TncDevice(id: '1a86:7523:', kind: 'usb', name: 'CH340');
@@ -123,6 +127,30 @@ void main() {
     test('越界值被夹住（防止手输 0 或百万级把设备搞挂）', () {
       expect(TncConfig.fromJson({'serialBaud': 0}).serialBaud, 1200);
       expect(TncConfig.fromJson({'serialBaud': 99999999}).serialBaud, 1000000);
+    });
+
+    // 只测 JSON 往返是不够的：真正读配置走的是 TncLink.load() → TncConfig._copy()，
+    // 那是一段**手写的逐字段拷贝**，漏一个字段就和「没持久化」完全等价。
+    // 曾经的症状：设了 38400 / 开机默认 9600，链路一个字节都收不到 ——
+    // 台站不上图、网关统计恒为 0，而界面上任何地方都看不出线速变了。
+    test('TncLink.load() 也要把 serialBaud 读回来（不是只测 JSON 往返）', () async {
+      SharedPreferences.setMockInitialValues({});
+      final a = TncLink(transport: FakeTransport('a'));
+      a.config.serialBaud = 38400;
+      await a.persistConfig();
+
+      final b = TncLink(transport: FakeTransport('b'));
+      await b.load();
+      expect(b.config.serialBaud, 38400,
+          reason: 'load() 漏字段 = 静默复位成 9600，串口 TNC 会一个字节都收不到');
+      // 顺带钉住同一段拷贝里其它射频参数（都不该被静默复位）
+      a.config.path = 'WIDE1-1';
+      a.config.initString = 'KISS ON';
+      await a.persistConfig();
+      final c = TncLink(transport: FakeTransport('c'));
+      await c.load();
+      expect(c.config.path, 'WIDE1-1');
+      expect(c.config.initString, 'KISS ON');
     });
   });
 

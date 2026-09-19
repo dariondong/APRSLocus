@@ -1096,6 +1096,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get igateResetStats => 'Reset counters';
 
   @override
+  String get igateStatRfSeen => 'Heard on RF';
+
+  @override
+  String get igateStatBlocked => 'Loop-protection rejects';
+
+  @override
+  String get igateRfDown =>
+      'The RF link is down, so the gateway cannot relay anything right now. If “Heard on RF” stays 0, no packets are arriving at all — check the TNC/audio status on the device page (serial baud, device powered on) before suspecting the gateway.';
+
+  @override
+  String get igateIsDown =>
+      'APRS-IS is not connected, so the gateway has nowhere to relay to. The counters will only start moving once it is up (see the link status card).';
+
+  @override
+  String get igateAllRejected =>
+      'RF packets are arriving but all of them were rejected by loop protection: they carry TCPIP*/TCPXX* or a q-construct, meaning they came from the internet, and sending them back would multiply the same packet forever. This is the gateway **working correctly**, not a fault.';
+
+  @override
+  String get igateNoRfTraffic =>
+      'No packets heard on RF at all: the gateway is fully armed but has '
+      'nothing to relay. This is not a gateway problem — nothing is reaching the app. Check upstream: radio volume and squelch, antenna, whether anyone is actually transmitting, and the log page for any RF traffic at all.';
+
+  @override
   String grpSysJoined(String call) {
     return '$call joined the group';
   }

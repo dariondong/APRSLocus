@@ -2205,6 +2205,42 @@ abstract class AppLocalizations {
   /// **'清空统计'**
   String get igateResetStats;
 
+  /// No description provided for @igateStatRfSeen.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频收到（条）'**
+  String get igateStatRfSeen;
+
+  /// No description provided for @igateStatBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'环路拒收（条）'**
+  String get igateStatBlocked;
+
+  /// No description provided for @igateRfDown.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频链路没连上：网关现在什么都转不了。上面的「射频收到」如果一直是 0，说明报文根本没进来 —— 先查设备页里的 TNC / 音频状态（串口线速、设备是否开机），而不是怀疑网关。'**
+  String get igateRfDown;
+
+  /// No description provided for @igateIsDown.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。'**
+  String get igateIsDown;
+
+  /// No description provided for @igateAllRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。'**
+  String get igateAllRejected;
+
+  /// No description provided for @igateNoRfTraffic.
+  ///
+  /// In zh, this message translates to:
+  /// **'射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。'**
+  String get igateNoRfTraffic;
+
   /// No description provided for @grpSysJoined.
   ///
   /// In zh, this message translates to:

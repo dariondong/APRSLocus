@@ -1102,6 +1102,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get igateResetStats => 'Reiniciar contadores';
 
   @override
+  String get igateStatRfSeen => 'Oídos por RF';
+
+  @override
+  String get igateStatBlocked => 'Rechazados por anti-bucle';
+
+  @override
+  String get igateRfDown =>
+      'El enlace de RF está caído: la pasarela no puede reenviar nada. Si «Oídos por RF» sigue en 0, no llega ningún paquete — revisa el estado del TNC/audio (velocidad serie, equipo encendido), no la pasarela.';
+
+  @override
+  String get igateIsDown =>
+      'APRS-IS no está conectado: la pasarela no tiene a dónde reenviar. Los contadores empezarán a subir cuando se conecte (ver la tarjeta de estado del enlace).';
+
+  @override
+  String get igateNoRfTraffic =>
+      'No se ha oído ningún paquete por RF: la pasarela está lista pero '
+      '**no tiene nada que reenviar**. No es un problema de la pasarela: nada llega a la aplicación. Revisa el origen: volumen y silenciador del equipo, antena, si alguien está transmitiendo y el registro por si hay tráfico de RF.';
+
+  @override
+  String get igateAllRejected =>
+      'Llegan paquetes de RF pero todos fueron rechazados por la protección anti-bucle: llevan TCPIP*/TCPXX* o una construcción q, es decir, vienen de internet y reenviarlos multiplicaría el mismo paquete. Esto es **funcionar correctamente**, no una avería.';
+
+  @override
   String grpSysJoined(String call) {
     return '$call se unió al grupo';
   }

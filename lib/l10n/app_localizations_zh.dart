@@ -1081,6 +1081,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get igateResetStats => '清空统计';
 
   @override
+  String get igateStatRfSeen => '射频收到（条）';
+
+  @override
+  String get igateStatBlocked => '环路拒收（条）';
+
+  @override
+  String get igateRfDown =>
+      '射频链路没连上：网关现在什么都转不了。上面的「射频收到」如果一直是 0，说明报文根本没进来 —— 先查设备页里的 TNC / 音频状态（串口线速、设备是否开机），而不是怀疑网关。';
+
+  @override
+  String get igateIsDown => 'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。';
+
+  @override
+  String get igateAllRejected =>
+      '收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。';
+
+  @override
+  String get igateNoRfTraffic =>
+      '射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。'
+      '这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、'
+      '天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。';
+
+  @override
   String grpSysJoined(String call) {
     return '$call 加入了群聊';
   }
@@ -7352,6 +7375,29 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get igateResetStats => '清空統計';
+
+  @override
+  String get igateStatRfSeen => '射頻收到（條）';
+
+  @override
+  String get igateStatBlocked => '迴路拒收（條）';
+
+  @override
+  String get igateRfDown =>
+      '射頻鏈路沒連上：閘道現在什麼都轉不了。上面的「射頻收到」如果一直是 0，說明報文根本沒進來 —— 先查裝置頁裡的 TNC / 音訊狀態（串列埠線速、裝置是否開機），而不是懷疑閘道。';
+
+  @override
+  String get igateIsDown => 'APRS-IS 沒連上：閘道沒有可轉遞的目標網路。等它連上（鏈路狀態卡裡能看到）後數字才會開始漲。';
+
+  @override
+  String get igateAllRejected =>
+      '收到了射頻報文，但全被迴路防護拒收：報文裡帶 TCPIP*/TCPXX* 或 q 構造，說明它本來就從網際網路來，再送回 APRS-IS 會讓同一條報文無限增殖。這是**在正確工作**，不是故障。';
+
+  @override
+  String get igateNoRfTraffic =>
+      '射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。'
+      '這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、'
+      '天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。';
 
   @override
   String grpSysJoined(String call) {

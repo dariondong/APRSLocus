@@ -1095,6 +1095,29 @@ class AppLocalizationsId extends AppLocalizations {
   String get igateResetStats => 'Reset penghitung';
 
   @override
+  String get igateStatRfSeen => 'Diterima di RF';
+
+  @override
+  String get igateStatBlocked => 'Ditolak proteksi loop';
+
+  @override
+  String get igateRfDown =>
+      'Tautan RF terputus, gateway tidak dapat meneruskan apa pun. Jika “Diterima di RF” tetap 0, paket tidak sampai — periksa status TNC/audio (baud serial, perangkat menyala), bukan gateway-nya.';
+
+  @override
+  String get igateIsDown =>
+      'APRS-IS belum terhubung, gateway tidak punya tujuan penerusan. Penghitung baru bergerak setelah tersambung (lihat kartu status tautan).';
+
+  @override
+  String get igateNoRfTraffic =>
+      'Tidak ada paket yang terdengar di RF: kondisi gateway sudah lengkap '
+      'tetapi **tidak ada yang diteruskan**. Ini bukan masalah gateway — paket tidak sampai ke aplikasi. Periksa hulu: volume dan squelch radio, antena, apakah ada yang benar-benar memancar, dan halaman log untuk lalu lintas RF apa pun.';
+
+  @override
+  String get igateAllRejected =>
+      'Paket RF diterima tetapi semuanya ditolak proteksi loop: membawa TCPIP*/TCPXX* atau q-construct, artinya berasal dari internet, dan mengirimnya kembali akan memperbanyak paket yang sama. Ini **bekerja dengan benar**, bukan kerusakan.';
+
+  @override
   String grpSysJoined(String call) {
     return '$call bergabung ke grup';
   }

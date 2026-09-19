@@ -98,6 +98,22 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
     );
   }
 
+  /// 网关「为什么没在转递」的界面文案（空串 = 条件齐了）
+  String _igateIdleText(S s) {
+    switch (state.igateIdleReason) {
+      case 'no-rf-source':
+        return s.igateNeedRf;
+      case 'rf-down':
+        return s.igateRfDown;
+      case 'is-down':
+        return s.igateIsDown;
+      case 'all-rejected':
+        return s.igateAllRejected;
+      default:
+        return '';
+    }
+  }
+
   /// ② 网关（iGate）
   Widget _igateCard(BuildContext context, S s) {
     return SettingsSectionCard(
@@ -113,11 +129,11 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           onChanged: state.setIgateEnabled,
         ),
         SettingsHint(s.igateHint),
-        // 启用前置条件没满足时**明确说缺什么**，而不是静默不工作
-        if (state.igateEnabled && !state.igateReady)
-          SettingsHint(s.igateNeedRf, color: C.orange),
-        if (state.igateEnabled && !state.aprsIsOn)
-          SettingsHint(s.igateNeedIs, color: C.orange),
+        // 启用前置条件没满足时**明确说缺什么**，而不是静默不工作。
+        // 四种情形由 AppState.igateIdleReason 统一判定（勾没勾、连没连、
+        // 是不是全被环路防护拒收），这里只负责把它翻成人话。
+        if (_igateIdleText(s).isNotEmpty)
+          SettingsHint(_igateIdleText(s), color: C.orange),
         if (state.igateEnabled) ...[
           SettingsSwitch(
             s.igateTwoWay,
@@ -126,6 +142,18 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
             onChanged: state.setIgateTwoWay,
           ),
           SettingsHint(s.igateTwoWayHint, color: C.orange),
+          // 条件全齐、射频却一条都没收到 —— 这最容易被当成「网关坏了」，
+          // 而它其实与网关无关：报文根本没进到应用里。先把责任划清，
+          // 用户才不会在网关的开关上反复折腾。
+          if (state.igateActive && state.igateRfSeen == 0)
+            SettingsHint(s.igateNoRfTraffic, color: C.orange),
+          // 先给「射频到底收到了没有」。统计全是 0 时，这一行立刻把
+          // 「射频没流量」与「收到了但没转递」分开 —— 否则只有一串 0。
+          SettingsRow2(
+            s.igateStatRfSeen,
+            '${state.igateRfSeen}',
+            valueColor: state.igateRfSeen > 0 ? C.green : C.grey,
+          ),
           SettingsRow2(s.igateStatToIs, '${state.igateGated}',
               valueColor: state.igateGated > 0 ? C.green : C.grey),
           SettingsRow2(
@@ -134,6 +162,9 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
             valueColor: state.igateToRf > 0 ? C.green : C.grey,
           ),
           SettingsRow2(s.igateStatDup, '${state.igateDupDropped}'),
+          // 环路防护拒收的数原先只在日志里（还得按节流才看得见），
+          // 如果它一直在涨，那「已转递 = 0」是有原因的，得让人看见
+          SettingsRow2(s.igateStatBlocked, '${state.igateBlocked}'),
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
             child: Row(children: [

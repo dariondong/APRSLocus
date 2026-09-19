@@ -615,7 +615,17 @@ class TncLink {
       ..autoReconnect = from.autoReconnect
       ..initString = from.initString
       ..initDelayMs = from.initDelayMs
-      ..pushKissParams = from.pushKissParams;
+      ..pushKissParams = from.pushKissParams
+      // serialBaud **必须在这里也抄一遍**。
+      //
+      // 这里是一段**手写的逐字段拷贝**，而真正读配置走的就是它
+      // （[load] → [_copy]）。之前 `toJson`/`fromJson` 都带上了 serialBaud，
+      // 测试也只验了 JSON 往返，于是看起来「已经修好了」—— 但 load() 仍然
+      // 把它丢在门外：串口 TNC 设了 38400，重启后又按 9600 打开，
+      // **一个字节都收不到**，而界面上没有任何地方能看出线速变了
+      // （症状是台站不上图、网关统计恒为 0，像是「射频坏了」）。
+      // 教训：漏字段 = 静默复位，与「没持久化」完全等价，所以拷贝必须成对。
+      ..serialBaud = from.serialBaud;
   }
 
   Future<void> persistConfig() async {
