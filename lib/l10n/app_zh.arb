@@ -725,13 +725,13 @@
   "tncBindSubtitle": "绑定并连接电台侧的 TNC",
   "tncBoundDevice": "已绑定设备",
   "tncNotBound": "未绑定设备",
-  "tncScanPaired": "扫描已配对设备",
-  "tncNoPaired": "未找到设备 · 请先在系统蓝牙设置里配对 TNC",
+  "tncScanPaired": "扫描设备（蓝牙已配对 + USB 串口）",
+  "tncNoPaired": "未找到设备 · 请先在系统蓝牙设置里配对 TNC，或插上 USB 串口线（OTG）",
   "tncUnbind": "解除绑定",
   "tncConnectAction": "连接 TNC",
   "tncRestart": "重启链路",
   "tncSupportedNo": "当前平台暂不支持 TNC 链路",
-  "tncNeedPermission": "需要蓝牙权限，请授权后重试",
+  "tncNeedPermission": "需要蓝牙权限（扫描蓝牙设备用）；只用 USB 串口可忽略，插线时系统会单独弹出授权",
   "tncOpenFailedHint": "打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用",
   "tncStats": "收 {rx} 帧 · 发 {tx} 帧",
   "tncLog": "链路日志",
@@ -2810,5 +2810,9 @@
   "packetSendFailed": "未发送：{err}",
   "@packetSendFailed": {
     "placeholders": {"err": {"type": "String"}}
-  }
+  },
+  "tncSerialBaud": "串口线速 (bd)",
+  "tncSerialBaudTip": "USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。",
+  "tncSerialBaudHint": "改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）",
+  "tncSerialBaudBluetooth": "当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效"
 }

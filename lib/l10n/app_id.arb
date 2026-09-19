@@ -718,13 +718,13 @@
   "tncBindSubtitle": "Pasangkan dan hubungkan TNC di radio Anda",
   "tncBoundDevice": "Perangkat terpasang",
   "tncNotBound": "Belum ada perangkat",
-  "tncScanPaired": "Pindai perangkat terpasang",
-  "tncNoPaired": "Tidak ada perangkat — pasangkan TNC di pengaturan Bluetooth sistem lebih dulu",
+  "tncScanPaired": "Pindai perangkat (Bluetooth tertaut + serial USB)",
+  "tncNoPaired": "Perangkat tidak ditemukan — tautkan TNC di pengaturan Bluetooth sistem, atau colokkan kabel serial USB (OTG)",
   "tncUnbind": "Lepas",
   "tncConnectAction": "Hubungkan TNC",
   "tncRestart": "Mulai ulang tautan",
   "tncSupportedNo": "Tautan TNC belum didukung di platform ini",
-  "tncNeedPermission": "Izin Bluetooth diperlukan — berikan lalu coba lagi",
+  "tncNeedPermission": "Izin Bluetooth diperlukan untuk memindai perangkat Bluetooth; abaikan jika hanya memakai serial USB — sistem memintanya sendiri saat kabel dicolokkan",
   "tncOpenFailedHint": "Gagal membuka perangkat — port COM Windows bersifat eksklusif; pastikan tidak dipakai aplikasi lain",
   "tncStats": "{rx} bingkai diterima · {tx} terkirim",
   "tncLog": "Log tautan",
@@ -2296,5 +2296,9 @@
   "packetSendFailed": "Tidak terkirim: {err}",
   "@packetSendFailed": {
     "placeholders": {"err": {"type": "String"}}
-  }
+  },
+  "tncSerialBaud": "Kecepatan baud serial (bd)",
+  "tncSerialBaudTip": "Kabel serial USB dan port data radio harus sama kecepatannya, kalau tidak satu byte pun tidak akan lewat. Nilai umum: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP tidak punya konsep baud, jadi ini diabaikan untuk perangkat Bluetooth.",
+  "tncSerialBaudHint": "Kecepatan baru berlaku setelah menghubungkan ulang (mengirim parameter akan menyambung ulang sekali secara otomatis)",
+  "tncSerialBaudBluetooth": "Perangkat yang tertaut adalah Bluetooth: Bluetooth SPP tidak punya konsep baud, jadi pengaturan ini tidak berpengaruh"
 }

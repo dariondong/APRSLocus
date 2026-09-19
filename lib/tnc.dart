@@ -77,6 +77,15 @@ class TncConfig {
   /// 一直退避而不发射。需要时可在设备页显式打开或手动下发一次。
   bool pushKissParams;
 
+  /// 串口线速（bd）。**只管 USB 串口与桌面串口**；蓝牙 SPP 没有波特率概念。
+  ///
+  /// 为什么必须让用户能设：USB 串口线两端必须同速，而 TNC/电台的速率
+  /// 五花八门（9600 / 19200 / 38400 / 57600 / 115200）。此前桌面串口完全
+  /// 没法设（注释写的是「由系统/驱动决定」），Windows 上 COM 口还是独占
+  /// 设备、开两个句柄会失败 —— 等于那条路根本没通。Android 的 USB-OTG
+  /// 更是从无到有。默认 9600（APRS 串口 TNC 最常见）。
+  int serialBaud;
+
   TncConfig({
     this.txDelayMs = 300,
     this.txTailMs = 50,
@@ -94,6 +103,7 @@ class TncConfig {
     this.initString = '',
     this.initDelayMs = 300,
     this.pushKissParams = false,
+    this.serialBaud = 9600,
   });
 
   /// ms → KISS 值（10ms 单位，封顶 255）
@@ -119,6 +129,10 @@ class TncConfig {
         'initString': initString,
         'initDelayMs': initDelayMs,
         'pushKissParams': pushKissParams,
+        // serialBaud **必须一起存**：不存的话重启回到默认 9600，
+        // 用户会看到「设了 38400、下次打开又变回 9600」这种静默复位。
+        // 连拍时由 TncLink.connect 把它填进 TncDevice.baud 交给传输层。
+        'serialBaud': serialBaud,
       };
 
   static TncConfig fromJson(Object? j) {
@@ -144,6 +158,7 @@ class TncConfig {
       initString: s('initString', ''),
       initDelayMs: i('initDelayMs', c.initDelayMs).clamp(0, 5000),
       pushKissParams: b('pushKissParams', c.pushKissParams),
+      serialBaud: i('serialBaud', c.serialBaud).clamp(1200, 1000000),
     );
   }
 }
@@ -310,7 +325,13 @@ class TncLink {
     _dec.reset();
     onStateChanged?.call();
     _log('连接 ${target.label} …');
-    final err = await _t.connect(target);
+    // 串口类设备（USB-OTG / 桌面串口）把用户配的线速随设备带下去：
+    // 传输层接口只有 connect(device)，线速作为设备属性传最自然，
+    // 也不必为一个参数去改所有平台实现的签名。蓝牙不需要（无此概念）。
+    final wireTarget = target.needsBaud
+        ? target.copyWith(baud: config.serialBaud)
+        : target;
+    final err = await _t.connect(wireTarget);
     connecting = false;
     if (err != null) {
       connected = false;

@@ -2150,10 +2150,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tncNotBound => '未绑定设备';
 
   @override
-  String get tncScanPaired => '扫描已配对设备';
+  String get tncScanPaired => '扫描设备（蓝牙已配对 + USB 串口）';
 
   @override
-  String get tncNoPaired => '未找到设备 · 请先在系统蓝牙设置里配对 TNC';
+  String get tncNoPaired => '未找到设备 · 请先在系统蓝牙设置里配对 TNC，或插上 USB 串口线（OTG）';
 
   @override
   String get tncUnbind => '解除绑定';
@@ -2168,7 +2168,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tncSupportedNo => '当前平台暂不支持 TNC 链路';
 
   @override
-  String get tncNeedPermission => '需要蓝牙权限，请授权后重试';
+  String get tncNeedPermission => '需要蓝牙权限（扫描蓝牙设备用）；只用 USB 串口可忽略，插线时系统会单独弹出授权';
 
   @override
   String get tncOpenFailedHint => '打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用';
@@ -6263,6 +6263,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String packetSendFailed(String err) {
     return '未发送：$err';
   }
+
+  @override
+  String get tncSerialBaud => '串口线速 (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。';
+
+  @override
+  String get tncSerialBaudHint => '改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）';
+
+  @override
+  String get tncSerialBaudBluetooth => '当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -8410,10 +8423,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get tncNotBound => '未綁定裝置';
 
   @override
-  String get tncScanPaired => '掃描已配對裝置';
+  String get tncScanPaired => '掃描裝置（藍牙已配對 + USB 串列）';
 
   @override
-  String get tncNoPaired => '未找到裝置 · 請先在系統藍牙設定裡配對 TNC';
+  String get tncNoPaired => '找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）';
 
   @override
   String get tncUnbind => '解除綁定';
@@ -8428,7 +8441,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get tncSupportedNo => '目前平台暫不支援 TNC 鏈路';
 
   @override
-  String get tncNeedPermission => '需要藍牙權限，請授權後重試';
+  String get tncNeedPermission => '需要藍牙權限（掃描藍牙裝置用）；只用 USB 串列可忽略，插線時系統會單獨彈出授權';
 
   @override
   String get tncOpenFailedHint => '開啟裝置失敗 · Windows 的 COM 埠是獨佔裝置，請確認沒有被其他軟體佔用';
@@ -12523,4 +12536,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String packetSendFailed(String err) {
     return '未發送：$err';
   }
+
+  @override
+  String get tncSerialBaud => '串列埠線速 (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。';
+
+  @override
+  String get tncSerialBaudHint => '改完線速後需要重新連線才會生效（點「下發參數」會自動重連一次）';
+
+  @override
+  String get tncSerialBaudBluetooth => '目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效';
 }

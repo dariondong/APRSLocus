@@ -2230,11 +2230,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get tncNotBound => 'Belum ada perangkat';
 
   @override
-  String get tncScanPaired => 'Pindai perangkat terpasang';
+  String get tncScanPaired =>
+      'Pindai perangkat (Bluetooth tertaut + serial USB)';
 
   @override
   String get tncNoPaired =>
-      'Tidak ada perangkat — pasangkan TNC di pengaturan Bluetooth sistem lebih dulu';
+      'Perangkat tidak ditemukan — tautkan TNC di pengaturan Bluetooth sistem, atau colokkan kabel serial USB (OTG)';
 
   @override
   String get tncUnbind => 'Lepas';
@@ -2250,7 +2251,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tncNeedPermission =>
-      'Izin Bluetooth diperlukan — berikan lalu coba lagi';
+      'Izin Bluetooth diperlukan untuk memindai perangkat Bluetooth; abaikan jika hanya memakai serial USB — sistem memintanya sendiri saat kabel dicolokkan';
 
   @override
   String get tncOpenFailedHint =>
@@ -6526,4 +6527,19 @@ class AppLocalizationsId extends AppLocalizations {
   String packetSendFailed(String err) {
     return 'Tidak terkirim: $err';
   }
+
+  @override
+  String get tncSerialBaud => 'Kecepatan baud serial (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'Kabel serial USB dan port data radio harus sama kecepatannya, kalau tidak satu byte pun tidak akan lewat. Nilai umum: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP tidak punya konsep baud, jadi ini diabaikan untuk perangkat Bluetooth.';
+
+  @override
+  String get tncSerialBaudHint =>
+      'Kecepatan baru berlaku setelah menghubungkan ulang (mengirim parameter akan menyambung ulang sekali secara otomatis)';
+
+  @override
+  String get tncSerialBaudBluetooth =>
+      'Perangkat yang tertaut adalah Bluetooth: Bluetooth SPP tidak punya konsep baud, jadi pengaturan ini tidak berpengaruh';
 }

@@ -725,13 +725,13 @@
   "tncBindSubtitle": "綁定並連接電台端的 TNC",
   "tncBoundDevice": "已綁定裝置",
   "tncNotBound": "未綁定裝置",
-  "tncScanPaired": "掃描已配對裝置",
-  "tncNoPaired": "未找到裝置 · 請先在系統藍牙設定裡配對 TNC",
+  "tncScanPaired": "掃描裝置（藍牙已配對 + USB 串列）",
+  "tncNoPaired": "找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）",
   "tncUnbind": "解除綁定",
   "tncConnectAction": "連接 TNC",
   "tncRestart": "重啟鏈路",
   "tncSupportedNo": "目前平台暫不支援 TNC 鏈路",
-  "tncNeedPermission": "需要藍牙權限，請授權後重試",
+  "tncNeedPermission": "需要藍牙權限（掃描藍牙裝置用）；只用 USB 串列可忽略，插線時系統會單獨彈出授權",
   "tncOpenFailedHint": "開啟裝置失敗 · Windows 的 COM 埠是獨佔裝置，請確認沒有被其他軟體佔用",
   "tncStats": "收 {rx} 幀 · 發 {tx} 幀",
   "tncLog": "鏈路日誌",
@@ -2800,5 +2800,9 @@
   "packetSendFailed": "未發送：{err}",
   "@packetSendFailed": {
     "placeholders": {"err": {"type": "String"}}
-  }
+  },
+  "tncSerialBaud": "串列埠線速 (bd)",
+  "tncSerialBaudTip": "USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。",
+  "tncSerialBaudHint": "改完線速後需要重新連線才會生效（點「下發參數」會自動重連一次）",
+  "tncSerialBaudBluetooth": "目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效"
 }

@@ -157,6 +157,55 @@ REMOTEVIEWS_METHODS = {
 SETINT_CALL = re.compile(r'setInt\([^,]+,\s*"(\w+)"')
 
 
+# ── 资源 XML 的属性名白名单 ──
+#
+# 为什么需要：aapt2 对**未知属性名**是硬错误（`attribute X not found`），
+# 会让整个 Android 构建失败 —— 而本机没有 Android SDK，编不了，只能等 CI。
+# 一个真实教训：`<usb-device interface-class="2"/>` 里的 `interface-class`
+# 根本不存在（那是 UsbInterface 的概念，`<usb-device>` 只认 class/subclass/
+# protocol），aapt2 直接报错；而它看起来「很像对的」。
+XML_RES_TAGS = {
+    "appwidget-provider": {
+        "minWidth", "minHeight", "minResizeWidth", "minResizeHeight",
+        "targetCellWidth", "targetCellHeight", "maxResizeWidth", "maxResizeHeight",
+        "updatePeriodMillis", "initialLayout", "initialKeyguardLayout",
+        "configure", "previewImage", "previewLayout", "description",
+        "resizeMode", "widgetCategory", "updatePeriodMillis",
+    },
+    "usb-device": {"vendor-id", "product-id", "class", "subclass", "protocol"},
+}
+
+
+def check_xml_res_attributes(res_dir: str) -> list:
+    """res/xml/*.xml 里的属性名必须在白名单里
+
+    ⚠️ 必须容忍**带命名空间的属性**（`android:minWidth`）—— 直接把
+    `android:` 前缀剥掉再比。反过来，若忘剥前缀，每个属性都会被判成
+    非法（假失败比真失败更坏：修它的人会去删说明或放宽规则）。
+    """
+    problems = []
+    for path in sorted(glob.glob(os.path.join(res_dir, "xml", "*.xml"))):
+        try:
+            tree = ET.parse(path)
+        except Exception as e:  # 语法错误交给别的检查
+            problems.append(f"  ✗ {os.path.basename(path)} 解析失败：{e}")
+            continue
+        base = os.path.basename(path)
+        for el in tree.iter():
+            tag = el.tag.split("}")[-1]
+            allowed = XML_RES_TAGS.get(tag)
+            if allowed is None:
+                continue
+            for raw in el.attrib:
+                attr = raw.split("}")[-1] if "}" in raw else raw
+                if attr not in allowed:
+                    problems.append(
+                        f"  ✗ {base}: <{tag}> 上的属性 '{attr}' 不是合法属性"
+                        f"（aapt2 会直接报错、Android 构建失败）"
+                    )
+    return problems
+
+
 def check_remoteviews_string_methods(kotlin_dir: str) -> list:
     """核对 setInt(viewId, "方法名", …) 里的字符串方法名。"""
     problems = []
@@ -546,6 +595,7 @@ def main() -> int:
         ("Kotlin 具名实参在类声明里不存在",
          check_named_args(kotlin_dir)),
         ("小组件尺寸声明不合法", check_widget_sizes(res_dir)),
+        ("资源 XML 属性名不合法", check_xml_res_attributes(res_dir)),
     ]
 
     failed = False

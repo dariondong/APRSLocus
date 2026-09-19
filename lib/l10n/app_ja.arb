@@ -718,13 +718,13 @@
   "tncBindSubtitle": "無線機側の TNC を登録して接続します",
   "tncBoundDevice": "登録済みデバイス",
   "tncNotBound": "未登録",
-  "tncScanPaired": "ペアリング済みを取得",
-  "tncNoPaired": "デバイスが見つかりません。先にシステムの Bluetooth 設定で TNC をペアリングしてください",
+  "tncScanPaired": "デバイスをスキャン（Bluetooth ペアリング済み + USB シリアル）",
+  "tncNoPaired": "デバイスが見つかりません — システムの Bluetooth 設定で TNC をペアリングするか、USB シリアルケーブル（OTG）を接続してください",
   "tncUnbind": "登録解除",
   "tncConnectAction": "TNC に接続",
   "tncRestart": "リンクを再起動",
   "tncSupportedNo": "このプラットフォームは TNC リンクに未対応です",
-  "tncNeedPermission": "Bluetooth の権限が必要です。許可して再試行してください",
+  "tncNeedPermission": "Bluetooth 機器のスキャンには Bluetooth 権限が必要です（USB シリアルのみの場合は不要。ケーブル接続時にシステムが別途確認します）",
   "tncOpenFailedHint": "デバイスを開けません。Windows の COM ポートは占有型です。他のソフトが使用していないか確認してください",
   "tncStats": "受信 {rx} フレーム · 送信 {tx} フレーム",
   "tncLog": "リンクログ",
@@ -2296,5 +2296,9 @@
   "packetSendFailed": "送信していません：{err}",
   "@packetSendFailed": {
     "placeholders": {"err": {"type": "String"}}
-  }
+  },
+  "tncSerialBaud": "シリアル通信速度 (bd)",
+  "tncSerialBaudTip": "USB シリアルケーブルと無線機のデータ端子は同じ速度にする必要があり、違うと 1 バイトも通りません。よく使う値：9600 / 19200 / 38400 / 57600 / 115200。Bluetooth SPP には速度の概念がなく、Bluetooth 機器ではこの設定は無効です。",
+  "tncSerialBaudHint": "変更した速度は再接続後に有効になります（「パラメータ送信」で1 回自動的に再接続します）",
+  "tncSerialBaudBluetooth": "現在バインドされているのは Bluetooth 機器です。Bluetooth SPP には速度の概念がないため、この設定は無効です"
 }

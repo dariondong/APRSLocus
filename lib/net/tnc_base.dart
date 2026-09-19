@@ -9,31 +9,58 @@ import 'dart:typed_data';
 
 /// 一个可绑定的 TNC 设备
 ///
-/// - Android：`id` 为蓝牙 MAC 地址（经典 SPP / RFCOMM）
+/// - Android：`id` 为蓝牙 MAC 地址（经典 SPP / RFCOMM），`kind='bluetooth'`
+/// - Android（USB-OTG）：`id` 为 `vid:pid:serial`，`kind='usb'`
 /// - Windows/Linux/macOS：`id` 为串口名（如 `COM5` / `/dev/ttyUSB0`）
 class TncDevice {
-  /// 平台标识：蓝牙 MAC 或串口名
+  /// 平台标识：蓝牙 MAC / USB 设备标识 / 串口名
   final String id;
 
   /// 展示名（蓝牙设备别名 / 串口友好名）
   final String name;
 
-  /// 'bluetooth' | 'serial'
+  /// 'bluetooth' | 'serial' | 'usb'
   final String kind;
 
   /// 是否已在系统里配对（串口恒为 true）
   final bool paired;
+
+  /// 串口线速（bd）。仅串口类设备（`kind='usb'`/`'serial'`）有意义 ——
+  /// **蓝牙 SPP 没有波特率概念**（RFCOMM 是可靠的字节流，速率由双方协商），
+  /// 所以蓝牙设备上这个值被忽略。0 表示未指定，按后端默认值（9600）处理。
+  ///
+  /// 这个值**不随设备持久化**（见 `toJson`）：真正的设置在
+  /// `TncConfig.serialBaud`，由 `TncLink.connect` 在连拍时填进来 ——
+  /// 单一来源，避免「设备里存一个、配置里存一个、两边还可能不一致」。
+  final int baud;
 
   const TncDevice({
     required this.id,
     this.name = '',
     this.kind = 'bluetooth',
     this.paired = true,
+    this.baud = 0,
   });
 
   String get label => name.isEmpty ? id : '$name · $id';
 
   bool get isBluetooth => kind == 'bluetooth';
+
+  /// USB-OTG 转串口线 / 电台自带 USB 口（Android）
+  bool get isUsb => kind == 'usb';
+
+  /// 是不是「需要设置波特率」的串口类设备（USB 串口 / 桌面串口）
+  bool get needsBaud => kind == 'usb' || kind == 'serial';
+
+  /// 复制并覆盖若干字段。连拍时用它把用户配置的线速带上（见 [baud]）
+  TncDevice copyWith({String? id, String? name, String? kind, bool? paired, int? baud}) =>
+      TncDevice(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        kind: kind ?? this.kind,
+        paired: paired ?? this.paired,
+        baud: baud ?? this.baud,
+      );
 
   Map<String, dynamic> toJson() =>
       {'id': id, 'name': name, 'kind': kind, 'paired': paired};

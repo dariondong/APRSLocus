@@ -2228,11 +2228,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tncNotBound => 'No bound device';
 
   @override
-  String get tncScanPaired => 'Scan paired devices';
+  String get tncScanPaired => 'Scan devices (paired Bluetooth + USB serial)';
 
   @override
   String get tncNoPaired =>
-      'No devices found — pair the TNC in the system Bluetooth settings first';
+      'No devices found — pair the TNC in the system Bluetooth settings, or plug in the USB serial cable (OTG)';
 
   @override
   String get tncUnbind => 'Unbind';
@@ -2249,7 +2249,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tncNeedPermission =>
-      'Bluetooth permission is required — grant it and try again';
+      'Bluetooth permission is needed to scan for Bluetooth devices; ignore this if you only use USB serial — the system asks for that separately when you plug the cable in';
 
   @override
   String get tncOpenFailedHint =>
@@ -6518,4 +6518,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String packetSendFailed(String err) {
     return 'Not sent: $err';
   }
+
+  @override
+  String get tncSerialBaud => 'Serial baud rate (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'A USB serial cable and the radio data port must agree on the speed, otherwise not a single byte gets through. Common values: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP has no baud rate, so this is ignored for Bluetooth devices.';
+
+  @override
+  String get tncSerialBaudHint =>
+      'The new speed takes effect after reconnecting (sending the parameters reconnects once automatically)';
+
+  @override
+  String get tncSerialBaudBluetooth =>
+      'A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect';
 }

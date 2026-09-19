@@ -41,6 +41,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
 
+    <!-- USB 串口（USB-OTG 硬件串口）：
+         required=false 是**必须的** —— 没写或写 true 会让没有 OTG 的设备
+         （部分机型、Windows 之外的平台）在应用市场里被直接过滤掉。
+         枚举/打开走 UsbManager（系统会弹一次授权），无需任何存储权限；
+         设备过滤表只用于「插线时系统询问用哪个应用打开」，见 usb_device_filter.xml。 -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false"/>
+    <uses-feature android:name="android.hardware.usb.accessory" android:required="false"/>
+
     <application
         android:label="APRSlocus"
         android:name="${applicationName}"
@@ -66,6 +74,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- USB 串口：插上线时系统能直接列出本应用（便利，不是必需 ——
+                 不写也能在应用内枚举到设备，只是要先进应用再插线）。
+                 过滤表见 res/xml/usb_device_filter.xml。 -->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_device_filter" />
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

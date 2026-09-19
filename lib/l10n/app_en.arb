@@ -743,13 +743,13 @@
   "tncBindSubtitle": "Bind and connect the TNC on your radio",
   "tncBoundDevice": "Bound device",
   "tncNotBound": "No bound device",
-  "tncScanPaired": "Scan paired devices",
-  "tncNoPaired": "No devices found — pair the TNC in the system Bluetooth settings first",
+  "tncScanPaired": "Scan devices (paired Bluetooth + USB serial)",
+  "tncNoPaired": "No devices found — pair the TNC in the system Bluetooth settings, or plug in the USB serial cable (OTG)",
   "tncUnbind": "Unbind",
   "tncConnectAction": "Connect TNC",
   "tncRestart": "Restart link",
   "tncSupportedNo": "TNC links are not supported on this platform yet",
-  "tncNeedPermission": "Bluetooth permission is required — grant it and try again",
+  "tncNeedPermission": "Bluetooth permission is needed to scan for Bluetooth devices; ignore this if you only use USB serial — the system asks for that separately when you plug the cable in",
   "tncOpenFailedHint": "Could not open the device — Windows COM ports are exclusive; make sure no other app holds it",
   "tncStats": "{rx} frames received · {tx} sent",
   "tncLog": "Link log",
@@ -2212,5 +2212,9 @@
   "packetSendFailed": "Not sent: {err}",
   "@packetSendFailed": {
     "placeholders": {"err": {"type": "String"}}
-  }
+  },
+  "tncSerialBaud": "Serial baud rate (bd)",
+  "tncSerialBaudTip": "A USB serial cable and the radio data port must agree on the speed, otherwise not a single byte gets through. Common values: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP has no baud rate, so this is ignored for Bluetooth devices.",
+  "tncSerialBaudHint": "The new speed takes effect after reconnecting (sending the parameters reconnects once automatically)",
+  "tncSerialBaudBluetooth": "A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect"
 }

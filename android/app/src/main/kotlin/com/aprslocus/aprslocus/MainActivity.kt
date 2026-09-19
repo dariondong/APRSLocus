@@ -59,6 +59,11 @@ class MainActivity : FlutterActivity() {
     // 声卡 TNC（AFSK 1200）：同样只搬 PCM 采样，调制解调在 Dart 侧
     private var audio: AudioManager? = null
 
+    // USB 串口（USB-OTG）：Android 侧此前只有蓝牙 SPP，插 USB 转串口线
+    // （CH340 / CP2102 / FTDI）或电台自带 USB 口时用不了。同样只搬字节，
+    // KISS/AX.25 全在 Dart 侧 —— 与蓝牙侧同一套分层。
+    private var usbSerial: UsbSerialManager? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -291,6 +296,88 @@ class MainActivity : FlutterActivity() {
                     override fun onCancel(arguments: Any?) {
                         audioManager.setEventSink(null)
                         setAudioCaptureActive(false)
+                    }
+                }
+            )
+
+        // USB 串口通道：枚举 / 授权 / 打开 / 收发（只搬字节）
+        val usbManager = UsbSerialManager(this)
+        usbSerial = usbManager
+        usbManager.attach()
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, UsbSerialManager.METHOD_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isSupported" -> result.success(usbManager.isSupported())
+                    "listDevices" -> {
+                        try {
+                            result.success(usbManager.listDevices())
+                        } catch (e: Exception) {
+                            result.error("USB_LIST_FAILED", e.message ?: "列出 USB 设备失败", null)
+                        }
+                    }
+                    "connect" -> {
+                        val id = call.argument<String>("id")
+                        val baud = call.argument<Int>("baudRate") ?: 9600
+                        if (id.isNullOrEmpty()) {
+                            result.error("NO_ID", "缺少设备标识", null)
+                        } else {
+                            usbManager.connect(id, baud, result)
+                            // USB 已接入：让前台服务声明 connectedDevice 类型。
+                            // 与蓝牙/音频同一个坑 —— Android 14+ 不声明就会在退到
+                            // 后台后限制 USB 访问（表现为「切后台收不到报文」）。
+                            setBtActive(true)
+                        }
+                    }
+                    "disconnect" -> {
+                        try {
+                            usbManager.disconnect()
+                        } catch (_: Exception) {
+                        }
+                        val otherBt = if (tnc?.isConnected() == true || pkwdwpl?.isConnected() == true) true else false
+                        setBtActive(otherBt)
+                        result.success(true)
+                    }
+                    "send" -> {
+                        val data = call.argument<ByteArray>("data")
+                        if (data == null) {
+                            // 与蓝牙侧同一条教训：List<int> 会编成 ArrayList，
+                            // Kotlin 侧取 ByteArray 得 null（发送静默失败）
+                            val raw = call.argument<Any>("data")
+                            result.error(
+                                "NO_DATA",
+                                "缺少数据：期望 ByteArray，实际收到 " +
+                                    (raw?.javaClass?.name ?: "null") +
+                                    "。Dart 侧必须传 Uint8List（见 Kiss.escape 注释）",
+                                null
+                            )
+                        } else {
+                            try {
+                                usbManager.send(data)
+                                result.success(true)
+                            } catch (e: Exception) {
+                                result.error("USB_SEND_FAILED", e.message ?: "发送失败", null)
+                            }
+                        }
+                    }
+                    "requestPermissions" -> {
+                        // USB 的授权是**按设备**、由系统弹窗完成的（见 connect），
+                        // 没有可预先申请的运行时权限 —— 恒为 true，免得上层把
+                        // 「还没插线」误判成「没有权限」。
+                        result.success(true)
+                    }
+                    "info" -> result.success(usbManager.info())
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, UsbSerialManager.EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                        usbManager.setEventSink(events)
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        usbManager.setEventSink(null)
                     }
                 }
             )
@@ -814,6 +901,14 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        // USB 串口的读线程与连接句柄要显式释放：
+        //   * 不释放时 reader 线程会一直挂在长超时的 bulkTransfer 上；
+        //   * 连接句柄不关，界面里选了一根线、退出应用后那根线仍显示占用。
+        try {
+            usbSerial?.detach()
+        } catch (_: Exception) {
+        }
+        usbSerial = null
         try {
             tnc?.dispose()
         } catch (_: Exception) {

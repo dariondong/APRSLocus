@@ -2245,11 +2245,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tncNotBound => 'Sin dispositivo emparejado';
 
   @override
-  String get tncScanPaired => 'Buscar dispositivos emparejados';
+  String get tncScanPaired =>
+      'Buscar dispositivos (Bluetooth emparejado + serie USB)';
 
   @override
   String get tncNoPaired =>
-      'No se encontraron dispositivos: empareja el TNC en los ajustes de Bluetooth del sistema';
+      'No se encontraron dispositivos: empareja el TNC en los ajustes de Bluetooth, o conecta el cable serie USB (OTG)';
 
   @override
   String get tncUnbind => 'Desemparejar';
@@ -2265,7 +2266,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tncNeedPermission =>
-      'Se requiere permiso de Bluetooth: concédelo e inténtalo de nuevo';
+      'Se necesita permiso de Bluetooth para buscar dispositivos Bluetooth; ignóralo si solo usas serie USB: el sistema lo pide aparte al conectar el cable';
 
   @override
   String get tncOpenFailedHint =>
@@ -6568,4 +6569,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String packetSendFailed(String err) {
     return 'No enviado: $err';
   }
+
+  @override
+  String get tncSerialBaud => 'Velocidad en baudios (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'El cable serie USB y el puerto de datos de la radio deben usar la misma velocidad; si no, no pasa ni un byte. Valores habituales: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP no tiene velocidad en baudios, así que se ignora en dispositivos Bluetooth.';
+
+  @override
+  String get tncSerialBaudHint =>
+      'La nueva velocidad se aplica al reconectar (al enviar los parámetros se reconecta una vez automáticamente)';
+
+  @override
+  String get tncSerialBaudBluetooth =>
+      'El dispositivo vinculado es Bluetooth: Bluetooth SPP no tiene velocidad en baudios, así que este ajuste no surte efecto';
 }

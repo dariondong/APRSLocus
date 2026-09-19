@@ -40,6 +40,10 @@ class _TncDevicePageState extends State<TncDevicePage> {
   late final TextEditingController _initString;
   late final TextEditingController _initDelay;
 
+  /// 串口线速（bd）。只对 USB-OTG / 桌面串口有意义 ——
+  /// 蓝牙 SPP 没有波特率概念，所以绑的是蓝牙设备时这一项会被忽略。
+  late final TextEditingController _baud;
+
   bool _scanning = false;
   bool _supported = true;
   bool _busy = false;
@@ -64,6 +68,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
     _hwVal = TextEditingController(text: '${c.hardwareVal}');
     _initString = TextEditingController(text: c.initString);
     _initDelay = TextEditingController(text: '${c.initDelayMs}');
+    _baud = TextEditingController(text: '${c.serialBaud}');
     unawaited(_probe());
   }
 
@@ -72,6 +77,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
     for (final c in [
       _txDelay, _txTail, _persistence, _slotTime,
       _channel, _maxFrame, _path, _hwCmd, _hwVal, _initString, _initDelay,
+      _baud,
     ]) {
       c.dispose();
     }
@@ -113,6 +119,9 @@ class _TncDevicePageState extends State<TncDevicePage> {
     c.hardwareVal = _intOf(_hwVal, c.hardwareVal).clamp(0, 255);
     c.initString = _initString.text;
     c.initDelayMs = _intOf(_initDelay, c.initDelayMs).clamp(0, 5000);
+    final newBaud = _intOf(_baud, c.serialBaud).clamp(1200, 1000000);
+    _baud.text = '$newBaud';
+    c.serialBaud = newBaud;
     await tnc.persistConfig();
   }
 
@@ -123,6 +132,13 @@ class _TncDevicePageState extends State<TncDevicePage> {
       return;
     }
     tnc.applyKiss();
+    // 串口线速改了要重开链路才生效（KISS 参数帧走的是同一条串口，
+    // 但波特率是打开设备时定的）—— 否则用户会以为「设了没反应」。
+    // 蓝牙没有波特率概念，不必重连。
+    if (tnc.device?.needsBaud == true) {
+      await tnc.disconnect();
+      await tnc.connect();
+    }
     _toast(S.of(context).kissParamsSent, color: C.green);
     setState(() {});
   }
@@ -442,6 +458,14 @@ class _TncDevicePageState extends State<TncDevicePage> {
         SettingsInput(s.tncInitDelay, _initDelay,
             tip: s.tncInitDelayTip,
             onChanged: (_) => unawaited(_collect())),
+        // 串口线速：只对 USB-OTG / 桌面串口有意义（蓝牙 SPP 无此概念）
+        SettingsInput(s.tncSerialBaud, _baud,
+            tip: s.tncSerialBaudTip,
+            onEditingComplete: () => unawaited(_collect())),
+        if (tnc.device?.needsBaud == true)
+          SettingsHint(s.tncSerialBaudHint, color: C.orange)
+        else
+          SettingsHint(s.tncSerialBaudBluetooth, color: C.grey),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
           child: SizedBox(

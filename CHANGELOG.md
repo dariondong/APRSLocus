@@ -1,5 +1,88 @@
 # 更新日志
 
+## [1.6.136] - 2026-09-19
+
+### 🔌 新增「硬件串口」：Android 支持 USB-OTG 串口线，桌面串口可设波特率 / New “hardware serial”: USB-OTG serial on Android, settable baud rate on desktop
+
+Android 侧此前只有蓝牙 SPP —— 插一根 USB-OTG 转串口线（CH340 / CP2102 / FTDI）
+或电台自带 USB 口时**完全用不了**，而这类线恰恰最便宜、延迟最低、最不会被系统
+限流。桌面串口更早就存在，但**没有波特率设置**（代码注释写的是「由系统决定」），
+Windows 上 COM 口还是独占设备、开两个句柄会失败 —— 等于那条路根本没通。
+
+- **Android USB 串口**（新增 `UsbSerialManager.kt`，零新增依赖）：`UsbManager`
+  枚举 + 批量传输搬字节，系统弹一次授权即可（无需存储权限）。
+  - **芯片适配**：CDC-ACM（标准 SET_LINE_CODING，电台自带 USB 口与 Arduino 类）、
+    CH34x（厂商私有初始化 + 分频写寄存器）、CP210x（含旧固件兼容路径）。
+    FTDI / PL2303 的私有序列**本版未实现** —— 设备仍可打开收发（很多模块出厂就是
+    9600/38400），但改不了它的线速，且会在日志里明确说明，不假装成功。
+  - **热插拔**：支持 USB_DEVICE_ATTACHED 广播 + `usb_device_filter.xml` 过滤表，
+    插上线时系统能直接列出本应用。
+  - **枚举不按 VID 白名单**：USB 转串口线的 VID/PID 组合极多（还有大量白牌），
+    按白名单会把能用的线判成「不支持」；这里按**端点形状**判断（有批量 IN+OUT
+    即串口设备），展示名里带 VID:PID 供用户认线。
+- **桌面串口补上波特率**：Linux `stty -F` / macOS `stty -f` / Windows `mode COMx:`，
+  先设参数再开句柄（tty 参数留在设备节点上，两个句柄自然继承）。设不上会如实
+  写进链路日志 —— 「没设上却以为设上了」比报错难查得多。
+- **蓝牙 / USB 自动选路**（新增 `TncAutoTransport`）：绑定的设备是持久化的，
+  用户下次启动直接点「连接」，那一刻没人会问「这是蓝牙还是 USB」—— 选路必须由
+  传输层按设备类型完成。同一时刻只保持一条链路（两条同时开会把接收字节流瓜分，
+  症状正是「能发不能收」）。
+- **线速放在设备页**（`TncConfig.serialBaud`，默认 9600，随配置持久化）：
+  USB 串口线与电台数据口必须同速，否则一个字节都收不到。蓝牙设备下这一项
+  会明确提示「不生效」（SPP 没有波特率概念），而不是静默忽略。
+- **顺手修掉一个真缺陷**：原生早就在发 `txok` / `txfail` 事件，但 **Dart 侧从未
+  监听** —— 于是「发射自检」的写出确认从来收不到回应，每次都退化成
+  「已入队但未收到写出确认」（看起来像没确认，实际是根本没人听）。现在蓝牙与
+  USB 共用同一条事件解析，两条链路都真正拿得到写出确认。
+- 界面文案随之更新（扫描按钮 / 空列表 / 权限提示不再只说蓝牙）。新增 16 条
+  回归测试（选路、线速传递、切路、断开语义）。
+
+Android previously had only Bluetooth SPP — plugging in a USB-OTG serial cable
+(CH340 / CP2102 / FTDI) or a radio's own USB port **did nothing**, even though those
+cables are the cheapest, lowest-latency and least-throttled option. Desktop serial
+had existed for longer but with **no baud rate setting** (the code comment said “decided
+by the system”), and a Windows COM port is exclusive so the second handle fails — in
+practice that path was never usable.
+
+- **USB serial on Android** (new `UsbSerialManager.kt`, no new dependencies):
+  enumeration via `UsbManager` and byte-pumping with bulk transfers, plus a one-time
+  system permission prompt (no storage permission).
+  - **Chip support**: CDC-ACM (standard SET_LINE_CODING — radios with a built-in USB
+    port and Arduino-class boards), CH34x (vendor init + divisor registers) and CP210x
+    (with a legacy-firmware path). FTDI / PL2303 vendor sequences are **not implemented
+    in this version** — those devices still open and transfer (many modules ship at
+    9600/38400), but the baud rate cannot be changed, and that is stated plainly in the
+    log instead of pretending it worked.
+  - **Hot plug**: `USB_DEVICE_ATTACHED` plus a `usb_device_filter.xml` table, so the
+    system can offer this app when the cable is plugged in.
+  - **Enumeration is not a VID allow-list**: USB-serial VID/PID pairs are numerous
+    (including many white-label cables), and an allow-list would call a working cable
+    “unsupported”. Detection is by **endpoint shape** (bulk IN + OUT means a serial
+    device), and the VID:PID is shown in the name so the user can identify the cable.
+- **Baud rate for desktop serial**: Linux `stty -F`, macOS `stty -f`, Windows
+  `mode COMx:` — parameters are applied before the handles are opened (tty settings
+  live on the device node, so both handles inherit them). Failures go into the link
+  log verbatim: “thought it was set but it wasn't” is far harder to diagnose than an
+  error message.
+- **Automatic routing between Bluetooth and USB** (new `TncAutoTransport`): the bound
+  device is persisted, so the next launch just taps “connect” — at that moment nobody
+  asks “Bluetooth or USB?”, and routing has to happen in the transport layer based on
+  the device type. Only one link is kept at a time (two at once split the received byte
+  stream, which shows up exactly as “transmits but receives nothing”).
+- **The baud rate lives on the device page** (`TncConfig.serialBaud`, default 9600,
+  persisted with the config): the USB cable and the radio data port must agree, or not a
+  single byte gets through. With a Bluetooth device the field says plainly that it has
+  no effect (SPP has no baud rate) instead of silently ignoring it.
+- **A real defect fixed along the way**: the native side had been emitting `txok` /
+  `txfail` events all along, but **nothing on the Dart side ever listened** — so the TX
+  self-test's write acknowledgement never arrived, and every run degraded to “queued but
+  no write confirmation” (which looks like “unconfirmed” when in fact nobody was
+  listening). Bluetooth and USB now share one event parser, so both links really do get
+  their write acknowledgements.
+- UI wording follows (scan button / empty list / permission hint no longer say Bluetooth
+  only). 16 new regression tests cover routing, baud propagation, switching and
+  disconnect semantics.
+
 ## [1.6.135] - 2026-09-19
 
 ### 📻 修「音频发射对方解不出」：Android 发射期间拉满音量、暂停麦克风、并给出接线与电平提示 / Fixes “on-air audio cannot be decoded by other software”: full media volume, mic paused during TX, plus wiring and level hints

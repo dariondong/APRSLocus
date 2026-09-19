@@ -2168,11 +2168,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tncNotBound => '未登録';
 
   @override
-  String get tncScanPaired => 'ペアリング済みを取得';
+  String get tncScanPaired => 'デバイスをスキャン（Bluetooth ペアリング済み + USB シリアル）';
 
   @override
   String get tncNoPaired =>
-      'デバイスが見つかりません。先にシステムの Bluetooth 設定で TNC をペアリングしてください';
+      'デバイスが見つかりません — システムの Bluetooth 設定で TNC をペアリングするか、USB シリアルケーブル（OTG）を接続してください';
 
   @override
   String get tncUnbind => '登録解除';
@@ -2187,7 +2187,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tncSupportedNo => 'このプラットフォームは TNC リンクに未対応です';
 
   @override
-  String get tncNeedPermission => 'Bluetooth の権限が必要です。許可して再試行してください';
+  String get tncNeedPermission =>
+      'Bluetooth 機器のスキャンには Bluetooth 権限が必要です（USB シリアルのみの場合は不要。ケーブル接続時にシステムが別途確認します）';
 
   @override
   String get tncOpenFailedHint =>
@@ -6330,4 +6331,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String packetSendFailed(String err) {
     return '送信していません：$err';
   }
+
+  @override
+  String get tncSerialBaud => 'シリアル通信速度 (bd)';
+
+  @override
+  String get tncSerialBaudTip =>
+      'USB シリアルケーブルと無線機のデータ端子は同じ速度にする必要があり、違うと 1 バイトも通りません。よく使う値：9600 / 19200 / 38400 / 57600 / 115200。Bluetooth SPP には速度の概念がなく、Bluetooth 機器ではこの設定は無効です。';
+
+  @override
+  String get tncSerialBaudHint =>
+      '変更した速度は再接続後に有効になります（「パラメータ送信」で1 回自動的に再接続します）';
+
+  @override
+  String get tncSerialBaudBluetooth =>
+      '現在バインドされているのは Bluetooth 機器です。Bluetooth SPP には速度の概念がないため、この設定は無効です';
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- USB 串口设备过滤表。
+     用途：插上一根 USB 转串口线时，系统会显示「打开方式」并可列出本应用 ——
+     对用户是便利（不用先开应用再插线），对应用是能收到 USB_DEVICE_ATTACHED。
+
+     ⚠️ 这里**故意不写得太窄**：USB 转串口线的 VID/PID 组合极多，还有大量白牌，
+     按芯片厂商白名单会把用户手上的线漏掉。所以只列最常见的几类做「提示」，
+     真正的枚举与判断在 UsbSerialManager.listDevices()（按端点形状判断）。
+
+     ⚠️ 属性名必须是 class / subclass / protocol —— **没有 interface-class**
+     （那是 UsbInterface 的概念，不是 <usb-device> 的匹配属性）。
+     写错会直接让 aapt2 报「attribute not found」，整个 Android 构建失败。 -->
+<resources>
+    <!-- 沁恒 CH340 / CH341（最常见的蓝线） -->
+    <usb-device vendor-id="6790" /> <!-- 0x1A86 -->
+    <!-- Silicon Labs CP210x -->
+    <usb-device vendor-id="4292" /> <!-- 0x10C4 -->
+    <!-- FTDI -->
+    <usb-device vendor-id="1027" /> <!-- 0x0403 -->
+    <!-- Prolific PL2303 -->
+    <usb-device vendor-id="1659" /> <!-- 0x067B -->
+    <!-- Arduino 类（电台自带 USB 口常也是 CDC） -->
+    <usb-device vendor-id="9025" /> <!-- 0x2341 -->
+    <usb-device vendor-id="10767" /> <!-- 0x2A03 -->
+    <!-- CDC-ACM：按设备类匹配（电台自带 USB 口多为 0x02 通信类 + 0x0A 数据类） -->
+    <usb-device class="2" /> <!-- CDC 通信类 -->
+    <usb-device class="10" /> <!-- CDC 数据类 -->
+</resources>

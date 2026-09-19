@@ -4056,13 +4056,13 @@ abstract class AppLocalizations {
   /// No description provided for @tncScanPaired.
   ///
   /// In zh, this message translates to:
-  /// **'扫描已配对设备'**
+  /// **'扫描设备（蓝牙已配对 + USB 串口）'**
   String get tncScanPaired;
 
   /// No description provided for @tncNoPaired.
   ///
   /// In zh, this message translates to:
-  /// **'未找到设备 · 请先在系统蓝牙设置里配对 TNC'**
+  /// **'未找到设备 · 请先在系统蓝牙设置里配对 TNC，或插上 USB 串口线（OTG）'**
   String get tncNoPaired;
 
   /// No description provided for @tncUnbind.
@@ -4092,7 +4092,7 @@ abstract class AppLocalizations {
   /// No description provided for @tncNeedPermission.
   ///
   /// In zh, this message translates to:
-  /// **'需要蓝牙权限，请授权后重试'**
+  /// **'需要蓝牙权限（扫描蓝牙设备用）；只用 USB 串口可忽略，插线时系统会单独弹出授权'**
   String get tncNeedPermission;
 
   /// No description provided for @tncOpenFailedHint.
@@ -11324,6 +11324,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'未发送：{err}'**
   String packetSendFailed(String err);
+
+  /// No description provided for @tncSerialBaud.
+  ///
+  /// In zh, this message translates to:
+  /// **'串口线速 (bd)'**
+  String get tncSerialBaud;
+
+  /// No description provided for @tncSerialBaudTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。'**
+  String get tncSerialBaudTip;
+
+  /// No description provided for @tncSerialBaudHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）'**
+  String get tncSerialBaudHint;
+
+  /// No description provided for @tncSerialBaudBluetooth.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效'**
+  String get tncSerialBaudBluetooth;
 }
 
 class _AppLocalizationsDelegate
