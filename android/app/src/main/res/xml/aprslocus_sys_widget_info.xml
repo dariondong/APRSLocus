@@ -10,8 +10,10 @@
   顺带让组件在存储异常后能自愈。真正刷新由 App 侧推送。
 -->
 <!-- 缩放适配（说明写在标签之外：XML 注释不能出现在属性之间）
-  同短波：最小尺寸取内容放得下的下限（高 125dp / 宽 170dp）。
-  拉高到 3 格以上换 aw_widget_sys_tall：字号上一档、状态点变大、各区块之间拉开
+  同短波：**minResizeHeight 必须 ≤ minHeight**（105dp < 110dp），
+  否则默认的 4×2 会落不下来。宽度下限 170dp。
+
+  高度到 240dp 以上换 aw_widget_sys_tall：字号上一档、状态点变大、各区块之间拉开
   —— 这个组件没有「可以多给的内容」，所以把高度用在可读性上。
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,7 +23,7 @@
     android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"
     android:minResizeWidth="170dp"
-    android:minResizeHeight="125dp"
+    android:minResizeHeight="105dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/aw_widget_sys"
     android:previewLayout="@layout/aw_widget_sys"

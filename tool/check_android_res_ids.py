@@ -458,6 +458,58 @@ def check_named_args(kotlin_dir):
                             f"（这类「加了用法忘了加字段」的改动，Kotlin 编译会直接失败）")
     return problems
 
+def check_widget_sizes(res_dir: str) -> list:
+    """小组件尺寸声明的不变量。
+
+    **这条是拿一次真实事故换来的**（v1.6.133）：当时给短波/系统状态打开了缩放，
+    顺手把 `minResizeHeight` 写成 150dp / 125dp —— 而它们的 `minHeight`（默认
+    尺寸）是 110dp。`minResize*` 的语义是「用户**最少**能拖到多小」，比默认尺寸
+    还大的话，等于宣告「默认的 4×2 低于下限」，启动器于是拒绝落到 4×2、或强行
+    撑到那个下限。用户装完的反应就是「4×2 怎么不支持了」。
+
+    约束就一句话：**minResize* ≤ min***。写在代码里看着显然，但要到装机才发作，
+    所以放进检查器。
+
+    顺带查 `resizeMode` 的取值：写错了同样只在装机时才看得出来。
+    """
+    problems = []
+    xml_dir = os.path.join(res_dir, "xml")
+    if not os.path.isdir(xml_dir):
+        return problems
+    allowed_modes = {"none", "horizontal", "vertical", "horizontal|vertical",
+                     "vertical|horizontal"}
+    for name in sorted(os.listdir(xml_dir)):
+        if not (name.startswith("aprslocus_") and name.endswith("_widget_info.xml")):
+            continue
+        path = os.path.join(xml_dir, name)
+        try:
+            root = ET.parse(path).getroot()
+        except ET.ParseError as e:
+            problems.append(f"  ✗ {name}: XML 解析失败（AAPT 会拒）：{e}")
+            continue
+
+        def dim(attr: str) -> int:
+            """取 dp 属性；缺失返回 -1（不参与比较）。"""
+            v = root.get("{http://schemas.android.com/apk/res/android}" + attr)
+            if v is None or not v.endswith("dp"):
+                return -1
+            return int(v[:-2])
+
+        mode = root.get("{http://schemas.android.com/apk/res/android}resizeMode")
+        if mode is not None and mode not in allowed_modes:
+            problems.append(f"  ✗ {name}: resizeMode={mode!r} 不是合法取值")
+
+        for axis, mn, rs in (("宽", "minWidth", "minResizeWidth"),
+                             ("高", "minHeight", "minResizeHeight")):
+            a, b = dim(mn), dim(rs)
+            if a > 0 and b > 0 and b > a:
+                problems.append(
+                    f"  ✗ {name}: {rs}={b}dp 大于 {mn}={a}dp —— "
+                    f"「最少能拖到多小」不能比默认{axis}度还大，"
+                    f"否则默认尺寸（如 4×2）会落不下来（v1.6.133 的真实事故）")
+    return problems
+
+
 def main() -> int:
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     res_dir = os.path.join(root, "android", "app", "src", "main", "res")
@@ -493,6 +545,7 @@ def main() -> int:
          check_layout_literal_providers(kotlin_dir, res_dir)),
         ("Kotlin 具名实参在类声明里不存在",
          check_named_args(kotlin_dir)),
+        ("小组件尺寸声明不合法", check_widget_sizes(res_dir)),
     ]
 
     failed = False

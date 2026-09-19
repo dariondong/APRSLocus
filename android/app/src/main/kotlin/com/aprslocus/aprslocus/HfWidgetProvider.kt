@@ -90,37 +90,30 @@ class HfWidgetProvider : AppWidgetProvider() {
         private const val SNAPSHOT_VERSION = 2
 
         /**
-         * 估算「1 格」的 dp。与 widget_info 的 minWidth 口径一致；
-         * 老系统只给 dp，需要它反推格子数。
+         * 够用「加高档」布局的最小高度（dp）。
+         *
+         * **为什么用 dp 而不是「几格」**：格子数是按 (74 × n − 16) 的**标称**公式
+         * 反推的，而实际每格多高随启动器与屏幕差很多 —— 用它判档时，4×2 在部分
+         * 启动器上被算成 3 格，直接套上了加高布局（内容 232dp）而溢出，
+         * 表现就是「4×2 坏了」。而加高布局放不放得下本来就是个 **dp 事实**
+         * （内容 232dp / 系统状态 215dp），所以直接比 dp 才成立。
+         *
+         * 240dp：给加高布局的 232dp 留 8dp 余量。
+         * 3 格标称约 206dp → 仍用标准档（内容 157dp，放得下，不会被裁）。
+         * 4 格标称约 280dp → 换加高档。
          */
-        private const val DP_PER_CELL = 74.0
-
-        /**
-         * 取格子数：优先用 bundle 里 API 31+ 的 cells 值，否则用 dp 反推。
-         */
-        private fun cells(opt: Bundle, cellsKey: String, dpKey: String): Int {
-            val c = opt.getInt(cellsKey, 0)
-            if (c > 0) return c
-            val dp = opt.getInt(dpKey, 0)
-            if (dp <= 0) return 0
-            return Math.ceil(dp / DP_PER_CELL).toInt()
-        }
+        private const val TALL_MIN_HEIGHT_DP = 240
 
         /**
          * 高度是否够用「加高档」布局。
          *
-         * 阈值取 3 格：本组件标准档的内容约 157dp，而 4×2 实际能拿到的高度
-         * 各启动器不同（实测约 160~206dp），所以不能用「刚好放得下」当判据；
-         * 从 3 格（≈222dp）起才确定有余量，把条加粗、字号上一档。
-         *
-         * 用 `minHeight` 而不是 `maxHeight`：用户拖大之后再拖小，两者都会更新，
-         * 但 min* 在部分启动器上是唯一可靠的那个口径（与天气组件同一取舍）。
+         * 用 OPTION_APPWIDGET_MIN_HEIGHT：用户拖动后系统会把它更新为当前尺寸，
+         * 所以它既表示「现在多高」，也正好是我们要判的那个量。
          */
         private fun isTall(manager: AppWidgetManager, id: Int): Boolean {
             val opt = manager.getAppWidgetOptions(id) ?: Bundle()
-            val rows = cells(opt, "appWidgetHeightCells",
-                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-            return rows >= 3
+            val dp = opt.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
+            return dp >= TALL_MIN_HEIGHT_DP
         }
 
 

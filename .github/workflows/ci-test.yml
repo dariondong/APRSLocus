@@ -34,6 +34,14 @@ jobs:
       - name: Check backup preference keys
         run: python3 tool/check_backup_keys.py
 
+      # Android 资源的静态检查：ResId 对不上、布局引用了不存在的 drawable、
+      # `setInt("方法名")` 在目标控件上不存在、**小组件尺寸声明不合法**等。
+      # 这些**全都是只在装机时才发作**的问题（白块、默认尺寸落不下来），
+      # 所以必须在 CI 里拦 —— 以前它只在我手动跑，于是 v1.6.133 的
+      # 「minResizeHeight 比 minHeight 还大 → 4×2 不能用了」就是这样漏出去的。
+      - name: Check Android resources
+        run: python3 tool/check_android_res_ids.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

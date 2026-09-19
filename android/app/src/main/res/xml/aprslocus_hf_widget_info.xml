@@ -17,11 +17,16 @@
   顺带让组件在存储/数据异常后能自愈。真正的刷新由 App 侧推送。
 -->
 <!-- 缩放适配（说明写在标签之外：XML 注释不能出现在属性之间）
-  最小尺寸 = **内容放得下的下限**，不是随便拍的：
-  高 150dp（内容 157dp，留一点余量；比它更矮就会把底部提示行裁掉）、
-  宽 200dp（波段名 56 + 两段各约 35 + 档位块 48 + 内边距与缝）。
-  拉高到 3 格（约 206dp）以上时换成 aw_widget_hf_tall：条更粗、字号上一档、
-  提示给两行 —— 多出来的高度都用在信息量上。
+  ⚠ **minResizeHeight 必须 ≤ minHeight**：minResize* 是「用户最少能拖到多小」，
+  比组件自己的默认尺寸还大的话，等于宣告「默认的 4×2 低于下限」——
+  启动器会拒绝落到 4×2、或强行撑到那个下限（v1.6.133 就是这样把 4×2 弄没的）。
+  这里取 105dp（略低于默认 110dp），保证 4×2 始终可达。
+
+  宽度下限 200dp：波段名 56 + 两段 + 档位块 48 + 内边距与缝，再窄就先牺牲波段名。
+
+  高度到 240dp（≈4 格）以上换 aw_widget_hf_tall：条更粗、字号上一档、提示给两行
+  —— 多出来的高度都用在信息量上。（3 格标称只有 206dp，放不下加高布局的 232dp，
+  所以判档阈值按**内容需要的高度**取，而不是按「几格」。）
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="250dp"
@@ -30,7 +35,7 @@
     android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"
     android:minResizeWidth="200dp"
-    android:minResizeHeight="150dp"
+    android:minResizeHeight="105dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/aw_widget_hf"
     android:previewLayout="@layout/aw_widget_hf"

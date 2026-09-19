@@ -1,5 +1,61 @@
 # 更新日志
 
+## [1.6.134] - 2026-09-19
+
+### 🔧 修 v1.6.133 把 4×2 弄没了：`minResizeHeight` 不能大于 `minHeight`
+
+装了 v1.6.133 之后 4×2 落不下来、或被强行撑大。根因是我在 widget_info 里写了一组
+**自相矛盾**的尺寸：
+
+| | `minHeight`（默认尺寸） | `minResizeHeight`（我写的） |
+|---|---|---|
+| 短波 | 110dp | **150dp** |
+| 系统状态 | 110dp | **125dp** |
+| 天气（一直正常） | 110dp | 60dp |
+
+`minResizeHeight` 的语义是「用户**最少**能拖到多小」。把它写成比组件自己的默认高度
+还大，等于宣告「默认的 4×2 低于下限」—— 启动器只能拒绝落到 4×2、或强行撑到那个下限。
+**约束是 `minResize* ≤ min*`，我把方向搞反了。**
+
+现在两个组件都取 105dp（略低于默认 110dp），4×2 始终可达。宽度下限不变
+（短波 200dp / 系统状态 170dp）—— 那是「再窄就先牺牲波段名」的位置。
+
+**顺带修掉判档阈值。** 原来按「≥3 格」判加高布局，而格子数是按 `74 × n − 16` 这个
+**标称**公式反推的 —— 实际每格多高随启动器与屏幕差很多，用它判档时 4×2 在部分启动器上
+被算成 3 格，直接套上了 232dp 的加高布局而溢出（表现同样是「4×2 坏了」）。
+现在改成**直接比 dp**：≥240dp 才换加高档。理由很直白 —— 加高布局放不放得下本来就是
+个 dp 事实（内容 232dp / 215dp），而 3 格标称只有 206dp，它本来就装不下。
+
+---
+
+**Fixes the 4×2 regression from v1.6.133: `minResizeHeight` must not exceed `minHeight`.**
+
+After v1.6.133 the 4×2 size could no longer be placed, or was forced larger. The cause was a
+**self-contradictory** set of size declarations in the widget infos:
+
+| | `minHeight` (default size) | `minResizeHeight` (what I wrote) |
+|---|---|---|
+| HF | 110dp | **150dp** |
+| System status | 110dp | **125dp** |
+| Weather (never broken) | 110dp | 60dp |
+
+`minResizeHeight` means "the smallest size the user may drag to". Declaring it *larger* than the
+widget's own default height announces that the default 4×2 sits below the floor — so the launcher
+either refuses to place it at 4×2 or forces it up to that floor. The constraint is
+**`minResize* ≤ min*`**, and I had it backwards.
+
+Both widgets now use 105dp (just under the 110dp default), so 4×2 is always reachable. The width
+floors are unchanged (200dp / 170dp) — the point where a narrower widget starts sacrificing the
+band name.
+
+**The tier threshold is fixed as well.** It used to switch to the tall layout at "3 cells or more",
+where cells come from the **nominal** `74 × n − 16` formula. Real cell heights vary widely with
+launcher and screen, so on some launchers a 4×2 was computed as 3 cells and received the 232dp tall
+layout, which overflowed — and that reads as "4×2 is broken" too. It now compares **dp directly**:
+the tall layout only applies at 240dp or more. The reasoning is plain — whether the tall layout fits
+is a dp fact (its content is 232dp / 215dp), and a nominal 3 cells is only 206dp, so it never fit
+in the first place.
+
 ## [1.6.133] - 2026-09-19
 
 ### ↔️ 短波与系统状态组件支持缩放了；拉高自动换「加高档」
@@ -20,7 +76,7 @@ RemoteViews 没有百分比布局，能按比例设高的 `setViewLayoutHeight` 
 最先被牺牲的就是波段名 —— 所以最小宽度卡在内容放得下的地方：
 短波 200dp、系统状态 170dp。
 
-**纵向：拉高到 3 格以上换「加高档」**
+**纵向：高度够时换「加高档」**（判档见 v1.6.134 的修正）
 
 | | 标准档（4×2） | 加高档（4×3+） |
 |---|---|---|
@@ -32,10 +88,12 @@ RemoteViews 没有百分比布局，能按比例设高的 `setViewLayoutHeight` 
 - **系统状态**没有「可以多给的内容」（它四段各自独立，硬塞新内容会变成另一张表），
   所以把高度用在**可读性**上。
 
-**最小尺寸卡在「内容放得下的下限」**
+**最小尺寸**
 
-短波高 150dp / 系统状态高 125dp。这两个数字是算出来的：比它更矮，底部那行
-（通联提示 / 最近收到）就会被裁掉。宁可不让拖得那么小，也不要给一个一拖就缺字的组件。
+> ⚠ 这里原来写的是「卡在内容放得下的下限」（短波 150dp / 系统 125dp）——
+> **那是错的，而且直接把 4×2 弄没了**：`minResizeHeight`（用户最少能拖到多小）
+> 被写成比组件自己的默认高度（`minHeight` 110dp）还大，等于宣告「默认的 4×2
+> 低于下限」，启动器于是拒绝落位、或强行撑大。**已在 v1.6.134 修正**，见该条。
 
 **实现上只改了一处**
 
@@ -65,7 +123,7 @@ needs guarding is dragging it *too narrow*: band name 56dp + two segments + a 48
 when that stops fitting, the band name is the first thing sacrificed. The minimum widths are therefore
 pinned to what the content needs: 200dp (HF) and 170dp (system status).
 
-**Vertical: 3 cells or more switches to the tall layout**
+**Vertical: switches to the tall layout when there is enough height** (threshold fixed in v1.6.134)
 
 | | standard (4×2) | tall (4×3+) |
 |---|---|---|
@@ -77,11 +135,13 @@ height on **information** (thicker bars, a second tip line), while system status
 show — its four sections are already distinct, and forcing more in would make it a different widget —
 so it spends the height on **legibility**.
 
-**Minimum size pinned to "what the content needs"**
+**Minimum size**
 
-150dp tall for HF, 125dp for system status. Both are derived: any shorter and the last row (the
-propagation tip / the "last heard" line) gets clipped. Better to disallow that size than to ship a
-widget that loses text as soon as you shrink it.
+> ⚠ This originally read "pinned to what the content needs" (150dp for HF, 125dp for system
+> status) — **that was wrong, and it removed the 4×2 size entirely**: `minResizeHeight` (the
+> smallest the user may drag to) was declared *larger* than the widget's own default height
+> (`minHeight`, 110dp), announcing that the default 4×2 sits below the floor, so the launcher
+> refused to place it there or forced it larger. **Fixed in v1.6.134** — see that entry.
 
 **Only one thing changed in the implementation**
 
