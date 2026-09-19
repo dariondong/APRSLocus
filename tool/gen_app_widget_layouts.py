@@ -62,31 +62,6 @@ COMPACT = dict(temp="25sp", icon="21dp", cond="9sp", range="8.5sp",
 # 所以颜色必须写成可解析的资源，夜间模式才能自动切到 values-night 的值。
 # 对应 theme.dart 的 C.ink / C.slate / C.border。
 INK = "@color/aw_ink"  # 主文字
-# 进度条段高度。13dp 时四行加起来只有 52dp，整块显得空 —— 用户要「拉高一点、更饱满」，
-# 提到 18dp（4 行共 72dp）。为此把几处 4/3dp 的间隔各收 1~2dp，
-# 总高仍低于 4×2 的内容预算（实测见预览工具的核对输出）。
-SEG_H = "18dp"
-# 日/夜两段之间的缝
-SEG_GAP = "2dp"
-# 段内的太阳/月亮图标（挪到**条内**之后不再占条外宽度，也不用染色：
-# 白天段是满色、夜晚段是压暗色，白图在两者上都够清楚）
-SEG_ICON = "10dp"
-# 段内顶部的小白点：标出「现在」在哪一段。
-# 它**不再烘焙进 drawable** —— 那样每种「档位 × 昼夜 × 是否当前」都要一张图
-# （4×2×2=16 张/主题）。改成独立 ImageView 后，可见性由 Kotlin 控，
-# drawable 只需「档位 × 昼夜」4×2=8 张。
-SEG_PIP_W = "6dp"
-SEG_PIP_H = "3dp"
-# 段内图标离条左端的距离
-SEG_ICON_PAD = "7dp"
-# 每行右侧「现在这一档」的标块宽度
-NOW_W = "48dp"
-# 波段名列宽。**56dp 是算出来的，不是拍的**：最长的波段名（12m/10m）在
-# 9sp 加粗下实测约 42dp；Android 字体缩放最大 1.3 倍 → 42 × 1.3 ≈ 55dp。
-# 上一版给 46dp，系统字体一放大就把名字吃掉（ellipsize 成「12m/1…」）——
-# 而**预览工具画文字不裁切**，所以它看不出来，只有真机上才现形。
-# 宁可把 10dp 让给名字，也不让最关键的「这是哪个波段」消失。
-BAND_W = "56dp"
 SLATE = "@color/aw_slate"  # 次要文字
 LINE = "@color/aw_line"  # 细分隔线
 
@@ -684,7 +659,47 @@ def build_row():
 
 
 # ── 短波/电离层传播组件（4×2，固定尺寸 · 白底 · 彩色 chip）────────────
-def build_hf():
+# ── 短波组件的两档尺寸 ─────────────────────────────────────────────
+# 为什么是「两档」而不是流体缩放：RemoteViews 没有百分比布局，能按比例设高的
+# `setViewLayoutHeight` 又要 API 31+（本项目 minSdk=24），所以只能分档 ——
+# 与天气组件（4 档）同一套机制。
+#
+# **两档共用同一套 id**（只有 dp 值不同）：这样 Provider 只需按高度换一个
+# layout 资源，不必维护第二张 IdS 表 —— 少一处「改了一档忘了改另一档」的地方。
+HF_BASE = dict(
+    seg_h="18dp", seg_icon="10dp", icon_pad="7dp", pip_w="6dp", pip_h="3dp",
+    seg_gap="2dp", now_w="48dp",
+    title="12sp", tag="8.5sp", idx_label="8.5sp", idx_value="11sp",
+    six="8.5sp", band="9sp", now="8.5sp",
+    tip_level="8.5sp", tip="9sp", tip_lines=1,
+    head_icon="14dp", head_logo="15dp", app="10sp", six_h="13dp", six_w="48dp",
+    pad="12dp", pad_top="8dp", pad_bottom="9dp",
+    # 波段名列宽。**56dp 是算出来的**：最长的「12m/10m」在 9sp 加粗下实测
+    # 约 42dp；Android 字体缩放上限 1.3 倍 → 42 × 1.3 ≈ 55dp。
+    band_w="56dp",
+    idx_gap="2dp", rule_gap="3dp", row_gap="2dp", tip_gap="3dp",
+)
+
+# 高出 1~2 格（4×3 / 4×4）时用这一档：条更粗、字更大、提示给两行。
+# 不是把所有间距乘 1.5 —— 那样只会显得松散；改成「条变粗 + 字号上一档
+# + 提示多一行」，多出来的高度都用在**信息量**上。
+HF_TALL = dict(HF_BASE, **dict(
+    # 24dp 而不是 26dp：26dp 时四行加起来把总高顶到 240dp，超出 4×3 的
+    # 内容预算（≈234dp）；24dp 刚好落在 230dp 以内。
+    seg_h="24dp", seg_icon="15dp", icon_pad="10dp", pip_w="10dp", pip_h="4dp",
+    seg_gap="3dp", now_w="62dp",
+    title="13.5sp", tag="10sp", idx_label="10sp", idx_value="13sp",
+    six="10sp", band="10.5sp", now="10.5sp",
+    tip_level="10sp", tip="10.5sp", tip_lines=2,
+    head_icon="16dp", head_logo="17dp", app="11.5sp", six_h="17dp", six_w="56dp",
+    pad="14dp", pad_top="11dp", pad_bottom="12dp",
+    # 字号上到 10.5sp，列宽必须跟着加到 68dp：10.5sp 加粗 ≈ 49dp，
+    # 再乘字体缩放 1.3 ≈ 64dp —— 沿用 56dp 会当场把波段名截掉。
+    band_w="68dp",
+    idx_gap="4dp", rule_gap="5dp", row_gap="4dp", tip_gap="5dp",
+))
+
+def build_hf(tall=False):
     """短波/电离层传播：每个波段一条「日 → 夜」进度条 + 当前时段游标。
 
     **这一版是「M1 · 双段 + 游标」**（用户在三个方向里选定的）。上一版
@@ -716,7 +731,9 @@ def build_hf():
     设计稿见 tool/preview_app_widget.py 的 render_hf_M1（同一套尺寸）。
     """
     rows = 4
-    s = header_comment("桌面小组件 · 短波/电离层传播（4×2 · M1 日/夜进度条）", [
+    sz = HF_TALL if tall else HF_BASE
+    tier = "4×3+ 加高" if tall else "4×2 标准"
+    s = header_comment(f"桌面小组件 · 短波/电离层传播（{tier} · M1 日/夜进度条）", [
         "顶栏    ：[电波图标·墨色] 短波传播  现在 夜间    [logo] APRSlocus",
         "指数行  ：SFI 100 · Kp 3 · A 9                        6m [档位]",
         "细线    ：C.border（#E5E9F0）",
@@ -740,28 +757,30 @@ def build_hf():
     ])
     s += open_layout("aw_root", "aw_bg_white")
     s += linear("aw_pad", orientation="vertical", height="match_parent",
-                pad_start="12dp", pad_end="12dp", pad_top="8dp", pad_bottom="9dp")
+                pad_start=sz["pad"], pad_end=sz["pad"], pad_top=sz["pad_top"],
+                pad_bottom=sz["pad_bottom"])
     # ① 顶栏
     s += linear("aw_hf_header", orientation="horizontal",
                 gravity="center_vertical", baseline=True)
-    s += image("aw_hf_icon", "aw_ic_waves", "14dp")
-    s += text("aw_hf_title", size="12sp", bold=True, color=INK, margin_start="4dp")
+    s += image("aw_hf_icon", "aw_ic_waves", sz["head_icon"])
+    s += text("aw_hf_title", size=sz["title"], bold=True, color=INK,
+              margin_start="4dp")
     # 「现在 夜间」放在**顶栏**而不是指数行：它是表头级的「这份数据对应当前哪个时段」，
     # 且指数行已经被 SFI/Kp/A + 6m 占满 —— 实测西班牙语的「Ahora Noche」52.3dp、
     # 印尼语的「Sekarang Malam」67.7dp，留在指数行会把 6m 格挤出去。
     # 顶栏标题与品牌之间有大片空位，长度再长也放得下。
-    s += text("aw_now_tag", size="8.5sp", color=SLATE, margin_start="7dp")
+    s += text("aw_now_tag", size=sz["tag"], color=SLATE, margin_start="7dp")
     s += text("aw_spacer", size="1sp", width="0dp", height="1dp", weight="1")
-    s += image("aw_logo", "aw_logo", "15dp")
-    s += text("aw_app_name", size="10sp", bold=True, color=INK,
+    s += image("aw_logo", "aw_logo", sz["head_logo"])
+    s += text("aw_app_name", size=sz["app"], bold=True, color=INK,
               margin_start="4dp", android_text="APRSlocus")
     s += CLOSE
     # ② 指数行 + 右端「现在 夜间」（文案由 Dart 拼好下发 —— 原生不本地化）
     s += linear("aw_idx", orientation="horizontal", gravity="bottom",
-                baseline=True, margin_top="2dp")
+                baseline=True, margin_top=sz["idx_gap"])
     for i in range(3):
-        s += text(f"aw_idx{i}_label", size="8.5sp", color=SLATE)
-        s += text(f"aw_idx{i}_value", size="11sp", bold=True, color=INK,
+        s += text(f"aw_idx{i}_label", size=sz["idx_label"], color=SLATE)
+        s += text(f"aw_idx{i}_value", size=sz["idx_value"], bold=True, color=INK,
                   margin_start="3dp", margin_end="10dp")
     s += text("aw_idx_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
@@ -769,15 +788,15 @@ def build_hf():
     # 所以不进上面那张「日/夜进度条」的表，留在指数行右端当一个独立指标 ——
     # 上一版（v1.6.128）刚把它做成常驻，这版不能因为改了表就把它挤掉。
     # 无条件时显示灰色占位符（Dart 给 HfNow.none），开通时才变色。
-    s += text("aw_six_tag", size="8.5sp", color=SLATE, android_text="6m",
+    s += text("aw_six_tag", size=sz["six"], color=SLATE, android_text="6m",
               margin_start="8dp", margin_end="3dp")
-    s += text("aw_six", size="8.5sp", bold=True, color="#FFFFFF",
-              width="48dp", height="13dp", gravity="center",
+    s += text("aw_six", size=sz["six"], bold=True, color="#FFFFFF",
+              width=sz["six_w"], height=sz["six_h"], gravity="center",
               bg="aw_segnight_closed", pad_start="3dp", pad_end="3dp",
               ellipsize=True)
     s += CLOSE
     # ③ 细线
-    s += linear("aw_rule1_box", orientation="vertical", margin_top="3dp")
+    s += linear("aw_rule1_box", orientation="vertical", margin_top=sz["rule_gap"])
     s += hairline("aw_rule1", LINE)
     s += CLOSE
     # ④ 4 行波段：名字 + [白天段] + [夜晚段] + 当前档位块
@@ -793,35 +812,35 @@ def build_hf():
     for i in range(rows):
         s += linear(f"aw_band{i}", orientation="horizontal",
                     gravity="center_vertical", baseline=True,
-                    margin_top="2dp")
-        s += text(f"aw_band{i}_name", size="9sp", bold=True, color=INK,
-                  width=BAND_W, ellipsize=True)
+                    margin_top=sz["row_gap"])
+        s += text(f"aw_band{i}_name", size=sz["band"], bold=True, color=INK,
+                  width=sz["band_w"], ellipsize=True)
         # ── 白天段 ──
-        s += frame(f"aw_band{i}_day", width="0dp", weight="1", height=SEG_H,
+        s += frame(f"aw_band{i}_day", width="0dp", weight="1", height=sz["seg_h"],
                    bg="aw_segday_closed")
-        s += image(f"aw_band{i}_dayicon", "aw_ic_wb_sunny", SEG_ICON,
+        s += image(f"aw_band{i}_dayicon", "aw_ic_wb_sunny", sz["seg_icon"],
                    layout_gravity="left|center_vertical",
-                   margin_start=SEG_ICON_PAD)
-        s += image(f"aw_band{i}_daypip", "aw_dot", SEG_PIP_W,
-                   width=SEG_PIP_W, height=SEG_PIP_H,
+                   margin_start=sz["icon_pad"])
+        s += image(f"aw_band{i}_daypip", "aw_dot", sz["pip_w"],
+                   width=sz["pip_w"], height=sz["pip_h"],
                    layout_gravity="top|center_horizontal", margin_top="2dp")
         s += FRAME_CLOSE
         # ── 夜晚段 ──
         # 夜端用**月亮**（nights_stay）而不是「星光簇」（auto_awesome）：
         # 后者是几颗大小不一的三角闪光，10dp 下糊成一团，看上去像渲染毛刺。
-        s += frame(f"aw_band{i}_night", width="0dp", weight="1", height=SEG_H,
-                   bg="aw_segnight_closed", margin_start=SEG_GAP)
-        s += image(f"aw_band{i}_nighticon", "aw_ic_nights_stay", SEG_ICON,
+        s += frame(f"aw_band{i}_night", width="0dp", weight="1", height=sz["seg_h"],
+                   bg="aw_segnight_closed", margin_start=sz["seg_gap"])
+        s += image(f"aw_band{i}_nighticon", "aw_ic_nights_stay", sz["seg_icon"],
                    layout_gravity="left|center_vertical",
-                   margin_start=SEG_ICON_PAD)
-        s += image(f"aw_band{i}_nightpip", "aw_dot", SEG_PIP_W,
-                   width=SEG_PIP_W, height=SEG_PIP_H,
+                   margin_start=sz["icon_pad"])
+        s += image(f"aw_band{i}_nightpip", "aw_dot", sz["pip_w"],
+                   width=sz["pip_w"], height=sz["pip_h"],
                    layout_gravity="top|center_horizontal", margin_top="2dp")
         s += FRAME_CLOSE
         # 当前档位块：底色跟**当前时段**的明暗走（白天段=亮底 / 夜晚段=暗底），
         # 文字由 Kotlin 设成白色 —— 与段内图标的处理一致。
-        s += text(f"aw_band{i}_now", size="8.5sp", bold=True, color="#FFFFFF",
-                  width=NOW_W, height=SEG_H, gravity="center",
+        s += text(f"aw_band{i}_now", size=sz["now"], bold=True, color="#FFFFFF",
+                  width=sz["now_w"], height=sz["seg_h"], gravity="center",
                   bg="aw_segday_closed", margin_start="3dp", ellipsize=True)
         s += CLOSE
 
@@ -832,16 +851,17 @@ def build_hf():
     #
     # 圆点与级别图标都是**白图 + 运行时染色**（setColorFilter 只存在于
     # ImageView —— v1.6.114 的线上事故正源于把它用在 TextView 上）。
-    s += linear("aw_tip_box", orientation="vertical", margin_top="3dp")
+    s += linear("aw_tip_box", orientation="vertical", margin_top=sz["tip_gap"])
     s += hairline("aw_tip_rule", LINE)
     s += CLOSE
     s += linear("aw_tip", orientation="horizontal", gravity="center_vertical",
-                baseline=True, margin_top="3dp")
+                baseline=True, margin_top=sz["tip_gap"])
     s += image("aw_tip_dot", "aw_dot", "6dp")
     s += image("aw_tip_icon", "aw_ic_rss_feed", "11dp", margin_start="5dp")
-    s += text("aw_tip_level", size="8.5sp", bold=True, spacing="0.04",
+    s += text("aw_tip_level", size=sz["tip_level"], bold=True, spacing="0.04",
               margin_start="4dp")
-    s += text("aw_tip_text", size="9sp", color=INK, alpha=0.93, max_lines=1,
+    s += text("aw_tip_text", size=sz["tip"], color=INK, alpha=0.93,
+              max_lines=sz["tip_lines"],
               ellipsize=True, margin_start="5dp", width="0dp", weight="1")
     s += CLOSE
 
@@ -852,7 +872,31 @@ def build_hf():
 
 
 # ── 系统状态组件（4×2）──────────────────────────────────────────────
-def build_sys():
+# ── 系统状态组件的两档尺寸（同短波：两档共用同一套 id）────────────
+SYS_BASE = dict(
+    pad="13dp", pad_top="8dp", pad_bottom="9dp",
+    title="13sp", app="10sp", icon="14dp", logo="15dp",
+    call="11sp", id_sep="9sp", id_val="9.5sp",
+    dot="7dp", link_name="9.5sp", link_state="9sp",
+    cnt="9.5sp", recent_label="8.5sp", recent_call="9.5sp",
+    g_id="3dp", g_rule1="3dp", g_links="4dp", g_lrow="5dp", g_rule2="4dp",
+    g_cnt="4dp", g_recent="4dp",
+)
+
+# 加高档（4×3+）：字号上一档、状态点变大、各区块之间拉开。
+# 这里**没有多加内容**（不像短波多给一行提示）—— 系统状态的四段本来就
+# 各自独立，硬塞新内容会变成另一张表；把间距拉开、字放大反而是它需要的。
+SYS_TALL = dict(SYS_BASE, **dict(
+    pad="16dp", pad_top="13dp", pad_bottom="16dp",
+    title="15sp", app="11.5sp", icon="17dp", logo="17dp",
+    call="13sp", id_sep="10sp", id_val="11sp",
+    dot="9dp", link_name="11sp", link_state="10.5sp",
+    cnt="11sp", recent_label="10sp", recent_call="11sp",
+    g_id="7dp", g_rule1="8dp", g_links="12dp", g_lrow="14dp", g_rule2="12dp",
+    g_cnt="12dp", g_recent="12dp",
+))
+
+def build_sys(tall=False):
     """APRS 台站的「一眼健康检查」：定位 / 四条链路 / 收发计数 / 信标与台站数。
 
     为什么值得单独做一个组件：APRS 是**后台长期运行**的应用，用户最常问的
@@ -863,7 +907,9 @@ def build_sys():
     设计沿用短波组件的语言（白/深底 + 墨色字 + tonal 状态点），
     这样三个组件摆在一起是同一套设计，而不是三种风格。
     """
-    s = header_comment("桌面小组件 · 系统状态（4×2）", [
+    sz = SYS_TALL if tall else SYS_BASE
+    tier = "4×3+ 加高" if tall else "4×2 标准"
+    s = header_comment(f"桌面小组件 · 系统状态（{tier}）", [
         "顶栏    ：[齿轮] 系统状态                          [logo] APRSlocus",
         "身份行  ：呼号 · 定位状态 · 网格",
         "细线",
@@ -884,63 +930,64 @@ def build_sys():
     ])
     s += open_layout("aw_root", "aw_bg_white")
     s += linear("aw_pad", orientation="vertical", height="match_parent",
-                pad_start="13dp", pad_end="13dp", pad_top="8dp", pad_bottom="9dp")
+                pad_start=sz["pad"], pad_end=sz["pad"], pad_top=sz["pad_top"],
+                pad_bottom=sz["pad_bottom"])
     # 顶栏
     s += linear("aw_sys_header", orientation="horizontal",
                 gravity="center_vertical", baseline=True)
-    s += image("aw_sys_icon", "aw_ic_settings", "14dp")
-    s += text("aw_sys_title", size="13sp", bold=True, color=INK,
+    s += image("aw_sys_icon", "aw_ic_settings", sz["icon"])
+    s += text("aw_sys_title", size=sz["title"], bold=True, color=INK,
               margin_start="4dp")
     s += text("aw_spacer", size="1sp", width="0dp", height="1dp", weight="1")
-    s += image("aw_logo", "aw_logo", "15dp")
-    s += text("aw_app_name", size="10sp", bold=True, color=INK,
+    s += image("aw_logo", "aw_logo", sz["logo"])
+    s += text("aw_app_name", size=sz["app"], bold=True, color=INK,
               margin_start="4dp", android_text="APRSlocus")
     s += CLOSE
     # 身份行：呼号 · 定位 · 网格
     s += linear("aw_identity", orientation="horizontal", baseline=True,
-                margin_top="3dp")
-    s += text("aw_my_call", size="11sp", bold=True, color=INK)
-    s += text("aw_id_sep1", size="9sp", color=SLATE, margin_start="6dp",
+                margin_top=sz["g_id"])
+    s += text("aw_my_call", size=sz["call"], bold=True, color=INK)
+    s += text("aw_id_sep1", size=sz["id_sep"], color=SLATE, margin_start="6dp",
               margin_end="6dp", android_text="·")
-    s += text("aw_fix_state", size="9.5sp", color=SLATE)
-    s += text("aw_id_sep2", size="9sp", color=SLATE, margin_start="6dp",
+    s += text("aw_fix_state", size=sz["id_val"], color=SLATE)
+    s += text("aw_id_sep2", size=sz["id_sep"], color=SLATE, margin_start="6dp",
               margin_end="6dp", android_text="·")
-    s += text("aw_my_grid", size="9.5sp", color=SLATE)
+    s += text("aw_my_grid", size=sz["id_val"], color=SLATE)
     s += CLOSE
-    s += linear("aw_rule1_box", orientation="vertical", margin_top="3dp")
+    s += linear("aw_rule1_box", orientation="vertical", margin_top=sz["g_rule1"])
     s += hairline("aw_rule1", LINE)
     s += CLOSE
     # 链路 2×2
-    s += linear("aw_links", orientation="vertical", margin_top="4dp")
+    s += linear("aw_links", orientation="vertical", margin_top=sz["g_links"])
     for r in range(2):
         s += linear(f"aw_lrow{r}", orientation="horizontal", baseline=True,
-                    margin_top=None if r == 0 else "5dp")
+                    margin_top=None if r == 0 else sz["g_lrow"])
         for c in range(2):
             i = r * 2 + c
             s += linear(f"aw_link{i}", orientation="horizontal", width="0dp",
                         weight="1", gravity="center_vertical", baseline=True,
                         margin_end="10dp" if c == 0 else None)
-            s += image(f"aw_link{i}_dot", "aw_dot", "7dp")
-            s += text(f"aw_link{i}_name", size="9.5sp", color=INK,
+            s += image(f"aw_link{i}_dot", "aw_dot", sz["dot"])
+            s += text(f"aw_link{i}_name", size=sz["link_name"], color=INK,
                       margin_start="6dp", bold=True)
-            s += text(f"aw_link{i}_state", size="9sp", color=SLATE,
+            s += text(f"aw_link{i}_state", size=sz["link_state"], color=SLATE,
                       margin_start="5dp", width="0dp", weight="1",
                       ellipsize=True)
             s += CLOSE
         s += CLOSE
     s += CLOSE
-    s += linear("aw_rule2_box", orientation="vertical", margin_top="4dp")
+    s += linear("aw_rule2_box", orientation="vertical", margin_top=sz["g_rule2"])
     s += hairline("aw_rule2", LINE)
     s += CLOSE
     # 计数行
     s += linear("aw_counters", orientation="horizontal", baseline=True,
-                margin_top="4dp")
-    s += text("aw_rx", size="9.5sp", color=SLATE)
-    s += text("aw_tx", size="9.5sp", color=SLATE, margin_start="12dp")
+                margin_top=sz["g_cnt"])
+    s += text("aw_rx", size=sz["cnt"], color=SLATE)
+    s += text("aw_tx", size=sz["cnt"], color=SLATE, margin_start="12dp")
     s += text("aw_cnt_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
-    s += text("aw_beacon", size="9.5sp", color=SLATE)
-    s += text("aw_stations", size="9.5sp", color=SLATE, margin_start="12dp")
+    s += text("aw_beacon", size=sz["cnt"], color=SLATE)
+    s += text("aw_stations", size=sz["cnt"], color=SLATE, margin_start="12dp")
     s += CLOSE
     # 最近收到的台站（左：标签 + 呼号；右：多久前）
     #
@@ -951,13 +998,13 @@ def build_sys():
     # 没有台站时整行收起（Kotlin 侧按 recentCall 是否为空决定），
     # 而不是留一个「最近收到  · 」的空壳。
     s += linear("aw_recent", orientation="horizontal", baseline=True,
-                margin_top="4dp")
-    s += text("aw_recent_label", size="8.5sp", color=SLATE)
-    s += text("aw_recent_call", size="9.5sp", bold=True, color=INK,
+                margin_top=sz["g_recent"])
+    s += text("aw_recent_label", size=sz["recent_label"], color=SLATE)
+    s += text("aw_recent_call", size=sz["recent_call"], bold=True, color=INK,
               margin_start="5dp", ellipsize=True)
     s += text("aw_recent_spacer", size="1sp", width="0dp", height="1dp",
               weight="1")
-    s += text("aw_recent_ago", size="8.5sp", color=SLATE)
+    s += text("aw_recent_ago", size=sz["recent_label"], color=SLATE)
     s += CLOSE
     s += CLOSE
     s += empty_label(color=INK, alpha=0.85)
@@ -1025,7 +1072,12 @@ def main():
         "aw_widget_compact.xml": build_compact(),
         "aw_widget_row.xml": build_row(),
         "aw_widget_hf.xml": build_hf(),
+        # 加高档（4×3+）：与标准档**同一套 id**，只有 dp 值不同 ——
+        # Provider 按高度选一个 layout 资源即可，不必维护第二张 IdS 表。
+        "aw_widget_hf_tall.xml": build_hf(tall=True),
         "aw_widget_sys.xml": build_sys(),
+        # 加高档（4×3+）：与标准档同一套 id，只有 dp 值不同
+        "aw_widget_sys_tall.xml": build_sys(tall=True),
     }
 
     problems = []

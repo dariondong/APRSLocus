@@ -1,5 +1,98 @@
 # 更新日志
 
+## [1.6.133] - 2026-09-19
+
+### ↔️ 短波与系统状态组件支持缩放了；拉高自动换「加高档」
+
+三个桌面组件里，只有**天气**原来能拖拽缩放，**短波**与**系统状态**是
+`resizeMode="none"`（固定尺寸）。这一版把它们也打开，并各多做一个
+**「加高档」布局**。
+
+**为什么是「分档」而不是真的按比例缩放**
+
+RemoteViews 没有百分比布局，能按比例设高的 `setViewLayoutHeight` 又要 API 31+
+（本项目 minSdk=24）—— 所以只能像天气组件那样分档。这不是偷懒，是平台限制。
+
+**横向：本来就能自适应**
+
+两条进度条用的是 `weight`（等分），所以拖宽时它们自己就跟着变宽，无需第二套
+代码。真正要防的是「拖太窄」：波段名 56dp + 两段 + 档位块 48dp 一旦挤不下，
+最先被牺牲的就是波段名 —— 所以最小宽度卡在内容放得下的地方：
+短波 200dp、系统状态 170dp。
+
+**纵向：拉高到 3 格以上换「加高档」**
+
+| | 标准档（4×2） | 加高档（4×3+） |
+|---|---|---|
+| 短波 | 157dp，条高 18dp，提示 1 行 | 232dp，条高 24dp、字号上一档、提示 **2 行** |
+| 系统状态 | 138dp | 215dp，字号上一档、状态点变大、各区块拉开 |
+
+两档的差别不是「把所有间距乘个倍数」（那样只会显得松散）：
+- **短波**把多出来的高度都用在**信息量**上 —— 条变粗、提示多一行；
+- **系统状态**没有「可以多给的内容」（它四段各自独立，硬塞新内容会变成另一张表），
+  所以把高度用在**可读性**上。
+
+**最小尺寸卡在「内容放得下的下限」**
+
+短波高 150dp / 系统状态高 125dp。这两个数字是算出来的：比它更矮，底部那行
+（通联提示 / 最近收到）就会被裁掉。宁可不让拖得那么小，也不要给一个一拖就缺字的组件。
+
+**实现上只改了一处**
+
+两档布局**共用同一套 id**（只有 dp 值不同）—— 所以 Provider 只换一个 layout
+资源，ResId 表两档通用。少一张表就少一处「改了一档忘了改另一档」。
+
+顺带把「波段名放得下」的回归测试扩到**两档都查**：加高档字号 10.5sp、列宽 68dp，
+只查标准档是不够的 —— 而它的表现同样是「波段名被截掉」。
+
+---
+
+**The HF and system-status widgets can now be resized, with a taller layout when you drag them bigger.**
+
+Of the three widgets only **weather** could be dragged to a different size; **HF** and **system status**
+were `resizeMode="none"` (fixed). This release opens them up and adds a **tall layout** to each.
+
+**Why tiers rather than true proportional scaling**
+
+RemoteViews has no percentage layout, and `setViewLayoutHeight` (which could scale a height
+proportionally) requires API 31+ — this project's minSdk is 24. So tiers are the only option, exactly as
+the weather widget already does it.
+
+**Horizontal: it already adapts**
+
+The two progress bars use `weight`, so they widen on their own when the widget does. What actually
+needs guarding is dragging it *too narrow*: band name 56dp + two segments + a 48dp level block —
+when that stops fitting, the band name is the first thing sacrificed. The minimum widths are therefore
+pinned to what the content needs: 200dp (HF) and 170dp (system status).
+
+**Vertical: 3 cells or more switches to the tall layout**
+
+| | standard (4×2) | tall (4×3+) |
+|---|---|---|
+| HF | 157dp, 18dp bars, one tip line | 232dp, 24dp bars, type up a step, **two** tip lines |
+| System status | 138dp | 215dp, type up a step, larger status dots, sections spread out |
+
+The difference is not "multiply every gap by some factor" (that just looks loose): HF spends the extra
+height on **information** (thicker bars, a second tip line), while system status has no extra content to
+show — its four sections are already distinct, and forcing more in would make it a different widget —
+so it spends the height on **legibility**.
+
+**Minimum size pinned to "what the content needs"**
+
+150dp tall for HF, 125dp for system status. Both are derived: any shorter and the last row (the
+propagation tip / the "last heard" line) gets clipped. Better to disallow that size than to ship a
+widget that loses text as soon as you shrink it.
+
+**Only one thing changed in the implementation**
+
+The two layouts **share the same set of ids** (only the dp values differ), so the provider just swaps one
+layout resource and the ResId table serves both tiers. One less table means one less "updated one tier,
+forgot the other".
+
+The regression test for "band names fit" now checks **both tiers**: the tall one uses 10.5sp type and a
+68dp column, and checking only the standard tier is not enough — it fails the same way (a truncated
+band name).
+
 ## [1.6.132] - 2026-09-18
 
 ### 📊 短波组件：**亮的是白天、暗的是晚上**；图标进条、条加高

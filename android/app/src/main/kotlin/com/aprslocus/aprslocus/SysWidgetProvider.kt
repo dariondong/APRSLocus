@@ -58,6 +58,41 @@ class SysWidgetProvider : AppWidgetProvider() {
         /** ← 与 lib/sys_widget.dart 的 kSysWidgetSnapshotVersion 必须一致 */
         private const val SNAPSHOT_VERSION = 1
 
+        /**
+         * 估算「1 格」的 dp。与 widget_info 的 minWidth 口径一致；
+         * 老系统只给 dp，需要它反推格子数。
+         */
+        private const val DP_PER_CELL = 74.0
+
+        /**
+         * 取格子数：优先用 bundle 里 API 31+ 的 cells 值，否则用 dp 反推。
+         */
+        private fun cells(opt: Bundle, cellsKey: String, dpKey: String): Int {
+            val c = opt.getInt(cellsKey, 0)
+            if (c > 0) return c
+            val dp = opt.getInt(dpKey, 0)
+            if (dp <= 0) return 0
+            return Math.ceil(dp / DP_PER_CELL).toInt()
+        }
+
+        /**
+         * 高度是否够用「加高档」布局。
+         *
+         * 阈值取 3 格：标准档内容约 129dp，而 4×2 实际能拿到的高度因启动器而异
+         * （实测约 160~206dp），所以「2 格」本身就有余量 —— 从 3 格（≈222dp）
+         * 起才换档，把字号上一档、各区块之间拉开。
+         *
+         * 用 `minHeight` 而不是 `maxHeight`：用户拖大之后再拖小，两者都会更新，
+         * 但 min* 在部分启动器上是唯一可靠的那个口径（与天气组件同一取舍）。
+         */
+        private fun isTall(manager: AppWidgetManager, id: Int): Boolean {
+            val opt = manager.getAppWidgetOptions(id) ?: Bundle()
+            val rows = cells(opt, "appWidgetHeightCells",
+                AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+            return rows >= 3
+        }
+
+
         /** 链路格数（与 aw_widget_sys.xml 一致） */
         private const val LINK_CELLS = 4
 
@@ -82,7 +117,14 @@ class SysWidgetProvider : AppWidgetProvider() {
         }
 
         fun render(context: Context, manager: AppWidgetManager, id: Int) {
-            val views = RemoteViews(context.packageName, R.layout.aw_widget_sys)
+            // 两档布局**共用同一套 id**，只有 dp 值不同 —— 所以这里
+            // 只换 layout 资源，下面的 ResId 表两档通用。
+            val layout = if (isTall(manager, id)) {
+                R.layout.aw_widget_sys_tall
+            } else {
+                R.layout.aw_widget_sys
+            }
+            val views = RemoteViews(context.packageName, layout)
             views.setOnClickPendingIntent(R.id.aw_root, openApp(context))
 
             val snap = parseSnapshot(context)

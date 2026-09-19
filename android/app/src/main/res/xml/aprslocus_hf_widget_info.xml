@@ -16,12 +16,21 @@
   （组件不持有数据源，见 lib/hf_widget.dart），只是重渲染已有快照，
   顺带让组件在存储/数据异常后能自愈。真正的刷新由 App 侧推送。
 -->
+<!-- 缩放适配（说明写在标签之外：XML 注释不能出现在属性之间）
+  最小尺寸 = **内容放得下的下限**，不是随便拍的：
+  高 150dp（内容 157dp，留一点余量；比它更矮就会把底部提示行裁掉）、
+  宽 200dp（波段名 56 + 两段各约 35 + 档位块 48 + 内边距与缝）。
+  拉高到 3 格（约 206dp）以上时换成 aw_widget_hf_tall：条更粗、字号上一档、
+  提示给两行 —— 多出来的高度都用在信息量上。
+-->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="250dp"
     android:minHeight="110dp"
     android:targetCellWidth="4"
     android:targetCellHeight="2"
-    android:resizeMode="none"
+    android:resizeMode="horizontal|vertical"
+    android:minResizeWidth="200dp"
+    android:minResizeHeight="150dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/aw_widget_hf"
     android:previewLayout="@layout/aw_widget_hf"

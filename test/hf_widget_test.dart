@@ -481,11 +481,16 @@ void main() {
       // 实测 42.0dp —— 平时刚好、系统字体一放大（Android 上限 1.3 倍 → 55.3dp）
       // 就被 ellipsize 成「12m/1…」，「这是哪个波段」这个**前置信息**就没了。
       // 预览工具画文字不裁切，所以那版预览看不出来。现在列宽 56dp。
-      for (final name in ['80m/40m', '30m/20m', '17m/15m', '12m/10m']) {
-        final scaled = textWidth(name, 9 * 1.3, 0.667);
-        expect(scaled, lessThanOrEqualTo(56),
-            reason: '「$name」在字体放大 1.3 倍时约需 '
-                '${scaled.toStringAsFixed(1)}dp，超出 56dp 列宽会被截断');
+      // 两档都要查：标准档 9sp / 列宽 56dp，加高档 10.5sp / 列宽 68dp。
+      // 只查一档是**不够的** —— 加高档是新加的，最容易「忘了同步列宽」，
+      // 而它的表现同样是「波段名被截掉」。
+      for (final (size, colW) in const [(9.0, 56.0), (10.5, 68.0)]) {
+        for (final name in ['80m/40m', '30m/20m', '17m/15m', '12m/10m']) {
+          final scaled = textWidth(name, size * 1.3, 0.667);
+          expect(scaled, lessThanOrEqualTo(colW),
+              reason: '「$name」在 ${size}sp、字体放大 1.3 倍时约需 '
+                  '${scaled.toStringAsFixed(1)}dp，超出 ${colW}dp 列宽会被截断');
+        }
       }
     });
 
