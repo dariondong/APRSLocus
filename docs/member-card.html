@@ -232,6 +232,11 @@ let GROUPS=[
   role:{zh:"学生火腿群体 · 资金赞助","zh-TW":"學生火腿群體 · 資金贊助",en:"Student hams · financial support"},
   note:{zh:"感谢群组的资金赞助，支持 APRSlocus 持续开发与运营。","zh-TW":"感謝群組的資金贊助，支持 APRSlocus 持續開發與營運。",en:"Thanks to the group for financial support that keeps APRSlocus building."},
   c:"#7c5cff",heart:"true"},
+ {name:{zh:"APRS.TV","zh-TW":"APRS.TV",en:"APRS.TV"},
+  role:{zh:"中文 APRS 实时地图 · 同行团体","zh-TW":"中文 APRS 即時地圖 · 同行團體",en:"Chinese-language APRS live map · peer community"},
+  note:{zh:"实时信标、轨迹回放、在线报文解码与中文指南；APRSlocus 的符号图标与台站入口，承其接口。","zh-TW":"即時信標、軌跡回放、線上報文解碼與中文指南；APRSlocus 的符號圖標與台站入口，承其介面。",en:"Live beacons, track replay, packet decoding and Chinese guides — source of APRSlocus' icons."},
+  tag:{zh:"同行团体","zh-TW":"同行團體",en:"Peer community"},
+  c:"#0891b2"},
  {name:{zh:"每一位支持者","zh-TW":"每一位支持者",en:"Every supporter"},
   role:{zh:"匿名赞助 · 陪伴与鼓励","zh-TW":"匿名贊助 · 陪伴與鼓勵",en:"Anonymous · encouragement"},
   note:{zh:"你们的每一份支持，都是 APRSlocus 继续发光的动力。","zh-TW":"你們的每一份支持，都是 APRSlocus 繼續發光的動力。",en:"Every bit of support keeps APRSlocus glowing."},
@@ -340,7 +345,7 @@ function walls(){
          <div class="av" style="background:linear-gradient(140deg,${g.c},${g.c})">${T(g.name).trim().charAt(0).toUpperCase()}</div>
          <div class="call">${T(g.name)}</div>
          <div class="who">${T(g.role)}</div>
-         <div class="tag2">${TX[lang].sponsor}</div>
+         <div class="tag2">${g.tag?T(g.tag):TX[lang].sponsor}</div>
        </div>`).join("")}
      </div></div>`;
  }
@@ -429,13 +434,13 @@ function profile(){
    <div class="p-id">
      <div class="p-call">${T(m.name)}</div>
      <div class="p-who">${T(m.role)}</div>
-     <div class="p-honors"><span class="honor" style="color:${g};border-color:${g}"><span class="hd" style="background:${g}"></span>${TX[lang].sponsor}</span></div>
+     <div class="p-honors"><span class="honor" style="color:${g};border-color:${g}"><span class="hd" style="background:${g}"></span>${m.tag?T(m.tag):TX[lang].sponsor}</span></div>
    </div>
   </div>
   <div class="p-hr"></div>
   <div class="p-sec"><h4>${TX[lang].contribution}</h4><p>${T(m.note)}</p></div>
   <div class="p-quote" style="border-color:${g}"><span class="qm">“</span><p>${TX[lang].t2}</p></div>
-  <div class="p-tags"><span class="tag">${TX[lang].sponsor}</span></div>`;
+  <div class="p-tags"><span class="tag">${m.tag?T(m.tag):TX[lang].sponsor}</span></div>`;
  }
 }
 let logoImg=undefined;{const t=new Image();t.onload=()=>{logoImg=t;draw();};t.src=LOGO;}
@@ -475,7 +480,7 @@ function applyRemote(d){
  const merged=dev.concat(early);
  if(merged.length>0) PEOPLE=merged;
  if(Array.isArray(d.groups)&&d.groups.length>0){
-   GROUPS=d.groups.map(g=>({name:g.name,role:g.role,note:g.note,c:g.c||"#7c5cff"}));
+   GROUPS=d.groups.map(g=>({name:g.name,role:g.role,note:g.note,tag:g.tag||null,c:g.c||"#7c5cff"}));
  }
  rebuildCards();
  // 尽量保留当前 ?call 选中

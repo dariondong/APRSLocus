@@ -1,6 +1,6 @@
 {
-  "version": 47,
-  "updated": "2026-09-16",
+  "version": 48,
+  "updated": "2026-09-19",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -1541,6 +1541,29 @@
         "en": "Thanks to the group for financial support that keeps APRSlocus building."
       },
       "c": "#7c5cff"
+    },
+    {
+      "name": {
+        "zh": "APRS.TV",
+        "zh-TW": "APRS.TV",
+        "en": "APRS.TV"
+      },
+      "role": {
+        "zh": "中文 APRS 实时地图 · 同行团体",
+        "zh-TW": "中文 APRS 即時地圖 · 同行團體",
+        "en": "Chinese-language APRS live map · peer community"
+      },
+      "note": {
+        "zh": "实时信标、轨迹回放、在线报文解码与中文指南；APRSlocus 的符号图标与台站入口，承其接口。",
+        "zh-TW": "即時信標、軌跡回放、線上報文解碼與中文指南；APRSlocus 的符號圖標與台站入口，承其介面。",
+        "en": "Live beacons, track replay, packet decoding and Chinese guides — source of APRSlocus' icons."
+      },
+      "tag": {
+        "zh": "同行团体",
+        "zh-TW": "同行團體",
+        "en": "Peer community"
+      },
+      "c": "#0891b2"
     },
     {
       "name": {
