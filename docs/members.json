@@ -1,5 +1,5 @@
 {
-  "version": 48,
+  "version": 49,
   "updated": "2026-09-19",
   "developers": [
     {
@@ -1554,9 +1554,9 @@
         "en": "Chinese-language APRS live map · peer community"
       },
       "note": {
-        "zh": "实时信标、轨迹回放、在线报文解码与中文指南；APRSlocus 的符号图标与台站入口，承其接口。",
-        "zh-TW": "即時信標、軌跡回放、線上報文解碼與中文指南；APRSlocus 的符號圖標與台站入口，承其介面。",
-        "en": "Live beacons, track replay, packet decoding and Chinese guides — source of APRSlocus' icons."
+        "zh": "实时信标、轨迹回放、在线报文解码。",
+        "zh-TW": "即時信標、軌跡回放、線上報文解碼。",
+        "en": "Live beacons, track replay, packet decoding."
       },
       "tag": {
         "zh": "同行团体",
