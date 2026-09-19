@@ -493,7 +493,7 @@
   "audioStatDrop": "{n} bytes dropped while transmitting",
   "audioRestart": "Restart audio link",
   "audioTxDisabled": "\"Allow transmit\" is off — receiving only",
-  "audioLoopbackHint": "The self-test really modulates and demodulates; \"dropped while transmitting\" is normal half-duplex behaviour",
+  "audioLoopbackHint": "The self-test really does a modulate→demodulate round trip; on Android the microphone is paused while transmitting (half duplex)",
   "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
   "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
   "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
@@ -2174,5 +2174,43 @@
   "themePresetSakura": "Sakura",
   "themePresetTerminal": "Terminal",
   "themePresetAmber": "Amber",
-  "sysRecentLabel": "Last heard"
+  "sysRecentLabel": "Last heard",
+  "audioWavImportAction": "Choose WAV file",
+  "audioWavExportToDownloads": "Export to Downloads",
+  "audioWavSavedTo": "Saved to {path}",
+  "@audioWavSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "audioWavCopyPath": "Copy path",
+  "audioWavPathCopied": "Path copied",
+  "audioWavCanceled": "Cancelled",
+  "audioWavVerifyFailed": "Self-check failed: the generated audio does not decode back",
+  "audioWavMobileHint": "Android cannot write arbitrary paths: the file goes to Downloads/APRSlocusAudio — copy it to a PC for Direwolf or a radio",
+  "audioWavPickHint": "On desktop, enter the WAV path below",
+  "audioTxLevel": "TX level",
+  "audioTxLevelTip": "Before transmitting the media volume is raised to maximum and the mic is paused; a peak that is too low or clipped means the other side cannot decode",
+  "audioTxPeak": "Peak {p}% · {sec}s · preamble {flags} flags",
+  "@audioTxPeak": {
+    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+  },
+  "audioTxLevelClip": "Clipped: lower the output amplitude below 0.8 (clipping adds harmonics)",
+  "audioTxLevelLow": "Low level: the other side may not decode — raise amplitude and device volume",
+  "audioWiringHint": "Use an audio cable to the radio (headphone out → data/mic jack). Phone speakers roll off badly at 2200 Hz, so acoustic coupling rarely decodes. If the far end is Direwolf, first verify with the exported WAV: if that decodes, the problem is the audio path, not the protocol",
+  "packetLimitRf": "Packet {bytes} B · RF frame limit {max} B",
+  "@packetLimitRf": {
+    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "packetLimitIs": "Packet {bytes} B · APRS-IS line limit 512 B",
+  "@packetLimitIs": {
+    "placeholders": {"bytes": {"type": "int"}}
+  },
+  "packetTcpipWarning": "Contains TCPIP*: it is stripped on RF (that path belongs to APRS-IS)",
+  "packetSent": "Handed to the link: {line}",
+  "@packetSent": {
+    "placeholders": {"line": {"type": "String"}}
+  },
+  "packetSendFailed": "Not sent: {err}",
+  "@packetSendFailed": {
+    "placeholders": {"err": {"type": "String"}}
+  }
 }

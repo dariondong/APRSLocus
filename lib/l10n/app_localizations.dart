@@ -2838,7 +2838,7 @@ abstract class AppLocalizations {
   /// No description provided for @audioLoopbackHint.
   ///
   /// In zh, this message translates to:
-  /// **'自检会真的做一次调制→解调；提示「发射期间丢弃」属正常半双工行为'**
+  /// **'自检会真的做一次调制→解调；Android 发射时会暂停麦克风采集（半双工）'**
   String get audioLoopbackHint;
 
   /// No description provided for @notifAudioConnected.
@@ -11204,6 +11204,126 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'最近收到'**
   String get sysRecentLabel;
+
+  /// No description provided for @audioWavImportAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择 WAV 文件'**
+  String get audioWavImportAction;
+
+  /// No description provided for @audioWavExportToDownloads.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出到下载目录'**
+  String get audioWavExportToDownloads;
+
+  /// No description provided for @audioWavSavedTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存到 {path}'**
+  String audioWavSavedTo(String path);
+
+  /// No description provided for @audioWavCopyPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制路径'**
+  String get audioWavCopyPath;
+
+  /// No description provided for @audioWavPathCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'路径已复制'**
+  String get audioWavPathCopied;
+
+  /// No description provided for @audioWavCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消（未选择文件）'**
+  String get audioWavCanceled;
+
+  /// No description provided for @audioWavVerifyFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出前的自检失败：生成的音频解不出本报文（请反馈）'**
+  String get audioWavVerifyFailed;
+
+  /// No description provided for @audioWavMobileHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'Android 不能写任意目录：导出会保存到「下载/APRSlocusAudio」，无需填路径；拷到电脑后即可喂给 Direwolf 或电台'**
+  String get audioWavMobileHint;
+
+  /// No description provided for @audioWavPickHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'桌面端请在下方填写 WAV 路径'**
+  String get audioWavPickHint;
+
+  /// No description provided for @audioTxLevel.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射电平'**
+  String get audioTxLevel;
+
+  /// No description provided for @audioTxLevelTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'发射前系统会把媒体音量拉到最大、并暂停麦克风采集；峰值太低或削顶都会让对端解不出'**
+  String get audioTxLevelTip;
+
+  /// No description provided for @audioTxPeak.
+  ///
+  /// In zh, this message translates to:
+  /// **'峰值 {p}% · {sec}s · 前导 {flags} flag'**
+  String audioTxPeak(int p, String sec, int flags);
+
+  /// No description provided for @audioTxLevelClip.
+  ///
+  /// In zh, this message translates to:
+  /// **'波形削顶：请把「输出幅度」调到 0.8 以下（削顶会产生谐波）'**
+  String get audioTxLevelClip;
+
+  /// No description provided for @audioTxLevelLow.
+  ///
+  /// In zh, this message translates to:
+  /// **'电平偏低：对方可能解不出，请调高「输出幅度」与设备音量'**
+  String get audioTxLevelLow;
+
+  /// No description provided for @audioWiringHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'接电台请用音频线（耳机口 → 电台数据口/话筒）；手机扬声器在 2200Hz 衰减很大，对着麦克风很难解出。对端是电脑上的 Direwolf 时，先用「导出」出的 WAV 验证一遍，能解出就说明问题在音频通路而不是协议'**
+  String get audioWiringHint;
+
+  /// No description provided for @packetLimitRf.
+  ///
+  /// In zh, this message translates to:
+  /// **'整包 {bytes} 字节 · 射频单帧上限 {max} 字节'**
+  String packetLimitRf(int bytes, int max);
+
+  /// No description provided for @packetLimitIs.
+  ///
+  /// In zh, this message translates to:
+  /// **'整包 {bytes} 字节 · APRS-IS 单行上限 512 字节'**
+  String packetLimitIs(int bytes);
+
+  /// No description provided for @packetTcpipWarning.
+  ///
+  /// In zh, this message translates to:
+  /// **'含 TCPIP*：射频上会被自动剔除（那是 APRS-IS 的路径）'**
+  String get packetTcpipWarning;
+
+  /// No description provided for @packetSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已交给链路发送：{line}'**
+  String packetSent(String line);
+
+  /// No description provided for @packetSendFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'未发送：{err}'**
+  String packetSendFailed(String err);
 }
 
 class _AppLocalizationsDelegate

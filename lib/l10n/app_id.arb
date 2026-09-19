@@ -468,7 +468,7 @@
   "audioStatDrop": "{n} byte dibuang saat memancar",
   "audioRestart": "Mulai ulang tautan audio",
   "audioTxDisabled": "\"Izinkan pancar\" mati — hanya menerima",
-  "audioLoopbackHint": "Uji mandiri benar-benar memodulasi lalu mendemodulasi; \"dibuang saat memancar\" normal pada half-duplex",
+  "audioLoopbackHint": "Pemeriksaan benar-benar melakukan modulasi→demodulasi; di Android mikrofon dijeda saat mengirim (half duplex)",
   "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
   "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
   "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
@@ -2258,5 +2258,43 @@
   "themePresetSakura": "Sakura",
   "themePresetTerminal": "Terminal",
   "themePresetAmber": "Amber",
-  "sysRecentLabel": "Terakhir diterima"
+  "sysRecentLabel": "Terakhir diterima",
+  "audioWavImportAction": "Pilih berkas WAV",
+  "audioWavExportToDownloads": "Ekspor ke Unduhan",
+  "audioWavSavedTo": "Disimpan ke {path}",
+  "@audioWavSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "audioWavCopyPath": "Salin jalur",
+  "audioWavPathCopied": "Jalur disalin",
+  "audioWavCanceled": "Dibatalkan",
+  "audioWavVerifyFailed": "Pemeriksaan gagal: audio yang dibuat tidak dapat didekode",
+  "audioWavMobileHint": "Android tidak bisa menulis jalur bebas: berkas disimpan di Unduhan/APRSlocusAudio — salin ke PC untuk Direwolf atau radio",
+  "audioWavPickHint": "Di desktop, isi jalur WAV di bawah",
+  "audioTxLevel": "Level TX",
+  "audioTxLevelTip": "Sebelum mengirim, volume media dinaikkan maksimum dan mikrofon dijeda; puncak terlalu rendah atau terpotong membuat lawan tidak bisa mendekode",
+  "audioTxPeak": "Puncak {p}% · {sec}s · preamble {flags} flag",
+  "@audioTxPeak": {
+    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+  },
+  "audioTxLevelClip": "Terpotong: turunkan amplitudo di bawah 0.8 (menimbulkan harmonisa)",
+  "audioTxLevelLow": "Level rendah: lawan mungkin tidak bisa mendekode — naikkan amplitudo dan volume",
+  "audioWiringHint": "Gunakan kabel audio ke radio (keluaran headphone → konektor data/mikrofon). Speaker ponsel meredam 2200 Hz dengan buruk, jadi kopling akustik hampir tidak pernah bisa didekode. Jika lawan adalah Direwolf, uji dulu dengan WAV hasil ekspor: kalau itu bisa, masalahnya di jalur audio, bukan protokol",
+  "packetLimitRf": "Paket {bytes} B · batas bingkai RF {max} B",
+  "@packetLimitRf": {
+    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "packetLimitIs": "Paket {bytes} B · batas baris APRS-IS 512 B",
+  "@packetLimitIs": {
+    "placeholders": {"bytes": {"type": "int"}}
+  },
+  "packetTcpipWarning": "Mengandung TCPIP*: akan dihapus di RF (jalur itu milik APRS-IS)",
+  "packetSent": "Diteruskan ke tautan: {line}",
+  "@packetSent": {
+    "placeholders": {"line": {"type": "String"}}
+  },
+  "packetSendFailed": "Tidak terkirim: {err}",
+  "@packetSendFailed": {
+    "placeholders": {"err": {"type": "String"}}
+  }
 }

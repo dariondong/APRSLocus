@@ -475,7 +475,7 @@
   "audioStatDrop": "發射期間丟棄 {n} 位元組",
   "audioRestart": "重啟音訊鏈路",
   "audioTxDisabled": "「允許發射」已關閉，僅接收",
-  "audioLoopbackHint": "自檢會真的做一次調變→解調；提示「發射期間丟棄」屬正常半雙工行為",
+  "audioLoopbackHint": "自檢會真的做一次調變→解調；Android 發射時會暫停麥克風擷取（半雙工）",
   "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
   "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
   "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
@@ -2762,5 +2762,43 @@
   "themePresetSakura": "櫻花",
   "themePresetTerminal": "終端",
   "themePresetAmber": "琥珀",
-  "sysRecentLabel": "最近收到"
+  "sysRecentLabel": "最近收到",
+  "audioWavImportAction": "選擇 WAV 檔案",
+  "audioWavExportToDownloads": "匯出到下載目錄",
+  "audioWavSavedTo": "已儲存到 {path}",
+  "@audioWavSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "audioWavCopyPath": "複製路徑",
+  "audioWavPathCopied": "路徑已複製",
+  "audioWavCanceled": "已取消（未選擇檔案）",
+  "audioWavVerifyFailed": "匯出前的自檢失敗：生成的音訊解不出本報文（請回報）",
+  "audioWavMobileHint": "Android 不能寫任意目錄：匯出會存到「下載/APRSlocusAudio」，無需填路徑；複製到電腦後即可餵給 Direwolf 或電台",
+  "audioWavPickHint": "桌面端請在下方填寫 WAV 路徑",
+  "audioTxLevel": "發射電平",
+  "audioTxLevelTip": "發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出",
+  "audioTxPeak": "峰值 {p}% · {sec}s · 前導 {flags} flag",
+  "@audioTxPeak": {
+    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+  },
+  "audioTxLevelClip": "波形削頂：請把「輸出幅度」調到 0.8 以下（削頂會產生諧波）",
+  "audioTxLevelLow": "電平偏低：對方可能解不出，請調高「輸出幅度」與裝置音量",
+  "audioWiringHint": "接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定",
+  "packetLimitRf": "整包 {bytes} 位元組 · 射頻單幀上限 {max} 位元組",
+  "@packetLimitRf": {
+    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "packetLimitIs": "整包 {bytes} 位元組 · APRS-IS 單行上限 512 位元組",
+  "@packetLimitIs": {
+    "placeholders": {"bytes": {"type": "int"}}
+  },
+  "packetTcpipWarning": "含 TCPIP*：射頻上會被自動剔除（那是 APRS-IS 的路徑）",
+  "packetSent": "已交給鏈路發送：{line}",
+  "@packetSent": {
+    "placeholders": {"line": {"type": "String"}}
+  },
+  "packetSendFailed": "未發送：{err}",
+  "@packetSendFailed": {
+    "placeholders": {"err": {"type": "String"}}
+  }
 }

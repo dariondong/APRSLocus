@@ -467,7 +467,7 @@
   "audioStatDrop": "{n} bytes descartados durante la transmisión",
   "audioRestart": "Reiniciar enlace de audio",
   "audioTxDisabled": "\"Permitir transmisión\" desactivado: solo recepción",
-  "audioLoopbackHint": "La prueba modula y demodula de verdad; \"descartados durante la transmisión\" es normal en semidúplex",
+  "audioLoopbackHint": "La autocomprobación hace una ida y vuelta real de modulación→demodulación; en Android el micrófono se pausa al transmitir (semidúplex)",
   "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
   "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
   "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
@@ -2258,5 +2258,43 @@
   "themePresetSakura": "Sakura",
   "themePresetTerminal": "Terminal",
   "themePresetAmber": "Ámbar",
-  "sysRecentLabel": "Última recepción"
+  "sysRecentLabel": "Última recepción",
+  "audioWavImportAction": "Elegir archivo WAV",
+  "audioWavExportToDownloads": "Exportar a Descargas",
+  "audioWavSavedTo": "Guardado en {path}",
+  "@audioWavSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "audioWavCopyPath": "Copiar ruta",
+  "audioWavPathCopied": "Ruta copiada",
+  "audioWavCanceled": "Cancelado",
+  "audioWavVerifyFailed": "Falló la autocomprobación: el audio generado no se puede decodificar",
+  "audioWavMobileHint": "Android no permite rutas arbitrarias: se guarda en Descargas/APRSlocusAudio — cópialo al PC para Direwolf o la radio",
+  "audioWavPickHint": "En escritorio, escribe la ruta del WAV abajo",
+  "audioTxLevel": "Nivel de TX",
+  "audioTxLevelTip": "Antes de transmitir se sube el volumen al máximo y se pausa el micrófono; un pico demasiado bajo o recortado impide decodificar al otro lado",
+  "audioTxPeak": "Pico {p}% · {sec}s · preámbulo {flags} flags",
+  "@audioTxPeak": {
+    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+  },
+  "audioTxLevelClip": "Recortado: baja la amplitud por debajo de 0.8 (genera armónicos)",
+  "audioTxLevelLow": "Nivel bajo: puede que no lo decodifiquen — sube amplitud y volumen",
+  "audioWiringHint": "Usa un cable de audio hacia la radio (salida de auriculares → conector de datos/micrófono). El altavoz del móvil atenúa mucho a 2200 Hz, así que por aire casi nunca decodifica. Si el otro extremo es Direwolf, verifica primero con el WAV exportado: si eso decodifica, el problema es el audio, no el protocolo",
+  "packetLimitRf": "Paquete {bytes} B · límite de trama RF {max} B",
+  "@packetLimitRf": {
+    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "packetLimitIs": "Paquete {bytes} B · límite de línea APRS-IS 512 B",
+  "@packetLimitIs": {
+    "placeholders": {"bytes": {"type": "int"}}
+  },
+  "packetTcpipWarning": "Contiene TCPIP*: se elimina en RF (esa ruta es de APRS-IS)",
+  "packetSent": "Entregado al enlace: {line}",
+  "@packetSent": {
+    "placeholders": {"line": {"type": "String"}}
+  },
+  "packetSendFailed": "No enviado: {err}",
+  "@packetSendFailed": {
+    "placeholders": {"err": {"type": "String"}}
+  }
 }

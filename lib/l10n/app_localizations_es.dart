@@ -1506,7 +1506,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get audioLoopbackHint =>
-      'La prueba modula y demodula de verdad; \"descartados durante la transmisión\" es normal en semidúplex';
+      'La autocomprobación hace una ida y vuelta real de modulación→demodulación; en Android el micrófono se pausa al transmitir (semidúplex)';
 
   @override
   String get notifAudioConnected => 'Enlace de audio en línea';
@@ -6489,4 +6489,83 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sysRecentLabel => 'Última recepción';
+
+  @override
+  String get audioWavImportAction => 'Elegir archivo WAV';
+
+  @override
+  String get audioWavExportToDownloads => 'Exportar a Descargas';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return 'Guardado en $path';
+  }
+
+  @override
+  String get audioWavCopyPath => 'Copiar ruta';
+
+  @override
+  String get audioWavPathCopied => 'Ruta copiada';
+
+  @override
+  String get audioWavCanceled => 'Cancelado';
+
+  @override
+  String get audioWavVerifyFailed =>
+      'Falló la autocomprobación: el audio generado no se puede decodificar';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android no permite rutas arbitrarias: se guarda en Descargas/APRSlocusAudio — cópialo al PC para Direwolf o la radio';
+
+  @override
+  String get audioWavPickHint => 'En escritorio, escribe la ruta del WAV abajo';
+
+  @override
+  String get audioTxLevel => 'Nivel de TX';
+
+  @override
+  String get audioTxLevelTip =>
+      'Antes de transmitir se sube el volumen al máximo y se pausa el micrófono; un pico demasiado bajo o recortado impide decodificar al otro lado';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return 'Pico $p% · ${sec}s · preámbulo $flags flags';
+  }
+
+  @override
+  String get audioTxLevelClip =>
+      'Recortado: baja la amplitud por debajo de 0.8 (genera armónicos)';
+
+  @override
+  String get audioTxLevelLow =>
+      'Nivel bajo: puede que no lo decodifiquen — sube amplitud y volumen';
+
+  @override
+  String get audioWiringHint =>
+      'Usa un cable de audio hacia la radio (salida de auriculares → conector de datos/micrófono). El altavoz del móvil atenúa mucho a 2200 Hz, así que por aire casi nunca decodifica. Si el otro extremo es Direwolf, verifica primero con el WAV exportado: si eso decodifica, el problema es el audio, no el protocolo';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return 'Paquete $bytes B · límite de trama RF $max B';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return 'Paquete $bytes B · límite de línea APRS-IS 512 B';
+  }
+
+  @override
+  String get packetTcpipWarning =>
+      'Contiene TCPIP*: se elimina en RF (esa ruta es de APRS-IS)';
+
+  @override
+  String packetSent(String line) {
+    return 'Entregado al enlace: $line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return 'No enviado: $err';
+  }
 }

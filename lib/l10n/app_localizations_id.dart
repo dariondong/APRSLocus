@@ -1496,7 +1496,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get audioLoopbackHint =>
-      'Uji mandiri benar-benar memodulasi lalu mendemodulasi; \"dibuang saat memancar\" normal pada half-duplex';
+      'Pemeriksaan benar-benar melakukan modulasi→demodulasi; di Android mikrofon dijeda saat mengirim (half duplex)';
 
   @override
   String get notifAudioConnected => 'Tautan audio aktif';
@@ -6447,4 +6447,83 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get sysRecentLabel => 'Terakhir diterima';
+
+  @override
+  String get audioWavImportAction => 'Pilih berkas WAV';
+
+  @override
+  String get audioWavExportToDownloads => 'Ekspor ke Unduhan';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return 'Disimpan ke $path';
+  }
+
+  @override
+  String get audioWavCopyPath => 'Salin jalur';
+
+  @override
+  String get audioWavPathCopied => 'Jalur disalin';
+
+  @override
+  String get audioWavCanceled => 'Dibatalkan';
+
+  @override
+  String get audioWavVerifyFailed =>
+      'Pemeriksaan gagal: audio yang dibuat tidak dapat didekode';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android tidak bisa menulis jalur bebas: berkas disimpan di Unduhan/APRSlocusAudio — salin ke PC untuk Direwolf atau radio';
+
+  @override
+  String get audioWavPickHint => 'Di desktop, isi jalur WAV di bawah';
+
+  @override
+  String get audioTxLevel => 'Level TX';
+
+  @override
+  String get audioTxLevelTip =>
+      'Sebelum mengirim, volume media dinaikkan maksimum dan mikrofon dijeda; puncak terlalu rendah atau terpotong membuat lawan tidak bisa mendekode';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return 'Puncak $p% · ${sec}s · preamble $flags flag';
+  }
+
+  @override
+  String get audioTxLevelClip =>
+      'Terpotong: turunkan amplitudo di bawah 0.8 (menimbulkan harmonisa)';
+
+  @override
+  String get audioTxLevelLow =>
+      'Level rendah: lawan mungkin tidak bisa mendekode — naikkan amplitudo dan volume';
+
+  @override
+  String get audioWiringHint =>
+      'Gunakan kabel audio ke radio (keluaran headphone → konektor data/mikrofon). Speaker ponsel meredam 2200 Hz dengan buruk, jadi kopling akustik hampir tidak pernah bisa didekode. Jika lawan adalah Direwolf, uji dulu dengan WAV hasil ekspor: kalau itu bisa, masalahnya di jalur audio, bukan protokol';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return 'Paket $bytes B · batas bingkai RF $max B';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return 'Paket $bytes B · batas baris APRS-IS 512 B';
+  }
+
+  @override
+  String get packetTcpipWarning =>
+      'Mengandung TCPIP*: akan dihapus di RF (jalur itu milik APRS-IS)';
+
+  @override
+  String packetSent(String line) {
+    return 'Diteruskan ke tautan: $line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return 'Tidak terkirim: $err';
+  }
 }

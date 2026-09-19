@@ -364,6 +364,31 @@ class MainActivity : FlutterActivity() {
                         result.success(path)
                     }
                 }
+                // 音频 WAV 导出：二进制不能走 saveToDownloads（那条按 UTF-8 写文本）
+                "saveBytesToDownloads" -> {
+                    val filename = call.argument<String>("filename") ?: "audio.wav"
+                    val b64 = call.argument<String>("base64")
+                    val mime = call.argument<String>("mimeType") ?: "audio/wav"
+                    if (b64 == null) {
+                        result.error("NO_DATA", "缺少文件内容", null)
+                    } else {
+                        val bytes = try {
+                            android.util.Base64.decode(b64, android.util.Base64.DEFAULT)
+                        } catch (_: Exception) {
+                            null
+                        }
+                        if (bytes == null) {
+                            result.error("BAD_DATA", "文件内容解码失败", null)
+                        } else {
+                            val path = saveBytesToDownloads(filename, bytes, mime)
+                            if (path == null) {
+                                result.error("SAVE_FAILED", "保存失败", null)
+                            } else {
+                                result.success(path)
+                            }
+                        }
+                    }
+                }
                 // 备份导入：拉起系统文件选择器，返回 {name, content}
                 // 用户取消返回 null；文件过大 / 读失败走 error
                 "pickTextFile" -> pickTextFile(result)
@@ -523,6 +548,31 @@ class MainActivity : FlutterActivity() {
         filename: String,
         content: String,
         mime: String = "text/plain"
+    ): String? = saveToDownloads(filename, mime) {
+        it.write(content.toByteArray(Charsets.UTF_8))
+    }
+
+    /// 二进制版本（音频 WAV 导出用）。
+    ///
+    /// 为什么必须单独一条：文本导出把内容按 UTF-8 写，WAV 是二进制 ——
+    /// 用同一条通道会把文件写坏（而且「坏了但看着成功」最难查）。
+    ///
+    /// 路径与文本版**共用同一个 helper**：导出目的地只有一处定义，
+    /// 免得出现「文本进 Downloads、音频进别处」这种不一致。
+    private fun saveBytesToDownloads(
+        filename: String,
+        bytes: ByteArray,
+        mime: String = "audio/wav"
+    ): String? = saveToDownloads(filename, mime) { it.write(bytes) }
+
+    /// 写入「下载」目录的公共实现：插入 MediaStore 条目（或落到应用外部目录）
+    /// → 交给 [write] 写内容 → 把文件名改成我们要求的那个。
+    ///
+    /// 返回**用户可见的路径**（File 管理器里看到的那种）。
+    private fun saveToDownloads(
+        filename: String,
+        mime: String,
+        write: (java.io.OutputStream) -> Unit
     ): String? {
         // 文件名来自 Dart，做一次净化，避免路径穿越
         val safe = filename.replace('/', '_').replace('\\', '_')
@@ -531,34 +581,31 @@ class MainActivity : FlutterActivity() {
                 val values = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, safe)
                     put(MediaStore.MediaColumns.MIME_TYPE, mime)
-                    put(
-                        MediaStore.MediaColumns.RELATIVE_PATH,
-                        Environment.DIRECTORY_DOWNLOADS
-                    )
                 }
                 val resolver = contentResolver
                 // 音频 WAV 属于音乐/音频类型：放进 Downloads 的 Audio 子目录更整齐，
-                // 也让系统文件管理器的分类视图能直接找到。
+                // 也让系统文件管理器的分类视图能直接找到（导出后要能一眼找到，
+                // 才能拿它去给 Direwolf / 电台解）。
                 val isAudio = safe.lowercase().endsWith(".wav")
-                if (isAudio) {
-                    values.put(
-                        MediaStore.MediaColumns.RELATIVE_PATH,
+                values.put(
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    if (isAudio) {
                         Environment.DIRECTORY_DOWNLOADS + "/APRSlocusAudio"
-                    )
-                }
+                    } else {
+                        Environment.DIRECTORY_DOWNLOADS
+                    }
+                )
                 val uri = resolver.insert(
                     MediaStore.Downloads.EXTERNAL_CONTENT_URI, values
                 ) ?: return null
                 resolver.openOutputStream(uri)?.use { out ->
-                    out.write(content.toByteArray(Charsets.UTF_8))
+                    write(out)
                     out.flush()
                 } ?: return null
-                // 部分实现会根据 MIME（text/plain）给文件名**追加 .txt**，
-                // 使 APRSlocus_….adi 变成 APRSlocus_….adi.txt。
-                // 这里读回实际名字，不一致就改回原名（.adi 是 ADIF 的惯用扩展名）。
+                // 部分实现会根据 MIME 给文件名**追加后缀**（text/plain → .txt、
+                // 音频 → .wav/.mp3），使 APRSlocus_….adi 变成 APRSlocus_….adi.txt。
+                // 这里读回实际名字，不一致就改回原名。
                 val actual = displayNameOf(uri)
-                // 媒体类型下部分系统会给音频文件补 .wav/.mp3 之类的后缀，
-                // 与文本同理：写回原名，保证与自检/日志里报告的路径一致。
                 if (actual != null && actual != safe) {
                     try {
                         resolver.update(
@@ -573,11 +620,17 @@ class MainActivity : FlutterActivity() {
                         // 改不回去也不影响导出成功（内容已写入）
                     }
                 }
-                "Download/$safe"
+                // 报告**真实路径**：音频在 Download/APRSlocusAudio/ 下，
+                // 之前一律回 "Download/$safe" 会让用户去错的目录里找。
+                if (isAudio) {
+                    "Download/APRSlocusAudio/$safe"
+                } else {
+                    "Download/$safe"
+                }
             } else {
                 val dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir
                 val f = File(dir, safe)
-                f.writeText(content, Charsets.UTF_8)
+                f.outputStream().use { write(it) }
                 f.absolutePath
             }
         } catch (_: Exception) {

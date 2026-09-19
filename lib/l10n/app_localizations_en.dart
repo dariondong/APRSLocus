@@ -1497,7 +1497,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get audioLoopbackHint =>
-      'The self-test really modulates and demodulates; \"dropped while transmitting\" is normal half-duplex behaviour';
+      'The self-test really does a modulate→demodulate round trip; on Android the microphone is paused while transmitting (half duplex)';
 
   @override
   String get notifAudioConnected => 'Audio link online';
@@ -6439,4 +6439,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sysRecentLabel => 'Last heard';
+
+  @override
+  String get audioWavImportAction => 'Choose WAV file';
+
+  @override
+  String get audioWavExportToDownloads => 'Export to Downloads';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return 'Saved to $path';
+  }
+
+  @override
+  String get audioWavCopyPath => 'Copy path';
+
+  @override
+  String get audioWavPathCopied => 'Path copied';
+
+  @override
+  String get audioWavCanceled => 'Cancelled';
+
+  @override
+  String get audioWavVerifyFailed =>
+      'Self-check failed: the generated audio does not decode back';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android cannot write arbitrary paths: the file goes to Downloads/APRSlocusAudio — copy it to a PC for Direwolf or a radio';
+
+  @override
+  String get audioWavPickHint => 'On desktop, enter the WAV path below';
+
+  @override
+  String get audioTxLevel => 'TX level';
+
+  @override
+  String get audioTxLevelTip =>
+      'Before transmitting the media volume is raised to maximum and the mic is paused; a peak that is too low or clipped means the other side cannot decode';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return 'Peak $p% · ${sec}s · preamble $flags flags';
+  }
+
+  @override
+  String get audioTxLevelClip =>
+      'Clipped: lower the output amplitude below 0.8 (clipping adds harmonics)';
+
+  @override
+  String get audioTxLevelLow =>
+      'Low level: the other side may not decode — raise amplitude and device volume';
+
+  @override
+  String get audioWiringHint =>
+      'Use an audio cable to the radio (headphone out → data/mic jack). Phone speakers roll off badly at 2200 Hz, so acoustic coupling rarely decodes. If the far end is Direwolf, first verify with the exported WAV: if that decodes, the problem is the audio path, not the protocol';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return 'Packet $bytes B · RF frame limit $max B';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return 'Packet $bytes B · APRS-IS line limit 512 B';
+  }
+
+  @override
+  String get packetTcpipWarning =>
+      'Contains TCPIP*: it is stripped on RF (that path belongs to APRS-IS)';
+
+  @override
+  String packetSent(String line) {
+    return 'Handed to the link: $line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return 'Not sent: $err';
+  }
 }

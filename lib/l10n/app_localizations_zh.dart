@@ -1459,7 +1459,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get audioTxDisabled => '「允许发射」已关闭，仅接收';
 
   @override
-  String get audioLoopbackHint => '自检会真的做一次调制→解调；提示「发射期间丢弃」属正常半双工行为';
+  String get audioLoopbackHint => '自检会真的做一次调制→解调；Android 发射时会暂停麦克风采集（半双工）';
 
   @override
   String get notifAudioConnected => '音频链路在线';
@@ -6189,6 +6189,80 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sysRecentLabel => '最近收到';
+
+  @override
+  String get audioWavImportAction => '选择 WAV 文件';
+
+  @override
+  String get audioWavExportToDownloads => '导出到下载目录';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return '已保存到 $path';
+  }
+
+  @override
+  String get audioWavCopyPath => '复制路径';
+
+  @override
+  String get audioWavPathCopied => '路径已复制';
+
+  @override
+  String get audioWavCanceled => '已取消（未选择文件）';
+
+  @override
+  String get audioWavVerifyFailed => '导出前的自检失败：生成的音频解不出本报文（请反馈）';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android 不能写任意目录：导出会保存到「下载/APRSlocusAudio」，无需填路径；拷到电脑后即可喂给 Direwolf 或电台';
+
+  @override
+  String get audioWavPickHint => '桌面端请在下方填写 WAV 路径';
+
+  @override
+  String get audioTxLevel => '发射电平';
+
+  @override
+  String get audioTxLevelTip => '发射前系统会把媒体音量拉到最大、并暂停麦克风采集；峰值太低或削顶都会让对端解不出';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return '峰值 $p% · ${sec}s · 前导 $flags flag';
+  }
+
+  @override
+  String get audioTxLevelClip => '波形削顶：请把「输出幅度」调到 0.8 以下（削顶会产生谐波）';
+
+  @override
+  String get audioTxLevelLow => '电平偏低：对方可能解不出，请调高「输出幅度」与设备音量';
+
+  @override
+  String get audioWiringHint =>
+      '接电台请用音频线（耳机口 → 电台数据口/话筒）；手机扬声器在 2200Hz 衰减很大，对着麦克风很难解出。对端是电脑上的 Direwolf 时，先用「导出」出的 WAV 验证一遍，能解出就说明问题在音频通路而不是协议';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return '整包 $bytes 字节 · 射频单帧上限 $max 字节';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return '整包 $bytes 字节 · APRS-IS 单行上限 512 字节';
+  }
+
+  @override
+  String get packetTcpipWarning => '含 TCPIP*：射频上会被自动剔除（那是 APRS-IS 的路径）';
+
+  @override
+  String packetSent(String line) {
+    return '已交给链路发送：$line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return '未发送：$err';
+  }
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -7645,7 +7719,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get audioTxDisabled => '「允許發射」已關閉，僅接收';
 
   @override
-  String get audioLoopbackHint => '自檢會真的做一次調變→解調；提示「發射期間丟棄」屬正常半雙工行為';
+  String get audioLoopbackHint => '自檢會真的做一次調變→解調；Android 發射時會暫停麥克風擷取（半雙工）';
 
   @override
   String get notifAudioConnected => '音訊鏈路線上';
@@ -12375,4 +12449,78 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sysRecentLabel => '最近收到';
+
+  @override
+  String get audioWavImportAction => '選擇 WAV 檔案';
+
+  @override
+  String get audioWavExportToDownloads => '匯出到下載目錄';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return '已儲存到 $path';
+  }
+
+  @override
+  String get audioWavCopyPath => '複製路徑';
+
+  @override
+  String get audioWavPathCopied => '路徑已複製';
+
+  @override
+  String get audioWavCanceled => '已取消（未選擇檔案）';
+
+  @override
+  String get audioWavVerifyFailed => '匯出前的自檢失敗：生成的音訊解不出本報文（請回報）';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android 不能寫任意目錄：匯出會存到「下載/APRSlocusAudio」，無需填路徑；複製到電腦後即可餵給 Direwolf 或電台';
+
+  @override
+  String get audioWavPickHint => '桌面端請在下方填寫 WAV 路徑';
+
+  @override
+  String get audioTxLevel => '發射電平';
+
+  @override
+  String get audioTxLevelTip => '發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return '峰值 $p% · ${sec}s · 前導 $flags flag';
+  }
+
+  @override
+  String get audioTxLevelClip => '波形削頂：請把「輸出幅度」調到 0.8 以下（削頂會產生諧波）';
+
+  @override
+  String get audioTxLevelLow => '電平偏低：對方可能解不出，請調高「輸出幅度」與裝置音量';
+
+  @override
+  String get audioWiringHint =>
+      '接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return '整包 $bytes 位元組 · 射頻單幀上限 $max 位元組';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return '整包 $bytes 位元組 · APRS-IS 單行上限 512 位元組';
+  }
+
+  @override
+  String get packetTcpipWarning => '含 TCPIP*：射頻上會被自動剔除（那是 APRS-IS 的路徑）';
+
+  @override
+  String packetSent(String line) {
+    return '已交給鏈路發送：$line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return '未發送：$err';
+  }
 }

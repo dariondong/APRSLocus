@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
@@ -46,6 +47,8 @@ class AudioManager(private val activity: Activity) {
 
         private const val PERM_REQUEST = 0x7A41
 
+        private const val TAG = "APRSLocusAudio"
+
         /** 采集读块：1024 样本 ≈ 46ms @22050Hz */
         private const val READ_SAMPLES = 1024
     }
@@ -63,6 +66,30 @@ class AudioManager(private val activity: Activity) {
     private var permResult: MethodChannel.Result? = null
 
     private var sourceName = ""
+
+    /**
+     * 发射期间真的暂停麦克风采集（半双工）。
+     *
+     * 为什么要暂停：一边录音一边播放时，部分机型会把播放**路由到听筒**、
+     * 或叠加 AEC/降噪，波形到了耳机口/喇叭上已经变形（频率响应被改、
+     * 电平被压）—— 表现就是「本机自检全过，但电台 / Direwolf 解不出」。
+     *
+     * 为什么不只是「读出来丢掉」：那样 AudioRecord 仍处于 RECORDING 状态，
+     * 上面那些机型行为（路由/AEC）照样生效，等于没停。所以这里真的
+     * stop()/startRecording()。
+     *
+     * 风险控制（Stop/Start 本身可能失败，且 read() 在 stop 后可能返回
+     * 负值或抛异常）：读线程在暂停期间**完全不碰 read()**，异常也只在
+     * 未暂停时才当成链路故障上报 —— 否则每次发射都会被误判成
+     * 「采集被系统中断」，进而触发自动重连。
+     */
+    private val capturePaused = AtomicBoolean(false)
+
+    /** 发射前用户的媒体音量（-1 = 未改动，无需恢复） */
+    private var savedVolume = -1
+
+    /** 发射期间是否已申请音频焦点 */
+    private var focusHeld = false
 
     // ─── 设备能力 ───
 
@@ -182,16 +209,30 @@ class AudioManager(private val activity: Activity) {
             try {
                 rec.startRecording()
                 while (running.get()) {
+                    // 发射暂停期间不碰 read()：stop() 之后 read() 会立刻返回 0，
+                    // 继续读就变成忙等（吃满一个核）
+                    if (capturePaused.get()) {
+                        Thread.sleep(20)
+                        continue
+                    }
                     val n = rec.read(buf, 0, buf.size)
                     if (n > 0) {
                         emitPcm(if (n == buf.size) buf.copyOf() else buf.copyOf(n))
                     } else if (n < 0) {
+                        // 负数可能是「发射暂停时 stop() 的副作用」：此时不是故障
+                        if (capturePaused.get() || !running.get()) {
+                            Thread.sleep(20)
+                            continue
+                        }
                         emitError("AudioRecord.read 返回 $n")
                         break
                     }
                 }
             } catch (e: Exception) {
-                if (running.get()) emitError("采集异常：${e.message}")
+                // 同上：暂停/停止期间的异常属预期，不要上报成链路中断
+                if (running.get() && !capturePaused.get()) {
+                    emitError("采集异常：${e.message}")
+                }
             } finally {
                 running.set(false)
                 emitState("captureClosed")
@@ -202,6 +243,7 @@ class AudioManager(private val activity: Activity) {
 
     fun stopCapture() {
         running.set(false)
+        capturePaused.set(false)
         try {
             record?.stop()
         } catch (_: Exception) {
@@ -214,12 +256,110 @@ class AudioManager(private val activity: Activity) {
         recordThread = null
     }
 
+    // ─── 发射期间的系统准备（音量 / 焦点 / 半双工） ───
+
+    /**
+     * 把媒体音量拉到最大并申请瞬时音频焦点。
+     *
+     * 声卡 TNC 靠的就是输出电平：手机媒体音量偏低时，对端（Direwolf /
+     * 电台）信噪比不够，整帧都解不出；而别的应用正在放的音乐会和 FSK
+     * 混在一起（混音等于加噪声，波形直接毁掉）。两者都在这里处理，
+     * 播完立刻恢复用户原来的音量并归还焦点。
+     */
+    private fun raiseOutput() {
+        val am = activity.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+            ?: return
+        if (savedVolume < 0) {
+            try {
+                val cur = am.getStreamVolume(AndroidAudioManager.STREAM_MUSIC)
+                val max = am.getStreamMaxVolume(AndroidAudioManager.STREAM_MUSIC)
+                if (cur < max) {
+                    am.setStreamVolume(AndroidAudioManager.STREAM_MUSIC, max, 0)
+                    savedVolume = cur
+                    Log.i(TAG, "发射：媒体音量 $cur → $max（结束后恢复）")
+                } else {
+                    savedVolume = -2 // 已经是最大：无需恢复
+                }
+            } catch (_: Exception) {
+                savedVolume = -2
+            }
+        }
+        if (!focusHeld) {
+            try {
+                am.requestAudioFocus(
+                    null,
+                    AndroidAudioManager.STREAM_MUSIC,
+                    AndroidAudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+                )
+                focusHeld = true
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    /** 恢复发射前的媒体音量并归还音频焦点（幂等） */
+    private fun restoreOutput() {
+        val am = activity.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+        if (am != null && savedVolume >= 0) {
+            try {
+                am.setStreamVolume(AndroidAudioManager.STREAM_MUSIC, savedVolume, 0)
+            } catch (_: Exception) {
+            }
+        }
+        savedVolume = -1
+        if (am != null && focusHeld) {
+            try {
+                am.abandonAudioFocus(null)
+            } catch (_: Exception) {
+            }
+        }
+        focusHeld = false
+    }
+
+    /**
+     * 发射开始：先把标志置上再 stop()，让读线程立刻安静下来。
+     * 停不掉也不拦发射（大不了还是「边录边放」，即当前行为）。
+     */
+    private fun pauseCapture() {
+        if (!running.get() || record == null) return
+        capturePaused.set(true)
+        try {
+            record?.stop()
+        } catch (e: Exception) {
+            Log.w(TAG, "发射前暂停采集失败（忽略，继续发射）：${e.message}")
+        }
+    }
+
+    /**
+     * 发射结束：恢复采集。
+     *
+     * 恢复失败是**真故障**（接下来收不到任何东西），所以报错并关闭采集流，
+     * 让上层走「采集被系统中断 → 自动重连」这条已有路径，而不是安静地
+     * 变成只能发不能收。
+     */
+    private fun resumeCapture() {
+        if (!capturePaused.getAndSet(false)) return
+        if (!running.get()) return
+        val rec = record ?: return
+        try {
+            rec.startRecording()
+        } catch (e: Exception) {
+            Log.e(TAG, "发射后恢复采集失败：${e.message}")
+            emitError("发射后恢复采集失败：${e.message}")
+            running.set(false)
+            emitState("captureClosed")
+        }
+    }
+
     // ─── 播放 ───
 
     fun play(data: ByteArray, sampleRate: Int): Boolean {
         if (data.isEmpty()) return true
         stopPlayback()
         try {
+            // 先做系统侧准备（音量/焦点/半双工），任何一步失败都不拦播放
+            raiseOutput()
+            pauseCapture()
             val minBuf = AudioTrack.getMinBufferSize(
                 sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT
             )
@@ -274,12 +414,17 @@ class AudioManager(private val activity: Activity) {
                     try { t.stop() } catch (_: Exception) {}
                     try { t.release() } catch (_: Exception) {}
                     if (track === t) track = null
+                    // 半双工收尾：恢复采集与音量后再告诉上层「播完了」
+                    resumeCapture()
+                    restoreOutput()
                     emitState("playDone")
                 }
             }.also { it.name = "afsk-audio-tx"; it.start() }
             return true
         } catch (e: Exception) {
             emitError("播放失败：${e.message}")
+            resumeCapture()
+            restoreOutput()
             return false
         }
     }
@@ -296,6 +441,9 @@ class AudioManager(private val activity: Activity) {
         }
         track = null
         playThread = null
+        // 用户中途停止发射 / 断开链路：同样要把采集与音量还给系统
+        resumeCapture()
+        restoreOutput()
     }
 
     fun dispose() {

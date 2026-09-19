@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -307,6 +309,7 @@ class _PacketsPageState extends State<PacketsPage> {
                           vertical: 10,
                         ),
                       ),
+                      onChanged: (_) => setState(() {}),
                       onSubmitted: (_) => _sendRaw(),
                     ),
                   ),
@@ -319,6 +322,11 @@ class _PacketsPageState extends State<PacketsPage> {
                   ),
                 ],
               ),
+              SizedBox(height: 6),
+              // 发送前就把「会走哪条链路、限长多少」写出来：手写报文最常踩的
+              // 两个坑就是「格式不合法」与「拿到 APRS-IS 的报文直接往射频发」，
+              // 这两件事在点发送之前就能提醒到。
+              _injectHint(st, S.of(context)),
             ],
           ),
         );
@@ -326,10 +334,51 @@ class _PacketsPageState extends State<PacketsPage> {
     );
   }
 
-  void _sendRaw() {
-    if (_tx.text.trim().isEmpty) return;
-    widget.state.sendPacket(_tx.text.trim());
-    _tx.clear();
+  /// 手动注入的上下文提示：当前链路 + 长度 + 格式
+  Widget _injectHint(AppState st, S l) {
+    final bytes = utf8.encode(_tx.text.trim()).length;
+    final parts = <String>[
+      st.usingRf
+          ? l.packetLimitRf(bytes, st.rfMaxFrame)
+          : l.packetLimitIs(bytes),
+      '${l.kissRfPath}: ${st.txPath}',
+    ];
+    // 射频下带 TCPIP* 几乎总是「从 APRS-IS 复制的报文」——发出去前先提醒
+    if (st.usingRf && _tx.text.toUpperCase().contains('TCPIP')) {
+      parts.add(l.packetTcpipWarning);
+    }
+    return Padding(
+      padding: const EdgeInsets.only(left: 2),
+      child: Text(
+        parts.join(' · '),
+        style: ts(10, c: st.usingRf ? C.orange : C.greyLight, h: 1.4),
+      ),
+    );
+  }
+
+  /// 手动注入并发送：把结果如实反馈给用户（旧实现无论成败都毫无提示）
+  Future<void> _sendRaw() async {
+    final line = _tx.text.trim();
+    if (line.isEmpty) return;
+    final l = S.of(context);
+    final err = widget.state.sendPacket(line);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          err == null ? l.packetSent(line) : l.packetSendFailed(linkErrorText(l, err)),
+          style: ts(12),
+        ),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: err == null ? C.green : C.red,
+        duration: Duration(seconds: err == null ? 2 : 5),
+      ),
+    );
+    // 失败时保留输入：用户改一个字符就能重发，不用重新敲一遍
+    if (err == null) {
+      _tx.clear();
+      setState(() {});
+    }
   }
 
   Widget _parsedList(List<Packet> list) {

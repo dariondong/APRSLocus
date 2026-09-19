@@ -468,7 +468,7 @@
   "audioStatDrop": "送信中に {n} バイト破棄",
   "audioRestart": "オーディオリンクを再起動",
   "audioTxDisabled": "「送信を許可」がオフ — 受信のみ",
-  "audioLoopbackHint": "自己診断は実際に変調→復調を行います。「送信中に破棄」は半二重として正常です",
+  "audioLoopbackHint": "自己検査は実際に変調→復調を行います。Android では送信中マイクを一時停止します（半二重）",
   "@diagPassed": {"placeholders": {"n": {"type": "int"}}},
   "@diagFailed": {"placeholders": {"n": {"type": "int"}}},
   "@diagAx25Mismatch": {"placeholders": {"got": {"type": "String"}}},
@@ -2258,5 +2258,43 @@
   "themePresetSakura": "桜",
   "themePresetTerminal": "ターミナル",
   "themePresetAmber": "アンバー",
-  "sysRecentLabel": "直近受信"
+  "sysRecentLabel": "直近受信",
+  "audioWavImportAction": "WAV ファイルを選択",
+  "audioWavExportToDownloads": "ダウンロードへ書き出し",
+  "audioWavSavedTo": "保存先: {path}",
+  "@audioWavSavedTo": {
+    "placeholders": {"path": {"type": "String"}}
+  },
+  "audioWavCopyPath": "パスをコピー",
+  "audioWavPathCopied": "パスをコピーしました",
+  "audioWavCanceled": "キャンセルしました",
+  "audioWavVerifyFailed": "書き出し前の自己検査に失敗：生成した音声を復調できません",
+  "audioWavMobileHint": "Android では任意のパスに書けません：ダウンロード/APRSlocusAudio に保存されます（PC にコピーして Direwolf や無線機へ）",
+  "audioWavPickHint": "デスクトップでは下に WAV パスを入力してください",
+  "audioTxLevel": "送信レベル",
+  "audioTxLevelTip": "送信前にメディア音量を最大にし、マイク入力を一時停止します。ピークが低すぎてもクリップしても相手は復調できません",
+  "audioTxPeak": "ピーク {p}% · {sec}s · プリアンブル {flags} フラグ",
+  "@audioTxPeak": {
+    "placeholders": {"p": {"type": "int"}, "sec": {"type": "String"}, "flags": {"type": "int"}}
+  },
+  "audioTxLevelClip": "クリップしています：出力振幅を 0.8 未満に下げてください（高調波が出ます）",
+  "audioTxLevelLow": "レベルが低い：相手が復調できない可能性があります。振幅と音量を上げてください",
+  "audioWiringHint": "無線機へはオーディオケーブルで（イヤホン出力 → データ/マイク端子）。スマホのスピーカーは 2200Hz が大きく減衰し、音響結合ではまず復調できません。相手が Direwolf なら、まず書き出した WAV で確認を：それで復調できれば問題は音声経路であってプロトコルではありません",
+  "packetLimitRf": "パケット {bytes} バイト · 無線フレーム上限 {max} バイト",
+  "@packetLimitRf": {
+    "placeholders": {"bytes": {"type": "int"}, "max": {"type": "int"}}
+  },
+  "packetLimitIs": "パケット {bytes} バイト · APRS-IS 1 行上限 512 バイト",
+  "@packetLimitIs": {
+    "placeholders": {"bytes": {"type": "int"}}
+  },
+  "packetTcpipWarning": "TCPIP* を含みます：無線では自動的に除去されます（APRS-IS のパス）",
+  "packetSent": "リンクへ送信しました：{line}",
+  "@packetSent": {
+    "placeholders": {"line": {"type": "String"}}
+  },
+  "packetSendFailed": "送信していません：{err}",
+  "@packetSendFailed": {
+    "placeholders": {"err": {"type": "String"}}
+  }
 }

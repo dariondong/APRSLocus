@@ -1465,7 +1465,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get audioTxDisabled => '「送信を許可」がオフ — 受信のみ';
 
   @override
-  String get audioLoopbackHint => '自己診断は実際に変調→復調を行います。「送信中に破棄」は半二重として正常です';
+  String get audioLoopbackHint =>
+      '自己検査は実際に変調→復調を行います。Android では送信中マイクを一時停止します（半二重）';
 
   @override
   String get notifAudioConnected => 'オーディオリンク接続中';
@@ -6254,4 +6255,79 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sysRecentLabel => '直近受信';
+
+  @override
+  String get audioWavImportAction => 'WAV ファイルを選択';
+
+  @override
+  String get audioWavExportToDownloads => 'ダウンロードへ書き出し';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return '保存先: $path';
+  }
+
+  @override
+  String get audioWavCopyPath => 'パスをコピー';
+
+  @override
+  String get audioWavPathCopied => 'パスをコピーしました';
+
+  @override
+  String get audioWavCanceled => 'キャンセルしました';
+
+  @override
+  String get audioWavVerifyFailed => '書き出し前の自己検査に失敗：生成した音声を復調できません';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android では任意のパスに書けません：ダウンロード/APRSlocusAudio に保存されます（PC にコピーして Direwolf や無線機へ）';
+
+  @override
+  String get audioWavPickHint => 'デスクトップでは下に WAV パスを入力してください';
+
+  @override
+  String get audioTxLevel => '送信レベル';
+
+  @override
+  String get audioTxLevelTip =>
+      '送信前にメディア音量を最大にし、マイク入力を一時停止します。ピークが低すぎてもクリップしても相手は復調できません';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return 'ピーク $p% · ${sec}s · プリアンブル $flags フラグ';
+  }
+
+  @override
+  String get audioTxLevelClip => 'クリップしています：出力振幅を 0.8 未満に下げてください（高調波が出ます）';
+
+  @override
+  String get audioTxLevelLow => 'レベルが低い：相手が復調できない可能性があります。振幅と音量を上げてください';
+
+  @override
+  String get audioWiringHint =>
+      '無線機へはオーディオケーブルで（イヤホン出力 → データ/マイク端子）。スマホのスピーカーは 2200Hz が大きく減衰し、音響結合ではまず復調できません。相手が Direwolf なら、まず書き出した WAV で確認を：それで復調できれば問題は音声経路であってプロトコルではありません';
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return 'パケット $bytes バイト · 無線フレーム上限 $max バイト';
+  }
+
+  @override
+  String packetLimitIs(int bytes) {
+    return 'パケット $bytes バイト · APRS-IS 1 行上限 512 バイト';
+  }
+
+  @override
+  String get packetTcpipWarning => 'TCPIP* を含みます：無線では自動的に除去されます（APRS-IS のパス）';
+
+  @override
+  String packetSent(String line) {
+    return 'リンクへ送信しました：$line';
+  }
+
+  @override
+  String packetSendFailed(String err) {
+    return '送信していません：$err';
+  }
 }

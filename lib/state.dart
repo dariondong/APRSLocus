@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.113';
+  static const appVersion = '1.6.135';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2687,6 +2687,12 @@ class AppState extends ChangeNotifier {
   /// 当前数据来源下单条消息的长度上限；0 表示不限
   int get msgLenLimit => usingRf ? tncMaxMsgLen : 0;
 
+  /// 当前射频来源的 AX.25 单帧字节上限（TNC / 音频各自可配）。
+  ///
+  /// 手写报文（数据包控制台）也要按它提示 —— 超限在射频上是直接拒发，
+  /// 而 APRS-IS 那边是按 512 字节整行算，两者的限制不是一回事。
+  int get rfMaxFrame => usingTnc ? tnc.config.maxFrame : audio.config.maxFrame;
+
   /// 群聊是否可用。射频模式下禁用（见 [sendGroupMessage] 的说明）
   bool get groupChatAllowed => !usingRf;
 
@@ -4589,16 +4595,68 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  void sendPacket(String raw) {
-    if (raw.trim().isEmpty) return;
-    final src = raw.contains('>') ? raw.split('>').first : myCall;
-    _pushPacket(Packet(raw, src, 'APRS', 'message', DateTime.now(), info: raw));
-    packetsTx++;
-    if (connected) {
-      _sendRaw(raw);
+  /// 校验一条手写 TNC2 报文能否发送；返回 null 表示格式可以。
+  ///
+  /// 判据与 `Ax25.encodeTnc2` 一致，但**在发送前**给出可本地化的错误码 ——
+  /// 手写报文最常见的问题就是漏了 `>` 或 `:`，而这两种情况在旧实现里是
+  /// 静默失败（界面照旧显示「已发送」）。
+  String? validateTnc2(String raw) {
+    final line = raw.trim();
+    if (line.isEmpty) return 'bad-format';
+    final gt = line.indexOf('>');
+    if (gt <= 0) return 'bad-format';
+    final rest = line.substring(gt + 1);
+    final colon = rest.indexOf(':');
+    if (colon < 0) return 'bad-format';
+    if (rest.substring(0, colon).trim().isEmpty) return 'bad-format';
+    return null;
+  }
+
+  /// 手动注入并发送一条原始报文（数据包控制台用）。
+  ///
+  /// 返回 null 表示已交给链路，否则是错误码（界面用 `linkErrorText` 本地化）。
+  ///
+  /// 与信标/消息/测试帧保持一致：**先校验 → 再计数 → 如实返回错误**。
+  /// 旧实现不管发没发出去都自增发包计数、也没有任何返回 —— 射频（TNC/音频）
+  /// 下格式写错或链路没连上时，界面显示如常，用户只能干等（实为静默失败）。
+  String? sendPacket(String raw) {
+    final line = raw.trim();
+    final bad = validateTnc2(line);
+    if (bad != null) {
+      _log(LogLevel.warn, '发送',
+          '手动注入被拒绝（格式应为 SRC>DEST,PATH:info）：${_trunc(line)}');
+      return bad;
+    }
+    // 射频上不能带 TCPIP*/TCPXX*（那是 APRS-IS 的路径）：Ax25 会剔掉它们，
+    // 但用户手写时多半是复制了 IS 上的报文，值得提醒一句
+    if (usingRf && line.toUpperCase().contains('TCPIP')) {
+      _log(LogLevel.warn, '发送', '报文含 TCPIP*：射频上会被自动剔除（那是 APRS-IS 的路径）');
+    }
+    if (!connected) {
+      _log(LogLevel.warn, '发送',
+          '未连接（${_sourceName(dataSource)}），未发送：${_trunc(line)}');
+      return 'not-connected';
+    }
+    // 手动注入是我们**自己发出**的包：只进列表与发包计数。
+    // 不能走 _pushPacket —— 那条路自增收包数、还会计入「世界聆听者」成就
+    // （把「我发的」当成「我收到的」）。
+    final src = line.substring(0, line.indexOf('>')).trim();
+    packets.insert(
+      0,
+      Packet(line, src.isEmpty ? myCall : src, 'APRS', 'unknown',
+          DateTime.now(), info: line),
+    );
+    if (packets.length > maxPackets) packets.removeLast();
+    final err = _sendVia(dataSource, line);
+    if (err == null) {
+      packetsTx++;
       _lastTx = DateTime.now();
+      _log(LogLevel.info, '发送', '手动注入已发出：${_trunc(line)}');
+    } else {
+      _log(LogLevel.warn, '发送', '手动注入发送失败（$err）：${_trunc(line)}');
     }
     _notify();
+    return err;
   }
 
   // ─── 开发者工具 ───

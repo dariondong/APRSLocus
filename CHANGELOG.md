@@ -1,5 +1,112 @@
 # 更新日志
 
+## [1.6.135] - 2026-09-19
+
+### 📻 修「音频发射对方解不出」：Android 发射期间拉满音量、暂停麦克风、并给出接线与电平提示 / Fixes “on-air audio cannot be decoded by other software”: full media volume, mic paused during TX, plus wiring and level hints
+
+用户报告：**实时发射**（手机接电台 / 对着电脑上的 Direwolf）对方解不出。
+先把软件层排除干净 —— 我用一份**独立实现**（非本项目代码）解调「音频」页真实发射
+路径产出的音频，按规范（mark=1200Hz、NRZI 1=不变）能解出完整帧、FCS 正确。
+**所以波形与协议没问题，问题在「音频怎么送到对方」这一段。** 这一段此前
+完全没被照顾：
+
+- **发射期间把媒体音量拉到最大**（结束后原样恢复），并申请瞬时音频焦点。
+  手机媒体音量偏低时对端信噪比不够，整帧都解不出；而「别的应用正在放音乐」
+  会和 FSK 混在一起 —— 混音等于加噪声，波形直接毁掉。
+- **发射期间真正暂停麦克风采集**（半双工）。此前只是「收上来再丢掉」，
+  AudioRecord 仍开着：一边录音一边播放时，部分机型会把播放路由到听筒、
+  或叠加 AEC/降噪 —— 本机自检全过，电台却解不出，正是这个形状。
+- **发射体检进日志**：峰值%、时长、前导 flag 数。削顶（≥99.9%）与电平偏低
+  （<15%）都会明确报警 —— 这两种情况自检都「通过」，只有对方解不出，
+  是最难查的一类。
+- 音频页新增「接线提示」：接电台请走音频线；**手机扬声器在 2200Hz 衰减很大**，
+  对着麦克风很难解出。对端是电脑上的 Direwolf 时，先用导出的 WAV 验证一遍 ——
+  能解出就说明问题在音频通路，而不是协议。
+
+Reported: **live TX** (phone into a radio, or aiming at Direwolf on a PC) could not be
+decoded by the other end. I first ruled the software layer out — an **independent
+implementation** (not this project's code) decodes audio captured from the real TX path
+with correct FCS and legal addressing, so **the waveform and protocol are fine; the
+problem is in how the audio reaches the other end.** That part had no handling at all:
+
+- **Media volume is raised to maximum for the transmission** (restored afterwards) and
+transient audio focus is requested. At low media volume the far end's SNR is too poor to
+decode a whole frame, and music from another app mixes with the FSK — mixing is just
+noise, and it destroys the waveform.
+- **Microphone capture is actually paused during TX** (half duplex). Previously samples
+were merely dropped after capture, with AudioRecord still running; when recording and
+playback run together some devices route playback to the earpiece or stack AEC/noise
+suppression on it — the app's self-test passes while the radio cannot decode.
+- **TX diagnostics in the log**: peak %, duration, preamble flag count. Clipping (≥99.9%)
+and low level (<15%) are called out explicitly — both pass the self-test and only fail at
+ the far end, which is the hardest class of problem to find.
+- The audio page now shows **wiring hints**: use an audio cable into the radio;
+**a phone speaker rolls off badly at 2200 Hz**, so decoding it over the air from the
+speaker is very hard. When the far end is Direwolf on a PC, first verify with an exported
+WAV — if that decodes, the problem is the audio path, not the protocol.
+
+### 💾 修「导出路径」：不再要求手打路径，导出前自解一遍 / Fixes the export path: no more typing paths, and the file is decoded before it is written
+
+- **Android 导出改走系统「保存到下载目录」**（MediaStore，免存储权限）：
+  落到 `下载/APRSlocusAudio`，弹窗直接给出**真实路径**并可一键复制 ——
+  拷到电脑就能喂给 Direwolf。此前要用户手打路径，而 Android 应用**本来
+  就写不了任意目录**，私有目录用户又看不见 —— 这个入口在语义上就是坏的。
+- **导入改用系统文件选择器**（不再手打路径）；桌面端保留路径输入框
+  （桌面用户本来就习惯填路径）。
+- **导出前在内存里自己先解一遍**：解不出就直接报错，宁可不写，
+  也不给用户一个拿到对端反复试的坏文件。
+- **二进制走独立的原生通道**：文本导出按 UTF-8 写，WAV 是二进制 ——
+  沿用同一条通道会把文件写坏，而「坏了却显示成功」是最难查的一种。
+- 文件名带呼号与时间戳（`APRSlocus_<呼号>_<时间>.wav`）：下载目录会累积
+  多个导出，同名只能被系统加 `(1)(2)`，之后谁也分不清哪个是哪个。
+
+- **Android export now goes through the system “save to Downloads”** (MediaStore, no
+storage permission needed): files land in `Downloads/APRSlocusAudio`, and the dialog
+shows the **real path** with a one-tap copy — move it to a PC and feed it to Direwolf.
+Previously the user had to type a path, but an Android app **cannot write arbitrary
+directories** and its private directory is invisible — that entry point was broken by
+design.
+- **Import uses the system file picker** (no more typing paths); desktop keeps the path
+field, since desktop users expect to type paths.
+- **The WAV is decoded in memory before it is written**: if it does not decode the export
+fails outright — better to write nothing than to hand the user a broken file to retry at
+the far end.
+- **Binary goes through its own native channel**: text export writes UTF-8, while a WAV is
+binary — reusing that channel corrupts the file, and “corrupted but reported as success”
+is the hardest kind to notice.
+- Filenames carry the callsign and a timestamp (`APRSlocus_<call>_<time>.wav`): the
+Downloads folder accumulates exports, and identical names only get `(1)(2)` suffixes,
+after which nobody can tell which is which.
+
+### 📦 修「数据包控制台」：手动注入在 TNC / 音频下点了没反应 / Fixes the packet console: manual inject did nothing under TNC / audio
+
+射频（TNC / 音频）下手动注入一条报文，界面**既没有成功提示也没有失败提示** ——
+实为静默失败，三件事叠在一起：
+
+- **发送前先校验格式**：漏了 `>` 或 `:` 直接拦下并提示，不再「显示已发送、
+  其实对端什么都没收到」。
+- **未连接时如实返回 `not-connected`**，而不是照旧自增发包数 ——
+  计数从此只在真的交给链路后才增加。
+- **界面给出结果反馈**：成功弹绿条、失败弹红条（5s，够读完），
+  且**失败时保留输入**，改一个字符就能重发。
+- 输入框下方新增**上下文提示**：当前链路、整包字节数与上限
+  （射频按 AX.25 单帧上限、APRS-IS 按 512 字节整行）、当前路径，
+  含 `TCPIP*` 时提醒「射频上会被自动剔除」。
+
+Under RF (TNC / audio), injecting a packet produced **neither a success nor a failure
+message** — a silent failure, caused by three things stacking up:
+
+- **Format is validated before sending**: a missing `>` or `:` is rejected with a message
+instead of “shown as sent” while the far end receives nothing.
+- **`not-connected` is returned honestly** instead of incrementing the TX counter anyway —
+the counter now only advances once the packet is actually handed to a link.
+- **The UI reports the result**: a green bar on success, a red one on failure (5 s, long
+enough to read), and **the input is kept on failure** so one character can be fixed and
+resent.
+- A **context line** under the input shows the current link, the packet byte count and
+limit (AX.25 single-frame limit on RF, the 512-byte APRS-IS line limit), the current path,
+and a warning when `TCPIP*` is present.
+
 ## [1.6.134] - 2026-09-19
 
 ### 🔧 修 v1.6.133 把 4×2 弄没了：`minResizeHeight` 不能大于 `minHeight`
