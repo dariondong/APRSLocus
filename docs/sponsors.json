@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "updated": "2026-09-19",
   "sponsors": [
     {
@@ -80,11 +80,21 @@
     {
       "kind": "api",
       "name": "BH7NOR",
-      "desc": "APRS.TV 协议接口支持",
+      "desc": "协议接口支持",
       "descs": {
-        "zh": "APRS.TV 协议接口支持",
-        "zh-TW": "APRS.TV 協定介面支援",
-        "en": "APRS.TV protocol interface support"
+        "zh": "协议接口支持",
+        "zh-TW": "協定介面支援",
+        "en": "Protocol interface support"
+      }
+    },
+    {
+      "kind": "api",
+      "name": "APRS.TV",
+      "desc": "APRS.TV 接口支持",
+      "descs": {
+        "zh": "APRS.TV 接口支持",
+        "zh-TW": "APRS.TV 介面支援",
+        "en": "APRS.TV interface support"
       }
     },
     {

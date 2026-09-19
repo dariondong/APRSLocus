@@ -127,10 +127,20 @@ class _SponsorPageState extends State<SponsorPage> {
       kind: 'api',
       name: 'BH7NOR',
       names: const {},
-      desc: 'APRS.TV 协议接口支持',
+      desc: '协议接口支持',
       descs: const {
-        'zh-TW': 'APRS.TV 協定介面支援',
-        'en': 'APRS.TV protocol interface support',
+        'zh-TW': '協定介面支援',
+        'en': 'Protocol interface support',
+      },
+    ),
+    (
+      kind: 'api',
+      name: 'APRS.TV',
+      names: const {},
+      desc: 'APRS.TV 接口支持',
+      descs: const {
+        'zh-TW': 'APRS.TV 介面支援',
+        'en': 'APRS.TV interface support',
       },
     ),
     (
