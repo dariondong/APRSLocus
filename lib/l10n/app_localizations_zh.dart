@@ -6331,6 +6331,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get uiMaterialPreview => '预览';
+
+  @override
+  String get uiLayout => '界面布局';
+
+  @override
+  String get uiLayoutDesc => '2.0 把地图当成整个界面的底：其余页面收进底部可上滑的卡片';
+
+  @override
+  String get uiLayoutClassic => '经典布局（1.0）';
+
+  @override
+  String get uiLayoutClassicDesc => '宽屏左侧栏 + 窄屏底部导航，与旧版完全一致';
+
+  @override
+  String get uiLayoutSheet => '地图为基底（2.0）';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      '地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开';
+
+  @override
+  String get uiLayoutHint => '切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12659,4 +12681,26 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get uiMaterialPreview => '預覽';
+
+  @override
+  String get uiLayout => '介面佈局';
+
+  @override
+  String get uiLayoutDesc => '2.0 把地圖當成整個介面的底：其餘頁面收進底部可上滑的卡片';
+
+  @override
+  String get uiLayoutClassic => '經典佈局（1.0）';
+
+  @override
+  String get uiLayoutClassicDesc => '寬螢幕左側欄 + 窄螢幕底部導覽，與舊版完全一致';
+
+  @override
+  String get uiLayoutSheet => '地圖為基底（2.0）';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      '地圖常駐整螢幕；台站 / 訊息 / 資料包 / 設定收進底部可拖曳卡片，上滑或點把手即可展開';
+
+  @override
+  String get uiLayoutHint => '切換後立即生效，兩種佈局的設定各自保留；卡片收起時地圖上的按鈕會自動上移';
 }

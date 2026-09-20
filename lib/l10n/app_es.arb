@@ -2317,5 +2317,12 @@
   "uiMaterialMicaDesc": "Más sólido, con menos desenfoque y un matiz de tu color de acento, como el Mica de Windows 11",
   "uiMaterialHint": "El material solo afecta a las superficies de la app (tarjetas, barras, diálogos, capas del mapa); no es transparencia de ventana. El desenfoque consume GPU: en equipos antiguos puede ir menos fluido que con «Desactivado».",
   "uiMaterialBgHint": "Este tema usa una imagen de fondo, así que el material no añade fondo propio y solo esmerila las barras y las capas.",
-  "uiMaterialPreview": "Vista previa"
+  "uiMaterialPreview": "Vista previa",
+  "uiLayout": "Diseño de la interfaz",
+  "uiLayoutDesc": "2.0 usa el mapa como base de toda la interfaz y coloca las demás páginas en una tarjeta deslizable abajo",
+  "uiLayoutClassic": "Diseño clásico (1.0)",
+  "uiLayoutClassicDesc": "Barra lateral en pantallas anchas y navegación inferior en las estrechas, igual que antes",
+  "uiLayoutSheet": "Mapa como base (2.0)",
+  "uiLayoutSheetDesc": "El mapa ocupa toda la pantalla; estaciones / mensajes / paquetes / ajustes van en una tarjeta deslizable abajo: desliza hacia arriba o toca el asa para expandirla",
+  "uiLayoutHint": "Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta"
 }

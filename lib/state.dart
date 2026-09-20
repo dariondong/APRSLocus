@@ -1217,6 +1217,25 @@ class AppState extends ChangeNotifier {
   /// 当前材质的枚举形式（界面直接读这个）
   UiMaterial get uiMaterialValue => uiMaterialOf(uiMaterial);
 
+  // ─── 界面布局（v1.6.139 的「UI 2.0」）───
+  //
+  // 同为显示偏好，与材质独立可组合：'' = 1.0 经典布局，'sheet' = 2.0 地图为基底。
+  // 认不出的值一律回落 1.0 —— 布局选错会让人找不到导航，比颜色错严重得多。
+  String uiLayout = '';
+
+  /// 切换界面布局。
+  ///
+  /// 切完同样要 [applySavedTheme]（布局写在 C 这个全局调色板上，除了重算没有
+  /// 别的生效路径）；App 侧的 `_onThemeChange` 会发现 uiLayout 变了并重建。
+  void setUiLayout(String v) {
+    uiLayout = uiLayoutName(uiLayoutOf(v));
+    applySavedTheme();
+    persist();
+    _notify();
+  }
+
+  UiLayout get uiLayoutValue => uiLayoutOf(uiLayout);
+
   /// 切换界面语言
   void setLocale(String lang) {
     locale = lang;
@@ -1288,10 +1307,11 @@ class AppState extends ChangeNotifier {
   /// 颜色来源分两层：**主题的令牌覆写优先，其次才是旧版的单一 themeColor**。
   /// 保留第二层是有意的：老用户只存过 `themeColor`，升级后颜色必须原样不变。
   void applySavedTheme() {
-    // 材质要在 applyColors **之后**写：后者会重算整套调色板（并且自己也读
-    // C.materialOn 来决定页面底色透不透），所以材质必须先落定，
+    // 材质与布局要在 applyColors **之后**写：后者会重算整套调色板（并且自己也读
+    // C.materialOn 来决定页面底色透不透），所以两者必须先落定，
     // 否则换主题那一下会用上一档材质算出一套错的 alpha。
     C.material = uiMaterialValue;
+    C.layout = uiLayoutValue;
     ThemeController.instance.applyColors(
       isDark: darkMode,
       legacyPrimary: themeColorValue,
@@ -1609,6 +1629,9 @@ class AppState extends ChangeNotifier {
       uiMaterial = uiMaterialName(
         uiMaterialOf(p.getString('uiMaterial') ?? uiMaterial),
       );
+      uiLayout = uiLayoutName(
+        uiLayoutOf(p.getString('uiLayout') ?? uiLayout),
+      );
       mapType = p.getString('mapType') ?? mapType;
       // 离线地图：缓存开关与「仅离线」模式
       tileCacheOn = p.getBool('tileCacheOn') ?? tileCacheOn;
@@ -1791,6 +1814,7 @@ class AppState extends ChangeNotifier {
     await p.setString('themeColor', themeColor);
     await p.setDouble('uiScale', uiScale);
     await p.setString('uiMaterial', uiMaterial);
+    await p.setString('uiLayout', uiLayout);
     await p.setString('mapType', mapType);
     await p.setBool('tileCacheOn', tileCacheOn);
     await p.setBool('offlineOnly', offlineOnly);

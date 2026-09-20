@@ -2233,5 +2233,12 @@
   "uiMaterialMicaDesc": "More solid with a lighter blur and a tint of your accent colour — like Windows 11 Mica",
   "uiMaterialHint": "The material only affects the app's own surfaces (cards, bars, dialogs, map overlays) — it is not window transparency. Blur costs GPU time, so on older devices it may feel less smooth than Off.",
   "uiMaterialBgHint": "This theme uses a background image, so the material adds no backdrop of its own and only frosts the bars and overlays.",
-  "uiMaterialPreview": "Preview"
+  "uiMaterialPreview": "Preview",
+  "uiLayout": "UI layout",
+  "uiLayoutDesc": "2.0 uses the map as the base of the whole UI, with the other pages in a draggable card at the bottom",
+  "uiLayoutClassic": "Classic layout (1.0)",
+  "uiLayoutClassicDesc": "Side rail on wide screens, bottom navigation on narrow ones — exactly as before",
+  "uiLayoutSheet": "Map-first (2.0)",
+  "uiLayoutSheetDesc": "The map stays full-screen; stations / messages / packets / settings live in a draggable card below — swipe up or tap the handle to expand",
+  "uiLayoutHint": "Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses"
 }

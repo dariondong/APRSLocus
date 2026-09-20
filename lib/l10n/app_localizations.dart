@@ -11450,6 +11450,48 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'预览'**
   String get uiMaterialPreview;
+
+  /// No description provided for @uiLayout.
+  ///
+  /// In zh, this message translates to:
+  /// **'界面布局'**
+  String get uiLayout;
+
+  /// No description provided for @uiLayoutDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'2.0 把地图当成整个界面的底：其余页面收进底部可上滑的卡片'**
+  String get uiLayoutDesc;
+
+  /// No description provided for @uiLayoutClassic.
+  ///
+  /// In zh, this message translates to:
+  /// **'经典布局（1.0）'**
+  String get uiLayoutClassic;
+
+  /// No description provided for @uiLayoutClassicDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'宽屏左侧栏 + 窄屏底部导航，与旧版完全一致'**
+  String get uiLayoutClassicDesc;
+
+  /// No description provided for @uiLayoutSheet.
+  ///
+  /// In zh, this message translates to:
+  /// **'地图为基底（2.0）'**
+  String get uiLayoutSheet;
+
+  /// No description provided for @uiLayoutSheetDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开'**
+  String get uiLayoutSheetDesc;
+
+  /// No description provided for @uiLayoutHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移'**
+  String get uiLayoutHint;
 }
 
 class _AppLocalizationsDelegate

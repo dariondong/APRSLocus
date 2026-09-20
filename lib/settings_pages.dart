@@ -2537,6 +2537,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               if (ThemeController.instance.active.overridesColor('primary'))
                 SettingsHint(S.of(context).themeFixedPrimary, color: C.orange),
               _uiMaterialSelector(st),
+              _uiLayoutSelector(st),
               _languageSelector(st),
               _uiScaleSelector(st),
               SettingsRow2(S.of(context).unit, S.of(context).metricUnits),
@@ -2629,6 +2630,143 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  /// 界面布局选择（1.0 经典 / 2.0 地图为基底）
+  ///
+  /// 与「界面材质」同一个形状：给两档 + 各一句说明。不合并成一个
+  /// 「外观：1.0/2.0」下拉，是因为这两个开关**正交**（2.0 + 云母、1.0 + 磨砂
+  /// 都成立），用户不该因为想试布局而弄丢刚调好的材质。
+  Widget _uiLayoutSelector(AppState st) {
+    final cur = st.uiLayoutValue;
+    final options = <(UiLayout, String, String)>[
+      (
+        UiLayout.classic,
+        S.of(context).uiLayoutClassic,
+        S.of(context).uiLayoutClassicDesc,
+      ),
+      (
+        UiLayout.sheet,
+        S.of(context).uiLayoutSheet,
+        S.of(context).uiLayoutSheetDesc,
+      ),
+    ];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(S.of(context).uiLayout, style: ts(12, c: C.slate)),
+          const SizedBox(height: 2),
+          Text(S.of(context).uiLayoutDesc, style: ts(10, c: C.grey, h: 1.35)),
+          const SizedBox(height: 8),
+          for (final (m, name, desc) in options)
+            GestureDetector(
+              onTap: () => st.setUiLayout(uiLayoutName(m)),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: cur == m ? C.cyanBg : C.bgSoft,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: cur == m ? C.cyan : C.border,
+                    width: cur == m ? 1.5 : 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      cur == m
+                          ? Icons.radio_button_checked_rounded
+                          : Icons.radio_button_unchecked_rounded,
+                      size: 16,
+                      color: cur == m ? C.cyan : C.greyLight,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: ts(
+                              12,
+                              c: cur == m ? C.cyan : C.slate,
+                              w: cur == m ? FontWeight.w700 : FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(desc, style: ts(10, c: C.grey, h: 1.3)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _layoutSwatch(m),
+                  ],
+                ),
+              ),
+            ),
+          SettingsHint(S.of(context).uiLayoutHint),
+        ],
+      ),
+    );
+  }
+
+  /// 布局小样：把「地图在哪、内容在哪」画成示意图。
+  ///
+  /// 两档的区别是**结构**，用文字描述（「地图为基底」）很容易被读成只是换个
+  /// 配色；一张 68×40 的示意图把「地图占满 / 地图只在上面一条」说得毫无歧义。
+  Widget _layoutSwatch(UiLayout l) {
+    final mapColor = C.blue.withValues(alpha: 0.18);
+    final barColor = C.blue.withValues(alpha: 0.55);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: 68,
+        height: 40,
+        child: Container(
+          color: C.bgSoft,
+          child: l == UiLayout.sheet
+              // 2.0：地图满屏（底色就是地图），底部一张浮起的卡片
+              ? Stack(
+                  children: [
+                    Positioned.fill(child: ColoredBox(color: mapColor)),
+                    Positioned(
+                      left: 6,
+                      right: 6,
+                      bottom: 5,
+                      child: Container(
+                        height: 18,
+                        decoration: BoxDecoration(
+                          color: C.surfaceFill,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: C.border),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              // 1.0：左侧栏 + 顶栏 + 内容区
+              : Row(
+                  children: [
+                    Container(width: 16, color: barColor),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Container(height: 8, color: barColor),
+                          const Expanded(child: SizedBox()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

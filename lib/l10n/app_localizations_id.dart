@@ -6602,4 +6602,29 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get uiMaterialPreview => 'Pratinjau';
+
+  @override
+  String get uiLayout => 'Tata letak antarmuka';
+
+  @override
+  String get uiLayoutDesc =>
+      '2.0 memakai peta sebagai dasar seluruh antarmuka dan menaruh halaman lain di kartu yang bisa digeser di bawah';
+
+  @override
+  String get uiLayoutClassic => 'Tata letak klasik (1.0)';
+
+  @override
+  String get uiLayoutClassicDesc =>
+      'Bilah samping di layar lebar, navigasi bawah di layar sempit, sama seperti sebelumnya';
+
+  @override
+  String get uiLayoutSheet => 'Peta sebagai dasar (2.0)';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      'Peta selalu layar penuh; stasiun / pesan / paket / pengaturan ada di kartu yang bisa digeser di bawah — geser ke atas atau ketuk pegangannya untuk membuka';
+
+  @override
+  String get uiLayoutHint =>
+      'Langsung berlaku; kedua tata letak menyimpan pengaturannya sendiri. Tombol di peta otomatis naik saat kartu dilipat';
 }

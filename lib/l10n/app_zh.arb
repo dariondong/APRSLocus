@@ -2831,5 +2831,12 @@
   "uiMaterialMicaDesc": "更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）",
   "uiMaterialHint": "材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。",
   "uiMaterialBgHint": "当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。",
-  "uiMaterialPreview": "预览"
+  "uiMaterialPreview": "预览",
+  "uiLayout": "界面布局",
+  "uiLayoutDesc": "2.0 把地图当成整个界面的底：其余页面收进底部可上滑的卡片",
+  "uiLayoutClassic": "经典布局（1.0）",
+  "uiLayoutClassicDesc": "宽屏左侧栏 + 窄屏底部导航，与旧版完全一致",
+  "uiLayoutSheet": "地图为基底（2.0）",
+  "uiLayoutSheetDesc": "地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开",
+  "uiLayoutHint": "切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移"
 }

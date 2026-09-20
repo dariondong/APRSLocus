@@ -4,6 +4,7 @@ import 'theme.dart';
 import 'theme_store.dart';
 import 'state.dart';
 import 'home_page.dart';
+import 'shell2.dart';
 import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'app_widget.dart';
@@ -29,6 +30,7 @@ class _AppState extends State<App> {
   String _lastTheme = '';
   String _lastLocale = '';
   String _lastMaterial = '';
+  String _lastLayout = '';
   int _lastReloadTick = 0;
   int _lastThemeRevision = 0;
 
@@ -49,6 +51,9 @@ class _AppState extends State<App> {
     final tc = _state.themeColor;
     final loc = _state.locale;
     final mat = _state.uiMaterial;
+    // 布局（1.0 / 2.0）也要看：它换的是**整个外壳**（HomePage ↔ HomeShell2），
+    // 不重建就会出现「设置里点了 2.0、界面还是 1.0」。与材质同理不进 `key`。
+    final lay = _state.uiLayout;
     final rt = _state.reloadTick;
     // 主题改动也要重建 MaterialApp：颜色/圆角写在 ThemeData 里，
     // 但它们**不**需要换 key（换 key 会把导航栈整个丢掉，
@@ -60,6 +65,7 @@ class _AppState extends State<App> {
     //  点这一档，界面会当场弹回首页。）
     if (dark != _lastDark ||
         tc != _lastTheme ||
+        lay != _lastLayout ||
         loc != _lastLocale ||
         mat != _lastMaterial ||
         rt != _lastReloadTick ||
@@ -68,6 +74,7 @@ class _AppState extends State<App> {
       _lastTheme = tc;
       _lastLocale = loc;
       _lastMaterial = mat;
+      _lastLayout = lay;
       _lastReloadTick = rt;
       _lastThemeRevision = tr;
       if (mounted) setState(() {});
@@ -155,7 +162,12 @@ class _AppState extends State<App> {
           if (!_state.initialized) return const SplashPage();
           // 首次启动：进入设置向导
           if (!_state.oobeDone) return OobePage(state: _state);
-          return HomePage(state: _state);
+          // 两套外壳二选一（设置 → 显示 → 界面布局）。判断读 C 上的全局值
+          // 而不是 _state.uiLayout：C.layout 与调色板同一时刻写入，不会出现
+          // 「颜色已换、外壳还是旧的」这种半截状态。
+          return C.sheetLayout
+              ? HomeShell2(state: _state)
+              : HomePage(state: _state);
         },
       ),
     );

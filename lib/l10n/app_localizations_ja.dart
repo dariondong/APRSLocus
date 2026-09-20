@@ -6404,4 +6404,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get uiMaterialPreview => 'プレビュー';
+
+  @override
+  String get uiLayout => '画面レイアウト';
+
+  @override
+  String get uiLayoutDesc => '2.0 では地図を画面全体の土台にし、他のページは下部のドラッグできるカードに収めます';
+
+  @override
+  String get uiLayoutClassic => 'クラシック（1.0）';
+
+  @override
+  String get uiLayoutClassicDesc => '広い画面は左サイドバー、狭い画面は下部ナビ。従来どおりです';
+
+  @override
+  String get uiLayoutSheet => '地図ベース（2.0）';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      '地図は常に全画面。台站 / メッセージ / パケット / 設定は下部のドラッグできるカードに入り、上スワイプかハンドルのタップで開きます';
+
+  @override
+  String get uiLayoutHint =>
+      'すぐに反映されます。両レイアウトの設定は別々に保持されます。カードを畳むと地図上のボタンが自動で上に移動します';
 }

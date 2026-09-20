@@ -6644,4 +6644,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get uiMaterialPreview => 'Vista previa';
+
+  @override
+  String get uiLayout => 'Diseño de la interfaz';
+
+  @override
+  String get uiLayoutDesc =>
+      '2.0 usa el mapa como base de toda la interfaz y coloca las demás páginas en una tarjeta deslizable abajo';
+
+  @override
+  String get uiLayoutClassic => 'Diseño clásico (1.0)';
+
+  @override
+  String get uiLayoutClassicDesc =>
+      'Barra lateral en pantallas anchas y navegación inferior en las estrechas, igual que antes';
+
+  @override
+  String get uiLayoutSheet => 'Mapa como base (2.0)';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      'El mapa ocupa toda la pantalla; estaciones / mensajes / paquetes / ajustes van en una tarjeta deslizable abajo: desliza hacia arriba o toca el asa para expandirla';
+
+  @override
+  String get uiLayoutHint =>
+      'Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta';
 }

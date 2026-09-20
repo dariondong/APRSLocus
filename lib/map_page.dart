@@ -19,6 +19,17 @@ class MapPage extends StatefulWidget {
   final AppState state;
   final String searchQuery;
 
+  /// 底部要**让出**多少高度（像素）。
+  ///
+  /// 2.0 布局下，地图是整屏的底，而底部那张可拖拽卡片浮在地图之上 ——
+  /// 不告诉地图「下面被占了多高」，原本贴底的「比例尺/坐标条」和「上报横杠」
+  /// 就会被卡片盖住（表现是「2.0 里这些控件不见了」）。所以由外壳把卡片的
+  /// 当前高度传进来，地图自己把这两个控件往上推。
+  ///
+  /// 卡片拖到很高时这两个控件会被推出屏幕顶部之外，这是**预期**的：
+  /// 那时整块地图本来就看不见了，控件留在原地只会被卡片压住。
+  final double bottomInset;
+
   /// 当前是否为激活 Tab（首页 IndexedStack 可见页）。非激活时跳过地图重建，
   /// 避免台站上千时后台地图反复 rebuild 造成全局卡顿。
   final bool isActive;
@@ -27,6 +38,7 @@ class MapPage extends StatefulWidget {
     required this.state,
     this.searchQuery = '',
     this.isActive = true,
+    this.bottomInset = 0,
   });
   @override
   State<MapPage> createState() => _MapPageState();
@@ -604,14 +616,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   Positioned(
                     left: 14,
                     right: 14,
-                    bottom: 62 + MediaQuery.of(context).padding.bottom,
+                    bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
+                    child: _beaconBar(),
                     child: _beaconBar(),
                   ),
                 // 底部控制（安全区白条 + 14px）
                 Positioned(
                   left: 14,
                   right: 14,
-                  bottom: 14 + MediaQuery.of(context).padding.bottom,
+                  bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                   child: ValueListenableBuilder<Offset?>(
                     valueListenable: _hover,
                     builder: (_, hp, _) => _bottomControls(hp),

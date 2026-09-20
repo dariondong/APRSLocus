@@ -36,6 +36,34 @@ UiMaterial uiMaterialOf(String? raw) {
   return UiMaterial.none;
 }
 
+/// ─── 界面布局（1.0 经典 / 2.0 地图为基底）───
+///
+/// 与 [UiMaterial] 一样，这是**显示偏好**而不是主题的一部分：主题管颜色，布局管
+/// 结构；两者正交，可以任意组合（2.0 + 云母、1.0 + 磨砂玻璃都成立）。
+///
+/// 为什么默认 [classic]：2.0 会把导航从「左侧栏/底部栏」换成「底部可拖拽卡片 + 浮层
+/// 顶栏」—— 这是改变肌肉记忆级别的改动，不能替老用户决定。默认值 = 升级后与旧版
+/// 一模一样，这才是兼容底线。
+enum UiLayout {
+  /// 1.0 经典：宽屏左侧栏 + 窄屏底部导航 + 顶栏
+  classic,
+
+  /// 2.0 地图为基底：地图常驻整屏，其余页装进底部可拖拽卡片，顶栏浮在地图上
+  sheet;
+}
+
+UiLayout uiLayoutOf(String? raw) {
+  switch ((raw ?? '').trim().toLowerCase()) {
+    case 'sheet':
+      return UiLayout.sheet;
+  }
+  return UiLayout.classic;
+}
+
+/// 布局 → 偏好里存的字符串（[UiLayout.classic] 存空串 = 不写这一项）
+String uiLayoutName(UiLayout l) =>
+    l == UiLayout.sheet ? 'sheet' : '';
+
 /// 材质对应的表面不透明度 / 模糊半径。
 ///
 /// 抽成函数（而不是只塞在 C 的 getter 里）是为了让**设置页里的预览小样**能用
@@ -207,6 +235,19 @@ class C {
   /// 刻意**不**放进 `applyTheme` 的重置列表：材质是显示偏好，换主题不该把它
   /// 悄悄关掉（那会表现为「换了个皮肤，磨砂玻璃自己没了」）。
   static UiMaterial material = UiMaterial.none;
+
+  /// 当前界面布局（v1.6.139 起的「 UI 2.0」）。由 AppState 在 applySavedTheme 里写入。
+  ///
+  /// 与 [material] 同理，刻意**不**放进 `applyTheme` 的重置列表：换肤不该
+  /// 偷偷把布局换回 1.0。
+  static UiLayout layout = UiLayout.classic;
+
+  /// 是否是「地图为基底」的 2.0 布局。
+  ///
+  /// 多处要问这个问题（地图要不要当底、外壳选哪一套、卡片要不要半透明），
+  /// 所以给个具名 getter：到处写 `C.layout == UiLayout.sheet` 容易在某处写成
+  /// 反的，而写反了的表现是「整个界面变成另一套布局、但不报错」。
+  static bool get sheetLayout => layout == UiLayout.sheet;
 
   /// 是否有材质（= 表面要半透明 + 壁纸要画出来）
   static bool get materialOn => material != UiMaterial.none;

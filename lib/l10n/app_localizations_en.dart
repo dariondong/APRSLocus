@@ -6593,4 +6593,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get uiMaterialPreview => 'Preview';
+
+  @override
+  String get uiLayout => 'UI layout';
+
+  @override
+  String get uiLayoutDesc =>
+      '2.0 uses the map as the base of the whole UI, with the other pages in a draggable card at the bottom';
+
+  @override
+  String get uiLayoutClassic => 'Classic layout (1.0)';
+
+  @override
+  String get uiLayoutClassicDesc =>
+      'Side rail on wide screens, bottom navigation on narrow ones — exactly as before';
+
+  @override
+  String get uiLayoutSheet => 'Map-first (2.0)';
+
+  @override
+  String get uiLayoutSheetDesc =>
+      'The map stays full-screen; stations / messages / packets / settings live in a draggable card below — swipe up or tap the handle to expand';
+
+  @override
+  String get uiLayoutHint =>
+      'Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses';
 }

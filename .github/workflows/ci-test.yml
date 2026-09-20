@@ -49,6 +49,14 @@ jobs:
       - name: Check material coverage
         run: python3 tool/check_material_coverage.py
 
+      # 跨层导入：用了 C / MaterialSurface / SettingsRow2 这类名字，就必须导入定义
+      # 它的那个文件。漏一个只在 analyze/编译时报 undefined —— 而本机跑不了
+      # analyze，于是每漏一个就白等一轮 CI。同一个坑已经撞过两次
+      # （state.dart 缺 theme.dart、五个页面缺 material.dart），这条把它变成
+      # CI 里一眼就能看出来的错误。
+      - name: Check cross-layer imports
+        run: python3 tool/check_cross_imports.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |
