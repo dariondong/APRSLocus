@@ -64,9 +64,9 @@ body { overflow: hidden; height: 100vh; margin: 0; }
 
 /* 玻璃卡片：与官网 .card 同一配方 */
 .gcards { display: grid; gap: 24px; margin-top: 44px; }
-.gcards.c2 { grid-template-columns: repeat(2, 1fr); }
-.gcards.c3 { grid-template-columns: repeat(3, 1fr); }
-.gcards.c4 { grid-template-columns: repeat(4, 1fr); }
+.gcards.n2 { grid-template-columns: repeat(2, 1fr); }
+.gcards.n3 { grid-template-columns: repeat(3, 1fr); }
+.gcards.n4 { grid-template-columns: repeat(4, 1fr); }
 .gcard {
   position: relative; padding: 34px 32px; border-radius: var(--radius);
   background: rgba(255, 255, 255, .8); border: 1px solid var(--line);
@@ -264,8 +264,8 @@ body { overflow: hidden; height: 100vh; margin: 0; }
   backdrop-filter: blur(8px);
 }
 .stage.show-ui .topbar { transform: none; }
-.topbar .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; font-size: 16px; letter-spacing: -.01em; }
-.topbar .brand img { width: 30px; height: 30px; border-radius: 9px; box-shadow: 0 6px 16px rgba(56, 189, 248, .4); }
+.topbar .deckbrand { display: flex; align-items: center; gap: 11px; font-weight: 900; font-size: 16px; letter-spacing: -.01em; }
+.topbar .deckbrand img { width: 30px; height: 30px; border-radius: 9px; box-shadow: 0 6px 16px rgba(56, 189, 248, .4); }
 .topbar .t { font-size: 14px; color: var(--text-faint); }
 .topbar .sp { flex: 1; }
 .btn2 {
@@ -351,7 +351,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
   </div>
 <!-- 顶栏 -->
 <header class="ui topbar" id="topbar">
-  <span class="brand"><img src="assets/logo.png" alt="APRSlocus">APRSlocus 视频画面</span>
+  <span class="deckbrand"><img src="assets/logo.png" alt="APRSlocus">APRSlocus 视频画面</span>
   <span class="t" id="tTitle"></span>
   <span class="sp"></span>
   <button class="btn2" id="bPrompt">提词条 <kbd>T</kbd></button>
@@ -430,7 +430,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <h1 class="h1 an" style="--i:1">玩业余无线电的朋友，<br>这个视频是给你的</h1>
     <p class="lead an" style="--i:2;font-size:32px">如果你还不了解 APRS，也可以当个科普看。</p>
   </div>
-  <div class="gcards c3 an" style="--i:3">
+  <div class="gcards n3 an" style="--i:3">
     <div class="gcard cc">
       <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M494.8 47c12.7-3.7 20-17.1 16.3-29.8S494-2.8 481.2 1L51.7 126.9c-9.4 2.7-17.9 7.3-25.1 13.2C10.5 151.7 0 170.6 0 192l0 4L0 304 0 448c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-229.5 0L494.8 47zM368 240a80 80 0 1 1 0 160 80 80 0 1 1 0-160zM80 256c0-8.8 7.2-16 16-16l96 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-96 0c-8.8 0-16-7.2-16-16zM64 320c0-8.8 7.2-16 16-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L80 336c-8.8 0-16-7.2-16-16zm16 64c0-8.8 7.2-16 16-16l96 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-96 0c-8.8 0-16-7.2-16-16z"/></svg></div>
       <h3>火腿朋友</h3>
@@ -462,7 +462,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
       = Automatic Packet Reporting System · 自动分组报告系统
     </p>
   </div>
-  <div class="gcards c3 an" style="--i:3">
+  <div class="gcards n3 an" style="--i:3">
     <div class="gcard">
       <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg></div>
       <h3>自动报位置</h3>
@@ -563,7 +563,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">缘起</span>
     <h2 class="h2 an" style="--i:1">老软件不是不好，只是不太合手</h2>
   </div>
-  <div class="gcards c3 an" style="--i:2">
+  <div class="gcards n3 an" style="--i:2">
     <div class="gcard">
       <div class="ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM96 96l320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div>
       <h3>界面过时</h3>
@@ -592,7 +592,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">登场</span>
     <h2 class="h2 an" style="--i:1">把 APRS 常用功能，搬到手机和电脑上</h2>
   </div>
-  <div class="gcards c4" style="margin-top:40px">
+  <div class="gcards n4" style="margin-top:40px">
     <div class="gcard cc an" style="--i:2">
       <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg></div>
       <h3>打开就是地图</h3>
@@ -631,7 +631,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">功能 · 实时地图</span>
     <h2 class="h2 an" style="--i:1">台站实时显示，地图顺手好用</h2>
   </div>
-  <div class="gcards c3" style="margin-top:40px">
+  <div class="gcards n3" style="margin-top:40px">
     <div class="gcard an" style="--i:2">
       <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M160 32c-35.3 0-64 28.7-64 64l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320l-144 0-48 0-80 0c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224z"/></svg></div>
       <h3>十多种底图可切</h3>
@@ -682,7 +682,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="chip"><span class="dot d-c"></span>航向 090° · 速度 50</span>
     <span class="chip"><span class="dot d-c"></span>电量 70%</span>
   </div>
-  <div class="gcards c3" style="margin-top:38px">
+  <div class="gcards n3" style="margin-top:38px">
     <div class="gcard cc an" style="--i:4"><h3>自动附带信息</h3><p>高度、速度、航向、电量，一次带上，不用手填。</p></div>
     <div class="gcard cc an" style="--i:5"><h3>上报间隔可调</h3><p>想勤一点、省一点，自己说了算。</p></div>
     <div class="gcard cc an" style="--i:6"><h3>演示模式先试试</h3><p>不确定效果时，先在演示模式里跑一遍。</p></div>
@@ -722,7 +722,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <h2 class="h2 an" style="--i:1">这个呼号，到底是什么设备？</h2>
     <p class="lead an" style="--i:2">接入 <b class="hl">aprs.org</b> 官方设备库，从报文目的呼号识别台站所用设备：厂商 + 型号 + 台站类别。</p>
   </div>
-  <div class="gcards c4" style="margin-top:36px">
+  <div class="gcards n4" style="margin-top:36px">
     <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M171.3 96L224 96l0 96-112.7 0 30.4-75.9C146.5 104 158.2 96 171.3 96zM272 192l0-96 81.2 0c9.7 0 18.9 4.4 25 12l67.2 84L272 192zm256.2 1L428.2 68c-18.2-22.8-45.8-36-75-36L171.3 32c-39.3 0-74.6 23.9-89.1 60.3L40.6 196.4C16.8 205.8 0 228.9 0 256L0 368c0 17.7 14.3 32 32 32l33.3 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l130.7 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l33.3 0c17.7 0 32-14.3 32-32l0-48c0-65.2-48.8-119-111.8-127zM434.7 368a48 48 0 1 1 90.5 32 48 48 0 1 1 -90.5-32zM160 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></div><h3>车台 / 手台</h3><p>路上跑的、随身带的，一眼分清。</p></div>
     <div class="gcard cc an" style="--i:4"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div><h3>跟踪器 / App</h3><p>专用跟踪器，或者手机 App。</p></div>
     <div class="gcard cc an" style="--i:5"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg></div><h3>网关 / 中继</h3><p>iGate、数字中继这些基础设施。</p></div>
@@ -747,7 +747,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <code>BG7LZQ-3&gt;APALOC,TCPIP*:!<s>2148.90N/11049.14E</s>&gt; <i>/A=000328 090/050</i> Bat:70%</code>
     <code style="margin-top:14px;font-size:23px;color:#94a3b8">BG7PGW-7&gt;APRS,TCPIP*::BG7LZQ-3 :晚点通联{001</code>
   </div>
-  <div class="gcards c3" style="margin-top:36px">
+  <div class="gcards n3" style="margin-top:36px">
     <div class="gcard cc an" style="--i:2"><h3>原始报文</h3><p>等宽字体展示，长按可复制，自己看得懂每一段。</p></div>
     <div class="gcard cc an" style="--i:3"><h3>解析分类</h3><p>按位置 / 消息 / 气象 / 状态归类，不用自己拆。</p></div>
     <div class="gcard cc an" style="--i:4"><h3>分级日志</h3><p>内置分级日志，排查问题有据可依。</p></div>
@@ -763,7 +763,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">功能 · 连接与后台</span>
     <h2 class="h2 an" style="--i:1">网络这件事，交给程序自己盯着</h2>
   </div>
-  <div class="gcards c2" style="margin-top:36px">
+  <div class="gcards n2" style="margin-top:36px">
     <div class="gcard an" style="--i:1">
       <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"/></svg></div>
       <h3>自动连接与渐进重连</h3>
@@ -798,7 +798,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">功能 · 数据来源与网关</span>
     <h2 class="h2 an" style="--i:1">四条链路，一起收报文</h2>
   </div>
-  <div class="gcards c4" style="margin-top:36px">
+  <div class="gcards n4" style="margin-top:36px">
     <div class="gcard cc an" style="--i:1"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div><h3>APRS-IS</h3><p>互联网接入，开机就连。</p></div>
     <div class="gcard cc an" style="--i:2"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 320 512" aria-hidden="true"><path d="M196.48 260.023l92.626-103.333L143.125 0v206.33l-86.111-86.111-31.406 31.405 108.061 108.399L25.608 368.422l31.406 31.405 86.111-86.111L145.84 512l148.552-148.644-97.912-103.333zm40.86-102.996l-49.977 49.978-.338-100.295 50.315 50.317zM187.363 313.04l49.977 49.978-50.315 50.316.338-100.294z"/></svg></div><h3>TNC</h3><p>蓝牙 / 串口，KISS 协议。</p></div>
     <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"/></svg></div><h3>声卡音频</h3><p>AFSK 1200（Bell 202）软 TNC。</p></div>
@@ -824,7 +824,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">功能 · 还有这些</span>
     <h2 class="h2 an" style="--i:1">顺手的小东西，也都做了</h2>
   </div>
-  <div class="gcards c3" style="margin-top:34px">
+  <div class="gcards n3" style="margin-top:34px">
     <div class="gcard cc an" style="--i:1"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg></div><h3>沉浸地图（导航风格）</h3><p>大字号方向 / 距离 / 速度，左侧「附近台站」面板，专为开车看屏幕设计。</p></div>
     <div class="gcard cc an" style="--i:2"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64L0 400c0 44.2 35.8 80 80 80l400 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 416c-8.8 0-16-7.2-16-16L64 64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/></svg></div><h3>天气 · 统计 · 荣誉墙</h3><p>天气面板背景随天气强度变化；最近上报、最远距离、报文速率一目了然。</p></div>
     <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 128-168 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l168 0 0 112c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zM384 336l0-48 110.1 0-39-39c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l39-39L384 336zm0-208l-128 0L256 0 384 128z"/></svg></div><h3>数据导出 ADIF</h3><p>业余无线电通用的日志格式，频率可自定义，导出后能直接进别的日志软件。</p></div>
@@ -843,7 +843,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">跨平台 · 开源</span>
     <h2 class="h2 an" style="--i:1">一个项目，同时覆盖 Android 和 Windows</h2>
   </div>
-  <div class="gcards c2" style="margin-top:38px">
+  <div class="gcards n2" style="margin-top:38px">
     <div class="gcard an" style="--i:1">
       <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg></div>
       <h3>Android</h3>
@@ -898,7 +898,7 @@ body { overflow: hidden; height: 100vh; margin: 0; }
     <span class="kicker an" style="--i:0">支持与鸣谢</span>
     <h2 class="h2 an" style="--i:1">能走到今天，离不开很多人的帮助</h2>
   </div>
-  <div class="gcards c2" style="margin-top:32px">
+  <div class="gcards n2" style="margin-top:32px">
     <div class="gcard an" style="--i:1">
       <h3>赞助与算力支持</h3>
       <div class="tname">
