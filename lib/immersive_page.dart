@@ -10,6 +10,7 @@ import 'state.dart';
 import 'theme.dart';
 import 'tile_map.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// ─── 沉浸地图（导航风格）───
 ///

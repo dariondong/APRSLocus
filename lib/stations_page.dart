@@ -9,6 +9,7 @@ import 'aprs_device.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
 import 'stats_panel.dart';
+import 'material.dart';
 
 class StationsPage extends StatefulWidget {
   final AppState state;

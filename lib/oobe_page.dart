@@ -11,6 +11,7 @@ import 'state.dart';
 import 'models.dart';
 import 'widgets.dart';
 import 'terms_page.dart';
+import 'material.dart';
 
 /// 首次启动引导（OOBE）：语言 → 用户协议确认 → 欢迎 → 呼号 → 符号 → 筛选 → 服务器
 class OobePage extends StatefulWidget {

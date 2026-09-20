@@ -88,7 +88,45 @@ def match_range(lines, start, opener):
     raise AssertionError('材质壳未闭合（第 %d 行）' % (start + 1))
 
 
+def import_problems():
+    """用了材质壳却没 `import 'material.dart';` 的文件。
+
+    为什么把这条也放进这个脚本：它和我自己撞过两次的同一种错一模一样 ——
+    “本地语法解析看得过去（`dart format` 只判语法），只有 analyze/编译会报
+    undefined_method”。本机跑不了 analyze（会压垮同机的服务），所以每次都得
+    等 CI 跑一轮才知道。把它变成一个本地就能跑的检查，一轮 CI 就省下来了。
+    """
+    need = ('MaterialSurface(', 'MaterialAppBar(', 'surfaceTint(')
+    out = []
+    for base, _dirs, files in os.walk(LIB):
+        for fn in sorted(files):
+            if not fn.endswith('.dart'):
+                continue
+            path = os.path.join(base, fn)
+            rel = os.path.relpath(path, ROOT).replace(os.sep, '/')
+            if rel == 'lib/material.dart':
+                continue  # 定义处
+            text = io.open(path, encoding='utf-8').read()
+            lines = text.split('\n')
+            used = sorted({n for n in need if any(n in l and not l.strip().startswith('//')
+                                                 for l in lines)})
+            if not used:
+                continue
+            if "import 'material.dart';" in text:
+                continue
+            out.append((rel, used))
+    return out
+
+
 def main() -> int:
+    bad_imports = import_problems()
+    if bad_imports:
+        print('以下文件用了材质壳/函数，却没 import material.dart —— 会报 '
+              'undefined_method（本地 dart format 看不出来）：')
+        for rel, used in bad_imports:
+            print('  NO-IMPORT  %-30s 用到 %s' % (rel, '、'.join(used)))
+        print()
+
     problems = []
     for base, _dirs, files in os.walk(LIB):
         for fn in sorted(files):
@@ -115,9 +153,12 @@ def main() -> int:
                 continue
             problems.append((rel, hits, reason))
 
-    if not problems:
-        print('material coverage ok: 所有半透明壳表面都在材质壳内')
+    if not problems and not bad_imports:
+        print('material coverage ok: 所有半透明壳表面都在材质壳内，且都 import 了 material.dart')
         return 0
+    if not problems:
+        print('（半透明壳表面的包裹本身是齐的）')
+        return 1
 
     print('以下「半透明壳表面」没有套材质壳（材质开着时会半透明但不模糊，'
           '底下的内容直接透出来）：')

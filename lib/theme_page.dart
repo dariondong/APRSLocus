@@ -14,6 +14,7 @@ import 'theme_model.dart';
 import 'theme_store.dart';
 import 'theme_text.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// 主题页：把界面的**颜色 / 图标 / 文字**变成用户可以自己改、并且能导出成
 /// JSON 分享或备份的东西。

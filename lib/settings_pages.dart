@@ -16,6 +16,7 @@ import 'early_member.dart';
 import 'offline_map_page.dart';
 import 'weather.dart';
 import 'theme_store.dart';
+import 'material.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
