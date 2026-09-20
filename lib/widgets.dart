@@ -369,19 +369,19 @@ class KV extends StatelessWidget {
   const KV(this.label, this.value, {super.key, this.icon, this.valueColor});
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (icon != null) ...[
-          Icon(icon, size: 14, color: C.grey),
-          SizedBox(width: 6),
-        ],
-        Text(label, style: ts(12, c: C.slate)),
-        Spacer(),
-        Text(
-          value,
-          style: ts(12, c: valueColor ?? C.ink, w: FontWeight.w600),
-        ),
-      ],
+    // 走 LabelValueRow：值常常是用户数据（呼号、设备名、距离、时间），
+    // 而原来的 `Text + Spacer + Text` 两端都是自然宽 —— 值一长就整行溢出。
+    return LabelValueRow(
+      label,
+      value,
+      labelStyle: ts(12, c: C.slate),
+      valueStyle: ts(12, c: valueColor ?? C.ink, w: FontWeight.w600),
+      leading: icon == null
+          ? null
+          : Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Icon(icon, size: 14, color: C.grey),
+            ),
     );
   }
 }
@@ -455,6 +455,87 @@ class SectionCard extends StatelessWidget {
   }
 }
 
+/// 「标签 …… 值」的行式布局：标签最多占 [maxLabelFactor] 的比例（超出省略号），
+/// 值吃掉剩余全部宽度并右对齐，**两端都不会溢出**。
+///
+/// 为什么不用 `Flexible(标签) + Expanded(值)` 这个常见写法：Row 的弹性空间是
+/// **按 flex 权重一次分配**的（`RenderFlex._computeSizes` 里 `spacePerFlex` 只算
+/// 一次，宽松子项没用完的那份不会再分给兄弟）—— 于是标签短的时候，值只拿到自己
+/// 那一份（约一半），右边留一截空隙，看起来「值没贴右」。这里让标签走**限宽的自然
+/// 宽**、值走 `Expanded`：只有一个弹性子项时，它拿到的就是全部剩余，行为确定。
+///
+/// 为什么要 Tooltip：省略号一旦出现，用户总得有个办法看到全文。这两端本来就不
+/// 可点（设置项只读），加 Tooltip 不会和点击手势打架。
+class LabelValueRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final TextStyle? labelStyle;
+  final TextStyle? valueStyle;
+
+  /// 标签前的小图标（不参与弹性分配）
+  final Widget? leading;
+
+  /// 标签最多占的宽度比例。0.42 能容下现有各语言里最长的几个标签
+  /// （「射频信标」/「Bound device」），又把大头留给值 —— 而**值**才是长的
+  /// 那个（设备名、呼号、服务器地址）。
+  final double maxLabelFactor;
+  final double gap;
+
+  const LabelValueRow(
+    this.label,
+    this.value, {
+    super.key,
+    this.labelStyle,
+    this.valueStyle,
+    this.leading,
+    this.maxLabelFactor = 0.42,
+    this.gap = 10,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        final maxLabel = (c.maxWidth * maxLabelFactor).clamp(0.0, c.maxWidth);
+        return Row(
+          children: [
+            if (leading != null) leading!,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxLabel),
+              child: _tip(
+                label,
+                Text(
+                  label,
+                  style: labelStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            SizedBox(width: gap),
+            Expanded(
+              child: _tip(
+                value,
+                Text(
+                  value,
+                  style: valueStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 空串不加 Tooltip：否则会弹出一个空白提示框，比不加更难理解
+  Widget _tip(String msg, Widget child) =>
+      msg.trim().isEmpty ? child : Tooltip(message: msg, child: child);
+}
+
 /// Row in settings
 class SettingRow extends StatelessWidget {
   final String label, value;
@@ -466,12 +547,11 @@ class SettingRow extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
       ),
-      child: Row(
-        children: [
-          Text(label, style: ts(12, c: C.slate)),
-          const Spacer(),
-          Text(value, style: ts(12, w: FontWeight.w500)),
-        ],
+      child: LabelValueRow(
+        label,
+        value,
+        labelStyle: ts(12, c: C.slate),
+        valueStyle: ts(12, w: FontWeight.w500),
       ),
     );
   }

@@ -77,7 +77,7 @@ class LogPage extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: C.sheetFill,
+                  color: C.surfaceFill,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: C.border),
                 ),

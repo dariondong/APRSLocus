@@ -213,11 +213,29 @@ class _SettingsPageState extends State<SettingsPage> {
                               color: Colors.white, size: 17),
                         ),
                         SizedBox(width: 10),
-                        Text(Tx.of(context).byKey('honorWall'), style: ts(13, w: FontWeight.w700)),
+                        // 标题短、副标题长（且各语言长度差很大）：标题限份额，
+                        // 副标题用 Expanded 把剩余全吃掉 —— 不用 Spacer，因为
+                        // Spacer 也是弹性子项，会把副标题的可用宽度再切一刀。
+                        Flexible(
+                          flex: 2,
+                          child: Text(
+                            Tx.of(context).byKey('honorWall'),
+                            style: ts(13, w: FontWeight.w700),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         const SizedBox(width: 6),
-                        Text(S.of(context).myBadgesAndAchievements,
-                            style: TextStyle(fontSize: 10, color: Color(0xFF98A2B8))),
-                        Spacer(),
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            S.of(context).myBadgesAndAchievements,
+                            style: const TextStyle(
+                                fontSize: 10, color: Color(0xFF98A2B8)),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         Icon(Icons.chevron_right_rounded,
                             color: C.grey, size: 20),
                       ],

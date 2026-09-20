@@ -455,22 +455,25 @@ class _TrackerPageState extends State<TrackerPage>
     return SafeArea(
       child: Row(
         children: [
-          Container(
-            width: 272,
-            color: C.sheetFill,
-            child: Column(
-              children: [
-                _header(members, showGroupChat: !_isTemp),
-                const Divider(height: 1),
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    itemCount: members.length,
-                    itemBuilder: (_, i) => _memberTile(members[i]),
+          MaterialSurface(
+            radius: 0,
+            child: Container(
+              width: 272,
+              color: C.sheetFill,
+              child: Column(
+                children: [
+                  _header(members, showGroupChat: !_isTemp),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      itemCount: members.length,
+                      itemBuilder: (_, i) => _memberTile(members[i]),
+                    ),
                   ),
-                ),
-                _toolRow(),
-              ],
+                  _toolRow(),
+                ],
+              ),
             ),
           ),
           // 横屏：地图区左上角叠模式徽章，底部叠会话信息条

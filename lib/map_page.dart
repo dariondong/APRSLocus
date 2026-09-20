@@ -1857,28 +1857,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             top: 58,
             child: Material(
               color: Colors.transparent,
-              child: Container(
-                width: 210,
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: C.sheetFill,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
-                ),
-                // 图层较多时允许滚动，避免超出屏幕
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(ctx).size.height * 0.68,
+              child: MaterialSurface(
+                radius: 14,
+                blurSigma: 16.0,
+                child: Container(
+                  width: 210,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: C.sheetFill,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // 高德系列
-                        _mapTypeGroup('高德', C.blue, () => entry.remove()),
-                        // 其他地图
-                        _mapTypeGroup('其他', C.slate, () => entry.remove()),
-                      ],
+                  // 图层较多时允许滚动，避免超出屏幕
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(ctx).size.height * 0.68,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 高德系列
+                          _mapTypeGroup('高德', C.blue, () => entry.remove()),
+                          // 其他地图
+                          _mapTypeGroup('其他', C.slate, () => entry.remove()),
+                        ],
+                      ),
                     ),
                   ),
                 ),

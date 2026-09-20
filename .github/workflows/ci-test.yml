@@ -42,6 +42,13 @@ jobs:
       - name: Check Android resources
         run: python3 tool/check_android_res_ids.py
 
+      # 材质覆盖：半透明的「壳」表面（顶栏/面板/浮层/对话框）必须套了材质壳。
+      # 漏一个面板不会让编译或测试失败，只在**开着材质**时才看得出来 ——
+      # 表现是「半透明但没有模糊」，底下的地图瓦片直接透出来，看着像坏了。
+      # v1.6.138 就是这样漏了两个浮动面板与十来个底部面板/对话框。
+      - name: Check material coverage
+        run: python3 tool/check_material_coverage.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

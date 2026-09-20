@@ -500,43 +500,46 @@ class _SponsorPageState extends State<SponsorPage> {
         backgroundColor: Colors.transparent,
         child: GestureDetector(
           onTap: () => Navigator.pop(ctx),
-          child: Container(
-            decoration: BoxDecoration(
-              color: C.sheetFill,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  S.of(context).qrCodeTitle(title),
-                  style: ts(15, w: FontWeight.w800),
-                ),
-                const SizedBox(height: 14),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    asset,
-                    width: 260,
-                    height: 260,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+          child: MaterialSurface(
+            radius: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: C.sheetFill,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    S.of(context).qrCodeTitle(title),
+                    style: ts(15, w: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 14),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      asset,
                       width: 260,
                       height: 260,
-                      color: C.greyBg,
-                      child: Center(child: Text(S.of(context).qrLoadFailed)),
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 260,
+                        height: 260,
+                        color: C.greyBg,
+                        child: Center(child: Text(S.of(context).qrLoadFailed)),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 14),
-                Text(S.of(context).qrSaveWechat, style: ts(11, c: C.grey)),
-                const SizedBox(height: 4),
-                Text(
-                  S.of(context).tapAnywhereClose,
-                  style: ts(10, c: C.greyLight),
-                ),
-              ],
+                  const SizedBox(height: 14),
+                  Text(S.of(context).qrSaveWechat, style: ts(11, c: C.grey)),
+                  const SizedBox(height: 4),
+                  Text(
+                    S.of(context).tapAnywhereClose,
+                    style: ts(10, c: C.greyLight),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

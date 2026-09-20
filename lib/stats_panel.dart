@@ -440,19 +440,36 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
       decoration: BoxDecoration(
-        color: C.sheetFill,
+        color: C.surfaceFill,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 两端都可能长（标题是 l10n、trailing 常是数字/台站名），
+          // 各自限宽 + 省略号，Spacer 只在两者都短时把 trailing 推到右侧。
           Row(children: [
             Icon(icon, size: 14, color: C.blue),
             const SizedBox(width: 6),
-            Text(title, style: ts(12.5, w: FontWeight.w800)),
+            Flexible(
+              child: Text(
+                title,
+                style: ts(12.5, w: FontWeight.w800),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             const Spacer(),
             if (trailing != null)
-              Text(trailing, style: ts(10, c: C.grey, w: FontWeight.w600)),
+              Flexible(
+                child: Text(
+                  trailing,
+                  style: ts(10, c: C.grey, w: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                ),
+              ),
           ]),
           if (subtitle != null)
             Padding(

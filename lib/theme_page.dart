@@ -1164,16 +1164,27 @@ class _ThemePageState extends State<ThemePage> {
     final chosen = await showModalBottomSheet<String?>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: C.sheetFill,
-      builder: (ctx) => _IconPickerSheet(
-        title: s.themePickIcon,
-        searchHint: s.themePickIconSearch,
-        importLabel: s.themeIconImport,
-        importHint: s.themeIconImportHint,
-        resetLabel: s.themeReset,
-        canImport: _editable && icon_io.supportsFileIcons,
-        // 返回 null = 关闭；返回 '' = 恢复默认；其余为引用
-        onImport: () async => _importIcon(s),
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20)),
+          ),
+          child: _IconPickerSheet(
+            title: s.themePickIcon,
+            searchHint: s.themePickIconSearch,
+            importLabel: s.themeIconImport,
+            importHint: s.themeIconImportHint,
+            resetLabel: s.themeReset,
+            canImport: _editable && icon_io.supportsFileIcons,
+            // 返回 null = 关闭；返回 '' = 恢复默认；其余为引用
+            onImport: () async => _importIcon(s),
+        ),
+        ),
       ),
     );
     if (chosen == null) return;

@@ -331,7 +331,7 @@ class _TermsPageState extends State<TermsPage> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
             decoration: BoxDecoration(
-              color: C.sheetFill,
+              color: C.surfaceFill,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: C.border, width: 0.5),
               boxShadow: [

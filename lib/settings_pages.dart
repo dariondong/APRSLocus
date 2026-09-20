@@ -137,21 +137,44 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
-            child: Row(children: [
-              Icon(Icons.star_rounded, size: 16, color: C.yellow),
-              SizedBox(width: 8),
-              Text(S.of(context).homeBadgeLabel, style: ts(12, c: C.slate)),
-              Spacer(),
-              if (cur != null)
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(cur.icon, size: 15, color: cur.color),
-                  SizedBox(width: 4),
-                  Text(cur.label,
-                      style: ts(12, c: cur.color, w: FontWeight.w700)),
-                ]),
-              SizedBox(width: 4),
-              Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
-            ]),
+            // 与 LabelValueRow 同一套做法：**被限宽的一端自然宽、另一端用
+            // Expanded 吸剩余**。不用「两个 Flexible + Spacer」是因为那样三方
+            // 各分 1/3，会把本来放得下的徽标名挤成省略号。
+            child: LayoutBuilder(
+              builder: (ctx, c) => Row(children: [
+                Icon(Icons.star_rounded, size: 16, color: C.yellow),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    S.of(context).homeBadgeLabel,
+                    style: ts(12, c: C.slate),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (cur != null) ...[
+                  const SizedBox(width: 8),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: c.maxWidth * 0.45),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(cur.icon, size: 15, color: cur.color),
+                      SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          cur.label,
+                          style: ts(12, c: cur.color, w: FontWeight.w700),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.end,
+                        ),
+                      ),
+                    ]),
+                  ),
+                ],
+                SizedBox(width: 4),
+                Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
+              ]),
+            ),
           ),
         );
       },
@@ -225,56 +248,60 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => StatefulBuilder(
-        builder: (ctx, setModalState) => Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(width: 36, height: 4, decoration: BoxDecoration(
-                color: C.greyLight, borderRadius: BorderRadius.circular(2))),
-            SizedBox(height: 14),
-            Text(S.of(context).chooseSsidSuffix, style: ts(16, w: FontWeight.w700)),
-            SizedBox(height: 4),
-            Text(S.of(context).ssidDesc,
-                style: ts(11, c: C.grey), textAlign: TextAlign.center),
-            SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                for (final val in [0, ...List.generate(15, (i) => i + 1)])
-                  GestureDetector(
-                    onTap: () {
-                      setState(() => st.mySsid = val);
-                      st.persist();
-                      setModalState(() {});
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      width: 64,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: st.mySsid == val ? C.blue : C.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: st.mySsid == val ? C.blue : C.border),
-                      ),
-                      child: Text(val == 0 ? S.of(context).none : '-$val',
-                          textAlign: TextAlign.center,
-                          style: ts(13,
-                              c: st.mySsid == val ? Colors.white : C.slate,
-                              w: st.mySsid == val
-                                  ? FontWeight.w700
-                                  : FontWeight.w500)),
-                    ),
-                  ),
-              ],
+        builder: (ctx, setModalState) => MaterialSurface(
+          radius: 20,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            const SizedBox(height: 10),
-          ]),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Container(width: 36, height: 4, decoration: BoxDecoration(
+                  color: C.greyLight, borderRadius: BorderRadius.circular(2))),
+              SizedBox(height: 14),
+              Text(S.of(context).chooseSsidSuffix, style: ts(16, w: FontWeight.w700)),
+              SizedBox(height: 4),
+              Text(S.of(context).ssidDesc,
+                  style: ts(11, c: C.grey), textAlign: TextAlign.center),
+              SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  for (final val in [0, ...List.generate(15, (i) => i + 1)])
+                    GestureDetector(
+                      onTap: () {
+                        setState(() => st.mySsid = val);
+                        st.persist();
+                        setModalState(() {});
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 150),
+                        width: 64,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: st.mySsid == val ? C.blue : C.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: st.mySsid == val ? C.blue : C.border),
+                        ),
+                        child: Text(val == 0 ? S.of(context).none : '-$val',
+                            textAlign: TextAlign.center,
+                            style: ts(13,
+                                c: st.mySsid == val ? Colors.white : C.slate,
+                                w: st.mySsid == val
+                                    ? FontWeight.w700
+                                    : FontWeight.w500)),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ]),
+          ),
         ),
       ),
     );
@@ -328,82 +355,86 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        height: MediaQuery.of(context).size.height * 0.48,
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(children: [
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            width: 36, height: 4,
-            decoration: BoxDecoration(
-                color: C.grey.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2)),
+      builder: (ctx) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.48,
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-            child: Row(children: [
-              Text(S.of(context).chooseSymbol, style: ts(15, w: FontWeight.w700)),
-              Spacer(),
-              IconButton(
-                icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
-                onPressed: () => Navigator.pop(ctx),
-              ),
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(S.of(context).callSymbolDesc, style: ts(11, c: C.slate)),
-          ),
-          SizedBox(height: 12),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 4,
-              shrinkWrap: true,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              childAspectRatio: 0.85,
-              children: [
-                for (final s in syms)
-                  _symTile(ctx, s),
-              ],
+          child: Column(children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                  color: C.grey.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2)),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: C.border, width: 0.4))),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(ctx);
-                _showAllSymbols();
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: C.bgSoft,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: C.border),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+              child: Row(children: [
+                Text(S.of(context).chooseSymbol, style: ts(15, w: FontWeight.w700)),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
+                  onPressed: () => Navigator.pop(ctx),
                 ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(Icons.grid_view_rounded, size: 15, color: C.blue),
-                  SizedBox(width: 6),
-                  Text(S.of(context).moreSymbols,
-                      style: ts(12, c: C.blue, w: FontWeight.w600)),
-                  SizedBox(width: 4),
-                  Icon(Icons.chevron_right_rounded, size: 16, color: C.blue),
-                ]),
+              ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(S.of(context).callSymbolDesc, style: ts(11, c: C.slate)),
+            ),
+            SizedBox(height: 12),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 4,
+                shrinkWrap: true,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                childAspectRatio: 0.85,
+                children: [
+                  for (final s in syms)
+                    _symTile(ctx, s),
+                ],
               ),
             ),
-          ),
-        ]),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: C.border, width: 0.4))),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _showAllSymbols();
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: C.bgSoft,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: C.border),
+                  ),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Icon(Icons.grid_view_rounded, size: 15, color: C.blue),
+                    SizedBox(width: 6),
+                    Text(S.of(context).moreSymbols,
+                        style: ts(12, c: C.blue, w: FontWeight.w600)),
+                    SizedBox(width: 4),
+                    Icon(Icons.chevron_right_rounded, size: 16, color: C.blue),
+                  ]),
+                ),
+              ),
+            ),
+          ]),
+        ),
       ),
     );
   }
@@ -465,69 +496,73 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        height: MediaQuery.of(context).size.height * 0.75,
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(children: [
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            width: 36, height: 4,
-            decoration: BoxDecoration(
-                color: C.grey.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2)),
+      builder: (ctx) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.75,
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-            child: Row(children: [
-              Text(S.of(context).allAprsSymbols, style: ts(15, w: FontWeight.w700)),
-              Spacer(),
-              IconButton(
-                icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
-                onPressed: () => Navigator.pop(ctx),
-              ),
-            ]),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                for (final cat in _symCategories(S.of(context))) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 12, 4, 8),
-                    child: Row(children: [
-                      Container(
-                        width: 3, height: 14,
-                        decoration: BoxDecoration(
-                          color: C.blue,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      SizedBox(width: 6),
-                      Text(cat.$1,
-                          style: ts(13, c: C.blue, w: FontWeight.w700)),
-                    ]),
-                  ),
-                  GridView.count(
-                    crossAxisCount: 4,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    childAspectRatio: 0.85,
-                    children: [
-                      for (final s in cat.$2)
-                        _symTile(ctx, s),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                ],
-              ],
+          child: Column(children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                  color: C.grey.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2)),
             ),
-          ),
-        ]),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+              child: Row(children: [
+                Text(S.of(context).allAprsSymbols, style: ts(15, w: FontWeight.w700)),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ]),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  for (final cat in _symCategories(S.of(context))) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 12, 4, 8),
+                      child: Row(children: [
+                        Container(
+                          width: 3, height: 14,
+                          decoration: BoxDecoration(
+                            color: C.blue,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Text(cat.$1,
+                            style: ts(13, c: C.blue, w: FontWeight.w700)),
+                      ]),
+                    ),
+                    GridView.count(
+                      crossAxisCount: 4,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 0.85,
+                      children: [
+                        for (final s in cat.$2)
+                          _symTile(ctx, s),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                ],
+              ),
+            ),
+          ]),
+        ),
       ),
     );
   }
@@ -1271,157 +1306,161 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
       isScrollControlled: true,
       builder: (ctx) {
         void close() => Navigator.pop(ctx);
-        return Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          padding: EdgeInsets.fromLTRB(20, 10, 20,
-              MediaQuery.of(ctx).viewInsets.bottom + 10),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                        color: C.grey.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(2)),
-                  ),
-                ),
-                SizedBox(height: 12),
-                Row(children: [
-                  Icon(Icons.speed_rounded, size: 18, color: C.blue),
-                  SizedBox(width: 8),
-                  Text(isIdle
-              ? S.of(context).tierIdleTitle
-              : S.of(context).tierSpeedTitle,
-                      style: ts(15, w: FontWeight.w700)),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
-                    onPressed: close,
-                  ),
-                ]),
-                if (!isIdle)
-                  Row(children: [
-                    Expanded(
-                      child: TextField(
-                        controller: thCtrl,
-                        keyboardType: TextInputType.number,
-                        style: ts(13, w: FontWeight.w600),
-                        decoration: _tierFieldDeco(S.of(context).minSpeedKmh),
-                      ),
+        return MaterialSurface(
+          radius: 20,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            padding: EdgeInsets.fromLTRB(20, 10, 20,
+                MediaQuery.of(ctx).viewInsets.bottom + 10),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          color: C.grey.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(2)),
                     ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        controller: ivCtrl,
-                        keyboardType: TextInputType.number,
-                        style: ts(13, w: FontWeight.w600),
-                        decoration: _tierFieldDeco(S.of(context).intervalSeconds),
-                      ),
-                    ),
-                  ])
-                else
+                  ),
+                  SizedBox(height: 12),
                   Row(children: [
-                    Text(S.of(context).idleTierDesc,
-                        style: ts(11, c: C.slate)),
-                    Spacer(),
-                    Text(S.of(context).intervalLabel, style: ts(11, c: C.slate)),
+                    Icon(Icons.speed_rounded, size: 18, color: C.blue),
                     SizedBox(width: 8),
-                    SizedBox(
-                      width: 84,
-                      child: TextField(
-                        controller: ivCtrl,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.right,
-                        style: ts(13, w: FontWeight.w700),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
-                          border: InputBorder.none,
+                    Text(isIdle
+                ? S.of(context).tierIdleTitle
+                : S.of(context).tierSpeedTitle,
+                        style: ts(15, w: FontWeight.w700)),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
+                      onPressed: close,
+                    ),
+                  ]),
+                  if (!isIdle)
+                    Row(children: [
+                      Expanded(
+                        child: TextField(
+                          controller: thCtrl,
+                          keyboardType: TextInputType.number,
+                          style: ts(13, w: FontWeight.w600),
+                          decoration: _tierFieldDeco(S.of(context).minSpeedKmh),
                         ),
                       ),
-                    ),
-                    Text(S.of(context).unitSeconds, style: ts(11, c: C.slate)),
-                  ]),
-                SizedBox(height: 14),
-                Text(S.of(context).pickBeaconIconDesc,
-                    style: ts(10, c: C.slate)),
-                SizedBox(height: 8),
-                Wrap(spacing: 8, runSpacing: 8, children: [
-                  _symbolOpt(ctx, symNotifier, '', S.of(context).defaultLabel),
-                  for (final q in _smartQuickSymbols(S.of(context)))
-                    _symbolOpt(ctx, symNotifier, q.$1,
-                        symName(S.of(context), q.$1)),
-                ]),
-                SizedBox(height: 16),
-                Row(children: [
-                  if (!isIdle)
-                    TextButton.icon(
-                      onPressed: () {
-                        st.removeSmartTier(index);
-                        close();
-                      },
-                      icon: Icon(Icons.delete_outline_rounded,
-                          size: 16, color: C.red),
-                      label: Text(S.of(context).deleteThisTier, style: ts(11, c: C.red)),
-                    )
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: ivCtrl,
+                          keyboardType: TextInputType.number,
+                          style: ts(13, w: FontWeight.w600),
+                          decoration: _tierFieldDeco(S.of(context).intervalSeconds),
+                        ),
+                      ),
+                    ])
                   else
-                    Text(S.of(context).idleTierNotDeletable, style: ts(10, c: C.grey)),
-                  Spacer(),
-                  OutlinedButton(
-                    onPressed: close,
-                    child: Text(S.of(context).cancel, style: ts(12)),
-                  ),
-                  SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: () {
-                      int? th = isIdle ? 0 : int.tryParse(thCtrl.text.trim());
-                      int? iv = int.tryParse(ivCtrl.text.trim());
-                      String? err;
-                      if (!isIdle && (th == null || th < 1)) {
-                        err = S.of(context).errMinSpeedInt;
-                      } else if (iv == null || iv < 5) {
-                        err = S.of(context).errIntervalInt;
-                      } else if (!isIdle && th != null) {
-                        for (var i = 0; i < tiers.length; i++) {
-                          if (i != index && tiers[i].minSpeed == th) {
-                            err = S.of(context).errTierDuplicate;
-                            break;
+                    Row(children: [
+                      Text(S.of(context).idleTierDesc,
+                          style: ts(11, c: C.slate)),
+                      Spacer(),
+                      Text(S.of(context).intervalLabel, style: ts(11, c: C.slate)),
+                      SizedBox(width: 8),
+                      SizedBox(
+                        width: 84,
+                        child: TextField(
+                          controller: ivCtrl,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.right,
+                          style: ts(13, w: FontWeight.w700),
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(vertical: 8),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                      Text(S.of(context).unitSeconds, style: ts(11, c: C.slate)),
+                    ]),
+                  SizedBox(height: 14),
+                  Text(S.of(context).pickBeaconIconDesc,
+                      style: ts(10, c: C.slate)),
+                  SizedBox(height: 8),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    _symbolOpt(ctx, symNotifier, '', S.of(context).defaultLabel),
+                    for (final q in _smartQuickSymbols(S.of(context)))
+                      _symbolOpt(ctx, symNotifier, q.$1,
+                          symName(S.of(context), q.$1)),
+                  ]),
+                  SizedBox(height: 16),
+                  Row(children: [
+                    if (!isIdle)
+                      TextButton.icon(
+                        onPressed: () {
+                          st.removeSmartTier(index);
+                          close();
+                        },
+                        icon: Icon(Icons.delete_outline_rounded,
+                            size: 16, color: C.red),
+                        label: Text(S.of(context).deleteThisTier, style: ts(11, c: C.red)),
+                      )
+                    else
+                      Text(S.of(context).idleTierNotDeletable, style: ts(10, c: C.grey)),
+                    Spacer(),
+                    OutlinedButton(
+                      onPressed: close,
+                      child: Text(S.of(context).cancel, style: ts(12)),
+                    ),
+                    SizedBox(width: 8),
+                    FilledButton(
+                      onPressed: () {
+                        int? th = isIdle ? 0 : int.tryParse(thCtrl.text.trim());
+                        int? iv = int.tryParse(ivCtrl.text.trim());
+                        String? err;
+                        if (!isIdle && (th == null || th < 1)) {
+                          err = S.of(context).errMinSpeedInt;
+                        } else if (iv == null || iv < 5) {
+                          err = S.of(context).errIntervalInt;
+                        } else if (!isIdle && th != null) {
+                          for (var i = 0; i < tiers.length; i++) {
+                            if (i != index && tiers[i].minSpeed == th) {
+                              err = S.of(context).errTierDuplicate;
+                              break;
+                            }
                           }
                         }
-                      }
-                      if (err != null) {
-                        ScaffoldMessenger.of(ctx)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(SnackBar(
-                            content: Text(err, style: ts(12)),
-                            duration: const Duration(seconds: 2),
-                          ));
-                        return;
-                      }
-                      st.updateSmartTier(
-                        index,
-                        SmartBeaconTier(
-                          minSpeed: th!,
-                          intervalSec: iv!,
-                          symbol: symNotifier.value,
-                        ),
-                      );
-                      close();
-                    },
-                    child: Text(S.of(context).save, style: ts(12)),
-                  ),
-                ]),
-              ],
+                        if (err != null) {
+                          ScaffoldMessenger.of(ctx)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(SnackBar(
+                              content: Text(err, style: ts(12)),
+                              duration: const Duration(seconds: 2),
+                            ));
+                          return;
+                        }
+                        st.updateSmartTier(
+                          index,
+                          SmartBeaconTier(
+                            minSpeed: th!,
+                            intervalSec: iv!,
+                            symbol: symNotifier.value,
+                          ),
+                        );
+                        close();
+                      },
+                      child: Text(S.of(context).save, style: ts(12)),
+                    ),
+                  ]),
+                ],
+              ),
+              ),
             ),
-            ),
-          );
+        );
         },
       );
     thCtrl.dispose();
@@ -2382,53 +2421,56 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
       ..sort((a, b) => a.value.compareTo(b.value));
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: C.sheetFill,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(S.of(context).addCountry, style: ts(16, w: FontWeight.w700)),
-        content: SizedBox(
-          width: 340,
-          height: MediaQuery.of(context).size.height * 0.55,
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              for (final e in entries)
-                GestureDetector(
-                  onTap: () {
-                    st.addReceiveCountry(e.key);
-                    Navigator.pop(ctx);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: st.receiveCountries.contains(e.key)
-                          ? C.cyanBg
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
+      builder: (ctx) => MaterialSurface(
+        radius: 16,
+        child: AlertDialog(
+          backgroundColor: C.sheetFill,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(S.of(context).addCountry, style: ts(16, w: FontWeight.w700)),
+          content: SizedBox(
+            width: 340,
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                for (final e in entries)
+                  GestureDetector(
+                    onTap: () {
+                      st.addReceiveCountry(e.key);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: st.receiveCountries.contains(e.key)
+                            ? C.cyanBg
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      margin: EdgeInsets.only(bottom: 6),
+                      child: Row(children: [
+                        Icon(Icons.public_rounded, size: 16, color: C.cyan),
+                        SizedBox(width: 10),
+                        Text(e.value, style: ts(13, w: FontWeight.w600)),
+                        Spacer(),
+                        if (st.receiveCountries.contains(e.key))
+                          Icon(Icons.check_circle_rounded,
+                              size: 16, color: C.cyan),
+                        Text(' ${e.key}',
+                            style: ts(10, c: C.grey)),
+                      ]),
                     ),
-                    margin: EdgeInsets.only(bottom: 6),
-                    child: Row(children: [
-                      Icon(Icons.public_rounded, size: 16, color: C.cyan),
-                      SizedBox(width: 10),
-                      Text(e.value, style: ts(13, w: FontWeight.w600)),
-                      Spacer(),
-                      if (st.receiveCountries.contains(e.key))
-                        Icon(Icons.check_circle_rounded,
-                            size: 16, color: C.cyan),
-                      Text(' ${e.key}',
-                          style: ts(10, c: C.grey)),
-                    ]),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-        ],
       ),
     );
   }
@@ -3337,31 +3379,34 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
   void _confirmRestartOobe() {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: C.sheetFill,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(S.of(context).restartWizardTitle, style: ts(16, w: FontWeight.w700)),
-        content: Text(S.of(context).restartWizardConfirm,
-            style: ts(13, c: C.slate, h: 1.6)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: C.orange,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      builder: (ctx) => MaterialSurface(
+        radius: 16,
+        child: AlertDialog(
+          backgroundColor: C.sheetFill,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(S.of(context).restartWizardTitle, style: ts(16, w: FontWeight.w700)),
+          content: Text(S.of(context).restartWizardConfirm,
+              style: ts(13, c: C.slate, h: 1.6)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
             ),
-            onPressed: () {
-              st.restartOobe();
-              // 弹出所有子路由，回到根路由（home 已切换为设置向导）
-              Navigator.of(ctx).popUntil((r) => r.isFirst);
-            },
-            child: Text(S.of(context).restartWizardButton,
-              style: ts(13, c: Colors.white, w: FontWeight.w700)),
-          ),
-        ],
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: C.orange,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () {
+                st.restartOobe();
+                // 弹出所有子路由，回到根路由（home 已切换为设置向导）
+                Navigator.of(ctx).popUntil((r) => r.isFirst);
+              },
+              child: Text(S.of(context).restartWizardButton,
+                style: ts(13, c: Colors.white, w: FontWeight.w700)),
+            ),
+          ],
+        ),
       ),
     );
   }

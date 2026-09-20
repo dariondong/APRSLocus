@@ -174,43 +174,47 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(S.of(ctx).mapType, style: ts(15, w: FontWeight.w800)),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final t in MapType.values)
-                GestureDetector(
-                  onTap: () {
-                    st.setMapType(t.name);
-                    Navigator.pop(ctx);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: st.mapType == t.name ? C.blue : C.bgSoft,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: st.mapType == t.name ? C.blue : C.border),
-                    ),
-                    child: Text(t.label,
-                        style: ts(12,
-                            c: st.mapType == t.name ? Colors.white : C.slate,
-                            w: FontWeight.w600)),
-                  ),
-                ),
-            ],
+      builder: (ctx) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-        ]),
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text(S.of(ctx).mapType, style: ts(15, w: FontWeight.w800)),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final t in MapType.values)
+                  GestureDetector(
+                    onTap: () {
+                      st.setMapType(t.name);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: st.mapType == t.name ? C.blue : C.bgSoft,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: st.mapType == t.name ? C.blue : C.border),
+                      ),
+                      child: Text(t.label,
+                          style: ts(12,
+                              c: st.mapType == t.name ? Colors.white : C.slate,
+                              w: FontWeight.w600)),
+                    ),
+                  ),
+              ],
+            ),
+          ]),
+        ),
       ),
     );
   }

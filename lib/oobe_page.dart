@@ -162,50 +162,53 @@ class _OobePageState extends State<OobePage> {
   void _confirmDefaultPasscode() {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: C.sheetFill,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
-            SizedBox(width: 8),
-            Expanded(
+      builder: (ctx) => MaterialSurface(
+        radius: 16,
+        child: AlertDialog(
+          backgroundColor: C.sheetFill,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: C.orange, size: 22),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  S.of(context).oobePasscodeMissing,
+                  style: ts(16, w: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            S.of(context).oobePasscodeMissingDesc,
+            style: ts(13, c: C.slate, h: 1.6),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                _finish();
+              },
               child: Text(
-                S.of(context).oobePasscodeMissing,
-                style: ts(16, w: FontWeight.w700),
+                S.of(context).continueAnyway,
+                style: ts(13, c: C.orange, w: FontWeight.w600),
+              ),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: C.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                S.of(context).fillPasscode,
+                style: ts(13, c: Colors.white, w: FontWeight.w700),
               ),
             ),
           ],
         ),
-        content: Text(
-          S.of(context).oobePasscodeMissingDesc,
-          style: ts(13, c: C.slate, h: 1.6),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _finish();
-            },
-            child: Text(
-              S.of(context).continueAnyway,
-              style: ts(13, c: C.orange, w: FontWeight.w600),
-            ),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: C.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              S.of(context).fillPasscode,
-              style: ts(13, c: Colors.white, w: FontWeight.w700),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -648,46 +651,50 @@ class _OobePageState extends State<OobePage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: C.greyLight,
-                borderRadius: BorderRadius.circular(2),
+      builder: (_) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: C.greyLight,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            SizedBox(height: 14),
-            Text(
-              S.of(context).chooseSsidSuffix,
-              style: ts(16, w: FontWeight.w700),
-            ),
-            SizedBox(height: 4),
-            Text(
-              S.of(context).ssidDescShort,
-              style: ts(11, c: C.grey),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                _ssidOption(S.of(context).none, 0),
-                for (int i = 1; i <= 15; i++) _ssidOption('-$i', i),
-              ],
-            ),
-            const SizedBox(height: 10),
-          ],
+              SizedBox(height: 14),
+              Text(
+                S.of(context).chooseSsidSuffix,
+                style: ts(16, w: FontWeight.w700),
+              ),
+              SizedBox(height: 4),
+              Text(
+                S.of(context).ssidDescShort,
+                style: ts(11, c: C.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  _ssidOption(S.of(context).none, 0),
+                  for (int i = 1; i <= 15; i++) _ssidOption('-$i', i),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -743,7 +750,7 @@ class _OobePageState extends State<OobePage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: C.sheetFill,
+        color: C.surfaceFill,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: C.border),
       ),
@@ -833,7 +840,7 @@ class _OobePageState extends State<OobePage> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: C.sheetFill,
+                color: C.surfaceFill,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: C.border),
               ),
@@ -1124,7 +1131,7 @@ class _OobePageState extends State<OobePage> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: C.sheetFill,
+                      color: C.surfaceFill,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: C.red.withValues(alpha: 0.3)),
                     ),

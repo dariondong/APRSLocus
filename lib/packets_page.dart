@@ -493,7 +493,7 @@ class _PacketsPageState extends State<PacketsPage> {
             margin: const EdgeInsets.only(bottom: 5),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             decoration: BoxDecoration(
-              color: C.sheetFill,
+              color: C.surfaceFill,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: C.border),
             ),

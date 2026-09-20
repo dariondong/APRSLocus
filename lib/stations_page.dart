@@ -192,7 +192,7 @@ class _StationsPageState extends State<StationsPage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: C.sheetFill,
+                  color: C.surfaceFill,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: C.border),
                 ),
@@ -671,114 +671,118 @@ class _StationsPageState extends State<StationsPage> {
             setSheet(() {});
             setState(() {});
           }
-          return Container(
-            decoration: BoxDecoration(
-              color: C.sheetFill,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(sheetCtx).size.height * 0.78,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 14, 10, 4),
-                  child: Row(
-                    children: [
-                      Icon(Icons.devices_rounded, size: 18, color: C.indigo),
-                      SizedBox(width: 8),
-                      Text(
-                        S.of(sheetCtx).deviceFilter,
-                        style: ts(16, c: C.ink, w: FontWeight.w800),
-                      ),
-                      Spacer(),
-                      TextButton(
-                        onPressed: () => apply(
-                          () => _setFilter(_f.copyWith(dev: 'all', model: 'all')),
-                        ),
-                        child: Text(
-                          S.of(sheetCtx).clearAll,
-                          style: ts(12, c: C.grey),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close_rounded, size: 18, color: C.grey),
-                        onPressed: () => Navigator.pop(sheetCtx),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(18, 4, 18, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          return MaterialSurface(
+            radius: 20,
+            topOnly: true,
+            child: Container(
+              decoration: BoxDecoration(
+                color: C.sheetFill,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(sheetCtx).size.height * 0.78,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 14, 10, 4),
+                    child: Row(
                       children: [
-                        groupTitle(S.of(sheetCtx).deviceClass),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            opt(
-                              S.of(sheetCtx).all,
-                              _f.dev == 'all',
-                              C.indigo,
-                              () => apply(() => _setFilter(_f.copyWith(dev: 'all'))),
-                            ),
-                            for (final k in devKeys)
-                              opt(
-                                DeviceClassNames.labelOf(k, zh),
-                                _f.dev == k,
-                                C.indigo,
-                                () => apply(() {
-                                  // 切类别时若已选型号不属于新类别则清空，避免空列表
-                                  var m = _f.model;
-                                  if (m != 'all' && _modelDeviceClass(st, m) != k) {
-                                    m = 'all';
-                                  }
-                                  _setFilter(_f.copyWith(
-                                    dev: _f.dev == k ? 'all' : k,
-                                    model: m,
-                                  ));
-                                }),
-                              ),
-                          ],
+                        Icon(Icons.devices_rounded, size: 18, color: C.indigo),
+                        SizedBox(width: 8),
+                        Text(
+                          S.of(sheetCtx).deviceFilter,
+                          style: ts(16, c: C.ink, w: FontWeight.w800),
                         ),
-                        if (models.isNotEmpty) ...[
-                          SizedBox(height: 14),
-                          groupTitle(S.of(sheetCtx).deviceModel),
+                        Spacer(),
+                        TextButton(
+                          onPressed: () => apply(
+                            () => _setFilter(_f.copyWith(dev: 'all', model: 'all')),
+                          ),
+                          child: Text(
+                            S.of(sheetCtx).clearAll,
+                            style: ts(12, c: C.grey),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close_rounded, size: 18, color: C.grey),
+                          onPressed: () => Navigator.pop(sheetCtx),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(18, 4, 18, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          groupTitle(S.of(sheetCtx).deviceClass),
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
                             children: [
                               opt(
                                 S.of(sheetCtx).all,
-                                _f.model == 'all',
-                                C.blueDark,
-                                () => apply(
-                                  () => _setFilter(_f.copyWith(model: 'all')),
-                                ),
+                                _f.dev == 'all',
+                                C.indigo,
+                                () => apply(() => _setFilter(_f.copyWith(dev: 'all'))),
                               ),
-                              for (final m in models)
+                              for (final k in devKeys)
                                 opt(
-                                  m,
-                                  _f.model == m,
-                                  C.blueDark,
-                                  () => apply(() => _setFilter(
-                                        _f.copyWith(
-                                            model: _f.model == m ? 'all' : m),
-                                      )),
+                                  DeviceClassNames.labelOf(k, zh),
+                                  _f.dev == k,
+                                  C.indigo,
+                                  () => apply(() {
+                                    // 切类别时若已选型号不属于新类别则清空，避免空列表
+                                    var m = _f.model;
+                                    if (m != 'all' && _modelDeviceClass(st, m) != k) {
+                                      m = 'all';
+                                    }
+                                    _setFilter(_f.copyWith(
+                                      dev: _f.dev == k ? 'all' : k,
+                                      model: m,
+                                    ));
+                                  }),
                                 ),
                             ],
                           ),
+                          if (models.isNotEmpty) ...[
+                            SizedBox(height: 14),
+                            groupTitle(S.of(sheetCtx).deviceModel),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                opt(
+                                  S.of(sheetCtx).all,
+                                  _f.model == 'all',
+                                  C.blueDark,
+                                  () => apply(
+                                    () => _setFilter(_f.copyWith(model: 'all')),
+                                  ),
+                                ),
+                                for (final m in models)
+                                  opt(
+                                    m,
+                                    _f.model == m,
+                                    C.blueDark,
+                                    () => apply(() => _setFilter(
+                                          _f.copyWith(
+                                              model: _f.model == m ? 'all' : m),
+                                        )),
+                                  ),
+                              ],
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

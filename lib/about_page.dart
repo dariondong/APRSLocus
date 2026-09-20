@@ -70,88 +70,92 @@ class _AboutPageState extends State<AboutPage>
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 头部
-              Row(children: [
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: C.blueBg,
-                    borderRadius: BorderRadius.circular(12),
+      builder: (_) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 头部
+                Row(children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: C.blueBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(Icons.share_rounded, color: C.blue, size: 22),
                   ),
-                  child: Icon(Icons.share_rounded, color: C.blue, size: 22),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).shareApp,
-                        style: ts(16, w: FontWeight.w800),
-                      ),
-                      Text(
-                        'APRSlocus · v${AppState.appVersion}',
-                        style: ts(11, c: C.grey),
-                      ),
-                    ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S.of(context).shareApp,
+                          style: ts(16, w: FontWeight.w800),
+                        ),
+                        Text(
+                          'APRSlocus · v${AppState.appVersion}',
+                          style: ts(11, c: C.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: C.grey),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ]),
-              const SizedBox(height: 14),
-              // 分享到系统（仅 Android：调系统分享面板）
-              if (_isAndroid) ...[
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: C.grey),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ]),
+                const SizedBox(height: 14),
+                // 分享到系统（仅 Android：调系统分享面板）
+                if (_isAndroid) ...[
+                  _shareOption(
+                    icon: Icons.send_rounded,
+                    color: C.green,
+                    title: S.of(context).shareToSystem,
+                    subtitle: S.of(context).shareToSystemDesc,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _shareToSystem();
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                // 复制分享文案
                 _shareOption(
-                  icon: Icons.send_rounded,
-                  color: C.green,
-                  title: S.of(context).shareToSystem,
-                  subtitle: S.of(context).shareToSystemDesc,
+                  icon: Icons.copy_rounded,
+                  color: C.blue,
+                  title: S.of(context).copyShareText,
+                  subtitle: 'Android / Windows / iOS',
                   onTap: () {
                     Navigator.pop(context);
-                    _shareToSystem();
+                    _copyShareText();
                   },
                 ),
                 const SizedBox(height: 8),
+                // 打开下载页
+                _shareOption(
+                  icon: Icons.download_rounded,
+                  color: C.orange,
+                  title: S.of(context).openDownload,
+                  subtitle: 'github.com/dariondong/APRSLocus/releases',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _openDownload();
+                  },
+                ),
               ],
-              // 复制分享文案
-              _shareOption(
-                icon: Icons.copy_rounded,
-                color: C.blue,
-                title: S.of(context).copyShareText,
-                subtitle: 'Android / Windows / iOS',
-                onTap: () {
-                  Navigator.pop(context);
-                  _copyShareText();
-                },
-              ),
-              const SizedBox(height: 8),
-              // 打开下载页
-              _shareOption(
-                icon: Icons.download_rounded,
-                color: C.orange,
-                title: S.of(context).openDownload,
-                subtitle: 'github.com/dariondong/APRSLocus/releases',
-                onTap: () {
-                  Navigator.pop(context);
-                  _openDownload();
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),

@@ -326,57 +326,65 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
   void _confirmDelete(S s, OfflineRegion r) {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: C.surfaceFillStrong,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
-            child: Text(s.offlineDeleteRegionConfirm(r.name),
-                style: ts(14, w: FontWeight.w700), textAlign: TextAlign.center),
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => MaterialSurface(
+        radius: 18,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18)),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-            child: Text(s.offlineDeleteTileCount('${r.tileCount}'),
-                style: ts(11, c: C.grey)),
+          child: SafeArea(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
+                child: Text(s.offlineDeleteRegionConfirm(r.name),
+                    style: ts(14, w: FontWeight.w700), textAlign: TextAlign.center),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                child: Text(s.offlineDeleteTileCount('${r.tileCount}'),
+                    style: ts(11, c: C.grey)),
+              ),
+              ListTile(
+                leading: Icon(Icons.link_off_rounded, color: C.slate),
+                title: Text(s.offlineDeleteKeepTiles, style: ts(13)),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await store.remove(r.id);
+                  _refreshStats();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_forever_rounded, color: C.red),
+                title: Text(s.offlineDeleteWithTiles,
+                    style: ts(13, c: C.red, w: FontWeight.w600)),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  setState(() {
+                    _deleting = true;
+                    _deleteDone = 0;
+                    _deleteTotal = r.tileCount;
+                  });
+                  await dl.deleteTiles(r, onProgress: (d, t) {
+                    if (mounted) setState(() => _deleteDone = d);
+                  });
+                  await store.remove(r.id);
+                  setState(() => _deleting = false);
+                  _refreshStats();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.close_rounded, color: C.grey),
+                title: Text(s.cancel, style: ts(13)),
+                onTap: () => Navigator.pop(ctx),
+              ),
+              const SizedBox(height: 6),
+            ]),
           ),
-          ListTile(
-            leading: Icon(Icons.link_off_rounded, color: C.slate),
-            title: Text(s.offlineDeleteKeepTiles, style: ts(13)),
-            onTap: () async {
-              Navigator.pop(ctx);
-              await store.remove(r.id);
-              _refreshStats();
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.delete_forever_rounded, color: C.red),
-            title: Text(s.offlineDeleteWithTiles,
-                style: ts(13, c: C.red, w: FontWeight.w600)),
-            onTap: () async {
-              Navigator.pop(ctx);
-              setState(() {
-                _deleting = true;
-                _deleteDone = 0;
-                _deleteTotal = r.tileCount;
-              });
-              await dl.deleteTiles(r, onProgress: (d, t) {
-                if (mounted) setState(() => _deleteDone = d);
-              });
-              await store.remove(r.id);
-              setState(() => _deleting = false);
-              _refreshStats();
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.close_rounded, color: C.grey),
-            title: Text(s.cancel, style: ts(13)),
-            onTap: () => Navigator.pop(ctx),
-          ),
-          const SizedBox(height: 6),
-        ]),
+        ),
       ),
     );
   }
@@ -586,15 +594,19 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
                 right: 14, bottom: 14,
                 child: GestureDetector(
                   onTap: _goMyLocation,
-                  child: Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      color: C.surfaceFillStrong,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: C.border),
+                  child: MaterialSurface(
+                    radius: 20,
+                    blurSigma: 14.0,
+                    child: Container(
+                      width: 40, height: 40,
+                      decoration: BoxDecoration(
+                        color: C.surfaceFillStrong,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: C.border),
+                      ),
+                      child: Icon(Icons.my_location_rounded,
+                          size: 18, color: C.blue),
                     ),
-                    child: Icon(Icons.my_location_rounded,
-                        size: 18, color: C.blue),
                   ),
                 ),
               ),
@@ -602,117 +614,120 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
           }),
         ),
         // 控制区
-        Container(
-          decoration: BoxDecoration(
-            color: C.surfaceFillStrong,
-            border: Border(top: BorderSide(color: C.border, width: 0.6)),
-          ),
-          child: SafeArea(
-            top: false,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // 名称
-                Row(children: [
-                  Text(s.offlineName, style: ts(12, c: C.slate)),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: _name,
-                      textAlign: TextAlign.right,
-                      style: ts(13, w: FontWeight.w600),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        hintText: s.offlineNameHint,
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ]),
-                const SizedBox(height: 10),
-                Divider(height: 1, color: C.border),
-                const SizedBox(height: 10),
-                // 图源
-                Text(s.offlineSource, style: ts(12, c: C.slate)),
-                const SizedBox(height: 8),
-                Wrap(spacing: 8, runSpacing: 8, children: [
-                  for (final t in MapType.values.where((t) => t.canDownloadOffline))
-                    GestureDetector(
-                      onTap: () {
-                        setState(() => _type = t);
-                        _recompute(_viewSize);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: _type == t ? C.blue : C.bgSoft,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                              color: _type == t ? C.blue : C.border),
+        MaterialSurface(
+          radius: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.surfaceFillStrong,
+              border: Border(top: BorderSide(color: C.border, width: 0.6)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  // 名称
+                  Row(children: [
+                    Text(s.offlineName, style: ts(12, c: C.slate)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: _name,
+                        textAlign: TextAlign.right,
+                        style: ts(13, w: FontWeight.w600),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: s.offlineNameHint,
+                          border: InputBorder.none,
                         ),
-                        child: Text(t.label,
-                            style: ts(11,
-                                c: _type == t ? Colors.white : C.slate,
-                                w: FontWeight.w600)),
                       ),
                     ),
-                ]),
-                const SizedBox(height: 12),
-                // 层级范围
-                Row(children: [
-                  Text(s.offlineZoomLevels('$_minZoom', '$_maxZoom'),
-                      style: ts(12, c: C.slate, w: FontWeight.w600)),
-                  const Spacer(),
-                  Text(
-                    bounds == null
-                        ? ''
-                        : s.offlineEstimate(
-                            '$tiles', formatBytes(tiles * kTileBytesEstimate)),
-                    style: ts(11, c: tooMany ? C.red : C.grey),
+                  ]),
+                  const SizedBox(height: 10),
+                  Divider(height: 1, color: C.border),
+                  const SizedBox(height: 10),
+                  // 图源
+                  Text(s.offlineSource, style: ts(12, c: C.slate)),
+                  const SizedBox(height: 8),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    for (final t in MapType.values.where((t) => t.canDownloadOffline))
+                      GestureDetector(
+                        onTap: () {
+                          setState(() => _type = t);
+                          _recompute(_viewSize);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: _type == t ? C.blue : C.bgSoft,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: _type == t ? C.blue : C.border),
+                          ),
+                          child: Text(t.label,
+                              style: ts(11,
+                                  c: _type == t ? Colors.white : C.slate,
+                                  w: FontWeight.w600)),
+                        ),
+                      ),
+                  ]),
+                  const SizedBox(height: 12),
+                  // 层级范围
+                  Row(children: [
+                    Text(s.offlineZoomLevels('$_minZoom', '$_maxZoom'),
+                        style: ts(12, c: C.slate, w: FontWeight.w600)),
+                    const Spacer(),
+                    Text(
+                      bounds == null
+                          ? ''
+                          : s.offlineEstimate(
+                              '$tiles', formatBytes(tiles * kTileBytesEstimate)),
+                      style: ts(11, c: tooMany ? C.red : C.grey),
+                    ),
+                  ]),
+                  RangeSlider(
+                    values: RangeValues(_minZoom.toDouble(), _maxZoom.toDouble()),
+                    min: 0,
+                    max: 19,
+                    divisions: 19,
+                    labels: RangeLabels('$_minZoom', '$_maxZoom'),
+                    activeColor: C.blue,
+                    onChanged: (v) => setState(() {
+                      _minZoom = v.start.round();
+                      _maxZoom = v.end.round();
+                    }),
                   ),
-                ]),
-                RangeSlider(
-                  values: RangeValues(_minZoom.toDouble(), _maxZoom.toDouble()),
-                  min: 0,
-                  max: 19,
-                  divisions: 19,
-                  labels: RangeLabels('$_minZoom', '$_maxZoom'),
-                  activeColor: C.blue,
-                  onChanged: (v) => setState(() {
-                    _minZoom = v.start.round();
-                    _maxZoom = v.end.round();
-                  }),
-                ),
-                if (tooMany)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: SettingsHint(s.offlineTooManyTiles('$tiles'),
-                        color: C.red, icon: Icons.warning_amber_rounded),
-                  ),
-                if (st.offlineOnly)
-                  SettingsHint(s.offlineOnlyWarn, color: C.orange),
-                if (!TileCache.available)
-                  SettingsHint(s.offlineCacheDisabled, color: C.red),
-                if (TileCache.available && !st.tileCacheOn)
-                  SettingsHint(s.offlineSwitchFirst, color: C.orange),
-                const SizedBox(height: 6),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: canStart ? _start : null,
-                    icon: const Icon(Icons.download_rounded, size: 18),
-                    label: Text(s.offlineStartDownload,
-                        style: ts(13, w: FontWeight.w700)),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: C.blue,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                  if (tooMany)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: SettingsHint(s.offlineTooManyTiles('$tiles'),
+                          color: C.red, icon: Icons.warning_amber_rounded),
+                    ),
+                  if (st.offlineOnly)
+                    SettingsHint(s.offlineOnlyWarn, color: C.orange),
+                  if (!TileCache.available)
+                    SettingsHint(s.offlineCacheDisabled, color: C.red),
+                  if (TileCache.available && !st.tileCacheOn)
+                    SettingsHint(s.offlineSwitchFirst, color: C.orange),
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: canStart ? _start : null,
+                      icon: const Icon(Icons.download_rounded, size: 18),
+                      label: Text(s.offlineStartDownload,
+                          style: ts(13, w: FontWeight.w700)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: C.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             ),
           ),
         ),

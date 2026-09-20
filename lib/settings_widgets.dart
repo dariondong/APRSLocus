@@ -162,9 +162,18 @@ class SettingsSwitch extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      // 标签走 Expanded + 省略号：标签也是 l10n 文案，德语/印尼语会明显更长，
+      // 而右侧的 Switch 是固定宽 —— 不约束标签就会把开关挤出屏幕。
       child: Row(children: [
-        Text(label, style: ts(12, c: C.slate)),
-        Spacer(),
+        Expanded(
+          child: Text(
+            label,
+            style: ts(12, c: C.slate),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
         Switch(
           value: value,
           onChanged: onChanged,
@@ -190,8 +199,15 @@ class SettingsMiniSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Text(label, style: ts(11, c: C.slate)),
-      Spacer(),
+      Expanded(
+        child: Text(
+          label,
+          style: ts(11, c: C.slate),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      const SizedBox(width: 8),
       Switch(
         value: value,
         onChanged: onChanged,
@@ -205,6 +221,10 @@ class SettingsMiniSwitch extends StatelessWidget {
 }
 
 /// 设置只读行
+///
+/// 用 [LabelValueRow] 而不是 `Text + Spacer + Text`：后者的两端都是**自然宽**，
+/// 一旦值是长的用户数据（设备名如 `Serial /dev/ttyUSB0 @38400`、蓝牙 MAC、
+/// 呼号、`host:port`）就整行溢出（黄黑斜纹）—— 这正是「设备名称会溢出」的原因。
 class SettingsRow2 extends StatelessWidget {
   final String label, value;
   final Color? valueColor;
@@ -216,11 +236,12 @@ class SettingsRow2 extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
-      child: Row(children: [
-        Text(label, style: ts(12, c: C.slate)),
-        const Spacer(),
-        Text(value, style: ts(13, w: FontWeight.w600, c: valueColor)),
-      ]),
+      child: LabelValueRow(
+        label,
+        value,
+        labelStyle: ts(12, c: C.slate),
+        valueStyle: ts(13, w: FontWeight.w600, c: valueColor),
+      ),
     );
   }
 }

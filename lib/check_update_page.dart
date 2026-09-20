@@ -176,43 +176,47 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                S.of(context).updateChannel,
-                style: ts(15, w: FontWeight.w800),
-              ),
-              const SizedBox(height: 14),
-              _channelOption(
-                'GitCode',
-                'api.gitcode.com',
-                widget.state.updateChannel == 'gitcode',
-                () {
-                  widget.state.setUpdateChannel('gitcode');
-                  Navigator.pop(context);
-                  _check();
-                },
-              ),
-              const SizedBox(height: 8),
-              _channelOption(
-                'GitHub',
-                'api.github.com',
-                widget.state.updateChannel == 'github',
-                () {
-                  widget.state.setUpdateChannel('github');
-                  Navigator.pop(context);
-                  _check();
-                },
-              ),
-            ],
+      builder: (_) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  S.of(context).updateChannel,
+                  style: ts(15, w: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                _channelOption(
+                  'GitCode',
+                  'api.gitcode.com',
+                  widget.state.updateChannel == 'gitcode',
+                  () {
+                    widget.state.setUpdateChannel('gitcode');
+                    Navigator.pop(context);
+                    _check();
+                  },
+                ),
+                const SizedBox(height: 8),
+                _channelOption(
+                  'GitHub',
+                  'api.github.com',
+                  widget.state.updateChannel == 'github',
+                  () {
+                    widget.state.setUpdateChannel('github');
+                    Navigator.pop(context);
+                    _check();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

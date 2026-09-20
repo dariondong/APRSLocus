@@ -103,72 +103,75 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) {
-        final sheet = Container(
-          margin: const EdgeInsets.all(12),
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: C.greenBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(Icons.send_rounded, color: C.green, size: 20),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      S.of(ctx).beaconAutoAskTitle,
-                      style: ts(15, w: FontWeight.w700),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Text(
-                S.of(ctx).beaconAutoAskDesc,
-                style: ts(12.5, c: C.slate, h: 1.6),
-              ),
-              SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: C.slate,
-                        side: BorderSide(color: C.borderStrong),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+        final sheet = MaterialSurface(
+          radius: 20,
+          child: Container(
+            margin: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: C.greenBg,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(S.of(ctx).beaconAutoNo,
-                          style: ts(13, w: FontWeight.w600)),
+                      child: Icon(Icons.send_rounded, color: C.green, size: 20),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: C.green,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        S.of(ctx).beaconAutoAskTitle,
+                        style: ts(15, w: FontWeight.w700),
                       ),
-                      child: Text(S.of(ctx).beaconAutoYes,
-                          style: ts(13, w: FontWeight.w700)),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text(
+                  S.of(ctx).beaconAutoAskDesc,
+                  style: ts(12.5, c: C.slate, h: 1.6),
+                ),
+                SizedBox(height: 18),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.slate,
+                          side: BorderSide(color: C.borderStrong),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(S.of(ctx).beaconAutoNo,
+                            style: ts(13, w: FontWeight.w600)),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: C.green,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Text(S.of(ctx).beaconAutoYes,
+                            style: ts(13, w: FontWeight.w700)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
         return SafeArea(child: sheet);
@@ -745,20 +748,31 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 8),
           // 网格 + 速率
+          // 两端的文案都是「按当前状态拼出来的」：网格值与速率数字一变长
+          // （例如速率到 4 位数），不限制宽度就会把这一段撑出横幅外。
           Row(
             children: [
               Icon(Icons.grid_4x4_rounded, size: 12, color: C.grey),
               SizedBox(width: 4),
-              Text(
-                S.of(context).gridValue(widget.state.myGrid),
-                style: ts(10, c: C.slate),
+              Flexible(
+                child: Text(
+                  S.of(context).gridValue(widget.state.myGrid),
+                  style: ts(10, c: C.slate),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               Spacer(),
               Icon(Icons.speed_rounded, size: 12, color: C.grey),
               SizedBox(width: 4),
-              Text(
-                S.of(context).packetsPerMinute(widget.state.packetsPerMin),
-                style: ts(10, c: C.slate),
+              Flexible(
+                child: Text(
+                  S.of(context).packetsPerMinute(widget.state.packetsPerMin),
+                  style: ts(10, c: C.slate),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                ),
               ),
             ],
           ),
