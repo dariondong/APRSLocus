@@ -3,751 +3,1176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APRSlocus 视频脚本 · 沉浸式解说台</title>
-<meta name="description" content="APRSlocus 视频脚本的沉浸式演示页：逐页讲解画面、字幕、旁白与备注，支持提词模式，方便录制解说。">
+<title>APRSlocus 视频画面（PPT）· 解说台</title>
+<meta name="description" content="APRSlocus 视频画面稿：16:9 幻灯片，可直接全屏录制、当视频画面用。">
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#05070d">
+<meta name="theme-color" content="#f3f6fd">
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="css/style.css?v=4">
 <style>
 /* ════════════════════════════════════════════════════════════════
-   APRSlocus 视频脚本 · 沉浸式解说台（自包含单页，无外部依赖）
-   用法：← → 翻页；P 提词；O 目录；H 快捷键；F 全屏
-   01. 变量与基础   02. 背景   03. 顶栏 / 底栏 HUD
-   04. 幻灯片骨架   05. 卡片（画面 / 字幕 / 旁白 / 备注）
-   06. 封面与列表页 07. 提词模式   08. 目录浮层 / 帮助
-   09. 响应式       10. 打印
+   APRSlocus 视频画面 · 16:9 幻灯片（沿用官网毛玻璃风格）
+   设计尺寸 1600×900，运行时自动缩放铺满屏幕；F 全屏录制。
+   快捷键：← → 翻页 · F 全屏 · T 提词条 · C 界面 · A 自动播放 · 1-9 跳页
    ════════════════════════════════════════════════════════════════ */
 
-/* ── 01. 变量与基础 ── */
-:root {
-  --bg: #05070d;
-  --panel: rgba(255, 255, 255, .045);
-  --panel-2: rgba(255, 255, 255, .075);
-  --line: rgba(125, 211, 252, .16);
-  --line-strong: rgba(125, 211, 252, .34);
-  --text: #e9effb;
-  --dim: #a3b2cc;
-  --faint: #6d7c98;
-  --cyan: #38bdf8;
-  --cyan-soft: #7dd3fc;
-  --blue: #2563eb;
-  --green: #34d399;
-  --amber: #fbbf24;
-  --grad: linear-gradient(120deg, #7dd3fc, #38bdf8);
-  --radius: 18px;
-  --ease: cubic-bezier(.22, .8, .24, 1);
-  --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
+/* ── 舞台 ── */
+body { overflow: hidden; height: 100vh; margin: 0; }
+.stage { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; cursor: none; }
+.stage.show-ui { cursor: default; }
+
+/* 缩放容器：固定 1600×900 画布 */
+.fit { position: relative; width: 1600px; height: 900px; transform-origin: center center; }
+
+/* ── 单页 ── */
+.slide {
+  position: absolute; inset: 0; padding: 84px 96px 96px;
+  display: flex; flex-direction: column; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity .5s var(--ease);
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  font-family: var(--sans);
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.7;
+.slide.on { opacity: 1; visibility: visible; }
+.slide.head { justify-content: center; }
+/* 内容包一层，超框时自动缩一点（见脚本里的 fitBody） */
+.body { width: 100%; }
+
+/* 页脚细线：品牌 + 页码 */
+.foot {
+  position: absolute; left: 96px; right: 96px; bottom: 40px; z-index: 3;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 17px; color: var(--text-faint); letter-spacing: .3px;
+}
+.foot b { color: var(--text-dim); font-weight: 800; }
+.foot .pg { font-variant-numeric: tabular-nums; }
+
+/* ── 通用文字块 ── */
+.kicker {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: 19px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--cyan);
+}
+.kicker::before { content: ""; width: 42px; height: 3px; border-radius: 3px; background: var(--grad); }
+.h1 { font-size: 78px; font-weight: 900; letter-spacing: -.03em; line-height: 1.14; margin: 20px 0 0; }
+.h1.sm { font-size: 62px; }
+.h2 { font-size: 54px; font-weight: 900; letter-spacing: -.025em; line-height: 1.2; margin: 16px 0 0; }
+.lead { font-size: 28px; color: var(--text-dim); line-height: 1.7; margin: 22px 0 0; max-width: 1180px; }
+.small { font-size: 21px; color: var(--text-faint); line-height: 1.7; }
+.big-line { font-size: 104px; font-weight: 900; letter-spacing: -.035em; line-height: 1.12; }
+.hl { color: var(--cyan); }
+.grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mono { font-family: ui-monospace, "SF Mono", Consolas, "Courier New", monospace; }
+
+/* 玻璃卡片：与官网 .card 同一配方 */
+.gcards { display: grid; gap: 24px; margin-top: 44px; }
+.gcards.c2 { grid-template-columns: repeat(2, 1fr); }
+.gcards.c3 { grid-template-columns: repeat(3, 1fr); }
+.gcards.c4 { grid-template-columns: repeat(4, 1fr); }
+.gcard {
+  position: relative; padding: 34px 32px; border-radius: var(--radius);
+  background: rgba(255, 255, 255, .8); border: 1px solid var(--line);
+  box-shadow: 0 14px 38px rgba(45, 70, 120, .12);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   overflow: hidden;
-  -webkit-font-smoothing: antialiased;
 }
-::selection { background: rgba(56, 189, 248, .35); }
+.gcard::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(320px circle at 22% 0%, rgba(56, 189, 248, .16), transparent 62%);
+}
+.gcard .ic {
+  width: 66px; height: 66px; border-radius: 18px; display: grid; place-items: center;
+  margin-bottom: 20px; box-shadow: 0 12px 26px rgba(45, 70, 120, .2);
+}
+.gcard .ic svg { width: 33px; height: 33px; fill: #fff; }
+.gcard svg:not(.ic svg) { width: 22px; height: 22px; }
+.gcard .ic img { width: 40px; height: 40px; }
+.gcard h3 { font-size: 30px; font-weight: 800; margin-bottom: 12px; position: relative; }
+.gcard p { font-size: 21px; color: var(--text-dim); line-height: 1.7; position: relative; }
+.gcard p b, .gcard li b { color: var(--text); }
+.gcard.cc { padding: 30px 28px; }
+.gcard.cc h3 { font-size: 26px; }
+.gcard.cc p { font-size: 19px; }
+.gcard ul { list-style: none; position: relative; }
+.gcard ul li { font-size: 20px; color: var(--text-dim); padding-left: 20px; position: relative; line-height: 1.6; }
+.gcard ul li + li { margin-top: 9px; }
+.gcard ul li::before {
+  content: ""; position: absolute; left: 2px; top: .62em; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 3px rgba(56, 189, 248, .18);
+}
+.tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; position: relative; }
+.tags span {
+  font-size: 18px; color: #0369a1; background: rgba(255, 255, 255, .62);
+  border: 1px solid rgba(56, 189, 248, .3); padding: 7px 16px; border-radius: 999px;
+}
+.tags.plain span { color: var(--text-dim); border-color: var(--line); }
 
-/* ── 02. 背景 ── */
-.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.bg::before {
-  content: ""; position: absolute; inset: -10%;
+/* 芯片 / 徽章 */
+.chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 700;
+  background: rgba(255, 255, 255, .58); border: 1px solid var(--line);
+  padding: 12px 22px; border-radius: 999px; box-shadow: 0 8px 20px rgba(45, 70, 120, .08);
+}
+.chip img { width: 30px; height: 30px; }
+.chip svg { width: 26px; height: 26px; flex: 0 0 auto; fill: var(--cyan); }
+.chip .dot { width: 11px; height: 11px; border-radius: 50%; }
+.d-g { background: var(--green); } .d-y { background: var(--amber); } .d-o { background: #94a0b2; }
+.d-b { background: var(--blue); } .d-c { background: var(--cyan); }
+
+/* 大数字 / 关键量 */
+.stats { display: flex; gap: 64px; margin-top: 44px; }
+.stat b { display: block; font-size: 58px; font-weight: 900; letter-spacing: -.03em; line-height: 1; }
+.stat span { display: block; font-size: 19px; color: var(--text-faint); margin-top: 10px; }
+
+/* 代码块（原始报文） */
+.report {
+  margin-top: 40px; padding: 34px 38px; border-radius: var(--radius);
+  background: rgba(15, 23, 42, .92); border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, .3);
+}
+.report code {
+  font-family: ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
+  font-size: 27px; line-height: 1.75; color: #e2e8f0; background: none; padding: 0; display: block;
+  word-break: break-all;
+}
+.report code em { font-style: normal; color: #7dd3fc; font-weight: 700; }
+.report code s { text-decoration: none; color: #86efac; }
+.report code i { font-style: normal; color: #fcd34d; }
+
+/* ── 链路图 ── */
+.chain { display: flex; align-items: stretch; gap: 0; margin-top: 56px; }
+.node {
+  flex: 1; text-align: center; padding: 30px 14px 26px; border-radius: var(--radius);
+  background: var(--glass); border: 1px solid var(--line);
+  box-shadow: 0 12px 32px rgba(45, 70, 120, .1);
+  backdrop-filter: blur(14px);
+}
+.node .nic {
+  width: 84px; height: 84px; margin: 0 auto 16px; border-radius: 24px; display: grid; place-items: center;
+  background: var(--grad); box-shadow: 0 12px 28px rgba(2, 132, 199, .3);
+}
+.node .nic img { width: 52px; height: 52px; }
+.node .nic i { font-size: 36px; color: #fff; }
+.node b { display: block; font-size: 25px; font-weight: 800; }
+.node span { display: block; font-size: 18px; color: var(--text-faint); margin-top: 8px; line-height: 1.5; }
+.node.wide { flex: 1.25; }
+.link {
+  align-self: center; width: 74px; height: 4px; border-radius: 3px; margin: 0 6px;
+  background-image: linear-gradient(90deg, var(--cyan) 50%, rgba(56, 189, 248, .18) 50%);
+  background-size: 18px 4px; animation: flow .9s linear infinite; flex: 0 0 auto;
+}
+@keyframes flow { to { background-position: 18px 0; } }
+
+/* ── 地图示意（用真实 APRS 台站符号） ── */
+.mapwrap { display: grid; grid-template-columns: 1.55fr 1fr; gap: 34px; margin-top: 40px; align-items: stretch; }
+.mapmock {
+  position: relative; height: 424px; border-radius: var(--radius); overflow: hidden;
+  background: linear-gradient(160deg, #eef4fb, #e3ecf7);
+  border: 1px solid var(--line); box-shadow: 0 18px 44px rgba(45, 70, 120, .14);
+}
+.mapmock::before {
+  content: ""; position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(125, 211, 252, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 211, 252, .045) 1px, transparent 1px);
-  background-size: 46px 46px, 46px 46px;
-  mask-image: radial-gradient(120% 90% at 50% 10%, #000 20%, transparent 78%);
-  -webkit-mask-image: radial-gradient(120% 90% at 50% 10%, #000 20%, transparent 78%);
+    linear-gradient(rgba(120, 150, 200, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 150, 200, .16) 1px, transparent 1px);
+  background-size: 62px 62px;
 }
-.orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; }
-.o1 { width: 46vw; height: 46vw; top: -16vw; right: -10vw; background: rgba(56, 189, 248, .22); animation: float 22s var(--ease) infinite alternate; }
-.o2 { width: 38vw; height: 38vw; bottom: -14vw; left: -8vw; background: rgba(37, 99, 235, .20); animation: float 26s var(--ease) infinite alternate-reverse; }
-.o3 { width: 26vw; height: 26vw; bottom: 12vh; right: 18vw; background: rgba(52, 211, 153, .12); animation: float 30s var(--ease) infinite alternate; }
-@keyframes float { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-4vw, 5vh, 0) scale(1.12); } }
+.mapmock::after {
+  content: ""; position: absolute; left: -10%; top: 40%; width: 120%; height: 120px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, .18), rgba(37, 99, 235, .1));
+  filter: blur(2px); transform: rotate(-16deg); border-radius: 40px;
+}
+.pt { position: absolute; z-index: 2; display: flex; align-items: center; gap: 10px; }
+.pt img { width: 54px; height: 54px; filter: drop-shadow(0 6px 12px rgba(15, 23, 42, .28)); }
+.pt .c {
+  font-family: ui-monospace, Consolas, monospace; font-size: 19px; font-weight: 700; color: #0f172a;
+  background: rgba(255, 255, 255, .9); padding: 3px 10px; border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(45, 70, 120, .16); white-space: nowrap;
+}
+.pt::before {
+  content: ""; position: absolute; left: 20px; top: 20px; width: 14px; height: 14px; border-radius: 50%;
+  border: 2.5px solid var(--green); animation: pulse 2s ease-out infinite;
+}
+.pt.p2::before { border-color: var(--amber); animation-delay: .5s; }
+.pt.p3::before { border-color: #94a0b2; animation-delay: 1s; }
+.trail { position: absolute; z-index: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, rgba(2, 132, 199, .1), rgba(2, 132, 199, .7)); }
+.self { position: absolute; z-index: 2; left: 44%; top: 52%; }
+.self img { width: 62px; height: 62px; }
+.self::after {
+  content: ""; position: absolute; inset: -16px; border-radius: 50%;
+  border: 2px dashed rgba(2, 132, 199, .45); animation: spin 9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.legend { display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+.legend .row { display: flex; align-items: center; gap: 16px; font-size: 23px; }
+.legend .row img { width: 46px; height: 46px; }
+.legend .row .t { color: var(--text-dim); }
+.legend .row b { font-weight: 800; }
 
-/* ── 03. 顶栏 / 底栏 HUD ── */
-.deck { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+/* ── 聊天气泡 ── */
+.chat { display: flex; flex-direction: column; gap: 18px; margin-top: 38px; }
+.bub {
+  max-width: 760px; padding: 20px 26px; border-radius: 20px; font-size: 24px;
+  background: rgba(255, 255, 255, .72); border: 1px solid var(--line); align-self: flex-start;
+  box-shadow: 0 10px 26px rgba(45, 70, 120, .1);
+}
+.bub.me { align-self: flex-end; background: var(--grad); color: #fff; border-color: transparent; }
+.bub .meta { display: block; font-size: 16px; opacity: .72; margin-bottom: 6px; font-weight: 700; }
+.bub .ack { font-size: 17px; margin-left: 10px; opacity: .85; }
+
+/* ── 呼号大字 ── */
+.callbig {
+  font-family: ui-monospace, Consolas, monospace; font-size: 150px; font-weight: 800;
+  letter-spacing: .02em; line-height: 1;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 16px 36px rgba(2, 132, 199, .22));
+}
+
+/* ── 鸣谢名单 ── */
+.tname { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 22px; }
+.tname span {
+  font-family: ui-monospace, Consolas, monospace; font-size: 22px; font-weight: 700; color: var(--text);
+  background: rgba(255, 255, 255, .62); border: 1px solid var(--line);
+  padding: 11px 20px; border-radius: 14px; box-shadow: 0 8px 20px rgba(45, 70, 120, .08);
+}
+.tname span em { font-style: normal; color: var(--text-faint); font-weight: 500; margin-left: 10px; font-family: inherit; font-size: 17px; }
+
+/* ── 片尾二维码 ── */
+.qrbox {
+  width: 340px; height: 340px; padding: 18px; border-radius: 24px; background: #fff;
+  border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(45, 70, 120, .18);
+}
+.qrbox img { width: 100%; height: 100%; image-rendering: pixelated; }
+
+/* ── 进入动画（每页元素依次浮起） ── */
+.an { opacity: 0; }
+.slide.on .an { animation: riseIn .72s var(--ease) both; animation-delay: calc(var(--i, 0) * .1s); }
+@keyframes riseIn { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+.slide.on .an.zoom { animation: zoomIn .8s var(--ease) both; animation-delay: calc(var(--i, 0) * .1s); }
+@keyframes zoomIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+.pulse { animation: pulse 1.8s ease-out infinite; }
+
+/* ── 界面（顶栏 / 底栏 / 提词条），2.6 秒无操作自动隐藏 ── */
+.ui {
+  position: fixed; z-index: 60; opacity: 0; pointer-events: none;
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+}
+.stage.show-ui .ui { opacity: 1; pointer-events: auto; }
 .topbar {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px clamp(14px, 3vw, 34px);
-  border-bottom: 1px solid rgba(125, 211, 252, .08);
-  background: linear-gradient(180deg, rgba(5, 7, 13, .86), rgba(5, 7, 13, 0));
+  inset: 0 0 auto 0; display: flex; align-items: center; gap: 16px;
+  padding: 14px 22px; transform: translateY(-10px);
+  background: linear-gradient(180deg, rgba(243, 246, 253, .92), rgba(243, 246, 253, 0));
   backdrop-filter: blur(8px);
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
 }
-.home {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 12px; border-radius: 11px; text-decoration: none;
-  color: var(--dim); font-size: 13.5px;
-  border: 1px solid transparent; transition: .25s var(--ease);
+.stage.show-ui .topbar { transform: none; }
+.topbar .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; font-size: 16px; letter-spacing: -.01em; }
+.topbar .brand img { width: 30px; height: 30px; border-radius: 9px; box-shadow: 0 6px 16px rgba(56, 189, 248, .4); }
+.topbar .t { font-size: 14px; color: var(--text-faint); }
+.topbar .sp { flex: 1; }
+.btn2 {
+  font: inherit; font-size: 13.5px; font-weight: 700; color: var(--text-dim); cursor: pointer;
+  background: rgba(255, 255, 255, .72); border: 1px solid var(--line);
+  padding: 9px 14px; border-radius: 11px; transition: .2s var(--ease); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 7px;
 }
-.home:hover { color: var(--text); background: var(--panel); border-color: var(--line); }
-.home i { font-style: normal; font-size: 15px; }
-.deck-title { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
-.deck-title strong { font-size: 15px; letter-spacing: .4px; white-space: nowrap; }
-.deck-title span { font-size: 12.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar .spacer { flex: 1; }
-.tools { display: flex; align-items: center; gap: 6px; }
-.tool {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 11px; border-radius: 11px; cursor: pointer;
-  background: transparent; border: 1px solid var(--line);
-  color: var(--dim); font-family: inherit; font-size: 12.5px;
-  transition: .22s var(--ease);
+.btn2 svg { width: 14px; height: 14px; fill: currentColor; }
+.btn2:hover { color: var(--text); border-color: rgba(255, 255, 255, .95); box-shadow: 0 8px 20px rgba(45, 70, 120, .12); }
+.btn2.on { background: var(--grad); color: #fff; border-color: transparent; }
+.btn2 kbd {
+  font-family: ui-monospace, monospace; font-size: 11px; padding: 1px 5px; border-radius: 5px;
+  background: rgba(15, 23, 42, .07); opacity: .75;
 }
-.tool:hover { color: var(--text); background: var(--panel); border-color: var(--line-strong); }
-.tool.on { color: #04121d; background: var(--grad); border-color: transparent; font-weight: 700; }
-.tool kbd {
-  font-family: var(--mono); font-size: 10.5px; padding: 1px 5px; border-radius: 5px;
-  background: rgba(255, 255, 255, .08); color: inherit; opacity: .8;
-}
-.tool.on kbd { background: rgba(4, 18, 29, .18); }
-
-.progress { height: 2px; background: rgba(125, 211, 252, .1); }
-.progress > i { display: block; height: 100%; width: 0; background: var(--grad); box-shadow: 0 0 14px rgba(56, 189, 248, .7); transition: width .45s var(--ease); }
+.btn2.on kbd { background: rgba(255, 255, 255, .25); }
 
 .hud {
-  display: flex; align-items: center; gap: 16px;
-  padding: 12px clamp(14px, 3vw, 34px);
-  border-top: 1px solid rgba(125, 211, 252, .08);
-  background: linear-gradient(0deg, rgba(5, 7, 13, .9), rgba(5, 7, 13, 0));
-  transition: opacity .35s var(--ease), transform .35s var(--ease);
+  inset: auto 0 0 0; display: flex; align-items: center; gap: 18px; padding: 14px 22px;
+  background: linear-gradient(0deg, rgba(243, 246, 253, .94), rgba(243, 246, 253, 0));
+  transform: translateY(10px); backdrop-filter: blur(8px);
 }
-.counter { font-family: var(--mono); font-size: 12.5px; color: var(--dim); letter-spacing: 1px; }
-.counter b { color: var(--cyan-soft); font-size: 15px; }
-.dots { display: flex; gap: 6px; flex-wrap: wrap; }
-.dot {
-  width: 22px; height: 5px; border-radius: 3px; cursor: pointer; border: 0; padding: 0;
-  background: rgba(125, 211, 252, .18); transition: .25s var(--ease);
-}
-.dot:hover { background: rgba(125, 211, 252, .45); }
-.dot.on { background: var(--grad); box-shadow: 0 0 12px rgba(56, 189, 248, .6); }
-.hud .spacer { flex: 1; }
-.navbtns { display: flex; gap: 8px; }
-.navbtn {
-  width: 38px; height: 34px; border-radius: 11px; cursor: pointer;
-  border: 1px solid var(--line); background: var(--panel); color: var(--text);
-  font-size: 15px; line-height: 1; transition: .22s var(--ease);
-}
-.navbtn:hover:not(:disabled) { background: var(--panel-2); border-color: var(--line-strong); transform: translateY(-1px); }
-.navbtn:disabled { opacity: .3; cursor: default; }
-.hint { font-size: 12px; color: var(--faint); white-space: nowrap; }
+.stage.show-ui .hud { transform: none; }
+.hud .cnt { font-family: ui-monospace, monospace; font-size: 14px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.hud .cnt b { color: var(--cyan); font-size: 17px; }
+.dots { display: flex; gap: 7px; flex-wrap: wrap; max-width: 720px; }
+.dots i { width: 26px; height: 6px; border-radius: 3px; background: rgba(120, 150, 200, .28); cursor: pointer; transition: .25s var(--ease); }
+.dots i:hover { background: rgba(120, 150, 200, .5); }
+.dots i.on { background: var(--grad); box-shadow: 0 0 10px rgba(56, 189, 248, .5); }
+.hud .sp { flex: 1; }
+.hud .navb { display: flex; gap: 8px; }
 
-/* ── 04. 幻灯片骨架 ── */
-.stage { flex: 1; position: relative; overflow: hidden; }
-.slide {
-  position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain;
-  padding: clamp(18px, 3.4vh, 40px) clamp(16px, 3.6vw, 56px) clamp(24px, 4vh, 44px);
-  display: flex; flex-direction: column; gap: clamp(14px, 2.2vh, 24px);
-  opacity: 0; visibility: hidden; transform: translateY(18px) scale(.995);
-  transition: opacity .42s var(--ease), transform .42s var(--ease), visibility .42s;
+/* 提词条（T 开关）：只给自己看，录制前记得关 */
+.prompt {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; display: none;
+  padding: 18px clamp(20px, 4vw, 60px) 22px;
+  background: linear-gradient(0deg, rgba(15, 23, 42, .93), rgba(15, 23, 42, .78));
+  color: #f1f5f9; backdrop-filter: blur(10px);
 }
-.slide.on { opacity: 1; visibility: visible; transform: none; }
-.slide.head { justify-content: center; }
-.slide::-webkit-scrollbar { width: 8px; }
-.slide::-webkit-scrollbar-thumb { background: rgba(125, 211, 252, .18); border-radius: 8px; }
+.prompt.show { display: block; }
+.prompt b { display: block; font-size: 12px; letter-spacing: .18em; color: #7dd3fc; margin-bottom: 8px; font-weight: 800; }
+.prompt p { font-size: 26px; line-height: 1.6; max-width: 1400px; }
+.prompt .pg2 { position: absolute; right: clamp(20px, 4vw, 60px); top: 18px; font-size: 20px; color: #7dd3fc; font-family: ui-monospace, monospace; }
 
-.slide-head { display: flex; align-items: flex-start; gap: clamp(12px, 1.6vw, 22px); }
-.num {
-  font-family: var(--mono); font-size: clamp(26px, 3.6vw, 44px); font-weight: 800; line-height: 1;
-  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
-  opacity: .85; padding-top: 3px;
+/* 提示条 */
+.tip {
+  position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 14px); z-index: 80;
+  background: rgba(15, 23, 42, .86); color: #fff; font-size: 14px;
+  padding: 11px 20px; border-radius: 12px; opacity: 0; pointer-events: none;
+  transition: .3s var(--ease); box-shadow: 0 16px 40px rgba(15, 23, 42, .35);
 }
-.kicker { font-size: 12px; letter-spacing: 3px; color: var(--cyan-soft); text-transform: uppercase; }
-.slide-head h2 { font-size: clamp(21px, 2.6vw, 34px); line-height: 1.25; letter-spacing: .3px; }
-.slide-head .tag {
-  display: inline-block; margin-top: 8px; font-size: 12px; color: var(--amber);
-  border: 1px dashed rgba(251, 191, 36, .45); border-radius: 999px; padding: 2px 10px;
-}
+.tip.show { opacity: 1; transform: translate(-50%, 0); }
 
-.body-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr); gap: clamp(12px, 1.5vw, 20px); align-items: start; }
-.col { display: flex; flex-direction: column; gap: clamp(12px, 1.5vw, 18px); min-width: 0; }
+/* 内容超框时的兜底缩放标记（脚本按需加 .shrunk） */
+.slide.shrunk .body { transform-origin: center center; }
 
-/* ── 05. 卡片 ── */
-.card {
-  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: clamp(14px, 1.5vw, 20px) clamp(15px, 1.6vw, 22px);
-  backdrop-filter: blur(6px);
-  animation: rise .5s var(--ease) both; animation-delay: var(--d, 0s);
-}
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.card h3 {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12.5px; letter-spacing: 2px; color: var(--dim); font-weight: 700; margin-bottom: 10px;
-}
-.card h3::before { content: ""; width: 14px; height: 2px; border-radius: 2px; background: var(--grad); }
-.card p { font-size: clamp(14px, 1.12vw, 16px); color: #cfd9ec; }
-.card--visual { border-left: 2px solid rgba(125, 211, 252, .5); }
-.card--visual p { color: var(--dim); }
-.card--caption { border-left: 2px solid rgba(52, 211, 153, .55); }
-.card--caption ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.card--caption li {
-  position: relative; padding-left: 20px; font-size: clamp(14.5px, 1.16vw, 17px); color: #dfe8f8;
-}
-.card--caption li::before {
-  content: ""; position: absolute; left: 4px; top: .62em; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--green); box-shadow: 0 0 10px rgba(52, 211, 153, .8);
-}
-.card--caption .music { margin-top: 11px; font-size: 13px; color: var(--faint); }
-.card--narr { border-color: var(--line-strong); background: linear-gradient(160deg, rgba(56, 189, 248, .1), rgba(37, 99, 235, .04) 60%); }
-.card--narr h3 { color: var(--cyan-soft); }
-.narr-text { font-size: clamp(17px, 1.75vw, 25px); line-height: 1.85; color: #f2f7ff; letter-spacing: .2px; }
-.card--narr.todo { border-style: dashed; border-color: rgba(251, 191, 36, .45); }
-.card--narr.todo .narr-text { color: var(--amber); }
-.card--notes { background: rgba(255, 255, 255, .025); }
-.card--notes p { color: var(--faint); font-size: clamp(13px, 1vw, 14.5px); }
-.hl { color: var(--cyan-soft); font-weight: 700; }
-.todo { color: var(--amber); font-weight: 700; }
-
-/* ── 06. 封面与列表页 ── */
-.cover { max-width: 1000px; margin: auto; text-align: left; }
-.cover .badge {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 2.4px;
-  color: var(--cyan-soft); border: 1px solid var(--line-strong); border-radius: 999px; padding: 5px 14px;
-}
-.cover .badge::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green);
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, .7); animation: ping 1.9s ease-out infinite;
-}
-@keyframes ping { 70% { box-shadow: 0 0 0 9px rgba(52, 211, 153, 0); } 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); } }
-.cover h1 { font-size: clamp(30px, 5.4vw, 62px); line-height: 1.15; margin: 18px 0 12px; letter-spacing: .5px; }
-.cover h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.cover .sub { color: var(--dim); font-size: clamp(14px, 1.35vw, 18px); max-width: 760px; }
-.cover .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: clamp(20px, 3.4vh, 34px); }
-.cover .meta div { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; }
-.cover .meta b { display: block; font-size: 12px; letter-spacing: 1.6px; color: var(--faint); margin-bottom: 5px; font-weight: 700; }
-.cover .meta span { font-size: 14.5px; color: #d7e1f3; }
-.cover .start { margin-top: clamp(18px, 3vh, 28px); color: var(--faint); font-size: 13px; }
-.cover .start kbd { font-family: var(--mono); font-size: 11.5px; padding: 2px 7px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); }
-
-.list-wrap { max-width: 1080px; margin: auto; width: 100%; }
-.list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 10px; margin-top: 6px; }
-.list li {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px;
-  font-size: clamp(14px, 1.1vw, 16px); color: #d9e3f4;
-  animation: rise .5s var(--ease) both; animation-delay: var(--d, 0s);
-}
-.list li i { font-style: normal; font-family: var(--mono); font-size: 12px; color: var(--cyan-soft); padding-top: 4px; }
-
-/* ── 07. 提词模式 ── */
-.deck.prompt .topbar, .deck.prompt .hud, .deck.prompt .col--a, .deck.prompt .card--notes, .deck.prompt .progress { opacity: 0; pointer-events: none; }
-.deck.prompt .body-grid { grid-template-columns: minmax(0, 1fr); max-width: 1120px; margin: 0 auto; }
-.deck.prompt .slide-head { max-width: 1120px; margin: 0 auto; width: 100%; }
-.deck.prompt .card--narr { background: transparent; border-color: transparent; padding: 0; }
-.deck.prompt .card--narr h3 { opacity: .45; }
-.deck.prompt .narr-text { font-size: clamp(24px, 2.9vw, 44px); line-height: 1.75; }
-.deck.prompt .narr-text .hl { color: #a5e8ff; }
-.deck.prompt .col, .deck.prompt .body-grid { animation: none; }
-.deck.prompt .slide { padding-top: clamp(24px, 6vh, 70px); }
-
-/* ── 08. 目录浮层 / 帮助 ── */
-.overlay {
-  position: fixed; inset: 0; z-index: 50; display: none;
-  background: rgba(3, 5, 10, .82); backdrop-filter: blur(10px);
-  padding: clamp(16px, 5vh, 60px) clamp(16px, 5vw, 70px); overflow-y: auto;
-}
-.overlay.open { display: block; animation: fade .25s var(--ease); }
-@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-.overlay h2 { font-size: 18px; margin-bottom: 6px; }
-.overlay .ov-sub { color: var(--faint); font-size: 13px; margin-bottom: 20px; }
-.ov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
-.ov-item {
-  text-align: left; cursor: pointer; font-family: inherit;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
-  padding: 12px 15px; color: var(--text); transition: .22s var(--ease);
-}
-.ov-item:hover { border-color: var(--line-strong); background: var(--panel-2); transform: translateY(-2px); }
-.ov-item b { display: block; font-family: var(--mono); font-size: 12px; color: var(--cyan-soft); }
-.ov-item span { font-size: 14.5px; }
-.ov-item.on { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan) inset; }
-.help-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; max-width: 1100px; }
-.help-list div { display: flex; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; font-size: 14px; color: var(--dim); }
-.help-list kbd { font-family: var(--mono); font-size: 11.5px; padding: 3px 8px; border-radius: 7px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); white-space: nowrap; }
-.ov-close { position: fixed; top: 18px; right: 22px; z-index: 51; }
-.toast {
-  position: fixed; left: 50%; bottom: 74px; transform: translate(-50%, 12px);
-  background: rgba(10, 18, 32, .94); border: 1px solid var(--line-strong); color: var(--text);
-  padding: 9px 16px; border-radius: 12px; font-size: 13.5px; opacity: 0; pointer-events: none;
-  transition: .3s var(--ease); z-index: 60;
-}
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-/* ── 09. 响应式 ── */
-@media (max-width: 900px) {
-  .body-grid { grid-template-columns: minmax(0, 1fr); }
-  .deck-title span { display: none; }
-  .hint { display: none; }
-}
-@media (max-width: 620px) {
-  .tools .tool span, .tool kbd { display: none; }
-  .hud { gap: 10px; }
-  .dots { display: none; }
-  .narr-text { font-size: clamp(16px, 4.4vw, 20px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
-}
-
-/* ── 10. 打印（Ctrl+P 导出全部页，当脚本文档用） ── */
-@media print {
-  body { overflow: visible; background: #fff; color: #111; }
-  .bg, .topbar, .hud, .progress, .overlay, .toast { display: none !important; }
-  .stage { overflow: visible; height: auto; }
-  .slide { position: static; opacity: 1 !important; visibility: visible !important; transform: none !important; page-break-after: always; border-bottom: 1px solid #ccc; padding: 0 0 16px; }
-  .card { border: 1px solid #ccc; background: #fff; }
-  .card p, .card--caption li, .narr-text { color: #111; }
-  .deck-title strong, .slide-head h2 { color: #111; }
-  .num { color: #333; -webkit-text-fill-color: #333; }
-  body.has-print .deck { display: none !important; }
-  .print-all { display: block !important; }
-  .print-all .num { color: #333; -webkit-text-fill-color: #333; }
-  .print-all .card { page-break-inside: avoid; }
-}
+/* ── 打印 / 导出 PDF：每页一张 16:9 横版 ── */
 .print-all { display: none; }
+@media print {
+  @page { size: A4 landscape; margin: 6mm; }
+  html, body { overflow: visible; height: auto; background: #fff; }
+  .stage, .ui, .tip, .prompt { display: none !important; }
+  .print-all { display: block; }
+  .print-all .sheet {
+    position: relative; width: 1600px; height: 900px; overflow: hidden;
+    page-break-after: always; break-after: page;
+    zoom: .64; transform-origin: 0 0;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .print-all .slide { opacity: 1 !important; visibility: visible !important; }
+  .print-all .an { opacity: 1 !important; animation: none !important; }
+}
 </style>
 </head>
 <body>
-<div class="deck" id="deck">
 
-  <div class="bg" aria-hidden="true">
-    <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+<div class="stage" id="stage">
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span>
   </div>
-
-  <header class="topbar" id="topbar">
-    <a class="home" href="./" title="返回官网首页"><i>←</i> 官网</a>
-    <div class="deck-title">
-      <strong>APRSlocus 视频脚本</strong>
-      <span>亲切详细版 · 无时间码</span>
-    </div>
-    <span class="spacer"></span>
-    <div class="tools">
-      <button class="tool" id="btnIndex" title="目录（O）">目录 <kbd>O</kbd></button>
-      <button class="tool" id="btnPrompt" title="提词模式（P）">提词 <kbd>P</kbd></button>
-      <button class="tool" id="btnCopy" title="复制本页旁白">复制旁白</button>
-      <button class="tool" id="btnHelp" title="快捷键（H）">? <kbd>H</kbd></button>
-    </div>
-  </header>
-  <div class="progress"><i id="bar"></i></div>
-
-  <main class="stage" id="stage"></main>
-
-  <footer class="hud">
-    <span class="counter" id="counter"></span>
-    <div class="dots" id="dots"></div>
-    <span class="spacer"></span>
-    <span class="hint">← → 翻页 · P 提词 · O 目录 · F 全屏</span>
-    <div class="navbtns">
-      <button class="navbtn" id="btnPrev" aria-label="上一页">↑</button>
-      <button class="navbtn" id="btnNext" aria-label="下一页">↓</button>
-    </div>
-  </footer>
-</div>
-
-<!-- 目录 -->
-<div class="overlay" id="ovIndex" role="dialog" aria-label="目录">
-  <button class="tool ov-close" id="ovIndexClose">关闭 Esc</button>
-  <h2>目录</h2>
-  <p class="ov-sub">点击任意一页跳转，或用 ← → 逐页讲。</p>
-  <div class="ov-grid" id="ovGrid"></div>
-</div>
-
-<!-- 快捷键 -->
-<div class="overlay" id="ovHelp" role="dialog" aria-label="快捷键">
-  <button class="tool ov-close" id="ovHelpClose">关闭 Esc</button>
-  <h2>快捷键</h2>
-  <p class="ov-sub">录制时建议按 F 全屏，再按 P 进提词模式。</p>
-  <div class="help-list">
-    <div><kbd>→</kbd><kbd>↓</kbd><kbd>空格</kbd> 下一页</div>
-    <div><kbd>←</kbd><kbd>↑</kbd> 上一页</div>
-    <div><kbd>Home</kbd><kbd>End</kbd> 首页 / 末页</div>
-    <div><kbd>1</kbd>…<kbd>9</kbd> 跳到第 N 页</div>
-    <div><kbd>P</kbd> 提词模式（大字旁白）</div>
-    <div><kbd>O</kbd> 目录浮层</div>
-    <div><kbd>F</kbd> 浏览器全屏</div>
-    <div><kbd>C</kbd> 复制本页旁白</div>
-    <div><kbd>Esc</kbd> 关闭浮层 / 退出提词</div>
-    <div><kbd>滚轮 / 滑动</kbd> 页内滚动，不翻页</div>
+  <div class="fit" id="fit">
+    <div class="slide" id="slide"></div>
   </div>
+<!-- 顶栏 -->
+<header class="ui topbar" id="topbar">
+  <span class="brand"><img src="assets/logo.png" alt="APRSlocus">APRSlocus 视频画面</span>
+  <span class="t" id="tTitle"></span>
+  <span class="sp"></span>
+  <button class="btn2" id="bPrompt">提词条 <kbd>T</kbd></button>
+  <button class="btn2" id="bAuto">自动播放 <kbd>A</kbd></button>
+  <button class="btn2" id="bPrint">导出 PDF <kbd>P</kbd></button>
+  <button class="btn2" id="bFull">全屏 <kbd>F</kbd></button>
+  <a class="btn2" href="./">官网</a>
+</header>
+
+<!-- 底栏 -->
+<footer class="ui hud" id="hud">
+  <span class="cnt" id="cnt"></span>
+  <span class="dots" id="dots"></span>
+  <span class="sp"></span>
+  <span class="navb">
+    <button class="btn2" id="bPrev">← 上一页</button>
+    <button class="btn2" id="bNext">下一页 →</button>
+  </span>
+</footer>
+
+<!-- 提词条（录制旁白时用；录制画面时按 T 关掉） -->
+<div class="prompt" id="prompt">
+  <span class="pg2" id="pg2"></span>
+  <b>旁白 · 照着念</b>
+  <p id="narrText"></p>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="tip" id="tip"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     幻灯片（画面稿）· 01–09
+     data-narr = 旁白（按 T 在底部显示，照着念；录制画面时记得关掉）
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ── 01 封面 ── -->
+<template class="sl" data-narr="大家好，我是 BG7LZQ。这个视频不讲课，就是分享一个我自己做得顺手、也天天在用的 APRS 工具，叫 APRSlocus。">
+  <div class="body">
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:70px;align-items:center">
+    <div>
+      <span class="kicker an" style="--i:0">APRS 科普 · 软件分享</span>
+      <h1 class="big-line an" style="--i:1;font-size:132px;margin-top:18px"><span class="grad">APRSlocus</span></h1>
+      <p class="lead an" style="--i:2;font-size:34px;color:var(--text);font-weight:700">随时随地，掌握电波世界的一举一动</p>
+      <p class="lead an" style="--i:3;max-width:720px">一个给业余无线电爱好者用的 APRS 客户端。<br>打开就能看到附近的台站，位置、消息、信标都在同一张图上，Android 和 Windows 都能跑。</p>
+      <div class="chips an" style="--i:4">
+        <span class="chip"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg>Android</span>
+        <span class="chip"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l176 0-10.7 32L160 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-69.3 0L336 416l176 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0zM512 64l0 224L64 288 64 64l448 0z"/></svg>Windows</span>
+        <span class="chip"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-6.7 0-198.7C19.7 141 0 112.8 0 80C0 35.8 35.8 0 80 0s80 35.8 80 80zm232 0a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>GPL-3.0 开源</span>
+        <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>v1.6.137</span>
+      </div>
+    </div>
+    <div class="an zoom" style="--i:2;text-align:center">
+      <img src="assets/logo.png" alt="APRSlocus" style="width:230px;height:230px;border-radius:52px;margin:0 auto 34px;box-shadow:0 26px 60px rgba(56,189,248,.4)">
+      <div class="small" style="margin-bottom:16px">APRS 台站符号</div>
+      <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap">
+        <img src="assets/guide/sym-car.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-house.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-digi.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-wx.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-truck.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-plane.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-boat.png" alt="" style="width:52px">
+        <img src="assets/guide/sym-server.png" alt="" style="width:52px">
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面 · 亲切详细版</span><span class="pg">01 / 19</span></div>
+</template>
+
+<!-- ── 02 片头提示 ── -->
+<template class="sl" data-narr="这个视频主要聊 APRS，玩业余无线电的朋友应该会感兴趣。如果你还不了解 APRS，没关系，我先用半分钟简单说说。不是火腿的朋友，也可以当个科技小科普看。">
+  <div class="body">
+  <div style="max-width:1320px">
+    <span class="kicker an" style="--i:0">开场</span>
+    <h1 class="h1 an" style="--i:1">玩业余无线电的朋友，<br>这个视频是给你的</h1>
+    <p class="lead an" style="--i:2;font-size:32px">如果你还不了解 APRS，也可以当个科普看。</p>
+  </div>
+  <div class="gcards c3 an" style="--i:3">
+    <div class="gcard cc">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M494.8 47c12.7-3.7 20-17.1 16.3-29.8S494-2.8 481.2 1L51.7 126.9c-9.4 2.7-17.9 7.3-25.1 13.2C10.5 151.7 0 170.6 0 192l0 4L0 304 0 448c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-229.5 0L494.8 47zM368 240a80 80 0 1 1 0 160 80 80 0 1 1 0-160zM80 256c0-8.8 7.2-16 16-16l96 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-96 0c-8.8 0-16-7.2-16-16zM64 320c0-8.8 7.2-16 16-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L80 336c-8.8 0-16-7.2-16-16zm16 64c0-8.8 7.2-16 16-16l96 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-96 0c-8.8 0-16-7.2-16-16z"/></svg></div>
+      <h3>火腿朋友</h3>
+      <p>如果你已经在玩 APRS，这里可能有你用得上的顺手工具。</p>
+    </div>
+    <div class="gcard cc">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M320 32c-8.1 0-16.1 1.4-23.7 4.1L15.8 137.4C6.3 140.9 0 149.9 0 160s6.3 19.1 15.8 22.6l57.9 20.9C57.3 229.3 48 259.8 48 291.9l0 28.1c0 28.4-10.8 57.7-22.3 80.8c-6.5 13-13.9 25.8-22.5 37.6C0 442.7-.9 448.3 .9 453.4s6 8.9 11.2 10.2l64 16c4.2 1.1 8.7 .3 12.4-2s6.3-6.1 7.1-10.4c8.6-42.8 4.3-81.2-2.1-108.7C90.3 344.3 86 329.8 80 316.5l0-24.6c0-30.2 10.2-58.7 27.9-81.5c12.9-15.5 29.6-28 49.2-35.7l157-61.7c8.2-3.2 17.5 .8 20.7 9s-.8 17.5-9 20.7l-157 61.7c-12.4 4.9-23.3 12.4-32.2 21.6l159.6 57.6c7.6 2.7 15.6 4.1 23.7 4.1s16.1-1.4 23.7-4.1L624.2 182.6c9.5-3.4 15.8-12.5 15.8-22.6s-6.3-19.1-15.8-22.6L343.7 36.1C336.1 33.4 328.1 32 320 32zM128 408c0 35.3 86 72 192 72s192-36.7 192-72L496.7 262.6 354.5 314c-11.1 4-22.8 6-34.5 6s-23.5-2-34.5-6L143.3 262.6 128 408z"/></svg></div>
+      <h3>完全不了解</h3>
+      <p>不要紧，接下来半分钟，先把 APRS 是什么说清楚。</p>
+    </div>
+    <div class="gcard cc">
+      <div class="ic" style="background:linear-gradient(135deg,#fb923c,#ea580c)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg></div>
+      <h3>只是路过</h3>
+      <p>那就当一期科技小科普，看看电波里的位置是怎么跑起来的。</p>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">02 / 19</span></div>
+</template>
+
+<!-- ── 03 APRS 是什么 ── -->
+<template class="sl" data-narr="APRS，全称 Automatic Packet Reporting System，自动分组报告系统。简单说，就是让业余电台自动报告自己在哪、速度多少、海拔多高，还能发短消息、传气象数据、发遥测信息。你可以把它理解成业余无线电里的实时位置加短消息网络。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">快速科普</span>
+    <h2 class="h2 an" style="--i:1">APRS，让电台自己报位置、传消息</h2>
+    <p class="lead an" style="--i:2">
+      <span class="mono hl" style="font-size:30px;font-weight:700">APRS</span>
+      = Automatic Packet Reporting System · 自动分组报告系统
+    </p>
+  </div>
+  <div class="gcards c3 an" style="--i:3">
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg></div>
+      <h3>自动报位置</h3>
+      <p>我在哪、速度多少、海拔多高 —— 电台自己发出去，不用手打。</p>
+    </div>
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"/></svg></div>
+      <h3>短消息</h3>
+      <p>点对点、群组都能发，屏幕上像聊天一样收发。</p>
+    </div>
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M294.2 1.2c5.1 2.1 8.7 6.7 9.6 12.1l14.1 84.7 84.7 14.1c5.4 .9 10 4.5 12.1 9.6s1.5 10.9-1.6 15.4l-38.5 55c-2.2-.1-4.4-.2-6.7-.2c-23.3 0-45.1 6.2-64 17.1l0-1.1c0-53-43-96-96-96s-96 43-96 96s43 96 96 96c8.1 0 15.9-1 23.4-2.9c-36.6 18.1-63.3 53.1-69.8 94.9l-24.4 17c-4.5 3.2-10.3 3.8-15.4 1.6s-8.7-6.7-9.6-12.1L98.1 317.9 13.4 303.8c-5.4-.9-10-4.5-12.1-9.6s-1.5-10.9 1.6-15.4L52.5 208 2.9 137.2c-3.2-4.5-3.8-10.3-1.6-15.4s6.7-8.7 12.1-9.6L98.1 98.1l14.1-84.7c.9-5.4 4.5-10 9.6-12.1s10.9-1.5 15.4 1.6L208 52.5 278.8 2.9c4.5-3.2 10.3-3.8 15.4-1.6zM144 208a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM639.9 431.9c0 44.2-35.8 80-80 80l-271.9 0c-53 0-96-43-96-96c0-47.6 34.6-87 80-94.6l0-1.3c0-53 43-96 96-96c34.9 0 65.4 18.6 82.2 46.4c13-9.1 28.8-14.4 45.8-14.4c44.2 0 80 35.8 80 80c0 5.9-.6 11.7-1.9 17.2c37.4 6.7 65.8 39.4 65.8 78.7z"/></svg></div>
+      <h3>气象与遥测</h3>
+      <p>气象站、遥测信息也能顺路传，一条数据里啥都带上。</p>
+    </div>
+  </div>
+  <p class="small an" style="--i:4;margin-top:34px">通常工作在 VHF / UHF 频段，例如很多地方用 <b class="hl">144.640 MHz</b> —— 可以理解成业余无线电里的「实时位置 + 短消息网络」。</p>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">03 / 19</span></div>
+</template>
+
+<!-- ── 04 数据链路 ── -->
+<template class="sl" data-narr="数据是怎么从天上跑到地图上的？你的电台把位置交给 TNC 或者声卡，变成能发射的数据；本地中继帮忙转发；有网络的地方就汇进 APRS-IS 骨干，最后大家在同一个地图上看到彼此。也就是说，有网、没网，两条路都能走。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">链路</span>
+    <h2 class="h2 an" style="--i:1">报文怎么从空中跑到地图上</h2>
+  </div>
+  <div class="chain">
+    <div class="node an" style="--i:2">
+      <div class="nic"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M112 24c0-13.3-10.7-24-24-24S64 10.7 64 24l0 72L48 96C21.5 96 0 117.5 0 144L0 300.1c0 12.7 5.1 24.9 14.1 33.9l3.9 3.9c9 9 14.1 21.2 14.1 33.9L32 464c0 26.5 21.5 48 48 48l224 0c26.5 0 48-21.5 48-48l0-92.1c0-12.7 5.1-24.9 14.1-33.9l3.9-3.9c9-9 14.1-21.2 14.1-33.9L384 144c0-26.5-21.5-48-48-48l-16 0c0-17.7-14.3-32-32-32s-32 14.3-32 32l-32 0c0-17.7-14.3-32-32-32s-32 14.3-32 32l-48 0 0-72zm0 136l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg></div>
+      <b>业余电台</b><span>144.640 MHz</span>
+    </div>
+    <div class="link an" style="--i:2"></div>
+    <div class="node an" style="--i:3">
+      <div class="nic"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M176 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40c-35.3 0-64 28.7-64 64l-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0 0 56-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0 0 56-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0c0 35.3 28.7 64 64 64l0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 56 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 56 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40c35.3 0 64-28.7 64-64l40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-56 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-56 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0c0-35.3-28.7-64-64-64l0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-56 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-56 0 0-40zM160 128l192 0c17.7 0 32 14.3 32 32l0 192c0 17.7-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32l0-192c0-17.7 14.3-32 32-32zm192 32l-192 0 0 192 192 0 0-192z"/></svg></div>
+      <b>TNC / 声卡</b><span>KISS · AFSK 1200</span>
+    </div>
+    <div class="link an" style="--i:3"></div>
+    <div class="node an" style="--i:4">
+      <div class="nic"><img src="assets/guide/sym-digi.png" alt=""></div>
+      <b>本地中继</b><span>转发出去</span>
+    </div>
+    <div class="link an" style="--i:4"></div>
+    <div class="node an" style="--i:5">
+      <div class="nic"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div>
+      <b>APRS-IS</b><span>互联网骨干</span>
+    </div>
+    <div class="link an" style="--i:5"></div>
+    <div class="node an" style="--i:6">
+      <div class="nic"><img src="assets/guide/sym-car.png" alt=""></div>
+      <b>地图上的呼号</b><span>实时显示</span>
+    </div>
+  </div>
+  <p class="lead an" style="--i:7;margin-top:44px">有网络就汇入 APRS-IS，没网络就靠本地中继 —— 两条路都走得通。</p>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">04 / 19</span></div>
+</template>
+
+<!-- ── 05 地图上的彼此 ── -->
+<template class="sl" data-narr="到了地图上，每个呼号就是一个台站，图标就是它的身份：跑着的车、固定的家、中继、气象站。谁的信号到了哪、谁在动谁没动，扫一眼就明白。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">地图</span>
+    <h2 class="h2 an" style="--i:1">于是，全球火腿在同一张地图上彼此可见</h2>
+  </div>
+  <div class="mapwrap">
+    <div class="mapmock an zoom" style="--i:2">
+      <div class="trail" style="left:18%;top:71%;width:34%;transform:rotate(-9deg)"></div>
+      <div class="pt an" style="--i:3;left:12%;top:58%"><img src="assets/guide/sym-car.png" alt=""><span class="c">BG7LZQ-9</span></div>
+      <div class="pt p2 an" style="--i:4;left:52%;top:34%"><img src="assets/guide/sym-truck.png" alt=""><span class="c">BG7PGW-7</span></div>
+      <div class="pt p3 an" style="--i:5;left:70%;top:66%"><img src="assets/guide/sym-house.png" alt=""><span class="c">BA4JLD</span></div>
+      <div class="pt an" style="--i:6;left:26%;top:18%"><img src="assets/guide/sym-digi.png" alt=""><span class="c">BG2HCB-3</span></div>
+      <div class="pt p2 an" style="--i:7;left:60%;top:80%"><img src="assets/guide/sym-wx.png" alt=""><span class="c">WX 气象站</span></div>
+      <div class="self an zoom" style="--i:8"><img src="assets/guide/sym-dot.png" alt=""></div>
+    </div>
+    <div class="legend">
+      <div class="row an" style="--i:3"><span class="dot d-c"></span><b>呼号就是身份</b></div>
+      <div class="row an" style="--i:4"><img src="assets/guide/sym-car.png" alt=""><span class="t">移动台站</span></div>
+      <div class="row an" style="--i:5"><img src="assets/guide/sym-house.png" alt=""><span class="t">固定台站</span></div>
+      <div class="row an" style="--i:6"><img src="assets/guide/sym-digi.png" alt=""><span class="t">中继 / 网关</span></div>
+      <div class="row an" style="--i:7"><img src="assets/guide/sym-wx.png" alt=""><span class="t">气象站</span></div>
+      <div class="row an" style="--i:8">
+        <span class="dot d-g"></span><span class="t">在线</span>
+        <span class="dot d-y"></span><span class="t">停止</span>
+        <span class="dot d-o"></span><span class="t">离线</span>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">05 / 19</span></div>
+</template>
+
+<!-- ── 06 为什么做 ── -->
+<template class="sl" data-narr="APRS 很好玩，但以前想在手机和电脑上舒服地看台站、发信标、聊消息，真不太容易。老软件要么界面过时，要么操作麻烦，有的还只能在 Windows 上跑。我自己也是折腾了好久，后来干脆想，不如自己写一个。于是就有了 APRSlocus。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">缘起</span>
+    <h2 class="h2 an" style="--i:1">老软件不是不好，只是不太合手</h2>
+  </div>
+  <div class="gcards c3 an" style="--i:2">
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM96 96l320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 160c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div>
+      <h3>界面过时</h3>
+      <p>密密麻麻的窗口，看久了眼睛累，新朋友也不容易上手。</p>
+    </div>
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M0 192l176 0L176 0 160 0C71.6 0 0 71.6 0 160l0 32zm0 32L0 352c0 88.4 71.6 160 160 160l64 0c88.4 0 160-71.6 160-160l0-128-192 0L0 224zm384-32l0-32C384 71.6 312.4 0 224 0L208 0l0 192 176 0z"/></svg></div>
+      <h3>操作麻烦</h3>
+      <p>想发个信标、看条消息，要绕好几层菜单。</p>
+    </div>
+    <div class="gcard">
+      <div class="ic" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l176 0-10.7 32L160 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-69.3 0L336 416l176 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0zM512 64l0 224L64 288 64 64l448 0z"/></svg></div>
+      <h3>平台受限</h3>
+      <p>有的只能在 Windows 上跑，出门在手机上就不方便了。</p>
+    </div>
+  </div>
+  <p class="big-line an" style="--i:6;font-size:76px;margin-top:52px">那就<span class="grad">自己写一个</span>。</p>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">06 / 19</span></div>
+</template>
+
+<!-- ── 07 APRSlocus 登场 ── -->
+<template class="sl" data-narr="APRSlocus 把 APRS 常用功能搬到了手机和电脑上：上网有 APRS-IS，本地可以接 TNC、走声卡音频，也能读 Kenwood 电台的航点；在线、停止、离线三色标识，状态一眼看清。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">登场</span>
+    <h2 class="h2 an" style="--i:1">把 APRS 常用功能，搬到手机和电脑上</h2>
+  </div>
+  <div class="gcards c4" style="margin-top:40px">
+    <div class="gcard cc an" style="--i:2">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg></div>
+      <h3>打开就是地图</h3>
+      <p>台站实时显示，在线 / 停止 / 离线三色标识，活跃台站带脉冲动画。</p>
+    </div>
+    <div class="gcard cc an" style="--i:3">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z"/></svg></div>
+      <h3>图层筛选</h3>
+      <p>移动台站、固定台站、中继、气象站……按需勾选，谁在动一眼看出。</p>
+    </div>
+    <div class="gcard cc an" style="--i:4">
+      <div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M62.6 2.3C46.2-4.3 27.6 3.6 20.9 20C7.4 53.4 0 89.9 0 128s7.4 74.6 20.9 108c6.6 16.4 25.3 24.3 41.7 17.7S86.9 228.4 80.3 212C69.8 186.1 64 157.8 64 128s5.8-58.1 16.3-84C86.9 27.6 79 9 62.6 2.3zm450.8 0C497 9 489.1 27.6 495.7 44C506.2 69.9 512 98.2 512 128s-5.8 58.1-16.3 84c-6.6 16.4 1.3 35 17.7 41.7s35-1.3 41.7-17.7c13.5-33.4 20.9-69.9 20.9-108s-7.4-74.6-20.9-108C548.4 3.6 529.8-4.3 513.4 2.3zM340.1 165.2c7.5-10.5 11.9-23.3 11.9-37.2c0-35.3-28.7-64-64-64s-64 28.7-64 64c0 13.9 4.4 26.7 11.9 37.2L98.9 466.8c-7.3 16.1-.2 35.1 15.9 42.4s35.1 .2 42.4-15.9L177.7 448l220.6 0 20.6 45.2c7.3 16.1 26.3 23.2 42.4 15.9s23.2-26.3 15.9-42.4L340.1 165.2zM369.2 384l-162.4 0 14.5-32 133.3 0 14.5 32zM288 205.3L325.6 288l-75.2 0L288 205.3zM163.3 73.6c5.3-12.1-.2-26.3-12.4-31.6s-26.3 .2-31.6 12.4C109.5 77 104 101.9 104 128s5.5 51 15.3 73.6c5.3 12.1 19.5 17.7 31.6 12.4s17.7-19.5 12.4-31.6C156 165.8 152 147.4 152 128s4-37.8 11.3-54.4zM456.7 54.4c-5.3-12.1-19.5-17.7-31.6-12.4s-17.7 19.5-12.4 31.6C420 90.2 424 108.6 424 128s-4 37.8-11.3 54.4c-5.3 12.1 .2 26.3 12.4 31.6s26.3-.2 31.6-12.4C466.5 179 472 154.1 472 128s-5.5-51-15.3-73.6z"/></svg></div>
+      <h3>四种数据来源</h3>
+      <p>APRS-IS、TNC（蓝牙 / 串口）、声卡音频、Kenwood 航点语句。</p>
+    </div>
+    <div class="gcard cc an" style="--i:5">
+      <div class="ic" style="background:linear-gradient(135deg,#f472b6,#db2777)"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-6.7 0-198.7C19.7 141 0 112.8 0 80C0 35.8 35.8 0 80 0s80 35.8 80 80zm232 0a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg></div>
+      <h3>跨平台 · 开源</h3>
+      <p>基于 Flutter 从零重写，Android 与 Windows 双端，GPL-3.0，免费用。</p>
+    </div>
+  </div>
+  <div class="chips an" style="--i:6">
+    <span class="chip"><span class="dot d-g"></span>在线</span>
+    <span class="chip"><span class="dot d-y"></span>停止</span>
+    <span class="chip"><span class="dot d-o"></span>离线</span>
+    <span class="chip"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288l111.5 0L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7l-111.5 0L349.4 44.6z"/></svg>活跃台站脉冲动画</span>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">07 / 19</span></div>
+</template>
+
+<!-- ── 08 实时地图 ── -->
+<template class="sl" data-narr="打开就是地图，台站实时显示，在线、停止、离线三色标识，活跃台站还有脉冲动画。图层筛选可以让你按需查看移动台站、固定台站、中继、气象站等类型。想看谁在移动、谁静止不动，一眼就能看出来。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 实时地图</span>
+    <h2 class="h2 an" style="--i:1">台站实时显示，地图顺手好用</h2>
+  </div>
+  <div class="gcards c3" style="margin-top:40px">
+    <div class="gcard an" style="--i:2">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M160 32c-35.3 0-64 28.7-64 64l0 224c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L160 32zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320l-144 0-48 0-80 0c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120L0 344c0 75.1 60.9 136 136 136l320 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-320 0c-48.6 0-88-39.4-88-88l0-224z"/></svg></div>
+      <h3>十多种底图可切</h3>
+      <ul>
+        <li>高德瓦片 / 高德卫星</li>
+        <li>Carto（浅色 · 深色 · 航行者）</li>
+        <li>OSM 标准 / 人道、OpenTopo、Esri</li>
+        <li>坐标支持 GCJ-02 与 WGS-84</li>
+      </ul>
+    </div>
+    <div class="gcard an" style="--i:3">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M418.4 157.9c35.3-8.3 61.6-40 61.6-77.9c0-44.2-35.8-80-80-80c-43.4 0-78.7 34.5-80 77.5L136.2 151.1C121.7 136.8 101.9 128 80 128c-44.2 0-80 35.8-80 80s35.8 80 80 80c12.2 0 23.8-2.7 34.1-7.6L259.7 407.8c-2.4 7.6-3.7 15.8-3.7 24.2c0 44.2 35.8 80 80 80s80-35.8 80-80c0-27.7-14-52.1-35.4-66.4l37.8-207.7zM156.3 232.2c2.2-6.9 3.5-14.2 3.7-21.7l183.8-73.5c3.6 3.5 7.4 6.7 11.6 9.5L317.6 354.1c-5.5 1.3-10.8 3.1-15.8 5.5L156.3 232.2z"/></svg></div>
+      <h3>台站聚合与轨迹</h3>
+      <ul>
+        <li>台站按呼号聚合，密集处不打架</li>
+        <li>轨迹回放，看它从哪来</li>
+        <li>图层按类型筛选</li>
+      </ul>
+    </div>
+    <div class="gcard an" style="--i:4">
+      <div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M80.3 44C69.8 69.9 64 98.2 64 128s5.8 58.1 16.3 84c6.6 16.4-1.3 35-17.7 41.7s-35-1.3-41.7-17.7C7.4 202.6 0 166.1 0 128S7.4 53.4 20.9 20C27.6 3.6 46.2-4.3 62.6 2.3S86.9 27.6 80.3 44zM555.1 20C568.6 53.4 576 89.9 576 128s-7.4 74.6-20.9 108c-6.6 16.4-25.3 24.3-41.7 17.7S489.1 228.4 495.7 212c10.5-25.9 16.3-54.2 16.3-84s-5.8-58.1-16.3-84C489.1 27.6 497 9 513.4 2.3s35 1.3 41.7 17.7zM352 128c0 23.7-12.9 44.4-32 55.4L320 480c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-296.6c-19.1-11.1-32-31.7-32-55.4c0-35.3 28.7-64 64-64s64 28.7 64 64zM170.6 76.8C163.8 92.4 160 109.7 160 128s3.8 35.6 10.6 51.2c7.1 16.2-.3 35.1-16.5 42.1s-35.1-.3-42.1-16.5c-10.3-23.6-16-49.6-16-76.8s5.7-53.2 16-76.8c7.1-16.2 25.9-23.6 42.1-16.5s23.6 25.9 16.5 42.1zM464 51.2c10.3 23.6 16 49.6 16 76.8s-5.7 53.2-16 76.8c-7.1 16.2-25.9 23.6-42.1 16.5s-23.6-25.9-16.5-42.1c6.8-15.6 10.6-32.9 10.6-51.2s-3.8-35.6-10.6-51.2c-7.1-16.2 .3-35.1 16.5-42.1s35.1 .3 42.1 16.5z"/></svg></div>
+      <h3>状态一眼可辨</h3>
+      <ul>
+        <li>在线 / 停止 / 离线三色标识</li>
+        <li>活跃台站脉冲动画</li>
+        <li>沉浸地图：导航风格大字版</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">08 / 19</span></div>
+</template>
+
+<!-- ── 09 位置信标 ── -->
+<template class="sl" data-narr="想上报位置，点一下就行。发出去的是 APRS 标准格式的报文：带呼号、经纬度、海拔、航向速度，还有电量。上报间隔可以自己调，拿不准的时候，先用演示模式试。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 位置信标</span>
+    <h2 class="h2 an" style="--i:1">一键上报，按 APRS 标准格式发出去</h2>
+  </div>
+  <div class="report an zoom" style="--i:2">
+    <code><em>BG7LZQ-3</em>&gt;<em>APALOC</em>,TCPIP*:<em>!</em><s>2148.90N/11049.14E</s>/&gt; <i>/A=000328 090/050</i> Bat:70% APRSlocus v1.6.137</code>
+  </div>
+  <div class="chips an" style="--i:3">
+    <span class="chip"><span class="dot d-c"></span>呼号与路径</span>
+    <span class="chip"><span class="dot d-c"></span>经纬度</span>
+    <span class="chip"><span class="dot d-c"></span>海拔 32.8 m</span>
+    <span class="chip"><span class="dot d-c"></span>航向 090° · 速度 50</span>
+    <span class="chip"><span class="dot d-c"></span>电量 70%</span>
+  </div>
+  <div class="gcards c3" style="margin-top:38px">
+    <div class="gcard cc an" style="--i:4"><h3>自动附带信息</h3><p>高度、速度、航向、电量，一次带上，不用手填。</p></div>
+    <div class="gcard cc an" style="--i:5"><h3>上报间隔可调</h3><p>想勤一点、省一点，自己说了算。</p></div>
+    <div class="gcard cc an" style="--i:6"><h3>演示模式先试试</h3><p>不确定效果时，先在演示模式里跑一遍。</p></div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">09 / 19</span></div>
+</template>
+
+<!-- ── 10 消息通信 ── -->
+<template class="sl" data-narr="消息这块，单聊和群聊都放在同一个会话列表里，带 ACK 确认；发中文也没问题，甚至可以在发送前先翻译成对方的语言。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 消息通信</span>
+    <h2 class="h2 an" style="--i:1">单聊、群聊，都在一个会话列表里</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:56px;margin-top:36px;align-items:start">
+    <div class="chat" style="margin-top:0">
+      <div class="bub an" style="--i:2"><span class="meta">BG7PGW-7 · 收到 12:04</span>晚上在 144.640 上跑一圈，你在家守听吗？</div>
+      <div class="bub me an" style="--i:3"><span class="meta">我 · 发出 12:05<span class="ack">✓ ACK</span></span>在，我把网关也开着，回头把轨迹发我一份。</div>
+      <div class="bub an" style="--i:4"><span class="meta">群聊「珠三角 APRS」· 3 人</span>周末有个活动，谁带移动台？</div>
+    </div>
+    <div class="gcards" style="margin-top:0;gap:18px">
+      <div class="gcard cc an" style="--i:3"><h3>ACK 确认</h3><p>消息到底送到没有，屏幕上说得清楚。</p></div>
+      <div class="gcard cc an" style="--i:4"><h3>群聊管理</h3><p>群聊邀请、成员管理、未读角标。</p></div>
+      <div class="gcard cc an" style="--i:5"><h3>中文友好 · 双向翻译</h3><p>中文没问题；还能收到即译、发出前先译成对方的语言，免密钥。</p></div>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">10 / 19</span></div>
+</template>
+
+<!-- ── 11 台站识别与筛选 ── -->
+<template class="sl" data-narr="看到一个陌生呼号，可以顺着官方设备库认出它是车台、手台还是网关；列表能按状态、类型、设备型号筛，详情页还能直接跳 QRZ 和 aprs.fi。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 台站识别与筛选</span>
+    <h2 class="h2 an" style="--i:1">这个呼号，到底是什么设备？</h2>
+    <p class="lead an" style="--i:2">接入 <b class="hl">aprs.org</b> 官方设备库，从报文目的呼号识别台站所用设备：厂商 + 型号 + 台站类别。</p>
+  </div>
+  <div class="gcards c4" style="margin-top:36px">
+    <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M171.3 96L224 96l0 96-112.7 0 30.4-75.9C146.5 104 158.2 96 171.3 96zM272 192l0-96 81.2 0c9.7 0 18.9 4.4 25 12l67.2 84L272 192zm256.2 1L428.2 68c-18.2-22.8-45.8-36-75-36L171.3 32c-39.3 0-74.6 23.9-89.1 60.3L40.6 196.4C16.8 205.8 0 228.9 0 256L0 368c0 17.7 14.3 32 32 32l33.3 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l130.7 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l33.3 0c17.7 0 32-14.3 32-32l0-48c0-65.2-48.8-119-111.8-127zM434.7 368a48 48 0 1 1 90.5 32 48 48 0 1 1 -90.5-32zM160 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></div><h3>车台 / 手台</h3><p>路上跑的、随身带的，一眼分清。</p></div>
+    <div class="gcard cc an" style="--i:4"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div><h3>跟踪器 / App</h3><p>专用跟踪器，或者手机 App。</p></div>
+    <div class="gcard cc an" style="--i:5"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg></div><h3>网关 / 中继</h3><p>iGate、数字中继这些基础设施。</p></div>
+    <div class="gcard cc an" style="--i:6"><div class="ic" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg></div><h3>筛出想要的</h3><p>按状态、类型、设备类别与具体型号筛。</p></div>
+  </div>
+  <div class="chips an" style="--i:7">
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-128c0-17.7-14.3-32-32-32L352 0zM80 32C35.8 32 0 67.8 0 112L0 432c0 44.2 35.8 80 80 80l320 0c44.2 0 80-35.8 80-80l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-320c0-8.8 7.2-16 16-16l112 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 32z"/></svg>详情页跳 QRZ 呼号库</span>
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-128c0-17.7-14.3-32-32-32L352 0zM80 32C35.8 32 0 67.8 0 112L0 432c0 44.2 35.8 80 80 80l320 0c44.2 0 80-35.8 80-80l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-320c0-8.8 7.2-16 16-16l112 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 32z"/></svg>跳 aprs.fi 看轨迹</span>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">11 / 19</span></div>
+</template>
+
+<!-- ── 12 数据包与日志 ── -->
+<template class="sl" data-narr="如果想把事情看透，可以直接翻原始报文；解析结果按位置、消息、气象、状态分好类。另外还有分级日志，出了问题排查起来心里有底。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 数据包与日志</span>
+    <h2 class="h2 an" style="--i:1">想看清楚，就把原始报文摆出来</h2>
+  </div>
+  <div class="report an zoom" style="--i:1">
+    <code>BG7LZQ-3&gt;APALOC,TCPIP*:!<s>2148.90N/11049.14E</s>&gt; <i>/A=000328 090/050</i> Bat:70%</code>
+    <code style="margin-top:14px;font-size:23px;color:#94a3b8">BG7PGW-7&gt;APRS,TCPIP*::BG7LZQ-3 :晚点通联{001</code>
+  </div>
+  <div class="gcards c3" style="margin-top:36px">
+    <div class="gcard cc an" style="--i:2"><h3>原始报文</h3><p>等宽字体展示，长按可复制，自己看得懂每一段。</p></div>
+    <div class="gcard cc an" style="--i:3"><h3>解析分类</h3><p>按位置 / 消息 / 气象 / 状态归类，不用自己拆。</p></div>
+    <div class="gcard cc an" style="--i:4"><h3>分级日志</h3><p>内置分级日志，排查问题有据可依。</p></div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">12 / 19</span></div>
+</template>
+
+<!-- ── 13 连接与后台 ── -->
+<template class="sl" data-narr="网络这块不用自己盯着：默认连 rotate.aprs2.net，TCP 和 WebSocket 都支持，断线会按 8、16、32、60 秒渐进重连；Android 上还有前台服务保活。小提示：Passcode 填 -1 能连上，但要正常收发消息，得用真正的 Passcode。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 连接与后台</span>
+    <h2 class="h2 an" style="--i:1">网络这件事，交给程序自己盯着</h2>
+  </div>
+  <div class="gcards c2" style="margin-top:36px">
+    <div class="gcard an" style="--i:1">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"/></svg></div>
+      <h3>自动连接与渐进重连</h3>
+      <ul>
+        <li>默认 <b class="mono">rotate.aprs2.net:14580</b></li>
+        <li>TCP / WebSocket 都支持</li>
+        <li>断线按 <b>8 → 16 → 32 → 60 秒</b> 渐进重连</li>
+      </ul>
+    </div>
+    <div class="gcard an" style="--i:2">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg></div>
+      <h3>后台不掉线</h3>
+      <ul>
+        <li>Android 用前台服务保持在线</li>
+        <li>系统通知随时知道连接状态</li>
+        <li>服务器、波特率都能自己改</li>
+      </ul>
+    </div>
+  </div>
+  <div class="gcard an" style="--i:3;margin-top:30px;border-left:4px solid var(--amber)">
+    <h3>小提示：Passcode 别偷懒</h3>
+    <p>密码填 <b class="mono">-1</b> 能连上，但<b>未验证的 Passcode 无法正常收发消息</b> —— 建议用完整呼号（含 SSID，如 <span class="mono">BG7LZQ-3</span>）生成专属 Passcode。</p>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">13 / 19</span></div>
+</template>
+
+<!-- ── 14 四种数据来源 + 网关 ── -->
+<template class="sl" data-narr="四条链路可以一起收报文：APRS-IS、蓝牙或串口的 TNC、声卡音频，还有 Kenwood 电台的航点语句。它也能当 iGate 用，把射频收到的报文转到网络上，带环路防护和去重。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 数据来源与网关</span>
+    <h2 class="h2 an" style="--i:1">四条链路，一起收报文</h2>
+  </div>
+  <div class="gcards c4" style="margin-top:36px">
+    <div class="gcard cc an" style="--i:1"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg></div><h3>APRS-IS</h3><p>互联网接入，开机就连。</p></div>
+    <div class="gcard cc an" style="--i:2"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 320 512" aria-hidden="true"><path d="M196.48 260.023l92.626-103.333L143.125 0v206.33l-86.111-86.111-31.406 31.405 108.061 108.399L25.608 368.422l31.406 31.405 86.111-86.111L145.84 512l148.552-148.644-97.912-103.333zm40.86-102.996l-49.977 49.978-.338-100.295 50.315 50.317zM187.363 313.04l49.977 49.978-50.315 50.316.338-100.294z"/></svg></div><h3>TNC</h3><p>蓝牙 / 串口，KISS 协议。</p></div>
+    <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"/></svg></div><h3>声卡音频</h3><p>AFSK 1200（Bell 202）软 TNC。</p></div>
+    <div class="gcard cc an" style="--i:4"><div class="ic" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M112 24c0-13.3-10.7-24-24-24S64 10.7 64 24l0 72L48 96C21.5 96 0 117.5 0 144L0 300.1c0 12.7 5.1 24.9 14.1 33.9l3.9 3.9c9 9 14.1 21.2 14.1 33.9L32 464c0 26.5 21.5 48 48 48l224 0c26.5 0 48-21.5 48-48l0-92.1c0-12.7 5.1-24.9 14.1-33.9l3.9-3.9c9-9 14.1-21.2 14.1-33.9L384 144c0-26.5-21.5-48-48-48l-16 0c0-17.7-14.3-32-32-32s-32 14.3-32 32l-32 0c0-17.7-14.3-32-32-32s-32 14.3-32 32l-48 0 0-72zm0 136l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg></div><h3>PKWDWPL</h3><p>读 Kenwood 航点语句，只收不发。</p></div>
+  </div>
+  <div class="gcard an" style="--i:5;margin-top:32px">
+    <h3>还能当网关（iGate）：把射频收到的报文转到 APRS-IS</h3>
+    <div class="chips" style="margin-top:18px">
+      <span class="chip"><span class="dot d-c"></span>自动带 qAr / qAR 来路标识</span>
+      <span class="chip"><span class="dot d-c"></span>环路防护：疑似来自网络的报文绝不送回</span>
+      <span class="chip"><span class="dot d-c"></span>同一帧 30 秒内只注入一次</span>
+      <span class="chip"><span class="dot d-c"></span>可选双向模式</span>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">14 / 19</span></div>
+</template>
+
+<!-- ── 15 更多顺手功能 ── -->
+<template class="sl" data-narr="另外还有一些顺手的小东西：导航风格的沉浸地图、双向聊天翻译、天气和统计面板、荣誉墙、导出 ADIF 日志，还有自动更新、六种语言、主题和界面缩放。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">功能 · 还有这些</span>
+    <h2 class="h2 an" style="--i:1">顺手的小东西，也都做了</h2>
+  </div>
+  <div class="gcards c3" style="margin-top:34px">
+    <div class="gcard cc an" style="--i:1"><div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg></div><h3>沉浸地图（导航风格）</h3><p>大字号方向 / 距离 / 速度，左侧「附近台站」面板，专为开车看屏幕设计。</p></div>
+    <div class="gcard cc an" style="--i:2"><div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64L0 400c0 44.2 35.8 80 80 80l400 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 416c-8.8 0-16-7.2-16-16L64 64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/></svg></div><h3>天气 · 统计 · 荣誉墙</h3><p>天气面板背景随天气强度变化；最近上报、最远距离、报文速率一目了然。</p></div>
+    <div class="gcard cc an" style="--i:3"><div class="ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 128-168 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l168 0 0 112c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zM384 336l0-48 110.1 0-39-39c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l39-39L384 336zm0-208l-128 0L256 0 384 128z"/></svg></div><h3>数据导出 ADIF</h3><p>业余无线电通用的日志格式，频率可自定义，导出后能直接进别的日志软件。</p></div>
+    <div class="gcard cc an" style="--i:4"><div class="ic" style="background:linear-gradient(135deg,#f472b6,#db2777)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M105.1 202.6c7.7-21.8 20.2-42.3 37.8-59.8c62.5-62.5 163.8-62.5 226.3 0L386.3 160 352 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l111.5 0c0 0 0 0 0 0l.4 0c17.7 0 32-14.3 32-32l0-112c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 35.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5zM39 289.3c-5 1.5-9.8 4.2-13.7 8.2c-4 4-6.7 8.8-8.1 14c-.3 1.2-.6 2.5-.8 3.8c-.3 1.7-.4 3.4-.4 5.1L16 432c0 17.7 14.3 32 32 32s32-14.3 32-32l0-35.1 17.6 17.5c0 0 0 0 0 0c87.5 87.4 229.3 87.4 316.7 0c24.4-24.4 42.1-53.1 52.9-83.8c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.5 62.5-163.8 62.5-226.3 0l-.1-.1L125.6 352l34.4 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48.4 288c-1.6 0-3.2 .1-4.8 .3s-3.1 .5-4.6 1z"/></svg></div><h3>自动更新</h3><p>GitHub / GitCode 双渠道，按平台分流下载，也能装历史版本。</p></div>
+    <div class="gcard cc an" style="--i:5"><div class="ic" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3L344 320c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg></div><h3>语言 · 主题 · 缩放</h3><p>简中 / 繁中 / English / 日本語 / Indonesia / Español；深色模式、主题色、界面 85%–130%。</p></div>
+    <div class="gcard cc an" style="--i:6"><div class="ic" style="background:linear-gradient(135deg,#4ade80,#16a34a)"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></div><h3>上手引导</h3><p>首次启动六步向导：语言、功能、呼号、符号、接收筛选、服务器，填完就能连。</p></div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">15 / 19</span></div>
+</template>
+
+<!-- ── 16 跨平台与开源 ── -->
+<template class="sl" data-narr="APRSlocus 一个项目同时覆盖 Android 和 Windows。出门用手机当移动台，回家用电脑大屏看台站分布。代码完全开源，基于 Flutter 从零重写，GPL-3.0 协议，免费使用。大家有兴趣可以一起来玩，提 issue、提 PR 都欢迎。">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">跨平台 · 开源</span>
+    <h2 class="h2 an" style="--i:1">一个项目，同时覆盖 Android 和 Windows</h2>
+  </div>
+  <div class="gcards c2" style="margin-top:38px">
+    <div class="gcard an" style="--i:1">
+      <div class="ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg></div>
+      <h3>Android</h3>
+      <ul><li>最低 Android 5.0，APK 直装</li><li>前台服务持续在线</li><li>出门就是一台移动台</li></ul>
+    </div>
+    <div class="gcard an" style="--i:2">
+      <div class="ic" style="background:linear-gradient(135deg,#38bdf8,#0284c7)"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l176 0-10.7 32L160 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-69.3 0L336 416l176 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0zM512 64l0 224L64 288 64 64l448 0z"/></svg></div>
+      <h3>Windows</h3>
+      <ul><li>绿色单文件 EXE + 安装包</li><li>双击即用，不用装环境</li><li>回家用大屏看台站分布</li></ul>
+    </div>
+  </div>
+  <div class="chips an" style="--i:3">
+    <span class="chip"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M290.8 48.6l78.4 29.7L288 109.5 206.8 78.3l78.4-29.7c1.8-.7 3.8-.7 5.7 0zM136 92.5l0 112.2c-1.3 .4-2.6 .8-3.9 1.3l-96 36.4C14.4 250.6 0 271.5 0 294.7L0 413.9c0 22.2 13.1 42.3 33.5 51.3l96 42.2c14.4 6.3 30.7 6.3 45.1 0L288 457.5l113.5 49.9c14.4 6.3 30.7 6.3 45.1 0l96-42.2c20.3-8.9 33.5-29.1 33.5-51.3l0-119.1c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-1.3-.5-2.6-.9-3.9-1.3l0-112.2c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-12.8-4.8-26.9-4.8-39.7 0l-96 36.4C150.4 48.4 136 69.3 136 92.5zM392 210.6l-82.4 31.2 0-89.2L392 121l0 89.6zM154.8 250.9l78.4 29.7L152 311.7 70.8 280.6l78.4-29.7c1.8-.7 3.8-.7 5.7 0zm18.8 204.4l0-100.5L256 323.2l0 95.9-82.4 36.2zM421.2 250.9c1.8-.7 3.8-.7 5.7 0l78.4 29.7L424 311.7l-81.2-31.1 78.4-29.7zM523.2 421.2l-77.6 34.1 0-100.5L528 323.2l0 90.7c0 3.2-1.9 6-4.8 7.3z"/></svg>基于 Flutter 从零重写</span>
+    <span class="chip"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-6.7 0-198.7C19.7 141 0 112.8 0 80C0 35.8 35.8 0 80 0s80 35.8 80 80zm232 0a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>GPL-3.0 开源</span>
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>免费使用</span>
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M305.8 2.1C314.4 5.9 320 14.5 320 24l0 40 16 0c70.7 0 128 57.3 128 128l0 166.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3L400 192c0-35.3-28.7-64-64-64l-16 0 0 40c0 9.5-5.6 18.1-14.2 21.9s-18.8 2.3-25.8-4.1l-80-72c-5.1-4.6-7.9-11-7.9-17.8s2.9-13.3 7.9-17.8l80-72c7-6.3 17.2-7.9 25.8-4.1zM104 80A24 24 0 1 0 56 80a24 24 0 1 0 48 0zm8 73.3l0 205.3c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-205.3C19.7 141 0 112.8 0 80C0 35.8 35.8 0 80 0s80 35.8 80 80c0 32.8-19.7 61-48 73.3zM104 432a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zm328 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>欢迎 issue 与 PR</span>
+  </div>
+  <p class="small an" style="--i:4;margin-top:28px">
+    仓库：<span class="mono hl">github.com/dariondong/APRSLocus</span> ·
+    <span class="mono hl">gitcode.com/DarionDong/APRSLocus</span>
+  </p>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">16 / 19</span></div>
+</template>
+
+<!-- ── 17 开发者故事 ── -->
+<template class="sl" data-narr="这个项目是我在高中阶段做的，呼号 BG7LZQ。马上要进高三了，更新可能会慢一点，但项目会继续维护。大家多包涵，也多多支持。">
+  <div class="body">
+  <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:70px;align-items:center">
+    <div class="an zoom" style="--i:1;text-align:center">
+      <div class="callbig">BG7LZQ</div>
+      <div class="small" style="margin-top:22px">作者 · 高中火腿</div>
+    </div>
+    <div>
+      <span class="kicker an" style="--i:0">作者</span>
+      <h2 class="h2 an" style="--i:1">这个项目，是高中阶段做的</h2>
+      <p class="lead an" style="--i:2">创建并全栈开发 APRSlocus：从 APRS-IS 接入、地图引擎，到消息与信标体系，独立完成 Android / Windows 双端，再把它开源给全球业余无线电爱好者。</p>
+      <div class="gcard an" style="--i:3;margin-top:34px;border-left:4px solid var(--cyan)">
+        <h3>马上要进高三了</h3>
+        <p>更新可能会慢一点，但项目会继续维护。大家多包涵，也多多支持。</p>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">17 / 19</span></div>
+</template>
+
+<!-- ── 18 支持与鸣谢 ── -->
+<template class="sl" data-narr="APRSlocus 能走到今天，离不开很多人的帮助。感谢赞助和算力支持的朋友，感谢翻译、测试和反馈的火腿，也感谢提供中继、iGate 与 APRS-IS 服务的朋友们。73！">
+  <div class="body">
+  <div>
+    <span class="kicker an" style="--i:0">支持与鸣谢</span>
+    <h2 class="h2 an" style="--i:1">能走到今天，离不开很多人的帮助</h2>
+  </div>
+  <div class="gcards c2" style="margin-top:32px">
+    <div class="gcard an" style="--i:1">
+      <h3>赞助与算力支持</h3>
+      <div class="tname">
+        <span>STUDENT HAMS 群组</span><span>BG7PGW</span><span>BG7ORC</span>
+        <span>BA4JLD<em>青岛科技大学业余无线电俱乐部</em></span>
+        <span>BA4IUD</span><span>BD1FEH</span><span>BA3RZL<em>算力支持</em></span>
+        <span>BH7NOR</span><span>APRS.TV</span><span>每一位支持者</span>
+      </div>
+    </div>
+    <div class="gcard an" style="--i:2">
+      <h3>翻译 · 测试 · 反馈</h3>
+      <div class="tname">
+        <span>BG2HCB<em>设置页优化</em></span>
+        <span>BA4UAX<em>繁中翻译</em></span>
+        <span>BD3QID<em>英文 &amp; 测试</em></span>
+        <span>BA7KSM<em>翻译</em></span>
+        <span>BG7LMW</span><span>BG7OSL</span><span>BG4LZY</span>
+        <span>等 47 位早期成员</span>
+      </div>
+    </div>
+  </div>
+  <div class="chips an" style="--i:3">
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M192 32c0-17.7 14.3-32 32-32C383.1 0 512 128.9 512 288c0 17.7-14.3 32-32 32s-32-14.3-32-32C448 164.3 347.7 64 224 64c-17.7 0-32-14.3-32-32zM60.6 220.6L164.7 324.7l28.4-28.4c-.7-2.6-1.1-5.4-1.1-8.3c0-17.7 14.3-32 32-32s32 14.3 32 32s-14.3 32-32 32c-2.9 0-5.6-.4-8.3-1.1l-28.4 28.4L291.4 451.4c14.5 14.5 11.8 38.8-7.3 46.3C260.5 506.9 234.9 512 208 512C93.1 512 0 418.9 0 304c0-26.9 5.1-52.5 14.4-76.1c7.5-19 31.8-21.8 46.3-7.3zM224 96c106 0 192 86 192 192c0 17.7-14.3 32-32 32s-32-14.3-32-32c0-70.7-57.3-128-128-128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>APRS-IS 社区</span>
+    <span class="chip"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M80.3 44C69.8 69.9 64 98.2 64 128s5.8 58.1 16.3 84c6.6 16.4-1.3 35-17.7 41.7s-35-1.3-41.7-17.7C7.4 202.6 0 166.1 0 128S7.4 53.4 20.9 20C27.6 3.6 46.2-4.3 62.6 2.3S86.9 27.6 80.3 44zM555.1 20C568.6 53.4 576 89.9 576 128s-7.4 74.6-20.9 108c-6.6 16.4-25.3 24.3-41.7 17.7S489.1 228.4 495.7 212c10.5-25.9 16.3-54.2 16.3-84s-5.8-58.1-16.3-84C489.1 27.6 497 9 513.4 2.3s35 1.3 41.7 17.7zM352 128c0 23.7-12.9 44.4-32 55.4L320 480c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-296.6c-19.1-11.1-32-31.7-32-55.4c0-35.3 28.7-64 64-64s64 28.7 64 64zM170.6 76.8C163.8 92.4 160 109.7 160 128s3.8 35.6 10.6 51.2c7.1 16.2-.3 35.1-16.5 42.1s-35.1-.3-42.1-16.5c-10.3-23.6-16-49.6-16-76.8s5.7-53.2 16-76.8c7.1-16.2 25.9-23.6 42.1-16.5s23.6 25.9 16.5 42.1zM464 51.2c10.3 23.6 16 49.6 16 76.8s-5.7 53.2-16 76.8c-7.1 16.2-25.9 23.6-42.1 16.5s-23.6-25.9-16.5-42.1c6.8-15.6 10.6-32.9 10.6-51.2s-3.8-35.6-10.6-51.2c-7.1-16.2 .3-35.1 16.5-42.1s35.1 .3 42.1 16.5z"/></svg>中继与 iGate 维护者</span>
+    <span class="chip"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg>地图与数据服务</span>
+    <span class="chip"><svg viewBox="0 0 640 512" aria-hidden="true"><path d="M58.9 42.1c3-6.1 9.6-9.6 16.3-8.7L320 64 564.8 33.4c6.7-.8 13.3 2.7 16.3 8.7l41.7 83.4c9 17.9-.6 39.6-19.8 45.1L439.6 217.3c-13.9 4-28.8-1.9-36.2-14.3L320 64 236.6 203c-7.4 12.4-22.3 18.3-36.2 14.3L37.1 170.6c-19.3-5.5-28.8-27.2-19.8-45.1L58.9 42.1zM321.1 128l54.9 91.4c14.9 24.8 44.6 36.6 72.5 28.6L576 211.6l0 167c0 22-15 41.2-36.4 46.6l-204.1 51c-10.2 2.6-20.9 2.6-31 0l-204.1-51C79 419.7 64 400.5 64 378.5l0-167L191.6 248c27.8 8 57.6-3.8 72.5-28.6L318.9 128l2.2 0z"/></svg>开源依赖</span>
+    <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>73！</span>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面</span><span class="pg">18 / 19</span></div>
+</template>
+
+<!-- ── 19 行动号召 / 片尾 ── -->
+<template class="sl" data-narr="如果你也是 APRS 玩家，或者想入门，GitCode 搜 APRSlocus 就能找到。73！">
+  <div class="body">
+  <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:80px;align-items:center">
+    <div>
+      <span class="kicker an" style="--i:0">片尾</span>
+      <h1 class="h1 sm an" style="--i:1">GitCode 搜 <span class="grad">APRSlocus</span></h1>
+      <div class="chips an" style="--i:2">
+        <span class="chip"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg>Android</span>
+        <span class="chip"><svg viewBox="0 0 576 512" aria-hidden="true"><path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l176 0-10.7 32L160 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-69.3 0L336 416l176 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0zM512 64l0 224L64 288 64 64l448 0z"/></svg>Windows</span>
+        <span class="chip"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-6.7 0-198.7C19.7 141 0 112.8 0 80C0 35.8 35.8 0 80 0s80 35.8 80 80zm232 0a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>GPL-3.0 开源</span>
+        <span class="chip"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>免费使用</span>
+      </div>
+      <p class="lead an" style="--i:3;font-size:30px;color:var(--text);font-weight:700;margin-top:34px">APRSlocus —— 随时随地，掌握电波世界的一举一动</p>
+      <p class="small an" style="--i:4;margin-top:14px">官网 <span class="mono hl">aprslocus.theez.top</span> · 下载 <span class="mono hl">github.com/dariondong/APRSLocus/releases</span></p>
+      <p class="big-line an" style="--i:5;font-size:70px;margin-top:26px">73！</p>
+    </div>
+    <div class="an zoom" style="--i:2;text-align:center">
+      <div class="qrbox" style="margin:0 auto"><img src="assets/guide/site-qr.png" alt="官网二维码"></div>
+      <div class="small" style="margin-top:18px">扫码直达官网 · 截图也能用</div>
+    </div>
+  </div>
+  </div>
+  <div class="foot"><span><b>APRSlocus</b> · 视频画面 · 感谢观看</span><span class="pg">19 / 19</span></div>
+</template>
 
 <script>
+/* ════════════════════════════════════════════════════════════════
+   APRSlocus 视频画面 · 放映器
+   —— 页面本身不出现说明书；操作靠快捷键，鼠标动一下界面才出来。
+   ════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ── 内容：视频脚本（亲切详细版 · 无时间码 · 去掉 FMO） ── */
-  var SLIDES = [
-    {
-      kind: 'cover',
-      kicker: 'VIDEO SCRIPT',
-      title: 'APRSlocus 视频脚本',
-      sub: '亲切详细版 · 无时间码',
-      meta: [
-        ['视频定位', '一个火腿朋友在分享自己觉得好用的 APRS 工具'],
-        ['整体调性', '轻松、真诚、说人话，不端着，不讲课'],
-        ['目标受众', '玩业余无线电的朋友，尤其是对 APRS 感兴趣的人；不了解 APRS 的也可以当科普看']
-      ]
-    },
+  /* ── 取出所有页面（模板） ── */
+  var tpls = Array.prototype.slice.call(document.querySelectorAll('template.sl'));
+  var SLIDES = tpls
+    .filter(function (t) { return t.getAttribute('data-hide') !== 'true'; })
+    .map(function (t) {
+      var html = t.innerHTML;
+      var title = '第 ' + (tpls.indexOf(t) + 1) + ' 页';
+      try {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var h = doc.querySelector('.h1, .h2, .big-line, .callbig');
+        if (h) title = h.textContent.replace(/\s+/g, ' ').trim().slice(0, 40);
+      } catch (e) { /* 取不到标题不影响放映 */ }
+      return { html: html, narr: t.getAttribute('data-narr') || '', title: title };
+    });
 
-    {
-      kicker: '第一段 · 开场',
-      title: '一、片头提示',
-      visual: '黑底白字，字体轻松一点，不要像警告标语。可以配一点轻微的无线电滴答声。',
-      caption: ['玩业余无线电的朋友，这个视频是给你的', '如果你还不了解 APRS，也可以当个科普看'],
-      narr: '“这个视频主要聊 APRS，玩业余无线电的朋友应该会感兴趣。如果你还不了解 APRS，没关系，我先用半分钟简单说说。不是火腿的朋友，也可以当个科技小科普看。”',
-      note: '这里不要用“仅面向业余无线电爱好者”这种硬邦邦的说法，容易把人推开。用“玩无线电的朋友，这个视频是给你的”既明确了受众，又友好。'
-    },
-
-    {
-      kicker: '第二段 · 科普',
-      title: '二、APRS 快速科普',
-      visual: '先用简单动画表现：一台业余电台 → TNC 或声卡 → 本地中继 → APRS-IS 互联网 → 地图上出现呼号图标。地图上可以有几个呼号闪烁，比如 BG7LZQ、BI1XXX 之类，表示台站实时上报。',
-      caption: ['APRS = 业余无线电的实时位置与短消息网络', '常用频段举例：144.640 MHz', '数据可经中继，也可汇入 APRS-IS'],
-      narr: '“APRS，全称 Automatic Packet Reporting System，自动分组报告系统。简单说，就是让业余电台自动报告自己在哪、速度多少、海拔多高，还能发短消息、传气象数据、发遥测信息。它通常工作在 VHF/UHF 频段，比如很多地方用 144.640 MHz。数据可以通过本地中继转发，也可以汇入 APRS-IS 互联网骨干，让全球火腿在地图上看到彼此。你可以把它理解成业余无线电里的‘实时位置加短消息网络’。”',
-      note: '这段尽量说人话，少堆术语。如果观众是新手，可以在这里多停两秒，让他们消化。'
-    },
-
-    {
-      kicker: '第三段 · 缘起',
-      title: '三、为什么做 APRSLocus',
-      visual: '切到老式 APRS 软件界面截图，灰暗色调，操作繁琐，窗口密密麻麻。然后画面一转，出现手机和电脑上 APRSLocus 的清爽界面。',
-      caption: ['老软件体验参差不齐', '手机和电脑上都不太方便', '所以，自己写一个'],
-      narr: '“APRS 很好玩，但以前想在手机和电脑上舒服地看台站、发信标、聊消息，真不太容易。老软件要么界面过时，要么操作麻烦，有的还只能在 Windows 上跑。我自己也是折腾了好久，后来干脆想，不如自己写一个。于是就有了 APRSLocus。”',
-      note: '这里用“我自己也是折腾了好久”这种第一人称，会更亲切。如果你不想用第一人称，也可以改成“作者也是折腾了好久”。'
-    },
-
-    {
-      kicker: '第四段 · 概览',
-      title: '四、APRSLocus 登场',
-      visual: 'APRSLocus 主界面录屏。地图流畅缩放拖拽，台站图标以不同颜色显示，活跃台站有脉冲动画。然后快速展示图层筛选：移动台站、固定台站、中继、气象站等。',
-      caption: ['实时地图', '三色标识：在线 / 停止 / 离线', '活跃台站脉冲动画', '图层筛选：移动 / 固定 / 中继 / 气象 等'],
-      narr: '“APRSLocus 把 APRS 常用功能搬到了手机和电脑上。打开就是地图，台站实时显示，在线、停止、离线三色标识，活跃台站还有脉冲动画。图层筛选可以让你按需查看移动台站、固定台站、中继、气象站等类型。想看谁在移动、谁静止不动，一眼就能看出来。”',
-      note: '这段是概览，让观众知道软件大概长什么样。详细功能放到下一段占位。'
-    },
-
-    {
-      kicker: '第五段 · 待补充',
-      title: '五、详细功能介绍',
-      tag: '占位 · 待知识库补充',
-      visual: 'APRSLocus 功能演示串烧。地图、信标、消息、设置、跨平台界面快速切换。配轻松音乐，节奏明快一点。',
-      caption: ['实时地图与台站显示', '图层筛选与台站分类', '台站详情与轨迹查看', '位置信标上报', '消息通信', '气象与遥测', 'APRS-IS 连接与过滤', '对象 / 物品与分组', '设置、语言与主题', 'Android / Windows 跨平台', '开源与扩展'],
-      captionTitle: '字幕 / 功能清单（仅列标题，不展开）',
-      narr: '【待补充：详细功能介绍，由更全的知识库 AI 填写】',
-      narrTodo: true,
-      note: '这段不展开具体功能，只留占位。画面可以用录屏串烧，旁白等知识库更全的 AI 补充。字幕先把功能模块列出来，方便后期对应画面。'
-    },
-
-    {
-      kicker: '第六段 · 平台与开源',
-      title: '六、跨平台与开源',
-      visual: '左边 Android 手机展示移动端界面，右边 Windows 电脑展示桌面端，分屏对比。然后切到 GitCode / GitHub 项目页面，展示 GPL-3.0 协议标识和代码仓库。',
-      caption: ['Android + Windows', '基于 Flutter 从零重写', 'GPL-3.0 开源', '免费使用，欢迎贡献'],
-      narr: '“APRSLocus 一个项目同时覆盖 Android 和 Windows。出门用手机当移动台，回家用电脑大屏看台站分布。代码完全开源，基于 Flutter 从零重写，GPL-3.0 协议，免费使用。大家有兴趣可以一起来玩，提 issue、提 PR 都欢迎。”',
-      note: '这段可以展示代码提交记录、issue 页面、PR 页面，让观众感受到项目是活的。'
-    },
-
-    {
-      kicker: '第七段 · 作者',
-      title: '七、开发者故事',
-      visual: 'BG7LZQ 呼号出现，代码提交记录滚动。可以配一张高中课桌或电台设备的空镜，不要露脸也行。',
-      caption: ['作者：BG7LZQ', '高中火腿', '高三更新可能变慢，但项目继续维护'],
-      narr: '“这个项目是我在高中阶段做的，呼号 BG7LZQ。马上要进高三了，更新可能会慢一点，但项目会继续维护。大家多包涵，也多多支持。”',
-      note: '如果呼号或身份有误，请替换。这里语气要谦虚、真诚，不要卖惨，也不要吹嘘。'
-    },
-
-    {
-      kicker: '第八段 · 待补充',
-      title: '八、支持与鸣谢',
-      tag: '占位 · 待补充',
-      visual: '鸣谢名单滚动。背景可以用 APRSlocus Logo、开源协议标识、APRS-IS 网络示意图。名单可以按类别滚动：测试、反馈、代码贡献、中继维护、APRS-IS 服务、地图服务、开源依赖。',
-      caption: ['【鸣谢名单待补充】', '特别感谢：', 'APRS-IS 社区', '地图服务', '开源依赖', '测试台站', '中继维护者', '贡献者'],
-      narr: '“APRSLocus 能走到今天，离不开很多人的帮助：【鸣谢名单待补充】。感谢所有测试、反馈、贡献代码的火腿，也感谢提供中继和 APRS-IS 服务的朋友们。73！”',
-      note: '具体鸣谢对象、呼号、项目名、服务方，可由知识库更全的 AI 补充。鸣谢部分不要一笔带过，可以多留几秒滚动，显得真诚。'
-    },
-
-    {
-      kicker: '第九段 · 收尾',
-      title: '九、行动号召与片尾',
-      visual: '下载页 + 二维码。然后切到 APRSLocus Logo 和软件内地图实拍。',
-      caption: ['GitCode 搜索“APRSLocus”', 'GPL-3.0 开源', 'Android + Windows', 'APRSLocus — 随时随地，掌握电波世界的一举一动'],
-      music: '渐弱收尾',
-      narr: '“如果你也是 APRS 玩家，或者想入门，GitCode 搜 APRSlocus 就能找到。73！”',
-      note: '片尾可以再放一次二维码，方便观众截图。'
-    },
-
-    {
-      kind: 'list',
-      kicker: '第十段 · 制作',
-      title: '十、制作建议',
-      items: [
-        '片头提示要友好，不要用“仅面向”这种硬词。用“玩无线电的朋友，这个视频是给你的”更亲切。',
-        'APRS 科普部分尽量用动画，把“电台 → 中继 → APRS-IS → 地图”这条链路讲清楚。',
-        '功能演示优先用录屏实拍，地图交互可以适当加速，突出流畅度。',
-        '“详细功能介绍”和“支持与鸣谢”用【待补充】标出，方便后续 AI 填充。',
-        '整体语气放轻松，像跟朋友分享一个好用的工具，不要像在做报告。',
-        '如果发抖音 / 视频号，建议做竖屏版，片头提示压缩到几秒内，节奏更快一点。',
-        '鸣谢部分可以配一点温暖的音乐，和前面功能演示的轻快音乐区分开。'
-      ]
-    }
-  ];
-
-  var deck = document.getElementById('deck');
+  var total = SLIDES.length;
   var stage = document.getElementById('stage');
-  var bar = document.getElementById('bar');
-  var counter = document.getElementById('counter');
+  var fitEl = document.getElementById('fit');
+  var slide = document.getElementById('slide');
   var dotsBox = document.getElementById('dots');
-  var ovIndex = document.getElementById('ovIndex');
-  var ovHelp = document.getElementById('ovHelp');
-  var toastBox = document.getElementById('toast');
-  var i = 0, total = SLIDES.length;
+  var cnt = document.getElementById('cnt');
+  var promptBox = document.getElementById('prompt');
+  var narrText = document.getElementById('narrText');
+  var pg2 = document.getElementById('pg2');
+  var tipBox = document.getElementById('tip');
+  var tTitle = document.getElementById('tTitle');
+  var i = 0;
+  var timer = null, autoTimer = null;
 
-  /* 转义 + 高亮：呼号 / 频率 / 【待补充】 */
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  /* ── 缩放：1600×900 画布铺满窗口 ── */
+  function fit() {
+    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    fitEl.style.transform = 'scale(' + s + ')';
   }
-  function hl(s) {
-    return esc(s)
-      .replace(/(【[^】]*】)/g, '<span class="todo">$1</span>')
-      .replace(/\b((?:BG|BI|BH|BD|BA|BY)[0-9][A-Z]{1,3})\b/g, '<b class="hl">$1</b>')
-      .replace(/([0-9]+\.[0-9]+\s?MHz)/g, '<b class="hl">$1</b>')
-      .replace(/\b(APRS-IS|TNC|Flutter|GPL-3\.0|Android|Windows|GPL)\b/g, '<b class="hl">$1</b>');
+  window.addEventListener('resize', fit, { passive: true });
+  fit();
+
+  /* ── 提示条 ── */
+  var tipT = null;
+  function tip(msg, ms) {
+    tipBox.textContent = msg;
+    tipBox.classList.add('show');
+    clearTimeout(tipT);
+    tipT = setTimeout(function () { tipBox.classList.remove('show'); }, ms || 1900);
   }
 
-  /* 把一页渲染成 HTML 字符串（屏幕与打印共用） */
-  function slideHTML(s, idx) {
-    var n = ('0' + (idx + 1)).slice(-2);
-    var html = '';
+  /* ── 界面自动隐藏（录制时画面干净） ── */
+  var uiLock = false;
+  function showUI() {
+    stage.classList.add('show-ui');
+    clearTimeout(timer);
+    if (!uiLock) timer = setTimeout(function () { stage.classList.remove('show-ui'); }, 2600);
+  }
+  function lockUI(on) { uiLock = on; if (on) { clearTimeout(timer); stage.classList.add('show-ui'); } else { showUI(); } }
+  document.addEventListener('mousemove', showUI, { passive: true });
+  document.getElementById('topbar').addEventListener('pointerenter', function () { lockUI(true); });
+  document.getElementById('topbar').addEventListener('pointerleave', function () { lockUI(false); });
+  document.getElementById('hud').addEventListener('pointerenter', function () { lockUI(true); });
+  document.getElementById('hud').addEventListener('pointerleave', function () { lockUI(false); });
 
-    if (s.kind === 'cover') {
-      html =
-        '<article class="slide head">' +
-          '<div class="cover">' +
-            '<span class="badge">' + esc(s.kicker) + '</span>' +
-            '<h1>APRSlocus <em>视频脚本</em></h1>' +
-            '<p class="sub">' + esc(s.sub) + '</p>' +
-            '<div class="meta">' + s.meta.map(function (m) {
-              return '<div><b>' + esc(m[0]) + '</b><span>' + esc(m[1]) + '</span></div>';
-            }).join('') + '</div>' +
-            '<p class="start">按 <kbd>→</kbd> 开始 / 按 <kbd>O</kbd> 看目录 / 按 <kbd>P</kbd> 进提词模式</p>' +
-          '</div>' +
-        '</article>';
-    } else if (s.kind === 'list') {
-      html =
-        '<article class="slide head">' +
-          '<div class="list-wrap">' +
-            '<div class="slide-head" style="margin-bottom:14px">' +
-              '<span class="num">' + n + '</span>' +
-              '<div><p class="kicker">' + esc(s.kicker) + '</p><h2>' + esc(s.title) + '</h2></div>' +
-            '</div>' +
-            '<ul class="list">' + s.items.map(function (t, k) {
-              return '<li style="--d:' + (k * .04) + 's"><i>' + ('0' + (k + 1)).slice(-2) + '</i><span>' + hl(t) + '</span></li>';
-            }).join('') + '</ul>' +
-          '</div>' +
-        '</article>';
+  /* ── 兜底：内容比画布高时，整体缩一点，绝不溢出到画面外 ── */
+  var AVAIL = 900 - 84 - 96;             /* 画布高 - 上下内边距 */
+  function fitBody(root) {
+    var body = root.querySelector('.body');
+    if (!body) return;
+    body.style.zoom = '';
+    var need = body.offsetHeight;
+    if (need > AVAIL + 1) {
+      body.style.zoom = Math.max(0.68, AVAIL / need).toFixed(3);
+      root.classList.add('shrunk');
     } else {
-      var narrCls = 'card card--narr' + (s.narrTodo ? ' todo' : '');
-      html =
-        '<article class="slide">' +
-          '<div class="slide-head">' +
-            '<span class="num">' + n + '</span>' +
-            '<div>' +
-              '<p class="kicker">' + esc(s.kicker) + '</p>' +
-              '<h2>' + esc(s.title) + '</h2>' +
-              (s.tag ? '<span class="tag">' + esc(s.tag) + '</span>' : '') +
-            '</div>' +
-          '</div>' +
-          '<div class="body-grid">' +
-            '<div class="col col--a">' +
-              '<section class="card card--visual" style="--d:.02s"><h3>画面</h3><p>' + hl(s.visual) + '</p></section>' +
-              '<section class="card card--caption" style="--d:.08s"><h3>' + esc(s.captionTitle || '字幕') + '</h3><ul>' +
-                s.caption.map(function (c) { return '<li>' + hl(c) + '</li>'; }).join('') +
-              '</ul>' + (s.music ? '<p class="music">音乐：' + hl(s.music) + '</p>' : '') + '</section>' +
-            '</div>' +
-            '<div class="col col--b">' +
-              '<section class="' + narrCls + '" style="--d:.14s"><h3>旁白</h3><p class="narr-text">' + hl(s.narr) + '</p></section>' +
-              '<section class="card card--notes" style="--d:.2s"><h3>备注</h3><p>' + hl(s.note) + '</p></section>' +
-            '</div>' +
-          '</div>' +
-        '</article>';
+      root.classList.remove('shrunk');
     }
-    return html;
   }
 
-  function render(idx) {
-    var n = ('0' + (idx + 1)).slice(-2);
-    stage.innerHTML = slideHTML(SLIDES[idx], idx);
-    requestAnimationFrame(function () {
-      var el = stage.firstChild;
-      if (el) el.classList.add('on');
-    });
+  /* ── 渲染 ── */
+  function render(idx, dir) {
+    var s = SLIDES[idx];
+    slide.classList.remove('on');
+    slide.innerHTML = s.html;
+    void slide.offsetWidth;              /* 强制重排，让动画重新开始 */
+    slide.classList.add('on');
+    fitBody(slide);
 
-    bar.style.width = ((idx + 1) / total * 100) + '%';
-    counter.innerHTML = '<b>' + n + '</b> / ' + ('0' + total).slice(-2);
-    Array.prototype.forEach.call(dotsBox.children, function (d, k) {
-      d.classList.toggle('on', k === idx);
-    });
-    document.getElementById('btnPrev').disabled = (idx === 0);
-    document.getElementById('btnNext').disabled = (idx === total - 1);
-    if (location.hash !== '#s' + (idx + 1)) {
-      history.replaceState(null, '', '#s' + (idx + 1));
-    }
+    var n = ('0' + (idx + 1)).slice(-2), all = ('0' + total).slice(-2);
+    cnt.innerHTML = '<b>' + n + '</b> / ' + all;
+    tTitle.textContent = s.title;
+    narrText.textContent = s.narr;
+    pg2.textContent = n + ' / ' + all;
+    Array.prototype.forEach.call(dotsBox.children, function (d, k) { d.classList.toggle('on', k === idx); });
+    if (location.hash !== '#s' + (idx + 1)) history.replaceState(null, '', '#s' + (idx + 1));
+    showUI();
   }
 
   function go(idx) {
     idx = Math.max(0, Math.min(total - 1, idx));
-    if (idx === i && stage.firstChild) return;
+    if (idx === i && slide.innerHTML) return;
     i = idx;
     render(i);
   }
   function next() { go(i + 1); }
   function prev() { go(i - 1); }
 
-  /* 底栏进度点 */
+  /* ── 底栏进度点 ── */
   SLIDES.forEach(function (s, k) {
-    var b = document.createElement('button');
-    b.className = 'dot';
-    b.title = (k + 1) + '. ' + (s.title || s.kicker);
-    b.setAttribute('aria-label', b.title);
-    b.addEventListener('click', function () { go(k); });
-    dotsBox.appendChild(b);
+    var d = document.createElement('i');
+    d.title = (k + 1) + '. ' + s.title;
+    d.addEventListener('click', function () { go(k); showUI(); });
+    dotsBox.appendChild(d);
   });
 
-  /* 目录浮层 */
-  var ovGrid = document.getElementById('ovGrid');
-  SLIDES.forEach(function (s, k) {
-    var b = document.createElement('button');
-    b.className = 'ov-item';
-    b.innerHTML = '<b>' + ('0' + (k + 1)).slice(-2) + '</b><span>' + esc(s.title || '封面') + '</span>';
-    b.addEventListener('click', function () { closeOverlays(); go(k); });
-    ovGrid.appendChild(b);
-  });
-
-  function refreshIndex() {
-    Array.prototype.forEach.call(ovGrid.children, function (el, k) { el.classList.toggle('on', k === i); });
-  }
-
-  function openOverlay(which) {
-    closeOverlays();
-    which.classList.add('open');
-    if (which === ovIndex) refreshIndex();
-  }
-  function closeOverlays() {
-    ovIndex.classList.remove('open');
-    ovHelp.classList.remove('open');
-  }
-
-  /* 提示条 */
-  var toastTimer = null;
-  function toast(msg) {
-    toastBox.textContent = msg;
-    toastBox.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastBox.classList.remove('show'); }, 1800);
-  }
-
-  /* 提词模式 */
+  /* ── 提词条（旁白） ── */
   function togglePrompt(force) {
-    var on = (typeof force === 'boolean') ? force : !deck.classList.contains('prompt');
-    deck.classList.toggle('prompt', on);
-    document.getElementById('btnPrompt').classList.toggle('on', on);
-    return on;
+    var on = (typeof force === 'boolean') ? force : !promptBox.classList.contains('show');
+    promptBox.classList.toggle('show', on);
+    document.getElementById('bPrompt').classList.toggle('on', on);
+    tip(on ? '提词条已开：录制画面时记得按 T 关掉' : '提词条已关', 2600);
   }
 
-  /* 全屏 */
-  function toggleFull() {
-    if (document.fullscreenElement) { document.exitFullscreen(); }
-    else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(function () { toast('浏览器不允许全屏，请按 F11'); }); }
-  }
-
-  /* 复制本页旁白 */
-  function copyNarr() {
-    var s = SLIDES[i];
-    var txt = s.kind === 'list' ? (s.title + '\n' + s.items.map(function (t, k) { return (k + 1) + '. ' + t; }).join('\n'))
-      : (s.title + (s.narr ? '\n\n' + s.narr : '') + (s.note ? '\n\n备注：' + s.note : ''));
-    function done() { toast('本页已复制到剪贴板'); }
-    function fail() {
-      var ta = document.createElement('textarea');
-      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); done(); } catch (e) { toast('复制失败，请手动选择'); }
-      document.body.removeChild(ta);
+  /* ── 自动播放 ── */
+  var AUTO_MS = 8000;
+  function toggleAuto(force) {
+    var on = (typeof force === 'boolean') ? force : !autoTimer;
+    clearInterval(autoTimer); autoTimer = null;
+    document.getElementById('bAuto').classList.toggle('on', on);
+    if (on) {
+      autoTimer = setInterval(function () {
+        if (i >= total - 1) { toggleAuto(false); tip('已到最后一页'); return; }
+        next();
+      }, AUTO_MS);
+      tip('自动播放：每 ' + (AUTO_MS / 1000) + ' 秒翻一页（再按 A 停止）', 2600);
+    } else {
+      tip('已停止自动播放');
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(done).catch(fail);
-    } else { fail(); }
   }
 
-  /* 事件绑定 */
-  document.getElementById('btnPrev').addEventListener('click', prev);
-  document.getElementById('btnNext').addEventListener('click', next);
-  document.getElementById('btnIndex').addEventListener('click', function () { openOverlay(ovIndex); });
-  document.getElementById('btnHelp').addEventListener('click', function () { openOverlay(ovHelp); });
-  document.getElementById('btnCopy').addEventListener('click', copyNarr);
-  document.getElementById('btnPrompt').addEventListener('click', function () { toast(togglePrompt() ? '提词模式：只留旁白，字更大' : '已退出提词模式'); });
-  document.getElementById('ovIndexClose').addEventListener('click', closeOverlays);
-  document.getElementById('ovHelpClose').addEventListener('click', closeOverlays);
-  ovIndex.addEventListener('click', function (e) { if (e.target === ovIndex) closeOverlays(); });
-  ovHelp.addEventListener('click', function (e) { if (e.target === ovHelp) closeOverlays(); });
+  /* ── 全屏 ── */
+  function toggleFull() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(function () { tip('浏览器不允许全屏，请按 F11'); });
+    }
+  }
 
+  /* ── 打印：把所有页面摊开，一次导出 PDF ── */
+  var printBox = null;
+  function buildPrint() {
+    if (printBox) return;
+    printBox = document.createElement('div');
+    printBox.className = 'print-all';
+    printBox.innerHTML = SLIDES.map(function (s) {
+      return '<div class="sheet"><div class="slide on">' + s.html + '</div></div>';
+    }).join('');
+    document.body.appendChild(printBox);
+    Array.prototype.forEach.call(printBox.querySelectorAll('.slide'), fitBody);
+  }
+  window.addEventListener('beforeprint', buildPrint);
+  window.addEventListener('afterprint', function () {
+    if (printBox) { printBox.remove(); printBox = null; }
+  });
+
+  /* ── 按钮 ── */
+  document.getElementById('bNext').addEventListener('click', next);
+  document.getElementById('bPrev').addEventListener('click', prev);
+  document.getElementById('bPrompt').addEventListener('click', function () { togglePrompt(); });
+  document.getElementById('bAuto').addEventListener('click', function () { toggleAuto(); });
+  document.getElementById('bFull').addEventListener('click', toggleFull);
+  document.getElementById('bPrint').addEventListener('click', function () { window.print(); });
+
+  /* ── 点击翻页（录制时最省事）：点右半边下一页，左半边上一页 ── */
+  stage.addEventListener('click', function (e) {
+    if (e.target.closest('.ui') || e.target.closest('.prompt')) return;
+    (e.clientX < window.innerWidth * 0.25) ? prev() : next();
+  });
+
+  /* ── 键盘 ── */
   document.addEventListener('keydown', function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
-    var tg = e.target;
-    if (tg && tg.tagName === 'BUTTON' && (k === ' ' || k === 'Enter')) return; /* 别抢按钮的键 */
     if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown' || k === 'Enter') { e.preventDefault(); next(); return; }
     if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); prev(); return; }
     if (k === 'Home') { e.preventDefault(); go(0); return; }
     if (k === 'End') { e.preventDefault(); go(total - 1); return; }
-    if (k === 'Escape') { closeOverlays(); togglePrompt(false); return; }
-    if (k === 'p' || k === 'P') { toast(togglePrompt() ? '提词模式：只留旁白，字更大' : '已退出提词模式'); return; }
-    if (k === 'o' || k === 'O') { ovIndex.classList.contains('open') ? closeOverlays() : openOverlay(ovIndex); return; }
-    if (k === 'h' || k === 'H' || k === '?') { ovHelp.classList.contains('open') ? closeOverlays() : openOverlay(ovHelp); return; }
+    if (k === 'Escape') { togglePrompt(false); return; }
     if (k === 'f' || k === 'F') { toggleFull(); return; }
-    if (k === 'c' || k === 'C') { copyNarr(); return; }
+    if (k === 't' || k === 'T') { togglePrompt(); return; }
+    if (k === 'a' || k === 'A') { toggleAuto(); return; }
+    if (k === 'p' || k === 'P') { window.print(); return; }
+    if (k === 'c' || k === 'C') {                     /* 显示 / 隐藏界面（临时用鼠标时） */
+      uiLock = !uiLock; showUI(); tip(uiLock ? '界面已固定显示' : '界面自动隐藏已恢复');
+      return;
+    }
     if (/^[1-9]$/.test(k)) { go(parseInt(k, 10) - 1); }
   });
 
-  /* 触摸滑动 */
-  var tx = 0, ty = 0;
-  document.addEventListener('touchstart', function (e) {
-    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    var dx = e.changedTouches[0].clientX - tx;
-    var dy = e.changedTouches[0].clientY - ty;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) { dx < 0 ? next() : prev(); }
-  }, { passive: true });
-
-  /* 打印 / 导出 PDF：把全部页面铺开，一次打完 */
-  var printBox = null;
-  window.addEventListener('beforeprint', function () {
-    if (printBox) return;
-    printBox = document.createElement('div');
-    printBox.className = 'print-all';
-    printBox.innerHTML = SLIDES.map(function (s, k) { return slideHTML(s, k); }).join('');
-    document.body.appendChild(printBox);
-    document.body.classList.add('has-print');
-  });
-  window.addEventListener('afterprint', function () {
-    if (printBox) { printBox.remove(); printBox = null; }
-    document.body.classList.remove('has-print');
-  });
-
-  /* 浏览器前进 / 后退也跟着翻页 */
+  /* ── 浏览器前进 / 后退也跟着翻页 ── */
   window.addEventListener('hashchange', function () {
-    var mm = /^#s([0-9]+)$/.exec(location.hash);
-    if (mm) { go(parseInt(mm[1], 10) - 1); }
+    var m = /^#s([0-9]+)$/.exec(location.hash);
+    if (m) go(parseInt(m[1], 10) - 1);
   });
 
-  /* 起始页：#s3 直达某一页 */
-  var m = /^#s([0-9]+)$/.exec(location.hash);
-  i = m ? Math.max(0, Math.min(total - 1, parseInt(m[1], 10) - 1)) : 0;
+  /* ── 起始页：#s3 直达某一页 ── */
+  var m0 = /^#s([0-9]+)$/.exec(location.hash);
+  i = m0 ? Math.max(0, Math.min(total - 1, parseInt(m0[1], 10) - 1)) : 0;
   render(i);
+  setTimeout(function () {
+    tip('← → 翻页 · F 全屏录制 · T 提词条 · A 自动播放 · P 导出 PDF', 5200);
+  }, 500);
 })();
 </script>
 </body>
