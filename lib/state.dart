@@ -34,6 +34,10 @@ import 'tnc.dart';
 import 'translate.dart';
 import 'early_member.dart';
 import 'achievements.dart';
+// 说明：状态层要用 theme.dart 里的 C（应用材质）与 uiMaterialOf / uiMaterialName。
+// 以前它只经过 theme_store.dart 间接用到主题，改成直接用 theme.dart 之后
+// 新增的这几个名字才能解析 —— CI 的 analyze 就是这么报出来的。
+import 'theme.dart';
 import 'theme_store.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。

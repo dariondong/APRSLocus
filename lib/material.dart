@@ -95,7 +95,12 @@ class MaterialSurface extends StatelessWidget {
 /// 用法上要求 AppBar 自己的 `backgroundColor` 取 `C.surfaceFillStrong`
 /// （材质开启时它是半透明的）—— 顶栏若还是实色，模糊就被自己盖住了，
 /// 而那种「改了没反应」的表现最难查。
-class MaterialAppBar implements PreferredSizeWidget {
+///
+/// 注意必须 **extends StatelessWidget implements PreferredSizeWidget**，
+/// 不能只写 `implements`：后者会让父类退化成 Object，于是 `{super.key}` 无处可传
+/// （报 super_formal_parameter_without_associated_named），还得自己实现
+/// Diagnosticable 的一整套方法。这一条是 CI 的 analyze 拦下来的。
+class MaterialAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget child;
   const MaterialAppBar(this.child, {super.key});
 
@@ -103,7 +108,7 @@ class MaterialAppBar implements PreferredSizeWidget {
   Size get preferredSize => child.preferredSize;
 
   @override
-  Widget build(BuildContext context) => MaterialSurface(child: child as Widget);
+  Widget build(BuildContext context) => MaterialSurface(child: child);
 }
 
 /// 把一个「表面色」调成材质该有的透明度 —— **保留它的色相**。
