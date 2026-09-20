@@ -8,6 +8,7 @@ import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
 import 'tile_map.dart';
+import 'material.dart';
 
 /// 群组跟踪页：把聊天群的成员放到整屏地图跟踪（车队 / 好友结伴）
 /// - 横屏：左侧成员栏 + 右侧全屏地图（导航风格）
@@ -456,7 +457,7 @@ class _TrackerPageState extends State<TrackerPage>
         children: [
           Container(
             width: 272,
-            color: C.white,
+            color: C.sheetFill,
             child: Column(
               children: [
                 _header(members, showGroupChat: !_isTemp),
@@ -521,24 +522,27 @@ class _TrackerPageState extends State<TrackerPage>
                   child: _chatBar(members, compact: true),
                 ),
               if (members.isNotEmpty)
-                Container(
-                  height: 116,
-                  margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-                  decoration: BoxDecoration(
-                    color: C.white.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.7),
+                MaterialSurface(
+                  radius: 16,
+                  child: Container(
+                    height: 116,
+                    margin: const EdgeInsets.fromLTRB(8, 0, 8, 4),
+                    decoration: BoxDecoration(
+                      color: C.white.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                      boxShadow: softShadow(blur: 16, alpha: 0.12),
                     ),
-                    boxShadow: softShadow(blur: 16, alpha: 0.12),
-                  ),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
-                    itemCount: members.length,
-                    itemBuilder: (_, i) =>
-                        SizedBox(width: 244, child: _memberTile(members[i])),
-                  ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                      itemCount: members.length,
+                      itemBuilder: (_, i) =>
+                          SizedBox(width: 244, child: _memberTile(members[i])),
+                    ),
+                  )
                 )
               else
                 _emptyHint(),
@@ -557,74 +561,77 @@ class _TrackerPageState extends State<TrackerPage>
         .length;
     return Material(
       color: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        decoration: BoxDecoration(
-          color: C.white.withValues(alpha: 0.92),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: softShadow(blur: 10, alpha: 0.08),
-        ),
-        child: Row(
-          children: [
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.arrow_back_rounded, size: 20, color: C.ink),
-              onPressed: () => Navigator.pop(context),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.group.name,
-                    style: ts(14, w: FontWeight.w800),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    S
-                        .of(context)
-                        .trackHeader(members.length, online, withPos),
-                    style: ts(9, c: C.grey),
-                  ),
-                ],
-              ),
-            ),
-            // 群聊快捷入口（可选，横屏成员栏显示）
-            if (showGroupChat)
+      child: MaterialSurface(
+        radius: 14,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: softShadow(blur: 10, alpha: 0.08),
+          ),
+          child: Row(
+            children: [
               IconButton(
                 visualDensity: VisualDensity.compact,
-                tooltip: S.of(context).groupChatShort,
-                icon: Icon(Icons.chat_bubble_rounded,
-                    size: 18, color: C.orange),
-                onPressed: () => _openChatSheet(null),
+                icon: Icon(Icons.arrow_back_rounded, size: 20, color: C.ink),
+                onPressed: () => Navigator.pop(context),
               ),
-            // 全览（进入自动保持模式；再次点击退出）
-            IconButton(
-              visualDensity: VisualDensity.compact,
-              tooltip: S.of(context).fitAll,
-              icon: Icon(
-                Icons.zoom_out_map_rounded,
-                size: 19,
-                color: _keepFitAll ? Colors.white : C.blue,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.group.name,
+                      style: ts(14, w: FontWeight.w800),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      S
+                          .of(context)
+                          .trackHeader(members.length, online, withPos),
+                      style: ts(9, c: C.grey),
+                    ),
+                  ],
+                ),
               ),
-              style: IconButton.styleFrom(
-                backgroundColor: _keepFitAll
-                    ? C.green
-                    : C.blueBg,
-                disabledBackgroundColor: Colors.transparent,
+              // 群聊快捷入口（可选，横屏成员栏显示）
+              if (showGroupChat)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  tooltip: S.of(context).groupChatShort,
+                  icon: Icon(Icons.chat_bubble_rounded,
+                      size: 18, color: C.orange),
+                  onPressed: () => _openChatSheet(null),
+                ),
+              // 全览（进入自动保持模式；再次点击退出）
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                tooltip: S.of(context).fitAll,
+                icon: Icon(
+                  Icons.zoom_out_map_rounded,
+                  size: 19,
+                  color: _keepFitAll ? Colors.white : C.blue,
+                ),
+                style: IconButton.styleFrom(
+                  backgroundColor: _keepFitAll
+                      ? C.green
+                      : C.blueBg,
+                  disabledBackgroundColor: Colors.transparent,
+                ),
+                onPressed: () {
+                  if (_keepFitAll) {
+                    _exitKeepFit();
+                  } else {
+                    _fitAll(keep: true);
+                  }
+                },
               ),
-              onPressed: () {
-                if (_keepFitAll) {
-                  _exitKeepFit();
-                } else {
-                  _fitAll(keep: true);
-                }
-              },
-            ),
-            const SizedBox(width: 2),
-          ],
+              const SizedBox(width: 2),
+            ],
+          ),
         ),
       ),
     );
@@ -1047,70 +1054,73 @@ class _TrackerPageState extends State<TrackerPage>
     final target = isGroupMsg ? null : m.from;
     return GestureDetector(
         onTap: () => _openChatSheet(target),
-        child: Container(
-          padding: compact
-              ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
-              : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: C.white.withValues(alpha: compact ? 0.98 : 0.95),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: (isGroupMsg ? C.orange : C.cyan).withValues(alpha: 0.4),
-            ),
-            boxShadow: softShadow(blur: 12, alpha: 0.15),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                isGroupMsg ? Icons.group_rounded : Icons.person_rounded,
-                size: compact ? 14 : 28,
-                color: isGroupMsg ? C.orange : C.cyan,
+        child: MaterialSurface(
+          radius: 12,
+          child: Container(
+            padding: compact
+                ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
+                : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: C.white.withValues(alpha: 1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: (isGroupMsg ? C.orange : C.cyan).withValues(alpha: 0.4),
               ),
-              SizedBox(width: compact ? 6 : 8),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!compact) ...[],
-                    Text(
-                      compact
-                          ? '${isGroupMsg ? widget.group.name : fromName}: ${m.text}'
-                          : m.text,
-                      style: ts(
-                        compact ? 10 : 11,
-                        c: C.ink,
-                        w: compact ? FontWeight.w600 : FontWeight.w700,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (!compact)
+              boxShadow: softShadow(blur: 12, alpha: 0.15),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  isGroupMsg ? Icons.group_rounded : Icons.person_rounded,
+                  size: compact ? 14 : 28,
+                  color: isGroupMsg ? C.orange : C.cyan,
+                ),
+                SizedBox(width: compact ? 6 : 8),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!compact) ...[],
                       Text(
-                        isGroupMsg ? widget.group.name : fromName,
-                        style: ts(9, c: C.slate, w: FontWeight.w600),
+                        compact
+                            ? '${isGroupMsg ? widget.group.name : fromName}: ${m.text}'
+                            : m.text,
+                        style: ts(
+                          compact ? 10 : 11,
+                          c: C.ink,
+                          w: compact ? FontWeight.w600 : FontWeight.w700,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                  ],
-                ),
-              ),
-              if (recent.length > 1) ...[
-                const SizedBox(width: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: C.red,
-                    borderRadius: BorderRadius.circular(7),
+                      if (!compact)
+                        Text(
+                          isGroupMsg ? widget.group.name : fromName,
+                          style: ts(9, c: C.slate, w: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
                   ),
-                  child: Text('${recent.length}',
-                      style: ts(8, c: Colors.white, w: FontWeight.w800)),
                 ),
+                if (recent.length > 1) ...[
+                  const SizedBox(width: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: C.red,
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    child: Text('${recent.length}',
+                        style: ts(8, c: Colors.white, w: FontWeight.w800)),
+                  ),
+                ],
+                const SizedBox(width: 4),
+                Icon(Icons.reply_rounded,
+                    size: compact ? 12 : 14, color: C.blue),
               ],
-              const SizedBox(width: 4),
-              Icon(Icons.reply_rounded,
-                  size: compact ? 12 : 14, color: C.blue),
-            ],
+            ),
           ),
         ),
     );

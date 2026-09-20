@@ -440,7 +440,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
       decoration: BoxDecoration(
-        color: C.white,
+        color: C.sheetFill,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(

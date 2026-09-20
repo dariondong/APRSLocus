@@ -2229,17 +2229,17 @@ abstract class AppLocalizations {
   /// **'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。'**
   String get igateIsDown;
 
-  /// No description provided for @igateAllRejected.
-  ///
-  /// In zh, this message translates to:
-  /// **'收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。'**
-  String get igateAllRejected;
-
   /// No description provided for @igateNoRfTraffic.
   ///
   /// In zh, this message translates to:
   /// **'射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。'**
   String get igateNoRfTraffic;
+
+  /// No description provided for @igateAllRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。'**
+  String get igateAllRejected;
 
   /// No description provided for @grpSysJoined.
   ///
@@ -11384,6 +11384,72 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效'**
   String get tncSerialBaudBluetooth;
+
+  /// No description provided for @uiMaterial.
+  ///
+  /// In zh, this message translates to:
+  /// **'界面材质'**
+  String get uiMaterial;
+
+  /// No description provided for @uiMaterialDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'让卡片、顶栏与弹窗半透明，并在它们背后做真实模糊'**
+  String get uiMaterialDesc;
+
+  /// No description provided for @uiMaterialOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭（实色）'**
+  String get uiMaterialOff;
+
+  /// No description provided for @uiMaterialOffDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'表面实色，与旧版完全一致'**
+  String get uiMaterialOffDesc;
+
+  /// No description provided for @uiMaterialGlass.
+  ///
+  /// In zh, this message translates to:
+  /// **'磨砂玻璃'**
+  String get uiMaterialGlass;
+
+  /// No description provided for @uiMaterialGlassDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'更透、模糊更强：像 Windows 11 的亚克力（Acrylic）'**
+  String get uiMaterialGlassDesc;
+
+  /// No description provided for @uiMaterialMica.
+  ///
+  /// In zh, this message translates to:
+  /// **'云母'**
+  String get uiMaterialMica;
+
+  /// No description provided for @uiMaterialMicaDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）'**
+  String get uiMaterialMicaDesc;
+
+  /// No description provided for @uiMaterialHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。'**
+  String get uiMaterialHint;
+
+  /// No description provided for @uiMaterialBgHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。'**
+  String get uiMaterialBgHint;
+
+  /// No description provided for @uiMaterialPreview.
+  ///
+  /// In zh, this message translates to:
+  /// **'预览'**
+  String get uiMaterialPreview;
 }
 
 class _AppLocalizationsDelegate

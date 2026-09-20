@@ -2306,5 +2306,16 @@
   "tncSerialBaud": "Velocidad en baudios (bd)",
   "tncSerialBaudTip": "El cable serie USB y el puerto de datos de la radio deben usar la misma velocidad; si no, no pasa ni un byte. Valores habituales: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP no tiene velocidad en baudios, así que se ignora en dispositivos Bluetooth.",
   "tncSerialBaudHint": "La nueva velocidad se aplica al reconectar (al enviar los parámetros se reconecta una vez automáticamente)",
-  "tncSerialBaudBluetooth": "El dispositivo vinculado es Bluetooth: Bluetooth SPP no tiene velocidad en baudios, así que este ajuste no surte efecto"
+  "tncSerialBaudBluetooth": "El dispositivo vinculado es Bluetooth: Bluetooth SPP no tiene velocidad en baudios, así que este ajuste no surte efecto",
+  "uiMaterial": "Material de la interfaz",
+  "uiMaterialDesc": "Hace translúcidas las tarjetas, barras y diálogos, con desenfoque real detrás",
+  "uiMaterialOff": "Desactivado (sólido)",
+  "uiMaterialOffDesc": "Superficies sólidas, igual que antes",
+  "uiMaterialGlass": "Cristal esmerilado",
+  "uiMaterialGlassDesc": "Más transparente y con más desenfoque, como el acrílico de Windows 11",
+  "uiMaterialMica": "Mica",
+  "uiMaterialMicaDesc": "Más sólido, con menos desenfoque y un matiz de tu color de acento, como el Mica de Windows 11",
+  "uiMaterialHint": "El material solo afecta a las superficies de la app (tarjetas, barras, diálogos, capas del mapa); no es transparencia de ventana. El desenfoque consume GPU: en equipos antiguos puede ir menos fluido que con «Desactivado».",
+  "uiMaterialBgHint": "Este tema usa una imagen de fondo, así que el material no añade fondo propio y solo esmerila las barras y las capas.",
+  "uiMaterialPreview": "Vista previa"
 }

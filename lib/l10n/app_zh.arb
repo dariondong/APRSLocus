@@ -2820,5 +2820,16 @@
   "tncSerialBaud": "串口线速 (bd)",
   "tncSerialBaudTip": "USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。",
   "tncSerialBaudHint": "改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）",
-  "tncSerialBaudBluetooth": "当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效"
+  "tncSerialBaudBluetooth": "当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效",
+  "uiMaterial": "界面材质",
+  "uiMaterialDesc": "让卡片、顶栏与弹窗半透明，并在它们背后做真实模糊",
+  "uiMaterialOff": "关闭（实色）",
+  "uiMaterialOffDesc": "表面实色，与旧版完全一致",
+  "uiMaterialGlass": "磨砂玻璃",
+  "uiMaterialGlassDesc": "更透、模糊更强：像 Windows 11 的亚克力（Acrylic）",
+  "uiMaterialMica": "云母",
+  "uiMaterialMicaDesc": "更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）",
+  "uiMaterialHint": "材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。",
+  "uiMaterialBgHint": "当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。",
+  "uiMaterialPreview": "预览"
 }

@@ -1117,8 +1117,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get igateNoRfTraffic =>
-      'No se ha oído ningún paquete por RF: la pasarela está lista pero '
-      '**no tiene nada que reenviar**. No es un problema de la pasarela: nada llega a la aplicación. Revisa el origen: volumen y silenciador del equipo, antena, si alguien está transmitiendo y el registro por si hay tráfico de RF.';
+      'No se ha oído ningún paquete por RF: la pasarela está lista pero **no tiene nada que reenviar**. No es un problema de la pasarela: nada llega a la aplicación. Revisa el origen: volumen y silenciador del equipo, antena, si alguien está transmitiendo y el registro por si hay tráfico de RF.';
 
   @override
   String get igateAllRejected =>
@@ -6607,4 +6606,42 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tncSerialBaudBluetooth =>
       'El dispositivo vinculado es Bluetooth: Bluetooth SPP no tiene velocidad en baudios, así que este ajuste no surte efecto';
+
+  @override
+  String get uiMaterial => 'Material de la interfaz';
+
+  @override
+  String get uiMaterialDesc =>
+      'Hace translúcidas las tarjetas, barras y diálogos, con desenfoque real detrás';
+
+  @override
+  String get uiMaterialOff => 'Desactivado (sólido)';
+
+  @override
+  String get uiMaterialOffDesc => 'Superficies sólidas, igual que antes';
+
+  @override
+  String get uiMaterialGlass => 'Cristal esmerilado';
+
+  @override
+  String get uiMaterialGlassDesc =>
+      'Más transparente y con más desenfoque, como el acrílico de Windows 11';
+
+  @override
+  String get uiMaterialMica => 'Mica';
+
+  @override
+  String get uiMaterialMicaDesc =>
+      'Más sólido, con menos desenfoque y un matiz de tu color de acento, como el Mica de Windows 11';
+
+  @override
+  String get uiMaterialHint =>
+      'El material solo afecta a las superficies de la app (tarjetas, barras, diálogos, capas del mapa); no es transparencia de ventana. El desenfoque consume GPU: en equipos antiguos puede ir menos fluido que con «Desactivado».';
+
+  @override
+  String get uiMaterialBgHint =>
+      'Este tema usa una imagen de fondo, así que el material no añade fondo propio y solo esmerila las barras y las capas.';
+
+  @override
+  String get uiMaterialPreview => 'Vista previa';
 }

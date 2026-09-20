@@ -1110,8 +1110,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get igateNoRfTraffic =>
-      'Tidak ada paket yang terdengar di RF: kondisi gateway sudah lengkap '
-      'tetapi **tidak ada yang diteruskan**. Ini bukan masalah gateway — paket tidak sampai ke aplikasi. Periksa hulu: volume dan squelch radio, antena, apakah ada yang benar-benar memancar, dan halaman log untuk lalu lintas RF apa pun.';
+      'Tidak ada paket yang terdengar di RF: kondisi gateway sudah lengkap tetapi **tidak ada yang diteruskan**. Ini bukan masalah gateway — paket tidak sampai ke aplikasi. Periksa hulu: volume dan squelch radio, antena, apakah ada yang benar-benar memancar, dan halaman log untuk lalu lintas RF apa pun.';
 
   @override
   String get igateAllRejected =>
@@ -6565,4 +6564,42 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get tncSerialBaudBluetooth =>
       'Perangkat yang tertaut adalah Bluetooth: Bluetooth SPP tidak punya konsep baud, jadi pengaturan ini tidak berpengaruh';
+
+  @override
+  String get uiMaterial => 'Material antarmuka';
+
+  @override
+  String get uiMaterialDesc =>
+      'Membuat kartu, bilah, dan dialog tembus pandang, dengan buram nyata di belakangnya';
+
+  @override
+  String get uiMaterialOff => 'Mati (padat)';
+
+  @override
+  String get uiMaterialOffDesc => 'Permukaan padat, sama seperti sebelumnya';
+
+  @override
+  String get uiMaterialGlass => 'Kaca buram';
+
+  @override
+  String get uiMaterialGlassDesc =>
+      'Lebih tembus pandang dengan buram lebih kuat, seperti Acrylic Windows 11';
+
+  @override
+  String get uiMaterialMica => 'Mica';
+
+  @override
+  String get uiMaterialMicaDesc =>
+      'Lebih padat dengan buram ringan dan sedikit warna aksen, seperti Mica Windows 11';
+
+  @override
+  String get uiMaterialHint =>
+      'Material hanya memengaruhi permukaan aplikasi (kartu, bilah, dialog, lapisan peta); bukan transparansi jendela. Buram memakai GPU, jadi di perangkat lama mungkin terasa kurang lancar dibanding Mati.';
+
+  @override
+  String get uiMaterialBgHint =>
+      'Tema ini memakai gambar latar, jadi material tidak menambah latar sendiri dan hanya membuat bilah serta lapisan menjadi buram.';
+
+  @override
+  String get uiMaterialPreview => 'Pratinjau';
 }

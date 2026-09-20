@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// 官网协议正文地址（与 docs/assets 同源，改协议只需更新网站即可生效）
 const _kTermsBase = 'https://aprslocus.theez.top/';
@@ -128,33 +129,35 @@ class _TermsPageState extends State<TermsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          S.of(context).userAgreement,
-          style: ts(16, w: FontWeight.w700),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: S.of(context).weatherRefresh,
-            icon: Icon(Icons.refresh_rounded, color: C.blue, size: 20),
-            onPressed: _reload,
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          IconButton(
-            tooltip: S.of(context).openInBrowser,
-            icon: Icon(Icons.open_in_new_rounded, color: C.blue, size: 18),
-            onPressed: () => launchUrl(
-              Uri.parse('$_kTermsBase$_webPath'),
-              mode: LaunchMode.externalApplication,
+          title: Text(
+            S.of(context).userAgreement,
+            style: ts(16, w: FontWeight.w700),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              tooltip: S.of(context).weatherRefresh,
+              icon: Icon(Icons.refresh_rounded, color: C.blue, size: 20),
+              onPressed: _reload,
             ),
-          ),
-        ],
+            IconButton(
+              tooltip: S.of(context).openInBrowser,
+              icon: Icon(Icons.open_in_new_rounded, color: C.blue, size: 18),
+              onPressed: () => launchUrl(
+                Uri.parse('$_kTermsBase$_webPath'),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -328,7 +331,7 @@ class _TermsPageState extends State<TermsPage> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
             decoration: BoxDecoration(
-              color: C.white,
+              color: C.sheetFill,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: C.border, width: 0.5),
               boxShadow: [

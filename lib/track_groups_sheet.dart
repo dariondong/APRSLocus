@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
+import 'material.dart';
 import 'models.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -51,135 +52,139 @@ class _GroupPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final groups = List<ChatGroup>.from(state.chatGroups)
       ..sort((a, b) => a.name.compareTo(b.name));
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-      ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.gps_fixed_rounded, size: 20, color: C.blue),
-                const SizedBox(width: 8),
-                Text(
-                  S.of(context).groupTracking,
-                  style: ts(16, w: FontWeight.w800),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: C.grey),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              S.of(context).groupTrackingHint,
-              style: ts(11, c: C.grey, h: 1.5),
-            ),
-            const SizedBox(height: 8),
-            // 快速新建跟踪组入口
-            InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => _quickCreate(context),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 11,
-                ),
-                decoration: BoxDecoration(
-                  color: C.blueBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: C.blue.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.add_rounded, size: 18, color: C.blue),
-                    const SizedBox(width: 8),
-                    Text(
-                      S.of(context).quickTrackCreate,
-                      style: ts(13, c: C.blue, w: FontWeight.w700),
-                    ),
-                  ],
-                ),
+    return MaterialSurface(
+      radius: 20,
+      topOnly: true,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.gps_fixed_rounded, size: 20, color: C.blue),
+                  const SizedBox(width: 8),
+                  Text(
+                    S.of(context).groupTracking,
+                    style: ts(16, w: FontWeight.w800),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: C.grey),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10),
-            if (groups.isEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: C.bgSoft,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  S.of(context).trackGroupsEmptyHint,
-                  textAlign: TextAlign.center,
-                  style: ts(12, c: C.grey, h: 1.5),
-                ),
-              )
-            else
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final g in groups)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color: C.bgSoft,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          dense: true,
-                          leading: CircleAvatar(
-                            radius: 17,
-                            backgroundColor: C.orangeBg,
-                            child: Icon(Icons.group_rounded,
-                                size: 18, color: C.orange),
-                          ),
-                          title: Text(
-                            g.name,
-                            style: ts(13, w: FontWeight.w700),
-                          ),
-                          subtitle: Text(
-                            S
-                                .of(context)
-                                .memberOnlineCount(
-                                  g.confirmedMembers.length,
-                                  g.confirmedMembers.where((c) {
-                                    for (final s in state.stations) {
-                                      if (s.call.toUpperCase() == c) {
-                                        return s.effectiveStatus != St.offline;
-                                      }
-                                    }
-                                    return false;
-                                  }).length,
-                                ),
-                            style: ts(10, c: C.grey),
-                          ),
-                          trailing: const Icon(
-                            Icons.chevron_right_rounded,
-                            size: 20,
-                            color: Colors.black45,
-                          ),
-                          onTap: () => _enter(context, g),
-                        ),
+              const SizedBox(height: 4),
+              Text(
+                S.of(context).groupTrackingHint,
+                style: ts(11, c: C.grey, h: 1.5),
+              ),
+              const SizedBox(height: 8),
+              // 快速新建跟踪组入口
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => _quickCreate(context),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 11,
+                  ),
+                  decoration: BoxDecoration(
+                    color: C.blueBg,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: C.blue.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.add_rounded, size: 18, color: C.blue),
+                      const SizedBox(width: 8),
+                      Text(
+                        S.of(context).quickTrackCreate,
+                        style: ts(13, c: C.blue, w: FontWeight.w700),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-          ],
+              const SizedBox(height: 10),
+              if (groups.isEmpty)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: C.bgSoft,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    S.of(context).trackGroupsEmptyHint,
+                    textAlign: TextAlign.center,
+                    style: ts(12, c: C.grey, h: 1.5),
+                  ),
+                )
+              else
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final g in groups)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            color: C.bgSoft,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            dense: true,
+                            leading: CircleAvatar(
+                              radius: 17,
+                              backgroundColor: C.orangeBg,
+                              child: Icon(Icons.group_rounded,
+                                  size: 18, color: C.orange),
+                            ),
+                            title: Text(
+                              g.name,
+                              style: ts(13, w: FontWeight.w700),
+                            ),
+                            subtitle: Text(
+                              S
+                                  .of(context)
+                                  .memberOnlineCount(
+                                    g.confirmedMembers.length,
+                                    g.confirmedMembers.where((c) {
+                                      for (final s in state.stations) {
+                                        if (s.call.toUpperCase() == c) {
+                                          return s.effectiveStatus != St.offline;
+                                        }
+                                      }
+                                      return false;
+                                    }).length,
+                                  ),
+                              style: ts(10, c: C.grey),
+                            ),
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              size: 20,
+                              color: Colors.black45,
+                            ),
+                            onTap: () => _enter(context, g),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -271,163 +276,167 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
   @override
   Widget build(BuildContext context) {
     final cands = _candidates;
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
-      ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.group_add_rounded, size: 20, color: C.blue),
-                const SizedBox(width: 8),
-                Text(
-                  S.of(context).quickTrackCreate,
-                  style: ts(16, w: FontWeight.w800),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: C.grey),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              S.of(context).quickTrackHint,
-              style: ts(11, c: C.grey, h: 1.5),
-            ),
-            const SizedBox(height: 12),
-            // 组名（可选）
-            TextField(
-              controller: _nameCtrl,
-              style: ts(13),
-              decoration: InputDecoration(
-                labelText: S.of(context).quickTrackName,
-                labelStyle: ts(12, c: C.grey),
-                isDense: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: C.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: C.border),
+    return MaterialSurface(
+      radius: 20,
+      topOnly: true,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.9,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.group_add_rounded, size: 20, color: C.blue),
+                  const SizedBox(width: 8),
+                  Text(
+                    S.of(context).quickTrackCreate,
+                    style: ts(16, w: FontWeight.w800),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: C.grey),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                S.of(context).quickTrackHint,
+                style: ts(11, c: C.grey, h: 1.5),
+              ),
+              const SizedBox(height: 12),
+              // 组名（可选）
+              TextField(
+                controller: _nameCtrl,
+                style: ts(13),
+                decoration: InputDecoration(
+                  labelText: S.of(context).quickTrackName,
+                  labelStyle: ts(12, c: C.grey),
+                  isDense: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: C.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: C.border),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            // 从接收台站勾选
-            Text(
-              S.of(context).quickTrackPickLabel,
-              style: ts(12, c: C.slate, w: FontWeight.w700),
-            ),
-            const SizedBox(height: 6),
-            if (cands.isEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: C.bgSoft,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  S.of(context).quickTrackNoStations,
-                  style: ts(11, c: C.grey),
-                ),
-              )
-            else
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final c in cands)
-                      CheckboxListTile(
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        value: _picked.contains(c),
-                        title: Text(
-                          c,
-                          style: ts(12.5, c: C.ink, w: FontWeight.w600),
+              const SizedBox(height: 10),
+              // 从接收台站勾选
+              Text(
+                S.of(context).quickTrackPickLabel,
+                style: ts(12, c: C.slate, w: FontWeight.w700),
+              ),
+              const SizedBox(height: 6),
+              if (cands.isEmpty)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: C.bgSoft,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    S.of(context).quickTrackNoStations,
+                    style: ts(11, c: C.grey),
+                  ),
+                )
+              else
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final c in cands)
+                        CheckboxListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          value: _picked.contains(c),
+                          title: Text(
+                            c,
+                            style: ts(12.5, c: C.ink, w: FontWeight.w600),
+                          ),
+                          onChanged: (v) =>
+                              setState(() => v! ? _picked.add(c) : _picked.remove(c)),
                         ),
-                        onChanged: (v) =>
-                            setState(() => v! ? _picked.add(c) : _picked.remove(c)),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 10),
+              // 手输补充
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _manualCtrl,
+                      style: ts(13),
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        hintText: S.of(context).quickTrackManualHint,
+                        hintStyle: ts(12, c: C.greyLight),
+                        isDense: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: C.border),
+                        ),
+                      ),
+                      onSubmitted: (_) => _applyManual(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    onPressed: _applyManual,
+                    icon: Icon(Icons.add_rounded, color: C.blue),
+                  ),
+                ],
+              ),
+              if (_picked.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final c in _picked)
+                      InputChip(
+                        label: Text(c, style: ts(11, w: FontWeight.w700)),
+                        onDeleted: () => setState(() => _picked.remove(c)),
+                        visualDensity: VisualDensity.compact,
+                        backgroundColor: C.blueBg,
+                        deleteIconColor: C.blue,
                       ),
                   ],
                 ),
-              ),
-            const SizedBox(height: 10),
-            // 手输补充
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _manualCtrl,
-                    style: ts(13),
-                    textCapitalization: TextCapitalization.characters,
-                    decoration: InputDecoration(
-                      hintText: S.of(context).quickTrackManualHint,
-                      hintStyle: ts(12, c: C.greyLight),
-                      isDense: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: C.border),
-                      ),
-                    ),
-                    onSubmitted: (_) => _applyManual(),
+              ],
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: _confirm,
+                  icon: Icon(Icons.play_arrow_rounded, size: 18),
+                  label: Text(
+                    S.of(context).quickTrackStart,
+                    style: ts(13, w: FontWeight.w700),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: C.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: _applyManual,
-                  icon: Icon(Icons.add_rounded, color: C.blue),
-                ),
-              ],
-            ),
-            if (_picked.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  for (final c in _picked)
-                    InputChip(
-                      label: Text(c, style: ts(11, w: FontWeight.w700)),
-                      onDeleted: () => setState(() => _picked.remove(c)),
-                      visualDensity: VisualDensity.compact,
-                      backgroundColor: C.blueBg,
-                      deleteIconColor: C.blue,
-                    ),
-                ],
               ),
             ],
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _confirm,
-                icon: Icon(Icons.play_arrow_rounded, size: 18),
-                label: Text(
-                  S.of(context).quickTrackStart,
-                  style: ts(13, w: FontWeight.w700),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: C.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

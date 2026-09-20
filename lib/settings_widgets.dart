@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'widgets.dart';
 import 'state.dart';
+import 'material.dart';
 
 /// 设置子页面外壳：标题 + 返回 + 可滚动内容
 class SettingsPageShell extends StatelessWidget {
@@ -25,51 +26,59 @@ class SettingsPageShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.slate),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Row(children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 18),
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: C.slate),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          SizedBox(width: 10),
-          Text(title, style: ts(16, w: FontWeight.w700)),
-        ]),
-        bottom: subtitle.isEmpty
-            ? null
-            : PreferredSize(
-                preferredSize: const Size.fromHeight(32),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                  child: Row(children: [
-                    Container(
-                      width: 3,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    SizedBox(width: 6),
-                    Expanded(
-                      child: Text(subtitle,
-                          style: ts(11, c: C.grey),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                  ]),
+          title: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Icon(icon, color: color, size: 18),
               ),
+              SizedBox(width: 10),
+              Text(title, style: ts(16, w: FontWeight.w700)),
+            ],
+          ),
+          bottom: subtitle.isEmpty
+              ? null
+              : PreferredSize(
+                  preferredSize: const Size.fromHeight(32),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 3,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            subtitle,
+                            style: ts(11, c: C.grey),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

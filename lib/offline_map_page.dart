@@ -8,6 +8,7 @@ import 'theme.dart';
 import 'tile_cache.dart';
 import 'tile_map.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// ─── 离线地图：区域管理页 ───
 ///
@@ -524,14 +525,16 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
 
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.slate),
-          onPressed: () => Navigator.pop(context),
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: C.slate),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(s.offlineNew, style: ts(16, w: FontWeight.w700)),
         ),
-        title: Text(s.offlineNew, style: ts(16, w: FontWeight.w700)),
       ),
       body: Column(children: [
         // 地图（当前视图 = 下载范围）

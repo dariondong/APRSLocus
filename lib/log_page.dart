@@ -5,6 +5,7 @@ import 'models.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// 日志查看页：分级筛选、清空、复制导出
 class LogPage extends StatelessWidget {
@@ -20,37 +21,39 @@ class LogPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        title: Text(S.of(context).systemLog),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            tooltip: S.of(context).copyAllLogs,
-            icon: const Icon(Icons.copy_rounded, size: 20),
-            onPressed: () {
-              final sb = StringBuffer();
-              for (final l in state.logs) {
-                sb.writeln(
-                  '${_fmt(l.time)} [${localizedLogLevelName(context, l.level)}] ${l.source} ${l.message}',
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          title: Text(S.of(context).systemLog),
+          centerTitle: false,
+          actions: [
+            IconButton(
+              tooltip: S.of(context).copyAllLogs,
+              icon: const Icon(Icons.copy_rounded, size: 20),
+              onPressed: () {
+                final sb = StringBuffer();
+                for (final l in state.logs) {
+                  sb.writeln(
+                    '${_fmt(l.time)} [${localizedLogLevelName(context, l.level)}] ${l.source} ${l.message}',
+                  );
+                }
+                Clipboard.setData(ClipboardData(text: sb.toString()));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).copiedLogs(state.logs.length)),
+                    behavior: SnackBarBehavior.floating,
+                  ),
                 );
-              }
-              Clipboard.setData(ClipboardData(text: sb.toString()));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(S.of(context).copiedLogs(state.logs.length)),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-          ),
-          IconButton(
-            tooltip: S.of(context).clearLogs,
-            icon: const Icon(Icons.delete_sweep_rounded, size: 20),
-            onPressed: () => state.clearLogs(),
-          ),
-          const SizedBox(width: 4),
-        ],
+              },
+            ),
+            IconButton(
+              tooltip: S.of(context).clearLogs,
+              icon: const Icon(Icons.delete_sweep_rounded, size: 20),
+              onPressed: () => state.clearLogs(),
+            ),
+            const SizedBox(width: 4),
+          ],
+        ),
       ),
       body: ListenableBuilder(
         listenable: state,
@@ -74,7 +77,7 @@ class LogPage extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: C.white,
+                  color: C.sheetFill,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: C.border),
                 ),

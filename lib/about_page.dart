@@ -11,6 +11,7 @@ import 'widgets.dart';
 import 'state.dart';
 import 'sponsor_page.dart';
 import 'terms_page.dart';
+import 'material.dart';
 
 /// 彩蛋呼号 → 台词
 
@@ -71,7 +72,7 @@ class _AboutPageState extends State<AboutPage>
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.all(20),
@@ -401,15 +402,17 @@ class _AboutPageState extends State<AboutPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
-          onPressed: () => Navigator.pop(context),
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(S.of(context).about, style: ts(16, w: FontWeight.w700)),
+          centerTitle: true,
         ),
-        title: Text(S.of(context).about, style: ts(16, w: FontWeight.w700)),
-        centerTitle: true,
       ),
       body: Stack(
         children: [

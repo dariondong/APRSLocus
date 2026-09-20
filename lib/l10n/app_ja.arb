@@ -2306,5 +2306,16 @@
   "tncSerialBaud": "シリアル通信速度 (bd)",
   "tncSerialBaudTip": "USB シリアルケーブルと無線機のデータ端子は同じ速度にする必要があり、違うと 1 バイトも通りません。よく使う値：9600 / 19200 / 38400 / 57600 / 115200。Bluetooth SPP には速度の概念がなく、Bluetooth 機器ではこの設定は無効です。",
   "tncSerialBaudHint": "変更した速度は再接続後に有効になります（「パラメータ送信」で1 回自動的に再接続します）",
-  "tncSerialBaudBluetooth": "現在バインドされているのは Bluetooth 機器です。Bluetooth SPP には速度の概念がないため、この設定は無効です"
+  "tncSerialBaudBluetooth": "現在バインドされているのは Bluetooth 機器です。Bluetooth SPP には速度の概念がないため、この設定は無効です",
+  "uiMaterial": "画面マテリアル",
+  "uiMaterialDesc": "カード・バー・ダイアログを半透明にし、その背後を実際にぼかします",
+  "uiMaterialOff": "オフ（不透明）",
+  "uiMaterialOffDesc": "表面は不透明で、従来どおりです",
+  "uiMaterialGlass": "すりガラス",
+  "uiMaterialGlassDesc": "より透明でぼかしが強め。Windows 11 のアクリルに近い見た目です",
+  "uiMaterialMica": "マイカ",
+  "uiMaterialMicaDesc": "より不透明でぼかしは控えめ、アクセント色がうっすら乗ります。Windows 11 のマイカに近い見た目です",
+  "uiMaterialHint": "マテリアルはアプリ内の表面（カード・バー・ダイアログ・地図の重なり）だけにかかります。ウィンドウ自体の透明化ではありません。ぼかしは GPU を使うため、古い端末ではオフより動作が重くなることがあります。",
+  "uiMaterialBgHint": "このテーマは背景画像を使っているため、マテリアルは独自の背景を描かず、バーと重なりだけをぼかします。",
+  "uiMaterialPreview": "プレビュー"
 }

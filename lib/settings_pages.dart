@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'state.dart';
@@ -225,7 +227,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, setModalState) => Container(
           decoration: BoxDecoration(
-            color: C.white,
+            color: C.sheetFill,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -329,7 +331,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       builder: (ctx) => Container(
         height: MediaQuery.of(context).size.height * 0.48,
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(children: [
@@ -466,7 +468,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       builder: (ctx) => Container(
         height: MediaQuery.of(context).size.height * 0.75,
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(children: [
@@ -1271,7 +1273,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
         void close() => Navigator.pop(ctx);
         return Container(
           decoration: BoxDecoration(
-            color: C.white,
+            color: C.sheetFill,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: EdgeInsets.fromLTRB(20, 10, 20,
@@ -2381,7 +2383,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: C.white,
+        backgroundColor: C.sheetFill,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(S.of(context).addCountry, style: ts(16, w: FontWeight.w700)),
         content: SizedBox(
@@ -2491,6 +2493,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
               // 不如直接说清楚去哪儿改。
               if (ThemeController.instance.active.overridesColor('primary'))
                 SettingsHint(S.of(context).themeFixedPrimary, color: C.orange),
+              _uiMaterialSelector(st),
               _languageSelector(st),
               _uiScaleSelector(st),
               SettingsRow2(S.of(context).unit, S.of(context).metricUnits),
@@ -2586,6 +2589,156 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
       ),
     );
   }
+
+  /// 界面材质选择（磨砂玻璃 / 云母）
+  ///
+  /// 给三档而不是一个开关：这两个材质的观感差别（透多少 / 糊多狠）是要**选**的，
+  /// 只给「开 / 关」等于替用户做了选择。
+  ///
+  /// 每档都配一张小样，因为「磨砂玻璃」和「云母」这两个词各人理解不同：
+  /// 只给名字就只能靠点了再看、不满意再点回来。
+  Widget _uiMaterialSelector(AppState st) {
+    final cur = st.uiMaterialValue;
+    final options = <(UiMaterial, String, String)>[
+      (
+        UiMaterial.none,
+        S.of(context).uiMaterialOff,
+        S.of(context).uiMaterialOffDesc,
+      ),
+      (
+        UiMaterial.glass,
+        S.of(context).uiMaterialGlass,
+        S.of(context).uiMaterialGlassDesc,
+      ),
+      (
+        UiMaterial.mica,
+        S.of(context).uiMaterialMica,
+        S.of(context).uiMaterialMicaDesc,
+      ),
+    ];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.border, width: 0.4))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(S.of(context).uiMaterial, style: ts(12, c: C.slate)),
+          const SizedBox(height: 2),
+          Text(S.of(context).uiMaterialDesc, style: ts(10, c: C.grey, h: 1.35)),
+          const SizedBox(height: 8),
+          for (final (m, name, desc) in options)
+            GestureDetector(
+              onTap: () => st.setUiMaterial(uiMaterialName(m)),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: cur == m ? C.cyanBg : C.bgSoft,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: cur == m ? C.cyan : C.border,
+                    width: cur == m ? 1.5 : 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      cur == m
+                          ? Icons.radio_button_checked_rounded
+                          : Icons.radio_button_unchecked_rounded,
+                      size: 16,
+                      color: cur == m ? C.cyan : C.greyLight,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: ts(
+                              12,
+                              c: cur == m ? C.cyan : C.slate,
+                              w: cur == m ? FontWeight.w700 : FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(desc, style: ts(10, c: C.grey, h: 1.3)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _materialSwatch(m),
+                  ],
+                ),
+              ),
+            ),
+          // 主题已有背景图时，材质不再自己造底 —— 不说清楚的话，用户会以为
+          // 「选了磨砂玻璃但底色没变成材质那样」是自己点坏了。
+          if (ThemeController.instance.active.hasBackground)
+            SettingsHint(S.of(context).uiMaterialBgHint, color: C.orange),
+          SettingsHint(S.of(context).uiMaterialHint),
+        ],
+      ),
+    );
+  }
+
+  /// 材质小样：一层渐变底 + 一层该材质的磨砂条
+  ///
+  /// 底用的是与真实材质壁纸**同一对颜色**（C.materialAccent / C.materialBase），
+  /// 所以这不是另画一张示意图，而是把那层底缩到 68×40 里。
+  /// 「关闭」那一档画成实色 —— 两个小样一对比，「开了之后到底变在哪里」不用说。
+  Widget _materialSwatch(UiMaterial m) {
+    final sigma = uiMaterialBlurOf(m);
+    final alpha = uiMaterialAlphaOf(m);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: 68,
+        height: 40,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [C.materialAccent, C.materialBase],
+                  ),
+                ),
+              ),
+            ),
+            // 「内容」：三条不同宽度的色带。模糊把它们吃成什么样，
+            // 就是这一档「糊不糊」的直接证据。
+            Positioned(left: 6, top: 8, child: _swatchBar(C.blue, 34)),
+            Positioned(left: 6, top: 18, child: _swatchBar(C.green, 22)),
+            Positioned(left: 6, top: 28, child: _swatchBar(C.orange, 44)),
+            // 磨砂层：关闭时不画，小样就是一块干净的实色渐变
+            if (m != UiMaterial.none)
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+                  child:
+                      ColoredBox(color: C.white.withValues(alpha: alpha)),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _swatchBar(Color c, double w) => Container(
+        width: w,
+        height: 6,
+        decoration: BoxDecoration(
+          color: c.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(3),
+        ),
+      );
 
   /// 语言选择
   Widget _languageSelector(AppState st) {
@@ -3185,7 +3338,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: C.white,
+        backgroundColor: C.sheetFill,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(S.of(context).restartWizardTitle, style: ts(16, w: FontWeight.w700)),
         content: Text(S.of(context).restartWizardConfirm,

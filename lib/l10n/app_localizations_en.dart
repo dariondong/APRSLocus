@@ -1110,13 +1110,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'APRS-IS is not connected, so the gateway has nowhere to relay to. The counters will only start moving once it is up (see the link status card).';
 
   @override
-  String get igateAllRejected =>
-      'RF packets are arriving but all of them were rejected by loop protection: they carry TCPIP*/TCPXX* or a q-construct, meaning they came from the internet, and sending them back would multiply the same packet forever. This is the gateway **working correctly**, not a fault.';
+  String get igateNoRfTraffic =>
+      'No packets heard on RF at all: the gateway is fully armed but has nothing to relay. This is not a gateway problem — nothing is reaching the app. Check upstream: radio volume and squelch, antenna, whether anyone is actually transmitting, and the log page for any RF traffic at all.';
 
   @override
-  String get igateNoRfTraffic =>
-      'No packets heard on RF at all: the gateway is fully armed but has '
-      'nothing to relay. This is not a gateway problem — nothing is reaching the app. Check upstream: radio volume and squelch, antenna, whether anyone is actually transmitting, and the log page for any RF traffic at all.';
+  String get igateAllRejected =>
+      'RF packets are arriving but all of them were rejected by loop protection: they carry TCPIP*/TCPXX* or a q-construct, meaning they came from the internet, and sending them back would multiply the same packet forever. This is the gateway **working correctly**, not a fault.';
 
   @override
   String grpSysJoined(String call) {
@@ -6556,4 +6555,42 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tncSerialBaudBluetooth =>
       'A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect';
+
+  @override
+  String get uiMaterial => 'UI material';
+
+  @override
+  String get uiMaterialDesc =>
+      'Make cards, bars and dialogs translucent, with a real blur behind them';
+
+  @override
+  String get uiMaterialOff => 'Off (solid)';
+
+  @override
+  String get uiMaterialOffDesc => 'Solid surfaces, exactly as before';
+
+  @override
+  String get uiMaterialGlass => 'Frosted glass';
+
+  @override
+  String get uiMaterialGlassDesc =>
+      'More transparent with a stronger blur — like Windows 11 Acrylic';
+
+  @override
+  String get uiMaterialMica => 'Mica';
+
+  @override
+  String get uiMaterialMicaDesc =>
+      'More solid with a lighter blur and a tint of your accent colour — like Windows 11 Mica';
+
+  @override
+  String get uiMaterialHint =>
+      'The material only affects the app\'s own surfaces (cards, bars, dialogs, map overlays) — it is not window transparency. Blur costs GPU time, so on older devices it may feel less smooth than Off.';
+
+  @override
+  String get uiMaterialBgHint =>
+      'This theme uses a background image, so the material adds no backdrop of its own and only frosts the bars and overlays.';
+
+  @override
+  String get uiMaterialPreview => 'Preview';
 }

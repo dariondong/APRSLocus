@@ -11,6 +11,7 @@ import 'models.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// ADIF 导出页：勾选会话 → 生成 `.adi` 文件。
 ///
@@ -316,11 +317,13 @@ class _ExportAdifPageState extends State<ExportAdifPage> {
 
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(s.exportAdif),
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: surfaceTint(Colors.white),
+          elevation: 0,
+          centerTitle: true,
+          title: Text(s.exportAdif),
+        ),
       ),
       body: total == 0
           ? Center(

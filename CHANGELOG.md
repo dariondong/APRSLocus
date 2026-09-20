@@ -1,5 +1,83 @@
 # 更新日志
 
+## [1.6.138] - 2026-09-20
+
+### ✨ 界面材质：磨砂玻璃与云母，显示设置里可切换 / New UI materials — frosted glass and mica, switchable in Display settings
+
+显示设置里新增一项「界面材质」，三档：**关闭（默认）／磨砂玻璃／云母**。
+
+**这三档各自是什么**
+
+- **磨砂玻璃**：更透（表面不透明度 0.55）、模糊更强，接近 Windows 11 的亚克力（Acrylic）；
+- **云母**：更实（0.78）、模糊较轻，带一层从主色混出来的色，接近 Windows 11 的云母（Mica）；
+- **关闭**：与旧版**逐像素一致** —— 这是默认值，也是兼容底线：老用户升级后界面不会被改掉。
+
+**实现上的三处取舍（都写进了代码注释，因为下次改动会再碰到）**
+
+- **底是一次性画好的**：材质开启（且主题没设背景图）时，应用在最底层画一张从主色混出来的
+  柔和渐变当「壁纸」，页面底色随之透明 —— 半透明表面背后得有东西可透，否则磨砂玻璃看起来
+  只是「变淡了」，用户只会以为开关没生效。
+- **只有压在内容上的表面做真模糊**：顶栏、侧栏、底部导航、各页 AppBar、地图浮层、
+  地图/站点/群组面板用 `BackdropFilter` 真模糊，因为背后是地图瓦片或正在滚动的列表，
+  不模糊就会糊成一片。**卡片不套模糊** —— 它们背后只是那张已经画好的底，再模糊一次是纯浪费，
+  而每个 `BackdropFilter` 都是一次整屏 `saveLayer`：一屏十几张卡片就是十几层，低端 Android 上直接掉帧。
+- **材质与主题不打架**：表面不透明度 = 材质档位 × 用户自己调的 `surfaceAlpha`（相对默认 0.85 的比例），
+  所以「玻璃永远比云母透」和「滑杆往哪边拉就真往哪边去」两件事同时成立。
+  主题已设**背景图**时不再叠材质壁纸（在他自己挑的图上再叠一层渐变只会变成脏颜色），
+  只把顶栏与浮层做成磨砂，设置页里也会说明这一点。
+
+**设置页里每一档都配了小样**（渐变底 + 三条色带，再盖上该档的磨砂层）。
+小样用的是与真实材质**同一对颜色、同一组数字**（`uiMaterialAlphaOf` / `uiMaterialBlurOf`），
+预览和实际效果不会各走各的 —— 那种漂移只有截图对比才看得出来，也就是没人会发现。
+
+**边界**：这是应用内的材质，不是系统窗口透明（Windows 的 Mica/Acrylic 窗口效果要额外插件，
+而 Android 上没有对等物，那会变成「这档设置在手机上点了没反应」）。模糊要占显卡：旧机型上
+可能不如「关闭」顺滑，设置页里也照实说了。
+
+新增偏好键 `uiMaterial`（字符串，空 = 关闭，认不出的值一律回落关闭），已归入备份的「设置」分组，
+换机后材质设置跟着走；新增 11 个文案键 × 6 语言。
+
+---
+
+**Display settings has a new “UI material” entry with three options: Off (default) / Frosted glass / Mica.**
+
+- **Frosted glass** — more transparent (surfaces at 0.55) with a stronger blur, close to Windows 11 Acrylic.
+- **Mica** — more solid (0.78) with a lighter blur and a tint mixed from your accent colour, close to Windows 11 Mica.
+- **Off** — pixel-identical to previous versions. It is the default, and that is the compatibility promise: an
+  existing user upgrading must not find their UI changed underneath them.
+
+**Three deliberate trade-offs (documented in the code, because the next change will hit them again)**
+
+- **The backdrop is painted once.** With a material on (and no background image in the theme), the app paints a
+  soft gradient mixed from the accent colour as a wallpaper and makes page fills transparent — a translucent
+  surface needs something worth showing through, otherwise “frosted glass” just looks slightly faded and users
+  conclude the switch does nothing.
+- **Only surfaces that sit *on top of content* get a real blur**: top bar, side rail, bottom navigation, page
+  app bars, map overlays and the map/station/group panels. What is behind them is map tiles or a scrolling list,
+  so without a blur the text would smear into them. **Cards are deliberately not blurred** — the only thing behind
+  a card is that already-painted backdrop, so blurring again buys nothing while every `BackdropFilter` costs a
+  full-screen `saveLayer`; a dozen cards on screen means a dozen layers and visible frame drops on low-end Android.
+- **Materials and themes do not fight each other**: surface opacity = the material's base × the user's own
+  `surfaceAlpha` (as a ratio against the 0.85 default), so “glass is always more transparent than mica” and
+  “the slider really moves things” hold at the same time. When the theme already has a **background image**, the
+  material wallpaper is skipped (stacking a gradient over a picture the user chose only makes mud) and only the
+  bars and overlays get frosted — the settings page says so as well.
+
+**Every option in settings comes with a small swatch** (gradient backdrop, three colour bars, then that
+option's frosting). The swatch uses the very same colours and numbers as the real thing
+(`uiMaterialAlphaOf` / `uiMaterialBlurOf`), so the preview cannot drift away from the result — that kind of drift
+is only visible when someone compares screenshots, which means nobody ever finds it.
+
+**Scope, stated honestly**: this is an in-app material, not window transparency. (Real Windows Mica/Acrylic
+windows need an extra plugin, and Android has no equivalent — that would have turned this switch into “nothing
+happens on my phone”.) Blur costs GPU time, so on older devices it may feel less smooth than Off; the settings
+page says that too.
+
+New preference key `uiMaterial` (string, empty = off, unrecognised values fall back to off), filed under the
+backup “settings” group so it travels with a device change, plus 11 new localised strings × 6 languages.
+
+---
+
 ## [1.6.137] - 2026-09-19
 
 ### 🛠 修「网关传递统计一直是 0」：先把 0 说清楚，也别自己制造 0 / Fixing “the iGate counters are always 0” — explain the zero, and stop creating one

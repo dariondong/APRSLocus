@@ -28,6 +28,7 @@ class _AppState extends State<App> {
   bool _lastDark = false;
   String _lastTheme = '';
   String _lastLocale = '';
+  String _lastMaterial = '';
   int _lastReloadTick = 0;
   int _lastThemeRevision = 0;
 
@@ -47,19 +48,26 @@ class _AppState extends State<App> {
     final dark = _state.darkMode;
     final tc = _state.themeColor;
     final loc = _state.locale;
+    final mat = _state.uiMaterial;
     final rt = _state.reloadTick;
     // 主题改动也要重建 MaterialApp：颜色/圆角写在 ThemeData 里，
     // 但它们**不**需要换 key（换 key 会把导航栈整个丢掉，
     // 主题页正在编辑时会被弹出去）。
     final tr = _state.themeRevision;
+    // 材质（磨砂玻璃/云母）也要进这个判断：它改的是**表面填色与底图**，
+    // 不重建 MaterialApp 的话只有下次进页面才生效 —— 那和「开关坏了」没区别。
+    // （但它不能进 `key`：换 key 会把导航栈整个丢掉，用户正在显示设置页里
+    //  点这一档，界面会当场弹回首页。）
     if (dark != _lastDark ||
         tc != _lastTheme ||
         loc != _lastLocale ||
+        mat != _lastMaterial ||
         rt != _lastReloadTick ||
         tr != _lastThemeRevision) {
       _lastDark = dark;
       _lastTheme = tc;
       _lastLocale = loc;
+      _lastMaterial = mat;
       _lastReloadTick = rt;
       _lastThemeRevision = tr;
       if (mounted) setState(() {});
@@ -117,11 +125,11 @@ class _AppState extends State<App> {
       ],
       builder: (context, child) {
         final scale = _state.uiScale;
-        // 背景图在这里**一次性**生效：builder 位于 MaterialApp 之下、Navigator
-        // 之上，所以所有页面（含设置子页、push 出来的对话框页面）都盖到了，
-        // 不必逐个页面去改 —— 逐个改的结果必然是漏掉几个，而那几页看起来
-        // 就像「背景图有时候不生效」。
-        final bg = ThemeController.instance.buildAppBackground();
+        // 底（背景图 / 材质壁纸）在这里**一次性**生效：builder 位于 MaterialApp
+        // 之下、Navigator 之上，所以所有页面（含设置子页、push 出来的对话框
+        // 页面）都盖到了，不必逐个页面去改 —— 逐个改的结果必然是漏掉几个，
+        // 而那几页看起来就像「背景图/材质有时候不生效」。
+        final bg = ThemeController.instance.buildBackdrop();
         Widget content = AppWidgetSync(state: _state, child: child!);
         if (bg != null) {
           content = Stack(

@@ -176,7 +176,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),

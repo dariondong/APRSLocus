@@ -56,6 +56,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'smartBeaconOn', 'smartTiers',
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
+    // 界面材质（磨砂玻璃 / 云母）：与深色模式、界面缩放同类的**显示偏好**，
+    // 用户换机后当然希望屏幕还是他调好的那副样子。
+    'uiMaterial',
     'uiScale', 'mapType', 'updateChannel',
     // 离线地图：缓存开关、仅离线模式，以及**区域记录**（只有范围与进度，
     // 瓦片本体是文件不随备份走 —— 换机后区域记录还在，重新点「继续」即可）

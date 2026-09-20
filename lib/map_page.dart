@@ -13,6 +13,7 @@ import 'vector_map.dart';
 import 'immersive_page.dart';
 import 'track_groups_sheet.dart';
 import 'coord.dart';
+import 'material.dart';
 
 class MapPage extends StatefulWidget {
   final AppState state;
@@ -533,7 +534,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       _toolBtn(
                         icon: Icons.layers_rounded,
                         onTap: () => _showLayerMenu(context),
-                        bg: _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
+                        // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
+                        // 只让通透程度跟着材质走（详见 material.dart）
+                        bg: surfaceTint(
+                          _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
+                        ),
                         fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
                         border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
                       ),
@@ -549,7 +554,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       _toolBtn(
                         icon: Icons.map_rounded,
                         onTap: _showMapTypeMenu,
-                        bg: C.white,
+                        bg: surfaceTint(C.white),
                         fg: C.slate,
                         border: C.border,
                       ),
@@ -619,24 +624,27 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     left: 0,
                     right: 0,
                     child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: C.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: softShadow(),
-                        ),
-                        child: Text(
-                          S
-                              .of(context)
-                              .foundStations(
-                                vis.length,
-                                widget.searchQuery.trim(),
-                              ),
-                          style: ts(12, w: FontWeight.w600),
+                      child: MaterialSurface(
+                        radius: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: C.sheetFill,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: softShadow(),
+                          ),
+                          child: Text(
+                            S
+                                .of(context)
+                                .foundStations(
+                                  vis.length,
+                                  widget.searchQuery.trim(),
+                                ),
+                            style: ts(12, w: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
@@ -650,30 +658,33 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: Center(
                       child: GestureDetector(
                         onTap: _showMapHelp,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 9,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: softShadow(blur: 14, alpha: 0.15),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.help_outline_rounded,
-                                size: 15,
-                                color: C.cyan,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                S.of(context).noStationHelp,
-                                style: ts(11, c: C.cyan, w: FontWeight.w600),
-                              ),
-                            ],
+                        child: MaterialSurface(
+                          radius: 12,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 9,
+                            ),
+                            decoration: BoxDecoration(
+                              color: C.sheetFill,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: softShadow(blur: 14, alpha: 0.15),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.help_outline_rounded,
+                                  size: 15,
+                                  color: C.cyan,
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  S.of(context).noStationHelp,
+                                  style: ts(11, c: C.cyan, w: FontWeight.w600),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -1033,16 +1044,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       info.write('  ·  ${s.distKm(my.lat, my.lng).toStringAsFixed(1)}km');
     }
     info.write('  · ${S.of(context).tapToView}');
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: C.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: softShadow(blur: 10, alpha: 0.15),
-      ),
-      child: Text(
-        info.toString(),
-        style: ts(11, c: s.color, w: FontWeight.w700),
+    return MaterialSurface(
+      radius: 10,
+      blurSigma: 12.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: C.sheetFill,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: softShadow(blur: 10, alpha: 0.15),
+        ),
+        child: Text(
+          info.toString(),
+          style: ts(11, c: s.color, w: FontWeight.w700),
+        ),
       ),
     );
   }
@@ -1129,162 +1144,166 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 头部
-              Row(
-                children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: C.blueBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.my_location_rounded,
-                      color: C.blue,
-                      size: 24,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          S.of(context).myLocationPanel(st.myCall),
-                          style: ts(16, w: FontWeight.w800),
-                        ),
-                        Text(
-                          localizedLocationStatus(context, st.locStatus),
-                          style: ts(11, c: st.myHasFix ? C.green : C.yellow),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: C.grey),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              SoftCard(
-                padding: const EdgeInsets.all(14),
-                child: Column(
+      builder: (_) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 头部
+                Row(
                   children: [
-                    KV(
-                      S.of(context).latitude,
-                      st.myLat?.toStringAsFixed(5) ?? '--',
-                      icon: Icons.explore_rounded,
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: C.blueBg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.my_location_rounded,
+                        color: C.blue,
+                        size: 24,
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).longitude,
-                      st.myLng?.toStringAsFixed(5) ?? '--',
-                      icon: Icons.explore_rounded,
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            S.of(context).myLocationPanel(st.myCall),
+                            style: ts(16, w: FontWeight.w800),
+                          ),
+                          Text(
+                            localizedLocationStatus(context, st.locStatus),
+                            style: ts(11, c: st.myHasFix ? C.green : C.yellow),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).speedLabel,
-                      st.mySpeed != null
-                          ? '${st.mySpeed!.toStringAsFixed(1)} km/h'
-                          : '--',
-                      icon: Icons.speed_rounded,
-                    ),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).bearing,
-                      st.myCourse != null
-                          ? '${st.myCourse!.toStringAsFixed(0)}°'
-                          : '--',
-                      icon: Icons.explore_rounded,
-                    ),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).beaconIntervalLabel,
-                      st.smartBeaconEnabled
-                          ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
-                          : S.of(context).secondsValue(st.beaconInterval),
-                      icon: Icons.timer_rounded,
-                    ),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).beaconsSentLabel,
-                      S.of(context).countTimes(st.beaconsSent),
-                      icon: Icons.sync_rounded,
-                    ),
-                    const SizedBox(height: 8),
-                    KV(
-                      S.of(context).nextBeaconLabel,
-                      st.nextBeaconIn,
-                      icon: Icons.access_time_rounded,
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: C.grey),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        st.sendBeacon();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              S.of(context).positionBeacon(st.myGrid),
+                const SizedBox(height: 14),
+                SoftCard(
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    children: [
+                      KV(
+                        S.of(context).latitude,
+                        st.myLat?.toStringAsFixed(5) ?? '--',
+                        icon: Icons.explore_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).longitude,
+                        st.myLng?.toStringAsFixed(5) ?? '--',
+                        icon: Icons.explore_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).speedLabel,
+                        st.mySpeed != null
+                            ? '${st.mySpeed!.toStringAsFixed(1)} km/h'
+                            : '--',
+                        icon: Icons.speed_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).bearing,
+                        st.myCourse != null
+                            ? '${st.myCourse!.toStringAsFixed(0)}°'
+                            : '--',
+                        icon: Icons.explore_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).beaconIntervalLabel,
+                        st.smartBeaconEnabled
+                            ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
+                            : S.of(context).secondsValue(st.beaconInterval),
+                        icon: Icons.timer_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).beaconsSentLabel,
+                        S.of(context).countTimes(st.beaconsSent),
+                        icon: Icons.sync_rounded,
+                      ),
+                      const SizedBox(height: 8),
+                      KV(
+                        S.of(context).nextBeaconLabel,
+                        st.nextBeaconIn,
+                        icon: Icons.access_time_rounded,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          st.sendBeacon();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                S.of(context).positionBeacon(st.myGrid),
+                              ),
+                              behavior: SnackBarBehavior.floating,
                             ),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.send_rounded, size: 16),
-                      label: Text(S.of(context).manualBeacon),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: C.green,
-                        side: BorderSide(color: C.green.withValues(alpha: 0.5)),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        textStyle: ts(12, w: FontWeight.w600),
+                          );
+                        },
+                        icon: Icon(Icons.send_rounded, size: 16),
+                        label: Text(S.of(context).manualBeacon),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.green,
+                          side: BorderSide(color: C.green.withValues(alpha: 0.5)),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          textStyle: ts(12, w: FontWeight.w600),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        st.finishPick();
-                        setState(() => _pickMode = false);
-                        // 重新进入选点
-                        st.startPick();
-                      },
-                      icon: Icon(Icons.edit_location_alt_rounded, size: 16),
-                      label: Text(S.of(context).reselectPoint),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: C.blue,
-                        side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        textStyle: ts(12, w: FontWeight.w600),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          st.finishPick();
+                          setState(() => _pickMode = false);
+                          // 重新进入选点
+                          st.startPick();
+                        },
+                        icon: Icon(Icons.edit_location_alt_rounded, size: 16),
+                        label: Text(S.of(context).reselectPoint),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: C.blue,
+                          side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          textStyle: ts(12, w: FontWeight.w600),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1401,96 +1420,100 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.help_outline_rounded, size: 20, color: C.cyan),
-                  const SizedBox(width: 8),
-                  Text(
-                    S.of(context).mapHelpTitle,
-                    style: ts(16, w: FontWeight.w800),
+      builder: (_) => MaterialSurface(
+        radius: 20,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.help_outline_rounded, size: 20, color: C.cyan),
+                    const SizedBox(width: 8),
+                    Text(
+                      S.of(context).mapHelpTitle,
+                      style: ts(16, w: FontWeight.w800),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: C.grey),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: C.cyanBg,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: C.grey),
-                    onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    S.of(context).mapHelpIntro,
+                    style: ts(12, c: C.cyan, w: FontWeight.w600, h: 1.5),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                for (final (icon, text) in rows) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
+                            color: C.bgSoft,
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Icon(icon, size: 15, color: C.blue),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            text,
+                            style: ts(12, c: C.ink, h: 1.5),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 4),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: C.cyanBg,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  S.of(context).mapHelpIntro,
-                  style: ts(12, c: C.cyan, w: FontWeight.w600, h: 1.5),
-                ),
-              ),
-              const SizedBox(height: 12),
-              for (final (icon, text) in rows) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(
-                          color: C.bgSoft,
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Icon(icon, size: 15, color: C.blue),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.state.toggleConnect();
+                    },
+                    icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+                    label: Text(
+                      S.of(context).connectAprsIs,
+                      style: ts(13, w: FontWeight.w700),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.blue,
+                      side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          text,
-                          style: ts(12, c: C.ink, h: 1.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    widget.state.toggleConnect();
-                  },
-                  icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                  label: Text(
-                    S.of(context).connectAprsIs,
-                    style: ts(13, w: FontWeight.w700),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: C.blue,
-                    side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1499,37 +1522,40 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   // ─── 覆盖控件 ───
   Widget _infoChip(List<Station> vis, bool searched) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: C.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: softShadow(blur: 14, alpha: 0.09),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _dot(C.green),
-          SizedBox(width: 6),
-          Text(
-            S.of(context).onlineCount(widget.state.online),
-            style: ts(12, c: C.green, w: FontWeight.w600),
-          ),
-          SizedBox(width: 12),
-          _dot(C.blue),
-          SizedBox(width: 6),
-          Text(
-            S.of(context).movingCount(widget.state.moving),
-            style: ts(12, c: C.blue, w: FontWeight.w600),
-          ),
-          SizedBox(width: 12),
-          _dot(C.slate),
-          SizedBox(width: 6),
-          Text(
-            S.of(context).stationCount(vis.length),
-            style: ts(12, c: searched ? C.slate : C.grey),
-          ),
-        ],
+    return MaterialSurface(
+      radius: 14,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: C.sheetFill,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: softShadow(blur: 14, alpha: 0.09),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _dot(C.green),
+            SizedBox(width: 6),
+            Text(
+              S.of(context).onlineCount(widget.state.online),
+              style: ts(12, c: C.green, w: FontWeight.w600),
+            ),
+            SizedBox(width: 12),
+            _dot(C.blue),
+            SizedBox(width: 6),
+            Text(
+              S.of(context).movingCount(widget.state.moving),
+              style: ts(12, c: C.blue, w: FontWeight.w600),
+            ),
+            SizedBox(width: 12),
+            _dot(C.slate),
+            SizedBox(width: 6),
+            Text(
+              S.of(context).stationCount(vis.length),
+              style: ts(12, c: searched ? C.slate : C.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1606,25 +1632,28 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Widget _legend() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: C.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: softShadow(blur: 12, alpha: 0.07),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _lg(C.green, S.of(context).online),
-          SizedBox(height: 5),
-          _lg(C.blue, S.of(context).moving),
-          SizedBox(height: 5),
-          _lg(C.yellow, S.of(context).stationary),
-          SizedBox(height: 5),
-          _lg(C.grey, S.of(context).offline),
-        ],
+    return MaterialSurface(
+      radius: 12,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: C.sheetFill,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: softShadow(blur: 12, alpha: 0.07),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _lg(C.green, S.of(context).online),
+            SizedBox(height: 5),
+            _lg(C.blue, S.of(context).moving),
+            SizedBox(height: 5),
+            _lg(C.yellow, S.of(context).stationary),
+            SizedBox(height: 5),
+            _lg(C.grey, S.of(context).offline),
+          ],
+        ),
       ),
     );
   }
@@ -1664,16 +1693,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-          border: Border.all(color: border),
+      child: MaterialSurface(
+        radius: 12,
+        blurSigma: 14.0,
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+            border: Border.all(color: border),
+          ),
+          child: Icon(icon, size: 20, color: fg),
         ),
-        child: Icon(icon, size: 20, color: fg),
       ),
     );
   }
@@ -1828,7 +1861,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 width: 210,
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: C.white,
+                  color: C.sheetFill,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
                 ),
@@ -1877,191 +1910,194 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       (TypeGroup.fmo, 'FMO', Icons.radio_rounded, C.orange),
       (TypeGroup.other, S.of(context).otherType, Icons.apps_rounded, C.slate),
     ];
-    return Container(
-      width: 200,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: C.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: softShadow(blur: 16, alpha: 0.18),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.layers_rounded, size: 15, color: C.blue),
-              SizedBox(width: 6),
-              Text(
-                S.of(context).layerFilter,
-                style: ts(12, w: FontWeight.w700),
-              ),
-              Spacer(),
-              if (_hiddenTypes.isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    setMenuState(() => _hiddenTypes.clear());
-                    setState(() {});
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: C.blueBg,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      S.of(context).showAll,
-                      style: ts(10, c: C.blue, w: FontWeight.w600),
+    return MaterialSurface(
+      radius: 14,
+      child: Container(
+        width: 200,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: C.sheetFill,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: softShadow(blur: 16, alpha: 0.18),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.layers_rounded, size: 15, color: C.blue),
+                SizedBox(width: 6),
+                Text(
+                  S.of(context).layerFilter,
+                  style: ts(12, w: FontWeight.w700),
+                ),
+                Spacer(),
+                if (_hiddenTypes.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      setMenuState(() => _hiddenTypes.clear());
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: C.blueBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        S.of(context).showAll,
+                        style: ts(10, c: C.blue, w: FontWeight.w600),
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          SizedBox(height: 8),
-          // 将台站面板的筛选（状态/类型/同款软件/设备）应用到地图
-          GestureDetector(
-            onTap: () {
-              widget.state
-                  .setApplyFilterToMap(!widget.state.applyFilterToMap);
-              setMenuState(() {});
-              setState(() {});
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.filter_alt_rounded,
-                  size: 16,
-                  color: widget.state.applyFilterToMap ? C.blue : C.greyLight,
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        S.of(context).applyStationFilter,
-                        style: ts(
-                          12,
-                          c: widget.state.applyFilterToMap ? C.ink : C.grey,
-                          w: FontWeight.w600,
+              ],
+            ),
+            SizedBox(height: 8),
+            // 将台站面板的筛选（状态/类型/同款软件/设备）应用到地图
+            GestureDetector(
+              onTap: () {
+                widget.state
+                    .setApplyFilterToMap(!widget.state.applyFilterToMap);
+                setMenuState(() {});
+                setState(() {});
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.filter_alt_rounded,
+                    size: 16,
+                    color: widget.state.applyFilterToMap ? C.blue : C.greyLight,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S.of(context).applyStationFilter,
+                          style: ts(
+                            12,
+                            c: widget.state.applyFilterToMap ? C.ink : C.grey,
+                            w: FontWeight.w600,
+                          ),
+                        ),
+                        if (widget.state.applyFilterToMap &&
+                            !widget.state.stationFilter.isEmpty)
+                          Text(
+                            S.of(context).stationFilterOn,
+                            style: ts(9.5, c: C.blue),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 40,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: widget.state.applyFilterToMap
+                          ? C.blue.withValues(alpha: 0.25)
+                          : C.greyBg,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Align(
+                      alignment: widget.state.applyFilterToMap
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(
+                          color: widget.state.applyFilterToMap ? C.blue : C.grey,
+                          borderRadius: BorderRadius.circular(9),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 2,
+                            ),
+                          ],
                         ),
                       ),
-                      if (widget.state.applyFilterToMap &&
-                          !widget.state.stationFilter.isEmpty)
-                        Text(
-                          S.of(context).stationFilterOn,
-                          style: ts(9.5, c: C.blue),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 14, color: C.border),
+            for (final t in types)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: GestureDetector(
+                  onTap: () {
+                    setMenuState(() {
+                      if (_hiddenTypes.contains(t.$1)) {
+                        _hiddenTypes.remove(t.$1);
+                      } else {
+                        _hiddenTypes.add(t.$1);
+                      }
+                    });
+                    setState(() {});
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Row(
+                    children: [
+                      Icon(
+                        t.$3,
+                        size: 16,
+                        color: _hiddenTypes.contains(t.$1) ? C.greyLight : t.$4,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          t.$2,
+                          style: ts(
+                            12,
+                            c: _hiddenTypes.contains(t.$1) ? C.grey : C.ink,
+                            w: FontWeight.w600,
+                          ),
                         ),
+                      ),
+                      Container(
+                        width: 40,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: !_hiddenTypes.contains(t.$1)
+                              ? t.$4.withValues(alpha: 0.25)
+                              : C.greyBg,
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                        child: Align(
+                          alignment: !_hiddenTypes.contains(t.$1)
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Container(
+                            width: 18,
+                            height: 18,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            decoration: BoxDecoration(
+                              color: !_hiddenTypes.contains(t.$1) ? t.$4 : C.grey,
+                              borderRadius: BorderRadius.circular(9),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.15),
+                                  blurRadius: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                Container(
-                  width: 40,
-                  height: 22,
-                  decoration: BoxDecoration(
-                    color: widget.state.applyFilterToMap
-                        ? C.blue.withValues(alpha: 0.25)
-                        : C.greyBg,
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Align(
-                    alignment: widget.state.applyFilterToMap
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      width: 18,
-                      height: 18,
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      decoration: BoxDecoration(
-                        color: widget.state.applyFilterToMap ? C.blue : C.grey,
-                        borderRadius: BorderRadius.circular(9),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
-                            blurRadius: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 14, color: C.border),
-          for (final t in types)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: GestureDetector(
-                onTap: () {
-                  setMenuState(() {
-                    if (_hiddenTypes.contains(t.$1)) {
-                      _hiddenTypes.remove(t.$1);
-                    } else {
-                      _hiddenTypes.add(t.$1);
-                    }
-                  });
-                  setState(() {});
-                },
-                behavior: HitTestBehavior.opaque,
-                child: Row(
-                  children: [
-                    Icon(
-                      t.$3,
-                      size: 16,
-                      color: _hiddenTypes.contains(t.$1) ? C.greyLight : t.$4,
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        t.$2,
-                        style: ts(
-                          12,
-                          c: _hiddenTypes.contains(t.$1) ? C.grey : C.ink,
-                          w: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 40,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        color: !_hiddenTypes.contains(t.$1)
-                            ? t.$4.withValues(alpha: 0.25)
-                            : C.greyBg,
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                      child: Align(
-                        alignment: !_hiddenTypes.contains(t.$1)
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: Container(
-                          width: 18,
-                          height: 18,
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                          decoration: BoxDecoration(
-                            color: !_hiddenTypes.contains(t.$1) ? t.$4 : C.grey,
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -2087,48 +2123,51 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 : S.of(context).beaconNextIn(st.nextBeaconIn)));
     return GestureDetector(
       onTap: _showMyPanel,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: softShadow(blur: 10, alpha: 0.12),
-          border: Border.all(color: c.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              on ? Icons.send_rounded : Icons.notifications_off_rounded,
-              size: 14,
-              color: c,
-            ),
-            SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                label,
-                style: ts(11.5, c: C.ink, w: FontWeight.w600),
+      child: MaterialSurface(
+        radius: 10,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: softShadow(blur: 10, alpha: 0.12),
+            border: Border.all(color: c.withValues(alpha: 0.25)),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                on ? Icons.send_rounded : Icons.notifications_off_rounded,
+                size: 14,
+                color: c,
               ),
-            ),
-            // 立即上报（信标开时绿色；关时置灰仍可发一次）
-            GestureDetector(
-              onTap: () {
-                st.sendBeacon();
-                _toastMsg(S.of(context).positionBeacon(st.myGrid));
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  color: C.blue,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              SizedBox(width: 6),
+              Expanded(
                 child: Text(
-                  S.of(context).manualBeacon,
-                  style: ts(10.5, c: Colors.white, w: FontWeight.w700),
+                  label,
+                  style: ts(11.5, c: C.ink, w: FontWeight.w600),
                 ),
               ),
-            ),
-          ],
+              // 立即上报（信标开时绿色；关时置灰仍可发一次）
+              GestureDetector(
+                onTap: () {
+                  st.sendBeacon();
+                  _toastMsg(S.of(context).positionBeacon(st.myGrid));
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: C.blue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    S.of(context).manualBeacon,
+                    style: ts(10.5, c: Colors.white, w: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -2171,51 +2210,54 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       scrollDirection: Axis.horizontal,
       reverse: true,
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: softShadow(blur: 12, alpha: 0.08),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.straighten_rounded, size: 13, color: C.slate),
-            SizedBox(width: 5),
-            Text(
-              _scaleText,
-              style: ts(10, c: C.slate, w: FontWeight.w600),
-            ),
-            SizedBox(width: 8),
-            Container(width: 1, height: 12, color: C.border),
-            SizedBox(width: 8),
-            Text(
-              coord,
-              style: ts(11, c: C.slate, w: FontWeight.w500),
-            ),
-            if (grid.isNotEmpty) ...[
+      child: MaterialSurface(
+        radius: 12,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: softShadow(blur: 12, alpha: 0.08),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.straighten_rounded, size: 13, color: C.slate),
+              SizedBox(width: 5),
+              Text(
+                _scaleText,
+                style: ts(10, c: C.slate, w: FontWeight.w600),
+              ),
               SizedBox(width: 8),
               Container(width: 1, height: 12, color: C.border),
               SizedBox(width: 8),
               Text(
-                grid,
-                style: mono(10, c: C.blue, w: FontWeight.w600),
+                coord,
+                style: ts(11, c: C.slate, w: FontWeight.w500),
+              ),
+              if (grid.isNotEmpty) ...[
+                SizedBox(width: 8),
+                Container(width: 1, height: 12, color: C.border),
+                SizedBox(width: 8),
+                Text(
+                  grid,
+                  style: mono(10, c: C.blue, w: FontWeight.w600),
+                ),
+              ],
+              SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: C.blueBg,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  datum,
+                  style: ts(9, c: C.blue, w: FontWeight.w700),
+                ),
               ),
             ],
-            SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: C.blueBg,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                datum,
-                style: ts(9, c: C.blue, w: FontWeight.w700),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

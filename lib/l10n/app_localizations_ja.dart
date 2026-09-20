@@ -1099,8 +1099,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get igateNoRfTraffic =>
-      'RF でパケットを 1 件も受信していません。ゲートウェイの条件は揃っていますが'
-      '**中継するものがありません**。ゲートウェイの問題ではなく、パケットがアプリに届いていません。上流を確認してください：無線機の音量とスケルチ、アンテナ、相手が実際に送信しているか、ログページに RF パケットがあるか。';
+      'RF でパケットを 1 件も受信していません。ゲートウェイの条件は揃っていますが**中継するものがありません**。ゲートウェイの問題ではなく、パケットがアプリに届いていません。上流を確認してください：無線機の音量とスケルチ、アンテナ、相手が実際に送信しているか、ログページに RF パケットがあるか。';
 
   @override
   String get igateAllRejected =>
@@ -6369,4 +6368,40 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get tncSerialBaudBluetooth =>
       '現在バインドされているのは Bluetooth 機器です。Bluetooth SPP には速度の概念がないため、この設定は無効です';
+
+  @override
+  String get uiMaterial => '画面マテリアル';
+
+  @override
+  String get uiMaterialDesc => 'カード・バー・ダイアログを半透明にし、その背後を実際にぼかします';
+
+  @override
+  String get uiMaterialOff => 'オフ（不透明）';
+
+  @override
+  String get uiMaterialOffDesc => '表面は不透明で、従来どおりです';
+
+  @override
+  String get uiMaterialGlass => 'すりガラス';
+
+  @override
+  String get uiMaterialGlassDesc => 'より透明でぼかしが強め。Windows 11 のアクリルに近い見た目です';
+
+  @override
+  String get uiMaterialMica => 'マイカ';
+
+  @override
+  String get uiMaterialMicaDesc =>
+      'より不透明でぼかしは控えめ、アクセント色がうっすら乗ります。Windows 11 のマイカに近い見た目です';
+
+  @override
+  String get uiMaterialHint =>
+      'マテリアルはアプリ内の表面（カード・バー・ダイアログ・地図の重なり）だけにかかります。ウィンドウ自体の透明化ではありません。ぼかしは GPU を使うため、古い端末ではオフより動作が重くなることがあります。';
+
+  @override
+  String get uiMaterialBgHint =>
+      'このテーマは背景画像を使っているため、マテリアルは独自の背景を描かず、バーと重なりだけをぼかします。';
+
+  @override
+  String get uiMaterialPreview => 'プレビュー';
 }

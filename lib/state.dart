@@ -68,7 +68,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.137';
+  static const appVersion = '1.6.138';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1190,6 +1190,29 @@ class AppState extends ChangeNotifier {
   // 界面语言：'' = 跟随系统；'zh' 中文；'en' English
   String locale = '';
 
+  // ─── 界面材质（磨砂玻璃 / 云母）───
+  //
+  // 存字符串（'' = 关闭）而不是 bool：材质是**多档**的，将来加一档
+  // （例如「亚克力」或「跟随系统」）不需要改存储格式，也不会让旧值变成乱码。
+  // 认不出的值一律回落「关闭」（见 uiMaterialOf）。
+  String uiMaterial = '';
+
+  /// 切换界面材质。
+  ///
+  /// 切完必须调 [applySavedTheme]：材质写在 C 这个全局调色板上，它不在
+  /// ThemeData 里，所以除了重算没有别的生效路径（否则表现就是「点了没反应」，
+  /// 要退出重进才生效）。
+  void setUiMaterial(String v) {
+    final n = uiMaterialOf(v);
+    uiMaterial = uiMaterialName(n);
+    applySavedTheme();
+    persist();
+    _notify();
+  }
+
+  /// 当前材质的枚举形式（界面直接读这个）
+  UiMaterial get uiMaterialValue => uiMaterialOf(uiMaterial);
+
   /// 切换界面语言
   void setLocale(String lang) {
     locale = lang;
@@ -1261,6 +1284,10 @@ class AppState extends ChangeNotifier {
   /// 颜色来源分两层：**主题的令牌覆写优先，其次才是旧版的单一 themeColor**。
   /// 保留第二层是有意的：老用户只存过 `themeColor`，升级后颜色必须原样不变。
   void applySavedTheme() {
+    // 材质要在 applyColors **之后**写：后者会重算整套调色板（并且自己也读
+    // C.materialOn 来决定页面底色透不透），所以材质必须先落定，
+    // 否则换主题那一下会用上一档材质算出一套错的 alpha。
+    C.material = uiMaterialValue;
     ThemeController.instance.applyColors(
       isDark: darkMode,
       legacyPrimary: themeColorValue,
@@ -1573,7 +1600,12 @@ class AppState extends ChangeNotifier {
       weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
-      uiScale = p.getDouble('uiScale') ?? uiScale;      mapType = p.getString('mapType') ?? mapType;
+      uiScale = p.getDouble('uiScale') ?? uiScale;
+      // 界面材质：认不出的值（改坏 / 将来新增档位）一律回落「关闭」
+      uiMaterial = uiMaterialName(
+        uiMaterialOf(p.getString('uiMaterial') ?? uiMaterial),
+      );
+      mapType = p.getString('mapType') ?? mapType;
       // 离线地图：缓存开关与「仅离线」模式
       tileCacheOn = p.getBool('tileCacheOn') ?? tileCacheOn;
       offlineOnly = p.getBool('offlineOnly') ?? offlineOnly;
@@ -1754,6 +1786,7 @@ class AppState extends ChangeNotifier {
     await p.setString('locale', locale);
     await p.setString('themeColor', themeColor);
     await p.setDouble('uiScale', uiScale);
+    await p.setString('uiMaterial', uiMaterial);
     await p.setString('mapType', mapType);
     await p.setBool('tileCacheOn', tileCacheOn);
     await p.setBool('offlineOnly', offlineOnly);

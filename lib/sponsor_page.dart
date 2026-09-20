@@ -8,6 +8,7 @@ import 'theme.dart';
 import 'widgets.dart';
 // honorLangOf：荣誉/成就/赞助共用同一套语言回落（ja/id → 英文）
 import 'early_member.dart';
+import 'material.dart';
 
 /// 赞助与鸣谢页面（赞助名单从官网 sponsors.json 在线更新，离线用内置兜底）
 const String kSponsorsUrl = 'https://aprslocus.theez.top/sponsors.json';
@@ -221,15 +222,20 @@ class _SponsorPageState extends State<SponsorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: C.surfaceFillStrong,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded, color: C.ink, size: 20),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            S.of(context).sponsors,
+            style: ts(16, w: FontWeight.w700),
+          ),
+          centerTitle: true,
         ),
-        title: Text(S.of(context).sponsors, style: ts(16, w: FontWeight.w700)),
-        centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 40),
@@ -496,7 +502,7 @@ class _SponsorPageState extends State<SponsorPage> {
           onTap: () => Navigator.pop(ctx),
           child: Container(
             decoration: BoxDecoration(
-              color: C.white,
+              color: C.sheetFill,
               borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.all(20),

@@ -1164,7 +1164,7 @@ class _ThemePageState extends State<ThemePage> {
     final chosen = await showModalBottomSheet<String?>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: C.white,
+      backgroundColor: C.sheetFill,
       builder: (ctx) => _IconPickerSheet(
         title: s.themePickIcon,
         searchHint: s.themePickIconSearch,

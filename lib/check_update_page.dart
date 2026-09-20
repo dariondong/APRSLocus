@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'theme.dart';
 import 'state.dart';
 import 'widgets.dart';
+import 'material.dart';
 
 /// GitCode Release 数据模型
 class _ReleaseInfo {
@@ -177,7 +178,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.all(20),
@@ -627,38 +628,40 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
     final isWin = defaultTargetPlatform == TargetPlatform.windows;
     return Scaffold(
       backgroundColor: C.pageFill,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(S.of(context).checkUpdate),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: S.of(context).allChangelog,
-            onPressed: _allReleases.isEmpty ? null : _showAllChangelog,
-            icon: Icon(
-              Icons.article_outlined,
-              color: _allReleases.isEmpty ? C.greyLight : C.blue,
+      appBar: MaterialAppBar(
+        AppBar(
+          backgroundColor: surfaceTint(Colors.white),
+          elevation: 0,
+          title: Text(S.of(context).checkUpdate),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              tooltip: S.of(context).allChangelog,
+              onPressed: _allReleases.isEmpty ? null : _showAllChangelog,
+              icon: Icon(
+                Icons.article_outlined,
+                color: _allReleases.isEmpty ? C.greyLight : C.blue,
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: widget.state.updateChannel == 'github'
-                ? 'GitHub'
-                : 'GitCode',
-            onPressed: _switchChannel,
-            icon: Icon(
-              widget.state.updateChannel == 'github'
-                  ? Icons.public_rounded
-                  : Icons.cloud_rounded,
-              color: C.blue,
+            IconButton(
+              tooltip: widget.state.updateChannel == 'github'
+                  ? 'GitHub'
+                  : 'GitCode',
+              onPressed: _switchChannel,
+              icon: Icon(
+                widget.state.updateChannel == 'github'
+                    ? Icons.public_rounded
+                    : Icons.cloud_rounded,
+                color: C.blue,
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: S.of(context).recheck,
-            onPressed: _checking ? null : _check,
-            icon: Icon(Icons.refresh_rounded, color: C.blue),
-          ),
-        ],
+            IconButton(
+              tooltip: S.of(context).recheck,
+              onPressed: _checking ? null : _check,
+              icon: Icon(Icons.refresh_rounded, color: C.blue),
+            ),
+          ],
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

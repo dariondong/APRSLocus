@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
+import 'material.dart';
 import 'models.dart';
 import 'l10n/app_localizations.dart';
 
@@ -491,18 +492,25 @@ class RoundIconBtn extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    // 圆形按钮基本都是**压在地图/列表上**的浮层：材质开启时给它真模糊，
+    // 但用更小的半径 —— 38px 的按钮上套全屏级别的模糊，边缘会糊成一团灰，
+    // 看起来像按钮没画好，而不是像磨砂。
     final btn = GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-          border: Border.all(color: C.border),
+      child: MaterialSurface(
+        radius: 12,
+        blurSigma: 14,
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: surfaceTint(C.white),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+            border: Border.all(color: C.border),
+          ),
+          child: Icon(icon, color: color ?? C.slate, size: 20),
         ),
-        child: Icon(icon, color: color ?? C.slate, size: 20),
       ),
     );
     if (tooltip == null) return btn;

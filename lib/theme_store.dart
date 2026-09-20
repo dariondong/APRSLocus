@@ -549,6 +549,67 @@ class ThemeController extends ChangeNotifier {
 
   // ─── 背景图 ───
 
+  /// 页面底部的「底」：优先用主题背景图，其次用材质壁纸，都没有则返回 null
+  /// （调用方直接显示不透明的页面底色）。
+  ///
+  /// 这一个入口同时管两件事，是因为**它们必须在同一处生效**：`app.dart` 的
+  /// builder 是唯一能一次覆盖「所有页面 + push 出来的子页 + 弹窗路由」的位置。
+  /// 分成两处写，必然会出现「材质在设置子页不生效」这种半截状态。
+  Widget? buildBackdrop() => buildAppBackground() ?? buildMaterialWallpaper();
+
+  /// 材质壁纸：从主色混出来的一层柔和渐变（斜向 + 中心高光）。
+  ///
+  /// 为什么不模糊它：它是**渐变**，本身就没有需要压掉的细节，再模糊一层只是白花
+  /// 一次全屏 filter（而壁纸每帧都在）。模糊只给真正压在**内容**上的表面用
+  /// （见 material.dart 的 MaterialSurface）。
+  ///
+  /// 为什么要画它：没有这层，「磨砂玻璃」的作用对象就是一片纯色 —— 半透明表面
+  /// 后面什么都看不到，用户只会觉得「开了没反应，只是变淡了」。有渐变才有
+  /// 「背后有东西」的观感，这也是这次改动的核心。
+  Widget? buildMaterialWallpaper() {
+    if (!C.materialWallpaper) return null;
+    final base = C.materialBase;
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [C.materialAccent, base, base],
+                stops: const [0.0, 0.55, 1.0],
+              ),
+            ),
+            child: CustomPaint(
+              painter: _BackdropGrainPainter(C.dark ? Colors.white : Colors.black),
+              size: Size.infinite,
+            ),
+          ),
+        ),
+        // 中心高光：让「主色在哪里」有个明确的方向，而不是平摊一整面
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0.0, -0.55),
+                radius: 1.15,
+                colors: [C.materialAccent, base.withValues(alpha: 0)],
+              ),
+            ),
+          ),
+        ),
+        // 亮度归一：浅色模式盖一层白、深色盖一层黑，把整面往中间亮度拉一点，
+        // 半透明表面上的正文才有一致的可读性（不然渐变两端差很多）
+        Positioned.fill(
+          child: ColoredBox(
+            color: (C.dark ? C.black : C.white).withValues(alpha: 0.10),
+          ),
+        ),
+      ],
+    );
+  }
+
   /// 背景层；主题没设背景图、或图已不可用 → 返回 null（调用方直接用原内容）。
   ///
   /// 三层的顺序是**有讲究**的，不是随手叠的：
@@ -592,6 +653,11 @@ class ThemeController extends ChangeNotifier {
     );
   }
 
+  /// 背景图预览（主题页里那张小图）。
+  ///
+  /// 名字保留旧称 `buildBgThumb` 是为了不动 theme_page 里的调用点；
+  /// 它只画**用户自己的**背景图，与材质壁纸无关。
+  ///
   /// 主题页里那张小预览图。
   ///
   /// 走 [icon_io] 而不是自己 Image.file：路径解析、文件名安全校验、
@@ -702,4 +768,35 @@ class ThemeController extends ChangeNotifier {
     }
     return libIcon();
   }
+}
+
+/// 底上那层极淡的颗粒。
+///
+/// Win11 的云母有细微的「纸纹」，全平的渐变看起来像廉价的色块；这一层用
+/// 确定性（不用 Random，避免每次重画都不一样）的点阵把它补回来。
+///
+/// 代价意识：这是全屏 CustomPaint，但点阵是**固定**的、只有 ~600 个点，
+/// 在设备像素比下的开销远小于一次全屏高斯模糊，所以壁纸不模糊、颗粒反而保留。
+class _BackdropGrainPainter extends CustomPainter {
+  final Color color;
+  const _BackdropGrainPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final paint = Paint()..color = color.withValues(alpha: 0.022);
+    const step = 22.0;
+    var i = 0;
+    for (var y = 0.0; y < size.height; y += step) {
+      for (var x = 0.0; x < size.width; x += step) {
+        // 三级错位：不然点会排成规整的网格，看起来像印刷网纹而不是颗粒
+        final dx = (i % 3) * (step / 3);
+        canvas.drawCircle(Offset(x + dx, y), 0.7, paint);
+        i++;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BackdropGrainPainter old) => old.color != color;
 }

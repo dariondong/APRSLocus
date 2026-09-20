@@ -163,7 +163,7 @@ class _OobePageState extends State<OobePage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: C.white,
+        backgroundColor: C.sheetFill,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
@@ -650,7 +650,7 @@ class _OobePageState extends State<OobePage> {
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         decoration: BoxDecoration(
-          color: C.white,
+          color: C.sheetFill,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -743,7 +743,7 @@ class _OobePageState extends State<OobePage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: C.white,
+        color: C.sheetFill,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: C.border),
       ),
@@ -833,7 +833,7 @@ class _OobePageState extends State<OobePage> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: C.white,
+                color: C.sheetFill,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: C.border),
               ),
@@ -1124,7 +1124,7 @@ class _OobePageState extends State<OobePage> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: C.white,
+                      color: C.sheetFill,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: C.red.withValues(alpha: 0.3)),
                     ),

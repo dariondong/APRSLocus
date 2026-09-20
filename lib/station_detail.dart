@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
+import 'material.dart';
 import 'models.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -181,509 +182,714 @@ class _StationDetailState extends State<StationDetail> {
     return FractionallySizedBox(
       heightFactor: 0.92,
       child: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 拖动指示条
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: C.greyLight,
-                  borderRadius: BorderRadius.circular(2),
+        child: MaterialSurface(
+          radius: 24,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 拖动指示条
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.greyLight,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 头部
-                      Row(
-                        children: [
-                          SymbolBadge(s, size: 56),
-                          SizedBox(width: 14),
-                          Expanded(
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 头部
+                        Row(
+                          children: [
+                            SymbolBadge(s, size: 56),
+                            SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        s.call,
+                                        style: ts(
+                                          20,
+                                          w: FontWeight.w800,
+                                          ls: -0.4,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      // 用 effectiveStatus：超过 5 分钟未上报即显示离线，
+                                      // 避免标签一直停留在「在线」
+                                      StatusBadge(s.effectiveStatus),
+                                    ],
+                                  ),
+                                  SizedBox(height: 3),
+                                  Text(
+                                    '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
+                                    style: ts(12, c: C.slate),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // 台站操作：收藏 / 复制呼号 / 删除台站
+                            // 用可见的菜单入口，不依赖隐藏手势（长按等）
+                            PopupMenuButton<String>(
+                              icon: Icon(
+                                Icons.more_vert_rounded,
+                                color: C.grey,
+                              ),
+                              tooltip: S.of(context).stationActions,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              onSelected: (v) => _onStationAction(v, s),
+                              itemBuilder: (ctx) => [
+                                PopupMenuItem(
+                                  value: 'fav',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        s.favorite
+                                            ? Icons.star_rounded
+                                            : Icons.star_border_rounded,
+                                        size: 18,
+                                        color: C.orange,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        s.favorite
+                                            ? S.of(ctx).unfavorite
+                                            : S.of(ctx).favorite,
+                                        style: ts(13),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'copy',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.copy_rounded,
+                                        size: 18,
+                                        color: C.blue,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        S.of(ctx).copyCallsign,
+                                        style: ts(13),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.delete_outline_rounded,
+                                        size: 18,
+                                        color: C.red,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        S.of(ctx).deleteStation,
+                                        style: ts(13, c: C.red),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.close_rounded, color: C.grey),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                        // 发送消息（详情面板最常用操作，置于头部之后，避免沉到页面底部）
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _msg,
+                                style: ts(13),
+                                decoration: InputDecoration(
+                                  hintText: S.of(context).sendMessageTo(s.call),
+                                  hintStyle: ts(13, c: C.grey),
+                                  filled: true,
+                                  fillColor: C.bgSoft,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 10,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () {
+                                if (_msg.text.isNotEmpty) {
+                                  widget.state.sendMessage(
+                                    s.call,
+                                    _msg.text.trim(),
+                                  );
+                                  _msg.clear();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(S.of(context).messageSent),
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                width: 42,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  color: C.blue,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: softShadow(blur: 12, alpha: 0.2),
+                                ),
+                                child: const Icon(
+                                  Icons.send_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // 台站荣誉徽章（该呼号在荣誉墙名单中时展示）
+                        _honorRow(s.call),
+                        if (related.isNotEmpty) ...[
+                          SizedBox(height: 14),
+                          // 相关台站（同基础呼号）
+                          SoftCard(
+                            padding: const EdgeInsets.all(12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
+                                    Icon(
+                                      Icons.link_rounded,
+                                      size: 15,
+                                      color: C.cyan,
+                                    ),
+                                    SizedBox(width: 6),
                                     Text(
-                                      s.call,
+                                      '${S.of(context).relatedStations} (${related.length})',
                                       style: ts(
-                                        20,
-                                        w: FontWeight.w800,
-                                        ls: -0.4,
+                                        12,
+                                        c: C.cyan,
+                                        w: FontWeight.w700,
                                       ),
                                     ),
-                                    SizedBox(width: 10),
-                                    // 用 effectiveStatus：超过 5 分钟未上报即显示离线，
-                                    // 避免标签一直停留在「在线」
-                                    StatusBadge(s.effectiveStatus),
                                   ],
                                 ),
-                                SizedBox(height: 3),
-                                Text(
-                                  '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
-                                  style: ts(12, c: C.slate),
+                                SizedBox(height: 8),
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  children: [
+                                    for (final r in related)
+                                      GestureDetector(
+                                        onTap: () {
+                                          // 切换到相关台站的面板
+                                          Navigator.pop(context);
+                                          showModalBottomSheet(
+                                            context: context,
+                                            backgroundColor: Colors.transparent,
+                                            isScrollControlled: true,
+                                            builder: (_) => StationDetail(
+                                              state: widget.state,
+                                              station: r,
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: C.cyanBg,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            border: Border.all(
+                                              color: C.cyan.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                width: 7,
+                                                height: 7,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: r.status == St.offline
+                                                      ? C.grey
+                                                      : C.green,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                r.call,
+                                                style: ts(
+                                                  11,
+                                                  c: C.cyan,
+                                                  w: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                          // 台站操作：收藏 / 复制呼号 / 删除台站
-                          // 用可见的菜单入口，不依赖隐藏手势（长按等）
-                          PopupMenuButton<String>(
-                            icon: Icon(
-                              Icons.more_vert_rounded,
-                              color: C.grey,
-                            ),
-                            tooltip: S.of(context).stationActions,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            onSelected: (v) => _onStationAction(v, s),
-                            itemBuilder: (ctx) => [
-                              PopupMenuItem(
-                                value: 'fav',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      s.favorite
-                                          ? Icons.star_rounded
-                                          : Icons.star_border_rounded,
-                                      size: 18,
-                                      color: C.orange,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      s.favorite
-                                          ? S.of(ctx).unfavorite
-                                          : S.of(ctx).favorite,
-                                      style: ts(13),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'copy',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.copy_rounded,
-                                      size: 18,
-                                      color: C.blue,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      S.of(ctx).copyCallsign,
-                                      style: ts(13),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.delete_outline_rounded,
-                                      size: 18,
-                                      color: C.red,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      S.of(ctx).deleteStation,
-                                      style: ts(13, c: C.red),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.close_rounded, color: C.grey),
-                            onPressed: () => Navigator.pop(context),
-                          ),
                         ],
-                      ),
-                      // 发送消息（详情面板最常用操作，置于头部之后，避免沉到页面底部）
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _msg,
-                              style: ts(13),
-                              decoration: InputDecoration(
-                                hintText: S.of(context).sendMessageTo(s.call),
-                                hintStyle: ts(13, c: C.grey),
-                                filled: true,
-                                fillColor: C.bgSoft,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () {
-                              if (_msg.text.isNotEmpty) {
-                                widget.state.sendMessage(
-                                  s.call,
-                                  _msg.text.trim(),
-                                );
-                                _msg.clear();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(S.of(context).messageSent),
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                              }
-                            },
-                            child: Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                color: C.blue,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: softShadow(blur: 12, alpha: 0.2),
-                              ),
-                              child: const Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // 台站荣誉徽章（该呼号在荣誉墙名单中时展示）
-                      _honorRow(s.call),
-                      if (related.isNotEmpty) ...[
-                        SizedBox(height: 14),
-                        // 相关台站（同基础呼号）
-                        SoftCard(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.link_rounded,
-                                    size: 15,
-                                    color: C.cyan,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    '${S.of(context).relatedStations} (${related.length})',
-                                    style: ts(
-                                      12,
-                                      c: C.cyan,
-                                      w: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              Wrap(
-                                spacing: 6,
-                                runSpacing: 6,
-                                children: [
-                                  for (final r in related)
-                                    GestureDetector(
-                                      onTap: () {
-                                        // 切换到相关台站的面板
-                                        Navigator.pop(context);
-                                        showModalBottomSheet(
-                                          context: context,
-                                          backgroundColor: Colors.transparent,
-                                          isScrollControlled: true,
-                                          builder: (_) => StationDetail(
-                                            state: widget.state,
-                                            station: r,
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: C.cyanBg,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          border: Border.all(
-                                            color: C.cyan.withValues(
-                                              alpha: 0.3,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              width: 7,
-                                              height: 7,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: r.status == St.offline
-                                                    ? C.grey
-                                                    : C.green,
-                                              ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              r.call,
-                                              style: ts(
-                                                11,
-                                                c: C.cyan,
-                                                w: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 16),
-                      // 指标
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _metric(
-                              S.of(context).speedLabel,
-                              s.speedStr,
-                              Icons.speed_rounded,
-                              C.blue,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: _metric(
-                              S.of(context).altitude,
-                              s.altStr,
-                              Icons.height_rounded,
-                              C.purple,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: _metric(
-                              S.of(context).courseLabel,
-                              s.course != null
-                                  ? '${s.course!.toStringAsFixed(0)}°'
-                                  : '--',
-                              Icons.navigation_rounded,
-                              C.cyan,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      // 快捷操作（Wrap 自动换行，窄屏不溢出）
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _action(
-                            Icons.content_copy_rounded,
-                            S.of(context).copyCoords,
-                            () {
-                              Clipboard.setData(ClipboardData(text: s.posStr));
-                              _toast(S.of(context).copiedCoordsValue(s.posStr));
-                            },
-                          ),
-                          _action(
-                            Icons.grid_4x4_rounded,
-                            S.of(context).copyGrid,
-                            () {
-                              Clipboard.setData(ClipboardData(text: s.grid));
-                              _toast(S.of(context).copiedGridValue(s.grid));
-                            },
-                          ),
-                          _action(
-                            Icons.map_rounded,
-                            S.of(context).openInMap,
-                            () {
-                              widget.state.focusOnMap(s);
-                              Navigator.pop(context);
-                            },
-                          ),
-                          _action(
-                            Icons.navigation_rounded,
-                            S.of(context).navigate,
-                            () {
-                              _openNavigation(s);
-                            },
-                          ),
-                          // 在线查询：QRZ（去 SSID 查基础呼号）/ aprs.fi（完整呼号）
-                          _action(
-                            Icons.badge_rounded,
-                            S.of(context).lookupQrz,
-                            () => _openUrl(
-                              'https://www.qrz.com/db/${s.baseCall}',
-                            ),
-                          ),
-                          _action(
-                            Icons.public_rounded,
-                            S.of(context).lookupAprsFi,
-                            () => _openUrl(
-                              'https://aprs.fi/info/a/${s.call}',
-                            ),
-                          ),
-                          // APRS.tv：点击后弹面板再选「详情页 / 地图」
-                          _action(
-                            Icons.travel_explore_rounded,
-                            S.of(context).aprsTv,
-                            () => _showAprsTvSheet(s),
-                          ),
-                        ],
-                      ),
-                      // 设备识别信息（官方 tocalls 目的呼号识别）
-                      if (_deviceCard(context, s) != null) ...[
-                        SizedBox(height: 14),
-                        _deviceCard(context, s)!,
-                      ],
-                      if (widget.state.myStation != null) ...[
-                        SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.blueBg,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: C.blue.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.navigation_rounded,
-                                color: C.blue,
-                                size: 18,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                S
-                                    .of(context)
-                                    .distanceBearing(
-                                      s
-                                          .distKm(
-                                            widget.state.myLat!,
-                                            widget.state.myLng!,
-                                          )
-                                          .toStringAsFixed(1),
-                                      s
-                                          .bearingFrom(
-                                            widget.state.myLat!,
-                                            widget.state.myLng!,
-                                          )
-                                          .toStringAsFixed(0),
-                                    ),
-                                style: ts(12, c: C.blue, w: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      if (s.wx != null) ...[
-                        SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.cyanBg,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: C.cyan.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.cloud_rounded,
-                                color: C.cyan,
-                                size: 20,
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  S.of(context).weatherDataValue(s.wx!),
-                                  style: ts(12, c: C.cyan, w: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 16),
-                      // 位置信息
-                      SoftCard(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
+                        SizedBox(height: 16),
+                        // 指标
+                        Row(
                           children: [
-                            KV(
-                              S.of(context).grid,
-                              s.grid,
-                              icon: Icons.grid_4x4_rounded,
+                            Expanded(
+                              child: _metric(
+                                S.of(context).speedLabel,
+                                s.speedStr,
+                                Icons.speed_rounded,
+                                C.blue,
+                              ),
                             ),
-                            SizedBox(height: 8),
-                            KV(
-                              S.of(context).latitude,
-                              s.lat.toStringAsFixed(5),
-                              icon: Icons.explore_rounded,
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: _metric(
+                                S.of(context).altitude,
+                                s.altStr,
+                                Icons.height_rounded,
+                                C.purple,
+                              ),
                             ),
-                            SizedBox(height: 8),
-                            KV(
-                              S.of(context).longitude,
-                              s.lng.toStringAsFixed(5),
-                              icon: Icons.explore_rounded,
-                            ),
-                            SizedBox(height: 8),
-                            KV(
-                              S.of(context).lastSeen,
-                              localizedLastSeen(context, s),
-                              icon: Icons.access_time_rounded,
-                            ),
-                            SizedBox(height: 8),
-                            KV(
-                              S.of(context).symbolLabel,
-                              '${s.symbol}  ${localizedAprsSymbolName(context, s.symbol)}',
-                              icon: Icons.tag_rounded,
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: _metric(
+                                S.of(context).courseLabel,
+                                s.course != null
+                                    ? '${s.course!.toStringAsFixed(0)}°'
+                                    : '--',
+                                Icons.navigation_rounded,
+                                C.cyan,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      // 转发路径（独立区块，箭头串联，中继台可点击跳转）
-                      if (s.path != null && s.path!.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        // 快捷操作（Wrap 自动换行，窄屏不溢出）
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _action(
+                              Icons.content_copy_rounded,
+                              S.of(context).copyCoords,
+                              () {
+                                Clipboard.setData(ClipboardData(text: s.posStr));
+                                _toast(S.of(context).copiedCoordsValue(s.posStr));
+                              },
+                            ),
+                            _action(
+                              Icons.grid_4x4_rounded,
+                              S.of(context).copyGrid,
+                              () {
+                                Clipboard.setData(ClipboardData(text: s.grid));
+                                _toast(S.of(context).copiedGridValue(s.grid));
+                              },
+                            ),
+                            _action(
+                              Icons.map_rounded,
+                              S.of(context).openInMap,
+                              () {
+                                widget.state.focusOnMap(s);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            _action(
+                              Icons.navigation_rounded,
+                              S.of(context).navigate,
+                              () {
+                                _openNavigation(s);
+                              },
+                            ),
+                            // 在线查询：QRZ（去 SSID 查基础呼号）/ aprs.fi（完整呼号）
+                            _action(
+                              Icons.badge_rounded,
+                              S.of(context).lookupQrz,
+                              () => _openUrl(
+                                'https://www.qrz.com/db/${s.baseCall}',
+                              ),
+                            ),
+                            _action(
+                              Icons.public_rounded,
+                              S.of(context).lookupAprsFi,
+                              () => _openUrl(
+                                'https://aprs.fi/info/a/${s.call}',
+                              ),
+                            ),
+                            // APRS.tv：点击后弹面板再选「详情页 / 地图」
+                            _action(
+                              Icons.travel_explore_rounded,
+                              S.of(context).aprsTv,
+                              () => _showAprsTvSheet(s),
+                            ),
+                          ],
+                        ),
+                        // 设备识别信息（官方 tocalls 目的呼号识别）
+                        if (_deviceCard(context, s) != null) ...[
+                          SizedBox(height: 14),
+                          _deviceCard(context, s)!,
+                        ],
+                        if (widget.state.myStation != null) ...[
+                          SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: C.blueBg,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: C.blue.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.navigation_rounded,
+                                  color: C.blue,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  S
+                                      .of(context)
+                                      .distanceBearing(
+                                        s
+                                            .distKm(
+                                              widget.state.myLat!,
+                                              widget.state.myLng!,
+                                            )
+                                            .toStringAsFixed(1),
+                                        s
+                                            .bearingFrom(
+                                              widget.state.myLat!,
+                                              widget.state.myLng!,
+                                            )
+                                            .toStringAsFixed(0),
+                                      ),
+                                  style: ts(12, c: C.blue, w: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (s.wx != null) ...[
+                          SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: C.cyanBg,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: C.cyan.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.cloud_rounded,
+                                  color: C.cyan,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    S.of(context).weatherDataValue(s.wx!),
+                                    style: ts(12, c: C.cyan, w: FontWeight.w600),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        SizedBox(height: 16),
+                        // 位置信息
+                        SoftCard(
+                          padding: const EdgeInsets.all(14),
+                          child: Column(
+                            children: [
+                              KV(
+                                S.of(context).grid,
+                                s.grid,
+                                icon: Icons.grid_4x4_rounded,
+                              ),
+                              SizedBox(height: 8),
+                              KV(
+                                S.of(context).latitude,
+                                s.lat.toStringAsFixed(5),
+                                icon: Icons.explore_rounded,
+                              ),
+                              SizedBox(height: 8),
+                              KV(
+                                S.of(context).longitude,
+                                s.lng.toStringAsFixed(5),
+                                icon: Icons.explore_rounded,
+                              ),
+                              SizedBox(height: 8),
+                              KV(
+                                S.of(context).lastSeen,
+                                localizedLastSeen(context, s),
+                                icon: Icons.access_time_rounded,
+                              ),
+                              SizedBox(height: 8),
+                              KV(
+                                S.of(context).symbolLabel,
+                                '${s.symbol}  ${localizedAprsSymbolName(context, s.symbol)}',
+                                icon: Icons.tag_rounded,
+                              ),
+                            ],
+                          ),
+                        ),
+                        // 转发路径（独立区块，箭头串联，中继台可点击跳转）
+                        if (s.path != null && s.path!.isNotEmpty) ...[
+                          SizedBox(height: 14),
+                          SoftCard(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.route_rounded,
+                                      size: 14,
+                                      color: C.orange,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      S.of(context).forwardingPath,
+                                      style: ts(
+                                        12,
+                                        c: C.orange,
+                                        w: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 2,
+                                  runSpacing: 8,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: _buildPathHops(_pathHops(s.path!)),
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                  S.of(context).digipeaterTapHint,
+                                  style: ts(9, c: C.greyLight),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                         SizedBox(height: 14),
+                        // FMO 台站信息
+                        if (s.fmo != null && s.fmo!.isNotEmpty) ...[
+                          SoftCard(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 26,
+                                      height: 26,
+                                      decoration: BoxDecoration(
+                                        color: C.greenBg,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Icons.radio_rounded,
+                                        color: C.green,
+                                        size: 15,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      S.of(context).fmoInfo,
+                                      style: ts(
+                                        13,
+                                        c: C.green,
+                                        w: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        final txt = s.fmo!.entries
+                                            .map((e) => '${e.key}: ${e.value}')
+                                            .join('\n');
+                                        Clipboard.setData(
+                                          ClipboardData(text: txt),
+                                        );
+                                        _toast(S.of(context).copiedFmoInfo);
+                                      },
+                                      child: Icon(
+                                        Icons.copy_rounded,
+                                        color: C.grey,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                ...s.fmo!.entries.map(
+                                  (e) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: Row(
+                                      children: [
+                                        Text(e.key, style: ts(11, c: C.slate)),
+                                        SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            e.value,
+                                            textAlign: TextAlign.right,
+                                            style: ts(
+                                              11,
+                                              c: C.ink,
+                                              w: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 14),
+                        ],
+                        // APRSlocus 专属信息（同款软件台站）
+                        if (s.isAprslocusStation) ...[
+                          SoftCard(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 26,
+                                      height: 26,
+                                      decoration: BoxDecoration(
+                                        color: C.blueBg,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Icons.terminal_rounded,
+                                        color: C.blue,
+                                        size: 15,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      S.of(context).aprslocusInfo,
+                                      style: ts(
+                                        13,
+                                        c: C.blue,
+                                        w: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        final txt =
+                                            (s.aprslocus ??
+                                                    _aprslocusFromComment(s))
+                                                .entries
+                                                .map(
+                                                  (e) => '${e.key}: ${e.value}',
+                                                )
+                                                .join('\n');
+                                        Clipboard.setData(
+                                          ClipboardData(text: txt),
+                                        );
+                                        _toast(S.of(context).copiedAprslocusInfo);
+                                      },
+                                      child: Icon(
+                                        Icons.copy_rounded,
+                                        color: C.grey,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                ..._aprslocusEntries(s).entries.map(
+                                  (e) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: Row(
+                                      children: [
+                                        Text(e.key, style: ts(11, c: C.slate)),
+                                        SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            e.value,
+                                            textAlign: TextAlign.right,
+                                            style: ts(
+                                              11,
+                                              c: C.ink,
+                                              w: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 14),
+                        ],
+                        // 轨迹预览
                         SoftCard(
                           padding: const EdgeInsets.all(14),
                           child: Column(
@@ -693,268 +899,67 @@ class _StationDetailState extends State<StationDetail> {
                                 children: [
                                   Icon(
                                     Icons.route_rounded,
-                                    size: 14,
-                                    color: C.orange,
+                                    size: 16,
+                                    color: C.slate,
                                   ),
                                   SizedBox(width: 6),
                                   Text(
-                                    S.of(context).forwardingPath,
-                                    style: ts(
-                                      12,
-                                      c: C.orange,
-                                      w: FontWeight.w700,
-                                    ),
+                                    S.of(context).trackPoints(s.track.length),
+                                    style: ts(12, c: C.slate, w: FontWeight.w600),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 10),
-                              Wrap(
-                                spacing: 2,
-                                runSpacing: 8,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: _buildPathHops(_pathHops(s.path!)),
-                              ),
-                              SizedBox(height: 6),
-                              Text(
-                                S.of(context).digipeaterTapHint,
-                                style: ts(9, c: C.greyLight),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 14),
-                      // FMO 台站信息
-                      if (s.fmo != null && s.fmo!.isNotEmpty) ...[
-                        SoftCard(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 26,
-                                    height: 26,
-                                    decoration: BoxDecoration(
-                                      color: C.greenBg,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      Icons.radio_rounded,
-                                      color: C.green,
-                                      size: 15,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    S.of(context).fmoInfo,
-                                    style: ts(
-                                      13,
-                                      c: C.green,
-                                      w: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      final txt = s.fmo!.entries
-                                          .map((e) => '${e.key}: ${e.value}')
-                                          .join('\n');
-                                      Clipboard.setData(
-                                        ClipboardData(text: txt),
-                                      );
-                                      _toast(S.of(context).copiedFmoInfo);
-                                    },
-                                    child: Icon(
-                                      Icons.copy_rounded,
-                                      color: C.grey,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              ...s.fmo!.entries.map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
-                                  child: Row(
-                                    children: [
-                                      Text(e.key, style: ts(11, c: C.slate)),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          e.value,
-                                          textAlign: TextAlign.right,
-                                          style: ts(
-                                            11,
-                                            c: C.ink,
-                                            w: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              SizedBox(
+                                height: 90,
+                                width: double.infinity,
+                                child: CustomPaint(
+                                  painter: _TrackPainter(s.track, s.color),
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        // 速度 / 高度变化图表
+                        if (s.telemetry.isNotEmpty) ...[
+                          SizedBox(height: 14),
+                          _trendChartCard(s),
+                        ],
                         SizedBox(height: 14),
-                      ],
-                      // APRSlocus 专属信息（同款软件台站）
-                      if (s.isAprslocusStation) ...[
-                        SoftCard(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 26,
-                                    height: 26,
-                                    decoration: BoxDecoration(
-                                      color: C.blueBg,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      Icons.terminal_rounded,
-                                      color: C.blue,
-                                      size: 15,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    S.of(context).aprslocusInfo,
-                                    style: ts(
-                                      13,
-                                      c: C.blue,
-                                      w: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      final txt =
-                                          (s.aprslocus ??
-                                                  _aprslocusFromComment(s))
-                                              .entries
-                                              .map(
-                                                (e) => '${e.key}: ${e.value}',
-                                              )
-                                              .join('\n');
-                                      Clipboard.setData(
-                                        ClipboardData(text: txt),
-                                      );
-                                      _toast(S.of(context).copiedAprslocusInfo);
-                                    },
-                                    child: Icon(
-                                      Icons.copy_rounded,
-                                      color: C.grey,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              ..._aprslocusEntries(s).entries.map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
-                                  child: Row(
-                                    children: [
-                                      Text(e.key, style: ts(11, c: C.slate)),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          e.value,
-                                          textAlign: TextAlign.right,
-                                          style: ts(
-                                            11,
-                                            c: C.ink,
-                                            w: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                        // 最近数据包
+                        if (pkt.isNotEmpty) ...[
+                          Text(
+                            S.of(context).recentPackets,
+                            style: ts(13, w: FontWeight.w600),
                           ),
-                        ),
-                        SizedBox(height: 14),
-                      ],
-                      // 轨迹预览
-                      SoftCard(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.route_rounded,
-                                  size: 16,
-                                  color: C.slate,
-                                ),
-                                SizedBox(width: 6),
-                                Text(
-                                  S.of(context).trackPoints(s.track.length),
-                                  style: ts(12, c: C.slate, w: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            SizedBox(
-                              height: 90,
-                              width: double.infinity,
-                              child: CustomPaint(
-                                painter: _TrackPainter(s.track, s.color),
+                          SizedBox(height: 8),
+                          ...pkt.map(
+                            (p) => Container(
+                              margin: const EdgeInsets.only(bottom: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // 速度 / 高度变化图表
-                      if (s.telemetry.isNotEmpty) ...[
-                        SizedBox(height: 14),
-                        _trendChartCard(s),
-                      ],
-                      SizedBox(height: 14),
-                      // 最近数据包
-                      if (pkt.isNotEmpty) ...[
-                        Text(
-                          S.of(context).recentPackets,
-                          style: ts(13, w: FontWeight.w600),
-                        ),
-                        SizedBox(height: 8),
-                        ...pkt.map(
-                          (p) => Container(
-                            margin: const EdgeInsets.only(bottom: 6),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: C.bgSoft,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              p.raw,
-                              style: mono(10, c: C.slate),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              decoration: BoxDecoration(
+                                color: C.bgSoft,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                p.raw,
+                                style: mono(10, c: C.slate),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 8),
+                          SizedBox(height: 8),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1044,64 +1049,68 @@ class _StationDetailState extends State<StationDetail> {
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        // 不能加 const：C.white 是 static 字段（非常量）
-        decoration: BoxDecoration(
-          color: C.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 拖动指示条（与其他面板一致）
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: C.greyLight,
-                  borderRadius: BorderRadius.circular(2),
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          // 不能加 const：C.white 是 static 字段（非常量）
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 拖动指示条（与其他面板一致）
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: C.greyLight,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.travel_explore_rounded,
-                      size: 18,
-                      color: C.blue,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(loc.aprsTv, style: T.h3),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        s.call,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: ts(12, c: C.grey, w: FontWeight.w600),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.travel_explore_rounded,
+                        size: 18,
+                        color: C.blue,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(loc.aprsTv, style: T.h3),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          s.call,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ts(12, c: C.grey, w: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              _aprsTvOption(
-                ctx,
-                icon: Icons.article_rounded,
-                label: loc.aprsTvInfo,
-                url: 'https://aprs.tv/info/${s.call}',
-              ),
-              _aprsTvOption(
-                ctx,
-                icon: Icons.map_rounded,
-                label: loc.aprsTvMap,
-                url: 'https://aprs.tv/?call=${s.call}',
-              ),
-              const SizedBox(height: 10),
-            ],
+                const SizedBox(height: 6),
+                _aprsTvOption(
+                  ctx,
+                  icon: Icons.article_rounded,
+                  label: loc.aprsTvInfo,
+                  url: 'https://aprs.tv/info/${s.call}',
+                ),
+                _aprsTvOption(
+                  ctx,
+                  icon: Icons.map_rounded,
+                  label: loc.aprsTvMap,
+                  url: 'https://aprs.tv/?call=${s.call}',
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
           ),
         ),
       ),

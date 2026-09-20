@@ -2810,5 +2810,16 @@
   "tncSerialBaud": "串列埠線速 (bd)",
   "tncSerialBaudTip": "USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。",
   "tncSerialBaudHint": "改完線速後需要重新連線才會生效（點「下發參數」會自動重連一次）",
-  "tncSerialBaudBluetooth": "目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效"
+  "tncSerialBaudBluetooth": "目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效",
+  "uiMaterial": "介面材質",
+  "uiMaterialDesc": "讓卡片、頂欄與彈窗半透明，並在她們背後做真實模糊",
+  "uiMaterialOff": "關閉（實色）",
+  "uiMaterialOffDesc": "表面實色，與舊版完全一致",
+  "uiMaterialGlass": "磨砂玻璃",
+  "uiMaterialGlassDesc": "更透、模糊更強：像 Windows 11 的壓克力（Acrylic）",
+  "uiMaterialMica": "雲母",
+  "uiMaterialMicaDesc": "更實、模糊較輕，帶一層主色色調：像 Windows 11 的雲母（Mica）",
+  "uiMaterialHint": "材質只作用於應用程式自己的表面（卡片、頂欄、導覽列、彈窗、地圖浮層），不是系統視窗的透明。模糊要佔顯卡：舊機型上可能不如關閉時順暢。",
+  "uiMaterialBgHint": "目前主題用了背景圖：材質不再另畫底色，只把頂欄與浮層做成磨砂。",
+  "uiMaterialPreview": "預覽"
 }

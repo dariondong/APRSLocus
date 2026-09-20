@@ -192,7 +192,7 @@ class _StationsPageState extends State<StationsPage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: C.white,
+                  color: C.sheetFill,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: C.border),
                 ),
@@ -673,7 +673,7 @@ class _StationsPageState extends State<StationsPage> {
           }
           return Container(
             decoration: BoxDecoration(
-              color: C.white,
+              color: C.sheetFill,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             constraints: BoxConstraints(

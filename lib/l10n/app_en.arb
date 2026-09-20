@@ -2222,5 +2222,16 @@
   "tncSerialBaud": "Serial baud rate (bd)",
   "tncSerialBaudTip": "A USB serial cable and the radio data port must agree on the speed, otherwise not a single byte gets through. Common values: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP has no baud rate, so this is ignored for Bluetooth devices.",
   "tncSerialBaudHint": "The new speed takes effect after reconnecting (sending the parameters reconnects once automatically)",
-  "tncSerialBaudBluetooth": "A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect"
+  "tncSerialBaudBluetooth": "A Bluetooth device is bound: Bluetooth SPP has no baud rate, so this setting has no effect",
+  "uiMaterial": "UI material",
+  "uiMaterialDesc": "Make cards, bars and dialogs translucent, with a real blur behind them",
+  "uiMaterialOff": "Off (solid)",
+  "uiMaterialOffDesc": "Solid surfaces, exactly as before",
+  "uiMaterialGlass": "Frosted glass",
+  "uiMaterialGlassDesc": "More transparent with a stronger blur — like Windows 11 Acrylic",
+  "uiMaterialMica": "Mica",
+  "uiMaterialMicaDesc": "More solid with a lighter blur and a tint of your accent colour — like Windows 11 Mica",
+  "uiMaterialHint": "The material only affects the app's own surfaces (cards, bars, dialogs, map overlays) — it is not window transparency. Blur costs GPU time, so on older devices it may feel less smooth than Off.",
+  "uiMaterialBgHint": "This theme uses a background image, so the material adds no backdrop of its own and only frosts the bars and overlays.",
+  "uiMaterialPreview": "Preview"
 }

@@ -1094,14 +1094,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get igateIsDown => 'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。';
 
   @override
-  String get igateAllRejected =>
-      '收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。';
+  String get igateNoRfTraffic =>
+      '射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。';
 
   @override
-  String get igateNoRfTraffic =>
-      '射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。'
-      '这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、'
-      '天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。';
+  String get igateAllRejected =>
+      '收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。';
 
   @override
   String grpSysJoined(String call) {
@@ -6299,6 +6297,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tncSerialBaudBluetooth => '当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效';
+
+  @override
+  String get uiMaterial => '界面材质';
+
+  @override
+  String get uiMaterialDesc => '让卡片、顶栏与弹窗半透明，并在它们背后做真实模糊';
+
+  @override
+  String get uiMaterialOff => '关闭（实色）';
+
+  @override
+  String get uiMaterialOffDesc => '表面实色，与旧版完全一致';
+
+  @override
+  String get uiMaterialGlass => '磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassDesc => '更透、模糊更强：像 Windows 11 的亚克力（Acrylic）';
+
+  @override
+  String get uiMaterialMica => '云母';
+
+  @override
+  String get uiMaterialMicaDesc => '更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）';
+
+  @override
+  String get uiMaterialHint =>
+      '材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。';
+
+  @override
+  String get uiMaterialBgHint => '当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。';
+
+  @override
+  String get uiMaterialPreview => '预览';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -7390,14 +7422,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get igateIsDown => 'APRS-IS 沒連上：閘道沒有可轉遞的目標網路。等它連上（鏈路狀態卡裡能看到）後數字才會開始漲。';
 
   @override
-  String get igateAllRejected =>
-      '收到了射頻報文，但全被迴路防護拒收：報文裡帶 TCPIP*/TCPXX* 或 q 構造，說明它本來就從網際網路來，再送回 APRS-IS 會讓同一條報文無限增殖。這是**在正確工作**，不是故障。';
+  String get igateNoRfTraffic =>
+      '射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。';
 
   @override
-  String get igateNoRfTraffic =>
-      '射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。'
-      '這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、'
-      '天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。';
+  String get igateAllRejected =>
+      '收到了射頻報文，但全被迴路防護拒收：報文裡帶 TCPIP*/TCPXX* 或 q 構造，說明它本來就從網際網路來，再送回 APRS-IS 會讓同一條報文無限增殖。這是**在正確工作**，不是故障。';
 
   @override
   String grpSysJoined(String call) {
@@ -12595,4 +12625,38 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tncSerialBaudBluetooth => '目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效';
+
+  @override
+  String get uiMaterial => '介面材質';
+
+  @override
+  String get uiMaterialDesc => '讓卡片、頂欄與彈窗半透明，並在她們背後做真實模糊';
+
+  @override
+  String get uiMaterialOff => '關閉（實色）';
+
+  @override
+  String get uiMaterialOffDesc => '表面實色，與舊版完全一致';
+
+  @override
+  String get uiMaterialGlass => '磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassDesc => '更透、模糊更強：像 Windows 11 的壓克力（Acrylic）';
+
+  @override
+  String get uiMaterialMica => '雲母';
+
+  @override
+  String get uiMaterialMicaDesc => '更實、模糊較輕，帶一層主色色調：像 Windows 11 的雲母（Mica）';
+
+  @override
+  String get uiMaterialHint =>
+      '材質只作用於應用程式自己的表面（卡片、頂欄、導覽列、彈窗、地圖浮層），不是系統視窗的透明。模糊要佔顯卡：舊機型上可能不如關閉時順暢。';
+
+  @override
+  String get uiMaterialBgHint => '目前主題用了背景圖：材質不再另畫底色，只把頂欄與浮層做成磨砂。';
+
+  @override
+  String get uiMaterialPreview => '預覽';
 }

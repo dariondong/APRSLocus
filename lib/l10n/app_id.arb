@@ -2306,5 +2306,16 @@
   "tncSerialBaud": "Kecepatan baud serial (bd)",
   "tncSerialBaudTip": "Kabel serial USB dan port data radio harus sama kecepatannya, kalau tidak satu byte pun tidak akan lewat. Nilai umum: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP tidak punya konsep baud, jadi ini diabaikan untuk perangkat Bluetooth.",
   "tncSerialBaudHint": "Kecepatan baru berlaku setelah menghubungkan ulang (mengirim parameter akan menyambung ulang sekali secara otomatis)",
-  "tncSerialBaudBluetooth": "Perangkat yang tertaut adalah Bluetooth: Bluetooth SPP tidak punya konsep baud, jadi pengaturan ini tidak berpengaruh"
+  "tncSerialBaudBluetooth": "Perangkat yang tertaut adalah Bluetooth: Bluetooth SPP tidak punya konsep baud, jadi pengaturan ini tidak berpengaruh",
+  "uiMaterial": "Material antarmuka",
+  "uiMaterialDesc": "Membuat kartu, bilah, dan dialog tembus pandang, dengan buram nyata di belakangnya",
+  "uiMaterialOff": "Mati (padat)",
+  "uiMaterialOffDesc": "Permukaan padat, sama seperti sebelumnya",
+  "uiMaterialGlass": "Kaca buram",
+  "uiMaterialGlassDesc": "Lebih tembus pandang dengan buram lebih kuat, seperti Acrylic Windows 11",
+  "uiMaterialMica": "Mica",
+  "uiMaterialMicaDesc": "Lebih padat dengan buram ringan dan sedikit warna aksen, seperti Mica Windows 11",
+  "uiMaterialHint": "Material hanya memengaruhi permukaan aplikasi (kartu, bilah, dialog, lapisan peta); bukan transparansi jendela. Buram memakai GPU, jadi di perangkat lama mungkin terasa kurang lancar dibanding Mati.",
+  "uiMaterialBgHint": "Tema ini memakai gambar latar, jadi material tidak menambah latar sendiri dan hanya membuat bilah serta lapisan menjadi buram.",
+  "uiMaterialPreview": "Pratinjau"
 }
