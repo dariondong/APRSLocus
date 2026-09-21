@@ -88,7 +88,7 @@ class _LinkTestCardState extends State<LinkTestCard> {
         content: Text(msg),
         behavior: SnackBarBehavior.floating,
         backgroundColor: err == null ? C.green : C.red,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
     setState(() {});
@@ -200,7 +200,7 @@ class _LinkTestCardState extends State<LinkTestCard> {
               children: [
                 Text(item.label, style: ts(12, w: FontWeight.w700, c: col)),
                 const SizedBox(height: 1),
-                Text(item.detail, style: ts(10.5, c: C.slate, h: 1.35)),
+                Text(item.detail, style: ts(10, c: C.slate, h: 1.35)),
               ],
             ),
           ),

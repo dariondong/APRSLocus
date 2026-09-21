@@ -176,16 +176,16 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(S.of(ctx).mapType, style: ts(15, w: FontWeight.w800)),
+            Text(S.of(ctx).mapType, style: ts(16, w: FontWeight.w800)),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -202,7 +202,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                         color: st.mapType == t.name ? C.blue : C.bgSoft,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                             color: st.mapType == t.name ? C.blue : C.border),
                       ),
@@ -480,7 +480,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
             padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
             decoration: BoxDecoration(
               color: Colors.black.withValues(alpha: 0.46),
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
             ),
             child: Column(
@@ -495,7 +495,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                     child: Text(s.nearbyStations,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: ts(9.5,
+                        style: ts(9,
                             w: FontWeight.w700,
                             c: Colors.white.withValues(alpha: 0.75))),
                   ),
@@ -551,7 +551,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
           ),
           const SizedBox(width: 6),
           Text(st.connected ? s.connected : s.disconnected,
-              style: ts(10.5, w: FontWeight.w700, c: Colors.white)),
+              style: ts(10, w: FontWeight.w700, c: Colors.white)),
         ]),
         const SizedBox(height: 6),
         Row(crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -572,7 +572,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         ]),
         const SizedBox(height: 2),
         Text('${s.beaconsSent} ${st.beaconsSent}${on ? '' : ' · ${s.beaconOff}'}',
-            style: ts(9.5, c: Colors.white.withValues(alpha: 0.6))),
+            style: ts(9, c: Colors.white.withValues(alpha: 0.6))),
       ],
     );
   }
@@ -624,7 +624,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
             st.myHasFix && st.myLat != null && st.myLng != null
                 ? '${st.myLat!.toStringAsFixed(5)}, ${st.myLng!.toStringAsFixed(5)}'
                 : '--',
-            style: ts(9.5, c: Colors.white.withValues(alpha: 0.55))),
+            style: ts(9, c: Colors.white.withValues(alpha: 0.55))),
       ],
     );
   }
@@ -637,7 +637,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
       constraints: const BoxConstraints(minWidth: 116),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.52),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
       child: Column(
@@ -666,7 +666,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         Icon(icon, size: 12, color: color),
         const SizedBox(width: 6),
         Text(value,
-            style: ts(10.5, w: FontWeight.w700, c: Colors.white)),
+            style: ts(10, w: FontWeight.w700, c: Colors.white)),
         if (sub != null) ...[
           const SizedBox(width: 6),
           Text(sub,
@@ -687,7 +687,7 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
           color: active
               ? C.blue.withValues(alpha: 0.92)
               : Colors.black.withValues(alpha: 0.52),
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
         ),
         child: Icon(icon,

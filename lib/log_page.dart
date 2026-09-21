@@ -63,7 +63,7 @@ class LogPage extends StatelessWidget {
             return Center(
               child: Text(
                 S.of(context).noLogs,
-                style: TextStyle(color: C.grey, fontSize: 14),
+                style: TextStyle(color: C.grey, fontSize: 13),
               ),
             );
           }
@@ -78,7 +78,7 @@ class LogPage extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: C.surfaceFill,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: C.border),
                 ),
                 child: Row(

@@ -635,7 +635,7 @@ class HonorBadge extends StatelessWidget {
                   style: ts(11, c: col, w: FontWeight.w800)),
               if (keys.length > 1) ...[const SizedBox(width: 3),
                 Text('+${keys.length - 1}',
-                    style: ts(9.5, c: col.withValues(alpha: 0.7), w: FontWeight.w700)),
+                    style: ts(9, c: col.withValues(alpha: 0.7), w: FontWeight.w700)),
               ],
             ]),
           ),
@@ -687,7 +687,7 @@ class _HonorWallSheet extends StatelessWidget {
           const SizedBox(width: 12),
           Text(AppLocalizations.of(context).badgeWall,
               style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF98A2B8))),
         ]),
@@ -702,7 +702,7 @@ class _HonorWallSheet extends StatelessWidget {
                   AppLocalizations.of(context)
                       .honoredBadges('$ownedCount', '${wall.length}'),
                   style: const TextStyle(
-                      fontSize: 12.5, color: Color(0xFF98A2B8))),
+                      fontSize: 12, color: Color(0xFF98A2B8))),
               const SizedBox(height: 12),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.62,
@@ -770,7 +770,7 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
           height: 46,
           decoration: BoxDecoration(
             color: owned ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(owned ? h.icon : Icons.lock_rounded, color: col, size: 23),
         ),
@@ -781,7 +781,7 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: owned ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
             const SizedBox(height: 3),
@@ -792,7 +792,7 @@ Widget _badgeTile(BuildContext context, String call, Honor h, bool owned) {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontSize: 12.5,
+                    fontSize: 12,
                     height: 1.35,
                     color: owned ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
           ]),
@@ -830,7 +830,7 @@ Widget _achievementTile(
         height: 46,
         decoration: BoxDecoration(
           color: unlocked ? c.withValues(alpha: 0.13) : const Color(0xFFF0F2F7),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Icon(unlocked ? a.icon : Icons.lock_rounded, color: col, size: 23),
       ),
@@ -841,7 +841,7 @@ Widget _achievementTile(
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: unlocked ? const Color(0xFF1B253C) : const Color(0xFF98A2B8))),
           const SizedBox(height: 3),
@@ -849,7 +849,7 @@ Widget _achievementTile(
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: 12,
                   height: 1.35,
                   color: unlocked ? const Color(0xFF68748F) : const Color(0xFFB4BCCB))),
         ]),

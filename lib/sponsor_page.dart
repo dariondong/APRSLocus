@@ -245,7 +245,7 @@ class _SponsorPageState extends State<SponsorPage> {
           Center(
             child: Text(
               S.of(context).sponsorsThanks,
-              style: ts(18, w: FontWeight.w800),
+              style: ts(16, w: FontWeight.w800),
             ),
           ),
           const SizedBox(height: 4),
@@ -331,7 +331,7 @@ class _SponsorPageState extends State<SponsorPage> {
                           decoration: BoxDecoration(
                             color: const Color(0xFF07C160)
                                 .withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
                             Icons.wechat_rounded,
@@ -396,7 +396,7 @@ class _SponsorPageState extends State<SponsorPage> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF1677FF)
                               .withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
                           Icons.account_balance_wallet_rounded,
@@ -501,11 +501,11 @@ class _SponsorPageState extends State<SponsorPage> {
         child: GestureDetector(
           onTap: () => Navigator.pop(ctx),
           child: MaterialSurface(
-            radius: 20,
+            radius: 24,
             child: Container(
               decoration: BoxDecoration(
                 color: C.sheetFill,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(24),
               ),
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -513,7 +513,7 @@ class _SponsorPageState extends State<SponsorPage> {
                 children: [
                   Text(
                     S.of(context).qrCodeTitle(title),
-                    style: ts(15, w: FontWeight.w800),
+                    style: ts(16, w: FontWeight.w800),
                   ),
                   const SizedBox(height: 14),
                   ClipRRect(

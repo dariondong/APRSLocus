@@ -584,7 +584,7 @@ class WeatherBadge extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: col.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
               border: Border.all(color: col.withValues(alpha: 0.35)),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1674,7 +1674,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
       const SizedBox(width: 12),
       Expanded(
         child: Text(msg,
-            style: ts(12.5, c: Colors.white.withValues(alpha: 0.9), h: 1.55)),
+            style: ts(12, c: Colors.white.withValues(alpha: 0.9), h: 1.55)),
       ),
     ]);
   }
@@ -1725,7 +1725,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   Padding(
                     padding: const EdgeInsets.only(top: 5),
                     child: Text('°',
-                        style: ts(24,
+                        style: ts(26,
                             w: FontWeight.w700,
                             c: Colors.white.withValues(alpha: 0.85))),
                   ),
@@ -1753,18 +1753,18 @@ class _WeatherPanelState extends State<_WeatherPanel>
           child: Row(children: [
             if (d0 != null) ...[
               Text('${s.weatherToday} ${d0.tempMin}° ~ ${d0.tempMax}°',
-                  style: ts(11.5,
+                  style: ts(11,
                       w: FontWeight.w600,
                       c: Colors.white.withValues(alpha: 0.86))),
               Text('  ·  ',
-                  style: ts(11.5, c: Colors.white.withValues(alpha: 0.35))),
+                  style: ts(11, c: Colors.white.withValues(alpha: 0.35))),
             ],
             Text(s.weatherFeels(now.feelsLike),
-                style: ts(11.5, c: Colors.white.withValues(alpha: 0.7))),
+                style: ts(11, c: Colors.white.withValues(alpha: 0.7))),
             Text('  ·  ',
-                style: ts(11.5, c: Colors.white.withValues(alpha: 0.35))),
+                style: ts(11, c: Colors.white.withValues(alpha: 0.35))),
             Text(s.weatherObserved(now.obsTimeShort),
-                style: ts(11.5, c: Colors.white.withValues(alpha: 0.7))),
+                style: ts(11, c: Colors.white.withValues(alpha: 0.7))),
           ]),
         ),
         const SizedBox(height: 12),
@@ -1803,7 +1803,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.20),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1814,10 +1814,10 @@ class _WeatherPanelState extends State<_WeatherPanel>
         ),
         const SizedBox(width: 6),
         Text('${s.weatherAir} $aqi',
-            style: ts(10.5, w: FontWeight.w700, c: Colors.white)),
+            style: ts(10, w: FontWeight.w700, c: Colors.white)),
         const SizedBox(width: 5),
         Text(airLabel(aqi, s),
-            style: ts(10.5, c: Colors.white.withValues(alpha: 0.68))),
+            style: ts(10, c: Colors.white.withValues(alpha: 0.68))),
       ]),
     );
   }
@@ -1860,7 +1860,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
           const SizedBox(height: 12),
           Center(
             child: Text(s.weatherPowered,
-                style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
+                style: ts(9, c: Colors.white.withValues(alpha: 0.5))),
           ),
         ],
       ),
@@ -1872,7 +1872,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         Icon(ic, size: 13, color: Colors.white.withValues(alpha: 0.62)),
         const SizedBox(width: 6),
         Text(text,
-            style: ts(11.5,
+            style: ts(11,
                 w: FontWeight.w700, c: Colors.white.withValues(alpha: 0.8), ls: 0.8)),
       ]);
 
@@ -1882,12 +1882,12 @@ class _WeatherPanelState extends State<_WeatherPanel>
       color: Colors.transparent,
       child: InkWell(
         onTap: () => showDaily15Sheet(context),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           height: 44,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
           ),
           child: Row(
@@ -1915,7 +1915,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(wc.loading ? s.weatherPanelSub : s.weatherUnavail,
-              style: ts(11.5, c: Colors.white.withValues(alpha: 0.65))),
+              style: ts(11, c: Colors.white.withValues(alpha: 0.65))),
         ),
       ];
     }
@@ -1945,7 +1945,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(_dayLabel(i, d.date, s),
-                  style: ts(12.5, w: FontWeight.w700, c: Colors.white)),
+                  style: ts(12, w: FontWeight.w700, c: Colors.white)),
               const SizedBox(height: 1),
               Text(d.date == null ? '' : _md(d.date!),
                   style: ts(10, c: Colors.white.withValues(alpha: 0.5))),
@@ -2010,11 +2010,11 @@ class _WeatherPanelState extends State<_WeatherPanel>
                 size: 15, color: Colors.white.withValues(alpha: 0.85)),
             const SizedBox(width: 7),
             Text(s.hamTitle,
-                style: ts(12.5, w: FontWeight.w800, c: Colors.white)),
+                style: ts(12, w: FontWeight.w800, c: Colors.white)),
             const Spacer(),
             if (all.isNotEmpty)
               Text('${all.length}',
-                  style: ts(10.5,
+                  style: ts(10,
                       w: FontWeight.w700,
                       c: Colors.white.withValues(alpha: 0.45))),
           ]),
@@ -2066,7 +2066,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
                   Icon(tip.icon, size: 12, color: tip.color),
                   const SizedBox(width: 5),
                   Text(hamLevelLabel(tip.level, s),
-                      style: ts(9.5,
+                      style: ts(9,
                           w: FontWeight.w800, c: tip.color, ls: 0.7)),
                 ]),
                 const SizedBox(height: 4),
@@ -2201,7 +2201,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
         const SizedBox(height: 10),
         Center(
           child: Text(s.hfPowered,
-              style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
+              style: ts(9, c: Colors.white.withValues(alpha: 0.5))),
         ),
       ],
     );
@@ -2261,7 +2261,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   /// 逐波段表的表头：波段 / 日间 / 夜间（小号 + 低透明度，与面板其它小标题一致）
   Widget _hfBandHead(AppLocalizations s) {
-    final st = ts(10.5, c: Colors.white.withValues(alpha: 0.58));
+    final st = ts(10, c: Colors.white.withValues(alpha: 0.58));
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 2),
       child: Row(children: [
@@ -2310,7 +2310,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
           child: Text(hfQualityLabel(q, s),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: ts(11.5, w: FontWeight.w700, c: col)),
+              style: ts(11, w: FontWeight.w700, c: col)),
         ),
       ],
     );
@@ -2318,7 +2318,7 @@ class _WeatherPanelState extends State<_WeatherPanel>
 
   Widget _kvPair(String label, String value) => Row(children: [
         Text(label,
-            style: ts(10.5, c: Colors.white.withValues(alpha: 0.58))),
+            style: ts(10, c: Colors.white.withValues(alpha: 0.58))),
         const SizedBox(width: 8),
         Expanded(
           child: Text(value,
@@ -2414,7 +2414,7 @@ class _Daily15SheetState extends State<_Daily15Sheet>
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(s.weatherDaily15Title,
-                                style: ts(14.5,
+                                style: ts(13,
                                         w: FontWeight.w800, c: Colors.white)
                                     .copyWith(shadows: _kTextShadow)),
                           ),
@@ -2478,7 +2478,7 @@ class _Daily15SheetState extends State<_Daily15Sheet>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_dayLabel(i, d.date, s),
-                    style: ts(12.5, w: FontWeight.w700, c: Colors.white)),
+                    style: ts(12, w: FontWeight.w700, c: Colors.white)),
                 const SizedBox(height: 1),
                 Text(d.date == null ? '' : _md(d.date!),
                     style: ts(10, c: Colors.white.withValues(alpha: 0.5))),
@@ -2530,7 +2530,7 @@ class _Daily15SheetState extends State<_Daily15Sheet>
                 Text('${d.precip}mm',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ts(9.5, c: Colors.white.withValues(alpha: 0.5))),
+                    style: ts(9, c: Colors.white.withValues(alpha: 0.5))),
               ],
             ),
           ),

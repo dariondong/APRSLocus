@@ -199,7 +199,7 @@ class _OobePageState extends State<OobePage> {
               style: FilledButton.styleFrom(
                 backgroundColor: C.blue,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               onPressed: () => Navigator.pop(ctx),
@@ -250,7 +250,7 @@ class _OobePageState extends State<OobePage> {
                   SizedBox(width: 10),
                   Text(
                     S.of(context).wizard,
-                    style: ts(15, w: FontWeight.w800, ls: -0.3),
+                    style: ts(16, w: FontWeight.w800, ls: -0.3),
                   ),
                   Spacer(),
                   Text('${_step + 1} / 7', style: ts(12, c: C.grey)),
@@ -368,7 +368,7 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 16),
           Text(
             S.of(context).language,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
           ),
           SizedBox(height: 8),
           Text(
@@ -394,7 +394,7 @@ class _OobePageState extends State<OobePage> {
                 ),
                 decoration: BoxDecoration(
                   color: on ? C.blueBg : C.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: on ? C.blue : C.border,
                     width: on ? 1.5 : 1,
@@ -442,14 +442,14 @@ class _OobePageState extends State<OobePage> {
             height: 74,
             decoration: BoxDecoration(
               color: C.blueBg,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Icon(Icons.description_rounded, size: 36, color: C.blue),
           ),
           SizedBox(height: 18),
           Text(
             S.of(context).oobeAgreeTitle,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 10),
@@ -492,10 +492,10 @@ class _OobePageState extends State<OobePage> {
           Container(
             decoration: BoxDecoration(
               color: C.greyBg,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               onTap: () => setState(() => _agreed = !_agreed),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -515,7 +515,7 @@ class _OobePageState extends State<OobePage> {
                     Expanded(
                       child: Text(
                         S.of(context).oobeAgreeCheck,
-                        style: ts(12.5, c: _agreed ? C.ink : C.slate, h: 1.4),
+                        style: ts(12, c: _agreed ? C.ink : C.slate, h: 1.4),
                       ),
                     ),
                   ],
@@ -530,7 +530,7 @@ class _OobePageState extends State<OobePage> {
             style: TextButton.styleFrom(foregroundColor: C.red),
             child: Text(
               S.of(context).oobeDeclineExit,
-              style: ts(12.5, w: FontWeight.w600),
+              style: ts(12, w: FontWeight.w600),
             ),
           ),
         ],
@@ -555,7 +555,7 @@ class _OobePageState extends State<OobePage> {
           children: [
             Icon(icon, size: 15, color: C.blue),
             SizedBox(width: 8),
-            Text(label, style: ts(12.5, c: C.slate)),
+            Text(label, style: ts(12, c: C.slate)),
             Spacer(),
             Text(value, style: ts(12, c: C.blue, w: FontWeight.w600)),
             SizedBox(width: 4),
@@ -590,10 +590,10 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 22),
           Text(
             S.of(context).oobeWelcomeTitle,
-            style: ts(24, w: FontWeight.w800, ls: -0.5),
+            style: ts(26, w: FontWeight.w800, ls: -0.5),
           ),
           SizedBox(height: 10),
-          Text(S.of(context).aboutSubtitle, style: ts(14, c: C.slate, ls: 1)),
+          Text(S.of(context).aboutSubtitle, style: ts(13, c: C.slate, ls: 1)),
           SizedBox(height: 28),
           _feature(
             Icons.map_rounded,
@@ -653,12 +653,12 @@ class _OobePageState extends State<OobePage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
@@ -714,7 +714,7 @@ class _OobePageState extends State<OobePage> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: selected ? C.blue : C.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: selected ? C.blue : C.border),
         ),
         child: Text(
@@ -752,7 +752,7 @@ class _OobePageState extends State<OobePage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: C.surfaceFill,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: C.border),
       ),
       child: Row(
@@ -762,7 +762,7 @@ class _OobePageState extends State<OobePage> {
             height: 40,
             decoration: BoxDecoration(
               color: C.blueBg,
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: C.blue, size: 20),
           ),
@@ -793,7 +793,7 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 16),
           Text(
             S.of(context).oobeCallTitle,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
           ),
           SizedBox(height: 8),
           Text(
@@ -806,22 +806,22 @@ class _OobePageState extends State<OobePage> {
             controller: _call,
             textAlign: TextAlign.center,
             textCapitalization: TextCapitalization.characters,
-            style: ts(22, w: FontWeight.w800, ls: 2),
+            style: ts(20, w: FontWeight.w800, ls: 2),
             decoration: InputDecoration(
               hintText: S.of(context).callsign,
-              hintStyle: ts(22, c: C.greyLight, w: FontWeight.w800),
+              hintStyle: ts(20, c: C.greyLight, w: FontWeight.w800),
               filled: true,
               fillColor: C.white,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: C.border),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: C.border),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: C.blue, width: 1.5),
               ),
               contentPadding: const EdgeInsets.symmetric(
@@ -851,7 +851,7 @@ class _OobePageState extends State<OobePage> {
                   SizedBox(width: 8),
                   Text(
                     _ssid == 0 ? S.of(context).noSsid : '-$_ssid',
-                    style: ts(14, c: C.blue, w: FontWeight.w700),
+                    style: ts(13, c: C.blue, w: FontWeight.w700),
                   ),
                   Spacer(),
                   Icon(Icons.chevron_right_rounded, size: 20, color: C.grey),
@@ -893,7 +893,7 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 16),
           Text(
             S.of(context).oobeSymbolTitle,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
           ),
           SizedBox(height: 8),
           Text(S.of(context).oobeSymbolDesc, style: ts(12, c: C.slate)),
@@ -911,7 +911,7 @@ class _OobePageState extends State<OobePage> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: _symbol == s.$1 ? C.blueBg : C.white,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: _symbol == s.$1 ? C.blue : C.border,
                         width: _symbol == s.$1 ? 1.5 : 1,
@@ -965,7 +965,7 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 16),
           Text(
             S.of(context).oobeFilterTitle,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
           ),
           SizedBox(height: 8),
           Text(
@@ -1077,7 +1077,7 @@ class _OobePageState extends State<OobePage> {
           SizedBox(height: 16),
           Text(
             S.of(context).oobeServerTitle,
-            style: ts(22, w: FontWeight.w800, ls: -0.4),
+            style: ts(20, w: FontWeight.w800, ls: -0.4),
           ),
           SizedBox(height: 8),
           Text(

@@ -122,7 +122,7 @@ class DataSourceCard extends StatelessWidget {
             height: 34,
             decoration: BoxDecoration(
               color: enabled ? C.blue.withValues(alpha: 0.12) : C.greyBg,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, size: 17, color: enabled ? C.blue : C.grey),
           ),

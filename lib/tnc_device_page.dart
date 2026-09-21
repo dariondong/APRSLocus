@@ -96,7 +96,7 @@ class _TncDevicePageState extends State<TncDevicePage> {
         content: Text(msg),
         behavior: SnackBarBehavior.floating,
         backgroundColor: color ?? C.ink,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

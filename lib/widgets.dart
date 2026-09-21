@@ -238,7 +238,7 @@ class StatBox extends StatelessWidget {
             height: 34,
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 17),
           ),
@@ -249,7 +249,7 @@ class StatBox extends StatelessWidget {
               children: [
                 Text(
                   value,
-                  style: ts(18, c: color, w: FontWeight.w800),
+                  style: ts(16, c: color, w: FontWeight.w800),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -290,7 +290,7 @@ class FilterChip2 extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
           color: selected ? color.withValues(alpha: 0.12) : C.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: selected ? color.withValues(alpha: 0.4) : C.border,
           ),
@@ -419,7 +419,7 @@ class SectionCard extends StatelessWidget {
                   height: 34,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 17),
                 ),
@@ -586,8 +586,8 @@ class RoundIconBtn extends StatelessWidget {
           decoration: BoxDecoration(
             color: surfaceTint(C.white),
             borderRadius: BorderRadius.circular(12),
-            boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
-            border: Border.all(color: C.border),
+            // 同上：投影负责分层，描边去掉（圆形工具钮常年压在地图上）
+            boxShadow: elev1(),
           ),
           child: Icon(icon, color: color ?? C.slate, size: 20),
         ),

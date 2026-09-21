@@ -224,7 +224,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
                         Icon(h.icon, size: 20, color: h.color),
                         const SizedBox(width: 12),
                         Text(h.labelOf(honorLangOf(context)),
-                            style: ts(14, w: FontWeight.w700)),
+                            style: ts(13, w: FontWeight.w700)),
                         const Spacer(),
                         if (cur == h.key)
                           Icon(Icons.check_circle_rounded, size: 20, color: h.color),
@@ -250,12 +250,12 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       backgroundColor: Colors.transparent,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setModalState) => MaterialSurface(
-          radius: 20,
+          radius: 24,
           topOnly: true,
           child: Container(
             decoration: BoxDecoration(
               color: C.sheetFill,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -285,7 +285,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
                           color: st.mySsid == val ? C.blue : C.white,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                               color: st.mySsid == val ? C.blue : C.border),
                         ),
@@ -357,13 +357,13 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           height: MediaQuery.of(context).size.height * 0.48,
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(children: [
             Container(
@@ -376,7 +376,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
               child: Row(children: [
-                Text(S.of(context).chooseSymbol, style: ts(15, w: FontWeight.w700)),
+                Text(S.of(context).chooseSymbol, style: ts(16, w: FontWeight.w700)),
                 Spacer(),
                 IconButton(
                   icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
@@ -498,13 +498,13 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           height: MediaQuery.of(context).size.height * 0.75,
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(children: [
             Container(
@@ -517,7 +517,7 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
               child: Row(children: [
-                Text(S.of(context).allAprsSymbols, style: ts(15, w: FontWeight.w700)),
+                Text(S.of(context).allAprsSymbols, style: ts(16, w: FontWeight.w700)),
                 Spacer(),
                 IconButton(
                   icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
@@ -799,7 +799,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           SizedBox(width: 8),
           Expanded(
             child: Text(S.of(context).beaconWarnTitle,
-                style: ts(15, w: FontWeight.w700)),
+                style: ts(16, w: FontWeight.w700)),
           ),
         ]),
         content: Text(S.of(context).beaconWarnBody,
@@ -1308,12 +1308,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
       builder: (ctx) {
         void close() => Navigator.pop(ctx);
         return MaterialSurface(
-          radius: 20,
+          radius: 24,
           topOnly: true,
           child: Container(
             decoration: BoxDecoration(
               color: C.sheetFill,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
             padding: EdgeInsets.fromLTRB(20, 10, 20,
                 MediaQuery.of(ctx).viewInsets.bottom + 10),
@@ -1338,7 +1338,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                     Text(isIdle
                 ? S.of(context).tierIdleTitle
                 : S.of(context).tierSpeedTitle,
-                        style: ts(15, w: FontWeight.w700)),
+                        style: ts(16, w: FontWeight.w700)),
                     Spacer(),
                     IconButton(
                       icon: Icon(Icons.close_rounded, size: 20, color: C.grey),
@@ -1482,7 +1482,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             padding: const EdgeInsets.symmetric(vertical: 6),
             decoration: BoxDecoration(
               color: sel ? C.blueBg : C.bgSoft,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                   color: sel ? C.blue : C.border, width: sel ? 1.5 : 1),
             ),
@@ -1769,7 +1769,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: C.orangeBg,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(6),
               ),
               child: Text(S.of(context).unverified,
                   style: ts(9, c: C.orange, w: FontWeight.w700)),
@@ -1846,7 +1846,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             : Icons.cloud_off_rounded;
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(16)),
       child: Row(children: [
         Icon(icon, color: col, size: 20),
         SizedBox(width: 10),
@@ -2310,7 +2310,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 height: 32,
                 decoration: BoxDecoration(
                   color: C.purpleBg,
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(Icons.blur_circular_rounded,
                     size: 16, color: C.purple),
@@ -2373,7 +2373,7 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
                   color: C.bgSoft,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: C.border, width: 0.6),
                 ),
                 child: Column(children: [
@@ -2673,7 +2673,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
                   color: cur == m ? C.cyanBg : C.bgSoft,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: cur == m ? C.cyan : C.border,
                     width: cur == m ? 1.5 : 1,
@@ -2745,7 +2745,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                         height: 18,
                         decoration: BoxDecoration(
                           color: C.surfaceFill,
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(6),
                           border: Border.all(color: C.border),
                         ),
                       ),
@@ -2817,7 +2817,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
                   color: cur == m ? C.cyanBg : C.bgSoft,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: cur == m ? C.cyan : C.border,
                     width: cur == m ? 1.5 : 1,
@@ -2917,7 +2917,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         height: 6,
         decoration: BoxDecoration(
           color: c.withValues(alpha: 0.85),
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(2),
         ),
       );
 
@@ -3062,7 +3062,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               icon: const Icon(Icons.refresh_rounded, size: 18),
@@ -3125,7 +3125,7 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                           color: st.mapType == t.name
                               ? C.blue
                               : C.bgSoft,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: st.mapType == t.name
                                 ? C.blue
@@ -3381,7 +3381,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
             },
             style: FilledButton.styleFrom(
               backgroundColor: C.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text(S.of(context).clear,
                 style: ts(13, c: Colors.white, w: FontWeight.w600)),
@@ -3420,7 +3420,7 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
             },
             style: FilledButton.styleFrom(
               backgroundColor: C.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text(S.of(context).confirmClear, style: ts(13, c: Colors.white, w: FontWeight.w700)),
           ),
@@ -3510,7 +3510,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
         ]),
         const SizedBox(height: 6),
         Text(S.of(context).weatherSimDesc,
-            style: ts(9.5, c: C.grey)),
+            style: ts(9, c: C.grey)),
       ]),
     );
   }
@@ -3534,7 +3534,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: C.orange,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () {
                 st.restartOobe();
@@ -3644,7 +3644,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                       filled: true,
                       fillColor: C.bgSoft,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                     ),

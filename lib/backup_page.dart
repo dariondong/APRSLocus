@@ -350,7 +350,7 @@ class _BackupPageState extends State<BackupPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: ts(12.5, w: FontWeight.w600)),
+                  Text(title, style: ts(12, w: FontWeight.w600)),
                   Text(desc, style: ts(10, c: C.grey, h: 1.35)),
                 ],
               ),
@@ -394,7 +394,7 @@ class _BackupPageState extends State<BackupPage> {
                         ),
                       )
                     : const Icon(Icons.save_alt_rounded, size: 16),
-                label: Text(s.backupExportToFile, style: ts(12.5)),
+                label: Text(s.backupExportToFile, style: ts(12)),
               ),
             ),
           if (toFile && !kIsWeb) const SizedBox(width: 10),
@@ -408,7 +408,7 @@ class _BackupPageState extends State<BackupPage> {
               icon: Icon(Icons.copy_all_rounded, size: 16, color: C.blue),
               label: Text(
                 s.backupCopyJson,
-                style: ts(12.5, c: C.blue),
+                style: ts(12, c: C.blue),
               ),
             ),
           ),
@@ -458,7 +458,7 @@ class _BackupPageState extends State<BackupPage> {
               }),
               child: Text(
                 s.backupSelectAll,
-                style: ts(11.5, c: all ? C.grey : C.blue),
+                style: ts(11, c: all ? C.grey : C.blue),
               ),
             ),
             children: [
@@ -524,7 +524,7 @@ class _BackupPageState extends State<BackupPage> {
                           ),
                           onPressed: _busy ? null : _pick,
                           icon: const Icon(Icons.folder_open_rounded, size: 16),
-                          label: Text(s.backupPickFile, style: ts(12.5)),
+                          label: Text(s.backupPickFile, style: ts(12)),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -545,7 +545,7 @@ class _BackupPageState extends State<BackupPage> {
                         ),
                         label: Text(
                           s.backupPaste,
-                          style: ts(12.5, c: C.orange),
+                          style: ts(12, c: C.orange),
                         ),
                       ),
                     ),
@@ -621,7 +621,7 @@ class _BackupPageState extends State<BackupPage> {
             ),
             onPressed: _busy ? null : _doImport,
             icon: const Icon(Icons.restore_rounded, size: 16),
-            label: Text(s.backupImportSelected, style: ts(12.5)),
+            label: Text(s.backupImportSelected, style: ts(12)),
           ),
         ),
       ),

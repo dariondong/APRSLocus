@@ -111,7 +111,7 @@ class _PacketsPageState extends State<PacketsPage> {
                         SizedBox(width: 8),
                         Text(
                           S.of(context).packetConsole,
-                          style: ts(14, c: C.blue, w: FontWeight.w700),
+                          style: ts(13, c: C.blue, w: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -123,7 +123,7 @@ class _PacketsPageState extends State<PacketsPage> {
                     ),
                     decoration: BoxDecoration(
                       color: st.connected ? C.greenBg : C.yellowBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -157,7 +157,7 @@ class _PacketsPageState extends State<PacketsPage> {
                     ),
                     decoration: BoxDecoration(
                       color: C.blueBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       S
@@ -279,7 +279,7 @@ class _PacketsPageState extends State<PacketsPage> {
                           _filter != 'all' || _search.text.isNotEmpty
                               ? S.of(context).noMatchingPackets
                               : S.of(context).noPackets,
-                          style: ts(14, c: C.grey),
+                          style: ts(13, c: C.grey),
                         ),
                       )
                     : _raw
@@ -494,7 +494,7 @@ class _PacketsPageState extends State<PacketsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             decoration: BoxDecoration(
               color: C.surfaceFill,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: C.border),
             ),
             child: Row(

@@ -282,7 +282,7 @@ void _toast(BuildContext context, String msg) {
       content: Text(msg),
       behavior: SnackBarBehavior.floating,
       backgroundColor: C.ink,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   );
 }
@@ -347,7 +347,7 @@ Future<void> showMessageActions({
     builder: (ctx) => Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       child: SafeArea(
@@ -387,7 +387,7 @@ Future<void> showMessageActions({
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: C.orangeBg,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(children: [
                   Icon(Icons.info_outline_rounded, size: 15, color: C.orange),
@@ -488,7 +488,7 @@ void _copy(BuildContext context, String text, String toast) {
       backgroundColor: C.blue,
       duration: const Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   );
 }
@@ -511,7 +511,7 @@ Widget _action({
           height: 32,
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 16, color: color),
         ),
@@ -556,7 +556,7 @@ Future<void> showConvTranslateSheet({
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
           constraints: BoxConstraints(
@@ -575,7 +575,7 @@ Future<void> showConvTranslateSheet({
                       height: 34,
                       decoration: BoxDecoration(
                         color: color.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(icon, size: 17, color: color),
                     ),
@@ -585,7 +585,7 @@ Future<void> showConvTranslateSheet({
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(s.translateSettings,
-                              style: ts(14, w: FontWeight.w800)),
+                              style: ts(13, w: FontWeight.w800)),
                           Text(title,
                               style: ts(11, c: C.grey),
                               maxLines: 1,
@@ -959,10 +959,10 @@ Widget translateChip({
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
                 color: c,
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text('$count',
-                  style: ts(8, c: Colors.white, w: FontWeight.w700)),
+                  style: ts(9, c: Colors.white, w: FontWeight.w700)),
             ),
           ),
       ],

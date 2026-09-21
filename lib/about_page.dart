@@ -51,7 +51,7 @@ class _AboutPageState extends State<AboutPage>
       SnackBar(
         content: Text(S.of(context).shareTextCopied),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         backgroundColor: C.ink,
       ),
     );
@@ -71,12 +71,12 @@ class _AboutPageState extends State<AboutPage>
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.all(20),
           child: SafeArea(
@@ -183,7 +183,7 @@ class _AboutPageState extends State<AboutPage>
               height: 34,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, size: 17, color: color),
             ),
@@ -339,7 +339,7 @@ class _AboutPageState extends State<AboutPage>
               SizedBox(height: 12),
               Text(
                 call,
-                style: ts(14, c: C.blue, w: FontWeight.w700),
+                style: ts(13, c: C.blue, w: FontWeight.w700),
               ),
               SizedBox(height: 6),
               Text(
@@ -376,7 +376,7 @@ class _AboutPageState extends State<AboutPage>
           children: [
             Text(
               call,
-              style: ts(14, c: C.blue, w: FontWeight.w700),
+              style: ts(13, c: C.blue, w: FontWeight.w700),
             ),
             SizedBox(height: 10),
             Text(
@@ -539,7 +539,7 @@ class _AboutPageState extends State<AboutPage>
                           ),
                           textStyle: ts(12, w: FontWeight.w600),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
@@ -740,7 +740,7 @@ class _AboutPageState extends State<AboutPage>
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
                                 Icons.volunteer_activism_rounded,
@@ -876,7 +876,7 @@ class _AboutPageState extends State<AboutPage>
                               content: Text(S.of(context).appInfoCopied),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               backgroundColor: C.ink,
                             ),
@@ -889,7 +889,7 @@ class _AboutPageState extends State<AboutPage>
                           ),
                           decoration: BoxDecoration(
                             color: C.greyBg,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,

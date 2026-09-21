@@ -260,7 +260,7 @@ class _StationsPageState extends State<StationsPage> {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: C.bgSoft,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -373,14 +373,14 @@ class _StationsPageState extends State<StationsPage> {
             Text(
               narrowed ? s.noStationsFiltered : s.notFound,
               textAlign: TextAlign.center,
-              style: ts(14, w: FontWeight.w700, c: C.slate),
+              style: ts(13, w: FontWeight.w700, c: C.slate),
             ),
             if (narrowed) ...[
               const SizedBox(height: 6),
               Text(
                 s.noStationsFilteredHint,
                 textAlign: TextAlign.center,
-                style: ts(11.5, c: C.grey, h: 1.5),
+                style: ts(11, c: C.grey, h: 1.5),
               ),
               const SizedBox(height: 10),
               Text(s.activeConditions,
@@ -410,7 +410,7 @@ class _StationsPageState extends State<StationsPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 8),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     if (canClearSearch)
@@ -428,7 +428,7 @@ class _StationsPageState extends State<StationsPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 8),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                   ],
@@ -673,12 +673,12 @@ class _StationsPageState extends State<StationsPage> {
             setState(() {});
           }
           return MaterialSurface(
-            radius: 20,
+            radius: 24,
             topOnly: true,
             child: Container(
               decoration: BoxDecoration(
                 color: C.sheetFill,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               ),
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(sheetCtx).size.height * 0.78,
@@ -853,7 +853,7 @@ class _StationsPageState extends State<StationsPage> {
       initialValue: _sort,
       onSelected: (v) => setState(() => _sort = v),
       offset: const Offset(0, 28),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
@@ -1001,7 +1001,7 @@ class _StationsPageState extends State<StationsPage> {
 
   /// 呼号显示，搜索命中部分高亮
   Widget _callText(Station s, String q) {
-    final base = ts(14, c: C.ink, w: FontWeight.w700);
+    final base = ts(13, c: C.ink, w: FontWeight.w700);
     if (q.isEmpty) {
       return Text(s.call, style: base, overflow: TextOverflow.ellipsis);
     }

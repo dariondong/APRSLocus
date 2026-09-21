@@ -510,7 +510,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         decoration: BoxDecoration(
                           color: C.orange,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: softShadow(blur: 14, alpha: 0.25),
+                          boxShadow: elev3(),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -614,7 +614,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       decoration: BoxDecoration(
                         color: C.black.withValues(alpha: 0.82),
                         borderRadius: BorderRadius.circular(12),
-                        boxShadow: softShadow(blur: 12, y: 3, alpha: 0.18),
+                        boxShadow: elev1(),
                         border: Border.all(
                             color: Colors.white.withValues(alpha: 0.18)),
                       ),
@@ -664,7 +664,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             color: C.sheetFill,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: softShadow(),
+                            boxShadow: elev2(),
                           ),
                           child: Text(
                             S
@@ -700,7 +700,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                               color: C.sheetFill,
                               borderRadius: BorderRadius.circular(12),
-                              boxShadow: softShadow(blur: 14, alpha: 0.15),
+                              boxShadow: elev2(),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -1053,7 +1053,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         constraints: const BoxConstraints(maxWidth: 120),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.92),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(color: s.color.withValues(alpha: 0.5)),
         ),
         child: Text(
@@ -1061,7 +1061,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: ts(8.5, c: s.color, w: FontWeight.w700, h: 1.0),
+          style: ts(9, c: s.color, w: FontWeight.w700, h: 1.0),
         ),
       ),
     );
@@ -1077,14 +1077,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
     info.write('  · ${S.of(context).tapToView}');
     return MaterialSurface(
-      radius: 10,
+      radius: 12,
       blurSigma: 12.0,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: C.sheetFill,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: softShadow(blur: 10, alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: elev2(),
         ),
         child: Text(
           info.toString(),
@@ -1177,12 +1177,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.all(20),
           child: SafeArea(
@@ -1453,12 +1453,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
           child: SafeArea(
@@ -1506,7 +1506,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           height: 26,
                           decoration: BoxDecoration(
                             color: C.bgSoft,
-                            borderRadius: BorderRadius.circular(7),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(icon, size: 15, color: C.blue),
                         ),
@@ -1539,7 +1539,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -1555,13 +1555,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // ─── 覆盖控件 ───
   Widget _infoChip(List<Station> vis, bool searched) {
     return MaterialSurface(
-      radius: 14,
+      radius: 16,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: C.sheetFill,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: softShadow(blur: 14, alpha: 0.09),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: elev2(),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -1632,7 +1632,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
               decoration: BoxDecoration(
                 color: _currentMapType == t ? C.blueBg : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
@@ -1671,7 +1671,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         decoration: BoxDecoration(
           color: C.sheetFill,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: softShadow(blur: 12, alpha: 0.07),
+          boxShadow: elev1(),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1734,7 +1734,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: softShadow(blur: 12, y: 3, alpha: 0.08),
+            boxShadow: elev1(),
             border: Border.all(color: border),
           ),
           child: Icon(icon, size: 20, color: fg),
@@ -1890,15 +1890,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             child: Material(
               color: Colors.transparent,
               child: MaterialSurface(
-                radius: 14,
+                radius: 16,
                 blurSigma: 16.0,
                 child: Container(
                   width: 210,
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: C.sheetFill,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: softShadow(blur: 20, y: 6, alpha: 0.14),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: elev3(),
                   ),
                   // 图层较多时允许滚动，避免超出屏幕
                   child: ConstrainedBox(
@@ -1947,14 +1947,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       (TypeGroup.other, S.of(context).otherType, Icons.apps_rounded, C.slate),
     ];
     return MaterialSurface(
-      radius: 14,
+      radius: 16,
       child: Container(
         width: 200,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: C.sheetFill,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: softShadow(blur: 16, alpha: 0.18),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: elev3(),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -2026,7 +2026,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             !widget.state.stationFilter.isEmpty)
                           Text(
                             S.of(context).stationFilterOn,
-                            style: ts(9.5, c: C.blue),
+                            style: ts(9, c: C.blue),
                           ),
                       ],
                     ),
@@ -2038,7 +2038,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       color: widget.state.applyFilterToMap
                           ? C.blue.withValues(alpha: 0.25)
                           : C.greyBg,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Align(
                       alignment: widget.state.applyFilterToMap
@@ -2050,7 +2050,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         margin: const EdgeInsets.symmetric(horizontal: 2),
                         decoration: BoxDecoration(
                           color: widget.state.applyFilterToMap ? C.blue : C.grey,
-                          borderRadius: BorderRadius.circular(9),
+                          borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.15),
@@ -2105,7 +2105,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           color: !_hiddenTypes.contains(t.$1)
                               ? t.$4.withValues(alpha: 0.25)
                               : C.greyBg,
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Align(
                           alignment: !_hiddenTypes.contains(t.$1)
@@ -2117,7 +2117,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
                               color: !_hiddenTypes.contains(t.$1) ? t.$4 : C.grey,
-                              borderRadius: BorderRadius.circular(9),
+                              borderRadius: BorderRadius.circular(8),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.15),
@@ -2160,13 +2160,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: _showMyPanel,
       child: MaterialSurface(
-        radius: 10,
+        radius: 12,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: softShadow(blur: 10, alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: elev2(),
             border: Border.all(color: c.withValues(alpha: 0.25)),
           ),
           child: Row(
@@ -2180,7 +2180,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               Expanded(
                 child: Text(
                   label,
-                  style: ts(11.5, c: C.ink, w: FontWeight.w600),
+                  style: ts(11, c: C.ink, w: FontWeight.w600),
                 ),
               ),
               // 立即上报（信标开时绿色；关时置灰仍可发一次）
@@ -2198,7 +2198,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                   child: Text(
                     S.of(context).manualBeacon,
-                    style: ts(10.5, c: Colors.white, w: FontWeight.w700),
+                    style: ts(10, c: Colors.white, w: FontWeight.w700),
                   ),
                 ),
               ),
@@ -2253,7 +2253,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             color: C.sheetFill,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: softShadow(blur: 12, alpha: 0.08),
+            boxShadow: elev1(),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

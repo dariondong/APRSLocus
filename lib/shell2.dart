@@ -252,7 +252,7 @@ class _HomeShell2State extends State<HomeShell2>
                     color: C.sheetFill,
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(24)),
-                    boxShadow: softShadow(blur: 18, y: 4, alpha: 0.16),
+                    boxShadow: elev3(),
                   ),
                   child: Column(
                     children: [
@@ -300,8 +300,9 @@ class _HomeShell2State extends State<HomeShell2>
         decoration: BoxDecoration(
           color: C.surfaceFillStrong,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: C.border),
-          boxShadow: softShadow(blur: 12, alpha: 0.10),
+          // 只留投影、不再描边：投影已经把它和地图分开了，再加一圈描边就是
+          // 「框套框」（深色模式下尤其明显）。原生地图类 App 的浮层也是这个做法。
+          boxShadow: elev2(),
         ),
         child: Row(
           children: [
@@ -393,7 +394,7 @@ class _HomeShell2State extends State<HomeShell2>
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
         decoration: BoxDecoration(
           color: c.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -420,7 +421,7 @@ class _HomeShell2State extends State<HomeShell2>
         height: 32,
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, size: 18, color: color),
       ),
@@ -512,7 +513,7 @@ class _HomeShell2State extends State<HomeShell2>
                       child: Center(
                         child: Text(
                           unread > 99 ? '99+' : '$unread',
-                          style: ts(8, c: Colors.white, w: FontWeight.w700),
+                          style: ts(9, c: Colors.white, w: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -601,7 +602,7 @@ class _HomeShell2State extends State<HomeShell2>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(st.myCall,
-                            style: ts(15, w: FontWeight.w700),
+                            style: ts(16, w: FontWeight.w700),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         Text(st.myPosStr,
@@ -679,7 +680,7 @@ class _HomeShell2State extends State<HomeShell2>
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(s.manualBeacon,
-                            style: ts(10.5,
+                            style: ts(10,
                                 c: Colors.white, w: FontWeight.w700)),
                       ),
                     ),
@@ -711,11 +712,11 @@ class _HomeShell2State extends State<HomeShell2>
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
           decoration: BoxDecoration(
             color: c.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Text(
             text,
-            style: ts(10.5, c: c, w: FontWeight.w600),
+            style: ts(10, c: c, w: FontWeight.w600),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -733,15 +734,15 @@ class _HomeShell2State extends State<HomeShell2>
         _select(2);
       },
       child: MaterialSurface(
-        radius: 14,
+        radius: 16,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 340),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: C.surfaceFillStrong,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: C.blue.withValues(alpha: 0.3)),
-            boxShadow: softShadow(blur: 16, alpha: 0.25),
+            boxShadow: elev3(),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

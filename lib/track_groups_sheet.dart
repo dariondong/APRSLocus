@@ -53,7 +53,7 @@ class _GroupPicker extends StatelessWidget {
     final groups = List<ChatGroup>.from(state.chatGroups)
       ..sort((a, b) => a.name.compareTo(b.name));
     return MaterialSurface(
-      radius: 20,
+      radius: 24,
       topOnly: true,
       child: Container(
         constraints: BoxConstraints(
@@ -61,7 +61,7 @@ class _GroupPicker extends StatelessWidget {
         ),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
         child: SafeArea(
@@ -277,7 +277,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
   Widget build(BuildContext context) {
     final cands = _candidates;
     return MaterialSurface(
-      radius: 20,
+      radius: 24,
       topOnly: true,
       child: Container(
         constraints: BoxConstraints(
@@ -285,7 +285,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
         ),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
         child: SafeArea(
@@ -323,11 +323,11 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
                   labelStyle: ts(12, c: C.grey),
                   isDense: true,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: C.border),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: C.border),
                   ),
                 ),
@@ -345,7 +345,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: C.bgSoft,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     S.of(context).quickTrackNoStations,
@@ -365,7 +365,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
                           value: _picked.contains(c),
                           title: Text(
                             c,
-                            style: ts(12.5, c: C.ink, w: FontWeight.w600),
+                            style: ts(12, c: C.ink, w: FontWeight.w600),
                           ),
                           onChanged: (v) =>
                               setState(() => v! ? _picked.add(c) : _picked.remove(c)),
@@ -387,7 +387,7 @@ class _QuickCreateSheetState extends State<_QuickCreateSheet> {
                         hintStyle: ts(12, c: C.greyLight),
                         isDense: true,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: C.border),
                         ),
                       ),

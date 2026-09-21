@@ -364,7 +364,7 @@ class _StationDetailState extends State<StationDetail> {
                                 decoration: BoxDecoration(
                                   color: C.blue,
                                   borderRadius: BorderRadius.circular(12),
-                                  boxShadow: softShadow(blur: 12, alpha: 0.2),
+                                  boxShadow: elev2(),
                                 ),
                                 child: const Icon(
                                   Icons.send_rounded,
@@ -1016,7 +1016,7 @@ class _StationDetailState extends State<StationDetail> {
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
             color: C.bgSoft,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: C.border),
           ),
           child: Column(
@@ -1139,7 +1139,7 @@ class _StationDetailState extends State<StationDetail> {
               height: 36,
               decoration: BoxDecoration(
                 color: C.blueBg,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, size: 18, color: C.blue),
             ),
@@ -1443,7 +1443,7 @@ class _StationDetailState extends State<StationDetail> {
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
                 color: C.orangeBg,
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: C.orange.withValues(alpha: 0.35)),
               ),
               child: Text(
@@ -1459,7 +1459,7 @@ class _StationDetailState extends State<StationDetail> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: C.greyBg,
-              borderRadius: BorderRadius.circular(7),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               hop.call,
@@ -1607,7 +1607,7 @@ class _TrendPainter extends CustomPainter {
     final gridPaint = Paint()
       ..color = C.border.withValues(alpha: 0.6)
       ..strokeWidth = 0.6;
-    final labelStyle = ts(8, c: C.greyLight);
+    final labelStyle = ts(9, c: C.greyLight);
     for (var i = 0; i <= 3; i++) {
       final vy = yMin + (yMax - yMin) * i / 3;
       final yy = y(vy);

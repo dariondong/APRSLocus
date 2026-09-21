@@ -441,7 +441,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
       decoration: BoxDecoration(
         color: C.surfaceFill,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -454,7 +454,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
             Flexible(
               child: Text(
                 title,
-                style: ts(12.5, w: FontWeight.w800),
+                style: ts(12, w: FontWeight.w800),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -474,7 +474,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
           if (subtitle != null)
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text(subtitle, style: ts(9.5, c: C.grey)),
+              child: Text(subtitle, style: ts(9, c: C.grey)),
             ),
           const SizedBox(height: 11),
           child,
@@ -502,7 +502,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
           Text(label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: ts(10.5, c: C.grey)),
+              style: ts(10, c: C.grey)),
         ],
       ),
     );
@@ -518,7 +518,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
           Text(value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: ts(13.5, w: FontWeight.w800, c: c)),
+              style: ts(13, w: FontWeight.w800, c: c)),
           const SizedBox(height: 1),
           Text(label,
               maxLines: 1,
@@ -528,7 +528,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
             Text(sub,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: ts(9.5, w: FontWeight.w700, c: C.slate)),
+                style: ts(9, w: FontWeight.w700, c: C.slate)),
         ],
       ),
     );
@@ -565,7 +565,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text('${i + 1}',
-                  style: ts(9.5,
+                  style: ts(9,
                       w: FontWeight.w800,
                       c: top3 ? C.blue : C.greyLight)),
             )
@@ -588,7 +588,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
           const SizedBox(width: 8),
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
                 value: frac,
                 minHeight: 6,
@@ -603,7 +603,7 @@ class _StationStatsPanelState extends State<StationStatsPanel> {
             width: 36,
             child: Text(_num(it.count),
                 textAlign: TextAlign.right,
-                style: ts(11.5, w: FontWeight.w700)),
+                style: ts(11, w: FontWeight.w700)),
           ),
         ]),
       ));

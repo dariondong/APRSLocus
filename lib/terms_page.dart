@@ -219,7 +219,7 @@ class _TermsPageState extends State<TermsPage> {
     return Container(
       decoration: BoxDecoration(
         color: C.greyBg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
       ),
       padding: const EdgeInsets.all(2),
       child: Row(
@@ -241,7 +241,7 @@ class _TermsPageState extends State<TermsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
           color: active ? C.blue : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
           label,
@@ -269,7 +269,7 @@ class _TermsPageState extends State<TermsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
             color: loading ? C.greyBg : (online ? C.greenBg : C.greyBg),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -332,7 +332,7 @@ class _TermsPageState extends State<TermsPage> {
             padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
             decoration: BoxDecoration(
               color: C.surfaceFill,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: C.border, width: 0.5),
               boxShadow: [
                 BoxShadow(
@@ -362,7 +362,7 @@ class _TermsPageState extends State<TermsPage> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 14),
           child: Text(b.text,
-              style: ts(19, w: FontWeight.w800, ls: -0.3, h: 1.5)),
+              style: ts(20, w: FontWeight.w800, ls: -0.3, h: 1.5)),
         );
       case 2: // 元信息（版本/更新日期）
         return Padding(
@@ -372,12 +372,12 @@ class _TermsPageState extends State<TermsPage> {
       case 3: // 章节标题
         return Padding(
           padding: const EdgeInsets.only(top: 18, bottom: 6),
-          child: Text(b.text, style: ts(15, w: FontWeight.w800, h: 1.4)),
+          child: Text(b.text, style: ts(16, w: FontWeight.w800, h: 1.4)),
         );
       case 4: // 条款正文
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text(b.text, style: ts(13.5, c: C.ink, h: 1.85)),
+          child: Text(b.text, style: ts(13, c: C.ink, h: 1.85)),
         );
       case 5: // 分隔线
         return Padding(

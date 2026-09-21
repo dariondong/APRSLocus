@@ -47,10 +47,10 @@ class _SplashPageState extends State<SplashPage>
               SizedBox(height: 20),
               Text(
                 'APRSlocus',
-                style: ts(28, w: FontWeight.w800, ls: -0.5, c: Colors.white),
+                style: ts(26, w: FontWeight.w800, ls: -0.5, c: Colors.white),
               ),
               SizedBox(height: 6),
-              Text(S.of(context).appTagline, style: ts(14, c: Colors.white70)),
+              Text(S.of(context).appTagline, style: ts(13, c: Colors.white70)),
               SizedBox(height: 32),
               SizedBox(
                 width: 28,

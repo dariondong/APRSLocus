@@ -430,8 +430,8 @@ class _TrackerPageState extends State<TrackerPage>
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: softShadow(blur: 10, alpha: 0.2),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: elev1(),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -536,7 +536,7 @@ class _TrackerPageState extends State<TrackerPage>
                       border: Border.all(
                         color: Colors.white.withValues(alpha: 0.7),
                       ),
-                      boxShadow: softShadow(blur: 16, alpha: 0.12),
+                      boxShadow: elev3(),
                     ),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -565,13 +565,13 @@ class _TrackerPageState extends State<TrackerPage>
     return Material(
       color: Colors.transparent,
       child: MaterialSurface(
-        radius: 14,
+        radius: 16,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: softShadow(blur: 10, alpha: 0.08),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: elev1(),
           ),
           child: Row(
             children: [
@@ -587,7 +587,7 @@ class _TrackerPageState extends State<TrackerPage>
                   children: [
                     Text(
                       widget.group.name,
-                      style: ts(14, w: FontWeight.w800),
+                      style: ts(13, w: FontWeight.w800),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -744,7 +744,7 @@ class _TrackerPageState extends State<TrackerPage>
                               ),
                               child: Text(
                                 localizedStatusLabel(context, s!.effectiveStatus),
-                                style: ts(8,
+                                style: ts(9,
                                     c: C.blue, w: FontWeight.w700),
                               ),
                             ),
@@ -753,7 +753,7 @@ class _TrackerPageState extends State<TrackerPage>
                       ),
                       Text(
                         _memberSub(m),
-                        style: ts(9.5, c: C.grey, h: 1.25),
+                        style: ts(9, c: C.grey, h: 1.25),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -898,7 +898,7 @@ class _TrackerPageState extends State<TrackerPage>
               return Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
                 child: Column(
@@ -915,7 +915,7 @@ class _TrackerPageState extends State<TrackerPage>
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(title,
-                              style: ts(15, w: FontWeight.w800),
+                              style: ts(16, w: FontWeight.w800),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis),
                         ),
@@ -947,7 +947,7 @@ class _TrackerPageState extends State<TrackerPage>
                                       horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: mine ? C.blueBg : C.bgSoft,
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(m.text,
                                       style: ts(12, c: C.ink),
@@ -1069,7 +1069,7 @@ class _TrackerPageState extends State<TrackerPage>
               border: Border.all(
                 color: (isGroupMsg ? C.orange : C.cyan).withValues(alpha: 0.4),
               ),
-              boxShadow: softShadow(blur: 12, alpha: 0.15),
+              boxShadow: elev2(),
             ),
             child: Row(
               children: [
@@ -1113,10 +1113,10 @@ class _TrackerPageState extends State<TrackerPage>
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                     decoration: BoxDecoration(
                       color: C.red,
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text('${recent.length}',
-                        style: ts(8, c: Colors.white, w: FontWeight.w800)),
+                        style: ts(9, c: Colors.white, w: FontWeight.w800)),
                   ),
                 ],
                 const SizedBox(width: 4),
@@ -1267,7 +1267,7 @@ class _TrackerOverlayPainter extends CustomPainter {
           tp.width + 6,
           tp.height + 3,
         ),
-        const Radius.circular(4),
+        const Radius.circular(6),
       );
       canvas.drawRRect(
         bg,

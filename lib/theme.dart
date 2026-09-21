@@ -476,6 +476,42 @@ TextStyle mono(double s, {Color? c, FontWeight? w}) =>
       package: null,
     );
 
+/// ─── 三级高度（阴影）───
+///
+/// 之前散着 15 种 (blur, y, alpha) 组合（0.07/0.08/0.09/0.10/0.12/0.14/0.15/
+/// 0.16/0.18/0.20/0.22/0.25 × blur 10~20），等于「每个表面自己定投影」——
+/// 看起来就是没有层次体系。现在只留三级，按**浮起高度**选：
+///
+/// * [elev1] 小浮起：图标按钮、圆形工具钮、chip 这类小控件；
+/// * [elev2] 面板：顶栏、浮动提示条、地图浮层；
+/// * [elev3] 最高层：底部面板、对话框、醒目横幅。
+///
+/// [softShadow] 保留（默认参数即「卡片」那一档）：卡片是最多的表面，
+/// 它的取值不动 —— 这次的目标是**收拾乱**，不是改默认长相。
+List<BoxShadow> elev1() => [
+      BoxShadow(
+        color: C.black.withValues(alpha: 0.08),
+        blurRadius: 12,
+        offset: const Offset(0, 3),
+      ),
+    ];
+
+List<BoxShadow> elev2() => [
+      BoxShadow(
+        color: C.black.withValues(alpha: 0.10),
+        blurRadius: 16,
+        offset: const Offset(0, 4),
+      ),
+    ];
+
+List<BoxShadow> elev3() => [
+      BoxShadow(
+        color: C.black.withValues(alpha: 0.16),
+        blurRadius: 18,
+        offset: const Offset(0, 5),
+      ),
+    ];
+
 List<BoxShadow> softShadow({double blur = 18, double y = 5, double alpha = 0.07}) => [
       BoxShadow(
         color: C.black.withValues(alpha: alpha),
@@ -514,7 +550,7 @@ class T {
   static TextStyle get h1 => ts(26, w: FontWeight.w800, ls: -0.5);
   static TextStyle get h2 => ts(20, w: FontWeight.w700, ls: -0.3);
   static TextStyle get h3 => ts(16, w: FontWeight.w600);
-  static TextStyle get body => ts(14);
+  static TextStyle get body => ts(13);
   static TextStyle get cap => ts(11, c: C.slate, w: FontWeight.w600, ls: 1.1);
   static TextStyle get num => mono(16, w: FontWeight.w700);
 }

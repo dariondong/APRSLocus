@@ -154,7 +154,7 @@ class _ThemePageState extends State<ThemePage> {
       height: 34,
       decoration: BoxDecoration(
         color: c('background'),
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: C.border),
       ),
       child: Center(
@@ -163,7 +163,7 @@ class _ThemePageState extends State<ThemePage> {
           height: 16,
           decoration: BoxDecoration(
             color: c('primary'),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(6),
           ),
         ),
       ),
@@ -317,7 +317,7 @@ class _ThemePageState extends State<ThemePage> {
               height: 26,
               decoration: BoxDecoration(
                 color: cur,
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: C.borderStrong),
               ),
             ),
@@ -415,7 +415,7 @@ class _ThemePageState extends State<ThemePage> {
                       height: 34,
                       decoration: BoxDecoration(
                         color: parseHexColor(hex) ?? C.grey,
-                        borderRadius: BorderRadius.circular(9),
+                        borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: C.borderStrong),
                       ),
                     ),
@@ -650,7 +650,7 @@ class _ThemePageState extends State<ThemePage> {
               height: 26,
               decoration: BoxDecoration(
                 color: cur,
-                borderRadius: BorderRadius.circular(7),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: C.borderStrong),
               ),
             ),
@@ -847,7 +847,7 @@ class _ThemePageState extends State<ThemePage> {
         ),
         child: Text(
           label,
-          style: ts(11.5, c: on ? C.indigo : C.slate, w: FontWeight.w600),
+          style: ts(11, c: on ? C.indigo : C.slate, w: FontWeight.w600),
         ),
       ),
     );
@@ -878,13 +878,13 @@ class _ThemePageState extends State<ThemePage> {
                 Expanded(
                   child: Text(
                     has ? s.themeBgReplace : s.themeBgPick,
-                    style: ts(12.5, w: FontWeight.w600),
+                    style: ts(12, w: FontWeight.w600),
                   ),
                 ),
                 if (has && _editable)
                   TextButton(
                     onPressed: () => _mutate((x) => x.background = null),
-                    child: Text(s.themeBgRemove, style: ts(11.5, c: C.red)),
+                    child: Text(s.themeBgRemove, style: ts(11, c: C.red)),
                   ),
               ],
             ),
@@ -1122,7 +1122,7 @@ class _ThemePageState extends State<ThemePage> {
               height: 34,
               decoration: BoxDecoration(
                 color: C.greyBg,
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: tc.buildSlotIcon(
@@ -1167,13 +1167,13 @@ class _ThemePageState extends State<ThemePage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
             borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20)),
+                top: Radius.circular(24)),
           ),
           child: _IconPickerSheet(
             title: s.themePickIcon,

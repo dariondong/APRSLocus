@@ -121,7 +121,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
         content: Text(msg),
         behavior: SnackBarBehavior.floating,
         backgroundColor: color ?? C.ink,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -337,7 +337,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
               ]),
               const SizedBox(height: 5),
               ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(6),
                 child: LinearProgressIndicator(
                   value: level,
                   minHeight: 7,
@@ -580,7 +580,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_wavOut,
-                    style: ts(10.5, c: C.slate, h: 1.4)
+                    style: ts(10, c: C.slate, h: 1.4)
                         .copyWith(fontFamily: 'monospace')),
                 // 路径很长，让用户可以一键复制去文件管理器/电脑里粘贴
                 if (_savedPath.isNotEmpty)

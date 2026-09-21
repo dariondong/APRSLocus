@@ -392,10 +392,10 @@ class _MessagesPageState extends State<MessagesPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                 decoration: BoxDecoration(
                   color: C.cyan,
-                  borderRadius: BorderRadius.circular(7),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text('$n',
-                    style: ts(8, c: Colors.white, w: FontWeight.w700)),
+                    style: ts(9, c: Colors.white, w: FontWeight.w700)),
               ),
             ),
         ],
@@ -445,7 +445,7 @@ class _MessagesPageState extends State<MessagesPage> {
           height: 44,
           decoration: BoxDecoration(
             color: _outPreview != null ? C.cyanBg : C.bgSoft,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _outPreview != null
                   ? C.cyan.withValues(alpha: 0.5)
@@ -624,7 +624,7 @@ class _MessagesPageState extends State<MessagesPage> {
         const SizedBox(width: 5),
         Text(
           S.of(context).msgLenCounter(fit.textChars, fit.packetBytes),
-          style: ts(9.5,
+          style: ts(9,
               c: fit.fit == MsgFit.ok ? C.grey
                   : fit.fit == MsgFit.overSpec ? C.orange : C.red),
         ),
@@ -689,11 +689,11 @@ class _MessagesPageState extends State<MessagesPage> {
                     filled: true,
                     fillColor: C.bgSoft,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(color: C.border, width: 0.6),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(color: C.border, width: 0.6),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
@@ -722,8 +722,8 @@ class _MessagesPageState extends State<MessagesPage> {
                   height: 44,
                   decoration: BoxDecoration(
                     color: C.blue,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: softShadow(blur: 12, alpha: 0.2),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: elev2(),
                   ),
                   child: const Icon(
                     Icons.send_rounded,
@@ -899,7 +899,7 @@ class _MessagesPageState extends State<MessagesPage> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           label,
@@ -1131,7 +1131,7 @@ class _MessagesPageState extends State<MessagesPage> {
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
@@ -1187,7 +1187,7 @@ class _MessagesPageState extends State<MessagesPage> {
               height: 38,
               decoration: BoxDecoration(
                 color: C.orangeBg,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(Icons.group_rounded, color: C.orange, size: 20),
             ),
@@ -1217,11 +1217,11 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                         decoration: BoxDecoration(
                           color: C.orangeBg,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
                           S.of(context).groupShortLabel,
-                          style: ts(8, c: C.orange, w: FontWeight.w700),
+                          style: ts(9, c: C.orange, w: FontWeight.w700),
                         ),
                       ),
                     ],
@@ -1243,7 +1243,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: C.orange,
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '$unread',
@@ -1305,7 +1305,7 @@ class _MessagesPageState extends State<MessagesPage> {
               height: 38,
               decoration: BoxDecoration(
                 color: C.blueBg,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Text(
@@ -1335,7 +1335,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: C.blue,
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '$unread',
@@ -1393,7 +1393,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     height: 34,
                     decoration: BoxDecoration(
                       color: C.orangeBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(Icons.group_rounded, color: C.orange, size: 18),
                   ),
@@ -1404,7 +1404,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(group.name, style: ts(14, w: FontWeight.w700)),
+                          Text(group.name, style: ts(13, w: FontWeight.w700)),
                           SizedBox(height: 1),
                           Text(
                             S.of(context).groupCallsignLine(group.groupCall),
@@ -1595,7 +1595,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 SizedBox(height: 12),
                 Text(
                   S.of(context).selectConversation,
-                  style: ts(14, c: C.grey),
+                  style: ts(13, c: C.grey),
                 ),
               ],
             ),
@@ -1625,7 +1625,7 @@ class _MessagesPageState extends State<MessagesPage> {
                               height: 34,
                               decoration: BoxDecoration(
                                 color: C.blueBg,
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Center(
                                 child: Text(
@@ -1639,7 +1639,7 @@ class _MessagesPageState extends State<MessagesPage> {
                               ),
                             ),
                             SizedBox(width: 10),
-                            Text(_selected, style: ts(15, w: FontWeight.w700)),
+                            Text(_selected, style: ts(16, w: FontWeight.w700)),
                           ],
                         ),
                       ),
@@ -1706,7 +1706,7 @@ class _MessagesPageState extends State<MessagesPage> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: C.greyLight.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             localizedSystemMessage(context, m.text),
@@ -1741,8 +1741,8 @@ class _MessagesPageState extends State<MessagesPage> {
           decoration: BoxDecoration(
             color: mine ? C.blueBg : C.bgSoft,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(14),
-              topRight: const Radius.circular(14),
+              topLeft: const Radius.circular(16),
+              topRight: const Radius.circular(16),
               bottomLeft: Radius.circular(mine ? 14 : 4),
               bottomRight: Radius.circular(mine ? 4 : 14),
             ),
@@ -1929,7 +1929,7 @@ class _MessagesPageState extends State<MessagesPage> {
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
@@ -1948,7 +1948,7 @@ class _MessagesPageState extends State<MessagesPage> {
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: color.withValues(alpha: 0.25)),
           ),
           child: Row(
@@ -2014,7 +2014,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     controller: ctrl,
                     autofocus: true,
                     textCapitalization: TextCapitalization.characters,
-                    style: ts(14),
+                    style: ts(13),
                     onChanged: (_) => setDialogState(() {}),
                     onSubmitted: (_) => _startConversation(st, ctrl.text),
                     decoration: InputDecoration(
@@ -2023,7 +2023,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       filled: true,
                       fillColor: C.bgSoft,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                     ),
@@ -2033,7 +2033,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     Container(
                       decoration: BoxDecoration(
                         color: C.bgSoft,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         children: suggestions.map((s) {
@@ -2092,7 +2092,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 style: FilledButton.styleFrom(
                   backgroundColor: C.blue,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: Text(
@@ -2216,7 +2216,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         filled: true,
                         fillColor: C.bgSoft,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -2401,7 +2401,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         filled: true,
                         fillColor: C.bgSoft,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -2578,7 +2578,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     TextField(
                       controller: nameCtrl,
                       autofocus: true,
-                      style: ts(14),
+                      style: ts(13),
                       onChanged: (_) => setDialogState(() {}),
                       onSubmitted: (_) {
                         if (nameCtrl.text.trim().isNotEmpty) {
@@ -2606,7 +2606,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: C.orangeBg,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2651,7 +2651,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         filled: true,
                         fillColor: C.bgSoft,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -2899,7 +2899,7 @@ class _MessagesPageState extends State<MessagesPage> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.75,
@@ -3088,7 +3088,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                       children: [
                                         Text(
                                           call,
-                                          style: ts(14, w: FontWeight.w600),
+                                          style: ts(13, w: FontWeight.w600),
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
@@ -3237,7 +3237,7 @@ class _MessagesPageState extends State<MessagesPage> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) {
@@ -3372,7 +3372,7 @@ class _MessagesPageState extends State<MessagesPage> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: C.orangeBg,
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
                                         S.of(context).groupOwner,
@@ -3482,7 +3482,7 @@ class _MessagesPageState extends State<MessagesPage> {
             backgroundColor: Colors.white,
             title: Text(
               S.of(context).inviteMembersTo(group.name),
-              style: ts(15, w: FontWeight.w700),
+              style: ts(16, w: FontWeight.w700),
             ),
             content: SizedBox(
               width: double.maxFinite,
@@ -3511,7 +3511,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       filled: true,
                       fillColor: C.bgSoft,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                     ),
@@ -3532,7 +3532,7 @@ class _MessagesPageState extends State<MessagesPage> {
                             filled: true,
                             fillColor: C.bgSoft,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -3724,7 +3724,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     controller: ctrl,
                     autofocus: true,
                     textCapitalization: TextCapitalization.characters,
-                    style: ts(14),
+                    style: ts(13),
                     onChanged: (_) => setDialogState(() {}),
                     decoration: InputDecoration(
                       hintText: S.of(context).callsignExample,
@@ -3737,7 +3737,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       filled: true,
                       fillColor: C.bgSoft,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -3753,7 +3753,7 @@ class _MessagesPageState extends State<MessagesPage> {
                       constraints: const BoxConstraints(maxHeight: 200),
                       decoration: BoxDecoration(
                         color: C.bgSoft,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -3822,7 +3822,7 @@ class _MessagesPageState extends State<MessagesPage> {
                 style: FilledButton.styleFrom(
                   backgroundColor: C.blue,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: Text(

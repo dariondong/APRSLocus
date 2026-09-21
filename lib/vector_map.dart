@@ -309,7 +309,7 @@ class _VectorMapViewState extends State<VectorMapView> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: C.redBg,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: C.red.withValues(alpha: 0.3)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -351,7 +351,9 @@ class _VectorMapViewState extends State<VectorMapView> {
           color: C.blue,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2),
-          boxShadow: softShadow(blur: 8, alpha: 0.3),
+          // 这里**故意**不用 elev1/2/3：这是地图标记背后的一圈深色光晕，用途是让压在各种瓦片上的文字可读，属于「可读性」而不是「层次」。
+          // 同上：可读性光晕，不属于三级高度体系。
+            boxShadow: softShadow(blur: 8, alpha: 0.3),
         ),
         child: const Icon(Icons.navigation_rounded, color: Colors.white, size: 14),
       ),
@@ -389,7 +391,7 @@ class _VectorMapViewState extends State<VectorMapView> {
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: s.color.withValues(alpha: 0.4)),
               ),
               child: Text(

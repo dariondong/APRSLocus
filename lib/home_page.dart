@@ -104,13 +104,13 @@ class _HomePageState extends State<HomePage> {
       isScrollControlled: true,
       builder: (ctx) {
         final sheet = MaterialSurface(
-          radius: 20,
+          radius: 24,
           child: Container(
             margin: const EdgeInsets.all(12),
             padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
             decoration: BoxDecoration(
               color: C.sheetFill,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: Text(
                         S.of(ctx).beaconAutoAskTitle,
-                        style: ts(15, w: FontWeight.w700),
+                        style: ts(16, w: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 10),
                 Text(
                   S.of(ctx).beaconAutoAskDesc,
-                  style: ts(12.5, c: C.slate, h: 1.6),
+                  style: ts(12, c: C.slate, h: 1.6),
                 ),
                 SizedBox(height: 18),
                 Row(
@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
               height: 36,
               decoration: BoxDecoration(
                 color: C.orangeBg,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(Icons.group_add_rounded, color: C.orange, size: 20),
             ),
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: C.bgSoft,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text(
               S.of(context).accept,
-              style: ts(14, c: C.green, w: FontWeight.w700),
+              style: ts(13, c: C.green, w: FontWeight.w700),
             ),
           ),
           TextButton(
@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
-            child: Text(S.of(context).reject, style: ts(14, c: C.red)),
+            child: Text(S.of(context).reject, style: ts(13, c: C.red)),
           ),
         ],
       ),
@@ -450,15 +450,15 @@ class _HomePageState extends State<HomePage> {
         if (_tab != 2) setState(() => _tab = 2);
       },
       child: MaterialSurface(
-        radius: 14,
+        radius: 16,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: C.surfaceFillStrong,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: C.blue.withValues(alpha: 0.3)),
-            boxShadow: softShadow(blur: 16, alpha: 0.25),
+            boxShadow: elev3(),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -468,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                 height: 30,
                 decoration: BoxDecoration(
                   color: C.blueBg,
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
                   child: Text(
@@ -657,7 +657,7 @@ class _HomePageState extends State<HomePage> {
       height: 18,
       decoration: BoxDecoration(
         color: C.red,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
         child: Text(
@@ -682,7 +682,7 @@ class _HomePageState extends State<HomePage> {
       child: Center(
         child: Text(
           text,
-          style: ts(8, c: Colors.white, w: FontWeight.w700),
+          style: ts(9, c: Colors.white, w: FontWeight.w700),
         ),
       ),
     );
@@ -714,7 +714,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: C.bgSoft,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
@@ -726,7 +726,7 @@ class _HomePageState extends State<HomePage> {
                 height: 36,
                 decoration: BoxDecoration(
                   color: C.blueBg,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(Icons.my_location_rounded, color: C.blue, size: 20),
               ),
@@ -851,13 +851,13 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: Text(
                         S.of(context).pkwdwplReadOnly,
-                        style: ts(10.5, c: C.orange, w: FontWeight.w600),
+                        style: ts(10, c: C.orange, w: FontWeight.w600),
                       ),
                     ),
                     Text(
                       S.of(context)
                           .beaconCount(widget.state.pkwdwpl.rxFrames),
-                      style: ts(10.5, c: C.slate, w: FontWeight.w600),
+                      style: ts(10, c: C.slate, w: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -904,7 +904,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: Text(
                           '开启自动上报',
-                          style: ts(10.5, c: C.blue, w: FontWeight.w700),
+                          style: ts(10, c: C.blue, w: FontWeight.w700),
                         ),
                       ),
                   ],
@@ -975,7 +975,7 @@ class _HomePageState extends State<HomePage> {
                         horizontal: 12, vertical: 12),
                     textStyle: ts(13, w: FontWeight.w700),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -1013,7 +1013,7 @@ class _HomePageState extends State<HomePage> {
                         horizontal: 12, vertical: 12),
                     textStyle: ts(13, w: FontWeight.w700),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
@@ -1148,7 +1148,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Text(
         '$val $label',
@@ -1187,8 +1187,8 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: softShadow(blur: 16, alpha: 0.22),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: elev3(),
             ),
             child: Row(
               children: [
@@ -1310,8 +1310,8 @@ class _HomePageState extends State<HomePage> {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: softShadow(blur: 16, alpha: 0.22),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: elev3(),
           ),
           child: Row(
             children: [
@@ -1358,7 +1358,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     connecting

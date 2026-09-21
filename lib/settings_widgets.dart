@@ -41,7 +41,7 @@ class SettingsPageShell extends StatelessWidget {
                 height: 34,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 18),
               ),
@@ -282,7 +282,7 @@ class SettingsNavRow extends StatelessWidget {
             height: 30,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, size: 16, color: color),
           ),
@@ -292,7 +292,7 @@ class SettingsNavRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: ts(12.5, c: C.slate, w: FontWeight.w600)),
+                    style: ts(12, c: C.slate, w: FontWeight.w600)),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
                   Text(subtitle!,
@@ -377,7 +377,7 @@ class SettingsFold extends StatelessWidget {
                 height: 34,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 17),
               ),

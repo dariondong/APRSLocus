@@ -206,7 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFFC9A227), Color(0xFF8A6D1F)],
                             ),
                           child: const Icon(Icons.emoji_events_rounded,
@@ -258,7 +258,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFF0E7490), Color(0xFF155E75)],
                             ),
                           child: const Icon(Icons.translate_rounded,
@@ -298,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFF16A34A), Color(0xFF0B7A37)],
                             ),
                           child: const Icon(
@@ -346,7 +346,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFFDB2777), Color(0xFF9D174D)],
                             ),
                           child: const Icon(
@@ -394,7 +394,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFF7C3AED), Color(0xFF5B21B6)],
                             ),
                           child: const Icon(
@@ -445,7 +445,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           width: 32,
                           height: 32,
                           decoration: C.accentDeco(
-                            radius: 9,
+                            radius: 8,
                             fallback: const [Color(0xFF0A5CFF), Color(0xFF003D99)],
                             ),
                           child: const Icon(
@@ -558,7 +558,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: ts(14, w: FontWeight.w700),
+                    style: ts(13, w: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -600,7 +600,7 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
@@ -667,7 +667,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SizedBox(width: 8),
           Expanded(
             child: Text(S.of(context).quitApp,
-                style: ts(15, w: FontWeight.w700)),
+                style: ts(16, w: FontWeight.w700)),
           ),
         ]),
         content: Text(
@@ -714,7 +714,7 @@ class _SettingsPageState extends State<SettingsPage> {
               height: 34,
               decoration: BoxDecoration(
                 color: C.blue,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.forum_rounded,

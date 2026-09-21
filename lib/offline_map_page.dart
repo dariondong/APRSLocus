@@ -229,7 +229,7 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
         if (showBar) ...[
           const SizedBox(height: 8),
           ClipRRect(
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(2),
             child: LinearProgressIndicator(
               value: r.progress,
               minHeight: 5,
@@ -328,20 +328,20 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => MaterialSurface(
-        radius: 18,
+        radius: 16,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
             borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(18)),
+                top: Radius.circular(16)),
           ),
           child: SafeArea(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
                 child: Text(s.offlineDeleteRegionConfirm(r.name),
-                    style: ts(14, w: FontWeight.w700), textAlign: TextAlign.center),
+                    style: ts(13, w: FontWeight.w700), textAlign: TextAlign.center),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
@@ -393,7 +393,7 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(s.offlineClearCacheConfirm, style: ts(15, w: FontWeight.w700)),
+        title: Text(s.offlineClearCacheConfirm, style: ts(16, w: FontWeight.w700)),
         content: Text(s.offlineClearCacheConfirmBody, style: ts(12, c: C.slate, h: 1.5)),
         actions: [
           TextButton(
@@ -577,7 +577,7 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
                   decoration: BoxDecoration(
                     border: Border.all(
                         color: C.blue.withValues(alpha: 0.55), width: 2),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -595,7 +595,7 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
                 child: GestureDetector(
                   onTap: _goMyLocation,
                   child: MaterialSurface(
-                    radius: 20,
+                    radius: 24,
                     blurSigma: 14.0,
                     child: Container(
                       width: 40, height: 40,

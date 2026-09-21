@@ -177,12 +177,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => MaterialSurface(
-        radius: 20,
+        radius: 24,
         topOnly: true,
         child: Container(
           decoration: BoxDecoration(
             color: C.sheetFill,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.all(20),
           child: SafeArea(
@@ -191,7 +191,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               children: [
                 Text(
                   S.of(context).updateChannel,
-                  style: ts(15, w: FontWeight.w800),
+                  style: ts(16, w: FontWeight.w800),
                 ),
                 const SizedBox(height: 14),
                 _channelOption(
@@ -704,7 +704,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: gradient,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: hasUpdate
@@ -722,7 +722,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             height: 52,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
               Icons.system_update_rounded,
@@ -742,7 +742,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 const SizedBox(height: 3),
                 Text(
                   'v${AppState.appVersion}',
-                  style: ts(24, c: Colors.white, w: FontWeight.w800),
+                  style: ts(26, c: Colors.white, w: FontWeight.w800),
                 ),
                 if (_latest != null && !_checking && !_hasError)
                   Padding(
@@ -875,7 +875,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     height: 36,
                     decoration: BoxDecoration(
                       color: C.greenBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       Icons.verified_rounded,
@@ -890,7 +890,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                       children: [
                         Text(
                           S.of(context).latestVersion,
-                          style: ts(14, w: FontWeight.w700),
+                          style: ts(13, w: FontWeight.w700),
                         ),
                         SizedBox(height: 2),
                         Text(
@@ -949,7 +949,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: C.greyBg,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     S
@@ -1019,7 +1019,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                   ),
                   decoration: BoxDecoration(
                     color: C.redBg,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1095,7 +1095,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: C.greyBg,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   S
@@ -1151,7 +1151,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: C.redBg,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             _dlStatus,
@@ -1168,7 +1168,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             icon: const Icon(Icons.refresh_rounded, size: 20),
             label: Text(
               S.of(context).redownload,
-              style: ts(14, w: FontWeight.w700),
+              style: ts(13, w: FontWeight.w700),
             ),
           ),
         ),
@@ -1195,7 +1195,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               isWin
                   ? S.of(context).downloadInstaller
                   : S.of(context).downloadAndInstall,
-              style: ts(15, w: FontWeight.w700),
+              style: ts(16, w: FontWeight.w700),
             ),
           ),
         ),
@@ -1235,7 +1235,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 height: 36,
                 decoration: BoxDecoration(
                   color: C.greenBg,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.download_done_rounded,
@@ -1249,7 +1249,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 children: [
                   Text(
                     S.of(context).alreadyDownloaded,
-                    style: ts(14, w: FontWeight.w700),
+                    style: ts(13, w: FontWeight.w700),
                   ),
                   SizedBox(height: 2),
                   Text('v${_downloadedTag ?? ''}', style: ts(11, c: C.grey)),
@@ -1263,7 +1263,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: C.greyBg,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               path,
@@ -1430,12 +1430,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
-        title: Text(title, style: ts(15, w: FontWeight.w700)),
+        title: Text(title, style: ts(16, w: FontWeight.w700)),
         content: Text(message, style: ts(13, h: 1.5)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(S.of(context).cancel, style: ts(14, c: C.slate)),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.slate)),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: C.red),
@@ -1443,7 +1443,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
               Navigator.pop(ctx);
               onConfirm();
             },
-            child: Text(S.of(context).confirmDelete, style: ts(14)),
+            child: Text(S.of(context).confirmDelete, style: ts(13)),
           ),
         ],
       ),
@@ -1471,7 +1471,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                     height: 32,
                     decoration: BoxDecoration(
                       color: C.blueBg,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(Icons.history_rounded, color: C.blue, size: 17),
                   ),
@@ -1545,7 +1545,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                 ),
                 SizedBox(height: 8),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(6),
                   child: LinearProgressIndicator(
                     value: _progress,
                     minHeight: 6,
@@ -1587,7 +1587,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                               ),
                               decoration: BoxDecoration(
                                 color: C.greenBg,
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 S.of(context).current,
@@ -1643,7 +1643,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
           children: [
             Text(
               S.of(context).versionChangelog(rel.tagName),
-              style: ts(15, w: FontWeight.w700),
+              style: ts(16, w: FontWeight.w700),
             ),
             Spacer(),
             IconButton(
@@ -1683,7 +1683,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1727,7 +1727,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                               ),
                               decoration: BoxDecoration(
                                 color: C.greenBg,
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 S.of(context).current,
@@ -1743,7 +1743,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: C.greyBg,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           rel.body.trim().isNotEmpty
