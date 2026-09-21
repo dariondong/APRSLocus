@@ -36,12 +36,15 @@ import 'widgets.dart';
 /// 1. **地图整屏**（最底）：`MapPage` 一直活着，切到任何页都不销毁。
 /// 2. **底部悬浮导航**（固定）：5 个页签，**永远在同一个位置**，不随内容移动。
 ///    半透明 + 模糊 + 胶囊外形，选中用**滑动的指示胶囊**而不是 5 块色底。
-/// 3. **内容面板**（可拖拽）：只装内容，**不再包含导航**。头部只剩一根细把手
-///    （约 22px，不再是 80px 的双层 chrome）。选「地图」时它整个收起，
-///    地图就是全屏的 —— 这才是「地图为基底」。
+/// 3. **内容面板**（可拖拽）：只装内容，**不再包含导航**。头部是一根把手的
+///    **44px 触摸区**（药丸本身只有 40×5，但整条都能抓）—— 原来只有 22px，
+///    用户反馈「很难活动」。选「地图」时它整个收起，地图就是全屏的。
 ///
-/// 拖动只在把手上响应：向下拖过阈值就收起回到地图（符合直觉的「下滑关闭」），
-/// 否则吸附到两个档位（半屏 / 近全屏）。刻意**不**接管内容里列表的手势。
+/// 拖动能从**四个地方**发起（见 [_draggableContent] 里关于手势竞技场的说明）：
+/// 把手本身、底部导航条、内容不可滚动时的整片内容、以及「内容滚到顶后继续下拉」
+/// （靠滚动通知）。拖完吸附到两个档位（半屏 / 近全屏），向下拖过阈值则收起回到地图。
+/// 内容**可滚动且已在中间**时向上拖仍然是滚动列表 —— 这是 Flutter 手势竞技场的
+/// 既定行为（内层 Scrollable 赢），与系统底部面板一致。
 ///
 /// 地图要「让开」的地方通过两个 inset 告知：顶栏高度、底部（导航 + 面板）。
 class HomeShell2 extends StatefulWidget {
@@ -59,6 +62,9 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 上一次通知时的「外壳所显示的值」快照（见 [_onState]）
   String _stateKey = '';
+
+  /// 是否刚刚用「滚动」动过面板（决定滚动结束后要不要吸附）
+  bool _movedByScroll = false;
 
   /// 内容面板高度占屏高比例；0 = 收起（地图全屏）
   double _extent = 0;
@@ -80,6 +86,9 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 导航胶囊高度
   static const double _kNav = 56;
+
+  /// 把手触摸区高度（药丸本身只有 40×5，但整条都能拖/能点）
+  static const double _kHandle = 44;
 
   /// 统一外边距（左右 / 面板与导航之间 / 导航距底）。
   ///
@@ -189,6 +198,12 @@ class _HomeShell2State extends State<HomeShell2>
   /// 顶栏占的高度（顶部安全区 + 栏高 + 间隙），同时是地图顶部让位量与面板上限
   double _topInset() => MediaQuery.of(context).padding.top + 6 + _barH + 8;
 
+  /// 当前屏高 / 面板可达的最大比例（拖动与滚动两条路共用，避免两处算法漂移）
+  double _screenH() => MediaQuery.of(context).size.height;
+
+  double _fullRatioOf() =>
+      _fullRatio(MediaQuery.of(context).size, _navSpace(context), _topInset());
+
   void _snapTo(double target) {
     _snap = Tween(begin: _extent, end: target);
     _anim
@@ -205,19 +220,12 @@ class _HomeShell2State extends State<HomeShell2>
 
   void _onDrag(double dy) {
     _anim.stop();
-    final size = MediaQuery.of(context).size;
-    final navSpace = _navSpace(context);
-    final topInset = _topInset();
-    final h = size.height;
-    setState(() => _extent = (_extent - dy / h)
-        .clamp(0.0, _fullRatio(size, navSpace, topInset)));
+    setState(() => _extent =
+        (_extent - dy / _screenH()).clamp(0.0, _fullRatioOf()));
   }
 
   void _onDragEnd() {
-    final size = MediaQuery.of(context).size;
-    final navSpace = _navSpace(context);
-    final topInset = _topInset();
-    final full = _fullRatio(size, navSpace, topInset);
+    final full = _fullRatioOf();
     if (_extent < _kDismiss) {
       // 下滑关闭：回到地图（并把页签同步过去，否则导航会停在旧页签上）
       setState(() => _tab = 0);
@@ -244,9 +252,14 @@ class _HomeShell2State extends State<HomeShell2>
     final barTop = pad.top + 6;
     final topInset = _topInset();
     // 上限就是 _maxSheetH：绝不盖住顶栏
-    final sheetH = (size.height * _extent)
-        .clamp(0.0, _maxSheetH(size, navSpace, topInset));
+    final maxSheetH = _maxSheetH(size, navSpace, topInset);
+    final sheetH = (size.height * _extent).clamp(0.0, maxSheetH);
     final showSheet = _extent > 0.02;
+    // 内容**固定**按「展开到最大时可视区的高度」布局，只裁显示区。两个理由：
+    //   * 拖动时这个高度不变 → 不会逐帧重新布局（这才是这套设计的全部意义）；
+    //   * 必须减掉把手：不减的话内容比可视区高一个把手，底部那一条被裁掉且滚不到
+    //     （原来就是按当前的 sheetH 布局，等于每帧重排 + 底部永远有 44px 看不见）。
+    final pageH = (maxSheetH - _kHandle).clamp(0.0, size.height);
 
     // 返回键（含 Android 手势返回 / 预测式返回）：
     //   在「地图」页 → 交给系统（正常退出应用）；
@@ -315,11 +328,11 @@ class _HomeShell2State extends State<HomeShell2>
                           child: ClipRect(
                             child: OverflowBox(
                               alignment: Alignment.topCenter,
-                              minHeight: sheetH,
-                              maxHeight: sheetH,
+                              minHeight: pageH,
+                              maxHeight: pageH,
                               child: SizedBox(
-                                height: sheetH,
-                                child: _content(),
+                                height: pageH,
+                                child: _draggableContent(),
                               ),
                             ),
                           ),
@@ -361,21 +374,22 @@ class _HomeShell2State extends State<HomeShell2>
       onVerticalDragEnd: (_) => _onDragEnd(),
       // 轻点把手：在半屏 / 近全屏之间切换
       onTap: () {
-        final size = MediaQuery.of(context).size;
-        final full = _fullRatio(size, _navSpace(context), _topInset());
+        final full = _fullRatioOf();
         _snapTo(_extent >= (_kHalf + full) / 2 ? _kHalf : full);
       },
       behavior: HitTestBehavior.opaque,
+      // 触摸目标 44（iOS 的最小推荐值）：原来是 22，用户反馈「很难活动」。
+      // 药丸本身仍然很小（40×5），但整条 44 高的区域都能抓、能点、能拖。
       child: SizedBox(
-        height: 22,
+        height: _kHandle,
         width: double.infinity,
         child: Center(
           child: Container(
-            width: 34,
-            height: 4,
+            width: 40,
+            height: 5,
             decoration: BoxDecoration(
-              color: C.greyLight,
-              borderRadius: BorderRadius.circular(2),
+              color: C.grey,
+              borderRadius: BorderRadius.circular(2.5),
             ),
           ),
         ),
@@ -383,6 +397,55 @@ class _HomeShell2State extends State<HomeShell2>
     );
   }
 
+  /// 把内容包起来，让拖拽不只发生在把手上。
+  ///
+  /// ── 为什么「整页拖动」要靠这两层，而不是给内容加一个手势 ──
+  ///
+  /// Flutter 的**手势竞技场**里，内层 `Scrollable` 总是赢过外层的拖拽识别器：
+  /// 一个 `GestureDetector(onVerticalDragUpdate:)` 包住 `ListView` 时，竖着拖只会
+  /// 滚动列表，外层回调一次都收不到。所以「整页可拖」只能换两条路：
+  ///
+  /// 1. **监听滚动通知**（[NotificationListener]）：内容滚到顶之后继续往下拉会发出
+  ///    `OverscrollNotification`，把那段「多余的距离」拿来收面板 —— 于是「整页下滑
+  ///    收起」成立（这也是用户最常试的手势）。
+  /// 2. **外层手势兜底**：内容**不可滚动**时（该页内容比面板矮、或本来就不滚动），
+  ///    内层没有识别器可赢，外层这个就接得到 —— 这类页面上「整页上下拖」直接成立。
+  ///
+  /// 诚实的边界：内容**可滚动**且已在中间位置时，向上拖仍然是滚动列表（这与
+  /// iOS/Android 的系统底部面板一致：列表要能滚）。要展开面板有三条路：把手（44px）、
+  /// 底部导航条（也能拖）、或轻点把手。
+  Widget _draggableContent() {
+    return GestureDetector(
+      // deferToChild：不抢子控件的点击，只在子控件没接手竖直拖拽时才生效
+      behavior: HitTestBehavior.deferToChild,
+      onVerticalDragUpdate: (d) => _onDrag(d.delta.dy),
+      onVerticalDragEnd: (_) => _onDragEnd(),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _onScrollNotification,
+        child: _content(),
+      ),
+    );
+  }
+
+  /// 内容滚到顶后继续下拉 → 收面板；滚动结束 → 吸附到最近档位
+  bool _onScrollNotification(ScrollNotification n) {
+    if (n is OverscrollNotification && n.overscroll < 0) {
+      // overscroll 为负 = 已经到顶还在往下拖
+      _anim.stop();
+      _movedByScroll = true;
+      setState(() => _extent =
+          (_extent + n.overscroll / _screenH()).clamp(0.0, _fullRatioOf()));
+      return false;
+    }
+    if (n is ScrollEndNotification && _movedByScroll) {
+      // 只有「真的用滚动动过面板」才吸附：普通列表滚完不该触发一次面板动画
+      _movedByScroll = false;
+      _onDragEnd();
+    }
+    return false;
+  }
+
+  /// 内容按面板高度布局、只裁显示区（见类注释 ①）
   Widget _content() {
     // IndexedStack：切页不销毁（滚动位置、会话都保留）。
     // 地图页不在这里 —— 选地图时整个面板收起，地图就是底。
@@ -405,7 +468,12 @@ class _HomeShell2State extends State<HomeShell2>
 
   Widget _navBar() {
     final pad = MediaQuery.of(context).padding;
-    return MaterialSurface(
+    // 导航条也能拖动面板：它紧贴在面板下方、又高又宽，是除把手之外最好抓的地方。
+    // 竖直拖动在它身上原本什么都不做（页签只认点击），所以这不会抢任何现有手势。
+    return GestureDetector(
+      onVerticalDragUpdate: (d) => _onDrag(d.delta.dy),
+      onVerticalDragEnd: (_) => _onDragEnd(),
+      child: MaterialSurface(
       radius: 999,
       child: Container(
         height: _kNav,
@@ -453,6 +521,7 @@ class _HomeShell2State extends State<HomeShell2>
             );
           },
         ),
+      ),
       ),
     );
   }
