@@ -1,5 +1,94 @@
 # 更新日志
 
+## [1.6.143] - 2026-09-21
+
+### ✨ 小按钮恢复磨砂；连接提示重做；面板把手加大且「整页都能拖」 / Frosted small buttons restored; a clearer connection indicator; a bigger grab handle and full-page dragging
+
+三件用户反馈。另外顺手修了一个一直存在的布局 bug。
+
+## 一、小按钮恢复磨砂（轻档）
+
+上一版为性能把小组件的磨砂关掉了，这次加回来 —— 但不是简单回退，而是做成**两档材质**：
+
+| 档 | 元素 | 半径 | 填色 |
+|---|---|---|---|
+| 小浮层 | 工具钮 / 图例 / 提示胶囊 / 信标横杠 / 顶栏那一簇 | **12** | 半透明 0.72 |
+| 大面板 | 底面板 / 侧栏 / 顶栏 / 导航胶囊 / AppBar | 材质默认（玻璃 24 / 云母 16） | 半透明 |
+
+小浮层给 12 而不是默认半径：它们**面积本来就小**（38px 按钮 1.4k px²，底部面板 196k），
+代价低；但半径给大反而把边缘糊成一团灰、像没画好。真正的性能问题不是半径，
+而是**同时存在的层数**与**重建频率**——那条已在上一版修掉。
+
+## 二、连接提示重做（原来确实不明确）
+
+原胶囊显示「37 在线」—— 那是**台站数**，不是连接状态；而台站数在地图信息条里
+已经显示了。最糟的是「离线」这个词：`connected` 的真实含义是**发射链路可用**，
+与「有没有台站在线」完全是两件事，同一个词同时暗示两件事。
+
+现在如实拆开成 **来源 · 状态**：`APRS-IS · 已连接`（绿）/ `TNC · 未连接`（灰）/
+**`PKWDWPL · 只收不发`（青）**。最后那一档单列：只启用只读来源时「没有发射链路」
+是正常的，画成「未连接」会让人白去点连接、白去查设置。点一下进连接设置
+（原来只有 tooltip 提示，而 tooltip 在手机上根本看不到）；tooltip 里还给出
+**具体连到哪儿**（服务器地址 / 设备名 / 采样率）。连接按钮也改成**未连接时实心蓝**
+（主操作的样子），已连接仍是红色（断开语义）。
+
+## 三、把手加大到 44px，并让「整页都能拖」
+
+- **把手**：触摸区 22px → **44px**（药丸本身仍是 40×5）。22 是用户抱怨「很难活动」的直接原因。
+- **整页拖动**：不能靠给内容加手势 —— Flutter 的手势竞技场里内层 `Scrollable`
+  总是赢。所以换两条路：**内容滚到顶后继续下拉**（监听 `OverscrollNotification`）
+  即可收起面板；**内容不可滚动时**外层手势接管，整页上下拖都成立。另外**底部导航条
+  也能拖**（它紧贴面板下方、又高又宽，竖直拖动原本什么都不做）。
+- **诚实的边界**：内容可滚动且已在中间时，向上拖仍然是滚动列表（与系统底部面板一致）。
+
+## 四、顺手修一个一直存在的布局 bug
+
+内容原来按**当前的**面板高度布局，而可视区只有「面板 − 把手高」：底部被裁掉
+**一整个把手的高度**，而且因为滚动视图自身就那么高，那一条**永远滚不到**；
+拖动时高度每帧都在变 → **内容逐帧重新布局**（正是这套设计要避免的事）。
+现在固定按「展开到最大时的可视高度」布局：拖动期间不重排，展开到最大时不裁。
+
+---
+
+**Three pieces of feedback, plus one long-standing layout bug fixed along the way.**
+
+**1) Frosted small buttons are back — as a lighter tier.** The previous release turned frosting
+off for small widgets to save GPU time; that is reverted, but not as a plain rollback — there are
+now two tiers: small overlays (map tool buttons, legend, hint pills, beacon bar, the top-right
+cluster) get a **12px** radius with 0.72 opacity; large panels (bottom sheet, side rail, top bar,
+navigation pill, app bars) keep the material default (glass 24 / mica 16). Small overlays keep 12
+because they are *small* — a 38px button is 1.4k px² against a 196k px² panel — so they are cheap,
+while a large radius would smear their edges into grey mush. The real cost was never the radius but
+the **number of simultaneously live layers** and **rebuild frequency**, both addressed previously.
+
+**2) The connection indicator was genuinely unclear.** It used to read “37 在线” — that is the
+**station count**, not the connection state (and the map’s info chip already shows it). Worse was
+the word “offline”: `connected` actually means **the transmit link is up**, which is a different
+question from “are any stations being heard”, and one word implying both leaves the user unable to
+tell which problem they have. It now reads **source · state** — `APRS-IS · Connected`,
+`TNC · Not connected`, and **`PKWDWPL · Receive-only`** as its own state (having no transmit link
+is normal for a read-only source; calling it “not connected” sends people hunting for a problem
+that does not exist). Tapping opens connection settings, and the tooltip names what it is actually
+connected to — server address, device name, or sample rate. The connect button is now **solid blue
+when disconnected** (it looks like the primary action it is) and red when connected.
+
+**3) The grab handle is 44px and the whole page drags.** The handle's touch target went 22px →
+**44px** (the pill itself stays 40×5). Full-page dragging cannot be done by wrapping the content in
+a gesture — in Flutter's gesture arena the inner `Scrollable` always wins — so it takes two routes:
+**pull down past the top of the content** (`OverscrollNotification`) collapses the sheet, and when
+the content **cannot scroll** the outer gesture takes over so the whole page drags. The bottom
+navigation bar drags too (it sits right under the sheet, is large, and previously did nothing in
+that direction). **Stated plainly**: when the content *can* scroll and is mid-list, dragging up
+still scrolls the list — same as every system bottom sheet.
+
+**4) A long-standing layout bug.** The content was laid out at the *current* sheet height while its
+viewport was that height minus the handle: the bottom strip was cut off by a full handle height and
+could never be scrolled to, and every drag frame re-laid out the content (exactly what the
+fixed-height/clip-only design exists to avoid). It is now laid out at the maximum expanded viewport
+height: no relayout while dragging, and nothing clipped when fully expanded.
+
+---
+
 ## [1.6.142] - 2026-09-21
 
 ### 🐛 修「自身轨迹横跳」；磨砂玻璃性能优化 / Fixing the jumping self-track; frosted-glass performance
