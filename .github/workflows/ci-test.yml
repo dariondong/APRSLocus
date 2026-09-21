@@ -57,6 +57,13 @@ jobs:
       - name: Check cross-layer imports
         run: python3 tool/check_cross_imports.py
 
+      # State 里用到的 `widget.X` 必须在同文件有声明。第三次踩同一类坑之后加的：
+      # 用跨块正则改注释时把中间的字段声明一起吞掉了，而
+      # `this.topInset = 0,` 与 `widget.topInset` 都还在 —— 代码读起来完全正常，
+      # 只有 analyze 报 undefined_getter。本机跑不了 analyze，所以本机查。
+      - name: Check widget members
+        run: python3 tool/check_widget_members.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |
