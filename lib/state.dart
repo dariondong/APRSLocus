@@ -3006,9 +3006,69 @@ class AppState extends ChangeNotifier {
     double alt,
     double speed,
     double bearing,
+    bool lastKnown,
   ) {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
+
+    // ── 位置跳变守卫：不要用「瞬移的点」污染轨迹 ──
+    //
+    // 症状（用户报的）：轨迹每隔一会儿跳回一个旧位置、再跳回当前位置，来回横画。
+    // 根因在 Android 侧（系统缓存的位置被当成实时定位、每 10 秒上报一次），已在那里
+    // 修掉；这里守的是同一类问题的**其它来源**（网络定位漂移、IP 定位、跨平台差异）。
+    //
+    // 判据是「**短时间内**跨很远」：距上一轨迹点不到 [_kFixJumpWindowSec]、位移又超过
+    // [_kFixJumpKm] 才算可疑 —— 单看距离会误伤「停车几小时后开出去」这种合法位移。
+    // 可疑点先**只更新标记、不写轨迹**，连续 [_kFixConfirmNeed] 次都落在同一处
+    // （彼此相距 < [_kFixConfirmKm]）才认账。
+    //
+    // 为什么用「连续确认」而不是直接丢弃：真的换了地方也必须能恢复，否则轨迹会永远
+    // 卡在旧位置。确认后**清空轨迹从新位置重画**，而不是画一条横跨两地的直线 ——
+    // 那条线是假的，比没有轨迹更误导。
+    if (!lastKnown && myTrack.isNotEmpty) {
+      final last = myTrack.last;
+      final dKm = haversine(last.lat, last.lng, lat, lng);
+      // 「短时间内」跨很远才算跳变：中间本来就隔了很久的话，多半是合法位移
+      // （设备刚开、GPS 丢了一阵），那种情况宁可画一条跨越空档的线，也别把轨迹清掉。
+      final gapSec = DateTime.now().difference(last.time).inSeconds;
+      if (dKm > _kFixJumpKm && gapSec < _kFixJumpWindowSec) {
+        final nearPending = _pendingFixLat != null &&
+            haversine(_pendingFixLat!, _pendingFixLng!, lat, lng) < _kFixConfirmKm;
+        if (nearPending) {
+          _pendingFixCount++;
+        } else {
+          _pendingFixLat = lat;
+          _pendingFixLng = lng;
+          _pendingFixCount = 1;
+        }
+        if (_pendingFixCount < _kFixConfirmNeed) {
+          _log(
+            LogLevel.info,
+            '定位',
+            '疑似跳变，暂不记轨：距上次轨迹点 ${dKm.toStringAsFixed(1)}km'
+                '（第 $_pendingFixCount 次，连续 $_kFixConfirmNeed 次一致才接受）',
+          );
+          // 标记也不动：先按「上一次可信位置」显示，避免地图上的「我」乱跳
+          _notify();
+          return;
+        }
+        _log(
+          LogLevel.info,
+          '定位',
+          '位置确认已变化（${_pendingFixCount} 次一致）：轨迹从新位置重新开始',
+        );
+        myTrack.clear();
+        _pendingFixLat = null;
+        _pendingFixLng = null;
+        _pendingFixCount = 0;
+      } else {
+        // 正常位移：清掉疑似计数
+        _pendingFixLat = null;
+        _pendingFixLng = null;
+        _pendingFixCount = 0;
+      }
+    }
+
     final first = !myHasFix;
     myLat = lat;
     myLng = lng;
@@ -3020,8 +3080,11 @@ class AppState extends ChangeNotifier {
     if (bearing >= 0) myCourse = bearing;
     locStatus = '已定位';
     // 记录我的轨迹（上限 maxTrackPts，间隔 >20m 才记录避免冗余）
+    //
+    // `lastKnown`（系统缓存的「上次已知位置」）**只更新标记、不写轨迹**：
+    // 它可能几小时前、甚至在另一个城市，写进去就是「线跳回起点再画一次」。
     final last = myTrack.isEmpty ? null : myTrack.last;
-    if (last == null || haversine(last.lat, last.lng, lat, lng) > 0.02) {
+    if (!lastKnown && (last == null || haversine(last.lat, last.lng, lat, lng) > 0.02)) {
       myTrack.add(TrackPt(lat, lng, DateTime.now()));
       if (myTrack.length > maxTrackPts) {
         myTrack.removeRange(0, myTrack.length - maxTrackPts);
@@ -3972,6 +4035,25 @@ class AppState extends ChangeNotifier {
       _scheduleStationsSave();
     }
   }
+
+  /// ── 位置跳变守卫的状态（见 [_onFix]）──
+  /// 单步位移超过这个公里数、**且**距上一轨迹点不到 [_kFixJumpWindowSec] 时才视为可疑。
+  ///
+  /// 30km 这个数的依据：正常的 TNC/GPS 采样间隔是 10 秒级，10 分钟内跨 30km 意味着
+  /// 平均 180km/h 以上，而民用移动（含高铁 350km/h —— 10 分钟也有 58km）里只有
+  /// 飞机能到这量级；反过来，缓存位置/网络漂移常跨几十上百公里。
+  /// 阈值取大一点的好处：**不会误伤「停车几小时后开出去」这种合法位移**
+  /// （那种情况距上一轨迹点已经很久，由时间窗排除）。
+  static const double _kFixJumpKm = 30.0;
+  /// 「短时间内」的定义（秒）：超过它就认为中间本来就有空档，多大的位移都可能是真的
+  static const int _kFixJumpWindowSec = 600;
+  /// 两次可疑点相距小于这个公里数，视为「落在同一处」
+  static const double _kFixConfirmKm = 1.0;
+  /// 连续这么多次都落在同一处，才承认位置真的变了
+  static const int _kFixConfirmNeed = 3;
+  double? _pendingFixLat;
+  double? _pendingFixLng;
+  int _pendingFixCount = 0;
 
   DateTime? _lastStationsSave;
   bool _saveQueued = false;

@@ -17,8 +17,14 @@ class LocService {
   Duration interval = const Duration(seconds: 10);
   /// 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助
   String mode = 'gps_network';
-  void Function(double lat, double lng, double alt, double speed, double bearing)?
-      onFix;
+  /// 定位回调。
+  ///
+  /// [lastKnown] 为真表示这**不是**实时定位，而是系统缓存的「上次已知位置」
+  /// （Android 侧用于启动时快速出图）。它可以更新地图上的「我」，但**不能**写进
+  /// 轨迹 —— 缓存点可能几小时前、甚至在另一个城市，写进轨迹就是「线跳回起点再画
+  /// 一次、反复横画」。
+  void Function(double lat, double lng, double alt, double speed, double bearing,
+      bool lastKnown)? onFix;
   void Function(String status)? onStatus;
   /// 通知栏"连接/断开"按钮点击回调
   void Function()? onToggleConnect;
@@ -67,6 +73,8 @@ class LocService {
             (event['alt'] as num?)?.toDouble() ?? 0,
             (event['speed'] as num?)?.toDouble() ?? 0,
             (event['bearing'] as num?)?.toDouble() ?? -1,
+            // 缓存位置标记：原生在「快速出图」时置真，上层据此不写轨迹
+            event['lastKnown'] == true,
           );
         }
       }
@@ -172,7 +180,8 @@ class LocService {
           final place =
               [region, city].where((s) => s.isNotEmpty).join(' · ');
           onStatus?.call(place.isEmpty ? '已定位' : '已定位 · $place');
-          onFix?.call(lat, lng, 0, 0, -1);
+          // IP 网络定位：一次性的粗略位置，不是轨迹点
+          onFix?.call(lat, lng, 0, 0, -1, true);
           return true;
         } finally {
           client.close(force: true);

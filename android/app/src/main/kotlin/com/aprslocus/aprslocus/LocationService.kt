@@ -96,6 +96,9 @@ class LocationService : Service() {
         const val MAX_ACCURACY_M = 150f
         /** 网络定位仅在 GPS 停更超过该时长时作为兜底（毫秒） */
         const val NET_FALLBACK_GAP_MS = 20000L
+        /** 「上次已知位置」的最大年龄（毫秒）。超过它的缓存点比没有更糟：
+         *  会把标记与轨迹拉到一个早已离开的地方。 */
+        const val LAST_KNOWN_MAX_AGE_MS = 5 * 60 * 1000L
         private var instance: LocationService? = null
 
         /**
@@ -160,6 +163,8 @@ class LocationService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     /** 最近一次优质 GPS fix 时间戳（用于网络定位兜底判断） */
     private var lastGpsFixMs: Long = 0L
+    /** 本次运行是否已收到过**实时**定位（收到后，缓存位置不再上报，见 considerLocation） */
+    private var hasLiveFix = false
     private val lastKnownPoll = Handler(Looper.getMainLooper())
     private val lastKnownRunnable = object : Runnable {
         override fun run() {
@@ -400,10 +405,23 @@ class LocationService : Service() {
 
     /** 定位决策：GPS 优先，网络仅在 GPS 长时间停更时兜底；
      *  精度超过阈值（基站/Wi-Fi 粗点）一律丢弃，抑制漂移。 */
-    private fun considerLocation(location: Location) {
+    private fun considerLocation(location: Location, fromLastKnown: Boolean = false) {
         val acc = try { location.accuracy } catch (_: Exception) { Float.MAX_VALUE }
         val isGps = location.provider == LocationManager.GPS_PROVIDER
         val now = System.currentTimeMillis()
+
+        // 0) 缓存位置（getLastKnownLocation）：**只在还没有实时定位时**用于「快速出图」。
+        //
+        //    ── 这是「轨迹横跳：回到起点再画一次、反复横画」的根因 ──
+        //    外面有个 10 秒轮询（lastKnownRunnable）会调用 reportLastKnown()，而它把
+        //    getLastKnownLocation() 的结果送进本函数 —— 于是那个**可能几小时前、甚至
+        //    在另一个城市**的缓存点，被当成一次正常定位上报给上层；上层按距离判断
+        //    「移动了」就把它写进轨迹，下一拍真实定位又写一次 → 线在旧点与新点之间来回。
+        //    收到实时定位之后，缓存点纯属噪声，必须一律丢掉。
+        if (fromLastKnown) {
+            if (hasLiveFix) return
+            if (location.time > 0 && now - location.time > LAST_KNOWN_MAX_AGE_MS) return
+        }
 
         // 1) 精度超限：直接丢弃（粗点比不准还伤——会拖走标记）
         if (!acc.isNaN() && acc > MAX_ACCURACY_M) return
@@ -414,12 +432,15 @@ class LocationService : Service() {
             if (lastGpsFixMs != 0L && now - lastGpsFixMs < NET_FALLBACK_GAP_MS) return
             // 网络兜底点精度门槛更严，避免明显劣化
             if (!acc.isNaN() && acc > 80f) return
-        } else {
-            lastGpsFixMs = now
         }
 
         // 3) 通过：记录时间并上报
-        if (isGps) lastGpsFixMs = now
+        //    注意 lastGpsFixMs 只由**实时**定位推进：缓存位置不是「GPS 刚更新过」，
+        //    拿它去推进会把真正的网络兜底误压 20 秒（原实现就有这个连带 bug）。
+        if (!fromLastKnown) {
+            hasLiveFix = true
+            if (isGps) lastGpsFixMs = now
+        }
         val provider = location.provider
         val status = if (isGps) "GPS 定位中" else "网络定位中"
         LocationBus.emit(mapOf(
@@ -430,6 +451,9 @@ class LocationService : Service() {
             "bearing" to location.bearing,  // 度
             "accuracy" to (if (acc.isNaN()) null else acc.toDouble()),
             "provider" to provider,
+            // 让上层知道这只是「缓存位置、仅供快速出图」：可以更新标记，
+            // 但**不能**写进轨迹（见 state.dart 的 _onFix）
+            "lastKnown" to fromLastKnown,
             "status" to status))
     }
 
@@ -438,13 +462,17 @@ class LocationService : Service() {
         val lm = locationManager ?: return
         try {
             val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) { considerLocation(gps); return }
+            if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) {
+                considerLocation(gps, fromLastKnown = true); return
+            }
         } catch (_: Exception) {}
         // 纯 GPS 模式不查询网络位置
         if (mode == "gps") return
         try {
             val net = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            if (net != null && net.latitude != 0.0 && net.longitude != 0.0) considerLocation(net)
+            if (net != null && net.latitude != 0.0 && net.longitude != 0.0) {
+                considerLocation(net, fromLastKnown = true)
+            }
         } catch (_: Exception) {}
     }
 
