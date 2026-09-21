@@ -1,5 +1,129 @@
 # 更新日志
 
+## [1.6.145] - 2026-09-21
+
+### 🎯 「打点算法」重做：旧帧、重复帧、错包与模糊位置都不再骗人 / A rebuilt position-quality layer for plotting stations
+
+台站位置有三个来源（APRS-IS / TNC / 音频解码），共用同一条解析管线；而同一帧还会经多条
+路径重复到达。在此之前 `_upsertStation` 是「收到就覆盖坐标、位移超过 20m 就记一笔」，
+于是地图上会出现四类假东西。这一版加了 `lib/pos_quality.dart`（打点质量层）逐条处理，
+并且**把不确定度如实画出来**—— 一个诚实标着 ±13km 的点，比一个假装精确的点有用得多。
+
+## 一、迟到的旧帧 / 重复帧：不再回拉、不再重复打点
+
+* **位置包的时间戳以前解析出来就丢掉了**，这是最直接的漏。APRS-IS 不保证有序，一个
+  几十秒前、几百米外的旧帧会把台站「拉回去」，轨迹上出现折返。现在 `/`、`@` 包的
+  7 字符时间戳（`DDHHMMz` / `HHMMSSh` / `DDHHMM/`，一律归一到 UTC）真正参与判断：
+  比已知位置旧 60 秒以上的帧**不覆盖位置、不追加轨迹**，只刷新「听到」。发送方时钟
+  超前 2 小时以上时忽略该时间戳（免得因为对方时钟错就整条丢掉）。
+* **同一帧的往返重复**：同时开着 APRS-IS 与射频、或经多个 iGate 时，同一帧会到两次。
+  现在按「呼号 + 正文」指纹去重（**不含转发路径** —— 两条副本只有路径不同），
+  20 秒窗口内只刷新「听到」，不打点也不记轨迹。
+
+## 二、错包：不再画出横跨城市的假线
+
+以前只有「自己」的位置有跳变守卫，接收到的台站没有 —— 一个错包就能让台站瞬移几十公里，
+轨迹上留一条假线。现在每个台站都有**速度门控**：
+
+* 按 APRS 符号估一个这类台站不可能超过的地速（飞机/卫星 2000、步行 15、默认 250 km/h），
+  用「距离 > 速度 × 时间 × 1.5 + 500m」判定物理上不可能；
+* 单点可疑**只保留旧位置**（不动标记、不记轨迹，只刷新「听到」），**连续 3 次都物理
+  不可能**才认账 —— 认账后清空轨迹从新位置重画，而不是画一条横跨两地的假线；
+* 为什么不能一次就否决：**真实的飞机 / ISS 每一帧都「物理不可能」**，一次否决会把它们
+  永久冻在地图角落。ISS 这类呼号直接豁免，报文自带速度时也会放宽上限。
+
+## 三、模糊位置：不再假装精确
+
+`posAmbiguity`（模糊位数）以前解析出来**全项目没有一处使用**。可它意味着真实误差是
+±0.13km / ±1.3km / ±13km / ±78km（对应 1′ / 10′ / 1° 的方格）。这些点以前被画得和精确点
+一模一样 ——「看着很准，其实差几十公里」，这是最伤专业用户信任的一种错。
+
+现在地图上按方格半对角画**不确定圈**（虚线），台站详情页多一行「位置精度」，
+写明 `±1.3 km（模糊 2 位）`。
+
+## 四、轨迹：抽稀按速度自适应、绘制前限幅平滑
+
+* 抽稀门限从「固定 20m」改成按速度自适应：步行 15m（下限，低于 GPS 噪声没有意义）、
+  汽车约 60m、飞机封顶 250m。固定值在步行时太粗、在高速时又太细（抖动被画成锯齿）。
+* 绘制前做一次三点加权平滑，但**每个点最多挪 25m** —— 抖动能抹掉，真实急弯抹不动。
+  瓦片地图与矢量地图走同一条平滑路径，两种底图不会长得不一样。
+
+## 五、推测位置：安静下来的移动台站，外推「现在大概在哪」
+
+移动台站安静 60 秒以上后，按最后的速度/航向外推位置：地图上画虚线鬼影 + 随时间扩大的
+不确定圈，详情页给出「± 不确定度 · x 分钟前最后定位」。只对**仍算在线**的台站外推 ——
+给一个已经离线的台站画推测位置只会更误导。这一层跟着地图的「轨迹」开关一起显示。
+
+## 六、顺带：两条本机查不了、只能进 CI 的检查
+
+* `tool/check_l10n_sync.py`：arb（真源）↔ 提交进 git 的 gen-l10n 产物。CI 会按 arb
+  重新生成产物，于是「产物没 regen」会被掩盖 —— 但本机开发时会报 undefined_getter，
+  也就是「我这儿有错、CI 却是绿的」，最耗人。这条按未生成产物的视角校验。
+* `tool/check_pos_quality.py`：打点质量层的**接线**检查。算法写好了但忘了在某条路径上
+  调用，编译与 analyze 都不会报错，功能只是悄悄不生效 —— 这条把「哪个文件必须调用哪个
+  入口」变成断言，含「固定 20m 门限不许回来」这条回归守卫。
+
+两条检查都按「必须会报红」的规矩用回归样本验证过。
+
+---
+
+**Station positions arrive from three sources (APRS-IS, TNC, decoded audio) through one shared
+pipeline, and the same frame often arrives over several paths. `_upsertStation` used to just
+overwrite the coordinates and append a track point whenever the station moved more than 20m —
+which put four kinds of fiction on the map. This release adds `lib/pos_quality.dart`, a position
+quality layer that handles each of them and **draws the uncertainty honestly**: a point labelled
+±13km is far more useful than one pretending to be exact.**
+
+**1) Late and duplicate frames.** The position packet's timestamp was parsed and then thrown away.
+APRS-IS does not guarantee ordering, so a frame from a minute ago, a few hundred metres away, could
+drag a station backwards and leave a fold in its track. The 7-character timestamps of `/` and `@`
+packets (`DDHHMMz` / `HHMMSSh` / `DDHHMM/`, normalised to UTC) now take part in the decision: a
+frame more than 60 seconds older than the known fix does not move the station and does not append
+to the track — it only refreshes "last heard". Timestamps more than two hours in the future are
+ignored so a sender's broken clock does not throw the whole packet away. Duplicates — the same
+frame seen via APRS-IS and RF, or via several iGates — are dropped by a callsign+payload
+fingerprint that deliberately excludes the digipeater path, since that is the only part that
+differs between copies.
+
+**2) Bad packets no longer draw lines across the country.** Only your own position had a jump
+guard; received stations had none, so a single corrupt packet could teleport a station tens of
+kilometres and leave a fake line. Every station now has kinematic gating: a plausible top ground
+speed chosen from its APRS symbol (2000 km/h for aircraft and satellites, 15 for pedestrians, 250
+by default), with "distance > speed × time × 1.5 + 500m" as the impossibility test. A single
+suspicious fix only keeps the old position (marker untouched, no track point, "last heard" still
+refreshed); three consecutive impossible fixes are accepted, and the track is then cleared and
+redrawn from the new position rather than connected across the gap. The reason not to reject on
+the first strike: a real aircraft or the ISS looks "physically impossible" on every single frame,
+and one-strike rejection would freeze them in a corner of the map forever. ISS callsigns are
+exempt outright, and a declared speed relaxes the limit.
+
+**3) Ambiguous positions stop pretending to be exact.** `posAmbiguity` was parsed but never used
+anywhere. It means a real error of ±0.13km / ±1.3km / ±13km / ±78km (a 1′ / 10′ / 1° cell), yet
+those points were drawn exactly like precise ones. The map now draws a dashed uncertainty circle
+at the cell's half-diagonal, and the station detail page gained a "position accuracy" row reading
+e.g. `±1.3 km (ambiguous to 2 digits)`.
+
+**4) Tracks: speed-adaptive decimation and capped smoothing.** The decimation threshold is no
+longer a fixed 20m — it scales with speed (15m floor, ~60m for a car, 250m cap for an aircraft),
+because a fixed value is too coarse when walking and too fine at speed (jitter becomes a saw
+tooth). Before drawing, a 1-2-1 weighted average is applied, but **each point may move at most
+25m**: jitter is erased, real corners are not. Tile and vector maps share the same smoothed path
+so they never look different.
+
+**5) Estimated position.** Once a moving station has been quiet for 60 seconds, its last
+speed/course is used to extrapolate where it probably is now: a dashed ghost marker with a growing
+uncertainty circle on the map, and an "± uncertainty · last fix x minutes ago" row in the detail
+page. Only stations still considered online are extrapolated — guessing for one that is known
+offline is simply more misleading. This layer follows the map's existing track toggle.
+
+**6) Two new CI-only checks.** `tool/check_l10n_sync.py` verifies the ARB files against the
+committed gen-l10n output: CI regenerates that output from the ARB, which hides a stale copy, but
+a local build then fails with undefined_getter — "my machine shows an error while CI is green",
+the most expensive kind of mismatch. `tool/check_pos_quality.py` verifies the wiring of the quality
+layer: an algorithm that compiles but is never called fails silently, so "which file must call
+which entry point" is now an assertion, including a regression guard that the fixed 20m threshold
+cannot come back. Both checks were verified to go red using regression samples.
+
 ## [1.6.144] - 2026-09-21
 
 ### ✨ 「满血磨砂玻璃」档；2.0 横屏改左侧竖条；修下拉/返回手势冲突 / A "full" frosted-glass tier; a new landscape layout; gesture fixes
