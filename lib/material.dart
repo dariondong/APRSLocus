@@ -71,12 +71,25 @@ class MaterialSurface extends StatelessWidget {
   /// * `0` → **不模糊**。用半透明填色时**不要**这么写（见 `chipTint` 的说明）。
   final double? blurSigma;
 
+  /// 这一刻是否允许做模糊（默认允许）。
+  ///
+  /// **面板展开/拖拽动画期间请设为 false。** 原因是可量化的：
+  /// `BackdropFilter` 每帧都要把「背后已经画好的内容」离屏重绘一遍，而展开动画
+  /// 每帧都会重建这一层（外壳每帧 setState，面板高度在变）—— 于是动画的 16 帧里
+  /// 每一帧都在对整张地图做一次全屏离屏模糊。那正是「浮动面板一展开就卡」的主因。
+  ///
+  /// 动画只有 260ms：用户察觉不到「模糊是动画停下来才出现的」，但省掉的是
+  /// 十几帧全屏离屏模糊。**注意**：关掉模糊时必须同时换成**不透明**填色
+  /// （调用点负责）—— 半透明但不模糊会直接透出地图，比卡更难看。
+  final bool blurWhen;
+
   const MaterialSurface({
     super.key,
     required this.child,
     this.radius = 0,
     this.topOnly = false,
     this.blurSigma,
+    this.blurWhen = true,
   });
 
   /// 为什么把模糊层垫在 child **下面**，而不是 `ClipRRect > BackdropFilter > child`：
@@ -91,6 +104,8 @@ class MaterialSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!C.materialOn) return child;
+    // 动画中不做模糊（见 [blurWhen] 的说明）
+    if (!blurWhen) return child;
     final sigma = blurSigma ?? C.materialBlur;
     // 显式 0：调用点明确要实心（小浮层都是这么写的，见文件顶部的说明）
     if (sigma <= 0) return child;

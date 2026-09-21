@@ -252,8 +252,10 @@ def main() -> int:
         return 0
     if not problems and not bad_imports:
         print('（半透明壳表面的包裹本身是齐的）')
-    return 1
 
+    # ⚠ 这里的顺序很要紧：原来 `return 1` 写在这段打印**之前**，于是脚本
+    # 「报红但不说哪里红」—— 真正的漏网被静默吞掉，只剩一个退出码。
+    # 一个不告诉你问题在哪的检查，比没有检查更费时间（得靠人肉去翻）。
     print('以下「半透明壳表面」没有套材质壳（材质开着时会半透明但不模糊，'
           '底下的内容直接透出来）：')
     for rel, hits, reason in problems:

@@ -5,15 +5,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'material.dart';
 import 'models.dart';
-import 'pos_quality.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'coord.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 
-// 不确定半径的展示格式已统一到 PosQuality 那边（`fmtUncertaintyM`）：
-// 台站详情页与「我的位置」面板都要用，各写一份必然漂移。
 class StationDetail extends StatefulWidget {
   final AppState state;
   final Station station;
@@ -24,10 +21,6 @@ class StationDetail extends StatefulWidget {
 
 class _StationDetailState extends State<StationDetail> {
   final _msg = TextEditingController();
-
-  /// 推测位置（安静下来的移动台站）：按最后速度/航向外推到现在。
-  /// 与地图上的虚线鬼影是同一个来源，这里给一个能看数字的入口。
-  CoastFix? get _coast => PosQuality.coastOf(widget.station);
 
   /// 遥测图表时间范围（秒，0 = 全部）
   int _telSec = 1800;
@@ -666,33 +659,6 @@ class _StationDetailState extends State<StationDetail> {
                                 icon: Icons.grid_4x4_rounded,
                               ),
                               SizedBox(height: 8),
-                              // 位置精度：模糊位置（只报到 1′/10′）的真实误差
-                              // 是几百米到几十公里，必须如实标出来 —— 否
-                              // 则用户会把一个「看着很准」的点当精确点用。
-                              KV(
-                                S.of(context).posAccuracy,
-                                s.ambiguity <= 0
-                                    ? S.of(context).posAccuracyExact
-                                    : S.of(context).posAccuracyApprox(
-                                        fmtUncertaintyM(
-                                          PosQuality.ambiguityRadiusM(
-                                            s.ambiguity,
-                                            lat: s.lat,
-                                          ),
-                                        ),
-                                        '${s.ambiguity}',
-                                      ),
-                                icon: Icons.my_location_rounded,
-                              ),
-                              if (_coast != null) ...[
-                                SizedBox(height: 8),
-                                KV(
-                                  S.of(context).posCoasting,
-                                  '±${fmtUncertaintyM(_coast!.uncertaintyM)}'
-                                      ' · ${localizedLastSeen(context, s)}',
-                                  icon: Icons.timeline_rounded,
-                                ),
-                              ],
                               SizedBox(height: 8),
                               KV(
                                 S.of(context).latitude,

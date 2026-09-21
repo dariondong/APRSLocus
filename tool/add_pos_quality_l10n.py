@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 """为「打点质量层」补 l10n 键（6 语言）+ 同步写入 gen-l10n 产物。
 
-背景：v1.6.145 起台站详情页会显示**位置精度**（模糊位置的真实误差半径）
-与**推测位置**（移动台站安静后按最后速度/航向外推），需要 4 个键。
+背景：v1.6.147 起只有**自己的位置**需要这两个键：
+  * `posAccuracy` —— 「我的位置」面板显示实测精度（±40 m）；
+  * `locationStill` —— 静止防抖判定为静止时的定位状态串。
+
+（v1.6.145 加过的 posAccuracyExact / posAccuracyApprox / posCoasting 已在 v1.6.147
+随接收侧质量层一起撤掉 —— 保留这里会让脚本把它们再加回来。）
 
 为什么连 gen-l10n 的产物一起写：
   本仓库把 `lib/l10n/app_localizations*.dart` **提交进了 git**，但本机
@@ -35,30 +39,6 @@ KEYS = [
         '位置精度',
         'Precisión de la posición',
         'Akurasi posisi',
-    ), []),
-    ('posAccuracyExact', (
-        '精确（未声明模糊）',
-        '精確（未宣告模糊）',
-        'Exact (no ambiguity declared)',
-        '正確（あいまいさの申告なし）',
-        'Exacta (sin ambigüedad declarada)',
-        'Presisi (tanpa ambiguitas)',
-    ), []),
-    ('posAccuracyApprox', (
-        '±{r}（模糊 {n} 位）',
-        '±{r}（模糊 {n} 位）',
-        '±{r} (ambiguous to {n} digits)',
-        '±{r}（{n} 桁のあいまいさ）',
-        '±{r} (ambigüedad de {n} dígitos)',
-        '±{r} (ambiguitas {n} digit)',
-    ), ['r', 'n']),
-    ('posCoasting', (
-        '推测位置',
-        '推測位置',
-        'Estimated position',
-        '推定位置',
-        'Posición estimada',
-        'Perkiraan posisi',
     ), []),
     # 自己的位置被静止防抖判为静止时的定位状态串。
     # ⚠ locStatus 是**白名单映射**（widgets.dart 的 localizedLocationStatus）：

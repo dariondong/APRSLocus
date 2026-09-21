@@ -25,14 +25,6 @@ class Station {
   String? path; // 最近一次数据包的转发路径（如 WIDE1-1,WIDE2-1）
   String? toCall; // 目的呼号（APxxxx），官方 tocalls 设备识别的依据
 
-  /// 最近一次位置包**声明**的时间（只有带时间戳的 `/`、`@` 包才有）。
-  /// 用来丢弃迟到的旧帧（见 `PosQuality` / `_upsertStation`）。
-  DateTime? fixTime;
-
-  /// 位置模糊位数（0 = 精确）。>0 时地图上按「不确定圈」绘制，
-  /// 而不是画成一个假装精确的点。
-  int ambiguity;
-
   /// 目的呼号对应的设备（未识别/未加载返回 null）
   AprsDeviceInfo? get device => AprsDevice.instance.lookup(toCall);
 
@@ -79,8 +71,6 @@ class Station {
     this.aprslocus,
     this.path,
     this.toCall,
-    this.fixTime,
-    this.ambiguity = 0,
     this.favorite = false,
     this.manual = false,
   });

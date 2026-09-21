@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""打点质量层（lib/pos_quality.dart）的**接线检查**。
+"""位置处理的接线与「不许回退」检查。
 
-为什么需要它：
-  算法写好了但**忘了在某条路径上调用**，编译、analyze 全都不会报错 ——
-  只是那个功能悄悄不生效。本机跑不了 analyze、更跑不了真机，这类「哑失败」
-  只能等用户发现。所以把「哪个文件必须调用哪个入口」变成 CI 里的一条断言。
+背景与口径（v1.6.147 定下，改动前先读这段）：
 
-它拦的都是真发生过/极易发生的回归：
-  * `_upsertStation` 是**唯一**的台站入口（IS / TNC / 音频 / PKWDWPL 全走它），
-    一旦有人把门控去掉（或改回固定 20m 门限），所有来源一起退化；
-  * 平滑只写在瓦片地图、忘了矢量地图 → 两种底图轨迹不一样（最难查的那种）；
-  * Station 加了字段却没进 `_saveStationsNow` / `_loadStations` → 重启后
-    迟到的旧帧又会被接受（功能「有时好有时坏」）；
-  * `locStatus` 是**白名单映射**（widgets.dart），新增状态串忘了登记 →
-    英文/日文界面直接漏出中文；
-  * 自己的定位防抖（SelfFixFilter）忘了接、或忘了把 accuracy 从原生接回来 →
-    「静止时轨迹画成一团毛线球」的旧问题原样复现。
+  代码里现在有**两件不同的事**，检查它们的方式完全相反 ——
 
-注意：只查「有没有接线」，不查算法对不对（那要靠真实语料回归）。
+  ① **自己的位置**（`SelfFixFilter` 静止防抖、精度显示、精度圈）—— **要守住**。
+     它们是每天看得见的东西，漏接线就是「功能悄悄不生效」，编译与 analyze 都不报。
+
+  ② **接收台站的位置质量层**（报文去重、位置时间戳判旧帧、速度门控、模糊位置的
+     不确定圈、轨迹平滑、推测定位）—— **要拦住不许回来**。
+     v1.6.145 加过，v1.6.147 按用户反馈（「不要给别人加防抖，浪费」）全部撤掉，
+     因为它们的代价发生在**绘制期**：轨迹平滑每次重绘重建整条列表、推测定位每秒
+     对每个可见台站算三角函数、那一层还每秒强制重绘，而它叠在磨砂面板的离屏模糊上
+     （面板一展开就每帧重算）。收益却是「别人的点准不准」。
+
+  所以本脚本对 ① 做「必须存在」断言，对 ② 做「必须不存在」断言。
+  想把 ② 加回来，请先在 CHANGELOG 里回答「它能省下多少帧」——
+  这条检查就是那道门槛，不是随手可以删掉的麻烦。
 """
 import io
 import os
@@ -41,49 +41,14 @@ def main() -> int:
 
     def forbid(rel, needle, why):
         if needle in read(rel):
-            errors.append(f'{rel} 里仍有 `{needle}` —— {why}')
+            errors.append(f'{rel} 里出现了 `{needle}` —— {why}')
 
-    # ① 接收台站：四个数据来源共用的唯一入口必须接上质量层
-    need('lib/state.dart', 'PosQuality.bodyOf(raw)',
-         '报文指纹要剥掉转发路径，否则跨路径重复帧去不掉')
-    need('lib/state.dart', 'PosQuality.dedupe(_fixDedupe',
-         '接收侧去重没接上，同一帧经 IS+射频会重复打点')
-    need('lib/state.dart', 'FixGate()', '速度门控没接上，错包会画假线')
-    need('lib/state.dart', 'PosQuality.maxSpeedKmh(', '速度门控没有速度上限判据')
-    need('lib/state.dart', 'PosQuality.trackMinDistM(', '轨迹抽稀没改成按速度自适应')
-    need('lib/state.dart', 's.ambiguity = p.posAmbiguity;', '模糊度没写进台站，画不出不确定圈')
-    need('lib/state.dart', 'if (ft != null) s.fixTime = ft;', '位置时间戳没落库，旧帧无法识别')
+    state = read('lib/state.dart')
+    map_page = read('lib/map_page.dart')
 
-    forbid('lib/state.dart',
-           'haversine(s.track.last.lat, s.track.last.lng, p.lat, p.lng) > 0.02',
-           '固定 20m 的抽稀门限又回来了（应按速度自适应）')
+    # ═══════════ ① 自己的位置：必须接线完整 ═══════════
 
-    # ② 持久化：新字段必须能存能取
-    need('lib/state.dart', "'fixTime': s.fixTime!.millisecondsSinceEpoch",
-         'fixTime 没进 _saveStationsNow')
-    need('lib/state.dart', "'ambiguity': s.ambiguity", 'ambiguity 没进 _saveStationsNow')
-    need('lib/state.dart', "m['ambiguity']", 'ambiguity 没在 _loadStations 里恢复')
-    need('lib/state.dart', "m['fixTime']", 'fixTime 没在 _loadStations 里恢复')
-
-    # ③ 两条地图都要平滑，否则同一条轨迹在两种底图上不一样
-    need('lib/map_page.dart', 'PosQuality.smoothForDraw(points)',
-         '自绘瓦片地图的轨迹没平滑')
-    need('lib/vector_map.dart', 'PosQuality.smoothForDraw(',
-         '矢量地图的轨迹没平滑（两种底图会长得不一样）')
-
-    # ④ 不确定圈 / 推测位置必须在自绘地图上真的画出来
-    need('lib/map_page.dart', 'class _FixQualityPainter', '不确定圈画笔没定义')
-    if read('lib/map_page.dart').count('_FixQualityPainter(') < 2:
-        errors.append('lib/map_page.dart 定义了 _FixQualityPainter 却没有挂进 Stack —— '
-                      '不确定圈/推测位置永远不会显示')
-
-    # ⑤ 详情页要把「不确定」说清楚，而不是只显示一个假装精确的坐标
-    need('lib/station_detail.dart', 'PosQuality.ambiguityRadiusM(',
-         '详情页没展示位置精度')
-    need('lib/station_detail.dart', 'PosQuality.coastOf(', '详情页没展示推测位置')
-
-    # ───────── 自己位置的防抖（A+B）─────────
-    # ⑥ accuracy 必须从原生接回 Dart：以前原生算了、Dart 侧没读，等于白算
+    # accuracy 从原生接回 Dart（以前原生算了、Dart 侧没读，等于白算）
     need('lib/services.dart', "(event['accuracy'] as num?)?.toDouble()",
          '原生上报的 accuracy 没被解析（精度信息在传输途中丢掉了）')
     need('lib/services.dart', 'double accuracyM)? onFix;',
@@ -93,55 +58,47 @@ def main() -> int:
     need('lib/state.dart', 'myAccuracy = accuracy > 0 ? accuracy : 0;',
          'myAccuracy 没落库')
 
-    # ⑦ 静止防抖必须真的作用在实时定位上
+    # 静止防抖
     need('lib/state.dart', '_selfFilter.feed(', '静止防抖滤波器没接上')
     need('lib/state.dart', 'final SelfFixFilter _selfFilter',
          '静止防抖滤波器实例没定义')
-    # 自己轨迹的旧固定门限（> 0.02）也必须消失：与接收台站同一套自适应
+    need('lib/pos_quality.dart', 'class SelfFixFilter {',
+         'SelfFixFilter 没了（自己的静止防抖靠它）')
+
+    # 轨迹抽稀：自己用自适应门限（固定 20m 在步行时太粗、高速时太细）
+    need('lib/state.dart', 'PosQuality.trackMinDistM(', '自己轨迹没按速度自适应抽稀')
     forbid('lib/state.dart', 'haversine(last.lat, last.lng, lat, lng) > 0.02',
            '自己轨迹的固定 20m 门限又回来了（应改为按速度自适应）')
 
-    # ───────── 「还会不会跳回初始点」的三条闸门 ─────────
-    # ⑨ 缓存位置：一旦有过实时定位，之后到达的系统缓存点必须被丢弃。
-    #    原生侧前台服务重启会让它的 hasLiveFix 归零，所以上层必须自己记。
+    # 「还会不会跳回初始点」的两条闸门
     need('lib/state.dart', 'if (lastKnown && _hadLiveFix) {',
          '缓存位置闸门没了 —— 前台服务重启后，几分钟前的缓存点会把标记拉回旧位置')
-
-    # ⑩ 跳变守卫的参照点必须是「上次被接受的实时定位」，不能用 myTrack.last：
-    #    静止时不再写轨迹点，myTrack.last 可能已是几小时前的点（守卫会整个失效），
-    #    而且 myTrack 为空时（刚启动/清空后）原本完全没有守卫。
     need('lib/state.dart', 'haversine(_lastFixLat!, _lastFixLng!, lat, lng)',
-         '跳变守卫的参照点不是「上次可信位置」')
-    forbid('lib/state.dart', 'haversine(last.lat, last.lng, lat, lng)',
-           '跳变守卫又用回 myTrack.last 当参照点（静止久了会失效）')
-
-    # ⑪ 定位状态复位必须集中在一处，并在三个入口都被调用
+         '跳变守卫的参照点不是「上次可信位置」（静止久了会失效）')
     need('lib/state.dart', 'void _resetSelfFix() {', '定位状态复位方法没了')
-    n_reset = read('lib/state.dart').count('_resetSelfFix();')
+    n_reset = state.count('_resetSelfFix();')
     if n_reset < 3:
         errors.append(f'_resetSelfFix() 只被调用 {n_reset} 次 —— 停止定位 / '
-                      f'切模拟位置 / 清空数据三处都要复位（实际要 ≥3）')
-    state_src = read('lib/state.dart')
-    i = state_src.find('void clearAllData() {')
+                      f'切模拟位置 / 清空数据三处都要复位（要 ≥3）')
+    i = state.find('void clearAllData() {')
     if i < 0:
         errors.append('找不到 clearAllData()')
-    elif 'myTrack.clear();' not in state_src[i:i + 400]:
+    elif 'myTrack.clear();' not in state[i:i + 400]:
         errors.append('clearAllData() 没清 myTrack —— 清空数据后自己的轨迹会残留')
 
-    # ⑧ locStatus 白名单：所有赋值过的状态串都必须已登记。
-    #
-    # ⚠ 不能只抓 `locStatus = 'xxx';` 这种直接赋值 —— 三元表达式
-    # （`locStatus = still ? '静止' : '已定位';`）里的字面量会全漏掉。
-    # 第一版就是这么写的，结果它声称「已登记 6 个」而恰好漏掉了新加的
-    # '静止' —— **检查器自己犯了它要检查的那类错**。所以改成：取整个赋值
-    # 表达式，把里面所有字面量都收进来。
-    src_state = read('lib/state.dart')
+    # 自己的精度圈（只在数据变化时重绘，不按秒重绘）
+    need('lib/map_page.dart', 'class _MyAccuracyPainter', '自己的精度圈画笔没了')
+    need('lib/map_page.dart', 'painter: _MyAccuracyPainter(',
+         'precision 圈没挂进地图 Stack')
+
+    # locStatus 白名单：所有赋值过的状态串都必须已登记
+    # ⚠ 不能只抓 `locStatus = 'xxx';` —— 三元表达式里的字面量会全漏掉
+    #   （第一版就是这么写的，结果恰好漏掉了新加的 '静止'）
     status_vals = set()
-    for m in re.finditer(r'locStatus\s*=\s*([^;]+);', src_state):
+    for m in re.finditer(r'locStatus\s*=\s*([^;]+);', state):
         for lit in re.findall(r"'([^']+)'", m.group(1)):
             if lit:
                 status_vals.add(lit)
-    # 正则自己也要有回归：至少应抓到已知的这几个状态串
     for probe in ('未定位', '已定位', '静止'):
         if probe not in status_vals:
             errors.append(f'检查器未能从代码里抽到状态串 {probe} —— '
@@ -152,12 +109,45 @@ def main() -> int:
             errors.append(f"locStatus 新增了 '{v}' 但 widgets.dart 的 "
                           f'localizedLocationStatus 里没登记 —— 非中文界面会漏出中文')
 
+    # ═══════════ ② 接收台站的质量层：必须不存在 ═══════════
+    #
+    # 这里拦的是「绘制期开销」那一类。每包只算一次的 O(1) 校验也在内 ——
+    # 用户要的是接收侧整体回到朴素行为，不区分成本。
+    RECEIVER_FORBIDDEN = [
+        ('lib/state.dart', 'PosQuality.dedupe(', '接收侧报文去重'),
+        ('lib/state.dart', 'PosQuality.bodyOf(', '接收侧报文指纹'),
+        ('lib/state.dart', 'FixGate(', '接收侧速度门控'),
+        ('lib/state.dart', 'FixVerdict.', '接收侧门控判定'),
+        ('lib/pos_quality.dart', 'class FixGate', '接收侧速度门控类'),
+        ('lib/pos_quality.dart', 'coastOf(', '接收侧推测定位'),
+        ('lib/pos_quality.dart', 'ambiguityRadiusM(', '接收侧模糊圈半径'),
+        ('lib/pos_quality.dart', 'smoothForDraw(', '轨迹平滑（每帧重建列表）'),
+        ('lib/pos_quality.dart', 'maxSpeedKmh(', '接收侧速度上限判据'),
+        ('lib/map_page.dart', 'smoothForDraw(', '地图上还在做轨迹平滑'),
+        ('lib/map_page.dart', 'coastOf(', '地图上还在算推测位置'),
+        ('lib/map_page.dart', 'ambiguityRadiusM(', '地图上还在画台站模糊圈'),
+        ('lib/vector_map.dart', 'smoothForDraw(', '矢量地图还在做轨迹平滑'),
+    ]
+    for rel, needle, what in RECEIVER_FORBIDDEN:
+        forbid(rel, needle,
+               f'{what}在 v1.6.147 已撤掉（绘制期开销换不来别人的点更准，'
+               f'见 pos_quality.dart 顶部）。要加回来请先说明它能省下多少帧')
+    # Station 也不许再挂这两个字段
+    forbid('lib/models.dart', 'DateTime? fixTime;', 'Station.fixTime（接收侧时序）')
+    forbid('lib/models.dart', 'int ambiguity;', 'Station.ambiguity（接收侧模糊度）')
+
+    # 接收侧必须仍是「位移 > 20m 记一点」的朴素行为
+    if 'p.lat, p.lng) > 0.02' not in state:
+        errors.append('lib/state.dart 里找不到接收台站的朴素抽稀（位移 > 20m）—— '
+                      '要么被改成别的判据了，要么这段被删了')
+
     if errors:
-        print('打点质量层接线不完整：')
+        print('位置处理检查失败：')
         for e in errors:
             print('  -', e)
         return 1
-    print(f'打点质量层接线 ok（含 {len(status_vals)} 个定位状态串已登记）')
+    print(f'位置处理 ok（自己侧接线完整；接收侧已回退为朴素行为；'
+          f'{len(status_vals)} 个定位状态串已登记）')
     return 0
 
 

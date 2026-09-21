@@ -6644,16 +6644,8 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get posAccuracy => 'Akurasi posisi';
 
-  @override
-  String get posAccuracyExact => 'Presisi (tanpa ambiguitas)';
 
-  @override
-  String posAccuracyApprox(String r, String n) {
-    return '±$r (ambiguitas $n digit)';
-  }
 
-  @override
-  String get posCoasting => 'Perkiraan posisi';
 
   @override
   String get locationStill => 'Diam';

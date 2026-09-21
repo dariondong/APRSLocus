@@ -11519,11 +11519,8 @@ abstract class AppLocalizations {
 
   String get posAccuracy;
 
-  String get posAccuracyExact;
 
-  String posAccuracyApprox(String r, String n);
 
-  String get posCoasting;
 
   String get locationStill;
 }

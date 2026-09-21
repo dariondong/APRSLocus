@@ -2246,8 +2246,5 @@
   "uiMaterialGlassFull": "Full frosted glass",
   "uiMaterialGlassFullDesc": "The most transparent and the blurriest, **including the small widgets** (map tool buttons, legend, hint pills) — the heaviest look, and the heaviest on the GPU",
   "posAccuracy": "Position accuracy",
-  "posAccuracyExact": "Exact (no ambiguity declared)",
-  "posAccuracyApprox": "±{r} (ambiguous to {n} digits)",
-  "posCoasting": "Estimated position",
   "locationStill": "Stationary"
 }

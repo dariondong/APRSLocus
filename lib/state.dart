@@ -3137,8 +3137,9 @@ class AppState extends ChangeNotifier {
     //   ② **静止不写** —— 否则 GPS 抖动会被画成一团毛线球（这正是本次要修的）；
     //   ③ 精度太差（> [SelfFixFilter.trackAccuracyLimitM]）不写 ——
     //      弱信号下的点没信息量，只会把轨迹拉得东倒西歪。
-    // 抽稀门限**按速度自适应**，与接收台站同一套（见 PosQuality.trackMinDistM）：
-    // 固定 20m 在步行时太粗、在高速时又太细。
+    // 抽稀门限**按速度自适应**（见 PosQuality.trackMinDistM）：固定 20m 在步行时
+    // 太粗、在高速时又太细。注意这只管**自己**的轨迹 —— 接收台站回到固定 20m
+    // 的朴素行为（见 _upsertStation 顶部说明）。
     final last = myTrack.isEmpty ? null : myTrack.last;
     if (!lastKnown &&
         !still &&
@@ -3901,6 +3902,17 @@ class AppState extends ChangeNotifier {
 
   /// 将解码后的位置更新/添加到台站列表（地图/列表实时可见）
   /// raw 为原始数据包（用于识别 FMO 等特殊台站字段）
+  /// ⚠ 这里**故意不做任何“位置质量/防抖”处理**（去重、时序判旧帧、速度门控、
+  /// 自适应抽稀），也不画不确定圈/推测位置/平滑轨迹。
+  ///
+  /// v1.6.145 加过这一整套，v1.6.147 按用户反馈**全部撤掉**：接收侧那些判据每帧
+  /// 都要跑（平滑每次重绘重建列表、推测定位每秒对每个可见台站算三角函数、
+  /// 那一层还每秒强制重绘），而它们改善的是“别人的点准不准”—— 代价与收益不成比例。
+  /// 用户的原话是「不要给别人加防抖，浪费」。
+  ///
+  /// 因此接收台站回到「收到就更新，位移超过 20m 记一个轨迹点」的朴素行为；
+  /// **自己**的位置防抖（`SelfFixFilter`）与精度显示仍保留 —— 那才是每天看得见的东西。
+  /// 若将来想重做这一层，请先回答“它能省下多少帧”再动手。
   void _upsertStation(String call, ParsedPos p,
       {String? raw, String? path, String? toCall}) {
     // 国家/地区接收筛选：未选择国家时不限制；
@@ -4001,135 +4013,59 @@ class AppState extends ChangeNotifier {
     if (cachedAp != null) apInfo = {...?apInfo, ...cachedAp};
     final idx = stations.indexWhere((s) => s.call == call);
     final now = DateTime.now();
-    // 位置包**声明**的时间（只有带时间戳的 `/`、`@` 包才有）。
-    // 发送方时钟明显跑飞（超前 2 小时以上）时当作没有时间戳 —— 位置照收，
-    // 免得因为对方时钟错就整条丢掉。
-    final ft = (p.fixTime != null &&
-            p.fixTime!.isBefore(now.add(const Duration(hours: 2))))
-        ? p.fixTime
-        : null;
     if (idx >= 0) {
       final s = stations[idx];
-
-      // ── 打点质量层（算法与逐条依据见 lib/pos_quality.dart）──
-      //
-      // ① 报文指纹去重：同一帧经 APRS-IS + 射频、或经多个 iGate 到达时，
-      //    转发路径不同但正文完全相同 —— 只刷新「听到」，不再打一次点。
-      final body = raw == null ? '' : PosQuality.bodyOf(raw);
-      final isDupe = body.isNotEmpty &&
-          !PosQuality.dedupe(_fixDedupe, '$call|$symbolTable|$body',
-              now.millisecondsSinceEpoch);
-      // ② 迟到旧帧：带时间戳的包若比已知位置还旧，位置不覆盖、轨迹不追加
-      //    （APRS-IS 不保证有序，迟到的旧包会让轨迹折返）。
-      final stale = ft != null &&
-          s.fixTime != null &&
-          ft.difference(s.fixTime!).inSeconds < -60;
-      // ③ 速度门控：物理上不可能的位置要连续确认才认账（见 FixGate）。
-      //    ISS 这类天然高速目标直接豁免 —— 它的每一帧都「物理不可能」。
-      // 门控表只存瞬时状态：超量时整表丢掉（等同于重启，第一帧一律接受），
-      // 免得长跑时随见过的呼号无界增长。
-      if (_fixGates.length > 4096) _fixGates.clear();
-      final gate = _fixGates.putIfAbsent(call, () => FixGate());
-      FixVerdict verdict;
-      if (isDupe || stale) {
-        verdict = FixVerdict.hold;
-      } else {
-        final vmaxA =
-            PosQuality.maxSpeedKmh(symbol, symbolTable, declaredKmh: p.speed);
-        final vmaxB = PosQuality.maxSpeedKmh(s.symbol, s.symbolTable,
-            declaredKmh: s.speed);
-        verdict = gate.evaluate(
-          lat: p.lat,
-          lng: p.lng,
-          prevLat: s.lat,
-          prevLng: s.lng,
-          now: now,
-          vmaxKmh: vmaxA > vmaxB ? vmaxA : vmaxB,
-          free: s.isIss,
-        );
+      final moved =
+          (s.lat - p.lat).abs() > 1e-6 || (s.lng - p.lng).abs() > 1e-6;
+      // 记录修改前的“地图相关”字段，用于判断是否推进台站版本
+      final oldStatus = s.status;
+      final oldSym = s.symbol;
+      final oldSymT = s.symbolTable;
+      s.lat = p.lat;
+      s.lng = p.lng;
+      s.lastHeard = now;
+      s.symbolTable = symbolTable;
+      s.symbol = symbol;
+      if (path != null) s.path = path;
+      if (toCall != null && toCall.isNotEmpty) s.toCall = toCall;
+      if (fmoInfo != null) s.fmo = {...?s.fmo, ...fmoInfo};
+      if (apInfo != null) s.aprslocus = {...?s.aprslocus, ...apInfo};
+      if (comment != null) s.comment = comment;
+      if (p.speed != null) s.speed = p.speed;
+      if (p.course != null) s.course = p.course;
+      if (p.alt != null) s.alt = p.alt;
+      // 根据速度自动判断移动/停止状态
+      if (s.status == St.offline) s.status = St.online;
+      if (p.speed != null) {
+        s.status = p.speed! > 1.0 ? St.moving : St.stopped;
       }
-
-      if (verdict != FixVerdict.accept) {
-        // 位置不可信：保留上一个可信位置，只把「听到」刷新 —— 否则台站会被
-        // 误判离线。一次性的错包就是这样被吃掉的。
-        s.lastHeard = now;
-        _stationsDirty = true;
-        if (verdict == FixVerdict.hold && !isDupe && !stale) {
-          _log(
-            LogLevel.debug,
-            '打点',
-            '疑似跳变，暂不移动 $call：距上次可信位置 '
-                '${haversine(s.lat, s.lng, p.lat, p.lng).toStringAsFixed(1)}km',
-          );
+      // 记录条件：位移超过 20m（避免静止时堆积重复点）。
+      // 上限由 maxTrackPts 控制（原先硬编码 60，轨迹因此很短）。
+      if (s.track.isEmpty ||
+          haversine(s.track.last.lat, s.track.last.lng, p.lat, p.lng) > 0.02) {
+        s.track = [...s.track, TrackPt(p.lat, p.lng, now)];
+        if (s.track.length > maxTrackPts) {
+          s.track = s.track.sublist(s.track.length - maxTrackPts);
         }
-      } else {
-        // 连续多次都物理不可能 → 参考点已经过时（换了地方 / 高速台站），
-        // 接受新位置并**清空轨迹重画**，而不是画一条横跨两地的假线
-        // （那条线比没有轨迹更误导）。
-        if (verdict == FixVerdict.confirmedMove) s.track = [];
-        final moved =
-            (s.lat - p.lat).abs() > 1e-6 || (s.lng - p.lng).abs() > 1e-6;
-        // 记录修改前的“地图相关”字段，用于判断是否推进台站版本
-        final oldStatus = s.status;
-        final oldSym = s.symbol;
-        final oldSymT = s.symbolTable;
-        s.lat = p.lat;
-        s.lng = p.lng;
-        s.lastHeard = now;
-        if (ft != null) s.fixTime = ft;
-        s.ambiguity = p.posAmbiguity;
-        s.symbolTable = symbolTable;
-        s.symbol = symbol;
-        if (path != null) s.path = path;
-        if (toCall != null && toCall.isNotEmpty) s.toCall = toCall;
-        if (fmoInfo != null) s.fmo = {...?s.fmo, ...fmoInfo};
-        if (apInfo != null) s.aprslocus = {...?s.aprslocus, ...apInfo};
-        if (comment != null) s.comment = comment;
-        if (p.speed != null) s.speed = p.speed;
-        if (p.course != null) s.course = p.course;
-        if (p.alt != null) s.alt = p.alt;
-        // 根据速度自动判断移动/停止状态
-        if (s.status == St.offline) s.status = St.online;
-        if (p.speed != null) {
-          s.status = p.speed! > 1.0 ? St.moving : St.stopped;
-        }
-        // 轨迹抽稀门限**按速度自适应**（步行 15m / 汽车约 60m /
-        // 飞机封顶 250m）：固定 20m 在步行时太粗，高速时又太细
-        // （GPS 抖动被画成锯齿，还白占 maxTrackPts）。
-        final minDistM = PosQuality.trackMinDistM(
-          speedKmh: p.speed ?? s.speed,
-          dtSec: s.track.isEmpty
-              ? 10.0
-              : now.difference(s.track.last.time).inSeconds.toDouble(),
-        );
-        if (s.track.isEmpty ||
-            haversine(s.track.last.lat, s.track.last.lng, p.lat, p.lng) *
-                    1000 >
-                minDistM) {
-          s.track = [...s.track, TrackPt(p.lat, p.lng, now)];
-          if (s.track.length > maxTrackPts) {
-            s.track = s.track.sublist(s.track.length - maxTrackPts);
-          }
-        }
-        // 记录速度/高度遥测采样（每次位置包都记，供详情页变化图表）
-        s.telemetry = [
-          ...s.telemetry,
-          TelemetryPt(now, speed: p.speed, alt: p.alt),
-        ];
-        if (s.telemetry.length > 200) {
-          s.telemetry = s.telemetry.sublist(s.telemetry.length - 200);
-        }
-        stations[idx] = s;
-        // 地图相关字段变化（位置/状态/符号）才推进版本，触发地图标记重建；
-        // 仅 lastHeard/速度/备注变化不会触发整片标记重建
-        if (moved ||
-            s.status != oldStatus ||
-            s.symbol != oldSym ||
-            s.symbolTable != oldSymT) {
-          _bumpStationsVersion();
-        }
-        _stationsDirty = true;
       }
+      // 记录速度/高度遥测采样（每次位置包都记，供详情页变化图表）
+      s.telemetry = [
+        ...s.telemetry,
+        TelemetryPt(now, speed: p.speed, alt: p.alt),
+      ];
+      if (s.telemetry.length > 200) {
+        s.telemetry = s.telemetry.sublist(s.telemetry.length - 200);
+      }
+      stations[idx] = s;
+      // 地图相关字段变化（位置/状态/符号）才推进版本，触发地图标记重建；
+      // 仅 lastHeard/速度/备注变化不会触发整片标记重建
+      if (moved ||
+          s.status != oldStatus ||
+          s.symbol != oldSym ||
+          s.symbolTable != oldSymT) {
+        _bumpStationsVersion();
+      }
+      _stationsDirty = true;
     } else {
       // 新台站：容量满时移除最旧的（优先保留收藏/手动台站）
       if (stations.length >= maxStations) {
@@ -4147,10 +4083,6 @@ class AppState extends ChangeNotifier {
         final canRemove = stations.length - keepers;
         if (needRemove > 0 && canRemove > 0) {
           final doRemove = needRemove < canRemove ? needRemove : canRemove;
-          // 被淘汰的台站连同它的门控状态一起丢掉，避免这张表随历史呼号增长
-          for (final r in stations.sublist(stations.length - doRemove)) {
-            _fixGates.remove(r.call);
-          }
           stations.removeRange(stations.length - doRemove, stations.length);
         }
       }
@@ -4167,8 +4099,6 @@ class AppState extends ChangeNotifier {
           course: p.course,
           comment: comment ?? '在线',
           lastHeard: now,
-          fixTime: ft,
-          ambiguity: p.posAmbiguity,
           status: St.online,
           track: [TrackPt(p.lat, p.lng, now)],
           telemetry: [TelemetryPt(now, speed: p.speed, alt: p.alt)],
@@ -4187,7 +4117,6 @@ class AppState extends ChangeNotifier {
       _scheduleStationsSave();
     }
   }
-
   /// ── 位置跳变守卫的状态（见 [_onFix]）──
   /// 单步位移超过这个公里数、**且**距上一轨迹点不到 [_kFixJumpWindowSec] 时才视为可疑。
   ///
@@ -4235,12 +4164,7 @@ class AppState extends ChangeNotifier {
     myAccuracy = 0;
   }
 
-  /// ── 接收台站的打点质量层状态（见 [_upsertStation] / `PosQuality`）──
-  /// 每台站一个门控：速度门控需要「上次见到的时间」来算合理位移。
-  /// 不持久化（重启后第一帧一律接受，用不到历史）。
-  final Map<String, FixGate> _fixGates = {};
-  /// 报文指纹去重表：`呼号|符号表|正文` → 上次见到的时间戳（毫秒）
-  final Map<String, int> _fixDedupe = {};
+  // 接收侧不再有任何质量层状态（见 _upsertStation 顶部的说明）。
 
   DateTime? _lastStationsSave;
   bool _saveQueued = false;
@@ -4359,11 +4283,6 @@ class AppState extends ChangeNotifier {
               if (s.toCall != null && s.toCall!.isNotEmpty) 'toCall': s.toCall,
               if (s.fmo != null) 'fmo': s.fmo,
               if (s.aprslocus != null) 'aprslocus': s.aprslocus,
-              // 位置声明时间与模糊位数：重启后仍能识别迟到的旧帧，
-              // 也能继续把模糊位置画成不确定圈
-              if (s.fixTime != null)
-                'fixTime': s.fixTime!.millisecondsSinceEpoch,
-              if (s.ambiguity > 0) 'ambiguity': s.ambiguity,
             },
           )
           .toList();
@@ -4429,11 +4348,6 @@ class AppState extends ChangeNotifier {
               toCall: (m['toCall'] as String?)?.isNotEmpty == true
                   ? m['toCall'] as String?
                   : null,
-              fixTime: (m['fixTime'] as num?) == null
-                  ? null
-                  : DateTime.fromMillisecondsSinceEpoch(
-                      (m['fixTime'] as num).toInt()),
-              ambiguity: (m['ambiguity'] as num?)?.toInt() ?? 0,
               aprslocus: apMap is Map
                   ? apMap.map((k, v) => MapEntry(k.toString(), v.toString()))
                   : null,
@@ -5183,8 +5097,6 @@ class AppState extends ChangeNotifier {
     packetsTx = 0;
     packetsRx = 0;
     unreadMessages = 0;
-    _fixGates.clear();
-    _fixDedupe.clear();
     _saveStations();
     _saveMessages();
     _saveChatGroups();

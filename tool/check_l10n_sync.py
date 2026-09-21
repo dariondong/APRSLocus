@@ -107,6 +107,27 @@ def main() -> int:
             errors.append(f'{fname}/{cname} 缺成员：{miss[:8]}'
                           f'（共 {len(miss)}）')
 
+    # ④ 反向：产物 / 抽象类里**不许有多余成员** —— arb 删了键却忘了删产物时，
+    #    本机编译不会报错（多余成员无害），但它会一直漂下去，而且
+    #    「arb 没有的键在界面里被人用了」会变成运行期异常。CI 重新生成会掩盖它。
+    for lg, fname, cname in TARGETS:
+        src = io.open(os.path.join(l10n, fname), encoding='utf-8').read()
+        body = class_body(src, cname)
+        if body is None:
+            continue
+        keys, _ = arb_keys(os.path.join(l10n, f'app_{lg}.arb'))
+        # 只认真正的 l10n 成员：`String get xxx =>` / `String xxx(...)`。
+        # 不能写成 `String (\w+)\s*[;=(]`——那会把 gen-l10n 产物里的
+        # `final String locale;`（运行时字段）与带参方法内部的
+        # `final String _temp0 = ...`（局部变量）也算成“成员”，误报一片。
+        got = set(re.findall(r'String get (\w+)\s*(?:=>|;)', body))
+        got |= set(re.findall(r'String (\w+)\(', body))
+        got = {g for g in got if not g.startswith('_')}
+        extra = sorted(got - set(keys))
+        if extra:
+            errors.append(f'{fname}/{cname} 有 arb 里没有的成员：{extra[:8]}'
+                          f'（共 {len(extra)}）—— arb 删键后产物没跟着删')
+
     if errors:
         print('l10n 不同步（arb 是，产物不是）：')
         for e in errors:

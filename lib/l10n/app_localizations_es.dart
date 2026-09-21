@@ -6686,16 +6686,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get posAccuracy => 'Precisión de la posición';
 
-  @override
-  String get posAccuracyExact => 'Exacta (sin ambigüedad declarada)';
 
-  @override
-  String posAccuracyApprox(String r, String n) {
-    return '±$r (ambigüedad de $n dígitos)';
-  }
 
-  @override
-  String get posCoasting => 'Posición estimada';
 
   @override
   String get locationStill => 'Estacionario';

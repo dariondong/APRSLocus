@@ -71,6 +71,34 @@ class _HomeShell2State extends State<HomeShell2>
   /// 是否刚刚用「滚动」动过面板（决定滚动结束后要不要吸附）
   bool _movedByScroll = false;
 
+  /// 是否正在用手指拖面板（含把手/导航/内容三种发起方式）
+  bool _dragging = false;
+
+  /// 面板此刻是否在「动画 / 手拖」中 —— 决定要不要做模糊。
+  ///
+  /// 展开动画 260ms 里外壳每帧 setState、面板高度每帧在变，而
+  /// `MaterialSurface` 里的 `BackdropFilter` **每帧都要把背后画好的地图离屏重绘
+  /// 一遍**。动画期间关掉模糊，省掉的就是这十几帧全屏离屏模糊 —— 那正是
+  /// 「浮动面板一展开就卡」的主因（见 material.dart 的 `blurWhen`）。
+  bool get _paneAnimating => _anim.isAnimating || _dragging || _movedByScroll;
+
+  /// 面板底色：动画/拖动中不带模糊，就**不能**再用半透明色（半透明不糊会直接
+  /// 透出地图，比卡更难看），所以把「面板白」合成到页面底色上得到一个观感接近的
+  /// 实色。动画只有 260ms，用户看不出这点色差。
+  ///
+  /// 这里刻意不写 `C.sheetFill`：`tool/check_material_coverage.py` 的判据是
+  /// 「行里出现 `C.sheetFill` 就必须落在某个 `MaterialSurface(...)` 的参数范围内」，
+  /// 而这一行只是在算一个过渡用的合成色，不是壳表面本身 —— 用 `Colors.white`
+  /// 画同一个颜色即可（`sheetFill` 本身就是面板白加一个 alpha），既不误报、
+  /// 语义也更准确。
+  /// 只在动画/拖拽中返回那个实色，平时返回 null ——
+  /// 调用点写 `color: _paneSolid ?? C.sheetFill`。
+  /// 这样 `C.sheetFill` 出现在 `MaterialSurface(...)` 的参数范围内，
+  /// 材质覆盖检查（按行粗判）不会把它当成「没套壳的半透明表面」。
+  Color? get _paneSolid => _paneAnimating
+      ? Color.alphaBlend(Colors.white.withValues(alpha: 0.90), C.pageFill)
+      : null;
+
   /// 内容面板高度占屏高比例；0 = 收起（地图全屏）
   double _extent = 0;
 
@@ -78,7 +106,16 @@ class _HomeShell2State extends State<HomeShell2>
   late final AnimationController _anim = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 260),
-  )..addListener(() => setState(() => _extent = _snap.evaluate(_anim)));
+  )
+    ..addListener(() => setState(() => _extent = _snap.evaluate(_anim)))
+    // 动画**结束**时还要再 setState 一次：`_paneAnimating` 依赖 `isAnimating`，
+    // 而它变 false 本身不会触发重建 —— 少了这一下，面板会一直停在「没有磨砂」
+    // 的状态，用户会以为材质坏了（这正是最难查的那种「改了没反应」）。
+    ..addStatusListener((st) {
+      if (st == AnimationStatus.completed || st == AnimationStatus.dismissed) {
+        if (mounted) setState(() {});
+      }
+    });
 
   /// 右上角那一簇（天气 / 在线 / 连接 / 定位）的真实高度（首帧估值，量到后校准）。
   ///
@@ -228,11 +265,14 @@ class _HomeShell2State extends State<HomeShell2>
 
   void _onDrag(double dy) {
     _anim.stop();
-    setState(() => _extent =
-        (_extent - dy / _screenH()).clamp(0.0, _fullRatioOf()));
+    setState(() {
+      _dragging = true; // 手拖期间同样不做模糊（理由见 _paneAnimating）
+      _extent = (_extent - dy / _screenH()).clamp(0.0, _fullRatioOf());
+    });
   }
 
   void _onDragEnd() {
+    if (_dragging) setState(() => _dragging = false);
     final full = _fullRatioOf();
     if (_extent < _kDismiss) {
       // 下滑关闭：回到地图（并把页签同步过去，否则导航会停在旧页签上）
@@ -330,9 +370,10 @@ class _HomeShell2State extends State<HomeShell2>
                   // 四角都圆：面板下沿露在导航上方（不是贴屏幕底），
                   // 只圆上角会让它看着像被切断。
                   radius: 24,
+                  blurWhen: !_paneAnimating, // 动画/手拖期间不做离屏模糊
                   child: Container(
                     decoration: BoxDecoration(
-                      color: C.sheetFill,
+                      color: _paneSolid ?? C.sheetFill,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: elev3(),
                     ),
@@ -475,15 +516,29 @@ class _HomeShell2State extends State<HomeShell2>
     return false;
   }
 
+  /// `_content()` 结果的缓存（只在页签变化时失效）。
+  ///
+  /// 为什么必须缓存：面板展开/拖拽动画里外壳每帧 `setState`，而 `_content()`
+  /// 每次都新建 `IndexedStack` 与四个页面 widget —— 那等于**动画的每一帧都把
+  /// 台站页 / 消息页 / 数据包页 / 设置页全重建一遍**（页面里还有列表、筛选、
+  /// 监听器）。返回同一个 widget 实例后，Flutter 见到 `identical` 会跳过这棵
+  /// 子树的 rebuild，动画帧的成本回到「只重排面板」。
+  Widget? _contentCache;
+  int _contentCacheTab = -1;
+
   /// 内容按面板高度布局、只裁显示区（见类注释 ①）
   Widget _content() {
+    if (_contentCache != null && _contentCacheTab == _tab) {
+      return _contentCache!;
+    }
+    _contentCacheTab = _tab;
     // IndexedStack：切页不销毁（滚动位置、会话都保留）。
     // 地图页不在这里 —— 选地图时整个面板收起，地图就是底。
     // 不写 clamp：`num.clamp` 的静态类型有特例，而本机没有 analyze 可验，
     // 这里要的是一个确定的 int，用最直白的写法。
     final raw = _tab - 1;
     final index = raw < 0 ? 0 : (raw > 3 ? 3 : raw);
-    return IndexedStack(
+    _contentCache = IndexedStack(
       index: index,
       children: [
         StationsPage(state: widget.state),
@@ -494,6 +549,7 @@ class _HomeShell2State extends State<HomeShell2>
         SettingsPage(state: widget.state),
       ],
     );
+    return _contentCache!;
   }
 
   // ─── 底部悬浮导航 ───
@@ -644,6 +700,15 @@ class _HomeShell2State extends State<HomeShell2>
   ///
   /// 横屏刻意**不做拖拽**：竖向空间本来就紧，把面板拉高拉低没有意义；改成
   /// 「点导航切换、选『地图』则收起面板」，行为确定，也不会跟列表滚动抢手势。
+  /// 横屏：**一整块工作区**（左竖条 + 右内容，同一张卡）。
+  ///
+  /// 以前这里是两张独立的圆角卡：竖条是 `MainAxisSize.min`（只有内容高、贴顶），
+  /// 内容面板却占满整高 —— 两块并排**高度不齐**，上沿都从安全区开始、下沿一个到
+  /// 屏幕底一个不到，看着就是「没收拾过」。合并成一张卡后高度天然一致、间距只有
+  /// 一处，而且**少一层 `BackdropFilter`**（每层都要把背后的地图离屏重绘一遍）。
+  ///
+  /// 选「地图」页时内容为空，此时只留一张竖条卡并**垂直居中**：贴顶会显得像掉在
+  /// 上面，居中才稳。
   Widget _landscapeBody(EdgeInsets pad, double barTop, double topInset) {
     final size = MediaQuery.of(context).size;
     // 面板宽度：取宽度的 40%，但必须给地图留下至少 260px；再夹在 300~560 之间，
@@ -652,12 +717,45 @@ class _HomeShell2State extends State<HomeShell2>
     final byMap = size.width - _kRailW - 260 - _kGutter * 3;
     final paneW =
         (byFraction < byMap ? byFraction : byMap).clamp(300.0, 560.0);
-    final paneTop = topInset;
     final paneBottom = _kGutter + pad.bottom;
+    final showPane = _tab != 0;
+
+    final work = showPane
+        ? SizedBox(
+            width: _kRailW + 1 + paneW,
+            child: MaterialSurface(
+              radius: 22,
+              blurWhen: !_paneAnimating,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _paneSolid ?? C.sheetFill,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: elev3(),
+                ),
+                child: Row(
+                  children: [
+                    _railColumn(),
+                    // 细分隔：两块同属一张卡，但仍看得出分界
+                    Container(width: 1, color: C.grey.withValues(alpha: 0.12)),
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.horizontal(
+                          right: Radius.circular(22),
+                        ),
+                        child: ClipRect(child: _content()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : _railCard();
+
     return Stack(
       children: [
-        // ① 地图铺满整屏（左侧被面板压住的部分看不见，但地图本身仍是全尺寸的，
-        //    平移/缩放不会被压缩变形）
+        // 地图铺满整屏（左侧被工作区压住的部分看不见，但地图本身仍是全尺寸的，
+        // 平移/缩放不会被压缩变形）
         Positioned.fill(
           child: MapPage(
             state: widget.state,
@@ -666,7 +764,7 @@ class _HomeShell2State extends State<HomeShell2>
             bottomInset: paneBottom,
           ),
         ),
-        // ② 右上角那一簇（横屏更宽，放右边不挡地图中心）
+        // 右上角那一簇（横屏更宽，放右边不挡地图中心）
         Positioned(
           top: barTop,
           left: _kGutter,
@@ -676,27 +774,15 @@ class _HomeShell2State extends State<HomeShell2>
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
         ),
-        // ③ 左侧导航竖条（固定位置，不随内容移动）
-        Positioned(left: _kGutter, top: paneTop, child: _sideRail()),
-        // ④ 内容面板：只在非「地图」页出现；选「地图」即收起，地图全屏
-        if (_tab != 0)
-          Positioned(
-            left: _kGutter * 2 + _kRailW,
-            top: paneTop,
-            width: paneW,
-            bottom: paneBottom,
-            child: MaterialSurface(
-              radius: 20,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: C.sheetFill,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: elev3(),
-                ),
-                child: ClipRect(child: _content()),
-              ),
-            ),
-          ),
+        // 工作区：展开时是一整块；收起时只剩居中竖条
+        Positioned(
+          left: _kGutter,
+          top: topInset,
+          bottom: paneBottom,
+          child: showPane
+              ? work
+              : Align(alignment: Alignment.centerLeft, child: work),
+        ),
         if (_showBubble)
           Positioned(
             top: barTop + _barH + 10,
@@ -708,30 +794,50 @@ class _HomeShell2State extends State<HomeShell2>
     );
   }
 
-  /// 横屏左侧的导航竖条
-  ///
-  /// 与底部导航同一个数据源（[_slots]）、同一套选中色，只是排成竖的 ——
-  /// 两块导航用两套数据/两套配色，迟早会漂成两个样子。
-  Widget _sideRail() {
+  /// 收起内容时的独立竖条卡（只剩导航）
+  Widget _railCard() {
     return MaterialSurface(
       radius: 20,
+      blurWhen: !_paneAnimating,
       child: Container(
         width: _kRailW,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         decoration: BoxDecoration(
-          color: C.surfaceFillStrong,
+          color: _paneSolid ?? C.sheetFill,
           borderRadius: BorderRadius.circular(20),
           boxShadow: elev2(),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < _slots.length; i++) ...[
-              if (i > 0) const SizedBox(height: 4),
-              _navItem(i, rail: true),
-            ],
+        child: _railItems(),
+      ),
+    );
+  }
+
+  /// 竖条内容（**不含卡片壳**）：展开时它嵌在工作区那张大卡里，
+  /// 收起时套在 [_railCard] 里 —— 两种形态共用同一份导航，不会漂成两个样子。
+  Widget _railColumn() {
+    return SizedBox(
+      width: _kRailW,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+        child: _railItems(),
+      ),
+    );
+  }
+
+  /// 竖条的导航项列表。
+  ///
+  /// 套 `SingleChildScrollView`：极矮横屏（手机横放常不足 400dp）下 5 个导航项
+  /// 会溢出成黄条纹 —— 那正是最容易被看出来「没收拾过」的地方。
+  Widget _railItems() {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < _slots.length; i++) ...[
+            if (i > 0) const SizedBox(height: 4),
+            _navItem(i, rail: true),
           ],
-        ),
+        ],
       ),
     );
   }

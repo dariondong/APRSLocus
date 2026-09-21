@@ -6370,16 +6370,8 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get posAccuracy => '位置精度';
 
-  @override
-  String get posAccuracyExact => '精确（未声明模糊）';
 
-  @override
-  String posAccuracyApprox(String r, String n) {
-    return '±$r（模糊 $n 位）';
-  }
 
-  @override
-  String get posCoasting => '推测位置';
 
   @override
   String get locationStill => '静止';
@@ -12750,16 +12742,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get posAccuracy => '位置精度';
 
-  @override
-  String get posAccuracyExact => '精確（未宣告模糊）';
 
-  @override
-  String posAccuracyApprox(String r, String n) {
-    return '±$r（模糊 $n 位）';
-  }
 
-  @override
-  String get posCoasting => '推測位置';
 
   @override
   String get locationStill => '靜止';

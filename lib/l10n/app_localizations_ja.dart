@@ -6444,16 +6444,8 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get posAccuracy => '位置精度';
 
-  @override
-  String get posAccuracyExact => '正確（あいまいさの申告なし）';
 
-  @override
-  String posAccuracyApprox(String r, String n) {
-    return '±$r（$n 桁のあいまいさ）';
-  }
 
-  @override
-  String get posCoasting => '推定位置';
 
   @override
   String get locationStill => '静止';

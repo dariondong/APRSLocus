@@ -2330,8 +2330,5 @@
   "uiMaterialGlassFull": "フルすりガラス",
   "uiMaterialGlassFullDesc": "最も透明で最もぼかしが強く、**小さな部品も一緒にぼかします**（地図のツールボタン・凡例・ヒント）。見た目は最も重く、GPU 負荷も最大です",
   "posAccuracy": "位置精度",
-  "posAccuracyExact": "正確（あいまいさの申告なし）",
-  "posAccuracyApprox": "±{r}（{n} 桁のあいまいさ）",
-  "posCoasting": "推定位置",
   "locationStill": "静止"
 }
