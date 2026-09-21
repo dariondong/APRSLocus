@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
 import 'models.dart';
+import 'back_router.dart';
 import 'state.dart';
 import 'chat_dates.dart';
 import 'chat_translate_ui.dart';
@@ -288,6 +289,12 @@ class _MessagesPageState extends State<MessagesPage> {
             final inChatDetail = narrow && !_showList;
             // 非活动 tab（IndexedStack 隐藏时）不拦截返回键
             final interceptBack = widget.isActive && inChatDetail;
+            // 登记「这次返回由我接手」：外壳也有一个 PopScope，同一个 route 上
+            // 两个回调会全部触发 —— 不登记的话，从会话详情按返回会同时
+            // 「回到会话列表」和「跳到地图」（后者把前者盖掉）。
+            // 这里只**声明**会接手，真正的状态切换仍由下面的 PopScope 做，
+            // 免得两处各 setState 一次。
+            BackRouter.instance.setInner(interceptBack ? (() => true) : null);
             return PopScope(
               canPop: !interceptBack,
               onPopInvokedWithResult: (didPop, _) {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'map_page.dart';
+import 'back_router.dart';
 import 'material.dart';
 import 'messages_page.dart';
 import 'packets_page.dart';
@@ -281,6 +282,11 @@ class _HomeShell2State extends State<HomeShell2>
       canPop: _tab == 0,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
+        // 先问内层页面要不要接手（例如消息页正停在某个会话详情里，它要的是
+        // 「回会话列表」而不是「跳回地图」）。**这一步不能省**：同一个 route 上的
+        // 多个 PopScope 回调会全部触发、没有优先级，不问就会出现「回到列表」
+        // 和「跳到地图」同时发生。
+        if (BackRouter.instance.consume()) return;
         // 不在「地图」页：回地图（_select(0) 同时会把内容面板收起）
         _select(0);
       },
@@ -481,7 +487,9 @@ class _HomeShell2State extends State<HomeShell2>
       index: index,
       children: [
         StationsPage(state: widget.state),
-        MessagesPage(state: widget.state, isActive: true),
+        // isActive 必须跟着当前页签：它是「页面是否在前台」的语义，
+        // 写死 true 会让消息页在别的 tab 上也拦返回、也把「正在看的会话」算错。
+        MessagesPage(state: widget.state, isActive: _tab == 2),
         PacketsPage(state: widget.state),
         SettingsPage(state: widget.state),
       ],
