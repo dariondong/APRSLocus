@@ -484,24 +484,28 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 不额外创建 widget（台站多时也只多一次 canvas 遍历）。
                 if (!_usePluginMap && _showTracks)
                   IgnorePointer(
-                    child: CustomPaint(
-                      size: size,
-                      painter: _FixQualityPainter(
-                        stations: _visible,
-                        // 自己的不确定圈：精度是「实测」的（见 myAccuracy），
-                        // 与台站的「声明模糊度」同一种画法 —— 信号差时能一眼
-                        // 看出「我」这个点其实差几十米。
-                        myFix: widget.state.myHasFix &&
-                                widget.state.myAccuracy > 0
-                            ? (
-                                widget.state.myLat!,
-                                widget.state.myLng!,
-                                widget.state.myAccuracy
-                              )
-                            : null,
-                        secondBucket:
-                            DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                    // RepaintBoundary：这一层每秒重绘一次（推测圈随时间扩大），
+                    // 单独隔离后不会连累瓦片与其它浮层重新光栅化。
+                    child: RepaintBoundary(
+                      child: CustomPaint(
+                        size: size,
+                        painter: _FixQualityPainter(
+                          stations: _visible,
+                          // 自己的不确定圈：精度是「实测」的（见 myAccuracy），
+                          // 与台站的「声明模糊度」同一种画法 —— 信号差时能一眼
+                          // 看出「我」这个点其实差几十米。
+                          myFix: widget.state.myHasFix &&
+                                  widget.state.myAccuracy > 0
+                              ? (
+                                  widget.state.myLat!,
+                                  widget.state.myLng!,
+                                  widget.state.myAccuracy
+                                )
+                              : null,
+                          secondBucket:
+                              DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                          toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                        ),
                       ),
                     ),
                   ),
@@ -2507,7 +2511,9 @@ class _FixQualityPainter extends CustomPainter {
       final p2 = toScreen(mine.$1 + 0.001, mine.$2);
       final pxPerM = (p2 - c).distance.clamp(0.01, 1e6) / 111.32;
       final rPx = mine.$3 * pxPerM;
-      if (rPx >= 4 && rPx <= 6000) _dashedCircle(canvas, c, rPx, myRing);
+      if (rPx >= 4 && rPx <= size.longestSide * 1.5) {
+        _dashedCircle(canvas, c, rPx, myRing);
+      }
     }
 
     // 上限保护：极端情况下（上千台站 + 全都在推测）不至于每帧画几千条虚线
@@ -2529,11 +2535,13 @@ class _FixQualityPainter extends CustomPainter {
       final p2 = toScreen(s.lat + 0.001, s.lng);
       final pxPerM = (p2 - p1).distance.clamp(0.01, 1e6) / 111.32;
 
+      // 上限：接近整屏的圈没有信息量，却要光栅化一大片 —— 直接不画
+      final maxR = size.longestSide * 1.5;
       final ambR = PosQuality.ambiguityRadiusM(s.ambiguity, lat: s.lat);
       if (ambR > 0) {
         final rPx = ambR * pxPerM;
-        // <4px 看不清、>4000px 等于整屏，都不画
-        if (rPx >= 4 && rPx <= 4000) {
+        // <4px 看不清，不画
+        if (rPx >= 4 && rPx <= maxR) {
           _dashedCircle(canvas, c, rPx, ring);
           drawn++;
         }
@@ -2542,7 +2550,7 @@ class _FixQualityPainter extends CustomPainter {
         final cc = toScreen(coast.lat, coast.lng);
         _dashedLine(canvas, c, cc, ghostLine);
         final crPx = coast.uncertaintyM * pxPerM;
-        if (crPx >= 3 && crPx <= 6000) {
+        if (crPx >= 3 && crPx <= maxR) {
           _dashedCircle(canvas, cc, crPx, ghostLine);
         }
         canvas.drawCircle(cc, 4, ghostFill);
@@ -2552,16 +2560,43 @@ class _FixQualityPainter extends CustomPainter {
     }
   }
 
-  /// 虚线圆（Flutter 的 Paint 没有 dash，只能用 Path 度量自己切）
-  void _dashedCircle(Canvas canvas, Offset c, double r, Paint p) {
-    final path = Path()..addOval(Rect.fromCircle(center: c, radius: r));
-    for (final m in path.computeMetrics()) {
-      var d = 0.0;
-      while (d < m.length) {
-        canvas.drawPath(m.extractPath(d, d + 5), p);
-        d += 11;
-      }
+  /// 单位虚线圆（半径 1）。**进程内只构造一次**。
+  ///
+  /// 为什么不用「每帧对每个圈跑 PathMetrics 逐段切」：
+  ///   * Skia / Impeller 都**不在 GPU 上做路径虚线**，切段是纯 CPU 工作；
+  ///   * 半径 100px 的圈 ≈ 57 段、500px ≈ 285 段，而上限是 120 个圈
+  ///     —— 最坏一帧要做约 6800 次 extractPath + drawPath；
+  ///   * 而 `maxStations` 默认无上限，圈数真的会顶到上限。
+  /// 现在改成「算一次、缩放复用」：每个圈只剩 **1 次** drawPath（48 段）。
+  ///
+  /// 48 段是固定值，所以半径很大时单段会变长（r=1000px 时每段约 39px）——
+  /// 视觉上仍是一条均匀虚线，可以接受；换来的是与圈数无关的绘制成本。
+  static final Path _unitDash = () {
+    final p = Path();
+    const segs = 48;
+    const dashRatio = 0.55; // 每段里「实线」占的比例，其余是间隔
+    final rect = Rect.fromCircle(center: Offset.zero, radius: 1);
+    for (var i = 0; i < segs; i++) {
+      final a0 = i / segs * 2 * math.pi;
+      final sweep = 2 * math.pi / segs * dashRatio;
+      // forceMoveTo=true：每段独立子路径，否则会被连成实线
+      p.arcTo(rect, a0, sweep, true);
     }
+    return p;
+  }();
+
+  /// 画虚线圆：把单位虚线圆缩放到 [r] 复用。
+  /// 线宽要除以 [r] 抵消缩放，保证屏幕上的线宽不变（否则会被一起放大）。
+  void _dashedCircle(Canvas canvas, Offset c, double r, Paint p) {
+    if (r <= 0) return;
+    final w = p.strokeWidth;
+    canvas.save();
+    canvas.translate(c.dx, c.dy);
+    canvas.scale(r);
+    p.strokeWidth = w / r;
+    canvas.drawPath(_unitDash, p);
+    p.strokeWidth = w;
+    canvas.restore();
   }
 
   void _dashedLine(Canvas canvas, Offset a, Offset b, Paint p) {

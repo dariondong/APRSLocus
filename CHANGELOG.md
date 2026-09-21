@@ -80,7 +80,23 @@ Android 侧 `LocationService.kt` 一直在发 `"accuracy"`、iOS 侧 `LocationPl
 顺手补上：`clearAllData()` 以前不清自己的轨迹（`myTrack` 不在 `stations` 里），
 点「清空数据」后地图上仍残留一条自己的线；现在一并清掉并复位定位状态。
 
-## 五、两条新增的 CI 检查（本机跑不了 analyze，只能靠它们）
+## 五、绘制开销：不确定圈改成「算一次、缩放复用」
+
+三层虚线圈都是新加的，顺手把它做便宜了。要点是**硬件加速不等于免费**：
+
+* Android（`hardwareAccelerated="true"`，Impeller/Skia 走 GPU）、iOS（Metal）、
+  Windows（ANGLE → D3D11）确实是 GPU 绘制 —— 但这只说明 `drawPath` 由 GPU 光栅化，
+  **虚线本身是 CPU 算的**：Skia / Impeller 都不在 GPU 上做路径虚线。
+* 原来的写法是「每个圈每帧跑 `Path.computeMetrics()` + `extractPath()` 逐段切」：
+  半径 100px 的圈 ≈ 57 段、500px ≈ 285 段，而圈数上限 120 → 最坏一帧约 **6800 次**
+  切段 + 绘制。而 `maxStations` 默认是**无上限**的，这个上限真的会被撞到。
+* 现在改成预先只构造一个「单位虚线圆」（半径 1、48 段），画的时候 `canvas.scale(r)`
+  复用（线宽除以 r 抵消缩放）—— 每个圈只剩 **1 次** `drawPath`，
+  **与半径无关**，也不再有任何逐帧路径计算。
+* 另外两条：接近整屏的圈（> 1.5 倍屏幕长边）直接不画（没有信息量却要光栅化一大片）；
+  这一层套 `RepaintBoundary` 隔离，它每秒重绘一次时不会连累瓦片与其它浮层。
+
+## 六、两条新增的 CI 检查（本机跑不了 analyze，只能靠它们）
 
 * `tool/sim_selffix.py --check`：既是仿真也是回归 —— 校验 Dart 常量与仿真**逐项一致**
   （两处漂移就等于在验证另一个算法），并断言「静止不许反复横跳 / 单点漂移不许漏出去 /
@@ -184,7 +200,23 @@ Also fixed along the way: `clearAllData()` never cleared your own track (`myTrac
 `stations`), so a line of your own survived "clear all data"; it is now cleared along with the
 location state.
 
-**5) Two new CI checks** (this machine cannot run analyze, so these are the only safety net):
+**5) Drawing cost: the uncertainty rings now compute once and scale.** All three dashed-ring
+overlays were new, so they were made cheap while we were there. The point is that **hardware
+acceleration does not mean free**: Android (`hardwareAccelerated="true"`, with Impeller/Skia on
+the GPU), iOS (Metal) and Windows (ANGLE → D3D11) do render on the GPU — but that only means
+`drawPath` is rasterised by the GPU. **The dashes themselves are computed on the CPU**: neither
+Skia nor Impeller dashes paths on the GPU. The original code ran `Path.computeMetrics()` plus
+`extractPath()` per ring per frame — about 57 segments for a 100px ring and 285 for a 500px one,
+with a 120-ring cap, so up to roughly **6800** segment-and-draw calls in the worst frame; and
+`maxStations` is unlimited by default, so that cap really can be reached. Now a single
+"unit dashed circle" (radius 1, 48 segments) is built once and reused via `canvas.scale(r)` (with
+the stroke width divided by `r` to cancel the scale), leaving **one** `drawPath` per ring,
+independent of radius, with no per-frame path work at all. Two more: rings approaching the size of
+the screen (beyond 1.5× its longest side) are skipped entirely, since they carry no information
+while forcing a large rasterisation; and the layer is wrapped in a `RepaintBoundary` so its
+once-a-second repaint does not drag the tiles and other overlays into re-rasterising.
+
+**6) Two new CI checks** (this machine cannot run analyze, so these are the only safety net):
 `tool/sim_selffix.py --check` is both simulation and regression — it verifies that the Dart
 constants match the simulation **term by term** (any drift means the simulation is validating a
 different algorithm), and asserts that stationary output never jumps around, that a single-point
