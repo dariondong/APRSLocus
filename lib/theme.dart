@@ -84,9 +84,12 @@ double uiMaterialAlphaOf(UiMaterial m) {
 double uiMaterialBlurOf(UiMaterial m) {
   switch (m) {
     case UiMaterial.glass:
-      return 34.0;
+      // 34 → 24：模糊的代价随半径上升，而观感在 24 时已经「明显是磨砂」。
+      // 真正贵的是「大面板 × 每帧重算」，所以配合下面两条一起降：
+      // 小浮层不再模糊、外壳不再因无关状态重建（见 shell2._onState）。
+      return 24.0;
     case UiMaterial.mica:
-      return 22.0;
+      return 16.0;
     case UiMaterial.none:
       return 0.0;
   }
@@ -192,6 +195,16 @@ class C {
   static Color get surfaceFillStrong =>
       hasBackdrop ? white.withValues(alpha: _surfaceStrongAlphaEff) : white;
 
+  /// **小浮层**（工具钮、图例、提示胶囊、细横条）的表面色：近乎不透明。
+  ///
+  /// 与 [surfaceFill] / [sheetFill] 的区别是有意的，而且成对存在：
+  /// 小浮层**不做真模糊**（见 material.dart 顶部「小浮层不模糊，大面板才磨砂」），
+  /// 所以它们必须自己就够实 —— 否则底下的地图会直接透上来把字糊掉。
+  ///
+  /// 这也正是 iOS / Android 的做法：大面板才磨砂，小组件是实心的。
+  static Color get chipFill =>
+      materialOn ? white.withValues(alpha: 0.94) : white;
+
   /// 弹窗 / 底部面板的表面：材质下也做成半透明。
   ///
   /// 比卡片实（0.9 档）：这类表面背后是**正在滚动的列表或地图**，
@@ -277,6 +290,7 @@ class C {
 
   /// 材质下的模糊半径（sigma）
   static double get materialBlur => uiMaterialBlurOf(material);
+
 
   /// 材质壁纸的底色：从主色混出来的一层极淡的色，而不是纯灰。
   ///

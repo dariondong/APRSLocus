@@ -29,6 +29,28 @@ import 'theme.dart';
 ///   这里用「低模糊 + 带主色的底色」表达云母的质感，而不是假装有颗粒。
 /// - **不给卡片套 BackdropFilter**：见上，卡片的通透靠「底本身够柔和 + 表面半透明」
 ///   实现，不需要每张卡一次模糊。
+/// ─── 小浮层不模糊，大面板才磨砂 ───
+///
+/// `BackdropFilter` 不是免费的：它每帧都要把**背后已经画好的内容**离屏重绘一遍，
+/// 代价 ≈ 被模糊的面积 × 半径，而且**每个实例各付一次**。而小浮层上根本看不出
+/// 模糊 —— 你能看见的是它的填充色（38px 的工具钮上，模糊只是把边缘糊成一团灰）。
+/// 于是「小浮层实心 + 大面板磨砂」既保住观感，又把同时存在的模糊层从十几个降到
+/// 两三个：地图页原来光工具钮就有 8 个 `BackdropFilter`，而它们全是 38px。
+///
+/// ── 为什么**没有**做成「按面积自动判断」（我试过，行不通）──
+///
+/// 第一版用 `LayoutBuilder` 拿自己的尺寸：面积够大才插模糊层。看着很聪明，
+/// 但地图上的小浮层**全都是 `Positioned` 包着的**，而 Positioned 的子项拿到的
+/// 约束是**容器（整个 Stack）的大小**、不是它自己的尺寸 —— 于是 38px 的按钮被
+/// 量成整屏，自动规则恰好在最需要它的地方失效。这种「静默失效」比不做还危险，
+/// 所以改成**显式**：
+///
+/// * 小浮层 → `blurSigma: 0`（不模糊）+ `C.chipFill` / [chipTint]（实心填色）；
+/// * 大面板 → 不写 `blurSigma`，用材质默认半径。
+///
+/// 两者的配对由 `tool/check_material_coverage.py` 检查：出现 `chipFill`/`chipTint`
+/// 的 `MaterialSurface` 必须写 `blurSigma: 0`，否则报红 —— 免得将来有人只改一半。
+
 class MaterialSurface extends StatelessWidget {
   /// 被包裹的表面（自身通常带半透明填色与阴影）
   final Widget child;
@@ -39,9 +61,12 @@ class MaterialSurface extends StatelessWidget {
   /// 只有上方两角是圆角（底部面板用）
   final bool topOnly;
 
-  /// 覆盖模糊强度（null = 用当前材质的默认值 [C.materialBlur]）。
-  /// 小尺寸浮层（图标按钮、提示条）用得上：34 的模糊落在对角线只有 38px 的
-  /// 按钮上会糊成一团灰，反而看不清它的边界。
+  /// 模糊强度：
+  /// * `null`（默认）→ 用材质默认半径 [C.materialBlur]（大面板/条走这条）；
+  /// * `0` → **不模糊**（小浮层走这条，必须配 `C.chipFill` / [chipTint] 实心填色）；
+  /// * `> 0` → 用指定半径。
+  ///
+  /// 小浮层为什么必须显式写 0：见文件顶部「为什么没有做成按面积自动判断」。
   final double? blurSigma;
 
   const MaterialSurface({
@@ -65,6 +90,12 @@ class MaterialSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!C.materialOn) return child;
     final sigma = blurSigma ?? C.materialBlur;
+    // 显式 0：调用点明确要实心（小浮层都是这么写的，见文件顶部的说明）
+    if (sigma <= 0) return child;
+    return _blurred(sigma);
+  }
+
+  Widget _blurred(double sigma) {
     final br = topOnly
         ? BorderRadius.vertical(top: Radius.circular(radius))
         : BorderRadius.circular(radius);
@@ -109,6 +140,18 @@ class MaterialAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) => MaterialSurface(child: child);
+}
+
+/// 把一个小控件的底色调成「实心小浮层」的透明度 —— **保留它的色相**。
+///
+/// 与 [surfaceTint] 的分工（别混用）：
+/// * [surfaceTint] 给**会做模糊**的表面（AppBar 这类大面积条）→ 半透明，靠背后的
+///   模糊把它和内容分开；
+/// * [chipTint] 给**不做模糊**的小控件（38px 工具钮、圆形按钮）→ 近乎不透明，
+///   自己就把底下的地图盖住。两者分别对应「不模糊的小浮层」与「模糊的大面板」。
+Color chipTint(Color c) {
+  if (!C.materialOn) return c;
+  return c.withValues(alpha: c.a * 0.94);
 }
 
 /// 把一个「表面色」调成材质该有的透明度 —— **保留它的色相**。

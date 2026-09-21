@@ -57,6 +57,9 @@ class _HomeShell2State extends State<HomeShell2>
   /// 当前页签（0 = 地图）
   int _tab = 0;
 
+  /// 上一次通知时的「外壳所显示的值」快照（见 [_onState]）
+  String _stateKey = '';
+
   /// 内容面板高度占屏高比例；0 = 收起（地图全屏）
   double _extent = 0;
 
@@ -66,10 +69,10 @@ class _HomeShell2State extends State<HomeShell2>
     duration: const Duration(milliseconds: 260),
   )..addListener(() => setState(() => _extent = _snap.evaluate(_anim)));
 
-  /// 顶栏真实高度（首帧估值，量到后校准）。
+  /// 右上角那一簇（天气 / 在线 / 连接 / 定位）的真实高度（首帧估值，量到后校准）。
   ///
-  /// 为什么不写死：顶栏高度由内容决定（搜索框在窄屏变高、状态胶囊文字随语言
-  /// 变长），写死就会在别的语言/字号下压住地图控件。
+  /// 为什么不写死：高度由内容决定（状态胶囊的文字长度随语言变），写死会在别的
+  /// 语言/字号下压住地图顶部的控件。
   final GlobalKey _barKey = GlobalKey();
   /// 首帧估值：右上角那一簇约 32~34 高（胶囊 6+文字+6 与圆形按钮取高者）。
   /// 先给接近真实的值，量到后校准 —— 差太多会让地图顶部控件在首帧跳一下。
@@ -157,8 +160,26 @@ class _HomeShell2State extends State<HomeShell2>
     super.dispose();
   }
 
+  /// 只在「外壳真正显示的值」变化时重建。
+  ///
+  /// ── 这是「磨砂玻璃卡」最主要的成因 ──
+  ///
+  /// AppState 每秒 tick 一次、每次收包（250ms 节流）也会 notify；原来这里无条件
+  /// `setState`，于是**整个外壳每秒被重建好几次**，而外壳里就挂着那几层
+  /// `BackdropFilter` —— 每次重建都会重建这些层，模糊跟着重算。
+  ///
+  /// 外壳实际显示的东西只有这几项：连接状态、在线数、未读数、天气开关、
+  /// 有无定位（定位按钮要用）。其余状态（收到的报文、台站列表、消息…）都由
+  /// 各页**自己**监听 AppState 更新（ListenableBuilder / StreamBuilder），
+  /// 不需要外壳代劳 —— 于是重建频率从「每秒数次」降到「状态真的变了才一次」。
   void _onState() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    final st = widget.state;
+    final key = '${st.connected}|${st.connecting}|${st.online}|'
+        '${st.unreadMessages}|${st.weatherEnabled}|${st.myHasFix}';
+    if (key == _stateKey) return;
+    _stateKey = key;
+    setState(() {});
   }
 
   /// 底部导航占的总高度（含安全区与下边距）
@@ -386,7 +407,6 @@ class _HomeShell2State extends State<HomeShell2>
     final pad = MediaQuery.of(context).padding;
     return MaterialSurface(
       radius: 999,
-      blurSigma: 20,
       child: Container(
         height: _kNav,
         padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -523,11 +543,22 @@ class _HomeShell2State extends State<HomeShell2>
     // （StationsPage._query 优先用本页那一个，外壳的只在它为空时才起作用）；
     // 二是「一整条浮在地图上的浅色横条」本身就压视觉重量。
     // 现在只留右上角一簇悬浮胶囊：连接状态 + 定位。
+    // 包成**一只实心胶囊**：去掉搜索条之后这几个小块原本各自 12% 透明直接压在
+    // 瓦片上，既读不清也不整。这里刻意**不套** MaterialSurface —— 这一簇面积远
+    // 这一簇是「小浮层」，本来就不该模糊（见 material.dart），套了只是白加一层；
+    // 用实心 chipFill 才是正解（小浮层实心、大面板磨砂）。
     return Align(
       alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        decoration: BoxDecoration(
+          color: C.chipFill,
+          borderRadius: BorderRadius.circular(999),
+          boxShadow: elev2(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           // 天气组件（「设置 → 显示 → 顶栏天气组件」控制）。与 1.0 一样放在
           // 在线数左侧：它自带青色胶囊、点击弹出天气面板，不用另做外观。
           if (st.weatherEnabled) ...[
@@ -543,6 +574,7 @@ class _HomeShell2State extends State<HomeShell2>
           const SizedBox(width: 6),
           _locateBtn(st),
         ],
+        ),
       ),
     );
   }

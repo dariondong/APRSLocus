@@ -566,7 +566,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         onTap: () => _showLayerMenu(context),
                         // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
                         // 只让通透程度跟着材质走（详见 material.dart）
-                        bg: surfaceTint(
+                        bg: chipTint(
                           _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
                         ),
                         fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
@@ -584,7 +584,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       _toolBtn(
                         icon: Icons.map_rounded,
                         onTap: _showMapTypeMenu,
-                        bg: surfaceTint(C.white),
+                        bg: chipTint(C.white),
                         fg: C.slate,
                         border: C.border,
                       ),
@@ -657,13 +657,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: Center(
                       child: MaterialSurface(
                         radius: 12,
+                        blurSigma: 0,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: C.sheetFill,
+                            color: C.chipFill,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: elev2(),
                           ),
@@ -693,13 +694,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         onTap: _showMapHelp,
                         child: MaterialSurface(
                           radius: 12,
+                          blurSigma: 0,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 14,
                               vertical: 9,
                             ),
                             decoration: BoxDecoration(
-                              color: C.sheetFill,
+                              color: C.chipFill,
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: elev2(),
                             ),
@@ -1077,13 +1079,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       info.write('  ·  ${s.distKm(my.lat, my.lng).toStringAsFixed(1)}km');
     }
     info.write('  · ${S.of(context).tapToView}');
+    // blurSigma: 0：这是跟着鼠标走的小信息窗，原来自己带 12 的模糊 ——
+    // 每次悬停都要重算一层离屏模糊。小浮层不值得付这个代价（见 material.dart）。
     return MaterialSurface(
       radius: 12,
-      blurSigma: 12.0,
+      blurSigma: 0,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: C.sheetFill,
+          color: C.chipFill,
           borderRadius: BorderRadius.circular(12),
           boxShadow: elev2(),
         ),
@@ -1557,10 +1561,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _infoChip(List<Station> vis, bool searched) {
     return MaterialSurface(
       radius: 16,
+      blurSigma: 0,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: C.sheetFill,
+          color: C.chipFill,
           borderRadius: BorderRadius.circular(16),
           boxShadow: elev2(),
         ),
@@ -1667,10 +1672,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _legend() {
     return MaterialSurface(
       radius: 12,
+      blurSigma: 0,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: C.sheetFill,
+          color: C.chipFill,
           borderRadius: BorderRadius.circular(12),
           boxShadow: elev1(),
         ),
@@ -1728,7 +1734,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       onTap: onTap,
       child: MaterialSurface(
         radius: 12,
-        blurSigma: 14.0,
+        // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给
+        // 「实心」的 chipTint —— 本函数的三个调用点都这么传。
+        blurSigma: 0,
         child: Container(
           width: 38,
           height: 38,
@@ -1892,7 +1900,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               color: Colors.transparent,
               child: MaterialSurface(
                 radius: 16,
-                blurSigma: 16.0,
                 child: Container(
                   width: 210,
                   padding: const EdgeInsets.all(6),
@@ -2162,10 +2169,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       onTap: _showMyPanel,
       child: MaterialSurface(
         radius: 12,
+        blurSigma: 0,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: C.sheetFill,
+            color: C.chipFill,
             borderRadius: BorderRadius.circular(12),
             boxShadow: elev2(),
             border: Border.all(color: c.withValues(alpha: 0.25)),
@@ -2249,10 +2257,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: MaterialSurface(
         radius: 12,
+        blurSigma: 0,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
-            color: C.sheetFill,
+            color: C.chipFill,
             borderRadius: BorderRadius.circular(12),
             boxShadow: elev1(),
           ),

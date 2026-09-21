@@ -579,12 +579,12 @@ class RoundIconBtn extends StatelessWidget {
       onTap: onTap,
       child: MaterialSurface(
         radius: 12,
-        blurSigma: 14,
+        blurSigma: 0,
         child: Container(
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: surfaceTint(C.white),
+            color: chipTint(C.white),
             borderRadius: BorderRadius.circular(12),
             // 同上：投影负责分层，描边去掉（圆形工具钮常年压在地图上）
             boxShadow: elev1(),

@@ -118,6 +118,83 @@ def import_problems():
     return out
 
 
+
+MAT_PAIRS = {'(': ')', '[': ']', '{': '}'}
+
+
+def material_bodies(lines):
+    """返回每处 `MaterialSurface(...)` 的 (起始行, 结束行, 文本)。
+
+    两个坑（第一版都踩了）：
+    * **必须真正跳出**：写完 `j = len(lines)` 以为就跳出 for 循环了 —— 不会，
+      `j` 是循环变量，赋值不影响迭代。结果同一处被反复计入（报出十几条重复）。
+      现在用 `return`/`break` 明确跳出。
+    * **必须跳过注释行**：本文件的文档注释里就写着 `MaterialSurface(` 与
+      `chipFill`，不跳就把「说明文字」当成代码，凭空多出几条假失败。
+    """
+    out = []
+    for i, l in enumerate(lines):
+        if l.lstrip().startswith('//'):
+            continue
+        if 'MaterialSurface(' not in l:
+            continue
+        depth, instr, done = 0, None, False
+        for j in range(i, len(lines)):
+            line = lines[j]
+            k = (line.index('MaterialSurface(') + len('MaterialSurface') - 1) if j == i else 0
+            while k < len(line):
+                ch = line[k]
+                if instr is not None:
+                    if ch == '\\':
+                        k += 2
+                        continue
+                    if ch == instr:
+                        instr = None
+                    k += 1
+                    continue
+                if ch == '/' and k + 1 < len(line) and line[k + 1] == '/':
+                    break
+                if ch in ("'", '"'):
+                    instr = ch
+                    k += 1
+                    continue
+                if ch in MAT_PAIRS:
+                    depth += 1
+                elif ch in CLOSE:
+                    depth -= 1
+                    if depth == 0:
+                        out.append((i, j, '\n'.join(lines[i:j + 1])))
+                        done = True
+                        break
+                k += 1
+            if done:
+                break
+    return out
+
+
+def solid_blur_problems():
+    """实心小浮层（chipFill/chipTint）必须显式 `blurSigma: 0`。
+
+    为什么查这条：性能优化把「小浮层」从模糊改成实心，这一步必须**成对**改 ——
+    只改填色不改模糊 = 白付一层离屏重绘（模糊被实色盖住，谁也看不出来）；
+    只改模糊不改填色 = 半透明的浮层直接压在瓦片上，字糊掉。两种都只有肉眼
+    在特定页面上才看得出来，所以用检查兜住配对关系。
+    """
+    bad = []
+    for base, _dirs, files in os.walk(LIB):
+        for fn in sorted(files):
+            if not fn.endswith('.dart'):
+                continue
+            path = os.path.join(base, fn)
+            rel = os.path.relpath(path, ROOT).replace(os.sep, '/')
+            lines = io.open(path, encoding='utf-8').read().split('\n')
+            for start, _end, body in material_bodies(lines):
+                solid = ('C.chipFill' in body) or ('chipTint(' in body)
+                if solid and 'blurSigma: 0' not in body:
+                    bad.append((rel, start + 1))
+    return bad
+
+
 def main() -> int:
     bad_imports = import_problems()
     if bad_imports:
@@ -153,12 +230,20 @@ def main() -> int:
                 continue
             problems.append((rel, hits, reason))
 
-    if not problems and not bad_imports:
+    solid_bad = solid_blur_problems()
+    if solid_bad:
+        print('以下 `MaterialSurface` 用了「实心小浮层」的填色（chipFill / chipTint），'
+              '却没写 `blurSigma: 0` —— 模糊会被实色盖住，等于白付一层离屏重绘：')
+        for rel, ln in solid_bad:
+            print('  SOLID-NO-BLUR0  %-28s 第 %d 行' % (rel, ln))
+        print()
+
+    if not problems and not bad_imports and not solid_bad:
         print('material coverage ok: 所有半透明壳表面都在材质壳内，且都 import 了 material.dart')
         return 0
-    if not problems:
+    if not problems and not bad_imports:
         print('（半透明壳表面的包裹本身是齐的）')
-        return 1
+    return 1
 
     print('以下「半透明壳表面」没有套材质壳（材质开着时会半透明但不模糊，'
           '底下的内容直接透出来）：')
