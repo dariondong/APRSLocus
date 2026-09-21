@@ -1,5 +1,92 @@
 # 更新日志
 
+## [1.6.140] - 2026-09-21
+
+### 🎨 重做 UI 2.0 的底部（导航固定、面板只装内容）；收拾全局「视觉杂」 / Redesigned the bottom of UI 2.0 (fixed navigation, content-only sheet); general visual clean-up
+
+上一版（1.6.139）的 2.0 把 5 个页签放进了**可拖拽卡片的头部** —— 卡片一展开，
+导航就升到屏幕中间，底部还叠了两套 chrome（把手 + 页签约 80px）。这次是**重新设计**：
+
+**三层，职责单一**
+
+- **地图整屏**：它才是底，不再是一个页签；切到任何页都不会销毁它。
+- **底部悬浮导航**：5 个页签**永远在同一位置**，胶囊外形 + 背景模糊；选中态是
+  **一个滑动的指示胶囊**，而不是 5 块固定色底。
+- **内容面板**：只装内容、**不再包含导航**；头部只剩一根 22px 细把手。
+  拖两个档位（半屏 / 近全屏），**向下拖过阈值即收起**回到地图 ——
+  选「地图」就是地图真正全屏。
+
+**顺手把三处几何算错改对**（都是按真实数值画出来对照后发现的）
+
+- 面板展开时**以前会盖住顶栏**（搜索框、连接状态、定位按钮全被吞掉）：
+  原先最大档写死 0.86，在小屏上正好重合；现在按「屏高 − 导航 − 面板下边距 −
+  顶栏占位」算，两边各留 8px。
+- 地图贴底的比例尺/坐标条**以前会漂出一段空隙**：`bottomInset` 的口径含糊，
+  等于把「导航占用」与「安全区」重复算了一遍（实测差了 46px）。现在口径明确为
+  「底部被占用的边界（不含安全区）」，贴底控件永远落在占用区上方 14px。
+- 非搜索页的顶栏**不再重复导航的信息**：导航已高亮当前页，顶栏再写一遍标题是
+  重复的；改成右上角一小簇胶囊（连接状态 + 定位），地图因此多露一截。
+
+**全局「视觉杂」收拾**（1.0 与 2.0 都受益）
+
+| 项 | 之前 | 之后 |
+|---|---|---|
+| 圆角取值 | **12 种**（10/11/12/13/14/15/16/18/20/22…） | **7 档**：2/6/8/12/16/24/999 |
+| 字号取值 | **25 种**（含 8.5/9.5/10.5/11.5/12.5/13.5/14.5 等小数档） | **8 级**：9/10/11/12/13/16/20/26 |
+| 阴影取值 | **19 种** (blur,y,alpha) 组合 | **3 级**：elev1/elev2/elev3 |
+| 「框套框」 | 顶栏与圆形工具钮同时画描边 + 投影 | 只留投影 |
+
+分档语义：6 小徽标、8 小控件、**12 按钮/输入/列表行/工具钮**、16 卡片面板、
+24 底部面板、999 胶囊。同类元素现在长得一样，才有节奏。
+
+**新增一个本机可跑的静态检查**（`tool/check_widget_members.py`，已进 CI）
+
+「State 里用到的 `widget.X` 必须在同文件有声明」。起因是同一类错误撞了三次
+（漏 import、字段重复声明、改文档时把中间的字段声明一起吞掉）—— 它们都只在
+analyze/编译时报错，而本机唯一能跑的语法检查一律放行。这个守卫双向验证过：
+仓库现状 0 报错，故意删掉一个字段能精确报出文件与行号。
+
+默认仍是 1.0 经典布局；2.0 在「显示设置 → 界面布局」里切换，两套设置各自保留。
+
+---
+
+**In 1.6.139 the 2.0 layout put its five tabs inside the draggable card's header** — so the
+navigation climbed into the middle of the screen whenever the card expanded, and the bottom
+stacked two layers of chrome (handle + tabs, about 80px). This release **redesigns it**:
+
+* **The map is full-screen and is the base** — no longer a tab, and it is never destroyed when
+you switch pages.
+* **A floating bottom navigation** whose five tabs **never move**, shaped as a pill with a
+backdrop blur. The selection is **a single sliding indicator pill** instead of five tinted
+blocks.
+* **A content sheet that holds content only** — no navigation inside it, just a 22px handle.
+Two detents (half / near-full); **drag down past the threshold to dismiss** back to the map.
+Choosing “Map” gives you a genuinely full-screen map.
+
+**Three geometry errors fixed along the way** (all found by drawing the layout to scale and
+looking at it): the expanded sheet used to **cover the top bar** (search, connection state and
+the locate button were swallowed — the old 0.86 hard-coded detent coincided with it on small
+screens); the map's bottom controls **drifted away from the navigation** because `bottomInset`
+was ambiguous and counted the safe area twice (46px off); and the top bar **no longer repeats
+what the navigation already shows** — on non-search pages it collapses to a small cluster of
+pills at the top right, letting the map show more.
+
+**General visual clean-up** (benefits both layouts): corner radii went from **12 distinct
+values** down to **7 steps** (2/6/8/12/16/24/999), font sizes from **25** down to **8 levels**
+(9/10/11/12/13/16/20/26), shadows from **19** ad-hoc (blur, y, alpha) combinations down to
+**3 elevations**, and surfaces that drew both a border and a shadow (the top bar, the round map
+buttons) now rely on the shadow alone.
+
+**A new local static check** (`tool/check_widget_members.py`, wired into CI) verifies that every
+`widget.X` used by a State has a declaration in the same file. It exists because the same class
+of mistake — invisible to `dart format`, only caught by analyze/compile, which cannot run on the
+maintainer's machine — was hit three times.
+
+The default is still the classic 1.0 layout; 2.0 is switchable under Display settings → UI
+layout, and each layout keeps its own settings.
+
+---
+
 ## [1.6.139] - 2026-09-21
 
 ### ✨ UI 2.0：以地图为基底的布局（显示设置里可切换）/ New map-first layout (switchable in Display settings)
