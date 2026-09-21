@@ -259,7 +259,9 @@ class _HomeShell2State extends State<HomeShell2>
   /// 而后者正是我们不想让地图知道的：它每帧变一次，地图就每帧重排重绘一次。
   double _insetSheetH() {
     if (!_paneAnimating) return _extent * _screenH();
-    final target = _anim.isAnimating ? _snap.end : _extent;
+    // `Tween.end` 的类型是 `double?`（可以为 null），必须兜一下 ——
+    // 否则 analyze 报 unchecked_use_of_nullable_value。
+    final target = _anim.isAnimating ? (_snap.end ?? _extent) : _extent;
     return target.clamp(0.0, 1.0) * _screenH();
   }
 
@@ -370,7 +372,7 @@ class _HomeShell2State extends State<HomeShell2>
               // 否则每帧都会把新的 inset 传进 MapPage，触发一次重排 + 重绘，
               // 正好把上面那个「冻结」抵消掉。地图在动画期间本来就该是「固定」的。
               bottomInset: navSpace +
-                  (showSheet ? _kGutter + _insetSheetH : 0) -
+                  (showSheet ? _kGutter + _insetSheetH() : 0) -
                   pad.bottom,
             ),
           ),

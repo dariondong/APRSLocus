@@ -22,6 +22,7 @@
 """
 import io
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -90,8 +91,18 @@ def main() -> int:
     # ⑦ inset 在动画期必须是吸附目标值
     need('lib/shell2.dart', 'double _insetSheetH()',
          '没有 _insetSheetH —— bottomInset 会逐帧变，地图每帧重排重绘')
-    need('lib/shell2.dart', '_kGutter + _insetSheetH',
-         'bottomInset 没用 _insetSheetH（动画期仍然逐帧变化）')
+    # ⚠ 断言里必须带 `()`：第一版写的是 `_kGutter + _insetSheetH`（少了括号），
+    # 于是它把「方法当值用」这个**编译错误**当成了正确实现 —— 检查通过、CI 编译红。
+    # 教训：静态断言要断言**能编译的字符串**，不要把「看起来像」当「是对的」。
+    need('lib/shell2.dart', '_kGutter + _insetSheetH()',
+         'bottomInset 没用 _insetSheetH()（动画期仍然逐帧变化）')
+    forbid('lib/shell2.dart', '_kGutter + _insetSheetH ',
+           '_insetSheetH 少了括号（方法当值用，编译不过）')
+    forbid('lib/shell2.dart', '_kGutter + _insetSheetH:',
+           '_insetSheetH 少了括号（方法当值用，编译不过）')
+    for m in re.finditer(r'_insetSheetH(?![\s(])', read('lib/shell2.dart')):
+        errors.append('lib/shell2.dart 里 `_insetSheetH` 有被当值用的地方'
+                      '（应写成 `_insetSheetH()`）')
 
     # ⑧ 面板内容实例缓存
     need('lib/shell2.dart', '_contentCache',
