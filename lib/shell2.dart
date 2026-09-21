@@ -70,7 +70,9 @@ class _HomeShell2State extends State<HomeShell2>
   /// 为什么不写死：顶栏高度由内容决定（搜索框在窄屏变高、状态胶囊文字随语言
   /// 变长），写死就会在别的语言/字号下压住地图控件。
   final GlobalKey _barKey = GlobalKey();
-  double _barH = 46;
+  /// 首帧估值：右上角那一簇约 32~34 高（胶囊 6+文字+6 与圆形按钮取高者）。
+  /// 先给接近真实的值，量到后校准 —— 差太多会让地图顶部控件在首帧跳一下。
+  double _barH = 34;
 
   /// 导航胶囊高度
   static const double _kNav = 56;
@@ -102,11 +104,6 @@ class _HomeShell2State extends State<HomeShell2>
 
   double _fullRatio(Size size, double navSpace, double topInset) =>
       _maxSheetH(size, navSpace, topInset) / size.height;
-
-  // 搜索（仅地图/台站页用，沿用 1.0 顶栏那套 300ms 防抖）
-  String _search = '';
-  final _searchCtrl = TextEditingController();
-  Timer? _searchDebounce;
 
   // 新消息气泡
   bool _showBubble = false;
@@ -153,9 +150,7 @@ class _HomeShell2State extends State<HomeShell2>
   @override
   void dispose() {
     _anim.dispose();
-    _searchDebounce?.cancel();
     _bubbleTimer?.cancel();
-    _searchCtrl.dispose();
     widget.state.onNewMessage = null;
     widget.state.removeListener(_onState);
     super.dispose();
@@ -210,17 +205,11 @@ class _HomeShell2State extends State<HomeShell2>
     _snapTo(_extent >= (_kHalf + full) / 2 ? full : _kHalf);
   }
 
-  /// 只有「地图/台站」页用全局搜索
-  bool get _searchable => _tab == 0 || _tab == 1;
-
   @override
   Widget build(BuildContext context) {
     // 顶栏量高：帧后读一次，变了才 setState（稳定后不再触发，无循环）
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      // 只在搜索形态下测量：非搜索页顶栏只是一小簇胶囊（矮得多），
-      // 若跟着它更新，切页时地图的顶部让位量会跳一下。
-      if (!_searchable) return;
       final h = _barKey.currentContext?.size?.height;
       if (h != null && h > 1 && (h - _barH).abs() > 0.5) {
         setState(() => _barH = h);
@@ -237,7 +226,21 @@ class _HomeShell2State extends State<HomeShell2>
         .clamp(0.0, _maxSheetH(size, navSpace, topInset));
     final showSheet = _extent > 0.02;
 
-    return Scaffold(
+    // 返回键（含 Android 手势返回 / 预测式返回）：
+    //   在「地图」页 → 交给系统（正常退出应用）；
+    //   在其他页    → 回到地图页，而不是直接退出。
+    // 这是用户明确要的：2.0 里地图是底，其他页只是「盖在上面的内容」，
+    // 按返回回到地图符合「退一层」的直觉。
+    // 放在外壳（而不是各页）是因为导航本身就是外壳的事；
+    // push 出来的子页（设置子页等）各自是独立路由，由 Navigator 先处理，不受影响。
+    return PopScope(
+      canPop: _tab == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        // 不在「地图」页：回地图（_select(0) 同时会把内容面板收起）
+        _select(0);
+      },
+      child: Scaffold(
       backgroundColor: C.pageFill,
       body: Stack(
         children: [
@@ -245,7 +248,6 @@ class _HomeShell2State extends State<HomeShell2>
           Positioned.fill(
             child: MapPage(
               state: widget.state,
-              searchQuery: _search,
               isActive: true,
               topInset: topInset,
               // 底部被占用的边界 B（自屏幕底算起）＝ 导航 + （面板 + 间隙）。
@@ -325,6 +327,7 @@ class _HomeShell2State extends State<HomeShell2>
             ),
         ],
       ),
+      ),
     );
   }
 
@@ -368,7 +371,7 @@ class _HomeShell2State extends State<HomeShell2>
     return IndexedStack(
       index: index,
       children: [
-        StationsPage(state: widget.state, searchQuery: _search),
+        StationsPage(state: widget.state),
         MessagesPage(state: widget.state, isActive: true),
         PacketsPage(state: widget.state),
         SettingsPage(state: widget.state),
@@ -513,76 +516,21 @@ class _HomeShell2State extends State<HomeShell2>
 
   Widget _topBar() {
     final st = widget.state;
-    // 非搜索页**不画整宽横条**：导航已经高亮当前页，顶栏再写一遍标题是重复的；
-    // 而「一整条浅色横条」本身就压视觉重量。这里退化成右侧一小组悬浮胶囊
-    // （连接状态 + 定位），地图因此多露出来一截，也更像原生地图 App。
-    if (!_searchable) {
-      return Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _statusPill(st),
-            const SizedBox(width: 6),
-            _locateBtn(st),
-          ],
-        ),
-      );
-    }
-    // 顶栏与底部导航同属「悬浮的条」，形状也用同一族（整只胶囊）——
-    // 原来是顶栏 16、导航 999，同一家族两种形，看着就不像一套东西。
-    return MaterialSurface(
-      radius: 999,
-      blurSigma: 18,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: C.surfaceFillStrong,
-          borderRadius: BorderRadius.circular(999),
-          boxShadow: elev2(),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _searchCtrl,
-                style: ts(13),
-                decoration: InputDecoration(
-                  isDense: true,
-                  border: InputBorder.none,
-                  hintText: S.of(context).searchHint,
-                  hintStyle: ts(13, c: C.grey),
-                  prefixIcon:
-                      Icon(Icons.search_rounded, size: 18, color: C.grey),
-                  prefixIconConstraints:
-                      const BoxConstraints(minWidth: 26, minHeight: 0),
-                  suffixIcon: _search.isEmpty
-                      ? null
-                      : GestureDetector(
-                          onTap: () {
-                            _searchCtrl.clear();
-                            setState(() => _search = '');
-                          },
-                          child: Icon(Icons.close_rounded,
-                              size: 16, color: C.grey),
-                        ),
-                ),
-                onChanged: (v) {
-                  // 防抖：台站上千时逐字搜索会让地图逐字重排
-                  _searchDebounce?.cancel();
-                  _searchDebounce =
-                      Timer(const Duration(milliseconds: 300), () {
-                    if (mounted) setState(() => _search = v);
-                  });
-                },
-              ),
-            ),
-            const SizedBox(width: 6),
-            _statusPill(st),
-            const SizedBox(width: 6),
-            _locateBtn(st),
-          ],
-        ),
+    // 顶栏**没有搜索框**（用户反馈：主页与台站页没必要出现）。
+    //
+    // 两个理由：一是台站页**自己就有搜索框**，外壳这个对它是重复的
+    // （StationsPage._query 优先用本页那一个，外壳的只在它为空时才起作用）；
+    // 二是「一整条浮在地图上的浅色横条」本身就压视觉重量。
+    // 现在只留右上角一簇悬浮胶囊：连接状态 + 定位。
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _statusPill(st),
+          const SizedBox(width: 6),
+          _locateBtn(st),
+        ],
       ),
     );
   }
