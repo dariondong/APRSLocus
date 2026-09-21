@@ -1,5 +1,72 @@
 # 更新日志
 
+## [1.6.148] - 2026-09-21
+
+### 🐛 修面板「拖动卡 + 一拖就变白」；连接按钮改成带动词文字 / Fixing sheet drag jank and the white flash; a clearer connect button
+
+两条用户反馈，而第一条是我上一版「治卡」的手法自己造出来的另一半问题。
+
+**一、拖动卡 + 莫名其妙变白：根因是「面板高度每帧在变」**
+
+`BackdropFilter` 的代价与它的**几何**直接相关。上一版为了让展开动画不卡，做法是
+动画/拖动期间**关掉模糊**——而关掉模糊就**必须**同时把填色换成不透明的白
+（半透明不糊会直接透出地图，比卡更难看）。于是每次拖动面板都会从
+「58% alpha 的磨砂」跳成「纯白」：用户看到的就是「一拖就变白」，而那两步其实是
+同一处设计的两个面 —— 它把「卡」换成了「白」。
+
+**正确的解法在几何，不在开关**：让面板**自身固定为最高档高度**，只裁出可视区。
+这样模糊层的几何在拖动/动画中**完全不变**，叠加地图那侧的冻结（底图不变 →
+模糊结果可复用），就能**一直开着模糊**：既不变白，也不再每帧重做整屏模糊。
+
+因此把 `MaterialSurface(blurWhen:)` 这个开关**删掉**了，并在它的位置留一段说明：
+**谁要用模糊，谁就得保证自己的几何是稳定的** —— 不留这个开关，就不会有人再走
+「关模糊 + 换实白」这条回头路。
+
+**二、连接按钮：状态与动作彻底分开**
+
+上一版把未连接做成**实心蓝**圆钮，本意是「看成主操作」。但它同时被读成了状态灯：
+**实心**在图形界面的惯例里意味着「已开启」，于是看到的正好相反（填满时反而是断开）；
+而连上之后同一位置又变成「断开」，来回换含义。
+
+现在：**状态只由左边的胶囊表达**（● 来源 · 已连接 / 未连接 / 只收不发）；
+**按钮只表达「点了会发生什么」** —— 一律带动词文字（连接 / 断开连接）、一律淡底。
+顺手把来源名改短（`APRS-IS` / `TNC` / `音频` / `PKWDWPL`）：设置页那套完整说法
+放进胶囊会把顶部那一行撑爆。
+
+---
+
+**Two reports from users — and the first one was the other half of a problem my own previous
+“fix for jank” created.**
+
+**1) Sheet dragging stuttered and flashed white. The root cause is that the sheet's height changed
+every frame.** A `BackdropFilter`'s cost is tied directly to its **geometry**. The previous release
+avoided animation jank by turning the blur **off** while animating/dragging — and turning a blur off
+*forces* you to switch the fill to opaque white (translucent-but-unblurred shows the map straight
+through, which looks worse than stutter). So every drag jumped from “58% alpha frosted” to “pure
+white”: that is the white flash, and the two reports are two faces of one design that traded jank
+for whiteness.
+
+**The fix belongs in the geometry, not in a switch**: the sheet now lays itself out at its **maximum
+height** and merely clips to the visible area. The blur layer's geometry therefore never changes
+while dragging, and combined with the frozen map behind it (unchanged backdrop ⇒ reusable blur
+result) the blur can simply **stay on** — no white flash, and no full-screen blur recomputed every
+frame.
+
+So `MaterialSurface(blurWhen:)` was **removed**, replaced by a note in its place: **whoever wants a
+blur owns keeping their geometry stable.** With no switch to reach for, nobody can take the
+“disable blur, swap in solid white” road again.
+
+**2) The connect button: state and action are now cleanly separated.** The previous release drew the
+disconnected state as a **solid blue** round button, intending it to read as “the primary action”.
+But it also read as a status light: in GUI convention **solid** means *on*, so it said the opposite
+(filled = disconnected). And once connected, the same spot turned into “disconnect”, changing
+meaning back and forth. Now **the pill on the left carries the state** (● source · connected /
+not connected / receive-only) and **the button carries only what tapping does** — always a verb
+(Connect / Disconnect), always a light fill. Source names were also shortened (`APRS-IS` / `TNC` /
+`Audio` / `PKWDWPL`), because the settings-page wording would burst that row on narrow screens.
+
+---
+
 ## [1.6.147] - 2026-09-21
 
 ### 🧹 按反馈撤掉接收侧那套「防抖」；修浮动面板展开卡顿；横屏改成一整块工作区 / Dropping the receiver-side debounce; fixing sheet-open jank; a single landscape workspace
