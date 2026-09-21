@@ -186,6 +186,9 @@ class _HomeShell2State extends State<HomeShell2>
     // 顶栏量高：帧后读一次，变了才 setState（稳定后不再触发，无循环）
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // 只在搜索形态下测量：非搜索页顶栏只是一小簇胶囊（矮得多），
+      // 若跟着它更新，切页时地图的顶部让位量会跳一下。
+      if (!_searchable) return;
       final h = _barKey.currentContext?.size?.height;
       if (h != null && h > 1 && (h - _barH).abs() > 0.5) {
         setState(() => _barH = h);
@@ -232,13 +235,13 @@ class _HomeShell2State extends State<HomeShell2>
               child: SizedBox(
                 height: sheetH,
                 child: MaterialSurface(
+                  // 四角都圆：面板下沿露在导航上方（不是贴屏幕底），
+                  // 只圆上角会让它看着像被切断。
                   radius: 24,
-                  topOnly: true,
                   child: Container(
                     decoration: BoxDecoration(
                       color: C.sheetFill,
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(24)),
+                      borderRadius: BorderRadius.circular(24),
                       boxShadow: elev3(),
                     ),
                     child: Column(
@@ -466,6 +469,22 @@ class _HomeShell2State extends State<HomeShell2>
 
   Widget _topBar() {
     final st = widget.state;
+    // 非搜索页**不画整宽横条**：导航已经高亮当前页，顶栏再写一遍标题是重复的；
+    // 而「一整条浅色横条」本身就压视觉重量。这里退化成右侧一小组悬浮胶囊
+    // （连接状态 + 定位），地图因此多露出来一截，也更像原生地图 App。
+    if (!_searchable) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _statusPill(st),
+            const SizedBox(width: 6),
+            _locateBtn(st),
+          ],
+        ),
+      );
+    }
     return MaterialSurface(
       radius: 16,
       blurSigma: 18,
@@ -478,71 +497,68 @@ class _HomeShell2State extends State<HomeShell2>
         ),
         child: Row(
           children: [
-            if (_searchable)
-              Expanded(
-                child: TextField(
-                  controller: _searchCtrl,
-                  style: ts(13),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    hintText: S.of(context).searchHint,
-                    hintStyle: ts(13, c: C.grey),
-                    prefixIcon:
-                        Icon(Icons.search_rounded, size: 18, color: C.grey),
-                    prefixIconConstraints:
-                        const BoxConstraints(minWidth: 26, minHeight: 0),
-                    suffixIcon: _search.isEmpty
-                        ? null
-                        : GestureDetector(
-                            onTap: () {
-                              _searchCtrl.clear();
-                              setState(() => _search = '');
-                            },
-                            child: Icon(Icons.close_rounded,
-                                size: 16, color: C.grey),
-                          ),
-                  ),
-                  onChanged: (v) {
-                    // 防抖：台站上千时逐字搜索会让地图逐字重排
-                    _searchDebounce?.cancel();
-                    _searchDebounce =
-                        Timer(const Duration(milliseconds: 300), () {
-                      if (mounted) setState(() => _search = v);
-                    });
-                  },
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                style: ts(13),
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  hintText: S.of(context).searchHint,
+                  hintStyle: ts(13, c: C.grey),
+                  prefixIcon:
+                      Icon(Icons.search_rounded, size: 18, color: C.grey),
+                  prefixIconConstraints:
+                      const BoxConstraints(minWidth: 26, minHeight: 0),
+                  suffixIcon: _search.isEmpty
+                      ? null
+                      : GestureDetector(
+                          onTap: () {
+                            _searchCtrl.clear();
+                            setState(() => _search = '');
+                          },
+                          child: Icon(Icons.close_rounded,
+                              size: 16, color: C.grey),
+                        ),
                 ),
-              )
-            else
-              Expanded(
-                child: Text(
-                  _labelOf(Tx.of(context), _slots[_tab].$1),
-                  style: T.h3,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                onChanged: (v) {
+                  // 防抖：台站上千时逐字搜索会让地图逐字重排
+                  _searchDebounce?.cancel();
+                  _searchDebounce =
+                      Timer(const Duration(milliseconds: 300), () {
+                    if (mounted) setState(() => _search = v);
+                  });
+                },
               ),
+            ),
             const SizedBox(width: 6),
             _statusPill(st),
             const SizedBox(width: 6),
-            _iconBtn(Icons.my_location_rounded, C.blue, () {
-              if (_tab != 0) _select(0);
-              final me = st.myStation;
-              if (me != null) {
-                st.focusOnMap(me);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(S.of(context).noFixYet),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            }),
+            _locateBtn(st),
           ],
         ),
       ),
     );
+  }
+
+  /// 定位按钮：回到地图并居中到我
+  ///
+  /// 2.0 里地图始终在，所以从任何一页点它都能直接落回地图 —— 不必先切页。
+  Widget _locateBtn(AppState st) {
+    return _iconBtn(Icons.my_location_rounded, C.blue, () {
+      if (_tab != 0) _select(0);
+      final me = st.myStation;
+      if (me != null) {
+        st.focusOnMap(me);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(S.of(context).noFixYet),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
   }
 
   /// 连接/在线状态胶囊：点一下进连接设置
@@ -550,8 +566,10 @@ class _HomeShell2State extends State<HomeShell2>
   Widget _statusPill(AppState st) {
     final up = st.connected;
     final c = up ? C.green : (st.connecting ? C.blue : C.slate);
+    // 只给一个数字（例如「37」）看不出是什么；带上「在线」这个词，
+    // 与 1.0 顶栏的统计标签口径一致。
     final text = up
-        ? '${st.online}'
+        ? '${st.online} ${S.of(context).online}'
         : (st.connecting ? S.of(context).connecting : S.of(context).offline);
     return GestureDetector(
       onTap: () => Navigator.push(
