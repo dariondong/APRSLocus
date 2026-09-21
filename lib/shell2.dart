@@ -75,12 +75,33 @@ class _HomeShell2State extends State<HomeShell2>
   /// 导航胶囊高度
   static const double _kNav = 56;
 
-  /// 内容面板两个档位
+  /// 统一外边距（左右 / 面板与导航之间 / 导航距底）。
+  ///
+  /// 原来左右是 10、面板与导航之间是 8、导航距底又是 10 —— 同一组悬浮元素用三个
+  /// 不同的间距，这种不一致最容易被看出来「没收拾过」。统一成一个常数后，
+  /// 想调就一处调，也不会再各自漂移。
+  static const double _kGutter = 10;
+
+  /// 内容面板的「半屏」档（比例）
   static const double _kHalf = 0.46;
-  static const double _kFull = 0.86;
+
+  /// 「近全屏」档不是固定比例，而是**由可用高度算出来**：
+  /// 面板上沿不许碰到顶栏 —— 顶栏装着搜索、连接状态与定位按钮，
+  /// 被面板盖住就等于这些入口消失了（0.86 这种写死的比例在小屏上正好会盖住）。
 
   /// 向下拖过这个比例就收起（回到地图）
   static const double _kDismiss = 0.30;
+
+  /// 面板可达的最大高度（像素）：屏高 − 底部导航 − 面板下边距 − 顶栏占位。
+  ///
+  /// 用像素而不是比例，是因为它由「顶栏实际高度」决定（见上方说明）。
+  /// 那个「面板下边距」不能漏：面板自己往下留了 `_kGutter`，
+  /// 漏掉它算出来的上限会让面板上沿正好**贴住**顶栏（差的就是这一档间隙）。
+  double _maxSheetH(Size size, double navSpace, double topInset) =>
+      (size.height - navSpace - _kGutter - topInset).clamp(160.0, size.height);
+
+  double _fullRatio(Size size, double navSpace, double topInset) =>
+      _maxSheetH(size, navSpace, topInset) / size.height;
 
   // 搜索（仅地图/台站页用，沿用 1.0 顶栏那套 300ms 防抖）
   String _search = '';
@@ -146,7 +167,10 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 底部导航占的总高度（含安全区与下边距）
   double _navSpace(BuildContext context) =>
-      _kNav + MediaQuery.of(context).padding.bottom + 10;
+      _kNav + MediaQuery.of(context).padding.bottom + _kGutter;
+
+  /// 顶栏占的高度（顶部安全区 + 栏高 + 间隙），同时是地图顶部让位量与面板上限
+  double _topInset() => MediaQuery.of(context).padding.top + 6 + _barH + 8;
 
   void _snapTo(double target) {
     _snap = Tween(begin: _extent, end: target);
@@ -164,18 +188,26 @@ class _HomeShell2State extends State<HomeShell2>
 
   void _onDrag(double dy) {
     _anim.stop();
-    final h = MediaQuery.of(context).size.height;
-    setState(() => _extent = (_extent - dy / h).clamp(0.0, _kFull));
+    final size = MediaQuery.of(context).size;
+    final navSpace = _navSpace(context);
+    final topInset = _topInset();
+    final h = size.height;
+    setState(() => _extent = (_extent - dy / h)
+        .clamp(0.0, _fullRatio(size, navSpace, topInset)));
   }
 
   void _onDragEnd() {
+    final size = MediaQuery.of(context).size;
+    final navSpace = _navSpace(context);
+    final topInset = _topInset();
+    final full = _fullRatio(size, navSpace, topInset);
     if (_extent < _kDismiss) {
       // 下滑关闭：回到地图（并把页签同步过去，否则导航会停在旧页签上）
       setState(() => _tab = 0);
       _snapTo(0);
       return;
     }
-    _snapTo(_extent >= (_kHalf + _kFull) / 2 ? _kFull : _kHalf);
+    _snapTo(_extent >= (_kHalf + full) / 2 ? full : _kHalf);
   }
 
   /// 只有「地图/台站」页用全局搜索
@@ -199,7 +231,10 @@ class _HomeShell2State extends State<HomeShell2>
     final pad = MediaQuery.of(context).padding;
     final navSpace = _navSpace(context);
     final barTop = pad.top + 6;
-    final sheetH = (size.height * _extent).clamp(0.0, size.height - navSpace - 40);
+    final topInset = _topInset();
+    // 上限就是 _maxSheetH：绝不盖住顶栏
+    final sheetH = (size.height * _extent)
+        .clamp(0.0, _maxSheetH(size, navSpace, topInset));
     final showSheet = _extent > 0.02;
 
     return Scaffold(
@@ -212,26 +247,31 @@ class _HomeShell2State extends State<HomeShell2>
               state: widget.state,
               searchQuery: _search,
               isActive: true,
-              topInset: barTop + _barH + 8,
-              // 地图贴底的控件要让开「导航 + 内容面板」
-              bottomInset: navSpace + sheetH + 8,
+              topInset: topInset,
+              // 底部被占用的边界 B（自屏幕底算起）＝ 导航 + （面板 + 间隙）。
+              // 地图那边的口径是「相对安全区」，所以这里减去 pad.bottom ——
+              // 这样贴底控件永远落在 B 上方 14px：面板收起时贴着导航，
+              // 面板打开时贴着面板，而不是随卡片高度漂出一个大空隙。
+              bottomInset: navSpace +
+                  (showSheet ? _kGutter + sheetH : 0) -
+                  pad.bottom,
             ),
           ),
 
           // ② 浮层顶栏
           Positioned(
             top: barTop,
-            left: 10,
-            right: 10,
+            left: _kGutter,
+            right: _kGutter,
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
 
           // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
           if (showSheet)
             Positioned(
-              left: 10,
-              right: 10,
-              bottom: navSpace + 8,
+              left: _kGutter,
+              right: _kGutter,
+              bottom: navSpace + _kGutter,
               child: SizedBox(
                 height: sheetH,
                 child: MaterialSurface(
@@ -269,9 +309,9 @@ class _HomeShell2State extends State<HomeShell2>
 
           // ④ 底部悬浮导航（固定位置，永不随内容移动）
           Positioned(
-            left: 10,
-            right: 10,
-            bottom: pad.bottom + 10,
+            left: _kGutter,
+            right: _kGutter,
+            bottom: pad.bottom + _kGutter,
             child: _navBar(),
           ),
 
@@ -295,7 +335,11 @@ class _HomeShell2State extends State<HomeShell2>
       onVerticalDragUpdate: (d) => _onDrag(d.delta.dy),
       onVerticalDragEnd: (_) => _onDragEnd(),
       // 轻点把手：在半屏 / 近全屏之间切换
-      onTap: () => _snapTo(_extent >= (_kHalf + _kFull) / 2 ? _kHalf : _kFull),
+      onTap: () {
+        final size = MediaQuery.of(context).size;
+        final full = _fullRatio(size, _navSpace(context), _topInset());
+        _snapTo(_extent >= (_kHalf + full) / 2 ? _kHalf : full);
+      },
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         height: 22,
@@ -485,14 +529,16 @@ class _HomeShell2State extends State<HomeShell2>
         ),
       );
     }
+    // 顶栏与底部导航同属「悬浮的条」，形状也用同一族（整只胶囊）——
+    // 原来是顶栏 16、导航 999，同一家族两种形，看着就不像一套东西。
     return MaterialSurface(
-      radius: 16,
+      radius: 999,
       blurSigma: 18,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
           color: C.surfaceFillStrong,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(999),
           boxShadow: elev2(),
         ),
         child: Row(
@@ -625,13 +671,13 @@ class _HomeShell2State extends State<HomeShell2>
         _select(2);
       },
       child: MaterialSurface(
-        radius: 16,
+        radius: 999,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 340),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: C.surfaceFillStrong,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(999),
             boxShadow: elev2(),
           ),
           child: Row(
