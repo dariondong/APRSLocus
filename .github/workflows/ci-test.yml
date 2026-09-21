@@ -64,6 +64,12 @@ jobs:
       - name: Check widget members
         run: python3 tool/check_widget_members.py
 
+      # `const Padding(... color: C.blue)` 会报 invalid_constant（C 的字段是非常量）。
+      # 仓库里早就踩过（station_detail.dart 留着注释），我写 2.0 连接按钮时又踩了
+      # 一次。这种判据完全确定，本机几秒可查，没必要再等一轮 CI。
+      - name: Check const colors
+        run: python3 tool/check_const_colors.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

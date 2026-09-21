@@ -560,8 +560,11 @@ class _HomeShell2State extends State<HomeShell2>
             color: C.blue.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(8),
+          // 不能 const：C.blue 是 static 字段（非常量），
+          // `const Padding(... color: C.blue)` 会报 invalid_constant ——
+          // 仓库里别处也踩过同一个坑（station_detail.dart 有注释记着）。
+          child: Padding(
+            padding: const EdgeInsets.all(8),
             child: CircularProgressIndicator(strokeWidth: 2, color: C.blue),
           ),
         ),
