@@ -154,10 +154,9 @@ class AppState extends ChangeNotifier {
     myHasFix = true;
     useSimLocation = true;
     loc.stop();
-    // 换到模拟位置：清掉 GPS 的静止判定窗口与精度，免得切回真实定位时
-    // 拿着手动坐标当历史、把位置粘在旧点上。
-    _selfFilter.reset();
-    myAccuracy = 0;
+    // 换到模拟位置：复位 GPS 侧的全部状态，免得切回真实定位时拿着手动坐标
+    // 当历史、把位置粘在旧点上。
+    _resetSelfFix();
     locStatus = '模拟位置';
     _syncFilterToPosition(); // 过滤中心跟随我的位置（filterFollow 时）
     persist();
@@ -3005,8 +3004,7 @@ class AppState extends ChangeNotifier {
   void stopTracking() {
     loc.stop();
     myHasFix = false;
-    _selfFilter.reset();
-    myAccuracy = 0;
+    _resetSelfFix();
     locStatus = '定位已停止';
     _log(LogLevel.info, '定位', '定位已停止');
     _notify();
@@ -3038,12 +3036,15 @@ class AppState extends ChangeNotifier {
     // 为什么用「连续确认」而不是直接丢弃：真的换了地方也必须能恢复，否则轨迹会永远
     // 卡在旧位置。确认后**清空轨迹从新位置重画**，而不是画一条横跨两地的直线 ——
     // 那条线是假的，比没有轨迹更误导。
-    if (!lastKnown && myTrack.isNotEmpty) {
-      final last = myTrack.last;
-      final dKm = haversine(last.lat, last.lng, lat, lng);
+    // 参照点是**上一次被接受的实时定位**，不是 `myTrack.last`：
+    //   * 静止时不再写轨迹点 → myTrack.last 可能已经是几小时前的点，那时
+    //     gapSec 必然超窗、守卫**整个失效**（正是本次改动引入的回归）；
+    //   * myTrack 为空时（刚启动、清空数据、刚确认过跳变）原本完全没有守卫。
+    if (!lastKnown && _lastFixLat != null) {
+      final dKm = haversine(_lastFixLat!, _lastFixLng!, lat, lng);
       // 「短时间内」跨很远才算跳变：中间本来就隔了很久的话，多半是合法位移
       // （设备刚开、GPS 丢了一阵），那种情况宁可画一条跨越空档的线，也别把轨迹清掉。
-      final gapSec = DateTime.now().difference(last.time).inSeconds;
+      final gapSec = DateTime.now().difference(_lastFixTime!).inSeconds;
       if (dKm > _kFixJumpKm && gapSec < _kFixJumpWindowSec) {
         final nearPending = _pendingFixLat != null &&
             haversine(_pendingFixLat!, _pendingFixLng!, lat, lng) < _kFixConfirmKm;
@@ -3058,7 +3059,7 @@ class AppState extends ChangeNotifier {
           _log(
             LogLevel.info,
             '定位',
-            '疑似跳变，暂不记轨：距上次轨迹点 ${dKm.toStringAsFixed(1)}km'
+            '疑似跳变，暂不记录：距上次可信位置 ${dKm.toStringAsFixed(1)}km'
                 '（第 $_pendingFixCount 次，连续 $_kFixConfirmNeed 次一致才接受）',
           );
           // 标记也不动：先按「上一次可信位置」显示，避免地图上的「我」乱跳
@@ -3082,9 +3083,21 @@ class AppState extends ChangeNotifier {
       }
     }
 
+    // ── 最后一道闸：缓存位置只在「还没有过实时定位」时用 ──
+    //
+    // 原生侧在服务运行期间也会挡缓存点（Android 的 hasLiveFix），但**前台服务
+    // 重启后那个标记会归零**（比如系统回收、切回前台重连），于是它可能再次放行
+    // 一个几分钟前的缓存位置；而上层如果照收，标记就会被拉回旧位置 ——
+    // 症状正是用户报过的「轨迹跳回初始点」。这里记住「已经有过实时定位」，把这条
+    // 路径彻底封掉：缓存点此后只用来保证「有东西可显示」，不再改标记。
+    if (lastKnown && _hadLiveFix) {
+      _log(LogLevel.debug, '定位', '已有实时定位，忽略系统缓存位置');
+      return;
+    }
+
     // ── 静止防抖（A+B）：见 lib/pos_quality.dart 的 [SelfFixFilter] ──
     //
-    // 定位**源头**只负责「把明显不可信的点丢棹」（Android 侧 150m 精度门控、
+    // 定位**源头**只负责「把明显不可信的点丢掉」（Android 侧 150m 精度门控、
     // 网络点只在 GPS 停更时兜底、缓存点只在无实时定位时用）；而「可信但抖」
     // 的点一直没人管 —— 静止时 GPS 在 20~150m 之间飘是常态，轨迹会被画成一小团
     // 毛线球，信标上报的坐标也跟着哆嗦。这里做的就是把「可信但抖」修平。
@@ -3104,6 +3117,14 @@ class AppState extends ChangeNotifier {
     myAlt = alt;
     myHasFix = true;
     myAccuracy = accuracy > 0 ? accuracy : 0;
+    if (!lastKnown) {
+      // 只有实时定位才推进参照点与「有过实时定位」标记；缓存位置不算数
+      // （否则一个错缓存点会成为后续判断的基准）。
+      _lastFixLat = outLat;
+      _lastFixLng = outLng;
+      _lastFixTime = DateTime.now();
+      _hadLiveFix = true;
+    }
     // 速度 m/s → km/h；方位角度。
     // 静止时 GPS 也返回 speed=0/bearing=0，正常上报（000/000 表示静止）
     mySpeed = speed * 3.6;
@@ -4189,6 +4210,31 @@ class AppState extends ChangeNotifier {
   /// 自己位置的静止防抖滤波器（见 lib/pos_quality.dart 的 [SelfFixFilter]）
   final SelfFixFilter _selfFilter = SelfFixFilter();
 
+  /// 是否已经有过**实时**定位（系统缓存位置不算）。缓存点只在它为 false 时
+  /// 允许更新标记 —— 原生前台服务重启会让它那边的 hasLiveFix 归零，这里再挡一道。
+  bool _hadLiveFix = false;
+
+  /// 上一次**被接受**的实时定位：跳变守卫的参照点。
+  /// 不能用 `myTrack.last` —— 静止时不写轨迹点（可能已是几小时前的点），
+  /// 且 myTrack 为空时原本完全没有守卫。
+  double? _lastFixLat, _lastFixLng;
+  DateTime? _lastFixTime;
+
+  /// 复位「自己位置」的全部状态：防抖窗口、跳变守卫、缓存点闸门、精度。
+  /// 停止定位 / 切到模拟位置 / 清空数据时调用 —— 否则切回真实定位时
+  /// 会拿着旧状态（手动坐标、缓存的窗口）当历史。
+  void _resetSelfFix() {
+    _selfFilter.reset();
+    _hadLiveFix = false;
+    _lastFixLat = null;
+    _lastFixLng = null;
+    _lastFixTime = null;
+    _pendingFixLat = null;
+    _pendingFixLng = null;
+    _pendingFixCount = 0;
+    myAccuracy = 0;
+  }
+
   /// ── 接收台站的打点质量层状态（见 [_upsertStation] / `PosQuality`）──
   /// 每台站一个门控：速度门控需要「上次见到的时间」来算合理位移。
   /// 不持久化（重启后第一帧一律接受，用不到历史）。
@@ -5124,6 +5170,9 @@ class AppState extends ChangeNotifier {
   /// 清除所有本地数据
   void clearAllData() {
     stations.clear();
+    // 自己的轨迹不在 stations 里，以前清空数据后会残留一条自己的线
+    myTrack.clear();
+    _resetSelfFix();
     _bumpStationsVersion();
     messages.clear();
     chatGroups.clear();

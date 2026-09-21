@@ -62,15 +62,36 @@ Android 侧 `LocationService.kt` 一直在发 `"accuracy"`、iOS 侧 `LocationPl
 * 修掉一个本版引入的 bug：`filterLng` 误写成原始经度，会让 APRS-IS 过滤中心拿
   「平滑纬度 + 未平滑经度」去算，两轴不同步。
 
-## 四、两条新增的 CI 检查（本机跑不了 analyze，只能靠它们）
+## 四、还会不会「跳回初始点」？—— 又查出两条路，都封死了
+
+顺着「谁还能把标记拉回旧点」把整条链路重走了一遍，剩下两条：
+
+* **缓存位置（`getLastKnownLocation`）在原生服务重启后会再次放行。** 原生侧在服务
+  运行期间确实会挡缓存点（Android 的 `hasLiveFix`），但**前台服务被系统回收、切回
+  前台重连之后那个标记会归零**，于是它可能再放行一个几分钟前的缓存位置 —— 而上层
+  照收就会把标记拉回旧位置，症状正是用户报过的「轨迹跳回初始点」。现在 Dart 侧自己
+  记住「已经有过实时定位」，此后的缓存点**连标记都不再改**（只保证有东西可显示）。
+* **跳变守卫的参照点原本是「上一个轨迹点」——这条是我这版改动引入的回归。**
+  因为静止时不再写轨迹点了，`myTrack.last` 可能已经是几小时前的点，于是
+  `gapSec` 必然超窗、**守卫整个失效**；而 `myTrack` 为空时（刚启动、清空数据后、
+  刚确认过一次跳变）原本完全没有守卫。参照点改成「**上一次被接受的实时定位**」，
+  这两处一起解决 —— 顺带 `myTrack.clear()` 现在只在确认跳变时发生。
+
+顺手补上：`clearAllData()` 以前不清自己的轨迹（`myTrack` 不在 `stations` 里），
+点「清空数据」后地图上仍残留一条自己的线；现在一并清掉并复位定位状态。
+
+## 五、两条新增的 CI 检查（本机跑不了 analyze，只能靠它们）
 
 * `tool/sim_selffix.py --check`：既是仿真也是回归 —— 校验 Dart 常量与仿真**逐项一致**
   （两处漂移就等于在验证另一个算法），并断言「静止不许反复横跳 / 单点漂移不许漏出去 /
   **步行开车不许被平滑**」。
-* `tool/check_pos_quality.py` 增加两条断言：accuracy 是否真的从原生接回来、
-  `locStatus` 的每个状态串是否都在白名单里登记过（漏登记会让英文界面漏出中文）。
+* `tool/check_pos_quality.py` 增加五条断言：accuracy 是否真的从原生接回来、
+  `locStatus` 的每个状态串是否都在白名单里登记过（漏登记会让英文界面漏出中文）、
+  缓存位置闸门与「守卫参照点不是 myTrack.last」这两条不许回退、以及
+  `clearAllData()` 必须清 myTrack。
 
-三条回归样本都验证过**会报红**，其中一条正是「keep 阈值落在步行区间 → 走路被粘住」。
+回归样本都验证过**会报红**，其中两条正是上面这两条路径被改回去 ——
+另外一条是「keep 阈值落在步行区间 → 走路被粘住」。
 
 ---
 
@@ -140,15 +161,40 @@ same style as the ambiguity circles for other stations. Also fixed a bug introdu
 release: `filterLng` was assigned the raw, unsmoothed longitude, which made the APRS-IS filter
 centre combine a smoothed latitude with an unsmoothed longitude.
 
-**4) Two new CI checks** (this machine cannot run analyze, so these are the only safety net):
+**4) Can it still jump back to the initial point? Two more paths were found, both now
+closed.** Walking the chain again asking "what can still drag the marker back to an old
+position" turned up two:
+
+* **The cached location (`getLastKnownLocation`) can be released again after a native service
+  restart.** The native side does suppress cached fixes while the service runs (Android's
+  `hasLiveFix`), but **that flag resets when the foreground service is reclaimed and reconnects**,
+  so a cached position from a few minutes ago can be emitted again — and accepting it drags the
+  marker back to the old position, which is exactly the "track jumps back to the initial point"
+  symptom users reported. The Dart side now remembers that it has already had a live fix, and
+  cached fixes after that **do not even move the marker** (they only guarantee something is
+  displayed).
+* **The jump guard's reference point used to be "the previous track point" — a regression
+  introduced by this very release.** Since stationary fixes are no longer written to the track,
+  `myTrack.last` can be hours old, so `gapSec` always exceeds the window and **the guard stops
+  working entirely**; and when `myTrack` is empty (just started, after clearing data, right after
+  a confirmed jump) there was no guard at all. The reference is now "**the last accepted live
+  fix**", which fixes both cases at once.
+
+Also fixed along the way: `clearAllData()` never cleared your own track (`myTrack` is not inside
+`stations`), so a line of your own survived "clear all data"; it is now cleared along with the
+location state.
+
+**5) Two new CI checks** (this machine cannot run analyze, so these are the only safety net):
 `tool/sim_selffix.py --check` is both simulation and regression — it verifies that the Dart
 constants match the simulation **term by term** (any drift means the simulation is validating a
 different algorithm), and asserts that stationary output never jumps around, that a single-point
 outlier never leaks out, and that **walking and driving are never smoothed**. `check_pos_quality.py`
-gained two assertions: that accuracy is really plumbed back from the native side, and that every
-`locStatus` string is registered in the whitelist. All three regression samples were verified to go
-**red**, one of them being exactly "the keep threshold landed inside the walking range, so walking
-got stuck".
+gained five assertions: that accuracy is really plumbed back from the native side, that every
+`locStatus` string is registered in the whitelist, that the cached-location gate and the "guard
+reference is not myTrack.last" invariant cannot regress, and that `clearAllData()` clears `myTrack`.
+Every regression sample was verified to go **red** — two of them are exactly the two paths above
+being reverted, and another is "the keep threshold landed inside the walking range, so walking got
+stuck".
 
 ## [1.6.145] - 2026-09-21
 

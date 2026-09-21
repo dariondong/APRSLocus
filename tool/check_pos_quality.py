@@ -101,6 +101,33 @@ def main() -> int:
     forbid('lib/state.dart', 'haversine(last.lat, last.lng, lat, lng) > 0.02',
            '自己轨迹的固定 20m 门限又回来了（应改为按速度自适应）')
 
+    # ───────── 「还会不会跳回初始点」的三条闸门 ─────────
+    # ⑨ 缓存位置：一旦有过实时定位，之后到达的系统缓存点必须被丢弃。
+    #    原生侧前台服务重启会让它的 hasLiveFix 归零，所以上层必须自己记。
+    need('lib/state.dart', 'if (lastKnown && _hadLiveFix) {',
+         '缓存位置闸门没了 —— 前台服务重启后，几分钟前的缓存点会把标记拉回旧位置')
+
+    # ⑩ 跳变守卫的参照点必须是「上次被接受的实时定位」，不能用 myTrack.last：
+    #    静止时不再写轨迹点，myTrack.last 可能已是几小时前的点（守卫会整个失效），
+    #    而且 myTrack 为空时（刚启动/清空后）原本完全没有守卫。
+    need('lib/state.dart', 'haversine(_lastFixLat!, _lastFixLng!, lat, lng)',
+         '跳变守卫的参照点不是「上次可信位置」')
+    forbid('lib/state.dart', 'haversine(last.lat, last.lng, lat, lng)',
+           '跳变守卫又用回 myTrack.last 当参照点（静止久了会失效）')
+
+    # ⑪ 定位状态复位必须集中在一处，并在三个入口都被调用
+    need('lib/state.dart', 'void _resetSelfFix() {', '定位状态复位方法没了')
+    n_reset = read('lib/state.dart').count('_resetSelfFix();')
+    if n_reset < 3:
+        errors.append(f'_resetSelfFix() 只被调用 {n_reset} 次 —— 停止定位 / '
+                      f'切模拟位置 / 清空数据三处都要复位（实际要 ≥3）')
+    state_src = read('lib/state.dart')
+    i = state_src.find('void clearAllData() {')
+    if i < 0:
+        errors.append('找不到 clearAllData()')
+    elif 'myTrack.clear();' not in state_src[i:i + 400]:
+        errors.append('clearAllData() 没清 myTrack —— 清空数据后自己的轨迹会残留')
+
     # ⑧ locStatus 白名单：所有赋值过的状态串都必须已登记。
     #
     # ⚠ 不能只抓 `locStatus = 'xxx';` 这种直接赋值 —— 三元表达式
