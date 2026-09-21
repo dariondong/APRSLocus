@@ -657,7 +657,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: Center(
                       child: MaterialSurface(
                         radius: 12,
-                        blurSigma: 0,
+                        blurSigma: C.kChipBlurSigma,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
@@ -694,7 +694,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         onTap: _showMapHelp,
                         child: MaterialSurface(
                           radius: 12,
-                          blurSigma: 0,
+                          blurSigma: C.kChipBlurSigma,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 14,
@@ -1083,7 +1083,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     // 每次悬停都要重算一层离屏模糊。小浮层不值得付这个代价（见 material.dart）。
     return MaterialSurface(
       radius: 12,
-      blurSigma: 0,
+      blurSigma: C.kChipBlurSigma,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
@@ -1561,7 +1561,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _infoChip(List<Station> vis, bool searched) {
     return MaterialSurface(
       radius: 16,
-      blurSigma: 0,
+      blurSigma: C.kChipBlurSigma,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
@@ -1672,7 +1672,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _legend() {
     return MaterialSurface(
       radius: 12,
-      blurSigma: 0,
+      blurSigma: C.kChipBlurSigma,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
@@ -1736,7 +1736,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         radius: 12,
         // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给
         // 「实心」的 chipTint —— 本函数的三个调用点都这么传。
-        blurSigma: 0,
+        blurSigma: C.kChipBlurSigma,
         child: Container(
           width: 38,
           height: 38,
@@ -2169,7 +2169,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       onTap: _showMyPanel,
       child: MaterialSurface(
         radius: 12,
-        blurSigma: 0,
+        blurSigma: C.kChipBlurSigma,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
@@ -2257,7 +2257,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: MaterialSurface(
         radius: 12,
-        blurSigma: 0,
+        blurSigma: C.kChipBlurSigma,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(

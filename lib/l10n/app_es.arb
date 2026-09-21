@@ -2324,5 +2324,7 @@
   "uiLayoutClassicDesc": "Barra lateral en pantallas anchas y navegación inferior en las estrechas, igual que antes",
   "uiLayoutSheet": "Mapa como base (2.0)",
   "uiLayoutSheetDesc": "El mapa ocupa toda la pantalla; estaciones / mensajes / paquetes / ajustes van en una tarjeta deslizable abajo: desliza hacia arriba o toca el asa para expandirla",
-  "uiLayoutHint": "Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta"
+  "uiLayoutHint": "Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta",
+  "linkNotConnected": "Sin conexión",
+  "linkTapForSettings": "Toca para abrir los ajustes de conexión"
 }

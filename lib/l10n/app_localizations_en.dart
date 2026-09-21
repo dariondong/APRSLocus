@@ -6618,4 +6618,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get uiLayoutHint =>
       'Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses';
+
+  @override
+  String get linkNotConnected => 'Not connected';
+
+  @override
+  String get linkTapForSettings => 'Tap to open connection settings';
 }

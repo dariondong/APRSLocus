@@ -2838,5 +2838,7 @@
   "uiLayoutClassicDesc": "宽屏左侧栏 + 窄屏底部导航，与旧版完全一致",
   "uiLayoutSheet": "地图为基底（2.0）",
   "uiLayoutSheetDesc": "地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开",
-  "uiLayoutHint": "切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移"
+  "uiLayoutHint": "切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移",
+  "linkNotConnected": "未连接",
+  "linkTapForSettings": "点一下查看连接设置"
 }

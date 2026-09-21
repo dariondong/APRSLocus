@@ -172,13 +172,17 @@ def material_bodies(lines):
     return out
 
 
-def solid_blur_problems():
-    """实心小浮层（chipFill/chipTint）必须显式 `blurSigma: 0`。
+def chip_blur_problems():
+    """用了小浮层的半透明填色（chipFill / chipTint），就**不能**把模糊写成 0。
 
-    为什么查这条：性能优化把「小浮层」从模糊改成实心，这一步必须**成对**改 ——
-    只改填色不改模糊 = 白付一层离屏重绘（模糊被实色盖住，谁也看不出来）；
-    只改模糊不改填色 = 半透明的浮层直接压在瓦片上，字糊掉。两种都只有肉眼
-    在特定页面上才看得出来，所以用检查兜住配对关系。
+    为什么查这条：小浮层的填色是半透明的（0.72），靠背后那层模糊撑着可读性。
+    把 `blurSigma` 写成 0 就变成「半透明又不模糊」—— 底下的地图瓦片直接透上来，
+    字糊成一片；而它只在特定页面上肉眼可见，很容易漏。
+
+    （这条规则**反过一次**，值得记下来：性能优化那一版把半径降为 0 的动机是「省一层
+    离屏重绘」，那时填色是近乎不透明的（0.94），配对关系是「实心 ⇒ 不模糊」。后来按
+    用户要求把小按钮的磨砂加回来，配对关系整体反转成「半透明 ⇒ 必须模糊」。
+    检查器跟着反转，而不是删掉 —— 配对关系本身仍然需要有人看着。）
     """
     bad = []
     for base, _dirs, files in os.walk(LIB):
@@ -189,8 +193,13 @@ def solid_blur_problems():
             rel = os.path.relpath(path, ROOT).replace(os.sep, '/')
             lines = io.open(path, encoding='utf-8').read().split('\n')
             for start, _end, body in material_bodies(lines):
-                solid = ('C.chipFill' in body) or ('chipTint(' in body)
-                if solid and 'blurSigma: 0' not in body:
+                # 判定前先剔掉注释行：注释里常常提到 `blurSigma: 0` 或 `chipFill`
+                # 来**解释**规则，不剔就会把说明文字当成代码（这个假失败踩过两次）。
+                code = '\n'.join(
+                    l for l in body.split('\n')
+                    if not l.lstrip().startswith('//'))
+                chip = ('C.chipFill' in code) or ('chipTint(' in code)
+                if chip and 'blurSigma: 0' in code:
                     bad.append((rel, start + 1))
     return bad
 
@@ -230,15 +239,15 @@ def main() -> int:
                 continue
             problems.append((rel, hits, reason))
 
-    solid_bad = solid_blur_problems()
-    if solid_bad:
-        print('以下 `MaterialSurface` 用了「实心小浮层」的填色（chipFill / chipTint），'
-              '却没写 `blurSigma: 0` —— 模糊会被实色盖住，等于白付一层离屏重绘：')
-        for rel, ln in solid_bad:
-            print('  SOLID-NO-BLUR0  %-28s 第 %d 行' % (rel, ln))
+    chip_bad = chip_blur_problems()
+    if chip_bad:
+        print('以下 `MaterialSurface` 用了小浮层的半透明填色（chipFill / chipTint），'
+              '却写了 `blurSigma: 0` —— 半透明又不模糊，底下的地图会透上来把字糊掉：')
+        for rel, ln in chip_bad:
+            print('  CHIP-NO-BLUR  %-28s 第 %d 行' % (rel, ln))
         print()
 
-    if not problems and not bad_imports and not solid_bad:
+    if not problems and not bad_imports and not chip_bad:
         print('material coverage ok: 所有半透明壳表面都在材质壳内，且都 import 了 material.dart')
         return 0
     if not problems and not bad_imports:

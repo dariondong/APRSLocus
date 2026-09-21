@@ -6353,6 +6353,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get uiLayoutHint => '切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移';
+
+  @override
+  String get linkNotConnected => '未连接';
+
+  @override
+  String get linkTapForSettings => '点一下查看连接设置';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12703,4 +12709,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get uiLayoutHint => '切換後立即生效，兩種佈局的設定各自保留；卡片收起時地圖上的按鈕會自動上移';
+
+  @override
+  String get linkNotConnected => '未連線';
+
+  @override
+  String get linkTapForSettings => '點一下查看連線設定';
 }

@@ -6427,4 +6427,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get uiLayoutHint =>
       'すぐに反映されます。両レイアウトの設定は別々に保持されます。カードを畳むと地図上のボタンが自動で上に移動します';
+
+  @override
+  String get linkNotConnected => '未接続';
+
+  @override
+  String get linkTapForSettings => 'タップして接続設定を開く';
 }

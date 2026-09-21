@@ -596,12 +596,12 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
                   onTap: _goMyLocation,
                   child: MaterialSurface(
                     radius: 24,
-                    blurSigma: 0,
+                    blurSigma: C.kChipBlurSigma,
                     child: Container(
                       width: 40, height: 40,
                       decoration: BoxDecoration(
-                        // 40px 小圆钮：不模糊（见 blurSigma: 0），所以填色要用
-                        // 实心的 chipFill，否则地图会从它底下透上来
+                        // 40px 小圆钮：走「小浮层」那一档材质（chipFill +
+                        // C.kChipBlurSigma），半透明 + 轻磨砂
                         color: C.chipFill,
                         shape: BoxShape.circle,
                         border: Border.all(color: C.border),

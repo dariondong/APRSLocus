@@ -579,7 +579,7 @@ class RoundIconBtn extends StatelessWidget {
       onTap: onTap,
       child: MaterialSurface(
         radius: 12,
-        blurSigma: 0,
+        blurSigma: C.kChipBlurSigma,
         child: Container(
           width: 38,
           height: 38,

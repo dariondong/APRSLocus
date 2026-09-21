@@ -195,15 +195,20 @@ class C {
   static Color get surfaceFillStrong =>
       hasBackdrop ? white.withValues(alpha: _surfaceStrongAlphaEff) : white;
 
-  /// **小浮层**（工具钮、图例、提示胶囊、细横条）的表面色：近乎不透明。
+  /// **小浮层**（工具钮、图例、提示胶囊、细横条）的表面色。
   ///
-  /// 与 [surfaceFill] / [sheetFill] 的区别是有意的，而且成对存在：
-  /// 小浮层**不做真模糊**（见 material.dart 顶部「小浮层不模糊，大面板才磨砂」），
-  /// 所以它们必须自己就够实 —— 否则底下的地图会直接透上来把字糊掉。
-  ///
-  /// 这也正是 iOS / Android 的做法：大面板才磨砂，小组件是实心的。
+  /// 比 [sheetFill] 略透一点：小浮层用的是**较小的模糊半径**（[kChipBlurSigma]），
+  /// 透一点才看得出「背后有东西」；再透就会让底下的地图透上来把字糊掉。
+  /// 0.72 与 kChipBlurSigma 是一对数字，改一个就要回头看另一个。
   static Color get chipFill =>
-      materialOn ? white.withValues(alpha: 0.94) : white;
+      materialOn ? white.withValues(alpha: 0.72) : white;
+
+  /// 小浮层的模糊半径。
+  ///
+  /// 为什么不直接用小按钮的默认半径：模糊的代价 ≈ 面积 × 半径，而小浮层的**面积**
+  /// 本来就小（38px 的按钮只有 1.4k px²，一块底部面板是 196k），所以它便宜；
+  /// 但半径给大反而会把这些小东西的边缘糊成一团灰、看着像没画好。12 是那个平衡点。
+  static const double kChipBlurSigma = 12;
 
   /// 弹窗 / 底部面板的表面：材质下也做成半透明。
   ///

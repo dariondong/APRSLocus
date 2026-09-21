@@ -6627,4 +6627,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get uiLayoutHint =>
       'Langsung berlaku; kedua tata letak menyimpan pengaturannya sendiri. Tombol di peta otomatis naik saat kartu dilipat';
+
+  @override
+  String get linkNotConnected => 'Tidak terhubung';
+
+  @override
+  String get linkTapForSettings => 'Ketuk untuk membuka pengaturan koneksi';
 }

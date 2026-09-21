@@ -29,13 +29,19 @@ import 'theme.dart';
 ///   这里用「低模糊 + 带主色的底色」表达云母的质感，而不是假装有颗粒。
 /// - **不给卡片套 BackdropFilter**：见上，卡片的通透靠「底本身够柔和 + 表面半透明」
 ///   实现，不需要每张卡一次模糊。
-/// ─── 小浮层不模糊，大面板才磨砂 ───
+/// ─── 两档材质：小浮层轻磨砂，大面板重磨砂 ───
 ///
 /// `BackdropFilter` 不是免费的：它每帧都要把**背后已经画好的内容**离屏重绘一遍，
-/// 代价 ≈ 被模糊的面积 × 半径，而且**每个实例各付一次**。而小浮层上根本看不出
-/// 模糊 —— 你能看见的是它的填充色（38px 的工具钮上，模糊只是把边缘糊成一团灰）。
-/// 于是「小浮层实心 + 大面板磨砂」既保住观感，又把同时存在的模糊层从十几个降到
-/// 两三个：地图页原来光工具钮就有 8 个 `BackdropFilter`，而它们全是 38px。
+/// 代价 ≈ 被模糊的面积 × 半径，而且**每个实例各付一次**。所以两档的**半径**不同：
+///
+/// * 小浮层（工具钮 / 图例 / 提示胶囊 / 细横条）→ `blurSigma: C.kChipBlurSigma`(12)
+///   + `C.chipFill` / [chipTint]。它们**面积小**，代价本来就低；12 的半径既看得出
+///   磨砂，又不会把 38px 按钮的边缘糊成一团灰。
+/// * 大面板（底面板 / 侧栏 / 顶栏 / 导航胶囊 / AppBar）→ 不写 `blurSigma`，
+///   用材质默认半径（玻璃 24 / 云母 16）。
+///
+/// 真正的性能问题是**同时存在的层数**与**重建频率**，不是这两个半径：这一版同时
+/// 把外壳「每秒重建数次」改成「只在显示值变化时重建」，并把半径从 34/22 降到 24/16。
 ///
 /// ── 为什么**没有**做成「按面积自动判断」（我试过，行不通）──
 ///
@@ -43,13 +49,11 @@ import 'theme.dart';
 /// 但地图上的小浮层**全都是 `Positioned` 包着的**，而 Positioned 的子项拿到的
 /// 约束是**容器（整个 Stack）的大小**、不是它自己的尺寸 —— 于是 38px 的按钮被
 /// 量成整屏，自动规则恰好在最需要它的地方失效。这种「静默失效」比不做还危险，
-/// 所以改成**显式**：
+/// 所以半径改成**显式**写。
 ///
-/// * 小浮层 → `blurSigma: 0`（不模糊）+ `C.chipFill` / [chipTint]（实心填色）；
-/// * 大面板 → 不写 `blurSigma`，用材质默认半径。
-///
-/// 两者的配对由 `tool/check_material_coverage.py` 检查：出现 `chipFill`/`chipTint`
-/// 的 `MaterialSurface` 必须写 `blurSigma: 0`，否则报红 —— 免得将来有人只改一半。
+/// 配对由 `tool/check_material_coverage.py` 检查：用了小浮层的半透明填色
+/// （`chipFill` / [chipTint]）就**不能**把 `blurSigma` 写成 0 —— 半透明又不模糊，
+/// 底下的地图会直接透上来把字糊掉（只改一半的典型症状）。
 
 class MaterialSurface extends StatelessWidget {
   /// 被包裹的表面（自身通常带半透明填色与阴影）
@@ -63,10 +67,8 @@ class MaterialSurface extends StatelessWidget {
 
   /// 模糊强度：
   /// * `null`（默认）→ 用材质默认半径 [C.materialBlur]（大面板/条走这条）；
-  /// * `0` → **不模糊**（小浮层走这条，必须配 `C.chipFill` / [chipTint] 实心填色）；
-  /// * `> 0` → 用指定半径。
-  ///
-  /// 小浮层为什么必须显式写 0：见文件顶部「为什么没有做成按面积自动判断」。
+  /// * `C.kChipBlurSigma`(12) → 小浮层的轻磨砂（工具钮 / 图例 / 提示胶囊 / 细横条）；
+  /// * `0` → **不模糊**。用半透明填色时**不要**这么写（见 `chipTint` 的说明）。
   final double? blurSigma;
 
   const MaterialSurface({
@@ -147,11 +149,12 @@ class MaterialAppBar extends StatelessWidget implements PreferredSizeWidget {
 /// 与 [surfaceTint] 的分工（别混用）：
 /// * [surfaceTint] 给**会做模糊**的表面（AppBar 这类大面积条）→ 半透明，靠背后的
 ///   模糊把它和内容分开；
-/// * [chipTint] 给**不做模糊**的小控件（38px 工具钮、圆形按钮）→ 近乎不透明，
-///   自己就把底下的地图盖住。两者分别对应「不模糊的小浮层」与「模糊的大面板」。
+/// * [chipTint] 给**小控件**（38px 工具钮、圆形按钮）→ 半透明 + 轻模糊
+///   （`blurSigma: C.kChipBlurSigma`）。两者都半透明，区别只在半径：
+///   小的 12、大的用材质默认。
 Color chipTint(Color c) {
   if (!C.materialOn) return c;
-  return c.withValues(alpha: c.a * 0.94);
+  return c.withValues(alpha: c.a * 0.72);
 }
 
 /// 把一个「表面色」调成材质该有的透明度 —— **保留它的色相**。

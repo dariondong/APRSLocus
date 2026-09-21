@@ -2240,5 +2240,7 @@
   "uiLayoutClassicDesc": "Side rail on wide screens, bottom navigation on narrow ones — exactly as before",
   "uiLayoutSheet": "Map-first (2.0)",
   "uiLayoutSheetDesc": "The map stays full-screen; stations / messages / packets / settings live in a draggable card below — swipe up or tap the handle to expand",
-  "uiLayoutHint": "Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses"
+  "uiLayoutHint": "Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses",
+  "linkNotConnected": "Not connected",
+  "linkTapForSettings": "Tap to open connection settings"
 }

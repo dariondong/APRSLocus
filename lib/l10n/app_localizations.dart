@@ -11492,6 +11492,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移'**
   String get uiLayoutHint;
+
+  /// No description provided for @linkNotConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接'**
+  String get linkNotConnected;
+
+  /// No description provided for @linkTapForSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'点一下查看连接设置'**
+  String get linkTapForSettings;
 }
 
 class _AppLocalizationsDelegate

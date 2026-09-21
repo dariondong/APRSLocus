@@ -6669,4 +6669,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get uiLayoutHint =>
       'Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta';
+
+  @override
+  String get linkNotConnected => 'Sin conexión';
+
+  @override
+  String get linkTapForSettings => 'Toca para abrir los ajustes de conexión';
 }

@@ -2324,5 +2324,7 @@
   "uiLayoutClassicDesc": "Bilah samping di layar lebar, navigasi bawah di layar sempit, sama seperti sebelumnya",
   "uiLayoutSheet": "Peta sebagai dasar (2.0)",
   "uiLayoutSheetDesc": "Peta selalu layar penuh; stasiun / pesan / paket / pengaturan ada di kartu yang bisa digeser di bawah — geser ke atas atau ketuk pegangannya untuk membuka",
-  "uiLayoutHint": "Langsung berlaku; kedua tata letak menyimpan pengaturannya sendiri. Tombol di peta otomatis naik saat kartu dilipat"
+  "uiLayoutHint": "Langsung berlaku; kedua tata letak menyimpan pengaturannya sendiri. Tombol di peta otomatis naik saat kartu dilipat",
+  "linkNotConnected": "Tidak terhubung",
+  "linkTapForSettings": "Ketuk untuk membuka pengaturan koneksi"
 }

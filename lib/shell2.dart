@@ -547,9 +547,15 @@ class _HomeShell2State extends State<HomeShell2>
     // 瓦片上，既读不清也不整。这里刻意**不套** MaterialSurface —— 这一簇面积远
     // 这一簇是「小浮层」，本来就不该模糊（见 material.dart），套了只是白加一层；
     // 用实心 chipFill 才是正解（小浮层实心、大面板磨砂）。
+    // 用「小浮层」那一档材质（chipFill + kChipBlurSigma）：半透明 + 轻磨砂。
+    // 这几个小块原本是各自 12% 透明直接压在瓦片上（读不清、也不整），包成一只胶囊
+    // 之后既整齐，也看得出背后有地图。
     return Align(
       alignment: Alignment.centerRight,
-      child: Container(
+      child: MaterialSurface(
+        radius: 999,
+        blurSigma: C.kChipBlurSigma,
+        child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         decoration: BoxDecoration(
           color: C.chipFill,
@@ -574,6 +580,7 @@ class _HomeShell2State extends State<HomeShell2>
           const SizedBox(width: 6),
           _locateBtn(st),
         ],
+        ),
         ),
       ),
     );
@@ -603,12 +610,27 @@ class _HomeShell2State extends State<HomeShell2>
       );
     }
     final up = st.connected;
+    // 未连接时做成**实心蓝**（主操作的样子），而不是浅色图标钮：
+    // 原来那颗按钮无论连不连都是一个 12% 透明的浅底，看不出「现在该点它」。
+    // 已连接仍用红色（断开语义）保持区分。
     return Tooltip(
       message: up ? s.disconnect : s.connectAction,
-      child: _iconBtn(
-        up ? Icons.wifi_off_rounded : Icons.wifi_rounded,
-        up ? C.red : C.blue,
-        st.toggleConnect,
+      child: GestureDetector(
+        onTap: st.toggleConnect,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: up ? C.red.withValues(alpha: 0.12) : C.blue,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            up ? Icons.wifi_off_rounded : Icons.wifi_rounded,
+            size: 18,
+            color: up ? C.red : Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -633,41 +655,105 @@ class _HomeShell2State extends State<HomeShell2>
     });
   }
 
-  /// 连接/在线状态胶囊：点一下进连接设置
-  /// （2.0 没有侧栏，而「连接状态」是最高频的诊断入口，得给它一个位置）
+  /// 连接状态胶囊 + 当前链路来源。
+  ///
+  /// ── 为什么重做（用户反馈「连接的提示很不明确」）──
+  ///
+  /// 原来它显示「37 在线」—— 那是**台站数**，不是连接状态；而台站数在地图的
+  /// 信息条里已经显示了（在线 / 移动 / 台站）。最糟的是「离线」这个词：`connected`
+  /// 的真实含义是**发射链路可用**，与「有没有台站在线」是两件事，同一个词同时
+  /// 暗示两件事，用户没法判断到底是自己没连上、还是收不到台站。
+  ///
+  /// 现在如实拆开：**来源 · 状态**。来源取自 `dataSource`（APRS-IS / TNC / 音频 /
+  /// PKWDWPL），状态用 `connected`（发射链路）：
+  ///
+  /// * 已连接 → 绿；
+  /// * 连接中 → 蓝；
+  /// * **只收不发**（只启用 PKWDWPL 这类只读来源）→ 青，并直说「只收不发」——
+  ///   这不是故障，1.0 的横幅也是这么区分的；
+  /// * 未连接 → 灰。
+  ///
+  /// 点一下进连接设置（原来是暗示都没有，只在 tooltip 里说 —— tooltip 在手机上
+  /// 根本看不到，这也是「不明确」的一部分）。
   Widget _statusPill(AppState st) {
-    final up = st.connected;
-    final c = up ? C.green : (st.connecting ? C.blue : C.slate);
-    // 只给一个数字（例如「37」）看不出是什么；带上「在线」这个词，
-    // 与 1.0 顶栏的统计标签口径一致。
-    final text = up
-        ? '${st.online} ${S.of(context).online}'
-        : (st.connecting ? S.of(context).connecting : S.of(context).offline);
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-        decoration: BoxDecoration(
-          color: c.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(999),
+    final s = S.of(context);
+    final source = _sourceLabel(st);
+    final (state, color) = _linkState(st);
+    return Tooltip(
+      message: '${_linkDetail(st)}\n${s.linkTapForSettings}',
+      child: GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: c),
-            ),
-            const SizedBox(width: 5),
-            Text(text, style: ts(11, c: c, w: FontWeight.w700)),
-          ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+              ),
+              const SizedBox(width: 5),
+              // 来源 + 状态：挤不下时省略来源（状态更要紧）
+              Flexible(
+                child: Text(
+                  '$source · $state',
+                  style: ts(11, c: color, w: FontWeight.w700),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  /// 当前**发射来源**的短名（与 1.0 的用词一致）
+  String _sourceLabel(AppState st) {
+    final s = S.of(context);
+    if (st.dataSource == AppState.srcTnc) return s.dataSourceTnc;
+    if (st.dataSource == AppState.srcAudio) return s.dataSourceAudio;
+    if (st.dataSource == AppState.srcPkwdwpl) return s.dataSourcePkwdwpl;
+    return s.dataSourceAprsIs;
+  }
+
+  /// 链路状态（文案, 颜色）。
+  ///
+  /// 「只读接收」单列一档：它**没有发射链路是正常的**，画成「未连接」会让人
+  /// 白去点连接、白去查设置。
+  (String, Color) _linkState(AppState st) {
+    final s = S.of(context);
+    if (st.readOnlyMode) return (s.pkwdwplRxOnly, C.cyan);
+    if (st.connecting) return (s.connecting, C.blue);
+    if (st.connected) return (s.connected, C.green);
+    return (s.linkNotConnected, C.slate);
+  }
+
+  /// tooltip 里的细节：具体连到哪儿（服务器地址 / 设备名），让「点进去看」之前
+  /// 就有个判断依据
+  String _linkDetail(AppState st) {
+    if (st.dataSource == AppState.srcTnc) {
+      return st.tnc.device?.label ?? S.of(context).tncNotBound;
+    }
+    if (st.dataSource == AppState.srcPkwdwpl) {
+      return st.pkwdwpl.device?.label ?? S.of(context).tncNotBound;
+    }
+    if (st.dataSource == AppState.srcAudio) {
+      return '${st.audio.config.afsk.sampleRate} Hz';
+    }
+    final s = S.of(context);
+    return st.readOnlyMode
+        ? s.pkwdwplRxOnly
+        : '${st.aprs.server}:${st.aprs.port}';
   }
 
   Widget _iconBtn(IconData icon, Color color, VoidCallback onTap) {
