@@ -33,6 +33,10 @@ import 'widgets.dart';
 ///
 /// ## 这一版的结构（三层，各自职责单一）
 ///
+/// **两种朝向各一套布局**：竖屏是「地图整屏 + 底部悬浮导航 + 可拖拽内容面板」，
+/// 横屏换成「地图整屏 + 左侧导航竖条 + 左侧内容面板」（见 [_landscapeBody]）——
+/// 横屏高度太小，底部面板会把地图吃掉，而这一版的前提是「地图是底」。
+///
 /// 1. **地图整屏**（最底）：`MapPage` 一直活着，切到任何页都不销毁。
 /// 2. **底部悬浮导航**（固定）：5 个页签，**永远在同一个位置**，不随内容移动。
 ///    半透明 + 模糊 + 胶囊外形，选中用**滑动的指示胶囊**而不是 5 块色底。
@@ -89,6 +93,9 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 把手触摸区高度（药丸本身只有 40×5，但整条都能拖/能点）
   static const double _kHandle = 44;
+
+  /// 横屏左侧导航竖条宽度
+  static const double _kRailW = 70;
 
   /// 统一外边距（左右 / 面板与导航之间 / 导航距底）。
   ///
@@ -248,6 +255,8 @@ class _HomeShell2State extends State<HomeShell2>
 
     final size = MediaQuery.of(context).size;
     final pad = MediaQuery.of(context).padding;
+    // 横屏（宽 > 高）：换成「左侧竖条 + 左侧内容面板」，见 [_landscapeBody]
+    final isWide = size.width > size.height;
     final navSpace = _navSpace(context);
     final barTop = pad.top + 6;
     final topInset = _topInset();
@@ -277,7 +286,7 @@ class _HomeShell2State extends State<HomeShell2>
       },
       child: Scaffold(
       backgroundColor: C.pageFill,
-      body: Stack(
+      body: isWide ? _landscapeBody(pad, barTop, topInset) : Stack(
         children: [
           // ① 地图整屏（永远在，切换内容页也不销毁）
           Positioned.fill(
@@ -428,7 +437,22 @@ class _HomeShell2State extends State<HomeShell2>
   }
 
   /// 内容滚到顶后继续下拉 → 收面板；滚动结束 → 吸附到最近档位
+  ///
+  /// ── 只对「正向（非 reverse）列表」生效，这一条是踩出来的 ──
+  ///
+  /// 消息页的会话/聊天列表是 `reverse: true`（最新消息在底部，往上滑看历史）。
+  /// 在反向列表里，用户「往下拉」是朝**最新消息**方向，那不是「到顶了还想再拉」，
+  /// 却被这里当成了收面板 —— 用户反馈「消息页往下拉，面板就缩下去了」。
+  ///
+  /// 所以加一道方向门控：只有正向竖向列表（`AxisDirection.down`）才允许
+  /// 「滚到顶继续下拉 → 收面板」。反向列表（消息页）与横向列表（筛选芯片那一行）
+  /// 一律不参与 —— 这两类列表的 overscroll 语义与「把面板拉下去」无关。
   bool _onScrollNotification(ScrollNotification n) {
+    final ongoing = _movedByScroll;
+    if (n is! ScrollEndNotification && n.metrics.axisDirection != AxisDirection.down) {
+      // 反向/横向：如果之前已经动过面板，仍然要让 ScrollEnd 把它吸附回去
+      return false;
+    }
     if (n is OverscrollNotification && n.overscroll < 0) {
       // overscroll 为负 = 已经到顶还在往下拖
       _anim.stop();
@@ -437,7 +461,7 @@ class _HomeShell2State extends State<HomeShell2>
           (_extent + n.overscroll / _screenH()).clamp(0.0, _fullRatioOf()));
       return false;
     }
-    if (n is ScrollEndNotification && _movedByScroll) {
+    if (n is ScrollEndNotification && ongoing) {
       // 只有「真的用滚动动过面板」才吸附：普通列表滚完不该触发一次面板动画
       _movedByScroll = false;
       _onDragEnd();
@@ -529,14 +553,26 @@ class _HomeShell2State extends State<HomeShell2>
   Color _accentOf(String slot) =>
       ThemeController.instance.tabAccent(slot, isDark: C.dark) ?? C.blue;
 
-  Widget _navItem(int i) {
+  /// 一个页签。
+  ///
+  /// [rail] 为真时用在横屏的左侧竖条里：那里没有底部导航那种**滑动的指示胶囊**，
+  /// 所以选中底由每一项自己画（同一套颜色，只是位置固定）。
+  Widget _navItem(int i, {bool rail = false}) {
     final sel = _tab == i;
     final slot = _slots[i].$1;
     final unread = widget.state.unreadMessages;
     return GestureDetector(
       onTap: () => _select(i),
       behavior: HitTestBehavior.opaque,
-      child: Column(
+      child: Container(
+        padding: rail ? const EdgeInsets.symmetric(vertical: 9) : EdgeInsets.zero,
+        decoration: rail && sel
+            ? BoxDecoration(
+                color: _accentOf(slot).withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(12),
+              )
+            : null,
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -584,6 +620,111 @@ class _HomeShell2State extends State<HomeShell2>
           ),
         ],
       ),
+      ),
+    );
+  }
+
+  // ─── 横屏（宽 > 高）───
+
+  /// 2.0 横屏：左侧「导航竖条 + 内容面板」，地图占满其余空间。
+  ///
+  /// ── 为什么横屏不复用底部面板 ──
+  ///
+  /// 横屏的**高度**很小（手机横放常不足 400dp），底部面板一展开就吃掉大半高度，
+  /// 地图基本看不见 —— 而这一版的设计前提是「地图是底」。所以横屏把导航与内容
+  /// 一起挪到**左侧**：宽绰的那一维给内容，地图占满右侧，两者互不遮挡。
+  ///
+  /// 横屏刻意**不做拖拽**：竖向空间本来就紧，把面板拉高拉低没有意义；改成
+  /// 「点导航切换、选『地图』则收起面板」，行为确定，也不会跟列表滚动抢手势。
+  Widget _landscapeBody(EdgeInsets pad, double barTop, double topInset) {
+    final size = MediaQuery.of(context).size;
+    // 面板宽度：取宽度的 40%，但必须给地图留下至少 260px；再夹在 300~560 之间，
+    // 免得极端比例（超宽平板 / 极窄横屏）下面板过窄或把地图挤没。
+    final byFraction = size.width * 0.40;
+    final byMap = size.width - _kRailW - 260 - _kGutter * 3;
+    final paneW =
+        (byFraction < byMap ? byFraction : byMap).clamp(300.0, 560.0);
+    final paneTop = topInset;
+    final paneBottom = _kGutter + pad.bottom;
+    return Stack(
+      children: [
+        // ① 地图铺满整屏（左侧被面板压住的部分看不见，但地图本身仍是全尺寸的，
+        //    平移/缩放不会被压缩变形）
+        Positioned.fill(
+          child: MapPage(
+            state: widget.state,
+            isActive: true,
+            topInset: topInset,
+            bottomInset: paneBottom,
+          ),
+        ),
+        // ② 右上角那一簇（横屏更宽，放右边不挡地图中心）
+        Positioned(
+          top: barTop,
+          left: _kGutter,
+          right: _kGutter,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: KeyedSubtree(key: _barKey, child: _topBar()),
+          ),
+        ),
+        // ③ 左侧导航竖条（固定位置，不随内容移动）
+        Positioned(left: _kGutter, top: paneTop, child: _sideRail()),
+        // ④ 内容面板：只在非「地图」页出现；选「地图」即收起，地图全屏
+        if (_tab != 0)
+          Positioned(
+            left: _kGutter * 2 + _kRailW,
+            top: paneTop,
+            width: paneW,
+            bottom: paneBottom,
+            child: MaterialSurface(
+              radius: 20,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: C.sheetFill,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: elev3(),
+                ),
+                child: ClipRect(child: _content()),
+              ),
+            ),
+          ),
+        if (_showBubble)
+          Positioned(
+            top: barTop + _barH + 10,
+            left: 0,
+            right: 0,
+            child: Center(child: _bubble()),
+          ),
+      ],
+    );
+  }
+
+  /// 横屏左侧的导航竖条
+  ///
+  /// 与底部导航同一个数据源（[_slots]）、同一套选中色，只是排成竖的 ——
+  /// 两块导航用两套数据/两套配色，迟早会漂成两个样子。
+  Widget _sideRail() {
+    return MaterialSurface(
+      radius: 20,
+      child: Container(
+        width: _kRailW,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: elev2(),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < _slots.length; i++) ...[
+              if (i > 0) const SizedBox(height: 4),
+              _navItem(i, rail: true),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -616,14 +757,15 @@ class _HomeShell2State extends State<HomeShell2>
     // 瓦片上，既读不清也不整。这里刻意**不套** MaterialSurface —— 这一簇面积远
     // 这一簇是「小浮层」，本来就不该模糊（见 material.dart），套了只是白加一层；
     // 用实心 chipFill 才是正解（小浮层实心、大面板磨砂）。
-    // 用「小浮层」那一档材质（chipFill + kChipBlurSigma）：半透明 + 轻磨砂。
+    // 用「小浮层」那一档材质（chipFill + chipBlur）：半透明 + 磨砂
+    // （chipBlur 随档位变：满血档给大半径，其余档 12）。
     // 这几个小块原本是各自 12% 透明直接压在瓦片上（读不清、也不整），包成一只胶囊
     // 之后既整齐，也看得出背后有地图。
     return Align(
       alignment: Alignment.centerRight,
       child: MaterialSurface(
         radius: 999,
-        blurSigma: C.kChipBlurSigma,
+        blurSigma: C.chipBlur,
         child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         decoration: BoxDecoration(

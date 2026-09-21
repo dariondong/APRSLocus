@@ -2830,5 +2830,7 @@
   "uiLayoutSheetDesc": "地圖常駐整螢幕；台站 / 訊息 / 資料包 / 設定收進底部可拖曳卡片，上滑或點把手即可展開",
   "uiLayoutHint": "切換後立即生效，兩種佈局的設定各自保留；卡片收起時地圖上的按鈕會自動上移",
   "linkNotConnected": "未連線",
-  "linkTapForSettings": "點一下查看連線設定"
+  "linkTapForSettings": "點一下查看連線設定",
+  "uiMaterialGlassFull": "滿血磨砂玻璃",
+  "uiMaterialGlassFullDesc": "最透、最糊，而且**小元件也一起糊**（工具鈕 / 圖例 / 小提示都有磨砂）—— 觀感最重，也最吃顯卡"
 }

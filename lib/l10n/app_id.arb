@@ -2326,5 +2326,7 @@
   "uiLayoutSheetDesc": "Peta selalu layar penuh; stasiun / pesan / paket / pengaturan ada di kartu yang bisa digeser di bawah — geser ke atas atau ketuk pegangannya untuk membuka",
   "uiLayoutHint": "Langsung berlaku; kedua tata letak menyimpan pengaturannya sendiri. Tombol di peta otomatis naik saat kartu dilipat",
   "linkNotConnected": "Tidak terhubung",
-  "linkTapForSettings": "Ketuk untuk membuka pengaturan koneksi"
+  "linkTapForSettings": "Ketuk untuk membuka pengaturan koneksi",
+  "uiMaterialGlassFull": "Kaca buram penuh",
+  "uiMaterialGlassFullDesc": "Paling tembus pandang dan paling buram, **termasuk widget kecil** (tombol peta, legenda, petunjuk) — tampilan paling tebal, dan paling memberatkan GPU"
 }

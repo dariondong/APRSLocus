@@ -6633,4 +6633,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get linkTapForSettings => 'Ketuk untuk membuka pengaturan koneksi';
+
+  @override
+  String get uiMaterialGlassFull => 'Kaca buram penuh';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      'Paling tembus pandang dan paling buram, **termasuk widget kecil** (tombol peta, legenda, petunjuk) — tampilan paling tebal, dan paling memberatkan GPU';
 }

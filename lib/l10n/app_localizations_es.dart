@@ -6675,4 +6675,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get linkTapForSettings => 'Toca para abrir los ajustes de conexión';
+
+  @override
+  String get uiMaterialGlassFull => 'Cristal esmerilado intenso';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      'Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU';
 }

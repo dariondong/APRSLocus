@@ -2326,5 +2326,7 @@
   "uiLayoutSheetDesc": "地図は常に全画面。台站 / メッセージ / パケット / 設定は下部のドラッグできるカードに入り、上スワイプかハンドルのタップで開きます",
   "uiLayoutHint": "すぐに反映されます。両レイアウトの設定は別々に保持されます。カードを畳むと地図上のボタンが自動で上に移動します",
   "linkNotConnected": "未接続",
-  "linkTapForSettings": "タップして接続設定を開く"
+  "linkTapForSettings": "タップして接続設定を開く",
+  "uiMaterialGlassFull": "フルすりガラス",
+  "uiMaterialGlassFullDesc": "最も透明で最もぼかしが強く、**小さな部品も一緒にぼかします**（地図のツールボタン・凡例・ヒント）。見た目は最も重く、GPU 負荷も最大です"
 }

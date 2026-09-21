@@ -6433,4 +6433,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get linkTapForSettings => 'タップして接続設定を開く';
+
+  @override
+  String get uiMaterialGlassFull => 'フルすりガラス';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      '最も透明で最もぼかしが強く、**小さな部品も一緒にぼかします**（地図のツールボタン・凡例・ヒント）。見た目は最も重く、GPU 負荷も最大です';
 }

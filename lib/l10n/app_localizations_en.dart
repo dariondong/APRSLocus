@@ -6624,4 +6624,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkTapForSettings => 'Tap to open connection settings';
+
+  @override
+  String get uiMaterialGlassFull => 'Full frosted glass';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      'The most transparent and the blurriest, **including the small widgets** (map tool buttons, legend, hint pills) — the heaviest look, and the heaviest on the GPU';
 }

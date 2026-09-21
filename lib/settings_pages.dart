@@ -2796,6 +2796,13 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         S.of(context).uiMaterialMica,
         S.of(context).uiMaterialMicaDesc,
       ),
+      // 满血档：与「磨砂玻璃」的区别是**小浮层也给满强度模糊** ——
+      // 这正是用户反馈「默认状态下小图层没有磨砂」后加的那一档。
+      (
+        UiMaterial.glassFull,
+        S.of(context).uiMaterialGlassFull,
+        S.of(context).uiMaterialGlassFullDesc,
+      ),
     ];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

@@ -11504,6 +11504,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'点一下查看连接设置'**
   String get linkTapForSettings;
+
+  /// No description provided for @uiMaterialGlassFull.
+  ///
+  /// In zh, this message translates to:
+  /// **'满血磨砂玻璃'**
+  String get uiMaterialGlassFull;
+
+  /// No description provided for @uiMaterialGlassFullDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡'**
+  String get uiMaterialGlassFullDesc;
 }
 
 class _AppLocalizationsDelegate

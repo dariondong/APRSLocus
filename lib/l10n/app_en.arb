@@ -2242,5 +2242,7 @@
   "uiLayoutSheetDesc": "The map stays full-screen; stations / messages / packets / settings live in a draggable card below — swipe up or tap the handle to expand",
   "uiLayoutHint": "Takes effect immediately; both layouts keep their own settings. Map controls move up automatically as the card collapses",
   "linkNotConnected": "Not connected",
-  "linkTapForSettings": "Tap to open connection settings"
+  "linkTapForSettings": "Tap to open connection settings",
+  "uiMaterialGlassFull": "Full frosted glass",
+  "uiMaterialGlassFullDesc": "The most transparent and the blurriest, **including the small widgets** (map tool buttons, legend, hint pills) — the heaviest look, and the heaviest on the GPU"
 }

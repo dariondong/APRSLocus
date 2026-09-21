@@ -19,7 +19,15 @@ enum UiMaterial {
   glass,
 
   /// 云母：更实（0.78）、模糊较轻、带一层主色的灰，像 Win11 Mica
-  mica;
+  mica,
+
+  /// **满血磨砂玻璃**：最透（0.42）+ 最强模糊（40），而且**连小浮层也给满强度模糊**。
+  ///
+  /// 与 [glass] 的区别就在最后那半句：玻璃档给工具钮、图例这类小东西只上 **12** 的
+  /// 轻磨砂（半径大反而会把 38px 的边缘糊成一团灰，见 [kChipBlurSigma]），
+  /// 于是用户会觉得「小图层看不出磨砂」。这一档把该顾虑放下：小浮层直接用同一档
+  /// 的强模糊，观感最重、代价也最高（每个小浮层都按大半径重绘一次离屏）。
+  glassFull;
 }
 
 /// 偏好里存的字符串 → 材质。认不出的一律回落 [UiMaterial.none]。
@@ -32,6 +40,8 @@ UiMaterial uiMaterialOf(String? raw) {
       return UiMaterial.glass;
     case 'mica':
       return UiMaterial.mica;
+    case 'glass_full':
+      return UiMaterial.glassFull;
   }
   return UiMaterial.none;
 }
@@ -76,6 +86,8 @@ double uiMaterialAlphaOf(UiMaterial m) {
       return 0.55;
     case UiMaterial.mica:
       return 0.78;
+    case UiMaterial.glassFull:
+      return 0.42;
     case UiMaterial.none:
       return 1.0;
   }
@@ -90,6 +102,9 @@ double uiMaterialBlurOf(UiMaterial m) {
       return 24.0;
     case UiMaterial.mica:
       return 16.0;
+    case UiMaterial.glassFull:
+      // 满血档：最强模糊。这一档**不省 GPU**，是用户明确要的重观感。
+      return 40.0;
     case UiMaterial.none:
       return 0.0;
   }
@@ -102,6 +117,8 @@ String uiMaterialName(UiMaterial m) {
       return 'glass';
     case UiMaterial.mica:
       return 'mica';
+    case UiMaterial.glassFull:
+      return 'glass_full';
     case UiMaterial.none:
       return '';
   }
@@ -200,8 +217,20 @@ class C {
   /// 比 [sheetFill] 略透一点：小浮层用的是**较小的模糊半径**（[kChipBlurSigma]），
   /// 透一点才看得出「背后有东西」；再透就会让底下的地图透上来把字糊掉。
   /// 0.72 与 kChipBlurSigma 是一对数字，改一个就要回头看另一个。
-  static Color get chipFill =>
-      materialOn ? white.withValues(alpha: 0.72) : white;
+  /// 满血档更透（0.52），其余材质档 0.72：透明度与 [chipBlur] 是一对，
+  /// 模糊越强就可以越透（背后被糊掉了，不怕看清瓦片）。
+  static Color get chipFill {
+    if (!materialOn) return white;
+    return white.withValues(
+        alpha: material == UiMaterial.glassFull ? 0.52 : 0.72);
+  }
+
+  /// 小浮层的模糊半径（**随档位变**）。
+  ///
+  /// * 满血档 → 与大面板同一档的强模糊（40）：这一档要的就是「小按钮也糊」；
+  /// * 玻璃 / 云母 → [kChipBlurSigma]（12）：小东西上大半径只会把边缘糊成灰。
+  static double get chipBlur =>
+      material == UiMaterial.glassFull ? materialBlur : kChipBlurSigma;
 
   /// 小浮层的模糊半径。
   ///

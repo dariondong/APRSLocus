@@ -2840,5 +2840,7 @@
   "uiLayoutSheetDesc": "地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开",
   "uiLayoutHint": "切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移",
   "linkNotConnected": "未连接",
-  "linkTapForSettings": "点一下查看连接设置"
+  "linkTapForSettings": "点一下查看连接设置",
+  "uiMaterialGlassFull": "满血磨砂玻璃",
+  "uiMaterialGlassFullDesc": "最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡"
 }

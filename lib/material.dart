@@ -34,7 +34,7 @@ import 'theme.dart';
 /// `BackdropFilter` 不是免费的：它每帧都要把**背后已经画好的内容**离屏重绘一遍，
 /// 代价 ≈ 被模糊的面积 × 半径，而且**每个实例各付一次**。所以两档的**半径**不同：
 ///
-/// * 小浮层（工具钮 / 图例 / 提示胶囊 / 细横条）→ `blurSigma: C.kChipBlurSigma`(12)
+/// * 小浮层（工具钮 / 图例 / 提示胶囊 / 细横条）→ `blurSigma: C.chipBlur`
 ///   + `C.chipFill` / [chipTint]。它们**面积小**，代价本来就低；12 的半径既看得出
 ///   磨砂，又不会把 38px 按钮的边缘糊成一团灰。
 /// * 大面板（底面板 / 侧栏 / 顶栏 / 导航胶囊 / AppBar）→ 不写 `blurSigma`，
@@ -67,7 +67,7 @@ class MaterialSurface extends StatelessWidget {
 
   /// 模糊强度：
   /// * `null`（默认）→ 用材质默认半径 [C.materialBlur]（大面板/条走这条）；
-  /// * `C.kChipBlurSigma`(12) → 小浮层的轻磨砂（工具钮 / 图例 / 提示胶囊 / 细横条）；
+  /// * `C.chipBlur` → 小浮层的模糊（**随档位变**：满血档给大半径，其余档给 12）；
   /// * `0` → **不模糊**。用半透明填色时**不要**这么写（见 `chipTint` 的说明）。
   final double? blurSigma;
 
@@ -150,8 +150,8 @@ class MaterialAppBar extends StatelessWidget implements PreferredSizeWidget {
 /// * [surfaceTint] 给**会做模糊**的表面（AppBar 这类大面积条）→ 半透明，靠背后的
 ///   模糊把它和内容分开；
 /// * [chipTint] 给**小控件**（38px 工具钮、圆形按钮）→ 半透明 + 轻模糊
-///   （`blurSigma: C.kChipBlurSigma`）。两者都半透明，区别只在半径：
-///   小的 12、大的用材质默认。
+///   （`blurSigma: C.chipBlur`）。两者都半透明，区别只在半径：
+///   小的默认 12（满血档用大半径）、大的用材质默认。
 Color chipTint(Color c) {
   if (!C.materialOn) return c;
   return c.withValues(alpha: c.a * 0.72);

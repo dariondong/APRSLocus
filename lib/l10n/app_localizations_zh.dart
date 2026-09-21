@@ -6359,6 +6359,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get linkTapForSettings => '点一下查看连接设置';
+
+  @override
+  String get uiMaterialGlassFull => '满血磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      '最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12715,4 +12722,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get linkTapForSettings => '點一下查看連線設定';
+
+  @override
+  String get uiMaterialGlassFull => '滿血磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassFullDesc =>
+      '最透、最糊，而且**小元件也一起糊**（工具鈕 / 圖例 / 小提示都有磨砂）—— 觀感最重，也最吃顯卡';
 }
