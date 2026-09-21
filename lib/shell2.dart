@@ -14,6 +14,7 @@ import 'theme.dart';
 import 'theme_icons.dart';
 import 'theme_store.dart';
 import 'theme_text.dart';
+import 'weather.dart';
 import 'widgets.dart';
 
 /// ─── UI 2.0 外壳：以地图为基底（重做版）───
@@ -527,10 +528,52 @@ class _HomeShell2State extends State<HomeShell2>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // 天气组件（「设置 → 显示 → 顶栏天气组件」控制）。与 1.0 一样放在
+          // 在线数左侧：它自带青色胶囊、点击弹出天气面板，不用另做外观。
+          if (st.weatherEnabled) ...[
+            WeatherBadge(state: st),
+            const SizedBox(width: 6),
+          ],
           _statusPill(st),
+          const SizedBox(width: 6),
+          // 一键连接 / 断开。
+          // 1.0 里这个动作在侧栏与「未连接横幅」各有一处，而我重写 2.0 外壳时
+          // 漏掉了 —— 结果 2.0 里只能进连接设置页才能连/断。补回来。
+          _connBtn(st),
           const SizedBox(width: 6),
           _locateBtn(st),
         ],
+      ),
+    );
+  }
+
+  /// 连接 / 断开按钮（连接中显示转圈）
+  Widget _connBtn(AppState st) {
+    final s = S.of(context);
+    if (st.connecting) {
+      return Tooltip(
+        message: s.connecting,
+        child: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: C.blue.withValues(alpha: 0.12),
+            shape: BoxShape.circle,
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: CircularProgressIndicator(strokeWidth: 2, color: C.blue),
+          ),
+        ),
+      );
+    }
+    final up = st.connected;
+    return Tooltip(
+      message: up ? s.disconnect : s.connectAction,
+      child: _iconBtn(
+        up ? Icons.wifi_off_rounded : Icons.wifi_rounded,
+        up ? C.red : C.blue,
+        st.toggleConnect,
       ),
     );
   }
