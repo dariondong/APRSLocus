@@ -1,5 +1,155 @@
 # 更新日志
 
+## [1.6.146] - 2026-09-21
+
+### 📍 自己的定位加「静止防抖」：站着不动时，标记不再原地哆嗦 / Stationary debounce for your own GPS
+
+上一版治的是「接收到的台站」，自己这一侧其实只有**粗筛**：精度超过 150m 的点丢掉、
+网络点只在 GPS 停更 20 秒后才兜底、系统缓存位置只在还没定位时用。这些都是「不合格就
+扔掉」，而**「合格但抖」的点从来没管过** —— 静止时 GPS 在 ±30m 内飘是常态，于是轨迹被
+画成一小团毛线球，信标上报的坐标也跟着一起哆嗦（aprs.fi 上看自己的点会在原地跳）。
+
+## 一、精度这个值，原生算了却没人读
+
+Android 侧 `LocationService.kt` 一直在发 `"accuracy"`、iOS 侧 `LocationPlugin.swift`
+一直在发 `horizontalAccuracy` —— 但 Dart 侧解析事件时**从来没读过**，回调签名里也没这个
+参数，等于白算。现在接回并落库，这是三件事的前提：如实显示「±40 m」、太差的点不写轨迹、
+给自己画不确定圈。**IP 定位现在如实标 50km（城市级）** —— 以前它和手机 GPS 点在界面上
+长得一模一样，用户无从知道眼前这个点差了多远。
+
+## 二、静止防抖：滑动窗口中位数 + 四个关键决定
+
+算法是 `lib/pos_quality.dart` 里的 `SelfFixFilter`，参数**不是拍脑袋定的**，是用
+`tool/sim_selffix.py` 的场景仿真跑出来的（脚本已进仓库，注释里的数字都能复现）：
+
+| 场景 | 反向跳（稳态） | 跳变 >20m | 输出游走总长 |
+|---|---|---|---|
+| 静止 σ30m | 106 → **10** | 206 → **10** | 11691m → **2311m** |
+| 静止 σ60m（弱信号） | — | 233 → **11** | 23382m → ~4000m |
+| 静止 + 一次 200m 漂移 | 108 → **11** | 207 → **10** | 12103m → **2358m** |
+| 步行 4.5km/h | 75 → **75** | 156 → **156** | 不变 |
+| 开车 60km/h | 0 → **0** | 239 → **239** | 不变 |
+
+四个决定，每个都是先写错、被仿真打回来才改对的：
+
+* **判据用「窗口前后两半中位数之差」，不是「离当前点的最大距离」。** 第一版就是后者：
+  5 个 σ=30m 的噪声点离当前点最远常到 60~90m，于是「进入静止」**永远不成立** ——
+  仿真里静止场景 `still=0%`，两条曲线完全一样，**功能等于没上**。两半中位数之差才对
+  噪声不敏感（各半中位数各有 ≈0.7σ 误差）、对真实位移敏感。
+* **静止时取中位数，不是均值。** 均值会被一个漂出去很远的点拉偏，而「漂出去很远」恰好是
+  GPS 最常见的失效模式（隧道口、出地库、多路径反射）。仿真里那个 200m 单点漂移，
+  中位数完全不受影响。
+* **进出都要时间滞回**：进入要连续 3 次成立、退出要连续 3 次不成立，但速度达到 5km/h
+  （明显在动）**当帧退出**。只做阈值滞回不做时间滞回，阈值边缘就会反复切换，位置忽跳 ——
+  那正是「反复横跳」。
+* **输出死区 12m + 每帧限速 15m**：中位数没漂出 12m 就**完全不动**（挡住中位数自身的
+  ±10m 游走，实测把稳态反向跳从 30 次降到 10 次），要动也每帧最多 15m。于是「进静止」
+  「出静止」都不会有突兀一跳。
+
+**移动时不做任何平滑**：移动中 GPS 本身准，平滑只会引入滞后（轨迹甩到弯道外侧）。
+仿真里步行与开车场景的输出与未滤波**逐帧完全相同**，就是这条的证明 —— 这是「宁可不平滑，
+也不要让位置追不上车」的取舍。已知局限也如实写进了类的注释：若设备上报的**速度不可信**
+（在 0~4km/h 之间乱跳），滤波器基本不生效（still 仅 20%）—— 那种情况下输出与改动前一致，
+至少不会变差。
+
+## 三、自己的轨迹与展示
+
+* **静止不写轨迹点**、精度差于 100m 不写、抽稀门限按速度自适应（原来固定 20m）——
+  毛线球的三个来源逐个堵掉。
+* 定位状态多一个「**静止**」（6 语言 + 白名单登记，非中文界面不会漏出中文）。
+* 「我的位置」面板新增「位置精度 ±40 m」；地图上给自己画不确定圈（蓝虚线），
+  与台站的模糊圈同一种画法。
+* 修掉一个本版引入的 bug：`filterLng` 误写成原始经度，会让 APRS-IS 过滤中心拿
+  「平滑纬度 + 未平滑经度」去算，两轴不同步。
+
+## 四、两条新增的 CI 检查（本机跑不了 analyze，只能靠它们）
+
+* `tool/sim_selffix.py --check`：既是仿真也是回归 —— 校验 Dart 常量与仿真**逐项一致**
+  （两处漂移就等于在验证另一个算法），并断言「静止不许反复横跳 / 单点漂移不许漏出去 /
+  **步行开车不许被平滑**」。
+* `tool/check_pos_quality.py` 增加两条断言：accuracy 是否真的从原生接回来、
+  `locStatus` 的每个状态串是否都在白名单里登记过（漏登记会让英文界面漏出中文）。
+
+三条回归样本都验证过**会报红**，其中一条正是「keep 阈值落在步行区间 → 走路被粘住」。
+
+---
+
+**The previous release fixed received stations; your own position only had coarse filters
+(drop fixes worse than 150m, fall back to network only after GPS goes quiet for 20s, use the
+cached last-known fix only before the first fix). Those are all "throw it away if it is bad" —
+and a fix that is **good but noisy was never handled at all**. A stationary GPS wanders within
+±30m as a matter of course, so the track was drawn as a little ball of wool and the beacon
+coordinates jittered along with it (your own dot visibly hops around on aprs.fi).**
+
+**1) The accuracy value was computed and then never read.** Android's `LocationService.kt` has
+always sent `"accuracy"`, and iOS's `LocationPlugin.swift` has always sent `horizontalAccuracy`
+— but the Dart side never parsed it and the callback signature had no such parameter. It is now
+plumbed through and stored, which is the prerequisite for three things: showing "±40 m"
+truthfully, refusing to write very poor fixes into the track, and drawing an uncertainty circle
+around yourself. **IP geolocation is now honestly labelled 50km (city-level)** — previously it
+looked exactly like a phone GPS fix, leaving users no way to tell how far off the dot was.
+
+**2) Stationary debounce: a sliding-window median with four key decisions.** The algorithm is
+`SelfFixFilter` in `lib/pos_quality.dart`, and its parameters are **not guesses** — they come
+from scenario simulations in `tool/sim_selffix.py`, which is committed so every number in the
+comments is reproducible:
+
+| Scenario | Reversals (steady) | Jumps >20m | Output wandering |
+|---|---|---|---|
+| Stationary, σ30m | 106 → **10** | 206 → **10** | 11691m → **2311m** |
+| Stationary, σ60m (weak signal) | — | 233 → **11** | 23382m → ~4000m |
+| Stationary + one 200m outlier | 108 → **11** | 207 → **10** | 12103m → **2358m** |
+| Walking, 4.5 km/h | 75 → **75** | 156 → **156** | unchanged |
+| Driving, 60 km/h | 0 → **0** | 239 → **239** | unchanged |
+
+Four decisions, each of which was wrong first and corrected after the simulation pushed back:
+
+* **The criterion is the distance between the medians of the window's two halves, not the
+  maximum distance from the current point.** The first version used the latter: five samples at
+  σ=30m are routinely 60–90m from the current point, so "entering the stationary state" **never
+  happened at all** — the simulation showed `still=0%`, the two curves were identical, and the
+  feature was effectively not shipped. The half-to-half median distance is insensitive to noise
+  (each half's median carries ~0.7σ of error) yet sensitive to real movement.
+* **Stationary output is a median, not a mean.** A mean is dragged by one far-away sample, and
+  "far away" is exactly how GPS most often fails (tunnel mouths, leaving a garage, multipath).
+  In the simulation the single 200m outlier leaves the median completely undisturbed.
+* **Time hysteresis in both directions**: three consecutive good samples to enter, three
+  consecutive bad ones to leave — but a speed of 5 km/h (clearly moving) exits **on that frame**.
+  Threshold hysteresis without time hysteresis makes the state flap at the boundary, and each
+  flap moves the position; that *is* the "jumping back and forth" failure mode.
+* **A 12m output deadband plus a 15m-per-frame slew limit**: if the median has not drifted beyond
+  12m the output **does not move at all** (this suppresses the median's own ±10m wander and took
+  steady-state reversals from 30 down to 10); when it does move, it moves at most 15m per frame.
+  Neither entering nor leaving the stationary state produces a visible jump.
+
+**No smoothing whatsoever while moving.** GPS is accurate when you are moving; smoothing there
+only adds lag and swings the track onto the outside of corners. In the simulation the walking and
+driving outputs are **frame-for-frame identical** to the unfiltered ones, which is the proof. It
+is a deliberate trade: better to skip smoothing than to have the position unable to keep up with
+the car. The known limitation is written into the class documentation as well: if a device
+reports an **unreliable speed** (jumping around between 0 and 4 km/h), the filter largely does
+not engage (still only 20%) — and in that case the output is identical to before, so it is never
+worse.
+
+**3) Your own track and its presentation.** Stationary fixes, fixes worse than 100m, and the
+adaptive decimation threshold (formerly a fixed 20m) — the three sources of the ball of wool, each
+plugged. A new "**stationary**" location status (in all six languages and registered in the
+whitelist, so non-Chinese interfaces never leak Chinese). The "my location" panel now shows the
+accuracy as "±40 m", and an uncertainty circle is drawn around your own dot on the map, in the
+same style as the ambiguity circles for other stations. Also fixed a bug introduced in this
+release: `filterLng` was assigned the raw, unsmoothed longitude, which made the APRS-IS filter
+centre combine a smoothed latitude with an unsmoothed longitude.
+
+**4) Two new CI checks** (this machine cannot run analyze, so these are the only safety net):
+`tool/sim_selffix.py --check` is both simulation and regression — it verifies that the Dart
+constants match the simulation **term by term** (any drift means the simulation is validating a
+different algorithm), and asserts that stationary output never jumps around, that a single-point
+outlier never leaks out, and that **walking and driving are never smoothed**. `check_pos_quality.py`
+gained two assertions: that accuracy is really plumbed back from the native side, and that every
+`locStatus` string is registered in the whitelist. All three regression samples were verified to go
+**red**, one of them being exactly "the keep threshold landed inside the walking range, so walking
+got stuck".
+
 ## [1.6.145] - 2026-09-21
 
 ### 🎯 「打点算法」重做：旧帧、重复帧、错包与模糊位置都不再骗人 / A rebuilt position-quality layer for plotting stations
