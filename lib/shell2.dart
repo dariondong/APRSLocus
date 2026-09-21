@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'immersive_page.dart';
 import 'map_page.dart';
 import 'material.dart';
 import 'messages_page.dart';
 import 'packets_page.dart';
 import 'settings_page.dart';
 import 'settings_pages.dart';
-import 'settings_widgets.dart';
 import 'state.dart';
 import 'stations_page.dart';
 import 'theme.dart';
@@ -18,33 +16,33 @@ import 'theme_store.dart';
 import 'theme_text.dart';
 import 'widgets.dart';
 
-/// ─── UI 2.0 外壳：以地图为基底 ───
+/// ─── UI 2.0 外壳：以地图为基底（重做版）───
 ///
-/// 结构（自下而上三层）：
-/// 1. **地图常驻整屏**（[MapPage]）：它不是「一个页签」，而是整个界面的底。
-///    它自己不知道卡片有多高，所以由外壳把卡片高度通过 `bottomInset` 传进去，
-///    让它把贴底的控件（比例尺/坐标条、上报横杠）往上让开。
-/// 2. **底部可拖拽卡片**：台站 / 消息 / 数据包 / 设置装进来，卡片顶部就是
-///    **导航行** —— 于是「切页」和「这页在卡片里」是同一件事。
-/// 3. **浮在地图上的顶栏**：搜索、在线数、连接与定位入口。
+/// ## 为什么推翻上一版
 ///
-/// ── 三个刻意的实现取舍（都踩过或差点踩到）──
+/// 上一版把 5 个页签放在**可拖拽卡片的头部**，用户反馈「底部卡片/导航那一块」
+/// 最难看。复盘下来是结构缺陷，不是配色问题：
 ///
-/// **① 卡片内容固定按「最大高度」布局，再裁掉超出部分。**
-/// 卡片收到最矮时可视高度只剩几十像素。若把页面直接塞进这个高度，页面内部的
-/// `Column` 立刻溢出（黄黑斜纹），而且拖动时高度每帧都在变、布局每帧重做。
-/// 改用 `OverflowBox + ClipRect`：页面**永远按展开时的高度**布局，只是被裁掉
-/// 看不见的部分 —— 拖动过程零重算、不溢出，各页滚动位置与状态都保留。
+/// 1. **导航属于外壳，不该跟着卡片动**：卡片一展开，页签就升到屏幕中间偏上，
+///    位置飘忽 —— 导航是「永远在同一个地方」的东西。
+/// 2. **底部叠了两套 chrome**：把手 + 页签约 80px。收起时几乎只剩它俩，
+///    展开时页签又跟着上去，怎么放都不对。
+/// 3. **页签是 5 个实心色块**，而它只是个导航，视觉上过重。
+/// 4. **卡片身份混乱**：它同时是导航条和内容面板，两种心智模型硬叠在一起。
 ///
-/// **② 拖动只认把手与导航行，不抢列表的手势。**
-/// `DraggableScrollableSheet` 要求把它的 `scrollController` 交给内部滚动体，
-/// 那等于让外壳的控制器接管五个页面的列表（各自的下拉刷新、横向列表都会变脆）。
-/// 所以这里自己实现拖动：只有头部响应竖直拖拽，松手吸附到最近档位。
-/// 代价是「列表滑到顶再上滑能展开卡片」这种联动没有 —— 换来五页滚动行为零改动。
+/// ## 这一版的结构（三层，各自职责单一）
 ///
-/// **③ 档位只有三个，且最矮那档按头部高度算出来。**
-/// 写死 0.12 这种比例在窄屏/大字号上会把导航行切掉一半（看起来像「导航行缺了
-/// 一块」），所以 peek 档 =（把手 + 导航行 + 底部安全区）/ 屏高。
+/// 1. **地图整屏**（最底）：`MapPage` 一直活着，切到任何页都不销毁。
+/// 2. **底部悬浮导航**（固定）：5 个页签，**永远在同一个位置**，不随内容移动。
+///    半透明 + 模糊 + 胶囊外形，选中用**滑动的指示胶囊**而不是 5 块色底。
+/// 3. **内容面板**（可拖拽）：只装内容，**不再包含导航**。头部只剩一根细把手
+///    （约 22px，不再是 80px 的双层 chrome）。选「地图」时它整个收起，
+///    地图就是全屏的 —— 这才是「地图为基底」。
+///
+/// 拖动只在把手上响应：向下拖过阈值就收起回到地图（符合直觉的「下滑关闭」），
+/// 否则吸附到两个档位（半屏 / 近全屏）。刻意**不**接管内容里列表的手势。
+///
+/// 地图要「让开」的地方通过两个 inset 告知：顶栏高度、底部（导航 + 面板）。
 class HomeShell2 extends StatefulWidget {
   final AppState state;
   const HomeShell2({super.key, required this.state});
@@ -55,25 +53,34 @@ class HomeShell2 extends StatefulWidget {
 
 class _HomeShell2State extends State<HomeShell2>
     with SingleTickerProviderStateMixin {
+  /// 当前页签（0 = 地图）
   int _tab = 0;
 
-  /// 卡片高度占屏高的比例
-  double _extent = 0.22;
+  /// 内容面板高度占屏高比例；0 = 收起（地图全屏）
+  double _extent = 0;
 
-  /// 吸附动画用的 tween（拖动时直接改 _extent，不走它）
-  Tween<double> _snap = Tween(begin: 0.22, end: 0.22);
+  Tween<double> _snap = Tween(begin: 0, end: 0);
   late final AnimationController _anim = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 240),
+    duration: const Duration(milliseconds: 260),
   )..addListener(() => setState(() => _extent = _snap.evaluate(_anim)));
 
-  /// 顶栏真实高度（首帧用估值，量到后校准）。
+  /// 顶栏真实高度（首帧估值，量到后校准）。
   ///
-  /// 为什么量而不是写死：顶栏是内容决定高度的（搜索框在窄屏变高、状态胶囊的
-  /// 文字长度随语言变），写死一个数就会在别的语言/字号下重新压住地图控件 ——
-  /// 而这正是「地图页布局混乱」的成因之一。
+  /// 为什么不写死：顶栏高度由内容决定（搜索框在窄屏变高、状态胶囊文字随语言
+  /// 变长），写死就会在别的语言/字号下压住地图控件。
   final GlobalKey _barKey = GlobalKey();
   double _barH = 46;
+
+  /// 导航胶囊高度
+  static const double _kNav = 56;
+
+  /// 内容面板两个档位
+  static const double _kHalf = 0.46;
+  static const double _kFull = 0.86;
+
+  /// 向下拖过这个比例就收起（回到地图）
+  static const double _kDismiss = 0.30;
 
   // 搜索（仅地图/台站页用，沿用 1.0 顶栏那套 300ms 防抖）
   String _search = '';
@@ -85,15 +92,6 @@ class _HomeShell2State extends State<HomeShell2>
   String _bubbleCall = '';
   String _bubbleText = '';
   Timer? _bubbleTimer;
-
-  /// 卡片头部高度（把手 8+8+4 与导航行 58）
-  static const double _kHeader = 80;
-
-  /// 非地图页展开到的工作高度
-  static const double _kOpen = 0.62;
-
-  /// 最大高度：留一条缝，「卡片浮在地图上」这件事才看得出来
-  static const double _kMax = 0.92;
 
   static const List<(String, String)> _slots = [
     ('navMap', 'map_rounded'),
@@ -142,20 +140,13 @@ class _HomeShell2State extends State<HomeShell2>
     super.dispose();
   }
 
-  /// 收起状态也要跟着刷新：连接状态、未读角标都画在卡片头部
   void _onState() {
     if (mounted) setState(() {});
   }
 
-  /// 最矮档：刚好放下「把手 + 导航行 + 底部安全区」
-  double _peekExtent(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final pad = MediaQuery.of(context).padding.bottom;
-    return ((_kHeader + pad + 12) / h).clamp(0.12, 0.34);
-  }
-
-  List<double> _detents(BuildContext context) =>
-      [_peekExtent(context), _kOpen, _kMax];
+  /// 底部导航占的总高度（含安全区与下边距）
+  double _navSpace(BuildContext context) =>
+      _kNav + MediaQuery.of(context).padding.bottom + 10;
 
   void _snapTo(double target) {
     _snap = Tween(begin: _extent, end: target);
@@ -164,37 +155,35 @@ class _HomeShell2State extends State<HomeShell2>
       ..forward();
   }
 
-  void _snapToNearest() {
-    final ds = _detents(context);
-    var best = ds.first;
-    for (final d in ds) {
-      if ((d - _extent).abs() < (best - _extent).abs()) best = d;
-    }
-    _snapTo(best);
-  }
-
+  /// 选页签：地图 → 内容面板收起（地图全屏）；其余 → 展开到半屏
   void _select(int i) {
     if (i == 2) widget.state.clearUnread();
     setState(() => _tab = i);
-    // 选「地图」→ 收起（地图是底，卡片只是附件）；选其他页 → 展开到工作高度
-    _snapTo(i == 0 ? _peekExtent(context) : _kOpen);
+    _snapTo(i == 0 ? 0 : (_extent > 0.05 ? _extent : _kHalf));
   }
 
   void _onDrag(double dy) {
     _anim.stop();
-    final lo = _detents(context).first;
-    setState(() {
-      _extent = (_extent - dy / MediaQuery.of(context).size.height)
-          .clamp(lo, _kMax);
-    });
+    final h = MediaQuery.of(context).size.height;
+    setState(() => _extent = (_extent - dy / h).clamp(0.0, _kFull));
   }
 
-  /// 只有「地图/台站」页用全局搜索：其余页各有自己的搜索/筛选入口
+  void _onDragEnd() {
+    if (_extent < _kDismiss) {
+      // 下滑关闭：回到地图（并把页签同步过去，否则导航会停在旧页签上）
+      setState(() => _tab = 0);
+      _snapTo(0);
+      return;
+    }
+    _snapTo(_extent >= (_kHalf + _kFull) / 2 ? _kFull : _kHalf);
+  }
+
+  /// 只有「地图/台站」页用全局搜索
   bool get _searchable => _tab == 0 || _tab == 1;
 
   @override
   Widget build(BuildContext context) {
-    // 顶栏量高：帧后读一次，变了才 setState（稳定后不会再触发，无循环）
+    // 顶栏量高：帧后读一次，变了才 setState（稳定后不再触发，无循环）
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final h = _barKey.currentContext?.size?.height;
@@ -202,83 +191,91 @@ class _HomeShell2State extends State<HomeShell2>
         setState(() => _barH = h);
       }
     });
+
     final size = MediaQuery.of(context).size;
     final pad = MediaQuery.of(context).padding;
-    final peek = _peekExtent(context);
-    // 旋屏/改字号后旧的 _extent 可能比新的 peek 还矮，那会把导航行切掉一半 ——
-    // 这里就地修正（比在 didChangeMetrics 里维护一份状态更不会漏）。
-    if (_extent < peek) _extent = peek;
-    final cardH = size.height * _extent;
-    final headerH = _kHeader + pad.bottom;
-    final visible = (cardH - headerH).clamp(0.0, double.infinity);
-    // 页面永远按「最大档」的高度布局，只裁显示区（见类注释 ①）
-    final pageH = (size.height * _kMax - headerH).clamp(0.0, double.infinity);
+    final navSpace = _navSpace(context);
+    final barTop = pad.top + 6;
+    final sheetH = (size.height * _extent).clamp(0.0, size.height - navSpace - 40);
+    final showSheet = _extent > 0.02;
 
     return Scaffold(
       backgroundColor: C.pageFill,
       body: Stack(
         children: [
-          // ① 地图永远是底；按卡片高度让开贴底控件
+          // ① 地图整屏（永远在，切换内容页也不销毁）
           Positioned.fill(
             child: MapPage(
               state: widget.state,
               searchQuery: _search,
               isActive: true,
-              topInset: pad.top + 6 + _barH + 8,
-              bottomInset: cardH + 6,
+              topInset: barTop + _barH + 8,
+              // 地图贴底的控件要让开「导航 + 内容面板」
+              bottomInset: navSpace + sheetH + 8,
             ),
           ),
 
-          // ② 浮在地图上的顶栏（避开状态栏）
+          // ② 浮层顶栏
           Positioned(
-            top: pad.top + 6,
+            top: barTop,
             left: 10,
             right: 10,
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
 
-          // ③ 底部卡片
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SizedBox(
-              height: cardH,
-              child: MaterialSurface(
-                radius: 24,
-                topOnly: true,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: C.sheetFill,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(24)),
-                    boxShadow: elev3(),
-                  ),
-                  child: Column(
-                    children: [
-                      _cardHeader(),
-                      SizedBox(
-                        height: visible,
-                        child: ClipRect(
-                          child: OverflowBox(
-                            alignment: Alignment.topCenter,
-                            minHeight: pageH,
-                            maxHeight: pageH,
-                            child: SizedBox(height: pageH, child: _pages()),
+          // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
+          if (showSheet)
+            Positioned(
+              left: 10,
+              right: 10,
+              bottom: navSpace + 8,
+              child: SizedBox(
+                height: sheetH,
+                child: MaterialSurface(
+                  radius: 24,
+                  topOnly: true,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: C.sheetFill,
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(24)),
+                      boxShadow: elev3(),
+                    ),
+                    child: Column(
+                      children: [
+                        _handle(),
+                        Expanded(
+                          child: ClipRect(
+                            child: OverflowBox(
+                              alignment: Alignment.topCenter,
+                              minHeight: sheetH,
+                              maxHeight: sheetH,
+                              child: SizedBox(
+                                height: sheetH,
+                                child: _content(),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
+
+          // ④ 底部悬浮导航（固定位置，永不随内容移动）
+          Positioned(
+            left: 10,
+            right: 10,
+            bottom: pad.bottom + 10,
+            child: _navBar(),
           ),
 
-          // ④ 气泡压在最上层，免得被卡片挡住
+          // ⑤ 新消息气泡压在最上层
           if (_showBubble)
             Positioned(
-              top: pad.top + 6 + _barH + 10,
+              top: barTop + _barH + 10,
               left: 0,
               right: 0,
               child: Center(child: _bubble()),
@@ -288,7 +285,184 @@ class _HomeShell2State extends State<HomeShell2>
     );
   }
 
-  // ─── 顶栏（浮层）───
+  // ─── 内容面板：只剩一根把手 ───
+
+  Widget _handle() {
+    return GestureDetector(
+      onVerticalDragUpdate: (d) => _onDrag(d.delta.dy),
+      onVerticalDragEnd: (_) => _onDragEnd(),
+      // 轻点把手：在半屏 / 近全屏之间切换
+      onTap: () => _snapTo(_extent >= (_kHalf + _kFull) / 2 ? _kHalf : _kFull),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        height: 22,
+        width: double.infinity,
+        child: Center(
+          child: Container(
+            width: 34,
+            height: 4,
+            decoration: BoxDecoration(
+              color: C.greyLight,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _content() {
+    // IndexedStack：切页不销毁（滚动位置、会话都保留）。
+    // 地图页不在这里 —— 选地图时整个面板收起，地图就是底。
+    // 不写 clamp：`num.clamp` 的静态类型有特例，而本机没有 analyze 可验，
+    // 这里要的是一个确定的 int，用最直白的写法。
+    final raw = _tab - 1;
+    final index = raw < 0 ? 0 : (raw > 3 ? 3 : raw);
+    return IndexedStack(
+      index: index,
+      children: [
+        StationsPage(state: widget.state, searchQuery: _search),
+        MessagesPage(state: widget.state, isActive: true),
+        PacketsPage(state: widget.state),
+        SettingsPage(state: widget.state),
+      ],
+    );
+  }
+
+  // ─── 底部悬浮导航 ───
+
+  Widget _navBar() {
+    final pad = MediaQuery.of(context).padding;
+    return MaterialSurface(
+      radius: 999,
+      blurSigma: 20,
+      child: Container(
+        height: _kNav,
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          borderRadius: BorderRadius.circular(999),
+          boxShadow: elev2(),
+        ),
+        child: LayoutBuilder(
+          builder: (context, c) {
+            final itemW = c.maxWidth / _slots.length;
+            final accent = _accentOf(_slots[_tab].$1);
+            // fit: expand 不能省 —— Stack 默认 StackFit.loose，非定位子项（这行
+            // 页签）会按自身高度贴到上沿，胶囊底部空出一截（看着像没对齐）。
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                // 选中指示：一个**滑动的胶囊**，而不是 5 块固定色底 ——
+                // 位置在动但没有 5 处同时存在的「重」色，视觉上轻得多。
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  left: itemW * _tab,
+                  top: 8,
+                  bottom: 8,
+                  width: itemW,
+                  child: Center(
+                    child: Container(
+                      width: itemW * 0.78,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    for (var i = 0; i < _slots.length; i++)
+                      Expanded(child: _navItem(i)),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Color _accentOf(String slot) =>
+      ThemeController.instance.tabAccent(slot, isDark: C.dark) ?? C.blue;
+
+  Widget _navItem(int i) {
+    final sel = _tab == i;
+    final slot = _slots[i].$1;
+    final unread = widget.state.unreadMessages;
+    return GestureDetector(
+      onTap: () => _select(i),
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ThemeController.instance.buildSlotIcon(
+                slot,
+                size: 21,
+                color: sel ? _accentOf(slot) : C.grey,
+                fallbackIcon: themeIconByName(_slots[i].$2),
+                selected: sel,
+              ),
+              if (i == 2 && unread > 0)
+                Positioned(
+                  right: -8,
+                  top: -4,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    constraints:
+                        const BoxConstraints(minWidth: 14, minHeight: 14),
+                    decoration: BoxDecoration(
+                      color: C.red,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        unread > 99 ? '99+' : '$unread',
+                        style: ts(9, c: Colors.white, w: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            _labelOf(Tx.of(context), slot),
+            style: ts(10,
+                c: sel ? _accentOf(slot) : C.grey,
+                w: sel ? FontWeight.w700 : FontWeight.w400),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _labelOf(Tx tx, String slot) {
+    switch (slot) {
+      case 'navMap':
+        return tx.navMap;
+      case 'navStations':
+        return tx.navStations;
+      case 'navMessages':
+        return tx.navMessages;
+      case 'navPackets':
+        return tx.navPackets;
+      default:
+        return tx.navSettings;
+    }
+  }
+
+  // ─── 浮层顶栏 ───
 
   Widget _topBar() {
     final st = widget.state;
@@ -296,12 +470,10 @@ class _HomeShell2State extends State<HomeShell2>
       radius: 16,
       blurSigma: 18,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           color: C.surfaceFillStrong,
           borderRadius: BorderRadius.circular(16),
-          // 只留投影、不再描边：投影已经把它和地图分开了，再加一圈描边就是
-          // 「框套框」（深色模式下尤其明显）。原生地图类 App 的浮层也是这个做法。
           boxShadow: elev2(),
         ),
         child: Row(
@@ -357,8 +529,6 @@ class _HomeShell2State extends State<HomeShell2>
               if (_tab != 0) _select(0);
               final me = st.myStation;
               if (me != null) {
-                // 复用地图既有的「焦点跳转」通道：2.0 里地图始终在，所以从任何
-                // 页点定位都能直接落回地图，不必先切页再点一次。
                 st.focusOnMap(me);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -376,9 +546,7 @@ class _HomeShell2State extends State<HomeShell2>
   }
 
   /// 连接/在线状态胶囊：点一下进连接设置
-  ///
-  /// 2.0 里没有侧栏，而「连接状态」是最高频的诊断入口 —— 不在这里给一个入口，
-  /// 用户会找不到（1.0 里它同时出现在侧栏面板与顶栏横幅）。
+  /// （2.0 没有侧栏，而「连接状态」是最高频的诊断入口，得给它一个位置）
   Widget _statusPill(AppState st) {
     final up = st.connected;
     final c = up ? C.green : (st.connecting ? C.blue : C.slate);
@@ -394,7 +562,7 @@ class _HomeShell2State extends State<HomeShell2>
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
         decoration: BoxDecoration(
           color: c.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(999),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -421,307 +589,12 @@ class _HomeShell2State extends State<HomeShell2>
         height: 32,
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
+          shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 18, color: color),
       ),
     );
   }
-
-  // ─── 卡片头部：把手 + 导航行（整块可拖）───
-
-  Widget _cardHeader() {
-    final pad = MediaQuery.of(context).padding.bottom;
-    return GestureDetector(
-      // 竖直拖动 ↔ 收放卡片；轻点 ↔ 在「收起 / 工作高度」间切换
-      onVerticalDragUpdate: (d) => _onDrag(d.delta.dy),
-      onVerticalDragEnd: (_) => _snapToNearest(),
-      onTap: () {
-        final peek = _peekExtent(context);
-        _snapTo((_extent - peek).abs() < 0.02 ? _kOpen : peek);
-      },
-      behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 8, bottom: 8),
-            width: 42,
-            height: 4,
-            decoration: BoxDecoration(
-              color: C.greyLight,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Row(
-              children: [
-                for (var i = 0; i < _slots.length; i++)
-                  Expanded(child: _navItem(i)),
-              ],
-            ),
-          ),
-          if (pad > 0) SizedBox(height: pad) else const SizedBox(height: 4),
-        ],
-      ),
-    );
-  }
-
-  Widget _navItem(int i) {
-    final sel = _tab == i;
-    final slot = _slots[i].$1;
-    final accent =
-        ThemeController.instance.tabAccent(slot, isDark: C.dark) ?? C.blue;
-    final unread = widget.state.unreadMessages;
-    return GestureDetector(
-      onTap: () => _select(i),
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        decoration: BoxDecoration(
-          color: sel ? accent.withValues(alpha: 0.12) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ThemeController.instance.buildSlotIcon(
-                  slot,
-                  size: 21,
-                  color: sel ? accent : C.grey,
-                  fallbackIcon: themeIconByName(_slots[i].$2),
-                  selected: sel,
-                ),
-                if (i == 2 && unread > 0)
-                  Positioned(
-                    right: -8,
-                    top: -4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 1),
-                      constraints:
-                          const BoxConstraints(minWidth: 14, minHeight: 14),
-                      decoration: BoxDecoration(
-                        color: C.red,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          unread > 99 ? '99+' : '$unread',
-                          style: ts(9, c: Colors.white, w: FontWeight.w700),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 3),
-            Text(
-              _labelOf(Tx.of(context), slot),
-              style: ts(10,
-                  c: sel ? accent : C.grey,
-                  w: sel ? FontWeight.w600 : FontWeight.w400),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _labelOf(Tx tx, String slot) {
-    switch (slot) {
-      case 'navMap':
-        return tx.navMap;
-      case 'navStations':
-        return tx.navStations;
-      case 'navMessages':
-        return tx.navMessages;
-      case 'navPackets':
-        return tx.navPackets;
-      default:
-        return tx.navSettings;
-    }
-  }
-
-  // ─── 卡片内容：五页常驻 ───
-
-  Widget _pages() {
-    // IndexedStack：切页不销毁（台站列表滚动位置、会话、设置入口状态都保留）。
-    // 刻意不给淡入动画：卡片本身在动，再叠一层淡入会显得闪。
-    return IndexedStack(
-      index: _tab,
-      children: [
-        _mapSummary(),
-        StationsPage(state: widget.state, searchQuery: _search),
-        MessagesPage(state: widget.state, isActive: true),
-        PacketsPage(state: widget.state),
-        SettingsPage(state: widget.state),
-      ],
-    );
-  }
-
-  /// 地图页对应的卡片内容。
-  ///
-  /// 地图本身已经是底了，这里不能再放一张地图 —— 放的是「抬起卡片时最想知道的
-  /// 地图相关状态」：我是谁、在哪个网格、信标会不会真的发出去、链路通不通。
-  /// 这也让「点地图页签 → 卡片收起」有了意义：收起是看地图，抬起是看自己这台电台。
-  Widget _mapSummary() {
-    return ListenableBuilder(
-      listenable: widget.state,
-      builder: (context, _) {
-        final st = widget.state;
-        final s = S.of(context);
-        final fix = st.myHasFix;
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 6, 16, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: C.blueBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child:
-                        Icon(Icons.my_location_rounded, color: C.blue, size: 20),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(st.myCall,
-                            style: ts(16, w: FontWeight.w700),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                        Text(st.myPosStr,
-                            style: ts(10, c: C.grey),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                      ],
-                    ),
-                  ),
-                  if (fix)
-                    Icon(Icons.gps_fixed_rounded, color: C.green, size: 18),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _tag(s.gridValue(st.myGrid), C.slate),
-                  const SizedBox(width: 8),
-                  _tag(s.packetsPerMinute(st.packetsPerMin), C.blue),
-                  const SizedBox(width: 8),
-                  _tag(
-                    localizedLocationStatus(context, st.locStatus),
-                    fix ? C.green : C.yellow,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              // 上报状态：这张卡是「看自己」的地方，所以信标的关键结论
-              // （会不会真的发出去）要直说，而不是只画一个倒计时。
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: C.bgSoft,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      st.beaconEnabled
-                          ? Icons.send_rounded
-                          : Icons.notifications_off_rounded,
-                      size: 15,
-                      color: st.beaconEnabled ? C.green : C.slate,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        st.beaconEnabled
-                            ? (st.beaconPhase == BeaconPhase.imminent
-                                ? s.beaconImminent
-                                : s.beaconNextIn(st.nextBeaconIn))
-                            : s.beaconOffChip,
-                        style: ts(12, c: C.ink, w: FontWeight.w600),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () {
-                        st.sendBeacon();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(s.positionBeacon(st.myGrid)),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: C.blue,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(s.manualBeacon,
-                            style: ts(10,
-                                c: Colors.white, w: FontWeight.w700)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              SettingsNavRow(
-                title: S.of(context).immersiveMap,
-                subtitle: S.of(context).immersiveMapTip,
-                icon: Icons.navigation_rounded,
-                color: C.indigo,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ImmersiveMapPage(state: st),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _tag(String text, Color c) => Flexible(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-          decoration: BoxDecoration(
-            color: c.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Text(
-            text,
-            style: ts(10, c: c, w: FontWeight.w600),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      );
 
   // ─── 新消息气泡 ───
 
@@ -741,8 +614,7 @@ class _HomeShell2State extends State<HomeShell2>
           decoration: BoxDecoration(
             color: C.surfaceFillStrong,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: C.blue.withValues(alpha: 0.3)),
-            boxShadow: elev3(),
+            boxShadow: elev2(),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
