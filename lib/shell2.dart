@@ -74,12 +74,16 @@ class _HomeShell2State extends State<HomeShell2>
   /// 是否正在用手指拖面板（含把手/导航/内容三种发起方式）
   bool _dragging = false;
 
-  /// 面板此刻是否在「动画 / 手拖」中 —— 决定要不要做模糊。
+  /// 面板此刻是否在「动画 / 手拖」中。
   ///
-  /// 展开动画 260ms 里外壳每帧 setState、面板高度每帧在变，而
-  /// `MaterialSurface` 里的 `BackdropFilter` **每帧都要把背后画好的地图离屏重绘
-  /// 一遍**。动画期间关掉模糊，省掉的就是这十几帧全屏离屏模糊 —— 那正是
-  /// 「浮动面板一展开就卡」的主因（见 material.dart 的 `blurWhen`）。
+  /// 现在它**不再用于「要不要做模糊」**：模糊一直开着，因为面板壳改成了
+  /// 「自身固定为最高档高度、只裁出可视区」（见面板那一段的注释）—— 拖动时
+  /// 模糊层的几何完全不变，代价只剩「底图不变时可复用」的那一次。
+  ///
+  /// 它现在只服务两件事：
+  /// * [_paneOpen]（→ 地图冻结）—— 动画中面板也在往上长，就得算「开着」；
+  /// * [_insetSheetH]（→ 传给地图的让位量）—— 动画中要传**吸附目标值**，
+  ///   否则地图每帧重排重绘。
   bool get _paneAnimating => _anim.isAnimating || _dragging || _movedByScroll;
 
   /// 面板是否**占着屏幕**（含动画：动画中它也在往上长）。
@@ -89,22 +93,6 @@ class _HomeShell2State extends State<HomeShell2>
   /// 停脉冲动画、数据变化不重建标记。**视图变化仍然跟随**（拖地图时标记不会僵住）。
   bool get _paneOpen => _extent > 0.02 || _paneAnimating;
 
-  /// 面板底色：动画/拖动中不带模糊，就**不能**再用半透明色（半透明不糊会直接
-  /// 透出地图，比卡更难看），所以把「面板白」合成到页面底色上得到一个观感接近的
-  /// 实色。动画只有 260ms，用户看不出这点色差。
-  ///
-  /// 这里刻意不写 `C.sheetFill`：`tool/check_material_coverage.py` 的判据是
-  /// 「行里出现 `C.sheetFill` 就必须落在某个 `MaterialSurface(...)` 的参数范围内」，
-  /// 而这一行只是在算一个过渡用的合成色，不是壳表面本身 —— 用 `Colors.white`
-  /// 画同一个颜色即可（`sheetFill` 本身就是面板白加一个 alpha），既不误报、
-  /// 语义也更准确。
-  /// 只在动画/拖拽中返回那个实色，平时返回 null ——
-  /// 调用点写 `color: _paneSolid ?? C.sheetFill`。
-  /// 这样 `C.sheetFill` 出现在 `MaterialSurface(...)` 的参数范围内，
-  /// 材质覆盖检查（按行粗判）不会把它当成「没套壳的半透明表面」。
-  Color? get _paneSolid => _paneAnimating
-      ? Color.alphaBlend(Colors.white.withValues(alpha: 0.90), C.pageFill)
-      : null;
 
   /// 内容面板高度占屏高比例；0 = 收起（地图全屏）
   double _extent = 0;
@@ -285,7 +273,7 @@ class _HomeShell2State extends State<HomeShell2>
   void _onDrag(double dy) {
     _anim.stop();
     setState(() {
-      _dragging = true; // 手拖期间同样不做模糊（理由见 _paneAnimating）
+      _dragging = true; // 只用于 _paneAnimating/_insetSheetH 的判断（不再影响模糊）
       _extent = (_extent - dy / _screenH()).clamp(0.0, _fullRatioOf());
     });
   }
@@ -385,47 +373,70 @@ class _HomeShell2State extends State<HomeShell2>
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
 
-          // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
-          if (showSheet)
-            Positioned(
-              left: _kGutter,
-              right: _kGutter,
-              bottom: navSpace + _kGutter,
-              child: SizedBox(
-                height: sheetH,
-                child: MaterialSurface(
-                  // 四角都圆：面板下沿露在导航上方（不是贴屏幕底），
-                  // 只圆上角会让它看着像被切断。
-                  radius: 24,
-                  blurWhen: !_paneAnimating, // 动画/手拖期间不做离屏模糊
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _paneSolid ?? C.sheetFill,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: elev3(),
-                    ),
-                    child: Column(
-                      children: [
-                        _handle(),
-                        Expanded(
-                          child: ClipRect(
-                            child: OverflowBox(
-                              alignment: Alignment.topCenter,
-                              minHeight: pageH,
-                              maxHeight: pageH,
-                              child: SizedBox(
-                                height: pageH,
-                                child: _draggableContent(),
+                  // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
+                  if (showSheet)
+                    Positioned(
+                      left: _kGutter,
+                      right: _kGutter,
+                      bottom: navSpace + _kGutter,
+                      child: SizedBox(
+                        height: sheetH, // 可视高度（拖动/动画时在变）
+                        child: ClipRect(
+                          // 面板**自身固定为最高档高度**，只裁出下面 `sheetH` 可见。
+                          //
+                          // ── 为什么这样排（这是「拖起来卡 + 一拖就变白」的根因）──
+                          //
+                          // `BackdropFilter` 的代价与它的**几何**直接相关：面板高度每帧都在
+                          // 变时，每帧都要重做一次离屏模糊（拖一下就是十几次全屏模糊）——
+                          // 那是「卡」；而之前为了不卡，只好在拖动期间**关掉模糊并把填色换成
+                          // 不透明的白**，于是又出现「莫名其妙变白」（正常态 `sheetFill` 只有
+                          // 58% alpha，跳成实白非常显眼）。
+                          //
+                          // 固定高度之后，模糊层的几何在拖动中**完全不变**；再叠加地图那侧
+                          // 的 `frozen`（底图不变 → 模糊结果可复用），就能**一直开着模糊**：
+                          // 既不变白、也不每帧重算。裁切只影响可见区域，观感与「高度真的在变」
+                          // 完全一致。
+                          child: OverflowBox(
+                            alignment: Alignment.topCenter,
+                            minHeight: maxSheetH,
+                            maxHeight: maxSheetH,
+                            child: SizedBox(
+                              height: maxSheetH,
+                              child: MaterialSurface(
+                                // 四角都圆：面板下沿露在导航上方（不是贴屏幕底），
+                                // 只圆上角会让它看着像被切断。
+                                radius: 24,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: C.sheetFill,
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: elev3(),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      _handle(),
+                                      Expanded(
+                                        child: ClipRect(
+                                          child: OverflowBox(
+                                            alignment: Alignment.topCenter,
+                                            minHeight: pageH,
+                                            maxHeight: pageH,
+                                            child: SizedBox(
+                                              height: pageH,
+                                              child: _draggableContent(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
 
           // ④ 底部悬浮导航（固定位置，永不随内容移动）
           Positioned(
@@ -752,10 +763,9 @@ class _HomeShell2State extends State<HomeShell2>
             width: _kRailW + 1 + paneW,
             child: MaterialSurface(
               radius: 22,
-              blurWhen: !_paneAnimating,
               child: Container(
                 decoration: BoxDecoration(
-                  color: _paneSolid ?? C.sheetFill,
+                  color: C.sheetFill,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: elev3(),
                 ),
@@ -828,12 +838,11 @@ class _HomeShell2State extends State<HomeShell2>
   Widget _railCard() {
     return MaterialSurface(
       radius: 20,
-      blurWhen: !_paneAnimating,
       child: Container(
         width: _kRailW,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         decoration: BoxDecoration(
-          color: _paneSolid ?? C.sheetFill,
+          color: C.sheetFill,
           borderRadius: BorderRadius.circular(20),
           boxShadow: elev2(),
         ),
@@ -965,25 +974,42 @@ class _HomeShell2State extends State<HomeShell2>
       );
     }
     final up = st.connected;
-    // 未连接时做成**实心蓝**（主操作的样子），而不是浅色图标钮：
-    // 原来那颗按钮无论连不连都是一个 12% 透明的浅底，看不出「现在该点它」。
-    // 已连接仍用红色（断开语义）保持区分。
+    // ── 为什么要改成「带文字的浅底按钮」（用户反馈「多不清晰」）──
+    //
+    // 上一版做成了「未连接 = **实心蓝**圆钮、已连接 = 淡红圆钮」，本意是让未连接
+    // 时那颗按钮看起来像主操作。但它同时被读成了状态灯：**实心**在图形界面的惯例里
+    // 意味着「已开启」，于是用户看到的正好相反 —— 原话是「填充时是断开」（填满的
+    // 时候反而是断开状态）。而连上之后按钮又变成「断开」，同一个位置来回换含义。
+    //
+    // 现在把**状态**与**动作**彻底分开：
+    // * 状态只由左边那颗胶囊表达（● APRS-IS · 已连接 / 未连接，带颜色）；
+    // * 这颗按钮**只表达点了会发生什么**，所以一律带动词文字（连接 / 断开连接），
+    //   底色一律是淡底（不用实心）—— 不留「实心是否是状态」的解读空间。
     return Tooltip(
       message: up ? s.disconnect : s.connectAction,
       child: GestureDetector(
         onTap: st.toggleConnect,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          width: 32,
-          height: 32,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
-            color: up ? C.red.withValues(alpha: 0.12) : C.blue,
-            shape: BoxShape.circle,
+            color: (up ? C.red : C.blue).withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(999),
           ),
-          child: Icon(
-            up ? Icons.wifi_off_rounded : Icons.wifi_rounded,
-            size: 18,
-            color: up ? C.red : Colors.white,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                up ? Icons.link_off_rounded : Icons.wifi_rounded,
+                size: 15,
+                color: up ? C.red : C.blue,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                up ? s.disconnect : s.connectAction,
+                style: ts(11, c: up ? C.red : C.blue, w: FontWeight.w700),
+              ),
+            ],
           ),
         ),
       ),
@@ -1073,12 +1099,17 @@ class _HomeShell2State extends State<HomeShell2>
   }
 
   /// 当前**发射来源**的短名（与 1.0 的用词一致）
+  /// 状态胶囊里的**短**来源名。
+  ///
+  /// 为什么不用设置页那套完整说法（「音频（声卡）」「PKWDWPL（Kenwood 航点）」）：
+  /// 那颗胶囊和天气、连接按钮、定位按钮并排挤在窄屏顶部，长名会把这一行撑爆。
+  /// 完整说法留在设置页/连接页 —— 那里有整行宽度，也该解释清楚。
+  /// `APRS-IS` / `TNC` / `PKWDWPL` 是协议名与设备类别名，不是可翻译短语，直接用字面量。
   String _sourceLabel(AppState st) {
-    final s = S.of(context);
-    if (st.dataSource == AppState.srcTnc) return s.dataSourceTnc;
-    if (st.dataSource == AppState.srcAudio) return s.dataSourceAudio;
-    if (st.dataSource == AppState.srcPkwdwpl) return s.dataSourcePkwdwpl;
-    return s.dataSourceAprsIs;
+    if (st.dataSource == AppState.srcTnc) return 'TNC';
+    if (st.dataSource == AppState.srcAudio) return S.of(context).dataSourceAudioShort;
+    if (st.dataSource == AppState.srcPkwdwpl) return 'PKWDWPL';
+    return 'APRS-IS';
   }
 
   /// 链路状态（文案, 颜色）。

@@ -34,6 +34,18 @@ import 'theme.dart';
 /// `BackdropFilter` 不是免费的：它每帧都要把**背后已经画好的内容**离屏重绘一遍，
 /// 代价 ≈ 被模糊的面积 × 半径，而且**每个实例各付一次**。所以两档的**半径**不同：
 ///
+/// ── 曾经有一个 `blurWhen`（动画期关掉模糊），现在已经删掉 ──
+///
+/// 它当初是为了治「面板一展开就卡」：动画中面板高度每帧在变，`BackdropFilter`
+/// 的几何也就每帧在变，于是每帧都要重做一次离屏模糊。关掉模糊确实省了那十几帧，
+/// **但代价是必须同时把填色换成不透明的白** —— 而正常态的面板只有 58% alpha，
+/// 这一跳非常显眼，用户看到的就是「一拖就莫名其妙变白」。
+///
+/// 正确的做法不在这一层，而在**调用点的几何**：让面板**自身高度固定**、只裁出
+/// 可视区（见 `shell2` 面板那一段）。这样模糊层的几何在拖动/动画中完全不变，
+/// 叠加底图冻结（模糊结果可复用），模糊就能**一直开着** —— 既不卡、也不变白。
+/// 所以这里不再提供开关：**谁要用模糊，谁就得保证自己的几何是稳定的。**
+///
 /// * 小浮层（工具钮 / 图例 / 提示胶囊 / 细横条）→ `blurSigma: C.chipBlur`
 ///   + `C.chipFill` / [chipTint]。它们**面积小**，代价本来就低；12 的半径既看得出
 ///   磨砂，又不会把 38px 按钮的边缘糊成一团灰。
@@ -71,25 +83,12 @@ class MaterialSurface extends StatelessWidget {
   /// * `0` → **不模糊**。用半透明填色时**不要**这么写（见 `chipTint` 的说明）。
   final double? blurSigma;
 
-  /// 这一刻是否允许做模糊（默认允许）。
-  ///
-  /// **面板展开/拖拽动画期间请设为 false。** 原因是可量化的：
-  /// `BackdropFilter` 每帧都要把「背后已经画好的内容」离屏重绘一遍，而展开动画
-  /// 每帧都会重建这一层（外壳每帧 setState，面板高度在变）—— 于是动画的 16 帧里
-  /// 每一帧都在对整张地图做一次全屏离屏模糊。那正是「浮动面板一展开就卡」的主因。
-  ///
-  /// 动画只有 260ms：用户察觉不到「模糊是动画停下来才出现的」，但省掉的是
-  /// 十几帧全屏离屏模糊。**注意**：关掉模糊时必须同时换成**不透明**填色
-  /// （调用点负责）—— 半透明但不模糊会直接透出地图，比卡更难看。
-  final bool blurWhen;
-
   const MaterialSurface({
     super.key,
     required this.child,
     this.radius = 0,
     this.topOnly = false,
     this.blurSigma,
-    this.blurWhen = true,
   });
 
   /// 为什么把模糊层垫在 child **下面**，而不是 `ClipRRect > BackdropFilter > child`：
@@ -104,8 +103,8 @@ class MaterialSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!C.materialOn) return child;
-    // 动画中不做模糊（见 [blurWhen] 的说明）
-    if (!blurWhen) return child;
+    // 说明：这里**没有**「动画期关掉模糊」这类开关，见文件顶部关于 blurWhen
+    // 为何被删掉的那一段 —— 责任在调用点：要用模糊，就得保证几何稳定。
     final sigma = blurSigma ?? C.materialBlur;
     // 显式 0：调用点明确要实心（小浮层都是这么写的，见文件顶部的说明）
     if (sigma <= 0) return child;

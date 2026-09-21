@@ -6444,9 +6444,9 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get posAccuracy => '位置精度';
 
-
-
-
   @override
   String get locationStill => '静止';
+
+  @override
+  String get dataSourceAudioShort => '音声';
 }

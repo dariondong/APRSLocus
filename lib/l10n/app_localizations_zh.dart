@@ -6370,11 +6370,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get posAccuracy => '位置精度';
 
-
-
-
   @override
   String get locationStill => '静止';
+
+  @override
+  String get dataSourceAudioShort => '音频';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12742,9 +12742,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get posAccuracy => '位置精度';
 
-
-
-
   @override
   String get locationStill => '靜止';
+
+  @override
+  String get dataSourceAudioShort => '音訊';
 }

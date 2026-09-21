@@ -11517,12 +11517,23 @@ abstract class AppLocalizations {
   /// **'最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡'**
   String get uiMaterialGlassFullDesc;
 
+  /// No description provided for @posAccuracy.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置精度'**
   String get posAccuracy;
 
-
-
-
+  /// No description provided for @locationStill.
+  ///
+  /// In zh, this message translates to:
+  /// **'静止'**
   String get locationStill;
+
+  /// No description provided for @dataSourceAudioShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频'**
+  String get dataSourceAudioShort;
 }
 
 class _AppLocalizationsDelegate

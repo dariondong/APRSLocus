@@ -2834,5 +2834,6 @@
   "uiMaterialGlassFull": "滿血磨砂玻璃",
   "uiMaterialGlassFullDesc": "最透、最糊，而且**小元件也一起糊**（工具鈕 / 圖例 / 小提示都有磨砂）—— 觀感最重，也最吃顯卡",
   "posAccuracy": "位置精度",
-  "locationStill": "靜止"
+  "locationStill": "靜止",
+  "dataSourceAudioShort": "音訊"
 }

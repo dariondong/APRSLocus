@@ -6644,9 +6644,9 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get posAccuracy => 'Akurasi posisi';
 
-
-
-
   @override
   String get locationStill => 'Diam';
+
+  @override
+  String get dataSourceAudioShort => 'Audio';
 }

@@ -2330,5 +2330,6 @@
   "uiMaterialGlassFull": "Kaca buram penuh",
   "uiMaterialGlassFullDesc": "Paling tembus pandang dan paling buram, **termasuk widget kecil** (tombol peta, legenda, petunjuk) — tampilan paling tebal, dan paling memberatkan GPU",
   "posAccuracy": "Akurasi posisi",
-  "locationStill": "Diam"
+  "locationStill": "Diam",
+  "dataSourceAudioShort": "Audio"
 }

@@ -6635,9 +6635,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get posAccuracy => 'Position accuracy';
 
-
-
-
   @override
   String get locationStill => 'Stationary';
+
+  @override
+  String get dataSourceAudioShort => 'Audio';
 }

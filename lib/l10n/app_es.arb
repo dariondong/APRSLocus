@@ -2330,5 +2330,6 @@
   "uiMaterialGlassFull": "Cristal esmerilado intenso",
   "uiMaterialGlassFullDesc": "Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU",
   "posAccuracy": "Precisión de la posición",
-  "locationStill": "Estacionario"
+  "locationStill": "Estacionario",
+  "dataSourceAudioShort": "Audio"
 }

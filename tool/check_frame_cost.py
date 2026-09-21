@@ -14,8 +14,11 @@
      换成 `Offstage`/`Visibility` 就是「把磨砂弄坏」而不是优化。
   2. 冻结要**双向**：视图（拖动/缩放/选中）变化必须跟随，否则拖地图时标记僵住。
   3. 解冻要**补一次重建**，否则会短暂显示冻结前的旧标记。
-  4. 动画期不做离屏模糊（`MaterialSurface(blurWhen:)`），但**动画结束要恢复**
-     （少了状态监听就会一直没磨砂，用户以为材质坏了）。
+  4. 面板**自身高度固定**、只裁出可视区（`ClipRect` + `OverflowBox(maxHeight:
+     maxSheetH)`）。这一条是「拖起来卡」与「一拖就变白」的共同解法：
+     固定高度 ⇒ 模糊层的几何在拖动/动画中不变 ⇒ 可以**一直开着模糊**。
+     反过来（让高度跟着变、动画期关模糊）就是老做法：要么卡，要么为了不卡而把
+     填色换成不透明的白 —— 那就是用户看到的「莫名其妙变白」。
   5. 传给地图的 `bottomInset` 在动画期必须是**吸附目标值**：逐帧变的话，
      地图每帧重排重绘，正好把第 1 条抵消掉。
   6. 面板内容要做**实例缓存**：否则动画每帧重建四个页面。
@@ -32,6 +35,18 @@ def read(rel):
     return io.open(os.path.join(ROOT, rel), encoding='utf-8').read()
 
 
+def code_only(text):
+    """剔掉整行注释，只留代码 —— 用于 `forbid` 与正则这类**会误伤注释**的判据。
+
+    为什么必需：本文件与源码里的注释会**提到**被禁的名字来解释「为什么不用它」
+    （例如 `blurWhen` 的墓志铭）。直接全文件搜索会把这些说明文字当违规 ——
+    本检查第一版就因此报了两条假失败（另一条是注释里写 `[_insetSheetH]` 被
+    当成「方法当值用」）。假失败比没有检查更坏，因为它会让人把规则放宽。
+    """
+    return '\n'.join(l for l in text.split('\n')
+                     if not l.lstrip().startswith('//'))
+
+
 def main() -> int:
     errors = []
 
@@ -40,7 +55,8 @@ def main() -> int:
             errors.append(f'{rel} 里找不到 `{needle}` —— {why}')
 
     def forbid(rel, needle, why):
-        if needle in read(rel):
+        # 只看代码行：注释里提到被禁的名字是在**解释**，不是违规
+        if needle in code_only(read(rel)):
             errors.append(f'{rel} 里出现了 `{needle}` —— {why}')
 
     shell = read('lib/shell2.dart')
@@ -77,16 +93,24 @@ def main() -> int:
     if shell.count('frozen:') < 2:
         errors.append('lib/shell2.dart 只在一处传了 frozen —— 竖屏与横屏都要传')
 
-    # ⑥ 动画期不做模糊，但必须有状态监听恢复
-    need('lib/material.dart', 'final bool blurWhen;',
-         'MaterialSurface 没有 blurWhen（动画期会每帧做整屏离屏模糊）')
-    need('lib/material.dart', 'if (!blurWhen) return child;',
-         'blurWhen 没有在 build 里生效')
-    if shell.count('blurWhen: !_paneAnimating') < 2:
-        errors.append('lib/shell2.dart 里面板壳没有（或只有一处）用 '
-                      '`blurWhen: !_paneAnimating` —— 动画期仍会每帧离屏模糊')
+    # ⑥ 面板几何必须固定：模糊层的大小在拖动/动画中不能变
+    #
+    #    为什么不再检查 `blurWhen`：那个开关（动画期关掉模糊）本身就是问题的另一半
+    #    —— 关掉模糊必须同时把填色换成不透明的白，于是「一拖就变白」。现在改成
+    #    「面板自身高度固定、只裁可视区」，模糊可以一直开着。所以这里守的不变量
+    #    换了，而且要**反过来**禁止那两个旧手法再长回来。
+    need('lib/shell2.dart', 'minHeight: maxSheetH',
+         '面板壳没有固定高度（minHeight: maxSheetH）—— 高度每帧变，模糊层就每帧重做')
+    need('lib/shell2.dart', 'maxHeight: maxSheetH',
+         '面板壳没有固定高度（maxHeight: maxSheetH）')
+    forbid('lib/shell2.dart', '_paneSolid',
+           '面板又出现了「过渡用的不透明填色」—— 那正是「一拖就莫名其妙变白」的成因；'
+           '正确做法是让面板几何固定、模糊一直开着')
+    forbid('lib/material.dart', 'blurWhen',
+           'MaterialSurface 又长出了「动画期关模糊」的开关 —— 关掉它就必须换不透明填色，'
+           '于是变成「一拖就变白」；责任应在调用点的几何')
     need('lib/shell2.dart', 'addStatusListener',
-         '没有状态监听：动画结束后不会恢复磨砂（面板会一直没磨砂）')
+         '没有状态监听：动画结束后不会按新状态重算（面板会停在旧的让位量上）')
 
     # ⑦ inset 在动画期必须是吸附目标值
     need('lib/shell2.dart', 'double _insetSheetH()',
@@ -100,7 +124,7 @@ def main() -> int:
            '_insetSheetH 少了括号（方法当值用，编译不过）')
     forbid('lib/shell2.dart', '_kGutter + _insetSheetH:',
            '_insetSheetH 少了括号（方法当值用，编译不过）')
-    for m in re.finditer(r'_insetSheetH(?![\s(])', read('lib/shell2.dart')):
+    for m in re.finditer(r'_insetSheetH(?![\s(])', code_only(read('lib/shell2.dart'))):
         errors.append('lib/shell2.dart 里 `_insetSheetH` 有被当值用的地方'
                       '（应写成 `_insetSheetH()`）')
 
@@ -113,7 +137,7 @@ def main() -> int:
         for e in errors:
             print('  -', e)
         return 1
-    print('帧成本 ok（面板开着时地图冻结但仍在画；动画期不模糊且会恢复；'
+    print('帧成本 ok（面板开着时地图冻结但仍在画；面板几何固定故模糊可常开；'
           'inset 与内容都做了缓存）')
     return 0
 
