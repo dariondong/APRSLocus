@@ -67,6 +67,14 @@ class _HomeShell2State extends State<HomeShell2>
     duration: const Duration(milliseconds: 240),
   )..addListener(() => setState(() => _extent = _snap.evaluate(_anim)));
 
+  /// 顶栏真实高度（首帧用估值，量到后校准）。
+  ///
+  /// 为什么量而不是写死：顶栏是内容决定高度的（搜索框在窄屏变高、状态胶囊的
+  /// 文字长度随语言变），写死一个数就会在别的语言/字号下重新压住地图控件 ——
+  /// 而这正是「地图页布局混乱」的成因之一。
+  final GlobalKey _barKey = GlobalKey();
+  double _barH = 46;
+
   // 搜索（仅地图/台站页用，沿用 1.0 顶栏那套 300ms 防抖）
   String _search = '';
   final _searchCtrl = TextEditingController();
@@ -186,6 +194,14 @@ class _HomeShell2State extends State<HomeShell2>
 
   @override
   Widget build(BuildContext context) {
+    // 顶栏量高：帧后读一次，变了才 setState（稳定后不会再触发，无循环）
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final h = _barKey.currentContext?.size?.height;
+      if (h != null && h > 1 && (h - _barH).abs() > 0.5) {
+        setState(() => _barH = h);
+      }
+    });
     final size = MediaQuery.of(context).size;
     final pad = MediaQuery.of(context).padding;
     final peek = _peekExtent(context);
@@ -208,12 +224,18 @@ class _HomeShell2State extends State<HomeShell2>
               state: widget.state,
               searchQuery: _search,
               isActive: true,
+              topInset: pad.top + 6 + _barH + 8,
               bottomInset: cardH + 6,
             ),
           ),
 
           // ② 浮在地图上的顶栏（避开状态栏）
-          Positioned(top: pad.top + 6, left: 10, right: 10, child: _topBar()),
+          Positioned(
+            top: pad.top + 6,
+            left: 10,
+            right: 10,
+            child: KeyedSubtree(key: _barKey, child: _topBar()),
+          ),
 
           // ③ 底部卡片
           Positioned(
@@ -256,7 +278,7 @@ class _HomeShell2State extends State<HomeShell2>
           // ④ 气泡压在最上层，免得被卡片挡住
           if (_showBubble)
             Positioned(
-              top: pad.top + 62,
+              top: pad.top + 6 + _barH + 10,
               left: 0,
               right: 0,
               child: Center(child: _bubble()),

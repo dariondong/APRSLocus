@@ -28,6 +28,14 @@ class MapPage extends StatefulWidget {
   ///
   /// 卡片拖到很高时这两个控件会被推出屏幕顶部之外，这是**预期**的：
   /// 那时整块地图本来就看不见了，控件留在原地只会被卡片压住。
+  /// 顶部要**让出**多少高度（像素）。
+  ///
+  /// 2.0 布局下外壳在顶上浮了一条搜索/状态栏，而地图自己的信息条、图例、
+  /// 右侧工具列、沉浸入口过去全都锚在 `top: 14` —— 不让开就全被压在
+  /// 那条栏底下（表现就是「地图页布局混乱」）。由外壳把栏高传进来，
+  /// 地图把所有顶部锚点整体下移。
+  final double topInset;
+
   final double bottomInset;
 
   /// 当前是否为激活 Tab（首页 IndexedStack 可见页）。非激活时跳过地图重建，
@@ -38,6 +46,7 @@ class MapPage extends StatefulWidget {
     required this.state,
     this.searchQuery = '',
     this.isActive = true,
+    this.topInset = 0,
     this.bottomInset = 0,
   });
   @override
@@ -379,6 +388,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             final searched = widget.searchQuery.trim().isNotEmpty;
             // 矮横屏（小屏手机横放）：隐藏图例减少遮挡，让地图更全
             final shortWide = size.width > size.height && size.height < 520;
+            // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
+            final double topBase = 14 + widget.topInset;
+            // 贴底控件（比例尺/坐标条、上报横杠）在 2.0 里会被卡片顶上来。
+            // 顶到右侧工具列（约 390 高）那一段就会同时压住工具列与顶栏 ——
+            // 这正是「混乱」的来源。所以按顶栏之下的可用高度判断：
+            // 不够就**不显示**，而不是硬塞进去。440 ≈ 工具列高 + 间隙。
+            final bool roomForBottom =
+                size.height - widget.topInset - widget.bottomInset > 440;
             _syncPulse();
 
             return Stack(
@@ -477,11 +494,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 if (!_usePluginMap && !_showHeatmap)
                   ..._stationMarkers(size),
                 // 信息
-                Positioned(top: 14, left: 14, child: _infoChip(vis, searched)),
+                Positioned(top: topBase, left: 14, child: _infoChip(vis, searched)),
                 // 选点提示
                 if (_pickMode)
                   Positioned(
-                    top: 14,
+                    top: topBase,
                     left: 0,
                     right: 0,
                     child: Center(
@@ -531,7 +548,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                 // 图例（矮横屏隐藏，减少遮挡）
                 if (!shortWide)
-                  Positioned(top: 14, right: 60, child: _legend()),
+                  Positioned(top: topBase, right: 60, child: _legend()),
                 // ── 右侧工具列（合并为单个 Column）──
                 // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
                 // 而 `_zoomCtrl()` 实际含 6 个按钮（放大/缩小/轨迹/聚合/热力图/定位，
@@ -539,7 +556,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 改为单列顺序排布后，结构上不可能再出现相互重叠。
                 Positioned(
                   right: 14,
-                  top: 14,
+                  top: topBase,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -584,7 +601,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
                 Positioned(
                   left: 14,
-                  top: 58,
+                  top: topBase + 44,
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
@@ -610,7 +627,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   ),
                 ),
                 // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
-                if (size.height > size.width &&
+                if (roomForBottom &&
                     widget.state.connected &&
                     widget.state.myHasFix)
                   Positioned(
@@ -620,19 +637,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     child: _beaconBar(),
                   ),
                 // 底部控制（安全区白条 + 14px）
-                Positioned(
-                  left: 14,
-                  right: 14,
-                  bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
-                  child: ValueListenableBuilder<Offset?>(
-                    valueListenable: _hover,
-                    builder: (_, hp, _) => _bottomControls(hp),
+                if (roomForBottom)
+                  Positioned(
+                    left: 14,
+                    right: 14,
+                    bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
+                    child: ValueListenableBuilder<Offset?>(
+                      valueListenable: _hover,
+                      builder: (_, hp, _) => _bottomControls(hp),
+                    ),
                   ),
-                ),
                 // 搜索提示
                 if (searched)
                   Positioned(
-                    top: 14,
+                    top: topBase,
                     left: 0,
                     right: 0,
                     child: Center(
@@ -662,9 +680,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   ),
                 // 视野内无台站提示（点击弹出地图帮助）
-                if (!_hasVisibleStation(size))
+                // 同样受 roomForBottom 门控：它原本贴底，卡片顶上来后会跑到
+                // 上方与工具列/信息条重叠（这就属于「混乱」的一部分）。
+                if (roomForBottom && !_hasVisibleStation(size))
                   Positioned(
-                    bottom: 118,
+                    bottom: 118 + widget.bottomInset,
                     left: 0,
                     right: 0,
                     child: Center(
@@ -1831,7 +1851,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           // 面板
           Positioned(
             right: 56,
-            top: 14,
+            top: 14 + widget.topInset,
             child: Material(
               color: Colors.transparent,
               child: StatefulBuilder(
@@ -1866,7 +1886,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           // 面板
           Positioned(
             right: 56,
-            top: 58,
+            top: 58 + widget.topInset,
             child: Material(
               color: Colors.transparent,
               child: MaterialSurface(
