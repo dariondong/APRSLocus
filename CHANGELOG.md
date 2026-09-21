@@ -1,5 +1,91 @@
 # 更新日志
 
+## [1.6.142] - 2026-09-21
+
+### 🐛 修「自身轨迹横跳」；磨砂玻璃性能优化 / Fixing the jumping self-track; frosted-glass performance
+
+两个用户反馈，一个比一个难查。
+
+## 一、自身轨迹横跳：跳回旧点再画一次，反复横画
+
+现象：轨迹每隔一会儿跳回初始点、再画一次当前位置，来回横画，但**实际发出去的位置是对的**。
+
+根因在 Android 原生侧，**不是算法**：`LocationService` 里有个 10 秒轮询会调
+`reportLastKnown()`，而它取的是 `getLastKnownLocation()` —— **系统缓存的「上次已知位置」**
+（可能几小时前、甚至在另一个城市）—— 它走的是**和实时定位完全相同**的判断函数，
+于是每 10 秒被当成一次正常定位上报：旧点写进轨迹 → 真实点又写一次 → 反复。
+这也解释了为什么**只有部分手机**出现（取决于缓存位置离当前位置多远）。
+
+顺带一个连带 bug：那个缓存点会推进「最近 GPS 时间」，让代码误以为 GPS 刚更新过，
+**反而把真正的网络兜底压掉 20 秒**。
+
+**三层修法**：
+
+- **原生（根因）**：缓存位置只在「还没有实时定位」时用于快速出图（且年龄 ≤ 5 分钟），
+  收到实时定位后一律丢弃；GPS 时间戳只由实时定位推进。
+- **不写轨迹**：定位回调新增 `lastKnown` 标记，缓存位置只更新地图上的「我」、不写轨迹；
+  IP 网络定位也归入此类（一次性的粗点）。
+- **跳变守卫（兜其它来源）**：**10 分钟内位移超过 30km** 才算可疑（只看距离会误伤
+  「停车几小时后开出去」这种合法位移），可疑点先只更新标记、不写轨迹，连续 **3 次**
+  落在同一处才认账 —— 认账后**清空轨迹从新位置重画**，而不是画一条横跨两地的
+  假线（那比没有轨迹更误导）。
+
+## 二、磨砂玻璃卡
+
+`BackdropFilter` 每帧都要把背后的内容离屏重绘一遍，代价 ≈ 面积 × 半径，
+且**每个实例各付一次**。量下来三个真凶：
+
+1. **2.0 外壳每秒被重建数次** —— 状态每秒 tick、每次收包也 notify，而外壳原来无条件
+   `setState`，那些模糊层跟着一起重建。现在只在「外壳真正显示的值」变化时重建。
+2. **小浮层也在模糊** —— 全仓库 48 处 `MaterialSurface`，光地图页就 12 处，其中 8 个是
+   **38px 的工具钮**；这类浮层根本看不出模糊（能看见的是填充色），却各自付一次整屏
+   离屏重绘；「跟随鼠标的信息窗」更是每次悬停都重算。现在按「小浮层实心、大面板磨砂」
+   分档（也是 iOS/Android 的做法）。
+3. **半径**：玻璃 34→24、云母 22→16。
+
+一个失败的设计也记在代码里：第一版想用 `LayoutBuilder` 按面积自动判断，但地图上的
+小浮层**全是 `Positioned` 包着的**，约束是整个 Stack 的尺寸而不是自身尺寸 ——
+38px 的按钮被量成整屏，自动规则恰好在最需要它的地方**静默失效**，所以改成显式。
+
+---
+
+**Two reports from users, the first one considerably harder to find.**
+
+**1) The self-track jumped back to an old point and redrew the current position, over and over** —
+while the positions actually being transmitted were correct. The cause was not the algorithm but a
+wiring bug on the Android side: `LocationService` runs a 10-second poll calling
+`reportLastKnown()`, which reads `getLastKnownLocation()` — the **system's cached last-known
+position**, possibly hours old or in a different city — and feeds it through **the very same**
+decision function as live fixes. So every ten seconds the stale point was reported as a normal fix:
+written into the track, then the real fix written again, back and forth. It also explains why only
+*some* phones show it: it depends on how far the cached position is from the current one. A related
+bug: that cached point advanced the “last good GPS” timestamp, which **suppressed the legitimate
+network fallback for 20 seconds**.
+
+Fixed in three layers: **the native side** (cached positions are only used for a quick first draw
+before any live fix, and only if under 5 minutes old; the GPS timestamp is advanced only by live
+fixes); **no track entries** from cached fixes (the callback now carries a `lastKnown` flag, and IP
+geolocation counts as one too); and a **jump guard** for any other source — a move of more than
+**30 km within 10 minutes** is treated as suspect (distance alone would wrongly punish “parked for
+hours, then drove off”), such points update the marker but not the track, and only after **3
+consecutive** readings in the same place is it accepted — at which point the track is **cleared and
+restarted from the new position** rather than drawing a fake line across the gap.
+
+**2) Frosted glass felt sluggish.** A `BackdropFilter` re-renders what is behind it offscreen every
+frame — cost ≈ area × radius, **paid per instance**. Three culprits: the 2.0 shell was rebuilt
+several times a second (so its blur layers were too — now it only rebuilds when a value it actually
+displays changes); **small overlays were being blurred at all** (48 `MaterialSurface` uses, twelve
+on the map page alone, eight of them **38px tool buttons** — invisible blur, paid in full; a hover
+info window recomputed a blur on every hover) — now “solid small overlays, frosted large panels”,
+as iOS and Android do it; and the radii came down (glass 34→24, mica 22→16).
+
+One failed design is documented in the code: the first attempt used `LayoutBuilder` to decide by
+area — but the map's small overlays are all wrapped in **`Positioned`**, whose child receives the
+*stack's* constraints rather than its own size, so a 38px button measured as full-screen and the
+rule failed silently exactly where it mattered most. Hence: explicit.
+
+---
+
 ## [1.6.141] - 2026-09-21
 
 ### 🔧 2.0 收尾：去掉顶部搜索框、返回键回地图、补回天气与一键连接 / 2.0 finishing touches: no more top search bar, back returns to the map, weather and connect restored
