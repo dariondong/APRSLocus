@@ -6640,4 +6640,18 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get uiMaterialGlassFullDesc =>
       'Paling tembus pandang dan paling buram, **termasuk widget kecil** (tombol peta, legenda, petunjuk) — tampilan paling tebal, dan paling memberatkan GPU';
+
+  @override
+  String get posAccuracy => 'Akurasi posisi';
+
+  @override
+  String get posAccuracyExact => 'Presisi (tanpa ambiguitas)';
+
+  @override
+  String posAccuracyApprox(String r, String n) {
+    return '±$r (ambiguitas $n digit)';
+  }
+
+  @override
+  String get posCoasting => 'Perkiraan posisi';
 }

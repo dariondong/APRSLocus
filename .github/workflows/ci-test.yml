@@ -70,6 +70,18 @@ jobs:
       - name: Check const colors
         run: python3 tool/check_const_colors.py
 
+      # l10n 一致性：arb（真源）↔ 提交进 git 的 gen-l10n 产物。
+      # CI 里 `generate: true` 会按 arb 重新生成产物，于是「产物没 regen」
+      # 会被掩盖 —— 但本机开发时它报 undefined_getter。这条按**未生成产物**
+      # 的视角校验，把「我这有错、CI 却绿」这种最耗人的错位挡在 CI。
+      - name: Check l10n sync
+        run: python3 tool/check_l10n_sync.py
+
+      # 打点质量层的**接线**检查：算法写好了但忘了在某条路径上调用，
+      # 编译与 analyze 都不会报错 —— 功能只是悄悄不生效。
+      - name: Check position quality wiring
+        run: python3 tool/check_pos_quality.py
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

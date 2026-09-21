@@ -9,6 +9,7 @@ import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 import 'theme.dart';
 import 'models.dart';
+import 'pos_quality.dart';
 import 'widgets.dart';
 
 /// 矢量地图视图（flutter_map + vector_map_tiles）
@@ -148,8 +149,11 @@ class _VectorMapViewState extends State<VectorMapView> {
     if (!widget.showTracks) return const [];
     final result = <Polyline>[];
     if (widget.myTrack.length > 1) {
+      // 与瓦片地图同一条平滑路径：GPS 抖动被抹掉、真实急弯不动
+      // （每个点最多挪 25m，见 PosQuality.smoothForDraw）
+      final pts = PosQuality.smoothForDraw(widget.myTrack);
       result.add(Polyline(
-        points: widget.myTrack.map((p) => LatLng(p.lat, p.lng)).toList(),
+        points: pts.map((p) => LatLng(p.lat, p.lng)).toList(),
         color: C.blue.withValues(alpha: 0.85),
         strokeWidth: 3.5,
       ));
@@ -157,8 +161,9 @@ class _VectorMapViewState extends State<VectorMapView> {
     final sel = widget.selectedTrack;
     final selColor = widget.selectedColor;
     if (sel.length > 1 && selColor != null) {
+      final pts = PosQuality.smoothForDraw(sel);
       result.add(Polyline(
-        points: sel.map((p) => LatLng(p.lat, p.lng)).toList(),
+        points: pts.map((p) => LatLng(p.lat, p.lng)).toList(),
         color: selColor.withValues(alpha: 0.85),
         strokeWidth: 3.5,
       ));

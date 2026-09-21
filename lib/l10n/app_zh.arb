@@ -2842,5 +2842,9 @@
   "linkNotConnected": "未连接",
   "linkTapForSettings": "点一下查看连接设置",
   "uiMaterialGlassFull": "满血磨砂玻璃",
-  "uiMaterialGlassFullDesc": "最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡"
+  "uiMaterialGlassFullDesc": "最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡",
+  "posAccuracy": "位置精度",
+  "posAccuracyExact": "精确（未声明模糊）",
+  "posAccuracyApprox": "±{r}（模糊 {n} 位）",
+  "posCoasting": "推测位置"
 }

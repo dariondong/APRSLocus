@@ -6631,4 +6631,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get uiMaterialGlassFullDesc =>
       'The most transparent and the blurriest, **including the small widgets** (map tool buttons, legend, hint pills) — the heaviest look, and the heaviest on the GPU';
+
+  @override
+  String get posAccuracy => 'Position accuracy';
+
+  @override
+  String get posAccuracyExact => 'Exact (no ambiguity declared)';
+
+  @override
+  String posAccuracyApprox(String r, String n) {
+    return '±$r (ambiguous to $n digits)';
+  }
+
+  @override
+  String get posCoasting => 'Estimated position';
 }

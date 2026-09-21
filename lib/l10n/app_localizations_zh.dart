@@ -6366,6 +6366,20 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get uiMaterialGlassFullDesc =>
       '最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡';
+
+  @override
+  String get posAccuracy => '位置精度';
+
+  @override
+  String get posAccuracyExact => '精确（未声明模糊）';
+
+  @override
+  String posAccuracyApprox(String r, String n) {
+    return '±$r（模糊 $n 位）';
+  }
+
+  @override
+  String get posCoasting => '推测位置';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12729,4 +12743,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get uiMaterialGlassFullDesc =>
       '最透、最糊，而且**小元件也一起糊**（工具鈕 / 圖例 / 小提示都有磨砂）—— 觀感最重，也最吃顯卡';
+
+  @override
+  String get posAccuracy => '位置精度';
+
+  @override
+  String get posAccuracyExact => '精確（未宣告模糊）';
+
+  @override
+  String posAccuracyApprox(String r, String n) {
+    return '±$r（模糊 $n 位）';
+  }
+
+  @override
+  String get posCoasting => '推測位置';
 }

@@ -11516,6 +11516,14 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡'**
   String get uiMaterialGlassFullDesc;
+
+  String get posAccuracy;
+
+  String get posAccuracyExact;
+
+  String posAccuracyApprox(String r, String n);
+
+  String get posCoasting;
 }
 
 class _AppLocalizationsDelegate

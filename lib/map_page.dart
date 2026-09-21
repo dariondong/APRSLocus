@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'theme.dart';
 import 'models.dart';
+import 'pos_quality.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'station_detail.dart';
@@ -474,6 +475,21 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       painter: _TrackOverlayPainter(
                         points: _selected!.track,
                         color: _selected!.color,
+                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                      ),
+                    ),
+                  ),
+                // 位置质量层：模糊位置画「不确定圈」、安静下来的移动台站画
+                // 「推测位置 + 随时间扩大的不确定圈」。都在一个 painter 里画，
+                // 不额外创建 widget（台站多时也只多一次 canvas 遍历）。
+                if (!_usePluginMap && _showTracks)
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _FixQualityPainter(
+                        stations: _visible,
+                        secondBucket:
+                            DateTime.now().millisecondsSinceEpoch ~/ 1000,
                         toScreen: (lat, lng) => _toScreen(lat, lng, size),
                       ),
                     ),
@@ -2371,6 +2387,9 @@ class _TrackOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (points.length < 2) return;
+    // 绘制前做一次**限幅平滑**：GPS 抖动（十几米）被抹掉、真实急弯不动
+    // —— 每个点最多挪 25m，不会把立交桥抹成直线（见 PosQuality.smoothForDraw）。
+    final draw = PosQuality.smoothForDraw(points);
     final outline = Paint()
       ..color = Colors.white.withValues(alpha: 0.7)
       ..strokeWidth = 5
@@ -2386,7 +2405,7 @@ class _TrackOverlayPainter extends CustomPainter {
 
     final path = Path();
     bool first = true;
-    for (final p in points) {
+    for (final p in draw) {
       final pos = toScreen(p.lat, p.lng);
       if (first) {
         path.moveTo(pos.dx, pos.dy);
@@ -2399,12 +2418,12 @@ class _TrackOverlayPainter extends CustomPainter {
     canvas.drawPath(path, line);
 
     final dot = Paint()..color = color.withValues(alpha: 0.5);
-    for (int i = 0; i < points.length; i += 5) {
-      final pos = toScreen(points[i].lat, points[i].lng);
+    for (int i = 0; i < draw.length; i += 5) {
+      final pos = toScreen(draw[i].lat, draw[i].lng);
       canvas.drawCircle(pos, 2.2, dot);
     }
-    final start = toScreen(points.first.lat, points.first.lng);
-    final end = toScreen(points.last.lat, points.last.lng);
+    final start = toScreen(draw.first.lat, draw.first.lng);
+    final end = toScreen(draw.last.lat, draw.last.lng);
     canvas.drawCircle(start, 3, Paint()..color = C.greyLight);
     canvas.drawCircle(end, 4.5, Paint()..color = color);
   }
@@ -2412,6 +2431,112 @@ class _TrackOverlayPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _TrackOverlayPainter old) =>
       old.points != points || old.color != color;
+}
+
+/// 位置质量层：把「不确定」如实画出来，而不是假装精确。
+///
+/// 两件事：
+///   ① 模糊位置 —— 上报方只报到 1′ / 10′（`Station.ambiguity`）时，真实位置
+///      落在几百米到几十公里的方格内，画「不确定圈」；
+///   ② 推测定位 —— 移动台站安静下来后，按最后速度/航向外推现在大概在哪
+///      （`PosQuality.coastOf`），圈随静默时间扩大。
+///
+/// 全部在屏幕空间画虚线，不创建 widget：台站再多也只多一次 canvas 遍历。
+class _FixQualityPainter extends CustomPainter {
+  final List<Station> stations;
+  final Offset Function(double lat, double lng) toScreen;
+
+  /// 秒级时间桶：推测圈随时间扩大，没它的话「没有新包 = 不重绘」会把圈冻住。
+  final int secondBucket;
+
+  _FixQualityPainter({
+    required this.stations,
+    required this.toScreen,
+    required this.secondBucket,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final now = DateTime.now();
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..color = C.greyLight.withValues(alpha: 0.75);
+    final ghostLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..color = C.cyan.withValues(alpha: 0.85);
+    final ghostFill = Paint()..color = C.cyan.withValues(alpha: 0.18);
+
+    // 上限保护：极端情况下（上千台站 + 全都在推测）不至于每帧画几千条虚线
+    var drawn = 0;
+    for (final s in stations) {
+      if (drawn >= 120) break;
+      final c = toScreen(s.lat, s.lng);
+      if (c.dx < -200 ||
+          c.dx > size.width + 200 ||
+          c.dy < -200 ||
+          c.dy > size.height + 200) {
+        continue;
+      }
+      final coast = PosQuality.coastOf(s, now: now);
+      if (s.ambiguity <= 0 && coast == null) continue;
+      // 米 → 像素：用「向北 0.001°（≈111m）」在屏幕上的位移反算。
+      // 这样瓦片图（自算投影）与矢量图（flutter_map）不用各写一套换算。
+      final p1 = toScreen(s.lat, s.lng);
+      final p2 = toScreen(s.lat + 0.001, s.lng);
+      final pxPerM = (p2 - p1).distance.clamp(0.01, 1e6) / 111.32;
+
+      final ambR = PosQuality.ambiguityRadiusM(s.ambiguity, lat: s.lat);
+      if (ambR > 0) {
+        final rPx = ambR * pxPerM;
+        // <4px 看不清、>4000px 等于整屏，都不画
+        if (rPx >= 4 && rPx <= 4000) {
+          _dashedCircle(canvas, c, rPx, ring);
+          drawn++;
+        }
+      }
+      if (coast != null) {
+        final cc = toScreen(coast.lat, coast.lng);
+        _dashedLine(canvas, c, cc, ghostLine);
+        final crPx = coast.uncertaintyM * pxPerM;
+        if (crPx >= 3 && crPx <= 6000) {
+          _dashedCircle(canvas, cc, crPx, ghostLine);
+        }
+        canvas.drawCircle(cc, 4, ghostFill);
+        canvas.drawCircle(cc, 4, ghostLine);
+        drawn++;
+      }
+    }
+  }
+
+  /// 虚线圆（Flutter 的 Paint 没有 dash，只能用 Path 度量自己切）
+  void _dashedCircle(Canvas canvas, Offset c, double r, Paint p) {
+    final path = Path()..addOval(Rect.fromCircle(center: c, radius: r));
+    for (final m in path.computeMetrics()) {
+      var d = 0.0;
+      while (d < m.length) {
+        canvas.drawPath(m.extractPath(d, d + 5), p);
+        d += 11;
+      }
+    }
+  }
+
+  void _dashedLine(Canvas canvas, Offset a, Offset b, Paint p) {
+    final total = (b - a).distance;
+    if (total < 1) return;
+    final dir = (b - a) / total;
+    var d = 0.0;
+    while (d < total) {
+      final e = math.min(d + 4, total);
+      canvas.drawLine(a + dir * d, a + dir * e, p);
+      d += 10;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _FixQualityPainter old) =>
+      !identical(old.stations, stations) || old.secondBucket != secondBucket;
 }
 
 /// 低缩放热力图：把台站按屏幕位置绘制成密度热力点（网格统计 + 色阶），无第三方依赖

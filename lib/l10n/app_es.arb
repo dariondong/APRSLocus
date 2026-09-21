@@ -2328,5 +2328,9 @@
   "linkNotConnected": "Sin conexión",
   "linkTapForSettings": "Toca para abrir los ajustes de conexión",
   "uiMaterialGlassFull": "Cristal esmerilado intenso",
-  "uiMaterialGlassFullDesc": "Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU"
+  "uiMaterialGlassFullDesc": "Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU",
+  "posAccuracy": "Precisión de la posición",
+  "posAccuracyExact": "Exacta (sin ambigüedad declarada)",
+  "posAccuracyApprox": "±{r} (ambigüedad de {n} dígitos)",
+  "posCoasting": "Posición estimada"
 }

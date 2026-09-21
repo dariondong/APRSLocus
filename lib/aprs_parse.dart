@@ -20,6 +20,13 @@ class ParsedPos {
   final int posAmbiguity; // 位置模糊位数（0-4）
   final String format; // uncompressed / compressed / mic-e
 
+  /// 位置包**声明**的时间（只有带时间戳的 `/`、`@` 包才有，其余为 null）。
+  ///
+  /// 以前这个字段解析出来就被丢掉了，于是没法判断「这条是不是迟到的旧帧」——
+  /// APRS-IS 不保证有序，一个几十秒前的旧包会把台站拉回几百米外，
+  /// 轨迹上就出现折返。它是打点质量层里唯一能识别乱序的依据。
+  final DateTime? fixTime;
+
   const ParsedPos({
     required this.lat,
     required this.lng,
@@ -31,6 +38,7 @@ class ParsedPos {
     this.alt,
     this.posAmbiguity = 0,
     this.format = 'uncompressed',
+    this.fixTime,
   });
 }
 
@@ -52,17 +60,57 @@ ParsedPos? parseAprsPosition(String body, {String? dest}) {
   var s = body.substring(1);
 
   // 带时间戳的位置包：7 字符时间戳（DDHHMMz / HHMMSSh / DDHHMM/）
+  DateTime? fixTime;
   if (dti == '/' || dti == '@') {
     if (s.length < 8) return null;
+    fixTime = _parsePosTime(s.substring(0, 7));
     s = s.substring(7);
   }
   if (s.isEmpty) return null;
 
   // 压缩格式优先（其首字符为符号表，非压缩首字符为纬度数字，不会冲突）
-  final c = _parseCompressed(s);
+  final c = _parseCompressed(s, fixTime: fixTime);
   if (c != null) return c;
 
-  return _parseNormal(s);
+  return _parseNormal(s, fixTime: fixTime);
+}
+
+/// 解析 7 字符位置时间戳，统一成 **UTC**（无法解析返回 null）。
+///
+/// 三种形式（APRS101）：
+///   `DDHHMMz` —— 日 时 分，z 表示 UTC；
+///   `HHMMSSh` —— 时 分 秒，h 表示 UTC（用当天的日期）；
+///   `DDHHMM/` —— 日 时 分，'/' 表示**本地时间**。
+///
+/// 都没有年份：按当前 UTC 年月补。若补出来的时间落在未来 12 小时以后，
+/// 说明报文其实是上个月/去年发的（31 天跨月、跨年都会这样），回退一个月。
+/// 这里只需要「能比较先后」，不需要绝对精确 —— 迟到的判据是秒级到分钟级，
+/// 跨月回退错了也只会让一个旧包被当成新包，代价可接受。
+DateTime? _parsePosTime(String t) {
+  if (t.length != 7) return null;
+  final now = DateTime.now().toUtc();
+  int two(int i) => int.tryParse(t.substring(i, i + 2)) ?? -1;
+  final kind = t[6];
+  final a = two(0), b = two(2), c = two(4);
+  if (a < 0 || b < 0 || c < 0) return null;
+  if (kind == 'z' || kind == 'Z') {
+    if (a < 1 || a > 31 || b > 23 || c > 59) return null;
+    var dt = DateTime.utc(now.year, now.month, a, b, c);
+    if (dt.isAfter(now.add(const Duration(hours: 12)))) {
+      dt = DateTime.utc(now.year, now.month - 1, a, b, c);
+    }
+    return dt;
+  }
+  if (kind == 'h' || kind == 'H') {
+    if (a > 23 || b > 59 || c > 59) return null;
+    return DateTime.utc(now.year, now.month, now.day, a, b, c);
+  }
+  if (kind == '/') {
+    if (a < 1 || a > 31 || b > 23 || c > 59) return null;
+    // '/' 是本地时间，转成 UTC 后才能与其它包比较
+    return DateTime(now.year, now.month, a, b, c).toUtc();
+  }
+  return null;
 }
 
 // ─────────────────────────── 非压缩格式 ───────────────────────────
@@ -74,7 +122,7 @@ final RegExp _normalRe = RegExp(
   r'(\d{3})([0-9 ]{2}\.[0-9 ]{2})([EeWw])([\x21-\x7e])([\s\S]*)$',
 );
 
-ParsedPos? _parseNormal(String s) {
+ParsedPos? _parseNormal(String s, {DateTime? fixTime}) {
   final m = _normalRe.firstMatch(s);
   if (m == null) return null;
 
@@ -119,6 +167,7 @@ ParsedPos? _parseNormal(String s) {
     alt: ex.alt,
     posAmbiguity: amb,
     format: 'uncompressed',
+    fixTime: fixTime,
   );
 }
 
@@ -128,7 +177,7 @@ ParsedPos? _parseNormal(String s) {
 /// [0] 符号表 [1..4] 纬度 [5..8] 经度 [9] 符号 [10..11] 航向/速度 [12] 类型
 final RegExp _compRe = RegExp(r'^[/\\A-Za-j][!-|]{8}[!-{}][ -|]{3}');
 
-ParsedPos? _parseCompressed(String s) {
+ParsedPos? _parseCompressed(String s, {DateTime? fixTime}) {
   if (!_compRe.hasMatch(s) || s.length < 13) return null;
   final c = s.substring(0, 13);
   final rest = s.length > 13 ? s.substring(13) : '';
@@ -164,6 +213,7 @@ ParsedPos? _parseCompressed(String s) {
     course: course,
     alt: alt,
     format: 'compressed',
+    fixTime: fixTime,
   );
 }
 
