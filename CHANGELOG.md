@@ -1,5 +1,96 @@
 # 更新日志
 
+## [1.6.144] - 2026-09-21
+
+### ✨ 「满血磨砂玻璃」档；2.0 横屏改左侧竖条；修下拉/返回手势冲突 / A "full" frosted-glass tier; a new landscape layout; gesture fixes
+
+四件用户反馈。其中两件是我上一版引入的 bug，先列出来。
+
+## 一、修「消息页往下拉，面板就缩下去」（我上一版引入的）
+
+消息页的会话/聊天列表是 `reverse: true`（最新消息在底部，往上滑看历史）。在反向列表里
+用户「往下拉」是朝**最新消息**方向，却被我的 `OverscrollNotification` 监听当成了
+「滚到顶还想再拉」→ 收面板。
+
+现在加**方向门控**：只有正向竖向列表（`AxisDirection.down`）才允许「滚到顶继续下拉 →
+收面板」；反向列表（消息页）与横向列表（筛选芯片那一行）一律不参与。
+
+## 二、修「从会话详情按返回，一下跑到地图去了」（我上一版引入的）
+
+根因是 Flutter 的语义：`ModalRoute.popDisposition` **遍历**所有 PopScope，只要有一个
+`canPop == false` 就整体不弹；而 `onPopInvokedWithResult` 是对**每一个**逐个调用 ——
+**同一个 route 上的多个 PopScope 回调会全部触发，没有优先级**。外壳（返回→回地图）与
+消息页（返回→回会话列表）各有一个，于是两者同时发生，后者把前者盖掉。
+
+新增 `lib/back_router.dart`：内层页面在需要接手返回时**登记意愿**，外壳先问一句，
+有人接手就不插手。用登记而不是「让外壳去猜内层状态」——内层最清楚自己拦不拦，
+外壳去推演（哪个 tab、窄屏还是宽屏、是否在详情里）必然漏一种。
+
+顺带修正：给消息页传的 `isActive` 原先写死 `true`，而它是「页面是否在前台」的语义
+（同时决定是否拦返回、以及「正在看的会话」要不要算未读）；写死 true 会让消息页在
+别的页签上也拦返回。
+
+## 三、「满血磨砂玻璃」——小浮层也有磨砂
+
+原因很具体：原来的**磨砂玻璃**档给工具钮、图例这类**小浮层**只上 **12** 的轻磨砂
+（半径给大反而会把 38px 的边缘糊成一团灰），所以小东西看着像「没开材质」。
+
+新增第四档：透明度 **0.42**（最透）、模糊 **40**（最强），而且**小浮层用与大面板
+同一档的强模糊**。代价照实说：这一档**不省显卡**（每个小浮层都按大半径重绘一次
+离屏）—— 是明确要的重观感，所以做成**独立一档**，没有改掉原来的玻璃档。
+
+## 四、2.0 横屏：左侧「导航竖条 + 内容面板」
+
+横屏的**高度**很小（手机横放常不足 400dp），底部面板一展开就吃掉大半高度、地图基本
+看不见——而这一版的前提是「地图是底」。所以横屏把导航与内容一起挪到**左侧**：宽绰的
+那一维给内容，地图占满右侧，互不遮挡。
+
+* 导航竖条与底部导航**同一个数据源、同一套选中色**，只是排成竖的。
+* 内容面板宽 = min(屏宽 40%, 屏宽 − 竖条 − 260)，夹在 300~560，保证地图不被挤没。
+* 横屏**刻意不做拖拽**：竖向空间本来就紧，拉高拉低没意义；点导航切换、选「地图」收起。
+* 地图在横屏仍是**全尺寸**绘制（不是被压扁的窄条），只是左侧被面板遮住一部分。
+
+---
+
+**Four items of feedback; two of them are regressions I introduced in the previous release, so
+those come first.**
+
+**1) Fixed: pulling down on the messages page collapsed the sheet.** The conversation/chat
+lists there are `reverse: true` (newest at the bottom, swipe up for history). In a reversed list,
+pulling *down* moves toward the newest message — but my `OverscrollNotification` listener read it
+as “already at the top and still pulling”, and collapsed the sheet. There is now an **axis
+gate**: only a forward vertical list (`AxisDirection.down`) may collapse the sheet by
+over-scrolling; reversed and horizontal lists never do.
+
+**2) Fixed: pressing back from a chat jumped to the map.** This is Flutter's semantics, not a
+guess: `ModalRoute.popDisposition` **iterates** every registered `PopScope` (any one with
+`canPop == false` makes the whole route refuse to pop), while `onPopInvokedWithResult` is called
+on **each** of them — so **multiple PopScopes on one route all fire, with no priority**. The shell
+(back → map) and the messages page (back → conversation list) each had one, so both happened and
+the latter overwrote the former. A shared `lib/back_router.dart` now lets an inner page *register*
+that it wants the back gesture; the shell asks first and stands down if someone claims it.
+Registering beats the shell trying to infer the inner state — the inner page is the only one that
+knows, and any inference (which tab, narrow or wide, in a detail view or not) will miss a case.
+
+**3) A “full frosted glass” tier, so small overlays are frosted too.** The reason small widgets
+looked unfrosted is specific: the existing frosted-glass tier blurs small overlays (map tool
+buttons, legend, hint pills) by only **12** — a large radius would smear a 38px button's edges to
+grey. The new fourth tier uses opacity **0.42** and blur **40**, and gives small overlays the
+**same strong blur as large panels**. Stated plainly: this tier does **not** save GPU time (every
+small overlay is redrawn offscreen at a large radius). It is a separate tier rather than a change
+to the existing one, precisely because that cost is a deliberate choice.
+
+**4) A landscape layout for 2.0: side rail plus a left panel.** Landscape height is small (often
+under 400dp), so a bottom sheet eats most of the map — and the premise of this design is that the
+map is the base. So in landscape the navigation and content move to the **left**: the generous
+dimension holds content, the map fills the right, and they no longer overlap. The side rail shares
+the bottom navigation's data source and accent colours, just stacked vertically; the panel width is
+`min(40% of width, width − rail − 260)` clamped to 300–560 so the map is never squeezed out;
+landscape deliberately has **no dragging**; and the map is still drawn at **full size** (not a
+squashed strip) with only its left part covered by the panel.
+
+---
+
 ## [1.6.143] - 2026-09-21
 
 ### ✨ 小按钮恢复磨砂；连接提示重做；面板把手加大且「整页都能拖」 / Frosted small buttons restored; a clearer connection indicator; a bigger grab handle and full-page dragging
