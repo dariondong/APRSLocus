@@ -618,7 +618,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     right: 14,
                     bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                     child: _beaconBar(),
-                    child: _beaconBar(),
                   ),
                 // 底部控制（安全区白条 + 14px）
                 Positioned(
