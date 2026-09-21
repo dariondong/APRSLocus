@@ -1,5 +1,99 @@
 # 更新日志
 
+## [1.6.141] - 2026-09-21
+
+### 🔧 2.0 收尾：去掉顶部搜索框、返回键回地图、补回天气与一键连接 / 2.0 finishing touches: no more top search bar, back returns to the map, weather and connect restored
+
+三条用户反馈 + 我自己审计出的一处功能缺失。
+
+**一、2.0 顶栏不再有搜索框**
+
+- **台站页自己就有搜索框** —— `StationsPage._query` 的优先级是「本页优先」，
+  外壳那个只在它为空时才起作用，对台站页基本是重复的；
+- 「一整条浮在地图上的浅色横条」本身就压视觉重量。
+
+现在只留右上角一簇悬浮胶囊。**取舍说明**：2.0 的地图页不再有全局搜索
+（1.0 经典布局的顶栏搜索**未动**），地图仍可用图层/类型筛选，搜索在台站页里。
+
+**二、返回键在「其他页」时回到地图页**
+
+`PopScope(canPop: _tab == 0)`：在地图页交给系统（正常退出），在其他页则回到地图
+并收起内容面板。放在外壳而非各页（导航本来就是外壳的事），push 出来的子页
+（设置子页、底部面板）各自是独立路由，不受影响。
+
+**三、补回天气组件 —— 这是我漏的**
+
+用户问「还有个天气组件在哪了」：`shell2.dart` 里**根本没有天气**，
+`WeatherBadge` 从未被引进去。已补在那一簇的最左（与 1.0「在线数左侧」一致），
+仍由「设置 → 显示 → 顶栏天气组件」控制。
+
+顺便把 1.0 外壳的功能逐项对了一遍，又找出一处**功能**缺失：
+
+| 功能 | 1.0 | 2.0（改前） |
+|---|---|---|
+| 天气组件 | 顶栏在线数左侧 | **无** |
+| 一键连接/断开 | 侧栏 + 未连接横幅 | **无**（只能进设置页） |
+| 未连接横幅 | 有 | 无 |
+
+前两项已补。第三项**未擅自加**：那条横幅会给地图再添一块浮层，而用户刚反馈过
+「嫌乱」；它的独有信息（当前是哪种来源、为什么没连上）已在状态胶囊与连接设置页里。
+
+**四、又一个只有 analyze 能发现的错，以及为此新增的检查**
+
+写连接按钮时写了 `const Padding(... color: C.blue)` —— `C.blue` 是 **static 字段
+（非常量）**，`const` 构造里不能引用，报 `invalid_constant`。这是仓库里**早就踩过**
+的坑（`station_detail.dart` 还留着注释记着它）。
+
+这是同一类「本机语法解析放行、只有 analyze/编译能发现」的错误第四次漏到 CI。
+但这一种的判据是**完全确定**的，所以新增 `tool/check_const_colors.py` 并接进 CI。
+现在 CI 里有六个静态检查：备份键、Android 资源、材质覆盖、跨层导入、
+`widget.X` 声明、`const` 颜色 —— 每一个都对应一类实际犯过的错。
+
+默认仍是 1.0 经典布局；2.0 在「显示设置 → 界面布局」里切换。
+
+---
+
+**Three pieces of user feedback plus one feature gap I found while auditing my own work.**
+
+**1) The 2.0 top bar no longer has a search field.** The stations page already has its own
+search box, and `StationsPage._query` prefers the local one — the shell's only mattered when
+that was empty. On top of that, a full-width translucent strip floating over the map carries a
+lot of visual weight. What remains is a small cluster of pills at the top right. **Trade-off,
+stated plainly**: in 2.0 the map page no longer offers a global search (the classic 1.0 layout's
+search is **unchanged**); the map still has layer/type filters, and search lives on the
+stations page.
+
+**2) Back returns to the map** when you are on any other page: `PopScope(canPop: _tab == 0)` —
+on the map page the system handles it (normal exit), everywhere else it goes back to the map and
+collapses the content sheet. It lives in the shell rather than in each page, because navigation
+is the shell's business; pushed child routes (settings sub-pages, bottom sheets) are separate
+routes and are unaffected.
+
+**3) The weather widget is back — that one was my omission.** A user asked where it went:
+`shell2.dart` had **no weather at all**, `WeatherBadge` was never wired in. It is now the
+leftmost item in that cluster (matching 1.0, where it sat left of the online count) and is still
+controlled by Display settings → top-bar weather widget. While auditing, I compared the whole
+1.0 shell feature by feature and found one more **functional** gap: 2.0 had **no one-tap
+connect/disconnect** (you had to open connection settings), which is now restored. The
+“not connected” banner was deliberately **not** re-added — it would put yet another overlay on
+the map, and the user had just complained about clutter; its unique information already lives
+in the status pill and the connection settings page.
+
+**4) One more mistake only analyze could catch — and a new check for it.** While writing the
+connect button I wrote `const Padding(... color: C.blue)`; `C.blue` is a **non-const static
+field**, so that is `invalid_constant`. The repository had hit this before (there is a comment
+in `station_detail.dart` about it). This was the fourth time a mistake of the class “dart format
+is happy, only analyze/compile complains — and analyze cannot run on the maintainer's machine”
+reached CI. This one, however, has a **fully deterministic** test, so `tool/check_const_colors.py`
+is now the sixth static check in CI: backup keys, Android resources, material coverage,
+cross-layer imports, `widget.X` declarations, and const colours — each one earned by a real
+mistake.
+
+The default is still the classic 1.0 layout; 2.0 is switchable under Display settings → UI
+layout.
+
+---
+
 ## [1.6.140] - 2026-09-21
 
 ### 🎨 重做 UI 2.0 的底部（导航固定、面板只装内容）；收拾全局「视觉杂」 / Redesigned the bottom of UI 2.0 (fixed navigation, content-only sheet); general visual clean-up
