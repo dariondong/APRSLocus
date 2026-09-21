@@ -43,11 +43,28 @@ class MapPage extends StatefulWidget {
   /// 当前是否为激活 Tab（首页 IndexedStack 可见页）。非激活时跳过地图重建，
   /// 避免台站上千时后台地图反复 rebuild 造成全局卡顿。
   final bool isActive;
+
+  /// 是否**冻结**（面板展开在它上面时）。
+  ///
+  /// 与 [isActive] 的区别很关键：
+  ///   * `isActive == false` → 整块地图换成 `SizedBox.shrink()`（真的不画了）；
+  ///   * `frozen == true`   → **继续画**，但不再产出新的帧：停掉脉冲动画、
+  ///     标记继续复用上一次缓存。
+  ///
+  /// 为什么必须「继续画」：面板开着磨砂时，`BackdropFilter` 要把背后已经画好的
+  /// 内容离屏重绘一遍。地图一旦不画了，模糊背后就只剩页面底色 —— 那不叫优化，
+  /// 那叫把磨砂弄坏。
+  ///
+  /// 冻结的实际收益：地图内容不再变化 → 它自己那层 `RepaintBoundary` 的光栅化
+  /// 结果被 Flutter 复用 → 面板的模糊改成**采样缓存纹理**，而不是每帧把整张地图
+  /// 重新光栅化一遍。这正是「面板一动就卡」的来源。
+  final bool frozen;
   const MapPage({
     super.key,
     required this.state,
     this.searchQuery = '',
     this.isActive = true,
+    this.frozen = false,
     this.topInset = 0,
     this.bottomInset = 0,
   });
@@ -137,6 +154,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       // 停转后强制标记重建一次，去掉标记里残留的静态脉冲圈
       _forceMarkerRebuild = true;
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant MapPage old) {
+    super.didUpdateWidget(old);
+    // 解冻的一次性补偿：冻结期间地图上的台站/焦点/尺寸变化都被跳过了，
+    // 这里补一次强制重建，否则解冻后会短暂显示冻结前的旧标记。
+    if (old.frozen && !widget.frozen) _forceMarkerRebuild = true;
   }
 
   @override
@@ -398,7 +423,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // 不够就**不显示**，而不是硬塞进去。440 ≈ 工具列高 + 间隙。
             final bool roomForBottom =
                 size.height - widget.topInset - widget.bottomInset > 440;
-            _syncPulse();
+            if (widget.frozen) {
+              // 冻结：停掉脉冲动画。它是地图这边**唯一的每帧**重绘来源
+              // （`_pulse.repeat()` 会驱动所有移动台站的扩散圈逐帧重建），
+              // 停掉之后地图内容不再变化，光栅化结果可以被复用。
+              if (_pulse.isAnimating) {
+                _pulse.stop();
+                _forceMarkerRebuild = true; // 去掉标记里残留的静态脉冲圈
+              }
+            } else {
+              _syncPulse();
+            }
 
             return Stack(
               children: [
@@ -431,6 +466,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             onStationTap: (s) {
                               _openDetail(s);
                               _selected = s;
+                              // 这里照常同步脉冲：选中态要在屏幕上看得见。
+                              // 若此刻处于冻结（面板正在动），下一帧 build 会把
+                              // 它再停掉 —— 用户的点击反馈优先于省这一两帧。
                               _syncPulse();
                             },
                           )
@@ -801,6 +839,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         _pan.dx.round() * 1009 +
         _pan.dy.round();
     final selHash = _selected?.call ?? '';
+    // 冻结（面板开着/正在动）时：**数据**变化不再重建标记，但**视图**变化必须
+    // 跟随 —— 否则用户在这个状态下拖地图，标记会僵在原地（那是明显的错位）。
+    // 解冻时由 didUpdateWidget 置 _forceMarkerRebuild 补一次重建。
+    if (widget.frozen &&
+        _markerCache != null &&
+        viewHash == _markerViewHash &&
+        selHash == _markerSelHash) {
+      return _markerCache!;
+    }
     // 可见台站列表身份变化（台站版本 / 搜索 / 图层筛选 / 国家筛选变化都会使 _visible
     // 返回新列表）→ 立即重建，保证实时与筛选生效；
     // 视图(拖动/缩放/选中)变化 → 立即重建，保证跟手；

@@ -82,6 +82,12 @@ jobs:
       - name: Check position quality wiring
         run: python3 tool/check_pos_quality.py
 
+      # 帧成本：面板展开/拖动时不产出多余帧，且不把磨砂弄坏。
+      # 这几条优化「不做某件事」—— 编译与测试都不会失败，只有真机看得出来，
+      # 所以钉在这里（含「不许把地图换成 Offstage」这条：磨砂背后必须有内容）。
+      - name: Check frame cost
+        run: python3 tool/check_frame_cost.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。

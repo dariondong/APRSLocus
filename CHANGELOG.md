@@ -1,5 +1,169 @@
 # 更新日志
 
+## [1.6.147] - 2026-09-21
+
+### 🧹 按反馈撤掉接收侧那套「防抖」；修浮动面板展开卡顿；横屏改成一整块工作区 / Dropping the receiver-side debounce; fixing sheet-open jank; a single landscape workspace
+
+三条都来自使用反馈。第一条是**我上一版做错了方向**，先认这个。
+
+## 一、接收台站的「位置质量层」全部撤掉（v1.6.145 加的）
+
+原话是「不要给别人加防抖，浪费」—— 这个判断是对的，而且**浪费是能算出数的**。
+那一整套里真正占资源的不是"每包算一次"的判据，而是**绘制期**的东西：
+
+* 轨迹平滑（`smoothForDraw`）：**每次重绘都重新分配整条列表**，每个点还要算 1~2 次
+  haversine；地图一拖动/缩放就是每帧一次；
+* 推测位置（`coastOf`）：**每秒对每个可见台站**算 sin/cos/atan（上限 120 个），
+  而绝大多数台站是静止或离线 —— 算了完全用不上；
+* 那一层还**每秒强制重绘**，而它就叠在磨砂面板的离屏模糊之上（见第二条）。
+
+于是接收侧**整体回到朴素行为**：收到就更新，位移超过 20m 记一个轨迹点。
+一并删掉的：报文指纹去重、位置时间戳判旧帧、速度门控、模糊位置的不确定圈、
+自适应抽稀。`Station` 上的 `fixTime` / `ambiguity` 与它们的持久化也删了。
+
+**保留的是「自己」那一侧**（每天看得见的东西，且成本可忽略）：静止防抖（站着不动时
+标记不再原地哆嗦）、按速度自适应的轨迹抽稀、定位精度显示与精度圈。
+
+以后想给接收侧再加回来，`tool/check_pos_quality.py` 会拦住 ——
+它现在对接收侧那些调用是「**必须不存在**」的断言。要加，先回答「它能省下多少帧」。
+
+## 二、面板一动，地图就**冻住**（不再渲染新帧）
+
+按「触发其他面板之后地图不再渲染？固定？」这条建议做的 —— 它是这一轮里最有效的一条。
+
+关键是分清两种「不画」：
+
+* `isActive = false` → 整块地图换成 `SizedBox.shrink()`，**真的不画了**；
+* `frozen = true` → **继续画**，但不再产出新的帧。
+
+后者才是对的：面板开着做磨砂时，`BackdropFilter` 要把**背后已经画好的内容**
+离屏重绘一遍 —— 地图一旦不画，模糊背后只剩页面底色，那不叫优化，那叫把磨砂弄坏。
+
+冻结做了三件事：
+
+* 停掉脉冲动画（`_pulse.repeat()` 是地图这边**唯一的每帧**重绘来源，它驱动所有
+  移动台站的扩散圈逐帧重建）；
+* **数据**变化不再重建标记（面板开着期间收到的新台站/新位置先攒着）；
+* 传给地图的 `bottomInset` 改用**吸附目标值**而不是逐帧中间值 —— 否则每帧一个新
+  inset，地图就每帧重排重绘一次，正好把上面两条抵消掉。
+
+**视图变化仍然跟随**：拖地图、缩放、点台站都会立即重建标记。这条不能省 ——
+否则在那个状态下拖地图，标记会僵在原地，比卡更难接受。解冻时再补一次重建
+（`didUpdateWidget`），避免短暂显示冻结前的旧标记。
+
+效果：地图内容在面板开着期间不变 → 它自己那层 `RepaintBoundary` 的光栅化结果被
+Flutter 复用 → 面板的模糊从「每帧把整张地图重新光栅化」变成**采样一张缓存纹理**。
+
+## 三、浮动面板展开卡顿：另外三条一起改
+
+
+根因是**叠加**出来的，不是单一原因：
+
+1. **展开动画每帧都在做整屏离屏模糊。** 面板壳里的 `BackdropFilter` 每帧都要把
+   「背后已经画好的地图」离屏重绘一遍（`material.dart` 里早就写明了这笔账），而
+   展开动画 260ms 里外壳每帧 `setState`、面板高度每帧在变 —— 于是动画的十几帧
+   里每一帧都在对整张地图做一次全屏模糊。
+   → 新增 `MaterialSurface(blurWhen:)`：**动画/手拖期间不做模糊**，同时换成不透明
+   合成色（半透明但不糊会直接透出地图，比卡更难看）。动画结束再 `setState` 一次
+   把磨砂恢复 —— 少了这一下，面板会一直停在「没有磨砂」，用户会以为材质坏了。
+2. **展开动画每帧重建四个页面。** `_content()` 每次都新建 `IndexedStack` 与
+   台站/消息/数据包/设置四页 → 动画每帧把它们全重建一遍。改成**缓存 widget 实例**，
+   只有页签变化才失效；Flutter 见到同一实例会跳过这棵子树的 rebuild。
+3. **少一层模糊**：横屏原来「竖条 + 面板」是两张独立卡（两层 `BackdropFilter`），
+   见第三条 —— 现在是一张。
+
+## 四、横屏：一整块工作区
+
+原来横屏是两张**独立的**圆角卡：竖条是 `MainAxisSize.min`（只有内容高、贴顶），
+内容面板却占满整高 —— 两块并排**高度不齐**，上沿都从安全区起、下沿一个到屏幕底
+一个不到，看着就是「没收拾过」。
+
+现在合并成**一张卡**：左竖条 + 细分隔 + 右内容。高度天然一致、间距只有一处，
+而且少一层离屏模糊。选「地图」页（内容为空）时只留竖条卡并**垂直居中** ——
+贴顶会显得像掉在上面。竖条也套了 `SingleChildScrollView`：极矮横屏（手机横放常
+不足 400dp）下 5 个导航项会溢出成黄条纹。
+
+## 五、顺带修掉一个「检查器自己的 bug」
+
+`tool/check_material_coverage.py` 里 `return 1` 写在了打印**之前**，于是它一旦
+发现真问题就**报红但不说哪里红**（后面那段打印是死代码）。一个不告诉你问题在哪的
+检查比没有检查更费时间 —— 这轮它真报红时才发现，已修好并把顺序写进注释。
+
+---
+
+**All three items come from user feedback. The first one is me having gone the wrong way in
+the previous release, so that comes first.**
+
+**1) The receiver-side "position quality layer" (added in v1.6.145) is gone.** The feedback was
+"don't add debounce for other people, it's a waste" — and that judgement is right, with the waste
+being **quantifiable**. What actually cost resources was never the once-per-packet checks but the
+**per-frame** work: track smoothing (`smoothForDraw`) **reallocated the entire list on every
+repaint** and ran one or two haversines per point, i.e. once per frame while the map is being
+dragged or zoomed; estimated position (`coastOf`) computed sin/cos/atan **for every visible
+station every second** (up to 120), even though most stations are stationary or offline, so the
+result was almost never used; and that layer also **forced a repaint every second**, right on top
+of the sheet's backdrop blur (see item 2). The receiver side is therefore back to plain behaviour:
+update on receipt, append a track point when the station moved more than 20m. Also removed: packet
+fingerprint dedupe, position-timestamp staleness rejection, kinematic gating, ambiguity circles,
+and adaptive decimation — along with `Station.fixTime` / `Station.ambiguity` and their
+persistence. **What stays is the "my own position" side** (the part you see every day, at
+negligible cost): stationary debounce, speed-adaptive track decimation, and the accuracy display
+and accuracy ring. If anyone wants the receiver side back, `tool/check_pos_quality.py` will stop
+them — those calls are now asserted to be **absent**. To add them back, first answer "how many
+frames does it save".
+
+**2) While a panel is open the map is frozen — it keeps painting, but stops producing new
+frames.** This came from the suggestion "after triggering another panel, can the map stop
+rendering? fixed?" and it turned out to be the most effective change of the round. The key is
+telling two kinds of "not painting" apart: `isActive = false` replaces the whole map with
+`SizedBox.shrink()` — it really stops painting; `frozen = true` **keeps painting** but stops
+producing new frames. The latter is the correct one, because with frosted material the
+`BackdropFilter` re-renders everything already painted behind it — if the map stops painting, the
+blur has nothing but the page background behind it, which is not an optimisation, it is breaking
+the frosted effect. Freezing does three things: it stops the pulse animation (`_pulse.repeat()` is
+the map's **only** per-frame repaint source, driving the expanding rings on every moving station),
+it stops rebuilding markers on **data** changes (new stations and positions received while a panel
+is open simply accumulate), and it passes the map a `bottomInset` based on the **snap target**
+instead of the per-frame intermediate value — otherwise every frame brings a new inset, the map
+re-lays-out and repaints every frame, and the first two wins are cancelled out. **View changes are
+still followed**: panning, zooming and tapping a station rebuild markers immediately, and this
+cannot be dropped — without it, dragging the map in that state leaves the markers stuck, which is
+worse than jank. A final rebuild on unfreeze (`didUpdateWidget`) avoids briefly showing the
+pre-freeze markers. The effect: the map's content does not change while a panel is open, so the
+rasterised result of its own `RepaintBoundary` is reused by Flutter, and the panel's blur goes from
+"re-rasterise the whole map every frame" to **sampling a cached texture**.
+
+**3) Sheet-open jank: the other three fixes, at once.**
+ The root cause was additive. First, the open
+animation was doing a full-screen offscreen blur **every frame** — the `BackdropFilter` in the
+sheet shell re-renders everything already painted behind it each frame (`material.dart` has
+always documented that cost), while the open animation setState-s every frame with a changing
+height, so a dozen-plus frames each blurred the entire map. `MaterialSurface` now takes
+`blurWhen:`: **no blur during animation or finger-dragging**, with an opaque blended fill in the
+meantime (translucent-but-unblurred would show the map straight through, which looks worse than
+jank); a final `setState` when the animation completes restores the frosted look — without it the
+sheet would stay blur-less forever and users would think the material broke. Second, the animation
+rebuilt all four pages every frame: `_content()` built a fresh `IndexedStack` with the stations,
+messages, packets and settings pages on each call. The widget instance is now cached and only
+invalidated when the tab changes, so Flutter skips that subtree entirely. Third, one fewer blur
+layer: landscape used to be two separate cards (two `BackdropFilter`s), now one.
+
+**4) Landscape: a single workspace.** Previously landscape had two **independent** rounded cards —
+the rail was `MainAxisSize.min` (content-height only, pinned to the top) while the content pane
+filled the full height, so the two sat side by side with **mismatched heights** and different
+bottom edges. It is now **one card**: rail, hairline divider, content. Heights match by
+construction, spacing lives in one place, and there is one less offscreen blur. On the map tab
+(no content) only the rail card remains, **vertically centred** — pinned to the top it looked like
+it had fallen there. The rail is also wrapped in a `SingleChildScrollView`, because at very short
+landscape heights (phones rotated are often under 400dp) five nav items overflowed into the
+yellow-and-black stripes.
+
+**5) Also fixed a bug in one of the checkers themselves.** `tool/check_material_coverage.py` had
+its `return 1` **before** the printing block, so whenever it actually found a problem it went red
+**without saying where** (the reporting code was dead). A check that does not tell you where the
+problem is costs more time than no check at all; this round's first real failure exposed it.
+Fixed, with the ordering requirement written into the comment.
+
 ## [1.6.146] - 2026-09-21
 
 ### 📍 自己的定位加「静止防抖」：站着不动时，标记不再原地哆嗦 / Stationary debounce for your own GPS

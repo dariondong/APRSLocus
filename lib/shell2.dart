@@ -82,6 +82,13 @@ class _HomeShell2State extends State<HomeShell2>
   /// 「浮动面板一展开就卡」的主因（见 material.dart 的 `blurWhen`）。
   bool get _paneAnimating => _anim.isAnimating || _dragging || _movedByScroll;
 
+  /// 面板是否**占着屏幕**（含动画：动画中它也在往上长）。
+  ///
+  /// 用它来冻结地图 —— 用户的原话是「触发其他面板之后地图不再渲染，固定」。
+  /// 冻结后地图仍在屏幕上（磨砂背后必须有内容），只是不再产出新的帧：
+  /// 停脉冲动画、数据变化不重建标记。**视图变化仍然跟随**（拖地图时标记不会僵住）。
+  bool get _paneOpen => _extent > 0.02 || _paneAnimating;
+
   /// 面板底色：动画/拖动中不带模糊，就**不能**再用半透明色（半透明不糊会直接
   /// 透出地图，比卡更难看），所以把「面板白」合成到页面底色上得到一个观感接近的
   /// 实色。动画只有 260ms，用户看不出这点色差。
@@ -246,6 +253,16 @@ class _HomeShell2State extends State<HomeShell2>
   /// 当前屏高 / 面板可达的最大比例（拖动与滚动两条路共用，避免两处算法漂移）
   double _screenH() => MediaQuery.of(context).size.height;
 
+  /// 传给地图的「面板占用高度」：动画/拖动期间取**吸附目标**，静止时取当前值。
+  ///
+  /// 两个值在静止时相同（所以不会出现跳变），只在动画中是「目标 vs 逐帧中间态」——
+  /// 而后者正是我们不想让地图知道的：它每帧变一次，地图就每帧重排重绘一次。
+  double _insetSheetH() {
+    if (!_paneAnimating) return _extent * _screenH();
+    final target = _anim.isAnimating ? _snap.end : _extent;
+    return target.clamp(0.0, 1.0) * _screenH();
+  }
+
   double _fullRatioOf() =>
       _fullRatio(MediaQuery.of(context).size, _navSpace(context), _topInset());
 
@@ -339,13 +356,21 @@ class _HomeShell2State extends State<HomeShell2>
             child: MapPage(
               state: widget.state,
               isActive: true,
+              // 面板开着（或正在动）期间**冻结**地图：不产出新帧（见 MapPage.frozen）。
+              // 这是「面板一展开就卡」最后一块拼图 —— 冻结后地图那层
+              // RepaintBoundary 的光栅化结果可以被复用，面板的模糊改成采样缓存纹理。
+              frozen: _paneOpen,
               topInset: topInset,
               // 底部被占用的边界 B（自屏幕底算起）＝ 导航 + （面板 + 间隙）。
               // 地图那边的口径是「相对安全区」，所以这里减去 pad.bottom ——
               // 这样贴底控件永远落在 B 上方 14px：面板收起时贴着导航，
               // 面板打开时贴着面板，而不是随卡片高度漂出一个大空隙。
+              //
+              // ⚠ 动画/拖动期间用**吸附目标值** `_snap.end` 而不是当前 `sheetH`：
+              // 否则每帧都会把新的 inset 传进 MapPage，触发一次重排 + 重绘，
+              // 正好把上面那个「冻结」抵消掉。地图在动画期间本来就该是「固定」的。
               bottomInset: navSpace +
-                  (showSheet ? _kGutter + sheetH : 0) -
+                  (showSheet ? _kGutter + _insetSheetH : 0) -
                   pad.bottom,
             ),
           ),
@@ -760,6 +785,9 @@ class _HomeShell2State extends State<HomeShell2>
           child: MapPage(
             state: widget.state,
             isActive: true,
+            // 横屏没有「面板滑上来」的过程，但内容页展开时地图同样被盖住 ——
+            // 冻结它（理由见 MapPage.frozen）。地图页时保持正常刷新。
+            frozen: showPane && _paneOpen,
             topInset: topInset,
             bottomInset: paneBottom,
           ),
