@@ -2332,5 +2332,6 @@
   "posAccuracy": "位置精度",
   "posAccuracyExact": "正確（あいまいさの申告なし）",
   "posAccuracyApprox": "±{r}（{n} 桁のあいまいさ）",
-  "posCoasting": "推定位置"
+  "posCoasting": "推定位置",
+  "locationStill": "静止"
 }

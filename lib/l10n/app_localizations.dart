@@ -11524,6 +11524,8 @@ abstract class AppLocalizations {
   String posAccuracyApprox(String r, String n);
 
   String get posCoasting;
+
+  String get locationStill;
 }
 
 class _AppLocalizationsDelegate

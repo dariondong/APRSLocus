@@ -6380,6 +6380,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get posCoasting => '推测位置';
+
+  @override
+  String get locationStill => '静止';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12757,4 +12760,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get posCoasting => '推測位置';
+
+  @override
+  String get locationStill => '靜止';
 }

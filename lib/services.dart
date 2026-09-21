@@ -23,8 +23,16 @@ class LocService {
   /// （Android 侧用于启动时快速出图）。它可以更新地图上的「我」，但**不能**写进
   /// 轨迹 —— 缓存点可能几小时前、甚至在另一个城市，写进轨迹就是「线跳回起点再画
   /// 一次、反复横画」。
+  /// 定位回调。最后两个参数：
+  ///   * [lastKnown] —— 见上（缓存位置标记）；
+  ///   * [accuracyM] —— 水平精度（米，`1σ`）；**<= 0 表示平台没给**。
+  ///
+  /// 精度这个值原生两边一直在算并发出来（Android `LocationService.kt` 的
+  /// `"accuracy"`、iOS `LocationPlugin.swift` 的 `horizontalAccuracy`），
+  /// 但这里解析事件时**从来没读过**，于是上层既无法按精度加权、也无法告诉你
+  /// 「这个点其实 ±40m」—— 白白算了一个最关键的字段。
   void Function(double lat, double lng, double alt, double speed, double bearing,
-      bool lastKnown)? onFix;
+      bool lastKnown, double accuracyM)? onFix;
   void Function(String status)? onStatus;
   /// 通知栏"连接/断开"按钮点击回调
   void Function()? onToggleConnect;
@@ -75,6 +83,8 @@ class LocService {
             (event['bearing'] as num?)?.toDouble() ?? -1,
             // 缓存位置标记：原生在「快速出图」时置真，上层据此不写轨迹
             event['lastKnown'] == true,
+            // 水平精度（米）；原生没给或为 NaN 时按 0（未知）传给上层
+            (event['accuracy'] as num?)?.toDouble() ?? 0,
           );
         }
       }
@@ -180,8 +190,14 @@ class LocService {
           final place =
               [region, city].where((s) => s.isNotEmpty).join(' · ');
           onStatus?.call(place.isEmpty ? '已定位' : '已定位 · $place');
-          // IP 网络定位：一次性的粗略位置，不是轨迹点
-          onFix?.call(lat, lng, 0, 0, -1, true);
+          // IP 网络定位：一次性的粗略位置，不是轨迹点。
+          //
+          // 精度按**城市级**如实上报（50km）：以前这个值是「未知」，于是它和
+          // 手机 GPS 点在界面上长得一模一样 —— 用户无从知道眼前这个点差了多远。
+          // 这个数字参与判断：非 lastKnown 的抖动判定、轨迹写入门限，
+          // 而 50km 远超过那些门限，所以 IP 点天然不会写轨迹、也不会被当成
+          // 「静止」的可靠依据。
+          onFix?.call(lat, lng, 0, 0, -1, true, 50000);
           return true;
         } finally {
           client.close(force: true);

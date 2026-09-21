@@ -141,6 +141,11 @@ class AppState extends ChangeNotifier {
   double? mySpeed, myCourse;
   String locStatus = '未定位';
 
+  /// 最近一次实时定位的**水平精度**（米，1σ）；0 表示平台没给这个值。
+  /// 用来：① 界面如实显示「±40 m」；② 太差的点不写轨迹；③ 给地图上的「我」
+  /// 画不确定圈。以前这个值在 Dart 侧被丢掉（原生算了但没人读）。
+  double myAccuracy = 0;
+
   /// 手动设置我的位置（模拟位置 / Windows 无定位服务时的备用）
   void setMyPosition(double lat, double lng, {double? alt}) {
     myLat = lat;
@@ -149,6 +154,10 @@ class AppState extends ChangeNotifier {
     myHasFix = true;
     useSimLocation = true;
     loc.stop();
+    // 换到模拟位置：清掉 GPS 的静止判定窗口与精度，免得切回真实定位时
+    // 拿着手动坐标当历史、把位置粘在旧点上。
+    _selfFilter.reset();
+    myAccuracy = 0;
     locStatus = '模拟位置';
     _syncFilterToPosition(); // 过滤中心跟随我的位置（filterFollow 时）
     persist();
@@ -2996,6 +3005,8 @@ class AppState extends ChangeNotifier {
   void stopTracking() {
     loc.stop();
     myHasFix = false;
+    _selfFilter.reset();
+    myAccuracy = 0;
     locStatus = '定位已停止';
     _log(LogLevel.info, '定位', '定位已停止');
     _notify();
@@ -3008,6 +3019,7 @@ class AppState extends ChangeNotifier {
     double speed,
     double bearing,
     bool lastKnown,
+    double accuracy,
   ) {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
@@ -3070,31 +3082,67 @@ class AppState extends ChangeNotifier {
       }
     }
 
+    // ── 静止防抖（A+B）：见 lib/pos_quality.dart 的 [SelfFixFilter] ──
+    //
+    // 定位**源头**只负责「把明显不可信的点丢棹」（Android 侧 150m 精度门控、
+    // 网络点只在 GPS 停更时兜底、缓存点只在无实时定位时用）；而「可信但抖」
+    // 的点一直没人管 —— 静止时 GPS 在 20~150m 之间飘是常态，轨迹会被画成一小团
+    // 毛线球，信标上报的坐标也跟着哆嗦。这里做的就是把「可信但抖」修平。
+    //
+    // 只对**实时定位**做防抖：缓存位置（lastKnown）不是实时点，IP 定位是城市级
+    // 粗点 —— 两者都不该进滑动窗口（会把中位数拉跑），也不该影响静止判定。
+    final out = lastKnown
+        ? (lat, lng, false)
+        : _selfFilter.feed(lat, lng, speed * 3.6, accuracy);
+    final outLat = out.$1;
+    final outLng = out.$2;
+    final still = out.$3;
+
     final first = !myHasFix;
-    myLat = lat;
-    myLng = lng;
+    myLat = outLat;
+    myLng = outLng;
     myAlt = alt;
     myHasFix = true;
+    myAccuracy = accuracy > 0 ? accuracy : 0;
     // 速度 m/s → km/h；方位角度。
     // 静止时 GPS 也返回 speed=0/bearing=0，正常上报（000/000 表示静止）
     mySpeed = speed * 3.6;
     if (bearing >= 0) myCourse = bearing;
-    locStatus = '已定位';
-    // 记录我的轨迹（上限 maxTrackPts，间隔 >20m 才记录避免冗余）
+    locStatus = still ? '静止' : '已定位';
+    // 记录我的轨迹
     //
-    // `lastKnown`（系统缓存的「上次已知位置」）**只更新标记、不写轨迹**：
-    // 它可能几小时前、甚至在另一个城市，写进去就是「线跳回起点再画一次」。
+    // 三道门（缺一道就会出问题）：
+    //   ① `lastKnown` 不写 —— 缓存点可能几小时前、甚至在另一个城市；
+    //   ② **静止不写** —— 否则 GPS 抖动会被画成一团毛线球（这正是本次要修的）；
+    //   ③ 精度太差（> [SelfFixFilter.trackAccuracyLimitM]）不写 ——
+    //      弱信号下的点没信息量，只会把轨迹拉得东倒西歪。
+    // 抽稀门限**按速度自适应**，与接收台站同一套（见 PosQuality.trackMinDistM）：
+    // 固定 20m 在步行时太粗、在高速时又太细。
     final last = myTrack.isEmpty ? null : myTrack.last;
-    if (!lastKnown && (last == null || haversine(last.lat, last.lng, lat, lng) > 0.02)) {
-      myTrack.add(TrackPt(lat, lng, DateTime.now()));
-      if (myTrack.length > maxTrackPts) {
-        myTrack.removeRange(0, myTrack.length - maxTrackPts);
+    if (!lastKnown &&
+        !still &&
+        accuracy <= SelfFixFilter.trackAccuracyLimitM) {
+      final minDistM = PosQuality.trackMinDistM(
+        speedKmh: speed * 3.6,
+        dtSec: last == null
+            ? 10.0
+            : DateTime.now().difference(last.time).inSeconds.toDouble(),
+      );
+      if (last == null ||
+          haversine(last.lat, last.lng, outLat, outLng) * 1000 > minDistM) {
+        myTrack.add(TrackPt(outLat, outLng, DateTime.now()));
+        if (myTrack.length > maxTrackPts) {
+          myTrack.removeRange(0, myTrack.length - maxTrackPts);
+        }
       }
     }
     // 过滤中心跟随我的位置
     if (filterFollow) {
-      filterLat = lat;
-      filterLng = lng;
+      // 必须用**防抖后**的坐标：写成 `lng`（原始值）会让 APRS-IS 过滤中心
+      // 拿「平滑过的纬度 + 未平滑的经度」去算，两轴不同步 —— 过滤中心自己
+      // 就会抖，而它会触发重连（见 _refreshFilter）。
+      filterLat = outLat;
+      filterLng = outLng;
     }
     if (first) {
       _log(
@@ -4137,6 +4185,9 @@ class AppState extends ChangeNotifier {
   double? _pendingFixLat;
   double? _pendingFixLng;
   int _pendingFixCount = 0;
+
+  /// 自己位置的静止防抖滤波器（见 lib/pos_quality.dart 的 [SelfFixFilter]）
+  final SelfFixFilter _selfFilter = SelfFixFilter();
 
   /// ── 接收台站的打点质量层状态（见 [_upsertStation] / `PosQuality`）──
   /// 每台站一个门控：速度门控需要「上次见到的时间」来算合理位移。

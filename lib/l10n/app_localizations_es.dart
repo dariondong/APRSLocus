@@ -6696,4 +6696,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get posCoasting => 'Posición estimada';
+
+  @override
+  String get locationStill => 'Estacionario';
 }

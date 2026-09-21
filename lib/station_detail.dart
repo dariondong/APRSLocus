@@ -12,13 +12,8 @@ import 'coord.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 
-/// 不确定半径的展示格式：米 / 千米（≥10km 不再给小数 —— 这个尺度上小数是假精度）
-String _fmtUncertaintyM(double m) {
-  if (m >= 10000) return '${(m / 1000).round()} km';
-  if (m >= 1000) return '${(m / 1000).toStringAsFixed(1)} km';
-  return '${m.round()} m';
-}
-
+// 不确定半径的展示格式已统一到 PosQuality 那边（`fmtUncertaintyM`）：
+// 台站详情页与「我的位置」面板都要用，各写一份必然漂移。
 class StationDetail extends StatefulWidget {
   final AppState state;
   final Station station;
@@ -679,7 +674,7 @@ class _StationDetailState extends State<StationDetail> {
                                 s.ambiguity <= 0
                                     ? S.of(context).posAccuracyExact
                                     : S.of(context).posAccuracyApprox(
-                                        _fmtUncertaintyM(
+                                        fmtUncertaintyM(
                                           PosQuality.ambiguityRadiusM(
                                             s.ambiguity,
                                             lat: s.lat,
@@ -693,7 +688,7 @@ class _StationDetailState extends State<StationDetail> {
                                 SizedBox(height: 8),
                                 KV(
                                   S.of(context).posCoasting,
-                                  '±${_fmtUncertaintyM(_coast!.uncertaintyM)}'
+                                  '±${fmtUncertaintyM(_coast!.uncertaintyM)}'
                                       ' · ${localizedLastSeen(context, s)}',
                                   icon: Icons.timeline_rounded,
                                 ),

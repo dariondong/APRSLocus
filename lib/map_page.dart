@@ -488,6 +488,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       size: size,
                       painter: _FixQualityPainter(
                         stations: _visible,
+                        // 自己的不确定圈：精度是「实测」的（见 myAccuracy），
+                        // 与台站的「声明模糊度」同一种画法 —— 信号差时能一眼
+                        // 看出「我」这个点其实差几十米。
+                        myFix: widget.state.myHasFix &&
+                                widget.state.myAccuracy > 0
+                            ? (
+                                widget.state.myLat!,
+                                widget.state.myLng!,
+                                widget.state.myAccuracy
+                              )
+                            : null,
                         secondBucket:
                             DateTime.now().millisecondsSinceEpoch ~/ 1000,
                         toScreen: (lat, lng) => _toScreen(lat, lng, size),
@@ -1265,6 +1276,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         st.myLng?.toStringAsFixed(5) ?? '--',
                         icon: Icons.explore_rounded,
                       ),
+                      // 定位精度：GPS 实测值（1σ）。以前它算而不报，用户无从
+                      // 判断眼前这个点到底是「±5m」还是「±80m」——
+                      // 而这两种情况的可用性完全不同
+                      if (st.myAccuracy > 0) ...[
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).posAccuracy,
+                          '±${fmtUncertaintyM(st.myAccuracy)}',
+                          icon: Icons.my_location_rounded,
+                        ),
+                      ],
                       const SizedBox(height: 8),
                       KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
                       const SizedBox(height: 8),
@@ -2446,6 +2468,11 @@ class _FixQualityPainter extends CustomPainter {
   final List<Station> stations;
   final Offset Function(double lat, double lng) toScreen;
 
+  /// 自己的定位：`(经度, 纬度, 精度米)`，无定位或精度未知时为 null。
+  /// 自己的圈用**实测精度**（GPS 报的 1σ），台站的圈用**声明模糊度** ——
+  /// 两者来源不同但含义一样（都是「真实位置有多大概率落在圈内」）。
+  final (double, double, double)? myFix;
+
   /// 秒级时间桶：推测圈随时间扩大，没它的话「没有新包 = 不重绘」会把圈冻住。
   final int secondBucket;
 
@@ -2453,6 +2480,7 @@ class _FixQualityPainter extends CustomPainter {
     required this.stations,
     required this.toScreen,
     required this.secondBucket,
+    this.myFix,
   });
 
   @override
@@ -2467,6 +2495,20 @@ class _FixQualityPainter extends CustomPainter {
       ..strokeWidth = 1.4
       ..color = C.cyan.withValues(alpha: 0.85);
     final ghostFill = Paint()..color = C.cyan.withValues(alpha: 0.18);
+    final myRing = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..color = C.blue.withValues(alpha: 0.6);
+
+    // 自己的不确定圈：先画（在最底层），免得盖住台站信息
+    final mine = myFix;
+    if (mine != null) {
+      final c = toScreen(mine.$1, mine.$2);
+      final p2 = toScreen(mine.$1 + 0.001, mine.$2);
+      final pxPerM = (p2 - c).distance.clamp(0.01, 1e6) / 111.32;
+      final rPx = mine.$3 * pxPerM;
+      if (rPx >= 4 && rPx <= 6000) _dashedCircle(canvas, c, rPx, myRing);
+    }
 
     // 上限保护：极端情况下（上千台站 + 全都在推测）不至于每帧画几千条虚线
     var drawn = 0;
@@ -2536,7 +2578,9 @@ class _FixQualityPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _FixQualityPainter old) =>
-      !identical(old.stations, stations) || old.secondBucket != secondBucket;
+      !identical(old.stations, stations) ||
+      old.secondBucket != secondBucket ||
+      old.myFix != myFix;
 }
 
 /// 低缩放热力图：把台站按屏幕位置绘制成密度热力点（网格统计 + 色阶），无第三方依赖

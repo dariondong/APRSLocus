@@ -2332,5 +2332,6 @@
   "posAccuracy": "Precisión de la posición",
   "posAccuracyExact": "Exacta (sin ambigüedad declarada)",
   "posAccuracyApprox": "±{r} (ambigüedad de {n} dígitos)",
-  "posCoasting": "Posición estimada"
+  "posCoasting": "Posición estimada",
+  "locationStill": "Estacionario"
 }

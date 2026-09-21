@@ -60,6 +60,18 @@ KEYS = [
         'Posición estimada',
         'Perkiraan posisi',
     ), []),
+    # 自己的位置被静止防抖判为静止时的定位状态串。
+    # ⚠ locStatus 是**白名单映射**（widgets.dart 的 localizedLocationStatus）：
+    # 新增状态串必须同时在 arb + 该映射里登记，否则英文/日文界面会直接漏出中文。
+    # tool/check_pos_quality.py 会把这条当断言查。
+    ('locationStill', (
+        '静止',
+        '靜止',
+        'Stationary',
+        '静止',
+        'Estacionario',
+        'Diam',
+    ), []),
 ]
 
 # 生成文件 → [(类名, 语言)]

@@ -6654,4 +6654,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get posCoasting => 'Perkiraan posisi';
+
+  @override
+  String get locationStill => 'Diam';
 }

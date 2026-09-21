@@ -2846,5 +2846,6 @@
   "posAccuracy": "位置精度",
   "posAccuracyExact": "精确（未声明模糊）",
   "posAccuracyApprox": "±{r}（模糊 {n} 位）",
-  "posCoasting": "推测位置"
+  "posCoasting": "推测位置",
+  "locationStill": "静止"
 }

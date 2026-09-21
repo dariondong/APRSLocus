@@ -118,6 +118,11 @@ String localizedLocationStatus(BuildContext context, String value) {
   if (value == '定位失败') return s.locationFailed;
   if (value == '定位已停止') return s.locationStopped;
   if (value == '已定位') return s.locationFixed;
+  // 静止防抖判定为静止（见 lib/pos_quality.dart 的 SelfFixFilter）。
+  // 这里是**白名单**：新增一个状态串却忘在这里登记，界面就会直接漏出中文
+  // —— 这个坑踩过（`模拟位置 · 后台保活`），所以 tool/check_pos_quality.py
+  // 会把「所有 locStatus 字面量都已登记」当成断言在 CI 里查。
+  if (value == '静止') return s.locationStill;
   if (value == '请授予定位权限…') return s.locationPermission;
   if (value == 'GPS 定位中…') return s.gpsLocating;
   if (value == 'Web 平台暂不支持自动定位，请手动输入坐标') {

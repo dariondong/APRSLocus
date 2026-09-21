@@ -82,6 +82,13 @@ jobs:
       - name: Check position quality wiring
         run: python3 tool/check_pos_quality.py
 
+      # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
+      # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
+      # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。
+      # 这几条都是「本机跑不了 analyze/真机」时唯一能提前拦住的办法。
+      - name: Check self-fix debounce (algorithm regression)
+        run: python3 tool/sim_selffix.py --check
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

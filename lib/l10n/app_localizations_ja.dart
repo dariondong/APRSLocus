@@ -6454,4 +6454,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get posCoasting => '推定位置';
+
+  @override
+  String get locationStill => '静止';
 }

@@ -2332,5 +2332,6 @@
   "posAccuracy": "Akurasi posisi",
   "posAccuracyExact": "Presisi (tanpa ambiguitas)",
   "posAccuracyApprox": "±{r} (ambiguitas {n} digit)",
-  "posCoasting": "Perkiraan posisi"
+  "posCoasting": "Perkiraan posisi",
+  "locationStill": "Diam"
 }
