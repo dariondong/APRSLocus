@@ -2,7 +2,7 @@
 
 ## [1.6.139] - 2026-09-21
 
-### ✨ UI 2.0：以地图为新面的布局（显示设置里可切换）/ New map-first layout (switchable in Display settings)
+### ✨ UI 2.0：以地图为基底的布局（显示设置里可切换）/ New map-first layout (switchable in Display settings)
 
 显示设置新增「界面布局」两档：**经典布局（1.0，默认）/ 地图为基底（2.0）**。
 它与「界面材质」（磨砂玻璃 / 云母）是**两个独立的开关**，可以任意组合（2.0 + 云母、
