@@ -1,5 +1,80 @@
 # 更新日志
 
+## [1.6.139] - 2026-09-21
+
+### ✨ UI 2.0：以地图为新面的布局（显示设置里可切换）/ New map-first layout (switchable in Display settings)
+
+显示设置新增「界面布局」两档：**经典布局（1.0，默认）/ 地图为基底（2.0）**。
+它与「界面材质」（磨砂玻璃 / 云母）是**两个独立的开关**，可以任意组合（2.0 + 云母、
+1.0 + 磨砂玻璃都成立），切完立即生效。
+
+**2.0 长什么样**
+
+- **地图常驻整屏**：它不再是一个页签，而是整个界面的底（所以在地图之外的页面
+  也能一眼看到自己与台站的位置关系）；
+- **底部可拖拽卡片**：台站 / 消息 / 数据包 / 设置装进来，卡片顶部就是导航行 ——
+  「切页」和「这页在卡片里」是同一件事。上滑或点把手展开，收起只留导航行；
+- **浮在地图上的顶栏**：搜索、在线数、连接状态、定位入口；点连接胶囊可直接进
+  连接设置（2.0 没有侧栏，得给它一个入口）；
+- **地图页签的卡片内容**：抬起卡片时看的是「我这台电台」—— 呼号、网格、速率、
+  定位状态、信标会不会真的发出去（带手动上报）。收起卡片就是看地图。
+
+**三个实现上的取舍（都写进了代码注释）**
+
+- **卡片内容永远按「展开高度」布局，只裁显示区**（`OverflowBox + ClipRect`）。
+  卡片收起到只剩导航行时可视高度只有几十像素，把页面直接塞进这么高的盒子会让
+  页面内部的 `Column` 立刻溢出（黄黑斜纹），而且拖动时高度每帧都变、布局每帧重做。
+  现在拖动零重算、不溢出，五页的滚动位置与状态全部保留。
+- **拖动只认把手与导航行，不抢列表的手势**。`DraggableScrollableSheet` 要求把它的
+  滚动控制器交给内部滚动体，那等于让外壳接管五个页面的列表（下拉刷新、横向列表
+  都会变脆）。代价是「列表滑到顶再上滑展开卡片」这种联动没有 —— 换来五页滚动
+  行为零改动。
+- **最矮那档按头部高度算出来**，不是写死比例：窄屏 / 大字号下写死的比例会把
+  导航行切掉一半（看起来像「导航行缺了一块」）。
+
+**与地图的接口**：`MapPage` 新增 `bottomInset` —— 2.0 下地图要让开卡片的高度，
+否则它贴底的比例尺/坐标条与上报横杠会被卡片压住（表现是「2.0 里这些控件不见了」）。
+
+**兼容**：默认仍是 1.0，界面与以前逐像素一致；两套布局的设置各自保留，
+随时可以切回去。
+
+新增偏好键 `uiLayout`（空 = 1.0，认不出的值一律回落 1.0；布局选错比颜色错严重
+得多），已归入备份的「设置」分组；新增 7 个文案键 × 6 语言。
+
+---
+
+**Display settings has a new “UI layout” entry with two options: Classic (1.0, default)
+and Map-first (2.0).** It is an **independent switch** from “UI material” (frosted glass /
+mica) — any combination works — and changes take effect immediately.
+
+- **The map is always full-screen**: it is no longer a tab but the base of the whole UI,
+  so the spatial relationship between you and the stations stays visible from every page.
+- **A draggable card at the bottom** holds stations / messages / packets / settings, and the
+  card's own header *is* the navigation — switching pages and “this page lives in the card”
+  are the same gesture. Swipe up or tap the handle to expand; collapsing leaves just the nav row.
+- **A floating top bar** carries search, the online count, connection state and a locate button;
+  tapping the connection pill opens connection settings (2.0 has no side rail, so that entry
+  point has to exist somewhere).
+- **The map tab's card content** is “my station”: callsign, grid, rate, fix status, and whether
+  the beacon will actually go out (with a manual-beacon button). Collapse the card to see the map.
+
+**Three deliberate trade-offs** (documented in code): the card's content is always laid out at
+its *expanded* height and merely clipped (`OverflowBox + ClipRect`) — otherwise a 50-pixel-tall
+card would make inner `Column`s overflow and relayout on every drag frame; dragging is limited to
+the handle and nav row instead of using `DraggableScrollableSheet`, whose scroll controller would
+have to drive five pages' lists; and the lowest detent is computed from the header height rather
+than hard-coded, which would clip the nav row on narrow screens or at large text sizes.
+
+`MapPage` gained a `bottomInset` so the map can move its bottom controls (scale/coordinate bar,
+beacon bar) out from under the card. The default stays 1.0 and is pixel-identical to before; both
+layouts keep their own settings and you can switch back at any time.
+
+New preference key `uiLayout` (empty = 1.0, unrecognised values fall back to 1.0 — picking the
+wrong layout is far worse than the wrong colour), filed under the backup “settings” group, plus
+7 new localised strings × 6 languages.
+
+---
+
 ## [1.6.138] - 2026-09-20
 
 ### ✨ 界面材质：磨砂玻璃与云母，显示设置里可切换 / New UI materials — frosted glass and mica, switchable in Display settings
