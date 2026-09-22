@@ -1,5 +1,105 @@
 # 更新日志
 
+## [1.6.152] - 2026-09-22
+
+### ⚡ 磨砂玻璃再优化：列表滚动不再卡 / Frosted-glass performance, again: smooth list scrolling
+
+反馈是「开磨砂玻璃会卡顿」，最明显在**列表页滚动**（Android）。复查下来这次的问题不在
+模糊本身，而在**层数** —— 更准确地说：**每层模糊都要让引擎把当前画面收尾一次再重开**。
+
+**一、贵的不是模糊，是「收尾 → 采样 → 重开」的次数**
+
+每个 `BackdropFilter` 的输入是「当前已经画好的内容」，引擎必须先结束当前渲染通道
+（Android 上就是一次贴着屏幕大小的收尾 + 重开），采样，再继续画 —— 每层模糊都是一次
+**通道切换**，与面积、半径关系不大，**每个实例各付一次**。而地图页一屏有十来个 38px
+小浮层（工具钮 8 颗 + 图例 + 上报横杠 + 底部坐标条），背后都是同一张地图，却各付一次；
+列表一滚动（60fps）就是每秒上千次通道切换，顶栏那层更是每帧一次。
+
+现在 `MaterialSurface` 改用 `BackdropFilter.grouped`，并把地图页那一簇（连续绘制、
+互不重叠、背后同一张地图）包进一个 `BackdropGroup`：**只采一次底**；又因为各层模糊
+半径完全相同（都是 `C.chipBlur`），**模糊也只算一次**，再按各自的矩形贴上去 ——
+观感逐像素不变。其余调用点不用动：没有 `BackdropGroup` 祖先时 `.grouped` 与原来的
+写法完全等价。
+
+**二、只压在壁纸上的壳，不再插模糊层**
+
+1.0 的顶栏 / 侧栏 / 底栏、各子页的 AppBar —— 它们**不压在内容上**（正文排在它们下面），
+背后只有壁纸。而壁纸是**渐变**：模糊一层渐变 ≈ 渐变本身（材质壁纸当初就因此刻意不
+模糊），视觉上零收益，却每帧白付一次通道切换 —— 列表一滚动就是每帧一次，这正是列表页
+卡顿的直接来源。
+
+这些壳现在标注 `overWallpaper: true`，直接不插模糊层。两个例外都处理了：
+
+* 主题设了**背景图**的用户照旧模糊（照片有细节，该糊还得糊）；
+* `track_day_page` 写了 `extendBodyBehindAppBar: true`（顶栏背后是地图），显式传
+  `overWallpaper: false`，照旧真模糊。
+
+**三、检查器**
+
+`tool/check_frame_cost.py` 新增两条守卫：`.grouped` / `BackdropGroup` 被改回默认构造、
+以及写了 `extendBodyBehindAppBar` 的页面漏传 `overWallpaper: false` —— 这两种退化都
+只在真机上表现为「磨砂又卡了」「顶栏透字」，编译与测试都拦不住。
+
+开发途中还踩了一次「参数加错层」（`overWallpaper` 写进了 `AppBar(...)` 里，analyze
+报 `undefined_named_parameter`）：`MaterialAppBar(AppBar(...))` 是两层嵌套，参数要加给
+外层。这条已写进代码注释。
+
+---
+
+## [1.6.152] - 2026-09-22 (English)
+
+### Frosted-glass performance, again: smooth list scrolling
+
+The report: “turning on frosted glass feels janky”, worst when **scrolling lists**
+(Android). The cause this time is not the blur itself but the **number of layers** — more
+precisely, **every blur layer makes the engine wrap up the current frame once and reopen it**.
+
+**1) The cost is the “close → sample → reopen” count, not the blur**
+
+Each `BackdropFilter` samples “content already painted”, so the engine has to end the
+current render pass first (on Android: a screen-sized wrap-up + reopen), sample, then keep
+painting. Every frosted surface therefore pays one **pass switch** — barely related to its
+area or radius, and paid **per instance**. The map screen carries about a dozen 38 px widgets
+(8 tool buttons + legend + beacon bar + bottom coordinate strip), all blurring the same map,
+each paying its own; scrolling a list at 60 fps turns that into thousands of pass switches a
+second, and the top bar pays one every single frame.
+
+`MaterialSurface` now uses `BackdropFilter.grouped`, and the map’s cluster (painted
+consecutively, never overlapping, all blurring the same map) sits under one
+`BackdropGroup`: the backdrop is sampled **once**, and since every layer uses the same sigma
+(`C.chipBlur`) the blur is computed **once** too and pasted into each rectangle —
+**pixel-identical looks**. Other call sites need no changes: without a `BackdropGroup`
+ancestor, `.grouped` behaves exactly like the old constructor.
+
+**2) Surfaces that only sit on the wallpaper no longer blur**
+
+The 1.0 top bar / sidebar / bottom bar and the sub-page AppBars don’t sit **on content**
+(the body is laid out below them) — behind them there is only the wallpaper, which is a
+**gradient**. Blurring a gradient ≈ the same gradient (the material wallpaper is
+deliberately unblurred for the very same reason): zero visual gain, one pass switch per
+frame. Scrolling a list re-blurs the top bar every frame — the direct cause of the jank.
+
+These surfaces now declare `overWallpaper: true` and skip the blur layer entirely. Two
+exceptions are handled:
+
+* Themes with a **background photo** still blur (photos have detail worth blurring);
+* `track_day_page` sets `extendBodyBehindAppBar: true` (the bar sits over the map) and passes
+  `overWallpaper: false`, keeping its real blur.
+
+**3) Checkers**
+
+`tool/check_frame_cost.py` gained two guards: `.grouped` / `BackdropGroup` regressing to the
+default constructors, and `extendBodyBehindAppBar` pages missing `overWallpaper: false`.
+Both regressions only show up on a real device as “frosted glass is janky again” or
+“text bleeding through the bar” — compile and tests won’t catch them.
+
+One lesson from the development loop: `overWallpaper` first landed inside `AppBar(...)`
+instead of the enclosing `MaterialAppBar`, and analyze reported
+`undefined_named_parameter` — with `MaterialAppBar(AppBar(...))` the parameter must go to
+the outer call. It is now noted in the code.
+
+---
+
 ## [1.6.151] - 2026-09-22
 
 ### 🌟 2.0 横屏收拾一遍：五处「只有真机横屏才看得出来」的毛病 / UI 2.0 landscape, tidied: five defects that only show up on a real device
