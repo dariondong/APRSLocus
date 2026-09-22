@@ -1,5 +1,56 @@
 # 更新日志
 
+## [1.6.153] - 2026-09-22
+
+### 🐛 修 2.0 面板「下面被切成直角」/ Fixing the 2.0 sheet's bottom being cut into right angles
+
+从底部导航弹出的卡片面板（信息页 / 设置页那种）半开时，下沿是一条**直角硬切口**。
+
+**根因**：面板为了治「拖动卡 + 一拖就变白」，几何固定为最高档高度、只靠外层裁口
+裁出可视区（v1.6.148 的设计）—— 而裁口用的是直角矩形 `ClipRect`。半开时裁口落在
+面板中途，面板自身的 24 圆角全在裁口底下，用户看到的「卡片下沿」就是这条直角边。
+
+**修法**：外层裁口改成 `ClipRRect`（底边圆角 24，与面板自身一致）：
+
+* 半开时：裁口伪装成卡片下沿，任意拖动高度都是完整圆角卡；
+* 全开时：裁口恰好落在面板自身的圆角上，两个圆角重合，不会「圆角套圆角」；
+* 模糊层的几何一点没动 —— v1.6.148 那套「拖动不卡、不变白」的机制不受影响。
+
+`tool/check_frame_cost.py` 加了第 11 条守卫（底边圆角参数不许丢）：改回直角裁口
+编译与测试都拦不住，只在真机半开面板时看得出来。按惯例用回归样本验证过会报红，
+验完 md5 确认源码完整还原。
+
+---
+
+## [1.6.153] - 2026-09-22 (English)
+
+### Fixing the 2.0 sheet's bottom being cut into right angles
+
+The card sheet popped from the bottom navigation (the one hosting the info / settings
+pages) showed a **hard right-angled cut** along its bottom edge when half open.
+
+**Cause**: to keep dragging smooth (and stop the white flash), the sheet’s geometry is
+pinned to its tallest height and the visible area is produced by an outer clip (the
+v1.6.148 design). That clip was a plain rectangular `ClipRect`. Half open, the clip line
+falls in the middle of the sheet, where the sheet’s own 24 px rounded corners are far
+below the fold — so the “card bottom” you see is that straight right-angled edge.
+
+**Fix**: the outer clip is now a `ClipRRect` with **rounded bottom corners (24, matching
+the sheet itself)**:
+
+* Half open: the clip edge now looks like a real card bottom at any drag height;
+* Fully open: the clip line lands exactly on the sheet’s own corners — the two
+  roundings coincide, no “corner-in-corner”;
+* The blur layer’s geometry is untouched — the v1.6.148 “no jank, no white flash”
+  machinery is unaffected.
+
+`tool/check_frame_cost.py` gained guard #11 (the rounded-bottom parameter must not be
+dropped): reverting to a square clip compiles and passes tests fine — it only shows up
+on a real device with the sheet half open. Verified to go red against a regression
+sample, then restored byte-identical (md5).
+
+---
+
 ## [1.6.152] - 2026-09-22
 
 ### ⚡ 磨砂玻璃再优化：列表滚动不再卡 / Frosted-glass performance, again: smooth list scrolling
