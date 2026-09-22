@@ -1,6 +1,6 @@
 {
-  "version": 49,
-  "updated": "2026-09-19",
+  "version": 50,
+  "updated": "2026-09-22",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -643,7 +643,8 @@
         "en": "Kept watch in the faintest signals, growing with it from a whisper to a clear call."
       },
       "honors": [
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "earlyMember",
       "grp": "test",
@@ -1514,6 +1515,30 @@
         "zh": "在信号还稀疏的那些夜里守着频率，把每一次出现都变成了航迹。",
         "zh-TW": "在訊號還稀疏的那些夜裡守著頻率，把每一次出現都變成了航跡。",
         "en": "Held the frequency through the nights when signals were sparse — every appearance turned into a track."
+      },
+      "honors": [
+        "earlyMember"
+      ],
+      "primary": "earlyMember",
+      "grp": "test",
+      "c": "#B08A34"
+    },
+    {
+      "call": "BG6TA",
+      "who": {
+        "zh": "BG6TA",
+        "zh-TW": "BG6TA",
+        "en": "BG6TA"
+      },
+      "role": {
+        "zh": "早期成员",
+        "zh-TW": "早期成員",
+        "en": "Early member"
+      },
+      "brief": {
+        "zh": "一声呼号从最开始响起，此后每一次上频，都是同行的约定。",
+        "zh-TW": "一聲呼號從最開始響起，此後每一次上頻，都是同行的約定。",
+        "en": "A callsign sounded from the very beginning — every check-in since has been a pact to travel together."
       },
       "honors": [
         "earlyMember"
