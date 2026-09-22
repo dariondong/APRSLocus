@@ -2331,5 +2331,19 @@
   "uiMaterialGlassFullDesc": "Paling tembus pandang dan paling buram, **termasuk widget kecil** (tombol peta, legenda, petunjuk) — tampilan paling tebal, dan paling memberatkan GPU",
   "posAccuracy": "Akurasi posisi",
   "locationStill": "Diam",
-  "dataSourceAudioShort": "Audio"
+  "dataSourceAudioShort": "Audio",
+  "historyTracks": "Riwayat lintasan",
+  "historyTracksDesc": "Mencatat kecepatan dan jarak Anda per hari, disimpan di perangkat ini",
+  "historyEmpty": "Belum ada riwayat lintasan. Akan terekam otomatis setelah penentuan posisi dan bergerak.",
+  "historyTotalDistance": "Total jarak",
+  "historyMaxSpeed": "Kecepatan maks.",
+  "historyMovingTime": "Waktu bergerak",
+  "historyPoints": "Titik",
+  "historyClearDay": "Hapus hari ini",
+  "historyCleared": "Hari dihapus",
+  "historyClearAll": "Hapus semua riwayat",
+  "historyClearAllConfirm": "Hapus semua riwayat lintasan? Tindakan ini tidak dapat dibatalkan.",
+  "historyClearedAll": "Semua riwayat dihapus",
+  "sensorAssist": "Penentuan posisi dengan sensor",
+  "sensorAssistDesc": "Menggunakan akselerometer untuk mengetahui apakah benar-benar bergerak dan kompas untuk memperbaiki arah saat kecepatan rendah, agar titik lintasan lebih akurat (hanya Android)."
 }

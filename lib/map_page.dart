@@ -77,9 +77,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   double _zoom = 11.0;
   Offset _pan = Offset.zero;
   bool _showTracks = true;
-  bool _clusterEnabled = true; // 台站聚合开关
   bool _heatEnabled = true; // 低缩放热力图开关
-  /// 缩小到该级别以下时自动显示热力图（替代密集标记/聚合）
+  /// 缩小到该级别以下时自动显示热力图（按网格统计台站密度）
   static const double _heatZoom = 6.5;
   Size _lastSize = Size.zero;
 
@@ -461,7 +460,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             actionSeq: _mapActionSeq,
                             action: _mapAction,
                             showTracks: _showTracks,
-                            clustering: _clusterEnabled,
                             onTap: _handleMapLatLng,
                             onStationTap: (s) {
                               _openDetail(s);
@@ -537,7 +535,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                // 低缩放热力图（替代密集标记/聚合球，展示台站密度）
+                // 低缩放热力图（按网格统计台站密度，不改变标记本身）
                 if (_showHeatmap)
                   IgnorePointer(
                     child: CustomPaint(
@@ -611,7 +609,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   Positioned(top: topBase, right: 60, child: _legend()),
                 // ── 右侧工具列（合并为单个 Column）──
                 // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
-                // 而 `_zoomCtrl()` 实际含 6 个按钮（放大/缩小/轨迹/聚合/热力图/定位，
+                // 而 `_zoomCtrl()` 实际含 5 个按钮（放大/缩小/轨迹/热力图/定位，
                 // 一直排到 404），矮屏上与其它元素必然打架。
                 // 改为单列顺序排布后，结构上不可能再出现相互重叠。
                 Positioned(
@@ -648,7 +646,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         border: C.border,
                       ),
                       const SizedBox(height: 6),
-                      // 缩放 / 轨迹 / 聚合 / 热力图 / 定位
+                      // 缩放 / 轨迹 / 热力图 / 定位
                       _zoomCtrl(),
                     ],
                   ),
@@ -735,50 +733,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                   widget.searchQuery.trim(),
                                 ),
                             style: ts(12, w: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                // 视野内无台站提示（点击弹出地图帮助）
-                // 同样受 roomForBottom 门控：它原本贴底，卡片顶上来后会跑到
-                // 上方与工具列/信息条重叠（这就属于「混乱」的一部分）。
-                if (roomForBottom && !_hasVisibleStation(size))
-                  Positioned(
-                    bottom: 118 + widget.bottomInset,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: _showMapHelp,
-                        child: MaterialSurface(
-                          radius: 12,
-                          blurSigma: C.chipBlur,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 9,
-                            ),
-                            decoration: BoxDecoration(
-                              color: C.chipFill,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: elev2(),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.help_outline_rounded,
-                                  size: 15,
-                                  color: C.cyan,
-                                ),
-                                SizedBox(width: 6),
-                                Text(
-                                  S.of(context).noStationHelp,
-                                  style: ts(11, c: C.cyan, w: FontWeight.w600),
-                                ),
-                              ],
-                            ),
                           ),
                         ),
                       ),
@@ -878,14 +832,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   List<Widget> _buildMarkers(Size size) {
-    // 聚合：当台站较多且缩放级别低时，把屏幕距离接近的台站合并为聚合球
-    final clusterRadius = _zoom < 8 ? 56.0 : 40.0;
-    // 超过阈值才聚合；台站多时更早聚合，减少低缩放大量 marker 的卡顿
-    final clusterThreshold = _zoom < 8 ? 16 : 35;
     final stations = _visible;
-    if (_clusterEnabled && stations.length > clusterThreshold) {
-      return _buildClusteredMarkers(stations, size, clusterRadius);
-    }
     // 先滤掉屏幕外台站（含少量留白），避免为不可见台站创建 widget
     return stations.where((s) {
       final p = _toScreen(s.lat, s.lng, size);
@@ -948,166 +895,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                 ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  /// 聚合模式：把屏幕距离接近的台站合并为聚合球（减少 widget 数量，降低卡顿）
-  List<Widget> _buildClusteredMarkers(
-    List<Station> stations,
-    Size size,
-    double radius,
-  ) {
-    // ── O(n) 网格聚合：一次性投影 + 屏幕外裁剪，再按网格邻域合并 ──
-    // 旧实现每对台站都做 _toScreen（GCJ+三角投影）+ placed.contains(O(n))，属 O(n²)，
-    // 台站上千时每帧重建都会卡顿。这里先投影成屏幕坐标数组，再以 radius 为格子做
-    // 3×3 邻域贪心合并，整体线性。
-    final n = stations.length;
-    final sx = List<double>.filled(n, 0);
-    final sy = List<double>.filled(n, 0);
-    final onScreen = List<bool>.filled(n, false);
-    for (var i = 0; i < n; i++) {
-      final p0 = _toScreen(stations[i].lat, stations[i].lng, size);
-      sx[i] = p0.dx;
-      sy[i] = p0.dy;
-      onScreen[i] = !(p0.dx < -50 ||
-          p0.dx > size.width + 50 ||
-          p0.dy < -50 ||
-          p0.dy > size.height + 50);
-    }
-    final cell = radius > 0 ? radius : 40.0;
-    int cx0(int idx) => (sx[idx] / cell).floor();
-    int cy0(int idx) => (sy[idx] / cell).floor();
-    // 网格：cellKey -> 点索引列表（record 作 key，Dart 3 值语义哈希）
-    final grid = <(int, int), List<int>>{};
-    for (var i = 0; i < n; i++) {
-      if (!onScreen[i]) continue;
-      (grid[(cx0(i), cy0(i))] ??= <int>[]).add(i);
-    }
-    // 贪心成簇：取未分配点新建组，并入 3×3 邻域内距离 < radius 的未分配点
-    final group = List<int>.filled(n, -1);
-    var gid = 0;
-    for (var i = 0; i < n; i++) {
-      if (!onScreen[i] || group[i] != -1) continue;
-      group[i] = gid;
-      gid++;
-      final gx = cx0(i), gy = cy0(i);
-      final r2 = radius * radius;
-      for (var ox = -1; ox <= 1; ox++) {
-        for (var oy = -1; oy <= 1; oy++) {
-          final list = grid[(gx + ox, gy + oy)];
-          if (list == null) continue;
-          for (var k = 0; k < list.length; k++) {
-            final j = list[k];
-            if (group[j] != -1) continue;
-            final dx = sx[j] - sx[i];
-            final dy = sy[j] - sy[i];
-            if (dx * dx + dy * dy < r2) {
-              group[j] = group[i];
-            }
-          }
-        }
-      }
-    }
-    // 组装 cluster：按组号桶收集（一次遍历，O(n)），中心取组内屏幕坐标均值
-    final bucket = List.generate(gid, (_) => <int>[]);
-    for (var i = 0; i < n; i++) {
-      if (onScreen[i]) bucket[group[i]].add(i);
-    }
-    final clusters = <({Offset center, List<Station> items})>[];
-    for (var ids in bucket) {
-      if (ids.isEmpty) continue;
-      final items = <Station>[];
-      var sumX = 0.0, sumY = 0.0;
-      for (final idx in ids) {
-        items.add(stations[idx]);
-        sumX += sx[idx];
-        sumY += sy[idx];
-      }
-      clusters.add((
-        center: Offset(sumX / items.length, sumY / items.length),
-        items: items,
-      ));
-    }
-
-    return clusters.map((c) {
-      final count = c.items.length;
-      if (count == 1) {
-        final s = c.items.first;
-        final sel = _selected?.call == s.call;
-        return Positioned(
-          left: c.center.dx - 28,
-          top: c.center.dy - 28,
-          child: GestureDetector(
-            onTapDown: (_) => setState(() => _selected = s),
-            onDoubleTap: () => _openDetail(s),
-            onTap: () => _animateToStation(s),
-            behavior: HitTestBehavior.opaque,
-            child: SizedBox(
-              width: 56,
-              height: 56,
-              child: Stack(
-                alignment: Alignment.center,
-                clipBehavior: Clip.none,
-                children: [
-                  if (s.effectiveStatus == St.moving || sel)
-                    _PulseRing(color: s.color, sel: sel, anim: _pulse),
-                  // APRS 官方符号图标原图（不加圆底/描边圈）
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Center(
-                      child: AprsSymbolImage(
-                        s.symbol,
-                        s.symbolTable,
-                        size: sel ? 30 : 24,
-                        grayscale: s.effectiveStatus == St.offline,
-                      ),
-                    ),
-                  ),
-                  // 常驻呼号标签
-                  if (!sel)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 40,
-                      child: _callLabel(s),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-      // 聚合球
-      return Positioned(
-        left: c.center.dx - 20,
-        top: c.center.dy - 20,
-        child: GestureDetector(
-          onTap: () => _zoomIn(),
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: C.indigo.withValues(alpha: 0.85),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2.5),
-              boxShadow: [
-                BoxShadow(
-                  color: C.indigo.withValues(alpha: 0.5),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                '$count',
-                style: ts(13, c: Colors.white, w: FontWeight.w800),
               ),
             ),
           ),
@@ -1426,37 +1213,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Station>? _hasVisList;
-  int _hasVisViewHash = -1;
-  Size _hasVisSize = Size.zero;
-  bool _hasVisResult = false;
-
-  /// 视野内是否有可见台站（放大后视野缩小时判断）
-  /// 按 可见台站列表同一性 + 视图 + 尺寸 缓存，避免每次重建全量投影
-  bool _hasVisibleStation(Size size) {
-    final vis = _visible;
-    final vh =
-        (_zoom * 64).round() * 1000003 + _pan.dx.round() * 1009 + _pan.dy.round();
-    if (identical(vis, _hasVisList) && vh == _hasVisViewHash && size == _hasVisSize) {
-      return _hasVisResult;
-    }
-    _hasVisList = vis;
-    _hasVisViewHash = vh;
-    _hasVisSize = size;
-    for (final s in vis) {
-      final pos = _toScreen(s.lat, s.lng, size);
-      if (pos.dx > -20 &&
-          pos.dx < size.width + 20 &&
-          pos.dy > -20 &&
-          pos.dy < size.height + 20) {
-        _hasVisResult = true;
-        return true;
-      }
-    }
-    _hasVisResult = false;
-    return false;
-  }
-
   void _handleMapTap(Offset pos) {
     if (_pickMode) {
       // 选点模式：点击地图设为我的位置
@@ -1521,118 +1277,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => StationDetail(state: widget.state, station: s),
-    );
-  }
-
-  /// 视野内无台站时点击弹出的地图帮助面板
-  void _showMapHelp() {
-    final rows = <(IconData, String)>[
-      (Icons.pan_tool_rounded, S.of(context).mapHelpMove),
-      (Icons.radio_rounded, S.of(context).mapHelpStation),
-      (Icons.layers_rounded, S.of(context).mapHelpLayer),
-      (Icons.my_location_rounded, S.of(context).mapHelpLocate),
-      (Icons.search_rounded, S.of(context).mapHelpSearch),
-    ];
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) => MaterialSurface(
-        radius: 24,
-        topOnly: true,
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.help_outline_rounded, size: 20, color: C.cyan),
-                    const SizedBox(width: 8),
-                    Text(
-                      S.of(context).mapHelpTitle,
-                      style: ts(16, w: FontWeight.w800),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.close_rounded, color: C.grey),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: C.cyanBg,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    S.of(context).mapHelpIntro,
-                    style: ts(12, c: C.cyan, w: FontWeight.w600, h: 1.5),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                for (final (icon, text) in rows) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                            color: C.bgSoft,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(icon, size: 15, color: C.blue),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            text,
-                            style: ts(12, c: C.ink, h: 1.5),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      widget.state.toggleConnect();
-                    },
-                    icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                    label: Text(
-                      S.of(context).connectAprsIs,
-                      style: ts(13, w: FontWeight.w700),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: C.blue,
-                      side: BorderSide(color: C.blue.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -1789,16 +1433,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     ],
   );
 
-  /// 聚合球点击：放大一级以展开聚合的台站
-  void _zoomIn() {
-    if (_usePluginMap) {
-      _pluginAction('zoomIn');
-      return;
-    }
-    final z = (_zoom + 1).clamp(3.0, 19.0);
-    _animateTo(z, _panForCenter(z));
-  }
-
   /// 右侧工具列的单颗按钮（统一 38×38 / 圆角 12 / 柔和投影）。
   /// 抽出来是为了让工具列能写成单个 Column 顺序排布，
   /// 避免多个硬编码 top 的 Positioned 在矮屏上互相重叠。
@@ -1863,18 +1497,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           tooltip: S.of(context).track,
           color: _showTracks ? C.green : C.slate,
           onTap: () => setState(() => _showTracks = !_showTracks),
-        ),
-        SizedBox(height: 6),
-        // 台站聚合开关（自绘 / 矢量地图有效）
-        RoundIconBtn(
-          _clusterEnabled
-              ? Icons.blur_circular_rounded
-              : Icons.blur_off_rounded,
-          tooltip: _clusterEnabled
-              ? S.of(context).disableClustering
-              : S.of(context).enableClustering,
-          color: _clusterEnabled ? C.cyan : C.slate,
-          onTap: () => setState(() => _clusterEnabled = !_clusterEnabled),
         ),
         SizedBox(height: 6),
         // 低缩放热力图开关

@@ -16,6 +16,7 @@ import 'settings_pages.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
 import 'backup_page.dart';
+import 'track_history_page.dart';
 import 'theme_page.dart';
 import 'theme_store.dart';
 import 'theme_text.dart';
@@ -364,6 +365,54 @@ class _SettingsPageState extends State<SettingsPage> {
                         Expanded(
                           child: Text(
                             S.of(context).themeEntryDesc,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF98A2B8),
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                // 历史轨迹（个人按天台账：里程 / 速度 / 时长）
+                GestureDetector(
+                  onTap: () => _push(const TrackHistoryPage()),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: C.accentDeco(
+                            radius: 8,
+                            fallback: const [Color(0xFF16A34A), Color(0xFF0B7A37)],
+                            ),
+                          child: const Icon(
+                            Icons.route_rounded,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).historyTracks,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).historyTracksDesc,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

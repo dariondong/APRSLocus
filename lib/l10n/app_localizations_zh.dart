@@ -6375,6 +6375,47 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dataSourceAudioShort => '音频';
+  @override
+  String get historyTracks => "历史轨迹";
+
+  @override
+  String get historyTracksDesc => "按天记录自己的速度与里程，保存在本机";
+
+  @override
+  String get historyEmpty => "还没有历史轨迹。开始定位并移动后会自动记录。";
+
+  @override
+  String get historyTotalDistance => "总里程";
+
+  @override
+  String get historyMaxSpeed => "最高速度";
+
+  @override
+  String get historyMovingTime => "移动时长";
+
+  @override
+  String get historyPoints => "轨迹点";
+
+  @override
+  String get historyClearDay => "删除这一天的记录";
+
+  @override
+  String get historyCleared => "已删除该天记录";
+
+  @override
+  String get historyClearAll => "清空全部历史轨迹";
+
+  @override
+  String get historyClearAllConfirm => "确定要清空全部历史轨迹吗？此操作无法撤销。";
+
+  @override
+  String get historyClearedAll => "已清空全部历史轨迹";
+
+  @override
+  String get sensorAssist => "传感器辅助定位";
+
+  @override
+  String get sensorAssistDesc => "用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。";
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -12747,4 +12788,45 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceAudioShort => '音訊';
+  @override
+  String get historyTracks => "歷史軌跡";
+
+  @override
+  String get historyTracksDesc => "按天記錄自己的速度與里程，儲存在本機";
+
+  @override
+  String get historyEmpty => "還沒有歷史軌跡。開始定位並移動後會自動記錄。";
+
+  @override
+  String get historyTotalDistance => "總里程";
+
+  @override
+  String get historyMaxSpeed => "最高速度";
+
+  @override
+  String get historyMovingTime => "移動時長";
+
+  @override
+  String get historyPoints => "軌跡點";
+
+  @override
+  String get historyClearDay => "刪除這一天的記錄";
+
+  @override
+  String get historyCleared => "已刪除該天記錄";
+
+  @override
+  String get historyClearAll => "清空全部歷史軌跡";
+
+  @override
+  String get historyClearAllConfirm => "確定要清空全部歷史軌跡嗎？此操作無法復原。";
+
+  @override
+  String get historyClearedAll => "已清空全部歷史軌跡";
+
+  @override
+  String get sensorAssist => "感測器輔助定位";
+
+  @override
+  String get sensorAssistDesc => "用加速度計判斷是否真的在移動、用指南針補正低速航向，讓軌跡打點更準（僅 Android 生效）。";
 }

@@ -41,6 +41,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
 
+    <!-- 运动传感器（加速度计 / 指南针）：用于「轨迹打点更准」——
+         低速时用指南针补航向、用加速度计判断是否真的在动。
+         没有这些传感器的设备必须能正常安装使用（required=false）。 -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false"/>
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false"/>
+
     <!-- USB 串口（USB-OTG 硬件串口）：
          required=false 是**必须的** —— 没写或写 true 会让没有 OTG 的设备
          （部分机型、Windows 之外的平台）在应用市场里被直接过滤掉。

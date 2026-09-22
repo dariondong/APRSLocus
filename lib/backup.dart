@@ -71,6 +71,7 @@ const List<BackupGroupSpec> kBackupGroups = [
     'filterLat', 'filterLng', 'filterRadius', 'maxStations', 'maxPackets',
     'onlineWindowMin', 'maxTrackPts', 'filterFollow',
     'receiveCountries', 'receiveOthers', 'labLandscape', 'oobeDone',
+    'sensorAssist',
     'server', 'port', 'passcode', 'dataSource', 'enabledSources',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',

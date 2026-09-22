@@ -2331,5 +2331,19 @@
   "uiMaterialGlassFullDesc": "最も透明で最もぼかしが強く、**小さな部品も一緒にぼかします**（地図のツールボタン・凡例・ヒント）。見た目は最も重く、GPU 負荷も最大です",
   "posAccuracy": "位置精度",
   "locationStill": "静止",
-  "dataSourceAudioShort": "音声"
+  "dataSourceAudioShort": "音声",
+  "historyTracks": "走行履歴",
+  "historyTracksDesc": "自分の速度と距離を日別に記録し、端末に保存します",
+  "historyEmpty": "走行履歴はまだありません。測位を開始して移動すると自動で記録されます。",
+  "historyTotalDistance": "総距離",
+  "historyMaxSpeed": "最高速度",
+  "historyMovingTime": "移動時間",
+  "historyPoints": "軌跡点",
+  "historyClearDay": "この日の記録を削除",
+  "historyCleared": "記録を削除しました",
+  "historyClearAll": "走行履歴をすべて消去",
+  "historyClearAllConfirm": "走行履歴をすべて消去しますか？この操作は取り消せません。",
+  "historyClearedAll": "走行履歴をすべて消去しました",
+  "sensorAssist": "センサー支援測位",
+  "sensorAssistDesc": "加速度センサーで実際に移動しているかを判定し、コンパスで低速時の方位を補正して軌跡をより正確に記録します（Android のみ）。"
 }

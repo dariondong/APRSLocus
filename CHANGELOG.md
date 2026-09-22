@@ -1,5 +1,126 @@
 # 更新日志
 
+## [1.6.149] - 2026-09-22
+
+### 🌟 四条反馈一次落地：去聚合、轨迹打点更准、去掉「无台站」提示、个人历史轨迹 / Four requests in one release: no clustering, better track points, no "no stations" pill, personal track history
+
+**一、去掉台站聚合**
+
+聚合（把屏幕距离接近的台站并成一颗「N」球）与热力图**本来就是同一件事的两种
+画法**，两个开关叠在一起，用户还得先猜「我现在看到的是球还是热力图」。按反馈
+**直接去掉聚合**：矢量地图与自绘地图都回到「一台站一个标记」，工具列少了那颗
+聚合按钮；低缩放时的密度信息交给热力图（它的开关保留）。代码层面把
+`map_page.dart` 的 `_buildClusteredMarkers` / `_clusterStations` / `_clusterMarker`
+与 `vector_map.dart` 的聚簇整段删掉 —— 不是藏起来，避免以后又被「顺手打开」。
+
+**二、轨迹打点更准：加入加速度计与指南针（Android）**
+
+这是「看看能不能做到精确打点」的答案：能，但要**各管各的短板**，而不是做一个
+「融合算法」把两个噪声源混在一起。
+
+* **指南针补航向**：GPS 在低速/静止时给的 course 是垃圾（多普勒解不出方向，
+  常为 0 或不更新）。步行、推车、慢骑时屏幕上的航向会乱指。现在速度低于
+  3 km/h 且**确实在动**时，用磁北航向补正；正常行驶仍用 GPS —— 磁力计在城里
+  靠近铁/电机时会被干扰，高速下反而是 GPS 更可靠。
+* **加速度计判「在不在动」**：GPS 静止时会飘，只看 GPS 速度容易把「站着不动」
+  判成移动。加速度计把重力低通滤掉后看线性加速度的 RMS，能直接回答「设备有没
+  有在动」。它只用来**提前退出静止**（GPS 速度偶尔为 0 时不被粘在旧点上），
+  绝不反过来把「传感器说静止」当成不进静止判定的理由 —— 坏传感器不该把防抖
+  整个废掉。
+
+实现上没有引第三方传感器插件：Android 侧加了一个 `MotionManager`（旋转矢量 +
+加速度计 + 磁力计），Dart 侧在每次定位回调里**拉取**一次采样，不做持续事件流，
+退出定位立刻注销监听。其它平台没有这套数据源，开关无效、行为与以前完全一致
+（接口按「没有传感器」返回）。默认开启，可在「设置 → 信标 → 定位」里关掉。
+
+**三、去掉「视野内无台站」提示**
+
+那条「该区域暂无台站 · 点击查看帮助」的浮条（以及点开的帮助面板）删掉了。
+地图上本来就有信息条、工具列与空地图本身，再挂一条提示只会挡住内容；真的没
+台站时，用户需要的是「换个地方看」而不是一段解释。
+
+**四、个人历史轨迹（按天保存，设置页查看）**
+
+设置页新增「历史轨迹」入口。它和地图上那条「我的轨迹」**刻意分开**：
+
+* 屏幕轨迹只服务这一次显示 —— 只留最近 N 个点、确认位置跳变时整条清空、退出
+  就没了；
+* 台账按**本地日期**落盘（`<应用支持目录>/tracklog/YYYY-MM-DD.json`），记录
+  每个点的经纬度、速度、航向、海拔、精度，退出重进还在。每天一屏：总里程、
+  平均速度、最高速度、移动时长、轨迹点，外加一张极简的点列预览。可按天删除、
+  可一键清空全部。
+
+落盘做了三件必要的事：**写盘节流**（攒着最多每 8 秒落一次，不给定位回调添
+存储抖动）、**跨天切分**（0 点后第一个点封存昨天并开新档）、**先写临时文件再
+改名**（原子替换，进程被杀不会留下半截 JSON 把整天读没）。读盘逐文件容错：
+一天的文件坏了只丢那一天。
+
+统计口径写在代码注释里：**移动时长**只累计「这一段确实在动」（段均速 >
+1.5 km/h）的间隔 —— 用「末点 − 首点」会把中途停下来吃饭的两小时算进去，平均
+速度就被稀释成没有意义的数字。
+
+---
+
+**1) Clustering is gone.** Clustering (merging nearby stations into an "N" bubble)
+and the heatmap were two drawings of the same idea, stacked behind two toggles —
+users had to guess which one they were looking at. Per feedback, **clustering is
+removed**: both the vector map and the self-drawn map are back to one marker per
+station, the cluster button is gone from the toolbar, and low-zoom density is the
+heatmap's job (its toggle stays). The clustering code in `map_page.dart` and
+`vector_map.dart` was **deleted**, not hidden, so it cannot quietly come back.
+
+**2) More accurate track points, with the accelerometer and compass (Android).**
+This is the answer to "can we make point plotting precise?": yes, but by letting
+each sensor cover the other's blind spot rather than blending both noise sources
+into one "fusion algorithm".
+
+* **Compass fixes the heading**: at low speed GPS course is garbage (Doppler cannot
+  resolve a direction, so it reports 0 or stops updating) and the on-screen heading
+  wanders while walking or pushing a bike. Below 3 km/h, and only while genuinely
+  moving, the magnetic-north heading is used; at normal speed GPS still wins —
+  magnetometers are disturbed near iron and motors in cities, and GPS is the more
+  reliable source at speed.
+* **Accelerometer decides "am I actually moving"**: GPS drifts when stationary, and
+  GPS speed alone misreads "standing still" as movement. After low-passing gravity
+  away, the RMS of linear acceleration answers the question directly. It is used
+  **only to leave the stationary state early** (so a brief GPS speed of 0 cannot
+  glue you to the old point); a sensor reporting "still" never blocks entering the
+  stationary state — a broken sensor must not disable the debounce entirely.
+
+No third-party sensor plugin was added: Android gets a `MotionManager` (rotation
+vector + accelerometer + magnetometer) and Dart **pulls** one sample per location
+callback instead of subscribing to a stream, unregistering the listeners the moment
+positioning stops. Other platforms have no such source; the switch is inert there
+and behaviour is exactly as before. It is on by default and can be turned off in
+Settings → Beacon → Location.
+
+**3) The "no stations in view" pill is gone.** The pill (and the help sheet it
+opened) was removed. The map already has an info chip, a toolbar and the empty map
+itself; one more overlay only covers content, and when there really are no stations
+the user needs to look elsewhere, not read an explanation.
+
+**4) Personal track history, saved per day and viewable in Settings.** A new
+"Track history" entry in Settings. It is **deliberately separate** from the "my
+track" line on the map: the on-screen track serves this one session (it keeps only
+the last N points, is cleared on a confirmed position jump, and is gone on exit),
+while this ledger is written to disk per **local day**
+(`<app support>/tracklog/YYYY-MM-DD.json`) with lat/lng, speed, course, altitude and
+accuracy for every point, and survives restarts. Each day shows total distance,
+average and max speed, moving time and point count, plus a minimal polyline preview;
+days can be deleted individually or all at once.
+
+Persistence does three necessary things: **write throttling** (at most one flush
+every 8 s, so location callbacks do not thrash storage), **day rollover** (the first
+point after midnight seals yesterday and opens a new file), and
+**write-temp-then-rename** (an atomic replace, so a killed process cannot leave a
+half-written JSON that blanks the whole day). Reading is per-file tolerant: one bad
+file loses only that day.
+
+The stats' definitions live in code comments: **moving time** only accumulates
+intervals that were genuinely moving (segment speed > 1.5 km/h). Using
+"last − first" would count a two-hour lunch stop as moving and dilute average speed
+into a meaningless number.
+
 ## [1.6.148] - 2026-09-21
 
 ### 🐛 修面板「拖动卡 + 一拖就变白」；连接按钮改成带动词文字 / Fixing sheet drag jank and the white flash; a clearer connect button

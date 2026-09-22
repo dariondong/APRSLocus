@@ -6649,4 +6649,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dataSourceAudioShort => 'Audio';
+  @override
+  String get historyTracks => "Riwayat lintasan";
+
+  @override
+  String get historyTracksDesc => "Mencatat kecepatan dan jarak Anda per hari, disimpan di perangkat ini";
+
+  @override
+  String get historyEmpty => "Belum ada riwayat lintasan. Akan terekam otomatis setelah penentuan posisi dan bergerak.";
+
+  @override
+  String get historyTotalDistance => "Total jarak";
+
+  @override
+  String get historyMaxSpeed => "Kecepatan maks.";
+
+  @override
+  String get historyMovingTime => "Waktu bergerak";
+
+  @override
+  String get historyPoints => "Titik";
+
+  @override
+  String get historyClearDay => "Hapus hari ini";
+
+  @override
+  String get historyCleared => "Hari dihapus";
+
+  @override
+  String get historyClearAll => "Hapus semua riwayat";
+
+  @override
+  String get historyClearAllConfirm => "Hapus semua riwayat lintasan? Tindakan ini tidak dapat dibatalkan.";
+
+  @override
+  String get historyClearedAll => "Semua riwayat dihapus";
+
+  @override
+  String get sensorAssist => "Penentuan posisi dengan sensor";
+
+  @override
+  String get sensorAssistDesc => "Menggunakan akselerometer untuk mengetahui apakah benar-benar bergerak dan kompas untuk memperbaiki arah saat kecepatan rendah, agar titik lintasan lebih akurat (hanya Android).";
 }

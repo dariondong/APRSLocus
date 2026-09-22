@@ -2331,5 +2331,19 @@
   "uiMaterialGlassFullDesc": "Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU",
   "posAccuracy": "Precisión de la posición",
   "locationStill": "Estacionario",
-  "dataSourceAudioShort": "Audio"
+  "dataSourceAudioShort": "Audio",
+  "historyTracks": "Historial de rutas",
+  "historyTracksDesc": "Registra tu velocidad y distancia por día, guardadas en este dispositivo",
+  "historyEmpty": "Aún no hay historial de rutas. Se registrará automáticamente al posicionarte y moverte.",
+  "historyTotalDistance": "Distancia total",
+  "historyMaxSpeed": "Velocidad máx.",
+  "historyMovingTime": "Tiempo en movimiento",
+  "historyPoints": "Puntos",
+  "historyClearDay": "Eliminar este día",
+  "historyCleared": "Día eliminado",
+  "historyClearAll": "Borrar todo el historial",
+  "historyClearAllConfirm": "¿Borrar todo el historial de rutas? No se puede deshacer.",
+  "historyClearedAll": "Historial borrado por completo",
+  "sensorAssist": "Posicionamiento con sensores",
+  "sensorAssistDesc": "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android)."
 }

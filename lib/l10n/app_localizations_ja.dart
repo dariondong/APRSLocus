@@ -6449,4 +6449,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dataSourceAudioShort => '音声';
+  @override
+  String get historyTracks => "走行履歴";
+
+  @override
+  String get historyTracksDesc => "自分の速度と距離を日別に記録し、端末に保存します";
+
+  @override
+  String get historyEmpty => "走行履歴はまだありません。測位を開始して移動すると自動で記録されます。";
+
+  @override
+  String get historyTotalDistance => "総距離";
+
+  @override
+  String get historyMaxSpeed => "最高速度";
+
+  @override
+  String get historyMovingTime => "移動時間";
+
+  @override
+  String get historyPoints => "軌跡点";
+
+  @override
+  String get historyClearDay => "この日の記録を削除";
+
+  @override
+  String get historyCleared => "記録を削除しました";
+
+  @override
+  String get historyClearAll => "走行履歴をすべて消去";
+
+  @override
+  String get historyClearAllConfirm => "走行履歴をすべて消去しますか？この操作は取り消せません。";
+
+  @override
+  String get historyClearedAll => "走行履歴をすべて消去しました";
+
+  @override
+  String get sensorAssist => "センサー支援測位";
+
+  @override
+  String get sensorAssistDesc => "加速度センサーで実際に移動しているかを判定し、コンパスで低速時の方位を補正して軌跡をより正確に記録します（Android のみ）。";
 }

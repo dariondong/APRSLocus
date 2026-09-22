@@ -53,7 +53,7 @@ def main() -> int:
          '原生上报的 accuracy 没被解析（精度信息在传输途中丢掉了）')
     need('lib/services.dart', 'double accuracyM)? onFix;',
          'onFix 回调签名缺 accuracy 参数')
-    need('lib/state.dart', 'double accuracy,\n  ) {',
+    need('lib/state.dart', 'double accuracy,\n',
          'AppState._onFix 没接收 accuracy')
     need('lib/state.dart', 'myAccuracy = accuracy > 0 ? accuracy : 0;',
          'myAccuracy 没落库')

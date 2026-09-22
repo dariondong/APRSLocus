@@ -64,11 +64,22 @@ class MainActivity : FlutterActivity() {
     // KISS/AX.25 全在 Dart 侧 —— 与蓝牙侧同一套分层。
     private var usbSerial: UsbSerialManager? = null
 
+    // 运动传感器（加速度计 + 指南针）：只服务「自己」的轨迹打点（低速航向
+    // 补正 + 判断是否真的在动）。通道常挂，Dart 侧按需 start/stop/sample。
+    private var motion: MotionManager? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
         // 桌面小组件桥：Dart 把算好的天气快照推过来，这里落盘并刷新组件
         WeatherWidgetBridge(this, flutterEngine.dartExecutor.binaryMessenger).attach()
+
+        // 运动传感器桥：拉取式（Dart 每次定位回调 sample 一次），
+        // 避免持续的事件流；没有传感器的设备 start() 返回 false。
+        val motionManager = MotionManager(this)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MotionManager.CHANNEL)
+            .setMethodCallHandler { call, result -> motionManager.handle(call, result) }
+        motion = motionManager
 
         // 方法通道：控制定位服务 + 权限
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
@@ -919,6 +930,12 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         pkwdwpl = null
+        // 传感器监听必须显式注销：否则 Activity 销毁后传感器仍在唤醒
+        try {
+            motion?.stop()
+        } catch (_: Exception) {
+        }
+        motion = null
         try {
             audio?.dispose()
         } catch (_: Exception) {

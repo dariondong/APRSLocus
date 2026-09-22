@@ -11534,6 +11534,89 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'音频'**
   String get dataSourceAudioShort;
+  /// No description provided for @historyTracks.
+  ///
+  /// In zh, this message translates to:
+  /// **'历史轨迹'**
+  String get historyTracks;
+
+  /// No description provided for @historyTracksDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'按天记录自己的速度与里程，保存在本机'**
+  String get historyTracksDesc;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有历史轨迹。开始定位并移动后会自动记录。'**
+  String get historyEmpty;
+
+  /// No description provided for @historyTotalDistance.
+  ///
+  /// In zh, this message translates to:
+  /// **'总里程'**
+  String get historyTotalDistance;
+
+  /// No description provided for @historyMaxSpeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'最高速度'**
+  String get historyMaxSpeed;
+
+  /// No description provided for @historyMovingTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动时长'**
+  String get historyMovingTime;
+
+  /// No description provided for @historyPoints.
+  ///
+  /// In zh, this message translates to:
+  /// **'轨迹点'**
+  String get historyPoints;
+
+  /// No description provided for @historyClearDay.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除这一天的记录'**
+  String get historyClearDay;
+
+  /// No description provided for @historyCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除该天记录'**
+  String get historyCleared;
+
+  /// No description provided for @historyClearAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空全部历史轨迹'**
+  String get historyClearAll;
+
+  /// No description provided for @historyClearAllConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要清空全部历史轨迹吗？此操作无法撤销。'**
+  String get historyClearAllConfirm;
+
+  /// No description provided for @historyClearedAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清空全部历史轨迹'**
+  String get historyClearedAll;
+
+  /// No description provided for @sensorAssist.
+  ///
+  /// In zh, this message translates to:
+  /// **'传感器辅助定位'**
+  String get sensorAssist;
+
+  /// No description provided for @sensorAssistDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。'**
+  String get sensorAssistDesc;
 }
 
 class _AppLocalizationsDelegate

@@ -14,6 +14,8 @@ import 'services.dart';
 import 'aprs_parse.dart';
 import 'aprs_device.dart';
 import 'pos_quality.dart';
+import 'track_log.dart';
+import 'motion.dart';
 import 'adif.dart';
 import 'l10n/app_localizations.dart';
 // 说明：AppLocalizationsZh / AppLocalizationsZhTw / AppLocalizationsEn 是 gen-l10n
@@ -73,7 +75,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.148';
+  static const appVersion = '1.6.149';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1336,6 +1338,8 @@ class AppState extends ChangeNotifier {
   void setUseSimLocation(bool v) {
     useSimLocation = v;
     if (v) {
+      // 切到模拟位置：没有真实位移可判，传感器监听一并停掉（省电）
+      unawaited(MotionService.instance.stop());
       // 切换到模拟：不再需要 GPS，但需要前台服务保活（见 startTracking）
       unawaited(startTracking());
       if (myLat == null || myLng == null) {
@@ -1463,10 +1467,28 @@ class AppState extends ChangeNotifier {
   // 实验室：允许手机横屏显示
   bool labLandscape = false;
 
+  /// 传感器辅助定位：用加速度计判断是否真的在移动、用指南针补正低速航向。
+  /// 仅 Android 生效（见 lib/motion.dart），其它平台上开关无效、不影响使用。
+  bool sensorAssist = true;
+
   void setLabLandscape(bool v) {
     labLandscape = v;
     persist();
     _applyOrientation();
+    _notify();
+  }
+
+  /// 传感器辅助开关：打开时若正在定位就立刻启动传感器监听，
+  /// 关闭时立刻注销 —— 不能让传感器在用户关掉它之后还在后台采样耗电。
+  void setSensorAssist(bool v) {
+    if (sensorAssist == v) return;
+    sensorAssist = v;
+    if (v) {
+      if (loc.running) unawaited(MotionService.instance.start());
+    } else {
+      unawaited(MotionService.instance.stop());
+    }
+    persist();
     _notify();
   }
 
@@ -1674,6 +1696,7 @@ class AppState extends ChangeNotifier {
       } catch (_) {}
       receiveOthers = p.getBool('receiveOthers') ?? receiveOthers;
       labLandscape = p.getBool('labLandscape') ?? labLandscape;
+      sensorAssist = p.getBool('sensorAssist') ?? sensorAssist;
       oobeDone = p.getBool('oobeDone') ?? oobeDone;
       aprs.server = p.getString('server') ?? aprs.server;
       aprs.port = p.getInt('port') ?? aprs.port;
@@ -1846,6 +1869,7 @@ class AppState extends ChangeNotifier {
     await p.setStringList('receiveCountries', receiveCountries);
     await p.setBool('receiveOthers', receiveOthers);
     await p.setBool('labLandscape', labLandscape);
+    await p.setBool('sensorAssist', sensorAssist);
     await p.setBool('oobeDone', oobeDone);
     await p.setString('server', aprs.server);
     await p.setInt('port', aprs.port);
@@ -2079,6 +2103,8 @@ class AppState extends ChangeNotifier {
     tick.dispose();
     _stationsCtrl.close();
     loc.stop();
+    // 把内存里攒着、还没到节流时间的台账落盘（退出后不丢最后几个点）
+    unawaited(TrackLogStore.instance.flush());
     aprs.disconnect();
     // 射频链路也要收尾（原先只释放了 APRS-IS）：
     // pkwdwpl 的传输层持有一个 EventChannel 订阅，不释放会一直挂在平台通道上；
@@ -2997,12 +3023,15 @@ class AppState extends ChangeNotifier {
       _notify();
     } else {
       _log(LogLevel.info, '定位', '定位服务已启动');
+      // 传感器与定位同生共死：没有定位就不需要判「在不在动」
+      if (sensorAssist) unawaited(MotionService.instance.start());
     }
     return ok;
   }
 
   void stopTracking() {
     loc.stop();
+    unawaited(MotionService.instance.stop());
     myHasFix = false;
     _resetSelfFix();
     locStatus = '定位已停止';
@@ -3010,7 +3039,7 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  void _onFix(
+  Future<void> _onFix(
     double lat,
     double lng,
     double alt,
@@ -3018,9 +3047,16 @@ class AppState extends ChangeNotifier {
     double bearing,
     bool lastKnown,
     double accuracy,
-  ) {
+  ) async {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
+
+    // 传感器辅助：拉一次最新的加速度计/指南针状态。
+    // 同一次定位只拉这一次 —— 后面的静止判定与航向补正共用它，
+    // 不为「用两次」而做两次平台通道往返。
+    final motion = sensorAssist
+        ? await MotionService.instance.refresh()
+        : MotionSample.unknown;
 
     // ── 位置跳变守卫：不要用「瞬移的点」污染轨迹 ──
     //
@@ -3106,7 +3142,13 @@ class AppState extends ChangeNotifier {
     // 粗点 —— 两者都不该进滑动窗口（会把中位数拉跑），也不该影响静止判定。
     final out = lastKnown
         ? (lat, lng, false)
-        : _selfFilter.feed(lat, lng, speed * 3.6, accuracy);
+        : _selfFilter.feed(
+            lat,
+            lng,
+            speed * 3.6,
+            accuracy,
+            sensorMoving: motion.moving,
+          );
     final outLat = out.$1;
     final outLng = out.$2;
     final still = out.$3;
@@ -3128,7 +3170,16 @@ class AppState extends ChangeNotifier {
     // 速度 m/s → km/h；方位角度。
     // 静止时 GPS 也返回 speed=0/bearing=0，正常上报（000/000 表示静止）
     mySpeed = speed * 3.6;
+    // 航向：低速时 GPS 的 course 不可信（多普勒解不出方向，常为 0 或不更新），
+    // 用指南针补正；正常行驶时仍用 GPS —— 磁力计在城里靠近铁/电机时会被干扰，
+    // 高速下反而是 GPS 更可靠。阈值 3km/h：步行/推车/慢骑覆盖，跑步以上交给 GPS。
     if (bearing >= 0) myCourse = bearing;
+    if (motion.hasCompass &&
+        motion.heading >= 0 &&
+        motion.moving &&
+        mySpeed! < 3.0) {
+      myCourse = motion.heading;
+    }
     locStatus = still ? '静止' : '已定位';
     // 记录我的轨迹
     //
@@ -3156,6 +3207,16 @@ class AppState extends ChangeNotifier {
         if (myTrack.length > maxTrackPts) {
           myTrack.removeRange(0, myTrack.length - maxTrackPts);
         }
+        // 个人历史台账（按天落盘）与屏幕轨迹分开写：只在「确实在动」时
+        // 记，并带上速度/航向/精度，供事后按天统计里程与速度。
+        TrackLogStore.instance.record(
+          lat: outLat,
+          lng: outLng,
+          speedKmh: speed * 3.6,
+          course: myCourse,
+          alt: alt,
+          accuracyM: accuracy,
+        );
       }
     }
     // 过滤中心跟随我的位置

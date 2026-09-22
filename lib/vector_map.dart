@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -45,8 +44,6 @@ class VectorMapView extends StatefulWidget {
   final int actionSeq;
   final String action;
   final bool showTracks;
-  // 是否启用台站聚合（台站多时合并为聚合球）
-  final bool clustering;
   // 矢量底图 style URL（OpenFreeMap Liberty / CARTO Positron）
   final String styleUrl;
   const VectorMapView({
@@ -69,7 +66,6 @@ class VectorMapView extends StatefulWidget {
     this.actionSeq = 0,
     this.action = '',
     this.showTracks = true,
-    this.clustering = true,
     this.styleUrl = kVectorStyleLiberty,
   });
 
@@ -85,10 +81,9 @@ class _VectorMapViewState extends State<VectorMapView> {
   int _lastActionSeq = -1;
   bool _initDone = false;
   LatLng? _pendingFocus;
-  // 台站 Marker 缓存（版本/缩放/聚合开关键）
+  // 台站 Marker 缓存（版本/缩放/选中项）
   int _lastMarkersVersion = -1;
   double _lastMarkerZoom = -999;
-  bool _lastClustering = true;
   String? _lastSelectedCall;
   List<Marker>? _markersCache;
 
@@ -291,7 +286,7 @@ class _VectorMapViewState extends State<VectorMapView> {
                   // 我的位置
                   if (widget.myHasFix && widget.myLat != null && widget.myLng != null)
                     MarkerLayer(markers: [_myMarker()]),
-                  // 台站标记（台站多时聚合为球，减少渲染量）
+                  // 台站标记
                   MarkerLayer(
                     markers: _buildStationMarkers(),
                   ),
@@ -410,113 +405,28 @@ class _VectorMapViewState extends State<VectorMapView> {
     );
   }
 
-  /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
+  /// 台站标记：按数据版本/缩放缓存，避免每秒 tick 重建全部 Marker
   List<Marker> _buildStationMarkers() {
     final zoom = _mapReady ? _map.camera.zoom : 11.0;
     // 台站版本 + 缩放级别 + 聚合开关未变时复用 Marker，
     // 避免 MapPage 每秒 tick 重建时反复创建全部 Marker
     if (widget.stationsVersion == _lastMarkersVersion &&
         (zoom - _lastMarkerZoom).abs() < 0.5 &&
-        widget.clustering == _lastClustering &&
         widget.selectedCall == _lastSelectedCall &&
         _markersCache != null) {
       return _markersCache!;
     }
     _lastMarkersVersion = widget.stationsVersion;
     _lastMarkerZoom = zoom;
-    _lastClustering = widget.clustering;
     _lastSelectedCall = widget.selectedCall;
-    // 台站数量多且缩放级别低时聚合（可被 clustering 开关关闭）
-    final total = widget.stations
-        .where((s) => s.call != widget.myCall && s.lat != 0 && s.lng != 0)
-        .length;
-    final List<Marker> result;
-    // 台站少于阈值、已放大到足够清晰、或关闭聚合时不聚合
-    if (!widget.clustering || total < 60 || zoom >= 13) {
-      result = widget.stations
-          .where((s) =>
-              s.call != widget.myCall && s.lat != 0 && s.lng != 0)
-          .map((s) => _stationMarker(s))
-          .toList();
-    } else {
-      final markers = <Marker>[];
-      for (final c in _clusterStations()) {
-        if (c.items.length > 1) {
-          markers.add(_clusterMarker(c.lat, c.lng, c.items));
-        } else {
-          markers.add(_stationMarker(c.items.first));
-        }
-      }
-      result = markers;
-    }
+    final result = widget.stations
+        .where((s) =>
+            s.call != widget.myCall && s.lat != 0 && s.lng != 0)
+        .map((s) => _stationMarker(s))
+        .toList();
     _markersCache = result;
     return result;
   }
 
-  /// 台站聚合：按经纬度网格聚类（zoom 越低网格越大，聚合越强）
-  /// 返回 (经纬度中心, 台站列表) 列表
-  List<({double lat, double lng, List<Station> items})> _clusterStations() {
-    final zoom = _mapReady ? _map.camera.zoom : 11.0;
-    // 网格大小（度）：zoom 每 +2 缩小一半
-    final gridDeg = 0.5 / math.pow(2, (zoom - 8).clamp(0, 10)).toDouble();
-    final clusters = <({double lat, double lng, List<Station> items})>[];
-    final keyMap = <String, int>{};
 
-    for (final s in widget.stations) {
-      if (s.call == widget.myCall || s.lat == 0 || s.lng == 0) continue;
-      // 量化到网格
-      final gx = (s.lng / gridDeg).floor();
-      final gy = (s.lat / gridDeg).floor();
-      final key = '$gx,$gy';
-      final idx = keyMap[key];
-      if (idx == null) {
-        keyMap[key] = clusters.length;
-        clusters.add((
-          lat: s.lat,
-          lng: s.lng,
-          items: [s],
-        ));
-      } else {
-        final c = clusters[idx];
-        // 更新中心（均值）
-        final n = c.items.length;
-        clusters[idx] = (
-          lat: (c.lat * n + s.lat) / (n + 1),
-          lng: (c.lng * n + s.lng) / (n + 1),
-          items: [...c.items, s],
-        );
-      }
-    }
-    return clusters;
-  }
-
-  /// 聚合球 Marker：显示数量，点击放大
-  Marker _clusterMarker(double lat, double lng, List<Station> items) {
-    final count = items.length;
-    final size = (24 + count.clamp(0, 20)).toDouble();
-    return Marker(
-      point: LatLng(lat, lng),
-      width: size,
-      height: size,
-      child: GestureDetector(
-        onTap: () {
-          // 放大一级展开聚合
-          final z = (_map.camera.zoom + 1).clamp(2.0, 19.0);
-          _map.move(LatLng(lat, lng), z);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.indigo.withValues(alpha: 0.85),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: softShadow(blur: 8, alpha: 0.3),
-          ),
-          child: Center(
-            child: Text('$count',
-                style: ts(13, c: Colors.white, w: FontWeight.w800)),
-          ),
-        ),
-      ),
-    );
-  }
 }

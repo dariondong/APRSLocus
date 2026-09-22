@@ -2247,5 +2247,19 @@
   "uiMaterialGlassFullDesc": "The most transparent and the blurriest, **including the small widgets** (map tool buttons, legend, hint pills) — the heaviest look, and the heaviest on the GPU",
   "posAccuracy": "Position accuracy",
   "locationStill": "Stationary",
-  "dataSourceAudioShort": "Audio"
+  "dataSourceAudioShort": "Audio",
+  "historyTracks": "Track history",
+  "historyTracksDesc": "Records your own speed and distance by day, saved on this device",
+  "historyEmpty": "No track history yet. It is recorded automatically once you start positioning and move.",
+  "historyTotalDistance": "Total distance",
+  "historyMaxSpeed": "Max speed",
+  "historyMovingTime": "Moving time",
+  "historyPoints": "Points",
+  "historyClearDay": "Delete this day",
+  "historyCleared": "Day deleted",
+  "historyClearAll": "Clear all track history",
+  "historyClearAllConfirm": "Clear all track history? This cannot be undone.",
+  "historyClearedAll": "All track history cleared",
+  "sensorAssist": "Sensor-assisted positioning",
+  "sensorAssistDesc": "Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only)."
 }

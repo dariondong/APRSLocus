@@ -138,12 +138,17 @@ class SelfFixFilter {
   /// [accuracyM] <= 0 表示平台没给精度，按 [stillSlackM] 处理。
   /// **缓存位置（lastKnown）与 IP 定位不得喂进来** —— 它们不是实时定位，
   /// 会把窗口污染（调用方负责，见 `AppState._onFix`）。
+  /// [sensorMoving]：加速度计判断「设备真的在动」。**只用来提前退出静止** ——
+  /// 传感器说在动就立刻按移动输出原始点，绝不因为 GPS 速度偶尔为 0 而把
+  /// 人粘在旧位置上；反过来（传感器没信号/说静止）**不**阻止进入静止判定，
+  /// 免得一个坏传感器把防抖整个废掉。
   (double, double, bool) feed(
     double lat,
     double lng,
     double speedKmh,
-    double accuracyM,
-  ) {
+    double accuracyM, {
+    bool? sensorMoving,
+  }) {
     final acc = accuracyM > 0 ? accuracyM : stillSlackM;
     _win.add((lat, lng));
     if (_win.length > window) _win.removeAt(0);
@@ -158,7 +163,10 @@ class SelfFixFilter {
       // 明显在动 → 当帧退出；否则要连续 exitNeed 次不成立才退出（挡阈值边缘的抖）。
       // 注意**退出时不清空窗口**：清空后要 5 帧才重填，那 5 帧只能输出原始噪声
       // —— 仿真里那就是残留反向跳的主要来源（清空时稳态 30 次，不清空后 10 次）。
-      if (speedKmh >= moveSpeedKmh) {
+      //
+      // 加速度计说在动也当帧退出：GPS 速度在多路径/隧道口会短时为 0，
+      // 而「设备在动」这个事实比 GPS 速度可靠。
+      if (speedKmh >= moveSpeedKmh || sensorMoving == true) {
         _still = false;
         _stillRun = 0;
         _exitRun = 0;

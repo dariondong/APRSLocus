@@ -6691,4 +6691,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dataSourceAudioShort => 'Audio';
+  @override
+  String get historyTracks => "Historial de rutas";
+
+  @override
+  String get historyTracksDesc => "Registra tu velocidad y distancia por día, guardadas en este dispositivo";
+
+  @override
+  String get historyEmpty => "Aún no hay historial de rutas. Se registrará automáticamente al posicionarte y moverte.";
+
+  @override
+  String get historyTotalDistance => "Distancia total";
+
+  @override
+  String get historyMaxSpeed => "Velocidad máx.";
+
+  @override
+  String get historyMovingTime => "Tiempo en movimiento";
+
+  @override
+  String get historyPoints => "Puntos";
+
+  @override
+  String get historyClearDay => "Eliminar este día";
+
+  @override
+  String get historyCleared => "Día eliminado";
+
+  @override
+  String get historyClearAll => "Borrar todo el historial";
+
+  @override
+  String get historyClearAllConfirm => "¿Borrar todo el historial de rutas? No se puede deshacer.";
+
+  @override
+  String get historyClearedAll => "Historial borrado por completo";
+
+  @override
+  String get sensorAssist => "Posicionamiento con sensores";
+
+  @override
+  String get sensorAssistDesc => "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android).";
 }

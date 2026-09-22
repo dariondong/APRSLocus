@@ -6640,4 +6640,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataSourceAudioShort => 'Audio';
+  @override
+  String get historyTracks => "Track history";
+
+  @override
+  String get historyTracksDesc => "Records your own speed and distance by day, saved on this device";
+
+  @override
+  String get historyEmpty => "No track history yet. It is recorded automatically once you start positioning and move.";
+
+  @override
+  String get historyTotalDistance => "Total distance";
+
+  @override
+  String get historyMaxSpeed => "Max speed";
+
+  @override
+  String get historyMovingTime => "Moving time";
+
+  @override
+  String get historyPoints => "Points";
+
+  @override
+  String get historyClearDay => "Delete this day";
+
+  @override
+  String get historyCleared => "Day deleted";
+
+  @override
+  String get historyClearAll => "Clear all track history";
+
+  @override
+  String get historyClearAllConfirm => "Clear all track history? This cannot be undone.";
+
+  @override
+  String get historyClearedAll => "All track history cleared";
+
+  @override
+  String get sensorAssist => "Sensor-assisted positioning";
+
+  @override
+  String get sensorAssistDesc => "Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only).";
 }
