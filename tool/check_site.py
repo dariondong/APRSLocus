@@ -108,7 +108,10 @@ def main():
              ('docs/zh-TW/manual', 'docs/zh-TW/manual.html'),
              ('docs/en/manual', 'docs/en/manual.html')]
     for base, old in BASES:
-        chk('旧单页已移除 ' + old, not os.path.exists(os.path.join(ROOT, old)))
+        # 旧单页必须是**跳转桩**（不是内容页，也不能 404）
+        s_old = read(old)
+        chk('旧单页转跳桩 ' + old,
+            'http-equiv="refresh"' in s_old and 'manual/index.html' in s_old)
         bad_struct, no_theme, no_crumb, no_hreflang = [], [], [], []
         for name in MANUAL:
             f = '%s/%s.html' % (base, name)

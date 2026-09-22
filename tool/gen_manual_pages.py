@@ -552,12 +552,29 @@ def main():
             written += 1
         print('%-6s %2d 页 → docs/…/manual/' % (lang, written))
 
-    # 旧单页手册移除（多页上线后留着会与新站重复/断链）
-    for old in ('docs/manual.html', 'docs/zh-TW/manual.html', 'docs/en/manual.html'):
-        path = os.path.join(ROOT, old)
-        if os.path.exists(path):
-            os.remove(path)
-            print('removed', old)
+    # 旧单页 URL → 跳转桩（已分享出去的链接不 404；重跑生成器不会误删）
+    stubs = {
+        'docs/manual.html': ('manual/index.html', 'zh-CN', '用户手册'),
+        'docs/zh-TW/manual.html': ('index.html', 'zh-TW', '使用手冊'),
+        'docs/en/manual.html': ('index.html', 'en', 'User Guide'),
+    }
+    for path, (dest, ld, ttl) in stubs.items():
+        if path.startswith('docs/zh-TW/'):
+            base = SITE + '/zh-TW/manual/index.html'
+        elif path.startswith('docs/en/'):
+            base = SITE + '/en/manual/index.html'
+        else:
+            base = SITE + '/manual/index.html'
+        html = ('<!DOCTYPE html>\n<html lang="%s">\n<head>\n<meta charset="UTF-8">\n'
+                '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+                '<title>%s — APRSlocus</title>\n<meta name="robots" content="noindex">\n'
+                '<link rel="canonical" href="%s">\n'
+                '<meta http-equiv="refresh" content="0; url=%s">\n'
+                '<script>location.replace("%s");</script>\n</head>\n'
+                '<body>\n<p><a href="%s">%s</a></p>\n</body>\n</html>\n'
+                % (ld, ttl, base, dest, dest, dest, ttl))
+        io.open(os.path.join(ROOT, path), 'w', encoding='utf-8', newline='\n').write(html)
+        print('stub', path, '→', dest)
     print('\n✅ 三语多页手册已生成（13 页 × 3 语，含代码生成的设置逐项表）')
 
 
