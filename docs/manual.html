@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用户手册 — APRSlocus 从上手到进阶</title>
+<meta name="description" content="APRSlocus 用户手册：快速上手七步引导、五个页签界面导览、四种数据来源与网关、位置信标、消息与群聊、地图与显示、台站筛选、导出备份、桌面小组件、设置参考与故障排查。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="用户手册 — APRSlocus 从上手到进阶">
+<meta property="og:description" content="APRSlocus 用户手册：快速上手七步引导、五个页签界面导览、四种数据来源与网关、位置信标、消息与群聊、地图与显示、台站筛选、导出备份、桌面小组件、设置参考与故障排查。">
+<meta property="og:url" content="https://aprslocus.theez.top/manual.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:image:width" content="192">
+<meta property="og:image:height" content="192">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用户手册 — APRSlocus 从上手到进阶">
+<meta name="twitter:description" content="APRSlocus 用户手册：快速上手七步引导、五个页签界面导览、四种数据来源与网关、位置信标、消息与群聊、地图与显示、台站筛选、导出备份、桌面小组件、设置参考与故障排查。">
+<meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
+<link rel="canonical" href="https://aprslocus.theez.top/manual.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual.html">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，
+   否则深色偏好用户会先闪一下白屏（CSS 键在 <html data-theme> 上）。 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "用户手册 — APRSlocus 从上手到进阶",
+  "description": "APRSlocus 用户手册：快速上手七步引导、五个页签界面导览、四种数据来源与网关、位置信标、消息与群聊、地图与显示、台站筛选、导出备份、桌面小组件、设置参考与故障排查。",
+  "url": "https://aprslocus.theez.top/manual.html",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/manual.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "用户手册",
+        "item": "https://aprslocus.theez.top/manual.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="blob b4"></span>
+</div>
+
+<!-- ═══════════ 导航栏（子页：锚点回到首页） ═══════════ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="">
+      <img class="brand-logo" src="assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="">首页</a>
+      <a href="#features">功能</a>
+      <a href="faq.html">帮助中心</a>
+      <a href="manual.html" class="active">手册</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="../manual.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/manual.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/manual.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<section class="section" id="manual">
+  <div class="section-head reveal">
+    <h1>用户手册</h1>
+    <p>按真实界面与代码行为写成的完整说明书：从第一次启动到射频进阶，12 章带你把每一个开关都用明白。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜索章节，比如「信标」「网关」「离线地图」…" aria-label="搜索章节" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>没有匹配的章节，换个关键词试试。</p>
+  </div>
+
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="本章导航">
+      <div class="mn-title">本章导航</div>
+        <a href="#start">快速上手</a>
+        <a href="#ui">界面导览</a>
+        <a href="#link">连接与数据来源</a>
+        <a href="#beacon">位置信标</a>
+        <a href="#msg">消息与群聊</a>
+        <a href="#map">地图与显示</a>
+        <a href="#stations">台站与筛选</a>
+        <a href="#data">导出 · 备份 · 历史轨迹</a>
+        <a href="#widgets">桌面组件与短波</a>
+        <a href="#settings">设置参考</a>
+        <a href="#platform">平台差异</a>
+        <a href="#trouble">故障排查</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="start">
+    <h2>快速上手</h2>
+      <h3>安装</h3>
+      <p>到 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a> 下载 <b>Android APK</b> 或 <b>Windows 安装包</b>。自 v1.5.2 起 Android 使用正式 release 签名，直接覆盖安装即可；从更老的版本升级请先卸载再装。</p>
+      <h3>首次启动：七步完成基础配置</h3>
+      <p>第一次打开应用会进入设置向导，每一步都可以随时返回修改；之后也能在「设置 → 高级」里<b>重新运行向导</b>，当前设置不会丢失。</p><ol class="m-steps"><li><b>选择界面语言</b> —— 六种语言：简体中文 / 繁體中文 / English / 日本語 / Indonesia / Español。</li><li><b>用户协议与许可</b> —— 需勾选同意《用户协议》与 GPL-3.0 才能继续；注意 APRS 数据是公开信息，发出后可能被全球网络接收与转发。</li><li><b>欢迎页</b> —— 介绍四项核心能力：实时地图、GPS 定位上报、APRS 消息、接入 APRS-IS。</li><li><b>呼号与 SSID</b> —— 输入你的完整呼号（含 SSID 后缀，如 <code>BG7LZQ-3</code>），留空无法继续。</li><li><b>台站符号</b> —— 符号代表台站类型，会随每一条位置信标一起发送。</li><li><b>接收地区</b> —— 勾选要接收的国家/地区；<b>不勾选 = 接收全部</b>，不做限制。</li><li><b>APRS-IS 服务器与 Passcode</b> —— 服务器默认 <code>rotate.aprs2.net</code>，可保持默认；Passcode 务必填对，见下方提示。</li></ol>
+      <h3>Passcode 与后台运行</h3>
+      <div class="callout warn"><span class="co-ic">⚠️</span><div><p><b>Passcode 是 APRS-IS 的登录验证码</b>，用于把你的呼号验证到网络。留空或用默认 <code>-1</code> 只能<b>连接</b>，无法正常收发消息与群组 —— 请到 <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查询</a> 用完整呼号生成后填入。填错时主页顶部会出现黄色「未验证」横幅。</p></div></div><div class="callout info"><span class="co-ic">🔋</span><div><p><b>想让信标持续上报</b>，请到系统设置里允许 APRSlocus 后台运行、关闭省电优化、允许自启动；通知栏可一键「退出」应用。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="ui">
+    <h2>界面导览</h2>
+      <h3>五个页签</h3>
+      <p>底部导航共五项，顺序固定（桌面端会变成侧边栏）：</p><table class="doc-table"><thead><tr><th>页签</th><th>里面是什么</th></tr></thead><tbody><tr><td><b>地图</b></td><td>应用的底座：台站标记、轨迹、工具列、地图菜单都在这里</td></tr><tr><td><b>台站</b></td><td>收到的台站列表：筛选、搜索、详情、收藏、轨迹回放</td></tr><tr><td><b>消息</b></td><td>单聊与群聊的统一会话列表，带未读角标</td></tr><tr><td><b>数据包</b></td><td>原始报文流（等宽显示、可复制、可按类型筛选）与分级日志</td></tr><tr><td><b>设置</b></td><td>八个分组 + 荣誉墙、翻译、ADIF、主题、历史轨迹、备份等入口</td></tr></tbody></table>
+      <h3>面板、手势与返回键</h3>
+      <ul><li><b>地图永远在最底下</b>：点其它页签时面板浮起盖在地图上，再点「地图」收起面板 —— 地图就是底。</li><li><b>面板可上下拖动</b>：抓住顶部把手，或者直接拖底部导航条（它又高又宽，最好抓）。</li><li><b>返回键只在「地图」页签退出应用</b>；在其它页签先收起面板/返回上级，避免误退。</li><li><b>切页不销毁</b>：列表滚动位置、正在看的会话都会保留（页面是缓存的，不是每次重建）。</li></ul>
+  </section>
+  <section class="chapter reveal" id="link">
+    <h2>连接与数据来源</h2>
+      <h3>四条链路，收发分开</h3>
+      <p>「设置 → 连接」里的<b>数据来源</b>可多选 —— 勾中的链路都会<b>收</b>报文；但<b>发射只有一条</b>（右侧圆点标记的那条），同一个呼号从两条链路发出去会造成重复报文。</p><table class="doc-table"><thead><tr><th>来源</th><th>链路</th><th>收</th><th>发</th></tr></thead><tbody><tr><td><b>APRS-IS</b></td><td>互联网 TCP（默认 <code>rotate.aprs2.net:14580</code>）</td><td>✓</td><td>✓</td></tr><tr><td><b>TNC</b></td><td>蓝牙 SPP 或 USB 串口（OTG），KISS 协议，接电台</td><td>✓</td><td>✓</td></tr><tr><td><b>音频（声卡）</b></td><td>麦克风/耳机口接电台，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr><tr><td><b>PKWDWPL</b></td><td>蓝牙/串口读 Kenwood 电台的 <code>$PKWDWPL</code> 航点语句</td><td>✓</td><td><b>✗ 只读</b></td></tr></tbody></table><div class="callout info"><span class="co-ic">📶</span><div><p>APRS-IS 断线按 <b>8 → 16 → 32 → 60 秒</b>渐进重连；接收范围用 <code>r/纬度/经度/半径</code> 过滤，默认半径 <b>300 km</b>（最小 10 km），在「连接设置」里改，点「保存并应用」生效。</p></div></div>
+      <h3>网关（iGate）</h3>
+      <p>iGate 把<b>射频</b>收到的报文转送到 <b>APRS-IS</b>（自动加 <code>qAr</code>/<code>qAR</code> 与你的呼号标识来路）。启用条件：上面同时勾选 <b>APRS-IS</b> 和一条射频来源（TNC 或音频），缺一个界面会直接告诉你差什么。</p><ul><li><b>默认只做 RF → IS</b>：把听到的送上互联网。</li><li><b>双向网关</b>打开后会在射频上<b>真实发射</b>：只转「发给最近在射频上听到过的台站」的点对点消息，位置/天气等广播不转，避免占满信道。</li><li><b>环路防护</b>：报文带 <code>TCPIP*</code> 或已有 q 构造的（本来就是从互联网来的）绝不回送；同一帧 30 秒内只注入一次。</li></ul>
+      <h3>链路自检与排错顺序</h3>
+      <p>设备页里的<b>「链路自检」</b>把 TNC 与音频各做一次分层回路测试；TNC 侧还有<b>初始化串</b>与<b>发射自检</b>（写入一帧状态包，不含坐标，不会在 aprs.fi 上挪动你的位置）。</p><ol class="m-steps"><li><b>先看链路状态卡</b>：连接是否成立、收发计数是否在涨。</li><li><b>TNC「能收不能发」</b>：先发初始化串（很多模块上电停在命令模式，要先收到 <code>KISS ON</code> 才进 KISS）；再查串口线速（USB 串口与电台数据口必须同速，常见 9600/19200/38400/57600/115200；蓝牙 SPP 无波特率概念）。</li><li><b>音频「对方解不出」</b>：看发射电平 —— 峰值太低或削顶都不行；接电台用音频线（耳机口 → 电台数据/话筒口），别用扬声器对着麦克风。</li><li><b>网关数字不涨</b>：按界面提示逐条排除 —— 射频收到=0 说明报文没进来，先查上游电台音量/静噪/天线。</li></ol>
+  </section>
+  <section class="chapter reveal" id="beacon">
+    <h2>位置信标</h2>
+      <h3>上报节奏</h3>
+      <p>信标按 APRS 1.0 标准格式发送，自动附带高度、速度、航向、电量（可配置），台站符号随信标一起发。默认间隔 <b>60 秒</b>（APRS-IS 建议移动站不低于 60 秒，最短可到 5 秒）。</p><ul><li><b>速度分档</b>（最多 5 档）：速度越快上报越频繁；每档可自定义间隔与图标（留空 = 用「我的符号」）。间隔低于 60 秒会明显增加服务器负载，界面会提醒。</li><li><b>首页看得见节奏</b>：下次上报倒计时、已发信标次数都在主页上。</li><li><b>手动上报</b>：不想自动发时可关掉自动上报，按需手动点。</li></ul>
+      <h3>没有 GPS 怎么办</h3>
+      <ul><li><b>定位来源</b>可在设置里选：GPS / 网络粗定位。</li><li><b>手动定位</b>：输入经纬度或在地图上选点，用于信标上报与台站距离计算（室内、桌面演示常用）。</li><li><b>演示模式</b>：完全没有定位时也能体验完整界面。</li><li><b>自身防抖</b>：站着不动时标记不再原地哆嗦；GPS 新鲜时会丢弃网络粗定位点，避免位置「飞来飞去」。</li></ul>
+  </section>
+  <section class="chapter reveal" id="msg">
+    <h2>消息与群聊</h2>
+      <h3>单聊、群聊与长度红线</h3>
+      <p>单聊与群聊在<b>同一个会话列表</b>里，像聊天软件一样收发；带 ACK 确认、未读角标、顶部气泡提示，历史自动保存，兼容中文消息（UTF-8 / GBK 自动解码）。</p><div class="callout warn"><span class="co-ic">📏</span><div><p><b>两条长度红线：</b>APRS101 规范消息文本 <b>67 字符</b>（超了多数客户端仍能读，少数按规范截断/拒收）；APRS-IS 单行 <b>512 字节</b>（整包超了服务器可能直接丢弃，连报头都到不了对方）。界面会在发送前预检并提示。</p></div></div><ul><li><b>群聊用群呼号广播</b>：建群后系统自动生成群呼号并邀请成员，所有成员都能收到。</li><li><b>射频（TNC）模式下不支持群聊广播</b>，单条长度同样受 67 字符限制 —— 信道是共享资源。</li></ul>
+      <h3>双向翻译</h3>
+      <p>内置多引擎翻译，默认走免费接口、<b>无需任何密钥</b>。「翻译设置」里可选引擎与语言：</p><ul><li><b>收到的消息</b>可对照原文显示译文；</li><li><b>发送前</b>可把自己的输入先译成对方的语言；</li><li>可开自动翻译；译文会做有效性校验，挡掉「把原文原样返回」的假成功。</li></ul>
+  </section>
+  <section class="chapter reveal" id="map">
+    <h2>地图与显示</h2>
+      <h3>图源与坐标</h3>
+      <table class="doc-table"><thead><tr><th>图源</th><th>说明</th></tr></thead><tbody><tr><td>高德地图 / 高德卫星</td><td>国内定位无缝对齐（GCJ-02）</td></tr><tr><td><b>矢量地图</b></td><td>客户端实时渲染，数据量小、缩放清晰，<b>无需 API Key</b>，WGS-84</td></tr><tr><td>Carto 浅色 / 深色 / 航行者</td><td>在线瓦片</td></tr><tr><td>OSM 标准 / 人道</td><td>在线瓦片</td></tr><tr><td>OpenTopo 地形</td><td>等高线地形</td></tr><tr><td>Esri 街道 / 影像</td><td>在线瓦片</td></tr></tbody></table><div class="callout info"><span class="co-ic">🗺️</span><div><p>内置 <b>WGS-84 ↔ GCJ-02</b> 坐标转换：国内图源用 GCJ-02 对齐，切换图源不会把你的位置挪出 500 米。</p></div></div>
+      <h3>界面风格与离线地图</h3>
+      <ul><li><b>UI 2.0</b>：以地图为基底的新布局，「显示设置」里可随时切回经典布局；材质可在<b>磨砂玻璃</b>与<b>云母</b>之间切换。</li><li><b>主题</b>：颜色（17 个令牌）、图标、文字、背景图都能改，可导出成 JSON 分享；界面可缩放 85% ~ 130%。</li><li><b>离线地图</b>（设置 → 显示 → 离线地图）：<b>下载范围 = 当前所见那一屏</b>，断点续传、单区域上限 20 万张（约 3 GB），断网、无信号也能看；还有「仅离线模式」——一个网络请求都不发。Web 版不提供下载（浏览器没有稳定可写目录）。</li></ul>
+  </section>
+  <section class="chapter reveal" id="stations">
+    <h2>台站与筛选</h2>
+      <h3>先过滤，再看列表</h3>
+      <p>两层过滤决定你「收到什么」，都在连接相关设置里：</p><ul><li><b>范围过滤</b>：<code>r/纬度/经度/半径</code>，默认半径 <b>300 km</b>（最小 10 km）；改完点「保存并应用」生效。</li><li><b>接收偏好</b>：按国家/地区分组，或精确到某个呼号 —— 在范围之外也能收指定呼号。</li><li>向导里选的「接收地区」就是这里的国家/地区勾选，不勾 = 全部接收。</li></ul><p>列表侧再做<b>展示筛选</b>：状态（在线/移动/静止）、APRS 类型（车载/固定/中继/气象）、软件（APRSlocus）、设备类别与具体型号、收藏；搜索支持呼号/类型/备注/网格，台站多也不卡。</p>
+      <h3>设备识别与详情跳转</h3>
+      <ul><li><b>官方设备库</b>：接入 aprs.org 的 <code>aprsorg/aprs-deviceid</code>（tocalls），按报文目的呼号识别<b>厂商 + 型号 + 设备类别</b>（车台/手台/跟踪器/App/iGate/中继/气象站…），内置快照 + 联网自动更新。</li><li><b>同款 APRSlocus 台站</b>自动标记，可看到版本、电量等专属信息；FMO 台站自动识别。</li><li><b>详情页可跳转</b>：QRZ 呼号库、aprs.fi 看轨迹、APRS.tv。</li><li><b>符号</b>：37 个官方符号表、3571 个标准图标，官方 PNG 优先、Material 图标兜底。</li></ul>
+  </section>
+  <section class="chapter reveal" id="data">
+    <h2>导出 · 备份 · 历史轨迹</h2>
+      <h3>导出 ADIF</h3>
+      <p>设置里「<b>导出 ADIF</b>」一键导出通联日志 —— ADIF 是业余无线电通用的日志交换格式，频率可自定义，导出后可直接导入其它日志软件。</p>
+      <h3>备份与恢复</h3>
+      <ul><li><b>一个 JSON 装下</b>：设置配置（电台、信标、地图、筛选、数据来源、服务器等）与本地数据导出成一个文件；换机或重装后导入即可，导入后需重启应用生效。</li><li><b>白名单导入</b>：只认该分组白名单内的键，来路不明的 JSON 改不了内部设置；更高版本的备份会被拒绝并提示先升级。</li><li><b>平台差异</b>：Android 用系统文件选择器（导出到下载目录）；桌面端选 Documents；Web 版走剪贴板。读取上限 32 MB。</li></ul>
+      <h3>历史轨迹与回放</h3>
+      <ul><li><b>按天落盘</b>：每个本地日期一个文件（<code>tracklog/YYYY-MM-DD.json</code>），记录经纬度、速度、航向、海拔、精度，退出重进还在。</li><li><b>每天一屏</b>：总里程、平均与最高速度、移动时长、轨迹点数；可按天删除或一键清空。「移动时长」只累计确实在动的段 —— 中途停车吃饭的两小时不会被算进去。</li><li><b>点进某天可回放</b>：底图与主地图同一套（同缓存、同坐标纠偏），轨迹随播放生长、可拖进度、0.5× ~ 4× 倍速、可跟随视角；超过 45 秒的停顿自动快进。</li><li>它与地图上那条「我的轨迹」<b>刻意分开</b>：屏幕轨迹只服务本次显示，退出即失。</li></ul>
+  </section>
+  <section class="chapter reveal" id="widgets">
+    <h2>桌面组件与短波</h2>
+      <h3>三套桌面组件</h3>
+      <table class="doc-table"><thead><tr><th>组件</th><th>内容</th></tr></thead><tbody><tr><td><b>天气</b></td><td>天气主区（图标、温度、现象、今日高低温）+ 指标格 + 火腿建议；按主屏空间自动切换 4 档布局（主档 / 竖长 / 紧凑 / 单行）</td></tr><tr><td><b>短波</b></td><td>各波段「日 → 夜」条件色带，一眼看出现在该用哪一段</td></tr><tr><td><b>系统状态</b></td><td>链路、定位与计数的实时快照</td></tr></tbody></table><div class="callout info"><span class="co-ic">📲</span><div><p>组件<b>不自己联网</b>：应用把已计算、已本地化的快照单向推给原生渲染（和风天气密钥只在应用侧，不会外泄）。装好后先打开一次应用；升级后若空白，打开应用刷新即可。</p></div></div>
+      <h3>短波传播面板</h3>
+      <ul><li><b>数据来源</b>：<code>hamqsl.com</code>（N0NBH 整理，业余界事实标准），源站约每小时更新，应用缓存 <b>30 分钟</b>。</li><li><b>看什么</b>：SFI / Kp / A 指数、黑子、X 射线、太阳风，四个波段对的<b>日 / 夜</b>条件一目了然；另有 6m 波段预测。</li><li><b>诚实说明</b>：hamqsl 的条件是<b>全球/区域平均</b>，不是你所在地的实测值，出门前请结合本地情况判断。</li></ul>
+  </section>
+  <section class="chapter reveal" id="settings">
+    <h2>设置参考</h2>
+      <h3>八个分组</h3>
+      <p>「设置」页顶部是八个分组卡片，每张点进去是一个子页面：</p><table class="doc-table"><thead><tr><th>分组</th><th>副标题</th><th>主要内容</th></tr></thead><tbody><tr><td><b>电台</b></td><td>呼号 · SSID · 符号</td><td>身份、备注、符号与我的展示</td></tr><tr><td><b>定位上报</b></td><td>GPS · 信标 · 手动定位</td><td>定位来源、上报间隔、速度分档、手动定位</td></tr><tr><td><b>连接</b></td><td>服务器 · 过滤范围</td><td>APRS-IS 服务器与 Passcode、数据来源、过滤半径与接收偏好、网关</td></tr><tr><td><b>显示</b></td><td>坐标 · 主题</td><td>地图类型、坐标显示、UI 2.0、材质、离线地图、语言与缩放</td></tr><tr><td><b>设备</b></td><td>电台设备 · 待开放</td><td>连接你的电台设备（TNC / 音频 / PKWDWPL 绑定与自检）</td></tr><tr><td><b>数据</b></td><td>清除本地数据</td><td>本地数据管理与清除</td></tr><tr><td><b>高级</b></td><td>实验室 · 开发者</td><td>实验性功能、调试与测试、<b>重新运行设置向导</b></td></tr><tr><td><b>更新</b></td><td>检查新版本</td><td>GitHub / GitCode 双渠道，按平台分流，可装历史版本</td></tr></tbody></table>
+      <h3>分组之外的六个入口</h3>
+      <p>分组卡片下方还有一排直达入口：</p><ul><li><b>荣誉墙</b> —— 成就与徽章，每枚徽章都写明获得条件；可选一枚在主页常驻展示。</li><li><b>翻译设置</b> —— 翻译接口、目标语言与自动翻译开关。</li><li><b>导出 ADIF</b> —— 通联日志导出。</li><li><b>主题</b> —— 颜色/图标/文字/背景图与 JSON 导出分享。</li><li><b>历史轨迹</b> —— 按天的轨迹台账与回放。</li><li><b>备份与恢复</b> —— 设置与数据的 JSON 导出导入。</li></ul>
+  </section>
+  <section class="chapter reveal" id="platform">
+    <h2>平台差异</h2>
+      <h3>Android / Windows / 其它</h3>
+      <table class="doc-table"><thead><tr><th>能力</th><th>Android</th><th>Windows</th></tr></thead><tbody><tr><td>APRS-IS 收发</td><td>✓</td><td>✓</td></tr><tr><td>后台持续定位（前台服务）</td><td>✓</td><td>—（桌面无前台服务概念）</td></tr><tr><td>蓝牙 TNC</td><td>✓（需蓝牙权限）</td><td>—（用 USB 串口 COM 口）</td></tr><tr><td>USB 串口（OTG）</td><td>✓</td><td>✓（COM 口为独占设备，别被别的软件占着）</td></tr><tr><td>音频 AFSK</td><td>✓（需录音权限；发射时拉满音量并暂停麦克风）</td><td>✓</td></tr><tr><td>离线地图下载</td><td>✓</td><td>✓</td></tr><tr><td>桌面小组件</td><td>✓（3 套）</td><td>—（Android 独有）</td></tr><tr><td>WAV 文件模式</td><td colspan="2">所有平台可用：离线解码录音，或把报文导出成音频</td></tr></tbody></table><div class="callout warn"><span class="co-ic">⚠️</span><div><p>Web 版是「能看、能连」的轻量形态：不提供离线地图下载，备份走剪贴板；实时音频在不支持的平台会提示，仍可用 WAV 模式。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="trouble">
+    <h2>故障排查</h2>
+      <h3>先用这三个入口</h3>
+      <ol class="m-steps"><li><b>链路状态卡</b>（主页顶部）：连接状态、收发计数、服务器返回值 —— <code>unverified</code> 就是 Passcode 问题。</li><li><b>链路自检</b>（设备页）：TNC 协议回路、AFSK 调制解调回路，一键分层定位。</li><li><b>数据包页</b>：看原始报文有没有进来；能收到但不上图，多是筛选或坐标问题。</li></ol>
+      <h3>还是解决不了？</h3>
+      <ul><li><b>常见问题</b>：23 题按主题分组的完整问答 → <a href="faq.html">帮助中心</a></li><li><b>更新记录</b>：你遇到的可能已在新版本修掉 → <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a></li><li><b>反馈</b>：提 Issue 或进 QQ 交流群，附上「数据包页」的原始报文与链路日志最快定位 → <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">Issues</a></li></ul>
+  </section>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="APRSlocus">
+        <div>
+          <b>APRSlocus</b>
+          <span>APR Tracking &amp; Mapping</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="">首页</a>
+        <a href="#features">功能</a>
+        <a href="#faq">问答</a>
+        <a href="faq.html">帮助</a>
+        <a href="manual.html">手册</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="js/main.js"></script>
+<script>
+/* 手册专属：章节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+
+  // 侧栏高亮：当前可见章节
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

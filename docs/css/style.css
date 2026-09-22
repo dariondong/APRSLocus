@@ -1184,3 +1184,78 @@ body.loaded .hero-phone {
     box-shadow: -20px 0 60px rgba(0, 0, 0, .55);
   }
 }
+
+/* ── 22. 用户手册（docs/manual.html，三语共用） ──
+   左栏固定目录 + 右栏正文；移动端目录塌成顶部横排。 */
+#manual { padding-top: 132px; }
+.manual-tools { max-width: 1080px; margin: 0 auto 30px; display: grid; gap: 14px; }
+.manual-layout {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start;
+}
+.manual-nav {
+  position: sticky; top: 96px;
+  background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 14px; box-shadow: 0 14px 38px rgba(45, 70, 120, .1);
+  backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%);
+}
+.mn-title { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--text-faint); margin-bottom: 10px; padding: 0 8px; }
+.manual-nav a {
+  display: block; padding: 7px 8px; border-radius: 9px; font-size: 13.5px;
+  color: var(--text-dim); text-decoration: none; line-height: 1.45;
+  border-left: 2px solid transparent; transition: color .2s, background .2s, border-color .2s;
+}
+.manual-nav a:hover { color: var(--cyan); background: rgba(56, 189, 248, .08); }
+.manual-nav a.active { color: var(--cyan); background: rgba(56, 189, 248, .12); border-left-color: var(--cyan); font-weight: 700; }
+.manual-body { min-width: 0; }
+.chapter {
+  scroll-margin-top: 96px; margin-bottom: 46px;
+  background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 28px 30px; box-shadow: 0 14px 38px rgba(45, 70, 120, .1);
+  backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%);
+}
+.chapter h2 {
+  font-size: clamp(21px, 2.6vw, 26px); font-weight: 800; letter-spacing: -.02em;
+  margin-bottom: 4px; padding-bottom: 12px; border-bottom: 2px solid var(--line);
+}
+.chapter h3 { font-size: 17px; font-weight: 800; margin: 24px 0 10px; color: var(--cyan); }
+.chapter p { color: var(--text-dim); font-size: 15px; margin-bottom: 12px; }
+.chapter ul, .chapter ol.m-steps { margin: 0 0 14px; padding-left: 22px; color: var(--text-dim); font-size: 14.5px; }
+.chapter li { margin-bottom: 7px; line-height: 1.75; }
+.chapter li::marker { color: var(--cyan); font-weight: 700; }
+.chapter b { color: var(--text); }
+.chapter a { color: var(--cyan); border-bottom: 1px dashed rgba(2, 132, 199, .4); }
+.chapter a:hover { border-bottom-style: solid; }
+.chapter code { white-space: nowrap; }
+/* 编号步骤：底色条目，比裸 ol 更像「操作步骤」 */
+ol.m-steps { list-style: decimal; }
+ol.m-steps > li {
+  background: rgba(56, 189, 248, .06); border: 1px solid rgba(56, 189, 248, .18);
+  border-radius: 10px; padding: 9px 13px; margin-bottom: 9px;
+}
+/* 表格：横向可滚，小屏不撑破 */
+.doc-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 6px 0 16px; display: block; overflow-x: auto; }
+.doc-table th, .doc-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+.doc-table th { background: rgba(56, 189, 248, .1); color: var(--text); font-weight: 700; white-space: nowrap; }
+.doc-table td { color: var(--text-dim); }
+.doc-table tr:nth-child(even) td { background: rgba(56, 189, 248, .04); }
+/* 提示条：info=蓝 / warn=琥珀 */
+.callout {
+  display: flex; gap: 12px; align-items: flex-start;
+  border-radius: 12px; padding: 13px 16px; margin: 6px 0 16px; border: 1px solid;
+}
+.callout p { margin: 0; font-size: 14px; }
+.callout .co-ic { font-size: 17px; line-height: 1.5; flex-shrink: 0; }
+.callout.info { background: rgba(56, 189, 248, .08); border-color: rgba(56, 189, 248, .35); }
+.callout.info p { color: var(--text-dim); }
+.callout.warn { background: rgba(217, 119, 6, .08); border-color: rgba(217, 119, 6, .4); }
+.callout.warn p { color: var(--text-dim); }
+@media (max-width: 900px) {
+  .manual-layout { grid-template-columns: 1fr; gap: 22px; }
+  /* 移动端：目录变成顶部可横滑的胶囊排 */
+  .manual-nav { position: static; display: flex; gap: 8px; overflow-x: auto; padding: 12px; -webkit-overflow-scrolling: touch; }
+  .mn-title { display: none; }
+  .manual-nav a { flex: 0 0 auto; white-space: nowrap; border-left: 0; border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; }
+  .manual-nav a.active { border-color: var(--cyan); }
+  .chapter { padding: 22px 18px; }
+}

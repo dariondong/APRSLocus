@@ -101,6 +101,30 @@ def main():
             n = s.count(t)
             chk('%s : %s' % (os.path.basename(f), t), (n > 0) == want, 'count=%d' % n)
 
+    print('[manual x3]')
+    for f in ['docs/manual.html', 'docs/zh-TW/manual.html', 'docs/en/manual.html']:
+        s = read(f)
+        p = P()
+        p.feed(s)
+        print(' ' + f)
+        chk('html structure', not p.err and not p.stack, p.err[:1])
+        chk('12 chapters', s.count('<section class="chapter') == 12)
+        chk('sidebar toc (12 links)', s.count('manual-nav') >= 1)
+        chk('theme + skip + canonical',
+            "localStorage.getItem('theme')" in s and 'skip-link' in s
+            and 'rel="canonical"' in s)
+        chk('ld TechArticle', '"@type": "TechArticle"' in s)
+        chk('m-steps not steps', 'class="m-steps"' in s and 'class="steps"' not in s)
+        chk('no leftover cond-expr', 'if lang ==' not in s)
+
+    print('[nav cross-links]')
+    for f in ['docs/index.html', 'docs/zh-TW/index.html', 'docs/en/index.html',
+              'docs/faq.html', 'docs/zh-TW/faq.html', 'docs/en/faq.html',
+              'docs/manual.html', 'docs/zh-TW/manual.html', 'docs/en/manual.html']:
+        chk('manual link in ' + os.path.basename(os.path.dirname(f)) + '/' + os.path.basename(f)
+            if '/' in f else 'manual link in ' + f,
+            'manual.html' in read(f))
+
     print('[seo]')
     ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
     locs = [u.find('s:loc', ns).text
