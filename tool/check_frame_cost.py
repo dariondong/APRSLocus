@@ -171,6 +171,17 @@ def main() -> int:
                               '但 MaterialAppBar 没写 `overWallpaper: false` —— '
                               '顶栏会变成「半透明但不模糊」')
 
+    # ⑪ 面板裁口必须是「底边圆角」的 ClipRRect，不是直角 ClipRect
+    #
+    # 面板几何固定、靠外层裁口裁出可视区之后，这个裁口就是用户半开时看到的
+    # 「卡片下沿」：直角裁口会把面板下面切成直角（用户反馈过）。
+    # 改回 ClipRect 不影响编译与测试，只在真机半开面板时看得出来，所以钉在这里。
+    shell_code = code_only(shell)
+    if 'bottom: Radius.circular(24),' not in shell_code:
+        errors.append('lib/shell2.dart 面板裁口丢了底边圆角（bottom: Radius.circular(24)）'
+                      '—— 直角裁口会把面板下面切成直角。注意内层裁内容的 ClipRect 不用'
+                      '圆角（圆角由外层裁口负责），这里只盯着外层 ClipRRect 的那个参数')
+
     if errors:
         print('帧成本检查失败：')
         for e in errors:

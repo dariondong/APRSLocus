@@ -381,7 +381,15 @@ class _HomeShell2State extends State<HomeShell2>
                       bottom: navSpace + _kGutter,
                       child: SizedBox(
                         height: sheetH, // 可视高度（拖动/动画时在变）
-                        child: ClipRect(
+                        child: ClipRRect(
+                          // 裁口的**底边要圆角**（与面板自身同为 24）：这个裁口就是用户
+                          // 半开时看到的「卡片下沿」——直角裁口会把面板下面切成直角
+                          // （用户反馈过）；圆角后任意高度都像一张完整的圆角卡。全开时
+                          // `sheetH == maxSheetH`，裁口恰好落在面板自身的圆角上，两个
+                          // 圆角重合，不会出现「圆角套圆角」。
+                          borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(24),
+                          ),
                           // 面板**自身固定为最高档高度**，只裁出下面 `sheetH` 可见。
                           //
                           // ── 为什么这样排（这是「拖起来卡 + 一拖就变白」的根因）──
