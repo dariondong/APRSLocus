@@ -58,8 +58,8 @@
 
 惯例（以现有数据为准）：**追加称号时一般保持原 `primary` 不变**，不抢原主展示。
 
-> 参考：`[earlyMember, jadeGift]` 组合共 5 人，其中 4 人保持 `primary = earlyMember`
-> （BA4JLD / BG7ORC / BG9KAG / BA4IUD），仅 BA3MDC 用 `jadeGift`。
+> 参考：`[earlyMember, jadeGift]` 组合共 6 人，其中 5 人保持 `primary = earlyMember`
+> （BA4JLD / BG9KAG / BA4IUD / BD1FEH / BG0AVI），仅 BA3MDC 用 `jadeGift`。
 
 ### `role` 要不要跟着改
 
