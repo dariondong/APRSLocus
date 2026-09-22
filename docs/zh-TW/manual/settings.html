@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>設定參考 — APRSlocus</title>
+<meta name="description" content="設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="設定參考 — APRSlocus">
+<meta property="og:description" content="設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。">
+<meta property="og:url" content="https://aprslocus.theez.top/zh-TW/manual/settings.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="設定參考 — APRSlocus">
+<meta name="twitter:description" content="設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。">
+<link rel="canonical" href="https://aprslocus.theez.top/zh-TW/manual/settings.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/settings.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/settings.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "設定參考 — APRSlocus",
+  "description": "設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。",
+  "url": "https://aprslocus.theez.top/zh-TW/manual/settings.html",
+  "inLanguage": "zh-TW",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/zh-TW/manual/settings.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手冊",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "設定參考 — APRSlocus",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/settings.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首頁</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">幫助中心</a>
+      <a href="index.html" class="active">手冊</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式" data-label-dark="切換淺色模式" data-label-light="切換深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/settings.html" hreflang="zh-Hans">简中</a><a class="lang-switch active" href="settings.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../../en/manual/settings.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要內容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手冊">
+    <a href="../">首頁</a><span aria-hidden="true">/</span>
+    <a href="index.html">手冊</a><span aria-hidden="true">/</span>
+    <span aria-current="page">設定參考</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>設定參考</h1>
+    <p>設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手冊目錄">
+      <div class="mn-title">手冊目錄</div>
+        <a href="index.html">手冊首頁</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">介面導覽</a>
+        <a href="connections.html">連線與資料來源</a>
+        <a href="beacon.html">位置信標</a>
+        <a href="messaging.html">訊息與群組</a>
+        <a href="maps.html">地圖與顯示</a>
+        <a href="stations.html">臺站與篩選</a>
+        <a href="data.html">匯出 · 備份 · 軌跡</a>
+        <a href="widgets.html">桌面小組件與短波</a>
+        <a href="settings.html" class="active">設定參考</a>
+        <a href="platform.html">平台差異</a>
+        <a href="troubleshooting.html">故障排除</a>
+      <div class="mn-title">本頁目錄</div>
+        <a href="#g0">設定</a>
+        <a href="#g1">電臺</a>
+        <a href="#g2">定位上報</a>
+        <a href="#g3">連線</a>
+        <a href="#g4">顯示</a>
+        <a href="#g5">資料</a>
+        <a href="#g6">高階</a>
+        <a href="#g7">裝置</a>
+        <a href="#g8">TNC 裝置與參數</a>
+        <a href="#g9">音訊（音效卡 TNC）</a>
+        <a href="#g10">PKWDWPL 裝置</a>
+        <a href="#g11">翻譯設定</a>
+        <a href="#g12">主題</a>
+        <a href="#g13">備份與還原</a>
+        <a href="#g14">離線地圖</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="g0">
+    <h2>設定</h2>
+      <h3 id="g0">設定</h3>
+      <p class="m-grp-sub">設定電臺、定位與連線</p>
+      <p>設定頁頂部是 <b>8 張分組卡</b>（點進去是子頁面），下面還有 6 個直達入口。本頁把每個子頁裡的設定項逐條列出：名稱、控件、預設值、說明 —— 預設值直接取自程式碼，改了程式碼重新產生即對齊。</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>電臺</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>呼號 · SSID · 符號</td></tr>
+<tr><td><b>定位上報</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>GPS · 信標 · 手動定位</td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>伺服器 · 篩選範圍</td></tr>
+<tr><td><b>顯示</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>座標 · 主題</td></tr>
+<tr><td><b>裝置</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>電台裝置 · 待開放</td></tr>
+<tr><td><b>資料</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>清除本機資料</td></tr>
+<tr><td><b>高階</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>實驗室 · 開發者</td></tr>
+<tr><td><b>更新</b></td><td><span class="m-kind">分組卡</span></td><td class="m-def">—</td><td>檢查新版本</td></tr>
+<tr><td><b>榮譽牆</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>我的徽章與成就</td></tr>
+<tr><td><b>翻譯設定</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>翻譯介面、語言與自動翻譯</td></tr>
+<tr><td><b>匯出 ADIF</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>會話匯出為日誌檔案</td></tr>
+<tr><td><b>主題</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>自訂顏色、圖示與文字</td></tr>
+<tr><td><b>歷史軌跡</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>按天記錄自己的速度與里程，儲存在本機</td></tr>
+<tr><td><b>備份與還原</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td>打包設定與資料為 JSON 檔</td></tr>
+<tr><td><b>關於</b></td><td><span class="m-kind">直達入口</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g1">
+    <h2>電臺</h2>
+      <h3 id="g1">電臺</h3>
+      <p class="m-grp-sub">呼號 · SSID · 符號</p>
+      <p>身份是所有封包的根：呼號必須與你的執照一致，SSID 決定臺站類型（-9 車載、-7 手持常見）。</p>
+      <div class="m-sub">
+        <h4>電臺身份</h4>
+        <p class="m-grp-sub">呼號、SSID 與備註</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>呼號</b> <code class="m-field">myCall</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>BV2AAA</code></td><td>APRS 呼號，如 BV2AAA</td></tr>
+<tr><td><b>臺站備註</b> <code class="m-field">myComment</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>信標傳送時的備註內容</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>顯示資訊</h4>
+        <p class="m-grp-sub">我的符號與目前定位</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>網格</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>我的位置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g2">
+    <h2>定位上報</h2>
+      <h3 id="g2">定位上報</h3>
+      <p class="m-grp-sub">GPS · 信標 · 手動定位</p>
+      <p>三件事：用什麼定位（GPS / 網路 / 手動）、多久報一次（預設 60 秒、最短 5 秒）、報什麼（速度/方位角/電量可關）。</p>
+      <div class="m-sub">
+        <h4>定位來源</h4>
+        <p class="m-grp-sub">選擇座標來源</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>定位<span class="m-opts">模擬位置</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">選項卡</span></td><td class="m-def">關</td><td>使用裝置定位 / 模擬位置：手動輸入座標</td></tr>
+<tr><td><b>感測器輔助定位</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>用加速度計判斷是否真的在移動、用指南針補正低速航向，讓軌跡打點更準（僅 Android 生效）。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>定位模式</h4>
+        <p class="m-grp-sub">選擇定位方式</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>純 GPS<span class="m-opts">GPS + 網路</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">選項卡</span></td><td class="m-def"><code>gps_network</code></td><td>僅衛星定位，更省電 / GPS + 網路：網路僅作兜底（GPS 停更時），粗定位不寫軌跡</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>信標上報</h4>
+        <p class="m-grp-sub">傳送間隔與上報內容</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>啟用位置信標</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>上報間隔(秒)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>60</code></td><td>位置信標的傳送間隔，至少 5 秒</td></tr>
+<tr><td><b>智慧信標(依速度分檔)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>速度</b> <code class="m-field">beaconIncludeSpeed</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>方位角</b> <code class="m-field">beaconIncludeCourse</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>手機電量</b> <code class="m-field">beaconIncludeBattery</code></td><td><span class="m-kind">小開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>定位狀態</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>信標傳送次數</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>下次上報</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>射頻來源的自動發射需要明確開啟「射頻信標」。在此之前不會自動發射位置（倒數也不會走動）。</td></tr>
+<tr><td><b>開啟射頻信標</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重新定位</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g3">
+    <h2>連線</h2>
+      <h3 id="g3">連線</h3>
+      <p class="m-grp-sub">伺服器 · 篩選範圍</p>
+      <p>APRS-IS 伺服器與 Passcode、資料來源複選、接收範圍（預設 300 km）、資料上限。改完點「儲存並套用」才生效。</p>
+      <div class="m-sub">
+        <h4>APRS-IS 連線</h4>
+        <p class="m-grp-sub">連線狀態與資訊</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>伺服器</b> <code class="m-field">server</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>rotate.aprs2.net</code></td><td></td></tr>
+<tr><td><b>埠</b> <code class="m-field">port</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>14580</code></td><td></td></tr>
+<tr><td><b>WebSocket URL(可選)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS 連線</h4>
+        <p class="m-grp-sub">透過藍牙或串列的 TNC 與電台直接收發</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>已綁定裝置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>允許射頻信標</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>TNC 模式下不使用伺服器與過濾器，相關設定已停用</td></tr>
+<tr><td><b>KISS 參數</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS 連線</h4>
+        <p class="m-grp-sub">用麥克風/揚聲器或音效卡線接電台，收發 AFSK 1200</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>音訊後端</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>取樣率</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>允許射頻信標</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>音訊模式下不使用伺服器、過濾器與 KISS 參數</td></tr>
+<tr><td><b>音訊（音效卡 TNC）</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS 連線</h4>
+        <p class="m-grp-sub">用藍牙/串列埠讀取電台輸出的 Kenwood  航點語句（只收不發）</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>已綁定裝置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>PKWDWPL（Kenwood 航點）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>PKWDWPL 是**唯讀**鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）</td></tr>
+<tr><td><b>PKWDWPL 裝置</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>接收範圍篩選</h4>
+        <p class="m-grp-sub">過濾中心與接收半徑</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>只接收設定範圍內的臺站資料包</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>篩選中心跟隨我的位置<span class="m-opts">儲存並套用篩選</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>篩選半徑(km)</b> <code class="m-field">filterRadius</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>接收半徑（km），點「儲存並套用」生效</td></tr>
+<tr><td><b>用我的位置作為篩選中心</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>資料上限</h4>
+        <p class="m-grp-sub">本機保留的資料量</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>最大臺站數</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>100000</code></td><td>記憶體中保留的最大臺站數量（預設不限制，可設更大值）</td></tr>
+<tr><td><b>資料包保留條數</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>2000</code></td><td>資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）</td></tr>
+<tr><td><b>軌跡點數上限</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）</td></tr>
+<tr><td><b>在線判定時長（分鐘）</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>5</code></td><td>台站最後上報超過該時長即視為離線（預設 5 分鐘）</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>接收呼號篩選</h4>
+        <p class="m-grp-sub">按國家/地區或呼號接收</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>除範圍篩選外，按國家/地區分組或精確呼號接收臺站</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g4">
+    <h2>顯示</h2>
+      <h3 id="g4">顯示</h3>
+      <p class="m-grp-sub">座標 · 主題</p>
+      <p>深色模式、天氣小組件、單位與網格在這裡；地圖類型與離線地圖在地圖選單與對應子頁。</p>
+      <div class="m-sub">
+        <h4>全部</h4>
+        <p class="m-grp-sub">主題、語言與座標顯示</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>深色模式</b> <code class="m-field">darkMode</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>天氣元件</b> <code class="m-field">weatherEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>目前主題已固定主色，請到「主題」頁修改</td></tr>
+<tr><td><b>單位</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>網格</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>地圖</h4>
+        <p class="m-grp-sub">地圖類型與顯示</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>離線地圖</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>材質只作用於應用程式自己的表面（卡片、頂欄、導覽列、彈窗、地圖浮層），不是系統視窗的透明。模糊要佔顯卡：舊機型上可能不如關閉時順暢。 / 先把地圖圖磚下載到本機，沒有網路時也能看地圖</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g5">
+    <h2>資料</h2>
+      <h3 id="g5">資料</h3>
+      <p class="m-grp-sub">清除本機資料</p>
+      <p>唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。</p>
+      <div class="m-sub">
+        <h4>聊天記錄</h4>
+        <p class="m-grp-sub">聯絡人與聊天資料</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>聊天記錄</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>清空全部聊天記錄</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>清除所有資料</h4>
+        <p class="m-grp-sub">刪除本機記錄</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>台站列表</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>聊天記錄</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>群組聊天</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>日誌</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>資料包</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>確認清除所有資料</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>離線地圖</h4>
+        <p class="m-grp-sub">瀏覽地圖時自動快取，也可手動下載區域</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>離線區域</b></td><td><span class="m-kind">入口</span></td><td class="m-def">—</td><td>已下載的區域可在地圖上離線檢視</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g6">
+    <h2>高階</h2>
+      <h3 id="g6">高階</h3>
+      <p class="m-grp-sub">實驗室 · 開發者</p>
+      <p>橫螢幕開關、示範資料（模擬臺站/封包）、收發計數與重新執行引導都在這裡。</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>允許手機橫屏顯示</b> <code class="m-field">labLandscape</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>實驗室功能仍在測試中，可能影響使用體驗。預設鎖定直向顯示，開啟後支援橫向顯示。</td></tr>
+<tr><td><b>啟用模擬資料（示範臺站/資料包）</b> <code class="m-field">devMode</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>收包 / 發包</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>臺站數量</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g7">
+    <h2>裝置</h2>
+      <h3 id="g7">裝置</h3>
+      <p class="m-grp-sub">資料來源、鏈路狀態與自檢</p>
+      <p>裝置總覽 = 當前鏈路 + 網關狀態 + 三個子頁入口（TNC / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。</p>
+      <div class="m-sub">
+        <h4>閘道（iGate）</h4>
+        <p class="m-grp-sub">把射頻收到的報文送上 APRS-IS</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>啟用閘道</b> <code class="m-field">igateEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>雙向閘道（向射頻轉遞訊息）</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。</td></tr>
+<tr><td><b>射頻收到（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>已轉遞 → APRS-IS（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>已轉遞 → 射頻（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重複丟棄（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>迴路拒收（條）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>清空統計</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>允許射頻信標</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>目前鏈路</h4>
+        <p class="m-grp-sub">唯讀摘要 · 改參數請進對應子頁</p>
+      </div>
+      <div class="m-sub">
+        <h4>裝置與參數</h4>
+        <p class="m-grp-sub">每條鏈路一個子頁，各管各的參數</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>TNC 裝置與參數</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>藍牙/序列綁定、初始化串、KISS 參數與發射自檢</td></tr>
+<tr><td><b>音訊（音效卡 TNC）</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>用音效卡收發 AFSK 1200 報文</td></tr>
+<tr><td><b>PKWDWPL 裝置</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>暫無日誌 / 綁定電台連接埠 · 檢視航點接收狀態</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g8">
+    <h2>TNC 裝置與參數</h2>
+      <h3 id="g8">TNC 裝置與參數</h3>
+      <p class="m-grp-sub">藍牙/序列綁定、初始化串、KISS 參數與發射自檢</p>
+      <p>接藍牙/USB TNC 的全部參數：綁定、初始化字串、線速、KISS 定時參數、中繼路徑、發射自檢。</p>
+      <div class="m-sub">
+        <h4>藍牙 TNC</h4>
+        <p class="m-grp-sub">綁定並連接電台端的 TNC</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>兩條鏈路綁定了同一臺裝置</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>已綁定裝置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）</td></tr>
+<tr><td><b>掃描裝置（藍牙已配對 + USB 串列）</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>斷開連線<span class="m-opts">重啟鏈路</span></b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>解除綁定</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>TNC 初始化字串</h4>
+        <p class="m-grp-sub">連線後逐行傳送（等價 APRSdroid 的 kiss.init）</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>若 TNC「能收不能發」，先在這裡試：很多藍牙/序列 TNC 模組上電停在命令模式，必須先收到 KISS ON、RESTART 等指令才進入 KISS 轉發狀態。每行一條命令（傳送時自動補 CRLF）。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>行間隔 (ms)</b> <code class="m-field">initDelayMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>每行命令之間的等待時間。模組處理命令需要時間，太短會丟命令</td></tr>
+<tr><td><b>串列埠線速 (bd)</b> <code class="m-field">serialBaud</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>9600</code></td><td>USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。</td></tr>
+<tr><td><b>立即傳送初始化字串</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>未填寫初始化字串</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>KISS 參數</h4>
+        <p class="m-grp-sub">直接下發到 TNC 的鏈路層參數</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>連線後下發 KISS 參數</b> <code class="m-field">pushKissParams</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>預設關閉（與 APRSdroid 一致）。打開後連線時會把上面的參數推給 TNC，覆蓋它自己的設定 —— 參數不合適可能讓它一直退避而不發射，所以只在需要統一管理時打開。</td></tr>
+<tr><td><b>發射延時 (ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>KISS TXDELAY，單位 10ms。發射前留給自己 PTT 建立的時間</td></tr>
+<tr><td><b>發射尾音 (ms)</b> <code class="m-field">txTailMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>50</code></td><td>KISS TXTAIL，單位 10ms。某些電台需要尾部保持才能收全</td></tr>
+<tr><td><b>持續度 P</b> <code class="m-field">persistence</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>63</code></td><td>KISS PERSISTENCE，0-255。越小越禮讓，共用信道時能減少碰撞</td></tr>
+<tr><td><b>時隙 (ms)</b> <code class="m-field">slotTimeMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>100</code></td><td>KISS SLOTTIME，單位 10ms。與持續度共同決定信道競爭節奏</td></tr>
+<tr><td><b>全雙工</b> <code class="m-field">fullDuplex</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td></td></tr>
+<tr><td><b>信道 / KISS 埠</b> <code class="m-field">channel</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>0</code></td><td>多信道 TNC 才有多埠，單信道電台保持 0</td></tr>
+<tr><td><b>幀長上限 (位元組)</b> <code class="m-field">maxFrame</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>330</code></td><td>超過此長度的報文不會發出（1200bd 下 AX.25 單幀約 330 位元組）</td></tr>
+<tr><td><b>射頻中繼路徑</b> <code class="m-field">path</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定</td></tr>
+<tr><td><b>廠商命令碼</b> <code class="m-field">hardwareCmd</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>-1</code></td><td>KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發</td></tr>
+<tr><td><b>參數值</b> <code class="m-field">hardwareVal</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>0</code></td><td>KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發</td></tr>
+<tr><td><b>下發參數</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>回到 TNC 命令模式</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>請先連接 TNC</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>回到 TNC 命令模式</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>發射自檢</h4>
+        <p class="m-grp-sub">向 TNC 寫一幀測試包，判斷問題在鏈路還是 TNC</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>發的是一幀狀態包（不含座標），不會把台站在 aprs.fi 上挪位置。若這裡顯示「已寫入」卻仍然不發射，問題在 TNC 側：先試初始化字串（KISS ON / RESTART），再檢查 TxDelay 與通道佔用。</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>寫入測試幀</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>射頻（TNC）模式</h4>
+        <p class="m-grp-sub">射頻信道是共享資源，訊息能力相應受限</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>允許射頻信標</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>打開後才會在射頻上定時發射位置。發射需以自己的呼號並在執照範圍內操作</td></tr>
+<tr><td><b>自動回覆 ACK</b> <code class="m-field">autoAck</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>關閉後不回覆收到的訊息回執，可減少射頻佔用</td></tr>
+<tr><td><b>斷開後自動重連</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g9">
+    <h2>音訊（音效卡 TNC）</h2>
+      <h3 id="g9">音訊（音效卡 TNC）</h3>
+      <p class="m-grp-sub">用音效卡收發 AFSK 1200 報文</p>
+      <p>把音效卡當 TNC：取樣率/鮑率/音調、發射電平與 CSMA 等待、WAV 檔案模式（離線解碼錄音）。</p>
+      <div class="m-sub">
+        <h4>音訊擷取</h4>
+        <p class="m-grp-sub">從麥克風/線路輸入解調 AFSK 1200</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>音訊後端</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線<span class="m-opts">停止擷取 · 重啟音訊鏈路</span></b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>解調鎖定</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>解碼中止 … 次（雜訊/失步）</td></tr>
+<tr><td><b>收 … 幀</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>目前平台不支援即時音訊（可用 WAV 檔案模式）</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>音訊（音效卡 TNC）</h4>
+        <p class="m-grp-sub">用音效卡收發 AFSK 1200 報文</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>取樣率</b> <code class="m-field">sampleRate</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>22050</code></td><td>22050Hz 是音效卡 TNC 常用值；裝置不支援時改用 44100/48000。修改會重啟擷取</td></tr>
+<tr><td><b>位元率</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300</td></tr>
+<tr><td><b>標號頻率 (Hz)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>Bell 202 規定標號 1200Hz、空號 2200Hz；只有 ±幾 Hz 的容差，不要隨意改</td></tr>
+<tr><td><b>空號頻率 (Hz)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>空號音調。與標號音調一起決定 FSK 頻偏（標準為 1000Hz）</td></tr>
+<tr><td><b>發射前導 (ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>300</code></td><td>發射前導時長：給對端解調器鎖定時間、給電台 PTT 建立時間</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>音訊發射</h4>
+        <p class="m-grp-sub">發射前先聽通道，避免與其他台站碰撞</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>允許發射</b> <code class="m-field">txEnabled</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>關閉後只接收不發射（只想聽信標時最省心）</td></tr>
+<tr><td><b>允許射頻信標</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>打開後才會在射頻上定時發射位置。發射需以自己的呼號並在執照範圍內操作</td></tr>
+<tr><td><b>發射前等待通道空閒 (ms)</b> <code class="m-field">csmaWaitMs</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>3000</code></td><td>偵測到通道佔用時最多等待多久；0 = 不等待直接發射</td></tr>
+<tr><td><b>射頻中繼路徑</b> <code class="m-field">path</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定</td></tr>
+<tr><td><b>幀長上限 (位元組)</b> <code class="m-field">maxFrame</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>330</code></td><td>超過此長度的報文不會發出（1200bd 下 AX.25 單幀約 330 位元組）</td></tr>
+<tr><td><b>發射電平</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出</td></tr>
+<tr><td><b>自動回覆 ACK</b> <code class="m-field">autoAck</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>關閉後不回覆收到的訊息回執，可減少射頻佔用</td></tr>
+<tr><td><b>斷開後自動重連</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td></td></tr>
+<tr><td><b>停止發射</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>WAV 檔案模式</h4>
+        <p class="m-grp-sub">離線解碼一段錄音，或把報文匯出成音訊檔案</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>待匯出報文 (TNC2)</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>格式 SRC&gt;DEST,PATH:info，例如 BG7LZQ-9&gt;APALOC:&gt;TEST</td></tr>
+<tr><td><b>檔案路徑</b></td><td><span class="m-kind">輸入框</span></td><td class="m-def">—</td><td>離線解碼一段錄音，或把報文匯出成音訊檔案</td></tr>
+<tr><td><b>選擇 WAV 檔案</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>匯出到下載目錄</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>複製路徑</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>路徑已複製</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>鏈路日誌</h4>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>暫無日誌</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g10">
+    <h2>PKWDWPL 裝置</h2>
+      <h3 id="g10">PKWDWPL 裝置</h3>
+      <p class="m-grp-sub">綁定電台連接埠 · 檢視航點接收狀態</p>
+      <p>Kenwood 航點唯讀鏈路：綁定與狀態、收到的航點計數、嚴格校驗和（預設關，只標註不丟棄）。</p>
+      <div class="m-sub">
+        <h4>裝置綁定與狀態</h4>
+        <p class="m-grp-sub">選擇輸出  語句的那個串列埠 / 藍牙埠</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>兩條鏈路綁定了同一臺裝置</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>已綁定裝置</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>連線</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>PKWDWPL（Kenwood 航點）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）</td></tr>
+<tr><td><b>掃描裝置（藍牙已配對 + USB 串列）</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>斷開連線<span class="m-opts">重啟鏈路</span></b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>解除綁定</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>航點接收</h4>
+        <p class="m-grp-sub">綁定電台連接埠 · 檢視航點接收狀態</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>已收航點 … 條</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>丟棄/無效語句</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>校驗和不符</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>其它 NMEA 語句（已忽略）</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>帧缓冲溢出 $… 字节</td></tr>
+<tr><td><b>嚴格校驗和（不符即丟棄）</b> <code class="m-field">strictChecksum</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查</td></tr>
+<tr><td><b>斷開後自動重連</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>暫無 PKWDWPL 日誌</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g11">
+    <h2>翻譯設定</h2>
+      <h3 id="g11">翻譯設定</h3>
+      <p class="m-grp-sub">翻譯介面、語言與自動翻譯</p>
+      <p>目標語言、引擎（預設 auto 免金鑰）、各引擎的金鑰/實例位址、測試翻譯。</p>
+      <div class="m-sub">
+        <h4>翻譯為</h4>
+        <p class="m-grp-sub">翻譯介面、語言與自動翻譯</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>翻譯為</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>翻譯介面</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>翻譯會把訊息文字傳送到你選擇的第三方介面，請自行評估隱私</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>翻譯介面</h4>
+      </div>
+      <div class="m-sub">
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>依次嘗試多個免密鑰介面，取第一個真正翻譯成功的結果</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>本次實際使用</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td>開源、可自建最可靠；公共實例現已要求密鑰且常不支援中文</td></tr>
+<tr><td><b>實例網址</b> <code class="m-field">libreUrl</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>https://libretranslate.com</code></td><td></td></tr>
+<tr><td><b>實例 API Key（公共實例需要，自建可留空）</b> <code class="m-field">libreApiKey</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td></td></tr>
+<tr><td><b>Google API Key</b> <code class="m-field">googleApiKey</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>Google Cloud Translation v2 的 API Key，需自行到 Google Cloud 主控台申請</td></tr>
+<tr><td><b>百度 App ID</b> <code class="m-field">baiduAppId</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td></td></tr>
+<tr><td><b>百度密鑰</b> <code class="m-field">baiduKey</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>在百度翻譯開放平台申請「通用文本翻譯」，密鑰只保存在本機</td></tr>
+<tr><td><b>介面網址</b> <code class="m-field">customUrl</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td></td></tr>
+<tr><td><b>請求標頭 (JSON)</b> <code class="m-field">customHeaders</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>{"Content-Type": "application/json"}</code></td><td></td></tr>
+<tr><td><b>請求主體範本</b> <code class="m-field">customBody</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def"><code>{"q": "{text}", "source": "{from}", "target": "{to}"}</code></td><td>可用佔位符：… 原文、… 來源語言、… 目標語言。選擇 GET 時忽略此項</td></tr>
+<tr><td><b>結果欄位路徑</b> <code class="m-field">customResultPath</code></td><td><span class="m-kind">輸入框</span></td><td class="m-def">（空）</td><td>用點號表示層級，陣列用序號，如 data.translations.0.translatedText</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>測試翻譯</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>測試翻譯</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>翻譯</b></td><td><span class="m-kind">唯讀狀態</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g12">
+    <h2>主題</h2>
+      <h3 id="g12">主題</h3>
+      <p class="m-grp-sub">把介面配色、圖示與常用文案改成你自己的</p>
+      <p>顏色 / 圖示 / 文字 / 背景圖四大塊，改完可匯出 JSON 分享；預設皮膚可一鍵切換。</p>
+      <div class="m-sub">
+        <h4>顏色</h4>
+        <p class="m-grp-sub">逐項覆寫配色；未修改的項跟隨預設</p>
+      </div>
+      <div class="m-sub">
+        <h4>卡片表面</h4>
+        <p class="m-grp-sub">有背景圖時，卡片要多透才既看得見圖又讀得清字</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>不透明度（越低越透）</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>介面鬆緊與字體</h4>
+        <p class="m-grp-sub">只作用於卡片與輸入框的留白，不改各處細節間距</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>鬆緊</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>改的是卡片內邊距；若某項看起來沒變，說明那處留白是單獨寫死的</td></tr>
+<tr><td><b>字體</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>只使用系統已裝的字體；某台裝置沒裝時會自動回退，不會變方框</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>強調色</h4>
+        <p class="m-grp-sub">入口卡片的漸變色，以及每個頁籤自己的強調色</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>統一入口卡片配色</b></td><td><span class="m-kind">開關</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>漸變起始色</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>漸變結束色</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>背景圖</h4>
+        <p class="m-grp-sub">用一張圖片做整個介面的底；卡片會自動變得半透明</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>目前主題未使用背景圖，介面底為純色</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>移除背景圖</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>不透明度</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>模糊</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>填滿方式</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>對齊</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>縮放</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td>背景圖只存在本機：主題檔裡只記錄引用，不含圖片本身，分享給別人後對方會看到無背景的主題。</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>卡片圓角</h4>
+        <p class="m-grp-sub">作用於卡片與輸入框（小徽標等不受影響）</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>卡片圓角</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>圖示</h4>
+        <p class="m-grp-sub">為底部頁籤與設定入口換圖示</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Web 版不支援匯入圖片，請使用內建圖示庫</p></div></div>
+      </div>
+      <div class="m-sub">
+        <h4>文字</h4>
+        <p class="m-grp-sub">覆寫常用文案（按鈕與錯誤提示不開放，避免介面變得不可操作）</p>
+      </div>
+      <div class="m-sub">
+        <h4>匯入與匯出</h4>
+        <p class="m-grp-sub">主題是 JSON 文字，可以分享給別人，也可以手動編輯</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>匯出時包含圖片</b></td><td><span class="m-kind">開關</span></td><td class="m-def">—</td><td>圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案</td></tr>
+<tr><td><b>匯出全部主題</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>匯入主題</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>從剪貼簿匯入</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重設本主題</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>皮膚資訊</h4>
+        <p class="m-grp-sub">分享給別人時，這兩項會跟著皮膚一起走</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>作者</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>說明</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>重新命名</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>預設與我的主題</h4>
+        <p class="m-grp-sub">把介面配色、圖示與常用文案改成你自己的</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>預設主題不可修改，複製為我的主題後即可自由編輯</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g13">
+    <h2>備份與還原</h2>
+      <h3 id="g13">備份與還原</h3>
+      <p class="m-grp-sub">匯出或匯入設定與資料</p>
+      <p>一個 JSON 裝下設定與資料；白名單匯入防來路不明的檔案改設定；匯入後需重啟生效。</p>
+      <div class="m-sub">
+        <h4>備份與還原</h4>
+        <p class="m-grp-sub">備份檔是 JSON 文字，換機或重裝後可還原；匯入會依分組覆蓋，無法復原。</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>備份檔包含呼號、伺服器密碼與 API 金鑰，請妥善保管。</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Web 版請用「複製到剪貼簿 / 從剪貼簿貼上」匯入匯出。</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>匯出備份</h4>
+        <p class="m-grp-sub">選擇要包含的內容，再存成檔案或複製到剪貼簿</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>全選</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>已儲存到：…</b></td><td><span class="m-kind">選項卡</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>匯出時包含圖片</b></td><td><span class="m-kind">開關</span></td><td class="m-def">—</td><td>備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>匯入備份</h4>
+        <p class="m-grp-sub">選擇先前匯出的 JSON 備份檔</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>選擇備份檔</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>從剪貼簿貼上</b></td><td><span class="m-kind">按鈕</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g14">
+    <h2>離線地圖</h2>
+      <h3 id="g14">離線地圖</h3>
+      <p class="m-grp-sub">先把地圖圖磚下載到本機，沒有網路時也能看地圖</p>
+      <p>圖磚快取與「僅使用離線圖磚」開關；下載範圍 = 當前所見那一螢，入口在地圖選單。</p>
+      <div class="m-sub">
+        <h4>圖磚快取</h4>
+        <p class="m-grp-sub">瀏覽地圖時自動快取，也可手動下載區域</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>設定項</th><th>控件</th><th>預設值</th><th>說明</th></tr></thead><tbody>
+<tr><td><b>快取地圖圖磚</b> <code class="m-field">tileCacheOn</code></td><td><span class="m-kind">開關</span></td><td class="m-def">開</td><td>瀏覽地圖時把圖磚存到本機，之後可離線檢視</td></tr>
+<tr><td><b>僅使用離線圖磚</b> <code class="m-field">offlineOnly</code></td><td><span class="m-kind">開關</span></td><td class="m-def">關</td><td>不再從網路載入圖磚，只用已下載/已快取的圖（省流量）</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>離線區域</h4>
+        <p class="m-grp-sub">已下載的區域可在地圖上離線檢視</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>範圍太大（約 … 張圖磚），請縮小範圍或降低最大層級</p></div></div>
+      </div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一頁"><a class="pg-prev" href="widgets.html">← 桌面小組件與短波</a><a class="pg-next" href="platform.html">平台差異 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首頁</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">問答</a>
+        <a href="../faq.html">幫助中心</a>
+        <a href="index.html">手冊</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">使用者協定</a></span>
+      <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地電波法規。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到頂部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

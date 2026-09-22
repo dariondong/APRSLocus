@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platforms — APRSlocus</title>
+<meta name="description" content="The same app behaves differently on Android, Windows and the web — check before you start.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Platforms — APRSlocus">
+<meta property="og:description" content="The same app behaves differently on Android, Windows and the web — check before you start.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/platform.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Platforms — APRSlocus">
+<meta name="twitter:description" content="The same app behaves differently on Android, Windows and the web — check before you start.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/platform.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/platform.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/platform.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Platforms — APRSlocus",
+  "description": "The same app behaves differently on Android, Windows and the web — check before you start.",
+  "url": "https://aprslocus.theez.top/en/manual/platform.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/platform.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Platforms — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/platform.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/platform.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/platform.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="platform.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Platforms</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Platforms</h1>
+    <p>The same app behaves differently on Android, Windows and the web — check before you start.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html" class="active">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#matrix">Capability matrix</a>
+        <a href="#web">Web build trade-offs</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="matrix">
+    <h2>Capability matrix</h2>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>Capability</th><th>Android</th><th>Windows</th></tr></thead><tbody>
+<tr><td>APRS-IS send/receive</td><td>✓</td><td>✓</td></tr>
+<tr><td>Continuous background positioning (foreground service)</td><td>✓</td><td>— (no such concept on desktop)</td></tr>
+<tr><td>Bluetooth TNC</td><td>✓ (Bluetooth permission)</td><td>— (use a USB serial COM port)</td></tr>
+<tr><td>USB serial (OTG)</td><td>✓</td><td>✓ (COM ports are exclusive — keep other software off them)</td></tr>
+<tr><td>Audio AFSK</td><td>✓ (mic permission; TX maxes volume and mutes the mic)</td><td>✓</td></tr>
+<tr><td>Offline map download</td><td>✓</td><td>✓</td></tr>
+<tr><td>Home-screen widgets</td><td>✓ (three of them)</td><td>— (Android only)</td></tr>
+<tr><td>WAV file mode</td><td colspan="2">available everywhere: decode a recording offline, or export packets as audio</td></tr>
+</tbody></table></div>
+  </section>
+  <section class="chapter reveal" id="web">
+    <h2>Web build trade-offs</h2>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p>The web build is the lightweight “view and connect” shape:</p>
+<ul style="margin-top:6px">
+<li><b>no offline map download</b> (browsers have no stable writable directory);</li>
+<li>backup runs through the <b>clipboard</b> (copy / paste), no files;</li>
+<li>realtime audio warns where unsupported while <b>WAV mode</b> still works (upload a recording, decode offline);</li>
+<li>no home-screen widgets, no continuous background positioning.</li>
+</ul></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="settings.html">← Settings Reference</a><a class="pg-next" href="troubleshooting.html">Troubleshooting →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

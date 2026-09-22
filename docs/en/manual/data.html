@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Export &amp; Backup — APRSlocus</title>
+<meta name="description" content="Goal: export logs to ADIF, back up every setting, and browse your track history.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Export &amp; Backup — APRSlocus">
+<meta property="og:description" content="Goal: export logs to ADIF, back up every setting, and browse your track history.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/data.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Export &amp; Backup — APRSlocus">
+<meta name="twitter:description" content="Goal: export logs to ADIF, back up every setting, and browse your track history.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/data.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/data.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/data.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Export & Backup — APRSlocus",
+  "description": "Goal: export logs to ADIF, back up every setting, and browse your track history.",
+  "url": "https://aprslocus.theez.top/en/manual/data.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/data.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Export & Backup — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/data.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/data.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/data.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="data.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Export &amp; Backup</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Export &amp; Backup</h1>
+    <p>Goal: export logs to ADIF, back up every setting, and browse your track history.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html" class="active">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#adif">ADIF export</a>
+        <a href="#backup">Backup & restore</a>
+        <a href="#track">Track history & playback</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="adif">
+    <h2>ADIF export</h2>
+<ol class="m-steps">
+<li>Entry: <b>Settings → Export ADIF</b>.</li>
+<li>The frequency is configurable (ADIF is the standard amateur log interchange format).</li>
+<li>The file imports straight into any other logging program.</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Check:</b> open the export anywhere — callsign, date and mode fields should all be there.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="backup">
+    <h2>Backup &amp; restore</h2>
+<ol class="m-steps">
+<li><b>Export</b> (Settings → Backup → export): configuration (station, beacon, map, filters, sources, server…)
+plus local data into <b>one JSON</b>; images are optional.</li>
+<li><b>Import</b>: pick the file (or paste from the clipboard) → <b>restart the app</b> to apply.</li>
+<li>New device order: install → import → restart → re-check server and Passcode under Settings → Connection.</li>
+</ol>
+<div class="callout warn"><span class="co-ic">🔐</span><div><p><b>Whitelisted import</b>: only keys inside that group’s whitelist are accepted, so a file from
+someone else cannot rewrite internal settings; a backup from a newer version is rejected with
+“update first”. <b>The file contains your callsign, server passwords and API keys — keep it safe.</b></p>
+<p style="margin-top:6px">Platform differences: Android uses the system picker (Downloads), Windows saves to
+Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="track">
+    <h2>Track history &amp; playback</h2>
+<ol class="m-steps">
+<li>Entry: <b>Settings → Track history</b>.</li>
+<li>Saved per local day (<code>tracklog/YYYY-MM-DD.json</code>) with lat/lng, speed, course, altitude and accuracy — it survives a restart.</li>
+<li>One screen per day: distance, average and top speed, <b>moving time</b>, point count; delete a day or clear all.
+Moving time only counts segments that genuinely moved — a two-hour lunch stop is not billed as driving.</li>
+<li><b>Tap a day to replay it</b>: same tile stack as the main map (same cache, same correction), the line grows as it plays,
+draggable progress, <b>0.5×–4×</b> speed, follow view; stops over 45 s fast-forward.</li>
+</ol>
+<div class="callout info"><span class="co-ic">🧾</span><div><p>It is <b>deliberately separate</b> from the on-screen “my track”, which only serves this session
+and disappears on exit; history is the archive — exportable and replayable.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="stations.html">← Stations</a><a class="pg-next" href="widgets.html">Widgets &amp; HF →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

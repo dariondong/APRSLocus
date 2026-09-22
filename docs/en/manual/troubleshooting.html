@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troubleshooting — APRSlocus</title>
+<meta name="description" content="Goal: use three entry points to localise a problem to link, filter or configuration.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Troubleshooting — APRSlocus">
+<meta property="og:description" content="Goal: use three entry points to localise a problem to link, filter or configuration.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/troubleshooting.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Troubleshooting — APRSlocus">
+<meta name="twitter:description" content="Goal: use three entry points to localise a problem to link, filter or configuration.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Troubleshooting — APRSlocus",
+  "description": "Goal: use three entry points to localise a problem to link, filter or configuration.",
+  "url": "https://aprslocus.theez.top/en/manual/troubleshooting.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/troubleshooting.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Troubleshooting — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/troubleshooting.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/troubleshooting.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/troubleshooting.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="troubleshooting.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Troubleshooting</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Troubleshooting</h1>
+    <p>Goal: use three entry points to localise a problem to link, filter or configuration.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html" class="active">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#entries">Start with these three</a>
+        <a href="#matrix">Symptom → cause → action</a>
+        <a href="#report">Still stuck?</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="entries">
+    <h2>Start with these three</h2>
+<ol class="m-steps">
+<li><b>Link status card</b> (top of the home page) — is the link up, what are the counters, what did
+the server return? <code>unverified</code> = <b>Passcode</b> problem
+(<a href="start.html#passcode">fix it here</a>).</li>
+<li><b>Link self-test</b> (device page) — TNC protocol loopback and the AFSK modulate/demodulate loop,
+layer by layer; the TNC side adds the init string and a TX self-test (status frame, no coordinates).</li>
+<li><b>Packets tab</b> — did raw frames arrive at all? <b>Received but never plotted = filter/coordinate</b>,
+go back to <a href="stations.html">Stations</a>; nothing at all = link problem, back to steps 1–2.</li>
+</ol>
+  </section>
+  <section class="chapter reveal" id="matrix">
+    <h2>Symptom → cause → action</h2>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>Symptom</th><th>Likely cause</th><th>Action</th></tr></thead><tbody>
+<tr><td>Yellow “unverified” banner</td><td>Passcode empty or wrong</td><td>Settings → Connection → correct it → Save &amp; apply</td></tr>
+<tr><td>Cannot reach the server</td><td>network / address / port</td><td>check <code>rotate.aprs2.net:14580</code>; reconnects run 8→16→32→60 s — wait one cycle</td></tr>
+<tr><td>Packets tab is empty</td><td>no source ticked / range too narrow</td><td>Settings → Connection: tick APRS-IS, raise the radius → Save &amp; apply</td></tr>
+<tr><td>Received but not on the map</td><td>list filter hiding it</td><td>Stations → clear filters; re-check status/type</td></tr>
+<tr><td>My position missing or jumping</td><td>no location permission / network fixes</td><td>grant permission; Settings → Beacon → GPS only</td></tr>
+<tr><td>TNC receives, never transmits</td><td>command mode / baud mismatch</td><td>send the init string (<code>KISS ON</code>); match 9600–115200 to the radio</td></tr>
+<tr><td>Audio nobody decodes</td><td>level too low or clipped / wrong cable</td><td>adjust TX level; headphone jack → radio data/mic, never speaker-to-mic</td></tr>
+<tr><td>Message sent, no reply</td><td>over 67 chars / 512 bytes; peer offline</td><td>shorten it; watch the bubble — a timeout means failure</td></tr>
+<tr><td>Group messages never arrive</td><td>RF mode has no group broadcast; Passcode unverified</td><td>send over APRS-IS; fix the Passcode first</td></tr>
+<tr><td>Gateway counters stay at zero</td><td>a source is missing / RF seen = 0</td><td>tick the missing source; RF seen = 0 → radio volume, squelch, antenna</td></tr>
+<tr><td>Widget is blank</td><td>no data pushed yet</td><td>open the app once to refresh</td></tr>
+<tr><td>Offline map won’t open offline</td><td>that screen was never downloaded</td><td>pan there and download; enable “offline tiles only”</td></tr>
+</tbody></table></div>
+  </section>
+  <section class="chapter reveal" id="report">
+    <h2>Still stuck?</h2>
+<ul>
+<li><b>FAQ</b>: 23 questions grouped by topic → <a href="../faq.html">Help Center</a></li>
+<li><b>Release notes</b>: what bit you may already be fixed →
+<a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a></li>
+<li><b>Feedback</b>: open an issue or join the QQ group. Fastest diagnosis needs the <b>raw packet</b>
+from the Packets tab plus the <b>link log</b> → <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">Issues</a></li>
+</ul>
+<div class="callout tip"><span class="co-ic">📎</span><div><p>Report template: ① platform and version; ② screenshot of the link status card;
+③ one complete frame (header included) from the Packets tab; ④ ticked data sources and the filter radius.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="platform.html">← Platforms</a><span></span></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1259,3 +1259,49 @@ ol.m-steps > li {
   .manual-nav a.active { border-color: var(--cyan); }
   .chapter { padding: 22px 18px; }
 }
+
+/* ═══════════ 多页手册（面包屑 / 分页 / 设置表 / 报文块） ═══════════ */
+.doc-crumb { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--text-faint); margin: 4px 0 14px; }
+.doc-crumb a { color: var(--text-dim); text-decoration: none; }
+.doc-crumb a:hover { color: var(--cyan); }
+.doc-crumb [aria-current="page"] { color: var(--text); font-weight: 600; }
+
+.doc-pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 26px; }
+.doc-pager a { flex: 1; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--glass); color: var(--text); text-decoration: none; font-weight: 600; font-size: 14px;
+  transition: border-color .2s var(--ease), transform .2s var(--ease); }
+.doc-pager a:hover { border-color: var(--cyan); transform: translateY(-2px); }
+.doc-pager .pg-next { text-align: right; }
+.doc-pager > span { flex: 1; }
+
+.m-index-list { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 8px; }
+.m-index-list li { padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--glass); font-size: 14.5px; }
+.m-index-list a { color: var(--cyan); font-weight: 700; text-decoration: none; }
+.m-index-list a:hover { text-decoration: underline; }
+
+.m-grp-sub { font-size: 13px; color: var(--text-faint); margin: 4px 0 10px; }
+.m-sub { border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 16px; }
+.m-sub h4 { font-size: 15.5px; margin: 0 0 6px; }
+.m-sub:first-of-type { border-top: 0; padding-top: 0; }
+
+.set-table { font-size: 13.5px; }
+.set-table th:nth-child(1) { width: 30%; }
+.set-table th:nth-child(2) { width: 12%; }
+.set-table th:nth-child(3) { width: 14%; }
+.m-kind { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+  background: rgba(56, 189, 248, .12); color: var(--cyan); white-space: nowrap; }
+.m-def { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.m-field { font-size: 11px; opacity: .55; }
+.m-opts { display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-top: 3px; }
+
+.manual-body pre.pkt { display: block; padding: 14px 16px; border-radius: 12px; overflow-x: auto;
+  background: rgba(2, 6, 23, .9); color: #a5f3fc; border: 1px solid var(--line);
+  font-family: "JetBrains Mono", Consolas, ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; margin: 12px 0 16px; }
+:root[data-theme="dark"] .manual-body pre.pkt { background: #05070f; border-color: #1e293b; }
+
+@media (max-width: 860px) {
+  .doc-pager { flex-direction: column; }
+  .doc-pager .pg-next { text-align: left; }
+  .set-table { font-size: 12.5px; }
+  .set-table th:nth-child(2), .set-table td:nth-child(2) { display: none; }
+}

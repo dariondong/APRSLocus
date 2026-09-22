@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messaging — APRSlocus</title>
+<meta name="description" content="Goal: send your first message and see it confirmed, then add group chat and translation.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Messaging — APRSlocus">
+<meta property="og:description" content="Goal: send your first message and see it confirmed, then add group chat and translation.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/messaging.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Messaging — APRSlocus">
+<meta name="twitter:description" content="Goal: send your first message and see it confirmed, then add group chat and translation.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/messaging.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/messaging.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/messaging.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/messaging.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/messaging.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Messaging — APRSlocus",
+  "description": "Goal: send your first message and see it confirmed, then add group chat and translation.",
+  "url": "https://aprslocus.theez.top/en/manual/messaging.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/messaging.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Messaging — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/messaging.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/messaging.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/messaging.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="messaging.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Messaging</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Messaging</h1>
+    <p>Goal: send your first message and see it confirmed, then add group chat and translation.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html" class="active">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#send">Send a message</a>
+        <a href="#limits">Two hard limits</a>
+        <a href="#group">Group chat</a>
+        <a href="#translate">Two-way translation</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="send">
+    <h2>Send a message</h2>
+<ol class="m-steps">
+<li>Open the <b>Messages</b> tab → new conversation (or “send message” from a station detail — it fills the callsign).</li>
+<li>Enter the recipient callsign (<b>with SSID; the addressee field is space-padded to 9 characters</b>, a fixed APRS101 field) and your text.</li>
+<li>Watch the bubble: <b>✓ confirmed</b> = the other client returned an ACK; spinner = waiting; ✗ = timed out.</li>
+<li>History is persisted and Chinese text works (UTF-8 / GBK decoded automatically).</li>
+</ol>
+<p>A message frame looks like this (from <code>afsk_test</code>; after <code>::</code> comes the
+<b>addressee field</b>, right-aligned and padded to 9 characters):</p>
+<pre class="pkt">BG7LZQ-9&gt;APALOC::BA7KSM   :Hello from APRSlocus</pre>
+  </section>
+  <section class="chapter reveal" id="limits">
+    <h2>Two hard limits</h2>
+<div class="callout warn"><span class="co-ic">📏</span><div><p><b>The UI pre-checks both — remember them:</b></p>
+<ul style="margin-top:6px">
+<li><b>67 characters</b> — the APRS101 message-text cap. Most clients read beyond it; a few truncate or reject.</li>
+<li><b>512 bytes</b> — the APRS-IS line cap. Over that the server may drop the <b>whole frame</b>, header included.</li>
+</ul></div></div>
+<div class="callout info"><span class="co-ic">🈶</span><div><p>UTF-8 makes every non-ASCII character cost more than one byte, so long messages hit the
+512-byte line first. The composer pre-checks <b>both</b> limits.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="group">
+    <h2>Group chat</h2>
+<ol class="m-steps">
+<li>Messages → new → <b>Group</b> → name it and pick members.</li>
+<li>The app <b>generates a group callsign</b> and invites everyone — later posts broadcast on it.</li>
+<li>Groups live in the <b>same conversation list</b> as direct chats, marked with an icon and unread badge.</li>
+</ol>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p><b>Group broadcast is unavailable in RF (TNC) mode</b> and single messages are capped at
+67 characters there too — the channel is shared and one broadcast occupies everyone’s frequency.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="translate">
+    <h2>Two-way translation</h2>
+<p>Path: <b>Settings → Translation</b>. Several engines, a free endpoint by default, <b>no API key required</b>.</p>
+<ol class="m-steps">
+<li><b>Translate to</b>: pick the target language (Chinese by default).</li>
+<li><b>Engine</b>: “auto” picks for you, or pin Google public / MyMemory / LibreTranslate / Baidu / custom. Public instances that need a key are highlighted; a self-hosted Libre can stay empty.</li>
+<li>Enable <b>auto-translate</b>: incoming messages show a translation next to the original; outgoing text can be translated before sending.</li>
+<li>Hit <b>test translation</b> to confirm the path works — results are validated, so a provider echoing the source back cannot fake success.</li>
+</ol>
+<div class="callout info"><span class="co-ic">🔒</span><div><p>Translation requests leave from the app side only; native surfaces like home-screen widgets
+<b>never see</b> your API keys — they only receive snapshots the app pushes to them.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="beacon.html">← Beaconing</a><a class="pg-next" href="maps.html">Maps &amp; Display →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

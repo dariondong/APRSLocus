@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings Reference — APRSlocus</title>
+<meta name="description" content="Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Settings Reference — APRSlocus">
+<meta property="og:description" content="Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/settings.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Settings Reference — APRSlocus">
+<meta name="twitter:description" content="Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/settings.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/settings.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/settings.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Settings Reference — APRSlocus",
+  "description": "Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.",
+  "url": "https://aprslocus.theez.top/en/manual/settings.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/settings.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Settings Reference — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/settings.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/settings.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/settings.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="settings.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Settings Reference</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Settings Reference</h1>
+    <p>Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html" class="active">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#g0">Settings</a>
+        <a href="#g1">Station</a>
+        <a href="#g2">Beaconing</a>
+        <a href="#g3">Connection</a>
+        <a href="#g4">Display</a>
+        <a href="#g5">Data</a>
+        <a href="#g6">Advanced</a>
+        <a href="#g7">Devices</a>
+        <a href="#g8">TNC device & parameters</a>
+        <a href="#g9">Audio (soundcard TNC)</a>
+        <a href="#g10">PKWDWPL device</a>
+        <a href="#g11">Translation settings</a>
+        <a href="#g12">Theme</a>
+        <a href="#g13">Backup & restore</a>
+        <a href="#g14">Offline maps</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="g0">
+    <h2>Settings</h2>
+      <h3 id="g0">Settings</h3>
+      <p class="m-grp-sub">Configure station, location &amp; connection</p>
+      <p>The Settings page opens with <b>eight category cards</b> (each leading to its own page) plus six direct entries. Below, every setting is listed: name, control, default, meaning — defaults are read from the code, so regenerating keeps them honest.</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Station</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Callsign · SSID · Symbol</td></tr>
+<tr><td><b>Beaconing</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>GPS · Beaconing · Manual position</td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Server · Range filter</td></tr>
+<tr><td><b>Display</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Coords · Theme</td></tr>
+<tr><td><b>Device</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Radio gear · coming soon</td></tr>
+<tr><td><b>Data</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Clear local data</td></tr>
+<tr><td><b>Advanced</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Lab · Developer</td></tr>
+<tr><td><b>Update</b></td><td><span class="m-kind">Category card</span></td><td class="m-def">—</td><td>Check for updates</td></tr>
+<tr><td><b>Honors</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>My badges and achievements</td></tr>
+<tr><td><b>Translation settings</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Provider, languages and auto-translate</td></tr>
+<tr><td><b>Export ADIF</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Export chats as a log file</td></tr>
+<tr><td><b>Theme</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Custom colours, icons and text</td></tr>
+<tr><td><b>Track history</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Records your own speed and distance by day, saved on this device</td></tr>
+<tr><td><b>Backup &amp; restore</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td>Pack settings and data into a JSON file</td></tr>
+<tr><td><b>About</b></td><td><span class="m-kind">Direct entry</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g1">
+    <h2>Station</h2>
+      <h3 id="g1">Station</h3>
+      <p class="m-grp-sub">Callsign · SSID · Symbol</p>
+      <p>Identity is the root of every frame: the callsign must match your licence, and the SSID states the station type (-9 mobile, -7 handheld are common).</p>
+      <div class="m-sub">
+        <h4>Station identity</h4>
+        <p class="m-grp-sub">Callsign, SSID and comment</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Callsign</b> <code class="m-field">myCall</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>BV2AAA</code></td><td>APRS callsign, e.g. BV2AAA</td></tr>
+<tr><td><b>Station comment</b> <code class="m-field">myComment</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>Comment sent with position beacons</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Station info</h4>
+        <p class="m-grp-sub">My symbol and current position</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Grid</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>My location</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g2">
+    <h2>Beaconing</h2>
+      <h3 id="g2">Beaconing</h3>
+      <p class="m-grp-sub">GPS · Beaconing · Manual position</p>
+      <p>Three decisions: what fixes you (GPS / network / manual), how often (60 s default, 5 s floor) and what travels in the frame (speed/course/battery can be switched off).</p>
+      <div class="m-sub">
+        <h4>Location source</h4>
+        <p class="m-grp-sub">Choose position source</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>When auto-location is unavailable, enter coordinates manually or pick on the map for beacon reporting and station distance calculation.</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Location<span class="m-opts">Simulated location</span></b> <code class="m-field">useSimLocation</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def">off</td><td>Use device location / Simulated location：Enter coordinates manually</td></tr>
+<tr><td><b>Sensor-assisted positioning</b> <code class="m-field">sensorAssist</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only).</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Location mode</h4>
+        <p class="m-grp-sub">Choose location method</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>GPS only<span class="m-opts">GPS + Network</span></b> <code class="m-field">locationMode</code></td><td><span class="m-kind">Choice card</span></td><td class="m-def"><code>gps_network</code></td><td>Satellite only, saves battery / GPS + Network：Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Beaconing</h4>
+        <p class="m-grp-sub">Transmit interval &amp; report content</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Enable beaconing</b> <code class="m-field">beaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Beacon interval (sec)</b> <code class="m-field">beaconInterval</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>60</code></td><td>Position beacon interval, minimum 5 seconds</td></tr>
+<tr><td><b>SmartBeacon (by speed)</b> <code class="m-field">smartBeaconEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Speed</b> <code class="m-field">beaconIncludeSpeed</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Bearing</b> <code class="m-field">beaconIncludeCourse</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Phone battery</b> <code class="m-field">beaconIncludeBattery</code></td><td><span class="m-kind">Small switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Location status</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Beacons sent</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Next beacon</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Automatic transmission on an RF source requires the “RF beacon” switch. Until then no position is transmitted automatically (and the countdown does not run).</td></tr>
+<tr><td><b>Enable RF beacon</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Relocate</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g3">
+    <h2>Connection</h2>
+      <h3 id="g3">Connection</h3>
+      <p class="m-grp-sub">Server · Range filter</p>
+      <p>APRS-IS server and Passcode, multi-select data sources, receive range (300 km default) and data caps. Changes apply only with “Save &amp; apply”.</p>
+      <div class="m-sub">
+        <h4>APRS-IS connection</h4>
+        <p class="m-grp-sub">Connection status and info</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Server</b> <code class="m-field">server</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>rotate.aprs2.net</code></td><td></td></tr>
+<tr><td><b>Port</b> <code class="m-field">port</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>14580</code></td><td></td></tr>
+<tr><td><b>WebSocket URL (optional)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS connection</h4>
+        <p class="m-grp-sub">Send and receive on air through a Bluetooth or serial TNC</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Allow RF beaconing</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>TNC mode does not use a server or filters, so those settings are disabled</td></tr>
+<tr><td><b>KISS parameters</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS connection</h4>
+        <p class="m-grp-sub">AFSK 1200 to/from a radio via mic/speaker or a soundcard cable</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Sample rate</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Allow RF beaconing</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Audio mode does not use the server, filters or KISS settings</td></tr>
+<tr><td><b>Audio (soundcard TNC)</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>APRS-IS connection</h4>
+        <p class="m-grp-sub">Read the Kenwood  waypoint sentences from the radio over Bluetooth or serial (receive-only)</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>PKWDWPL is a **receive-only** link: it brings in stations but never transmits (use APRS-IS / TNC / audio for transmitting)</td></tr>
+<tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Range filter</h4>
+        <p class="m-grp-sub">Filter center and radius</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Only receive station packets within the configured range</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Follow my location for filter center<span class="m-opts">Save &amp; apply filter</span></b> <code class="m-field">filterFollow</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Radius (km)</b> <code class="m-field">filterRadius</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Receive radius (km); tap “Save &amp; apply filter” to apply</td></tr>
+<tr><td><b>Use my position as filter center</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Data limits</h4>
+        <p class="m-grp-sub">How much data to keep locally</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Max stations</b> <code class="m-field">maxStations</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>100000</code></td><td>Maximum stations kept in memory (unlimited by default; increase as needed)</td></tr>
+<tr><td><b>Packet history limit</b> <code class="m-field">maxPackets</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>2000</code></td><td>How many packets to keep on the packets page (default 2000; higher uses more memory)</td></tr>
+<tr><td><b>Track point limit</b> <code class="m-field">maxTrackPts</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Track points kept per station (default 300; decides how far back a movement track can reach; a point is only stored after 20 m of movement)</td></tr>
+<tr><td><b>Online window (minutes)</b> <code class="m-field">onlineWindowMin</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>5</code></td><td>A station with no report for longer than this is treated as offline (default 5 minutes)</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Callsign filter</h4>
+        <p class="m-grp-sub">Receive by country/region or callsign</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Besides range filter, receive stations by country/region group or exact callsign</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g4">
+    <h2>Display</h2>
+      <h3 id="g4">Display</h3>
+      <p class="m-grp-sub">Coords · Theme</p>
+      <p>Dark mode, weather widget, units and grid live here; tile source and offline maps live in the map menu and their own sub-page.</p>
+      <div class="m-sub">
+        <h4>All</h4>
+        <p class="m-grp-sub">Theme, language and coordinate display</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Dark mode</b> <code class="m-field">darkMode</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Weather widget</b> <code class="m-field">weatherEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>The active theme pins the primary colour — change it on the Theme page</td></tr>
+<tr><td><b>Unit</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Grid</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Map</h4>
+        <p class="m-grp-sub">Map type and display</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>"Map 2.0 (vector)" renders vectors on-device for lower data use and sharp zooming; raster sources use online tiles, so quality depends on the network.</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Offline maps</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>The material only affects the app's own surfaces (cards, bars, dialogs, map overlays) — it is not window transparency. Blur costs GPU time, so on older devices it may feel less smooth than Off. / Download map tiles ahead of time so the map works without a network</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g5">
+    <h2>Data</h2>
+      <h3 id="g5">Data</h3>
+      <p class="m-grp-sub">Clear local data</p>
+      <p>Read-only stats and destructive actions are kept apart: clearing the chat is its own button, and “clear all data” asks twice.</p>
+      <div class="m-sub">
+        <h4>Chat history</h4>
+        <p class="m-grp-sub">Contacts and chat data</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Chat history</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Clear all chat history</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Clear all data</h4>
+        <p class="m-grp-sub">Delete local records</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Stations</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Chat history</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Group chats</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Logs</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Packets</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Clear all data</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Offline maps</h4>
+        <p class="m-grp-sub">Cached automatically while browsing; areas can also be downloaded manually</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Offline areas</b></td><td><span class="m-kind">Entry</span></td><td class="m-def">—</td><td>Downloaded areas can be viewed on the map offline</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g6">
+    <h2>Advanced</h2>
+      <h3 id="g6">Advanced</h3>
+      <p class="m-grp-sub">Lab · Developer</p>
+      <p>Landscape toggle, demo data (fake stations/packets), RX/TX counters and re-running the wizard.</p>
+      <div class="m-sub">
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Allow landscape orientation</b> <code class="m-field">labLandscape</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Lab features are experimental and may affect usability. Portrait orientation is locked by default; enable this to allow landscape.</td></tr>
+<tr><td><b>Enable demo data (sample stations/packets)</b> <code class="m-field">devMode</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>RX / TX</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Stations</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g7">
+    <h2>Devices</h2>
+      <h3 id="g7">Devices</h3>
+      <p class="m-grp-sub">Data source, link status and self-test</p>
+      <p>Device overview = current link, gateway status, the three sub-pages (TNC / audio / PKWDWPL) plus link self-test and logs.</p>
+      <div class="m-sub">
+        <h4>Gateway (iGate)</h4>
+        <p class="m-grp-sub">Relay packets heard on RF into APRS-IS</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Enable gateway</b> <code class="m-field">igateEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Two-way gateway (forward messages to RF)</b> <code class="m-field">igateTwoWay</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>No packets heard on RF at all: the gateway is fully armed but has nothing to relay. This is not a gateway problem — nothing is reaching the app. Check upstream: radio volume and squelch, antenna, whether anyone is actually transmitting, and the log page for any RF traffic at all.</td></tr>
+<tr><td><b>Heard on RF</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Relayed → APRS-IS</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Relayed → RF</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Duplicates dropped</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Loop-protection rejects</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Reset counters</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Allow RF beaconing</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Current link</h4>
+        <p class="m-grp-sub">Read-only summary — edit parameters in the sub-pages</p>
+      </div>
+      <div class="m-sub">
+        <h4>Devices &amp; parameters</h4>
+        <p class="m-grp-sub">One sub-page per link, each with its own settings</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>TNC device &amp; parameters</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Bluetooth/serial binding, init string, KISS parameters and TX self-test</td></tr>
+<tr><td><b>Audio (soundcard TNC)</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Send and receive AFSK 1200 packets with your soundcard</td></tr>
+<tr><td><b>PKWDWPL device</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>No log entries yet / Bind the radio port and check waypoint reception</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g8">
+    <h2>TNC device &amp; parameters</h2>
+      <h3 id="g8">TNC device &amp; parameters</h3>
+      <p class="m-grp-sub">Bluetooth/serial binding, init string, KISS parameters and TX self-test</p>
+      <p>Everything for a Bluetooth/USB TNC: binding, init string, baud, KISS timing, digipeat path and the TX self-test.</p>
+      <div class="m-sub">
+        <h4>Bluetooth TNC</h4>
+        <p class="m-grp-sub">Bind and connect the TNC on your radio</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Two links are bound to the same device</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>No devices found — pair the TNC in the system Bluetooth settings, or plug in the USB serial cable (OTG)</td></tr>
+<tr><td><b>Scan devices (paired Bluetooth + USB serial)</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Disconnect<span class="m-opts">Restart link</span></b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Unbind</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>TNC init string</h4>
+        <p class="m-grp-sub">Sent line by line after connecting (same as APRSdroid kiss.init)</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>If the TNC receives but will not transmit, try here first: many Bluetooth/serial TNC modules boot into command mode and need KISS ON / RESTART before they will forward in KISS. One command per line (CRLF is appended automatically).</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Delay per line (ms)</b> <code class="m-field">initDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Wait between lines. Modules need time to process commands; too short drops them</td></tr>
+<tr><td><b>Serial baud rate (bd)</b> <code class="m-field">serialBaud</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>9600</code></td><td>A USB serial cable and the radio data port must agree on the speed, otherwise not a single byte gets through. Common values: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP has no baud rate, so this is ignored for Bluetooth devices.</td></tr>
+<tr><td><b>Send init string now</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>No init string configured</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>KISS parameters</h4>
+        <p class="m-grp-sub">Link-layer settings pushed straight to the TNC</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Push KISS parameters on connect</b> <code class="m-field">pushKissParams</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Off by default (same as APRSdroid). When on, the values above are pushed to the TNC on connect, overriding its own configuration — inappropriate values can make it back off forever without transmitting, so enable only if you want centralised control.</td></tr>
+<tr><td><b>TX delay (ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>KISS TXDELAY in 10 ms units — time for your PTT to settle before data</td></tr>
+<tr><td><b>TX tail (ms)</b> <code class="m-field">txTailMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>50</code></td><td>KISS TXTAIL in 10 ms units — some radios need the tail to be heard fully</td></tr>
+<tr><td><b>Persistence</b> <code class="m-field">persistence</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>63</code></td><td>KISS PERSISTENCE, 0–255 — lower is more polite and avoids collisions on a shared channel</td></tr>
+<tr><td><b>Slot time (ms)</b> <code class="m-field">slotTimeMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>100</code></td><td>KISS SLOTTIME in 10 ms units — works with persistence to pace channel access</td></tr>
+<tr><td><b>Full duplex</b> <code class="m-field">fullDuplex</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td></td></tr>
+<tr><td><b>Channel / KISS port</b> <code class="m-field">channel</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>0</code></td><td>Only multi-channel TNCs have several ports; keep 0 for single-channel radios</td></tr>
+<tr><td><b>Max frame size (bytes)</b> <code class="m-field">maxFrame</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>330</code></td><td>Longer packets are not sent at all (at 1200 baud an AX.25 frame is ~330 bytes)</td></tr>
+<tr><td><b>RF digipeater path</b> <code class="m-field">path</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>Digipeaters used on air, e.g. WIDE1-1,WIDE2-1; leave empty for none</td></tr>
+<tr><td><b>Vendor command</b> <code class="m-field">hardwareCmd</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>-1</code></td><td>KISS SETHARDWARE (0x06), vendor-specific; -1 means do not send</td></tr>
+<tr><td><b>Value</b> <code class="m-field">hardwareVal</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>0</code></td><td>KISS SETHARDWARE (0x06), vendor-specific; -1 means do not send</td></tr>
+<tr><td><b>Push parameters</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Return to TNC command mode</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connect the TNC first</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Return to TNC command mode</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>KISS SETHARDWARE (0x06), vendor-specific; -1 means do not send</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>TX self-test</h4>
+        <p class="m-grp-sub">Writes one test frame to the TNC to tell link problems from TNC problems</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>It sends a status frame (no coordinates), so it will not move your station on aprs.fi. If it reports "written" but nothing is transmitted, the problem is on the TNC side: try the init string (KISS ON / RESTART) first, then check TxDelay and channel occupancy.</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Write test frame</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Radio (TNC) mode</h4>
+        <p class="m-grp-sub">The radio channel is shared, so messaging is limited accordingly</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Allow RF beaconing</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Only then will positions be transmitted on air. Transmitting requires your own licence and callsign</td></tr>
+<tr><td><b>Auto-acknowledge</b> <code class="m-field">autoAck</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>When off, incoming messages are not acknowledged — keeps the channel quieter</td></tr>
+<tr><td><b>Reconnect automatically</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g9">
+    <h2>Audio (soundcard TNC)</h2>
+      <h3 id="g9">Audio (soundcard TNC)</h3>
+      <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
+      <p>Use the sound card as a TNC: sample rate/baud/tone, TX level and CSMA wait, plus WAV file mode (decode a recording offline).</p>
+      <div class="m-sub">
+        <h4>Audio capture</h4>
+        <p class="m-grp-sub">Demodulate AFSK 1200 from the mic/line input</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Audio backend</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection<span class="m-opts">Stop capture · Restart audio link</span></b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Demod locked</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>… aborted decodes (noise / out of sync)</td></tr>
+<tr><td><b>… frames received</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Real-time audio is not supported on this platform (WAV file mode is available)</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Audio (soundcard TNC)</h4>
+        <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Sample rate</b> <code class="m-field">sampleRate</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>22050</code></td><td>22050 Hz is the usual soundcard-TNC rate; use 44100/48000 if unsupported. Changing it restarts capture</td></tr>
+<tr><td><b>Bit rate</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>APRS on VHF is always 1200 bd (Bell 202); 300 bd is for HF</td></tr>
+<tr><td><b>Mark tone (Hz)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Bell 202 specifies mark 1200 Hz / space 2200 Hz; the tolerance is only a few Hz</td></tr>
+<tr><td><b>Space tone (Hz)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Space tone. Together with mark it sets the FSK shift (1000 Hz nominal)</td></tr>
+<tr><td><b>Tx preamble (ms)</b> <code class="m-field">txDelayMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>300</code></td><td>Preamble length: lets the far-end demod lock and the radio key up</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Audio transmit</h4>
+        <p class="m-grp-sub">Listens before transmitting to avoid collisions</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Allow transmit</b> <code class="m-field">txEnabled</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>When off, receive only — handy if you just want to monitor beacons</td></tr>
+<tr><td><b>Allow RF beaconing</b> <code class="m-field">rfBeacon</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Only then will positions be transmitted on air. Transmitting requires your own licence and callsign</td></tr>
+<tr><td><b>Wait for a clear channel (ms)</b> <code class="m-field">csmaWaitMs</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>3000</code></td><td>How long to wait when the channel is busy; 0 = transmit immediately</td></tr>
+<tr><td><b>RF digipeater path</b> <code class="m-field">path</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>WIDE1-1,WIDE2-1</code></td><td>Digipeaters used on air, e.g. WIDE1-1,WIDE2-1; leave empty for none</td></tr>
+<tr><td><b>Max frame size (bytes)</b> <code class="m-field">maxFrame</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>330</code></td><td>Longer packets are not sent at all (at 1200 baud an AX.25 frame is ~330 bytes)</td></tr>
+<tr><td><b>TX level</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Before transmitting the media volume is raised to maximum and the mic is paused; a peak that is too low or clipped means the other side cannot decode</td></tr>
+<tr><td><b>Auto-acknowledge</b> <code class="m-field">autoAck</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>When off, incoming messages are not acknowledged — keeps the channel quieter</td></tr>
+<tr><td><b>Reconnect automatically</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td></td></tr>
+<tr><td><b>Stop transmit</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>WAV file mode</h4>
+        <p class="m-grp-sub">Decode a recording offline, or export a packet as audio</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Packet to export (TNC2)</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Format SRC&gt;DEST,PATH:info, e.g. BG7LZQ-9&gt;APALOC:&gt;TEST</td></tr>
+<tr><td><b>File path</b></td><td><span class="m-kind">Text input</span></td><td class="m-def">—</td><td>Decode a recording offline, or export a packet as audio</td></tr>
+<tr><td><b>Choose WAV file</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Export to Downloads</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Copy path</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Path copied</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Use an audio cable to the radio (headphone out → data/mic jack). Phone speakers roll off badly at 2200 Hz, so acoustic coupling rarely decodes. If the far end is Direwolf, first verify with the exported WAV: if that decodes, the problem is the audio path, not the protocol</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Link log</h4>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>No log entries yet</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g10">
+    <h2>PKWDWPL device</h2>
+      <h3 id="g10">PKWDWPL device</h3>
+      <p class="m-grp-sub">Bind the radio port and check waypoint reception</p>
+      <p>Read-only Kenwood waypoint link: binding and status, waypoint counters, strict checksum (off by default — mismatches are flagged, not dropped).</p>
+      <div class="m-sub">
+        <h4>Device binding and status</h4>
+        <p class="m-grp-sub">Pick the serial or Bluetooth port that outputs  sentences</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Two links are bound to the same device</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Bound device</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Connection</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>PKWDWPL (Kenwood waypoints)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>No devices found — pair the TNC in the system Bluetooth settings, or plug in the USB serial cable (OTG)</td></tr>
+<tr><td><b>Scan devices (paired Bluetooth + USB serial)</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Disconnect<span class="m-opts">Restart link</span></b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Unbind</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Waypoint reception</h4>
+        <p class="m-grp-sub">Bind the radio port and check waypoint reception</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>… waypoints received</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Dropped or invalid sentences</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Checksum mismatches</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Other NMEA sentences (ignored)</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>帧缓冲溢出 $… 字节</td></tr>
+<tr><td><b>Strict checksum (drop mismatches)</b> <code class="m-field">strictChecksum</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Off by default: a mismatch is flagged and logged instead of dropped, because on a local cable it usually means the firmware format differs from the manual. Dropping every sentence would leave the screen empty and make diagnosis much harder.</td></tr>
+<tr><td><b>Reconnect automatically</b> <code class="m-field">autoReconnect</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>No PKWDWPL log yet</td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g11">
+    <h2>Translation settings</h2>
+      <h3 id="g11">Translation settings</h3>
+      <p class="m-grp-sub">Provider, languages and auto-translate</p>
+      <p>Target language, engine (auto, no key needed), per-engine keys and instance URLs, test translation.</p>
+      <div class="m-sub">
+        <h4>Translate into</h4>
+        <p class="m-grp-sub">Provider, languages and auto-translate</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Translate into</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Provider</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Translation sends message text to the third-party provider you choose; assess privacy accordingly</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Provider</h4>
+      </div>
+      <div class="m-sub">
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Tries several keyless endpoints in turn and keeps the first real translation</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Actually used</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td>Open source and most reliable self-hosted; public instances now need a key and often lack Chinese</td></tr>
+<tr><td><b>Instance URL</b> <code class="m-field">libreUrl</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>https://libretranslate.com</code></td><td></td></tr>
+<tr><td><b>Instance API key (needed for public instances; leave empty when self-hosted)</b> <code class="m-field">libreApiKey</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td></td></tr>
+<tr><td><b>Google API key</b> <code class="m-field">googleApiKey</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>API key for Google Cloud Translation v2 — create one in the Google Cloud console</td></tr>
+<tr><td><b>Baidu App ID</b> <code class="m-field">baiduAppId</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td></td></tr>
+<tr><td><b>Baidu secret key</b> <code class="m-field">baiduKey</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>Apply for general text translation on the Baidu Translate platform; the key stays on this device</td></tr>
+<tr><td><b>Endpoint URL</b> <code class="m-field">customUrl</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td></td></tr>
+<tr><td><b>Headers (JSON)</b> <code class="m-field">customHeaders</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>{"Content-Type": "application/json"}</code></td><td></td></tr>
+<tr><td><b>Body template</b> <code class="m-field">customBody</code></td><td><span class="m-kind">Text input</span></td><td class="m-def"><code>{"q": "{text}", "source": "{from}", "target": "{to}"}</code></td><td>Placeholders: …, …, …. Ignored when the method is GET</td></tr>
+<tr><td><b>Result JSON path</b> <code class="m-field">customResultPath</code></td><td><span class="m-kind">Text input</span></td><td class="m-def">(empty)</td><td>Dot-separated path with array indexes, e.g. data.translations.0.translatedText</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Test translation</h4>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Test translation</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Translate</b></td><td><span class="m-kind">Read-only</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g12">
+    <h2>Theme</h2>
+      <h3 id="g12">Theme</h3>
+      <p class="m-grp-sub">Make the colours, icons and common labels your own</p>
+      <p>Four blocks — colours, icons, text, background — exportable as JSON to share; preset skins switch in one tap.</p>
+      <div class="m-sub">
+        <h4>Colours</h4>
+        <p class="m-grp-sub">Overwrite colours individually; untouched ones stay default</p>
+      </div>
+      <div class="m-sub">
+        <h4>Card surface</h4>
+        <p class="m-grp-sub">With a background image, how translucent cards should be</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Opacity (lower is more see-through)</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Density &amp; font</h4>
+        <p class="m-grp-sub">Affects card and input padding only, not every spacing</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Density</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>This changes card padding; if something looks unchanged, its spacing is fixed individually</td></tr>
+<tr><td><b>Font</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>Uses system-installed fonts only; if one is missing it falls back automatically (no tofu boxes)</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Accent colours</h4>
+        <p class="m-grp-sub">The entry-card gradient, and a per-tab accent colour</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Unify entry-card colours</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Gradient start</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Gradient end</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Background image</h4>
+        <p class="m-grp-sub">Use an image as the app backdrop; cards turn translucent automatically</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>This theme has no background image; the backdrop is a solid colour</p></div></div>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Remove background</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Opacity</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Blur</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Fill mode</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Alignment</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Scale</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td>The image stays on this device: the theme file records only a reference, not the image, so anyone you share it with sees the theme without a background.</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Card corner radius</h4>
+        <p class="m-grp-sub">Applies to cards and inputs (small badges are unaffected)</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Card corner radius</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Icons</h4>
+        <p class="m-grp-sub">Replace the tab bar and settings entries icons</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Importing images is not available on the web — use the built-in icon library</p></div></div>
+      </div>
+      <div class="m-sub">
+        <h4>Text</h4>
+        <p class="m-grp-sub">Overwrite common labels (buttons and error messages are deliberately excluded so the UI stays operable)</p>
+      </div>
+      <div class="m-sub">
+        <h4>Import &amp; export</h4>
+        <p class="m-grp-sub">A theme is JSON text — shareable and hand-editable</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Include images in the export</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td>The images are too large for the clipboard — use "Export all themes" to save a file instead</td></tr>
+<tr><td><b>Export all themes</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Import themes</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Import from clipboard</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Reset this theme</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Skin info</h4>
+        <p class="m-grp-sub">Both travel with the skin when you share it</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Author</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Description</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Rename</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Presets &amp; my themes</h4>
+        <p class="m-grp-sub">Make the colours, icons and common labels your own</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Presets cannot be edited — copy one to your themes first</p></div></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g13">
+    <h2>Backup &amp; restore</h2>
+      <h3 id="g13">Backup &amp; restore</h3>
+      <p class="m-grp-sub">Export or import settings and data</p>
+      <p>One JSON holds settings and data; whitelisted import stops a foreign file from rewriting your config; restart after importing.</p>
+      <div class="m-sub">
+        <h4>Backup &amp; restore</h4>
+        <p class="m-grp-sub">The backup is a JSON file you can restore after switching or reinstalling. Import overwrites per group and cannot be undone.</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>The backup contains your callsign, server passcode and API keys — keep it safe.</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>On the web, use “copy to clipboard / paste from clipboard”.</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Export backup</h4>
+        <p class="m-grp-sub">Pick what to include, then save to a file or copy as text</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Select all</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Saved to: …</b></td><td><span class="m-kind">Choice card</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Include images in the export</b></td><td><span class="m-kind">Switch</span></td><td class="m-def">—</td><td>The backup will embed the images your themes use. Without them, a restored theme falls back to built-in icons.</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Import backup</h4>
+        <p class="m-grp-sub">Choose a backup JSON file exported earlier</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Choose backup file</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+<tr><td><b>Paste from clipboard</b></td><td><span class="m-kind">Button</span></td><td class="m-def">—</td><td></td></tr>
+</tbody></table></div>
+      </div>
+  </section>
+  <section class="chapter reveal" id="g14">
+    <h2>Offline maps</h2>
+      <h3 id="g14">Offline maps</h3>
+      <p class="m-grp-sub">Download map tiles ahead of time so the map works without a network</p>
+      <p>Tile cache plus the “offline tiles only” switch; the download area is exactly what you see on screen, entered from the map menu.</p>
+      <div class="m-sub">
+        <h4>Tile cache</h4>
+        <p class="m-grp-sub">Cached automatically while browsing; areas can also be downloaded manually</p>
+        <div class="doc-table-wrap"><table class="doc-table set-table"><thead><tr><th>Setting</th><th>Control</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><b>Cache map tiles</b> <code class="m-field">tileCacheOn</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">on</td><td>Saves tiles while you browse, so they can be viewed offline later</td></tr>
+<tr><td><b>Offline tiles only</b> <code class="m-field">offlineOnly</code></td><td><span class="m-kind">Switch</span></td><td class="m-def">off</td><td>Never load tiles from the network — only downloaded/cached ones (saves data)</td></tr>
+</tbody></table></div>
+      </div>
+      <div class="m-sub">
+        <h4>Offline areas</h4>
+        <p class="m-grp-sub">Downloaded areas can be viewed on the map offline</p>
+        <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Area too large (about … tiles) — narrow it or lower the max zoom</p></div></div>
+      </div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="widgets.html">← Widgets &amp; HF</a><a class="pg-next" href="platform.html">Platforms →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

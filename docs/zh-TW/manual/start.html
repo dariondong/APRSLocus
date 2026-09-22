@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快速上手 — APRSlocus</title>
+<meta name="description" content="目標：裝好應用、跑完七步引導，讓 APRS-IS 顯示「已驗證」並收到第一則封包。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="快速上手 — APRSlocus">
+<meta property="og:description" content="目標：裝好應用、跑完七步引導，讓 APRS-IS 顯示「已驗證」並收到第一則封包。">
+<meta property="og:url" content="https://aprslocus.theez.top/zh-TW/manual/start.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快速上手 — APRSlocus">
+<meta name="twitter:description" content="目標：裝好應用、跑完七步引導，讓 APRS-IS 顯示「已驗證」並收到第一則封包。">
+<link rel="canonical" href="https://aprslocus.theez.top/zh-TW/manual/start.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/start.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/start.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "快速上手 — APRSlocus",
+  "description": "目標：裝好應用、跑完七步引導，讓 APRS-IS 顯示「已驗證」並收到第一則封包。",
+  "url": "https://aprslocus.theez.top/zh-TW/manual/start.html",
+  "inLanguage": "zh-TW",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/zh-TW/manual/start.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手冊",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "快速上手 — APRSlocus",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/start.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首頁</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">幫助中心</a>
+      <a href="index.html" class="active">手冊</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式" data-label-dark="切換淺色模式" data-label-light="切換深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/start.html" hreflang="zh-Hans">简中</a><a class="lang-switch active" href="start.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../../en/manual/start.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要內容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手冊">
+    <a href="../">首頁</a><span aria-hidden="true">/</span>
+    <a href="index.html">手冊</a><span aria-hidden="true">/</span>
+    <span aria-current="page">快速上手</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>快速上手</h1>
+    <p>目標：裝好應用、跑完七步引導，讓 APRS-IS 顯示「已驗證」並收到第一則封包。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手冊目錄">
+      <div class="mn-title">手冊目錄</div>
+        <a href="index.html">手冊首頁</a>
+        <a href="start.html" class="active">快速上手</a>
+        <a href="interface.html">介面導覽</a>
+        <a href="connections.html">連線與資料來源</a>
+        <a href="beacon.html">位置信標</a>
+        <a href="messaging.html">訊息與群組</a>
+        <a href="maps.html">地圖與顯示</a>
+        <a href="stations.html">臺站與篩選</a>
+        <a href="data.html">匯出 · 備份 · 軌跡</a>
+        <a href="widgets.html">桌面小組件與短波</a>
+        <a href="settings.html">設定參考</a>
+        <a href="platform.html">平台差異</a>
+        <a href="troubleshooting.html">故障排除</a>
+      <div class="mn-title">本頁目錄</div>
+        <a href="#install">安裝</a>
+        <a href="#wizard">首次啟動：七步引導</a>
+        <a href="#passcode">Passcode 與背景執行</a>
+        <a href="#firstpacket">驗證：收到第一則封包</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="install">
+    <h2>安裝</h2>
+<ol class="m-steps">
+<li>打開 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a>，按平台取包：<b>Android</b> → <code>*.apk</code>；<b>Windows</b> → 安裝程式。</li>
+<li>Android 自 v1.5.2 起使用正式 release 簽章，<b>直接覆蓋安裝</b>即可；從更老的版本升級請先解除安裝（簽章不同會裝不上）。</li>
+<li>裝完先別急著點 —— 下一步要準備 <b>Passcode</b>，沒有它只能連上、收不到訊息。</li>
+</ol>
+<div class="callout info"><span class="co-ic">🧩</span><div><p>桌面端是綠色安裝：裝完在開始功能表找 <b>APRSLocus</b>；解壓版直接執行 <code>aprslocus.exe</code>。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="wizard">
+    <h2>首次啟動：七步引導</h2>
+<p>引導每一步都能返回修改；之後隨時可在 <b>設定 → 進階</b> 裡<b>重新執行</b>，目前設定不會丟。</p>
+<ol class="m-steps">
+<li><b>介面語言</b> —— 簡體 / 繁體 / English / 日本語 / Indonesia / Español。</li>
+<li><b>使用者協議</b> —— 必須勾選同意《使用者協議》與 GPL-3.0；注意 APRS 資料是公開的，發出後可能被全球接收與轉發。</li>
+<li><b>歡迎頁</b> —— 即時地圖、GPS 上報、APRS 訊息、APRS-IS 四項能力。</li>
+<li><b>呼號與 SSID</b> —— 輸入完整呼號（含 SSID，如 <code>BG7LZQ-3</code>）；<b>留空無法繼續</b>。</li>
+<li><b>臺站符號</b> —— 代表臺站類型，隨每一則信標發送。</li>
+<li><b>接收地區</b> —— 勾選要收的國家/地區；<b>不勾 = 全收</b>。</li>
+<li><b>伺服器與 Passcode</b> —— 伺服器預設 <code>rotate.aprs2.net</code> 可不動；Passcode 見下一節。</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>怎麼算完成：</b>引導最後一頁點完成后，首頁頂部的鏈路狀態卡應顯示<b>已連線</b>；
+若顯示黃色「未驗證」，代表 Passcode 還沒填對，繼續看下一節。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="passcode">
+    <h2>Passcode 與背景執行</h2>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p><b>Passcode 是 APRS-IS 的登入驗證碼</b>，把你的呼號驗證到網路。
+留空或預設 <code>-1</code> 只能<b>連線</b>，訊息與群組都收發不了。到
+<a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查詢</a>
+用<b>完整呼號</b>產生後填入 <b>設定 → 連線 → Passcode</b>。
+填錯時首頁頂部會出現黃色「未驗證」橫幅 —— 那就是它。</p></div></div>
+<ul>
+<li><b>改完要儲存</b>：連線頁的改动點「儲存並套用」才生效。</li>
+<li><b>要它一直上報</b>：系統設定裡允許 APRSLocus 背景執行、關掉省電最佳化、允許自啟動；通知欄可一鍵結束。</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="firstpacket">
+    <h2>驗證：收到第一則封包</h2>
+<ol class="m-steps">
+<li>首頁頂部<b>鏈路狀態卡</b>：狀態為「已連線」，收包計數在漲。</li>
+<li>切到 <b>資料封包</b> 頁籤：幾秒內應出現原始封包（等寬字型、可長按複製）。</li>
+<li>看不懂沒關係 —— 下面是一幀<b>真實位置封包</b>的逐段拆解（取自專案測試用例）。</li>
+</ol>
+<pre class="pkt">BG7LZG-9&gt;APALOC,TCPIP*:!3904.25N/11624.44E&gt;123/045/A=000100 Bat:88% APRSlocus v1.6.67</pre>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>片段</th><th>含義</th></tr></thead><tbody>
+<tr><td><code>BG7LZG-9</code></td><td>發信人呼號（含 SSID）</td></tr>
+<tr><td><code>APALOC</code></td><td>目的呼號 / tocall —— APRSLocus 的軟體標識</td></tr>
+<tr><td><code>TCPIP*</code></td><td>路徑：走網際網路，星號 = 本裝置最後一次中繼</td></tr>
+<tr><td><code>!3904.25N/11624.44E&gt;</code></td><td>定位串：緯度 / 經度 / 臺站符號（車）</td></tr>
+<tr><td><code>123/045</code></td><td>航向 123°、速度 45 節</td></tr>
+<tr><td><code>A=000100</code></td><td>高度 100 英尺</td></tr>
+<tr><td><code>Bat:88% …</code></td><td>註釋：電量與軟體版本（緊跟定位串，無空格）</td></tr>
+</tbody></table></div>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>怎麼算成功：</b>封包頁有封包 + 收包計數增長 = 接收鏈路通。
+若計數一直為 0，去 <a href="troubleshooting.html">故障排除</a>。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一頁"><a class="pg-prev" href="index.html">← 手冊首頁</a><a class="pg-next" href="interface.html">介面導覽 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首頁</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">問答</a>
+        <a href="../faq.html">幫助中心</a>
+        <a href="index.html">手冊</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">使用者協定</a></span>
+      <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地電波法規。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到頂部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

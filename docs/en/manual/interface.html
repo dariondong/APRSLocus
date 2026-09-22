@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interface — APRSlocus</title>
+<meta name="description" content="Goal: learn the five tabs and the panel gestures, and know what each screen is for.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Interface — APRSlocus">
+<meta property="og:description" content="Goal: learn the five tabs and the panel gestures, and know what each screen is for.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/interface.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Interface — APRSlocus">
+<meta name="twitter:description" content="Goal: learn the five tabs and the panel gestures, and know what each screen is for.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/interface.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/interface.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/interface.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/interface.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/interface.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Interface — APRSlocus",
+  "description": "Goal: learn the five tabs and the panel gestures, and know what each screen is for.",
+  "url": "https://aprslocus.theez.top/en/manual/interface.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/interface.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Interface — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/interface.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/interface.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/interface.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="interface.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Interface</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Interface</h1>
+    <p>Goal: learn the five tabs and the panel gestures, and know what each screen is for.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html" class="active">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#tabs">Five tabs</a>
+        <a href="#gestures">Panels & Back key</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="tabs">
+    <h2>Five tabs</h2>
+<p>Five tabs in a fixed order (a side rail on desktop) — <b>the order never changes</b>:</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>#</th><th>Tab</th><th>What you do there</th></tr></thead><tbody>
+<tr><td>1</td><td><b>Map</b></td><td>the base: station markers, tracks, toolbar, map menu</td></tr>
+<tr><td>2</td><td><b>Stations</b></td><td>stations you received: filter, search, detail, favourites, playback</td></tr>
+<tr><td>3</td><td><b>Messages</b></td><td>one list for direct and group chats, with unread badges</td></tr>
+<tr><td>4</td><td><b>Packets</b></td><td>raw packet stream (copyable, filterable) and the graded log</td></tr>
+<tr><td>5</td><td><b>Settings</b></td><td>eight categories plus honor wall, translation, ADIF, themes, tracks, backup</td></tr>
+</tbody></table></div>
+<div class="callout info"><span class="co-ic">🗺️</span><div><p><b>The map is always the base</b>: other tabs raise a panel <i>over</i> the map, and tapping
+Map again lowers it — so you can always get back to the map.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="gestures">
+    <h2>Panels &amp; Back key</h2>
+<ul>
+<li><b>Drag the panel</b> with its top handle — or simply drag the bottom navigation bar, the biggest target on screen.</li>
+<li><b>Back key</b>: only exits the app from the Map tab; elsewhere it lowers the panel or goes up a level, so you never quit by accident.</li>
+<li><b>Tabs are never torn down</b>: scroll positions and the open conversation survive switching (pages are cached, not rebuilt).</li>
+<li><b>Landscape</b>: Android locks portrait by default — enable “allow landscape” under <b>Settings → Advanced</b>.</li>
+</ul>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Check the gestures:</b> scroll the station list halfway → tap Messages → tap Stations again;
+the scroll position should still be there.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="start.html">← Quick Start</a><a class="pg-next" href="connections.html">Connections →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

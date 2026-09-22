@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>故障排查 — APRSlocus</title>
+<meta name="description" content="目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="故障排查 — APRSlocus">
+<meta property="og:description" content="目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。">
+<meta property="og:url" content="https://aprslocus.theez.top/manual/troubleshooting.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="故障排查 — APRSlocus">
+<meta name="twitter:description" content="目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。">
+<link rel="canonical" href="https://aprslocus.theez.top/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "故障排查 — APRSlocus",
+  "description": "目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。",
+  "url": "https://aprslocus.theez.top/manual/troubleshooting.html",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/manual/troubleshooting.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手册",
+        "item": "https://aprslocus.theez.top/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "故障排查 — APRSlocus",
+        "item": "https://aprslocus.theez.top/manual/troubleshooting.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首页</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">帮助中心</a>
+      <a href="index.html" class="active">手册</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="troubleshooting.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/manual/troubleshooting.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/manual/troubleshooting.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手册">
+    <a href="../">首页</a><span aria-hidden="true">/</span>
+    <a href="index.html">手册</a><span aria-hidden="true">/</span>
+    <span aria-current="page">故障排查</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>故障排查</h1>
+    <p>目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手册目录">
+      <div class="mn-title">手册目录</div>
+        <a href="index.html">手册首页</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">界面导览</a>
+        <a href="connections.html">连接与数据来源</a>
+        <a href="beacon.html">位置信标</a>
+        <a href="messaging.html">消息与群聊</a>
+        <a href="maps.html">地图与显示</a>
+        <a href="stations.html">台站与筛选</a>
+        <a href="data.html">导出 · 备份 · 轨迹</a>
+        <a href="widgets.html">桌面组件与短波</a>
+        <a href="settings.html">设置参考</a>
+        <a href="platform.html">平台差异</a>
+        <a href="troubleshooting.html" class="active">故障排查</a>
+      <div class="mn-title">本页目录</div>
+        <a href="#entries">先用这三个入口</a>
+        <a href="#matrix">症状 → 原因 → 动作</a>
+        <a href="#report">还是解决不了？</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="entries">
+    <h2>先用这三个入口</h2>
+<ol class="m-steps">
+<li><b>链路状态卡</b>（主页顶部）——连接是否成立、收发计数、服务器返回值。
+返回 <code>unverified</code> = <b>Passcode</b> 问题（<a href="start.html#passcode">去填</a>）。</li>
+<li><b>链路自检</b>（设备页）—— TNC 协议回路、AFSK 调制解调回路，一键分层定位；
+TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
+<li><b>数据包页</b>—— 原始报文到底有没有进来。<b>能收到但不上图 = 筛选/坐标问题</b>，
+<a href="stations.html">回台站与筛选</a>；一条都没有 = 链路问题，回第 1、2 步。</li>
+</ol>
+  </section>
+  <section class="chapter reveal" id="matrix">
+    <h2>症状 → 原因 → 动作</h2>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>症状</th><th>最可能的原因</th><th>动作</th></tr></thead><tbody>
+<tr><td>黄色「未验证」横幅</td><td>Passcode 空 / 错</td><td>设置 → 连接 → 填正确 Passcode → 保存并应用</td></tr>
+<tr><td>连不上服务器</td><td>网络 / 服务器地址 / 端口</td><td>核对 <code>rotate.aprs2.net:14580</code>；断线会自动 8→16→32→60s 重连，等一轮</td></tr>
+<tr><td>数据包页一条都没有</td><td>没勾数据来源 / 范围过滤太窄</td><td>设置 → 连接：勾 APRS-IS；范围半径调大 → 保存并应用</td></tr>
+<tr><td>收到但地图上看不到</td><td>列表筛选挡住了</td><td>台站页点「清除筛选」；核对状态/类型筛选</td></tr>
+<tr><td>自己位置不显示/乱跳</td><td>没定位权限 / 用了网络粗定位</td><td>给定位权限；设置 → 定位上报 → 定位模式选纯 GPS</td></tr>
+<tr><td>TNC 能收不能发</td><td>停在命令模式 / 线速不匹配</td><td>发送初始化串（<code>KISS ON</code>）；核对 9600~115200 与电台一致</td></tr>
+<tr><td>音频对方解不出</td><td>发射电平过低或削顶 / 用错线</td><td>调整发射电平；耳机口 → 电台数据/话筒口，勿用扬声器对麦克风</td></tr>
+<tr><td>消息发出去没反应</td><td>超 67 字符 / 512 字节；对方不在线</td><td>缩短内容；看气泡状态，超时即失败</td></tr>
+<tr><td>群聊收不到</td><td>射频模式不支持群广播；Passcode 未验证</td><td>切到 APRS-IS 发；先修 Passcode</td></tr>
+<tr><td>网关计数不涨</td><td>缺一个来源（APRS-IS 或射频）/ 射频收到=0</td><td>按界面提示补齐来源；射频收到=0 先查电台音量/静噪/天线</td></tr>
+<tr><td>桌面组件空白</td><td>组件没有数据（应用没打开过）</td><td>打开一次应用刷新</td></tr>
+<tr><td>离线地图断网打不开</td><td>没下载该屏 / 未开仅离线</td><td>移到目标屏下载；开「仅使用离线瓦片」</td></tr>
+</tbody></table></div>
+  </section>
+  <section class="chapter reveal" id="report">
+    <h2>还是解决不了？</h2>
+<ul>
+<li><b>常见问题</b>：23 题按主题分组 → <a href="../faq.html">帮助中心</a></li>
+<li><b>更新记录</b>：你遇到的可能已在新版本修掉 →
+<a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a></li>
+<li><b>反馈</b>：提 Issue 或进 QQ 交流群。附上<b>数据包页的原始报文</b>与<b>链路日志</b>定位最快 →
+<a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">Issues</a></li>
+</ul>
+<div class="callout tip"><span class="co-ic">📎</span><div><p>报告模板（照抄即可）：① 平台与版本；② 链路状态卡截图；③ 数据包页里
+一条完整报文（含报头）；④ 已勾选的数据来源与过滤半径。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一页"><a class="pg-prev" href="platform.html">← 平台差异</a><span></span></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首页</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">问答</a>
+        <a href="../faq.html">帮助中心</a>
+        <a href="index.html">手册</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>桌面小組件與短波 — APRSlocus</title>
+<meta name="description" content="目標：放好三套桌面小組件，看懂短波傳播面板。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="桌面小組件與短波 — APRSlocus">
+<meta property="og:description" content="目標：放好三套桌面小組件，看懂短波傳播面板。">
+<meta property="og:url" content="https://aprslocus.theez.top/zh-TW/manual/widgets.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="桌面小組件與短波 — APRSlocus">
+<meta name="twitter:description" content="目標：放好三套桌面小組件，看懂短波傳播面板。">
+<link rel="canonical" href="https://aprslocus.theez.top/zh-TW/manual/widgets.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/widgets.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/widgets.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/widgets.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/widgets.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "桌面小組件與短波 — APRSlocus",
+  "description": "目標：放好三套桌面小組件，看懂短波傳播面板。",
+  "url": "https://aprslocus.theez.top/zh-TW/manual/widgets.html",
+  "inLanguage": "zh-TW",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/zh-TW/manual/widgets.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手冊",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "桌面小組件與短波 — APRSlocus",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/widgets.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首頁</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">幫助中心</a>
+      <a href="index.html" class="active">手冊</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式" data-label-dark="切換淺色模式" data-label-light="切換深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/widgets.html" hreflang="zh-Hans">简中</a><a class="lang-switch active" href="widgets.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../../en/manual/widgets.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要內容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手冊">
+    <a href="../">首頁</a><span aria-hidden="true">/</span>
+    <a href="index.html">手冊</a><span aria-hidden="true">/</span>
+    <span aria-current="page">桌面小組件與短波</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>桌面小組件與短波</h1>
+    <p>目標：放好三套桌面小組件，看懂短波傳播面板。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手冊目錄">
+      <div class="mn-title">手冊目錄</div>
+        <a href="index.html">手冊首頁</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">介面導覽</a>
+        <a href="connections.html">連線與資料來源</a>
+        <a href="beacon.html">位置信標</a>
+        <a href="messaging.html">訊息與群組</a>
+        <a href="maps.html">地圖與顯示</a>
+        <a href="stations.html">臺站與篩選</a>
+        <a href="data.html">匯出 · 備份 · 軌跡</a>
+        <a href="widgets.html" class="active">桌面小組件與短波</a>
+        <a href="settings.html">設定參考</a>
+        <a href="platform.html">平台差異</a>
+        <a href="troubleshooting.html">故障排除</a>
+      <div class="mn-title">本頁目錄</div>
+        <a href="#home">三套桌面小組件</a>
+        <a href="#hf">短波傳播面板</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="home">
+    <h2>三套桌面小組件</h2>
+<p>Android 主螢幕長按 → 小組件 → 找 <b>APRSLocus</b>：</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>小組件</th><th>內容</th></tr></thead><tbody>
+<tr><td><b>天氣</b></td><td>圖示、溫度、現象、今日高低溫 + 指標格 + 火腿建議；按主螢幕空間自動切 4 檔佈局（主檔 / 豪長 / 緊湊 / 單行）</td></tr>
+<tr><td><b>短波</b></td><td>各波段「日 → 夜」條件色帶，一眼看出現在該用哪一段</td></tr>
+<tr><td><b>系統狀態</b></td><td>鏈路、定位與計數的即時快照</td></tr>
+</tbody></table></div>
+<ol class="m-steps">
+<li>新增小組件 → <b>先打開一次應用</b>（小組件要應用推資料）。</li>
+<li>升級後若顯示空白：再打開一次應用即可刷新。</li>
+</ol>
+<div class="callout info"><span class="co-ic">📲</span><div><p><b>小組件不自己連線</b>：應用把已計算、已本地化的快照單向推給原生算繪 ——
+天氣介面金鑰只在應用側，不會外洩到小組件。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="hf">
+    <h2>短波傳播面板</h2>
+<ul>
+<li><b>資料來源</b>：<code>hamqsl.com</code>（N0NBH 整理，業餘界事實標準）；來源約每小時更新，應用快取 <b>30 分鐘</b>。</li>
+<li><b>看什麼</b>：SFI / Kp / A 指數、黑子、X 射線、太陽風；四個波段對的<b>日 / 夜</b>條件一目了然，另有 6m 預測。</li>
+<li><b>怎麼看</b>：綠色好、黃色湊合、紅色差 —— 先挑「日」或「夜」裡顏色最好的那一段。</li>
+</ul>
+<div class="callout warn"><span class="co-ic">誠實</span><div><p>hamqsl 的條件是<b>全球/區域平均</b>，不是你所在地的實測值 ——
+出門前請結合本地時間、天線與雜訊底再判斷。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一頁"><a class="pg-prev" href="data.html">← 匯出 · 備份 · 軌跡</a><a class="pg-next" href="settings.html">設定參考 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首頁</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">問答</a>
+        <a href="../faq.html">幫助中心</a>
+        <a href="index.html">手冊</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">使用者協定</a></span>
+      <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地電波法規。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到頂部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

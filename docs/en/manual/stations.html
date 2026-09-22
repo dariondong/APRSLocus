@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stations — APRSlocus</title>
+<meta name="description" content="Goal: receive the right things (range filter), then read them clearly (list filters and detail).">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Stations — APRSlocus">
+<meta property="og:description" content="Goal: receive the right things (range filter), then read them clearly (list filters and detail).">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/stations.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Stations — APRSlocus">
+<meta name="twitter:description" content="Goal: receive the right things (range filter), then read them clearly (list filters and detail).">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/stations.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/stations.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/stations.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Stations — APRSlocus",
+  "description": "Goal: receive the right things (range filter), then read them clearly (list filters and detail).",
+  "url": "https://aprslocus.theez.top/en/manual/stations.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/stations.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Stations — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/stations.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/stations.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/stations.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="stations.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Stations</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Stations</h1>
+    <p>Goal: receive the right things (range filter), then read them clearly (list filters and detail).</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html" class="active">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#receive">What you receive</a>
+        <a href="#display">What you display</a>
+        <a href="#detail">Detail & device ID</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="receive">
+    <h2>What you receive</h2>
+<p>Both filters live under <b>Settings → Connection</b> and decide whether packets can reach you at all:</p>
+<ol class="m-steps">
+<li><b>Receive range</b>: <code>r/lat/lng/radius</code>, <b>300 km</b> by default (10 km minimum).
+“Follow my position” centres it on you; press <b>Save &amp; apply</b> after changing it.</li>
+<li><b>Receive preferences</b>: tick countries/regions, plus the master switch for “also receive stations from unticked countries”.
+Exact callsigns are received <b>even from outside the range</b>.</li>
+<li>The “receive area” from the wizard is this same country list; <b>nothing ticked = receive everything</b>.</li>
+</ol>
+<div class="callout warn"><span class="co-ic">🧭</span><div><p>“Receiving nothing?” check these two <i>before</i> the link — the other way round wastes an evening:
+a station 400 km away cannot reach you through a 300 km filter however healthy the link is.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="display">
+    <h2>What you display</h2>
+<p>The <b>Stations tab</b> adds a <b>display filter</b> on top (it does not affect receiving):</p>
+<ul>
+<li><b>Status</b>: online / moving / static — the “online window” is under <b>Settings → Connection → Data caps</b> (5 minutes by default).</li>
+<li><b>Type</b>: APRS type (mobile/fixed/relay/weather), software (APRSLocus), device class and exact model.</li>
+<li><b>Favourites</b>: starred stations get their own bucket.</li>
+<li><b>Search</b>: callsign / type / comment / grid — stays fast at tens of thousands (100k stations in memory by default, adjustable).</li>
+</ul>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Check:</b> the list header shows the hit count; “clear filters” returns to everything.
+If the full list still lacks your target, it was <b>never received</b> (previous section), not hidden.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="detail">
+    <h2>Detail &amp; device ID</h2>
+<ul>
+<li><b>Official device library</b>: aprs.org’s <code>aprsorg/aprs-deviceid</code> (tocall) resolves
+<b>vendor + model + class</b> from the packet’s destination callsign (mobile/portable/tracker/app/iGate/relay/weather…);
+bundled snapshot plus online updates.</li>
+<li><b>Other APRSlocus stations</b> are marked automatically (version, battery, …); FMO stations are recognised too.</li>
+<li><b>Detail page jumps out</b> to the QRZ callsign database, <a href="https://aprs.fi" target="_blank" rel="noopener">aprs.fi</a> for trails, and APRS.tv.</li>
+<li><b>Symbols</b>: 37 official tables, 3571 standard icons — official PNG first, Material icons as fallback.</li>
+<li><b>Trail playback</b>: play back that station’s track from its detail page (the history is stored locally).</li>
+</ul>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="maps.html">← Maps &amp; Display</a><a class="pg-next" href="data.html">Export &amp; Backup →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

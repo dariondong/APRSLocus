@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>位置信标 — APRSlocus</title>
+<meta name="description" content="目标：让别人在地图上看到你 —— 间隔、速度分档、射频开关一次配好。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="位置信标 — APRSlocus">
+<meta property="og:description" content="目标：让别人在地图上看到你 —— 间隔、速度分档、射频开关一次配好。">
+<meta property="og:url" content="https://aprslocus.theez.top/manual/beacon.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="位置信标 — APRSlocus">
+<meta name="twitter:description" content="目标：让别人在地图上看到你 —— 间隔、速度分档、射频开关一次配好。">
+<link rel="canonical" href="https://aprslocus.theez.top/manual/beacon.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/beacon.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/beacon.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/beacon.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/beacon.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "位置信标 — APRSlocus",
+  "description": "目标：让别人在地图上看到你 —— 间隔、速度分档、射频开关一次配好。",
+  "url": "https://aprslocus.theez.top/manual/beacon.html",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/manual/beacon.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手册",
+        "item": "https://aprslocus.theez.top/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "位置信标 — APRSlocus",
+        "item": "https://aprslocus.theez.top/manual/beacon.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首页</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">帮助中心</a>
+      <a href="index.html" class="active">手册</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="beacon.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/manual/beacon.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/manual/beacon.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手册">
+    <a href="../">首页</a><span aria-hidden="true">/</span>
+    <a href="index.html">手册</a><span aria-hidden="true">/</span>
+    <span aria-current="page">位置信标</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>位置信标</h1>
+    <p>目标：让别人在地图上看到你 —— 间隔、速度分档、射频开关一次配好。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手册目录">
+      <div class="mn-title">手册目录</div>
+        <a href="index.html">手册首页</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">界面导览</a>
+        <a href="connections.html">连接与数据来源</a>
+        <a href="beacon.html" class="active">位置信标</a>
+        <a href="messaging.html">消息与群聊</a>
+        <a href="maps.html">地图与显示</a>
+        <a href="stations.html">台站与筛选</a>
+        <a href="data.html">导出 · 备份 · 轨迹</a>
+        <a href="widgets.html">桌面组件与短波</a>
+        <a href="settings.html">设置参考</a>
+        <a href="platform.html">平台差异</a>
+        <a href="troubleshooting.html">故障排查</a>
+      <div class="mn-title">本页目录</div>
+        <a href="#interval">上报节奏：先定间隔</a>
+        <a href="#tiers">移动起来：速度分檔</a>
+        <a href="#nofix">没有 GPS 怎么办</a>
+        <a href="#packet">一帧信标长什么样</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="interval">
+    <h2>上报节奏：先定间隔</h2>
+<ol class="m-steps">
+<li><b>设置 → 定位上报 → 启用位置信标</b> 打开（默认开）。</li>
+<li><b>上报间隔</b>默认 <b>60 秒</b> —— APRS-IS 建议移动站不低于 60 秒，<b>最短 5 秒</b>（输入更小会被校验拦下）。APRS 网络是共享资源，间隔拉太短会明显增加服务器负载，界面会提醒。</li>
+<li>按需关掉 <b>速度 / 方位角 / 手机电量</b> 三个附加字段 —— 关掉报文更短，也少暴露一点信息。</li>
+<li>不想自动发就关掉自动上报，用主页的<b>手动上报</b>按需点。</li>
+</ol>
+<div class="callout info"><span class="co-ic">⏱️</span><div><p><b>主页看得见节奏</b>：下次上报倒计时、已发信标次数都在主页上 ——
+停在这两个数字上就能判断「它到底在不在发」。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="tiers">
+    <h2>移动起来：速度分檔</h2>
+<ol class="m-steps">
+<li><b>设置 → 定位上报 → 智能信标（按速度分档）</b> 打开。</li>
+<li>配置最多 <b>5 档</b>：速度越快上报越频繁；每档自定义<b>间隔</b>与<b>图标</b>（图标留空 = 用「我的符号」）。</li>
+<li>停车时档位自动落到低速档，间隔拉长 —— 不用每次手动改。</li>
+</ol>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p>分档间隔同样受 5 秒下限与服务器负载约束；把某一档设成 3 秒，校验会拦下来。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="nofix">
+    <h2>没有 GPS 怎么办</h2>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>场景</th><th>用什么</th><th>在哪</th></tr></thead><tbody>
+<tr><td>室内 / 桌面演示</td><td><b>手动定位</b>：输入经纬度或在地图上选点</td><td>设置 → 定位上报 → 定位来源（模拟位置）</td></tr>
+<tr><td>GPS 弱、有基站</td><td><b>GPS + 网络</b></td><td>设置 → 定位上报 → 定位模式</td></tr>
+<tr><td>完全没有定位</td><td><b>启用模拟数据</b>（演示台站/数据包）</td><td>设置 → 高级</td></tr>
+</tbody></table></div>
+<div class="callout warn"><span class="co-ic">📍</span><div><p><b>网络定位的诚实说明：</b>基站/Wi-Fi 定位本来就有几百米误差，「位置飞来飞去」不是 bug。
+应用的行为是「GPS 停更 2 分钟后才用网络兜底，且<b>不写轨迹</b>」，并且 GPS 新鲜时会丢弃网络点。
+要准就选<b>纯 GPS</b>。</p></div></div>
+<ul>
+<li><b>静止防抖</b>：站着不动时标记不会原地哆嗦（滑动窗口中位数 + 漂移判据），移动时完全不平滑、逐帧如实。</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="packet">
+    <h2>一帧信标长什么样</h2>
+<p>本应用发出的位置帧（示例取自测试用例 <code>beacon_format_test</code> / <code>afsk_test</code>）：</p>
+<pre class="pkt"># 走 APRS-IS：
+BG7LZG-9&gt;APALOC,TCPIP*:!3904.25N/11624.44E&gt;123/045/A=000100 Bat:88% APRSlocus v1.6.67
+# 走射频（TNC）：
+BG7LZQ-9&gt;APALOC,WIDE1-1,WIDE2-1:!2230.00N/11400.00E&gt;测试</pre>
+<ul>
+<li><code>APALOC</code> 是 APRSlocus 的 tocall —— 第三方统计站按它订阅就能看到「同款台站」。</li>
+<li>射频路径用你在 TNC 页配的 <b>中继路径</b>（默认 <code>WIDE1-1,WIDE2-1</code>）；APRS-IS 侧自动是 <code>TCPIP*</code>。</li>
+<li>注释（电量/版本）<b>紧跟定位串、中间无空格</b> —— APRS101 规范要求，解析器按此对齐。</li>
+</ul>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>验证：</b>发一次手动上报 → 数据包页应看到自己那帧；几分钟后在
+<a href="https://aprs.fi" target="_blank" rel="noopener">aprs.fi</a> 用呼号搜，能看到同一坐标。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一页"><a class="pg-prev" href="connections.html">← 连接与数据来源</a><a class="pg-next" href="messaging.html">消息与群聊 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首页</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">问答</a>
+        <a href="../faq.html">帮助中心</a>
+        <a href="index.html">手册</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

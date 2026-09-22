@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Start — APRSlocus</title>
+<meta name="description" content="Goal: install, finish the seven-step wizard, get APRS-IS to “verified” and receive your first packet.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Quick Start — APRSlocus">
+<meta property="og:description" content="Goal: install, finish the seven-step wizard, get APRS-IS to “verified” and receive your first packet.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/start.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Quick Start — APRSlocus">
+<meta name="twitter:description" content="Goal: install, finish the seven-step wizard, get APRS-IS to “verified” and receive your first packet.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/start.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/start.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/start.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Quick Start — APRSlocus",
+  "description": "Goal: install, finish the seven-step wizard, get APRS-IS to “verified” and receive your first packet.",
+  "url": "https://aprslocus.theez.top/en/manual/start.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/start.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Quick Start — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/start.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/start.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/start.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="start.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Quick Start</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Quick Start</h1>
+    <p>Goal: install, finish the seven-step wizard, get APRS-IS to “verified” and receive your first packet.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html" class="active">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#install">Install</a>
+        <a href="#wizard">First launch: seven steps</a>
+        <a href="#passcode">Passcode & background</a>
+        <a href="#firstpacket">Verify: first packet</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="install">
+    <h2>Install</h2>
+<ol class="m-steps">
+<li>Grab the build for your platform from <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a>: <b>Android</b> → <code>*.apk</code>; <b>Windows</b> → installer.</li>
+<li>Android builds have used the official release signature since v1.5.2, so <b>install over the old one</b>; coming from a much older build, uninstall first (mismatched signatures refuse to install).</li>
+<li>Before you tap anything: prepare your <b>Passcode</b> — without it you can connect, but you will receive no messages.</li>
+</ol>
+<div class="callout info"><span class="co-ic">🧩</span><div><p>The desktop build is portable: find <b>APRSlocus</b> in the Start menu, or run <code>aprslocus.exe</code> from the unpacked folder.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="wizard">
+    <h2>First launch: seven steps</h2>
+<p>Every step can be revisited, and the wizard can be re-run any time from
+<b>Settings → Advanced</b> without losing the current setup.</p>
+<ol class="m-steps">
+<li><b>Language</b> — Simplified Chinese, Traditional Chinese, English, Japanese, Indonesian, Spanish.</li>
+<li><b>Agreement</b> — you must accept the Terms and GPL-3.0; APRS data is public: once sent it may be received and relayed worldwide.</li>
+<li><b>Welcome</b> — live map, GPS reporting, APRS messaging, APRS-IS.</li>
+<li><b>Callsign &amp; SSID</b> — full callsign including the SSID (e.g. <code>BG7LZQ-3</code>); <b>it cannot be left empty</b>.</li>
+<li><b>Station symbol</b> — states your station type and travels with every beacon.</li>
+<li><b>Receive area</b> — tick the countries/regions you want; <b>nothing ticked = receive everything</b>.</li>
+<li><b>Server &amp; Passcode</b> — the server defaults to <code>rotate.aprs2.net</code>; Passcode next.</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Done when:</b> after the last page the link status card at the top reads <b>connected</b>.
+A yellow “unverified” banner means the Passcode is still wrong — next section.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="passcode">
+    <h2>Passcode &amp; background</h2>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p><b>The Passcode is the APRS-IS login validator</b> for your callsign.
+Left empty or at the default <code>-1</code> you can only <b>connect</b> — no messaging, no groups.
+Generate one for your <b>full callsign</b> at the
+<a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode generator</a>
+and put it into <b>Settings → Connection → Passcode</b>. A wrong value shows the yellow
+“unverified” banner on the home page.</p></div></div>
+<ul>
+<li><b>Save after editing</b>: connection changes apply only with “Save &amp; apply”.</li>
+<li><b>Keep beaconing</b>: allow background running, disable battery optimisation and allow auto-start in your system settings; the notification offers a one-tap Exit.</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="firstpacket">
+    <h2>Verify: first packet</h2>
+<ol class="m-steps">
+<li>The <b>link status card</b> at the top reads “connected” and the RX counter climbs.</li>
+<li>Open the <b>Packets</b> tab: raw packets appear within seconds (monospace, long-press to copy).</li>
+<li>Never seen one? Here is a <b>real position frame</b> taken from the project’s tests, taken apart:</li>
+</ol>
+<pre class="pkt">BG7LZG-9&gt;APALOC,TCPIP*:!3904.25N/11624.44E&gt;123/045/A=000100 Bat:88% APRSlocus v1.6.67</pre>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>BG7LZG-9</code></td><td>sender callsign (with SSID)</td></tr>
+<tr><td><code>APALOC</code></td><td>destination / tocall — APRSlocus’s software ID</td></tr>
+<tr><td><code>TCPIP*</code></td><td>path: over the internet, asterisk = last retransmitter</td></tr>
+<tr><td><code>!3904.25N/11624.44E&gt;</code></td><td>position: latitude / longitude / station symbol (car)</td></tr>
+<tr><td><code>123/045</code></td><td>course 123°, speed 45 knots</td></tr>
+<tr><td><code>A=000100</code></td><td>altitude 100 ft</td></tr>
+<tr><td><code>Bat:88% …</code></td><td>comment: battery and version (directly after the position, no space)</td></tr>
+</tbody></table></div>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Done when:</b> the Packets tab shows frames and the counter grows.
+Still zero? Go to <a href="troubleshooting.html">Troubleshooting</a>.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="index.html">← Guide Home</a><a class="pg-next" href="interface.html">Interface →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

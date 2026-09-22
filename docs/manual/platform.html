@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>平台差异 — APRSlocus</title>
+<meta name="description" content="同一个应用在 Android / Windows / Web 上能力不同，先看这张表再动手。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="平台差异 — APRSlocus">
+<meta property="og:description" content="同一个应用在 Android / Windows / Web 上能力不同，先看这张表再动手。">
+<meta property="og:url" content="https://aprslocus.theez.top/manual/platform.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="平台差异 — APRSlocus">
+<meta name="twitter:description" content="同一个应用在 Android / Windows / Web 上能力不同，先看这张表再动手。">
+<link rel="canonical" href="https://aprslocus.theez.top/manual/platform.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/platform.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/platform.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "平台差异 — APRSlocus",
+  "description": "同一个应用在 Android / Windows / Web 上能力不同，先看这张表再动手。",
+  "url": "https://aprslocus.theez.top/manual/platform.html",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/manual/platform.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手册",
+        "item": "https://aprslocus.theez.top/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "平台差异 — APRSlocus",
+        "item": "https://aprslocus.theez.top/manual/platform.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首页</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">帮助中心</a>
+      <a href="index.html" class="active">手册</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="platform.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/manual/platform.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/manual/platform.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手册">
+    <a href="../">首页</a><span aria-hidden="true">/</span>
+    <a href="index.html">手册</a><span aria-hidden="true">/</span>
+    <span aria-current="page">平台差异</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>平台差异</h1>
+    <p>同一个应用在 Android / Windows / Web 上能力不同，先看这张表再动手。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手册目录">
+      <div class="mn-title">手册目录</div>
+        <a href="index.html">手册首页</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">界面导览</a>
+        <a href="connections.html">连接与数据来源</a>
+        <a href="beacon.html">位置信标</a>
+        <a href="messaging.html">消息与群聊</a>
+        <a href="maps.html">地图与显示</a>
+        <a href="stations.html">台站与筛选</a>
+        <a href="data.html">导出 · 备份 · 轨迹</a>
+        <a href="widgets.html">桌面组件与短波</a>
+        <a href="settings.html">设置参考</a>
+        <a href="platform.html" class="active">平台差异</a>
+        <a href="troubleshooting.html">故障排查</a>
+      <div class="mn-title">本页目录</div>
+        <a href="#matrix">能力矩阵</a>
+        <a href="#web">Web 版的取舍</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="matrix">
+    <h2>能力矩阵</h2>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>能力</th><th>Android</th><th>Windows</th></tr></thead><tbody>
+<tr><td>APRS-IS 收发</td><td>✓</td><td>✓</td></tr>
+<tr><td>后台持续定位（前台服务）</td><td>✓</td><td>—（桌面无前台服务概念）</td></tr>
+<tr><td>蓝牙 TNC</td><td>✓（需蓝牙权限）</td><td>—（用 USB 串口 COM 口）</td></tr>
+<tr><td>USB 串口（OTG）</td><td>✓</td><td>✓（COM 口独占，别被别的软件占着）</td></tr>
+<tr><td>音频 AFSK</td><td>✓（需录音权限；发射时拉满音量并暂停麦克风）</td><td>✓</td></tr>
+<tr><td>离线地图下载</td><td>✓</td><td>✓</td></tr>
+<tr><td>桌面小组件</td><td>✓（3 套）</td><td>—（Android 独有）</td></tr>
+<tr><td>WAV 文件模式</td><td colspan="2">所有平台可用：离线解码录音，或把报文导出成音频</td></tr>
+</tbody></table></div>
+  </section>
+  <section class="chapter reveal" id="web">
+    <h2>Web 版的取舍</h2>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p>Web 版是「能看、能连」的轻量形态：</p>
+<ul style="margin-top:6px">
+<li><b>不提供离线地图下载</b>（浏览器没有稳定可写目录）；</li>
+<li>备份走<b>剪贴板</b>（复制 / 粘贴），不落文件；</li>
+<li>实时音频在不支持的平台会提示，仍可用 <b>WAV 模式</b>（上传录音离线解码）；</li>
+<li>无桌面小组件、无后台持续定位。</li>
+</ul></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一页"><a class="pg-prev" href="settings.html">← 设置参考</a><a class="pg-next" href="troubleshooting.html">故障排查 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首页</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">问答</a>
+        <a href="../faq.html">帮助中心</a>
+        <a href="index.html">手册</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

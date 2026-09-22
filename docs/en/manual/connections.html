@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connections — APRSlocus</title>
+<meta name="description" content="Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Connections — APRSlocus">
+<meta property="og:description" content="Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/manual/connections.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Connections — APRSlocus">
+<meta name="twitter:description" content="Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.">
+<link rel="canonical" href="https://aprslocus.theez.top/en/manual/connections.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/connections.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/connections.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Connections — APRSlocus",
+  "description": "Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.",
+  "url": "https://aprslocus.theez.top/en/manual/connections.html",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/en/manual/connections.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guide",
+        "item": "https://aprslocus.theez.top/en/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Connections — APRSlocus",
+        "item": "https://aprslocus.theez.top/en/manual/connections.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="../faq.html">Help Center</a>
+      <a href="index.html" class="active">Guide</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/connections.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../../zh-TW/manual/connections.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="connections.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="Guide">
+    <a href="../">Home</a><span aria-hidden="true">/</span>
+    <a href="index.html">Guide</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Connections</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>Connections</h1>
+    <p>Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="Guide contents">
+      <div class="mn-title">Guide contents</div>
+        <a href="index.html">Guide Home</a>
+        <a href="start.html">Quick Start</a>
+        <a href="interface.html">Interface</a>
+        <a href="connections.html" class="active">Connections</a>
+        <a href="beacon.html">Beaconing</a>
+        <a href="messaging.html">Messaging</a>
+        <a href="maps.html">Maps & Display</a>
+        <a href="stations.html">Stations</a>
+        <a href="data.html">Export & Backup</a>
+        <a href="widgets.html">Widgets & HF</a>
+        <a href="settings.html">Settings Reference</a>
+        <a href="platform.html">Platforms</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+      <div class="mn-title">On this page</div>
+        <a href="#sources">Four links: many RX, one TX</a>
+        <a href="#aprsis">Connect APRS-IS</a>
+        <a href="#rf">Into a radio: TNC / audio / PKWDWPL</a>
+        <a href="#igate">iGate</a>
+        <a href="#selftest">Self-test & order of diagnosis</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="sources">
+    <h2>Four links: many RX, one TX</h2>
+<p>Path: <b>Settings → Connection → Data sources</b>. Every ticked link <b>receives</b>, but there is
+only <b>one transmit source</b> — the one marked with the dot. Transmitting the same callsign over
+two links produces duplicate packets.</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>Source</th><th>Link</th><th>RX</th><th>TX</th></tr></thead><tbody>
+<tr><td><b>APRS-IS</b></td><td>internet TCP, default <code>rotate.aprs2.net:14580</code></td><td>✓</td><td>✓</td></tr>
+<tr><td><b>TNC</b></td><td>Bluetooth SPP / USB serial (OTG), KISS, into a radio</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>Audio</b></td><td>headphone jack into a radio, AFSK 1200 (Bell 202)</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>PKWDWPL</b></td><td>Bluetooth/serial reader of a Kenwood radio’s <code>$PKWDWPL</code> waypoints</td><td>✓</td><td><b>✗ receive-only</b></td></tr>
+</tbody></table></div>
+<div class="callout warn"><span class="co-ic">📡</span><div><p><b>The receive range defaults to 300 km</b> (10 km minimum), filtered with
+<code>r/lat/lng/radius</code> — press <b>“Save &amp; apply”</b> after changing it. For worldwide
+reception, raise the radius or stop following your position.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="aprsis">
+    <h2>Connect APRS-IS</h2>
+<ol class="m-steps">
+<li><b>Settings → Connection</b>: leave the server at <code>rotate.aprs2.net</code>, port <code>14580</code>.</li>
+<li>Enter your <b>Passcode</b> (generated for the full callsign, see <a href="start.html#passcode">Quick Start</a>).</li>
+<li>Press <b>“Save &amp; apply”</b> — connection edits do nothing until you save.</li>
+<li>Back on the home page the link card reads “connected” and the counter climbs.</li>
+</ol>
+<ul>
+<li><b>It reconnects by itself</b>: progressive backoff of <b>8 → 16 → 32 → 60 s</b>.</li>
+<li><b>Server replies <code>unverified</code></b> = the Passcode failed — go back to step 2.</li>
+<li>Custom relay / WebSocket: fill <b>WebSocket URL (optional)</b> in the same place; empty = plain TCP.</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="rf">
+    <h2>Into a radio: TNC / audio / PKWDWPL</h2>
+<p>All three RF paths live under <b>Settings → Device</b> (the overview lists the current link and
+three sub-pages):</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>Path</th><th>Sub-page</th><th>Key parameters</th></tr></thead><tbody>
+<tr><td><b>Bluetooth/USB TNC</b></td><td>Device → TNC</td><td>init string, serial baud, KISS params (txDelay 300 ms, txTail 50 ms, P=63, slot 100 ms, 330 B frames), path <code>WIDE1-1,WIDE2-1</code></td></tr>
+<tr><td><b>Audio (soundcard)</b></td><td>Device → Audio</td><td>22050 sample rate, 1200 baud, mark 1200 Hz / space 2200 Hz, TX level, 3000 ms CSMA wait</td></tr>
+<tr><td><b>Kenwood waypoints</b></td><td>Device → PKWDWPL</td><td>read-only link; strict checksum off by default (mismatches are flagged, not dropped)</td></tr>
+</tbody></table></div>
+<ol class="m-steps">
+<li><b>Bind the device</b>: tap “Scan devices” (paired Bluetooth + USB serial) in the sub-page and pick yours.</li>
+<li><b>TNC receives but will not transmit</b>: send the init string first — many modules boot into command mode and need <code>KISS ON</code>; then match the <b>serial baud</b> on both ends (9600/19200/38400/57600/115200 are common; Bluetooth SPP has no baud rate).</li>
+<li><b>Audio nobody can decode</b>: check the <b>TX level</b> — too low or clipped both fail; wire it (headphone jack → radio data/mic), <b>never speaker-to-microphone</b>.</li>
+<li><b>Receive-only</b>: switch off “allow TX / allow RF beacon” — listening only is the calmest setup and never keys the PTT by mistake.</li>
+</ol>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p>RF transmission requires a licence — follow local regulations. <b>RF beaconing</b> is off by default; confirm your licence allows it before enabling.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="igate">
+    <h2>iGate</h2>
+<p>The iGate relays packets heard on <b>RF</b> into <b>APRS-IS</b> (adding <code>qAr</code>/<code>qAR</code>
+and your callsign). Entry: <b>Settings → Device → Gateway (iGate)</b>.</p>
+<ol class="m-steps">
+<li><b>Meet the conditions</b>: tick <b>APRS-IS</b> <i>and</i> one RF source (TNC or audio) — the UI names whichever is missing.</li>
+<li>Turn on <b>Enable gateway</b> — RF → IS only by default.</li>
+<li>Optionally enable <b>two-way</b>: it really transmits on RF, but only relays point-to-point messages addressed to stations heard on RF recently; broadcasts like position/weather are never relayed.</li>
+</ol>
+<div class="callout info"><span class="co-ic">🔁</span><div><p><b>Loop protection (automatic):</b> packets carrying <code>TCPIP*</code> or an existing
+q-construct (they came from the internet) are never sent back, and the same frame is injected once
+per 30 s. The counters in that section (RF seen / gated / duplicates dropped / loops blocked) are
+the live readings of those four gates.</p></div></div>
+  </section>
+  <section class="chapter reveal" id="selftest">
+    <h2>Self-test &amp; order of diagnosis</h2>
+<p>When something breaks, <b>work down this order</b> — one layer at a time:</p>
+<ol class="m-steps">
+<li><b>Link status card</b> (top of the home page): is the link up, are the counters moving, what did the server reply?</li>
+<li><b>Link self-test</b> (device page): TNC protocol loopback plus the AFSK modulate/demodulate loop; the TNC side also offers an <b>init string</b> and a <b>TX self-test</b> that writes one status frame with <b>no coordinates</b> (it never moves you on aprs.fi).</li>
+<li><b>Packets tab</b>: did the frames arrive at all? Received but never plotted = filter or coordinate issue (see <a href="stations.html">Stations</a>).</li>
+<li><b>Gateway counters stay flat</b>: follow the hints — “RF seen = 0” means nothing arrived: check radio volume, squelch and antenna first.</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>Best evidence when reporting:</b> the raw packet from the Packets tab plus the link log.</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="Next"><a class="pg-prev" href="interface.html">← Interface</a><a class="pg-next" href="beacon.html">Beaconing →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../faq.html">Help Center</a>
+        <a href="index.html">Guide</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

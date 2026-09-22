@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>连接与数据来源 — APRSlocus</title>
+<meta name="description" content="目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="连接与数据来源 — APRSlocus">
+<meta property="og:description" content="目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。">
+<meta property="og:url" content="https://aprslocus.theez.top/manual/connections.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="连接与数据来源 — APRSlocus">
+<meta name="twitter:description" content="目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。">
+<link rel="canonical" href="https://aprslocus.theez.top/manual/connections.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/connections.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/connections.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "连接与数据来源 — APRSlocus",
+  "description": "目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。",
+  "url": "https://aprslocus.theez.top/manual/connections.html",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/manual/connections.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手册",
+        "item": "https://aprslocus.theez.top/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "连接与数据来源 — APRSlocus",
+        "item": "https://aprslocus.theez.top/manual/connections.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首页</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">帮助中心</a>
+      <a href="index.html" class="active">手册</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="connections.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/manual/connections.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/manual/connections.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手册">
+    <a href="../">首页</a><span aria-hidden="true">/</span>
+    <a href="index.html">手册</a><span aria-hidden="true">/</span>
+    <span aria-current="page">连接与数据来源</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>连接与数据来源</h1>
+    <p>目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手册目录">
+      <div class="mn-title">手册目录</div>
+        <a href="index.html">手册首页</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">界面导览</a>
+        <a href="connections.html" class="active">连接与数据来源</a>
+        <a href="beacon.html">位置信标</a>
+        <a href="messaging.html">消息与群聊</a>
+        <a href="maps.html">地图与显示</a>
+        <a href="stations.html">台站与筛选</a>
+        <a href="data.html">导出 · 备份 · 轨迹</a>
+        <a href="widgets.html">桌面组件与短波</a>
+        <a href="settings.html">设置参考</a>
+        <a href="platform.html">平台差异</a>
+        <a href="troubleshooting.html">故障排查</a>
+      <div class="mn-title">本页目录</div>
+        <a href="#sources">四条链路：收可以多选，发只有一条</a>
+        <a href="#aprsis">接上 APRS-IS</a>
+        <a href="#rf">接电台：TNC / 音频 / PKWDWPL</a>
+        <a href="#igate">网关 iGate</a>
+        <a href="#selftest">链路自检与排错顺序</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="sources">
+    <h2>四条链路：收可以多选，发只有一条</h2>
+<p>路径 <b>设置 → 连接 → 数据来源</b>。勾中的链路都会<b>收</b>报文，但<b>发射只有一条</b> ——
+右侧圆点标记的那条。同一个呼号从两条链路发出去会造成重复报文。</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>来源</th><th>链路</th><th>收</th><th>发</th></tr></thead><tbody>
+<tr><td><b>APRS-IS</b></td><td>互联网 TCP，默认 <code>rotate.aprs2.net:14580</code></td><td>✓</td><td>✓</td></tr>
+<tr><td><b>TNC</b></td><td>蓝牙 SPP / USB 串口（OTG），KISS 协议，接电台</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>音频</b></td><td>耳机口接电台，AFSK 1200（Bell 202）</td><td>✓</td><td>✓</td></tr>
+<tr><td><b>PKWDWPL</b></td><td>蓝牙/串口读 Kenwood 的 <code>$PKWDWPL</code> 航点语句</td><td>✓</td><td><b>✗ 只读</b></td></tr>
+</tbody></table></div>
+<div class="callout warn"><span class="co-ic">📡</span><div><p><b>接收范围默认 300 km</b>（最小 10 km），用 <code>r/纬度/经度/半径</code> 过滤 ——
+改完必须点 <b>「保存并应用」</b> 才生效。想收全球就把半径调大或关掉过滤中心跟随。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="aprsis">
+    <h2>接上 APRS-IS</h2>
+<ol class="m-steps">
+<li><b>设置 → 连接</b>，确认服务器 <code>rotate.aprs2.net</code>、端口 <code>14580</code>（默认即可）。</li>
+<li>填入 <b>Passcode</b>（用完整呼号生成，见 <a href="start.html#passcode">快速上手</a>）。</li>
+<li>点 <b>「保存并应用」</b> —— 连接页的改动不保存不会生效。</li>
+<li>回主页看链路状态卡：变成「已连接」、收包计数开始增长。</li>
+</ol>
+<ul>
+<li><b>断线会自己重连</b>：按 <b>8 → 16 → 32 → 60 秒</b> 渐进退避，不用手动重连。</li>
+<li><b>服务器返回 <code>unverified</code></b> = Passcode 没通过，回到第 2 步。</li>
+<li>想用自建中转 / WebSocket：同一处填 <b>WebSocket URL（可选）</b>，留空走标准 TCP。</li>
+</ul>
+  </section>
+  <section class="chapter reveal" id="rf">
+    <h2>接电台：TNC / 音频 / PKWDWPL</h2>
+<p>三条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与三个子页）：</p>
+<div class="doc-table-wrap"><table class="doc-table">
+<thead><tr><th>路径</th><th>子页</th><th>关键参数</th></tr></thead><tbody>
+<tr><td><b>蓝牙/USB TNC</b></td><td>设备 → TNC 设备与参数</td><td>初始化串、串口线速、KISS 参数（txDelay 300ms、txTail 50ms、P=63、时隙 100ms、帧长 330B）、中继路径 <code>WIDE1-1,WIDE2-1</code></td></tr>
+<tr><td><b>音频（声卡）</b></td><td>设备 → 音频（声卡 TNC）</td><td>采样率 22050、比特率 1200、标号 1200Hz / 空号 2200Hz、发射电平、CSMA 等待 3000ms</td></tr>
+<tr><td><b>Kenwood 航点</b></td><td>设备 → PKWDWPL 设备</td><td>只读链路；严格校验和默认关（不符只标注不丢弃）</td></tr>
+</tbody></table></div>
+<ol class="m-steps">
+<li><b>绑定设备</b>：子页里点「扫描设备」（蓝牙已配对 + USB 串口），选中后绑定。</li>
+<li><b>TNC「能收不能发」</b>：先点「立即发送初始化串」—— 很多模块上电停在命令模式，要收到 <code>KISS ON</code> 才进 KISS；再核对<b>串口线速</b>（USB 串口与电台数据口必须同速：9600/19200/38400/57600/115200；蓝牙 SPP 无波特率概念）。</li>
+<li><b>音频「对方解不出」</b>：看出去的<b>发射电平</b> —— 峰值太低或削顶都解不出；用音频线（耳机口 → 电台数据/话筒口），<b>别用扬声器对着麦克风</b>。</li>
+<li><b>想只收不发</b>：关掉「允许发射 / 允许射频信标」—— 只听信标最省心，也避免误触 PTT。</li>
+</ol>
+<div class="callout warn"><span class="co-ic">⚠️</span><div><p>射频发射需持照操作，请遵守当地法规；<b>允许射频信标</b>默认关，打开前确认你的执照与本地规则允许。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="igate">
+    <h2>网关 iGate</h2>
+<p>iGate 把<b>射频</b>收到的报文转送 <b>APRS-IS</b>（自动加 <code>qAr</code>/<code>qAR</code> 与你的呼号标识来路）。
+入口在 <b>设置 → 设备 → 网关（iGate）</b>。</p>
+<ol class="m-steps">
+<li><b>先满足条件</b>：同时勾选 <b>APRS-IS</b> + 一条射频来源（TNC 或音频），缺哪个界面会直接告诉你。</li>
+<li>打开 <b>启用网关</b> —— 默认只做 <b>RF → IS</b>（把听到的送上互联网）。</li>
+<li>按需打开 <b>双向网关</b>：它会在射频上<b>真实发射</b>，但只转「发给最近在射频上听到过的台站」的点对点消息；位置/天气等广播不转，避免占满信道。</li>
+</ol>
+<div class="callout info"><span class="co-ic">🔁</span><div><p><b>环路防护（自动，无需配置）：</b>报文带 <code>TCPIP*</code> 或已有 q 构造的（本来就是互联网来的）
+绝不回送；同一帧 <b>30 秒内只注入一次</b>。分节里的计数（射频收到 / 已转递 / 重复丢弃 / 环路拒收）
+就是这四道闸的实时读数。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="selftest">
+    <h2>链路自检与排错顺序</h2>
+<p>出问题时<b>按这个顺序查</b>，一层一层来，别跳：</p>
+<ol class="m-steps">
+<li><b>链路状态卡</b>（主页顶部）：连接是否成立、收发计数是否在涨、服务器返回什么。</li>
+<li><b>链路自检</b>（设备页）：TNC 协议回路 + AFSK 调制解调回路，一键分层定位；TNC 侧另有<b>初始化串</b>与<b>发射自检</b>（写一帧状态包，<b>不含坐标</b>，不会在 aprs.fi 上挪动你的位置）。</li>
+<li><b>数据包页</b>：报文到底有没有进来。能收到但不上图 = 筛选或坐标问题（见 <a href="stations.html">台站与筛选</a>）。</li>
+<li><b>网关计数不涨</b>：按界面提示逐条排除 —— 「射频收到 = 0」说明报文根本没进来，先查电台音量/静噪/天线。</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>反馈时最有效的证据</b>：数据包页的原始报文 + 链路日志，附上它们定位最快。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一页"><a class="pg-prev" href="interface.html">← 界面导览</a><a class="pg-next" href="beacon.html">位置信标 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首页</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">问答</a>
+        <a href="../faq.html">帮助中心</a>
+        <a href="index.html">手册</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>匯出 · 備份 · 軌跡 — APRSlocus</title>
+<meta name="description" content="目標：把日誌匯出成 ADIF、把整機設定打包備份、翻看歷史軌跡。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="匯出 · 備份 · 軌跡 — APRSlocus">
+<meta property="og:description" content="目標：把日誌匯出成 ADIF、把整機設定打包備份、翻看歷史軌跡。">
+<meta property="og:url" content="https://aprslocus.theez.top/zh-TW/manual/data.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="匯出 · 備份 · 軌跡 — APRSlocus">
+<meta name="twitter:description" content="目標：把日誌匯出成 ADIF、把整機設定打包備份、翻看歷史軌跡。">
+<link rel="canonical" href="https://aprslocus.theez.top/zh-TW/manual/data.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/data.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/data.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html">
+<link rel="icon" type="image/png" href="../../assets/favicon.png">
+<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "匯出 · 備份 · 軌跡 — APRSlocus",
+  "description": "目標：把日誌匯出成 ADIF、把整機設定打包備份、翻看歷史軌跡。",
+  "url": "https://aprslocus.theez.top/zh-TW/manual/data.html",
+  "inLanguage": "zh-TW",
+  "author": {
+    "@type": "Person",
+    "name": "BG7LZQ (Darion)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "APRSlocus",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aprslocus.theez.top/assets/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://aprslocus.theez.top/zh-TW/manual/data.html"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "APRSlocus",
+        "item": "https://aprslocus.theez.top/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "手冊",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "匯出 · 備份 · 軌跡 — APRSlocus",
+        "item": "https://aprslocus.theez.top/zh-TW/manual/data.html"
+      }
+    ]
+  }
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.manual-tools{display:none}</style></noscript>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span>
+  <span class="blob b3"></span><span class="blob b4"></span>
+</div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">首頁</a>
+      <a href="../#features">功能</a>
+      <a href="../faq.html">幫助中心</a>
+      <a href="index.html" class="active">手冊</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下載</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式" data-label-dark="切換淺色模式" data-label-light="切換深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../../manual/data.html" hreflang="zh-Hans">简中</a><a class="lang-switch active" href="data.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../../en/manual/data.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要內容</a>
+
+<section class="section" id="manual">
+  <nav class="doc-crumb reveal" aria-label="手冊">
+    <a href="../">首頁</a><span aria-hidden="true">/</span>
+    <a href="index.html">手冊</a><span aria-hidden="true">/</span>
+    <span aria-current="page">匯出 · 備份 · 軌跡</span>
+  </nav>
+  <div class="section-head reveal">
+    <h1>匯出 · 備份 · 軌跡</h1>
+    <p>目標：把日誌匯出成 ADIF、把整機設定打包備份、翻看歷史軌跡。</p>
+  </div>
+
+  <div class="manual-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+    </div>
+    <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+  </div>
+
+  <div class="manual-layout">
+    <nav class="manual-nav reveal" aria-label="手冊目錄">
+      <div class="mn-title">手冊目錄</div>
+        <a href="index.html">手冊首頁</a>
+        <a href="start.html">快速上手</a>
+        <a href="interface.html">介面導覽</a>
+        <a href="connections.html">連線與資料來源</a>
+        <a href="beacon.html">位置信標</a>
+        <a href="messaging.html">訊息與群組</a>
+        <a href="maps.html">地圖與顯示</a>
+        <a href="stations.html">臺站與篩選</a>
+        <a href="data.html" class="active">匯出 · 備份 · 軌跡</a>
+        <a href="widgets.html">桌面小組件與短波</a>
+        <a href="settings.html">設定參考</a>
+        <a href="platform.html">平台差異</a>
+        <a href="troubleshooting.html">故障排除</a>
+      <div class="mn-title">本頁目錄</div>
+        <a href="#adif">匯出 ADIF</a>
+        <a href="#backup">備份與恢復</a>
+        <a href="#track">歷史軌跡與回放</a>
+    </nav>
+    <div class="manual-body">
+  <section class="chapter reveal" id="adif">
+    <h2>匯出 ADIF</h2>
+<ol class="m-steps">
+<li>入口：<b>設定 → 匯出 ADIF</b>。</li>
+<li>頻率可自訂（ADIF 是業餘無線電通用日誌交換格式）。</li>
+<li>匯出的檔案可直接匯入其它日誌軟體。</li>
+</ol>
+<div class="callout tip"><span class="co-ic">✅</span><div><p><b>驗證：</b>匯出後用任意日誌軟體開啟，能看到呼號、時間、模式欄位即成功。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="backup">
+    <h2>備份與恢復</h2>
+<ol class="m-steps">
+<li><b>匯出</b>（設定 → 備份與恢復 → 匯出備份）：設定組態（電臺、信標、地圖、篩選、資料來源、伺服器等）
+與本地資料進<b>一個 JSON</b>；可勾選是否包含圖片。</li>
+<li><b>匯入</b>：選擇備份檔案（或從剪貼簿貼上）→ 匯入後<b>重啟應用</b>生效。</li>
+<li>換機 / 重裝的順序：裝應用 → 匯入 → 重啟 → 核對「設定 → 連線」的伺服器與 Passcode。</li>
+</ol>
+<div class="callout warn"><span class="co-ic">🔐</span><div><p><b>白名單匯入</b>：只認該分組白名單內的鍵 —— 來路不明的 JSON 改不了內部設定；
+更高版本的備份會被拒絕並提示先升級。<b>備份檔案含呼號、伺服器口令與 API 金鑰，請妥善保管。</b></p>
+<p style="margin-top:6px">平台差異：Android 用系統檔案選擇器（下載目錄）；Windows 存 Documents；Web 版走剪貼簿。
+讀取上限 <b>32 MB</b>。</p></div></div>
+  </section>
+  <section class="chapter reveal" id="track">
+    <h2>歷史軌跡與回放</h2>
+<ol class="m-steps">
+<li>入口：<b>設定 → 歷史軌跡</b>。</li>
+<li>按天落盤：<code>tracklog/YYYY-MM-DD.json</code>，記錄經緯度、速度、航向、海拔、精度 —— 退出重進還在。</li>
+<li>每天一屏：總里程、平均與最高速度、<b>移動時長</b>、軌跡點數；可按天刪除或一鍵清空。
+移動時長只累計確實在動的段 —— 中途停車吃飯的兩小時不算開車。</li>
+<li><b>點進某天可回放</b>：底圖與主地圖同一套（同快取、同座標校正）；軌跡隨播放生長、可拖進度、
+<b>0.5× ~ 4×</b> 倍速、可跟隨視角；超過 45 秒的停頓自動快進。</li>
+</ol>
+<div class="callout info"><span class="co-ic">🧾</span><div><p>它與地圖上那條「我的軌跡」<b>刻意分開</b>：螢幕軌跡只服務本次顯示，退出即失；
+歷史軌跡是留檔，可匯出、可回放。</p></div></div>
+  </section>
+    </div>
+  </div>
+
+  <nav class="doc-pager" aria-label="下一頁"><a class="pg-prev" href="stations.html">← 臺站與篩選</a><a class="pg-next" href="widgets.html">桌面小組件與短波 →</a></nav>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../../assets/logo.png" alt="APRSlocus">
+        <div><b>APRSlocus</b><span>APR Tracking &amp; Mapping</span></div>
+      </div>
+      <div class="footer-links">
+        <a href="../">首頁</a>
+        <a href="../#features">功能</a>
+        <a href="../#faq">問答</a>
+        <a href="../faq.html">幫助中心</a>
+        <a href="index.html">手冊</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">使用者協定</a></span>
+      <span class="disclaimer">本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地電波法規。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#manual" aria-label="回到頂部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../../js/main.js"></script>
+<script>
+/* 手册页专属：小节搜索 + 侧栏 scrollspy（无 JS 时正文照常可读） */
+(function () {
+  "use strict";
+  var input = document.getElementById('manualFilter');
+  var nohit = document.getElementById('manualNohit');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      chapters.forEach(function (sec) {
+        var ok = !kw || (sec.textContent || '').toLowerCase().indexOf(kw) !== -1;
+        sec.hidden = !ok;
+        if (ok) hits++;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
+  if ('IntersectionObserver' in window && tocLinks.length) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      });
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    chapters.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

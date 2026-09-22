@@ -101,29 +101,60 @@ def main():
             n = s.count(t)
             chk('%s : %s' % (os.path.basename(f), t), (n > 0) == want, 'count=%d' % n)
 
-    print('[manual x3]')
-    for f in ['docs/manual.html', 'docs/zh-TW/manual.html', 'docs/en/manual.html']:
-        s = read(f)
-        p = P()
-        p.feed(s)
-        print(' ' + f)
-        chk('html structure', not p.err and not p.stack, p.err[:1])
-        chk('12 chapters', s.count('<section class="chapter') == 12)
-        chk('sidebar toc (12 links)', s.count('manual-nav') >= 1)
-        chk('theme + skip + canonical',
-            "localStorage.getItem('theme')" in s and 'skip-link' in s
-            and 'rel="canonical"' in s)
-        chk('ld TechArticle', '"@type": "TechArticle"' in s)
-        chk('m-steps not steps', 'class="m-steps"' in s and 'class="steps"' not in s)
-        chk('no leftover cond-expr', 'if lang ==' not in s)
+    print('[manual x39 多页]')
+    MANUAL = ['index', 'start', 'interface', 'connections', 'beacon', 'messaging', 'maps',
+              'stations', 'data', 'widgets', 'settings', 'platform', 'troubleshooting']
+    BASES = [('docs/manual', 'docs/manual.html'),
+             ('docs/zh-TW/manual', 'docs/zh-TW/manual.html'),
+             ('docs/en/manual', 'docs/en/manual.html')]
+    for base, old in BASES:
+        chk('旧单页已移除 ' + old, not os.path.exists(os.path.join(ROOT, old)))
+        bad_struct, no_theme, no_crumb, no_hreflang = [], [], [], []
+        for name in MANUAL:
+            f = '%s/%s.html' % (base, name)
+            s = read(f)
+            p = P()
+            p.feed(s)
+            if p.err or p.stack:
+                bad_struct.append(name)
+            if "localStorage.getItem('theme')" not in s or 'skip-link' not in s \
+                    or 'rel="canonical"' not in s or '"@type": "TechArticle"' not in s:
+                no_theme.append(name)
+            if 'doc-crumb' not in s or 'manual-nav' not in s or 'doc-pager' not in s:
+                no_crumb.append(name)
+            if s.count('rel="alternate" hreflang=') != 4:
+                no_hreflang.append(name)
+        chk('%s: 13 页结构 OK' % base, not bad_struct, bad_struct)
+        chk('%s: theme/skip/canonical/ld' % base, not no_theme, no_theme)
+        chk('%s: crumb+tree+pager' % base, not no_crumb, no_crumb)
+        chk('%s: hreflang x4/页' % base, not no_hreflang, no_hreflang)
+    # 设置页：三语表格行数必须对齐（196 行）且 15 个分组
+    for base, _ in BASES:
+        s = read(base + '/settings.html')
+        chk('settings 15 groups / 196 rows',
+            s.count('<section class="chapter') == 15
+            and s.count('<tr><td><b>') == 196,
+            '%d / %d' % (s.count('<section class="chapter'), s.count('<tr><td><b>')))
+        chk('settings defaults present', 'rotate.aprs2.net' in s and '14580' in s)
+    # 任务式素材：真实报文 + m-steps（且不得误用首页 .steps）
+    s = read('docs/manual/start.html')
+    chk('real packet sample', 'BG7LZG-9&gt;APALOC,TCPIP*' in s)
+    chk('m-steps used, .steps not', 'class="m-steps"' in s and 'class="steps"' not in s)
+    chk('troubleshooting decision table', '症状 → 原因 → 动作' in read('docs/manual/troubleshooting.html'))
+    chk('manual zh-TW 题式句', '症狀 → 原因 → 動作' in read('docs/zh-TW/manual/troubleshooting.html'))
+    chk('manual en sentence', 'Symptom → cause → action' in read('docs/en/manual/troubleshooting.html'))
 
     print('[nav cross-links]')
     for f in ['docs/index.html', 'docs/zh-TW/index.html', 'docs/en/index.html',
-              'docs/faq.html', 'docs/zh-TW/faq.html', 'docs/en/faq.html',
-              'docs/manual.html', 'docs/zh-TW/manual.html', 'docs/en/manual.html']:
-        chk('manual link in ' + os.path.basename(os.path.dirname(f)) + '/' + os.path.basename(f)
-            if '/' in f else 'manual link in ' + f,
-            'manual.html' in read(f))
+              'docs/faq.html', 'docs/zh-TW/faq.html', 'docs/en/faq.html']:
+        chk('manual link in ' + f, 'manual/index.html' in read(f))
+    # 手册 12 内页必须能回首页/帮助中心（index 自身除外）
+    for base, _ in BASES:
+        s = read(base + '/start.html')
+        chk('manual page -> faq + home', 'faq.html' in s and 'index.html' in s)
+    # 手册页互相链接（分页器）
+    s = read('docs/manual/start.html')
+    chk('pager prev/next', 'pg-prev' in s and 'pg-next' in s)
 
     print('[seo]')
     ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
@@ -137,6 +168,8 @@ def main():
         if not os.path.exists(os.path.join(ROOT, 'docs', rel)):
             missing.append(rel)
     chk('sitemap entries reachable (%d)' % len(locs), not missing, missing)
+    chk('sitemap manual x39', sum(1 for l in locs if '/manual/' in l) == 39,
+        sum(1 for l in locs if '/manual/' in l))
     chk('robots -> sitemap',
         'Sitemap: https://aprslocus.theez.top/sitemap.xml' in read('docs/robots.txt'))
 
@@ -151,6 +184,9 @@ def main():
         css.count('[data-theme="dark"]'))
     chk('new card grads c15-c18', all(('.c%d {' % i) in css for i in (15, 16, 17, 18)))
     chk('help-center styles', all(x in css for x in ['.skip-link', '.faq-search', '.faq-group']))
+    chk('manual multi-page styles',
+        all(x in css for x in ['.doc-crumb', '.doc-pager', '.set-table',
+                               '.m-kind', '.m-index-list', 'pre.pkt']))
 
     js = read('docs/js/main.js')
     j = re.sub(r'/\*.*?\*/', '', js, flags=re.S)

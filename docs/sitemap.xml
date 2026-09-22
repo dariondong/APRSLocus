@@ -34,36 +34,6 @@
   </url>
 
   <!-- 用户手册（三语） -->
-  <url>
-    <loc>https://aprslocus.theez.top/manual.html</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual.html"/>
-  </url>
-  <url>
-    <loc>https://aprslocus.theez.top/zh-TW/manual.html</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual.html"/>
-  </url>
-  <url>
-    <loc>https://aprslocus.theez.top/en/manual.html</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual.html"/>
-  </url>
 
   <!-- 帮助中心（三语） -->
   <url>
@@ -153,5 +123,395 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/terms.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/terms.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/terms.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/index.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/index.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/start.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/interface.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/interface.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/connections.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/beacon.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/beacon.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/messaging.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/messaging.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/maps.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/maps.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/stations.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/data.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/widgets.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/widgets.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/settings.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/platform.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/manual/troubleshooting.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/index.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/index.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/start.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/interface.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/interface.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/connections.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/beacon.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/beacon.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/messaging.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/messaging.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/maps.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/maps.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/stations.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/data.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/widgets.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/widgets.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/settings.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/platform.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/index.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/index.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/index.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/start.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/interface.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/interface.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/interface.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/connections.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/beacon.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/beacon.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/beacon.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/messaging.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/messaging.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/messaging.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/maps.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/maps.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/maps.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/stations.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/data.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/widgets.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/widgets.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/widgets.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/settings.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/platform.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html"/>
+  </url>
+  <url>
+    <loc>https://aprslocus.theez.top/en/manual/troubleshooting.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html"/>
   </url>
 </urlset>

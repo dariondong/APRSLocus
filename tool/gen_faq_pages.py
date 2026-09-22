@@ -517,7 +517,7 @@ def render(lang, path):
       <a href="{p}">{u['nav_home']}</a>
       <a href="{p}#features">{u['nav_feat']}</a>
       <a href="faq.html">{'帮助' if lang != 'en' else 'Help'}</a>
-      <a href="manual.html">{'手册' if lang == 'zh' else '手冊' if lang == 'zh_TW' else 'Guide'}</a>
+      <a href="manual/index.html">{'手册' if lang == 'zh' else '手冊' if lang == 'zh_TW' else 'Guide'}</a>
       <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">{u['nav_dl']}</a>
       <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="{u['theme']}" title="{u['theme']}" data-label-dark="{u['theme_off']}" data-label-light="{u['theme']}"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
       <span class="lang-switch-group"><a class="lang-switch{' active' if lang == 'zh' else ''}" href="../faq.html" hreflang="zh-Hans">简中</a><a class="lang-switch{' active' if lang == 'zh_TW' else ''}" href="../zh-TW/faq.html" hreflang="zh-Hant">繁中</a><a class="lang-switch{' active' if lang == 'en' else ''}" href="../en/faq.html" hreflang="en">EN</a></span>
