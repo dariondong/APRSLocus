@@ -1,0 +1,5 @@
+# APRSLocus 官网 robots —— 全站开放抓取（静态站，无需要隐藏的路径）
+User-agent: *
+Allow: /
+
+Sitemap: https://aprslocus.theez.top/sitemap.xml

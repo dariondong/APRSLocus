@@ -32,15 +32,19 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  burger.setAttribute("aria-expanded", "false");  // 屏幕阅读器要能感知抽屉开合
   burger.addEventListener("click", () => {
     burger.classList.toggle("open");
     navLinks.classList.toggle("open");
-    document.body.style.overflow = navLinks.classList.contains("open") ? "hidden" : "";
+    const open = navLinks.classList.contains("open");
+    burger.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
   });
   navLinks.querySelectorAll("a").forEach((a) =>
     a.addEventListener("click", () => {
       burger.classList.remove("open");
       navLinks.classList.remove("open");
+      burger.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
     })
   );
@@ -121,6 +125,33 @@
     });
   }
 
+  /* ── 主题切换（浅 / 深）──
+     初始主题由 <head> 内联脚本设定（避免首帧闪白）；这里只负责按钮与后续切换。 */
+  const themeBtn = document.getElementById("themeToggle");
+  if (themeBtn) {
+    const syncTheme = () => {
+      const dark = document.documentElement.getAttribute("data-theme") === "dark";
+      themeBtn.setAttribute("aria-pressed", String(dark));
+      const label = dark
+        ? themeBtn.dataset.labelDark || "Switch to light mode"
+        : themeBtn.dataset.labelLight || "Switch to dark mode";
+      themeBtn.setAttribute("aria-label", label);
+      themeBtn.setAttribute("title", label);
+      const icon = themeBtn.querySelector("i");
+      if (icon) icon.className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    };
+    syncTheme();
+    themeBtn.addEventListener("click", () => {
+      const next =
+        document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", next === "dark" ? "#0b1220" : "#f3f6fd");
+      syncTheme();
+    });
+  }
+
   /* ── 页脚年份自动更新 ── */
   const yr = document.getElementById("year");
   if (yr) yr.textContent = new Date().getFullYear();
@@ -148,9 +179,12 @@
     revealEls.forEach((el) => el.classList.add("in"));
   }
 
-  /* ── Hero 粒子背景（APRS 星网/雷达网络感） ── */
+  /* ── Hero 粒子背景（APRS 星网/雷达网络感） ──
+     子页（如帮助中心）没有 hero 画布：canvas 为 null 时下面的 if 守卫会跳过动画，
+     但 ctx 取值必须空值安全 —— 否则 `null.getContext` 会抛错，
+     把后面的版本号刷新与赞助渲染一并打断（IIFE 内无 try 包裹）。 */
   const canvas = document.getElementById("heroCanvas");
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas ? canvas.getContext("2d") : null;
   let w = 0, h = 0, particles = [], rafId = null;
 
   function resize() {

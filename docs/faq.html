@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>帮助中心 — APRSlocus 常见问题与使用指南</title>
+<meta name="description" content="APRSlocus 帮助中心：连接与 Passcode、四种数据来源与网关 iGate、定位与信标、界面与离线地图、桌面小组件与短波传播、备份恢复与安装更新，共 23 个常见问题。">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="帮助中心 — APRSlocus 常见问题与使用指南">
+<meta property="og:description" content="APRSlocus 帮助中心：连接与 Passcode、四种数据来源与网关 iGate、定位与信标、界面与离线地图、桌面小组件与短波传播、备份恢复与安装更新，共 23 个常见问题。">
+<meta property="og:url" content="https://aprslocus.theez.top/faq.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:image:width" content="192">
+<meta property="og:image:height" content="192">
+<meta property="og:image:alt" content="APRSlocus logo">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="帮助中心 — APRSlocus 常见问题与使用指南">
+<meta name="twitter:description" content="APRSlocus 帮助中心：连接与 Passcode、四种数据来源与网关 iGate、定位与信标、界面与离线地图、桌面小组件与短波传播、备份恢复与安装更新，共 23 个常见问题。">
+<meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
+<link rel="canonical" href="https://aprslocus.theez.top/faq.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/faq.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/faq.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/faq.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/faq.html">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，
+   否则深色偏好用户会先闪一下白屏（CSS 键在 <html data-theme> 上）。 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": "帮助中心 — APRSlocus 常见问题与使用指南",
+  "description": "APRSlocus 帮助中心：连接与 Passcode、四种数据来源与网关 iGate、定位与信标、界面与离线地图、桌面小组件与短波传播、备份恢复与安装更新，共 23 个常见问题。",
+  "url": "https://aprslocus.theez.top/faq.html",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "为什么收不到消息 / 无法收发消息？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "绝大多数情况是 Passcode 未验证。密码填 -1 只能连接，不能正常收发消息。请到 APRS Passcode 查询 生成自己的 Passcode 并填入「连接设置」；若服务器返回 unverified，主页顶部会出现黄色警告横幅，点「去设置」即可直达。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Passcode 该怎么设置？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在引导第 6 步或「设置 → 连接」中，用你的完整呼号（含 SSID 后缀，如 BG7LZQ-3）查询生成 Passcode 后填入即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "连接失败 / 频繁掉线？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "应用内置渐进式重连（8 → 16 → 32 → 60 秒）。若持续失败，请检查网络、确认服务器地址（默认 rotate.aprs2.net:14580）与端口是否被拦截，或在「连接设置」中更换服务器后点「重新连接」。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "支持哪些数据来源？我该怎么选？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "四条：互联网 APRS-IS、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200，以及 Kenwood 电台的 $PKWDWPL（只收不发）。刚上手选 APRS-IS 即可；有电台想听射频，再加 TNC 或音频。几条链路可同时收报文，发射来源单独指定一条。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "网关（iGate）是什么？需要开吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "iGate 把你在射频上听到的报文转到 APRS-IS，让全球网络看到你附近的台站。只有「在听射频、且愿意贡献」时才需要。带环路防护（含 TCPIP* 或已有 q 构造的报文绝不回送）与 30 秒去重，默认关闭。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "蓝牙 TNC 连上了，但收不到 / 发不出？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先升级到最新版：v1.6.110 修了「TNC 与 PKWDWPL 绑定同一台设备、互相瓜分接收数据」，v1.6.112 找到「能发不能收」的真正原因。升级后仍异常，用「链路自检」分层排查，并确认 Android 已授予蓝牙与定位权限。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "声卡音频（AFSK）怎么接？对方解不出怎么办？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "耳机 / 麦克风口接电台的 SPK / MIC，设置好 PTT。发射时应用会把媒体音量拉满并暂停麦克风，链路自检里能看到电平；对方解不出，先查电平与接线。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "手机上收不到周边台站？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "检查「接收筛选」是否勾选了目标国家 / 地区，并确认接收范围（经纬度 + 半径）覆盖你的位置。默认只接收中国（B 开头）台站。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "后台定位会一直耗电吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Android 端使用前台服务持续定位以保持 APRS 在线，可在「定位 / 信标」设置中调整上报间隔，或关闭信标上报、按需手动上报来降低耗电。通知栏可一键「退出」应用。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "站着不动时我的标记乱跳 / 轨迹有毛刺？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "v1.6.146 给自身定位加了「静止防抖」；v1.6.149 再用加速度计判断「有没有在动」、低速时用指南针补航向（Android，默认开启，可在「设置 → 信标 → 定位」关）。升级到最新版即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "历史轨迹在哪看？和地图上那条有什么区别？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "「设置 → 历史轨迹」按天保存在本地，可看总里程、平均与最高速度、移动时长，退出重进还在；点某一天还能在地图上回放当天路线（可拖进度、0.5×~4× 倍速）。它与地图上那条「我的轨迹」刻意分开：那条只服务本次显示，退出即失、确认位置跳变时整条清空。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Windows 上地图显示异常？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "建议在「显示 → 地图类型」中切换为矢量地图（无需 API Key，兼容性最好），或使用 Carto / OSM / Esri 等国际图源。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "怎么换界面风格 / 切回旧布局？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "「设置 → 显示」里可切 UI 2.0（以地图为基底）与经典布局，还能选磨砂玻璃 / 云母材质（v1.6.138）。主题支持颜色、图标、文字与背景图（17 个颜色令牌），可导出 JSON 分享。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "台站为什么不再合并成一颗球？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "v1.6.149 起去掉聚合：矢量地图与自绘地图都是一台站一个标记。低缩放时的密度交给热力图，工具列里有开关。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "离线地图怎么用？断网能看吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "「设置 → 显示 → 离线地图」把当前视图的瓦片一次下到本机（断点续传、单区域上限 20 万张），断网、无信号也能看，另有「仅离线模式」。Web 版不提供下载。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "支持哪些语言？翻译要密钥吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "界面六种语言：简体中文、繁體中文、English、日本語、Indonesia、Español。聊天翻译默认走免费接口、无需任何密钥，可双向、可对照，也能发送前先把输入译成对方的语言。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "桌面小组件怎么添加？为什么是空的？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "长按桌面 → 添加小部件 → APRSlocus，有天气、短波、系统状态三套。组件不自己联网，数据由应用单向推送 —— 装好后先打开一次应用；升级后若空白，打开应用刷新即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "短波面板的数据准吗？多久更新？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "来自 hamqsl.com（N0NBH 整理，业余界事实标准），源站约每小时更新，应用缓存 30 分钟。注意它是全球 / 区域平均，不是你所在地的实测值。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "小组件能调大小吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "天气组件四档自适应；v1.6.133 起短波与系统状态也能拖拽缩放，拉高会自动换「加高档」。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "换手机 / 重装怎么迁移？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "「设置 → 备份与恢复」把设置与数据导出成一个 JSON，新设备导入即可（v1.6.123）。导入后需重启应用生效。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "怎么导出通联日志？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "数据导出为 ADIF —— 业余无线电通用的日志交换格式，频率可自定义，导出后可直接导入其它日志软件。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "覆盖安装提示签名冲突 / 版本降级？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "自 1.5.2 起 Android 使用正式 release 签名，CI 与本地签名一致，直接覆盖安装即可。若从更老版本升级，请卸载后重装。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "在哪里下载？怎么更新？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GitHub Releases 与 GitCode 双渠道；应用内「检查更新」按平台分流，也能安装历史版本。本站导航「下载」直达最新版。"
+      }
+    }
+  ]
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.faq-tools{display:none}</style></noscript>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="blob b4"></span>
+</div>
+
+<!-- ═══════════ 导航栏（子页：锚点回到首页） ═══════════ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="">
+      <img class="brand-logo" src="assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="">首页</a>
+      <a href="#features">功能</a>
+      <a href="faq.html">帮助</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">下载</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切换深色模式" title="切换深色模式" data-label-dark="切换浅色模式" data-label-light="切换深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch active" href="../faq.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/faq.html" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/faq.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">跳到主要内容</a>
+<section class="section" id="help">
+  <div class="section-head reveal">
+    <h1>帮助中心</h1>
+    <p>从 Passcode 到桌面小组件，按主题分组的完整问答。答案随版本更新，当前对应 v1.6.150。</p>
+  </div>
+
+  <div class="faq-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="faqFilter" placeholder="搜索问题，比如「Passcode」「离线地图」「小组件」…" aria-label="搜索问题" autocomplete="off">
+    </div>
+    <div class="faq-chips" aria-label="分组导航">
+        <a href="#g0">连接与消息</a>
+        <a href="#g1">定位与信标</a>
+        <a href="#g2">界面与地图</a>
+        <a href="#g3">桌面小组件与短波</a>
+        <a href="#g4">数据、备份与安装</a>
+    </div>
+    <button class="faq-toggle" id="faqToggle" aria-expanded="false">全部展开</button>
+    <p class="faq-nohit" id="faqNohit" hidden>没有匹配的问题，换个关键词试试。</p>
+  </div>
+
+    <h3 class="faq-group" id="g0">连接与消息</h3>
+    <div class="faq-list">
+      <details class="faq reveal" open>
+        <summary>为什么收不到消息 / 无法收发消息？<span class="chev"></span></summary>
+        <p>绝大多数情况是 Passcode 未验证。密码填 <code>-1</code> 只能连接，不能正常收发消息。请到 <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查询</a> 生成自己的 Passcode 并填入「连接设置」；若服务器返回 <code>unverified</code>，主页顶部会出现黄色警告横幅，点「去设置」即可直达。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Passcode 该怎么设置？<span class="chev"></span></summary>
+        <p>在引导第 6 步或「设置 → 连接」中，用你的<b>完整呼号（含 SSID 后缀，如 BG7LZQ-3）</b>查询生成 Passcode 后填入即可。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>连接失败 / 频繁掉线？<span class="chev"></span></summary>
+        <p>应用内置渐进式重连（8 → 16 → 32 → 60 秒）。若持续失败，请检查网络、确认服务器地址（默认 <code>rotate.aprs2.net:14580</code>）与端口是否被拦截，或在「连接设置」中更换服务器后点「重新连接」。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>支持哪些数据来源？我该怎么选？<span class="chev"></span></summary>
+        <p>四条：互联网 APRS-IS、蓝牙 / 串口 TNC（KISS）、声卡音频 AFSK 1200，以及 Kenwood 电台的 <code>$PKWDWPL</code>（只收不发）。刚上手选 APRS-IS 即可；有电台想听射频，再加 TNC 或音频。几条链路可同时收报文，发射来源单独指定一条。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>网关（iGate）是什么？需要开吗？<span class="chev"></span></summary>
+        <p>iGate 把你在射频上听到的报文转到 APRS-IS，让全球网络看到你附近的台站。只有「在听射频、且愿意贡献」时才需要。带环路防护（含 <code>TCPIP*</code> 或已有 q 构造的报文绝不回送）与 30 秒去重，默认关闭。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>蓝牙 TNC 连上了，但收不到 / 发不出？<span class="chev"></span></summary>
+        <p>先升级到最新版：v1.6.110 修了「TNC 与 PKWDWPL 绑定同一台设备、互相瓜分接收数据」，v1.6.112 找到「能发不能收」的真正原因。升级后仍异常，用「链路自检」分层排查，并确认 Android 已授予蓝牙与定位权限。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>声卡音频（AFSK）怎么接？对方解不出怎么办？<span class="chev"></span></summary>
+        <p>耳机 / 麦克风口接电台的 SPK / MIC，设置好 PTT。发射时应用会把媒体音量拉满并暂停麦克风，链路自检里能看到电平；对方解不出，先查电平与接线。</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g1">定位与信标</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>手机上收不到周边台站？<span class="chev"></span></summary>
+        <p>检查「接收筛选」是否勾选了目标国家 / 地区，并确认接收范围（经纬度 + 半径）覆盖你的位置。默认只接收中国（B 开头）台站。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>后台定位会一直耗电吗？<span class="chev"></span></summary>
+        <p>Android 端使用前台服务持续定位以保持 APRS 在线，可在「定位 / 信标」设置中调整上报间隔，或关闭信标上报、按需手动上报来降低耗电。通知栏可一键「退出」应用。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>站着不动时我的标记乱跳 / 轨迹有毛刺？<span class="chev"></span></summary>
+        <p>v1.6.146 给自身定位加了「静止防抖」；v1.6.149 再用加速度计判断「有没有在动」、低速时用指南针补航向（Android，默认开启，可在「设置 → 信标 → 定位」关）。升级到最新版即可。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>历史轨迹在哪看？和地图上那条有什么区别？<span class="chev"></span></summary>
+        <p>「设置 → 历史轨迹」按天保存在本地，可看总里程、平均与最高速度、移动时长，退出重进还在；点某一天还能在地图上<b>回放当天路线</b>（可拖进度、0.5×~4× 倍速）。它与地图上那条「我的轨迹」<b>刻意分开</b>：那条只服务本次显示，退出即失、确认位置跳变时整条清空。</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g2">界面与地图</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>Windows 上地图显示异常？<span class="chev"></span></summary>
+        <p>建议在「显示 → 地图类型」中切换为<b>矢量地图</b>（无需 API Key，兼容性最好），或使用 Carto / OSM / Esri 等国际图源。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>怎么换界面风格 / 切回旧布局？<span class="chev"></span></summary>
+        <p>「设置 → 显示」里可切 UI 2.0（以地图为基底）与经典布局，还能选磨砂玻璃 / 云母材质（v1.6.138）。主题支持颜色、图标、文字与背景图（17 个颜色令牌），可导出 JSON 分享。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>台站为什么不再合并成一颗球？<span class="chev"></span></summary>
+        <p>v1.6.149 起去掉聚合：矢量地图与自绘地图都是一台站一个标记。低缩放时的密度交给热力图，工具列里有开关。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>离线地图怎么用？断网能看吗？<span class="chev"></span></summary>
+        <p>「设置 → 显示 → 离线地图」把当前视图的瓦片一次下到本机（断点续传、单区域上限 20 万张），断网、无信号也能看，另有「仅离线模式」。Web 版不提供下载。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>支持哪些语言？翻译要密钥吗？<span class="chev"></span></summary>
+        <p>界面六种语言：简体中文、繁體中文、English、日本語、Indonesia、Español。聊天翻译默认走免费接口、<b>无需任何密钥</b>，可双向、可对照，也能发送前先把输入译成对方的语言。</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g3">桌面小组件与短波</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>桌面小组件怎么添加？为什么是空的？<span class="chev"></span></summary>
+        <p>长按桌面 → 添加小部件 → APRSlocus，有天气、短波、系统状态三套。组件<b>不自己联网</b>，数据由应用单向推送 —— 装好后先打开一次应用；升级后若空白，打开应用刷新即可。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>短波面板的数据准吗？多久更新？<span class="chev"></span></summary>
+        <p>来自 hamqsl.com（N0NBH 整理，业余界事实标准），源站约每小时更新，应用缓存 30 分钟。注意它是<b>全球 / 区域平均</b>，不是你所在地的实测值。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>小组件能调大小吗？<span class="chev"></span></summary>
+        <p>天气组件四档自适应；v1.6.133 起短波与系统状态也能拖拽缩放，拉高会自动换「加高档」。</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g4">数据、备份与安装</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>换手机 / 重装怎么迁移？<span class="chev"></span></summary>
+        <p>「设置 → 备份与恢复」把设置与数据导出成一个 JSON，新设备导入即可（v1.6.123）。导入后需重启应用生效。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>怎么导出通联日志？<span class="chev"></span></summary>
+        <p>数据导出为 ADIF —— 业余无线电通用的日志交换格式，频率可自定义，导出后可直接导入其它日志软件。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>覆盖安装提示签名冲突 / 版本降级？<span class="chev"></span></summary>
+        <p>自 1.5.2 起 Android 使用正式 release 签名，CI 与本地签名一致，直接覆盖安装即可。若从更老版本升级，请卸载后重装。</p>
+      </details>
+      <details class="faq reveal">
+        <summary>在哪里下载？怎么更新？<span class="chev"></span></summary>
+        <p>GitHub Releases 与 GitCode 双渠道；应用内「检查更新」按平台分流，也能安装历史版本。本站导航「下载」直达最新版。</p>
+      </details>
+    </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="APRSlocus">
+        <div>
+          <b>APRSlocus</b>
+          <span>APR Tracking &amp; Mapping</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="">首页</a>
+        <a href="#features">功能</a>
+        <a href="#faq">问答</a>
+        <a href="faq.html">帮助</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="terms.html">用户协议</a></span>
+      <span class="disclaimer">本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#help" aria-label="回到顶部">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="js/main.js"></script>
+<script>
+/* 帮助中心专属：客户端搜索 + 全部展开/收起（无 JS 时题目仍是原生 details，可正常使用） */
+(function () {
+  "use strict";
+  var input = document.getElementById('faqFilter');
+  var nohit = document.getElementById('faqNohit');
+  var toggle = document.getElementById('faqToggle');
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.faq-list'));
+  var OPEN = "全部展开";
+  var CLOSE = "全部收起";
+
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      groups.forEach(function (list) {
+        var groupHit = 0;
+        Array.prototype.forEach.call(list.querySelectorAll('.faq'), function (d) {
+          var text = (d.textContent || '').toLowerCase();
+          var ok = !kw || text.indexOf(kw) !== -1;
+          d.hidden = !ok;
+          if (ok) { groupHit++; hits++; }
+        });
+        var head = list.previousElementSibling;
+        if (head && head.classList.contains('faq-group')) head.hidden = groupHit === 0;
+        list.hidden = groupHit === 0;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var expand = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(expand));
+      toggle.textContent = expand ? CLOSE : OPEN;
+      Array.prototype.forEach.call(document.querySelectorAll('.faq'), function (d) {
+        if (!d.hidden) d.open = expand;
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

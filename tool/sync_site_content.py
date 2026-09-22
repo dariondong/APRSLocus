@@ -41,8 +41,8 @@ def T(zh, zh_TW, en):
 
 
 # ─────────────────────────── 功能卡片 ───────────────────────────
-# 顺序即展示顺序；图标类名 c1~c14 见 docs/css/style.css。
-# 总数 14：4 列时末行 2 张、2 列时 7 行，两种断点都不会剩孤零零一张。
+# 顺序即展示顺序；图标类名 c1~c18 见 docs/css/style.css。
+# 总数 18：4 列时 4×4+2（末行 2 张）、2 列时 9 行，两种断点都不会剩孤零零一张。
 CARDS = [
     {
         'icon': 'c9', 'fa': 'fa-tower-cell',
@@ -138,12 +138,226 @@ CARDS = [
                  'zh_TW': ['ADIF', '頻率自訂'],
                  'en': ['ADIF', 'Custom frequency']},
     },
+    {
+        'icon': 'c15', 'fa': 'fa-table-cells-large',
+        'title': T('桌面小组件', '桌面小組件', 'Home-screen Widgets'),
+        'desc': T(
+            'Android 桌面小组件：天气（4 档自适应尺寸）、短波传播、系统状态三套；'
+            '组件不自己联网，由应用单向推送快照，省电可控。',
+            'Android 桌面小組件：天氣（4 種自適應尺寸）、短波傳播、系統狀態三套；'
+            '小組件不自己連線，由應用單向推送快照，省電可控。',
+            'Android home-screen widgets: weather (four adaptive sizes), HF propagation and '
+            'system status. The widgets never open a connection themselves — the app pushes '
+            'a snapshot to them, which keeps them cheap on battery.'),
+        'tags': {'zh': ['Android', '4 档自适应', '不自行联网'],
+                 'zh_TW': ['Android', '4 種自適應', '不自行連線'],
+                 'en': ['Android', '4 adaptive sizes', 'No direct network']},
+    },
+    {
+        'icon': 'c16', 'fa': 'fa-satellite-dish',
+        'title': T('短波与电离层传播', '短波與電離層傳播', 'HF & Ionospheric Propagation'),
+        'desc': T(
+            '短波面板与独立组件：SFI / Kp / A 指数、黑子、X 射线、太阳风，'
+            '四个波段对的「日 / 夜」条件一眼看清；数据来自 hamqsl.com（N0NBH），30 分钟缓存。',
+            '短波面板與獨立元件：SFI / Kp / A 指數、黑子、X 射線、太陽風，'
+            '四個波段對的「日 / 夜」條件一眼看清；資料來自 hamqsl.com（N0NBH），30 分鐘快取。',
+            'An HF panel plus a standalone widget: SFI / Kp / A index, sunspots, X-rays, solar '
+            'wind, and day/night conditions for four band pairs at a glance. Data comes from '
+            'hamqsl.com (N0NBH) with a 30-minute cache.'),
+        'tags': {'zh': ['SFI / Kp / A', '日 · 夜', '30 分钟缓存'],
+                 'zh_TW': ['SFI / Kp / A', '日 · 夜', '30 分鐘快取'],
+                 'en': ['SFI / Kp / A', 'Day / night', '30-min cache']},
+    },
+    {
+        'icon': 'c17', 'fa': 'fa-map-location-dot',
+        'title': T('离线地图', '離線地圖', 'Offline Maps'),
+        'desc': T(
+            '把当前视图整片瓦片下到本机（断点续传、单区域上限 20 万张），断网、无信号也能看；'
+            '四级降级保证地图始终可看可点。',
+            '把當前視圖整片瓦片下載到本機（斷點續傳、單區域上限 20 萬張），斷網、無訊號也能看；'
+            '四級降級保證地圖始終可看可點。',
+            'Download the tiles of the current view to the device (resumable, 200k tiles per '
+            'region) and keep the map with no network at all; a four-step fallback keeps it '
+            'readable and clickable.'),
+        'tags': {'zh': ['按视图下载', '断点续传', '四级降级'],
+                 'zh_TW': ['按視圖下載', '斷點續傳', '四級降級'],
+                 'en': ['Download view', 'Resumable', '4-step fallback']},
+    },
+    {
+        'icon': 'c18', 'fa': 'fa-paintbrush',
+        'title': T('主题与备份', '主題與備份', 'Themes & Backup'),
+        'desc': T(
+            '主题不只是换色：颜色、图标、文字、背景图都能改（17 个颜色令牌），可导出成 JSON 分享；'
+            '设置与数据可整体备份，换机一键导入。',
+            '主題不只是換色：顏色、圖示、文字、背景圖都能改（17 個顏色權杖），可匯出成 JSON 分享；'
+            '設定與資料可整體備份，換機一鍵匯入。',
+            'Themes go beyond colour: icons, text and your own background image (17 colour '
+            'tokens), exported as JSON to share; settings and data back up as one file for a '
+            'one-tap restore.'),
+        'tags': {'zh': ['17 色令牌', 'JSON 分享', '一键备份'],
+                 'zh_TW': ['17 色權杖', 'JSON 分享', '一鍵備份'],
+                 'en': ['17 tokens', 'JSON export', 'One-tap backup']},
+    },
 ]
 
 # ─────────────────────────── 更新日志重点版本 ───────────────────────────
 # new / up / fix 对应页面既有的三个圆点颜色（绿 / 琥珀 / 红）。
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
+    {
+        'ver': 'v1.6.150', 'date': '2026-09-22',
+        'items': [
+            ('new',
+             T('历史轨迹可点进某一天：地图上回放当天路线（轨迹随播放生长、'
+               '0.5×~4× 倍速、跟随视角；超过 45 秒的停顿自动快进）',
+               '歷史軌跡可點進某一天：地圖上回放當日路線（軌跡隨播放生長、'
+               '0.5×~4× 倍速、跟隨視角；超過 45 秒的停頓自動快進）',
+               'Tap into a day in track history and replay it on the map (the line grows as '
+               'it plays, 0.5×–4× speed, follow view; stops over 45 s are fast-forwarded)')),
+            ('fix',
+             T('网络定位不再让位置飞来飞去：GPS 新鲜时粗定位点一律丢弃，'
+               'GPS 停更 2 分钟以上才允许兜底',
+               '網路定位不再讓位置飛來飛去：GPS 新鮮時粗定位點一律丟棄，'
+               'GPS 停更 2 分鐘以上才允許兜底',
+               'Network fixes no longer make the marker fly around: coarse points are dropped '
+               'while GPS is fresh, and only allowed as a fallback after 2 minutes without an '
+               'GPS update')),
+        ],
+    },
+    {
+        'ver': 'v1.6.149', 'date': '2026-09-22',
+        'items': [
+            ('new',
+             T('去掉台站聚合：矢量地图与自绘地图都回到「一台站一个标记」，低缩放的密度信息交给热力图（开关保留）',
+               '去掉臺站聚合：向量圖與自繪地圖都回到「一台站一個標記」，低縮放的密度資訊交給熱力圖（開關保留）',
+               'Clustering removed: both maps are back to one marker per station, with low-zoom '
+               'density left to the heatmap (its toggle stays)')),
+            ('new',
+             T('轨迹打点更准（Android）：低速时用指南针补航向、用加速度计判断「有没有在动」，默认开启、可关',
+               '軌跡打點更準（Android）：低速時用指南針補航向、用加速度計判斷「有沒有在動」，預設開啟、可關',
+               'More accurate track points (Android): the compass fills in heading at low speed '
+               'and the accelerometer decides whether you are moving; on by default, switchable')),
+            ('new',
+             T('个人历史轨迹：按天保存在本地，设置页里看总里程 / 平均与最高速度 / 移动时长，可按天删除或一键清空',
+               '個人歷史軌跡：按天保存在本機，設定頁裡看總里程 / 平均與最高速度 / 移動時長，可按天刪除或一鍵清空',
+               'Personal track history: saved per day on the device, with total distance, average '
+               'and top speed and moving time in Settings; delete a day or clear all')),
+            ('up',
+             T('去掉「视野内无台站」提示浮条：地图上已有信息条与工具列，不再多挂一条挡内容',
+               '去掉「視野內無臺站」提示浮條：地圖上已有資訊條與工具列，不再多掛一條擋內容',
+               'The "no stations in view" pill is gone: the map already has an info chip and a toolbar')),
+        ],
+    },
+    {
+        'ver': 'v1.6.139', 'date': '2026-09-21',
+        'items': [
+            ('new',
+             T('UI 2.0：以地图为基底的新布局，「显示设置」里可随时切回经典布局',
+               'UI 2.0：以地圖為基底的新佈局，「顯示設定」裡可隨時切回經典佈局',
+               'UI 2.0: a new map-first layout, switchable back to the classic one in Display settings')),
+        ],
+    },
+    {
+        'ver': 'v1.6.138', 'date': '2026-09-20',
+        'items': [
+            ('new',
+             T('界面材质：磨砂玻璃与云母两种材质，「显示设置」里可切换',
+               '介面材質：磨砂玻璃與雲母兩種材質，「顯示設定」裡可切換',
+               'UI materials: frosted glass and mica, switchable in Display settings')),
+        ],
+    },
+    {
+        'ver': 'v1.6.136', 'date': '2026-09-19',
+        'items': [
+            ('new',
+             T('新增「硬件串口」：Android 支持 USB-OTG 串口线接电台，桌面端可调串口参数',
+               '新增「硬體串列埠」：Android 支援 USB-OTG 串列埠線接電臺，桌面端可調串列埠參數',
+               'New "hardware serial": USB-OTG serial on Android to wire a radio, with desktop '
+               'serial parameters you can tune')),
+        ],
+    },
+    {
+        'ver': 'v1.6.135', 'date': '2026-09-19',
+        'items': [
+            ('fix',
+             T('音频发射对方解不出：发射期间拉满音量、暂停麦克风，并给出接线与电平提示',
+               '音訊發射對方解不出：發射期間拉滿音量、暫停麥克風，並給出接線與電平提示',
+               'On-air audio that others could not decode: media volume is maxed and the mic '
+               'muted during TX, with wiring and level hints')),
+        ],
+    },
+    {
+        'ver': 'v1.6.128', 'date': '2026-09-18',
+        'items': [
+            ('new',
+             T('离线地图：把当前视图的瓦片一次下到本机（断点续传、单区域上限 20 万张），断网、无信号也能看',
+               '離線地圖：把當前視圖的瓦片一次下載到本機（斷點續傳、單區域上限 20 萬張），斷網、無訊號也能看',
+               'Offline maps: download the tiles of the current view once (resumable, 200k tiles '
+               'per region) and keep the map with no network at all')),
+        ],
+    },
+    {
+        'ver': 'v1.6.124', 'date': '2026-09-18',
+        'items': [
+            ('new',
+             T('主题：界面的颜色、图标、文字都能自己改，还能导出成 JSON 分享给别人',
+               '主題：介面的顏色、圖示、文字都能自己改，還能匯出成 JSON 分享給別人',
+               'Themes: recolour the UI, replace icons and text, and export the result as JSON to share')),
+            ('new',
+             T('主题可以带背景图，用自己照片当界面底；导出也可带上图片（v1.6.125–126）',
+               '主題可以帶背景圖，用自己照片當介面底；匯出也可帶上圖片（v1.6.125–126）',
+               'Themes can carry a background image — your own photo behind the UI; exports can '
+               'include it too (v1.6.125–126)')),
+        ],
+    },
+    {
+        'ver': 'v1.6.123', 'date': '2026-09-18',
+        'items': [
+            ('new',
+             T('备份与恢复：设置与数据导出成一个 JSON，换机或重装后导入即可',
+               '備份與復原：設定與資料匯出成一個 JSON，換機或重裝後匯入即可',
+               'Backup and restore: settings and data export to a single JSON, import it after a reinstall')),
+        ],
+    },
+    {
+        'ver': 'v1.6.121', 'date': '2026-09-17',
+        'items': [
+            ('new',
+             T('短波组件新增 6m 波段预测；桌面组件支持暗黑模式；新增「系统状态」组件',
+               '短波元件新增 6m 波段預測；桌面元件支援暗黑模式；新增「系統狀態」元件',
+               'The HF widget gained 6 m band forecasts, widgets gained dark mode, and a '
+               'system-status widget was added')),
+        ],
+    },
+    {
+        'ver': 'v1.6.117', 'date': '2026-09-17',
+        'items': [
+            ('new',
+             T('短波与电离层传播：面板新增区块 + 独立桌面组件，SFI / Kp / A 指数与四个波段对的日 / 夜条件一眼看清',
+               '短波與電離層傳播：面板新增區塊 + 獨立桌面元件，SFI / Kp / A 指數與四個波段對的日 / 夜條件一眼看清',
+               'HF and ionospheric propagation: a new panel section plus a standalone widget, '
+               'with SFI / Kp / A and day/night conditions for four band pairs at a glance')),
+        ],
+    },
+    {
+        'ver': 'v1.6.114', 'date': '2026-09-17',
+        'items': [
+            ('new',
+             T('新增 Android 桌面小组件：天气 + 业余无线电提示，4 档尺寸自适应',
+               '新增 Android 桌面小組件：天氣 + 業餘無線電提示，4 種尺寸自適應',
+               'New Android home-screen widgets: weather plus ham-radio tips, in four adaptive sizes')),
+        ],
+    },
+    {
+        'ver': 'v1.6.113', 'date': '2026-09-15',
+        'items': [
+            ('fix',
+             T('修「越用越卡」：APRS-IS 连接被反复重建导致 socket 泄漏，长时间运行不再越来越慢',
+               '修「越用越卡」：APRS-IS 連線被反覆重建導致 socket 洩漏，長時間執行不再越來越慢',
+               'Fixed "the longer it runs the slower it gets": the APRS-IS connection was '
+               'rebuilt repeatedly, leaking sockets')),
+        ],
+    },
     {
         'ver': 'v1.6.109', 'date': '2026-09-15',
         'items': [
@@ -274,6 +488,17 @@ PATCHES = [
      {'zh_TW': '<span>APRS-IS · TNC · 音訊 · PKWDWPL 四種來源</span>'}),
     ('<span>APRS-IS Auto Connect</span>',
      {'en': '<span>APRS-IS · TNC · Audio · PKWDWPL</span>'}),
+    # v1.6.149 移除了台站聚合 —— 功能卡里还写着「按呼号聚合」，已经不成立
+    ('台站按呼号聚合，也能看轨迹回放。',
+     {'zh': '一台站一个标记（v1.6.149 起去掉聚合），也能看轨迹回放，低缩放密度看热力图。'}),
+    ('臺站按呼號聚合，也能看軌跡回放。',
+     {'zh_TW': '一臺站一個標記（v1.6.149 起去掉聚合），也能看軌跡回放，低縮放密度看熱力圖。'}),
+    ('Stations are grouped by callsign, with trail playback support.',
+     {'en': 'One marker per station (clustering removed in v1.6.149), with trail playback '
+            'support; the heatmap shows density when zoomed out.'}),
+    ('<li>台站聚合</li>', {'zh': '<li>热力图</li>'}),
+    ('<li>臺站聚合</li>', {'zh_TW': '<li>熱力圖</li>'}),
+    ('<li>Station Clustering</li>', {'en': '<li>Heatmap</li>'}),
 ]
 
 

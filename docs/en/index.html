@@ -20,6 +20,20 @@
 <meta name="twitter:title" content="APRSlocus — APRS Tracking & Mapping">
 <meta name="twitter:description" content="An APRS client for amateur radio operators. Runs on Android and Windows.">
 <meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
+<script>
+/* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，
+   否则深色偏好用户会先闪一下白屏（CSS 键在 <html data-theme> 上）。 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,6 +59,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
+<a class="skip-link" href="#features">Skip to main content</a>
 
 <!-- ═══════════ Preloader ═══════════ -->
 <div class="preloader" id="preloader" aria-hidden="true">
@@ -81,9 +96,10 @@
       <a href="#faq">FAQ</a>
       <a href="#community">Community</a>
       <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">2.0 BETA</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
       <span class="lang-switch-group"><a class="lang-switch" href="../" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="./" hreflang="en">EN</a></span>
     </nav>
-    <button class="nav-burger" id="navBurger" aria-label="Menu">
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -91,7 +107,7 @@
 
 <!-- ═══════════ HERO ═══════════ -->
 <section class="hero" id="hero">
-  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero-grid"></div>
 
   <div class="hero-inner">
@@ -300,8 +316,8 @@
     <article class="card reveal">
       <div class="card-icon c1"><i class="fa-solid fa-location-dot"></i></div>
       <h3>Real-time Map Tracking</h3>
-      <p>Many tile sources: AMap tiles, AMap satellite, Vector, Carto (light/dark/voyager), OSM (standard/humanitarian), OpenTopo, and Esri. Stations are grouped by callsign, with trail playback support.</p>
-      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>Station Clustering</li><li>Trail Display</li></ul>
+      <p>Many tile sources: AMap tiles, AMap satellite, Vector, Carto (light/dark/voyager), OSM (standard/humanitarian), OpenTopo, and Esri. One marker per station (clustering removed in v1.6.149), with trail playback support; the heatmap shows density when zoomed out.</p>
+      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>Heatmap</li><li>Trail Display</li></ul>
     </article>
 
     <article class="card reveal">
@@ -388,6 +404,30 @@
       <h3>Data Export</h3>
       <p>One-tap ADIF export — the standard amateur-radio log interchange format — with a configurable frequency, ready to import into other logging software.</p>
       <ul class="card-tags"><li>ADIF</li><li>Custom frequency</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c15"><i class="fa-solid fa-table-cells-large"></i></div>
+      <h3>Home-screen Widgets</h3>
+      <p>Android home-screen widgets: weather (four adaptive sizes), HF propagation and system status. The widgets never open a connection themselves — the app pushes a snapshot to them, which keeps them cheap on battery.</p>
+      <ul class="card-tags"><li>Android</li><li>4 adaptive sizes</li><li>No direct network</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c16"><i class="fa-solid fa-satellite-dish"></i></div>
+      <h3>HF & Ionospheric Propagation</h3>
+      <p>An HF panel plus a standalone widget: SFI / Kp / A index, sunspots, X-rays, solar wind, and day/night conditions for four band pairs at a glance. Data comes from hamqsl.com (N0NBH) with a 30-minute cache.</p>
+      <ul class="card-tags"><li>SFI / Kp / A</li><li>Day / night</li><li>30-min cache</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c17"><i class="fa-solid fa-map-location-dot"></i></div>
+      <h3>Offline Maps</h3>
+      <p>Download the tiles of the current view to the device (resumable, 200k tiles per region) and keep the map with no network at all; a four-step fallback keeps it readable and clickable.</p>
+      <ul class="card-tags"><li>Download view</li><li>Resumable</li><li>4-step fallback</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c18"><i class="fa-solid fa-paintbrush"></i></div>
+      <h3>Themes & Backup</h3>
+      <p>Themes go beyond colour: icons, text and your own background image (17 colour tokens), exported as JSON to share; settings and data back up as one file for a one-tap restore.</p>
+      <ul class="card-tags"><li>17 tokens</li><li>JSON export</li><li>One-tap backup</li></ul>
     </article>
   <!-- /site-sync:features -->
   </div>
@@ -515,6 +555,128 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.150</span>
+        <span class="cl-date">2026-09-22</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Tap into a day in track history and replay it on the map (the line grows as it plays, 0.5×–4× speed, follow view; stops over 45 s are fast-forwarded)</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>Network fixes no longer make the marker fly around: coarse points are dropped while GPS is fresh, and only allowed as a fallback after 2 minutes without an GPS update</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.149</span>
+        <span class="cl-date">2026-09-22</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Clustering removed: both maps are back to one marker per station, with low-zoom density left to the heatmap (its toggle stays)</div>
+        <div class="cl-item"><span class="cl-dot new"></span>More accurate track points (Android): the compass fills in heading at low speed and the accelerometer decides whether you are moving; on by default, switchable</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Personal track history: saved per day on the device, with total distance, average and top speed and moving time in Settings; delete a day or clear all</div>
+        <div class="cl-item"><span class="cl-dot up"></span>The "no stations in view" pill is gone: the map already has an info chip and a toolbar</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.139</span>
+        <span class="cl-date">2026-09-21</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>UI 2.0: a new map-first layout, switchable back to the classic one in Display settings</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.138</span>
+        <span class="cl-date">2026-09-20</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>UI materials: frosted glass and mica, switchable in Display settings</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.136</span>
+        <span class="cl-date">2026-09-19</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New "hardware serial": USB-OTG serial on Android to wire a radio, with desktop serial parameters you can tune</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.135</span>
+        <span class="cl-date">2026-09-19</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>On-air audio that others could not decode: media volume is maxed and the mic muted during TX, with wiring and level hints</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.128</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Offline maps: download the tiles of the current view once (resumable, 200k tiles per region) and keep the map with no network at all</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.124</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Themes: recolour the UI, replace icons and text, and export the result as JSON to share</div>
+        <div class="cl-item"><span class="cl-dot new"></span>Themes can carry a background image — your own photo behind the UI; exports can include it too (v1.6.125–126)</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.123</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>Backup and restore: settings and data export to a single JSON, import it after a reinstall</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.121</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>The HF widget gained 6 m band forecasts, widgets gained dark mode, and a system-status widget was added</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.117</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>HF and ionospheric propagation: a new panel section plus a standalone widget, with SFI / Kp / A and day/night conditions for four band pairs at a glance</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.114</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>New Android home-screen widgets: weather plus ham-radio tips, in four adaptive sizes</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.113</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>Fixed "the longer it runs the slower it gets": the APRS-IS connection was rebuilt repeatedly, leaking sockets</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.109</span>
@@ -672,7 +834,7 @@
 <section class="section" id="faq">
   <div class="section-head reveal">
     <h2>Frequently Asked Questions</h2>
-    <p>From Passcode to battery drain — everything we could think of.</p>
+    <p>From Passcode to battery drain — everything we could think of. The full 23 questions, grouped by topic, live in the <a href="faq.html">Help Center</a>.</p>
   </div>
 
   <div class="faq-list">

@@ -21,6 +21,20 @@
 <meta name="twitter:title" content="APRSlocus — APRS 定位追蹤與地圖">
 <meta name="twitter:description" content="給業餘無線電愛好者用的 APRS 客戶端，Android 和 Windows 都能跑。">
 <meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
+<script>
+/* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，
+   否则深色偏好用户会先闪一下白屏（CSS 键在 <html data-theme> 上）。 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,6 +61,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
+<a class="skip-link" href="#features">跳到主要內容</a>
 
 <!-- ═══════════ 進入動畫：啟動遮罩 ═══════════ -->
 <div class="preloader" id="preloader" aria-hidden="true">
@@ -84,9 +99,10 @@
       <a href="#faq">問答</a>
       <a href="#community">社區</a>
       <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">2.0 BETA</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式" data-label-dark="切換淺色模式" data-label-light="切換深色模式"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
       <span class="lang-switch-group"><a class="lang-switch" href="../" hreflang="zh-Hans">簡中</a><a class="lang-switch active" href="../zh-TW/" hreflang="zh-Hant">繁中</a><a class="lang-switch" href="../en/" hreflang="en">EN</a></span>
     </nav>
-    <button class="nav-burger" id="navBurger" aria-label="菜單">
+    <button class="nav-burger" id="navBurger" aria-label="菜單" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -94,7 +110,7 @@
 
 <!-- ═══════════ HERO ═══════════ -->
 <section class="hero" id="hero">
-  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero-grid"></div>
 
   <div class="hero-inner">
@@ -306,8 +322,8 @@
     <article class="card reveal">
       <div class="card-icon c1"><i class="fa-solid fa-location-dot"></i></div>
       <h3>實時地圖追蹤</h3>
-      <p>高德瓦片 / 高德衛星 / 矢量 / Carto（淺色·深色·航行者）/ OSM（標準·人道）/ OpenTopo / Esri 十多種底圖可切。臺站按呼號聚合，也能看軌跡回放。</p>
-      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>臺站聚合</li><li>軌跡顯示</li></ul>
+      <p>高德瓦片 / 高德衛星 / 矢量 / Carto（淺色·深色·航行者）/ OSM（標準·人道）/ OpenTopo / Esri 十多種底圖可切。一臺站一個標記（v1.6.149 起去掉聚合），也能看軌跡回放，低縮放密度看熱力圖。</p>
+      <ul class="card-tags"><li>GCJ-02 / WGS-84</li><li>熱力圖</li><li>軌跡顯示</li></ul>
     </article>
 
     <article class="card reveal">
@@ -394,6 +410,30 @@
       <h3>資料匯出</h3>
       <p>一鍵匯出 ADIF —— 業餘無線電通用的日誌交換格式，頻率可自訂，匯出後可直接匯入其它日誌軟體。</p>
       <ul class="card-tags"><li>ADIF</li><li>頻率自訂</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c15"><i class="fa-solid fa-table-cells-large"></i></div>
+      <h3>桌面小組件</h3>
+      <p>Android 桌面小組件：天氣（4 種自適應尺寸）、短波傳播、系統狀態三套；小組件不自己連線，由應用單向推送快照，省電可控。</p>
+      <ul class="card-tags"><li>Android</li><li>4 種自適應</li><li>不自行連線</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c16"><i class="fa-solid fa-satellite-dish"></i></div>
+      <h3>短波與電離層傳播</h3>
+      <p>短波面板與獨立元件：SFI / Kp / A 指數、黑子、X 射線、太陽風，四個波段對的「日 / 夜」條件一眼看清；資料來自 hamqsl.com（N0NBH），30 分鐘快取。</p>
+      <ul class="card-tags"><li>SFI / Kp / A</li><li>日 · 夜</li><li>30 分鐘快取</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c17"><i class="fa-solid fa-map-location-dot"></i></div>
+      <h3>離線地圖</h3>
+      <p>把當前視圖整片瓦片下載到本機（斷點續傳、單區域上限 20 萬張），斷網、無訊號也能看；四級降級保證地圖始終可看可點。</p>
+      <ul class="card-tags"><li>按視圖下載</li><li>斷點續傳</li><li>四級降級</li></ul>
+    </article>
+    <article class="card reveal">
+      <div class="card-icon c18"><i class="fa-solid fa-paintbrush"></i></div>
+      <h3>主題與備份</h3>
+      <p>主題不只是換色：顏色、圖示、文字、背景圖都能改（17 個顏色權杖），可匯出成 JSON 分享；設定與資料可整體備份，換機一鍵匯入。</p>
+      <ul class="card-tags"><li>17 色權杖</li><li>JSON 分享</li><li>一鍵備份</li></ul>
     </article>
   <!-- /site-sync:features -->
   </div>
@@ -521,6 +561,128 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.150</span>
+        <span class="cl-date">2026-09-22</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>歷史軌跡可點進某一天：地圖上回放當日路線（軌跡隨播放生長、0.5×~4× 倍速、跟隨視角；超過 45 秒的停頓自動快進）</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>網路定位不再讓位置飛來飛去：GPS 新鮮時粗定位點一律丟棄，GPS 停更 2 分鐘以上才允許兜底</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.149</span>
+        <span class="cl-date">2026-09-22</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>去掉臺站聚合：向量圖與自繪地圖都回到「一台站一個標記」，低縮放的密度資訊交給熱力圖（開關保留）</div>
+        <div class="cl-item"><span class="cl-dot new"></span>軌跡打點更準（Android）：低速時用指南針補航向、用加速度計判斷「有沒有在動」，預設開啟、可關</div>
+        <div class="cl-item"><span class="cl-dot new"></span>個人歷史軌跡：按天保存在本機，設定頁裡看總里程 / 平均與最高速度 / 移動時長，可按天刪除或一鍵清空</div>
+        <div class="cl-item"><span class="cl-dot up"></span>去掉「視野內無臺站」提示浮條：地圖上已有資訊條與工具列，不再多掛一條擋內容</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.139</span>
+        <span class="cl-date">2026-09-21</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>UI 2.0：以地圖為基底的新佈局，「顯示設定」裡可隨時切回經典佈局</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.138</span>
+        <span class="cl-date">2026-09-20</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>介面材質：磨砂玻璃與雲母兩種材質，「顯示設定」裡可切換</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.136</span>
+        <span class="cl-date">2026-09-19</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增「硬體串列埠」：Android 支援 USB-OTG 串列埠線接電臺，桌面端可調串列埠參數</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.135</span>
+        <span class="cl-date">2026-09-19</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>音訊發射對方解不出：發射期間拉滿音量、暫停麥克風，並給出接線與電平提示</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.128</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>離線地圖：把當前視圖的瓦片一次下載到本機（斷點續傳、單區域上限 20 萬張），斷網、無訊號也能看</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.124</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>主題：介面的顏色、圖示、文字都能自己改，還能匯出成 JSON 分享給別人</div>
+        <div class="cl-item"><span class="cl-dot new"></span>主題可以帶背景圖，用自己照片當介面底；匯出也可帶上圖片（v1.6.125–126）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.123</span>
+        <span class="cl-date">2026-09-18</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>備份與復原：設定與資料匯出成一個 JSON，換機或重裝後匯入即可</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.121</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>短波元件新增 6m 波段預測；桌面元件支援暗黑模式；新增「系統狀態」元件</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.117</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>短波與電離層傳播：面板新增區塊 + 獨立桌面元件，SFI / Kp / A 指數與四個波段對的日 / 夜條件一眼看清</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.114</span>
+        <span class="cl-date">2026-09-17</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>新增 Android 桌面小組件：天氣 + 業餘無線電提示，4 種尺寸自適應</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v1.6.113</span>
+        <span class="cl-date">2026-09-15</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>修「越用越卡」：APRS-IS 連線被反覆重建導致 socket 洩漏，長時間執行不再越來越慢</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v1.6.109</span>
@@ -678,7 +840,7 @@
 <section class="section" id="faq">
   <div class="section-head reveal">
     <h2>常見問題</h2>
-    <p>從 Passcode 到後臺耗電，能想到的問題都寫在這裡了。</p>
+    <p>從 Passcode 到後臺耗電，能想到的問題都寫在這裡了。還有 23 題按主題分組的完整版，見 <a href="faq.html">幫助中心</a>。</p>
   </div>
 
   <div class="faq-list">

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help Center — APRSlocus FAQ & Guides</title>
+<meta name="description" content="APRSlocus help center: connection and Passcode, the four data sources and the iGate, positioning and beacon, display and offline maps, home-screen widgets and HF propagation, backup and updates — 23 frequently asked questions.">
+<meta name="theme-color" content="#f3f6fd">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="APRSlocus">
+<meta property="og:title" content="Help Center — APRSlocus FAQ & Guides">
+<meta property="og:description" content="APRSlocus help center: connection and Passcode, the four data sources and the iGate, positioning and beacon, display and offline maps, home-screen widgets and HF propagation, backup and updates — 23 frequently asked questions.">
+<meta property="og:url" content="https://aprslocus.theez.top/en/faq.html">
+<meta property="og:image" content="https://aprslocus.theez.top/assets/logo.png">
+<meta property="og:image:width" content="192">
+<meta property="og:image:height" content="192">
+<meta property="og:image:alt" content="APRSlocus logo">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Help Center — APRSlocus FAQ & Guides">
+<meta name="twitter:description" content="APRSlocus help center: connection and Passcode, the four data sources and the iGate, positioning and beacon, display and offline maps, home-screen widgets and HF propagation, backup and updates — 23 frequently asked questions.">
+<meta name="twitter:image" content="https://aprslocus.theez.top/assets/logo.png">
+<link rel="canonical" href="https://aprslocus.theez.top/en/faq.html">
+    <link rel="alternate" hreflang="zh-CN" href="https://aprslocus.theez.top/faq.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://aprslocus.theez.top/zh-TW/faq.html">
+    <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/faq.html">
+    <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/faq.html">
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>
+/* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，
+   否则深色偏好用户会先闪一下白屏（CSS 键在 <html data-theme> 上）。 */
+(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t !== 'dark' && t !== 'light')
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0b1220' : '#f3f6fd');
+  } catch (e) {}
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": "Help Center — APRSlocus FAQ & Guides",
+  "description": "APRSlocus help center: connection and Passcode, the four data sources and the iGate, positioning and beacon, display and offline maps, home-screen widgets and HF propagation, backup and updates — 23 frequently asked questions.",
+  "url": "https://aprslocus.theez.top/en/faq.html",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Cannot send or receive messages?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most likely an unverified Passcode. Entering -1 only lets you connect — messaging needs your own Passcode from the APRS Passcode generator, entered in Connection Settings. If the server returns unverified, a yellow banner appears at the top of the home page — tap “Go to settings”."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I set up a Passcode?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In step 6 of the wizard or under Settings → Connection, generate one from your full callsign (including the SSID suffix, e.g. BG7LZQ-3) and paste it in."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Connection fails or keeps dropping?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The app reconnects with progressive backoff (8 → 16 → 32 → 60 s). If it keeps failing, check your network, confirm the server (default rotate.aprs2.net:14580) and port are not blocked, or switch servers in Connection Settings and tap Reconnect."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which data sources are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Four: internet (APRS-IS), Bluetooth / serial TNC over KISS, sound-card AFSK 1200, and Kenwood’s $PKWDWPL (receive-only). Start with APRS-IS; add TNC or audio once you have a radio. Several links can receive at once — the transmit source is picked separately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the gateway (iGate)? Do I need it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The iGate relays what you hear on RF into APRS-IS, so the global network sees the stations around you. You only need it if you are listening on RF and want to contribute. Loop protection (packets carrying TCPIP* or an existing q-construct are never echoed back) and 30-second de-duplication are built in; off by default."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bluetooth TNC connects but receives or transmits nothing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Update first: v1.6.110 fixed “TNC and PKWDWPL bound to the same device split the received data”, and v1.6.112 found the real cause of “transmits but receives nothing”. If it persists, use the link self-test for layered diagnosis and make sure Bluetooth and location permissions are granted on Android."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I wire sound-card AFSK? Others cannot decode me.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Wire the headphone / mic jack to the radio’s SPK / MIC and set up PTT. During transmission the app maxes media volume and mutes the mic; the link self-test shows the audio level. If others cannot decode you, check level and wiring first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Cannot see nearby stations on mobile?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check if your target country/region is selected in the Receive Filter, and verify that the receive range (lat/lon + radius) covers your location. By default only Chinese (B-prefix) stations are received."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does background positioning drain the battery?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Android uses a foreground service for continuous positioning. Adjust the report interval in Location / Beacon settings, or switch to manual reporting to reduce power usage. The notification bar has a one-tap Exit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My marker jitters while I stand still?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "v1.6.146 added stationary debounce for your own fix; v1.6.149 goes further — the accelerometer decides whether you are moving and the compass fills in heading at low speed (Android, on by default, switchable in Settings → Beacon → Location). Updating fixes it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my track history, and how is it different?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Settings → Track history keeps days on disk, with total distance, average and top speed and moving time — it survives a restart, and tapping a day replays that day’s route on the map (draggable, 0.5×–4× speed). It is deliberately separate from the on-screen “my track”, which serves this session only (gone on exit, cleared on a confirmed jump)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Map display issues on Windows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For best compatibility on Windows, switch to Vector Map (no API key needed) or use Carto / OSM / Esri layers in Display → Map Type."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I switch the UI style?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Settings → Display switches between UI 2.0 (map-first) and the classic layout, and picks frosted glass or mica (v1.6.138). Themes cover colour, icons, text and background image (17 colour tokens) and export as JSON to share."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are stations no longer clustered?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Clustering was removed in v1.6.149: both the vector and self-drawn maps show one marker per station. Density at low zoom belongs to the heatmap — its toggle is in the toolbar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do offline maps work? Do they survive no network?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Settings → Display → Offline map downloads the tiles of the current view once (resumable, 200k tiles per region) so the map works with no network; there is also an Offline-only mode. The web build has no download."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which languages? Does translation need a key?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Six UI languages: Simplified Chinese, Traditional Chinese, English, Japanese, Indonesian and Spanish. Chat translation works out of the box on a free endpoint — no API key — two-way, side-by-side, and pre-send."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I add the widgets? Why are they empty?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Long-press the home screen → Widgets → APRSlocus: weather, HF and system status. The widgets never open a connection themselves — the app pushes a snapshot. Open the app once after adding them; if they go blank after an update, open the app to refresh."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How good is the HF data? How fresh is it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It comes from hamqsl.com (compiled by N0NBH, the de-facto standard in amateur radio); the source updates hourly and the app caches for 30 minutes. Note it is a global/regional average, not a local measurement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I resize the widgets?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The weather widget has four adaptive sizes; since v1.6.133 the HF and system-status widgets resize too, switching to a taller tier when you drag them up."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I migrate to a new device?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Settings → Backup & restore exports settings and data as a single JSON; import it on the new device (v1.6.123). Restart the app afterwards for everything to take effect."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I export my log?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "One-tap ADIF export — the standard amateur-radio log interchange format — with a configurable frequency, ready to import into other logging software."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Signature conflict or version downgrade on install?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Since v1.5.2 Android builds use the official release signature (CI and local builds match) — install straight over the old version. Coming from a much older build, uninstall and reinstall first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I download? How do updates work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "GitHub Releases and GitCode; in-app “Check for updates” picks the right build per platform and can install past versions. The Download button in the navigation goes straight to the latest release."
+      }
+    }
+  ]
+}
+</script>
+<noscript><style>.reveal{opacity:1;transform:none}.faq-tools{display:none}</style></noscript>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="blob b4"></span>
+</div>
+
+<!-- ═══════════ 导航栏（子页：锚点回到首页） ═══════════ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../">
+      <img class="brand-logo" src="../assets/logo.png" alt="APRSlocus">
+      <span class="brand-name">APRSlocus</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../">Home</a>
+      <a href="../#features">Features</a>
+      <a href="faq.html">Help</a>
+      <a class="nav-cta" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Download</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" data-label-dark="Switch to light mode" data-label-light="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <span class="lang-switch-group"><a class="lang-switch" href="../faq.html" hreflang="zh-Hans">简中</a><a class="lang-switch" href="../zh-TW/faq.html" hreflang="zh-Hant">繁中</a><a class="lang-switch active" href="../en/faq.html" hreflang="en">EN</a></span>
+    </nav>
+    <button class="nav-burger" id="navBurger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<a class="skip-link" href="#main">Skip to main content</a>
+<section class="section" id="help">
+  <div class="section-head reveal">
+    <h1>Help Center</h1>
+    <p>From Passcode to home-screen widgets, grouped by topic. Answers track the releases; this page matches v1.6.150.</p>
+  </div>
+
+  <div class="faq-tools reveal">
+    <div class="faq-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="faqFilter" placeholder="Search, e.g. “Passcode”, “offline map”, “widget”…" aria-label="Search questions" autocomplete="off">
+    </div>
+    <div class="faq-chips" aria-label="Jump to a group">
+        <a href="#g0">Connection & Messaging</a>
+        <a href="#g1">Positioning & Beacon</a>
+        <a href="#g2">Display & Maps</a>
+        <a href="#g3">Widgets & HF Propagation</a>
+        <a href="#g4">Data, Backup & Install</a>
+    </div>
+    <button class="faq-toggle" id="faqToggle" aria-expanded="false">Expand all</button>
+    <p class="faq-nohit" id="faqNohit" hidden>No matching question — try another keyword.</p>
+  </div>
+
+    <h3 class="faq-group" id="g0">Connection & Messaging</h3>
+    <div class="faq-list">
+      <details class="faq reveal" open>
+        <summary>Cannot send or receive messages?<span class="chev"></span></summary>
+        <p>Most likely an unverified Passcode. Entering <code>-1</code> only lets you connect — messaging needs your own Passcode from the <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode generator</a>, entered in Connection Settings. If the server returns <code>unverified</code>, a yellow banner appears at the top of the home page — tap “Go to settings”.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How do I set up a Passcode?<span class="chev"></span></summary>
+        <p>In step 6 of the wizard or under Settings → Connection, generate one from your <b>full callsign (including the SSID suffix, e.g. BG7LZQ-3)</b> and paste it in.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Connection fails or keeps dropping?<span class="chev"></span></summary>
+        <p>The app reconnects with progressive backoff (8 → 16 → 32 → 60 s). If it keeps failing, check your network, confirm the server (default <code>rotate.aprs2.net:14580</code>) and port are not blocked, or switch servers in Connection Settings and tap Reconnect.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Which data sources are supported?<span class="chev"></span></summary>
+        <p>Four: internet (APRS-IS), Bluetooth / serial TNC over KISS, sound-card AFSK 1200, and Kenwood’s <code>$PKWDWPL</code> (receive-only). Start with APRS-IS; add TNC or audio once you have a radio. Several links can receive at once — the transmit source is picked separately.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>What is the gateway (iGate)? Do I need it?<span class="chev"></span></summary>
+        <p>The iGate relays what you hear on RF into APRS-IS, so the global network sees the stations around you. You only need it if you are listening on RF and want to contribute. Loop protection (packets carrying <code>TCPIP*</code> or an existing q-construct are never echoed back) and 30-second de-duplication are built in; off by default.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Bluetooth TNC connects but receives or transmits nothing?<span class="chev"></span></summary>
+        <p>Update first: v1.6.110 fixed “TNC and PKWDWPL bound to the same device split the received data”, and v1.6.112 found the real cause of “transmits but receives nothing”. If it persists, use the link self-test for layered diagnosis and make sure Bluetooth and location permissions are granted on Android.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How do I wire sound-card AFSK? Others cannot decode me.<span class="chev"></span></summary>
+        <p>Wire the headphone / mic jack to the radio’s SPK / MIC and set up PTT. During transmission the app maxes media volume and mutes the mic; the link self-test shows the audio level. If others cannot decode you, check level and wiring first.</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g1">Positioning & Beacon</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>Cannot see nearby stations on mobile?<span class="chev"></span></summary>
+        <p>Check if your target country/region is selected in the Receive Filter, and verify that the receive range (lat/lon + radius) covers your location. By default only Chinese (B-prefix) stations are received.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Does background positioning drain the battery?<span class="chev"></span></summary>
+        <p>Android uses a foreground service for continuous positioning. Adjust the report interval in Location / Beacon settings, or switch to manual reporting to reduce power usage. The notification bar has a one-tap Exit.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>My marker jitters while I stand still?<span class="chev"></span></summary>
+        <p>v1.6.146 added stationary debounce for your own fix; v1.6.149 goes further — the accelerometer decides whether you are moving and the compass fills in heading at low speed (Android, on by default, switchable in Settings → Beacon → Location). Updating fixes it.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Where is my track history, and how is it different?<span class="chev"></span></summary>
+        <p>Settings → Track history keeps days on disk, with total distance, average and top speed and moving time — it survives a restart, and tapping a day replays that day’s route on the map (draggable, 0.5×–4× speed). It is <b>deliberately separate</b> from the on-screen “my track”, which serves this session only (gone on exit, cleared on a confirmed jump).</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g2">Display & Maps</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>Map display issues on Windows?<span class="chev"></span></summary>
+        <p>For best compatibility on Windows, switch to <b>Vector Map</b> (no API key needed) or use Carto / OSM / Esri layers in Display → Map Type.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How do I switch the UI style?<span class="chev"></span></summary>
+        <p>Settings → Display switches between UI 2.0 (map-first) and the classic layout, and picks frosted glass or mica (v1.6.138). Themes cover colour, icons, text and background image (17 colour tokens) and export as JSON to share.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Why are stations no longer clustered?<span class="chev"></span></summary>
+        <p>Clustering was removed in v1.6.149: both the vector and self-drawn maps show one marker per station. Density at low zoom belongs to the heatmap — its toggle is in the toolbar.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How do offline maps work? Do they survive no network?<span class="chev"></span></summary>
+        <p>Settings → Display → Offline map downloads the tiles of the current view once (resumable, 200k tiles per region) so the map works with no network; there is also an Offline-only mode. The web build has no download.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Which languages? Does translation need a key?<span class="chev"></span></summary>
+        <p>Six UI languages: Simplified Chinese, Traditional Chinese, English, Japanese, Indonesian and Spanish. Chat translation works out of the box on a free endpoint — <b>no API key</b> — two-way, side-by-side, and pre-send.</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g3">Widgets & HF Propagation</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>How do I add the widgets? Why are they empty?<span class="chev"></span></summary>
+        <p>Long-press the home screen → Widgets → APRSlocus: weather, HF and system status. The widgets <b>never open a connection themselves</b> — the app pushes a snapshot. Open the app once after adding them; if they go blank after an update, open the app to refresh.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How good is the HF data? How fresh is it?<span class="chev"></span></summary>
+        <p>It comes from hamqsl.com (compiled by N0NBH, the de-facto standard in amateur radio); the source updates hourly and the app caches for 30 minutes. Note it is a <b>global/regional average</b>, not a local measurement.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Can I resize the widgets?<span class="chev"></span></summary>
+        <p>The weather widget has four adaptive sizes; since v1.6.133 the HF and system-status widgets resize too, switching to a taller tier when you drag them up.</p>
+      </details>
+    </div>
+    <h3 class="faq-group" id="g4">Data, Backup & Install</h3>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>How do I migrate to a new device?<span class="chev"></span></summary>
+        <p>Settings → Backup & restore exports settings and data as a single JSON; import it on the new device (v1.6.123). Restart the app afterwards for everything to take effect.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>How do I export my log?<span class="chev"></span></summary>
+        <p>One-tap ADIF export — the standard amateur-radio log interchange format — with a configurable frequency, ready to import into other logging software.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Signature conflict or version downgrade on install?<span class="chev"></span></summary>
+        <p>Since v1.5.2 Android builds use the official release signature (CI and local builds match) — install straight over the old version. Coming from a much older build, uninstall and reinstall first.</p>
+      </details>
+      <details class="faq reveal">
+        <summary>Where do I download? How do updates work?<span class="chev"></span></summary>
+        <p>GitHub Releases and GitCode; in-app “Check for updates” picks the right build per platform and can install past versions. The Download button in the navigation goes straight to the latest release.</p>
+      </details>
+    </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="../assets/logo.png" alt="APRSlocus">
+        <div>
+          <b>APRSlocus</b>
+          <span>APR Tracking &amp; Mapping</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Home</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">FAQ</a>
+        <a href="faq.html">Help</a>
+        <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> BG7LZQ (Darion) · <a href="https://github.com/dariondong/APRSLocus/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a> · <a href="../terms.html">Terms</a></span>
+      <span class="disclaimer">For amateur radio study and exchange only — comply with your local radio regulations.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="backtop" id="backTop" href="#help" aria-label="Back to top">
+  <svg class="backtop-ring" viewBox="0 0 40 40">
+    <circle class="ring-bg" cx="20" cy="20" r="17"/>
+    <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="17"/>
+  </svg>
+  <svg class="backtop-arrow" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12l7-7z"/></svg>
+</a>
+
+<script src="../js/main.js"></script>
+<script>
+/* 帮助中心专属：客户端搜索 + 全部展开/收起（无 JS 时题目仍是原生 details，可正常使用） */
+(function () {
+  "use strict";
+  var input = document.getElementById('faqFilter');
+  var nohit = document.getElementById('faqNohit');
+  var toggle = document.getElementById('faqToggle');
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.faq-list'));
+  var OPEN = "Expand all";
+  var CLOSE = "Collapse all";
+
+  if (input) {
+    input.addEventListener('input', function () {
+      var kw = input.value.trim().toLowerCase();
+      var hits = 0;
+      groups.forEach(function (list) {
+        var groupHit = 0;
+        Array.prototype.forEach.call(list.querySelectorAll('.faq'), function (d) {
+          var text = (d.textContent || '').toLowerCase();
+          var ok = !kw || text.indexOf(kw) !== -1;
+          d.hidden = !ok;
+          if (ok) { groupHit++; hits++; }
+        });
+        var head = list.previousElementSibling;
+        if (head && head.classList.contains('faq-group')) head.hidden = groupHit === 0;
+        list.hidden = groupHit === 0;
+      });
+      if (nohit) nohit.hidden = hits !== 0;
+    });
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var expand = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(expand));
+      toggle.textContent = expand ? CLOSE : OPEN;
+      Array.prototype.forEach.call(document.querySelectorAll('.faq'), function (d) {
+        if (!d.hidden) d.open = expand;
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
