@@ -352,10 +352,11 @@ class _TrackDayPageState extends State<TrackDayPage>
             ),
           ],
         ),
+        // ⚠ `overWallpaper` 是 **MaterialAppBar** 的参数，不是 AppBar 的（写进
+        // AppBar 里会报 undefined_named_parameter —— CI 上踩过一次）。
         // 这一页写了 `extendBodyBehindAppBar: true`：顶栏背后是**地图**（内容），
         // 不是壁纸 —— 所以照旧要真模糊（见 material.dart 的 MaterialSurface.overWallpaper）。
-        overWallpaper: false,
-      )),
+      ), overWallpaper: false),
       body: LayoutBuilder(builder: (context, cons) {
         final size = Size(cons.maxWidth, cons.maxHeight);
         _ensureFit(size);
