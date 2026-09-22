@@ -1,5 +1,141 @@
 # 更新日志
 
+## [1.6.151] - 2026-09-22
+
+### 🌟 2.0 横屏收拾一遍：五处「只有真机横屏才看得出来」的毛病 / UI 2.0 landscape, tidied: five defects that only show up on a real device
+
+横屏是**矮的那一维**，手机横放常常只剩 300px 出头的高度，所以这一类问题在竖屏下怎么试都不会露出来。
+这一版不动设计骨架，只把已经知道的五处缺陷修掉。
+
+**一、左侧竖条与内容面板压住了地图的控件**
+
+横屏下 2.0 把导航竖条（以及展开时的内容面板）摆在左边，而地图仍是**整屏铺满**的。
+地图自己的贴左控件 —— 信息条、沉浸入口、上报横杠、底部比例尺/坐标条 —— 原先都锚在
+`left: 14`，正好落在竖条底下。而且不是「被挡住」这么干脆：竖条是**58% 透明的磨砂卡**，
+所以控制条会在卡片背后若隐若现，看着像渲染坏了。
+
+修法是给地图加一个 `leftInset`（与 `bottomInset` 同一套口径：给「被占用的边界」），
+横屏时把**竖条 + 内容面板**的宽度一起传下去，贴左控件整体右移。面板展开时也要算进去
+—— 否则地图的左半边控件仍然在卡片背后。搜索提示条也从「整屏居中」改成
+「可见地图区居中」，不然它会偏向卡片那一侧。
+
+**二、右侧工具列在手机横屏被裁掉，「定位」点不到**
+
+单列是 8 个按钮 ≈ **346px**（3 个小工具钮 126 + 5 个缩放钮 214 + 间隙），而手机横放
+可用高度常只有 300px 出头。`Stack` 默认 `Clip.hardEdge`，于是最下面的**「定位」被剪掉
+且点不到** —— 偏偏那是横屏看地图时最常用的那一个。
+
+横屏横向空间宽裕，所以矮横屏（`shortWide`）改成**两列**：左列「图层 / 轨迹分组 / 底图」，
+右列「缩放 / 轨迹 / 热力图 / 定位」，两列都靠上对齐（否则高的那列会把矮的推居中、
+上沿就不齐了）。最高一列 214px，300px 的高度也放得下。
+
+**三、底部让位量把安全区算了两遍**
+
+`MapPage` 的口径是「相对底部安全区」—— 它自己会加一次 `MediaQuery.padding.bottom`。
+竖屏那边是**减掉** `pad.bottom` 再传的，横屏却直接传了 `_kGutter + pad.bottom`，
+于是横屏（尤其带手势条/挖孔的机器）底部控件会凭空抬高一个安全区的高度。
+这类错误的特点是「只是位置偏一点」，不会报错、也不会崩，所以最容易被留下。
+
+**四、收起时的竖条卡被撑成通高空框**
+
+设计要求是「选地图页时只剩一张竖条卡并**垂直居中**，贴顶会显得像掉在上面」。
+但没生效：竖条内容为极矮横屏套了 `SingleChildScrollView`，而它**没有 `shrinkWrap`**
+—— 在高度有界的父约束下会直接**填满**可用高度。于是卡片变成一条通高的空框、
+5 个导航项全挤在上沿，正是注释里说要避免的那个样子；外层 `Align` 居中的是一个
+已经满高的盒子，所以「居中」等于没做。
+
+修法是包一层 `IntrinsicHeight`：它取内容高度并按父约束夹住，两个目的一次达成 ——
+内容矮就收缩（居中才真正生效），内容高（极矮横屏）则被夹在可用高度内、照旧可滚，
+不会溢出成黄条纹。
+
+**五、横屏两个轴的刘海安全区没让**
+
+手机的挖孔/刘海在横屏时跑到**左、右两侧**（不在顶部）。竖条与顶栏原先只用裸的
+`_kGutter`，带刘海的机器会把竖条最上面那颗图标吃掉一半。现在统一用
+`safeL = pad.left + _kGutter` / `safeR = pad.right + _kGutter`。
+（竖屏下 pad.left/right 通常是 0，所以这两项只在横屏生效。）
+
+**六、把上面的判据钉进 CI**
+
+这五条**全都能正常编译、也能通过 analyze**，只在真机横屏才看得出来。新增
+`tool/check_landscape_layout.py`（已接进 CI 的 Analyze job），断言：贴左控件确实让开了
+`leftInset`、工具列走 `_rightToolbar(shortWide)` 且两列靠上对齐、横屏 `bottomInset`
+不含安全区、`_railCard()` 里有 `IntrinsicHeight`、左右安全区都让。
+按惯例**每条都先用回归样本验证会报红**（去掉传参、漏一个贴左控件、工具列退回单列、
+`bottomInset` 改回含安全区、去掉 `IntrinsicHeight` —— 五个样本都报了红），验完 md5 确认
+源码完整还原。
+
+---
+
+## [1.6.151] - 2026-09-22 (English)
+
+### UI 2.0 landscape, tidied: five defects that only show up on a real device
+
+Landscape is the **short** dimension: a phone on its side often has barely 300 px of height,
+which is why none of these show up when you only test in portrait. The design skeleton is
+unchanged; this release fixes five known defects.
+
+**1) The rail and the content pane were sitting on top of the map's controls.** In landscape,
+UI 2.0 puts the navigation rail (and the content pane when open) on the left while the map is
+still **full-bleed**. The map's left-anchored controls — info chip, immersive entry, beacon
+bar, bottom scale/coordinate strip — were pinned to `left: 14`, exactly under the rail. And
+not cleanly "covered": the rail is a **58 %-transparent frosted card**, so those controls
+showed through it and looked like a rendering glitch.
+
+Fixed by giving the map a `leftInset` (same convention as `bottomInset`: the **occupied
+boundary**), passing the combined width of **rail + content pane** so left-anchored controls
+shift right. The pane has to be included — otherwise the map's left half stays behind the card
+when the pane is open. The search hint also changed from "centred on screen" to "centred over
+the visible map area", so it no longer leans towards the card.
+
+**2) The right toolbar was clipped in phone landscape and "locate me" was unreachable.** A
+single column is 8 buttons ≈ **346 px** (3 tool buttons = 126, 5 zoom buttons = 214, plus gaps),
+while a phone on its side often has barely 300 px of height. `Stack` defaults to
+`Clip.hardEdge`, so the bottom-most button — **"locate me"**, the one you actually use most
+while looking at a map in landscape — was cut off and unclickable.
+
+Landscape has width to spare, so in short landscape (`shortWide`) the toolbar becomes **two
+columns**: layer/track-group/basemap on the left, zoom/tracks/heatmap/locate on the right, both
+top-aligned (otherwise the shorter column gets pushed to centre and the tops no longer line up).
+The tallest column is 214 px, which fits even in 300 px.
+
+**3) The bottom inset counted the safe area twice.** `MapPage` measures from the **bottom
+safe area** — it adds `MediaQuery.padding.bottom` itself. Portrait **subtracted** `pad.bottom`
+before passing it; landscape passed `_kGutter + pad.bottom` directly, so in landscape (especially
+with a gesture bar or a cutout) the bottom controls floated a whole safe area too high. This
+kind of bug only looks "slightly off", never errors and never crashes — which is exactly why it
+survives.
+
+**4) The collapsed rail card was stretched into a full-height empty frame.** The design says
+"on the map tab only a rail card remains, **vertically centred** — top-aligned looks like it
+fell from above". That never actually happened: the rail items use a `SingleChildScrollView`
+(for very short landscape), and it has **no `shrinkWrap`** — under a height-bounded parent it
+simply **fills** the available height. So the card became a full-height empty frame with all
+five items pushed to the top, exactly the look the comment wanted to avoid; the outer `Align`
+was centring an already full-height box, so "centred" meant nothing.
+
+Fixed with an `IntrinsicHeight` wrapper: it takes the content height and clamps it to the parent
+constraints, achieving both goals at once — short content shrinks (so centring really works),
+tall content (very short landscape) is clamped and still scrolls instead of overflowing into
+yellow stripes.
+
+**5) Cutout safe areas on the two side axes were ignored.** A phone's cutout moves to the
+**left and right** sides in landscape (not the top). The rail and top bar used the bare
+`_kGutter`, so on a notched device the notches ate half of the rail's top icon. Now both use
+`safeL = pad.left + _kGutter` / `safeR = pad.right + _kGutter`. (In portrait `pad.left/right`
+are usually 0, so this only takes effect in landscape.)
+
+**6) The invariants above are now pinned in CI.** All five **compile and analyse cleanly** and
+only show up on a real device in landscape, so `tool/check_landscape_layout.py` was added
+(wired into the CI Analyze job). It asserts that left-anchored controls really respect
+`leftInset`, that the toolbar goes through `_rightToolbar(shortWide)` with both columns
+top-aligned, that the landscape `bottomInset` excludes the safe area, that `_railCard()`
+contains `IntrinsicHeight`, and that both side safe areas are respected. As usual **each check
+was first verified to go red with a regression sample** (dropping the argument, missing one
+left-anchored control, reverting the toolbar to one column, putting the safe area back into
+`bottomInset`, removing `IntrinsicHeight` — all five went red), and md5 confirmed the sources
+were restored byte-for-byte.
+
 ## [1.6.150] - 2026-09-22
 
 ### 🌟 历史轨迹可点进去看 + 回放动画 + 治「网络定位让位置飞来飞去」 / Tap into a day and replay it, plus a fix for jittery network fixes

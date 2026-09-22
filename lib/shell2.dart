@@ -749,14 +749,28 @@ class _HomeShell2State extends State<HomeShell2>
   /// 上面，居中才稳。
   Widget _landscapeBody(EdgeInsets pad, double barTop, double topInset) {
     final size = MediaQuery.of(context).size;
-    // 面板宽度：取宽度的 40%，但必须给地图留下至少 260px；再夹在 300~560 之间，
-    // 免得极端比例（超宽平板 / 极窄横屏）下面板过窄或把地图挤没。
-    final byFraction = size.width * 0.40;
-    final byMap = size.width - _kRailW - 260 - _kGutter * 3;
-    final paneW =
-        (byFraction < byMap ? byFraction : byMap).clamp(300.0, 560.0);
+    // 横屏的刘海/挖孔在**左、右两侧**（不在顶部）—— 竖条与顶栏都要让开 pad.left，
+    // 否则刘海会把竖条最上面那颗图标吃掉一半。竖屏下 pad.left/right 通常是 0，
+    // 所以这两项只在横屏（尤其带刘海的机器）生效。
+    final safeL = pad.left + _kGutter;
+    final safeR = pad.right + _kGutter;
+    // 面板宽度：宽度的 40%，但**先保证给地图留够 260**，再夹到 200~560。
+    //
+    // ⚠ 写法有讲究：早期是「先按 byMap 取小、再 clamp(300, 560)」—— 那个**下限
+    // 300 会把上一步的保护整个顶掉**：600 宽的窄横屏（分屏/小机）算出来
+    // paneW = 300，地图只剩 219 —— 既不满足「留 260」，也不是 40%。
+    // 所以顺序必须是：先算「面板最多能给多少」，下限只作为极窄屏的兜底。
+    const double minMapW = 260;
+    final double occupied = safeL + _kRailW + 1; // 安全区 + 外边距 + 竖条 + 细分隔
+    final double mapCap = size.width - occupied - minMapW;
+    final double byFraction = size.width * 0.40;
+    final double paneW =
+        (byFraction < mapCap ? byFraction : mapCap).clamp(200.0, 560.0);
     final paneBottom = _kGutter + pad.bottom;
     final showPane = _tab != 0;
+    // 地图贴左控件要避开的宽度：竖条，加上展开时**压在地图上**的内容面板。
+    // 不让开的话，信息条/沉浸入口/底部坐标条会糊在那张磨砂卡背后。
+    final double mapLeftInset = occupied + (showPane ? paneW : 0.0);
 
     final work = showPane
         ? SizedBox(
@@ -801,14 +815,21 @@ class _HomeShell2State extends State<HomeShell2>
             // 冻结它（理由见 MapPage.frozen）。地图页时保持正常刷新。
             frozen: showPane && _paneOpen,
             topInset: topInset,
-            bottomInset: paneBottom,
+            // 底部没有任何东西占用（导航在左边）—— 只留一个外边距当呼吸空间。
+            //
+            // ⚠ 必须**不含** pad.bottom：地图那边的口径是「相对安全区」
+            // （它自己会加一次 pad.bottom），传 paneBottom（含安全区）会把
+            // 底部控件凭空抬高一个安全区的高度 —— 竖屏那边是减掉了的，
+            // 两边口径必须一致。
+            bottomInset: _kGutter,
+            leftInset: mapLeftInset,
           ),
         ),
         // 右上角那一簇（横屏更宽，放右边不挡地图中心）
         Positioned(
           top: barTop,
-          left: _kGutter,
-          right: _kGutter,
+          left: safeL,
+          right: safeR,
           child: Align(
             alignment: Alignment.centerRight,
             child: KeyedSubtree(key: _barKey, child: _topBar()),
@@ -816,7 +837,7 @@ class _HomeShell2State extends State<HomeShell2>
         ),
         // 工作区：展开时是一整块；收起时只剩居中竖条
         Positioned(
-          left: _kGutter,
+          left: safeL,
           top: topInset,
           bottom: paneBottom,
           child: showPane
@@ -826,7 +847,9 @@ class _HomeShell2State extends State<HomeShell2>
         if (_showBubble)
           Positioned(
             top: barTop + _barH + 10,
-            left: 0,
+            // 居中要相对**可见的地图区**：横屏时左侧被竖条/面板占着，
+            // 从 0 开始居中会偏到卡片那一边（气泡也是半透明的，叠上去很脏）
+            left: showPane ? mapLeftInset : 0,
             right: 0,
             child: Center(child: _bubble()),
           ),
@@ -835,18 +858,31 @@ class _HomeShell2State extends State<HomeShell2>
   }
 
   /// 收起内容时的独立竖条卡（只剩导航）
+  ///
+  /// `IntrinsicHeight` 不能省。`_railItems()` 是 `SingleChildScrollView`
+  /// （为极矮横屏准备的），而它**没有 `shrinkWrap`** —— 在「高度有界」的父约束下
+  /// 会直接撑满可用高度。结果是：卡片变成一条**通高的空框**，5 个导航项全挤在上沿
+  /// —— 正是下面注释里说「贴顶会显得像掉在上面」的那种难看样子，所谓「垂直居中」
+  /// 也就根本没生效（外层 `Align` 居中的是一个已经满高的盒子）。
+  ///
+  /// `IntrinsicHeight` 取「内容高度」并按父约束夹住，两个目的一次达成：
+  ///   * 内容矮 → 卡片收缩到内容高，外层 `Align` 才能真正把它垂直居中；
+  ///   * 内容高（极矮横屏）→ 被夹在可用高度内，`SingleChildScrollView` 仍可滚，
+  ///     不会溢出成黄条纹。
   Widget _railCard() {
     return MaterialSurface(
       radius: 20,
-      child: Container(
-        width: _kRailW,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-        decoration: BoxDecoration(
-          color: C.sheetFill,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: elev2(),
+      child: IntrinsicHeight(
+        child: Container(
+          width: _kRailW,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: elev2(),
+          ),
+          child: _railItems(),
         ),
-        child: _railItems(),
       ),
     );
   }

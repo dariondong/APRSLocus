@@ -40,6 +40,17 @@ class MapPage extends StatefulWidget {
 
   final double bottomInset;
 
+  /// 左侧**被占用**多少宽度（像素，自屏幕左沿算起，**不含**左侧安全区）。
+  ///
+  /// 竖屏下左侧没有东西，所以是 0；**横屏**下 2.0 的外壳把导航竖条（以及展开时的
+  /// 内容面板）摆在左边，而地图仍是整屏铺满的 —— 不告诉地图，它贴左的控件
+  /// （信息条、沉浸入口、底部比例尺/坐标条）就会**压在那张半透明卡片底下**：
+  /// 卡是磨砂的，所以不是「被挡住」这么干脆，而是控制条在卡片背后糊成一片，
+  /// 看着像渲染坏了。
+  ///
+  /// 口径与 [bottomInset] 一致：给「被占用的边界」，地图自己再加上安全区。
+  final double leftInset;
+
   /// 当前是否为激活 Tab（首页 IndexedStack 可见页）。非激活时跳过地图重建，
   /// 避免台站上千时后台地图反复 rebuild 造成全局卡顿。
   final bool isActive;
@@ -67,6 +78,7 @@ class MapPage extends StatefulWidget {
     this.frozen = false,
     this.topInset = 0,
     this.bottomInset = 0,
+    this.leftInset = 0,
   });
   @override
   State<MapPage> createState() => _MapPageState();
@@ -552,7 +564,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 if (!_usePluginMap && !_showHeatmap)
                   ..._stationMarkers(size),
                 // 信息
-                Positioned(top: topBase, left: 14, child: _infoChip(vis, searched)),
+                Positioned(
+                    top: topBase,
+                    left: 14 + widget.leftInset,
+                    child: _infoChip(vis, searched)),
                 // 选点提示
                 if (_pickMode)
                   Positioned(
@@ -607,49 +622,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 图例（矮横屏隐藏，减少遮挡）
                 if (!shortWide)
                   Positioned(top: topBase, right: 60, child: _legend()),
-                // ── 右侧工具列（合并为单个 Column）──
+                // ── 右侧工具列 ──
                 // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
-                // 而 `_zoomCtrl()` 实际含 5 个按钮（放大/缩小/轨迹/热力图/定位，
-                // 一直排到 404），矮屏上与其它元素必然打架。
-                // 改为单列顺序排布后，结构上不可能再出现相互重叠。
+                // 而 `_zoomCtrl()` 含 5 个按钮（放大/缩小/轨迹/热力图/定位，一直排到
+                // 404），矮屏上必然打架。改成「单列顺序排布」后结构上不可能再重叠；
+                // 手机横放时**再分两列**（见 `_rightToolbar`，否则最下面的「定位」会被裁掉）。
                 Positioned(
                   right: 14,
                   top: topBase,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _toolBtn(
-                        icon: Icons.layers_rounded,
-                        onTap: () => _showLayerMenu(context),
-                        // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
-                        // 只让通透程度跟着材质走（详见 material.dart）
-                        bg: chipTint(
-                          _hiddenTypes.isNotEmpty ? C.blueBg : C.white,
-                        ),
-                        fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
-                        border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
-                      ),
-                      const SizedBox(height: 6),
-                      _toolBtn(
-                        icon: Icons.group_rounded,
-                        onTap: () => showTrackGroupPicker(context, widget.state),
-                        bg: C.orangeBg,
-                        fg: C.orange,
-                        border: C.orange.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 6),
-                      _toolBtn(
-                        icon: Icons.map_rounded,
-                        onTap: _showMapTypeMenu,
-                        bg: chipTint(C.white),
-                        fg: C.slate,
-                        border: C.border,
-                      ),
-                      const SizedBox(height: 6),
-                      // 缩放 / 轨迹 / 热力图 / 定位
-                      _zoomCtrl(),
-                    ],
-                  ),
+                  child: _rightToolbar(shortWide),
                 ),
                 // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
                 //
@@ -658,7 +639,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 改为左侧 top:58 —— 左上 `_infoChip` 只占 14~50，
                 // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
                 Positioned(
-                  left: 14,
+                  left: 14 + widget.leftInset,
                   top: topBase + 44,
                   child: GestureDetector(
                     onTap: () => Navigator.push(
@@ -689,7 +670,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     widget.state.connected &&
                     widget.state.myHasFix)
                   Positioned(
-                    left: 14,
+                    left: 14 + widget.leftInset,
                     right: 14,
                     bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                     child: _beaconBar(),
@@ -697,7 +678,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 底部控制（安全区白条 + 14px）
                 if (roomForBottom)
                   Positioned(
-                    left: 14,
+                    left: 14 + widget.leftInset,
                     right: 14,
                     bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
                     child: ValueListenableBuilder<Offset?>(
@@ -709,7 +690,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 if (searched)
                   Positioned(
                     top: topBase,
-                    left: 0,
+                    // 横屏时左侧被竖条占着：居中要相对**可见的地图区**，
+                    // 否则提示条会偏向左侧、压到卡片边缘
+                    left: widget.leftInset,
                     right: 0,
                     child: Center(
                       child: MaterialSurface(
@@ -1462,6 +1445,62 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           child: Icon(icon, size: 20, color: fg),
         ),
       ),
+    );
+  }
+
+  /// 右侧工具列。
+  ///
+  /// 竖屏（及高度充裕的横屏）用**单列**；矮横屏（`shortWide`）必须换成**两列**。
+  ///
+  /// 为什么：单列共 8 个按钮 ≈ 346px（3 个工具钮 126 + 5 个缩放钮 214 + 间隙），
+  /// 而手机横放时可用高度常只有 300px 出头 —— 单列会被 Stack 裁掉（默认
+  /// `Clip.hardEdge`），而裁掉的恰好是最下面的「定位」：横屏看地图时最常用的
+  /// 那一个。横向空间在横屏是宽裕的，所以分两列是最直接的解法，
+  /// 分组也是现成的：左列「图层 / 轨迹分组 / 底图」，右列「缩放 / 轨迹 / 热力图 / 定位」。
+  ///
+  /// 两列都靠上对齐（`CrossAxisAlignment.start`），否则高的那列会把矮的推居中，
+  /// 上沿就不是齐的了。
+  Widget _rightToolbar(bool shortWide) {
+    final toolCol = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _toolBtn(
+          icon: Icons.layers_rounded,
+          onTap: () => _showLayerMenu(context),
+          // 用 surfaceTint 保留「选中变蓝 / 普通白」的语义，
+          // 只让通透程度跟着材质走（详见 material.dart）
+          bg: chipTint(_hiddenTypes.isNotEmpty ? C.blueBg : C.white),
+          fg: _hiddenTypes.isNotEmpty ? C.blue : C.slate,
+          border: _hiddenTypes.isNotEmpty ? C.blue : C.border,
+        ),
+        const SizedBox(height: 6),
+        _toolBtn(
+          icon: Icons.group_rounded,
+          onTap: () => showTrackGroupPicker(context, widget.state),
+          bg: C.orangeBg,
+          fg: C.orange,
+          border: C.orange.withValues(alpha: 0.4),
+        ),
+        const SizedBox(height: 6),
+        _toolBtn(
+          icon: Icons.map_rounded,
+          onTap: () => _showMapTypeMenu,
+          bg: chipTint(C.white),
+          fg: C.slate,
+          border: C.border,
+        ),
+      ],
+    );
+    if (!shortWide) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [toolCol, const SizedBox(height: 6), _zoomCtrl()],
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [toolCol, const SizedBox(width: 6), _zoomCtrl()],
     );
   }
 

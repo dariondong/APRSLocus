@@ -88,6 +88,13 @@ jobs:
       - name: Check frame cost
         run: python3 tool/check_frame_cost.py
 
+      # 2.0 横屏布局：竖条/面板不许压住地图贴左控件、右侧工具列在矮横屏
+      # 不许被裁掉、底部让位不许重复计安全区、收起时的竖条卡不许被撑成通高。
+      # 这几条**全都能正常编译、也能通过 analyze**，只在真机横屏才看得出来，
+      # 而且手机横屏是「矮」的那一维，问题最明显 —— 所以钉在 CI。
+      - name: Check landscape layout
+        run: python3 tool/check_landscape_layout.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。
