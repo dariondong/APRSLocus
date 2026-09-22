@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Item-by-item reference: name, control, default, description — generated from the code and the official strings, so it stays in sync.",
   "url": "https://aprslocus.theez.top/en/manual/settings.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Settings Reference — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -174,8 +178,8 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
-    <h2>Settings</h2>
-      <h3 id="g0">Settings</h3>
+    <h2 id="g0">Settings<a class="hdr-anchor" href="#g0" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g0">Settings<a class="hdr-anchor" href="#g0" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Configure station, location &amp; connection</p>
       <p>The Settings page opens with <b>eight category cards</b> (each leading to its own page) plus six direct entries. Below, every setting is listed: name, control, default, meaning — defaults are read from the code, so regenerating keeps them honest.</p>
       <div class="m-sub">
@@ -199,8 +203,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g1">
-    <h2>Station</h2>
-      <h3 id="g1">Station</h3>
+    <h2 id="g1">Station<a class="hdr-anchor" href="#g1" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g1">Station<a class="hdr-anchor" href="#g1" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Callsign · SSID · Symbol</p>
       <p>Identity is the root of every frame: the callsign must match your licence, and the SSID states the station type (-9 mobile, -7 handheld are common).</p>
       <div class="m-sub">
@@ -221,8 +225,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g2">
-    <h2>Beaconing</h2>
-      <h3 id="g2">Beaconing</h3>
+    <h2 id="g2">Beaconing<a class="hdr-anchor" href="#g2" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g2">Beaconing<a class="hdr-anchor" href="#g2" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">GPS · Beaconing · Manual position</p>
       <p>Three decisions: what fixes you (GPS / network / manual), how often (60 s default, 5 s floor) and what travels in the frame (speed/course/battery can be switched off).</p>
       <div class="m-sub">
@@ -260,8 +264,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g3">
-    <h2>Connection</h2>
-      <h3 id="g3">Connection</h3>
+    <h2 id="g3">Connection<a class="hdr-anchor" href="#g3" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g3">Connection<a class="hdr-anchor" href="#g3" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Server · Range filter</p>
       <p>APRS-IS server and Passcode, multi-select data sources, receive range (300 km default) and data caps. Changes apply only with “Save &amp; apply”.</p>
       <div class="m-sub">
@@ -332,8 +336,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g4">
-    <h2>Display</h2>
-      <h3 id="g4">Display</h3>
+    <h2 id="g4">Display<a class="hdr-anchor" href="#g4" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g4">Display<a class="hdr-anchor" href="#g4" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Coords · Theme</p>
       <p>Dark mode, weather widget, units and grid live here; tile source and offline maps live in the map menu and their own sub-page.</p>
       <div class="m-sub">
@@ -356,8 +360,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g5">
-    <h2>Data</h2>
-      <h3 id="g5">Data</h3>
+    <h2 id="g5">Data<a class="hdr-anchor" href="#g5" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g5">Data<a class="hdr-anchor" href="#g5" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Clear local data</p>
       <p>Read-only stats and destructive actions are kept apart: clearing the chat is its own button, and “clear all data” asks twice.</p>
       <div class="m-sub">
@@ -389,8 +393,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g6">
-    <h2>Advanced</h2>
-      <h3 id="g6">Advanced</h3>
+    <h2 id="g6">Advanced<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g6">Advanced<a class="hdr-anchor" href="#g6" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Lab · Developer</p>
       <p>Landscape toggle, demo data (fake stations/packets), RX/TX counters and re-running the wizard.</p>
       <div class="m-sub">
@@ -404,8 +408,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g7">
-    <h2>Devices</h2>
-      <h3 id="g7">Devices</h3>
+    <h2 id="g7">Devices<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g7">Devices<a class="hdr-anchor" href="#g7" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Data source, link status and self-test</p>
       <p>Device overview = current link, gateway status, the three sub-pages (TNC / audio / PKWDWPL) plus link self-test and logs.</p>
       <div class="m-sub">
@@ -438,8 +442,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g8">
-    <h2>TNC device &amp; parameters</h2>
-      <h3 id="g8">TNC device &amp; parameters</h3>
+    <h2 id="g8">TNC device &amp; parameters<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g8">TNC device &amp; parameters<a class="hdr-anchor" href="#g8" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Bluetooth/serial binding, init string, KISS parameters and TX self-test</p>
       <p>Everything for a Bluetooth/USB TNC: binding, init string, baud, KISS timing, digipeat path and the TX self-test.</p>
       <div class="m-sub">
@@ -505,8 +509,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g9">
-    <h2>Audio (soundcard TNC)</h2>
-      <h3 id="g9">Audio (soundcard TNC)</h3>
+    <h2 id="g9">Audio (soundcard TNC)<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g9">Audio (soundcard TNC)<a class="hdr-anchor" href="#g9" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Send and receive AFSK 1200 packets with your soundcard</p>
       <p>Use the sound card as a TNC: sample rate/baud/tone, TX level and CSMA wait, plus WAV file mode (decode a recording offline).</p>
       <div class="m-sub">
@@ -563,8 +567,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g10">
-    <h2>PKWDWPL device</h2>
-      <h3 id="g10">PKWDWPL device</h3>
+    <h2 id="g10">PKWDWPL device<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g10">PKWDWPL device<a class="hdr-anchor" href="#g10" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Bind the radio port and check waypoint reception</p>
       <p>Read-only Kenwood waypoint link: binding and status, waypoint counters, strict checksum (off by default — mismatches are flagged, not dropped).</p>
       <div class="m-sub">
@@ -594,8 +598,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g11">
-    <h2>Translation settings</h2>
-      <h3 id="g11">Translation settings</h3>
+    <h2 id="g11">Translation settings<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g11">Translation settings<a class="hdr-anchor" href="#g11" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Provider, languages and auto-translate</p>
       <p>Target language, engine (auto, no key needed), per-engine keys and instance URLs, test translation.</p>
       <div class="m-sub">
@@ -633,8 +637,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g12">
-    <h2>Theme</h2>
-      <h3 id="g12">Theme</h3>
+    <h2 id="g12">Theme<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g12">Theme<a class="hdr-anchor" href="#g12" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Make the colours, icons and common labels your own</p>
       <p>Four blocks — colours, icons, text, background — exportable as JSON to share; preset skins switch in one tap.</p>
       <div class="m-sub">
@@ -721,8 +725,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g13">
-    <h2>Backup &amp; restore</h2>
-      <h3 id="g13">Backup &amp; restore</h3>
+    <h2 id="g13">Backup &amp; restore<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g13">Backup &amp; restore<a class="hdr-anchor" href="#g13" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Export or import settings and data</p>
       <p>One JSON holds settings and data; whitelisted import stops a foreign file from rewriting your config; restart after importing.</p>
       <div class="m-sub">
@@ -752,8 +756,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g14">
-    <h2>Offline maps</h2>
-      <h3 id="g14">Offline maps</h3>
+    <h2 id="g14">Offline maps<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
+      <h3 id="g14">Offline maps<a class="hdr-anchor" href="#g14" aria-label="Permalink to this section" title="Permalink to this section">#</a></h3>
       <p class="m-grp-sub">Download map tiles ahead of time so the map works without a network</p>
       <p>Tile cache plus the “offline tiles only” switch; the download area is exactly what you see on screen, entered from the map menu.</p>
       <div class="m-sub">
@@ -770,6 +774,11 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>Area too large (about … tiles) — narrow it or lower the max zoom</p></div></div>
       </div>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="start.html#wizard">First launch: seven steps</a><a href="connections.html#rf">Into a radio: TNC / audio / PKWDWPL</a><a href="troubleshooting.html">Troubleshooting</a></div>
+    </aside>
     </div>
   </div>
 
@@ -815,8 +824,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -826,6 +878,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

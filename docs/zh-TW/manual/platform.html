@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/platform.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/platform.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "同一個應用在 Android / Windows / Web 上能力不同，先看這張表再動手。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/platform.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "平台差異 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -161,7 +165,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="matrix">
-    <h2>能力矩陣</h2>
+    <h2 id="matrix">能力矩陣<a class="hdr-anchor" href="#matrix" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>能力</th><th>Android</th><th>Windows</th></tr></thead><tbody>
 <tr><td>APRS-IS 收發</td><td>✓</td><td>✓</td></tr>
@@ -175,7 +179,7 @@
 </tbody></table></div>
   </section>
   <section class="chapter reveal" id="web">
-    <h2>Web 版的取捨</h2>
+    <h2 id="web">Web 版的取捨<a class="hdr-anchor" href="#web" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Web 版是「能看、能連」的輕量形態：</p>
 <ul style="margin-top:6px">
 <li><b>不提供離線地圖下載</b>（瀏覽器沒有穩定可寫目錄）；</li>
@@ -184,6 +188,11 @@
 <li>無桌面小組件、無背景持續定位。</li>
 </ul></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="start.html#install">安裝</a><a href="connections.html#rf">接電臺：TNC / 音訊 / PKWDWPL</a><a href="data.html#backup">備份與恢復</a></div>
+    </aside>
     </div>
   </div>
 
@@ -229,8 +238,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -240,6 +292,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

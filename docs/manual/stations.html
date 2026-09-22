@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目标：先收得到（范围过滤），再看得清（列表筛选与详情）。",
   "url": "https://aprslocus.theez.top/manual/stations.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "台站与筛选 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="receive">
-    <h2>收什么：范围与接收偏好</h2>
+    <h2 id="receive">收什么：范围与接收偏好<a class="hdr-anchor" href="#receive" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>两层过滤都在 <b>设置 → 连接</b>，决定「报文到不到得了你」：</p>
 <ol class="m-steps">
 <li><b>接收范围过滤</b>：<code>r/纬度/经度/半径</code>，默认 <b>300 km</b>（最小 10 km）。
@@ -175,7 +179,7 @@
 范围 300 km 之外的台站，链路再通也到不了你。</p></div></div>
   </section>
   <section class="chapter reveal" id="display">
-    <h2>看什么：列表筛选</h2>
+    <h2 id="display">看什么：列表筛选<a class="hdr-anchor" href="#display" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p><b>台站页签</b>上再做一层<b>展示筛选</b>（不影响接收）：</p>
 <ul>
 <li><b>状态</b>：在线 / 移动 / 静止 —— 「在线判定时长」在 <b>设置 → 连接 → 数据上限</b>（默认 5 分钟）。</li>
@@ -187,7 +191,7 @@
 若全量也没有目标台站，那是<b>没收到</b>（回到上一节）而不是没显示。</p></div></div>
   </section>
   <section class="chapter reveal" id="detail">
-    <h2>台站详情与设备识别</h2>
+    <h2 id="detail">台站详情与设备识别<a class="hdr-anchor" href="#detail" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ul>
 <li><b>官方设备库</b>：接入 aprs.org 的 <code>aprsorg/aprs-deviceid</code>（tocall），按报文目的呼号识别
 <b>厂商 + 型号 + 设备类别</b>（车台/手台/追踪器/App/iGate/中继/气象站…）；内置快照 + 联网自动更新。</li>
@@ -197,6 +201,11 @@
 <li><b>轨迹回放</b>：详情里可回放该台站的轨迹（数据在本地历史里）。</li>
 </ul>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="connections.html#sources">四条链路：收可以多选，发只有一条</a><a href="maps.html#offline">下载离线地图</a><a href="troubleshooting.html#matrix">症状 → 原因 → 动作</a></div>
+    </aside>
     </div>
   </div>
 
@@ -242,8 +251,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -253,6 +305,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

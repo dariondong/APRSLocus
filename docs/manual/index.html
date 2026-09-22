@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/index.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/index.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "不知道从哪开始？按下面五条路径走，每条都指向具体页面。",
   "url": "https://aprslocus.theez.top/manual/index.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "手册首页 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -161,7 +165,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="paths">
-    <h2>按目标选路径</h2>
+    <h2 id="paths">按目标选路径<a class="hdr-anchor" href="#paths" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>我想…</th><th>去哪</th></tr></thead><tbody>
 <tr><td><b>第一次用</b>，从零跑到收到报文</td><td><a href="start.html">快速上手</a></td></tr>
@@ -174,7 +178,7 @@
 </tbody></table></div>
   </section>
   <section class="chapter reveal" id="all">
-    <h2>全部章节</h2>
+    <h2 id="all">全部章节<a class="hdr-anchor" href="#all" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ul class="m-index-list">
 <li><a href="start.html">快速上手</a> —— 安装、七步向导、Passcode、收第一条报文</li>
 <li><a href="interface.html">界面导览</a> —— 五个页签、面板手势、返回键</li>
@@ -193,6 +197,11 @@
 直接去 <a href="../faq.html">帮助中心</a>（23 题按主题分组）；本手册按<b>任务</b>组织，
 适合「我要完成一件事」。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="start.html">快速上手</a><a href="settings.html">设置参考</a><a href="troubleshooting.html">故障排查</a></div>
+    </aside>
     </div>
   </div>
 
@@ -238,8 +247,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -249,6 +301,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

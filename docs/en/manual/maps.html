@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/maps.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/maps.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Goal: choose a tile source, make sure coordinates do not drift, download offline tiles when needed.",
   "url": "https://aprslocus.theez.top/en/manual/maps.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Maps & Display — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -163,7 +167,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="tiles">
-    <h2>Pick tile sources</h2>
+    <h2 id="tiles">Pick tile sources<a class="hdr-anchor" href="#tiles" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>Entry: <b>Map tab → tile / map menu</b>. Pick by purpose:</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>Source</th><th>When to use it</th></tr></thead><tbody>
@@ -178,7 +182,7 @@
 if it does, datum correction is not applied, see next.</p></div></div>
   </section>
   <section class="chapter reveal" id="datum">
-    <h2>No drift: WGS-84 ↔ GCJ-02</h2>
+    <h2 id="datum">No drift: WGS-84 ↔ GCJ-02<a class="hdr-anchor" href="#datum" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <div class="callout info"><span class="co-ic">🗺️</span><div><p>APRS uses <b>WGS-84</b> worldwide; Chinese sources (AMap) use <b>GCJ-02</b>.
 The app converts both ways — Chinese sources are aligned to GCJ-02 and restored when you switch back —
 so <b>switching layers never moves you by 500 m</b>; stations, tracks and your own marker move together.</p></div></div>
@@ -188,7 +192,7 @@ so <b>switching layers never moves you by 500 m</b>; stations, tracks and your o
 </ul>
   </section>
   <section class="chapter reveal" id="offline">
-    <h2>Download offline maps</h2>
+    <h2 id="offline">Download offline maps<a class="hdr-anchor" href="#offline" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li>Pan and zoom the map to the <b>screen you want to keep</b> — the download area is exactly what you see (no box selection).</li>
 <li><b>Settings → Display → Offline map</b> (or the offline entry in the map menu) → download.</li>
@@ -199,7 +203,7 @@ so <b>switching layers never moves you by 500 m</b>; stations, tracks and your o
 use Android or Windows for offline maps.</p></div></div>
   </section>
   <section class="chapter reveal" id="look">
-    <h2>Look and feel</h2>
+    <h2 id="look">Look and feel<a class="hdr-anchor" href="#look" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ul>
 <li><b>UI 2.0</b>: the map-first layout (default); Display settings switches back to the classic one at any time; material toggles between <b>frosted glass</b> and <b>mica</b>.</li>
 <li><b>Dark mode</b>: Settings → Display → dark mode (follow system / force on / force off).</li>
@@ -207,6 +211,11 @@ use Android or Windows for offline maps.</p></div></div>
 <li>The <b>weather widget</b> switch is on the same page — off means the home weather card stops requesting data.</li>
 </ul>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="beacon.html#nofix">When there is no GPS</a><a href="data.html#track">Track history &amp; playback</a><a href="stations.html#receive">What you receive</a></div>
+    </aside>
     </div>
   </div>
 
@@ -252,8 +261,51 @@ use Android or Windows for offline maps.</p></div></div>
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -263,6 +315,11 @@ use Android or Windows for offline maps.</p></div></div>
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

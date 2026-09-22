@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/stations.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/stations.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Goal: receive the right things (range filter), then read them clearly (list filters and detail).",
   "url": "https://aprslocus.theez.top/en/manual/stations.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Stations — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="receive">
-    <h2>What you receive</h2>
+    <h2 id="receive">What you receive<a class="hdr-anchor" href="#receive" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>Both filters live under <b>Settings → Connection</b> and decide whether packets can reach you at all:</p>
 <ol class="m-steps">
 <li><b>Receive range</b>: <code>r/lat/lng/radius</code>, <b>300 km</b> by default (10 km minimum).
@@ -175,7 +179,7 @@ Exact callsigns are received <b>even from outside the range</b>.</li>
 a station 400 km away cannot reach you through a 300 km filter however healthy the link is.</p></div></div>
   </section>
   <section class="chapter reveal" id="display">
-    <h2>What you display</h2>
+    <h2 id="display">What you display<a class="hdr-anchor" href="#display" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>The <b>Stations tab</b> adds a <b>display filter</b> on top (it does not affect receiving):</p>
 <ul>
 <li><b>Status</b>: online / moving / static — the “online window” is under <b>Settings → Connection → Data caps</b> (5 minutes by default).</li>
@@ -187,7 +191,7 @@ a station 400 km away cannot reach you through a 300 km filter however healthy t
 If the full list still lacks your target, it was <b>never received</b> (previous section), not hidden.</p></div></div>
   </section>
   <section class="chapter reveal" id="detail">
-    <h2>Detail &amp; device ID</h2>
+    <h2 id="detail">Detail &amp; device ID<a class="hdr-anchor" href="#detail" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ul>
 <li><b>Official device library</b>: aprs.org’s <code>aprsorg/aprs-deviceid</code> (tocall) resolves
 <b>vendor + model + class</b> from the packet’s destination callsign (mobile/portable/tracker/app/iGate/relay/weather…);
@@ -198,6 +202,11 @@ bundled snapshot plus online updates.</li>
 <li><b>Trail playback</b>: play back that station’s track from its detail page (the history is stored locally).</li>
 </ul>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="connections.html#sources">Four links: many RX, one TX</a><a href="maps.html#offline">Download offline maps</a><a href="troubleshooting.html#matrix">Symptom → cause → action</a></div>
+    </aside>
     </div>
   </div>
 
@@ -243,8 +252,51 @@ bundled snapshot plus online updates.</li>
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -254,6 +306,11 @@ bundled snapshot plus online updates.</li>
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

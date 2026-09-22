@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Goal: pick the data sources, connect and verify APRS-IS, then get the RF link working.",
   "url": "https://aprslocus.theez.top/en/manual/connections.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Connections — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -164,7 +168,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="sources">
-    <h2>Four links: many RX, one TX</h2>
+    <h2 id="sources">Four links: many RX, one TX<a class="hdr-anchor" href="#sources" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>Path: <b>Settings → Connection → Data sources</b>. Every ticked link <b>receives</b>, but there is
 only <b>one transmit source</b> — the one marked with the dot. Transmitting the same callsign over
 two links produces duplicate packets.</p>
@@ -180,7 +184,7 @@ two links produces duplicate packets.</p>
 reception, raise the radius or stop following your position.</p></div></div>
   </section>
   <section class="chapter reveal" id="aprsis">
-    <h2>Connect APRS-IS</h2>
+    <h2 id="aprsis">Connect APRS-IS<a class="hdr-anchor" href="#aprsis" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li><b>Settings → Connection</b>: leave the server at <code>rotate.aprs2.net</code>, port <code>14580</code>.</li>
 <li>Enter your <b>Passcode</b> (generated for the full callsign, see <a href="start.html#passcode">Quick Start</a>).</li>
@@ -194,7 +198,7 @@ reception, raise the radius or stop following your position.</p></div></div>
 </ul>
   </section>
   <section class="chapter reveal" id="rf">
-    <h2>Into a radio: TNC / audio / PKWDWPL</h2>
+    <h2 id="rf">Into a radio: TNC / audio / PKWDWPL<a class="hdr-anchor" href="#rf" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>All three RF paths live under <b>Settings → Device</b> (the overview lists the current link and
 three sub-pages):</p>
 <div class="doc-table-wrap"><table class="doc-table">
@@ -212,7 +216,7 @@ three sub-pages):</p>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>RF transmission requires a licence — follow local regulations. <b>RF beaconing</b> is off by default; confirm your licence allows it before enabling.</p></div></div>
   </section>
   <section class="chapter reveal" id="igate">
-    <h2>iGate</h2>
+    <h2 id="igate">iGate<a class="hdr-anchor" href="#igate" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>The iGate relays packets heard on <b>RF</b> into <b>APRS-IS</b> (adding <code>qAr</code>/<code>qAR</code>
 and your callsign). Entry: <b>Settings → Device → Gateway (iGate)</b>.</p>
 <ol class="m-steps">
@@ -226,7 +230,7 @@ per 30 s. The counters in that section (RF seen / gated / duplicates dropped / l
 the live readings of those four gates.</p></div></div>
   </section>
   <section class="chapter reveal" id="selftest">
-    <h2>Self-test &amp; order of diagnosis</h2>
+    <h2 id="selftest">Self-test &amp; order of diagnosis<a class="hdr-anchor" href="#selftest" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <p>When something breaks, <b>work down this order</b> — one layer at a time:</p>
 <ol class="m-steps">
 <li><b>Link status card</b> (top of the home page): is the link up, are the counters moving, what did the server reply?</li>
@@ -236,6 +240,11 @@ the live readings of those four gates.</p></div></div>
 </ol>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>Best evidence when reporting:</b> the raw packet from the Packets tab plus the link log.</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="start.html#passcode">Passcode &amp; background</a><a href="beacon.html">Beaconing</a><a href="troubleshooting.html#matrix">Symptom → cause → action</a></div>
+    </aside>
     </div>
   </div>
 
@@ -281,8 +290,51 @@ the live readings of those four gates.</p></div></div>
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -292,6 +344,11 @@ the live readings of those four gates.</p></div></div>
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

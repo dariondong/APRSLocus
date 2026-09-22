@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：用三個入口把問題定位到「鏈路 / 篩選 / 配置」中的哪一層。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/troubleshooting.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "故障排除 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="entries">
-    <h2>先用這三個入口</h2>
+    <h2 id="entries">先用這三個入口<a class="hdr-anchor" href="#entries" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li><b>鏈路狀態卡</b>（首頁頂部）——連線是否成立、收發計數、伺服器回傳值。
 回傳 <code>unverified</code> = <b>Passcode</b> 問題（<a href="start.html#passcode">去填</a>）。</li>
@@ -173,7 +177,7 @@ TNC 另有初始化字串與發射自檢（狀態封包，不含座標）。</li
 </ol>
   </section>
   <section class="chapter reveal" id="matrix">
-    <h2>症狀 → 原因 → 動作</h2>
+    <h2 id="matrix">症狀 → 原因 → 動作<a class="hdr-anchor" href="#matrix" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>症狀</th><th>最可能的原因</th><th>動作</th></tr></thead><tbody>
 <tr><td>黃色「未驗證」橫幅</td><td>Passcode 空 / 錯</td><td>設定 → 連線 → 填正確 Passcode → 儲存並套用</td></tr>
@@ -191,7 +195,7 @@ TNC 另有初始化字串與發射自檢（狀態封包，不含座標）。</li
 </tbody></table></div>
   </section>
   <section class="chapter reveal" id="report">
-    <h2>還是解決不了？</h2>
+    <h2 id="report">還是解決不了？<a class="hdr-anchor" href="#report" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ul>
 <li><b>常見問題</b>：23 題按主題分組 → <a href="../faq.html">幫助中心</a></li>
 <li><b>更新記錄</b>：你遇到的可能已在新版本修掉 →
@@ -202,6 +206,11 @@ TNC 另有初始化字串與發射自檢（狀態封包，不含座標）。</li
 <div class="callout tip"><span class="co-ic">📎</span><div><p>報告模板（照抄即可）：① 平台與版本；② 鏈路狀態卡截圖；③ 封包頁裡
 一則完整封包（含封包頭）；④ 已勾選的資料來源與過濾半徑。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="connections.html#selftest">鏈路自檢與排錯順序</a><a href="stations.html#receive">收什麼：範圍與接收偏好</a><a href="start.html#passcode">Passcode 與背景執行</a></div>
+    </aside>
     </div>
   </div>
 
@@ -247,8 +256,51 @@ TNC 另有初始化字串與發射自檢（狀態封包，不含座標）。</li
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -258,6 +310,11 @@ TNC 另有初始化字串與發射自檢（狀態封包，不含座標）。</li
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

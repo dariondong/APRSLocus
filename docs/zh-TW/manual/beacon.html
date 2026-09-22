@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/beacon.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/beacon.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：讓別人在地圖上看到你 —— 間隔、速度分檔、射頻開關一次配好。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/beacon.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "位置信標 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -163,7 +167,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="interval">
-    <h2>上報節奏：先定間隔</h2>
+    <h2 id="interval">上報節奏：先定間隔<a class="hdr-anchor" href="#interval" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li><b>設定 → 定位上報 → 啟用位置信標</b> 打開（預設開）。</li>
 <li><b>上報間隔</b>預設 <b>60 秒</b> —— APRS-IS 建議移動站不低於 60 秒，<b>最短 5 秒</b>（輸入更小會被校驗攔下）。APRS 網路是共享資源，間隔拉太短會明顯增加伺服器負載，介面會提醒。</li>
@@ -174,7 +178,7 @@
 停在這兩個數字上就能判斷「它到底在不在發」。</p></div></div>
   </section>
   <section class="chapter reveal" id="tiers">
-    <h2>移動起來：速度分檔</h2>
+    <h2 id="tiers">移動起來：速度分檔<a class="hdr-anchor" href="#tiers" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li><b>設定 → 定位上報 → 智能信標（按速度分檔）</b> 打開。</li>
 <li>配置最多 <b>5 檔</b>：速度越快上報越頻繁；每檔自訂<b>間隔</b>與<b>圖示</b>（圖示留空 = 用「我的符號」）。</li>
@@ -183,7 +187,7 @@
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分檔間隔同樣受 5 秒下限與伺服器負載約束；把某一檔設成 3 秒，校驗會攔下來。</p></div></div>
   </section>
   <section class="chapter reveal" id="nofix">
-    <h2>沒有 GPS 怎麼辦</h2>
+    <h2 id="nofix">沒有 GPS 怎麼辦<a class="hdr-anchor" href="#nofix" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>場景</th><th>用什麼</th><th>在哪</th></tr></thead><tbody>
 <tr><td>室內 / 桌面示範</td><td><b>手動定位</b>：輸入經緯度或在地圖上選點</td><td>設定 → 定位上報 → 定位來源（模擬位置）</td></tr>
@@ -198,7 +202,7 @@
 </ul>
   </section>
   <section class="chapter reveal" id="packet">
-    <h2>一幀信標長什麼樣</h2>
+    <h2 id="packet">一幀信標長什麼樣<a class="hdr-anchor" href="#packet" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>本應用發出的位置幀（示例取自測試用例 <code>beacon_format_test</code> / <code>afsk_test</code>）：</p>
 <pre class="pkt"># 走 APRS-IS：
 BG7LZG-9&gt;APALOC,TCPIP*:!3904.25N/11624.44E&gt;123/045/A=000100 Bat:88% APRSlocus v1.6.67
@@ -212,6 +216,11 @@ BG7LZQ-9&gt;APALOC,WIDE1-1,WIDE2-1:!2230.00N/11400.00E&gt;測試</pre>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>驗證：</b>發一次手動上報 → 封包頁應看到自己那幀；幾分鐘後在
 <a href="https://aprs.fi" target="_blank" rel="noopener">aprs.fi</a> 用呼號搜，能看到同一座標。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="connections.html#rf">接電臺：TNC / 音訊 / PKWDWPL</a><a href="stations.html#receive">收什麼：範圍與接收偏好</a><a href="troubleshooting.html#matrix">症狀 → 原因 → 動作</a></div>
+    </aside>
     </div>
   </div>
 
@@ -257,8 +266,51 @@ BG7LZQ-9&gt;APALOC,WIDE1-1,WIDE2-1:!2230.00N/11400.00E&gt;測試</pre>
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -268,6 +320,11 @@ BG7LZQ-9&gt;APALOC,WIDE1-1,WIDE2-1:!2230.00N/11400.00E&gt;測試</pre>
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

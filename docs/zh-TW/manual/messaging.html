@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/messaging.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/messaging.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：發出第一條訊息並確認送達，再按需開群組與翻譯。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/messaging.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "訊息與群組 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -163,7 +167,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="send">
-    <h2>發一則訊息</h2>
+    <h2 id="send">發一則訊息<a class="hdr-anchor" href="#send" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li>切到 <b>訊息</b> 頁籤 → 右上新增（或從臺站詳情裡點「發訊息」，會自動帶入呼號）。</li>
 <li>輸入收方呼號（<b>含 SSID，收方欄位按 9 字元補位</b>，APRS101 固定欄位）與內容。</li>
@@ -174,7 +178,7 @@
 <pre class="pkt">BG7LZQ-9&gt;APALOC::BA7KSM   :你好，這裡是中文訊息</pre>
   </section>
   <section class="chapter reveal" id="limits">
-    <h2>兩條長度紅線</h2>
+    <h2 id="limits">兩條長度紅線<a class="hdr-anchor" href="#limits" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="callout warn"><span class="co-ic">📏</span><div><p><b>發送前介面會預先檢查，兩條都要記住：</b></p>
 <ul style="margin-top:6px">
 <li><b>67 字元</b> —— APRS101 的訊息文字上限。超了多數用戶端仍能讀，少數按規範截斷/拒收。</li>
@@ -184,7 +188,7 @@
 介面按字元與位元組<b>雙紅線</b>同時預先檢查。</p></div></div>
   </section>
   <section class="chapter reveal" id="group">
-    <h2>建組與群組</h2>
+    <h2 id="group">建組與群組<a class="hdr-anchor" href="#group" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li>訊息頁新增 → 選<b>群組</b> → 起名並挑成員。</li>
 <li>系統<b>自動產生群呼號</b>並發邀請，所有成員都能收到 —— 之後發言走群呼號廣播。</li>
@@ -194,7 +198,7 @@
 通道是共享資源，一條群發會佔用所有人的頻點。</p></div></div>
   </section>
   <section class="chapter reveal" id="translate">
-    <h2>雙向翻譯</h2>
+    <h2 id="translate">雙向翻譯<a class="hdr-anchor" href="#translate" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>路徑 <b>設定 → 翻譯設定</b>。多引擎、預設走免費介面、<b>無需任何金鑰</b>。</p>
 <ol class="m-steps">
 <li><b>翻譯為</b>：選目標語言（預設中文）。</li>
@@ -205,6 +209,11 @@
 </ol>
 <div class="callout info"><span class="co-ic">🔒</span><div><p>翻譯請求只在應用側發出；桌面小組件那類原生介面<b>拿不到</b>你的介面金鑰（它們只接收應用推的快照）。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="connections.html#aprsis">接上 APRS-IS</a><a href="stations.html#detail">臺站詳情與裝置識別</a><a href="troubleshooting.html#matrix">症狀 → 原因 → 動作</a></div>
+    </aside>
     </div>
   </div>
 
@@ -250,8 +259,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -261,6 +313,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目标：把日志导出成 ADIF、把整机设置打包备份、翻看历史轨迹。",
   "url": "https://aprslocus.theez.top/manual/data.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "导出 · 备份 · 轨迹 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="adif">
-    <h2>导出 ADIF</h2>
+    <h2 id="adif">导出 ADIF<a class="hdr-anchor" href="#adif" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li>入口：<b>设置 → 导出 ADIF</b>。</li>
 <li>频率可自定义（ADIF 是业余无线电通用日志交换格式）。</li>
@@ -171,7 +175,7 @@
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>验证：</b>导出后用任意日志软件打开，能看到呼号、时间、模式字段即成功。</p></div></div>
   </section>
   <section class="chapter reveal" id="backup">
-    <h2>备份与恢复</h2>
+    <h2 id="backup">备份与恢复<a class="hdr-anchor" href="#backup" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li><b>导出</b>（设置 → 备份与恢复 → 导出备份）：设置配置（电台、信标、地图、筛选、数据来源、服务器等）
 与本地数据进<b>一个 JSON</b>；可勾选是否包含图片。</li>
@@ -184,7 +188,7 @@
 读取上限 <b>32 MB</b>。</p></div></div>
   </section>
   <section class="chapter reveal" id="track">
-    <h2>历史轨迹与回放</h2>
+    <h2 id="track">历史轨迹与回放<a class="hdr-anchor" href="#track" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li>入口：<b>设置 → 历史轨迹</b>。</li>
 <li>按天落盘：<code>tracklog/YYYY-MM-DD.json</code>，记录经纬度、速度、航向、海拔、精度 —— 退出重进还在。</li>
@@ -196,6 +200,11 @@
 <div class="callout info"><span class="co-ic">🧾</span><div><p>它与地图上那条「我的轨迹」<b>刻意分开</b>：屏幕轨迹只服务本次显示，退出即失；
 历史轨迹是留档，可导出、可回放。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="settings.html">设置参考</a><a href="maps.html#offline">下载离线地图</a><a href="platform.html">平台差异</a></div>
+    </aside>
     </div>
   </div>
 
@@ -241,8 +250,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -252,6 +304,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

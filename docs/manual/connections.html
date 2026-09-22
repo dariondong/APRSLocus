@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目标：选对数据来源、把 APRS-IS 连上并验证，必要时接上电台跑通射频链路。",
   "url": "https://aprslocus.theez.top/manual/connections.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "连接与数据来源 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -164,7 +168,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="sources">
-    <h2>四条链路：收可以多选，发只有一条</h2>
+    <h2 id="sources">四条链路：收可以多选，发只有一条<a class="hdr-anchor" href="#sources" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>路径 <b>设置 → 连接 → 数据来源</b>。勾中的链路都会<b>收</b>报文，但<b>发射只有一条</b> ——
 右侧圆点标记的那条。同一个呼号从两条链路发出去会造成重复报文。</p>
 <div class="doc-table-wrap"><table class="doc-table">
@@ -178,7 +182,7 @@
 改完必须点 <b>「保存并应用」</b> 才生效。想收全球就把半径调大或关掉过滤中心跟随。</p></div></div>
   </section>
   <section class="chapter reveal" id="aprsis">
-    <h2>接上 APRS-IS</h2>
+    <h2 id="aprsis">接上 APRS-IS<a class="hdr-anchor" href="#aprsis" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li><b>设置 → 连接</b>，确认服务器 <code>rotate.aprs2.net</code>、端口 <code>14580</code>（默认即可）。</li>
 <li>填入 <b>Passcode</b>（用完整呼号生成，见 <a href="start.html#passcode">快速上手</a>）。</li>
@@ -192,7 +196,7 @@
 </ul>
   </section>
   <section class="chapter reveal" id="rf">
-    <h2>接电台：TNC / 音频 / PKWDWPL</h2>
+    <h2 id="rf">接电台：TNC / 音频 / PKWDWPL<a class="hdr-anchor" href="#rf" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>三条射频路径的入口都在 <b>设置 → 设备</b>（设备总览页列出当前链路与三个子页）：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>路径</th><th>子页</th><th>关键参数</th></tr></thead><tbody>
@@ -209,7 +213,7 @@
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>射频发射需持照操作，请遵守当地法规；<b>允许射频信标</b>默认关，打开前确认你的执照与本地规则允许。</p></div></div>
   </section>
   <section class="chapter reveal" id="igate">
-    <h2>网关 iGate</h2>
+    <h2 id="igate">网关 iGate<a class="hdr-anchor" href="#igate" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>iGate 把<b>射频</b>收到的报文转送 <b>APRS-IS</b>（自动加 <code>qAr</code>/<code>qAR</code> 与你的呼号标识来路）。
 入口在 <b>设置 → 设备 → 网关（iGate）</b>。</p>
 <ol class="m-steps">
@@ -222,7 +226,7 @@
 就是这四道闸的实时读数。</p></div></div>
   </section>
   <section class="chapter reveal" id="selftest">
-    <h2>链路自检与排错顺序</h2>
+    <h2 id="selftest">链路自检与排错顺序<a class="hdr-anchor" href="#selftest" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>出问题时<b>按这个顺序查</b>，一层一层来，别跳：</p>
 <ol class="m-steps">
 <li><b>链路状态卡</b>（主页顶部）：连接是否成立、收发计数是否在涨、服务器返回什么。</li>
@@ -232,6 +236,11 @@
 </ol>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>反馈时最有效的证据</b>：数据包页的原始报文 + 链路日志，附上它们定位最快。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="start.html#passcode">Passcode 与后台运行</a><a href="beacon.html">位置信标</a><a href="troubleshooting.html#matrix">症状 → 原因 → 动作</a></div>
+    </aside>
     </div>
   </div>
 
@@ -277,8 +286,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -288,6 +340,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

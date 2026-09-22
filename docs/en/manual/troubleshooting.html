@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Goal: use three entry points to localise a problem to link, filter or configuration.",
   "url": "https://aprslocus.theez.top/en/manual/troubleshooting.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Troubleshooting — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="entries">
-    <h2>Start with these three</h2>
+    <h2 id="entries">Start with these three<a class="hdr-anchor" href="#entries" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li><b>Link status card</b> (top of the home page) — is the link up, what are the counters, what did
 the server return? <code>unverified</code> = <b>Passcode</b> problem
@@ -174,7 +178,7 @@ go back to <a href="stations.html">Stations</a>; nothing at all = link problem, 
 </ol>
   </section>
   <section class="chapter reveal" id="matrix">
-    <h2>Symptom → cause → action</h2>
+    <h2 id="matrix">Symptom → cause → action<a class="hdr-anchor" href="#matrix" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>Symptom</th><th>Likely cause</th><th>Action</th></tr></thead><tbody>
 <tr><td>Yellow “unverified” banner</td><td>Passcode empty or wrong</td><td>Settings → Connection → correct it → Save &amp; apply</td></tr>
@@ -192,7 +196,7 @@ go back to <a href="stations.html">Stations</a>; nothing at all = link problem, 
 </tbody></table></div>
   </section>
   <section class="chapter reveal" id="report">
-    <h2>Still stuck?</h2>
+    <h2 id="report">Still stuck?<a class="hdr-anchor" href="#report" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ul>
 <li><b>FAQ</b>: 23 questions grouped by topic → <a href="../faq.html">Help Center</a></li>
 <li><b>Release notes</b>: what bit you may already be fixed →
@@ -203,6 +207,11 @@ from the Packets tab plus the <b>link log</b> → <a href="https://github.com/da
 <div class="callout tip"><span class="co-ic">📎</span><div><p>Report template: ① platform and version; ② screenshot of the link status card;
 ③ one complete frame (header included) from the Packets tab; ④ ticked data sources and the filter radius.</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="connections.html#selftest">Self-test &amp; order of diagnosis</a><a href="stations.html#receive">What you receive</a><a href="start.html#passcode">Passcode &amp; background</a></div>
+    </aside>
     </div>
   </div>
 
@@ -248,8 +257,51 @@ from the Packets tab plus the <b>link log</b> → <a href="https://github.com/da
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -259,6 +311,11 @@ from the Packets tab plus the <b>link log</b> → <a href="https://github.com/da
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

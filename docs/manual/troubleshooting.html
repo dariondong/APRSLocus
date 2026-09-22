@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/troubleshooting.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/troubleshooting.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目标：用三个入口把问题定位到「链路 / 筛选 / 配置」中的哪一层。",
   "url": "https://aprslocus.theez.top/manual/troubleshooting.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "故障排查 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="entries">
-    <h2>先用这三个入口</h2>
+    <h2 id="entries">先用这三个入口<a class="hdr-anchor" href="#entries" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li><b>链路状态卡</b>（主页顶部）——连接是否成立、收发计数、服务器返回值。
 返回 <code>unverified</code> = <b>Passcode</b> 问题（<a href="start.html#passcode">去填</a>）。</li>
@@ -173,7 +177,7 @@ TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
 </ol>
   </section>
   <section class="chapter reveal" id="matrix">
-    <h2>症状 → 原因 → 动作</h2>
+    <h2 id="matrix">症状 → 原因 → 动作<a class="hdr-anchor" href="#matrix" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>症状</th><th>最可能的原因</th><th>动作</th></tr></thead><tbody>
 <tr><td>黄色「未验证」横幅</td><td>Passcode 空 / 错</td><td>设置 → 连接 → 填正确 Passcode → 保存并应用</td></tr>
@@ -191,7 +195,7 @@ TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
 </tbody></table></div>
   </section>
   <section class="chapter reveal" id="report">
-    <h2>还是解决不了？</h2>
+    <h2 id="report">还是解决不了？<a class="hdr-anchor" href="#report" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ul>
 <li><b>常见问题</b>：23 题按主题分组 → <a href="../faq.html">帮助中心</a></li>
 <li><b>更新记录</b>：你遇到的可能已在新版本修掉 →
@@ -202,6 +206,11 @@ TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
 <div class="callout tip"><span class="co-ic">📎</span><div><p>报告模板（照抄即可）：① 平台与版本；② 链路状态卡截图；③ 数据包页里
 一条完整报文（含报头）；④ 已勾选的数据来源与过滤半径。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="connections.html#selftest">链路自检与排错顺序</a><a href="stations.html#receive">收什么：范围与接收偏好</a><a href="start.html#passcode">Passcode 与后台运行</a></div>
+    </aside>
     </div>
   </div>
 
@@ -247,8 +256,51 @@ TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -258,6 +310,11 @@ TNC 另有初始化串与发射自检（状态包，不含坐标）。</li>
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

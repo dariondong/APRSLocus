@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/widgets.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/widgets.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：放好三套桌面小組件，看懂短波傳播面板。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/widgets.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "桌面小組件與短波 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -161,7 +165,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="home">
-    <h2>三套桌面小組件</h2>
+    <h2 id="home">三套桌面小組件<a class="hdr-anchor" href="#home" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>Android 主螢幕長按 → 小組件 → 找 <b>APRSLocus</b>：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>小組件</th><th>內容</th></tr></thead><tbody>
@@ -177,7 +181,7 @@
 天氣介面金鑰只在應用側，不會外洩到小組件。</p></div></div>
   </section>
   <section class="chapter reveal" id="hf">
-    <h2>短波傳播面板</h2>
+    <h2 id="hf">短波傳播面板<a class="hdr-anchor" href="#hf" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ul>
 <li><b>資料來源</b>：<code>hamqsl.com</code>（N0NBH 整理，業餘界事實標準）；來源約每小時更新，應用快取 <b>30 分鐘</b>。</li>
 <li><b>看什麼</b>：SFI / Kp / A 指數、黑子、X 射線、太陽風；四個波段對的<b>日 / 夜</b>條件一目了然，另有 6m 預測。</li>
@@ -186,6 +190,11 @@
 <div class="callout warn"><span class="co-ic">誠實</span><div><p>hamqsl 的條件是<b>全球/區域平均</b>，不是你所在地的實測值 ——
 出門前請結合本地時間、天線與雜訊底再判斷。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="maps.html">地圖與顯示</a><a href="beacon.html">位置信標</a><a href="platform.html#web">Web 版的取捨</a></div>
+    </aside>
     </div>
   </div>
 
@@ -231,8 +240,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -242,6 +294,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

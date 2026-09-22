@@ -72,7 +72,7 @@ PAGE_META = {
                '目標：讓別人在地圖上看到你 —— 間隔、速度分檔、射頻開關一次配好。',
                'Goal: show up on other people’s maps — interval, speed tiers and the RF switch in one pass.'),
         sections=[('interval', T('上报节奏：先定间隔', '上報節奏：先定間隔', 'Cadence: pick the interval')),
-                  ('tiers', T('移动起来：速度分檔', '移動起來：速度分檔', 'On the move: speed tiers')),
+                  ('tiers', T('移动起来：速度分档', '移動起來：速度分檔', 'On the move: speed tiers')),
                   ('nofix', T('没有 GPS 怎么办', '沒有 GPS 怎麼辦', 'When there is no GPS')),
                   ('packet', T('一帧信标长什么样', '一幀信標長什麼樣', 'What a beacon frame looks like'))]),
     'messaging': dict(
@@ -132,4 +132,28 @@ PAGE_META = {
         sections=[('entries', T('先用这三个入口', '先用這三個入口', 'Start with these three')),
                   ('matrix', T('症状 → 原因 → 动作', '症狀 → 原因 → 動作', 'Symptom → cause → action')),
                   ('report', T('还是解决不了？', '還是解決不了？', 'Still stuck?'))]),
+}
+
+
+# ─────────────────────────── 每页底部「相关章节」互链 ───────────────────────────
+# (目标页 file, 目标小节 id 或 None)；标签自动取 PAGES/PAGE_META 的三语标题，手写会重复
+RELATED = {
+    'index':          [('start', None), ('settings', None), ('troubleshooting', None)],
+    'start':          [('connections', 'aprsis'), ('beacon', 'interval'),
+                       ('troubleshooting', 'entries')],
+    'interface':      [('start', 'wizard'), ('stations', 'display'), ('settings', None)],
+    'connections':    [('start', 'passcode'), ('beacon', None), ('troubleshooting', 'matrix')],
+    'beacon':         [('connections', 'rf'), ('stations', 'receive'),
+                       ('troubleshooting', 'matrix')],
+    'messaging':      [('connections', 'aprsis'), ('stations', 'detail'),
+                       ('troubleshooting', 'matrix')],
+    'maps':           [('beacon', 'nofix'), ('data', 'track'), ('stations', 'receive')],
+    'stations':       [('connections', 'sources'), ('maps', 'offline'),
+                       ('troubleshooting', 'matrix')],
+    'data':           [('settings', None), ('maps', 'offline'), ('platform', None)],
+    'widgets':        [('maps', None), ('beacon', None), ('platform', 'web')],
+    'settings':       [('start', 'wizard'), ('connections', 'rf'), ('troubleshooting', None)],
+    'platform':       [('start', 'install'), ('connections', 'rf'), ('data', 'backup')],
+    'troubleshooting': [('connections', 'selftest'), ('stations', 'receive'),
+                        ('start', 'passcode')],
 }

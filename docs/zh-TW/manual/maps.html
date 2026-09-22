@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/maps.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/maps.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：選好圖源、確認座標不漂，需要時下載離線地圖。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/maps.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "地圖與顯示 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -163,7 +167,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="tiles">
-    <h2>選圖源</h2>
+    <h2 id="tiles">選圖源<a class="hdr-anchor" href="#tiles" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>入口：<b>地圖頁 → 圖磚/地圖選單</b>。按用途選：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>圖磚</th><th>什麼時候用</th></tr></thead><tbody>
@@ -178,7 +182,7 @@
 做不到就代表糾正沒生效，見下一節。</p></div></div>
   </section>
   <section class="chapter reveal" id="datum">
-    <h2>座標不漂：WGS-84 ↔ GCJ-02</h2>
+    <h2 id="datum">座標不漂：WGS-84 ↔ GCJ-02<a class="hdr-anchor" href="#datum" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <div class="callout info"><span class="co-ic">🗺️</span><div><p>APRS 全球用 <b>WGS-84</b>；國內圖磚（高德）用 <b>GCJ-02</b>。
 應用內建雙向轉換：國內圖磚按 GCJ-02 對齊、切回國際圖磚還原 —— 所以<b>切換圖磚不會把你的位置挪出 500 公尺</b>，
 臺站、軌跡、我的位置一起對齊。</p></div></div>
@@ -188,7 +192,7 @@
 </ul>
   </section>
   <section class="chapter reveal" id="offline">
-    <h2>下載離線地圖</h2>
+    <h2 id="offline">下載離線地圖<a class="hdr-anchor" href="#offline" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li>先把地圖<b>平移縮放到要覆蓋的那一螢</b> —— 下載範圍 = 當前所見（不是選框）。</li>
 <li><b>設定 → 顯示 → 離線地圖</b>（或地圖選單裡的離線入口）→ 開始下載。</li>
@@ -198,7 +202,7 @@
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Web 版<b>不提供下載</b>（瀏覽器沒有穩定可寫目錄）—— 需要離線圖請用 Android / Windows。</p></div></div>
   </section>
   <section class="chapter reveal" id="look">
-    <h2>介面風格與主題</h2>
+    <h2 id="look">介面風格與主題<a class="hdr-anchor" href="#look" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ul>
 <li><b>UI 2.0</b>：以地圖為基底的新佈局（預設），「顯示設定」裡可隨時切回經典佈局；材質在<b>磨砂玻璃</b>與<b>雲母</b>之間切換。</li>
 <li><b>深色模式</b>：設定 → 顯示 → 深色模式（跟隨系統 / 強制開 / 強制關）。</li>
@@ -206,6 +210,11 @@
 <li><b>天氣小組件</b>開關也在這一頁 —— 關掉後首頁天氣卡不再請求資料。</li>
 </ul>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="beacon.html#nofix">沒有 GPS 怎麼辦</a><a href="data.html#track">歷史軌跡與回放</a><a href="stations.html#receive">收什麼：範圍與接收偏好</a></div>
+    </aside>
     </div>
   </div>
 
@@ -251,8 +260,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -262,6 +314,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

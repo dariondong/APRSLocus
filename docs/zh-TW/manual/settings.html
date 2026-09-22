@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/settings.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/settings.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "設定的逐項參考：名稱、控件、預設值、說明 —— 全部由程式碼與官方文案產生，改了程式碼重新產生即可對齊。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/settings.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "設定參考 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -174,8 +178,8 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="g0">
-    <h2>設定</h2>
-      <h3 id="g0">設定</h3>
+    <h2 id="g0">設定<a class="hdr-anchor" href="#g0" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g0">設定<a class="hdr-anchor" href="#g0" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">設定電臺、定位與連線</p>
       <p>設定頁頂部是 <b>8 張分組卡</b>（點進去是子頁面），下面還有 6 個直達入口。本頁把每個子頁裡的設定項逐條列出：名稱、控件、預設值、說明 —— 預設值直接取自程式碼，改了程式碼重新產生即對齊。</p>
       <div class="m-sub">
@@ -199,8 +203,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g1">
-    <h2>電臺</h2>
-      <h3 id="g1">電臺</h3>
+    <h2 id="g1">電臺<a class="hdr-anchor" href="#g1" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g1">電臺<a class="hdr-anchor" href="#g1" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">呼號 · SSID · 符號</p>
       <p>身份是所有封包的根：呼號必須與你的執照一致，SSID 決定臺站類型（-9 車載、-7 手持常見）。</p>
       <div class="m-sub">
@@ -221,8 +225,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g2">
-    <h2>定位上報</h2>
-      <h3 id="g2">定位上報</h3>
+    <h2 id="g2">定位上報<a class="hdr-anchor" href="#g2" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g2">定位上報<a class="hdr-anchor" href="#g2" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">GPS · 信標 · 手動定位</p>
       <p>三件事：用什麼定位（GPS / 網路 / 手動）、多久報一次（預設 60 秒、最短 5 秒）、報什麼（速度/方位角/電量可關）。</p>
       <div class="m-sub">
@@ -260,8 +264,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g3">
-    <h2>連線</h2>
-      <h3 id="g3">連線</h3>
+    <h2 id="g3">連線<a class="hdr-anchor" href="#g3" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g3">連線<a class="hdr-anchor" href="#g3" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">伺服器 · 篩選範圍</p>
       <p>APRS-IS 伺服器與 Passcode、資料來源複選、接收範圍（預設 300 km）、資料上限。改完點「儲存並套用」才生效。</p>
       <div class="m-sub">
@@ -332,8 +336,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g4">
-    <h2>顯示</h2>
-      <h3 id="g4">顯示</h3>
+    <h2 id="g4">顯示<a class="hdr-anchor" href="#g4" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g4">顯示<a class="hdr-anchor" href="#g4" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">座標 · 主題</p>
       <p>深色模式、天氣小組件、單位與網格在這裡；地圖類型與離線地圖在地圖選單與對應子頁。</p>
       <div class="m-sub">
@@ -356,8 +360,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g5">
-    <h2>資料</h2>
-      <h3 id="g5">資料</h3>
+    <h2 id="g5">資料<a class="hdr-anchor" href="#g5" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g5">資料<a class="hdr-anchor" href="#g5" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">清除本機資料</p>
       <p>唯讀統計與破壞性操作分開擺：清聊天記錄是單獨按鈕，「清除所有資料」會二次確認。</p>
       <div class="m-sub">
@@ -389,8 +393,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g6">
-    <h2>高階</h2>
-      <h3 id="g6">高階</h3>
+    <h2 id="g6">高階<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g6">高階<a class="hdr-anchor" href="#g6" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">實驗室 · 開發者</p>
       <p>橫螢幕開關、示範資料（模擬臺站/封包）、收發計數與重新執行引導都在這裡。</p>
       <div class="m-sub">
@@ -404,8 +408,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g7">
-    <h2>裝置</h2>
-      <h3 id="g7">裝置</h3>
+    <h2 id="g7">裝置<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g7">裝置<a class="hdr-anchor" href="#g7" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">資料來源、鏈路狀態與自檢</p>
       <p>裝置總覽 = 當前鏈路 + 網關狀態 + 三個子頁入口（TNC / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。</p>
       <div class="m-sub">
@@ -438,8 +442,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g8">
-    <h2>TNC 裝置與參數</h2>
-      <h3 id="g8">TNC 裝置與參數</h3>
+    <h2 id="g8">TNC 裝置與參數<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g8">TNC 裝置與參數<a class="hdr-anchor" href="#g8" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">藍牙/序列綁定、初始化串、KISS 參數與發射自檢</p>
       <p>接藍牙/USB TNC 的全部參數：綁定、初始化字串、線速、KISS 定時參數、中繼路徑、發射自檢。</p>
       <div class="m-sub">
@@ -505,8 +509,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g9">
-    <h2>音訊（音效卡 TNC）</h2>
-      <h3 id="g9">音訊（音效卡 TNC）</h3>
+    <h2 id="g9">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g9">音訊（音效卡 TNC）<a class="hdr-anchor" href="#g9" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">用音效卡收發 AFSK 1200 報文</p>
       <p>把音效卡當 TNC：取樣率/鮑率/音調、發射電平與 CSMA 等待、WAV 檔案模式（離線解碼錄音）。</p>
       <div class="m-sub">
@@ -563,8 +567,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g10">
-    <h2>PKWDWPL 裝置</h2>
-      <h3 id="g10">PKWDWPL 裝置</h3>
+    <h2 id="g10">PKWDWPL 裝置<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g10">PKWDWPL 裝置<a class="hdr-anchor" href="#g10" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">綁定電台連接埠 · 檢視航點接收狀態</p>
       <p>Kenwood 航點唯讀鏈路：綁定與狀態、收到的航點計數、嚴格校驗和（預設關，只標註不丟棄）。</p>
       <div class="m-sub">
@@ -594,8 +598,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g11">
-    <h2>翻譯設定</h2>
-      <h3 id="g11">翻譯設定</h3>
+    <h2 id="g11">翻譯設定<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g11">翻譯設定<a class="hdr-anchor" href="#g11" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">翻譯介面、語言與自動翻譯</p>
       <p>目標語言、引擎（預設 auto 免金鑰）、各引擎的金鑰/實例位址、測試翻譯。</p>
       <div class="m-sub">
@@ -633,8 +637,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g12">
-    <h2>主題</h2>
-      <h3 id="g12">主題</h3>
+    <h2 id="g12">主題<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g12">主題<a class="hdr-anchor" href="#g12" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">把介面配色、圖示與常用文案改成你自己的</p>
       <p>顏色 / 圖示 / 文字 / 背景圖四大塊，改完可匯出 JSON 分享；預設皮膚可一鍵切換。</p>
       <div class="m-sub">
@@ -721,8 +725,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g13">
-    <h2>備份與還原</h2>
-      <h3 id="g13">備份與還原</h3>
+    <h2 id="g13">備份與還原<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g13">備份與還原<a class="hdr-anchor" href="#g13" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">匯出或匯入設定與資料</p>
       <p>一個 JSON 裝下設定與資料；白名單匯入防來路不明的檔案改設定；匯入後需重啟生效。</p>
       <div class="m-sub">
@@ -752,8 +756,8 @@
       </div>
   </section>
   <section class="chapter reveal" id="g14">
-    <h2>離線地圖</h2>
-      <h3 id="g14">離線地圖</h3>
+    <h2 id="g14">離線地圖<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
+      <h3 id="g14">離線地圖<a class="hdr-anchor" href="#g14" aria-label="本節永久連結" title="本節永久連結">#</a></h3>
       <p class="m-grp-sub">先把地圖圖磚下載到本機，沒有網路時也能看地圖</p>
       <p>圖磚快取與「僅使用離線圖磚」開關；下載範圍 = 當前所見那一螢，入口在地圖選單。</p>
       <div class="m-sub">
@@ -770,6 +774,11 @@
         <div class="callout info"><span class="co-ic">ℹ️</span><div><p>範圍太大（約 … 張圖磚），請縮小範圍或降低最大層級</p></div></div>
       </div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="start.html#wizard">首次啟動：七步引導</a><a href="connections.html#rf">接電臺：TNC / 音訊 / PKWDWPL</a><a href="troubleshooting.html">故障排除</a></div>
+    </aside>
     </div>
   </div>
 
@@ -815,8 +824,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -826,6 +878,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

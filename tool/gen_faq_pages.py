@@ -474,7 +474,7 @@ def render(lang, path):
 <link rel="canonical" href="{SITE}/{PAGES[lang][3]}">
 {hreflangs}
 <link rel="icon" type="image/png" href="{p}assets/favicon.png">
-<link rel="stylesheet" href="{p}css/style.css?v=4">
+<link rel="stylesheet" href="{p}css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统。必须在首帧前执行，

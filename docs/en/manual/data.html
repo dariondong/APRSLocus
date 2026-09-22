@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/data.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/data.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "Goal: export logs to ADIF, back up every setting, and browse your track history.",
   "url": "https://aprslocus.theez.top/en/manual/data.html",
   "inLanguage": "en",
+  "dateModified": "2026-09-22",
+  "articleSection": "Export & Backup — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="Search this page, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search this page" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…" aria-label="Search the whole guide" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>No matching section — try another keyword.</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>No matches elsewhere in the guide.</p>
   </div>
 
   <div class="manual-layout">
@@ -162,7 +166,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="adif">
-    <h2>ADIF export</h2>
+    <h2 id="adif">ADIF export<a class="hdr-anchor" href="#adif" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li>Entry: <b>Settings → Export ADIF</b>.</li>
 <li>The frequency is configurable (ADIF is the standard amateur log interchange format).</li>
@@ -171,7 +175,7 @@
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>Check:</b> open the export anywhere — callsign, date and mode fields should all be there.</p></div></div>
   </section>
   <section class="chapter reveal" id="backup">
-    <h2>Backup &amp; restore</h2>
+    <h2 id="backup">Backup &amp; restore<a class="hdr-anchor" href="#backup" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li><b>Export</b> (Settings → Backup → export): configuration (station, beacon, map, filters, sources, server…)
 plus local data into <b>one JSON</b>; images are optional.</li>
@@ -185,7 +189,7 @@ someone else cannot rewrite internal settings; a backup from a newer version is 
 Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div></div>
   </section>
   <section class="chapter reveal" id="track">
-    <h2>Track history &amp; playback</h2>
+    <h2 id="track">Track history &amp; playback<a class="hdr-anchor" href="#track" aria-label="Permalink to this section" title="Permalink to this section">#</a></h2>
 <ol class="m-steps">
 <li>Entry: <b>Settings → Track history</b>.</li>
 <li>Saved per local day (<code>tracklog/YYYY-MM-DD.json</code>) with lat/lng, speed, course, altitude and accuracy — it survives a restart.</li>
@@ -197,6 +201,11 @@ draggable progress, <b>0.5×–4×</b> speed, follow view; stops over 45 s fast-
 <div class="callout info"><span class="co-ic">🧾</span><div><p>It is <b>deliberately separate</b> from the on-screen “my track”, which only serves this session
 and disappears on exit; history is the archive — exportable and replayable.</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="Related sections">
+      <div class="mr-title">Related sections</div>
+      <div class="mr-links"><a href="settings.html">Settings Reference</a><a href="maps.html#offline">Download offline maps</a><a href="platform.html">Platforms</a></div>
+    </aside>
     </div>
   </div>
 
@@ -242,8 +251,51 @@ and disappears on exit; history is the archive — exportable and replayable.</p
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -253,6 +305,11 @@ and disappears on exit; history is the archive — exportable and replayable.</p
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

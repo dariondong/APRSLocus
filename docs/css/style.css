@@ -1305,3 +1305,35 @@ ol.m-steps > li {
   .set-table { font-size: 12.5px; }
   .set-table th:nth-child(2), .set-table td:nth-child(2) { display: none; }
 }
+
+/* ═══════════ 文档页优化：标题永久链接 / 相关章节 / 跨页搜索结果 ═══════════ */
+.manual-tools { position: relative; }
+
+.hdr-anchor { margin-left: 10px; color: var(--text-faint); text-decoration: none;
+  font-size: .75em; font-weight: 700; opacity: 0; vertical-align: middle;
+  transition: opacity .15s var(--ease); }
+.chapter h2:hover .hdr-anchor, .chapter h3:hover .hdr-anchor, .hdr-anchor:focus { opacity: .9; }
+.hdr-anchor:hover { color: var(--cyan); opacity: 1; }
+
+.ms-results { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 6px);
+  margin: 0; padding: 6px; list-style: none; background: #fff; border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: var(--shadow-hover); max-height: 340px; overflow-y: auto; }
+.ms-results li { border: 0; border-radius: 10px; padding: 0; }
+.ms-results a { display: flex; flex-direction: column; gap: 2px; padding: 9px 12px;
+  border-radius: 10px; text-decoration: none; color: var(--text); font-size: 14px; }
+.ms-results a:hover, .ms-results a:focus { background: rgba(56, 189, 248, .10); outline: none; }
+.ms-results b { color: var(--cyan); font-size: 13.5px; }
+.ms-results span { color: var(--text-faint); font-size: 12px; }
+.ms-none { font-size: 13px; color: var(--text-faint); padding: 6px 2px 0; }
+:root[data-theme="dark"] .ms-results { background: #0e1626; }
+
+.m-related { margin-top: 26px; padding: 16px 18px; border: 1px solid var(--line);
+  border-radius: 16px; background: var(--glass); }
+.mr-title { font-size: 12px; font-weight: 800; letter-spacing: .08em;
+  color: var(--text-faint); margin-bottom: 10px; }
+.mr-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.mr-links a { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px;
+  font-size: 13.5px; font-weight: 600; color: var(--text); text-decoration: none;
+  background: #fff; transition: border-color .18s var(--ease), color .18s var(--ease); }
+.mr-links a:hover { border-color: var(--cyan); color: var(--cyan); }
+:root[data-theme="dark"] .mr-links a { background: #101a2c; }

@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/start.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/start.html">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目标：装好应用、跑完七步向导，让 APRS-IS 显示「已验证」并收到第一条报文。",
   "url": "https://aprslocus.theez.top/manual/start.html",
   "inLanguage": "zh-CN",
+  "dateModified": "2026-09-22",
+  "articleSection": "快速上手 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜索本页内容，比如「信标」「Passcode」「离线」…" aria-label="搜索本页" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜索整本手册，比如「信标」「Passcode」「离线」…" aria-label="搜索整本手册" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>没有匹配的小节，换个关键词试试。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手册其它页面也没有匹配。</p>
   </div>
 
   <div class="manual-layout">
@@ -163,7 +167,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="install">
-    <h2>安装</h2>
+    <h2 id="install">安装<a class="hdr-anchor" href="#install" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li>打开 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">GitHub Releases</a>，按平台取包：<b>Android</b> → <code>*.apk</code>；<b>Windows</b> → 安装包。</li>
 <li>Android 自 v1.5.2 起使用正式 release 签名，<b>直接覆盖安装</b>即可；从更老的版本升级请先卸载再装（签名不同会装不上）。</li>
@@ -172,7 +176,7 @@
 <div class="callout info"><span class="co-ic">🧩</span><div><p>桌面端是绿色安装：装完在开始菜单找 <b>APRSlocus</b>；解压版直接运行 <code>aprslocus.exe</code>。</p></div></div>
   </section>
   <section class="chapter reveal" id="wizard">
-    <h2>首次启动：七步向导</h2>
+    <h2 id="wizard">首次启动：七步向导<a class="hdr-anchor" href="#wizard" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <p>向导每一步都能返回修改；之后随时可在 <b>设置 → 高级</b> 里<b>重新运行</b>，当前设置不会丢。</p>
 <ol class="m-steps">
 <li><b>界面语言</b> —— 简体 / 繁體 / English / 日本語 / Indonesia / Español。</li>
@@ -187,7 +191,7 @@
 若显示黄色「未验证」，说明 Passcode 还没填对，继续看下一节。</p></div></div>
   </section>
   <section class="chapter reveal" id="passcode">
-    <h2>Passcode 与后台运行</h2>
+    <h2 id="passcode">Passcode 与后台运行<a class="hdr-anchor" href="#passcode" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p><b>Passcode 是 APRS-IS 的登录验证码</b>，把你的呼号验证到网络。
 留空或默认 <code>-1</code> 只能<b>连接</b>，消息与群组都收发不了。到
 <a href="https://aprs.cool/AprsPG" target="_blank" rel="noopener">APRS Passcode 查询</a>
@@ -199,7 +203,7 @@
 </ul>
   </section>
   <section class="chapter reveal" id="firstpacket">
-    <h2>验证：收到第一条报文</h2>
+    <h2 id="firstpacket">验证：收到第一条报文<a class="hdr-anchor" href="#firstpacket" aria-label="本节永久链接" title="本节永久链接">#</a></h2>
 <ol class="m-steps">
 <li>主页顶部<b>链路状态卡</b>：状态为「已连接」，收包计数在涨。</li>
 <li>切到 <b>数据包</b> 页签：几秒内应出现原始报文（等宽字体、可长按复制）。</li>
@@ -219,6 +223,11 @@
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>怎么算成功：</b>数据包页有报文 + 收包计数增长 = 接收链路通。
 若计数一直为 0，去 <a href="troubleshooting.html">故障排查</a>。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相关章节">
+      <div class="mr-title">相关章节</div>
+      <div class="mr-links"><a href="connections.html#aprsis">接上 APRS-IS</a><a href="beacon.html#interval">上报节奏：先定间隔</a><a href="troubleshooting.html#entries">先用这三个入口</a></div>
+    </aside>
     </div>
   </div>
 
@@ -264,8 +273,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -275,6 +327,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));

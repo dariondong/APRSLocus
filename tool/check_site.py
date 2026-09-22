@@ -190,6 +190,38 @@ def main():
     chk('manual multi-page styles',
         all(x in css for x in ['.doc-crumb', '.doc-pager', '.set-table',
                                '.m-kind', '.m-index-list', 'pre.pkt']))
+    chk('manual 优化样式',
+        all(x in css for x in ['.hdr-anchor', '.ms-results', '.m-related']))
+    # 文档页优化：跨页搜索索引 / 标题永久链接 / 相关章节 / 缓存版本
+    for base, _ in BASES:
+        try:
+            ix = json.load(io.open(os.path.join(ROOT, base, '_index.json'),
+                                   encoding='utf-8'))
+            chk('%s _index.json >= 50 条' % base, len(ix) >= 50, len(ix))
+        except Exception as e:
+            chk('%s _index.json 可解析' % base, False, e)
+    bad_anchor = [b0 + '/' + n for b0, _ in BASES for n in MANUAL
+                  if 'hdr-anchor' not in read(b0 + '/' + n + '.html')]
+    chk('hdr-anchor 39 页全有', not bad_anchor, bad_anchor[:3])
+    bad_rel = [b0 + '/' + n for b0, _ in BASES for n in MANUAL
+               if 'm-related' not in read(b0 + '/' + n + '.html')]
+    chk('m-related 39 页全有', not bad_rel, bad_rel[:3])
+    chk('跨页搜索容器 + 脚本',
+        all('manualResults' in read(b0 + '/start.html')
+            and "fetch('_index.json')" in read(b0 + '/start.html') for b0, _ in BASES))
+    chk('css 缓存版本 v5、无 v4 残留',
+        'style.css?v=5' in read('docs/manual/start.html')
+        and 'style.css?v=4' not in read('docs/manual/start.html')
+        and 'style.css?v=5' in read('docs/index.html'))
+    chk('永久链接文案三语',
+        '本节永久链接' in read('docs/manual/start.html')
+        and '本節永久連結' in read('docs/zh-TW/manual/start.html')
+        and 'Permalink to this section' in read('docs/en/manual/start.html'))
+    chk('相关章节三语',
+        '相关章节' in read('docs/manual/beacon.html')
+        and '相關章節' in read('docs/zh-TW/manual/beacon.html')
+        and 'Related sections' in read('docs/en/manual/beacon.html'))
+    chk('JSON-LD dateModified', 'dateModified' in read('docs/manual/start.html'))
 
     js = read('docs/js/main.js')
     j = re.sub(r'/\*.*?\*/', '', js, flags=re.S)

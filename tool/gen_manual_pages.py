@@ -26,7 +26,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, 'tool'))
 
-from manual_content import T, PAGES, PAGE_META          # noqa: E402
+from manual_content import T, PAGES, PAGE_META, RELATED    # noqa: E402
 from manual_bodies import BODIES                        # noqa: E402
 from manual_bodies2 import BODIES as BODIES2, SETTINGS_INTRO   # noqa: E402
 import extract_settings as ES                           # noqa: E402
@@ -35,6 +35,10 @@ BODIES.update(BODIES2)
 
 SITE = 'https://aprslocus.theez.top'
 LANGS = ('zh', 'zh_TW', 'en')
+MOD_DATE = '2026-09-22'          # 内容最后更新日（JSON-LD dateModified、提示条）
+# 永久链接 / 互链盒标题（三语）
+PERMA = {'zh': '本节永久链接', 'zh_TW': '本節永久連結', 'en': 'Permalink to this section'}
+RELT = {'zh': '相关章节', 'zh_TW': '相關章節', 'en': 'Related sections'}
 HTML_LANG = {'zh': 'zh-CN', 'zh_TW': 'zh-TW', 'en': 'en'}
 LOCALE = {'zh': 'zh_CN', 'zh_TW': 'zh_TW', 'en': 'en_US'}
 # lang -> (输出目录, 资源相对前缀(到 docs/), 语言根相对前缀(到 lang 根), lang 路径段)
@@ -49,21 +53,21 @@ HEAD = {
         desc='APRSlocus 用户手册（13 页）：快速上手、界面导览、连接与数据来源、位置信标、'
              '消息与群聊、地图与显示、台站与筛选、导出备份轨迹、桌面组件与短波、'
              '设置参考（逐项默认值）、平台差异与故障排查。',
-        ph='搜索本页内容，比如「信标」「Passcode」「离线」…',
+        ph='搜索整本手册，比如「信标」「Passcode」「离线」…',
         toc='本页目录', tree='手册目录', crumb_home='首页', crumb='手册',
         prev='上一页', next='下一页', disclaimer='本软件仅供业余无线电爱好者学习交流使用，请遵守当地无线电管理法规。'),
     'zh_TW': dict(
         desc='APRSLocus 使用手冊（13 頁）：快速上手、介面導覽、連線與資料來源、位置信標、'
              '訊息與群組、地圖與顯示、臺站與篩選、匯出備份軌跡、桌面小組件與短波、'
              '設定參考（逐項預設值）、平台差異與故障排除。',
-        ph='搜尋本頁內容，例如「信標」「Passcode」「離線」…',
+        ph='搜尋整本手冊，例如「信標」「Passcode」「離線」…',
         toc='本頁目錄', tree='手冊目錄', crumb_home='首頁', crumb='手冊',
         prev='上一頁', next='下一頁', disclaimer='本軟體僅供業餘無線電愛好者學習交流使用，請遵守當地電波法規。'),
     'en': dict(
         desc='The APRSlocus user guide (13 pages): quick start, interface, connections and data '
              'sources, beaconing, messaging, maps and display, stations, export/backup/tracks, '
              'widgets and HF, an item-by-item settings reference, platforms and troubleshooting.',
-        ph='Search this page, e.g. “beacon”, “Passcode”, “offline”…',
+        ph='Search the whole guide, e.g. “beacon”, “Passcode”, “offline”…',
         toc='On this page', tree='Guide contents', crumb_home='Home', crumb='Guide',
         prev='Previous', next='Next', disclaimer='For amateur radio study and exchange only — comply with your local radio regulations.'),
 }
@@ -71,15 +75,15 @@ HEAD = {
 UI = {
     'zh': dict(home='首页', feat='功能', help='帮助中心', manual='手册', dl='下载',
                burger='菜单', theme='切换深色模式', theme_off='切换浅色模式',
-               skip='跳到主要内容', search='搜索本页', foot_help='帮助中心',
+               skip='跳到主要内容', search='搜索整本手册', foot_help='帮助中心',
                terms='用户协议', all='全部页面'),
     'zh_TW': dict(home='首頁', feat='功能', help='幫助中心', manual='手冊', dl='下載',
                   burger='菜單', theme='切換深色模式', theme_off='切換淺色模式',
-                  skip='跳到主要內容', search='搜尋本頁', foot_help='幫助中心',
+                  skip='跳到主要內容', search='搜尋整本手冊', foot_help='幫助中心',
                   terms='使用者協定', all='全部頁面'),
     'en': dict(home='Home', feat='Features', help='Help Center', manual='Guide', dl='Download',
                burger='Menu', theme='Switch to dark mode', theme_off='Switch to light mode',
-               skip='Skip to main content', search='Search this page', foot_help='Help Center',
+               skip='Skip to main content', search='Search the whole guide', foot_help='Help Center',
                terms='Terms', all='All pages'),
 }
 
@@ -124,6 +128,57 @@ def cross_href(from_lang, to_lang, file):
     return posixpath.relpath(b + file + '.html', a) if a != b else file + '.html'
 
 
+def glyph(hid, lang):
+    """标题右侧的 # 永久链接（悬停/聚焦可见，可单条复制分享）。"""
+    return ('<a class="hdr-anchor" href="#%s" aria-label="%s" title="%s">#</a>'
+            % (hid, PERMA[lang], PERMA[lang]))
+
+
+def sec_html(sec_id, title, body, lang):
+    """章节卡片：h2 带 id + 永久链接；正文 h3 自动补 id 同样带链接。"""
+    n = [0]
+
+    def h3repl(m):
+        if 'hdr-anchor' in m.group(2):
+            return m.group(0)          # 设置页 h3 已在 build_settings 加过，勿重复
+        hid = m.group(1) or ('%s-h%d' % (sec_id, n[0] + 1))
+        if not m.group(1):
+            n[0] += 1
+        return '<h3 id="%s">%s%s</h3>' % (hid, m.group(2), glyph(hid, lang))
+
+    body = re.sub(r'<h3(?:\s+id="([^"]+)")?>(.*?)</h3>', h3repl, body, flags=re.S)
+    return ('  <section class="chapter reveal" id="%s">\n'
+            '    <h2 id="%s">%s%s</h2>\n%s\n  </section>'
+            % (sec_id, sec_id, esc(title), glyph(sec_id, lang), body))
+
+
+def strip_tags(html):
+    """HTML → 搜索索引用的纯文本（截 200 字）。"""
+    t = re.sub(r'<[^>]+>', ' ', html)
+    t = re.sub(r'&(?:amp|lt|gt|quot|#39);', ' ', t)
+    return re.sub(r'\s+', ' ', t).strip()[:200]
+
+
+def related_for(file, lang):
+    """本页底部「相关章节」chips（标签自动取目标页/小节的三语标题）。"""
+    tpage = {p['file']: p for p in PAGES}
+    chips = []
+    for tgt, anc in RELATED.get(file, []):
+        if anc:
+            href = '%s.html#%s' % (tgt, anc)
+            label = dict(PAGE_META[tgt]['sections'])[anc][lang]
+        else:
+            href = '%s.html' % tgt
+            label = tpage[tgt]['title'][lang]
+        chips.append('<a href="%s">%s</a>' % (href, esc(label)))
+    if not chips:
+        return ''
+    return ('\n    <aside class="m-related reveal" aria-label="%s">\n'
+            '      <div class="mr-title">%s</div>\n'
+            '      <div class="mr-links">%s</div>\n    </aside>'
+            % (RELT[lang], RELT[lang], ''.join(chips)))
+
+
 # ─────────────────────────── 设置页数据 ───────────────────────────
 # 中文标题 → 导语键（SETTINGS_INTRO 只有中文键；其它语言按 zh 标题回查）
 _ZH_TITLES = None
@@ -147,7 +202,8 @@ def build_settings(lang):
         zt = zhs[i] if i < len(zhs) else pg['title']
         intro = SETTINGS_INTRO.get(zt) or SETTINGS_INTRO.get(
             (zt or '').split(' · ')[-1])
-        parts = ['      <h3 id="%s">%s</h3>' % (sid, esc(title))]
+        parts = ['      <h3 id="%s">%s<a class="hdr-anchor" href="#%s" aria-label="%s" '
+                 'title="%s">#</a></h3>' % (sid, esc(title), sid, PERMA[lang], PERMA[lang])]
         if pg['subtitle'] and pg['subtitle'] != title:
             parts.append('      <p class="m-grp-sub">%s</p>' % esc(pg['subtitle']))
         if intro:
@@ -229,6 +285,7 @@ def render_head(lang, file, title, desc, anchors):
         '@context': 'https://schema.org', '@type': 'TechArticle',
         'name': title, 'description': desc, 'url': canonical,
         'inLanguage': HTML_LANG[lang],
+        'dateModified': MOD_DATE, 'articleSection': title,
         'author': {'@type': 'Person', 'name': 'BG7LZQ (Darion)'},
         'publisher': {'@type': 'Organization', 'name': 'APRSlocus',
                       'logo': {'@type': 'ImageObject', 'url': SITE + '/assets/logo.png'}},
@@ -263,7 +320,7 @@ def render_head(lang, file, title, desc, anchors):
 <link rel="canonical" href="{canonical}">
 {hreflangs}
 <link rel="icon" type="image/png" href="{asset}assets/favicon.png">
-<link rel="stylesheet" href="{asset}css/style.css?v=4">
+<link rel="stylesheet" href="{asset}css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -331,7 +388,7 @@ def render_chrome(lang, file, idx, anchors):
         manual_href='index.html')
 
 
-def render_page(lang, file, idx, title, lead, body_html, anchors):
+def render_page(lang, file, idx, title, lead, body_html, related, anchors):
     ch = render_chrome(lang, file, idx, anchors)
     u, h, asset = ch['u'], ch['h'], ch['asset']
     body = '''<div class="scroll-progress" id="scrollProgress"></div>
@@ -382,6 +439,8 @@ def render_page(lang, file, idx, title, lead, body_html, anchors):
       <input type="search" id="manualFilter" placeholder="{ph}" aria-label="{search}" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>{nohit}</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>{msnone}</p>
   </div>
 
   <div class="manual-layout">
@@ -391,6 +450,7 @@ def render_page(lang, file, idx, title, lead, body_html, anchors):
     </nav>
     <div class="manual-body">
 {body}
+{related}
     </div>
   </div>
 {pager}
@@ -435,8 +495,51 @@ def render_page(lang, file, idx, title, lead, body_html, anchors):
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {{
+    return String(s).replace(/[&<>"]/g, function (c) {{
+      return {{'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}}[c];
+    }});
+  }}
+  function loadIdx() {{
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) {{ return r.json(); }})
+      .then(function (d) {{ idx = d; drawOthers(); }})
+      .catch(function () {{ idx = []; }});
+  }}
+  function drawOthers() {{
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) {{ res.hidden = true; if (none) none.hidden = true; return; }}
+    var hits = idx.filter(function (e) {{
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }}).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {{
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    }});
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }}
   if (input) {{
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {{
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -446,6 +549,11 @@ def render_page(lang, file, idx, title, lead, body_html, anchors):
         if (ok) hits++;
       }});
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    }});
+    document.addEventListener('click', function (ev) {{
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     }});
   }}
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
@@ -475,7 +583,10 @@ def render_page(lang, file, idx, title, lead, body_html, anchors):
                'zh_TW': '沒有符合的小節，換個關鍵詞試試。',
                'en': 'No matching section — try another keyword.'}[lang],
         tree_label=h['tree'], tree_title=h['tree'], tree=ch['tree'], anchors=ch['anchors'],
-        body=body_html, pager=ch['pager'],
+        body=body_html, related=related, pager=ch['pager'],
+        msnone={'zh': '手册其它页面也没有匹配。',
+                'zh_TW': '手冊其它頁面也沒有符合。',
+                'en': 'No matches elsewhere in the guide.'}[lang],
         foot_help=u['foot_help'], foot_manual=u['manual'],
         faq_anchor={'zh': '问答', 'zh_TW': '問答', 'en': 'FAQ'}[lang],
         terms=u['terms'], disclaimer=h['disclaimer'],
@@ -520,6 +631,7 @@ def main():
     n_items = sum(len(s['items']) for p in ES.build() for s in p['sections'])
     print('设置抽取：%d 页 · %d 项' % (len(ES.build()), n_items))
 
+    index_pages = {l: [] for l in LANGS}
     for lang in LANGS:
         written = 0
         for idx, p in enumerate(PAGES):
@@ -530,8 +642,7 @@ def main():
             if file == 'settings':
                 secs = settings_secs[lang]
                 body_html = '\n'.join(
-                    '  <section class="chapter reveal" id="%s">\n    <h2>%s</h2>\n%s\n  </section>'
-                    % (s['id'], esc(s['title']), s['html']) for s in secs)
+                    sec_html(s['id'], s['title'], s['html'], lang) for s in secs)
                 anchors = [(s['id'], s['title']) for s in secs]
             else:
                 chunks, anchors = [], []
@@ -539,18 +650,35 @@ def main():
                     m = dict(meta['sections'])[sid]
                     anchors.append((sid, m[lang]))
                     body = dict(zip(LANGS, langs))[lang]
-                    chunks.append(
-                        '  <section class="chapter reveal" id="%s">\n'
-                        '    <h2>%s</h2>\n%s\n  </section>' % (sid, esc(m[lang]), body.strip()))
+                    chunks.append(sec_html(sid, m[lang], body.strip(), lang))
                 body_html = '\n'.join(chunks)
+            # 跨页搜索索引：页面级 + 小节级（标题命中权重最高，文本命中兜底）
+            index_pages[lang].append({'u': file + '.html', 'p': p['title'][lang],
+                                      's': '', 't': strip_tags(meta['lead'][lang])})
+            if file == 'settings':
+                for s in secs:
+                    index_pages[lang].append({'u': '%s.html#%s' % (file, s['id']),
+                                              'p': p['title'][lang], 's': s['title'],
+                                              't': strip_tags(s['html'])})
+            else:
+                for sid2, _h3, *lgs in BODIES[file]:
+                    index_pages[lang].append({
+                        'u': '%s.html#%s' % (file, sid2), 'p': p['title'][lang],
+                        's': dict(meta['sections'])[sid2][lang],
+                        't': strip_tags(dict(zip(LANGS, lgs))[lang])})
+            related_html = related_for(file, lang)
             html = render_head(lang, file, title, desc, anchors) + \
                 render_page(lang, file, idx, p['title'][lang], meta['lead'][lang],
-                            body_html, anchors)
+                            body_html, related_html, anchors)
             out = os.path.join(ROOT, page_path(lang, file))
             os.makedirs(os.path.dirname(out), exist_ok=True)
             io.open(out, 'w', encoding='utf-8', newline='\n').write(html)
             written += 1
-        print('%-6s %2d 页 → docs/…/manual/' % (lang, written))
+        out_idx = os.path.join(ROOT, DEST[lang][0], '_index.json')
+        json.dump(index_pages[lang], io.open(out_idx, 'w', encoding='utf-8'),
+                  ensure_ascii=False)
+        print('%-6s %2d 页 · %3d 条搜索索引 → %s/_index.json'
+              % (lang, written, len(index_pages[lang]), DEST[lang][0]))
 
     # 旧单页 URL → 跳转桩（已分享出去的链接不 404；重跑生成器不会误删）
     stubs = {

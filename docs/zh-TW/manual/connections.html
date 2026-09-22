@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="en" href="https://aprslocus.theez.top/en/manual/connections.html">
     <link rel="alternate" hreflang="x-default" href="https://aprslocus.theez.top/manual/connections.html">
 <link rel="icon" type="image/png" href="../../assets/favicon.png">
-<link rel="stylesheet" href="../../css/style.css?v=4">
+<link rel="stylesheet" href="../../css/style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <script>
 /* 主题：localStorage 优先，否则跟随系统；首帧前执行防闪白 */
@@ -45,6 +45,8 @@
   "description": "目標：選對資料來源、把 APRS-IS 連上並驗證，必要時接上電臺跑通射頻鏈路。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/connections.html",
   "inLanguage": "zh-TW",
+  "dateModified": "2026-09-22",
+  "articleSection": "連線與資料來源 — APRSlocus",
   "author": {
     "@type": "Person",
     "name": "BG7LZQ (Darion)"
@@ -134,9 +136,11 @@
   <div class="manual-tools reveal">
     <div class="faq-search">
       <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="manualFilter" placeholder="搜尋本頁內容，例如「信標」「Passcode」「離線」…" aria-label="搜尋本頁" autocomplete="off">
+      <input type="search" id="manualFilter" placeholder="搜尋整本手冊，例如「信標」「Passcode」「離線」…" aria-label="搜尋整本手冊" autocomplete="off">
     </div>
     <p class="faq-nohit" id="manualNohit" hidden>沒有符合的小節，換個關鍵詞試試。</p>
+    <ul class="ms-results" id="manualResults" hidden></ul>
+    <p class="ms-none" id="manualNone" hidden>手冊其它頁面也沒有符合。</p>
   </div>
 
   <div class="manual-layout">
@@ -164,7 +168,7 @@
     </nav>
     <div class="manual-body">
   <section class="chapter reveal" id="sources">
-    <h2>四條鏈路：收可複選，發只有一條</h2>
+    <h2 id="sources">四條鏈路：收可複選，發只有一條<a class="hdr-anchor" href="#sources" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>路徑 <b>設定 → 連線 → 資料來源</b>。勾中的鏈路都會<b>收</b>封包，但<b>發射只有一條</b> ——
 右側圓點標記的那條。同一個呼號從兩條鏈路發出去會造成重複封包。</p>
 <div class="doc-table-wrap"><table class="doc-table">
@@ -178,7 +182,7 @@
 改完必須點 <b>「儲存並套用」</b>才生效。想收全球就把半徑調大或關掉過濾中心跟隨。</p></div></div>
   </section>
   <section class="chapter reveal" id="aprsis">
-    <h2>接上 APRS-IS</h2>
+    <h2 id="aprsis">接上 APRS-IS<a class="hdr-anchor" href="#aprsis" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <ol class="m-steps">
 <li><b>設定 → 連線</b>，確認伺服器 <code>rotate.aprs2.net</code>、埠 <code>14580</code>（預設即可）。</li>
 <li>填入 <b>Passcode</b>（用完整呼號產生，見 <a href="start.html#passcode">快速上手</a>）。</li>
@@ -192,7 +196,7 @@
 </ul>
   </section>
   <section class="chapter reveal" id="rf">
-    <h2>接電臺：TNC / 音訊 / PKWDWPL</h2>
+    <h2 id="rf">接電臺：TNC / 音訊 / PKWDWPL<a class="hdr-anchor" href="#rf" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>三條射頻路徑的入口都在 <b>設定 → 裝置</b>（裝置總覽頁列出當前鏈路與三個子頁）：</p>
 <div class="doc-table-wrap"><table class="doc-table">
 <thead><tr><th>路徑</th><th>子頁</th><th>關鍵參數</th></tr></thead><tbody>
@@ -209,7 +213,7 @@
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>射頻發射需照證操作，請遵守當地法規；<b>允許射頻信標</b>預設關，打開前確認你的執照與本地規則允許。</p></div></div>
   </section>
   <section class="chapter reveal" id="igate">
-    <h2>閘道 iGate</h2>
+    <h2 id="igate">閘道 iGate<a class="hdr-anchor" href="#igate" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>iGate 把<b>射頻</b>收到的封包轉送 <b>APRS-IS</b>（自動加 <code>qAr</code>/<code>qAR</code> 與你的呼號標識來路）。
 入口在 <b>設定 → 裝置 → 網關（iGate）</b>。</p>
 <ol class="m-steps">
@@ -222,7 +226,7 @@
 就是這四道閘的即時讀數。</p></div></div>
   </section>
   <section class="chapter reveal" id="selftest">
-    <h2>鏈路自檢與排錯順序</h2>
+    <h2 id="selftest">鏈路自檢與排錯順序<a class="hdr-anchor" href="#selftest" aria-label="本節永久連結" title="本節永久連結">#</a></h2>
 <p>出問題時<b>按這個順序查</b>，一層一層來，別跳：</p>
 <ol class="m-steps">
 <li><b>鏈路狀態卡</b>（首頁頂部）：連線是否成立、收發計數是否在漲、伺服器回傳什麼。</li>
@@ -232,6 +236,11 @@
 </ol>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>回報時最有效的證據</b>：封包頁的原始封包 + 鏈路日誌，附上它們定位最快。</p></div></div>
   </section>
+
+    <aside class="m-related reveal" aria-label="相關章節">
+      <div class="mr-title">相關章節</div>
+      <div class="mr-links"><a href="start.html#passcode">Passcode 與背景執行</a><a href="beacon.html">位置信標</a><a href="troubleshooting.html#matrix">症狀 → 原因 → 動作</a></div>
+    </aside>
     </div>
   </div>
 
@@ -277,8 +286,51 @@
   "use strict";
   var input = document.getElementById('manualFilter');
   var nohit = document.getElementById('manualNohit');
+  var res = document.getElementById('manualResults');
+  var none = document.getElementById('manualNone');
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var here = (location.pathname.split('/').pop()) || 'index.html';
+  var idx = null, loading = false;
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+    });
+  }
+  function loadIdx() {
+    if (idx || loading) return;
+    loading = true;
+    fetch('_index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { idx = d; drawOthers(); })
+      .catch(function () { idx = []; });
+  }
+  function drawOthers() {
+    if (!res || !idx) return;
+    var kw = input.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (!kw) { res.hidden = true; if (none) none.hidden = true; return; }
+    var hits = idx.filter(function (e) {
+      if (e.u.split('#')[0] === here) return false;
+      return (e.s || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.p || '').toLowerCase().indexOf(kw) !== -1 ||
+             (e.t || '').toLowerCase().indexOf(kw) !== -1;
+    }).slice(0, 8);
+    var frag = document.createDocumentFragment();
+    hits.forEach(function (e) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = e.u;
+      a.innerHTML = '<b>' + esc(e.s || e.p) + '</b>' +
+        (e.s ? '<span>' + esc(e.p) + '</span>' : '');
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+    res.appendChild(frag);
+    res.hidden = hits.length === 0;
+    if (none) none.hidden = hits.length !== 0;
+  }
   if (input) {
+    input.addEventListener('focus', loadIdx);
     input.addEventListener('input', function () {
       var kw = input.value.trim().toLowerCase();
       var hits = 0;
@@ -288,6 +340,11 @@
         if (ok) hits++;
       });
       if (nohit) nohit.hidden = hits !== 0;
+      loadIdx();
+      drawOthers();
+    });
+    document.addEventListener('click', function (ev) {
+      if (res && !res.contains(ev.target) && ev.target !== input) res.hidden = true;
     });
   }
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.manual-nav a[href^="#"]'));
