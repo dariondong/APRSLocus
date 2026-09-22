@@ -306,6 +306,16 @@ class C {
   /// - 只看背景图：开了材质却没设图时，卡片仍是实色 —— 用户只会觉得「开了没反应」。
   static bool get hasBackdrop => hasBackground || materialOn;
 
+  /// 底色（壁纸 / 背景图）上有没有**值得被模糊的细节**。
+  ///
+  /// 判据只有一条：有没有背景图。材质壁纸是**渐变** —— `theme_store` 里「为什么不模糊
+  /// 壁纸」那段已经把这道理写过一次（模糊一层渐变 ≈ 渐变本身，纯粹白花一次全屏 filter），
+  /// 这里只是把它推广到「只压在底色上」的壳：1.0 布局的顶栏 / 侧栏 / 底栏、以及各子页的
+  /// AppBar，它们背后没有内容，只有壁纸 —— 可以不插模糊层，省掉每帧一次
+  /// 「结束 render pass → 采样 → 重开」（见 material.dart 顶部与 [MaterialSurface.overWallpaper]）。
+  /// 用户设了背景图就有细节了，该糊还得糊。
+  static bool get wallpaperHasDetail => hasBackground;
+
   /// 材质**壁纸**（那层从主色混出来的渐变）是否该画。
   ///
   /// 用户给主题设了背景图时不画：那是他自己挑的图，在他的图上再叠一层渐变

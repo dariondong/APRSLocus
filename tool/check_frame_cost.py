@@ -22,6 +22,15 @@
   5. 传给地图的 `bottomInset` 在动画期必须是**吸附目标值**：逐帧变的话，
      地图每帧重排重绘，正好把第 1 条抵消掉。
   6. 面板内容要做**实例缓存**：否则动画每帧重建四个页面。
+  7. 磨砂层要走**共享底**那条路（`BackdropFilter.grouped` + 地图小浮层那一簇的
+     `BackdropGroup`）：每个 `BackdropFilter` 都要让引擎「结束当前 render pass →
+     采样 → 重开」一次，这是它在移动端最贵的一步。地图页十来个 38px 小浮层各自
+     一次的话，列表一滚动就是每秒上千次。这两条一被改回默认构造就白做了，
+     而它**不会被编译或测试拦住**，只会回到「开着磨砂就卡」。
+  8. **只压在壁纸上的壳**（1.0 的顶栏/侧栏/底栏、各子页 AppBar）要写
+     `overWallpaper: true` —— 壁纸是渐变，模糊它零收益却每帧一次 pass 收尾/重开。
+     反过来，`extendBodyBehindAppBar: true` 的页面（顶栏背后是地图）**必须**写
+     `overWallpaper: false`，否则顶栏变成「半透明但不模糊」，底下的图直接透上来。
 """
 import io
 import os
@@ -131,6 +140,36 @@ def main() -> int:
     # ⑧ 面板内容实例缓存
     need('lib/shell2.dart', '_contentCache',
          '_content() 没有缓存 —— 面板动画每帧会重建四个页面')
+
+    # ⑨ 磨砂层必须走共享底那条路（见文件顶部第 7 条）
+    need('lib/material.dart', 'child: BackdropFilter.grouped(',
+         'MaterialSurface 又改回了默认的 BackdropFilter 构造 —— 每个浮层都会各自让'
+         '引擎「结束 render pass → 采样 → 重开」一次，共享底白做了')
+    forbid('lib/material.dart', 'BackdropFilter(',
+           'material.dart 里出现了非 `.grouped` 的 BackdropFilter —— 见文件顶部第 7 条')
+    need('lib/map_page.dart', 'child: BackdropGroup(',
+         '地图页的小浮层没有共享底（BackdropGroup）—— 十来个 38px 工具钮每帧各自'
+         '收尾/重开一次 render pass')
+
+    # ⑩ 「只压在壁纸上的壳」不插模糊层；反之 extendBodyBehindAppBar 必须插
+    if read('lib/home_page.dart').count('overWallpaper: true') < 3:
+        errors.append('lib/home_page.dart 的壳（侧栏/顶栏/底栏）少了 '
+                      '`overWallpaper: true` —— 1.0 布局里它们压在壁纸上，模糊一层'
+                      '渐变毫无收益，却每帧多付一次 pass 收尾/重开')
+    for base, _dirs, files in os.walk(os.path.join(ROOT, 'lib')):
+        for fn in sorted(files):
+            if not fn.endswith('.dart'):
+                continue
+            rel = os.path.relpath(os.path.join(base, fn), ROOT).replace(os.sep, '/')
+            # 只看代码行：material.dart 的文档注释里也写着 `extendBodyBehindAppBar: true`，
+            # 拿全文搜会把它当成一个「有顶层地图的页面」（第一版就假报了这一条）。
+            code = code_only(read(rel))
+            if 'extendBodyBehindAppBar: true' not in code:
+                continue
+            if 'overWallpaper: false' not in code:
+                errors.append(f'{rel} 写了 `extendBodyBehindAppBar: true`（顶栏背后是内容），'
+                              '但 MaterialAppBar 没写 `overWallpaper: false` —— '
+                              '顶栏会变成「半透明但不模糊」')
 
     if errors:
         print('帧成本检查失败：')

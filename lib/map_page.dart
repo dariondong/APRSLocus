@@ -619,73 +619,98 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                // 图例（矮横屏隐藏，减少遮挡）
-                if (!shortWide)
-                  Positioned(top: topBase, right: 60, child: _legend()),
-                // ── 右侧工具列 ──
-                // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
-                // 而 `_zoomCtrl()` 含 5 个按钮（放大/缩小/轨迹/热力图/定位，一直排到
-                // 404），矮屏上必然打架。改成「单列顺序排布」后结构上不可能再重叠；
-                // 手机横放时**再分两列**（见 `_rightToolbar`，否则最下面的「定位」会被裁掉）。
-                Positioned(
-                  right: 14,
-                  top: topBase,
-                  child: _rightToolbar(shortWide),
-                ),
-                // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
+                // ── 地图小浮层的「共享底」：一簇浮层只让引擎采一次底 ──
                 //
-                // 位置说明：原放在 right:14 / top:236，但右侧 `_zoomCtrl()`
-                // 实际含 6 个按钮（占用 146 → 404），会把它整个盖住。
-                // 改为左侧 top:58 —— 左上 `_infoChip` 只占 14~50，
-                // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
-                Positioned(
-                  left: 14 + widget.leftInset,
-                  top: topBase + 44,
-                  child: GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ImmersiveMapPage(state: widget.state)),
-                    ),
-                    child: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: C.black.withValues(alpha: 0.82),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: elev1(),
-                        border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.18)),
-                      ),
-                      child: Tooltip(
-                        message: S.of(context).immersiveMapTip,
-                        child: const Icon(Icons.navigation_rounded,
-                            size: 20, color: Colors.white),
-                      ),
+                // 这一簇（图例 / 工具列 8 颗按钮 / 上报横杠 / 底部坐标条）全是
+                // **兄弟节点、互不重叠、背后都是同一张地图**，模糊半径也都取
+                // `C.chipBlur`。每个 `BackdropFilter` 都要让引擎「结束当前 render
+                // pass → 采样 → 重开」一次，而这一步在移动端比模糊本身还贵 ——
+                // 地图页一屏十来个小浮层就是每帧十来次；列表一滚动（60fps）就是
+                // 每秒上千次。套进同一个 `BackdropGroup`（配合 `MaterialSurface`
+                // 里的 `BackdropFilter.grouped`）之后：引擎只采一次底，而且因为
+                // 各层 filter 完全相同，模糊也只算一次，再按各自的矩形贴上去 ——
+                // 观感逐像素不变（详见 material.dart 顶部那段）。
+                //
+                // ⚠ 只包**这一簇**，不包整页：共享 key 的语义是「后一个表面采样的
+                // 是第一个表面**之前**的那张底」，也就是说两者之间画的内容不会出现
+                // 在它的模糊里 —— 所以只有「连续绘制、互不重叠」的一簇能合并。
+                // 台站标记（里面还套着选中信息窗）与搜索提示条都留在组外，
+                // 正是这个原因。
+                Positioned.fill(
+                  child: BackdropGroup(
+                    child: Stack(
+                      children: [
+                        // 图例（矮横屏隐藏，减少遮挡）
+                        if (!shortWide)
+                          Positioned(top: topBase, right: 60, child: _legend()),
+                        // ── 右侧工具列 ──
+                        // 此前用 14 / 58 / 102 / 146 四个硬编码 top 各自 Positioned，
+                        // 而 `_zoomCtrl()` 含 5 个按钮（放大/缩小/轨迹/热力图/定位，一直排到
+                        // 404），矮屏上必然打架。改成「单列顺序排布」后结构上不可能再重叠；
+                        // 手机横放时**再分两列**（见 `_rightToolbar`，否则最下面的「定位」会被裁掉）。
+                        Positioned(
+                          right: 14,
+                          top: topBase,
+                          child: _rightToolbar(shortWide),
+                        ),
+                        // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
+                        //
+                        // 位置说明：原放在 right:14 / top:236，但右侧 `_zoomCtrl()`
+                        // 实际含 6 个按钮（占用 146 → 404），会把它整个盖住。
+                        // 改为左侧 top:58 —— 左上 `_infoChip` 只占 14~50，
+                        // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
+                        Positioned(
+                          left: 14 + widget.leftInset,
+                          top: topBase + 44,
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => ImmersiveMapPage(state: widget.state)),
+                            ),
+                            child: Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: C.black.withValues(alpha: 0.82),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: elev1(),
+                                border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.18)),
+                              ),
+                              child: Tooltip(
+                                message: S.of(context).immersiveMapTip,
+                                child: const Icon(Icons.navigation_rounded,
+                                    size: 20, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
+                        if (roomForBottom &&
+                            widget.state.connected &&
+                            widget.state.myHasFix)
+                          Positioned(
+                            left: 14 + widget.leftInset,
+                            right: 14,
+                            bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
+                            child: _beaconBar(),
+                          ),
+                        // 底部控制（安全区白条 + 14px）
+                        if (roomForBottom)
+                          Positioned(
+                            left: 14 + widget.leftInset,
+                            right: 14,
+                            bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
+                            child: ValueListenableBuilder<Offset?>(
+                              valueListenable: _hover,
+                              builder: (_, hp, _) => _bottomControls(hp),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
-                // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
-                if (roomForBottom &&
-                    widget.state.connected &&
-                    widget.state.myHasFix)
-                  Positioned(
-                    left: 14 + widget.leftInset,
-                    right: 14,
-                    bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
-                    child: _beaconBar(),
-                  ),
-                // 底部控制（安全区白条 + 14px）
-                if (roomForBottom)
-                  Positioned(
-                    left: 14 + widget.leftInset,
-                    right: 14,
-                    bottom: 14 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
-                    child: ValueListenableBuilder<Offset?>(
-                      valueListenable: _hover,
-                      builder: (_, hp, _) => _bottomControls(hp),
-                    ),
-                  ),
                 // 搜索提示
                 if (searched)
                   Positioned(

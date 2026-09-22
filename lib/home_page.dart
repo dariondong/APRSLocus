@@ -524,6 +524,9 @@ class _HomePageState extends State<HomePage> {
     // 侧边栏/底栏/顶栏这三块是「壳」，它们压在页面内容之上且**不随内容滚动**：
     // 材质开启时必须给它们真模糊，否则地图瓦片/列表会从半透明壳里直接透出来。
     return MaterialSurface(
+      // 1.0 的壳（侧栏 / 顶栏 / 底栏）压在**壁纸**上，不在内容上：
+      // 模糊一层渐变壁纸看不到差别，白付每帧一次 pass 收尾/重开（见 material.dart）。
+      overWallpaper: true,
       child: Container(
         width: width,
         color: C.surfaceFillStrong,
@@ -1029,6 +1032,8 @@ class _HomePageState extends State<HomePage> {
   Widget _topBar() {
     final compact = _compact;
     return MaterialSurface(
+      // 同上：顶栏背后没有内容，只有壁纸
+      overWallpaper: true,
       child: Container(
         height: compact ? 48 : 58,
         padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 20),
@@ -1379,6 +1384,8 @@ class _HomePageState extends State<HomePage> {
   Widget _bottomNav() {
     final bottomPad = MediaQuery.of(context).padding.bottom;
     return MaterialSurface(
+      // 同上：底栏背后没有内容，只有壁纸
+      overWallpaper: true,
       child: Container(
         decoration: BoxDecoration(
           color: C.surfaceFillStrong,

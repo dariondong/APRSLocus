@@ -352,6 +352,9 @@ class _TrackDayPageState extends State<TrackDayPage>
             ),
           ],
         ),
+        // 这一页写了 `extendBodyBehindAppBar: true`：顶栏背后是**地图**（内容），
+        // 不是壁纸 —— 所以照旧要真模糊（见 material.dart 的 MaterialSurface.overWallpaper）。
+        overWallpaper: false,
       )),
       body: LayoutBuilder(builder: (context, cons) {
         final size = Size(cons.maxWidth, cons.maxHeight);

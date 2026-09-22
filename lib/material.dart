@@ -55,6 +55,26 @@ import 'theme.dart';
 /// 真正的性能问题是**同时存在的层数**与**重建频率**，不是这两个半径：这一版同时
 /// 把外壳「每秒重建数次」改成「只在显示值变化时重建」，并把半径从 34/22 降到 24/16。
 ///
+/// ── 每层 BackdropFilter 真正贵在哪：一次 render pass 的收尾与重开 ──
+///
+/// 引擎给每个 `BackdropFilter` 做的事不是「算一次模糊」这么简单：它要把**当前已经画好的
+/// 内容**当输入，所以必须**结束当前 render pass**（在 Android/Impeller 上这就是一次
+/// 贴着屏幕大小的 flush + 重开），采样，然后再开一层。代价主要不在面积，而在
+/// **这一进一出的次数**。地图页一屏有十来个 38px 小浮层（工具钮 8 颗 + 图例 + 信息条
+/// + 上报横杠 + 底部坐标条），它们背后是同一张地图 —— 十几次收尾/重开每帧都发生一次，
+/// 列表一滚动（60fps）就是每秒上千次。
+///
+/// 所以这一版把 [MaterialSurface] 里的模糊改成 `BackdropFilter.grouped`，并把
+/// **可以共享底的那一簇**（互不重叠、中间没有别的内容、背后同一张底）包进一个
+/// `BackdropGroup`（见 `map_page` 里那一段）。同 key 之后引擎只采一次底；若各层的
+/// filter 又相同（小浮层全是 `C.chipBlur`），它连模糊也只算一次，再按各自的矩形贴上去
+/// —— **观感逐像素不变**。
+///
+/// 反过来说，**不能整页乱包**：共享 key 的语义是「后一个表面采样的是第一个表面**之前**
+/// 的那张底」—— 两个表面之间画的东西不会出现在它的模糊里。所以只有「连续绘制、
+/// 互不重叠」的一簇才能合并；没有 `BackdropGroup` 祖先时 `.grouped` 退化成原来的
+/// 各算各的（安全），所以调用点没包也不会坏，只是省不到。
+///
 /// ── 为什么**没有**做成「按面积自动判断」（我试过，行不通）──
 ///
 /// 第一版用 `LayoutBuilder` 拿自己的尺寸：面积够大才插模糊层。看着很聪明，
@@ -83,12 +103,25 @@ class MaterialSurface extends StatelessWidget {
   /// * `0` → **不模糊**。用半透明填色时**不要**这么写（见 `chipTint` 的说明）。
   final double? blurSigma;
 
+  /// 这个表面背后**只有应用底色**（材质壁纸 / 主题背景图），没有内容。
+  ///
+  /// 1.0 布局的壳就是这种情况：顶栏 / 侧栏 / 底栏 / 各子页的 AppBar —— 它们**不压在
+  /// 内容上**（`Scaffold` 的 body 排在它们下面，不在背后），背后只有壁纸。
+  ///
+  /// 为什么要单开这个字段：材质壁纸是**渐变**（见 theme_store 里那段「为什么不模糊
+  /// 壁纸」），模糊一层渐变 ≈ 渐变本身，视觉上零收益，却要每帧多付一次
+  /// 「结束 render pass → 采样 → 重开」（见文件顶部说明）。列表一滚动就是每帧一次。
+  /// 用户给主题设了**背景图**时不算「只有底色」：照片有细节，该糊还得糊
+  /// （判据收在 [C.wallpaperHasDetail]）。
+  final bool overWallpaper;
+
   const MaterialSurface({
     super.key,
     required this.child,
     this.radius = 0,
     this.topOnly = false,
     this.blurSigma,
+    this.overWallpaper = false,
   });
 
   /// 为什么把模糊层垫在 child **下面**，而不是 `ClipRRect > BackdropFilter > child`：
@@ -108,6 +141,8 @@ class MaterialSurface extends StatelessWidget {
     final sigma = blurSigma ?? C.materialBlur;
     // 显式 0：调用点明确要实心（小浮层都是这么写的，见文件顶部的说明）
     if (sigma <= 0) return child;
+    // 背后只有渐变壁纸：模糊它没有视觉收益，只有每帧一次 pass 收尾/重开
+    if (overWallpaper && !C.wallpaperHasDetail) return child;
     return _blurred(sigma);
   }
 
@@ -121,7 +156,10 @@ class MaterialSurface extends StatelessWidget {
         Positioned.fill(
           child: ClipRRect(
             borderRadius: br,
-            child: BackdropFilter(
+            // `.grouped`（而不是默认构造）：见文件顶部「每层 BackdropFilter 真正贵
+            // 在哪」。有 BackdropGroup 祖先时，同一簇浮层只让引擎采一次底；没有祖先
+            // 时它退化成和默认构造完全一样（各自一份），所以调用点漏包不会坏。
+            child: BackdropFilter.grouped(
               filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
               child: const SizedBox.expand(),
             ),
@@ -149,13 +187,22 @@ class MaterialSurface extends StatelessWidget {
 /// Diagnosticable 的一整套方法。这一条是 CI 的 analyze 拦下来的。
 class MaterialAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget child;
-  const MaterialAppBar(this.child, {super.key});
+
+  /// 见 [MaterialSurface.overWallpaper]。
+  ///
+  /// AppBar **默认就是**这种表面：`Scaffold` 把 body 排在 AppBar 之下，除非页面写了
+  /// `extendBodyBehindAppBar: true` —— 那种页面（目前只有 track_day_page）要传 `false`，
+  /// 否则顶栏会变成「半透明但不模糊」，底下的内容直接透上来把字糊掉。
+  final bool overWallpaper;
+
+  const MaterialAppBar(this.child, {super.key, this.overWallpaper = true});
 
   @override
   Size get preferredSize => child.preferredSize;
 
   @override
-  Widget build(BuildContext context) => MaterialSurface(child: child);
+  Widget build(BuildContext context) =>
+      MaterialSurface(overWallpaper: overWallpaper, child: child);
 }
 
 /// 把一个小控件的底色调成「实心小浮层」的透明度 —— **保留它的色相**。
