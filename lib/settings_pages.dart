@@ -1021,6 +1021,11 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   ),
                 ]),
               ),
+              // 诚实说清「网络辅助」的取舍：有用户报过「开了网络定位后位置
+              // 飞来飞去」—— 那不是 bug，而是基站/Wi-Fi 定位本来就有几百米误差。
+              // 现在的行为是「只在 GPS 停更 2 分钟后兜底、且不写轨迹」，
+              // 说不清楚用户就会以为是应用坏了。
+              SettingsHint(S.of(context).locModeNetHint),
               SizedBox(height: 10),
             ],
           ),

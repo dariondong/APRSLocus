@@ -11617,6 +11617,45 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。'**
   String get sensorAssistDesc;
+  /// No description provided for @historyTapDay.
+  ///
+  /// In zh, this message translates to:
+  /// **'点按某一天可查看地图与回放'**
+  String get historyTapDay;
+
+  /// No description provided for @historyPlay.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放'**
+  String get historyPlay;
+
+  /// No description provided for @historyPause.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂停'**
+  String get historyPause;
+
+  /// No description provided for @historyReplay.
+  ///
+  /// In zh, this message translates to:
+  /// **'重播'**
+  String get historyReplay;
+
+  /// No description provided for @historyFollow.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随'**
+  String get historyFollow;
+  /// No description provided for @locationCoarse.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络定位（粗）'**
+  String get locationCoarse;
+  /// No description provided for @locModeNetHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。'**
+  String get locModeNetHint;
 }
 
 class _AppLocalizationsDelegate

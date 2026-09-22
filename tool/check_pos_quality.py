@@ -51,12 +51,43 @@ def main() -> int:
     # accuracy 从原生接回 Dart（以前原生算了、Dart 侧没读，等于白算）
     need('lib/services.dart', "(event['accuracy'] as num?)?.toDouble()",
          '原生上报的 accuracy 没被解析（精度信息在传输途中丢掉了）')
-    need('lib/services.dart', 'double accuracyM)? onFix;',
-         'onFix 回调签名缺 accuracy 参数')
-    need('lib/state.dart', 'double accuracy,\n',
-         'AppState._onFix 没接收 accuracy')
-    need('lib/state.dart', 'myAccuracy = accuracy > 0 ? accuracy : 0;',
-         'myAccuracy 没落库')
+    need('lib/services.dart', "String source)? onFix;",
+         'onFix 回调签名缺 source（定位来源）参数')
+    need('lib/services.dart', "(event['provider'] as String?) ?? ''",
+         "原生发的 provider 没被解析 —— 上层就分不出「GPS 实测」和「基站/Wi-Fi "
+         '粗定位」，用户报的「网络让定位飞来飞去」会原样回来')
+    need('lib/state.dart', 'String source,\n',
+         'AppState._onFix 没接收 source')
+    need('lib/state.dart', 'myAccuracy = coarse',
+         'myAccuracy 没有区分粗定位（会照抄系统那个过于乐观的 accuracy）')
+    need('lib/state.dart', 'myFixCoarse = coarse;',
+         'myFixCoarse 没落库 —— 界面无法区分粗定位与 GPS')
+
+    # 粗定位（网络/基站）的两道闸：缺任何一道，标记都会在 GPS 一闪一断时横跳。
+    #
+    # 闸的阈值在**策略层**（这两个常量），而原生 LocationService.kt 里的
+    # NET_FALLBACK_GAP_MS=20s 只是**传输层**的「别刷屏」门槛 —— 两者是不同的事，
+    # 不要为了「看起来一致」把它们对齐：20s 一断就用粗点顶上去，正是横跳的成因。
+    need('lib/state.dart', 'final coarse = !lastKnown && '
+         "(source == 'network' || source == 'passive');",
+         '粗定位判定没了（网络/被动定位会被当成 GPS）')
+    need('lib/state.dart', 'if (gapSec < _kCoarseHoldSec || jumpKm > _kCoarseJumpKm) {',
+         '粗定位的两道闸（GPS 新鲜度 / 自身位移）没了 —— 「飞来飞去」会回来')
+    need('lib/state.dart', 'static const int _kCoarseHoldSec = 120;',
+         '粗定位的 GPS 新鲜度门槛没了/被改了')
+    need('lib/state.dart', 'static const double _kCoarseJumpKm = 8.0;',
+         '粗定位的自身位移上限没了/被改了')
+    need('lib/state.dart', 'static const double _kCoarseAccuracyFloorM = 150.0;',
+         '粗定位的精度显示下限没了 —— 精度圈会画得跟 GPS 一样小（比不画更骗人）')
+    # 粗点绝不许：进防抖滑窗、推进跳变参照点、写轨迹/历史台账
+    need('lib/state.dart', 'final out = (lastKnown || coarse)',
+         '粗定位点进了静止防抖滑窗 —— 会把中位数拉跑')
+    need('lib/state.dart', 'if (!lastKnown && !coarse) {',
+         '粗定位点会推进跳变守卫的参照点（GPS 回来时会被误判成跳变）')
+    need('lib/state.dart', '    if (!lastKnown &&\n        !coarse &&\n        !still &&',
+         '粗定位点能写进自己的轨迹与历史台账')
+    if "coarse ? '网络定位（粗）'" not in state:
+        errors.append('粗定位时没有如实的 locStatus —— 用户会以为 GPS 坏了')
 
     # 静止防抖
     need('lib/state.dart', '_selfFilter.feed(', '静止防抖滤波器没接上')

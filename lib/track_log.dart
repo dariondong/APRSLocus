@@ -336,3 +336,19 @@ class TrackLogStore {
     } catch (_) {}
   }
 }
+
+/// 里程 → 人类可读：1 km 以下用米（「800 m」比「0.8 km」好读）
+String fmtKm(double km) {
+  if (km <= 0) return '0 m';
+  if (km < 1) return '${(km * 1000).round()} m';
+  return '${km.toStringAsFixed(km >= 100 ? 0 : 1)} km';
+}
+
+/// 时长 → 人类可读：有小时就给 `2h 13m`，否则 `13m` / `42s`
+String fmtDur(Duration d) {
+  final h = d.inHours;
+  final m = d.inMinutes % 60;
+  if (h > 0) return '${h}h ${m}m';
+  if (m > 0) return '${m}m';
+  return '${d.inSeconds}s';
+}

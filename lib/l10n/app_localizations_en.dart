@@ -4236,7 +4236,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locModeGpsNetwork => 'GPS + Network';
 
   @override
-  String get locModeGpsNetworkDesc => 'Network-assisted, faster fix';
+  String get locModeGpsNetworkDesc => "Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track";
 
   @override
   String get beaconingSection => 'Beaconing';
@@ -6681,4 +6681,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sensorAssistDesc => "Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only).";
+  @override
+  String get historyTapDay => "Tap a day to see the map and replay it";
+
+  @override
+  String get historyPlay => "Play";
+
+  @override
+  String get historyPause => "Pause";
+
+  @override
+  String get historyReplay => "Replay";
+
+  @override
+  String get historyFollow => "Follow";
+  @override
+  String get locationCoarse => "Network fix (coarse)";
+  @override
+  String get locModeNetHint => "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history.";
 }

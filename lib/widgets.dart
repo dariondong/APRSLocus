@@ -123,6 +123,9 @@ String localizedLocationStatus(BuildContext context, String value) {
   // —— 这个坑踩过（`模拟位置 · 后台保活`），所以 tool/check_pos_quality.py
   // 会把「所有 locStatus 字面量都已登记」当成断言在 CI 里查。
   if (value == '静止') return s.locationStill;
+  // 粗定位：来源是基站/Wi-Fi（或被动定位），误差常在几百米量级。
+  // 必须和「已定位」在界面上可区分 —— 否则用户会以为 GPS 明明很准却画歪了。
+  if (value == '网络定位（粗）') return s.locationCoarse;
   if (value == '请授予定位权限…') return s.locationPermission;
   if (value == 'GPS 定位中…') return s.gpsLocating;
   if (value == 'Web 平台暂不支持自动定位，请手动输入坐标') {

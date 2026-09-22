@@ -1347,7 +1347,7 @@
   "locModeGps": "Hanya GPS",
   "locModeGpsDesc": "Hanya satelit, hemat baterai",
   "locModeGpsNetwork": "GPS + Jaringan",
-  "locModeGpsNetworkDesc": "Berbantuan jaringan, lebih cepat",
+  "locModeGpsNetworkDesc": "Jaringan hanya cadangan (saat GPS terputus); lokasi kasar tidak dicatat ke lintasan",
   "beaconingSection": "Beaconing",
   "beaconIntervalTip": "Interval beacon posisi, minimal 5 detik",
   "beaconContent": "Isi beacon",
@@ -2345,5 +2345,12 @@
   "historyClearAllConfirm": "Hapus semua riwayat lintasan? Tindakan ini tidak dapat dibatalkan.",
   "historyClearedAll": "Semua riwayat dihapus",
   "sensorAssist": "Penentuan posisi dengan sensor",
-  "sensorAssistDesc": "Menggunakan akselerometer untuk mengetahui apakah benar-benar bergerak dan kompas untuk memperbaiki arah saat kecepatan rendah, agar titik lintasan lebih akurat (hanya Android)."
+  "sensorAssistDesc": "Menggunakan akselerometer untuk mengetahui apakah benar-benar bergerak dan kompas untuk memperbaiki arah saat kecepatan rendah, agar titik lintasan lebih akurat (hanya Android).",
+  "historyTapDay": "Ketuk satu hari untuk melihat peta dan putar ulang",
+  "historyPlay": "Putar",
+  "historyPause": "Jeda",
+  "historyReplay": "Putar ulang",
+  "historyFollow": "Ikuti",
+  "locationCoarse": "Lokasi jaringan (kasar)",
+  "locModeNetHint": "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat."
 }

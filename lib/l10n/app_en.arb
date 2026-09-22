@@ -1357,7 +1357,7 @@
   "locModeGps": "GPS only",
   "locModeGpsDesc": "Satellite only, saves battery",
   "locModeGpsNetwork": "GPS + Network",
-  "locModeGpsNetworkDesc": "Network-assisted, faster fix",
+  "locModeGpsNetworkDesc": "Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track",
   "beaconingSection": "Beaconing",
   "beaconIntervalTip": "Position beacon interval, minimum 5 seconds",
   "beaconContent": "Beacon contents",
@@ -2261,5 +2261,12 @@
   "historyClearAllConfirm": "Clear all track history? This cannot be undone.",
   "historyClearedAll": "All track history cleared",
   "sensorAssist": "Sensor-assisted positioning",
-  "sensorAssistDesc": "Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only)."
+  "sensorAssistDesc": "Uses the accelerometer to tell whether you are really moving and the compass to correct the heading at low speed, for more accurate track points (Android only).",
+  "historyTapDay": "Tap a day to see the map and replay it",
+  "historyPlay": "Play",
+  "historyPause": "Pause",
+  "historyReplay": "Replay",
+  "historyFollow": "Follow",
+  "locationCoarse": "Network fix (coarse)",
+  "locModeNetHint": "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history."
 }

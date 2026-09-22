@@ -1,5 +1,136 @@
 # 更新日志
 
+## [1.6.150] - 2026-09-22
+
+### 🌟 历史轨迹可点进去看 + 回放动画 + 治「网络定位让位置飞来飞去」 / Tap into a day and replay it, plus a fix for jittery network fixes
+
+**一、历史轨迹：点进某一天看地图与回放**
+
+上一版只给了一张极简的点列预览 —— 只能看出「形状对不对」，看不出「怎么走的」。
+现在**点按某一天**进入详情页：
+
+* 底图用与主地图**同一套** `TileMapView`（同缓存、同离线规则、同坐标纠偏），
+  所以 GCJ 图源下轨迹不会整体偏 500m；
+* 轨迹线随播放**生长**：已走过的实线、未走的淡线，终点是当前点并带**航向箭头**
+  —— 单向道、掉头这种一眼就分得出来；
+* 进度条可拖、可 ×0.5 / ×1 / ×2 / ×4 倍速、可「跟随」把视野钉在当前点上。
+
+**时间轴是压缩过的，这点必须说清**：直接按墙上时钟播没有意义（一天跨 10 小时、
+真正在动的可能只有 40 分钟，照实播就是盯着一个点不动两小时）。所以相邻点间隔
+照实计入，但**超过 45 秒的停顿只按 45 秒计** —— 长停顿被整体快进，而移动中的
+快慢差异完整保留，你仍能看出「这段骑得快、那段在走路」。进度条拖到任意位置都会
+按**时间轴二分**取那个时刻的点，不是「已播放的点」上插值。
+
+**二、网络定位不再让位置飞来飞去**
+
+这是「优化 GPS + 网络」那条反馈的落点。原生侧其实早就有保护（GPS 优先、网络仅在
+GPS 停更 20 秒后兜底、精度超 150m 丢弃），但**漏洞在两个地方**：
+
+1. 原生一直在事件里发 `provider`（gps/network/passive），而 **Dart 侧从来没读**
+   —— 于是「基站/Wi-Fi 粗定位」和「GPS 实测」在上层长得一模一样；
+2. **跳变守卫的阈值是 30km** —— 那是给「缓存点跨城市」调的，而网络粗定位的漂移
+   是 200m~3km，**整个落在阈值以下**，等于完全没被拦；再加上系统对 Wi-Fi/基站
+   点自报的 accuracy 经常过于乐观（报 20~40m，实际偏几百米），精度门控也拦不住。
+
+这一版按**来源**判，而不是只看精度：
+
+* **GPS 新鲜时，粗点一律丢弃** —— GPS 在城市峡谷里一闪一断，粗点就在缝里把标记
+  拉走再拉回，这才是「飞来飞去」的真正成因；
+* GPS 真的停更 **2 分钟**（不是 20 秒）以上，粗点才允许兜底 ——「宁可停两分钟
+  不动，也不要抖」；
+* 粗点自己一口气跳出去 **8km** 以上的，连兜底都不算，直接丢（那多半是换了个
+  Wi-Fi，不是我们移动了）；
+* 粗点**绝不**进静止防抖的滑窗、**绝不**推进跳变参照点、**绝不**写轨迹与历史台账、
+  **不更新速度与航向**（基站定位没有多普勒，speed/bearing 常是 0 或残值）；
+* 界面上如实标注 **「网络定位（粗）」**，并把精度显示的下限压到 150m —— 系统原值
+  会让精度圈画得和 GPS 一样小，比不画更骗人。
+
+「设置 → 定位 → 定位模式」里那句「网络辅助，定位更快」也改成了如实的
+「网络仅作兜底（GPS 停更时），粗定位不写轨迹」，并补了一条说明 —— 说不清楚，
+用户就会以为是应用坏了。
+
+**三、检查器**
+
+`tool/check_pos_quality.py` 新增了 11 条断言锁住上面的行为（粗定位的两道闸、
+不写轨迹、不进滑窗、不推参照点、精度下限、状态串登记……）。新检查按惯例**逐个用
+回归样本验证会报红**：拆掉闸门、让粗点能写轨迹、不解析 provider —— 三种都报了红，
+然后 md5 确认源码完整还原。
+
+---
+
+## [1.6.150] - 2026-09-22 (English)
+
+### Tap into a day and replay it, plus a fix for jittery network fixes
+
+**1) Track history: tap a day to see the map and a replay animation.**
+
+The previous release only had a minimal polyline preview — enough to tell whether the
+*shape* was right, not *how you actually moved*. Tapping a day now opens a detail
+page with a real base map, using the **same** `TileMapView` as the main map (same
+cache, same offline rules, same datum correction, so GCJ sources do not shift the
+track by ~500 m).
+
+The track **grows** as it plays: a solid line for the part already travelled, a faded
+line for the rest, and a current point carrying a **heading arrow** — so one-way
+streets and U-turns are obvious at a glance. The progress bar is draggable, with
+×0.5 / ×1 / ×2 / ×4 speeds and a "follow" button that pins the view to the current
+point.
+
+One thing must be stated plainly: **the timeline is compressed.** Replaying wall-clock
+time is pointless — a day often spans 10 hours of which only 40 minutes were spent
+moving, so an honest replay means staring at a motionless dot for two hours. Gaps
+between points are counted as they are, but **any pause longer than 45 s counts as
+45 s**, so long stops are fast-forwarded while the differences in speed *while moving*
+are preserved: you can still tell that you cycled on one stretch and walked on
+another. Dragging the bar anywhere takes the point at that moment via a **binary
+search on the timeline**, never an interpolation over "points played so far"
+(which would make dragging jump).
+
+**2) Network fixes no longer throw the position around.**
+
+The native side already had protection (GPS wins, network only as a fallback once GPS
+is 20 s stale, anything worse than 150 m discarded) — but there were **two holes**:
+
+1. Android had always been sending `provider` (gps/network/passive) in the event and
+   the **Dart side never read it**, so a cell/Wi-Fi fix and a real GPS fix looked
+   *identical* to the layer above;
+2. **the jump guard's threshold was 30 km** — tuned for "a cached fix in another
+   city", while network drift is 200 m – 3 km, i.e. **entirely below the threshold
+   and therefore never caught**. System-reported accuracy for Wi-Fi/cell fixes is
+   also routinely optimistic (20–40 m reported, hundreds of metres actual), so the
+   accuracy gate could not catch it either.
+
+This release judges by **source**, not by accuracy alone:
+
+* **while GPS is fresh, coarse fixes are dropped outright** — GPS flickers in and
+  out in urban canyons, and the coarse fix pulls the marker away and back in the
+  gap; that *is* the "jumping around";
+* a coarse fix is only allowed as a fallback once GPS has been stale for **2 minutes**
+  (not 20 s) — better to sit still for two minutes than to jitter;
+* a coarse fix that jumps more than **8 km** on its own is not even a fallback, it is
+  dropped (that is a new Wi-Fi hotspot, not you moving);
+* a coarse fix **never** enters the stationary-debounce window, **never** advances
+  the jump-guard reference, **never** reaches the track or the history ledger, and
+  does **not** update speed or course (cell positioning has no Doppler; speed and
+  bearing are 0 or stale);
+* the UI now honestly labels it **"Network fix (coarse)"**, and the accuracy display
+  has a 150 m floor — the raw system value would draw an accuracy circle as small as
+  a GPS one, which is more misleading than drawing none.
+
+"Settings → Location → Location mode" no longer claims "Network-assisted, faster
+fix"; it now says "Network is a fallback only (when GPS goes stale); coarse fixes are
+never written to the track", with an explanatory hint underneath — if it is not
+stated, users reasonably conclude that the app is broken.
+
+**3) Checker.**
+
+`tool/check_pos_quality.py` gained 11 assertions locking the behaviour above (both
+coarse gates, no track writes, no debounce window, no reference advance, the accuracy
+floor, status-string registration, …). As usual, each new check was **verified to go
+red with a regression sample**: removing the gates, allowing coarse fixes into the
+track, and not parsing `provider` — all three went red, and md5 confirmed the sources
+were restored byte-for-byte.
+
 ## [1.6.149] - 2026-09-22
 
 ### 🌟 四条反馈一次落地：去聚合、轨迹打点更准、去掉「无台站」提示、个人历史轨迹 / Four requests in one release: no clustering, better track points, no "no stations" pill, personal track history

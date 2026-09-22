@@ -1613,7 +1613,7 @@
   "locModeGps": "纯 GPS",
   "locModeGpsDesc": "仅卫星定位，更省电",
   "locModeGpsNetwork": "GPS + 网络",
-  "locModeGpsNetworkDesc": "网络辅助，定位更快",
+  "locModeGpsNetworkDesc": "网络仅作兜底（GPS 停更时），粗定位不写轨迹",
   "beaconingSection": "信标上报",
   "beaconIntervalTip": "位置信标的发送间隔，至少 5 秒",
   "beaconContent": "信标上报内容",
@@ -2859,5 +2859,12 @@
   "historyClearAllConfirm": "确定要清空全部历史轨迹吗？此操作无法撤销。",
   "historyClearedAll": "已清空全部历史轨迹",
   "sensorAssist": "传感器辅助定位",
-  "sensorAssistDesc": "用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。"
+  "sensorAssistDesc": "用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。",
+  "historyTapDay": "点按某一天可查看地图与回放",
+  "historyPlay": "播放",
+  "historyPause": "暂停",
+  "historyReplay": "重播",
+  "historyFollow": "跟随",
+  "locationCoarse": "网络定位（粗）",
+  "locModeNetHint": "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。"
 }

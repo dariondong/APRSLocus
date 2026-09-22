@@ -4127,7 +4127,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get locModeGpsNetwork => 'GPS ＋ ネットワーク';
 
   @override
-  String get locModeGpsNetworkDesc => 'ネットワーク補助で測位が速い';
+  String get locModeGpsNetworkDesc => "ネットワークは補助のみ（GPS が途切れたとき）。粗い測位は軌跡に記録しません";
 
   @override
   String get beaconingSection => 'ビーコン送信';
@@ -6490,4 +6490,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sensorAssistDesc => "加速度センサーで実際に移動しているかを判定し、コンパスで低速時の方位を補正して軌跡をより正確に記録します（Android のみ）。";
+  @override
+  String get historyTapDay => "日をタップすると地図とリプレイを表示します";
+
+  @override
+  String get historyPlay => "再生";
+
+  @override
+  String get historyPause => "一時停止";
+
+  @override
+  String get historyReplay => "もう一度再生";
+
+  @override
+  String get historyFollow => "追従";
+  @override
+  String get locationCoarse => "ネットワーク測位（粗）";
+  @override
+  String get locModeNetHint => "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。";
 }

@@ -4271,8 +4271,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get locModeGpsNetwork => 'GPS + red';
 
   @override
-  String get locModeGpsNetworkDesc =>
-      'Con ayuda de la red; ubicación más rápida';
+  String get locModeGpsNetworkDesc => "La red es solo un respaldo (si el GPS se corta); las posiciones aproximadas no se guardan en la ruta";
 
   @override
   String get beaconingSection => 'Balizamiento';
@@ -6732,4 +6731,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sensorAssistDesc => "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android).";
+  @override
+  String get historyTapDay => "Toca un día para ver el mapa y su reproducción";
+
+  @override
+  String get historyPlay => "Reproducir";
+
+  @override
+  String get historyPause => "Pausar";
+
+  @override
+  String get historyReplay => "Repetir";
+
+  @override
+  String get historyFollow => "Seguir";
+  @override
+  String get locationCoarse => "Posición de red (aproximada)";
+  @override
+  String get locModeNetHint => "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 2 minutos sin actualizarse, y nunca se guardan en la ruta ni el historial.";
 }

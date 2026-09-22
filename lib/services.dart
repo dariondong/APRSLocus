@@ -23,16 +23,22 @@ class LocService {
   /// （Android 侧用于启动时快速出图）。它可以更新地图上的「我」，但**不能**写进
   /// 轨迹 —— 缓存点可能几小时前、甚至在另一个城市，写进轨迹就是「线跳回起点再画
   /// 一次、反复横画」。
-  /// 定位回调。最后两个参数：
+  /// 定位回调。最后几个参数：
   ///   * [lastKnown] —— 见上（缓存位置标记）；
-  ///   * [accuracyM] —— 水平精度（米，`1σ`）；**<= 0 表示平台没给**。
+  ///   * [accuracyM] —— 水平精度（米，`1σ`）；**<= 0 表示平台没给**；
+  ///   * [source] —— 定位来源（`'gps'` / `'network'` / `'passive'` / `''`）。
   ///
   /// 精度这个值原生两边一直在算并发出来（Android `LocationService.kt` 的
   /// `"accuracy"`、iOS `LocationPlugin.swift` 的 `horizontalAccuracy`），
   /// 但这里解析事件时**从来没读过**，于是上层既无法按精度加权、也无法告诉你
   /// 「这个点其实 ±40m」—— 白白算了一个最关键的字段。
+  ///
+  /// [source] 同理：Android 侧一直在事件里发 `"provider"`，这里**从来没读过**。
+  /// 代价是「基站/Wi-Fi 粗定位」与「GPS」在上层长得一模一样 —— 而前者会一次偏
+  /// 几百米到几公里，这就是用户报的「网络让定位飞来飞去」。空串表示平台没给
+  /// （iOS/桌面），按「未知」处理，不当作粗定位（保持旧行为，不制造回归）。
   void Function(double lat, double lng, double alt, double speed, double bearing,
-      bool lastKnown, double accuracyM)? onFix;
+      bool lastKnown, double accuracyM, String source)? onFix;
   void Function(String status)? onStatus;
   /// 通知栏"连接/断开"按钮点击回调
   void Function()? onToggleConnect;
@@ -85,6 +91,10 @@ class LocService {
             event['lastKnown'] == true,
             // 水平精度（米）；原生没给或为 NaN 时按 0（未知）传给上层
             (event['accuracy'] as num?)?.toDouble() ?? 0,
+            // 定位来源：原生发 "provider"（gps/network/passive）。上层据此
+            // 区分「GPS 实测」与「基站/Wi-Fi 粗定位」—— 后者精度字段常常
+            // 报得很乐观（20~40m）却实际偏几百米，只看 accuracy 拦不住。
+            (event['provider'] as String?) ?? '',
           );
         }
       }
@@ -197,7 +207,8 @@ class LocService {
           // 这个数字参与判断：非 lastKnown 的抖动判定、轨迹写入门限，
           // 而 50km 远超过那些门限，所以 IP 点天然不会写轨迹、也不会被当成
           // 「静止」的可靠依据。
-          onFix?.call(lat, lng, 0, 0, -1, true, 50000);
+          // source 传 'network'：IP 定位是城市级粗点，与 Wi-Fi 粗定位同类。
+          onFix?.call(lat, lng, 0, 0, -1, true, 50000, 'network');
           return true;
         } finally {
           client.close(force: true);

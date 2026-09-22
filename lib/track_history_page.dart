@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'material.dart';
 import 'settings_widgets.dart';
+import 'state.dart';
 import 'theme.dart';
+import 'track_day_page.dart';
 import 'track_log.dart';
 import 'widgets.dart';
 
@@ -12,8 +14,12 @@ import 'widgets.dart';
 /// 速度、移动时长、点数，以及一张极简的点列预览。删除粒度是「天」，
 /// 不提供「删除单个点」—— 轨迹点单看没有意义，而且误删一个点就会把当天的
 /// 里程算短，比不能删更糟。
+///
+/// **点按某一天**进入 [TrackDayPage]：底图 + 回放动画。列表里的预览只是
+/// 「形状对不对」，要看「怎么走的」必须进详情页。
 class TrackHistoryPage extends StatefulWidget {
-  const TrackHistoryPage({super.key});
+  final AppState state;
+  const TrackHistoryPage({super.key, required this.state});
 
   @override
   State<TrackHistoryPage> createState() => _TrackHistoryPageState();
@@ -38,31 +44,18 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
     });
   }
 
-  String _dayLabel(String day) {
-    final s = S.of(context);
-    final today = TrackLogStore.dayKey(DateTime.now());
-    final y = DateTime.now().subtract(const Duration(days: 1));
-    if (day == today) return s.dateToday;
-    if (day == TrackLogStore.dayKey(y)) return s.dateYesterday;
-    return day;
-  }
-
-  static String fmtKm(double km) {
-    if (km <= 0) return '0 m';
-    if (km < 1) return '${(km * 1000).round()} m';
-    return '${km.toStringAsFixed(km >= 100 ? 0 : 1)} km';
-  }
-
-  static String fmtDur(Duration d) {
-    final h = d.inHours;
-    final m = d.inMinutes % 60;
-    if (h > 0) return '${h}h ${m}m';
-    if (m > 0) return '${m}m';
-    return '${d.inSeconds}s';
+  /// 打开某一天的地图回放
+  void _openDay(DayTrack d) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => TrackDayPage(day: d, state: widget.state),
+      ),
+    );
   }
 
   Future<void> _confirmDeleteDay(DayTrack d) async {
     final s = S.of(context);
+    final label = dayLabelText(context, d.day);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => MaterialSurface(
@@ -73,7 +66,7 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(s.historyClearDay, style: ts(16, w: FontWeight.w700)),
           content: Text(
-            '${_dayLabel(d.day)} · ${fmtKm(d.distanceKm)}',
+            '$label · ${fmtKm(d.distanceKm)}',
             style: ts(13, c: C.slate),
           ),
           actions: [
@@ -152,7 +145,20 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
             _emptyCard()
           else ...[
             _summaryCard(),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(Icons.touch_app_rounded, size: 13, color: C.grey),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    S.of(context).historyTapDay,
+                    style: ts(10, c: C.grey),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             for (final d in _days) ...[
               _dayCard(d),
               const SizedBox(height: 10),
@@ -228,6 +234,11 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
   }
 
   Widget _dayCard(DayTrack d) {
+    // 点整张卡片进详情：预览只能看形状，回放才看得出「怎么走的」
+    return GestureDetector(onTap: () => _openDay(d), child: _dayCardBody(d));
+  }
+
+  Widget _dayCardBody(DayTrack d) {
     final s = S.of(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
@@ -241,7 +252,7 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  _dayLabel(d.day),
+                  dayLabelText(context, d.day),
                   style: ts(13, w: FontWeight.w700),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -251,6 +262,8 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
                 s.historyPoints + ' ${d.count}',
                 style: ts(10, c: C.grey),
               ),
+              // 卡片可点进回放页：给一个明确的指示符，否则用户不知道能点
+              Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
               IconButton(
                 icon: Icon(Icons.delete_outline_rounded, size: 18, color: C.grey),
                 tooltip: s.historyClearDay,

@@ -4093,7 +4093,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locModeGpsNetwork => 'GPS + 网络';
 
   @override
-  String get locModeGpsNetworkDesc => '网络辅助，定位更快';
+  String get locModeGpsNetworkDesc => "网络仅作兜底（GPS 停更时），粗定位不写轨迹";
 
   @override
   String get beaconingSection => '信标上报';
@@ -6416,6 +6416,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sensorAssistDesc => "用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。";
+  @override
+  String get historyTapDay => "点按某一天可查看地图与回放";
+
+  @override
+  String get historyPlay => "播放";
+
+  @override
+  String get historyPause => "暂停";
+
+  @override
+  String get historyReplay => "重播";
+
+  @override
+  String get historyFollow => "跟随";
+  @override
+  String get locationCoarse => "网络定位（粗）";
+  @override
+  String get locModeNetHint => "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。";
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -10506,7 +10524,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get locModeGpsNetwork => 'GPS + 網路';
 
   @override
-  String get locModeGpsNetworkDesc => '網路輔助，定位更快';
+  String get locModeGpsNetworkDesc => "網路僅作兜底（GPS 停更時），粗定位不寫軌跡";
 
   @override
   String get beaconingSection => '信標上報';
@@ -12829,4 +12847,22 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sensorAssistDesc => "用加速度計判斷是否真的在移動、用指南針補正低速航向，讓軌跡打點更準（僅 Android 生效）。";
+  @override
+  String get historyTapDay => "點按某一天可查看地圖與回放";
+
+  @override
+  String get historyPlay => "播放";
+
+  @override
+  String get historyPause => "暫停";
+
+  @override
+  String get historyReplay => "重播";
+
+  @override
+  String get historyFollow => "跟隨";
+  @override
+  String get locationCoarse => "網路定位（粗）";
+  @override
+  String get locModeNetHint => "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 2 分鐘後才用它兜底，且粗定位點不寫進軌跡與歷史。";
 }

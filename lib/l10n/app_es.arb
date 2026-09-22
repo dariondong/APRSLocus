@@ -1346,7 +1346,7 @@
   "locModeGps": "Solo GPS",
   "locModeGpsDesc": "Solo satélite; ahorra batería",
   "locModeGpsNetwork": "GPS + red",
-  "locModeGpsNetworkDesc": "Con ayuda de la red; ubicación más rápida",
+  "locModeGpsNetworkDesc": "La red es solo un respaldo (si el GPS se corta); las posiciones aproximadas no se guardan en la ruta",
   "beaconingSection": "Balizamiento",
   "beaconIntervalTip": "Intervalo de envío de la baliza de posición; mínimo 5 segundos",
   "beaconContent": "Contenido de la baliza",
@@ -2345,5 +2345,12 @@
   "historyClearAllConfirm": "¿Borrar todo el historial de rutas? No se puede deshacer.",
   "historyClearedAll": "Historial borrado por completo",
   "sensorAssist": "Posicionamiento con sensores",
-  "sensorAssistDesc": "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android)."
+  "sensorAssistDesc": "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android).",
+  "historyTapDay": "Toca un día para ver el mapa y su reproducción",
+  "historyPlay": "Reproducir",
+  "historyPause": "Pausar",
+  "historyReplay": "Repetir",
+  "historyFollow": "Seguir",
+  "locationCoarse": "Posición de red (aproximada)",
+  "locModeNetHint": "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 2 minutos sin actualizarse, y nunca se guardan en la ruta ni el historial."
 }

@@ -75,7 +75,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.149';
+  static const appVersion = '1.6.150';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -146,7 +146,14 @@ class AppState extends ChangeNotifier {
   /// 最近一次实时定位的**水平精度**（米，1σ）；0 表示平台没给这个值。
   /// 用来：① 界面如实显示「±40 m」；② 太差的点不写轨迹；③ 给地图上的「我」
   /// 画不确定圈。以前这个值在 Dart 侧被丢掉（原生算了但没人读）。
+  /// 自己位置的精度（米）。粗定位时不是系统原值，见 [_kCoarseAccuracyFloorM]
   double myAccuracy = 0;
+
+  /// 当前这个定位是不是粗定位（网络/基站/被动）。
+  ///
+  /// 界面上要如实告知：粗点会把「我」放在几百米开外，不说清楚用户会以为
+  /// GPS 坏了。切换/退出时靠 [_resetSelfFix] 复位。
+  bool myFixCoarse = false;
 
   /// 手动设置我的位置（模拟位置 / Windows 无定位服务时的备用）
   void setMyPosition(double lat, double lng, {double? alt}) {
@@ -3047,9 +3054,53 @@ class AppState extends ChangeNotifier {
     double bearing,
     bool lastKnown,
     double accuracy,
+    String source,
   ) async {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
+
+    // ── 第一道（也是最后一道）闸：粗定位点 ──
+    //
+    // 症状（用户报的）：开着「GPS + 网络辅助」时，地图上的「我」会**飞来飞去**。
+    //
+    // 为什么原有的两道闸都拦不住它：
+    //   ① 精度门控（原生 150m / 网络 80m）看的是**系统自报的 accuracy**，而
+    //      基站/Wi-Fi 定位的精度字段经常报得很乐观（自报 20~40m，实际偏 200m+）；
+    //   ② 跳变守卫的阈值是 30km —— 那是给「缓存点跨城市」调的，而网络粗点的
+    //      漂移是 200m~3km，**整个落在阈值以下**，等于完全没被拦。
+    //
+    // 所以要按**来源**判，而不是只看精度：
+    //   * 非 GPS（网络/基站/被动）的点，在「GPS 刚更新过」时一律丢弃 ——
+    //     这才是「飞来飞去」的真正成因：GPS 在城市峡谷里一闪一断，
+    //     粗点就在缝里把标记拉走再拉回，来回横跳；
+    //   * GPS 真的停了 [_kCoarseHoldSec] 秒以上（室内/隧道）才允许粗点推动标记
+    //     —— 宁可把它当「最后的保底」，也不能让它参与每一次抖动；
+    //   * 粗点绝不进入静止防抖的滑窗、绝不推参照点、绝不写轨迹与历史台账。
+    //
+    // 还有一条容易漏的：闸必须在**传感器采样之前** —— 被丢掉的点没必要
+    // 多跑一次平台通道。
+    final coarse = !lastKnown && (source == 'network' || source == 'passive');
+    if (coarse) {
+      final gapSec = _lastFixTime == null
+          ? 1 << 30
+          : DateTime.now().difference(_lastFixTime!).inSeconds;
+      final jumpKm = _lastFixLat == null
+          ? 0.0
+          : haversine(_lastFixLat!, _lastFixLng!, lat, lng);
+      // ① GPS 仍新鲜 → 粗点是噪声（**这就是「飞来飞去」的主因**）
+      // ② GPS 已停更很久，而粗点自己一口气跳出去 [_kCoarseJumpKm] 以上 →
+      //    不是一个可信的「原地兜底」，而是换个 Wi-Fi 就跳到街对面基站去了
+      if (gapSec < _kCoarseHoldSec || jumpKm > _kCoarseJumpKm) {
+        _log(
+          LogLevel.debug,
+          '定位',
+          '忽略粗定位点（来源 $source）：'
+          '距上次 GPS ${gapSec}s / 位移 ${jumpKm.toStringAsFixed(2)}km',
+        );
+        _notify();
+        return;
+      }
+    }
 
     // 传感器辅助：拉一次最新的加速度计/指南针状态。
     // 同一次定位只拉这一次 —— 后面的静止判定与航向补正共用它，
@@ -3076,7 +3127,7 @@ class AppState extends ChangeNotifier {
     //   * 静止时不再写轨迹点 → myTrack.last 可能已经是几小时前的点，那时
     //     gapSec 必然超窗、守卫**整个失效**（正是本次改动引入的回归）；
     //   * myTrack 为空时（刚启动、清空数据、刚确认过跳变）原本完全没有守卫。
-    if (!lastKnown && _lastFixLat != null) {
+    if (!lastKnown && !coarse && _lastFixLat != null) {
       final dKm = haversine(_lastFixLat!, _lastFixLng!, lat, lng);
       // 「短时间内」跨很远才算跳变：中间本来就隔了很久的话，多半是合法位移
       // （设备刚开、GPS 丢了一阵），那种情况宁可画一条跨越空档的线，也别把轨迹清掉。
@@ -3140,7 +3191,7 @@ class AppState extends ChangeNotifier {
     //
     // 只对**实时定位**做防抖：缓存位置（lastKnown）不是实时点，IP 定位是城市级
     // 粗点 —— 两者都不该进滑动窗口（会把中位数拉跑），也不该影响静止判定。
-    final out = lastKnown
+    final out = (lastKnown || coarse)
         ? (lat, lng, false)
         : _selfFilter.feed(
             lat,
@@ -3158,10 +3209,16 @@ class AppState extends ChangeNotifier {
     myLng = outLng;
     myAlt = alt;
     myHasFix = true;
-    myAccuracy = accuracy > 0 ? accuracy : 0;
-    if (!lastKnown) {
-      // 只有实时定位才推进参照点与「有过实时定位」标记；缓存位置不算数
-      // （否则一个错缓存点会成为后续判断的基准）。
+    myFixCoarse = coarse;
+    // 粗定位的精度**不能照抄系统自报值**：它常报 20~40m 却实际偏几百米，
+    // 于是精度圈画得像 GPS 一样小，反而更骗人。给一个诚实的下限。
+    myAccuracy = coarse
+        ? (accuracy > _kCoarseAccuracyFloorM ? accuracy : _kCoarseAccuracyFloorM)
+        : (accuracy > 0 ? accuracy : 0);
+    if (!lastKnown && !coarse) {
+      // 只有实时 **GPS** 才推进参照点与「有过实时定位」标记；
+      // 缓存位置与粗定位都不算数（否则粗点会成为后续跳变判断的基准，
+      // 把「GPS 回来时归位」也误判成一次跳变）。
       _lastFixLat = outLat;
       _lastFixLng = outLng;
       _lastFixTime = DateTime.now();
@@ -3169,18 +3226,24 @@ class AppState extends ChangeNotifier {
     }
     // 速度 m/s → km/h；方位角度。
     // 静止时 GPS 也返回 speed=0/bearing=0，正常上报（000/000 表示静止）
-    mySpeed = speed * 3.6;
-    // 航向：低速时 GPS 的 course 不可信（多普勒解不出方向，常为 0 或不更新），
-    // 用指南针补正；正常行驶时仍用 GPS —— 磁力计在城里靠近铁/电机时会被干扰，
-    // 高速下反而是 GPS 更可靠。阈值 3km/h：步行/推车/慢骑覆盖，跑步以上交给 GPS。
-    if (bearing >= 0) myCourse = bearing;
-    if (motion.hasCompass &&
-        motion.heading >= 0 &&
-        motion.moving &&
-        mySpeed! < 3.0) {
-      myCourse = motion.heading;
+    //
+    // 粗定位**不更新速度与航向**：基站/Wi-Fi 定位没有多普勒，speed 常为 0、
+    // bearing 常为 0（或上一次的残值）。照收会让信标误报「静止/朝北」，
+    // 也会把沉浸页的航向朝上判定带偏。宁可沿用上一次 GPS 的值。
+    if (!coarse) {
+      mySpeed = speed * 3.6;
+      // 航向：低速时 GPS 的 course 不可信（多普勒解不出方向，常为 0 或不更新），
+      // 用指南针补正；正常行驶时仍用 GPS —— 磁力计在城里靠近铁/电机时会被干扰，
+      // 高速下反而是 GPS 更可靠。阈值 3km/h：步行/推车/慢骑覆盖，跑步以上交给 GPS。
+      if (bearing >= 0) myCourse = bearing;
+      if (motion.hasCompass &&
+          motion.heading >= 0 &&
+          motion.moving &&
+          mySpeed! < 3.0) {
+        myCourse = motion.heading;
+      }
     }
-    locStatus = still ? '静止' : '已定位';
+    locStatus = coarse ? '网络定位（粗）' : (still ? '静止' : '已定位');
     // 记录我的轨迹
     //
     // 三道门（缺一道就会出问题）：
@@ -3193,6 +3256,7 @@ class AppState extends ChangeNotifier {
     // 的朴素行为（见 _upsertStation 顶部说明）。
     final last = myTrack.isEmpty ? null : myTrack.last;
     if (!lastKnown &&
+        !coarse &&
         !still &&
         accuracy <= SelfFixFilter.trackAccuracyLimitM) {
       final minDistM = PosQuality.trackMinDistM(
@@ -4180,13 +4244,33 @@ class AppState extends ChangeNotifier {
   }
   /// ── 位置跳变守卫的状态（见 [_onFix]）──
   /// 单步位移超过这个公里数、**且**距上一轨迹点不到 [_kFixJumpWindowSec] 时才视为可疑。
-  ///
   /// 30km 这个数的依据：正常的 TNC/GPS 采样间隔是 10 秒级，10 分钟内跨 30km 意味着
   /// 平均 180km/h 以上，而民用移动（含高铁 350km/h —— 10 分钟也有 58km）里只有
   /// 飞机能到这量级；反过来，缓存位置/网络漂移常跨几十上百公里。
   /// 阈值取大一点的好处：**不会误伤「停车几小时后开出去」这种合法位移**
   /// （那种情况距上一轨迹点已经很久，由时间窗排除）。
   static const double _kFixJumpKm = 30.0;
+
+  /// 粗定位（网络/基站/被动）推动标记前，GPS 必须已经停更这么多秒。
+  ///
+  /// 为什么是 120s 而不是原生那个 20s：原生那个是**传输层**的「别刷屏」门槛，
+  /// 而这里是**策略层**的「什么时候才允许用粗点换掉 GPS」决定。城市峡谷里
+  /// GPS 断十几秒是常事，一断就拿基站质心顶上，标记就会在 50m 与 800m 之间
+  /// 来回横跳 —— 用户看到的正是「飞来飞去」。宁可停 2 分钟不动，也不要抖。
+  static const int _kCoarseHoldSec = 120;
+
+  /// 粗定位点自己一口气跳出去的公里数上限。
+  ///
+  /// GPS 停了很久（比如刚出隧道）时允许粗点兜底，但如果它一上来就离上一可信
+  /// 位置十几公里，那多半不是「我们移动了」，而是换了个 Wi-Fi/基站质心 ——
+  /// 这种点宁可不要（没有位置比错位置好，地图会退化成「未定位」但不会骗人）。
+  static const double _kCoarseJumpKm = 8.0;
+
+  /// 粗定位的精度显示下限（米）。
+  ///
+  /// 系统自报的 accuracy 对 Wi-Fi/基站点常常过于乐观（报 20~40m，实际偏几百米）。
+  /// 照抄会让精度圈画得跟 GPS 一样小 —— 比不画更骗人。
+  static const double _kCoarseAccuracyFloorM = 150.0;
   /// 「短时间内」的定义（秒）：超过它就认为中间本来就有空档，多大的位移都可能是真的
   static const int _kFixJumpWindowSec = 600;
   /// 两次可疑点相距小于这个公里数，视为「落在同一处」
@@ -4223,6 +4307,7 @@ class AppState extends ChangeNotifier {
     _pendingFixLng = null;
     _pendingFixCount = 0;
     myAccuracy = 0;
+    myFixCoarse = false;
   }
 
   // 接收侧不再有任何质量层状态（见 _upsertStation 顶部的说明）。

@@ -385,7 +385,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(height: 12),
                 // 历史轨迹（个人按天台账：里程 / 速度 / 时长）
                 GestureDetector(
-                  onTap: () => _push(const TrackHistoryPage()),
+                  onTap: () => _push(TrackHistoryPage(state: st)),
                   child: Container(
                     padding: const EdgeInsets.all(14),
                     decoration: cardDeco(),

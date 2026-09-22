@@ -4244,7 +4244,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get locModeGpsNetwork => 'GPS + Jaringan';
 
   @override
-  String get locModeGpsNetworkDesc => 'Berbantuan jaringan, lebih cepat';
+  String get locModeGpsNetworkDesc => "Jaringan hanya cadangan (saat GPS terputus); lokasi kasar tidak dicatat ke lintasan";
 
   @override
   String get beaconingSection => 'Beaconing';
@@ -6690,4 +6690,22 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get sensorAssistDesc => "Menggunakan akselerometer untuk mengetahui apakah benar-benar bergerak dan kompas untuk memperbaiki arah saat kecepatan rendah, agar titik lintasan lebih akurat (hanya Android).";
+  @override
+  String get historyTapDay => "Ketuk satu hari untuk melihat peta dan putar ulang";
+
+  @override
+  String get historyPlay => "Putar";
+
+  @override
+  String get historyPause => "Jeda";
+
+  @override
+  String get historyReplay => "Putar ulang";
+
+  @override
+  String get historyFollow => "Ikuti";
+  @override
+  String get locationCoarse => "Lokasi jaringan (kasar)";
+  @override
+  String get locModeNetHint => "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat.";
 }

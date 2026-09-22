@@ -1347,7 +1347,7 @@
   "locModeGps": "GPS のみ",
   "locModeGpsDesc": "衛星のみ。省電力",
   "locModeGpsNetwork": "GPS ＋ ネットワーク",
-  "locModeGpsNetworkDesc": "ネットワーク補助で測位が速い",
+  "locModeGpsNetworkDesc": "ネットワークは補助のみ（GPS が途切れたとき）。粗い測位は軌跡に記録しません",
   "beaconingSection": "ビーコン送信",
   "beaconIntervalTip": "位置ビーコンの送信間隔（最短 5 秒）",
   "beaconContent": "ビーコンの内容",
@@ -2345,5 +2345,12 @@
   "historyClearAllConfirm": "走行履歴をすべて消去しますか？この操作は取り消せません。",
   "historyClearedAll": "走行履歴をすべて消去しました",
   "sensorAssist": "センサー支援測位",
-  "sensorAssistDesc": "加速度センサーで実際に移動しているかを判定し、コンパスで低速時の方位を補正して軌跡をより正確に記録します（Android のみ）。"
+  "sensorAssistDesc": "加速度センサーで実際に移動しているかを判定し、コンパスで低速時の方位を補正して軌跡をより正確に記録します（Android のみ）。",
+  "historyTapDay": "日をタップすると地図とリプレイを表示します",
+  "historyPlay": "再生",
+  "historyPause": "一時停止",
+  "historyReplay": "もう一度再生",
+  "historyFollow": "追従",
+  "locationCoarse": "ネットワーク測位（粗）",
+  "locModeNetHint": "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。"
 }
