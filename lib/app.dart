@@ -212,8 +212,11 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
 
   @override
   Widget buildTransitions<T>(
-    PageRoute<T>? route,
-    BuildContext? context,
+    // 形参必须是**非空**的：基类（`PageTransitionsBuilder`）与
+    // `PageTransitionsTheme.buildTransitions` 都声明非空，写成 `PageRoute<T>?`
+    // 虽然能当覆盖，但往下调 `inner.buildTransitions` 时类型对不上。
+    PageRoute<T> route,
+    BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
@@ -224,7 +227,7 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
     final inner = const PageTransitionsTheme()
             .builders[defaultTargetPlatform] ??
         const ZoomPageTransitionsBuilder();
-    final transitioned = inner.buildTransitions(
+    final transitioned = inner.buildTransitions<T>(
       route,
       context,
       animation,
