@@ -201,6 +201,9 @@ class _AppState extends State<App> {
 /// 所以逐像素一致，不会看到「换了一次底」；动画结束（`completed`）后它不再常驻，
 /// 不会与 builder 的底重复合成、也不多占一层。
 ///
+/// 反方向（**退出**子页）同理 —— 但那一侧多一个「值仍然是 1」的第一帧坑，
+/// 所以这份底是按 **status** 画的，见 [_TransitionBackdrop]。
+///
 /// 刻意不做两件事：
 /// * **不靠 `opaque` 解决**：让旧路由不画（`maintainState`/`opaque`）会打断返回手势
 ///   与“预测式返回”的观感，而且要在每个路由上改，容易漏；
@@ -236,19 +239,88 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
     );
     return Stack(
       children: [
-        // 转场期间才画；转入完成（value == 1）后置空
+        // 转场期间才画；**停稳**（completed / dismissed）后置空。
+        // 判据为什么不能是「value == 1」，见 [_TransitionBackdrop] 顶部那一段。
         Positioned.fill(
-          child: ValueListenableBuilder<double>(
-            valueListenable: animation,
-            builder: (_, v, _) => v >= 1
-                ? const SizedBox.shrink()
-                : (ThemeController.instance.buildBackdrop() ??
-                    const SizedBox.shrink()),
-          ),
+          child: _TransitionBackdrop(animation: animation),
         ),
         // 转场包在底之上：否则淡入/缩放会把这份底一起缩进去
         Positioned.fill(child: transitioned),
       ],
     );
   }
+}
+
+/// 转场期间那份「底」，只在**转场进行中**画。
+///
+/// ── 为什么判据必须是 status，不能是 `value == 1` ──
+///
+/// 这里原来写的是 `ValueListenableBuilder` + `v >= 1 ? 不画 : 画`。推入子页时它是对的
+/// （推入的第一帧值就是 0），**弹出时正好反了**：`AnimationController.reverse()` 只把
+/// status 置为 reverse，**值要等下一个 tick 才动**，而 ticker 的**首次回调 elapsed 恒为 0**
+/// —— 于是弹出后的第一帧里：
+///
+///   * 框架已经按 `overlayEntries.first.opaque = false`（见上面类注释里 routes.dart 那段）
+///     把**底下那一页**画了一遍；
+///   * 这份「底」却又被 `v >= 1` 判成「不用画」；
+///   * 而正在退出的页面底色是**透明**的（`C.pageFill`：有底时透明）。
+///
+/// 三者叠加 = 底下那一页**整整透出一帧**。2.0 布局下底下就是地图，而公告横幅正好浮在
+/// 地图上、位置又与设置子页自己那条横幅同高 —— 用户看到的就是「公告横幅怎么显示在
+/// 设置子页？页面退出动画会闪一下」。
+///
+/// 改成按 status 判断之后，`reverse()` 是在**帧之前**同步触发的（状态监听器里
+/// setState），所以弹出的第一帧就已经带着这份底，不再有那一帧空洞。
+///
+/// ⚠ 也因此必须挂 [Animation<double>.addStatusListener]，**不能**用
+/// `ValueListenableBuilder` / `AnimatedBuilder` 顶上：`reverse()` 不通知值监听器
+/// （值要下一帧才变），而弹出时**恰恰只有在值还没变的那一帧**需要把底画上。
+class _TransitionBackdrop extends StatefulWidget {
+  final Animation<double> animation;
+
+  const _TransitionBackdrop({required this.animation});
+
+  @override
+  State<_TransitionBackdrop> createState() => _TransitionBackdropState();
+}
+
+class _TransitionBackdropState extends State<_TransitionBackdrop> {
+  /// 当前是否该画这份底（= 是否在转场中）
+  bool _on = false;
+
+  /// 转场是否进行中。
+  ///
+  /// 用**排除法**判断「没停稳」：`completed`（已就位）与 `dismissed`（还没进来）
+  /// 之外一律算转场中 —— 不写「值是不是 1」，也不再列举 forward / reverse，
+  /// 将来状态只可能更多（见 [AnimationStatus]）。
+  bool get _moving {
+    final s = widget.animation.status;
+    return s != AnimationStatus.completed && s != AnimationStatus.dismissed;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _on = _moving;
+    widget.animation.addStatusListener(_onStatus);
+  }
+
+  @override
+  void dispose() {
+    widget.animation.removeStatusListener(_onStatus);
+    super.dispose();
+  }
+
+  /// ⚠ 参数用不到（判据统一在 [_moving]，免得两处各写一份），所以名字写成 `_`：
+  /// 留一个没人读的 `status` 会让人以为「是不是漏了用它」。
+  void _onStatus(AnimationStatus _) {
+    final on = _moving;
+    if (on != _on) setState(() => _on = on);
+  }
+
+  @override
+  Widget build(BuildContext context) => _on
+      // 与 `builder` 那份**同一个函数**：逐像素一致，看不出「换了一次底」
+      ? (ThemeController.instance.buildBackdrop() ?? const SizedBox.shrink())
+      : const SizedBox.shrink();
 }

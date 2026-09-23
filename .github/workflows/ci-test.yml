@@ -116,6 +116,13 @@ jobs:
       - name: Check UI wiring
         run: python3 tool/check_ui_wiring.py
 
+      # 转场底：那份底的判据必须是「转场是否进行中」（status），不能是「值到没到 1」。
+      # 按值判断在**推入**时是对的、只在**弹出**那一帧漏 —— 而漏出来的表现是
+      # 底下那一页整帧透出（「公告横幅怎么显示在设置子页？退出动画会闪一下」）。
+      # 它依赖三个前提同时成立，本机很难复现，所以写死成检查。
+      - name: Check transition backdrop
+        run: python3 tool/check_transition_backdrop.py
+
       # Release 说明的提取：**直接跑 build-release.yml 里那段 awk**，断言它把
       # 该版本的中英两个条目都取到了、且没混入相邻版本。
       # 那段 awk 一改错不会让任何东西失败 —— 只是打 tag 后 Release 页少半篇，
