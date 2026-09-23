@@ -2580,15 +2580,11 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         icon: Icons.palette_rounded,
         color: C.cyan,
         body: Column(children: [
-          // ── 公告横幅 ──
+          // ── 公告横幅（与主页各一条；用户要求「设置页也留」）──
           // 放在**页面最上面**：设置页是「扫一眼找开关」的地方，横幅放中间会被
-          // 当成某张卡的一部分而忽略。开关关掉时这个组件自己返回空（且不联网）。
-          NoticeBanner(
-            state: st,
-            onOpen: (md) => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => NoticePage(md)),
-            ),
-          ),
+          // 当成某张卡的一部分而忽略。开关关掉时这个组件自己返回空（且不联网）；
+          // 横幅自带的关闭按钮会把开关置为 off（一个来源、两种入口）。
+          NoticeBanner(state: st),
           SettingsSectionCard(
             title: S.of(context).all,
             subtitle: S.of(context).settingsGeneralSubtitle,

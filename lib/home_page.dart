@@ -10,6 +10,7 @@ import 'theme_store.dart';
 import 'theme_text.dart';
 import 'theme_icons.dart';
 import 'map_page.dart';
+import 'notice_banner.dart';
 import 'stations_page.dart';
 import 'messages_page.dart';
 import 'packets_page.dart';
@@ -415,6 +416,15 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       _topBar(),
+                      // ── 公告横幅（主页也有一条；用户要求「在主页显示横幅」）──
+                      // 放在顶栏与内容之间：它是**一条通知**，不该压在内容上；
+                      // 这一列是 Column，所以它会**真的占掉**高度，内容自动下移 ——
+                      // 不需要像 2.0 那边那样手动算让位量。
+                      // 开关关掉时组件自己返回空（且不联网），这里不用判断。
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                        child: NoticeBanner(state: widget.state),
+                      ),
                       // 各页面内部自监听（地图/消息/数据包/设置用 ListenableBuilder、
                       // 台站页用 StreamBuilder），无需外层再包全量 state 监听。
                       Expanded(child: _page()),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'map_page.dart';
+import 'notice_banner.dart';
 import 'back_router.dart';
 import 'material.dart';
 import 'messages_page.dart';
@@ -267,7 +268,9 @@ class _HomeShell2State extends State<HomeShell2>
     final key = '${st.connected}|${st.connecting}|${st.online}|'
         '${st.unreadMessages}|${st.weatherEnabled}|${st.myHasFix}|'
         // 未连接横幅的显隐还依赖「是不是只读模式」（见 _showLinkBanner）
-        '${st.readOnlyMode}';
+        '${st.readOnlyMode}|'
+        // 公告横幅的显隐与让位量都依赖这个开关
+        '${st.noticeBanner}'
     if (key == _stateKey) return;
     _stateKey = key;
     setState(() {});
@@ -355,7 +358,15 @@ class _HomeShell2State extends State<HomeShell2>
     // 看成「界面在跳」。
     final showLink = _showLinkBanner(widget.state);
     final linkBannerH = showLink ? _kLinkBannerH + 6 : 0.0;
-    final topInset = _topInset() + linkBannerH;
+    // 公告横幅同样压在**地图上方**（用户要求「在主页显示横幅」），所以也要
+    // 算进顶部让位量 —— 与未连接横幅同一套口径、同一个理由：不算进去它会压住
+    // 地图自己的顶部浮层（信息条/图例/工具列），而且它自己也会被瓦片糊住。
+    // 高度用**常量** [NoticeBanner.stripHeight]：让位量参与地图控件与面板的几何，
+    // 不能是量出来会抖的值。
+    final noticeH = widget.state.noticeBanner
+        ? NoticeBanner.stripHeight + 6
+        : 0.0;
+    final topInset = _topInset() + linkBannerH + noticeH;
     // 上限就是 _maxSheetH：绝不盖住顶栏
     final maxSheetH = _maxSheetH(size, navSpace, topInset);
     final sheetH = (size.height * _extent).clamp(0.0, maxSheetH);
@@ -421,10 +432,26 @@ class _HomeShell2State extends State<HomeShell2>
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
 
-                  // ②b 未连接横幅（压在地图上、顶栏之下；见 [_linkBanner]）
-          if (showLink)
+                  // ②a 公告横幅（压在地图上、顶栏之下；见 [NoticeBanner]）
+          //     放在未连接横幅**上面**：后者是更紧急的状态提示（发不出去），
+          //     离眼睛更近才对。两者的高度都已算进 topInset。
+          if (widget.state.noticeBanner)
             Positioned(
               top: barTop + _barH + 6,
+              left: _kGutter,
+              right: _kGutter,
+              child: NoticeBanner(state: widget.state),
+            ),
+
+          // ②b 未连接横幅（压在地图上、顶栏之下；见 [_linkBanner]）
+          if (showLink)
+            Positioned(
+              top: barTop +
+                  _barH +
+                  6 +
+                  (widget.state.noticeBanner
+                      ? NoticeBanner.stripHeight + 6
+                      : 0),
               left: _kGutter,
               right: _kGutter,
               child: _linkBanner(widget.state),
@@ -904,11 +931,24 @@ class _HomeShell2State extends State<HomeShell2>
             leftInset: mapLeftInset,
           ),
         ),
+        // 公告横幅（横屏同样在顶栏之下；左边让开竖条/内容面板）
+        if (widget.state.noticeBanner)
+          Positioned(
+            top: barTop + _barH + 6,
+            left: mapLeftInset + _kGutter,
+            right: safeR,
+            child: NoticeBanner(state: widget.state),
+          ),
         // 未连接横幅（横屏也在顶栏之下；见 [_linkBanner]）。
         // 左边让开竖条：它横跨地图区，压到竖条上会显得是两张卡撞在一起。
         if (_showLinkBanner(widget.state))
           Positioned(
-            top: barTop + _barH + 6,
+            top: barTop +
+                _barH +
+                6 +
+                (widget.state.noticeBanner
+                    ? NoticeBanner.stripHeight + 6
+                    : 0),
             left: mapLeftInset + _kGutter,
             right: safeR,
             child: _linkBanner(widget.state),

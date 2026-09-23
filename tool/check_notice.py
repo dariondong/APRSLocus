@@ -147,10 +147,29 @@ def main() -> int:
     sp = read('lib/settings_pages.dart')
     need('lib/settings_pages.dart', 'st.setNoticeBanner(',
          '设置页没有公告开关的写回 —— 开关点了不生效')
+    # 横幅要放**两处**（用户：「在主页显示横幅」「在设置页也留」）
+    need('lib/home_page.dart', 'NoticeBanner(',
+         '1.0 主页没有公告横幅 —— 用户要求「在主页显示横幅」')
+    need('lib/shell2.dart', 'NoticeBanner(',
+         '2.0 地图页没有公告横幅 —— 用户要求「在主页显示横幅」')
     need('lib/settings_pages.dart', 'NoticeBanner(',
-         '设置页没有放公告横幅 —— 功能等于不存在')
-    need('lib/settings_pages.dart', 'NoticePage(',
-         '横幅点不开全文 —— 用户只能看到一行摘要')
+         '设置页没有公告横幅 —— 用户要求「在设置页也留」')
+    # 全文用**底部弹层**而不是整页（用户：「打开就不能以弹窗的形式？」）
+    need('lib/notice_banner.dart', 'showNoticeSheet(',
+         '公告全文没有用底部弹层 —— 用户明确要求不要整页')
+    need('lib/notice_banner.dart', 'showModalBottomSheet',
+         '全文不是「底部弹层」（showModalBottomSheet）')
+    if 'class NoticeSheet' not in read('lib/notice_banner.dart'):
+        errors.append('没有 NoticeSheet（弹层内容）—— 全文又退回整页了')
+    # 横幅自带关闭按钮，且关闭 = 把**开关**置 off（一个来源、两种入口）
+    need('lib/notice_banner.dart', 'widget.state.setNoticeBanner(false)',
+         '横幅的关闭按钮没有把开关置为 off —— 那样关掉后下次打开又回来（「我明明关了」）')
+    # 2.0 那边要把横幅高度算进地图让位量，否则会压住地图自己的浮层
+    need('lib/shell2.dart', 'NoticeBanner.stripHeight',
+         '2.0 外壳没把公告横幅的高度算进顶部让位量 —— 横幅会压住地图浮层')
+    # 高度必须是常量（组件里声明），外壳才能安全地引用
+    need('lib/notice_banner.dart', 'static const double stripHeight',
+         '横幅高度不是常量 —— 让位量会随内容抖动')
     # 开关要落盘 + 进备份（换机后不该被静默打开）
     need('lib/state.dart', "setBool('noticeBanner'", '公告开关没有落盘')
     need('lib/state.dart', "getBool('noticeBanner')", '公告开关没有读回')

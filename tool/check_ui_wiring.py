@@ -113,9 +113,15 @@ def main() -> int:
                           '只启用只收来源时「没有发射链路」是正常的，'
                           '挂一条「未连接」会让人白去点连接（v1.6.109 的口径）')
     # 横幅要算进顶部让位量，否则压住地图自己的顶部浮层
-    if 'final topInset = _topInset() + linkBannerH;' not in sl:
-        errors.append('lib/shell2.dart 的顶部让位量没有算上未连接横幅 —— '
-                      '横幅会压住地图的信息条/图例/工具列')
+    # 两个横幅（未连接 + 公告）都必须算进让位量 —— 断言的是**那一行表达式**，
+    # 不是「变量名出现过」：只查名字的话，把某一项从求和里删掉仍然报绿。
+    m_top = re.search(r'final topInset = ([^;]+);', sl)
+    top_expr = m_top.group(1) if m_top else ''
+    for term, what in (('linkBannerH', '未连接横幅'), ('noticeH', '公告横幅')):
+        if term not in top_expr:
+            errors.append(f'lib/shell2.dart 的顶部让位量没有算上{what}'
+                          f'（`final topInset = {top_expr.strip()}` 里缺 `{term}`）—— '
+                          '横幅会压住地图的信息条/图例/工具列')
     if '_kLinkBannerH' not in sl:
         errors.append('lib/shell2.dart 缺 `_kLinkBannerH`（固定高度）—— '
                       '让位量必须是确定的数，量出来的高度会抖一下')

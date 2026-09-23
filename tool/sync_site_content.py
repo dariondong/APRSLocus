@@ -207,6 +207,17 @@ CL = [
     {
         'ver': 'v1.6.157', 'date': '2026-09-23',
         'items': [
+            ('new',
+             T('公告横幅挪到**主页**（地图上方，1.0/2.0 都有），设置页也各留一条；'
+               '点开改成**底部弹层**（长文可滚、可拖动关闭），横幅自带**关闭按钮**'
+               '（关掉后设置里再打开即可）',
+               '公告橫幅挪到**主頁**（地圖上方，1.0/2.0 都有），設定頁也各留一條；'
+               '點開改成**底部彈層**（長文可捲、可拖曳關閉），橫幅自帶**關閉按鈕**'
+               '（關掉後設定裡再打開即可）',
+               'The announcement banner moved to the **home screen** (above the map, in both '
+               '1.0 and 2.0) with another copy in Settings; it now opens in a **bottom sheet** '
+               '(scrollable, drag to dismiss) and carries its own **close button** — switch it '
+               'back on in Settings any time')),
             ('fix',
              T('修「主界面底图选择面板弹不出来」：那颗按钮的回调**漏了括号**'
                '（只是返回函数本身、从不调用）—— v1.6.151 起一直如此，'

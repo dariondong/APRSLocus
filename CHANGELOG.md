@@ -44,7 +44,23 @@ onTap: () => _showMapTypeMenu,      // 漏了 ()
 * **手册设置页表格**：不再比 196 行，而是要求**三语表格互相对齐** + 15 个分组 +
   行数下限（某语言的表格漏行才是真问题，而那次正是加了一个设置项触发的）。
 
-## 四、手册补上 v1.6.156 的新东西（三语 39 页已重新生成）
+## 四、公告横幅挪到主页，打开改成底部弹层，并且能关
+
+（这一条是 v1.6.156 之后、同一批改动里的调整）原先横幅只在**设置子页**里、
+点开是 **push 一个整页**。现在按反馈调成：
+
+* **主页也有横幅**：1.0 放在顶栏与内容之间；2.0 压在地图上、顶栏之下
+  （横屏同样有，且左边让开导航竖条/内容面板）。两处都跟设置页那条共用同一份内容。
+* **打开改成底部弹层**：从底部升起、可拖动关闭、长内容整层可滚 —— 读公告不必
+  离开地图、也不必按返回。
+* **横幅自带关闭按钮**：点它 = 把「公告横幅」这个**开关置为 off**（所以两处的
+  横幅一起收起，设置页的开关同步变成「关」）。刻意不另存一个「已忽略」标记：
+  那种状态用户看不见、也回不去，会出现「我明明关了它明天又回来」；置 off 之后
+  想再看，打开开关即可 —— 一个来源、两种入口。
+* 2.0 那边把横幅高度**算进地图的顶部让位量**（常量 34px），否则它会压住地图
+  自己的信息条 / 图例 / 工具列 —— 与未连接横幅同一套口径。
+
+## 五、手册补上 v1.6.156 的新东西（三语 39 页已重新生成）
 
 * **位置信标 → 速度分档**：补「航向变化」打点，含两道闸 —— **只在行驶中生效**
   （停着不动时航向本身就是噪声）、**两次之间至少隔 20 秒**（发卡弯上会把信道刷满）；
@@ -102,7 +118,29 @@ Both are now self-consistent:
   languages to **agree with each other**, 15 groups, and a row-count floor (a missing row
   in one language is the real problem — and that is exactly what adding a setting caused).
 
-## 4) The manual now covers v1.6.156's additions (39 pages regenerated, three languages)
+## 4) The announcement banner moves to the home screen, opens in a bottom sheet, and can be closed
+
+(An adjustment made after v1.6.156, shipped in the same batch.) The banner used to live
+only inside the **Settings sub-page**, and tapping it **pushed a full page**. It now works
+as follows:
+
+* **The home screen has a banner too**: in 1.0 it sits between the top bar and the content;
+  in 2.0 it floats over the map, under the top bar (landscape included, shifted right to
+  clear the navigation rail and content pane). Both share the same content as the one in
+  Settings.
+* **Opening uses a bottom sheet**: it rises from the bottom, can be dragged away, and the
+  whole sheet scrolls for long notices — reading an announcement no longer takes you off
+  the map and no longer needs a Back press.
+* **The banner carries its own close button**: tapping it sets the **announcement switch to
+  off** (so both banners collapse together and the Settings switch follows). A separate
+  “dismissed” flag was deliberately avoided: that state is invisible and irreversible,
+  producing “I definitely turned it off and it came back tomorrow.” With the switch off,
+  just turn it back on — one source of truth, two entry points.
+* In 2.0 the banner’s height is **counted into the map’s top inset** (a 34 px constant);
+  otherwise it would sit on top of the map’s own info chip, legend and tool column — the
+  same convention as the offline banner.
+
+## 5) The manual now covers v1.6.156's additions (39 pages regenerated, three languages)
 
 * **Beacon → speed tiers**: the new **turn** trigger, including its two gates — **only
   while moving** (heading is noise when parked) and **at least 20 s apart** (hairpins would

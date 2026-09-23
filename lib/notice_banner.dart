@@ -7,32 +7,40 @@ import 'state.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
-/// ─── 公告横幅（设置 → 显示）───
+/// ─── 公告横幅（**主页 + 设置页**各一条）+ 全文（**底部弹层**）───
 ///
-/// 用户需求：「在设置里添加一个公告横幅用户可以打开，公告内容从官网文件夹拉取，
-/// md 应用内支持渲染 MD 和超链接」。
+/// 需求沿革（三次）：
+///  1. 「在设置里加一个公告横幅用户可以打开，内容从官网拉，md 支持渲染与超链接」；
+///  2. 「位置改一下……在主页显示横幅，打开就不能以弹窗的形式？」→ 横幅搬到主页，
+///     打开改成**底部弹层**；
+///  3. 「在设置页也留，但是能够再次开启和关闭。横幅也能关闭。」
+///     → **两处都放**横幅；开关可反复开关；**横幅自带关闭按钮**
+///       （关掉 = 把开关置为 off，于是两处的横幅一起收起，用户可在设置里再打开 ——
+///        一个来源、两种入口，避免出现「关掉了但它明天又回来」）。
 ///
 /// ## 这个组件负责什么
 ///
 /// * **开关关掉时：什么都不做** —— 关键的一条。开关的意义不只是「藏起来」，
 ///   而是**不再发起网络请求**：用户关它多半就是因为不想让它联网。
-///   所以这里在 `build` 最前面就 return，连一次 `load()` 都不发起。
+///   所以 `initState` 里就先 return，连一次 `load()` 都不发起。
 /// * **打开时**：先用缓存立刻显示（有内容就不会闪空白），再后台刷新；
-///   刷新到了就换掉，没刷新到就留着旧的。
+///   刷新到了就换掉，没刷到就留着旧的。
 /// * **拿不到任何内容**：如实写「暂无公告」+ 一个「重试」，而不是留白 ——
 ///   留白会让人以为功能坏了（与 v1.6.109 只读模式同一条原则）。
 ///
-/// ## 为什么横幅只显示标题 + 前几行
+/// ## 为什么是「一条窄条」而不是卡片
 ///
-/// 设置页是「一眼扫过去找一个开关」的地方，不是阅读器。横幅给**一行摘要**，
-/// 点进去才是完整 Markdown（那里有表格、代码块、图片的空间）。
+/// 主页那条贴在**地图上方**：地图是主角，公告只是一条通知。窄条只占
+/// [stripHeight] 像素、一行文字（标题 + 摘要，超出省略），点开才是完整 Markdown。
+/// 高度是**常量**：外壳要用它算地图的顶部让位量（见 shell2），
+/// 而让位量参与地图控件与面板的几何，不能是一个量出来会抖的值。
 class NoticeBanner extends StatefulWidget {
   final AppState state;
 
-  /// 点标题时打开全文（由调用方决定用页面还是弹层）
-  final void Function(String markdown) onOpen;
+  const NoticeBanner({super.key, required this.state});
 
-  const NoticeBanner({super.key, required this.state, required this.onOpen});
+  /// 窄条高度（外壳用它算顶部让位量）
+  static const double stripHeight = 34;
 
   @override
   State<NoticeBanner> createState() => _NoticeBannerState();
@@ -62,7 +70,7 @@ class _NoticeBannerState extends State<NoticeBanner> {
   Future<void> _refresh() async {
     if (!widget.state.noticeBanner || _loading) return;
     setState(() => _loading = true);
-    final d = await NoticeStore.instance.load(lang: _lang());
+    final d = await NoticeStore.instance.load(lang: noticeLangOf(context));
     if (!mounted) return;
     setState(() {
       _loading = false;
@@ -72,20 +80,20 @@ class _NoticeBannerState extends State<NoticeBanner> {
     });
   }
 
-  /// 当前界面语言码（与 `notice/<lang>.md` 的文件名一致）
-  String _lang() {
-    final code = Localizations.localeOf(context).toString();
-    switch (code) {
-      case 'zh':
-      case 'zh_TW':
-      case 'en':
-      case 'ja':
-      case 'es':
-      case 'id':
-        return code;
-    }
-    return 'en';
+  void _open() {
+    final d = _doc;
+    if (d == null) return;
+    showNoticeSheet(context,
+        markdown: d.body, fetchedAt: d.fetchedAt, fromCache: d.fromCache);
   }
+
+  /// 横幅上的「关闭」：把**开关**置为 off。
+  ///
+  /// 为什么不只隐藏这一条：开关是唯一的持久状态。只隐藏的话，用户下次打开
+  /// 应用它又回来了（「我明明关了」），而若另存一个「已忽略」标记，就又多出
+  /// 一个没人知道的状态。置 off 之后：两处横幅一起收起、设置里的开关同步变成
+  /// 「关」，想再看打开即可 —— 行为闭环、可解释。
+  void _dismiss() => widget.state.setNoticeBanner(false);
 
   @override
   Widget build(BuildContext context) {
@@ -93,146 +101,161 @@ class _NoticeBannerState extends State<NoticeBanner> {
     if (!widget.state.noticeBanner) return const SizedBox.shrink();
     final s = S.of(context);
     final doc = _doc;
-    final summary =
-        doc == null ? '' : NoticeStore.summaryOf(doc.body);
+    final summary = doc == null ? '' : NoticeStore.summaryOf(doc.body);
+    final hasContent = doc != null && summary.isNotEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+    return SizedBox(
+      height: NoticeBanner.stripHeight,
       child: MaterialSurface(
-        radius: 16,
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: C.cyan.withValues(alpha: 0.4)),
-            boxShadow: elev2(),
-          ),
-          padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: C.cyanBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.campaign_rounded, size: 18, color: C.cyan),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(s.noticeTitle,
-                            style: ts(12, w: FontWeight.w800)),
-                        if (_loading) ...[
-                          const SizedBox(width: 6),
-                          SizedBox(
-                            width: 10,
-                            height: 10,
-                            child: CircularProgressIndicator(
-                                strokeWidth: 1.6, color: C.cyan),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    // `doc` 是可空的（还没拉到任何内容时就是 null），而
-                    // `summary.isNotEmpty` **不做类型提升** —— 所以这里显式提升
-                    // 成一个非空局部变量，后面直接用 `d`。
-                    if (summary.isNotEmpty && doc != null) ...[
-                      Text(summary,
-                          style: ts(11.5, c: C.ink, w: FontWeight.w600, h: 1.45),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 6),
-                      GestureDetector(
-                        // 整行都可点：与 _toolBtn 同一个坑 —— 底色来自
-                        // BoxDecoration 时不显式 opaque 就只有文字能点
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => widget.onOpen(doc.body),
-                        child: Row(
+        radius: 12,
+        blurSigma: C.chipBlur,
+        child: GestureDetector(
+          // 整条可点（与 _toolBtn 同一个坑：底色来自 BoxDecoration 时不显式
+          // opaque 就只有图标那点能点）
+          behavior: HitTestBehavior.opaque,
+          onTap: hasContent ? _open : null,
+          child: Container(
+            padding: const EdgeInsets.only(left: 10, right: 2),
+            decoration: BoxDecoration(
+              color: C.chipFill,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: C.cyan.withValues(alpha: 0.4)),
+              boxShadow: elev2(),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.campaign_rounded, size: 15, color: C.cyan),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: hasContent
+                      ? Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${s.noticeTitle} · ',
+                                style: ts(11, c: C.cyan, w: FontWeight.w700)),
+                            TextSpan(
+                                text: summary,
+                                style: ts(11, c: C.ink, w: FontWeight.w600)),
+                          ]),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Row(
                           children: [
-                            Text(s.noticeReadMore,
-                                style:
-                                    ts(11, c: C.cyan, w: FontWeight.w700)),
-                            Icon(Icons.chevron_right_rounded,
-                                size: 14, color: C.cyan),
-                          ],
-                        ),
-                      ),
-                      if (doc.fromCache && doc.fetchedAt != null) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          s.noticeCached(_ago(doc.fetchedAt!)),
-                          style: ts(9, c: C.greyLight),
-                        ),
-                      ],
-                    ] else
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _loading ? s.noticeLoading : s.noticeEmpty,
-                              style: ts(11, c: C.grey, h: 1.4),
-                            ),
-                          ),
-                          if (!_loading && _tried)
-                            GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: _refresh,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 2),
-                                child: Text(s.retry,
-                                    style: ts(11,
-                                        c: C.blue, w: FontWeight.w700)),
+                            Expanded(
+                              child: Text(
+                                _loading ? s.noticeLoading : s.noticeEmpty,
+                                style: ts(11, c: C.grey),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                        ],
-                      ),
-                  ],
+                            if (!_loading && _tried)
+                              GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: _refresh,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4, vertical: 2),
+                                  child: Text(s.retry,
+                                      style: ts(11,
+                                          c: C.blue, w: FontWeight.w700)),
+                                ),
+                              ),
+                          ],
+                        ),
                 ),
-              ),
-            ],
+                if (_loading)
+                  Padding(
+                    // ⚠ 不能写 const：C.cyan 是非常量（check_const_colors 会报）
+                    padding: const EdgeInsets.only(left: 6),
+                    child: SizedBox(
+                      width: 11,
+                      height: 11,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 1.6, color: C.cyan),
+                    ),
+                  ),
+                if (hasContent) ...[
+                  const SizedBox(width: 4),
+                  Icon(Icons.chevron_right_rounded, size: 15, color: C.cyan),
+                ],
+                // 缓存的那份要标出来：用户据此知道「这不是最新的」
+                if (hasContent && doc.fromCache && doc.fetchedAt != null) ...[
+                  const SizedBox(width: 6),
+                  Icon(Icons.cloud_off_rounded, size: 12, color: C.orange),
+                ],
+                // ── 关闭按钮 ──
+                // 触摸区做到 30×30（窄条只有 34 高，用 IconButton 的 48 会撑破），
+                // 并且**必须显式 opaque**：否则只有那个 15px 图标能点中。
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _dismiss,
+                  child: SizedBox(
+                    width: 30,
+                    height: NoticeBanner.stripHeight,
+                    child: Icon(Icons.close_rounded,
+                        size: 15, color: C.grey.withValues(alpha: 0.8)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
-  /// 「3 分钟前 / 2 小时前 / 3 天前」—— 缓存时间要如实标出来，
-  /// 否则用户看到一条旧公告会以为是最新的
-  String _ago(DateTime t) {
-    final d = DateTime.now().difference(t);
-    final s = S.of(context);
-    if (d.inMinutes < 1) return s.timeJustNow;
-    // ⚠ 这三个键的占位符在 arb 里声明为 `type: int`，所以只能传 int
-    //   （传 '${...}' 会报 argument_type_not_assignable）
-    if (d.inHours < 1) return s.minutesAgo(d.inMinutes);
-    if (d.inDays < 1) return s.hoursAgo(d.inHours);
-    return s.daysAgo(d.inDays);
-  }
 }
 
-/// 公告全文页：完整渲染 Markdown（表格 / 代码块 / 图片 / 可点链接）
-class NoticePage extends StatefulWidget {
+/// 打开公告全文（**底部弹层**）
+///
+/// 为什么是弹层而不是整页（用户第 2 次调整的原话：「打开就不能以弹窗的形式？」）：
+/// 公告是「顺手看一眼」的东西，整页会把用户从地图上完全带走、还得按返回；
+/// 弹层读完一划或点一下就回去了。内容用 [MarkdownView] 渲染
+/// （表格/代码块/图片/可点链接），长内容整层可滚。
+Future<void> showNoticeSheet(
+  BuildContext context, {
+  required String markdown,
+  DateTime? fetchedAt,
+  bool fromCache = false,
+}) {
+  return showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    // 长公告可以拉到接近全屏，但不占满 —— 留一条能看到背后的地图/页面，
+    // 用户知道自己是「盖上来的」而不是「跳到别处了」。
+    builder: (_) => NoticeSheet(
+      markdown: markdown,
+      fetchedAt: fetchedAt,
+      fromCache: fromCache,
+    ),
+  );
+}
+
+/// 当前界面语言码（与 `notice/<lang>.md` 的文件名一致）。
+///
+/// 抽成顶层函数：横幅与弹层两处都要用，各写一份必然漂。
+String noticeLangOf(BuildContext context) {
+  final code = Localizations.localeOf(context).toString();
+  const known = {'zh', 'zh_TW', 'en', 'ja', 'es', 'id'};
+  return known.contains(code) ? code : 'en';
+}
+
+/// 公告全文（弹层内容，**不是整页**：没有 Scaffold / AppBar）
+class NoticeSheet extends StatefulWidget {
   final String markdown;
   final DateTime? fetchedAt;
   final bool fromCache;
 
-  const NoticePage(this.markdown,
+  const NoticeSheet(this.markdown,
       {super.key, this.fetchedAt, this.fromCache = false});
 
   @override
-  State<NoticePage> createState() => _NoticePageState();
+  State<NoticeSheet> createState() => _NoticeSheetState();
 }
 
-class _NoticePageState extends State<NoticePage> {
+class _NoticeSheetState extends State<NoticeSheet> {
   // 不能在初始化器里引用 `widget`（implicit_this_reference_in_initializer），
   // 所以统一在 initState 里赋值。
   late String _md;
@@ -251,7 +274,7 @@ class _NoticePageState extends State<NoticePage> {
   Future<void> _refresh() async {
     if (_loading) return;
     setState(() => _loading = true);
-    final d = await NoticeStore.instance.load(lang: _lang());
+    final d = await NoticeStore.instance.load(lang: noticeLangOf(context));
     if (!mounted) return;
     setState(() {
       _loading = false;
@@ -263,67 +286,112 @@ class _NoticePageState extends State<NoticePage> {
     });
   }
 
-  String _lang() {
-    final code = Localizations.localeOf(context).toString();
-    const known = {'zh', 'zh_TW', 'en', 'ja', 'es', 'id'};
-    return known.contains(code) ? code : 'en';
-  }
-
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
-      backgroundColor: C.pageFill,
-      appBar: MaterialAppBar(AppBar(
-        backgroundColor: C.surfaceFillStrong,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: C.slate),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(s.noticeTitle, style: ts(16, w: FontWeight.w700)),
-        actions: [
-          IconButton(
-            tooltip: s.refresh,
-            icon: _loading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2))
-                : Icon(Icons.refresh_rounded, color: C.grey),
-            onPressed: _refresh,
-          ),
-        ],
-      )),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-          children: [
-            // 缓存的公告要标出来：用户据此知道「这是上次联网时的那份」
-            if (_cache && _at != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: C.orangeBg,
-                    borderRadius: BorderRadius.circular(8),
+    final maxH = MediaQuery.of(context).size.height * 0.85;
+    return SafeArea(
+      top: false,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxH),
+        child: MaterialSurface(
+          radius: 24,
+          topOnly: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: C.sheetFill,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 把手：与外壳面板一致的「可以往下划」暗示
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 2),
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: C.grey.withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.cloud_off_rounded, size: 14, color: C.orange),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(s.noticeOfflineCache(_at!.toString().substring(0, 16)),
-                            style: ts(10, c: C.orange, w: FontWeight.w600)),
+                ),
+                Row(
+                  children: [
+                    const SizedBox(width: 18),
+                    Icon(Icons.campaign_rounded, size: 17, color: C.cyan),
+                    const SizedBox(width: 8),
+                    Text(s.noticeTitle,
+                        style: ts(15, w: FontWeight.w800, c: C.ink)),
+                    const Spacer(),
+                    if (_loading)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 6),
+                        child: SizedBox(
+                          width: 14,
+                          height: 14,
+                          // 这里没有 C.*，所以 const 合法
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    else
+                      IconButton(
+                        tooltip: s.refresh,
+                        icon: Icon(Icons.refresh_rounded,
+                            size: 18, color: C.grey),
+                        onPressed: _refresh,
                       ),
+                    IconButton(
+                      tooltip: s.close,
+                      icon:
+                          Icon(Icons.close_rounded, size: 18, color: C.grey),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                ),
+                const Divider(height: 1),
+                Flexible(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
+                    shrinkWrap: true,
+                    children: [
+                      // 缓存的公告要标出来：用户据此知道「这是上次联网时的那份」
+                      if (_cache && _at != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: C.orangeBg,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.cloud_off_rounded,
+                                    size: 14, color: C.orange),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                      s.noticeOfflineCache(
+                                          _at!.toString().substring(0, 16)),
+                                      style: ts(10,
+                                          c: C.orange, w: FontWeight.w600)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      MarkdownView(_md, baseUrl: NoticeStore.base),
                     ],
                   ),
                 ),
-              ),
-            MarkdownView(_md, baseUrl: NoticeStore.base),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
