@@ -225,8 +225,12 @@ Future<void> showNoticeSheet(
     isScrollControlled: true,
     // 长公告可以拉到接近全屏，但不占满 —— 留一条能看到背后的地图/页面，
     // 用户知道自己是「盖上来的」而不是「跳到别处了」。
+    // ⚠ NoticeSheet 的第一个参数是**位置参数**（`const NoticeSheet(this.markdown, …)`），
+    //   写成 `markdown: markdown` 会报「1 positional argument expected but 0 found」+
+    //   「named parameter 'markdown' isn't defined」两条 —— 本机跑不了 analyze，
+    //   这种错只能等 CI。构造改成具名当然也行，但那要同时改两处，位置参数更短。
     builder: (_) => NoticeSheet(
-      markdown: markdown,
+      markdown,
       fetchedAt: fetchedAt,
       fromCache: fromCache,
     ),

@@ -187,6 +187,37 @@ def main() -> int:
                               '**漏了括号**（只是返回函数本身、从不调用），'
                               f'点了不会有反应；应写成 `() => {name}()` 或直接传 `{name}`')
 
+    # ── ⑦ 外壳状态 key 的多行字符串拼接必须以 `;` 收尾 ──
+    #
+    # 真实事故（v1.6.157 的 CI）：给 `final key = 'a|b|' 'c|'` 这种多行拼接
+    # 追加一项时，新那一行末尾漏了 `;` —— 括号是平衡的，所以本地那套
+    # 「括号平衡」检查看不出问题，只有 analyze 报 `Expected to find ';'`。
+    # 本机跑不了 analyze，于是又白等一轮 CI。
+    #
+    # 判据很窄但准确：定位 state key 那一行，往后扫到第一条「不是续行」的行，
+    # 要求**上一行以 `;` 结尾**。（续行 = 注释，或以引号/括号/运算符开头的行。）
+    lines = sl.split('\n')
+    ki = next((i for i, l in enumerate(lines) if 'final key = ' in l), -1)
+    if ki < 0:
+        errors.append('lib/shell2.dart 里找不到 `final key = ` —— 外壳的状态 key 无从确认')
+    else:
+        ok_semi = False
+        for j in range(ki, min(ki + 40, len(lines))):
+            s = lines[j].strip()
+            if j > ki:
+                # 续行特征：注释 / 以引号 / 括号 / 运算符开头
+                if not (s.startswith('//') or s[:1] in ("'", '"', '+', ')', '(', '[')
+                        or s == ''):
+                    ok_semi = lines[j - 1].rstrip().endswith(';')
+                    break
+            if s.endswith(';'):
+                ok_semi = True
+                break
+        if not ok_semi:
+            errors.append('lib/shell2.dart 的多行状态 key 拼接没有以 `;` 收尾 —— '
+                          'analyze 会报 `Expected to find \';\'`（本机看不出，'
+                          '括号是平衡的）')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:

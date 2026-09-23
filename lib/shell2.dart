@@ -270,7 +270,7 @@ class _HomeShell2State extends State<HomeShell2>
         // 未连接横幅的显隐还依赖「是不是只读模式」（见 _showLinkBanner）
         '${st.readOnlyMode}|'
         // 公告横幅的显隐与让位量都依赖这个开关
-        '${st.noticeBanner}'
+        '${st.noticeBanner}';
     if (key == _stateKey) return;
     _stateKey = key;
     setState(() {});
