@@ -218,12 +218,12 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    // 与 Material3 默认行为保持一致（本项目未指定其它 builder，改前就是各平台默认）
-    final inner = switch (defaultTargetPlatform) {
-      TargetPlatform.iOS || TargetPlatform.macOS =>
-        const CupertinoPageTransitionsBuilder(),
-      _ => const ZoomPageTransitionsBuilder(),
-    };
+    // 内层照旧用**框架自己的默认** builder，观感与改前逐帧一致 ——
+    // 不自己硬编码平台表：那样一旦框架调默认值（或某平台改用新转场）就会漂。
+    // （`PageTransitionsTheme()` 的默认构造带的就是 `_defaultBuilders`。）
+    final inner = const PageTransitionsTheme()
+            .builders[defaultTargetPlatform] ??
+        const ZoomPageTransitionsBuilder();
     final transitioned = inner.buildTransitions(
       route,
       context,
