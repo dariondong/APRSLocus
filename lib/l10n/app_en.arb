@@ -2289,5 +2289,7 @@
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "just now",
   "refresh": "Refresh",
-  "noticeEntryDesc": "Latest announcements from the website"
+  "noticeEntryDesc": "Latest announcements from the website",
+  "ossLicenseSection": "Open source & license",
+  "creditsSection": "Credits"
 }

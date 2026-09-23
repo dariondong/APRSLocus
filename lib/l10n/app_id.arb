@@ -2373,5 +2373,7 @@
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "baru saja",
   "refresh": "Segarkan",
-  "noticeEntryDesc": "Lihat pengumuman terbaru dari situs web"
+  "noticeEntryDesc": "Lihat pengumuman terbaru dari situs web",
+  "ossLicenseSection": "Sumber terbuka & lisensi",
+  "creditsSection": "Kredit"
 }

@@ -2887,5 +2887,7 @@
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "刚刚",
   "refresh": "刷新",
-  "noticeEntryDesc": "查看官网发布的最新公告"
+  "noticeEntryDesc": "查看官网发布的最新公告",
+  "ossLicenseSection": "开源与许可",
+  "creditsSection": "致谢名单"
 }

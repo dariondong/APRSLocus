@@ -452,38 +452,25 @@ class _AboutPageState extends State<AboutPage>
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              _heroCard(context),
-              // 桌面宽屏下正文不拉满整屏：限宽后居中，行宽才好读
+              // 封面、名片卡与各分节共用**同一个限宽容器**：桌面宽屏下它们同宽，
+              // 边缘才对得齐（以前正文 640、封面 560，宽屏上两套宽度错开一截）
               Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 640),
+                  constraints: const BoxConstraints(maxWidth: 600),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 44),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 44),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _shareCard(context),
-                        const SizedBox(height: 26),
+                        _heroCard(context),
 
-                        // ── 作者 ──
-                        _sectionHeader(t.author, Icons.person_rounded, C.blue),
-                        const SizedBox(height: 8),
-                        SoftCard(
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [
-                              _eggRow(t.callsign, 'BG7LZQ'),
-                              _row(t.nameLabel, 'Darion'),
-                              _linkRow(
-                                icon: Icons.language_rounded,
-                                label: t.website,
-                                value: 'theez.top',
-                                url: 'https://theez.top',
-                              ),
-                            ],
-                          ),
+                        // 名片卡：往上骑 14px 压住封面下缘。translate 不占布局，
+                        // 所以后面补 6px，视觉间距仍是 20px
+                        Transform.translate(
+                          offset: const Offset(0, -14),
+                          child: _profileCard(context),
                         ),
-                        const SizedBox(height: 22),
+                        const SizedBox(height: 6),
 
                         // ── 代码贡献 ──
                         _sectionHeader(
@@ -509,9 +496,9 @@ class _AboutPageState extends State<AboutPage>
                         ),
                         const SizedBox(height: 22),
 
-                        // ── 开源致谢 ──
+                        // ── 开源与许可（原「开源致谢」+「许可证声明」并成一节） ──
                         _sectionHeader(
-                          t.openSource,
+                          t.ossLicenseSection,
                           Icons.favorite_rounded,
                           C.red,
                         ),
@@ -520,73 +507,31 @@ class _AboutPageState extends State<AboutPage>
                           padding: EdgeInsets.zero,
                           child: Column(
                             children: [
-                              _feature(
-                                Icons.flutter_dash,
-                                t.osFlutter,
-                                t.osFlutterDesc,
-                              ),
-                              _feature(
-                                Icons.web_rounded,
-                                t.osAmap,
-                                t.osAmapDesc,
-                              ),
-                              _feature(
-                                Icons.cell_tower_rounded,
-                                t.osAprs,
-                                t.osAprsDesc,
-                              ),
-                              _feature(
-                                Icons.group_rounded,
-                                t.osHam,
-                                t.osHamDesc,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-
-                        // ── 许可证 ──
-                        _sectionHeader(
-                          t.licenseSection,
-                          Icons.balance_rounded,
-                          C.slate,
-                        ),
-                        const SizedBox(height: 8),
-                        SoftCard(
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [
-                              _feature(
-                                Icons.gavel_rounded,
-                                t.licenseName,
-                                t.licenseStatement,
-                              ),
+                              _ossGrid(context),
                               _linkRow(
                                 icon: Icons.description_rounded,
-                                label: t.licenseText,
+                                label: t.licenseName,
                                 value: 'GPL-3.0',
-                                url: 'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
+                                url:
+                                    'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
                               ),
                               _termsRow(context),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 10, 14, 12),
+                                child: Text(
+                                  t.licenseStatement,
+                                  style: ts(11, c: C.grey, h: 1.5),
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 22),
 
-                        // ── 赞助与鸣谢 ──
+                        // ── 致谢名单（测试成员 + AI 算力 + 赞助入口并成一节） ──
                         _sectionHeader(
-                          t.sponsors,
-                          Icons.volunteer_activism_rounded,
-                          C.orange,
-                        ),
-                        const SizedBox(height: 8),
-                        _sponsorEntry(context),
-
-                        const SizedBox(height: 22),
-
-                        // ── 测试成员 ──
-                        _sectionHeader(
-                          t.testMembers,
+                          t.creditsSection,
                           Icons.group_rounded,
                           C.green,
                         ),
@@ -594,28 +539,38 @@ class _AboutPageState extends State<AboutPage>
                         SoftCard(
                           padding: EdgeInsets.zero,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _eggRow(t.callsign, 'BG7PGW'),
-                              _eggRow(t.callsign, 'BG7LMW'),
-                              _eggRow(t.callsign, 'BG7OSL'),
-                              _eggRow(t.callsign, 'BD3QID'),
-                              _eggRow(t.callsign, 'BG4LZY'),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 12, 14, 0),
+                                child: Text(t.testMembers, style: ts(11, c: C.grey)),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 8, 14, 10),
+                                child: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _memberChip('BG7PGW'),
+                                    _memberChip('BG7LMW'),
+                                    _memberChip('BG7OSL'),
+                                    _memberChip('BD3QID'),
+                                    _memberChip('BG4LZY'),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                                child: Text(
+                                  '${t.aiSupport} · BA3RZL 养生',
+                                  style: ts(11, c: C.grey),
+                                ),
+                              ),
+                              _sponsorRow(context),
                             ],
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-
-                        // ── AI 算力支持 ──
-                        _sectionHeader(
-                          t.aiSupport,
-                          Icons.memory_rounded,
-                          C.purple,
-                        ),
-                        const SizedBox(height: 8),
-                        SoftCard(
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [_row(t.thanks, 'BA3RZL 养生')],
                           ),
                         ),
                         const SizedBox(height: 22),
@@ -701,259 +656,294 @@ class _AboutPageState extends State<AboutPage>
           child: child,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(26),
-                boxShadow: [
-                  BoxShadow(
-                    color: C.ink.withValues(alpha: 0.18),
-                    blurRadius: 28,
-                    offset: const Offset(0, 12),
-                  ),
-                  BoxShadow(
-                    color: C.ink.withValues(alpha: 0.05),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(26),
-                child: LayoutBuilder(
-                  builder: (ctx, cons) {
-                    final h = _heroHeightFor(cons.maxWidth);
-                    // 比原图还扁的超宽屏改用整体装入：宁可上下留边，
-                    // 也不能把火山裁掉。
-                    final tooWide = cons.maxWidth / h > 1.62;
-                    return SizedBox(
-                      height: h,
-                      width: double.infinity,
-                      child: Stack(
-                        fit: StackFit.expand,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: C.ink.withValues(alpha: 0.18),
+              blurRadius: 28,
+              offset: const Offset(0, 12),
+            ),
+            BoxShadow(
+              color: C.ink.withValues(alpha: 0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(26),
+          child: LayoutBuilder(
+            builder: (ctx, cons) {
+              final h = _heroHeightFor(cons.maxWidth);
+              // 比原图还扁的超宽屏改用整体装入：宁可上下留边，
+              // 也不能把火山裁掉。
+              final tooWide = cons.maxWidth / h > 1.62;
+              return SizedBox(
+                height: h,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // 底图：随滚动轻微视差（放大 12% 留出位移余量）
+                    AnimatedBuilder(
+                      animation: _heroScroll,
+                      builder: (_, __) => Transform.scale(
+                        scale: 1.12,
+                        child: Transform.translate(
+                          offset: Offset(0, -_heroScroll.value * 0.035),
+                          child: Image.asset(
+                            'assets/about_hero.jpg',
+                            fit: tooWide ? BoxFit.contain : BoxFit.cover,
+                            alignment: Alignment.center,
+                            filterQuality: FilterQuality.medium,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // 顶部压暗 + 底部渐隐：白字压在亮天空上也能读清
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          // 底部要**尽早**压暗：标题落在 ~70% 高度，
+                          // 那里还压着明亮的山体，0.30 的白字根本立不住。
+                          // 因此从 55% 就开始起色，到 78% 已经够深。
+                          colors: [
+                            Colors.black.withValues(alpha: 0.26),
+                            Colors.transparent,
+                            C.ink.withValues(alpha: 0.58),
+                            C.ink.withValues(alpha: 0.94),
+                          ],
+                          stops: const [0.0, 0.30, 0.55, 1.0],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 底图：随滚动轻微视差（放大 12% 留出位移余量）
-                          AnimatedBuilder(
-                            animation: _heroScroll,
-                            builder: (_, __) => Transform.scale(
-                              scale: 1.12,
-                              child: Transform.translate(
-                                offset: Offset(0, -_heroScroll.value * 0.035),
-                                child: Image.asset(
-                                  'assets/about_hero.jpg',
-                                  fit: tooWide ? BoxFit.contain : BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  filterQuality: FilterQuality.medium,
+                          Row(
+                            children: [
+                              const Spacer(),
+                              _glassBox(
+                                radius: 99,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 11,
+                                  vertical: 5,
+                                ),
+                                child: Text(
+                                  'v${AppState.appVersion}',
+                                  style: ts(
+                                    10.5,
+                                    c: Colors.white,
+                                    w: FontWeight.w700,
+                                    ls: 0.3,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          // 顶部压暗 + 底部渐隐：白字压在亮天空上也能读清
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                // 底部要**尽早**压暗：标题落在 ~70% 高度，
-                                // 那里还压着明亮的山体，0.30 的白字根本立不住。
-                                // 因此从 55% 就开始起色，到 78% 已经够深。
-                                colors: [
-                                  Colors.black.withValues(alpha: 0.26),
-                                  Colors.transparent,
-                                  C.ink.withValues(alpha: 0.58),
-                                  C.ink.withValues(alpha: 0.94),
-                                ],
-                                stops: const [0.0, 0.30, 0.55, 1.0],
+                          const Spacer(),
+                          Row(
+                            children: [
+                              _glassBox(
+                                radius: 16,
+                                padding: const EdgeInsets.all(5),
+                                child: AppLogo(size: 40),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Spacer(),
-                                    _glassBox(
-                                      radius: 99,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 11,
-                                        vertical: 5,
+                                    Text(
+                                      'APRSlocus',
+                                      style: ts(
+                                        24,
+                                        w: FontWeight.w800,
+                                        ls: -0.6,
+                                        c: Colors.white,
                                       ),
-                                      child: Text(
-                                        'v${AppState.appVersion}',
-                                        style: ts(
-                                          10.5,
-                                          c: Colors.white,
-                                          w: FontWeight.w700,
-                                          ls: 0.3,
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      S.of(context).aboutSubtitle,
+                                      style: ts(
+                                        12,
+                                        c: Colors.white.withValues(
+                                          alpha: 0.90,
                                         ),
+                                        h: 1.3,
                                       ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
-                                ),
-                                const Spacer(),
-                                Row(
-                                  children: [
-                                    _glassBox(
-                                      radius: 16,
-                                      padding: const EdgeInsets.all(5),
-                                      child: AppLogo(size: 40),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'APRSlocus',
-                                            style: ts(
-                                              24,
-                                              w: FontWeight.w800,
-                                              ls: -0.6,
-                                              c: Colors.white,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 3),
-                                          Text(
-                                            S.of(context).aboutSubtitle,
-                                            style: ts(
-                                              12,
-                                              c: Colors.white.withValues(
-                                                alpha: 0.90,
-                                              ),
-                                              h: 1.3,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          // 内侧极细描边：卡片与照片之间多一道光边
-                          IgnorePointer(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(26),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.16),
-                                  width: 0.8,
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
-                    );
-                  },
+                    ),
+                    // 内侧极细描边：卡片与照片之间多一道光边
+                    IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(26),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.16),
+                            width: 0.8,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  /// 分享入口：整张卡可点，比一个孤零零的描边胶囊更像「主操作」。
-  Widget _shareCard(BuildContext context) {
-    return GestureDetector(
-      onTap: _showShareSheet,
-      child: SoftCard(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: C.blueBg,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(Icons.share_rounded, color: C.blue, size: 19),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+  /// 名片卡：骑在封面下缘的一张小卡，把「身份 + 官网 + 分享」收在一处。
+  ///
+  /// 以前这三样拆成「作者」分节 + 一张独立的分享卡，一页光这两块就占两个分节；
+  /// 并成一张卡之后整页少一个分节，封面与身份也连成了一体。
+  /// **不放作者个人站**：那是作者自己的站，跟 App 官网不是一回事，这里只留官网。
+  Widget _profileCard(BuildContext context) {
+    final t = S.of(context);
+    return Container(
+      decoration: cardDeco(r: 20),
+      child: Column(
+        children: [
+          // 头部：呼号 · 名字（长按呼号仍是彩蛋）
+          GestureDetector(
+            onLongPress: () => _onEggTap('BG7LZQ'),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 12, 10),
+              child: Row(
                 children: [
-                  Text(
-                    S.of(context).shareApp,
-                    style: ts(13.5, w: FontWeight.w700),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'BG7LZQ · Darion',
+                          style: ts(13.5, w: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(t.author, style: ts(11, c: C.grey)),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'APRSlocus · v${AppState.appVersion}',
-                    style: ts(11, c: C.grey),
+                  _iconChip(
+                    icon: Icons.language_rounded,
+                    url: 'https://aprslocus.theez.top/',
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: C.grey, size: 20),
-          ],
-        ),
+          ),
+          // 分享入口：整行可点。分享只留这一处（右上角不再放重复的图标按钮）
+          InkWell(
+            onTap: _showShareSheet,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: C.border, width: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.share_rounded, size: 15, color: C.blue),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(t.shareApp, style: ts(12, c: C.slate)),
+                  ),
+                  Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  /// 赞助与鸣谢入口卡
-  Widget _sponsorEntry(BuildContext context) {
-    return GestureDetector(
+  /// 名片卡右上角的小图标按钮（官网入口）
+  Widget _iconChip({required IconData icon, required String url}) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () =>
+          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: C.blueBg,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, size: 16, color: C.blue),
+      ),
+    );
+  }
+
+  /// 赞助与鸣谢入口行（并进「致谢名单」卡）
+  Widget _sponsorRow(BuildContext context) {
+    final t = S.of(context);
+    return InkWell(
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const SponsorPage()),
       ),
-      child: SoftCard(
-        padding: const EdgeInsets.all(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: C.border, width: 0.4)),
+        ),
         child: Row(
           children: [
             Container(
-              width: 38,
-              height: 38,
+              width: 30,
+              height: 30,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFF8C00), Color(0xFFEA580C)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
                 Icons.volunteer_activism_rounded,
                 color: Colors.white,
-                size: 19,
+                size: 16,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
+            Text(t.sponsors, style: ts(12, c: C.slate)),
+            // 值右对齐并允许省略：西语那版「查看作者与赞助详情」很长，
+            // 硬塞会直接撑出 RenderFlex 溢出条
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S.of(context).sponsorsThanks,
-                    style: ts(13.5, w: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    S.of(context).viewSponsorDetails,
-                    style: ts(11, c: C.grey),
-                  ),
-                ],
+              child: Text(
+                t.viewSponsorDetails,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(12, c: C.blue, w: FontWeight.w600),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: C.grey, size: 20),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
           ],
         ),
       ),
@@ -1170,36 +1160,138 @@ class _AboutPageState extends State<AboutPage>
     );
   }
 
-  Widget _feature(IconData icon, String title, String desc) {
+  /// 「开源与许可」卡顶部的 2×2 网格。
+  ///
+  /// 四个开源项原本是四行「图标 + 标题 + 说明」，白占四行高度；排成两列后高度
+  /// 减半，宽屏下也不至于每行只有几个字。
+  Widget _ossGrid(BuildContext context) {
+    final t = S.of(context);
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _ossCell(
+                icon: Icons.flutter_dash,
+                color: C.blue,
+                title: t.osFlutter,
+                desc: t.osFlutterDesc,
+                right: true,
+              ),
+            ),
+            Expanded(
+              child: _ossCell(
+                icon: Icons.web_rounded,
+                color: C.green,
+                title: t.osAmap,
+                desc: t.osAmapDesc,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: _ossCell(
+                icon: Icons.cell_tower_rounded,
+                color: C.purple,
+                title: t.osAprs,
+                desc: t.osAprsDesc,
+                right: true,
+              ),
+            ),
+            Expanded(
+              child: _ossCell(
+                icon: Icons.group_rounded,
+                color: C.orange,
+                title: t.osHam,
+                desc: t.osHamDesc,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// 2×2 网格里的一格：淡色底托图标 + 标题 + 说明。
+  ///
+  /// 格子之间用**边框**而不是竖直分割线：`Row` 里那条 `Container(width: 0.4)` 得
+  /// 靠 `IntrinsicHeight` + `stretch` 才撑得满高（多一次固有尺寸测量），而两格的
+  /// 说明文字行数未必一样——边框方案不受影响。
+  Widget _ossCell({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String desc,
+    bool right = false,
+    bool bottom = true,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+        border: Border(
+          right:
+              right ? BorderSide(color: C.border, width: 0.4) : BorderSide.none,
+          bottom: bottom
+              ? BorderSide(color: C.border, width: 0.4)
+              : BorderSide.none,
+        ),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: C.blueBg,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 16, color: C.blue),
+          Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 13, color: color),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: ts(12, w: FontWeight.w700),
+                ),
+              ),
+            ],
           ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: ts(12, w: FontWeight.w700)),
-                SizedBox(height: 2),
-                Text(desc, style: ts(11, c: C.grey, h: 1.4)),
-              ],
-            ),
-          ),
+          const SizedBox(height: 5),
+          Text(desc, style: ts(11, c: C.grey, h: 1.4)),
         ],
+      ),
+    );
+  }
+
+  /// 测试成员呼号 chip（长按仍是彩蛋）
+  Widget _memberChip(String call) {
+    return GestureDetector(
+      onLongPress: () => _onEggTap(call),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: C.green.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(99),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.settings_input_antenna_rounded,
+              size: 12,
+              color: C.green,
+            ),
+            const SizedBox(width: 5),
+            Text(call, style: ts(11.5, c: C.green, w: FontWeight.w700)),
+          ],
+        ),
       ),
     );
   }

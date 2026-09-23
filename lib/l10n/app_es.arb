@@ -2373,5 +2373,7 @@
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "ahora mismo",
   "refresh": "Actualizar",
-  "noticeEntryDesc": "Consulta los últimos avisos de la web"
+  "noticeEntryDesc": "Consulta los últimos avisos de la web",
+  "ossLicenseSection": "Código abierto y licencia",
+  "creditsSection": "Créditos"
 }

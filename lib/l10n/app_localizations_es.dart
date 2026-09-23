@@ -254,6 +254,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get ossLicenseSection => 'Código abierto y licencia';
+
+  @override
+  String get creditsSection => 'Créditos';
+
+  @override
   String get noticeEntryDesc => 'Consulta los últimos avisos de la web';
 
   @override

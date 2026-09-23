@@ -669,6 +669,18 @@ abstract class AppLocalizations {
   /// **"查看官网发布的最新公告"**
   String get noticeEntryDesc;
 
+  /// No description provided for @ossLicenseSection.
+  ///
+  /// In zh, this message translates to:
+  /// **"开源与许可"**
+  String get ossLicenseSection;
+
+  /// No description provided for @creditsSection.
+  ///
+  /// In zh, this message translates to:
+  /// **"致谢名单"**
+  String get creditsSection;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

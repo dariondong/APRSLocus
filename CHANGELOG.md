@@ -28,8 +28,9 @@ Logo + 标题，四边留一堆空。问题不在图本身，而在**信息全�
 
 ## 三、桌面宽屏限宽居中
 
-正文和封面都套了 `ConstrainedBox`（正文 640、封面 560）。之前 Windows 全屏时
-卡片会被拉成整屏宽，行宽过长很难读；限宽居中后视觉焦点回来了。
+封面与正文套**同一个** `ConstrainedBox`（600）。之前 Windows 全屏时卡片会被
+拉成整屏宽，行宽过长很难读；限宽居中后视觉焦点回来了。一开始是封面 560、
+正文 640 两套宽度，宽屏下两者边缘对不齐、看着像错位，索性并成一个容器。
 
 ## 四、删掉「功能特性」一节
 
@@ -39,11 +40,29 @@ App 里是用户已经看得见的功能，关于页重复列一遍只是把页�
 
 ## 五、其它排版
 
-* 「分享」从一个孤零零的描边小胶囊改成**整卡可点**的入口卡（图标 + 标题 +
-  版本副标题 + 箭头），和「赞助与鸣谢」入口同一套样式；
+* 「分享」从一个孤零零的描边小胶囊改成**整行可点**的入口（图标 + 标题 + 箭头）；
 * 分节标题改成「淡色底托图标 + 标题 + 右侧细横线」，一页看下来有节奏；
 * 页脚加了分割线、放大了行高，并在最底部标出封面摄影署名
   （Pixabay / frankpotters7）。
+
+## 六、版式改成「名片式」：分节 8 → 5
+
+- **名片卡压在封面下缘**（上骑 14px）。左上是「呼号 · 名字」，右上是一颗官网
+  图标按钮，下面一整行是分享入口。以前这三样拆成「作者」分节 + 一张独立的分享
+  卡，光这两块就占两个分节；并成一张卡后封面与身份连成一体，整页少一个分节。
+- **去掉作者个人站（theez.top）与「站长」字样**。官网按钮改为指向 App 官网
+  `aprslocus.theez.top`（底部「用户反馈」里本来就有这一项），关于页不再出现
+  作者个人站。
+- **「开源致谢」+「许可证声明」→ 一节「开源与许可」**：四个开源项排成 2×2 网格
+  （原来四行「图标 + 标题 + 说明」白占四行高度），下面接 GPL v3、用户协议与
+  许可声明正文。
+- **「测试成员」+「AI 算力支持」+「赞助与鸣谢」→ 一节「致谢名单」**：呼号改成
+  chip 后按 `Wrap` 自动折行，AI 算力支持收成一行小字，赞助入口降为卡内一行。
+- 分节标题文案随之新增两个 l10n 键（`ossLicenseSection`、`creditsSection`，
+  6 语言齐全）；旧键（`openSource`、`licenseSection`、`website` 等）保留不删，
+  避免影响其它语言文件的键同步。
+- 长按彩蛋全部保留：名片卡的呼号仍是 `BG7LZQ`，测试成员 chip 与「代码优化」
+  那行也都能长按。
 
 ---
 
@@ -67,17 +86,33 @@ and cut the volcano out of frame. The height is now derived from the width —
 tablets/desktop. When the width/height ratio exceeds 1.62 (ultra-wide windows) it
 falls back to `BoxFit.contain`, preferring letterboxing over cropping the subject.
 
-**Constrained width on desktop.** The body (max 640) and the hero (max 560) are
-now wrapped in `ConstrainedBox`. Previously the cards stretched across a
-full-screen Windows window, producing unreadably long lines.
+**Constrained width on desktop.** The hero and the body now share **one**
+`ConstrainedBox` (600). Previously the cards stretched across a full-screen
+Windows window, producing unreadably long lines. An earlier pass capped them
+separately (hero 560, body 640), which left their edges misaligned on wide
+screens — hence the single container.
 
 **Features section removed.** The seven `_feature` rows (live map, GPS, beacon,
 messages, auto-connect, layer filter, FMO) duplicated functionality the user can
 already see in the app, and only made the page longer. The `features` l10n keys
 are kept so the other locale files stay in sync.
 
-**Other polish.** The share entry became a full-width tappable card (icon, title,
-version subtitle, chevron) matching the sponsor entry; section headers gained a
+**Business-card layout (sections 8 → 5).** A single card now rides the bottom edge
+of the hero (lifted 14px), carrying the callsign and name, a globe button on the
+right, and a full-width share row. Those three used to be an "Author" section plus
+a separate share card; merging them removes one section and ties the hero to the
+app's identity. The author's personal site (`theez.top`) and the "site owner"
+label are **removed** — the globe button now opens the app's own site
+(`aprslocus.theez.top`), which the Feedback section already listed. "Open source
+thanks" and "License" merged into "Open source & licence", with the four projects
+in a 2×2 grid (they previously occupied four full rows); "Test members", "AI
+compute support" and the sponsor entry merged into "Credits", with the callsigns
+as wrapping chips. Two new l10n keys were added (`ossLicenseSection`,
+`creditsSection`) across all six locales; older keys are kept so the locale files
+stay in sync. Every long-press easter egg still works.
+
+**Other polish.** The share entry became a full-width tappable row (icon, title,
+chevron); section headers gained a
 tinted icon chip and a trailing hairline rule; and the footer now has a divider,
 looser line height and a photo credit for the cover
 (Pixabay / frankpotters7).

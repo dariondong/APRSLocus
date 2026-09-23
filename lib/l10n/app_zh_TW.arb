@@ -2877,5 +2877,7 @@
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "剛剛",
   "refresh": "重新整理",
-  "noticeEntryDesc": "查看官網發布的最新公告"
+  "noticeEntryDesc": "查看官網發布的最新公告",
+  "ossLicenseSection": "開源與授權",
+  "creditsSection": "致謝名單"
 }

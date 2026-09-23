@@ -211,32 +211,51 @@ CL = [
              T('关于页重做：封面从 Logo 底图换成**泰德峰实景照片**，版本号收进右上角玻璃胶囊、'
                'Logo 与标题落到左下角压在渐变上；封面高度随窗口宽度走'
                '（`(宽 × 0.64)`，196~300），超宽屏改「整体装入」，不再把火山裁掉；'
-               '桌面宽屏下正文与封面**限宽居中**（640 / 560）',
+               '桌面宽屏下封面与正文套**同一个限宽容器**（600）',
                '關於頁重做：封面從 Logo 底圖換成**泰德峰實景照片**，版本號收進右上角玻璃膠囊、'
                'Logo 與標題落到左下角壓在漸層上；封面高度隨視窗寬度走'
                '（`(寬 × 0.64)`，196~300），超寬螢幕改「整體裝入」，不再把火山裁掉；'
-               '桌面寬螢幕下正文與封面**限寬居中**（640 / 560）',
+               '桌面寬螢幕下封面與正文套**同一個限寬容器**（600）',
                'About page redesigned: the hero cover is now a **real photograph of Pico del '
                'Teide** instead of the logo backdrop, with the version in a glass pill at the '
                'top-right and the logo and title anchored to the lower-left over a gradient. '
                'The hero height now follows the window width (`width × 0.64`, 196–300) and '
                'switches to “fit entirely” on ultra-wide screens so the volcano is never '
-               'cropped; the body and hero are also **width-capped and centred** on desktop '
-               '(640 / 560)')),
+               'cropped; the hero and body now share **one width-capped container** (600) on '
+               'desktop')),
             ('up',
              T('关于页删掉「功能特性」一节（实时地图 / GPS / 信标 / 消息 / 自动连接 / '
                '图层过滤 / FMO 七行 —— App 里已经看得见的功能不必再列一遍）；'
-               '「分享」从描边小胶囊改成**整卡可点**的入口卡，分节标题加淡色底托图标与'
+               '「分享」从描边小胶囊改成整行可点的入口，分节标题加淡色底托图标与'
                '右侧细横线，页脚加分割线并标出封面摄影署名',
                '關於頁刪掉「功能特性」一節（即時地圖 / GPS / 信標 / 訊息 / 自動連線 / '
                '圖層過濾 / FMO 七行 —— App 裡已經看得見的功能不必再列一遍）；'
-               '「分享」從描邊小膠囊改成**整卡可點**的入口卡，分節標題加淡色底托圖示與'
+               '「分享」從描邊小膠囊改成整行可點的入口，分節標題加淡色底托圖示與'
                '右側細橫線，頁腳加分割線並標出封面攝影署名',
                'Removed the Features section from the About page (the seven rows for live map, '
                'GPS, beacon, messages, auto-connect, layer filter and FMO duplicated what the '
-               'app already shows). The share entry became a **full-card tappable** card, '
+               'app already shows). The share entry became a **full-width tappable** row, '
                'section headers gained a tinted icon chip and a trailing hairline rule, and the '
                'footer gained a divider plus a photo credit for the cover')),
+            ('up',
+             T('关于页版式改成**名片式**：封面下缘骑一张名片卡（呼号 · 名字 + 官网图标 + '
+               '整行分享入口），分节从 8 个并成 5 个 —— 「开源致谢 + 许可证声明」并为'
+               '「开源与许可」（四个开源项排 2×2 网格），「测试成员 + AI 算力支持 + '
+               '赞助与鸣谢」并为「致谢名单」（呼号做成可折行的 chip）；**去掉作者个人站 '
+               'theez.top 与「站长」字样**，官网按钮改指 App 官网（用户反馈里本来就有）',
+               '關於頁版式改成**名片式**：封面下緣騎一張名片卡（呼號 · 名字 + 官網圖示 + '
+               '整列分享入口），分節從 8 個併成 5 個 —— 「開源致謝 + 授權宣告」併為'
+               '「開源與授權」（四個開源項目排 2×2 網格），「測試成員 + AI 算力支援 + '
+               '贊助與鳴謝」併為「致謝名單」（呼號做成可折行的 chip）；**移除作者個人站 '
+               'theez.top 與「站長」字樣**，官網按鈕改指 App 官網（使用者回饋裡本來就有）',
+               'About page relaid out as a **business card**: a card now rides the bottom edge '
+               'of the hero (callsign and name, a globe button and a full-width share row), '
+               'and the section count drops from 8 to 5 — "Open source thanks + License" '
+               'became "Open source & licence" (the four projects in a 2×2 grid) and '
+               '"Test members + AI compute support + Sponsor entry" became "Credits" '
+               '(callsigns as wrapping chips). The author\'s personal site `theez.top` and '
+               'the "site owner" label are **removed**, and the globe button now opens the '
+               'app\'s own website (already listed under Feedback)')),
         ],
     },
     {
