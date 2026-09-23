@@ -45,7 +45,7 @@
   "description": "目標：讓別人在地圖上看到你 —— 間隔、速度分檔、射頻開關一次配好。",
   "url": "https://aprslocus.theez.top/zh-TW/manual/beacon.html",
   "inLanguage": "zh-TW",
-  "dateModified": "2026-09-22",
+  "dateModified": "2026-09-23",
   "articleSection": "位置信標 — APRSlocus",
   "author": {
     "@type": "Person",
@@ -182,8 +182,13 @@
 <ol class="m-steps">
 <li><b>設定 → 定位上報 → 智能信標（按速度分檔）</b> 打開。</li>
 <li>配置最多 <b>5 檔</b>：速度越快上報越頻繁；每檔自訂<b>間隔</b>與<b>圖示</b>（圖示留空 = 用「我的符號」）。</li>
+<li>每檔還能設<b>移動距離</b>（公尺，<b>0 = 關閉</b>）：<b>定時到了</b>或<b>走夠了</b>，任一滿足就上報。</li>
 <li>停車時檔位自動落到低速檔，間隔拉長 —— 不用每次手動改。</li>
 </ol>
+<div class="callout info"><span class="co-ic">📏</span><div><p><b>為什麼還要「或距離」</b>：定時上報有個先天缺口 —— 走了多遠，和「過了多久」無關。
+塞車時 300 秒一個點完全夠用，而 60 km/h 在 60 秒裡能走 1 公里，中間那段在 aprs.fi 上就是一條直線、轉彎全被抹平。
+預設值按「該檔速度在一個上報間隔內走的路程」給：靜止 200 / 步行 250 / 城市 400 / 高速 700 公尺。
+走得快就按距離補點，停下來距離不動、自然退回純定時。</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分檔間隔同樣受 5 秒下限與伺服器負載約束；把某一檔設成 3 秒，校驗會攔下來。</p></div></div>
   </section>
   <section class="chapter reveal" id="nofix">

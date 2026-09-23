@@ -45,7 +45,7 @@
   "description": "Goal: export logs to ADIF, back up every setting, and browse your track history.",
   "url": "https://aprslocus.theez.top/en/manual/data.html",
   "inLanguage": "en",
-  "dateModified": "2026-09-22",
+  "dateModified": "2026-09-23",
   "articleSection": "Export & Backup — APRSlocus",
   "author": {
     "@type": "Person",
@@ -197,6 +197,9 @@ Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div><
 Moving time only counts segments that genuinely moved — a two-hour lunch stop is not billed as driving.</li>
 <li><b>Tap a day to replay it</b>: same tile stack as the main map (same cache, same correction), the line grows as it plays,
 draggable progress, <b>0.5×–4×</b> speed, follow view; stops over 45 s fast-forward.</li>
+<li><b>How to read that line on the map</b>: the on-screen track samples GPS at <b>1 s</b> and keeps a point when it moved far enough <em>or</em> five seconds passed with real movement
+— so corners are not cut into diagonals and slow walks are not sparse. The points <b>actually sent to the server</b> are marked with <b>small orange diamonds</b>:
+count them and check the spacing at a glance (track points get thinned and capped; the diamonds do not, because they already went out).</li>
 </ol>
 <div class="callout info"><span class="co-ic">🧾</span><div><p>It is <b>deliberately separate</b> from the on-screen “my track”, which only serves this session
 and disappears on exit; history is the archive — exportable and replayable.</p></div></div>

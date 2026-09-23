@@ -52,6 +52,18 @@ def read(rel):
     return io.open(os.path.join(ROOT, rel), encoding='utf-8').read()
 
 
+def _newest_ver():
+    """CHANGELOG.md 里最新的版本号，形如 `v1.6.155`。
+
+    给「首页有没有提到最新版本」用：写死版本号的那一版每隔几个版本就得改一次，
+    而忘了改的表现是**检查失败但内容其实是对的** —— 反过来更糟：发版后忘了跑
+    同步脚本时，写死的版本号仍然「通过」，首页却停在旧版本上。
+    """
+    m = re.search(r'(?m)^## \[([0-9]+\.[0-9]+\.[0-9]+)\]',
+                  read('CHANGELOG.md'))
+    return 'v' + m.group(1) if m else ''
+
+
 def main():
     print('[home x3]')
     for f in ['docs/index.html', 'docs/zh-TW/index.html', 'docs/en/index.html']:
@@ -60,10 +72,16 @@ def main():
         p.feed(s)
         print(' ' + f)
         chk('html structure', not p.err and not p.stack, p.err[:1])
-        chk('18 cards / 27 cl',
+        # 首页的卡片与更新日志 = **遗留手写条目 + tool/sync_site_content.py 生成的块**，
+        # 所以这里的数字是两者的和（18 = 手写 8 + 生成 10；32 = 手写 7 + 生成 25）。
+        # 加了新版本、重跑 sync_site_content.py 之后，这两个数字要一起改 ——
+        # 忘了改就会像 v1.6.155 那次一样误报（内容是对的、检查是旧的）。
+        chk('18 cards / 32 cl',
             s.count('<article class="card reveal">') == 18
-            and s.count('<div class="cl-version reveal">') == 27)
-        chk('latest release in cl', 'v1.6.150' in s)
+            and s.count('<div class="cl-version reveal">') == 32)
+        # 「最新版本出现在首页」不写死版本号：从 CHANGELOG 现取。
+        # 这条同时盯着「发版后忘跑 sync_site_content.py」—— 那时首页还停在旧版本。
+        chk('latest release in cl', _newest_ver() in s)
         chk('a11y set', all(x in s for x in
                             ['skip-link', 'heroCanvas" aria-hidden="true"',
                              'aria-expanded="false"', 'id="themeToggle"']))

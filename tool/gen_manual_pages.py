@@ -35,7 +35,7 @@ BODIES.update(BODIES2)
 
 SITE = 'https://aprslocus.theez.top'
 LANGS = ('zh', 'zh_TW', 'en')
-MOD_DATE = '2026-09-22'          # 内容最后更新日（JSON-LD dateModified、提示条）
+MOD_DATE = '2026-09-23'          # 内容最后更新日（JSON-LD dateModified、提示条）
 # 永久链接 / 互链盒标题（三语）
 PERMA = {'zh': '本节永久链接', 'zh_TW': '本節永久連結', 'en': 'Permalink to this section'}
 RELT = {'zh': '相关章节', 'zh_TW': '相關章節', 'en': 'Related sections'}

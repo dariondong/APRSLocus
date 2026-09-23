@@ -205,6 +205,63 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.155', 'date': '2026-09-23',
+        'items': [
+            ('fix',
+             T('修「地图上的按钮点了没反应」：图层、缩放那一列按钮原来只有中间那个小图标能点，现在整块都能点',
+               '修「地圖上的按鈕點了沒反應」：圖層、縮放那一列按鈕原來只有中間那個小圖示能點，現在整塊都能點',
+               'Fixed map buttons that “did nothing”: the layers and zoom buttons only responded on the small centre icon — now the whole button works')),
+            ('new',
+             T('未连接提示强化：地图上方会出现一条橙色横幅，整条可点即连，不再只靠右上角那颗小胶囊',
+               '未連線提示強化：地圖上方會出現一條橘色橫幅，整條可點即連，不再只靠右上角那顆小膠囊',
+               'A much clearer offline notice: an orange bar above the map, tappable anywhere to connect — no longer just a tiny pill in the corner')),
+            ('fix',
+             T('进会话自动把面板升到最高档（输入框不再藏在底下）；台站页「在地图查看」会切回地图并收起面板',
+               '進會話自動把面板升到最高檔（輸入框不再藏在底下）；臺站頁「在地圖查看」會切回地圖並收起面板',
+               'Opening a chat now raises the panel by itself (the input box is no longer hidden below the fold); “View on map” from the station list switches back to the map and collapses the panel')),
+        ],
+    },
+    {
+        'ver': 'v1.6.154', 'date': '2026-09-23',
+        'items': [
+            ('new',
+             T('实时轨迹采样从 10 秒细化到 1 秒，拐弯不再被切成斜线；发到服务器去的那些点用橙色小菱形标在轨迹上，数量与间隔一眼可见',
+               '即時軌跡取樣從 10 秒細化到 1 秒，轉彎不再被切成斜線；送到伺服器去的那些點用橘色小菱形標在軌跡上，數量與間隔一眼可見',
+               'Live track sampling refined from 10 s to 1 s so corners are no longer cut into diagonals; the points actually sent to the server are marked with small orange diamonds, so count and spacing are visible at a glance')),
+            ('new',
+             T('智能信标支持「按距离打点」：每档可设「或移动 N 米」，走得快就补点、停下来退回纯定时',
+               '智能信標支援「按距離打點」：每檔可設「或移動 N 公尺」，走得快就補點、停下來退回純定時',
+               'Smart beaconing can now trigger by distance: each tier takes an “or N metres” value, so fast movement adds points while standing still falls back to pure timing')),
+        ],
+    },
+    {
+        'ver': 'v1.6.153', 'date': '2026-09-22',
+        'items': [
+            ('fix',
+             T('修 2.0 卡片面板「下沿被切成直角」：裁口改成底边圆角，半开时也是一张完整的圆角卡',
+               '修 2.0 卡片面板「下沿被切成直角」：裁口改成底邊圓角，半開時也是一張完整的圓角卡',
+               'Fixed the UI 2.0 sheet having its bottom edge cut into right angles: the clip now rounds the bottom corners, so a half-open panel still looks like a complete rounded card')),
+        ],
+    },
+    {
+        'ver': 'v1.6.152', 'date': '2026-09-22',
+        'items': [
+            ('up',
+             T('磨砂玻璃再优化：同一簇浮层共享一次背景采样，只压在壁纸上的壳不再插模糊层 —— 列表滚动更顺，观感逐像素不变',
+               '霧面玻璃再優化：同一簇浮層共享一次背景取樣，只壓在底圖上的外殼不再插模糊層 —— 列表捲動更順，觀感逐像素不變',
+               'Frosted glass optimised again: surfaces over the same backdrop share a single sample, and shells that only sit on the wallpaper no longer blur — smoother list scrolling, pixel-identical looks')),
+        ],
+    },
+    {
+        'ver': 'v1.6.151', 'date': '2026-09-22',
+        'items': [
+            ('fix',
+             T('2.0 横屏收拾五处只有真机才看得出的毛病：左侧竖条压住地图控件、右侧工具列被裁掉「定位」、底部让位把安全区算了两遍等',
+               '2.0 橫向螢幕收拾五處只有真機才看得出的毛病：左側直條壓住地圖控件、右側工具列被裁掉「定位」、底部讓位把安全區算了兩遍等',
+               'UI 2.0 landscape: five defects that only show up on a real device, including the rail covering the map’s controls, the tool column clipping “locate”, and the bottom inset counting the safe area twice')),
+        ],
+    },
+    {
         'ver': 'v1.6.150', 'date': '2026-09-22',
         'items': [
             ('new',

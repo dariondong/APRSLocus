@@ -254,6 +254,8 @@ a station 400 km away cannot reach you through a 300 km filter however healthy t
 <li><b>类型</b>：APRS 类型（车载/固定/中继/气象）、软件（APRSLocus）、设备类别与具体型号。</li>
 <li><b>收藏</b>：标星的台站单独一档。</li>
 <li><b>搜索</b>：呼号 / 类型 / 备注 / 网格 —— 台站几万条也不卡（内存上限默认 10 万条，可调）。</li>
+<li><b>「在地图查看」会切回地图</b>：列表里那个小地图按钮、或详情页的「在地图查看」，
+会回到地图页签、收起内容面板，视野飞到该台站 —— 不用自己再点一次「地图」。</li>
 </ul>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>验证：</b>列表顶部应显示当前筛选的命中数；点「清除筛选」应回到全量。
 若全量也没有目标台站，那是<b>没收到</b>（回到上一节）而不是没显示。</p></div></div>
@@ -264,6 +266,8 @@ a station 400 km away cannot reach you through a 300 km filter however healthy t
 <li><b>類型</b>：APRS 類型（車載/固定/中繼/氣象）、軟體（APRSLocus）、裝置類別與具體型號。</li>
 <li><b>收藏</b>：加星的臺站單獨一檔。</li>
 <li><b>搜尋</b>：呼號 / 類型 / 備註 / 網格 —— 臺站幾萬條也不卡（記憶體上限預設 10 萬條，可調）。</li>
+<li><b>「在地圖查看」會切回地圖</b>：列表裡那個小地圖按鈕、或詳情頁的「在地圖查看」，
+會回到地圖頁籤、收起內容面板，視野飛到該臺站 —— 不用自己再點一次「地圖」。</li>
 </ul>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>驗證：</b>列表頂部應顯示當前篩選的命中數；點「清除篩選」應回到全量。
 若全量也沒有目標臺站，那是<b>沒收到</b>（回到上一節）而不是沒顯示。</p></div></div>
@@ -274,6 +278,7 @@ a station 400 km away cannot reach you through a 300 km filter however healthy t
 <li><b>Type</b>: APRS type (mobile/fixed/relay/weather), software (APRSLocus), device class and exact model.</li>
 <li><b>Favourites</b>: starred stations get their own bucket.</li>
 <li><b>Search</b>: callsign / type / comment / grid — stays fast at tens of thousands (100k stations in memory by default, adjustable).</li>
+<li><b>“View on map” switches back for you</b>: the small map button in the list (or “View on map” in the detail sheet) returns to the Map tab, collapses the content panel and flies to that station — no need to tap “Map” yourself.</li>
 </ul>
 <div class="callout tip"><span class="co-ic">✅</span><div><p><b>Check:</b> the list header shows the hit count; “clear filters” returns to everything.
 If the full list still lacks your target, it was <b>never received</b> (previous section), not hidden.</p></div></div>
@@ -376,6 +381,9 @@ Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div><
 移动时长只累计确实在动的段 —— 中途停车吃饭的两小时不算开车。</li>
 <li><b>点进某天可回放</b>：底图与主地图同一套（同缓存、同坐标纠偏）；轨迹随播放生长、可拖进度、
 <b>0.5× ~ 4×</b> 倍速、可跟随视角；超过 45 秒的停顿自动快进。</li>
+<li><b>地图上该怎么看这条线</b>：屏幕轨迹按 GPS <b>1 秒</b>采样，落点还要满足「位移够」或「隔 5 秒且确实挪了」
+—— 所以拐弯不会被切成斜线，慢走也不会稀稀拉拉。<b>发到服务器去的那些点</b>另用<b>橙色小菱形</b>标在轨迹上，
+数量与间隔一眼可见（轨迹点会被抽稀、封顶，菱形不会：那是已经发出去的事实）。</li>
 </ol>
 <div class="callout info"><span class="co-ic">🧾</span><div><p>它与地图上那条「我的轨迹」<b>刻意分开</b>：屏幕轨迹只服务本次显示，退出即失；
 历史轨迹是留档，可导出、可回放。</p></div></div>
@@ -387,6 +395,9 @@ Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div><
 移動時長只累計確實在動的段 —— 中途停車吃飯的兩小時不算開車。</li>
 <li><b>點進某天可回放</b>：底圖與主地圖同一套（同快取、同座標校正）；軌跡隨播放生長、可拖進度、
 <b>0.5× ~ 4×</b> 倍速、可跟隨視角；超過 45 秒的停頓自動快進。</li>
+<li><b>地圖上該怎麼看這條線</b>：螢幕軌跡按 GPS <b>1 秒</b>取樣，落點還要滿足「位移夠」或「隔 5 秒且確實挪了」
+—— 所以轉彎不會被切成斜線，慢走也不會稀稀落落。<b>發到伺服器去的那些點</b>另用<b>橘色小菱形</b>標在軌跡上，
+數量與間隔一眼可見（軌跡點會被抽稀、封頂，菱形不會：那是已經送出去的事實）。</li>
 </ol>
 <div class="callout info"><span class="co-ic">🧾</span><div><p>它與地圖上那條「我的軌跡」<b>刻意分開</b>：螢幕軌跡只服務本次顯示，退出即失；
 歷史軌跡是留檔，可匯出、可回放。</p></div></div>
@@ -398,6 +409,9 @@ Documents, web uses the clipboard. Reading is capped at <b>32 MB</b>.</p></div><
 Moving time only counts segments that genuinely moved — a two-hour lunch stop is not billed as driving.</li>
 <li><b>Tap a day to replay it</b>: same tile stack as the main map (same cache, same correction), the line grows as it plays,
 draggable progress, <b>0.5×–4×</b> speed, follow view; stops over 45 s fast-forward.</li>
+<li><b>How to read that line on the map</b>: the on-screen track samples GPS at <b>1 s</b> and keeps a point when it moved far enough <em>or</em> five seconds passed with real movement
+— so corners are not cut into diagonals and slow walks are not sparse. The points <b>actually sent to the server</b> are marked with <b>small orange diamonds</b>:
+count them and check the spacing at a glance (track points get thinned and capped; the diamonds do not, because they already went out).</li>
 </ol>
 <div class="callout info"><span class="co-ic">🧾</span><div><p>It is <b>deliberately separate</b> from the on-screen “my track”, which only serves this session
 and disappears on exit; history is the archive — exportable and replayable.</p></div></div>

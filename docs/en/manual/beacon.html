@@ -45,7 +45,7 @@
   "description": "Goal: show up on other people’s maps — interval, speed tiers and the RF switch in one pass.",
   "url": "https://aprslocus.theez.top/en/manual/beacon.html",
   "inLanguage": "en",
-  "dateModified": "2026-09-22",
+  "dateModified": "2026-09-23",
   "articleSection": "Beaconing — APRSlocus",
   "author": {
     "@type": "Person",
@@ -182,8 +182,13 @@ watch those two numbers to know whether it is still beaconing.</p></div></div>
 <ol class="m-steps">
 <li><b>Settings → Beacon → Smart beaconing (speed tiers)</b> on.</li>
 <li>Configure up to <b>five tiers</b>: the faster you go, the more often it reports; each tier has its own <b>interval</b> and <b>icon</b> (empty icon = “my symbol”).</li>
+<li>Each tier also takes a <b>distance</b> (metres, <b>0 = off</b>): it beacons when <b>the timer expires</b> <em>or</em> <b>you have moved far enough</b>.</li>
 <li>Park and it drops to the slow tier by itself — no manual switching.</li>
 </ol>
+<div class="callout info"><span class="co-ic">📏</span><div><p><b>Why “or by distance” at all?</b> Timed beaconing has an inherent gap: how far you travelled has nothing to do with how long it took.
+A 300 s interval is plenty in a traffic jam, while 60 km/h covers a kilometre in 60 s — and that stretch becomes a straight line on aprs.fi with every corner flattened.
+Defaults follow “the distance this tier's speed covers in one interval”: 200 m stationary / 250 m walking / 400 m city / 700 m highway.
+Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Tier intervals obey the same 5 s floor and server-load concern; a 3 s tier is rejected by validation.</p></div></div>
   </section>
   <section class="chapter reveal" id="nofix">

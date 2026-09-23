@@ -301,6 +301,11 @@ Map again lowers it — so you can always get back to the map.</p></div></div>
     ('gestures', T('面板手势与返回键', '面板手勢與返回鍵', 'Panels & Back key'), '''
 <ul>
 <li><b>拖面板</b>：抓住面板顶部把手，或直接拖底部导航条（又高又宽，最好抓）。</li>
+<li><b>列表滚到边也能拖面板</b>：列表<b>到顶继续下拉</b>会收面板、<b>到底继续上推</b>会展开面板。
+列表在中间时照常滚动 —— 那一段必须留给滚动。</li>
+<li><b>进会话自动展开</b>：打开某个会话或群聊时，面板会自己升到最高档，输入框就在最下面；退回列表时复位。</li>
+<li><b>未连接横幅</b>：没连上时地图上方会有一条<b>橙色横幅</b>（整条可点，点一下即连）。
+未连接时发送、信标、消息<b>全都出不去</b>，别被「界面看着正常」骗了。</li>
 <li><b>返回键</b>：只在「地图」页签会退出应用；其它页签先收面板 / 返回上级 —— 防误退。</li>
 <li><b>切页不销毁</b>：列表滚动位置、正在看的会话都会保留（页面是缓存的，不是每次重建）。</li>
 <li><b>横屏</b>：Android 默认锁竖屏，要在 <b>设置 → 高级</b> 打开「允许手机横屏显示」。</li>
@@ -310,6 +315,11 @@ Map again lowers it — so you can always get back to the map.</p></div></div>
 ''', '''
 <ul>
 <li><b>拖面板</b>：抓住面板頂部把手，或直接拖底部導航條（又高又寬，最好抓）。</li>
+<li><b>列表捲到邊也能拖面板</b>：列表<b>到頂繼續下拉</b>會收面板、<b>到底繼續上推</b>會展開面板。
+列表在中間時照常捲動 —— 那一段必須留給捲動。</li>
+<li><b>進會話自動展開</b>：打開某個會話或群組時，面板會自己升到最高檔，輸入框就在最下面；退回列表時復位。</li>
+<li><b>未連線橫幅</b>：沒連上時地圖上方會有一條<b>橘色橫幅</b>（整條可點，點一下即連）。
+未連線時傳送、信標、訊息<b>全都出不去</b>，別被「介面看著正常」騙了。</li>
 <li><b>返回鍵</b>：只在「地圖」頁籤會結束應用；其它頁籤先收面板 / 返回上層 —— 防誤退。</li>
 <li><b>切頁不銷毀</b>：列表捲動位置、正在看的會話都會保留（頁面是快取的，不是每次重建）。</li>
 <li><b>橫螢幕</b>：Android 預設鎖直螢幕，要在 <b>設定 → 進階</b> 打開「允許手機橫螢幕顯示」。</li>
@@ -319,6 +329,11 @@ Map again lowers it — so you can always get back to the map.</p></div></div>
 ''', '''
 <ul>
 <li><b>Drag the panel</b> with its top handle — or simply drag the bottom navigation bar, the biggest target on screen.</li>
+<li><b>Drag from a list edge too</b>: pull past the top of a list to lower the panel, push past the bottom to raise it.
+In the middle of a list, scrolling wins — that range must stay scrollable.</li>
+<li><b>Chats expand by themselves</b>: opening a conversation or group raises the panel to full height so the input box is visible; going back to the list restores it.</li>
+<li><b>Offline banner</b>: while disconnected an <b>orange bar</b> sits above the map (the whole bar is tappable and connects).
+Sending, beaconing and messages are <b>all dead</b> then, so don't be fooled by a normal-looking screen.</li>
 <li><b>Back key</b>: only exits the app from the Map tab; elsewhere it lowers the panel or goes up a level, so you never quit by accident.</li>
 <li><b>Tabs are never torn down</b>: scroll positions and the open conversation survive switching (pages are cached, not rebuilt).</li>
 <li><b>Landscape</b>: Android locks portrait by default — enable “allow landscape” under <b>Settings → Advanced</b>.</li>
@@ -552,22 +567,37 @@ watch those two numbers to know whether it is still beaconing.</p></div></div>
 <ol class="m-steps">
 <li><b>设置 → 定位上报 → 智能信标（按速度分档）</b> 打开。</li>
 <li>配置最多 <b>5 档</b>：速度越快上报越频繁；每档自定义<b>间隔</b>与<b>图标</b>（图标留空 = 用「我的符号」）。</li>
+<li>每档还能设<b>移动距离</b>（米，<b>0 = 关闭</b>）：<b>定时到了</b>或<b>走够了</b>，任一满足就上报。</li>
 <li>停车时档位自动落到低速档，间隔拉长 —— 不用每次手动改。</li>
 </ol>
+<div class="callout info"><span class="co-ic">📏</span><div><p><b>为什么还要「或距离」</b>：定时上报有个先天缺口 —— 走了多远，和「过了多久」无关。
+堵车时 300 秒一个点完全够用，而 60 km/h 在 60 秒里能走 1 公里，中间那段在 aprs.fi 上就是一条直线、拐弯全被抹平。
+默认值按「该档速度在一个上报间隔内走的路程」给：静止 200 / 步行 250 / 城市 400 / 高速 700 米。
+走得快就按距离补点，停下来距离不动、自然退回纯定时。</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分档间隔同样受 5 秒下限与服务器负载约束；把某一档设成 3 秒，校验会拦下来。</p></div></div>
 ''', '''
 <ol class="m-steps">
 <li><b>設定 → 定位上報 → 智能信標（按速度分檔）</b> 打開。</li>
 <li>配置最多 <b>5 檔</b>：速度越快上報越頻繁；每檔自訂<b>間隔</b>與<b>圖示</b>（圖示留空 = 用「我的符號」）。</li>
+<li>每檔還能設<b>移動距離</b>（公尺，<b>0 = 關閉</b>）：<b>定時到了</b>或<b>走夠了</b>，任一滿足就上報。</li>
 <li>停車時檔位自動落到低速檔，間隔拉長 —— 不用每次手動改。</li>
 </ol>
+<div class="callout info"><span class="co-ic">📏</span><div><p><b>為什麼還要「或距離」</b>：定時上報有個先天缺口 —— 走了多遠，和「過了多久」無關。
+塞車時 300 秒一個點完全夠用，而 60 km/h 在 60 秒裡能走 1 公里，中間那段在 aprs.fi 上就是一條直線、轉彎全被抹平。
+預設值按「該檔速度在一個上報間隔內走的路程」給：靜止 200 / 步行 250 / 城市 400 / 高速 700 公尺。
+走得快就按距離補點，停下來距離不動、自然退回純定時。</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分檔間隔同樣受 5 秒下限與伺服器負載約束；把某一檔設成 3 秒，校驗會攔下來。</p></div></div>
 ''', '''
 <ol class="m-steps">
 <li><b>Settings → Beacon → Smart beaconing (speed tiers)</b> on.</li>
 <li>Configure up to <b>five tiers</b>: the faster you go, the more often it reports; each tier has its own <b>interval</b> and <b>icon</b> (empty icon = “my symbol”).</li>
+<li>Each tier also takes a <b>distance</b> (metres, <b>0 = off</b>): it beacons when <b>the timer expires</b> <em>or</em> <b>you have moved far enough</b>.</li>
 <li>Park and it drops to the slow tier by itself — no manual switching.</li>
 </ol>
+<div class="callout info"><span class="co-ic">📏</span><div><p><b>Why “or by distance” at all?</b> Timed beaconing has an inherent gap: how far you travelled has nothing to do with how long it took.
+A 300 s interval is plenty in a traffic jam, while 60 km/h covers a kilometre in 60 s — and that stretch becomes a straight line on aprs.fi with every corner flattened.
+Defaults follow “the distance this tier's speed covers in one interval”: 200 m stationary / 250 m walking / 400 m city / 700 m highway.
+Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Tier intervals obey the same 5 s floor and server-load concern; a 3 s tier is rejected by validation.</p></div></div>
 '''),
     ('nofix', T('没有 GPS 怎么办', '沒有 GPS 怎麼辦', 'When there is no GPS'), '''
