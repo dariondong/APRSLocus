@@ -1302,9 +1302,20 @@ class AppState extends ChangeNotifier {
   // 顶栏天气组件（和风天气：当前位置天气 + 温度）
   bool weatherEnabled = true;
 
+  /// **公告横幅**（设置 → 显示）。默认**开**：用户要的是「用户可以打开」，
+  /// 而默认关等于没人看得见 —— 公告的意义就在于被看到。不想要的人可以关掉，
+  /// 关掉后**不再发起网络请求**（见 notice_banner.dart）。
+  bool noticeBanner = true;
+
   /// 切换顶栏天气组件
   void setWeatherEnabled(bool v) {
     weatherEnabled = v;
+    persist();
+    _notify();
+  }
+
+  void setNoticeBanner(bool v) {
+    noticeBanner = v;
     persist();
     _notify();
   }
@@ -1782,6 +1793,7 @@ class AppState extends ChangeNotifier {
       coordDatum = p.getString('coordDatum') ?? coordDatum;
       darkMode = p.getBool('darkMode') ?? darkMode;
       weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
+      noticeBanner = p.getBool('noticeBanner') ?? noticeBanner;
       locale = p.getString('locale') ?? locale;
       themeColor = p.getString('themeColor') ?? themeColor;
       uiScale = p.getDouble('uiScale') ?? uiScale;
@@ -1971,6 +1983,7 @@ class AppState extends ChangeNotifier {
     await p.setString('coordDatum', coordDatum);
     await p.setBool('darkMode', darkMode);
     await p.setBool('weatherEnabled', weatherEnabled);
+    await p.setBool('noticeBanner', noticeBanner);
     await p.setString('locale', locale);
     await p.setString('themeColor', themeColor);
     await p.setDouble('uiScale', uiScale);

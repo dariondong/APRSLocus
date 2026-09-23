@@ -48,6 +48,12 @@ EXCLUDE = {
     # 属于「可再生」数据；备份它只会让新装的设备把旧库盖回去。
     'deviceDbJsonV1': '网络可再生的设备识别库快照',
     'deviceDbUpdatedAtV1': '设备识别库的更新时间戳',
+    # 公告缓存（正文/语言/时间戳）：它只是**官网那份公告的副本**，换机后把旧公告
+    # 恢复过去只会显示过期内容，而联网后本来就会重新拉一份。
+    # 与上面两条同类：属于「可再生」数据。
+    'noticeCacheBody': '官网公告的本地副本（可再生）',
+    'noticeCacheLang': '公告副本对应的语言',
+    'noticeCacheAt': '公告副本的拉取时间戳',
 }
 
 GETSET = re.compile(r"\.(?:get|set)(?:String|Bool|Int|Double|StringList)\(")

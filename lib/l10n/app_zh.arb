@@ -2876,5 +2876,15 @@
   "orTurnDeg": "或转 {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "点击输入",
-  "callCommentEmpty": "未填写 · 点这里输入"
+  "callCommentEmpty": "未填写 · 点这里输入",
+  "noticeTitle": "公告",
+  "noticeEmpty": "暂无公告",
+  "noticeLoading": "正在获取…",
+  "noticeReadMore": "查看全文",
+  "noticeCached": "缓存 · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "离线缓存 · {time}（联网后会自动更新）",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "刚刚",
+  "refresh": "刷新"
 }

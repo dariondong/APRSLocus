@@ -2362,5 +2362,15 @@
   "orTurnDeg": "または {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "タップして入力",
-  "callCommentEmpty": "未設定 · タップして入力"
+  "callCommentEmpty": "未設定 · タップして入力",
+  "noticeTitle": "お知らせ",
+  "noticeEmpty": "お知らせはありません",
+  "noticeLoading": "取得中…",
+  "noticeReadMore": "全文を読む",
+  "noticeCached": "キャッシュ · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "オフラインのコピー · {time}（オンラインになると自動更新）",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "たった今",
+  "refresh": "更新"
 }

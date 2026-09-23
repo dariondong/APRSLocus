@@ -56,6 +56,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'smartBeaconOn', 'smartTiers',
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
+    // 公告横幅：与深色模式同类的**显示偏好** —— 用户关掉了它，
+    // 换机后不该被静默打开（那会表现为「怎么又开始联网拉公告了」）。
+    'noticeBanner',
     // 界面材质（磨砂玻璃 / 云母）：与深色模式、界面缩放同类的**显示偏好**，
     // 用户换机后当然希望屏幕还是他调好的那副样子。
     'uiMaterial',

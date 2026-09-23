@@ -251,6 +251,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get noticeTitle => '公告';
+
+  @override
+  String get noticeEmpty => '暂无公告';
+
+  @override
+  String get noticeLoading => '正在获取…';
+
+  @override
+  String get noticeReadMore => '查看全文';
+
+  @override
+  String noticeCached(String ago) {
+    return '缓存 · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return '离线缓存 · ${time}（联网后会自动更新）';
+  }
+
+  @override
+  String get timeJustNow => '刚刚';
+
+  @override
+  String get refresh => '刷新';
+
+  @override
   String get inputTapHint => '点击输入';
 
   @override
@@ -6708,6 +6736,34 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get noticeTitle => '公告';
+
+  @override
+  String get noticeEmpty => '暫無公告';
+
+  @override
+  String get noticeLoading => '正在取得…';
+
+  @override
+  String get noticeReadMore => '查看全文';
+
+  @override
+  String noticeCached(String ago) {
+    return '快取 · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return '離線快取 · ${time}（連網後會自動更新）';
+  }
+
+  @override
+  String get timeJustNow => '剛剛';
+
+  @override
+  String get refresh => '重新整理';
 
   @override
   String get inputTapHint => '點擊輸入';

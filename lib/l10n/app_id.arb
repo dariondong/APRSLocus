@@ -2362,5 +2362,15 @@
   "orTurnDeg": "atau {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "Ketuk untuk mengetik",
-  "callCommentEmpty": "Belum diisi · ketuk untuk mengetik"
+  "callCommentEmpty": "Belum diisi · ketuk untuk mengetik",
+  "noticeTitle": "Pengumuman",
+  "noticeEmpty": "Belum ada pengumuman",
+  "noticeLoading": "Memuat…",
+  "noticeReadMore": "Baca selengkapnya",
+  "noticeCached": "Cache · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "Salinan offline · {time} (diperbarui otomatis saat online)",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "baru saja",
+  "refresh": "Segarkan"
 }

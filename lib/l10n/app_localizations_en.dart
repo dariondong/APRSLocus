@@ -254,6 +254,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get noticeTitle => 'Announcements';
+
+  @override
+  String get noticeEmpty => 'No announcements yet';
+
+  @override
+  String get noticeLoading => 'Loading…';
+
+  @override
+  String get noticeReadMore => 'Read more';
+
+  @override
+  String noticeCached(String ago) {
+    return 'Cached · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return 'Offline copy · ${time} (updates automatically once online)';
+  }
+
+  @override
+  String get timeJustNow => 'just now';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
   String get inputTapHint => 'Tap to type';
 
   @override

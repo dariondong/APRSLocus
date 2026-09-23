@@ -22,6 +22,12 @@ dependencies:
   flutter_map: ^8.3.1
   vector_map_tiles: ^9.0.0-beta.11
   flutter_svg: ^2.3.0
+  # 公告横幅要渲染 Markdown（标题/列表/表格/链接）。只用**解析器**，
+  # 渲染由 lib/markdown_view.dart 自己拼 Flutter widget —— 理由见该文件顶部：
+  # flutter_markdown 已停止维护，而 markdown_widget 会多带一串依赖；
+  # 只加解析器（纯 Dart，依赖仅 args/meta）风险最小，链接也由我们自己交给
+  # url_launcher（应用内打开外链的既有做法）。
+  markdown: ^7.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -254,6 +254,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get noticeTitle => 'Avisos';
+
+  @override
+  String get noticeEmpty => 'Sin avisos por ahora';
+
+  @override
+  String get noticeLoading => 'Cargando…';
+
+  @override
+  String get noticeReadMore => 'Leer más';
+
+  @override
+  String noticeCached(String ago) {
+    return 'En caché · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return 'Copia sin conexión · ${time} (se actualiza al recuperar la red)';
+  }
+
+  @override
+  String get timeJustNow => 'ahora mismo';
+
+  @override
+  String get refresh => 'Actualizar';
+
+  @override
   String get inputTapHint => 'Toca para escribir';
 
   @override

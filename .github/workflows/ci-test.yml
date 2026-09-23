@@ -102,6 +102,13 @@ jobs:
       - name: Check beacon & track sampling
         run: python3 tool/check_beacon_track.py
 
+      # 公告横幅：官网 6 个语言文件齐备、开关关闭时不联网、MD 走 GFM、
+      # 链接交给系统浏览器、相对地址补全、开关落盘并进备份。
+      # 这几条都能正常编译、也能通过 analyze，只在真机上表现成
+      # 「某些语言看不到公告」「关了还在请求」「链接点了没反应」。
+      - name: Check notice banner
+        run: python3 tool/check_notice.py
+
       # 交互接线：自绘小按钮的命中区（DecoratedBox 不吸收点击 → 只有图标能点）、
       # 外壳对三种跨页请求（在地图查看 / 在地图选点 / 展开面板）的处理位置、
       # 未连接横幅（要排除只读模式、要占顶部让位量）。

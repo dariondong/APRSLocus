@@ -615,6 +615,54 @@ abstract class AppLocalizations {
   /// **"未填写 · 点这里输入"**
   String get callCommentEmpty;
 
+  /// No description provided for @noticeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"公告"**
+  String get noticeTitle;
+
+  /// No description provided for @noticeEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **"暂无公告"**
+  String get noticeEmpty;
+
+  /// No description provided for @noticeLoading.
+  ///
+  /// In zh, this message translates to:
+  /// **"正在获取…"**
+  String get noticeLoading;
+
+  /// No description provided for @noticeReadMore.
+  ///
+  /// In zh, this message translates to:
+  /// **"查看全文"**
+  String get noticeReadMore;
+
+  /// No description provided for @noticeCached.
+  ///
+  /// In zh, this message translates to:
+  /// **"缓存 · {ago}"**
+  String noticeCached(String ago);
+
+  /// No description provided for @noticeOfflineCache.
+  ///
+  /// In zh, this message translates to:
+  /// **"离线缓存 · {time}（联网后会自动更新）"**
+  String noticeOfflineCache(String time);
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In zh, this message translates to:
+  /// **"刚刚"**
+  String get timeJustNow;
+
+  /// No description provided for @refresh.
+  ///
+  /// In zh, this message translates to:
+  /// **"刷新"**
+  String get refresh;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

@@ -2866,5 +2866,15 @@
   "orTurnDeg": "或轉 {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "點擊輸入",
-  "callCommentEmpty": "未填寫 · 點這裡輸入"
+  "callCommentEmpty": "未填寫 · 點這裡輸入",
+  "noticeTitle": "公告",
+  "noticeEmpty": "暫無公告",
+  "noticeLoading": "正在取得…",
+  "noticeReadMore": "查看全文",
+  "noticeCached": "快取 · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "離線快取 · {time}（連網後會自動更新）",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "剛剛",
+  "refresh": "重新整理"
 }

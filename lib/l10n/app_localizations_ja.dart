@@ -253,6 +253,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tierMinTurnHint => 'この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）';
 
   @override
+  String get noticeTitle => 'お知らせ';
+
+  @override
+  String get noticeEmpty => 'お知らせはありません';
+
+  @override
+  String get noticeLoading => '取得中…';
+
+  @override
+  String get noticeReadMore => '全文を読む';
+
+  @override
+  String noticeCached(String ago) {
+    return 'キャッシュ · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return 'オフラインのコピー · ${time}（オンラインになると自動更新）';
+  }
+
+  @override
+  String get timeJustNow => 'たった今';
+
+  @override
+  String get refresh => '更新';
+
+  @override
   String get inputTapHint => 'タップして入力';
 
   @override

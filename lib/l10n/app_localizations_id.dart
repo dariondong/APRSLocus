@@ -254,6 +254,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get noticeTitle => 'Pengumuman';
+
+  @override
+  String get noticeEmpty => 'Belum ada pengumuman';
+
+  @override
+  String get noticeLoading => 'Memuat…';
+
+  @override
+  String get noticeReadMore => 'Baca selengkapnya';
+
+  @override
+  String noticeCached(String ago) {
+    return 'Cache · ${ago}';
+  }
+
+  @override
+  String noticeOfflineCache(String time) {
+    return 'Salinan offline · ${time} (diperbarui otomatis saat online)';
+  }
+
+  @override
+  String get timeJustNow => 'baru saja';
+
+  @override
+  String get refresh => 'Segarkan';
+
+  @override
   String get inputTapHint => 'Ketuk untuk mengetik';
 
   @override

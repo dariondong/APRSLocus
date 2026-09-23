@@ -2362,5 +2362,15 @@
   "orTurnDeg": "o {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "Toca para escribir",
-  "callCommentEmpty": "Sin definir · toca para escribir"
+  "callCommentEmpty": "Sin definir · toca para escribir",
+  "noticeTitle": "Avisos",
+  "noticeEmpty": "Sin avisos por ahora",
+  "noticeLoading": "Cargando…",
+  "noticeReadMore": "Leer más",
+  "noticeCached": "En caché · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "Copia sin conexión · {time} (se actualiza al recuperar la red)",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "ahora mismo",
+  "refresh": "Actualizar"
 }

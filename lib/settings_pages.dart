@@ -16,7 +16,10 @@ import 'early_member.dart';
 import 'offline_map_page.dart';
 import 'weather.dart';
 import 'theme_store.dart';
+import 'markdown_view.dart';
 import 'material.dart';
+import 'notice_banner.dart';
+import 'notice.dart';
 
 /// ─── 电台设置 ───
 class StationSettingsPage extends StatefulWidget {
@@ -2577,6 +2580,15 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         icon: Icons.palette_rounded,
         color: C.cyan,
         body: Column(children: [
+          // ── 公告横幅 ──
+          // 放在**页面最上面**：设置页是「扫一眼找开关」的地方，横幅放中间会被
+          // 当成某张卡的一部分而忽略。开关关掉时这个组件自己返回空（且不联网）。
+          NoticeBanner(
+            state: st,
+            onOpen: (md) => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => NoticePage(md)),
+            ),
+          ),
           SettingsSectionCard(
             title: S.of(context).all,
             subtitle: S.of(context).settingsGeneralSubtitle,
@@ -2587,6 +2599,12 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                   color: C.slate, onChanged: (v) => st.setDarkMode(v)),
               SettingsSwitch(S.of(context).weatherWidget, value: st.weatherEnabled,
                   color: C.cyan, onChanged: (v) => st.setWeatherEnabled(v)),
+              // 公告横幅：用户明确要「可以打开」的一个开关 —— 默认开，
+              // 关掉后**不再发起任何网络请求**（见 notice_banner.dart 顶部）。
+              SettingsSwitch(S.of(context).noticeTitle,
+                  value: st.noticeBanner,
+                  color: C.cyan,
+                  onChanged: (v) => st.setNoticeBanner(v)),
               _themeColorSelector(st),
               // 主题若已覆写主色，色板点了不会变 —— 与其让用户以为坏了，
               // 不如直接说清楚去哪儿改。

@@ -2278,5 +2278,15 @@
   "orTurnDeg": "or {deg}°",
   "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
   "inputTapHint": "Tap to type",
-  "callCommentEmpty": "Not set · tap to type"
+  "callCommentEmpty": "Not set · tap to type",
+  "noticeTitle": "Announcements",
+  "noticeEmpty": "No announcements yet",
+  "noticeLoading": "Loading…",
+  "noticeReadMore": "Read more",
+  "noticeCached": "Cached · {ago}",
+  "@noticeCached": {"placeholders": {"ago": {"type": "String"}}},
+  "noticeOfflineCache": "Offline copy · {time} (updates automatically once online)",
+  "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
+  "timeJustNow": "just now",
+  "refresh": "Refresh"
 }
