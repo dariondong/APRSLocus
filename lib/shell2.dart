@@ -546,8 +546,22 @@ class _HomeShell2State extends State<HomeShell2>
       // 反向/横向：如果之前已经动过面板，仍然要让 ScrollEnd 把它吸附回去
       return false;
     }
-    if (n is OverscrollNotification && n.overscroll < 0) {
-      // overscroll 为负 = 已经到顶还在往下拖
+    if (n is OverscrollNotification &&
+        n.overscroll != 0 &&
+        n.dragDetails != null) {
+      // 到边还继续拖 → 交给面板，**两个方向都交**：
+      //   * 到顶继续下拉（overscroll < 0）→ 收面板；
+      //   * 到底继续上推（overscroll > 0）→ 展开面板。
+      // 同一个公式两向通用：overscroll 的符号与「手指方向」一致
+      // （负＝手指向下拽＝收；正＝手指向上提＝开）。
+      //
+      // `dragDetails != null` 只认**手指还在拖**的越界：惯性撞墙、iOS 回弹
+      // 也发 OverscrollNotification，那两种不该拽面板（松手后会被莫名吸一下）。
+      //
+      // 这是「内容可滚动时整页可拖」的入口，与把手/导航条并列。手势竞技场里
+      // 列表在中间位置时永远赢（那一段必须留给滚动），但**到边后**手指还越界的
+      // 部分本来无处可去 —— 正好交棒。用户反馈「抓不住：抓哪儿都变滚动」，
+      // 就是只做了到顶下拉这半边、缺了到底上推。
       _anim.stop();
       _movedByScroll = true;
       setState(() => _extent =

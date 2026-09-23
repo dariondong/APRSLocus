@@ -90,8 +90,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Offset _pan = Offset.zero;
   bool _showTracks = true;
   bool _heatEnabled = true; // 低缩放热力图开关
-  /// 缩小到该级别以下时自动显示热力图（按网格统计台站密度）
-  static const double _heatZoom = 6.5;
+  /// 缩小到该级别以下时自动显示热力图（按网格统计台站密度）。
+  ///
+  /// 6.5 → 9.0（用户反馈「热力图不容易触发」）：6.5 已经是「省/区域」级，
+  /// 缩到城市级（9 前后）根本触发不了，而台站开始挤成一团恰恰在城市级。
+  static const double _heatZoom = 9.0;
   Size _lastSize = Size.zero;
 
   MapType get _currentMapType => MapType.values.firstWhere(
@@ -112,7 +115,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       !_usePluginMap &&
       _heatEnabled &&
       _zoom <= _heatZoom &&
-      _visible.length >= 20;
+      // 20 → 10：城市里同时可见 20 个台站的场景太少，门槛跟 zoom 一起放宽
+      _visible.length >= 10;
 
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);

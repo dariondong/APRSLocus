@@ -2095,6 +2095,10 @@ class AppState extends ChangeNotifier {
     unawaited(audio.disconnect(manual: false));
     if (_stationsDirty) _saveStations();
     persist();
+    // 个人历史台账也要落盘：手动「退出应用」是原生直接结束进程，
+    // dispose() **不会被调用** —— 台账的落盘节流是 8 秒，不在这里 flush，
+    // 最后一段轨迹就丢了。
+    await TrackLogStore.instance.flush();
     // 留出时间让 SharedPreferences / 台站文件写入落盘
     await Future.delayed(const Duration(milliseconds: 400));
   }

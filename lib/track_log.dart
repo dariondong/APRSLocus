@@ -205,6 +205,32 @@ class TrackLogStore {
     } catch (_) {
       _dir = null;
     }
+    // 今天这一档必须**从磁盘接着记**，绝不能开空档 —— 见 [_loadToday]。
+    await _loadToday();
+  }
+
+  /// 把今天已有的记录读回内存，让 `record()` 在旧点之上继续追加。
+  ///
+  /// ── 这是「退出再进，今天的轨迹就没了」的根因 ──
+  ///
+  /// `flush()` 是**整档覆盖写**（把 `_today` 整个写进当天文件）。而 `_today`
+  /// 原来只在 `record()` 里 `??=` 开一个**空档**：重启应用后第一次落盘，
+  /// 就把当天早些时候（上一个进程里）已经写盘的点**全部抹掉** —— 用户看到的
+  /// 症状正是「退出就没了」（其实是退出后一动就没了）。
+  ///
+  /// 在这里读回来就没有这个问题：`DayTrack.fromJson` 按时间排序，新点按
+  /// 时间追加在尾部，覆盖写写回的是两者之并集。坏文件丢这一天（与 [loadAll]
+  /// 的容错口径一致），不能影响启动。
+  Future<void> _loadToday() async {
+    final f = _fileFor(dayKey(DateTime.now()));
+    if (f == null) return;
+    try {
+      if (!await f.exists()) return;
+      final day = DayTrack.fromJson(jsonDecode(await f.readAsString()));
+      if (day != null && day.points.isNotEmpty) _today = day;
+    } catch (_) {
+      // 当天文件坏了：当没记过，从空档重新开始
+    }
   }
 
   File? _fileFor(String day) {

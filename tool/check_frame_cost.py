@@ -182,6 +182,26 @@ def main() -> int:
                       '—— 直角裁口会把面板下面切成直角。注意内层裁内容的 ClipRect 不用'
                       '圆角（圆角由外层裁口负责），这里只盯着外层 ClipRRect 的那个参数')
 
+    # ⑫ 转场要自带一份底：否则进子页时动画期间会透出「上一页」
+    #
+    # 应用只有一层底（builder 层），而 Flutter 在转场动画期间把新路由的
+    # OverlayEntry 设为非 opaque（routes.dart 的 _handleStatusChanged），
+    # 旧路由照常绘制 —— 新页面透明底就会「先透明后出现」（用户报的
+    # 「背景颜色动画进入才渲染」）。删掉这个 builder 不会报错、不会测试失败，
+    # 只在真机转场时看得出来，所以钉住。
+    #
+    # 同时钉住「动画完成就不再画」（v >= 1）与「底与 builder 同一函数」
+    # （buildBackdrop）—— 后者是为了不出现「两份不一样的底」。
+    app = read('lib/app.dart')
+    need('lib/app.dart', 'pageTransitionsTheme:',
+         '主题里没有 pageTransitionsTheme —— 转场会回到不带底的默认 builder')
+    need('lib/app.dart', 'class _BackdropTransitionBuilder extends PageTransitionsBuilder',
+         '缺少带底的转场 builder —— 进子页时背景色会闪（动画期间透出上一页）')
+    need('lib/app.dart', 'v >= 1',
+         '转场那份底没有在动画完成后停画 —— 会与 builder 的底重复常驻')
+    need('lib/app.dart', 'ThemeController.instance.buildBackdrop()',
+         '转场那份底不是取自 buildBackdrop —— 可能与 builder 的底不一致')
+
     if errors:
         print('帧成本检查失败：')
         for e in errors:

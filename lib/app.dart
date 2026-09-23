@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'theme.dart';
@@ -26,6 +28,29 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppState _state = AppState();
+
+  /// 当前亮暗下的主题。
+  ///
+  /// 抽出来只为一件事：给它装**带底的转场**（见 [_BackdropTransitionBuilder]）。
+  ThemeData _themeFor(Brightness b) =>
+      (b == Brightness.dark
+              ? ThemeData.dark(useMaterial3: true)
+              : ThemeData.light(useMaterial3: true))
+          .copyWith(
+        scaffoldBackgroundColor: C.bg,
+        canvasColor: C.bg,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: C.blue,
+          brightness: b,
+        ).copyWith(surface: C.bg),
+        splashFactory: InkSparkle.splashFactory,
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: {
+            for (final p in TargetPlatform.values)
+              p: const _BackdropTransitionBuilder(),
+          },
+        ),
+      );
   bool _lastDark = false;
   String _lastTheme = '';
   String _lastLocale = '';
@@ -94,24 +119,8 @@ class _AppState extends State<App> {
       key: ValueKey('app_${_state.reloadTick}'),
       title: 'APRSlocus',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true).copyWith(
-        scaffoldBackgroundColor: C.bg,
-        canvasColor: C.bg,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: C.blue,
-          brightness: Brightness.light,
-        ).copyWith(surface: C.bg),
-        splashFactory: InkSparkle.splashFactory,
-      ),
-      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        scaffoldBackgroundColor: C.bg,
-        canvasColor: C.bg,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: C.blue,
-          brightness: Brightness.dark,
-        ).copyWith(surface: C.bg),
-        splashFactory: InkSparkle.splashFactory,
-      ),
+      theme: _themeFor(Brightness.light),
+      darkTheme: _themeFor(Brightness.dark),
       themeMode: _state.darkMode ? ThemeMode.dark : ThemeMode.light,
       locale: _state.locale.isEmpty
           ? null
@@ -170,6 +179,73 @@ class _AppState extends State<App> {
               : HomePage(state: _state);
         },
       ),
+    );
+  }
+}
+
+/// 带**底色**的转场：进子页时不让动画期间透出「上一页」。
+///
+/// ── 为什么需要它 ──
+///
+/// 应用只有**一层**底（`builder` 里的 `ThemeController.buildBackdrop()`，压在
+/// Navigator 之下）。而 Flutter 在路由转场动画期间会把新路由的 OverlayEntry 设为
+/// **非 opaque**（`routes.dart` 的 `_handleStatusChanged`：forward/reverse 时
+/// `opaque = false`，completed 才恢复）—— 于是动画期间旧路由照常绘制，新页面若是
+/// 透明底（本项目正是：页面底色 = `C.pageFill` = 透明），**透出来的是上一页的内容**；
+/// 动画一完旧路由停画，底色才「出现」。用户看到的就是
+/// **「动画期间背景色闪一下／先透明后出现，动画完才正常」**。
+///
+/// ── 修法 ──
+///
+/// 转场期间给页面**自带一份底**：与 `builder` 那份同一函数（[ThemeController.buildBackdrop]），
+/// 所以逐像素一致，不会看到「换了一次底」；动画结束（`completed`）后它不再常驻，
+/// 不会与 builder 的底重复合成、也不多占一层。
+///
+/// 刻意不做两件事：
+/// * **不靠 `opaque` 解决**：让旧路由不画（`maintainState`/`opaque`）会打断返回手势
+///   与“预测式返回”的观感，而且要在每个路由上改，容易漏；
+/// * **不缓存背景图 widget**：图片经 `Image.file` 异步解码，**同一个 widget 实例出现在
+///   两棵树里**会踩 Flutter 的「同名 GlobalKey / 同实例复用」限制，而底在下面已经有一份
+///   （`AppWidgetSync` 还依赖它）；转场那两百毫秒重建一次，代价远小于这个风险。
+class _BackdropTransitionBuilder extends PageTransitionsBuilder {
+  const _BackdropTransitionBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T>? route,
+    BuildContext? context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // 与 Material3 默认行为保持一致（本项目未指定其它 builder，改前就是各平台默认）
+    final inner = switch (defaultTargetPlatform) {
+      TargetPlatform.iOS || TargetPlatform.macOS =>
+        const CupertinoPageTransitionsBuilder(),
+      _ => const ZoomPageTransitionsBuilder(),
+    };
+    final transitioned = inner.buildTransitions(
+      route,
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    );
+    return Stack(
+      children: [
+        // 转场期间才画；转入完成（value == 1）后置空
+        Positioned.fill(
+          child: ValueListenableBuilder<double>(
+            valueListenable: animation,
+            builder: (_, v, _) => v >= 1
+                ? const SizedBox.shrink()
+                : (ThemeController.instance.buildBackdrop() ??
+                    const SizedBox.shrink()),
+          ),
+        ),
+        // 转场包在底之上：否则淡入/缩放会把这份底一起缩进去
+        Positioned.fill(child: transitioned),
+      ],
     );
   }
 }
