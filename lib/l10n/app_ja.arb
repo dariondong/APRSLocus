@@ -2352,5 +2352,9 @@
   "historyReplay": "もう一度再生",
   "historyFollow": "追従",
   "locationCoarse": "ネットワーク測位（粗）",
-  "locModeNetHint": "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。"
+  "locModeNetHint": "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。",
+  "tierMinDist": "移動距離 (m)",
+  "tierMinDistHint": "前回の報告からこの距離を移動したら追加で報告します。0 = オフ（間隔のみ）",
+  "orMoveM": "または {dist} m",
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
 }

@@ -517,6 +517,21 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                // **信标点**（真正发到服务器去的那些点）：画在轨迹之上、标记之下。
+                // 单独一层而不是混进轨迹：轨迹是「我走过哪里」，信标点是
+                // 「我报到哪里」—— 后者要能一眼数出来（对方收到几个点、
+                // 间隔是否合预期），所以要画成独立符号而不是线上的节点。
+                if (!_usePluginMap && widget.state.beaconMarks.isNotEmpty)
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _BeaconMarkPainter(
+                        points: widget.state.beaconMarks,
+                        color: C.orange,
+                        toScreen: (lat, lng) => _toScreen(lat, lng, size),
+                      ),
+                    ),
+                  ),
                 // 轨迹线（不挡手势）
                 if (!_usePluginMap &&
                     _selected != null &&
@@ -2127,6 +2142,57 @@ class _PulseRing extends StatelessWidget {
 }
 
 /// 轨迹叠加绘制（用于选中台站历史轨迹）
+/// 信标点画笔：把「已上报到服务器」的点画成小菱形。
+///
+/// 为什么是菱形且只在中心画一个小点：
+///   * 地图上已经有台站图标、轨迹线、精度圈，信标点再用圆形就和它们混了；
+///     菱形是这里唯一没被占用的形状。
+///   * 尺寸刻意很小（半宽 4）：一屏可能有几十个信标点，画大了整张图就花了；
+///     它要回答的是「密度与走向」，不是「精确到哪一米」。
+///
+/// 只画屏幕内的（含 20px 留白）：跑一天会有上百个点，绝大多数在视野外，
+/// 逐个做三角函数是白费 —— 与台站标记同一套「先滤屏外」的做法。
+class _BeaconMarkPainter extends CustomPainter {
+  final List<TrackPt> points;
+  final Color color;
+  final Offset Function(double lat, double lng) toScreen;
+
+  const _BeaconMarkPainter({
+    required this.points,
+    required this.color,
+    required this.toScreen,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fill = Paint()..color = color;
+    // 白描边：信标点常压在轨迹线与瓦片路网上，加一圈白才分得出来
+    final edge = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    const r = 4.0;
+    for (final p in points) {
+      final o = toScreen(p.lat, p.lng);
+      if (o.dx < -20 || o.dx > size.width + 20) continue;
+      if (o.dy < -20 || o.dy > size.height + 20) continue;
+      final path = Path()
+        ..moveTo(o.dx, o.dy - r)
+        ..lineTo(o.dx + r, o.dy)
+        ..lineTo(o.dx, o.dy + r)
+        ..lineTo(o.dx - r, o.dy)
+        ..close();
+      canvas.drawPath(path, fill);
+      canvas.drawPath(path, edge);
+    }
+  }
+
+  /// 时间不参与比较：该层只在点位列表变化时重画（`beaconMarks` 增删即换实例）。
+  @override
+  bool shouldRepaint(covariant _BeaconMarkPainter old) =>
+      !identical(old.points, points) || old.color != color;
+}
+
 class _TrackOverlayPainter extends CustomPainter {
   final List<TrackPt> points;
   final Color color;

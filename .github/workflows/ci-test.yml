@@ -95,6 +95,13 @@ jobs:
       - name: Check landscape layout
         run: python3 tool/check_landscape_layout.py
 
+      # 轨迹采样 + 信标打点：GPS 采样率（1s 级）、落点判据里的「最大间隔保底」、
+      # 信标点（只记已发送/可清空/地图有图层）、智能信标的「定时或距离」。
+      # 这几条**全都能正常编译、也能通过 analyze**，只在真机上看得出差别
+      # （轨迹过疏、拐弯被拉直、清空后剩孤点），所以钉在 CI。
+      - name: Check beacon & track sampling
+        run: python3 tool/check_beacon_track.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。

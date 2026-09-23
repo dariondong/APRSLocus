@@ -248,6 +248,17 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get tierMinDist => 'Distancia (m)';
+
+  @override
+  String get tierMinDistHint => 'También reporta tras desplazarse esta distancia desde el último envío; 0 = desactivado (solo intervalo)';
+
+  @override
+  String orMoveM(String dist) {
+    return 'o ${dist} m';
+  }
+
+  @override
   String get tierIdleTitle => 'Editar · Nivel reposo/baja velocidad';
 
   @override

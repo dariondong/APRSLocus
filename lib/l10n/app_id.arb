@@ -2352,5 +2352,9 @@
   "historyReplay": "Putar ulang",
   "historyFollow": "Ikuti",
   "locationCoarse": "Lokasi jaringan (kasar)",
-  "locModeNetHint": "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat."
+  "locModeNetHint": "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat.",
+  "tierMinDist": "Jarak (m)",
+  "tierMinDistHint": "Juga lapor setelah berpindah sejauh ini sejak laporan terakhir; 0 = nonaktif (hanya interval)",
+  "orMoveM": "atau {dist} m",
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
 }

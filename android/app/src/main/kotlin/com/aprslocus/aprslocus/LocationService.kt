@@ -387,11 +387,19 @@ class LocationService : Service() {
         // GPS 高精度（两种模式都注册）
         var gpsRequested = false
         try {
+            // minTime 10s → 1s（用户反馈「实时轨迹采样率低」）：
+            // 10s 是「省电优先」的取值，代价是轨迹每 10 秒才一个点 —— 骑车/开车时
+            // 一个拐弯正好落在两个点之间，画出来就是一条切角的斜线。
+            // 1s 是导航类应用的常规取样率；下方 minDistance 仍是 5m，静止时 GPS 不给
+            // 回调，所以待机功耗并不跟着涨。
             lm.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 10000L, 5f, listener, Looper.getMainLooper())
+                LocationManager.GPS_PROVIDER, 1000L, 5f, listener, Looper.getMainLooper())
             gpsRequested = true
         } catch (_: Exception) {}
-        // GPS + 网络模式：额外注册网络辅助定位
+        // GPS + 网络模式：额外注册网络辅助定位。
+        //
+        // 网络定位**保持 10s**：它只做 GPS 停更时的兜底（见 considerLocation），
+        // 按 1s 轮询基站/Wi-Fi 毫无收益（也不会更准），只是白耗电与流量。
         if (useNetwork) {
             try {
                 lm.requestLocationUpdates(

@@ -2866,5 +2866,9 @@
   "historyReplay": "重播",
   "historyFollow": "跟随",
   "locationCoarse": "网络定位（粗）",
-  "locModeNetHint": "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。"
+  "locModeNetHint": "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。",
+  "tierMinDist": "移动距离 (米)",
+  "tierMinDistHint": "自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）",
+  "orMoveM": "或移动 {dist} m",
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
 }

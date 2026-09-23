@@ -1260,6 +1260,13 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
 
   Widget _tierRow(int index) {
     final t = st.smartTiers[index];
+    // 上报条件那一行：只按时 / 按时·或按距离。
+    // 先算好再插值（而不是在字符串里嵌 `${S.of(context).xxx('${...}')}`）：
+    // 嵌套插值里再嵌一层引号，读的人要数括号，写的人也容易漏。
+    final every = S.of(context).everyNSeconds('${t.intervalSec}');
+    final whenReport = t.minDistM > 0
+        ? '$every · ${S.of(context).orMoveM('${t.minDistM}')}'
+        : every;
     return GestureDetector(
       onTap: () => _editTierSheet(index),
       child: Container(
@@ -1284,8 +1291,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               ],
             ),
           ),
-          Text(S.of(context).everyNSeconds('${t.intervalSec}'),
-              style: ts(11, c: C.blue, w: FontWeight.w700)),
+          Text(whenReport, style: ts(11, c: C.blue, w: FontWeight.w700)),
           SizedBox(width: 4),
           Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
         ]),
@@ -1309,6 +1315,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     final isIdle = index == 0;
     final thCtrl = TextEditingController(text: '${tiers[index].minSpeed}');
     final ivCtrl = TextEditingController(text: '${tiers[index].intervalSec}');
+    final dsCtrl = TextEditingController(text: '${tiers[index].minDistM}');
     final symNotifier = ValueNotifier<String>(tiers[index].symbol);
     await showModalBottomSheet<void>(
       context: context,
@@ -1397,6 +1404,19 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       ),
                       Text(S.of(context).unitSeconds, style: ts(11, c: C.slate)),
                     ]),
+                  SizedBox(height: 10),
+                  // ── 距离打点 ──
+                  // 放在速度/间隔**下面单独一行**，两种档共用：静止档同样需要它
+                  // （停在一个地方却真的被挪走了 200m，也该报一个新的位置）。
+                  TextField(
+                    controller: dsCtrl,
+                    keyboardType: TextInputType.number,
+                    style: ts(13, w: FontWeight.w600),
+                    decoration: _tierFieldDeco(S.of(context).tierMinDist),
+                  ),
+                  SizedBox(height: 4),
+                  Text(S.of(context).tierMinDistHint,
+                      style: ts(10, c: C.grey, h: 1.3)),
                   SizedBox(height: 14),
                   Text(S.of(context).pickBeaconIconDesc,
                       style: ts(10, c: C.slate)),
@@ -1459,6 +1479,9 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                             minSpeed: th!,
                             intervalSec: iv!,
                             symbol: symNotifier.value,
+                            // 解析失败/留空都当 0（关闭距离打点）——
+                            // 这比「拒绝保存」温和，也与其它数值字段口径一致。
+                            minDistM: int.tryParse(dsCtrl.text.trim()) ?? 0,
                           ),
                         );
                         close();

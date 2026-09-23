@@ -2268,5 +2268,9 @@
   "historyReplay": "Replay",
   "historyFollow": "Follow",
   "locationCoarse": "Network fix (coarse)",
-  "locModeNetHint": "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history."
+  "locModeNetHint": "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history.",
+  "tierMinDist": "Distance (m)",
+  "tierMinDistHint": "Also beacon after moving this far since the last report; 0 = off (interval only)",
+  "orMoveM": "or {dist} m",
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
 }

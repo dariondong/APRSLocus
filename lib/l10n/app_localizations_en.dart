@@ -248,6 +248,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tierMinDist => 'Distance (m)';
+
+  @override
+  String get tierMinDistHint => 'Also beacon after moving this far since the last report; 0 = off (interval only)';
+
+  @override
+  String orMoveM(String dist) {
+    return 'or ${dist} m';
+  }
+
+  @override
   String get tierIdleTitle => 'Edit · Idle/low-speed tier';
 
   @override

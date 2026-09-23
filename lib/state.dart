@@ -51,25 +51,41 @@ class SmartBeaconTier {
   int intervalSec; // 上报间隔（秒）
   String symbol; // APRS 符号码（空串 = 默认 mySymbol）
 
+  /// **距离打点**：自上次上报以来移动超过该米数也上报一次（0 = 只用间隔）。
+  ///
+  /// 为什么要有它：定时上报有个先天缺口 —— 两点之间走了多远与「过了多久」无关。
+  /// 堵车时 300s 一个点完全够（根本没动），而 60km/h 的国道上 60s 能走 1km，
+  /// 中间那段路在 aprs.fi 上就是一条直线，拐弯全被抹平。
+  /// 有了距离门限：**走得快就按距离补点**（拐弯不再被切角），
+  /// **停下来就退回纯定时**（不白发报文，不占信道）。
+  int minDistM;
+
   SmartBeaconTier({
     this.minSpeed = 0,
     this.intervalSec = 60,
     this.symbol = '',
+    this.minDistM = 0,
   });
 
   SmartBeaconTier copy() => SmartBeaconTier(
         minSpeed: minSpeed,
         intervalSec: intervalSec,
         symbol: symbol,
+        minDistM: minDistM,
       );
 
-  Map<String, dynamic> toJson() =>
-      {'minSpeed': minSpeed, 'intervalSec': intervalSec, 'symbol': symbol};
+  Map<String, dynamic> toJson() => {
+        'minSpeed': minSpeed,
+        'intervalSec': intervalSec,
+        'symbol': symbol,
+        'minDistM': minDistM,
+      };
 
   factory SmartBeaconTier.fromJson(Map<String, dynamic> j) => SmartBeaconTier(
         minSpeed: ((j['minSpeed'] as num?) ?? 0).toInt(),
         intervalSec: ((j['intervalSec'] as num?) ?? 60).toInt(),
         symbol: (j['symbol'] as String?) ?? '',
+        minDistM: ((j['minDistM'] as num?) ?? 0).toInt(),
       );
 }
 
@@ -187,6 +203,11 @@ class AppState extends ChangeNotifier {
   bool beaconEnabled = true;
   int beaconInterval = 60; // 秒（APRS-IS 建议移动站不低于 60 秒）
   DateTime _lastBeacon = DateTime.now();
+
+  /// 上一次信标发出的**位置**：智能信标的「距离打点」用它算「自上次上报以来
+  /// 走了多远」（见 [beaconDistMovedM]）。与 [_lastBeacon]（时间）成对更新。
+  double? _lastBeaconLat;
+  double? _lastBeaconLng;
   int beaconsSent = 0;
 
   /// 是否已询问过“连接后是否自动上报位置”（只问一次，记住选择）
@@ -208,11 +229,14 @@ class AppState extends ChangeNotifier {
 
   /// 默认分档方案：
   /// 静止(<5km/h)→300s；步行(≥5)→120s 人形；城市(≥20)→60s 汽车；高速(≥70)→30s 汽车。
+  /// 距离档的取值口径：约等于「这一档速度在一个上报间隔内走的路程」，
+  /// 也就是「该发下一个点了」的自然位置 —— 比按面积/拍脑袋好解释，
+  /// 用户看到「步行 120s / 250m 或」时直觉也对得上（1.4m/s × 120s ≈ 170m）。
   static List<SmartBeaconTier> defaultSmartTiers() => [
-        SmartBeaconTier(minSpeed: 0, intervalSec: 300, symbol: ''),
-        SmartBeaconTier(minSpeed: 5, intervalSec: 120, symbol: '['),
-        SmartBeaconTier(minSpeed: 20, intervalSec: 60, symbol: '>'),
-        SmartBeaconTier(minSpeed: 70, intervalSec: 30, symbol: '>'),
+        SmartBeaconTier(minSpeed: 0, intervalSec: 300, symbol: '', minDistM: 200),
+        SmartBeaconTier(minSpeed: 5, intervalSec: 120, symbol: '[', minDistM: 250),
+        SmartBeaconTier(minSpeed: 20, intervalSec: 60, symbol: '>', minDistM: 400),
+        SmartBeaconTier(minSpeed: 70, intervalSec: 30, symbol: '>', minDistM: 700),
       ];
 
   void _ensureSmartTiers() {
@@ -231,6 +255,13 @@ class AppState extends ChangeNotifier {
       final t = smartTiers[i];
       if (t.minSpeed < 1) t.minSpeed = 1;
       if (t.intervalSec < 5) t.intervalSec = 5;
+    }
+    // 距离打点：0 = 关闭；否则夹到 20m~20km（低于 20m 比 GPS 噪声还小，
+    // 会退化成「每个点都发」，白占信道；上限只是防手输多打一个零）
+    for (final t in smartTiers) {
+      if (t.minDistM != 0) {
+        t.minDistM = t.minDistM < 20 ? 20 : (t.minDistM > 20000 ? 20000 : t.minDistM);
+      }
     }
     smartTiers.sort((a, b) => a.minSpeed.compareTo(b.minSpeed));
   }
@@ -258,7 +289,8 @@ class AppState extends ChangeNotifier {
     for (final t in smartTiers) {
       if (t.minSpeed >= next) next = t.minSpeed + 10;
     }
-    smartTiers.add(SmartBeaconTier(minSpeed: next, intervalSec: 60, symbol: ''));
+    smartTiers.add(SmartBeaconTier(
+        minSpeed: next, intervalSec: 60, symbol: '', minDistM: 400));
     _normalizeSmartTiers();
     persist();
     _notify();
@@ -299,6 +331,22 @@ class AppState extends ChangeNotifier {
 
   /// 实际生效的上报间隔：智能信标按速度取档，否则用固定间隔
   int get beaconIntervalNow => activeSmartTier?.intervalSec ?? beaconInterval;
+
+  /// 实际生效的**距离打点**门限（米）：0 = 只用定时。
+  /// 只有智能信标才有这一项 —— 固定间隔模式保持「纯定时」的老行为。
+  int get beaconMinDistNow => activeSmartTier?.minDistM ?? 0;
+
+  /// 自上次**真的发出去**以来移动了多远（米）。
+  ///
+  /// 与 `_lastBeacon`（时间）成对：两者都在发送成功后更新，所以这个距离
+  /// 就是「本次要不要因为『走够了』再发一个」的判据。
+  /// 还没发过（或没有定位）时返回 0 —— 此时时间判据会先行，不会漏报。
+  double get beaconDistMovedM {
+    final la = _lastBeaconLat;
+    final ln = _lastBeaconLng;
+    if (la == null || ln == null || !myHasFix) return 0;
+    return haversine(la, ln, myLat!, myLng!) * 1000;
+  }
 
   /// 实际生效的信标符号：智能档指定了符号则用之，否则用「我的符号」
   String get beaconSymbolNow {
@@ -1596,6 +1644,19 @@ class AppState extends ChangeNotifier {
   /// 我的位置轨迹（最近 N 个定位点）
   final List<TrackPt> myTrack = [];
 
+  /// **真正发到服务器去的那些点**（信标点），画在地图上与轨迹区分开。
+  ///
+  /// 为什么不从 [myTrack] 里挑：轨迹点会被抽稀、封顶（[maxTrackPts]）、
+  /// 确认跳变时还会整条清空 —— 那是「屏幕上这条线好看」的语义。而「这个点
+  /// 我发出去了」是个**事实**，不该被抽稀或封顶吃掉，也不该因为随后跳变
+  /// 确认而消失（aprs.fi 上确实已经收到了）。所以另存一份，且只在
+  /// **真的发出去**（connected）时记。
+  ///
+  /// 上限 [maxBeaconMarks]：只用于地图标注，不需要全量历史 ——
+  /// 全量在按天的台账里（见 TrackLogStore）。
+  final List<TrackPt> beaconMarks = [];
+  static const int maxBeaconMarks = 200;
+
   Station? get myStation => myHasFix
       ? Station(
           call: myCall,
@@ -1982,11 +2043,17 @@ class AppState extends ChangeNotifier {
       if (_disposed) return;
       // 自动定时上报仅在链路可用时进行；未连接不发送（避免误以为在上报）。
       // TNC 模式下还需用户显式开启「射频信标」（见 canAutoBeacon）。
-      if (canAutoBeacon &&
-          myHasFix &&
-          DateTime.now().difference(_lastBeacon).inSeconds >=
-              beaconIntervalNow) {
-        _sendBeaconNow();
+      // 上报判据：**定时到了，或者走够了**（智能信标的距离打点）。
+      //   * 定时那条是老行为，保证「哪怕原地不动也定期报个平安」；
+      //   * 距离那条专治「走得快时两点之间被拉成直线、拐弯全被抹平」——
+      //     走得快就按距离补点，停下来距离不动、自然退回纯定时。
+      // 两条都不成立时什么都不做（不空转、不 notify）。
+      if (canAutoBeacon && myHasFix) {
+        final dueByTime = DateTime.now().difference(_lastBeacon).inSeconds >=
+            beaconIntervalNow;
+        final minDistM = beaconMinDistNow;
+        final dueByDist = minDistM > 0 && beaconDistMovedM >= minDistM;
+        if (dueByTime || dueByDist) _sendBeaconNow();
       }
       // 台站“有效状态”翻转（如超 5 分钟变离线、移动→静止）时才推进版本并通知，
       // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
@@ -3258,19 +3325,27 @@ class AppState extends ChangeNotifier {
     // 抽稀门限**按速度自适应**（见 PosQuality.trackMinDistM）：固定 20m 在步行时
     // 太粗、在高速时又太细。注意这只管**自己**的轨迹 —— 接收台站回到固定 20m
     // 的朴素行为（见 _upsertStation 顶部说明）。
+    //
+    // 落点判据是**两条任一**（见 PosQuality 里那两个常量）：
+    //   * 位移 > 速度门限  → 拐弯不会被切角；
+    //   * 距上个点 ≥ 最大间隔且确实挪了  → 慢速也有稳定密度。
+    // 只有前一条时，速度越低点越疏（步行 8m 要 5.8s），而慢速正是用户最想
+    // 看清细节的时候 —— 那条「保底」就是为此加的。
     final last = myTrack.isEmpty ? null : myTrack.last;
     if (!lastKnown &&
         !coarse &&
         !still &&
         accuracy <= SelfFixFilter.trackAccuracyLimitM) {
-      final minDistM = PosQuality.trackMinDistM(
-        speedKmh: speed * 3.6,
-        dtSec: last == null
-            ? 10.0
-            : DateTime.now().difference(last.time).inSeconds.toDouble(),
-      );
-      if (last == null ||
-          haversine(last.lat, last.lng, outLat, outLng) * 1000 > minDistM) {
+      final minDistM = PosQuality.trackMinDistM(speedKmh: speed * 3.6);
+      final movedM = last == null
+          ? double.infinity
+          : haversine(last.lat, last.lng, outLat, outLng) * 1000;
+      final gapSec = last == null
+          ? double.infinity
+          : DateTime.now().difference(last.time).inSeconds.toDouble();
+      final keepAlive = gapSec >= PosQuality.trackMaxGapSec &&
+          movedM >= PosQuality.trackMinMoveM;
+      if (last == null || movedM > minDistM || keepAlive) {
         myTrack.add(TrackPt(outLat, outLng, DateTime.now()));
         if (myTrack.length > maxTrackPts) {
           myTrack.removeRange(0, myTrack.length - maxTrackPts);
@@ -3346,6 +3421,21 @@ class AppState extends ChangeNotifier {
     if (connected) {
       _sendRaw(raw);
       _lastTx = DateTime.now();
+      // 记下「这个点真的发出去了」并交给地图标注（见 [beaconMarks]）。
+      // 放在 connected 分支内：未连接时只是本地记录，不算「发送到服务器的点」。
+      final mark = TrackPt(lat, lng, DateTime.now());
+      final prev = beaconMarks.isEmpty ? null : beaconMarks.last;
+      // 同一位置反复发（静止档 300s 一次）不必堆重叠标记，隔开才有信息量
+      if (prev == null ||
+          haversine(prev.lat, prev.lng, lat, lng) * 1000 >= 5) {
+        beaconMarks.add(mark);
+        if (beaconMarks.length > maxBeaconMarks) {
+          beaconMarks.removeRange(0, beaconMarks.length - maxBeaconMarks);
+        }
+      } else if (beaconMarks.isNotEmpty) {
+        // 位置没动：把旧标记的时间刷新成最近一次，避免它看起来「很旧」
+        beaconMarks[beaconMarks.length - 1] = mark;
+      }
       setConnStatus(
         usingTnc
             ? ConnPhase.positionSentTnc
@@ -3359,6 +3449,8 @@ class AppState extends ChangeNotifier {
     }
     beaconsSent++;
     _lastBeacon = DateTime.now();
+    _lastBeaconLat = lat;
+    _lastBeaconLng = lng;
     AchievementCenter.instance.bump('sendCoord'); // 坐标发送·请求打击
     _log(
       LogLevel.info,
@@ -5236,6 +5328,9 @@ class AppState extends ChangeNotifier {
     stations.clear();
     // 自己的轨迹不在 stations 里，以前清空数据后会残留一条自己的线
     myTrack.clear();
+    // 信标标记与轨迹同属「我的位置」这一组：清了轨迹却留着标记，
+    // 地图上会剩下一串没有轨迹穿过的孤点。
+    beaconMarks.clear();
     _resetSelfFix();
     _bumpStationsVersion();
     messages.clear();

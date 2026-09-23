@@ -247,6 +247,17 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get tierMinDist => '移動距離 (m)';
+
+  @override
+  String get tierMinDistHint => '前回の報告からこの距離を移動したら追加で報告します。0 = オフ（間隔のみ）';
+
+  @override
+  String orMoveM(String dist) {
+    return 'または ${dist} m';
+  }
+
+  @override
   String get tierIdleTitle => '編集 · 停止/低速段';
 
   @override

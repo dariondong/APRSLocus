@@ -248,6 +248,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get tierMinDist => 'Jarak (m)';
+
+  @override
+  String get tierMinDistHint => 'Juga lapor setelah berpindah sejauh ini sejak laporan terakhir; 0 = nonaktif (hanya interval)';
+
+  @override
+  String orMoveM(String dist) {
+    return 'atau ${dist} m';
+  }
+
+  @override
   String get tierIdleTitle => 'Edit · Tingkat diam/lambat';
 
   @override

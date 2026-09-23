@@ -567,6 +567,24 @@ abstract class AppLocalizations {
   /// **'每 {sec} 秒'**
   String everyNSeconds(String sec);
 
+  /// No description provided for @tierMinDist.
+  ///
+  /// In zh, this message translates to:
+  /// **"移动距离 (米)"**
+  String get tierMinDist;
+
+  /// No description provided for @tierMinDistHint.
+  ///
+  /// In zh, this message translates to:
+  /// **"自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）"**
+  String get tierMinDistHint;
+
+  /// No description provided for @orMoveM.
+  ///
+  /// In zh, this message translates to:
+  /// **"或移动 {dist} m"**
+  String orMoveM(String dist);
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

@@ -245,6 +245,17 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get tierMinDist => '移动距离 (米)';
+
+  @override
+  String get tierMinDistHint => '自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）';
+
+  @override
+  String orMoveM(String dist) {
+    return '或移动 ${dist} m';
+  }
+
+  @override
   String get tierIdleTitle => '编辑 · 静止/低速档';
 
   @override
@@ -6673,6 +6684,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String everyNSeconds(String sec) {
     return '每 $sec 秒';
+  }
+
+  @override
+  String get tierMinDist => '移動距離 (公尺)';
+
+  @override
+  String get tierMinDistHint => '自上次上報以來移動超過這個距離，就補報一次；0 = 關閉（只按間隔）';
+
+  @override
+  String orMoveM(String dist) {
+    return '或移動 ${dist} m';
   }
 
   @override
