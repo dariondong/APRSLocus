@@ -2894,7 +2894,7 @@
   "guideGotIt": "知道了",
   "guideShowAgain": "重看本页引导",
   "guideHomeTitle": "主页 · 地图与台站",
-  "guideHomeBody": "地图上的每个点都是收到的台站，点开可以看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。",
+  "guideHomeBody": "点一个台站看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。",
   "guideImmersiveTitle": "沉浸地图",
   "guideImmersiveBody": "全屏看台站：双指缩放、单指拖动，左下角可切换「跟随自己」，左上角返回。",
   "guideMessagesTitle": "消息",
@@ -2931,5 +2931,6 @@
   "guideTncDeviceTitle": "蓝牙 TNC",
   "guideTncDeviceBody": "搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。",
   "guidePkwdwplTitle": "PKWDWPL 连接器",
-  "guidePkwdwplBody": "通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。"
+  "guidePkwdwplBody": "通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。",
+  "guideMoreInSettings": "之后可在「设置 → 重新查看功能引导」里再看"
 }

@@ -453,6 +453,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
             return Stack(
               children: [
+                // 功能引导：这是**全屏地图**，四周全是浮层（统计条 / 图例 / 工具列 /
+                // 上报横杠 / 比例尺），浮卡片找不到「一定不重叠」的位置 —— 实测会
+                // 压住图例下沿 1px。改走一次性底部弹层，关掉即记为已看。
+                GuideSheetOnce(
+                  guideId: 'home',
+                  state: widget.state,
+                  // 地图在 IndexedStack 里：只有它真的在前台时才弹
+                  enabled: widget.isActive,
+                ),
                 // 瓦片地图（RepaintBoundary 隔离重绘）
                 RepaintBoundary(
                   child: MouseRegion(
@@ -583,21 +592,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 // 台站标记（热力图模式下隐藏，其余直接 Stack Positioned）
                 if (!_usePluginMap && !_showHeatmap)
                   ..._stationMarkers(size),
-                // 信息
+                // ── 左上竖列：台站统计 + 沉浸地图入口 ──
+                //
+                // 两者放在**同一个 Column** 里顺序排布，而不是各自 Positioned
+                // 各自算 top —— 后者只要有人调一处间距就会互相盖住：早先统计在
+                // topBase、入口硬写 topBase+44，任何新控件插进来都可能糊上去。
+                // 顺序排布之后，结构上不可能再重叠。
+                //
+                // ⚠ 功能引导**不放这一列**：这一列的高度全看字体度量，而右上图例
+                // 是独立浮层 —— 卡片按列排下去会正好压在图例下沿（按真实几何量过，
+                // 差 1px；换个语言或缩放下必然翻车）。地图是全屏视图，引导改走
+                // 一次性弹层（见下面 GuideSheetOnce）。
                 Positioned(
-                    top: topBase,
-                    left: 14 + widget.leftInset,
-                    child: _infoChip(vis, searched)),
-                // 功能引导：首次进入地图页时浮一张小提示卡（看过就不再出现）。
-                // 浮在地图之上而不是插进布局：地图页是 Stack，插进去会改变地图尺寸。
-                Positioned(
-                  top: topBase + 46,
+                  top: topBase,
                   left: 14 + widget.leftInset,
                   right: 74,
-                  child: GuideTipCard(
-                    guideId: 'home',
-                    state: widget.state,
-                    margin: EdgeInsets.zero,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _infoChip(vis, searched),
+                      const SizedBox(height: 10),
+                      _immersiveEntry(),
+                    ],
                   ),
                 ),
                 // 选点提示
@@ -684,39 +701,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           right: 14,
                           top: topBase,
                           child: _rightToolbar(shortWide),
-                        ),
-                        // 沉浸地图（导航风格：以我为中心 / 航向朝上 / 四角 HUD）
-                        //
-                        // 位置说明：原放在 right:14 / top:236，但右侧 `_zoomCtrl()`
-                        // 实际含 6 个按钮（占用 146 → 404），会把它整个盖住。
-                        // 改为左侧 top:58 —— 左上 `_infoChip` 只占 14~50，
-                        // 而其下直到屏幕底部通栏之间均为空白，任何朝向下都不会碰撞。
-                        Positioned(
-                          left: 14 + widget.leftInset,
-                          top: topBase + 44,
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => ImmersiveMapPage(state: widget.state)),
-                            ),
-                            child: Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: C.black.withValues(alpha: 0.82),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: elev1(),
-                                border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.18)),
-                              ),
-                              child: Tooltip(
-                                message: S.of(context).immersiveMapTip,
-                                child: const Icon(Icons.navigation_rounded,
-                                    size: 20, color: Colors.white),
-                              ),
-                            ),
-                          ),
                         ),
                         // 竖屏：底部通栏“上报通知”横杠（仅已连接+有定位时显示，横屏由侧边栏承担）
                         if (roomForBottom &&
@@ -1569,6 +1553,36 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [toolCol, const SizedBox(width: 6), _zoomCtrl()],
+    );
+  }
+
+  /// 沉浸地图入口（导航风格：以我为中心 / 航向朝上 / 四角 HUD）。
+  ///
+  /// 它是**左上竖列**的一员（与统计条、引导卡同列），不再自己算 Positioned：
+  /// 这条入口原先单独放在 `top: topBase + 44`，右侧工具列实际含 8 个按钮
+  /// （一直排到 400 多），一旦有人改列间距它就会被别人盖住 —— 曾经被引导卡糊住过。
+  Widget _immersiveEntry() {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => ImmersiveMapPage(state: widget.state)),
+      ),
+      child: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: C.black.withValues(alpha: 0.82),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: elev1(),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+        ),
+        child: Tooltip(
+          message: S.of(context).immersiveMapTip,
+          child: const Icon(Icons.navigation_rounded,
+              size: 20, color: Colors.white),
+        ),
+      ),
     );
   }
 

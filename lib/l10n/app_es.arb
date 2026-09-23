@@ -2380,7 +2380,7 @@
   "guideGotIt": "Entendido",
   "guideShowAgain": "Ver esta guía otra vez",
   "guideHomeTitle": "Inicio · mapa y estaciones",
-  "guideHomeBody": "Cada punto del mapa es una estación que estás recibiendo: tócalo para ver su ruta y sus datos. El botón inferior envía tu posición (conecta antes).",
+  "guideHomeBody": "Toca una estación para ver su ruta y sus datos; el botón inferior envía tu posición (conecta antes).",
   "guideImmersiveTitle": "Mapa inmersivo",
   "guideImmersiveBody": "Mapa a pantalla completa: pellizca para ampliar, arrastra para mover, «seguirme» abajo a la izquierda, volver arriba a la izquierda.",
   "guideMessagesTitle": "Mensajes",
@@ -2417,5 +2417,6 @@
   "guideTncDeviceTitle": "TNC Bluetooth",
   "guideTncDeviceBody": "Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.",
   "guidePkwdwplTitle": "Interfaz PKWDWPL",
-  "guidePkwdwplBody": "Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir."
+  "guidePkwdwplBody": "Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir.",
+  "guideMoreInSettings": "Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones"
 }

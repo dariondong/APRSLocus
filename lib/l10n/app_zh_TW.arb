@@ -2884,7 +2884,7 @@
   "guideGotIt": "知道了",
   "guideShowAgain": "重看本頁引導",
   "guideHomeTitle": "主頁 · 地圖與臺站",
-  "guideHomeBody": "地圖上的每個點都是收到的臺站，點開可以看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。",
+  "guideHomeBody": "點一個臺站看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。",
   "guideImmersiveTitle": "沉浸地圖",
   "guideImmersiveBody": "全螢幕看臺站：雙指縮放、單指拖曳，左下角可切換「跟隨自己」，左上角返回。",
   "guideMessagesTitle": "訊息",
@@ -2921,5 +2921,6 @@
   "guideTncDeviceTitle": "藍牙 TNC",
   "guideTncDeviceBody": "搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。",
   "guidePkwdwplTitle": "PKWDWPL 連接器",
-  "guidePkwdwplBody": "透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。"
+  "guidePkwdwplBody": "透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。",
+  "guideMoreInSettings": "之後可在「設定 → 重新查看功能導覽」裡再看"
 }

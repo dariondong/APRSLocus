@@ -234,22 +234,10 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
             return Stack(children: [
               _mapLayer(size),
               // ── 四角 HUD（不随地图旋转，始终水平可读）──
-              // 功能引导：首次进入时浮在顶部（避开左上返回列与右侧工具列）
-              Positioned(
-                left: 12,
-                right: 12,
-                top: MediaQuery.of(context).padding.top + 66,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 420),
-                    child: GuideTipCard(
-                      guideId: 'immersive',
-                      state: st,
-                      margin: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
-              ),
+              // 功能引导：这是**全屏地图**，四角全是 HUD（左上返回+定位、右上按钮列、
+              // 左下信标倒计时、右下速度卡），浮卡片必然压住其中之一 —— 第一版就糊在
+              // 右上按钮列上。这类页面改用**一次性底部弹层**，进入时弹一次。
+              GuideSheetOnce(guideId: 'immersive', state: st),
               _hud(size, st),
             ]);
           },

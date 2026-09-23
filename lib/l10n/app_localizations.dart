@@ -933,6 +933,12 @@ abstract class AppLocalizations {
   /// **"通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。"**
   String get guidePkwdwplBody;
 
+  /// No description provided for @guideMoreInSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **"之后可在「设置 → 重新查看功能引导」里再看"**
+  String get guideMoreInSettings;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

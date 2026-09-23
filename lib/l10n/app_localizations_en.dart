@@ -254,6 +254,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get guideMoreInSettings => 'You can reopen this later under Settings → Show all feature guides again';
+
+  @override
   String get guideStationsTitle => 'Station list';
 
   @override
@@ -308,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideHomeTitle => 'Home · map & stations';
 
   @override
-  String get guideHomeBody => 'Every dot on the map is a station you are receiving — tap one for its track and details. The bottom button sends your position (connect first).';
+  String get guideHomeBody => 'Tap a station for its track and details; the bottom button sends your position (connect first).';
 
   @override
   String get guideImmersiveTitle => 'Immersive map';

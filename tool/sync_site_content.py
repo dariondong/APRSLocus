@@ -205,6 +205,47 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.162', 'date': '2026-09-23',
+        'items': [
+            ('fix',
+             T('**功能引导与地图浮层的重叠已修**：上一版引导卡硬写 `topBase+46`，正好糊住'
+               '「沉浸地图」入口。先改成同一竖列顺序排布，但按真实几何量过发现它与右上'
+               '图例**只差 1px 就相交**（靠「差一点」压住的布局换个语言/缩放必翻车）—— '
+               '最终**地图页与沉浸地图改用一次性底部弹层**：全屏地图四周都是浮层，浮卡片'
+               '找不到一定不重叠的位置；弹层只在页面真的在前台时才弹',
+               '**功能導覽與地圖浮層的重疊已修**：上一版引導卡硬寫 `topBase+46`，正好'
+               '糊住「沉浸地圖」入口。先改成同一直列順序排布，但按真實幾何量過發現它與'
+               '右上圖例**只差 1px 就相交**（靠「差一點」壓住的佈局換個語言／縮放必翻車）—— '
+               '最終**地圖頁與沉浸地圖改用一次性底部彈層**：全屏地圖四周都是浮層，浮卡片'
+               '找不到一定不重疊的位置；彈層只在頁面真的在前台時才彈',
+               '**Guide/overlay overlap on the map is fixed.** The previous build hard-coded '
+               'the guide card at `topBase+46`, right on top of the immersive-map entry. '
+               'Merging it into the same column fixed that, but measuring the real geometry '
+               'showed it was **one pixel** from intersecting the legend — a layout that '
+               'relies on "it just barely fits" breaks with a longer language or a different '
+               'text scale. So both full-screen map views now use a **one-off bottom sheet**: '
+               'with overlays on every side there is no position where a floating card is '
+               'safe. The sheet only fires when the page is actually in the foreground.')),
+            ('up',
+             T('引导卡做小做安静：底色 8%→6%、描边 22%→16%、图标底托 30→28；右侧 × 改成'
+               '**「知道了」文字按钮**；地图那条文案改短（卡片在地图左侧列里只有约 '
+               '300px 宽，原句会折四行）。另外把 `check_landscape_layout.py` 的判据从'
+               '「数 leftInset 出现次数」改成按结构判 —— 数实现细节会误伤重构（这次就'
+               '报了个假失败）',
+               '引導卡做小做安靜：底色 8%→6%、描邊 22%→16%、圖示底托 30→28；右側 × 改成'
+               '**「知道了」文字按鈕**；地圖那條文案改短（卡片在地圖左側列裡只有約 '
+               '300px 寬，原句會折四行）。另外把 `check_landscape_layout.py` 的判據從'
+               '「數 leftInset 出現次數」改成按結構判 —— 數實作細節會誤傷重構（這次就'
+               '報了個假失敗）',
+               'The card is smaller and quieter: tint 8%→6%, border 22%→16%, icon chip '
+               '30→28, and the lone × became a **"Got it" text button**. The map copy was '
+               'shortened (the card is only ~300px wide there and used to wrap to four '
+               'lines). `check_landscape_layout.py` no longer counts occurrences of '
+               '`leftInset` but judges the structure instead — counting implementation '
+               'details punishes refactoring, and it produced a false failure this time.')),
+        ],
+    },
+    {
         'ver': 'v1.6.161', 'date': '2026-09-23',
         'items': [
             ('new',

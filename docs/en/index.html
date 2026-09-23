@@ -558,6 +558,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.162</span>
+        <span class="cl-date">2026-09-23</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Guide/overlay overlap on the map is fixed.** The previous build hard-coded the guide card at `topBase+46`, right on top of the immersive-map entry. Merging it into the same column fixed that, but measuring the real geometry showed it was **one pixel** from intersecting the legend — a layout that relies on "it just barely fits" breaks with a longer language or a different text scale. So both full-screen map views now use a **one-off bottom sheet**: with overlays on every side there is no position where a floating card is safe. The sheet only fires when the page is actually in the foreground.</div>
+        <div class="cl-item"><span class="cl-dot up"></span>The card is smaller and quieter: tint 8%→6%, border 22%→16%, icon chip 30→28, and the lone × became a **"Got it" text button**. The map copy was shortened (the card is only ~300px wide there and used to wrap to four lines). `check_landscape_layout.py` no longer counts occurrences of `leftInset` but judges the structure instead — counting implementation details punishes refactoring, and it produced a false failure this time.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.161</span>
         <span class="cl-date">2026-09-23</span>
       </div>

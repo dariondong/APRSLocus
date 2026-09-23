@@ -2380,7 +2380,7 @@
   "guideGotIt": "了解しました",
   "guideShowAgain": "このページのガイドを再表示",
   "guideHomeTitle": "ホーム · 地図と局",
-  "guideHomeBody": "地図上の点は受信した局です。タップすると軌跡と詳細が見られます。下部のボタンで自分の位置を送信します（先に接続が必要）。",
+  "guideHomeBody": "局をタップすると軌跡と詳細が見られます。下部のボタンで自分の位置を送信します（先に接続）。",
   "guideImmersiveTitle": "イマーシブマップ",
   "guideImmersiveBody": "全画面の地図です。ピンチで拡大縮小、ドラッグで移動、左下で「自分を追従」を切り替え、左上で戻ります。",
   "guideMessagesTitle": "メッセージ",
@@ -2417,5 +2417,6 @@
   "guideTncDeviceTitle": "Bluetooth TNC",
   "guideTncDeviceBody": "Bluetooth TNC を検索してペアリングし、「回線」ページでデータソースとして選びます。",
   "guidePkwdwplTitle": "PKWDWPL インターフェース",
-  "guidePkwdwplBody": "シリアルポート経由で PKWDWPL を操作します。ポートとボーレートを選ぶと、送信を担当します。"
+  "guidePkwdwplBody": "シリアルポート経由で PKWDWPL を操作します。ポートとボーレートを選ぶと、送信を担当します。",
+  "guideMoreInSettings": "あとから「設定 → すべての機能ガイドを再表示」で見られます"
 }

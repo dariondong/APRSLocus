@@ -253,6 +253,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tierMinTurnHint => 'この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）';
 
   @override
+  String get guideMoreInSettings => 'あとから「設定 → すべての機能ガイドを再表示」で見られます';
+
+  @override
   String get guideStationsTitle => '局リスト';
 
   @override
@@ -307,7 +310,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideHomeTitle => 'ホーム · 地図と局';
 
   @override
-  String get guideHomeBody => '地図上の点は受信した局です。タップすると軌跡と詳細が見られます。下部のボタンで自分の位置を送信します（先に接続が必要）。';
+  String get guideHomeBody => '局をタップすると軌跡と詳細が見られます。下部のボタンで自分の位置を送信します（先に接続）。';
 
   @override
   String get guideImmersiveTitle => 'イマーシブマップ';

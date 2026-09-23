@@ -251,6 +251,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get guideMoreInSettings => '之后可在「设置 → 重新查看功能引导」里再看';
+
+  @override
   String get guideStationsTitle => '台站列表';
 
   @override
@@ -305,7 +308,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get guideHomeTitle => '主页 · 地图与台站';
 
   @override
-  String get guideHomeBody => '地图上的每个点都是收到的台站，点开可以看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。';
+  String get guideHomeBody => '点一个台站看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。';
 
   @override
   String get guideImmersiveTitle => '沉浸地图';
@@ -6873,6 +6876,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
 
   @override
+  String get guideMoreInSettings => '之後可在「設定 → 重新查看功能導覽」裡再看';
+
+  @override
   String get guideStationsTitle => '臺站列表';
 
   @override
@@ -6927,7 +6933,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get guideHomeTitle => '主頁 · 地圖與臺站';
 
   @override
-  String get guideHomeBody => '地圖上的每個點都是收到的臺站，點開可以看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。';
+  String get guideHomeBody => '點一個臺站看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。';
 
   @override
   String get guideImmersiveTitle => '沉浸地圖';

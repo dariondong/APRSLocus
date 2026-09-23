@@ -2296,7 +2296,7 @@
   "guideGotIt": "Got it",
   "guideShowAgain": "Show this guide again",
   "guideHomeTitle": "Home · map & stations",
-  "guideHomeBody": "Every dot on the map is a station you are receiving — tap one for its track and details. The bottom button sends your position (connect first).",
+  "guideHomeBody": "Tap a station for its track and details; the bottom button sends your position (connect first).",
   "guideImmersiveTitle": "Immersive map",
   "guideImmersiveBody": "Full-screen station view: pinch to zoom, drag to pan, “follow me” at the bottom-left, back arrow at the top-left.",
   "guideMessagesTitle": "Messages",
@@ -2333,5 +2333,6 @@
   "guideTncDeviceTitle": "Bluetooth TNC",
   "guideTncDeviceBody": "Scan and pair your Bluetooth TNC, then pick it as the data source on the links page.",
   "guidePkwdwplTitle": "PKWDWPL interface",
-  "guidePkwdwplBody": "Drive a PKWDWPL interface over a serial port: choose the port and baud rate; it then handles transmission."
+  "guidePkwdwplBody": "Drive a PKWDWPL interface over a serial port: choose the port and baud rate; it then handles transmission.",
+  "guideMoreInSettings": "You can reopen this later under Settings → Show all feature guides again"
 }

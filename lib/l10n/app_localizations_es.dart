@@ -254,6 +254,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get guideMoreInSettings => 'Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones';
+
+  @override
   String get guideStationsTitle => 'Lista de estaciones';
 
   @override
@@ -308,7 +311,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get guideHomeTitle => 'Inicio · mapa y estaciones';
 
   @override
-  String get guideHomeBody => 'Cada punto del mapa es una estación que estás recibiendo: tócalo para ver su ruta y sus datos. El botón inferior envía tu posición (conecta antes).';
+  String get guideHomeBody => 'Toca una estación para ver su ruta y sus datos; el botón inferior envía tu posición (conecta antes).';
 
   @override
   String get guideImmersiveTitle => 'Mapa inmersivo';

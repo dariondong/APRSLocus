@@ -2380,7 +2380,7 @@
   "guideGotIt": "Mengerti",
   "guideShowAgain": "Tampilkan panduan ini lagi",
   "guideHomeTitle": "Beranda · peta & stasiun",
-  "guideHomeBody": "Setiap titik di peta adalah stasiun yang Anda terima — ketuk untuk melihat jejak dan detailnya. Tombol bawah mengirim posisi Anda (sambungkan dulu).",
+  "guideHomeBody": "Ketuk stasiun untuk jejak dan detailnya; tombol bawah mengirim posisi Anda (sambungkan dulu).",
   "guideImmersiveTitle": "Peta imersif",
   "guideImmersiveBody": "Peta layar penuh: cubit untuk zoom, seret untuk menggeser, “ikuti saya” di kiri bawah, kembali di kiri atas.",
   "guideMessagesTitle": "Pesan",
@@ -2417,5 +2417,6 @@
   "guideTncDeviceTitle": "TNC Bluetooth",
   "guideTncDeviceBody": "Pindai dan pasangkan TNC Bluetooth, lalu pilih sebagai sumber data di halaman tautan.",
   "guidePkwdwplTitle": "Antarmuka PKWDWPL",
-  "guidePkwdwplBody": "Jalankan antarmuka PKWDWPL lewat port serial: pilih port dan baud rate; antarmuka ini yang memancarkan."
+  "guidePkwdwplBody": "Jalankan antarmuka PKWDWPL lewat port serial: pilih port dan baud rate; antarmuka ini yang memancarkan.",
+  "guideMoreInSettings": "Anda bisa membukanya lagi di Pengaturan → Tampilkan semua panduan fitur lagi"
 }

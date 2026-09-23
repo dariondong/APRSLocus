@@ -208,44 +208,53 @@ class GuideCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 刻意做得**小且安静**：它是「看一眼就知道该点哪」的提示，不是公告。
+    // 早先那版用大面积彩色底 + 描边 + 右侧 × 图标，一页一个还算清楚，但页页都有
+    // 就显得吵（用户反馈「小引导有点乱了」）—— 现在只留图标底托的颜色、底色压到 6%。
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 11, 8, 11),
+      padding: const EdgeInsets.fromLTRB(10, 9, 8, 9),
       decoration: BoxDecoration(
-        color: guide.color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: guide.color.withValues(alpha: 0.22)),
+        color: guide.color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: guide.color.withValues(alpha: 0.16)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 30,
-            height: 30,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: guide.color.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(9),
             ),
-            child: Icon(guide.icon, size: 16, color: guide.color),
+            child: Icon(guide.icon, size: 15, color: guide.color),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 9),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(guide.title, style: ts(12.5, w: FontWeight.w700)),
-                const SizedBox(height: 3),
-                Text(guide.body, style: ts(11.5, c: C.slate, h: 1.5)),
+                const SizedBox(height: 2),
+                Text(guide.body, style: ts(11.5, c: C.slate, h: 1.45)),
               ],
             ),
           ),
+          // 「知道了」比一个孤零零的 × 更好按，也把「关掉 = 看过」说清楚了
           if (showClose && onClose != null)
-            IconButton(
-              tooltip: S.of(context).guideGotIt,
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-              icon: Icon(Icons.close_rounded, size: 16, color: C.grey),
+            TextButton(
               onPressed: onClose,
+              style: TextButton.styleFrom(
+                minimumSize: const Size(0, 28),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                foregroundColor: guide.color,
+              ),
+              child: Text(
+                S.of(context).guideGotIt,
+                style: ts(11.5, c: guide.color, w: FontWeight.w700),
+              ),
             )
           else
             const SizedBox(width: 6),
@@ -253,6 +262,65 @@ class GuideCardView extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 全屏地图类页面（四角都是 HUD）用一次性弹层，**不浮卡片**。
+///
+/// 为什么这两种页面特殊：沉浸地图的四角全是控件（左上返回+定位、右侧一列按钮、
+/// 左下信标倒计时、右下速度卡），任何浮卡片都会压住其中之一 —— 用户已经报过一次
+/// 「地图页 UI 重叠」。这类页面进入时弹一次底部弹层，关掉即记为已看。
+///
+/// 用 `SizedBox.shrink()` 参与布局，所以直接丢进页面 Stack 里即可。
+class GuideSheetOnce extends StatefulWidget {
+  final String guideId;
+  final AppState state;
+
+  /// 当前页面是否真的在前台。
+  ///
+  /// 地图页在 `IndexedStack` 里（1.0 布局的五个 tab 一次全建、2.0 布局地图当底），
+  /// 不带这个开关的话，用户刚启动应用、还停在别的 tab 上时弹层就会抢着冒出来。
+  final bool enabled;
+
+  const GuideSheetOnce({
+    super.key,
+    required this.guideId,
+    required this.state,
+    this.enabled = true,
+  });
+  @override
+  State<GuideSheetOnce> createState() => _GuideSheetOnceState();
+}
+
+class _GuideSheetOnceState extends State<GuideSheetOnce> {
+  bool _fired = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _maybeFire();
+  }
+
+  @override
+  void didUpdateWidget(covariant GuideSheetOnce old) {
+    super.didUpdateWidget(old);
+    // 从后台切到前台的那一刻才弹（见 `enabled` 的说明）
+    if (widget.enabled && !old.enabled) _maybeFire();
+  }
+
+  void _maybeFire() {
+    if (_fired || !widget.enabled) return;
+    if (widget.state.isGuideSeen(widget.guideId)) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _fired || !context.mounted) return;
+      _fired = true;
+      // 先记「已看」再弹：点弹层外部关闭也算看过了，不该下次再弹一次
+      widget.state.markGuideSeen(widget.guideId);
+      showGuideSheet(context, widget.guideId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 /// 顶栏上的「重看本页引导」按钮。
@@ -328,6 +396,12 @@ Future<void> showGuideSheet(BuildContext context, String guideId) async {
               ),
               const SizedBox(height: 12),
               Text(g.body, style: ts(13, c: C.slate, h: 1.7)),
+              const SizedBox(height: 10),
+              // 看完了怎么再看一眼 —— 沉浸地图这类页面没有顶栏，这里是唯一的提示
+              Text(
+                S.of(ctx).guideMoreInSettings,
+                style: ts(11, c: C.grey, h: 1.5),
+              ),
               const SizedBox(height: 14),
               SizedBox(
                 width: double.infinity,

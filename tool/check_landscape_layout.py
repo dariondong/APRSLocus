@@ -13,8 +13,14 @@
      地图的贴左控件（信息条、沉浸入口、上报横杠、底部比例尺/坐标条）如果不让开，
      就会**糊在那张半透明磨砂卡背后** —— 卡是 58% 透明的，所以不是「被挡住」这么干脆，
      而是控制条在卡片后面若隐若现，看着像渲染坏了。
-     判据：`MapPage` 必须真的把 `leftInset` 用在贴左控件上（≥4 处），
-     且 `HomeShell2` 的横屏布局必须把 `leftInset` 传下去。
+     判据：`MapPage` 必须真的把 `leftInset` 用在贴左控件上，且 `HomeShell2` 的
+     横屏布局必须把 `leftInset` 传下去。
+
+     ⚠ 判据改过一次，记在这里：原来是**数 `14 + widget.leftInset` 的出现次数**
+     （要求 ≥4），那是在数实现细节、不是在守意图 —— 把「信息条 + 沉浸入口」合并成
+     同一个左上竖列之后，入口自己不再需要 `leftInset`（它跟着列走），计数掉到 3 就
+     报了假失败。假失败比没有检查更坏（人会顺手把规则放宽）。现在改成按**结构**判：
+     竖列本身要让开、**沉浸入口必须真的在那个竖列里**、上报横杠与底部条各自让开。
 
   2. **右侧工具列在手机横屏被裁掉**。
      单列是 8 个按钮 ≈ 346px（3 个小工具钮 3×38+2×6=126，5 个缩放钮 5×38+4×6=214，
@@ -71,10 +77,15 @@ def main() -> int:
     if 'final double leftInset;' not in map_page:
         errors.append('MapPage 没有 leftInset 参数 —— 横屏时贴左控件会糊在竖条/面板背后')
     n_left = map_code.count('14 + widget.leftInset')
-    if n_left < 4:
-        errors.append(f'MapPage 里只有 {n_left} 处用了 `14 + widget.leftInset`（要 ≥4：'
-                      '信息条 / 沉浸入口 / 上报横杠 / 底部坐标条）—— '
-                      '漏掉的那几个在横屏会被竖条压住')
+    if n_left < 3:
+        errors.append(f'MapPage 里只有 {n_left} 处用了 `14 + widget.leftInset`（要 ≥3：'
+                      '左上竖列（信息条 + 沉浸入口）/ 上报横杠 / 底部坐标条）—— '
+                      '漏掉的那些在横屏会被竖条压住')
+    # 沉浸入口必须**挂在左上竖列里**：它自己算 Positioned 时会被同列其它控件盖住
+    # （真发生过：引导卡硬写 topBase+46，正好糊在这个入口上）。
+    if '_immersiveEntry(),' not in map_code:
+        errors.append('沉浸入口没挂在「左上竖列」里 —— 它自己算 Positioned 就会被'
+                      '同列控件盖住，也拿不到 leftInset 的让位')
     if 'left: widget.leftInset,' not in map_code:
         errors.append('搜索提示条没有按 leftInset 对齐 —— 横屏时它会偏向左侧、压到卡片边缘')
     if 'leftInset: mapLeftInset' not in shell:

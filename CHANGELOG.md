@@ -1,5 +1,97 @@
 # 更新日志
 
+## [1.6.162] - 2026-09-23
+
+### 🔧 功能引导收敛：地图/沉浸地图改用一次性弹层；卡片更小更安静 / Guides tidied up: the full-screen map views use a one-off sheet, and the tip card is smaller and quieter
+
+### 一、地图页「UI 重叠」的根因
+
+上一版给引导卡硬写了 `top: topBase + 46`，而**沉浸地图入口**正好在
+`top: topBase + 44` —— 卡片直接把那个按钮糊掉了。
+
+修法走了两步，第一步是错的，记在这里：
+
+1. 先把「统计条 + 沉浸入口」并成**同一个 `Column`** 顺序排布（结构上不可能再重叠）。
+   看着对了，但按**真实几何**量过之后发现：这个竖列的高度全看字体度量，而右上图例
+   是独立浮层 —— 卡片按列排下去，与图例下沿**只差 1px 就相交**。靠「差一点」压住的
+   布局，换个语言（西语那句更长）或换个缩放必然翻车。
+2. 最终：**地图页与沉浸地图都改用一次性底部弹层**（进入该页时弹一次，关掉即记为
+   已看）。全屏地图四周全是浮层（统计 / 图例 / 工具列 / 上报横杠 / 比例尺），浮卡片
+   找不到「一定不重叠」的位置 —— 弹层不参与那套定位，从根上绕开。
+
+弹层只在页面**真的在前台**时才弹：地图在 `IndexedStack` 里（1.0 布局五个 tab 一次
+全建），否则用户还在别的 tab 上时它就会抢着冒出来。
+
+其余 14 个页面仍是正文顶部的内联卡片（它们排在内容流里，不存在重叠）。
+
+### 二、卡片做得更小更安静
+
+* 底色 8% → 6%、描边 22% → 16%、圆角 16 → 14、图标底托 30 → 28、说明行高 1.5 → 1.45；
+* 右侧那个孤零零的 × 图标 → **「知道了」文字按钮**（更好按，也把「关掉 = 看过」说清了）；
+* 地图那条文案改短：这张卡在地图左侧列里只有约 300px 宽（右侧要让开工具列），
+  原来那句会折成四行；
+* 弹层里多一行「之后可在『设置 → 重新查看功能引导』里再看」—— 全屏页面没有顶栏，
+  这是唯一的去处提示。
+
+### 三、顺手修了一个「检查器自己会误伤重构」的问题
+
+`check_landscape_layout.py` 原来数 `14 + widget.leftInset` 的**出现次数**（要求 ≥4：
+信息条 / 沉浸入口 / 上报横杠 / 底部坐标条）。把信息条与沉浸入口合并成同一个竖列之后，
+入口自己不再需要 `leftInset`（它跟着列走），计数掉到 3 就报了个**假失败**。假失败比
+没有检查更坏 —— 修它的人通常会把规则放宽。判据改成按**结构**判：竖列本身要让开、
+**沉浸入口必须真的在那个竖列里**、上报横杠与底部条各自让开。新判据同样验证过会报红。
+
+---
+
+## [1.6.162] - 2026-09-23 (English)
+
+### 🔧 Guides tidied up: the full-screen map views now use a one-off sheet, and the tip card is smaller and quieter
+
+**Why the map page had overlapping UI.** The previous build hard-coded the guide card at
+`top: topBase + 46`, while the immersive-map entry sits at `top: topBase + 44` — the card
+covered that button outright.
+
+The fix took two attempts, and the first one is worth recording:
+
+1. Merging the station-count chip and the immersive entry into **one `Column`** so they
+   flow in order (structurally impossible to overlap). It *looked* right, but measuring the
+   real geometry showed the column's height depends entirely on font metrics while the
+   legend is a separate overlay — the card ended up **one pixel** away from intersecting
+   the legend. A layout held together by "it just barely fits" will break with a longer
+   language (Spanish) or a different text scale.
+2. Final approach: **both full-screen map views use a one-off bottom sheet** (shown once
+   when the page opens; closing it records the guide as seen). A full-screen map has
+   overlays on every side — count chip, legend, tool column, beacon bar, scale bar — so
+   there is no position where a floating card is guaranteed not to overlap. A sheet does
+   not participate in that positioning at all.
+
+The sheet only fires when the page is **actually in the foreground**: the map lives inside
+an `IndexedStack` (in the 1.0 layout all five tabs are built at once), so without that
+guard it would pop up while the user was still on another tab.
+
+The other fourteen pages keep their inline card at the top of the content — they sit in
+the scroll flow, where overlap is not possible.
+
+**Smaller, quieter card.** Background tint 8% → 6%, border 22% → 16%, radius 16 → 14,
+icon chip 30 → 28, body line height 1.5 → 1.45. The lone × icon became a **"Got it" text
+button** (easier to hit, and it makes "closing = seen" explicit). The map copy was
+shortened, because the card is only about 300px wide there (the tool column takes the rest)
+and the original sentence wrapped to four lines. The sheet gained a line pointing at
+Settings → "Show all feature guides again", since full-screen pages have no app bar to
+put a "show again" button in.
+
+**Also fixed a check that punished refactoring.** `check_landscape_layout.py` used to
+*count* occurrences of `14 + widget.leftInset` (requiring ≥4: info chip / immersive entry /
+beacon bar / scale bar). After merging the info chip and the immersive entry into one
+column, the entry no longer needs `leftInset` of its own — it inherits it — so the count
+dropped to 3 and the check reported a **false failure**. A false failure is worse than no
+check, because the person hitting it usually just loosens the rule. The criterion is now
+structural: the column itself must be inset, **the immersive entry must really live inside
+that column**, and the beacon bar and scale bar must each be inset. The new criterion was
+verified to fail as well.
+
+---
+
 ## [1.6.161] - 2026-09-23
 
 ### ✨ 功能引导：16 个页面各有「首次进入的小提示卡」/ In-app feature guides: 16 pages now show a one-off tip card on first visit

@@ -564,6 +564,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.162</span>
+        <span class="cl-date">2026-09-23</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**功能引导与地图浮层的重叠已修**：上一版引导卡硬写 `topBase+46`，正好糊住「沉浸地图」入口。先改成同一竖列顺序排布，但按真实几何量过发现它与右上图例**只差 1px 就相交**（靠「差一点」压住的布局换个语言/缩放必翻车）—— 最终**地图页与沉浸地图改用一次性底部弹层**：全屏地图四周都是浮层，浮卡片找不到一定不重叠的位置；弹层只在页面真的在前台时才弹</div>
+        <div class="cl-item"><span class="cl-dot up"></span>引导卡做小做安静：底色 8%→6%、描边 22%→16%、图标底托 30→28；右侧 × 改成**「知道了」文字按钮**；地图那条文案改短（卡片在地图左侧列里只有约 300px 宽，原句会折四行）。另外把 `check_landscape_layout.py` 的判据从「数 leftInset 出现次数」改成按结构判 —— 数实现细节会误伤重构（这次就报了个假失败）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.161</span>
         <span class="cl-date">2026-09-23</span>
       </div>

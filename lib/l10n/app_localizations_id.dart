@@ -254,6 +254,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get guideMoreInSettings => 'Anda bisa membukanya lagi di Pengaturan → Tampilkan semua panduan fitur lagi';
+
+  @override
   String get guideStationsTitle => 'Daftar stasiun';
 
   @override
@@ -308,7 +311,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get guideHomeTitle => 'Beranda · peta & stasiun';
 
   @override
-  String get guideHomeBody => 'Setiap titik di peta adalah stasiun yang Anda terima — ketuk untuk melihat jejak dan detailnya. Tombol bawah mengirim posisi Anda (sambungkan dulu).';
+  String get guideHomeBody => 'Ketuk stasiun untuk jejak dan detailnya; tombol bawah mengirim posisi Anda (sambungkan dulu).';
 
   @override
   String get guideImmersiveTitle => 'Peta imersif';
