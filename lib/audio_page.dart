@@ -275,6 +275,11 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
+        guideId: 'audio',
+        // state 必须给：SettingsPageShell 靠它读写「引导已读」，只给 guideId 的话
+        // 卡片会**静默不出现**（外壳里那条 `state != null` 判断）——
+        // tool/check_guides.py 现已把这条钉住。
+        state: widget.state,
         title: s.audioSettings,
         subtitle: s.audioSettingsSubtitle,
         icon: Icons.graphic_eq_rounded,

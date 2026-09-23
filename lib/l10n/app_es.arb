@@ -2403,5 +2403,19 @@
   "guideResetTitle": "¿Ver otra vez las guías de funciones?",
   "guideResetConfirm": "Se borra el registro de «ya visto» y la tarjeta de ayuda vuelve a aparecer en cada página.",
   "guideResetButton": "Mostrar otra vez",
-  "guideResetDone": "Guías de funciones restablecidas"
+  "guideResetDone": "Guías de funciones restablecidas",
+  "guideStationsTitle": "Lista de estaciones",
+  "guideStationsBody": "Aquí están todas las estaciones que recibes: busca, ordena y filtra por distancia. La lista y el mapa comparten el mismo filtro.",
+  "guideTrackHistoryTitle": "Reproducir recorrido",
+  "guideTrackHistoryBody": "Reproduce la ruta de una estación en una fecha concreta; arrastra la línea de tiempo para recorrerla.",
+  "guideThemeTitle": "Tema e interfaz",
+  "guideThemeBody": "Cambia colores, imagen de fondo, material y escala de la interfaz; se aplica al momento para comparar.",
+  "guideTranslateTitle": "Traducción",
+  "guideTranslateBody": "Configura el idioma destino y la API para traducir los chats. Sin API no hay traducción; esta página indica qué hace falta.",
+  "guideAudioTitle": "TNC por tarjeta de sonido",
+  "guideAudioBody": "Envía y recibe tramas AFSK por la salida de audio: elige el dispositivo, ajusta volumen y ganancia y usa el tono de prueba antes de conectar.",
+  "guideTncDeviceTitle": "TNC Bluetooth",
+  "guideTncDeviceBody": "Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.",
+  "guidePkwdwplTitle": "Interfaz PKWDWPL",
+  "guidePkwdwplBody": "Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir."
 }

@@ -242,6 +242,8 @@ class _TncDevicePageState extends State<TncDevicePage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
+        guideId: 'tncDevice',
+        state: widget.state,
         title: s.tncDeviceTitle,
         subtitle: s.tncDeviceDesc,
         icon: Icons.settings_input_antenna_rounded,

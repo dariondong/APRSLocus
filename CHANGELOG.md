@@ -1,5 +1,79 @@
 # 更新日志
 
+## [1.6.161] - 2026-09-23
+
+### ✨ 功能引导：16 个页面各有「首次进入的小提示卡」/ In-app feature guides: 16 pages now show a one-off tip card on first visit
+
+### 一、为什么不是把首次启动向导（OOBE）做长
+
+OOBE 只解决「装完第一次怎么配」（语言 / 协议 / 呼号 / 符号 / 筛选 / 服务器）。而
+**设备链路、离线地图、日志、备份**这些页面是「用着用着才会遇到」的 —— 第一次打开
+时满屏控件，没人告诉你先点哪里。这版给这类页面各配一句话的提示。
+
+### 二、形态：正文顶部一张可关闭的小卡片
+
+* 首次进入该页时出现，**关掉即记为「已看」，不再打扰**；已看过时**不占任何位置**；
+* 卡片配色与页面语义一致（图标底托 + 淡色描边 + 一句话说明「从哪下手」）；
+* 设置类子页的顶栏多一个「重看本页引导」按钮，临时想再看一眼不必去设置里重置；
+* 地图与沉浸地图是 Stack，卡片**浮在上面**而不插进布局 —— 插进去会改变地图尺寸。
+
+覆盖 16 个页面：地图（主页）、台站列表、沉浸地图、消息、数据包、设备、设置、离线
+地图、日志、备份、轨迹回放、主题与界面、翻译、声卡 TNC、蓝牙 TNC、PKWDWPL。
+
+### 三、看过哪些，是可持久化、可重置的
+
+「已看」记录存进设置（`guideSeen`，与 `oobeDone` 同类）并**纳入备份** —— 换机后
+不该把已经看过的提示卡再弹一遍。设置里新增「重新查看功能引导」：确认后清空记录，
+各页的小提示卡会再出现一次（挨着「重新运行设置向导」）。
+
+### 四、引导文案是 6 语言的，且有三道静态检查兜底
+
+加一条引导要同时动**四处**：引导表、l10n 键（6 语言）、gen-l10n 产物、页面接入点。
+漏任何一处都**不会让编译或测试失败**，只会表现为「引导永远不出现」或「某个语言下
+运行时崩」。新增 `tool/check_guides.py` 把这四处一一对应钉住，两个方向都查
+（缺一步、以及页面里写了不存在的 id）。这条检查自己也被验证过会报红 —— 它在写完
+当次就抓出了三处真问题：`audio` / `backup` / `offlineMap` 三页只给了 `guideId`
+却没给 `state`，卡片会静默不出现。
+
+---
+
+## [1.6.161] - 2026-09-23 (English)
+
+### ✨ In-app feature guides: 16 pages now show a one-off tip card on first visit
+
+**Why not simply make the first-run wizard longer.** OOBE covers "how to configure the
+app once" (language, terms, callsign, symbol, filter, server). But device links,
+offline maps, the log and backup are pages users meet *later*, when the screen is
+already full of controls and nothing says where to start.
+
+**What it looks like.** A small dismissible card at the top of the page body, shown
+once: closing it records "seen" and it never takes up space again. The card uses the
+page's own accent colour and gives one line of "start here" advice. Sub-pages built on
+the settings shell also get a "show this guide again" button in the app bar, so
+re-reading one does not require resetting everything. On the map and immersive map the
+card **floats above** the stack instead of being inserted into the layout, which would
+change the map's size.
+
+Sixteen pages are covered: map (home), station list, immersive map, messages, packets,
+devices, settings, offline maps, log, backup, track replay, theme, translation,
+sound-card TNC, Bluetooth TNC and PKWDWPL.
+
+**Seen-state is persisted and resettable.** The record lives in settings (`guideSeen`,
+the same family as `oobeDone`) and is **included in backups**, so a restored device
+does not replay guides the user already read. Settings gained "show all feature guides
+again", which clears the record after a confirmation.
+
+**Guides are localised into six languages, with a static check behind them.** Adding a
+guide touches four places: the guide table, the l10n keys (6 locales), the generated
+l10n output, and the page that shows it. Missing any one of them breaks neither the
+build nor the tests — it just means the guide never appears, or crashes at runtime in
+one locale. The new `tool/check_guides.py` ties the four together in both directions.
+The check itself was validated to fail; it immediately caught three real problems while
+being written: `audio`, `backup` and `offlineMap` passed a `guideId` without `state`,
+so their cards would have silently never appeared.
+
+---
+
 ## [1.6.160] - 2026-09-23
 
 ### 🔧 名片卡不再压住封面：退回封面下方，中间留 12px / The business card no longer overlaps the hero — it sits below it with a 12px gap

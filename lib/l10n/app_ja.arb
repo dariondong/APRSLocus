@@ -2403,5 +2403,19 @@
   "guideResetTitle": "すべての機能ガイドを再表示しますか？",
   "guideResetConfirm": "「既読」の記録を消去すると、各ページ上部の小さなヒントがもう一度表示されます。",
   "guideResetButton": "再表示",
-  "guideResetDone": "機能ガイドをリセットしました"
+  "guideResetDone": "機能ガイドをリセットしました",
+  "guideStationsTitle": "局リスト",
+  "guideStationsBody": "受信した局の一覧です。検索・並べ替え・距離での絞り込みができ、地図と同じフィルタを共有します。",
+  "guideTrackHistoryTitle": "軌跡の再生",
+  "guideTrackHistoryBody": "日付ごとに局の走行ルートを再生できます。タイムラインをドラッグすると各区間を確認できます。",
+  "guideThemeTitle": "テーマと外観",
+  "guideThemeBody": "配色・背景画像・マテリアル・表示倍率を変更できます。すぐ反映されるので見比べながら調整できます。",
+  "guideTranslateTitle": "翻訳",
+  "guideTranslateBody": "チャット自動翻訳の対象言語と API を設定します。API 未設定のときは翻訳されません（設定方法をこのページで案内します）。",
+  "guideAudioTitle": "サウンドカード TNC",
+  "guideAudioBody": "オーディオ入出力で AFSK フレームを送受信します。デバイスを選び音量とゲインを調整し、「テストトーン」で確認してから接続してください。",
+  "guideTncDeviceTitle": "Bluetooth TNC",
+  "guideTncDeviceBody": "Bluetooth TNC を検索してペアリングし、「回線」ページでデータソースとして選びます。",
+  "guidePkwdwplTitle": "PKWDWPL インターフェース",
+  "guidePkwdwplBody": "シリアルポート経由で PKWDWPL を操作します。ポートとボーレートを選ぶと、送信を担当します。"
 }

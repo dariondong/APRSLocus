@@ -150,6 +150,8 @@ class _TranslateSettingsPageState extends State<TranslateSettingsPage> {
     return ListenableBuilder(
       listenable: widget.state,
       builder: (context, _) => SettingsPageShell(
+        guideId: 'translate',
+        state: widget.state,
         title: s.translateSettings,
         subtitle: s.translateSettingsSubtitle,
         icon: Icons.translate_rounded,

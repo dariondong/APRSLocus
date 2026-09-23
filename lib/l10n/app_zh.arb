@@ -2917,5 +2917,19 @@
   "guideResetTitle": "重新查看功能引导？",
   "guideResetConfirm": "清空「已看过」记录，各页顶部的小提示卡会再出现一次。",
   "guideResetButton": "重新显示",
-  "guideResetDone": "功能引导已重置"
+  "guideResetDone": "功能引导已重置",
+  "guideStationsTitle": "台站列表",
+  "guideStationsBody": "收到的台站都在这里，可搜索、排序、按距离筛选；列表与地图共用同一份筛选条件。",
+  "guideTrackHistoryTitle": "轨迹回放",
+  "guideTrackHistoryBody": "按日期回放某个台站当天走过的路线，拖动时间轴可以看每一段。",
+  "guideThemeTitle": "主题与界面",
+  "guideThemeBody": "换配色、背景图、界面材质与缩放；改完立刻生效，可以在同一页对比。",
+  "guideTranslateTitle": "翻译",
+  "guideTranslateBody": "设置聊天自动翻译的目标语言与接口。没配接口时不会翻译，这里会说明怎么配。",
+  "guideAudioTitle": "声卡 TNC",
+  "guideAudioBody": "用耳机口 / 声卡收发 AFSK 报文：选音频设备、调音量与增益，先「测试音」再连接。",
+  "guideTncDeviceTitle": "蓝牙 TNC",
+  "guideTncDeviceBody": "搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。",
+  "guidePkwdwplTitle": "PKWDWPL 连接器",
+  "guidePkwdwplBody": "通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。"
 }

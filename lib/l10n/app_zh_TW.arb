@@ -2907,5 +2907,19 @@
   "guideResetTitle": "重新查看功能導覽？",
   "guideResetConfirm": "清空「已看過」記錄，各頁頂部的小提示卡會再出現一次。",
   "guideResetButton": "重新顯示",
-  "guideResetDone": "功能導覽已重設"
+  "guideResetDone": "功能導覽已重設",
+  "guideStationsTitle": "臺站列表",
+  "guideStationsBody": "收到的臺站都在這裡，可搜尋、排序、依距離篩選；列表與地圖共用同一份篩選條件。",
+  "guideTrackHistoryTitle": "軌跡回放",
+  "guideTrackHistoryBody": "依日期回放某個臺站當天走過的路線，拖動時間軸可以看每一段。",
+  "guideThemeTitle": "主題與介面",
+  "guideThemeBody": "換配色、背景圖、介面材質與縮放；改完立刻生效，可以在同一頁對比。",
+  "guideTranslateTitle": "翻譯",
+  "guideTranslateBody": "設定聊天自動翻譯的目標語言與介面。沒設介面時不會翻譯，這裡會說明怎麼設。",
+  "guideAudioTitle": "音效卡 TNC",
+  "guideAudioBody": "用耳機孔 / 音效卡收發 AFSK 報文：選音訊裝置、調音量與增益，先「測試音」再連線。",
+  "guideTncDeviceTitle": "藍牙 TNC",
+  "guideTncDeviceBody": "搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。",
+  "guidePkwdwplTitle": "PKWDWPL 連接器",
+  "guidePkwdwplBody": "透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。"
 }

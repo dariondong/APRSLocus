@@ -60,6 +60,9 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
     final s = S.of(context);
     return SettingsPageShell(
       guideId: 'offlineMap',
+      // state 必须给：外壳靠它读写「引导已读」，只给 guideId 卡片会**静默不出现**
+      // （tool/check_guides.py 把这条钉住了）
+      state: widget.state,
       title: s.offlineMap,
       subtitle: s.offlineMapDesc,
       icon: Icons.download_for_offline_rounded,

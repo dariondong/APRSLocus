@@ -253,6 +253,48 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tierMinTurnHint => 'この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）';
 
   @override
+  String get guideStationsTitle => '局リスト';
+
+  @override
+  String get guideStationsBody => '受信した局の一覧です。検索・並べ替え・距離での絞り込みができ、地図と同じフィルタを共有します。';
+
+  @override
+  String get guideTrackHistoryTitle => '軌跡の再生';
+
+  @override
+  String get guideTrackHistoryBody => '日付ごとに局の走行ルートを再生できます。タイムラインをドラッグすると各区間を確認できます。';
+
+  @override
+  String get guideThemeTitle => 'テーマと外観';
+
+  @override
+  String get guideThemeBody => '配色・背景画像・マテリアル・表示倍率を変更できます。すぐ反映されるので見比べながら調整できます。';
+
+  @override
+  String get guideTranslateTitle => '翻訳';
+
+  @override
+  String get guideTranslateBody => 'チャット自動翻訳の対象言語と API を設定します。API 未設定のときは翻訳されません（設定方法をこのページで案内します）。';
+
+  @override
+  String get guideAudioTitle => 'サウンドカード TNC';
+
+  @override
+  String get guideAudioBody => 'オーディオ入出力で AFSK フレームを送受信します。デバイスを選び音量とゲインを調整し、「テストトーン」で確認してから接続してください。';
+
+  @override
+  String get guideTncDeviceTitle => 'Bluetooth TNC';
+
+  @override
+  String get guideTncDeviceBody => 'Bluetooth TNC を検索してペアリングし、「回線」ページでデータソースとして選びます。';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL インターフェース';
+
+  @override
+  String get guidePkwdwplBody => 'シリアルポート経由で PKWDWPL を操作します。ポートとボーレートを選ぶと、送信を担当します。';
+
+  @override
   String get guideTitle => '機能ガイド';
 
   @override

@@ -2319,5 +2319,19 @@
   "guideResetTitle": "Show all feature guides again?",
   "guideResetConfirm": "This clears the “already seen” record so the tip card appears once more on each page.",
   "guideResetButton": "Show again",
-  "guideResetDone": "Feature guides reset"
+  "guideResetDone": "Feature guides reset",
+  "guideStationsTitle": "Station list",
+  "guideStationsBody": "Every station you receive is listed here — search, sort and filter by distance. The list and the map share one filter.",
+  "guideTrackHistoryTitle": "Track replay",
+  "guideTrackHistoryBody": "Replay a station’s route for a given day and drag the timeline to go through it leg by leg.",
+  "guideThemeTitle": "Theme & interface",
+  "guideThemeBody": "Change colours, background image, interface material and scale — applied immediately so you can compare on the spot.",
+  "guideTranslateTitle": "Translation",
+  "guideTranslateBody": "Set the target language and the API used to translate chats. Without an API nothing is translated; this page explains what is needed.",
+  "guideAudioTitle": "Sound-card TNC",
+  "guideAudioBody": "Send and receive AFSK frames through the audio output: pick the device, set volume and gain, and use the test tone before connecting.",
+  "guideTncDeviceTitle": "Bluetooth TNC",
+  "guideTncDeviceBody": "Scan and pair your Bluetooth TNC, then pick it as the data source on the links page.",
+  "guidePkwdwplTitle": "PKWDWPL interface",
+  "guidePkwdwplBody": "Drive a PKWDWPL interface over a serial port: choose the port and baud rate; it then handles transmission."
 }

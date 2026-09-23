@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
+import 'guide.dart';
 import 'models.dart';
 import 'state.dart';
 import 'aprs_device.dart';
@@ -120,6 +121,13 @@ class _StationsPageState extends State<StationsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 功能引导（首次进入显示；看过后不占位置）
+              GuideTipCard(
+                guideId: 'stations',
+                state: widget.state,
+                margin: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 12),
               // 搜索框
               TextField(
                 controller: _searchCtrl,

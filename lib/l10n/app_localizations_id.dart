@@ -254,6 +254,48 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get guideStationsTitle => 'Daftar stasiun';
+
+  @override
+  String get guideStationsBody => 'Semua stasiun yang Anda terima ada di sini — cari, urutkan, dan filter berdasarkan jarak. Daftar dan peta berbagi satu filter.';
+
+  @override
+  String get guideTrackHistoryTitle => 'Putar ulang jejak';
+
+  @override
+  String get guideTrackHistoryBody => 'Putar ulang rute stasiun pada tanggal tertentu; geser garis waktu untuk menelusurinya.';
+
+  @override
+  String get guideThemeTitle => 'Tema & antarmuka';
+
+  @override
+  String get guideThemeBody => 'Ubah warna, gambar latar, material, dan skala antarmuka — langsung berlaku untuk dibandingkan.';
+
+  @override
+  String get guideTranslateTitle => 'Terjemahan';
+
+  @override
+  String get guideTranslateBody => 'Atur bahasa tujuan dan API untuk menerjemahkan obrolan. Tanpa API tidak ada terjemahan; halaman ini menjelaskan caranya.';
+
+  @override
+  String get guideAudioTitle => 'TNC kartu suara';
+
+  @override
+  String get guideAudioBody => 'Kirim dan terima frame AFSK lewat keluaran audio: pilih perangkat, atur volume dan gain, lalu pakai nada uji sebelum menyambung.';
+
+  @override
+  String get guideTncDeviceTitle => 'TNC Bluetooth';
+
+  @override
+  String get guideTncDeviceBody => 'Pindai dan pasangkan TNC Bluetooth, lalu pilih sebagai sumber data di halaman tautan.';
+
+  @override
+  String get guidePkwdwplTitle => 'Antarmuka PKWDWPL';
+
+  @override
+  String get guidePkwdwplBody => 'Jalankan antarmuka PKWDWPL lewat port serial: pilih port dan baud rate; antarmuka ini yang memancarkan.';
+
+  @override
   String get guideTitle => 'Panduan fitur';
 
   @override

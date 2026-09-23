@@ -423,6 +423,9 @@ class _BackupPageState extends State<BackupPage> {
     final all = _expCats.length == kBackupGroups.length;
     return SettingsPageShell(
       guideId: 'backup',
+      // state 必须给：外壳靠它读写「引导已读」，只给 guideId 卡片会**静默不出现**
+      // （tool/check_guides.py 把这条钉住了）
+      state: st,
       title: s.backupTitle,
       subtitle: s.backupSubtitle,
       icon: Icons.settings_backup_restore_rounded,

@@ -564,6 +564,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.161</span>
+        <span class="cl-date">2026-09-23</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**功能引导**：16 个功能页首次进入时，正文顶部会显示一张可关闭的小提示卡（一句话说明这页能干什么、从哪下手）；关掉即记为「已看」，之后不再出现、也不占位置。设置类子页顶栏另有「重看本页引导」按钮。覆盖地图、台站列表、沉浸地图、消息、数据包、设备、设置、离线地图、日志、备份、轨迹回放、主题、翻译、声卡 TNC、蓝牙 TNC、PKWDWPL</div>
+        <div class="cl-item"><span class="cl-dot up"></span>引导的「已看」记录存进设置并**纳入备份**（换机后不该把看过的提示卡再弹一遍）；设置里新增「重新查看功能引导」，确认后清空记录、各页提示卡重新出现。新增 `tool/check_guides.py` 静态检查：引导表 ↔ 6 语言文案 ↔ 生成产物 ↔ 页面接入点四处一一对应（漏任一处都不会编译失败，只会「引导永远不出现」）；该检查写完当次就抓出三处真问题</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.160</span>
         <span class="cl-date">2026-09-23</span>
       </div>

@@ -1552,6 +1552,8 @@ class _ThemePageState extends State<ThemePage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return SettingsPageShell(
+      guideId: 'theme',
+      state: widget.state,
       title: s.themeTitle,
       subtitle: s.themeSubtitle,
       icon: Icons.brush_rounded,

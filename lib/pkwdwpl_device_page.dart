@@ -148,6 +148,8 @@ class _PkwdwplDevicePageState extends State<PkwdwplDevicePage> {
     return ListenableBuilder(
       listenable: st,
       builder: (context, _) => SettingsPageShell(
+        guideId: 'pkwdwpl',
+        state: widget.state,
         title: s.pkwdwplDeviceTitle,
         subtitle: s.pkwdwplDeviceDesc,
         icon: Icons.route_rounded,

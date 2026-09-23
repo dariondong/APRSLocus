@@ -205,6 +205,48 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.161', 'date': '2026-09-23',
+        'items': [
+            ('new',
+             T('**功能引导**：16 个功能页首次进入时，正文顶部会显示一张可关闭的小提示卡'
+               '（一句话说明这页能干什么、从哪下手）；关掉即记为「已看」，之后不再出现、'
+               '也不占位置。设置类子页顶栏另有「重看本页引导」按钮。覆盖地图、台站列表、'
+               '沉浸地图、消息、数据包、设备、设置、离线地图、日志、备份、轨迹回放、主题、'
+               '翻译、声卡 TNC、蓝牙 TNC、PKWDWPL',
+               '**功能導覽**：16 個功能頁首次進入時，正文頂部會顯示一張可關閉的小提示卡'
+               '（一句話說明這頁能做什麼、從哪裡下手）；關掉即記為「已看」，之後不再出現、'
+               '也不佔位置。設定類子頁頂欄另有「重看本頁導覽」按鈕。涵蓋地圖、臺站列表、'
+               '沉浸地圖、訊息、資料封包、裝置、設定、離線地圖、日誌、備份、軌跡回放、主題、'
+               '翻譯、音效卡 TNC、藍牙 TNC、PKWDWPL',
+               '**Feature guides**: sixteen pages now show a dismissible one-off tip card at '
+               'the top of the body on first visit, saying in one line what the page does and '
+               'where to start. Closing it records "seen", after which it never appears and '
+               'takes up no space. Sub-pages built on the settings shell also gain a "show '
+               'this guide again" button in the app bar. Covered: map, station list, '
+               'immersive map, messages, packets, devices, settings, offline maps, log, '
+               'backup, track replay, theme, translation, sound-card TNC, Bluetooth TNC and '
+               'PKWDWPL')),
+            ('up',
+             T('引导的「已看」记录存进设置并**纳入备份**（换机后不该把看过的提示卡再弹'
+               '一遍）；设置里新增「重新查看功能引导」，确认后清空记录、各页提示卡重新出现。'
+               '新增 `tool/check_guides.py` 静态检查：引导表 ↔ 6 语言文案 ↔ 生成产物 ↔ '
+               '页面接入点四处一一对应（漏任一处都不会编译失败，只会「引导永远不出现」）；'
+               '该检查写完当次就抓出三处真问题',
+               '引導的「已看」記錄存進設定並**納入備份**（換機後不該把看過的提示卡再彈'
+               '一遍）；設定裡新增「重新查看功能導覽」，確認後清空記錄、各頁提示卡重新出現。'
+               '新增 `tool/check_guides.py` 靜態檢查：引導表 ↔ 6 語言文案 ↔ 產生產物 ↔ '
+               '頁面接入點四處一一對應（漏任一處都不會編譯失敗，只會「引導永遠不出現」）；'
+               '該檢查寫完當次就抓出三處真問題',
+               'The "seen" record is stored in settings and **included in backups** (a '
+               'restored device should not replay guides the user already read), and settings '
+               'gained "show all feature guides again", which clears the record. A new static '
+               'check, `tool/check_guides.py`, ties the guide table, the six-locale text, the '
+               'generated l10n output and the page call-sites together — missing any one of '
+               'them breaks neither the build nor the tests, it just means the guide never '
+               'appears. The check caught three real problems the moment it was written')),
+        ],
+    },
+    {
         'ver': 'v1.6.160', 'date': '2026-09-23',
         'items': [
             ('fix',

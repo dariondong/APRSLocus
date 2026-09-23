@@ -2403,5 +2403,19 @@
   "guideResetTitle": "Tampilkan semua panduan fitur lagi?",
   "guideResetConfirm": "Ini menghapus catatan “sudah dilihat” sehingga kartu petunjuk muncul lagi di tiap halaman.",
   "guideResetButton": "Tampilkan lagi",
-  "guideResetDone": "Panduan fitur direset"
+  "guideResetDone": "Panduan fitur direset",
+  "guideStationsTitle": "Daftar stasiun",
+  "guideStationsBody": "Semua stasiun yang Anda terima ada di sini — cari, urutkan, dan filter berdasarkan jarak. Daftar dan peta berbagi satu filter.",
+  "guideTrackHistoryTitle": "Putar ulang jejak",
+  "guideTrackHistoryBody": "Putar ulang rute stasiun pada tanggal tertentu; geser garis waktu untuk menelusurinya.",
+  "guideThemeTitle": "Tema & antarmuka",
+  "guideThemeBody": "Ubah warna, gambar latar, material, dan skala antarmuka — langsung berlaku untuk dibandingkan.",
+  "guideTranslateTitle": "Terjemahan",
+  "guideTranslateBody": "Atur bahasa tujuan dan API untuk menerjemahkan obrolan. Tanpa API tidak ada terjemahan; halaman ini menjelaskan caranya.",
+  "guideAudioTitle": "TNC kartu suara",
+  "guideAudioBody": "Kirim dan terima frame AFSK lewat keluaran audio: pilih perangkat, atur volume dan gain, lalu pakai nada uji sebelum menyambung.",
+  "guideTncDeviceTitle": "TNC Bluetooth",
+  "guideTncDeviceBody": "Pindai dan pasangkan TNC Bluetooth, lalu pilih sebagai sumber data di halaman tautan.",
+  "guidePkwdwplTitle": "Antarmuka PKWDWPL",
+  "guidePkwdwplBody": "Jalankan antarmuka PKWDWPL lewat port serial: pilih port dan baud rate; antarmuka ini yang memancarkan."
 }

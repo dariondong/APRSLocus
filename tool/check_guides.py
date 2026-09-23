@@ -64,6 +64,51 @@ def class_body(src, cls):
     return src[m.end():end] if end > 0 else None
 
 
+def paren_span(text, open_idx):
+    r"""返回从 '(' 到配对 ')' 的整段实参文本（跳过字符串与注释）。取不到时返回 None。
+
+    为什么要配对而不是 `\(([^)]*)\)`：实参里常有嵌套调用（`onTap: () => x(y)`），
+    用简单正则会在第一个 ')' 截断，于是「后面那段参数」全看不见 —— 假失败与
+    漏报都会出现。
+    """
+    if open_idx >= len(text) or text[open_idx] != '(':
+        return None
+    i, n, depth = open_idx, len(text), 0
+    while i < n:
+        c = text[i]
+        if c == '/' and i + 1 < n and text[i + 1] == '/':
+            j = text.find('\n', i)
+            i = n if j < 0 else j
+            continue
+        if c == '/' and i + 1 < n and text[i + 1] == '*':
+            j = text.find('*/', i + 2)
+            i = (j + 2) if j > 0 else n
+            continue
+        if c in "'\"":
+            q, triple = c, text[i:i + 3] == c * 3
+            i += 3 if triple else 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2
+                    continue
+                if triple and text[i:i + 3] == q * 3:
+                    i += 3
+                    break
+                if not triple and text[i] == q:
+                    i += 1
+                    break
+                i += 1
+            continue
+        if c == '(':
+            depth += 1
+        elif c == ')':
+            depth -= 1
+            if depth == 0:
+                return text[open_idx:i + 1]
+        i += 1
+    return None
+
+
 def has_getter(text, key):
     return re.search(r'String (?:get )?' + re.escape(key) + r'\s*[;(<={]',
                      text) is not None
@@ -133,6 +178,20 @@ def main() -> int:
             text = io.open(path, encoding='utf-8').read()
             for m in re.finditer(r"guideId:\s*'([A-Za-z0-9_]+)'", text):
                 used.setdefault(m.group(1), []).append(rel)
+            # SettingsPageShell 的调用里给了 guideId 就**必须**同时给 state：
+            # 外壳里是 `if (guideId != null && state != null)` 才渲染卡片 ——
+            # 只给 guideId 的话卡片**静默不出现**，看起来一切正常。
+            # 这个坑真踩过（audio 页的 state 漏了）。
+            for m in re.finditer(r'\bSettingsPageShell\s*\(', text):
+                call = paren_span(text, m.end() - 1)
+                if call is None:
+                    continue
+                if not re.search(r"guideId:\s*'", call):
+                    continue
+                if not re.search(r'\bstate:\s*\S', call):
+                    line = text.count('\n', 0, m.start()) + 1
+                    errors.append(f'{rel}:{line} 的 SettingsPageShell 只给了 guideId '
+                                  '却没给 state —— 卡片不会出现（外壳要求两者都有）')
 
     for gid, where in sorted(used.items()):
         if gid not in ids:

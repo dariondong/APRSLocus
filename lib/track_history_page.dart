@@ -129,6 +129,8 @@ class _TrackHistoryPageState extends State<TrackHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageShell(
+      guideId: 'trackHistory',
+      state: widget.state,
       title: S.of(context).historyTracks,
       subtitle: S.of(context).historyTracksDesc,
       icon: Icons.route_rounded,

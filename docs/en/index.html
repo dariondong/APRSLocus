@@ -558,6 +558,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.161</span>
+        <span class="cl-date">2026-09-23</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**Feature guides**: sixteen pages now show a dismissible one-off tip card at the top of the body on first visit, saying in one line what the page does and where to start. Closing it records "seen", after which it never appears and takes up no space. Sub-pages built on the settings shell also gain a "show this guide again" button in the app bar. Covered: map, station list, immersive map, messages, packets, devices, settings, offline maps, log, backup, track replay, theme, translation, sound-card TNC, Bluetooth TNC and PKWDWPL</div>
+        <div class="cl-item"><span class="cl-dot up"></span>The "seen" record is stored in settings and **included in backups** (a restored device should not replay guides the user already read), and settings gained "show all feature guides again", which clears the record. A new static check, `tool/check_guides.py`, ties the guide table, the six-locale text, the generated l10n output and the page call-sites together — missing any one of them breaks neither the build nor the tests, it just means the guide never appears. The check caught three real problems the moment it was written</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.160</span>
         <span class="cl-date">2026-09-23</span>
       </div>

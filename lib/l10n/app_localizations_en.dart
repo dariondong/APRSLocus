@@ -254,6 +254,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get guideStationsTitle => 'Station list';
+
+  @override
+  String get guideStationsBody => 'Every station you receive is listed here — search, sort and filter by distance. The list and the map share one filter.';
+
+  @override
+  String get guideTrackHistoryTitle => 'Track replay';
+
+  @override
+  String get guideTrackHistoryBody => 'Replay a station’s route for a given day and drag the timeline to go through it leg by leg.';
+
+  @override
+  String get guideThemeTitle => 'Theme & interface';
+
+  @override
+  String get guideThemeBody => 'Change colours, background image, interface material and scale — applied immediately so you can compare on the spot.';
+
+  @override
+  String get guideTranslateTitle => 'Translation';
+
+  @override
+  String get guideTranslateBody => 'Set the target language and the API used to translate chats. Without an API nothing is translated; this page explains what is needed.';
+
+  @override
+  String get guideAudioTitle => 'Sound-card TNC';
+
+  @override
+  String get guideAudioBody => 'Send and receive AFSK frames through the audio output: pick the device, set volume and gain, and use the test tone before connecting.';
+
+  @override
+  String get guideTncDeviceTitle => 'Bluetooth TNC';
+
+  @override
+  String get guideTncDeviceBody => 'Scan and pair your Bluetooth TNC, then pick it as the data source on the links page.';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL interface';
+
+  @override
+  String get guidePkwdwplBody => 'Drive a PKWDWPL interface over a serial port: choose the port and baud rate; it then handles transmission.';
+
+  @override
   String get guideTitle => 'Feature guide';
 
   @override

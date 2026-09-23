@@ -251,6 +251,48 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get guideStationsTitle => '台站列表';
+
+  @override
+  String get guideStationsBody => '收到的台站都在这里，可搜索、排序、按距离筛选；列表与地图共用同一份筛选条件。';
+
+  @override
+  String get guideTrackHistoryTitle => '轨迹回放';
+
+  @override
+  String get guideTrackHistoryBody => '按日期回放某个台站当天走过的路线，拖动时间轴可以看每一段。';
+
+  @override
+  String get guideThemeTitle => '主题与界面';
+
+  @override
+  String get guideThemeBody => '换配色、背景图、界面材质与缩放；改完立刻生效，可以在同一页对比。';
+
+  @override
+  String get guideTranslateTitle => '翻译';
+
+  @override
+  String get guideTranslateBody => '设置聊天自动翻译的目标语言与接口。没配接口时不会翻译，这里会说明怎么配。';
+
+  @override
+  String get guideAudioTitle => '声卡 TNC';
+
+  @override
+  String get guideAudioBody => '用耳机口 / 声卡收发 AFSK 报文：选音频设备、调音量与增益，先「测试音」再连接。';
+
+  @override
+  String get guideTncDeviceTitle => '蓝牙 TNC';
+
+  @override
+  String get guideTncDeviceBody => '搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL 连接器';
+
+  @override
+  String get guidePkwdwplBody => '通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。';
+
+  @override
   String get guideTitle => '功能引导';
 
   @override
@@ -6829,6 +6871,48 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get guideStationsTitle => '臺站列表';
+
+  @override
+  String get guideStationsBody => '收到的臺站都在這裡，可搜尋、排序、依距離篩選；列表與地圖共用同一份篩選條件。';
+
+  @override
+  String get guideTrackHistoryTitle => '軌跡回放';
+
+  @override
+  String get guideTrackHistoryBody => '依日期回放某個臺站當天走過的路線，拖動時間軸可以看每一段。';
+
+  @override
+  String get guideThemeTitle => '主題與介面';
+
+  @override
+  String get guideThemeBody => '換配色、背景圖、介面材質與縮放；改完立刻生效，可以在同一頁對比。';
+
+  @override
+  String get guideTranslateTitle => '翻譯';
+
+  @override
+  String get guideTranslateBody => '設定聊天自動翻譯的目標語言與介面。沒設介面時不會翻譯，這裡會說明怎麼設。';
+
+  @override
+  String get guideAudioTitle => '音效卡 TNC';
+
+  @override
+  String get guideAudioBody => '用耳機孔 / 音效卡收發 AFSK 報文：選音訊裝置、調音量與增益，先「測試音」再連線。';
+
+  @override
+  String get guideTncDeviceTitle => '藍牙 TNC';
+
+  @override
+  String get guideTncDeviceBody => '搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL 連接器';
+
+  @override
+  String get guidePkwdwplBody => '透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。';
 
   @override
   String get guideTitle => '功能導覽';

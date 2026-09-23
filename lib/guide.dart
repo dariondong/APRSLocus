@@ -103,6 +103,55 @@ List<Guide> allGuides(BuildContext context) {
       title: t.guidePacketsTitle,
       body: t.guidePacketsBody,
     ),
+    Guide(
+      id: 'stations',
+      icon: Icons.format_list_bulleted_rounded,
+      color: C.green,
+      title: t.guideStationsTitle,
+      body: t.guideStationsBody,
+    ),
+    Guide(
+      id: 'trackHistory',
+      icon: Icons.route_rounded,
+      color: C.green,
+      title: t.guideTrackHistoryTitle,
+      body: t.guideTrackHistoryBody,
+    ),
+    Guide(
+      id: 'theme',
+      icon: Icons.palette_rounded,
+      color: C.purple,
+      title: t.guideThemeTitle,
+      body: t.guideThemeBody,
+    ),
+    Guide(
+      id: 'translate',
+      icon: Icons.translate_rounded,
+      color: C.cyan,
+      title: t.guideTranslateTitle,
+      body: t.guideTranslateBody,
+    ),
+    Guide(
+      id: 'audio',
+      icon: Icons.graphic_eq_rounded,
+      color: C.cyan,
+      title: t.guideAudioTitle,
+      body: t.guideAudioBody,
+    ),
+    Guide(
+      id: 'tncDevice',
+      icon: Icons.settings_input_antenna_rounded,
+      color: C.indigo,
+      title: t.guideTncDeviceTitle,
+      body: t.guideTncDeviceBody,
+    ),
+    Guide(
+      id: 'pkwdwpl',
+      icon: Icons.cable_rounded,
+      color: C.green,
+      title: t.guidePkwdwplTitle,
+      body: t.guidePkwdwplBody,
+    ),
   ];
 }
 

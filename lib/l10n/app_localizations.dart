@@ -849,6 +849,90 @@ abstract class AppLocalizations {
   /// **"功能引导已重置"**
   String get guideResetDone;
 
+  /// No description provided for @guideStationsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"台站列表"**
+  String get guideStationsTitle;
+
+  /// No description provided for @guideStationsBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"收到的台站都在这里，可搜索、排序、按距离筛选；列表与地图共用同一份筛选条件。"**
+  String get guideStationsBody;
+
+  /// No description provided for @guideTrackHistoryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"轨迹回放"**
+  String get guideTrackHistoryTitle;
+
+  /// No description provided for @guideTrackHistoryBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"按日期回放某个台站当天走过的路线，拖动时间轴可以看每一段。"**
+  String get guideTrackHistoryBody;
+
+  /// No description provided for @guideThemeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"主题与界面"**
+  String get guideThemeTitle;
+
+  /// No description provided for @guideThemeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"换配色、背景图、界面材质与缩放；改完立刻生效，可以在同一页对比。"**
+  String get guideThemeBody;
+
+  /// No description provided for @guideTranslateTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"翻译"**
+  String get guideTranslateTitle;
+
+  /// No description provided for @guideTranslateBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"设置聊天自动翻译的目标语言与接口。没配接口时不会翻译，这里会说明怎么配。"**
+  String get guideTranslateBody;
+
+  /// No description provided for @guideAudioTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"声卡 TNC"**
+  String get guideAudioTitle;
+
+  /// No description provided for @guideAudioBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"用耳机口 / 声卡收发 AFSK 报文：选音频设备、调音量与增益，先「测试音」再连接。"**
+  String get guideAudioBody;
+
+  /// No description provided for @guideTncDeviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"蓝牙 TNC"**
+  String get guideTncDeviceTitle;
+
+  /// No description provided for @guideTncDeviceBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。"**
+  String get guideTncDeviceBody;
+
+  /// No description provided for @guidePkwdwplTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"PKWDWPL 连接器"**
+  String get guidePkwdwplTitle;
+
+  /// No description provided for @guidePkwdwplBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。"**
+  String get guidePkwdwplBody;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

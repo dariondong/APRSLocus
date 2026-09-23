@@ -254,6 +254,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get guideStationsTitle => 'Lista de estaciones';
+
+  @override
+  String get guideStationsBody => 'Aquí están todas las estaciones que recibes: busca, ordena y filtra por distancia. La lista y el mapa comparten el mismo filtro.';
+
+  @override
+  String get guideTrackHistoryTitle => 'Reproducir recorrido';
+
+  @override
+  String get guideTrackHistoryBody => 'Reproduce la ruta de una estación en una fecha concreta; arrastra la línea de tiempo para recorrerla.';
+
+  @override
+  String get guideThemeTitle => 'Tema e interfaz';
+
+  @override
+  String get guideThemeBody => 'Cambia colores, imagen de fondo, material y escala de la interfaz; se aplica al momento para comparar.';
+
+  @override
+  String get guideTranslateTitle => 'Traducción';
+
+  @override
+  String get guideTranslateBody => 'Configura el idioma destino y la API para traducir los chats. Sin API no hay traducción; esta página indica qué hace falta.';
+
+  @override
+  String get guideAudioTitle => 'TNC por tarjeta de sonido';
+
+  @override
+  String get guideAudioBody => 'Envía y recibe tramas AFSK por la salida de audio: elige el dispositivo, ajusta volumen y ganancia y usa el tono de prueba antes de conectar.';
+
+  @override
+  String get guideTncDeviceTitle => 'TNC Bluetooth';
+
+  @override
+  String get guideTncDeviceBody => 'Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.';
+
+  @override
+  String get guidePkwdwplTitle => 'Interfaz PKWDWPL';
+
+  @override
+  String get guidePkwdwplBody => 'Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir.';
+
+  @override
   String get guideTitle => 'Guía de funciones';
 
   @override
