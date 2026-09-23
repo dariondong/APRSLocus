@@ -1,5 +1,37 @@
 # 更新日志
 
+## [1.6.160] - 2026-09-23
+
+### 🔧 名片卡不再压住封面：退回封面下方，中间留 12px / The business card no longer overlaps the hero — it sits below it with a 12px gap
+
+上一版让名片卡上骑 14px 压住照片下缘（想做出「卡片骑在图上」的层次）。实机看下来
+不合适：照片底部被挡掉一条，**圆角切在图上**，看着像没对齐而不是有意为之。
+
+现在名片卡退回封面下方，中间留 12px 间隙 —— 封面是完整的一张照片，名片卡是
+封面之下的第一张卡，层次由留白而不是重叠来表达。
+
+只改这一处间距，其余版式与上一版一致。
+
+---
+
+## [1.6.160] - 2026-09-23 (English)
+
+### 🔧 The business card no longer overlaps the hero — it sits below it with a 12px gap
+
+The previous build lifted the business card by 14px so that it rode the bottom edge
+of the photo. On a real device this reads wrong: a strip of the photo is hidden and
+the card's rounded corners cut into the image, which looks like a misalignment
+rather than a deliberate layer.
+
+The card now sits **below** the hero with a 12px gap — the hero is one complete
+photograph, and the card is simply the first card under it. Depth comes from the
+whitespace instead of the overlap.
+
+Only this spacing changed; the rest of the layout is identical to the previous
+version.
+
+---
+
 ## [1.6.159] - 2026-09-23
 
 ### 🎨 关于页重做：实景封面 + 玻璃质感排版，删掉「功能特性」一节 / About page redesigned with a photo hero cover and glass-styled layout; the Features section is removed

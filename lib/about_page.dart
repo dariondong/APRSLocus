@@ -464,13 +464,10 @@ class _AboutPageState extends State<AboutPage>
                       children: [
                         _heroCard(context),
 
-                        // 名片卡：往上骑 14px 压住封面下缘。translate 不占布局，
-                        // 所以后面补 6px，视觉间距仍是 20px
-                        Transform.translate(
-                          offset: const Offset(0, -14),
-                          child: _profileCard(context),
-                        ),
-                        const SizedBox(height: 6),
+                        // 名片卡放在封面**下方**，不压封面：早先让它上骑 14px 压住照片
+                        // 下缘，结果照片被挡掉一条，看着像没对齐。现在留 12px 间隙。
+                        const SizedBox(height: 12),
+                        _profileCard(context),
 
                         // ── 代码贡献 ──
                         _sectionHeader(

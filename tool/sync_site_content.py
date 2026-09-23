@@ -205,6 +205,23 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.160', 'date': '2026-09-23',
+        'items': [
+            ('fix',
+             T('关于页名片卡不再**压住封面**：上一版让它上骑 14px 压住照片下缘，实机看'
+               '照片底部被挡掉一条、圆角切在图上，像没对齐；现在退回封面下方、中间留 '
+               '12px 间隙，封面是一张完整的照片',
+               '關於頁名片卡不再**壓住封面**：上一版讓它上騎 14px 壓住照片下緣，實機看'
+               '照片底部被擋掉一條、圓角切在圖上，像沒對齊；現在退回封面下方、中間留 '
+               '12px 間隙，封面是一張完整的照片',
+               'The About page business card no longer **overlaps the hero**: the previous '
+               'build lifted it 14px onto the bottom edge of the photo, which on a real '
+               'device hid a strip of the image and cut the card\'s rounded corners into '
+               'it, looking like a misalignment. The card now sits below the hero with a '
+               '12px gap, leaving the photo intact')),
+        ],
+    },
+    {
         'ver': 'v1.6.159', 'date': '2026-09-23',
         'items': [
             ('new',
