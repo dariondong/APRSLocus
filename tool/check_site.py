@@ -52,6 +52,22 @@ def read(rel):
     return io.open(os.path.join(ROOT, rel), encoding='utf-8').read()
 
 
+def _cl_vers():
+    """生成器里配的全部更新日志版本号（tool/sync_site_content.py 的 CL）。
+
+    与 `_newest_ver()` 同一类：从**源**取，而不是把版本号抄进检查器
+    （抄进去的话每发一版都要改检查器，忘了改就是「检查失败但内容是对的」）。
+    """
+    try:
+        # ⚠ 缩进别写死：CL 的条目实际缩进是 **8 个空格**，第一版按 4 写，
+        #   结果一个都没匹配到 → `missing` 永远为空 → 判据形同虚设
+        #   （回归样本当场验出来的：把版本号改错也报绿）。
+        return re.findall(r"(?m)^\s*'ver': '([^']+)'",
+                          read('tool/sync_site_content.py'))
+    except Exception:
+        return []
+
+
 def _newest_ver():
     """CHANGELOG.md 里最新的版本号，形如 `v1.6.155`。
 
@@ -72,13 +88,23 @@ def main():
         p.feed(s)
         print(' ' + f)
         chk('html structure', not p.err and not p.stack, p.err[:1])
-        # 首页的卡片与更新日志 = **遗留手写条目 + tool/sync_site_content.py 生成的块**，
-        # 所以这里的数字是两者的和（18 = 手写 8 + 生成 10；32 = 手写 7 + 生成 25）。
-        # 加了新版本、重跑 sync_site_content.py 之后，这两个数字要一起改 ——
-        # 忘了改就会像 v1.6.155 那次一样误报（内容是对的、检查是旧的）。
-        chk('18 cards / 32 cl',
-            s.count('<article class="card reveal">') == 18
-            and s.count('<div class="cl-version reveal">') == 32)
+        # 首页的卡片与更新日志 = **遗留手写条目 + tool/sync_site_content.py 生成的块**。
+        #
+        # 这里刻意**不写死条数**：写死的话每发一版都要改检查器，而忘了改的表现是
+        # 「检查失败但内容其实是对的」—— 已经因此误报过两次（v1.6.155、v1.6.156）。
+        # 改成两条**自洽**判据，既不用维护数字、又保留真正要守的不变量：
+        #   * 三个语言页的条数必须一致（不一致就是某页漏了）；
+        #   * 每页至少包含「生成的那些条」（见 tool/sync_site_content.py 的 CL）。
+        # 只判「有多少条」是**抓不到真问题**的：页面里还留着几条手写的老条目，
+        # 少一条生成的也照样 ≥ 阈值（回归样本当场验出来的）。
+        # 所以要**逐条点名**：生成器配置的每个版本都必须在页面上出现。
+        vers = _cl_vers()
+        missing = [v for v in vers
+                   if '<span class="cl-tag">%s</span>' % v not in s]
+        chk('cards/cl present (%d cards, %d/%d vers)' %
+            (s.count('<article class="card reveal">'),
+             len(vers) - len(missing), len(vers)),
+            s.count('<article class="card reveal">') >= 10 and not missing)
         # 「最新版本出现在首页」不写死版本号：从 CHANGELOG 现取。
         # 这条同时盯着「发版后忘跑 sync_site_content.py」—— 那时首页还停在旧版本。
         chk('latest release in cl', _newest_ver() in s)

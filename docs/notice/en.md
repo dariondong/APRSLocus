@@ -1,20 +1,25 @@
-# v1.6.156 is out: smart beaconing can now trigger on turns
+# TOUCH SKY · A Thank-You Letter
 
-This release is all about **tracks and beaconing**:
+**APRSLocus 2.0 BETA — Development Begins**
 
-- **A third smart-beacon trigger**: besides *timer* and *distance*, it can now
-  **beacon when the heading changes enough**. On mountain roads you are slow, so
-  the distance threshold takes ages to reach — yet those hairpins are exactly
-  where the track matters most. Now a point is added whenever you turn past the
-  configured angle. The angle is **per tier** (10–180°, 0 = off).
+From network-only to radio frequency — from "seeing" to "reaching".
 
-- **Live track sampling refined to 1 second**: it used to be one point every ten
-  seconds, which drew corners as diagonals. The points **actually sent to the
-  server** are now marked with small orange diamonds, so count and spacing are
-  visible at a glance.
+Dear fellow travelers of APRSLocus,
 
-- **The station comment field now looks editable**: that row used to be blank,
-  so nobody knew it could be tapped.
+When **FIRST FIX** lit up for the first time, we were still searching for a coordinate deep inside the network. A bright dot crossed clouds and servers and landed on the map, like a first breath. Now **TOUCH SKY** lets the signal leave the cable, enter the air, cross mountain ridges and cities, and land in the ripples of RF. Going from pure network to radio is more than a technical migration — it is a journey from "seeing" to "reaching".
 
-See the [release notes](https://github.com/dariondong/APRSLocus/releases) for
-details and the [user manual](https://aprslocus.theez.top/en/manual/) for how-to.
+Thanks to the APRS community, digipeaters, iGates, server maintainers, map and data providers, and all open-source projects and amateur-radio pioneers. You are the invisible bridges and the silent shores; you built the road between network and radio, letting every fix travel farther.
+
+1.0 "**FIRST FIX**" gave us our footing; 2.0 "**TOUCH SKY**" makes us look up. From pure network to radio, we write "connected" as "heard", and "data arrived" as "the sky answered". And now we are officially moving into **APRSLocus 2.0 BETA** development. TOUCH SKY is not the destination — it is the starting point of the next voyage.
+
+Testers, HAMs and developers are all welcome to join the **2.0 BETA**. Your logs, suggestions, reproductions and patience remain the brightest signal on this road.
+
+> FIRST FIX is where we started; TOUCH SKY is a salute. 2.0 BETA is the next departure.  
+> The sky is vast — let's keep going together.
+
+> Radio waves never end — thanks for traveling with us! 73!  
+> The APRSLocus Team  
+> September 15, 2026
+
+- [Join the 2.0 BETA](https://github.com/dariondong/APRSLocus/releases)
+- [Feedback & Suggestions](https://github.com/dariondong/APRSLocus/issues)

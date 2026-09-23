@@ -32,8 +32,13 @@ import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, 'tool'))
 
-# 应用支持的语言 → 官网公告文件名（与 lib/notice.dart 的构造规则一致）
+# 与生成器**共用同一套解析**：不在这里再写一遍「公告区长什么样」——
+# 那种「检查器自己理解一份规则」的写法，一旦页面结构变了两边就会一起错。
+import sync_notice_md as SN  # noqa: E402
+
+# 应用支持的语言（与 lib/notice.dart 的构造规则一致）
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'es', 'id']
 
 
@@ -64,19 +69,39 @@ def main() -> int:
         if needle not in read(rel):
             errors.append(f'{rel} 里找不到 `{needle}` —— {why}')
 
-    # ── ① 官网的公告文件 ──
-    for lg in LANGS:
-        rel = f'docs/notice/{lg}.md'
+    # ── ① 官网公告区 → notice/*.md（**生成式**，唯一手写处是页面）──
+    #
+    # 用户的要求是「把官网那条公告搬进公告文件夹，官网与应用共一份内容」。
+    # 所以这里不检查「文件存在」，而是检查**不漂移**：把官网公告区现渲染一遍，
+    # 与仓库里那份 .md 逐字节比对 —— 改了页面却忘了跑同步脚本，CI 直接报红。
+    # （这比「要求六个语言文件都存在」更贴合真实意图：官网只有三语，
+    #   其余语言由应用的兜底链退回 en.md。）
+    for lang, page in SN.PAGES:
+        rel = f'docs/notice/{lang}.md'
+        if not exists(page):
+            errors.append(f'缺 {page} —— 公告的唯一手写处（官网首页公告区）')
+            continue
+        want, err = SN.render_md(read(page))
+        if want is None:
+            errors.append(f'{page} 的公告区解析失败：{err}')
+            continue
+        if len(want.strip()) < 40:
+            errors.append(f'{page} 的公告区太短（<40 字符）—— 多半被写空了')
         if not exists(rel):
-            errors.append(f'缺 {rel} —— 官网那侧没有这个语言的公告，'
-                          f'「{lg}」用户永远看不到（其余语言正常，很难发现）')
-        elif len(read(rel).strip()) < 20:
-            errors.append(f'{rel} 太短（<20 字符）—— 多半是占位没写完，'
-                          '用户会看到一行空的公告')
-    # 英文是兜底：它必须存在（其它语言都缺时靠它）
+            errors.append(f'缺 {rel} —— 跑 `python3 tool/sync_notice_md.py` 生成')
+        elif read(rel) != want:
+            errors.append(f'{rel} 与 {page} 的公告区**不一致**（内容漂移）—— '
+                          '跑 `python3 tool/sync_notice_md.py` 同步')
+    # 英文是兜底：它必须存在（其它语言取不到时全靠它）
     if not exists('docs/notice/en.md'):
         errors.append('缺 docs/notice/en.md —— 它是**兜底**语言，'
                       '其它语言取不到时全靠它')
+    # 其余语言（官网没有）：可选 —— 应用会退回 en.md；但若存在就不能是空壳
+    for lg in ('ja', 'es', 'id'):
+        rel = f'docs/notice/{lg}.md'
+        if exists(rel) and len(read(rel).strip()) < 20:
+            errors.append(f'{rel} 太短（<20 字符）—— 要么写完整，要么删掉'
+                          '（删掉后该语言会退回 en.md）')
 
     # ── ② 开关关掉必须真的不发请求 ──
     nb = read('lib/notice_banner.dart')
@@ -142,7 +167,7 @@ def main() -> int:
         for e in errors:
             print('  -', e)
         return 1
-    print(f'公告横幅 ok（官网 {len(LANGS)} 个语言文件齐、开关关闭不联网、'
+    print('公告横幅 ok（官网公告区与 notice/*.md 一致、开关关闭不联网、'
           'MD 走 GFM 且链接交给系统浏览器、相对地址补全、开关落盘+进备份）')
     return 0
 

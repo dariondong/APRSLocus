@@ -205,6 +205,44 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.156', 'date': '2026-09-23',
+        'items': [
+            ('new',
+             T('新增**公告横幅**（设置 → 显示，默认开）：内容直接取自官网首页的公告区，'
+               '改官网就能发通知、不用等新版；应用内渲染 Markdown（标题/列表/表格/图片）'
+               '与超链接，断网时显示上次缓存的那份',
+               '新增**公告橫幅**（設定 → 顯示，預設開）：內容直接取自官網首頁的公告區，'
+               '改官網就能發通知、不用等新版；應用內渲染 Markdown（標題/列表/表格/圖片）'
+               '與超連結，斷網時顯示上次快取的那份',
+               'New **announcement banner** (Settings → Display, on by default): its content '
+               'is taken straight from the website homepage announcement, so publishing a '
+               'notice needs no app release. Markdown (headings, lists, tables, images) and '
+               'hyperlinks are rendered in-app, with the last cached copy shown offline')),
+            ('new',
+             T('智能信标新增**第三路判据：按转弯打点** —— 转过设定角度就补一个点，'
+               '角度每档可自定义（10~180°，0 = 关闭）。盘山路上车速慢、距离门限很久才够，'
+               '而连续发卡弯正是最该有轨迹的地方',
+               '智能信標新增**第三路判據：按轉彎打點** —— 轉過設定角度就補一個點，'
+               '角度每檔可自訂（10~180°，0 = 關閉）。山路上車速慢、距離門檻很久才夠，'
+               '而連續髮夾彎正是最該有軌跡的地方',
+               'Smart beaconing gains a **third trigger: turning** — a point is added once you '
+               'turn past the configured angle, set **per tier** (10–180°, 0 = off). On mountain '
+               'roads you are slow, so the distance threshold takes ages to reach, yet those '
+               'hairpins are exactly where the track matters most')),
+            ('fix',
+             T('「台站备注」现在看得出能输入了：那一行原来是**一片空白**（无边框、无占位提示），'
+               '和静态的「标签 + 值」行长得一样。现在空值有占位提示、输入区有底色与描边、'
+               '聚焦时描边变蓝 —— 全仓 42 处输入行一起受益',
+               '「臺站備註」現在看得出能輸入了：那一行原來是**一片空白**（無邊框、無佔位提示），'
+               '和靜態的「標籤 + 值」行長得一樣。現在空值有佔位提示、輸入區有底色與描邊、'
+               '聚焦時描邊變藍 —— 全倉 42 處輸入行一起受益',
+               'The station comment field now **looks editable**: that row used to be entirely '
+               'blank (no border, no placeholder), indistinguishable from the static '
+               '"label + value" rows. Empty fields now show a placeholder, the input area has a '
+               'fill and border, and the border turns blue on focus — all 42 input rows benefit')),
+        ],
+    },
+    {
         'ver': 'v1.6.155', 'date': '2026-09-23',
         'items': [
             ('fix',
