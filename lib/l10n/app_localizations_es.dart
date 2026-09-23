@@ -248,6 +248,17 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get tierMinTurn => 'Giro (grados)';
+
+  @override
+  String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
+
+  @override
+  String orTurnDeg(String deg) {
+    return 'o ${deg}°';
+  }
+
+  @override
   String get tierMinDist => 'Distancia (m)';
 
   @override

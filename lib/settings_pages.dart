@@ -1264,9 +1264,14 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     // 先算好再插值（而不是在字符串里嵌 `${S.of(context).xxx('${...}')}`）：
     // 嵌套插值里再嵌一层引号，读的人要数括号，写的人也容易漏。
     final every = S.of(context).everyNSeconds('${t.intervalSec}');
-    final whenReport = t.minDistM > 0
-        ? '$every · ${S.of(context).orMoveM('${t.minDistM}')}'
-        : every;
+    // 三路判据拼成一行：「每 60 秒 · 或移动 400 m · 或转 45°」。
+    // 只显示真正开着的那些（0 = 关），否则一行里全是「或…」反而看不出重点。
+    final parts = <String>[
+      every,
+      if (t.minDistM > 0) S.of(context).orMoveM('${t.minDistM}'),
+      if (t.minTurnDeg > 0) S.of(context).orTurnDeg('${t.minTurnDeg}'),
+    ];
+    final whenReport = parts.join(' · ');
     return GestureDetector(
       onTap: () => _editTierSheet(index),
       child: Container(
@@ -1316,6 +1321,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     final thCtrl = TextEditingController(text: '${tiers[index].minSpeed}');
     final ivCtrl = TextEditingController(text: '${tiers[index].intervalSec}');
     final dsCtrl = TextEditingController(text: '${tiers[index].minDistM}');
+    final tnCtrl = TextEditingController(text: '${tiers[index].minTurnDeg}');
     final symNotifier = ValueNotifier<String>(tiers[index].symbol);
     await showModalBottomSheet<void>(
       context: context,
@@ -1417,6 +1423,19 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   SizedBox(height: 4),
                   Text(S.of(context).tierMinDistHint,
                       style: ts(10, c: C.grey, h: 1.3)),
+                  SizedBox(height: 10),
+                  // ── 转弯打点（v1.6.156）──
+                  // 与距离并列的第三路判据：盘山路上车速慢、距离门限很久才够，
+                  // 而连续发卡弯正是最该有轨迹的地方。
+                  TextField(
+                    controller: tnCtrl,
+                    keyboardType: TextInputType.number,
+                    style: ts(13, w: FontWeight.w600),
+                    decoration: _tierFieldDeco(S.of(context).tierMinTurn),
+                  ),
+                  SizedBox(height: 4),
+                  Text(S.of(context).tierMinTurnHint,
+                      style: ts(10, c: C.grey, h: 1.3)),
                   SizedBox(height: 14),
                   Text(S.of(context).pickBeaconIconDesc,
                       style: ts(10, c: C.slate)),
@@ -1482,6 +1501,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                             // 解析失败/留空都当 0（关闭距离打点）——
                             // 这比「拒绝保存」温和，也与其它数值字段口径一致。
                             minDistM: int.tryParse(dsCtrl.text.trim()) ?? 0,
+                            minTurnDeg: int.tryParse(tnCtrl.text.trim()) ?? 0,
                           ),
                         );
                         close();

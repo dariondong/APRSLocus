@@ -248,6 +248,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tierMinTurn => 'Turn (degrees)';
+
+  @override
+  String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
+
+  @override
+  String orTurnDeg(String deg) {
+    return 'or ${deg}°';
+  }
+
+  @override
   String get tierMinDist => 'Distance (m)';
 
   @override

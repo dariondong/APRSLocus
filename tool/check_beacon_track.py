@@ -113,13 +113,47 @@ def main() -> int:
     need('lib/state.dart', 'double get beaconDistMovedM',
          '没有「自上次上报走了多远」的计算 —— 距离打点无从判断')
     need('lib/state.dart', 'dueByDist', '上报触发条件里没有距离那条')
-    if 'dueByTime || dueByDist' not in st:
-        errors.append('lib/state.dart 的上报判据不是「定时 **或** 距离」—— '
-                      '少了距离那条，走得快时拐弯仍会被拉直')
+    if 'dueByTime || dueByDist || dueByTurn' not in st:
+        errors.append('lib/state.dart 的上报判据不是「定时 **或** 距离 **或** 转弯」'
+                      '—— 少了某一条，对应的场景就补不到点')
     for field in ("'minDistM': minDistM", "minDistM: ((j['minDistM'] as num?)"):
         if field not in read('lib/state.dart'):
             errors.append(f'SmartBeaconTier 的 minDistM 没有落盘/读回（缺 `{field}`）—— '
                           '重启后用户的设置会丢')
+
+    # ── ⑤ 智能信标的「转弯打点」 ──
+    need('lib/state.dart', 'int get beaconMinTurnNow',
+         '取不到「当前档位的转弯阈值」')
+    need('lib/state.dart', 'double get beaconTurnDeg',
+         '没有「自上次上报航向变化了多少度」的计算 —— 转弯打点无从判断')
+    # 角度必须**环绕**处理：359° → 1° 是 2°。直接相减会让「几乎没转」判成
+    # 「转了大半圈」，于是每个点都触发。
+    if 'if (d > 180) d = 360 - d;' not in st:
+        errors.append('lib/state.dart 的航向差没有做 180° 环绕折算 —— '
+                      '359°→1° 会被算成 358°，于是每个点都触发转弯打点')
+    # 两道闸：低速不算转弯（停着不动航向是噪声）、两次之间留最小间隔（连续弯道防刷屏）
+    # ⚠ 这两条必须断言「**被用上**」，不能只断言常量存在 ——
+    #   第一版就是只查了 `_kTurnMinSpeedKmh` / `_kTurnMinGapSec` 这两个名字，
+    #   于是把两道闸从判断里删掉，检查器照样报 OK（回归样本当场验出来的）。
+    #   与 check_frame_cost 里那条「断言要断言能编译的字符串」同一类教训：
+    #   判据要落在**真正起作用的那一行**上。
+    if 'sinceSec >= _kTurnMinGapSec' not in st:
+        errors.append('转弯打点没有最小间隔那道闸 —— 连续发卡弯上会几秒一个点，'
+                      '把共享信道刷满（常量在、但没用在判断里）')
+    if '(mySpeed ?? 0) >= _kTurnMinSpeedKmh' not in st:
+        errors.append('转弯打点没有「行驶中才生效」的速度闸 —— 停着不动时航向'
+                      '噪声会一直触发上报（常量在、但没用在判断里）')
+    need('lib/state.dart', 'dueByTurn', '上报触发条件里没有转弯那条')
+    need('lib/state.dart', '_lastBeaconCourse = myCourse',
+         '发送后没有记录「本次的航向」—— 下次算不出转过多少度')
+    for field in ("'minTurnDeg': minTurnDeg",
+                  "minTurnDeg: ((j['minTurnDeg'] as num?)"):
+        if field not in read('lib/state.dart'):
+            errors.append(f'SmartBeaconTier 的 minTurnDeg 没有落盘/读回（缺 `{field}`）')
+    need('lib/settings_pages.dart', 'tnCtrl',
+         '设置页没有转弯打点的输入框 —— 功能不可配置')
+    need('lib/settings_pages.dart', 'minTurnDeg: int.tryParse(tnCtrl.text.trim())',
+         '设置页读了这个字段却没写回档位')
     need('lib/settings_pages.dart', 'dsCtrl',
          '设置页没有距离打点的输入框 —— 功能不可配置')
     need('lib/settings_pages.dart', 'minDistM: int.tryParse(dsCtrl.text.trim())',
@@ -131,7 +165,7 @@ def main() -> int:
             print('  -', e)
         return 1
     print('轨迹采样/信标打点 ok（GPS 1s、落点有保底、信标点只记已发送且可清、'
-          '智能信标支持定时或距离）')
+          '智能信标支持定时或距离或转弯）')
     return 0
 
 

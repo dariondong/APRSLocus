@@ -37,10 +37,26 @@ KEYS = {
         '0 = nonaktif (hanya interval)'),
     'orMoveM': ('或移动 {dist} m', '或移動 {dist} m', 'or {dist} m',
                 'または {dist} m', 'o {dist} m', 'atau {dist} m'),
+    # v1.6.156：智能信标的第三路判据 —— 转弯打点
+    'tierMinTurn': ('航向变化 (度)', '航向變化 (度)', 'Turn (degrees)',
+                    '方位変化 (度)', 'Giro (grados)', 'Belokan (derajat)'),
+    'tierMinTurnHint': (
+        '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）',
+        '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）',
+        'Beacon once after turning this far (10–180); 0 = off. Only while moving '
+        '(heading is noise when parked)',
+        'この角度を曲がったら追加で報告します。0 = オフ。'
+        '走行中のみ有効（停車中は方位がノイズ）',
+        'Reporta tras girar este ángulo; 0 = desactivado. Solo en movimiento '
+        '(parado, el rumbo es ruido)',
+        'Lapor setelah berbelok sejauh ini; 0 = nonaktif. Hanya saat bergerak '
+        '(saat berhenti, arah hanya derau)'),
+    'orTurnDeg': ('或转 {deg}°', '或轉 {deg}°', 'or {deg}°',
+                  'または {deg}°', 'o {deg}°', 'atau {deg}°'),
 }
 
 # 带占位符的键（生成产物要用函数签名而不是 getter）
-PLACEHOLDER_KEYS = {'orMoveM': ['dist']}
+PLACEHOLDER_KEYS = {'orMoveM': ['dist'], 'orTurnDeg': ['deg']}
 
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'es', 'id']
 IDX = {lg: i for i, lg in enumerate(LANGS)}

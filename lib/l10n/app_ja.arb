@@ -2356,5 +2356,9 @@
   "tierMinDist": "移動距離 (m)",
   "tierMinDistHint": "前回の報告からこの距離を移動したら追加で報告します。0 = オフ（間隔のみ）",
   "orMoveM": "または {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "tierMinTurn": "方位変化 (度)",
+  "tierMinTurnHint": "この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）",
+  "orTurnDeg": "または {deg}°",
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
 }

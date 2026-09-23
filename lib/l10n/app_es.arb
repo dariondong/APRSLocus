@@ -2356,5 +2356,9 @@
   "tierMinDist": "Distancia (m)",
   "tierMinDistHint": "También reporta tras desplazarse esta distancia desde el último envío; 0 = desactivado (solo intervalo)",
   "orMoveM": "o {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "tierMinTurn": "Giro (grados)",
+  "tierMinTurnHint": "Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)",
+  "orTurnDeg": "o {deg}°",
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
 }

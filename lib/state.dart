@@ -60,11 +60,24 @@ class SmartBeaconTier {
   /// **停下来就退回纯定时**（不白发报文，不占信道）。
   int minDistM;
 
+  /// **转弯打点**：航向相对「上次上报时的航向」变化超过该角度（度）也上报一次。
+  /// **逐档可自定义**（设置页里每一档都有这个输入框），0 = 关闭。
+  ///
+  /// 为什么还要它：距离与定时都答不了「这个弯该不该补一个点」。
+  /// 盘山路上车速慢、距离门限很久才够，而连续发卡弯正是最该有轨迹的地方 ——
+  /// 缺了转弯判据，地图上那一段就是一串被拉直的直线（看不出弯）。反过来，
+  /// 直路巡航时航向不变，它一次都不会触发，不占信道。
+  ///
+  /// 取值范围 10°~180°（见 [_normalizeSmartTiers]）：小于 10° 落在 GPS 航向
+  /// 自身的噪声里，会退化成「每个点都发」。
+  int minTurnDeg;
+
   SmartBeaconTier({
     this.minSpeed = 0,
     this.intervalSec = 60,
     this.symbol = '',
     this.minDistM = 0,
+    this.minTurnDeg = 0,
   });
 
   SmartBeaconTier copy() => SmartBeaconTier(
@@ -72,6 +85,7 @@ class SmartBeaconTier {
         intervalSec: intervalSec,
         symbol: symbol,
         minDistM: minDistM,
+        minTurnDeg: minTurnDeg,
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +93,7 @@ class SmartBeaconTier {
         'intervalSec': intervalSec,
         'symbol': symbol,
         'minDistM': minDistM,
+        'minTurnDeg': minTurnDeg,
       };
 
   factory SmartBeaconTier.fromJson(Map<String, dynamic> j) => SmartBeaconTier(
@@ -86,6 +101,7 @@ class SmartBeaconTier {
         intervalSec: ((j['intervalSec'] as num?) ?? 60).toInt(),
         symbol: (j['symbol'] as String?) ?? '',
         minDistM: ((j['minDistM'] as num?) ?? 0).toInt(),
+        minTurnDeg: ((j['minTurnDeg'] as num?) ?? 0).toInt(),
       );
 }
 
@@ -208,6 +224,10 @@ class AppState extends ChangeNotifier {
   /// 走了多远」（见 [beaconDistMovedM]）。与 [_lastBeacon]（时间）成对更新。
   double? _lastBeaconLat;
   double? _lastBeaconLng;
+
+  /// 上一次信标发出时的**航向**（度）：智能信标的「转弯打点」用它算航向变化
+  /// （见 [beaconTurnDeg]）。同样只在真的发出去之后才更新。
+  double? _lastBeaconCourse;
   int beaconsSent = 0;
 
   /// 是否已询问过“连接后是否自动上报位置”（只问一次，记住选择）
@@ -233,10 +253,17 @@ class AppState extends ChangeNotifier {
   /// 也就是「该发下一个点了」的自然位置 —— 比按面积/拍脑袋好解释，
   /// 用户看到「步行 120s / 250m 或」时直觉也对得上（1.4m/s × 120s ≈ 170m）。
   static List<SmartBeaconTier> defaultSmartTiers() => [
+        // 静止/步行档的转弯阈值留 0（关闭）：低速时 GPS 航向本身就不稳
+        // （见 _applySelfFix 里「低速用指南针补航向」那段），按角度判会乱触发。
+        // 每一档都可以在设置页里自己改（0 = 关，10~180°）。
         SmartBeaconTier(minSpeed: 0, intervalSec: 300, symbol: '', minDistM: 200),
         SmartBeaconTier(minSpeed: 5, intervalSec: 120, symbol: '[', minDistM: 250),
-        SmartBeaconTier(minSpeed: 20, intervalSec: 60, symbol: '>', minDistM: 400),
-        SmartBeaconTier(minSpeed: 70, intervalSec: 30, symbol: '>', minDistM: 700),
+        // 城市 45°：每个路口都是 90°，45° 只抓真正的转向，不会每个路口都发。
+        SmartBeaconTier(
+            minSpeed: 20, intervalSec: 60, symbol: '>', minDistM: 400, minTurnDeg: 45),
+        // 高速 30°：出口匝道、大弯这类「航向连续变化」才是要补的点。
+        SmartBeaconTier(
+            minSpeed: 70, intervalSec: 30, symbol: '>', minDistM: 700, minTurnDeg: 30),
       ];
 
   void _ensureSmartTiers() {
@@ -261,6 +288,12 @@ class AppState extends ChangeNotifier {
     for (final t in smartTiers) {
       if (t.minDistM != 0) {
         t.minDistM = t.minDistM < 20 ? 20 : (t.minDistM > 20000 ? 20000 : t.minDistM);
+      }
+      // 转弯打点：0 = 关；否则 10°~180°（小于 10° 落在 GPS 航向噪声里，
+      // 会退化成「每个点都发」；超过半圈没有意义）
+      if (t.minTurnDeg != 0) {
+        t.minTurnDeg =
+            t.minTurnDeg < 10 ? 10 : (t.minTurnDeg > 180 ? 180 : t.minTurnDeg);
       }
     }
     smartTiers.sort((a, b) => a.minSpeed.compareTo(b.minSpeed));
@@ -290,7 +323,7 @@ class AppState extends ChangeNotifier {
       if (t.minSpeed >= next) next = t.minSpeed + 10;
     }
     smartTiers.add(SmartBeaconTier(
-        minSpeed: next, intervalSec: 60, symbol: '', minDistM: 400));
+        minSpeed: next, intervalSec: 60, symbol: '', minDistM: 400, minTurnDeg: 45));
     _normalizeSmartTiers();
     persist();
     _notify();
@@ -335,6 +368,25 @@ class AppState extends ChangeNotifier {
   /// 实际生效的**距离打点**门限（米）：0 = 只用定时。
   /// 只有智能信标才有这一项 —— 固定间隔模式保持「纯定时」的老行为。
   int get beaconMinDistNow => activeSmartTier?.minDistM ?? 0;
+
+  /// 实际生效的**转弯打点**阈值（度）：0 = 只用定时/距离。
+  int get beaconMinTurnNow => activeSmartTier?.minTurnDeg ?? 0;
+
+  /// 自上次**真的发出去**以来，航向变化了多少度（0~180，最小夹角）。
+  ///
+  /// 两个容易写错的地方，都在这里收口：
+  ///  * **角度要环绕**：359° → 1° 是转了 2°，不是 358°。直接相减会让「几乎没转」
+  ///    判成「转了大半圈」，于是每个点都触发。
+  ///  * **没有航向/没发过 → 返回 0**（不触发）：宁可少补一个点，也不要在航向
+  ///    未知时乱发。
+  double get beaconTurnDeg {
+    final prev = _lastBeaconCourse;
+    final cur = myCourse;
+    if (prev == null || cur == null) return 0;
+    var d = (cur - prev).abs() % 360;
+    if (d > 180) d = 360 - d;
+    return d;
+  }
 
   /// 自上次**真的发出去**以来移动了多远（米）。
   ///
@@ -1657,6 +1709,15 @@ class AppState extends ChangeNotifier {
   final List<TrackPt> beaconMarks = [];
   static const int maxBeaconMarks = 200;
 
+  /// 「转弯打点」的最低速度（km/h）：低于它的航向变化一律不算转弯。
+  /// 静止时 GPS 航向是噪声、指南针也会被身边铁器带偏，不设这道闸
+  /// 就会出现「停着不动也一直上报」。
+  static const double _kTurnMinSpeedKmh = 5;
+
+  /// 「转弯打点」两次之间的最小间隔（秒）：防止连续弯道上把信道刷满。
+  /// 30° 阈值在发卡弯上几秒就能满足一次，而 APRS 是共享信道。
+  static const double _kTurnMinGapSec = 20;
+
   Station? get myStation => myHasFix
       ? Station(
           call: myCall,
@@ -2049,11 +2110,22 @@ class AppState extends ChangeNotifier {
       //     走得快就按距离补点，停下来距离不动、自然退回纯定时。
       // 两条都不成立时什么都不做（不空转、不 notify）。
       if (canAutoBeacon && myHasFix) {
-        final dueByTime = DateTime.now().difference(_lastBeacon).inSeconds >=
-            beaconIntervalNow;
+        final sinceSec =
+            DateTime.now().difference(_lastBeacon).inSeconds.toDouble();
+        final dueByTime = sinceSec >= beaconIntervalNow;
         final minDistM = beaconMinDistNow;
         final dueByDist = minDistM > 0 && beaconDistMovedM >= minDistM;
-        if (dueByTime || dueByDist) _sendBeaconNow();
+        final minTurn = beaconMinTurnNow;
+        // 转弯那条额外两道闸（缺一个都会变成「每个点都发」）：
+        //   * **行驶中才算**（≥5 km/h）：停着不动时航向本来就是噪声，
+        //     而指南针/多普勒在低速下的抖动足以越过 45°；
+        //   * **距上次至少 20 秒**：连续发卡弯上 30° 阈值可能几秒就满足一次，
+        //     不设最小间隔会把信道刷满 —— 各家智能信标都带速率上限正是这个原因。
+        final dueByTurn = minTurn > 0 &&
+            sinceSec >= _kTurnMinGapSec &&
+            (mySpeed ?? 0) >= _kTurnMinSpeedKmh &&
+            beaconTurnDeg >= minTurn;
+        if (dueByTime || dueByDist || dueByTurn) _sendBeaconNow();
       }
       // 台站“有效状态”翻转（如超 5 分钟变离线、移动→静止）时才推进版本并通知，
       // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
@@ -3451,6 +3523,7 @@ class AppState extends ChangeNotifier {
     _lastBeacon = DateTime.now();
     _lastBeaconLat = lat;
     _lastBeaconLng = lng;
+    _lastBeaconCourse = myCourse;
     AchievementCenter.instance.bump('sendCoord'); // 坐标发送·请求打击
     _log(
       LogLevel.info,

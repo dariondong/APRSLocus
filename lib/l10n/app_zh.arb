@@ -2870,5 +2870,9 @@
   "tierMinDist": "移动距离 (米)",
   "tierMinDistHint": "自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）",
   "orMoveM": "或移动 {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "tierMinTurn": "航向变化 (度)",
+  "tierMinTurnHint": "转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）",
+  "orTurnDeg": "或转 {deg}°",
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
 }

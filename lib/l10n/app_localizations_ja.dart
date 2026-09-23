@@ -247,6 +247,17 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get tierMinTurn => '方位変化 (度)';
+
+  @override
+  String get tierMinTurnHint => 'この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）';
+
+  @override
+  String orTurnDeg(String deg) {
+    return 'または ${deg}°';
+  }
+
+  @override
   String get tierMinDist => '移動距離 (m)';
 
   @override

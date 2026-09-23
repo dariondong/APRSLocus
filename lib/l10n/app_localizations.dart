@@ -585,6 +585,24 @@ abstract class AppLocalizations {
   /// **"或移动 {dist} m"**
   String orMoveM(String dist);
 
+  /// No description provided for @tierMinTurn.
+  ///
+  /// In zh, this message translates to:
+  /// **"航向变化 (度)"**
+  String get tierMinTurn;
+
+  /// No description provided for @tierMinTurnHint.
+  ///
+  /// In zh, this message translates to:
+  /// **"转过这个角度就补报一次；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）"**
+  String get tierMinTurnHint;
+
+  /// No description provided for @orTurnDeg.
+  ///
+  /// In zh, this message translates to:
+  /// **"或转 {deg}°"**
+  String orTurnDeg(String dist);
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

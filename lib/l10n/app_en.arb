@@ -2272,5 +2272,9 @@
   "tierMinDist": "Distance (m)",
   "tierMinDistHint": "Also beacon after moving this far since the last report; 0 = off (interval only)",
   "orMoveM": "or {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "tierMinTurn": "Turn (degrees)",
+  "tierMinTurnHint": "Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)",
+  "orTurnDeg": "or {deg}°",
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
 }

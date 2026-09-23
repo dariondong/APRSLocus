@@ -2356,5 +2356,9 @@
   "tierMinDist": "Jarak (m)",
   "tierMinDistHint": "Juga lapor setelah berpindah sejauh ini sejak laporan terakhir; 0 = nonaktif (hanya interval)",
   "orMoveM": "atau {dist} m",
-  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}}
+  "@orMoveM": {"placeholders": {"dist": {"type": "String"}}},
+  "tierMinTurn": "Belokan (derajat)",
+  "tierMinTurnHint": "Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)",
+  "orTurnDeg": "atau {deg}°",
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
 }

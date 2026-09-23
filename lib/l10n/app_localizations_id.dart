@@ -248,6 +248,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get tierMinTurn => 'Belokan (derajat)';
+
+  @override
+  String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
+
+  @override
+  String orTurnDeg(String deg) {
+    return 'atau ${deg}°';
+  }
+
+  @override
   String get tierMinDist => 'Jarak (m)';
 
   @override
