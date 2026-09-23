@@ -205,6 +205,35 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.158', 'date': '2026-09-23',
+        'items': [
+            ('fix',
+             T('修「退出设置子页时公告横幅闪一下」：转场那份「底」原来用「值到 1 没有」'
+               '判断转场结没结束 —— 而弹出时 `reverse()` 只改状态、**值要下一帧才动**，'
+               '于是底下的页面整整透出一帧（开的材质或背景图时才看得见）',
+               '修「退出設定子頁時公告橫幅閃一下」：轉場那份「底」原來用「值到 1 沒有」'
+               '判斷轉場結沒結束 —— 而彈出時 `reverse()` 只改狀態、**值要下一帧才動**，'
+               '於是底下的頁面整整透出一帧（開材質或背景圖時才看得見）',
+               'Fixed the flash when leaving a Settings sub-page: the transition backdrop '
+               'decided “is the transition over” from the value, but on pop `reverse()` only '
+               'changes the status — the **value moves a frame later** — so the page '
+               'underneath showed through for one full frame (visible only with the material '
+               'or a background image enabled)')),
+            ('up',
+             T('公告入口搬到**设置主页最底下**（备份之后、关于之前）；设置子页里不再放横幅、'
+               '只留开关。入口**点它才联网**，所以开关关着也能用 —— 不妨碍'
+               '「关了就不在后台联网」那个承诺',
+               '公告入口搬到**設定首頁最底下**（備份之後、關於之前）；設定子頁裡不再放橫幅、'
+               '只留開關。入口**點它才連網**，所以開關關著也能用 —— 不妨礙'
+               '「關了就不在後台連網」那個承諾',
+               'The announcement entry moved to the **bottom of the Settings home screen** '
+               '(after Backup, before About); the Settings sub-page no longer shows a banner, '
+               'only the toggle. The entry **only goes online when tapped**, so it still '
+               'works with the toggle off — without breaking the “off means no background '
+               'network requests” promise')),
+        ],
+    },
+    {
         'ver': 'v1.6.157', 'date': '2026-09-23',
         'items': [
             ('new',

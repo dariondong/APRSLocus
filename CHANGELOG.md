@@ -1,5 +1,173 @@
 # 更新日志
 
+## [1.6.158] - 2026-09-23
+
+### 🐛 修「退出设置子页时公告横幅闪一下」；公告入口搬到设置主页最底下 / Fixing the flash when leaving a Settings sub-page, and moving the announcement entry to the bottom of the Settings home screen
+
+## 一、「公告横幅怎么显示在设置子页？退出动画会闪一下」
+
+这不是横幅的问题，而是**转场底**的判据在**弹出方向**漏了整整一帧。
+
+背景：应用只有一层底（`MaterialApp.builder` 里那层）。而 Flutter 在路由转场期间会把
+新路由的 OverlayEntry 设为**非 opaque**，于是动画期间**旧路由照常绘制**；
+本项目各页面底色是**透明**的（`C.pageFill`：有底时透明）—— v1.6.146 就是因此
+给转场期额外加了一份「底」，免得动画期间透出上一页。
+
+那份底的判据写的是 `v >= 1 ? 不画 : 画`：
+
+* **推入**时它是对的（推入第一帧值就是 0，底照画）；
+* **弹出**时正好反了 —— `AnimationController.reverse()` 只把 status 置为 reverse，
+  **值要等下一个 tick 才动**，而 ticker 的**首次回调 elapsed 恒为 0**：值仍然是 1.0。
+
+于是弹回后的第一帧里三件事同时发生：框架已按 `opaque = false` 把**底下那一页**画了；
+退出中的页面是透明的；这份「底」又被 `v >= 1` 判成「不用画」。三者叠加 =
+**底下那一页整整透出一帧**。2.0 布局下底下就是地图，而公告横幅正好浮在地图上、
+位置又与设置子页里那条横幅同高 —— 看起来就成了「横幅显示在设置子页上」。
+
+**修法**：判据从「值到没到 1」改成「**转场是否进行中**」（status），并挂
+`addStatusListener`。这里必须挂状态监听：`reverse()` **不通知值监听器**
+（`ValueListenableBuilder` / `AnimatedBuilder` 都收不到那一下），而弹出时
+**恰恰只有在值还没变的那一帧**需要把底画上。新的 `_TransitionBackdrop` 用
+**排除法**判断没停稳（`completed` / `dismissed` 之外都算转场中），不列举
+forward / reverse —— 将来状态只可能更多。停稳后照样不常驻，不会与 `builder` 那份底重复合成。
+
+⚠ 这也意味着：这个闪只在**开了磨砂玻璃/云母材质或设了背景图**时才会出现
+（那时页面底色才是透明的；材质关掉时页面是实色，透不出来）。
+
+## 二、公告：子页不再放横幅，入口搬到设置主页最底下
+
+* **设置子页（设置 → 显示）里不再放横幅**，只留「公告横幅」开关；
+* **设置主页最底部**新增「公告」入口（在备份之后、关于之前；退出应用那颗销毁性
+  按钮仍留在最底）。
+
+为什么是「按钮」而不是在设置主页也放一条横幅：横幅是**被动可见**的通知
+（主页/地图那条已经在做这件事），这里要的是「我想看时点一下」—— 两处都放横幅
+才是重复的。
+
+这个入口的几个取舍：
+
+* **点它才联网**（先网络、失败退缓存），不在进入设置页时预拉。横幅那个开关的承诺是
+  「关了就不在后台联网」，而**用户主动点这一下**不是后台行为 —— 所以开关关着时
+  这个入口**依旧可用**；否则「不想在主页看到横幅」的人就再也读不到公告了。
+* 取不到就如实弹一句「暂无公告」，不留白也不假装成功。
+* 全文仍是**底部弹层**（与横幅点开的是同一个），没有退回整页。
+* 加了一颗转圈与防连点：否则手抖两下会发两次请求、叠两层弹层。
+
+## 三、检查器：抓到一个真实的「假绿」
+
+`tool/check_notice.py` 原来有一条断言「设置子页必须有 `NoticeBanner(`」。
+而开关那一行写的是 `st.setNoticeBanner(v)` —— **它含有 `NoticeBanner(` 这个子串**，
+所以这条断言一直是假绿的（子页横幅删了也不会报）。这次删掉横幅才暴露出来。
+现在改成：先把 `setNoticeBanner(` 整个剔掉再搜（只加左括号是不够的）。
+
+同时补了两条正向断言（设置主页必须 `showNoticeSheet(` —— 点了要真的打开全文；
+必须 `NoticeStore.instance.load(` —— 得先取到内容才能弹层）和一条反向断言
+（设置子页不许再出现 `NoticeBanner(`）。三个回归样本都验过会报红。
+
+另新增 `tool/check_transition_backdrop.py`（已接进 CI）：钉住「转场底必须按 status 判断」
+（不许再出现 `value >= 1` 当转场结束）、必须挂/摘状态监听、底必须画在页面之下、
+底必须与 `builder` 同源，并顺带钉住这套机制的前提（`C.pageFill` 仍是「有底时透明」）。
+
+## 四、手册：显示那一节不再说「顶部有一条公告横幅」
+
+横幅现在在主页/地图顶部、不在显示子页里 —— 三语手册改成「另有公告横幅开关」
+并补上设置主页底部那个入口。三语 39 页已重新生成。
+
+---
+
+## [1.6.158] - 2026-09-23 (English)
+
+### Fixing the flash when leaving a Settings sub-page, and moving the announcement entry to the bottom of the Settings home screen
+
+## 1) “Why is the announcement banner showing inside a Settings sub-page? Leaving the page flashes”
+
+It was not the banner — the backdrop painted during route transitions was being skipped for
+**exactly one frame on the pop direction**.
+
+The app has a single backdrop layer (the one in `MaterialApp.builder`). During a route
+transition Flutter marks the incoming route's OverlayEntry **non-opaque**, so the **old route
+keeps painting**; and this project's pages are **transparent** by design (`C.pageFill` is
+transparent whenever a backdrop exists). That is why v1.6.146 added an extra copy of the
+backdrop for the duration of a transition.
+
+That copy decided what to do with `v >= 1 ? skip : paint`:
+
+* on **push** it was correct (the value starts at 0, so the backdrop was painted);
+* on **pop** it was backwards — `AnimationController.reverse()` only sets the status to
+  reverse; the **value moves on the next tick**, and a ticker's **first callback always
+  reports elapsed = 0** — so the value is still 1.0.
+
+On that first frame after a pop, three things happen at once: the framework already paints
+the **page underneath** (`opaque = false`); the outgoing page is transparent; and the
+backdrop is skipped because `v >= 1`. The result is **the page underneath showing through
+for a full frame**. In the 2.0 layout that page is the map, and the announcement banner
+floats on the map at exactly the height of the banner in the sub-page — so it reads as
+“the banner is displayed inside the Settings sub-page”.
+
+**The fix**: the criterion is now “**is a transition in progress**” (status) instead of “did
+the value reach 1”, driven by `addStatusListener`. A status listener is mandatory here
+because `reverse()` **does not notify value listeners** (`ValueListenableBuilder` /
+`AnimatedBuilder` never hear about it), yet on pop the backdrop is needed **precisely on
+the frame where the value has not changed yet**. The new `_TransitionBackdrop` decides by
+**elimination** (anything other than `completed` / `dismissed` counts as in-transition)
+rather than listing forward / reverse. Once settled it still does not persist, so it never
+double-composites with the builder's backdrop.
+
+⚠ This also means the flash could only appear with the **frosted-glass/mica material or a
+background image** enabled — that is when page backgrounds are transparent.
+
+## 2) Announcements: no banner in the sub-page, entry moved to the bottom of Settings
+
+* The **Settings sub-page (Settings → Display) no longer shows a banner**, only the
+  “Announcements” toggle;
+* The **bottom of the Settings home screen** gained an “Announcements” entry (after Backup,
+  before About; the destructive “Quit app” button stays last).
+
+Why a button rather than another banner on the Settings home screen: a banner is a
+**passively visible** notice (the home/map banner already does that job) — what was asked
+for here is “a tap when I want to read it”. Two banners would simply be duplication.
+
+A few deliberate choices in that entry:
+
+* **It only goes online when tapped** (network first, cached copy as fallback); nothing is
+  prefetched on entering Settings. The banner toggle promises “off means no background
+  network requests”, and **the user tapping this** is not a background request — so the
+  entry **stays available even when the toggle is off**. Otherwise anyone who hid the
+  banner on the home screen could never read announcements again.
+* If nothing can be fetched it says “No announcements yet” instead of showing a blank or
+  pretending to succeed.
+* The full text still opens in a **bottom sheet** (the very same one the banner opens) —
+  no regression to a full page.
+* A spinner and a double-tap guard were added; without them two quick taps fire two
+  requests and stack two sheets.
+
+## 3) Checkers: caught a real false green
+
+`tool/check_notice.py` had an assertion “the Settings sub-page must contain
+`NoticeBanner(`”. But the toggle line reads `st.setNoticeBanner(v)` — which **contains the
+substring `NoticeBanner(`** — so that assertion had been passing vacuously all along (it
+would not have reported the banner's removal either). It only surfaced when the banner was
+deleted. The check now strips `setNoticeBanner(` first (adding the opening parenthesis
+alone is not enough).
+
+Two positive assertions were added (the Settings home screen must call `showNoticeSheet(`
+— tapping has to actually open the full text — and must call
+`NoticeStore.instance.load(` — content is needed before a sheet can be shown) plus one
+negative assertion (no `NoticeBanner(` in the Settings sub-page). All three regression
+samples were verified to go red.
+
+A new `tool/check_transition_backdrop.py` (wired into CI) pins the fix: the backdrop must
+be judged by status (no `value >= 1` as “transition finished”), the status listener must be
+added **and removed**, the backdrop must sit **behind** the page, it must come from the same
+source as the builder's, and the mechanism's precondition (`C.pageFill` still transparent
+with a backdrop) is pinned too.
+
+## 4) Manual: the Display section no longer claims a banner “at the top”
+
+The banner now lives at the top of the home screen / map, not in the Display sub-page — the
+three-language manual says “an announcement toggle” and mentions the new entry at the bottom
+of the Settings home screen. All 39 pages were regenerated.
+
 ## [1.6.157] - 2026-09-23
 
 ### 🐛 修「底图切换面板弹不出来」（v1.6.151 起一直坏着）；顺手补同类守卫 / Fixing the base-map panel that would not open, plus a guard against the same class of bug

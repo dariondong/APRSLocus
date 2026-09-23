@@ -564,6 +564,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.158</span>
+        <span class="cl-date">2026-09-23</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>修「退出設定子頁時公告橫幅閃一下」：轉場那份「底」原來用「值到 1 沒有」判斷轉場結沒結束 —— 而彈出時 `reverse()` 只改狀態、**值要下一帧才動**，於是底下的頁面整整透出一帧（開材質或背景圖時才看得見）</div>
+        <div class="cl-item"><span class="cl-dot up"></span>公告入口搬到**設定首頁最底下**（備份之後、關於之前）；設定子頁裡不再放橫幅、只留開關。入口**點它才連網**，所以開關關著也能用 —— 不妨礙「關了就不在後台連網」那個承諾</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.157</span>
         <span class="cl-date">2026-09-23</span>
       </div>
