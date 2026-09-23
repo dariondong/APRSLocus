@@ -568,36 +568,39 @@ watch those two numbers to know whether it is still beaconing.</p></div></div>
 <li><b>设置 → 定位上报 → 智能信标（按速度分档）</b> 打开。</li>
 <li>配置最多 <b>5 档</b>：速度越快上报越频繁；每档自定义<b>间隔</b>与<b>图标</b>（图标留空 = 用「我的符号」）。</li>
 <li>每档还能设<b>移动距离</b>（米，<b>0 = 关闭</b>）：<b>定时到了</b>或<b>走够了</b>，任一满足就上报。</li>
+<li>每档还能设<b>航向变化</b>（度，<b>0 = 关闭</b>）：<b>转过这个角度</b>也补一个点 —— 只在行驶中生效（停着不动时航向本身就是噪声），且两次之间至少隔 20 秒。</li>
 <li>停车时档位自动落到低速档，间隔拉长 —— 不用每次手动改。</li>
 </ol>
 <div class="callout info"><span class="co-ic">📏</span><div><p><b>为什么还要「或距离」</b>：定时上报有个先天缺口 —— 走了多远，和「过了多久」无关。
 堵车时 300 秒一个点完全够用，而 60 km/h 在 60 秒里能走 1 公里，中间那段在 aprs.fi 上就是一条直线、拐弯全被抹平。
 默认值按「该档速度在一个上报间隔内走的路程」给：静止 200 / 步行 250 / 城市 400 / 高速 700 米。
-走得快就按距离补点，停下来距离不动、自然退回纯定时。</p></div></div>
+走得快就按距离补点，停下来距离不动、自然退回纯定时。</p><p><b>「或转弯」治的是另一种路</b>：盘山路上车速慢，距离门限很久才够，而连续发卡弯正是最该有轨迹的地方；直路巡航时航向不变，它一次都不会触发，不占信道。</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分档间隔同样受 5 秒下限与服务器负载约束；把某一档设成 3 秒，校验会拦下来。</p></div></div>
 ''', '''
 <ol class="m-steps">
 <li><b>設定 → 定位上報 → 智能信標（按速度分檔）</b> 打開。</li>
 <li>配置最多 <b>5 檔</b>：速度越快上報越頻繁；每檔自訂<b>間隔</b>與<b>圖示</b>（圖示留空 = 用「我的符號」）。</li>
 <li>每檔還能設<b>移動距離</b>（公尺，<b>0 = 關閉</b>）：<b>定時到了</b>或<b>走夠了</b>，任一滿足就上報。</li>
+<li>每檔還能設<b>航向變化</b>（度，<b>0 = 關閉</b>）：<b>轉過這個角度</b>也補一個點 —— 只在行駛中生效（停著不動時航向本身就是雜訊），且兩次之間至少隔 20 秒。</li>
 <li>停車時檔位自動落到低速檔，間隔拉長 —— 不用每次手動改。</li>
 </ol>
 <div class="callout info"><span class="co-ic">📏</span><div><p><b>為什麼還要「或距離」</b>：定時上報有個先天缺口 —— 走了多遠，和「過了多久」無關。
 塞車時 300 秒一個點完全夠用，而 60 km/h 在 60 秒裡能走 1 公里，中間那段在 aprs.fi 上就是一條直線、轉彎全被抹平。
 預設值按「該檔速度在一個上報間隔內走的路程」給：靜止 200 / 步行 250 / 城市 400 / 高速 700 公尺。
-走得快就按距離補點，停下來距離不動、自然退回純定時。</p></div></div>
+走得快就按距離補點，停下來距離不動、自然退回純定時。</p><p><b>「或轉彎」治的是另一種路</b>：山路上車速慢，距離門檻很久才夠，而連續髮夾彎正是最該有軌跡的地方；直路巡航時航向不變，它一次都不會觸發，不佔頻道。</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>分檔間隔同樣受 5 秒下限與伺服器負載約束；把某一檔設成 3 秒，校驗會攔下來。</p></div></div>
 ''', '''
 <ol class="m-steps">
 <li><b>Settings → Beacon → Smart beaconing (speed tiers)</b> on.</li>
 <li>Configure up to <b>five tiers</b>: the faster you go, the more often it reports; each tier has its own <b>interval</b> and <b>icon</b> (empty icon = “my symbol”).</li>
 <li>Each tier also takes a <b>distance</b> (metres, <b>0 = off</b>): it beacons when <b>the timer expires</b> <em>or</em> <b>you have moved far enough</b>.</li>
+<li>…and a <b>turn</b> threshold (degrees, <b>0 = off</b>): a point is also added once you <b>turn past it</b> — only while moving (heading is noise when parked) and at most once every 20 s.</li>
 <li>Park and it drops to the slow tier by itself — no manual switching.</li>
 </ol>
 <div class="callout info"><span class="co-ic">📏</span><div><p><b>Why “or by distance” at all?</b> Timed beaconing has an inherent gap: how far you travelled has nothing to do with how long it took.
 A 300 s interval is plenty in a traffic jam, while 60 km/h covers a kilometre in 60 s — and that stretch becomes a straight line on aprs.fi with every corner flattened.
 Defaults follow “the distance this tier's speed covers in one interval”: 200 m stationary / 250 m walking / 400 m city / 700 m highway.
-Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p></div></div>
+Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p><p><b>The turn trigger covers a different road</b>: on mountain roads you are slow, so the distance threshold takes ages to reach, yet hairpins are exactly where the track matters most — while cruising straight the heading never changes and it never fires.</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Tier intervals obey the same 5 s floor and server-load concern; a 3 s tier is rejected by validation.</p></div></div>
 '''),
     ('nofix', T('没有 GPS 怎么办', '沒有 GPS 怎麼辦', 'When there is no GPS'), '''

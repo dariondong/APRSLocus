@@ -205,6 +205,21 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.157', 'date': '2026-09-23',
+        'items': [
+            ('fix',
+             T('修「主界面底图选择面板弹不出来」：那颗按钮的回调**漏了括号**'
+               '（只是返回函数本身、从不调用）—— v1.6.151 起一直如此，'
+               '编译与 analyze 都不会报',
+               '修「主介面底圖選擇面板彈不出來」：那顆按鈕的回呼**漏了括號**'
+               '（只是回傳函式本身、從不呼叫）—— v1.6.151 起一直如此，'
+               '編譯與 analyze 都不會報',
+               'Fixed the base-map panel that would not open: that button\'s callback was '
+               '**missing its parentheses** (returning the function instead of calling it) — '
+               'broken since v1.6.151, and neither the compiler nor analyze reports it')),
+        ],
+    },
+    {
         'ver': 'v1.6.156', 'date': '2026-09-23',
         'items': [
             ('new',

@@ -175,14 +175,22 @@ def main():
         chk('%s: theme/skip/canonical/ld' % base, not no_theme, no_theme)
         chk('%s: crumb+tree+pager' % base, not no_crumb, no_crumb)
         chk('%s: hreflang x4/页' % base, not no_hreflang, no_hreflang)
-    # 设置页：三语表格行数必须对齐（196 行）且 15 个分组
+    # 设置页：三语表格**互相对齐**且分组数为 15。
+    #
+    # ⚠ 行数**不写死**：这台是本月第三次被同一类问题咬 ——
+    #   （v1.6.155 首页条数、v1.6.156 首页条数、这次设置页行数）。
+    #   写死数字的表现永远是「加了设置项 → 内容是对的、检查是旧的」，
+    #   而要守的不变量其实是**三语之间一致**（某语言的表格漏行才是真问题）。
+    #   所以：三个语言的 (分组数, 行数) 必须彼此相同；行数下限取 150 兜住「整页空了」。
+    set_stats = {}
     for base, _ in BASES:
         s = read(base + '/settings.html')
-        chk('settings 15 groups / 196 rows',
-            s.count('<section class="chapter') == 15
-            and s.count('<tr><td><b>') == 196,
-            '%d / %d' % (s.count('<section class="chapter'), s.count('<tr><td><b>')))
+        set_stats[base] = (s.count('<section class="chapter'), s.count('<tr><td><b>'))
         chk('settings defaults present', 'rotate.aprs2.net' in s and '14580' in s)
+    uniq = set(set_stats.values())
+    chk('settings tables aligned across languages',
+        len(uniq) == 1 and next(iter(uniq))[0] == 15 and next(iter(uniq))[1] >= 150,
+        str(set_stats))
     # 任务式素材：真实报文 + m-steps（且不得误用首页 .steps）
     s = read('docs/manual/start.html')
     chk('real packet sample', 'BG7LZG-9&gt;APALOC,TCPIP*' in s)

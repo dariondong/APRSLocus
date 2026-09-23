@@ -1,5 +1,118 @@
 # 更新日志
 
+## [1.6.157] - 2026-09-23
+
+### 🐛 修「底图切换面板弹不出来」（v1.6.151 起一直坏着）；顺手补同类守卫 / Fixing the base-map panel that would not open, plus a guard against the same class of bug
+
+## 一、底图按钮点不开
+
+反馈：「在主界面不能切换地图类型，无法弹出选择面板」。
+
+**根因非常小**：工具列第三颗按钮（底图）的回调写成了
+
+```dart
+onTap: () => _showMapTypeMenu,      // 漏了 ()
+```
+
+箭头函数体是一个**裸标识符** —— 它只是**返回这个函数本身**，从不调用它。
+点下去什么都不发生，面板自然弹不出来。
+
+**为什么编译、analyze、测试全都不会报**：`GestureDetector.onTap` 的类型是
+`VoidCallback`（返回 `void`），而 Dart 在**返回值位置**把 `void` 当作顶类型，
+于是 `void Function() Function()`（返回函数的函数）可以赋给 `void Function()`。
+没有任何内置 lint 会拦这种写法 —— 典型的「能编译、点了没反应」。
+
+这一处是 v1.6.151 重排工具列时手滑改坏的（改之前是正确的方法引用），
+所以 **v1.6.151 ~ v1.6.156 都点不开底图面板**。现在恢复成直接传方法引用，
+结构上不可能再犯。
+
+## 二、检查器：补一条同类守卫
+
+`tool/check_ui_wiring.py` 增加第 6 组：回调不能「只返回函数、不调用」。
+判据限定在 `onXxx: () => 名字` 这一形态上 —— 不限定作用域的话会误报
+`builder: (_, __) => icon`（builder 返回一个局部 widget 变量，完全合法），
+这一点是实测出来并写进注释的。已用回归样本验证：把括号去掉，CI 直接报红。
+
+## 三、顺手把两处「写死的判据」改成自洽判据
+
+本月被同一类问题咬了三次（v1.6.155 首页条数、v1.6.156 首页条数、这次手册设置页行数）：
+判据里写死数字，写死之后**加了内容就误报** ——「内容是对的、检查是旧的」。
+两处都改成自洽判据：
+
+* **首页更新日志**：不再数「有几条」，而是**逐条点名** —— 生成器里配置的每个版本
+  都必须在三页上出现（少一个版本就报红）。
+* **手册设置页表格**：不再比 196 行，而是要求**三语表格互相对齐** + 15 个分组 +
+  行数下限（某语言的表格漏行才是真问题，而那次正是加了一个设置项触发的）。
+
+## 四、手册补上 v1.6.156 的新东西（三语 39 页已重新生成）
+
+* **位置信标 → 速度分档**：补「航向变化」打点，含两道闸 —— **只在行驶中生效**
+  （停着不动时航向本身就是噪声）、**两次之间至少隔 20 秒**（发卡弯上会把信道刷满）；
+* **设置参考 → 显示**：补公告横幅的说明（内容取自官网公告区、改官网即可发通知、
+  断网用缓存、关掉后不再联网）。
+
+---
+
+## [1.6.157] - 2026-09-23 (English)
+
+### Fixing the base-map panel that would not open, plus a guard against the same class of bug
+
+## 1) The base-map button did nothing
+
+The report: “on the main screen I cannot switch map type — the selection panel will not open.”
+
+**The cause was tiny**: the third toolbar button (base map) had its callback written as
+
+```dart
+onTap: () => _showMapTypeMenu,      // the () is missing
+```
+
+The arrow body is a **bare identifier** — it merely **returns the function itself**
+and never calls it. Tapping does nothing, so the panel never opens.
+
+**Why neither the compiler, analyze, nor tests catch it**: `GestureDetector.onTap` takes
+a `VoidCallback` (returning `void`), and Dart treats `void` in **return position** as a
+top type — so `void Function() Function()` (a function returning a function) is
+assignable to `void Function()`. No built-in lint rejects that — the classic
+“compiles fine, does nothing when tapped”.
+
+This was broken by a slip while rearranging the toolbar in v1.6.151 (it had been a correct
+method reference before), which means **v1.6.151 through v1.6.156 could not open the base
+map panel at all**. It is back to passing the method reference directly, a form that
+cannot regress this way.
+
+## 2) A guard for the same class of bug
+
+`tool/check_ui_wiring.py` gained a sixth group: callbacks must not “return a function
+without calling it”. The check is scoped to the `onXxx: () => name` shape — without
+that scoping it false-positives on `builder: (_, __) => icon` (a builder returning a local
+widget variable, perfectly legal), a detail that was measured and is recorded in the code.
+Verified against a regression sample: remove the parentheses and CI goes red.
+
+## 3) Two hard-coded assertions replaced with self-consistent ones
+
+This month the same class of problem bit three times (homepage entry count in v1.6.155,
+again in v1.6.156, and the manual settings row count now): a hard-coded number means
+**adding content trips the check** — “the content is right, the check is stale”.
+Both are now self-consistent:
+
+* **Homepage changelog**: no longer counts entries; it **names every version** in the
+  generator's config and requires each to appear on all three language pages.
+* **Manual settings table**: no longer compares against 196 rows; it requires the three
+  languages to **agree with each other**, 15 groups, and a row-count floor (a missing row
+  in one language is the real problem — and that is exactly what adding a setting caused).
+
+## 4) The manual now covers v1.6.156's additions (39 pages regenerated, three languages)
+
+* **Beacon → speed tiers**: the new **turn** trigger, including its two gates — **only
+  while moving** (heading is noise when parked) and **at least 20 s apart** (hairpins would
+  otherwise flood the channel);
+* **Settings reference → Display**: a note on the announcement banner (content comes from
+  the website's announcement section, publishing needs no app release, the cached copy is
+  used offline, and switching it off stops all network requests).
+
+---
+
 ## [1.6.156] - 2026-09-23
 
 ### 📢 公告横幅（官网 Markdown，应用内渲染）；智能信标支持「按转弯」打点；台站备注看得出能输入 / An announcement banner rendered from the website's Markdown; turn-based smart beaconing; an editable-looking comment field

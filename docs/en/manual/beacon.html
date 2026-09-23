@@ -183,12 +183,13 @@ watch those two numbers to know whether it is still beaconing.</p></div></div>
 <li><b>Settings → Beacon → Smart beaconing (speed tiers)</b> on.</li>
 <li>Configure up to <b>five tiers</b>: the faster you go, the more often it reports; each tier has its own <b>interval</b> and <b>icon</b> (empty icon = “my symbol”).</li>
 <li>Each tier also takes a <b>distance</b> (metres, <b>0 = off</b>): it beacons when <b>the timer expires</b> <em>or</em> <b>you have moved far enough</b>.</li>
+<li>…and a <b>turn</b> threshold (degrees, <b>0 = off</b>): a point is also added once you <b>turn past it</b> — only while moving (heading is noise when parked) and at most once every 20 s.</li>
 <li>Park and it drops to the slow tier by itself — no manual switching.</li>
 </ol>
 <div class="callout info"><span class="co-ic">📏</span><div><p><b>Why “or by distance” at all?</b> Timed beaconing has an inherent gap: how far you travelled has nothing to do with how long it took.
 A 300 s interval is plenty in a traffic jam, while 60 km/h covers a kilometre in 60 s — and that stretch becomes a straight line on aprs.fi with every corner flattened.
 Defaults follow “the distance this tier's speed covers in one interval”: 200 m stationary / 250 m walking / 400 m city / 700 m highway.
-Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p></div></div>
+Fast, and points are added by distance; stopped, the distance stops growing and it falls back to pure timing.</p><p><b>The turn trigger covers a different road</b>: on mountain roads you are slow, so the distance threshold takes ages to reach, yet hairpins are exactly where the track matters most — while cruising straight the heading never changes and it never fires.</p></div></div>
 <div class="callout warn"><span class="co-ic">⚠️</span><div><p>Tier intervals obey the same 5 s floor and server-load concern; a 3 s tier is rejected by validation.</p></div></div>
   </section>
   <section class="chapter reveal" id="nofix">
