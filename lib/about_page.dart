@@ -758,13 +758,16 @@ class _AboutPageState extends State<AboutPage>
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
+                                // 底部要**尽早**压暗：标题落在 ~70% 高度，
+                                // 那里还压着明亮的山体，0.30 的白字根本立不住。
+                                // 因此从 55% 就开始起色，到 78% 已经够深。
                                 colors: [
-                                  Colors.black.withValues(alpha: 0.22),
+                                  Colors.black.withValues(alpha: 0.26),
                                   Colors.transparent,
-                                  C.ink.withValues(alpha: 0.30),
-                                  C.ink.withValues(alpha: 0.88),
+                                  C.ink.withValues(alpha: 0.58),
+                                  C.ink.withValues(alpha: 0.94),
                                 ],
-                                stops: const [0.0, 0.30, 0.60, 1.0],
+                                stops: const [0.0, 0.30, 0.55, 1.0],
                               ),
                             ),
                           ),
