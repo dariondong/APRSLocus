@@ -5,7 +5,6 @@ import 'material.dart';
 import 'notice.dart';
 import 'state.dart';
 import 'theme.dart';
-import 'theme_text.dart';
 import 'widgets.dart';
 
 /// ─── 公告横幅（设置 → 显示）───
@@ -142,7 +141,10 @@ class _NoticeBannerState extends State<NoticeBanner> {
                       ],
                     ),
                     const SizedBox(height: 3),
-                    if (summary.isNotEmpty) ...[
+                    // `doc` 是可空的（还没拉到任何内容时就是 null），而
+                    // `summary.isNotEmpty` **不做类型提升** —— 所以这里显式提升
+                    // 成一个非空局部变量，后面直接用 `d`。
+                    if (summary.isNotEmpty && doc != null) ...[
                       Text(summary,
                           style: ts(11.5, c: C.ink, w: FontWeight.w600, h: 1.45),
                           maxLines: 2,
@@ -152,7 +154,7 @@ class _NoticeBannerState extends State<NoticeBanner> {
                         // 整行都可点：与 _toolBtn 同一个坑 —— 底色来自
                         // BoxDecoration 时不显式 opaque 就只有文字能点
                         behavior: HitTestBehavior.opaque,
-                        onTap: () => widget.onOpen(doc!.body),
+                        onTap: () => widget.onOpen(doc.body),
                         child: Row(
                           children: [
                             Text(s.noticeReadMore,
@@ -209,9 +211,11 @@ class _NoticeBannerState extends State<NoticeBanner> {
     final d = DateTime.now().difference(t);
     final s = S.of(context);
     if (d.inMinutes < 1) return s.timeJustNow;
-    if (d.inHours < 1) return s.minutesAgo('${d.inMinutes}');
-    if (d.inDays < 1) return s.hoursAgo('${d.inHours}');
-    return s.daysAgo('${d.inDays}');
+    // ⚠ 这三个键的占位符在 arb 里声明为 `type: int`，所以只能传 int
+    //   （传 '${...}' 会报 argument_type_not_assignable）
+    if (d.inHours < 1) return s.minutesAgo(d.inMinutes);
+    if (d.inDays < 1) return s.hoursAgo(d.inHours);
+    return s.daysAgo(d.inDays);
   }
 }
 
@@ -229,10 +233,20 @@ class NoticePage extends StatefulWidget {
 }
 
 class _NoticePageState extends State<NoticePage> {
-  late String _md = widget.markdown;
-  DateTime? _at = widget.fetchedAt;
-  bool _cache = widget.fromCache;
+  // 不能在初始化器里引用 `widget`（implicit_this_reference_in_initializer），
+  // 所以统一在 initState 里赋值。
+  late String _md;
+  DateTime? _at;
+  bool _cache = false;
   bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _md = widget.markdown;
+    _at = widget.fetchedAt;
+    _cache = widget.fromCache;
+  }
 
   Future<void> _refresh() async {
     if (_loading) return;
