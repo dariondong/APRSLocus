@@ -603,6 +603,18 @@ abstract class AppLocalizations {
   /// **"或转 {deg}°"**
   String orTurnDeg(String dist);
 
+  /// No description provided for @inputTapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **"点击输入"**
+  String get inputTapHint;
+
+  /// No description provided for @callCommentEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **"未填写 · 点这里输入"**
+  String get callCommentEmpty;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

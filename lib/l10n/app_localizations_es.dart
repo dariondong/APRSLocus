@@ -254,6 +254,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get inputTapHint => 'Toca para escribir';
+
+  @override
+  String get callCommentEmpty => 'Sin definir · toca para escribir';
+
+  @override
   String orTurnDeg(String deg) {
     return 'o ${deg}°';
   }

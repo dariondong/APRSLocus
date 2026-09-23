@@ -2360,5 +2360,7 @@
   "tierMinTurn": "方位変化 (度)",
   "tierMinTurnHint": "この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）",
   "orTurnDeg": "または {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "inputTapHint": "タップして入力",
+  "callCommentEmpty": "未設定 · タップして入力"
 }

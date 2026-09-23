@@ -253,6 +253,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tierMinTurnHint => 'この角度を曲がったら追加で報告します（10〜180）。0 = オフ。走行中のみ有効（停車中は方位がノイズ）';
 
   @override
+  String get inputTapHint => 'タップして入力';
+
+  @override
+  String get callCommentEmpty => '未設定 · タップして入力';
+
+  @override
   String orTurnDeg(String deg) {
     return 'または ${deg}°';
   }

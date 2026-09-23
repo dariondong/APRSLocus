@@ -2864,5 +2864,7 @@
   "tierMinTurn": "航向變化 (度)",
   "tierMinTurnHint": "轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）",
   "orTurnDeg": "或轉 {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "inputTapHint": "點擊輸入",
+  "callCommentEmpty": "未填寫 · 點這裡輸入"
 }

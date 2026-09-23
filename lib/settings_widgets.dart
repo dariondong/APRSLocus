@@ -96,8 +96,29 @@ class SettingsInput extends StatelessWidget {
   final VoidCallback? onEditingComplete;
   final FocusNode? focusNode;
   final String? tip;
+
+  /// 为空时显示的占位提示。默认用通用的「点击输入」。
+  ///
+  /// ── 为什么要加这个参数（用户反馈）──
+  ///
+  /// 原来的输入框是 `border: none`、无背景、**无占位符**，而几个自由文本字段
+  /// （最典型的是「台站备注」）默认就是空的 —— 于是那一行右边**整片空白**，
+  /// 和旁边的静态「标签 + 值」行长得一模一样。用户的反馈原话是
+  /// 「台站备注，用户都不知道那里是可以输入的」。
+  ///
+  /// 所以这一版做三件事，让「这里能输入」变成看得见的事实：
+  ///   1. 空值显示占位提示（默认「点击输入」，个别字段可以给更具体的）；
+  ///   2. 输入区给一层浅底 + 圆角 —— 有「框」才像输入框；
+  ///   3. 聚焦时描边变主题蓝，进一步确认「点这里就是在编辑」。
+  final String? hint;
+
   const SettingsInput(this.label, this.controller,
-      {super.key, this.onChanged, this.onEditingComplete, this.focusNode, this.tip});
+      {super.key,
+      this.onChanged,
+      this.onEditingComplete,
+      this.focusNode,
+      this.tip,
+      this.hint});
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +154,29 @@ class SettingsInput extends StatelessWidget {
             textInputAction: TextInputAction.done,
             textAlign: TextAlign.right,
             style: ts(13, w: FontWeight.w600),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               isDense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 6),
-              border: InputBorder.none,
+              // 内边距要对上外面那层浅底的圆角，否则光标贴边
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              // 空值时显示提示：这一行就再也不是「一片空白」了
+              hintText: hint ?? S.of(context).inputTapHint,
+              hintStyle: ts(12, c: C.greyLight, w: FontWeight.w400),
+              // 有底 + 圆角 + 一圈淡描边：一眼能认出是输入区（静止态不抢眼）
+              filled: true,
+              fillColor: C.bgSoft,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: C.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: C.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: C.blue, width: 1.4),
+              ),
             ),
           ),
         ),

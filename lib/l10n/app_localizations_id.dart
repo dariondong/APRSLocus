@@ -254,6 +254,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get inputTapHint => 'Ketuk untuk mengetik';
+
+  @override
+  String get callCommentEmpty => 'Belum diisi · ketuk untuk mengetik';
+
+  @override
   String orTurnDeg(String deg) {
     return 'atau ${deg}°';
   }

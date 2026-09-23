@@ -74,6 +74,10 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
             _defaultBadgeRow(),
             SettingsInput(S.of(context).callComment, _comment,
                 tip: S.of(context).callCommentHint,
+                // 这一行**默认就是空的**（v1.6.80 起备注默认清空），而它又是
+                // 自由文本 —— 用户反馈「都不知道那里是可以输入的」正是指这一行。
+                // 所以给它一句比通用提示更直白的占位文案。
+                hint: S.of(context).callCommentEmpty,
                 onChanged: (v) {
               st.myComment = v.trim();
               st.persist();

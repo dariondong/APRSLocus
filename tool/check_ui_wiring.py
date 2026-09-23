@@ -112,6 +112,33 @@ def main() -> int:
         errors.append('lib/shell2.dart 缺 `_kLinkBannerH`（固定高度）—— '
                       '让位量必须是确定的数，量出来的高度会抖一下')
 
+    # ── ⑤ 「看得出这是个输入框」──
+    #
+    # 用户反馈「台站备注，用户都不知道那里是可以输入的」：那个字段默认是空的，
+    # 而输入框原来是 `border: none` + 无背景 + **无占位符** —— 右边整片空白，
+    # 和静态的「标签 + 值」行长得一样。
+    #
+    # 这条只能靠眼睛发现，编译/analyze/测试全绿，所以钉在这里。判据落在
+    # **真正起作用的三行**上（与上面那两道闸同一个教训：别只断言参数名）。
+    sw = read('lib/settings_widgets.dart')
+    i = sw.find('class SettingsInput')
+    if i < 0:
+        errors.append('lib/settings_widgets.dart 找不到 `class SettingsInput`')
+    else:
+        body = sw[i:sw.find('\n}', i)]
+        if 'hintText:' not in body:
+            errors.append('SettingsInput 没有占位提示（hintText）—— 空字段那一行'
+                          '会是整片空白，用户不知道能输入')
+        if 'inputTapHint' not in body:
+            errors.append('SettingsInput 的占位提示没有默认值（inputTapHint）'
+                          '—— 没传 hint 的字段又会变回一片空白')
+        if 'filled: true' not in body:
+            errors.append('SettingsInput 的输入区没有底色（filled: true）—— '
+                          '没有「框」就不像输入框')
+    # 台站备注这一行要给更直白的提示（它默认就是空的，是用户点名的那一处）
+    need('lib/settings_pages.dart', 'hint: S.of(context).callCommentEmpty',
+         '「台站备注」没用专门的占位提示 —— 那正是用户说「不知道能输入」的那一行')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:

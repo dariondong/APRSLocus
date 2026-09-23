@@ -254,6 +254,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get inputTapHint => 'Tap to type';
+
+  @override
+  String get callCommentEmpty => 'Not set · tap to type';
+
+  @override
   String orTurnDeg(String deg) {
     return 'or ${deg}°';
   }

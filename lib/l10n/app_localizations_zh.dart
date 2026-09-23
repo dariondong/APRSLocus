@@ -251,6 +251,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get inputTapHint => '点击输入';
+
+  @override
+  String get callCommentEmpty => '未填写 · 点这里输入';
+
+  @override
   String orTurnDeg(String deg) {
     return '或转 ${deg}°';
   }
@@ -6702,6 +6708,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get inputTapHint => '點擊輸入';
+
+  @override
+  String get callCommentEmpty => '未填寫 · 點這裡輸入';
 
   @override
   String orTurnDeg(String deg) {

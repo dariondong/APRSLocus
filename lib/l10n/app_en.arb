@@ -2276,5 +2276,7 @@
   "tierMinTurn": "Turn (degrees)",
   "tierMinTurnHint": "Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)",
   "orTurnDeg": "or {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "inputTapHint": "Tap to type",
+  "callCommentEmpty": "Not set · tap to type"
 }

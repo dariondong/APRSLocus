@@ -2360,5 +2360,7 @@
   "tierMinTurn": "Giro (grados)",
   "tierMinTurnHint": "Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)",
   "orTurnDeg": "o {deg}°",
-  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}}
+  "@orTurnDeg": {"placeholders": {"deg": {"type": "String"}}},
+  "inputTapHint": "Toca para escribir",
+  "callCommentEmpty": "Sin definir · toca para escribir"
 }
