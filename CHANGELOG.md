@@ -1,5 +1,159 @@
 # 更新日志
 
+## [1.6.155] - 2026-09-23
+
+### 🖱 四条界面反馈：图层面板「点了没反应」、会话输入框藏底下、未连接提示、在地图查看不回地图 / Four UI reports: unclickable layer panel, hidden chat input, weak offline notice, and “view on map” not switching back
+
+## 一、地图上的按钮「点了没反应」—— 只有图标那一小块能点
+
+反馈是「图层选择面板打不开」。真凶不在面板，在**按钮的命中区**：
+
+按钮的底色来自 `BoxDecoration`，而它对应的 `DecoratedBox`
+（`RenderDecoratedBox extends RenderProxyBox`）**没有重写 `hitTestSelf`** ——
+也就是**不吸收点击**，命中全交给子节点。于是默认的 `deferToChild` 把可点区域
+缩到中间那个 **20px 图标**上：38px 的按钮只有中心约 28% 能点，按到边缘、
+圆角**完全没反应**。
+
+对比很能说明问题：Flutter 自己的 `IconButton` / `InkWell` 全是 opaque；
+而本应用里，外壳（顶栏/导航）的按钮早就写了 opaque，**只有地图页的按钮漏了**
+—— 与「地图上的控件点了没反应」这句反馈完全吻合。
+
+已修：工具列（图层 / 轨迹分组 / 底图）与右列缩放工具（放大/缩小/轨迹/
+热力图/定位）共 13 颗按钮，一律 `HitTestBehavior.opaque` —— 整块都能点。
+
+## 二、会话页的输入框藏在面板底下 → 进会话自动展开
+
+2.0 的内容面板是**按最高档高度布局、只裁出可视区**的（这是 v1.6.148 治
+「拖动卡 + 一拖就变白」的设计）。于是半屏档下页面只露出上半部分，而输入框在
+页面最底部 —— 正好落在裁切线之下，**看不见也点不到**，必须先手动把面板拉到
+最高才能打字。
+
+现在一进入会话就请求外壳把面板展开到最高档（退回会话列表时复位），
+打字前不再需要先找把手。
+
+## 三、未连接提示强化
+
+2.0 里「未连接」只由右上角那一颗小胶囊表达，还和天气、连接按钮、定位按钮挤在
+一起 —— 未连接时整屏看起来「一切正常」，而实际上**发送、信标、消息全都发不
+出去**。（1.0 里有一条明显的横幅，重写 2.0 外壳时只留下了胶囊。）
+
+现在补回一条**未连接横幅**：橙边框、两行说明 +「连接」按钮，**整条都可点**
+（点一下即连）。三个细节：
+
+* **只读模式不显示** —— 只启用 PKWDWPL 这类只收来源时，没有发射链路本来就是
+  正常的，挂一条「未连接」只会让人白去点连接、白去查设置；
+* 它占用的高度**算进地图的顶部让位量**（与底部让位同一套口径），否则会压住
+  地图自己的信息条 / 图例 / 工具列；
+* 竖屏与横屏各一处。
+
+## 四、台站页「在地图查看」之后不回地图
+
+`focusOnMap` 只改了一个状态值，而**切回地图页这件事是外壳的职责**。
+1.0 里这段逻辑在 `HomePage._onStateChanged` 里，重写 2.0 外壳时整段漏掉了 ——
+结果是：地图在背后悄悄飞到了那个台站，用户却还停在台站面板上，看着就像
+「点了没反应」。
+
+现在外壳接住了这个请求（以及「在地图选点」）：切回地图页并把内容面板收起，
+与 1.0 的行为一致。
+
+⚠ 一个容易写错的地方：这类「页面请求外壳做事」的信号**不改变外壳自己显示的
+值**，所以必须放在外壳那行「显示值没变就直接返回」的**前面**，否则会被它
+提前返回吃掉（检查器专门盯这一条）。
+
+## 检查器
+
+新增 `tool/check_ui_wiring.py`（已接进 CI）：自绘按钮必须 opaque、外壳对三种
+跨页请求（在地图查看 / 在地图选点 / 展开面板）的处理位置、未连接横幅的两条
+约束。这几条**编译与 analyze 全绿**，只有手指按下去才知道不对。
+按惯例用回归样本验证过会报红（去掉 `_toolBtn` 的 opaque、把跨页请求挪到提前
+返回之后），验完 md5 确认源码完整还原。
+
+---
+
+## [1.6.155] - 2026-09-23 (English)
+
+### Four UI reports: unclickable layer panel, hidden chat input, weak offline notice, and charging back to the map
+
+## 1) Buttons on the map “did nothing” — only the icon was clickable
+
+The report was “the layer panel won't open”. The culprit was not the panel but the
+**button's hit area**:
+
+The button's fill comes from a `BoxDecoration`, and the `DecoratedBox` behind it
+(`RenderDecoratedBox extends RenderProxyBox`) **does not override `hitTestSelf`** —
+it **does not absorb hits**, passing them all to its child. The default
+`deferToChild` therefore shrinks the clickable area to the **20 px icon** in the
+middle: of a 38 px button only the central ~28 % responded, and taps on the edge
+or the rounded corners **did nothing at all**.
+
+The comparison is telling: Flutter's own `IconButton` / `InkWell` are opaque, and
+in this app the shell's buttons (top bar, navigation) already were — **only the
+map page's buttons were missed**, which matches “controls on the map don't
+respond” exactly.
+
+Fixed: the tool column (layers / track groups / base map) and the zoom tools
+(zoom in/out, tracks, heatmap, locate) — 13 buttons in all — now use
+`HitTestBehavior.opaque`, so the whole button responds.
+
+## 2) The chat input was hidden under the panel → auto-expand on entering a chat
+
+The UI 2.0 content panel is laid out at its **tallest height and only clipped to
+the visible area** (the v1.6.148 design that fixed “janky dragging and the white
+flash”). Half-open, the page shows only its upper part — and the input sits at
+the very bottom of the page, just below the clip line: **invisible and
+untappable** until you dragged the panel to full height by hand.
+
+Now entering a chat asks the shell to expand the panel to full height (reset when
+you go back to the conversation list), so you no longer have to hunt for the
+handle before typing.
+
+## 3) A stronger offline notice
+
+In UI 2.0 “not connected” was conveyed only by the small pill in the top-right
+corner, squeezed in with the weather, connect and locate buttons — so a
+disconnected app looked “fine” while **sending, beaconing and messages were all
+silently dead**. (1.0 had a prominent banner; only the pill survived the rewrite.)
+
+A **disconnected banner** is now back: orange border, two lines of explanation and
+a “Connect” button, with the **whole bar tappable** (one tap connects). Three
+details:
+
+* **Not shown in receive-only mode** — with only read-only sources such as
+  PKWDWPL enabled, having no transmit link is normal, and a “not connected”
+  banner would send people chasing a connection and digging through settings;
+* Its height is **counted into the map's top inset** (same convention as the
+  bottom inset), otherwise it would sit on top of the map's own info chip,
+  legend and tool column;
+* Present in both portrait and landscape.
+
+## 4) “View on map” from the station list didn't return to the map
+
+`focusOnMap` only changes a state value; **switching the shell back to the map is
+the shell's job**. That logic lived in `HomePage._onStateChanged` in 1.0 and was
+dropped entirely when the 2.0 shell was written — so the map quietly flew to that
+station in the background while the user stayed on the station panel, which looks
+exactly like “tapping did nothing”.
+
+The shell now handles that request (and “pick on map” too): it switches to the
+map tab and collapses the content panel, matching 1.0's behaviour.
+
+⚠ One easy mistake: these “page asks the shell to do something” signals **do not
+change any value the shell itself displays**, so they must be handled **before**
+the shell's “displayed values unchanged → return” line — otherwise the early
+return swallows them (a checker watches for exactly this).
+
+## Checkers
+
+New `tool/check_ui_wiring.py` (wired into CI): self-drawn buttons must be opaque,
+where the shell handles its three cross-page requests (view on map / pick on map /
+expand panel), and the two constraints on the offline banner. All of these
+**compile and pass analyze cleanly** and only misbehave once a finger touches
+them. As usual the checks were verified against regression samples (removing the
+opaque flag from `_toolBtn`, moving the cross-page request after the early return)
+and the source restored byte-identical (md5).
+
+---
+
 ## [1.6.154] - 2026-09-23
 
 ### 🛰 轨迹采样细化 + 标出信标点 + 智能信标「按距离打点」；四反馈修复 / Finer track sampling, beacon dots, distance-based smart beaconing, and four reported fixes
