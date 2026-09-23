@@ -1472,6 +1472,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }) {
     return GestureDetector(
       onTap: onTap,
+      // ⚠ 必须显式 opaque：按钮的底色来自 `BoxDecoration`，而它对应的
+      // `DecoratedBox`（`RenderDecoratedBox extends RenderProxyBox`）**不重写
+      // `hitTestSelf`** —— 也就是**不吸收点击**，命中全交给子节点。默认的
+      // `deferToChild` 于是把可点区域缩到中间那个 20px 图标上：38px 的按钮
+      // 只有中心 28% 能点，按到边缘/圆角**完全没反应**（用户报的
+      // 「图层选择面板打不开」就是这么来的：他按的是按钮，不是图标）。
+      behavior: HitTestBehavior.opaque,
       child: MaterialSurface(
         radius: 12,
         // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给

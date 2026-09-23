@@ -102,6 +102,13 @@ jobs:
       - name: Check beacon & track sampling
         run: python3 tool/check_beacon_track.py
 
+      # 交互接线：自绘小按钮的命中区（DecoratedBox 不吸收点击 → 只有图标能点）、
+      # 外壳对三种跨页请求（在地图查看 / 在地图选点 / 展开面板）的处理位置、
+      # 未连接横幅（要排除只读模式、要占顶部让位量）。
+      # 这些**编译与 analyze 全绿**，只有在真机上按下去才知道不对。
+      - name: Check UI wiring
+        run: python3 tool/check_ui_wiring.py
+
       # Release 说明的提取：**直接跑 build-release.yml 里那段 awk**，断言它把
       # 该版本的中英两个条目都取到了、且没混入相邻版本。
       # 那段 awk 一改错不会让任何东西失败 —— 只是打 tag 后 Release 页少半篇，

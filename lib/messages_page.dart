@@ -91,6 +91,9 @@ class _MessagesPageState extends State<MessagesPage> {
 
   String _selected = '';
   bool _showList = true;
+
+  /// 本次进入会话是否已经请求过「把外壳面板展开到最高档」（见下）。
+  bool _askedSheetExpand = false;
   String? _selectedGroupId; // 当前打开的群聊ID
   final Set<String> _groupRecipients = {}; // 临时群发目标（创建群聊用）
   final _input = TextEditingController();
@@ -287,6 +290,28 @@ class _MessagesPageState extends State<MessagesPage> {
             final narrow = !landscape && constraints.maxWidth < 720;
             // 是否处于"聊天详情"（窄屏下非列表页）
             final inChatDetail = narrow && !_showList;
+            // ── 进了会话 → 请求外壳把内容面板展开到最高档 ──
+            //
+            // 为什么必须有这一步：2.0 的面板**按最高档高度布局、只裁出可视区**
+            // （治「拖动卡 + 一拖就变白」的设计，见 shell2），于是半屏档下页面
+            // 只露出上半部分。而输入框在页面最底部 —— 正好落在裁切线之下，
+            // 用户看不到、也点不到，必须先手动把面板拉到最高才能打字
+            // （用户反馈「那个输入控件很容易藏在底下」）。
+            //
+            // 放在这里（按 `_showList` 判）而不是每个「点开会话」的入口：
+            // 会话有七八个入口（会话列表、搜索、群组、通知跳转、站内链接…），
+            // 逐个加必然漏一个。用一个标志位保证每次进入只请求一次，
+            // 退回列表时复位。
+            if (!_showList) {
+              if (!_askedSheetExpand) {
+                _askedSheetExpand = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) widget.state.requestSheetExpand();
+                });
+              }
+            } else {
+              _askedSheetExpand = false;
+            }
             // 非活动 tab（IndexedStack 隐藏时）不拦截返回键
             final interceptBack = widget.isActive && inChatDetail;
             // 登记「这次返回由我接手」：外壳也有一个 PopScope，同一个 route 上

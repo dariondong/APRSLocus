@@ -585,6 +585,10 @@ class RoundIconBtn extends StatelessWidget {
     // 看起来像按钮没画好，而不是像磨砂。
     final btn = GestureDetector(
       onTap: onTap,
+      // ⚠ 显式 opaque，与 `_toolBtn` 同一个坑：底色是 `BoxDecoration`，而
+      // `DecoratedBox` 不吸收点击 —— 默认 `deferToChild` 会把 38px 按钮的
+      // 可点区域缩到中心那个 20px 图标上（详见 map_page._toolBtn 的注释）。
+      behavior: HitTestBehavior.opaque,
       child: MaterialSurface(
         radius: 12,
         blurSigma: C.chipBlur,

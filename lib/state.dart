@@ -5376,6 +5376,25 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 「把外壳的内容面板展开到最高档」的请求序号（见 [requestSheetExpand]）。
+  int sheetExpandSeq = 0;
+
+  /// 请求外壳把内容面板展开到最高档。
+  ///
+  /// 为什么需要它：2.0 的面板**按最高档高度布局、只裁出可视区**（治「拖动卡」
+  /// 的设计，见 shell2），于是半屏档下页面只显示上半部分。而聊天页的输入框
+  /// 在页面的最底部 —— 正好落在裁切线之下，**半屏时根本看不见它**，
+  /// 用户必须先手动把面板拉到最高才能打字。
+  ///
+  /// 为什么走状态而不是回调：发起方是**面板里的页面**（消息页），执行方是
+  /// **外壳**（它管面板高度），中间隔着两层 widget。逐个把回调透传下去要改
+  /// 四层构造函数；而 `focusOnMap` / `pickSeq` 已经是「页面 → 外壳」的同一类
+  /// 请求，这里沿用它 —— 一致性比「省一个字段」重要。
+  void requestSheetExpand() {
+    sheetExpandSeq++;
+    _notify();
+  }
+
   // ─── 地图选点定位 ───
   bool pickMode = false;
   int pickSeq = 0;

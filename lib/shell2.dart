@@ -68,6 +68,13 @@ class _HomeShell2State extends State<HomeShell2>
   /// 上一次通知时的「外壳所显示的值」快照（见 [_onState]）
   String _stateKey = '';
 
+  /// 「在地图查看 / 在地图选点」上一次处理过的序号（见 [_onState]）。
+  int _lastFocusSeq = 0;
+  int _lastPickSeq = 0;
+
+  /// 「展开内容面板」上一次处理过的序号（见 [AppState.requestSheetExpand]）。
+  int _lastExpandSeq = 0;
+
   /// 是否刚刚用「滚动」动过面板（决定滚动结束后要不要吸附）
   bool _movedByScroll = false;
 
@@ -123,6 +130,10 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 导航胶囊高度
   static const double _kNav = 56;
+
+  /// 未连接横幅的高度（见 [_linkBanner]）。固定值：它要参与顶部让位量的计算，
+  /// 让位量必须是**确定的数**（量出来的高度会在首帧抖动一下）。
+  static const double _kLinkBannerH = 36;
 
   /// 把手触摸区高度（药丸本身只有 40×5，但整条都能拖/能点）
   static const double _kHandle = 44;
@@ -224,8 +235,39 @@ class _HomeShell2State extends State<HomeShell2>
   void _onState() {
     if (!mounted) return;
     final st = widget.state;
+    // ── ① 跨页请求：页面让外壳做一件事 ──
+    //
+    // 这些请求**不改变外壳自己显示的值**，所以必须放在下面那个
+    // 「显示值没变就 return」之前 —— 否则它们会被那行提前返回吃掉。
+    //
+    // 「在地图查看」（[AppState.focusOnMap]）与「在地图选点」都只是改了
+    // 状态：地图那边的 `_handleViewFocus` 会把视野飞过去，而**外壳还得
+    // 把页签切回地图**。1.0 里这件事在 `HomePage._onStateChanged` 做，
+    // 我重写 2.0 外壳时整段漏掉了 —— 结果是台站页点「在地图查看」之后，
+    // 地图在背后悄悄飞到了那个台站，用户却还停在台站面板上，看着就像
+    // 「点了没反应」。
+    if (st.mapFocusSeq != _lastFocusSeq || st.pickSeq != _lastPickSeq) {
+      _lastFocusSeq = st.mapFocusSeq;
+      _lastPickSeq = st.pickSeq;
+      // 放到帧后：这两条可能由本帧的 build/通知里改出来，
+      // 直接 setState 会在 build 期间标记重建。
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _tab != 0) _select(0);
+      });
+    }
+    // 会话页要露出输入框 → 请求把面板展开到最高档（见 messages_page）。
+    if (st.sheetExpandSeq != _lastExpandSeq) {
+      _lastExpandSeq = st.sheetExpandSeq;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _tab == 0) return;
+        final full = _fullRatioOf();
+        if (_extent < full - 0.01) _snapTo(full);
+      });
+    }
     final key = '${st.connected}|${st.connecting}|${st.online}|'
-        '${st.unreadMessages}|${st.weatherEnabled}|${st.myHasFix}';
+        '${st.unreadMessages}|${st.weatherEnabled}|${st.myHasFix}|'
+        // 未连接横幅的显隐还依赖「是不是只读模式」（见 _showLinkBanner）
+        '${st.readOnlyMode}';
     if (key == _stateKey) return;
     _stateKey = key;
     setState(() {});
@@ -307,7 +349,13 @@ class _HomeShell2State extends State<HomeShell2>
     final isWide = size.width > size.height;
     final navSpace = _navSpace(context);
     final barTop = pad.top + 6;
-    final topInset = _topInset();
+    // 未连接横幅要占一行，并且**算进地图的顶部让位量**（与 bottomInset 同一套
+    // 口径：给「被外壳占用的边界」）—— 不扣的话它会压住地图自己的顶部浮层。
+    // 用固定高度而不是量出来的值：让位量参与面板/标记的几何，抖动一下就会被
+    // 看成「界面在跳」。
+    final showLink = _showLinkBanner(widget.state);
+    final linkBannerH = showLink ? _kLinkBannerH + 6 : 0.0;
+    final topInset = _topInset() + linkBannerH;
     // 上限就是 _maxSheetH：绝不盖住顶栏
     final maxSheetH = _maxSheetH(size, navSpace, topInset);
     final sheetH = (size.height * _extent).clamp(0.0, maxSheetH);
@@ -373,7 +421,16 @@ class _HomeShell2State extends State<HomeShell2>
             child: KeyedSubtree(key: _barKey, child: _topBar()),
           ),
 
-                  // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
+                  // ②b 未连接横幅（压在地图上、顶栏之下；见 [_linkBanner]）
+          if (showLink)
+            Positioned(
+              top: barTop + _barH + 6,
+              left: _kGutter,
+              right: _kGutter,
+              child: _linkBanner(widget.state),
+            ),
+
+          // ③ 内容面板（可拖拽，只装内容；头部只有一根把手）
                   if (showSheet)
                     Positioned(
                       left: _kGutter,
@@ -847,6 +904,15 @@ class _HomeShell2State extends State<HomeShell2>
             leftInset: mapLeftInset,
           ),
         ),
+        // 未连接横幅（横屏也在顶栏之下；见 [_linkBanner]）。
+        // 左边让开竖条：它横跨地图区，压到竖条上会显得是两张卡撞在一起。
+        if (_showLinkBanner(widget.state))
+          Positioned(
+            top: barTop + _barH + 6,
+            left: mapLeftInset + _kGutter,
+            right: safeR,
+            child: _linkBanner(widget.state),
+          ),
         // 右上角那一簇（横屏更宽，放右边不挡地图中心）
         Positioned(
           top: barTop,
@@ -1003,6 +1069,85 @@ class _HomeShell2State extends State<HomeShell2>
           _locateBtn(st),
         ],
         ),
+        ),
+      ),
+    );
+  }
+
+  /// 是否显示未连接横幅（见 [_linkBanner]）。
+  ///
+  /// 三种情况**不显示**，各有理由（第一版只看 `!connected`，于是只读模式下
+  /// 也会挂一条「未连接」，等于让人白去点连接、白去查设置）：
+  ///  * 已连接 —— 没什么好提示的；
+  ///  * 连接中 —— 顶部胶囊已经在转圈说明它；
+  ///  * **只读模式**（只启用 PKWDWPL 这类只收来源）—— 没有发射链路是正常的，
+  ///    这也是 v1.6.109 撤掉「不能只剩只读来源」那条限制时定下的口径。
+  bool _showLinkBanner(AppState st) =>
+      !st.connected && !st.connecting && !st.readOnlyMode;
+
+  /// **未连接横幅**：把「现在发不出去」这件事明确说出来，并给一个能立刻点的动作。
+  ///
+  /// 为什么需要（用户反馈「强化未连接提示」）：2.0 里连接状态只由右上角那颗
+  /// 小胶囊（● APRS-IS · 未连接）表达，和天气、连接钮、定位钮挤在一起 ——
+  /// 未连接时整屏看起来「一切正常」，而实际上**发送、信标、消息全都发不出去**。
+  /// 1.0 里有一条明显的横幅，重写 2.0 外壳时只留了胶囊。
+  ///
+  /// 位置与几何：整条都是按钮（点一下即连接），并且它占用的高度会**从地图的
+  /// 顶部让位量里扣掉**（见 build 里的 `linkBannerH`）—— 否则它会压住地图自己
+  /// 的顶部浮层（信息条 / 图例 / 工具列），而那几件是按 topInset 摆的。
+  Widget _linkBanner(AppState st) {
+    final s = S.of(context);
+    return GestureDetector(
+      // 整条都能点：与 _toolBtn 同一个坑 —— 底色来自 BoxDecoration，
+      // 而 DecoratedBox 不吸收点击，不写 opaque 就只有中间那点文字能点。
+      behavior: HitTestBehavior.opaque,
+      onTap: st.toggleConnect,
+      child: MaterialSurface(
+        radius: 12,
+        blurSigma: C.chipBlur,
+        child: Container(
+          height: _kLinkBannerH,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: C.chipFill,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: C.orange.withValues(alpha: 0.45)),
+            boxShadow: elev2(),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.link_off_rounded, size: 16, color: C.orange),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(s.notConnectedAprsServer,
+                        style: ts(11, w: FontWeight.w700, h: 1.1),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    Text(s.connectNearbyDesc,
+                        style: ts(9, c: C.grey, h: 1.1),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 行动按钮（与整条同动作）：把「点了会发生什么」写出来，
+              // 而不是只给一个状态词 —— 与 _connBtn 的分工一致。
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: C.orange.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(s.connectAction,
+                    style: ts(10, c: C.orange, w: FontWeight.w700)),
+              ),
+            ],
+          ),
         ),
       ),
     );
