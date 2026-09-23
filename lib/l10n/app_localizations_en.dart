@@ -254,6 +254,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get noticeEntryDesc => 'Latest announcements from the website';
+
+  @override
   String get noticeTitle => 'Announcements';
 
   @override

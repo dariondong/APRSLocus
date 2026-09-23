@@ -254,6 +254,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get noticeEntryDesc => 'Lihat pengumuman terbaru dari situs web';
+
+  @override
   String get noticeTitle => 'Pengumuman';
 
   @override

@@ -18,7 +18,6 @@ import 'weather.dart';
 import 'theme_store.dart';
 import 'markdown_view.dart';
 import 'material.dart';
-import 'notice_banner.dart';
 import 'notice.dart';
 
 /// ─── 电台设置 ───
@@ -2580,11 +2579,11 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
         icon: Icons.palette_rounded,
         color: C.cyan,
         body: Column(children: [
-          // ── 公告横幅（与主页各一条；用户要求「设置页也留」）──
-          // 放在**页面最上面**：设置页是「扫一眼找开关」的地方，横幅放中间会被
-          // 当成某张卡的一部分而忽略。开关关掉时这个组件自己返回空（且不联网）；
-          // 横幅自带的关闭按钮会把开关置为 off（一个来源、两种入口）。
-          NoticeBanner(state: st),
+          // ⚠ 这个子页里**不再**放公告横幅（用户：「不要在子页留了」）。
+          // 公告的入口只有两处：主页/地图那条横幅（[NoticeBanner]），以及
+          // **设置主页最底下**那个「公告」按钮（用户：「在设置主页底下添加一个
+          // 公告进入按钮」）。这里留着的是**开关**（下面那张卡的第三项）：
+          // 它控制横幅显不显示、以及要不要在后台联网拉公告，本身就是这个子页的职责。
           SettingsSectionCard(
             title: S.of(context).all,
             subtitle: S.of(context).settingsGeneralSubtitle,
@@ -2597,6 +2596,9 @@ class _DisplaySettingsPageState extends State<DisplaySettingsPage> {
                   color: C.cyan, onChanged: (v) => st.setWeatherEnabled(v)),
               // 公告横幅：用户明确要「可以打开」的一个开关 —— 默认开，
               // 关掉后**不再发起任何网络请求**（见 notice_banner.dart 顶部）。
+              // 开关放这里、横幅却不在这个子页：公告的**入口**统一在主页/地图那条
+              // 横幅与设置主页底部的「公告」按钮上，这里只留开关（用户：
+              // 「不要在子页留了」+「在设置主页底下添加一个公告进入按钮」）。
               SettingsSwitch(S.of(context).noticeTitle,
                   value: st.noticeBanner,
                   color: C.cyan,

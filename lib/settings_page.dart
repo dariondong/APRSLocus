@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'notice.dart';
+import 'notice_banner.dart';
 import 'theme.dart';
 import 'state.dart';
 import 'models.dart';
@@ -30,6 +32,9 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   AppState get st => widget.state;
+
+  /// 公告入口正在取（见 [_openNotice]）：只用来在行尾换成一个转圈
+  bool _noticeLoading = false;
 
   /// 按时段返回问候前缀（早上好/中午好/下午好/晚上好/夜深了）
   String get _greetingPrefix {
@@ -479,6 +484,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 SizedBox(height: 12),
+                // 公告：**主动查看**的入口（用户：「在设置主页底下添加一个公告进入
+                // 按钮」）。归在最底下这一簇入口里（备份之后、关于之前；退出应用
+                // 那颗销毁性按钮仍留在最底，不把公告排到它下面）。
+                //
+                // 为什么是「按钮」而不是在这个主页也放一条横幅：横幅是**被动可见**的
+                // 通知（主页/地图那条已经在做这件事），而这里要的是「我想看时点一下」。
+                // 两条横幅才是重复的 —— 上一版就因为在设置子页也塞了一条而被指出来。
+                //
+                // ⚠ 点它才联网：不在进入设置页时预拉。公告横幅那个开关的承诺是
+                // 「关了就不在后台联网」（见 notice_banner.dart 顶部），而**用户主动
+                // 点这一下**不是后台行为，所以开关关着时这个入口依旧可用 ——
+                // 不然「不想在主页看到横幅」的人就再也读不到公告了。
+                _noticeEntry(),
+                SizedBox(height: 12),
                 // 关于
                 GestureDetector(
                   onTap: () => Navigator.push(
@@ -564,6 +583,92 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _push(Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
+
+  /// 公告入口：点一下**当场去取**（先网络、失败退缓存），拿到了就弹底部弹层。
+  ///
+  /// 取不到就如实说「暂无公告」，不留白也不假装成功 —— 与横幅那条的
+  /// 「暂无公告 + 重试」同一条原则（v1.6.109 只读模式起就定下的）。
+  Future<void> _openNotice() async {
+    // 防连点：不拦的话手抖两下会发两次请求、叠两层弹层
+    if (_noticeLoading) return;
+    setState(() => _noticeLoading = true);
+    final d = await NoticeStore.instance.load(lang: noticeLangOf(context));
+    if (!mounted) return;
+    setState(() => _noticeLoading = false);
+    if (d == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(S.of(context).noticeEmpty),
+        duration: const Duration(seconds: 2),
+      ));
+      return;
+    }
+    // 全文用**底部弹层**（用户明确要求不要整页）：与横幅点开的是同一个
+    await showNoticeSheet(context,
+        markdown: d.body, fetchedAt: d.fetchedAt, fromCache: d.fromCache);
+  }
+
+  /// 公告入口行。样式与上面几个入口（备份 / 关于）保持一致。
+  Widget _noticeEntry() {
+    return GestureDetector(
+      onTap: _openNotice,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: cardDeco(),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: C.accentDeco(
+                radius: 8,
+                fallback: const [Color(0xFF0891B2), Color(0xFF155E75)],
+              ),
+              child: const Icon(
+                Icons.campaign_rounded,
+                color: Colors.white,
+                size: 17,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              S.of(context).noticeTitle,
+              style: ts(13, w: FontWeight.w700),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                S.of(context).noticeEntryDesc,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF98A2B8),
+                ),
+              ),
+            ),
+            // 取公告时给个转圈：这几百毫秒里若毫无反应，用户会以为没点上
+            // （又一次点击会叠一层弹层）
+            if (_noticeLoading)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2),
+                child: SizedBox(
+                  width: 14,
+                  height: 14,
+                  // ⚠ 里面没有 C.*，所以 const 合法（check_const_colors 会报）
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            else
+              Icon(
+                Icons.chevron_right_rounded,
+                color: C.grey,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _catCard({

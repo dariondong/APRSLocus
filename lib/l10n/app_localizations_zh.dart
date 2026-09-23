@@ -251,6 +251,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get noticeEntryDesc => '查看官网发布的最新公告';
+
+  @override
   String get noticeTitle => '公告';
 
   @override
@@ -6736,6 +6739,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get noticeEntryDesc => '查看官網發布的最新公告';
 
   @override
   String get noticeTitle => '公告';

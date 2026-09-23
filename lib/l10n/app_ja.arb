@@ -2372,5 +2372,6 @@
   "noticeOfflineCache": "オフラインのコピー · {time}（オンラインになると自動更新）",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "たった今",
-  "refresh": "更新"
+  "refresh": "更新",
+  "noticeEntryDesc": "公式サイトの最新お知らせを見る"
 }

@@ -663,6 +663,12 @@ abstract class AppLocalizations {
   /// **"刷新"**
   String get refresh;
 
+  /// No description provided for @noticeEntryDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **"查看官网发布的最新公告"**
+  String get noticeEntryDesc;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

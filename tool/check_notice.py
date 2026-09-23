@@ -29,6 +29,7 @@
 """
 import io
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -143,17 +144,35 @@ def main() -> int:
     need('pubspec.yaml', 'markdown:',
          'pubspec 没有 markdown 依赖 —— markdown_view.dart 编译不过（只在 CI 报）')
 
-    # ── 设置页接线：开关 + 横幅 ──
+    # ── 设置页接线：开关 + 公告入口 ──
     sp = read('lib/settings_pages.dart')
     need('lib/settings_pages.dart', 'st.setNoticeBanner(',
          '设置页没有公告开关的写回 —— 开关点了不生效')
-    # 横幅要放**两处**（用户：「在主页显示横幅」「在设置页也留」）
+    # 横幅要放**两处**：主页（1.0）与地图页（2.0）
     need('lib/home_page.dart', 'NoticeBanner(',
          '1.0 主页没有公告横幅 —— 用户要求「在主页显示横幅」')
     need('lib/shell2.dart', 'NoticeBanner(',
          '2.0 地图页没有公告横幅 —— 用户要求「在主页显示横幅」')
-    need('lib/settings_pages.dart', 'NoticeBanner(',
-         '设置页没有公告横幅 —— 用户要求「在设置页也留」')
+    # ── 设置子页**不许**再放横幅 ──
+    #
+    # 用户：「不要在子页留了」。
+    # ⚠ 必须先把 `setNoticeBanner(`（开关的写回）剔掉再搜：它**含有** `NoticeBanner(`
+    #   这个子串 —— 只带左括号是不够的，回归样本当场就验出来了（那条断言第一次跑
+    #   直接报红，而子页里其实已经没有横幅了）。假失败比真失败更坏，所以这里
+    #   先把开关名字整个删掉，剩下的才是「真的用了横幅组件」。
+    sp_no_switch = re.sub(r'setNoticeBanner\s*\(', '', sp)
+    if 'NoticeBanner(' in sp_no_switch:
+        errors.append('lib/settings_pages.dart 里又出现了 `NoticeBanner(` —— '
+                      '用户明确要求「不要在子页留」（设置子页里只留开关）')
+    # ── 设置**主页**底部要有公告入口（用户：「在设置主页底下添加一个公告进入按钮」）──
+    hsp = read('lib/settings_page.dart')
+    # 也带左括号：同样是为了不被 `setNoticeBanner(` 骗到
+    if 'showNoticeSheet(' not in hsp:
+        errors.append('lib/settings_page.dart 里没有 `showNoticeSheet(` —— '
+                      '设置主页那个公告入口没有打开全文（点了没反应）')
+    if 'NoticeStore.instance.load(' not in hsp:
+        errors.append('lib/settings_page.dart 里没有 `NoticeStore.instance.load(` —— '
+                      '设置主页那个公告入口不会去取公告（得先拿内容才能弹层）')
     # 全文用**底部弹层**而不是整页（用户：「打开就不能以弹窗的形式？」）
     need('lib/notice_banner.dart', 'showNoticeSheet(',
          '公告全文没有用底部弹层 —— 用户明确要求不要整页')

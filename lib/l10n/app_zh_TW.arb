@@ -2876,5 +2876,6 @@
   "noticeOfflineCache": "離線快取 · {time}（連網後會自動更新）",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "剛剛",
-  "refresh": "重新整理"
+  "refresh": "重新整理",
+  "noticeEntryDesc": "查看官網發布的最新公告"
 }

@@ -2886,5 +2886,6 @@
   "noticeOfflineCache": "离线缓存 · {time}（联网后会自动更新）",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "刚刚",
-  "refresh": "刷新"
+  "refresh": "刷新",
+  "noticeEntryDesc": "查看官网发布的最新公告"
 }

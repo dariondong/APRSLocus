@@ -40,16 +40,24 @@ SETTINGS_INTRO = {
         'data caps. Changes apply only with “Save &amp; apply”.'),
     '显示': T(
         '深色模式、天气组件、单位与网格在这里；地图类型与离线地图在地图菜单与对应子页。'
-        '顶部还有一条<b>公告横幅</b>（默认开）：内容取自官网的公告区，改官网就能发通知、不用等新版；'
-        '断网时显示上次缓存的那份，不想看到可以关掉（关掉后不再联网）。',
+        '另有一个<b>公告横幅</b>开关（默认开）：横幅显示在主页／地图的顶部，'
+        '内容取自官网的公告区，改官网就能发通知、不用等新版；'
+        '断网时显示上次缓存的那份，不想看到可以关掉（关掉后不再联网）。'
+        '想主动查看时，用<b>设置主页最底部</b>的「公告」按钮 —— 它随时可点，'
+        '读的是同一份内容。',
         '深色模式、天氣小組件、單位與網格在這裡；地圖類型與離線地圖在地圖選單與對應子頁。'
-        '頂部還有一條<b>公告橫幅</b>（預設開）：內容取自官網的公告區，改官網就能發通知、不用等新版；'
-        '斷網時顯示上次快取的那份，不想看到可以關掉（關掉後不再連網）。',
+        '另有一個<b>公告橫幅</b>開關（預設開）：橫幅顯示在首頁／地圖的頂部，'
+        '內容取自官網的公告區，改官網就能發通知、不用等新版；'
+        '斷網時顯示上次快取的那份，不想看到可以關掉（關掉後不再連網）。'
+        '想主動查看時，用<b>設定首頁最底部</b>的「公告」按鈕 —— 它隨時可點，'
+        '讀的是同一份內容。',
         'Dark mode, weather widget, units and grid live here; tile source and offline maps live in '
-        'the map menu and their own sub-page. There is also an <b>announcement banner</b> (on by '
-        'default) whose content comes from the website announcement section — publishing a notice '
-        'needs no app release; offline it shows the last cached copy, and turning it off stops all '
-        'network requests.'),
+        'the map menu and their own sub-page. There is also an <b>announcement banner</b> toggle '
+        '(on by default): the banner sits at the top of the home screen / map, its content comes '
+        'from the website announcement section — publishing a notice needs no app release; '
+        'offline it shows the last cached copy, and turning it off stops all network requests. '
+        'To read it on demand, use the <b>Announcements</b> button at the very bottom of the '
+        'settings home screen — it is always available and shows the same content.'),
     '设备': T(
         '设备总览 = 当前链路 + 网关状态 + 三个子页入口（TNC / 音频 / PKWDWPL）+ 链路自检与日志。',
         '裝置總覽 = 當前鏈路 + 網關狀態 + 三個子頁入口（TNC / 音訊 / PKWDWPL）+ 鏈路自檢與日誌。',

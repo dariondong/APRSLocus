@@ -2288,5 +2288,6 @@
   "noticeOfflineCache": "Offline copy · {time} (updates automatically once online)",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "just now",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "noticeEntryDesc": "Latest announcements from the website"
 }

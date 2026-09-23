@@ -2372,5 +2372,6 @@
   "noticeOfflineCache": "Salinan offline · {time} (diperbarui otomatis saat online)",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "baru saja",
-  "refresh": "Segarkan"
+  "refresh": "Segarkan",
+  "noticeEntryDesc": "Lihat pengumuman terbaru dari situs web"
 }

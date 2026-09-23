@@ -2372,5 +2372,6 @@
   "noticeOfflineCache": "Copia sin conexión · {time} (se actualiza al recuperar la red)",
   "@noticeOfflineCache": {"placeholders": {"time": {"type": "String"}}},
   "timeJustNow": "ahora mismo",
-  "refresh": "Actualizar"
+  "refresh": "Actualizar",
+  "noticeEntryDesc": "Consulta los últimos avisos de la web"
 }
