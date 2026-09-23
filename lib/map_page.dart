@@ -1535,7 +1535,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         const SizedBox(height: 6),
         _toolBtn(
           icon: Icons.map_rounded,
-          onTap: () => _showMapTypeMenu,
+          // ⚠ 必须带 ()：写成 `() => _showMapTypeMenu` 只是**返回这个函数本身**，
+          // 从不调用它 —— 点下去等于什么都不做（用户报的「底图选择面板弹不出来」）。
+          // 而 Dart 允许把 `void Function() Function()` 赋给 `VoidCallback`
+          // （返回值位置的 `void` 是顶类型），所以编译与 analyze **都不会报**。
+          onTap: () => _showMapTypeMenu(),
           bg: chipTint(C.white),
           fg: C.slate,
           border: C.border,

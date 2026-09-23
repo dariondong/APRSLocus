@@ -25,11 +25,19 @@
      而实际上发送/信标/消息全都发不出去。横幅还必须**算进地图顶部让位量**，
      否则它会压住地图自己的顶部浮层。
 
+  5. **回调「只返回函数、不调用」**：`onTap: () => _showMapTypeMenu`（**漏了括号**）
+     只是返回这个函数本身，从不调用 —— 点下去等于什么都不做。
+     而 Dart 允许把 `void Function() Function()` 赋给 `VoidCallback`
+     （返回值位置的 `void` 是顶类型），所以**编译与 analyze 都不会报**。
+     用户报的「底图选择面板弹不出来」就是这么来的（一直坏到 v1.6.156）。
+     判据落在**箭头函数体是裸标识符**这一形态上（`=>` 后面没有 `(`）。
+
 用法：python3 tool/check_ui_wiring.py
 退出码 0 = 全在；1 = 有缺失。
 """
 import io
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -139,12 +147,47 @@ def main() -> int:
     need('lib/settings_pages.dart', 'hint: S.of(context).callCommentEmpty',
          '「台站备注」没用专门的占位提示 —— 那正是用户说「不知道能输入」的那一行')
 
+    # ── ⑥ 回调不能「只返回函数、不调用」──
+    #
+    # 形态很具体：`onXxx: () => someName`（或换行后的同一个东西），
+    # `=>` 后面是**裸标识符**、紧接着 `,` 或 `)` —— 也就是没有调用。
+    #
+    # ⚠ 判据里的 `on[A-Za-z]+:` **不能省**（另一个会话的版本已经写对了，
+    #   我最初的宽版本就是栽在这里）：放开成「`=>` 后面跟裸标识符」会误报
+    #   `builder: (_, __) => icon`（builder 返回一个局部 widget 变量，完全合法）——
+    #   实测在 settings_pages.dart 上就报了一次假失败。限定在 `on*` 回调参数上，
+    #   既精确又不误伤。
+    # 编译能过（`void` 在返回值位置是顶类型）、analyze 也不报，
+    # 运行时表现是「点了完全没反应」，最难查。
+    bare = re.compile(
+        r'on[A-Za-z]+\s*:\s*\(\s*\)\s*=>\s*'
+        r'([A-Za-z_][A-Za-z0-9_]*)\s*(?=[,)])', re.S)
+    for base, _dirs, files in os.walk(os.path.join(ROOT, 'lib')):
+        for fn in sorted(files):
+            if not fn.endswith('.dart'):
+                continue
+            rel = os.path.relpath(os.path.join(base, fn), ROOT).replace(os.sep, '/')
+            # 剔掉整行注释：注释里会**提到**这个坏写法来解释为什么不能这么写
+            code = '\n'.join(l for l in read(rel).split('\n')
+                             if not l.lstrip().startswith('//'))
+            seen = set()
+            for m in bare.finditer(code):
+                name = m.group(1)
+                if name in seen:
+                    continue
+                seen.add(name)
+                line = code[:m.start()].count('\n') + 1
+                errors.append(f'{rel}:{line} 的手势/按键回调写成 `() => {name}` —— '
+                              '**漏了括号**（只是返回函数本身、从不调用），'
+                              f'点了不会有反应；应写成 `() => {name}()` 或直接传 `{name}`')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:
             print('  -', e)
         return 1
-    print('交互接线 ok（自绘按钮整块可点、外壳接三种跨页请求、未连接横幅占让位量）')
+    print('交互接线 ok（自绘按钮整块可点、外壳接三种跨页请求、未连接横幅占让位量、'
+          '回调都真的被调用）')
     return 0
 
 
