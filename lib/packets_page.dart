@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'theme.dart';
+import 'guide.dart';
 import 'models.dart';
 import 'state.dart';
 import 'widgets.dart';
@@ -89,6 +90,13 @@ class _PacketsPageState extends State<PacketsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 功能引导（首次进入显示；看过后不占位置）
+              GuideTipCard(
+                guideId: 'packets',
+                state: widget.state,
+                margin: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 12),
               // 头部（Wrap 自动换行，避免窄屏溢出）
               Wrap(
                 spacing: 8,

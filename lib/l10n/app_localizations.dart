@@ -681,6 +681,174 @@ abstract class AppLocalizations {
   /// **"致谢名单"**
   String get creditsSection;
 
+  /// No description provided for @guideTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"功能引导"**
+  String get guideTitle;
+
+  /// No description provided for @guideGotIt.
+  ///
+  /// In zh, this message translates to:
+  /// **"知道了"**
+  String get guideGotIt;
+
+  /// No description provided for @guideShowAgain.
+  ///
+  /// In zh, this message translates to:
+  /// **"重看本页引导"**
+  String get guideShowAgain;
+
+  /// No description provided for @guideHomeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"主页 · 地图与台站"**
+  String get guideHomeTitle;
+
+  /// No description provided for @guideHomeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"地图上的每个点都是收到的台站，点开可以看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。"**
+  String get guideHomeBody;
+
+  /// No description provided for @guideImmersiveTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"沉浸地图"**
+  String get guideImmersiveTitle;
+
+  /// No description provided for @guideImmersiveBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"全屏看台站：双指缩放、单指拖动，左下角可切换「跟随自己」，左上角返回。"**
+  String get guideImmersiveBody;
+
+  /// No description provided for @guideMessagesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"消息"**
+  String get guideMessagesTitle;
+
+  /// No description provided for @guideMessagesBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"输入呼号即可开聊；右上角能建群组、发广播。收不到回复时，先确认顶部已连接。"**
+  String get guideMessagesBody;
+
+  /// No description provided for @guideDeviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"设备与数据源"**
+  String get guideDeviceTitle;
+
+  /// No description provided for @guideDeviceBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"选数据从哪来（APRS-IS / TNC / 声卡）以及用哪条链路发射。蓝牙 TNC 要先去「设备」子页配对。"**
+  String get guideDeviceBody;
+
+  /// No description provided for @guideSettingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"设置"**
+  String get guideSettingsTitle;
+
+  /// No description provided for @guideSettingsBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"八类入口：电台、信标、连接、显示、设备、数据、高级、更新。改完的设置立刻生效，不需要重启。"**
+  String get guideSettingsBody;
+
+  /// No description provided for @guideOfflineMapTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"离线地图"**
+  String get guideOfflineMapTitle;
+
+  /// No description provided for @guideOfflineMapBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"框选一块区域下载瓦片，没网也能看地图。下载可随时暂停，之后接着下。"**
+  String get guideOfflineMapBody;
+
+  /// No description provided for @guideLogTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"系统日志"**
+  String get guideLogTitle;
+
+  /// No description provided for @guideLogBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"收发包与链路事件都记在这里。排查问题时先看这儿，右上角可以复制全部日志。"**
+  String get guideLogBody;
+
+  /// No description provided for @guideBackupTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"备份与恢复"**
+  String get guideBackupTitle;
+
+  /// No description provided for @guideBackupBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"导出设置文件，换机后一键恢复。瓦片与翻译缓存不在备份内，需要重新下载。"**
+  String get guideBackupBody;
+
+  /// No description provided for @guideExportAdifTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"导出 ADIF"**
+  String get guideExportAdifTitle;
+
+  /// No description provided for @guideExportAdifBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"把收到的台站位置导成 ADIF 文件，供日志软件导入。可选时间范围与模式。"**
+  String get guideExportAdifBody;
+
+  /// No description provided for @guidePacketsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"数据包"**
+  String get guidePacketsTitle;
+
+  /// No description provided for @guidePacketsBody.
+  ///
+  /// In zh, this message translates to:
+  /// **"原始收发报文列表，用来核对解析结果。点一行可以看到完整内容。"**
+  String get guidePacketsBody;
+
+  /// No description provided for @guideResetRow.
+  ///
+  /// In zh, this message translates to:
+  /// **"重新查看功能引导"**
+  String get guideResetRow;
+
+  /// No description provided for @guideResetTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **"重新查看功能引导？"**
+  String get guideResetTitle;
+
+  /// No description provided for @guideResetConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **"清空「已看过」记录，各页顶部的小提示卡会再出现一次。"**
+  String get guideResetConfirm;
+
+  /// No description provided for @guideResetButton.
+  ///
+  /// In zh, this message translates to:
+  /// **"重新显示"**
+  String get guideResetButton;
+
+  /// No description provided for @guideResetDone.
+  ///
+  /// In zh, this message translates to:
+  /// **"功能引导已重置"**
+  String get guideResetDone;
+
   /// No description provided for @tierIdleTitle.
   ///
   /// In zh, this message translates to:

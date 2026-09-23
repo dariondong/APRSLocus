@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'theme.dart';
+import 'guide.dart';
 import 'models.dart';
 import 'pos_quality.dart';
 import 'state.dart';
@@ -587,6 +588,18 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     top: topBase,
                     left: 14 + widget.leftInset,
                     child: _infoChip(vis, searched)),
+                // 功能引导：首次进入地图页时浮一张小提示卡（看过就不再出现）。
+                // 浮在地图之上而不是插进布局：地图页是 Stack，插进去会改变地图尺寸。
+                Positioned(
+                  top: topBase + 46,
+                  left: 14 + widget.leftInset,
+                  right: 74,
+                  child: GuideTipCard(
+                    guideId: 'home',
+                    state: widget.state,
+                    margin: EdgeInsets.zero,
+                  ),
+                ),
                 // 选点提示
                 if (_pickMode)
                   Positioned(

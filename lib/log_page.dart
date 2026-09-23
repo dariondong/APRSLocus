@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'models.dart';
 import 'state.dart';
 import 'theme.dart';
+import 'guide.dart';
 import 'widgets.dart';
 import 'material.dart';
 
@@ -55,71 +56,82 @@ class LogPage extends StatelessWidget {
           ],
         ),
       ),
-      body: ListenableBuilder(
-        listenable: state,
-        builder: (context, _) {
-          final logs = state.logs;
-          if (logs.isEmpty) {
-            return Center(
-              child: Text(
-                S.of(context).noLogs,
-                style: TextStyle(color: C.grey, fontSize: 13),
-              ),
-            );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.all(12),
-            itemCount: logs.length,
-            separatorBuilder: (_, _) => SizedBox(height: 6),
-            itemBuilder: (_, i) {
-              final e = logs[i];
-              final c = logLevelColor(e.level);
-              return Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: C.surfaceFill,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: C.border),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: c.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        localizedLogLevelName(context, e.level),
-                        style: ts(9, c: c, w: FontWeight.w700),
-                      ),
+      body: Column(
+        children: [
+          GuideTipCard(
+            guideId: 'log',
+            state: state,
+            margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+          ),
+          Expanded(
+            child: ListenableBuilder(
+            listenable: state,
+            builder: (context, _) {
+              final logs = state.logs;
+              if (logs.isEmpty) {
+                return Center(
+                  child: Text(
+                    S.of(context).noLogs,
+                    style: TextStyle(color: C.grey, fontSize: 13),
+                  ),
+                );
+              }
+              return ListView.separated(
+                padding: const EdgeInsets.all(12),
+                itemCount: logs.length,
+                separatorBuilder: (_, _) => SizedBox(height: 6),
+                itemBuilder: (_, i) {
+                  final e = logs[i];
+                  final c = logLevelColor(e.level);
+                  return Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: C.surfaceFill,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: C.border),
                     ),
-                    SizedBox(width: 8),
-                    Text(_fmt(e.time), style: mono(9, c: C.grey)),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '[${e.source}]',
-                            style: ts(10, c: c, w: FontWeight.w700),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
                           ),
-                          SizedBox(height: 2),
-                          Text(e.message, style: ts(12, c: C.ink, h: 1.3)),
-                        ],
-                      ),
+                          decoration: BoxDecoration(
+                            color: c.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            localizedLogLevelName(context, e.level),
+                            style: ts(9, c: c, w: FontWeight.w700),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text(_fmt(e.time), style: mono(9, c: C.grey)),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '[${e.source}]',
+                                style: ts(10, c: c, w: FontWeight.w700),
+                              ),
+                              SizedBox(height: 2),
+                              Text(e.message, style: ts(12, c: C.ink, h: 1.3)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+          ),
+        ],
       ),
     );
   }

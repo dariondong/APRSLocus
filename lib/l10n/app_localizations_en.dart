@@ -254,6 +254,90 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tierMinTurnHint => 'Beacon once after turning this far (10–180); 0 = off. Only while moving (heading is noise when parked)';
 
   @override
+  String get guideTitle => 'Feature guide';
+
+  @override
+  String get guideGotIt => 'Got it';
+
+  @override
+  String get guideShowAgain => 'Show this guide again';
+
+  @override
+  String get guideHomeTitle => 'Home · map & stations';
+
+  @override
+  String get guideHomeBody => 'Every dot on the map is a station you are receiving — tap one for its track and details. The bottom button sends your position (connect first).';
+
+  @override
+  String get guideImmersiveTitle => 'Immersive map';
+
+  @override
+  String get guideImmersiveBody => 'Full-screen station view: pinch to zoom, drag to pan, “follow me” at the bottom-left, back arrow at the top-left.';
+
+  @override
+  String get guideMessagesTitle => 'Messages';
+
+  @override
+  String get guideMessagesBody => 'Type a callsign to start a chat; the top-right menu creates groups and sends bulletins. No replies? Check that you are connected.';
+
+  @override
+  String get guideDeviceTitle => 'Devices & data sources';
+
+  @override
+  String get guideDeviceBody => 'Choose where data comes from (APRS-IS / TNC / sound card) and which link transmits. Pair a Bluetooth TNC in the device sub-page first.';
+
+  @override
+  String get guideSettingsTitle => 'Settings';
+
+  @override
+  String get guideSettingsBody => 'Eight categories: radio, beacon, connection, display, devices, data, advanced, update. Changes take effect immediately.';
+
+  @override
+  String get guideOfflineMapTitle => 'Offline maps';
+
+  @override
+  String get guideOfflineMapBody => 'Select an area and download its tiles so the map keeps working without network. You can pause and resume.';
+
+  @override
+  String get guideLogTitle => 'System log';
+
+  @override
+  String get guideLogBody => 'Every packet and link event is recorded here — the first place to look when something is wrong. Copy the whole log from the top-right.';
+
+  @override
+  String get guideBackupTitle => 'Backup & restore';
+
+  @override
+  String get guideBackupBody => 'Export a settings file and restore it in one tap on a new device. Map tiles and the translation cache are not included.';
+
+  @override
+  String get guideExportAdifTitle => 'Export ADIF';
+
+  @override
+  String get guideExportAdifBody => 'Write the stations you received into an ADIF file for your logging software, with an optional time range and mode.';
+
+  @override
+  String get guidePacketsTitle => 'Packets';
+
+  @override
+  String get guidePacketsBody => 'The raw received and sent frames, useful for checking how a packet was parsed. Tap a row for the full text.';
+
+  @override
+  String get guideResetRow => 'Show all feature guides again';
+
+  @override
+  String get guideResetTitle => 'Show all feature guides again?';
+
+  @override
+  String get guideResetConfirm => 'This clears the “already seen” record so the tip card appears once more on each page.';
+
+  @override
+  String get guideResetButton => 'Show again';
+
+  @override
+  String get guideResetDone => 'Feature guides reset';
+
+  @override
   String get ossLicenseSection => 'Open source & license';
 
   @override

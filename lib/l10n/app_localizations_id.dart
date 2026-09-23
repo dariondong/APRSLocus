@@ -254,6 +254,90 @@ class AppLocalizationsId extends AppLocalizations {
   String get tierMinTurnHint => 'Lapor setelah berbelok sejauh ini (10–180); 0 = nonaktif. Hanya saat bergerak (saat berhenti, arah hanya derau)';
 
   @override
+  String get guideTitle => 'Panduan fitur';
+
+  @override
+  String get guideGotIt => 'Mengerti';
+
+  @override
+  String get guideShowAgain => 'Tampilkan panduan ini lagi';
+
+  @override
+  String get guideHomeTitle => 'Beranda · peta & stasiun';
+
+  @override
+  String get guideHomeBody => 'Setiap titik di peta adalah stasiun yang Anda terima — ketuk untuk melihat jejak dan detailnya. Tombol bawah mengirim posisi Anda (sambungkan dulu).';
+
+  @override
+  String get guideImmersiveTitle => 'Peta imersif';
+
+  @override
+  String get guideImmersiveBody => 'Peta layar penuh: cubit untuk zoom, seret untuk menggeser, “ikuti saya” di kiri bawah, kembali di kiri atas.';
+
+  @override
+  String get guideMessagesTitle => 'Pesan';
+
+  @override
+  String get guideMessagesBody => 'Ketik callsign untuk mulai mengobrol; menu kanan atas membuat grup dan mengirim siaran. Tidak ada balasan? Periksa koneksi Anda.';
+
+  @override
+  String get guideDeviceTitle => 'Perangkat & sumber data';
+
+  @override
+  String get guideDeviceBody => 'Pilih sumber data (APRS-IS / TNC / kartu suara) dan tautan untuk memancar. Pasangkan TNC Bluetooth di sub-halaman perangkat.';
+
+  @override
+  String get guideSettingsTitle => 'Pengaturan';
+
+  @override
+  String get guideSettingsBody => 'Delapan kategori: radio, beacon, koneksi, tampilan, perangkat, data, lanjutan, pembaruan. Perubahan langsung berlaku.';
+
+  @override
+  String get guideOfflineMapTitle => 'Peta offline';
+
+  @override
+  String get guideOfflineMapBody => 'Pilih area lalu unduh ubinnya agar peta tetap bisa dilihat tanpa jaringan. Bisa dijeda dan dilanjutkan.';
+
+  @override
+  String get guideLogTitle => 'Log sistem';
+
+  @override
+  String get guideLogBody => 'Semua paket dan peristiwa tautan dicatat di sini — tempat pertama memeriksa saat ada masalah. Salin seluruh log dari kanan atas.';
+
+  @override
+  String get guideBackupTitle => 'Cadangan & pemulihan';
+
+  @override
+  String get guideBackupBody => 'Ekspor berkas pengaturan dan pulihkan sekali ketuk di perangkat baru. Ubin peta dan cache terjemahan tidak disertakan.';
+
+  @override
+  String get guideExportAdifTitle => 'Ekspor ADIF';
+
+  @override
+  String get guideExportAdifBody => 'Simpan stasiun yang Anda terima ke berkas ADIF untuk perangkat lunak log, dengan rentang waktu dan mode opsional.';
+
+  @override
+  String get guidePacketsTitle => 'Paket';
+
+  @override
+  String get guidePacketsBody => 'Frame mentah yang diterima dan dikirim, berguna untuk memeriksa hasil parsing. Ketuk baris untuk teks lengkapnya.';
+
+  @override
+  String get guideResetRow => 'Tampilkan semua panduan fitur lagi';
+
+  @override
+  String get guideResetTitle => 'Tampilkan semua panduan fitur lagi?';
+
+  @override
+  String get guideResetConfirm => 'Ini menghapus catatan “sudah dilihat” sehingga kartu petunjuk muncul lagi di tiap halaman.';
+
+  @override
+  String get guideResetButton => 'Tampilkan lagi';
+
+  @override
+  String get guideResetDone => 'Panduan fitur direset';
+
+  @override
   String get ossLicenseSection => 'Sumber terbuka & lisensi';
 
   @override

@@ -251,6 +251,90 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
 
   @override
+  String get guideTitle => '功能引导';
+
+  @override
+  String get guideGotIt => '知道了';
+
+  @override
+  String get guideShowAgain => '重看本页引导';
+
+  @override
+  String get guideHomeTitle => '主页 · 地图与台站';
+
+  @override
+  String get guideHomeBody => '地图上的每个点都是收到的台站，点开可以看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。';
+
+  @override
+  String get guideImmersiveTitle => '沉浸地图';
+
+  @override
+  String get guideImmersiveBody => '全屏看台站：双指缩放、单指拖动，左下角可切换「跟随自己」，左上角返回。';
+
+  @override
+  String get guideMessagesTitle => '消息';
+
+  @override
+  String get guideMessagesBody => '输入呼号即可开聊；右上角能建群组、发广播。收不到回复时，先确认顶部已连接。';
+
+  @override
+  String get guideDeviceTitle => '设备与数据源';
+
+  @override
+  String get guideDeviceBody => '选数据从哪来（APRS-IS / TNC / 声卡）以及用哪条链路发射。蓝牙 TNC 要先去「设备」子页配对。';
+
+  @override
+  String get guideSettingsTitle => '设置';
+
+  @override
+  String get guideSettingsBody => '八类入口：电台、信标、连接、显示、设备、数据、高级、更新。改完的设置立刻生效，不需要重启。';
+
+  @override
+  String get guideOfflineMapTitle => '离线地图';
+
+  @override
+  String get guideOfflineMapBody => '框选一块区域下载瓦片，没网也能看地图。下载可随时暂停，之后接着下。';
+
+  @override
+  String get guideLogTitle => '系统日志';
+
+  @override
+  String get guideLogBody => '收发包与链路事件都记在这里。排查问题时先看这儿，右上角可以复制全部日志。';
+
+  @override
+  String get guideBackupTitle => '备份与恢复';
+
+  @override
+  String get guideBackupBody => '导出设置文件，换机后一键恢复。瓦片与翻译缓存不在备份内，需要重新下载。';
+
+  @override
+  String get guideExportAdifTitle => '导出 ADIF';
+
+  @override
+  String get guideExportAdifBody => '把收到的台站位置导成 ADIF 文件，供日志软件导入。可选时间范围与模式。';
+
+  @override
+  String get guidePacketsTitle => '数据包';
+
+  @override
+  String get guidePacketsBody => '原始收发报文列表，用来核对解析结果。点一行可以看到完整内容。';
+
+  @override
+  String get guideResetRow => '重新查看功能引导';
+
+  @override
+  String get guideResetTitle => '重新查看功能引导？';
+
+  @override
+  String get guideResetConfirm => '清空「已看过」记录，各页顶部的小提示卡会再出现一次。';
+
+  @override
+  String get guideResetButton => '重新显示';
+
+  @override
+  String get guideResetDone => '功能引导已重置';
+
+  @override
   String get ossLicenseSection => '开源与许可';
 
   @override
@@ -6745,6 +6829,90 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get guideTitle => '功能導覽';
+
+  @override
+  String get guideGotIt => '知道了';
+
+  @override
+  String get guideShowAgain => '重看本頁引導';
+
+  @override
+  String get guideHomeTitle => '主頁 · 地圖與臺站';
+
+  @override
+  String get guideHomeBody => '地圖上的每個點都是收到的臺站，點開可以看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。';
+
+  @override
+  String get guideImmersiveTitle => '沉浸地圖';
+
+  @override
+  String get guideImmersiveBody => '全螢幕看臺站：雙指縮放、單指拖曳，左下角可切換「跟隨自己」，左上角返回。';
+
+  @override
+  String get guideMessagesTitle => '訊息';
+
+  @override
+  String get guideMessagesBody => '輸入呼號即可開聊；右上角能建群組、發廣播。收不到回覆時，先確認頂部已連線。';
+
+  @override
+  String get guideDeviceTitle => '裝置與資料來源';
+
+  @override
+  String get guideDeviceBody => '選資料從哪來（APRS-IS / TNC / 音效卡）以及用哪條鏈路發射。藍牙 TNC 要先去「裝置」子頁配對。';
+
+  @override
+  String get guideSettingsTitle => '設定';
+
+  @override
+  String get guideSettingsBody => '八類入口：電台、信標、連線、顯示、裝置、資料、進階、更新。改完的設定立刻生效，不需要重啟。';
+
+  @override
+  String get guideOfflineMapTitle => '離線地圖';
+
+  @override
+  String get guideOfflineMapBody => '框選一塊區域下載圖磚，沒網路也能看地圖。下載可隨時暫停，之後接著下。';
+
+  @override
+  String get guideLogTitle => '系統日誌';
+
+  @override
+  String get guideLogBody => '收發包與鏈路事件都記在這裡。排查問題時先看這裡，右上角可以複製全部日誌。';
+
+  @override
+  String get guideBackupTitle => '備份與還原';
+
+  @override
+  String get guideBackupBody => '匯出設定檔，換機後一鍵還原。圖磚與翻譯快取不在備份內，需重新下載。';
+
+  @override
+  String get guideExportAdifTitle => '匯出 ADIF';
+
+  @override
+  String get guideExportAdifBody => '把收到的臺站位置匯出成 ADIF 檔，供日誌軟體匯入。可選時間範圍與模式。';
+
+  @override
+  String get guidePacketsTitle => '資料封包';
+
+  @override
+  String get guidePacketsBody => '原始收發報文列表，用來核對解析結果。點一行可以看到完整內容。';
+
+  @override
+  String get guideResetRow => '重新查看功能導覽';
+
+  @override
+  String get guideResetTitle => '重新查看功能導覽？';
+
+  @override
+  String get guideResetConfirm => '清空「已看過」記錄，各頁頂部的小提示卡會再出現一次。';
+
+  @override
+  String get guideResetButton => '重新顯示';
+
+  @override
+  String get guideResetDone => '功能導覽已重設';
 
   @override
   String get ossLicenseSection => '開源與授權';

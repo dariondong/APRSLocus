@@ -422,6 +422,7 @@ class _BackupPageState extends State<BackupPage> {
     final s = S.of(context);
     final all = _expCats.length == kBackupGroups.length;
     return SettingsPageShell(
+      guideId: 'backup',
       title: s.backupTitle,
       subtitle: s.backupSubtitle,
       icon: Icons.settings_backup_restore_rounded,

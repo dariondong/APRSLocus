@@ -3,6 +3,7 @@ import 'theme.dart';
 import 'widgets.dart';
 import 'state.dart';
 import 'material.dart';
+import 'guide.dart';
 
 /// 设置子页面外壳：标题 + 返回 + 可滚动内容
 class SettingsPageShell extends StatelessWidget {
@@ -12,6 +13,10 @@ class SettingsPageShell extends StatelessWidget {
   final Color color;
   final Widget body;
   final AppState? state; // 传入后自动监听刷新（body 需引用 state 的 getter 以实时更新）
+
+  /// 本页的功能引导 id（见 lib/guide.dart）。给上它，顶栏会出现「重看引导」按钮，
+  /// 首次进入时正文顶部会多一张小提示卡。
+  final String? guideId;
   const SettingsPageShell({
     super.key,
     required this.title,
@@ -20,6 +25,7 @@ class SettingsPageShell extends StatelessWidget {
     required this.color,
     required this.body,
     this.state,
+    this.guideId,
   });
 
   @override
@@ -34,6 +40,10 @@ class SettingsPageShell extends StatelessWidget {
             icon: Icon(Icons.arrow_back_rounded, color: C.slate),
             onPressed: () => Navigator.of(context).pop(),
           ),
+          // 「重看本页引导」：提示卡关掉之后，用户临时想再看一眼时不必去设置里重置
+          actions: [
+            if (guideId != null) GuideHelpButton(guideId: guideId!),
+          ],
           title: Row(
             children: [
               Container(
@@ -82,7 +92,21 @@ class SettingsPageShell extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: body,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (guideId != null && state != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GuideTipCard(
+                  guideId: guideId!,
+                  state: state!,
+                  margin: EdgeInsets.zero,
+                ),
+              ),
+            body,
+          ],
+        ),
       ),
     );
   }

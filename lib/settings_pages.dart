@@ -3594,6 +3594,51 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
     );
   }
 
+  /// 确认后清空功能引导的「已看过」记录（各页提示卡重新出现）
+  void _confirmResetGuides() {
+    showDialog(
+      context: context,
+      builder: (ctx) => MaterialSurface(
+        radius: 16,
+        child: AlertDialog(
+          backgroundColor: C.sheetFill,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(S.of(context).guideResetTitle, style: ts(16, w: FontWeight.w700)),
+          content: Text(S.of(context).guideResetConfirm,
+              style: ts(13, c: C.slate, h: 1.6)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: C.purple,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () {
+                st.resetGuides();
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(S.of(context).guideResetDone),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: C.ink,
+                  ),
+                );
+              },
+              child: Text(S.of(context).guideResetButton,
+                style: ts(13, c: Colors.white, w: FontWeight.w700)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _confirmRestartOobe() {
     showDialog(
       context: context,
@@ -3699,6 +3744,22 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                   Icon(Icons.restart_alt_rounded, size: 16, color: C.orange),
                   SizedBox(width: 8),
                   Text(S.of(context).restartWizard, style: ts(12, c: C.slate, w: FontWeight.w600)),
+                  Spacer(),
+                  Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
+                ]),
+              ),
+            ),
+            Divider(height: 1, color: C.border),
+            // 功能引导：清空「已看过」记录，各页的小提示卡会再出现一次
+            InkWell(
+              onTap: () => _confirmResetGuides(),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(children: [
+                  Icon(Icons.help_outline_rounded, size: 16, color: C.purple),
+                  SizedBox(width: 8),
+                  Text(S.of(context).guideResetRow,
+                      style: ts(12, c: C.slate, w: FontWeight.w600)),
                   Spacer(),
                   Icon(Icons.chevron_right_rounded, size: 18, color: C.grey),
                 ]),

@@ -8,6 +8,7 @@ import 'l10n/app_localizations.dart';
 import 'models.dart';
 import 'state.dart';
 import 'theme.dart';
+import 'guide.dart';
 import 'tile_map.dart';
 import 'widgets.dart';
 import 'material.dart';
@@ -233,6 +234,22 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
             return Stack(children: [
               _mapLayer(size),
               // ── 四角 HUD（不随地图旋转，始终水平可读）──
+              // 功能引导：首次进入时浮在顶部（避开左上返回列与右侧工具列）
+              Positioned(
+                left: 12,
+                right: 12,
+                top: MediaQuery.of(context).padding.top + 66,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 420),
+                    child: GuideTipCard(
+                      guideId: 'immersive',
+                      state: st,
+                      margin: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+              ),
               _hud(size, st),
             ]);
           },

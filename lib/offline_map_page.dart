@@ -59,6 +59,7 @@ class _OfflineMapPageState extends State<OfflineMapPage> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     return SettingsPageShell(
+      guideId: 'offlineMap',
       title: s.offlineMap,
       subtitle: s.offlineMapDesc,
       icon: Icons.download_for_offline_rounded,

@@ -74,6 +74,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     'filterLat', 'filterLng', 'filterRadius', 'maxStations', 'maxPackets',
     'onlineWindowMin', 'maxTrackPts', 'filterFollow',
     'receiveCountries', 'receiveOthers', 'labLandscape', 'oobeDone',
+    // 功能引导的「已看过」集合：与 oobeDone 同类（都是「新手引导走没走过」）。
+    // 换机后不该把用户已经看过的提示卡再弹一遍 —— 那正是引导最烦人的地方。
+    'guideSeen',
     'sensorAssist',
     'server', 'port', 'passcode', 'dataSource', 'enabledSources',
     'igateEnabled', 'igateTwoWay',

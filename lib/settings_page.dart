@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'notice.dart';
 import 'notice_banner.dart';
 import 'theme.dart';
+import 'guide.dart';
 import 'state.dart';
 import 'models.dart';
 import 'widgets.dart';
@@ -76,7 +77,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 SizedBox(height: 4),
                 Text(S.of(context).settingsDesc, style: ts(13, c: C.slate)),
-                SizedBox(height: 20),
+                const SizedBox(height: 16),
+                // 功能引导（首次进入显示；看过后不占位置）
+                GuideTipCard(
+                  guideId: 'settings',
+                  state: widget.state,
+                  margin: EdgeInsets.zero,
+                ),
+                const SizedBox(height: 20),
                 // 连接状态横幅
                 _connBanner(),
                 SizedBox(height: 16),

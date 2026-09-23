@@ -44,6 +44,7 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
     return ListenableBuilder(
       listenable: state,
       builder: (context, _) => SettingsPageShell(
+        guideId: 'device',
         title: s.deviceOverviewTitle,
         subtitle: s.deviceOverviewSubtitle,
         icon: Icons.devices_other_rounded,

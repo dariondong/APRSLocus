@@ -254,6 +254,90 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
+  String get guideTitle => 'Guía de funciones';
+
+  @override
+  String get guideGotIt => 'Entendido';
+
+  @override
+  String get guideShowAgain => 'Ver esta guía otra vez';
+
+  @override
+  String get guideHomeTitle => 'Inicio · mapa y estaciones';
+
+  @override
+  String get guideHomeBody => 'Cada punto del mapa es una estación que estás recibiendo: tócalo para ver su ruta y sus datos. El botón inferior envía tu posición (conecta antes).';
+
+  @override
+  String get guideImmersiveTitle => 'Mapa inmersivo';
+
+  @override
+  String get guideImmersiveBody => 'Mapa a pantalla completa: pellizca para ampliar, arrastra para mover, «seguirme» abajo a la izquierda, volver arriba a la izquierda.';
+
+  @override
+  String get guideMessagesTitle => 'Mensajes';
+
+  @override
+  String get guideMessagesBody => 'Escribe un indicativo para chatear; el menú superior derecho crea grupos y envía boletines. ¿Sin respuestas? Comprueba que estás conectado.';
+
+  @override
+  String get guideDeviceTitle => 'Dispositivos y fuentes';
+
+  @override
+  String get guideDeviceBody => 'Elige de dónde vienen los datos (APRS-IS / TNC / tarjeta de sonido) y qué enlace transmite. Empareja el TNC Bluetooth en su subpágina.';
+
+  @override
+  String get guideSettingsTitle => 'Ajustes';
+
+  @override
+  String get guideSettingsBody => 'Ocho categorías: radio, baliza, conexión, pantalla, dispositivos, datos, avanzado, actualización. Los cambios se aplican al momento.';
+
+  @override
+  String get guideOfflineMapTitle => 'Mapas sin conexión';
+
+  @override
+  String get guideOfflineMapBody => 'Selecciona una zona y descarga sus teselas para ver el mapa sin red. Puedes pausar y reanudar.';
+
+  @override
+  String get guideLogTitle => 'Registro del sistema';
+
+  @override
+  String get guideLogBody => 'Aquí se registran los paquetes y los eventos del enlace: es lo primero que hay que mirar si algo falla. Copia todo desde arriba a la derecha.';
+
+  @override
+  String get guideBackupTitle => 'Copia y restauración';
+
+  @override
+  String get guideBackupBody => 'Exporta un archivo de ajustes y restáuralo con un toque en otro dispositivo. Las teselas y la caché de traducción no se incluyen.';
+
+  @override
+  String get guideExportAdifTitle => 'Exportar ADIF';
+
+  @override
+  String get guideExportAdifBody => 'Guarda las estaciones recibidas en un archivo ADIF para tu programa de log, con rango de fechas y modo opcionales.';
+
+  @override
+  String get guidePacketsTitle => 'Paquetes';
+
+  @override
+  String get guidePacketsBody => 'Las tramas originales enviadas y recibidas, útiles para comprobar cómo se interpretó un paquete. Toca una fila para ver el texto completo.';
+
+  @override
+  String get guideResetRow => 'Ver otra vez las guías de funciones';
+
+  @override
+  String get guideResetTitle => '¿Ver otra vez las guías de funciones?';
+
+  @override
+  String get guideResetConfirm => 'Se borra el registro de «ya visto» y la tarjeta de ayuda vuelve a aparecer en cada página.';
+
+  @override
+  String get guideResetButton => 'Mostrar otra vez';
+
+  @override
+  String get guideResetDone => 'Guías de funciones restablecidas';
+
+  @override
   String get ossLicenseSection => 'Código abierto y licencia';
 
   @override

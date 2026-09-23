@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
+import 'guide.dart';
 import 'models.dart';
 import 'back_router.dart';
 import 'state.dart';
@@ -283,89 +284,102 @@ class _MessagesPageState extends State<MessagesPage> {
         if (_selected.isEmpty && partners.isNotEmpty)
           _selected = partners.first;
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final landscape =
-                MediaQuery.of(context).orientation == Orientation.landscape;
-            final narrow = !landscape && constraints.maxWidth < 720;
-            // 是否处于"聊天详情"（窄屏下非列表页）
-            final inChatDetail = narrow && !_showList;
-            // ── 进了会话 → 请求外壳把内容面板展开到最高档 ──
-            //
-            // 为什么必须有这一步：2.0 的面板**按最高档高度布局、只裁出可视区**
-            // （治「拖动卡 + 一拖就变白」的设计，见 shell2），于是半屏档下页面
-            // 只露出上半部分。而输入框在页面最底部 —— 正好落在裁切线之下，
-            // 用户看不到、也点不到，必须先手动把面板拉到最高才能打字
-            // （用户反馈「那个输入控件很容易藏在底下」）。
-            //
-            // 放在这里（按 `_showList` 判）而不是每个「点开会话」的入口：
-            // 会话有七八个入口（会话列表、搜索、群组、通知跳转、站内链接…），
-            // 逐个加必然漏一个。用一个标志位保证每次进入只请求一次，
-            // 退回列表时复位。
-            if (!_showList) {
-              if (!_askedSheetExpand) {
-                _askedSheetExpand = true;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) widget.state.requestSheetExpand();
-                });
-              }
-            } else {
-              _askedSheetExpand = false;
-            }
-            // 非活动 tab（IndexedStack 隐藏时）不拦截返回键
-            final interceptBack = widget.isActive && inChatDetail;
-            // 登记「这次返回由我接手」：外壳也有一个 PopScope，同一个 route 上
-            // 两个回调会全部触发 —— 不登记的话，从会话详情按返回会同时
-            // 「回到会话列表」和「跳到地图」（后者把前者盖掉）。
-            // 这里只**声明**会接手，真正的状态切换仍由下面的 PopScope 做，
-            // 免得两处各 setState 一次。
-            BackRouter.instance.setInner(interceptBack ? (() => true) : null);
-            return PopScope(
-              canPop: !interceptBack,
-              onPopInvokedWithResult: (didPop, _) {
-                // 系统返回键：从聊天详情回到会话列表
-                if (!didPop && interceptBack) {
-                  setState(() {
-                    _selectedGroupId = null;
-                    _showList = true;
-                  });
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 页面标题。（原来这里还有「瀑布流 / 会话」切换器；瀑布流已按需求移除，
-                    // 只剩会话模式，切换器随之删掉 —— 一个只有一边的开关比没有更让人困惑。）
-                    Text(S.of(context).messages,
-                        style: T.h1,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 14),
-                    Expanded(
-                      child: narrow
-                          ? (_showList
-                                ? _listPane(st, partners)
-                                : _chatPane(st))
-                          : Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                SizedBox(
-                                  width: 280,
-                                  child: _listPane(st, partners),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(child: _chatPane(st)),
-                              ],
-                            ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 功能引导（首次进入显示；看过后不占位置）
+            GuideTipCard(
+              guideId: 'messages',
+              state: widget.state,
+              margin: EdgeInsets.zero,
+            ),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final landscape =
+                      MediaQuery.of(context).orientation == Orientation.landscape;
+                  final narrow = !landscape && constraints.maxWidth < 720;
+                  // 是否处于"聊天详情"（窄屏下非列表页）
+                  final inChatDetail = narrow && !_showList;
+                  // ── 进了会话 → 请求外壳把内容面板展开到最高档 ──
+                  //
+                  // 为什么必须有这一步：2.0 的面板**按最高档高度布局、只裁出可视区**
+                  // （治「拖动卡 + 一拖就变白」的设计，见 shell2），于是半屏档下页面
+                  // 只露出上半部分。而输入框在页面最底部 —— 正好落在裁切线之下，
+                  // 用户看不到、也点不到，必须先手动把面板拉到最高才能打字
+                  // （用户反馈「那个输入控件很容易藏在底下」）。
+                  //
+                  // 放在这里（按 `_showList` 判）而不是每个「点开会话」的入口：
+                  // 会话有七八个入口（会话列表、搜索、群组、通知跳转、站内链接…），
+                  // 逐个加必然漏一个。用一个标志位保证每次进入只请求一次，
+                  // 退回列表时复位。
+                  if (!_showList) {
+                    if (!_askedSheetExpand) {
+                      _askedSheetExpand = true;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) widget.state.requestSheetExpand();
+                      });
+                    }
+                  } else {
+                    _askedSheetExpand = false;
+                  }
+                  // 非活动 tab（IndexedStack 隐藏时）不拦截返回键
+                  final interceptBack = widget.isActive && inChatDetail;
+                  // 登记「这次返回由我接手」：外壳也有一个 PopScope，同一个 route 上
+                  // 两个回调会全部触发 —— 不登记的话，从会话详情按返回会同时
+                  // 「回到会话列表」和「跳到地图」（后者把前者盖掉）。
+                  // 这里只**声明**会接手，真正的状态切换仍由下面的 PopScope 做，
+                  // 免得两处各 setState 一次。
+                  BackRouter.instance.setInner(interceptBack ? (() => true) : null);
+                  return PopScope(
+                    canPop: !interceptBack,
+                    onPopInvokedWithResult: (didPop, _) {
+                      // 系统返回键：从聊天详情回到会话列表
+                      if (!didPop && interceptBack) {
+                        setState(() {
+                          _selectedGroupId = null;
+                          _showList = true;
+                        });
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 页面标题。（原来这里还有「瀑布流 / 会话」切换器；瀑布流已按需求移除，
+                          // 只剩会话模式，切换器随之删掉 —— 一个只有一边的开关比没有更让人困惑。）
+                          Text(S.of(context).messages,
+                              style: T.h1,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                          const SizedBox(height: 14),
+                          Expanded(
+                            child: narrow
+                                ? (_showList
+                                      ? _listPane(st, partners)
+                                      : _chatPane(st))
+                                : Row(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      SizedBox(
+                                        width: 280,
+                                        child: _listPane(st, partners),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(child: _chatPane(st)),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        );
+            ),
+          ],
+        );;
       },
     );
   }

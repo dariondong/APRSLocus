@@ -574,6 +574,28 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  /// 功能引导：**已看过**的引导 id 集合（见 lib/guide.dart）。
+  ///
+  /// 只记「看过」，文案与顺序都由代码给（l10n），所以这里不需要版本号：
+  /// 改文案不会让用户重看一遍，改 id 才会。
+  final Set<String> guideSeen = {};
+
+  /// 这条引导是否已看过
+  bool isGuideSeen(String id) => guideSeen.contains(id);
+
+  /// 记下「已看过」（关闭提示卡时调）
+  void markGuideSeen(String id) {
+    if (!guideSeen.add(id)) return;
+    persist();
+  }
+
+  /// 重置全部引导（设置里的「重新查看功能引导」）
+  void resetGuides() {
+    if (guideSeen.isEmpty) return;
+    guideSeen.clear();
+    persist();
+  }
+
   /// 按国家接收列表（国家代码）
   final List<String> receiveCountries = [];
 
@@ -1836,6 +1858,11 @@ class AppState extends ChangeNotifier {
             ..addAll(ctr);
       } catch (_) {}
       receiveOthers = p.getBool('receiveOthers') ?? receiveOthers;
+      // 功能引导已读集合（见 lib/guide.dart）
+      try {
+        final gseen = p.getStringList('guideSeen');
+        if (gseen != null) guideSeen..clear()..addAll(gseen);
+      } catch (_) {}
       labLandscape = p.getBool('labLandscape') ?? labLandscape;
       sensorAssist = p.getBool('sensorAssist') ?? sensorAssist;
       oobeDone = p.getBool('oobeDone') ?? oobeDone;
@@ -2009,6 +2036,7 @@ class AppState extends ChangeNotifier {
     await p.setInt('maxTrackPts', maxTrackPts);
     await p.setBool('filterFollow', filterFollow);
     await p.setStringList('receiveCountries', receiveCountries);
+    await p.setStringList('guideSeen', guideSeen.toList());
     await p.setBool('receiveOthers', receiveOthers);
     await p.setBool('labLandscape', labLandscape);
     await p.setBool('sensorAssist', sensorAssist);
