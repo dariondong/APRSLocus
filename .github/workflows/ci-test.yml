@@ -102,6 +102,13 @@ jobs:
       - name: Check beacon & track sampling
         run: python3 tool/check_beacon_track.py
 
+      # Release 说明的提取：**直接跑 build-release.yml 里那段 awk**，断言它把
+      # 该版本的中英两个条目都取到了、且没混入相邻版本。
+      # 那段 awk 一改错不会让任何东西失败 —— 只是打 tag 后 Release 页少半篇，
+      # 而那时 Release 已经发出去了。v1.6.78~v1.6.153 就是这么一直只有中文的。
+      - name: Check release notes extraction
+        run: python3 tool/check_release_notes.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。

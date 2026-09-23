@@ -1,5 +1,231 @@
 # 更新日志
 
+## [1.6.154] - 2026-09-23
+
+### 🛰 轨迹采样细化 + 标出信标点 + 智能信标「按距离打点」；四反馈修复 / Finer track sampling, beacon dots, distance-based smart beaconing, and four reported fixes
+
+这一版一半是四条反馈，一半是「轨迹与信标」这条主线。
+
+## 一、实时轨迹：采样从 10 秒细化到 1 秒
+
+反馈是「实时轨迹的采样率有点低」。根因在 Android 侧：定位注册用的是
+`requestLocationUpdates(GPS, 10000L, …)` —— 这是**省电优先**的取值，
+轨迹每 10 秒才落一个点。骑车、开车时一个拐弯正好落在两个点之间，
+画出来就是一条**切角的斜线**（明明是直角弯，看着像抄了近路）。
+
+现在 GPS 按 **1 秒**注册（导航类应用的常规取样率）。费用方面：最小位移仍是
+5 米，静止时 GPS 本身不给回调，所以待机和「坐下喝茶」时的功耗并不跟着涨；
+**网络定位保持 10 秒**——它只做 GPS 停更时的兜底，按 1 秒轮询基站不会更准，
+只会更费电。
+
+落点判据也从「只看距离」改成**两条任一**：
+
+* 位移超过门限（按速度自适应）→ 保证拐弯不被切角；
+* 距上一个点已过 5 秒、且确实挪动了 → 保证**慢速也有稳定密度**。
+
+只有前一条时，速度越低点越疏（步行 8 米才落一个点），而慢速恰恰是最想看清
+细节的时候。距离门限本身也改成按**固定 5 秒参考窗口**计算 —— 原来用的是
+真实回调间隔，1 秒采样下那个间隔≈1 秒，门限每次都被下限兜住，
+「按速度自适应」名存实亡。
+
+## 二、把「发到服务器的点」在地图上标出来
+
+地图上现在有一条轨迹线（我走过哪里），另外用**橙色小菱形**标出
+**信标点**（我报到哪里）—— 这是两件事，用户要能一眼分清「轨迹画得对不对」
+与「对方到底收到几个点、间隔合不合预期」。
+
+它们刻意分开存：轨迹点会被抽稀、封顶、位置跳变时整条清空 —— 那是
+「屏幕上这条线好看」的语义；而「这个点我确实发出去了」是个**事实**，
+不该被这些规则吃掉（对方已经收到了）。所以信标点单独记一份，
+且**只在真的发出去时**才记（未连接时只是本地记录，不算发出）。
+
+## 三、智能信标支持「按距离打点」
+
+原来的智能信标只有「按速度分档 → 每档一个时间间隔」。定时上报有个先天缺口：
+**两点之间走了多远，与「过了多久」无关**。堵车时 300 秒一个点完全够
+（根本没动），而 60 km/h 的国道上 60 秒能走 1 公里 —— 中间那段路在 aprs.fi
+上就是一条直线，拐弯全被抹平。
+
+现在每档多一个**距离**条件，触发改为「**定时到了，或者走够了**」：
+
+* 走得快 → 按距离补点，拐弯不再被拉直；
+* 停下来 → 距离不动，自然退回纯定时，不白发报文、不占信道。
+
+默认值按「该档速度在一个上报间隔内走的路程」给（静止 200 米 / 步行 250 米 /
+城市 400 米 / 高速 700 米），设置页里每一档都能单独改（0 = 关闭），
+档位列表上直接显示成「每 60 秒 **· 或移动 400 m**」。
+
+## 四、四条反馈
+
+**1）2.0 面板「抓不住：抓哪儿都变滚动」**
+
+面板本来就设计成「内容滚到边之后，继续拖就交给面板」—— 但只做了
+**到顶继续下拉**（收面板）这半边，缺了**到底继续上推**（展开面板）。
+于是想展开只能去抓那根 44px 的把手。现在两个方向都交棒。
+
+顺带收严了判据：只认**手指还在拖**的越界 —— 惯性撞墙、iOS 回弹也会发
+越界通知，那两种不该拽面板（否则松手后会被莫名吸一下）。
+
+**2）热力图不容易触发**
+
+自动显示热力图的阈值从「缩到省/区域级」（zoom ≤ 6.5）放宽到**城市级**
+（≤ 9.0），可见台站门槛从 20 降到 10 —— 台站开始挤成一团恰恰是在城市级，
+而原来那个级别根本触发不了。
+
+**3）进子页时背景色「先透明后出现，动画完才正常」**
+
+应用只有一层底（压在导航器之下），而 Flutter 在路由转场动画期间会把新页面
+标记为**非全屏不透明**、旧页面照常绘制 —— 新页面是透明底，于是动画期间
+透出来的是**上一页**的内容，动画一完底才「出现」。
+修法是转场期间让页面**自带一份底**（与全局那份同一个来源，逐像素一致），
+动画结束即停画，不常驻、不重复合成。
+
+**4）历史轨迹「退出就没了」—— 其实是被覆盖清空**
+
+这条最严重：台账是**整档覆盖写**，而内存里那一档在重启后是**空的** ——
+于是重启后第一次落盘，就把当天早些时候（上一个进程里）已经写好的点
+**全部抹掉**。用户看到的正是「退出就没了」。
+
+现在启动时先把当天已有的记录读回内存，新点在旧点之上继续追加，
+覆盖写写回的是两者之并集。另外「手动退出应用」走的是原生直接结束进程，
+`dispose()` 不会被调用，所以退出前补了一次落盘（台账的写盘节流是 8 秒，
+不补的话最后一段会丢）。
+
+## 五、检查器
+
+新增 `tool/check_beacon_track.py`（已接进 CI）：GPS 采样率、落点保底、
+信标点（只记已发送 / 可清空 / 地图有图层）、智能信标的「定时或距离」——
+这四组**全都能正常编译、也能通过 analyze**，只在真机上看得出差别
+（轨迹过疏、拐弯被拉直、清空后剩一串孤点），所以钉在 CI 里。
+按惯例用回归样本验证过会报红（把采样退回 10 秒、去掉距离触发），
+验完 md5 确认源码完整还原。
+
+---
+
+## [1.6.154] - 2026-09-23 (English)
+
+### Finer track sampling, beacon dots, distance-based smart beaconing, and four reported fixes
+
+Half of this release is four user reports; the other half is the track-and-beacon
+main line.
+
+## 1) Live track: sampling refined from 10 s to 1 s
+
+The report was that the live track felt sparsely sampled. The cause was on the
+Android side: location was registered with
+`requestLocationUpdates(GPS, 10000L, …)` — a **battery-first** choice that
+lands one track point every ten seconds. On a bike or in a car a corner falls
+between two points, and the line drawn is a **cut corner** — a right-angle turn
+looks like a shortcut.
+
+GPS is now registered at **1 s** (the usual rate for navigation apps). On cost:
+the minimum displacement is still 5 m and GPS itself delivers nothing while you
+stand still, so standby and “sitting over tea” power draw does not follow suit.
+**Network positioning stays at 10 s** — it only backstops a stalled GPS, and
+polling cell towers once a second is not more accurate, only more expensive.
+
+The point-acceptance rule also changed from “distance only” to **either of two**:
+
+* displacement past the threshold (speed-adaptive) — so corners are not cut;
+* five seconds since the last point **and** a real move — so **slow speeds keep a
+  steady density**.
+
+With only the first rule, the slower you go the sparser the track (a point every
+8 m on foot) — yet slow is exactly where detail matters most. The distance
+threshold itself is now computed over a **fixed 5 s reference window**: it used to
+use the real callback interval, and at 1 s sampling that interval is ~1 s, so the
+floor caught it every time and “speed-adaptive” was adaptive in name only.
+
+## 2) The points actually sent to the server are now drawn on the map
+
+The map shows a track line (where I have been) and now also marks the
+**beacon points** (where I have reported) as **small orange diamonds** — two
+different questions: “is the track drawn correctly” versus “how many points did the
+other side actually receive, and is the spacing what I expect”.
+
+They are deliberately stored separately: track points get thinned, capped, and
+wiped entirely when a position jump is confirmed — that is the “make the line on
+screen look right” contract. “I really transmitted this point” is a **fact** that
+should not be lost to those rules (the other side already has it). So beacon
+points are recorded on their own, and **only when the packet really went out**
+(while disconnected it is a local record, not a transmission).
+
+## 3) Smart beaconing gains “beacon by distance”
+
+Smart beaconing used to be “speed tiers → one time interval each”. Timed
+beaconing has an inherent gap: **how far you travelled between two points has
+nothing to do with how long it took**. In a traffic jam a point every 300 s is
+plenty (you are not moving), while on an open road at 60 km/h sixty seconds is a
+kilometre — that stretch becomes a straight line on aprs.fi and every corner is
+flattened.
+
+Each tier now carries a **distance** condition, and the trigger is
+“**the timer expired, or you have moved far enough**”:
+
+* moving fast → points are added by distance, corners are no longer straightened;
+* stopped → distance does not grow, so it falls back to pure timing — no wasted
+  packets, no wasted channel time.
+
+Defaults follow “the distance this tier's speed covers in one interval” (stationary
+200 m / walking 250 m / city 400 m / highway 700 m). Every tier is editable in
+settings (0 = off), and the tier list shows “Every 60 s **· or 400 m**”.
+
+## 4) The four reports
+
+**a) UI 2.0 sheet: “can't grab it — dragging anywhere just scrolls”**
+
+The sheet was designed so that once the content hits an edge, dragging further
+belongs to the sheet — but only the **top edge** half existed (pull down past the
+top to close). The **bottom edge** half was missing, so the only way to open the
+sheet was the 44 px handle. Both directions now hand off.
+
+The rule is also stricter: only overscroll **while a finger is still dragging**
+counts — fling-into-the-wall and the iOS bounce also emit overscroll, and those
+must not yank the sheet (otherwise it snaps oddly after you let go).
+
+**b) The heatmap was hard to trigger**
+
+The auto-heatmap threshold moved from “zoomed out to province/region level”
+(zoom ≤ 6.5) to **city level** (≤ 9.0), and the visible-station threshold from
+20 to 10 — stations start bunching up exactly at city level, which the old
+threshold could never reach.
+
+**c) Entering a sub-page: the background colour “appears only when the animation
+finishes”**
+
+The app has a single backdrop layer (beneath the navigator), and during a route
+transition Flutter marks the incoming page as **not fully opaque** while the old
+page keeps painting — so with a transparent page background, what shows through
+during the animation is **the previous page**, and the backdrop only “appears”
+once the animation ends. The fix has the transition carry **its own copy of the
+backdrop** (same source as the global one, pixel-identical), stopping once the
+animation completes — not resident, not composited twice.
+
+**d) Track history “disappears when I exit” — actually it was being overwritten**
+
+This one was the most serious: the log is written by **replacing the whole day**,
+and the in-memory day starts **empty** after a restart — so the first flush after
+restarting **erased every point recorded earlier that day** by the previous
+process. That is exactly what “it's gone after I exit” looked like.
+
+On startup the existing day is now read back into memory and new points are
+appended on top, so the rewrite writes the union of both. Separately, “quit the
+app” goes through the native path that kills the process outright — `dispose()`
+never runs — so a flush was added before exit (the log throttles writes to every
+8 s, so without it the last stretch was lost).
+
+## 5) Checkers
+
+New `tool/check_beacon_track.py` (wired into CI): GPS sampling rate, the
+point-acceptance fallback, beacon points (only-when-sent / cleared with data /
+has a map layer), and the smart beacon's “timer or distance”. All four **compile
+and pass analyze fine** and only differ on a real device (a sparse track,
+straightened corners, orphan dots after clearing) — hence in CI. As usual the
+guards were verified against regression samples (sampling back to 10 s, distance
+trigger removed) and the source restored byte-identical (md5).
+
+---
+
 ## [1.6.153] - 2026-09-22
 
 ### 🐛 修 2.0 面板「下面被切成直角」/ Fixing the 2.0 sheet's bottom being cut into right angles

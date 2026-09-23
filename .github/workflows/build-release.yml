@@ -192,11 +192,16 @@ jobs:
         run: |
           tag="${GITHUB_REF#refs/tags/}"
           ver="${tag#v}"
-          # 从 CHANGELOG.md 提取对应版本条目（## [x.y.z] 到下一个 ## 之间）
+          # 从 CHANGELOG.md 提取该版本的**全部**条目：中文条目 + 紧随其后的英文
+          # 条目（两个都是 `## [x.y.z]`），到**下一个版本**的标题为止。
+          #
+          # 旧写法是「遇到下一个 ## 就停」，于是英文条目被整个丢掉 —— 而更新日志
+          # 从 v1.6.78 起就要求中英双语，Release 页却一直只有中文。
+          # 判据改成「标题里是不是同一个版本号」，两个条目就都进来了。
           body=$(awk -v v="$ver" '
             $0 ~ /^## \[/ {
-              if (found) exit
-              if ($0 ~ "\\[" v "\\]") found=1
+              if (found && index($0, "[" v "]") == 0) exit
+              if (!found && index($0, "[" v "]") > 0) found=1
             }
             found { print }
           ' CHANGELOG.md | head -n -1)
