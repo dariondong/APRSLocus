@@ -1,5 +1,87 @@
 # 更新日志
 
+## [1.6.159] - 2026-09-23
+
+### 🎨 关于页重做：实景封面 + 玻璃质感排版，删掉「功能特性」一节 / About page redesigned with a photo hero cover and glass-styled layout; the Features section is removed
+
+## 一、封面从「Logo 底图」换成实景照片
+
+原来的封面是 `assets/logobg.jfif`（一张 Logo 底图）压在圆角卡片里，中央堆一个
+Logo + 标题，四边留一堆空。问题不在图本身，而在**信息全挤在正中**：上下各空出
+一大条，看着像占位符。
+
+现在换成泰德峰（Pico del Teide）实景照，内容按从左下角生长：
+
+* **版本号**挪进右上角的玻璃胶囊，不再在正文里单独占一行；
+* **Logo + APRSlocus + 副标题**落到左下角，压一层「顶部轻压暗 → 中部透明 →
+  底部深墨」的渐变，白字压在亮天空上也读得清；
+* 卡片内侧补一道 0.8px 半透明描边，图与卡片之间多一道光边。
+
+## 二、封面高度随宽度走，不再硬编码 252
+
+底图是 3:2（1280×853）。原来容器固定 252px，在桌面宽屏（卡片宽 700+）下
+`BoxFit.cover` 会把图裁成中间一条 —— 火山正好被切出去。
+
+现在高度由宽度推：`(宽 × 0.64).clamp(196, 300)`。手机竖屏约 232，平板/桌面给到
+300 封顶。宽度/高度比超过 1.62（比原图还扁的超宽屏）时改用 `BoxFit.contain`：
+宁可上下留一点边，也不能把主体裁掉。
+
+## 三、桌面宽屏限宽居中
+
+正文和封面都套了 `ConstrainedBox`（正文 640、封面 560）。之前 Windows 全屏时
+卡片会被拉成整屏宽，行宽过长很难读；限宽居中后视觉焦点回来了。
+
+## 四、删掉「功能特性」一节
+
+七行 `_feature`（实时地图 / GPS / 信标 / 消息 / 自动连接 / 图层过滤 / FMO）在
+App 里是用户已经看得见的功能，关于页重复列一遍只是把页面拉长。整节移除，
+`features` 系列 l10n 键保留（不删键，避免影响其它语言文件同步）。
+
+## 五、其它排版
+
+* 「分享」从一个孤零零的描边小胶囊改成**整卡可点**的入口卡（图标 + 标题 +
+  版本副标题 + 箭头），和「赞助与鸣谢」入口同一套样式；
+* 分节标题改成「淡色底托图标 + 标题 + 右侧细横线」，一页看下来有节奏；
+* 页脚加了分割线、放大了行高，并在最底部标出封面摄影署名
+  （Pixabay / frankpotters7）。
+
+---
+
+## [1.6.159] - 2026-09-23 (English)
+
+### 🎨 About page redesigned with a photo hero cover and glass-styled layout; the Features section is removed
+
+**Hero cover.** The old hero used `assets/logobg.jfif` (a logo backdrop) with a
+logo and title stacked in the centre, leaving large empty bands above and below.
+It is replaced by a real photograph of Pico del Teide with the content anchored
+to the lower-left: the version moves into a frosted-glass pill in the top-right,
+and the logo, wordmark and subtitle sit on a dark gradient (light at the top,
+transparent in the middle, deep ink at the bottom) so white text stays readable
+against the bright sky. A 0.8px translucent inner border separates the photo from
+the card edge.
+
+**Adaptive hero height.** The photo is 3:2 (1280×853). With the old fixed 252px
+height, `BoxFit.cover` cropped it to a thin centre strip on wide desktop windows
+and cut the volcano out of frame. The height is now derived from the width —
+`(width × 0.64).clamp(196, 300)` — roughly 232 on a phone and capped at 300 on
+tablets/desktop. When the width/height ratio exceeds 1.62 (ultra-wide windows) it
+falls back to `BoxFit.contain`, preferring letterboxing over cropping the subject.
+
+**Constrained width on desktop.** The body (max 640) and the hero (max 560) are
+now wrapped in `ConstrainedBox`. Previously the cards stretched across a
+full-screen Windows window, producing unreadably long lines.
+
+**Features section removed.** The seven `_feature` rows (live map, GPS, beacon,
+messages, auto-connect, layer filter, FMO) duplicated functionality the user can
+already see in the app, and only made the page longer. The `features` l10n keys
+are kept so the other locale files stay in sync.
+
+**Other polish.** The share entry became a full-width tappable card (icon, title,
+version subtitle, chevron) matching the sponsor entry; section headers gained a
+tinted icon chip and a trailing hairline rule; and the footer now has a divider,
+looser line height and a photo credit for the cover
+(Pixabay / frankpotters7).
+
 ## [1.6.158] - 2026-09-23
 
 ### 🐛 修「退出设置子页时公告横幅闪一下」；公告入口搬到设置主页最底下 / Fixing the flash when leaving a Settings sub-page, and moving the announcement entry to the bottom of the Settings home screen

@@ -205,6 +205,41 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.159', 'date': '2026-09-23',
+        'items': [
+            ('new',
+             T('关于页重做：封面从 Logo 底图换成**泰德峰实景照片**，版本号收进右上角玻璃胶囊、'
+               'Logo 与标题落到左下角压在渐变上；封面高度随窗口宽度走'
+               '（`(宽 × 0.64)`，196~300），超宽屏改「整体装入」，不再把火山裁掉；'
+               '桌面宽屏下正文与封面**限宽居中**（640 / 560）',
+               '關於頁重做：封面從 Logo 底圖換成**泰德峰實景照片**，版本號收進右上角玻璃膠囊、'
+               'Logo 與標題落到左下角壓在漸層上；封面高度隨視窗寬度走'
+               '（`(寬 × 0.64)`，196~300），超寬螢幕改「整體裝入」，不再把火山裁掉；'
+               '桌面寬螢幕下正文與封面**限寬居中**（640 / 560）',
+               'About page redesigned: the hero cover is now a **real photograph of Pico del '
+               'Teide** instead of the logo backdrop, with the version in a glass pill at the '
+               'top-right and the logo and title anchored to the lower-left over a gradient. '
+               'The hero height now follows the window width (`width × 0.64`, 196–300) and '
+               'switches to “fit entirely” on ultra-wide screens so the volcano is never '
+               'cropped; the body and hero are also **width-capped and centred** on desktop '
+               '(640 / 560)')),
+            ('up',
+             T('关于页删掉「功能特性」一节（实时地图 / GPS / 信标 / 消息 / 自动连接 / '
+               '图层过滤 / FMO 七行 —— App 里已经看得见的功能不必再列一遍）；'
+               '「分享」从描边小胶囊改成**整卡可点**的入口卡，分节标题加淡色底托图标与'
+               '右侧细横线，页脚加分割线并标出封面摄影署名',
+               '關於頁刪掉「功能特性」一節（即時地圖 / GPS / 信標 / 訊息 / 自動連線 / '
+               '圖層過濾 / FMO 七行 —— App 裡已經看得見的功能不必再列一遍）；'
+               '「分享」從描邊小膠囊改成**整卡可點**的入口卡，分節標題加淡色底托圖示與'
+               '右側細橫線，頁腳加分割線並標出封面攝影署名',
+               'Removed the Features section from the About page (the seven rows for live map, '
+               'GPS, beacon, messages, auto-connect, layer filter and FMO duplicated what the '
+               'app already shows). The share entry became a **full-card tappable** card, '
+               'section headers gained a tinted icon chip and a trailing hairline rule, and the '
+               'footer gained a divider plus a photo credit for the cover')),
+        ],
+    },
+    {
         'ver': 'v1.6.158', 'date': '2026-09-23',
         'items': [
             ('fix',

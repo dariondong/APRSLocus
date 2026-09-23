@@ -85,37 +85,39 @@ class _AboutPageState extends State<AboutPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 头部
-                Row(children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: C.blueBg,
-                      borderRadius: BorderRadius.circular(12),
+                Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: C.blueBg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.share_rounded, color: C.blue, size: 22),
                     ),
-                    child: Icon(Icons.share_rounded, color: C.blue, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          S.of(context).shareApp,
-                          style: ts(16, w: FontWeight.w800),
-                        ),
-                        Text(
-                          'APRSlocus · v${AppState.appVersion}',
-                          style: ts(11, c: C.grey),
-                        ),
-                      ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            S.of(context).shareApp,
+                            style: ts(16, w: FontWeight.w800),
+                          ),
+                          Text(
+                            'APRSlocus · v${AppState.appVersion}',
+                            style: ts(11, c: C.grey),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: C.grey),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ]),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: C.grey),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 14),
                 // 分享到系统（仅 Android：调系统分享面板）
                 if (_isAndroid) ...[
@@ -177,34 +179,43 @@ class _AboutPageState extends State<AboutPage>
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-          child: Row(children: [
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(8),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 17, color: color),
               ),
-              child: Icon(icon, size: 17, color: color),
-            ),
-            const SizedBox(width: 11),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: ts(13, w: FontWeight.w700)),
-                  const SizedBox(height: 1),
-                  Text(subtitle,
-                      style: ts(10, c: C.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
-                ],
+              const SizedBox(width: 11),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: ts(13, w: FontWeight.w700)),
+                    const SizedBox(height: 1),
+                    Text(
+                      subtitle,
+                      style: ts(10, c: C.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Icon(Icons.chevron_right_rounded, size: 17, color: C.greyLight),
-          ]),
+              Icon(Icons.chevron_right_rounded, size: 17, color: C.greyLight),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  /// Hero 底图视差量（0~240，随滚动量变化）
+  final ValueNotifier<double> _heroScroll = ValueNotifier<double>(0);
 
   // ─── 粒子动画 ───
   AnimationController? _ctrl;
@@ -302,6 +313,7 @@ class _AboutPageState extends State<AboutPage>
     _particleOverlay?.remove();
     _particleOverlay = null;
     _ctrl?.dispose();
+    _heroScroll.dispose();
     super.dispose();
   }
 
@@ -319,8 +331,9 @@ class _AboutPageState extends State<AboutPage>
     HapticFeedback.mediumImpact();
     if (call == 'BG7OSL' || call == 'BG2HCB') {
       // 图片彩蛋：OSL 袋鼠 / BG2HCB 专属
-      final eggAsset =
-          call == 'BG7OSL' ? 'assets/osl.png' : 'assets/bg2hcb.jpg';
+      final eggAsset = call == 'BG7OSL'
+          ? 'assets/osl.png'
+          : 'assets/bg2hcb.jpg';
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -418,526 +431,652 @@ class _AboutPageState extends State<AboutPage>
           centerTitle: true,
         ),
       ),
-      body: Stack(
-        children: [
-          ListView(
+      body: _buildBody(context),
+    );
+  }
+
+  /// 整页内容。
+  ///
+  /// 拆出来是因为 Hero 有自己的入场动画与视差，跟下面这堆静态分节混在一起
+  /// 之后，`build` 一眼看不到结构。
+  Widget _buildBody(BuildContext context) {
+    final t = S.of(context);
+    return Stack(
+      children: [
+        NotificationListener<ScrollNotification>(
+          onNotification: (n) {
+            // 只把滚动量喂给底图视差，不 setState：整页不重建
+            _heroScroll.value = n.metrics.pixels.clamp(0.0, 240.0);
+            return false;
+          },
+          child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // ── Hero 横幅：logobg 背景 + 中央 logo（带外边距圆角卡片） ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                child: Container(
-                  height: 220,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: C.ink.withValues(alpha: 0.10),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                    image: DecorationImage(
-                      image: AssetImage('assets/logobg.jfif'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: Stack(
+              _heroCard(context),
+              // 桌面宽屏下正文不拉满整屏：限宽后居中，行宽才好读
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 44),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 深色半透明遮罩，突出 logo
-                        Positioned.fill(
-                          child: Container(
-                            color: C.ink.withValues(alpha: 0.30),
-                          ),
-                        ),
-                        // 底部渐变过渡到背景色
-                        Positioned.fill(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  C.ink.withValues(alpha: 0.75),
-                                ],
-                                stops: const [0.45, 1.0],
-                              ),
-                            ),
-                          ),
-                        ),
-                        // 中央 logo + 标题
-                        Center(
+                        _shareCard(context),
+                        const SizedBox(height: 26),
+
+                        // ── 作者 ──
+                        _sectionHeader(t.author, Icons.person_rounded, C.blue),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppLogo(size: 78),
-                              const SizedBox(height: 12),
-                              Text(
-                                'APRSlocus',
-                                style: ts(
-                                  22,
-                                  w: FontWeight.w800,
-                                  ls: -0.5,
-                                  c: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                S.of(context).aboutSubtitle,
-                                style: ts(12, c: Colors.white70),
+                              _eggRow(t.callsign, 'BG7LZQ'),
+                              _row(t.nameLabel, 'Darion'),
+                              _linkRow(
+                                icon: Icons.language_rounded,
+                                label: t.website,
+                                value: 'theez.top',
+                                url: 'https://theez.top',
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(height: 22),
+
+                        // ── 代码贡献 ──
+                        _sectionHeader(
+                          t.codeContributions,
+                          Icons.code_rounded,
+                          C.purple,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              _eggRow(t.codeContributionI18n, 'BD3QID'),
+                              _eggRow(t.codeContributionZhTw, 'BA4UAX'),
+                              _eggRow(t.codeContributionTranslation, 'BA7KSM'),
+                              _row(
+                                t.settingsContribCodeOptimization,
+                                '清零（BG2HCB）',
+                                onLongPress: () => _onEggTap('BG2HCB'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // ── 开源致谢 ──
+                        _sectionHeader(
+                          t.openSource,
+                          Icons.favorite_rounded,
+                          C.red,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              _feature(
+                                Icons.flutter_dash,
+                                t.osFlutter,
+                                t.osFlutterDesc,
+                              ),
+                              _feature(
+                                Icons.web_rounded,
+                                t.osAmap,
+                                t.osAmapDesc,
+                              ),
+                              _feature(
+                                Icons.cell_tower_rounded,
+                                t.osAprs,
+                                t.osAprsDesc,
+                              ),
+                              _feature(
+                                Icons.group_rounded,
+                                t.osHam,
+                                t.osHamDesc,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // ── 许可证 ──
+                        _sectionHeader(
+                          t.licenseSection,
+                          Icons.balance_rounded,
+                          C.slate,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              _feature(
+                                Icons.gavel_rounded,
+                                t.licenseName,
+                                t.licenseStatement,
+                              ),
+                              _linkRow(
+                                icon: Icons.description_rounded,
+                                label: t.licenseText,
+                                value: 'GPL-3.0',
+                                url: 'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
+                              ),
+                              _termsRow(context),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // ── 赞助与鸣谢 ──
+                        _sectionHeader(
+                          t.sponsors,
+                          Icons.volunteer_activism_rounded,
+                          C.orange,
+                        ),
+                        const SizedBox(height: 8),
+                        _sponsorEntry(context),
+
+                        const SizedBox(height: 22),
+
+                        // ── 测试成员 ──
+                        _sectionHeader(
+                          t.testMembers,
+                          Icons.group_rounded,
+                          C.green,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              _eggRow(t.callsign, 'BG7PGW'),
+                              _eggRow(t.callsign, 'BG7LMW'),
+                              _eggRow(t.callsign, 'BG7OSL'),
+                              _eggRow(t.callsign, 'BD3QID'),
+                              _eggRow(t.callsign, 'BG4LZY'),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // ── AI 算力支持 ──
+                        _sectionHeader(
+                          t.aiSupport,
+                          Icons.memory_rounded,
+                          C.purple,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [_row(t.thanks, 'BA3RZL 养生')],
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // ── 用户反馈 ──
+                        _sectionHeader(
+                          t.feedback,
+                          Icons.forum_rounded,
+                          C.orange,
+                        ),
+                        const SizedBox(height: 8),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              _linkRow(
+                                icon: Icons.public_rounded,
+                                label: t.officialWebsite,
+                                value: 'aprslocus.theez.top',
+                                url: 'https://aprslocus.theez.top/',
+                              ),
+                              _linkRow(
+                                icon: Icons.wechat_rounded,
+                                label: t.qqGroup,
+                                value: t.qqSoftwareName,
+                                url: 'https://qm.qq.com/q/8pL6vc5YA0',
+                              ),
+                              _linkRow(
+                                icon: Icons.link_rounded,
+                                label: t.projectRepo,
+                                value: 'GitCode',
+                                url: 'https://gitcode.com/DarionDong/APRSLocus',
+                              ),
+                              _linkRow(
+                                icon: Icons.code_rounded,
+                                label: t.projectRepo,
+                                value: 'GitHub',
+                                url: 'https://github.com/dariondong/APRSLocus',
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+                        _footer(context),
                       ],
                     ),
                   ),
                 ),
               ),
-              // ── 内容列表 ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 2),
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: C.blueBg,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'v${AppState.appVersion}',
-                          style: ts(11, c: C.blue, w: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // 分享 APRSlocus 入口
-                    Center(
-                      child: OutlinedButton.icon(
-                        onPressed: _showShareSheet,
-                        icon: const Icon(Icons.share_rounded, size: 16),
-                        label: Text(S.of(context).shareApp),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: C.blue,
-                          side: BorderSide(
-                            color: C.blue.withValues(alpha: 0.5),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 9,
-                          ),
-                          textStyle: ts(12, w: FontWeight.w600),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 28),
-                    // ── 作者信息 ──
-                    _sectionHeader(
-                      S.of(context).author,
-                      Icons.person_rounded,
-                      C.blue,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _eggRow(S.of(context).callsign, 'BG7LZQ'),
-                          _row(S.of(context).nameLabel, 'Darion'),
-                          _linkRow(
-                            icon: Icons.language_rounded,
-                            label: S.of(context).website,
-                            value: 'Theez.top',
-                            url: 'https://theez.top',
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── Code contributions ──
-                    _sectionHeader(
-                      S.of(context).codeContributions,
-                      Icons.code_rounded,
-                      C.purple,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _eggRow(
-                            S.of(context).codeContributionI18n,
-                            'BD3QID',
-                          ),
-                          _eggRow(
-                            S.of(context).codeContributionZhTw,
-                            'BA4UAX',
-                          ),
-                          _eggRow(
-                            S.of(context).codeContributionTranslation,
-                            'BA7KSM',
-                          ),
-                          _row(
-                            S.of(context).settingsContribCodeOptimization,
-                            '清零（BG2HCB）',
-                            onLongPress: () => _onEggTap('BG2HCB'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── 功能特性 ──
-                    _sectionHeader(
-                      S.of(context).features,
-                      Icons.star_rounded,
-                      C.orange,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _feature(
-                            Icons.map_rounded,
-                            S.of(context).featureLiveMap,
-                            S.of(context).featureLiveMapDesc,
-                          ),
-                          _feature(
-                            Icons.gps_fixed_rounded,
-                            S.of(context).featureGps,
-                            S.of(context).featureGpsDesc,
-                          ),
-                          _feature(
-                            Icons.send_rounded,
-                            S.of(context).featureBeacon,
-                            S.of(context).featureBeaconDesc,
-                          ),
-                          _feature(
-                            Icons.chat_bubble_rounded,
-                            S.of(context).featureMsg,
-                            S.of(context).featureMsgDesc,
-                          ),
-                          _feature(
-                            Icons.wifi_tethering_rounded,
-                            S.of(context).featureAutoConnect,
-                            S.of(context).featureAutoConnectDesc,
-                          ),
-                          _feature(
-                            Icons.layers_rounded,
-                            S.of(context).featureLayerFilter,
-                            S.of(context).featureLayerFilterDesc,
-                          ),
-                          _feature(
-                            Icons.radio_rounded,
-                            S.of(context).featureFmo,
-                            S.of(context).featureFmoDesc,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── 开源致谢 ──
-                    _sectionHeader(
-                      S.of(context).openSource,
-                      Icons.favorite_rounded,
-                      C.red,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _feature(
-                            Icons.flutter_dash,
-                            S.of(context).osFlutter,
-                            S.of(context).osFlutterDesc,
-                          ),
-                          _feature(
-                            Icons.web_rounded,
-                            S.of(context).osAmap,
-                            S.of(context).osAmapDesc,
-                          ),
-                          _feature(
-                            Icons.cell_tower_rounded,
-                            S.of(context).osAprs,
-                            S.of(context).osAprsDesc,
-                          ),
-                          _feature(
-                            Icons.group_rounded,
-                            S.of(context).osHam,
-                            S.of(context).osHamDesc,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── License ──
-                    _sectionHeader(
-                      S.of(context).licenseSection,
-                      Icons.balance_rounded,
-                      C.slate,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _feature(
-                            Icons.gavel_rounded,
-                            S.of(context).licenseName,
-                            S.of(context).licenseStatement,
-                          ),
-                          _linkRow(
-                            icon: Icons.description_rounded,
-                            label: S.of(context).licenseText,
-                            value: 'GPL-3.0',
-                            url: 'https://github.com/dariondong/APRSLocus/blob/main/LICENSE',
-                          ),
-                          _termsRow(context),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── 赞助与鸣谢（独立页面入口） ──
-                    _sectionHeader(
-                      S.of(context).sponsors,
-                      Icons.volunteer_activism_rounded,
-                      C.orange,
-                    ),
-                    SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SponsorPage()),
-                      ),
-                      child: SoftCard(
-                        padding: const EdgeInsets.all(14),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFF8C00),
-                                    Color(0xFFEA580C),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.volunteer_activism_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    S.of(context).sponsorsThanks,
-                                    style: ts(13, w: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    S.of(context).viewSponsorDetails,
-                                    style: ts(11, c: C.grey),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: C.grey,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── 测试成员 ──
-                    _sectionHeader(
-                      S.of(context).testMembers,
-                      Icons.group_rounded,
-                      C.green,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _eggRow(S.of(context).callsign, 'BG7PGW'),
-                          _eggRow(S.of(context).callsign, 'BG7LMW'),
-                          _eggRow(S.of(context).callsign, 'BG7OSL'),
-                          _eggRow(S.of(context).callsign, 'BD3QID'),
-                          _eggRow(S.of(context).callsign, 'BG4LZY'),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── AI 算力支持 ──
-                    _sectionHeader(
-                      S.of(context).aiSupport,
-                      Icons.memory_rounded,
-                      C.purple,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [_row(S.of(context).thanks, 'BA3RZL 养生')],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // ── 用户反馈 ──
-                    _sectionHeader(
-                      S.of(context).feedback,
-                      Icons.forum_rounded,
-                      C.orange,
-                    ),
-                    SizedBox(height: 8),
-                    SoftCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          _linkRow(
-                            icon: Icons.public_rounded,
-                            label: S.of(context).officialWebsite,
-                            value: 'aprslocus.theez.top',
-                            url: 'https://aprslocus.theez.top/',
-                          ),
-                          _linkRow(
-                            icon: Icons.wechat_rounded,
-                            label: S.of(context).qqGroup,
-                            value: S.of(context).qqSoftwareName,
-                            url: 'https://qm.qq.com/q/8pL6vc5YA0',
-                          ),
-                          _linkRow(
-                            icon: Icons.link_rounded,
-                            label: S.of(context).projectRepo,
-                            value: 'GitCode',
-                            url: 'https://gitcode.com/DarionDong/APRSLocus',
-                          ),
-                          _linkRow(
-                            icon: Icons.code_rounded,
-                            label: S.of(context).projectRepo,
-                            value: 'GitHub',
-                            url: 'https://github.com/dariondong/APRSLocus',
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Center(
-                      child: Text(
-                        S.of(context).usageNotice,
-                        textAlign: TextAlign.center,
-                        style: ts(11, c: C.grey, h: 1.6),
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Center(
-                      child: Text(
-                        S.of(context).licenseNotice,
-                        textAlign: TextAlign.center,
-                        style: ts(10, c: C.greyLight, h: 1.6),
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          final info = S
-                              .of(context)
-                              .appInfoText(AppState.appVersion);
-                          Clipboard.setData(ClipboardData(text: info));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(S.of(context).appInfoCopied),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              backgroundColor: C.ink,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.greyBg,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.copy_rounded, size: 14, color: C.grey),
-                              SizedBox(width: 6),
-                              Text(
-                                S.of(context).copyAppInfo,
-                                style: ts(12, c: C.slate),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
-          // ─── 粒子层 ───
-          if (_showParticles)
-            IgnorePointer(
-              child: CustomPaint(
-                size: MediaQuery.of(context).size,
-                painter: _ParticlePainter(
-                  center: _particleCenter,
-                  progress: _ctrl!.value,
-                  particles: _particles,
+        ),
+        // ─── 粒子层 ───
+        if (_showParticles)
+          IgnorePointer(
+            child: CustomPaint(
+              size: MediaQuery.of(context).size,
+              painter: _ParticlePainter(
+                center: _particleCenter,
+                progress: _ctrl!.value,
+                particles: _particles,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Hero 封面：实景照片 + 玻璃质感标题。
+  ///
+  /// 高度随宽度走（[_heroHeightFor]）：底图是 3:2，固定高度在桌面宽屏下会被
+  /// `cover` 裁得只剩中间一条，山峰就切出去了。
+  Widget _heroCard(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 520),
+      curve: Curves.easeOutCubic,
+      builder: (_, t, child) => Opacity(
+        opacity: t,
+        child: Transform.translate(
+          offset: Offset(0, 14 * (1 - t)),
+          child: child,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(26),
+                boxShadow: [
+                  BoxShadow(
+                    color: C.ink.withValues(alpha: 0.18),
+                    blurRadius: 28,
+                    offset: const Offset(0, 12),
+                  ),
+                  BoxShadow(
+                    color: C.ink.withValues(alpha: 0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(26),
+                child: LayoutBuilder(
+                  builder: (ctx, cons) {
+                    final h = _heroHeightFor(cons.maxWidth);
+                    // 比原图还扁的超宽屏改用整体装入：宁可上下留边，
+                    // 也不能把火山裁掉。
+                    final tooWide = cons.maxWidth / h > 1.62;
+                    return SizedBox(
+                      height: h,
+                      width: double.infinity,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          // 底图：随滚动轻微视差（放大 12% 留出位移余量）
+                          AnimatedBuilder(
+                            animation: _heroScroll,
+                            builder: (_, __) => Transform.scale(
+                              scale: 1.12,
+                              child: Transform.translate(
+                                offset: Offset(0, -_heroScroll.value * 0.035),
+                                child: Image.asset(
+                                  'assets/about_hero.jpg',
+                                  fit: tooWide ? BoxFit.contain : BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  filterQuality: FilterQuality.medium,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // 顶部压暗 + 底部渐隐：白字压在亮天空上也能读清
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.22),
+                                  Colors.transparent,
+                                  C.ink.withValues(alpha: 0.30),
+                                  C.ink.withValues(alpha: 0.88),
+                                ],
+                                stops: const [0.0, 0.30, 0.60, 1.0],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    _glassBox(
+                                      radius: 99,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 11,
+                                        vertical: 5,
+                                      ),
+                                      child: Text(
+                                        'v${AppState.appVersion}',
+                                        style: ts(
+                                          10.5,
+                                          c: Colors.white,
+                                          w: FontWeight.w700,
+                                          ls: 0.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    _glassBox(
+                                      radius: 16,
+                                      padding: const EdgeInsets.all(5),
+                                      child: AppLogo(size: 40),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'APRSlocus',
+                                            style: ts(
+                                              24,
+                                              w: FontWeight.w800,
+                                              ls: -0.6,
+                                              c: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 3),
+                                          Text(
+                                            S.of(context).aboutSubtitle,
+                                            style: ts(
+                                              12,
+                                              c: Colors.white.withValues(
+                                                alpha: 0.90,
+                                              ),
+                                              h: 1.3,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          // 内侧极细描边：卡片与照片之间多一道光边
+                          IgnorePointer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(26),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.16),
+                                  width: 0.8,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
-        ],
+          ),
+        ),
       ),
+    );
+  }
+
+  /// 分享入口：整张卡可点，比一个孤零零的描边胶囊更像「主操作」。
+  Widget _shareCard(BuildContext context) {
+    return GestureDetector(
+      onTap: _showShareSheet,
+      child: SoftCard(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: C.blueBg,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.share_rounded, color: C.blue, size: 19),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    S.of(context).shareApp,
+                    style: ts(13.5, w: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'APRSlocus · v${AppState.appVersion}',
+                    style: ts(11, c: C.grey),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, color: C.grey, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 赞助与鸣谢入口卡
+  Widget _sponsorEntry(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SponsorPage()),
+      ),
+      child: SoftCard(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFF8C00), Color(0xFFEA580C)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.volunteer_activism_rounded,
+                color: Colors.white,
+                size: 19,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    S.of(context).sponsorsThanks,
+                    style: ts(13.5, w: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    S.of(context).viewSponsorDetails,
+                    style: ts(11, c: C.grey),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, color: C.grey, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 页脚：法律声明 + 复制应用信息 + 摄影署名。
+  Widget _footer(BuildContext context) {
+    final t = S.of(context);
+    return Column(
+      children: [
+        // 一条细分割线收尾
+        Container(height: 1, color: C.border),
+        const SizedBox(height: 18),
+        Text(
+          t.usageNotice,
+          textAlign: TextAlign.center,
+          style: ts(11, c: C.grey, h: 1.7),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          t.licenseNotice,
+          textAlign: TextAlign.center,
+          style: ts(10, c: C.greyLight, h: 1.7),
+        ),
+        const SizedBox(height: 18),
+        GestureDetector(
+          onTap: () {
+            final info = t.appInfoText(AppState.appVersion);
+            Clipboard.setData(ClipboardData(text: info));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(t.appInfoCopied),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: C.ink,
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+            decoration: BoxDecoration(
+              color: C.greyBg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.copy_rounded, size: 14, color: C.grey),
+                const SizedBox(width: 6),
+                Text(t.copyAppInfo, style: ts(12, c: C.slate)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 22),
+        // 摄影署名（与关于页 Hero 底图对应）
+        Text(
+          '封面摄影 · Pixabay / frankpotters7',
+          textAlign: TextAlign.center,
+          style: ts(9.5, c: C.greyLight, ls: 0.2),
+        ),
+      ],
     );
   }
 
   // ── 组件 ──
 
+  /// Hero 封面的高度。
+  ///
+  /// 底图是 3:2（1280×853），容器高度按宽度推：手机竖屏（~360 宽）大约
+  /// 232；平板/桌面（≥600 宽）给到 300 封顶。
+  double _heroHeightFor(double w) => (w * 0.64).clamp(196.0, 300.0);
+
+  /// 玻璃质感。
+  ///
+  /// 这里**故意不做真模糊**：`BackdropFilter` 每帧都要把背后的照片离屏重画
+  /// 一遍（见 lib/material.dart 顶部关于模糊代价的说明），而 Hero 底图还带
+  /// 视差动画，套上去等于每帧多一次全层 saveLayer。半透明白 + 顶部高光 +
+  /// 一道细描边在照片上已经足够像玻璃，代价为零。
+  Widget _glassBox({
+    required Widget child,
+    double radius = 14,
+    EdgeInsetsGeometry padding = const EdgeInsets.all(6),
+  }) {
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.30),
+            Colors.white.withValues(alpha: 0.12),
+          ],
+        ),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.30),
+          width: 0.8,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   Widget _sectionHeader(String title, IconData icon, Color c) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: c),
-        const SizedBox(width: 6),
-        Text(
-          title,
-          style: ts(13, w: FontWeight.w700, c: c),
+        // 淡色底托 + 彩色图标，比光秃秃一个图标更成体系
+        Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(
+            color: c.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 14, color: c),
         ),
+        const SizedBox(width: 8),
+        Text(title, style: ts(13, w: FontWeight.w800)),
+        const SizedBox(width: 10),
+        // 右侧细横线：把标题和内容一条条串起来
+        Expanded(child: Container(height: 1, color: C.border)),
       ],
     );
   }
@@ -961,10 +1100,7 @@ class _AboutPageState extends State<AboutPage>
       ),
     );
     if (onLongPress != null) {
-      return GestureDetector(
-        onLongPress: onLongPress,
-        child: row,
-      );
+      return GestureDetector(onLongPress: onLongPress, child: row);
     }
     return row;
   }

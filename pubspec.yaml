@@ -1,7 +1,7 @@
 name: aprslocus
 description: "APRSlocus - APRS Tracking & Mapping"
 publish_to: 'none'
-version: 1.6.158+10758
+version: 1.6.159+10759
 
 environment:
   sdk: ^3.13.1
@@ -40,7 +40,7 @@ flutter:
     - assets/aprs_syms/
     - assets/aprs_device/
     - assets/osl.png
-    - assets/logobg.jfif
+    - assets/about_hero.jpg
     - assets/WechatPay.jpg
     - assets/bg2hcb.jpg
     - assets/terms_zh.txt
