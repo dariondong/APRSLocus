@@ -1,5 +1,184 @@
 # 更新日志
 
+## [1.6.156] - 2026-09-23
+
+### 📢 公告横幅（官网 Markdown，应用内渲染）；智能信标支持「按转弯」打点；台站备注看得出能输入 / An announcement banner rendered from the website's Markdown; turn-based smart beaconing; an editable-looking comment field
+
+## 一、公告横幅：改官网就能发通知，不用等新版
+
+用户要的是「一个用户可以打开的公告横幅，内容从官网文件夹拉取，md 应用内支持渲染
+MD 和超链接」。现在设置 → 显示 里多了一条横幅，默认开启。
+
+**官网那侧**：`docs/notice/<语言>.md`（六份：简中 / 繁中 / 英 / 日 / 西 / 印尼）。
+**改文件 → 推 main → 官网部署（约一分钟）→ 用户下次打开设置就能看到**，
+不必发新版本 —— 这才是「公告」该有的时效性。
+
+**应用那侧三层**：
+
+* 拉取有**兜底链**：`notice/<当前语言>.md` → `notice/en.md` → **上次成功拉到的缓存**。
+  缓存的意义是「断网也看得见」：没有它，飞机上、地铁里打开设置就是一片空白。
+* **渲染用 `markdown` 解析器 + 自己拼 Flutter widget**（只引解析器，不引渲染库）：
+  样式跟随应用自己的排版令牌，链接行为也由我们决定。支持标题、粗斜体、列表、
+  引用、代码块、**表格**、图片、删除线、自动链接。
+* 全部拿不到时如实写「暂无公告」+ 重试按钮，**不留白** —— 留白会让人以为功能坏了。
+
+三个细节值得一提：
+
+1. **开关关掉时一次网络请求都不发**。用户关它多半就是不想让它联网，所以这不只是
+   「藏起来」。
+2. **打开时先用缓存立刻显示**，再后台刷新；刷新失败**保留**旧内容而不是清空。
+3. 缓存内容会标出「离线缓存 · 时间」，用户据此知道这不是最新的。
+
+## 二、智能信标新增「按转弯」打点（角度每档可自定义）
+
+原来的智能信标有「定时」和「按距离」两路判据。距离与定时都答不了
+**「这个弯该不该补一个点」**：盘山路上车速慢，距离门限很久才够，而连续发卡弯
+正是最该有轨迹的地方 —— 缺了这条，地图上那段就是一串被拉直的直线。
+
+现在上报判据是「定时到了，**或**走够了，**或**拐过去了」。角度**每一档单独设置**
+（10~180°，0 = 关闭），默认城市档 45°、高速档 30°；档位行显示成
+「每 60 秒 · 或移动 400 m · 或转 45°」。直路巡航时航向不变，它一次都不会触发。
+
+三个必须处理的细节（缺一个都会变成「每个点都发」，把共享信道刷满）：
+
+* **角度要环绕**：359° → 1° 是转了 2°，不是 358°。直接相减会把「几乎没转」判成
+  「转了大半圈」。
+* **只在行驶中生效**（≥5 km/h）：停着不动时航向本身就是噪声，指南针也会被身边
+  铁器带偏，抖动足以越过 45°。
+* **两次之间至少 20 秒**：发卡弯上 30° 阈值可能几秒就满足一次，各家智能信标都带
+  速率上限正是这个原因。
+
+## 三、台站备注：看得出来这里能输入
+
+反馈是「台站备注，用户都不知道那里是可以输入的」。根因很具体：输入框是
+**无边框、无底色、无占位提示**的，而「台站备注」默认就是空的（v1.6.80 起
+默认清空）—— 于是那一行右边**整片空白**，和旁边静态的「标签 + 值」行长得一模一样。
+
+现在做三件事：**空值显示占位提示**（通用的「点击输入」，台站备注那一行写
+「未填写 · 点这里输入」）、**输入区给一层浅底 + 圆角 + 淡描边**、**聚焦时描边变蓝**。
+全仓 42 处输入行一起受益。
+
+## 四、检查器
+
+新增 `tool/check_notice.py`（已接进 CI）：官网六个语言文件齐备、**开关关闭时不联网**、
+Markdown 走 GFM 扩展集、链接交给系统浏览器、相对地址补全、表格/代码块/图片分支都在、
+开关落盘并进备份。这几条都能正常编译、也能通过 analyze，只在真机上表现成
+「某些语言看不到公告」「关了还在请求」「链接点了没反应」。
+
+`check_beacon_track.py` 增补 8 条盯住转弯打点（环绕折算、两道闸**被用上**、
+记录上次航向、落盘读回、设置页字段与写回）。
+
+## 五、这一轮踩的坑（都记在代码里）
+
+* **检查器匹配到了文档注释里的字**：`markdown_view.dart` 的注释里写着「用
+  `ExtensionSet.gitHubFlavored` 是为了表格」，于是把代码换成 commonMark 仍然报绿。
+  已加 `code_only()`，只搜代码行。
+* **断言了名字、没断言实现**：只查 `_abs(` 出现过 —— 把**定义**改名后调用点仍在，
+  照样报绿；转弯打点的两道闸也只查了常量名。已改成断言真正起作用的那一行。
+* **`git checkout <file>` 会把未提交的改动一起还原**（本轮犯了两次），改用 `cp` 备份。
+* CI 报的 4 处编译错误：可空值未提升 ×3、l10n 占位符 `type: int` 却传了字符串 ×3、
+  `late` 字段初始化器里引用 `widget` ×2。
+
+---
+
+## [1.6.156] - 2026-09-23 (English)
+
+### An announcement banner rendered from the website's Markdown; turn-based smart beaconing; a comment field that looks editable
+
+## 1) The announcement banner: publish from the website, no new release needed
+
+The request: a banner the user can switch on, whose content is pulled from a folder on
+the website, with Markdown and hyperlinks rendered in-app. There is now a banner at the
+top of Settings → Display, on by default.
+
+**On the website**: `docs/notice/<language>.md` (Chinese, Traditional Chinese, English,
+Japanese, Spanish, Indonesian). **Edit the file → push to main → the site deploys
+(~a minute) → users see it the next time they open Settings** — no new version
+required, which is the whole point of an announcement.
+
+**In the app**, three layers:
+
+* Fetching has a **fallback chain**: `notice/<current language>.md` → `notice/en.md`
+  → **the last successfully fetched copy**. The cache exists so announcements remain
+  visible offline — without it, Settings on a plane is simply blank.
+* **Rendering uses the `markdown` parser plus our own Flutter widgets** (parser only, no
+  rendering library): styling follows the app's own type tokens and link behaviour stays
+  ours. Headings, bold/italic, lists, quotes, code blocks, **tables**, images,
+  strikethrough and autolinks are all supported.
+* When nothing can be obtained it says “No announcements yet” with a Retry button
+  rather than showing nothing — blank space reads as “the feature is broken”.
+
+Three details worth naming:
+
+1. **With the switch off, not a single network request is made.** People usually turn it
+   off because they do not want it online, so this is not just “hidden”.
+2. **Opening it shows the cached copy immediately**, then refreshes in the background;
+   a failed refresh **keeps** the old content instead of clearing it.
+3. Cached content is labelled “Offline copy · time” so users know it may be stale.
+
+## 2) Smart beaconing gains a third trigger: turning (angle configurable per tier)
+
+Smart beaconing had *timer* and *distance*. Neither answers **“should this corner add a
+point?”** — on mountain roads you are slow, so the distance threshold takes ages to
+reach, yet those hairpins are exactly where the track matters most. Without this trigger
+that stretch becomes a series of straightened lines.
+
+The trigger is now “the timer expired, **or** you moved far enough, **or** you turned far
+enough”. The angle is **per tier** (10–180°, 0 = off); defaults are 45° for the city
+tier and 30° for the highway tier, and each row reads “Every 60 s · or 400 m · or 45°”.
+Cruising straight, the heading does not change and it never fires.
+
+Three details that each turn this into “beacon on every fix” if missed — and flood a
+shared channel:
+
+* **Wrap the angle**: 359° → 1° is a 2° turn, not 358°. Subtracting directly makes
+  “almost no turn” read as “turned most of a circle”.
+* **Only while moving** (≥ 5 km/h): heading is pure noise when parked, and a compass near
+  iron drifts enough to cross 45° on its own.
+* **At least 20 s between turn-triggered beacons**: on a hairpin a 30° threshold can be
+  satisfied within seconds; rate limiting is why every smart beacon implementation has it.
+
+## 3) The station comment now looks editable
+
+The report: “nobody knows that the station comment can be typed into”. The cause was
+concrete: the field had **no border, no fill and no placeholder**, and the comment
+defaults to empty (since v1.6.80) — so the right-hand side of that row was **entirely
+blank**, indistinguishable from the static “label + value” rows beside it.
+
+Three changes: **an empty field shows a placeholder** (“Tap to type” generally; “Not
+set · tap to type” on the comment row), **the input area gets a soft fill, rounded
+corners and a hairline border**, and **the border turns accent blue on focus**. All 42
+input rows in the app benefit.
+
+## 4) Checkers
+
+New `tool/check_notice.py` (wired into CI): the six website files exist, **the switch
+being off means no network call**, Markdown uses the GFM extension set, links go to the
+system browser, relative URLs are completed, table/code/image branches exist, and the
+switch persists and is included in backups. All of these compile and pass analyze fine
+and only misbehave on a device (“some languages never see announcements”, “it still
+phones home after I turned it off”, “the link does nothing”).
+
+`check_beacon_track.py` gained eight assertions covering the turn trigger (angle wrap,
+both rate gates **actually used**, last heading recorded, persisted and restored, the
+settings field and its write-back).
+
+## 5) Things this round taught us (all recorded in the code)
+
+* **A check matched text inside a doc comment**: `markdown_view.dart` comments explain
+  why `ExtensionSet.gitHubFlavored` is used, so swapping the code to commonMark still
+  passed. `code_only()` now restricts checks to code lines.
+* **Asserting a name instead of the implementation**: checking that `_abs(` appears
+  passes even after the **definition** is renamed, since call sites remain; the two turn
+  gates only checked constant names. Both now assert the lines that actually do the work.
+* **`git checkout <file>` also discards uncommitted work** (twice this round) — switched
+  to `cp` for backup/restore.
+* Four compile errors reported by CI: nullable values not promoted × 3, l10n placeholders
+  declared `type: int` while strings were passed × 3, and `late` fields referencing
+  `widget` in initializers × 2.
+
+---
+
 ## [1.6.155] - 2026-09-23
 
 ### 🖱 四条界面反馈：图层面板「点了没反应」、会话输入框藏底下、未连接提示、在地图查看不回地图 / Four UI reports: unclickable layer panel, hidden chat input, weak offline notice, and “view on map” not switching back
