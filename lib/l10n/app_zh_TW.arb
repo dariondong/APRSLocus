@@ -2975,5 +2975,6 @@
   "ownSourceGarminStale": "連結有效，但佳明沒有新點（暫時用不到）",
   "ownSourceHrIdle": "未連線（點一下連線心率帶）",
   "hrLineHr": "心率 {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "garminShareNoLink": "分享的內容裡沒有找到佳明 LiveTrack 連結"
 }

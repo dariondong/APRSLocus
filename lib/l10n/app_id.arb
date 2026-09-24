@@ -2471,5 +2471,6 @@
   "ownSourceGarminStale": "Tautan ada, tapi Garmin belum punya titik baru",
   "ownSourceHrIdle": "Belum tersambung (ketuk untuk menyambung)",
   "hrLineHr": "HR {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan"
 }

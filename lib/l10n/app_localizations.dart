@@ -12356,6 +12356,18 @@ abstract class AppLocalizations {
   /// **'心率 {hr}'**
   String get beaconAttachedHr;
 
+  /// No description provided for @hrLineHr.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率 {hr}'**
+  String get hrLineHr;
+
+  /// No description provided for @garminShareNoLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享的内容里没有找到佳明 LiveTrack 链接'**
+  String get garminShareNoLink;
+
 }
 
 class _AppLocalizationsDelegate

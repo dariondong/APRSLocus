@@ -189,6 +189,17 @@ class _HomeShell2State extends State<HomeShell2>
   void initState() {
     super.initState();
     widget.state.addListener(_onState);
+    // 分享过来的内容里**没有**佳明链接：如实说一句，而不是静默什么都不做
+    //（用户看不到任何反应时只能来问「为什么没识别」）。
+    widget.state.onGarminShareNoLink = () {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).garminShareNoLink),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    };
     // 「分享给 APRSlocus」落到前台时给一条提示，并把用户直接带进设置页 ——
     // 否则分享完切回应用什么都没发生，用户会以为分享失败（需求原话：
     // 「可以直接引导用户到 APP 里面设置」）。
@@ -242,6 +253,7 @@ class _HomeShell2State extends State<HomeShell2>
     widget.state.onNewMessage = null;
     widget.state.removeListener(_onState);
     widget.state.onGarminShared = null;
+    widget.state.onGarminShareNoLink = null;
     super.dispose();
   }
 

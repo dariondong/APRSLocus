@@ -6859,4 +6859,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get beaconAttachedHr => "心拍 {hr}";
 
+  @override
+  String get hrLineHr => "心拍 {hr}";
+
+  @override
+  String get garminShareNoLink => "共有された内容に Garmin LiveTrack のリンクが見つかりません";
+
 }

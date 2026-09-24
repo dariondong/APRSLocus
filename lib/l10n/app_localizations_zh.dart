@@ -6785,6 +6785,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get beaconAttachedHr => "心率 {hr}";
 
+  @override
+  String get hrLineHr => "心率 {hr}";
+
+  @override
+  String get garminShareNoLink => "分享的内容里没有找到佳明 LiveTrack 链接";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13566,5 +13572,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconAttachedHr => "心率 {hr}";
+
+  @override
+  String get hrLineHr => "心率 {hr}";
+
+  @override
+  String get garminShareNoLink => "分享的內容裡沒有找到佳明 LiveTrack 連結";
 
 }

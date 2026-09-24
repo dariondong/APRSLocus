@@ -7100,4 +7100,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get beaconAttachedHr => "pulso {hr}";
 
+  @override
+  String get hrLineHr => "pulso {hr}";
+
+  @override
+  String get garminShareNoLink => "No se encontró ningún enlace de Garmin LiveTrack";
+
 }

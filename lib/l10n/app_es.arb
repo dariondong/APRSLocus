@@ -2471,5 +2471,6 @@
   "ownSourceGarminStale": "Enlace configurado, pero Garmin no tiene puntos nuevos",
   "ownSourceHrIdle": "Sin conectar (toca para conectar)",
   "hrLineHr": "pulso {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "garminShareNoLink": "No se encontró ningún enlace de Garmin LiveTrack"
 }

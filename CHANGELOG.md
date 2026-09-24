@@ -80,6 +80,17 @@ honestly reports "no points yet".
 有 128 bpm，主屏幕一直是空的、信标也不带 HR」。已修（并写进检查器：`bleHr.onChanged`
 里必须出现 `myHr =` —— 这类「两个来源各自同步漏一处」的缺陷只有真机能发现）。
 
+**佳明分享「没识别」的根因是两个静默丢弃**：
+
+* `_onSharedIncoming` 在解析失败时**直接 return** —— 用户分享完什么都没发生、也没有任何解释；
+* Android 侧按域名过滤（`TRACK_HOSTS`）只放行 `livetrack.garmin.com` / `gar.mn`，**理由本身是错的**：
+  应用是否出现在分享面板只由 manifest 的 intent-filter（`text/plain`）决定，那道理过滤不掉任何东西，
+  唯一的实际作用是把「佳明换了域名 / 分享的是别的形式」变成**连一次网络请求都没发出**的静默失败。
+
+改法：原生侧一律透传给 Dart；Dart 的链接识别放宽到「任何佳明域名的链接」（长链 → `gar.mn`
+短链 → `*.garmin.com` 兜底），识别不到就**写日志（含原文前 120 字）+ 弹提示**
+（新增 `garminShareNoLink`，6 语言）。顺带删掉 manifest 里重复的 SEND filter 与过期注释。
+
 **手动上报的提示现在会说清「实际带了什么」**：有用户问「手动上报…没有附带心率？」——
 核实结果是**带的**（手动与自动上报走的是同一段组包代码，全仓库只有一处
 `AprsFmt.position(...)`，备注与 `HR=` 都在里面），但提示当时只说网格，看不出带了什么。
@@ -122,6 +133,22 @@ and `HR=` in the beacon all read `myHr` — and the `bleHr` change callback only
 main screen stayed empty and the beacon carried no HR. Fixed, and pinned in the checker: the
 `bleHr.onChanged` body must contain `myHr =` — this class of "one of the two sources forgot to
 sync" bug is only visible on a real device.
+
+**Why Garmin sharing "wasn't recognised": two silent drops.**
+
+* `_onSharedIncoming` **just returned** when parsing failed — the user shared something and
+  nothing happened, with no explanation at all;
+* Android filtered by host (`TRACK_HOSTS`, allowing only `livetrack.garmin.com` / `gar.mn`), and
+  **the stated reason was simply wrong**: whether the app appears in the share sheet is decided
+  by the manifest's intent-filter (`text/plain`) alone, so that filter blocked nothing — its only
+  real effect was turning "Garmin changed the domain / shares something else" into a silent
+  failure where **not even one network request was made**.
+
+Now the native side always forwards the text to Dart; Dart's link detection was widened to "any
+Garmin-hosted link" (long form → `gar.mn` short link → a `*.garmin.com` fallback), and when it
+finds nothing it **logs the first 120 characters and shows a toast** (new `garminShareNoLink`,
+six locales). The duplicated SEND intent-filter and the stale comments in the manifest are gone
+too.
 
 **The manual-beacon toast now says what was actually attached.** A user asked "does manual
 beaconing not include the heart rate?" — it **does** (manual and automatic beaconing share the

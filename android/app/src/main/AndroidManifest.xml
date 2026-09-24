@@ -91,8 +91,8 @@
               />
             <!-- 「分享给 APRSlocus」：注册 text/plain 的 ACTION_SEND，佳明 App
                  的分享面板里就会出现本应用，用户点一下链接就落到设置里。
-                 只放行含 livetrack.garmin.com 的文本（见 MainActivity
-                 .extractSharedTrackText）—— 否则任意 App 分享任意文本都会看到我们。 -->
+                 分享进来的文本一律透传给 Dart（那边识别不了会如实提示）——
+                 原生侧不再按域名过滤，避免「佳明换了域名」变成静默丢弃。 -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -116,11 +116,6 @@
                  过滤的能力，所以 APRSlocus 会出现在**所有**文本分享的目标里。
                  真正的闸门在 MainActivity.readSharedText（只认
                  livetrack.garmin.com），其它内容一律安静忽略。 -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
-            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

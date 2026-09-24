@@ -184,9 +184,25 @@ def main() -> int:
     need('lib/garmin_fetch_io.dart', 'followRedirects = true',
          '抓取没有显式跟随跳转 —— 短链靠 301 跳到长链，关掉就再也抓不到数据'
          '（而长链照常，极难归因）')
-    need('android/app/src/main/kotlin/com/aprslocus/aprslocus/MainActivity.kt',
-         '"gar.mn"',
-         'Android 分享入口的域名闸门没有放行 gar.mn —— 佳明 App 分享的短链会被挡掉')
+    need('lib/garmin.dart', 'garmin\\.com',
+         '链接识别里没有「任何佳明域名」的兜底 —— 佳明一改分享形式就会「没反应」')
+    # 原生侧**不许**再按域名过滤：应用是否出现在分享面板只由 intent-filter 决定，
+    # 那道理过滤不掉任何东西，只会把「佳明换了域名」变成静默丢弃。
+    if 'TRACK_HOSTS' in read('android/app/src/main/kotlin/com/aprslocus/aprslocus/MainActivity.kt'):
+        errors.append('MainActivity 又出现了按域名过滤（TRACK_HOSTS）—— '
+                      '分享失败会重新变成「静默丢弃」，用户与日志都看不到原因')
+    # 解析失败必须**可见**（日志 + 回调），而不是静默 return
+    _sh = read('lib/state.dart')
+    _i = _sh.find('void _onSharedIncoming(String text) {')
+    if _i < 0:
+        errors.append('找不到 _onSharedIncoming')
+    else:
+        _blk = _sh[_i:_i + 1500]
+        if 'onGarminShareNoLink?.call()' not in _blk:
+            errors.append('_onSharedIncoming 解析失败时没有提示回调 —— '
+                          '用户分享后什么都不发生、也不给解释（「为什么没识别」）')
+    need('lib/state.dart', 'onGarminShareNoLink;',
+         '缺少「分享内容里没有链接」的回调字段')
     need('lib/garmin.dart', 'self\\.__next_f\\.push',
          '没有解析 Next.js 的流式数据块 —— 抓到的页面里找不到 trackPoints')
     need('lib/garmin.dart', '"trackPoints":', '没有取 trackPoints —— 拿不到任何点')

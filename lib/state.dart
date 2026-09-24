@@ -218,6 +218,9 @@ class AppState extends ChangeNotifier {
   /// 收到「分享进来的佳明链接」时回调（外壳用来提示并把用户带到设置页）。
   void Function(String url)? onGarminShared;
 
+  /// 分享内容里**没有**佳明链接时回调（外壳用来如实提示，而不是静默什么都不做）。
+  void Function()? onGarminShareNoLink;
+
   /// 佳明 LiveTrack 的新点 → 当作「自己」的一次定位。
   ///
   /// 为什么不让它走 _onFix：那条路径围着**手机定位**的一堆特性转（粗定位闸、
@@ -296,7 +299,22 @@ class AppState extends ChangeNotifier {
   void _onSharedIncoming(String text) {
     if (_disposed) return;
     final url = extractLiveTrackUrl(text);
-    if (url == null) return;
+    if (url == null) {
+      // **失败必须可见**：以前这里直接 return —— 用户分享完什么都没发生、
+      // 也没有任何解释，只能来问「为什么没识别」。
+      // 日志里带上原文前 120 字（去掉换行），否则无从判断到底是佳明改了格式，
+      // 还是分享过来的根本不是链接。
+      final brief = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+      _log(
+        LogLevel.warn,
+        '佳明',
+        '分享内容里没有找到 LiveTrack 链接（前 120 字）：'
+            '${brief.length > 120 ? '${brief.substring(0, 120)}…' : brief}',
+      );
+      onGarminShareNoLink?.call();
+      _notify();
+      return;
+    }
     garminUrl = url;
     _log(LogLevel.info, '佳明', '收到分享的 LiveTrack 链接，开始追踪');
     unawaited(garmin.start(url));

@@ -7059,4 +7059,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get beaconAttachedHr => "HR {hr}";
 
+  @override
+  String get hrLineHr => "HR {hr}";
+
+  @override
+  String get garminShareNoLink => "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan";
+
 }

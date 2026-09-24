@@ -7050,4 +7050,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get beaconAttachedHr => "HR {hr}";
 
+  @override
+  String get hrLineHr => "HR {hr}";
+
+  @override
+  String get garminShareNoLink => "No Garmin LiveTrack link found in what was shared";
+
 }

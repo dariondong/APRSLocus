@@ -87,6 +87,17 @@ String? extractLiveTrackUrl(String raw) {
   if (short != null) return short.group(0);
   final bare = _bareShortRe.firstMatch(text);
   if (bare != null) return 'https://${bare.group(0)}';
+  // 兜底：任何**佳明域名**的链接都先收下。
+  //
+  // 为什么需要它：佳明的分享形式改过（邮件里是长链、App 里是 `gar.mn` 短链），
+  // 而且还有 `connect.garmin.com/...` 这类页面 —— 只认死两种形态的话，佳明一改
+  // 用户就会遇到「分享过来没反应」，而我们在代码里连一次网络请求都没有发出，
+  // 也就没有任何错误可看。收下之后抓不到点会走「还没有取到点 / 抓取失败」的
+  // 提示，失败至少是**可见**的。
+  final anyGarmin =
+      RegExp(r"https?://[\w.-]*\bgarmin\.com/[^\s<>'\x22]+")
+          .firstMatch(text);
+  if (anyGarmin != null) return anyGarmin.group(0);
   return null;
 }
 

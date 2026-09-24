@@ -36,6 +36,18 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 分享进来的内容里**没有**佳明链接时的提示。
+    # 为什么必须给：以前解析失败是**静默 return** —— 用户分享后什么都没发生、
+    # 也没有任何解释，只能来问「为什么没识别」。失败必须可见。
+    'garminShareNoLink': (
+        '分享的内容里没有找到佳明 LiveTrack 链接',
+        '分享的內容裡沒有找到佳明 LiveTrack 連結',
+        'No Garmin LiveTrack link found in what was shared',
+        '共有された内容に Garmin LiveTrack のリンクが見つかりません',
+        'No se encontró ningún enlace de Garmin LiveTrack',
+        'Tidak ada tautan Garmin LiveTrack di konten yang dibagikan',
+    ),
+
     # 位置来源：**如实的状态行**（不是二选一的开关）。
     # 佳明与手机 GPS 本来就不是二选一：手表在直播时优先用手表，超过 120s 没新点
     # 自动交回手机 —— 所以这里只显示「现在是谁在供位置」，不假装是用户选的。

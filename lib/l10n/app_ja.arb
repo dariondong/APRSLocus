@@ -2471,5 +2471,6 @@
   "ownSourceGarminStale": "リンクは有効だが新しい点がありません",
   "ownSourceHrIdle": "未接続（タップして接続）",
   "hrLineHr": "心拍 {hr}",
-  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
+  "garminShareNoLink": "共有された内容に Garmin LiveTrack のリンクが見つかりません"
 }

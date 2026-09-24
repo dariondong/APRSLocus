@@ -53,12 +53,6 @@ class MainActivity : FlutterActivity() {
         const val SHARE_IN_CHANNEL = "com.aprslocus/share_in"
         const val SHARE_IN_EVENT_CHANNEL = "com.aprslocus/share_in_events"
 
-        // 只认佳明的 LiveTrack 域名（为什么要设这道闸门见 readSharedText）。
-        //
-        // **两个都要**：`livetrack.garmin.com` 是邮件/网页上的长链，而
-        // **佳明 App 的「分享」按钮给的是 `gar.mn` 短链** —— 只放行前者的话，
-        // 用户在佳明 App 里点分享、选 APRSlocus，会「什么都没发生」（被这里挡掉了）。
-        val TRACK_HOSTS = listOf("livetrack.garmin.com", "gar.mn")
     }
 
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
@@ -950,7 +944,16 @@ class MainActivity : FlutterActivity() {
             ?: textExtra(intent, Intent.EXTRA_SUBJECT)
         val text = raw?.trim()
         if (text.isNullOrEmpty()) return null
-        if (TRACK_HOSTS.none { text.contains(it, ignoreCase = true) }) return null
+        // **不再在这里按域名过滤**。
+        //
+        // 以前只放行含 `livetrack.garmin.com` / `gar.mn` 的文本，理由是「不设闸门
+        // 用户会在分享面板里看到 APRSlocus」—— 那个理由**是错的**：应用是否出现在
+        // 分享面板只由 AndroidManifest 的 intent-filter（`text/plain`）决定，
+        // 这里过滤不掉任何东西。它唯一的作用是把「佳明换了域名 / 分享的是别的形式」
+        // 变成**静默丢弃**：Dart 侧连一次网络请求都没发出，用户和日志都看不到原因。
+        //
+        // 现在一律透传给 Dart：能识别就追踪，识别不了就如实提示
+        // （见 AppState._onSharedIncoming 的 onGarminShareNoLink）。
         return text
     }
 
