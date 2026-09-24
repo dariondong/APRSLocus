@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.168</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**"Position source" is now an honest status row, not a two-way choice** (pointed out from a real device): with tracking not started, "Phone GPS" still showed a filled selection dot (nothing was running) and "Garmin" could be "selected" — the state only looked at the switch, never at whether tracking was running. Garmin and the phone GPS are not a choice at all: while the watch is live it wins, and after 120s without a fresh point the phone takes over. It now reports reality: "Not tracking (location off)" / "Tracking" / "Tracking (phone GPS stepped aside)" / "Link set, but Garmin has no fresh points"; the heart-rate row shows the current bpm too.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.167</span>
         <span class="cl-date">2026-09-24</span>
       </div>

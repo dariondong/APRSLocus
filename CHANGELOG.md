@@ -1,5 +1,35 @@
 # 更新日志
 
+## [1.6.168] - 2026-09-24
+
+### 🐞 「位置来源」不再是二选一，改成如实的状态行 / Position source is an honest status row, not a two-way choice
+
+**「位置来源」不该是二选一（用户实测指出）**：没启动追踪时，那一栏里「手机 GPS」
+照样画着**实心选中圆点**（其实什么都没在跑），而「佳明」那行也可以被「选中」——
+只看 `garminOn`，**没看追踪到底有没有启动**。而且佳明与手机 GPS 本来**不是二选一**：
+手表在直播时优先用手表，超过 120s 没新点自动交回手机。现在改成**如实的状态行**
+（没有选中圆点）：未启动定位就写「未追踪（未启动定位）」；在跑时写
+「追踪中（手机 GPS 已让位）」；佳明链接配了但没新点则写「链接有效，但佳明没有新点」。
+心率那一行也顺带显示当前 bpm。
+
+---
+
+## [1.6.168] - 2026-09-24 (English)
+
+### 🐞 Position source is an honest status row, not a two-way choice
+
+**"Position source" must not be a two-way choice (pointed out from a real device).** With
+tracking not started, the "Phone GPS" row still showed a **filled selection dot** (nothing was
+running at all) and the "Garmin" row could be "selected" — the state only looked at `garminOn`
+and **never at whether tracking was actually running**. Worse, Garmin and the phone GPS are not a
+choice at all: while the watch is live it wins, and after 120 seconds without a fresh point the
+phone takes over automatically. It is now an **honest status row** (no selection dot): "Not
+tracking (location off)" when nothing runs, "Tracking (phone GPS stepped aside)" while live, and
+"Link set, but Garmin has no fresh points" when the link is configured but idle. The heart-rate
+row now shows the current bpm too.
+
+---
+
 ## [1.6.167] - 2026-09-24
 
 ### 🐞 佳明接管时的上报 UI 说清来源；佳明/心率成为「数据来源」的选项 / Garmin beacon UI + Garmin·strap as data sources
@@ -23,14 +53,6 @@
 数据来源卡里新增两组选择 —— **位置来源**（手机 GPS / 佳明 LiveTrack，单选）与
 **心率来源**（蓝牙心率带）。它们与上面那些**报文链路**分开列：那几条的语义是「报文从哪条
 链路收发」，而这两条是「**我自己的位置/心率**从哪来」，混成一组会让发射来源的判定变乱。
-
-**「位置来源」不该是二选一（用户实测指出）**：没启动追踪时，那一栏里「手机 GPS」
-照样画着**实心选中圆点**（其实什么都没在跑），而「佳明」那行也可以被「选中」——
-只看 `garminOn`，**没看追踪到底有没有启动**。而且佳明与手机 GPS 本来**不是二选一**：
-手表在直播时优先用手表，超过 120s 没新点自动交回手机。现在改成**如实的状态行**
-（没有选中圆点）：未启动定位就写「未追踪（未启动定位）」；在跑时写
-「追踪中（手机 GPS 已让位）」；佳明链接配了但没新点则写「链接有效，但佳明没有新点」。
-心率那一行也顺带显示当前 bpm。
 
 **心率带连上了，主屏幕却不显示心率（用户实测报的）**：设置页那张卡直接读
 `bleHr.bpm`，而地图上的心率胶囊、上报横杠的 ❤、信标里的 `HR=` 读的都是 `myHr` ——
@@ -72,16 +94,6 @@ groups — **position source** (phone GPS / Garmin LiveTrack, single choice) and
 source** (the BLE strap). They are listed separately from the packet links above: those mean
 "which link do packets arrive on", whereas these mean "where does *my own* position/heart rate
 come from"; merging them would muddy the transmit-source logic.
-
-**"Position source" must not be a two-way choice (pointed out from a real device).** With
-tracking not started, the "Phone GPS" row still showed a **filled selection dot** (nothing was
-running at all) and the "Garmin" row could be "selected" — the state only looked at `garminOn`
-and **never at whether tracking was actually running**. Worse, Garmin and the phone GPS are not a
-choice at all: while the watch is live it wins, and after 120 seconds without a fresh point the
-phone takes over automatically. It is now an **honest status row** (no selection dot): "Not
-tracking (location off)" when nothing runs, "Tracking (phone GPS stepped aside)" while live, and
-"Link set, but Garmin has no fresh points" when the link is configured but idle. The heart-rate
-row now shows the current bpm too.
 
 **A connected strap showed nothing on the main screen (reported from a real device).** The
 settings card reads `bleHr.bpm` directly, but the map's heart-rate chip, the ❤ on the beacon bar

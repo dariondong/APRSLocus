@@ -205,6 +205,33 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.168', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**「位置来源」改成如实的状态行，不再是二选一**（用户实测指出）：没启动追踪时，'
+               '「手机 GPS」照样画着实心选中圆点（其实什么都没在跑），「佳明」那行也能被'
+               '「选中」——只看开关、没看追踪有没有启动。而且佳明与手机 GPS 本来不是二选一：'
+               '手表直播时优先用手表，超过 120s 没新点自动交回手机。现在按实际情况显示：'
+               '「未追踪（未启动定位）」/「追踪中」/「追踪中（手机 GPS 已让位）」/'
+               '「链接有效，但佳明没有新点」；心率那行也显示当前 bpm',
+               '**「位置來源」改成如實的狀態列，不再是二選一**（使用者實測指出）：沒啟動追蹤時，'
+               '「手機 GPS」照樣畫著實心選取圓點（其實什麼都沒在跑），「佳明」那列也能被'
+               '「選取」——只看開關、沒看追蹤有沒有啟動。而且佳明與手機 GPS 本來不是二選一：'
+               '手錶直播時優先用手錶，超過 120s 沒新點自動交回手機。現在按實際情況顯示：'
+               '「未追蹤（未啟動定位）」/「追蹤中」/「追蹤中（手機 GPS 已讓位）」/'
+               '「連結有效，但佳明沒有新點」；心率那列也顯示目前 bpm',
+               '**"Position source" is now an honest status row, not a two-way choice** (pointed '
+               'out from a real device): with tracking not started, "Phone GPS" still showed a '
+               'filled selection dot (nothing was running) and "Garmin" could be "selected" — the '
+               'state only looked at the switch, never at whether tracking was running. Garmin and '
+               'the phone GPS are not a choice at all: while the watch is live it wins, and after '
+               '120s without a fresh point the phone takes over. It now reports reality: "Not '
+               'tracking (location off)" / "Tracking" / "Tracking (phone GPS stepped aside)" / '
+               '"Link set, but Garmin has no fresh points"; the heart-rate row shows the current '
+               'bpm too.')),
+        ],
+    },
+    {
         'ver': 'v1.6.167', 'date': '2026-09-24',
         'items': [
             ('up',
