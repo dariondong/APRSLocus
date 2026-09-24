@@ -564,6 +564,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.171</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**佳明分享「有時候行有時候不行」修好了**：① 取分享文字只讀 `EXTRA_TEXT`，而不少應用（部分佳明版本 / 瀏覽器）把文字放在 `clipData` 裡 —— 讀到 null 就整條靜默，這正是「時好時壞」的機制；② 讀不到文字時直接靜默返回，使用者既沒提示也沒日誌；③ **冷啟動競態**：應用啟動時那次分享可能在介面註冊回呼**之前**就到達，回呼為 null 被丟掉（就是「跳轉之後還是沒有回饋」）—— 現在改成「有回呼就調、沒有就存起來」，介面起來後主動取一次。順帶把識別放寬：短鏈碼長度不限 + 大小寫不敏感</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.170</span>
         <span class="cl-date">2026-09-24</span>
       </div>

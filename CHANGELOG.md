@@ -1,5 +1,59 @@
 # 更新日志
 
+## [1.6.171] - 2026-09-24
+
+### 🐞 佳明分享「有时候行有时候不行」+ 冷启动毫无反馈 / Garmin share: flaky receive + no feedback on cold start
+
+用户报「佳明跟踪的识别还是不够强壮，有时候是这个（长链）有时候短的；跳转之后还是没有反馈」。
+先实测**链接抽取本身没问题**（长链 / 短链 / 整段分享文本 7/7 全对），真正的原因是三处：
+
+1. **取分享文本只读 `EXTRA_TEXT`** → 不少应用（部分佳明版本、浏览器、笔记类）把文本放在
+   `intent.clipData` 里，`extras` 读到 null 就**整条静默**（什么都不发生）。这正是
+   「有时候行、有时候不行」的机制 —— 取决于那一次分享走了哪条路径。
+   现加 `clipData` 兜底（`getItemAt(0)` + `coerceToText`）。
+2. **读不到文本时直接静默 return** → 用户点了分享既没有提示也没有日志可查。
+   现在照样推一次（空串），由 Dart 侧如实提示「没有找到佳明链接」。
+3. **冷启动竞态 → 完全没有反馈**（就是「跳转之后还是没有反馈」）：`AppState` 在
+   `_AppState` 的字段初始化时就构造（**早于**外壳 `initState`），而 `ensureInit()` 里那次
+   `takePendingSharedText` 的平台往返可能**更早**返回 —— 那一刻 `onGarminShared` 还是 null，
+   回调直接丢了。现在改成「有回调就调、没回调就**存进 state**」，两套外壳在 `initState`
+   里主动 `consumeShareNotice()` 取一次再提示。
+
+顺带把识别放宽：短链码**长度不限 + 大小写不敏感**（原来写死 `{4,32}`，佳明换码长或码里
+带大写就会静默失配）。
+
+---
+
+## [1.6.171] - 2026-09-24 (English)
+
+### 🐞 Garmin share: flaky receive + no feedback on cold start
+
+Reported as "Garmin tracking recognition still isn't robust — sometimes it's the long link,
+sometimes the short one; and after the hand-off there's still no feedback". Measured first: **link
+extraction itself is fine** (long form / short form / whole share text — 7/7 correct). The real
+causes were three:
+
+1. **Share text was only read from `EXTRA_TEXT`** → plenty of apps (some Garmin versions, browsers,
+   note apps) put it in `intent.clipData`; reading `extras` alone returned null and the whole share
+   went **silent** (nothing happened). That is exactly the "sometimes it works, sometimes it
+   doesn't" mechanism — it depends which path that particular share took. A `clipData` fallback
+   (`getItemAt(0)` + `coerceToText`) was added.
+2. **No text meant a silent `return`** → the user got neither a message nor a log line. It now
+   still emits once (with an empty string) so Dart can say "no Garmin link found".
+3. **A cold-start race meant no feedback at all** (the "still no feedback after the hand-off"):
+   `AppState` is constructed in `_AppState`'s field initialiser, i.e. **before** the shell's
+   `initState`, while the `takePendingSharedText` round trip inside `ensureInit()` can resolve
+   **earlier** — at that instant `onGarminShared` is still null and the callback is simply lost.
+   It is now "call the callback if present, otherwise **store it in state**", and both shells call
+   `consumeShareNotice()` once in `initState`.
+
+Link detection was also widened: the short code is now **unbounded in length and
+case-insensitive** (it used to be `{4,32}`, so a longer code or one containing capitals would
+silently fail to match).
+
+---
+
+
 ## [1.6.170] - 2026-09-24
 
 **「数据来源」卡收敛到一处（用户反馈「感觉乱套了」）**：那张卡（APRS-IS / TNC /

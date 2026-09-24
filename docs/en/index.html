@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.171</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Garmin sharing "sometimes works, sometimes doesn't" is fixed.** (1) Share text was only read from `EXTRA_TEXT`, while plenty of apps (some Garmin versions, browsers) put it in `clipData` — a null read made the whole share go silent, which is exactly the intermittent mechanism. (2) No text meant a silent return, with neither a message nor a log line. (3) A **cold-start race**: the share can arrive **before** the UI registers the callback, so the callback is null and the event is dropped (the "still no feedback after the hand-off") — it is now "call if present, otherwise store", with the UI consuming it once it is up. Link detection was widened too: the short code is unbounded in length and case-insensitive.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.170</span>
         <span class="cl-date">2026-09-24</span>
       </div>

@@ -205,6 +205,35 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.171', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**佳明分享「有时候行有时候不行」修好了**：① 取分享文本只读 `EXTRA_TEXT`，'
+               '而不少应用（部分佳明版本 / 浏览器）把文本放在 `clipData` 里 —— 读到 null 就'
+               '整条静默，这正是「时好时坏」的机制；② 读不到文本时直接静默返回，用户既没提示'
+               '也没日志；③ **冷启动竞态**：应用启动时那次分享可能在界面注册回调**之前**就'
+               '到达，回调为 null 被丢掉（就是「跳转之后还是没有反馈」）—— 现在改成'
+               '「有回调就调、没有就存起来」，界面起来后主动取一次。'
+               '顺带把识别放宽：短链码长度不限 + 大小写不敏感',
+               '**佳明分享「有時候行有時候不行」修好了**：① 取分享文字只讀 `EXTRA_TEXT`，'
+               '而不少應用（部分佳明版本 / 瀏覽器）把文字放在 `clipData` 裡 —— 讀到 null 就'
+               '整條靜默，這正是「時好時壞」的機制；② 讀不到文字時直接靜默返回，使用者既沒提示'
+               '也沒日誌；③ **冷啟動競態**：應用啟動時那次分享可能在介面註冊回呼**之前**就'
+               '到達，回呼為 null 被丟掉（就是「跳轉之後還是沒有回饋」）—— 現在改成'
+               '「有回呼就調、沒有就存起來」，介面起來後主動取一次。'
+               '順帶把識別放寬：短鏈碼長度不限 + 大小寫不敏感',
+               '**Garmin sharing "sometimes works, sometimes doesn\'t" is fixed.** (1) Share text '
+               'was only read from `EXTRA_TEXT`, while plenty of apps (some Garmin versions, '
+               'browsers) put it in `clipData` — a null read made the whole share go silent, which '
+               'is exactly the intermittent mechanism. (2) No text meant a silent return, with '
+               'neither a message nor a log line. (3) A **cold-start race**: the share can arrive '
+               '**before** the UI registers the callback, so the callback is null and the event is '
+               'dropped (the "still no feedback after the hand-off") — it is now "call if present, '
+               'otherwise store", with the UI consuming it once it is up. Link detection was widened '
+               'too: the short code is unbounded in length and case-insensitive.')),
+        ],
+    },
+    {
         'ver': 'v1.6.170', 'date': '2026-09-24',
         'items': [
             ('up',
