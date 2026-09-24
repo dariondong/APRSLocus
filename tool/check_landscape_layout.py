@@ -66,6 +66,23 @@
      要防的「工具列最下面的『定位』被裁掉、点不到」。
      判据：先算 `availH = size.height - widget.topInset - widget.bottomInset`，
      `shortWide` 用它跟 `_kToolbarColH`（单列工具列的实际高度）比。
+
+  9. **换栏／降级不许按「朝向」判**（v1.6.164，真实缺陷）。
+     消息页原写作 `!landscape && maxWidth < 720` —— 等价于「只要是横屏就走双栏」，
+     而 2.0 横屏把消息页装进**左侧面板**（≤560，手机常 200~280）：双栏里固定 280 的
+     列表栏把会话区挤成负宽度，两栏一起溢出、右侧被裁 —— 用户报的「手机的消息面板
+     显示不全」。此外单聊标题行（返回 + 头像 + 译发 + 星标 + 网格）与群聊标题行
+     （5 个操作胶囊）在窄容器里也会撑爆 Row（release 下不报错，只是默默少东西）。
+     判据：`narrow` 必须只看 `constraints.maxWidth`；窄容器要有 `_compactPane` 降级
+     （呼号可省略 / 群聊操作换行 `Wrap`）。
+
+ 10. **关于页封面必须铺满整张卡**（v1.6.164）。
+     早先超宽屏走 `BoxFit.contain`（怕裁掉火山），但卡片高度上限 300、容器宽到 600
+     —— 「容器比例 2.0 > 图片比例 1.5」在**任何 ≥600 宽**的屏幕上都成立，于是每次
+     都走 contain：照片缩成中间一条、两侧各空 75px，**Logo 那张玻璃卡坐在左边空白上**
+     （用户报的「横屏 logo 背景没有完全填充」）。
+     判据：封面必须 `BoxFit.cover` + `Alignment.topCenter`（铺满并保住雪顶，
+     裁掉的是信息量最低的近景岩石），且不得再出现 `tooWide` 这条 contain 分支。
 """
 import io
 import os
@@ -193,6 +210,49 @@ def main() -> int:
         errors.append('shortWide 没有用 _kToolbarColH（单列工具列高度）判断 —— '
                       '阈值又变回与按钮尺寸脱钩的魔数了')
 
+    # ⑨ 换栏/降级不许按「朝向」判（2.0 横屏的面板只有 200~280 宽）
+    if '!landscape && constraints.maxWidth < 720' in msgs:
+        errors.append('消息页还在按「朝向」决定双栏 —— 2.0 横屏把消息页装进 ≤560 的'
+                      '左侧面板（手机常 200~280），双栏里固定 280 的列表栏会把会话区'
+                      '挤成负宽度，两栏一起溢出（「面板显示不全」）')
+    if 'final narrow = constraints.maxWidth < 640;' not in msgs:
+        errors.append('消息页的 narrow 没有按可用宽度判（应 `constraints.maxWidth < 640`）')
+    if 'width: 280,' in msgs:
+        errors.append('消息页双栏的列表栏又变回写死的 280 —— 窄容器里会挤掉会话区')
+    if 'width: (constraints.maxWidth * 0.34)' not in msgs:
+        errors.append('消息页列表栏宽度没有跟着容器走（应为 maxWidth * 0.34 clamp 240~280）')
+    if '_compactPane = constraints.maxWidth < 520;' not in msgs:
+        errors.append('消息页没有「窄容器行内降级」(_compactPane) —— 标题行那串固定宽度'
+                      '的控件会撑爆 Row，右侧被裁')
+    if 'child: _compactPane' not in msgs:
+        errors.append('群聊标题行没按 _compactPane 拆两行 —— 5 个操作胶囊在窄面板里必然溢出')
+    if 'WrapAlignment.end' not in msgs:
+        errors.append('群聊操作胶囊没有换行容器（Wrap）—— 窄面板下会被裁掉')
+
+    # ⑩ 关于页封面必须铺满（contain 会让 Logo 坐在空白上）
+    about = read('lib/about_page.dart')
+    if 'fit: tooWide ?' in about or 'final tooWide' in about:
+        errors.append('关于页封面又走了 tooWide/contain 分支 —— 卡片高度上限 300、容器宽到'
+                      '600，contain 会在任何 ≥600 宽的屏幕上成立：照片缩成中间一条，'
+                      '两侧留空，Logo 卡坐在空白上（「logo 背景没有完全填充」）')
+    i = about.find('child: Image.asset(')
+    if i < 0:
+        errors.append('关于页封面 Image.asset 没了')
+    else:
+        seg = about[i:i + 2000]
+        if 'fit: BoxFit.cover,' not in seg:
+            errors.append('关于页封面不是 BoxFit.cover —— 铺不满整张卡')
+        if 'alignment: Alignment.topCenter,' not in seg:
+            errors.append('关于页封面没给 topCenter 对齐 —— cover 后会从中间裁，'
+                          '雪顶有被裁掉的风险')
+    # 分享弹层：标题与副标题之间必须有间隙（用户报的「APRSlocus 的下面太挤」）
+    a = about.find('S.of(context).shareApp,')
+    b = about.find("'APRSlocus \u00b7 v" + '$' + "{AppState.appVersion}',")
+    if a < 0 or b < 0 or b < a:
+        errors.append('分享弹层的标题/副标题结构变了，检查器自己失效（请更新检查）')
+    elif 'SizedBox(' not in about[a:b]:
+        errors.append('分享弹层的标题与副标题之间没有间隙 —— 两行贴着，看着就是被挤在一起')
+
     if errors:
         print('横屏布局检查失败：')
         for e in errors:
@@ -200,7 +260,8 @@ def main() -> int:
         return 1
     print(f'横屏布局 ok（贴左控件让开竖条与面板 {n_left} 处；工具列矮横屏分两列；'
           f'底部让位不含安全区；竖条卡可收缩；左右安全区都让；'
-          f'面板内宽度按局部约束；统计条可降级；矮横屏按可用高度判）')
+          f'面板内宽度按局部约束；统计条可降级；矮横屏按可用高度判；'
+          f'消息页按宽度换栏+行内降级；关于页封面铺满）')
     return 0
 
 

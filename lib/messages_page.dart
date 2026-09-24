@@ -98,6 +98,14 @@ class _MessagesPageState extends State<MessagesPage> {
   /// （桌面 1920 × 0.55 = 1056）会算出远超面板的宽度，超出的部分被默默裁掉，
   /// 长消息读不全且不报任何错。
   double _availW = 0;
+
+  /// 容器窄到需要**行内降级**（不是换栏：换栏由上面的 narrow 管）。
+  ///
+  /// 单聊标题行挂着一串固定宽度的东西（返回 24 + 头像 34 + 译发钮 + 星标 22 +
+  /// 网格 6 位），群聊那行更是 5 个操作胶囊 —— 宽度不够时它们会**撑爆 Row**
+  /// （debug 下溢出条纹、release 下直接被裁，不报任何错），这就是「面板显示
+  /// 不全」的现场。这里按可用宽度把它们逐个降级。
+  bool _compactPane = false;
   bool _showList = true;
 
   /// 本次进入会话是否已经请求过「把外壳面板展开到最高档」（见下）。
@@ -306,9 +314,19 @@ class _MessagesPageState extends State<MessagesPage> {
                   // 记录下来给 _bubble 用（同帧内先父后子，安全；与 map_page 的
                   // `_lastSize = size` 同一做法）。
                   _availW = constraints.maxWidth;
-                  final landscape =
-                      MediaQuery.of(context).orientation == Orientation.landscape;
-                  final narrow = !landscape && constraints.maxWidth < 720;
+                  // 单栏还是「列表 + 会话」双栏，**只看可用宽度，不看朝向**。
+                  //
+                  // 原来写成 `!landscape && maxWidth < 720` —— 等价于「只要是横屏就走
+                  // 双栏」。而 2.0 横屏把消息页装进**左侧面板**（宽 ≤560，手机上常
+                  // 200~280），双栏里那个**固定 280** 的列表栏直接把会话区挤成负宽度：
+                  // 两栏一起溢出、右侧被裁掉 —— 用户报的「手机的消息面板显示不全」
+                  // 就是这个。朝向不决定有多少宽度可用，可用宽度才决定。
+                  //
+                  // 640 的依据：双栏要 240~280 的列表 + 16 间隙 + 会话区还得好用
+                  // （气泡按 55% 取宽，会话区窄于 ~350 时气泡只剩一百来像素）。
+                  final narrow = constraints.maxWidth < 640;
+                  // 「窄容器」：个别**行内**元素要降级（见 _compactPane）。
+                  _compactPane = constraints.maxWidth < 520;
                   // 是否处于"聊天详情"（窄屏下非列表页）
                   final inChatDetail = narrow && !_showList;
                   // ── 进了会话 → 请求外壳把内容面板展开到最高档 ──
@@ -372,8 +390,12 @@ class _MessagesPageState extends State<MessagesPage> {
                                 : Row(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
+                                      // 列表栏宽度**跟着容器走**（不再是写死的 280）：
+                                      // 2.0 横屏的面板最宽 560，而 1.0 平板/桌面可以很宽，
+                                      // 固定 280 在窄容器里会把会话区挤到看不见。
                                       SizedBox(
-                                        width: 280,
+                                        width: (constraints.maxWidth * 0.34)
+                                            .clamp(240.0, 280.0),
                                         child: _listPane(st, partners),
                                       ),
                                       const SizedBox(width: 16),
@@ -1434,59 +1456,239 @@ class _MessagesPageState extends State<MessagesPage> {
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: C.border)),
               ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      _selectedGroupId = null;
-                      _showList = true;
-                    }),
-                    child: Icon(Icons.arrow_back_rounded, color: C.grey),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: C.orangeBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(Icons.group_rounded, color: C.orange, size: 18),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => _showGroupMembersSheet(st, group),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(group.name, style: ts(13, w: FontWeight.w700)),
-                          SizedBox(height: 1),
-                          Text(
-                            S.of(context).groupCallsignLine(group.groupCall),
-                            style: ts(10, c: C.orange, w: FontWeight.w600),
+              // 窄面板下**拆两行**：标题一行，操作胶囊换行排（一个都不藏）。
+              // 原先是**一整行 Row**：标题 + 5 个固定宽度的操作胶囊；2.0 横屏
+              // 把消息页装进 ≤560 的面板（手机常 200~280）时这一行必然撑爆 ——
+              // 右边的胶囊被裁掉，用户看到的就是「面板显示不全」（release 下
+              // 不报错，只是默默少东西）。
+              child: _compactPane
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => setState(() {
+                              _selectedGroupId = null;
+                              _showList = true;
+                            }),
+                          child: Icon(Icons.arrow_back_rounded, color: C.grey),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: C.orangeBg,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          SizedBox(height: 1),
-                          Text(
-                            S
-                                .of(context)
-                                .memberCountTap(group.confirmedMembers.length),
-                            style: ts(10, c: C.grey),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Icon(Icons.group_rounded, color: C.orange, size: 18),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => _showGroupMembersSheet(st, group),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(group.name, style: ts(13, w: FontWeight.w700)),
+                                SizedBox(height: 1),
+                                Text(
+                                  S.of(context).groupCallsignLine(group.groupCall),
+                                  style: ts(10, c: C.orange, w: FontWeight.w600),
+                                ),
+                                SizedBox(height: 1),
+                                Text(
+                                  S
+                                  .of(context)
+                                  .memberCountTap(group.confirmedMembers.length),
+                                  style: ts(10, c: C.grey),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      // Wrap 自己的宽度只等于内容宽，所以要靠 Align 靠右
+                      alignment: Alignment.centerRight,
+                      child: Wrap(
+                        // spacing 交给胶囊之间原有的 6px 间隔（含
+                        // 「非群主才有的那一个」条件间隔）
+                        runSpacing: 6,
+                        alignment: WrapAlignment.end,
+                        children: [
+                          _transBtn(
+                            onTap: () => _openTransSheet(
+                              title: group.name,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          // 邀请按钮（仅群主可见）
+                          if (group.isOwner(st.myCall))
+                          GestureDetector(
+                            onTap: () => _showInviteMemberDialog(st, group),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.greenBg,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.person_add_rounded,
+                                    size: 12,
+                                    color: C.green,
+                                  ),
+                                  SizedBox(width: 3),
+                                  Text(
+                                    S.of(context).invite,
+                                    style: ts(10, c: C.green, w: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          // 非群主显示退出按钮
+                          if (!group.isOwner(st.myCall))
+                          GestureDetector(
+                            onTap: () => _showLeaveGroupConfirm(st, group),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.redBg,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                S.of(context).leaveAction,
+                                style: ts(10, c: C.red, w: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          if (!group.isOwner(st.myCall)) SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: () => _showEditGroupDialog(st, group),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.blueBg,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                S.of(context).manage,
+                                style: ts(10, c: C.blue, w: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          // 群跟踪：把该群成员放到地图持续跟踪
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                  TrackerPage(state: st, group: group),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: C.cyanBg,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.gps_fixed_rounded,
+                                    size: 12, color: C.cyan),
+                                  SizedBox(width: 3),
+                                  Text(
+                                    S.of(context).groupTracking,
+                                    style: ts(10, c: C.cyan, w: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  _transBtn(
-                    onTap: () => _openTransSheet(
-                      title: group.name,
+                  ],
+                )
+                : Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => setState(() {
+                          _selectedGroupId = null;
+                          _showList = true;
+                        }),
+                      child: Icon(Icons.arrow_back_rounded, color: C.grey),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  // 邀请按钮（仅群主可见）
-                  if (group.isOwner(st.myCall))
+                    SizedBox(width: 10),
+                    Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: C.orangeBg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.group_rounded, color: C.orange, size: 18),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _showGroupMembersSheet(st, group),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(group.name, style: ts(13, w: FontWeight.w700)),
+                            SizedBox(height: 1),
+                            Text(
+                              S.of(context).groupCallsignLine(group.groupCall),
+                              style: ts(10, c: C.orange, w: FontWeight.w600),
+                            ),
+                            SizedBox(height: 1),
+                            Text(
+                              S
+                              .of(context)
+                              .memberCountTap(group.confirmedMembers.length),
+                              style: ts(10, c: C.grey),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    _transBtn(
+                      onTap: () => _openTransSheet(
+                        title: group.name,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    // 邀请按钮（仅群主可见）
+                    if (group.isOwner(st.myCall))
                     GestureDetector(
                       onTap: () => _showInviteMemberDialog(st, group),
                       child: Container(
@@ -1515,9 +1717,9 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                       ),
                     ),
-                  SizedBox(width: 6),
-                  // 非群主显示退出按钮
-                  if (!group.isOwner(st.myCall))
+                    SizedBox(width: 6),
+                    // 非群主显示退出按钮
+                    if (!group.isOwner(st.myCall))
                     GestureDetector(
                       onTap: () => _showLeaveGroupConfirm(st, group),
                       child: Container(
@@ -1535,61 +1737,61 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                       ),
                     ),
-                  if (!group.isOwner(st.myCall)) SizedBox(width: 6),
-                  GestureDetector(
-                    onTap: () => _showEditGroupDialog(st, group),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: C.blueBg,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        S.of(context).manage,
-                        style: ts(10, c: C.blue, w: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 6),
-                  // 群跟踪：把该群成员放到地图持续跟踪
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              TrackerPage(state: st, group: group),
+                    if (!group.isOwner(st.myCall)) SizedBox(width: 6),
+                    GestureDetector(
+                      onTap: () => _showEditGroupDialog(st, group),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: C.cyanBg,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.gps_fixed_rounded,
-                              size: 12, color: C.cyan),
-                          SizedBox(width: 3),
-                          Text(
-                            S.of(context).groupTracking,
-                            style: ts(10, c: C.cyan, w: FontWeight.w600),
-                          ),
-                        ],
+                        decoration: BoxDecoration(
+                          color: C.blueBg,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          S.of(context).manage,
+                          style: ts(10, c: C.blue, w: FontWeight.w600),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    SizedBox(width: 6),
+                    // 群跟踪：把该群成员放到地图持续跟踪
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            TrackerPage(state: st, group: group),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: C.cyanBg,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.gps_fixed_rounded,
+                              size: 12, color: C.cyan),
+                            SizedBox(width: 3),
+                            Text(
+                              S.of(context).groupTracking,
+                              style: ts(10, c: C.cyan, w: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
             ),
             Expanded(
               child: msgs.isEmpty
@@ -1672,31 +1874,43 @@ class _MessagesPageState extends State<MessagesPage> {
                         child: Icon(Icons.arrow_back_rounded, color: C.grey),
                       ),
                       SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () => _openStation(st, _selected),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: C.blueBg,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  _selected.length >= 2
-                                      ? _selected.substring(
-                                          _selected.length - 2,
-                                        )
-                                      : _selected,
-                                  style: ts(10, c: C.blue, w: FontWeight.w700),
+                      // Flexible + 省略号：呼号常常是这一行里最长的一段，而它后面
+                      // 还挂着译发钮 / 星标 / 网格三样固定宽度的东西（窄面板下
+                      // 不省略就必然溢出，右侧被裁）。
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: () => _openStation(st, _selected),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: C.blueBg,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _selected.length >= 2
+                                        ? _selected.substring(
+                                            _selected.length - 2,
+                                          )
+                                        : _selected,
+                                    style: ts(10, c: C.blue, w: FontWeight.w700),
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(_selected, style: ts(16, w: FontWeight.w700)),
-                          ],
+                              SizedBox(width: 10),
+                              Flexible(
+                                child: Text(
+                                  _selected,
+                                  style: ts(16, w: FontWeight.w700),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Spacer(),
@@ -1715,10 +1929,12 @@ class _MessagesPageState extends State<MessagesPage> {
                         ),
                       ),
                       SizedBox(width: 12),
-                      Text(
-                        _partnerGrid(st, _selected),
-                        style: mono(10, c: C.grey),
-                      ),
+                      // 网格那段最先让位：信息量最小，却要占 6 个字符位
+                      if (!_compactPane)
+                        Text(
+                          _partnerGrid(st, _selected),
+                          style: mono(10, c: C.grey),
+                        ),
                     ],
                   ),
                 ),

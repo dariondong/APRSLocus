@@ -205,6 +205,48 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.164', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**修三处「挤 / 没填满 / 显示不全」**：① 关于页分享弹层的标题与副标题'
+               '原来零间隙地贴在一起，现在留 3px，头部与选项之间 14→18、选项之间 8→10；'
+               '② 关于页封面——原来「容器宽/卡高 > 1.62」就改走 `contain`（怕裁掉火山），'
+               '但卡高有 300 上限、容器宽到 600，于是**任何 ≥600 宽的屏幕上都会走**：'
+               '照片缩成中间一条、两侧各空 75px，横屏时 Logo 卡正坐在左边空白上'
+               '（就是「logo 背景没填满」）；改成 cover + topCenter，铺满并保住雪顶；'
+               '③ 消息页换栏原来按**朝向**判（只要横屏就走双栏），而 2.0 横屏把消息页装进'
+               '≤560 的左面板（手机常 200~280），固定 280 的列表栏把会话区挤成负宽度 —— '
+               '现在只看可用宽度换栏、列表栏宽度跟着容器走，并新增窄容器行内降级'
+               '（呼号可省略 / 群聊操作胶囊换行排，一个都不藏）',
+               '**修三處「擠 / 沒填滿 / 顯示不全」**：① 關於頁分享彈層的標題與副標題'
+               '原來零間隙地貼在一起，現在留 3px，頭部與選項之間 14→18、選項之間 8→10；'
+               '② 關於頁封面——原來「容器寬/卡高 > 1.62」就改走 `contain`（怕裁掉火山），'
+               '但卡高有 300 上限、容器寬到 600，於是**任何 ≥600 寬的畫面上都會走**：'
+               '照片縮成中間一條、兩側各空 75px，橫屏時 Logo 卡正坐在左邊空白上'
+               '（就是「logo 背景沒填滿」）；改成 cover + topCenter，鋪滿並保住雪頂；'
+               '③ 訊息頁換欄原來按**朝向**判（只要橫屏就走雙欄），而 2.0 橫屏把訊息頁裝進'
+               '≤560 的左面板（手機常 200~280），固定 280 的列表欄把會話區擠成負寬度 —— '
+               '現在只看可用寬度換欄、列表欄寬度跟著容器走，並新增窄容器行內降級'
+               '（呼號可省略 / 群聊操作膠囊換行排，一個都不藏）',
+               '**Three layout fixes.** (1) In the About share sheet the title and subtitle sat '
+               'flush against each other (0 gap); now 3px, with 14→18px above the option '
+               'list and 8→10px between options. (2) The About cover switched to `contain` '
+               'whenever "container width / card height > 1.62" — but the card height is '
+               'capped at 300 while the container reaches 600, so that held on **every screen '
+               '600 wide or more**: the photo shrank to a band in the middle with 75px of blank '
+               'space on each side, and in landscape the logo card sat on that left gap (the '
+               '"logo backdrop isn\'t filled" report). It is now cover + topCenter, filling the '
+               'card while keeping the snow-capped summit. (3) The messages page switched '
+               'columns by **orientation** (any landscape screen got two columns), but the '
+               '2.0 landscape shell puts it in the ≤560 left pane (often 200–280 on a phone), '
+               'where the fixed 280 list column squeezed the chat column to a negative width. '
+               'Column switching now looks only at the available width, the list column '
+               'follows its container, and a new narrow-container degradation lets the '
+               'callsign ellipsise and wraps the group action chips onto their own row '
+               '(nothing hidden).')),
+        ],
+    },
+    {
         'ver': 'v1.6.163', 'date': '2026-09-24',
         'items': [
             ('up',

@@ -564,6 +564,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.164</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修三處「擠 / 沒填滿 / 顯示不全」**：① 關於頁分享彈層的標題與副標題原來零間隙地貼在一起，現在留 3px，頭部與選項之間 14→18、選項之間 8→10；② 關於頁封面——原來「容器寬/卡高 > 1.62」就改走 `contain`（怕裁掉火山），但卡高有 300 上限、容器寬到 600，於是**任何 ≥600 寬的畫面上都會走**：照片縮成中間一條、兩側各空 75px，橫屏時 Logo 卡正坐在左邊空白上（就是「logo 背景沒填滿」）；改成 cover + topCenter，鋪滿並保住雪頂；③ 訊息頁換欄原來按**朝向**判（只要橫屏就走雙欄），而 2.0 橫屏把訊息頁裝進≤560 的左面板（手機常 200~280），固定 280 的列表欄把會話區擠成負寬度 —— 現在只看可用寬度換欄、列表欄寬度跟著容器走，並新增窄容器行內降級（呼號可省略 / 群聊操作膠囊換行排，一個都不藏）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.163</span>
         <span class="cl-date">2026-09-24</span>
       </div>

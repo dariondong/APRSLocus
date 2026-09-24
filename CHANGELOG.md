@@ -1,5 +1,100 @@
 # 更新日志
 
+## [1.6.164] - 2026-09-24
+
+### 🐞 三处「挤 / 没填满 / 显示不全」/ Three layout fixes: the share sheet, the About cover, and the messages pane
+
+### 一、关于页 · 分享弹层：「APRSlocus 的下面太挤了」
+
+分享弹层头部的标题与副标题**直接贴在一起（0 间隙）**：「分享 APRSlocus」下面紧接着
+「APRSlocus · v1.6.x」，看着就是被挤成一团。现在：
+
+* 标题与副标题之间留 3px；
+* 头部与选项列表之间 14 → 18px；
+* 选项之间 8 → 10px，选项自身的上下内边距 11 → 12px。
+
+### 二、关于页 · 封面：「横屏 logo 背景没有完全填充」
+
+不是 Logo 自己的问题，而是**封面的底图没铺满**。封面原来在「超宽」时走
+`BoxFit.contain`（怕把火山裁掉），但判据是 `容器宽 / 卡高 > 1.62`，而卡片高度有
+**300 的上限**、容器宽到 600 ——「2.0 > 图片比例 1.5」在**任何 ≥600 宽**的屏幕上
+都成立，于是**每次**都走 contain：照片缩成中间一条，两侧各空 75px。横屏时最明显：
+Logo 那张玻璃卡正坐在左边的空白上（看起来就像「Logo 背景没填满」）。
+
+改成 `BoxFit.cover` + `Alignment.topCenter`：铺满整张卡，同时保住雪顶（在图片 27%
+高处）与天空；被裁掉的是最下面那一带近景岩石 —— 那张图里信息量最低的部分。
+
+### 三、消息页：「手机的消息面板显示不全」
+
+根因是**换栏按「朝向」判**：`narrow = !landscape && maxWidth < 720` —— 等价于
+「只要是横屏就走双栏」。而 2.0 横屏是把消息页装进**左侧面板**的（宽 ≤560，手机上常
+200~280），于是双栏里那个**固定 280** 的列表栏直接把会话区挤成负宽度：两栏一起溢出、
+右侧被裁。三处一起修：
+
+* **换栏只看可用宽度**（`constraints.maxWidth < 640`）：朝向不决定有多少宽度可用，
+  可用宽度才决定；
+* **列表栏宽度跟着容器走**（`maxWidth × 0.34`，夹在 240~280）—— 2.0 的面板最宽 560，
+  而 1.0 的平板/桌面可以很宽；
+* 新增 **`_compactPane`（<520）行内降级**：单聊标题行的呼号可省略、末尾的网格先让位；
+  群聊标题行那 5 个操作胶囊改成**换行排**（`Wrap`，一个都不藏）。
+
+单聊/群聊标题行原来是一整行固定宽度的控件，窄容器里同样会撑爆 —— debug 下是溢出
+条纹，**release 下不报错、只是默默少东西**，所以一并按可用宽度降级。
+
+### 四、守卫
+
+`check_landscape_layout.py` 增两组判据（共 10 条）：不许按朝向换栏/降级（并要求
+`_compactPane` 与群聊的 `Wrap`）、关于页封面必须 `cover` + `topCenter` 且不许再出现
+`tooWide` 分支、分享弹层标题与副标题之间必须有间隙。**9 个回归样本逐个验证过会报红。**
+
+---
+
+## [1.6.164] - 2026-09-24 (English)
+
+### 🐞 Three layout fixes: the share sheet, the About cover, and the messages pane
+
+**About → share sheet: the title and subtitle were touching (0 gap).** "Share APRSlocus"
+had "APRSlocus · v1.6.x" jammed right underneath it. Now: 3px between title and subtitle,
+14 → 18px between the header and the option list, 8 → 10px between options, and each
+option's vertical padding 11 → 12px.
+
+**About → cover: "the logo backdrop isn't filled" was really the cover photo not filling.**
+The hero used `BoxFit.contain` for "ultra-wide" boxes (to avoid cropping the volcano), but
+the test was `container width / card height > 1.62` while the card height is **capped at
+300** and the container goes to 600 — so "2.0 > the image's 1.5" holds on **every screen
+600 wide or more**, meaning `contain` always won: the photo shrank to a band in the middle
+with 75px of empty space on each side. Landscape made it obvious: the logo's glass card sat
+on that left-hand gap, which reads as "the logo backdrop isn't filled". Fixed with
+`BoxFit.cover` + `Alignment.topCenter`: the photo fills the whole card while keeping the
+snow-capped summit (at 27% of the image height) and the sky; what gets cropped is the
+bottom strip of foreground rocks — the least informative part of the shot.
+
+**Messages: "the panel isn't fully displayed" came from switching columns by orientation.**
+The rule was `narrow = !landscape && maxWidth < 720`, i.e. "any landscape screen gets two
+columns". But the 2.0 landscape shell puts the messages page inside the **left pane** (≤560,
+often 200–280 on a phone), where the **fixed 280** list column pushes the chat column to a
+negative width: both columns overflow and the right-hand side is clipped. Three changes:
+
+* **Column switching now looks only at the available width** (`constraints.maxWidth < 640`)
+  — orientation does not decide how much width you have, width does;
+* **the list column follows its container** (`maxWidth × 0.34`, clamped to 240–280), because
+  the 2.0 pane tops out at 560 while 1.0 tablets and desktops are far wider;
+* a new **`_compactPane` (<520) inline degradation**: the callsign in the one-to-one header
+  may ellipsise and the trailing grid square yields first; the group header's five action
+  chips now **wrap onto their own row** (`Wrap`, nothing hidden).
+
+Both chat headers are single rows of fixed-width widgets, so they overflowed in a narrow
+container too — an overflow stripe in debug, and in release **no error at all, just missing
+pieces**, which is why they now degrade by available width as well.
+
+**Guards.** `check_landscape_layout.py` gained two groups (ten invariants in total): no
+column switching or degradation by orientation (it also requires `_compactPane` and the
+group-header `Wrap`), the About cover must be `cover` + `topCenter` with no `tooWide` branch,
+and the share sheet must keep a gap between title and subtitle. **All nine regression samples
+were verified to fail as expected.**
+
+---
+
 ## [1.6.163] - 2026-09-24
 
 ### 🔧 网络定位降权：粗定位不再自动上报；关于页名片留白；横屏三端（手机/平板/桌面）打磨 / Network fixes de-emphasised (never auto-beacon), a roomier About card, and landscape polish for phone, tablet and desktop

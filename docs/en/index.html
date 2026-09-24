@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.164</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Three layout fixes.** (1) In the About share sheet the title and subtitle sat flush against each other (0 gap); now 3px, with 14→18px above the option list and 8→10px between options. (2) The About cover switched to `contain` whenever "container width / card height > 1.62" — but the card height is capped at 300 while the container reaches 600, so that held on **every screen 600 wide or more**: the photo shrank to a band in the middle with 75px of blank space on each side, and in landscape the logo card sat on that left gap (the "logo backdrop isn't filled" report). It is now cover + topCenter, filling the card while keeping the snow-capped summit. (3) The messages page switched columns by **orientation** (any landscape screen got two columns), but the 2.0 landscape shell puts it in the ≤560 left pane (often 200–280 on a phone), where the fixed 280 list column squeezed the chat column to a negative width. Column switching now looks only at the available width, the list column follows its container, and a new narrow-container degradation lets the callsign ellipsise and wraps the group action chips onto their own row (nothing hidden).</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.163</span>
         <span class="cl-date">2026-09-24</span>
       </div>

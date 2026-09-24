@@ -105,6 +105,10 @@ class _AboutPageState extends State<AboutPage>
                             S.of(context).shareApp,
                             style: ts(16, w: FontWeight.w800),
                           ),
+                          // 标题与副标题之间必须留一行间隙：原来两行贴着（0px），
+                          // 「分享 APRSLocus」下面紧接着「APRSlocus · v1.6.x」，
+                          // 看起来就是被挤在一起（用户反馈「APRSlocus 的下面太挤了」）。
+                          const SizedBox(height: 3),
                           Text(
                             'APRSlocus · v${AppState.appVersion}',
                             style: ts(11, c: C.grey),
@@ -118,7 +122,7 @@ class _AboutPageState extends State<AboutPage>
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 18),
                 // 分享到系统（仅 Android：调系统分享面板）
                 if (_isAndroid) ...[
                   _shareOption(
@@ -131,7 +135,7 @@ class _AboutPageState extends State<AboutPage>
                       _shareToSystem();
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                 ],
                 // 复制分享文案
                 _shareOption(
@@ -144,7 +148,7 @@ class _AboutPageState extends State<AboutPage>
                     _copyShareText();
                   },
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 // 打开下载页
                 _shareOption(
                   icon: Icons.download_rounded,
@@ -178,7 +182,7 @@ class _AboutPageState extends State<AboutPage>
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             children: [
               Container(
@@ -674,9 +678,6 @@ class _AboutPageState extends State<AboutPage>
           child: LayoutBuilder(
             builder: (ctx, cons) {
               final h = _heroHeightFor(cons.maxWidth);
-              // 比原图还扁的超宽屏改用整体装入：宁可上下留边，
-              // 也不能把火山裁掉。
-              final tooWide = cons.maxWidth / h > 1.62;
               return SizedBox(
                 height: h,
                 width: double.infinity,
@@ -692,8 +693,22 @@ class _AboutPageState extends State<AboutPage>
                           offset: Offset(0, -_heroScroll.value * 0.035),
                           child: Image.asset(
                             'assets/about_hero.jpg',
-                            fit: tooWide ? BoxFit.contain : BoxFit.cover,
-                            alignment: Alignment.center,
+                            // **永远 cover**：不让底图两侧留空。
+                            //
+                            // 早先的超宽屏分支用 `BoxFit.contain`（怕裁掉火山），
+                            // 但卡片高度有 300 的上限、而容器宽到 600 —— 也就是
+                            // 「容器比例 2.0 > 图片比例 1.5」在任何 ≥600 宽的屏幕上
+                            // 都成立，于是**每次**都走 contain：照片缩成中间一条，
+                            // 两侧各空 75px。后果在横屏最明显 —— Logo 那张玻璃卡
+                            // 坐在左边空白上（用户报的「logo 背景没有完全填充」）。
+                            //
+                            // 改成 cover + `Alignment.topCenter`：铺满整张卡，同时
+                            // 保住雪顶（在图片 27% 高处）与天空；被裁掉的是最下面
+                            // 那一带近景岩石 —— 那张图里信息量最低的部分。
+                            // 视差把底图放大 12%（上下各多出 6%），足够容纳最大
+                            // 8.4px 的上移，不会露边。
+                            fit: BoxFit.cover,
+                            alignment: Alignment.topCenter,
                             filterQuality: FilterQuality.medium,
                           ),
                         ),
