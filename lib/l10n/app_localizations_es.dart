@@ -6948,4 +6948,102 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get beaconCoarseHint => "La posición actual viene de la red (aproximada, a menudo cientos de metros) — los informes automáticos están en pausa y se reanudan al volver el GPS. Aún puedes balizar manualmente.";
+  @override
+  String get locationGarmin => "Garmin LiveTrack";
+
+  @override
+  String get hrCardTitle => "Frecuencia cardíaca";
+
+  @override
+  String get hrCardSubtitle => "Bandas de pecho Bluetooth (servicio HR estándar), opcionalmente con tu baliza";
+
+  @override
+  String get hrIncludeInBeacon => "Enviar pulso en la baliza";
+
+  @override
+  String get hrIncludeHint => "Añade HR=nn al comentario de posición (convención APRS habitual; los mapas de terceros lo muestran como comentario). Sin lectura no enviamos HR=0, porque el receptor lo leería como \"pulso 0\" en vez de \"sin medir\".";
+
+  @override
+  String get hrConnected => "Conectado a {name}";
+
+  @override
+  String get hrWaitReading => "Esperando lectura (ajusta la banda)";
+
+  @override
+  String get hrSearch => "Buscar sensores de pulso";
+
+  @override
+  String get hrScanning => "Buscando…";
+
+  @override
+  String get hrStopScan => "Detener búsqueda";
+
+  @override
+  String get hrNoDevice => "No se encontró ningún sensor. Comprueba que la banda esté emitiendo y cerca del teléfono.";
+
+  @override
+  String get hrConnect => "Conectar";
+
+  @override
+  String get hrDisconnect => "Desconectar";
+
+  @override
+  String get hrForget => "Olvidar dispositivo";
+
+  @override
+  String get hrNotSupported => "El pulso por Bluetooth no está disponible en esta plataforma (solo Android)";
+
+  @override
+  String get hrConflictWithTnc => "Ese dispositivo lo usa el enlace Bluetooth de TNC / PKWDWPL; no puede ser la banda";
+
+  @override
+  String get hrStrapHint => "Sirve cualquier banda que emita el servicio HR estándar (0x180D): Polar H10, Garmin HRM. TNC usa Bluetooth clásico y el pulso usa BLE, así que no interfieren.";
+
+  @override
+  String get garminCardTitle => "Garmin LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "Trae la actividad de tu reloj Garmin y balízala";
+
+  @override
+  String get garminUrlLabel => "Enlace compartido";
+
+  @override
+  String get garminPaste => "Pegar del portapapeles";
+
+  @override
+  String get garminStart => "Iniciar seguimiento";
+
+  @override
+  String get garminStop => "Detener seguimiento";
+
+  @override
+  String get garminRunning => "Siguiendo";
+
+  @override
+  String get garminStats => "{n} puntos reenviados · última {t}";
+
+  @override
+  String get garminBadUrl => "El enlace no es válido. Pega la URL completa (con /session/…/token/…)";
+
+  @override
+  String get garminNoPoints => "Aún no hay puntos: puede que la actividad acabe de empezar o el enlace haya caducado.";
+
+  @override
+  String get garminError => "Fallo al obtener: {error}";
+
+  @override
+  String get garminHowTo => "Cómo obtener el enlace: en la app Garmin Connect abre la actividad → Compartir → elige \"APRSlocus\" (la app registra un destino del sistema) y el enlace llega aquí.";
+
+  @override
+  String get garminSharedToast => "Enlace de Garmin recibido";
+
+  @override
+  String get garminOpen => "Abrir ajustes";
+
+  @override
+  String get garminWebUnsupported => "No disponible en la versión web (CORS del navegador); usa la de Android o Windows";
+
+  @override
+  String get hrForTncNote => "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez";
 }

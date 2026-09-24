@@ -6907,4 +6907,102 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get beaconCoarseHint => "Posisi saat ini berasal dari jaringan (kasar, bisa meleset ratusan meter) — laporan otomatis dijeda dan lanjut setelah GPS kembali. Anda masih bisa memancarkan beacon secara manual.";
+  @override
+  String get locationGarmin => "Garmin LiveTrack";
+
+  @override
+  String get hrCardTitle => "Detak jantung";
+
+  @override
+  String get hrCardSubtitle => "Chest strap Bluetooth (layanan HR standar), opsional ikut beacon";
+
+  @override
+  String get hrIncludeInBeacon => "Kirim detak jantung di beacon";
+
+  @override
+  String get hrIncludeHint => "Menambahkan HR=nn ke komentar posisi (konvensi APRS; peta pihak ketiga menampilkannya sebagai komentar). Tanpa bacaan, kami tidak mengirim HR=0.";
+
+  @override
+  String get hrConnected => "Tersambung ke {name}";
+
+  @override
+  String get hrWaitReading => "Menunggu bacaan (pasang strap rapat)";
+
+  @override
+  String get hrSearch => "Cari perangkat detak jantung";
+
+  @override
+  String get hrScanning => "Memindai…";
+
+  @override
+  String get hrStopScan => "Hentikan pemindaian";
+
+  @override
+  String get hrNoDevice => "Tidak ada perangkat ditemukan. Pastikan strap memancarkan dan dekat dengan ponsel.";
+
+  @override
+  String get hrConnect => "Sambungkan";
+
+  @override
+  String get hrDisconnect => "Putuskan";
+
+  @override
+  String get hrForget => "Lupakan perangkat";
+
+  @override
+  String get hrNotSupported => "Detak jantung Bluetooth tidak tersedia di platform ini (hanya Android)";
+
+  @override
+  String get hrConflictWithTnc => "Perangkat itu dipakai tautan Bluetooth TNC / PKWDWPL; tidak bisa jadi strap juga";
+
+  @override
+  String get hrStrapHint => "Strap apa pun yang memancarkan layanan HR standar (0x180D) bisa dipakai. TNC memakai Bluetooth klasik dan detak jantung memakai BLE, jadi tidak saling mengganggu.";
+
+  @override
+  String get garminCardTitle => "Garmin LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "Tarik aktivitas jam Garmin dan pancarkan sebagai beacon";
+
+  @override
+  String get garminUrlLabel => "Tautan berbagi";
+
+  @override
+  String get garminPaste => "Tempel dari papan klip";
+
+  @override
+  String get garminStart => "Mulai lacak";
+
+  @override
+  String get garminStop => "Hentikan lacak";
+
+  @override
+  String get garminRunning => "Melacak";
+
+  @override
+  String get garminStats => "{n} titik diteruskan · terakhir {t}";
+
+  @override
+  String get garminBadUrl => "Tautan tidak valid. Tempel URL lengkap (dengan /session/…/token/…)";
+
+  @override
+  String get garminNoPoints => "Belum ada titik — aktivitas mungkin baru mulai atau tautan sudah kedaluwarsa.";
+
+  @override
+  String get garminError => "Gagal mengambil: {error}";
+
+  @override
+  String get garminHowTo => "Cara mendapatkan tautan: di aplikasi Garmin Connect buka aktivitas → Bagikan → pilih \"APRSlocus\" (terdaftar sebagai tujuan berbagi sistem), tautan masuk ke sini.";
+
+  @override
+  String get garminSharedToast => "Tautan Garmin diterima";
+
+  @override
+  String get garminOpen => "Buka setelan";
+
+  @override
+  String get garminWebUnsupported => "Tidak tersedia di versi web (CORS peramban); gunakan versi Android atau Windows";
+
+  @override
+  String get hrForTncNote => "Detak jantung memakai BLE dan TNC Bluetooth klasik, jadi keduanya bisa tersambung";
 }

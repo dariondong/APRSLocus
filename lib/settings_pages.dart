@@ -6,6 +6,8 @@ import 'state.dart';
 import 'models.dart';
 import 'widgets.dart';
 import 'settings_widgets.dart';
+import 'garmin_page.dart';
+import 'hr_card.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
 import 'audio_page.dart';
@@ -1085,6 +1087,10 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             SettingsRow2(S.of(context).beaconsSent,
             S.of(context).beaconsSentCount('${st.beaconsSent}')),
             SettingsRow2(S.of(context).nextBeacon, st.nextBeaconIn),
+            // 心率（蓝牙心率带）与佳明 LiveTrack 都是「位置/内容来源」，
+            // 放在信标卡里最顺手 —— 用户是在这里决定「上报什么」。
+            HrSettingsCard(state: st),
+            GarminTrackEntry(state: st),
             // 射频来源没开「射频信标」时，倒计时不会走动也不会发射。
             // 这里直接把「为什么」和「怎么改」摆在同一条上：只显示
             // 「射频信标未开启」会让人去找开关，而开关在另一张卡片里。

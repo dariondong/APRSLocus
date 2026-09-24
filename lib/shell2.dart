@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'garmin_page.dart';
 import 'map_page.dart';
 import 'notice_banner.dart';
 import 'back_router.dart';
@@ -188,6 +189,28 @@ class _HomeShell2State extends State<HomeShell2>
   void initState() {
     super.initState();
     widget.state.addListener(_onState);
+    // 「分享给 APRSlocus」落到前台时给一条提示，并把用户直接带进设置页 ——
+    // 否则分享完切回应用什么都没发生，用户会以为分享失败（需求原话：
+    // 「可以直接引导用户到 APP 里面设置」）。
+    widget.state.onGarminShared = (url) {
+      if (!mounted) return;
+      final s = S.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.garminSharedToast),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: s.garminOpen,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => GarminTrackPage(state: widget.state),
+              ),
+            ),
+          ),
+        ),
+      );
+    };
     widget.state.onNewMessage = (src, text, groupId) {
       String? groupName;
       if (groupId != null) {
@@ -218,6 +241,7 @@ class _HomeShell2State extends State<HomeShell2>
     _bubbleTimer?.cancel();
     widget.state.onNewMessage = null;
     widget.state.removeListener(_onState);
+    widget.state.onGarminShared = null;
     super.dispose();
   }
 

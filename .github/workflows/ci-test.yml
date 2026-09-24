@@ -88,6 +88,13 @@ jobs:
       - name: Check frame cost
         run: python3 tool/check_frame_cost.py
 
+      # 蓝牙心率带 + 佳明 LiveTrack：全是「只有真机才看得出来」的接线 ——
+      # CCCD 不写收不到心率、经典蓝牙发现会打断 TNC 的 SPP 链路、singleTop 不重写
+      # onNewIntent 会丢第二次分享、不解析 Next.js 的 trackPoints 就一个点都拿不到。
+      # 本机编不了 Android / 也连不上心率带，只能把判据钉在这里。
+      - name: Check heart rate & Garmin LiveTrack wiring
+        run: python3 tool/check_hr_garmin.py
+
       # 2.0 横屏布局：竖条/面板不许压住地图贴左控件、右侧工具列在矮横屏
       # 不许被裁掉、底部让位不许重复计安全区、收起时的竖条卡不许被撑成通高。
       # 这几条**全都能正常编译、也能通过 analyze**，只在真机横屏才看得出来，

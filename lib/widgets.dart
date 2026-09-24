@@ -126,6 +126,10 @@ String localizedLocationStatus(BuildContext context, String value) {
   // 粗定位：来源是基站/Wi-Fi（或被动定位），误差常在几百米量级。
   // 必须和「已定位」在界面上可区分 —— 否则用户会以为 GPS 明明很准却画歪了。
   if (value == '网络定位（粗）') return s.locationCoarse;
+  // 佳明 LiveTrack（见 lib/garmin.dart）：与「GPS / 粗定位」并列的第三种来源。
+  // 这里是**白名单**，新增一个状态串不登记就会在非中文界面漏出中文
+  // （tool/check_pos_quality.py 会把「所有 locStatus 字面量都已登记」当断言查）。
+  if (value == '佳明 LiveTrack') return s.locationGarmin;
   if (value == '请授予定位权限…') return s.locationPermission;
   if (value == 'GPS 定位中…') return s.gpsLocating;
   if (value == 'Web 平台暂不支持自动定位，请手动输入坐标') {

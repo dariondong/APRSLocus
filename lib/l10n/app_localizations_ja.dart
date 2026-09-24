@@ -6707,4 +6707,102 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get beaconCoarseHint => "現在の測位はネットワーク由来です（粗く、数百メートルずれることも）。自動送信は停止し、GPS が戻れば再開します。手動送信は可能です。";
+  @override
+  String get locationGarmin => "Garmin LiveTrack";
+
+  @override
+  String get hrCardTitle => "心拍数";
+
+  @override
+  String get hrCardSubtitle => "Bluetooth 心拍センサー（標準 HR サービス）。ビーコンに同梱できます";
+
+  @override
+  String get hrIncludeInBeacon => "ビーコンに心拍数を付ける";
+
+  @override
+  String get hrIncludeHint => "位置コメントに HR=nn を付けます（APRS の慣例。サードパーティ地図ではコメント表示）。読み取りが無いときは HR=0 を送りません（受信側が「心拍 0」と誤解するため）。";
+
+  @override
+  String get hrConnected => "{name} に接続";
+
+  @override
+  String get hrWaitReading => "読み取り待ち（ベルトを密着させてください）";
+
+  @override
+  String get hrSearch => "心拍デバイスを検索";
+
+  @override
+  String get hrScanning => "検索中…";
+
+  @override
+  String get hrStopScan => "検索を停止";
+
+  @override
+  String get hrNoDevice => "心拍デバイスが見つかりません。ベルトが送信中か確認し、スマホの近くに置いてください。";
+
+  @override
+  String get hrConnect => "接続";
+
+  @override
+  String get hrDisconnect => "切断";
+
+  @override
+  String get hrForget => "デバイスを削除";
+
+  @override
+  String get hrNotSupported => "この環境では Bluetooth 心拍を利用できません（Android 版のみ）";
+
+  @override
+  String get hrConflictWithTnc => "そのデバイスは TNC / PKWDWPL の Bluetooth リンクが使用中です（兼用は不可）";
+
+  @override
+  String get hrStrapHint => "標準 HR サービス（0x180D）を送信する胸／腕ベルトならどれでも（Polar H10、Garmin HRM など）。TNC はクラシック Bluetooth、心拍は BLE なので互いに干渉しません。";
+
+  @override
+  String get garminCardTitle => "Garmin LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "Garmin ウォッチの活動位置を取り込み、ビーコンで送信";
+
+  @override
+  String get garminUrlLabel => "共有リンク";
+
+  @override
+  String get garminPaste => "クリップボードから貼り付け";
+
+  @override
+  String get garminStart => "追跡を開始";
+
+  @override
+  String get garminStop => "追跡を停止";
+
+  @override
+  String get garminRunning => "追跡中";
+
+  @override
+  String get garminStats => "{n} 点を転送 · 最終更新 {t}";
+
+  @override
+  String get garminBadUrl => "リンク形式が正しくありません（/session/…/token/… を含む URL を貼り付けてください）";
+
+  @override
+  String get garminNoPoints => "まだ点を取得できません（開始直後か、リンク期限切れの可能性）。";
+
+  @override
+  String get garminError => "取得に失敗：{error}";
+
+  @override
+  String get garminHowTo => "リンクの取得方法：Garmin Connect アプリで活動を開く → 共有 → 「APRSlocus」を選択（システム共有先に登録済み）。リンクがここに入り追跡が始まります。";
+
+  @override
+  String get garminSharedToast => "Garmin 共有リンクを受け取りました";
+
+  @override
+  String get garminOpen => "設定を開く";
+
+  @override
+  String get garminWebUnsupported => "Web 版では利用できません（ブラウザの CORS 制限）。Android / Windows 版をご利用ください";
+
+  @override
+  String get hrForTncNote => "心拍は BLE、TNC はクラシック Bluetooth なので同時接続できます";
 }

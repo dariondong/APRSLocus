@@ -12039,6 +12039,203 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动「手动上报」。'**
   String get beaconCoarseHint;
+  /// No description provided for @locationGarmin.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明 LiveTrack'**
+  String get locationGarmin;
+
+  /// No description provided for @hrCardTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率'**
+  String get hrCardTitle;
+
+  /// No description provided for @hrCardSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝牙心率带（标准心率服务），可随信标一起上报'**
+  String get hrCardSubtitle;
+
+  /// No description provided for @hrIncludeInBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'信标附带心率'**
+  String get hrIncludeInBeacon;
+
+  /// No description provided for @hrIncludeHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后在位置包的备注里加 HR=nn（APRS 的通行写法，第三方地图会当备注显示）。没有读数时不会发 HR=0 —— 那会被收端当成「心率 0」而不是「没测」。'**
+  String get hrIncludeHint;
+
+  /// No description provided for @hrConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 {name}'**
+  String get hrConnected;
+
+  /// No description provided for @hrWaitReading.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待读数（把心率带贴紧皮肤）'**
+  String get hrWaitReading;
+
+  /// No description provided for @hrSearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索心率设备'**
+  String get hrSearch;
+
+  /// No description provided for @hrScanning.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在搜索…'**
+  String get hrScanning;
+
+  /// No description provided for @hrStopScan.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止搜索'**
+  String get hrStopScan;
+
+  /// No description provided for @hrNoDevice.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有找到心率设备。确认心率带正在广播（多数胸带贴上电极片就开始广播），并让它离手机近一些。'**
+  String get hrNoDevice;
+
+  /// No description provided for @hrConnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接'**
+  String get hrConnect;
+
+  /// No description provided for @hrDisconnect.
+  ///
+  /// In zh, this message translates to:
+  /// **'断开'**
+  String get hrDisconnect;
+
+  /// No description provided for @hrForget.
+  ///
+  /// In zh, this message translates to:
+  /// **'忘记该设备'**
+  String get hrForget;
+
+  /// No description provided for @hrNotSupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机不支持蓝牙心率（该功能在 Android 版提供）'**
+  String get hrNotSupported;
+
+  /// No description provided for @hrConflictWithTnc.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个设备正被 TNC / PKWDWPL 的蓝牙链路使用，不能同时当心率带'**
+  String get hrConflictWithTnc;
+
+  /// No description provided for @hrStrapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'支持标准心率服务（0x180D）的胸带/臂带都行，例如 Polar H10、Garmin HRM、迈金、Coospo。TNC 走经典蓝牙、心率走 BLE，两条链路互不干扰。'**
+  String get hrStrapHint;
+
+  /// No description provided for @garminCardTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明 LiveTrack'**
+  String get garminCardTitle;
+
+  /// No description provided for @garminCardSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'把佳明手表的活动实时位置接进来，随信标上报'**
+  String get garminCardSubtitle;
+
+  /// No description provided for @garminUrlLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享链接'**
+  String get garminUrlLabel;
+
+  /// No description provided for @garminPaste.
+  ///
+  /// In zh, this message translates to:
+  /// **'从剪贴板粘贴'**
+  String get garminPaste;
+
+  /// No description provided for @garminStart.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始追踪'**
+  String get garminStart;
+
+  /// No description provided for @garminStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止追踪'**
+  String get garminStop;
+
+  /// No description provided for @garminRunning.
+  ///
+  /// In zh, this message translates to:
+  /// **'追踪中'**
+  String get garminRunning;
+
+  /// No description provided for @garminStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'已转发 {n} 个点 · 最后更新 {t}'**
+  String get garminStats;
+
+  /// No description provided for @garminBadUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'链接格式不对。请粘贴完整的 LiveTrack 分享链接（含 /session/…/token/…）'**
+  String get garminBadUrl;
+
+  /// No description provided for @garminNoPoints.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有取到点。活动可能刚开始，或链接已过期。'**
+  String get garminNoPoints;
+
+  /// No description provided for @garminError.
+  ///
+  /// In zh, this message translates to:
+  /// **'抓取失败：{error}'**
+  String get garminError;
+
+  /// No description provided for @garminHowTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'怎么拿到链接：在佳明 Connect App 里打开该活动 → 分享 → 选「APRSlocus」（本应用已注册系统分享入口），链接会自动填到这里并开始追踪；也可以手动复制链接后粘贴到上面。'**
+  String get garminHowTo;
+
+  /// No description provided for @garminSharedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已收到佳明分享链接'**
+  String get garminSharedToast;
+
+  /// No description provided for @garminOpen.
+  ///
+  /// In zh, this message translates to:
+  /// **'去设置'**
+  String get garminOpen;
+
+  /// No description provided for @garminWebUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 版不支持（浏览器的跨域限制），请在 Android / Windows 版使用'**
+  String get garminWebUnsupported;
+
+  /// No description provided for @hrForTncNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接'**
+  String get hrForTncNote;
 }
 
 class _AppLocalizationsDelegate

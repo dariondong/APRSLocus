@@ -564,6 +564,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.165</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**藍牙心率帶**（BLE 標準心率服務 0x180D）：信標設定頁可搜尋／連線／看目前心率，新增「信標附帶心率」開關（預設開）——位置包備註裡加 `HR=nn`，沒有讀數時**什麼都不發**（發 HR=0 會被讀成「心率 0」）。**與 TNC 的藍牙通道不衝突**：TNC 走經典藍牙 SPP、心率走 BLE GATT，本來就並行；並且絕不做經典藍牙發現（那會打斷 TNC 的 SPP 連線），同一台裝置被兩條鏈路搶占時會直接拒絕並說明原因</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**佳明 LiveTrack**：手錶的活動位置可以直接接進來。兩條路——① 在佳明 Connect App 裡「分享」選 APRSlocus（已註冊系統分享入口），連結自動填入並開始追蹤；② 信標設定頁的「佳明 LiveTrack」裡手動貼上連結（也可從剪貼簿取）。抓公開分享頁的 trackPoints，取經緯度／海拔／速度／心率；只接受 120 秒內的點、積壓超 60 秒跳點、兩次轉發至少隔 10 秒；佳明在跑時手機 GPS 自動讓位</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.164</span>
         <span class="cl-date">2026-09-24</span>
       </div>

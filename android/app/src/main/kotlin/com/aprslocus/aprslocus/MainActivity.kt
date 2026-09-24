@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
@@ -45,6 +46,15 @@ class MainActivity : FlutterActivity() {
 
         // 主题自定义图标的大小上限（与 Dart 侧 kIconMaxBytes 保持一致）
         const val MAX_ICON_BYTES = 2 * 1024 * 1024
+
+        // 分享入口（佳明 LiveTrack）：与本应用**发起**分享的
+        // "com.aprslocus/share" 是相反方向，故意不同名 —— 那个是把文本 SEND
+        // 出去给别的 App，这个是从别的 App 把 SEND 进来的文本收下。
+        const val SHARE_IN_CHANNEL = "com.aprslocus/share_in"
+        const val SHARE_IN_EVENT_CHANNEL = "com.aprslocus/share_in_events"
+
+        // 只认佳明的 LiveTrack 域名（为什么要设这道闸门见 readSharedText）
+        const val LIVETRACK_HOST = "livetrack.garmin.com"
     }
 
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
@@ -67,6 +77,20 @@ class MainActivity : FlutterActivity() {
     // 运动传感器（加速度计 + 指南针）：只服务「自己」的轨迹打点（低速航向
     // 补正 + 判断是否真的在动）。通道常挂，Dart 侧按需 start/stop/sample。
     private var motion: MotionManager? = null
+
+    // BLE 心率带（标准心率服务 0x180D）：只把心率/电量搬出来，不做任何业务 ——
+    // 与 TNC 同一套分层（协议与用法全在 Dart 侧）。
+    private var bleHr: BleHrManager? = null
+
+    // 外部分享进来的文本（目前只认佳明 LiveTrack 链接）。
+    // 为什么要存下来而不是直接发事件：分享**冷启动**也会发生（应用没在运行时
+    // 从佳明 App 点分享），那一刻 Flutter 引擎还没起来、事件通道还没有监听者，
+    // 直接 send 会丢。所以先存着，冷启动由 Dart 主动 takePendingSharedText 取走，
+    // 热启动才走事件通道。
+    private var pendingShared: String? = null
+
+    // 分享入口的事件 sink（为 null 说明 Dart 侧还没在监听 —— 冷启动路径）
+    private var shareInSink: EventChannel.EventSink? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -178,10 +202,11 @@ class MainActivity : FlutterActivity() {
                             } else {
                                 try {
                                     manager.connect(address)
-                                    // 蓝牙已接入：让前台服务声明 connectedDevice 类型。
-                                    // 与音频同一个坑 —— Android 14+ 不声明就会在退到
-                                    // 后台后限制蓝牙访问（表现为「切后台收不到报文」）。
-                                    setBtActive(true)
+                                    // 蓝牙已接入：重算「还有没有设备在用蓝牙」，让前台
+                                    // 服务声明 connectedDevice 类型。与音频同一个坑 ——
+                                    // Android 14+ 不声明就会在退到后台后限制蓝牙访问
+                                    // （表现为「切后台收不到报文」）。
+                                    refreshBtActive()
                                     result.success(true)
                                 } catch (e: Exception) {
                                     result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
@@ -193,12 +218,12 @@ class MainActivity : FlutterActivity() {
                                 manager.disconnect()
                             } catch (_: Exception) {
                             }
-                            // 只有两条 SPP 链路都断开时才撤销 connectedDevice 声明。
-                            // 判断用「另一个 manager 是否还连着」而不是各记各的状态 ——
-                            // 否则先断开的那条会把仍在工作的那条的类型声明撤掉，
-                            // 重新落回「后台被限制蓝牙」的坑里。
-                            val other = if (manager === tnc) pkwdwpl else tnc
-                            setBtActive(other?.isConnected() == true)
+                            // 断开后**重算**「还有设备在用蓝牙吗」，而不是自己传一个
+                            // 布尔值。原来这里写的是「看另一个 manager 是否还连着」——
+                            // 那种写法漏了 USB 与 BLE：先断开的那条链路会把仍在工作的
+                            // 那条的 connectedDevice 声明撤掉，重新落回「后台被限制
+                            // 蓝牙」的坑。判断统一收进 refreshBtActive。
+                            refreshBtActive()
                             result.success(true)
                         }
                         "send" -> {
@@ -263,6 +288,71 @@ class MainActivity : FlutterActivity() {
             TncManager.METHOD_CHANNEL_PKWDWPL,
             TncManager.EVENT_CHANNEL_PKWDWPL,
         )
+
+        // BLE 心率带通道：扫描 → 连接 → 订阅标准心率服务 0x180D 的通知。
+        //
+        // 与上面两条 SPP 链路**刻意隔离**（用户明确要求「不要跟 TNC 的蓝牙
+        // 通道起冲突」）：
+        //   * 全程只用 BluetoothLeScanner，**绝不调用 adapter.startDiscovery()**
+        //     —— 经典蓝牙「发现设备」会打断正在工作的 SPP 连接（表现：TNC
+        //     正在收报文时突然断流），BLE 扫描器走的不是那条路径；
+        //   * 不调用 adapter.enable() / disable()（整机重启蓝牙，SPP 必断）；
+        //   * connect 前先 stopScan()（扫描与连接争用同一个蓝牙控制器）；
+        //   * 不读写 TncManager 的任何状态，只通过 busySppAddresses 回调问一句
+        //     「这个地址现在被 SPP 占着吗」。
+        val bleHrManager = BleHrManager(
+            this,
+            // 地址占用判定：TNC 与 PKWDWPL 各最多占一条 SPP 链路。
+            // 传回调而不是把 TncManager 塞进去，是为了不让两个管理器互相引用 ——
+            // 这里只需要「哪些地址现在被占着」这一个事实。
+            busySppAddresses = {
+                setOfNotNull(tnc?.connectedAddress(), pkwdwpl?.connectedAddress())
+            },
+            // 链路状态是异步变化的（GATT 回调），Dart 的方法调用点覆盖不到，
+            // 所以由管理器主动通知这里重算前台服务类型。
+            onLinkChanged = { refreshBtActive() },
+        )
+        bleHr = bleHrManager
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BleHrManager.METHOD_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isSupported" -> result.success(bleHrManager.isSupported())
+                    "requestPermissions" -> bleHrManager.requestPermissions(result)
+                    "startScan" -> result.success(bleHrManager.startScan())
+                    "stopScan" -> {
+                        bleHrManager.stopScan()
+                        result.success(true)
+                    }
+                    "connect" -> {
+                        val address = call.argument<String>("address")
+                        if (address.isNullOrEmpty()) {
+                            result.error("NO_ADDRESS", "缺少设备地址", null)
+                        } else {
+                            // 校验与「防跟 SPP 撞车」都在管理器里回 error，
+                            // 这里不要再包一层 —— 会变成「先 success 再 error」
+                            bleHrManager.connect(address, result)
+                        }
+                    }
+                    "disconnect" -> {
+                        bleHrManager.disconnect()
+                        result.success(true)
+                    }
+                    "status" -> result.success(bleHrManager.status())
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, BleHrManager.EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, things: EventChannel.EventSink?) {
+                        bleHrManager.setEventSink(things)
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        bleHrManager.setEventSink(null)
+                    }
+                }
+            )
 
         // 音频通道（声卡 TNC）：采集 PCM16 上传 / 接收 PCM16 播放
         val audioManager = AudioManager(this)
@@ -333,10 +423,11 @@ class MainActivity : FlutterActivity() {
                             result.error("NO_ID", "缺少设备标识", null)
                         } else {
                             usbManager.connect(id, baud, result)
-                            // USB 已接入：让前台服务声明 connectedDevice 类型。
-                            // 与蓝牙/音频同一个坑 —— Android 14+ 不声明就会在退到
-                            // 后台后限制 USB 访问（表现为「切后台收不到报文」）。
-                            setBtActive(true)
+                            // USB 已接入：重算「还有没有设备在用蓝牙」，让前台服务
+                            // 声明 connectedDevice 类型。与蓝牙/音频同一个坑 ——
+                            // Android 14+ 不声明就会在退到后台后限制 USB 访问
+                            // （表现为「切后台收不到报文」）。
+                            refreshBtActive()
                         }
                     }
                     "disconnect" -> {
@@ -344,8 +435,9 @@ class MainActivity : FlutterActivity() {
                             usbManager.disconnect()
                         } catch (_: Exception) {
                         }
-                        val otherBt = if (tnc?.isConnected() == true || pkwdwpl?.isConnected() == true) true else false
-                        setBtActive(otherBt)
+                        // 同样交给 refreshBtActive：四条链路（TNC / PKWDWPL /
+                        // USB / BLE）里还有活着的就保留 connectedDevice 声明
+                        refreshBtActive()
                         result.success(true)
                     }
                     "send" -> {
@@ -445,6 +537,38 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        // 分享入口（佳明 LiveTrack）：与上面的分享通道方向相反。
+        // 冷启动的文本走 takePendingSharedText（Flutter 还没起来时事件没人收），
+        // 热启动的文本走事件通道（见 intakeShared）。
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_IN_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "takePendingSharedText" -> {
+                        // 取走即清空：否则 Flutter 引擎重建 / 界面热重载时会
+                        // 把同一次分享当成新的再处理一遍（用户会莫名多出一路追踪）
+                        val text = pendingShared
+                        pendingShared = null
+                        result.success(text)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, SHARE_IN_EVENT_CHANNEL)
+            .setStreamHandler(
+                object : EventChannel.StreamHandler {
+                    override fun onListen(arguments: Any?, things: EventChannel.EventSink?) {
+                        shareInSink = things
+                        // 这里**刻意不补发** pendingShared 里的旧文本：冷启动那条
+                        // 路径由 Dart 主动 take 走，两边都发会让同一次分享被处理
+                        // 两遍。Dart 侧只要「先 take、再监听」就不会漏。
+                    }
+
+                    override fun onCancel(arguments: Any?) {
+                        shareInSink = null
+                    }
+                }
+            )
 
         // 导出通道：把文本文件写入「下载」目录（供 ADIF 导出 / 备份导出使用）
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/export").setMethodCallHandler { call, result ->
@@ -762,6 +886,86 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    /// 冷启动的分享入口。
+    ///
+    /// Activity 是 singleTop：应用**没在**运行时点分享，系统会新建 Activity，
+    /// 意图在 onCreate 的 intent 里；应用在后台时点分享，系统不新建 Activity，
+    /// 只回调 onNewIntent（见下）。两条路都要接，缺一条就成了
+    /// 「第一次分享能用，后面再分享毫无反应」。
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 此刻 Flutter 引擎刚建、Dart 还来不及监听事件通道，所以这里几乎一定
+        // 走「存起来」这条分支（见 intakeShared）。
+        intakeShared(intent)
+    }
+
+    /// 热启动的分享入口。
+    ///
+    /// **必须重写**：singleTop 下第二次分享只走这里，不重写就会把分享悄悄
+    /// 丢掉（表现：在佳明 App 里再点一次分享，切回 APRSlocus 什么也没发生）。
+    /// setIntent 也要做：否则 getIntent() 一直是第一次那个，后续再读 intent
+    /// 会拿到过期内容（比如用户又分享了一个不同的链接）。
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        // 到这里 Flutter 引擎通常已起来、Dart 也已在监听事件通道 —— 直接推事件；
+        // 万一还没人监听，intakeShared 会退化成存起来等 Dart 来 take。
+        intakeShared(intent)
+    }
+
+    /// 收下分享进来的 LiveTrack 链接：能直接推就推（热启动），
+    /// 推不了就先存着（冷启动，Flutter 还没起来）。
+    private fun intakeShared(intent: Intent?) {
+        val text = readSharedText(intent) ?: return
+        val sink = shareInSink
+        if (sink != null) {
+            sink.success(mapOf("type" to "shared", "text" to text))
+        } else {
+            pendingShared = text
+        }
+    }
+
+    /// 从 ACTION_SEND 意图里取出分享文本；不是文本分享、或不是佳明 LiveTrack
+    /// 的链接则返回 null（安静忽略）。
+    ///
+    /// 为什么要有 livetrack.garmin.com 这道闸门：声明了 ACTION_SEND 的
+    /// intent-filter 之后，**任意 App 分享任意文本**时 APRSlocus 都会出现在
+    /// 分享目标里（这是系统机制，没法按宿主 App 过滤）。不设闸门的话，用户在
+    /// 微信里分享一句话也会看到 APRSlocus，点进来又什么都没发生 —— 一脸问号。
+    /// 所以只在文本里确实出现佳明 LiveTrack 域名时才收下。
+    ///
+    /// 只做「识别 + 透传」：**不解析 URL 的 uuid/token、不发任何网络请求**
+    /// （那涉及登录态与跨域，全部交给 Dart 侧）。
+    private fun readSharedText(intent: Intent?): String? {
+        if (intent == null || intent.action != Intent.ACTION_SEND) return null
+        // 不写死 "text/plain"：部分分享方会带参数（如 text/plain;charset=utf-8），
+        // 用相等比较会把这些全漏掉；按 text/ 前缀接更稳。
+        val type = intent.type ?: ""
+        if (!type.startsWith("text/")) return null
+        val raw = textExtra(intent, Intent.EXTRA_TEXT)
+            ?: textExtra(intent, Intent.EXTRA_SUBJECT)
+        val text = raw?.trim()
+        if (text.isNullOrEmpty()) return null
+        if (!text.contains(LIVETRACK_HOST, ignoreCase = true)) return null
+        return text
+    }
+
+    /// 取字符串型 extra。
+    ///
+    /// 用 extras.get 而不是 getStringExtra：分享方常把 EXTRA_TEXT 塞成
+    /// CharSequence（SpannableString，微信/浏览器很常见），这时 getStringExtra
+    /// 会抛 ClassCastException —— 接收方直接崩，而「我分享了一下对方就闪退」
+    /// 是最难归因的一类问题（用户根本不会想到是接收方崩的）。
+    private fun textExtra(intent: Intent, key: String): String? = try {
+        when (val v = intent.extras?.get(key)) {
+            null -> null
+            is CharSequence -> v.toString()
+            else -> null
+        }
+    } catch (_: Exception) {
+        null
+    }
+
     override fun onPostResume() {
         super.onPostResume()
         // 权限请求统一由 Dart 侧按业务时机触发（OOBE 完成后 / 用户主动开启定位），
@@ -797,6 +1001,7 @@ class MainActivity : FlutterActivity() {
         tnc?.onRequestPermissionsResult(requestCode, grantResults)
         pkwdwpl?.onRequestPermissionsResult(requestCode, grantResults)
         audio?.onRequestPermissionsResult(requestCode, grantResults)
+        bleHr?.onRequestPermissionsResult(requestCode, grantResults)
         if (requestCode != 100) return
         val ok = hasPermissions()
         permCompleter?.success(ok)
@@ -832,11 +1037,29 @@ class MainActivity : FlutterActivity() {
         stopService(Intent(this, LocationService::class.java))
     }
 
-    /// 蓝牙是否在用 → 同步给前台服务（决定要不要声明 connectedDevice 类型）。
+    /// 重新统计「还有没有蓝牙/USB 设备在用」，再同步给前台服务。
+    ///
+    /// 为什么收敛成一个函数：setBtActive(布尔) 原本由 TNC / PKWDWPL / USB 三处
+    /// 各自传值调用，「断开时该传什么」各写各的 —— 已经踩过一次：先断开的那条
+    /// 链路会把仍在工作的那条的 connectedDevice 声明撤掉，落回「退到后台就收不到
+    /// 报文」的坑（Android 14+ 后台访问蓝牙必须有这个前台服务类型）。所以改成：
+    /// **调用方都不传布尔值**，由这里统一统计四条链路里是否还有活着的。
+    /// 任何「我这条链路断了所以整体不活跃」的判断都是错的，必须走这里。
+    private fun refreshBtActive() {
+        val anyActive = tnc?.isConnected() == true ||
+            pkwdwpl?.isConnected() == true ||
+            usbSerial?.isConnected() == true ||
+            bleHr?.isConnected() == true
+        setBtActive(anyActive)
+    }
+
+    /// 把「是否有设备在使用蓝牙」推给前台服务（决定要不要声明 connectedDevice）。
     ///
     /// 与音频的 setAudioCaptureActive 对应：Android 14（API 34）起，前台服务中
     /// 访问蓝牙设备必须声明 connectedDevice 类型，否则系统会限制蓝牙访问 ——
     /// 症状正是「能发不能收」或「退到后台就收不到」。当初只修了音频，漏了蓝牙。
+    ///
+    /// **只应由 [refreshBtActive] 调用**（onDestroy 里那处显式 false 除外）。
     private fun setBtActive(active: Boolean) {
         try {
             LocationService.setBtActiveStatic(active)
@@ -941,6 +1164,17 @@ class MainActivity : FlutterActivity() {
         } catch (_: Exception) {
         }
         audio = null
+        // BLE 心率带：dispose 里会停扫描 + gatt.close()。
+        // 不 close 的话系统的 GATT 客户端资源一直占着（上限约 32 个），
+        // 下次进应用连心率带很容易直接 133 失败。
+        try {
+            bleHr?.dispose()
+        } catch (_: Exception) {
+        }
+        bleHr = null
+        // 分享入口的 sink 必须清掉：Activity 都销毁了，EventChannel 已经没人听，
+        // 留着会让下一次分享被推给一个失效的 sink（丢事件且不报错）
+        shareInSink = null
         // 撤销蓝牙/音频的前台服务类型声明：Activity 销毁后不该再声称在用这些设备，
         // 否则服务会带着 connectedDevice/microphone 类型继续跑（系统可能因此在
         // 下次启动时要求额外权限，也浪费电）。

@@ -42,6 +42,9 @@ import 'achievements.dart';
 // 新增的这几个名字才能解析 —— CI 的 analyze 就是这么报出来的。
 import 'theme.dart';
 import 'theme_store.dart';
+import 'ble_hr.dart';
+import 'garmin.dart';
+import 'share_in.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
 /// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
@@ -107,7 +110,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.164';
+  static const appVersion = '1.6.165';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -187,6 +190,100 @@ class AppState extends ChangeNotifier {
   /// GPS 坏了。切换/退出时靠 [_resetSelfFix] 复位。
   bool myFixCoarse = false;
 
+  /// 蓝牙心率（bpm）：最近一次收到的读数（心率带通知 / 佳明点）。
+  /// null = 还没有过读数（此时**不发** HR=，而不是发一个 0）。
+  int? myHr;
+
+  /// 蓝牙心率带服务（扫描/连接/订阅标准心率服务 0x180D）。
+  final BleHrService bleHr = BleHrService.instance;
+
+  /// 佳明 LiveTrack 轨迹服务（抓公开分享页，把新点转换成本地定位）。
+  final GarminTrackService garmin = GarminTrackService.instance;
+
+  /// 「分享给 APRSlocus」入口（佳明 App 分享 LiveTrack 链接进来）。
+  final ShareInService shareIn = ShareInService.instance;
+
+  /// 记住的心率带（地址 + 名字）：只用于「上次那台」的一键重连；
+  /// 开机不自动连 —— 蓝牙权限/设备不在身边时静默失败反而更让人困惑。
+  String bleHrId = '';
+  String bleHrName = '';
+
+  /// 佳明 LiveTrack 的分享链接与开关状态。
+  String garminUrl = '';
+  bool garminOn = false;
+
+  /// 收到「分享进来的佳明链接」时回调（外壳用来提示并把用户带到设置页）。
+  void Function(String url)? onGarminShared;
+
+  /// 佳明 LiveTrack 的新点 → 当作「自己」的一次定位。
+  ///
+  /// 为什么不让它走 _onFix：那条路径围着**手机定位**的一堆特性转（粗定位闸、
+  /// 静止防抖滑窗、缓存点闸门、精度门限），而佳明点自带「手表测出来的
+  /// 经纬度/速度/心率」，是另一类东西 —— 硬塞进去反而要层层特判。
+  /// 这里只做三件必须做的事：更新位置、写轨迹（同一套抽稀）、跟随过滤中心。
+  void _onGarminPoint(GarminPoint p) {
+    if (_disposed) return;
+    final first = !myHasFix;
+    myLat = p.lat;
+    myLng = p.lng;
+    myHasFix = true;
+    myFixCoarse = false; // 手表 GPS，不是粗定位
+    myAccuracy = 0; // 佳明页面不给精度 → 0 = 未知（不画精度圈）
+    if (p.altM != null) myAlt = p.altM;
+    if (p.speedMps != null) mySpeed = p.speedMps! * 3.6;
+    if (p.hr != null && p.hr! > 0) myHr = p.hr;
+    locStatus = '佳明 LiveTrack';
+    // 跳变守卫的参照点也要跟着走：否则手机 GPS 接回来的那一刻会被误判成跳变
+    _lastFixLat = p.lat;
+    _lastFixLng = p.lng;
+    _lastFixTime = DateTime.now();
+    _hadLiveFix = true;
+    // 轨迹：与 GPS 同一套「按速度自适应抽稀」，但不受静止防抖影响
+    // （佳明的点本身就是干净的；静止时手表也会给点，画出来才对）。
+    final last = myTrack.isEmpty ? null : myTrack.last;
+    final minDistM =
+        PosQuality.trackMinDistM(speedKmh: (p.speedMps ?? 0) * 3.6);
+    final movedM = last == null
+        ? double.infinity
+        : haversine(last.lat, last.lng, p.lat, p.lng) * 1000;
+    if (last == null || movedM > minDistM) {
+      myTrack.add(TrackPt(p.lat, p.lng, DateTime.now()));
+      if (myTrack.length > maxTrackPts) {
+        myTrack.removeRange(0, myTrack.length - maxTrackPts);
+      }
+    }
+    if (filterFollow) {
+      filterLat = p.lat;
+      filterLng = p.lng;
+    }
+    if (first) {
+      _log(
+        LogLevel.info,
+        '佳明',
+        'LiveTrack 首个点 ${p.lat.toStringAsFixed(5)}, ${p.lng.toStringAsFixed(5)}',
+      );
+    }
+    _notify();
+    _updateNotification();
+  }
+
+  /// 收到分享进来的文本（佳明 App 的 LiveTrack 链接）。
+  ///
+  /// 不信任输入：整段分享文案里只有匹配 LiveTrack 链接的那部分才有意义
+  /// （见 extractLiveTrackUrl），匹配不上就安静丢掉。
+  void _onSharedIncoming(String text) {
+    if (_disposed) return;
+    final url = extractLiveTrackUrl(text);
+    if (url == null) return;
+    garminUrl = url;
+    _log(LogLevel.info, '佳明', '收到分享的 LiveTrack 链接，开始追踪');
+    unawaited(garmin.start(url));
+    garminOn = true;
+    persist();
+    onGarminShared?.call(url);
+    _notify();
+  }
+
   /// 手动设置我的位置（模拟位置 / Windows 无定位服务时的备用）
   void setMyPosition(double lat, double lng, {double? alt}) {
     myLat = lat;
@@ -240,6 +337,14 @@ class AppState extends ChangeNotifier {
   bool beaconIncludeSpeed = true; // 速度
   bool beaconIncludeCourse = true; // 方位角
   bool beaconIncludeBattery = true; // 手机电量
+  /// 信标备注里是否带上**心率**（HR=nn）。
+  ///
+  /// 心率可能来自两个地方，共用这一个开关：
+  ///   * 蓝牙心率带（BLE 标准心率服务，见 lib/ble_hr.dart）；
+  ///   * 佳明 LiveTrack 轨迹点里的 heartRateBeatsPerMin（见 lib/garmin.dart）。
+  /// APRS 没有心率的正式字段，`HR=nn` 是业界通行写法（参考
+  /// garmin-livetrack-aprs-openwrt 的报文示例），第三方地图会把它当备注显示。
+  bool beaconIncludeHr = true;
   int _battery = -1; // 电量百分比（-1 未知）
 
   // ─── 智能信标（按速度分档：不同速度 → 不同上报间隔 + 信标图标）───
@@ -435,6 +540,49 @@ class AppState extends ChangeNotifier {
     beaconIncludeBattery = v;
     persist();
     _notify();
+  }
+
+  /// 信标是否带上心率（见 [beaconIncludeHr]）。
+  void setBeaconIncludeHr(bool v) {
+    beaconIncludeHr = v;
+    persist();
+    _notify();
+  }
+
+  /// 记住心率带（连接成功后调用）：换机/重启后能一键重连同一台。
+  void setBleHrDevice(String id, String name) {
+    bleHrId = id;
+    bleHrName = name;
+    persist();
+    _notify();
+  }
+
+  /// 忘掉心率带。
+  void clearBleHrDevice() {
+    bleHrId = '';
+    bleHrName = '';
+    bleHr.forget();
+    persist();
+    _notify();
+  }
+
+  /// 开启/关闭佳明 LiveTrack 追踪（链接无效时返回 false，由 UI 提示）。
+  Future<bool> setGarminOn(bool v) async {
+    if (!v) {
+      garmin.stop();
+      garminOn = false;
+      persist();
+      _notify();
+      return true;
+    }
+    final url = extractLiveTrackUrl(garminUrl);
+    if (url == null) return false;
+    final ok = await garmin.start(url);
+    garminOn = ok;
+    if (ok) garminUrl = url;
+    persist();
+    _notify();
+    return ok;
   }
 
   /// 更新 APRS-IS 接收范围过滤
@@ -1812,6 +1960,18 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeCourse') ?? beaconIncludeCourse;
       beaconIncludeBattery =
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
+      beaconIncludeHr = p.getBool('beaconIncludeHr') ?? beaconIncludeHr;
+      bleHrId = p.getString('bleHrId') ?? bleHrId;
+      bleHrName = p.getString('bleHrName') ?? bleHrName;
+      // 只恢复「记住的是哪台」，不自动连（权限/设备不在身边时静默失败更困惑）
+      if (bleHrId.isNotEmpty) {
+        bleHr.deviceId = bleHrId;
+        bleHr.deviceName = bleHrName;
+      }
+      // 佳明：恢复链接，但**不自动开跑** —— 分享链接是有时效的（活动结束后
+      // 页面就没点了），开机自动去抓一个过期链接只会刷错误日志。
+      garminUrl = p.getString('garminUrl') ?? garminUrl;
+      garminOn = false;
       coordDatum = p.getString('coordDatum') ?? coordDatum;
       darkMode = p.getBool('darkMode') ?? darkMode;
       weatherEnabled = p.getBool('weatherEnabled') ?? weatherEnabled;
@@ -2007,6 +2167,10 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
     await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
     await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
+    await p.setBool('beaconIncludeHr', beaconIncludeHr);
+    await p.setString('bleHrId', bleHrId);
+    await p.setString('bleHrName', bleHrName);
+    await p.setString('garminUrl', garminUrl);
     await p.setString('coordDatum', coordDatum);
     await p.setBool('darkMode', darkMode);
     await p.setBool('weatherEnabled', weatherEnabled);
@@ -2138,6 +2302,20 @@ class AppState extends ChangeNotifier {
     _wireTnc();
     _wireAudio();
     _wirePkwdwpl();
+    // 蓝牙心率带：状态变化只影响 UI 与信标备注，通知一次即可。
+    bleHr.onChanged = () {
+      if (_disposed) return;
+      _notify();
+    };
+    // 佳明 LiveTrack：每个新点都当作一次「自己」的定位（见 _onGarminPoint）。
+    garmin.onPoint = _onGarminPoint;
+    garmin.onChanged = () {
+      if (_disposed) return;
+      _notify();
+    };
+    // 「分享给 APRSlocus」：佳明 App 把 LiveTrack 链接分享进来 → 存下并直接开跑。
+    shareIn.onShared = _onSharedIncoming;
+    unawaited(shareIn.ensureInit());
     _simTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (devMode) _simTick();
     });
@@ -3259,6 +3437,13 @@ class AppState extends ChangeNotifier {
   ) async {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
+    // ── 佳明 LiveTrack 在跑且还新鲜时，**手机 GPS 让位** ──
+    //
+    // 两路同时在更新「我的位置」会互相打架：手表比手机准，而手机一侧随时可能
+    // 给出隧道/城市峡谷里的漂移点，把标记从手表的位置上拽走又拽回来。
+    // 只在「佳明还新鲜」（120 秒内有新点）时让位：活动结束、手机没网、
+    // 分享链接过期等情况下手机会自动接回来，不至于彻底没有位置。
+    if (garmin.on && garmin.fresh) return;
 
     // ── 第一道（也是最后一道）闸：粗定位点 ──
     //
@@ -3628,6 +3813,11 @@ class AppState extends ChangeNotifier {
     }
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');
+    }
+    // 心率：HR=nn。APRS 没有正式字段，`HR=` 是通行写法（第三方地图当备注显示）。
+    // 只在**真有读数**时发：没读数时发 HR=0 会让收端以为「心率 0」而不是「没测」。
+    if (beaconIncludeHr && myHr != null && myHr! > 0) {
+      parts.add('HR=$myHr');
     }
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());

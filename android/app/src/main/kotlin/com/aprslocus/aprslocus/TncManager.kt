@@ -370,6 +370,16 @@ class TncManager(
      */
     fun isConnected(): Boolean = generation.get() > 0 && socket?.isConnected == true
 
+    /**
+     * 当前链路对端地址（未连接返回 null）。**只读**，不碰任何状态。
+     *
+     * 唯一的用途：BLE 心率带在连接前要判断「这个地址是不是正被 SPP 占着」——
+     * 两条链路共用同一个蓝牙控制器，撞在一起会让 SPP 断流（见
+     * [BleHrManager.connect] 里的防冲突闸门）。**不要**拿它做别的判断。
+     */
+    @SuppressLint("MissingPermission")
+    fun connectedAddress(): String? = socket?.remoteDevice?.address
+
     fun disconnect() {
         // 推进代次 + 拆链路：在飞的 reader/writer 会在下一轮循环退出，
         // 且不会误报 "closed"（只有当前代次的 reader 才有资格报）

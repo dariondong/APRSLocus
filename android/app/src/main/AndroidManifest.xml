@@ -13,11 +13,17 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
-    <!-- 蓝牙 TNC（经典蓝牙 SPP）：
+    <!-- 蓝牙：经典蓝牙 SPP（TNC / PKWDWPL）+ BLE 心率带（标准心率服务 0x180D）。
          Android 12（API 31）起蓝牙权限拆分为运行时权限 BLUETOOTH_CONNECT / _SCAN；
          旧版本仍用 BLUETOOTH / BLUETOOTH_ADMIN，故用 maxSdkVersion 限定作用域。
-         本应用只用「已配对设备 + 建立 RFCOMM」，不做蓝牙扫描发现，
-         neverForLocation 明确声明不用于推断位置（避免额外索要定位权限）。 -->
+         经典蓝牙侧只用「已配对设备 + 建立 RFCOMM」，**不做经典蓝牙发现**
+         （startDiscovery 会打断正在工作的 SPP 连接，见 BleHrManager 的注释）；
+         BLE 侧要扫描心率带，但只按标准心率服务 0x180D 过滤。
+         neverForLocation 仍然成立：BLE 扫描只为找心率带、不用于推断位置 ——
+         声明它才不会在 Android 12+ 上额外索要定位权限（否则用户会看到一个
+         「找心率带为什么要位置」的弹窗，很容易被当成隐私问题而拒绝）。
+         注意：Android 11 及以下 BLE 扫描**仍然**需要 ACCESS_FINE_LOCATION
+         （系统行为，绕不过去），该权限本文件上面已声明。 -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
@@ -26,6 +32,13 @@
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="s"/>
     <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
+    <!-- BLE（心率广播设备）：同样 required=false —— 没有 BLE 的设备必须能正常
+         安装使用，只是设置里的「心率」一档会显示「本机不支持」。 -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+    <!-- BLE 心率带：required=false 是**必须的**，理由同下面的 USB / 传感器 ——
+         写 true（或漏写）会让没有 BLE 的机型在应用市场里被直接过滤掉，
+         而它们在功能上完全可用，只是没有心率带支持。 -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
 
     <!-- 音频数据来源（声卡 TNC / AFSK 1200）：
          RECORD_AUDIO 采集电台/声卡的音频做解调；MODIFY_AUDIO_SETTINGS 用于读取
@@ -76,6 +89,15 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- 「分享给 APRSlocus」：注册 text/plain 的 ACTION_SEND，佳明 App
+                 的分享面板里就会出现本应用，用户点一下链接就落到设置里。
+                 只放行含 livetrack.garmin.com 的文本（见 MainActivity
+                 .extractSharedTrackText）—— 否则任意 App 分享任意文本都会看到我们。 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -89,6 +111,16 @@
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/usb_device_filter" />
+            <!-- 分享入口：佳明 App 的 LiveTrack 链接可以直接分享进本应用。
+                 只能声明成「接收任意 text/plain 分享」—— 系统没提供按宿主 App
+                 过滤的能力，所以 APRSlocus 会出现在**所有**文本分享的目标里。
+                 真正的闸门在 MainActivity.readSharedText（只认
+                 livetrack.garmin.com），其它内容一律安静忽略。 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

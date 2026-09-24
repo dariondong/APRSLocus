@@ -205,6 +205,47 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.165', 'date': '2026-09-24',
+        'items': [
+            ('new',
+             T('**蓝牙心率带**（BLE 标准心率服务 0x180D）：信标设置页可搜索/连接/看当前心率，'
+               '新增「信标附带心率」开关（默认开）——位置包备注里加 `HR=nn`，没有读数时**什么都不发**'
+               '（发 HR=0 会被读成「心率 0」）。**与 TNC 的蓝牙通道不冲突**：TNC 走经典蓝牙 SPP、'
+               '心率走 BLE GATT，本来就并行；并且绝不做经典蓝牙发现（那会打断 TNC 的 SPP 连接），'
+               '同一台设备被两条链路抢占时会直接拒绝并说明原因',
+               '**藍牙心率帶**（BLE 標準心率服務 0x180D）：信標設定頁可搜尋／連線／看目前心率，'
+               '新增「信標附帶心率」開關（預設開）——位置包備註裡加 `HR=nn`，沒有讀數時**什麼都不發**'
+               '（發 HR=0 會被讀成「心率 0」）。**與 TNC 的藍牙通道不衝突**：TNC 走經典藍牙 SPP、'
+               '心率走 BLE GATT，本來就並行；並且絕不做經典藍牙發現（那會打斷 TNC 的 SPP 連線），'
+               '同一台裝置被兩條鏈路搶占時會直接拒絕並說明原因',
+               '**Bluetooth heart-rate straps** (standard BLE service 0x180D): the beacon settings '
+               'page can scan/connect and show the current BPM, with a new "Send heart rate in '
+               'beacon" switch (on by default) that adds `HR=nn` to the position comment — and '
+               'sends **nothing** without a reading (HR=0 would read as "pulse 0"). It does not '
+               'fight with the TNC link: TNC uses classic Bluetooth SPP while heart rate uses BLE '
+               'GATT, they run in parallel, classic discovery (which would tear down the SPP '
+               'link) is never used, and a device already held by TNC is rejected with a reason.')),
+            ('new',
+             T('**佳明 LiveTrack**：手表的活动位置可以直接接进来。两条路——① 在佳明 Connect App 里'
+               '「分享」选 APRSlocus（已注册系统分享入口），链接自动填入并开始追踪；② 信标设置页'
+               '的「佳明 LiveTrack」里手动粘贴链接（也可从剪贴板取）。抓公开分享页的 trackPoints，'
+               '取经纬度/海拔/速度/心率；只接受 120 秒内的点、积压超 60 秒跳点、两次转发至少隔 '
+               '10 秒；佳明在跑时手机 GPS 自动让位',
+               '**佳明 LiveTrack**：手錶的活動位置可以直接接進來。兩條路——① 在佳明 Connect App 裡'
+               '「分享」選 APRSlocus（已註冊系統分享入口），連結自動填入並開始追蹤；② 信標設定頁'
+               '的「佳明 LiveTrack」裡手動貼上連結（也可從剪貼簿取）。抓公開分享頁的 trackPoints，'
+               '取經緯度／海拔／速度／心率；只接受 120 秒內的點、積壓超 60 秒跳點、兩次轉發至少隔 '
+               '10 秒；佳明在跑時手機 GPS 自動讓位',
+               '**Garmin LiveTrack**: your watch activity can feed straight in — either share it '
+               'from the Garmin Connect app to APRSlocus (a registered system share target), or '
+               'paste the link on the new "Garmin LiveTrack" page (clipboard button included). It '
+               'reads trackPoints from the public share page (position, altitude, speed, heart '
+               'rate) and accepts only points up to 120s old, skips to the newest past a 60s '
+               'backlog, and forwards at most one point every 10s; while Garmin is live the phone '
+               'GPS steps aside automatically.')),
+        ],
+    },
+    {
         'ver': 'v1.6.164', 'date': '2026-09-24',
         'items': [
             ('fix',
@@ -970,7 +1011,11 @@ def main():
             missing = [l for l in LANGS if not txt.get(l)]
             assert not missing, '%s 的条目缺 %s 文案' % (e['ver'], missing)
             # 半简半繁是上次踩过的坑：繁体文案里不该出现这几个常用简体字
-            bad = [ch for ch in '连发条来设备页题单网络报频率识环钥译对开关机边缘错击码'
+            # 注意：黑名单必须是「简体才有、繁体不同形」的字。
+            # `率` 曾是成员，但它在简繁里同形（`頻率` 的繁体只差 `頻`）—— 
+            # 于是「心率」这种完全正确的繁体写法被误判成混入简体字（v1.6.165 现场踩到）。
+            # 假失败比没有检查更坏：修它的人只会把规则整个删掉。
+            bad = [ch for ch in '连发条来设备页题单网络报频识环钥译对开关机边缘错击码'
                    if ch in txt['zh_TW']]
             assert not bad, '%s 的繁体文案混入简体字：%s' % (e['ver'], bad)
 

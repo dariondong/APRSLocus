@@ -1,5 +1,102 @@
 # 更新日志
 
+## [1.6.165] - 2026-09-24
+
+### ❤️ 蓝牙心率带（信标附带心率）+ ⌚ 佳明 LiveTrack / BLE heart-rate straps (HR in the beacon) + Garmin LiveTrack
+
+### 一、蓝牙心率带（BLE 标准心率服务 0x180D）
+
+信标设置页新增「心率」一卡：搜索 / 连接 / 查看当前心率与电量 / 断开 / 忘记设备，并有一个
+**「信标附带心率」**开关（默认开）。开启后位置包的备注里会加 `HR=nn`（APRS 的通行写法，
+第三方地图当备注显示）。**没有读数时什么都不发** —— 发 `HR=0` 会被收端读成「心率 0」而不是
+「没测」。心率带与佳明 LiveTrack 共用这一个开关与同一个 `myHr`。
+
+**与 TNC 的蓝牙通道不冲突**（这是明确要求，也是实现里最花心思的一处）：
+
+* 两条链路是**两套栈** —— TNC/PKWDWPL 走经典蓝牙 SPP，心率走 BLE GATT，可以同时工作；
+* 真正的风险是**经典蓝牙发现 `startDiscovery()` 会打断正在工作的 SPP 连接**：原生侧只用
+  `BluetoothLeScanner`，绝不调用它（检查器把这条钉成了「必须没有」）；
+* 另一处风险是**同一台设备不能同时当两者**（双模设备的经典地址与 BLE 地址是同一个 MAC）：
+  `MainActivity` 把「正被 SPP 占用的地址」传给心率管理器，撞上就回 `ADDR_IN_USE` 并给出人话理由；
+* 前台服务的 `connectedDevice` 类型声明改成**统一汇总**（TNC / PKWDWPL / USB / BLE 四条里
+  还有活着的就保留）—— 原来各处各传一个布尔，先断开的那条会把仍在工作的那条的类型撤掉。
+
+### 二、佳明 LiveTrack（手表的活动位置直接进来）
+
+两条路都支持：
+
+* **分享入口**：注册了 `ACTION_SEND`（text/plain），佳明 Connect App 的分享面板里会出现
+  APRSlocus，点一下链接就落到应用里并直接开始追踪（附提示条 + 「去设置」按钮）；
+* **手贴链接**：信标设置页新增「佳明 LiveTrack」入口 → 新页面里可粘贴 / 从剪贴板取 /
+  开关追踪 / 看状态，并写清「怎么从佳明 App 拿到链接」。
+
+实现按参考项目（garmin-livetrack-aprs-openwrt）的公开分享页方案：抓
+`livetrack.garmin.com/session/…/token/…` 的页面，从 Next.js 的流式数据块里取
+`trackPoints`，读经纬度 / 海拔 / 速度 / 心率。节流策略同参考实现：**只接受 120 秒内的点、
+积压超过 60 秒就跳到最新点、两次转发至少隔 10 秒**（APRS 信道是共享资源）。
+佳明在跑且还新鲜时**手机 GPS 让位**（否则两路会互相把标记拉来拉去），超过 120 秒没新点
+就自动交还手机定位。
+
+页面入口、`locStatus`、l10n 六语言、备份分组都补齐；`HR=` 与 `locStatus` 的新状态串都在
+`widgets.dart` 的登记白名单里（漏登记会让非中文界面漏出中文）。
+
+### 三、守卫
+
+新增 `tool/check_hr_garmin.py`（已接进 CI 的 Analyze job）：BLE 的服务 UUID / CCCD 写入 /
+`TRANSPORT_LE` / 主线程发事件 / 权限码不撞车，**禁止** `startDiscovery`、`adapter.disable`；
+分享入口的 intent-filter、`onNewIntent`、域名闸门、冷启动取文本；`trackPoints` 解析与三条
+节流常数；`HR=` 只在有读数时发；6 语言键齐。**首版检查器自己踩了「注释里提到就误报」的坑**
+（BleHrManager 的注释正写着「绝不调用 startDiscovery」），已改成先剥注释再判，并用 5 个
+回归样本验证会报红。
+
+---
+
+## [1.6.165] - 2026-09-24 (English)
+
+### ❤️ BLE heart-rate straps (HR in the beacon) + ⌚ Garmin LiveTrack
+
+**Bluetooth heart-rate straps (standard BLE service 0x180D).** The beacon settings page gained
+a Heart rate card: scan / connect / see the current BPM and battery / disconnect / forget,
+plus a **"Send heart rate in beacon"** switch (on by default). With it on, position comments
+carry `HR=nn` (the common APRS convention; third-party maps show it as a comment). **With no
+reading we send nothing at all** — `HR=0` would be read as "pulse 0" rather than "not measured".
+The strap and Garmin LiveTrack share this switch and the same `myHr`.
+
+**It does not fight with the TNC Bluetooth link** (an explicit requirement, and where most of
+the care went): the two links use different stacks (TNC/PKWDWPL are classic Bluetooth SPP;
+heart rate is BLE GATT) so they run side by side. The real hazards are (a) **classic discovery
+(`startDiscovery()`) tearing down a working SPP connection** — the native side only ever uses
+`BluetoothLeScanner`, and the checker pins the forbidden call; and (b) **one device cannot be
+both** (a dual-mode device has the same MAC for classic and BLE) — `MainActivity` passes the
+addresses currently held by SPP to the heart-rate manager, which rejects the clash with
+`ADDR_IN_USE` and a plain-language reason. The foreground service's `connectedDevice` type is
+now computed in **one place** across TNC / PKWDWPL / USB / BLE, so a link that disconnects
+first can no longer revoke the type still needed by a link that is working.
+
+**Garmin LiveTrack** — two ways in: an **Android share target** (`ACTION_SEND`, text/plain) so
+the Garmin Connect app lists APRSlocus and one tap lands the link in the app and starts
+tracking (with a toast and an "Open settings" action), and **manual paste** on a new page
+(also "paste from clipboard"), which explains how to get the link. The implementation follows
+the reference project's public-share-page approach: fetch
+`livetrack.garmin.com/session/…/token/…`, pull `trackPoints` out of the Next.js streamed data
+blocks, and read position, altitude, speed and heart rate. The throttling matches the
+reference: **accept only points up to 120s old, skip to the newest when the backlog exceeds
+60s, and forward at most one point every 10s** (the APRS channel is shared). While Garmin is
+running and fresh the **phone GPS steps aside** (otherwise the two sources would pull the
+marker back and forth), and hands back automatically after 120s without a new point.
+
+**Guards.** New `tool/check_hr_garmin.py` (wired into the CI Analyze job) covers the BLE service
+UUID / CCCD write / `TRANSPORT_LE` / main-thread events / distinct permission code, **forbids**
+`startDiscovery` and `adapter.disable`, checks the share intent-filter, `onNewIntent`, the
+domain gate and the cold-start path, the `trackPoints` parsing with its three throttling
+constants, that `HR=` is only sent with a reading, and that all six locales have the keys.
+**The first version of this checker produced false failures by reading its own explanatory
+comments** (the file literally says "never call startDiscovery") — it now strips comments
+before the forbidden-call checks, and five regression samples were verified to fail.
+
+---
+
+
 ## [1.6.164] - 2026-09-24
 
 ### 🐞 三处「挤 / 没填满 / 显示不全」/ Three layout fixes: the share sheet, the About cover, and the messages pane

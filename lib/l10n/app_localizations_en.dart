@@ -6898,4 +6898,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconCoarseHint => "The current fix comes from the network (coarse, often hundreds of metres off) — automatic reports are paused and resume once GPS is back. You can still beacon manually.";
+  @override
+  String get locationGarmin => "Garmin LiveTrack";
+
+  @override
+  String get hrCardTitle => "Heart rate";
+
+  @override
+  String get hrCardSubtitle => "Bluetooth heart-rate straps (standard HR service), optionally sent with your beacon";
+
+  @override
+  String get hrIncludeInBeacon => "Send heart rate in beacon";
+
+  @override
+  String get hrIncludeHint => "Adds HR=nn to the position comment (the common APRS convention; third-party maps show it as a comment). With no reading we send nothing rather than HR=0, which receivers would read as \"pulse 0\" instead of \"not measured\".";
+
+  @override
+  String get hrConnected => "Connected to {name}";
+
+  @override
+  String get hrWaitReading => "Waiting for a reading (make sure the strap is snug)";
+
+  @override
+  String get hrSearch => "Scan for heart-rate devices";
+
+  @override
+  String get hrScanning => "Scanning…";
+
+  @override
+  String get hrStopScan => "Stop scanning";
+
+  @override
+  String get hrNoDevice => "No heart-rate device found. Make sure the strap is broadcasting (most straps start once the electrodes are worn) and is close to the phone.";
+
+  @override
+  String get hrConnect => "Connect";
+
+  @override
+  String get hrDisconnect => "Disconnect";
+
+  @override
+  String get hrForget => "Forget device";
+
+  @override
+  String get hrNotSupported => "Bluetooth heart rate is not available on this platform (Android only)";
+
+  @override
+  String get hrConflictWithTnc => "That device is used by the TNC / PKWDWPL Bluetooth link; it cannot be the strap too";
+
+  @override
+  String get hrStrapHint => "Any strap broadcasting the standard Heart Rate service (0x180D) works — Polar H10, Garmin HRM, Magene, Coospo. TNC uses classic Bluetooth and heart rate uses BLE, so the two links do not interfere.";
+
+  @override
+  String get garminCardTitle => "Garmin LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "Pull your Garmin watch activity in and beacon it";
+
+  @override
+  String get garminUrlLabel => "Share link";
+
+  @override
+  String get garminPaste => "Paste from clipboard";
+
+  @override
+  String get garminStart => "Start tracking";
+
+  @override
+  String get garminStop => "Stop tracking";
+
+  @override
+  String get garminRunning => "Tracking";
+
+  @override
+  String get garminStats => "{n} points forwarded · last update {t}";
+
+  @override
+  String get garminBadUrl => "That is not a LiveTrack link. Paste the full share URL (with /session/…/token/…)";
+
+  @override
+  String get garminNoPoints => "No points yet — the activity may have just started, or the link has expired.";
+
+  @override
+  String get garminError => "Fetch failed: {error}";
+
+  @override
+  String get garminHowTo => "How to get the link: in the Garmin Connect app open the activity → Share → pick \"APRSlocus\" (the app registers a system share target) and the link lands here and starts tracking; or copy the link and paste it above.";
+
+  @override
+  String get garminSharedToast => "Garmin share link received";
+
+  @override
+  String get garminOpen => "Open settings";
+
+  @override
+  String get garminWebUnsupported => "Not available on the web build (browser CORS); use the Android or Windows build";
+
+  @override
+  String get hrForTncNote => "Heart rate uses BLE while TNC uses classic Bluetooth, so both can be connected";
 }

@@ -55,6 +55,12 @@ const List<BackupGroupSpec> kBackupGroups = [
     'beacon', 'beaconAutoAsked', 'beaconInterval',
     'smartBeaconOn', 'smartTiers',
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
+    // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，
+    // 换机后当然希望还按自己调的那样上报。
+    'beaconIncludeHr',
+    // 记住的心率带与佳明 LiveTrack 链接：都是「用户自己配的外部设备」，
+    // 不该在换机后丢（重新找一遍设备/再问一次链接很烦）。
+    'bleHrId', 'bleHrName', 'garminUrl',
     'coordDatum', 'darkMode', 'weatherEnabled', 'locale', 'themeColor',
     // 公告横幅：与深色模式同类的**显示偏好** —— 用户关掉了它，
     // 换机后不该被静默打开（那会表现为「怎么又开始联网拉公告了」）。

@@ -6633,6 +6633,104 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get beaconCoarseHint => "当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动上报。";
+  @override
+  String get locationGarmin => "佳明 LiveTrack";
+
+  @override
+  String get hrCardTitle => "心率";
+
+  @override
+  String get hrCardSubtitle => "蓝牙心率带（标准心率服务），可随信标一起上报";
+
+  @override
+  String get hrIncludeInBeacon => "信标附带心率";
+
+  @override
+  String get hrIncludeHint => "开启后在位置包的备注里加 HR=nn（APRS 的通行写法，第三方地图会当备注显示）。没有读数时不会发 HR=0 —— 那会被收端当成「心率 0」而不是「没测」。";
+
+  @override
+  String get hrConnected => "已连接 {name}";
+
+  @override
+  String get hrWaitReading => "等待读数（把心率带贴紧皮肤）";
+
+  @override
+  String get hrSearch => "搜索心率设备";
+
+  @override
+  String get hrScanning => "正在搜索…";
+
+  @override
+  String get hrStopScan => "停止搜索";
+
+  @override
+  String get hrNoDevice => "没有找到心率设备。确认心率带正在广播（多数胸带贴上电极片就开始广播），并让它离手机近一些。";
+
+  @override
+  String get hrConnect => "连接";
+
+  @override
+  String get hrDisconnect => "断开";
+
+  @override
+  String get hrForget => "忘记该设备";
+
+  @override
+  String get hrNotSupported => "本机不支持蓝牙心率（该功能在 Android 版提供）";
+
+  @override
+  String get hrConflictWithTnc => "这个设备正被 TNC / PKWDWPL 的蓝牙链路使用，不能同时当心率带";
+
+  @override
+  String get hrStrapHint => "支持标准心率服务（0x180D）的胸带/臂带都行，例如 Polar H10、Garmin HRM、迈金、Coospo。TNC 走经典蓝牙、心率走 BLE，两条链路互不干扰。";
+
+  @override
+  String get garminCardTitle => "佳明 LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "把佳明手表的活动实时位置接进来，随信标上报";
+
+  @override
+  String get garminUrlLabel => "分享链接";
+
+  @override
+  String get garminPaste => "从剪贴板粘贴";
+
+  @override
+  String get garminStart => "开始追踪";
+
+  @override
+  String get garminStop => "停止追踪";
+
+  @override
+  String get garminRunning => "追踪中";
+
+  @override
+  String get garminStats => "已转发 {n} 个点 · 最后更新 {t}";
+
+  @override
+  String get garminBadUrl => "链接格式不对。请粘贴完整的 LiveTrack 分享链接（含 /session/…/token/…）";
+
+  @override
+  String get garminNoPoints => "还没有取到点。活动可能刚开始，或链接已过期。";
+
+  @override
+  String get garminError => "抓取失败：{error}";
+
+  @override
+  String get garminHowTo => "怎么拿到链接：在佳明 Connect App 里打开该活动 → 分享 → 选「APRSlocus」（本应用已注册系统分享入口），链接会自动填到这里并开始追踪；也可以手动复制链接后粘贴到上面。";
+
+  @override
+  String get garminSharedToast => "已收到佳明分享链接";
+
+  @override
+  String get garminOpen => "去设置";
+
+  @override
+  String get garminWebUnsupported => "Web 版不支持（浏览器的跨域限制），请在 Android / Windows 版使用";
+
+  @override
+  String get hrForTncNote => "心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接";
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13263,4 +13361,102 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconCoarseHint => "目前定位來自網路（粗，誤差常達幾百公尺）—— 自動上報已暫停，GPS 恢復後自動繼續；期間仍可手動上報。";
+  @override
+  String get locationGarmin => "佳明 LiveTrack";
+
+  @override
+  String get hrCardTitle => "心率";
+
+  @override
+  String get hrCardSubtitle => "藍牙心率帶（標準心率服務），可隨信標一起上報";
+
+  @override
+  String get hrIncludeInBeacon => "信標附帶心率";
+
+  @override
+  String get hrIncludeHint => "開啟後在位置包的備註裡加 HR=nn（APRS 的通行寫法，第三方地圖會當備註顯示）。沒有讀數時不會發 HR=0 —— 那會被收端當成「心率 0」而不是「沒測」。";
+
+  @override
+  String get hrConnected => "已連線 {name}";
+
+  @override
+  String get hrWaitReading => "等待讀數（把心率帶貼緊皮膚）";
+
+  @override
+  String get hrSearch => "搜尋心率裝置";
+
+  @override
+  String get hrScanning => "正在搜尋…";
+
+  @override
+  String get hrStopScan => "停止搜尋";
+
+  @override
+  String get hrNoDevice => "沒有找到心率裝置。確認心率帶正在廣播（多數胸帶貼上電極片就開始廣播），並讓它離手機近一些。";
+
+  @override
+  String get hrConnect => "連線";
+
+  @override
+  String get hrDisconnect => "斷開";
+
+  @override
+  String get hrForget => "忘記該裝置";
+
+  @override
+  String get hrNotSupported => "本機不支援藍牙心率（該功能在 Android 版提供）";
+
+  @override
+  String get hrConflictWithTnc => "這個裝置正被 TNC / PKWDWPL 的藍牙鏈路使用，不能同時當心率帶";
+
+  @override
+  String get hrStrapHint => "支援標準心率服務（0x180D）的胸帶／臂帶都行，例如 Polar H10、Garmin HRM、邁金、Coospo。TNC 走經典藍牙、心率走 BLE，兩條鏈路互不干擾。";
+
+  @override
+  String get garminCardTitle => "佳明 LiveTrack";
+
+  @override
+  String get garminCardSubtitle => "把佳明手錶的活動即時位置接進來，隨信標上報";
+
+  @override
+  String get garminUrlLabel => "分享連結";
+
+  @override
+  String get garminPaste => "從剪貼簿貼上";
+
+  @override
+  String get garminStart => "開始追蹤";
+
+  @override
+  String get garminStop => "停止追蹤";
+
+  @override
+  String get garminRunning => "追蹤中";
+
+  @override
+  String get garminStats => "已轉發 {n} 個點 · 最後更新 {t}";
+
+  @override
+  String get garminBadUrl => "連結格式不對。請貼上完整的 LiveTrack 分享連結（含 /session/…/token/…）";
+
+  @override
+  String get garminNoPoints => "還沒有取到點。活動可能剛開始，或連結已過期。";
+
+  @override
+  String get garminError => "抓取失敗：{error}";
+
+  @override
+  String get garminHowTo => "怎麼拿到連結：在佳明 Connect App 裡打開該活動 → 分享 → 選「APRSlocus」（本應用已註冊系統分享入口），連結會自動填到這裡並開始追蹤；也可以手動複製連結後貼到上面。";
+
+  @override
+  String get garminSharedToast => "已收到佳明分享連結";
+
+  @override
+  String get garminOpen => "去設定";
+
+  @override
+  String get garminWebUnsupported => "Web 版不支援（瀏覽器的跨域限制），請在 Android / Windows 版使用";
+
+  @override
+  String get hrForTncNote => "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線";
 }
