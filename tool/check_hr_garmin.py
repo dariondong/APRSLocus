@@ -147,6 +147,20 @@ def main() -> int:
     if '_lastGarminPoint' not in gseg:
         errors.append('_onGarminPoint 没有记上一个点 —— 算不出航向')
     need('lib/state.dart', 'int? myHr;', '没有存心率 —— 界面与信标都拿不到读数')
+    # ⚠ 心率带是**两个数据源之一**（另一个是佳明）。`myHr` 是界面与信标共用的那个值，
+    # 所以**每个来源都必须往它同步**。曾经漏掉 BLE 这一处：设置页显示「已连接、128 bpm」
+    # （那张卡直接读 bleHr.bpm），而主屏幕的心率胶囊一直不出现、信标也不带 HR=。
+    # 判据：`bleHr.onChanged` 处理函数体内必须出现 `myHr =`。
+    _i = read('lib/state.dart').find('bleHr.onChanged = () {')
+    if _i < 0:
+        errors.append('找不到 bleHr.onChanged 的接线')
+    else:
+        _blk = read('lib/state.dart')[_i:_i + 1200]
+        _end = _blk.find('};')
+        _blk = _blk[:_end] if _end > 0 else _blk
+        if 'myHr =' not in _blk:
+            errors.append('bleHr.onChanged 里没有把读数同步到 myHr —— '
+                          '设置页会显示已连接/有读数，而主屏幕心率胶囊与信标 HR= 都拿不到值')
     need('lib/state.dart', "'HR=$myHr'", '信标备注里没有 HR=nn（需求：信标附带心率）')
     if 'HR=0' in code_only('lib/state.dart'):
         errors.append('lib/state.dart 里出现了 HR=0 —— 没有读数时应该**不发** HR，'

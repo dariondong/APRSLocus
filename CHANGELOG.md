@@ -24,6 +24,12 @@
 **心率来源**（蓝牙心率带）。它们与上面那些**报文链路**分开列：那几条的语义是「报文从哪条
 链路收发」，而这两条是「**我自己的位置/心率**从哪来」，混成一组会让发射来源的判定变乱。
 
+**心率带连上了，主屏幕却不显示心率（用户实测报的）**：设置页那张卡直接读
+`bleHr.bpm`，而地图上的心率胶囊、上报横杠的 ❤、信标里的 `HR=` 读的都是 `myHr` ——
+而 `bleHr` 的变更回调只 `_notify()`、**从没把读数同步到 `myHr`**。于是「设置页显示已连接、
+有 128 bpm，主屏幕一直是空的、信标也不带 HR」。已修（并写进检查器：`bleHr.onChanged`
+里必须出现 `myHr =` —— 这类「两个来源各自同步漏一处」的缺陷只有真机能发现）。
+
 **手动上报的提示现在会说清「实际带了什么」**：有用户问「手动上报…没有附带心率？」——
 核实结果是**带的**（手动与自动上报走的是同一段组包代码，全仓库只有一处
 `AprsFmt.position(...)`，备注与 `HR=` 都在里面），但提示当时只说网格，看不出带了什么。
@@ -58,6 +64,14 @@ groups — **position source** (phone GPS / Garmin LiveTrack, single choice) and
 source** (the BLE strap). They are listed separately from the packet links above: those mean
 "which link do packets arrive on", whereas these mean "where does *my own* position/heart rate
 come from"; merging them would muddy the transmit-source logic.
+
+**A connected strap showed nothing on the main screen (reported from a real device).** The
+settings card reads `bleHr.bpm` directly, but the map's heart-rate chip, the ❤ on the beacon bar
+and `HR=` in the beacon all read `myHr` — and the `bleHr` change callback only called `_notify()`,
+**never copying the reading into `myHr`**. So the settings page said "connected, 128 bpm" while the
+main screen stayed empty and the beacon carried no HR. Fixed, and pinned in the checker: the
+`bleHr.onChanged` body must contain `myHr =` — this class of "one of the two sources forgot to
+sync" bug is only visible on a real device.
 
 **The manual-beacon toast now says what was actually attached.** A user asked "does manual
 beaconing not include the heart rate?" — it **does** (manual and automatic beaconing share the

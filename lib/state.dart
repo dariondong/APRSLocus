@@ -2327,6 +2327,19 @@ class AppState extends ChangeNotifier {
     // 蓝牙心率带：状态变化只影响 UI 与信标备注，通知一次即可。
     bleHr.onChanged = () {
       if (_disposed) return;
+      // **必须把读数同步到 `myHr`**：地图上的心率胶囊、上报横杠上的 ❤、以及信标
+      // 备注里的 `HR=` 读的都是 `myHr`；而设置页那张卡直接读 `bleHr.bpm`。
+      // 这里如果只 `_notify()`，就会出现「设置页显示已连接、也有读数，**主屏幕却
+      // 一直没有心率、信标也不带 HR**」—— 用户实测报的就是这个（同步漏了一处）。
+      //
+      // 优先级：胸带（BLE）比手表准，所以**它有读数时优先用它**；没有读数且已断开时，
+      // 若佳明没在供数据就清空（避免主屏一直显示一个过期读数）。
+      final b = bleHr.bpm;
+      if (b != null && b > 0) {
+        myHr = b;
+      } else if (!bleHr.connected && !(garmin.on && garmin.fresh)) {
+        myHr = null;
+      }
       _notify();
     };
     // 佳明 LiveTrack：每个新点都当作一次「自己」的定位（见 _onGarminPoint）。
