@@ -44,6 +44,16 @@
 现在 `if (coarse && garmin.on) return;` 把粗点挡住，宁可保持上一个（手表的）位置，
 等真 GPS 接回来。
 
+**佳明/心率成为「数据来源」里的可选来源**（用户要求：佳明应当作为数据来源的一种选择）：
+数据来源卡里新增两组选择 —— **位置来源**（手机 GPS / 佳明 LiveTrack，单选）与
+**心率来源**（蓝牙心率带）。它们与上面那些**报文链路**分开列：那几条的语义是「报文从哪条
+链路收发」，而这两条是「**我自己的位置/心率**从哪来」，混成一组会让发射来源的判定变乱。
+
+**手动上报的提示现在会说清「实际带了什么」**：有用户问「手动上报…没有附带心率？」——
+核实结果是**带的**（手动与自动上报走的是同一段组包代码，全仓库只有一处
+`AprsFmt.position(...)`，备注与 `HR=` 都在里面），但提示当时只说网格，看不出带了什么。
+现在提示为「位置信标 · 网格 FN20xx · 心率 128 bpm」或「… · 未附带心率」。
+
 **说明**：页面解析逻辑（从公开分享页的 Next.js 流式数据块里取 `trackPoints`）**保持与参考
 项目一致**，本版没有改动它。（拿真实分享链接实测时页面里 `trackPoints` 是空数组、
 `position` 字段一个都没有 —— 那是**那个会话本身还没有数据**，不是解析器坏了；空会话会
@@ -98,6 +108,19 @@ watch's position with a cell-tower centroid while the bar shows a perfectly norm
 (`counting`), so **nothing on screen reveals that a wrong coordinate is being transmitted**. It is
 now blocked with `if (coarse && garmin.on) return;`, keeping the last (watch) position until real
 GPS returns.
+
+**Garmin and the strap are now selectable "data sources".** The Data sources card gained two
+groups — **position source** (phone GPS / Garmin LiveTrack, single choice) and **heart-rate
+source** (the BLE strap). They are listed separately from the packet links above: those mean
+"which link do packets arrive on", whereas these mean "where does *my own* position/heart rate
+come from"; merging them would muddy the transmit-source logic.
+
+**The manual-beacon toast now says what was actually attached.** A user asked "does manual
+beaconing not include the heart rate?" — it **does** (manual and automatic beaconing share the
+same packet builder; there is exactly one `AprsFmt.position(...)` call site in the whole
+codebase, and the comment plus `HR=` are in it), but the toast only showed the grid square, so
+there was no way to tell. It now reads "Position beacon · Grid FN20xx · HR 128 bpm", or
+"· no heart rate".
 
 **Note:** the page parser (pulling `trackPoints` out of the public share page's Next.js streamed
 data blocks) is **unchanged and matches the reference project**. (When testing with a real share

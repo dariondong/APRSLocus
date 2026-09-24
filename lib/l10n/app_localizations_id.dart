@@ -7029,4 +7029,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
+  @override
+  String positionBeaconDetail(String grid, String detail) => "Beacon posisi · Grid $grid · $detail";
+
+  @override
+  String beaconAttachedHr(String hr) => "HR $hr";
+
+  @override
+  String get beaconAttachedNone => "tanpa detak jantung";
+
 }

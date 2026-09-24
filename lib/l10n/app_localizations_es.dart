@@ -7070,4 +7070,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
+  @override
+  String positionBeaconDetail(String grid, String detail) => "Baliza de posición · Cuadrícula $grid · $detail";
+
+  @override
+  String beaconAttachedHr(String hr) => "pulso $hr";
+
+  @override
+  String get beaconAttachedNone => "sin pulso";
+
 }

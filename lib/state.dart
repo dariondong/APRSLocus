@@ -3747,6 +3747,18 @@ class AppState extends ChangeNotifier {
 
   // ─── 信标（定位上传） ───
   /// 手动“立即上报”：无论自动信标是否开启都会发送一次
+  /// 手动上报提示里的「实际附带了什么」。
+  ///
+  /// 用户问过「手动上报…没有附带心率？」—— 而提示那时只说网格，看不出带了什么。
+  /// 这里如实列出：心率（有读数且开关开）／未附带心率（开关关或没读数）。
+  String get beaconAttachedDetail {
+    final l = l10n;
+    if (beaconIncludeHr && myHr != null && myHr! > 0) {
+      return l.beaconAttachedHr('$myHr bpm');
+    }
+    return l.beaconAttachedNone;
+  }
+
   void sendBeacon() {
     _sendBeaconNow(force: true);
   }

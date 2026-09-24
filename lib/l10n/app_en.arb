@@ -2376,5 +2376,10 @@
   "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
   "posSourceLabel": "Position source",
   "hrSourceLabel": "Heart-rate source",
-  "ownSourcePhoneGps": "Phone GPS"
+  "ownSourcePhoneGps": "Phone GPS",
+  "positionBeaconDetail": "Position beacon · Grid {grid} · {detail}",
+  "beaconAttachedHr": "HR {hr}",
+  "beaconAttachedNone": "no heart rate",
+  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
 }

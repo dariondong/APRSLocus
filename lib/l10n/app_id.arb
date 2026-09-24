@@ -2460,5 +2460,10 @@
   "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
   "posSourceLabel": "Sumber posisi",
   "hrSourceLabel": "Sumber detak jantung",
-  "ownSourcePhoneGps": "GPS ponsel"
+  "ownSourcePhoneGps": "GPS ponsel",
+  "positionBeaconDetail": "Beacon posisi · Grid {grid} · {detail}",
+  "beaconAttachedHr": "HR {hr}",
+  "beaconAttachedNone": "tanpa detak jantung",
+  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
 }

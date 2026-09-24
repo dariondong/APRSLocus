@@ -2964,5 +2964,10 @@
   "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
   "posSourceLabel": "位置來源",
   "hrSourceLabel": "心率來源",
-  "ownSourcePhoneGps": "手機 GPS"
+  "ownSourcePhoneGps": "手機 GPS",
+  "positionBeaconDetail": "位置信標 · 網格 {grid} · {detail}",
+  "beaconAttachedHr": "心率 {hr}",
+  "beaconAttachedNone": "未附帶心率",
+  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
 }

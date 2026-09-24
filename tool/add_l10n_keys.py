@@ -36,6 +36,20 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 手动上报后的提示：把**实际附带的内容**列出来，用户才不用猜
+    # （用户问「手动上报…没有附带心率？」—— 之前提示只说网格，看不出带了什么）
+    'positionBeaconDetail': (
+        '位置信标 · 网格 {grid} · {detail}',
+        '位置信標 · 網格 {grid} · {detail}',
+        'Position beacon · Grid {grid} · {detail}',
+        '位置ビーコン · グリッド {grid} · {detail}',
+        'Baliza de posición · Cuadrícula {grid} · {detail}',
+        'Beacon posisi · Grid {grid} · {detail}',
+    ),
+    'beaconAttachedHr': ('心率 {hr}', '心率 {hr}', 'HR {hr}',
+                         '心拍 {hr}', 'pulso {hr}', 'HR {hr}'),
+    'beaconAttachedNone': ('未附带心率', '未附帶心率', 'no heart rate',
+                           '心拍なし', 'sin pulso', 'tanpa detak jantung'),
     # 「位置来源 / 心率来源」——数据来源卡里的两个小标题（用户要求：
     # 佳明应当作为「数据来源」的一种选择）
     'posSourceLabel': (
@@ -65,6 +79,9 @@ KEYS = {
 
 # ── 占位符声明（可空）──
 META = {
+    'positionBeaconDetail': '{"placeholders": {"grid": {"type": "String"}, '
+                            '"detail": {"type": "String"}}}',
+    'beaconAttachedHr': '{"placeholders": {"hr": {"type": "String"}}}',
     'beaconGarminNext': '{"placeholders": {"s": {"type": "String"}, '
                         '"hr": {"type": "String"}}}',
 }

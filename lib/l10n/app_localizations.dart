@@ -12296,6 +12296,24 @@ abstract class AppLocalizations {
   /// **'佳明上报 · {s} · ❤{hr}'**
   String get beaconGarminNext;
 
+  /// No description provided for @positionBeaconDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置信标 · 网格 {grid} · {detail}'**
+  String positionBeaconDetail(String grid, String detail);
+
+  /// No description provided for @beaconAttachedHr.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率 {hr}'**
+  String beaconAttachedHr(String hr);
+
+  /// No description provided for @beaconAttachedNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未附带心率'**
+  String get beaconAttachedNone;
+
 }
 
 class _AppLocalizationsDelegate

@@ -2460,5 +2460,10 @@
   "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
   "posSourceLabel": "位置ソース",
   "hrSourceLabel": "心拍ソース",
-  "ownSourcePhoneGps": "スマホ GPS"
+  "ownSourcePhoneGps": "スマホ GPS",
+  "positionBeaconDetail": "位置ビーコン · グリッド {grid} · {detail}",
+  "beaconAttachedHr": "心拍 {hr}",
+  "beaconAttachedNone": "心拍なし",
+  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
 }

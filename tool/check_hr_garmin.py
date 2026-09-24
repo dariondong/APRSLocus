@@ -209,6 +209,23 @@ def main() -> int:
         errors.append('粗定位点没有被拦住去覆盖佳明的位置 —— 佳明断流后，'
                       '一个基站质心会在横杠显示「正常倒计时」的情况下被上报出去')
 
+    # **手动上报必须与自动上报共用同一段组包代码**（只有一个 AprsFmt.position 调用点）。
+    # 用户问过「手动上报…没有附带心率？」—— 当时确实带了（共用同一处），但这类
+    # 「两条路径各拼一份报文」的写法一旦分叉，就会变成「手动发的不带备注」这种
+    # 只有真机才发现的缺陷。这里把它钉住。
+    if read('lib/state.dart').count('AprsFmt.position(') != 1:
+        errors.append('lib/state.dart 里组位置包的地方不止一处 —— 手动/自动上报会分叉，'
+                      '备注与 HR= 可能只在其中一条上')
+    need('lib/state.dart', 'void sendBeacon() {\n    _sendBeaconNow(force: true);',
+         '手动上报没有走 _sendBeaconNow(force: true) —— 与自动上报不是同一条路径')
+    need('lib/state.dart', 'comment: _beaconComment(),',
+         '组包时没有带上 _beaconComment() —— 备注与 HR= 会丢')
+    # 手动上报的提示必须说清「带了什么」（用户看不出时就会来问）
+    need('lib/state.dart', 'String get beaconAttachedDetail',
+         '缺少「实际附带内容」的拼装 —— 手动上报后用户无法确认心率高没带上')
+    need('lib/map_page.dart', 'st.beaconAttachedDetail',
+         '手动上报的提示没有列出实际附带的内容')
+
     # 心率必须显示在**主屏幕（地图页）**上（需求原话）
     need('lib/map_page.dart', 'Widget _hrChip()',
          '地图页没有心率胶囊 —— 心率只在设置页可见，主屏幕看不到')

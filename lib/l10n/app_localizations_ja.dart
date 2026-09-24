@@ -6829,4 +6829,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
+  @override
+  String positionBeaconDetail(String grid, String detail) => "位置ビーコン · グリッド $grid · $detail";
+
+  @override
+  String beaconAttachedHr(String hr) => "心拍 $hr";
+
+  @override
+  String get beaconAttachedNone => "心拍なし";
+
 }

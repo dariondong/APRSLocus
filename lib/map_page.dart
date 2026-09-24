@@ -1210,7 +1210,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                S.of(context).positionBeacon(st.myGrid),
+                                S.of(context).positionBeaconDetail(
+                                  st.myGrid,
+                                  st.beaconAttachedDetail,
+                                ),
                               ),
                               behavior: SnackBarBehavior.floating,
                             ),
@@ -2133,7 +2136,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   child: GestureDetector(
                     onTap: () {
                       st.sendBeacon();
-                      _toastMsg(S.of(context).positionBeacon(st.myGrid));
+                      _toastMsg(S.of(context).positionBeaconDetail(
+                        st.myGrid,
+                        st.beaconAttachedDetail,
+                      ));
                     },
                     child: Container(
                       padding:

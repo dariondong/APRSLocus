@@ -2460,5 +2460,10 @@
   "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
   "posSourceLabel": "Fuente de posición",
   "hrSourceLabel": "Fuente de pulso",
-  "ownSourcePhoneGps": "GPS del teléfono"
+  "ownSourcePhoneGps": "GPS del teléfono",
+  "positionBeaconDetail": "Baliza de posición · Cuadrícula {grid} · {detail}",
+  "beaconAttachedHr": "pulso {hr}",
+  "beaconAttachedNone": "sin pulso",
+  "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
 }

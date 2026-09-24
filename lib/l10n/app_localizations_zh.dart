@@ -6755,6 +6755,15 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get beaconGarminNext => "佳明上报 · {s} · ❤{hr}";
 
+  @override
+  String positionBeaconDetail(String grid, String detail) => "位置信标 · 网格 $grid · $detail";
+
+  @override
+  String beaconAttachedHr(String hr) => "心率 $hr";
+
+  @override
+  String get beaconAttachedNone => "未附带心率";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13506,5 +13515,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconGarminNext => "佳明上報 · {s} · ❤{hr}";
+
+  @override
+  String positionBeaconDetail(String grid, String detail) => "位置信標 · 網格 $grid · $detail";
+
+  @override
+  String beaconAttachedHr(String hr) => "心率 $hr";
+
+  @override
+  String get beaconAttachedNone => "未附帶心率";
 
 }
