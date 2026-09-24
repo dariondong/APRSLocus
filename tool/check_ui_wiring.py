@@ -47,6 +47,42 @@ def read(rel):
     return io.open(os.path.join(ROOT, rel), encoding='utf-8').read()
 
 
+def code_only(text):
+    """剥掉注释与字符串字面量，只留代码。
+
+    做「代码里写了什么」的判断必须先用它：本仓库的注释会引用被检查的写法本身
+    （例如解释「为什么 BA3RZL 要单独一行」时会写出那种被禁止的形式），
+    按全文匹配就会把说明文字当成违规 —— 假失败比没有检查更坏。
+    """
+    out = []
+    i, n = 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == '/' and text[i + 1:i + 2] == '/':
+            j = text.find('\n', i)
+            i = n if j < 0 else j
+            continue
+        if c == '/' and text[i + 1:i + 2] == '*':
+            j = text.find('*/', i + 2)
+            i = n if j < 0 else j + 2
+            continue
+        if c in '\'"':
+            q = c
+            i += 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2
+                    continue
+                if text[i] == q:
+                    break
+                i += 1
+            i += 1
+            continue
+        out.append(c)
+        i += 1
+    return ''.join(out)
+
+
 def main() -> int:
     errors = []
 
@@ -218,13 +254,31 @@ def main() -> int:
                           'analyze 会报 `Expected to find \';\'`（本机看不出，'
                           '括号是平衡的）')
 
+    # ── 关于页：BA3RZL 必须**单独一行** ──
+    #
+    # 用户明确要求过（原话「BA3RZL 单独一行 这很重要！」）。原来写成一整行
+    # `'${t.aiSupport} · BA3RZL 养生'`：扫过去只看到那个「标签」，提供算力的人被
+    # `·` 混在句子中间、一眼看不见。这类「排版意愿」没有任何编译期检查会拦，
+    # 所以钉在这里（判据很窄：不许出现把二者写在同一行字符串里的写法）。
+    about_raw = read('lib/about_page.dart')
+    about_code = code_only(about_raw)
+    # ① 不许把「标签 + BA3RZL」写进同一个字符串（那正是被要求拆开的样子）。
+    #    这一步要**剥注释**：解释「为什么它要单独一行」的注释里会写出被禁止的形式。
+    if '· BA3RZL' in about_code:
+        errors.append('lib/about_page.dart 里 BA3RZL 又和别的文字挤在同一行了 —— '
+                      '用户明确要求它单独成行（重要）')
+    # ② 必须有「自己一个字符串」的那一行。这一步要**用原文** —— 要找的东西本身
+    #    就是字符串字面量（先剥字符串就永远找不到，第一版就是这么自相矛盾的）。
+    if "'BA3RZL" not in about_raw:
+        errors.append('lib/about_page.dart 里找不到单独成行的 BA3RZL 文本')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:
             print('  -', e)
         return 1
     print('交互接线 ok（自绘按钮整块可点、外壳接三种跨页请求、未连接横幅占让位量、'
-          '回调都真的被调用）')
+          '回调都真的被调用、关于页 BA3RZL 单独成行）')
     return 0
 
 

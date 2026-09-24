@@ -2,6 +2,13 @@
 
 ## [1.6.169] - 2026-09-24
 
+**关于页：BA3RZL 单独成行，并与上面的呼号同一套样式**（用户明确要求，原话「这很重要」，
+随后追问「跟上面呼号一样吗，这是个重要人物」）。原来那一行是 `AI 算力支持 · BA3RZL 养生`：
+扫过去只看到「标签」，提供算力的人在句子中间、一眼看不见。
+现在**标签一行、呼号胶囊一行**：`BA3RZL` 用与上面测试成员**同一个 `_memberChip`**
+（同一颗绿色胶囊 + 天线图标），「养生」作为胶囊后的小字备注 —— 既单独成行，样式也和
+被点名的那些呼号一致。
+
 ### 🐞 1.0 布局下「佳明分享」仍然毫无反应（两个回调都只在 2.0 注册）/ Garmin share still silent in the 1.0 layout
 
 上一版把「分享过来的内容里没有链接」也做成**可见提示**（`onGarminShareNoLink`），但那个
@@ -20,6 +27,14 @@
 ---
 
 ## [1.6.169] - 2026-09-24 (English)
+
+**About page: BA3RZL gets its own line, styled exactly like the callsigns above** (an explicit
+request — "this is important" — followed by "is it the same as the callsigns above? This is an
+important person"). The line used to read `AI compute support · BA3RZL`; scanning it you only saw
+the label, with the person who provided the compute buried mid-sentence. It is now **label on one
+line, callsign chip on the next**: `BA3RZL` uses the very same `_memberChip` as the test members
+above (same green pill, same antenna icon), with 养生 as a small note after it — so it is both on
+its own line and visually identical to the callsigns being named.
 
 ### 🐞 Garmin share still silent in the 1.0 layout (both callbacks were registered in the 2.0 shell only)
 

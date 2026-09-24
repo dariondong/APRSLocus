@@ -565,9 +565,34 @@ class _AboutPageState extends State<AboutPage>
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                                child: Text(
-                                  '${t.aiSupport} · BA3RZL 养生',
-                                  style: ts(11, c: C.grey),
+                                // BA3RZL **必须单独一行**（用户明确要求，且说「这很重要」）。
+                                // 原来写成一整行『AI 算力支持 · BA3RZL 养生』：扫过去只看到
+                                // 那个「标签」，提供算力的人被 `·` 混在句子中间、一眼看不见。
+                                // 现在标签一行、呼号胶囊一行 —— 谁做了什么是两行分别可读的。
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(t.aiSupport, style: ts(10.5, c: C.greyLight)),
+                                    const SizedBox(height: 6),
+                                    // **与上面测试成员同一套呼号胶囊**。
+                                    //
+                                    // 用户原话：「关于页 BA3RZL 单独一行 这很重要！」→
+                                    // 接着又问「跟上面呼号一样吗，这是个重要人物」——
+                                    // 也就是说：光把 `AI 算力支持 · BA3RZL 养生` 拆成一行
+                                    // 普通文字还不够，**样式也得和上面那几个呼号一致**，
+                                    // 否则他在这一节里看着仍然不像「被点名的人」。
+                                    // 所以这里用同一个 `_memberChip`（同一颗绿色胶囊 +
+                                    // 天线图标），把「养生」留作胶囊后面的小字备注。
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      children: [
+                                        _memberChip('BA3RZL'),
+                                        Text('养生', style: ts(11, c: C.grey)),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                               _sponsorRow(context),
