@@ -162,6 +162,17 @@ def main() -> int:
     g = read('lib/garmin.dart')
     need('lib/garmin.dart', r'livetrack\.garmin\.com',
          'LiveTrack 链接的正则没了 —— 用户粘贴的链接永远判为无效')
+    # **佳明 App 的「分享」给的是短链 `gar.mn/xxx`**，参考项目（从 Gmail 邮件取长链）
+    # 里根本没有这条分支 —— 只认长链的话，用户在佳明 App 里点分享选 APRSlocus
+    # 会「什么都没发生」（Dart 与 Android 的域名闸门两处都会把它挡掉）。
+    need('lib/garmin.dart', r'gar\.mn',
+         '没有识别佳明 App 分享的短链 gar.mn —— 分享过来的链接会被判为无效')
+    need('lib/garmin_fetch_io.dart', 'followRedirects = true',
+         '抓取没有显式跟随跳转 —— 短链靠 301 跳到长链，关掉就再也抓不到数据'
+         '（而长链照常，极难归因）')
+    need('android/app/src/main/kotlin/com/aprslocus/aprslocus/MainActivity.kt',
+         '"gar.mn"',
+         'Android 分享入口的域名闸门没有放行 gar.mn —— 佳明 App 分享的短链会被挡掉')
     need('lib/garmin.dart', 'self\\.__next_f\\.push',
          '没有解析 Next.js 的流式数据块 —— 抓到的页面里找不到 trackPoints')
     need('lib/garmin.dart', '"trackPoints":', '没有取 trackPoints —— 拿不到任何点')
@@ -189,13 +200,22 @@ def main() -> int:
     need('lib/map_page.dart', '_hrChip(),',
          '心率胶囊没有挂进地图左上竖列')
 
-    # 设备页要有「其他数据来源」入口（心率带 / 佳明）
-    need('lib/settings_pages.dart', 'otherSourcesTitle',
-         '设备页（数据来源）没有「其他数据来源」这一节 —— 用户在那里找不到心率带/佳明')
-    need('lib/settings_pages.dart', 'HrSettingsCard(state: st)',
-         '设备页没挂心率卡（应复用信标页那一个组件，不要另写一套）')
-    need('lib/settings_pages.dart', 'GarminTrackEntry(state: st)',
-         '设备页没挂佳明入口')
+    # 心率带与佳明的入口位置：**必须在「设备」页的子页入口列表里**。
+    #
+    # 用户原话：「应该把这些链接放在设置设备列表里面，而不是…信标」——
+    # 它们的语义是**设备**（要搜、要连、会掉线），与「信标怎么发」是两件事。
+    # 一开始我放在信标设置页，位置就是错的。
+    need('lib/device_page.dart', 'page: HrDevicePage(state: state)',
+         '设备页的子页入口里没有「心率」—— 用户找不到连心率带的地方')
+    need('lib/device_page.dart', 'page: GarminTrackPage(state: state)',
+         '设备页的子页入口里没有「佳明 LiveTrack」')
+    need('lib/hr_page.dart', 'HrSettingsCard(state: state)',
+         '心率页没有复用 HrSettingsCard（不要另写一套，两处必然会漂）')
+    # 反向：信标设置页里**不许**再塞这两样（放错了地方）
+    if 'HrSettingsCard' in read('lib/settings_pages.dart') or \
+            'GarminTrackEntry' in read('lib/settings_pages.dart'):
+        errors.append('lib/settings_pages.dart 里又出现了心率卡 / 佳明入口 —— '
+                      '它们的入口在「设置 → 设备」，不要塞进信标设置页')
 
     # ── ⑥ l10n：六个语言都要有这两组键 ──
     for lg in ('zh', 'zh_TW', 'en', 'ja', 'es', 'id'):

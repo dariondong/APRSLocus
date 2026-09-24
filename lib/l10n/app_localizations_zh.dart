@@ -6734,14 +6734,8 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
-  @override
-  String get otherSourcesTitle => "其他数据来源";
 
-  @override
-  String get otherSourcesSubtitle => "自己位置的来源（不是报文链路）";
 
-  @override
-  String get otherSourcesHint => "心率带与佳明 LiveTrack 提供的是「你的位置/心率」，与上面那些收发报文的链路互不影响；可以同时使用。";
 
 }
 
@@ -13474,13 +13468,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
-  @override
-  String get otherSourcesTitle => "其他資料來源";
 
-  @override
-  String get otherSourcesSubtitle => "自己位置的來源（不是報文鏈路）";
 
-  @override
-  String get otherSourcesHint => "心率帶與佳明 LiveTrack 提供的是「你的位置／心率」，與上面那些收發報文的鏈路互不影響；可以同時使用。";
 
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'audio_page.dart';
+import 'garmin_page.dart';
+import 'hr_page.dart';
 import 'link_test_card.dart';
 import 'pkwdwpl_device_page.dart';
 import 'settings_widgets.dart';
@@ -274,6 +276,26 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           title: s.pkwdwplDeviceTitle,
           desc: s.pkwdwplDeviceDesc,
           page: PkwdwplDevicePage(state: state),
+        ),
+        // 心率带与佳明 LiveTrack：它们**不是报文链路**（不参与收发报文），
+        // 而是「自己位置/心率的来源」，所以放在「设备」这一页的子页入口里，
+        // 与上面三条链路并列 —— 而不是塞进信标设置页（用户原话：
+        // 「应该把这些链接放在设置设备列表里面，而不是…信标」）。
+        _entry(
+          context,
+          icon: Icons.favorite_rounded,
+          color: C.red,
+          title: s.hrCardTitle,
+          desc: s.hrCardSubtitle,
+          page: HrDevicePage(state: state),
+        ),
+        _entry(
+          context,
+          icon: Icons.watch_rounded,
+          color: C.green,
+          title: s.garminCardTitle,
+          desc: s.garminCardSubtitle,
+          page: GarminTrackPage(state: state),
         ),
       ],
     );

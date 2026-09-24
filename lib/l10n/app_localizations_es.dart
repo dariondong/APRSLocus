@@ -7049,13 +7049,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
-  @override
-  String get otherSourcesTitle => "Otras fuentes de datos";
 
-  @override
-  String get otherSourcesSubtitle => "Fuentes de tu posición (no enlaces de paquetes)";
 
-  @override
-  String get otherSourcesHint => "La banda de pulso y Garmin LiveTrack aportan tu propia posición/pulso; son independientes de los enlaces de paquetes y pueden funcionar a la vez.";
 
 }

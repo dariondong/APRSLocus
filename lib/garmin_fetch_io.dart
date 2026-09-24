@@ -15,6 +15,17 @@ Future<String> httpGetText(String url) async {
     ..userAgent = 'Mozilla/5.0';
   try {
     final req = await client.getUrl(Uri.parse(url));
+    // ⚠ `followRedirects` / `maxRedirects` 是 **HttpClientRequest** 上的属性，
+    // 不是 HttpClient 上的（写成 `HttpClient()..followRedirects = true` 会直接
+    // 编译不过 —— `no setter named 'followRedirects'`）。
+    //
+    // 这两个必须显式写：**佳明 App 分享的短链（gar.mn/xxx）就是靠 301 跳到
+    // livetrack.garmin.com 的长链**。dart:io 默认确实跟随，但显式写出来是为了
+    // 让「这条链依赖跳转」这件事在代码里看得见 —— 否则哪天有人关掉它，
+    // 表现会是「短链永远抓不到数据」而长链照常，极难归因。
+    req
+      ..followRedirects = true
+      ..maxRedirects = 5;
     req.headers.set(HttpHeaders.acceptHeader, 'text/html');
     final res = await req.close().timeout(const Duration(seconds: 20));
     if (res.statusCode != 200) {

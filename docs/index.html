@@ -564,6 +564,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.166</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：佳明 App 分享的短链（`gar.mn/…`）之前根本进不来**。佳明 App 的「分享」给的是短链，而应用只认长链（`livetrack.garmin.com/session/…/token/…`）、Android 分享入口也只放行那个域名 —— 于是「分享 → 选 APRSlocus」什么都没发生。现在两种链接都认（含只复制到 `gar.mn/xxx` 没有 `https://` 的情况），抓取时跟随 301 跳转；写日志前把 token 打码 —— 分享链接本身就是读取实时位置的凭据</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.165</span>
         <span class="cl-date">2026-09-24</span>
       </div>

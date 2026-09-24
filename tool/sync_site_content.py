@@ -205,6 +205,28 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.166', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**修：佳明 App 分享的短链（`gar.mn/…`）之前根本进不来**。佳明 App 的「分享」给的是'
+               '短链，而应用只认长链（`livetrack.garmin.com/session/…/token/…`）、Android 分享'
+               '入口也只放行那个域名 —— 于是「分享 → 选 APRSlocus」什么都没发生。现在两种链接都认'
+               '（含只复制到 `gar.mn/xxx` 没有 `https://` 的情况），抓取时跟随 301 跳转；'
+               '写日志前把 token 打码 —— 分享链接本身就是读取实时位置的凭据',
+               '**修：佳明 App 分享的短鏈（`gar.mn/…`）之前根本進不來**。佳明 App 的「分享」給的是'
+               '短鏈，而應用只認長鏈（`livetrack.garmin.com/session/…/token/…`）、Android 分享'
+               '入口也只放行那個域名 —— 於是「分享 → 選 APRSlocus」什麼都沒發生。現在兩種連結都認'
+               '（含只複製到 `gar.mn/xxx` 沒有 `https://` 的情況），抓取時跟隨 301 跳轉；'
+               '寫日誌前把 token 打碼 —— 分享連結本身就是讀取即時位置的憑據',
+               '**Fix: the short link the Garmin app shares (`gar.mn/…`) never got through.** '
+               'Garmin\'s Share button produces a short link, but the app only accepted the long '
+               'form and the Android share target only allowed that host — so "Share → APRSlocus" '
+               'did nothing. Both forms are recognised now (including a bare `gar.mn/xxx` with no '
+               'scheme), redirects are followed, and the token is masked before logging, because a '
+               'share link is the credential for reading a live position.')),
+        ],
+    },
+    {
         'ver': 'v1.6.165', 'date': '2026-09-24',
         'items': [
             ('new',

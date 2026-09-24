@@ -53,8 +53,12 @@ class MainActivity : FlutterActivity() {
         const val SHARE_IN_CHANNEL = "com.aprslocus/share_in"
         const val SHARE_IN_EVENT_CHANNEL = "com.aprslocus/share_in_events"
 
-        // 只认佳明的 LiveTrack 域名（为什么要设这道闸门见 readSharedText）
-        const val LIVETRACK_HOST = "livetrack.garmin.com"
+        // 只认佳明的 LiveTrack 域名（为什么要设这道闸门见 readSharedText）。
+        //
+        // **两个都要**：`livetrack.garmin.com` 是邮件/网页上的长链，而
+        // **佳明 App 的「分享」按钮给的是 `gar.mn` 短链** —— 只放行前者的话，
+        // 用户在佳明 App 里点分享、选 APRSlocus，会「什么都没发生」（被这里挡掉了）。
+        val TRACK_HOSTS = listOf("livetrack.garmin.com", "gar.mn")
     }
 
     // 蓝牙 TNC（经典蓝牙 SPP）：只搬字节，KISS/AX.25 在 Dart 侧
@@ -928,7 +932,7 @@ class MainActivity : FlutterActivity() {
     /// 从 ACTION_SEND 意图里取出分享文本；不是文本分享、或不是佳明 LiveTrack
     /// 的链接则返回 null（安静忽略）。
     ///
-    /// 为什么要有 livetrack.garmin.com 这道闸门：声明了 ACTION_SEND 的
+    /// 为什么要有域名闸门：声明了 ACTION_SEND 的
     /// intent-filter 之后，**任意 App 分享任意文本**时 APRSlocus 都会出现在
     /// 分享目标里（这是系统机制，没法按宿主 App 过滤）。不设闸门的话，用户在
     /// 微信里分享一句话也会看到 APRSlocus，点进来又什么都没发生 —— 一脸问号。
@@ -946,7 +950,7 @@ class MainActivity : FlutterActivity() {
             ?: textExtra(intent, Intent.EXTRA_SUBJECT)
         val text = raw?.trim()
         if (text.isNullOrEmpty()) return null
-        if (!text.contains(LIVETRACK_HOST, ignoreCase = true)) return null
+        if (TRACK_HOSTS.none { text.contains(it, ignoreCase = true) }) return null
         return text
     }
 

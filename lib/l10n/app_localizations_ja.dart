@@ -6808,13 +6808,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
-  @override
-  String get otherSourcesTitle => "その他のデータソース";
 
-  @override
-  String get otherSourcesSubtitle => "自分の位置のソース（パケットリンクではありません）";
 
-  @override
-  String get otherSourcesHint => "心拍センサーと Garmin LiveTrack は「自分の位置／心拍」を供給するもので、上のパケットリンクとは独立して同時に使えます。";
 
 }

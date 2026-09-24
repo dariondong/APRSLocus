@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.166</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: the short link the Garmin app shares (`gar.mn/…`) never got through.** Garmin's Share button produces a short link, but the app only accepted the long form and the Android share target only allowed that host — so "Share → APRSlocus" did nothing. Both forms are recognised now (including a bare `gar.mn/xxx` with no scheme), redirects are followed, and the token is masked before logging, because a share link is the credential for reading a live position.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.165</span>
         <span class="cl-date">2026-09-24</span>
       </div>

@@ -2370,8 +2370,5 @@
   "garminOpen": "Open settings",
   "garminWebUnsupported": "Not available on the web build (browser CORS); use the Android or Windows build",
   "hrForTncNote": "Heart rate uses BLE while TNC uses classic Bluetooth, so both can be connected",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
-  "otherSourcesTitle": "Other data sources",
-  "otherSourcesSubtitle": "Sources for your own position (not packet links)",
-  "otherSourcesHint": "The heart-rate strap and Garmin LiveTrack supply your own position/heart rate; they are independent of the packet links above and can run at the same time."
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
 }

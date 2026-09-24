@@ -2454,8 +2454,5 @@
   "garminOpen": "設定を開く",
   "garminWebUnsupported": "Web 版では利用できません（ブラウザの CORS 制限）。Android / Windows 版をご利用ください",
   "hrForTncNote": "心拍は BLE、TNC はクラシック Bluetooth なので同時接続できます",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
-  "otherSourcesTitle": "その他のデータソース",
-  "otherSourcesSubtitle": "自分の位置のソース（パケットリンクではありません）",
-  "otherSourcesHint": "心拍センサーと Garmin LiveTrack は「自分の位置／心拍」を供給するもので、上のパケットリンクとは独立して同時に使えます。"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
 }

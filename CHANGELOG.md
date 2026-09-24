@@ -1,5 +1,91 @@
 # 更新日志
 
+## [1.6.166] - 2026-09-24
+
+### 🐞 佳明 App 分享的短链（`gar.mn/…`）之前根本进不来 / Garmin app share links (gar.mn) never got through
+
+**现状**：佳明 App 的「分享」按钮给的是**短链** `gar.mn/xxxx`，而我们的链接正则只认长链
+`livetrack.garmin.com/session/…/token/…`，Android 分享入口的域名闸门也只放行后者 ——
+于是用户「在佳明 App 里点分享 → 选 APRSlocus」，表现是**什么都没发生**。
+
+**为什么参考项目没有这个问题**：`garmin-livetrack-aprs-openwrt` 只从 **Gmail 邮件**里抠链接，
+而邮件里给的就是完整长链 —— 它的代码里压根没有短链分支。手机分享面板是**另一条路**，
+只能自己补。
+
+**实测**（2026-09-24）：`https://gar.mn/<code>` → `301` →
+`https://livetrack.garmin.com/session/<uuid>/token/<hex>` → `200`，页面与直接访问长链完全一致。
+所以**不需要自己解短链**，抓取时跟随跳转即可。
+
+**修了三处**：
+
+* `lib/garmin.dart` 同时识别长链与短链，并兼容「只复制到 `gar.mn/xxx`（没有 `https://`）」；
+* Android 分享入口的域名闸门放行 `livetrack.garmin.com` 与 `gar.mn` 两个域名；
+* 抓取时显式 `followRedirects` —— 顺带发现并修掉了「属性写错对象」的错误：
+  `followRedirects` / `maxRedirects` 是 **`HttpClientRequest`** 上的，不是 `HttpClient` 上的
+  （第一版写在 `HttpClient()..followRedirects` 上，本机 `dart` 编译直接报
+  `no setter named 'followRedirects'`——好在没推上去白等一轮 CI）。
+
+**另外**：写日志前把链接里的 token 打码（`maskLiveTrackUrl`）。分享链接本身就是**读取
+实时位置与心率的凭据**，原样落进日志或截图里等于把它公开出去（参考项目的文档也专门强调
+「token 只应存在于运行时」）。
+
+**入口位置改对了**：心率带与佳明 LiveTrack 都是**设备**（要搜、要连、会掉线），
+与「信标怎么发」是两件事 —— 所以入口统一放在**设置 → 设备**的子页入口列表里
+（与 TNC / 音频 / PKWDWPL 并列），**不再塞在信标设置页**。心率那页是新加的
+（`hr_page.dart`，正文复用原来那张卡，不重写一份）。
+
+**说明**：页面解析逻辑（从公开分享页的 Next.js 流式数据块里取 `trackPoints`）**保持与参考
+项目一致**，本版没有改动它。（拿真实分享链接实测时页面里 `trackPoints` 是空数组、
+`position` 字段一个都没有 —— 那是**那个会话本身还没有数据**，不是解析器坏了；空会话会
+照常给出「还没有取到点」的提示。）
+
+---
+
+## [1.6.166] - 2026-09-24 (English)
+
+### 🐞 Garmin app share links (gar.mn) never got through
+
+**The problem.** The Garmin app's Share button produces a **short link**, `gar.mn/xxxx`, while
+our URL pattern only accepted the long form (`livetrack.garmin.com/session/…/token/…`), and the
+Android share target's host gate only allowed the same host — so "Share → APRSlocus" in the
+Garmin app **did nothing at all**.
+
+**Why the reference project never hit this.** `garmin-livetrack-aprs-openwrt` only scrapes links
+out of **Gmail messages**, and the mail contains the full long URL — there is no short-link branch
+in its code. The phone share sheet is a **different path**, which we had to add ourselves.
+
+**Measured** (2026-09-24): `https://gar.mn/<code>` → `301` →
+`https://livetrack.garmin.com/session/<uuid>/token/<hex>` → `200`, and the page is identical to
+opening the long link directly. So there is **no need to resolve the short link ourselves** —
+following redirects while fetching is enough.
+
+**Three fixes**: `lib/garmin.dart` now recognises both forms (and tolerates a bare `gar.mn/xxx`
+with no scheme); the Android share gate allows both hosts; and fetching sets `followRedirects`
+explicitly — which also surfaced a mistake of mine: `followRedirects` / `maxRedirects` live on
+**`HttpClientRequest`**, not `HttpClient` (the first attempt put them on `HttpClient()..` and the
+local `dart` compiler rejected it outright with `no setter named 'followRedirects'`, so no CI
+round was wasted).
+
+**Also**: the token is masked before anything is logged (`maskLiveTrackUrl`). A share link *is*
+the credential for reading someone's live position and heart rate — logging it verbatim publishes
+it (the reference project's docs stress the same point: "the token should only ever exist at
+runtime").
+
+**Entry points moved to the right place.** The strap and Garmin LiveTrack are **devices** (you
+scan, you connect, they drop out) — a different concern from "how the beacon transmits" — so
+their entries now live in **Settings → Devices**, alongside TNC / audio / PKWDWPL, and are **no
+longer inside the beacon settings page**. The heart-rate page is new (`hr_page.dart`) and reuses
+the existing card rather than duplicating it.
+
+**Note:** the page parser (pulling `trackPoints` out of the public share page's Next.js streamed
+data blocks) is **unchanged and matches the reference project**. (When testing with a real share
+link the page's `trackPoints` was an empty array with no `position` fields at all — that session
+simply **had no data yet**, it was not a broken parser; an empty session keeps showing the
+"no points yet" notice.)
+
+---
+
+
 ## [1.6.165] - 2026-09-24
 
 ### ❤️ 蓝牙心率带（信标附带心率）+ ⌚ 佳明 LiveTrack / BLE heart-rate straps (HR in the beacon) + Garmin LiveTrack

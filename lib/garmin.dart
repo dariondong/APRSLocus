@@ -48,15 +48,46 @@ class GarminPoint {
 /// 佳明 LiveTrack 分享链接的正则（uuid + token 两段都必须有）。
 ///
 /// 形如：`https://livetrack.garmin.com/session/<uuid>/token/<HEX>`
-final RegExp _urlRe = RegExp(
-  r'https?://livetrack\.garmin\.com/session/([0-9a-fA-F-]{36})/token/([0-9A-Fa-f]+)',
+final RegExp _longRe = RegExp(
+  r'https?://livetrack\.garmin\.com/session/[0-9a-fA-F-]{36}/token/[0-9A-Fa-f]+',
 );
+
+/// 短链：**佳明 App 的「分享」按钮给出的就是这个**（形如 `gar.mn/3nN1LAZebB`）。
+///
+/// 参考项目（garmin-livetrack-aprs-openwrt）从来没有这个问题 —— 它只从 **Gmail 邮件**
+/// 里抠长链，而邮件里给的是完整的 `livetrack.garmin.com/session/…/token/…`。
+/// 手机上的「分享」面板给的是短链，所以这条路是我们自己补的。
+///
+/// 实测（2026-09-24）：`https://gar.mn/<code>` → `301` →
+/// `https://livetrack.garmin.com/session/<uuid>/token/<hex>` → `200`，页面与直接访问
+/// 长链完全一致。所以**不需要**自己去解短链 —— 抓取时跟随跳转即可（见 garmin_fetch_io）。
+final RegExp _shortRe = RegExp(r'https?://gar\.mn/[A-Za-z0-9_-]{4,32}');
+
+/// 用户可能只复制到 `gar.mn/xxx`（分享面板里显示的常常没有 scheme）。
+final RegExp _bareShortRe = RegExp(r'(?<![\w./-])gar\.mn/[A-Za-z0-9_-]{4,32}');
+
+/// 把链接里的 token 打码，供日志/界面使用。
+///
+/// 分享链接本身就是**读取位置与心率的凭据** —— 原样写进日志或截图里，等于把
+/// 自己的实时位置公开出去（参考项目的文档也专门强调了「token 只应存在于运行时」）。
+String maskLiveTrackUrl(String url) => url.replaceAllMapped(
+      RegExp(r'(token/)([0-9A-Fa-f]+)'),
+      (m) => '${m[1]}${m[2]!.substring(0, m[2]!.length < 8 ? m[2]!.length : 8)}…',
+    );
 
 /// 从任意文本里抽出 LiveTrack 链接（用户可能整段粘贴分享文案，不止是链接）。
 String? extractLiveTrackUrl(String raw) {
-  final m = _urlRe.firstMatch(raw.trim());
-  if (m == null) return null;
-  return m.group(0);
+  final text = raw.trim();
+  // 长链优先：它自带 session/token，最明确。
+  final long = _longRe.firstMatch(text);
+  if (long != null) return long.group(0);
+  // 短链（佳明 App 分享）：带 scheme 的先用，其次补上 https:// ——
+  // 分享面板里复制出来的往往就是 `gar.mn/xxx` 这样没有 scheme 的一段。
+  final short = _shortRe.firstMatch(text);
+  if (short != null) return short.group(0);
+  final bare = _bareShortRe.firstMatch(text);
+  if (bare != null) return 'https://${bare.group(0)}';
+  return null;
 }
 
 /// Next.js 的流式数据块：页面把服务端渲染的数据塞在
