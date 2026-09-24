@@ -565,6 +565,25 @@ class SettingRow extends StatelessWidget {
   }
 }
 
+/// 给**自绘**的可点区域一个桌面端手型指针。
+///
+/// 为什么需要它：`GestureDetector` **没有** `mouseCursor` 参数（那是 `InkWell` /
+/// `MouseRegion` 的），而这些自绘按钮（导航项、地图工具钮、立即上报…）又不是
+/// `InkWell` —— 于是 Windows 上把鼠标移到它们上面时指针还是普通箭头，看不出
+/// 哪些东西能点（触屏无影响）。
+///
+/// 包一层 `MouseRegion` 是最小的做法，而且它只改指针、**不抢手势**：
+/// 命中测试先走子节点，`GestureDetector` 仍然在命中路径上。
+class ClickCursor extends StatelessWidget {
+  final Widget child;
+  const ClickCursor({super.key, required this.child});
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: child,
+      );
+}
+
 /// Round small button
 class RoundIconBtn extends StatelessWidget {
   final IconData icon;
@@ -583,27 +602,27 @@ class RoundIconBtn extends StatelessWidget {
     // 圆形按钮基本都是**压在地图/列表上**的浮层：材质开启时给它真模糊，
     // 但用更小的半径 —— 38px 的按钮上套全屏级别的模糊，边缘会糊成一团灰，
     // 看起来像按钮没画好，而不是像磨砂。
-    final btn = GestureDetector(
-      onTap: onTap,
-      // 桌面端悬停给手型（自绘按钮没有水波，不给指针就没有「可点」的反馈）
-      mouseCursor: SystemMouseCursors.click,
-      // ⚠ 显式 opaque，与 `_toolBtn` 同一个坑：底色是 `BoxDecoration`，而
-      // `DecoratedBox` 不吸收点击 —— 默认 `deferToChild` 会把 38px 按钮的
-      // 可点区域缩到中心那个 20px 图标上（详见 map_page._toolBtn 的注释）。
-      behavior: HitTestBehavior.opaque,
-      child: MaterialSurface(
-        radius: 12,
-        blurSigma: C.chipBlur,
-        child: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: chipTint(C.white),
-            borderRadius: BorderRadius.circular(12),
-            // 同上：投影负责分层，描边去掉（圆形工具钮常年压在地图上）
-            boxShadow: elev1(),
+    final btn = ClickCursor(
+      child: GestureDetector(
+        onTap: onTap,
+        // ⚠ 显式 opaque，与 `_toolBtn` 同一个坑：底色是 `BoxDecoration`，而
+        // `DecoratedBox` 不吸收点击 —— 默认 `deferToChild` 会把 38px 按钮的
+        // 可点区域缩到中心那个 20px 图标上（详见 map_page._toolBtn 的注释）。
+        behavior: HitTestBehavior.opaque,
+        child: MaterialSurface(
+          radius: 12,
+          blurSigma: C.chipBlur,
+          child: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: chipTint(C.white),
+              borderRadius: BorderRadius.circular(12),
+              // 同上：投影负责分层，描边去掉（圆形工具钮常年压在地图上）
+              boxShadow: elev1(),
+            ),
+            child: Icon(icon, color: color ?? C.slate, size: 20),
           ),
-          child: Icon(icon, color: color ?? C.slate, size: 20),
         ),
       ),
     );

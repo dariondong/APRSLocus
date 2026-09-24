@@ -1510,33 +1510,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     required Color fg,
     required Color border,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      // 桌面端（Windows）鼠标悬停时给出手型：自绘按钮没有 Material 的水波，
-      // 不给指针的话鼠标移上去没有任何「可点」的反馈（触屏无影响）。
-      mouseCursor: SystemMouseCursors.click,
-      // ⚠ 必须显式 opaque：按钮的底色来自 `BoxDecoration`，而它对应的
-      // `DecoratedBox`（`RenderDecoratedBox extends RenderProxyBox`）**不重写
-      // `hitTestSelf`** —— 也就是**不吸收点击**，命中全交给子节点。默认的
-      // `deferToChild` 于是把可点区域缩到中间那个 20px 图标上：38px 的按钮
-      // 只有中心 28% 能点，按到边缘/圆角**完全没反应**（用户报的
-      // 「图层选择面板打不开」就是这么来的：他按的是按钮，不是图标）。
-      behavior: HitTestBehavior.opaque,
-      child: MaterialSurface(
-        radius: 12,
-        // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给
-        // 「实心」的 chipTint —— 本函数的三个调用点都这么传。
-        blurSigma: C.chipBlur,
-        child: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: elev1(),
-            border: Border.all(color: border),
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: onTap,
+        // ⚠ 必须显式 opaque：按钮的底色来自 `BoxDecoration`，而它对应的
+        // `DecoratedBox`（`RenderDecoratedBox extends RenderProxyBox`）**不重写
+        // `hitTestSelf`** —— 也就是**不吸收点击**，命中全交给子节点。默认的
+        // `deferToChild` 于是把可点区域缩到中间那个 20px 图标上：38px 的按钮
+        // 只有中心 28% 能点，按到边缘/圆角**完全没反应**（用户报的
+        // 「图层选择面板打不开」就是这么来的：他按的是按钮，不是图标）。
+        behavior: HitTestBehavior.opaque,
+        child: MaterialSurface(
+          radius: 12,
+          // 38px 的小控件：不模糊（省一层离屏重绘），所以 bg 必须由调用方给
+          // 「实心」的 chipTint —— 本函数的三个调用点都这么传。
+          blurSigma: C.chipBlur,
+          child: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: elev1(),
+              border: Border.all(color: border),
+            ),
+            child: Icon(icon, size: 20, color: fg),
           ),
-          child: Icon(icon, size: 20, color: fg),
         ),
       ),
     );
@@ -1608,26 +1607,27 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   /// 这条入口原先单独放在 `top: topBase + 44`，右侧工具列实际含 8 个按钮
   /// （一直排到 400 多），一旦有人改列间距它就会被别人盖住 —— 曾经被引导卡糊住过。
   Widget _immersiveEntry() {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => ImmersiveMapPage(state: widget.state)),
-      ),
-      mouseCursor: SystemMouseCursors.click,
-      child: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: C.black.withValues(alpha: 0.82),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: elev1(),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ImmersiveMapPage(state: widget.state)),
         ),
-        child: Tooltip(
-          message: S.of(context).immersiveMapTip,
-          child: const Icon(Icons.navigation_rounded,
-              size: 20, color: Colors.white),
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: C.black.withValues(alpha: 0.82),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: elev1(),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+          ),
+          child: Tooltip(
+            message: S.of(context).immersiveMapTip,
+            child: const Icon(Icons.navigation_rounded,
+                size: 20, color: Colors.white),
+          ),
         ),
       ),
     );
@@ -2040,55 +2040,57 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final c = !on
         ? C.slate
         : (st.beaconPhase == BeaconPhase.coarseFix ? C.orange : C.green);
-    return GestureDetector(
-      onTap: _showMyPanel,
-      mouseCursor: SystemMouseCursors.click,
-      child: MaterialSurface(
-        radius: 12,
-        blurSigma: C.chipBlur,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: C.chipFill,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: elev2(),
-            border: Border.all(color: c.withValues(alpha: 0.25)),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                on ? Icons.send_rounded : Icons.notifications_off_rounded,
-                size: 14,
-                color: c,
-              ),
-              SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  label,
-                  style: ts(11, c: C.ink, w: FontWeight.w600),
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: _showMyPanel,
+        child: MaterialSurface(
+          radius: 12,
+          blurSigma: C.chipBlur,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: C.chipFill,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: elev2(),
+              border: Border.all(color: c.withValues(alpha: 0.25)),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  on ? Icons.send_rounded : Icons.notifications_off_rounded,
+                  size: 14,
+                  color: c,
                 ),
-              ),
-              // 立即上报（信标开时绿色；关时置灰仍可发一次）
-              GestureDetector(
-                onTap: () {
-                  st.sendBeacon();
-                  _toastMsg(S.of(context).positionBeacon(st.myGrid));
-                },
-                mouseCursor: SystemMouseCursors.click,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: C.blue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                SizedBox(width: 6),
+                Expanded(
                   child: Text(
-                    S.of(context).manualBeacon,
-                    style: ts(10, c: Colors.white, w: FontWeight.w700),
+                    label,
+                    style: ts(11, c: C.ink, w: FontWeight.w600),
                   ),
                 ),
-              ),
-            ],
+                // 立即上报（信标开时绿色；关时置灰仍可发一次）
+                ClickCursor(
+                  child: GestureDetector(
+                    onTap: () {
+                      st.sendBeacon();
+                      _toastMsg(S.of(context).positionBeacon(st.myGrid));
+                    },
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: C.blue,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        S.of(context).manualBeacon,
+                        style: ts(10, c: Colors.white, w: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

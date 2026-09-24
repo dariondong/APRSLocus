@@ -240,14 +240,16 @@ CL = [
                '自动降级为「在线 + 台站」（横屏面板展开时地图区常只剩 200 出头）；'
                '③「矮横屏」改按顶栏之下的可用高度判断（未连接 / 公告横幅会各占一行），'
                '不再漏判「工具列最下面的定位按钮被裁掉、点不到」；'
-               '④ 桌面端自绘按钮统一给鼠标手型指针',
+               '④ 桌面端自绘按钮统一给鼠标手型指针（包一层 ClickCursor —— '
+               'GestureDetector 没有 mouseCursor 参数）',
                '**橫屏在手機 / 平板 / 電腦三端的打磨**：① 面板內的寬度不再按螢幕寬度算 —— '
                '訊息氣泡原來取「螢幕寬 × 0.55」，桌面 1920 會算成 1056px，超出面板的部分'
                '被默默裁掉，長訊息讀不全（現在按訊息區實際寬度）；② 左上統計列在窄地圖區'
                '自動降級為「線上 + 臺站」（橫屏面板展開時地圖區常只剩 200 出頭）；'
                '③「矮橫屏」改按頂欄之下的可用高度判斷（未連線 / 公告橫幅會各佔一行），'
                '不再漏判「工具列最下面的定位按鈕被裁掉、點不到」；'
-               '④ 桌面端自繪按鈕統一給滑鼠手型指標',
+               '④ 桌面端自繪按鈕統一給滑鼠手型指標（包一層 ClickCursor —— '
+               'GestureDetector 沒有 mouseCursor 參數）',
                '**Landscape polish for phone, tablet and desktop.** (1) Widths inside the pane '
                'are no longer computed from the screen — message bubbles used to take '
                '"screen width × 0.55", which on a 1920 desktop is 1056px, silently clipped by '
@@ -257,8 +259,9 @@ CL = [
                'about 200px). (3) "Short landscape" is now judged by the height actually '
                'available below the top bar — the disconnected and notice banners each take '
                'a row — so the clipped, unreachable locate button at the bottom of the tool '
-               'column is no longer missed. (4) Self-drawn buttons on desktop now show a hand '
-               'cursor.')),
+               'column is no longer missed. (4) Self-drawn buttons on desktop are wrapped in '
+               'ClickCursor (MouseRegion + SystemMouseCursors.click), because GestureDetector '
+               'has no mouseCursor parameter, so a hover shows a hand cursor.')),
             ('fix',
              T('**关于页名片卡不再挤**：头部内边距加大、标题与副标题间距 2→4px、'
                '标题 13.5→14.5、分享行更宽松、官网图标 32→34 并加了悬停说明（桌面端）',

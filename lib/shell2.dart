@@ -769,67 +769,67 @@ class _HomeShell2State extends State<HomeShell2>
     final sel = _tab == i;
     final slot = _slots[i].$1;
     final unread = widget.state.unreadMessages;
-    return GestureDetector(
-      onTap: () => _select(i),
-      behavior: HitTestBehavior.opaque,
-      // 桌面端给手型：导航项是自绘的，没有 Material 水波
-      mouseCursor: SystemMouseCursors.click,
-      child: Container(
-        padding: rail ? const EdgeInsets.symmetric(vertical: 9) : EdgeInsets.zero,
-        decoration: rail && sel
-            ? BoxDecoration(
-                color: _accentOf(slot).withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(12),
-              )
-            : null,
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              ThemeController.instance.buildSlotIcon(
-                slot,
-                size: 21,
-                color: sel ? _accentOf(slot) : C.grey,
-                fallbackIcon: themeIconByName(_slots[i].$2),
-                selected: sel,
-              ),
-              if (i == 2 && unread > 0)
-                Positioned(
-                  right: -8,
-                  top: -4,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                    constraints:
-                        const BoxConstraints(minWidth: 14, minHeight: 14),
-                    decoration: BoxDecoration(
-                      color: C.red,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        unread > 99 ? '99+' : '$unread',
-                        style: ts(9, c: Colors.white, w: FontWeight.w700),
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: () => _select(i),
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: rail ? const EdgeInsets.symmetric(vertical: 9) : EdgeInsets.zero,
+          decoration: rail && sel
+              ? BoxDecoration(
+                  color: _accentOf(slot).withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(12),
+                )
+              : null,
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ThemeController.instance.buildSlotIcon(
+                  slot,
+                  size: 21,
+                  color: sel ? _accentOf(slot) : C.grey,
+                  fallbackIcon: themeIconByName(_slots[i].$2),
+                  selected: sel,
+                ),
+                if (i == 2 && unread > 0)
+                  Positioned(
+                    right: -8,
+                    top: -4,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      constraints:
+                          const BoxConstraints(minWidth: 14, minHeight: 14),
+                      decoration: BoxDecoration(
+                        color: C.red,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(
+                          unread > 99 ? '99+' : '$unread',
+                          style: ts(9, c: Colors.white, w: FontWeight.w700),
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 2),
-          Text(
-            _labelOf(Tx.of(context), slot),
-            style: ts(10,
-                c: sel ? _accentOf(slot) : C.grey,
-                w: sel ? FontWeight.w700 : FontWeight.w400),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _labelOf(Tx.of(context), slot),
+              style: ts(10,
+                  c: sel ? _accentOf(slot) : C.grey,
+                  w: sel ? FontWeight.w700 : FontWeight.w400),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+        ),
       ),
     );
   }
@@ -1139,57 +1139,58 @@ class _HomeShell2State extends State<HomeShell2>
   /// 的顶部浮层（信息条 / 图例 / 工具列），而那几件是按 topInset 摆的。
   Widget _linkBanner(AppState st) {
     final s = S.of(context);
-    return GestureDetector(
-      // 整条都能点：与 _toolBtn 同一个坑 —— 底色来自 BoxDecoration，
-      // 而 DecoratedBox 不吸收点击，不写 opaque 就只有中间那点文字能点。
-      behavior: HitTestBehavior.opaque,
-      mouseCursor: SystemMouseCursors.click,
-      onTap: st.toggleConnect,
-      child: MaterialSurface(
-        radius: 12,
-        blurSigma: C.chipBlur,
-        child: Container(
-          height: _kLinkBannerH,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: C.chipFill,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: C.orange.withValues(alpha: 0.45)),
-            boxShadow: elev2(),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.link_off_rounded, size: 16, color: C.orange),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(s.notConnectedAprsServer,
-                        style: ts(11, w: FontWeight.w700, h: 1.1),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    Text(s.connectNearbyDesc,
-                        style: ts(9, c: C.grey, h: 1.1),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                  ],
+    return ClickCursor(
+      child: GestureDetector(
+        // 整条都能点：与 _toolBtn 同一个坑 —— 底色来自 BoxDecoration，
+        // 而 DecoratedBox 不吸收点击，不写 opaque 就只有中间那点文字能点。
+        behavior: HitTestBehavior.opaque,
+        onTap: st.toggleConnect,
+        child: MaterialSurface(
+          radius: 12,
+          blurSigma: C.chipBlur,
+          child: Container(
+            height: _kLinkBannerH,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: C.chipFill,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: C.orange.withValues(alpha: 0.45)),
+              boxShadow: elev2(),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.link_off_rounded, size: 16, color: C.orange),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(s.notConnectedAprsServer,
+                          style: ts(11, w: FontWeight.w700, h: 1.1),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      Text(s.connectNearbyDesc,
+                          style: ts(9, c: C.grey, h: 1.1),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              // 行动按钮（与整条同动作）：把「点了会发生什么」写出来，
-              // 而不是只给一个状态词 —— 与 _connBtn 的分工一致。
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: C.orange.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(999),
+                const SizedBox(width: 8),
+                // 行动按钮（与整条同动作）：把「点了会发生什么」写出来，
+                // 而不是只给一个状态词 —— 与 _connBtn 的分工一致。
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: C.orange.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(s.connectAction,
+                      style: ts(10, c: C.orange, w: FontWeight.w700)),
                 ),
-                child: Text(s.connectAction,
-                    style: ts(10, c: C.orange, w: FontWeight.w700)),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1233,30 +1234,31 @@ class _HomeShell2State extends State<HomeShell2>
     //   底色一律是淡底（不用实心）—— 不留「实心是否是状态」的解读空间。
     return Tooltip(
       message: up ? s.disconnect : s.connectAction,
-      child: GestureDetector(
-        onTap: st.toggleConnect,
-        behavior: HitTestBehavior.opaque,
-        mouseCursor: SystemMouseCursors.click,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          decoration: BoxDecoration(
-            color: (up ? C.red : C.blue).withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                up ? Icons.link_off_rounded : Icons.wifi_rounded,
-                size: 15,
-                color: up ? C.red : C.blue,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                up ? s.disconnect : s.connectAction,
-                style: ts(11, c: up ? C.red : C.blue, w: FontWeight.w700),
-              ),
-            ],
+      child: ClickCursor(
+        child: GestureDetector(
+          onTap: st.toggleConnect,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            decoration: BoxDecoration(
+              color: (up ? C.red : C.blue).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  up ? Icons.link_off_rounded : Icons.wifi_rounded,
+                  size: 15,
+                  color: up ? C.red : C.blue,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  up ? s.disconnect : s.connectAction,
+                  style: ts(11, c: up ? C.red : C.blue, w: FontWeight.w700),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1309,37 +1311,38 @@ class _HomeShell2State extends State<HomeShell2>
     final (state, color) = _linkState(st);
     return Tooltip(
       message: '${_linkDetail(st)}\n${s.linkTapForSettings}',
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
-        ),
-        mouseCursor: SystemMouseCursors.click,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(999),
+      child: ClickCursor(
+        child: GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 7,
-                height: 7,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-              ),
-              const SizedBox(width: 5),
-              // 来源 + 状态：挤不下时省略来源（状态更要紧）
-              Flexible(
-                child: Text(
-                  '$source · $state',
-                  style: ts(11, c: color, w: FontWeight.w700),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: color),
                 ),
-              ),
-            ],
+                const SizedBox(width: 5),
+                // 来源 + 状态：挤不下时省略来源（状态更要紧）
+                Flexible(
+                  child: Text(
+                    '$source · $state',
+                    style: ts(11, c: color, w: FontWeight.w700),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1391,18 +1394,19 @@ class _HomeShell2State extends State<HomeShell2>
   }
 
   Widget _iconBtn(IconData icon, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      mouseCursor: SystemMouseCursors.click,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          shape: BoxShape.circle,
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 18, color: color),
         ),
-        child: Icon(icon, size: 18, color: color),
       ),
     );
   }
@@ -1410,38 +1414,39 @@ class _HomeShell2State extends State<HomeShell2>
   // ─── 新消息气泡 ───
 
   Widget _bubble() {
-    return GestureDetector(
-      onTap: () {
-        setState(() => _showBubble = false);
-        _bubbleTimer?.cancel();
-        widget.state.clearUnread();
-        _select(2);
-      },
-      mouseCursor: SystemMouseCursors.click,
-      child: MaterialSurface(
-        radius: 999,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 340),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: C.surfaceFillStrong,
-            borderRadius: BorderRadius.circular(999),
-            boxShadow: elev2(),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.chat_bubble_rounded, size: 16, color: C.blue),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  '$_bubbleCall · $_bubbleText',
-                  style: ts(12, c: C.ink, w: FontWeight.w600),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+    return ClickCursor(
+      child: GestureDetector(
+        onTap: () {
+          setState(() => _showBubble = false);
+          _bubbleTimer?.cancel();
+          widget.state.clearUnread();
+          _select(2);
+        },
+        child: MaterialSurface(
+          radius: 999,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 340),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: C.surfaceFillStrong,
+              borderRadius: BorderRadius.circular(999),
+              boxShadow: elev2(),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.chat_bubble_rounded, size: 16, color: C.blue),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    '$_bubbleCall · $_bubbleText',
+                    style: ts(12, c: C.ink, w: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

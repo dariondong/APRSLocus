@@ -48,9 +48,10 @@
   （合计 +84），桌面上又常有「很宽但很矮」的窗口；按裸屏高判断会漏判，而漏判的表现就是
   工具列最下面的「定位」被裁掉、点不到。阈值也与按钮尺寸挂钩（`_kToolbarColH`），不再
   是一个没有来历的「520」。
-* **桌面端鼠标指针**：自绘按钮（导航项 / 地图工具钮 / 顶栏胶囊 / 立即上报…）统一给
-  `SystemMouseCursors.click` —— 没有 Material 水波的情况下，鼠标悬停至少要有「可点」的
-  反馈。触屏无影响。
+* **桌面端鼠标指针**：自绘按钮（导航项 / 地图工具钮 / 顶栏胶囊 / 立即上报…）统一包一层
+  `ClickCursor`（`MouseRegion` + `SystemMouseCursors.click`）—— `GestureDetector` **没有**
+  `mouseCursor` 参数（第一版就是这么写错的，CI 报 `undefined_named_parameter`）；没有 Material
+  水波的情况下，鼠标悬停至少要有「可点」的反馈。触屏无影响。
 
 ### 五、检查器
 
@@ -116,8 +117,10 @@ icon went 32 → 34 with a tooltip (so a desktop hover tells you where it points
   "locate" button at the bottom of the tool column. The threshold is now tied to the real
   button size (`_kToolbarColH`) instead of a magic "520".
 * **Desktop mouse cursors**: self-drawn buttons (nav items, map tool buttons, top-bar pills,
-  "beacon now"…) now set `SystemMouseCursors.click` — with no Material ink splash, at least
-  a hover should tell you the thing is clickable. Touch is unaffected.
+  "beacon now"…) are now wrapped in `ClickCursor` (`MouseRegion` + `SystemMouseCursors.click`)
+  — `GestureDetector` has **no** `mouseCursor` parameter (the first attempt assumed it did and
+  CI caught the `undefined_named_parameter` error), and with no Material ink splash at least a
+  hover should tell you the thing is clickable. Touch is unaffected.
 
 **CI guards**: `check_landscape_layout.py` gained three invariants (pane-local widths,
 station-chip degradation, short-landscape by available height) and `check_pos_quality.py`
