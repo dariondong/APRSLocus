@@ -12236,6 +12236,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接'**
   String get hrForTncNote;
+  /// No description provided for @garminUrlHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'livetrack.garmin.com/session/…/token/…'**
+  String get garminUrlHint;
+
 }
 
 class _AppLocalizationsDelegate

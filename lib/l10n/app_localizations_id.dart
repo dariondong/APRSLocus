@@ -7005,4 +7005,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get hrForTncNote => "Detak jantung memakai BLE dan TNC Bluetooth klasik, jadi keduanya bisa tersambung";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }

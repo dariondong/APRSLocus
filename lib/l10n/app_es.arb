@@ -2453,5 +2453,6 @@
   "garminSharedToast": "Enlace de Garmin recibido",
   "garminOpen": "Abrir ajustes",
   "garminWebUnsupported": "No disponible en la versión web (CORS del navegador); usa la de Android o Windows",
-  "hrForTncNote": "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez"
+  "hrForTncNote": "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez",
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
 }

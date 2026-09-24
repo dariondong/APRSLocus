@@ -6731,6 +6731,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hrForTncNote => "心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13459,4 +13462,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get hrForTncNote => "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }

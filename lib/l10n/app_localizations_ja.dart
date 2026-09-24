@@ -6805,4 +6805,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get hrForTncNote => "心拍は BLE、TNC はクラシック Bluetooth なので同時接続できます";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }

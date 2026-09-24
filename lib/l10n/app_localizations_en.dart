@@ -6996,4 +6996,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hrForTncNote => "Heart rate uses BLE while TNC uses classic Bluetooth, so both can be connected";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }

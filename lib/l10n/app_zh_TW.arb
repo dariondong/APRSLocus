@@ -2957,5 +2957,6 @@
   "garminSharedToast": "已收到佳明分享連結",
   "garminOpen": "去設定",
   "garminWebUnsupported": "Web 版不支援（瀏覽器的跨域限制），請在 Android / Windows 版使用",
-  "hrForTncNote": "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線"
+  "hrForTncNote": "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線",
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
 }

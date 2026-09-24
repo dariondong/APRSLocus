@@ -7046,4 +7046,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get hrForTncNote => "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez";
+  @override
+  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+
 }

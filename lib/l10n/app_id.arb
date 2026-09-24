@@ -2453,5 +2453,6 @@
   "garminSharedToast": "Tautan Garmin diterima",
   "garminOpen": "Buka setelan",
   "garminWebUnsupported": "Tidak tersedia di versi web (CORS peramban); gunakan versi Android atau Windows",
-  "hrForTncNote": "Detak jantung memakai BLE dan TNC Bluetooth klasik, jadi keduanya bisa tersambung"
+  "hrForTncNote": "Detak jantung memakai BLE dan TNC Bluetooth klasik, jadi keduanya bisa tersambung",
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
 }
