@@ -564,6 +564,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.167</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>**佳明接管时的上报 UI 说清了来源**：位置来自手表时，上报横杠显示「佳明上报 · 45s · ❤128」（红色），而不是看不出差别的普通倒计时 —— 两者可能差几十公里。并且**挡住粗定位覆盖手表位置**：佳明断流后手机 GPS 会接回来，但基站/WiFi 粗点不行（它会拿偏几百米的质心替换手表位置，而横杠当时显示的是正常倒计时，用户完全看不出正在发错坐标）。另外**佳明/心率成为「数据来源」里的可选来源**（位置来源：手机 GPS / 佳明；心率来源：蓝牙心率带），与报文链路分开列；**手动上报的提示现在会列出实际附带的内容**（如「网格 FN20xx · 心率 128 bpm」）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.166</span>
         <span class="cl-date">2026-09-24</span>
       </div>

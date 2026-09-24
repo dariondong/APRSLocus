@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.167</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>**The beacon UI now says where the position comes from.** While Garmin is live the beacon bar shows "Garmin · 45s · ❤128" in red instead of an indistinguishable countdown (the two positions can be tens of kilometres apart). A coarse (cell/Wi-Fi) fix is now blocked from replacing the watch position: once Garmin goes stale the phone GPS rightly takes over, but a cell-tower centroid must not — the bar would still show a normal countdown, so nothing on screen reveals a wrong coordinate is being transmitted. **Garmin and the strap also became selectable "data sources"** (position source: phone GPS / Garmin; heart-rate source: the BLE strap), listed separately from the packet links, and **the manual-beacon toast now lists what was actually attached** (e.g. "Grid FN20xx · HR 128 bpm").</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.166</span>
         <span class="cl-date">2026-09-24</span>
       </div>

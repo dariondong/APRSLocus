@@ -205,6 +205,38 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.167', 'date': '2026-09-24',
+        'items': [
+            ('up',
+             T('**佳明接管时的上报 UI 说清了来源**：位置来自手表时，上报横杠显示'
+               '「佳明上报 · 45s · ❤128」（红色），而不是看不出差别的普通倒计时 —— '
+               '两者可能差几十公里。并且**挡住粗定位覆盖手表位置**：佳明断流后手机 GPS '
+               '会接回来，但基站/WiFi 粗点不行（它会拿偏几百米的质心替换手表位置，而横杠'
+               '当时显示的是正常倒计时，用户完全看不出正在发错坐标）。'
+               '另外**佳明/心率成为「数据来源」里的可选来源**（位置来源：手机 GPS / 佳明；'
+               '心率来源：蓝牙心率带），与报文链路分开列；**手动上报的提示现在会列出'
+               '实际附带的内容**（如「网格 FN20xx · 心率 128 bpm」）',
+               '**佳明接管時的上報 UI 說清了來源**：位置來自手錶時，上報橫槓顯示'
+               '「佳明上報 · 45s · ❤128」（紅色），而不是看不出差別的普通倒數 —— '
+               '兩者可能差幾十公里。並且**擋住粗定位覆蓋手錶位置**：佳明斷流後手機 GPS '
+               '會接回來，但基地台/WiFi 粗點不行（它會拿偏幾百公尺的質心替換手錶位置，而橫槓'
+               '當時顯示的是正常倒數，使用者完全看不出正在發錯座標）。'
+               '另外**佳明/心率成為「資料來源」裡的可選來源**（位置來源：手機 GPS / 佳明；'
+               '心率來源：藍牙心率帶），與報文鏈路分開列；**手動上報的提示現在會列出'
+               '實際附帶的內容**（如「網格 FN20xx · 心率 128 bpm」）',
+               '**The beacon UI now says where the position comes from.** While Garmin is live the '
+               'beacon bar shows "Garmin · 45s · ❤128" in red instead of an indistinguishable '
+               'countdown (the two positions can be tens of kilometres apart). A coarse (cell/Wi-Fi) '
+               'fix is now blocked from replacing the watch position: once Garmin goes stale the '
+               'phone GPS rightly takes over, but a cell-tower centroid must not — the bar would '
+               'still show a normal countdown, so nothing on screen reveals a wrong coordinate is '
+               'being transmitted. **Garmin and the strap also became selectable "data sources"** '
+               '(position source: phone GPS / Garmin; heart-rate source: the BLE strap), listed '
+               'separately from the packet links, and **the manual-beacon toast now lists what was '
+               'actually attached** (e.g. "Grid FN20xx · HR 128 bpm").')),
+        ],
+    },
+    {
         'ver': 'v1.6.166', 'date': '2026-09-24',
         'items': [
             ('fix',
