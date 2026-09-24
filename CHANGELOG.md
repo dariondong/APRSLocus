@@ -1,5 +1,113 @@
 # 更新日志
 
+## [1.6.174] - 2026-09-24
+
+### 📡 转弯打点：先分清「真的拐了」和「GPS 胡说」 / Turn-based beaconing: tell a real turn from a GPS glitch
+
+智能信标里那条「航向变化超过 N 度就补一个点」的判据（v1.6.156 加的）有一个前提一直
+没人管：**「当前航向」是不是真的**。手机给的 course 在多径反射、低速、地库出口这些时候
+会一帧跳几十度，而判据把它当成一次真实转向。
+
+用 `tool/sim_turn_dot.py`（新增，已进 CI）把这件事量了一下 —— 城市档（60s · 400m · 45°）
+跑 16 分钟 1Hz 的仿真：
+
+* **城市直路：旧算法发了 19 个转弯补点**，而那条路是直的，补点让弦高改善**为 0** ——
+  19 次发射全是白发的（APRS 是共享信道）；
+* 更糟的是发完之后 `基准航向 ← 当前航向`，野值被钉成新基准，真实航向与它差 60°，
+  回正后还会再触发一次 —— 一次野值换两个点。
+
+现在多了一层 `lib/turn_dot.dart`：**只把物理上不可能的一帧航向丢掉**（一帧就转
+40°/秒以上 ≈ 20 m/s 下横向 14 m/s²，远超轮胎能给的附着），取替代、也不改判据本身。
+
+同一组仿真里：直路 19 个 → **0 个**；发卡弯平均弦高 14.0m → 9.9m（点数不变）；
+连续弯、高速匝道、S 弯的弦高都不退化，也没有多花信道。
+
+**没做**什么，以及为什么（都是仿真里被数据否掉的，不是没想到）：
+
+* **不做航向平滑**：3 点中位数会把一个 50° 的 S 弯峰值削到约 44° —— 恰好掉到用户设的
+  45° 之下，**整个弯一个点都不补**。「转过 45° 就补报」这句话得算数。
+* **不做连续确认**：30° 的出口匝道配 30° 阈值，超阈值的帧只有一帧，要求连续两帧就
+  再也补不上点。
+* **不做峰值锁存**：它把补点推到闸门打开那一刻，点落在弯**之后** —— 发卡弯平均弦高
+  从 8.0m 坏到 22.4m。
+* **不动 20 秒闸门**：5s/10s/20s 都试过，收紧它只在连续弯上多花信道，弦高没有改善。
+
+两件**必须**做对的小事，都写在代码里：
+
+1. **连续丢帧要有上限**（`maxDrops`）。一个持续超过 40°/秒的**真实**转向会让每一帧都
+   相对「上一个可信值」超限 —— 不设上限就会**永久失明**（仿真里发卡弯从 21 个点掉到
+   10 个、平均弦高翻倍）。
+2. **基准航向取「上一个可信航向」**，不是调用方手里的原始航向 —— 否则发送那一刻的
+   野值会被钉成新基准，与「丢帧」是同一件事的两面。
+
+门限是**按秒折算**的（40°/秒 × 距上一帧的秒数），所以佳明那种十几秒一个点的稀疏序列
+不会被误杀（也不会受它保护）；阈值 40 的两侧都有依据：25° 会把真实转向（发卡弯
+22.5°/秒 + σ=7° 噪声）一起丢掉，60° 会正好放行 60° 的野值。
+
+检查器：`tool/check_beacon_track.py` 增补 6 条（门**用在判断里**、丢帧上限、基准取可信
+航向、180° 环绕折算搬到了新文件、两条路径都要喂样本、发送后要复位），全部按
+「必须会报红」用回归样本验过。
+
+---
+
+## [1.6.174] - 2026-09-24 (English)
+
+### 📡 Turn-based beaconing: tell a real turn from a GPS glitch
+
+Smart beaconing has had a "beacon after turning more than N degrees" criterion since v1.6.156.
+It rests on an assumption nobody checked: **is "the current heading" real?** The heading the
+phone reports jumps by tens of degrees on multipath, at low speed, and at garage exits — and the
+criterion happily treats that as a genuine turn.
+
+A new simulation (`tool/sim_turn_dot.py`, now in CI) puts numbers on it. City tier
+(60 s · 400 m · 45°), 16 minutes at 1 Hz:
+
+* **A straight city road: the old criterion emitted 19 turn dots**, on a road where the sag
+  improvement was **exactly zero** — 19 transmissions that carried nothing (APRS is a shared
+  channel).
+* Worse, each send then did `reference heading ← current heading`, so the glitch got nailed down
+  as the new reference; when the heading snapped back it differed by 60° and triggered again.
+  One glitch, two dots.
+
+There is now a small layer, `lib/turn_dot.dart`, that **discards the frames that are physically
+impossible** (more than 40°/s in one frame ≈ 14 m/s² lateral at 20 m/s, well beyond tyre grip).
+It replaces nothing and changes no threshold.
+
+In the same simulation: straight road 19 → **0**; hairpin mean sag 14.0 m → 9.9 m (same dot
+count); the winding-road, motorway-ramp and S-curve cases neither regress nor spend more channel.
+
+**What was deliberately not done** (each rejected by data, not by taste):
+
+* **No smoothing**: a 3-point median flattens a 50° S-curve to about 44° — just under the user's
+  45° setting, so the whole curve gets **no dot at all**. "Beacon after turning 45°" has to mean
+  what it says.
+* **No run-length confirmation**: for a 30° ramp exit with a 30° threshold only one frame exceeds
+  the threshold, so requiring two consecutive frames loses the dot entirely.
+* **No peak latch**: it defers the dot to the moment the rate gate opens, which lands it *after*
+  the corner (hairpin mean sag 8.0 m → 22.4 m).
+* **The 20 s gate is unchanged**: 5/10/20 s were all tried; tightening it only spends more channel
+  on winding roads, with no accuracy gain.
+
+Two small things that **must** be right (both documented in the code):
+
+1. **Consecutive drops need a ceiling** (`maxDrops`). A *real* sustained turn above 40°/s makes
+   every frame exceed the limit against the last trusted value — without a ceiling the detector is
+   **blinded forever** (hairpin dots 21 → 10 in the simulation, mean sag doubled).
+2. **The reference heading is the last *trusted* heading**, not whatever the caller holds —
+   otherwise a glitch that happens to coincide with a send becomes the new reference. That is the
+   same failure the gate exists to prevent.
+
+The limit is scaled by elapsed time (40°/s × seconds since the previous frame), so Garmin's
+sparse points (one every 10–60 s) are neither rejected nor protected. The value 40 has evidence
+on both sides: 25° throws away real turns (hairpin 22.5°/s plus σ=7° of noise), while 60° lets
+60° glitches straight through.
+
+Checks: `tool/check_beacon_track.py` gained six assertions (the gate **used in the comparison**,
+the drop ceiling, the trusted-reference rule, the 180° wrap moved to the new file, both feed
+paths, and the reset after a send) — each verified to go red on a regression sample.
+
+---
+
 ## [1.6.173] - 2026-09-24
 
 ### 🐞 佳明页：不会自动填充、没有确定按钮、看不出生效了没有 / Garmin page: no auto-fill, no confirm button, no status

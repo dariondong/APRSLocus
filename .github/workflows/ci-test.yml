@@ -144,6 +144,13 @@ jobs:
       - name: Check self-fix debounce (algorithm regression)
         run: python3 tool/sim_selffix.py --check
 
+      # 「转弯打点」的航向过滤层（纯 Python，1:1 移植自 lib/turn_dot.dart）。
+      # 断言：**航向干净时逐点直通**（不可能把本来就准的场景改坏）、直路上不再被
+      # 野值凭空触发补点、含噪声时不多花信道且平均弦高不退化、门的取值有两侧依据、
+      # 以及「连续丢帧不设上限会永久失明」。
+      - name: Check turn-based beaconing (algorithm regression)
+        run: python3 tool/sim_turn_dot.py --check
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

@@ -14,6 +14,10 @@
      「清空后剩一串孤点」、「功能等于不存在」—— 都不会报错。
   4. **智能信标的距离打点**：档位要有 `minDistM`、要落盘、触发条件要
      「定时 **或** 距离」。只留定时那条时，用户在国道上看到的还是被拉直的轨迹。
+  5. **转弯打点的航向过滤层**（v1.6.174，`lib/turn_dot.dart`）：物理门、重同步
+     上限、基准航向取可信值、两条路径都喂样本。这四条全都能正常编译、能过
+     analyze、能过普通测试，只在真机上表现成「直路上白白多发点」、「持续快转
+     之后再也补不上点」、或者「整个功能静默失效」。
 
 用法：python3 tool/check_beacon_track.py
 退出码 0 = 全在；1 = 有缺失（并列出具体位置）。
@@ -127,9 +131,10 @@ def main() -> int:
     need('lib/state.dart', 'double get beaconTurnDeg',
          '没有「自上次上报航向变化了多少度」的计算 —— 转弯打点无从判断')
     # 角度必须**环绕**处理：359° → 1° 是 2°。直接相减会让「几乎没转」判成
-    # 「转了大半圈」，于是每个点都触发。
-    if 'if (d > 180) d = 360 - d;' not in st:
-        errors.append('lib/state.dart 的航向差没有做 180° 环绕折算 —— '
+    # 「转了大半圈」，于是每个点都触发。（v1.6.174 起这段在 lib/turn_dot.dart）
+    td = codes_only(read('lib/turn_dot.dart'))
+    if 'd = 360.0 - d;' not in td:
+        errors.append('lib/turn_dot.dart 的航向差没有做 180° 环绕折算 —— '
                       '359°→1° 会被算成 358°，于是每个点都触发转弯打点')
     # 两道闸：低速不算转弯（停着不动航向是噪声）、两次之间留最小间隔（连续弯道防刷屏）
     # ⚠ 这两条必须断言「**被用上**」，不能只断言常量存在 ——
@@ -144,8 +149,30 @@ def main() -> int:
         errors.append('转弯打点没有「行驶中才生效」的速度闸 —— 停着不动时航向'
                       '噪声会一直触发上报（常量在、但没用在判断里）')
     need('lib/state.dart', 'dueByTurn', '上报触发条件里没有转弯那条')
-    need('lib/state.dart', '_lastBeaconCourse = myCourse',
-         '发送后没有记录「本次的航向」—— 下次算不出转过多少度')
+    need('lib/state.dart', '_turnDot.markSent()',
+         '发送后没有复位检测器 —— 下次算不出转过多少度（基准航向会一直是旧的）')
+
+    # ── ⑤b 航向过滤层（v1.6.174）：物理门 + 重同步 + 喂样本 ──
+    #
+    # 这四条全是「编译、analyze、普通测试都绿，只有真机才看得出来」的：
+    #   * 门没接上 → 城市直路上每十几分钟白白多发十几个点（仿真 straight_urban）；
+    #   * 门的阈值没**用**在判断里（只声明常量）→ 一样没接上；
+    #   * 重同步上限没接上 → 一个持续快转**之后永久失明**，转向再也补不上点；
+    #   * 没把 1Hz 航向喂进去 → 整个功能静默失效（比现在更坏）。
+    if 'fold180(course - prev) > allow' not in td:
+        errors.append('lib/turn_dot.dart 没有把「一帧跳太多」用来丢帧 —— '
+                      '门的常量在、但没用在判断里')
+    if '_drops < maxDrops' not in td:
+        errors.append('lib/turn_dot.dart 连续丢帧没有上限 —— '
+                      '一个持续超过 40°/秒的**真实**转向会让每一帧都超限，'
+                      '_last 卡在转向前那一帧上，转弯打点从此**永久失明**')
+    if '_ref = last;' not in td:
+        errors.append('lib/turn_dot.dart 的基准航向不是「上一个**可信**航向」—— '
+                      '发送那一刻的野值会被钉成基准，之后凭空触发一轮补点')
+    feeds = st.count('_turnDot.onCourse(')
+    if feeds < 2:
+        errors.append(f'lib/state.dart 只把航向喂进检测器 {feeds} 处 —— '
+                      '手机 GPS 与佳明两条路径都要喂，否则那条路径下转弯打点静默失效')
     for field in ("'minTurnDeg': minTurnDeg",
                   "minTurnDeg: ((j['minTurnDeg'] as num?)"):
         if field not in read('lib/state.dart'):
@@ -165,7 +192,7 @@ def main() -> int:
             print('  -', e)
         return 1
     print('轨迹采样/信标打点 ok（GPS 1s、落点有保底、信标点只记已发送且可清、'
-          '智能信标支持定时或距离或转弯）')
+          '智能信标支持定时或距离或转弯、转弯判据有物理门且不会永久失明）')
     return 0
 
 

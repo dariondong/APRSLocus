@@ -45,6 +45,7 @@ import 'theme_store.dart';
 import 'ble_hr.dart';
 import 'garmin.dart';
 import 'share_in.dart';
+import 'turn_dot.dart';
 
 /// 智能信标速度档：速度 ≥ [minSpeed] km/h 时启用。
 /// 首档 minSpeed==0 为「静止/低速」档（兜底档，不可删除）；
@@ -110,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.173';
+  static const appVersion = '1.6.174';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -283,6 +284,12 @@ class AppState extends ChangeNotifier {
       if (b != null) myCourse = b;
     }
     _lastGarminPoint = p;
+    // 转弯打点的航向样本（见 lib/turn_dot.dart）。佳明的点比手机 GPS 稀得多
+    // （十几秒到一分钟一个），而那道物理门的阈值是**按 dt 折算**的（40°/秒），
+    // 所以这里可以放心直接喂：稀疏序列不会被误杀，只是也不受它保护。
+    if ((mySpeed ?? 0) >= _kTurnMinSpeedKmh) {
+      _turnDot.onCourse(myCourse, DateTime.now());
+    }
     locStatus = '佳明 LiveTrack';
     // 跳变守卫的参照点也要跟着走：否则手机 GPS 接回来的那一刻会被误判成跳变
     _lastFixLat = p.lat;
@@ -416,9 +423,13 @@ class AppState extends ChangeNotifier {
   double? _lastBeaconLat;
   double? _lastBeaconLng;
 
-  /// 上一次信标发出时的**航向**（度）：智能信标的「转弯打点」用它算航向变化
-  /// （见 [beaconTurnDeg]）。同样只在真的发出去之后才更新。
-  double? _lastBeaconCourse;
+  /// 转弯打点的航向过滤层（见 lib/turn_dot.dart）：只把「物理上不可能的一帧航向」
+  /// 丢掉，基准航向与判据都在它内部（[beaconTurnDeg] 读的就是它）。
+  ///
+  /// 以前这里是一个裸的 `_lastBeaconCourse`，判据直接拿 `myCourse` 去减它 ——
+  /// 于是多径/低速下那种「一帧跳 60°」的野值会被当成一次真实转向：直路上凭空
+  /// 多发点，而且野值被钉成新基准之后还会再触发一次。
+  final TurnDotDetector _turnDot = TurnDotDetector();
   int beaconsSent = 0;
 
   /// 是否已询问过“连接后是否自动上报位置”（只问一次，记住选择）
@@ -573,19 +584,16 @@ class AppState extends ChangeNotifier {
 
   /// 自上次**真的发出去**以来，航向变化了多少度（0~180，最小夹角）。
   ///
-  /// 两个容易写错的地方，都在这里收口：
+  /// 两个容易写错的地方，都在 [TurnDotDetector] 里收口：
   ///  * **角度要环绕**：359° → 1° 是转了 2°，不是 358°。直接相减会让「几乎没转」
-  ///    判成「转了大半圈」，于是每个点都触发。
+  ///    判成「转了大半圈」，于是每个点都触发（见 `fold180`）。
   ///  * **没有航向/没发过 → 返回 0**（不触发）：宁可少补一个点，也不要在航向
   ///    未知时乱发。
-  double get beaconTurnDeg {
-    final prev = _lastBeaconCourse;
-    final cur = myCourse;
-    if (prev == null || cur == null) return 0;
-    var d = (cur - prev).abs() % 360;
-    if (d > 180) d = 360 - d;
-    return d;
-  }
+  ///
+  /// v1.6.174 起这个值取自 [TurnDotDetector]，多了一道**物理门**：一帧就跳
+  /// 40°/秒以上（多径反射、地库出口那个量级）的航向不会参与判断，也不会被钉成
+  /// 新基准。理由与实测数据见 lib/turn_dot.dart 的文件头。
+  double get beaconTurnDeg => _turnDot.deviationDeg;
 
   /// 自上次**真的发出去**以来移动了多远（米）。
   ///
@@ -3751,6 +3759,13 @@ class AppState extends ChangeNotifier {
           mySpeed! < 3.0) {
         myCourse = motion.heading;
       }
+      // 转弯打点的航向样本（见 lib/turn_dot.dart）：只喂**真的在行驶**时的航向 ——
+      // 停着不动时 course 是噪声（多普勒解不出方向），喂进去等于给那道物理门送野值。
+      // 上报那一刻还有一道独立的速度闸（见 _tickTimer 里的判断），这里先用同一个
+      // 门限把样本筛掉 —— 两者是同一个常量，不会漂移。
+      if ((mySpeed ?? 0) >= _kTurnMinSpeedKmh) {
+        _turnDot.onCourse(myCourse, DateTime.now());
+      }
     }
     locStatus = coarse ? '网络定位（粗）' : (still ? '静止' : '已定位');
     // 记录我的轨迹
@@ -3906,7 +3921,8 @@ class AppState extends ChangeNotifier {
     _lastBeacon = DateTime.now();
     _lastBeaconLat = lat;
     _lastBeaconLng = lng;
-    _lastBeaconCourse = myCourse;
+    // 基准航向 ← 本次发出去时的**可信**航向，判据归零（见 lib/turn_dot.dart）。
+    _turnDot.markSent();
     AchievementCenter.instance.bump('sendCoord'); // 坐标发送·请求打击
     _log(
       LogLevel.info,
