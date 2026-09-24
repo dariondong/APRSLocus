@@ -7089,4 +7089,17 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get posSrcNone => "belum ada posisi";
 
+
+  @override
+  String get garminNotStarted => "Tidak melacak";
+
+  @override
+  String get garminAutoFilled => "Tautan terisi otomatis";
+
+  @override
+  String get garminLinkOk => "Tautan valid";
+
+  @override
+  String get posSourceUsing => "Sedang dipakai: {src}";
+
 }

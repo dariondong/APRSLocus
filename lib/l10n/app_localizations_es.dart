@@ -7130,4 +7130,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get posSrcNone => "sin posición";
 
+
+  @override
+  String get garminNotStarted => "Sin seguimiento";
+
+  @override
+  String get garminAutoFilled => "Enlace rellenado automáticamente";
+
+  @override
+  String get garminLinkOk => "Enlace válido";
+
+  @override
+  String get posSourceUsing => "En uso ahora: {src}";
+
 }

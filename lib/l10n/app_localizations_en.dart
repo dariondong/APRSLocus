@@ -7080,4 +7080,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get posSrcNone => "no fix";
 
+
+  @override
+  String get garminNotStarted => "Not tracking";
+
+  @override
+  String get garminAutoFilled => "Share link filled in automatically";
+
+  @override
+  String get garminLinkOk => "Link is valid";
+
+  @override
+  String get posSourceUsing => "In use now: {src}";
+
 }

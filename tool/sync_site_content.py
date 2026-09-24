@@ -205,6 +205,37 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.173', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**佳明页补齐了「自动填充 / 确定按钮 / 状态显示」**（用户实测反馈）：'
+               '① 链接框原来只在页面初始化时读一次，分享进来时页面已经开着就**不会自动填充** —— '
+               '现在跟随状态同步，并显示「已自动填入分享链接」；'
+               '② 原来只有一个含义模糊的开关（标签写着「追踪中」是状态不是动作）—— '
+               '现在是明确的 **[开始追踪] / [停止追踪]** 按钮；'
+               '③ 新增状态卡：未开启追踪 / 追踪中（含已转发点数与最后更新时间）/ 抓取失败（含原因），'
+               '链接框下面还会实时显示「链接有效」。'
+               '分享到达的提示也从 4 秒延长到 8 秒，不容易错过',
+               '**佳明頁補齊了「自動填入 / 確定按鈕 / 狀態顯示」**（使用者實測回饋）：'
+               '① 連結框原來只在頁面初始化時讀一次，分享進來時頁面已經開著就**不會自動填入** —— '
+               '現在跟隨狀態同步，並顯示「已自動填入分享連結」；'
+               '② 原來只有一個含義模糊的開關（標籤寫著「追蹤中」是狀態不是動作）—— '
+               '現在是明確的 **[開始追蹤] / [停止追蹤]** 按鈕；'
+               '③ 新增狀態卡：未開啟追蹤 / 追蹤中（含已轉發點數與最後更新時間）/ 抓取失敗（含原因），'
+               '連結框下面還會即時顯示「連結有效」。'
+               '分享到達的提示也從 4 秒延長到 8 秒，不容易錯過',
+               '**The Garmin page now has auto-fill, a confirm button and a status display** '
+               '(reported from a real device). (1) The URL field used to read the state once at init, '
+               'so a share arriving while the page was already open would never fill it in — it now '
+               'follows the state and says "Share link filled in automatically". (2) There used to be '
+               'only an ambiguous switch (labelled "Tracking", a state rather than an action) — it is '
+               'now explicit **[Start tracking] / [Stop tracking]** buttons. (3) A new status card '
+               'shows Not tracking / Tracking (with forwarded-point count and last update time) / '
+               'Fetch failed (with the reason), and the field shows "Link is valid" live. The share '
+               'toast also lasts 8s instead of 4s so it is not missed.')),
+        ],
+    },
+    {
         'ver': 'v1.6.172', 'date': '2026-09-24',
         'items': [
             ('fix',

@@ -6815,6 +6815,19 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get posSrcNone => "未定位";
 
+
+  @override
+  String get garminNotStarted => "未开启追踪";
+
+  @override
+  String get garminAutoFilled => "已自动填入分享链接";
+
+  @override
+  String get garminLinkOk => "链接有效";
+
+  @override
+  String get posSourceUsing => "当前使用：{src}";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13626,5 +13639,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get posSrcNone => "未定位";
+
+
+  @override
+  String get garminNotStarted => "未開啟追蹤";
+
+  @override
+  String get garminAutoFilled => "已自動填入分享連結";
+
+  @override
+  String get garminLinkOk => "連結有效";
+
+  @override
+  String get posSourceUsing => "目前使用：{src}";
 
 }

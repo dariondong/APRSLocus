@@ -2481,5 +2481,8 @@
   "posSrcGarmin": "Garmin LiveTrack",
   "posSrcPhone": "GPS ponsel",
   "posSrcNone": "belum ada posisi",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "garminNotStarted": "Tidak melacak",
+  "garminAutoFilled": "Tautan terisi otomatis",
+  "garminLinkOk": "Tautan valid"
 }

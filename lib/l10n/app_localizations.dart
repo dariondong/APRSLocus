@@ -12416,6 +12416,31 @@ abstract class AppLocalizations {
   /// **'未定位'**
   String get posSrcNone;
 
+
+  /// No description provided for @garminNotStarted.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启追踪'**
+  String get garminNotStarted;
+
+  /// No description provided for @garminAutoFilled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已自动填入分享链接'**
+  String get garminAutoFilled;
+
+  /// No description provided for @garminLinkOk.
+  ///
+  /// In zh, this message translates to:
+  /// **'链接有效'**
+  String get garminLinkOk;
+
+  /// No description provided for @posSourceUsing.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前使用：{src}'**
+  String get posSourceUsing;
+
 }
 
 class _AppLocalizationsDelegate

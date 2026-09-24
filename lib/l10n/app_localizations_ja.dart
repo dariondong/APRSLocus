@@ -6889,4 +6889,17 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get posSrcNone => "未測位";
 
+
+  @override
+  String get garminNotStarted => "追跡していません";
+
+  @override
+  String get garminAutoFilled => "共有リンクを自動入力しました";
+
+  @override
+  String get garminLinkOk => "リンクは有効";
+
+  @override
+  String get posSourceUsing => "現在使用中：{src}";
+
 }

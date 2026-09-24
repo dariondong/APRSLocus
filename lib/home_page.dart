@@ -97,6 +97,9 @@ class _HomePageState extends State<HomePage> {
         SnackBar(
           content: Text(s.garminSharedToast),
           behavior: SnackBarBehavior.floating,
+          // 8 秒（默认 4 秒）：这是一条「刚刚发生了什么 + 去哪儿看」的通知，
+          // 4 秒常常还没读完就消失了（用户报的「跳转有问题」有一半是这个观感）。
+          duration: const Duration(seconds: 8),
           action: SnackBarAction(
             label: s.garminOpen,
             onPressed: () => Navigator.push(

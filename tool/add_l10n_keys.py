@@ -36,6 +36,16 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 佳明页的**状态显示**与**确定按钮**（用户反馈：「它也不会自动填充」「我也不知道
+    # 他生效了没有，都没有一个确定按钮和状态显示」）。
+    'garminNotStarted': ('未开启追踪', '未開啟追蹤', 'Not tracking', '追跡していません',
+                         'Sin seguimiento', 'Tidak melacak'),
+    'garminAutoFilled': ('已自动填入分享链接', '已自動填入分享連結',
+                         'Share link filled in automatically', '共有リンクを自動入力しました',
+                         'Enlace rellenado automáticamente', 'Tautan terisi otomatis'),
+    'garminLinkOk': ('链接有效', '連結有效', 'Link is valid', 'リンクは有効',
+                     'Enlace válido', 'Tautan valid'),
+
     # 位置来源的**优先级**（用户问「听谁的？」）——两处设置都显示这一句，
     # 避免「定位上报页一个来源、设备页另一个来源」看着像打架。
     'posSourcePrecedence': (

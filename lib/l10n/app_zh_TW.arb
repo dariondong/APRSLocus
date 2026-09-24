@@ -2985,5 +2985,8 @@
   "posSrcGarmin": "佳明 LiveTrack",
   "posSrcPhone": "手機 GPS",
   "posSrcNone": "未定位",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "garminNotStarted": "未開啟追蹤",
+  "garminAutoFilled": "已自動填入分享連結",
+  "garminLinkOk": "連結有效"
 }

@@ -1,5 +1,55 @@
 # 更新日志
 
+## [1.6.173] - 2026-09-24
+
+### 🐞 佳明页：不会自动填充、没有确定按钮、看不出生效了没有 / Garmin page: no auto-fill, no confirm button, no status
+
+用户实测反馈三条（原话：「它也不会自动填充」「我也不知道他生效了没有，都没有一个确定按钮，
+和状态显示」）。三条都属实，逐条改：
+
+1. **自动填充**：链接框原来只在 `initState` 读一次 `state.garminUrl` —— 分享进来时页面
+   **已经开着**（或顺序反过来）时，文本框永远停在旧内容。现在监听 state 同步进文本框
+   （正在手动编辑时不覆盖），并显示一行**「已自动填入分享链接」**让用户知道发生了。
+2. **确定按钮**：原来只有一个 `Switch`，标签还写着「追踪中」—— 那是**状态**不是**动作**，
+   用户根本不知道点了会不会生效。现在换成明确的 `[开始追踪]` 主按钮 + `[停止追踪]`。
+3. **状态显示**：新增状态卡 —— **未开启追踪** / **追踪中**（含已转发点数、最后更新时间）/
+   **抓取失败**（含原因）；链接框下面还会实时显示**链接有效**或格式不对。
+
+顺带：分享到达的提示从默认 4 秒延长到 **8 秒**（带「去设置」按钮）—— 那是一条
+「刚刚发生了什么 + 去哪儿看」的通知，4 秒常常还没读完就消失了。
+
+（另附核实：用户给的短链 `gar.mn/RKE070EQgn` 用抽取函数实测**能正确识别**，
+所以问题确实在页面本身，不在链接解析。）
+
+---
+
+## [1.6.173] - 2026-09-24 (English)
+
+### 🐞 Garmin page: no auto-fill, no confirm button, no status
+
+Three things reported from a real device — "it doesn't auto-fill either", "I can't tell whether it
+took effect; there's no confirm button and no status display". All three were true:
+
+1. **Auto-fill**: the URL field only read `state.garminUrl` once in `initState`, so when a share
+   arrived **while the page was already open** (or in the reverse order) the field stayed on stale
+   content. It now follows the state (without clobbering what you are typing) and shows a
+   **"Share link filled in automatically"** line so you can see that it happened.
+2. **A confirm button**: there used to be only a `Switch` labelled "Tracking" — a *state*, not an
+   *action*, so there was no way to tell whether tapping it did anything. It is now an explicit
+   **[Start tracking]** primary button plus **[Stop tracking]**.
+3. **A status display**: a new status card — **Not tracking** / **Tracking** (with forwarded-point
+   count and last update time) / **Fetch failed** (with the reason); the field also shows
+   **Link is valid** or the format error live as you type.
+
+Also: the "share received" toast now lasts **8 s** instead of the default 4 (it carries an "Open
+settings" action) — 4 s was often gone before it could be read.
+
+(For the record: the short link the user sent, `gar.mn/RKE070EQgn`, **does** parse correctly with
+the extractor — so the problem really was the page, not link parsing.)
+
+---
+
+
 ## [1.6.172] - 2026-09-24
 
 ### 🐞 关于页名片卡贴住下个板块 + 位置来源「听谁的」说清楚 / About card spacing + a single source-of-truth for the position source

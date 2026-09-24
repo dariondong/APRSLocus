@@ -2481,5 +2481,8 @@
   "posSrcGarmin": "Garmin LiveTrack",
   "posSrcPhone": "スマホ GPS",
   "posSrcNone": "未測位",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "garminNotStarted": "追跡していません",
+  "garminAutoFilled": "共有リンクを自動入力しました",
+  "garminLinkOk": "リンクは有効"
 }

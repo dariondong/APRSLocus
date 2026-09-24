@@ -2397,5 +2397,8 @@
   "posSrcGarmin": "Garmin LiveTrack",
   "posSrcPhone": "phone GPS",
   "posSrcNone": "no fix",
-  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
+  "garminNotStarted": "Not tracking",
+  "garminAutoFilled": "Share link filled in automatically",
+  "garminLinkOk": "Link is valid"
 }

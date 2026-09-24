@@ -276,6 +276,23 @@ def main() -> int:
                           '冷启动时那次分享会因回调未注册而**完全没有反馈**')
     need('lib/garmin_page.dart', 'GarminTrackPage',
          '佳明设置页没了 —— 手贴链接那条路就断了')
+    gpage = read('lib/garmin_page.dart')
+    # ① **自动填充**：分享进来时页面可能已经开着，只读一次 initState 的话文本框
+    #    永远不动（用户报「它也不会自动填充」）→ 必须监听 state 同步。
+    if 'addListener(_syncFromState)' not in gpage or 'removeListener(_syncFromState)' not in gpage:
+        errors.append('佳明页没有跟随 state 同步链接（addListener/removeListener）—— '
+                      '分享进来时文本框不会自动填充')
+    # ② **确定按钮**：原来只有一个 Switch（标签还写着「追踪中」，是状态不是动作），
+    #    用户不知道点了会不会生效 → 必须有明确的开始/停止按钮。
+    if 's.garminStart' not in gpage:
+        errors.append('佳明页没有「开始追踪」确定按钮 —— 用户不知道有没有生效')
+    if 's.garminStop' not in gpage:
+        errors.append('佳明页没有「停止追踪」按钮')
+    # ③ **状态显示**：一眼看出未开启/追踪中/失败。
+    if 's.garminNotStarted' not in gpage:
+        errors.append('佳明页没有状态显示（未开启追踪）—— 用户看不出生效了没有')
+    if 's.garminAutoFilled' not in gpage:
+        errors.append('佳明页没有「已自动填入分享链接」的确认 —— 用户不知道它发生了')
     # 佳明点必须把「航向」与「历史台账」一起补上：佳明的点里没有航向字段，
     # 不自己算就会沿用手机 GPS 的旧值（指南针停在旧方向）；不写台账则佳明接管
     # 期间的历史记录是一段空白（手机 GPS 正被让位，两边都不记）。
