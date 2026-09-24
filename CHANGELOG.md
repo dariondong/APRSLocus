@@ -37,6 +37,12 @@
 顺带修掉同一个坑的另一半：`;` 对象报告以前也落到默认的「位置」，于是数据包页的
 「对象」筛选**永远筛不出东西**（截图里第 4 条 `;145.5875D*131532z4939.25N/…` 就是）。
 
+同一批改动还收掉了一处**同类偏差**：数据包页的「手动注入」工具自己写了一份类型表，
+也不会把注入的消息放进会话列表 —— 同一个包注入时显示「未知」、真机显示「消息」。
+现在接收路径与注入工具共用同一个类型出口（`_packetType`），注入一条消息也会进消息页
+（这个工具本就是「手动模拟接收」）。**这是新加的 CI 测试当场抓出来的**：6 条断言里
+红了 4 条，全是「同一个东西两处各写一份」这个老毛病。
+
 回归测试 `test/third_party_packet_test.dart`（截图原文的分类、发给本机的消息进列表、
 内层位置包上台站、畸形内层原样保留、两层套娃）；`_splitTnc2Header` / `_unwrapThirdParty`
 另用真实代码文本跑了 13 条断言（本机 `dart run`，含 5 层套娃不失控、普通包不受影响）。
@@ -84,6 +90,14 @@ Three things worth spelling out:
 While in there, the other half of the same hole: `;` object reports also used to fall through to
 "position", which made the packet page's "object" filter **match nothing, ever** (the 4th entry
 in the screenshot, `;145.5875D*131532z4939.25N/…`, is one of those).
+
+The same batch also closed one more instance of the same drift: the packet page's "manual inject"
+tool had its own copy of the type table and never put an injected message into the conversation
+list, so the very same packet read "unknown" when injected and "message" on the air. Both paths
+now share a single classifier (`_packetType`), and injecting a message reaches the message page
+too - which is what "simulate reception" was always supposed to mean. The brand-new CI test
+caught this on its first run: 4 of its 6 assertions went red, all of them the same "two copies
+of one thing" disease.
 
 Regression test `test/third_party_packet_test.dart` (classification of the screenshot's line, a
 message addressed to us reaching the message list, the inner position packet becoming a station,

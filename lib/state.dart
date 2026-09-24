@@ -4085,22 +4085,11 @@ class AppState extends ChangeNotifier {
       // 记的是**外层发射台**：第三方包里的台站不是射频上直接听到的，
       // 拿它去判断「值不值得转发」会让网关把消息发在没人听的链路上。
       if (rf) _noteHeard(line);
-      var type = 'position';
+      // 类型判定与「手动注入」共用同一个出口（见 _packetType）：
+      // 两处各写一份 DTI 表必然走偏 —— 已经偏过一次（同一个包，注入显示
+      // 「未知」、真机显示「消息」，v1.6.175 的测试当场抓到）。
+      final type = _packetType(body);
       var info = body;
-      if (body.startsWith(':')) type = 'message';
-      if (body.startsWith('@') ||
-          body.startsWith('=') ||
-          body.startsWith('/') ||
-          body.startsWith("'") ||
-          body.startsWith('`')) {
-        type = 'position';
-      }
-      if (body.startsWith('_')) type = 'weather';
-      if (body.startsWith('>')) type = 'status';
-      // 对象报告（DTI `;`，APRS101 §11）：不分类的话它落到默认的「位置」，
-      // 而数据包页的「对象」筛选是按 type 匹配的 —— 于是那个筛选条永远
-      // 筛不出东西（对象包全被当成了位置）。
-      if (body.startsWith(';')) type = 'object';
       // 多跳转发识别：记录转发路径（如 WIDE1-1,WIDE2-1 或数字中继）
       if (path.isNotEmpty &&
           path.toUpperCase() != 'APRS' &&
@@ -4173,12 +4162,7 @@ class AppState extends ChangeNotifier {
       // 解码位置数据包 → 更新/添加台站到地图
       // 注意：呼号可带 ssid 后缀（如 BV2AAA-9），必须解析
       // 位置包：!/=/（含压缩、非压缩）+ /@（带时间戳）+ '`（Mic-E，纬度编码在目的呼号）
-      if (body.startsWith('!') ||
-          body.startsWith('=') ||
-          body.startsWith('/') ||
-          body.startsWith('@') ||
-          body.startsWith("'") ||
-          body.startsWith('`')) {
+      if (_isPositionBody(body)) {
         final p = parseAprsPosition(body, dest: toCall);
         if (p != null) {
           _upsertStation(
@@ -4217,6 +4201,33 @@ class AppState extends ChangeNotifier {
     } catch (e) {
       _log(LogLevel.debug, '解析', '数据包处理异常: $e');
     }
+  }
+
+  /// 位置包的 DTI：`!` `=` 无时间戳、`/` `@` 带时间戳、`'` `` ` `` Mic-E
+  /// （Mic-E 的纬度编在目的呼号里，故解析时要一并传 dest）
+  static bool _isPositionBody(String body) =>
+      body.startsWith('!') ||
+      body.startsWith('=') ||
+      body.startsWith('/') ||
+      body.startsWith('@') ||
+      body.startsWith("'") ||
+      body.startsWith('`');
+
+  /// 按信息字段首字符（DTI）判类型。
+  ///
+  /// **接收路径与「手动注入」共用这一个出口**：以前两处各写一份，同一个包
+  /// 在注入时显示「未知」、在真机上显示「消息」—— 排查时最容易被带偏。
+  ///
+  /// 兜底是 `position`：数据包页只有五个筛选条，没有「其它」，不认识的 DTI
+  /// 与解析失败的位置包都落到这里（与此前行为一致）。
+  static String _packetType(String body) {
+    if (body.startsWith(':')) return 'message';
+    if (body.startsWith('_')) return 'weather';
+    if (body.startsWith('>')) return 'status';
+    // 对象报告（APRS101 §11）：不分类的话它落到「位置」，数据包页的
+    // 「对象」筛选就永远筛不出东西（对象包全被当成了位置）。
+    if (body.startsWith(';')) return 'object';
+    return 'position';
   }
 
   /// 拆一条 TNC2 报文的头：`SRC>DEST,DIGI1,DIGI2:info`
@@ -5857,18 +5868,23 @@ class AppState extends ChangeNotifier {
               ' 网格 ${maidenhead(p.lat, p.lng)}';
         }
       }
-      // 类型判定与接收路径一致，否则注入一条消息会显示成「未知」
-      var type = 'unknown';
-      if (body.startsWith(':')) type = 'message';
-      if (body.startsWith('_')) type = 'weather';
-      if (body.startsWith('>')) type = 'status';
-      if (body.startsWith(';')) type = 'object';
-      final info = hdr.relay.isEmpty ? body : '$body  ·  [${hdr.relay} 转递]';
+      // 类型判定与接收路径共用同一个出口（见 _packetType）
+      final type = _packetType(body);
+      var info = body;
+      // 消息：与接收路径一样进会话列表 —— 本工具就是「手动模拟接收」，
+      // 不这么做的话「注入一条消息」在消息页什么都看不到（测试当场抓到）。
+      if (body.startsWith(':')) {
+        final parsed = _parseIncomingMessage(src, body);
+        if (parsed != null) info = parsed.$1;
+      }
+      // 第三方包：标记文案与接收路径**逐字一致**，否则同一个包在数据包页
+      // 会显示成两种样子（转发路径那段只有接收路径有：注入没有「路径」概念）
+      if (hdr.relay.isNotEmpty) info = '$info  ·  [转递 ${hdr.relay}]';
       _pushPacket(
         Packet(raw.trim(), src, 'APRS', type, DateTime.now(), info: info),
       );
       _notify();
-      return '已加入数据包，但未识别为位置（$src）';
+      return '已加入数据包（$src · $type）';
     } catch (e) {
       return '解析异常：$e';
     }

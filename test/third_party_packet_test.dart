@@ -42,8 +42,8 @@ void main() {
       final p = st.packets.first;
       expect(p.type, 'message', reason: '内层是消息包，不该落到默认的「位置」');
       expect(p.src, 'BG7LZQ-2', reason: '详情里的发信台必须是内层台，不是转递它的那一跳');
-      // 信息栏有 80 字上限，这里断言的是**没被截掉的那部分**（`[转递 LX0WX-13`）
-      expect(p.info, contains('转递 LX0WX-13'), reason: '要能看出这条是绕了一手来的');
+      // 信息栏带上「谁转递的」，否则这条与直收的报文长得一模一样
+      expect(p.info, contains('[转递 LX0WX-13]'), reason: '要能看出这条是绕了一手来的');
       // 原文仍是**外层**那条：长按复制 / 原始模式看到的必须是真正收到的字节
       expect(p.raw, line);
 
@@ -89,7 +89,7 @@ void main() {
       expect(st.packets, hasLength(1), reason: '畸形报文也要如实展示，不能凭空丢掉');
       final p = st.packets.first;
       expect(p.info, contains('}garbage>X'), reason: '解不了就显示原文');
-      expect(p.type, 'position'); // 兜底类型：{ 开头不属于任何 DTI
+      expect(p.type, 'position'); // 兜底类型：内层解不了就不算任何已知 DTI
 
       st.dispose();
     });
