@@ -12,6 +12,15 @@
 「追踪中（手机 GPS 已让位）」；佳明链接配了但没新点则写「链接有效，但佳明没有新点」。
 心率那一行也顺带显示当前 bpm。
 
+**「佳明分享没被识别」：短链本身是好的，缺的是 1.0 布局的反馈。** 按用户给的链接实测：
+`gar.mn` → `301` → 长链 → `200`，我们自己的抓取代码也能正常跟随跳转并拿到页面；
+链接抽取对「用户复制的那段真实分享文本」也完全正确（长链/短链/不带 `https://` 都认）。
+真正的问题是 **`onGarminShared` 只注册在 2.0 外壳**（`shell2.dart`）里 —— 用 **1.0 布局**
+的用户分享完之后**界面上什么都不会发生**，看起来自然是「没被识别」。
+现在 1.0（`home_page.dart`）也注册同一条提示（含「去设置」按钮），并把这个缺口钉进检查器
+（两套外壳都必须注册）。顺带说明：抓取失败与「活动还没有数据」是两件事 —— 后者会如实显示
+「还没有取到点」。
+
 ---
 
 ## [1.6.168] - 2026-09-24 (English)
@@ -27,6 +36,17 @@ phone takes over automatically. It is now an **honest status row** (no selection
 tracking (location off)" when nothing runs, "Tracking (phone GPS stepped aside)" while live, and
 "Link set, but Garmin has no fresh points" when the link is configured but idle. The heart-rate
 row now shows the current bpm too.
+
+**"The Garmin share was not recognised": the short link is fine — what was missing is feedback
+in the 1.0 layout.** Measured with the link the user supplied: `gar.mn` → `301` → long link →
+`200`, and our own fetcher follows the redirect and gets the page just fine; link extraction also
+handles the exact shared text the user copied (long form, short form, and a bare `gar.mn/xxx`
+without a scheme all match). The real gap was that **`onGarminShared` was only registered in the
+2.0 shell** (`shell2.dart`) — so anyone on the **1.0 layout** saw *nothing at all* after sharing,
+which naturally reads as "not recognised". The 1.0 shell (`home_page.dart`) now registers the same
+notice (with an "Open settings" action), and the checker requires both shells to register it. Note
+also that a fetch failure and "the activity has no points yet" are different things — the latter
+honestly reports "no points yet".
 
 ---
 

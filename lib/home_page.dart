@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'theme.dart';
 import 'material.dart';
+import 'garmin_page.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'theme_store.dart';
@@ -44,6 +45,30 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // 监听台站列表跳转地图 / 地图选点
     widget.state.addListener(_onStateChanged);
+    // 「分享给 APRSlocus」：佳明 App 分享 LiveTrack 链接进来 → 提示 + 引导进设置页。
+    //
+    // ⚠ **1.0 和 2.0 两套外壳都要注册**。这里原先只在 2.0（shell2.dart）注册了 ——
+    // 于是用 1.0 布局的用户分享完之后**界面上什么都不会发生**，看起来就是
+    // 「分享的链接没被识别」（用户实测反馈）。
+    widget.state.onGarminShared = (url) {
+      if (!mounted) return;
+      final s = S.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.garminSharedToast),
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: s.garminOpen,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => GarminTrackPage(state: widget.state),
+              ),
+            ),
+          ),
+        ),
+      );
+    };
     // 收到新消息时弹出顶部气泡
     widget.state.onNewMessage = (src, text, groupId) {
       String? groupName;
@@ -316,6 +341,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _bubbleTimer?.cancel();
     widget.state.removeListener(_onStateChanged);
+    widget.state.onGarminShared = null;
     widget.state.onNewMessage = null;
     widget.state.onInviteReceived = null;
     widget.state.onGroupEvent = null;

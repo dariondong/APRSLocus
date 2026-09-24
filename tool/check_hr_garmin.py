@@ -198,6 +198,17 @@ def main() -> int:
     need('lib/state.dart', 'if (garmin.on && garmin.fresh) return;',
          '佳明在跑时手机 GPS 没有让位 —— 两路会互相把标记拉来拉去')
     need('lib/state.dart', 'onGarminShared', '分享进来的链接没有回调出去（用户看不到任何提示）')
+    # **两套外壳（1.0 HomePage / 2.0 HomeShell2）都必须注册这个回调**。
+    # 原先只在 2.0 注册：用 1.0 的用户分享完之后界面**毫无反应**，
+    # 看起来就是「分享的链接没被识别」（用户实测报的）。
+    for _f, _name in (('lib/shell2.dart', '2.0 HomeShell2'),
+                      ('lib/home_page.dart', '1.0 HomePage')):
+        # ⚠ 判据必须带上 `(url) {` —— 只搜 `onGarminShared = ` 会被 dispose 里的
+        # `onGarminShared = null;` 满足，等于永远查不出来（第一版就是这么写的，
+        # 回归样本当场证明它不报红）。
+        if 'onGarminShared = (url) {' not in read(_f):
+            errors.append(f'{_f}（{_name}）没有注册 onGarminShared —— '
+                          '在该布局下分享佳明链接后界面毫无反应')
     need('lib/garmin_page.dart', 'GarminTrackPage',
          '佳明设置页没了 —— 手贴链接那条路就断了')
     # 佳明点必须把「航向」与「历史台账」一起补上：佳明的点里没有航向字段，
