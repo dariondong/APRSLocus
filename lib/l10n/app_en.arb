@@ -2388,5 +2388,6 @@
   "ownSourceHrIdle": "Not connected (tap to connect a strap)",
   "hrLineHr": "HR {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
-  "garminShareNoLink": "No Garmin LiveTrack link found in what was shared"
+  "garminShareNoLink": "No Garmin LiveTrack link found in what was shared",
+  "hrFromGarmin": "Heart rate from Garmin LiveTrack (watch)"
 }

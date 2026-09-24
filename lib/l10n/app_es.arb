@@ -2472,5 +2472,6 @@
   "ownSourceHrIdle": "Sin conectar (toca para conectar)",
   "hrLineHr": "pulso {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
-  "garminShareNoLink": "No se encontró ningún enlace de Garmin LiveTrack"
+  "garminShareNoLink": "No se encontró ningún enlace de Garmin LiveTrack",
+  "hrFromGarmin": "Pulso desde Garmin LiveTrack (reloj)"
 }

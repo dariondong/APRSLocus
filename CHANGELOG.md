@@ -2,6 +2,15 @@
 
 ## [1.6.169] - 2026-09-24
 
+**心率说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源
+（BLE 胸带 / 佳明点里的心率），现在**佳明在供数据时**心率卡与「数据来源」卡的心率行都会
+写明「心率来自佳明 LiveTrack（手表）· 128 bpm」，没插胸带也不会再显示成「未连接」，
+用户一眼知道这个数字从哪来。
+
+**关于页空隙**（用户反馈「一些组件空隙不够」）：节标题与卡片之间 8 → 12；致谢卡里
+「测试成员」标签到呼号胶囊 8 → 11、胶囊之间 8 → 10；`BA3RZL` 那组的标签到胶囊 6 → 8、
+与上方胶囊组之间留 6；卡片底部 12 → 14。
+
 **关于页：BA3RZL 单独成行，并与上面的呼号同一套样式**（用户明确要求，原话「这很重要」，
 随后追问「跟上面呼号一样吗，这是个重要人物」）。原来那一行是 `AI 算力支持 · BA3RZL 养生`：
 扫过去只看到「标签」，提供算力的人在句子中间、一眼看不见。
@@ -27,6 +36,16 @@
 ---
 
 ## [1.6.169] - 2026-09-24 (English)
+
+**Heart rate now names its source** (on request: "if Garmin is linked, say the rate comes from
+Garmin tracking"). There are two sources (a BLE strap / the heart rate inside Garmin's points), so
+while Garmin is supplying data both the heart-rate card and the heart-rate row in the data-sources
+card now say "Heart rate from Garmin LiveTrack (watch) · 128 bpm" — no more "not connected" when no
+strap is worn, and it is obvious where the number comes from.
+
+**About page spacing** (reported as too tight): section header → card 8 → 12; inside the credits
+card the "test members" label → callsign chips 8 → 11 and chip gaps 8 → 10; the `BA3RZL` group's
+label → chip 6 → 8 with 6px of separation from the chips above; card bottom padding 12 → 14.
 
 **About page: BA3RZL gets its own line, styled exactly like the callsigns above** (an explicit
 request — "this is important" — followed by "is it the same as the callsigns above? This is an

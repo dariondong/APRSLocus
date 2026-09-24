@@ -282,6 +282,16 @@ def main() -> int:
     need('lib/map_page.dart', 'st.beaconAttachedDetail',
          '手动上报的提示没有列出实际附带的内容')
 
+    # 佳明在供数据时要**说明心率来自佳明**（用户原话：「如果链接了佳明就提示从
+    # 佳明追踪获取」）—— 心率有两个来源（BLE 胸带 / 佳明点），不写清楚用户不知道
+    # 这个数字从哪来；没插胸带时还会以为设置坏了。
+    need('lib/hr_card.dart', 's.hrFromGarmin',
+         '心率卡里没有「心率来自佳明 LiveTrack」的说明')
+    need('lib/tnc_page.dart', 's.hrFromGarmin',
+         '数据来源卡的心率行没有说明「来自佳明」—— 没插胸带时会显示成「未连接」')
+    need('lib/l10n/app_zh.arb', '"hrFromGarmin"',
+         '缺少 hrFromGarmin 文案（6 语言）')
+
     # 心率必须显示在**主屏幕（地图页）**上（需求原话）
     need('lib/map_page.dart', 'Widget _hrChip()',
          '地图页没有心率胶囊 —— 心率只在设置页可见，主屏幕看不到')

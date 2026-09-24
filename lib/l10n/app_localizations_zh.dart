@@ -6791,6 +6791,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get garminShareNoLink => "分享的内容里没有找到佳明 LiveTrack 链接";
 
+  @override
+  String get hrFromGarmin => "心率来自佳明 LiveTrack（手表）";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13578,5 +13581,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get garminShareNoLink => "分享的內容裡沒有找到佳明 LiveTrack 連結";
+
+  @override
+  String get hrFromGarmin => "心率來自佳明 LiveTrack（手錶）";
 
 }

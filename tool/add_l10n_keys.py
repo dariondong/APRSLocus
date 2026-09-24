@@ -36,6 +36,18 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 心率来源是**佳明 LiveTrack**（手表）时的说明。
+    # 用户要求：「如果链接了佳明就提示从佳明追踪获取」。心率有两个来源
+    # （BLE 胸带 / 佳明点里的 heartRateBeatsPerMin），不写清楚用户不知道
+    # 这个数字是从哪来的 —— 尤其没插胸带时他会以为设置坏了。
+    'hrFromGarmin': (
+        '心率来自佳明 LiveTrack（手表）', '心率來自佳明 LiveTrack（手錶）',
+        'Heart rate from Garmin LiveTrack (watch)',
+        '心拍は Garmin LiveTrack（ウォッチ）から',
+        'Pulso desde Garmin LiveTrack (reloj)',
+        'Detak jantung dari Garmin LiveTrack (jam)',
+    ),
+
     # 分享进来的内容里**没有**佳明链接时的提示。
     # 为什么必须给：以前解析失败是**静默 return** —— 用户分享后什么都没发生、
     # 也没有任何解释，只能来问「为什么没识别」。失败必须可见。

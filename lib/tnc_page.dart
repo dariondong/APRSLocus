@@ -130,8 +130,15 @@ class DataSourceCard extends StatelessWidget {
                   ? s.hrConnected(state.bleHr.deviceName ?? '--')
                   : '${s.hrConnected(state.bleHr.deviceName ?? '--')} · '
                       '${s.hrLineHr('${state.bleHr.bpm} bpm')}')
-              : s.ownSourceHrIdle,
-          active: state.bleHr.connected && state.bleHr.bpm != null,
+              // 没插胸带但佳明在供数据 → 如实说「心率来自佳明 LiveTrack」，
+              // 而不是显示「未连接（点一下连接心率带）」让人以为缺东西。
+              : (state.garminOn && state.garmin.fresh
+                  ? (state.myHr == null
+                      ? s.hrFromGarmin
+                      : '${s.hrFromGarmin} · ${s.hrLineHr('${state.myHr} bpm')}')
+                  : s.ownSourceHrIdle),
+          active: (state.bleHr.connected && state.bleHr.bpm != null) ||
+              (state.garminOn && state.garmin.fresh && state.myHr != null),
           onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => HrDevicePage(state: state))),
         ),

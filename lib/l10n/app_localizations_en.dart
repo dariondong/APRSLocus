@@ -7056,4 +7056,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get garminShareNoLink => "No Garmin LiveTrack link found in what was shared";
 
+  @override
+  String get hrFromGarmin => "Heart rate from Garmin LiveTrack (watch)";
+
 }

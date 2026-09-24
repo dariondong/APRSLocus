@@ -6865,4 +6865,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get garminShareNoLink => "共有された内容に Garmin LiveTrack のリンクが見つかりません";
 
+  @override
+  String get hrFromGarmin => "心拍は Garmin LiveTrack（ウォッチ）から";
+
 }

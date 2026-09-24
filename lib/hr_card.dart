@@ -80,6 +80,33 @@ class _HrSettingsCardState extends State<HrSettingsCard> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(s.hrIncludeHint, style: ts(10.5, c: C.grey, h: 1.5)),
                 ),
+              // ①b 心率来自**佳明**时的说明（用户要求：「如果链接了佳明就提示从
+              // 佳明追踪获取」）。放在设备区之上：它是「这个数字哪来的」的答案，
+              // 比「有没有插胸带」更靠前 —— 佳明在供数据时，用户压根不需要插胸带。
+              if (st.garminOn && st.garmin.fresh)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: C.redBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(children: [
+                      Icon(Icons.watch_rounded, size: 14, color: C.red),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          st.myHr == null
+                              ? s.hrFromGarmin
+                              : '${s.hrFromGarmin} · ${s.hrLineHr('${st.myHr} bpm')}',
+                          style: ts(11, c: C.red, w: FontWeight.w600),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
               // ② 设备连接区
               if (!h.isAndroid || !h.supported)
                 Padding(

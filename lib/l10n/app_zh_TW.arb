@@ -2976,5 +2976,6 @@
   "ownSourceHrIdle": "未連線（點一下連線心率帶）",
   "hrLineHr": "心率 {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
-  "garminShareNoLink": "分享的內容裡沒有找到佳明 LiveTrack 連結"
+  "garminShareNoLink": "分享的內容裡沒有找到佳明 LiveTrack 連結",
+  "hrFromGarmin": "心率來自佳明 LiveTrack（手錶）"
 }

@@ -2472,5 +2472,6 @@
   "ownSourceHrIdle": "Belum tersambung (ketuk untuk menyambung)",
   "hrLineHr": "HR {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
-  "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan"
+  "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan",
+  "hrFromGarmin": "Detak jantung dari Garmin LiveTrack (jam)"
 }

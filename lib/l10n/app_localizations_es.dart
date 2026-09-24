@@ -7106,4 +7106,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get garminShareNoLink => "No se encontró ningún enlace de Garmin LiveTrack";
 
+  @override
+  String get hrFromGarmin => "Pulso desde Garmin LiveTrack (reloj)";
+
 }

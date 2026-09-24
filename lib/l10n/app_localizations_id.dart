@@ -7065,4 +7065,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get garminShareNoLink => "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan";
 
+  @override
+  String get hrFromGarmin => "Detak jantung dari Garmin LiveTrack (jam)";
+
 }

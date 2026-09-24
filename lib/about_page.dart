@@ -479,7 +479,9 @@ class _AboutPageState extends State<AboutPage>
                           Icons.code_rounded,
                           C.purple,
                         ),
-                        const SizedBox(height: 8),
+                        // 节标题与卡片之间留 12：原来是 8，标题那行自带 24 高的图标底托，
+                        // 8px 会让标题看起来「贴在卡片上」（用户反馈空隙不够）。
+                        const SizedBox(height: 12),
                         SoftCard(
                           padding: EdgeInsets.zero,
                           child: Column(
@@ -503,7 +505,7 @@ class _AboutPageState extends State<AboutPage>
                           Icons.favorite_rounded,
                           C.red,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         SoftCard(
                           padding: EdgeInsets.zero,
                           child: Column(
@@ -536,7 +538,7 @@ class _AboutPageState extends State<AboutPage>
                           Icons.group_rounded,
                           C.green,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         SoftCard(
                           padding: EdgeInsets.zero,
                           child: Column(
@@ -544,15 +546,17 @@ class _AboutPageState extends State<AboutPage>
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(14, 12, 14, 0),
+                                    const EdgeInsets.fromLTRB(14, 14, 14, 0),
                                 child: Text(t.testMembers, style: ts(11, c: C.grey)),
                               ),
+                              // 标签 → 呼号胶囊：8 → 11（胶囊本身有 6 的上下内边距，
+                              // 8 会让它看起来黏在标签下面）
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(14, 8, 14, 10),
+                                    const EdgeInsets.fromLTRB(14, 11, 14, 12),
                                 child: Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
+                                  spacing: 10,
+                                  runSpacing: 10,
                                   children: [
                                     _memberChip('BG7PGW'),
                                     _memberChip('BG7LMW'),
@@ -564,7 +568,7 @@ class _AboutPageState extends State<AboutPage>
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                                    const EdgeInsets.fromLTRB(14, 6, 14, 14),
                                 // BA3RZL **必须单独一行**（用户明确要求，且说「这很重要」）。
                                 // 原来写成一整行『AI 算力支持 · BA3RZL 养生』：扫过去只看到
                                 // 那个「标签」，提供算力的人被 `·` 混在句子中间、一眼看不见。
@@ -573,7 +577,7 @@ class _AboutPageState extends State<AboutPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(t.aiSupport, style: ts(10.5, c: C.greyLight)),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 8),
                                     // **与上面测试成员同一套呼号胶囊**。
                                     //
                                     // 用户原话：「关于页 BA3RZL 单独一行 这很重要！」→

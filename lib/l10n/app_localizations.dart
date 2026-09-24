@@ -12368,6 +12368,12 @@ abstract class AppLocalizations {
   /// **'分享的内容里没有找到佳明 LiveTrack 链接'**
   String get garminShareNoLink;
 
+  /// No description provided for @hrFromGarmin.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率来自佳明 LiveTrack（手表）'**
+  String get hrFromGarmin;
+
 }
 
 class _AppLocalizationsDelegate
