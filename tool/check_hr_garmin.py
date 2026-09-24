@@ -125,8 +125,18 @@ def main() -> int:
     need(man, 'android.hardware.bluetooth_le',
          '没有声明 BLE 特性（required=false）—— 没有 BLE 的设备会被应用市场过滤掉')
     need(act, 'onNewIntent', '**没有重写 onNewIntent —— singleTop 下第二次分享会被静默丢掉**')
-    need(act, 'livetrack.garmin.com',
-         '没有按 livetrack 域名过滤 —— 任意 App 分享任意文本都会看到 APRSlocus')
+    # ⚠ **不许**在原生侧按域名过滤。原先这里是 `need(act, 'livetrack.garmin.com')`
+    # —— 那条判据两个方向都错：① 域名过滤本身是坏设计（应用是否出现在分享面板只由
+    # manifest 的 intent-filter 决定，过滤拦不住任何东西，只会把「佳明换了域名」
+    # 变成**静默丢弃**）；② 改成 forbid 之前它还被注释里的字样满足了（假通过）。
+    # 现在要求：文本一律透传给 Dart，识别不了由 Dart 如实提示。
+    for bad in ('TRACK_HOSTS', 'LIVETRACK_HOST'):
+        if bad in code_only(act):
+            errors.append(f'MainActivity 又按域名过滤分享文本了（{bad}）—— '
+                          '那道过滤拦不住任何东西，只会把新域名变成静默丢弃；'
+                          '应一律透传给 Dart')
+    need('lib/state.dart', 'onGarminShareNoLink?.call();',
+         '分享内容里没有链接时是**静默丢弃** —— 用户看不到任何反应，只能来问')
     need(act, 'takePendingSharedText', '冷启动那条分享路径没了（Flutter 起来前事件没人收）')
 
     # ── ④ Dart：心率与信标 ──
@@ -217,14 +227,19 @@ def main() -> int:
     # **两套外壳（1.0 HomePage / 2.0 HomeShell2）都必须注册这个回调**。
     # 原先只在 2.0 注册：用 1.0 的用户分享完之后界面**毫无反应**，
     # 看起来就是「分享的链接没被识别」（用户实测报的）。
+    # ⚠ 判据必须带上 `(url) {` / `() {` —— 只搜 `onGarminShared = ` 会被 dispose 里的
+    # `onGarminShared = null;` 满足，等于永远查不出来（第一版就是这么写的，
+    # 回归样本当场证明它不报红）。
+    # **两个回调都要**：成功一条（带「去设置」）、失败一条（没找到链接时也要可见）。
     for _f, _name in (('lib/shell2.dart', '2.0 HomeShell2'),
                       ('lib/home_page.dart', '1.0 HomePage')):
-        # ⚠ 判据必须带上 `(url) {` —— 只搜 `onGarminShared = ` 会被 dispose 里的
-        # `onGarminShared = null;` 满足，等于永远查不出来（第一版就是这么写的，
-        # 回归样本当场证明它不报红）。
-        if 'onGarminShared = (url) {' not in read(_f):
-            errors.append(f'{_f}（{_name}）没有注册 onGarminShared —— '
-                          '在该布局下分享佳明链接后界面毫无反应')
+        for _needle, _what in (
+            ('onGarminShared = (url) {', 'onGarminShared（收到链接的提示）'),
+            ('onGarminShareNoLink = () {', 'onGarminShareNoLink（没识别到链接的提示）'),
+        ):
+            if _needle not in read(_f):
+                errors.append(f'{_f}（{_name}）没有注册 {_what} —— '
+                              '在该布局下分享佳明链接后界面毫无反应')
     need('lib/garmin_page.dart', 'GarminTrackPage',
          '佳明设置页没了 —— 手贴链接那条路就断了')
     # 佳明点必须把「航向」与「历史台账」一起补上：佳明的点里没有航向字段，

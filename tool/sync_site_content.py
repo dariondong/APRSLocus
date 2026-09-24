@@ -205,6 +205,26 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.169', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**1.0 布局下「佳明分享」依然毫无反应**：上一版把「分享里没有链接」也做成'
+               '可见提示，但那个回调只注册在 2.0 外壳 —— 用 1.0 的用户分享完还是什么都'
+               '看不到，和「没识别」一模一样。现在 1.0 两个回调都注册：收到链接给提示 +'
+               '「去设置」，没找到链接也如实说一句（**失败也看得见**）',
+               '**1.0 佈局下「佳明分享」依然毫無反應**：上一版把「分享裡沒有連結」也做成'
+               '可見提示，但那個回呼只註冊在 2.0 外殼 —— 用 1.0 的使用者分享完還是什麼都'
+               '看不到，和「沒識別」一模一樣。現在 1.0 兩個回呼都註冊：收到連結給提示 +'
+               '「去設定」，沒找到連結也如實說一句（**失敗也看得見**）',
+               '**Garmin sharing was still silent in the 1.0 layout**: the previous release made '
+               '"the shared content has no link" visible too, but that callback was registered only '
+               'in the 2.0 shell — so on 1.0 sharing still showed nothing, exactly like "not '
+               'recognised". The 1.0 shell now registers both callbacks: a link shows a notice plus '
+               'an "Open settings" action, and a share without a link says so plainly (failures are '
+               'visible too).')),
+        ],
+    },
+    {
         'ver': 'v1.6.168', 'date': '2026-09-24',
         'items': [
             ('fix',

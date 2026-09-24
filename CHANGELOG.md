@@ -1,5 +1,48 @@
 # 更新日志
 
+## [1.6.169] - 2026-09-24
+
+### 🐞 1.0 布局下「佳明分享」仍然毫无反应（两个回调都只在 2.0 注册）/ Garmin share still silent in the 1.0 layout
+
+上一版把「分享过来的内容里没有链接」也做成**可见提示**（`onGarminShareNoLink`），但那个
+回调**只注册在 2.0 外壳**里 —— 用 **1.0 布局**的用户分享完依然是**毫无反应**，
+和「没识别」看起来一模一样（上一版刚给 `onGarminShared` 补过同一个缺口，这次是它的兄弟）。
+
+现在 1.0（`home_page.dart`）两个回调都注册：收到链接给「已收到佳明分享链接 + 去设置」，
+没找到链接给「没有识别到佳明链接」——**失败也看得见**。
+
+守卫也一起修了两处（都是我自己写松的）：
+* 原来的 `need(MainActivity, 'livetrack.garmin.com')` 是**假通过** —— 原生侧早已取消域名过滤，
+  文件里只剩注释提到这个词；改成**反向禁止**域名过滤（`TRACK_HOSTS` / `LIVETRACK_HOST`），
+  因为那道过滤拦不住任何东西，只会把「佳明换了域名」变成静默丢弃；
+* 「两套外壳都要注册」的判据漏了第二个回调，现在**两个回调 × 两套外壳**逐个点名。
+
+---
+
+## [1.6.169] - 2026-09-24 (English)
+
+### 🐞 Garmin share still silent in the 1.0 layout (both callbacks were registered in the 2.0 shell only)
+
+The previous release made "the shared content contains no link" **visible** too
+(`onGarminShareNoLink`), but that callback was **registered only in the 2.0 shell** — so anyone on
+the **1.0 layout** still saw *nothing at all* after sharing, which looks exactly like "not
+recognised". (The same gap had just been fixed for `onGarminShared`; this is its sibling.)
+
+The 1.0 shell (`home_page.dart`) now registers both: a shared link shows "Garmin share link
+received" plus an "Open settings" action, and a share without a link shows "no Garmin link
+recognised" — **failures are visible too**.
+
+Two guards were also fixed (both were mine, and both were too loose):
+* the old `need(MainActivity, 'livetrack.garmin.com')` was a **false pass** — the native side no
+  longer filters by host and only a comment still mentions that word; it is now a **forbidden**
+  host filter (`TRACK_HOSTS` / `LIVETRACK_HOST`), because that filter blocks nothing and merely
+  turns "Garmin changed the domain" into a silent drop;
+* the "both shells must register" check missed the second callback; it now names **both callbacks
+  across both shells**.
+
+---
+
+
 ## [1.6.168] - 2026-09-24
 
 ### 🐞 「位置来源」不再是二选一，改成如实的状态行 / Position source is an honest status row, not a two-way choice

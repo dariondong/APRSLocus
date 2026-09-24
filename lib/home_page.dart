@@ -50,6 +50,18 @@ class _HomePageState extends State<HomePage> {
     // ⚠ **1.0 和 2.0 两套外壳都要注册**。这里原先只在 2.0（shell2.dart）注册了 ——
     // 于是用 1.0 布局的用户分享完之后**界面上什么都不会发生**，看起来就是
     // 「分享的链接没被识别」（用户实测反馈）。
+    // 分享过来的内容里**没有**佳明链接时也要说一句 —— 静默什么都不做的话，
+    // 用户只能来问「为什么没识别」（**1.0 / 2.0 两套外壳都要注册**，
+    // 这里原先只在 2.0 注册过）。
+    widget.state.onGarminShareNoLink = () {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).garminShareNoLink),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    };
     widget.state.onGarminShared = (url) {
       if (!mounted) return;
       final s = S.of(context);
@@ -342,6 +354,7 @@ class _HomePageState extends State<HomePage> {
     _bubbleTimer?.cancel();
     widget.state.removeListener(_onStateChanged);
     widget.state.onGarminShared = null;
+    widget.state.onGarminShareNoLink = null;
     widget.state.onNewMessage = null;
     widget.state.onInviteReceived = null;
     widget.state.onGroupEvent = null;

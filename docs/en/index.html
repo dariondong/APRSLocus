@@ -558,6 +558,15 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.169</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Garmin sharing was still silent in the 1.0 layout**: the previous release made "the shared content has no link" visible too, but that callback was registered only in the 2.0 shell — so on 1.0 sharing still showed nothing, exactly like "not recognised". The 1.0 shell now registers both callbacks: a link shows a notice plus an "Open settings" action, and a share without a link says so plainly (failures are visible too).</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.168</span>
         <span class="cl-date">2026-09-24</span>
       </div>
