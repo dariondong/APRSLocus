@@ -1,6 +1,8 @@
 # 更新日志
 
-## [1.6.169] - 2026-09-24
+## [1.6.170] - 2026-09-24
+
+### ❤️ 心率说明来源 + 关于页空隙 / Heart-rate source labelling + About page spacing
 
 **心率说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源
 （BLE 胸带 / 佳明点里的心率），现在**佳明在供数据时**心率卡与「数据来源」卡的心率行都会
@@ -11,13 +13,31 @@
 「测试成员」标签到呼号胶囊 8 → 11、胶囊之间 8 → 10；`BA3RZL` 那组的标签到胶囊 6 → 8、
 与上方胶囊组之间留 6；卡片底部 12 → 14。
 
+---
+
+## [1.6.170] - 2026-09-24 (English)
+
+### ❤️ Heart-rate source labelling + About page spacing
+
+**Heart rate now names its source** (on request: "if Garmin is linked, say the rate comes from
+Garmin tracking"). There are two sources (a BLE strap / the heart rate inside Garmin's points), so
+while Garmin is supplying data both the heart-rate card and the heart-rate row in the data-sources
+card now say "Heart rate from Garmin LiveTrack (watch) · 128 bpm" — no more "not connected" when no
+strap is worn, and it is obvious where the number comes from.
+
+**About page spacing** (reported as too tight): section header → card 8 → 12; inside the credits
+card the "test members" label → callsign chips 8 → 11 and chip gaps 8 → 10; the `BA3RZL` group's
+label → chip 6 → 8 with 6px of separation from the chips above; card bottom padding 12 → 14.
+
+---
+
+## [1.6.169] - 2026-09-24
 **关于页：BA3RZL 单独成行，并与上面的呼号同一套样式**（用户明确要求，原话「这很重要」，
 随后追问「跟上面呼号一样吗，这是个重要人物」）。原来那一行是 `AI 算力支持 · BA3RZL 养生`：
 扫过去只看到「标签」，提供算力的人在句子中间、一眼看不见。
 现在**标签一行、呼号胶囊一行**：`BA3RZL` 用与上面测试成员**同一个 `_memberChip`**
 （同一颗绿色胶囊 + 天线图标），「养生」作为胶囊后的小字备注 —— 既单独成行，样式也和
 被点名的那些呼号一致。
-
 ### 🐞 1.0 布局下「佳明分享」仍然毫无反应（两个回调都只在 2.0 注册）/ Garmin share still silent in the 1.0 layout
 
 上一版把「分享过来的内容里没有链接」也做成**可见提示**（`onGarminShareNoLink`），但那个
@@ -35,18 +55,9 @@
 
 ---
 
+---
+
 ## [1.6.169] - 2026-09-24 (English)
-
-**Heart rate now names its source** (on request: "if Garmin is linked, say the rate comes from
-Garmin tracking"). There are two sources (a BLE strap / the heart rate inside Garmin's points), so
-while Garmin is supplying data both the heart-rate card and the heart-rate row in the data-sources
-card now say "Heart rate from Garmin LiveTrack (watch) · 128 bpm" — no more "not connected" when no
-strap is worn, and it is obvious where the number comes from.
-
-**About page spacing** (reported as too tight): section header → card 8 → 12; inside the credits
-card the "test members" label → callsign chips 8 → 11 and chip gaps 8 → 10; the `BA3RZL` group's
-label → chip 6 → 8 with 6px of separation from the chips above; card bottom padding 12 → 14.
-
 **About page: BA3RZL gets its own line, styled exactly like the callsigns above** (an explicit
 request — "this is important" — followed by "is it the same as the callsigns above? This is an
 important person"). The line used to read `AI compute support · BA3RZL`; scanning it you only saw
@@ -54,7 +65,6 @@ the label, with the person who provided the compute buried mid-sentence. It is n
 line, callsign chip on the next**: `BA3RZL` uses the very same `_memberChip` as the test members
 above (same green pill, same antenna icon), with 养生 as a small note after it — so it is both on
 its own line and visually identical to the callsigns being named.
-
 ### 🐞 Garmin share still silent in the 1.0 layout (both callbacks were registered in the 2.0 shell only)
 
 The previous release made "the shared content contains no link" **visible** too
@@ -75,7 +85,6 @@ Two guards were also fixed (both were mine, and both were too loose):
   across both shells**.
 
 ---
-
 
 ## [1.6.168] - 2026-09-24
 

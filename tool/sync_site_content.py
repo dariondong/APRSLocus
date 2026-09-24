@@ -205,6 +205,31 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.170', 'date': '2026-09-24',
+        'items': [
+            ('up',
+             T('**心率会说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源'
+               '（BLE 胸带 / 佳明点里的心率）。佳明在供数据时，心率卡与「数据来源」卡的心率行都会写明'
+               '「心率来自佳明 LiveTrack（手表）· 128 bpm」——没插胸带也不会再显示成「未连接」，'
+               '数字是哪来的摆在明面上。'
+               '另外**关于页空隙**（用户反馈「一些组件空隙不够」）：节标题与卡片之间 8→12，'
+               '致谢卡里「测试成员」标签到呼号胶囊 8→11、胶囊之间 8→10，`BA3RZL` 那组标签到胶囊 6→8',
+               '**心率會說明來源**（使用者要求「如果連結了佳明就提示從佳明追蹤獲取」）：心率有兩個來源'
+               '（BLE 胸帶／佳明點裡的心率）。佳明在供資料時，心率卡與「資料來源」卡的心率列都會寫明'
+               '「心率來自佳明 LiveTrack（手錶）· 128 bpm」——沒插胸帶也不會再顯示成「未連線」，'
+               '數字是哪來的擺在明面上。'
+               '另外**關於頁空隙**（使用者回報「一些元件空隙不夠」）：節標題與卡片之間 8→12，'
+               '致謝卡裡「測試成員」標籤到呼號膠囊 8→11、膠囊之間 8→10，`BA3RZL` 那組標籤到膠囊 6→8',
+               '**Heart rate now names its source** (on request): there are two sources (a BLE strap / '
+               'the heart rate carried in Garmin points), so while Garmin is supplying data both the '
+               'heart-rate card and the heart-rate row of the data-sources card say "Heart rate from '
+               'Garmin LiveTrack (watch) · 128 bpm" — no strap required, and it is obvious where the '
+               'number comes from. Also **About page spacing** (reported as too tight): section '
+               'header → card 8 → 12, and inside the credits card the "test members" label → callsign '
+               'chips 8 → 11 with chip gaps 8 → 10, and the BA3RZL group 6 → 8.')),
+        ],
+    },
+    {
         'ver': 'v1.6.169', 'date': '2026-09-24',
         'items': [
             ('fix',
