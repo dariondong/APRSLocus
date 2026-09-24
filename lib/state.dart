@@ -221,6 +221,43 @@ class AppState extends ChangeNotifier {
   /// 分享内容里**没有**佳明链接时回调（外壳用来如实提示，而不是静默什么都不做）。
   void Function()? onGarminShareNoLink;
 
+  /// 冷启动时外壳还没注册回调 —— 把「收到分享」这件事先存这里，等外壳 initState 取走。
+  ///
+  /// 必须是**存状态**而不是只调回调：`AppState` 在 `_AppState` 的字段初始化时就构造了
+  /// （早于外壳 initState），而 `ensureInit()` 里那次 `takePendingSharedText` 的平台往返
+  /// 可能比外壳注册回调**更早**返回 —— 那一瞬间回调还是 null，用户点完分享
+  /// **界面上什么都不会发生**（用户实测报的「跳转之后还是没有反馈」）。
+  String? _shareNotice;
+  bool _shareNoticeNoLink = false;
+
+  /// 外壳启动时取走待提示的分享事件（取走即清空，不会重复弹）。
+  ({String? url, bool noLink})? consumeShareNotice() {
+    if (_shareNotice == null && !_shareNoticeNoLink) return null;
+    final r = (url: _shareNotice, noLink: _shareNoticeNoLink);
+    _shareNotice = null;
+    _shareNoticeNoLink = false;
+    return r;
+  }
+
+  /// 把「收到分享」交给 UI：**有回调就立即用**，否则**存起来**等外壳来取。
+  void _deliverShareNotice({String? url, bool noLink = false}) {
+    if (noLink) {
+      final cb = onGarminShareNoLink;
+      if (cb != null) {
+        cb();
+        return;
+      }
+      _shareNoticeNoLink = true;
+      return;
+    }
+    final cbu = onGarminShared;
+    if (cbu != null) {
+      cbu(url ?? '');
+      return;
+    }
+    _shareNotice = url;
+  }
+
   /// 佳明 LiveTrack 的新点 → 当作「自己」的一次定位。
   ///
   /// 为什么不让它走 _onFix：那条路径围着**手机定位**的一堆特性转（粗定位闸、
@@ -311,7 +348,7 @@ class AppState extends ChangeNotifier {
         '分享内容里没有找到 LiveTrack 链接（前 120 字）：'
             '${brief.length > 120 ? '${brief.substring(0, 120)}…' : brief}',
       );
-      onGarminShareNoLink?.call();
+      _deliverShareNotice(noLink: true);
       _notify();
       return;
     }
@@ -320,7 +357,7 @@ class AppState extends ChangeNotifier {
     unawaited(garmin.start(url));
     garminOn = true;
     persist();
-    onGarminShared?.call(url);
+    _deliverShareNotice(url: url);
     _notify();
   }
 

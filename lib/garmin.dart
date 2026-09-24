@@ -61,10 +61,18 @@ final RegExp _longRe = RegExp(
 /// 实测（2026-09-24）：`https://gar.mn/<code>` → `301` →
 /// `https://livetrack.garmin.com/session/<uuid>/token/<hex>` → `200`，页面与直接访问
 /// 长链完全一致。所以**不需要**自己去解短链 —— 抓取时跟随跳转即可（见 garmin_fetch_io）。
-final RegExp _shortRe = RegExp(r'https?://gar\.mn/[A-Za-z0-9_-]{4,32}');
+/// 短链码长度**不设上限**、且**大小写不敏感**：佳明的短码里本来就可能有大写，
+/// 而写死 `{4,32}` 会在佳明换更长/更短的码时静默失配。
+final RegExp _shortRe = RegExp(
+  r'https?://gar\.mn/[A-Za-z0-9_-]+',
+  caseSensitive: false,
+);
 
 /// 用户可能只复制到 `gar.mn/xxx`（分享面板里显示的常常没有 scheme）。
-final RegExp _bareShortRe = RegExp(r'(?<![\w./-])gar\.mn/[A-Za-z0-9_-]{4,32}');
+final RegExp _bareShortRe = RegExp(
+  r'(?<![\w./-])gar\.mn/[A-Za-z0-9_-]+',
+  caseSensitive: false,
+);
 
 /// 把链接里的 token 打码，供日志/界面使用。
 ///

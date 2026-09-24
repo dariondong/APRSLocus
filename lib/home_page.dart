@@ -62,6 +62,34 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     };
+
+      // 冷启动时**外壳还没注册回调**，那次分享被 state 存了下来（见 consumeShareNotice）——
+      // 这里主动取一次并提示，否则「点分享 → 应用启动 → 什么反应都没有」
+      // （用户实测报的「跳转之后还是没有反馈」）。
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final n = widget.state.consumeShareNotice();
+        if (n == null) return;
+        final s = S.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(n.noLink ? s.garminShareNoLink : s.garminSharedToast),
+            behavior: SnackBarBehavior.floating,
+            action: n.noLink
+                ? null
+                : SnackBarAction(
+                    label: s.garminOpen,
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GarminTrackPage(state: widget.state),
+                      ),
+                    ),
+                  ),
+          ),
+        );
+      });
+
     widget.state.onGarminShared = (url) {
       if (!mounted) return;
       final s = S.of(context);

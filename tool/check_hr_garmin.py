@@ -135,9 +135,26 @@ def main() -> int:
             errors.append(f'MainActivity 又按域名过滤分享文本了（{bad}）—— '
                           '那道过滤拦不住任何东西，只会把新域名变成静默丢弃；'
                           '应一律透传给 Dart')
-    need('lib/state.dart', 'onGarminShareNoLink?.call();',
-         '分享内容里没有链接时是**静默丢弃** —— 用户看不到任何反应，只能来问')
+    need('lib/state.dart', 'onGarminShareNoLink;',
+         '缺少「分享内容里没有链接」的回调字段')
+    # 「收到分享」必须**存一份状态**，不能只调回调：AppState 早于外壳 initState 构造，
+    # 而 ensureInit 里那次平台往返可能更早返回 —— 那一刻回调还是 null，
+    # 用户点完分享**界面上什么都不会发生**（用户实测「跳转之后还是没有反馈」）。
+    need('lib/state.dart', 'consumeShareNotice()',
+         '没有「待提示的分享事件」存取 —— 冷启动那次分享会因回调未注册而丢失')
+    need('lib/state.dart', '_deliverShareNotice(',
+         '分享事件没有走「有回调就调、没回调就存」的统一出口')
     need(act, 'takePendingSharedText', '冷启动那条分享路径没了（Flutter 起来前事件没人收）')
+    # **ClipData 兜底**：不少应用（部分佳明版本/浏览器）把分享文本放在 clipData 而不是
+    # EXTRA_TEXT，只读 extras 会拿到 null → 整条分享完全静默（用户报的「有时候行有时候不行」）。
+    need(act, 'intent.clipData?.getItemAt(0)',
+         '取分享文本没有 ClipData 兜底 —— 走那条路径的分享会完全静默')
+    # ⚠ 探针必须是**完整调用形态**：先前写成裸词 `clipData`，把代码改成
+    # `clipDataX` 后 `'clipData' in src` 仍然成立 → 假通过（回归样本当场抓到）。
+    # 读不到文本也要推一次（空串）让 Dart 如实提示，不许静默 return。
+    if 'readSharedText(intent) ?: ""' not in read(act):
+        errors.append('intakeShared 在读不到文本时静默返回 —— '
+                      '用户点了分享却既没有提示也没有日志')
 
     # ── ④ Dart：心率与信标 ──
     st = read('lib/state.dart')
@@ -191,6 +208,18 @@ def main() -> int:
     # 会「什么都没发生」（Dart 与 Android 的域名闸门两处都会把它挡掉）。
     need('lib/garmin.dart', r'gar\.mn',
          '没有识别佳明 App 分享的短链 gar.mn —— 分享过来的链接会被判为无效')
+    # 短链码**大小写不敏感、且不设长度上限**：佳明短码里可能有大写，写死 `{4,32}`
+    # 会在它换码长时静默失配（「有时候行有时候不行」的另一种可能）。
+    _g = read('lib/garmin.dart')
+    # ⚠ 只看**非注释行**：解释「别写死 {4,32}」的那条注释本身含这个串，
+    # 按全文匹配会误报（本仓库第 N 次踩「注释里提到被禁的东西」这个坑了）。
+    _g_code = '\n'.join(l for l in _g.split('\n')
+                         if not l.lstrip().startswith('//'))
+    if _g_code.count('caseSensitive: false') < 2:
+        errors.append('短链正则不是大小写不敏感（两个正则都该 caseSensitive: false）—— '
+                      '佳明短码含大写时会漏识别')
+    if '{4,32}' in _g_code:
+        errors.append('短链正则又写死了长度 {4,32} —— 佳明换码长就会静默失配')
     need('lib/garmin_fetch_io.dart', 'followRedirects = true',
          '抓取没有显式跟随跳转 —— 短链靠 301 跳到长链，关掉就再也抓不到数据'
          '（而长链照常，极难归因）')
@@ -208,8 +237,8 @@ def main() -> int:
         errors.append('找不到 _onSharedIncoming')
     else:
         _blk = _sh[_i:_i + 1500]
-        if 'onGarminShareNoLink?.call()' not in _blk:
-            errors.append('_onSharedIncoming 解析失败时没有提示回调 —— '
+        if '_deliverShareNotice(noLink: true)' not in _blk:
+            errors.append('_onSharedIncoming 解析失败时没有提示 —— '
                           '用户分享后什么都不发生、也不给解释（「为什么没识别」）')
     need('lib/state.dart', 'onGarminShareNoLink;',
          '缺少「分享内容里没有链接」的回调字段')
@@ -240,6 +269,11 @@ def main() -> int:
             if _needle not in read(_f):
                 errors.append(f'{_f}（{_name}）没有注册 {_what} —— '
                               '在该布局下分享佳明链接后界面毫无反应')
+        # 还要**主动取一次**冷启动时存下的分享事件，否则「点分享 → 应用启动 →
+        # 毫无反应」（回调注册晚于那次平台往返）。
+        if 'consumeShareNotice' not in read(_f):
+            errors.append(f'{_f}（{_name}）没有调用 consumeShareNotice —— '
+                          '冷启动时那次分享会因回调未注册而**完全没有反馈**')
     need('lib/garmin_page.dart', 'GarminTrackPage',
          '佳明设置页没了 —— 手贴链接那条路就断了')
     # 佳明点必须把「航向」与「历史台账」一起补上：佳明的点里没有航向字段，

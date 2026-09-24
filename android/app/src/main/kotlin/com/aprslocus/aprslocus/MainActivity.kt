@@ -914,7 +914,14 @@ class MainActivity : FlutterActivity() {
     /// 收下分享进来的 LiveTrack 链接：能直接推就推（热启动），
     /// 推不了就先存着（冷启动，Flutter 还没起来）。
     private fun intakeShared(intent: Intent?) {
-        val text = readSharedText(intent) ?: return
+        // 只处理「文本分享」；不是分享意图就安静返回（那是别的事）。
+        if (intent == null || intent.action != Intent.ACTION_SEND) return
+        val type = intent.type ?: ""
+        if (!type.startsWith("text/")) return
+        // ⚠ **读不到文本也要照推一次（空串）**：以前这里 `?: return` 直接静默返回 ——
+        // 用户点了分享却什么都没发生，**既没有提示也没有日志**，只能来问「为什么没反应」。
+        // 现在空串也送到 Dart，由那边如实提示「没有找到佳明链接」，失败可见、可诊断。
+        val text = readSharedText(intent) ?: ""
         val sink = shareInSink
         if (sink != null) {
             sink.success(mapOf("type" to "shared", "text" to text))
@@ -934,14 +941,32 @@ class MainActivity : FlutterActivity() {
     ///
     /// 只做「识别 + 透传」：**不解析 URL 的 uuid/token、不发任何网络请求**
     /// （那涉及登录态与跨域，全部交给 Dart 侧）。
+    /// 取分享文本：`EXTRA_TEXT` → `EXTRA_SUBJECT` → **`clipData`**。
+    ///
+    /// ── 为什么要 ClipData 这一路 ──
+    /// 不少应用（部分佳明版本、浏览器、笔记类）把分享内容塞在 `intent.clipData`
+    /// 里而不是 `EXTRA_TEXT`。只读 extras 会拿到 null，于是整条分享在我们这边
+    /// **完全静默**（用户实测报的「有时候行、有时候不行」就是这个：
+    /// 取决于那一次分享走的是哪条 extras/clipData 路径）。
+    private fun sharedTextOf(intent: Intent): String? {
+        val direct = textExtra(intent, Intent.EXTRA_TEXT)
+            ?: textExtra(intent, Intent.EXTRA_SUBJECT)
+        if (!direct.isNullOrBlank()) return direct
+        return try {
+            val item = intent.clipData?.getItemAt(0) ?: return null
+            (item.coerceToText(this)?.toString() ?: item.text?.toString())
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private fun readSharedText(intent: Intent?): String? {
         if (intent == null || intent.action != Intent.ACTION_SEND) return null
         // 不写死 "text/plain"：部分分享方会带参数（如 text/plain;charset=utf-8），
         // 用相等比较会把这些全漏掉；按 text/ 前缀接更稳。
         val type = intent.type ?: ""
         if (!type.startsWith("text/")) return null
-        val raw = textExtra(intent, Intent.EXTRA_TEXT)
-            ?: textExtra(intent, Intent.EXTRA_SUBJECT)
+        val raw = sharedTextOf(intent)
         val text = raw?.trim()
         if (text.isNullOrEmpty()) return null
         // **不再在这里按域名过滤**。
