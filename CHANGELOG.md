@@ -1,5 +1,96 @@
 # 更新日志
 
+## [1.6.175] - 2026-09-24
+
+### 📡 TNC/射频：第三方包（DTI `}`）没解包 —— 消息被当成「位置」，消息页一条也收不到 / Unwrapping third-party packets
+
+用户反馈（TNC 模式）：数据包列表里那几条**明明是消息**，却标着绿色的「位置」，
+消息页也一条收不到。原文长这样：
+
+    LX0WX-13>APMI06,TCPIP,LX0WX-13*:}BG7LZQ-2>APALOC,TCPIP,LX0WX-13*::LX6FB-15 :I received it.{5224
+    └──────── 外层：射频上是谁发的这条 ────────┘└────────── 内层：真正的报文 ──────────┘
+
+信息字段以 `}` 开头 = APRS 的**第三方包**（DTI `}`）：`}` 后面是**另一条完整的报文**
+（`SRC>DEST,PATH:info`）。iGate 把互联网上的报文转到射频、中继台之间互转时大量使用，
+所以射频上遇到的并不都是「一条报文明文」。截图里那句 `[via APMI06,` 正好断在信息栏
+80 字上限处，与这个读法逐字吻合（不解包时信息栏显示的是内层原文 + 外层路径）。
+
+以前不认内层，于是一整类报文被吃掉：
+
+* 内层是消息 → 落到默认类型「位置」：数据包页把消息标成位置，**消息页一条也收不到**
+  （也就不会回 ack，发信方以为没送到）；
+* 内层是位置包 → 更彻底：内层台站根本不上图（图标、轨迹、详情页都没有）。
+
+现在 `}` 解包后**整条流水线按内层走**（类型判定、发信台、消息与 ack、台站与轨迹全用
+内层），外层只把「谁转递的」写进信息栏（`· [转递 LX0WX-13]`）；「原始」模式与长按
+复制里仍是那条**真正收到**的外层报文。
+
+三件必须说清的事：
+
+1. **只按内层重算，不改外层**：射频上「听到过」的是外层发射台（双向网关据此判断一条
+   互联网消息值不值得占射频时隙），拿内层台去记会让网关把消息发在没人听的链路上，
+   所以 `_noteHeard` 仍用外层。
+2. **层数上限 3 层，且每层都要求内层确实是 TNC2**（缺 `>` 或 `:` 就原样保留外层）：
+   既不会把「正文里恰好以 `}` 开头」的正常报文吃掉，也不会为畸形套娃失控。
+3. **只入列表一条**（内层那条）：外层再单独入一条会凭空多算一个「收包数」。
+
+顺带修掉同一个坑的另一半：`;` 对象报告以前也落到默认的「位置」，于是数据包页的
+「对象」筛选**永远筛不出东西**（截图里第 4 条 `;145.5875D*131532z4939.25N/…` 就是）。
+
+回归测试 `test/third_party_packet_test.dart`（截图原文的分类、发给本机的消息进列表、
+内层位置包上台站、畸形内层原样保留、两层套娃）；`_splitTnc2Header` / `_unwrapThirdParty`
+另用真实代码文本跑了 13 条断言（本机 `dart run`，含 5 层套娃不失控、普通包不受影响）。
+
+## [1.6.175] - 2026-09-24 (English)
+
+### 📡 TNC/RF: third-party packets (DTI `}`) were never unwrapped — a message showed up as "position"
+
+User report (TNC mode): entries in the packet list that are plainly messages carried the green
+"position" tag, and none of them reached the message page. The line looks like this:
+
+    LX0WX-13>APMI06,TCPIP,LX0WX-13*:}BG7LZQ-2>APALOC,TCPIP,LX0WX-13*::LX6FB-15 :I received it.{5224
+    +------- outer: who transmitted it on RF -------++----------- inner: the real packet -----------+
+
+An info field starting with `}` is an APRS **third-party packet** (DTI `}`): everything after
+`}` is **another complete packet** (`SRC>DEST,PATH:info`). iGates use this whenever they put an
+internet packet on the air, and digipeaters use it when relaying, so what arrives on RF is not
+always "one plain packet". The `[via APMI06,` in the screenshot stops exactly at the info
+field's 80-character cap, which matches this reading character for character (without unwrapping
+the info field shows the inner text plus the outer path).
+
+The inner packet used to be ignored, and that swallowed a whole class of traffic:
+
+* inner is a message -> it fell through to the default type "position": the packet list tagged a
+  message as position and **nothing reached the message page** (so no ack was sent either, and
+  the sender assumed it never arrived);
+* inner is a position -> worse: the inner station never appeared on the map at all.
+
+Now the `}` is unwrapped and **the whole pipeline runs on the inner packet** (type, sender,
+messages and acks, stations and tracks), while the outer frame only contributes a note in the
+info field (`· [relayed by LX0WX-13]`). "Raw" mode and long-press copy still show the outer
+packet — the bytes actually received.
+
+Three things worth spelling out:
+
+1. **Only the inner packet is re-derived; the outer one is untouched.** What was "heard on RF" is
+   the outer transmitter (the two-way gateway uses that to decide whether an internet message is
+   worth a time slot), so `_noteHeard` still records the outer call.
+2. **Depth is capped at 3, and every level must actually be TNC2** (missing `>` or `:` means the
+   outer packet is kept as-is): a normal packet whose text merely starts with `}` is never
+   eaten, and malformed nesting can't run away.
+3. **Only one entry is pushed** (the inner one): adding the outer one as well would inflate the
+   received-packet counter out of thin air.
+
+While in there, the other half of the same hole: `;` object reports also used to fall through to
+"position", which made the packet page's "object" filter **match nothing, ever** (the 4th entry
+in the screenshot, `;145.5875D*131532z4939.25N/…`, is one of those).
+
+Regression test `test/third_party_packet_test.dart` (classification of the screenshot's line, a
+message addressed to us reaching the message list, the inner position packet becoming a station,
+a malformed inner packet being preserved, two-level nesting). The `_splitTnc2Header` /
+`_unwrapThirdParty` code text itself was run against 13 assertions locally (`dart run`), including
+5-level nesting not running away and normal packets being unaffected.
+
 ## [1.6.174] - 2026-09-24
 
 ### 📡 转弯打点：先分清「真的拐了」和「GPS 胡说」 / Turn-based beaconing: tell a real turn from a GPS glitch

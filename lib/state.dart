@@ -111,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.174';
+  static const appVersion = '1.6.175';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -4071,29 +4071,20 @@ class AppState extends ChangeNotifier {
         }
         return; // 注释/服务器消息
       }
-      final sep = line.indexOf('>');
-      final bodySep = line.indexOf(':');
-      if (sep < 0 || bodySep < 0) return;
-      final src = line.substring(0, sep).trim();
-      final body = line.substring(bodySep + 1);
+      // 拆报文头 → 源 / 信息体 / 路径 / 目的呼号，并解第三方包（DTI `}`）。
+      // 共用一个出口：解包与否直接决定类型判定、消息归属与台站名。
+      final hdr = _unwrapThirdParty(_splitTnc2Header(line));
+      if (hdr.src.isEmpty) return;
+      final src = hdr.src;
+      final body = hdr.body;
+      final path = hdr.path;
+      final toCall = hdr.toCall;
+      final relay = hdr.relay;
       // 射频上听到的台站记入「听到过」列表 —— 双向网关据此判断
-      // 一条互联网消息值不值得占用射频时隙
+      // 一条互联网消息值不值得占用射频时隙。
+      // 记的是**外层发射台**：第三方包里的台站不是射频上直接听到的，
+      // 拿它去判断「值不值得转发」会让网关把消息发在没人听的链路上。
       if (rf) _noteHeard(line);
-      // 提取路径（src>dest,digi1,digi2:body），识别多跳转发链路
-      String path = '';
-      String toCall = ''; // 目的呼号（路径首段，APxxxx），设备识别依据
-      if (bodySep > sep + 1) {
-        path = line.substring(sep + 1, bodySep).trim();
-        final first = path.split(RegExp(r'[, ]')).first.trim().toUpperCase();
-        // APRS/TCPIP*/BEACON 等通用目的呼号无设备识别价值，不入库
-        if (first.isNotEmpty &&
-            first != 'APRS' &&
-            first != 'TCPIP*' &&
-            first != 'BEACON' &&
-            first != 'MAIL') {
-          toCall = first;
-        }
-      }
       var type = 'position';
       var info = body;
       if (body.startsWith(':')) type = 'message';
@@ -4106,6 +4097,10 @@ class AppState extends ChangeNotifier {
       }
       if (body.startsWith('_')) type = 'weather';
       if (body.startsWith('>')) type = 'status';
+      // 对象报告（DTI `;`，APRS101 §11）：不分类的话它落到默认的「位置」，
+      // 而数据包页的「对象」筛选是按 type 匹配的 —— 于是那个筛选条永远
+      // 筛不出东西（对象包全被当成了位置）。
+      if (body.startsWith(';')) type = 'object';
       // 多跳转发识别：记录转发路径（如 WIDE1-1,WIDE2-1 或数字中继）
       if (path.isNotEmpty &&
           path.toUpperCase() != 'APRS' &&
@@ -4203,6 +4198,12 @@ class AppState extends ChangeNotifier {
         }
       }
 
+      // 第三方包：把「谁转递的」补进信息栏。放在最后统一加 —— 上面几个分支
+      // （消息 / 位置 / FMO）都会重写 info，加早了会被冲掉。
+      // 信息栏有 80 字上限，长报文的这行说明会被截掉，所以**完整原文**
+      // 始终留在 `raw` 里（长按复制 / 原始模式可见）。
+      if (relay.isNotEmpty) info = '$info  ·  [转递 $relay]';
+
       _pushPacket(
         Packet(
           line.trim(),
@@ -4216,6 +4217,80 @@ class AppState extends ChangeNotifier {
     } catch (e) {
       _log(LogLevel.debug, '解析', '数据包处理异常: $e');
     }
+  }
+
+  /// 拆一条 TNC2 报文的头：`SRC>DEST,DIGI1,DIGI2:info`
+  /// → (src, body, path, toCall)。
+  ///
+  /// 目的呼号（路径首段）只在能识别设备时才取：`APRS` / `TCPIP*` / `BEACON` /
+  /// `MAIL` 这类通用 tocall 没有识别价值，不入库。它是 Mic-E 位姿解码的依据
+  /// （纬度数字编在目的呼号里），取错会让整条报文解成另一个位置。
+  ///
+  /// 格式不合法时返回空 src —— 调用方据此判「这条不是 TNC2」。
+  ({String src, String body, String path, String toCall}) _splitTnc2Header(
+    String line,
+  ) {
+    final sep = line.indexOf('>');
+    final bodySep = line.indexOf(':');
+    if (sep <= 0 || bodySep < sep) {
+      return (src: '', body: '', path: '', toCall: '');
+    }
+    final src = line.substring(0, sep).trim();
+    final body = line.substring(bodySep + 1);
+    var path = '';
+    var toCall = '';
+    if (bodySep > sep + 1) {
+      path = line.substring(sep + 1, bodySep).trim();
+      final first = path.split(RegExp(r'[, ]')).first.trim().toUpperCase();
+      if (first.isNotEmpty &&
+          first != 'APRS' &&
+          first != 'TCPIP*' &&
+          first != 'BEACON' &&
+          first != 'MAIL') {
+        toCall = first;
+      }
+    }
+    return (src: src, body: body, path: path, toCall: toCall);
+  }
+
+  /// 第三方包（DTI `}`）的解包层数上限。规范只允许一层，套娃只可能来自
+  /// 畸形报文 —— 设上限是为了「绝不会递归失控」这件事不依赖运气。
+  static const int _maxThirdPartyDepth = 3;
+
+  /// 解第三方包（DTI `}`）：信息字段里是**另一条完整的报文**
+  /// `SRC>DEST,PATH:info`，最多解 [_maxThirdPartyDepth] 层。
+  ///
+  /// 为什么必须解：iGate 把互联网上收到的报文转到射频、中继台之间互转时
+  /// 大量使用这种封装，所以射频上遇到的并不都是「一条报文明文」。
+  /// 不解包时（v1.6.174 用户反馈）：内层的 `:收件人:文本` 落到默认类型
+  /// 「位置」—— 数据包页把消息显示成「位置」，消息一条也进不了消息页；
+  /// 内层是位置包时更彻底：台站根本不上图。
+  ///
+  /// 解包后**整条流水线按内层走**（类型判定、消息与 ack、台站、轨迹全用
+  /// 内层），外层只留下 [relay]（发射它的那一跳）供信息栏说明「绕了一手」。
+  ///
+  /// 每层都要求内层确实是 TNC2（否则原样保留外层）：既不会把
+  /// 「正文里恰好以 `}` 开头」的正常报文吃掉，也不会为了套娃去猜。
+  ({String src, String body, String path, String toCall, String relay})
+      _unwrapThirdParty(
+    ({String src, String body, String path, String toCall}) outer,
+  ) {
+    var h = outer;
+    var relay = '';
+    for (var depth = 0; depth < _maxThirdPartyDepth; depth++) {
+      if (!h.body.startsWith('}')) break;
+      final inner = _splitTnc2Header(h.body.substring(1).trim());
+      if (inner.src.isEmpty || inner.body.isEmpty) break;
+      relay = relay.isEmpty ? h.src : relay; // 第一层外层的 src = 转递台
+      h = inner;
+    }
+    return (
+      src: h.src,
+      body: h.body,
+      path: h.path,
+      toCall: h.toCall,
+      relay: relay,
+    );
   }
 
   /// 解析收到的 APRS 消息体 `:TO  :text{id_`
@@ -5735,9 +5810,10 @@ class AppState extends ChangeNotifier {
   String injectRawPacket(String raw) {
     if (raw.trim().isEmpty) return '输入为空';
     try {
-      final sep = raw.indexOf('>');
-      final bodySep = raw.indexOf(':');
-      if (sep < 0 || bodySep < 0) {
+      // 与射频/网络来包共用同一套拆头 + 解第三方包：注入工具的结果必须与
+      // 真实报文一致，否则「注入能解析、真机不解析」这种偏差查不出来。
+      final hdr = _unwrapThirdParty(_splitTnc2Header(raw));
+      if (hdr.src.isEmpty) {
         _pushPacket(
           Packet(
             raw.trim(),
@@ -5751,20 +5827,9 @@ class AppState extends ChangeNotifier {
         _notify();
         return '格式异常：缺少 > 或 :';
       }
-      final src = raw.substring(0, sep).trim();
-      final body = raw.substring(bodySep + 1);
-      String toCall = '';
-      if (bodySep > sep + 1) {
-        final pathSeg = raw.substring(sep + 1, bodySep).trim();
-        final first = pathSeg.split(RegExp(r'[, ]')).first.trim().toUpperCase();
-        if (first.isNotEmpty &&
-            first != 'APRS' &&
-            first != 'TCPIP*' &&
-            first != 'BEACON' &&
-            first != 'MAIL') {
-          toCall = first;
-        }
-      }
+      final src = hdr.src;
+      final body = hdr.body;
+      final toCall = hdr.toCall;
       if (body.startsWith('!') ||
           body.startsWith('=') ||
           body.startsWith('/') ||
@@ -5792,8 +5857,15 @@ class AppState extends ChangeNotifier {
               ' 网格 ${maidenhead(p.lat, p.lng)}';
         }
       }
+      // 类型判定与接收路径一致，否则注入一条消息会显示成「未知」
+      var type = 'unknown';
+      if (body.startsWith(':')) type = 'message';
+      if (body.startsWith('_')) type = 'weather';
+      if (body.startsWith('>')) type = 'status';
+      if (body.startsWith(';')) type = 'object';
+      final info = hdr.relay.isEmpty ? body : '$body  ·  [${hdr.relay} 转递]';
       _pushPacket(
-        Packet(raw.trim(), src, 'APRS', 'unknown', DateTime.now(), info: body),
+        Packet(raw.trim(), src, 'APRS', type, DateTime.now(), info: info),
       );
       _notify();
       return '已加入数据包，但未识别为位置（$src）';

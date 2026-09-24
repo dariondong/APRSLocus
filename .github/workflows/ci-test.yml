@@ -151,6 +151,15 @@ jobs:
       - name: Check turn-based beaconing (algorithm regression)
         run: python3 tool/sim_turn_dot.py --check
 
+      # 第三方包（DTI `}`）解包：这类报文**只有真机收得到**才知道是坑。
+      # 欧洲的 iGate / 中继大量用 `}` 把**整条报文**再包一层，不解包时内层的
+      # `:收件人:文本` 会落到默认类型「位置」—— 数据包页把消息标成位置，
+      # 消息页一条也收不到（用户 v1.6.174 报的就是这个，本机没有任何环境能复现）。
+      # 它编译得过、analyze 也全绿，所以只能靠这个测试守住「按内层走」：
+      # 类型、发信台、消息列表、内层台站上台。
+      - name: Test third-party packet unwrapping
+        run: flutter test test/third_party_packet_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |
