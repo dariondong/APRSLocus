@@ -243,6 +243,27 @@ CL = [
                'rate) and accepts only points up to 120s old, skips to the newest past a 60s '
                'backlog, and forwards at most one point every 10s; while Garmin is live the phone '
                'GPS steps aside automatically.')),
+            ('up',
+             T('**心率显示在主屏幕**（地图左上第一个胶囊，带 BLE / Garmin 来源标记，没有读数时'
+               '整块不显示）；**佳明接管期间补齐两处**：① 航向——佳明的点没有航向字段，之前会'
+               '沿用手机 GPS 的旧值（指南针停在旧方向），现用前后两点算出来；② 历史台账——之前'
+               '没写而手机 GPS 又正让位，那段历史是空白，现已与 GPS 同一套落盘。'
+               '另外设备页新增「其他数据来源」卡（心率带 + 佳明两个入口），'
+               '与报文链路互不影响、可同时使用',
+               '**心率顯示在主畫面**（地圖左上第一個膠囊，帶 BLE / Garmin 來源標記，沒有讀數時'
+               '整塊不顯示）；**佳明接管期間補齊兩處**：① 航向——佳明的點沒有航向欄位，之前會'
+               '沿用手機 GPS 的舊值（指南針停在舊方向），現用前後兩點算出來；② 歷史台帳——之前'
+               '沒寫而手機 GPS 又正讓位，那段歷史是空白，現已與 GPS 同一套落盤。'
+               '另外裝置頁新增「其他資料來源」卡（心率帶 + 佳明兩個入口），'
+               '與報文鏈路互不影響、可同時使用',
+               '**Heart rate on the main screen** (the first chip in the map top-left column, '
+               'tagged BLE or Garmin, and hidden entirely with no reading). Two gaps while '
+               'Garmin is driving are closed: the heading was not computed at all (Garmin points '
+               'carry none, so the compass froze on the phone GPS last value) and it is now '
+               'derived from the previous point; and the daily history log was not written while '
+               'the phone GPS was standing down, leaving a blank stretch — it now records like '
+               'the GPS path. The device page also gained an "Other data sources" card (strap + '
+               'Garmin), which is independent of the packet links and can run alongside them.')),
         ],
     },
     {

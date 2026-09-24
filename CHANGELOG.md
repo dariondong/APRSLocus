@@ -40,14 +40,43 @@
 页面入口、`locStatus`、l10n 六语言、备份分组都补齐；`HR=` 与 `locStatus` 的新状态串都在
 `widgets.dart` 的登记白名单里（漏登记会让非中文界面漏出中文）。
 
-### 三、守卫
+### 三、心率上主屏幕；佳明接管期间补齐航向与历史台账；设备页加「其他数据来源」
+
+* **心率显示在主屏幕**：地图左上竖列**最上面**一个心率胶囊（❤ `128` bpm + 来源
+  BLE/Garmin）。**没有读数时整块不出现** —— 一屏浮层上摆一个永远空白的胶囊比不显示更糟。
+  原来只在信标设置页能看到。
+* **佳明接管期间的两个缺口**（「是否已完全替换 GPS 与其他来源」的答案是：方向对，但之前
+  不完整）：
+  * **航向 `myCourse` 之前根本没算**。佳明 LiveTrack 的点里没有航向字段，不自己算就会
+    **沿用手机 GPS 的旧值** —— 指南针停在上次的方向不动，比不显示更误导。现在用前后两点
+    算初始方位角（`garmin.dart` 的 `bearingDeg`，与参考项目同款公式）。
+  * **历史台账 `TrackLogStore` 之前没写**。而手机 GPS 又正被让位 —— 于是佳明接管期间在
+    历史记录里是**一段空白**，用户回头看会觉得那段路凭空消失。现在与 GPS 路径同一套落盘。
+  （位置 / 速度 / 海拔 / 心率都已是佳明优先；精度字段佳明页面不给 → 保持 0 = 未知，
+  不画精度圈；电量仍用手机，这是合理的。）
+* **设备页新增「其他数据来源」卡**：心率带与佳明 LiveTrack 都是「**自己位置**的来源」，
+  不是报文链路，所以没有混进那张勾选式的「数据来源」（那卡的语义是「报文从哪条链路来」，
+  混进去会让发射来源的判定变乱）。改为在它下面单独一张卡、两个入口，复用信标页里那两个
+  组件（不另写一套，免得两处漂移），并说明「与上面的链路互不影响，可以同时使用」。
+
+### 四、守卫
 
 新增 `tool/check_hr_garmin.py`（已接进 CI 的 Analyze job）：BLE 的服务 UUID / CCCD 写入 /
 `TRANSPORT_LE` / 主线程发事件 / 权限码不撞车，**禁止** `startDiscovery`、`adapter.disable`；
 分享入口的 intent-filter、`onNewIntent`、域名闸门、冷启动取文本；`trackPoints` 解析与三条
 节流常数；`HR=` 只在有读数时发；6 语言键齐。**首版检查器自己踩了「注释里提到就误报」的坑**
 （BleHrManager 的注释正写着「绝不调用 startDiscovery」），已改成先剥注释再判，并用 5 个
-回归样本验证会报红。
+回归样本验证会报红。此外 `check_hr_garmin.py` 又加了 8 条断言（心率必须挂在地图竖列、
+`_onGarminPoint` 里必须有 `bearingDeg` 与 `TrackLogStore`、设备页必须有「其他来源」卡）。
+其中「历史台账」那条**第一版不严**：全文件搜索会被 GPS 路径里的同名调用满足，于是
+「佳明不写台账」永远抓不到（回归样本当场证明），已改成**限定在函数体内**搜索。
+
+`check_l10n_sync.py` 新增第 5 条检查：**代码里 `s.xxx` / `S.of(context).xxx` 用到的键
+必须存在**。起因就是本版：重写键表时漏了 `garminUrlHint`，而 `arb ↔ 产物` 是「一致地缺」
+的，前 4 条检查全绿、只有 `flutter analyze` 报 `undefined_getter`（三个 job 全红）。
+写这条检查时自己也踩了两次假失败（注释里的示例 `s.xxx` 被当成用法；`s` 在某些文件里是
+台站对象），都已修掉：先剥注释与字符串，再**数绑定次数**判断同名歧义，并豁免
+`extension on AppLocalizations` 里的方法。
 
 ---
 
@@ -85,6 +114,33 @@ reference: **accept only points up to 120s old, skip to the newest when the back
 running and fresh the **phone GPS steps aside** (otherwise the two sources would pull the
 marker back and forth), and hands back automatically after 120s without a new point.
 
+**Heart rate on the main screen.** The map's top-left column now starts with a heart-rate
+chip (❤ `128` bpm plus its source, BLE or Garmin). **It disappears entirely with no reading** —
+a permanently blank chip on an already busy overlay is worse than nothing. Previously the value
+was only visible on the beacon settings page.
+
+**Two gaps while Garmin is driving** (so the answer to "is Garmin fully replacing GPS and other
+sources?" was: the direction was right, but it was incomplete):
+
+* **Heading (`myCourse`) was not computed at all.** Garmin LiveTrack points carry no heading
+  field, so without computing one the app **kept the phone GPS's last value** — a compass frozen
+  in the old direction, which is worse than showing nothing. It is now derived from the previous
+  and current point (`bearingDeg` in `garmin.dart`, the same initial-bearing formula the
+  reference project uses).
+* **The daily history log (`TrackLogStore`) was not written.** Since the phone GPS is standing
+  down at the same time, that period was simply **missing from the history** — it looks like the
+  route vanished. It is now recorded exactly like the GPS path.
+  (Position, speed, altitude and heart rate already prefer Garmin; accuracy stays 0 = unknown
+  because the share page does not provide it, so no accuracy circle is drawn; battery still
+  comes from the phone, which is the sensible choice.)
+
+**A new "Other data sources" card on the device page.** The strap and Garmin LiveTrack supply
+**your own position**, they are not packet links, so they were deliberately *not* mixed into the
+tick-list "Data sources" card (whose semantics are "which link do packets arrive on"; mixing
+them in would muddy the transmit-source logic). They get their own card right below it, reusing
+the very same widgets as the beacon page (so the two can never drift apart), with a note that
+they are independent of the links above and can run at the same time.
+
 **Guards.** New `tool/check_hr_garmin.py` (wired into the CI Analyze job) covers the BLE service
 UUID / CCCD write / `TRANSPORT_LE` / main-thread events / distinct permission code, **forbids**
 `startDiscovery` and `adapter.disable`, checks the share intent-filter, `onNewIntent`, the
@@ -92,7 +148,21 @@ domain gate and the cold-start path, the `trackPoints` parsing with its three th
 constants, that `HR=` is only sent with a reading, and that all six locales have the keys.
 **The first version of this checker produced false failures by reading its own explanatory
 comments** (the file literally says "never call startDiscovery") — it now strips comments
-before the forbidden-call checks, and five regression samples were verified to fail.
+before the forbidden-call checks, and five regression samples were verified to fail. Eight more
+assertions were added later (the heart-rate chip must be wired into the map column,
+`_onGarminPoint` must contain `bearingDeg` and `TrackLogStore`, the device page must carry the
+"other sources" card). The history-log one was **too weak at first**: a whole-file search is
+satisfied by the identical call in the GPS path, so "Garmin never writes the log" could never be
+caught (the regression sample proved it); it now searches **inside the function body only**.
+
+`check_l10n_sync.py` gained a fifth check: **every key used in code (`s.xxx` /
+`S.of(context).xxx`) must exist**. That is exactly what this release tripped over — while
+rewriting the key table I dropped `garminUrlHint`, and because `arb` and the generated output
+were "consistently missing" it, the first four checks stayed green and only `flutter analyze`
+reported `undefined_getter` (all three jobs red). Writing that check produced two false failures
+of its own (an `s.xxx` example inside a comment counted as usage; `s` is a station object in some
+files); both are fixed by stripping comments and string literals first, counting bindings to
+detect name collisions, and exempting methods defined in `extension ... on AppLocalizations`.
 
 ---
 

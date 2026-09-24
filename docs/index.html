@@ -570,6 +570,7 @@
       <div class="cl-body">
         <div class="cl-item"><span class="cl-dot new"></span>**蓝牙心率带**（BLE 标准心率服务 0x180D）：信标设置页可搜索/连接/看当前心率，新增「信标附带心率」开关（默认开）——位置包备注里加 `HR=nn`，没有读数时**什么都不发**（发 HR=0 会被读成「心率 0」）。**与 TNC 的蓝牙通道不冲突**：TNC 走经典蓝牙 SPP、心率走 BLE GATT，本来就并行；并且绝不做经典蓝牙发现（那会打断 TNC 的 SPP 连接），同一台设备被两条链路抢占时会直接拒绝并说明原因</div>
         <div class="cl-item"><span class="cl-dot new"></span>**佳明 LiveTrack**：手表的活动位置可以直接接进来。两条路——① 在佳明 Connect App 里「分享」选 APRSlocus（已注册系统分享入口），链接自动填入并开始追踪；② 信标设置页的「佳明 LiveTrack」里手动粘贴链接（也可从剪贴板取）。抓公开分享页的 trackPoints，取经纬度/海拔/速度/心率；只接受 120 秒内的点、积压超 60 秒跳点、两次转发至少隔 10 秒；佳明在跑时手机 GPS 自动让位</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**心率显示在主屏幕**（地图左上第一个胶囊，带 BLE / Garmin 来源标记，没有读数时整块不显示）；**佳明接管期间补齐两处**：① 航向——佳明的点没有航向字段，之前会沿用手机 GPS 的旧值（指南针停在旧方向），现用前后两点算出来；② 历史台账——之前没写而手机 GPS 又正让位，那段历史是空白，现已与 GPS 同一套落盘。另外设备页新增「其他数据来源」卡（心率带 + 佳明两个入口），与报文链路互不影响、可同时使用</div>
       </div>
     </div>
     <div class="cl-version reveal">
