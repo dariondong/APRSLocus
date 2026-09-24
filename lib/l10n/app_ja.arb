@@ -2352,7 +2352,7 @@
   "historyReplay": "もう一度再生",
   "historyFollow": "追従",
   "locationCoarse": "ネットワーク測位（粗）",
-  "locModeNetHint": "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。",
+  "locModeNetHint": "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 5 分途切れたときだけ補助に使い、軌跡と履歴には記録せず、自動送信も行いません。",
   "tierMinDist": "移動距離 (m)",
   "tierMinDistHint": "前回の報告からこの距離を移動したら追加で報告します。0 = オフ（間隔のみ）",
   "orMoveM": "または {dist} m",
@@ -2418,5 +2418,7 @@
   "guideTncDeviceBody": "Bluetooth TNC を検索してペアリングし、「回線」ページでデータソースとして選びます。",
   "guidePkwdwplTitle": "PKWDWPL インターフェース",
   "guidePkwdwplBody": "シリアルポート経由で PKWDWPL を操作します。ポートとボーレートを選ぶと、送信を担当します。",
-  "guideMoreInSettings": "あとから「設定 → すべての機能ガイドを再表示」で見られます"
+  "guideMoreInSettings": "あとから「設定 → すべての機能ガイドを再表示」で見られます",
+  "beaconCoarseFix": "ネットワーク測位中 · 自動送信を停止",
+  "beaconCoarseHint": "現在の測位はネットワーク由来です（粗く、数百メートルずれることも）。自動送信は停止し、GPS が戻れば再開します。手動送信は可能です。"
 }

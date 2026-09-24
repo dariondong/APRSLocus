@@ -465,8 +465,8 @@ class _AboutPageState extends State<AboutPage>
                         _heroCard(context),
 
                         // 名片卡放在封面**下方**，不压封面：早先让它上骑 14px 压住照片
-                        // 下缘，结果照片被挡掉一条，看着像没对齐。现在留 12px 间隙。
-                        const SizedBox(height: 12),
+                        // 下缘，结果照片被挡掉一条，看着像没对齐。现在留 14px 间隙。
+                        const SizedBox(height: 14),
                         _profileCard(context),
 
                         // ── 代码贡献 ──
@@ -811,11 +811,17 @@ class _AboutPageState extends State<AboutPage>
     );
   }
 
-  /// 名片卡：骑在封面下缘的一张小卡，把「身份 + 官网 + 分享」收在一处。
+  /// 名片卡：封面下方的一张小卡，把「身份 + 官网 + 分享」收在一处。
   ///
   /// 以前这三样拆成「作者」分节 + 一张独立的分享卡，一页光这两块就占两个分节；
   /// 并成一张卡之后整页少一个分节，封面与身份也连成了一体。
   /// **不放作者个人站**：那是作者自己的站，跟 App 官网不是一回事，这里只留官网。
+  ///
+  /// v1.6.163 重排了一圈留白（用户反馈「名片有点太挤」）：原来头部内边距是
+  /// `14/12/10`、两行文字之间只有 2px、右边那颗官网图标离卡片边缘也只有 12 ——
+  /// 窄屏（两行文字 + 图标挤在一行）上整块看着像被压扁了。现在按「每行都有自己的
+  /// 呼吸」给：标题/副标题间距 4px，头部 16/15/14/13，分享行 16/13，并把官网图标
+  /// 放到 34×34 加 tooltip（顺带给桌面端鼠标悬停一个「这是官网」的说明）。
   Widget _profileCard(BuildContext context) {
     final t = S.of(context);
     return Container(
@@ -826,7 +832,7 @@ class _AboutPageState extends State<AboutPage>
           GestureDetector(
             onLongPress: () => _onEggTap('BG7LZQ'),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 14, 12, 10),
+              padding: const EdgeInsets.fromLTRB(16, 15, 14, 13),
               child: Row(
                 children: [
                   Expanded(
@@ -836,13 +842,14 @@ class _AboutPageState extends State<AboutPage>
                       children: [
                         Text(
                           'BG7LZQ · Darion',
-                          style: ts(13.5, w: FontWeight.w700),
+                          style: ts(14.5, w: FontWeight.w700, ls: -0.1),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(t.author, style: ts(11, c: C.grey)),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 10),
                   _iconChip(
                     icon: Icons.language_rounded,
                     url: 'https://aprslocus.theez.top/',
@@ -855,18 +862,18 @@ class _AboutPageState extends State<AboutPage>
           InkWell(
             onTap: _showShareSheet,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: C.border, width: 0.4)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.share_rounded, size: 15, color: C.blue),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 9),
                   Expanded(
                     child: Text(t.shareApp, style: ts(12, c: C.slate)),
                   ),
-                  Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+                  Icon(Icons.chevron_right_rounded, size: 17, color: C.grey),
                 ],
               ),
             ),
@@ -878,18 +885,22 @@ class _AboutPageState extends State<AboutPage>
 
   /// 名片卡右上角的小图标按钮（官网入口）
   Widget _iconChip({required IconData icon, required String url}) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: () =>
-          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: C.blueBg,
-          borderRadius: BorderRadius.circular(10),
+    return Tooltip(
+      // 只图标不带字，桌面端悬停能看出它指向哪
+      message: url.replaceFirst(RegExp(r'^https?://'), '').replaceAll('/', ''),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(11),
+        onTap: () =>
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+        child: Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: C.blueBg,
+            borderRadius: BorderRadius.circular(11),
+          ),
+          child: Icon(icon, size: 17, color: C.blue),
         ),
-        child: Icon(icon, size: 16, color: C.blue),
       ),
     );
   }

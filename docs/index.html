@@ -564,6 +564,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v1.6.163</span>
+        <span class="cl-date">2026-09-24</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>**网络定位整体降权：粗定位（基站/Wi-Fi）不再自动上报**。自动上报是「我在这里」的公开宣告，而粗点常年偏几百米、还会原地漂 —— 报出去就是个错坐标。地图上报横幅 / 沉浸地图 / 首页 / 设置页都会如实说明「网络定位中 · 暂不自动上报」，GPS 一回来立即恢复（手动「立即上报」不受影响）。三个门槛同时收紧：GPS 停更 120s→300s 才允许粗点兜底、粗点自身位移上限 8km→3km、粗点精度显示下限 150m→300m；粗点也不再推动 APRS-IS 过滤中心（过滤串按 0.01° 取整，一动就可能触发整条链路重连）</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**横屏在手机 / 平板 / 桌面三端的打磨**：① 面板内的宽度不再按屏幕宽度算 —— 消息气泡原来取「屏幕宽 × 0.55」，桌面 1920 会算成 1056px，超出面板的部分被默默裁掉，长消息读不全（现在按消息区实际宽度）；② 左上统计条在窄地图区自动降级为「在线 + 台站」（横屏面板展开时地图区常只剩 200 出头）；③「矮横屏」改按顶栏之下的可用高度判断（未连接 / 公告横幅会各占一行），不再漏判「工具列最下面的定位按钮被裁掉、点不到」；④ 桌面端自绘按钮统一给鼠标手型指针</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**关于页名片卡不再挤**：头部内边距加大、标题与副标题间距 2→4px、标题 13.5→14.5、分享行更宽松、官网图标 32→34 并加了悬停说明（桌面端）</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.162</span>
         <span class="cl-date">2026-09-23</span>
       </div>

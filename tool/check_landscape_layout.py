@@ -46,6 +46,26 @@
   5. **两个轴的安全区都要让**（横屏的刘海/挖孔在**左、右**两侧，不在顶部）。
      判据：横屏的竖条与顶栏用 `safeL` / `safeR`（= `pad.left/right + _kGutter`）而不是
      裸的 `_kGutter`。
+
+  6. **面板内的宽度不许按屏幕宽度算**（v1.6.163）。
+     2.0 横屏把消息页装进左侧面板（宽 ≤560，手机上常 200~280）。消息气泡原来取
+     「屏幕宽 × 0.55」：桌面上屏幕 1920 时会算成 1056，而面板外面套着 `ClipRect`
+     —— 超出的部分被默默裁掉，长消息读不全（编译、analyze、其它检查全绿）。
+     判据：气泡宽度必须用消息区**实际宽度**（布局期记下的 `_availW`），
+     且不许再出现屏幕宽度 × 0.55。
+
+  7. **地图左上统计条在窄地图区不许撑爆**（v1.6.163）。
+     横屏 + 内容面板展开时，地图左上控件能拿到的宽度可能只剩 200 出头，而统计条
+     三段计数都是**定宽子项**（一个图标一个 Text，没有弹性）—— 必然溢出
+     （debug 下溢出条纹、release 下直接被截）。
+     判据：`_infoChip` 必须按可用宽度分档（`compact`），每个计数再用 `Flexible` 兜底。
+
+  8. **「矮横屏」要按顶栏之下的可用高度判断**（v1.6.163）。
+     顶部让位量会被未连接横幅 / 公告横幅各顶掉一行（合计 +84），桌面上又常有
+     「很宽但很矮」的窗口；按**裸屏高**判断会漏判 —— 而漏判的表现正是本文件第 2 条
+     要防的「工具列最下面的『定位』被裁掉、点不到」。
+     判据：先算 `availH = size.height - widget.topInset - widget.bottomInset`，
+     `shortWide` 用它跟 `_kToolbarColH`（单列工具列的实际高度）比。
 """
 import io
 import os
@@ -138,13 +158,49 @@ def main() -> int:
     if n_safe < 2:
         errors.append(f'只有 {n_safe} 处用了 safeL（顶栏与工作区都要用）')
 
+    # ⑥ 面板内的宽度不许按屏幕宽度算（消息页在横屏是被装进 ≤560 的面板里的）
+    msgs = code_only(read('lib/messages_page.dart'))
+    if 'MediaQuery.of(context).size.width * 0.55' in msgs:
+        errors.append('消息气泡仍按屏幕宽度取 0.55 —— 2.0 横屏下面板 ≤560'
+                      '（手机常 200~280），桌面上会算成 1056 并被面板的 ClipRect '
+                      '裁掉，长消息读不全')
+    if 'double _availW = 0;' not in msgs:
+        errors.append('消息页没有记下「消息区实际宽度」(_availW) —— 气泡宽度只能'
+                      '退回按屏幕宽度算')
+    if 'maxWidth: (_availW > 0' not in msgs:
+        errors.append('消息气泡的最大宽度没有用 _availW 算')
+
+    # ⑦ 地图左上统计条在窄地图区必须能降级
+    i = map_code.find('Widget _infoChip(')
+    j = map_code.find('Widget _mapTypeGroup(', i + 1) if i >= 0 else -1
+    seg = map_code[i:j] if (i >= 0 and j > i) else ''
+    if not seg:
+        errors.append('_infoChip 没了（或检查器自己坏了：找不到它到 _mapTypeGroup 之间）')
+    else:
+        if 'final compact = cons.maxWidth <' not in seg:
+            errors.append('_infoChip 没有按可用宽度降级的 compact 档 —— 横屏面板'
+                          '展开时（地图区常只剩 200 出头）三段计数会撑爆 Row')
+        if seg.count('Flexible(') < 3:
+            errors.append('_infoChip 的计数没有**全部**(≥3) 用 Flexible + ellipsis '
+                          '兜底 —— 西语/日语的长文案（`120 en movimiento`）会溢出')
+
+    # ⑧ 「矮横屏」按顶栏之下的可用高度判断，而不是裸屏高
+    if ('final double availH =' not in map_code
+            or 'size.height - widget.topInset - widget.bottomInset' not in map_code):
+        errors.append('MapPage 没有按「顶栏之下的可用高度」(availH) 判断矮横屏 —— '
+                      '横幅占位/桌面矮窗口会漏判，工具列最下面的按钮被裁')
+    if 'availH < _kToolbarColH + 54' not in map_code:
+        errors.append('shortWide 没有用 _kToolbarColH（单列工具列高度）判断 —— '
+                      '阈值又变回与按钮尺寸脱钩的魔数了')
+
     if errors:
         print('横屏布局检查失败：')
         for e in errors:
             print('  -', e)
         return 1
     print(f'横屏布局 ok（贴左控件让开竖条与面板 {n_left} 处；工具列矮横屏分两列；'
-          f'底部让位不含安全区；竖条卡可收缩；左右安全区都让）')
+          f'底部让位不含安全区；竖条卡可收缩；左右安全区都让；'
+          f'面板内宽度按局部约束；统计条可降级；矮横屏按可用高度判）')
     return 0
 
 

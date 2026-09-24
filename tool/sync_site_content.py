@@ -205,6 +205,71 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.163', 'date': '2026-09-24',
+        'items': [
+            ('up',
+             T('**网络定位整体降权：粗定位（基站/Wi-Fi）不再自动上报**。'
+               '自动上报是「我在这里」的公开宣告，而粗点常年偏几百米、还会原地漂 —— '
+               '报出去就是个错坐标。地图上报横幅 / 沉浸地图 / 首页 / 设置页都会如实说明'
+               '「网络定位中 · 暂不自动上报」，GPS 一回来立即恢复（手动「立即上报」不受影响）。'
+               '三个门槛同时收紧：GPS 停更 120s→300s 才允许粗点兜底、粗点自身位移上限 '
+               '8km→3km、粗点精度显示下限 150m→300m；粗点也不再推动 APRS-IS 过滤中心'
+               '（过滤串按 0.01° 取整，一动就可能触发整条链路重连）',
+               '**網路定位整體降權：粗定位（基地台／Wi-Fi）不再自動上報**。'
+               '自動上報是「我在這裡」的公開宣告，而粗點長年偏幾百公尺、還會原地漂 —— '
+               '報出去就是個錯座標。地圖上報橫幅 / 沉浸地圖 / 首頁 / 設定頁都會如實說明'
+               '「網路定位中 · 暫不自動上報」，GPS 一回來立即恢復（手動「立即上報」不受影響）。'
+               '三個門檻同時收緊：GPS 停更 120s→300s 才允許粗點兜底、粗點自身位移上限 '
+               '8km→3km、粗點精度顯示下限 150m→300m；粗點也不再推動 APRS-IS 過濾中心'
+               '（過濾字串按 0.01° 取整，一動就可能觸發整條連結重連）',
+               '**Network positioning is de-emphasised overall: coarse (cell/Wi-Fi) fixes are '
+               'never transmitted automatically.** An automatic beacon is a public statement '
+               'of "I am here", and a coarse fix is routinely hundreds of metres off and '
+               'wanders in place — what goes out is a wrong coordinate. The map beacon bar, '
+               'immersive map, home page and settings all say "network fix · auto beacon '
+               'paused", and reporting resumes the moment GPS is back (manual "beacon now" '
+               'is unaffected). Three thresholds were tightened at the same time: a coarse '
+               'fix is only used once GPS has been stale for 300s (was 120s), its self-jump '
+               'limit is 3km (was 8km), and its accuracy floor is 300m (was 150m). Coarse '
+               'fixes no longer move the APRS-IS filter centre either — the filter string is '
+               'rounded to 0.01°, so a drift could trigger a full link reconnect.')),
+            ('fix',
+             T('**横屏在手机 / 平板 / 桌面三端的打磨**：① 面板内的宽度不再按屏幕宽度算 —— '
+               '消息气泡原来取「屏幕宽 × 0.55」，桌面 1920 会算成 1056px，超出面板的部分'
+               '被默默裁掉，长消息读不全（现在按消息区实际宽度）；② 左上统计条在窄地图区'
+               '自动降级为「在线 + 台站」（横屏面板展开时地图区常只剩 200 出头）；'
+               '③「矮横屏」改按顶栏之下的可用高度判断（未连接 / 公告横幅会各占一行），'
+               '不再漏判「工具列最下面的定位按钮被裁掉、点不到」；'
+               '④ 桌面端自绘按钮统一给鼠标手型指针',
+               '**橫屏在手機 / 平板 / 電腦三端的打磨**：① 面板內的寬度不再按螢幕寬度算 —— '
+               '訊息氣泡原來取「螢幕寬 × 0.55」，桌面 1920 會算成 1056px，超出面板的部分'
+               '被默默裁掉，長訊息讀不全（現在按訊息區實際寬度）；② 左上統計列在窄地圖區'
+               '自動降級為「線上 + 臺站」（橫屏面板展開時地圖區常只剩 200 出頭）；'
+               '③「矮橫屏」改按頂欄之下的可用高度判斷（未連線 / 公告橫幅會各佔一行），'
+               '不再漏判「工具列最下面的定位按鈕被裁掉、點不到」；'
+               '④ 桌面端自繪按鈕統一給滑鼠手型指標',
+               '**Landscape polish for phone, tablet and desktop.** (1) Widths inside the pane '
+               'are no longer computed from the screen — message bubbles used to take '
+               '"screen width × 0.55", which on a 1920 desktop is 1056px, silently clipped by '
+               'the pane so long messages were cut off (they now use the message area\'s '
+               'actual width). (2) The top-left station chip degrades to "online + stations" '
+               'when the map area is narrow (landscape with the pane open often leaves only '
+               'about 200px). (3) "Short landscape" is now judged by the height actually '
+               'available below the top bar — the disconnected and notice banners each take '
+               'a row — so the clipped, unreachable locate button at the bottom of the tool '
+               'column is no longer missed. (4) Self-drawn buttons on desktop now show a hand '
+               'cursor.')),
+            ('fix',
+             T('**关于页名片卡不再挤**：头部内边距加大、标题与副标题间距 2→4px、'
+               '标题 13.5→14.5、分享行更宽松、官网图标 32→34 并加了悬停说明（桌面端）',
+               '**關於頁名片卡不再擠**：頭部內距加大、標題與副標題間距 2→4px、'
+               '標題 13.5→14.5、分享列更寬鬆、官網圖示 32→34 並加了懸停說明（桌面端）',
+               '**About page: the name card is no longer cramped** — bigger header padding, '
+               'title/subtitle gap 2→4px, title 13.5→14.5, a roomier share row, and the '
+               'website icon went 32→34 with a hover tooltip on desktop.')),
+        ],
+    },
+    {
         'ver': 'v1.6.162', 'date': '2026-09-23',
         'items': [
             ('fix',

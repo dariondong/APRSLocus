@@ -6892,5 +6892,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get locationCoarse => "Network fix (coarse)";
   @override
-  String get locModeNetHint => "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history.";
+  String get locModeNetHint => "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 5 minutes; coarse fixes are never written to the track or history, and never trigger an automatic report.";
+  @override
+  String get beaconCoarseFix => "Network fix · auto beacon paused";
+
+  @override
+  String get beaconCoarseHint => "The current fix comes from the network (coarse, often hundreds of metres off) — automatic reports are paused and resume once GPS is back. You can still beacon manually.";
 }

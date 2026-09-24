@@ -2352,7 +2352,7 @@
   "historyReplay": "Putar ulang",
   "historyFollow": "Ikuti",
   "locationCoarse": "Lokasi jaringan (kasar)",
-  "locModeNetHint": "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat.",
+  "locModeNetHint": "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 5 menit; tidak pernah dicatat ke lintasan atau riwayat, dan tidak memicu laporan otomatis.",
   "tierMinDist": "Jarak (m)",
   "tierMinDistHint": "Juga lapor setelah berpindah sejauh ini sejak laporan terakhir; 0 = nonaktif (hanya interval)",
   "orMoveM": "atau {dist} m",
@@ -2418,5 +2418,7 @@
   "guideTncDeviceBody": "Pindai dan pasangkan TNC Bluetooth, lalu pilih sebagai sumber data di halaman tautan.",
   "guidePkwdwplTitle": "Antarmuka PKWDWPL",
   "guidePkwdwplBody": "Jalankan antarmuka PKWDWPL lewat port serial: pilih port dan baud rate; antarmuka ini yang memancarkan.",
-  "guideMoreInSettings": "Anda bisa membukanya lagi di Pengaturan → Tampilkan semua panduan fitur lagi"
+  "guideMoreInSettings": "Anda bisa membukanya lagi di Pengaturan → Tampilkan semua panduan fitur lagi",
+  "beaconCoarseFix": "Lokasi jaringan · beacon otomatis dijeda",
+  "beaconCoarseHint": "Posisi saat ini berasal dari jaringan (kasar, bisa meleset ratusan meter) — laporan otomatis dijeda dan lanjut setelah GPS kembali. Anda masih bisa memancarkan beacon secara manual."
 }

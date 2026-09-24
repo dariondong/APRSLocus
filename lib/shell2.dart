@@ -772,6 +772,8 @@ class _HomeShell2State extends State<HomeShell2>
     return GestureDetector(
       onTap: () => _select(i),
       behavior: HitTestBehavior.opaque,
+      // 桌面端给手型：导航项是自绘的，没有 Material 水波
+      mouseCursor: SystemMouseCursors.click,
       child: Container(
         padding: rail ? const EdgeInsets.symmetric(vertical: 9) : EdgeInsets.zero,
         decoration: rail && sel
@@ -1141,6 +1143,7 @@ class _HomeShell2State extends State<HomeShell2>
       // 整条都能点：与 _toolBtn 同一个坑 —— 底色来自 BoxDecoration，
       // 而 DecoratedBox 不吸收点击，不写 opaque 就只有中间那点文字能点。
       behavior: HitTestBehavior.opaque,
+      mouseCursor: SystemMouseCursors.click,
       onTap: st.toggleConnect,
       child: MaterialSurface(
         radius: 12,
@@ -1233,6 +1236,7 @@ class _HomeShell2State extends State<HomeShell2>
       child: GestureDetector(
         onTap: st.toggleConnect,
         behavior: HitTestBehavior.opaque,
+        mouseCursor: SystemMouseCursors.click,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
@@ -1310,6 +1314,7 @@ class _HomeShell2State extends State<HomeShell2>
           context,
           MaterialPageRoute(builder: (_) => ConnectionSettingsPage(state: st)),
         ),
+        mouseCursor: SystemMouseCursors.click,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
@@ -1388,6 +1393,7 @@ class _HomeShell2State extends State<HomeShell2>
   Widget _iconBtn(IconData icon, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
+      mouseCursor: SystemMouseCursors.click,
       behavior: HitTestBehavior.opaque,
       child: Container(
         width: 32,
@@ -1411,6 +1417,7 @@ class _HomeShell2State extends State<HomeShell2>
         widget.state.clearUnread();
         _select(2);
       },
+      mouseCursor: SystemMouseCursors.click,
       child: MaterialSurface(
         radius: 999,
         child: Container(

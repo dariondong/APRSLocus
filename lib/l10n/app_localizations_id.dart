@@ -6901,5 +6901,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get locationCoarse => "Lokasi jaringan (kasar)";
   @override
-  String get locModeNetHint => "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 2 menit, dan tidak pernah dicatat ke lintasan atau riwayat.";
+  String get locModeNetHint => "Lokasi seluler/Wi-Fi bisa meleset ratusan meter. Agar penanda tidak meloncat, hanya dipakai setelah GPS putus 5 menit; tidak pernah dicatat ke lintasan atau riwayat, dan tidak memicu laporan otomatis.";
+  @override
+  String get beaconCoarseFix => "Lokasi jaringan · beacon otomatis dijeda";
+
+  @override
+  String get beaconCoarseHint => "Posisi saat ini berasal dari jaringan (kasar, bisa meleset ratusan meter) — laporan otomatis dijeda dan lanjut setelah GPS kembali. Anda masih bisa memancarkan beacon secara manual.";
 }

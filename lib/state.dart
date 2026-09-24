@@ -107,7 +107,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.162';
+  static const appVersion = '1.6.163';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -2736,9 +2736,26 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
-  /// 是否允许自动周期上报（射频来源需用户显式开启「射频信标」）
+  /// 是否允许**自动**周期上报。
+  ///
+  /// 「会不会真的自动发出去」只有这一个出口 —— 散在两处必然漂移（见
+  /// [beaconPhase] 的注释）。四个条件缺一不可：
+  ///
+  ///   ① 链路可用（[connected]）；
+  ///   ② 信标开着（[beaconEnabled]）；
+  ///   ③ **当前定位不是粗定位**（[myFixCoarse]）；
+  ///   ④ 射频来源（TNC/音频）还需用户显式开启「射频信标」。
+  ///
+  /// ── 为什么粗定位（网络/基站/被动）不自动上报（v1.6.163）──
+  ///
+  /// 自动上报是「我在这里」的公开宣告，而粗点常年偏几百米、还会原地漂 ——
+  /// 报出去的是个错坐标，收端（igate / 其他台站）看到的是一条乱跳的轨迹。
+  /// 网络定位从此只用来「在地图上给个大概位置」，不进入信道；GPS 一回来
+  /// 就自动恢复（倒计时按 [_lastBeacon] 算，所以那一刻会立刻补报一次）。
+  /// **手动「立即上报」不受影响**：那是用户的显式动作，知情且即时。
   bool get canAutoBeacon => connected &&
       beaconEnabled &&
+      !myFixCoarse &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
   /// 连接**所有已启用**来源（多选）。
@@ -3259,7 +3276,11 @@ class AppState extends ChangeNotifier {
     //     粗点就在缝里把标记拉走再拉回，来回横跳；
     //   * GPS 真的停了 [_kCoarseHoldSec] 秒以上（室内/隧道）才允许粗点推动标记
     //     —— 宁可把它当「最后的保底」，也不能让它参与每一次抖动；
-    //   * 粗点绝不进入静止防抖的滑窗、绝不推参照点、绝不写轨迹与历史台账。
+    //   * 粗点绝不进入静止防抖的滑窗、绝不推参照点、绝不写轨迹与历史台账、
+    //     **绝不自动上报**（见 canAutoBeacon）、也不推动 APRS-IS 过滤中心。
+    //
+    // 也就是说：粗点的全部作用就是「GPS 真的没了时，地图上还给个大概位置」。
+    // 它不产生任何对外的影响（信道、链路、轨迹、历史）。
     //
     // 还有一条容易漏的：闸必须在**传感器采样之前** —— 被丢掉的点没必要
     // 多跑一次平台通道。
@@ -3476,7 +3497,12 @@ class AppState extends ChangeNotifier {
       }
     }
     // 过滤中心跟随我的位置
-    if (filterFollow) {
+    //
+    // **粗定位不推动过滤中心**（v1.6.163）：过滤串按 0.01°（约 1.1km）取整，
+    // 粗点漂移几百米到 1km 就可能越过一条边界，而过滤串一变就会触发
+    // [reconnect]（见 [_refreshFilter]）—— 拿一个几百米精度的点去换一次整条
+    // 链路的重连，代价与收益完全不成比例。
+    if (filterFollow && !coarse) {
       // 必须用**防抖后**的坐标：写成 `lng`（原始值）会让 APRS-IS 过滤中心
       // 拿「平滑过的纬度 + 未平滑的经度」去算，两轴不同步 —— 过滤中心自己
       // 就会抖，而它会触发重连（见 _refreshFilter）。
@@ -4463,24 +4489,33 @@ class AppState extends ChangeNotifier {
 
   /// 粗定位（网络/基站/被动）推动标记前，GPS 必须已经停更这么多秒。
   ///
-  /// 为什么是 120s 而不是原生那个 20s：原生那个是**传输层**的「别刷屏」门槛，
-  /// 而这里是**策略层**的「什么时候才允许用粗点换掉 GPS」决定。城市峡谷里
-  /// GPS 断十几秒是常事，一断就拿基站质心顶上，标记就会在 50m 与 800m 之间
-  /// 来回横跳 —— 用户看到的正是「飞来飞去」。宁可停 2 分钟不动，也不要抖。
-  static const int _kCoarseHoldSec = 120;
+  /// 为什么不用原生那个 20s：原生那个是**传输层**的「别刷屏」门槛，而这里是
+  /// **策略层**的「什么时候才允许用粗点换掉 GPS」决定。城市峡谷里 GPS 断十几秒
+  /// 是常事，一断就拿基站质心顶上，标记就会在 50m 与 800m 之间来回横跳 ——
+  /// 用户看到的正是「飞来飞去」。
+  ///
+  /// v1.6.163 从 120s 提到 300s（用户要求「降低网络定位的权重」）：2 分钟的缝
+  /// 在城市峡谷/高架/室内仍然太常见，GPS 一断一续粗点就顶上来；而粗点现在
+  /// **不再触发自动上报**（见 [canAutoBeacon]），所以它唯一的作用就是「GPS
+  /// 真的没了，至少给个大概位置」—— 那本来就是分钟级的兜底，等得起。
+  static const int _kCoarseHoldSec = 300;
 
   /// 粗定位点自己一口气跳出去的公里数上限。
   ///
   /// GPS 停了很久（比如刚出隧道）时允许粗点兜底，但如果它一上来就离上一可信
   /// 位置十几公里，那多半不是「我们移动了」，而是换了个 Wi-Fi/基站质心 ——
   /// 这种点宁可不要（没有位置比错位置好，地图会退化成「未定位」但不会骗人）。
-  static const double _kCoarseJumpKm = 8.0;
+  ///
+  /// v1.6.163 从 8.0 收到 3.0：基站/Wi-Fi 的单跳误差本来就在公里级，8km 相当于
+  /// 不设防（那种「换个 Wi-Fi 就跳到街对面」的点会照收）。
+  static const double _kCoarseJumpKm = 3.0;
 
   /// 粗定位的精度显示下限（米）。
   ///
   /// 系统自报的 accuracy 对 Wi-Fi/基站点常常过于乐观（报 20~40m，实际偏几百米）。
   /// 照抄会让精度圈画得跟 GPS 一样小 —— 比不画更骗人。
-  static const double _kCoarseAccuracyFloorM = 150.0;
+  /// v1.6.163 从 150 提到 300：基站质心实际常在几百米到公里级，150 仍然偏乐观。
+  static const double _kCoarseAccuracyFloorM = 300.0;
   /// 「短时间内」的定义（秒）：超过它就认为中间本来就有空档，多大的位移都可能是真的
   static const int _kFixJumpWindowSec = 600;
   /// 两次可疑点相距小于这个公里数，视为「落在同一处」
@@ -5577,6 +5612,9 @@ class AppState extends ChangeNotifier {
     // 这一类 bug 的根因是把「是否会发射」判断散落在两处，所以此处必须与
     // canAutoBeacon 用同一个条件（rfBeaconEnabled）。
     if (!rfBeaconEnabled) return BeaconPhase.rfDisabled;
+    // 粗定位（网络/基站）**不自动上报**（见 [canAutoBeacon]），所以也不能显示一个
+    // 照走的倒计时 —— 那正是「倒计时结束什么也没发生」的老症状。
+    if (myFixCoarse) return BeaconPhase.coarseFix;
     if (!myHasFix) return BeaconPhase.waitingFix;
     return beaconSecondsLeft > 0 ? BeaconPhase.counting : BeaconPhase.imminent;
   }
@@ -5591,6 +5629,8 @@ class AppState extends ChangeNotifier {
         return l.beaconNotConnected;
       case BeaconPhase.rfDisabled:
         return l.beaconRfBeaconOff;
+      case BeaconPhase.coarseFix:
+        return l.beaconCoarseFix;
       case BeaconPhase.waitingFix:
         return l.beaconWaitingFix;
       case BeaconPhase.imminent:
@@ -5658,6 +5698,9 @@ enum BeaconPhase {
   /// 射频来源（TNC / 音频）未打开「射频信标」——此时不会自动发射，
   /// UI 必须显示原因并提供一键开启，而不是继续倒计时。
   rfDisabled,
+  /// 当前是**粗定位**（网络/基站/被动）——自动上报已暂停（见 [canAutoBeacon]），
+  /// UI 必须说明原因，而不是继续倒计时。
+  coarseFix,
   waitingFix,
   counting,
   imminent,

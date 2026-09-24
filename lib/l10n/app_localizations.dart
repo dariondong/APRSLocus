@@ -12028,6 +12028,17 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。'**
   String get locModeNetHint;
+  /// No description provided for @beaconCoarseFix.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络定位中 · 暂不自动上报'**
+  String get beaconCoarseFix;
+
+  /// No description provided for @beaconCoarseHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动「手动上报」。'**
+  String get beaconCoarseHint;
 }
 
 class _AppLocalizationsDelegate

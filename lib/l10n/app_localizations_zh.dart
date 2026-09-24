@@ -6627,7 +6627,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get locationCoarse => "网络定位（粗）";
   @override
-  String get locModeNetHint => "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 2 分钟后才用它兜底，且粗定位点不写进轨迹与历史。";
+  String get locModeNetHint => "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 5 分钟后才用它兜底；粗定位点不写进轨迹与历史，也不会触发自动上报。";
+  @override
+  String get beaconCoarseFix => "网络定位中 · 暂不自动上报";
+
+  @override
+  String get beaconCoarseHint => "当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动上报。";
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13252,5 +13257,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get locationCoarse => "網路定位（粗）";
   @override
-  String get locModeNetHint => "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 2 分鐘後才用它兜底，且粗定位點不寫進軌跡與歷史。";
+  String get locModeNetHint => "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 5 分鐘後才用它兜底；粗定位點不寫進軌跡與歷史，也不會觸發自動上報。";
+  @override
+  String get beaconCoarseFix => "網路定位中 · 暫不自動上報";
+
+  @override
+  String get beaconCoarseHint => "目前定位來自網路（粗，誤差常達幾百公尺）—— 自動上報已暫停，GPS 恢復後自動繼續；期間仍可手動上報。";
 }

@@ -91,6 +91,13 @@ class _MessagesPageState extends State<MessagesPage> {
   ConvTranslatePref get _pref => TranslateService.instance.prefFor(_convKey);
 
   String _selected = '';
+  /// 本次布局里「消息区」的实际可用宽度（见下方 LayoutBuilder 里的赋值）。
+  ///
+  /// 气泡最大宽度必须按**它**算，不能按屏幕宽度算：2.0 横屏把消息页装进左侧
+  /// 面板（宽 ≤560，手机上常 200~280），而面板外面套着 ClipRect —— 用屏幕宽度
+  /// （桌面 1920 × 0.55 = 1056）会算出远超面板的宽度，超出的部分被默默裁掉，
+  /// 长消息读不全且不报任何错。
+  double _availW = 0;
   bool _showList = true;
 
   /// 本次进入会话是否已经请求过「把外壳面板展开到最高档」（见下）。
@@ -296,6 +303,9 @@ class _MessagesPageState extends State<MessagesPage> {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  // 记录下来给 _bubble 用（同帧内先父后子，安全；与 map_page 的
+                  // `_lastSize = size` 同一做法）。
+                  _availW = constraints.maxWidth;
                   final landscape =
                       MediaQuery.of(context).orientation == Orientation.landscape;
                   final narrow = !landscape && constraints.maxWidth < 720;
@@ -1782,7 +1792,12 @@ class _MessagesPageState extends State<MessagesPage> {
           margin: const EdgeInsets.symmetric(vertical: 4),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.55,
+            // 按消息区的实际宽度取 55%（不是屏幕宽度）—— 见字段 [_availW]。
+            // 退化兜底：万一 _bubble 在没有 LayoutBuilder 的场合被复用。
+            maxWidth: (_availW > 0
+                    ? _availW
+                    : MediaQuery.of(context).size.width) *
+                0.55,
           ),
           decoration: BoxDecoration(
             color: mine ? C.blueBg : C.bgSoft,

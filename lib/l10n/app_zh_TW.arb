@@ -2856,7 +2856,7 @@
   "historyReplay": "重播",
   "historyFollow": "跟隨",
   "locationCoarse": "網路定位（粗）",
-  "locModeNetHint": "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 2 分鐘後才用它兜底，且粗定位點不寫進軌跡與歷史。",
+  "locModeNetHint": "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 5 分鐘後才用它兜底；粗定位點不寫進軌跡與歷史，也不會觸發自動上報。",
   "tierMinDist": "移動距離 (公尺)",
   "tierMinDistHint": "自上次上報以來移動超過這個距離，就補報一次；0 = 關閉（只按間隔）",
   "orMoveM": "或移動 {dist} m",
@@ -2922,5 +2922,7 @@
   "guideTncDeviceBody": "搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。",
   "guidePkwdwplTitle": "PKWDWPL 連接器",
   "guidePkwdwplBody": "透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。",
-  "guideMoreInSettings": "之後可在「設定 → 重新查看功能導覽」裡再看"
+  "guideMoreInSettings": "之後可在「設定 → 重新查看功能導覽」裡再看",
+  "beaconCoarseFix": "網路定位中 · 暫不自動上報",
+  "beaconCoarseHint": "目前定位來自網路（粗，誤差常達幾百公尺）—— 自動上報已暫停，GPS 恢復後自動繼續；期間仍可手動上報。"
 }

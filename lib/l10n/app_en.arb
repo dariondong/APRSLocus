@@ -2268,7 +2268,7 @@
   "historyReplay": "Replay",
   "historyFollow": "Follow",
   "locationCoarse": "Network fix (coarse)",
-  "locModeNetHint": "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 2 minutes, and are never written to the track or history.",
+  "locModeNetHint": "Cell and Wi-Fi fixes can be hundreds of metres off. So that the \"me\" marker does not jump around, they are used only after GPS has been stale for 5 minutes; coarse fixes are never written to the track or history, and never trigger an automatic report.",
   "tierMinDist": "Distance (m)",
   "tierMinDistHint": "Also beacon after moving this far since the last report; 0 = off (interval only)",
   "orMoveM": "or {dist} m",
@@ -2334,5 +2334,7 @@
   "guideTncDeviceBody": "Scan and pair your Bluetooth TNC, then pick it as the data source on the links page.",
   "guidePkwdwplTitle": "PKWDWPL interface",
   "guidePkwdwplBody": "Drive a PKWDWPL interface over a serial port: choose the port and baud rate; it then handles transmission.",
-  "guideMoreInSettings": "You can reopen this later under Settings → Show all feature guides again"
+  "guideMoreInSettings": "You can reopen this later under Settings → Show all feature guides again",
+  "beaconCoarseFix": "Network fix · auto beacon paused",
+  "beaconCoarseHint": "The current fix comes from the network (coarse, often hundreds of metres off) — automatic reports are paused and resume once GPS is back. You can still beacon manually."
 }

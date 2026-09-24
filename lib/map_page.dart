@@ -122,6 +122,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Station? _selected;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
 
+  /// 右侧工具列**单列**的总高：3 个工具钮（3×38 + 2×6 间隙）+ 组间 6
+  /// + 5 个缩放钮（5×38 + 4×6 间隙）= 346。
+  ///
+  /// 只用来判断「要不要分两列」（见 [_rightToolbar]）。以前那里是一个裸的
+  /// 「520」，看不出与按钮尺寸的关系 —— 改一颗按钮的高度就得重新猜阈值。
+  static const double _kToolbarColH = 346;
+
   // 脉冲动画（移动/选中标记）
   late final AnimationController _pulse;
   // 平滑定位动画
@@ -429,16 +436,24 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             _lastSize = size;
             final vis = _visible;
             final searched = widget.searchQuery.trim().isNotEmpty;
-            // 矮横屏（小屏手机横放）：隐藏图例减少遮挡，让地图更全
-            final shortWide = size.width > size.height && size.height < 520;
+            // 矮横屏（小屏手机横放，以及「窗口很宽但很矮」的桌面窗口）：
+            // 隐藏图例减少遮挡，并让右侧工具列换两列（见 _rightToolbar）。
+            //
+            // 判据用**顶栏之下实际可用**的高度，而不是裸屏高：顶部让位量会被
+            // 未连接横幅与公告横幅各顶掉一行（合计 +84），桌面上又常有「很宽
+            // 但很矮」的窗口形状 —— 按裸屏高判断这些都会漏判，而漏判的表现
+            // 就是工具列最下面的「定位」被 Stack 裁掉、点不到。
+            final double availH =
+                size.height - widget.topInset - widget.bottomInset;
+            final bool shortWide =
+                size.width > size.height && availH < _kToolbarColH + 54;
             // 顶部锚点的基准：所有顶部浮层从 14 挪到「外壳顶栏之下」
             final double topBase = 14 + widget.topInset;
             // 贴底控件（比例尺/坐标条、上报横杠）在 2.0 里会被卡片顶上来。
             // 顶到右侧工具列（约 390 高）那一段就会同时压住工具列与顶栏 ——
             // 这正是「混乱」的来源。所以按顶栏之下的可用高度判断：
             // 不够就**不显示**，而不是硬塞进去。440 ≈ 工具列高 + 间隙。
-            final bool roomForBottom =
-                size.height - widget.topInset - widget.bottomInset > 440;
+            final bool roomForBottom = availH > 440;
             if (widget.frozen) {
               // 冻结：停掉脉冲动画。它是地图这边**唯一的每帧**重绘来源
               // （`_pulse.repeat()` 会驱动所有移动台站的扩散圈逐帧重建），
@@ -1316,30 +1331,58 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
           boxShadow: elev2(),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _dot(C.green),
-            SizedBox(width: 6),
-            Text(
-              S.of(context).onlineCount(widget.state.online),
-              style: ts(12, c: C.green, w: FontWeight.w600),
-            ),
-            SizedBox(width: 12),
-            _dot(C.blue),
-            SizedBox(width: 6),
-            Text(
-              S.of(context).movingCount(widget.state.moving),
-              style: ts(12, c: C.blue, w: FontWeight.w600),
-            ),
-            SizedBox(width: 12),
-            _dot(C.slate),
-            SizedBox(width: 6),
-            Text(
-              S.of(context).stationCount(vis.length),
-              style: ts(12, c: searched ? C.slate : C.grey),
-            ),
-          ],
+        // 三段计数都是**定宽子项**（一个 Text 一个图标，没有弹性），而它能拿到的
+        // 宽度由外壳给的 left/right 决定 —— 2.0 横屏下（左侧竖条 + 展开的内容面板）
+        // 常只剩 200 出头，三段中文/西语文案必然撑爆 Row（debug 下溢出条纹、
+        // release 下直接被截）。所以按**实际可用宽度**分两档：够宽给三段，紧的
+        // 时候只留「在线 + 台站」（移动数最次要），每个计数再用 Flexible + ellipsis
+        // 兜底（西语的「en movimiento」比中文长一倍）。
+        child: LayoutBuilder(
+          builder: (_, cons) {
+            final compact = cons.maxWidth < 250;
+            final online = Flexible(
+              child: Text(
+                S.of(context).onlineCount(widget.state.online),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(12, c: C.green, w: FontWeight.w600),
+              ),
+            );
+            final moving = Flexible(
+              child: Text(
+                S.of(context).movingCount(widget.state.moving),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(12, c: C.blue, w: FontWeight.w600),
+              ),
+            );
+            final stations = Flexible(
+              child: Text(
+                S.of(context).stationCount(vis.length),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(12, c: searched ? C.slate : C.grey),
+              ),
+            );
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _dot(C.green),
+                const SizedBox(width: 6),
+                online,
+                if (!compact) ...[
+                  const SizedBox(width: 12),
+                  _dot(C.blue),
+                  const SizedBox(width: 6),
+                  moving,
+                ],
+                const SizedBox(width: 12),
+                _dot(C.slate),
+                const SizedBox(width: 6),
+                stations,
+              ],
+            );
+          },
         ),
       ),
     );
@@ -1469,6 +1512,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }) {
     return GestureDetector(
       onTap: onTap,
+      // 桌面端（Windows）鼠标悬停时给出手型：自绘按钮没有 Material 的水波，
+      // 不给指针的话鼠标移上去没有任何「可点」的反馈（触屏无影响）。
+      mouseCursor: SystemMouseCursors.click,
       // ⚠ 必须显式 opaque：按钮的底色来自 `BoxDecoration`，而它对应的
       // `DecoratedBox`（`RenderDecoratedBox extends RenderProxyBox`）**不重写
       // `hitTestSelf`** —— 也就是**不吸收点击**，命中全交给子节点。默认的
@@ -1568,6 +1614,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         MaterialPageRoute(
             builder: (_) => ImmersiveMapPage(state: widget.state)),
       ),
+      mouseCursor: SystemMouseCursors.click,
       child: Container(
         width: 38,
         height: 38,
@@ -1975,20 +2022,27 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _beaconBar() {
     final st = widget.state;
     final on = st.beaconEnabled;
-    final c = on ? C.green : C.slate;
-    // 连接但信标关 → 显示未上报；信标开 → 倒计时
-    // 用结构化的 beaconPhase 判断，**不再拿中文字符串做 == 比较**
-    // 射频来源未开「射频信标」→ 显示原因（点一下可去开），不要显示一个
-    // 永远不会归零生效的倒计时
-    final label = !on
-        ? S.of(context).beaconOffChip
-        : (st.beaconNeedsRfEnable
-            ? S.of(context).beaconRfBeaconOff
-            : (st.beaconPhase == BeaconPhase.imminent
-                ? S.of(context).beaconImminent
-                : S.of(context).beaconNextIn(st.nextBeaconIn)));
+    // 文案**全部**由结构化的 beaconPhase 分派（不再拿中文字符串做 == 比较，
+    // 也不再在这里重算「会不会发射」的条件 —— 那必须与 state.dart 的
+    // canAutoBeacon 同源，否则又会回「倒计时走着却不发射」的老毛病）。
+    // 三种「不发射」都要如实说原因：信标关 / 射频信标没开 / 当前是粗定位。
+    final label = switch (st.beaconPhase) {
+      BeaconPhase.off => S.of(context).beaconOffChip,
+      BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
+      BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
+      BeaconPhase.imminent => S.of(context).beaconImminent,
+      BeaconPhase.counting => S.of(context).beaconNextIn(st.nextBeaconIn),
+      BeaconPhase.disconnected => S.of(context).beaconNotConnected,
+      BeaconPhase.waitingFix => st.nextBeaconIn,
+    };
+    // 粗定位时用橙色：它和「射频信标没开」一样是「现在不会自动发」的状态，
+    // 绿色（信标已开）会让人以为倒计时正在走。
+    final c = !on
+        ? C.slate
+        : (st.beaconPhase == BeaconPhase.coarseFix ? C.orange : C.green);
     return GestureDetector(
       onTap: _showMyPanel,
+      mouseCursor: SystemMouseCursors.click,
       child: MaterialSurface(
         radius: 12,
         blurSigma: C.chipBlur,
@@ -2020,6 +2074,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   st.sendBeacon();
                   _toastMsg(S.of(context).positionBeacon(st.myGrid));
                 },
+                mouseCursor: SystemMouseCursors.click,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 5),

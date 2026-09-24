@@ -6942,5 +6942,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get locationCoarse => "Posición de red (aproximada)";
   @override
-  String get locModeNetHint => "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 2 minutos sin actualizarse, y nunca se guardan en la ruta ni el historial.";
+  String get locModeNetHint => "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 5 minutos sin actualizarse; nunca se guardan en la ruta ni el historial, y nunca provocan un informe automático.";
+  @override
+  String get beaconCoarseFix => "Posición de red · baliza automática en pausa";
+
+  @override
+  String get beaconCoarseHint => "La posición actual viene de la red (aproximada, a menudo cientos de metros) — los informes automáticos están en pausa y se reanudan al volver el GPS. Aún puedes balizar manualmente.";
 }

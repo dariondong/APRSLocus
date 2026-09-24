@@ -2352,7 +2352,7 @@
   "historyReplay": "Repetir",
   "historyFollow": "Seguir",
   "locationCoarse": "Posición de red (aproximada)",
-  "locModeNetHint": "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 2 minutos sin actualizarse, y nunca se guardan en la ruta ni el historial.",
+  "locModeNetHint": "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 5 minutos sin actualizarse; nunca se guardan en la ruta ni el historial, y nunca provocan un informe automático.",
   "tierMinDist": "Distancia (m)",
   "tierMinDistHint": "También reporta tras desplazarse esta distancia desde el último envío; 0 = desactivado (solo intervalo)",
   "orMoveM": "o {dist} m",
@@ -2418,5 +2418,7 @@
   "guideTncDeviceBody": "Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.",
   "guidePkwdwplTitle": "Interfaz PKWDWPL",
   "guidePkwdwplBody": "Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir.",
-  "guideMoreInSettings": "Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones"
+  "guideMoreInSettings": "Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones",
+  "beaconCoarseFix": "Posición de red · baliza automática en pausa",
+  "beaconCoarseHint": "La posición actual viene de la red (aproximada, a menudo cientos de metros) — los informes automáticos están en pausa y se reanudan al volver el GPS. Aún puedes balizar manualmente."
 }

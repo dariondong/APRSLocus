@@ -546,6 +546,13 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   Widget _beaconCard(AppState st, AppLocalizations s) {
     final on = st.beaconEnabled;
     final col = st.connected ? C.green : C.grey;
+    // 不能自动上报时（射频信标没开 / 当前是粗定位）要显示**原因**而不是照走的
+    // 倒计时；判据只用结构化的 beaconPhase（与 AppState.canAutoBeacon 同源）。
+    final String? note = switch (st.beaconPhase) {
+      BeaconPhase.rfDisabled => s.beaconRfBeaconOff,
+      BeaconPhase.coarseFix => s.beaconCoarseFix,
+      _ => null,
+    };
     return _card(
       children: [
         Row(children: [
@@ -562,10 +569,10 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
         Row(crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic, children: [
           Text(
-              // 未开射频信标时 nextBeaconIn 是「射频信标未开启」这句话，
+              // 不能自动上报时 nextBeaconIn 是一整句原因，
               // 用 26 号大字体显示会溢出；这里让数量级跟着内容走。
-              st.beaconNeedsRfEnable ? S.of(context).beaconRfBeaconOff : st.nextBeaconIn,
-              style: st.beaconNeedsRfEnable
+              note ?? st.nextBeaconIn,
+              style: note != null
                   ? ts(13, w: FontWeight.w700, c: Colors.white)
                   : ts(26, w: FontWeight.w900, c: Colors.white, ls: -0.5)),
           const SizedBox(width: 6),

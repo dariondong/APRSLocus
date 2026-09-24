@@ -6701,5 +6701,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get locationCoarse => "ネットワーク測位（粗）";
   @override
-  String get locModeNetHint => "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 2 分途切れたときだけ補助に使い、軌跡と履歴には記録しません。";
+  String get locModeNetHint => "基地局・Wi-Fi 測位は数百メートルずれることがあります。地図上の「自分」が飛び回らないよう、GPS が 5 分途切れたときだけ補助に使い、軌跡と履歴には記録せず、自動送信も行いません。";
+  @override
+  String get beaconCoarseFix => "ネットワーク測位中 · 自動送信を停止";
+
+  @override
+  String get beaconCoarseHint => "現在の測位はネットワーク由来です（粗く、数百メートルずれることも）。自動送信は停止し、GPS が戻れば再開します。手動送信は可能です。";
 }

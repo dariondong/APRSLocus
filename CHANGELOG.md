@@ -1,5 +1,132 @@
 # 更新日志
 
+## [1.6.163] - 2026-09-24
+
+### 🔧 网络定位降权：粗定位不再自动上报；关于页名片留白；横屏三端（手机/平板/桌面）打磨 / Network fixes de-emphasised (never auto-beacon), a roomier About card, and landscape polish for phone, tablet and desktop
+
+### 一、网络定位（粗定位）不再自动上报
+
+「自动上报」是**「我在这里」的公开宣告**，而网络/基站定位常年偏几百米、还会原地漂 ——
+报出去的是个错坐标，收端（igate 与其它台站）看到的是一条乱跳的轨迹。所以：
+
+* `canAutoBeacon` 新增条件 `!myFixCoarse`（**唯一出口**，与 `beaconPhase` 同源）；
+* `BeaconPhase` 新增 `coarseFix` 档：地图上报横杠 / 沉浸地图 / 首页 / 设置页都显示
+  「网络定位中 · 暂不自动上报」（而不是一个照走的倒计时），设置页另给一句解释；
+* **手动「立即上报」不受影响**：那是用户的显式动作，知情且即时；
+* GPS 一恢复就自动继续（倒计时按上次成功上报算，所以那一刻会立刻补报一次）。
+
+### 二、顺带把网络定位的权重整体压下来
+
+粗点现在**不产生任何对外影响**（信道 / 链路 / 轨迹 / 历史），剩下的作用只是「GPS 真的
+没了时，地图上还给个大概位置」。配套收紧了三个常数（`tool/check_pos_quality.py` 同步）：
+
+| 常数 | 旧 | 新 | 理由 |
+| --- | --- | --- | --- |
+| `_kCoarseHoldSec` | 120s | **300s** | 2 分钟的 GPS 缝隙（城市峡谷 / 高架 / 室内）太常见，粗点会顶上来 |
+| `_kCoarseJumpKm` | 8.0km | **3.0km** | 基站 / Wi-Fi 的单跳误差本来就在公里级，8km 等于不设防 |
+| `_kCoarseAccuracyFloorM` | 150m | **300m** | 基站质心常在几百米到公里级，150 仍然偏乐观 |
+
+另外**粗点不再推动 APRS-IS 过滤中心**：过滤串按 0.01°（约 1.1km）取整，粗点漂移越过一条
+边界就会触发一次整链路重连（见 `_refreshFilter`）—— 拿几百米精度的点换一次 reconnect，
+代价与收益完全不成比例。
+
+### 三、关于页名片卡：不再挤
+
+头部内边距 14/12/10 → 16/15/14/13、标题与副标题间距 2 → 4px、标题 13.5 → 14.5、
+分享行 14/11 → 16/13，官网图标 32 → 34 并加了 tooltip（桌面悬停能看出它指向哪）。
+
+### 四、横屏：手机 / 平板 / 电脑三端
+
+* **面板内的宽度不再按屏幕宽度算**。2.0 横屏把消息页装进左侧面板（≤560，手机上常
+  200~280），而消息气泡原来取「屏幕宽 × 0.55」：桌面 1920 时会算成 1056，超出的部分
+  被面板的 `ClipRect` 直接裁掉 —— 长消息读不全，而且不报任何错。现在按消息区
+  **实际宽度**（布局期记下的 `_availW`）取比例。
+* **左上统计条按可用宽度降级**。横屏 + 内容面板展开时，地图左上控件可能只剩 200 出头，
+  而三段计数（在线 / 移动 / 台站）都是定宽子项 —— 必然撑爆 `Row`。现在窄的时候只留
+  「在线 + 台站」，每段再用 `Flexible` + ellipsis 兜底（西语的 `en movimiento` 长一倍）。
+* **「矮横屏」改按顶栏之下的可用高度判断**。顶部让位量会被未连接 / 公告横幅各顶掉一行
+  （合计 +84），桌面上又常有「很宽但很矮」的窗口；按裸屏高判断会漏判，而漏判的表现就是
+  工具列最下面的「定位」被裁掉、点不到。阈值也与按钮尺寸挂钩（`_kToolbarColH`），不再
+  是一个没有来历的「520」。
+* **桌面端鼠标指针**：自绘按钮（导航项 / 地图工具钮 / 顶栏胶囊 / 立即上报…）统一给
+  `SystemMouseCursors.click` —— 没有 Material 水波的情况下，鼠标悬停至少要有「可点」的
+  反馈。触屏无影响。
+
+### 五、检查器
+
+`check_landscape_layout.py` 增加 3 条（面板内宽度按局部约束 / 统计条可降级 / 矮横屏按可用
+高度判），`check_pos_quality.py` 更新 3 个常数并新增 3 条（粗点不自动上报 / 粗点不推过滤
+中心 / `BeaconPhase` 有 `coarseFix` 档）。8 个回归样本逐个验证过会报红。
+
+---
+
+## [1.6.163] - 2026-09-24 (English)
+
+### 🔧 Network fixes are de-emphasised (never auto-beacon), the About card gets room to breathe, and landscape is polished for phone, tablet and desktop
+
+**Coarse (network/cell) fixes are no longer transmitted automatically.** An automatic beacon
+is a public statement of "I am here"; a coarse fix is routinely hundreds of metres off and
+wanders in place — what goes out is simply a wrong coordinate, and receivers (igate and
+other stations) see a track that jumps around. So `canAutoBeacon` gained the condition
+`!myFixCoarse` (the **single place** that decides whether a beacon is really sent, sharing
+its source of truth with `beaconPhase`), and `BeaconPhase` gained a `coarseFix` state: the
+map beacon bar, the immersive map, the 1.0 home page and the settings page now all say
+"network fix · auto beacon paused" instead of running a countdown that never fires, with an
+explanation line in settings. **Manual "beacon now" is untouched** — that is an explicit,
+informed action. Automatic reporting resumes the moment GPS returns (the countdown is
+measured from the last successful report, so one goes out right away).
+
+**And the weight of network positioning is lowered overall.** A coarse fix now has *no*
+external effect at all (channel, link, track, history); its only remaining job is "show an
+approximate position on the map when GPS is really gone". Three constants were tightened
+accordingly (kept in sync by `tool/check_pos_quality.py`):
+
+| Constant | Before | After | Why |
+| --- | --- | --- | --- |
+| `_kCoarseHoldSec` | 120s | **300s** | two-minute GPS gaps (urban canyon, flyover, indoors) are far too common to hand over to a cell-tower centroid |
+| `_kCoarseJumpKm` | 8.0km | **3.0km** | single-hop cell/Wi-Fi error is already kilometre-scale; 8km was no guard at all |
+| `_kCoarseAccuracyFloorM` | 150m | **300m** | cell centroids are usually hundreds of metres to kilometres off; 150 was still optimistic |
+
+Coarse fixes also **no longer move the APRS-IS filter centre**: the filter string is rounded
+to 0.01° (≈1.1km), so a drifting coarse fix can cross a boundary and trigger a full link
+reconnect (see `_refreshFilter`) — trading a few-hundred-metre fix for a reconnect is a
+terrible deal.
+
+**About page: the name card is no longer cramped.** Header padding 14/12/10 → 16/15/14/13,
+title-to-subtitle gap 2 → 4px, title 13.5 → 14.5, share row 14/11 → 16/13, and the website
+icon went 32 → 34 with a tooltip (so a desktop hover tells you where it points).
+
+**Landscape, on all three form factors.**
+
+* **Widths inside the pane are no longer computed from the screen.** In the 2.0 landscape
+  shell the messages page lives in the left pane (≤560 wide, often 200–280 on a phone),
+  while bubbles used to take `screen width × 0.55`: on a 1920-wide desktop that is 1056px,
+  and everything past the pane edge was silently clipped by the pane's `ClipRect` — long
+  messages were cut off with no error anywhere. Bubbles now use the message area's **actual
+  width** (`_availW`, captured during layout).
+* **The top-left station chip degrades by available width.** With landscape plus an open
+  content pane the map's left overlay can be down to about 200px, and its three counters
+  (online / moving / stations) are all fixed-width children — they inevitably blew out the
+  `Row`. It now drops to "online + stations" when tight, with `Flexible` + ellipsis as a
+  backstop (Spanish's `en movimiento` is twice as long as the Chinese).
+* **"Short landscape" is now judged by the height actually available below the top bar,**
+  not by raw screen height: the top inset grows by a row for each of the disconnected and
+  notice banners (+84 total), and desktop windows are often wide and short. Judging by raw
+  height misses those cases — and what they produce is exactly the clipped, unreachable
+  "locate" button at the bottom of the tool column. The threshold is now tied to the real
+  button size (`_kToolbarColH`) instead of a magic "520".
+* **Desktop mouse cursors**: self-drawn buttons (nav items, map tool buttons, top-bar pills,
+  "beacon now"…) now set `SystemMouseCursors.click` — with no Material ink splash, at least
+  a hover should tell you the thing is clickable. Touch is unaffected.
+
+**CI guards**: `check_landscape_layout.py` gained three invariants (pane-local widths,
+station-chip degradation, short-landscape by available height) and `check_pos_quality.py`
+was updated for the three constants plus three new ones (coarse never auto-beacons, coarse
+never moves the filter centre, `BeaconPhase` has the `coarseFix` state). All eight
+regression samples were verified to fail as expected.
+
+---
+
 ## [1.6.162] - 2026-09-23
 
 ### 🔧 功能引导收敛：地图/沉浸地图改用一次性弹层；卡片更小更安静 / Guides tidied up: the full-screen map views use a one-off sheet, and the tip card is smaller and quieter

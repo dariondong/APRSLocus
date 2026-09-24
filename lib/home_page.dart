@@ -823,12 +823,19 @@ class _HomePageState extends State<HomePage> {
               // 不要再包一层 localizedNextBeaconValue —— 那个助手是按「中文
               // 状态串」做映射的旧模式，传入已本地化文案会匹配不上。
               Text(
-                // 射频未开信标时给出原因，而不是显示一个不会生效的倒计时
-                widget.state.beaconNeedsRfEnable
+                // 射频未开信标 / 当前是**粗定位（网络）**时给出原因，而不是显示
+                // 一个不会生效的倒计时 —— 判据用结构化的 beaconPhase（与
+                // AppState.canAutoBeacon 同源，两处漂移就是「倒计时走着不发」）。
+                widget.state.beaconPhase == BeaconPhase.rfDisabled
                     ? S.of(context).beaconRfBeaconOff
-                    : S.of(context).nextBeaconIn(widget.state.nextBeaconIn),
+                    : (widget.state.beaconPhase == BeaconPhase.coarseFix
+                        ? S.of(context).beaconCoarseFix
+                        : S.of(context).nextBeaconIn(widget.state.nextBeaconIn)),
                 style: ts(10,
-                    c: widget.state.beaconNeedsRfEnable ? C.orange : C.slate),
+                    c: (widget.state.beaconNeedsRfEnable ||
+                            widget.state.beaconPhase == BeaconPhase.coarseFix)
+                        ? C.orange
+                        : C.slate),
               ),
               Spacer(),
               Icon(Icons.sync_rounded, size: 12, color: C.grey),

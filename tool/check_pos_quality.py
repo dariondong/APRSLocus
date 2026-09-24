@@ -73,15 +73,29 @@ def main() -> int:
          '粗定位判定没了（网络/被动定位会被当成 GPS）')
     need('lib/state.dart', 'if (gapSec < _kCoarseHoldSec || jumpKm > _kCoarseJumpKm) {',
          '粗定位的两道闸（GPS 新鲜度 / 自身位移）没了 —— 「飞来飞去」会回来')
-    need('lib/state.dart', 'static const int _kCoarseHoldSec = 120;',
-         '粗定位的 GPS 新鲜度门槛没了/被改了')
-    need('lib/state.dart', 'static const double _kCoarseJumpKm = 8.0;',
-         '粗定位的自身位移上限没了/被改了')
-    need('lib/state.dart', 'static const double _kCoarseAccuracyFloorM = 150.0;',
-         '粗定位的精度显示下限没了 —— 精度圈会画得跟 GPS 一样小（比不画更骗人）')
+    need('lib/state.dart', 'static const int _kCoarseHoldSec = 300;',
+         '粗定位的 GPS 新鲜度门槛没了/被改成了别的值（v1.6.163 定为 300s：'
+         '粗点不再自动上报，只做「GPS 真没了」时的分钟级兜底）')
+    need('lib/state.dart', 'static const double _kCoarseJumpKm = 3.0;',
+         '粗定位的自身位移上限没了/被改了（v1.6.163 收到 3.0：基站/Wi-Fi 的'
+         '单跳误差本来就在公里级，8km 等于不设防）')
+    need('lib/state.dart', 'static const double _kCoarseAccuracyFloorM = 300.0;',
+         '粗定位的精度显示下限没了/被改了 —— 精度圈会画得跟 GPS 一样小'
+         '（比不画更骗人）')
     # 粗点绝不许：进防抖滑窗、推进跳变参照点、写轨迹/历史台账
     need('lib/state.dart', 'final out = (lastKnown || coarse)',
          '粗定位点进了静止防抖滑窗 —— 会把中位数拉跑')
+    need('lib/state.dart', 'if (filterFollow && !coarse) {',
+         '粗定位点仍在推动 APRS-IS 过滤中心 —— 过滤串按 0.01° 取整，粗点漂移'
+         '越过一条边界就会触发一次整链路 reconnect（见 _refreshFilter）')
+    # 粗点绝不许自动上报（v1.6.163 用户明确要求「网络定位时不自动发定位包」）
+    need('lib/state.dart', '      !myFixCoarse &&',
+         'canAutoBeacon 没有排除粗定位 —— 网络定位下仍会自动发出一个偏几百米'
+         '的坐标（收端看到的是一条乱跳的轨迹）')
+    need('lib/state.dart', 'if (myFixCoarse) return BeaconPhase.coarseFix;',
+         'beaconPhase 没有粗定位这一档 —— 界面会继续显示一个不会生效的倒计时'
+         '（「倒计时走着却不发射」的老毛病）')
+    need('lib/state.dart', 'coarseFix,', 'BeaconPhase 里没有 coarseFix 枚举项')
     need('lib/state.dart', 'if (!lastKnown && !coarse) {',
          '粗定位点会推进跳变守卫的参照点（GPS 回来时会被误判成跳变）')
     need('lib/state.dart', '    if (!lastKnown &&\n        !coarse &&\n        !still &&',

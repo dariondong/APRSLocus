@@ -1123,6 +1123,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   ],
                 ),
               ),
+            // 粗定位（网络/基站）期间不自动上报：与「射频信标未开启」一样，把原因
+            // 说出来 —— 否则用户只会看到一个不走的倒计时，以为信标坏了。
+            // 这里没有「一键修复」：唯一能做的是等 GPS 回来（也可以手动上报一次）。
+            if (st.beaconPhase == BeaconPhase.coarseFix)
+              SettingsHint(S.of(context).beaconCoarseHint,
+                  color: C.orange, icon: Icons.gps_off_rounded),
             // 模拟位置模式：不显示 GPS 启动按钮，改为提示
             if (st.useSimLocation)
               Padding(
