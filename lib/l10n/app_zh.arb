@@ -2987,5 +2987,6 @@
   "hrLineHr": "心率 {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "分享的内容里没有找到佳明 LiveTrack 链接",
-  "hrFromGarmin": "心率来自佳明 LiveTrack（手表）"
+  "hrFromGarmin": "心率来自佳明 LiveTrack（手表）",
+  "sourceMovedHint": "要启用 / 切换数据来源（链路），请到「设置 → 设备」"
 }

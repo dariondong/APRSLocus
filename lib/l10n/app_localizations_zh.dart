@@ -6794,6 +6794,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get hrFromGarmin => "心率来自佳明 LiveTrack（手表）";
 
+  @override
+  String get sourceMovedHint => "要启用 / 切换数据来源（链路），请到「设置 → 设备」";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13584,5 +13587,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get hrFromGarmin => "心率來自佳明 LiveTrack（手錶）";
+
+  @override
+  String get sourceMovedHint => "要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」";
 
 }

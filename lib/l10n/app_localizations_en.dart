@@ -7059,4 +7059,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get hrFromGarmin => "Heart rate from Garmin LiveTrack (watch)";
 
+  @override
+  String get sourceMovedHint => "To enable or switch data sources (links), go to Settings → Devices";
+
 }

@@ -1703,10 +1703,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
           icon: Icons.wifi_rounded,
           color: C.purple,
           body: Column(children: [
-            // ⓪ 数据来源：先让用户确认来源，再决定下面显示什么 —— 比
-            //    「灰掉一片用户看不懂的输入框」清楚得多。
-            DataSourceCard(state: st),
-            const SizedBox(height: 16),
+            // ⓪ 指路：「数据来源」卡**只在设置→设备**那一页（用户反馈三处重复
+            //    「感觉乱套了」）。这一页专注「**这条链路**的参数」——下面每张卡
+            //    都只在对应链路启用时出现。但删掉来源卡必须留一句指路，否则用户
+            //    会以为「启用 TNC 的入口没了」。
+            SettingsHint(S.of(context).sourceMovedHint),
+            const SizedBox(height: 6),
             // 多选：**每条已启用的来源都要有自己的卡片**，顺序固定为
             // APRS-IS → TNC → 音频。此前只按「发射来源」显示一张，
             // 于是「APRS-IS + TNC」时 TNC 的绑定状态/统计完全看不到。

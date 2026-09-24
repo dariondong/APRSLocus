@@ -2,6 +2,16 @@
 
 ## [1.6.170] - 2026-09-24
 
+**「数据来源」卡收敛到一处（用户反馈「感觉乱套了」）**：那张卡（APRS-IS / TNC /
+音频 / PKWDWPL 四条链路的勾选 + 发射来源）原来**同时挂在三个页面**（设备页 / 连接页 /
+音频页），三份一样的列表、改一处也不知道该看哪一处。现在：
+* **设备页是唯一的「来源选择」处**（勾选链路 + 发射来源 + 位置/心率来源）；
+* **连接页**专注「**这条链路**的参数」（下面每张卡只在该链路启用时出现），顶部留一句
+  「要启用 / 切换数据来源，请到设置 → 设备」；
+* **音频页**同理（它原来那张纯属重复）。
+删卡必须配指路文案，否则用户会以为「启用 TNC 的入口没了」—— 这条也钉进了检查器
+（两页都不许再挂 DataSourceCard，且必须有 `sourceMovedHint`）。
+
 ### ❤️ 心率说明来源 + 关于页空隙 / Heart-rate source labelling + About page spacing
 
 **心率说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源
@@ -16,6 +26,18 @@
 ---
 
 ## [1.6.170] - 2026-09-24 (English)
+
+**The "Data sources" card now lives in exactly one place** (reported as "it feels like a mess").
+That card (the APRS-IS / TNC / audio / PKWDWPL tick list plus the transmit source) used to be
+mounted on **three pages at once** (Devices, Connection, Audio) — three identical lists, and no way
+to tell which one to look at. Now:
+* **Devices is the single place to choose sources** (link ticks, transmit source, position and
+  heart-rate sources);
+* the **Connection** page focuses on **that link's parameters** (each card only appears for an
+  enabled link) and carries a "to enable or switch data sources, go to Settings → Devices" line;
+* the **Audio** page likewise (its copy was pure duplication).
+Removing the card requires that pointer text, otherwise users assume the entry point is gone — the
+checker now enforces both (no `DataSourceCard` on those two pages, and `sourceMovedHint` present).
 
 ### ❤️ Heart-rate source labelling + About page spacing
 

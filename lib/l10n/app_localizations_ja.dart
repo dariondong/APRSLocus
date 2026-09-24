@@ -6868,4 +6868,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get hrFromGarmin => "心拍は Garmin LiveTrack（ウォッチ）から";
 
+  @override
+  String get sourceMovedHint => "データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います";
+
 }

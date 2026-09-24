@@ -2473,5 +2473,6 @@
   "hrLineHr": "HR {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan",
-  "hrFromGarmin": "Detak jantung dari Garmin LiveTrack (jam)"
+  "hrFromGarmin": "Detak jantung dari Garmin LiveTrack (jam)",
+  "sourceMovedHint": "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat"
 }

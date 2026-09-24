@@ -2473,5 +2473,6 @@
   "hrLineHr": "pulso {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "No se encontró ningún enlace de Garmin LiveTrack",
-  "hrFromGarmin": "Pulso desde Garmin LiveTrack (reloj)"
+  "hrFromGarmin": "Pulso desde Garmin LiveTrack (reloj)",
+  "sourceMovedHint": "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos"
 }

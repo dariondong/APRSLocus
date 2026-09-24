@@ -12374,6 +12374,12 @@ abstract class AppLocalizations {
   /// **'心率来自佳明 LiveTrack（手表）'**
   String get hrFromGarmin;
 
+  /// No description provided for @sourceMovedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'要启用 / 切换数据来源（链路），请到「设置 → 设备」'**
+  String get sourceMovedHint;
+
 }
 
 class _AppLocalizationsDelegate

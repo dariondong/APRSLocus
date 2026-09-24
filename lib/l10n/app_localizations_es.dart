@@ -7109,4 +7109,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get hrFromGarmin => "Pulso desde Garmin LiveTrack (reloj)";
 
+  @override
+  String get sourceMovedHint => "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos";
+
 }

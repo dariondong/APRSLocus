@@ -36,6 +36,18 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 「数据来源」卡收敛到「设置 → 设备」后，连接页与音频页顶部的指路文案。
+    # 为什么要有：这两页原来各挂一张「数据来源」卡（三处重复 = 用户说的「乱套」），
+    # 删掉之后必须**告诉用户去哪儿**启用/切换链路，否则会以为功能消失了。
+    'sourceMovedHint': (
+        '要启用 / 切换数据来源（链路），请到「设置 → 设备」',
+        '要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」',
+        'To enable or switch data sources (links), go to Settings → Devices',
+        'データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います',
+        'Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos',
+        'Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat',
+    ),
+
     # 心率来源是**佳明 LiveTrack**（手表）时的说明。
     # 用户要求：「如果链接了佳明就提示从佳明追踪获取」。心率有两个来源
     # （BLE 胸带 / 佳明点里的 heartRateBeatsPerMin），不写清楚用户不知道

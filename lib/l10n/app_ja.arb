@@ -2473,5 +2473,6 @@
   "hrLineHr": "心拍 {hr}",
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "共有された内容に Garmin LiveTrack のリンクが見つかりません",
-  "hrFromGarmin": "心拍は Garmin LiveTrack（ウォッチ）から"
+  "hrFromGarmin": "心拍は Garmin LiveTrack（ウォッチ）から",
+  "sourceMovedHint": "データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います"
 }

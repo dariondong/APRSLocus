@@ -7068,4 +7068,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get hrFromGarmin => "Detak jantung dari Garmin LiveTrack (jam)";
 
+  @override
+  String get sourceMovedHint => "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat";
+
 }

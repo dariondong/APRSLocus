@@ -272,6 +272,22 @@ def main() -> int:
     if "'BA3RZL" not in about_raw:
         errors.append('lib/about_page.dart 里找不到单独成行的 BA3RZL 文本')
 
+    # ── 「数据来源」卡只允许出现在**设备页** ──
+    #
+    # 用户反馈「感觉乱套了」的根因就是它同时挂在三处（设备页 / 连接页 / 音频页），
+    # 三份一样的勾选列表、改一处不知道看哪一处。现在约定：
+    #   * 设备页 = 唯一的「来源（链路）选择」处；
+    #   * 连接页 = 各链路的**参数**；音频页 = 音频参数；两页各留一句指路文案
+    #     （sourceMovedHint），否则用户会以为「启用入口没了」。
+    for _f, _n in (('lib/settings_pages.dart', '连接页'),
+                   ('lib/audio_page.dart', '音频页')):
+        if 'DataSourceCard(' in code_only(read(_f)):
+            errors.append(f'{_f}（{_n}）又挂上了「数据来源」卡 —— '
+                          '它只允许在设备页（用户反馈三处重复「乱套」）')
+        if 'sourceMovedHint' not in read(_f):
+            errors.append(f'{_f}（{_n}）没有指路文案（sourceMovedHint）—— '
+                          '删掉来源卡后用户会以为启用入口没了')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:

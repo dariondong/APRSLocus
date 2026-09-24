@@ -285,8 +285,9 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
         icon: Icons.graphic_eq_rounded,
         color: C.cyan,
         body: Column(children: [
-          DataSourceCard(state: st, extra: s.dataSourceSwitchHint),
-          const SizedBox(height: 16),
+          // 「数据来源」卡不在这里重复（只在设置→设备）——这一页专注音频参数。
+          SettingsHint(s.sourceMovedHint),
+          const SizedBox(height: 6),
           _captureCard(s),
           const SizedBox(height: 16),
           _paramsCard(s),
