@@ -7038,4 +7038,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get beaconAttachedNone => "tanpa detak jantung";
 
+  @override
+  String get posSourceIdle => "Tidak melacak (lokasi nonaktif)";
+
+  @override
+  String get ownSourceGarminLive => "Melacak (GPS ponsel menyingkir)";
+
+  @override
+  String get ownSourceGarminStale => "Tautan ada, tapi Garmin belum punya titik baru";
+
+  @override
+  String get ownSourceHrIdle => "Belum tersambung (ketuk untuk menyambung)";
+
+  @override
+  String hrLineHr(String hr) => "HR $hr";
+
+  @override
+  String get positionBeaconDetail => "Beacon posisi · Grid {grid} · {detail}";
+
+  @override
+  String get beaconAttachedHr => "HR {hr}";
+
 }

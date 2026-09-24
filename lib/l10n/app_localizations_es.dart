@@ -7079,4 +7079,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get beaconAttachedNone => "sin pulso";
 
+  @override
+  String get posSourceIdle => "Sin seguimiento (ubicación desactivada)";
+
+  @override
+  String get ownSourceGarminLive => "Siguiendo (el GPS del teléfono cedió)";
+
+  @override
+  String get ownSourceGarminStale => "Enlace configurado, pero Garmin no tiene puntos nuevos";
+
+  @override
+  String get ownSourceHrIdle => "Sin conectar (toca para conectar)";
+
+  @override
+  String hrLineHr(String hr) => "pulso $hr";
+
+  @override
+  String get positionBeaconDetail => "Baliza de posición · Cuadrícula {grid} · {detail}";
+
+  @override
+  String get beaconAttachedHr => "pulso {hr}";
+
 }

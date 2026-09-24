@@ -2381,5 +2381,11 @@
   "beaconAttachedHr": "HR {hr}",
   "beaconAttachedNone": "no heart rate",
   "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "posSourceIdle": "Not tracking (location off)",
+  "ownSourceGarminLive": "Tracking (phone GPS stepped aside)",
+  "ownSourceGarminStale": "Link set, but Garmin has no fresh points",
+  "ownSourceHrIdle": "Not connected (tap to connect a strap)",
+  "hrLineHr": "HR {hr}",
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
 }

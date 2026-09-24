@@ -6764,6 +6764,27 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get beaconAttachedNone => "未附带心率";
 
+  @override
+  String get posSourceIdle => "未追踪（未启动定位）";
+
+  @override
+  String get ownSourceGarminLive => "追踪中（手机 GPS 已让位）";
+
+  @override
+  String get ownSourceGarminStale => "链接有效，但佳明没有新点（暂时用不到）";
+
+  @override
+  String get ownSourceHrIdle => "未连接（点一下连接心率带）";
+
+  @override
+  String hrLineHr(String hr) => "心率 $hr";
+
+  @override
+  String get positionBeaconDetail => "位置信标 · 网格 {grid} · {detail}";
+
+  @override
+  String get beaconAttachedHr => "心率 {hr}";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13524,5 +13545,26 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconAttachedNone => "未附帶心率";
+
+  @override
+  String get posSourceIdle => "未追蹤（未啟動定位）";
+
+  @override
+  String get ownSourceGarminLive => "追蹤中（手機 GPS 已讓位）";
+
+  @override
+  String get ownSourceGarminStale => "連結有效，但佳明沒有新點（暫時用不到）";
+
+  @override
+  String get ownSourceHrIdle => "未連線（點一下連線心率帶）";
+
+  @override
+  String hrLineHr(String hr) => "心率 $hr";
+
+  @override
+  String get positionBeaconDetail => "位置信標 · 網格 {grid} · {detail}";
+
+  @override
+  String get beaconAttachedHr => "心率 {hr}";
 
 }

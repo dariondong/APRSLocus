@@ -80,23 +80,34 @@ class DataSourceCard extends StatelessWidget {
         // 与上面那些**报文链路**分开列：那几条的语义是「报文从哪条链路收发」，
         // 而这两条是「**我自己的位置/心率**从哪来」。混成一组会让「发射来源」
         // 的判定变乱 —— 但用户找「数据来源」时就该在这一张卡里看到它们。
+        // 位置来源**不是二选一**（佳明直播时优先用手表，超过 120s 没新点自动交回
+        // 手机 GPS），所以这里**不画选中圆点**，只如实显示「现在是谁在供位置」。
+        // 曾经画成单选，出现两个不诚实的表现（用户实测指出）：
+        //   * 未启动定位时「手机 GPS」也显示已选中 —— 其实什么都没在跑；
+        //   * 佳明那行可以「选中」，哪怕应用根本没在追踪。
         _ownLabel(context, s.posSourceLabel),
-        _ownTile(
+        // 手机 GPS：只有在真的在追踪、且佳明**没有**在供位置时才算「在用」。
+        // `loc.running` 是定位服务是否在跑（用户没启动追踪时它是 false）。
+        _statusRow(
           context,
           icon: Icons.smartphone_rounded,
           title: s.ownSourcePhoneGps,
-          desc: s.hrForTncNote == '' ? '' : s.dataSourceSubtitle,
-          active: !state.garminOn,
-          onTap: () {
-            if (state.garminOn) state.setGarminOn(false);
-          },
+          desc: !state.loc.running
+              ? s.posSourceIdle
+              : (state.garminOn ? s.ownSourceGarminLive : s.garminRunning),
+          live: state.loc.running,
         ),
         _ownTile(
           context,
           icon: Icons.watch_rounded,
           title: s.garminCardTitle,
-          desc: state.garminOn ? s.garminRunning : s.garminCardSubtitle,
-          active: state.garminOn,
+          // 三种如实状态：链接有效且有点 / 链接有效但没点 / 还没配
+          desc: !state.garminOn
+              ? (state.garminUrl.isEmpty
+                  ? s.garminCardSubtitle
+                  : s.ownSourceGarminStale)
+              : s.garminRunning,
+          active: state.garminOn && state.garmin.fresh,
           onTap: () {
             // 没配过链接 → 直接进设置页（用户在那里粘贴/分享）
             if (!state.garminOn && state.garminUrl.isEmpty) {
@@ -112,10 +123,15 @@ class DataSourceCard extends StatelessWidget {
           context,
           icon: Icons.favorite_rounded,
           title: s.hrCardTitle,
+          // 已连接时把**当前心率**也显示出来（用户要「主屏能看到心率」，
+          // 设置页这一行顺便也能看到，接没接上、有没有读数一目了然）。
           desc: state.bleHr.connected
-              ? s.hrConnected(state.bleHr.deviceName ?? '--')
-              : s.hrCardSubtitle,
-          active: state.bleHr.connected,
+              ? (state.bleHr.bpm == null
+                  ? s.hrConnected(state.bleHr.deviceName ?? '--')
+                  : '${s.hrConnected(state.bleHr.deviceName ?? '--')} · '
+                      '${s.hrLineHr('${state.bleHr.bpm} bpm')}')
+              : s.ownSourceHrIdle,
+          active: state.bleHr.connected && state.bleHr.bpm != null,
           onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => HrDevicePage(state: state))),
         ),
@@ -126,6 +142,51 @@ class DataSourceCard extends StatelessWidget {
         if (state.pkwdwplOn) SettingsHint(s.dataSourcePkwdwplHint),
         if (extra != null) SettingsHint(extra!),
       ],
+    );
+  }
+
+  /// **只读状态行**：用于「位置来源」——它不是用户二选一的开关，而是「现在谁在供位
+  /// 置」。所以**不画选中圆点**（画了就是在暗示「这是你选的」，而实际上应用是自动让位的）。
+  /// 只有一个小圆点表示「在跑 / 没在跑」，避免未启动追踪时看着像已经选好了。
+  Widget _statusRow(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String desc,
+    required bool live,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+      ),
+      child: Row(children: [
+        Icon(icon, size: 16, color: live ? C.green : C.grey),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: ts(12.5, c: live ? C.ink : C.slate, w: FontWeight.w600)),
+              const SizedBox(height: 1),
+              Text(desc,
+                  style: ts(10.5, c: C.grey),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
+        // 状态点：绿=在供位置；灰=没在跑
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: live ? C.green : C.greyLight,
+          ),
+        ),
+      ]),
     );
   }
 

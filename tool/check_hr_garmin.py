@@ -251,6 +251,17 @@ def main() -> int:
     # 用户原话：「应该把这些链接放在设置设备列表里面，而不是…信标」——
     # 它们的语义是**设备**（要搜、要连、会掉线），与「信标怎么发」是两件事。
     # 一开始我放在信标设置页，位置就是错的。
+    # 「位置来源」必须是**状态行**而不是二选一（用户实测指出：没启动追踪时
+    # 「手机 GPS」也显示已选中、佳明那行也能被「选中」）。
+    # 判据：位置来源那一行必须用 _statusRow（无选中圆点，只反映 loc.running），
+    # 且它的文案必须区分「未追踪」。
+    need('lib/tnc_page.dart', 'Widget _statusRow(',
+         '位置来源没有用只读状态行 —— 会退化成「二选一」，未启动追踪时也显示已选中')
+    need('lib/tnc_page.dart', 's.posSourceIdle',
+         '位置来源没有显示「未追踪」状态 —— 用户看不出定位其实没在跑')
+    need('lib/tnc_page.dart', '!state.loc.running',
+         '位置来源没有参考 loc.running —— 未启动追踪时仍会显示成在跑')
+
     need('lib/device_page.dart', 'page: HrDevicePage(state: state)',
          '设备页的子页入口里没有「心率」—— 用户找不到连心率带的地方')
     need('lib/device_page.dart', 'page: GarminTrackPage(state: state)',

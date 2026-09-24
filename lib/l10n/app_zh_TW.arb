@@ -2969,5 +2969,11 @@
   "beaconAttachedHr": "心率 {hr}",
   "beaconAttachedNone": "未附帶心率",
   "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "posSourceIdle": "未追蹤（未啟動定位）",
+  "ownSourceGarminLive": "追蹤中（手機 GPS 已讓位）",
+  "ownSourceGarminStale": "連結有效，但佳明沒有新點（暫時用不到）",
+  "ownSourceHrIdle": "未連線（點一下連線心率帶）",
+  "hrLineHr": "心率 {hr}",
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
 }

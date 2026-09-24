@@ -2465,5 +2465,11 @@
   "beaconAttachedHr": "HR {hr}",
   "beaconAttachedNone": "tanpa detak jantung",
   "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "posSourceIdle": "Tidak melacak (lokasi nonaktif)",
+  "ownSourceGarminLive": "Melacak (GPS ponsel menyingkir)",
+  "ownSourceGarminStale": "Tautan ada, tapi Garmin belum punya titik baru",
+  "ownSourceHrIdle": "Belum tersambung (ketuk untuk menyambung)",
+  "hrLineHr": "HR {hr}",
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
 }

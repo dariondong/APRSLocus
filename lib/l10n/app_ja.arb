@@ -2465,5 +2465,11 @@
   "beaconAttachedHr": "心拍 {hr}",
   "beaconAttachedNone": "心拍なし",
   "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "posSourceIdle": "未追跡（位置情報オフ）",
+  "ownSourceGarminLive": "追跡中（スマホ GPS は待機）",
+  "ownSourceGarminStale": "リンクは有効だが新しい点がありません",
+  "ownSourceHrIdle": "未接続（タップして接続）",
+  "hrLineHr": "心拍 {hr}",
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
 }

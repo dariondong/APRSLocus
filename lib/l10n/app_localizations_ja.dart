@@ -6838,4 +6838,25 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get beaconAttachedNone => "心拍なし";
 
+  @override
+  String get posSourceIdle => "未追跡（位置情報オフ）";
+
+  @override
+  String get ownSourceGarminLive => "追跡中（スマホ GPS は待機）";
+
+  @override
+  String get ownSourceGarminStale => "リンクは有効だが新しい点がありません";
+
+  @override
+  String get ownSourceHrIdle => "未接続（タップして接続）";
+
+  @override
+  String hrLineHr(String hr) => "心拍 $hr";
+
+  @override
+  String get positionBeaconDetail => "位置ビーコン · グリッド {grid} · {detail}";
+
+  @override
+  String get beaconAttachedHr => "心拍 {hr}";
+
 }

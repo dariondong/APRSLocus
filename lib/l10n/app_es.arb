@@ -2465,5 +2465,11 @@
   "beaconAttachedHr": "pulso {hr}",
   "beaconAttachedNone": "sin pulso",
   "@positionBeaconDetail": {"placeholders": {"grid": {"type": "String"}, "detail": {"type": "String"}}},
-  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}}
+  "@beaconAttachedHr": {"placeholders": {"hr": {"type": "String"}}},
+  "posSourceIdle": "Sin seguimiento (ubicación desactivada)",
+  "ownSourceGarminLive": "Siguiendo (el GPS del teléfono cedió)",
+  "ownSourceGarminStale": "Enlace configurado, pero Garmin no tiene puntos nuevos",
+  "ownSourceHrIdle": "Sin conectar (toca para conectar)",
+  "hrLineHr": "pulso {hr}",
+  "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}}
 }

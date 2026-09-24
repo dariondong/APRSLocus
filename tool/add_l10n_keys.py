@@ -36,6 +36,32 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 位置来源：**如实的状态行**（不是二选一的开关）。
+    # 佳明与手机 GPS 本来就不是二选一：手表在直播时优先用手表，超过 120s 没新点
+    # 自动交回手机 —— 所以这里只显示「现在是谁在供位置」，不假装是用户选的。
+    'posSourceIdle': (
+        '未追踪（未启动定位）', '未追蹤（未啟動定位）', 'Not tracking (location off)',
+        '未追跡（位置情報オフ）', 'Sin seguimiento (ubicación desactivada)',
+        'Tidak melacak (lokasi nonaktif)',
+    ),
+    'ownSourceGarminLive': (
+        '追踪中（手机 GPS 已让位）', '追蹤中（手機 GPS 已讓位）',
+        'Tracking (phone GPS stepped aside)', '追跡中（スマホ GPS は待機）',
+        'Siguiendo (el GPS del teléfono cedió)', 'Melacak (GPS ponsel menyingkir)',
+    ),
+    'ownSourceGarminStale': (
+        '链接有效，但佳明没有新点（暂时用不到）', '連結有效，但佳明沒有新點（暫時用不到）',
+        'Link set, but Garmin has no fresh points', 'リンクは有効だが新しい点がありません',
+        'Enlace configurado, pero Garmin no tiene puntos nuevos',
+        'Tautan ada, tapi Garmin belum punya titik baru',
+    ),
+    'ownSourceHrIdle': (
+        '未连接（点一下连接心率带）', '未連線（點一下連線心率帶）',
+        'Not connected (tap to connect a strap)', '未接続（タップして接続）',
+        'Sin conectar (toca para conectar)', 'Belum tersambung (ketuk untuk menyambung)',
+    ),
+    'hrLineHr': ('心率 {hr}', '心率 {hr}', 'HR {hr}', '心拍 {hr}',
+                 'pulso {hr}', 'HR {hr}'),
     # 手动上报后的提示：把**实际附带的内容**列出来，用户才不用猜
     # （用户问「手动上报…没有附带心率？」—— 之前提示只说网格，看不出带了什么）
     'positionBeaconDetail': (
@@ -79,6 +105,7 @@ KEYS = {
 
 # ── 占位符声明（可空）──
 META = {
+    'hrLineHr': '{"placeholders": {"hr": {"type": "String"}}}',
     'positionBeaconDetail': '{"placeholders": {"grid": {"type": "String"}, '
                             '"detail": {"type": "String"}}}',
     'beaconAttachedHr': '{"placeholders": {"hr": {"type": "String"}}}',

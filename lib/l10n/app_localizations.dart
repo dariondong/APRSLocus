@@ -12314,6 +12314,48 @@ abstract class AppLocalizations {
   /// **'未附带心率'**
   String get beaconAttachedNone;
 
+  /// No description provided for @posSourceIdle.
+  ///
+  /// In zh, this message translates to:
+  /// **'未追踪（未启动定位）'**
+  String get posSourceIdle;
+
+  /// No description provided for @ownSourceGarminLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'追踪中（手机 GPS 已让位）'**
+  String get ownSourceGarminLive;
+
+  /// No description provided for @ownSourceGarminStale.
+  ///
+  /// In zh, this message translates to:
+  /// **'链接有效，但佳明没有新点（暂时用不到）'**
+  String get ownSourceGarminStale;
+
+  /// No description provided for @ownSourceHrIdle.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接（点一下连接心率带）'**
+  String get ownSourceHrIdle;
+
+  /// No description provided for @hrLineHr.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率 {hr}'**
+  String hrLineHr(String hr);
+
+  /// No description provided for @positionBeaconDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置信标 · 网格 {grid} · {detail}'**
+  String get positionBeaconDetail;
+
+  /// No description provided for @beaconAttachedHr.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率 {hr}'**
+  String get beaconAttachedHr;
+
 }
 
 class _AppLocalizationsDelegate
