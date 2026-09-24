@@ -2454,5 +2454,8 @@
   "garminOpen": "Abrir ajustes",
   "garminWebUnsupported": "No disponible en la versión web (CORS del navegador); usa la de Android o Windows",
   "hrForTncNote": "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "beaconGarminSource": "Balizando desde Garmin LiveTrack",
+  "beaconGarminNext": "Garmin · {s} · ❤{hr}",
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
 }

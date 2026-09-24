@@ -194,6 +194,21 @@ def main() -> int:
     # `TrackLogStore.instance.record(` 在 GPS 那条路径里也有一模一样的调用，
 
 
+    # 连接佳明时的上报横杠必须**说明来源并带上心率**（用户原话：
+    # 「如果连接了佳明，定位上报 UI 是不是应该写好一点」）。
+    # 只写倒计时的话，用户会以为发的是手机定位 —— 两者可能差几十公里。
+    need('lib/state.dart', 'if (garmin.on && garmin.fresh) return BeaconPhase.garmin;',
+         '佳明没有自己的上报档 —— 横杠只会显示普通倒计时，看不出位置来自手表')
+    need('lib/map_page.dart', 'BeaconPhase.garmin =>',
+         '上报横杠没有佳明档的文案（应带来源与心率）')
+    need('lib/l10n/app_zh.arb', 'beaconGarminNext',
+         '缺少 beaconGarminNext 文案 —— 横杠上的「佳明 · 倒计时 · 心率」拼不出来')
+    # 粗定位点绝不许覆盖「佳明给的位置」：那一刻横杠显示的是正常倒计时，
+    # 用户完全看不出正在发一个偏几百米的坐标。
+    if 'if (coarse && garmin.on) return;' not in read('lib/state.dart'):
+        errors.append('粗定位点没有被拦住去覆盖佳明的位置 —— 佳明断流后，'
+                      '一个基站质心会在横杠显示「正常倒计时」的情况下被上报出去')
+
     # 心率必须显示在**主屏幕（地图页）**上（需求原话）
     need('lib/map_page.dart', 'Widget _hrChip()',
          '地图页没有心率胶囊 —— 心率只在设置页可见，主屏幕看不到')

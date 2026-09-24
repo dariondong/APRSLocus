@@ -12260,6 +12260,18 @@ abstract class AppLocalizations {
   /// **'心率带与佳明 LiveTrack 提供的是「你的位置/心率」，与上面那些收发报文的链路互不影响；可以同时使用。'**
   String get otherSourcesHint;
 
+  /// No description provided for @beaconGarminSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明 LiveTrack 上报中'**
+  String get beaconGarminSource;
+
+  /// No description provided for @beaconGarminNext.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明上报 · {s} · ❤{hr}'**
+  String beaconGarminNext(String s, String hr);
+
 }
 
 class _AppLocalizationsDelegate

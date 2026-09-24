@@ -6811,4 +6811,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
 
 
+  @override
+  String get beaconGarminSource => "Garmin LiveTrack から送信";
+
+  @override
+  String beaconGarminNext(String s, String hr) => "Garmin · $s · ❤$hr";
+
 }

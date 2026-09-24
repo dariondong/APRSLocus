@@ -34,6 +34,16 @@
 （与 TNC / 音频 / PKWDWPL 并列），**不再塞在信标设置页**。心率那页是新加的
 （`hr_page.dart`，正文复用原来那张卡，不重写一份）。
 
+**佳明接管时的「定位上报」UI 写清楚了**：位置来自手表时，上报横杠改为显示
+**来源 + 倒计时 + 心率**（`佳明上报 · 45s · ❤128`，红色），而不是一个看不出差别的普通
+倒计时 —— 两者可能差几十公里，只写倒计时用户会以为发的是手机定位。
+
+**顺带修了一个真隐患**：佳明**不再新鲜**（活动结束 / 链接过期）时手机 GPS 会接回来，
+但**粗定位点**不行 —— 它会拿一个偏几百米的基站质心去替换手表给的位置，而此刻横杠正
+显示着正常的倒计时（`counting`），**用户完全看不出正在发一个错坐标**。
+现在 `if (coarse && garmin.on) return;` 把粗点挡住，宁可保持上一个（手表的）位置，
+等真 GPS 接回来。
+
 **说明**：页面解析逻辑（从公开分享页的 Next.js 流式数据块里取 `trackPoints`）**保持与参考
 项目一致**，本版没有改动它。（拿真实分享链接实测时页面里 `trackPoints` 是空数组、
 `position` 字段一个都没有 —— 那是**那个会话本身还没有数据**，不是解析器坏了；空会话会
@@ -76,6 +86,18 @@ scan, you connect, they drop out) — a different concern from "how the beacon t
 their entries now live in **Settings → Devices**, alongside TNC / audio / PKWDWPL, and are **no
 longer inside the beacon settings page**. The heart-rate page is new (`hr_page.dart`) and reuses
 the existing card rather than duplicating it.
+
+**The beacon UI now says where the position comes from.** While Garmin is live the beacon bar
+shows **source + countdown + heart rate** (`Garmin · 45s · ❤128`, in red) instead of an
+indistinguishable countdown — the two positions can be tens of kilometres apart, and a bare
+countdown would read as "this is my phone's location".
+
+**A real hazard fixed along the way.** When Garmin goes stale (activity ended, link expired) the
+phone GPS correctly takes over — but a **coarse (cell/Wi-Fi) fix** must not: it would replace the
+watch's position with a cell-tower centroid while the bar shows a perfectly normal countdown
+(`counting`), so **nothing on screen reveals that a wrong coordinate is being transmitted**. It is
+now blocked with `if (coarse && garmin.on) return;`, keeping the last (watch) position until real
+GPS returns.
 
 **Note:** the page parser (pulling `trackPoints` out of the public share page's Next.js streamed
 data blocks) is **unchanged and matches the reference project**. (When testing with a real share

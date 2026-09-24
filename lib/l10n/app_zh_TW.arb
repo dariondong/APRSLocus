@@ -2958,5 +2958,8 @@
   "garminOpen": "去設定",
   "garminWebUnsupported": "Web 版不支援（瀏覽器的跨域限制），請在 Android / Windows 版使用",
   "hrForTncNote": "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "beaconGarminSource": "佳明 LiveTrack 上報中",
+  "beaconGarminNext": "佳明上報 · {s} · ❤{hr}",
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
 }

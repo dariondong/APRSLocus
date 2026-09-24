@@ -3459,6 +3459,13 @@ class AppState extends ChangeNotifier {
   ) async {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
+    // ── 粗定位点绝不许覆盖「佳明给的位置」──
+    //
+    // 佳明不新鲜（活动结束 / 链接过期）时手机 GPS 会接回来，这是对的；但**粗定位**
+    // 不行：它会拿一个偏几百米的基站质心去替换手表给的位置，而此刻上报横杠多半
+    // 显示着正常的倒计时（beaconPhase = counting）—— 用户完全看不出「正在发一个
+    // 错坐标」。宁可保持上一个（手表的）位置，等真 GPS 接回来。
+    if (coarse && garmin.on) return;
     // ── 佳明 LiveTrack 在跑且还新鲜时，**手机 GPS 让位** ──
     //
     // 两路同时在更新「我的位置」会互相打架：手表比手机准，而手机一侧随时可能
@@ -5824,6 +5831,9 @@ class AppState extends ChangeNotifier {
     // 这一类 bug 的根因是把「是否会发射」判断散落在两处，所以此处必须与
     // canAutoBeacon 用同一个条件（rfBeaconEnabled）。
     if (!rfBeaconEnabled) return BeaconPhase.rfDisabled;
+    // **顺序有讲究**：佳明优先于粗定位 —— 位置来自手表时，粗定位那条已经不生效
+    // （佳明新鲜时手机 GPS 整个让位，见 _onFix），显示「网络定位中」会是错的。
+    if (garmin.on && garmin.fresh) return BeaconPhase.garmin;
     // 粗定位（网络/基站）**不自动上报**（见 [canAutoBeacon]），所以也不能显示一个
     // 照走的倒计时 —— 那正是「倒计时结束什么也没发生」的老症状。
     if (myFixCoarse) return BeaconPhase.coarseFix;
@@ -5843,6 +5853,8 @@ class AppState extends ChangeNotifier {
         return l.beaconRfBeaconOff;
       case BeaconPhase.coarseFix:
         return l.beaconCoarseFix;
+      case BeaconPhase.garmin:
+        return l.beaconGarminSource;
       case BeaconPhase.waitingFix:
         return l.beaconWaitingFix;
       case BeaconPhase.imminent:
@@ -5913,6 +5925,10 @@ enum BeaconPhase {
   /// 当前是**粗定位**（网络/基站/被动）——自动上报已暂停（见 [canAutoBeacon]），
   /// UI 必须说明原因，而不是继续倒计时。
   coarseFix,
+  /// 位置来自**佳明 LiveTrack**（手表比手机准，手机 GPS 会让位）。
+  /// 这一档不是「不能上报」，而是「要告诉用户**上报的是手表的位置**」——
+  /// 否则用户看着倒计时会以为发的是手机定位，而两者可能差几十公里。
+  garmin,
   waitingFix,
   counting,
   imminent,

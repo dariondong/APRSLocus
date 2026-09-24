@@ -2082,6 +2082,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       BeaconPhase.off => S.of(context).beaconOffChip,
       BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
       BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
+      // 佳明档：把**来源**说清楚 + 心率（用户明确要「主屏能看到心率」）。
+      // 只写倒计时的话，用户会以为发的是手机定位（两者可能差几十公里）。
+      BeaconPhase.garmin => S.of(context).beaconGarminNext(
+        st.nextBeaconIn,
+        st.myHr == null ? '--' : '${st.myHr}',
+      ),
       BeaconPhase.imminent => S.of(context).beaconImminent,
       BeaconPhase.counting => S.of(context).beaconNextIn(st.nextBeaconIn),
       BeaconPhase.disconnected => S.of(context).beaconNotConnected,
@@ -2091,7 +2097,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     // 绿色（信标已开）会让人以为倒计时正在走。
     final c = !on
         ? C.slate
-        : (st.beaconPhase == BeaconPhase.coarseFix ? C.orange : C.green);
+        : (st.beaconPhase == BeaconPhase.coarseFix
+            ? C.orange
+            : (st.beaconPhase == BeaconPhase.garmin ? C.red : C.green));
     return ClickCursor(
       child: GestureDetector(
         onTap: _showMyPanel,

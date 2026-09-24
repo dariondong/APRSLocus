@@ -7002,4 +7002,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
 
 
+  @override
+  String get beaconGarminSource => "Beaconing from Garmin LiveTrack";
+
+  @override
+  String beaconGarminNext(String s, String hr) => "Garmin · $s · ❤$hr";
+
 }

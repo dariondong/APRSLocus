@@ -2370,5 +2370,8 @@
   "garminOpen": "Open settings",
   "garminWebUnsupported": "Not available on the web build (browser CORS); use the Android or Windows build",
   "hrForTncNote": "Heart rate uses BLE while TNC uses classic Bluetooth, so both can be connected",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "beaconGarminSource": "Beaconing from Garmin LiveTrack",
+  "beaconGarminNext": "Garmin · {s} · ❤{hr}",
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
 }
