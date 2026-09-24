@@ -7008,4 +7008,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
+  @override
+  String get otherSourcesTitle => "Sumber data lain";
+
+  @override
+  String get otherSourcesSubtitle => "Sumber posisi Anda (bukan tautan paket)";
+
+  @override
+  String get otherSourcesHint => "Strap detak jantung dan Garmin LiveTrack menyediakan posisi/detak jantung Anda; keduanya independen dari tautan paket di atas.";
+
 }

@@ -208,6 +208,9 @@ class AppState extends ChangeNotifier {
   String bleHrId = '';
   String bleHrName = '';
 
+  /// 上一个佳明点：只用来算航向（佳明的点没有航向字段，见 [bearingDeg]）。
+  GarminPoint? _lastGarminPoint;
+
   /// 佳明 LiveTrack 的分享链接与开关状态。
   String garminUrl = '';
   bool garminOn = false;
@@ -232,6 +235,14 @@ class AppState extends ChangeNotifier {
     if (p.altM != null) myAlt = p.altM;
     if (p.speedMps != null) mySpeed = p.speedMps! * 3.6;
     if (p.hr != null && p.hr! > 0) myHr = p.hr;
+    // 航向：佳明的点里没有这个字段，用**前后两点**算（见 bearingDeg 的注释）。
+    // 没有上一个点（首个点）时不改 —— 保留手机 GPS 的最后已知航向，比瞎指北好。
+    final prev = _lastGarminPoint;
+    if (prev != null) {
+      final b = bearingDeg(prev.lat, prev.lng, p.lat, p.lng);
+      if (b != null) myCourse = b;
+    }
+    _lastGarminPoint = p;
     locStatus = '佳明 LiveTrack';
     // 跳变守卫的参照点也要跟着走：否则手机 GPS 接回来的那一刻会被误判成跳变
     _lastFixLat = p.lat;
@@ -251,6 +262,17 @@ class AppState extends ChangeNotifier {
       if (myTrack.length > maxTrackPts) {
         myTrack.removeRange(0, myTrack.length - maxTrackPts);
       }
+      // 历史台账（按天落盘）：GPS 那条路径写在同一个条件里，佳明这条也必须写 ——
+      // 不写的话「佳明接管期间」在历史记录里是**一段空白**（而手机 GPS 正好被让位，
+      // 两边都不记，用户回头看会觉得那一段路凭空消失）。
+      TrackLogStore.instance.record(
+        lat: p.lat,
+        lng: p.lng,
+        speedKmh: (p.speedMps ?? 0) * 3.6,
+        course: myCourse,
+        alt: p.altM,
+        accuracyM: 0,
+      );
     }
     if (filterFollow) {
       filterLat = p.lat;

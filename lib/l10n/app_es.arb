@@ -2454,5 +2454,8 @@
   "garminOpen": "Abrir ajustes",
   "garminWebUnsupported": "No disponible en la versión web (CORS del navegador); usa la de Android o Windows",
   "hrForTncNote": "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "otherSourcesTitle": "Otras fuentes de datos",
+  "otherSourcesSubtitle": "Fuentes de tu posición (no enlaces de paquetes)",
+  "otherSourcesHint": "La banda de pulso y Garmin LiveTrack aportan tu propia posición/pulso; son independientes de los enlaces de paquetes y pueden funcionar a la vez."
 }

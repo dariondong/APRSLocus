@@ -1,8 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'garmin_fetch_io.dart'
     if (dart.library.html) 'garmin_fetch_web.dart' as fetch;
+
+/// 由前后两个点算**初始方位角**（度，0~360）。
+///
+/// 为什么必须自己算：佳明 LiveTrack 的点里**没有航向字段**（只有经纬度/海拔/
+/// 速度/心率），而 APRS 位置包的 `ddd/sss` 与界面上的航向都靠 `myCourse`。
+/// 不补这一项的话，佳明接管期间航向会**沿用手机 GPS 的旧值** —— 指南针上停在上次
+/// 的方向不动，比不显示更误导。参考实现（garmin-livetrack-aprs-openwrt）也是这么算的。
+///
+/// 用的是大圆航线的初始方位角公式；两点重合时返回 null（没有方向可言）。
+double? bearingDeg(double lat1, double lng1, double lat2, double lng2) {
+  const rad = 0.017453292519943295;
+  final phi1 = lat1 * rad, phi2 = lat2 * rad;
+  final dLambda = (lng2 - lng1) * rad;
+  final y = math.sin(dLambda) * math.cos(phi2);
+  final x = math.cos(phi1) * math.sin(phi2) -
+      math.sin(phi1) * math.cos(phi2) * math.cos(dLambda);
+  if (x.abs() < 1e-12 && y.abs() < 1e-12) return null;
+  return (math.atan2(y, x) / rad + 360) % 360;
+}
 
 /// 当前平台能不能抓取佳明分享页（Web 版不能：浏览器的跨域限制）。
 bool get garminFetchSupported => fetch.supported;

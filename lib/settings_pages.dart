@@ -1711,6 +1711,12 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             //    「灰掉一片用户看不懂的输入框」清楚得多。
             DataSourceCard(state: st),
             const SizedBox(height: 16),
+            // 「其他数据来源」：心率带与佳明 LiveTrack **不是报文链路**，而是
+            // 「自己位置的来源」，所以不混进 DataSourceCard（那张卡的勾选语义是
+            // 「报文从哪条链路来」，混进去会让发射来源的判定变乱）。但用户找
+            // 「连设备」就是来这一页 —— 所以在这里单独给一张卡、两个入口。
+            _otherSourcesCard(st),
+            const SizedBox(height: 16),
             // 多选：**每条已启用的来源都要有自己的卡片**，顺序固定为
             // APRS-IS → TNC → 音频。此前只按「发射来源」显示一张，
             // 于是「APRS-IS + TNC」时 TNC 的绑定状态/统计完全看不到。
@@ -2124,6 +2130,24 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  /// 「其他数据来源」（v1.6.165）：蓝牙心率带 + 佳明 LiveTrack。
+  ///
+  /// 复用信标设置页里那两个组件（`HrSettingsCard` / `GarminTrackEntry`），
+  /// 不另写一套 —— 两处各写一份必然会漂（一处改了另一处忘）。
+  Widget _otherSourcesCard(AppState st) {
+    return SettingsSectionCard(
+      title: S.of(context).otherSourcesTitle,
+      subtitle: S.of(context).otherSourcesSubtitle,
+      icon: Icons.devices_other_rounded,
+      color: C.red,
+      children: [
+        SettingsHint(S.of(context).otherSourcesHint, color: C.slate),
+        HrSettingsCard(state: st),
+        GarminTrackEntry(state: st),
       ],
     );
   }

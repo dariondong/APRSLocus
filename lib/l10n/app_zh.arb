@@ -2968,5 +2968,8 @@
   "garminOpen": "去设置",
   "garminWebUnsupported": "Web 版不支持（浏览器的跨域限制），请在 Android / Windows 版使用",
   "hrForTncNote": "心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "otherSourcesTitle": "其他数据来源",
+  "otherSourcesSubtitle": "自己位置的来源（不是报文链路）",
+  "otherSourcesHint": "心率带与佳明 LiveTrack 提供的是「你的位置/心率」，与上面那些收发报文的链路互不影响；可以同时使用。"
 }

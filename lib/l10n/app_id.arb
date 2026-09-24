@@ -2454,5 +2454,8 @@
   "garminOpen": "Buka setelan",
   "garminWebUnsupported": "Tidak tersedia di versi web (CORS peramban); gunakan versi Android atau Windows",
   "hrForTncNote": "Detak jantung memakai BLE dan TNC Bluetooth klasik, jadi keduanya bisa tersambung",
-  "garminUrlHint": "livetrack.garmin.com/session/…/token/…"
+  "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
+  "otherSourcesTitle": "Sumber data lain",
+  "otherSourcesSubtitle": "Sumber posisi Anda (bukan tautan paket)",
+  "otherSourcesHint": "Strap detak jantung dan Garmin LiveTrack menyediakan posisi/detak jantung Anda; keduanya independen dari tautan paket di atas."
 }

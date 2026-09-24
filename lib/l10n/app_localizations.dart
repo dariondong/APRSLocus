@@ -12242,6 +12242,24 @@ abstract class AppLocalizations {
   /// **'livetrack.garmin.com/session/…/token/…'**
   String get garminUrlHint;
 
+  /// No description provided for @otherSourcesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他数据来源'**
+  String get otherSourcesTitle;
+
+  /// No description provided for @otherSourcesSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'自己位置的来源（不是报文链路）'**
+  String get otherSourcesSubtitle;
+
+  /// No description provided for @otherSourcesHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率带与佳明 LiveTrack 提供的是「你的位置/心率」，与上面那些收发报文的链路互不影响；可以同时使用。'**
+  String get otherSourcesHint;
+
 }
 
 class _AppLocalizationsDelegate

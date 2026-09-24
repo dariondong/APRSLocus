@@ -131,6 +131,21 @@ def main() -> int:
 
     # ── ④ Dart：心率与信标 ──
     st = read('lib/state.dart')
+    # 佳明接管期间必须补齐的两件事，**限定在 _onGarminPoint 函数体内**查：
+    # 全文件搜索会被 GPS 那条路径里的同名调用满足（`TrackLogStore.instance.record(`
+    # 两边都有），于是「佳明不写台账」这种缺陷永远抓不到 —— 回归样本当场证明过。
+    gseg = st[st.find('void _onGarminPoint'):]
+    gseg = gseg[:gseg.find('\n  /// 收到分享进来的文本')]
+    if not gseg:
+        errors.append('lib/state.dart 里找不到 _onGarminPoint 的函数体 —— 检查器自己失效')
+    if 'TrackLogStore.instance.record(' not in gseg:
+        errors.append('_onGarminPoint 里没有写历史台账 —— 佳明接管期间的历史记录会是'
+                      '一段空白（手机 GPS 正被让位，两边都不记）')
+    if 'bearingDeg(' not in gseg:
+        errors.append('_onGarminPoint 里没有算航向 —— 佳明点没有航向字段，不自己算'
+                      '就会沿用手机 GPS 的旧值（指南针停在旧方向）')
+    if '_lastGarminPoint' not in gseg:
+        errors.append('_onGarminPoint 没有记上一个点 —— 算不出航向')
     need('lib/state.dart', 'int? myHr;', '没有存心率 —— 界面与信标都拿不到读数')
     need('lib/state.dart', "'HR=$myHr'", '信标备注里没有 HR=nn（需求：信标附带心率）')
     if 'HR=0' in code_only('lib/state.dart'):
@@ -160,6 +175,27 @@ def main() -> int:
     need('lib/state.dart', 'onGarminShared', '分享进来的链接没有回调出去（用户看不到任何提示）')
     need('lib/garmin_page.dart', 'GarminTrackPage',
          '佳明设置页没了 —— 手贴链接那条路就断了')
+    # 佳明点必须把「航向」与「历史台账」一起补上：佳明的点里没有航向字段，
+    # 不自己算就会沿用手机 GPS 的旧值（指南针停在旧方向）；不写台账则佳明接管
+    # 期间的历史记录是一段空白（手机 GPS 正被让位，两边都不记）。
+    need('lib/garmin.dart', 'double? bearingDeg(',
+         '没有「两点算方位角」—— 佳明接管期间航向会沿用手机 GPS 的旧值')
+    # `TrackLogStore.instance.record(` 在 GPS 那条路径里也有一模一样的调用，
+
+
+    # 心率必须显示在**主屏幕（地图页）**上（需求原话）
+    need('lib/map_page.dart', 'Widget _hrChip()',
+         '地图页没有心率胶囊 —— 心率只在设置页可见，主屏幕看不到')
+    need('lib/map_page.dart', '_hrChip(),',
+         '心率胶囊没有挂进地图左上竖列')
+
+    # 设备页要有「其他数据来源」入口（心率带 / 佳明）
+    need('lib/settings_pages.dart', 'otherSourcesTitle',
+         '设备页（数据来源）没有「其他数据来源」这一节 —— 用户在那里找不到心率带/佳明')
+    need('lib/settings_pages.dart', 'HrSettingsCard(state: st)',
+         '设备页没挂心率卡（应复用信标页那一个组件，不要另写一套）')
+    need('lib/settings_pages.dart', 'GarminTrackEntry(state: st)',
+         '设备页没挂佳明入口')
 
     # ── ⑥ l10n：六个语言都要有这两组键 ──
     for lg in ('zh', 'zh_TW', 'en', 'ja', 'es', 'id'):

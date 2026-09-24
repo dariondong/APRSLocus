@@ -626,6 +626,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // 心率放**最上面**：它是用户运动时最想一眼看到的东西，
+                      // 而台站计数是「背景信息」（需求原话：「让心率显示在主屏幕上面」）。
+                      _hrChip(),
+                      const SizedBox(height: 10),
                       _infoChip(vis, searched),
                       const SizedBox(height: 10),
                       _immersiveEntry(),
@@ -1320,6 +1324,54 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   // ─── 覆盖控件 ───
+  /// 心率胶囊（主屏幕左上，最上面那一个）。
+  ///
+  /// **没有读数就整块不出现**（返回 `SizedBox.shrink()`，连 10px 间隙也由调用处
+  /// 那两条 `SizedBox` 自己塌陷成 0 高 —— 实际上会剩 10px 空隙，所以这里让它
+  /// 在无读数时连间隙都不要：见 build 里用 `_hrChip()` 返回的 widget 是否为空）。
+  /// 一屏浮层上摆一个永远是空白的胶囊，比不显示更糟。
+  Widget _hrChip() {
+    final st = widget.state;
+    final hr = st.myHr;
+    if (hr == null) return const SizedBox.shrink();
+    // 来源标注：心率带连上就写 BLE，否则若是佳明在跑就写 Garmin。
+    // 不标来源的话，用户看到 140 会不知道是胸带还是手表报的。
+    final fromBle = st.bleHr.connected;
+    final tag = fromBle ? 'BLE' : (st.garminOn ? 'Garmin' : '');
+    final live = fromBle ? st.bleHr.bpm != null : st.garminOn;
+    return MaterialSurface(
+      radius: 16,
+      blurSigma: C.chipBlur,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: C.chipFill,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: elev2(),
+          border: Border.all(color: C.red.withValues(alpha: 0.28)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.favorite_rounded, size: 14, color: C.red),
+            const SizedBox(width: 6),
+            Text(
+              '$hr',
+              style: ts(15, c: C.red, w: FontWeight.w800),
+            ),
+            const SizedBox(width: 3),
+            Text('bpm', style: ts(10, c: C.grey)),
+            if (tag.isNotEmpty) ...[
+              const SizedBox(width: 7),
+              // 读数过期（心率带掉线 / 佳明没在跑）时灰掉来源，别让人以为还在测
+              Text(tag, style: ts(9.5, c: live ? C.red : C.greyLight, w: FontWeight.w700)),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _infoChip(List<Station> vis, bool searched) {
     return MaterialSurface(
       radius: 16,

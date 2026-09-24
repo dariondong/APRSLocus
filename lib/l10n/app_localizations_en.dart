@@ -6999,4 +6999,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
 
+  @override
+  String get otherSourcesTitle => "Other data sources";
+
+  @override
+  String get otherSourcesSubtitle => "Sources for your own position (not packet links)";
+
+  @override
+  String get otherSourcesHint => "The heart-rate strap and Garmin LiveTrack supply your own position/heart rate; they are independent of the packet links above and can run at the same time.";
+
 }
