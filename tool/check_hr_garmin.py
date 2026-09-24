@@ -326,6 +326,28 @@ def main() -> int:
     need('lib/l10n/app_zh.arb', '"hrFromGarmin"',
          '缺少 hrFromGarmin 文案（6 语言）')
 
+    # ── 位置来源必须**只有一个判断出口**，且两处设置都写明优先级 ──
+    #
+    # 用户问过：「如果选了佳明定位来源，定位上报页那个定位来源不重复了吗？听谁的？」
+    # 根因是界面把来源拆成两半说（上报页「定位 / 模拟位置」、设备页「手机 GPS / 佳明」），
+    # 而真正的优先级只有 `_onFix` 开头那两道 return。现在：
+    #   * 判断收进 `AppState.positionSourceNow`（唯一出口）；
+    #   * 两处都显示同一句 `posSourcePrecedence`。
+    need('lib/state.dart', 'PositionSourceNow get positionSourceNow',
+         '位置来源没有单一出口（positionSourceNow）—— 界面各写一套优先级必然漂')
+    need('lib/state.dart', 'enum PositionSourceNow',
+         '缺少 PositionSourceNow 枚举（用中文串比较必然漂）')
+    need('lib/settings_pages.dart', 'st.positionSourceNow',
+         '定位上报页没有显示「现在实际在用的是谁」—— 用户只能靠猜')
+    need('lib/tnc_page.dart', 's.posSourcePrecedence',
+         '设备页的「位置来源」没有写明优先级（用户问「听谁的」）')
+    need('lib/l10n/app_zh.arb', '"posSourcePrecedence"',
+         '缺少优先级文案（posSourcePrecedence，6 语言）')
+    # 上报页那个选项必须与设备页**同名**（「手机 GPS」而不是「定位」），否则看着像两件事。
+    if 'title: S.of(context).location,' in read('lib/settings_pages.dart'):
+        errors.append('定位上报页的来源选项还叫「定位」—— 与设备页的「手机 GPS」不同名，'
+                      '用户会以为是两件不同的事（改读 posSrcPhone）')
+
     # 心率必须显示在**主屏幕（地图页）**上（需求原话）
     need('lib/map_page.dart', 'Widget _hrChip()',
          '地图页没有心率胶囊 —— 心率只在设置页可见，主屏幕看不到')

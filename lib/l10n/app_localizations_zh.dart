@@ -6797,6 +6797,24 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sourceMovedHint => "要启用 / 切换数据来源（链路），请到「设置 → 设备」";
 
+  @override
+  String get posSourcePrecedence => "同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS";
+
+  @override
+  String posSourceUsing(String src) => "当前使用：$src";
+
+  @override
+  String get posSrcSim => "模拟/手动位置";
+
+  @override
+  String get posSrcGarmin => "佳明 LiveTrack";
+
+  @override
+  String get posSrcPhone => "手机 GPS";
+
+  @override
+  String get posSrcNone => "未定位";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13590,5 +13608,23 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sourceMovedHint => "要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」";
+
+  @override
+  String get posSourcePrecedence => "同時可用時的優先順序：模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS";
+
+  @override
+  String posSourceUsing(String src) => "目前使用：$src";
+
+  @override
+  String get posSrcSim => "模擬/手動位置";
+
+  @override
+  String get posSrcGarmin => "佳明 LiveTrack";
+
+  @override
+  String get posSrcPhone => "手機 GPS";
+
+  @override
+  String get posSrcNone => "未定位";
 
 }

@@ -1,5 +1,52 @@
 # 更新日志
 
+## [1.6.172] - 2026-09-24
+
+### 🐞 关于页名片卡贴住下个板块 + 位置来源「听谁的」说清楚 / About card spacing + a single source-of-truth for the position source
+
+**关于页：名片卡与下面板块靠太近。** 名片卡下面**直接**就是「代码贡献」的节标题（间距 0），
+看着像黏在一起。现在留 22 —— 与其它节之间的间距一致（节间距本来就是 22）。
+
+**位置来源「不重复了吗？听谁的？」** 用户问得对，这是一个**真实的表述缺陷**：界面把来源
+拆成两半说 —— 定位上报页写「定位 / 模拟位置」、设备页写「手机 GPS / 佳明」—— 于是
+「定位」和「手机 GPS」看着像两件不同的事，而佳明只在一边出现。
+**代码里的优先级一直只有一处**（`_onFix` 开头那两道 return），现在把它做成单一出口并在
+两处都写明：
+
+1. `AppState.positionSourceNow`（新枚举 `PositionSourceNow`）是唯一判断：
+   **模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS**；
+2. 定位上报页的那个选项**改名成「手机 GPS」**（与设备页同名，不再叫「定位」），
+   并在卡片里加一句优先级说明 + 一行「当前使用：…」（读同一个 getter）；
+3. 设备页的「位置来源」也显示同一句优先级 —— 两处文案同一份，不会各说一套。
+
+---
+
+## [1.6.172] - 2026-09-24 (English)
+
+### 🐞 About card was touching the next section; and the position source now has one source of truth
+
+**About page: the name card sat flush against the next section.** Right under the card came the
+"Code contributions" header with **zero** gap, so they read as one glued block. It is now 22 — the
+same gap the other sections already use.
+
+**"Isn't the position source duplicated? Which one wins?"** Fair question, and it exposed a real
+wording defect: the UI described the source in two halves — the beacon page said "Location /
+Simulated", the Devices page said "Phone GPS / Garmin" — so "Location" and "Phone GPS" looked like
+two different things, and Garmin only appeared on one side. **The actual priority has always lived
+in exactly one place** (`_onFix`'s two early returns). It is now a single exported getter, stated in
+both places:
+
+1. `AppState.positionSourceNow` (new `PositionSourceNow` enum) is the only decision:
+   **simulated/manual › Garmin (while the watch has live data) › phone GPS**;
+2. the beacon page's option is **renamed to "Phone GPS"** (same name as on the Devices page — it no
+   longer says "Location"), with the priority line plus an "In use now: …" row reading the same
+   getter;
+3. the Devices page's position-source card shows the same priority sentence — one string, two
+   places, so they cannot drift apart.
+
+---
+
+
 ## [1.6.171] - 2026-09-24
 
 ### 🐞 佳明分享「有时候行有时候不行」+ 冷启动毫无反馈 / Garmin share: flaky receive + no feedback on cold start

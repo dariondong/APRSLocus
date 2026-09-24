@@ -2474,5 +2474,12 @@
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "No se encontró ningún enlace de Garmin LiveTrack",
   "hrFromGarmin": "Pulso desde Garmin LiveTrack (reloj)",
-  "sourceMovedHint": "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos"
+  "sourceMovedHint": "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos",
+  "posSourcePrecedence": "Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga datos en vivo) › GPS del teléfono",
+  "posSourceUsing": "En uso ahora: {src}",
+  "posSrcSim": "simulada/manual",
+  "posSrcGarmin": "Garmin LiveTrack",
+  "posSrcPhone": "GPS del teléfono",
+  "posSrcNone": "sin posición",
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
 }

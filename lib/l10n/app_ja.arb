@@ -2474,5 +2474,12 @@
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "共有された内容に Garmin LiveTrack のリンクが見つかりません",
   "hrFromGarmin": "心拍は Garmin LiveTrack（ウォッチ）から",
-  "sourceMovedHint": "データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います"
+  "sourceMovedHint": "データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います",
+  "posSourcePrecedence": "同時に使える場合の優先順位：シミュレート/手動 › Garmin（ウォッチに实时データがある間）› スマホ GPS",
+  "posSourceUsing": "現在使用中：{src}",
+  "posSrcSim": "シミュレート/手動",
+  "posSrcGarmin": "Garmin LiveTrack",
+  "posSrcPhone": "スマホ GPS",
+  "posSrcNone": "未測位",
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
 }

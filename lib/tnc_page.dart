@@ -143,6 +143,9 @@ class DataSourceCard extends StatelessWidget {
               MaterialPageRoute(builder: (_) => HrDevicePage(state: state))),
         ),
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
+        // 位置来源的**优先级**（与上报页同一句文案、同一个 getter）：两处都写清楚，
+        // 用户才不会觉得「两个地方各说一个来源、不知道听谁的」。
+        SettingsHint(s.posSourcePrecedence, color: C.slate),
         if (state.multiSource) SettingsHint(s.dataSourceTxHint),
         if (state.multiSource) SettingsHint(s.dataSourceIgateHint),
         // PKWDWPL 是只读的，这句必须常驻：否则用户会奇怪为何它没有发射圆点

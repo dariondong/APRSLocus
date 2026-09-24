@@ -2474,5 +2474,12 @@
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan",
   "hrFromGarmin": "Detak jantung dari Garmin LiveTrack (jam)",
-  "sourceMovedHint": "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat"
+  "sourceMovedHint": "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat",
+  "posSourcePrecedence": "Prioritas bila beberapa tersedia: simulasi/manual › Garmin (selama jam punya data langsung) › GPS ponsel",
+  "posSourceUsing": "Sedang dipakai: {src}",
+  "posSrcSim": "simulasi/manual",
+  "posSrcGarmin": "Garmin LiveTrack",
+  "posSrcPhone": "GPS ponsel",
+  "posSrcNone": "belum ada posisi",
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
 }

@@ -7112,4 +7112,22 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sourceMovedHint => "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos";
 
+  @override
+  String get posSourcePrecedence => "Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga datos en vivo) › GPS del teléfono";
+
+  @override
+  String posSourceUsing(String src) => "En uso ahora: $src";
+
+  @override
+  String get posSrcSim => "simulada/manual";
+
+  @override
+  String get posSrcGarmin => "Garmin LiveTrack";
+
+  @override
+  String get posSrcPhone => "GPS del teléfono";
+
+  @override
+  String get posSrcNone => "sin posición";
+
 }

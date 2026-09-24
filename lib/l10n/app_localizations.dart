@@ -12380,6 +12380,42 @@ abstract class AppLocalizations {
   /// **'要启用 / 切换数据来源（链路），请到「设置 → 设备」'**
   String get sourceMovedHint;
 
+  /// No description provided for @posSourcePrecedence.
+  ///
+  /// In zh, this message translates to:
+  /// **'同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS'**
+  String get posSourcePrecedence;
+
+  /// No description provided for @posSourceUsing.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前使用：{src}'**
+  String posSourceUsing(String src);
+
+  /// No description provided for @posSrcSim.
+  ///
+  /// In zh, this message translates to:
+  /// **'模拟/手动位置'**
+  String get posSrcSim;
+
+  /// No description provided for @posSrcGarmin.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明 LiveTrack'**
+  String get posSrcGarmin;
+
+  /// No description provided for @posSrcPhone.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机 GPS'**
+  String get posSrcPhone;
+
+  /// No description provided for @posSrcNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未定位'**
+  String get posSrcNone;
+
 }
 
 class _AppLocalizationsDelegate

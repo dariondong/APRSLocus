@@ -36,6 +36,32 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 位置来源的**优先级**（用户问「听谁的？」）——两处设置都显示这一句，
+    # 避免「定位上报页一个来源、设备页另一个来源」看着像打架。
+    'posSourcePrecedence': (
+        '同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS',
+        '同時可用時的優先順序：模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS',
+        'Priority when several are available: simulated/manual › Garmin (while the watch has live '
+        'data) › phone GPS',
+        '同時に使える場合の優先順位：シミュレート/手動 › Garmin（ウォッチに实时データがある間）'
+        '› スマホ GPS',
+        'Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga '
+        'datos en vivo) › GPS del teléfono',
+        'Prioritas bila beberapa tersedia: simulasi/manual › Garmin (selama jam punya data '
+        'langsung) › GPS ponsel',
+    ),
+    'posSourceUsing': (
+        '当前使用：{src}', '目前使用：{src}', 'In use now: {src}',
+        '現在使用中：{src}', 'En uso ahora: {src}', 'Sedang dipakai: {src}',
+    ),
+    'posSrcSim': ('模拟/手动位置', '模擬/手動位置', 'simulated/manual', 'シミュレート/手動',
+                  'simulada/manual', 'simulasi/manual'),
+    'posSrcGarmin': ('佳明 LiveTrack', '佳明 LiveTrack', 'Garmin LiveTrack',
+                     'Garmin LiveTrack', 'Garmin LiveTrack', 'Garmin LiveTrack'),
+    'posSrcPhone': ('手机 GPS', '手機 GPS', 'phone GPS', 'スマホ GPS',
+                    'GPS del teléfono', 'GPS ponsel'),
+    'posSrcNone': ('未定位', '未定位', 'no fix', '未測位', 'sin posición', 'belum ada posisi'),
+
     # 「数据来源」卡收敛到「设置 → 设备」后，连接页与音频页顶部的指路文案。
     # 为什么要有：这两页原来各挂一张「数据来源」卡（三处重复 = 用户说的「乱套」），
     # 删掉之后必须**告诉用户去哪儿**启用/切换链路，否则会以为功能消失了。
@@ -141,6 +167,7 @@ KEYS = {
 
 # ── 占位符声明（可空）──
 META = {
+    'posSourceUsing': '{"placeholders": {"src": {"type": "String"}}}',
     'hrLineHr': '{"placeholders": {"hr": {"type": "String"}}}',
     'positionBeaconDetail': '{"placeholders": {"grid": {"type": "String"}, '
                             '"detail": {"type": "String"}}}',

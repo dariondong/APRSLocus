@@ -472,6 +472,10 @@ class _AboutPageState extends State<AboutPage>
                         // 下缘，结果照片被挡掉一条，看着像没对齐。现在留 14px 间隙。
                         const SizedBox(height: 14),
                         _profileCard(context),
+                        // 名片卡 → 下面第一个板块：原来只有 0（名片卡下面直接就是
+                        // 「代码贡献」的节标题），用户反馈「名片跟下面那个板块靠太近」。
+                        // 22 与其它节之间的间距一致（节间距本来就是 22）。
+                        const SizedBox(height: 22),
 
                         // ── 代码贡献 ──
                         _sectionHeader(

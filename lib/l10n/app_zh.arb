@@ -2988,5 +2988,12 @@
   "@hrLineHr": {"placeholders": {"hr": {"type": "String"}}},
   "garminShareNoLink": "分享的内容里没有找到佳明 LiveTrack 链接",
   "hrFromGarmin": "心率来自佳明 LiveTrack（手表）",
-  "sourceMovedHint": "要启用 / 切换数据来源（链路），请到「设置 → 设备」"
+  "sourceMovedHint": "要启用 / 切换数据来源（链路），请到「设置 → 设备」",
+  "posSourcePrecedence": "同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS",
+  "posSourceUsing": "当前使用：{src}",
+  "posSrcSim": "模拟/手动位置",
+  "posSrcGarmin": "佳明 LiveTrack",
+  "posSrcPhone": "手机 GPS",
+  "posSrcNone": "未定位",
+  "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}}
 }

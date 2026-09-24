@@ -205,6 +205,35 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v1.6.172', 'date': '2026-09-24',
+        'items': [
+            ('fix',
+             T('**关于页名片卡不再贴着下面板块**：原来名片卡下面**直接**就是「代码贡献」的节标题'
+               '（间距 0），现在留 22（与其它节间距一致）。'
+               '另外**位置来源「听谁的」说清楚了**：界面原来把来源拆成两半说'
+               '（上报页「定位 / 模拟位置」、设备页「手机 GPS / 佳明」），看着像两件事。'
+               '现在判断只有一处（`positionSourceNow`），两处都写明优先级：'
+               '**模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS**，'
+               '上报页的选项也改名成「手机 GPS」（与设备页同名），并显示「当前使用：…」',
+               '**關於頁名片卡不再貼著下面板塊**：原來名片卡下面**直接**就是「程式碼貢獻」的節標題'
+               '（間距 0），現在留 22（與其它節間距一致）。'
+               '另外**位置來源「聽誰的」說清楚了**：介面原來把來源拆成兩半說'
+               '（上報頁「定位 / 模擬位置」、裝置頁「手機 GPS / 佳明」），看著像兩件事。'
+               '現在判斷只有一處（`positionSourceNow`），兩處都寫明優先順序：'
+               '**模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS**，'
+               '上報頁的選項也改名成「手機 GPS」（與裝置頁同名），並顯示「目前使用：…」',
+               '**The About page name card no longer touches the section below** — the "Code '
+               'contributions" header used to start immediately after it (0 gap); it now has 22, '
+               'matching the other sections. Also, **"which position source wins?" is now stated**: '
+               'the UI used to describe it in two halves (beacon page "Location / Simulated", '
+               'Devices page "Phone GPS / Garmin"), which read as two different things. There is now '
+               'one decision (`positionSourceNow`) whose priority is written in both places — '
+               '**simulated/manual › Garmin (while the watch has live data) › phone GPS** — and the '
+               'beacon page option is renamed to "Phone GPS" (matching the Devices page), with an '
+               '"In use now: …" line.')),
+        ],
+    },
+    {
         'ver': 'v1.6.171', 'date': '2026-09-24',
         'items': [
             ('fix',

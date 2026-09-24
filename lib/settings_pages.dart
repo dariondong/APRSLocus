@@ -856,7 +856,9 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               child: Row(children: [
                 Expanded(
                   child: _locSourceCard(
-                    title: S.of(context).location,
+                    // 「定位」→「手机 GPS」：与设备页的「位置来源」用**同一个名字**，
+                    // 否则用户会以为这是两件不同的事（用户的疑问正是这个）。
+                    title: S.of(context).posSrcPhone,
                     icon: Icons.gps_fixed_rounded,
                     desc: S.of(context).useDeviceLocation,
                     selected: !st.useSimLocation,
@@ -879,6 +881,15 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 value: st.sensorAssist, color: C.green,
                 onChanged: st.setSensorAssist),
             SettingsHint(S.of(context).sensorAssistDesc),
+            // **优先级说明**（用户问「如果选了佳明，这里不重复了吗？听谁的？」）：
+            // 这一页只管「手机 GPS / 模拟位置」二选一，佳明在「设置 → 设备 → 位置来源」，
+            // 而两者同时可用时的顺序是**一处判断**（AppState.positionSourceNow），
+            // 不在这里另立一套。把「现在实际在用谁」也一并显示，避免用户靠猜。
+            SettingsHint(S.of(context).posSourcePrecedence, color: C.slate),
+            SettingsRow2(
+              S.of(context).locationSource,
+              S.of(context).posSourceUsing(_posSourceLabel(st, S.of(context))),
+            ),
             SizedBox(height: 10),
           ],
         ),
@@ -1568,6 +1579,20 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     );
   }
 
+
+  /// 「现在是谁在供位置」的文案（来源见 AppState.positionSourceNow 的单一判断）。
+  String _posSourceLabel(AppState st, S s) {
+    switch (st.positionSourceNow) {
+      case PositionSourceNow.sim:
+        return s.posSrcSim;
+      case PositionSourceNow.garmin:
+        return s.posSrcGarmin;
+      case PositionSourceNow.phone:
+        return s.posSrcPhone;
+      case PositionSourceNow.none:
+        return s.posSrcNone;
+    }
+  }
 
   Widget _locSourceCard({
     required String title,

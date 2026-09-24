@@ -110,7 +110,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.171';
+  static const appVersion = '1.6.172';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -359,6 +359,23 @@ class AppState extends ChangeNotifier {
     persist();
     _deliverShareNotice(url: url);
     _notify();
+  }
+
+  /// **现在是谁在供位置** —— 位置来源的唯一出口。
+  ///
+  /// 用户问过「如果选了佳明定位来源，定位上报页那个定位来源不重复了吗？听谁的？」
+  /// —— 代码里的优先级一直只有一处（`_onFix` 开头那两道 return），但界面把它拆成
+  /// 两半说（上报页说「定位 / 模拟位置」、设备页说「手机 GPS / 佳明」），
+  /// 于是「定位」和「手机 GPS」看着像两件事、佳明又只在一边出现。
+  /// 现在两处都读这一个 getter，并在界面上把优先级写明。
+  ///
+  /// 优先级（与 `_onFix` 完全一致，不要在这里另立一套）：
+  ///   `sim`（模拟/手动）＞ `garmin`（手表有实时数据时）＞ `phone`（手机 GPS）
+  PositionSourceNow get positionSourceNow {
+    if (useSimLocation) return PositionSourceNow.sim;
+    if (garmin.on && garmin.fresh) return PositionSourceNow.garmin;
+    if (myHasFix || loc.running) return PositionSourceNow.phone;
+    return PositionSourceNow.none;
   }
 
   /// 手动设置我的位置（模拟位置 / Windows 无定位服务时的备用）
@@ -5998,6 +6015,12 @@ class AppState extends ChangeNotifier {
     loc.updateNotification(parts.join(' · '));
   }
 }
+
+/// **当前在供位置的那个来源**（见 [AppState.positionSourceNow]）。
+///
+/// 抽成枚举而不是字符串：界面要按它选文案/颜色，用中文串比较必然漂
+/// （本仓库在 [BeaconPhase] 上已经踩过一次）。
+enum PositionSourceNow { sim, garmin, phone, none }
 
 /// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）
 enum BeaconPhase {

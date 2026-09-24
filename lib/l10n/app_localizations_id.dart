@@ -7071,4 +7071,22 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get sourceMovedHint => "Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat";
 
+  @override
+  String get posSourcePrecedence => "Prioritas bila beberapa tersedia: simulasi/manual › Garmin (selama jam punya data langsung) › GPS ponsel";
+
+  @override
+  String posSourceUsing(String src) => "Sedang dipakai: $src";
+
+  @override
+  String get posSrcSim => "simulasi/manual";
+
+  @override
+  String get posSrcGarmin => "Garmin LiveTrack";
+
+  @override
+  String get posSrcPhone => "GPS ponsel";
+
+  @override
+  String get posSrcNone => "belum ada posisi";
+
 }

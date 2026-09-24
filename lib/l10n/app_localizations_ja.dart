@@ -6871,4 +6871,22 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get sourceMovedHint => "データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います";
 
+  @override
+  String get posSourcePrecedence => "同時に使える場合の優先順位：シミュレート/手動 › Garmin（ウォッチに实时データがある間）› スマホ GPS";
+
+  @override
+  String posSourceUsing(String src) => "現在使用中：$src";
+
+  @override
+  String get posSrcSim => "シミュレート/手動";
+
+  @override
+  String get posSrcGarmin => "Garmin LiveTrack";
+
+  @override
+  String get posSrcPhone => "スマホ GPS";
+
+  @override
+  String get posSrcNone => "未測位";
+
 }
