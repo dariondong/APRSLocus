@@ -2971,5 +2971,8 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "佳明 LiveTrack 上报中",
   "beaconGarminNext": "佳明上报 · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "posSourceLabel": "位置来源",
+  "hrSourceLabel": "心率来源",
+  "ownSourcePhoneGps": "手机 GPS"
 }

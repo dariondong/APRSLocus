@@ -2373,5 +2373,8 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "Beaconing from Garmin LiveTrack",
   "beaconGarminNext": "Garmin · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "posSourceLabel": "Position source",
+  "hrSourceLabel": "Heart-rate source",
+  "ownSourcePhoneGps": "Phone GPS"
 }

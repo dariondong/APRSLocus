@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'settings_widgets.dart';
+import 'garmin_page.dart';
+import 'hr_page.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'tnc.dart';
@@ -73,6 +75,50 @@ class DataSourceCard extends StatelessWidget {
           desc: s.dataSourceAudioDesc,
           icon: Icons.graphic_eq_rounded,
         ),
+        // ── 位置来源 / 心率来源（用户要求：佳明应当作为「数据来源」的一种选择）──
+        //
+        // 与上面那些**报文链路**分开列：那几条的语义是「报文从哪条链路收发」，
+        // 而这两条是「**我自己的位置/心率**从哪来」。混成一组会让「发射来源」
+        // 的判定变乱 —— 但用户找「数据来源」时就该在这一张卡里看到它们。
+        _ownLabel(context, s.posSourceLabel),
+        _ownTile(
+          context,
+          icon: Icons.smartphone_rounded,
+          title: s.ownSourcePhoneGps,
+          desc: s.hrForTncNote == '' ? '' : s.dataSourceSubtitle,
+          active: !state.garminOn,
+          onTap: () {
+            if (state.garminOn) state.setGarminOn(false);
+          },
+        ),
+        _ownTile(
+          context,
+          icon: Icons.watch_rounded,
+          title: s.garminCardTitle,
+          desc: state.garminOn ? s.garminRunning : s.garminCardSubtitle,
+          active: state.garminOn,
+          onTap: () {
+            // 没配过链接 → 直接进设置页（用户在那里粘贴/分享）
+            if (!state.garminOn && state.garminUrl.isEmpty) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => GarminTrackPage(state: state)));
+            } else {
+              state.setGarminOn(!state.garminOn);
+            }
+          },
+        ),
+        _ownLabel(context, s.hrSourceLabel),
+        _ownTile(
+          context,
+          icon: Icons.favorite_rounded,
+          title: s.hrCardTitle,
+          desc: state.bleHr.connected
+              ? s.hrConnected(state.bleHr.deviceName ?? '--')
+              : s.hrCardSubtitle,
+          active: state.bleHr.connected,
+          onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => HrDevicePage(state: state))),
+        ),
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
         if (state.multiSource) SettingsHint(s.dataSourceTxHint),
         if (state.multiSource) SettingsHint(s.dataSourceIgateHint),
@@ -80,6 +126,70 @@ class DataSourceCard extends StatelessWidget {
         if (state.pkwdwplOn) SettingsHint(s.dataSourcePkwdwplHint),
         if (extra != null) SettingsHint(extra!),
       ],
+    );
+  }
+
+  /// 小组标题（位置来源 / 心率来源）
+  Widget _ownLabel(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+      child: Row(children: [
+        Container(
+          width: 3,
+          height: 10,
+          decoration: BoxDecoration(
+            color: C.red,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(text, style: ts(11, c: C.red, w: FontWeight.w700)),
+      ]),
+    );
+  }
+
+  /// 「自己位置/心率」的来源项：与报文链路不同 —— 它不是开关式的多选，
+  /// 而是**选中**（左侧圆点表示当前生效的那一个）。
+  Widget _ownTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String desc,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    return ClickCursor(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
+          ),
+          child: Row(children: [
+            Icon(icon, size: 16, color: active ? C.red : C.grey),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: ts(12.5,
+                          c: active ? C.ink : C.slate, w: FontWeight.w600)),
+                  const SizedBox(height: 1),
+                  Text(desc,
+                      style: ts(10.5, c: C.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+            Icon(active ? Icons.radio_button_checked : Icons.radio_button_off,
+                size: 16, color: active ? C.red : C.greyLight),
+          ]),
+        ),
+      ),
     );
   }
 

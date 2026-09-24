@@ -6817,4 +6817,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String beaconGarminNext(String s, String hr) => "Garmin · $s · ❤$hr";
 
+  @override
+  String get posSourceLabel => "位置ソース";
+
+  @override
+  String get hrSourceLabel => "心拍ソース";
+
+  @override
+  String get ownSourcePhoneGps => "スマホ GPS";
+
+  @override
+  String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
+
 }

@@ -36,6 +36,20 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
+    # 「位置来源 / 心率来源」——数据来源卡里的两个小标题（用户要求：
+    # 佳明应当作为「数据来源」的一种选择）
+    'posSourceLabel': (
+        '位置来源', '位置來源', 'Position source', '位置ソース',
+        'Fuente de posición', 'Sumber posisi',
+    ),
+    'hrSourceLabel': (
+        '心率来源', '心率來源', 'Heart-rate source', '心拍ソース',
+        'Fuente de pulso', 'Sumber detak jantung',
+    ),
+    'ownSourcePhoneGps': (
+        '手机 GPS', '手機 GPS', 'Phone GPS', 'スマホ GPS',
+        'GPS del teléfono', 'GPS ponsel',
+    ),
     'beaconGarminSource': (
         '佳明 LiveTrack 上报中', '佳明 LiveTrack 上報中',
         'Beaconing from Garmin LiveTrack', 'Garmin LiveTrack から送信',

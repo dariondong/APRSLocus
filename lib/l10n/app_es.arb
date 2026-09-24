@@ -2457,5 +2457,8 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "Balizando desde Garmin LiveTrack",
   "beaconGarminNext": "Garmin · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "posSourceLabel": "Fuente de posición",
+  "hrSourceLabel": "Fuente de pulso",
+  "ownSourcePhoneGps": "GPS del teléfono"
 }

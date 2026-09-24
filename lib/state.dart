@@ -3459,13 +3459,6 @@ class AppState extends ChangeNotifier {
   ) async {
     if (_disposed) return;
     if (useSimLocation) return; // 模拟位置模式下忽略 GPS 数据
-    // ── 粗定位点绝不许覆盖「佳明给的位置」──
-    //
-    // 佳明不新鲜（活动结束 / 链接过期）时手机 GPS 会接回来，这是对的；但**粗定位**
-    // 不行：它会拿一个偏几百米的基站质心去替换手表给的位置，而此刻上报横杠多半
-    // 显示着正常的倒计时（beaconPhase = counting）—— 用户完全看不出「正在发一个
-    // 错坐标」。宁可保持上一个（手表的）位置，等真 GPS 接回来。
-    if (coarse && garmin.on) return;
     // ── 佳明 LiveTrack 在跑且还新鲜时，**手机 GPS 让位** ──
     //
     // 两路同时在更新「我的位置」会互相打架：手表比手机准，而手机一侧随时可能
@@ -3499,6 +3492,18 @@ class AppState extends ChangeNotifier {
     // 还有一条容易漏的：闸必须在**传感器采样之前** —— 被丢掉的点没必要
     // 多跑一次平台通道。
     final coarse = !lastKnown && (source == 'network' || source == 'passive');
+    // ── 粗定位点绝不许覆盖「佳明给的位置」──
+    //
+    // ⚠ 这一条必须写在 `coarse` **声明之后**：第一版我把它插在 `_onFix` 开头
+    // （紧挨着「佳明让位」那条），本机 `dart format` 看不出问题，CI 的 analyze
+    // 直接报 `referenced_before_declaration` + `read_potentially_unassigned_final`
+    // —— 用到的变量要先声明，这种错误只能靠编译发现，别凭印象插代码。
+    //
+    // 为什么要挡：佳明**不新鲜**（活动结束 / 链接过期）时手机 GPS 会接回来，这是对的；
+    // 但**粗定位**不行 —— 它会拿一个偏几百米的基站质心去替换手表给的位置，而此刻
+    // 上报横杠多半显示着正常的倒计时（beaconPhase = counting），
+    // 用户完全看不出「正在发一个错坐标」。宁可保持上一个（手表的）位置，等真 GPS 接回来。
+    if (coarse && garmin.on) return;
     if (coarse) {
       final gapSec = _lastFixTime == null
           ? 1 << 30

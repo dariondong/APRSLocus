@@ -2457,5 +2457,8 @@
   "garminUrlHint": "livetrack.garmin.com/session/…/token/…",
   "beaconGarminSource": "Memancarkan dari Garmin LiveTrack",
   "beaconGarminNext": "Garmin · {s} · ❤{hr}",
-  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}}
+  "@beaconGarminNext": {"placeholders": {"s": {"type": "String"}, "hr": {"type": "String"}}},
+  "posSourceLabel": "Sumber posisi",
+  "hrSourceLabel": "Sumber detak jantung",
+  "ownSourcePhoneGps": "GPS ponsel"
 }

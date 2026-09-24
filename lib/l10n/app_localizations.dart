@@ -12272,6 +12272,30 @@ abstract class AppLocalizations {
   /// **'佳明上报 · {s} · ❤{hr}'**
   String beaconGarminNext(String s, String hr);
 
+  /// No description provided for @posSourceLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置来源'**
+  String get posSourceLabel;
+
+  /// No description provided for @hrSourceLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率来源'**
+  String get hrSourceLabel;
+
+  /// No description provided for @ownSourcePhoneGps.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机 GPS'**
+  String get ownSourcePhoneGps;
+
+  /// No description provided for @beaconGarminNext.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳明上报 · {s} · ❤{hr}'**
+  String get beaconGarminNext;
+
 }
 
 class _AppLocalizationsDelegate
