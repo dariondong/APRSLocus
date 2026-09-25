@@ -205,6 +205,15 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.0', 'date': '2026-09-25',
+        'items': [
+            ('new',
+             T('**TOUCH SKY · 2.0 正式版**：1.5.8 → 2.0 的 **322 次更新**在这一版合流 —— 全新 UI 2.0（地图基底 + 可拖拽面板、底部胶囊导航、横屏三端统一）、磨砂玻璃与云母材质、沉浸地图与多图源、离线地图与轨迹回放、官方设备库识别、群聊与 7 家翻译、蓝牙 TNC 与声卡 TNC、iGate 与 PKWDWPL、iOS / macOS 原生定位、按转弯与按距离的智能信标、天气与短波传播建议、Android 桌面小组件、ADIF 导出与数据包控制台、佳明分享与蓝牙心率带、6 种界面语言。',
+               '**TOUCH SKY · 2.0 正式版**：1.5.8 → 2.0 的 **322 次更新**在這一版合流 —— 全新 UI 2.0（地圖基底 + 可拖曳面板、底部膠囊導覽、橫向三端統一）、磨砂玻璃與雲母材質、沉浸地圖與多圖源、離線地圖與軌跡回放、官方裝置庫辨識、群組聊天與 7 家翻譯、藍牙 TNC 與音效卡 TNC、iGate 與 PKWDWPL、iOS / macOS 原生定位、按轉彎與按距離的智慧信標、天氣與短波傳播建議、Android 桌面小工具、ADIF 匯出與封包主控台、Garmin 分享與藍牙心率帶、6 種介面語言。',
+               '**TOUCH SKY · 2.0**: the **322 updates** from 1.5.8 to 2.0 land together — the new UI 2.0 (a map-first layout with a draggable sheet, bottom capsule nav, landscape unified across phone / tablet / desktop), frosted-glass and mica materials, the immersive map with many sources, offline maps and track replay, aprs.org device identification, group chat and 7 translation providers, Bluetooth and sound-card TNCs, iGate and PKWDWPL, native iOS / macOS location, smart beaconing by turn and by distance, weather and HF propagation advice, Android home-screen widgets, ADIF export and the packet console, Garmin sharing and BLE heart-rate straps, and six UI languages.')),
+        ],
+    },
+    {
         'ver': 'v1.6.173', 'date': '2026-09-24',
         'items': [
             ('fix',

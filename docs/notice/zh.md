@@ -4,7 +4,7 @@
 
 从纯网络到射频，从「看见」到「抵达」——这是 2.0 这一路的全部脚印。
 
-**APRSLocus 2.0 将于 9 月 25 日 22:00 正式推送**，届时可在 GitHub Releases 下载最新版。
+**APRSLocus 2.0 已于 9 月 25 日 22:00 正式发布**，可在 GitHub Releases 下载最新版。
 
 亲爱的 APRSLocus 同行者：
 

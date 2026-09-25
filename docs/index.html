@@ -139,16 +139,16 @@ html{overflow-x:hidden}
         打开就能看到附近的台站，位置、消息、信标都在同一张图上，Android 和 Windows 都能跑。
       </p>
       <div class="hero-release" id="heroRelease" style="display:inline-flex;align-items:center;gap:12px;margin:8px 0 6px;padding:12px 18px;border-radius:16px;background:var(--glass);border:1px solid var(--line);box-shadow:0 12px 30px rgba(45,70,120,.14);backdrop-filter:blur(14px)">
-        <span id="hrIcon" style="font-size:20px">🚀</span>
+        <span id="hrIcon" style="font-size:20px">✅</span>
         <span>
-          <b style="font-size:14px">APRSlocus 2.0 <span id="hrState" style="color:#0369a1">即将推送</span></b>
-          <span id="hrTimer" style="display:block;font-size:12.5px;color:#5b6b85">距推送 <b id="hrCd" style="color:#0369a1;font-variant-numeric:tabular-nums">--</b> · 9 月 25 日 22:00</span>
+          <b style="font-size:14px">APRSlocus 2.0 <span id="hrState" style="color:#0369a1">已发布</span></b>
+          <span id="hrTimer" style="display:block;font-size:12.5px;color:#5b6b85">2.0 已发布 · <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener" style="color:#0369a1;font-weight:700">立即下载 →</a></span>
         </span>
       </div>
       <div class="hero-actions">
         <a class="btn btn-primary" id="heroDownload" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-mobile-screen"></i>
-          <span id="heroDlText">下载 Android APK</span>
+          <span id="heroDlText">下载 2.0 最新版</span>
         </a>
         <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
           <i class="fa-solid fa-desktop" style="width:20px;height:20px"></i>
@@ -337,8 +337,7 @@ html{overflow-x:hidden}
         <div style="text-align:center;min-width:58px"><div id="cd-m" style="font-size:30px;font-weight:900;line-height:1;color:#0f172a">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">分</div></div>
         <div style="text-align:center;min-width:58px"><div id="cd-s" style="font-size:30px;font-weight:900;line-height:1;color:#0f172a">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">秒</div></div>
       </div>
-      <p style="text-align:center;font-size:12.5px;color:#5b6b85;margin:0 0 20px">距 <b>APRSLocus 2.0</b> 正式推送</p>
-      <p><b>APRSLocus 2.0 将于 9 月 25 日 22:00 正式推送</b>，届时可在 GitHub Releases 下载最新版。</p>
+      <p><b>APRSLocus 2.0 已于 9 月 25 日 22:00 正式发布</b>，可在 GitHub Releases 下载最新版。</p>
       <p class="announce-greet">亲爱的 APRSLocus 同行者：</p>
       <p>1.5.8 之后，我们写下了 <b>322 次更新</b>。这不是数字，是一条从「网络里的一个光点」走到「天空里的一声回应」的路。下面是这一路全部的脚印。</p>
       <p><b>一、界面 · 全新 UI 2.0</b>：以地图为基底的布局，地图常驻整屏、其余内容装进可拖拽面板，显示设置里可切回 1.0；底部悬浮胶囊导航（滑动指示胶囊）＋右上悬浮胶囊（天气 / 连接 / 定位）；把手加大到 44px 且整页可拖；横屏在手机 / 平板 / 桌面三端统一为左栏 + 地图；去掉顶部搜索框、返回键回到地图、补回天气与一键连接；16 个页面新增「首次进入小提示卡」。</p>
@@ -701,6 +700,15 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.0</span>
+        <span class="cl-date">2026-09-25</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**TOUCH SKY · 2.0 正式版**：1.5.8 → 2.0 的 **322 次更新**在这一版合流 —— 全新 UI 2.0（地图基底 + 可拖拽面板、底部胶囊导航、横屏三端统一）、磨砂玻璃与云母材质、沉浸地图与多图源、离线地图与轨迹回放、官方设备库识别、群聊与 7 家翻译、蓝牙 TNC 与声卡 TNC、iGate 与 PKWDWPL、iOS / macOS 原生定位、按转弯与按距离的智能信标、天气与短波传播建议、Android 桌面小组件、ADIF 导出与数据包控制台、佳明分享与蓝牙心率带、6 种界面语言。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v1.6.173</span>
         <span class="cl-date">2026-09-24</span>
       </div>
@@ -732,7 +740,7 @@ html{overflow-x:hidden}
         <span class="cl-date">2026-09-24</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot up"></span>**心率会说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源（BLE 胸带 / 佳明点里的心率）。佳明在供数据时，心率卡与「数据来源」卡的心率行都会写明「心率来自佳明 LiveTrack（手表）· 128 bpm」——没插胸带也不会再显示成「未连接」，数字是哪来的摆在明面上。另外**关于页空隙**（用户反馈「一些组件空隙不够」）：节标题与卡片之间 8→12，致谢卡里「测试成员」标签到呼号胶囊 8→11、胶囊之间 8→10，其余标签到胶囊 6→8</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**心率会说明来源**（用户要求「如果链接了佳明就提示从佳明追踪获取」）：心率有两个来源（BLE 胸带 / 佳明点里的心率）。佳明在供数据时，心率卡与「数据来源」卡的心率行都会写明「心率来自佳明 LiveTrack（手表）· 128 bpm」——没插胸带也不会再显示成「未连接」，数字是哪来的摆在明面上。另外**关于页空隙**（用户反馈「一些组件空隙不够」）：节标题与卡片之间 8→12，致谢卡里「测试成员」标签到呼号胶囊 8→11、胶囊之间 8→10，`BA3RZL` 那组标签到胶囊 6→8</div>
       </div>
     </div>
     <div class="cl-version reveal">

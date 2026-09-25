@@ -1,5 +1,170 @@
 # 更新日志
 
+## [2.0.0] - 2026-09-25
+
+### 🚀 TOUCH SKY · 2.0 正式版：从纯网络到射频，从「看见」到「抵达」
+
+**1.5.8 → 2.0，322 次更新。** 逐版细节在下方 v1.6.x 各条目里（v1.5.8 之后一路到
+v1.6.177）；这里给出这一整段的总览 —— 也就是 2.0 这一路的全部脚印。
+
+**一、界面 · 全新 UI 2.0**：以地图为基底的布局 —— 地图常驻整屏、其余内容装进可拖拽面板，
+显示设置里可切回 1.0；底部悬浮胶囊导航（滑动指示胶囊）＋右上悬浮胶囊（天气 / 连接 / 定位）；
+把手加大到 44px 且整页可拖；横屏在手机 / 平板 / 桌面三端统一为左栏 + 地图；
+去掉顶部搜索框、返回键回到地图、补回天气与一键连接；16 个页面新增「首次进入小提示卡」。
+
+**二、材质与主题**：新增磨砂玻璃（Acrylic）与云母（Mica）材质，另有「满血磨砂」档；
+主题的颜色 / 图标 / 文字可自定义，支持背景图与导出 JSON（可带图）；
+更多令牌、界面松紧与字体、分页签强调色；备份与恢复把设置与数据导出成一个 JSON。
+
+**三、地图 · 沉浸地图**：多图源（高德 / 卫星 / 矢量免 Key / Carto / OSM / OpenTopo / Esri）；
+新增沉浸地图页（导航风格，左侧附近台站）；台站筛选可应用到地图；离线地图按区域下载；
+去掉聚合；历史轨迹回放（点进某天，动画重播）。
+
+**四、台站与识别**：接入 aprs.org 官方设备库，自动识别厂商 / 型号 / 类别；
+内置 37 个符号表、3571 个标准图标；台站操作菜单（收藏 / 复制呼号 / 删除）与 APRS.tv 查询；
+APRSlocus 平台识别（不再一律归为手机 App）；
+打点算法重做（旧帧、重复帧、错包与模糊位置都不再骗人）。
+
+**五、消息与翻译**：单聊群聊统一会话 + ACK 确认；群聊重构（建群 / 邀请 / 成员 / 离开，no-ack 广播）；
+聊天翻译接口从 4 家扩到 7 家，默认自动、默认走免费免密钥接口；
+支持双向翻译、对照显示、发送前翻译、语言自动识别与记忆。
+
+**六、连接与射频**：新增蓝牙 TNC（完整 KISS，真正修好「能收不能发」）与
+音频声卡 TNC（AFSK 1200，手机 + 一根音频线即 TNC）；新增 PKWDWPL（Kenwood 航点，只收不发）与网关（iGate）；
+多数据来源可同时接收、发射来源单独指定；配套链路自检；
+修「TNC 与 PKWDWPL 同设备瓜分数据」与「音频发射对方解不出」。
+
+**七、定位与信标**：iOS 原生定位、macOS 改原生定位；网络粗定位不再自动上报；自身定位静止防抖；
+智能信标支持「按转弯」（先分清真拐弯与 GPS 抖动）与「按距离」打点；
+轨迹采样细化并标出信标点；轨迹与数据包上限可配置。
+
+**八、天气 · 传播 · 建议**：天气面板（实时 + 高低温 + 体感 + 湿度 / 气压 / 露点 / 风向 / 能见度 / 云量）；
+业余无线电建议按「安全警示 > 注意 > 通联机会 > 操作提示」分级，含灰线、雨衰、结冰驻波、大气波导等结论；
+短波 / 电离层传播逐波段日 / 夜条件，6m 单独预测。
+
+**九、桌面小组件（Android）**：天气 + 业余无线电提示（4 档尺寸自适应）、短波传播组件、系统状态组件；
+真实图标与图形 logo；支持缩放与暗黑模式；新增设计预览工具。
+
+**十、数据 · 导出 · 备份**：ADIF 导出（频率可自定义、导出选项可选）；修导出路径与文件名；
+数据包控制台（原始 / 解析、手动注入、分类筛选）；新增台站面板内的统计视图。
+
+**十一、设备集成**：佳明 App 分享短链（gar.mn）与 LiveTrack；蓝牙心率带（BLE 0x180D）心率随信标上报；
+设备页新增「其他数据来源」。
+
+**十二、多语言与本地化**：界面语言增至 6 种（简体 / 繁體 / English / 日本語 / Indonesia / Español）；
+多批中文硬编码清理；荣誉墙与赞助名单多语言化。
+
+**十三、社区 · 荣誉 · 公告**：荣誉墙展示每枚徽章的获得条件，含「开发人员」「FIRST FIX · 至高荣誉」「早期成员」；
+赞助墙补齐遗漏；应用内公告横幅取自官网 Markdown。
+
+**十四、平台 · 性能 · 稳定**：iOS / macOS / 桌面三端支持与横屏打磨；
+修「越用越卡」的 APRS-IS 重建 + socket 泄漏；磨砂玻璃与动态背景性能优化；大量回归测试与静态检查。
+
+以及数不清的修复：关于页卡片贴住下个板块、底图切换面板弹不出来、图层面板点了没反应、
+会话输入框藏底下、「在地图查看」不回地图、天气面板点空白关不掉……
+它们共同构成了从 1.5.8 到 2.0 的 322 次更新。
+
+> FIRST FIX 是起点，TOUCH SKY 是致意。2.0，是下一次出发。
+> 天空很大，我们继续同行。
+
+> 电波无限，感谢同行！73！
+> APRSLocus 开发团队
+> 2026 年 9 月 25 日
+
+- [下载最新版](https://github.com/dariondong/APRSLocus/releases)
+- [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
+
+## [2.0.0] - 2026-09-25 (English)
+
+### 🚀 TOUCH SKY · 2.0 — from network-only to radio, from "seeing" to "reaching"
+
+**1.5.8 → 2.0, 322 updates.** The release-by-release detail lives in the v1.6.x entries
+below (everything after v1.5.8 through v1.6.177); this entry is the overview of that whole
+stretch — every step of the 2.0 journey.
+
+**1 · UI 2.0**: a map-first layout — the map stays full-screen and everything else lives in
+a draggable sheet, switchable back to 1.0 in Display settings; a floating bottom capsule nav
+(sliding indicator) plus a top-right capsule (weather / connection / locate); a 44px grab
+handle with full-page dragging; landscape unified across phone / tablet / desktop as a left
+rail + map; the top search bar removed, back returns to the map, weather and one-tap connect
+restored; 16 pages get a first-visit tip card.
+
+**2 · Materials & themes**: new frosted glass (Acrylic) and mica materials plus a "full glass"
+tier; theme colors / icons / text are editable, with background images and JSON export
+(images included); more tokens, density and font controls, per-tab accents; backup & restore
+exports settings and data as one JSON.
+
+**3 · Map & immersive map**: many sources (AMap / satellite / vector without an API key /
+Carto / OSM / OpenTopo / Esri); a new immersive map page (navigation style, nearby stations on
+the left); station filters apply to the map; offline map downloads by region; clustering
+removed; track replay (tap a day to replay it).
+
+**4 · Stations & identification**: the aprs.org device database identifies vendor / model /
+class; 37 symbol tables and 3571 icons built in; a station action menu (favorite / copy
+callsign / delete) and APRS.tv lookup; APRSlocus platform identification (no longer just
+"a phone app"); a rebuilt plotting algorithm so stale, duplicate, bad and fuzzy positions no
+longer fool you.
+
+**5 · Messaging & translation**: a unified chat and group list with ACK; group-chat refactor
+(create / invite / members / leave, no-ack broadcast); translation providers grew from 4 to 7,
+defaulting to auto and to a free keyless endpoint; two-way translation, side-by-side view,
+translate-before-send, automatic language detection and memory.
+
+**6 · Links & RF**: new Bluetooth TNC (full KISS — the real fix for "receives but will not
+transmit") and sound-card TNC (AFSK 1200 — a phone plus one audio cable); new PKWDWPL (Kenwood
+waypoints, receive-only) and iGate; several sources can receive at once with the transmit
+source picked separately; a built-in link self-test; fixes for "TNC and PKWDWPL splitting one
+device" and "on-air audio not decodable".
+
+**7 · Positioning & beaconing**: native iOS and macOS location; coarse network fixes no longer
+auto-beacon; stationary debounce for your own GPS; smart beaconing by turn (telling a real turn
+from a GPS glitch) and by distance; finer track sampling with beacon dots; configurable track
+and packet caps.
+
+**8 · Weather · propagation · advice**: a weather panel (now + high/low + feels-like + humidity /
+pressure / dew point / wind / visibility / cloud); ham advice ranked safety > caution >
+opportunity > tip, covering the gray line, rain fade, icing SWR and ducting; HF/ionospheric
+propagation with day/night per band and a separate 6m forecast.
+
+**9 · Home-screen widgets (Android)**: weather + ham tips (4 adaptive sizes), an HF propagation
+widget and a system-status widget; real icons and a graphic logo; scaling and dark mode; a
+design preview tool.
+
+**10 · Data · export · backup**: ADIF export (custom frequency, selectable options); export path
+and filename fixes; a packet console (raw / parsed, manual inject, type filters); a stats view
+inside the station panel.
+
+**11 · Device integrations**: Garmin app share links (gar.mn) and LiveTrack; BLE heart-rate
+straps (0x180D) with HR carried in the beacon; an "other data sources" entry on the device page.
+
+**12 · Languages & localization**: six UI languages (Simplified / Traditional Chinese / English /
+Japanese / Indonesian / Spanish); multiple rounds of hard-coded Chinese cleanup; the honor wall
+and sponsors localized.
+
+**13 · Community · honors · announcements**: the honor wall shows how to earn each badge,
+including "Developer", "FIRST FIX · highest honor" and "early member"; the sponsors list filled
+in; the in-app announcement banner comes straight from the website's Markdown.
+
+**14 · Platforms · performance · stability**: iOS / macOS / desktop support and landscape polish;
+a fix for the "slower the longer it runs" APRS-IS rebuild + socket leak; frosted-glass and
+dynamic-background performance; plenty of regression tests and static checks.
+
+Plus countless fixes: the About card spacing, the base-map panel not opening, the layer panel
+not responding, the chat input hidden below, "view on map" not returning, the weather panel not
+closing on an outside click… Together they make the 322 updates from 1.5.8 to 2.0.
+
+> FIRST FIX is where we started; TOUCH SKY is a salute. 2.0 is the next departure.
+> The sky is vast — let's keep going together.
+
+> Radio waves never end — thanks for traveling with us! 73!
+> The APRSLocus Team
+> September 25, 2026
+
+- [Download latest](https://github.com/dariondong/APRSLocus/releases)
+- [View full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [Feedback & Suggestions](https://github.com/dariondong/APRSLocus/issues)
+
 ## [1.6.177] - 2026-09-25
 
 ### 📡 信标上报页新增「强制接受网络定位自动上报」（默认关）

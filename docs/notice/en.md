@@ -4,7 +4,7 @@
 
 From network-only to radio — from "seeing" to "reaching". Every step of the 2.0 journey.
 
-**APRSLocus 2.0 goes live on Sep 25 at 22:00** — grab the latest build from GitHub Releases.
+**APRSLocus 2.0 is live (Sep 25, 22:00)** — grab the latest build from GitHub Releases.
 
 Dear fellow travelers of APRSLocus,
 
