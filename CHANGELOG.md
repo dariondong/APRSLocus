@@ -1,5 +1,91 @@
 # 更新日志
 
+## [1.6.176] - 2026-09-25
+
+### 📐 2.0 横屏重做：借 1.0 的骨架（用户：「2.0 横屏没有 1.0 横屏好看」）
+
+上一版 2.0 横屏是「地图整屏 + 左侧 70px 图标竖条 + 半透明内容面板」。按用户这句话
+复盘，翻出三条**结构**原因（都不是配色问题）：
+
+* **竖条只有 70px、只有图标**：没有 Logo、没有标题、没有「我的位置」，而 1.0 的侧栏
+  （120~232px）三样都有 —— 它单薄得不像导航，像一排临时按钮；
+* **竖条形态会变**：选「地图」时它是一小条**垂直居中飘着**的卡，展开后变通高。
+  导航是「永远在同一个地方」的东西，它却有两个位置；
+* **内容面板半透明、背后就是地图**：文字与瓦片叠在一起发灰发脏，而 1.0 的内容区是
+  实底；顶栏只剩右上角一簇胶囊，屏幕上沿整条空着 —— 没有骨架。
+
+这一版把 1.0 的三样东西借过来，同时**保留 2.0 的身份**（地图仍是铺满整屏的底，
+只是左侧被实底的工作区盖住）：
+
+* 左侧导航 **108 / 232 两档**（矮横屏 / 高窗口），**贴顶通高**，图标与文字**横排**
+  （与 1.0 侧栏同一形态）；高窗口下底部还带「我的位置」面板，而且它与 1.0 的侧栏
+  **共用同一份**（新文件 `lib/my_panel.dart`）—— 不是抄一份；
+* **顶栏横贯一条**：浅底 + 下沿分隔线，左端当前页标题、右端原来那簇胶囊；
+* 竖条与内容面板都是**实底**（与 1.0 的侧栏/顶栏同一个色），瓦片不再从字底下透出来。
+
+地图仍是 `Positioned.fill`：左侧被工作区盖住的部分看不见，但**图幅没有被压缩** ——
+平移/缩放不变形是 2.0 相对 1.0 的实质好处，这一版保住了。
+
+顺带把「同一个东西两处各写一份」的苗头收掉两处：`_navItem` 的两种形态（底部导航竖排 /
+横屏竖条横排）与未读角标都收敛成一份。
+
+检查器：`tool/check_landscape_layout.py` 第 4 条**换了意图** —— 老判据守的是「收起时
+竖条卡收缩得对」（`IntrinsicHeight`），而新设计的要求是「根本不该收缩」（贴顶通高），
+旧判据守的东西整个消失；文件头写清了为什么换，免得下一个人以为检查器不认识
+`IntrinsicHeight` 了、顺手加回去。另新增 6 条（竖条宽度档位 / 品牌行 / 横排导航 /
+共用角标 / 共用「我的位置」面板 / 顶栏横贯含标题与分隔线 / 内容面板实底），
+16 个回归样本全部验过会报红 —— **其中 3 条样本当场抓出我自己刚写的假通过**
+（子串匹配、`or` 短路、扫描窗口被另一个同类调用填满），已逐条修掉。
+
+## [1.6.176] - 2026-09-25 (English)
+
+### 📐 2.0 landscape rebuilt on 1.0's frame ("2.0 landscape doesn't look as good as 1.0")
+
+The previous 2.0 landscape was "full-screen map + a 70px icon rail on the left + a
+translucent content pane". Going back through the complaint turned up three **structural**
+causes - none of them about colour:
+
+* **The rail was 70px wide with icons only**: no logo, no title, no "my position" - while
+  1.0's sidebar (120-232px) has all three. It read as a row of temporary buttons, not as
+  navigation;
+* **The rail had two different shapes**: on the map tab it was a small card floating
+  **vertically centred**, and once expanded it became full height. Navigation is the one
+  thing that should always be in the same place;
+* **The pane was translucent over the map**: text and map tiles layered on top of each
+  other, going grey and muddy, where 1.0's content area is solid; and the top bar was just
+  a cluster of pills in the top-right corner, leaving the whole top edge empty - no frame.
+
+This version borrows 1.0's three pieces while keeping 2.0's identity (the map is still the
+base, filling the screen - the left side is simply covered by a solid workspace):
+
+* the left rail is now **two stops, 108 / 232** (short landscape / tall window), **pinned
+  to the top and full height**, with icon **beside** label (same shape as 1.0's sidebar);
+  tall windows also get the "my position" panel at the bottom - and it is the **same
+  widget** 1.0's sidebar uses (new file `lib/my_panel.dart`), not a copy;
+* **one full-width top bar**: light fill, a hairline along its bottom edge, the current
+  page title on the left and the existing pill cluster on the right;
+* the rail and the pane are both **solid** (the same colour 1.0's sidebar/top bar use), so
+  tiles no longer show through the text.
+
+The map is still `Positioned.fill`: the part under the workspace is hidden, but the **map
+itself is never squeezed** - pan/zoom stay undistorted, which is 2.0's real advantage over
+1.0, and this version keeps it.
+
+Two more "one thing written twice" risks were closed on the way: the nav item's two shapes
+(stacked for the bottom bar, side-by-side for the rail) and the unread badge are now a
+single implementation each.
+
+Checker: rule 4 in `tool/check_landscape_layout.py` had its **intent changed** - the old
+rule guarded "the collapsed rail card shrinks correctly" (`IntrinsicHeight`), but the new
+design requires that it never shrinks at all (pinned, full height), so what the old rule
+guarded no longer exists. The file header records why, so the next person doesn't just see
+"the checker no longer understands IntrinsicHeight" and put it back. Six more rules were
+added (rail width stops / brand row / horizontal nav items / shared unread badge / shared
+"my position" panel / full-width top bar with title and hairline / solid pane), and all 16
+regression samples were verified to go red - **three of those samples immediately caught
+false passes in the rules I had just written** (substring match, `or` short-circuit, and a
+scan window filled by another call of the same kind); each was fixed.
+
 ## [1.6.175] - 2026-09-24
 
 ### 📡 TNC/射频：第三方包（DTI `}`）没解包 —— 消息被当成「位置」，消息页一条也收不到 / Unwrapping third-party packets

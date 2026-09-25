@@ -8,6 +8,7 @@ import 'notice_banner.dart';
 import 'back_router.dart';
 import 'material.dart';
 import 'messages_page.dart';
+import 'my_panel.dart';
 import 'packets_page.dart';
 import 'settings_page.dart';
 import 'settings_pages.dart';
@@ -140,8 +141,26 @@ class _HomeShell2State extends State<HomeShell2>
   /// 把手触摸区高度（药丸本身只有 40×5，但整条都能拖/能点）
   static const double _kHandle = 44;
 
-  /// 横屏左侧导航竖条宽度
-  static const double _kRailW = 70;
+  /// 横屏左侧导航宽度：**矮横屏 / 高窗口两档**（口径同 1.0 侧栏的那两个值）。
+  ///
+  /// 70px 那一版只有图标、没有品牌行与文字横排的余地，用户反馈「2.0 横屏没有
+  /// 1.0 横屏好看」——宽度是其中一半原因（见 [_landscapeBody] 的文档注释）。
+  static const double _kRailW = 108;
+
+  /// 高窗口（桌面 / 平板横放）用的宽档：与 1.0 的非紧凑侧栏同宽 ——
+  /// 「我的位置」面板（[MyPanel]）就是按这个宽度排的版，窄档放不下；
+  /// 1.0 在紧凑模式里也把这个面板藏掉了，这里是同一个判断。
+  static const double _kRailWide = 232;
+
+  /// 竖条与右侧那一列（顶栏 + 内容面板）之间的间距
+  static const double _kColGap = 8;
+
+  /// 窗口高到多少才在竖条底部放「我的位置」面板。
+  ///
+  /// 算过：品牌行 52 + 5 个导航项 230 + 面板本身约 300 = 582，再加下边距。
+  /// 手机横放（300~400）远够不着 → 矮横屏只显示品牌行 + 导航；
+  /// 桌面窗口（≥700）放得下。就算估矮了一点也不会溢出：面板那块自己可滚。
+  static const double _kRailTallEnough = 660;
 
   /// 统一外边距（左右 / 面板与导航之间 / 导航距底）。
   ///
@@ -496,7 +515,7 @@ class _HomeShell2State extends State<HomeShell2>
             top: barTop,
             left: _kGutter,
             right: _kGutter,
-            child: KeyedSubtree(key: _barKey, child: _topBar()),
+            child: KeyedSubtree(key: _barKey, child: _topBarCluster()),
           ),
 
                   // ②a 公告横幅（压在地图上、顶栏之下；见 [NoticeBanner]）
@@ -830,72 +849,96 @@ class _HomeShell2State extends State<HomeShell2>
 
   /// 一个页签。
   ///
-  /// [rail] 为真时用在横屏的左侧竖条里：那里没有底部导航那种**滑动的指示胶囊**，
-  /// 所以选中底由每一项自己画（同一套颜色，只是位置固定）。
+  /// 两种形态：
+  ///   * 底部导航（[rail] 为假）：图标在上、文字在下，选中靠**滑动的指示胶囊**；
+  ///   * 横屏竖条（[rail] 为真）：**图标在左、文字在右**的一行 —— 与 1.0 的侧栏
+  ///     同一形态。竖条在 70px 时代只能竖排，那是它「单薄得不像导航」的一部分
+  ///     原因（见 [_landscapeBody] 的文档注释）；加宽到 108/232 之后横排放得下，
+  ///     也更像一条真正的导航。
+  ///
+  /// 两种形态共用同一份图标/颜色/角标逻辑，只在**排布**上分叉：颜色表或角标规则
+  /// 各写一份必然漂开（本项目在别处已经吃过这个亏）。
   Widget _navItem(int i, {bool rail = false}) {
     final sel = _tab == i;
     final slot = _slots[i].$1;
     final unread = widget.state.unreadMessages;
+    final accent = sel ? _accentOf(slot) : C.grey;
+    final icon = ThemeController.instance.buildSlotIcon(
+      slot,
+      size: rail ? 20 : 21,
+      color: accent,
+      fallbackIcon: themeIconByName(_slots[i].$2),
+      selected: sel,
+    );
+    final label = Text(
+      _labelOf(Tx.of(context), slot),
+      style: ts(
+        rail ? 12 : 10,
+        c: accent,
+        w: sel ? FontWeight.w700 : FontWeight.w400,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    final badge = (i == 2 && unread > 0) ? _unreadBadge(unread) : null;
     return ClickCursor(
       child: GestureDetector(
         onTap: () => _select(i),
         behavior: HitTestBehavior.opaque,
         child: Container(
-          padding: rail ? const EdgeInsets.symmetric(vertical: 9) : EdgeInsets.zero,
+          padding: rail
+              ? const EdgeInsets.symmetric(horizontal: 10, vertical: 11)
+              : EdgeInsets.zero,
           decoration: rail && sel
               ? BoxDecoration(
                   color: _accentOf(slot).withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(12),
                 )
               : null,
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ThemeController.instance.buildSlotIcon(
-                  slot,
-                  size: 21,
-                  color: sel ? _accentOf(slot) : C.grey,
-                  fallbackIcon: themeIconByName(_slots[i].$2),
-                  selected: sel,
-                ),
-                if (i == 2 && unread > 0)
-                  Positioned(
-                    right: -8,
-                    top: -4,
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                      constraints:
-                          const BoxConstraints(minWidth: 14, minHeight: 14),
-                      decoration: BoxDecoration(
-                        color: C.red,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          unread > 99 ? '99+' : '$unread',
-                          style: ts(9, c: Colors.white, w: FontWeight.w700),
-                        ),
-                      ),
+          child: rail
+              ? Row(
+                  children: [
+                    icon,
+                    const SizedBox(width: 10),
+                    Expanded(child: label),
+                    if (badge != null) badge,
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        icon,
+                        if (badge != null)
+                          Positioned(right: -8, top: -4, child: badge),
+                      ],
                     ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 2),
-            Text(
-              _labelOf(Tx.of(context), slot),
-              style: ts(10,
-                  c: sel ? _accentOf(slot) : C.grey,
-                  w: sel ? FontWeight.w700 : FontWeight.w400),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+                    const SizedBox(height: 2),
+                    label,
+                  ],
+                ),
         ),
+      ),
+    );
+  }
+
+  /// 未读角标。底部导航与横屏竖条**共用同一颗**：两处各画一遍的话，
+  /// 尺寸/圆角/字号迟早会分头漂（一颗 14 高、一颗 16 高，放一起就看出来了）。
+  Widget _unreadBadge(int unread) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
+      decoration: BoxDecoration(
+        color: C.red,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text(
+          unread > 99 ? '99+' : '$unread',
+          style: ts(9, c: Colors.white, w: FontWeight.w700),
         ),
       ),
     );
@@ -903,25 +946,35 @@ class _HomeShell2State extends State<HomeShell2>
 
   // ─── 横屏（宽 > 高）───
 
-  /// 2.0 横屏：左侧「导航竖条 + 内容面板」，地图占满其余空间。
+  /// 2.0 横屏：**借 1.0 的骨架**，地图仍铺底（v1.6.176 重做）。
   ///
-  /// ── 为什么横屏不复用底部面板 ──
+  /// ── 为什么要推翻上一版 ──
   ///
-  /// 横屏的**高度**很小（手机横放常不足 400dp），底部面板一展开就吃掉大半高度，
-  /// 地图基本看不见 —— 而这一版的设计前提是「地图是底」。所以横屏把导航与内容
-  /// 一起挪到**左侧**：宽绰的那一维给内容，地图占满右侧，两者互不遮挡。
+  /// 上一版是「地图整屏 + 左侧 70px 图标竖条 + 半透明内容面板」。用户反馈
+  /// **「2.0 横屏没有 1.0 横屏好看」**，复盘出三条结构原因（都不是配色问题）：
+  ///
+  /// 1. **竖条只有 70px、只有图标**：没有 Logo、没有标题、没有「我的位置」，
+  ///    而 1.0 的侧栏（120~232px）三样都有 —— 它单薄得不像导航，像一排临时按钮。
+  /// 2. **竖条形态会变**：选「地图」时它是一小条**垂直居中飘着**的卡，展开后变成
+  ///    通高的大卡。导航是「永远在同一个地方」的东西，它却有两个位置。
+  /// 3. **面板半透明、背后就是地图**：文字和瓦片叠在一起发灰发脏，而 1.0 的内容区
+  ///    是实底；另外顶栏只剩右上角一簇胶囊，屏幕上沿整条空着 —— 没有骨架。
+  ///
+  /// 这一版把 1.0 的三样东西借过来，同时**保留 2.0 的身份**（地图仍是铺满整屏的底，
+  /// 只是左侧被实底的工作区盖住）：
+  ///
+  ///   * 左侧导航 **108 / 232 两档**（矮横屏 / 高窗口，口径同 1.0 的侧栏），
+  ///     **贴顶通高**、图标与文字横排；高窗口下底部还带「我的位置」面板
+  ///     （`MyPanel`，与 1.0 的侧栏**共用同一份**，见 lib/my_panel.dart）；
+  ///   * **顶栏横贯一条**：浅底 + 下沿分隔线，左端当前页标题、右端原来那簇胶囊；
+  ///   * 竖条与内容面板都是 **实底**（`C.surfaceFillStrong` —— 与 1.0 的侧栏/顶栏
+  ///     同一个色），不再让瓦片从字底下透出来。
+  ///
+  /// 地图仍是 `Positioned.fill`：左侧被工作区盖住的部分看不见，但地图本身还是全尺寸，
+  /// 平移/缩放不会被压扁 —— 这是 2.0 相对 1.0 的实质好处，不能丢。
   ///
   /// 横屏刻意**不做拖拽**：竖向空间本来就紧，把面板拉高拉低没有意义；改成
   /// 「点导航切换、选『地图』则收起面板」，行为确定，也不会跟列表滚动抢手势。
-  /// 横屏：**一整块工作区**（左竖条 + 右内容，同一张卡）。
-  ///
-  /// 以前这里是两张独立的圆角卡：竖条是 `MainAxisSize.min`（只有内容高、贴顶），
-  /// 内容面板却占满整高 —— 两块并排**高度不齐**，上沿都从安全区开始、下沿一个到
-  /// 屏幕底一个不到，看着就是「没收拾过」。合并成一张卡后高度天然一致、间距只有
-  /// 一处，而且**少一层 `BackdropFilter`**（每层都要把背后的地图离屏重绘一遍）。
-  ///
-  /// 选「地图」页时内容为空，此时只留一张竖条卡并**垂直居中**：贴顶会显得像掉在
-  /// 上面，居中才稳。
   Widget _landscapeBody(EdgeInsets pad, double barTop, double topInset) {
     final size = MediaQuery.of(context).size;
     // 横屏的刘海/挖孔在**左、右两侧**（不在顶部）—— 竖条与顶栏都要让开 pad.left，
@@ -929,59 +982,40 @@ class _HomeShell2State extends State<HomeShell2>
     // 所以这两项只在横屏（尤其带刘海的机器）生效。
     final safeL = pad.left + _kGutter;
     final safeR = pad.right + _kGutter;
-    // 面板宽度：宽度的 40%，但**先保证给地图留够 260**，再夹到 200~560。
+    // 左侧导航两档：**矮横屏放不下「我的位置」面板**（手机横放常只有 300 出头），
+    // 只给窄档；桌面/平板那种高窗口才用宽档，把面板放进来。
+    final bool wideRail = size.height >= _kRailTallEnough;
+    final double railW = wideRail ? _kRailWide : _kRailW;
+    final double railRight = safeL + railW;
+    // 右侧那一列（顶栏 + 内容面板）的左缘。
+    final double colLeft = railRight + _kColGap;
+    // 内容面板宽度：屏幕的 34%，但**先保证给地图留够 260**，再夹到 240~560。
     //
-    // ⚠ 写法有讲究：早期是「先按 byMap 取小、再 clamp(300, 560)」—— 那个**下限
-    // 300 会把上一步的保护整个顶掉**：600 宽的窄横屏（分屏/小机）算出来
-    // paneW = 300，地图只剩 219 —— 既不满足「留 260」，也不是 40%。
-    // 所以顺序必须是：先算「面板最多能给多少」，下限只作为极窄屏的兜底。
+    // ⚠ 顺序有讲究（早期踩过）：先算「面板最多能给多少」，下限只作极窄屏的兜底 ——
+    // 反过来「先按比例取小、再 clamp(下限)」会让下限把「留 260」的保护整个顶掉：
+    // 600 宽的窄横屏算出面板 300、地图只剩 219，既不满足「留 260」也不是 34%。
     const double minMapW = 260;
-    final double occupied = safeL + _kRailW + 1; // 安全区 + 外边距 + 竖条 + 细分隔
-    final double mapCap = size.width - occupied - minMapW;
-    final double byFraction = size.width * 0.40;
-    final double paneW =
-        (byFraction < mapCap ? byFraction : mapCap).clamp(200.0, 560.0);
-    final paneBottom = _kGutter + pad.bottom;
-    final showPane = _tab != 0;
-    // 地图贴左控件要避开的宽度：竖条，加上展开时**压在地图上**的内容面板。
-    // 不让开的话，信息条/沉浸入口/底部坐标条会糊在那张磨砂卡背后。
-    final double mapLeftInset = occupied + (showPane ? paneW : 0.0);
-
-    final work = showPane
-        ? SizedBox(
-            width: _kRailW + 1 + paneW,
-            child: MaterialSurface(
-              radius: 22,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: C.sheetFill,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: elev3(),
-                ),
-                child: Row(
-                  children: [
-                    _railColumn(),
-                    // 细分隔：两块同属一张卡，但仍看得出分界
-                    Container(width: 1, color: C.grey.withValues(alpha: 0.12)),
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.horizontal(
-                          right: Radius.circular(22),
-                        ),
-                        child: ClipRect(child: _content()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
-        : _railCard();
+    final double mapCap = size.width - colLeft - minMapW;
+    final double contentW = (size.width * 0.34 < mapCap
+            ? size.width * 0.34
+            : mapCap)
+        .clamp(240.0, 560.0);
+    final double paneBottom = _kGutter + pad.bottom;
+    final bool showPane = _tab != 0;
+    // 地图贴左控件要避开的宽度：竖条 + 间距，加上展开时**压在地图上**的内容面板。
+    // 不让开的话，信息条/沉浸入口/上报横杠/底部坐标条会压在工作区背后。
+    // （v1.6.176 之前那张卡是半透明的，表现是「控件在卡后面若隐若现、像渲染坏了」；
+    // 现在卡改成实底，表现变成干脆「被挡住」—— 两种都不对，让位量照旧必须算全。）
+    //
+    // ⚠ `safeL` 里含 `pad.left`：地图那边**只在底部自己加了一次安全区**
+    // （`bottomInset` 的调用点必须把 pad.bottom 减掉），左侧没有 —— 两个 insets
+    // 的口径并不对称，别只看 MapPage 的注释想当然。
+    final double mapLeftInset =
+        safeL + railW + _kColGap + (showPane ? contentW + _kColGap : 0.0);
 
     return Stack(
       children: [
-        // 地图铺满整屏（左侧被工作区压住的部分看不见，但地图本身仍是全尺寸的，
-        // 平移/缩放不会被压缩变形）
+        // ① 地图铺满整屏（见本方法的文档注释：图幅不被压缩是 2.0 的实质好处）
         Positioned.fill(
           child: MapPage(
             state: widget.state,
@@ -990,17 +1024,14 @@ class _HomeShell2State extends State<HomeShell2>
             // 冻结它（理由见 MapPage.frozen）。地图页时保持正常刷新。
             frozen: showPane && _paneOpen,
             topInset: topInset,
-            // 底部没有任何东西占用（导航在左边）—— 只留一个外边距当呼吸空间。
-            //
             // ⚠ 必须**不含** pad.bottom：地图那边的口径是「相对安全区」
-            // （它自己会加一次 pad.bottom），传 paneBottom（含安全区）会把
-            // 底部控件凭空抬高一个安全区的高度 —— 竖屏那边是减掉了的，
-            // 两边口径必须一致。
+            // （它自己会加一次 pad.bottom），传含安全区的值会把底部控件凭空抬高
+            // 一个安全区的高度 —— 竖屏那边是减掉了的，两边口径必须一致。
             bottomInset: _kGutter,
             leftInset: mapLeftInset,
           ),
         ),
-        // 公告横幅（横屏同样在顶栏之下；左边让开竖条/内容面板）
+        // ② 公告横幅（横屏同样在顶栏之下；左边让开工作区）
         if (widget.state.noticeBanner)
           Positioned(
             top: barTop + _barH + 6,
@@ -1008,8 +1039,8 @@ class _HomeShell2State extends State<HomeShell2>
             right: safeR,
             child: NoticeBanner(state: widget.state),
           ),
-        // 未连接横幅（横屏也在顶栏之下；见 [_linkBanner]）。
-        // 左边让开竖条：它横跨地图区，压到竖条上会显得是两张卡撞在一起。
+        // 未连接横幅（见 [_linkBanner]）。左边让开工作区：它横跨地图区，
+        // 压到竖条上会显得是两张卡撞在一起。
         if (_showLinkBanner(widget.state))
           Positioned(
             top: barTop +
@@ -1022,31 +1053,34 @@ class _HomeShell2State extends State<HomeShell2>
             right: safeR,
             child: _linkBanner(widget.state),
           ),
-        // 右上角那一簇（横屏更宽，放右边不挡地图中心）
+        // ③ 左侧导航：**贴顶通高**。以前它在「地图」页是垂直居中飘着的一小条，
+        //    展开后却变成通高 —— 同一个导航两个位置，正是「不如 1.0」的一条。
         Positioned(
+          left: safeL,
           top: barTop,
-          left: safeL,
-          right: safeR,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: KeyedSubtree(key: _barKey, child: _topBar()),
-          ),
-        ),
-        // 工作区：展开时是一整块；收起时只剩居中竖条
-        Positioned(
-          left: safeL,
-          top: topInset,
           bottom: paneBottom,
-          child: showPane
-              ? work
-              : Align(alignment: Alignment.centerLeft, child: work),
+          child: _rail(railW, wideRail),
+        ),
+        // ④ 右侧一列：顶栏（横贯） + 内容面板
+        Positioned(
+          left: colLeft,
+          top: barTop,
+          right: safeR,
+          bottom: paneBottom,
+          child: Column(
+            children: [
+              _topBarStrip(),
+              const SizedBox(height: _kColGap),
+              if (showPane) Expanded(child: _pane()),
+            ],
+          ),
         ),
         if (_showBubble)
           Positioned(
             top: barTop + _barH + 10,
             // 居中要相对**可见的地图区**：横屏时左侧被竖条/面板占着，
             // 从 0 开始居中会偏到卡片那一边（气泡也是半透明的，叠上去很脏）
-            left: showPane ? mapLeftInset : 0,
+            left: showPane ? mapLeftInset : railRight,
             right: 0,
             child: Center(child: _bubble()),
           ),
@@ -1054,62 +1088,164 @@ class _HomeShell2State extends State<HomeShell2>
     );
   }
 
-  /// 收起内容时的独立竖条卡（只剩导航）
+  /// 横屏左侧导航（通高）。
   ///
-  /// `IntrinsicHeight` 不能省。`_railItems()` 是 `SingleChildScrollView`
-  /// （为极矮横屏准备的），而它**没有 `shrinkWrap`** —— 在「高度有界」的父约束下
-  /// 会直接撑满可用高度。结果是：卡片变成一条**通高的空框**，5 个导航项全挤在上沿
-  /// —— 正是下面注释里说「贴顶会显得像掉在上面」的那种难看样子，所谓「垂直居中」
-  /// 也就根本没生效（外层 `Align` 居中的是一个已经满高的盒子）。
+  /// 两种内容按窗口高度分档（见 [_kRailTallEnough]）：
+  ///   * 矮横屏：只有品牌行 + 5 个导航项，套 `SingleChildScrollView`
+  ///     （极矮横屏下 5 项会溢出成黄条纹 —— 那正是最容易被看出来「没收拾过」的地方）；
+  ///   * 高窗口：再在底部放「我的位置」面板，它自己可滚，窗口再矮也不会溢出。
   ///
-  /// `IntrinsicHeight` 取「内容高度」并按父约束夹住，两个目的一次达成：
-  ///   * 内容矮 → 卡片收缩到内容高，外层 `Align` 才能真正把它垂直居中；
-  ///   * 内容高（极矮横屏）→ 被夹在可用高度内，`SingleChildScrollView` 仍可滚，
-  ///     不会溢出成黄条纹。
-  Widget _railCard() {
+  /// 两条分支**不共用一段代码**是有意的：底部那块需要 `Expanded` 撑满余高，
+  /// 而 `Expanded` 不能放进 `SingleChildScrollView`（高度无界会直接抛异常）。
+  Widget _rail(double railW, bool tall) {
+    final nav = <Widget>[
+      for (var i = 0; i < _slots.length; i++) ...[
+        if (i > 0) const SizedBox(height: 4),
+        _navItem(i, rail: true),
+      ],
+    ];
+    final Widget inner = tall
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _railBrand(tall),
+              const SizedBox(height: 8),
+              ...nav,
+              const SizedBox(height: 10),
+              Expanded(child: SingleChildScrollView(child: MyPanel(state: widget.state))),
+            ],
+          )
+        : SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _railBrand(tall),
+                const SizedBox(height: 8),
+                ...nav,
+              ],
+            ),
+          );
     return MaterialSurface(
-      radius: 20,
-      child: IntrinsicHeight(
-        child: Container(
-          width: _kRailW,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: elev2(),
+      radius: 18,
+      child: Container(
+        width: railW,
+        // 实底：与 1.0 的侧栏同一个色（C.surfaceFillStrong 的语义就是
+        // 「压在内容之上的壳」）。用户反馈的「不如 1.0 好看」里，有一半是
+        // 半透明面板把背后的瓦片透出来、字发灰 —— 壳就该是实的。
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: elev3(),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        clipBehavior: Clip.antiAlias,
+        child: inner,
+      ),
+    );
+  }
+
+  /// 竖条顶部的品牌行（与 1.0 侧栏同一个形态：Logo + 应用名）。
+  ///
+  /// 竖条加宽之前这里没有它 —— 而「左上角是空的」正是「看着不像一个 app」的一部分。
+  Widget _railBrand(bool roomy) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(6, 4, 6, 6),
+      child: Row(
+        children: [
+          AppLogo(size: roomy ? 34 : 28),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'APRSlocus',
+                  style: ts(roomy ? 16 : 14, w: FontWeight.w800, ls: -0.3),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                // 标语只在够宽时出现：108px 档放不下（会被省略号吃掉，不如不放）
+                if (roomy) ...[
+                  const SizedBox(height: 1),
+                  Text(
+                    S.of(context).appTagline,
+                    style: ts(10, c: C.grey),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
           ),
-          child: _railItems(),
+        ],
+      ),
+    );
+  }
+
+  /// 顶栏高度：横贯的那一条（**横屏**用）。竖屏的浮层顶栏高度由 `_barKey` 量出。
+  static const double _kBarStripH = 44;
+
+  /// 横屏顶栏：**横贯一条**（浅底 + 下沿分隔线），左端当前页标题、右端那簇胶囊。
+  ///
+  /// 以前这里只有右上角一簇悬浮胶囊，屏幕上沿整条是空的 —— 没有横贯的骨架，
+  /// 这也是「2.0 横屏不如 1.0」观感的一部分。标题与 1.0 顶栏取同一个来源
+  /// （`_labelOf`），不新造一套文案。
+  ///
+  /// `_barKey` 包在**整条**上（而不是只包右端那簇）：地图的顶部让位量 `_topInset()`
+  /// 直接依赖量出来的 `_barH`，量错就会让地图控件压在这条下面。
+  Widget _topBarStrip() {
+    return KeyedSubtree(
+      key: _barKey,
+      child: MaterialSurface(
+        radius: 16,
+        child: Container(
+          height: _kBarStripH,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: C.surfaceFillStrong,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: elev2(),
+            // 下沿一条分隔线：顶栏与它下面的内容面板是**同一列里的两块**，
+            // 靠一条线分界比靠阴影分界更像一个框架。
+            border: Border(bottom: BorderSide(color: C.border)),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _labelOf(Tx.of(context), _slots[_tab].$1),
+                  style: T.h2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              _topBarCluster(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  /// 竖条内容（**不含卡片壳**）：展开时它嵌在工作区那张大卡里，
-  /// 收起时套在 [_railCard] 里 —— 两种形态共用同一份导航，不会漂成两个样子。
-  Widget _railColumn() {
-    return SizedBox(
-      width: _kRailW,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-        child: _railItems(),
-      ),
-    );
-  }
-
-  /// 竖条的导航项列表。
+  /// 横屏的内容面板：**实底**，与竖条同色同圆角（两块是同一套壳）。
   ///
-  /// 套 `SingleChildScrollView`：极矮横屏（手机横放常不足 400dp）下 5 个导航项
-  /// 会溢出成黄条纹 —— 那正是最容易被看出来「没收拾过」的地方。
-  Widget _railItems() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < _slots.length; i++) ...[
-            if (i > 0) const SizedBox(height: 4),
-            _navItem(i, rail: true),
-          ],
-        ],
+  /// 上一版这里是 `C.sheetFill`（半透明 + 磨砂），面板里的列表后面直接透出地图
+  /// 瓦片 —— 文字和瓦片叠在一起，读起来发灰发脏。1.0 的内容区是实底，
+  /// 「不如 1.0 好看」有一半出在这里。
+  Widget _pane() {
+    return MaterialSurface(
+      radius: 18,
+      child: Container(
+        decoration: BoxDecoration(
+          color: C.surfaceFillStrong,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: elev3(),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: ClipRect(child: _content()),
       ),
     );
   }
@@ -1131,7 +1267,7 @@ class _HomeShell2State extends State<HomeShell2>
 
   // ─── 浮层顶栏 ───
 
-  Widget _topBar() {
+  Widget _topBarCluster() {
     final st = widget.state;
     // 顶栏**没有搜索框**（用户反馈：主页与台站页没必要出现）。
     //
