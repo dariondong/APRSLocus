@@ -301,7 +301,7 @@ void _seedDefaults() {
     'BA7KSM': ['developer'],
     'BG7PGW': ['kaishan', 'earlyMember'],
     'BG7LMW': ['kaishan', 'earlyMember'],
-    'BG7OSL': ['kaishan', 'earlyMember'],
+    'BG7OSL': ['kaishan', 'earlyMember', 'jadeGift'],
     'BG4LZY': ['earlyMember'],
     'BA3RZL': ['earlyMember', 'mostBrain', 'jadeGift'],
   };

@@ -1,6 +1,6 @@
 {
-  "version": 50,
-  "updated": "2026-09-22",
+  "version": 51,
+  "updated": "2026-09-25",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -402,7 +402,8 @@
       "grp": "test",
       "honors": [
         "kaishan",
-        "earlyMember"
+        "earlyMember",
+        "jadeGift"
       ],
       "primary": "kaishan"
     },
