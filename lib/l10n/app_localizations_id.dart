@@ -7027,7 +7027,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get ownSourcePhoneGps => "GPS ponsel";
 
   @override
-  String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "Beacon posisi · Grid $grid · $detail";
@@ -7054,13 +7053,10 @@ class AppLocalizationsId extends AppLocalizations {
   String hrLineHr(String hr) => "HR $hr";
 
   @override
-  String get positionBeaconDetail => "Beacon posisi · Grid {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "HR {hr}";
 
   @override
-  String get hrLineHr => "HR {hr}";
 
   @override
   String get garminShareNoLink => "Tidak ada tautan Garmin LiveTrack di konten yang dibagikan";
@@ -7100,6 +7096,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get garminLinkOk => "Tautan valid";
 
   @override
-  String get posSourceUsing => "Sedang dipakai: {src}";
+
+  @override
+  String get beaconForceCoarse => "Tetap pancarkan posisi jaringan (kasar)";
+
+  @override
+  String get beaconForceCoarseHint => "Mati secara bawaan: posisi jaringan (sel / Wi-Fi) sering meleset ratusan meter, jadi memancarkannya berarti mengumumkan koordinat yang salah ke semua orang. Nyalakan hanya bila perangkat tidak punya GPS (tablet, hanya jaringan). Peta dan jejak tetap menyaring titik kasar seperti biasa, jadi tidak ikut kacau. \"Pancarkan sekarang\" manual tidak terpengaruh.";
+
+  @override
+  String beaconCoarseForced(String s) => "Posisi jaringan (kasar) · $s";
+
+  @override
+  String get beaconCoarseForcedNote => "Memancarkan posisi jaringan (kasar)";
 
 }

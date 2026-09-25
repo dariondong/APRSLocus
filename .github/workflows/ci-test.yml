@@ -157,6 +157,14 @@ jobs:
       # 消息页一条也收不到（用户 v1.6.174 报的就是这个，本机没有任何环境能复现）。
       # 它编译得过、analyze 也全绿，所以只能靠这个测试守住「按内层走」：
       # 类型、发信台、消息列表、内层台站上台。
+      # 「强制接受网络定位自动上报」（v1.6.177）动到的是一条**既有约定**
+      # （v1.6.163：粗定位不自动上报），所以三条边界必须钉住：默认仍然不发、
+      # 打开后真的能发、打开的当下界面看得出「发的是网络定位」。
+      # 第三条最容易漏 —— 混进普通倒计时的话编译/测试/界面全都「正常」，
+      # 而用户看到的是一个绿色倒计时，发出去的却是偏几百米的坐标。
+      - name: Test coarse-fix beacon override
+        run: flutter test test/beacon_coarse_force_test.dart
+
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 

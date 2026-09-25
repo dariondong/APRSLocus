@@ -143,14 +143,19 @@ class MyPanel extends StatelessWidget {
                 // 射频未开信标 / 当前是**粗定位（网络）**时给出原因，而不是显示
                 // 一个不会生效的倒计时 —— 判据用结构化的 beaconPhase（与
                 // AppState.canAutoBeacon 同源，两处漂移就是「倒计时走着不发」）。
-                state.beaconPhase == BeaconPhase.rfDisabled
-                    ? S.of(context).beaconRfBeaconOff
-                    : (state.beaconPhase == BeaconPhase.coarseFix
-                        ? S.of(context).beaconCoarseFix
-                        : S.of(context).nextBeaconIn(state.nextBeaconIn)),
+                switch (state.beaconPhase) {
+                  BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
+                  BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
+                  // 强制接受网络定位时它**会发射**，所以不再是「不报」而是
+                  // 「报的是网络定位」—— 这一档也不能退回普通倒计时。
+                  BeaconPhase.coarseForced =>
+                    S.of(context).beaconCoarseForcedNote,
+                  _ => S.of(context).nextBeaconIn(state.nextBeaconIn),
+                },
                 style: ts(10,
                     c: (state.beaconNeedsRfEnable ||
-                            state.beaconPhase == BeaconPhase.coarseFix)
+                            state.beaconPhase == BeaconPhase.coarseFix ||
+                            state.beaconPhase == BeaconPhase.coarseForced)
                         ? C.orange
                         : C.slate),
               ),

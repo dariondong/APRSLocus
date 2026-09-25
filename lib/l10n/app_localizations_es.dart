@@ -7068,7 +7068,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ownSourcePhoneGps => "GPS del teléfono";
 
   @override
-  String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "Baliza de posición · Cuadrícula $grid · $detail";
@@ -7095,13 +7094,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String hrLineHr(String hr) => "pulso $hr";
 
   @override
-  String get positionBeaconDetail => "Baliza de posición · Cuadrícula {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "pulso {hr}";
 
   @override
-  String get hrLineHr => "pulso {hr}";
 
   @override
   String get garminShareNoLink => "No se encontró ningún enlace de Garmin LiveTrack";
@@ -7141,6 +7137,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get garminLinkOk => "Enlace válido";
 
   @override
-  String get posSourceUsing => "En uso ahora: {src}";
+
+  @override
+  String get beaconForceCoarse => "Balizar también con posición de red (gruesa)";
+
+  @override
+  String get beaconForceCoarseHint => "Desactivado por defecto: la posición de red (celda / Wi-Fi) suele fallar cientos de metros, así que balizarla anuncia una coordenada errónea a todos. Actívalo solo si el dispositivo no tiene GPS (tableta, solo red). El mapa y la traza siguen filtrando los puntos gruesos como siempre, así que no se vuelven inestables. El \"balizar ahora\" manual no se ve afectado.";
+
+  @override
+  String beaconCoarseForced(String s) => "Posición de red (gruesa) · $s";
+
+  @override
+  String get beaconCoarseForcedNote => "Balizando con posición de red (gruesa)";
 
 }

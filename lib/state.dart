@@ -111,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '1.6.176';
+  static const appVersion = '1.6.177';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -452,6 +452,20 @@ class AppState extends ChangeNotifier {
   bool beaconIncludeHr = true;
   int _battery = -1; // 电量百分比（-1 未知）
 
+  /// **强制接受网络定位自动上报**（默认关）。
+  ///
+  /// 关着时（默认）：粗定位（网络 / 基站 / 被动）期间自动上报暂停（见 [canAutoBeacon]）。
+  /// 这是 v1.6.163 按用户反馈加的，理由是粗点常年偏几百米、发出去的是个错坐标。
+  ///
+  /// 打开后：粗点也能触发自动上报。给的是「**手里这台设备没有 GPS**」那类场景
+  /// （平板 / 只有网络定位的机器、长期室内）—— 对他们来说可选的位置只剩网络定位，
+  /// 一律不发等于自动上报这个功能整个不存在。
+  ///
+  /// ⚠ 它**只放开「自动上报」这一道闸**，不动任何位置质量闸（GPS 新鲜度 / 跳变 /
+  /// 静止防抖滑窗 / 轨迹与过滤中心仍然把粗点当噪声，见 [_onFix]）—— 也就是说
+  /// 这个开关不会让地图与轨迹重新乱跳，它只决定「粗点能不能被发出去」。
+  bool beaconForceCoarse = false;
+
   // ─── 智能信标（按速度分档：不同速度 → 不同上报间隔 + 信标图标）───
   bool smartBeaconEnabled = false;
   /// 速度档列表（升序，首档 minSpeed==0 为静止档）。空串 symbol 沿用 mySymbol。
@@ -649,6 +663,24 @@ class AppState extends ChangeNotifier {
     beaconIncludeHr = v;
     persist();
     _notify();
+  }
+
+  /// 强制接受网络定位自动上报（见 [beaconForceCoarse]）。
+  ///
+  /// 两个方向都记一条日志：这是**知情选择**，事后排查「轨迹怎么偏了几百米」时
+  /// 日志里必须能看出「那一刻起用的就是网络定位」—— 否则只能靠猜。
+  void setBeaconForceCoarse(bool v) {
+    beaconForceCoarse = v;
+    _log(
+      LogLevel.warn,
+      '信标',
+      v
+          ? '已打开「强制接受网络定位自动上报」：粗定位期间也会自动发射'
+          : '已关闭「强制接受网络定位自动上报」：粗定位期间自动上报暂停',
+    );
+    persist();
+    _notify();
+    _updateNotification();
   }
 
   /// 记住心率带（连接成功后调用）：换机/重启后能一键重连同一台。
@@ -2063,6 +2095,8 @@ class AppState extends ChangeNotifier {
       beaconIncludeBattery =
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
       beaconIncludeHr = p.getBool('beaconIncludeHr') ?? beaconIncludeHr;
+      beaconForceCoarse =
+          p.getBool('beaconForceCoarse') ?? beaconForceCoarse;
       bleHrId = p.getString('bleHrId') ?? bleHrId;
       bleHrName = p.getString('bleHrName') ?? bleHrName;
       // 只恢复「记住的是哪台」，不自动连（权限/设备不在身边时静默失败更困惑）
@@ -2270,6 +2304,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
     await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
+    await p.setBool('beaconForceCoarse', beaconForceCoarse);
     await p.setString('bleHrId', bleHrId);
     await p.setString('bleHrName', bleHrName);
     await p.setString('garminUrl', garminUrl);
@@ -3046,9 +3081,13 @@ class AppState extends ChangeNotifier {
   /// 网络定位从此只用来「在地图上给个大概位置」，不进入信道；GPS 一回来
   /// 就自动恢复（倒计时按 [_lastBeacon] 算，所以那一刻会立刻补报一次）。
   /// **手动「立即上报」不受影响**：那是用户的显式动作，知情且即时。
+  ///
+  /// 唯一的例外是 [beaconForceCoarse]：用户明确选择了「就要发网络定位」
+  /// （没有 GPS 的设备）时才放开这一道闸 —— 它是**用户自己的决定**，
+  /// 而不是代码替他默认。
   bool get canAutoBeacon => connected &&
       beaconEnabled &&
-      !myFixCoarse &&
+      (!myFixCoarse || beaconForceCoarse) &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
   /// 连接**所有已启用**来源（多选）。
@@ -6042,7 +6081,15 @@ class AppState extends ChangeNotifier {
     if (garmin.on && garmin.fresh) return BeaconPhase.garmin;
     // 粗定位（网络/基站）**不自动上报**（见 [canAutoBeacon]），所以也不能显示一个
     // 照走的倒计时 —— 那正是「倒计时结束什么也没发生」的老症状。
-    if (myFixCoarse) return BeaconPhase.coarseFix;
+    //
+    // 开了强制开关时它**确实会发射**，所以这里必须给出倒计时；但绝不能退回到
+    // 普通的 counting —— 那会让界面显示成一个正常的绿色倒计时，用户就再也看不出
+    // 「现在发出去的是网络定位」。单独一档，由 UI 用颜色与文案说清。
+    if (myFixCoarse) {
+      return beaconForceCoarse
+          ? BeaconPhase.coarseForced
+          : BeaconPhase.coarseFix;
+    }
     if (!myHasFix) return BeaconPhase.waitingFix;
     return beaconSecondsLeft > 0 ? BeaconPhase.counting : BeaconPhase.imminent;
   }
@@ -6059,6 +6106,11 @@ class AppState extends ChangeNotifier {
         return l.beaconRfBeaconOff;
       case BeaconPhase.coarseFix:
         return l.beaconCoarseFix;
+      case BeaconPhase.coarseForced:
+        // 与 counting 一样给**真实倒计时**（它确实会发射）。「这是网络定位」
+        // 由引用它的界面用颜色 / 附加文案说明，不塞进倒计时字符串 ——
+        // 这个 getter 有三个界面与通知栏在读，塞进去会让同一句话各处长不一样。
+        return '${beaconSecondsLeft}s';
       case BeaconPhase.garmin:
         return l.beaconGarminSource;
       case BeaconPhase.waitingFix:
@@ -6137,6 +6189,11 @@ enum BeaconPhase {
   /// 当前是**粗定位**（网络/基站/被动）——自动上报已暂停（见 [canAutoBeacon]），
   /// UI 必须说明原因，而不是继续倒计时。
   coarseFix,
+  /// 当前是粗定位，但用户开了**强制接受网络定位自动上报**
+  /// （[AppState.beaconForceCoarse]）—— 会照常倒计时并真的发射。
+  /// 必须与 [counting] 分开：界面要如实告诉用户「发出去的是网络定位（粗）」，
+  /// 否则一个正常的绿色倒计时会让人以为发的是 GPS 位置（两者常差几百米）。
+  coarseForced,
   /// 位置来自**佳明 LiveTrack**（手表比手机准，手机 GPS 会让位）。
   /// 这一档不是「不能上报」，而是「要告诉用户**上报的是手表的位置**」——
   /// 否则用户看着倒计时会以为发的是手机定位，而两者可能差几十公里。

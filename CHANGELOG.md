@@ -1,5 +1,122 @@
 # 更新日志
 
+## [1.6.177] - 2026-09-25
+
+### 📡 信标上报页新增「强制接受网络定位自动上报」（默认关）
+
+用户要求：**在信标上报页面留一个按钮，可开启强制接受网络定位自动上报**。
+
+这条需求动到的是一条**既有约定**：v1.6.163 起粗定位（网络 / 基站 / 被动）
+**不自动上报** —— 粗点常偏几百米、还会原地漂，自动发出去等于向全网宣告一个错坐标，
+收端看到的是一条乱跳的轨迹。当时的理由是充分的，但它漏了一类用户：
+**手里这台设备根本没有 GPS**（平板、只有网络定位的机器、长期室内）。
+对他们来说可选的位置只剩网络定位，一律不发等于「自动上报」这个功能整个不存在，
+而界面上只写着「网络定位中 · 暂不自动上报」—— 他们没有任何办法把它打开。
+
+现在信标上报页多了一个开关（默认关，位置就在那条「为什么没在报」的提示旁边）：
+
+* **默认行为一个字没变**：关着时粗定位仍然不自动上报（老约定继续生效）；
+* 打开后粗定位也会自动发射 —— 开关旁边常驻一句取舍说明（粗点偏差、
+  什么场景才该开、以及**手动「立即上报」不受它影响**）；
+* 打开且当前确实是粗点时，状态不再是普通的绿色倒计时，而是**单独一档**
+  （`BeaconPhase.coarseForced`）：横杠、沉浸页、「我的位置」面板、设置页
+  四处都显示「网络定位（粗）」—— 否则界面与 GPS 正常时一模一样，
+  用户看不出「现在发出去的是个偏几百米的坐标」。
+
+**关键取舍：这个开关只放开「自动上报」这一道闸**，位置质量闸一道都没动
+（GPS 新鲜度、跳变上限、静止防抖滑窗、轨迹与历史台账、APRS-IS 过滤中心仍然把粗点
+当噪声，粗点也仍然不许覆盖佳明给的位置）。也就是说它**不会**让地图与轨迹重新
+「飞来飞去」—— 那正是 v1.6.163 修掉的东西。
+
+落盘与备份都补上了（丢了它，换机后自动上报会静默变回「一直不报」，
+而用户很可能正是因为设备没有 GPS 才需要它）。
+
+**顺带抓出并修掉一个已经躺了很久的 l10n 产物缺陷**：新加的 l10n 形态检查（第 6 条）
+第一次跑就报出 `beaconGarminNext` / `positionBeaconDetail` / `beaconAttachedHr` /
+`hrLineHr` / `posSourceUsing` 五个带占位符的键，在**每一个语言类**里都存在**两份**：
+gen-l10n 生成的那份是对的（`String x(String s) => "... $s"`），而被 `add_*_l10n.py`
+追加的那份是 `String get x => "... {s}"` —— 同一个类里两个同名成员，是 Dart 的
+duplicate_definition **编译错误**。它一直没被发现，因为 CI 的 `flutter pub get`
+会按 arb 重新生成产物，把错的版本盖掉；而本机手动改完不重生成就会撞上。
+五个键共 30 处重复成员已清掉（`lib/l10n/app_localizations*.dart`），生成脚本
+`tool/add_l10n_keys.py` 也修成「带占位符就写**带参数的方法**」，并新增
+`check_l10n_sync.py` 第 6 条把这个形态钉住（两个回归样本验过会报红）。
+
+检查器：`tool/check_pos_quality.py` 里「粗点不许自动上报」那两条**改了判据**
+（从「排除粗点」升级成「默认排除粗点，唯一例外是用户显式开关」——守的还是同一件事：
+不许**代码**替用户默认把粗点发出去），另新增 11 条（`coarseForced` 独立成档、
+开关不许顺手放宽三道位置质量闸、开关要落盘 + 进备份、以及**接线**三条：
+页面上真有这个控件 / `onChanged` 真接了 setter / 强制档在页面上真有如实提示）。
+11 个回归样本全部验过会报红。新增行为测试 `test/beacon_coarse_force_test.dart`
+并接进 CI（默认不发 / 打开后真的能发 / 独立成档 / GPS 回来后归位 / 关掉立刻生效）。
+
+## [1.6.177] - 2026-09-25 (English)
+
+### 📡 New switch on the beacon page: "beacon network (coarse) fixes anyway" (off by default)
+
+User request: **put a button on the beacon-reporting page that enables force-accepting
+network location for automatic reports**.
+
+This touches an **existing rule**: since v1.6.163, coarse fixes (network / cell / passive)
+are **not beaconed automatically** - they are often hundreds of metres off and drift in
+place, so beaconing one announces a wrong coordinate to everyone and the receiver sees a
+track that jumps around. That reasoning was sound, but it missed a class of users: **devices
+with no GPS at all** (tablets, network-only machines, long spells indoors). For them the
+only available position is the network one, so "never beacon it" means the auto-beacon
+feature simply does not exist - and the UI just said "Network fix - auto beacon paused",
+with no way to change it.
+
+The beacon page now has a switch for it (off by default, sitting right next to the
+explanation of why nothing is being sent):
+
+* **the default behaviour is unchanged** - with the switch off, coarse fixes are still not
+  beaconed (the old rule still applies);
+* with it on, coarse fixes do get beaconed - and a permanent note next to the switch
+  spells out the trade-off (how far off coarse fixes are, when it is worth enabling, and
+  that manual "beacon now" is unaffected);
+* when the switch is on *and the current fix really is coarse*, the status is no longer an
+  ordinary green countdown but a **separate phase** (`BeaconPhase.coarseForced`): the map
+  bar, immersive page, "my position" panel and settings page all say "network (coarse)"
+  - otherwise the UI looks exactly like a normal GPS beacon and the user cannot tell that
+  what is going out is a coordinate that may be hundreds of metres off.
+
+**The key trade-off: this switch only opens the auto-beacon gate.** Not one position-quality
+gate was touched (GPS freshness, jump limit, stationary smoothing window, own track and
+history log, APRS-IS filter centre all still treat coarse points as noise, and a coarse
+point still may not overwrite a Garmin position). So it does **not** bring back the
+"marker flying around" behaviour - that was what v1.6.163 fixed.
+
+Persistence and backup were updated too (lose the flag and, after switching devices, auto
+beaconing silently reverts to "never" - and the user quite likely needs it precisely
+because their device has no GPS).
+
+**A long-standing l10n product defect was found and fixed on the way**: the new l10n
+shape rule (no. 6) reported on its very first run that five placeholder keys -
+`beaconGarminNext`, `positionBeaconDetail`, `beaconAttachedHr`, `hrLineHr` and
+`posSourceUsing` - exist **twice** in **every language class**: the gen-l10n one is correct
+(`String x(String s) => "... $s"`), while the copy appended by `add_*_l10n.py` is
+`String get x => "... {s}"`. Two members with the same name in one class is Dart's
+duplicate_definition, i.e. a **compile error**. It went unnoticed because CI's
+`flutter pub get` regenerates the products from the arb files and overwrites the bad
+version; only a local build that does *not* regenerate hits it. All 30 duplicate members
+(5 keys x 6 language classes) were removed from `lib/l10n/app_localizations*.dart`, the
+generator `tool/add_l10n_keys.py` now emits a **method with parameters** whenever a key has
+placeholders, and rule 6 in `check_l10n_sync.py` pins that shape down (verified with two
+regression samples).
+
+Checker: the two "coarse points must not be auto-beaconed" rules in
+`tool/check_pos_quality.py` had their **criteria changed** (from "exclude coarse points" to
+"exclude coarse points by default, the only exception being the user's explicit switch" -
+guarding the same thing: the *code* must not decide on the user's behalf to send a coarse
+point out). Eleven more rules were added (`coarseForced` as its own phase, the switch must
+not relax any of the three position-quality gates, the flag must be persisted and backed
+up, plus three **wiring** rules: the control really is on the page / `onChanged` really is
+wired to the setter / the forced phase really produces an honest note there). All 11
+regression samples were verified to go red. A new behaviour test,
+`test/beacon_coarse_force_test.dart`, was added to CI (off by default / really beacons when
+on / separate phase / returns to normal once GPS is back / switching off takes effect
+immediately).
+
 ## [1.6.176] - 2026-09-25
 
 ### 📐 2.0 横屏重做：借 1.0 的骨架（用户：「2.0 横屏没有 1.0 横屏好看」）

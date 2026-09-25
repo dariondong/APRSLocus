@@ -239,6 +239,47 @@ def main() -> int:
                                   f'（共 {len(bad)}）—— 会报 undefined_getter，'
                                   f'本机查不出、只有 CI 的 analyze 会红')
 
+    # ⑥ 带占位符的键：产物必须是**带参数的方法**，不能是 getter + 字面量 `{x}`
+    #
+    # 真实案例（v1.6.177）：`add_l10n_keys.py` 只会写 getter，于是
+    # `String get beaconCoarseForced => "网络定位（粗）· {s}";` —— 成员在、文案在，
+    # 只有**形态**不对。本机 `S.of(context).beaconCoarseForced(x)` 报 not_a_function；
+    # 而 CI 的 pub get 会按 arb 重新生成 → 全绿。跟「我这儿有错、CI 却是绿的」
+    # 是同一类问题，只有按 arb 的 @key.placeholders 对照产物才看得出来。
+    tmpl = json.loads(io.open(os.path.join(l10n, f'app_{TEMPLATE}.arb'),
+                              encoding='utf-8').read())
+    ph_keys = [k for k in template_keys if isinstance(tmpl.get('@' + k), dict)
+               and tmpl['@' + k].get('placeholders')]
+    if not ph_keys:
+        errors.append('模板 arb 里居然没有带占位符的键 —— 检查器自己可能坏了')
+    # 抽象类
+    #
+    # ⚠ 必须**重新取一次**抽象类，不能复用上面那个 `body` —— ③ 的循环里
+    # `body = class_body(src, cname)` 把它覆盖成了**最后一个语言类**（Id）。
+    # 第一版就是复用 `body`，于是这一条永远在检查 Id 那个类：**改坏抽象类它不报**
+    # （回归样本当场抓到；这类「变量被上一个循环覆盖」的假通过，写检查器时
+    #  比正则写错更难看出来 —— 代码读起来完全正常）。
+    abs_body = class_body(base, 'AppLocalizations')
+    if abs_body is not None:
+        for k in ph_keys:
+            m = re.search(r'String (?:get )?' + re.escape(k) + r'\s*([;(])',
+                          abs_body)
+            if m and m.group(1) == ';':
+                errors.append(f'抽象类里 {k} 是 getter，但 arb 声明了占位符 '
+                              f'{sorted(tmpl["@" + k]["placeholders"])} —— 必须是'
+                              f' `String {k}(...)`，否则本机调用处报 not_a_function')
+    # 各语言实现
+    for lg, fname, cname in TARGETS:
+        src = io.open(os.path.join(l10n, fname), encoding='utf-8').read()
+        b = class_body(src, cname)
+        if b is None:
+            continue
+        for k in ph_keys:
+            if re.search(r'String get ' + re.escape(k) + r'\s*=>', b):
+                errors.append(f'{fname} 的 {k} 被写成 `String get {k} => ...`，'
+                              f'但 arb 声明了占位符 —— 产物里会留着字面量 '
+                              f'{{{{x}}}} 且调用处编译不过（与 gen-l10n 不同形）')
+
     if errors:
         print('l10n 不同步（arb 是，产物不是）：')
         for e in errors:

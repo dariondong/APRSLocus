@@ -89,13 +89,55 @@ def main() -> int:
          '粗定位点仍在推动 APRS-IS 过滤中心 —— 过滤串按 0.01° 取整，粗点漂移'
          '越过一条边界就会触发一次整链路 reconnect（见 _refreshFilter）')
     # 粗点绝不许自动上报（v1.6.163 用户明确要求「网络定位时不自动发定位包」）
-    need('lib/state.dart', '      !myFixCoarse &&',
-         'canAutoBeacon 没有排除粗定位 —— 网络定位下仍会自动发出一个偏几百米'
-         '的坐标（收端看到的是一条乱跳的轨迹）')
-    need('lib/state.dart', 'if (myFixCoarse) return BeaconPhase.coarseFix;',
-         'beaconPhase 没有粗定位这一档 —— 界面会继续显示一个不会生效的倒计时'
-         '（「倒计时走着却不发射」的老毛病）')
+    #
+    # ⚠ v1.6.177 改过这条：用户要「信标上报页留一个按钮，可开启强制接受网络
+    # 定位自动上报」。判据于是从「排除粗点」升级成「**默认**排除粗点，唯一的
+    # 例外是那个用户显式开关」—— 守的还是同一件事：不许**代码**替用户默认把
+    # 一个偏几百米的坐标发出去。
+    need('lib/state.dart', '      (!myFixCoarse || beaconForceCoarse) &&',
+         'canAutoBeacon 不再默认排除粗定位 —— 网络定位下会自动发出一个偏几百米'
+         '的坐标（收端看到的是一条乱跳的轨迹）。唯一允许的例外是用户显式打开的'
+         ' beaconForceCoarse，不是默认放行')
+    # 开关打开时**不能**退回普通的 counting：界面上会变成一个正常的绿色倒计时，
+    # 用户再也看不出「现在发出去的是网络定位」（两者常差几百米）。
+    need('lib/state.dart',
+         '    if (myFixCoarse) {\n      return beaconForceCoarse\n          ? BeaconPhase.coarseForced\n          : BeaconPhase.coarseFix;\n    }',
+         'beaconPhase 的粗定位分支没了/被拆散 —— 要么界面继续显示一个不会生效的'
+         '倒计时（老毛病），要么强制档与普通倒计时混成一样（看不出发的是粗坐标）')
     need('lib/state.dart', 'coarseFix,', 'BeaconPhase 里没有 coarseFix 枚举项')
+    need('lib/state.dart', 'coarseForced,',
+         'BeaconPhase 里没有 coarseForced 枚举项 —— 强制接受网络定位时无法与正常'
+         '倒计时区分（界面会显示成一切正常）')
+    # 这个开关只放开「自动上报」，**绝不许顺手放宽位置质量闸**：
+    # 否则地图/轨迹会重新「飞来飞去」（v1.6.163 修的就是它）。
+    for probe, why in (
+        ('if (coarse && garmin.on) return;',
+         '粗定位点又允许覆盖佳明给的位置了 —— 会拿基站质心替换手表的位置'),
+        ('if (gapSec < _kCoarseHoldSec || jumpKm > _kCoarseJumpKm) {',
+         '粗定位的两道闸（GPS 新鲜度 / 自身位移）被绕过 —— 这个开关不该影响它们，'
+         '「飞来飞去」会回来'),
+        ('if (filterFollow && !coarse) {',
+         '强制开关放开了「粗点推动 APRS-IS 过滤中心」—— 过滤串按 0.01° 取整，'
+         '粗点漂移越过一条边界就会触发一次整链路 reconnect'),
+    ):
+        need('lib/state.dart', probe, why)
+    # 开关本身要落盘 + 进备份：丢了它，换机后自动上报会静默变回「一直不报」，
+    # 而用户很可能正是因为设备没有 GPS 才需要它。
+    need('lib/state.dart', "await p.setBool('beaconForceCoarse', beaconForceCoarse);",
+         'beaconForceCoarse 没落盘 —— 重启后开关回到默认关，用户以为设置没生效')
+    need('lib/backup.dart', "'beaconForceCoarse'",
+         'beaconForceCoarse 没进备份白名单 —— 换机后这个选择会丢')
+    # ── 开关的**接线**：字段/逻辑对了，但控件没接上照样等于没做 ──
+    # 编译、analyze、测试都不会因此失败，用户看到的只是「页面里没这个选项」
+    # 或「拨了不动」—— 本仓库已有多次「功能写好了但没接上」的前科。
+    need('lib/settings_pages.dart', 'SettingsSwitch(S.of(context).beaconForceCoarse,',
+         '信标上报页上没有这个开关 —— 功能等于不存在')
+    need('lib/settings_pages.dart', 'onChanged: st.setBeaconForceCoarse)',
+         '开关没接上 setter —— 拨了不会生效（编译全绿，只是没用）')
+    need('lib/settings_pages.dart',
+         'if (st.beaconPhase == BeaconPhase.coarseForced)',
+         '开着强制且当前就是粗点时没有如实提示 —— 页面上的倒计时与 GPS 正常时'
+         '一模一样，用户看不出「正在发一个偏几百米的坐标」')
     need('lib/state.dart', 'if (!lastKnown && !coarse) {',
          '粗定位点会推进跳变守卫的参照点（GPS 回来时会被误判成跳变）')
     need('lib/state.dart', '    if (!lastKnown &&\n        !coarse &&\n        !still &&',

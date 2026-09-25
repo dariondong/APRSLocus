@@ -6753,7 +6753,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ownSourcePhoneGps => "手机 GPS";
 
   @override
-  String get beaconGarminNext => "佳明上报 · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "位置信标 · 网格 $grid · $detail";
@@ -6780,13 +6779,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String hrLineHr(String hr) => "心率 $hr";
 
   @override
-  String get positionBeaconDetail => "位置信标 · 网格 {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "心率 {hr}";
 
   @override
-  String get hrLineHr => "心率 {hr}";
 
   @override
   String get garminShareNoLink => "分享的内容里没有找到佳明 LiveTrack 链接";
@@ -6826,7 +6822,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get garminLinkOk => "链接有效";
 
   @override
-  String get posSourceUsing => "当前使用：{src}";
+
+  @override
+  String get beaconForceCoarse => "强制接受网络定位自动上报";
+
+  @override
+  String get beaconForceCoarseHint => "默认不开启：网络定位（基站 / Wi-Fi）常偏几百米，自动发出去等于向全网宣告一个错坐标。只有设备没有 GPS（平板 / 只有网络定位）时才建议打开 —— 打开后粗定位也会自动发射；地图与轨迹仍按原样过滤粗点，不会因此变乱。手动「立即上报」不受这个开关影响。";
+
+  @override
+  String beaconCoarseForced(String s) => "网络定位（粗）· $s";
+
+  @override
+  String get beaconCoarseForcedNote => "正在用网络定位（粗）上报";
 
 }
 
@@ -13578,7 +13585,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ownSourcePhoneGps => "手機 GPS";
 
   @override
-  String get beaconGarminNext => "佳明上報 · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "位置信標 · 網格 $grid · $detail";
@@ -13605,13 +13611,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String hrLineHr(String hr) => "心率 $hr";
 
   @override
-  String get positionBeaconDetail => "位置信標 · 網格 {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "心率 {hr}";
 
   @override
-  String get hrLineHr => "心率 {hr}";
 
   @override
   String get garminShareNoLink => "分享的內容裡沒有找到佳明 LiveTrack 連結";
@@ -13651,6 +13654,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get garminLinkOk => "連結有效";
 
   @override
-  String get posSourceUsing => "目前使用：{src}";
+
+  @override
+  String get beaconForceCoarse => "強制接受網路定位自動上報";
+
+  @override
+  String get beaconForceCoarseHint => "預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。";
+
+  @override
+  String beaconCoarseForced(String s) => "網路定位（粗）· $s";
+
+  @override
+  String get beaconCoarseForcedNote => "正在用網路定位（粗）上報";
 
 }

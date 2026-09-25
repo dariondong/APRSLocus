@@ -2484,5 +2484,10 @@
   "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
   "garminNotStarted": "Sin seguimiento",
   "garminAutoFilled": "Enlace rellenado automáticamente",
-  "garminLinkOk": "Enlace válido"
+  "garminLinkOk": "Enlace válido",
+  "beaconForceCoarse": "Balizar también con posición de red (gruesa)",
+  "beaconForceCoarseHint": "Desactivado por defecto: la posición de red (celda / Wi-Fi) suele fallar cientos de metros, así que balizarla anuncia una coordenada errónea a todos. Actívalo solo si el dispositivo no tiene GPS (tableta, solo red). El mapa y la traza siguen filtrando los puntos gruesos como siempre, así que no se vuelven inestables. El \"balizar ahora\" manual no se ve afectado.",
+  "beaconCoarseForced": "Posición de red (gruesa) · {s}",
+  "beaconCoarseForcedNote": "Balizando con posición de red (gruesa)",
+  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}}
 }

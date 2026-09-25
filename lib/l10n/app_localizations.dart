@@ -12441,6 +12441,30 @@ abstract class AppLocalizations {
   /// **'当前使用：{src}'**
   String get posSourceUsing;
 
+  /// No description provided for @beaconForceCoarse.
+  ///
+  /// In zh, this message translates to:
+  /// **'强制接受网络定位自动上报'**
+  String get beaconForceCoarse;
+
+  /// No description provided for @beaconForceCoarseHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认不开启：网络定位（基站 / Wi-Fi）常偏几百米，自动发出去等于向全网宣告一个错坐标。只有设备没有 GPS（平板 / 只有网络定位）时才建议打开 —— 打开后粗定位也会自动发射；地图与轨迹仍按原样过滤粗点，不会因此变乱。手动「立即上报」不受这个开关影响。'**
+  String get beaconForceCoarseHint;
+
+  /// No description provided for @beaconCoarseForced.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络定位（粗）· {s}'**
+  String beaconCoarseForced(String s);
+
+  /// No description provided for @beaconCoarseForcedNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在用网络定位（粗）上报'**
+  String get beaconCoarseForcedNote;
+
 }
 
 class _AppLocalizationsDelegate

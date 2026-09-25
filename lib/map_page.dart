@@ -2085,6 +2085,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       BeaconPhase.off => S.of(context).beaconOffChip,
       BeaconPhase.rfDisabled => S.of(context).beaconRfBeaconOff,
       BeaconPhase.coarseFix => S.of(context).beaconCoarseFix,
+      // 开了「强制接受网络定位自动上报」时它**会真的发射**，所以这一档跟的是
+      // 倒计时；但文案里必须点明「发的是网络定位（粗）」—— 见 [BeaconPhase.coarseForced]。
+      BeaconPhase.coarseForced =>
+        S.of(context).beaconCoarseForced(st.nextBeaconIn),
       // 佳明档：把**来源**说清楚 + 心率（用户明确要「主屏能看到心率」）。
       // 只写倒计时的话，用户会以为发的是手机定位（两者可能差几十公里）。
       BeaconPhase.garmin => S.of(context).beaconGarminNext(
@@ -2096,13 +2100,19 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       BeaconPhase.disconnected => S.of(context).beaconNotConnected,
       BeaconPhase.waitingFix => st.nextBeaconIn,
     };
-    // 粗定位时用橙色：它和「射频信标没开」一样是「现在不会自动发」的状态，
-    // 绿色（信标已开）会让人以为倒计时正在走。
+    // 颜色：非绿 = 「现在这一发不能当作正常 GPS 上报看」。
+    //   * coarseFix / coarseForced → 橙（粗定位）；强制那档虽然是绿的语义
+    //     （会发射），但内容同样是粗点，用绿色会与正常 GPS 上报混为一谈；
+    //   * garmin → 红（发的是手表的位置，可能差几十公里）。
+    // 改成 switch 而不是嵌套三元：档位会继续长，三元叠到第四层就没法读了。
     final c = !on
         ? C.slate
-        : (st.beaconPhase == BeaconPhase.coarseFix
-            ? C.orange
-            : (st.beaconPhase == BeaconPhase.garmin ? C.red : C.green));
+        : switch (st.beaconPhase) {
+            BeaconPhase.coarseFix => C.orange,
+            BeaconPhase.coarseForced => C.orange,
+            BeaconPhase.garmin => C.red,
+            _ => C.green,
+          };
     return ClickCursor(
       child: GestureDetector(
         onTap: _showMyPanel,

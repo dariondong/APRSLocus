@@ -58,6 +58,10 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，
     // 换机后当然希望还按自己调的那样上报。
     'beaconIncludeHr',
+    // 强制接受网络定位自动上报：同上 —— 这是用户对**上报行为**的知情选择，
+    // 而且他的设备很可能正是因为**没有 GPS** 才需要它。丢了它换机后自动上报
+    // 会静默变回「一直不报」，而用户不知道为什么（界面只显示「网络定位中」）。
+    'beaconForceCoarse',
     // 记住的心率带与佳明 LiveTrack 链接：都是「用户自己配的外部设备」，
     // 不该在换机后丢（重新找一遍设备/再问一次链接很烦）。
     'bleHrId', 'bleHrName', 'garminUrl',

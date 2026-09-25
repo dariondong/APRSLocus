@@ -36,155 +36,98 @@ CLASSES = {
 
 # ── 要加的键：key → (zh, zh_TW, en, ja, es, id) ──
 KEYS = {
-    # 佳明页的**状态显示**与**确定按钮**（用户反馈：「它也不会自动填充」「我也不知道
-    # 他生效了没有，都没有一个确定按钮和状态显示」）。
-    'garminNotStarted': ('未开启追踪', '未開啟追蹤', 'Not tracking', '追跡していません',
-                         'Sin seguimiento', 'Tidak melacak'),
-    'garminAutoFilled': ('已自动填入分享链接', '已自動填入分享連結',
-                         'Share link filled in automatically', '共有リンクを自動入力しました',
-                         'Enlace rellenado automáticamente', 'Tautan terisi otomatis'),
-    'garminLinkOk': ('链接有效', '連結有效', 'Link is valid', 'リンクは有効',
-                     'Enlace válido', 'Tautan valid'),
-
-    # 位置来源的**优先级**（用户问「听谁的？」）——两处设置都显示这一句，
-    # 避免「定位上报页一个来源、设备页另一个来源」看着像打架。
-    'posSourcePrecedence': (
-        '同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS',
-        '同時可用時的優先順序：模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS',
-        'Priority when several are available: simulated/manual › Garmin (while the watch has live '
-        'data) › phone GPS',
-        '同時に使える場合の優先順位：シミュレート/手動 › Garmin（ウォッチに实时データがある間）'
-        '› スマホ GPS',
-        'Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga '
-        'datos en vivo) › GPS del teléfono',
-        'Prioritas bila beberapa tersedia: simulasi/manual › Garmin (selama jam punya data '
-        'langsung) › GPS ponsel',
+    # ── 强制接受网络定位自动上报（v1.6.177 用户要求：「在信标上报页面留一个按钮，
+    # 可开启强制接受网络定位自动上报」）──
+    #
+    # 背景：v1.6.163 起粗定位（网络/基站/被动）**不自动上报**（粗点常偏几百米，
+    # 发出去的是错坐标）。但「手里这台设备没有 GPS」的用户（平板/只有网络定位的
+    # 机器/长期室内）就变成「永远不会自动上报」，而界面上只写着「网络定位中」
+    # —— 他们没有任何办法打开它。这组文案就是那个开关。
+    'beaconForceCoarse': (
+        '强制接受网络定位自动上报', '強制接受網路定位自動上報',
+        'Beacon network (coarse) fixes anyway',
+        'ネットワーク測位でも自動送信する',
+        'Balizar también con posición de red (gruesa)',
+        'Tetap pancarkan posisi jaringan (kasar)',
     ),
-    'posSourceUsing': (
-        '当前使用：{src}', '目前使用：{src}', 'In use now: {src}',
-        '現在使用中：{src}', 'En uso ahora: {src}', 'Sedang dipakai: {src}',
+    # 取舍要写清：这个开关换来的是「能发」，代价是「发的是粗坐标」。
+    'beaconForceCoarseHint': (
+        '默认不开启：网络定位（基站 / Wi-Fi）常偏几百米，自动发出去等于向全网宣告一个错坐标。'
+        '只有设备没有 GPS（平板 / 只有网络定位）时才建议打开 —— 打开后粗定位也会自动发射；'
+        '地图与轨迹仍按原样过滤粗点，不会因此变乱。手动「立即上报」不受这个开关影响。',
+        '預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。'
+        '只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；'
+        '地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。',
+        'Off by default: network fixes (cell / Wi-Fi) are often hundreds of metres off, so beaconing '
+        'them announces a wrong coordinate to everyone. Turn this on only when the device has no GPS '
+        '(tablet, network-only). Coarse points are still filtered the usual way for the map and '
+        'track, so those do not get jumpy. Manual "beacon now" is unaffected.',
+        '既定ではオフ：ネットワーク測位（基地局 / Wi-Fi）は数百メートルずれることが多く、'
+        '自動送信すると誤った座標を全員に知らせることになります。GPS の無い端末（タブレットなど）'
+        'でのみオンにしてください。地図と軌跡は従来どおり粗い点を除外するので乱れません。'
+        '手動の「今すぐ送信」はこのスイッチの影響を受けません。',
+        'Desactivado por defecto: la posición de red (celda / Wi-Fi) suele fallar cientos de metros, '
+        'así que balizarla anuncia una coordenada errónea a todos. Actívalo solo si el dispositivo no '
+        'tiene GPS (tableta, solo red). El mapa y la traza siguen filtrando los puntos gruesos como '
+        'siempre, así que no se vuelven inestables. El "balizar ahora" manual no se ve afectado.',
+        'Mati secara bawaan: posisi jaringan (sel / Wi-Fi) sering meleset ratusan meter, jadi '
+        'memancarkannya berarti mengumumkan koordinat yang salah ke semua orang. Nyalakan hanya bila '
+        'perangkat tidak punya GPS (tablet, hanya jaringan). Peta dan jejak tetap menyaring titik '
+        'kasar seperti biasa, jadi tidak ikut kacau. "Pancarkan sekarang" manual tidak terpengaruh.',
     ),
-    'posSrcSim': ('模拟/手动位置', '模擬/手動位置', 'simulated/manual', 'シミュレート/手動',
-                  'simulada/manual', 'simulasi/manual'),
-    'posSrcGarmin': ('佳明 LiveTrack', '佳明 LiveTrack', 'Garmin LiveTrack',
-                     'Garmin LiveTrack', 'Garmin LiveTrack', 'Garmin LiveTrack'),
-    'posSrcPhone': ('手机 GPS', '手機 GPS', 'phone GPS', 'スマホ GPS',
-                    'GPS del teléfono', 'GPS ponsel'),
-    'posSrcNone': ('未定位', '未定位', 'no fix', '未測位', 'sin posición', 'belum ada posisi'),
-
-    # 「数据来源」卡收敛到「设置 → 设备」后，连接页与音频页顶部的指路文案。
-    # 为什么要有：这两页原来各挂一张「数据来源」卡（三处重复 = 用户说的「乱套」），
-    # 删掉之后必须**告诉用户去哪儿**启用/切换链路，否则会以为功能消失了。
-    'sourceMovedHint': (
-        '要启用 / 切换数据来源（链路），请到「设置 → 设备」',
-        '要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」',
-        'To enable or switch data sources (links), go to Settings → Devices',
-        'データソース（リンク）の有効化・切り替えは「設定 → デバイス」で行います',
-        'Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos',
-        'Untuk mengaktifkan/mengganti sumber data (tautan), buka Setelan → Perangkat',
+    # 强制档下的横杠文案：会发射，所以给真实倒计时；要点明「发的是网络定位」。
+    'beaconCoarseForced': (
+        '网络定位（粗）· {s}', '網路定位（粗）· {s}',
+        'Network fix (coarse) · {s}', 'ネットワーク測位（粗）· {s}',
+        'Posición de red (gruesa) · {s}', 'Posisi jaringan (kasar) · {s}',
     ),
-
-    # 心率来源是**佳明 LiveTrack**（手表）时的说明。
-    # 用户要求：「如果链接了佳明就提示从佳明追踪获取」。心率有两个来源
-    # （BLE 胸带 / 佳明点里的 heartRateBeatsPerMin），不写清楚用户不知道
-    # 这个数字是从哪来的 —— 尤其没插胸带时他会以为设置坏了。
-    'hrFromGarmin': (
-        '心率来自佳明 LiveTrack（手表）', '心率來自佳明 LiveTrack（手錶）',
-        'Heart rate from Garmin LiveTrack (watch)',
-        '心拍は Garmin LiveTrack（ウォッチ）から',
-        'Pulso desde Garmin LiveTrack (reloj)',
-        'Detak jantung dari Garmin LiveTrack (jam)',
-    ),
-
-    # 分享进来的内容里**没有**佳明链接时的提示。
-    # 为什么必须给：以前解析失败是**静默 return** —— 用户分享后什么都没发生、
-    # 也没有任何解释，只能来问「为什么没识别」。失败必须可见。
-    'garminShareNoLink': (
-        '分享的内容里没有找到佳明 LiveTrack 链接',
-        '分享的內容裡沒有找到佳明 LiveTrack 連結',
-        'No Garmin LiveTrack link found in what was shared',
-        '共有された内容に Garmin LiveTrack のリンクが見つかりません',
-        'No se encontró ningún enlace de Garmin LiveTrack',
-        'Tidak ada tautan Garmin LiveTrack di konten yang dibagikan',
-    ),
-
-    # 位置来源：**如实的状态行**（不是二选一的开关）。
-    # 佳明与手机 GPS 本来就不是二选一：手表在直播时优先用手表，超过 120s 没新点
-    # 自动交回手机 —— 所以这里只显示「现在是谁在供位置」，不假装是用户选的。
-    'posSourceIdle': (
-        '未追踪（未启动定位）', '未追蹤（未啟動定位）', 'Not tracking (location off)',
-        '未追跡（位置情報オフ）', 'Sin seguimiento (ubicación desactivada)',
-        'Tidak melacak (lokasi nonaktif)',
-    ),
-    'ownSourceGarminLive': (
-        '追踪中（手机 GPS 已让位）', '追蹤中（手機 GPS 已讓位）',
-        'Tracking (phone GPS stepped aside)', '追跡中（スマホ GPS は待機）',
-        'Siguiendo (el GPS del teléfono cedió)', 'Melacak (GPS ponsel menyingkir)',
-    ),
-    'ownSourceGarminStale': (
-        '链接有效，但佳明没有新点（暂时用不到）', '連結有效，但佳明沒有新點（暫時用不到）',
-        'Link set, but Garmin has no fresh points', 'リンクは有効だが新しい点がありません',
-        'Enlace configurado, pero Garmin no tiene puntos nuevos',
-        'Tautan ada, tapi Garmin belum punya titik baru',
-    ),
-    'ownSourceHrIdle': (
-        '未连接（点一下连接心率带）', '未連線（點一下連線心率帶）',
-        'Not connected (tap to connect a strap)', '未接続（タップして接続）',
-        'Sin conectar (toca para conectar)', 'Belum tersambung (ketuk untuk menyambung)',
-    ),
-    'hrLineHr': ('心率 {hr}', '心率 {hr}', 'HR {hr}', '心拍 {hr}',
-                 'pulso {hr}', 'HR {hr}'),
-    # 手动上报后的提示：把**实际附带的内容**列出来，用户才不用猜
-    # （用户问「手动上报…没有附带心率？」—— 之前提示只说网格，看不出带了什么）
-    'positionBeaconDetail': (
-        '位置信标 · 网格 {grid} · {detail}',
-        '位置信標 · 網格 {grid} · {detail}',
-        'Position beacon · Grid {grid} · {detail}',
-        '位置ビーコン · グリッド {grid} · {detail}',
-        'Baliza de posición · Cuadrícula {grid} · {detail}',
-        'Beacon posisi · Grid {grid} · {detail}',
-    ),
-    'beaconAttachedHr': ('心率 {hr}', '心率 {hr}', 'HR {hr}',
-                         '心拍 {hr}', 'pulso {hr}', 'HR {hr}'),
-    'beaconAttachedNone': ('未附带心率', '未附帶心率', 'no heart rate',
-                           '心拍なし', 'sin pulso', 'tanpa detak jantung'),
-    # 「位置来源 / 心率来源」——数据来源卡里的两个小标题（用户要求：
-    # 佳明应当作为「数据来源」的一种选择）
-    'posSourceLabel': (
-        '位置来源', '位置來源', 'Position source', '位置ソース',
-        'Fuente de posición', 'Sumber posisi',
-    ),
-    'hrSourceLabel': (
-        '心率来源', '心率來源', 'Heart-rate source', '心拍ソース',
-        'Fuente de pulso', 'Sumber detak jantung',
-    ),
-    'ownSourcePhoneGps': (
-        '手机 GPS', '手機 GPS', 'Phone GPS', 'スマホ GPS',
-        'GPS del teléfono', 'GPS ponsel',
-    ),
-    'beaconGarminSource': (
-        '佳明 LiveTrack 上报中', '佳明 LiveTrack 上報中',
-        'Beaconing from Garmin LiveTrack', 'Garmin LiveTrack から送信',
-        'Balizando desde Garmin LiveTrack', 'Memancarkan dari Garmin LiveTrack',
-    ),
-    # 横杠上的佳明档：来源 + 倒计时 + 心率一起给（用户要「主屏能看到心率」）
-    'beaconGarminNext': (
-        '佳明上报 · {s} · ❤{hr}', '佳明上報 · {s} · ❤{hr}',
-        'Garmin · {s} · ❤{hr}', 'Garmin · {s} · ❤{hr}',
-        'Garmin · {s} · ❤{hr}', 'Garmin · {s} · ❤{hr}',
+    # 不带倒计时的短句（沉浸页 / 我的位置面板 / 设置页提示条）。
+    'beaconCoarseForcedNote': (
+        '正在用网络定位（粗）上报', '正在用網路定位（粗）上報',
+        'Beaconing a network (coarse) fix',
+        'ネットワーク測位（粗）で送信中',
+        'Balizando con posición de red (gruesa)',
+        'Memancarkan posisi jaringan (kasar)',
     ),
 }
 
 # ── 占位符声明（可空）──
 META = {
-    'posSourceUsing': '{"placeholders": {"src": {"type": "String"}}}',
-    'hrLineHr': '{"placeholders": {"hr": {"type": "String"}}}',
-    'positionBeaconDetail': '{"placeholders": {"grid": {"type": "String"}, '
-                            '"detail": {"type": "String"}}}',
-    'beaconAttachedHr': '{"placeholders": {"hr": {"type": "String"}}}',
-    'beaconGarminNext': '{"placeholders": {"s": {"type": "String"}, '
-                        '"hr": {"type": "String"}}}',
+    'beaconCoarseForced': '{"placeholders": {"s": {"type": "String"}}}',
 }
+
+
+def _params(key):
+    """从 META 里抠出这个键的占位符名字。"""
+    raw = META.get(key)
+    if not raw:
+        return []
+    try:
+        return list(json.loads(raw).get('placeholders', {}).keys())
+    except Exception:
+        return []
+
+
+def member(key):
+    """产出的成员签名：无占位符 → `get key`；有 → `key(String a, String b)`。
+
+    ⚠ 这是一处真实缺陷的修法（v1.6.177）：本函数以前一律写 getter，于是带占位符
+    的键被写成 `String get x => "... {s}";` —— **本机** `S.of(context).x(y)` 报
+    not_a_function，而 CI 的 `pub get` 会按 arb 重新生成产物，于是 CI 全绿、
+    问题被盖住（正是本仓库最熟悉的「我这儿有错、CI 却是绿的」）。
+    产物必须与 gen-l10n 同形：带占位符就是**带参数的方法**。
+    """
+    ps = _params(key)
+    if not ps:
+        return 'get %s' % key
+    return '%s(%s)' % (key, ', '.join('String ' + x for x in ps))
+
+
+def interp(key, text):
+    """把 `{x}` 换成 Dart 插值 `$x`（与 gen-l10n 的产物一致）。"""
+    for x in _params(key):
+        text = text.replace('{%s}' % x, '$%s' % x)
+    return text
 
 
 def class_body(src, name):
@@ -246,11 +189,11 @@ def main() -> int:
     s = io.open(p, encoding='utf-8').read()
     code = []
     for k, v in KEYS.items():
-        if re.search(r'String get %s\b' % k, s):
+        if re.search(r'String (?:get )?%s\b' % k, s):
             continue
         code.append("  /// No description provided for @%s.\n  ///\n"
                     "  /// In zh, this message translates to:\n  /// **'%s'**\n"
-                    "  String get %s;\n" % (k, v[0], k))
+                    "  String %s;\n" % (k, v[0], member(k)))
     if code:
         _, j = class_body(s, 'AppLocalizations')
         s = s[:j] + '\n' + '\n'.join(code) + s[j:]
@@ -266,10 +209,11 @@ def main() -> int:
         b0, b1 = class_body(s, CLASSES[lg])
         code = []
         for k, v in KEYS.items():
-            if re.search(r'String get %s\b' % k, s[b0:b1]):
+            if re.search(r'String (?:get )?%s\b' % k, s[b0:b1]):
                 continue
-            code.append('  @override\n  String get %s => %s;\n'
-                        % (k, json.dumps(v[IDX[lg]], ensure_ascii=False)))
+            code.append('  @override\n  String %s => %s;\n'
+                        % (member(k),
+                           json.dumps(interp(k, v[IDX[lg]]), ensure_ascii=False)))
         if code:
             s = s[:b1] + '\n' + '\n'.join(code) + s[b1:]
             io.open(p, 'w', encoding='utf-8').write(s)

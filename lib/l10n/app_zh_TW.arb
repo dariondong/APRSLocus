@@ -2988,5 +2988,10 @@
   "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
   "garminNotStarted": "未開啟追蹤",
   "garminAutoFilled": "已自動填入分享連結",
-  "garminLinkOk": "連結有效"
+  "garminLinkOk": "連結有效",
+  "beaconForceCoarse": "強制接受網路定位自動上報",
+  "beaconForceCoarseHint": "預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。",
+  "beaconCoarseForced": "網路定位（粗）· {s}",
+  "beaconCoarseForcedNote": "正在用網路定位（粗）上報",
+  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}}
 }

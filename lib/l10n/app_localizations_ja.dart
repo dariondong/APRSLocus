@@ -6827,7 +6827,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ownSourcePhoneGps => "スマホ GPS";
 
   @override
-  String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "位置ビーコン · グリッド $grid · $detail";
@@ -6854,13 +6853,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String hrLineHr(String hr) => "心拍 $hr";
 
   @override
-  String get positionBeaconDetail => "位置ビーコン · グリッド {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "心拍 {hr}";
 
   @override
-  String get hrLineHr => "心拍 {hr}";
 
   @override
   String get garminShareNoLink => "共有された内容に Garmin LiveTrack のリンクが見つかりません";
@@ -6900,6 +6896,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get garminLinkOk => "リンクは有効";
 
   @override
-  String get posSourceUsing => "現在使用中：{src}";
+
+  @override
+  String get beaconForceCoarse => "ネットワーク測位でも自動送信する";
+
+  @override
+  String get beaconForceCoarseHint => "既定ではオフ：ネットワーク測位（基地局 / Wi-Fi）は数百メートルずれることが多く、自動送信すると誤った座標を全員に知らせることになります。GPS の無い端末（タブレットなど）でのみオンにしてください。地図と軌跡は従来どおり粗い点を除外するので乱れません。手動の「今すぐ送信」はこのスイッチの影響を受けません。";
+
+  @override
+  String beaconCoarseForced(String s) => "ネットワーク測位（粗）· $s";
+
+  @override
+  String get beaconCoarseForcedNote => "ネットワーク測位（粗）で送信中";
 
 }

@@ -1138,9 +1138,27 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               ),
             // 粗定位（网络/基站）期间不自动上报：与「射频信标未开启」一样，把原因
             // 说出来 —— 否则用户只会看到一个不走的倒计时，以为信标坏了。
-            // 这里没有「一键修复」：唯一能做的是等 GPS 回来（也可以手动上报一次）。
+            // 除了等 GPS 回来（或手动上报一次），用户还能**明确打开**下面那个开关。
             if (st.beaconPhase == BeaconPhase.coarseFix)
               SettingsHint(S.of(context).beaconCoarseHint,
+                  color: C.orange, icon: Icons.gps_off_rounded),
+            // ── 强制接受网络定位自动上报（默认关）──
+            //
+            // 放这一页而不是设备/连接页：它改的是**上报行为**，而用户遇到
+            // 「倒计时不走」时人就在这一页 —— 开关必须坐在「原因」旁边才找得到。
+            SettingsSwitch(S.of(context).beaconForceCoarse,
+                value: st.beaconForceCoarse,
+                color: C.orange,
+                onChanged: st.setBeaconForceCoarse),
+            // 说明常驻（不只在打开时才显示）：它是一句取舍，用户得先读到再决定；
+            // 打开后用橙色，让人一眼看到「现在处于非默认状态」。
+            SettingsHint(S.of(context).beaconForceCoarseHint,
+                color: st.beaconForceCoarse ? C.orange : C.slate,
+                icon: Icons.warning_amber_rounded),
+            // 开着强制且**当前就是粗点**：发出去的就是网络定位，必须点明 ——
+            // 不然这一行倒计时看起来与 GPS 正常时一模一样。
+            if (st.beaconPhase == BeaconPhase.coarseForced)
+              SettingsHint(S.of(context).beaconCoarseForcedNote,
                   color: C.orange, icon: Icons.gps_off_rounded),
             // 模拟位置模式：不显示 GPS 启动按钮，改为提示
             if (st.useSimLocation)

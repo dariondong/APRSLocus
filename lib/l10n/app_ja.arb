@@ -2484,5 +2484,10 @@
   "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
   "garminNotStarted": "追跡していません",
   "garminAutoFilled": "共有リンクを自動入力しました",
-  "garminLinkOk": "リンクは有効"
+  "garminLinkOk": "リンクは有効",
+  "beaconForceCoarse": "ネットワーク測位でも自動送信する",
+  "beaconForceCoarseHint": "既定ではオフ：ネットワーク測位（基地局 / Wi-Fi）は数百メートルずれることが多く、自動送信すると誤った座標を全員に知らせることになります。GPS の無い端末（タブレットなど）でのみオンにしてください。地図と軌跡は従来どおり粗い点を除外するので乱れません。手動の「今すぐ送信」はこのスイッチの影響を受けません。",
+  "beaconCoarseForced": "ネットワーク測位（粗）· {s}",
+  "beaconCoarseForcedNote": "ネットワーク測位（粗）で送信中",
+  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}}
 }

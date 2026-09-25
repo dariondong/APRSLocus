@@ -7018,7 +7018,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ownSourcePhoneGps => "Phone GPS";
 
   @override
-  String get beaconGarminNext => "Garmin · {s} · ❤{hr}";
 
   @override
   String positionBeaconDetail(String grid, String detail) => "Position beacon · Grid $grid · $detail";
@@ -7045,13 +7044,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String hrLineHr(String hr) => "HR $hr";
 
   @override
-  String get positionBeaconDetail => "Position beacon · Grid {grid} · {detail}";
 
   @override
-  String get beaconAttachedHr => "HR {hr}";
 
   @override
-  String get hrLineHr => "HR {hr}";
 
   @override
   String get garminShareNoLink => "No Garmin LiveTrack link found in what was shared";
@@ -7091,6 +7087,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get garminLinkOk => "Link is valid";
 
   @override
-  String get posSourceUsing => "In use now: {src}";
+
+  @override
+  String get beaconForceCoarse => "Beacon network (coarse) fixes anyway";
+
+  @override
+  String get beaconForceCoarseHint => "Off by default: network fixes (cell / Wi-Fi) are often hundreds of metres off, so beaconing them announces a wrong coordinate to everyone. Turn this on only when the device has no GPS (tablet, network-only). Coarse points are still filtered the usual way for the map and track, so those do not get jumpy. Manual \"beacon now\" is unaffected.";
+
+  @override
+  String beaconCoarseForced(String s) => "Network fix (coarse) · $s";
+
+  @override
+  String get beaconCoarseForcedNote => "Beaconing a network (coarse) fix";
 
 }

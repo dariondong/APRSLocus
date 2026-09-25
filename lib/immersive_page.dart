@@ -551,6 +551,9 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
     final String? note = switch (st.beaconPhase) {
       BeaconPhase.rfDisabled => s.beaconRfBeaconOff,
       BeaconPhase.coarseFix => s.beaconCoarseFix,
+      // 强制上报下的粗定位：会发射，但必须说清发的是网络定位（否则这一页
+      // 看起来与正常 GPS 上报完全一样）。
+      BeaconPhase.coarseForced => s.beaconCoarseForcedNote,
       _ => null,
     };
     return _card(

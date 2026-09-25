@@ -2484,5 +2484,10 @@
   "@posSourceUsing": {"placeholders": {"src": {"type": "String"}}},
   "garminNotStarted": "Tidak melacak",
   "garminAutoFilled": "Tautan terisi otomatis",
-  "garminLinkOk": "Tautan valid"
+  "garminLinkOk": "Tautan valid",
+  "beaconForceCoarse": "Tetap pancarkan posisi jaringan (kasar)",
+  "beaconForceCoarseHint": "Mati secara bawaan: posisi jaringan (sel / Wi-Fi) sering meleset ratusan meter, jadi memancarkannya berarti mengumumkan koordinat yang salah ke semua orang. Nyalakan hanya bila perangkat tidak punya GPS (tablet, hanya jaringan). Peta dan jejak tetap menyaring titik kasar seperti biasa, jadi tidak ikut kacau. \"Pancarkan sekarang\" manual tidak terpengaruh.",
+  "beaconCoarseForced": "Posisi jaringan (kasar) · {s}",
+  "beaconCoarseForcedNote": "Memancarkan posisi jaringan (kasar)",
+  "@beaconCoarseForced": {"placeholders": {"s": {"type": "String"}}}
 }
