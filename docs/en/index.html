@@ -272,36 +272,52 @@
     <div class="announce-ribbon"><span class="ar-dot"></span>Announcement</div>
 
     <header class="announce-head">
-      <p class="announce-kicker">APRSLocus 2.0 BETA — Development Begins</p>
-      <h2 class="announce-title">TOUCH SKY<span class="announce-en">A Thank-You Letter</span></h2>
-      <p class="announce-sub">From network-only to radio frequency — from "seeing" to "reaching".</p>
+      <p class="announce-kicker">1.5.8 → 2.0 · 322 updates</p>
+      <h2 class="announce-title">TOUCH SKY<span class="announce-en">2.0 release notes · What's New</span></h2>
+      <p class="announce-sub">From network-only to radio — from "seeing" to "reaching". Every step of the 2.0 journey.</p>
     </header>
 
     <div class="announce-body">
+      <p><b>APRSLocus 2.0 goes live on Sep 25 at 22:00</b> — grab the latest build from GitHub Releases.</p>
       <p class="announce-greet">Dear fellow travelers of APRSLocus,</p>
-      <p>When <b>FIRST FIX</b> lit up for the first time, we were still searching for a coordinate deep inside the network. A bright dot crossed clouds and servers and landed on the map, like a first breath. Now <b>TOUCH SKY</b> lets the signal leave the cable, enter the air, cross mountain ridges and cities, and land in the ripples of RF. Going from pure network to radio is more than a technical migration — it is a journey from "seeing" to "reaching".</p>
-      <p>Thanks to the APRS community, digipeaters, iGates, server maintainers, map and data providers, and all open-source projects and amateur-radio pioneers. You are the invisible bridges and the silent shores; you built the road between network and radio, letting every fix travel farther.</p>
-      <p>1.0 "<b>FIRST FIX</b>" gave us our footing; 2.0 "<b>TOUCH SKY</b>" makes us look up. From pure network to radio, we write "connected" as "heard", and "data arrived" as "the sky answered". And now we are officially moving into <b>APRSLocus 2.0 BETA</b> development. TOUCH SKY is not the destination — it is the starting point of the next voyage.</p>
-      <p>Testers, HAMs and developers are all welcome to join the <b>2.0 BETA</b>. Your logs, suggestions, reproductions and patience remain the brightest signal on this road.</p>
-      <p class="announce-quote">FIRST FIX is where we started; TOUCH SKY is a salute. 2.0 BETA is the next departure.<br>The sky is vast — let's keep going together.</p>
+      <p>After 1.5.8 we wrote <b>322 updates</b>. Not a number, but a road from "a dot in the network" to "an answer in the sky". Here are all the footprints.</p>
+      <p><b>1 · UI 2.0</b>: a map-first layout — the map stays full-screen and everything else lives in a draggable sheet, switchable back to 1.0 in Display settings; a floating bottom capsule nav (sliding indicator) plus a top-right capsule (weather / connection / locate); a 44px grab handle with full-page dragging; landscape unified across phone / tablet / desktop as a left rail + map; the top search bar removed, back returns to the map, weather and one-tap connect restored; 16 pages get a first-visit tip card.</p>
+      <p><b>2 · Materials &amp; themes</b>: new frosted glass (Acrylic) and mica materials plus a "full glass" tier; theme colors / icons / text are editable, with background images and JSON export (images included); more tokens, density and font controls, per-tab accents; backup &amp; restore exports settings and data as one JSON.</p>
+      <p><b>3 · Map &amp; immersive map</b>: many sources (AMap / satellite / vector without an API key / Carto / OSM / OpenTopo / Esri); a new immersive map page (navigation style, nearby stations on the left); station filters apply to the map; offline map downloads by region; clustering removed; track replay (tap a day to replay it).</p>
+      <p><b>4 · Stations &amp; identification</b>: the aprs.org device database identifies vendor / model / class; 37 symbol tables and 3571 icons built in; a station action menu (favorite / copy callsign / delete) and APRS.tv lookup; APRSlocus platform identification (no longer just "a phone app"); a rebuilt plotting algorithm so stale, duplicate, bad and fuzzy positions no longer fool you.</p>
+      <p><b>5 · Messaging &amp; translation</b>: a unified chat and group list with ACK; group-chat refactor (create / invite / members / leave, no-ack broadcast); translation providers grew from 4 to 7, defaulting to auto and to a free keyless endpoint; two-way translation, side-by-side view, translate-before-send, automatic language detection and memory.</p>
+      <p><b>6 · Links &amp; RF</b>: new Bluetooth TNC (full KISS — the real fix for "receives but will not transmit") and sound-card TNC (AFSK 1200 — a phone plus one audio cable); new PKWDWPL (Kenwood waypoints, receive-only) and iGate; several sources can receive at once with the transmit source picked separately; a built-in link self-test; fixes for "TNC and PKWDWPL splitting one device" and "on-air audio not decodable".</p>
+      <p><b>7 · Positioning &amp; beaconing</b>: native iOS and macOS location; coarse network fixes no longer auto-beacon; stationary debounce for your own GPS; smart beaconing by turn (telling a real turn from a GPS glitch) and by distance; finer track sampling with beacon dots; configurable track and packet caps.</p>
+      <p><b>8 · Weather · propagation · advice</b>: a weather panel (now + high/low + feels-like + humidity / pressure / dew point / wind / visibility / cloud); ham advice ranked safety &gt; caution &gt; opportunity &gt; tip, covering the gray line, rain fade, icing SWR and ducting; HF/ionospheric propagation with day/night per band and a separate 6m forecast.</p>
+      <p><b>9 · Home-screen widgets (Android)</b>: weather + ham tips (4 adaptive sizes), an HF propagation widget and a system-status widget; real icons and a graphic logo; scaling and dark mode; a design preview tool.</p>
+      <p><b>10 · Data · export · backup</b>: ADIF export (custom frequency, selectable options); export path and filename fixes; a packet console (raw / parsed, manual inject, type filters); a stats view inside the station panel.</p>
+      <p><b>11 · Device integrations</b>: Garmin app share links (gar.mn) and LiveTrack; BLE heart-rate straps (0x180D) with HR carried in the beacon; an "other data sources" entry on the device page.</p>
+      <p><b>12 · Languages &amp; localization</b>: six UI languages (Simplified / Traditional Chinese / English / Japanese / Indonesian / Spanish); multiple rounds of hard-coded Chinese cleanup; the honor wall and sponsors localized.</p>
+      <p><b>13 · Community · honors · announcements</b>: the honor wall shows how to earn each badge, including "Developer", "FIRST FIX · highest honor" and "early member"; the sponsors list filled in; the in-app announcement banner comes straight from the website's Markdown.</p>
+      <p><b>14 · Platforms · performance · stability</b>: iOS / macOS / desktop support and landscape polish; a fix for the "slower the longer it runs" APRS-IS rebuild + socket leak; frosted-glass and dynamic-background performance; plenty of regression tests and static checks.</p>
+      <p>Plus countless fixes: the About card spacing, the base-map panel not opening, the layer panel not responding, the chat input hidden below, "view on map" not returning, the weather panel not closing on an outside click… Together they make the 322 updates from 1.5.8 to 2.0.</p>
+      <p class="announce-quote">FIRST FIX is where we started; TOUCH SKY is a salute. 2.0 is the next departure.<br>The sky is vast — let's keep going together.</p>
 
       <div class="announce-sign">
         <span class="ann-sign-line">Radio waves never end — thanks for traveling with us! 73!</span>
         <span class="ann-sign-team">The APRSLocus Team</span>
-        <span class="ann-sign-date">September 15, 2026</span>
+        <span class="ann-sign-date">September 25, 2026</span>
       </div>
     </div>
 
     <div class="announce-actions">
       <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">
-        <i class="fa-solid fa-flask"></i>
-        Join the 2.0 BETA
+        <i class="fa-solid fa-download"></i>
+        Download latest
       </a>
-      <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
+      <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
+        <i class="fa-solid fa-list-check"></i>
+        View full changelog
+      </a>
+      <a class="btn btn-text" href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">
         <i class="fa-solid fa-comment-dots"></i>
         Feedback &amp; Suggestions
       </a>
-      <a class="btn btn-text" href="#community">Join the community<svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7V5z"/></svg></a>
     </div>
   </div>
 </section>
