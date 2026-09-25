@@ -302,6 +302,7 @@ void _seedDefaults() {
     'BG7PGW': ['kaishan', 'earlyMember'],
     'BG7LMW': ['kaishan', 'earlyMember'],
     'BG7OSL': ['kaishan', 'earlyMember', 'jadeGift'],
+    'BG2EFX': ['jadeGift'],
     'BG4LZY': ['earlyMember'],
     'BA3RZL': ['earlyMember', 'mostBrain', 'jadeGift'],
   };
@@ -314,6 +315,7 @@ void _seedDefaults() {
     'BG7PGW': 'kaishan',
     'BG7LMW': 'kaishan',
     'BG7OSL': 'kaishan',
+    'BG2EFX': 'jadeGift',
     'BG4LZY': 'earlyMember',
     'BA3RZL': 'earlyMember',
   };

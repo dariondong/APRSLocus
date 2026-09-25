@@ -1,5 +1,5 @@
 {
-  "version": 51,
+  "version": 52,
   "updated": "2026-09-25",
   "developers": [
     {
@@ -1547,6 +1547,30 @@
       "primary": "earlyMember",
       "grp": "test",
       "c": "#B08A34"
+    },
+    {
+      "call": "BG2EFX",
+      "who": {
+        "zh": "BG2EFX",
+        "zh-TW": "BG2EFX",
+        "en": "BG2EFX"
+      },
+      "role": {
+        "zh": "赞助支持",
+        "zh-TW": "贊助支持",
+        "en": "Sponsorship support"
+      },
+      "brief": {
+        "zh": "以一份心意相赠，让这盏灯火照得更远。",
+        "zh-TW": "以一份心意相贈，讓這盞燈火照得更遠。",
+        "en": "A gift from the heart, so this beacon can shine farther."
+      },
+      "honors": [
+        "jadeGift"
+      ],
+      "primary": "jadeGift",
+      "grp": "support",
+      "c": "#0EA5B7"
     }
   ],
   "groups": [

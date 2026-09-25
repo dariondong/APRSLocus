@@ -125,6 +125,16 @@ class _SponsorPageState extends State<SponsorPage> {
       },
     ),
     (
+      kind: 'jade',
+      name: 'BG2EFX',
+      names: const {},
+      desc: '赠我以琼琚 · 承君厚赠，藏之于心；唯有砥砺，以报清音',
+      descs: const {
+        'zh-TW': '贈我以瓊琚 · 承君厚贈，藏之於心；唯有砥礪，以報清音',
+        'en': 'Gifted with jade — your kindness is treasured in my heart; the only return I can offer is to strive, and answer with good work.',
+      },
+    ),
+    (
       kind: 'api',
       name: 'BH7NOR',
       names: const {},
