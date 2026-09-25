@@ -224,7 +224,15 @@ let PEOPLE=[
            en:"Provided AI compute for development and testing, accelerating prototypes, debugging and multilingual content."},
   quote:{zh:"算力无形，善意有迹。","zh-TW":"算力無形，善意有跡。",en:"Compute is invisible; kindness leaves a trace."},
   tags:{zh:["AI 算力","开发支持"],"zh-TW":["AI 算力","開發支持"],en:["AI compute","Dev support"]},
-  c:"#df7a36",grp:"support"}
+  c:"#df7a36",grp:"support"},
+ /* BG2EFX：赠我以琼琚（与 members.json v52 对齐；本名单是「取不到 JSON」时的兜底，
+    因此只列精选成员，不是全量）。
+    ⚠️ `honors` 必须显式写出 —— 只给 grp:"support" 会被上面 honorDefsOf 的
+    兜底映射成 [earlyMember, mostBrain]（那是 BA3RZL 的组合），离线时徽章就错了。 */
+ {call:"BG2EFX",who:{zh:"BG2EFX","zh-TW":"BG2EFX",en:"BG2EFX"},
+  role:{zh:"赞助支持","zh-TW":"贊助支持",en:"Sponsorship support"},
+  brief:{zh:"以一份心意相赠，让这盏灯火照得更远。","zh-TW":"以一份心意相贈，讓這盞燈火照得更遠。",en:"A gift from the heart, so this beacon can shine farther."},
+  honors:["jadeGift"],primary:"jadeGift",c:"#0EA5B7",grp:"support"}
 ];
 /* 团体/赞助项（无呼号） */
 let GROUPS=[
