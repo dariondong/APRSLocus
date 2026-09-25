@@ -228,6 +228,63 @@ def main():
     chk('robots -> sitemap',
         'Sitemap: https://aprslocus.theez.top/sitemap.xml' in read('docs/robots.txt'))
 
+    print('[sponsors]')
+    # 赞助名单的**唯一真源**是 docs/sponsors.json，展示面按语言分三处走：
+    #   * 三个首页的静态块由 `tool/sync_sponsors_site.py` 渲染 —— 忘了跑脚本首页就落后；
+    #   * `docs/guide.html`（解说页）的「赞助与算力支持」卡片是**手写的**，脚本不管它。
+    #
+    # 后者正是会悄悄漂移的那一种：加了赞助人、首页跟上了、解说页却少一位 ——
+    # 页面照样打开、也没有任何报错（BG2EFX 就差点这样漏掉）。所以这里按真源
+    # 逐条点名三个首页 + 解说页，**不写死条数**（写死的话每加一位都要改检查器，
+    # 忘了改的表现是「检查失败但内容其实是对的」）。
+    def _sp_pick(mapv, base, lang):
+        """与 sync_sponsors_site.py / js/main.js 同一套回落：该语言 → 中文基准 → 英文。"""
+        if isinstance(mapv, dict) and mapv.get(lang):
+            return mapv[lang]
+        if base:
+            return base
+        if isinstance(mapv, dict) and mapv.get('en'):
+            return mapv['en']
+        return ''
+
+    def _sp_esc(v):
+        """渲染时会被转义（同 sync_sponsors_site.py 的 esc / js 的 esc）——
+        名单里将来真出现 `&`（如「A & B 群组」）时，拿原文去比会**假失败**，
+        所以两种写法都算命中。"""
+        return (str(v).replace('&', '&amp;').replace('<', '&lt;')
+                .replace('>', '&gt;').replace('"', '&quot;'))
+
+    def _sp_hit(name, s, tmpl):
+        return any(tmpl % esc in s for esc in {name, _sp_esc(name)})
+
+    try:
+        _sp = json.loads(read('docs/sponsors.json'))
+        ents = [e for e in (_sp.get('sponsors') or []) if e.get('name')]
+    except Exception as ex:
+        ents = []
+        chk('sponsors.json 可解析', False, ex)
+
+    miss = []
+    for rel, lang in (('docs/index.html', 'zh'),
+                      ('docs/zh-TW/index.html', 'zh-TW'),
+                      ('docs/en/index.html', 'en')):
+        s = read(rel)
+        for e in ents:
+            nm = _sp_pick(e.get('names'), e.get('name'), lang)
+            if nm and not _sp_hit(nm, s, '<span class="c-name">%s</span>'):
+                miss.append('%s 缺 %s' % (rel, nm))
+    chk('赞助名单 %d 位 × 三语首页齐备' % len(ents), bool(ents) and not miss, miss[:3])
+
+    g = read('docs/guide.html')
+    gmiss = []
+    for e in ents:
+        nm = _sp_pick(e.get('names'), e.get('name'), 'zh')
+        # 解说页的卡片是手写的，允许 `<span>呼号<em>备注</em></span>` 这种带小注的写法
+        if nm and not any(re.search(r'<span>%s(?:</span>|<em>)' % re.escape(x), g)
+                          for x in {nm, _sp_esc(nm)}):
+            gmiss.append(nm)
+    chk('解说页赞助卡片含全部 %d 位' % len(ents), bool(ents) and not gmiss, gmiss[:3])
+
     print('[css / js]')
     css = read('docs/css/style.css')
     cssb = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
