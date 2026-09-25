@@ -137,6 +137,14 @@ jobs:
       - name: Check release notes extraction
         run: python3 tool/check_release_notes.py
 
+      # iOS 打包：真跑一遍 tool/make_ipa.py（造一个忠实的最小 Runner.app），断言封出来的
+      # .ipa 结构对（Payload 顶层 / Info.plist / 执行位 / 符号链接），并断言
+      # build-release.yml 里 .ipa 真的挂进了 Release。
+      # 「.app 是**目录**、action-gh-release 静默跳过」这个 bug 让 v1.6.175~177 的
+      # Release 一个 iOS 资产都没有，而整条流水线全绿 —— 这种错必须在这里拦住。
+      - name: Check IPA packaging
+        run: python3 tool/check_ipa_packaging.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。
@@ -242,3 +250,46 @@ jobs:
         with:
           name: APRSLocus-Android
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  # iOS 走的是**真机流程**（真编、真封 .ipa），与分析 job 里那条
+  # `check_ipa_packaging.py` 是两件事：后者验的是「封包代码与发版接线对不对」，
+  # 它跑在 Linux 上、用的是造出来的样本；这里验的是「macOS 上真编出来的
+  # Runner.app 能不能封成 .ipa」。
+  #
+  # 为什么要在**打 tag 之前**跑：iOS 的 .ipa 是发版产物之一，而发版只在打 tag 时发生。
+  # 若只在发版时才知道封不出来，就得删 tag / 删 Release 重打（v1.6.1、v1.6.3 的教训）。
+  # 仓库是公开仓库，macOS runner 不花额度，所以这笔「提前发现」是白得的。
+  build-ios:
+    name: Build iOS (IPA)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS (Release, no codesign)
+        run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --no-codesign
+
+      - name: Package IPA (unsigned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          ver=$(grep -E '^version:' pubspec.yaml | head -1 | sed -E 's/version: ([0-9.]+).*/\1/')
+          ipa="build/ios/ipa/APRSLocus_${ver}_unsigned.ipa"
+          python3 tool/make_ipa.py build/ios/iphoneos -o "$ipa"
+          test -s "$ipa"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-iOS
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: error

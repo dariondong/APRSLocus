@@ -165,11 +165,43 @@ jobs:
       - name: Build iOS (Release, no codesign)
         run: flutter build ios --release --dart-define=QWEATHER_KEY=${{ secrets.QWEATHER_KEY }} --dart-define=QWEATHER_HOST=${{ secrets.QWEATHER_HOST || 'pf4ewvjfqj.re.qweatherapi.com' }} --no-codesign
 
-      - name: Upload iOS app
+      # 把 .app 封成**未签名 .ipa**。为什么非有这一步不可：
+      # `.app` 是**目录**，而 action-gh-release 对目录是**静默跳过** ——
+      # v1.6.175 / v1.6.176 / v1.6.177 的 Release 页因此一个 iOS 资产都没有
+      # （发版流水线却全绿）。而未签名 .ipa 正是 TrollStore / sideloadly / AltStore
+      # 这类自签工具的入口：它们拿包之后用**用户自己的**证书重签。
+      #
+      # 封包交给 tool/make_ipa.py，而不是 `zip` 命令：本机没有 zip 二进制，
+      # 写成 Python 才能让本机、CI 检查、发版三处跑**同一份代码**。
+      - name: Package IPA (unsigned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          ver=$(grep -E '^version:' pubspec.yaml | head -1 | sed -E 's/version: ([0-9.]+).*/\1/')
+          ipa="build/ios/ipa/APRSLocus_${ver}_unsigned.ipa"
+          python3 tool/make_ipa.py build/ios/iphoneos -o "$ipa"
+          # 空文件也算没产出，当场炸；不许把「没产出」混过去
+          test -s "$ipa"
+          ls -la build/ios/ipa/
+
+      # 两个 artifact **故意分开**，不合并成一个多路径 artifact：
+      # upload-artifact 对多个 path 会取公共祖先当根目录，合并后包里会变成
+      # `ipa/xxx.ipa` / `iphoneos/Runner.app`，而 Release 那边写的
+      # `APRSLocus-iOS/*.ipa` 就**匹配不到** —— 又是一个「流水线全绿、Release 没资产」。
+      # 单路径时根目录就是 `build/ios/ipa/`，`*.ipa` 刚好落在包里第一层。
+      - name: Upload IPA (安装用)
         uses: actions/upload-artifact@v4
         with:
           name: APRSLocus-iOS
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: error
+
+      - name: Upload .app (调试用)
+        uses: actions/upload-artifact@v4
+        with:
+          name: APRSLocus-iOS-app
           path: build/ios/iphoneos/*.app
+          if-no-files-found: error
 
   release:
     name: Publish Release
@@ -216,7 +248,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.notes.outputs.notes }}
+          # 只挂 .ipa。**.app 是目录，action-gh-release 会静默跳过** ——
+          # v1.6.175~177 的 Release 页因此一个 iOS 资产都没有，而流水线全绿。
           files: |
             APRSLocus-Windows/*.exe
             APRSLocus-Android/*.apk
-            APRSLocus-iOS/*.app
+            APRSLocus-iOS/*.ipa
