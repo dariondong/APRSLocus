@@ -94,11 +94,14 @@ class _TrackerPageState extends State<TrackerPage>
   (double, double) _tc(double lat, double lng) =>
       _isGcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
 
+  /// 渲染投影（百度不是 Web Mercator）
+  MapProjection get _proj => projectionFor(_mapType);
+
   Offset _toScreen(double lat, double lng) {
     final t = _tc(lat, lng);
     final b = _base;
-    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
-    final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, _zoom);
+    final p = _proj.latLngToPx(t.$1, t.$2, _zoom);
     return Offset(
       p.dx - c.dx + _mapSize.width / 2 + _pan.dx,
       p.dy - c.dy + _mapSize.height / 2 + _pan.dy,
@@ -108,8 +111,8 @@ class _TrackerPageState extends State<TrackerPage>
   Offset _panFor(double lat, double lng, double zoom) {
     final b = _base;
     final g = _tc(lat, lng);
-    final c = MapProj.latLngToPx(b.$1, b.$2, zoom);
-    final p = MapProj.latLngToPx(g.$1, g.$2, zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, zoom);
+    final p = _proj.latLngToPx(g.$1, g.$2, zoom);
     return c - p;
   }
 
@@ -164,13 +167,22 @@ class _TrackerPageState extends State<TrackerPage>
     }
     final w = _mapSize.width > 100 ? _mapSize.width : 1000;
     final h = _mapSize.height > 100 ? _mapSize.height : 700;
-    final spanLng = math.max(maxLng - minLng, 0.02);
-    final spanY = math.max((_mercY(maxLat) - _mercY(minLat)).abs(), 1e-4);
-    final zX = math.log((w - 120) * 360 / (spanLng * 256)) / math.ln2;
-    final zY = math.log((h - 160) / (spanY * 256)) / math.ln2;
-    final z = (zX < zY ? zX : zY).clamp(3.0, 16.0);
     final cLat = (minLat + maxLat) / 2;
     final cLng = (minLng + maxLng) / 2;
+    // 用投影在 z0 上的像素跨度反算缩放级（对 Web Mercator 与百度都成立）
+    final spanXpx = math.max(
+        (_proj.latLngToPx(cLat, maxLng, 0).dx -
+                _proj.latLngToPx(cLat, minLng, 0).dx)
+            .abs(),
+        1e-3);
+    final spanYpx = math.max(
+        (_proj.latLngToPx(maxLat, cLng, 0).dy -
+                _proj.latLngToPx(minLat, cLng, 0).dy)
+            .abs(),
+        1e-3);
+    final zX = math.log((w - 120) / spanXpx) / math.ln2;
+    final zY = math.log((h - 160) / spanYpx) / math.ln2;
+    final z = (zX < zY ? zX : zY).clamp(3.0, 16.0);
     _panCtrl.stop();
     final z0 = _zoom;
     setState(() {
@@ -194,7 +206,7 @@ class _TrackerPageState extends State<TrackerPage>
     if (_mapSize.width <= 0 || _mapSize.height <= 0) return;
     // 视口世界像素范围（含余量 70px）
     final b = _base;
-    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, _zoom);
     final left = c.dx - _mapSize.width / 2 - _pan.dx - 70;
     final right = c.dx + _mapSize.width / 2 - _pan.dx + 70;
     final top = c.dy - _mapSize.height / 2 - _pan.dy - 70;
@@ -203,7 +215,7 @@ class _TrackerPageState extends State<TrackerPage>
       final s = m.st;
       if (s == null) continue;
       final t = _tc(s.lat, s.lng);
-      final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
+      final p = _proj.latLngToPx(t.$1, t.$2, _zoom);
       if (p.dx < left || p.dx > right || p.dy < top || p.dy > bottom) {
         _fitAll(keep: true);
         return;
@@ -214,11 +226,6 @@ class _TrackerPageState extends State<TrackerPage>
   /// 退出全览保持（用户手动操作/点人时调用）
   void _exitKeepFit() {
     _keepFitAll = false;
-  }
-
-  double _mercY(double lat) {
-    final s = math.sin(lat * math.pi / 180);
-    return (1 - math.log((1 + s) / (1 - s)) / (2 * math.pi)) / 2;
   }
 
   /// 跟踪成员：群成员(confirmedMembers) ∪ 我自己。排序：我 → 有位置 → 无位置

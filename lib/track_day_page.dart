@@ -142,13 +142,16 @@ class _TrackDayPageState extends State<TrackDayPage>
   (double, double) _tc(double lat, double lng) =>
       _isGcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
 
+  /// 渲染投影（百度不是 Web Mercator）
+  MapProjection get _proj => projectionFor(_tileType);
+
   void _prepare() {
     final pts = widget.day.points;
     // 先定图源再算坐标：GCJ 图源要对整条轨迹纠偏，否则会整体偏 500m 上下
     _isGcj = isGcjMapType(_tileType);
     final first = pts.isEmpty ? (0.0, 0.0) : _tc(pts.first.lat, pts.first.lng);
     _base = first;
-    final c0 = MapProj.latLngToPx(_base.$1, _base.$2, 0);
+    final c0 = _proj.latLngToPx(_base.$1, _base.$2, 0);
 
     _lx = Float64List(_n);
     _ly = Float64List(_n);
@@ -159,7 +162,7 @@ class _TrackDayPageState extends State<TrackDayPage>
     var km = 0.0;
     for (var i = 0; i < _n; i++) {
       final t = _tc(pts[i].lat, pts[i].lng);
-      final p = MapProj.latLngToPx(t.$1, t.$2, 0);
+      final p = _proj.latLngToPx(t.$1, t.$2, 0);
       _lx[i] = p.dx - c0.dx;
       _ly[i] = p.dy - c0.dy;
       if (i > 0) {

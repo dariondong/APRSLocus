@@ -78,3 +78,46 @@ class Gcj {
     return (2 * lat - g.$1, 2 * lng - g.$2);
   }
 }
+
+/// WGS-84 ⇄ BD-09（百度坐标）：先 WGS→GCJ，再在 GCJ 上做一次极坐标偏移。
+class Bd09 {
+  Bd09._();
+
+  static const double _xPi = 3.14159265358979324 * 3000.0 / 180.0;
+
+  /// WGS-84 → BD-09，返回 (lat, lng)
+  static (double, double) wgsToBd09(double lat, double lng) {
+    final g = Gcj.wgsToGcj(lat, lng);
+    return gcjToBd09(g.$1, g.$2);
+  }
+
+  /// BD-09 → WGS-84
+  static (double, double) bd09ToWgs(double lat, double lng) {
+    final g = bd09ToGcj(lat, lng);
+    return Gcj.gcjToWgs(g.$1, g.$2);
+  }
+
+  /// GCJ-02 → BD-09
+  static (double, double) gcjToBd09(double lat, double lng) {
+    final x = lng;
+    final y = lat;
+    final z = math.sqrt(x * x + y * y) + 0.00002 * math.sin(y * _xPi);
+    final theta = math.atan2(y, x) + 0.000003 * math.cos(x * _xPi);
+    return (
+      z * math.sin(theta) + 0.006,
+      z * math.cos(theta) + 0.0065,
+    );
+  }
+
+  /// BD-09 → GCJ-02
+  static (double, double) bd09ToGcj(double lat, double lng) {
+    final x = lng - 0.0065;
+    final y = lat - 0.006;
+    final z = math.sqrt(x * x + y * y) - 0.00002 * math.sin(y * _xPi);
+    final theta = math.atan2(y, x) - 0.000003 * math.cos(x * _xPi);
+    return (
+      z * math.sin(theta),
+      z * math.cos(theta),
+    );
+  }
+}

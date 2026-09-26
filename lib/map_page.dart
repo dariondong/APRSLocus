@@ -226,11 +226,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return r;
   }
 
+  /// 当前渲染投影：百度不是 Web Mercator，标记必须与瓦片共用同一套投影
+  MapProjection get _proj => projectionFor(_currentMapType);
+
   Offset _toScreen(double lat, double lng, Size size) {
     final g = _toTileCoord(lat, lng);
     final b = _projBase;
-    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
-    final p = MapProj.latLngToPx(g.$1, g.$2, _zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, _zoom);
+    final p = _proj.latLngToPx(g.$1, g.$2, _zoom);
     return Offset(
       p.dx - c.dx + size.width / 2 + _pan.dx,
       p.dy - c.dy + size.height / 2 + _pan.dy,
@@ -239,18 +242,18 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   (double, double) _screenToLatLng(Offset screen, Size size) {
     final b = _projBase;
-    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, _zoom);
     final p = Offset(
       screen.dx + c.dx - size.width / 2 - _pan.dx,
       screen.dy + c.dy - size.height / 2 - _pan.dy,
     );
-    final g = MapProj.pxToLatLng(p, _zoom);
-    // GCJ 瓦片：坐标是 GCJ-02，按用户 datum 偏好输出 WGS-84
+    final g = _proj.pxToLatLng(p, _zoom);
+    // GCJ 瓦片：坐标是 GCJ-02，按用户 datum 偏好输出 WGS-84；
+    // 百度由投影内部转回 WGS-84；国际 WGS 瓦片原样。
     if (_isGcjTile) {
       if (widget.state.coordDatum == 'gcj') return g;
       return Gcj.gcjToWgs(g.$1, g.$2);
     }
-    // 国际 WGS 瓦片：坐标已是 WGS-84，原样返回
     return g;
   }
 
@@ -258,17 +261,19 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Offset _panFor(double lat, double lng, double zoom) {
     final g = _toTileCoord(lat, lng);
     final b = _projBase;
-    final c = MapProj.latLngToPx(b.$1, b.$2, zoom);
-    final p = MapProj.latLngToPx(g.$1, g.$2, zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, zoom);
+    final p = _proj.latLngToPx(g.$1, g.$2, zoom);
     return c - p;
   }
 
   String get _scaleText {
     const pxLen = 120.0;
-    final n = 256 * math.pow(2, _zoom);
-    final dLng = pxLen / n * 360;
-    final km = dLng * 111.32 * math.cos(_baseLat * math.pi / 180);
-    if (km >= 100) return '${(km / 1000).toStringAsFixed(1)} km';
+    // 用投影反算，任何图源（含百度）都准 —— 不能再套 Web Mercator 的公式
+    final c = _proj.latLngToPx(_projBase.$1, _projBase.$2, _zoom);
+    final a = _proj.pxToLatLng(c, _zoom);
+    final b = _proj.pxToLatLng(Offset(c.dx + pxLen, c.dy), _zoom);
+    final km = haversine(a.$1, a.$2, b.$1, b.$2);
+    if (km >= 100) return '${km.toStringAsFixed(1)} km';
     if (km >= 1) return '${km.toStringAsFixed(0)} km';
     return '${(km * 1000).toStringAsFixed(0)} m';
   }
@@ -298,8 +303,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     // 起止中心对应的世界像素（以起始 zoom 为参考系）
     final ref = _fromZoom;
     final b = _projBase;
-    final c1 = MapProj.latLngToPx(b.$1, b.$2, _fromZoom);
-    final c2 = MapProj.latLngToPx(b.$1, b.$2, _toZoom);
+    final c1 = _proj.latLngToPx(b.$1, b.$2, _fromZoom);
+    final c2 = _proj.latLngToPx(b.$1, b.$2, _toZoom);
     final wc1 = (c1 - _fromPan) * math.pow(2, ref - _fromZoom).toDouble();
     final wc2 = (c2 - _toPan) * math.pow(2, ref - _toZoom).toDouble();
 
@@ -311,7 +316,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       final t = Curves.easeOutCubic.transform(ctrl.value);
       final z = _fromZoom + (_toZoom - _fromZoom) * t;
       final wc = Offset.lerp(wc1, wc2, t)!;
-      final c = MapProj.latLngToPx(_projBase.$1, _projBase.$2, z);
+      final c = _proj.latLngToPx(_projBase.$1, _projBase.$2, z);
       setState(() {
         _zoom = z;
         _pan = c - wc * math.pow(2, z - ref).toDouble();

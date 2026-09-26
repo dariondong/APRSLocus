@@ -122,12 +122,15 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   (double, double) _tc(double lat, double lng) =>
       _isGcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
 
+  /// 渲染投影（百度不是 Web Mercator，覆盖层必须与瓦片同投影）
+  MapProjection get _proj => projectionFor(_mapType);
+
   /// 让指定经纬度落在画布中心所需的 pan
   Offset _panFor(double lat, double lng, double zoom) {
     final b = _base;
     final g = _tc(lat, lng);
-    final c = MapProj.latLngToPx(b.$1, b.$2, zoom);
-    final p = MapProj.latLngToPx(g.$1, g.$2, zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, zoom);
+    final p = _proj.latLngToPx(g.$1, g.$2, zoom);
     return c - p;
   }
 
@@ -143,8 +146,8 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
   Offset _toScreen(double lat, double lng) {
     final t = _tc(lat, lng);
     final b = _base;
-    final c = MapProj.latLngToPx(b.$1, b.$2, _zoom);
-    final p = MapProj.latLngToPx(t.$1, t.$2, _zoom);
+    final c = _proj.latLngToPx(b.$1, b.$2, _zoom);
+    final p = _proj.latLngToPx(t.$1, t.$2, _zoom);
     final pan = _pan;
     return Offset(
       p.dx - c.dx + _canvas.width / 2 + pan.dx,

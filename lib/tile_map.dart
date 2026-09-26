@@ -66,7 +66,8 @@ class _TileMapViewState extends State<TileMapView> {
 
   /// 手指下的世界像素点
   Offset _worldAt(Offset screen, Size size) {
-    final c = MapProj.latLngToPx(widget.centerLat, widget.centerLng, widget.zoom);
+    final proj = projectionFor(widget.mapType);
+    final c = proj.latLngToPx(widget.centerLat, widget.centerLng, widget.zoom);
     final center = Offset(size.width / 2, size.height / 2);
     return (screen - center) + c - widget.pan;
   }
@@ -83,7 +84,8 @@ class _TileMapViewState extends State<TileMapView> {
   ///   pan' = focal - center + c1 - anchor1
   Offset _panToAnchor(Offset focal, double newZoom, Size size) {
     final sf = math.pow(2, newZoom - _startZoom).toDouble();
-    final c1 = MapProj.latLngToPx(widget.centerLat, widget.centerLng, newZoom);
+    final proj = projectionFor(widget.mapType);
+    final c1 = proj.latLngToPx(widget.centerLat, widget.centerLng, newZoom);
     final center = Offset(size.width / 2, size.height / 2);
     final anchor1 = (_anchorWorld ?? Offset.zero) * sf;
     return (focal - center) + c1 - anchor1;
@@ -113,7 +115,8 @@ class _TileMapViewState extends State<TileMapView> {
   /// 围绕屏幕焦点缩放到 newZoom，返回对应的 pan（滚轮使用）
   Offset _panForFocus(Offset localFocus, double newZoom, Size size) {
     final sf = math.pow(2, newZoom - widget.zoom).toDouble();
-    final c1 = MapProj.latLngToPx(widget.centerLat, widget.centerLng, newZoom);
+    final proj = projectionFor(widget.mapType);
+    final c1 = proj.latLngToPx(widget.centerLat, widget.centerLng, newZoom);
     final center = Offset(size.width / 2, size.height / 2);
     final focusWorld = _worldAt(localFocus, size);
     return (localFocus - center) + c1 - focusWorld * sf;
@@ -135,8 +138,9 @@ class _TileMapViewState extends State<TileMapView> {
       builder: (context, constraints) {
         final size = constraints.biggest;
         final z = widget.zoom.floor().clamp(0, 19);
+        final proj = projectionFor(widget.mapType);
         final centerPx =
-            MapProj.latLngToPx(widget.centerLat, widget.centerLng, widget.zoom);
+            proj.latLngToPx(widget.centerLat, widget.centerLng, widget.zoom);
         // 视口左上角世界像素 = centerPx - pan - size/2（与标记层 pan 符号一致）
         final left = centerPx.dx - widget.pan.dx - size.width / 2;
         final top = centerPx.dy - widget.pan.dy - size.height / 2;
@@ -149,9 +153,12 @@ class _TileMapViewState extends State<TileMapView> {
 
         final tiles = <Widget>[];
         final n = 1 << z; // 本级别瓦片数量（经度循环包边）
+        // 百度瓦片的列号已是「平移后」的连续编号、且不跨 ±180 环绕，
+        // 不能再按 2^z 取模（会把有效列折回去取到另一张瓦片）。
+        final wrap = !isBaiduMapType(widget.mapType);
         for (var tx = tx0; tx <= tx1; tx++) {
           for (var ty = ty0; ty <= ty1; ty++) {
-            final wx = (tx % n + n) % n;
+            final wx = wrap ? ((tx % n + n) % n) : tx;
             tiles.add(Positioned(
               key: ValueKey('t$z-$tx-$ty-${widget.mapType.name}'),
               left: tx * tilePx - left,
@@ -187,7 +194,8 @@ class _TileMapViewState extends State<TileMapView> {
                       pan: widget.pan,
                       centerLat: widget.centerLat,
                       centerLng: widget.centerLng,
-                      // 国内图源（高德/腾讯）为 GCJ-02，国际图源为 WGS-84
+                      proj: proj,
+                      // 高德/腾讯为 GCJ-02；百度由 proj 内部转 BD-09；国际图源 WGS-84
                       gcj: isGcjMapType(widget.mapType),
                     ),
                   ),
@@ -208,14 +216,18 @@ class _FallbackPainter extends CustomPainter {
   final double zoom;
   final Offset pan;
   final double centerLat, centerLng;
-  /// 底图是否为 GCJ-02（高德）：是→元素坐标做 WGS→GCJ；国际 WGS 底图→原样
+  /// 底图坐标系：高德/腾讯 GCJ-02 → 元素坐标做 WGS→GCJ；
+  /// 百度 → 由 [proj]（BaiduProjection）内部转 BD-09；国际 WGS 底图 → 原样
   final bool gcj;
+  /// 渲染投影（百度不是 Web Mercator）
+  final MapProjection proj;
   _FallbackPainter({
     required this.zoom,
     required this.pan,
     required this.centerLat,
     required this.centerLng,
     this.gcj = true,
+    this.proj = const WebMercatorProjection(),
   });
 
   /// 把 WGS-84 元素坐标映射到底图坐标系
@@ -223,8 +235,8 @@ class _FallbackPainter extends CustomPainter {
       gcj ? Gcj.wgsToGcj(lat, lng) : (lat, lng);
 
   Offset _s(double lat, double lng) {
-    final c = MapProj.latLngToPx(centerLat, centerLng, zoom);
-    final p = MapProj.latLngToPx(lat, lng, zoom);
+    final c = proj.latLngToPx(centerLat, centerLng, zoom);
+    final p = proj.latLngToPx(lat, lng, zoom);
     return Offset(
       p.dx - c.dx + pan.dx,
       p.dy - c.dy + pan.dy,
@@ -417,8 +429,7 @@ class _TileState extends State<_Tile> {
     // 祖先放大那一路还会因裁切偏移仍按旧边长算而错位（离线缩放时最明显）。
   }
 
-  bool _sameDatum(MapType other) =>
-      isGcjMapType(other) == isGcjMapType(widget.mapType);
+  bool _sameDatum(MapType other) => sameDatum(widget.mapType, other);
 
   /// 在线候选链：当前图源 → Carto 浅色 → OSM（逐级降级，与旧版一致，
   /// 但只接受**同坐标系**的候选 —— 拿 WGS-84 的图源去填 GCJ-02 的瓦片

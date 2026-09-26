@@ -96,13 +96,20 @@ class OfflineRegion {
 
   MapType get type => mapTypeByName(mapType);
 
-  /// 瓦片编号所用的坐标范围：国内图源（高德/腾讯）是 GCJ-02 瓦片，
-  /// 用 WGS-84 的范围去算编号会整体偏移（>500 m），下回来的图与地图对不上。
-  GeoBounds get tileSpaceBounds =>
-      isGcjMapType(type) ? bounds.toGcj() : bounds;
+  /// 瓦片编号所用的坐标范围：国内图源（高德/腾讯）是 GCJ-02 瓦片、
+  /// 百度是 BD-09 瓦片，用 WGS-84 的范围去算编号会整体偏移（>500 m），
+  /// 下回来的图与地图对不上。
+  GeoBounds get tileSpaceBounds {
+    if (isBaiduMapType(type)) return bounds.toBd09();
+    return isGcjMapType(type) ? bounds.toGcj() : bounds;
+  }
+
+  /// 该区域瓦片编号所用的投影（百度不是 Web Mercator）
+  MapProjection get tileProjection => projectionFor(type);
 
   /// 该区域需要下载的瓦片张数
-  int get tileCount => countTilesIn(tileSpaceBounds, minZoom, maxZoom);
+  int get tileCount =>
+      countTilesIn(tileSpaceBounds, minZoom, maxZoom, tileProjection);
 
   /// 进度 0..1
   double get progress => total <= 0 ? 0 : (done / total).clamp(0.0, 1.0);
@@ -531,7 +538,7 @@ class OfflineDownloader extends ChangeNotifier {
       outer:
       for (var z = r.minZoom; z <= r.maxZoom; z++) {
         final n = 1 << z;
-        final rng = tileRange(tb, z);
+        final rng = tileRange(tb, z, r.tileProjection);
         for (var y = rng.y0; y <= rng.y1; y++) {
           for (var x = rng.x0; x <= rng.x1; x++) {
             if (t.canceled) break outer;
@@ -584,7 +591,7 @@ class OfflineDownloader extends ChangeNotifier {
 
     for (var z = r.minZoom; z <= r.maxZoom; z++) {
       final n = 1 << z;
-      final rng = tileRange(tb, z);
+      final rng = tileRange(tb, z, r.tileProjection);
       for (var y = rng.y0; y <= rng.y1; y++) {
         for (var x = rng.x0; x <= rng.x1; x++) {
           final wx = ((x % n) + n) % n;

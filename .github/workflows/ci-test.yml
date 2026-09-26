@@ -176,6 +176,12 @@ jobs:
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 
+      # 百度瓦片投影/编号数学：官方参考向量锁定（BD-09 坐标 + 多项式平面投影 +
+      # 瓦片 y 朝北 + 每级瓦片数不是 2^z）。这些**编译能过、analyze 也全绿**，
+      # 只有把标记画到与瓦片错开的位置才看得出来，所以钉在 CI。
+      - name: Test Baidu tile projection math
+        run: flutter test test/baidu_proj_test.dart
+
       - name: Analyze (tolerate known vector_map false positive)
         shell: bash
         run: |

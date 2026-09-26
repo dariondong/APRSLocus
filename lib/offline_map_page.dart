@@ -481,6 +481,9 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
 
   bool get _gcj => isGcjMapType(_type);
 
+  /// 渲染/下载投影（百度不是 Web Mercator）
+  MapProjection get _proj => projectionFor(_type);
+
   void _recompute(Size size) {
     if (size.width <= 0 || size.height <= 0) return;
     _viewSize = size;
@@ -490,6 +493,7 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
       zoom: _zoom,
       pan: _pan,
       size: size,
+      proj: _proj,
       gcj: _gcj,
     );
   }
@@ -526,7 +530,7 @@ class _OfflineRegionPickerPageState extends State<OfflineRegionPickerPage> {
     final bounds = _bounds;
     final tiles = bounds == null
         ? 0
-        : countTilesIn(bounds, _minZoom, _maxZoom);
+        : countTilesIn(bounds, _minZoom, _maxZoom, _proj);
     final tooMany = tiles > kMaxOfflineTiles;
     final canStart = bounds != null &&
         bounds.isValid &&
