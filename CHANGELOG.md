@@ -1,5 +1,66 @@
 # 更新日志
 
+## [2.0.1] - 2026-09-26
+
+### 🔧 iOS 原生能力补齐 · 信标里程 · 交互打磨
+
+**一、iOS 原生能力**：补上运动传感器（CoreMotion）—— 加速度计判断「真的在动」、指南针补正低速航向；
+蓝牙心率带（CoreBluetooth，标准心率服务 0x180D，自动写 CCCD）与电量读取（UIDevice）；
+声卡 TNC 的实时音频（AVAudioEngine，AFSK 采集 / 播放，发射时半双工暂停采集）。
+心率 / 传感器 / 音频因此在 iOS 上真正可用。TNC / PKWDWPL 由于 iOS 不向第三方开放
+经典蓝牙 SPP / USB 串口（仅 MFi 配件），保持置灰并给出原因，可改用 APRS-IS。
+
+**二、信标与里程**：信标备注可选附带**本次里程**（`TRV:`，信标本次开启起）与
+**累计总里程**（`ODO:`，跨重启累计、进备份），两个独立开关默认关。
+
+**三、消息页**：修「单聊会话头部呼号被压窄、提前省略号」—— 原为 Flexible + Spacer 各分走一半宽度；
+会话列表呼号改单行省略。
+
+**四、地图**：台站信息窗提示由「点击查看」改为「双击信标查看更多」（六语言）。
+
+**五、更新页**：主「立即下载」按钮上移到顶部版本卡（不用再滚到底部找）；
+去掉顶部会被误当成下载按钮的向下箭头；新增扫光与线性进度动画。
+
+**六、数据页**：新增「清除台站列表」独立选项 —— 只清收到的台站及其轨迹，
+不动消息 / 日志 / 数据包，也不动「我的轨迹」。
+
+- [下载最新版](https://github.com/dariondong/APRSLocus/releases)
+- [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
+
+## [2.0.1] - 2026-09-26 (English)
+
+### 🔧 iOS native features · beacon mileage · interaction polish
+
+**1 · iOS native features**: motion sensors (CoreMotion — accelerometer for "really moving", compass for
+low-speed heading), Bluetooth heart-rate strap (CoreBluetooth, standard Heart Rate Service 0x180D with
+an automatic CCCD write) and battery level (UIDevice), and real-time sound-card audio (AVAudioEngine,
+AFSK capture/playback with a half-duplex pause while transmitting). Heart rate / sensors / audio are now
+actually usable on iOS. TNC / PKWDWPL stay greyed out with an explanation because iOS does not expose
+classic Bluetooth SPP / USB serial to third-party apps (MFi only); use APRS-IS instead.
+
+**2 · Beacon & mileage**: the beacon comment can optionally carry **trip distance** (`TRV:`, since the
+beacon was turned on this time) and **cumulative total distance** (`ODO:`, persisted across restarts and
+included in backups) — two independent switches, off by default.
+
+**3 · Messages**: fixed the single-chat header callsign being squeezed and ellipsized early (it used
+Flexible + Spacer, which split the free space in half); the conversation-list callsign now truncates on
+a single line.
+
+**4 · Map**: the station info window hint changed from "Tap to view" to "Double-tap beacon for more"
+(6 languages).
+
+**5 · Update page**: the primary "Download now" button moved up into the top version card (no more
+scrolling to the bottom to find it); the top arrow icon that looked like a download button is gone;
+added a sheen sweep and linear progress animations.
+
+**6 · Data page**: a separate "Clear station list" option — clears only the received stations and their
+tracks, leaving messages / logs / packets and your own track untouched.
+
+- [Download the latest version](https://github.com/dariondong/APRSLocus/releases)
+- [Full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [Feedback & suggestions](https://github.com/dariondong/APRSLocus/issues)
+
 ## [2.0.0] - 2026-09-25
 
 ### 🚀 TOUCH SKY · 2.0 正式版：从纯网络到射频，从「看见」到「抵达」
