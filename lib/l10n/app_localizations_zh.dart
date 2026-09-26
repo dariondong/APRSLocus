@@ -10,3947 +10,36 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appName => 'APRSlocus';
-
-  @override
-  String get ok => '确定';
-
-  @override
-  String get cancel => '取消';
-
-  @override
-  String get save => '保存';
-
-  @override
-  String get delete => '删除';
-
-  @override
-  String get confirm => '确认';
-
-  @override
-  String get back => '返回';
-
-  @override
-  String get next => '下一步';
-
-  @override
-  String get finish => '完成并连接';
-
-  @override
-  String get previous => '上一步';
-
-  @override
-  String get search => '搜索';
-
-  @override
-  String get settings => '设置';
-
-  @override
-  String get greetMorning => '早上好，';
-
-  @override
-  String get greetNoon => '中午好，';
-
-  @override
-  String get greetAfternoon => '下午好，';
-
-  @override
-  String get greetEvening => '晚上好，';
-
-  @override
-  String get greetNight => '夜深了，';
-
-  @override
   String get about => '关于';
-
-  @override
-  String get logout => '退出';
-
-  @override
-  String get retry => '重试';
-
-  @override
-  String get all => '全部';
-
-  @override
-  String get online => '在线';
-
-  @override
-  String get offline => '离线';
-
-  @override
-  String get moving => '移动';
-
-  @override
-  String get emergency => '紧急';
-
-  @override
-  String get fixed => '固定';
-
-  @override
-  String get infrastructure => '中继';
-
-  @override
-  String get weather => '气象';
-
-  @override
-  String get fmo => 'FMO';
-
-  @override
-  String get mobile => '车载';
-
-  @override
-  String get favorite => '收藏';
-
-  @override
-  String get grid => '网格';
-
-  @override
-  String get callsign => '呼号';
-
-  @override
-  String get speed => '速度';
-
-  @override
-  String get altitude => '高度';
-
-  @override
-  String get course => '航向';
-
-  @override
-  String get distance => '距离';
-
-  @override
-  String get bearing => '方位角';
-
-  @override
-  String get lastSeen => '最近活跃';
-
-  @override
-  String get latitude => '纬度';
-
-  @override
-  String get longitude => '经度';
-
-  @override
-  String get station => '台站';
-
-  @override
-  String get stations => '台站';
-
-  @override
-  String get messages => '消息';
-
-  @override
-  String get packets => '数据包';
-
-  @override
-  String get map => '地图';
-
-  @override
-  String get home => '首页';
-
-  @override
-  String get connection => '连接';
-
-  @override
-  String get connected => '已连接';
-
-  @override
-  String get disconnected => '未连接';
-
-  @override
-  String get connecting => '连接中';
-
-  @override
-  String get reconnect => '重新连接';
-
-  @override
-  String get server => '服务器';
-
-  @override
-  String get port => '端口';
-
-  @override
-  String get passcode => 'Passcode';
-
-  @override
-  String get beacon => '位置信标';
-
-  @override
-  String get beaconInterval => '上报间隔(秒)';
-
-  @override
-  String get nextBeacon => '下次上报';
-
-  @override
-  String get beaconsSent => '信标发送次数';
-
-  @override
-  String get symCatVehicles => '车辆 / 交通';
-
-  @override
-  String get symCatBuildings => '建筑 / 设施';
-
-  @override
-  String get symCatNature => '气象 / 自然';
-
-  @override
-  String get symCatAirWater => '飞行 / 水域';
-
-  @override
-  String get symCatComms => '通信 / 其他';
-
-  @override
-  String get homeBadgeLabel => '主页展示徽章';
-
-  @override
-  String get homeBadgePickTitle => '选择主页展示徽章';
-
-  @override
-  String get homeBadgePickDesc => '在以下已获得的徽章中选一个，作为主页常驻展示';
-
-  @override
-  String get simLocationHint => '使用模拟位置，无需 GPS';
-
-  @override
-  String get speedTierRules => '速度分档规则';
-
-  @override
-  String get restoreDefaults => '恢复默认';
-
-  @override
-  String get speedTierDesc => '速度越快上报越频繁；每档可自定义间隔与图标（留空=我的符号）。';
-
-  @override
-  String get speedTierShortIntervalWarn => '间隔低于 60 秒会显著增加服务器负载，建议 ≥60 秒。';
-
-  @override
-  String get addSpeedTier => '添加速度档';
-
-  @override
-  String get maxSpeedTiers => '最多 5 个速度档';
-
-  @override
-  String get iconDefaultMySymbol => '图标 · 默认(我的符号)';
-
-  @override
-  String iconNamed(String name) {
-    return '图标 · $name';
-  }
-
-  @override
-  String everyNSeconds(String sec) {
-    return '每 $sec 秒';
-  }
-
-  @override
-  String get tierMinTurn => '航向变化 (度)';
-
-  @override
-  String get tierMinTurnHint => '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
-
-  @override
-  String get guideMoreInSettings => '之后可在「设置 → 重新查看功能引导」里再看';
-
-  @override
-  String get guideStationsTitle => '台站列表';
-
-  @override
-  String get guideStationsBody => '收到的台站都在这里，可搜索、排序、按距离筛选；列表与地图共用同一份筛选条件。';
-
-  @override
-  String get guideTrackHistoryTitle => '轨迹回放';
-
-  @override
-  String get guideTrackHistoryBody => '按日期回放某个台站当天走过的路线，拖动时间轴可以看每一段。';
-
-  @override
-  String get guideThemeTitle => '主题与界面';
-
-  @override
-  String get guideThemeBody => '换配色、背景图、界面材质与缩放；改完立刻生效，可以在同一页对比。';
-
-  @override
-  String get guideTranslateTitle => '翻译';
-
-  @override
-  String get guideTranslateBody => '设置聊天自动翻译的目标语言与接口。没配接口时不会翻译，这里会说明怎么配。';
-
-  @override
-  String get guideAudioTitle => '声卡 TNC';
-
-  @override
-  String get guideAudioBody => '用耳机口 / 声卡收发 AFSK 报文：选音频设备、调音量与增益，先「测试音」再连接。';
-
-  @override
-  String get guideTncDeviceTitle => '蓝牙 TNC';
-
-  @override
-  String get guideTncDeviceBody => '搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。';
-
-  @override
-  String get guidePkwdwplTitle => 'PKWDWPL 连接器';
-
-  @override
-  String get guidePkwdwplBody => '通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。';
-
-  @override
-  String get guideTitle => '功能引导';
-
-  @override
-  String get guideGotIt => '知道了';
-
-  @override
-  String get guideShowAgain => '重看本页引导';
-
-  @override
-  String get guideHomeTitle => '主页 · 地图与台站';
-
-  @override
-  String get guideHomeBody => '点一个台站看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。';
-
-  @override
-  String get guideImmersiveTitle => '沉浸地图';
-
-  @override
-  String get guideImmersiveBody => '全屏看台站：双指缩放、单指拖动，左下角可切换「跟随自己」，左上角返回。';
-
-  @override
-  String get guideMessagesTitle => '消息';
-
-  @override
-  String get guideMessagesBody => '输入呼号即可开聊；右上角能建群组、发广播。收不到回复时，先确认顶部已连接。';
-
-  @override
-  String get guideDeviceTitle => '设备与数据源';
-
-  @override
-  String get guideDeviceBody => '选数据从哪来（APRS-IS / TNC / 声卡）以及用哪条链路发射。蓝牙 TNC 要先去「设备」子页配对。';
-
-  @override
-  String get guideSettingsTitle => '设置';
-
-  @override
-  String get guideSettingsBody => '八类入口：电台、信标、连接、显示、设备、数据、高级、更新。改完的设置立刻生效，不需要重启。';
-
-  @override
-  String get guideOfflineMapTitle => '离线地图';
-
-  @override
-  String get guideOfflineMapBody => '框选一块区域下载瓦片，没网也能看地图。下载可随时暂停，之后接着下。';
-
-  @override
-  String get guideLogTitle => '系统日志';
-
-  @override
-  String get guideLogBody => '收发包与链路事件都记在这里。排查问题时先看这儿，右上角可以复制全部日志。';
-
-  @override
-  String get guideBackupTitle => '备份与恢复';
-
-  @override
-  String get guideBackupBody => '导出设置文件，换机后一键恢复。瓦片与翻译缓存不在备份内，需要重新下载。';
-
-  @override
-  String get guideExportAdifTitle => '导出 ADIF';
-
-  @override
-  String get guideExportAdifBody => '把收到的台站位置导成 ADIF 文件，供日志软件导入。可选时间范围与模式。';
-
-  @override
-  String get guidePacketsTitle => '数据包';
-
-  @override
-  String get guidePacketsBody => '原始收发报文列表，用来核对解析结果。点一行可以看到完整内容。';
-
-  @override
-  String get guideResetRow => '重新查看功能引导';
-
-  @override
-  String get guideResetTitle => '重新查看功能引导？';
-
-  @override
-  String get guideResetConfirm => '清空「已看过」记录，各页顶部的小提示卡会再出现一次。';
-
-  @override
-  String get guideResetButton => '重新显示';
-
-  @override
-  String get guideResetDone => '功能引导已重置';
-
-  @override
-  String get ossLicenseSection => '开源与许可';
-
-  @override
-  String get creditsSection => '致谢名单';
-
-  @override
-  String get noticeEntryDesc => '查看官网发布的最新公告';
-
-  @override
-  String get noticeTitle => '公告';
-
-  @override
-  String get noticeEmpty => '暂无公告';
-
-  @override
-  String get noticeLoading => '正在获取…';
-
-  @override
-  String get noticeReadMore => '查看全文';
-
-  @override
-  String noticeCached(String ago) {
-    return '缓存 · ${ago}';
-  }
-
-  @override
-  String noticeOfflineCache(String time) {
-    return '离线缓存 · ${time}（联网后会自动更新）';
-  }
-
-  @override
-  String get timeJustNow => '刚刚';
-
-  @override
-  String get refresh => '刷新';
-
-  @override
-  String get inputTapHint => '点击输入';
-
-  @override
-  String get callCommentEmpty => '未填写 · 点这里输入';
-
-  @override
-  String orTurnDeg(String deg) {
-    return '或转 ${deg}°';
-  }
-
-  @override
-  String get tierMinDist => '移动距离 (米)';
-
-  @override
-  String get tierMinDistHint => '自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）';
-
-  @override
-  String orMoveM(String dist) {
-    return '或移动 ${dist} m';
-  }
-
-  @override
-  String get tierIdleTitle => '编辑 · 静止/低速档';
-
-  @override
-  String get tierSpeedTitle => '编辑 · 速度档';
-
-  @override
-  String get minSpeedKmh => '最低速度 (km/h)';
-
-  @override
-  String get intervalSeconds => '上报间隔 (秒)';
-
-  @override
-  String get idleTierDesc => '低于第一移动档的速度都按此档上报';
-
-  @override
-  String get intervalLabel => '间隔';
-
-  @override
-  String get unitSeconds => '秒';
-
-  @override
-  String get pickBeaconIconDesc => '选择信标图标 ·「默认」= 沿用我的符号';
-
-  @override
-  String get defaultLabel => '默认';
-
-  @override
-  String get deleteThisTier => '删除此档';
-
-  @override
-  String get idleTierNotDeletable => '静止档不可删除';
-
-  @override
-  String get errMinSpeedInt => '最低速度需为 ≥1 的整数';
-
-  @override
-  String get errIntervalInt => '上报间隔需为 ≥5 秒的整数';
-
-  @override
-  String get errTierDuplicate => '该速度档已存在，速度值需互不相同';
-
-  @override
-  String get wsUrlOptional => 'WebSocket URL(可选)';
-
-  @override
-  String get countryUnrestricted => '未选择国家/地区 · 不做限制（接收全部台站）';
-
-  @override
-  String get weatherWidget => '天气组件';
-
-  @override
-  String get groupChatLabel => '群聊';
-
-  @override
-  String nItems(String n) {
-    return '$n 个';
-  }
-
-  @override
-  String nMessages(String n) {
-    return '$n 条';
-  }
-
-  @override
-  String confirmDeleteMessages(String n) {
-    return '确定要删除全部 $n 条聊天记录吗？此操作不可恢复。';
-  }
-
-  @override
-  String get weatherSimFollowLive => '跟随实时';
-
-  @override
-  String get wxClear => '晴';
-
-  @override
-  String get wxCloudy => '多云';
-
-  @override
-  String get wxOvercast => '阴';
-
-  @override
-  String get wxLightRain => '小雨';
-
-  @override
-  String get wxModerateRain => '中雨';
-
-  @override
-  String get wxHeavyRain => '大雨';
-
-  @override
-  String get wxStormRain => '暴雨';
-
-  @override
-  String get wxThunder => '雷阵雨';
-
-  @override
-  String get wxSnow => '雪';
-
-  @override
-  String get wxFog => '雾';
-
-  @override
-  String get weatherSimTitle => '天气模拟（预览背景/特效/建议）';
-
-  @override
-  String get weatherSimDesc => '选择后点顶栏天气胶囊预览；「跟随实时」恢复真实天气';
-
-  @override
-  String get restartWizardConfirm =>
-      '将重新进入首次启动向导，可重新设置呼号、接收地区等。\\n当前设置不会丢失，完成向导后继续使用。';
-
-  @override
-  String get restartWizardButton => '重新运行';
-
-  @override
-  String get pasteAprsPacketHint =>
-      '粘贴原始 APRS 包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>测试台';
-
-  @override
-  String beaconsSentCount(String n) {
-    return '$n 次';
-  }
-
-  @override
-  String get myBadgesAndAchievements => '我的徽章与成就';
-
-  @override
-  String get quitApp => '退出应用';
-
-  @override
-  String get quitAppDesc => '退出后 APRSlocus 将停止定位上报与后台接收，并结束进程。';
-
-  @override
-  String get symCar => '汽车';
-
-  @override
-  String get openInBrowser => '在浏览器打开';
-
-  @override
-  String get badgeWall => '徽章墙';
-
-  @override
-  String get achievementWall => '成就墙';
-
-  @override
-  String get mapTypeCartoPositron => 'Carto Positron(浅色矢量)';
-
-  @override
-  String get mapTypeCarto => 'Carto 浅色';
-
-  @override
-  String get mapTypeCartoDark => 'Carto 深色';
-
-  @override
-  String get mapTypeCartoVoyager => 'Carto 航行者';
-
-  @override
-  String get mapTypeOsm => 'OSM 标准';
-
-  @override
-  String get mapTypeOsmHot => 'OSM 人道';
-
-  @override
-  String get mapTypeOpenTopo => 'OpenTopo 地形';
-
-  @override
-  String get mapTypeEsriStreet => 'Esri 街道';
-
-  @override
-  String get mapTypeEsriSat => 'Esri 影像';
-
-  @override
-  String get simulatedKeepAlive => '模拟位置 · 后台保活';
-
-  @override
-  String get symCatEmergency => '应急救援';
-
-  @override
-  String get symSmallAircraft => '小型飞机';
-
-  @override
-  String myPositionSet(String grid) {
-    return '已设置我的位置，网格 $grid';
-  }
-
-  @override
-  String get tierIdleShort => '静止/低速';
-
-  @override
-  String get symHouse => '房屋';
-
-  @override
-  String get symPerson => '人';
-
-  @override
-  String get symTruck => '卡车';
-
-  @override
-  String get symBicycle => '自行车';
-
-  @override
-  String get symRv => '房车';
-
-  @override
-  String get symWxStation => '气象站';
-
-  @override
-  String get symPolice => '警局';
-
-  @override
-  String get symMotorcycle => '摩托';
-
-  @override
-  String get symSemi => '半挂车';
-
-  @override
-  String get symVan => '面包车';
-
-  @override
-  String get symJeep => '吉普';
-
-  @override
-  String get symBus => '公交';
-
-  @override
-  String get symTruckStop => '卡车停靠';
-
-  @override
-  String get symTrain => '火车';
-
-  @override
-  String get symFireTruck => '消防车';
-
-  @override
-  String get symPoliceCar => '警车';
-
-  @override
-  String get symSnowmobile => '雪地摩托';
-
-  @override
-  String get symYagi => '八木屋';
-
-  @override
-  String get symHospital => '医院';
-
-  @override
-  String get symAmbulance => '救护车';
-
-  @override
-  String get symFireStation => '消防站';
-
-  @override
-  String get symSchool => '学校';
-
-  @override
-  String get symMotel => '旅馆';
-
-  @override
-  String get symHotel => '酒店';
-
-  @override
-  String get symLaptop => '笔记本';
-
-  @override
-  String get symPostOffice => '邮局';
-
-  @override
-  String get symWeather => '气象';
-
-  @override
-  String get symWater => '供水站';
-
-  @override
-  String get symHurricane => '飓风';
-
-  @override
-  String get symHorse => '骑马';
-
-  @override
-  String get symDog => '狗';
-
-  @override
-  String get symCamping => '露营';
-
-  @override
-  String get symShelter => '避难所';
-
-  @override
-  String get symRedCross => '红十字';
-
-  @override
-  String get symFireAlarm => '火警';
-
-  @override
-  String get symEmergCenter => '应急中心';
-
-  @override
-  String get symCmdCenter => '指挥中心';
-
-  @override
-  String get symHandicap => '残障';
-
-  @override
-  String get symBigAircraft => '大型飞机';
-
-  @override
-  String get symGlider => '滑翔机';
-
-  @override
-  String get symBalloon => '气球';
-
-  @override
-  String get symShip => '船';
-
-  @override
-  String get symSailboat => '帆船';
-
-  @override
-  String get symMobileSat => '移动卫星';
-
-  @override
-  String get symSatAntenna => '卫星天线';
-
-  @override
-  String get symDigi => '数字中继';
-
-  @override
-  String get symDigiTower => '中继塔';
-
-  @override
-  String get symMicE => 'Mic-E 中继';
-
-  @override
-  String get symNode => '节点';
-
-  @override
-  String get symDxCluster => 'DX 集群';
-
-  @override
-  String get symHfGateway => 'HF 网关';
-
-  @override
-  String get symFileServer => '文件服务器';
-
-  @override
-  String get symTelephone => '电话';
-
-  @override
-  String get symGrid => '网格';
-
-  @override
-  String get symXUnix => 'X/Unix';
-
-  @override
-  String get symFmoStation => 'FMO 台站';
-
-  @override
-  String get filter => '接收范围过滤';
-
-  @override
-  String get filterRadius => '过滤半径(km)';
-
-  @override
-  String get maxStations => '最大台站数';
-
-  @override
-  String get receiveFilter => '接收呼号筛选';
-
-  @override
-  String get receiveCountries => '国家/地区';
-
-  @override
-  String get receiveOthers => '其他台站';
-
-  @override
-  String get darkMode => '深色模式';
-
-  @override
-  String get themeColor => '主题颜色';
-
-  @override
-  String get language => '语言';
-
-  @override
-  String get languageSystem => '跟随系统';
-
-  @override
-  String get languageZh => '中文';
-
-  @override
-  String get languageEn => 'English';
-
-  @override
-  String get languageZhTw => '繁體中文';
-
-  @override
-  String get languageJa => '日本語';
-
-  @override
-  String get languageId => 'Bahasa Indonesia';
-
-  @override
-  String get languageEs => '西班牙语';
-
-  @override
-  String get displaySettings => '显示设置';
-
-  @override
-  String get uiScale => '界面缩放';
-
-  @override
-  String get reloadUi => '重新加载界面';
-
-  @override
-  String get reloadDone => '已重新加载';
-
-  @override
-  String get mapType => '地图类型';
-
-  @override
-  String get unit => '单位';
-
-  @override
-  String get coordDatum => '坐标基准';
-
-  @override
-  String get stationSettings => '电台设置';
-
-  @override
-  String get connectionSettings => '连接设置';
-
-  @override
-  String get chatSettings => '聊天设置';
-
-  @override
-  String get dataSettings => '数据设置';
-
-  @override
-  String get advancedSettings => '高级设置';
-
-  @override
-  String get sponsors => '赞助与鸣谢';
-
-  @override
-  String get sponsorsThanks => '感谢每一位支持者';
-
-  @override
-  String get send => '发送';
-
-  @override
-  String get receive => '接收';
-
-  @override
-  String get clear => '清除';
-
-  @override
-  String get copy => '复制';
-
-  @override
-  String get copied => '已复制';
-
-  @override
-  String get version => '版本';
-
-  @override
-  String get location => '定位';
-
-  @override
-  String get gpsStatus => 'GPS 状态';
-
-  @override
-  String get myLocation => '我的位置';
-
-  @override
-  String get track => '轨迹';
-
-  @override
-  String get forwardingPath => '转发路径';
-
-  @override
-  String get relatedStations => '相关台站';
-
-  @override
-  String get openInMap => '在地图查看';
-
-  @override
-  String get navigate => '导航';
-
-  @override
-  String get messageSent => '消息已发送';
-
-  @override
-  String get enterMessage => '输入消息';
-
-  @override
-  String get noData => '暂无数据';
-
-  @override
-  String get searchHint => '搜索呼号 / 类型 / 网格 / 备注…';
-
-  @override
-  String get notFound => '未找到台站';
-
-  @override
-  String get totalStations => '总数';
-
-  @override
-  String get sortBy => '排序';
-
-  @override
-  String get sortCall => '呼号';
-
-  @override
-  String get sortRecent => '最近';
-
-  @override
-  String get sortDistance => '距离';
-
-  @override
-  String get sortStatus => '状态';
-
-  @override
-  String get typeFilter => '类型筛选';
-
-  @override
-  String get aprslocusOnly => 'APRSlocus';
-
-  @override
-  String get confirmDelete => '确定要删除吗？';
-
-  @override
-  String get confirmRestartOobe =>
-      '将重新进入首次启动向导，可重新设置呼号、接收地区等。\n当前设置不会丢失，完成向导后继续使用。';
-
-  @override
-  String get restartWizard => '重新运行设置向导';
-
-  @override
-  String get restartWizardTitle => '重新运行设置向导？';
-
-  @override
-  String get oobeFilterTitle => '选择接收地区';
-
-  @override
-  String get oobeFilterDesc => '勾选要接收的国家/地区；不勾选则接收全部台站，不做限制';
-
-  @override
-  String get oobeWelcomeTitle => '欢迎使用 APRSlocus';
-
-  @override
-  String get oobeWelcomeRealMap => '实时地图';
-
-  @override
-  String get oobeWelcomeGps => 'GPS 定位上报';
-
-  @override
-  String get oobeWelcomeMsg => 'APRS 消息';
-
-  @override
-  String get oobeWelcomeIs => '接入 APRS-IS';
-
-  @override
-  String get oobeCallTitle => '你的呼号';
-
-  @override
-  String get oobeSymbolTitle => '选择台站符号';
-
-  @override
-  String get oobeServerTitle => '连接 APRS-IS 服务器';
-
-  @override
-  String get weatherData => '气象数据';
-
-  @override
-  String get fmoInfo => 'FMO 台站信息';
-
-  @override
-  String get aprslocusInfo => 'APRSlocus 信息';
-
-  @override
-  String get locationInfo => '位置信息';
-
-  @override
-  String get recentPackets => '最近数据包';
-
-  @override
-  String get quickActions => '快捷操作';
-
-  @override
-  String get copyCoords => '复制坐标';
-
-  @override
-  String get copyGrid => '复制网格';
-
-  @override
-  String get sender => '发送方';
-
-  @override
-  String get time => '时间';
-
-  @override
-  String get message => '消息';
-
-  @override
-  String get groupChat => '群组';
-
-  @override
-  String get newGroup => '新建群组';
-
-  @override
-  String get sendTo => '发送至';
-
-  @override
-  String get filterRule => '过滤规则';
-
-  @override
-  String get saveAndApply => '保存并应用过滤';
-
-  @override
-  String get useMyLocation => '用我的位置作为过滤中心';
-
-  @override
-  String get noFixYet => '尚未定位，无法获取当前位置';
-
-  @override
-  String get invalidCoords => '请输入有效的经纬度和半径';
-
-  @override
-  String get filterSaved => '过滤已保存并应用';
-
-  @override
-  String get stationsShown => '台站';
-
-  @override
-  String get settingsDesc => '配置电台、定位与连接';
-
-  @override
-  String get radioCat => '电台';
-
-  @override
-  String get radioCatDesc => '呼号 · SSID · 符号';
-
-  @override
-  String get beaconCat => '定位上报';
-
-  @override
-  String get beaconCatDesc => 'GPS · 信标 · 手动定位';
-
-  @override
-  String get connectionCat => '连接';
-
-  @override
-  String get connectionCatDesc => '服务器 · 过滤范围';
-
-  @override
-  String get displayCat => '显示';
-
-  @override
-  String get displayCatDesc => '坐标 · 主题';
-
-  @override
-  String get chatCat => '聊天';
-
-  @override
-  String get chatCatDesc => '记录 · 联系人';
-
-  @override
-  String get dataCat => '数据';
-
-  @override
-  String get dataCatDesc => '清除本地数据';
-
-  @override
-  String get advancedCat => '高级';
-
-  @override
-  String get advancedCatDesc => '实验室 · 开发者';
-
-  @override
-  String get updateCat => '更新';
-
-  @override
-  String get updateCatDesc => '检查新版本';
-
-  @override
-  String get checkUpdate => '检查更新';
-
-  @override
-  String get myStationSettings => '我的电台';
-
-  @override
-  String get myStationSettingsDesc => '呼号 · SSID · 符号 · 信标';
-
-  @override
-  String get oobeWelcomeDesc => '开始配置你的 APRS 电台';
-
-  @override
-  String get oobeCallDesc => '输入你的呼号';
-
-  @override
-  String get oobeSymbolDesc => '符号代表台站类型，会随位置信标一起发送';
-
-  @override
-  String get oobeServerDesc => '连接后接收全球 APRS 台站数据，可保持默认配置直接使用';
-
-  @override
-  String get wizard => '设置向导';
-
-  @override
-  String get setStep => '步骤';
-
-  @override
-  String get chooseSymbol => '选择台站符号';
-
-  @override
-  String get settingsSubtitle => '地图坐标与显示偏好';
-
-  @override
-  String get stationSettingsSubtitle => '呼号、符号与信标';
-
-  @override
-  String get connectionSettingsSubtitle => 'APRS-IS 服务器与接收范围';
-
-  @override
-  String get chatSettingsSubtitle => '消息记录与联系人';
-
-  @override
-  String get dataSettingsSubtitle => '本地数据管理';
-
-  @override
-  String get advancedSettingsSubtitle => '实验室与开发者工具';
-
-  @override
-  String get stationListTitle => '台站列表';
-
-  @override
-  String get filters => '筛选';
-
-  @override
-  String get clearAll => '全部清除';
-
-  @override
-  String get statusFilter => '状态';
-
-  @override
-  String get typeGroup => '类型';
-
-  @override
-  String get appFilter => '软件';
-
-  @override
-  String get mapMenu => '地图菜单';
-
-  @override
-  String get mapTypeTitle => '地图类型';
-
-  @override
-  String get selectMapType => '选择地图类型';
-
-  @override
-  String get showTrails => '显示轨迹';
-
-  @override
-  String get showStations => '显示台站';
-
-  @override
-  String get aboutTitle => '关于';
 
   @override
   String get aboutSubtitle => 'APRS 定位追踪与地图';
 
   @override
-  String get author => '作者';
-
-  @override
-  String get codeContributions => '代码贡献';
-
-  @override
-  String get codeContributionI18n => '国际化 / 英文界面';
-
-  @override
-  String get codeContributionZhTw => '繁体中文界面';
-
-  @override
-  String get codeContributionTranslation => '翻译';
-
-  @override
-  String get dataSourceTxHint =>
-      '可以同时勾选多条链路一起收报文，但**发射只有一条**（右侧圆点为发射来源）——同一个呼号从两条链路发出去会造成重复报文。';
-
-  @override
-  String get dataSourceTxBadge => '发射';
-
-  @override
-  String get dataSourceIgateHint =>
-      '想当网关（把射频收到的报文转到互联网）就同时勾选 APRS-IS 与 TNC/音频，然后在下面打开「网关」。';
-
-  @override
-  String get igateTitle => '网关（iGate）';
-
-  @override
-  String get igateSubtitle => '把射频收到的报文送上 APRS-IS';
-
-  @override
-  String get igateEnable => '启用网关';
-
-  @override
-  String get igateHint =>
-      '射频上收到的报文会被送上 APRS-IS（自动加上 qAr/qAR 与你的呼号标识来路）。需要同时启用 APRS-IS 和一个射频来源（TNC / 音频）。';
-
-  @override
-  String get igateNeedRf => '还差一个射频来源：请在上面的「数据来源」里勾选 TNC 或音频，否则网关没有可转递的射频链路。';
-
-  @override
-  String get igateNeedIs => '还没启用 APRS-IS：请在上面勾选 APRS-IS，否则网关没有可转递的目标网络。';
-
-  @override
-  String get igateTwoWay => '双向网关（向射频转递消息）';
-
-  @override
-  String get igateTwoWayHint =>
-      '打开后会**在射频上真实发射**：只转「发给最近在射频上听到过的台站」的点对点消息（位置/天气等广播不转，避免占满信道）。关闭时只做 RF→IS。';
-
-  @override
-  String get igateStatToIs => '已转递 → APRS-IS（条）';
-
-  @override
-  String get igateStatToRf => '已转递 → 射频（条）';
-
-  @override
-  String get igateStatDup => '重复丢弃（条）';
-
-  @override
-  String get igateResetStats => '清空统计';
-
-  @override
-  String get igateStatRfSeen => '射频收到（条）';
-
-  @override
-  String get igateStatBlocked => '环路拒收（条）';
-
-  @override
-  String get igateRfDown =>
-      '射频链路没连上：网关现在什么都转不了。上面的「射频收到」如果一直是 0，说明报文根本没进来 —— 先查设备页里的 TNC / 音频状态（串口线速、设备是否开机），而不是怀疑网关。';
-
-  @override
-  String get igateIsDown => 'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。';
-
-  @override
-  String get igateNoRfTraffic =>
-      '射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。';
-
-  @override
-  String get igateAllRejected =>
-      '收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。';
-
-  @override
-  String grpSysJoined(String call) {
-    return '$call 加入了群聊';
-  }
-
-  @override
-  String grpSysLeft(String call) {
-    return '$call 离开了群聊';
-  }
-
-  @override
-  String grpSysJoinReq(String call) {
-    return '$call 申请加入群聊';
-  }
-
-  @override
-  String grpSysDeclined(String call) {
-    return '$call 拒绝了邀请';
-  }
-
-  @override
-  String get grpInviteTitle => '群聊邀请';
-
-  @override
-  String grpInviteBody(String from, String name) {
-    return '$from 邀请你加入「$name」';
-  }
-
-  @override
-  String get grpNameInvalid => '群名不能为空、不能包含冒号或换行';
-
-  @override
-  String grpNameTooLong(int max) {
-    return '群名最长 $max 个字符（过长会让邀请报文超出 APRS 消息上限）';
-  }
-
-  @override
-  String grpInviteSent(int n) {
-    return '已向 $n 位成员发出邀请';
-  }
-
-  @override
-  String get grpSelfPending => '等待群主确认';
-
-  @override
-  String get deviceOverviewTitle => '设备';
-
-  @override
-  String get deviceOverviewSubtitle => '数据来源、链路状态与自检';
-
-  @override
-  String get deviceCurrentLink => '当前链路';
-
-  @override
-  String get deviceCurrentLinkDesc => '只读摘要 · 改参数请进对应子页';
-
-  @override
-  String get deviceEntries => '设备与参数';
-
-  @override
-  String get deviceEntriesDesc => '每条链路一个子页，各管各的参数';
-
-  @override
-  String get tncDeviceTitle => 'TNC 设备与参数';
-
-  @override
-  String get tncDeviceDesc => '蓝牙/串口绑定、初始化串、KISS 参数与发射自检';
-
-  @override
-  String get deviceLogTitle => '链路日志';
-
-  @override
-  String get deviceLogDesc => '显示当前来源的日志（TNC / 音频自动切换）';
-
-  @override
-  String get tncInitTitle => 'TNC 初始化串';
-
-  @override
-  String get tncInitSubtitle => '连接后逐行发送（等价 APRSdroid 的 kiss.init）';
-
-  @override
-  String get tncInitTip =>
-      '若 TNC「能收不能发」，先在这里试：很多蓝牙/串口 TNC 模块上电停在命令模式，必须先收到 KISS ON、RESTART 等指令才进入 KISS 转发状态。每行一条命令（发送时自动补 CRLF）。';
-
-  @override
-  String get tncInitDelay => '行间隔 (ms)';
-
-  @override
-  String get tncInitDelayTip => '每行命令之间的等待时间。模块处理命令需要时间，太短会丢命令';
-
-  @override
-  String get tncInitSendAction => '立即发送初始化串';
-
-  @override
-  String tncInitSent(int n) {
-    return '已发送 $n 行初始化串';
-  }
-
-  @override
-  String get tncInitEmpty => '未填写初始化串';
-
-  @override
-  String get tncPushParams => '连接后下发 KISS 参数';
-
-  @override
-  String get tncPushParamsTip =>
-      '默认关闭（与 APRSdroid 一致）。打开后连接时会把上面的参数推给 TNC，覆盖它自己的配置 —— 参数不合适可能让它一直退避而不发射，所以只在需要统一管理时打开。';
-
-  @override
-  String get tncTxTestTitle => '发射自检';
-
-  @override
-  String get tncTxTestSubtitle => '向 TNC 写一帧测试包，判断问题在链路还是 TNC';
-
-  @override
-  String get tncTxTestHint =>
-      '发的是一帧状态包（不含坐标），不会把台站在 aprs.fi 上挪位置。若这里显示「已写入」却仍然不发射，问题在 TNC 侧：先试初始化串（KISS ON / RESTART），再检查 TxDelay 与信道占用。';
-
-  @override
-  String get tncTxTestAction => '写入测试帧';
-
-  @override
-  String get tncTxTestOkPrefix => '已写入';
-
-  @override
-  String tncTxTestOk(String n) {
-    return '已写入 TNC（累计 $n 帧）。若电台仍不发射，问题在 TNC 侧：试初始化串或检查 TxDelay。';
-  }
-
-  @override
-  String tncTxTestFail(String err) {
-    return '未写入：$err';
-  }
-
-  @override
-  String get tncNeedConnected => '请先连接 TNC';
-
-  @override
-  String msgLenCounter(int chars, int bytes) {
-    return '$chars/67 字符 · 整包 $bytes/512 字节';
-  }
-
-  @override
-  String msgOverSpecAsk(int chars) {
-    return '这条消息 $chars 个字符，超过 APRS 规范的 67 字符上限。多数客户端仍能读出，但部分客户端/网关会截断或拒收，对方可能解析不出来。仍要发送吗？';
-  }
-
-  @override
-  String msgOverServerLimit(int bytes, int over) {
-    return '整包 $bytes 字节，超过 APRS-IS 单行上限 512 字节，服务器可能直接丢弃整包（连报头都送不到）。请缩短约 $over 字节。';
-  }
-
-  @override
-  String get msgSendAnyway => '仍要发送';
-
-  @override
-  String get msgSpecLimitHint =>
-      'APRS 规范建议单条消息不超过 67 字符：超长文本在部分客户端上会显示不全或解析失败。';
-
-  @override
-  String get msgBlockedTooLong => '已阻止发送：整包超出 APRS-IS 上限';
-
-  @override
-  String get beaconRfBeaconOff => '射频信标未开启';
-
-  @override
-  String get beaconRfEnableHint =>
-      '射频来源的自动发射需要显式打开「射频信标」。在此之前不会自动发射位置（倒计时也不会走动）。';
-
-  @override
-  String get beaconRfEnableAction => '开启射频信标';
-
-  @override
-  String get beaconRfEnabled => '已开启射频信标，将按间隔自动发射';
-
-  @override
-  String get beaconRfEnableWarn => '发射将使用你的呼号，请在执照范围内操作';
-
-  @override
-  String get diagTitle => '链路自检';
-
-  @override
-  String get diagSubtitle => '逐层确认协议、权限、设备到底哪一环有问题';
-
-  @override
-  String get diagRun => '开始自检';
-
-  @override
-  String get diagRunning => '自检中…';
-
-  @override
-  String diagPassed(int n) {
-    return '通过 $n 项';
-  }
-
-  @override
-  String diagFailed(int n) {
-    return '失败 $n 项';
-  }
-
-  @override
-  String get diagHint => '协议回路不接电台也能跑：先确认软件层没问题，再去查设备与接线';
-
-  @override
-  String get diagTncSection => 'TNC（KISS / AX.25）';
-
-  @override
-  String get diagAudioSection => '音频（AFSK 1200）';
-
-  @override
-  String get diagKissEscape => 'KISS 转义';
-
-  @override
-  String get diagKissEscapeFail => 'KISS 转义还原失败（软件层问题，换设备也没用）';
-
-  @override
-  String get diagAx25 => 'AX.25 帧编解码';
-
-  @override
-  String get diagAx25Fail => 'AX.25 编码失败（报文格式不合法）';
-
-  @override
-  String diagAx25Mismatch(String got) {
-    return 'AX.25 回路不一致，解回：$got';
-  }
-
-  @override
-  String get diagFcs => 'FCS 校验';
-
-  @override
-  String get diagFcsFail => 'FCS 校验异常（改动一个字节本应被拒收）';
-
-  @override
-  String get diagTncLoopback => 'TNC 协议回路';
-
-  @override
-  String diagTncLoopbackOk(int len) {
-    return 'KISS/AX.25 编解码往返一致（$len 字节）';
-  }
-
-  @override
-  String get diagAfskLoopback => 'AFSK 调制解调回路';
-
-  @override
-  String diagAfskLoopbackOk(int samples, int rate) {
-    return '调制→解调一致（$samples 采样 @${rate}Hz）';
-  }
-
-  @override
-  String diagAfskLoopbackFail(int n) {
-    return '解出 $n 帧（应为 1 帧）';
-  }
-
-  @override
-  String get diagAfskLevelFail => '波形幅度过低（调制结果接近静音）';
-
-  @override
-  String get diagPlatform => '平台能力';
-
-  @override
-  String diagPlatformOk(String name) {
-    return '可用 · 后端 $name';
-  }
-
-  @override
-  String get diagTncPlatformNo => '当前平台不支持 TNC 链路';
-
-  @override
-  String get diagAudioPlatformWarn => '不支持实时音频 · 仍可用 WAV 文件模式';
-
-  @override
-  String get diagNoRealtime => '非实时';
-
-  @override
-  String get diagPermission => '录音权限';
-
-  @override
-  String get diagPermissionOk => '已授权';
-
-  @override
-  String get diagSkipped => '已跳过（平台不支持）';
-
-  @override
-  String get diagCapture => '音频采集';
-
-  @override
-  String diagCaptureOk(int bytes, int rate) {
-    return '收到 $bytes 字节 @${rate}Hz';
-  }
-
-  @override
-  String get diagCaptureNoData => '没有收到任何音频数据 · 检查输入设备与权限';
-
-  @override
-  String diagCaptureFailed(String err) {
-    return '打开采集失败：$err';
-  }
-
-  @override
-  String get diagSpeaker => '扬声器输出';
-
-  @override
-  String get diagSpeakerOk => '测试音已播放';
-
-  @override
-  String diagSpeakerFail(String err) {
-    return '播放失败：$err';
-  }
-
-  @override
-  String get diagFileIo => 'WAV 文件读写';
-
-  @override
-  String diagFileIoOk(int rate) {
-    return '写入→读出→解调一致 @${rate}Hz';
-  }
-
-  @override
-  String diagFileWriteFail(String err) {
-    return '文件写入失败：$err';
-  }
-
-  @override
-  String get diagFileReadFail => '文件读取失败';
-
-  @override
-  String get diagFileDecodeFail => '文件里的音频解不出报文（可能不是 AFSK 1200 录音）';
-
-  @override
-  String get connAudioSourceHint => '音频模式下不使用服务器、过滤器与 KISS 参数';
-
-  @override
-  String get testTxTitle => '测试发射';
-
-  @override
-  String get testTxDesc => '发一条状态报文，验证链路真的通到空中';
-
-  @override
-  String get testTxAction => '发射测试帧';
-
-  @override
-  String get testTxSent => '测试帧已交给链路';
-
-  @override
-  String testTxFail(String err) {
-    return '测试帧发送失败：$err';
-  }
-
-  @override
-  String get testTxNeedsConnect => '请先连接链路';
-
-  @override
-  String get testTxHint => '这是**真实发射**（状态报文，不含坐标）。射频发射请确认在自己的呼号与执照范围内';
-
-  @override
-  String get audioStatsTitle => '音频统计';
-
-  @override
-  String audioStatRx(int n) {
-    return '收 $n 帧';
-  }
-
-  @override
-  String audioStatTx(int n) {
-    return '发 $n 帧';
-  }
-
-  @override
-  String audioStatDrop(int n) {
-    return '发射期间丢弃 $n 字节';
-  }
-
-  @override
-  String get audioRestart => '重启音频链路';
-
-  @override
-  String get audioTxDisabled => '「允许发射」已关闭，仅接收';
-
-  @override
-  String get audioLoopbackHint => '自检会真的做一次调制→解调；Android 发射时会暂停麦克风采集（半双工）';
-
-  @override
-  String get notifAudioConnected => '音频链路在线';
-
-  @override
-  String get notifAudioDisconnected => '音频链路已断开';
-
-  @override
-  String connConnectingAudio(String name) {
-    return '正在打开音频（$name）…';
-  }
-
-  @override
-  String connAudioConnected(String rate) {
-    return '音频链路在线 · $rate';
-  }
-
-  @override
-  String connRetryAudio(int seconds) {
-    return '音频链路打开失败 · ${seconds}s 后重试…';
-  }
-
-  @override
-  String connRetryAudioDetail(String detail, int seconds) {
-    return '音频打开失败（$detail）· ${seconds}s 后重试…';
-  }
-
-  @override
-  String connAudioLinkLost(int seconds) {
-    return '音频链路中断 · $seconds秒后自动重连…';
-  }
-
-  @override
-  String connAudioPositionSent(String call) {
-    return '音频已发射 · 位置已发送 ($call)';
-  }
-
-  @override
-  String get dataSourceAudio => '音频（声卡）';
-
-  @override
-  String get dataSourceAudioDesc => '用麦克风/扬声器或声卡线接电台，收发 AFSK 1200';
-
-  @override
-  String get audioSettings => '音频（声卡 TNC）';
-
-  @override
-  String get audioSettingsSubtitle => '用声卡收发 AFSK 1200 报文';
-
-  @override
-  String get audioBackend => '音频后端';
-
-  @override
-  String get audioUnsupported => '当前平台不支持实时音频（可用 WAV 文件模式）';
-
-  @override
-  String get audioNeedPermission => '需要录音权限（RECORD_AUDIO），请授权后重试';
-
-  @override
-  String get audioCaptureTitle => '音频采集';
-
-  @override
-  String get audioCaptureDesc => '从麦克风/线路输入解调 AFSK 1200';
-
-  @override
-  String get audioCaptureStart => '打开采集';
-
-  @override
-  String get audioCaptureStop => '停止采集';
-
-  @override
-  String get audioSampleRate => '采样率';
-
-  @override
-  String get audioSampleRateTip =>
-      '22050Hz 是声卡 TNC 常用值；设备不支持时改用 44100/48000。修改会重启采集';
-
-  @override
-  String get audioLevel => '输入电平';
-
-  @override
-  String get audioLevelTip => '有信号时电平条会抬起；收到 AFSK 时「解调锁定」会点亮';
-
-  @override
-  String get audioSynced => '解调锁定';
-
-  @override
-  String get audioUnlocked => '未锁定';
-
-  @override
-  String audioBadFrames(int n) {
-    return '解码中止 $n 次（噪声/失步）';
-  }
-
-  @override
-  String get audioBaud => '比特率';
-
-  @override
-  String get audioTones => '音调（标/空）';
-
-  @override
-  String get audioTxTitle => '音频发射';
-
-  @override
-  String get audioTxDesc => '发射前先听信道，避免与其它台站碰撞';
-
-  @override
-  String get audioTxEnabled => '允许发射';
-
-  @override
-  String get audioTxEnabledTip => '关闭后只接收不发射（只想听信标时最省心）';
-
-  @override
-  String get audioTxDelayTip => '发射前导时长：给对端解调器锁定时间、给电台 PTT 建立时间';
-
-  @override
-  String get audioToneMark => '标号频率 (Hz)';
-
-  @override
-  String get audioToneSpace => '空号频率 (Hz)';
-
-  @override
-  String get audioMarkTip =>
-      'Bell 202 规定标号 1200Hz、空号 2200Hz；只有 ±几 Hz 的容差，不要随意改';
-
-  @override
-  String get audioSpaceTip => '空号音调。与标号音调一起决定 FSK 频偏（标准为 1000Hz）';
-
-  @override
-  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
-
-  @override
-  String get audioTxDelayLabel => '发射前导 (ms)';
-
-  @override
-  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
-
-  @override
-  String get audioCsmaWait => '发射前等待信道空闲 (ms)';
-
-  @override
-  String get audioCsmaWaitTip => '检测到信道占用时最多等待多久；0 = 不等待直接发射';
-
-  @override
-  String get audioStopTx => '停止发射';
-
-  @override
-  String get audioWavTitle => 'WAV 文件模式';
-
-  @override
-  String get audioWavDesc => '离线解码一段录音，或把报文导出成音频文件';
-
-  @override
-  String get audioWavPath => '文件路径';
-
-  @override
-  String get audioWavDecodeAction => '解码此 WAV';
-
-  @override
-  String get audioWavExportAction => '导出此报文';
-
-  @override
-  String get audioWavTnC2 => '待导出报文 (TNC2)';
-
-  @override
-  String get audioWavNone => '未解出报文（可能不是 AFSK 1200 录音）';
-
-  @override
-  String audioWavFound(int n) {
-    return '解出 $n 条报文';
-  }
-
-  @override
-  String audioWavWritten(String path) {
-    return '已写入 $path';
-  }
-
-  @override
-  String audioWavFailed(String err) {
-    return '文件读写失败：$err';
-  }
-
-  @override
-  String connTncConnected(String arg) {
-    return 'TNC 已连接 · $arg';
-  }
-
-  @override
-  String connTncPositionSent(String arg) {
-    return 'TNC 已连接 · 位置已发送 ($arg)';
-  }
-
-  @override
-  String connRetryTnc(int n) {
-    return 'TNC 连接失败 · ${n}s 后重试…';
-  }
-
-  @override
-  String connRetryTncDetail(String e, int n) {
-    return 'TNC 连接失败（$e）· ${n}s 后重试…';
-  }
-
-  @override
-  String connTncLinkLost(int n) {
-    return 'TNC 链路断开 · $n秒后自动重连…';
-  }
-
-  @override
-  String get tncErrNoDevice => '未绑定 TNC 设备';
-
-  @override
-  String get tncErrUnsupported => '当前平台不支持';
-
-  @override
-  String get tncErrNotConnected => '链路未连接';
-
-  @override
-  String get tncErrOpenRead => '无法打开设备（读）';
-
-  @override
-  String get tncErrOpenWrite => '无法打开设备（写）—— Windows 的 COM 口是独占设备，检查是否被其他软件占用';
-
-  @override
-  String get tncErrBadFormat => '报文格式不合法';
-
-  @override
-  String get tncErrFrameTooLong => '帧长超出上限';
-
-  @override
-  String get tncErrTimeout => '连接超时';
-
-  @override
-  String get translateMyLang => '我的语言';
-
-  @override
-  String get translateMyLangHint => '对方发来的消息翻成它';
-
-  @override
-  String get translatePeerLang => '对方的语言';
-
-  @override
-  String get translatePeerUnknownHint => '收到对方消息后由翻译接口自动识别';
-
-  @override
-  String get translateLearned => '已自动识别';
-
-  @override
-  String get translatePeerUnknown => '还不知道对方使用什么语言 · 先在翻译设置里指定，或收几条对方消息后会自动识别';
-
-  @override
-  String get translateSideIncoming => '对方发来';
-
-  @override
-  String get translateSideOutgoing => '我发出';
-
-  @override
-  String get translateToMeTag => '译给我看';
-
-  @override
-  String get translateToPeerTag => '对方将读到';
-
-  @override
-  String get translateContrast => '对照显示原文与译文';
-
-  @override
-  String get translateContrastTip => '关闭后只显示译文（原文仍可通过长按查看）';
-
-  @override
-  String get translateProviderFree => '免费接口（无需密钥）';
-
-  @override
-  String get translateProviderFreeDesc => '开箱即用 · 使用公开端点，可能被限流或不稳定';
-
-  @override
-  String translateFreeFailed(String e) {
-    return '免费接口暂时不可用（$e）· 可在设置里改用 Google / 百度 / 自定义接口';
-  }
-
-  @override
-  String get translateProviderAuto => '自动（推荐）';
-
-  @override
-  String get translateProviderAutoDesc => '依次尝试多个免密钥接口，取第一个真正翻译成功的结果';
-
-  @override
-  String get translateProviderGooglePublic => 'Google 公开端点（免密钥）';
-
-  @override
-  String get translateProviderGooglePublicDesc => '质量较好，但可能被限流（实测会返回 429）';
-
-  @override
-  String get translateProviderMyMemory => 'MyMemory（免密钥）';
-
-  @override
-  String get translateProviderMyMemoryDesc => '官方免费接口，但本质是翻译记忆库：无匹配语料时会返回原文';
-
-  @override
-  String get translateProviderLibre => 'LibreTranslate（可自建）';
-
-  @override
-  String get translateProviderLibreDesc => '开源、可自建最可靠；公共实例现已要求密钥且常不支持中文';
-
-  @override
-  String get translateLibreUrl => '实例地址';
-
-  @override
-  String get translateLibreKey => '实例 API Key（公共实例需要，自建可留空）';
-
-  @override
-  String get translateUsedProvider => '本次实际使用';
-
-  @override
-  String get translateUntranslated => '接口没有真正翻译（返回了原文）· 已自动尝试下一个接口';
-
-  @override
-  String translateAutoAllFailed(String e) {
-    return '所有免密钥接口都不可用（$e）· 建议在设置里改用 Google / 百度密钥或自建实例';
-  }
-
-  @override
-  String get translateLangUnsupported => '该接口不支持翻译成这一语言 · 可改用「自动」或其它接口';
-
-  @override
-  String get translateLangScopeNote =>
-      '各接口支持的语种范围不同（例如百度标准版支持印尼语 id，但并非所有方向都支持）· 遇到不支持时会提示改用自动或其它接口';
-
-  @override
-  String get langNameZh => '简体中文';
-
-  @override
-  String get langNameZhTw => '繁体中文';
-
-  @override
-  String get langNameEn => '英语';
-
-  @override
-  String get langNameJa => '日语';
-
-  @override
-  String get langNameKo => '韩语';
-
-  @override
-  String get langNameEs => '西班牙语';
-
-  @override
-  String get langNameFr => '法语';
-
-  @override
-  String get langNameDe => '德语';
-
-  @override
-  String get langNameRu => '俄语';
-
-  @override
-  String get langNamePt => '葡萄牙语';
-
-  @override
-  String get langNameIt => '意大利语';
-
-  @override
-  String get langNameId => '印尼语';
-
-  @override
-  String get langNameTh => '泰语';
-
-  @override
-  String get langNameVi => '越南语';
-
-  @override
-  String get langNameAr => '阿拉伯语';
-
-  @override
-  String get translateOutgoing => '发送前翻译成对方的语言';
-
-  @override
-  String get translateOutgoingTip => '开启后按发送会先把内容译成对方的语言再发出；请确认对方能读懂该语言';
-
-  @override
-  String get translateInput => '翻译输入内容';
-
-  @override
-  String translateOutPreview(String text) {
-    return '将发送：$text';
-  }
-
-  @override
-  String translateOutPreviewHint(String lang) {
-    return '已译为 $lang · 点发送即按此发出';
-  }
-
-  @override
-  String get translateOutCancel => '取消翻译';
-
-  @override
-  String get translateOutNeedPeer => '还不知道对方使用什么语言 · 先在会话翻译设置里指定';
-
-  @override
-  String translateSentAs(String text) {
-    return '已按对方语言发出：$text';
-  }
-
-  @override
-  String translateTooLongAfter(int n) {
-    return '译文超出长度上限（$n 字符），未发送';
-  }
-
-  @override
-  String get dateToday => '今天';
-
-  @override
-  String get dateYesterday => '昨天';
-
-  @override
-  String dateDividerFull(int y, int m, int d, String w) {
-    return '$y年$m月$d日 $w';
-  }
-
-  @override
-  String dateWeekday(String d) {
-    String _temp0 = intl.Intl.selectLogic(d, {
-      '1': '周一',
-      '2': '周二',
-      '3': '周三',
-      '4': '周四',
-      '5': '周五',
-      '6': '周六',
-      '7': '周日',
-      'other': '—',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get translate => '翻译';
-
-  @override
-  String get translateText => '翻译文本';
-
-  @override
-  String get translateSettings => '翻译设置';
-
-  @override
-  String get translateSettingsSubtitle => '翻译接口、语言与自动翻译';
-
-  @override
-  String get translateProvider => '翻译接口';
-
-  @override
-  String get translateProviderGoogle => 'Google 翻译';
-
-  @override
-  String get translateProviderBaidu => '百度翻译';
-
-  @override
-  String get translateProviderCustom => '自定义';
-
-  @override
-  String get translateGoogleKey => 'Google API Key';
-
-  @override
-  String get translateGoogleKeyTip =>
-      'Google Cloud Translation v2 的 API Key，需要自行到 Google Cloud 控制台申请';
-
-  @override
-  String get translateBaiduAppId => '百度 App ID';
-
-  @override
-  String get translateBaiduKey => '百度密钥';
-
-  @override
-  String get translateBaiduTip => '在百度翻译开放平台申请「通用文本翻译」，密钥只保存在本机';
-
-  @override
-  String get translateCustomUrl => '接口地址';
-
-  @override
-  String get translateCustomMethod => '请求方式';
-
-  @override
-  String get translateCustomHeaders => '请求头 (JSON)';
-
-  @override
-  String get translateCustomBody => '请求体模板';
-
-  @override
-  String translateCustomBodyTip(String text, String from, String to) {
-    return '可用占位符：$text 原文、$from 源语言、$to 目标语言。选择 GET 时忽略此项';
-  }
-
-  @override
-  String get translateCustomResultPath => '结果字段路径';
-
-  @override
-  String get translateCustomResultPathTip =>
-      '用点号表示层级，数组用序号，如 data.translations.0.translatedText';
-
-  @override
-  String get translateTest => '测试翻译';
-
-  @override
-  String translateTestOk(String text) {
-    return '接口可用：$text';
-  }
-
-  @override
-  String get translateNeedConfig => '请先填写翻译接口配置';
-
-  @override
-  String translateFailed(String e) {
-    return '翻译失败：$e';
-  }
-
-  @override
-  String get translateTargetLang => '翻译为';
-
-  @override
-  String get translateSourceLang => '原文语言';
-
-  @override
-  String get translateAuto => '自动翻译收到的消息';
-
-  @override
-  String get translateAutoTip => '仅对本会话生效；只翻译对方发来的消息';
-
-  @override
-  String get translateShowOriginal => '显示原文';
-
-  @override
-  String get translateShowTranslation => '显示译文';
-
-  @override
-  String get translateRetry => '重新翻译';
-
-  @override
-  String get translateTranslating => '正在翻译…';
-
-  @override
-  String get translateCopyOriginal => '复制原文';
-
-  @override
-  String get translateCopyResult => '复制译文';
-
-  @override
-  String get translateLangAuto => '自动检测';
-
-  @override
-  String get translateSameLang => '译文与原文相同 · 可能无需翻译，或该接口未能翻译';
-
-  @override
-  String get translateNotNeeded => '该内容无需翻译（数字 / 符号 / 呼号）';
-
-  @override
-  String translateBubbleCount(int n) {
-    return '已翻译 $n 条';
-  }
-
-  @override
-  String get translatePrivacyNote => '翻译会把消息文本发送到你选择的第三方接口，请自行评估隐私';
-
-  @override
-  String get notifTncConnected => 'TNC 已连接';
-
-  @override
-  String get notifTncDisconnected => 'TNC 未连接';
-
-  @override
-  String get dataSourceTitle => '数据来源';
-
-  @override
-  String get dataSourceSubtitle => '报文从哪里来';
-
-  @override
-  String get dataSourceAprsIs => 'APRS-IS';
-
-  @override
-  String get dataSourceAprsIsDesc => '通过互联网接入全球 APRS 网络';
-
-  @override
-  String get dataSourceTnc => 'TNC';
-
-  @override
-  String get dataSourceTncDesc => '通过蓝牙或串口的 TNC 与电台直接收发';
-
-  @override
-  String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
-
-  @override
-  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航点）';
-
-  @override
-  String get dataSourcePkwdwplDesc =>
-      '用蓝牙/串口读取电台输出的 Kenwood \$PKWDWPL 航点语句（只收不发）';
-
-  @override
-  String get dataSourcePkwdwplHint =>
-      'PKWDWPL 是**只读**链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）';
-
-  @override
-  String connConnectingPkwdwpl(String arg) {
-    return '正在连接 PKWDWPL（$arg）…';
-  }
-
-  @override
-  String connPkwdwplConnected(String arg) {
-    return 'PKWDWPL 已连接 · $arg';
-  }
-
-  @override
-  String get pkwdwplDeviceTitle => 'PKWDWPL 设备';
-
-  @override
-  String get pkwdwplDeviceDesc => '绑定电台端口 · 查看航点接收状态';
-
-  @override
-  String get pkwdwplBindTitle => '设备绑定与状态';
-
-  @override
-  String get pkwdwplBindSubtitle => '选择输出 \$PKWDWPL 语句的那个串口 / 蓝牙端口';
-
-  @override
-  String get pkwdwplRxOnly => '只收不发';
-
-  @override
-  String get pkwdwplReadOnly => '只读接收中 · 本机不会发射任何报文';
-
-  @override
-  String get deviceConflictTitle => '两条链路绑定了同一台设备';
-
-  @override
-  String get deviceConflictDesc =>
-      'TNC 与 PKWDWPL 指向同一台设备时，接收到的数据会被两条链路瓜分 —— 表现是「能发不能收」（发送正常、收不到报文）。请给其中一条换一台设备。TNC 优先：PKWDWPL 会拒绝连接。';
-
-  @override
-  String get deviceInUseByTnc => '已被 TNC 使用，不能重复绑定';
-
-  @override
-  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重复绑定';
-
-  @override
-  String rxOnlyBanner(String arg) {
-    return '$arg 已连接 · 仅接收（当前发射来源未连接）';
-  }
-
-  @override
-  String get pkwdwplTip =>
-      '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
-
-  @override
-  String get pkwdwplStrictChecksum => '严格校验和（不符即丢弃）';
-
-  @override
-  String get pkwdwplStrictChecksumTip =>
-      '默认关闭：验证不符时只标注并记日志，不丢句子 —— 本地线缆上的不符多半是固件格式与手册有出入，整条丢弃会让界面「什么都不显示」，反而更难排查';
-
-  @override
-  String get pkwdwplErrReadOnly => '只读链路，不能发射';
-
-  @override
-  String get pkwdwplStatTitle => '航点接收';
-
-  @override
-  String pkwdwplStats(String rx) {
-    return '已收航点 $rx 条';
-  }
-
-  @override
-  String get pkwdwplStatRejected => '丢弃/无效语句';
-
-  @override
-  String get pkwdwplStatMismatch => '校验和不符';
-
-  @override
-  String get pkwdwplStatIgnored => '其它 NMEA 语句（已忽略）';
-
-  @override
-  String get pkwdwplLogEmpty => '暂无 PKWDWPL 日志';
-
-  @override
-  String get tncBindTitle => '蓝牙 TNC';
-
-  @override
-  String get tncBindSubtitle => '绑定并连接电台侧的 TNC';
-
-  @override
-  String get tncBoundDevice => '已绑定设备';
-
-  @override
-  String get tncNotBound => '未绑定设备';
-
-  @override
-  String get tncScanPaired => '扫描设备（蓝牙已配对 + USB 串口）';
-
-  @override
-  String get tncNoPaired => '未找到设备 · 请先在系统蓝牙设置里配对 TNC，或插上 USB 串口线（OTG）';
-
-  @override
-  String get tncUnbind => '解除绑定';
-
-  @override
-  String get tncConnectAction => '连接 TNC';
-
-  @override
-  String get tncRestart => '重启链路';
-
-  @override
-  String get tncSupportedNo => '当前平台暂不支持 TNC 链路';
-
-  @override
-  String get tncNeedPermission => '需要蓝牙权限（扫描蓝牙设备用）；只用 USB 串口可忽略，插线时系统会单独弹出授权';
-
-  @override
-  String get tncOpenFailedHint => '打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用';
-
-  @override
-  String tncStats(String rx, String tx) {
-    return '收 $rx 帧 · 发 $tx 帧';
-  }
-
-  @override
-  String get tncLog => '链路日志';
-
-  @override
-  String get tncLogEmpty => '暂无日志';
-
-  @override
-  String get kissParamsTitle => 'KISS 参数';
-
-  @override
-  String get kissParamsSubtitle => '直接下发到 TNC 的链路层参数';
-
-  @override
-  String get kissTxDelay => '发射延时 (ms)';
-
-  @override
-  String get kissTxDelayTip => 'KISS TXDELAY，单位 10ms。发射前留给自己 PTT 建立的时间';
-
-  @override
-  String get kissTxTail => '发射尾音 (ms)';
-
-  @override
-  String get kissTxTailTip => 'KISS TXTAIL，单位 10ms。某些电台需要尾部保持才能收全';
-
-  @override
-  String get kissPersistence => '持续度 P';
-
-  @override
-  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越礼让，共用信道时能减少碰撞';
-
-  @override
-  String get kissSlotTime => '时隙 (ms)';
-
-  @override
-  String get kissSlotTimeTip => 'KISS SLOTTIME，单位 10ms。与持续度共同决定信道竞争节奏';
-
-  @override
-  String get kissFullDuplex => '全双工';
-
-  @override
-  String get kissFullDuplexTip => 'KISS FULLDUPLEX，普通电台必须关闭（同时收发会互相干扰）';
-
-  @override
-  String get kissChannel => '信道 / KISS 端口';
-
-  @override
-  String get kissChannelTip => '多信道 TNC 才有多端口，单信道电台保持 0';
-
-  @override
-  String get kissMaxFrame => '帧长上限 (字节)';
-
-  @override
-  String get kissMaxFrameTip => '超过此长度的报文不会发出（1200bd 下 AX.25 单帧约 330 字节）';
-
-  @override
-  String get kissHardwareCmd => '厂商命令码';
-
-  @override
-  String get kissHardwareVal => '参数值';
-
-  @override
-  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，厂商自定义；-1 表示不下发';
-
-  @override
-  String get kissApplyParams => '下发参数';
-
-  @override
-  String get kissParamsSent => 'KISS 参数已下发';
-
-  @override
-  String get kissBackToCommand => '回到 TNC 命令模式';
-
-  @override
-  String get kissBackToCommandTip =>
-      '发送 RETURN (0x0F)。多数 KISS TNC 会就此停止转发，需重启链路才恢复';
-
-  @override
-  String get kissRfPath => '射频中继路径';
-
-  @override
-  String get kissRfPathTip => '射频上使用的中继，如 WIDE1-1,WIDE2-1；留空则不指定';
-
-  @override
-  String get kissRfBeacon => '允许射频信标';
-
-  @override
-  String get kissRfBeaconTip => '打开后才会在射频上定时发射位置。发射需以自己的呼号并在执照范围内操作';
-
-  @override
-  String get kissAutoAck => '自动回复 ACK';
-
-  @override
-  String get kissAutoAckTip => '关闭后不回应收到的消息回执，可减少射频占用';
-
-  @override
-  String get kissAutoReconnect => '断开后自动重连';
-
-  @override
-  String get kissNeedConnected => '请先连接 TNC';
-
-  @override
-  String get tncSwitchOn => '已开启';
-
-  @override
-  String get tncSwitchOff => '已关闭';
-
-  @override
-  String get connTncSourceHint => 'TNC 模式下不使用服务器与过滤器，相关设置已停用';
-
-  @override
-  String get connectTncBar => '点「连接」建立 TNC 链路';
-
-  @override
-  String connectingToTnc(String name) {
-    return '正在连接 TNC · $name';
-  }
-
-  @override
-  String get tncMsgTitle => '射频（TNC）模式';
-
-  @override
-  String get tncMsgDesc => '射频信道是共享资源，消息能力相应受限';
-
-  @override
-  String get tncGroupDisabled => '射频模式不支持群聊广播';
-
-  @override
-  String tncMsgLimitHint(String n) {
-    return '单条限 $n 字符（APRS 消息规范）';
-  }
-
-  @override
-  String get tncMsgTooLong => '超出射频模式单条消息长度上限';
-
-  @override
-  String get licenseSection => '许可证声明';
-
-  @override
-  String get licenseName => 'GNU GPL v3';
-
-  @override
-  String get licenseStatement =>
-      '本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。';
-
-  @override
-  String get licenseText => '查看许可证';
-
-  @override
-  String get oobeAgreeTitle => '用户协议与许可';
-
-  @override
-  String get oobeAgreeBody =>
-      '欢迎使用 APRSlocus！在使用前，请阅读并同意以下条款。请注意：APRS 数据是公开信息，一旦发送即代表其可能被全球 APRS 网络接收、存储与转发。';
-
-  @override
-  String get oobeAgreeCheck => '我已阅读并同意《用户协议》与 GPL-3.0 开源许可证';
-
-  @override
-  String get oobeAgreeNeed => '请先阅读并勾选同意《用户协议》';
-
-  @override
-  String get oobeDeclineExit => '不同意并退出';
-
-  @override
-  String get userAgreement => '用户协议';
-
-  @override
-  String get beaconWarnTitle => '信标间隔过短';
-
-  @override
-  String get beaconWarnBody =>
-      'APRS-IS 建议移动站信标间隔不低于 60 秒。过快的上报可能被视为滥用并导致服务器断开连接。是否仍要使用该间隔？';
-
-  @override
-  String get beaconWarnKeep => '仍然使用';
-
-  @override
-  String get beaconWarnFix => '改回 60 秒';
-
-  @override
-  String get features => '功能特性';
-
-  @override
-  String get openSource => '开源致谢';
-
-  @override
-  String get feedback => '用户反馈';
-
-  @override
-  String get officialWebsite => '官方网站';
-
-  @override
-  String get qqGroup => 'QQ 交流群';
-
-  @override
-  String get projectRepo => '项目仓库';
-
-  @override
-  String get testMembers => '测试成员';
-
-  @override
-  String get aiSupport => 'AI 算力支持';
-
-  @override
-  String get copyAppInfo => '复制应用信息';
-
-  @override
-  String get appInfoCopied => '已复制应用信息';
-
-  @override
-  String get shareApp => '分享 APRSlocus';
-
-  @override
-  String get shareToSystem => '分享到系统';
-
-  @override
-  String get shareToSystemDesc => '微信 / QQ / 短信等';
-
-  @override
-  String get copyShareText => '复制分享文案';
-
-  @override
-  String get openDownload => '打开下载页';
-
-  @override
-  String get shareTextCopied => '分享文案已复制，可粘贴发送给好友';
-
-  @override
-  String get shareText =>
-      'APRSlocus —— 业余无线电 APRS 定位追踪与地图 📡\n实时台站追踪、消息收发、信标上报，Android / Windows 全平台可用。\n官网：https://aprslocus.theez.top/\n下载：https://github.com/dariondong/APRSLocus/releases';
-
-  @override
-  String get enterCallsign => '请输入你的呼号';
-
-  @override
-  String get enterValidCall => '请输入有效呼号';
-
-  @override
-  String get stationSettings2 => '电台设置';
-
-  @override
-  String get beaconSettings => '定位上报';
-
-  @override
-  String get displaySettings2 => '显示设置';
-
-  @override
-  String get chatSettings2 => '聊天设置';
-
-  @override
-  String get dataSettings2 => '数据设置';
-
-  @override
-  String get advancedSettings2 => '高级设置';
-
-  @override
-  String get connectionSettings2 => '连接设置';
-
-  @override
-  String get myCallsign => '我的呼号';
-
-  @override
-  String get beaconEnabled => '启用位置信标';
-
-  @override
-  String get smartBeacon => '智能信标(按速度分档)';
-
-  @override
-  String get packetConsole => '数据包控制台';
-
-  @override
-  String get rawMode => '原始模式';
-
-  @override
-  String get parsedMode => '解析模式';
-
-  @override
-  String get position => '位置';
-
-  @override
-  String get statusType => '状态';
-
-  @override
-  String get objectType => '对象';
-
-  @override
-  String packetStats(Object ppm, Object rx, Object tx) {
-    return '收 $rx · 发 $tx · $ppm/分';
-  }
-
-  @override
-  String get searchPacket => '搜索呼号、目的地或原始内容…';
-
-  @override
-  String get noMatchingPackets => '没有匹配的数据包';
-
-  @override
-  String get inject => '注入';
-
-  @override
-  String get manualInject => '手动注入 APRS 数据包';
-
-  @override
-  String get injected => '已注入数据包';
-
-  @override
-  String get clearedPackets => '已清除数据包';
-
-  @override
-  String get clearPackets => '清除数据包';
-
-  @override
-  String noPositionInfo(Object call) {
-    return '$call 暂无位置信息（数据包未含位置）';
-  }
-
-  @override
-  String get copiedPacket => '已复制数据包';
-
-  @override
-  String get mapPickMode => '地图选点模式';
-
-  @override
-  String get mapPickDesc => '点击地图选择我的位置';
-
-  @override
-  String foundStations(Object count, Object q) {
-    return '找到 $count 台匹配「$q」';
-  }
-
-  @override
-  String get tapMapHint => '点击地图查看台站 · 双指缩放';
-
-  @override
-  String myLocationPanel(Object call) {
-    return '我的位置 · $call';
-  }
-
-  @override
-  String get speedLabel => '速度';
-
-  @override
-  String get courseLabel => '航向';
-
-  @override
-  String get telemetryTitle => '速度 / 高度变化';
-
-  @override
-  String get range10m => '10 分钟';
-
-  @override
-  String get range30m => '30 分钟';
-
-  @override
-  String get range1h => '1 小时';
-
-  @override
-  String get range3h => '3 小时';
-
-  @override
-  String get rangeAll => '全部';
-
-  @override
-  String get beaconIntervalLabel => '上报间隔';
-
-  @override
-  String get beaconsSentLabel => '已上报';
-
-  @override
-  String get nextBeaconLabel => '下次上报';
-
-  @override
-  String positionBeacon(Object grid) {
-    return '位置信标 · 网格 $grid';
-  }
-
-  @override
-  String get manualBeacon => '手动上报';
-
-  @override
-  String get mapPickNow => '地图选点';
-
-  @override
-  String pickedCoord(Object grid, Object lat, Object lng) {
-    return '已在地图选点 · $lat, $lng · 网格 $grid';
-  }
-
-  @override
-  String onlineCount(Object count) {
-    return '$count 在线';
-  }
-
-  @override
-  String movingCount(Object count) {
-    return '$count 移动';
-  }
-
-  @override
-  String stationCount(Object count) {
-    return '$count 台站';
-  }
-
-  @override
-  String get locateMe => '定位';
-
-  @override
-  String get layerFilter => '图层筛选';
-
-  @override
-  String get showAll => '全部显示';
-
-  @override
-  String get otherType => '其他';
-
-  @override
-  String zoomLevel(Object z) {
-    return '缩放 $z';
-  }
-
-  @override
-  String get datumGcj => 'GCJ-02';
-
-  @override
-  String get datumWgs => 'WGS-84';
-
-  @override
-  String distKm(Object d) {
-    return '距离 ${d}km';
-  }
-
-  @override
-  String get noStationInView => '该区域暂无台站 · 点击显示全部';
-
-  @override
-  String get noStationHelp => '该区域暂无台站 · 点击查看帮助';
-
-  @override
-  String get mapHelpTitle => '地图帮助';
-
-  @override
-  String get mapHelpIntro => '当前视野内没有台站。可能原因：未连接 APRS-IS、接收范围较小或附近暂无活跃台站。';
-
-  @override
-  String get mapHelpMove => '拖动 / 缩放：单指拖动地图，双指或滚轮缩放';
-
-  @override
-  String get mapHelpStation => '查看台站：点击标记选中并居中，双击打开详情';
-
-  @override
-  String get mapHelpLayer => '图层与底图：右上角按钮筛选台站类型、切换地图样式';
-
-  @override
-  String get mapHelpLocate => '定位：点击右下角「定位到我」回到当前位置';
-
-  @override
-  String get mapHelpSearch => '搜索：顶部搜索框输入呼号可快速定位台站';
-
-  @override
-  String get allChangelog => '全部更新日志';
-
-  @override
-  String get tapToView => '双击信标查看更多';
-
-  @override
-  String get beaconNow => '手动上报';
-
-  @override
-  String get meLabel => '我';
-
-  @override
-  String get mapZoomIn => '放大';
-
-  @override
-  String get mapZoomOut => '缩小';
-
-  @override
-  String get mapHome => '回到中心';
-
-  @override
-  String get mapLocate => '定位';
-
-  @override
-  String get mapLayers => '图层';
-
-  @override
-  String get featureLiveMap => '在线地图';
-
-  @override
-  String get featureLiveMapDesc => 'GCJ-02 坐标，流畅的缩放与拖拽体验';
-
-  @override
-  String get featureGps => 'GPS 定位';
-
-  @override
-  String get featureGpsDesc => '原生 Android 定位，无需 Google 服务';
-
-  @override
-  String get featureBeacon => '信标发送';
-
-  @override
-  String get featureBeaconDesc => '自定义内容、频率、符号，支持 APRS 标准格式';
-
-  @override
-  String get featureMsg => '消息收发';
-
-  @override
-  String get featureMsgDesc => '瀑布流 + 会话模式，支持中文和自动应答';
-
-  @override
-  String get featureAutoConnect => '自动连接';
-
-  @override
-  String get featureAutoConnectDesc => '公共服务器自动连接，后台保持在线';
-
-  @override
-  String get featureLayerFilter => '图层筛选';
-
-  @override
-  String get featureLayerFilterDesc => '按类型筛选：移动、固定、中继、气象、FMO';
-
-  @override
-  String get featureFmo => 'FMO 台站';
-
-  @override
-  String get featureFmoDesc => '自动识别 FMO 数据，显示结构化信息';
-
-  @override
-  String get osFlutter => 'Flutter';
-
-  @override
-  String get osFlutterDesc => 'Google 跨平台 UI 框架';
-
-  @override
-  String get osAmap => '高德地图';
-
-  @override
-  String get osAmapDesc => '地图瓦片服务';
-
-  @override
-  String get osAprs => 'APRS-IS';
-
-  @override
-  String get osAprsDesc => '全球 APRS 数据网络';
-
-  @override
-  String get osHam => '业余无线电';
-
-  @override
-  String get osHamDesc => '所有 APRS 爱好者的贡献';
-
-  @override
-  String get authorName => 'Darion';
-
-  @override
-  String get authorCall => '呼号';
-
-  @override
-  String get website => '网站';
-
-  @override
-  String get sponsorAuthor => '作者 BG7LZQ';
-
-  @override
-  String get sponsorAuthorItems => '利用课余时间开发维护本项目';
-
-  @override
-  String get sponsorGroup => 'STUDENT HAMS 群组';
-
-  @override
-  String get sponsorGroupItems => '感谢群组的资金赞助支持';
-
-  @override
-  String get sponsorBgp => 'BG7PGW';
-
-  @override
-  String get sponsorBgpItems => '感谢赞助的蜜雪冰城一杯 🧋';
-
-  @override
-  String get sponsorEvery => '每一位支持者';
-
-  @override
-  String get sponsorEveryItems => '你们的每一份支持都是动力';
-
-  @override
-  String get donateWechat => '微信赞赏';
-
-  @override
-  String get donateWechatDesc => '长按保存赞赏码 · 点击放大';
-
-  @override
-  String get donateAlipay => '支付宝赞赏';
-
-  @override
-  String get donateAlipayDesc => '联系作者获取赞赏码';
-
-  @override
-  String get nonprofitNote => '本项目为非盈利学习交流项目\n赞助仅用于服务器与开发成本';
-
-  @override
-  String get myStation => '我的电台';
-
-  @override
-  String get callSsid => '呼号 · SSID';
-
-  @override
-  String get ssid => 'SSID';
-
-  @override
-  String get ssidDesc => 'SSID 是呼号后缀用于标识设备，如 BG7ABC-9 中的 -9';
-
-  @override
-  String get callComment => '台站备注';
-
-  @override
-  String get callCommentHint => '信标发送时的备注内容';
-
-  @override
-  String get callSymbol => '台站符号';
-
-  @override
-  String get callSymbolDesc => '符号随位置信标一起发送';
-
-  @override
-  String get autoReply => '自动应答';
-
-  @override
-  String get sendBeacon => '发送信标';
-
-  @override
-  String get mapTypeDesc =>
-      '「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。';
-
-  @override
-  String get offlineLoading => '加载中…';
-
-  @override
-  String get offlineMap => '离线地图';
-
-  @override
-  String get offlineMapDesc => '把地图瓦片预先下载到本机，没有网络时也能看地图';
-
-  @override
-  String get offlineMapFooter => '瓦片只保存在本机，不会上传；不同图源的瓦片分开缓存';
-
-  @override
-  String get offlineRegions => '离线区域';
-
-  @override
-  String get offlineRegionsDesc => '已下载的区域可在地图上离线查看';
-
-  @override
-  String get offlineNew => '新建区域';
-
-  @override
-  String get offlineNoRegions => '还没有离线区域';
-
-  @override
-  String get offlineNoRegionsHint => '点右上角「新建区域」，把常去的地方下载下来';
-
-  @override
-  String get offlineCacheUsage => '瓦片缓存';
-
-  @override
-  String get offlineCacheUsageDesc => '浏览地图时自动缓存，也可手动下载区域';
-
-  @override
-  String get offlineClearCache => '清除全部瓦片缓存';
-
-  @override
-  String get offlineClearCacheConfirm => '清除全部已下载的地图瓦片？';
-
-  @override
-  String get offlineClearCacheConfirmBody =>
-      '已下载的瓦片会被删除，区域记录会保留（需要重新下载才能离线查看）。';
-
-  @override
-  String get offlineAreaHint => '当前画面范围就是下载范围';
-
-  @override
-  String get offlineSource => '图源';
-
-  @override
-  String get offlineName => '名称';
-
-  @override
-  String get offlineNameHint => '例如：家附近';
-
-  @override
-  String get offlineStartDownload => '开始下载';
-
-  @override
-  String get offlineStatusPending => '等待下载';
-
-  @override
-  String get offlineStatusRunning => '下载中';
-
-  @override
-  String get offlineStatusPaused => '已暂停';
-
-  @override
-  String get offlineStatusDone => '已完成';
-
-  @override
-  String get offlineStatusCanceled => '已取消';
-
-  @override
-  String get offlineStatusFailed => '下载失败';
-
-  @override
-  String get offlinePause => '暂停';
-
-  @override
-  String get offlineResume => '继续';
-
-  @override
-  String get offlineCancelDownload => '取消';
-
-  @override
-  String get offlineDeleteKeepTiles => '仅删除记录（保留已下载瓦片）';
-
-  @override
-  String get offlineDeleteWithTiles => '删除记录并删除瓦片';
-
-  @override
-  String get offlineDownloadBusy => '已有下载任务在进行，请先等待或取消';
-
-  @override
-  String get offlineCacheSwitch => '缓存地图瓦片';
-
-  @override
-  String get offlineCacheSwitchDesc => '浏览地图时把瓦片存到本机，之后可离线查看';
-
-  @override
-  String get offlineOnlySwitch => '仅使用离线瓦片';
-
-  @override
-  String get offlineOnlySwitchDesc => '不再从网络加载瓦片，只用已下载/已缓存的图（省流量）';
-
-  @override
-  String get offlineCacheDisabled => '瓦片缓存不可用（当前平台不支持）';
-
-  @override
-  String get offlineSwitchFirst => '请先打开「缓存地图瓦片」';
-
-  @override
-  String get offlineOnlyWarn => '已开启「仅使用离线瓦片」，地图可能显示不全';
-
-  @override
-  String offlineTilesDownloaded(String n) {
-    return '已下载 $n 张瓦片';
-  }
-
-  @override
-  String offlineZoomLevels(String min, String max) {
-    return '$min–$max 级';
-  }
-
-  @override
-  String offlineEstimate(String tiles, String size) {
-    return '约 $tiles 张瓦片 · 约 $size';
-  }
-
-  @override
-  String offlineTooManyTiles(String tiles) {
-    return '范围太大（约 $tiles 张瓦片），请缩小范围或降低最大层级';
-  }
-
-  @override
-  String offlineDeleteRegionConfirm(String name) {
-    return '删除离线区域「$name」？';
-  }
-
-  @override
-  String offlineDeleteTileCount(String n) {
-    return '将删除约 $n 张瓦片';
-  }
-
-  @override
-  String offlineDeletingTiles(String done, String total) {
-    return '正在删除 $done/$total';
-  }
-
-  @override
-  String offlineFailedCount(String n) {
-    return '$n 张失败';
-  }
-
-  @override
-  String offlineTileProgress(String done, String total) {
-    return '$done/$total 张';
-  }
-
-  @override
-  String get msgHistory => '消息记录';
-
-  @override
-  String get statistics => '统计';
-
-  @override
-  String get clearData => '清除数据';
-
-  @override
-  String get favorites => '收藏/手动';
-
-  @override
-  String get favoriteStations => '收藏台站';
-
-  @override
-  String get manualStations => '手动台站';
-
-  @override
-  String get wgs84 => 'WGS-84';
-
-  @override
-  String get gcj02 => 'GCJ-02';
-
-  @override
-  String get onlyWgs84 => '仅标准 WGS-84';
-
-  @override
-  String get contactList => '联系人';
-
-  @override
-  String get contactDesc => '消息/联系人相关的过滤规则';
-
-  @override
-  String get dataClearDesc => '清除消息、数据包、台站等本地数据';
-
-  @override
-  String get advancedDesc => '实验室与开发者工具';
-
-  @override
-  String get labDesc => '实验室功能仍在测试中，可能影响使用体验。默认锁定竖屏，开启后支持横屏。';
-
-  @override
-  String get systemLog => '系统日志';
-
-  @override
-  String get devDesc => '开发者调试工具';
-
-  @override
-  String get simData => '启用模拟数据（演示台站/数据包）';
-
-  @override
-  String get rxTx => '收包 / 发包';
-
-  @override
-  String get stationCount2 => '台站数量';
-
-  @override
-  String get appInfo => '应用信息';
-
-  @override
-  String get clearMessages => '清空全部聊天记录';
-
-  @override
-  String get clearPackets2 => '清除数据包';
-
-  @override
-  String get clearStations => '清除台站列表';
-
-  @override
-  String get stationListDesc => '收到的台站与它们的轨迹，保存在本机';
-
-  @override
-  String clearStationsConfirm(String n) {
-    return '确定要清除全部台站吗？共 $n 个，清除后不可恢复（消息 / 日志 / 数据包不受影响）。';
-  }
-
-  @override
-  String get stationsCleared => '已清除台站列表';
-
-  @override
-  String get clearCache => '清除缓存';
-
-  @override
-  String get resetAll => '重置全部设置';
-
-  @override
-  String get resetAllDesc => '恢复出厂设置';
-
-  @override
-  String get dataPersistence => '台站持久化';
-
-  @override
-  String get autoSaveStations => '自动保存台站数据';
-
-  @override
-  String get gridFormat => '网格格式';
-
-  @override
-  String get coordsFormat => '坐标格式';
-
-  @override
-  String get appVersion => '版本';
-
-  @override
-  String get appVersionDesc => '当前应用版本';
-
-  @override
-  String get stationDetail => '台站详情';
-
-  @override
-  String get backToTop => '回到顶部';
-
-  @override
-  String get installApk => '安装 APRSlocus';
-
-  @override
-  String get install => '安装';
-
-  @override
-  String get cancelInstall => '取消';
-
-  @override
-  String get openFolder => '打开目录';
-
-  @override
-  String get browse => '浏览';
-
-  @override
-  String get downloadUpdate => '下载更新';
-
-  @override
-  String get downloadNow => '立即下载';
-
-  @override
-  String get downloading => '下载中';
-
-  @override
-  String downloadProgress(Object p) {
-    return '下载中 $p%';
-  }
-
-  @override
-  String get downloadComplete => '下载完成';
-
-  @override
-  String get downloadFailed => '下载失败';
-
-  @override
-  String get installNow => '立即安装';
-
-  @override
-  String get installComplete => '安装完成';
-
-  @override
-  String get openInstallDir => '打开安装目录';
-
-  @override
-  String get deletePackage => '删除安装包';
-
-  @override
-  String deletePackageConfirm(Object file) {
-    return '确定删除安装包 $file？';
-  }
-
-  @override
-  String get deleteAllPackages => '删除全部安装包';
-
-  @override
-  String deleteAllPackagesWithCount(Object count) {
-    return '删除全部安装包（$count 个）';
-  }
-
-  @override
-  String deleteAllPackagesConfirm(Object count, Object size) {
-    return '将删除本地已下载的 $count 个安装包（共 $size），确定？';
-  }
-
-  @override
-  String get historyVersions => '历史版本';
-
-  @override
-  String get current => '当前';
-
-  @override
-  String get newVersion => '新版本';
-
-  @override
-  String get latestVersion => '当前已是最新版本';
-
-  @override
-  String get currentVersion => 'APRSlocus 当前版本';
-
-  @override
-  String get checking => '正在检查新版本…';
-
-  @override
-  String get checkingGitCode => '检查 GitCode 仓库';
-
-  @override
-  String get updateFailed => '检查更新失败';
-
-  @override
-  String get noUpdateFound => '当前已是最新版本';
-
-  @override
-  String get newVersionFound => '发现新版本';
-
-  @override
-  String get downloadAgain => '重新下载安装包';
-
-  @override
-  String get openDownloads => '打开下载目录';
-
-  @override
-  String get releaseNotes => '更新日志';
-
-  @override
-  String currentVsRepo(Object local, Object remote) {
-    return '本地 v$local · 仓库最新 v$remote';
-  }
-
-  @override
-  String installSize(Object os, Object size) {
-    return '$os 安装包大小：$size';
-  }
-
-  @override
-  String get alreadyDownloaded => '安装包已下载';
-
-  @override
-  String get downloadReady => '下载一份安装包';
-
-  @override
-  String get appInstallDir => '安装目录';
-
-  @override
-  String get runInstaller => '运行安装程序';
-
-  @override
-  String get downloadUpdateTip => '下载更新并自动打开';
-
-  @override
-  String get openDownloadFolder => '打开下载目录';
-
-  @override
-  String groupBubble(String name) {
-    return '群·$name';
-  }
-
-  @override
-  String get groupInviteTitle => '群组邀请';
-
-  @override
-  String groupInviteFrom(String from) {
-    return '$from 邀请你加入群组';
-  }
-
-  @override
-  String groupNameValue(String name) {
-    return '群名：$name';
-  }
-
-  @override
-  String groupCallsignValue(String call) {
-    return '群呼号：$call';
-  }
-
-  @override
-  String groupInviteAccepted(String name) {
-    return '已接受邀请，加入 $name';
-  }
+  String get aboutTitle => '关于';
 
   @override
   String get accept => '接受';
 
   @override
-  String groupInviteRejected(String name) {
-    return '已拒绝 $name 的邀请';
+  String get accountHonors => '账号荣誉';
+
+  @override
+  String get achievementWall => '成就墙';
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m 成就';
   }
 
   @override
-  String get reject => '拒绝';
+  String get achievementsSection => '成就';
 
   @override
-  String get appTagline => 'APRS 定位追踪';
+  String get activeConditions => '生效条件';
 
   @override
-  String gridValue(String grid) {
-    return '网格 $grid';
-  }
-
-  @override
-  String packetsPerMinute(int count) {
-    return '$count/分';
-  }
-
-  @override
-  String get demo => '演示';
-
-  @override
-  String nextBeaconIn(String time) {
-    return '下次上报 $time';
-  }
-
-  @override
-  String beaconCount(int count) {
-    return '信标 $count 次';
-  }
-
-  @override
-  String beaconSentAprsIs(String grid) {
-    return '位置已上报 · 网格 $grid · 已发往 APRS-IS';
-  }
-
-  @override
-  String beaconSentDemo(String grid) {
-    return '位置已上报 · 网格 $grid · 演示';
-  }
-
-  @override
-  String get getLocation => '获取定位';
-
-  @override
-  String get disconnect => '断开连接';
-
-  @override
-  String get connectAprsIs => '连接 APRS-IS';
-
-  @override
-  String get packetsReceived => '收包';
-
-  @override
-  String get passcodeUnverified => 'Passcode 未验证';
-
-  @override
-  String get passcodeWarning => '登录密码可能错误，无法正常收发消息';
-
-  @override
-  String get goSettings => '去设置';
-
-  @override
-  String get connectingServer => '正在连接服务器…';
-
-  @override
-  String get notConnectedAprsServer => '未连接 APRS-IS 服务器';
-
-  @override
-  String connectingToServer(String server, int port) {
-    return '正在连接 $server:$port…';
-  }
-
-  @override
-  String get connectNearbyDesc => '连接后可接收附近台站定位与消息';
-
-  @override
-  String get connectAction => '连接';
-
-  @override
-  String get backgroundRunTip =>
-      '后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
-
-  @override
-  String get connectedAprsIs => '已连接 APRS-IS';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus 软件 · 反馈问题/交流使用';
-
-  @override
-  String get reselectPoint => '重新选点';
-
-  @override
-  String get disableClustering => '关闭聚合';
-
-  @override
-  String get enableClustering => '开启聚合';
-
-  @override
-  String get heatmap => '台站热力图';
-
-  @override
-  String get heatmapHint => '缩小地图后显示台站密度热力图';
-
-  @override
-  String get groupTracking => '群组跟踪';
-
-  @override
-  String get groupTrackingHint => '把关心的呼号编成组，在大地图上持续跟踪（车队 / 好友结伴），支持横屏。';
-
-  @override
-  String get newTrackGroup => '新建跟踪组';
-
-  @override
-  String get trackGroupNameHint => '组名，如：周末骑行';
-
-  @override
-  String get editTrackGroup => '编辑跟踪组';
-
-  @override
-  String get deleteTrackGroup => '删除跟踪组';
-
-  @override
-  String deleteTrackGroupConfirm(Object name) {
-    return '确定删除跟踪组「$name」吗？';
-  }
-
-  @override
-  String get pickTrackMembers => '选择成员（勾选要跟踪的呼号）';
-
-  @override
-  String get saveAndTrack => '保存并跟踪';
-
-  @override
-  String get trackGroupsEmptyHint => '还没有跟踪组，点「新建跟踪组」创建一组要跟踪的呼号。';
-
-  @override
-  String trackMemberSub(Object seen, Object type) {
-    return '$type · $seen';
-  }
-
-  @override
-  String get trackGroupEmpty => '组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。';
-
-  @override
-  String get trackActive => '在线';
-
-  @override
-  String get trackWaitingPos => '等待位置…';
-
-  @override
-  String get offlineShort => '离线';
-
-  @override
-  String get stoppedShort => '静止';
-
-  @override
-  String trackHeader(Object fixed, Object online, Object total) {
-    return '$total 人 · $online 在线 · $fixed 已定位';
-  }
-
-  @override
-  String get groupChatShort => '群组';
-
-  @override
-  String groupChatTitle(Object name) {
-    return '群组 · $name';
-  }
-
-  @override
-  String chatWithTitle(Object call) {
-    return '与 $call 聊天';
-  }
-
-  @override
-  String get chatToGroupHint => '发消息给全群…';
-
-  @override
-  String chatToHint(Object call) {
-    return '发给 $call…';
-  }
-
-  @override
-  String get noMessagesHint => '暂无消息，发一条吧';
-
-  @override
-  String trackModeFollow(Object call) {
-    return '跟随 $call';
-  }
-
-  @override
-  String get trackModeMe => '跟随我';
-
-  @override
-  String get trackModeFitAll => '全览保持中';
-
-  @override
-  String get fitAll => '全览';
-
-  @override
-  String get noStationsYet => '暂无台站数据，连接 APRS-IS 后即可选择。';
-
-  @override
-  String get noPackets => '暂无数据包';
-
-  @override
-  String secondsAgo(int count) {
-    return '$count秒前';
-  }
-
-  @override
-  String minutesAgo(int count) {
-    return '$count分前';
-  }
-
-  @override
-  String hoursAgo(int count) {
-    return '$count小时前';
-  }
-
-  @override
-  String daysAgo(int count) {
-    return '$count天前';
-  }
-
-  @override
-  String copiedCoordsValue(String coords) {
-    return '已复制坐标：$coords';
-  }
-
-  @override
-  String copiedGridValue(String grid) {
-    return '已复制网格：$grid';
-  }
-
-  @override
-  String distanceBearing(String distance, String bearing) {
-    return '距我 ${distance}km · 方位 $bearing°';
-  }
-
-  @override
-  String weatherDataValue(String data) {
-    return '气象数据 · $data';
-  }
-
-  @override
-  String get symbolLabel => '符号';
-
-  @override
-  String get digipeaterTapHint => '点击中继台跳转到对应台站';
-
-  @override
-  String get copiedFmoInfo => '已复制 FMO 信息';
-
-  @override
-  String get copiedAprslocusInfo => '已复制 APRSlocus 信息';
-
-  @override
-  String trackPoints(int count) {
-    return '轨迹 ($count 点)';
-  }
-
-  @override
-  String sendMessageTo(String call) {
-    return '发消息给 $call…';
-  }
-
-  @override
-  String get navigationUnavailable => '未安装地图应用，且无法打开其他地图应用';
-
-  @override
-  String stationNoData(String call) {
-    return '台站 $call 尚未收到数据';
-  }
-
-  @override
-  String get software => '软件';
-
-  @override
-  String get close => '关闭';
-
-  @override
-  String get nameLabel => '名称';
-
-  @override
-  String get viewSponsorDetails => '查看作者与赞助详情 →';
-
-  @override
-  String get thanks => '感谢';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus 软件';
-
-  @override
-  String get usageNotice => '本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规';
-
-  @override
-  String get licenseNotice => 'GNU GPL v3 开源协议 · Copyright © BG7LZQ';
-
-  @override
-  String appInfoText(String version) {
-    return 'APRSlocus v$version\n作者: BG7LZQ (Darion)\n网站: Theez.top';
-  }
-
-  @override
-  String get eggBg7lzq => '哎呦你干嘛~';
-
-  @override
-  String get eggBg7pgw => '闹呢？';
-
-  @override
-  String get eggBg7lmw => '默不作声...';
-
-  @override
-  String get eggBg7osl => '你的胆子肥嘟嘟的';
-
-  @override
-  String get manualCallsignHint => '手动输入呼号添加';
-
-  @override
-  String get noPacketReceived => '未收到数据包';
-
-  @override
-  String get feedMode => '瀑布流';
-
-  @override
-  String get conversationMode => '会话';
-
-  @override
-  String get messageFeed => '消息瀑布流';
-
-  @override
-  String messageTotal(int count) {
-    return '共 $count 条';
-  }
-
-  @override
-  String get noMessages => '暂无消息';
-
-  @override
-  String get copiedClipboard => '已复制到剪贴板';
-
-  @override
-  String get groupShortLabel => '群';
-
-  @override
-  String get conversations => '会话';
-
-  @override
-  String get noConversations => '暂无会话';
-
-  @override
-  String get groupNotFound => '群组不存在';
-
-  @override
-  String get invite => '邀请';
-
-  @override
-  String get manage => '管理';
-
-  @override
-  String get noGroupMessages => '群组暂无消息';
-
-  @override
-  String get selectConversation => '选择会话开始聊天';
-
-  @override
-  String get newConversation => '新建会话';
-
-  @override
-  String get newConversationDesc => '输入呼号开始新的会话';
-
-  @override
-  String get callsignExample => '呼号，如 BG7ABC';
-
-  @override
-  String get start => '开始';
-
-  @override
-  String get broadcastMessage => '群发消息';
-
-  @override
-  String get noStations => '暂无台站';
-
-  @override
-  String get broadcastHint => '提示：每条消息会单独发送给每个接收人';
-
-  @override
-  String broadcastSent(int count) {
-    return '已群发给 $count 人';
-  }
-
-  @override
-  String get searchCallsign => '搜索呼号…';
-
-  @override
-  String get broadcastContentHint => '输入要群发的内容…';
-
-  @override
-  String get groupNameHint => '输入群组名称';
-
-  @override
-  String get create => '创建';
-
-  @override
-  String groupCallsignLine(String call) {
-    return '群呼号: $call';
-  }
-
-  @override
-  String get noMembers => '暂无成员';
-
-  @override
-  String get inviteMembersHint => '点击下方「邀请成员」添加';
-
-  @override
-  String get remove => '移除';
-
-  @override
-  String get inviteMembers => '邀请成员';
-
-  @override
-  String get deleteGroup => '删除群组';
-
-  @override
-  String deleteGroupConfirm(String name) {
-    return '确定删除「$name」？此操作不可撤销。';
-  }
-
-  @override
-  String get deleteConversation => '删除会话';
-
-  @override
-  String deleteConversationConfirm(Object call) {
-    return '确定删除与 $call 的聊天记录吗？该会话将从列表中移除，此操作不可恢复。';
-  }
-
-  @override
-  String clearGroupChatConfirm(Object name) {
-    return '确定清空「$name」的聊天记录吗？此操作不可恢复。';
-  }
-
-  @override
-  String memberOnlineCount(int members, int online) {
-    return '$members 名成员 · $online 在线';
-  }
-
-  @override
-  String get leaveGroup => '退出群组';
-
-  @override
-  String leaveGroupConfirm(String name) {
-    return '确定退出「$name」？你将不再收到该群的消息。';
-  }
-
-  @override
-  String leftGroup(String name) {
-    return '已退出 $name';
-  }
-
-  @override
-  String get leave => '退出';
-
-  @override
-  String inviteMembersTo(String name) {
-    return '邀请成员到 $name';
-  }
-
-  @override
-  String get manualCallsign => '手动输入呼号';
-
-  @override
-  String inviteSent(String call) {
-    return '已发送邀请给 $call';
-  }
-
-  @override
-  String get noMoreOnlineStations => '暂无更多在线台站';
-
-  @override
-  String get invited => '已邀请';
-
-  @override
-  String get tapToInvite => '点击邀请';
-
-  @override
-  String get done => '完成';
+  String get add => '添加';
 
   @override
   String get addContact => '添加联系人';
@@ -3959,54 +48,195 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addContactDesc => '输入呼号手动添加到联系人列表';
 
   @override
-  String contactAdded(String call) {
-    return '已添加联系人 $call';
+  String get addCountry => '添加国家/地区';
+
+  @override
+  String get addOrFavoriteContact => '点击右上角“添加”或在地图上收藏台站';
+
+  @override
+  String get addSpeedTier => '添加速度档';
+
+  @override
+  String get adifBand => '频段（BAND）';
+
+  @override
+  String get adifCopyPath => '复制路径';
+
+  @override
+  String get adifExportDone => '导出完成';
+
+  @override
+  String get adifExportFailed => '导出失败，请检查存储权限或剩余空间';
+
+  @override
+  String adifExported(int n) {
+    return '已导出 $n 条记录';
   }
 
   @override
-  String get add => '添加';
+  String get adifFreq => '频率（FREQ）';
 
   @override
-  String get stationary => '静止';
+  String get adifFreqHint => '单位 MHz，留空则不写';
 
   @override
-  String get unknown => '未知';
+  String get adifFreqInvalid => '请输入 MHz 数字，如 144.640';
 
   @override
-  String get none => '无';
+  String get adifHint => '每条记录只含呼号与首条消息时间（UTC），不含模式与频段';
 
   @override
-  String get manual => '手动';
+  String get adifLogFile => '会话导出为日志文件';
 
   @override
-  String get management => '管理';
+  String get adifMode => '模式（MODE）';
 
   @override
-  String get debugLabel => '调试';
+  String get adifModeData => 'DATA（数据）';
 
   @override
-  String get information => '信息';
+  String get adifModeFm => 'FM（语音）';
 
   @override
-  String get warning => '警告';
+  String get adifModePkt => 'PKT（数据包，推荐）';
 
   @override
-  String get errorLabel => '错误';
+  String get adifModeRequiredHint => '多数日志软件（含 QRZ）要求 MODE，缺少会被拒收';
 
   @override
-  String countTimes(int count) {
-    return '$count 次';
+  String get adifNoSelection => '请先选择要导出的会话';
+
+  @override
+  String get adifNotWritten => '不写';
+
+  @override
+  String get adifOptions => '导出选项';
+
+  @override
+  String get adifPathCopied => '路径已复制';
+
+  @override
+  String get adifPreview => '预览（将写出的记录）';
+
+  @override
+  String adifSavedTo(String path) {
+    return '已保存到：$path';
   }
 
   @override
-  String countItems(int count) {
-    return '$count 个';
+  String get adifStripSsid => '只写基础呼号（去掉 -SSID）';
+
+  @override
+  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+
+  @override
+  String get advancedCat => '高级';
+
+  @override
+  String get advancedCatDesc => '实验室 · 开发者';
+
+  @override
+  String get advancedDesc => '实验室与开发者工具';
+
+  @override
+  String get advancedSettings => '高级设置';
+
+  @override
+  String get advancedSettings2 => '高级设置';
+
+  @override
+  String get advancedSettingsSubtitle => '实验室与开发者工具';
+
+  @override
+  String get aiSupport => 'AI 算力支持';
+
+  @override
+  String get airExcellent => '优';
+
+  @override
+  String get airGood => '良';
+
+  @override
+  String get airHazardous => '严重污染';
+
+  @override
+  String get airModerate => '轻度污染';
+
+  @override
+  String get airUnhealthy => '中度污染';
+
+  @override
+  String get airVeryUnhealthy => '重度污染';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get allAprsSymbols => '全部 APRS 符号';
+
+  @override
+  String get allChangelog => '全部更新日志';
+
+  @override
+  String get allDataCleared => '所有数据已清除';
+
+  @override
+  String get allowLandscape => '允许手机横屏显示';
+
+  @override
+  String get alreadyDownloaded => '安装包已下载';
+
+  @override
+  String get altitude => '高度';
+
+  @override
+  String get amapGroup => '国内地图';
+
+  @override
+  String androidInstallHelp(String path) {
+    return '安装包已下载到：\n$path\n\n点击“安装”后，系统会弹出安装确认框。\n\n若提示“不允许安装未知来源应用”，请到系统设置中允许本应用安装未知应用。';
   }
 
   @override
-  String countEntries(int count) {
-    return '$count 条';
+  String get appFilter => '软件';
+
+  @override
+  String get appInfo => '应用信息';
+
+  @override
+  String get appInfoCopied => '已复制应用信息';
+
+  @override
+  String appInfoText(String version) {
+    return 'APRSlocus v$version\n作者: BG7LZQ (Darion)\n网站: Theez.top';
   }
+
+  @override
+  String get appInstallDir => '安装目录';
+
+  @override
+  String get appName => 'APRSlocus';
+
+  @override
+  String get appTagline => 'APRS 定位追踪';
+
+  @override
+  String get appVersion => '版本';
+
+  @override
+  String get appVersionDesc => '当前应用版本';
+
+  @override
+  String get applyCoordinates => '应用坐标';
+
+  @override
+  String get applyStationFilter => '台站筛选应用到地图';
+
+  @override
+  String get aprsCallsignHint => 'APRS 呼号，如 BV2AAA';
+
+  @override
+  String get aprsStatus => '独立状态报文';
 
   @override
   String aprsSymbolName(String symbol) {
@@ -4079,17 +309,1177 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String symbolCategoryName(String category) {
-    String _temp0 = intl.Intl.selectLogic(category, {
-      'vehicles': '车辆 / 交通',
-      'facilities': '建筑 / 设施',
-      'weatherNature': '气象 / 自然',
-      'emergencyRescue': '应急救援',
-      'airWater': '飞行 / 水域',
-      'communications': '通信 / 其他',
-      'other': '其他',
-    });
-    return '$_temp0';
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => '详情页';
+
+  @override
+  String get aprsTvMap => '在地图上查看';
+
+  @override
+  String get aprslocusInfo => 'APRSlocus 信息';
+
+  @override
+  String get aprslocusOnly => 'APRSlocus';
+
+  @override
+  String get audioBackend => '音频后端';
+
+  @override
+  String audioBadFrames(int n) {
+    return '解码中止 $n 次（噪声/失步）';
+  }
+
+  @override
+  String get audioBaud => '比特率';
+
+  @override
+  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
+
+  @override
+  String get audioCaptureDesc => '从麦克风/线路输入解调 AFSK 1200';
+
+  @override
+  String get audioCaptureStart => '打开采集';
+
+  @override
+  String get audioCaptureStop => '停止采集';
+
+  @override
+  String get audioCaptureTitle => '音频采集';
+
+  @override
+  String get audioCsmaWait => '发射前等待信道空闲 (ms)';
+
+  @override
+  String get audioCsmaWaitTip => '检测到信道占用时最多等待多久；0 = 不等待直接发射';
+
+  @override
+  String get audioLevel => '输入电平';
+
+  @override
+  String get audioLevelTip => '有信号时电平条会抬起；收到 AFSK 时「解调锁定」会点亮';
+
+  @override
+  String get audioLoopbackHint => '自检会真的做一次调制→解调；Android 发射时会暂停麦克风采集（半双工）';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 规定标号 1200Hz、空号 2200Hz；只有 ±几 Hz 的容差，不要随意改';
+
+  @override
+  String get audioNeedPermission => '需要录音权限（RECORD_AUDIO），请授权后重试';
+
+  @override
+  String get audioRestart => '重启音频链路';
+
+  @override
+  String get audioSampleRate => '采样率';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz 是声卡 TNC 常用值；设备不支持时改用 44100/48000。修改会重启采集';
+
+  @override
+  String get audioSettings => '音频（声卡 TNC）';
+
+  @override
+  String get audioSettingsSubtitle => '用声卡收发 AFSK 1200 报文';
+
+  @override
+  String get audioSpaceTip => '空号音调。与标号音调一起决定 FSK 频偏（标准为 1000Hz）';
+
+  @override
+  String audioStatDrop(int n) {
+    return '发射期间丢弃 $n 字节';
+  }
+
+  @override
+  String audioStatRx(int n) {
+    return '收 $n 帧';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '发 $n 帧';
+  }
+
+  @override
+  String get audioStatsTitle => '音频统计';
+
+  @override
+  String get audioStopTx => '停止发射';
+
+  @override
+  String get audioSynced => '解调锁定';
+
+  @override
+  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioToneMark => '标号频率 (Hz)';
+
+  @override
+  String get audioToneSpace => '空号频率 (Hz)';
+
+  @override
+  String get audioTones => '音调（标/空）';
+
+  @override
+  String get audioTxDelayLabel => '发射前导 (ms)';
+
+  @override
+  String get audioTxDelayTip => '发射前导时长：给对端解调器锁定时间、给电台 PTT 建立时间';
+
+  @override
+  String get audioTxDesc => '发射前先听信道，避免与其它台站碰撞';
+
+  @override
+  String get audioTxDisabled => '「允许发射」已关闭，仅接收';
+
+  @override
+  String get audioTxEnabled => '允许发射';
+
+  @override
+  String get audioTxEnabledTip => '关闭后只接收不发射（只想听信标时最省心）';
+
+  @override
+  String get audioTxLevel => '发射电平';
+
+  @override
+  String get audioTxLevelClip => '波形削顶：请把「输出幅度」调到 0.8 以下（削顶会产生谐波）';
+
+  @override
+  String get audioTxLevelLow => '电平偏低：对方可能解不出，请调高「输出幅度」与设备音量';
+
+  @override
+  String get audioTxLevelTip => '发射前系统会把媒体音量拉到最大、并暂停麦克风采集；峰值太低或削顶都会让对端解不出';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return '峰值 $p% · ${sec}s · 前导 $flags flag';
+  }
+
+  @override
+  String get audioTxTitle => '音频发射';
+
+  @override
+  String get audioUnlocked => '未锁定';
+
+  @override
+  String get audioUnsupported => '当前平台不支持实时音频（可用 WAV 文件模式）';
+
+  @override
+  String get audioWavCanceled => '已取消（未选择文件）';
+
+  @override
+  String get audioWavCopyPath => '复制路径';
+
+  @override
+  String get audioWavDecodeAction => '解码此 WAV';
+
+  @override
+  String get audioWavDesc => '离线解码一段录音，或把报文导出成音频文件';
+
+  @override
+  String get audioWavExportAction => '导出此报文';
+
+  @override
+  String get audioWavExportToDownloads => '导出到下载目录';
+
+  @override
+  String audioWavFailed(String err) {
+    return '文件读写失败：$err';
+  }
+
+  @override
+  String audioWavFound(int n) {
+    return '解出 $n 条报文';
+  }
+
+  @override
+  String get audioWavImportAction => '选择 WAV 文件';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android 不能写任意目录：导出会保存到「下载/APRSlocusAudio」，无需填路径；拷到电脑后即可喂给 Direwolf 或电台';
+
+  @override
+  String get audioWavNone => '未解出报文（可能不是 AFSK 1200 录音）';
+
+  @override
+  String get audioWavPath => '文件路径';
+
+  @override
+  String get audioWavPathCopied => '路径已复制';
+
+  @override
+  String get audioWavPickHint => '桌面端请在下方填写 WAV 路径';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return '已保存到 $path';
+  }
+
+  @override
+  String get audioWavTitle => 'WAV 文件模式';
+
+  @override
+  String get audioWavTnC2 => '待导出报文 (TNC2)';
+
+  @override
+  String get audioWavVerifyFailed => '导出前的自检失败：生成的音频解不出本报文（请反馈）';
+
+  @override
+  String audioWavWritten(String path) {
+    return '已写入 $path';
+  }
+
+  @override
+  String get audioWiringHint =>
+      '接电台请用音频线（耳机口 → 电台数据口/话筒）；手机扬声器在 2200Hz 衰减很大，对着麦克风很难解出。对端是电脑上的 Direwolf 时，先用「导出」出的 WAV 验证一遍，能解出就说明问题在音频通路而不是协议';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get authorCall => '呼号';
+
+  @override
+  String get authorName => 'Darion';
+
+  @override
+  String get autoReply => '自动应答';
+
+  @override
+  String get autoSaveStations => '自动保存台站数据';
+
+  @override
+  String get back => '返回';
+
+  @override
+  String get backToTop => '回到顶部';
+
+  @override
+  String get backgroundRunTip =>
+      '后台运行提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
+
+  @override
+  String get backupCatChats => '群聊';
+
+  @override
+  String get backupCatChatsDesc => '群组、成员与已读状态';
+
+  @override
+  String get backupCatHonors => '成就与荣誉';
+
+  @override
+  String get backupCatHonorsDesc => '解锁记录、计数与默认徽章';
+
+  @override
+  String get backupCatMessages => '消息记录';
+
+  @override
+  String get backupCatMessagesDesc => '单聊消息与已读位置';
+
+  @override
+  String get backupCatSettings => '设置配置';
+
+  @override
+  String get backupCatSettingsDesc => '电台、信标、地图、筛选、数据来源、服务器';
+
+  @override
+  String get backupCatStations => '台站与联系人';
+
+  @override
+  String get backupCatStationsDesc => '收藏、手动添加的联系人及其备注';
+
+  @override
+  String get backupCatTranslate => '翻译设置';
+
+  @override
+  String get backupCatTranslateDesc => '翻译接口、密钥与语言偏好';
+
+  @override
+  String get backupCopyDone => '备份内容已复制到剪贴板';
+
+  @override
+  String get backupCopyJson => '复制到剪贴板';
+
+  @override
+  String get backupDesc => '备份文件是 JSON 文本，换机或重装后可恢复；导入按分组覆盖，无法撤销。';
+
+  @override
+  String get backupEntryDesc => '打包配置与数据为 JSON 文件';
+
+  @override
+  String get backupErrEmpty => '备份里没有可导入的内容';
+
+  @override
+  String get backupErrNotBackup => '这不是 APRSlocus 的备份文件';
+
+  @override
+  String get backupErrNotJson => '文件不是有效的 JSON';
+
+  @override
+  String get backupErrRead => '读取备份文件失败';
+
+  @override
+  String get backupErrSchemaNewer => '备份来自更新版本的 APRSlocus，请先升级应用';
+
+  @override
+  String get backupErrTooLarge => '备份文件超过 32 MB，无法读取';
+
+  @override
+  String get backupErrUnsupported => '当前平台暂不支持选择文件，请改用剪贴板粘贴';
+
+  @override
+  String get backupExport => '导出备份';
+
+  @override
+  String get backupExportDesc => '选择要包含的内容，然后保存为文件或复制到剪贴板';
+
+  @override
+  String get backupExportDone => '备份已导出';
+
+  @override
+  String get backupExportFailed => '导出失败，请检查存储权限或剩余空间';
+
+  @override
+  String get backupExportToFile => '保存为文件';
+
+  @override
+  String backupExportedAt(String t) {
+    return '导出时间 $t';
+  }
+
+  @override
+  String backupFromVersion(String v) {
+    return '来源版本 $v';
+  }
+
+  @override
+  String get backupImport => '导入备份';
+
+  @override
+  String get backupImportConfirm => '所选分组会被备份里的内容覆盖，且无法撤销。建议先导出一次当前数据。';
+
+  @override
+  String get backupImportConfirmTitle => '确认导入？';
+
+  @override
+  String get backupImportDesc => '选择之前导出的 JSON 备份文件';
+
+  @override
+  String get backupImportNothing => '备份里不包含所选分组的数据';
+
+  @override
+  String get backupImportSelected => '导入所选';
+
+  @override
+  String backupImported(int n) {
+    return '已导入 $n 项';
+  }
+
+  @override
+  String backupItems(int n) {
+    return '$n 项';
+  }
+
+  @override
+  String get backupLater => '稍后';
+
+  @override
+  String get backupNoSelection => '请至少选择一个分组';
+
+  @override
+  String get backupPaste => '从剪贴板粘贴';
+
+  @override
+  String get backupPasteEmpty => '剪贴板里没有文本';
+
+  @override
+  String get backupPickFile => '选择备份文件';
+
+  @override
+  String get backupPreview => '备份内容';
+
+  @override
+  String get backupRestartHint => '数据已写入，重启应用后完全生效（成就、翻译、服务器连接等）。';
+
+  @override
+  String get backupRestartNow => '退出应用';
+
+  @override
+  String get backupRestartTitle => '导入完成';
+
+  @override
+  String backupSavedTo(String path) {
+    return '已保存到：$path';
+  }
+
+  @override
+  String get backupSecurityTip => '备份文件包含呼号、服务器口令与 API 密钥，请妥善保管。';
+
+  @override
+  String get backupSelectAll => '全选';
+
+  @override
+  String backupSkipped(int n) {
+    return '跳过 $n 项（本版本不认识的内容）';
+  }
+
+  @override
+  String get backupSubtitle => '导出或导入配置与数据';
+
+  @override
+  String get backupThemeImagesHint => '备份会包含主题引用的图片本体；不包含时，换机恢复后主题会回退成内置图标';
+
+  @override
+  String get backupThemeImagesOff => '不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标';
+
+  @override
+  String get backupTitle => '备份与恢复';
+
+  @override
+  String get backupWebHint => 'Web 版请用「复制到剪贴板 / 从剪贴板粘贴」导入导出。';
+
+  @override
+  String get badgeFallback => '徽章';
+
+  @override
+  String get badgeWall => '徽章墙';
+
+  @override
+  String get beacon => '位置信标';
+
+  @override
+  String get beaconAltLabel => '高度（米，留空跟随定位）';
+
+  @override
+  String get beaconAltNone => '随定位自动发送 · 当前没有海拔';
+
+  @override
+  String get beaconAntHeightLabel => '天线高度（英尺）';
+
+  @override
+  String beaconAttachedHr(String hr) {
+    return '心率 $hr';
+  }
+
+  @override
+  String get beaconAttachedNone => '未附带心率';
+
+  @override
+  String get beaconAutoAskDesc =>
+      '是否让 APRSlocus 在连接后自动定时上报你的位置（信标）？移动台建议开启；若只想接收消息与看周边台站，可关闭（随时可手动上报一次）。';
+
+  @override
+  String get beaconAutoAskTitle => '连接成功，自动上报位置？';
+
+  @override
+  String get beaconAutoNo => '暂不，仅接收';
+
+  @override
+  String get beaconAutoYes => '自动上报';
+
+  @override
+  String get beaconCat => '定位上报';
+
+  @override
+  String get beaconCatDesc => 'GPS · 信标 · 手动定位';
+
+  @override
+  String get beaconCoarseFix => '网络定位中 · 暂不自动上报';
+
+  @override
+  String beaconCoarseForced(String s) {
+    return '网络定位（粗）· $s';
+  }
+
+  @override
+  String get beaconCoarseForcedNote => '正在用网络定位（粗）上报';
+
+  @override
+  String get beaconCoarseHint =>
+      '当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动上报。';
+
+  @override
+  String get beaconContent => '信标上报内容';
+
+  @override
+  String get beaconContentDesc => '随位置信标一起发送';
+
+  @override
+  String beaconCount(int count) {
+    return '信标 $count 次';
+  }
+
+  @override
+  String get beaconCountdown => '发送倒计时';
+
+  @override
+  String get beaconDisabled => '已关闭';
+
+  @override
+  String get beaconEnabled => '启用位置信标';
+
+  @override
+  String get beaconForceCoarse => '强制接受网络定位自动上报';
+
+  @override
+  String get beaconForceCoarseHint =>
+      '默认不开启：网络定位（基站 / Wi-Fi）常偏几百米，自动发出去等于向全网宣告一个错坐标。只有设备没有 GPS（平板 / 只有网络定位）时才建议打开 —— 打开后粗定位也会自动发射；地图与轨迹仍按原样过滤粗点，不会因此变乱。手动「立即上报」不受这个开关影响。';
+
+  @override
+  String get beaconGainLabel => '增益（dB）';
+
+  @override
+  String beaconGarminNext(String s, String hr) {
+    return '佳明上报 · $s · ❤$hr';
+  }
+
+  @override
+  String get beaconGarminSource => '佳明 LiveTrack 上报中';
+
+  @override
+  String get beaconImminent => '即将上报…';
+
+  @override
+  String get beaconInterval => '上报间隔(秒)';
+
+  @override
+  String get beaconIntervalLabel => '上报间隔';
+
+  @override
+  String get beaconIntervalTip => '位置信标的发送间隔，至少 5 秒';
+
+  @override
+  String get beaconNetInterval => '纯网络上报间隔（秒）';
+
+  @override
+  String get beaconNetIntervalTip =>
+      '纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）';
+
+  @override
+  String beaconNextIn(String s) {
+    return '距下次上报 $s';
+  }
+
+  @override
+  String get beaconNotConnected => '未连接';
+
+  @override
+  String get beaconNow => '手动上报';
+
+  @override
+  String get beaconOff => '未开启';
+
+  @override
+  String get beaconOffChip => '自动上报已关闭';
+
+  @override
+  String beaconPhgPreview(String phg) {
+    return '报文中将包含：$phg';
+  }
+
+  @override
+  String get beaconPhgTip =>
+      '功率 / 天线高度 / 增益同属一个 PHG 数据扩展，填了任一项就一起编码发出（规范里它是固定的 7 字节字段）。功率取不超过实际值的最大档：25 W 报 25、30 W 也只报 25 —— 写大了等于虚报覆盖范围。天线高度是「高于当地平均地面」，与上面自动发送的 /A= 海拔是两个不同的量。';
+
+  @override
+  String get beaconPowerLabel => '功率（瓦）';
+
+  @override
+  String get beaconRfBeaconOff => '射频信标未开启';
+
+  @override
+  String get beaconRfEnableAction => '开启射频信标';
+
+  @override
+  String get beaconRfEnableHint =>
+      '射频来源的自动发射需要显式打开「射频信标」。在此之前不会自动发射位置（倒计时也不会走动）。';
+
+  @override
+  String get beaconRfEnableWarn => '发射将使用你的呼号，请在执照范围内操作';
+
+  @override
+  String get beaconRfEnabled => '已开启射频信标，将按间隔自动发射';
+
+  @override
+  String beaconSentAprsIs(String grid) {
+    return '位置已上报 · 网格 $grid · 已发往 APRS-IS';
+  }
+
+  @override
+  String beaconSentDemo(String grid) {
+    return '位置已上报 · 网格 $grid · 演示';
+  }
+
+  @override
+  String get beaconSettings => '定位上报';
+
+  @override
+  String get beaconSettingsDetail => 'GPS 来源、信标与手动定位';
+
+  @override
+  String get beaconSoon => '即将';
+
+  @override
+  String get beaconTotalMileage => '累计里程';
+
+  @override
+  String get beaconTripMileage => '本次里程';
+
+  @override
+  String get beaconWaitingFix => '等待定位';
+
+  @override
+  String get beaconWarnBody =>
+      'APRS-IS 建议移动站信标间隔不低于 60 秒。过快的上报可能被视为滥用并导致服务器断开连接。是否仍要使用该间隔？';
+
+  @override
+  String get beaconWarnFix => '改回 60 秒';
+
+  @override
+  String get beaconWarnKeep => '仍然使用';
+
+  @override
+  String get beaconWarnTitle => '信标间隔过短';
+
+  @override
+  String get beaconingSection => '信标上报';
+
+  @override
+  String get beaconsSent => '信标发送次数';
+
+  @override
+  String beaconsSentCount(String n) {
+    return '$n 次';
+  }
+
+  @override
+  String get beaconsSentLabel => '已上报';
+
+  @override
+  String get bearing => '方位角';
+
+  @override
+  String get block => '屏蔽';
+
+  @override
+  String get broadcastContentHint => '输入要群发的内容…';
+
+  @override
+  String get broadcastHint => '提示：每条消息会单独发送给每个接收人';
+
+  @override
+  String get broadcastMessage => '群发消息';
+
+  @override
+  String broadcastSent(int count) {
+    return '已群发给 $count 人';
+  }
+
+  @override
+  String get broadcastShort => '群发';
+
+  @override
+  String get browse => '浏览';
+
+  @override
+  String get callComment => '台站备注';
+
+  @override
+  String get callCommentEmpty => '未填写 · 点这里输入';
+
+  @override
+  String get callCommentHint => '信标发送时的备注内容';
+
+  @override
+  String get callSsid => '呼号 · SSID';
+
+  @override
+  String get callSymbol => '台站符号';
+
+  @override
+  String get callSymbolDesc => '符号随位置信标一起发送';
+
+  @override
+  String get callsign => '呼号';
+
+  @override
+  String get callsignCopied => '呼号已复制';
+
+  @override
+  String get callsignExample => '呼号，如 BG7ABC';
+
+  @override
+  String get callsignMin3 => '呼号至少 3 个字符';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get cancelInstall => '取消';
+
+  @override
+  String get cannotLaunchInstaller => '无法启动安装器，请手动打开安装包';
+
+  @override
+  String cannotOpenPackage(String error) {
+    return '无法打开安装包：$error';
+  }
+
+  @override
+  String get cannotRunInstaller => '无法启动安装程序，请到所在目录手动打开';
+
+  @override
+  String get chatCat => '聊天';
+
+  @override
+  String get chatCatDesc => '记录 · 联系人';
+
+  @override
+  String get chatCleared => '聊天记录已清空';
+
+  @override
+  String get chatHistory => '聊天记录';
+
+  @override
+  String get chatManageHint => '点击会话进行选择，长按也可选中';
+
+  @override
+  String get chatRecords => '聊天记录';
+
+  @override
+  String get chatRecordsCleared => '聊天记录已清空';
+
+  @override
+  String get chatSettings => '聊天设置';
+
+  @override
+  String get chatSettings2 => '聊天设置';
+
+  @override
+  String get chatSettingsDetail => '消息、联系人与聊天数据';
+
+  @override
+  String get chatSettingsSubtitle => '消息记录与联系人';
+
+  @override
+  String get chatShortLabel => '单聊';
+
+  @override
+  String get chatToGroupHint => '发消息给全群…';
+
+  @override
+  String chatToHint(Object call) {
+    return '发给 $call…';
+  }
+
+  @override
+  String chatWithTitle(Object call) {
+    return '与 $call 聊天';
+  }
+
+  @override
+  String get checkUpdate => '检查更新';
+
+  @override
+  String get checking => '正在检查新版本…';
+
+  @override
+  String get checkingGitCode => '检查 GitCode 仓库';
+
+  @override
+  String get checkingLatest => '正在检查最新版本…';
+
+  @override
+  String get chooseSsidSuffix => '选择 SSID 后缀';
+
+  @override
+  String get chooseSymbol => '选择台站符号';
+
+  @override
+  String get clear => '清除';
+
+  @override
+  String get clearAll => '全部清除';
+
+  @override
+  String get clearAllData => '清除所有数据';
+
+  @override
+  String get clearAllDataConfirm => '确定要清除全部本地数据吗？此操作不可恢复。';
+
+  @override
+  String get clearAllDataIntro => '此操作将删除以下所有本地数据：';
+
+  @override
+  String get clearCache => '清除缓存';
+
+  @override
+  String get clearData => '清除数据';
+
+  @override
+  String clearGroupChatConfirm(Object name) {
+    return '确定清空「$name」的聊天记录吗？此操作不可恢复。';
+  }
+
+  @override
+  String get clearLogs => '清空日志';
+
+  @override
+  String get clearMessages => '清空全部聊天记录';
+
+  @override
+  String get clearPackets => '清除数据包';
+
+  @override
+  String get clearPackets2 => '清除数据包';
+
+  @override
+  String get clearSearch => '清除搜索';
+
+  @override
+  String get clearSelection => '取消全选';
+
+  @override
+  String get clearStationFilter => '清除筛选';
+
+  @override
+  String get clearStations => '清除台站列表';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '确定要清除全部台站吗？共 $n 个，清除后不可恢复（消息 / 日志 / 数据包不受影响）。';
+  }
+
+  @override
+  String get clearedPackets => '已清除数据包';
+
+  @override
+  String get close => '关闭';
+
+  @override
+  String get codeContributionI18n => '国际化 / 英文界面';
+
+  @override
+  String get codeContributionTranslation => '翻译';
+
+  @override
+  String get codeContributionZhTw => '繁体中文界面';
+
+  @override
+  String get codeContributions => '代码贡献';
+
+  @override
+  String get configChanged => '配置已修改';
+
+  @override
+  String get confirm => '确认';
+
+  @override
+  String get confirmClear => '确认清除';
+
+  @override
+  String get confirmClearAllData => '确认清除所有数据';
+
+  @override
+  String get confirmDelete => '确定要删除吗？';
+
+  @override
+  String confirmDeleteMessages(String n) {
+    return '确定要删除全部 $n 条聊天记录吗？此操作不可恢复。';
+  }
+
+  @override
+  String get confirmRestartOobe =>
+      '将重新进入首次启动向导，可重新设置呼号、接收地区等。\n当前设置不会丢失，完成向导后继续使用。';
+
+  @override
+  String connAudioConnected(String rate) {
+    return '音频链路在线 · $rate';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return '音频链路中断 · $seconds秒后自动重连…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return '音频已发射 · 位置已发送 ($call)';
+  }
+
+  @override
+  String get connAudioSourceHint => '音频模式下不使用服务器、过滤器与 KISS 参数';
+
+  @override
+  String connAutoReconnect(int seconds) {
+    return '连接已断开 · $seconds秒后自动重连…';
+  }
+
+  @override
+  String connConnectingAudio(String name) {
+    return '正在打开音频（$name）…';
+  }
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return '正在连接 PKWDWPL（$arg）…';
+  }
+
+  @override
+  String connConnectingTarget(String target) {
+    return '正在连接 $target…';
+  }
+
+  @override
+  String get connDemoBeacon => '未连接 · 位置已上报（模拟）';
+
+  @override
+  String get connManuallyDisconnected => '未连接 · 已手动断开';
+
+  @override
+  String connOnline(String call) {
+    return '已连接 · $call 在线';
+  }
+
+  @override
+  String get connPasscodeInvalid => '已连接 · 未验证（Passcode 可能错误）';
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL 已连接 · $arg';
+  }
+
+  @override
+  String connPositionSent(String call) {
+    return '已连接 · 位置已上报 ($call)';
+  }
+
+  @override
+  String connRetry(int seconds) {
+    return '连接失败 · ${seconds}s 后重试…';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return '音频链路打开失败 · ${seconds}s 后重试…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return '音频打开失败（$detail）· ${seconds}s 后重试…';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC 连接失败 · ${n}s 后重试…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC 连接失败（$e）· ${n}s 后重试…';
+  }
+
+  @override
+  String get connTapToConnect => '未连接 · 点击播放按钮连接 APRS-IS';
+
+  @override
+  String connTncConnected(String arg) {
+    return 'TNC 已连接 · $arg';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC 链路断开 · $n秒后自动重连…';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC 已连接 · 位置已发送 ($arg)';
+  }
+
+  @override
+  String get connTncSourceHint => 'TNC 模式下不使用服务器与过滤器，相关设置已停用';
+
+  @override
+  String get connectAction => '连接';
+
+  @override
+  String get connectAprsIs => '连接 APRS-IS';
+
+  @override
+  String get connectFailedCheckConfig => '连接失败，请检查配置';
+
+  @override
+  String get connectNearbyDesc => '连接后可接收附近台站定位与消息';
+
+  @override
+  String get connectTncBar => '点「连接」建立 TNC 链路';
+
+  @override
+  String get connected => '已连接';
+
+  @override
+  String get connectedAprsIs => '已连接 APRS-IS';
+
+  @override
+  String get connecting => '连接中';
+
+  @override
+  String get connectingEllipsis => '正在连接…';
+
+  @override
+  String get connectingGitCode => '连接 GitCode 服务器';
+
+  @override
+  String get connectingServer => '正在连接服务器…';
+
+  @override
+  String connectingToServer(String server, int port) {
+    return '正在连接 $server:$port…';
+  }
+
+  @override
+  String connectingToTnc(String name) {
+    return '正在连接 TNC · $name';
+  }
+
+  @override
+  String get connection => '连接';
+
+  @override
+  String get connectionCard2 => 'APRS-IS 连接';
+
+  @override
+  String get connectionCat => '连接';
+
+  @override
+  String get connectionCatDesc => '服务器 · 过滤范围';
+
+  @override
+  String get connectionSettings => '连接设置';
+
+  @override
+  String get connectionSettings2 => '连接设置';
+
+  @override
+  String get connectionSettingsSubtitle => 'APRS-IS 服务器与接收范围';
+
+  @override
+  String contactAdded(String call) {
+    return '已添加联系人 $call';
+  }
+
+  @override
+  String contactDeleted(String call) {
+    return '已删除 $call';
+  }
+
+  @override
+  String get contactDesc => '消息/联系人相关的过滤规则';
+
+  @override
+  String get contactList => '联系人';
+
+  @override
+  String get continueAnyway => '仍然继续';
+
+  @override
+  String get continuousIteration => '持续迭代';
+
+  @override
+  String get continuousIterationDesc => '不断改进 APRSlocus 功能与体验';
+
+  @override
+  String get conversationMode => '会话';
+
+  @override
+  String get conversations => '会话';
+
+  @override
+  String conversationsDeleted(int n) {
+    return '已删除 $n 个会话';
+  }
+
+  @override
+  String get coordDatum => '坐标基准';
+
+  @override
+  String get coordDisplay => '坐标显示';
+
+  @override
+  String get coordsFormat => '坐标格式';
+
+  @override
+  String get copied => '已复制';
+
+  @override
+  String get copiedAprslocusInfo => '已复制 APRSlocus 信息';
+
+  @override
+  String get copiedClipboard => '已复制到剪贴板';
+
+  @override
+  String copiedCoordsValue(String coords) {
+    return '已复制坐标：$coords';
+  }
+
+  @override
+  String get copiedFmoInfo => '已复制 FMO 信息';
+
+  @override
+  String copiedGridValue(String grid) {
+    return '已复制网格：$grid';
+  }
+
+  @override
+  String copiedLogs(int count) {
+    return '已复制 $count 条日志';
+  }
+
+  @override
+  String get copiedPacket => '已复制数据包';
+
+  @override
+  String get copy => '复制';
+
+  @override
+  String get copyAllLogs => '复制全部日志';
+
+  @override
+  String get copyAppInfo => '复制应用信息';
+
+  @override
+  String get copyCallsign => '复制呼号';
+
+  @override
+  String get copyCoords => '复制坐标';
+
+  @override
+  String get copyGrid => '复制网格';
+
+  @override
+  String get copyShareText => '复制分享文案';
+
+  @override
+  String countEntries(int count) {
+    return '$count 条';
+  }
+
+  @override
+  String countItems(int count) {
+    return '$count 个';
+  }
+
+  @override
+  String countTimes(int count) {
+    return '$count 次';
   }
 
   @override
@@ -4127,1226 +1517,120 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get locationNotFixed => '未定位';
+  String get countryUnrestricted => '未选择国家/地区 · 不做限制（接收全部台站）';
 
   @override
-  String get simulatedLocation => '模拟位置';
+  String get course => '航向';
 
   @override
-  String get savedLocation => '已保存位置';
+  String get courseLabel => '航向';
 
   @override
-  String get locationFailed => '定位失败';
+  String get create => '创建';
 
   @override
-  String get locationStopped => '定位已停止';
+  String get creditsSection => '致谢名单';
 
   @override
-  String get locationFixed => '已定位';
+  String get current => '当前';
 
   @override
-  String get locationPermission => '请授予定位权限…';
+  String get currentVersion => 'APRSlocus 当前版本';
 
   @override
-  String get gpsLocating => 'GPS 定位中…';
-
-  @override
-  String get webLocationUnsupported => 'Web 平台暂不支持自动定位，请手动输入坐标';
-
-  @override
-  String locationStreamError(String error) {
-    return '定位流异常：$error';
+  String currentVsRepo(Object local, Object remote) {
+    return '本地 v$local · 仓库最新 v$remote';
   }
 
   @override
-  String locationInitError(String error) {
-    return '定位初始化失败：$error';
-  }
+  String get darkMode => '深色模式';
 
   @override
-  String get beaconDisabled => '已关闭';
+  String get dataCat => '数据';
 
   @override
-  String get waitingForLocation => '等待定位';
+  String get dataCatDesc => '清除本地数据';
 
   @override
-  String get imminent => '即将';
-
-  @override
-  String get connTapToConnect => '未连接 · 点击播放按钮连接 APRS-IS';
-
-  @override
-  String get connManuallyDisconnected => '未连接 · 已手动断开';
-
-  @override
-  String connAutoReconnect(int seconds) {
-    return '连接已断开 · $seconds秒后自动重连…';
-  }
-
-  @override
-  String connConnectingTarget(String target) {
-    return '正在连接 $target…';
-  }
-
-  @override
-  String connOnline(String call) {
-    return '已连接 · $call 在线';
-  }
-
-  @override
-  String connRetry(int seconds) {
-    return '连接失败 · ${seconds}s 后重试…';
-  }
-
-  @override
-  String connPositionSent(String call) {
-    return '已连接 · 位置已上报 ($call)';
-  }
-
-  @override
-  String get connDemoBeacon => '未连接 · 位置已上报（模拟）';
-
-  @override
-  String get connPasscodeInvalid => '已连接 · 未验证（Passcode 可能错误）';
-
-  @override
-  String get mapTypeAmap => '高德地图';
-
-  @override
-  String get mapTypeAmapSatellite => '高德卫星';
-
-  @override
-  String get mapTypeVector => '矢量地图';
-
-  @override
-  String get amapGroup => '国内地图';
-
-  @override
-  String get domesticMaps => '国内地图';
-
-  @override
-  String get internationalMaps => '国际地图';
-
-  @override
-  String get metricUnits => '公制 (km/h, m)';
-
-  @override
-  String get coordDisplay => '坐标显示';
-
-  @override
-  String mapDefaultCoord(int level) {
-    return '北京 · $level级';
-  }
-
-  @override
-  String secondsValue(int count) {
-    return '$count 秒';
-  }
-
-  @override
-  String get stationSettingsDetail => '呼号、SSID、符号与备注';
-
-  @override
-  String get stationIdentity => '电台身份';
-
-  @override
-  String get aprsCallsignHint => 'APRS 呼号，如 BV2AAA';
-
-  @override
-  String get displayInfo => '显示信息';
-
-  @override
-  String get ssidSuffix => 'SSID 后缀';
-
-  @override
-  String get chooseSsidSuffix => '选择 SSID 后缀';
-
-  @override
-  String get mySymbol => '我的符号';
-
-  @override
-  String get moreSymbols => '更多符号';
-
-  @override
-  String get allAprsSymbols => '全部 APRS 符号';
-
-  @override
-  String get beaconSettingsDetail => 'GPS 来源、信标与手动定位';
-
-  @override
-  String get locationSource => '定位来源';
-
-  @override
-  String get useDeviceLocation => '使用设备定位';
-
-  @override
-  String get manualCoordinates => '手动输入坐标';
-
-  @override
-  String get locationMode => '定位模式';
-
-  @override
-  String get settingsLocModeSubtitle => '选择定位方式';
-
-  @override
-  String get locModeGps => '纯 GPS';
-
-  @override
-  String get locModeGpsDesc => '仅卫星定位，更省电';
-
-  @override
-  String get locModeGpsNetwork => 'GPS + 网络';
-
-  @override
-  String get locModeGpsNetworkDesc => "网络仅作兜底（GPS 停更时），粗定位不写轨迹";
-
-  @override
-  String get locModeNetwork => "纯网络";
-
-  @override
-  String get locModeNetworkDesc => "仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备";
-
-  @override
-  String get locModeNetworkHint =>
-      "纯网络模式下只有基站 / Wi-Fi 定位：误差常在几百米，且**不会**写进轨迹与历史；除非打开「强制接受网络定位自动上报」，否则不会自动发信标。";
-
-  @override
-  String get beaconingSection => '信标上报';
-
-  @override
-  String get beaconIntervalTip => '位置信标的发送间隔，至少 5 秒';
-
-  @override
-  String get beaconNetInterval => '纯网络上报间隔（秒）';
-
-  @override
-  String get beaconNetIntervalTip =>
-      '纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）';
-
-  @override
-  String get beaconContent => '信标上报内容';
-
-  @override
-  String get beaconContentDesc => '随位置信标一起发送';
-
-  @override
-  String get beaconTripMileage => '本次里程';
-
-  @override
-  String get beaconTotalMileage => '累计里程';
-
-  @override
-  String get iosFeatureUnsupported =>
-      'iOS 不支持经典蓝牙 / USB 串口链路（仅 MFi 认证配件可用），此功能无法开启；可改用 APRS-IS 联网接入。';
-
-  @override
-  String get phoneBattery => '手机电量';
-
-  @override
-  String get locationStatus => '定位状态';
-
-  @override
-  String get relocate => '重新定位';
-
-  @override
-  String get startGps => '开启 GPS 定位';
-
-  @override
-  String get trackingBeaconing => '定位运行中，正在持续上报位置';
-
-  @override
-  String get manualLocation => '手动定位';
-
-  @override
-  String get latitudeHint => '纬度 39.9042';
-
-  @override
-  String get longitudeHint => '经度 116.4074';
-
-  @override
-  String get invalidLatLng => '请输入有效经纬度';
-
-  @override
-  String myLocationSetGrid(String grid) {
-    return '已设置我的位置，网格 $grid';
-  }
-
-  @override
-  String get applyCoordinates => '应用坐标';
-
-  @override
-  String get pickOnMap => '在地图选点';
-
-  @override
-  String get manualLocationHelp => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
-
-  @override
-  String get passcodeTip => 'APRS-IS 登录验证码，可在线生成；填 -1 表示未验证';
-
-  @override
-  String get websocketOptional => 'WebSocket URL（可选）';
-
-  @override
-  String get configChanged => '配置已修改';
-
-  @override
-  String get reconnectToApply => '重新连接后生效';
-
-  @override
-  String get reconnected => '已重新连接';
-
-  @override
-  String get connectFailedCheckConfig => '连接失败，请检查配置';
-
-  @override
-  String get rangeFilterDesc => '只接收设定范围内的台站数据包';
-
-  @override
-  String get filterCenterFollows => '过滤中心跟随我的位置';
-
-  @override
-  String get radiusTip => '接收半径（km），点“保存并应用”生效';
-
-  @override
-  String get maxStationsTip => '内存中保留的最大台站数量（默认不限制，可设更大值）';
-
-  @override
-  String filterSavedRadius(String saved, int radius) {
-    return '$saved · 半径 ${radius}km';
-  }
-
-  @override
-  String get receiveFilterDesc2 => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
-
-  @override
-  String get receiveCountryDesc => '按呼号前缀批量接收某国家/地区全部台站';
-
-  @override
-  String get noCountriesSelected => '未选择国家/地区';
-
-  @override
-  String get receiveOthersDesc => '接收不匹配所选国家的特殊呼号台站';
-
-  @override
-  String get addCountry => '添加国家/地区';
-
-  @override
-  String get chatSettingsDetail => '消息、联系人与聊天数据';
-
-  @override
-  String get messageCountLabel => '消息条数';
-
-  @override
-  String get manageContacts => '管理联系人';
-
-  @override
-  String deleteAllChatsConfirm(int count) {
-    return '确定要删除全部 $count 条聊天记录吗？此操作不可恢复。';
-  }
-
-  @override
-  String get chatCleared => '聊天记录已清空';
-
-  @override
-  String get noContacts => '暂无联系人';
-
-  @override
-  String get addOrFavoriteContact => '点击右上角“添加”或在地图上收藏台站';
-
-  @override
-  String movingWithSpeed(String speed) {
-    return '移动中 · $speed';
-  }
-
-  @override
-  String get callsignMin3 => '呼号至少 3 个字符';
-
-  @override
-  String get deleteContact => '删除联系人';
-
-  @override
-  String deleteContactConfirm(String call) {
-    return '确定删除联系人 $call？';
-  }
-
-  @override
-  String contactDeleted(String call) {
-    return '已删除 $call';
-  }
+  String get dataClearDesc => '清除消息、数据包、台站等本地数据';
 
   @override
   String get dataMaintenance => '数据维护';
 
   @override
-  String get clearAllData => '清除所有数据';
+  String get dataPersistence => '台站持久化';
 
   @override
-  String get clearAllDataIntro => '此操作将删除以下所有本地数据：';
+  String get dataSettings => '数据设置';
 
   @override
-  String get chatHistory => '聊天记录';
+  String get dataSettings2 => '数据设置';
 
   @override
-  String get logs => '日志';
+  String get dataSettingsSubtitle => '本地数据管理';
 
   @override
-  String get irreversibleKeepSettings => '此操作不可恢复，连接设置和呼号不会被删除。';
+  String get dataSourceAprsIs => 'APRS-IS';
 
   @override
-  String get confirmClearAllData => '确认清除所有数据';
+  String get dataSourceAprsIsDesc => '通过互联网接入全球 APRS 网络';
 
   @override
-  String get clearAllDataConfirm => '确定要清除全部本地数据吗？此操作不可恢复。';
+  String get dataSourceAudio => '音频（声卡）';
 
   @override
-  String get allDataCleared => '所有数据已清除';
+  String get dataSourceAudioDesc => '用麦克风/扬声器或声卡线接电台，收发 AFSK 1200';
 
   @override
-  String get confirmClear => '确认清除';
+  String get dataSourceAudioShort => '音频';
 
   @override
-  String get allowLandscape => '允许手机横屏显示';
+  String get dataSourceIgateHint =>
+      '想当网关（把射频收到的报文转到互联网）就同时勾选 APRS-IS 与 TNC/音频，然后在下面打开「网关」。';
 
   @override
-  String get packetParseTest => '数据包解析测试';
+  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航点）';
 
   @override
-  String get packetParseHint =>
-      '粘贴原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+  String get dataSourcePkwdwplDesc =>
+      '用蓝牙/串口读取电台输出的 Kenwood \$PKWDWPL 航点语句（只收不发）';
 
   @override
-  String get parseAndApply => '解析并应用';
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL 是**只读**链路：能收台站、不参与发射（发射请用 APRS-IS / TNC / 音频）';
 
   @override
-  String get oobePasscodeMissing => 'Passcode 未填写';
+  String get dataSourceSubtitle => '报文从哪里来';
 
   @override
-  String get oobePasscodeMissingDesc =>
-      'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群组。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
+  String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
-  String get continueAnyway => '仍然继续';
+  String get dataSourceTitle => '数据来源';
 
   @override
-  String get fillPasscode => '去填写';
+  String get dataSourceTnc => 'TNC';
 
   @override
-  String get oobeMapFeatureDesc => '在线地图瓦片，查看附近 APRS 台站与轨迹';
+  String get dataSourceTncDesc => '通过蓝牙或串口的 TNC 与电台直接收发';
 
   @override
-  String get oobeGpsFeatureDesc => '自动获取位置并发送信标到 APRS-IS';
+  String get dataSourceTxBadge => '发射';
 
   @override
-  String get oobeMsgFeatureDesc => '与台站收发消息，支持自动应答';
+  String get dataSourceTxHint =>
+      '可以同时勾选多条链路一起收报文，但**发射只有一条**（右侧圆点为发射来源）——同一个呼号从两条链路发出去会造成重复报文。';
 
   @override
-  String get oobeIsFeatureDesc => '连接公共服务器，接收全球台站数据';
-
-  @override
-  String get oobeBackgroundTip =>
-      '提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
-
-  @override
-  String get oobeNextSteps => '接下来几步完成基础配置，随时可在设置中修改。';
-
-  @override
-  String get ssidDescShort => 'SSID 是呼号后面的数字标识，如 BG7ABC-9 中的 -9';
-
-  @override
-  String get ssidOptional => 'SSID 后缀（可选）';
-
-  @override
-  String get noSsid => '无后缀（基本呼号）';
-
-  @override
-  String fullCallsign(String call) {
-    return '完整呼号：$call';
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$y年$m月$d日 $w';
   }
 
   @override
-  String get passcodeImportant => 'Passcode 非常重要';
+  String get dateToday => '今天';
 
   @override
-  String get passcodeImportantDesc =>
-      '正确的 Passcode 是接收群组消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。';
-
-  @override
-  String get lookupPasscode => '点击查询你的 Passcode →';
-
-  @override
-  String get passcodeLookupHint => '输入你的呼号即可获取，例如 BV2AAA';
-
-  @override
-  String sendToGroupHint(String group) {
-    return '发到 $group…';
-  }
-
-  @override
-  String sendToCallHint(String call) {
-    return '发给 $call…';
-  }
-
-  @override
-  String get selectMessageReply => '点选消息以回复…';
-
-  @override
-  String get broadcastShort => '群发';
-
-  @override
-  String memberCount(int count) {
-    return '$count 个成员';
-  }
-
-  @override
-  String memberCountTap(int count) {
-    return '$count 名成员 · 点击查看';
-  }
-
-  @override
-  String get stepRecipients => '选人';
-
-  @override
-  String get stepContent => '内容';
-
-  @override
-  String get selectAllOnline => '全选在线';
-
-  @override
-  String get clearSelection => '取消全选';
-
-  @override
-  String get onlineOnly => '仅在线';
-
-  @override
-  String get noRecipients => '未选择接收人';
-
-  @override
-  String selectedRecipients(int count) {
-    return '已选 $count 人';
-  }
-
-  @override
-  String sendRecipientsList(int count, String calls) {
-    return '将发送给 $count 人：$calls';
-  }
-
-  @override
-  String get stepName => '名称';
-
-  @override
-  String get stepMembers => '成员';
-
-  @override
-  String get groupChatExplain => '群组使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。';
-
-  @override
-  String get noMembersSelected => '未选择成员';
-
-  @override
-  String get memberBlocked => '已屏蔽';
-
-  @override
-  String get memberJoined => '已加入';
-
-  @override
-  String get memberPending => '待确认';
-
-  @override
-  String get memberDeclined => '已拒绝';
-
-  @override
-  String get memberLeft => '已退出';
-
-  @override
-  String get memberTimeout => '超时';
-
-  @override
-  String get unblock => '解除屏蔽';
-
-  @override
-  String get block => '屏蔽';
-
-  @override
-  String get groupOwner => '群主';
-
-  @override
-  String systemMemberJoined(String call) {
-    return '$call 加入了群组';
-  }
-
-  @override
-  String systemMemberLeft(String call) {
-    return '$call 离开了群组';
-  }
-
-  @override
-  String systemInviteDeclined(String call) {
-    return '$call 拒绝了邀请';
-  }
-
-  @override
-  String get copyAllLogs => '复制全部日志';
-
-  @override
-  String copiedLogs(int count) {
-    return '已复制 $count 条日志';
-  }
-
-  @override
-  String get clearLogs => '清空日志';
-
-  @override
-  String get noLogs => '暂无日志';
-
-  @override
-  String get supportProject => '你们的支持让项目走得更远';
-
-  @override
-  String get continuousIteration => '持续迭代';
-
-  @override
-  String get continuousIterationDesc => '不断改进 APRSlocus 功能与体验';
-
-  @override
-  String get sponsorSupport => '赞助支持';
-
-  @override
-  String get sponsorMethods => '赞助方式';
-
-  @override
-  String qrCodeTitle(String title) {
-    return '$title 赞赏码';
-  }
-
-  @override
-  String get qrLoadFailed => '赞赏码图片加载失败';
-
-  @override
-  String get qrSaveWechat => '长按图片可保存 · 微信扫一扫赞赏';
-
-  @override
-  String get tapAnywhereClose => '点击任意处关闭';
-
-  @override
-  String vectorMapLoadFailed(String error) {
-    return '矢量地图加载失败\n$error';
-  }
-
-  @override
-  String get loadingVectorMap => '加载矢量地图…';
-
-  @override
-  String get updateChannel => '更新渠道';
-
-  @override
-  String serverReturned(int code) {
-    return '服务器返回 $code';
-  }
-
-  @override
-  String get invalidResponseData => '返回数据格式错误';
-
-  @override
-  String get noVersionsFound => '没有找到任何版本';
-
-  @override
-  String get noWindowsInstaller => '该版本没有 Windows 安装包';
-
-  @override
-  String get noApkInstaller => '该版本没有 APK 安装包';
-
-  @override
-  String get connectingEllipsis => '正在连接…';
-
-  @override
-  String downloadHttpError(int code) {
-    return '下载失败：HTTP $code';
-  }
-
-  @override
-  String downloadedBytes(String received, String total) {
-    return '已下载 $received / $total';
-  }
-
-  @override
-  String androidInstallHelp(String path) {
-    return '安装包已下载到：\n$path\n\n点击“安装”后，系统会弹出安装确认框。\n\n若提示“不允许安装未知来源应用”，请到系统设置中允许本应用安装未知应用。';
-  }
-
-  @override
-  String windowsInstallHelp(String path) {
-    return '安装包已保存到：\n$path\n\n点击“立即运行”直接启动安装程序；也可以打开所在目录查看文件。';
-  }
-
-  @override
-  String get openContainingFolder => '打开所在目录';
-
-  @override
-  String get runNow => '立即运行';
-
-  @override
-  String get cannotRunInstaller => '无法启动安装程序，请到所在目录手动打开';
-
-  @override
-  String get cannotLaunchInstaller => '无法启动安装器，请手动打开安装包';
-
-  @override
-  String get openPackageManually => '请在文件管理器中打开安装包';
-
-  @override
-  String cannotOpenPackage(String error) {
-    return '无法打开安装包：$error';
-  }
-
-  @override
-  String get installPermissionTitle => '需要允许安装应用';
-
-  @override
-  String get installPermissionDesc =>
-      '检测到系统未允许 APRSlocus 安装应用。\n\n请点击“去设置”，在“安装未知应用”中允许本应用安装应用，然后返回重新安装。';
-
-  @override
-  String get recheck => '重新检查';
-
-  @override
-  String newVersionTitle(String version) {
-    return '发现新版本 v$version';
-  }
-
-  @override
-  String repoLatestTitle(String version) {
-    return '仓库最新版本 v$version';
-  }
-
-  @override
-  String get checkingLatest => '正在检查最新版本…';
-
-  @override
-  String get connectingGitCode => '连接 GitCode 服务器';
-
-  @override
-  String get noReleaseNotes => '暂无更新说明';
-
-  @override
-  String noInstallerHistoryHint(String platform) {
-    return '该版本暂无 $platform 安装包，请到历史版本中选择可下载的版本';
-  }
-
-  @override
-  String get latestVersionLabel => '最新版本';
-
-  @override
-  String packageSize(String platform, String size) {
-    return '$platform 安装包大小：$size';
-  }
-
-  @override
-  String get updateContents => '更新内容';
-
-  @override
-  String get redownload => '重新下载';
-
-  @override
-  String get downloadInstaller => '下载安装包';
-
-  @override
-  String get downloadAndInstall => '下载并安装';
-
-  @override
-  String get localPackageExists => '本地已有一份安装包';
-
-  @override
-  String get packageDeleted => '安装包已删除';
-
-  @override
-  String versionCount(int count) {
-    return '$count 个';
-  }
-
-  @override
-  String get noInstaller => '无安装包';
-
-  @override
-  String get download => '下载';
-
-  @override
-  String get viewChangelog => '查看更新日志';
-
-  @override
-  String versionChangelog(String version) {
-    return 'v$version 更新日志';
-  }
-
-  @override
-  String get gotIt => '知道了';
-
-  @override
-  String get leaveAction => '退出';
-
-  @override
-  String localRepoVersion(Object latest, Object local) {
-    return '本地 v$local · 仓库最新 v$latest';
-  }
-
-  @override
-  String get unverified => '未验证';
-
-  @override
-  String get passcodeUnverifiedHint => '-1 未验证';
-
-  @override
-  String get passcodeMessageWarning => 'APRS-IS 登录验证码，填 -1 无法正常收发消息';
-
-  @override
-  String get settingsStationIdentitySubtitle => '呼号、SSID 与备注';
-
-  @override
-  String get settingsDisplayInfoSubtitle => '我的符号与当前定位';
-
-  @override
-  String get settingsLocSourceSubtitle => '选择坐标来源';
-
-  @override
-  String get settingsBeaconSubtitle => '发送间隔与上报内容';
-
-  @override
-  String get settingsManualLocSubtitle => '无定位时可手动输入或选点';
-
-  @override
-  String get settingsManualLocHint => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
-
-  @override
-  String get settingsConnStatusSubtitle => '连接状态与信息';
-
-  @override
-  String get settingsServerSubtitle => 'APRS-IS 服务器与验证码';
-
-  @override
-  String get settingsFilterSubtitle => '过滤中心与接收半径';
-
-  @override
-  String get settingsReceivePrefSubtitle => '按国家/地区或呼号接收';
-
-  @override
-  String get settingsGeneralSubtitle => '主题、语言与坐标显示';
-
-  @override
-  String get settingsMapSubtitle => '地图类型与显示';
-
-  @override
-  String get settingsChatStatsSubtitle => '消息与联系人统计';
-
-  @override
-  String get settingsChatManageSubtitle => '联系人与聊天数据';
-
-  @override
-  String get settingsClearDataSubtitle => '删除本地记录';
-
-  @override
-  String get settingsLabSubtitle => '实验性功能';
-
-  @override
-  String get settingsDevSubtitle => '调试与测试';
-
-  @override
-  String get settingsFilterHint => '只接收设定范围内的台站数据包';
-
-  @override
-  String get settingsReceivePrefHint => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
-
-  @override
-  String get settingsContribCodeOptimization => '代码优化';
-
-  @override
-  String get eggBg2hcb => '人生真是喵喵又咪咪啊';
-
-  @override
-  String get deviceInfoTitle => '设备识别';
-
-  @override
-  String get deviceToCall => '目的呼号';
-
-  @override
-  String get deviceModel => '设备型号';
-
-  @override
-  String get deviceClass => '设备类别';
-
-  @override
-  String get deviceFilter => '设备筛选';
-
-  @override
-  String get lookupQrz => 'QRZ 呼号';
-
-  @override
-  String get lookupAprsFi => 'aprs.fi 位置';
-
-  @override
-  String get aprsTv => 'APRS.tv';
-
-  @override
-  String get aprsTvInfo => '详情页';
-
-  @override
-  String get aprsTvMap => '在地图上查看';
-
-  @override
-  String get linkOpenFailed => '无法打开链接';
-
-  @override
-  String get beaconAutoAskTitle => '连接成功，自动上报位置？';
-
-  @override
-  String get beaconAutoAskDesc =>
-      '是否让 APRSlocus 在连接后自动定时上报你的位置（信标）？移动台建议开启；若只想接收消息与看周边台站，可关闭（随时可手动上报一次）。';
-
-  @override
-  String get beaconAutoYes => '自动上报';
-
-  @override
-  String get beaconAutoNo => '暂不，仅接收';
-
-  @override
-  String get beaconOffChip => '自动上报已关闭';
-
-  @override
-  String get quickTrackCreate => '新建跟踪组';
-
-  @override
-  String get quickTrackHint => '从已接收台站勾选成员，也可手输呼号补充；直接在地图上跟踪这些人，不需要先建聊天群。';
-
-  @override
-  String get quickTrackName => '组名（可选）';
-
-  @override
-  String get quickTrackPickLabel => '选择要跟踪的台站';
-
-  @override
-  String get quickTrackNoStations => '暂无已接收台站，可直接手输呼号（多个用逗号分隔）';
-
-  @override
-  String get quickTrackManualHint => '手输呼号，如 BG7PGW,BG7LMW';
-
-  @override
-  String get quickTrackStart => '开始跟踪';
-
-  @override
-  String get quickTrackNeedMembers => '请至少选择或输入一个呼号';
-
-  @override
-  String get weatherPanelTitle => '天气 · 火腿建议';
-
-  @override
-  String get weatherPanelSub => '和风天气 · 当前位置';
-
-  @override
-  String get weatherRefresh => '刷新';
-
-  @override
-  String get weatherPowered => '数据由和风天气提供 · APRSlocus';
-
-  @override
-  String get hfTitle => '短波传播';
-
-  @override
-  String get hfSixMeter => '6m 波段';
-
-  @override
-  String get hfEs => 'Es 偶发 E 层';
-
-  @override
-  String get hfAurora => '极光';
-
-  @override
-  String get hfF2 => 'F2 层';
-
-  @override
-  String get hfBand => '波段';
-
-  @override
-  String get hfDay => '日间';
-
-  @override
-  String get hfNight => '夜间';
-
-  @override
-  String get hfNow => '现在';
-
-  @override
-  String get hfSfi => '太阳通量';
-
-  @override
-  String get hfKp => '地磁 Kp';
-
-  @override
-  String get hfAIndex => 'A 指数';
-
-  @override
-  String get hfSunspots => '太阳黑子';
-
-  @override
-  String get hfXray => 'X 射线';
-
-  @override
-  String get hfSolarWind => '太阳风速';
-
-  @override
-  String get hfGeomag => '地磁';
-
-  @override
-  String get hfNoise => '底噪';
-
-  @override
-  String get hfMuf => '最高可用频率';
-
-  @override
-  String get hfNoData => '暂无短波传播数据：联网后自动获取';
-
-  @override
-  String get hfUnavailable => '短波传播服务暂时不可用';
-
-  @override
-  String get hfQGood => '好';
-
-  @override
-  String get hfQFair => '一般';
-
-  @override
-  String get hfQPoor => '差';
-
-  @override
-  String get hfQClosed => '未开通';
-
-  @override
-  String get hfPowered => '传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测';
-
-  @override
-  String get hfTipStorm =>
-      '地磁暴（Kp≥5）：极区短波路径衰减明显，跨极地 DX 基本中断；改走低纬度路径或转本地 VHF/UHF';
-
-  @override
-  String get hfTipGeomagActive => '地磁较活跃：短波高纬度路径不如平时稳定，DX 通联建议留出更多呼叫时间';
-
-  @override
-  String get hfTipLowSfi =>
-      '太阳活动偏低（SFI<100）：白天高波段（15m/12m/10m）机会少，优先 40m/30m/20m';
-
-  @override
-  String get hfTipHighSfi => '太阳活动活跃（SFI≥150）：白天高波段（15m/12m/10m）有机会远距离 DX';
-
-  @override
-  String get hfTipHighNoise => '底噪偏高：弱信号接收困难，建议收窄带宽、降低前置增益，必要时用窄带模式';
-
-  @override
-  String hfTipBandGood(String b) {
-    return '$b 传播条件好：本时段优先用这一段呼叫';
-  }
-
-  @override
-  String hfTipBandPoor(String b) {
-    return '$b 条件偏差：换到其它波段，或等日落/日出灰线再试';
-  }
-
-  @override
-  String get weatherCurLoc => '当前位置';
-
-  @override
-  String get weatherNoLoc => '暂无定位：请在“我的电台”开启位置服务后查看天气';
-
-  @override
-  String get weatherUnavail => '天气服务暂时不可用';
-
-  @override
-  String get weatherDataFail => '天气数据获取失败';
-
-  @override
-  String get weatherConnFail => '天气服务连接失败';
-
-  @override
-  String get weatherCloud => '云量';
-
-  @override
-  String get weatherDew => '露点';
-
-  @override
-  String get weatherHumidity => '湿度';
-
-  @override
-  String get weatherWindDir => '风向';
-
-  @override
-  String get weatherWindScale => '风力';
-
-  @override
-  String get weatherWindSpeed => '风速';
-
-  @override
-  String get weatherPressure => '气压';
-
-  @override
-  String get weatherVis => '能见度';
-
-  @override
-  String get weatherPrecip => '降水';
-
-  @override
-  String weatherFeels(String v) {
-    return '体感 $v°';
-  }
-
-  @override
-  String weatherObserved(String t) {
-    return '观测 $t';
-  }
-
-  @override
-  String get hamTitle => '业余无线电建议';
-
-  @override
-  String get hamNoData => '获取天气后，将给出适合架台/通联/防雷的安全建议';
-
-  @override
-  String get hamStorm1 => '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备';
-
-  @override
-  String get hamStorm2 => '如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮';
-
-  @override
-  String get hamRain => '有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水';
-
-  @override
-  String get hamCold => '低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化';
-
-  @override
-  String hamWind(String w) {
-    return '风力 $w 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒';
-  }
-
-  @override
-  String hamHot(String t) {
-    return '高温 $t°C：注意防暑补水，设备避免长时间满功率发射导致过热';
-  }
-
-  @override
-  String hamHumid(String h) {
-    return '湿度 $h%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈';
-  }
-
-  @override
-  String hamFog(String v) {
-    return '能见度低（${v}km）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联';
-  }
-
-  @override
-  String get hamGood => '天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化';
-
-  @override
-  String hamWindExtra(String w) {
-    return '虽有 $w 级风，仍建议为天线加固风绳，野外架台注意安全';
-  }
-
-  @override
-  String get hamStorm3 =>
-      '雷电临近：把天线馈线从设备上拔下并移至室外接地端泄放，关闭电源并拔掉插头，避免浪涌经市电、网线窜入；不要使用室外天线与有线电话';
-
-  @override
-  String get hamStorm4 => '雷暴前后静电噪声（QRN）骤增、短波底噪抬升；雷电活动结束后约 30 分钟再恢复架台与发射';
-
-  @override
-  String get hamExtreme => '暴雨/极端降水：注意山洪、积水与落石，勿在河岸、低洼处架台；馈线入墙处做滴水弯，防止雨水顺线灌入室内';
-
-  @override
-  String hamGale(String w) {
-    return '风力 $w 级：禁止上塔、爬杆作业！八木与长线天线务必放倒或降下，检查风绳、地锚与桅杆拉线';
-  }
-
-  @override
-  String get hamIce => '天线与馈线结冰会升高驻波（SWR）并增加冰载：切勿满功率硬发，先检查拉线受力，待化冰后再正常通联';
-
-  @override
-  String get hamFrost => '气温低于 0℃：锂电池容量骤降，备用电池请贴身保温；注意手部与面部冻伤，带上暖手宝';
-
-  @override
-  String get hamHeat2 => '高温易使功放与电源过热降额：适当降低功率、缩短连续发射时间，并保证通风散热';
-
-  @override
-  String get hamDust => '沙尘天气：细沙渗入接头与绝缘子会造成泄漏和噪声，请加防尘罩；干燥摩擦易积累静电，注意接地泄放';
-
-  @override
-  String get hamAir => '空气质量差：户外架台请佩戴口罩并减少剧烈活动；污染物附着天线绝缘子会引入泄漏噪声，收工后清洁';
-
-  @override
-  String hamDew(String d) {
-    return '露点差仅 $d℃，空气接近饱和：设备与馈线易结露，收工后先缓温除湿再通电，避免短路';
-  }
-
-  @override
-  String hamUV(String u) {
-    return '紫外线指数 $u，强度偏高：野外架台注意防晒；长期暴晒会加速同轴电缆外皮与扎带老化';
-  }
-
-  @override
-  String hamLowPressure(String p) {
-    return '气压偏低（$p hPa）：天气趋于不稳，长时间野外架台请留好退路并留意临近预警';
-  }
-
-  @override
-  String hamHighPressure(String p) {
-    return '气压较高（$p hPa）且稳定：易形成逆温层，VHF/UHF 可能出现大气波导，可尝试超视距远地直频或中继通联';
-  }
-
-  @override
-  String get hamGrayLine => '正值日出/日落灰线时段：20/40m 短波传播最佳，是跨洲远程（DX）通联的黄金窗口';
-
-  @override
-  String get hamNight => '夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信';
-
-  @override
-  String get hamRainFade => '较强降水对 1.2GHz 以上频段有雨衰影响：微波与 EME 通联建议改用较低频段或等雨势减弱';
-
-  @override
-  String get hamShower => '阵雨来去突然：架台请备好防雨罩并留意云团移动，收工前先断开发射再拆馈线';
-
-  @override
-  String get hamLevelDanger => '安全警示';
-
-  @override
-  String get hamLevelWarn => '注意';
-
-  @override
-  String get hamLevelGood => '通联机会';
-
-  @override
-  String get hamLevelTip => '操作提示';
-
-  @override
-  String hamMore(String n) {
-    return '展开全部 $n 条建议';
-  }
-
-  @override
-  String get hamLess => '收起';
-
-  @override
-  String get weatherForecast3 => '三天预报';
-
-  @override
-  String get weatherDaily15 => '查看近 15 日天气';
-
-  @override
-  String get weatherDaily15Title => '近 15 日天气趋势';
-
-  @override
-  String get weatherToday => '今天';
-
-  @override
-  String get weatherTomorrow => '明天';
-
-  @override
-  String get weatherDayAfter => '后天';
-
-  @override
-  String weatherWeekday(String d) {
+  String dateWeekday(String d) {
     String _temp0 = intl.Intl.selectLogic(d, {
       '1': '周一',
       '2': '周二',
@@ -5361,182 +1645,115 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get weatherSunrise => '日出';
+  String get dateYesterday => '昨天';
 
   @override
-  String get weatherSunset => '日落';
+  String get datumGcj => 'GCJ-02';
 
   @override
-  String get weatherUV => '紫外线';
+  String get datumWgs => 'WGS-84';
 
   @override
-  String get weatherDetails => '详细数据';
-
-  @override
-  String get weatherAQIPrimary => '首要污染物';
-
-  @override
-  String get airExcellent => '优';
-
-  @override
-  String get airGood => '良';
-
-  @override
-  String get airModerate => '轻度污染';
-
-  @override
-  String get airUnhealthy => '中度污染';
-
-  @override
-  String get airVeryUnhealthy => '重度污染';
-
-  @override
-  String get airHazardous => '严重污染';
-
-  @override
-  String get weatherAir => '空气质量';
-
-  @override
-  String get issStation => 'ISS 空间站';
-
-  @override
-  String get applyStationFilter => '台站筛选应用到地图';
-
-  @override
-  String get stationFilterOn => '已按台站面板筛选显示';
-
-  @override
-  String get stationList => '台站列表';
-
-  @override
-  String get statsPanel => '统计面板';
-
-  @override
-  String get statsOverview => '系统总览';
-
-  @override
-  String get statsTotalRx => '总接收数';
-
-  @override
-  String get statsTotalTx => '总发送数';
-
-  @override
-  String get statsRate => '接收速率';
-
-  @override
-  String statsPerMin(String n) {
-    return '$n/分';
+  String daysAgo(int count) {
+    return '$count天前';
   }
 
   @override
-  String get statsStationsTotal => '台站总数';
+  String get debugLabel => '调试';
 
   @override
-  String get statsCap => '容量上限';
+  String get defaultLabel => '默认';
 
   @override
-  String get statsConn => '连接状态';
+  String get delete => '删除';
 
   @override
-  String get statsConnected => '已连接';
-
-  @override
-  String get statsDisconnected => '未连接';
-
-  @override
-  String get statsMyGrid => '我的大网格';
-
-  @override
-  String get statsAprslocusUsers => 'APRSlocus 用户';
-
-  @override
-  String get statsFarthest => '最远台站';
-
-  @override
-  String get statsStatusDist => '台站状态分布';
-
-  @override
-  String get statsTypeDist => 'APRS 类型分布';
-
-  @override
-  String get statsGridDist => '大网格台站分布';
-
-  @override
-  String get statsGridHint => '按 Maidenhead 大网格（4 位）统计台站数量并排序';
-
-  @override
-  String statsGridCount(String n) {
-    return '$n 个网格';
+  String deleteAllChatsConfirm(int count) {
+    return '确定要删除全部 $count 条聊天记录吗？此操作不可恢复。';
   }
 
   @override
-  String get statsGridEmpty => '暂无台站位置数据';
+  String get deleteAllPackages => '删除全部安装包';
 
   @override
-  String get statsDeviceDist => '设备类别分布';
+  String deleteAllPackagesConfirm(Object count, Object size) {
+    return '将删除本地已下载的 $count 个安装包（共 $size），确定？';
+  }
 
   @override
-  String get statsOther => '其他指标';
+  String deleteAllPackagesWithCount(Object count) {
+    return '删除全部安装包（$count 个）';
+  }
 
   @override
-  String get statsAvgSpeed => '平均速度';
+  String get deleteContact => '删除联系人';
 
   @override
-  String get statsLastHeard => '最近上报';
+  String deleteContactConfirm(String call) {
+    return '确定删除联系人 $call？';
+  }
 
   @override
-  String get statsPackets => '数据包(近期)';
+  String get deleteConversation => '删除会话';
 
   @override
-  String get statsNoData => '暂无数据';
+  String deleteConversationConfirm(Object call) {
+    return '确定删除与 $call 的聊天记录吗？该会话将从列表中移除，此操作不可恢复。';
+  }
 
   @override
-  String get noStationsFiltered => '当前筛选条件下没有台站';
+  String get deleteGroup => '删除群组';
 
   @override
-  String get noStationsFilteredHint => '筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。';
+  String deleteGroupConfirm(String name) {
+    return '确定删除「$name」？此操作不可撤销。';
+  }
 
   @override
-  String get clearStationFilter => '清除筛选';
+  String get deletePackage => '删除安装包';
 
   @override
-  String get clearSearch => '清除搜索';
+  String deletePackageConfirm(Object file) {
+    return '确定删除安装包 $file？';
+  }
 
   @override
-  String get activeConditions => '生效条件';
+  String deleteSelected(int n) {
+    return '删除 ($n)';
+  }
 
   @override
-  String get statsMovingCount => '移动台站';
+  String deleteSelectedConfirm(int n) {
+    return '确定删除选中的 $n 个会话？此操作不可恢复。';
+  }
 
   @override
-  String get statsOnlineRate => '在线率';
+  String get deleteStation => '删除台站';
 
   @override
-  String get statsGridCountLabel => '大网格数';
+  String deleteStationConfirm(String name) {
+    return '确定删除台站 $name 吗？删除后将从台站列表移除；若再次收到其报文会重新出现。';
+  }
 
   @override
-  String get maxPackets => '数据包保留条数';
+  String get deleteThisTier => '删除此档';
 
   @override
-  String get maxPacketsTip => '数据包页面保留的历史条数（默认 2000，提高会占用更多内存）';
+  String get deleteTrackGroup => '删除跟踪组';
 
   @override
-  String get maxTrackPts => '轨迹点数上限';
+  String deleteTrackGroupConfirm(Object name) {
+    return '确定删除跟踪组「$name」吗？';
+  }
 
   @override
-  String get maxTrackPtsTip => '每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）';
+  String get demo => '演示';
 
   @override
-  String get onlineWindow => '在线判定时长（分钟）';
+  String get deselectAll => '取消全选';
 
   @override
-  String get onlineWindowTip => '台站最后上报超过该时长即视为离线（默认 5 分钟）';
-
-  @override
-  String get chatRecords => '聊天记录';
-
-  @override
-  String get chatRecordsCleared => '聊天记录已清空';
+  String get devDesc => '开发者调试工具';
 
   @override
   String get deviceCat => '设备';
@@ -5545,25 +1762,1315 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceCatDesc => '电台设备 · 待开放';
 
   @override
+  String get deviceClass => '设备类别';
+
+  @override
+  String get deviceConflictDesc =>
+      'TNC 与 PKWDWPL 指向同一台设备时，接收到的数据会被两条链路瓜分 —— 表现是「能发不能收」（发送正常、收不到报文）。请给其中一条换一台设备。TNC 优先：PKWDWPL 会拒绝连接。';
+
+  @override
+  String get deviceConflictTitle => '两条链路绑定了同一台设备';
+
+  @override
+  String get deviceCurrentLink => '当前链路';
+
+  @override
+  String get deviceCurrentLinkDesc => '只读摘要 · 改参数请进对应子页';
+
+  @override
+  String get deviceEntries => '设备与参数';
+
+  @override
+  String get deviceEntriesDesc => '每条链路一个子页，各管各的参数';
+
+  @override
+  String get deviceFilter => '设备筛选';
+
+  @override
+  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重复绑定';
+
+  @override
+  String get deviceInUseByTnc => '已被 TNC 使用，不能重复绑定';
+
+  @override
+  String get deviceInfoTitle => '设备识别';
+
+  @override
+  String get deviceLogDesc => '显示当前来源的日志（TNC / 音频自动切换）';
+
+  @override
+  String get deviceLogTitle => '链路日志';
+
+  @override
+  String get deviceModel => '设备型号';
+
+  @override
+  String get deviceOverviewSubtitle => '数据来源、链路状态与自检';
+
+  @override
+  String get deviceOverviewTitle => '设备';
+
+  @override
   String get deviceSettings2 => '设备设置';
 
   @override
   String get deviceSettingsSubtitle => '连接你的电台设备';
 
   @override
-  String get underConstruction => '前方施工，尚未开放';
+  String get deviceToCall => '目的呼号';
 
   @override
-  String get underConstructionHint => '该功能正在开发中，敬请期待';
+  String get diagAfskLevelFail => '波形幅度过低（调制结果接近静音）';
 
   @override
-  String get storageLimit => '数据上限';
+  String get diagAfskLoopback => 'AFSK 调制解调回路';
 
   @override
-  String get storageLimitSubtitle => '本地保留的数据量';
+  String diagAfskLoopbackFail(int n) {
+    return '解出 $n 帧（应为 1 帧）';
+  }
 
   @override
-  String get connectionCard2 => 'APRS-IS 连接';
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return '调制→解调一致（$samples 采样 @${rate}Hz）';
+  }
+
+  @override
+  String get diagAudioPlatformWarn => '不支持实时音频 · 仍可用 WAV 文件模式';
+
+  @override
+  String get diagAudioSection => '音频（AFSK 1200）';
+
+  @override
+  String get diagAx25 => 'AX.25 帧编解码';
+
+  @override
+  String get diagAx25Fail => 'AX.25 编码失败（报文格式不合法）';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 回路不一致，解回：$got';
+  }
+
+  @override
+  String get diagCapture => '音频采集';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return '打开采集失败：$err';
+  }
+
+  @override
+  String get diagCaptureNoData => '没有收到任何音频数据 · 检查输入设备与权限';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return '收到 $bytes 字节 @${rate}Hz';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '失败 $n 项';
+  }
+
+  @override
+  String get diagFcs => 'FCS 校验';
+
+  @override
+  String get diagFcsFail => 'FCS 校验异常（改动一个字节本应被拒收）';
+
+  @override
+  String get diagFileDecodeFail => '文件里的音频解不出报文（可能不是 AFSK 1200 录音）';
+
+  @override
+  String get diagFileIo => 'WAV 文件读写';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return '写入→读出→解调一致 @${rate}Hz';
+  }
+
+  @override
+  String get diagFileReadFail => '文件读取失败';
+
+  @override
+  String diagFileWriteFail(String err) {
+    return '文件写入失败：$err';
+  }
+
+  @override
+  String get diagHint => '协议回路不接电台也能跑：先确认软件层没问题，再去查设备与接线';
+
+  @override
+  String get diagKissEscape => 'KISS 转义';
+
+  @override
+  String get diagKissEscapeFail => 'KISS 转义还原失败（软件层问题，换设备也没用）';
+
+  @override
+  String get diagNoRealtime => '非实时';
+
+  @override
+  String diagPassed(int n) {
+    return '通过 $n 项';
+  }
+
+  @override
+  String get diagPermission => '录音权限';
+
+  @override
+  String get diagPermissionOk => '已授权';
+
+  @override
+  String get diagPlatform => '平台能力';
+
+  @override
+  String diagPlatformOk(String name) {
+    return '可用 · 后端 $name';
+  }
+
+  @override
+  String get diagRun => '开始自检';
+
+  @override
+  String get diagRunning => '自检中…';
+
+  @override
+  String get diagSkipped => '已跳过（平台不支持）';
+
+  @override
+  String get diagSpeaker => '扬声器输出';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return '播放失败：$err';
+  }
+
+  @override
+  String get diagSpeakerOk => '测试音已播放';
+
+  @override
+  String get diagSubtitle => '逐层确认协议、权限、设备到底哪一环有问题';
+
+  @override
+  String get diagTitle => '链路自检';
+
+  @override
+  String get diagTncLoopback => 'TNC 协议回路';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 编解码往返一致（$len 字节）';
+  }
+
+  @override
+  String get diagTncPlatformNo => '当前平台不支持 TNC 链路';
+
+  @override
+  String get diagTncSection => 'TNC（KISS / AX.25）';
+
+  @override
+  String get digipeaterTapHint => '点击中继台跳转到对应台站';
+
+  @override
+  String get disableClustering => '关闭聚合';
+
+  @override
+  String get disconnect => '断开连接';
+
+  @override
+  String get disconnected => '未连接';
+
+  @override
+  String get displayCat => '显示';
+
+  @override
+  String get displayCatDesc => '坐标 · 主题';
+
+  @override
+  String get displayInfo => '显示信息';
+
+  @override
+  String get displaySettings => '显示设置';
+
+  @override
+  String get displaySettings2 => '显示设置';
+
+  @override
+  String distKm(Object d) {
+    return '距离 ${d}km';
+  }
+
+  @override
+  String get distance => '距离';
+
+  @override
+  String distanceBearing(String distance, String bearing) {
+    return '距我 ${distance}km · 方位 $bearing°';
+  }
+
+  @override
+  String get domesticMaps => '国内地图';
+
+  @override
+  String get donateAlipay => '支付宝赞赏';
+
+  @override
+  String get donateAlipayDesc => '联系作者获取赞赏码';
+
+  @override
+  String get donateWechat => '微信赞赏';
+
+  @override
+  String get donateWechatDesc => '长按保存赞赏码 · 点击放大';
+
+  @override
+  String get done => '完成';
+
+  @override
+  String get download => '下载';
+
+  @override
+  String get downloadAgain => '重新下载安装包';
+
+  @override
+  String get downloadAndInstall => '下载并安装';
+
+  @override
+  String get downloadComplete => '下载完成';
+
+  @override
+  String get downloadFailed => '下载失败';
+
+  @override
+  String downloadHttpError(int code) {
+    return '下载失败：HTTP $code';
+  }
+
+  @override
+  String get downloadInstaller => '下载安装包';
+
+  @override
+  String get downloadNow => '立即下载';
+
+  @override
+  String downloadProgress(Object p) {
+    return '下载中 $p%';
+  }
+
+  @override
+  String get downloadReady => '下载一份安装包';
+
+  @override
+  String get downloadUpdate => '下载更新';
+
+  @override
+  String get downloadUpdateTip => '下载更新并自动打开';
+
+  @override
+  String downloadedBytes(String received, String total) {
+    return '已下载 $received / $total';
+  }
+
+  @override
+  String get downloading => '下载中';
+
+  @override
+  String get editTrackGroup => '编辑跟踪组';
+
+  @override
+  String get eggBg2hcb => '人生真是喵喵又咪咪啊';
+
+  @override
+  String get eggBg7lmw => '默不作声...';
+
+  @override
+  String get eggBg7lzq => '哎呦你干嘛~';
+
+  @override
+  String get eggBg7osl => '你的胆子肥嘟嘟的';
+
+  @override
+  String get eggBg7pgw => '闹呢？';
+
+  @override
+  String get emergency => '紧急';
+
+  @override
+  String get enableClustering => '开启聚合';
+
+  @override
+  String get enterCallsign => '请输入你的呼号';
+
+  @override
+  String get enterMessage => '输入消息';
+
+  @override
+  String get enterValidCall => '请输入有效呼号';
+
+  @override
+  String get errIntervalInt => '上报间隔需为 ≥5 秒的整数';
+
+  @override
+  String get errMinSpeedInt => '最低速度需为 ≥1 的整数';
+
+  @override
+  String get errTierDuplicate => '该速度档已存在，速度值需互不相同';
+
+  @override
+  String get errorLabel => '错误';
+
+  @override
+  String everyNSeconds(String sec) {
+    return '每 $sec 秒';
+  }
+
+  @override
+  String get export => '导出';
+
+  @override
+  String get exportAdif => '导出 ADIF';
+
+  @override
+  String get exportAdifDesc => '把会话导出为 ADIF 日志文件，可导入 Log4OM、N3FJP 等日志软件';
+
+  @override
+  String get favorite => '收藏';
+
+  @override
+  String get favoriteStations => '收藏台站';
+
+  @override
+  String get favorites => '收藏/手动';
+
+  @override
+  String get featureAutoConnect => '自动连接';
+
+  @override
+  String get featureAutoConnectDesc => '公共服务器自动连接，后台保持在线';
+
+  @override
+  String get featureBeacon => '信标发送';
+
+  @override
+  String get featureBeaconDesc => '自定义内容、频率、符号，支持 APRS 标准格式';
+
+  @override
+  String get featureFmo => 'FMO 台站';
+
+  @override
+  String get featureFmoDesc => '自动识别 FMO 数据，显示结构化信息';
+
+  @override
+  String get featureGps => 'GPS 定位';
+
+  @override
+  String get featureGpsDesc => '原生 Android 定位，无需 Google 服务';
+
+  @override
+  String get featureLayerFilter => '图层筛选';
+
+  @override
+  String get featureLayerFilterDesc => '按类型筛选：移动、固定、中继、气象、FMO';
+
+  @override
+  String get featureLiveMap => '在线地图';
+
+  @override
+  String get featureLiveMapDesc => 'GCJ-02 坐标，流畅的缩放与拖拽体验';
+
+  @override
+  String get featureMsg => '消息收发';
+
+  @override
+  String get featureMsgDesc => '瀑布流 + 会话模式，支持中文和自动应答';
+
+  @override
+  String get features => '功能特性';
+
+  @override
+  String get feedMode => '瀑布流';
+
+  @override
+  String get feedback => '用户反馈';
+
+  @override
+  String get fillPasscode => '去填写';
+
+  @override
+  String get filter => '接收范围过滤';
+
+  @override
+  String get filterCenterFollows => '过滤中心跟随我的位置';
+
+  @override
+  String get filterRadius => '过滤半径(km)';
+
+  @override
+  String get filterRule => '过滤规则';
+
+  @override
+  String get filterSaved => '过滤已保存并应用';
+
+  @override
+  String filterSavedRadius(String saved, int radius) {
+    return '$saved · 半径 ${radius}km';
+  }
+
+  @override
+  String get filters => '筛选';
+
+  @override
+  String get finish => '完成并连接';
+
+  @override
+  String get fitAll => '全览';
+
+  @override
+  String get fixed => '固定';
+
+  @override
+  String get fmo => 'FMO';
+
+  @override
+  String get fmoInfo => 'FMO 台站信息';
+
+  @override
+  String get followMe => '跟随我';
+
+  @override
+  String get forwardingPath => '转发路径';
+
+  @override
+  String foundStations(Object count, Object q) {
+    return '找到 $count 台匹配「$q」';
+  }
+
+  @override
+  String fullCallsign(String call) {
+    return '完整呼号：$call';
+  }
+
+  @override
+  String get garminAutoFilled => '已自动填入分享链接';
+
+  @override
+  String get garminBadUrl =>
+      '链接格式不对。请粘贴完整的 LiveTrack 分享链接（含 /session/…/token/…）';
+
+  @override
+  String get garminCardSubtitle => '把佳明手表的活动实时位置接进来，随信标上报';
+
+  @override
+  String get garminCardTitle => '佳明 LiveTrack';
+
+  @override
+  String garminError(Object error) {
+    return '抓取失败：$error';
+  }
+
+  @override
+  String get garminHowTo =>
+      '怎么拿到链接：在佳明 Connect App 里打开该活动 → 分享 → 选「APRSlocus」（本应用已注册系统分享入口），链接会自动填到这里并开始追踪；也可以手动复制链接后粘贴到上面。';
+
+  @override
+  String get garminLinkOk => '链接有效';
+
+  @override
+  String get garminNoPoints => '还没有取到点。活动可能刚开始，或链接已过期。';
+
+  @override
+  String get garminNotStarted => '未开启追踪';
+
+  @override
+  String get garminOpen => '去设置';
+
+  @override
+  String get garminPaste => '从剪贴板粘贴';
+
+  @override
+  String get garminRunning => '追踪中';
+
+  @override
+  String get garminShareNoLink => '分享的内容里没有找到佳明 LiveTrack 链接';
+
+  @override
+  String get garminSharedToast => '已收到佳明分享链接';
+
+  @override
+  String get garminStart => '开始追踪';
+
+  @override
+  String garminStats(Object n, Object t) {
+    return '已转发 $n 个点 · 最后更新 $t';
+  }
+
+  @override
+  String get garminStop => '停止追踪';
+
+  @override
+  String get garminUrlHint => 'livetrack.garmin.com/session/…/token/…';
+
+  @override
+  String get garminUrlLabel => '分享链接';
+
+  @override
+  String get garminWebUnsupported =>
+      'Web 版不支持（浏览器的跨域限制），请在 Android / Windows 版使用';
+
+  @override
+  String get gcj02 => 'GCJ-02';
+
+  @override
+  String get getLocation => '获取定位';
+
+  @override
+  String get goSettings => '去设置';
+
+  @override
+  String get gotIt => '知道了';
+
+  @override
+  String get gpsLocating => 'GPS 定位中…';
+
+  @override
+  String get gpsStatus => 'GPS 状态';
+
+  @override
+  String get greetAfternoon => '下午好，';
+
+  @override
+  String get greetEvening => '晚上好，';
+
+  @override
+  String get greetMorning => '早上好，';
+
+  @override
+  String get greetNight => '夜深了，';
+
+  @override
+  String get greetNoon => '中午好，';
+
+  @override
+  String get grid => '网格';
+
+  @override
+  String get gridFormat => '网格格式';
+
+  @override
+  String gridValue(String grid) {
+    return '网格 $grid';
+  }
+
+  @override
+  String groupBubble(String name) {
+    return '群·$name';
+  }
+
+  @override
+  String groupCallsignLine(String call) {
+    return '群呼号: $call';
+  }
+
+  @override
+  String groupCallsignValue(String call) {
+    return '群呼号：$call';
+  }
+
+  @override
+  String get groupChat => '群组';
+
+  @override
+  String get groupChatExplain => '群组使用群呼号广播消息，所有成员都能收到。创建后系统会自动生成群呼号并邀请你选择的成员。';
+
+  @override
+  String get groupChatLabel => '群聊';
+
+  @override
+  String get groupChatShort => '群组';
+
+  @override
+  String groupChatTitle(Object name) {
+    return '群组 · $name';
+  }
+
+  @override
+  String groupInviteAccepted(String name) {
+    return '已接受邀请，加入 $name';
+  }
+
+  @override
+  String groupInviteFrom(String from) {
+    return '$from 邀请你加入群组';
+  }
+
+  @override
+  String groupInviteRejected(String name) {
+    return '已拒绝 $name 的邀请';
+  }
+
+  @override
+  String get groupInviteTitle => '群组邀请';
+
+  @override
+  String get groupNameHint => '输入群组名称';
+
+  @override
+  String groupNameValue(String name) {
+    return '群名：$name';
+  }
+
+  @override
+  String get groupNotFound => '群组不存在';
+
+  @override
+  String get groupOwner => '群主';
+
+  @override
+  String get groupShortLabel => '群';
+
+  @override
+  String get groupTracking => '群组跟踪';
+
+  @override
+  String get groupTrackingHint => '把关心的呼号编成组，在大地图上持续跟踪（车队 / 好友结伴），支持横屏。';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from 邀请你加入「$name」';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return '已向 $n 位成员发出邀请';
+  }
+
+  @override
+  String get grpInviteTitle => '群聊邀请';
+
+  @override
+  String get grpNameInvalid => '群名不能为空、不能包含冒号或换行';
+
+  @override
+  String grpNameTooLong(int max) {
+    return '群名最长 $max 个字符（过长会让邀请报文超出 APRS 消息上限）';
+  }
+
+  @override
+  String get grpSelfPending => '等待群主确认';
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call 拒绝了邀请';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call 申请加入群聊';
+  }
+
+  @override
+  String grpSysJoined(String call) {
+    return '$call 加入了群聊';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call 离开了群聊';
+  }
+
+  @override
+  String get guideAudioBody => '用耳机口 / 声卡收发 AFSK 报文：选音频设备、调音量与增益，先「测试音」再连接。';
+
+  @override
+  String get guideAudioTitle => '声卡 TNC';
+
+  @override
+  String get guideBackupBody => '导出设置文件，换机后一键恢复。瓦片与翻译缓存不在备份内，需要重新下载。';
+
+  @override
+  String get guideBackupTitle => '备份与恢复';
+
+  @override
+  String get guideDeviceBody =>
+      '选数据从哪来（APRS-IS / TNC / 声卡）以及用哪条链路发射。蓝牙 TNC 要先去「设备」子页配对。';
+
+  @override
+  String get guideDeviceTitle => '设备与数据源';
+
+  @override
+  String get guideExportAdifBody => '把收到的台站位置导成 ADIF 文件，供日志软件导入。可选时间范围与模式。';
+
+  @override
+  String get guideExportAdifTitle => '导出 ADIF';
+
+  @override
+  String get guideGotIt => '知道了';
+
+  @override
+  String get guideHomeBody => '点一个台站看它的轨迹与详情；底部按钮把你的位置发出去（需先连接）。';
+
+  @override
+  String get guideHomeTitle => '主页 · 地图与台站';
+
+  @override
+  String get guideImmersiveBody => '全屏看台站：双指缩放、单指拖动，左下角可切换「跟随自己」，左上角返回。';
+
+  @override
+  String get guideImmersiveTitle => '沉浸地图';
+
+  @override
+  String get guideLogBody => '收发包与链路事件都记在这里。排查问题时先看这儿，右上角可以复制全部日志。';
+
+  @override
+  String get guideLogTitle => '系统日志';
+
+  @override
+  String get guideMessagesBody => '输入呼号即可开聊；右上角能建群组、发广播。收不到回复时，先确认顶部已连接。';
+
+  @override
+  String get guideMessagesTitle => '消息';
+
+  @override
+  String get guideMoreInSettings => '之后可在「设置 → 重新查看功能引导」里再看';
+
+  @override
+  String get guideOfflineMapBody => '框选一块区域下载瓦片，没网也能看地图。下载可随时暂停，之后接着下。';
+
+  @override
+  String get guideOfflineMapTitle => '离线地图';
+
+  @override
+  String get guidePacketsBody => '原始收发报文列表，用来核对解析结果。点一行可以看到完整内容。';
+
+  @override
+  String get guidePacketsTitle => '数据包';
+
+  @override
+  String get guidePkwdwplBody => '通过串口驱动 PKWDWPL：选端口与波特率，连上后由它负责发射。';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL 连接器';
+
+  @override
+  String get guideResetButton => '重新显示';
+
+  @override
+  String get guideResetConfirm => '清空「已看过」记录，各页顶部的小提示卡会再出现一次。';
+
+  @override
+  String get guideResetDone => '功能引导已重置';
+
+  @override
+  String get guideResetRow => '重新查看功能引导';
+
+  @override
+  String get guideResetTitle => '重新查看功能引导？';
+
+  @override
+  String get guideSettingsBody =>
+      '八类入口：电台、信标、连接、显示、设备、数据、高级、更新。改完的设置立刻生效，不需要重启。';
+
+  @override
+  String get guideSettingsTitle => '设置';
+
+  @override
+  String get guideShowAgain => '重看本页引导';
+
+  @override
+  String get guideStationsBody => '收到的台站都在这里，可搜索、排序、按距离筛选；列表与地图共用同一份筛选条件。';
+
+  @override
+  String get guideStationsTitle => '台站列表';
+
+  @override
+  String get guideThemeBody => '换配色、背景图、界面材质与缩放；改完立刻生效，可以在同一页对比。';
+
+  @override
+  String get guideThemeTitle => '主题与界面';
+
+  @override
+  String get guideTitle => '功能引导';
+
+  @override
+  String get guideTncDeviceBody => '搜索并配对蓝牙 TNC；配对后回到「链路」页把它选作数据来源。';
+
+  @override
+  String get guideTncDeviceTitle => '蓝牙 TNC';
+
+  @override
+  String get guideTrackHistoryBody => '按日期回放某个台站当天走过的路线，拖动时间轴可以看每一段。';
+
+  @override
+  String get guideTrackHistoryTitle => '轨迹回放';
+
+  @override
+  String get guideTranslateBody => '设置聊天自动翻译的目标语言与接口。没配接口时不会翻译，这里会说明怎么配。';
+
+  @override
+  String get guideTranslateTitle => '翻译';
+
+  @override
+  String get hamAir => '空气质量差：户外架台请佩戴口罩并减少剧烈活动；污染物附着天线绝缘子会引入泄漏噪声，收工后清洁';
+
+  @override
+  String get hamCold => '低温/降雪：锂电池容量明显下降，多备电池并贴身保暖；天线结冰注意驻波变化';
+
+  @override
+  String hamDew(String d) {
+    return '露点差仅 $d℃，空气接近饱和：设备与馈线易结露，收工后先缓温除湿再通电，避免短路';
+  }
+
+  @override
+  String get hamDust => '沙尘天气：细沙渗入接头与绝缘子会造成泄漏和噪声，请加防尘罩；干燥摩擦易积累静电，注意接地泄放';
+
+  @override
+  String get hamExtreme => '暴雨/极端降水：注意山洪、积水与落石，勿在河岸、低洼处架台；馈线入墙处做滴水弯，防止雨水顺线灌入室内';
+
+  @override
+  String hamFog(String v) {
+    return '能见度低（${v}km）：出行架台注意安全；雾天易形成大气波导，可尝试远地 V/U 通联';
+  }
+
+  @override
+  String get hamFrost => '气温低于 0℃：锂电池容量骤降，备用电池请贴身保温；注意手部与面部冻伤，带上暖手宝';
+
+  @override
+  String hamGale(String w) {
+    return '风力 $w 级：禁止上塔、爬杆作业！八木与长线天线务必放倒或降下，检查风绳、地锚与桅杆拉线';
+  }
+
+  @override
+  String get hamGood => '天气良好，适合架台！UV 段可尝试本地中继与直频；短波留意晚间电离层变化';
+
+  @override
+  String get hamGrayLine => '正值日出/日落灰线时段：20/40m 短波传播最佳，是跨洲远程（DX）通联的黄金窗口';
+
+  @override
+  String get hamHeat2 => '高温易使功放与电源过热降额：适当降低功率、缩短连续发射时间，并保证通风散热';
+
+  @override
+  String hamHighPressure(String p) {
+    return '气压较高（$p hPa）且稳定：易形成逆温层，VHF/UHF 可能出现大气波导，可尝试超视距远地直频或中继通联';
+  }
+
+  @override
+  String hamHot(String t) {
+    return '高温 $t°C：注意防暑补水，设备避免长时间满功率发射导致过热';
+  }
+
+  @override
+  String hamHumid(String h) {
+    return '湿度 $h%：潮湿会降低绝缘与天线效率，VHF/UHF 信号衰减偏大，注意接口防锈';
+  }
+
+  @override
+  String get hamIce => '天线与馈线结冰会升高驻波（SWR）并增加冰载：切勿满功率硬发，先检查拉线受力，待化冰后再正常通联';
+
+  @override
+  String get hamLess => '收起';
+
+  @override
+  String get hamLevelDanger => '安全警示';
+
+  @override
+  String get hamLevelGood => '通联机会';
+
+  @override
+  String get hamLevelTip => '操作提示';
+
+  @override
+  String get hamLevelWarn => '注意';
+
+  @override
+  String hamLowPressure(String p) {
+    return '气压偏低（$p hPa）：天气趋于不稳，长时间野外架台请留好退路并留意临近预警';
+  }
+
+  @override
+  String hamMore(String n) {
+    return '展开全部 $n 条建议';
+  }
+
+  @override
+  String get hamNight => '夜间 D 层消失：80/40m 吸收减小、噪声较低，适合本土与夜间远程通信';
+
+  @override
+  String get hamNoData => '获取天气后，将给出适合架台/通联/防雷的安全建议';
+
+  @override
+  String get hamRain => '有降水：户外架台请备防雨罩/防水箱，接口用胶带或热缩管密封，馈线避免积水';
+
+  @override
+  String get hamRainFade => '较强降水对 1.2GHz 以上频段有雨衰影响：微波与 EME 通联建议改用较低频段或等雨势减弱';
+
+  @override
+  String get hamShower => '阵雨来去突然：架台请备好防雨罩并留意云团移动，收工前先断开发射再拆馈线';
+
+  @override
+  String get hamStorm1 => '雷雨天气：请勿在室外架设/操作天线！断开天线馈线，谨防雷击感应损坏设备';
+
+  @override
+  String get hamStorm2 => '如已架设，尽快收纳拉倒；转为室内收听中继与短波，注意设备防潮';
+
+  @override
+  String get hamStorm3 =>
+      '雷电临近：把天线馈线从设备上拔下并移至室外接地端泄放，关闭电源并拔掉插头，避免浪涌经市电、网线窜入；不要使用室外天线与有线电话';
+
+  @override
+  String get hamStorm4 => '雷暴前后静电噪声（QRN）骤增、短波底噪抬升；雷电活动结束后约 30 分钟再恢复架台与发射';
+
+  @override
+  String get hamTitle => '业余无线电建议';
+
+  @override
+  String hamUV(String u) {
+    return '紫外线指数 $u，强度偏高：野外架台注意防晒；长期暴晒会加速同轴电缆外皮与扎带老化';
+  }
+
+  @override
+  String hamWind(String w) {
+    return '风力 $w 级：架设天线务必拉好风绳加固，八木/长线收工时放倒，避免倾倒';
+  }
+
+  @override
+  String hamWindExtra(String w) {
+    return '虽有 $w 级风，仍建议为天线加固风绳，野外架台注意安全';
+  }
+
+  @override
+  String get headingUp => '航向朝上';
+
+  @override
+  String get heatmap => '台站热力图';
+
+  @override
+  String get heatmapHint => '缩小地图后显示台站密度热力图';
+
+  @override
+  String get hfAIndex => 'A 指数';
+
+  @override
+  String get hfAurora => '极光';
+
+  @override
+  String get hfBand => '波段';
+
+  @override
+  String get hfDay => '日间';
+
+  @override
+  String get hfEs => 'Es 偶发 E 层';
+
+  @override
+  String get hfF2 => 'F2 层';
+
+  @override
+  String get hfGeomag => '地磁';
+
+  @override
+  String get hfKp => '地磁 Kp';
+
+  @override
+  String get hfMuf => '最高可用频率';
+
+  @override
+  String get hfNight => '夜间';
+
+  @override
+  String get hfNoData => '暂无短波传播数据：联网后自动获取';
+
+  @override
+  String get hfNoise => '底噪';
+
+  @override
+  String get hfNow => '现在';
+
+  @override
+  String get hfPowered => '传播数据由 hamqsl.com（N0NBH）提供 · 全球平均，非本地实测';
+
+  @override
+  String get hfQClosed => '未开通';
+
+  @override
+  String get hfQFair => '一般';
+
+  @override
+  String get hfQGood => '好';
+
+  @override
+  String get hfQPoor => '差';
+
+  @override
+  String get hfSfi => '太阳通量';
+
+  @override
+  String get hfSixMeter => '6m 波段';
+
+  @override
+  String get hfSolarWind => '太阳风速';
+
+  @override
+  String get hfSunspots => '太阳黑子';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b 传播条件好：本时段优先用这一段呼叫';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b 条件偏差：换到其它波段，或等日落/日出灰线再试';
+  }
+
+  @override
+  String get hfTipGeomagActive => '地磁较活跃：短波高纬度路径不如平时稳定，DX 通联建议留出更多呼叫时间';
+
+  @override
+  String get hfTipHighNoise => '底噪偏高：弱信号接收困难，建议收窄带宽、降低前置增益，必要时用窄带模式';
+
+  @override
+  String get hfTipHighSfi => '太阳活动活跃（SFI≥150）：白天高波段（15m/12m/10m）有机会远距离 DX';
+
+  @override
+  String get hfTipLowSfi =>
+      '太阳活动偏低（SFI<100）：白天高波段（15m/12m/10m）机会少，优先 40m/30m/20m';
+
+  @override
+  String get hfTipStorm =>
+      '地磁暴（Kp≥5）：极区短波路径衰减明显，跨极地 DX 基本中断；改走低纬度路径或转本地 VHF/UHF';
+
+  @override
+  String get hfTitle => '短波传播';
+
+  @override
+  String get hfUnavailable => '短波传播服务暂时不可用';
+
+  @override
+  String get hfXray => 'X 射线';
+
+  @override
+  String get historyClearAll => '清空全部历史轨迹';
+
+  @override
+  String get historyClearAllConfirm => '确定要清空全部历史轨迹吗？此操作无法撤销。';
+
+  @override
+  String get historyClearDay => '删除这一天的记录';
+
+  @override
+  String get historyCleared => '已删除该天记录';
+
+  @override
+  String get historyClearedAll => '已清空全部历史轨迹';
+
+  @override
+  String get historyEmpty => '还没有历史轨迹。开始定位并移动后会自动记录。';
+
+  @override
+  String get historyFollow => '跟随';
+
+  @override
+  String get historyMaxSpeed => '最高速度';
+
+  @override
+  String get historyMovingTime => '移动时长';
+
+  @override
+  String get historyPause => '暂停';
+
+  @override
+  String get historyPlay => '播放';
+
+  @override
+  String get historyPoints => '轨迹点';
+
+  @override
+  String get historyReplay => '重播';
+
+  @override
+  String get historyTapDay => '点按某一天可查看地图与回放';
+
+  @override
+  String get historyTotalDistance => '总里程';
+
+  @override
+  String get historyTracks => '历史轨迹';
+
+  @override
+  String get historyTracksDesc => '按天记录自己的速度与里程，保存在本机';
+
+  @override
+  String get historyVersions => '历史版本';
+
+  @override
+  String get home => '首页';
+
+  @override
+  String get homeBadgeLabel => '主页展示徽章';
+
+  @override
+  String get homeBadgePickDesc => '在以下已获得的徽章中选一个，作为主页常驻展示';
+
+  @override
+  String get homeBadgePickTitle => '选择主页展示徽章';
+
+  @override
+  String honorCriteriaLine(String c) {
+    return '获得条件：$c';
+  }
+
+  @override
+  String get honorWall => '荣誉墙';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '已点亮 $n/$m 徽章';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return '$count小时前';
+  }
+
+  @override
+  String get hrCardSubtitle => '蓝牙心率带（标准心率服务），可随信标一起上报';
+
+  @override
+  String get hrCardTitle => '心率';
+
+  @override
+  String get hrConflictWithTnc => '这个设备正被 TNC / PKWDWPL 的蓝牙链路使用，不能同时当心率带';
+
+  @override
+  String get hrConnect => '连接';
+
+  @override
+  String hrConnected(Object name) {
+    return '已连接 $name';
+  }
+
+  @override
+  String get hrDisconnect => '断开';
+
+  @override
+  String get hrForTncNote => '心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接';
+
+  @override
+  String get hrForget => '忘记该设备';
+
+  @override
+  String get hrFromGarmin => '心率来自佳明 LiveTrack（手表）';
+
+  @override
+  String get hrIncludeHint =>
+      '开启后在位置包的备注里加 HR=nn（APRS 的通行写法，第三方地图会当备注显示）。没有读数时不会发 HR=0 —— 那会被收端当成「心率 0」而不是「没测」。';
+
+  @override
+  String get hrIncludeInBeacon => '信标附带心率';
+
+  @override
+  String hrLineHr(String hr) {
+    return '心率 $hr';
+  }
+
+  @override
+  String get hrNoDevice => '没有找到心率设备。确认心率带正在广播（多数胸带贴上电极片就开始广播），并让它离手机近一些。';
+
+  @override
+  String get hrNotSupported => '本机不支持蓝牙心率（该功能在 Android / iOS 版提供）';
+
+  @override
+  String get hrScanning => '正在搜索…';
+
+  @override
+  String get hrSearch => '搜索心率设备';
+
+  @override
+  String get hrSourceLabel => '心率来源';
+
+  @override
+  String get hrStopScan => '停止搜索';
+
+  @override
+  String get hrStrapHint =>
+      '支持标准心率服务（0x180D）的胸带/臂带都行，例如 Polar H10、Garmin HRM、迈金、Coospo。TNC 走经典蓝牙、心率走 BLE，两条链路互不干扰。';
+
+  @override
+  String get hrWaitReading => '等待读数（把心率带贴紧皮肤）';
+
+  @override
+  String get iconDefaultMySymbol => '图标 · 默认(我的符号)';
+
+  @override
+  String iconNamed(String name) {
+    return '图标 · $name';
+  }
+
+  @override
+  String get idleTierDesc => '低于第一移动档的速度都按此档上报';
+
+  @override
+  String get idleTierNotDeletable => '静止档不可删除';
+
+  @override
+  String get igateAllRejected =>
+      '收到了射频报文，但全被环路防护拒收：报文里带 TCPIP*/TCPXX* 或 q 构造，说明它本来就从互联网来，再送回 APRS-IS 会让同一条报文无限增殖。这是**在正确工作**，不是故障。';
+
+  @override
+  String get igateEnable => '启用网关';
+
+  @override
+  String get igateHint =>
+      '射频上收到的报文会被送上 APRS-IS（自动加上 qAr/qAR 与你的呼号标识来路）。需要同时启用 APRS-IS 和一个射频来源（TNC / 音频）。';
+
+  @override
+  String get igateIsDown => 'APRS-IS 没连上：网关没有可转递的目标网络。等它连上（链路状态卡里能看到）后数字才会开始涨。';
+
+  @override
+  String get igateNeedIs => '还没启用 APRS-IS：请在上面勾选 APRS-IS，否则网关没有可转递的目标网络。';
+
+  @override
+  String get igateNeedRf => '还差一个射频来源：请在上面的「数据来源」里勾选 TNC 或音频，否则网关没有可转递的射频链路。';
+
+  @override
+  String get igateNoRfTraffic =>
+      '射频上一条报文都没收到：网关的条件已经全齐，但它**无报文可转**。这不是网关的问题 —— 报文根本没进到应用里。查上游：电台音量与静噪、天线、对方是否真的在发射，也可以在日志页确认有没有任何射频报文。';
+
+  @override
+  String get igateResetStats => '清空统计';
+
+  @override
+  String get igateRfDown =>
+      '射频链路没连上：网关现在什么都转不了。上面的「射频收到」如果一直是 0，说明报文根本没进来 —— 先查设备页里的 TNC / 音频状态（串口线速、设备是否开机），而不是怀疑网关。';
+
+  @override
+  String get igateStatBlocked => '环路拒收（条）';
+
+  @override
+  String get igateStatDup => '重复丢弃（条）';
+
+  @override
+  String get igateStatRfSeen => '射频收到（条）';
+
+  @override
+  String get igateStatToIs => '已转递 → APRS-IS（条）';
+
+  @override
+  String get igateStatToRf => '已转递 → 射频（条）';
+
+  @override
+  String get igateSubtitle => '把射频收到的报文送上 APRS-IS';
+
+  @override
+  String get igateTitle => '网关（iGate）';
+
+  @override
+  String get igateTwoWay => '双向网关（向射频转递消息）';
+
+  @override
+  String get igateTwoWayHint =>
+      '打开后会**在射频上真实发射**：只转「发给最近在射频上听到过的台站」的点对点消息（位置/天气等广播不转，避免占满信道）。关闭时只做 RF→IS。';
 
   @override
   String get immersiveMap => '沉浸地图';
@@ -5572,75 +3079,953 @@ class AppLocalizationsZh extends AppLocalizations {
   String get immersiveMapTip => '导航风格：以我为中心、航向朝上、四角 HUD';
 
   @override
-  String get headingUp => '航向朝上';
+  String get imminent => '即将';
 
   @override
-  String get northUp => '正北朝上';
+  String get information => '信息';
 
   @override
-  String get followMe => '跟随我';
+  String get infrastructure => '中继';
 
   @override
-  String get beaconCountdown => '发送倒计时';
+  String get inject => '注入';
 
   @override
-  String get beaconOff => '未开启';
+  String get injected => '已注入数据包';
 
   @override
-  String get unlocated => '未定位';
+  String get inputTapHint => '点击输入';
 
   @override
-  String get platform => '平台';
+  String get install => '安装';
+
+  @override
+  String get installApk => '安装 APRSlocus';
+
+  @override
+  String get installComplete => '安装完成';
+
+  @override
+  String get installNow => '立即安装';
+
+  @override
+  String get installPermissionDesc =>
+      '检测到系统未允许 APRSlocus 安装应用。\n\n请点击“去设置”，在“安装未知应用”中允许本应用安装应用，然后返回重新安装。';
+
+  @override
+  String get installPermissionTitle => '需要允许安装应用';
+
+  @override
+  String installSize(Object os, Object size) {
+    return '$os 安装包大小：$size';
+  }
+
+  @override
+  String get internationalMaps => '国际地图';
+
+  @override
+  String get intervalLabel => '间隔';
+
+  @override
+  String get intervalSeconds => '上报间隔 (秒)';
+
+  @override
+  String get invalidCoords => '请输入有效的经纬度和半径';
+
+  @override
+  String get invalidLatLng => '请输入有效经纬度';
+
+  @override
+  String get invalidResponseData => '返回数据格式错误';
+
+  @override
+  String get invite => '邀请';
+
+  @override
+  String get inviteMembers => '邀请成员';
+
+  @override
+  String get inviteMembersHint => '点击下方「邀请成员」添加';
+
+  @override
+  String inviteMembersTo(String name) {
+    return '邀请成员到 $name';
+  }
+
+  @override
+  String inviteSent(String call) {
+    return '已发送邀请给 $call';
+  }
+
+  @override
+  String get invited => '已邀请';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS 不支持经典蓝牙 / USB 串口链路（仅 MFi 认证配件可用），此功能无法开启；可改用 APRS-IS 联网接入。';
+
+  @override
+  String get irreversibleKeepSettings => '此操作不可恢复，连接设置和呼号不会被删除。';
+
+  @override
+  String get issStation => 'ISS 空间站';
+
+  @override
+  String get kissApplyParams => '下发参数';
+
+  @override
+  String get kissAutoAck => '自动回复 ACK';
+
+  @override
+  String get kissAutoAckTip => '关闭后不回应收到的消息回执，可减少射频占用';
+
+  @override
+  String get kissAutoReconnect => '断开后自动重连';
+
+  @override
+  String get kissBackToCommand => '回到 TNC 命令模式';
+
+  @override
+  String get kissBackToCommandTip =>
+      '发送 RETURN (0x0F)。多数 KISS TNC 会就此停止转发，需重启链路才恢复';
+
+  @override
+  String get kissChannel => '信道 / KISS 端口';
+
+  @override
+  String get kissChannelTip => '多信道 TNC 才有多端口，单信道电台保持 0';
+
+  @override
+  String get kissFullDuplex => '全双工';
+
+  @override
+  String get kissFullDuplexTip => 'KISS FULLDUPLEX，普通电台必须关闭（同时收发会互相干扰）';
+
+  @override
+  String get kissHardwareCmd => '厂商命令码';
+
+  @override
+  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，厂商自定义；-1 表示不下发';
+
+  @override
+  String get kissHardwareVal => '参数值';
+
+  @override
+  String get kissMaxFrame => '帧长上限 (字节)';
+
+  @override
+  String get kissMaxFrameTip => '超过此长度的报文不会发出（1200bd 下 AX.25 单帧约 330 字节）';
+
+  @override
+  String get kissNeedConnected => '请先连接 TNC';
+
+  @override
+  String get kissParamsSent => 'KISS 参数已下发';
+
+  @override
+  String get kissParamsSubtitle => '直接下发到 TNC 的链路层参数';
+
+  @override
+  String get kissParamsTitle => 'KISS 参数';
+
+  @override
+  String get kissPersistence => '持续度 P';
+
+  @override
+  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越礼让，共用信道时能减少碰撞';
+
+  @override
+  String get kissRfBeacon => '允许射频信标';
+
+  @override
+  String get kissRfBeaconTip => '打开后才会在射频上定时发射位置。发射需以自己的呼号并在执照范围内操作';
+
+  @override
+  String get kissRfPath => '射频中继路径';
+
+  @override
+  String get kissRfPathTip => '射频上使用的中继，如 WIDE1-1,WIDE2-1；留空则不指定';
+
+  @override
+  String get kissSlotTime => '时隙 (ms)';
+
+  @override
+  String get kissSlotTimeTip => 'KISS SLOTTIME，单位 10ms。与持续度共同决定信道竞争节奏';
+
+  @override
+  String get kissTxDelay => '发射延时 (ms)';
+
+  @override
+  String get kissTxDelayTip => 'KISS TXDELAY，单位 10ms。发射前留给自己 PTT 建立的时间';
+
+  @override
+  String get kissTxTail => '发射尾音 (ms)';
+
+  @override
+  String get kissTxTailTip => 'KISS TXTAIL，单位 10ms。某些电台需要尾部保持才能收全';
+
+  @override
+  String get labDesc => '实验室功能仍在测试中，可能影响使用体验。默认锁定竖屏，开启后支持横屏。';
+
+  @override
+  String get langNameAr => '阿拉伯语';
+
+  @override
+  String get langNameDe => '德语';
+
+  @override
+  String get langNameEn => '英语';
+
+  @override
+  String get langNameEs => '西班牙语';
+
+  @override
+  String get langNameFr => '法语';
+
+  @override
+  String get langNameId => '印尼语';
+
+  @override
+  String get langNameIt => '意大利语';
+
+  @override
+  String get langNameJa => '日语';
+
+  @override
+  String get langNameKo => '韩语';
+
+  @override
+  String get langNamePt => '葡萄牙语';
+
+  @override
+  String get langNameRu => '俄语';
+
+  @override
+  String get langNameTh => '泰语';
+
+  @override
+  String get langNameVi => '越南语';
+
+  @override
+  String get langNameZh => '简体中文';
+
+  @override
+  String get langNameZhTw => '繁体中文';
+
+  @override
+  String get language => '语言';
+
+  @override
+  String get languageEn => 'English';
+
+  @override
+  String get languageEs => '西班牙语';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
+
+  @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageSystem => '跟随系统';
+
+  @override
+  String get languageZh => '中文';
+
+  @override
+  String get languageZhTw => '繁體中文';
+
+  @override
+  String get lastSeen => '最近活跃';
+
+  @override
+  String get latestVersion => '当前已是最新版本';
+
+  @override
+  String get latestVersionLabel => '最新版本';
+
+  @override
+  String get latitude => '纬度';
+
+  @override
+  String get latitudeHint => '纬度 39.9042';
+
+  @override
+  String get layerFilter => '图层筛选';
+
+  @override
+  String get leave => '退出';
+
+  @override
+  String get leaveAction => '退出';
+
+  @override
+  String get leaveGroup => '退出群组';
+
+  @override
+  String leaveGroupConfirm(String name) {
+    return '确定退出「$name」？你将不再收到该群的消息。';
+  }
+
+  @override
+  String leftGroup(String name) {
+    return '已退出 $name';
+  }
+
+  @override
+  String get licenseName => 'GNU GPL v3';
+
+  @override
+  String get licenseNotice => 'GNU GPL v3 开源协议 · Copyright © BG7LZQ';
+
+  @override
+  String get licenseSection => '许可证声明';
+
+  @override
+  String get licenseStatement =>
+      '本软件依据 GNU GPL v3 开源许可证发布。你可以在遵守许可证条款的前提下运行、研究、修改和再分发本软件；修改和再分发时须遵守 GPL v3 的相应义务。本软件不附带任何担保。';
+
+  @override
+  String get licenseText => '查看许可证';
+
+  @override
+  String get linkNotConnected => '未连接';
+
+  @override
+  String get linkOpenFailed => '无法打开链接';
+
+  @override
+  String get linkTapForSettings => '点一下查看连接设置';
+
+  @override
+  String get loadingVectorMap => '加载矢量地图…';
+
+  @override
+  String get locModeGps => '纯 GPS';
+
+  @override
+  String get locModeGpsDesc => '仅卫星定位，更省电';
+
+  @override
+  String get locModeGpsNetwork => 'GPS + 网络';
+
+  @override
+  String get locModeGpsNetworkDesc => '网络仅作兜底（GPS 停更时），粗定位不写轨迹';
+
+  @override
+  String get locModeNetHint =>
+      '网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 5 分钟后才用它兜底；粗定位点不写进轨迹与历史，也不会触发自动上报。';
+
+  @override
+  String get locModeNetwork => '纯网络';
+
+  @override
+  String get locModeNetworkDesc => '仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备';
+
+  @override
+  String get locModeNetworkHint =>
+      '纯网络模式下只有基站 / Wi-Fi 定位：误差常在几百米，且**不会**写进轨迹与历史；除非打开「强制接受网络定位自动上报」，否则不会自动发信标。';
+
+  @override
+  String get localPackageExists => '本地已有一份安装包';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return '本地 v$local · 仓库最新 v$latest';
+  }
+
+  @override
+  String get locateMe => '定位';
+
+  @override
+  String get location => '定位';
+
+  @override
+  String get locationCoarse => '网络定位（粗）';
+
+  @override
+  String get locationFailed => '定位失败';
+
+  @override
+  String get locationFixed => '已定位';
+
+  @override
+  String get locationGarmin => '佳明 LiveTrack';
+
+  @override
+  String get locationInfo => '位置信息';
+
+  @override
+  String locationInitError(String error) {
+    return '定位初始化失败：$error';
+  }
+
+  @override
+  String get locationMode => '定位模式';
+
+  @override
+  String get locationNotFixed => '未定位';
+
+  @override
+  String get locationPermission => '请授予定位权限…';
+
+  @override
+  String get locationSource => '定位来源';
+
+  @override
+  String get locationStatus => '定位状态';
+
+  @override
+  String get locationStill => '静止';
+
+  @override
+  String get locationStopped => '定位已停止';
+
+  @override
+  String locationStreamError(String error) {
+    return '定位流异常：$error';
+  }
+
+  @override
+  String get logout => '退出';
+
+  @override
+  String get logs => '日志';
+
+  @override
+  String get longitude => '经度';
+
+  @override
+  String get longitudeHint => '经度 116.4074';
+
+  @override
+  String get lookupAprsFi => 'aprs.fi 位置';
+
+  @override
+  String get lookupPasscode => '点击查询你的 Passcode →';
+
+  @override
+  String get lookupQrz => 'QRZ 呼号';
+
+  @override
+  String get manage => '管理';
+
+  @override
+  String get manageContacts => '管理联系人';
+
+  @override
+  String get management => '管理';
+
+  @override
+  String get manual => '手动';
+
+  @override
+  String get manualBeacon => '手动上报';
+
+  @override
+  String get manualCallsign => '手动输入呼号';
+
+  @override
+  String get manualCallsignHint => '手动输入呼号添加';
+
+  @override
+  String get manualCoordinates => '手动输入坐标';
+
+  @override
+  String get manualInject => '手动注入 APRS 数据包';
+
+  @override
+  String get manualLocation => '手动定位';
+
+  @override
+  String get manualLocationHelp => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
+
+  @override
+  String get manualStations => '手动台站';
+
+  @override
+  String get map => '地图';
+
+  @override
+  String mapDefaultCoord(int level) {
+    return '北京 · $level级';
+  }
+
+  @override
+  String get mapHelpIntro => '当前视野内没有台站。可能原因：未连接 APRS-IS、接收范围较小或附近暂无活跃台站。';
+
+  @override
+  String get mapHelpLayer => '图层与底图：右上角按钮筛选台站类型、切换地图样式';
+
+  @override
+  String get mapHelpLocate => '定位：点击右下角「定位到我」回到当前位置';
+
+  @override
+  String get mapHelpMove => '拖动 / 缩放：单指拖动地图，双指或滚轮缩放';
+
+  @override
+  String get mapHelpSearch => '搜索：顶部搜索框输入呼号可快速定位台站';
+
+  @override
+  String get mapHelpStation => '查看台站：点击标记选中并居中，双击打开详情';
+
+  @override
+  String get mapHelpTitle => '地图帮助';
+
+  @override
+  String get mapHome => '回到中心';
+
+  @override
+  String get mapLayers => '图层';
+
+  @override
+  String get mapLocate => '定位';
+
+  @override
+  String get mapMenu => '地图菜单';
+
+  @override
+  String get mapPickDesc => '点击地图选择我的位置';
+
+  @override
+  String get mapPickMode => '地图选点模式';
+
+  @override
+  String get mapPickNow => '地图选点';
+
+  @override
+  String get mapType => '地图类型';
+
+  @override
+  String get mapTypeAmap => '高德地图';
+
+  @override
+  String get mapTypeAmapSatellite => '高德卫星';
+
+  @override
+  String get mapTypeCarto => 'Carto 浅色';
+
+  @override
+  String get mapTypeCartoDark => 'Carto 深色';
+
+  @override
+  String get mapTypeCartoPositron => 'Carto Positron(浅色矢量)';
+
+  @override
+  String get mapTypeCartoVoyager => 'Carto 航行者';
+
+  @override
+  String get mapTypeDesc =>
+      '「地图 2.0（矢量）」使用客户端实时矢量渲染，数据量小、缩放清晰；栅格图源为在线瓦片，画质取决于网络。';
+
+  @override
+  String get mapTypeEsriSat => 'Esri 影像';
+
+  @override
+  String get mapTypeEsriStreet => 'Esri 街道';
+
+  @override
+  String get mapTypeOpenTopo => 'OpenTopo 地形';
+
+  @override
+  String get mapTypeOsm => 'OSM 标准';
+
+  @override
+  String get mapTypeOsmHot => 'OSM 人道';
+
+  @override
+  String get mapTypeTitle => '地图类型';
+
+  @override
+  String get mapTypeVector => '矢量地图';
+
+  @override
+  String get mapZoomIn => '放大';
+
+  @override
+  String get mapZoomOut => '缩小';
+
+  @override
+  String get maxPackets => '数据包保留条数';
+
+  @override
+  String get maxPacketsTip => '数据包页面保留的历史条数（默认 2000，提高会占用更多内存）';
+
+  @override
+  String get maxSpeedTiers => '最多 5 个速度档';
+
+  @override
+  String get maxStations => '最大台站数';
+
+  @override
+  String get maxStationsTip => '内存中保留的最大台站数量（默认不限制，可设更大值）';
+
+  @override
+  String get maxTrackPts => '轨迹点数上限';
+
+  @override
+  String get maxTrackPtsTip => '每个台站保留的轨迹点数（默认 300，决定运动轨迹能回溯多长；仅位移超过 20m 才记点）';
+
+  @override
+  String get meLabel => '我';
+
+  @override
+  String get memberBlocked => '已屏蔽';
+
+  @override
+  String memberCount(int count) {
+    return '$count 个成员';
+  }
+
+  @override
+  String memberCountTap(int count) {
+    return '$count 名成员 · 点击查看';
+  }
+
+  @override
+  String get memberDeclined => '已拒绝';
+
+  @override
+  String get memberJoined => '已加入';
+
+  @override
+  String get memberLeft => '已退出';
+
+  @override
+  String memberOnlineCount(int members, int online) {
+    return '$members 名成员 · $online 在线';
+  }
+
+  @override
+  String get memberPending => '待确认';
+
+  @override
+  String get memberTimeout => '超时';
+
+  @override
+  String get message => '消息';
+
+  @override
+  String get messageCountLabel => '消息条数';
+
+  @override
+  String get messageFeed => '消息瀑布流';
+
+  @override
+  String get messageSent => '消息已发送';
+
+  @override
+  String messageTotal(int count) {
+    return '共 $count 条';
+  }
+
+  @override
+  String get messages => '消息';
+
+  @override
+  String get metricUnits => '公制 (km/h, m)';
+
+  @override
+  String get minSpeedKmh => '最低速度 (km/h)';
+
+  @override
+  String minutesAgo(int count) {
+    return '$count分前';
+  }
+
+  @override
+  String get mobile => '车载';
+
+  @override
+  String get moreSymbols => '更多符号';
+
+  @override
+  String get moving => '移动';
+
+  @override
+  String movingCount(Object count) {
+    return '$count 移动';
+  }
+
+  @override
+  String movingWithSpeed(String speed) {
+    return '移动中 · $speed';
+  }
+
+  @override
+  String get msgBlockedTooLong => '已阻止发送：整包超出 APRS-IS 上限';
+
+  @override
+  String get msgHistory => '消息记录';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 字符 · 整包 $bytes/512 字节';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return '整包 $bytes 字节，超过 APRS-IS 单行上限 512 字节，服务器可能直接丢弃整包（连报头都送不到）。请缩短约 $over 字节。';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return '这条消息 $chars 个字符，超过 APRS 规范的 67 字符上限。多数客户端仍能读出，但部分客户端/网关会截断或拒收，对方可能解析不出来。仍要发送吗？';
+  }
+
+  @override
+  String get msgSendAnyway => '仍要发送';
+
+  @override
+  String get msgSpecLimitHint =>
+      'APRS 规范建议单条消息不超过 67 字符：超长文本在部分客户端上会显示不全或解析失败。';
+
+  @override
+  String get myBadgesAndAchievements => '我的徽章与成就';
+
+  @override
+  String get myCallsign => '我的呼号';
+
+  @override
+  String get myLocation => '我的位置';
+
+  @override
+  String myLocationPanel(Object call) {
+    return '我的位置 · $call';
+  }
+
+  @override
+  String myLocationSetGrid(String grid) {
+    return '已设置我的位置，网格 $grid';
+  }
+
+  @override
+  String myPositionSet(String grid) {
+    return '已设置我的位置，网格 $grid';
+  }
+
+  @override
+  String get myStation => '我的电台';
+
+  @override
+  String get myStationSettings => '我的电台';
+
+  @override
+  String get myStationSettingsDesc => '呼号 · SSID · 符号 · 信标';
+
+  @override
+  String get mySymbol => '我的符号';
+
+  @override
+  String nItems(String n) {
+    return '$n 个';
+  }
+
+  @override
+  String nMessages(String n) {
+    return '$n 条';
+  }
+
+  @override
+  String get nameLabel => '名称';
+
+  @override
+  String get navigate => '导航';
+
+  @override
+  String get navigationUnavailable => '未安装地图应用，且无法打开其他地图应用';
 
   @override
   String get nearbyStations => '附近台站';
 
   @override
-  String get honorWall => '荣誉墙';
+  String get newConversation => '新建会话';
 
   @override
-  String get accountHonors => '账号荣誉';
+  String get newConversationDesc => '输入呼号开始新的会话';
 
   @override
-  String get achievementsSection => '成就';
+  String get newGroup => '新建群组';
+
+  @override
+  String get newTrackGroup => '新建跟踪组';
+
+  @override
+  String get newVersion => '新版本';
+
+  @override
+  String get newVersionFound => '发现新版本';
+
+  @override
+  String newVersionTitle(String version) {
+    return '发现新版本 v$version';
+  }
+
+  @override
+  String get next => '下一步';
+
+  @override
+  String get nextBeacon => '下次上报';
+
+  @override
+  String nextBeaconIn(String time) {
+    return '下次上报 $time';
+  }
+
+  @override
+  String get nextBeaconLabel => '下次上报';
+
+  @override
+  String get noApkInstaller => '该版本没有 APK 安装包';
+
+  @override
+  String get noContacts => '暂无联系人';
+
+  @override
+  String get noConversations => '暂无会话';
+
+  @override
+  String get noCountriesSelected => '未选择国家/地区';
+
+  @override
+  String get noData => '暂无数据';
+
+  @override
+  String get noFixYet => '尚未定位，无法获取当前位置';
+
+  @override
+  String get noGroupMessages => '群组暂无消息';
+
+  @override
+  String get noInstaller => '无安装包';
+
+  @override
+  String noInstallerHistoryHint(String platform) {
+    return '该版本暂无 $platform 安装包，请到历史版本中选择可下载的版本';
+  }
+
+  @override
+  String get noLogs => '暂无日志';
+
+  @override
+  String get noMatchingPackets => '没有匹配的数据包';
+
+  @override
+  String get noMembers => '暂无成员';
+
+  @override
+  String get noMembersSelected => '未选择成员';
+
+  @override
+  String get noMessages => '暂无消息';
+
+  @override
+  String get noMessagesHint => '暂无消息，发一条吧';
+
+  @override
+  String get noMoreOnlineStations => '暂无更多在线台站';
+
+  @override
+  String get noPacketReceived => '未收到数据包';
+
+  @override
+  String get noPackets => '暂无数据包';
+
+  @override
+  String noPositionInfo(Object call) {
+    return '$call 暂无位置信息（数据包未含位置）';
+  }
+
+  @override
+  String get noRecipients => '未选择接收人';
+
+  @override
+  String get noReleaseNotes => '暂无更新说明';
+
+  @override
+  String get noSsid => '无后缀（基本呼号）';
+
+  @override
+  String get noStationHelp => '该区域暂无台站 · 点击查看帮助';
+
+  @override
+  String get noStationInView => '该区域暂无台站 · 点击显示全部';
+
+  @override
+  String get noStations => '暂无台站';
+
+  @override
+  String get noStationsFiltered => '当前筛选条件下没有台站';
+
+  @override
+  String get noStationsFilteredHint => '筛选或接收范围过窄。可清除筛选后重试，接收范围见「设置 → 接收范围」。';
+
+  @override
+  String get noStationsYet => '暂无台站数据，连接 APRS-IS 后即可选择。';
+
+  @override
+  String get noUpdateFound => '当前已是最新版本';
+
+  @override
+  String get noVersionsFound => '没有找到任何版本';
+
+  @override
+  String get noWindowsInstaller => '该版本没有 Windows 安装包';
+
+  @override
+  String get none => '无';
+
+  @override
+  String get nonprofitNote => '本项目为非盈利学习交流项目\n赞助仅用于服务器与开发成本';
+
+  @override
+  String get northUp => '正北朝上';
+
+  @override
+  String get notConnectedAprsServer => '未连接 APRS-IS 服务器';
+
+  @override
+  String get notFound => '未找到台站';
 
   @override
   String get notLit => '未点亮';
 
   @override
-  String honorCriteriaLine(String c) {
-    return '获得条件：$c';
+  String noticeCached(String ago) {
+    return '缓存 · $ago';
   }
 
   @override
-  String get badgeFallback => '徽章';
+  String get noticeEmpty => '暂无公告';
 
   @override
-  String honoredBadges(String n, String m) {
-    return '已点亮 $n/$m 徽章';
+  String get noticeEntryDesc => '查看官网发布的最新公告';
+
+  @override
+  String get noticeLoading => '正在获取…';
+
+  @override
+  String noticeOfflineCache(String time) {
+    return '离线缓存 · $time（联网后会自动更新）';
   }
 
   @override
-  String achievementsProgress(String n, String m) {
-    return '$n/$m 成就';
+  String get noticeReadMore => '查看全文';
+
+  @override
+  String get noticeTitle => '公告';
+
+  @override
+  String get notifAudioConnected => '音频链路在线';
+
+  @override
+  String get notifAudioDisconnected => '音频链路已断开';
+
+  @override
+  String notifBeacon(String v) {
+    return '信标 $v';
   }
-
-  @override
-  String get beaconNotConnected => '未连接';
-
-  @override
-  String get beaconWaitingFix => '等待定位';
-
-  @override
-  String get beaconSoon => '即将';
-
-  @override
-  String beaconNextIn(String s) {
-    return '距下次上报 $s';
-  }
-
-  @override
-  String get beaconImminent => '即将上报…';
 
   @override
   String get notifConnected => '已连接';
@@ -5662,15 +4047,831 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String notifBeacon(String v) {
-    return '信标 $v';
+  String get notifTncConnected => 'TNC 已连接';
+
+  @override
+  String get notifTncDisconnected => 'TNC 未连接';
+
+  @override
+  String get objectType => '对象';
+
+  @override
+  String get officialWebsite => '官方网站';
+
+  @override
+  String get offline => '离线';
+
+  @override
+  String get offlineAreaHint => '当前画面范围就是下载范围';
+
+  @override
+  String get offlineCacheDisabled => '瓦片缓存不可用（当前平台不支持）';
+
+  @override
+  String get offlineCacheSwitch => '缓存地图瓦片';
+
+  @override
+  String get offlineCacheSwitchDesc => '浏览地图时把瓦片存到本机，之后可离线查看';
+
+  @override
+  String get offlineCacheUsage => '瓦片缓存';
+
+  @override
+  String get offlineCacheUsageDesc => '浏览地图时自动缓存，也可手动下载区域';
+
+  @override
+  String get offlineCancelDownload => '取消';
+
+  @override
+  String get offlineClearCache => '清除全部瓦片缓存';
+
+  @override
+  String get offlineClearCacheConfirm => '清除全部已下载的地图瓦片？';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      '已下载的瓦片会被删除，区域记录会保留（需要重新下载才能离线查看）。';
+
+  @override
+  String get offlineDeleteKeepTiles => '仅删除记录（保留已下载瓦片）';
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '删除离线区域「$name」？';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return '将删除约 $n 张瓦片';
+  }
+
+  @override
+  String get offlineDeleteWithTiles => '删除记录并删除瓦片';
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return '正在删除 $done/$total';
+  }
+
+  @override
+  String get offlineDownloadBusy => '已有下载任务在进行，请先等待或取消';
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return '约 $tiles 张瓦片 · 约 $size';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n 张失败';
+  }
+
+  @override
+  String get offlineLoading => '加载中…';
+
+  @override
+  String get offlineMap => '离线地图';
+
+  @override
+  String get offlineMapDesc => '把地图瓦片预先下载到本机，没有网络时也能看地图';
+
+  @override
+  String get offlineMapFooter => '瓦片只保存在本机，不会上传；不同图源的瓦片分开缓存';
+
+  @override
+  String get offlineName => '名称';
+
+  @override
+  String get offlineNameHint => '例如：家附近';
+
+  @override
+  String get offlineNew => '新建区域';
+
+  @override
+  String get offlineNoRegions => '还没有离线区域';
+
+  @override
+  String get offlineNoRegionsHint => '点右上角「新建区域」，把常去的地方下载下来';
+
+  @override
+  String get offlineOnlySwitch => '仅使用离线瓦片';
+
+  @override
+  String get offlineOnlySwitchDesc => '不再从网络加载瓦片，只用已下载/已缓存的图（省流量）';
+
+  @override
+  String get offlineOnlyWarn => '已开启「仅使用离线瓦片」，地图可能显示不全';
+
+  @override
+  String get offlinePause => '暂停';
+
+  @override
+  String get offlineRegions => '离线区域';
+
+  @override
+  String get offlineRegionsDesc => '已下载的区域可在地图上离线查看';
+
+  @override
+  String get offlineResume => '继续';
+
+  @override
+  String get offlineShort => '离线';
+
+  @override
+  String get offlineSource => '图源';
+
+  @override
+  String get offlineStartDownload => '开始下载';
+
+  @override
+  String get offlineStatusCanceled => '已取消';
+
+  @override
+  String get offlineStatusDone => '已完成';
+
+  @override
+  String get offlineStatusFailed => '下载失败';
+
+  @override
+  String get offlineStatusPaused => '已暂停';
+
+  @override
+  String get offlineStatusPending => '等待下载';
+
+  @override
+  String get offlineStatusRunning => '下载中';
+
+  @override
+  String get offlineSwitchFirst => '请先打开「缓存地图瓦片」';
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total 张';
+  }
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '已下载 $n 张瓦片';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return '范围太大（约 $tiles 张瓦片），请缩小范围或降低最大层级';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return '$min–$max 级';
+  }
+
+  @override
+  String get ok => '确定';
+
+  @override
+  String get online => '在线';
+
+  @override
+  String onlineCount(Object count) {
+    return '$count 在线';
+  }
+
+  @override
+  String get onlineOnly => '仅在线';
+
+  @override
+  String get onlineWindow => '在线判定时长（分钟）';
+
+  @override
+  String get onlineWindowTip => '台站最后上报超过该时长即视为离线（默认 5 分钟）';
+
+  @override
+  String get onlyWgs84 => '仅标准 WGS-84';
+
+  @override
+  String get oobeAgreeBody =>
+      '欢迎使用 APRSlocus！在使用前，请阅读并同意以下条款。请注意：APRS 数据是公开信息，一旦发送即代表其可能被全球 APRS 网络接收、存储与转发。';
+
+  @override
+  String get oobeAgreeCheck => '我已阅读并同意《用户协议》与 GPL-3.0 开源许可证';
+
+  @override
+  String get oobeAgreeNeed => '请先阅读并勾选同意《用户协议》';
+
+  @override
+  String get oobeAgreeTitle => '用户协议与许可';
+
+  @override
+  String get oobeBackgroundTip =>
+      '提示：为保证后台持续定位上报，请到系统设置中允许 APRSlocus 后台运行、关闭省电优化，并允许自启动。';
+
+  @override
+  String get oobeCallDesc => '输入你的呼号';
+
+  @override
+  String get oobeCallTitle => '你的呼号';
+
+  @override
+  String get oobeDeclineExit => '不同意并退出';
+
+  @override
+  String get oobeFilterDesc => '勾选要接收的国家/地区；不勾选则接收全部台站，不做限制';
+
+  @override
+  String get oobeFilterTitle => '选择接收地区';
+
+  @override
+  String get oobeGpsFeatureDesc => '自动获取位置并发送信标到 APRS-IS';
+
+  @override
+  String get oobeIsFeatureDesc => '连接公共服务器，接收全球台站数据';
+
+  @override
+  String get oobeMapFeatureDesc => '在线地图瓦片，查看附近 APRS 台站与轨迹';
+
+  @override
+  String get oobeMsgFeatureDesc => '与台站收发消息，支持自动应答';
+
+  @override
+  String get oobeNextSteps => '接下来几步完成基础配置，随时可在设置中修改。';
+
+  @override
+  String get oobePasscodeMissing => 'Passcode 未填写';
+
+  @override
+  String get oobePasscodeMissingDesc =>
+      'Passcode 是 APRS-IS 登录验证码，用于识别你的呼号。\n\n使用默认值 -1（未验证）虽然可以连接，但将无法正常收发消息与群组。\n\n建议在 https://aprs.cool/AprsPG 输入呼号查询正确 Passcode 后填写。';
+
+  @override
+  String get oobeServerDesc => '连接后接收全球 APRS 台站数据，可保持默认配置直接使用';
+
+  @override
+  String get oobeServerTitle => '连接 APRS-IS 服务器';
+
+  @override
+  String get oobeSymbolDesc => '符号代表台站类型，会随位置信标一起发送';
+
+  @override
+  String get oobeSymbolTitle => '选择台站符号';
+
+  @override
+  String get oobeWelcomeDesc => '开始配置你的 APRS 电台';
+
+  @override
+  String get oobeWelcomeGps => 'GPS 定位上报';
+
+  @override
+  String get oobeWelcomeIs => '接入 APRS-IS';
+
+  @override
+  String get oobeWelcomeMsg => 'APRS 消息';
+
+  @override
+  String get oobeWelcomeRealMap => '实时地图';
+
+  @override
+  String get oobeWelcomeTitle => '欢迎使用 APRSlocus';
+
+  @override
+  String get openContainingFolder => '打开所在目录';
+
+  @override
+  String get openDownload => '打开下载页';
+
+  @override
+  String get openDownloadFolder => '打开下载目录';
+
+  @override
+  String get openDownloads => '打开下载目录';
+
+  @override
+  String get openFolder => '打开目录';
+
+  @override
+  String get openInBrowser => '在浏览器打开';
+
+  @override
+  String get openInMap => '在地图查看';
+
+  @override
+  String get openInstallDir => '打开安装目录';
+
+  @override
+  String get openPackageManually => '请在文件管理器中打开安装包';
+
+  @override
+  String get openSource => '开源致谢';
+
+  @override
+  String orMoveM(String dist) {
+    return '或移动 $dist m';
+  }
+
+  @override
+  String orTurnDeg(String deg) {
+    return '或转 $deg°';
+  }
+
+  @override
+  String get osAmap => '高德地图';
+
+  @override
+  String get osAmapDesc => '地图瓦片服务';
+
+  @override
+  String get osAprs => 'APRS-IS';
+
+  @override
+  String get osAprsDesc => '全球 APRS 数据网络';
+
+  @override
+  String get osFlutter => 'Flutter';
+
+  @override
+  String get osFlutterDesc => 'Google 跨平台 UI 框架';
+
+  @override
+  String get osHam => '业余无线电';
+
+  @override
+  String get osHamDesc => '所有 APRS 爱好者的贡献';
+
+  @override
+  String get ossLicenseSection => '开源与许可';
+
+  @override
+  String get otherType => '其他';
+
+  @override
+  String get ownSourceGarminLive => '追踪中（手机 GPS 已让位）';
+
+  @override
+  String get ownSourceGarminStale => '链接有效，但佳明没有新点（暂时用不到）';
+
+  @override
+  String get ownSourceHrIdle => '未连接（点一下连接心率带）';
+
+  @override
+  String get ownSourcePhoneGps => '手机 GPS';
+
+  @override
+  String get packageDeleted => '安装包已删除';
+
+  @override
+  String packageSize(String platform, String size) {
+    return '$platform 安装包大小：$size';
+  }
+
+  @override
+  String get packetConsole => '数据包控制台';
+
+  @override
+  String packetLimitIs(int bytes) {
+    return '整包 $bytes 字节 · APRS-IS 单行上限 512 字节';
+  }
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return '整包 $bytes 字节 · 射频单帧上限 $max 字节';
+  }
+
+  @override
+  String get packetParseHint =>
+      '粘贴原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+
+  @override
+  String get packetParseTest => '数据包解析测试';
+
+  @override
+  String packetSendFailed(String err) {
+    return '未发送：$err';
+  }
+
+  @override
+  String packetSent(String line) {
+    return '已交给链路发送：$line';
+  }
+
+  @override
+  String packetStats(Object ppm, Object rx, Object tx) {
+    return '收 $rx · 发 $tx · $ppm/分';
+  }
+
+  @override
+  String get packetTcpipWarning => '含 TCPIP*：射频上会被自动剔除（那是 APRS-IS 的路径）';
+
+  @override
+  String get packets => '数据包';
+
+  @override
+  String packetsPerMinute(int count) {
+    return '$count/分';
+  }
+
+  @override
+  String get packetsReceived => '收包';
+
+  @override
+  String get parseAndApply => '解析并应用';
+
+  @override
+  String get parsedMode => '解析模式';
+
+  @override
+  String get passcode => 'Passcode';
+
+  @override
+  String get passcodeImportant => 'Passcode 非常重要';
+
+  @override
+  String get passcodeImportantDesc =>
+      '正确的 Passcode 是接收群组消息和发送确认消息的前提。填 -1 虽然可以连接，但无法正常收发消息。';
+
+  @override
+  String get passcodeLookupHint => '输入你的呼号即可获取，例如 BV2AAA';
+
+  @override
+  String get passcodeMessageWarning => 'APRS-IS 登录验证码，填 -1 无法正常收发消息';
+
+  @override
+  String get passcodeTip => 'APRS-IS 登录验证码，可在线生成；填 -1 表示未验证';
+
+  @override
+  String get passcodeUnverified => 'Passcode 未验证';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 未验证';
+
+  @override
+  String get passcodeWarning => '登录密码可能错误，无法正常收发消息';
+
+  @override
+  String get pasteAprsPacketHint =>
+      '粘贴原始 APRS 包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>测试台';
+
+  @override
+  String get phoneBattery => '手机电量';
+
+  @override
+  String get pickBeaconIconDesc => '选择信标图标 ·「默认」= 沿用我的符号';
+
+  @override
+  String get pickOnMap => '在地图选点';
+
+  @override
+  String get pickTrackMembers => '选择成员（勾选要跟踪的呼号）';
+
+  @override
+  String pickedCoord(Object grid, Object lat, Object lng) {
+    return '已在地图选点 · $lat, $lng · 网格 $grid';
+  }
+
+  @override
+  String get pkwdwplBindSubtitle => '选择输出 \$PKWDWPL 语句的那个串口 / 蓝牙端口';
+
+  @override
+  String get pkwdwplBindTitle => '设备绑定与状态';
+
+  @override
+  String get pkwdwplDeviceDesc => '绑定电台端口 · 查看航点接收状态';
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL 设备';
+
+  @override
+  String get pkwdwplErrReadOnly => '只读链路，不能发射';
+
+  @override
+  String get pkwdwplLogEmpty => '暂无 PKWDWPL 日志';
+
+  @override
+  String get pkwdwplReadOnly => '只读接收中 · 本机不会发射任何报文';
+
+  @override
+  String get pkwdwplRxOnly => '只收不发';
+
+  @override
+  String get pkwdwplStatIgnored => '其它 NMEA 语句（已忽略）';
+
+  @override
+  String get pkwdwplStatMismatch => '校验和不符';
+
+  @override
+  String get pkwdwplStatRejected => '丢弃/无效语句';
+
+  @override
+  String get pkwdwplStatTitle => '航点接收';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '已收航点 $rx 条';
+  }
+
+  @override
+  String get pkwdwplStrictChecksum => '严格校验和（不符即丢弃）';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      '默认关闭：验证不符时只标注并记日志，不丢句子 —— 本地线缆上的不符多半是固件格式与手册有出入，整条丢弃会让界面「什么都不显示」，反而更难排查';
+
+  @override
+  String get pkwdwplTip =>
+      '在电台菜单里把 PC / GPS 端口的输出格式设为 \"\$PKWDWPL\"（一般 4800 8N1）；这条链路只读，不会发射任何报文';
+
+  @override
+  String get platform => '平台';
+
+  @override
+  String get port => '端口';
+
+  @override
+  String get posAccuracy => '位置精度';
+
+  @override
+  String get posSourceIdle => '未追踪（未启动定位）';
+
+  @override
+  String get posSourceLabel => '位置来源';
+
+  @override
+  String get posSourcePrecedence => '同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS';
+
+  @override
+  String posSourceUsing(String src) {
+    return '当前使用：$src';
+  }
+
+  @override
+  String get posSrcGarmin => '佳明 LiveTrack';
+
+  @override
+  String get posSrcNone => '未定位';
+
+  @override
+  String get posSrcPhone => '手机 GPS';
+
+  @override
+  String get posSrcSim => '模拟/手动位置';
+
+  @override
+  String get position => '位置';
+
+  @override
+  String positionBeacon(Object grid) {
+    return '位置信标 · 网格 $grid';
+  }
+
+  @override
+  String positionBeaconDetail(String grid, String detail) {
+    return '位置信标 · 网格 $grid · $detail';
+  }
+
+  @override
+  String get previous => '上一步';
+
+  @override
+  String get projectRepo => '项目仓库';
+
+  @override
+  String get qqGroup => 'QQ 交流群';
+
+  @override
+  String get qqGroupDesc => 'APRSlocus 软件 · 反馈问题/交流使用';
+
+  @override
+  String get qqSoftwareName => 'APRSlocus 软件';
+
+  @override
+  String qrCodeTitle(String title) {
+    return '$title 赞赏码';
+  }
+
+  @override
+  String get qrLoadFailed => '赞赏码图片加载失败';
+
+  @override
+  String get qrSaveWechat => '长按图片可保存 · 微信扫一扫赞赏';
+
+  @override
+  String get quickActions => '快捷操作';
+
+  @override
+  String get quickTrackCreate => '新建跟踪组';
+
+  @override
+  String get quickTrackHint => '从已接收台站勾选成员，也可手输呼号补充；直接在地图上跟踪这些人，不需要先建聊天群。';
+
+  @override
+  String get quickTrackManualHint => '手输呼号，如 BG7PGW,BG7LMW';
+
+  @override
+  String get quickTrackName => '组名（可选）';
+
+  @override
+  String get quickTrackNeedMembers => '请至少选择或输入一个呼号';
+
+  @override
+  String get quickTrackNoStations => '暂无已接收台站，可直接手输呼号（多个用逗号分隔）';
+
+  @override
+  String get quickTrackPickLabel => '选择要跟踪的台站';
+
+  @override
+  String get quickTrackStart => '开始跟踪';
+
+  @override
+  String get quitApp => '退出应用';
+
+  @override
+  String get quitAppDesc => '退出后 APRSlocus 将停止定位上报与后台接收，并结束进程。';
+
+  @override
+  String get radioCat => '电台';
+
+  @override
+  String get radioCatDesc => '呼号 · SSID · 符号';
+
+  @override
+  String get radiusTip => '接收半径（km），点“保存并应用”生效';
+
+  @override
+  String get range10m => '10 分钟';
+
+  @override
+  String get range1h => '1 小时';
+
+  @override
+  String get range30m => '30 分钟';
+
+  @override
+  String get range3h => '3 小时';
+
+  @override
+  String get rangeAll => '全部';
+
+  @override
+  String get rangeFilterDesc => '只接收设定范围内的台站数据包';
+
+  @override
+  String get rawMode => '原始模式';
+
+  @override
+  String get receive => '接收';
+
+  @override
+  String get receiveCountries => '国家/地区';
+
+  @override
+  String get receiveCountryDesc => '按呼号前缀批量接收某国家/地区全部台站';
+
+  @override
+  String get receiveFilter => '接收呼号筛选';
+
+  @override
+  String get receiveFilterDesc2 => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
+
+  @override
+  String get receiveOthers => '其他台站';
+
+  @override
+  String get receiveOthersDesc => '接收不匹配所选国家的特殊呼号台站';
+
+  @override
+  String get recentPackets => '最近数据包';
+
+  @override
+  String get recheck => '重新检查';
+
+  @override
+  String get reconnect => '重新连接';
+
+  @override
+  String get reconnectToApply => '重新连接后生效';
+
+  @override
+  String get reconnected => '已重新连接';
+
+  @override
+  String get redownload => '重新下载';
+
+  @override
+  String get refresh => '刷新';
+
+  @override
+  String get reject => '拒绝';
+
+  @override
+  String get relatedStations => '相关台站';
+
+  @override
+  String get releaseNotes => '更新日志';
+
+  @override
+  String get reloadDone => '已重新加载';
+
+  @override
+  String get reloadUi => '重新加载界面';
+
+  @override
+  String get relocate => '重新定位';
+
+  @override
+  String get remove => '移除';
+
+  @override
+  String repoLatestTitle(String version) {
+    return '仓库最新版本 v$version';
+  }
+
+  @override
+  String get reselectPoint => '重新选点';
+
+  @override
+  String get resetAll => '重置全部设置';
+
+  @override
+  String get resetAllDesc => '恢复出厂设置';
+
+  @override
+  String get restartWizard => '重新运行设置向导';
+
+  @override
+  String get restartWizardButton => '重新运行';
+
+  @override
+  String get restartWizardConfirm =>
+      '将重新进入首次启动向导，可重新设置呼号、接收地区等。\\n当前设置不会丢失，完成向导后继续使用。';
+
+  @override
+  String get restartWizardTitle => '重新运行设置向导？';
+
+  @override
+  String get restoreDefaults => '恢复默认';
+
+  @override
+  String get retry => '重试';
+
+  @override
+  String get runInstaller => '运行安装程序';
+
+  @override
+  String get runNow => '立即运行';
+
+  @override
+  String rxOnlyBanner(String arg) {
+    return '$arg 已连接 · 仅接收（当前发射来源未连接）';
+  }
+
+  @override
+  String get rxTx => '收包 / 发包';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get saveAndApply => '保存并应用过滤';
+
+  @override
+  String get saveAndTrack => '保存并跟踪';
+
+  @override
+  String get savedLocation => '已保存位置';
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get searchCallsign => '搜索呼号…';
+
+  @override
+  String get searchHint => '搜索呼号 / 类型 / 网格 / 备注…';
+
+  @override
+  String get searchPacket => '搜索呼号、目的地或原始内容…';
+
+  @override
+  String secondsAgo(int count) {
+    return '$count秒前';
+  }
+
+  @override
+  String secondsValue(int count) {
+    return '$count 秒';
   }
 
   @override
   String get selectAll => '全选';
 
   @override
-  String get deselectAll => '取消全选';
+  String get selectAllOnline => '全选在线';
+
+  @override
+  String get selectConversation => '选择会话开始聊天';
+
+  @override
+  String get selectMapType => '选择地图类型';
+
+  @override
+  String get selectMessageReply => '点选消息以回复…';
 
   @override
   String selectedCount(int n) {
@@ -5678,146 +4879,661 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String deleteSelected(int n) {
-    return '删除 ($n)';
+  String selectedRecipients(int count) {
+    return '已选 $count 人';
   }
 
   @override
-  String deleteSelectedConfirm(int n) {
-    return '确定删除选中的 $n 个会话？此操作不可恢复。';
+  String get send => '发送';
+
+  @override
+  String get sendBeacon => '发送信标';
+
+  @override
+  String sendMessageTo(String call) {
+    return '发消息给 $call…';
   }
 
   @override
-  String get chatManageHint => '点击会话进行选择，长按也可选中';
+  String sendRecipientsList(int count, String calls) {
+    return '将发送给 $count 人：$calls';
+  }
 
   @override
-  String conversationsDeleted(int n) {
-    return '已删除 $n 个会话';
+  String get sendTo => '发送至';
+
+  @override
+  String sendToCallHint(String call) {
+    return '发给 $call…';
   }
+
+  @override
+  String sendToGroupHint(String group) {
+    return '发到 $group…';
+  }
+
+  @override
+  String get sender => '发送方';
+
+  @override
+  String get sensorAssist => '传感器辅助定位';
+
+  @override
+  String get sensorAssistDesc =>
+      '用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。';
+
+  @override
+  String get server => '服务器';
+
+  @override
+  String serverReturned(int code) {
+    return '服务器返回 $code';
+  }
+
+  @override
+  String get setStep => '步骤';
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get settingsBeaconSubtitle => '发送间隔与上报内容';
+
+  @override
+  String get settingsChatManageSubtitle => '联系人与聊天数据';
+
+  @override
+  String get settingsChatStatsSubtitle => '消息与联系人统计';
+
+  @override
+  String get settingsClearDataSubtitle => '删除本地记录';
+
+  @override
+  String get settingsConnStatusSubtitle => '连接状态与信息';
+
+  @override
+  String get settingsContribCodeOptimization => '代码优化';
+
+  @override
+  String get settingsDesc => '配置电台、定位与连接';
+
+  @override
+  String get settingsDevSubtitle => '调试与测试';
+
+  @override
+  String get settingsDisplayInfoSubtitle => '我的符号与当前定位';
+
+  @override
+  String get settingsFilterHint => '只接收设定范围内的台站数据包';
+
+  @override
+  String get settingsFilterSubtitle => '过滤中心与接收半径';
+
+  @override
+  String get settingsGeneralSubtitle => '主题、语言与坐标显示';
+
+  @override
+  String get settingsLabSubtitle => '实验性功能';
+
+  @override
+  String get settingsLocModeSubtitle => '选择定位方式';
+
+  @override
+  String get settingsLocSourceSubtitle => '选择坐标来源';
+
+  @override
+  String get settingsManualLocHint => '无法自动定位时，可手动输入经纬度或用地图选点，用于信标上报与台站距离计算。';
+
+  @override
+  String get settingsManualLocSubtitle => '无定位时可手动输入或选点';
+
+  @override
+  String get settingsMapSubtitle => '地图类型与显示';
+
+  @override
+  String get settingsReceivePrefHint => '除范围过滤外，按国家/地区分组或精确呼号接收台站';
+
+  @override
+  String get settingsReceivePrefSubtitle => '按国家/地区或呼号接收';
+
+  @override
+  String get settingsServerSubtitle => 'APRS-IS 服务器与验证码';
+
+  @override
+  String get settingsStationIdentitySubtitle => '呼号、SSID 与备注';
+
+  @override
+  String get settingsSubtitle => '地图坐标与显示偏好';
+
+  @override
+  String get shareApp => '分享 APRSlocus';
+
+  @override
+  String get shareText =>
+      'APRSlocus —— 业余无线电 APRS 定位追踪与地图 📡\n实时台站追踪、消息收发、信标上报，Android / Windows 全平台可用。\n官网：https://aprslocus.theez.top/\n下载：https://github.com/dariondong/APRSLocus/releases';
+
+  @override
+  String get shareTextCopied => '分享文案已复制，可粘贴发送给好友';
+
+  @override
+  String get shareToSystem => '分享到系统';
+
+  @override
+  String get shareToSystemDesc => '微信 / QQ / 短信等';
+
+  @override
+  String get showAll => '全部显示';
+
+  @override
+  String get showStations => '显示台站';
+
+  @override
+  String get showTrails => '显示轨迹';
+
+  @override
+  String get simData => '启用模拟数据（演示台站/数据包）';
+
+  @override
+  String get simLocationHint => '使用模拟位置，无需 GPS';
+
+  @override
+  String get simulatedKeepAlive => '模拟位置 · 后台保活';
+
+  @override
+  String get simulatedLocation => '模拟位置';
+
+  @override
+  String get smartBeacon => '智能信标(按速度分档)';
+
+  @override
+  String get software => '软件';
+
+  @override
+  String get sortBy => '排序';
+
+  @override
+  String get sortCall => '呼号';
+
+  @override
+  String get sortDistance => '距离';
+
+  @override
+  String get sortRecent => '最近';
+
+  @override
+  String get sortStatus => '状态';
+
+  @override
+  String get sourceMovedHint => '要启用 / 切换数据来源（链路），请到「设置 → 设备」';
+
+  @override
+  String get speed => '速度';
+
+  @override
+  String get speedLabel => '速度';
+
+  @override
+  String get speedTierDesc => '速度越快上报越频繁；每档可自定义间隔与图标（留空=我的符号）。';
+
+  @override
+  String get speedTierRules => '速度分档规则';
+
+  @override
+  String get speedTierShortIntervalWarn => '间隔低于 60 秒会显著增加服务器负载，建议 ≥60 秒。';
+
+  @override
+  String get sponsorAuthor => '作者 BG7LZQ';
+
+  @override
+  String get sponsorAuthorItems => '利用课余时间开发维护本项目';
+
+  @override
+  String get sponsorBgp => 'BG7PGW';
+
+  @override
+  String get sponsorBgpItems => '感谢赞助的蜜雪冰城一杯 🧋';
+
+  @override
+  String get sponsorEvery => '每一位支持者';
+
+  @override
+  String get sponsorEveryItems => '你们的每一份支持都是动力';
+
+  @override
+  String get sponsorGroup => 'STUDENT HAMS 群组';
+
+  @override
+  String get sponsorGroupItems => '感谢群组的资金赞助支持';
+
+  @override
+  String get sponsorMethods => '赞助方式';
+
+  @override
+  String get sponsorSupport => '赞助支持';
+
+  @override
+  String get sponsors => '赞助与鸣谢';
+
+  @override
+  String get sponsorsThanks => '感谢每一位支持者';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get ssidDesc => 'SSID 是呼号后缀用于标识设备，如 BG7ABC-9 中的 -9';
+
+  @override
+  String get ssidDescShort => 'SSID 是呼号后面的数字标识，如 BG7ABC-9 中的 -9';
+
+  @override
+  String get ssidOptional => 'SSID 后缀（可选）';
+
+  @override
+  String get ssidSuffix => 'SSID 后缀';
+
+  @override
+  String get start => '开始';
+
+  @override
+  String get startGps => '开启 GPS 定位';
+
+  @override
+  String get station => '台站';
 
   @override
   String get stationActions => '台站操作';
 
   @override
-  String get deleteStation => '删除台站';
-
-  @override
-  String deleteStationConfirm(String name) {
-    return '确定删除台站 $name 吗？删除后将从台站列表移除；若再次收到其报文会重新出现。';
+  String stationCount(Object count) {
+    return '$count 台站';
   }
 
   @override
-  String get unfavorite => '取消收藏';
-
-  @override
-  String get copyCallsign => '复制呼号';
-
-  @override
-  String get callsignCopied => '呼号已复制';
+  String get stationCount2 => '台站数量';
 
   @override
   String get stationDeleted => '已删除台站';
 
   @override
-  String get exportAdif => '导出 ADIF';
+  String get stationDetail => '台站详情';
 
   @override
-  String get exportAdifDesc => '把会话导出为 ADIF 日志文件，可导入 Log4OM、N3FJP 等日志软件';
+  String get stationFilterOn => '已按台站面板筛选显示';
 
   @override
-  String get export => '导出';
+  String get stationIdentity => '电台身份';
 
   @override
-  String get adifHint => '每条记录只含呼号与首条消息时间（UTC），不含模式与频段';
+  String get stationList => '台站列表';
 
   @override
-  String get adifNoSelection => '请先选择要导出的会话';
+  String get stationListDesc => '收到的台站与它们的轨迹，保存在本机';
 
   @override
-  String adifExported(int n) {
-    return '已导出 $n 条记录';
+  String get stationListTitle => '台站列表';
+
+  @override
+  String stationNoData(String call) {
+    return '台站 $call 尚未收到数据';
   }
 
   @override
-  String get adifExportDone => '导出完成';
+  String get stationSettings => '电台设置';
 
   @override
-  String get adifExportFailed => '导出失败，请检查存储权限或剩余空间';
+  String get stationSettings2 => '电台设置';
 
   @override
-  String adifSavedTo(String path) {
-    return '已保存到：$path';
+  String get stationSettingsDetail => '呼号、SSID、符号与备注';
+
+  @override
+  String get stationSettingsSubtitle => '呼号、符号与信标';
+
+  @override
+  String get stationary => '静止';
+
+  @override
+  String get stations => '台站';
+
+  @override
+  String get stationsCleared => '已清除台站列表';
+
+  @override
+  String get stationsShown => '台站';
+
+  @override
+  String get statistics => '统计';
+
+  @override
+  String get statsAprslocusUsers => 'APRSlocus 用户';
+
+  @override
+  String get statsAvgSpeed => '平均速度';
+
+  @override
+  String get statsCap => '容量上限';
+
+  @override
+  String get statsConn => '连接状态';
+
+  @override
+  String get statsConnected => '已连接';
+
+  @override
+  String get statsDeviceDist => '设备类别分布';
+
+  @override
+  String get statsDisconnected => '未连接';
+
+  @override
+  String get statsFarthest => '最远台站';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n 个网格';
   }
 
   @override
-  String get adifCopyPath => '复制路径';
+  String get statsGridCountLabel => '大网格数';
 
   @override
-  String get adifPathCopied => '路径已复制';
+  String get statsGridDist => '大网格台站分布';
 
   @override
-  String get chatShortLabel => '单聊';
+  String get statsGridEmpty => '暂无台站位置数据';
 
   @override
-  String get adifLogFile => '会话导出为日志文件';
+  String get statsGridHint => '按 Maidenhead 大网格（4 位）统计台站数量并排序';
 
   @override
-  String get adifOptions => '导出选项';
+  String get statsLastHeard => '最近上报';
 
   @override
-  String get adifMode => '模式（MODE）';
+  String get statsMovingCount => '移动台站';
 
   @override
-  String get adifNotWritten => '不写';
+  String get statsMyGrid => '我的大网格';
 
   @override
-  String get adifModePkt => 'PKT（数据包，推荐）';
+  String get statsNoData => '暂无数据';
 
   @override
-  String get adifModeFm => 'FM（语音）';
+  String get statsOnlineRate => '在线率';
 
   @override
-  String get adifModeData => 'DATA（数据）';
+  String get statsOther => '其他指标';
 
   @override
-  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+  String get statsOverview => '系统总览';
 
   @override
-  String get adifBand => '频段（BAND）';
+  String get statsPackets => '数据包(近期)';
 
   @override
-  String get adifStripSsid => '只写基础呼号（去掉 -SSID）';
+  String get statsPanel => '统计面板';
 
   @override
-  String get adifPreview => '预览（将写出的记录）';
-
-  @override
-  String get adifModeRequiredHint => '多数日志软件（含 QRZ）要求 MODE，缺少会被拒收';
-
-  @override
-  String get adifFreq => '频率（FREQ）';
-
-  @override
-  String get adifFreqHint => '单位 MHz，留空则不写';
-
-  @override
-  String get adifFreqInvalid => '请输入 MHz 数字，如 144.640';
-
-  @override
-  String get sysTitle => '系统状态';
-
-  @override
-  String get sysLinkOff => '未启用';
-
-  @override
-  String sysRx(String n) {
-    return '收 $n';
+  String statsPerMin(String n) {
+    return '$n/分';
   }
 
   @override
-  String sysTx(String n) {
-    return '发 $n';
+  String get statsRate => '接收速率';
+
+  @override
+  String get statsStationsTotal => '台站总数';
+
+  @override
+  String get statsStatusDist => '台站状态分布';
+
+  @override
+  String get statsTotalRx => '总接收数';
+
+  @override
+  String get statsTotalTx => '总发送数';
+
+  @override
+  String get statsTypeDist => 'APRS 类型分布';
+
+  @override
+  String get statusFilter => '状态';
+
+  @override
+  String get statusType => '状态';
+
+  @override
+  String get stepContent => '内容';
+
+  @override
+  String get stepMembers => '成员';
+
+  @override
+  String get stepName => '名称';
+
+  @override
+  String get stepRecipients => '选人';
+
+  @override
+  String get stoppedShort => '静止';
+
+  @override
+  String get storageLimit => '数据上限';
+
+  @override
+  String get storageLimitSubtitle => '本地保留的数据量';
+
+  @override
+  String get supportProject => '你们的支持让项目走得更远';
+
+  @override
+  String get symAmbulance => '救护车';
+
+  @override
+  String get symBalloon => '气球';
+
+  @override
+  String get symBicycle => '自行车';
+
+  @override
+  String get symBigAircraft => '大型飞机';
+
+  @override
+  String get symBus => '公交';
+
+  @override
+  String get symCamping => '露营';
+
+  @override
+  String get symCar => '汽车';
+
+  @override
+  String get symCatAirWater => '飞行 / 水域';
+
+  @override
+  String get symCatBuildings => '建筑 / 设施';
+
+  @override
+  String get symCatComms => '通信 / 其他';
+
+  @override
+  String get symCatEmergency => '应急救援';
+
+  @override
+  String get symCatNature => '气象 / 自然';
+
+  @override
+  String get symCatVehicles => '车辆 / 交通';
+
+  @override
+  String get symCmdCenter => '指挥中心';
+
+  @override
+  String get symDigi => '数字中继';
+
+  @override
+  String get symDigiTower => '中继塔';
+
+  @override
+  String get symDog => '狗';
+
+  @override
+  String get symDxCluster => 'DX 集群';
+
+  @override
+  String get symEmergCenter => '应急中心';
+
+  @override
+  String get symFileServer => '文件服务器';
+
+  @override
+  String get symFireAlarm => '火警';
+
+  @override
+  String get symFireStation => '消防站';
+
+  @override
+  String get symFireTruck => '消防车';
+
+  @override
+  String get symFmoStation => 'FMO 台站';
+
+  @override
+  String get symGlider => '滑翔机';
+
+  @override
+  String get symGrid => '网格';
+
+  @override
+  String get symHandicap => '残障';
+
+  @override
+  String get symHfGateway => 'HF 网关';
+
+  @override
+  String get symHorse => '骑马';
+
+  @override
+  String get symHospital => '医院';
+
+  @override
+  String get symHotel => '酒店';
+
+  @override
+  String get symHouse => '房屋';
+
+  @override
+  String get symHurricane => '飓风';
+
+  @override
+  String get symJeep => '吉普';
+
+  @override
+  String get symLaptop => '笔记本';
+
+  @override
+  String get symMicE => 'Mic-E 中继';
+
+  @override
+  String get symMobileSat => '移动卫星';
+
+  @override
+  String get symMotel => '旅馆';
+
+  @override
+  String get symMotorcycle => '摩托';
+
+  @override
+  String get symNode => '节点';
+
+  @override
+  String get symPerson => '人';
+
+  @override
+  String get symPolice => '警局';
+
+  @override
+  String get symPoliceCar => '警车';
+
+  @override
+  String get symPostOffice => '邮局';
+
+  @override
+  String get symRedCross => '红十字';
+
+  @override
+  String get symRv => '房车';
+
+  @override
+  String get symSailboat => '帆船';
+
+  @override
+  String get symSatAntenna => '卫星天线';
+
+  @override
+  String get symSchool => '学校';
+
+  @override
+  String get symSemi => '半挂车';
+
+  @override
+  String get symShelter => '避难所';
+
+  @override
+  String get symShip => '船';
+
+  @override
+  String get symSmallAircraft => '小型飞机';
+
+  @override
+  String get symSnowmobile => '雪地摩托';
+
+  @override
+  String get symTelephone => '电话';
+
+  @override
+  String get symTrain => '火车';
+
+  @override
+  String get symTruck => '卡车';
+
+  @override
+  String get symTruckStop => '卡车停靠';
+
+  @override
+  String get symVan => '面包车';
+
+  @override
+  String get symWater => '供水站';
+
+  @override
+  String get symWeather => '气象';
+
+  @override
+  String get symWxStation => '气象站';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symYagi => '八木屋';
+
+  @override
+  String symbolCategoryName(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'vehicles': '车辆 / 交通',
+      'facilities': '建筑 / 设施',
+      'weatherNature': '气象 / 自然',
+      'emergencyRescue': '应急救援',
+      'airWater': '飞行 / 水域',
+      'communications': '通信 / 其他',
+      'other': '其他',
+    });
+    return '$_temp0';
   }
+
+  @override
+  String get symbolLabel => '符号';
 
   @override
   String sysBeacon(String t) {
@@ -5825,9 +5541,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String sysStations(String n) {
-    return '台站 $n';
-  }
+  String get sysEmpty => '打开 APRSlocus 并连接后，这里会显示台站运行状态';
 
   @override
   String get sysFixOk => '已定位';
@@ -5836,253 +5550,208 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sysLinkAudio => '音频';
 
   @override
-  String get sysEmpty => '打开 APRSlocus 并连接后，这里会显示台站运行状态';
+  String get sysLinkOff => '未启用';
 
   @override
-  String get backupTitle => '备份与恢复';
+  String get sysRecentLabel => '最近收到';
 
   @override
-  String get backupSubtitle => '导出或导入配置与数据';
-
-  @override
-  String get backupEntryDesc => '打包配置与数据为 JSON 文件';
-
-  @override
-  String get backupDesc => '备份文件是 JSON 文本，换机或重装后可恢复；导入按分组覆盖，无法撤销。';
-
-  @override
-  String get backupExport => '导出备份';
-
-  @override
-  String get backupExportDesc => '选择要包含的内容，然后保存为文件或复制到剪贴板';
-
-  @override
-  String get backupExportToFile => '保存为文件';
-
-  @override
-  String get backupCopyJson => '复制到剪贴板';
-
-  @override
-  String get backupExportDone => '备份已导出';
-
-  @override
-  String get backupExportFailed => '导出失败，请检查存储权限或剩余空间';
-
-  @override
-  String get backupCopyDone => '备份内容已复制到剪贴板';
-
-  @override
-  String backupSavedTo(String path) {
-    return '已保存到：$path';
+  String sysRx(String n) {
+    return '收 $n';
   }
 
   @override
-  String get backupCatSettings => '设置配置';
-
-  @override
-  String get backupCatSettingsDesc => '电台、信标、地图、筛选、数据来源、服务器';
-
-  @override
-  String get backupCatStations => '台站与联系人';
-
-  @override
-  String get backupCatStationsDesc => '收藏、手动添加的联系人及其备注';
-
-  @override
-  String get backupCatMessages => '消息记录';
-
-  @override
-  String get backupCatMessagesDesc => '单聊消息与已读位置';
-
-  @override
-  String get backupCatChats => '群聊';
-
-  @override
-  String get backupCatChatsDesc => '群组、成员与已读状态';
-
-  @override
-  String get backupCatTranslate => '翻译设置';
-
-  @override
-  String get backupCatTranslateDesc => '翻译接口、密钥与语言偏好';
-
-  @override
-  String get backupCatHonors => '成就与荣誉';
-
-  @override
-  String get backupCatHonorsDesc => '解锁记录、计数与默认徽章';
-
-  @override
-  String backupItems(int n) {
-    return '$n 项';
+  String sysStations(String n) {
+    return '台站 $n';
   }
 
   @override
-  String get backupSelectAll => '全选';
+  String get sysTitle => '系统状态';
 
   @override
-  String get backupNoSelection => '请至少选择一个分组';
-
-  @override
-  String get backupImport => '导入备份';
-
-  @override
-  String get backupImportDesc => '选择之前导出的 JSON 备份文件';
-
-  @override
-  String get backupPickFile => '选择备份文件';
-
-  @override
-  String get backupPaste => '从剪贴板粘贴';
-
-  @override
-  String get backupPasteEmpty => '剪贴板里没有文本';
-
-  @override
-  String get backupPreview => '备份内容';
-
-  @override
-  String backupFromVersion(String v) {
-    return '来源版本 $v';
+  String sysTx(String n) {
+    return '发 $n';
   }
 
   @override
-  String backupExportedAt(String t) {
-    return '导出时间 $t';
+  String systemInviteDeclined(String call) {
+    return '$call 拒绝了邀请';
   }
 
   @override
-  String get backupImportSelected => '导入所选';
+  String get systemLog => '系统日志';
 
   @override
-  String get backupImportConfirmTitle => '确认导入？';
-
-  @override
-  String get backupImportConfirm => '所选分组会被备份里的内容覆盖，且无法撤销。建议先导出一次当前数据。';
-
-  @override
-  String backupImported(int n) {
-    return '已导入 $n 项';
+  String systemMemberJoined(String call) {
+    return '$call 加入了群组';
   }
 
   @override
-  String backupSkipped(int n) {
-    return '跳过 $n 项（本版本不认识的内容）';
+  String systemMemberLeft(String call) {
+    return '$call 离开了群组';
   }
 
   @override
-  String get backupImportNothing => '备份里不包含所选分组的数据';
+  String get tapAnywhereClose => '点击任意处关闭';
 
   @override
-  String get backupRestartTitle => '导入完成';
+  String get tapMapHint => '点击地图查看台站 · 双指缩放';
 
   @override
-  String get backupRestartHint => '数据已写入，重启应用后完全生效（成就、翻译、服务器连接等）。';
+  String get tapToInvite => '点击邀请';
 
   @override
-  String get backupRestartNow => '退出应用';
+  String get tapToView => '双击信标查看更多';
 
   @override
-  String get backupLater => '稍后';
+  String get telemetryTitle => '速度 / 高度变化';
 
   @override
-  String get backupSecurityTip => '备份文件包含呼号、服务器口令与 API 密钥，请妥善保管。';
+  String get testMembers => '测试成员';
 
   @override
-  String get backupWebHint => 'Web 版请用「复制到剪贴板 / 从剪贴板粘贴」导入导出。';
+  String get testTxAction => '发射测试帧';
 
   @override
-  String get backupErrNotJson => '文件不是有效的 JSON';
+  String get testTxDesc => '发一条状态报文，验证链路真的通到空中';
 
   @override
-  String get backupErrNotBackup => '这不是 APRSlocus 的备份文件';
+  String testTxFail(String err) {
+    return '测试帧发送失败：$err';
+  }
 
   @override
-  String get backupErrSchemaNewer => '备份来自更新版本的 APRSlocus，请先升级应用';
+  String get testTxHint => '这是**真实发射**（状态报文，不含坐标）。射频发射请确认在自己的呼号与执照范围内';
 
   @override
-  String get backupErrEmpty => '备份里没有可导入的内容';
+  String get testTxNeedsConnect => '请先连接链路';
 
   @override
-  String get backupErrTooLarge => '备份文件超过 32 MB，无法读取';
+  String get testTxSent => '测试帧已交给链路';
 
   @override
-  String get backupErrRead => '读取备份文件失败';
+  String get testTxTitle => '测试发射';
 
   @override
-  String get backupErrUnsupported => '当前平台暂不支持选择文件，请改用剪贴板粘贴';
+  String get thanks => '感谢';
 
   @override
-  String get themeTitle => '主题';
+  String get themeAccentFrom => '渐变起始色';
 
   @override
-  String get themeEntryDesc => '自定义颜色、图标与文字';
-
-  @override
-  String get themeSubtitle => '把界面配色、图标与常用文案改成你自己的';
-
-  @override
-  String get themePresets => '预设与我的主题';
-
-  @override
-  String get themePresetTag => '预设';
+  String get themeAccentTo => '渐变结束色';
 
   @override
   String get themeActive => '使用中';
 
   @override
-  String get themePresetDefault => '默认';
+  String get themeAlignBottom => '下';
 
   @override
-  String get themePresetOcean => '海洋';
+  String get themeAlignBottomLeft => '左下';
 
   @override
-  String get themePresetForest => '森林';
+  String get themeAlignBottomRight => '右下';
 
   @override
-  String get themePresetMidnight => '暗夜';
+  String get themeAlignCenter => '居中';
 
   @override
-  String get themePresetSunset => '日落';
+  String get themeAlignLeft => '左';
 
   @override
-  String get themePresetContrast => '高对比';
+  String get themeAlignRight => '右';
+
+  @override
+  String get themeAlignTop => '上';
+
+  @override
+  String get themeAlignTopLeft => '左上';
+
+  @override
+  String get themeAlignTopRight => '右上';
+
+  @override
+  String get themeAuthor => '作者';
+
+  @override
+  String get themeAuthorHint => '你的呼号或昵称';
+
+  @override
+  String get themeBg => '背景图';
+
+  @override
+  String get themeBgAlign => '对齐';
+
+  @override
+  String get themeBgBlur => '模糊';
+
+  @override
+  String get themeBgBlurDesc => '模糊能把照片的细节压掉，让上面的文字更清楚';
+
+  @override
+  String get themeBgDesc => '用一张图片做整个界面的底；卡片会自动变得半透明';
+
+  @override
+  String get themeBgDisabledHint => '当前主题未使用背景图，界面底为纯色';
+
+  @override
+  String get themeBgErrTooLarge => '背景图超过 8MB，请先压缩（图标上限是 2MB）';
+
+  @override
+  String get themeBgFit => '填充方式';
+
+  @override
+  String get themeBgFitContain => '完整显示';
+
+  @override
+  String get themeBgFitCover => '铺满';
+
+  @override
+  String get themeBgFitStretch => '拉伸';
+
+  @override
+  String get themeBgFitTile => '平铺';
+
+  @override
+  String get themeBgLocalOnly =>
+      '背景图只存在本机：主题文件里只记录引用，不含图片本身，分享给别人后对方会看到无背景的主题。';
+
+  @override
+  String get themeBgNone => '未设置';
+
+  @override
+  String get themeBgOpacity => '不透明度';
+
+  @override
+  String get themeBgOpacityDesc => '同时决定遮罩浓度：调高更看见图，也更容易看不清文字';
+
+  @override
+  String get themeBgPick => '选择图片';
+
+  @override
+  String get themeBgRemove => '移除背景图';
+
+  @override
+  String get themeBgReplace => '更换图片';
+
+  @override
+  String get themeBgScale => '缩放';
+
+  @override
+  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用于「只取画面一角」';
 
   @override
   String get themeBuiltinHint => '预设主题不可修改，复制为我的主题后即可自由编辑';
+
+  @override
+  String get themeColor => '主题颜色';
 
   @override
   String get themeColors => '颜色';
 
   @override
   String get themeColorsDesc => '逐项覆写配色；未修改的项跟随默认';
-
-  @override
-  String get themeRadius => '卡片圆角';
-
-  @override
-  String get themeRadiusDesc => '作用于卡片与输入框（小徽标等不受影响）';
-
-  @override
-  String get themeIcons => '图标';
-
-  @override
-  String get themeIconsDesc => '为底部页签与设置入口换图标';
-
-  @override
-  String get themeTexts => '文字';
-
-  @override
-  String get themeTextsDesc => '覆写常用文案（按钮与错误提示不开放，避免界面变得不可操作）';
-
-  @override
-  String get themeNew => '新建主题';
-
-  @override
-  String get themeDuplicate => '复制为我的主题';
-
-  @override
-  String get themeRename => '重命名';
 
   @override
   String get themeDelete => '删除主题';
@@ -6093,80 +5762,37 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get themeReset => '恢复默认';
+  String get themeDensity => '松紧';
 
   @override
-  String get themeResetAll => '重置本主题';
+  String get themeDensityComfortable => '宽松';
 
   @override
-  String get themeSaved => '主题已保存';
+  String get themeDensityCompact => '紧凑';
 
   @override
-  String get themeNameHint => '主题名称';
+  String get themeDensityHint => '改的是卡片内边距；若某项看起来没变，说明那处留白是单独写死的';
 
   @override
-  String get themePickColor => '选择颜色';
+  String get themeDensityNormal => '标准';
 
   @override
-  String get themePickIcon => '选择图标';
+  String get themeDescHint => '一句话说明这套皮肤';
 
   @override
-  String get themePickIconSearch => '搜索图标名（英文）';
+  String get themeDescription => '说明';
+
+  @override
+  String get themeDuplicate => '复制为我的主题';
 
   @override
   String get themeEditText => '修改文字';
 
   @override
-  String get themeTextHint => '留空即恢复默认';
+  String get themeEntryDesc => '自定义颜色、图标与文字';
 
   @override
-  String get themeIconImport => '从图片导入';
-
-  @override
-  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
-
-  @override
-  String themeIconImportDone(String name) {
-    return '已导入图标：$name';
-  }
-
-  @override
-  String get themeIconWebHint => 'Web 版不支持导入图片，请使用内置图标库';
-
-  @override
-  String get themeIconErrFormat => '不支持的图片格式（支持 PNG/JPG/WebP/GIF/BMP/SVG）';
-
-  @override
-  String get themeIconErrTooLarge => '图片超过 2MB，请先压缩';
-
-  @override
-  String get themeIconErrFailed => '导入图标失败';
-
-  @override
-  String get themeIconErrUnsupported => '当前平台不支持导入图片';
-
-  @override
-  String get themeIo => '导入与导出';
-
-  @override
-  String get themeIoDesc => '主题是 JSON 文本，可以分享给别人，也可以手工编辑';
-
-  @override
-  String get themeExport => '导出此主题';
-
-  @override
-  String get themeExportAll => '导出全部主题';
-
-  @override
-  String get themeImport => '导入主题';
-
-  @override
-  String get themeImportPaste => '从剪贴板导入';
-
-  @override
-  String themeImportDone(int n) {
-    return '已导入 $n 个主题';
-  }
+  String get themeErrEmpty => '文件里没有可用的主题';
 
   @override
   String get themeErrNotJson => '文件不是有效的 JSON';
@@ -6178,101 +5804,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeErrSchemaNewer => '主题来自更新版本的 APRSlocus，请先升级应用';
 
   @override
-  String get themeErrEmpty => '文件里没有可用的主题';
+  String get themeExport => '导出此主题';
 
   @override
-  String get themeFixedPrimary => '当前主题已固定主色，请到「主题」页修改';
+  String get themeExportAll => '导出全部主题';
 
   @override
-  String get themeTokenPrimary => '主色';
+  String get themeExportClipboardTooBig => '图片较大，无法通过剪贴板传递，请用「导出全部主题」保存为文件';
 
   @override
-  String get themeTokenSurface => '卡片表面';
-
-  @override
-  String get themeTokenBackground => '页面背景';
-
-  @override
-  String get themeTokenBackgroundSoft => '次层背景';
-
-  @override
-  String get themeTokenTextPrimary => '主文字';
-
-  @override
-  String get themeTokenTextSecondary => '次要文字';
-
-  @override
-  String get themeTokenTextMuted => '弱化文字';
-
-  @override
-  String get themeTokenDivider => '分隔线';
-
-  @override
-  String get themeTokenSuccess => '成功/在线';
-
-  @override
-  String get themeTokenWarning => '警告';
-
-  @override
-  String get themeTokenDanger => '危险/离线';
-
-  @override
-  String get themeTokenInfo => '信息/强调';
-
-  @override
-  String get themeBg => '背景图';
-
-  @override
-  String get themeBgDesc => '用一张图片做整个界面的底；卡片会自动变得半透明';
-
-  @override
-  String get themeBgPick => '选择图片';
-
-  @override
-  String get themeBgReplace => '更换图片';
-
-  @override
-  String get themeBgRemove => '移除背景图';
-
-  @override
-  String get themeBgOpacity => '不透明度';
-
-  @override
-  String get themeBgOpacityDesc => '同时决定遮罩浓度：调高更看见图，也更容易看不清文字';
-
-  @override
-  String get themeBgBlur => '模糊';
-
-  @override
-  String get themeBgBlurDesc => '模糊能把照片的细节压掉，让上面的文字更清楚';
-
-  @override
-  String get themeBgFit => '填充方式';
-
-  @override
-  String get themeBgFitCover => '铺满';
-
-  @override
-  String get themeBgFitContain => '完整显示';
-
-  @override
-  String get themeBgFitStretch => '拉伸';
-
-  @override
-  String get themeBgFitTile => '平铺';
-
-  @override
-  String get themeBgNone => '未设置';
-
-  @override
-  String get themeBgErrTooLarge => '背景图超过 8MB，请先压缩（图标上限是 2MB）';
-
-  @override
-  String get themeBgLocalOnly =>
-      '背景图只存在本机：主题文件里只记录引用，不含图片本身，分享给别人后对方会看到无背景的主题。';
-
-  @override
-  String get themeBgDisabledHint => '当前主题未使用背景图，界面底为纯色';
+  String get themeExportNoImages => '当前主题没有引用图片，导出文件只含配色与文字';
 
   @override
   String get themeExportWithImages => '导出时包含图片';
@@ -6283,57 +5824,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get themeExportNoImages => '当前主题没有引用图片，导出文件只含配色与文字';
+  String get themeFixedPrimary => '当前主题已固定主色，请到「主题」页修改';
 
   @override
-  String get themeExportClipboardTooBig => '图片较大，无法通过剪贴板传递，请用「导出全部主题」保存为文件';
-
-  @override
-  String themeImportImagesSkipped(int n) {
-    return '有 $n 张图片未导入（过大或格式不支持）';
-  }
-
-  @override
-  String get backupThemeImagesHint => '备份会包含主题引用的图片本体；不包含时，换机恢复后主题会回退成内置图标';
-
-  @override
-  String get backupThemeImagesOff => '不含图片：备份更小，但换机恢复后主题会缺少背景与自定义图标';
-
-  @override
-  String get themeSurface => '卡片表面';
-
-  @override
-  String get themeSurfaceDesc => '有背景图时，卡片要多透才既看得见图又读得清字';
-
-  @override
-  String get themeSurfaceAlpha => '不透明度（越低越透）';
-
-  @override
-  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮盖力又透出一点背景；低于 0.6 文字容易糊';
-
-  @override
-  String get themeSurfaceNoBg => '当前没有背景图，这一项暂时看不出效果';
-
-  @override
-  String get themeLayout => '界面松紧与字体';
-
-  @override
-  String get themeLayoutDesc => '只作用于卡片与输入框的留白，不改各处细节间距';
-
-  @override
-  String get themeDensity => '松紧';
-
-  @override
-  String get themeDensityCompact => '紧凑';
-
-  @override
-  String get themeDensityNormal => '标准';
-
-  @override
-  String get themeDensityComfortable => '宽松';
-
-  @override
-  String get themeDensityHint => '改的是卡片内边距；若某项看起来没变，说明那处留白是单独写死的';
+  String get themeFollowsPrimary => '跟随主色';
 
   @override
   String get themeFont => '字体';
@@ -6342,76 +5836,148 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeFontDefault => '跟随系统';
 
   @override
-  String get themeFontSystem => '系统界面字体';
+  String get themeFontHint => '只使用系统已装的字体；某台设备没装时会自动回退，不会变方框';
 
   @override
   String get themeFontMono => '等宽';
 
   @override
-  String get themeFontHint => '只使用系统已装的字体；某台设备没装时会自动回退，不会变方框';
+  String get themeFontSystem => '系统界面字体';
 
   @override
-  String get themeTabs => '强调色';
+  String get themeIconErrFailed => '导入图标失败';
 
   @override
-  String get themeTabsDesc => '入口卡片的渐变色，以及每个页签自己的强调色';
+  String get themeIconErrFormat => '不支持的图片格式（支持 PNG/JPG/WebP/GIF/BMP/SVG）';
 
   @override
-  String get themeUniformAccent => '统一入口卡片配色';
+  String get themeIconErrTooLarge => '图片超过 2MB，请先压缩';
 
   @override
-  String get themeAccentFrom => '渐变起始色';
+  String get themeIconErrUnsupported => '当前平台不支持导入图片';
 
   @override
-  String get themeAccentTo => '渐变结束色';
+  String get themeIconImport => '从图片导入';
+
+  @override
+  String themeIconImportDone(String name) {
+    return '已导入图标：$name';
+  }
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
+
+  @override
+  String get themeIconWebHint => 'Web 版不支持导入图片，请使用内置图标库';
+
+  @override
+  String get themeIcons => '图标';
+
+  @override
+  String get themeIconsDesc => '为底部页签与设置入口换图标';
+
+  @override
+  String get themeImport => '导入主题';
+
+  @override
+  String themeImportDone(int n) {
+    return '已导入 $n 个主题';
+  }
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '有 $n 张图片未导入（过大或格式不支持）';
+  }
+
+  @override
+  String get themeImportPaste => '从剪贴板导入';
+
+  @override
+  String get themeIo => '导入与导出';
+
+  @override
+  String get themeIoDesc => '主题是 JSON 文本，可以分享给别人，也可以手工编辑';
+
+  @override
+  String get themeLayout => '界面松紧与字体';
+
+  @override
+  String get themeLayoutDesc => '只作用于卡片与输入框的留白，不改各处细节间距';
+
+  @override
+  String get themeNameHint => '主题名称';
+
+  @override
+  String get themeNew => '新建主题';
 
   @override
   String get themeOverridden => '已自定义';
 
   @override
-  String get themeFollowsPrimary => '跟随主色';
+  String get themePickColor => '选择颜色';
 
   @override
-  String get themeBgAlign => '对齐';
+  String get themePickIcon => '选择图标';
 
   @override
-  String get themeAlignCenter => '居中';
+  String get themePickIconSearch => '搜索图标名（英文）';
 
   @override
-  String get themeAlignTop => '上';
+  String get themePresetAmber => '琥珀';
 
   @override
-  String get themeAlignBottom => '下';
+  String get themePresetContrast => '高对比';
 
   @override
-  String get themeAlignLeft => '左';
+  String get themePresetDefault => '默认';
 
   @override
-  String get themeAlignRight => '右';
+  String get themePresetForest => '森林';
 
   @override
-  String get themeAlignTopLeft => '左上';
+  String get themePresetGraphite => '石墨';
 
   @override
-  String get themeAlignTopRight => '右上';
+  String get themePresetMidnight => '暗夜';
 
   @override
-  String get themeAlignBottomLeft => '左下';
+  String get themePresetOcean => '海洋';
 
   @override
-  String get themeAlignBottomRight => '右下';
+  String get themePresetSakura => '樱花';
 
   @override
-  String get themeBgScale => '缩放';
+  String get themePresetSunset => '日落';
 
   @override
-  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用于「只取画面一角」';
+  String get themePresetTag => '预设';
 
   @override
-  String get themeAuthor => '作者';
+  String get themePresetTerminal => '终端';
 
   @override
-  String get themeDescription => '说明';
+  String get themePresets => '预设与我的主题';
+
+  @override
+  String get themePreviewSwatches => '预览色板';
+
+  @override
+  String get themeRadius => '卡片圆角';
+
+  @override
+  String get themeRadiusDesc => '作用于卡片与输入框（小徽标等不受影响）';
+
+  @override
+  String get themeRename => '重命名';
+
+  @override
+  String get themeReset => '恢复默认';
+
+  @override
+  String get themeResetAll => '重置本主题';
+
+  @override
+  String get themeSaved => '主题已保存';
 
   @override
   String get themeSkinInfo => '皮肤信息';
@@ -6420,161 +5986,628 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeSkinInfoDesc => '分享给别人时，这两项会跟着皮肤一起走';
 
   @override
-  String get themeAuthorHint => '你的呼号或昵称';
+  String get themeSubtitle => '把界面配色、图标与常用文案改成你自己的';
 
   @override
-  String get themeDescHint => '一句话说明这套皮肤';
+  String get themeSurface => '卡片表面';
 
   @override
-  String get themePreviewSwatches => '预览色板';
+  String get themeSurfaceAlpha => '不透明度（越低越透）';
 
   @override
-  String get themePresetGraphite => '石墨';
+  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮盖力又透出一点背景；低于 0.6 文字容易糊';
 
   @override
-  String get themePresetSakura => '樱花';
+  String get themeSurfaceDesc => '有背景图时，卡片要多透才既看得见图又读得清字';
 
   @override
-  String get themePresetTerminal => '终端';
+  String get themeSurfaceNoBg => '当前没有背景图，这一项暂时看不出效果';
 
   @override
-  String get themePresetAmber => '琥珀';
+  String get themeTabs => '强调色';
 
   @override
-  String get sysRecentLabel => '最近收到';
+  String get themeTabsDesc => '入口卡片的渐变色，以及每个页签自己的强调色';
 
   @override
-  String get audioWavImportAction => '选择 WAV 文件';
+  String get themeTextHint => '留空即恢复默认';
 
   @override
-  String get audioWavExportToDownloads => '导出到下载目录';
+  String get themeTexts => '文字';
 
   @override
-  String audioWavSavedTo(String path) {
-    return '已保存到 $path';
+  String get themeTextsDesc => '覆写常用文案（按钮与错误提示不开放，避免界面变得不可操作）';
+
+  @override
+  String get themeTitle => '主题';
+
+  @override
+  String get themeTokenBackground => '页面背景';
+
+  @override
+  String get themeTokenBackgroundSoft => '次层背景';
+
+  @override
+  String get themeTokenDanger => '危险/离线';
+
+  @override
+  String get themeTokenDivider => '分隔线';
+
+  @override
+  String get themeTokenInfo => '信息/强调';
+
+  @override
+  String get themeTokenPrimary => '主色';
+
+  @override
+  String get themeTokenSuccess => '成功/在线';
+
+  @override
+  String get themeTokenSurface => '卡片表面';
+
+  @override
+  String get themeTokenTextMuted => '弱化文字';
+
+  @override
+  String get themeTokenTextPrimary => '主文字';
+
+  @override
+  String get themeTokenTextSecondary => '次要文字';
+
+  @override
+  String get themeTokenWarning => '警告';
+
+  @override
+  String get themeUniformAccent => '统一入口卡片配色';
+
+  @override
+  String get tierIdleShort => '静止/低速';
+
+  @override
+  String get tierIdleTitle => '编辑 · 静止/低速档';
+
+  @override
+  String get tierMinDist => '移动距离 (米)';
+
+  @override
+  String get tierMinDistHint => '自上次上报以来移动超过这个距离，就补报一次；0 = 关闭（只按间隔）';
+
+  @override
+  String get tierMinTurn => '航向变化 (度)';
+
+  @override
+  String get tierMinTurnHint =>
+      '转过这个角度就补报一次（可填 10~180）；0 = 关闭。只在行驶中生效（停着不动时航向是噪声）';
+
+  @override
+  String get tierSpeedTitle => '编辑 · 速度档';
+
+  @override
+  String get time => '时间';
+
+  @override
+  String get timeJustNow => '刚刚';
+
+  @override
+  String get tncBindSubtitle => '绑定并连接电台侧的 TNC';
+
+  @override
+  String get tncBindTitle => '蓝牙 TNC';
+
+  @override
+  String get tncBoundDevice => '已绑定设备';
+
+  @override
+  String get tncConnectAction => '连接 TNC';
+
+  @override
+  String get tncDeviceDesc => '蓝牙/串口绑定、初始化串、KISS 参数与发射自检';
+
+  @override
+  String get tncDeviceTitle => 'TNC 设备与参数';
+
+  @override
+  String get tncErrBadFormat => '报文格式不合法';
+
+  @override
+  String get tncErrFrameTooLong => '帧长超出上限';
+
+  @override
+  String get tncErrNoDevice => '未绑定 TNC 设备';
+
+  @override
+  String get tncErrNotConnected => '链路未连接';
+
+  @override
+  String get tncErrOpenRead => '无法打开设备（读）';
+
+  @override
+  String get tncErrOpenWrite => '无法打开设备（写）—— Windows 的 COM 口是独占设备，检查是否被其他软件占用';
+
+  @override
+  String get tncErrTimeout => '连接超时';
+
+  @override
+  String get tncErrUnsupported => '当前平台不支持';
+
+  @override
+  String get tncGroupDisabled => '射频模式不支持群聊广播';
+
+  @override
+  String get tncInitDelay => '行间隔 (ms)';
+
+  @override
+  String get tncInitDelayTip => '每行命令之间的等待时间。模块处理命令需要时间，太短会丢命令';
+
+  @override
+  String get tncInitEmpty => '未填写初始化串';
+
+  @override
+  String get tncInitSendAction => '立即发送初始化串';
+
+  @override
+  String tncInitSent(int n) {
+    return '已发送 $n 行初始化串';
   }
 
   @override
-  String get audioWavCopyPath => '复制路径';
+  String get tncInitSubtitle => '连接后逐行发送（等价 APRSdroid 的 kiss.init）';
 
   @override
-  String get audioWavPathCopied => '路径已复制';
+  String get tncInitTip =>
+      '若 TNC「能收不能发」，先在这里试：很多蓝牙/串口 TNC 模块上电停在命令模式，必须先收到 KISS ON、RESTART 等指令才进入 KISS 转发状态。每行一条命令（发送时自动补 CRLF）。';
 
   @override
-  String get audioWavCanceled => '已取消（未选择文件）';
+  String get tncInitTitle => 'TNC 初始化串';
 
   @override
-  String get audioWavVerifyFailed => '导出前的自检失败：生成的音频解不出本报文（请反馈）';
+  String get tncLog => '链路日志';
 
   @override
-  String get audioWavMobileHint =>
-      'Android 不能写任意目录：导出会保存到「下载/APRSlocusAudio」，无需填路径；拷到电脑后即可喂给 Direwolf 或电台';
+  String get tncLogEmpty => '暂无日志';
 
   @override
-  String get audioWavPickHint => '桌面端请在下方填写 WAV 路径';
+  String get tncMsgDesc => '射频信道是共享资源，消息能力相应受限';
 
   @override
-  String get audioTxLevel => '发射电平';
-
-  @override
-  String get audioTxLevelTip => '发射前系统会把媒体音量拉到最大、并暂停麦克风采集；峰值太低或削顶都会让对端解不出';
-
-  @override
-  String audioTxPeak(int p, String sec, int flags) {
-    return '峰值 $p% · ${sec}s · 前导 $flags flag';
+  String tncMsgLimitHint(String n) {
+    return '单条限 $n 字符（APRS 消息规范）';
   }
 
   @override
-  String get audioTxLevelClip => '波形削顶：请把「输出幅度」调到 0.8 以下（削顶会产生谐波）';
+  String get tncMsgTitle => '射频（TNC）模式';
 
   @override
-  String get audioTxLevelLow => '电平偏低：对方可能解不出，请调高「输出幅度」与设备音量';
+  String get tncMsgTooLong => '超出射频模式单条消息长度上限';
 
   @override
-  String get audioWiringHint =>
-      '接电台请用音频线（耳机口 → 电台数据口/话筒）；手机扬声器在 2200Hz 衰减很大，对着麦克风很难解出。对端是电脑上的 Direwolf 时，先用「导出」出的 WAV 验证一遍，能解出就说明问题在音频通路而不是协议';
+  String get tncNeedConnected => '请先连接 TNC';
 
   @override
-  String packetLimitRf(int bytes, int max) {
-    return '整包 $bytes 字节 · 射频单帧上限 $max 字节';
-  }
+  String get tncNeedPermission => '需要蓝牙权限（扫描蓝牙设备用）；只用 USB 串口可忽略，插线时系统会单独弹出授权';
 
   @override
-  String packetLimitIs(int bytes) {
-    return '整包 $bytes 字节 · APRS-IS 单行上限 512 字节';
-  }
+  String get tncNoPaired => '未找到设备 · 请先在系统蓝牙设置里配对 TNC，或插上 USB 串口线（OTG）';
 
   @override
-  String get packetTcpipWarning => '含 TCPIP*：射频上会被自动剔除（那是 APRS-IS 的路径）';
+  String get tncNotBound => '未绑定设备';
 
   @override
-  String packetSent(String line) {
-    return '已交给链路发送：$line';
-  }
+  String get tncOpenFailedHint => '打开设备失败 · Windows 的 COM 口是独占设备，请确认没有被其他软件占用';
 
   @override
-  String packetSendFailed(String err) {
-    return '未发送：$err';
-  }
+  String get tncPushParams => '连接后下发 KISS 参数';
+
+  @override
+  String get tncPushParamsTip =>
+      '默认关闭（与 APRSdroid 一致）。打开后连接时会把上面的参数推给 TNC，覆盖它自己的配置 —— 参数不合适可能让它一直退避而不发射，所以只在需要统一管理时打开。';
+
+  @override
+  String get tncRestart => '重启链路';
+
+  @override
+  String get tncScanPaired => '扫描设备（蓝牙已配对 + USB 串口）';
 
   @override
   String get tncSerialBaud => '串口线速 (bd)';
+
+  @override
+  String get tncSerialBaudBluetooth => '当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效';
+
+  @override
+  String get tncSerialBaudHint => '改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）';
 
   @override
   String get tncSerialBaudTip =>
       'USB 串口线与电台数据口必须同速，否则一个字节都收不到。常见值：9600 / 19200 / 38400 / 57600 / 115200。蓝牙 SPP 没有波特率概念，绑蓝牙设备时此项不生效。';
 
   @override
-  String get tncSerialBaudHint => '改完线速后需要重新连接才会生效（点「下发参数」会自动重连一次）';
+  String tncStats(String rx, String tx) {
+    return '收 $rx 帧 · 发 $tx 帧';
+  }
 
   @override
-  String get tncSerialBaudBluetooth => '当前绑的是蓝牙设备：蓝牙 SPP 没有波特率概念，此项不生效';
+  String get tncSupportedNo => '当前平台暂不支持 TNC 链路';
 
   @override
-  String get uiMaterial => '界面材质';
+  String get tncSwitchOff => '已关闭';
 
   @override
-  String get uiMaterialDesc => '让卡片、顶栏与弹窗半透明，并在它们背后做真实模糊';
+  String get tncSwitchOn => '已开启';
 
   @override
-  String get uiMaterialOff => '关闭（实色）';
+  String get tncTxTestAction => '写入测试帧';
 
   @override
-  String get uiMaterialOffDesc => '表面实色，与旧版完全一致';
+  String tncTxTestFail(String err) {
+    return '未写入：$err';
+  }
 
   @override
-  String get uiMaterialGlass => '磨砂玻璃';
+  String get tncTxTestHint =>
+      '发的是一帧状态包（不含坐标），不会把台站在 aprs.fi 上挪位置。若这里显示「已写入」却仍然不发射，问题在 TNC 侧：先试初始化串（KISS ON / RESTART），再检查 TxDelay 与信道占用。';
 
   @override
-  String get uiMaterialGlassDesc => '更透、模糊更强：像 Windows 11 的亚克力（Acrylic）';
+  String tncTxTestOk(String n) {
+    return '已写入 TNC（累计 $n 帧）。若电台仍不发射，问题在 TNC 侧：试初始化串或检查 TxDelay。';
+  }
 
   @override
-  String get uiMaterialMica => '云母';
+  String get tncTxTestOkPrefix => '已写入';
 
   @override
-  String get uiMaterialMicaDesc => '更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）';
+  String get tncTxTestSubtitle => '向 TNC 写一帧测试包，判断问题在链路还是 TNC';
 
   @override
-  String get uiMaterialHint =>
-      '材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。';
+  String get tncTxTestTitle => '发射自检';
 
   @override
-  String get uiMaterialBgHint => '当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。';
+  String get tncUnbind => '解除绑定';
 
   @override
-  String get uiMaterialPreview => '预览';
+  String get totalStations => '总数';
+
+  @override
+  String get track => '轨迹';
+
+  @override
+  String get trackActive => '在线';
+
+  @override
+  String get trackGroupEmpty => '组内成员暂无位置数据（未收到或未上报），点击下方可编辑成员。';
+
+  @override
+  String get trackGroupNameHint => '组名，如：周末骑行';
+
+  @override
+  String get trackGroupsEmptyHint => '还没有跟踪组，点「新建跟踪组」创建一组要跟踪的呼号。';
+
+  @override
+  String trackHeader(Object fixed, Object online, Object total) {
+    return '$total 人 · $online 在线 · $fixed 已定位';
+  }
+
+  @override
+  String trackMemberSub(Object seen, Object type) {
+    return '$type · $seen';
+  }
+
+  @override
+  String get trackModeFitAll => '全览保持中';
+
+  @override
+  String trackModeFollow(Object call) {
+    return '跟随 $call';
+  }
+
+  @override
+  String get trackModeMe => '跟随我';
+
+  @override
+  String trackPoints(int count) {
+    return '轨迹 ($count 点)';
+  }
+
+  @override
+  String get trackWaitingPos => '等待位置…';
+
+  @override
+  String get trackingBeaconing => '定位运行中，正在持续上报位置';
+
+  @override
+  String get translate => '翻译';
+
+  @override
+  String get translateAuto => '自动翻译收到的消息';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return '所有免密钥接口都不可用（$e）· 建议在设置里改用 Google / 百度密钥或自建实例';
+  }
+
+  @override
+  String get translateAutoTip => '仅对本会话生效；只翻译对方发来的消息';
+
+  @override
+  String get translateBaiduAppId => '百度 App ID';
+
+  @override
+  String get translateBaiduKey => '百度密钥';
+
+  @override
+  String get translateBaiduTip => '在百度翻译开放平台申请「通用文本翻译」，密钥只保存在本机';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '已翻译 $n 条';
+  }
+
+  @override
+  String get translateContrast => '对照显示原文与译文';
+
+  @override
+  String get translateContrastTip => '关闭后只显示译文（原文仍可通过长按查看）';
+
+  @override
+  String get translateCopyOriginal => '复制原文';
+
+  @override
+  String get translateCopyResult => '复制译文';
+
+  @override
+  String get translateCustomBody => '请求体模板';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return '可用占位符：$text 原文、$from 源语言、$to 目标语言。选择 GET 时忽略此项';
+  }
+
+  @override
+  String get translateCustomHeaders => '请求头 (JSON)';
+
+  @override
+  String get translateCustomMethod => '请求方式';
+
+  @override
+  String get translateCustomResultPath => '结果字段路径';
+
+  @override
+  String get translateCustomResultPathTip =>
+      '用点号表示层级，数组用序号，如 data.translations.0.translatedText';
+
+  @override
+  String get translateCustomUrl => '接口地址';
+
+  @override
+  String translateFailed(String e) {
+    return '翻译失败：$e';
+  }
+
+  @override
+  String translateFreeFailed(String e) {
+    return '免费接口暂时不可用（$e）· 可在设置里改用 Google / 百度 / 自定义接口';
+  }
+
+  @override
+  String get translateGoogleKey => 'Google API Key';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Google Cloud Translation v2 的 API Key，需要自行到 Google Cloud 控制台申请';
+
+  @override
+  String get translateInput => '翻译输入内容';
+
+  @override
+  String get translateLangAuto => '自动检测';
+
+  @override
+  String get translateLangScopeNote =>
+      '各接口支持的语种范围不同（例如百度标准版支持印尼语 id，但并非所有方向都支持）· 遇到不支持时会提示改用自动或其它接口';
+
+  @override
+  String get translateLangUnsupported => '该接口不支持翻译成这一语言 · 可改用「自动」或其它接口';
+
+  @override
+  String get translateLearned => '已自动识别';
+
+  @override
+  String get translateLibreKey => '实例 API Key（公共实例需要，自建可留空）';
+
+  @override
+  String get translateLibreUrl => '实例地址';
+
+  @override
+  String get translateMyLang => '我的语言';
+
+  @override
+  String get translateMyLangHint => '对方发来的消息翻成它';
+
+  @override
+  String get translateNeedConfig => '请先填写翻译接口配置';
+
+  @override
+  String get translateNotNeeded => '该内容无需翻译（数字 / 符号 / 呼号）';
+
+  @override
+  String get translateOutCancel => '取消翻译';
+
+  @override
+  String get translateOutNeedPeer => '还不知道对方使用什么语言 · 先在会话翻译设置里指定';
+
+  @override
+  String translateOutPreview(String text) {
+    return '将发送：$text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return '已译为 $lang · 点发送即按此发出';
+  }
+
+  @override
+  String get translateOutgoing => '发送前翻译成对方的语言';
+
+  @override
+  String get translateOutgoingTip => '开启后按发送会先把内容译成对方的语言再发出；请确认对方能读懂该语言';
+
+  @override
+  String get translatePeerLang => '对方的语言';
+
+  @override
+  String get translatePeerUnknown => '还不知道对方使用什么语言 · 先在翻译设置里指定，或收几条对方消息后会自动识别';
+
+  @override
+  String get translatePeerUnknownHint => '收到对方消息后由翻译接口自动识别';
+
+  @override
+  String get translatePrivacyNote => '翻译会把消息文本发送到你选择的第三方接口，请自行评估隐私';
+
+  @override
+  String get translateProvider => '翻译接口';
+
+  @override
+  String get translateProviderAuto => '自动（推荐）';
+
+  @override
+  String get translateProviderAutoDesc => '依次尝试多个免密钥接口，取第一个真正翻译成功的结果';
+
+  @override
+  String get translateProviderBaidu => '百度翻译';
+
+  @override
+  String get translateProviderCustom => '自定义';
+
+  @override
+  String get translateProviderFree => '免费接口（无需密钥）';
+
+  @override
+  String get translateProviderFreeDesc => '开箱即用 · 使用公开端点，可能被限流或不稳定';
+
+  @override
+  String get translateProviderGoogle => 'Google 翻译';
+
+  @override
+  String get translateProviderGooglePublic => 'Google 公开端点（免密钥）';
+
+  @override
+  String get translateProviderGooglePublicDesc => '质量较好，但可能被限流（实测会返回 429）';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate（可自建）';
+
+  @override
+  String get translateProviderLibreDesc => '开源、可自建最可靠；公共实例现已要求密钥且常不支持中文';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory（免密钥）';
+
+  @override
+  String get translateProviderMyMemoryDesc => '官方免费接口，但本质是翻译记忆库：无匹配语料时会返回原文';
+
+  @override
+  String get translateRetry => '重新翻译';
+
+  @override
+  String get translateSameLang => '译文与原文相同 · 可能无需翻译，或该接口未能翻译';
+
+  @override
+  String translateSentAs(String text) {
+    return '已按对方语言发出：$text';
+  }
+
+  @override
+  String get translateSettings => '翻译设置';
+
+  @override
+  String get translateSettingsSubtitle => '翻译接口、语言与自动翻译';
+
+  @override
+  String get translateShowOriginal => '显示原文';
+
+  @override
+  String get translateShowTranslation => '显示译文';
+
+  @override
+  String get translateSideIncoming => '对方发来';
+
+  @override
+  String get translateSideOutgoing => '我发出';
+
+  @override
+  String get translateSourceLang => '原文语言';
+
+  @override
+  String get translateTargetLang => '翻译为';
+
+  @override
+  String get translateTest => '测试翻译';
+
+  @override
+  String translateTestOk(String text) {
+    return '接口可用：$text';
+  }
+
+  @override
+  String get translateText => '翻译文本';
+
+  @override
+  String get translateToMeTag => '译给我看';
+
+  @override
+  String get translateToPeerTag => '对方将读到';
+
+  @override
+  String translateTooLongAfter(int n) {
+    return '译文超出长度上限（$n 字符），未发送';
+  }
+
+  @override
+  String get translateTranslating => '正在翻译…';
+
+  @override
+  String get translateUntranslated => '接口没有真正翻译（返回了原文）· 已自动尝试下一个接口';
+
+  @override
+  String get translateUsedProvider => '本次实际使用';
+
+  @override
+  String get txButton => '发射';
+
+  @override
+  String get txNothingFilled => '上面几项都为空，没有可发送的内容';
+
+  @override
+  String get txPartPosition => '位置报文';
+
+  @override
+  String get txPartStatus => '状态报文';
+
+  @override
+  String txSent(String parts) {
+    return '已发射：$parts';
+  }
+
+  @override
+  String get typeFilter => '类型筛选';
+
+  @override
+  String get typeGroup => '类型';
 
   @override
   String get uiLayout => '界面布局';
-
-  @override
-  String get uiLayoutDesc => '2.0 把地图当成整个界面的底：其余页面收进底部可上滑的卡片';
 
   @override
   String get uiLayoutClassic => '经典布局（1.0）';
 
   @override
   String get uiLayoutClassicDesc => '宽屏左侧栏 + 窄屏底部导航，与旧版完全一致';
+
+  @override
+  String get uiLayoutDesc => '2.0 把地图当成整个界面的底：其余页面收进底部可上滑的卡片';
+
+  @override
+  String get uiLayoutHint => '切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移';
 
   @override
   String get uiLayoutSheet => '地图为基底（2.0）';
@@ -6584,13 +6617,19 @@ class AppLocalizationsZh extends AppLocalizations {
       '地图常驻整屏；台站 / 消息 / 数据包 / 设置装进底部可拖拽卡片，上滑或点把手即可展开';
 
   @override
-  String get uiLayoutHint => '切换后立即生效，两种布局的设置各自保留；卡片收起时地图上的按钮会自动上移';
+  String get uiMaterial => '界面材质';
 
   @override
-  String get linkNotConnected => '未连接';
+  String get uiMaterialBgHint => '当前主题用了背景图：材质不再另画底色，只把顶栏与浮层做成磨砂。';
 
   @override
-  String get linkTapForSettings => '点一下查看连接设置';
+  String get uiMaterialDesc => '让卡片、顶栏与弹窗半透明，并在它们背后做真实模糊';
+
+  @override
+  String get uiMaterialGlass => '磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassDesc => '更透、模糊更强：像 Windows 11 的亚克力（Acrylic）';
 
   @override
   String get uiMaterialGlassFull => '满血磨砂玻璃';
@@ -6600,794 +6639,283 @@ class AppLocalizationsZh extends AppLocalizations {
       '最透、最糊，而且**小组件也一起糊**（工具钮 / 图例 / 小提示都有磨砂）—— 观感最重，也最吃显卡';
 
   @override
-  String get posAccuracy => '位置精度';
+  String get uiMaterialHint =>
+      '材质只作用于应用自己的表面（卡片、顶栏、导航栏、弹窗、地图浮层），不是系统窗口的透明。模糊要占显卡：旧机型上可能不如关闭时顺滑。';
 
   @override
-  String get locationStill => '静止';
+  String get uiMaterialMica => '云母';
 
   @override
-  String get dataSourceAudioShort => '音频';
-  @override
-  String get historyTracks => "历史轨迹";
-
-  @override
-  String get historyTracksDesc => "按天记录自己的速度与里程，保存在本机";
-
-  @override
-  String get historyEmpty => "还没有历史轨迹。开始定位并移动后会自动记录。";
-
-  @override
-  String get historyTotalDistance => "总里程";
-
-  @override
-  String get historyMaxSpeed => "最高速度";
-
-  @override
-  String get historyMovingTime => "移动时长";
-
-  @override
-  String get historyPoints => "轨迹点";
-
-  @override
-  String get historyClearDay => "删除这一天的记录";
-
-  @override
-  String get historyCleared => "已删除该天记录";
-
-  @override
-  String get historyClearAll => "清空全部历史轨迹";
-
-  @override
-  String get historyClearAllConfirm => "确定要清空全部历史轨迹吗？此操作无法撤销。";
-
-  @override
-  String get historyClearedAll => "已清空全部历史轨迹";
-
-  @override
-  String get sensorAssist => "传感器辅助定位";
-
-  @override
-  String get sensorAssistDesc => "用加速度计判断是否真的在移动、用指南针补正低速航向，让轨迹打点更准（仅 Android 生效）。";
-  @override
-  String get historyTapDay => "点按某一天可查看地图与回放";
-
-  @override
-  String get historyPlay => "播放";
-
-  @override
-  String get historyPause => "暂停";
-
-  @override
-  String get historyReplay => "重播";
-
-  @override
-  String get historyFollow => "跟随";
-  @override
-  String get locationCoarse => "网络定位（粗）";
-  @override
-  String get locModeNetHint => "网络/基站定位误差常在几百米。为免地图上的「我」来回跳，只有 GPS 停更 5 分钟后才用它兜底；粗定位点不写进轨迹与历史，也不会触发自动上报。";
-  @override
-  String get beaconCoarseFix => "网络定位中 · 暂不自动上报";
-
-  @override
-  String get beaconCoarseHint => "当前定位来自网络（粗，误差常达几百米）—— 自动上报已暂停，GPS 恢复后自动继续；期间仍可手动上报。";
-  @override
-  String get locationGarmin => "佳明 LiveTrack";
-
-  @override
-  String get hrCardTitle => "心率";
-
-  @override
-  String get hrCardSubtitle => "蓝牙心率带（标准心率服务），可随信标一起上报";
-
-  @override
-  String get hrIncludeInBeacon => "信标附带心率";
-
-  @override
-  String get hrIncludeHint => "开启后在位置包的备注里加 HR=nn（APRS 的通行写法，第三方地图会当备注显示）。没有读数时不会发 HR=0 —— 那会被收端当成「心率 0」而不是「没测」。";
-
-  @override
-  String get hrConnected => "已连接 {name}";
-
-  @override
-  String get hrWaitReading => "等待读数（把心率带贴紧皮肤）";
-
-  @override
-  String get hrSearch => "搜索心率设备";
-
-  @override
-  String get hrScanning => "正在搜索…";
-
-  @override
-  String get hrStopScan => "停止搜索";
-
-  @override
-  String get hrNoDevice => "没有找到心率设备。确认心率带正在广播（多数胸带贴上电极片就开始广播），并让它离手机近一些。";
-
-  @override
-  String get hrConnect => "连接";
-
-  @override
-  String get hrDisconnect => "断开";
-
-  @override
-  String get hrForget => "忘记该设备";
-
-  @override
-  String get hrNotSupported => "本机不支持蓝牙心率（该功能在 Android / iOS 版提供）";
-
-  @override
-  String get hrConflictWithTnc => "这个设备正被 TNC / PKWDWPL 的蓝牙链路使用，不能同时当心率带";
-
-  @override
-  String get hrStrapHint => "支持标准心率服务（0x180D）的胸带/臂带都行，例如 Polar H10、Garmin HRM、迈金、Coospo。TNC 走经典蓝牙、心率走 BLE，两条链路互不干扰。";
-
-  @override
-  String get garminCardTitle => "佳明 LiveTrack";
-
-  @override
-  String get garminCardSubtitle => "把佳明手表的活动实时位置接进来，随信标上报";
-
-  @override
-  String get garminUrlLabel => "分享链接";
-
-  @override
-  String get garminPaste => "从剪贴板粘贴";
-
-  @override
-  String get garminStart => "开始追踪";
-
-  @override
-  String get garminStop => "停止追踪";
-
-  @override
-  String get garminRunning => "追踪中";
-
-  @override
-  String get garminStats => "已转发 {n} 个点 · 最后更新 {t}";
-
-  @override
-  String get garminBadUrl => "链接格式不对。请粘贴完整的 LiveTrack 分享链接（含 /session/…/token/…）";
-
-  @override
-  String get garminNoPoints => "还没有取到点。活动可能刚开始，或链接已过期。";
-
-  @override
-  String get garminError => "抓取失败：{error}";
-
-  @override
-  String get garminHowTo => "怎么拿到链接：在佳明 Connect App 里打开该活动 → 分享 → 选「APRSlocus」（本应用已注册系统分享入口），链接会自动填到这里并开始追踪；也可以手动复制链接后粘贴到上面。";
-
-  @override
-  String get garminSharedToast => "已收到佳明分享链接";
-
-  @override
-  String get garminOpen => "去设置";
-
-  @override
-  String get garminWebUnsupported => "Web 版不支持（浏览器的跨域限制），请在 Android / Windows 版使用";
-
-  @override
-  String get hrForTncNote => "心率带与 TNC 用的是两套蓝牙（BLE / 经典），可以同时连接";
-  @override
-  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
-
-
-
-
-  @override
-  String get beaconGarminSource => "佳明 LiveTrack 上报中";
-
-  @override
-  String beaconGarminNext(String s, String hr) => "佳明上报 · $s · ❤$hr";
-
-  @override
-  String get posSourceLabel => "位置来源";
-
-  @override
-  String get hrSourceLabel => "心率来源";
-
-  @override
-  String get ownSourcePhoneGps => "手机 GPS";
-
-  @override
-
-  @override
-  String positionBeaconDetail(String grid, String detail) => "位置信标 · 网格 $grid · $detail";
-
-  @override
-  String beaconAttachedHr(String hr) => "心率 $hr";
-
-  @override
-  String get beaconAttachedNone => "未附带心率";
-
-  @override
-  String get posSourceIdle => "未追踪（未启动定位）";
-
-  @override
-  String get ownSourceGarminLive => "追踪中（手机 GPS 已让位）";
-
-  @override
-  String get ownSourceGarminStale => "链接有效，但佳明没有新点（暂时用不到）";
-
-  @override
-  String get ownSourceHrIdle => "未连接（点一下连接心率带）";
-
-  @override
-  String hrLineHr(String hr) => "心率 $hr";
-
-  @override
-
-  @override
-
-  @override
-
-  @override
-  String get garminShareNoLink => "分享的内容里没有找到佳明 LiveTrack 链接";
-
-  @override
-  String get hrFromGarmin => "心率来自佳明 LiveTrack（手表）";
-
-  @override
-  String get sourceMovedHint => "要启用 / 切换数据来源（链路），请到「设置 → 设备」";
-
-  @override
-  String get posSourcePrecedence => "同时可用时的优先级：模拟/手动位置 › 佳明（手表有实时数据时）› 手机 GPS";
-
-  @override
-  String posSourceUsing(String src) => "当前使用：$src";
-
-  @override
-  String get posSrcSim => "模拟/手动位置";
-
-  @override
-  String get posSrcGarmin => "佳明 LiveTrack";
-
-  @override
-  String get posSrcPhone => "手机 GPS";
-
-  @override
-  String get posSrcNone => "未定位";
-
-
-  @override
-  String get garminNotStarted => "未开启追踪";
-
-  @override
-  String get garminAutoFilled => "已自动填入分享链接";
-
-  @override
-  String get garminLinkOk => "链接有效";
-
-  @override
-
-  @override
-  String get beaconForceCoarse => "强制接受网络定位自动上报";
-
-  @override
-  String get beaconForceCoarseHint => "默认不开启：网络定位（基站 / Wi-Fi）常偏几百米，自动发出去等于向全网宣告一个错坐标。只有设备没有 GPS（平板 / 只有网络定位）时才建议打开 —— 打开后粗定位也会自动发射；地图与轨迹仍按原样过滤粗点，不会因此变乱。手动「立即上报」不受这个开关影响。";
-
-  @override
-  String beaconCoarseForced(String s) => "网络定位（粗）· $s";
-
-  @override
-  String get beaconCoarseForcedNote => "正在用网络定位（粗）上报";
-
-}
-
-/// The translations for Chinese, as used in Taiwan (`zh_TW`).
-class AppLocalizationsZhTw extends AppLocalizationsZh {
-  AppLocalizationsZhTw() : super('zh_TW');
-
-  @override
-  String get appName => 'APRSlocus';
-
-  @override
-  String get ok => '確定';
-
-  @override
-  String get cancel => '取消';
-
-  @override
-  String get save => '儲存';
-
-  @override
-  String get delete => '刪除';
-
-  @override
-  String get confirm => '確認';
-
-  @override
-  String get back => '返回';
-
-  @override
-  String get next => '下一步';
-
-  @override
-  String get finish => '完成並連線';
-
-  @override
-  String get previous => '上一步';
-
-  @override
-  String get search => '搜尋';
-
-  @override
-  String get settings => '設定';
-
-  @override
-  String get greetMorning => '早上好，';
-
-  @override
-  String get greetNoon => '中午好，';
-
-  @override
-  String get greetAfternoon => '下午好，';
-
-  @override
-  String get greetEvening => '晚上好，';
-
-  @override
-  String get greetNight => '夜深了，';
-
-  @override
-  String get about => '關於';
-
-  @override
-  String get logout => '登出';
-
-  @override
-  String get retry => '重試';
-
-  @override
-  String get all => '全部';
-
-  @override
-  String get online => '線上';
-
-  @override
-  String get offline => '離線';
-
-  @override
-  String get moving => '移動';
-
-  @override
-  String get emergency => '緊急';
-
-  @override
-  String get fixed => '固定';
-
-  @override
-  String get infrastructure => '中繼';
-
-  @override
-  String get weather => '氣象';
-
-  @override
-  String get fmo => 'FMO';
-
-  @override
-  String get mobile => '車載';
-
-  @override
-  String get favorite => '收藏';
-
-  @override
-  String get grid => '網格';
-
-  @override
-  String get callsign => '呼號';
-
-  @override
-  String get speed => '速度';
-
-  @override
-  String get altitude => '高度';
-
-  @override
-  String get course => '航向';
-
-  @override
-  String get distance => '距離';
-
-  @override
-  String get bearing => '方位角';
-
-  @override
-  String get lastSeen => '最近活躍';
-
-  @override
-  String get latitude => '緯度';
-
-  @override
-  String get longitude => '經度';
-
-  @override
-  String get station => '臺站';
-
-  @override
-  String get stations => '臺站';
-
-  @override
-  String get messages => '訊息';
-
-  @override
-  String get packets => '資料包';
-
-  @override
-  String get map => '地圖';
-
-  @override
-  String get home => '首頁';
-
-  @override
-  String get connection => '連線';
-
-  @override
-  String get connected => '已連線';
-
-  @override
-  String get disconnected => '未連線';
-
-  @override
-  String get connecting => '連線中';
-
-  @override
-  String get reconnect => '重新連線';
-
-  @override
-  String get server => '伺服器';
-
-  @override
-  String get port => '埠';
-
-  @override
-  String get passcode => 'Passcode';
-
-  @override
-  String get beacon => '位置信標';
-
-  @override
-  String get beaconInterval => '上報間隔(秒)';
-
-  @override
-  String get nextBeacon => '下次上報';
-
-  @override
-  String get beaconsSent => '信標傳送次數';
-
-  @override
-  String get symCatVehicles => '車輛 / 交通';
-
-  @override
-  String get symCatBuildings => '建築 / 設施';
-
-  @override
-  String get symCatNature => '氣象 / 自然';
-
-  @override
-  String get symCatAirWater => '飛行 / 水域';
-
-  @override
-  String get symCatComms => '通訊 / 其他';
-
-  @override
-  String get homeBadgeLabel => '首頁展示徽章';
-
-  @override
-  String get homeBadgePickTitle => '選擇首頁展示徽章';
-
-  @override
-  String get homeBadgePickDesc => '在以下已獲得的徽章中選一個，作為首頁常駐展示';
-
-  @override
-  String get simLocationHint => '使用模擬位置，無需 GPS';
-
-  @override
-  String get speedTierRules => '速度分檔規則';
-
-  @override
-  String get restoreDefaults => '恢復預設';
-
-  @override
-  String get speedTierDesc => '速度越快上報越頻繁；每檔可自訂間隔與圖示（留空=我的符號）。';
-
-  @override
-  String get speedTierShortIntervalWarn => '間隔低於 60 秒會顯著增加伺服器負載，建議 ≥60 秒。';
-
-  @override
-  String get addSpeedTier => '新增速度檔';
-
-  @override
-  String get maxSpeedTiers => '最多 5 個速度檔';
-
-  @override
-  String get iconDefaultMySymbol => '圖示 · 預設(我的符號)';
-
-  @override
-  String iconNamed(String name) {
-    return '圖示 · $name';
-  }
-
-  @override
-  String everyNSeconds(String sec) {
-    return '每 $sec 秒';
-  }
-
-  @override
-  String get tierMinTurn => '航向變化 (度)';
-
-  @override
-  String get tierMinTurnHint => '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
-
-  @override
-  String get guideMoreInSettings => '之後可在「設定 → 重新查看功能導覽」裡再看';
-
-  @override
-  String get guideStationsTitle => '臺站列表';
-
-  @override
-  String get guideStationsBody => '收到的臺站都在這裡，可搜尋、排序、依距離篩選；列表與地圖共用同一份篩選條件。';
-
-  @override
-  String get guideTrackHistoryTitle => '軌跡回放';
-
-  @override
-  String get guideTrackHistoryBody => '依日期回放某個臺站當天走過的路線，拖動時間軸可以看每一段。';
-
-  @override
-  String get guideThemeTitle => '主題與介面';
-
-  @override
-  String get guideThemeBody => '換配色、背景圖、介面材質與縮放；改完立刻生效，可以在同一頁對比。';
-
-  @override
-  String get guideTranslateTitle => '翻譯';
-
-  @override
-  String get guideTranslateBody => '設定聊天自動翻譯的目標語言與介面。沒設介面時不會翻譯，這裡會說明怎麼設。';
-
-  @override
-  String get guideAudioTitle => '音效卡 TNC';
-
-  @override
-  String get guideAudioBody => '用耳機孔 / 音效卡收發 AFSK 報文：選音訊裝置、調音量與增益，先「測試音」再連線。';
-
-  @override
-  String get guideTncDeviceTitle => '藍牙 TNC';
-
-  @override
-  String get guideTncDeviceBody => '搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。';
-
-  @override
-  String get guidePkwdwplTitle => 'PKWDWPL 連接器';
-
-  @override
-  String get guidePkwdwplBody => '透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。';
-
-  @override
-  String get guideTitle => '功能導覽';
-
-  @override
-  String get guideGotIt => '知道了';
-
-  @override
-  String get guideShowAgain => '重看本頁引導';
-
-  @override
-  String get guideHomeTitle => '主頁 · 地圖與臺站';
-
-  @override
-  String get guideHomeBody => '點一個臺站看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。';
-
-  @override
-  String get guideImmersiveTitle => '沉浸地圖';
-
-  @override
-  String get guideImmersiveBody => '全螢幕看臺站：雙指縮放、單指拖曳，左下角可切換「跟隨自己」，左上角返回。';
-
-  @override
-  String get guideMessagesTitle => '訊息';
-
-  @override
-  String get guideMessagesBody => '輸入呼號即可開聊；右上角能建群組、發廣播。收不到回覆時，先確認頂部已連線。';
-
-  @override
-  String get guideDeviceTitle => '裝置與資料來源';
-
-  @override
-  String get guideDeviceBody => '選資料從哪來（APRS-IS / TNC / 音效卡）以及用哪條鏈路發射。藍牙 TNC 要先去「裝置」子頁配對。';
-
-  @override
-  String get guideSettingsTitle => '設定';
-
-  @override
-  String get guideSettingsBody => '八類入口：電台、信標、連線、顯示、裝置、資料、進階、更新。改完的設定立刻生效，不需要重啟。';
-
-  @override
-  String get guideOfflineMapTitle => '離線地圖';
-
-  @override
-  String get guideOfflineMapBody => '框選一塊區域下載圖磚，沒網路也能看地圖。下載可隨時暫停，之後接著下。';
-
-  @override
-  String get guideLogTitle => '系統日誌';
-
-  @override
-  String get guideLogBody => '收發包與鏈路事件都記在這裡。排查問題時先看這裡，右上角可以複製全部日誌。';
-
-  @override
-  String get guideBackupTitle => '備份與還原';
-
-  @override
-  String get guideBackupBody => '匯出設定檔，換機後一鍵還原。圖磚與翻譯快取不在備份內，需重新下載。';
-
-  @override
-  String get guideExportAdifTitle => '匯出 ADIF';
-
-  @override
-  String get guideExportAdifBody => '把收到的臺站位置匯出成 ADIF 檔，供日誌軟體匯入。可選時間範圍與模式。';
-
-  @override
-  String get guidePacketsTitle => '資料封包';
-
-  @override
-  String get guidePacketsBody => '原始收發報文列表，用來核對解析結果。點一行可以看到完整內容。';
-
-  @override
-  String get guideResetRow => '重新查看功能導覽';
-
-  @override
-  String get guideResetTitle => '重新查看功能導覽？';
-
-  @override
-  String get guideResetConfirm => '清空「已看過」記錄，各頁頂部的小提示卡會再出現一次。';
-
-  @override
-  String get guideResetButton => '重新顯示';
-
-  @override
-  String get guideResetDone => '功能導覽已重設';
-
-  @override
-  String get ossLicenseSection => '開源與授權';
-
-  @override
-  String get creditsSection => '致謝名單';
-
-  @override
-  String get noticeEntryDesc => '查看官網發布的最新公告';
-
-  @override
-  String get noticeTitle => '公告';
-
-  @override
-  String get noticeEmpty => '暫無公告';
-
-  @override
-  String get noticeLoading => '正在取得…';
-
-  @override
-  String get noticeReadMore => '查看全文';
-
-  @override
-  String noticeCached(String ago) {
-    return '快取 · ${ago}';
-  }
-
-  @override
-  String noticeOfflineCache(String time) {
-    return '離線快取 · ${time}（連網後會自動更新）';
-  }
-
-  @override
-  String get timeJustNow => '剛剛';
-
-  @override
-  String get refresh => '重新整理';
-
-  @override
-  String get inputTapHint => '點擊輸入';
-
-  @override
-  String get callCommentEmpty => '未填寫 · 點這裡輸入';
-
-  @override
-  String orTurnDeg(String deg) {
-    return '或轉 ${deg}°';
-  }
+  String get uiMaterialMicaDesc => '更实、模糊较轻，带一层主色色调：像 Windows 11 的云母（Mica）';
 
   @override
-  String get tierMinDist => '移動距離 (公尺)';
+  String get uiMaterialOff => '关闭（实色）';
 
   @override
-  String get tierMinDistHint => '自上次上報以來移動超過這個距離，就補報一次；0 = 關閉（只按間隔）';
+  String get uiMaterialOffDesc => '表面实色，与旧版完全一致';
 
   @override
-  String orMoveM(String dist) {
-    return '或移動 ${dist} m';
-  }
+  String get uiMaterialPreview => '预览';
 
   @override
-  String get tierIdleTitle => '編輯 · 靜止/低速檔';
+  String get uiScale => '界面缩放';
 
   @override
-  String get tierSpeedTitle => '編輯 · 速度檔';
+  String get unblock => '解除屏蔽';
 
   @override
-  String get minSpeedKmh => '最低速度 (km/h)';
+  String get underConstruction => '前方施工，尚未开放';
 
   @override
-  String get intervalSeconds => '上報間隔 (秒)';
+  String get underConstructionHint => '该功能正在开发中，敬请期待';
 
   @override
-  String get idleTierDesc => '低於第一移動檔的速度都按此檔上報';
+  String get unfavorite => '取消收藏';
 
   @override
-  String get intervalLabel => '間隔';
+  String get unit => '单位';
 
   @override
   String get unitSeconds => '秒';
 
   @override
-  String get pickBeaconIconDesc => '選擇信標圖示 ·「預設」= 沿用我的符號';
+  String get unknown => '未知';
 
   @override
-  String get defaultLabel => '預設';
+  String get unlocated => '未定位';
 
   @override
-  String get deleteThisTier => '刪除此檔';
+  String get unverified => '未验证';
 
   @override
-  String get idleTierNotDeletable => '靜止檔不可刪除';
+  String get updateCat => '更新';
 
   @override
-  String get errMinSpeedInt => '最低速度需為 ≥1 的整數';
+  String get updateCatDesc => '检查新版本';
 
   @override
-  String get errIntervalInt => '上報間隔需為 ≥5 秒的整數';
+  String get updateChannel => '更新渠道';
 
   @override
-  String get errTierDuplicate => '該速度檔已存在，速度值需互不相同';
+  String get updateContents => '更新内容';
 
   @override
-  String get wsUrlOptional => 'WebSocket URL(可選)';
+  String get updateFailed => '检查更新失败';
 
   @override
-  String get countryUnrestricted => '未選擇國家/地區 · 不做限制（接收全部台站）';
+  String get usageNotice => '本软件仅供业余无线电爱好者学习交流使用\n请遵守当地无线电管理法规';
 
   @override
-  String get weatherWidget => '天氣元件';
+  String get useDeviceLocation => '使用设备定位';
 
   @override
-  String get groupChatLabel => '群組聊天';
+  String get useMyLocation => '用我的位置作为过滤中心';
 
   @override
-  String nItems(String n) {
-    return '$n 個';
+  String get userAgreement => '用户协议';
+
+  @override
+  String vectorMapLoadFailed(String error) {
+    return '矢量地图加载失败\n$error';
   }
 
   @override
-  String nMessages(String n) {
-    return '$n 條';
+  String get version => '版本';
+
+  @override
+  String versionChangelog(String version) {
+    return 'v$version 更新日志';
   }
 
   @override
-  String confirmDeleteMessages(String n) {
-    return '確定要刪除全部 $n 條聊天記錄嗎？此操作不可恢復。';
+  String versionCount(int count) {
+    return '$count 个';
   }
 
   @override
-  String get weatherSimFollowLive => '跟隨即時';
+  String get viewChangelog => '查看更新日志';
+
+  @override
+  String get viewSponsorDetails => '查看作者与赞助详情 →';
+
+  @override
+  String get waitingForLocation => '等待定位';
+
+  @override
+  String get warning => '警告';
+
+  @override
+  String get weather => '气象';
+
+  @override
+  String get weatherAQIPrimary => '首要污染物';
+
+  @override
+  String get weatherAir => '空气质量';
+
+  @override
+  String get weatherCloud => '云量';
+
+  @override
+  String get weatherConnFail => '天气服务连接失败';
+
+  @override
+  String get weatherCurLoc => '当前位置';
+
+  @override
+  String get weatherDaily15 => '查看近 15 日天气';
+
+  @override
+  String get weatherDaily15Title => '近 15 日天气趋势';
+
+  @override
+  String get weatherData => '气象数据';
+
+  @override
+  String get weatherDataFail => '天气数据获取失败';
+
+  @override
+  String weatherDataValue(String data) {
+    return '气象数据 · $data';
+  }
+
+  @override
+  String get weatherDayAfter => '后天';
+
+  @override
+  String get weatherDetails => '详细数据';
+
+  @override
+  String get weatherDew => '露点';
+
+  @override
+  String weatherFeels(String v) {
+    return '体感 $v°';
+  }
+
+  @override
+  String get weatherForecast3 => '三天预报';
+
+  @override
+  String get weatherHumidity => '湿度';
+
+  @override
+  String get weatherNoLoc => '暂无定位：请在“我的电台”开启位置服务后查看天气';
+
+  @override
+  String weatherObserved(String t) {
+    return '观测 $t';
+  }
+
+  @override
+  String get weatherPanelSub => '和风天气 · 当前位置';
+
+  @override
+  String get weatherPanelTitle => '天气 · 火腿建议';
+
+  @override
+  String get weatherPowered => '数据由和风天气提供 · APRSlocus';
+
+  @override
+  String get weatherPrecip => '降水';
+
+  @override
+  String get weatherPressure => '气压';
+
+  @override
+  String get weatherRefresh => '刷新';
+
+  @override
+  String get weatherSimDesc => '选择后点顶栏天气胶囊预览；「跟随实时」恢复真实天气';
+
+  @override
+  String get weatherSimFollowLive => '跟随实时';
+
+  @override
+  String get weatherSimTitle => '天气模拟（预览背景/特效/建议）';
+
+  @override
+  String get weatherSunrise => '日出';
+
+  @override
+  String get weatherSunset => '日落';
+
+  @override
+  String get weatherToday => '今天';
+
+  @override
+  String get weatherTomorrow => '明天';
+
+  @override
+  String get weatherUV => '紫外线';
+
+  @override
+  String get weatherUnavail => '天气服务暂时不可用';
+
+  @override
+  String get weatherVis => '能见度';
+
+  @override
+  String weatherWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': '周一',
+      '2': '周二',
+      '3': '周三',
+      '4': '周四',
+      '5': '周五',
+      '6': '周六',
+      '7': '周日',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get weatherWidget => '天气组件';
+
+  @override
+  String get weatherWindDir => '风向';
+
+  @override
+  String get weatherWindScale => '风力';
+
+  @override
+  String get weatherWindSpeed => '风速';
+
+  @override
+  String get webLocationUnsupported => 'Web 平台暂不支持自动定位，请手动输入坐标';
+
+  @override
+  String get website => '网站';
+
+  @override
+  String get websocketOptional => 'WebSocket URL（可选）';
+
+  @override
+  String get wgs84 => 'WGS-84';
+
+  @override
+  String windowsInstallHelp(String path) {
+    return '安装包已保存到：\n$path\n\n点击“立即运行”直接启动安装程序；也可以打开所在目录查看文件。';
+  }
+
+  @override
+  String get wizard => '设置向导';
+
+  @override
+  String get wsUrlOptional => 'WebSocket URL(可选)';
 
   @override
   String get wxClear => '晴';
 
   @override
-  String get wxCloudy => '多雲';
+  String get wxCloudy => '多云';
 
   @override
-  String get wxOvercast => '陰';
+  String get wxFog => '雾';
+
+  @override
+  String get wxHeavyRain => '大雨';
 
   @override
   String get wxLightRain => '小雨';
@@ -7396,3431 +6924,80 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get wxModerateRain => '中雨';
 
   @override
-  String get wxHeavyRain => '大雨';
-
-  @override
-  String get wxStormRain => '暴雨';
-
-  @override
-  String get wxThunder => '雷陣雨';
+  String get wxOvercast => '阴';
 
   @override
   String get wxSnow => '雪';
 
   @override
-  String get wxFog => '霧';
+  String get wxStormRain => '暴雨';
 
   @override
-  String get weatherSimTitle => '天氣模擬（預覽背景/特效/建議）';
+  String get wxThunder => '雷阵雨';
 
   @override
-  String get weatherSimDesc => '選擇後點頂欄天氣膠囊預覽；「跟隨即時」恢復真實天氣';
-
-  @override
-  String get restartWizardConfirm =>
-      '將重新進入首次啟動精靈，可重新設定呼號、接收地區等。\\n目前設定不會遺失，完成精靈後繼續使用。';
-
-  @override
-  String get restartWizardButton => '重新執行';
-
-  @override
-  String get pasteAprsPacketHint =>
-      '貼上原始 APRS 封包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>測試台';
-
-  @override
-  String beaconsSentCount(String n) {
-    return '$n 次';
+  String zoomLevel(Object z) {
+    return '缩放 $z';
   }
 
   @override
-  String get myBadgesAndAchievements => '我的徽章與成就';
+  String get advancedMenu => '高级设置';
 
-  @override
-  String get quitApp => '結束應用程式';
-
-  @override
-  String get quitAppDesc => '結束後 APRSlocus 將停止定位上報與背景接收，並結束行程。';
-
-  @override
-  String get symCar => '汽車';
-
-  @override
-  String get openInBrowser => '在瀏覽器開啟';
-
-  @override
-  String get badgeWall => '徽章牆';
-
-  @override
-  String get achievementWall => '成就牆';
-
-  @override
-  String get mapTypeCartoPositron => 'Carto Positron(淺色向量)';
-
-  @override
-  String get mapTypeCarto => 'Carto 淺色';
-
-  @override
-  String get mapTypeCartoDark => 'Carto 深色';
-
-  @override
-  String get mapTypeCartoVoyager => 'Carto 航行者';
-
-  @override
-  String get mapTypeOsm => 'OSM 標準';
-
-  @override
-  String get mapTypeOsmHot => 'OSM 人道';
-
-  @override
-  String get mapTypeOpenTopo => 'OpenTopo 地形';
-
-  @override
-  String get mapTypeEsriStreet => 'Esri 街道';
-
-  @override
-  String get mapTypeEsriSat => 'Esri 影像';
-
-  @override
-  String get simulatedKeepAlive => '模擬位置 · 背景保活';
-
-  @override
-  String get symCatEmergency => '應急救援';
-
-  @override
-  String get symSmallAircraft => '小型飛機';
-
-  @override
-  String myPositionSet(String grid) {
-    return '已設定我的位置，網格 $grid';
-  }
-
-  @override
-  String get tierIdleShort => '靜止/低速';
-
-  @override
-  String get symHouse => '房屋';
-
-  @override
-  String get symPerson => '人';
-
-  @override
-  String get symTruck => '卡車';
-
-  @override
-  String get symBicycle => '自行車';
-
-  @override
-  String get symRv => '房車';
-
-  @override
-  String get symWxStation => '氣象站';
-
-  @override
-  String get symPolice => '警局';
-
-  @override
-  String get symMotorcycle => '摩托';
-
-  @override
-  String get symSemi => '半掛車';
-
-  @override
-  String get symVan => '麵包車';
-
-  @override
-  String get symJeep => '吉普';
-
-  @override
-  String get symBus => '公車';
-
-  @override
-  String get symTruckStop => '卡車停靠';
-
-  @override
-  String get symTrain => '火車';
-
-  @override
-  String get symFireTruck => '消防車';
-
-  @override
-  String get symPoliceCar => '警車';
-
-  @override
-  String get symSnowmobile => '雪地摩托';
-
-  @override
-  String get symYagi => '八木屋';
-
-  @override
-  String get symHospital => '醫院';
-
-  @override
-  String get symAmbulance => '救護車';
-
-  @override
-  String get symFireStation => '消防站';
-
-  @override
-  String get symSchool => '學校';
-
-  @override
-  String get symMotel => '旅館';
-
-  @override
-  String get symHotel => '酒店';
-
-  @override
-  String get symLaptop => '筆記型電腦';
-
-  @override
-  String get symPostOffice => '郵局';
-
-  @override
-  String get symWeather => '氣象';
-
-  @override
-  String get symWater => '供水站';
-
-  @override
-  String get symHurricane => '颶風';
-
-  @override
-  String get symHorse => '騎馬';
-
-  @override
-  String get symDog => '狗';
-
-  @override
-  String get symCamping => '露營';
-
-  @override
-  String get symShelter => '避難所';
-
-  @override
-  String get symRedCross => '紅十字';
-
-  @override
-  String get symFireAlarm => '火警';
-
-  @override
-  String get symEmergCenter => '應急中心';
-
-  @override
-  String get symCmdCenter => '指揮中心';
-
-  @override
-  String get symHandicap => '殘障';
-
-  @override
-  String get symBigAircraft => '大型飛機';
-
-  @override
-  String get symGlider => '滑翔機';
-
-  @override
-  String get symBalloon => '氣球';
-
-  @override
-  String get symShip => '船';
-
-  @override
-  String get symSailboat => '帆船';
-
-  @override
-  String get symMobileSat => '移動衛星';
-
-  @override
-  String get symSatAntenna => '衛星天線';
-
-  @override
-  String get symDigi => '數位中繼';
-
-  @override
-  String get symDigiTower => '中繼塔';
-
-  @override
-  String get symMicE => 'Mic-E 中繼';
-
-  @override
-  String get symNode => '節點';
-
-  @override
-  String get symDxCluster => 'DX 叢集';
-
-  @override
-  String get symHfGateway => 'HF 閘道';
-
-  @override
-  String get symFileServer => '檔案伺服器';
-
-  @override
-  String get symTelephone => '電話';
-
-  @override
-  String get symGrid => '網格';
-
-  @override
-  String get symXUnix => 'X/Unix';
-
-  @override
-  String get symFmoStation => 'FMO 台站';
-
-  @override
-  String get filter => '接收範圍篩選';
-
-  @override
-  String get filterRadius => '篩選半徑(km)';
-
-  @override
-  String get maxStations => '最大臺站數';
-
-  @override
-  String get receiveFilter => '接收呼號篩選';
-
-  @override
-  String get receiveCountries => '國家/地區';
-
-  @override
-  String get receiveOthers => '其他臺站';
-
-  @override
-  String get darkMode => '深色模式';
-
-  @override
-  String get themeColor => '主題顏色';
-
-  @override
-  String get language => '語言';
-
-  @override
-  String get languageSystem => '跟隨系統';
-
-  @override
-  String get languageZh => '中文';
-
-  @override
-  String get languageEn => 'English';
-
-  @override
-  String get languageZhTw => '繁體中文';
-
-  @override
-  String get languageJa => '日本語';
-
-  @override
-  String get languageId => 'Bahasa Indonesia';
-
-  @override
-  String get languageEs => '西班牙語';
-
-  @override
-  String get displaySettings => '顯示設定';
-
-  @override
-  String get uiScale => '介面縮放';
-
-  @override
-  String get reloadUi => '重新載入介面';
-
-  @override
-  String get reloadDone => '已重新載入';
-
-  @override
-  String get mapType => '地圖類型';
-
-  @override
-  String get unit => '單位';
-
-  @override
-  String get coordDatum => '座標基準';
-
-  @override
-  String get stationSettings => '電臺設定';
-
-  @override
-  String get connectionSettings => '連線設定';
-
-  @override
-  String get chatSettings => '聊天設定';
-
-  @override
-  String get dataSettings => '資料設定';
-
-  @override
-  String get advancedSettings => '高階設定';
-
-  @override
-  String get sponsors => '贊助與鳴謝';
-
-  @override
-  String get sponsorsThanks => '感謝每一位支持者';
-
-  @override
-  String get send => '傳送';
-
-  @override
-  String get receive => '接收';
-
-  @override
-  String get clear => '清除';
-
-  @override
-  String get copy => '複製';
-
-  @override
-  String get copied => '已複製';
-
-  @override
-  String get version => '版本';
-
-  @override
-  String get location => '定位';
-
-  @override
-  String get gpsStatus => 'GPS 狀態';
-
-  @override
-  String get myLocation => '我的位置';
-
-  @override
-  String get track => '軌跡';
-
-  @override
-  String get forwardingPath => '轉發路徑';
-
-  @override
-  String get relatedStations => '相關臺站';
-
-  @override
-  String get openInMap => '在地圖檢視';
-
-  @override
-  String get navigate => '導航';
-
-  @override
-  String get messageSent => '訊息已傳送';
-
-  @override
-  String get enterMessage => '輸入訊息';
-
-  @override
-  String get noData => '暫無資料';
-
-  @override
-  String get searchHint => '搜尋呼號 / 類型 / 網格 / 備註…';
-
-  @override
-  String get notFound => '未找到臺站';
-
-  @override
-  String get totalStations => '總數';
-
-  @override
-  String get sortBy => '排序';
-
-  @override
-  String get sortCall => '呼號';
-
-  @override
-  String get sortRecent => '最近';
-
-  @override
-  String get sortDistance => '距離';
-
-  @override
-  String get sortStatus => '狀態';
-
-  @override
-  String get typeFilter => '類型篩選';
-
-  @override
-  String get aprslocusOnly => 'APRSlocus';
-
-  @override
-  String get confirmDelete => '確定要刪除嗎？';
-
-  @override
-  String get confirmRestartOobe =>
-      '將重新進入首次啟動精靈，可重新設定呼號、接收地區等。\n目前設定不會遺失，完成精靈後繼續使用。';
-
-  @override
-  String get restartWizard => '重新執行設定精靈';
-
-  @override
-  String get restartWizardTitle => '重新執行設定精靈？';
-
-  @override
-  String get oobeFilterTitle => '選擇接收地區';
-
-  @override
-  String get oobeFilterDesc => '勾選要接收的國家/地區；不勾選則接收全部臺站，不做限制';
-
-  @override
-  String get oobeWelcomeTitle => '歡迎使用 APRSlocus';
-
-  @override
-  String get oobeWelcomeRealMap => '即時地圖';
-
-  @override
-  String get oobeWelcomeGps => 'GPS 定位上報';
-
-  @override
-  String get oobeWelcomeMsg => 'APRS 訊息';
-
-  @override
-  String get oobeWelcomeIs => '連線至 APRS-IS';
-
-  @override
-  String get oobeCallTitle => '你的呼號';
-
-  @override
-  String get oobeSymbolTitle => '選擇臺站符號';
-
-  @override
-  String get oobeServerTitle => '連線 APRS-IS 伺服器';
-
-  @override
-  String get weatherData => '氣象資料';
-
-  @override
-  String get fmoInfo => 'FMO 臺站資訊';
-
-  @override
-  String get aprslocusInfo => 'APRSlocus 資訊';
-
-  @override
-  String get locationInfo => '位置資訊';
-
-  @override
-  String get recentPackets => '最近資料包';
-
-  @override
-  String get quickActions => '快速操作';
-
-  @override
-  String get copyCoords => '複製座標';
-
-  @override
-  String get copyGrid => '複製網格';
-
-  @override
-  String get sender => '傳送方';
-
-  @override
-  String get time => '時間';
-
-  @override
-  String get message => '訊息';
-
-  @override
-  String get groupChat => '群組';
-
-  @override
-  String get newGroup => '建立新群組';
-
-  @override
-  String get sendTo => '傳送至';
-
-  @override
-  String get filterRule => '篩選規則';
-
-  @override
-  String get saveAndApply => '儲存並套用篩選';
-
-  @override
-  String get useMyLocation => '用我的位置作為篩選中心';
-
-  @override
-  String get noFixYet => '尚未定位，無法獲取目前位置';
-
-  @override
-  String get invalidCoords => '請輸入有效的經緯度和半徑';
-
-  @override
-  String get filterSaved => '篩選已儲存並套用';
-
-  @override
-  String get stationsShown => '臺站';
-
-  @override
-  String get settingsDesc => '設定電臺、定位與連線';
-
-  @override
-  String get radioCat => '電臺';
-
-  @override
-  String get radioCatDesc => '呼號 · SSID · 符號';
-
-  @override
-  String get beaconCat => '定位上報';
-
-  @override
-  String get beaconCatDesc => 'GPS · 信標 · 手動定位';
-
-  @override
-  String get connectionCat => '連線';
-
-  @override
-  String get connectionCatDesc => '伺服器 · 篩選範圍';
-
-  @override
-  String get displayCat => '顯示';
-
-  @override
-  String get displayCatDesc => '座標 · 主題';
-
-  @override
-  String get chatCat => '聊天';
-
-  @override
-  String get chatCatDesc => '記錄 · 聯絡人';
 
   @override
-  String get dataCat => '資料';
+  String get beaconAltTip => '填了就用手填的这个海拔（更可靠：无气压计机型、室内、只有网络定位时 GPS 海拔常不可用），留空则跟随定位的海拔。发送时按英尺编成 `/A=aaaaaa` 六位；这是台站**海拔**，与下面 PHG 里的「天线高度」（高于当地平均地面）是两个不同的量。';
 
   @override
-  String get dataCatDesc => '清除本機資料';
+  String get beaconAltWillSend => '当前将发出：';
 
-  @override
-  String get advancedCat => '高階';
-
-  @override
-  String get advancedCatDesc => '實驗室 · 開發者';
-
-  @override
-  String get updateCat => '更新';
-
-  @override
-  String get updateCatDesc => '檢查新版本';
-
-  @override
-  String get checkUpdate => '檢查更新';
-
-  @override
-  String get myStationSettings => '我的電臺';
-
-  @override
-  String get myStationSettingsDesc => '呼號 · SSID · 符號 · 信標';
-
-  @override
-  String get oobeWelcomeDesc => '開始設定你的 APRS 電臺';
-
-  @override
-  String get oobeCallDesc => '輸入你的呼號';
-
-  @override
-  String get oobeSymbolDesc => '符號代表臺站類型，會隨位置信標一起傳送';
-
-  @override
-  String get oobeServerDesc => '連線後接收全球 APRS 臺站資料，可保持預設設定直接使用';
-
-  @override
-  String get wizard => '設定精靈';
-
-  @override
-  String get setStep => '步驟';
 
-  @override
-  String get chooseSymbol => '選擇臺站符號';
-
-  @override
-  String get settingsSubtitle => '地圖座標與顯示偏好';
-
-  @override
-  String get stationSettingsSubtitle => '呼號、符號與信標';
-
-  @override
-  String get connectionSettingsSubtitle => 'APRS-IS 伺服器與接收範圍';
-
-  @override
-  String get chatSettingsSubtitle => '訊息記錄與聯絡人';
-
-  @override
-  String get dataSettingsSubtitle => '本機資料管理';
-
-  @override
-  String get advancedSettingsSubtitle => '實驗室與開發者工具';
 
-  @override
-  String get stationListTitle => '臺站清單';
-
-  @override
-  String get filters => '篩選';
-
-  @override
-  String get clearAll => '全部清除';
-
-  @override
-  String get statusFilter => '狀態';
-
-  @override
-  String get typeGroup => '類型';
 
-  @override
-  String get appFilter => '軟體';
 
-  @override
-  String get mapMenu => '地圖選單';
 
   @override
-  String get mapTypeTitle => '地圖類型';
+  String get batteryNoFix => '还没有定位，无法上报位置';
 
   @override
-  String get selectMapType => '選擇地圖類型';
+  String get aprsStatusHint => '这一点发的是**独立一帧**状态报文（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。';
 
-  @override
-  String get showTrails => '顯示軌跡';
+}
 
-  @override
-  String get showStations => '顯示臺站';
+/// The translations for Chinese, as used in Taiwan (`zh_TW`).
+class AppLocalizationsZhTw extends AppLocalizationsZh {
+  AppLocalizationsZhTw() : super('zh_TW');
 
   @override
-  String get aboutTitle => '關於';
+  String get about => '關於';
 
   @override
   String get aboutSubtitle => 'APRS 定位追蹤與地圖';
 
   @override
-  String get author => '作者';
-
-  @override
-  String get codeContributions => '程式碼貢獻';
-
-  @override
-  String get codeContributionI18n => '國際化 / 英文介面';
-
-  @override
-  String get codeContributionZhTw => '繁體中文介面';
-
-  @override
-  String get codeContributionTranslation => '翻譯';
-
-  @override
-  String get dataSourceTxHint =>
-      '可以同時勾選多條鏈路一起收報文，但**發射只有一條**（右側圓點為發射來源）——同一個呼號從兩條鏈路發出去會造成重複報文。';
-
-  @override
-  String get dataSourceTxBadge => '發射';
-
-  @override
-  String get dataSourceIgateHint =>
-      '想當閘道（把射頻收到的報文轉到網際網路）就同時勾選 APRS-IS 與 TNC/音訊，然後在下面打開「閘道」。';
-
-  @override
-  String get igateTitle => '閘道（iGate）';
-
-  @override
-  String get igateSubtitle => '把射頻收到的報文送上 APRS-IS';
-
-  @override
-  String get igateEnable => '啟用閘道';
-
-  @override
-  String get igateHint =>
-      '射頻上收到的報文會被送上 APRS-IS（自動加上 qAr/qAR 與你的呼號標識來路）。需要同時啟用 APRS-IS 和一個射頻來源（TNC / 音訊）。';
-
-  @override
-  String get igateNeedRf => '還差一個射頻來源：請在上面的「資料來源」裡勾選 TNC 或音訊，否則閘道沒有可轉遞的射頻鏈路。';
-
-  @override
-  String get igateNeedIs => '還沒啟用 APRS-IS：請在上面勾選 APRS-IS，否則閘道沒有可轉遞的目標網路。';
-
-  @override
-  String get igateTwoWay => '雙向閘道（向射頻轉遞訊息）';
-
-  @override
-  String get igateTwoWayHint =>
-      '打開後會**在射頻上真實發射**：只轉「發給最近在射頻上聽到過的台站」的點對點訊息（位置/天氣等廣播不轉，避免佔滿通道）。關閉時只做 RF→IS。';
-
-  @override
-  String get igateStatToIs => '已轉遞 → APRS-IS（條）';
-
-  @override
-  String get igateStatToRf => '已轉遞 → 射頻（條）';
-
-  @override
-  String get igateStatDup => '重複丟棄（條）';
-
-  @override
-  String get igateResetStats => '清空統計';
-
-  @override
-  String get igateStatRfSeen => '射頻收到（條）';
-
-  @override
-  String get igateStatBlocked => '迴路拒收（條）';
-
-  @override
-  String get igateRfDown =>
-      '射頻鏈路沒連上：閘道現在什麼都轉不了。上面的「射頻收到」如果一直是 0，說明報文根本沒進來 —— 先查裝置頁裡的 TNC / 音訊狀態（串列埠線速、裝置是否開機），而不是懷疑閘道。';
-
-  @override
-  String get igateIsDown => 'APRS-IS 沒連上：閘道沒有可轉遞的目標網路。等它連上（鏈路狀態卡裡能看到）後數字才會開始漲。';
-
-  @override
-  String get igateNoRfTraffic =>
-      '射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。';
-
-  @override
-  String get igateAllRejected =>
-      '收到了射頻報文，但全被迴路防護拒收：報文裡帶 TCPIP*/TCPXX* 或 q 構造，說明它本來就從網際網路來，再送回 APRS-IS 會讓同一條報文無限增殖。這是**在正確工作**，不是故障。';
-
-  @override
-  String grpSysJoined(String call) {
-    return '$call 加入了群聊';
-  }
-
-  @override
-  String grpSysLeft(String call) {
-    return '$call 離開了群聊';
-  }
-
-  @override
-  String grpSysJoinReq(String call) {
-    return '$call 申請加入群聊';
-  }
-
-  @override
-  String grpSysDeclined(String call) {
-    return '$call 拒絕了邀請';
-  }
-
-  @override
-  String get grpInviteTitle => '群聊邀請';
-
-  @override
-  String grpInviteBody(String from, String name) {
-    return '$from 邀請你加入「$name」';
-  }
-
-  @override
-  String get grpNameInvalid => '群名不能為空、不能包含冒號或換行';
-
-  @override
-  String grpNameTooLong(int max) {
-    return '群名最長 $max 個字元（過長會讓邀請報文超出 APRS 訊息上限）';
-  }
-
-  @override
-  String grpInviteSent(int n) {
-    return '已向 $n 位成員發出邀請';
-  }
-
-  @override
-  String get grpSelfPending => '等待群主確認';
-
-  @override
-  String get deviceOverviewTitle => '裝置';
-
-  @override
-  String get deviceOverviewSubtitle => '資料來源、鏈路狀態與自檢';
-
-  @override
-  String get deviceCurrentLink => '目前鏈路';
-
-  @override
-  String get deviceCurrentLinkDesc => '唯讀摘要 · 改參數請進對應子頁';
-
-  @override
-  String get deviceEntries => '裝置與參數';
-
-  @override
-  String get deviceEntriesDesc => '每條鏈路一個子頁，各管各的參數';
-
-  @override
-  String get tncDeviceTitle => 'TNC 裝置與參數';
-
-  @override
-  String get tncDeviceDesc => '藍牙/序列綁定、初始化串、KISS 參數與發射自檢';
-
-  @override
-  String get deviceLogTitle => '鏈路日誌';
-
-  @override
-  String get deviceLogDesc => '顯示目前來源的日誌（TNC / 音訊自動切換）';
-
-  @override
-  String get tncInitTitle => 'TNC 初始化字串';
-
-  @override
-  String get tncInitSubtitle => '連線後逐行傳送（等價 APRSdroid 的 kiss.init）';
-
-  @override
-  String get tncInitTip =>
-      '若 TNC「能收不能發」，先在這裡試：很多藍牙/序列 TNC 模組上電停在命令模式，必須先收到 KISS ON、RESTART 等指令才進入 KISS 轉發狀態。每行一條命令（傳送時自動補 CRLF）。';
-
-  @override
-  String get tncInitDelay => '行間隔 (ms)';
-
-  @override
-  String get tncInitDelayTip => '每行命令之間的等待時間。模組處理命令需要時間，太短會丟命令';
-
-  @override
-  String get tncInitSendAction => '立即傳送初始化字串';
-
-  @override
-  String tncInitSent(int n) {
-    return '已傳送 $n 行初始化字串';
-  }
-
-  @override
-  String get tncInitEmpty => '未填寫初始化字串';
-
-  @override
-  String get tncPushParams => '連線後下發 KISS 參數';
-
-  @override
-  String get tncPushParamsTip =>
-      '預設關閉（與 APRSdroid 一致）。打開後連線時會把上面的參數推給 TNC，覆蓋它自己的設定 —— 參數不合適可能讓它一直退避而不發射，所以只在需要統一管理時打開。';
-
-  @override
-  String get tncTxTestTitle => '發射自檢';
-
-  @override
-  String get tncTxTestSubtitle => '向 TNC 寫一幀測試包，判斷問題在鏈路還是 TNC';
-
-  @override
-  String get tncTxTestHint =>
-      '發的是一幀狀態包（不含座標），不會把台站在 aprs.fi 上挪位置。若這裡顯示「已寫入」卻仍然不發射，問題在 TNC 側：先試初始化字串（KISS ON / RESTART），再檢查 TxDelay 與通道佔用。';
-
-  @override
-  String get tncTxTestAction => '寫入測試幀';
-
-  @override
-  String get tncTxTestOkPrefix => '已寫入';
-
-  @override
-  String tncTxTestOk(String n) {
-    return '已寫入 TNC（累計 $n 幀）。若電台仍不發射，問題在 TNC 側：試初始化字串或檢查 TxDelay。';
-  }
-
-  @override
-  String tncTxTestFail(String err) {
-    return '未寫入：$err';
-  }
-
-  @override
-  String get tncNeedConnected => '請先連接 TNC';
-
-  @override
-  String msgLenCounter(int chars, int bytes) {
-    return '$chars/67 字元 · 整包 $bytes/512 位元組';
-  }
-
-  @override
-  String msgOverSpecAsk(int chars) {
-    return '這則訊息 $chars 個字元，超過 APRS 規範的 67 字元上限。多數用戶端仍能讀出，但部分用戶端/閘道會截斷或拒收，對方可能解析不出來。仍要傳送嗎？';
-  }
-
-  @override
-  String msgOverServerLimit(int bytes, int over) {
-    return '整包 $bytes 位元組，超過 APRS-IS 單行上限 512 位元組，伺服器可能直接丟棄整包（連標頭都送不到）。請縮短約 $over 位元組。';
-  }
-
-  @override
-  String get msgSendAnyway => '仍要傳送';
-
-  @override
-  String get msgSpecLimitHint =>
-      'APRS 規範建議單則訊息不超過 67 字元：過長文字在部分用戶端上會顯示不全或解析失敗。';
-
-  @override
-  String get msgBlockedTooLong => '已阻止傳送：整包超出 APRS-IS 上限';
-
-  @override
-  String get beaconRfBeaconOff => '射頻信標未開啟';
-
-  @override
-  String get beaconRfEnableHint =>
-      '射頻來源的自動發射需要明確開啟「射頻信標」。在此之前不會自動發射位置（倒數也不會走動）。';
-
-  @override
-  String get beaconRfEnableAction => '開啟射頻信標';
-
-  @override
-  String get beaconRfEnabled => '已開啟射頻信標，將按間隔自動發射';
-
-  @override
-  String get beaconRfEnableWarn => '發射將使用你的呼號，請在執照範圍內操作';
-
-  @override
-  String get diagTitle => '鏈路自檢';
-
-  @override
-  String get diagSubtitle => '逐層確認協定、權限、裝置到底哪一環有問題';
-
-  @override
-  String get diagRun => '開始自檢';
-
-  @override
-  String get diagRunning => '自檢中…';
-
-  @override
-  String diagPassed(int n) {
-    return '通過 $n 項';
-  }
-
-  @override
-  String diagFailed(int n) {
-    return '失敗 $n 項';
-  }
-
-  @override
-  String get diagHint => '協定迴路不接電台也能跑：先確認軟體層沒問題，再去查裝置與接線';
-
-  @override
-  String get diagTncSection => 'TNC（KISS / AX.25）';
-
-  @override
-  String get diagAudioSection => '音訊（AFSK 1200）';
-
-  @override
-  String get diagKissEscape => 'KISS 跳脫';
-
-  @override
-  String get diagKissEscapeFail => 'KISS 跳脫還原失敗（軟體層問題，換裝置也沒用）';
-
-  @override
-  String get diagAx25 => 'AX.25 幀編解碼';
-
-  @override
-  String get diagAx25Fail => 'AX.25 編碼失敗（報文格式不合法）';
-
-  @override
-  String diagAx25Mismatch(String got) {
-    return 'AX.25 迴路不一致，解回：$got';
-  }
-
-  @override
-  String get diagFcs => 'FCS 校驗';
-
-  @override
-  String get diagFcsFail => 'FCS 校驗異常（改動一個位元組本應被拒收）';
-
-  @override
-  String get diagTncLoopback => 'TNC 協定迴路';
-
-  @override
-  String diagTncLoopbackOk(int len) {
-    return 'KISS/AX.25 編解碼往返一致（$len 位元組）';
-  }
-
-  @override
-  String get diagAfskLoopback => 'AFSK 調變解調迴路';
-
-  @override
-  String diagAfskLoopbackOk(int samples, int rate) {
-    return '調變→解調一致（$samples 取樣 @${rate}Hz）';
-  }
-
-  @override
-  String diagAfskLoopbackFail(int n) {
-    return '解出 $n 幀（應為 1 幀）';
-  }
-
-  @override
-  String get diagAfskLevelFail => '波形幅度過低（調變結果接近靜音）';
-
-  @override
-  String get diagPlatform => '平台能力';
-
-  @override
-  String diagPlatformOk(String name) {
-    return '可用 · 後端 $name';
-  }
-
-  @override
-  String get diagTncPlatformNo => '目前平台不支援 TNC 鏈路';
-
-  @override
-  String get diagAudioPlatformWarn => '不支援即時音訊 · 仍可用 WAV 檔案模式';
-
-  @override
-  String get diagNoRealtime => '非即時';
-
-  @override
-  String get diagPermission => '錄音權限';
-
-  @override
-  String get diagPermissionOk => '已授權';
-
-  @override
-  String get diagSkipped => '已跳過（平台不支援）';
-
-  @override
-  String get diagCapture => '音訊擷取';
-
-  @override
-  String diagCaptureOk(int bytes, int rate) {
-    return '收到 $bytes 位元組 @${rate}Hz';
-  }
-
-  @override
-  String get diagCaptureNoData => '沒有收到任何音訊資料 · 檢查輸入裝置與權限';
-
-  @override
-  String diagCaptureFailed(String err) {
-    return '開啟擷取失敗：$err';
-  }
-
-  @override
-  String get diagSpeaker => '揚聲器輸出';
-
-  @override
-  String get diagSpeakerOk => '測試音已播放';
-
-  @override
-  String diagSpeakerFail(String err) {
-    return '播放失敗：$err';
-  }
-
-  @override
-  String get diagFileIo => 'WAV 檔案讀寫';
-
-  @override
-  String diagFileIoOk(int rate) {
-    return '寫入→讀出→解調一致 @${rate}Hz';
-  }
-
-  @override
-  String diagFileWriteFail(String err) {
-    return '檔案寫入失敗：$err';
-  }
-
-  @override
-  String get diagFileReadFail => '檔案讀取失敗';
-
-  @override
-  String get diagFileDecodeFail => '檔案裡的音訊解不出報文（可能不是 AFSK 1200 錄音）';
-
-  @override
-  String get connAudioSourceHint => '音訊模式下不使用伺服器、過濾器與 KISS 參數';
-
-  @override
-  String get testTxTitle => '測試發射';
-
-  @override
-  String get testTxDesc => '發一條狀態報文，驗證鏈路真的通到空中';
-
-  @override
-  String get testTxAction => '發射測試幀';
-
-  @override
-  String get testTxSent => '測試幀已交給鏈路';
-
-  @override
-  String testTxFail(String err) {
-    return '測試幀發送失敗：$err';
-  }
-
-  @override
-  String get testTxNeedsConnect => '請先連接鏈路';
-
-  @override
-  String get testTxHint => '這是**真實發射**（狀態報文，不含座標）。射頻發射請確認在自己的呼號與執照範圍內';
-
-  @override
-  String get audioStatsTitle => '音訊統計';
-
-  @override
-  String audioStatRx(int n) {
-    return '收 $n 幀';
-  }
-
-  @override
-  String audioStatTx(int n) {
-    return '發 $n 幀';
-  }
-
-  @override
-  String audioStatDrop(int n) {
-    return '發射期間丟棄 $n 位元組';
-  }
-
-  @override
-  String get audioRestart => '重啟音訊鏈路';
-
-  @override
-  String get audioTxDisabled => '「允許發射」已關閉，僅接收';
-
-  @override
-  String get audioLoopbackHint => '自檢會真的做一次調變→解調；Android 發射時會暫停麥克風擷取（半雙工）';
-
-  @override
-  String get notifAudioConnected => '音訊鏈路線上';
-
-  @override
-  String get notifAudioDisconnected => '音訊鏈路已中斷';
-
-  @override
-  String connConnectingAudio(String name) {
-    return '正在開啟音訊（$name）…';
-  }
-
-  @override
-  String connAudioConnected(String rate) {
-    return '音訊鏈路線上 · $rate';
-  }
-
-  @override
-  String connRetryAudio(int seconds) {
-    return '音訊鏈路開啟失敗 · ${seconds}s 後重試…';
-  }
-
-  @override
-  String connRetryAudioDetail(String detail, int seconds) {
-    return '音訊開啟失敗（$detail）· ${seconds}s 後重試…';
-  }
-
-  @override
-  String connAudioLinkLost(int seconds) {
-    return '音訊鏈路中斷 · $seconds秒後自動重連…';
-  }
-
-  @override
-  String connAudioPositionSent(String call) {
-    return '音訊已發射 · 位置已傳送 ($call)';
-  }
-
-  @override
-  String get dataSourceAudio => '音訊（音效卡）';
-
-  @override
-  String get dataSourceAudioDesc => '用麥克風/揚聲器或音效卡線接電台，收發 AFSK 1200';
-
-  @override
-  String get audioSettings => '音訊（音效卡 TNC）';
-
-  @override
-  String get audioSettingsSubtitle => '用音效卡收發 AFSK 1200 報文';
-
-  @override
-  String get audioBackend => '音訊後端';
-
-  @override
-  String get audioUnsupported => '目前平台不支援即時音訊（可用 WAV 檔案模式）';
-
-  @override
-  String get audioNeedPermission => '需要錄音權限（RECORD_AUDIO），請授權後重試';
-
-  @override
-  String get audioCaptureTitle => '音訊擷取';
-
-  @override
-  String get audioCaptureDesc => '從麥克風/線路輸入解調 AFSK 1200';
-
-  @override
-  String get audioCaptureStart => '開啟擷取';
-
-  @override
-  String get audioCaptureStop => '停止擷取';
-
-  @override
-  String get audioSampleRate => '取樣率';
-
-  @override
-  String get audioSampleRateTip =>
-      '22050Hz 是音效卡 TNC 常用值；裝置不支援時改用 44100/48000。修改會重啟擷取';
-
-  @override
-  String get audioLevel => '輸入電平';
-
-  @override
-  String get audioLevelTip => '有訊號時電平條會抬起；收到 AFSK 時「解調鎖定」會點亮';
-
-  @override
-  String get audioSynced => '解調鎖定';
-
-  @override
-  String get audioUnlocked => '未鎖定';
-
-  @override
-  String audioBadFrames(int n) {
-    return '解碼中止 $n 次（雜訊/失步）';
-  }
-
-  @override
-  String get audioBaud => '位元率';
-
-  @override
-  String get audioTones => '音調（標/空）';
-
-  @override
-  String get audioTxTitle => '音訊發射';
-
-  @override
-  String get audioTxDesc => '發射前先聽通道，避免與其他台站碰撞';
-
-  @override
-  String get audioTxEnabled => '允許發射';
-
-  @override
-  String get audioTxEnabledTip => '關閉後只接收不發射（只想聽信標時最省心）';
-
-  @override
-  String get audioTxDelayTip => '發射前導時長：給對端解調器鎖定時間、給電台 PTT 建立時間';
-
-  @override
-  String get audioToneMark => '標號頻率 (Hz)';
-
-  @override
-  String get audioToneSpace => '空號頻率 (Hz)';
-
-  @override
-  String get audioMarkTip =>
-      'Bell 202 規定標號 1200Hz、空號 2200Hz；只有 ±幾 Hz 的容差，不要隨意改';
-
-  @override
-  String get audioSpaceTip => '空號音調。與標號音調一起決定 FSK 頻偏（標準為 1000Hz）';
-
-  @override
-  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
-
-  @override
-  String get audioTxDelayLabel => '發射前導 (ms)';
-
-  @override
-  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
-
-  @override
-  String get audioCsmaWait => '發射前等待通道空閒 (ms)';
-
-  @override
-  String get audioCsmaWaitTip => '偵測到通道佔用時最多等待多久；0 = 不等待直接發射';
-
-  @override
-  String get audioStopTx => '停止發射';
-
-  @override
-  String get audioWavTitle => 'WAV 檔案模式';
-
-  @override
-  String get audioWavDesc => '離線解碼一段錄音，或把報文匯出成音訊檔案';
-
-  @override
-  String get audioWavPath => '檔案路徑';
-
-  @override
-  String get audioWavDecodeAction => '解碼此 WAV';
-
-  @override
-  String get audioWavExportAction => '匯出此報文';
-
-  @override
-  String get audioWavTnC2 => '待匯出報文 (TNC2)';
-
-  @override
-  String get audioWavNone => '未解出報文（可能不是 AFSK 1200 錄音）';
-
-  @override
-  String audioWavFound(int n) {
-    return '解出 $n 條報文';
-  }
-
-  @override
-  String audioWavWritten(String path) {
-    return '已寫入 $path';
-  }
-
-  @override
-  String audioWavFailed(String err) {
-    return '檔案讀寫失敗：$err';
-  }
-
-  @override
-  String connTncConnected(String arg) {
-    return 'TNC 已連線 · $arg';
-  }
-
-  @override
-  String connTncPositionSent(String arg) {
-    return 'TNC 已連線 · 位置已傳送 ($arg)';
-  }
-
-  @override
-  String connRetryTnc(int n) {
-    return 'TNC 連線失敗 · ${n}s 後重試…';
-  }
-
-  @override
-  String connRetryTncDetail(String e, int n) {
-    return 'TNC 連線失敗（$e）· ${n}s 後重試…';
-  }
-
-  @override
-  String connTncLinkLost(int n) {
-    return 'TNC 鏈路中斷 · $n秒後自動重連…';
-  }
-
-  @override
-  String get tncErrNoDevice => '未綁定 TNC 裝置';
-
-  @override
-  String get tncErrUnsupported => '目前平台不支援';
-
-  @override
-  String get tncErrNotConnected => '鏈路未連線';
-
-  @override
-  String get tncErrOpenRead => '無法開啟裝置（讀）';
-
-  @override
-  String get tncErrOpenWrite => '無法開啟裝置（寫）—— Windows 的 COM 埠是獨佔裝置，檢查是否被其他軟體佔用';
-
-  @override
-  String get tncErrBadFormat => '報文格式不合法';
-
-  @override
-  String get tncErrFrameTooLong => '幀長超出上限';
-
-  @override
-  String get tncErrTimeout => '連線逾時';
-
-  @override
-  String get translateMyLang => '我的語言';
-
-  @override
-  String get translateMyLangHint => '對方傳來的訊息翻成它';
-
-  @override
-  String get translatePeerLang => '對方的語言';
-
-  @override
-  String get translatePeerUnknownHint => '收到對方訊息後由翻譯介面自動識別';
-
-  @override
-  String get translateLearned => '已自動識別';
-
-  @override
-  String get translatePeerUnknown => '還不知道對方使用什麼語言 · 先在翻譯設定裡指定，或收幾條對方訊息後會自動識別';
-
-  @override
-  String get translateSideIncoming => '對方傳來';
-
-  @override
-  String get translateSideOutgoing => '我發出';
-
-  @override
-  String get translateToMeTag => '譯給我看';
-
-  @override
-  String get translateToPeerTag => '對方將讀到';
-
-  @override
-  String get translateContrast => '對照顯示原文與譯文';
-
-  @override
-  String get translateContrastTip => '關閉後只顯示譯文（原文仍可透過長按查看）';
-
-  @override
-  String get translateProviderFree => '免費介面（無需密鑰）';
-
-  @override
-  String get translateProviderFreeDesc => '開箱即用 · 使用公開端點，可能被限流或不穩定';
-
-  @override
-  String translateFreeFailed(String e) {
-    return '免費介面暫時無法使用（$e）· 可在設定裡改用 Google / 百度 / 自訂介面';
-  }
-
-  @override
-  String get translateProviderAuto => '自動（推薦）';
-
-  @override
-  String get translateProviderAutoDesc => '依次嘗試多個免密鑰介面，取第一個真正翻譯成功的結果';
-
-  @override
-  String get translateProviderGooglePublic => 'Google 公開端點（免密鑰）';
-
-  @override
-  String get translateProviderGooglePublicDesc => '品質較好，但可能被限流（實測會回傳 429）';
-
-  @override
-  String get translateProviderMyMemory => 'MyMemory（免密鑰）';
-
-  @override
-  String get translateProviderMyMemoryDesc => '官方免費介面，但本質是翻譯記憶庫：無匹配語料時會回傳原文';
-
-  @override
-  String get translateProviderLibre => 'LibreTranslate（可自建）';
-
-  @override
-  String get translateProviderLibreDesc => '開源、可自建最可靠；公共實例現已要求密鑰且常不支援中文';
-
-  @override
-  String get translateLibreUrl => '實例網址';
-
-  @override
-  String get translateLibreKey => '實例 API Key（公共實例需要，自建可留空）';
-
-  @override
-  String get translateUsedProvider => '本次實際使用';
-
-  @override
-  String get translateUntranslated => '介面沒有真正翻譯（回傳了原文）· 已自動嘗試下一個介面';
-
-  @override
-  String translateAutoAllFailed(String e) {
-    return '所有免密鑰介面都無法使用（$e）· 建議在設定裡改用 Google / 百度密鑰或自建實例';
-  }
-
-  @override
-  String get translateLangUnsupported => '該介面不支援翻譯成這一語言 · 可改用「自動」或其它介面';
-
-  @override
-  String get translateLangScopeNote =>
-      '各介面支援的語種範圍不同（例如百度標準版支援印尼語 id，但並非所有方向都支援）· 遇到不支援時會提示改用自動或其它介面';
-
-  @override
-  String get langNameZh => '簡體中文';
-
-  @override
-  String get langNameZhTw => '繁體中文';
-
-  @override
-  String get langNameEn => '英語';
-
-  @override
-  String get langNameJa => '日語';
-
-  @override
-  String get langNameKo => '韓語';
-
-  @override
-  String get langNameEs => '西班牙語';
-
-  @override
-  String get langNameFr => '法語';
-
-  @override
-  String get langNameDe => '德語';
-
-  @override
-  String get langNameRu => '俄語';
-
-  @override
-  String get langNamePt => '葡萄牙語';
-
-  @override
-  String get langNameIt => '義大利語';
-
-  @override
-  String get langNameId => '印尼語';
-
-  @override
-  String get langNameTh => '泰語';
-
-  @override
-  String get langNameVi => '越南語';
-
-  @override
-  String get langNameAr => '阿拉伯語';
-
-  @override
-  String get translateOutgoing => '傳送前翻譯成對方的語言';
-
-  @override
-  String get translateOutgoingTip => '開啟後按傳送會先把內容譯成對方的語言再發出；請確認對方能讀懂該語言';
-
-  @override
-  String get translateInput => '翻譯輸入內容';
-
-  @override
-  String translateOutPreview(String text) {
-    return '將傳送：$text';
-  }
-
-  @override
-  String translateOutPreviewHint(String lang) {
-    return '已譯為 $lang · 點傳送即按此發出';
-  }
-
-  @override
-  String get translateOutCancel => '取消翻譯';
-
-  @override
-  String get translateOutNeedPeer => '還不知道對方使用什麼語言 · 先在對話翻譯設定裡指定';
-
-  @override
-  String translateSentAs(String text) {
-    return '已按對方語言發出：$text';
-  }
-
-  @override
-  String translateTooLongAfter(int n) {
-    return '譯文超出長度上限（$n 字元），未傳送';
-  }
-
-  @override
-  String get dateToday => '今天';
-
-  @override
-  String get dateYesterday => '昨天';
-
-  @override
-  String dateDividerFull(int y, int m, int d, String w) {
-    return '$y年$m月$d日 $w';
-  }
-
-  @override
-  String dateWeekday(String d) {
-    String _temp0 = intl.Intl.selectLogic(d, {
-      '1': '週一',
-      '2': '週二',
-      '3': '週三',
-      '4': '週四',
-      '5': '週五',
-      '6': '週六',
-      '7': '週日',
-      'other': '—',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get translate => '翻譯';
-
-  @override
-  String get translateText => '翻譯文字';
-
-  @override
-  String get translateSettings => '翻譯設定';
-
-  @override
-  String get translateSettingsSubtitle => '翻譯介面、語言與自動翻譯';
-
-  @override
-  String get translateProvider => '翻譯介面';
-
-  @override
-  String get translateProviderGoogle => 'Google 翻譯';
-
-  @override
-  String get translateProviderBaidu => '百度翻譯';
-
-  @override
-  String get translateProviderCustom => '自訂';
-
-  @override
-  String get translateGoogleKey => 'Google API Key';
-
-  @override
-  String get translateGoogleKeyTip =>
-      'Google Cloud Translation v2 的 API Key，需自行到 Google Cloud 主控台申請';
-
-  @override
-  String get translateBaiduAppId => '百度 App ID';
-
-  @override
-  String get translateBaiduKey => '百度密鑰';
-
-  @override
-  String get translateBaiduTip => '在百度翻譯開放平台申請「通用文本翻譯」，密鑰只保存在本機';
-
-  @override
-  String get translateCustomUrl => '介面網址';
-
-  @override
-  String get translateCustomMethod => '請求方式';
-
-  @override
-  String get translateCustomHeaders => '請求標頭 (JSON)';
-
-  @override
-  String get translateCustomBody => '請求主體範本';
-
-  @override
-  String translateCustomBodyTip(String text, String from, String to) {
-    return '可用佔位符：$text 原文、$from 來源語言、$to 目標語言。選擇 GET 時忽略此項';
-  }
-
-  @override
-  String get translateCustomResultPath => '結果欄位路徑';
-
-  @override
-  String get translateCustomResultPathTip =>
-      '用點號表示層級，陣列用序號，如 data.translations.0.translatedText';
-
-  @override
-  String get translateTest => '測試翻譯';
-
-  @override
-  String translateTestOk(String text) {
-    return '介面可用：$text';
-  }
-
-  @override
-  String get translateNeedConfig => '請先填寫翻譯介面設定';
-
-  @override
-  String translateFailed(String e) {
-    return '翻譯失敗：$e';
-  }
-
-  @override
-  String get translateTargetLang => '翻譯為';
-
-  @override
-  String get translateSourceLang => '原文語言';
-
-  @override
-  String get translateAuto => '自動翻譯收到的訊息';
-
-  @override
-  String get translateAutoTip => '僅對本對話生效；只翻譯對方傳來的訊息';
-
-  @override
-  String get translateShowOriginal => '顯示原文';
-
-  @override
-  String get translateShowTranslation => '顯示譯文';
-
-  @override
-  String get translateRetry => '重新翻譯';
-
-  @override
-  String get translateTranslating => '正在翻譯…';
-
-  @override
-  String get translateCopyOriginal => '複製原文';
-
-  @override
-  String get translateCopyResult => '複製譯文';
-
-  @override
-  String get translateLangAuto => '自動偵測';
-
-  @override
-  String get translateSameLang => '譯文與原文相同 · 可能無需翻譯，或該介面未能翻譯';
-
-  @override
-  String get translateNotNeeded => '該內容無需翻譯（數字 / 符號 / 呼號）';
-
-  @override
-  String translateBubbleCount(int n) {
-    return '已翻譯 $n 條';
-  }
-
-  @override
-  String get translatePrivacyNote => '翻譯會把訊息文字傳送到你選擇的第三方介面，請自行評估隱私';
-
-  @override
-  String get notifTncConnected => 'TNC 已連線';
-
-  @override
-  String get notifTncDisconnected => 'TNC 未連線';
-
-  @override
-  String get dataSourceTitle => '資料來源';
-
-  @override
-  String get dataSourceSubtitle => '報文從哪裡來';
-
-  @override
-  String get dataSourceAprsIs => 'APRS-IS';
-
-  @override
-  String get dataSourceAprsIsDesc => '透過網際網路接入全球 APRS 網路';
-
-  @override
-  String get dataSourceTnc => 'TNC';
-
-  @override
-  String get dataSourceTncDesc => '透過藍牙或串列的 TNC 與電台直接收發';
-
-  @override
-  String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
-
-  @override
-  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航點）';
-
-  @override
-  String get dataSourcePkwdwplDesc =>
-      '用藍牙/串列埠讀取電台輸出的 Kenwood \$PKWDWPL 航點語句（只收不發）';
-
-  @override
-  String get dataSourcePkwdwplHint =>
-      'PKWDWPL 是**唯讀**鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）';
-
-  @override
-  String connConnectingPkwdwpl(String arg) {
-    return '正在連線 PKWDWPL（$arg）…';
-  }
-
-  @override
-  String connPkwdwplConnected(String arg) {
-    return 'PKWDWPL 已連線 · $arg';
-  }
-
-  @override
-  String get pkwdwplDeviceTitle => 'PKWDWPL 裝置';
-
-  @override
-  String get pkwdwplDeviceDesc => '綁定電台連接埠 · 檢視航點接收狀態';
-
-  @override
-  String get pkwdwplBindTitle => '裝置綁定與狀態';
-
-  @override
-  String get pkwdwplBindSubtitle => '選擇輸出 \$PKWDWPL 語句的那個串列埠 / 藍牙埠';
-
-  @override
-  String get pkwdwplRxOnly => '只收不發';
-
-  @override
-  String get pkwdwplReadOnly => '唯讀接收中 · 本機不會發射任何報文';
-
-  @override
-  String get deviceConflictTitle => '兩條鏈路綁定了同一臺裝置';
-
-  @override
-  String get deviceConflictDesc =>
-      'TNC 與 PKWDWPL 指向同一臺裝置時，接收到的資料會被兩條鏈路瓜分 —— 表現是「能發不能收」（發送正常、收不到報文）。請給其中一條換一臺裝置。TNC 優先：PKWDWPL 會拒絕連線。';
-
-  @override
-  String get deviceInUseByTnc => '已被 TNC 使用，不能重複綁定';
-
-  @override
-  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重複綁定';
-
-  @override
-  String rxOnlyBanner(String arg) {
-    return '$arg 已連線 · 僅接收（目前發射來源未連線）';
-  }
-
-  @override
-  String get pkwdwplTip =>
-      '在電台選單裡把 PC / GPS 埠的輸出格式設為 \"\$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文';
-
-  @override
-  String get pkwdwplStrictChecksum => '嚴格校驗和（不符即丟棄）';
-
-  @override
-  String get pkwdwplStrictChecksumTip =>
-      '預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查';
-
-  @override
-  String get pkwdwplErrReadOnly => '唯讀鏈路，不能發射';
-
-  @override
-  String get pkwdwplStatTitle => '航點接收';
-
-  @override
-  String pkwdwplStats(String rx) {
-    return '已收航點 $rx 條';
-  }
-
-  @override
-  String get pkwdwplStatRejected => '丟棄/無效語句';
-
-  @override
-  String get pkwdwplStatMismatch => '校驗和不符';
-
-  @override
-  String get pkwdwplStatIgnored => '其它 NMEA 語句（已忽略）';
-
-  @override
-  String get pkwdwplLogEmpty => '暫無 PKWDWPL 日誌';
-
-  @override
-  String get tncBindTitle => '藍牙 TNC';
-
-  @override
-  String get tncBindSubtitle => '綁定並連接電台端的 TNC';
-
-  @override
-  String get tncBoundDevice => '已綁定裝置';
-
-  @override
-  String get tncNotBound => '未綁定裝置';
-
-  @override
-  String get tncScanPaired => '掃描裝置（藍牙已配對 + USB 串列）';
-
-  @override
-  String get tncNoPaired => '找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）';
-
-  @override
-  String get tncUnbind => '解除綁定';
-
-  @override
-  String get tncConnectAction => '連接 TNC';
-
-  @override
-  String get tncRestart => '重啟鏈路';
-
-  @override
-  String get tncSupportedNo => '目前平台暫不支援 TNC 鏈路';
-
-  @override
-  String get tncNeedPermission => '需要藍牙權限（掃描藍牙裝置用）；只用 USB 串列可忽略，插線時系統會單獨彈出授權';
-
-  @override
-  String get tncOpenFailedHint => '開啟裝置失敗 · Windows 的 COM 埠是獨佔裝置，請確認沒有被其他軟體佔用';
-
-  @override
-  String tncStats(String rx, String tx) {
-    return '收 $rx 幀 · 發 $tx 幀';
-  }
-
-  @override
-  String get tncLog => '鏈路日誌';
-
-  @override
-  String get tncLogEmpty => '暫無日誌';
-
-  @override
-  String get kissParamsTitle => 'KISS 參數';
-
-  @override
-  String get kissParamsSubtitle => '直接下發到 TNC 的鏈路層參數';
-
-  @override
-  String get kissTxDelay => '發射延時 (ms)';
-
-  @override
-  String get kissTxDelayTip => 'KISS TXDELAY，單位 10ms。發射前留給自己 PTT 建立的時間';
-
-  @override
-  String get kissTxTail => '發射尾音 (ms)';
-
-  @override
-  String get kissTxTailTip => 'KISS TXTAIL，單位 10ms。某些電台需要尾部保持才能收全';
-
-  @override
-  String get kissPersistence => '持續度 P';
-
-  @override
-  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越禮讓，共用信道時能減少碰撞';
-
-  @override
-  String get kissSlotTime => '時隙 (ms)';
-
-  @override
-  String get kissSlotTimeTip => 'KISS SLOTTIME，單位 10ms。與持續度共同決定信道競爭節奏';
-
-  @override
-  String get kissFullDuplex => '全雙工';
-
-  @override
-  String get kissFullDuplexTip => 'KISS FULLDUPLEX，一般電台必須關閉（同時收發會互相干擾）';
-
-  @override
-  String get kissChannel => '信道 / KISS 埠';
-
-  @override
-  String get kissChannelTip => '多信道 TNC 才有多埠，單信道電台保持 0';
-
-  @override
-  String get kissMaxFrame => '幀長上限 (位元組)';
-
-  @override
-  String get kissMaxFrameTip => '超過此長度的報文不會發出（1200bd 下 AX.25 單幀約 330 位元組）';
-
-  @override
-  String get kissHardwareCmd => '廠商命令碼';
-
-  @override
-  String get kissHardwareVal => '參數值';
-
-  @override
-  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發';
-
-  @override
-  String get kissApplyParams => '下發參數';
-
-  @override
-  String get kissParamsSent => 'KISS 參數已下發';
-
-  @override
-  String get kissBackToCommand => '回到 TNC 命令模式';
-
-  @override
-  String get kissBackToCommandTip =>
-      '發送 RETURN (0x0F)。多數 KISS TNC 會就此停止轉發，需重啟鏈路才恢復';
-
-  @override
-  String get kissRfPath => '射頻中繼路徑';
-
-  @override
-  String get kissRfPathTip => '射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定';
-
-  @override
-  String get kissRfBeacon => '允許射頻信標';
-
-  @override
-  String get kissRfBeaconTip => '打開後才會在射頻上定時發射位置。發射需以自己的呼號並在執照範圍內操作';
-
-  @override
-  String get kissAutoAck => '自動回覆 ACK';
-
-  @override
-  String get kissAutoAckTip => '關閉後不回覆收到的訊息回執，可減少射頻佔用';
-
-  @override
-  String get kissAutoReconnect => '斷開後自動重連';
-
-  @override
-  String get kissNeedConnected => '請先連接 TNC';
-
-  @override
-  String get tncSwitchOn => '已開啟';
-
-  @override
-  String get tncSwitchOff => '已關閉';
-
-  @override
-  String get connTncSourceHint => 'TNC 模式下不使用伺服器與過濾器，相關設定已停用';
-
-  @override
-  String get connectTncBar => '點「連接」建立 TNC 鏈路';
-
-  @override
-  String connectingToTnc(String name) {
-    return '正在連接 TNC · $name';
-  }
-
-  @override
-  String get tncMsgTitle => '射頻（TNC）模式';
-
-  @override
-  String get tncMsgDesc => '射頻信道是共享資源，訊息能力相應受限';
-
-  @override
-  String get tncGroupDisabled => '射頻模式不支援群聊廣播';
-
-  @override
-  String tncMsgLimitHint(String n) {
-    return '單條限 $n 字元（APRS 訊息規範）';
-  }
-
-  @override
-  String get tncMsgTooLong => '超出射頻模式單條訊息長度上限';
-
-  @override
-  String get licenseSection => '許可證宣告';
-
-  @override
-  String get licenseName => 'GNU GPL v3';
-
-  @override
-  String get licenseStatement =>
-      '本軟體依據 GNU GPL v3 開源許可證釋出。你可以在遵守許可證條款的前提下執行、研究、修改和再分發本軟體；修改和再分發時須遵守 GPL v3 的相應義務。本軟體不附帶任何擔保。';
-
-  @override
-  String get licenseText => '檢視許可證';
-
-  @override
-  String get oobeAgreeTitle => '使用者協議與許可';
-
-  @override
-  String get oobeAgreeBody =>
-      '歡迎使用 APRSlocus！在使用前，請閱讀並同意以下條款。請注意：APRS 資料是公開資訊，一旦傳送即代表其可能被全球 APRS 網路接收、儲存與轉發。';
-
-  @override
-  String get oobeAgreeCheck => '我已閱讀並同意《使用者協議》與 GPL-3.0 開源許可證';
-
-  @override
-  String get oobeAgreeNeed => '請先閱讀並勾選同意《使用者協議》';
-
-  @override
-  String get oobeDeclineExit => '不同意並離開';
-
-  @override
-  String get userAgreement => '使用者協議';
-
-  @override
-  String get beaconWarnTitle => '信標間隔過短';
-
-  @override
-  String get beaconWarnBody =>
-      'APRS-IS 建議移動站信標間隔不低於 60 秒。過快的上報可能被視為濫用並導致伺服器斷開連線。是否仍要使用該間隔？';
-
-  @override
-  String get beaconWarnKeep => '仍然使用';
-
-  @override
-  String get beaconWarnFix => '改回 60 秒';
-
-  @override
-  String get features => '功能特性';
-
-  @override
-  String get openSource => '開源致謝';
-
-  @override
-  String get feedback => '使用者反饋';
-
-  @override
-  String get officialWebsite => '官方網站';
-
-  @override
-  String get qqGroup => 'QQ 群組';
-
-  @override
-  String get projectRepo => '專案倉庫';
-
-  @override
-  String get testMembers => '測試成員';
-
-  @override
-  String get aiSupport => 'AI 算力支援';
-
-  @override
-  String get copyAppInfo => '複製應用程式資訊';
-
-  @override
-  String get appInfoCopied => '已複製應用程式資訊';
-
-  @override
-  String get shareApp => '分享 APRSlocus';
-
-  @override
-  String get shareToSystem => '分享到系統';
-
-  @override
-  String get shareToSystemDesc => 'WeChat / QQ / 簡訊等';
-
-  @override
-  String get copyShareText => '複製分享文案';
-
-  @override
-  String get openDownload => '開啟下載頁';
-
-  @override
-  String get shareTextCopied => '分享文案已複製，可貼上傳送給好友';
-
-  @override
-  String get shareText =>
-      'APRSlocus —— 業餘無線電 APRS 定位追蹤與地圖 📡\n即時臺站追蹤、訊息收發、信標上報，Android / Windows 全平台可用。\n官網：https://aprslocus.theez.top/\n下載：https://github.com/dariondong/APRSLocus/releases';
-
-  @override
-  String get enterCallsign => '請輸入你的呼號';
-
-  @override
-  String get enterValidCall => '請輸入有效呼號';
-
-  @override
-  String get stationSettings2 => '電臺設定';
-
-  @override
-  String get beaconSettings => '定位上報';
-
-  @override
-  String get displaySettings2 => '顯示設定';
-
-  @override
-  String get chatSettings2 => '聊天設定';
-
-  @override
-  String get dataSettings2 => '資料設定';
-
-  @override
-  String get advancedSettings2 => '高階設定';
-
-  @override
-  String get connectionSettings2 => '連線設定';
-
-  @override
-  String get myCallsign => '我的呼號';
-
-  @override
-  String get beaconEnabled => '啟用位置信標';
-
-  @override
-  String get smartBeacon => '智慧信標(依速度分檔)';
-
-  @override
-  String get packetConsole => '資料包控制檯';
-
-  @override
-  String get rawMode => '原始模式';
-
-  @override
-  String get parsedMode => '解析模式';
-
-  @override
-  String get position => '位置';
-
-  @override
-  String get statusType => '狀態';
-
-  @override
-  String get objectType => '物件';
-
-  @override
-  String packetStats(Object ppm, Object rx, Object tx) {
-    return '收 $rx · 發 $tx · $ppm/分';
-  }
-
-  @override
-  String get searchPacket => '搜尋呼號、目的地或原始內容…';
-
-  @override
-  String get noMatchingPackets => '沒有符合的資料包';
-
-  @override
-  String get inject => '注入';
-
-  @override
-  String get manualInject => '手動注入 APRS 資料包';
-
-  @override
-  String get injected => '已注入資料包';
-
-  @override
-  String get clearedPackets => '已清除資料包';
-
-  @override
-  String get clearPackets => '清除資料包';
-
-  @override
-  String noPositionInfo(Object call) {
-    return '$call 暫無位置資訊（資料包未含位置）';
-  }
-
-  @override
-  String get copiedPacket => '已複製資料包';
-
-  @override
-  String get mapPickMode => '地圖選點模式';
-
-  @override
-  String get mapPickDesc => '點選地圖選擇我的位置';
-
-  @override
-  String foundStations(Object count, Object q) {
-    return '找到 $count 臺符合「$q」';
-  }
-
-  @override
-  String get tapMapHint => '點選地圖檢視臺站 · 雙指縮放';
-
-  @override
-  String myLocationPanel(Object call) {
-    return '我的位置 · $call';
-  }
-
-  @override
-  String get speedLabel => '速度';
-
-  @override
-  String get courseLabel => '航向';
-
-  @override
-  String get telemetryTitle => '速度 / 高度變化';
-
-  @override
-  String get range10m => '10 分鐘';
-
-  @override
-  String get range30m => '30 分鐘';
-
-  @override
-  String get range1h => '1 小時';
-
-  @override
-  String get range3h => '3 小時';
-
-  @override
-  String get rangeAll => '全部';
-
-  @override
-  String get beaconIntervalLabel => '上報間隔';
-
-  @override
-  String get beaconsSentLabel => '已上報';
-
-  @override
-  String get nextBeaconLabel => '下次上報';
-
-  @override
-  String positionBeacon(Object grid) {
-    return '位置信標 · 網格 $grid';
-  }
-
-  @override
-  String get manualBeacon => '手動上報';
-
-  @override
-  String get mapPickNow => '地圖選點';
-
-  @override
-  String pickedCoord(Object grid, Object lat, Object lng) {
-    return '已在地圖選點 · $lat, $lng · 網格 $grid';
-  }
-
-  @override
-  String onlineCount(Object count) {
-    return '$count 線上';
-  }
-
-  @override
-  String movingCount(Object count) {
-    return '$count 移動';
-  }
-
-  @override
-  String stationCount(Object count) {
-    return '$count 臺站';
-  }
-
-  @override
-  String get locateMe => '定位';
-
-  @override
-  String get layerFilter => '圖層篩選';
-
-  @override
-  String get showAll => '全部顯示';
-
-  @override
-  String get otherType => '其他';
-
-  @override
-  String zoomLevel(Object z) {
-    return '縮放 $z';
-  }
-
-  @override
-  String get datumGcj => 'GCJ-02';
-
-  @override
-  String get datumWgs => 'WGS-84';
-
-  @override
-  String distKm(Object d) {
-    return '距離 ${d}km';
-  }
-
-  @override
-  String get noStationInView => '該區域暫無臺站 · 點選顯示全部';
-
-  @override
-  String get noStationHelp => '該區域暫無臺站 · 點選檢視幫助';
-
-  @override
-  String get mapHelpTitle => '地圖幫助';
-
-  @override
-  String get mapHelpIntro => '目前視野內沒有臺站。可能原因：未連線 APRS-IS、接收範圍較小或附近暫無活躍臺站。';
-
-  @override
-  String get mapHelpMove => '拖動 / 縮放：單指拖動地圖，雙指或滾輪縮放';
-
-  @override
-  String get mapHelpStation => '檢視臺站：點選標記選中並居中，雙擊開啟詳情';
-
-  @override
-  String get mapHelpLayer => '圖層與底圖：右上角按鈕篩選臺站類型、切換地圖樣式';
-
-  @override
-  String get mapHelpLocate => '定位：點選右下角「定位到我」回到目前位置';
-
-  @override
-  String get mapHelpSearch => '搜尋：頂部搜尋框輸入呼號可快速定位臺站';
-
-  @override
-  String get allChangelog => '全部更新日誌';
-
-  @override
-  String get tapToView => '雙擊信標查看更多';
-
-  @override
-  String get beaconNow => '手動上報';
-
-  @override
-  String get meLabel => '我';
-
-  @override
-  String get mapZoomIn => '放大';
-
-  @override
-  String get mapZoomOut => '縮小';
-
-  @override
-  String get mapHome => '回到中心';
-
-  @override
-  String get mapLocate => '定位';
-
-  @override
-  String get mapLayers => '圖層';
-
-  @override
-  String get featureLiveMap => '線上地圖';
-
-  @override
-  String get featureLiveMapDesc => 'GCJ-02 座標，流暢的縮放與拖拽體驗';
-
-  @override
-  String get featureGps => 'GPS 定位';
-
-  @override
-  String get featureGpsDesc => '原生 Android 定位，無需 Google 服務';
-
-  @override
-  String get featureBeacon => '信標傳送';
-
-  @override
-  String get featureBeaconDesc => '自定義內容、頻率、符號，支援 APRS 標準格式';
-
-  @override
-  String get featureMsg => '訊息收發';
-
-  @override
-  String get featureMsgDesc => '瀑布流 + 會話模式，支援中文和自動應答';
-
-  @override
-  String get featureAutoConnect => '自動連線';
-
-  @override
-  String get featureAutoConnectDesc => '公共伺服器自動連線，背景執行時保持線上';
-
-  @override
-  String get featureLayerFilter => '圖層篩選';
-
-  @override
-  String get featureLayerFilterDesc => '按類型篩選：移動、固定、中繼、氣象、FMO';
-
-  @override
-  String get featureFmo => 'FMO 臺站';
-
-  @override
-  String get featureFmoDesc => '自動識別 FMO 資料，顯示結構化資訊';
-
-  @override
-  String get osFlutter => 'Flutter';
-
-  @override
-  String get osFlutterDesc => 'Google 跨平台 UI 框架';
-
-  @override
-  String get osAmap => '高德地圖';
-
-  @override
-  String get osAmapDesc => '地圖瓦片服務';
-
-  @override
-  String get osAprs => 'APRS-IS';
-
-  @override
-  String get osAprsDesc => '全球 APRS 資料網路';
-
-  @override
-  String get osHam => '業餘無線電';
-
-  @override
-  String get osHamDesc => '所有 APRS 愛好者的貢獻';
-
-  @override
-  String get authorName => 'Darion';
-
-  @override
-  String get authorCall => '呼號';
-
-  @override
-  String get website => '網站';
-
-  @override
-  String get sponsorAuthor => '作者 BG7LZQ';
-
-  @override
-  String get sponsorAuthorItems => '利用課餘時間開發維護本專案';
-
-  @override
-  String get sponsorGroup => 'STUDENT HAMS 群組';
-
-  @override
-  String get sponsorGroupItems => '感謝群組的資金贊助支援';
-
-  @override
-  String get sponsorBgp => 'BG7PGW';
-
-  @override
-  String get sponsorBgpItems => '感謝贊助的蜜雪冰城一杯 🧋';
-
-  @override
-  String get sponsorEvery => '每一位支持者';
-
-  @override
-  String get sponsorEveryItems => '你們的每一份支援都是動力';
-
-  @override
-  String get donateWechat => 'WeChat 讚賞';
-
-  @override
-  String get donateWechatDesc => '長按儲存讚賞碼 · 點選放大';
-
-  @override
-  String get donateAlipay => 'Alipay 讚賞';
-
-  @override
-  String get donateAlipayDesc => '聯絡作者獲取讚賞碼';
-
-  @override
-  String get nonprofitNote => '本專案為非盈利學習交流專案\n贊助僅用於伺服器與開發成本';
-
-  @override
-  String get myStation => '我的電臺';
-
-  @override
-  String get callSsid => '呼號 · SSID';
-
-  @override
-  String get ssid => 'SSID';
-
-  @override
-  String get ssidDesc => 'SSID 是呼號字尾用於標識裝置，如 BG7ABC-9 中的 -9';
-
-  @override
-  String get callComment => '臺站備註';
-
-  @override
-  String get callCommentHint => '信標傳送時的備註內容';
-
-  @override
-  String get callSymbol => '臺站符號';
-
-  @override
-  String get callSymbolDesc => '符號隨位置信標一起傳送';
-
-  @override
-  String get autoReply => '自動應答';
-
-  @override
-  String get sendBeacon => '傳送信標';
-
-  @override
-  String get mapTypeDesc =>
-      '「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。';
-
-  @override
-  String get offlineLoading => '載入中…';
-
-  @override
-  String get offlineMap => '離線地圖';
-
-  @override
-  String get offlineMapDesc => '先把地圖圖磚下載到本機，沒有網路時也能看地圖';
-
-  @override
-  String get offlineMapFooter => '圖磚只保存在本機，不會上傳；不同圖源的圖磚分開快取';
-
-  @override
-  String get offlineRegions => '離線區域';
-
-  @override
-  String get offlineRegionsDesc => '已下載的區域可在地圖上離線檢視';
-
-  @override
-  String get offlineNew => '新建區域';
-
-  @override
-  String get offlineNoRegions => '還沒有離線區域';
-
-  @override
-  String get offlineNoRegionsHint => '點右上角「新建區域」，把常去的地方下載下來';
-
-  @override
-  String get offlineCacheUsage => '圖磚快取';
-
-  @override
-  String get offlineCacheUsageDesc => '瀏覽地圖時自動快取，也可手動下載區域';
-
-  @override
-  String get offlineClearCache => '清除全部圖磚快取';
-
-  @override
-  String get offlineClearCacheConfirm => '清除全部已下載的地圖圖磚？';
-
-  @override
-  String get offlineClearCacheConfirmBody =>
-      '已下載的圖磚會被刪除，區域記錄會保留（需要重新下載才能離線檢視）。';
-
-  @override
-  String get offlineAreaHint => '目前畫面範圍就是下載範圍';
-
-  @override
-  String get offlineSource => '圖源';
-
-  @override
-  String get offlineName => '名稱';
-
-  @override
-  String get offlineNameHint => '例如：家附近';
-
-  @override
-  String get offlineStartDownload => '開始下載';
-
-  @override
-  String get offlineStatusPending => '等待下載';
-
-  @override
-  String get offlineStatusRunning => '下載中';
-
-  @override
-  String get offlineStatusPaused => '已暫停';
-
-  @override
-  String get offlineStatusDone => '已完成';
-
-  @override
-  String get offlineStatusCanceled => '已取消';
-
-  @override
-  String get offlineStatusFailed => '下載失敗';
-
-  @override
-  String get offlinePause => '暫停';
-
-  @override
-  String get offlineResume => '繼續';
-
-  @override
-  String get offlineCancelDownload => '取消';
-
-  @override
-  String get offlineDeleteKeepTiles => '僅刪除記錄（保留已下載圖磚）';
-
-  @override
-  String get offlineDeleteWithTiles => '刪除記錄並刪除圖磚';
-
-  @override
-  String get offlineDownloadBusy => '已有下載任務在進行，請先等待或取消';
-
-  @override
-  String get offlineCacheSwitch => '快取地圖圖磚';
-
-  @override
-  String get offlineCacheSwitchDesc => '瀏覽地圖時把圖磚存到本機，之後可離線檢視';
-
-  @override
-  String get offlineOnlySwitch => '僅使用離線圖磚';
-
-  @override
-  String get offlineOnlySwitchDesc => '不再從網路載入圖磚，只用已下載/已快取的圖（省流量）';
-
-  @override
-  String get offlineCacheDisabled => '圖磚快取無法使用（目前平台不支援）';
-
-  @override
-  String get offlineSwitchFirst => '請先開啟「快取地圖圖磚」';
-
-  @override
-  String get offlineOnlyWarn => '已開啟「僅使用離線圖磚」，地圖可能顯示不全';
-
-  @override
-  String offlineTilesDownloaded(String n) {
-    return '已下載 $n 張圖磚';
-  }
-
-  @override
-  String offlineZoomLevels(String min, String max) {
-    return '$min–$max 級';
-  }
-
-  @override
-  String offlineEstimate(String tiles, String size) {
-    return '約 $tiles 張圖磚 · 約 $size';
-  }
-
-  @override
-  String offlineTooManyTiles(String tiles) {
-    return '範圍太大（約 $tiles 張圖磚），請縮小範圍或降低最大層級';
-  }
-
-  @override
-  String offlineDeleteRegionConfirm(String name) {
-    return '刪除離線區域「$name」？';
-  }
-
-  @override
-  String offlineDeleteTileCount(String n) {
-    return '將刪除約 $n 張圖磚';
-  }
-
-  @override
-  String offlineDeletingTiles(String done, String total) {
-    return '正在刪除 $done/$total';
-  }
-
-  @override
-  String offlineFailedCount(String n) {
-    return '$n 張失敗';
-  }
-
-  @override
-  String offlineTileProgress(String done, String total) {
-    return '$done/$total 張';
-  }
-
-  @override
-  String get msgHistory => '訊息記錄';
-
-  @override
-  String get statistics => '統計';
-
-  @override
-  String get clearData => '清除資料';
-
-  @override
-  String get favorites => '收藏/手動';
-
-  @override
-  String get favoriteStations => '收藏臺站';
-
-  @override
-  String get manualStations => '手動臺站';
-
-  @override
-  String get wgs84 => 'WGS-84';
-
-  @override
-  String get gcj02 => 'GCJ-02';
-
-  @override
-  String get onlyWgs84 => '僅標準 WGS-84';
-
-  @override
-  String get contactList => '聯絡人';
-
-  @override
-  String get contactDesc => '訊息/聯絡人相關的篩選規則';
-
-  @override
-  String get dataClearDesc => '清除訊息、資料包、臺站等本機資料';
-
-  @override
-  String get advancedDesc => '實驗室與開發者工具';
-
-  @override
-  String get labDesc => '實驗室功能仍在測試中，可能影響使用體驗。預設鎖定直向顯示，開啟後支援橫向顯示。';
-
-  @override
-  String get systemLog => '系統日誌';
-
-  @override
-  String get devDesc => '開發者除錯工具';
-
-  @override
-  String get simData => '啟用模擬資料（示範臺站/資料包）';
-
-  @override
-  String get rxTx => '收包 / 發包';
-
-  @override
-  String get stationCount2 => '臺站數量';
-
-  @override
-  String get appInfo => '應用程式資訊';
-
-  @override
-  String get clearMessages => '清空全部聊天記錄';
-
-  @override
-  String get clearPackets2 => '清除資料包';
-
-  @override
-  String get clearStations => '清除臺站清單';
-
-  @override
-  String get stationListDesc => '收到的臺站與它們的軌跡，保存在本機';
-
-  @override
-  String clearStationsConfirm(String n) {
-    return '確定要清除全部臺站嗎？共 $n 個，清除後無法復原（訊息 / 日誌 / 資料包不受影響）。';
-  }
-
-  @override
-  String get stationsCleared => '已清除臺站清單';
-
-  @override
-  String get clearCache => '清除快取';
-
-  @override
-  String get resetAll => '重置全部設定';
-
-  @override
-  String get resetAllDesc => '還原出廠設定';
-
-  @override
-  String get dataPersistence => '臺站持久化';
-
-  @override
-  String get autoSaveStations => '自動儲存臺站資料';
-
-  @override
-  String get gridFormat => '網格格式';
-
-  @override
-  String get coordsFormat => '座標格式';
-
-  @override
-  String get appVersion => '版本';
-
-  @override
-  String get appVersionDesc => '目前應用程式版本';
-
-  @override
-  String get stationDetail => '臺站詳情';
-
-  @override
-  String get backToTop => '回到頂部';
-
-  @override
-  String get installApk => '安裝 APRSlocus';
-
-  @override
-  String get install => '安裝';
-
-  @override
-  String get cancelInstall => '取消';
-
-  @override
-  String get openFolder => '開啟目錄';
-
-  @override
-  String get browse => '瀏覽';
-
-  @override
-  String get downloadUpdate => '下載更新';
-
-  @override
-  String get downloadNow => '立即下載';
-
-  @override
-  String get downloading => '下載中';
-
-  @override
-  String downloadProgress(Object p) {
-    return '下載中 $p%';
-  }
-
-  @override
-  String get downloadComplete => '下載完成';
-
-  @override
-  String get downloadFailed => '下載失敗';
-
-  @override
-  String get installNow => '立即安裝';
-
-  @override
-  String get installComplete => '安裝完成';
-
-  @override
-  String get openInstallDir => '開啟安裝目錄';
-
-  @override
-  String get deletePackage => '刪除安裝檔';
-
-  @override
-  String deletePackageConfirm(Object file) {
-    return '確定刪除安裝檔 $file？';
-  }
-
-  @override
-  String get deleteAllPackages => '刪除全部安裝檔';
-
-  @override
-  String deleteAllPackagesWithCount(Object count) {
-    return '刪除全部安裝檔（$count 個）';
-  }
-
-  @override
-  String deleteAllPackagesConfirm(Object count, Object size) {
-    return '將刪除本機已下載的 $count 個安裝檔（共 $size），確定？';
-  }
-
-  @override
-  String get historyVersions => '歷史版本';
-
-  @override
-  String get current => '目前';
-
-  @override
-  String get newVersion => '新版本';
-
-  @override
-  String get latestVersion => '目前已是最新版本';
-
-  @override
-  String get currentVersion => 'APRSlocus 目前版本';
-
-  @override
-  String get checking => '正在檢查新版本…';
-
-  @override
-  String get checkingGitCode => '檢查 GitCode 倉庫';
-
-  @override
-  String get updateFailed => '檢查更新失敗';
-
-  @override
-  String get noUpdateFound => '目前已是最新版本';
-
-  @override
-  String get newVersionFound => '發現新版本';
-
-  @override
-  String get downloadAgain => '重新下載安裝檔';
-
-  @override
-  String get openDownloads => '開啟下載目錄';
-
-  @override
-  String get releaseNotes => '更新日誌';
-
-  @override
-  String currentVsRepo(Object local, Object remote) {
-    return '本機 v$local · 倉庫最新 v$remote';
-  }
-
-  @override
-  String installSize(Object os, Object size) {
-    return '$os 安裝檔大小：$size';
-  }
-
-  @override
-  String get alreadyDownloaded => '安裝檔已下載';
-
-  @override
-  String get downloadReady => '下載一份安裝檔';
-
-  @override
-  String get appInstallDir => '安裝目錄';
-
-  @override
-  String get runInstaller => '執行安裝程式';
-
-  @override
-  String get downloadUpdateTip => '下載更新並自動開啟';
-
-  @override
-  String get openDownloadFolder => '開啟下載目錄';
-
-  @override
-  String groupBubble(String name) {
-    return '群組 · $name';
-  }
-
-  @override
-  String get groupInviteTitle => '群組邀請';
-
-  @override
-  String groupInviteFrom(String from) {
-    return '$from 邀請你加入群組';
-  }
-
-  @override
-  String groupNameValue(String name) {
-    return '群組名稱：$name';
-  }
-
-  @override
-  String groupCallsignValue(String call) {
-    return '群組呼號：$call';
-  }
-
-  @override
-  String groupInviteAccepted(String name) {
-    return '已接受邀請，加入 $name';
-  }
+  String get aboutTitle => '關於';
 
   @override
   String get accept => '接受';
 
   @override
-  String groupInviteRejected(String name) {
-    return '已拒絕 $name 的邀請';
+  String get accountHonors => '帳號榮譽';
+
+  @override
+  String get achievementWall => '成就牆';
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m 成就';
   }
 
   @override
-  String get reject => '拒絕';
+  String get achievementsSection => '成就';
 
   @override
-  String get appTagline => 'APRS 定位追蹤';
+  String get activeConditions => '生效條件';
 
   @override
-  String gridValue(String grid) {
-    return '網格 $grid';
-  }
-
-  @override
-  String packetsPerMinute(int count) {
-    return '$count/分';
-  }
-
-  @override
-  String get demo => '演示';
-
-  @override
-  String nextBeaconIn(String time) {
-    return '下次上報 $time';
-  }
-
-  @override
-  String beaconCount(int count) {
-    return '信標 $count 次';
-  }
-
-  @override
-  String beaconSentAprsIs(String grid) {
-    return '位置已上報 · 網格 $grid · 已發往 APRS-IS';
-  }
-
-  @override
-  String beaconSentDemo(String grid) {
-    return '位置已上報 · 網格 $grid · 演示';
-  }
-
-  @override
-  String get getLocation => '獲取定位';
-
-  @override
-  String get disconnect => '斷開連線';
-
-  @override
-  String get connectAprsIs => '連線 APRS-IS';
-
-  @override
-  String get packetsReceived => '收包';
-
-  @override
-  String get passcodeUnverified => 'Passcode 未驗證';
-
-  @override
-  String get passcodeWarning => '登入密碼可能錯誤，無法正常收發訊息';
-
-  @override
-  String get goSettings => '去設定';
-
-  @override
-  String get connectingServer => '正在連線伺服器…';
-
-  @override
-  String get notConnectedAprsServer => '未連線 APRS-IS 伺服器';
-
-  @override
-  String connectingToServer(String server, int port) {
-    return '正在連線 $server:$port…';
-  }
-
-  @override
-  String get connectNearbyDesc => '連線後可接收附近臺站定位與訊息';
-
-  @override
-  String get connectAction => '連線';
-
-  @override
-  String get backgroundRunTip =>
-      '背景執行提示：為保證背景執行時持續定位上報，請到系統設定中允許 APRSlocus 背景執行、關閉省電最佳化，並允許自啟動。';
-
-  @override
-  String get connectedAprsIs => '已連線 APRS-IS';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus 軟體 · 反饋問題/交流使用';
-
-  @override
-  String get reselectPoint => '重新選點';
-
-  @override
-  String get disableClustering => '關閉聚合';
-
-  @override
-  String get enableClustering => '開啟聚合';
-
-  @override
-  String get heatmap => '臺站熱力圖';
-
-  @override
-  String get heatmapHint => '縮小地圖後顯示臺站密度熱力圖';
-
-  @override
-  String get groupTracking => '群組追蹤';
-
-  @override
-  String get groupTrackingHint => '把關心的呼號編成群組，在大地圖上持續追蹤（車隊 / 好友結伴），支援橫向顯示。';
-
-  @override
-  String get newTrackGroup => '建立新追蹤組';
-
-  @override
-  String get trackGroupNameHint => '群組名稱，例如：週末騎乘';
-
-  @override
-  String get editTrackGroup => '編輯追蹤組';
-
-  @override
-  String get deleteTrackGroup => '刪除追蹤組';
-
-  @override
-  String deleteTrackGroupConfirm(Object name) {
-    return '確定刪除追蹤組「$name」嗎？';
-  }
-
-  @override
-  String get pickTrackMembers => '選擇成員（勾選要追蹤的呼號）';
-
-  @override
-  String get saveAndTrack => '儲存並追蹤';
-
-  @override
-  String get trackGroupsEmptyHint => '還沒有追蹤組，點「建立新追蹤組」建立一組要追蹤的呼號。';
-
-  @override
-  String trackMemberSub(Object seen, Object type) {
-    return '$type · $seen';
-  }
-
-  @override
-  String get trackGroupEmpty => '群組內成員暫無位置資料（未收到或未上報），點選下方可編輯成員。';
-
-  @override
-  String get trackActive => '線上';
-
-  @override
-  String get trackWaitingPos => '等待位置…';
-
-  @override
-  String get offlineShort => '離線';
-
-  @override
-  String get stoppedShort => '靜止';
-
-  @override
-  String trackHeader(Object fixed, Object online, Object total) {
-    return '$total 人 · $online 線上 · $fixed 已定位';
-  }
-
-  @override
-  String get groupChatShort => '群組';
-
-  @override
-  String groupChatTitle(Object name) {
-    return '群組 · $name';
-  }
-
-  @override
-  String chatWithTitle(Object call) {
-    return '與 $call 聊天';
-  }
-
-  @override
-  String get chatToGroupHint => '傳送訊息給整個群組…';
-
-  @override
-  String chatToHint(Object call) {
-    return '傳送給 $call…';
-  }
-
-  @override
-  String get noMessagesHint => '暫無訊息，發一條吧';
-
-  @override
-  String trackModeFollow(Object call) {
-    return '跟隨 $call';
-  }
-
-  @override
-  String get trackModeMe => '跟隨我';
-
-  @override
-  String get trackModeFitAll => '全覽保持中';
-
-  @override
-  String get fitAll => '全覽';
-
-  @override
-  String get noStationsYet => '暫無臺站資料，連線 APRS-IS 後即可選擇。';
-
-  @override
-  String get noPackets => '暫無資料包';
-
-  @override
-  String secondsAgo(int count) {
-    return '$count秒前';
-  }
-
-  @override
-  String minutesAgo(int count) {
-    return '$count分前';
-  }
-
-  @override
-  String hoursAgo(int count) {
-    return '$count小時前';
-  }
-
-  @override
-  String daysAgo(int count) {
-    return '$count天前';
-  }
-
-  @override
-  String copiedCoordsValue(String coords) {
-    return '已複製座標：$coords';
-  }
-
-  @override
-  String copiedGridValue(String grid) {
-    return '已複製網格：$grid';
-  }
-
-  @override
-  String distanceBearing(String distance, String bearing) {
-    return '距我 ${distance}km · 方位 $bearing°';
-  }
-
-  @override
-  String weatherDataValue(String data) {
-    return '氣象資料 · $data';
-  }
-
-  @override
-  String get symbolLabel => '符號';
-
-  @override
-  String get digipeaterTapHint => '點選中繼臺跳轉到對應臺站';
-
-  @override
-  String get copiedFmoInfo => '已複製 FMO 資訊';
-
-  @override
-  String get copiedAprslocusInfo => '已複製 APRSlocus 資訊';
-
-  @override
-  String trackPoints(int count) {
-    return '軌跡 ($count 點)';
-  }
-
-  @override
-  String sendMessageTo(String call) {
-    return '發訊息給 $call…';
-  }
-
-  @override
-  String get navigationUnavailable => '未安裝地圖應用程式，且無法開啟其他地圖應用程式';
-
-  @override
-  String stationNoData(String call) {
-    return '臺站 $call 尚未收到資料';
-  }
-
-  @override
-  String get software => '軟體';
-
-  @override
-  String get close => '關閉';
-
-  @override
-  String get nameLabel => '名稱';
-
-  @override
-  String get viewSponsorDetails => '檢視作者與贊助詳情 →';
-
-  @override
-  String get thanks => '感謝';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus 軟體';
-
-  @override
-  String get usageNotice => '本軟體僅供業餘無線電愛好者學習交流使用\n請遵守當地無線電管理法規';
-
-  @override
-  String get licenseNotice => 'GNU GPL v3 開源協議 · Copyright © BG7LZQ';
-
-  @override
-  String appInfoText(String version) {
-    return 'APRSlocus v$version\n作者: BG7LZQ (Darion)\n網站: Theez.top';
-  }
-
-  @override
-  String get eggBg7lzq => '哎呦你幹嘛~';
-
-  @override
-  String get eggBg7pgw => '鬧呢？';
-
-  @override
-  String get eggBg7lmw => '默不作聲...';
-
-  @override
-  String get eggBg7osl => '你的膽子肥嘟嘟的';
-
-  @override
-  String get manualCallsignHint => '手動輸入呼號新增';
-
-  @override
-  String get noPacketReceived => '未收到資料包';
-
-  @override
-  String get feedMode => '瀑布流';
-
-  @override
-  String get conversationMode => '會話';
-
-  @override
-  String get messageFeed => '訊息瀑布流';
-
-  @override
-  String messageTotal(int count) {
-    return '共 $count 條';
-  }
-
-  @override
-  String get noMessages => '暫無訊息';
-
-  @override
-  String get copiedClipboard => '已複製到剪貼簿';
-
-  @override
-  String get groupShortLabel => '群組';
-
-  @override
-  String get conversations => '會話';
-
-  @override
-  String get noConversations => '暫無會話';
-
-  @override
-  String get groupNotFound => '找不到群組';
-
-  @override
-  String get invite => '邀請';
-
-  @override
-  String get manage => '管理';
-
-  @override
-  String get noGroupMessages => '群組暫無訊息';
-
-  @override
-  String get selectConversation => '選擇會話開始聊天';
-
-  @override
-  String get newConversation => '新建會話';
-
-  @override
-  String get newConversationDesc => '輸入呼號開始新的會話';
-
-  @override
-  String get callsignExample => '呼號，如 BG7ABC';
-
-  @override
-  String get start => '開始';
-
-  @override
-  String get broadcastMessage => '群組廣播訊息';
-
-  @override
-  String get noStations => '暫無臺站';
-
-  @override
-  String get broadcastHint => '提示：每條訊息會單獨傳送給每個接收人';
-
-  @override
-  String broadcastSent(int count) {
-    return '已廣播給 $count 人';
-  }
-
-  @override
-  String get searchCallsign => '搜尋呼號…';
-
-  @override
-  String get broadcastContentHint => '輸入要廣播的內容…';
-
-  @override
-  String get groupNameHint => '輸入群組名稱';
-
-  @override
-  String get create => '建立';
-
-  @override
-  String groupCallsignLine(String call) {
-    return '群組呼號：$call';
-  }
-
-  @override
-  String get noMembers => '暫無成員';
-
-  @override
-  String get inviteMembersHint => '點選下方「邀請成員」新增';
-
-  @override
-  String get remove => '移除';
-
-  @override
-  String get inviteMembers => '邀請成員';
-
-  @override
-  String get deleteGroup => '刪除群組';
-
-  @override
-  String deleteGroupConfirm(String name) {
-    return '確定刪除「$name」？此操作無法復原。';
-  }
-
-  @override
-  String get deleteConversation => '刪除會話';
-
-  @override
-  String deleteConversationConfirm(Object call) {
-    return '確定刪除與 $call 的聊天記錄嗎？該會話將從列表中移除，此操作不可恢復。';
-  }
-
-  @override
-  String clearGroupChatConfirm(Object name) {
-    return '確定清空「$name」的聊天記錄嗎？此操作不可恢復。';
-  }
-
-  @override
-  String memberOnlineCount(int members, int online) {
-    return '$members 名成員 · $online 線上';
-  }
-
-  @override
-  String get leaveGroup => '離開群組';
-
-  @override
-  String leaveGroupConfirm(String name) {
-    return '確定離開「$name」？你將不再收到該群組的訊息。';
-  }
-
-  @override
-  String leftGroup(String name) {
-    return '已離開 $name';
-  }
-
-  @override
-  String get leave => '離開';
-
-  @override
-  String inviteMembersTo(String name) {
-    return '邀請成員到 $name';
-  }
-
-  @override
-  String get manualCallsign => '手動輸入呼號';
-
-  @override
-  String inviteSent(String call) {
-    return '已傳送邀請給 $call';
-  }
-
-  @override
-  String get noMoreOnlineStations => '暫無更多線上臺站';
-
-  @override
-  String get invited => '已邀請';
-
-  @override
-  String get tapToInvite => '點選邀請';
-
-  @override
-  String get done => '完成';
+  String get add => '新增';
 
   @override
   String get addContact => '新增聯絡人';
@@ -10829,54 +7006,195 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get addContactDesc => '輸入呼號手動新增到聯絡人清單';
 
   @override
-  String contactAdded(String call) {
-    return '已新增聯絡人 $call';
+  String get addCountry => '新增國家/地區';
+
+  @override
+  String get addOrFavoriteContact => '點選右上角「新增」或在地圖上收藏臺站';
+
+  @override
+  String get addSpeedTier => '新增速度檔';
+
+  @override
+  String get adifBand => '頻段（BAND）';
+
+  @override
+  String get adifCopyPath => '複製路徑';
+
+  @override
+  String get adifExportDone => '匯出完成';
+
+  @override
+  String get adifExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';
+
+  @override
+  String adifExported(int n) {
+    return '已匯出 $n 筆記錄';
   }
 
   @override
-  String get add => '新增';
+  String get adifFreq => '頻率（FREQ）';
 
   @override
-  String get stationary => '靜止';
+  String get adifFreqHint => '單位 MHz，留空則不寫';
 
   @override
-  String get unknown => '未知';
+  String get adifFreqInvalid => '請輸入 MHz 數字，如 144.640';
 
   @override
-  String get none => '無';
+  String get adifHint => '每筆記錄只含呼號與首則訊息時間（UTC），不含模式與頻段';
 
   @override
-  String get manual => '手動';
+  String get adifLogFile => '會話匯出為日誌檔案';
 
   @override
-  String get management => '管理';
+  String get adifMode => '模式（MODE）';
 
   @override
-  String get debugLabel => '除錯';
+  String get adifModeData => 'DATA（資料）';
 
   @override
-  String get information => '資訊';
+  String get adifModeFm => 'FM（語音）';
 
   @override
-  String get warning => '警告';
+  String get adifModePkt => 'PKT（資料包，推薦）';
 
   @override
-  String get errorLabel => '錯誤';
+  String get adifModeRequiredHint => '多數日誌軟體（含 QRZ）要求 MODE，缺少會被拒收';
 
   @override
-  String countTimes(int count) {
-    return '$count 次';
+  String get adifNoSelection => '請先選擇要匯出的會話';
+
+  @override
+  String get adifNotWritten => '不寫';
+
+  @override
+  String get adifOptions => '匯出選項';
+
+  @override
+  String get adifPathCopied => '路徑已複製';
+
+  @override
+  String get adifPreview => '預覽（將寫出的記錄）';
+
+  @override
+  String adifSavedTo(String path) {
+    return '已儲存至：$path';
   }
 
   @override
-  String countItems(int count) {
-    return '$count 個';
+  String get adifStripSsid => '只寫基礎呼號（去掉 -SSID）';
+
+  @override
+  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+
+  @override
+  String get advancedCat => '高階';
+
+  @override
+  String get advancedCatDesc => '實驗室 · 開發者';
+
+  @override
+  String get advancedDesc => '實驗室與開發者工具';
+
+  @override
+  String get advancedSettings => '高階設定';
+
+  @override
+  String get advancedSettings2 => '高階設定';
+
+  @override
+  String get advancedSettingsSubtitle => '實驗室與開發者工具';
+
+  @override
+  String get aiSupport => 'AI 算力支援';
+
+  @override
+  String get airExcellent => '優';
+
+  @override
+  String get airGood => '良';
+
+  @override
+  String get airHazardous => '嚴重污染';
+
+  @override
+  String get airModerate => '輕度污染';
+
+  @override
+  String get airUnhealthy => '中度污染';
+
+  @override
+  String get airVeryUnhealthy => '重度污染';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get allAprsSymbols => '全部 APRS 符號';
+
+  @override
+  String get allChangelog => '全部更新日誌';
+
+  @override
+  String get allDataCleared => '所有資料已清除';
+
+  @override
+  String get allowLandscape => '允許手機橫屏顯示';
+
+  @override
+  String get alreadyDownloaded => '安裝檔已下載';
+
+  @override
+  String get altitude => '高度';
+
+  @override
+  String get amapGroup => '國內地圖';
+
+  @override
+  String androidInstallHelp(String path) {
+    return '安裝檔已下載到：\n$path\n\n點選「安裝」後，系統會彈出安裝確認框。\n\n若提示「不允許安裝未知來源應用程式」，請到系統設定中允許本應用程式安裝未知來源應用程式。';
   }
 
   @override
-  String countEntries(int count) {
-    return '$count 條';
+  String get appFilter => '軟體';
+
+  @override
+  String get appInfo => '應用程式資訊';
+
+  @override
+  String get appInfoCopied => '已複製應用程式資訊';
+
+  @override
+  String appInfoText(String version) {
+    return 'APRSlocus v$version\n作者: BG7LZQ (Darion)\n網站: Theez.top';
   }
+
+  @override
+  String get appInstallDir => '安裝目錄';
+
+  @override
+  String get appName => 'APRSlocus';
+
+  @override
+  String get appTagline => 'APRS 定位追蹤';
+
+  @override
+  String get appVersion => '版本';
+
+  @override
+  String get appVersionDesc => '目前應用程式版本';
+
+  @override
+  String get applyCoordinates => '套用座標';
+
+  @override
+  String get applyStationFilter => '台站篩選套用到地圖';
+
+  @override
+  String get aprsCallsignHint => 'APRS 呼號，如 BV2AAA';
+
+  @override
+  String get aprsStatus => '獨立狀態報文';
 
   @override
   String aprsSymbolName(String symbol) {
@@ -10949,17 +7267,1177 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String symbolCategoryName(String category) {
-    String _temp0 = intl.Intl.selectLogic(category, {
-      'vehicles': '車輛 / 交通',
-      'facilities': '建築 / 設施',
-      'weatherNature': '氣象 / 自然',
-      'emergencyRescue': '應急救援',
-      'airWater': '飛行 / 水域',
-      'communications': '通訊 / 其他',
-      'other': '其他',
-    });
-    return '$_temp0';
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => '詳細頁';
+
+  @override
+  String get aprsTvMap => '在地圖上查看';
+
+  @override
+  String get aprslocusInfo => 'APRSlocus 資訊';
+
+  @override
+  String get aprslocusOnly => 'APRSlocus';
+
+  @override
+  String get audioBackend => '音訊後端';
+
+  @override
+  String audioBadFrames(int n) {
+    return '解碼中止 $n 次（雜訊/失步）';
+  }
+
+  @override
+  String get audioBaud => '位元率';
+
+  @override
+  String get audioBaudTip => 'APRS 在 VHF 上固定 1200 bd（Bell 202），HF 才用 300';
+
+  @override
+  String get audioCaptureDesc => '從麥克風/線路輸入解調 AFSK 1200';
+
+  @override
+  String get audioCaptureStart => '開啟擷取';
+
+  @override
+  String get audioCaptureStop => '停止擷取';
+
+  @override
+  String get audioCaptureTitle => '音訊擷取';
+
+  @override
+  String get audioCsmaWait => '發射前等待通道空閒 (ms)';
+
+  @override
+  String get audioCsmaWaitTip => '偵測到通道佔用時最多等待多久；0 = 不等待直接發射';
+
+  @override
+  String get audioLevel => '輸入電平';
+
+  @override
+  String get audioLevelTip => '有訊號時電平條會抬起；收到 AFSK 時「解調鎖定」會點亮';
+
+  @override
+  String get audioLoopbackHint => '自檢會真的做一次調變→解調；Android 發射時會暫停麥克風擷取（半雙工）';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 規定標號 1200Hz、空號 2200Hz；只有 ±幾 Hz 的容差，不要隨意改';
+
+  @override
+  String get audioNeedPermission => '需要錄音權限（RECORD_AUDIO），請授權後重試';
+
+  @override
+  String get audioRestart => '重啟音訊鏈路';
+
+  @override
+  String get audioSampleRate => '取樣率';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050Hz 是音效卡 TNC 常用值；裝置不支援時改用 44100/48000。修改會重啟擷取';
+
+  @override
+  String get audioSettings => '音訊（音效卡 TNC）';
+
+  @override
+  String get audioSettingsSubtitle => '用音效卡收發 AFSK 1200 報文';
+
+  @override
+  String get audioSpaceTip => '空號音調。與標號音調一起決定 FSK 頻偏（標準為 1000Hz）';
+
+  @override
+  String audioStatDrop(int n) {
+    return '發射期間丟棄 $n 位元組';
+  }
+
+  @override
+  String audioStatRx(int n) {
+    return '收 $n 幀';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '發 $n 幀';
+  }
+
+  @override
+  String get audioStatsTitle => '音訊統計';
+
+  @override
+  String get audioStopTx => '停止發射';
+
+  @override
+  String get audioSynced => '解調鎖定';
+
+  @override
+  String get audioTnc2Tip => '格式 SRC>DEST,PATH:info，例如 BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioToneMark => '標號頻率 (Hz)';
+
+  @override
+  String get audioToneSpace => '空號頻率 (Hz)';
+
+  @override
+  String get audioTones => '音調（標/空）';
+
+  @override
+  String get audioTxDelayLabel => '發射前導 (ms)';
+
+  @override
+  String get audioTxDelayTip => '發射前導時長：給對端解調器鎖定時間、給電台 PTT 建立時間';
+
+  @override
+  String get audioTxDesc => '發射前先聽通道，避免與其他台站碰撞';
+
+  @override
+  String get audioTxDisabled => '「允許發射」已關閉，僅接收';
+
+  @override
+  String get audioTxEnabled => '允許發射';
+
+  @override
+  String get audioTxEnabledTip => '關閉後只接收不發射（只想聽信標時最省心）';
+
+  @override
+  String get audioTxLevel => '發射電平';
+
+  @override
+  String get audioTxLevelClip => '波形削頂：請把「輸出幅度」調到 0.8 以下（削頂會產生諧波）';
+
+  @override
+  String get audioTxLevelLow => '電平偏低：對方可能解不出，請調高「輸出幅度」與裝置音量';
+
+  @override
+  String get audioTxLevelTip => '發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return '峰值 $p% · ${sec}s · 前導 $flags flag';
+  }
+
+  @override
+  String get audioTxTitle => '音訊發射';
+
+  @override
+  String get audioUnlocked => '未鎖定';
+
+  @override
+  String get audioUnsupported => '目前平台不支援即時音訊（可用 WAV 檔案模式）';
+
+  @override
+  String get audioWavCanceled => '已取消（未選擇檔案）';
+
+  @override
+  String get audioWavCopyPath => '複製路徑';
+
+  @override
+  String get audioWavDecodeAction => '解碼此 WAV';
+
+  @override
+  String get audioWavDesc => '離線解碼一段錄音，或把報文匯出成音訊檔案';
+
+  @override
+  String get audioWavExportAction => '匯出此報文';
+
+  @override
+  String get audioWavExportToDownloads => '匯出到下載目錄';
+
+  @override
+  String audioWavFailed(String err) {
+    return '檔案讀寫失敗：$err';
+  }
+
+  @override
+  String audioWavFound(int n) {
+    return '解出 $n 條報文';
+  }
+
+  @override
+  String get audioWavImportAction => '選擇 WAV 檔案';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android 不能寫任意目錄：匯出會存到「下載/APRSlocusAudio」，無需填路徑；複製到電腦後即可餵給 Direwolf 或電台';
+
+  @override
+  String get audioWavNone => '未解出報文（可能不是 AFSK 1200 錄音）';
+
+  @override
+  String get audioWavPath => '檔案路徑';
+
+  @override
+  String get audioWavPathCopied => '路徑已複製';
+
+  @override
+  String get audioWavPickHint => '桌面端請在下方填寫 WAV 路徑';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return '已儲存到 $path';
+  }
+
+  @override
+  String get audioWavTitle => 'WAV 檔案模式';
+
+  @override
+  String get audioWavTnC2 => '待匯出報文 (TNC2)';
+
+  @override
+  String get audioWavVerifyFailed => '匯出前的自檢失敗：生成的音訊解不出本報文（請回報）';
+
+  @override
+  String audioWavWritten(String path) {
+    return '已寫入 $path';
+  }
+
+  @override
+  String get audioWiringHint =>
+      '接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get authorCall => '呼號';
+
+  @override
+  String get authorName => 'Darion';
+
+  @override
+  String get autoReply => '自動應答';
+
+  @override
+  String get autoSaveStations => '自動儲存臺站資料';
+
+  @override
+  String get back => '返回';
+
+  @override
+  String get backToTop => '回到頂部';
+
+  @override
+  String get backgroundRunTip =>
+      '背景執行提示：為保證背景執行時持續定位上報，請到系統設定中允許 APRSlocus 背景執行、關閉省電最佳化，並允許自啟動。';
+
+  @override
+  String get backupCatChats => '群組聊天';
+
+  @override
+  String get backupCatChatsDesc => '群組、成員與已讀狀態';
+
+  @override
+  String get backupCatHonors => '成就與榮譽';
+
+  @override
+  String get backupCatHonorsDesc => '解鎖記錄、計數與預設徽章';
+
+  @override
+  String get backupCatMessages => '訊息記錄';
+
+  @override
+  String get backupCatMessagesDesc => '單聊訊息與已讀位置';
+
+  @override
+  String get backupCatSettings => '設定';
+
+  @override
+  String get backupCatSettingsDesc => '電台、信標、地圖、篩選、資料來源、伺服器';
+
+  @override
+  String get backupCatStations => '臺站與聯絡人';
+
+  @override
+  String get backupCatStationsDesc => '我的最愛、手動新增的聯絡人與備註';
+
+  @override
+  String get backupCatTranslate => '翻譯設定';
+
+  @override
+  String get backupCatTranslateDesc => '翻譯介面、金鑰與語言偏好';
+
+  @override
+  String get backupCopyDone => '備份內容已複製到剪貼簿';
+
+  @override
+  String get backupCopyJson => '複製到剪貼簿';
+
+  @override
+  String get backupDesc => '備份檔是 JSON 文字，換機或重裝後可還原；匯入會依分組覆蓋，無法復原。';
+
+  @override
+  String get backupEntryDesc => '打包設定與資料為 JSON 檔';
+
+  @override
+  String get backupErrEmpty => '備份裡沒有可匯入的內容';
+
+  @override
+  String get backupErrNotBackup => '這不是 APRSlocus 的備份檔';
+
+  @override
+  String get backupErrNotJson => '檔案不是有效的 JSON';
+
+  @override
+  String get backupErrRead => '讀取備份檔失敗';
+
+  @override
+  String get backupErrSchemaNewer => '備份來自較新版本的 APRSlocus，請先更新應用程式';
+
+  @override
+  String get backupErrTooLarge => '備份檔超過 32 MB，無法讀取';
+
+  @override
+  String get backupErrUnsupported => '目前平台不支援選擇檔案，請改用剪貼簿貼上';
+
+  @override
+  String get backupExport => '匯出備份';
+
+  @override
+  String get backupExportDesc => '選擇要包含的內容，再存成檔案或複製到剪貼簿';
+
+  @override
+  String get backupExportDone => '備份已匯出';
+
+  @override
+  String get backupExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';
+
+  @override
+  String get backupExportToFile => '存成檔案';
+
+  @override
+  String backupExportedAt(String t) {
+    return '匯出時間 $t';
+  }
+
+  @override
+  String backupFromVersion(String v) {
+    return '來源版本 $v';
+  }
+
+  @override
+  String get backupImport => '匯入備份';
+
+  @override
+  String get backupImportConfirm => '所選分組會被備份內容覆蓋，且無法復原。建議先匯出一次目前的資料。';
+
+  @override
+  String get backupImportConfirmTitle => '確認匯入？';
+
+  @override
+  String get backupImportDesc => '選擇先前匯出的 JSON 備份檔';
+
+  @override
+  String get backupImportNothing => '備份裡不包含所選分組的資料';
+
+  @override
+  String get backupImportSelected => '匯入所選';
+
+  @override
+  String backupImported(int n) {
+    return '已匯入 $n 項';
+  }
+
+  @override
+  String backupItems(int n) {
+    return '$n 項';
+  }
+
+  @override
+  String get backupLater => '稍後';
+
+  @override
+  String get backupNoSelection => '請至少選擇一個分組';
+
+  @override
+  String get backupPaste => '從剪貼簿貼上';
+
+  @override
+  String get backupPasteEmpty => '剪貼簿裡沒有文字';
+
+  @override
+  String get backupPickFile => '選擇備份檔';
+
+  @override
+  String get backupPreview => '備份內容';
+
+  @override
+  String get backupRestartHint => '資料已寫入，重新啟動後才會完全生效（成就、翻譯、伺服器連線等）。';
+
+  @override
+  String get backupRestartNow => '結束應用程式';
+
+  @override
+  String get backupRestartTitle => '匯入完成';
+
+  @override
+  String backupSavedTo(String path) {
+    return '已儲存到：$path';
+  }
+
+  @override
+  String get backupSecurityTip => '備份檔包含呼號、伺服器密碼與 API 金鑰，請妥善保管。';
+
+  @override
+  String get backupSelectAll => '全選';
+
+  @override
+  String backupSkipped(int n) {
+    return '略過 $n 項（本版本不認識的內容）';
+  }
+
+  @override
+  String get backupSubtitle => '匯出或匯入設定與資料';
+
+  @override
+  String get backupThemeImagesHint => '備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示';
+
+  @override
+  String get backupThemeImagesOff => '不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示';
+
+  @override
+  String get backupTitle => '備份與還原';
+
+  @override
+  String get backupWebHint => 'Web 版請用「複製到剪貼簿 / 從剪貼簿貼上」匯入匯出。';
+
+  @override
+  String get badgeFallback => '徽章';
+
+  @override
+  String get badgeWall => '徽章牆';
+
+  @override
+  String get beacon => '位置信標';
+
+  @override
+  String get beaconAltLabel => '高度（公尺，留空跟隨定位）';
+
+  @override
+  String get beaconAltNone => '隨定位自動傳送 · 目前沒有海拔';
+
+  @override
+  String get beaconAntHeightLabel => '天線高度（英尺）';
+
+  @override
+  String beaconAttachedHr(String hr) {
+    return '心率 $hr';
+  }
+
+  @override
+  String get beaconAttachedNone => '未附帶心率';
+
+  @override
+  String get beaconAutoAskDesc =>
+      '是否讓 APRSlocus 在連線後自動定時上報你的位置（信標）？行動臺建議開啟；若只想接收訊息與檢視周邊臺站，可關閉（隨時可手動上報一次）。';
+
+  @override
+  String get beaconAutoAskTitle => '連線成功，自動上報位置？';
+
+  @override
+  String get beaconAutoNo => '暫不，僅接收';
+
+  @override
+  String get beaconAutoYes => '自動上報';
+
+  @override
+  String get beaconCat => '定位上報';
+
+  @override
+  String get beaconCatDesc => 'GPS · 信標 · 手動定位';
+
+  @override
+  String get beaconCoarseFix => '網路定位中 · 暫不自動上報';
+
+  @override
+  String beaconCoarseForced(String s) {
+    return '網路定位（粗）· $s';
+  }
+
+  @override
+  String get beaconCoarseForcedNote => '正在用網路定位（粗）上報';
+
+  @override
+  String get beaconCoarseHint =>
+      '目前定位來自網路（粗，誤差常達幾百公尺）—— 自動上報已暫停，GPS 恢復後自動繼續；期間仍可手動上報。';
+
+  @override
+  String get beaconContent => '信標上報內容';
+
+  @override
+  String get beaconContentDesc => '隨位置信標一起傳送';
+
+  @override
+  String beaconCount(int count) {
+    return '信標 $count 次';
+  }
+
+  @override
+  String get beaconCountdown => '發送倒數';
+
+  @override
+  String get beaconDisabled => '已關閉';
+
+  @override
+  String get beaconEnabled => '啟用位置信標';
+
+  @override
+  String get beaconForceCoarse => '強制接受網路定位自動上報';
+
+  @override
+  String get beaconForceCoarseHint =>
+      '預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。';
+
+  @override
+  String get beaconGainLabel => '增益（dB）';
+
+  @override
+  String beaconGarminNext(String s, String hr) {
+    return '佳明上報 · $s · ❤$hr';
+  }
+
+  @override
+  String get beaconGarminSource => '佳明 LiveTrack 上報中';
+
+  @override
+  String get beaconImminent => '即將上報…';
+
+  @override
+  String get beaconInterval => '上報間隔(秒)';
+
+  @override
+  String get beaconIntervalLabel => '上報間隔';
+
+  @override
+  String get beaconIntervalTip => '位置信標的傳送間隔，至少 5 秒';
+
+  @override
+  String get beaconNetInterval => '純網路上報間隔（秒）';
+
+  @override
+  String get beaconNetIntervalTip =>
+      '純網路模式使用固定間隔；網路定位沒有可靠速度，不使用智慧信標（依速度 / 距離 / 轉彎）';
+
+  @override
+  String beaconNextIn(String s) {
+    return '距下次上報 $s';
+  }
+
+  @override
+  String get beaconNotConnected => '未連線';
+
+  @override
+  String get beaconNow => '手動上報';
+
+  @override
+  String get beaconOff => '未開啟';
+
+  @override
+  String get beaconOffChip => '自動上報已關閉';
+
+  @override
+  String beaconPhgPreview(String phg) {
+    return '報文中將包含：$phg';
+  }
+
+  @override
+  String get beaconPhgTip =>
+      '功率 / 天線高度 / 增益同屬一個 PHG 資料擴充，填了任一項就一起編碼送出（規範裡它是固定的 7 位元組欄位）。功率取不超過實際值的最大檔：25 W 報 25、30 W 也只報 25 —— 寫大了等於虛報覆蓋範圍。天線高度是「高於當地平均地面」，與上面自動傳送的 /A= 海拔是兩個不同的量。';
+
+  @override
+  String get beaconPowerLabel => '功率（瓦）';
+
+  @override
+  String get beaconRfBeaconOff => '射頻信標未開啟';
+
+  @override
+  String get beaconRfEnableAction => '開啟射頻信標';
+
+  @override
+  String get beaconRfEnableHint =>
+      '射頻來源的自動發射需要明確開啟「射頻信標」。在此之前不會自動發射位置（倒數也不會走動）。';
+
+  @override
+  String get beaconRfEnableWarn => '發射將使用你的呼號，請在執照範圍內操作';
+
+  @override
+  String get beaconRfEnabled => '已開啟射頻信標，將按間隔自動發射';
+
+  @override
+  String beaconSentAprsIs(String grid) {
+    return '位置已上報 · 網格 $grid · 已發往 APRS-IS';
+  }
+
+  @override
+  String beaconSentDemo(String grid) {
+    return '位置已上報 · 網格 $grid · 演示';
+  }
+
+  @override
+  String get beaconSettings => '定位上報';
+
+  @override
+  String get beaconSettingsDetail => 'GPS 來源、信標與手動定位';
+
+  @override
+  String get beaconSoon => '即將';
+
+  @override
+  String get beaconTotalMileage => '累計里程';
+
+  @override
+  String get beaconTripMileage => '本次里程';
+
+  @override
+  String get beaconWaitingFix => '等待定位';
+
+  @override
+  String get beaconWarnBody =>
+      'APRS-IS 建議移動站信標間隔不低於 60 秒。過快的上報可能被視為濫用並導致伺服器斷開連線。是否仍要使用該間隔？';
+
+  @override
+  String get beaconWarnFix => '改回 60 秒';
+
+  @override
+  String get beaconWarnKeep => '仍然使用';
+
+  @override
+  String get beaconWarnTitle => '信標間隔過短';
+
+  @override
+  String get beaconingSection => '信標上報';
+
+  @override
+  String get beaconsSent => '信標傳送次數';
+
+  @override
+  String beaconsSentCount(String n) {
+    return '$n 次';
+  }
+
+  @override
+  String get beaconsSentLabel => '已上報';
+
+  @override
+  String get bearing => '方位角';
+
+  @override
+  String get block => '遮蔽';
+
+  @override
+  String get broadcastContentHint => '輸入要廣播的內容…';
+
+  @override
+  String get broadcastHint => '提示：每條訊息會單獨傳送給每個接收人';
+
+  @override
+  String get broadcastMessage => '群組廣播訊息';
+
+  @override
+  String broadcastSent(int count) {
+    return '已廣播給 $count 人';
+  }
+
+  @override
+  String get broadcastShort => '廣播';
+
+  @override
+  String get browse => '瀏覽';
+
+  @override
+  String get callComment => '臺站備註';
+
+  @override
+  String get callCommentEmpty => '未填寫 · 點這裡輸入';
+
+  @override
+  String get callCommentHint => '信標傳送時的備註內容';
+
+  @override
+  String get callSsid => '呼號 · SSID';
+
+  @override
+  String get callSymbol => '臺站符號';
+
+  @override
+  String get callSymbolDesc => '符號隨位置信標一起傳送';
+
+  @override
+  String get callsign => '呼號';
+
+  @override
+  String get callsignCopied => '呼號已複製';
+
+  @override
+  String get callsignExample => '呼號，如 BG7ABC';
+
+  @override
+  String get callsignMin3 => '呼號至少 3 個字元';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get cancelInstall => '取消';
+
+  @override
+  String get cannotLaunchInstaller => '無法啟動安裝程式，請手動開啟安裝檔';
+
+  @override
+  String cannotOpenPackage(String error) {
+    return '無法開啟安裝檔：$error';
+  }
+
+  @override
+  String get cannotRunInstaller => '無法啟動安裝程式，請到所在目錄手動開啟';
+
+  @override
+  String get chatCat => '聊天';
+
+  @override
+  String get chatCatDesc => '記錄 · 聯絡人';
+
+  @override
+  String get chatCleared => '聊天記錄已清空';
+
+  @override
+  String get chatHistory => '聊天記錄';
+
+  @override
+  String get chatManageHint => '點擊會話進行選擇，長按也可選中';
+
+  @override
+  String get chatRecords => '聊天記錄';
+
+  @override
+  String get chatRecordsCleared => '聊天記錄已清空';
+
+  @override
+  String get chatSettings => '聊天設定';
+
+  @override
+  String get chatSettings2 => '聊天設定';
+
+  @override
+  String get chatSettingsDetail => '訊息、聯絡人與聊天資料';
+
+  @override
+  String get chatSettingsSubtitle => '訊息記錄與聯絡人';
+
+  @override
+  String get chatShortLabel => '單聊';
+
+  @override
+  String get chatToGroupHint => '傳送訊息給整個群組…';
+
+  @override
+  String chatToHint(Object call) {
+    return '傳送給 $call…';
+  }
+
+  @override
+  String chatWithTitle(Object call) {
+    return '與 $call 聊天';
+  }
+
+  @override
+  String get checkUpdate => '檢查更新';
+
+  @override
+  String get checking => '正在檢查新版本…';
+
+  @override
+  String get checkingGitCode => '檢查 GitCode 倉庫';
+
+  @override
+  String get checkingLatest => '正在檢查最新版本…';
+
+  @override
+  String get chooseSsidSuffix => '選擇 SSID 字尾';
+
+  @override
+  String get chooseSymbol => '選擇臺站符號';
+
+  @override
+  String get clear => '清除';
+
+  @override
+  String get clearAll => '全部清除';
+
+  @override
+  String get clearAllData => '清除所有資料';
+
+  @override
+  String get clearAllDataConfirm => '確定要清除全部本機資料嗎？此操作無法復原。';
+
+  @override
+  String get clearAllDataIntro => '此操作將刪除以下所有本機資料：';
+
+  @override
+  String get clearCache => '清除快取';
+
+  @override
+  String get clearData => '清除資料';
+
+  @override
+  String clearGroupChatConfirm(Object name) {
+    return '確定清空「$name」的聊天記錄嗎？此操作不可恢復。';
+  }
+
+  @override
+  String get clearLogs => '清空日誌';
+
+  @override
+  String get clearMessages => '清空全部聊天記錄';
+
+  @override
+  String get clearPackets => '清除資料包';
+
+  @override
+  String get clearPackets2 => '清除資料包';
+
+  @override
+  String get clearSearch => '清除搜尋';
+
+  @override
+  String get clearSelection => '取消全選';
+
+  @override
+  String get clearStationFilter => '清除篩選';
+
+  @override
+  String get clearStations => '清除臺站清單';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '確定要清除全部臺站嗎？共 $n 個，清除後無法復原（訊息 / 日誌 / 資料包不受影響）。';
+  }
+
+  @override
+  String get clearedPackets => '已清除資料包';
+
+  @override
+  String get close => '關閉';
+
+  @override
+  String get codeContributionI18n => '國際化 / 英文介面';
+
+  @override
+  String get codeContributionTranslation => '翻譯';
+
+  @override
+  String get codeContributionZhTw => '繁體中文介面';
+
+  @override
+  String get codeContributions => '程式碼貢獻';
+
+  @override
+  String get configChanged => '設定已修改';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get confirmClear => '確認清除';
+
+  @override
+  String get confirmClearAllData => '確認清除所有資料';
+
+  @override
+  String get confirmDelete => '確定要刪除嗎？';
+
+  @override
+  String confirmDeleteMessages(String n) {
+    return '確定要刪除全部 $n 條聊天記錄嗎？此操作不可恢復。';
+  }
+
+  @override
+  String get confirmRestartOobe =>
+      '將重新進入首次啟動精靈，可重新設定呼號、接收地區等。\n目前設定不會遺失，完成精靈後繼續使用。';
+
+  @override
+  String connAudioConnected(String rate) {
+    return '音訊鏈路線上 · $rate';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return '音訊鏈路中斷 · $seconds秒後自動重連…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return '音訊已發射 · 位置已傳送 ($call)';
+  }
+
+  @override
+  String get connAudioSourceHint => '音訊模式下不使用伺服器、過濾器與 KISS 參數';
+
+  @override
+  String connAutoReconnect(int seconds) {
+    return '連線已斷開 · $seconds秒後自動重連…';
+  }
+
+  @override
+  String connConnectingAudio(String name) {
+    return '正在開啟音訊（$name）…';
+  }
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return '正在連線 PKWDWPL（$arg）…';
+  }
+
+  @override
+  String connConnectingTarget(String target) {
+    return '正在連線 $target…';
+  }
+
+  @override
+  String get connDemoBeacon => '未連線 · 位置已上報（模擬）';
+
+  @override
+  String get connManuallyDisconnected => '未連線 · 已手動斷開';
+
+  @override
+  String connOnline(String call) {
+    return '已連線 · $call 線上';
+  }
+
+  @override
+  String get connPasscodeInvalid => '已連線 · 未驗證（Passcode 可能錯誤）';
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL 已連線 · $arg';
+  }
+
+  @override
+  String connPositionSent(String call) {
+    return '已連線 · 位置已上報 ($call)';
+  }
+
+  @override
+  String connRetry(int seconds) {
+    return '連線失敗 · ${seconds}s 後重試…';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return '音訊鏈路開啟失敗 · ${seconds}s 後重試…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return '音訊開啟失敗（$detail）· ${seconds}s 後重試…';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'TNC 連線失敗 · ${n}s 後重試…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'TNC 連線失敗（$e）· ${n}s 後重試…';
+  }
+
+  @override
+  String get connTapToConnect => '未連線 · 點選播放按鈕連線 APRS-IS';
+
+  @override
+  String connTncConnected(String arg) {
+    return 'TNC 已連線 · $arg';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'TNC 鏈路中斷 · $n秒後自動重連…';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC 已連線 · 位置已傳送 ($arg)';
+  }
+
+  @override
+  String get connTncSourceHint => 'TNC 模式下不使用伺服器與過濾器，相關設定已停用';
+
+  @override
+  String get connectAction => '連線';
+
+  @override
+  String get connectAprsIs => '連線 APRS-IS';
+
+  @override
+  String get connectFailedCheckConfig => '連線失敗，請檢查設定';
+
+  @override
+  String get connectNearbyDesc => '連線後可接收附近臺站定位與訊息';
+
+  @override
+  String get connectTncBar => '點「連接」建立 TNC 鏈路';
+
+  @override
+  String get connected => '已連線';
+
+  @override
+  String get connectedAprsIs => '已連線 APRS-IS';
+
+  @override
+  String get connecting => '連線中';
+
+  @override
+  String get connectingEllipsis => '正在連線…';
+
+  @override
+  String get connectingGitCode => '連線 GitCode 伺服器';
+
+  @override
+  String get connectingServer => '正在連線伺服器…';
+
+  @override
+  String connectingToServer(String server, int port) {
+    return '正在連線 $server:$port…';
+  }
+
+  @override
+  String connectingToTnc(String name) {
+    return '正在連接 TNC · $name';
+  }
+
+  @override
+  String get connection => '連線';
+
+  @override
+  String get connectionCard2 => 'APRS-IS 連線';
+
+  @override
+  String get connectionCat => '連線';
+
+  @override
+  String get connectionCatDesc => '伺服器 · 篩選範圍';
+
+  @override
+  String get connectionSettings => '連線設定';
+
+  @override
+  String get connectionSettings2 => '連線設定';
+
+  @override
+  String get connectionSettingsSubtitle => 'APRS-IS 伺服器與接收範圍';
+
+  @override
+  String contactAdded(String call) {
+    return '已新增聯絡人 $call';
+  }
+
+  @override
+  String contactDeleted(String call) {
+    return '已刪除 $call';
+  }
+
+  @override
+  String get contactDesc => '訊息/聯絡人相關的篩選規則';
+
+  @override
+  String get contactList => '聯絡人';
+
+  @override
+  String get continueAnyway => '仍然繼續';
+
+  @override
+  String get continuousIteration => '持續迭代';
+
+  @override
+  String get continuousIterationDesc => '不斷改進 APRSlocus 功能與體驗';
+
+  @override
+  String get conversationMode => '會話';
+
+  @override
+  String get conversations => '會話';
+
+  @override
+  String conversationsDeleted(int n) {
+    return '已刪除 $n 個會話';
+  }
+
+  @override
+  String get coordDatum => '座標基準';
+
+  @override
+  String get coordDisplay => '座標顯示';
+
+  @override
+  String get coordsFormat => '座標格式';
+
+  @override
+  String get copied => '已複製';
+
+  @override
+  String get copiedAprslocusInfo => '已複製 APRSlocus 資訊';
+
+  @override
+  String get copiedClipboard => '已複製到剪貼簿';
+
+  @override
+  String copiedCoordsValue(String coords) {
+    return '已複製座標：$coords';
+  }
+
+  @override
+  String get copiedFmoInfo => '已複製 FMO 資訊';
+
+  @override
+  String copiedGridValue(String grid) {
+    return '已複製網格：$grid';
+  }
+
+  @override
+  String copiedLogs(int count) {
+    return '已複製 $count 條日誌';
+  }
+
+  @override
+  String get copiedPacket => '已複製資料包';
+
+  @override
+  String get copy => '複製';
+
+  @override
+  String get copyAllLogs => '複製全部日誌';
+
+  @override
+  String get copyAppInfo => '複製應用程式資訊';
+
+  @override
+  String get copyCallsign => '複製呼號';
+
+  @override
+  String get copyCoords => '複製座標';
+
+  @override
+  String get copyGrid => '複製網格';
+
+  @override
+  String get copyShareText => '複製分享文案';
+
+  @override
+  String countEntries(int count) {
+    return '$count 條';
+  }
+
+  @override
+  String countItems(int count) {
+    return '$count 個';
+  }
+
+  @override
+  String countTimes(int count) {
+    return '$count 次';
   }
 
   @override
@@ -10997,1227 +8475,120 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get locationNotFixed => '未定位';
+  String get countryUnrestricted => '未選擇國家/地區 · 不做限制（接收全部台站）';
 
   @override
-  String get simulatedLocation => '模擬位置';
+  String get course => '航向';
 
   @override
-  String get savedLocation => '已儲存位置';
+  String get courseLabel => '航向';
 
   @override
-  String get locationFailed => '定位失敗';
+  String get create => '建立';
 
   @override
-  String get locationStopped => '定位已停止';
+  String get creditsSection => '致謝名單';
 
   @override
-  String get locationFixed => '已定位';
+  String get current => '目前';
 
   @override
-  String get locationPermission => '請授予定位許可權…';
+  String get currentVersion => 'APRSlocus 目前版本';
 
   @override
-  String get gpsLocating => 'GPS 定位中…';
-
-  @override
-  String get webLocationUnsupported => 'Web 平台暫不支援自動定位，請手動輸入座標';
-
-  @override
-  String locationStreamError(String error) {
-    return '定位流異常：$error';
+  String currentVsRepo(Object local, Object remote) {
+    return '本機 v$local · 倉庫最新 v$remote';
   }
 
   @override
-  String locationInitError(String error) {
-    return '定位初始化失敗：$error';
-  }
+  String get darkMode => '深色模式';
 
   @override
-  String get beaconDisabled => '已關閉';
+  String get dataCat => '資料';
 
   @override
-  String get waitingForLocation => '等待定位';
+  String get dataCatDesc => '清除本機資料';
 
   @override
-  String get imminent => '即將';
-
-  @override
-  String get connTapToConnect => '未連線 · 點選播放按鈕連線 APRS-IS';
-
-  @override
-  String get connManuallyDisconnected => '未連線 · 已手動斷開';
-
-  @override
-  String connAutoReconnect(int seconds) {
-    return '連線已斷開 · $seconds秒後自動重連…';
-  }
-
-  @override
-  String connConnectingTarget(String target) {
-    return '正在連線 $target…';
-  }
-
-  @override
-  String connOnline(String call) {
-    return '已連線 · $call 線上';
-  }
-
-  @override
-  String connRetry(int seconds) {
-    return '連線失敗 · ${seconds}s 後重試…';
-  }
-
-  @override
-  String connPositionSent(String call) {
-    return '已連線 · 位置已上報 ($call)';
-  }
-
-  @override
-  String get connDemoBeacon => '未連線 · 位置已上報（模擬）';
-
-  @override
-  String get connPasscodeInvalid => '已連線 · 未驗證（Passcode 可能錯誤）';
-
-  @override
-  String get mapTypeAmap => '高德地圖';
-
-  @override
-  String get mapTypeAmapSatellite => '高德衛星';
-
-  @override
-  String get mapTypeVector => '向量地圖';
-
-  @override
-  String get amapGroup => '國內地圖';
-
-  @override
-  String get domesticMaps => '國內地圖';
-
-  @override
-  String get internationalMaps => '國際地圖';
-
-  @override
-  String get metricUnits => '公制 (km/h, m)';
-
-  @override
-  String get coordDisplay => '座標顯示';
-
-  @override
-  String mapDefaultCoord(int level) {
-    return '北京 · $level級';
-  }
-
-  @override
-  String secondsValue(int count) {
-    return '$count 秒';
-  }
-
-  @override
-  String get stationSettingsDetail => '呼號、SSID、符號與備註';
-
-  @override
-  String get stationIdentity => '電臺身份';
-
-  @override
-  String get aprsCallsignHint => 'APRS 呼號，如 BV2AAA';
-
-  @override
-  String get displayInfo => '顯示資訊';
-
-  @override
-  String get ssidSuffix => 'SSID 字尾';
-
-  @override
-  String get chooseSsidSuffix => '選擇 SSID 字尾';
-
-  @override
-  String get mySymbol => '我的符號';
-
-  @override
-  String get moreSymbols => '更多符號';
-
-  @override
-  String get allAprsSymbols => '全部 APRS 符號';
-
-  @override
-  String get beaconSettingsDetail => 'GPS 來源、信標與手動定位';
-
-  @override
-  String get locationSource => '定位來源';
-
-  @override
-  String get useDeviceLocation => '使用裝置定位';
-
-  @override
-  String get manualCoordinates => '手動輸入座標';
-
-  @override
-  String get locationMode => '定位模式';
-
-  @override
-  String get settingsLocModeSubtitle => '選擇定位方式';
-
-  @override
-  String get locModeGps => '純 GPS';
-
-  @override
-  String get locModeGpsDesc => '僅衛星定位，更省電';
-
-  @override
-  String get locModeGpsNetwork => 'GPS + 網路';
-
-  @override
-  String get locModeGpsNetworkDesc => "網路僅作兜底（GPS 停更時），粗定位不寫軌跡";
-
-  @override
-  String get locModeNetwork => "純網路";
-
-  @override
-  String get locModeNetworkDesc => "僅基地台 / Wi-Fi，誤差百公尺級；最省電，適合沒有 GPS 的裝置";
-
-  @override
-  String get locModeNetworkHint =>
-      "純網路模式下只有基地台 / Wi-Fi 定位：誤差常在幾百公尺，且**不會**寫進軌跡與歷史；除非開啟「強制接受網路定位自動上報」，否則不會自動發信標。";
-
-  @override
-  String get beaconingSection => '信標上報';
-
-  @override
-  String get beaconIntervalTip => '位置信標的傳送間隔，至少 5 秒';
-
-  @override
-  String get beaconNetInterval => '純網路上報間隔（秒）';
-
-  @override
-  String get beaconNetIntervalTip =>
-      '純網路模式使用固定間隔；網路定位沒有可靠速度，不使用智慧信標（依速度 / 距離 / 轉彎）';
-
-  @override
-  String get beaconContent => '信標上報內容';
-
-  @override
-  String get beaconContentDesc => '隨位置信標一起傳送';
-
-  @override
-  String get beaconTripMileage => '本次里程';
-
-  @override
-  String get beaconTotalMileage => '累計里程';
-
-  @override
-  String get iosFeatureUnsupported =>
-      'iOS 不支援經典藍牙 / USB 序列埠鏈路（僅 MFi 認證配件可用），此功能無法開啟；可改用 APRS-IS 連網接入。';
-
-  @override
-  String get phoneBattery => '手機電量';
-
-  @override
-  String get locationStatus => '定位狀態';
-
-  @override
-  String get relocate => '重新定位';
-
-  @override
-  String get startGps => '開啟 GPS 定位';
-
-  @override
-  String get trackingBeaconing => '定位執行中，正在持續上報位置';
-
-  @override
-  String get manualLocation => '手動定位';
-
-  @override
-  String get latitudeHint => '緯度 39.9042';
-
-  @override
-  String get longitudeHint => '經度 116.4074';
-
-  @override
-  String get invalidLatLng => '請輸入有效經緯度';
-
-  @override
-  String myLocationSetGrid(String grid) {
-    return '已設定我的位置，網格 $grid';
-  }
-
-  @override
-  String get applyCoordinates => '套用座標';
-
-  @override
-  String get pickOnMap => '在地圖選點';
-
-  @override
-  String get manualLocationHelp => '無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。';
-
-  @override
-  String get passcodeTip => 'APRS-IS 登入驗證碼，可線上產生；填 -1 表示未驗證';
-
-  @override
-  String get websocketOptional => 'WebSocket URL（可選）';
-
-  @override
-  String get configChanged => '設定已修改';
-
-  @override
-  String get reconnectToApply => '重新連線後生效';
-
-  @override
-  String get reconnected => '已重新連線';
-
-  @override
-  String get connectFailedCheckConfig => '連線失敗，請檢查設定';
-
-  @override
-  String get rangeFilterDesc => '只接收設定範圍內的臺站資料包';
-
-  @override
-  String get filterCenterFollows => '篩選中心跟隨我的位置';
-
-  @override
-  String get radiusTip => '接收半徑（km），點「儲存並套用」生效';
-
-  @override
-  String get maxStationsTip => '記憶體中保留的最大臺站數量（預設不限制，可設更大值）';
-
-  @override
-  String filterSavedRadius(String saved, int radius) {
-    return '$saved · 半徑 ${radius}km';
-  }
-
-  @override
-  String get receiveFilterDesc2 => '除範圍篩選外，按國家/地區分組或精確呼號接收臺站';
-
-  @override
-  String get receiveCountryDesc => '按呼號字首批次接收某國家/地區全部臺站';
-
-  @override
-  String get noCountriesSelected => '未選擇國家/地區';
-
-  @override
-  String get receiveOthersDesc => '接收不符合所選國家的特殊呼號臺站';
-
-  @override
-  String get addCountry => '新增國家/地區';
-
-  @override
-  String get chatSettingsDetail => '訊息、聯絡人與聊天資料';
-
-  @override
-  String get messageCountLabel => '訊息條數';
-
-  @override
-  String get manageContacts => '管理聯絡人';
-
-  @override
-  String deleteAllChatsConfirm(int count) {
-    return '確定要刪除全部 $count 條聊天記錄嗎？此操作無法復原。';
-  }
-
-  @override
-  String get chatCleared => '聊天記錄已清空';
-
-  @override
-  String get noContacts => '暫無聯絡人';
-
-  @override
-  String get addOrFavoriteContact => '點選右上角「新增」或在地圖上收藏臺站';
-
-  @override
-  String movingWithSpeed(String speed) {
-    return '移動中 · $speed';
-  }
-
-  @override
-  String get callsignMin3 => '呼號至少 3 個字元';
-
-  @override
-  String get deleteContact => '刪除聯絡人';
-
-  @override
-  String deleteContactConfirm(String call) {
-    return '確定刪除聯絡人 $call？';
-  }
-
-  @override
-  String contactDeleted(String call) {
-    return '已刪除 $call';
-  }
+  String get dataClearDesc => '清除訊息、資料包、臺站等本機資料';
 
   @override
   String get dataMaintenance => '資料維護';
 
   @override
-  String get clearAllData => '清除所有資料';
+  String get dataPersistence => '臺站持久化';
 
   @override
-  String get clearAllDataIntro => '此操作將刪除以下所有本機資料：';
+  String get dataSettings => '資料設定';
 
   @override
-  String get chatHistory => '聊天記錄';
+  String get dataSettings2 => '資料設定';
 
   @override
-  String get logs => '日誌';
+  String get dataSettingsSubtitle => '本機資料管理';
 
   @override
-  String get irreversibleKeepSettings => '此操作無法復原，連線設定和呼號不會被刪除。';
+  String get dataSourceAprsIs => 'APRS-IS';
 
   @override
-  String get confirmClearAllData => '確認清除所有資料';
+  String get dataSourceAprsIsDesc => '透過網際網路接入全球 APRS 網路';
 
   @override
-  String get clearAllDataConfirm => '確定要清除全部本機資料嗎？此操作無法復原。';
+  String get dataSourceAudio => '音訊（音效卡）';
 
   @override
-  String get allDataCleared => '所有資料已清除';
+  String get dataSourceAudioDesc => '用麥克風/揚聲器或音效卡線接電台，收發 AFSK 1200';
 
   @override
-  String get confirmClear => '確認清除';
+  String get dataSourceAudioShort => '音訊';
 
   @override
-  String get allowLandscape => '允許手機橫屏顯示';
+  String get dataSourceIgateHint =>
+      '想當閘道（把射頻收到的報文轉到網際網路）就同時勾選 APRS-IS 與 TNC/音訊，然後在下面打開「閘道」。';
 
   @override
-  String get packetParseTest => '資料包解析測試';
+  String get dataSourcePkwdwpl => 'PKWDWPL（Kenwood 航點）';
 
   @override
-  String get packetParseHint =>
-      '貼上原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+  String get dataSourcePkwdwplDesc =>
+      '用藍牙/串列埠讀取電台輸出的 Kenwood \$PKWDWPL 航點語句（只收不發）';
 
   @override
-  String get parseAndApply => '解析並套用';
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL 是**唯讀**鏈路：能收台站、不參與發射（發射請用 APRS-IS / TNC / 音訊）';
 
   @override
-  String get oobePasscodeMissing => 'Passcode 未填寫';
+  String get dataSourceSubtitle => '報文從哪裡來';
 
   @override
-  String get oobePasscodeMissingDesc =>
-      'Passcode 是 APRS-IS 登入驗證碼，用於識別你的呼號。\n\n使用預設值 -1（未驗證）雖然可以連線，但將無法正常收發訊息與群組。\n\n建議在 https://aprs.cool/AprsPG 輸入呼號查詢正確 Passcode 後填寫。';
+  String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
 
   @override
-  String get continueAnyway => '仍然繼續';
+  String get dataSourceTitle => '資料來源';
 
   @override
-  String get fillPasscode => '去填寫';
+  String get dataSourceTnc => 'TNC';
 
   @override
-  String get oobeMapFeatureDesc => '線上地圖圖磚，檢視附近 APRS 臺站與軌跡';
+  String get dataSourceTncDesc => '透過藍牙或串列的 TNC 與電台直接收發';
 
   @override
-  String get oobeGpsFeatureDesc => '自動取得位置並傳送信標到 APRS-IS';
+  String get dataSourceTxBadge => '發射';
 
   @override
-  String get oobeMsgFeatureDesc => '與臺站收發訊息，支援自動應答';
+  String get dataSourceTxHint =>
+      '可以同時勾選多條鏈路一起收報文，但**發射只有一條**（右側圓點為發射來源）——同一個呼號從兩條鏈路發出去會造成重複報文。';
 
   @override
-  String get oobeIsFeatureDesc => '連線公共伺服器，接收全球 APRS 臺站資料';
-
-  @override
-  String get oobeBackgroundTip =>
-      '提示：為保證背景執行時持續定位上報，請到系統設定中允許 APRSlocus 背景執行、關閉省電最佳化，並允許自啟動。';
-
-  @override
-  String get oobeNextSteps => '接下來幾步完成基礎設定，隨時可在設定中修改。';
-
-  @override
-  String get ssidDescShort => 'SSID 是呼號後面的數字標識，如 BG7ABC-9 中的 -9';
-
-  @override
-  String get ssidOptional => 'SSID 字尾（可選）';
-
-  @override
-  String get noSsid => '無字尾（基本呼號）';
-
-  @override
-  String fullCallsign(String call) {
-    return '完整呼號：$call';
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$y年$m月$d日 $w';
   }
 
   @override
-  String get passcodeImportant => 'Passcode 非常重要';
+  String get dateToday => '今天';
 
   @override
-  String get passcodeImportantDesc =>
-      '正確的 Passcode 是接收群組訊息和傳送確認訊息的前提。填 -1 雖然可以連線，但無法正常收發訊息。';
-
-  @override
-  String get lookupPasscode => '點選查詢你的 Passcode →';
-
-  @override
-  String get passcodeLookupHint => '輸入你的呼號即可取得，例如 BV2AAA';
-
-  @override
-  String sendToGroupHint(String group) {
-    return '傳送至 $group…';
-  }
-
-  @override
-  String sendToCallHint(String call) {
-    return '傳送給 $call…';
-  }
-
-  @override
-  String get selectMessageReply => '點選訊息以回覆…';
-
-  @override
-  String get broadcastShort => '廣播';
-
-  @override
-  String memberCount(int count) {
-    return '$count 個成員';
-  }
-
-  @override
-  String memberCountTap(int count) {
-    return '$count 名成員 · 點選檢視';
-  }
-
-  @override
-  String get stepRecipients => '選人';
-
-  @override
-  String get stepContent => '內容';
-
-  @override
-  String get selectAllOnline => '全選線上';
-
-  @override
-  String get clearSelection => '取消全選';
-
-  @override
-  String get onlineOnly => '僅線上';
-
-  @override
-  String get noRecipients => '未選擇接收人';
-
-  @override
-  String selectedRecipients(int count) {
-    return '已選 $count 人';
-  }
-
-  @override
-  String sendRecipientsList(int count, String calls) {
-    return '將傳送給 $count 人：$calls';
-  }
-
-  @override
-  String get stepName => '名稱';
-
-  @override
-  String get stepMembers => '成員';
-
-  @override
-  String get groupChatExplain =>
-      '群組使用群組呼號廣播訊息，所有成員都能收到。建立後系統會自動產生群組呼號，並向你選擇的成員傳送邀請。';
-
-  @override
-  String get noMembersSelected => '未選擇成員';
-
-  @override
-  String get memberBlocked => '已遮蔽';
-
-  @override
-  String get memberJoined => '已加入';
-
-  @override
-  String get memberPending => '待確認';
-
-  @override
-  String get memberDeclined => '已拒絕';
-
-  @override
-  String get memberLeft => '已離開';
-
-  @override
-  String get memberTimeout => '超時';
-
-  @override
-  String get unblock => '解除遮蔽';
-
-  @override
-  String get block => '遮蔽';
-
-  @override
-  String get groupOwner => '群組管理員';
-
-  @override
-  String systemMemberJoined(String call) {
-    return '$call 加入了群組';
-  }
-
-  @override
-  String systemMemberLeft(String call) {
-    return '$call 離開了群組';
-  }
-
-  @override
-  String systemInviteDeclined(String call) {
-    return '$call 拒絕了邀請';
-  }
-
-  @override
-  String get copyAllLogs => '複製全部日誌';
-
-  @override
-  String copiedLogs(int count) {
-    return '已複製 $count 條日誌';
-  }
-
-  @override
-  String get clearLogs => '清空日誌';
-
-  @override
-  String get noLogs => '暫無日誌';
-
-  @override
-  String get supportProject => '你們的支援讓專案走得更遠';
-
-  @override
-  String get continuousIteration => '持續迭代';
-
-  @override
-  String get continuousIterationDesc => '不斷改進 APRSlocus 功能與體驗';
-
-  @override
-  String get sponsorSupport => '贊助支援';
-
-  @override
-  String get sponsorMethods => '贊助方式';
-
-  @override
-  String qrCodeTitle(String title) {
-    return '$title 讚賞碼';
-  }
-
-  @override
-  String get qrLoadFailed => '讚賞碼圖片載入失敗';
-
-  @override
-  String get qrSaveWechat => '長按圖片可儲存 · 使用 WeChat 掃一掃讚賞';
-
-  @override
-  String get tapAnywhereClose => '點選任意處關閉';
-
-  @override
-  String vectorMapLoadFailed(String error) {
-    return '向量地圖載入失敗\n$error';
-  }
-
-  @override
-  String get loadingVectorMap => '載入向量地圖…';
-
-  @override
-  String get updateChannel => '更新管道';
-
-  @override
-  String serverReturned(int code) {
-    return '伺服器回傳 $code';
-  }
-
-  @override
-  String get invalidResponseData => '回傳資料格式錯誤';
-
-  @override
-  String get noVersionsFound => '找不到任何版本';
-
-  @override
-  String get noWindowsInstaller => '該版本沒有 Windows 安裝檔';
-
-  @override
-  String get noApkInstaller => '該版本沒有 APK 安裝檔';
-
-  @override
-  String get connectingEllipsis => '正在連線…';
-
-  @override
-  String downloadHttpError(int code) {
-    return '下載失敗：HTTP $code';
-  }
-
-  @override
-  String downloadedBytes(String received, String total) {
-    return '已下載 $received / $total';
-  }
-
-  @override
-  String androidInstallHelp(String path) {
-    return '安裝檔已下載到：\n$path\n\n點選「安裝」後，系統會彈出安裝確認框。\n\n若提示「不允許安裝未知來源應用程式」，請到系統設定中允許本應用程式安裝未知來源應用程式。';
-  }
-
-  @override
-  String windowsInstallHelp(String path) {
-    return '安裝包已儲存到：\n$path\n\n點選「立即執行」直接啟動安裝程式；也可以開啟所在目錄檢視檔案。';
-  }
-
-  @override
-  String get openContainingFolder => '開啟所在目錄';
-
-  @override
-  String get runNow => '立即執行';
-
-  @override
-  String get cannotRunInstaller => '無法啟動安裝程式，請到所在目錄手動開啟';
-
-  @override
-  String get cannotLaunchInstaller => '無法啟動安裝程式，請手動開啟安裝檔';
-
-  @override
-  String get openPackageManually => '請在檔案管理程式中開啟安裝檔';
-
-  @override
-  String cannotOpenPackage(String error) {
-    return '無法開啟安裝檔：$error';
-  }
-
-  @override
-  String get installPermissionTitle => '需要允許安裝應用程式';
-
-  @override
-  String get installPermissionDesc =>
-      '偵測到系統未允許 APRSlocus 安裝應用程式。\n\n請點選「去設定」，在「安裝未知應用程式」中允許本應用程式安裝未知來源應用程式，然後返回重新安裝。';
-
-  @override
-  String get recheck => '重新檢查';
-
-  @override
-  String newVersionTitle(String version) {
-    return '發現新版本 v$version';
-  }
-
-  @override
-  String repoLatestTitle(String version) {
-    return '倉庫最新版本 v$version';
-  }
-
-  @override
-  String get checkingLatest => '正在檢查最新版本…';
-
-  @override
-  String get connectingGitCode => '連線 GitCode 伺服器';
-
-  @override
-  String get noReleaseNotes => '暫無更新說明';
-
-  @override
-  String noInstallerHistoryHint(String platform) {
-    return '該版本暫無 $platform 安裝檔，請到歷史版本中選擇可下載的版本';
-  }
-
-  @override
-  String get latestVersionLabel => '最新版本';
-
-  @override
-  String packageSize(String platform, String size) {
-    return '$platform 安裝檔大小：$size';
-  }
-
-  @override
-  String get updateContents => '更新內容';
-
-  @override
-  String get redownload => '重新下載';
-
-  @override
-  String get downloadInstaller => '下載安裝檔';
-
-  @override
-  String get downloadAndInstall => '下載並安裝';
-
-  @override
-  String get localPackageExists => '本機已有一份安裝檔';
-
-  @override
-  String get packageDeleted => '安裝檔已刪除';
-
-  @override
-  String versionCount(int count) {
-    return '$count 個';
-  }
-
-  @override
-  String get noInstaller => '無安裝檔';
-
-  @override
-  String get download => '下載';
-
-  @override
-  String get viewChangelog => '檢視更新日誌';
-
-  @override
-  String versionChangelog(String version) {
-    return 'v$version 更新日誌';
-  }
-
-  @override
-  String get gotIt => '知道了';
-
-  @override
-  String get leaveAction => '離開';
-
-  @override
-  String localRepoVersion(Object latest, Object local) {
-    return '本機 v$local · 倉庫最新 v$latest';
-  }
-
-  @override
-  String get unverified => '未驗證';
-
-  @override
-  String get passcodeUnverifiedHint => '-1 未驗證';
-
-  @override
-  String get passcodeMessageWarning => 'APRS-IS 登入驗證碼，填 -1 無法正常收發訊息';
-
-  @override
-  String get settingsStationIdentitySubtitle => '呼號、SSID 與備註';
-
-  @override
-  String get settingsDisplayInfoSubtitle => '我的符號與目前定位';
-
-  @override
-  String get settingsLocSourceSubtitle => '選擇座標來源';
-
-  @override
-  String get settingsBeaconSubtitle => '傳送間隔與上報內容';
-
-  @override
-  String get settingsManualLocSubtitle => '無定位時可手動輸入或選點';
-
-  @override
-  String get settingsManualLocHint => '無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。';
-
-  @override
-  String get settingsConnStatusSubtitle => '連線狀態與資訊';
-
-  @override
-  String get settingsServerSubtitle => 'APRS-IS 伺服器與驗證碼';
-
-  @override
-  String get settingsFilterSubtitle => '過濾中心與接收半徑';
-
-  @override
-  String get settingsReceivePrefSubtitle => '按國家/地區或呼號接收';
-
-  @override
-  String get settingsGeneralSubtitle => '主題、語言與座標顯示';
-
-  @override
-  String get settingsMapSubtitle => '地圖類型與顯示';
-
-  @override
-  String get settingsChatStatsSubtitle => '訊息與聯絡人統計';
-
-  @override
-  String get settingsChatManageSubtitle => '聯絡人與聊天資料';
-
-  @override
-  String get settingsClearDataSubtitle => '刪除本機記錄';
-
-  @override
-  String get settingsLabSubtitle => '實驗性功能';
-
-  @override
-  String get settingsDevSubtitle => '除錯與測試';
-
-  @override
-  String get settingsFilterHint => '只接收設定範圍內的臺站資料包';
-
-  @override
-  String get settingsReceivePrefHint => '除範圍篩選外，按國家/地區分組或精確呼號接收臺站';
-
-  @override
-  String get settingsContribCodeOptimization => '程式碼最佳化';
-
-  @override
-  String get eggBg2hcb => '人生真是喵喵又咪咪啊';
-
-  @override
-  String get deviceInfoTitle => '裝置識別';
-
-  @override
-  String get deviceToCall => '目的呼號';
-
-  @override
-  String get deviceModel => '裝置型號';
-
-  @override
-  String get deviceClass => '裝置類別';
-
-  @override
-  String get deviceFilter => '裝置篩選';
-
-  @override
-  String get lookupQrz => 'QRZ 呼號';
-
-  @override
-  String get lookupAprsFi => 'aprs.fi 位置';
-
-  @override
-  String get aprsTv => 'APRS.tv';
-
-  @override
-  String get aprsTvInfo => '詳細頁';
-
-  @override
-  String get aprsTvMap => '在地圖上查看';
-
-  @override
-  String get linkOpenFailed => '無法開啟連結';
-
-  @override
-  String get beaconAutoAskTitle => '連線成功，自動上報位置？';
-
-  @override
-  String get beaconAutoAskDesc =>
-      '是否讓 APRSlocus 在連線後自動定時上報你的位置（信標）？行動臺建議開啟；若只想接收訊息與檢視周邊臺站，可關閉（隨時可手動上報一次）。';
-
-  @override
-  String get beaconAutoYes => '自動上報';
-
-  @override
-  String get beaconAutoNo => '暫不，僅接收';
-
-  @override
-  String get beaconOffChip => '自動上報已關閉';
-
-  @override
-  String get quickTrackCreate => '新建跟蹤組';
-
-  @override
-  String get quickTrackHint => '從已接收臺站勾選成員，也可手輸呼號補充；直接在地圖上跟蹤這些人，不需要先建聊天群。';
-
-  @override
-  String get quickTrackName => '組名（可選）';
-
-  @override
-  String get quickTrackPickLabel => '選擇要跟蹤的臺站';
-
-  @override
-  String get quickTrackNoStations => '暫無已接收臺站，可直接手輸呼號（多個用逗號分隔）';
-
-  @override
-  String get quickTrackManualHint => '手輸呼號，如 BG7PGW,BG7LMW';
-
-  @override
-  String get quickTrackStart => '開始跟蹤';
-
-  @override
-  String get quickTrackNeedMembers => '請至少選擇或輸入一個呼號';
-
-  @override
-  String get weatherPanelTitle => '天氣 · 火腿建議';
-
-  @override
-  String get weatherPanelSub => '和風天氣 · 當前位置';
-
-  @override
-  String get weatherRefresh => '重新整理';
-
-  @override
-  String get weatherPowered => '資料由和風天氣提供 · APRSlocus';
-
-  @override
-  String get hfTitle => '短波傳播';
-
-  @override
-  String get hfSixMeter => '6m 波段';
-
-  @override
-  String get hfEs => 'Es 偶發 E 層';
-
-  @override
-  String get hfAurora => '極光';
-
-  @override
-  String get hfF2 => 'F2 層';
-
-  @override
-  String get hfBand => '波段';
-
-  @override
-  String get hfDay => '日間';
-
-  @override
-  String get hfNight => '夜間';
-
-  @override
-  String get hfNow => '現在';
-
-  @override
-  String get hfSfi => '太陽通量';
-
-  @override
-  String get hfKp => '地磁 Kp';
-
-  @override
-  String get hfAIndex => 'A 指數';
-
-  @override
-  String get hfSunspots => '太陽黑子';
-
-  @override
-  String get hfXray => 'X 射線';
-
-  @override
-  String get hfSolarWind => '太陽風速';
-
-  @override
-  String get hfGeomag => '地磁';
-
-  @override
-  String get hfNoise => '底噪';
-
-  @override
-  String get hfMuf => '最高可用頻率';
-
-  @override
-  String get hfNoData => '暫無短波傳播資料：連網後自動取得';
-
-  @override
-  String get hfUnavailable => '短波傳播服務暫時無法使用';
-
-  @override
-  String get hfQGood => '好';
-
-  @override
-  String get hfQFair => '一般';
-
-  @override
-  String get hfQPoor => '差';
-
-  @override
-  String get hfQClosed => '未開通';
-
-  @override
-  String get hfPowered => '傳播資料由 hamqsl.com（N0NBH）提供 · 全球平均，非本地實測';
-
-  @override
-  String get hfTipStorm =>
-      '地磁暴（Kp≥5）：極區短波路徑衰減明顯，跨極地 DX 幾乎中斷；改走低緯度路徑或轉本地 VHF/UHF';
-
-  @override
-  String get hfTipGeomagActive => '地磁較活躍：短波高緯度路徑不如平時穩定，DX 通聯建議留出更多呼叫時間';
-
-  @override
-  String get hfTipLowSfi =>
-      '太陽活動偏低（SFI<100）：白天高頻段（15m/12m/10m）機會少，優先 40m/30m/20m';
-
-  @override
-  String get hfTipHighSfi => '太陽活動活躍（SFI≥150）：白天高頻段（15m/12m/10m）有機會遠距離 DX';
-
-  @override
-  String get hfTipHighNoise => '底噪偏高：弱信號接收困難，建議收窄頻寬、降低前置增益，必要時用窄帶模式';
-
-  @override
-  String hfTipBandGood(String b) {
-    return '$b 傳播條件好：本時段優先使用這一段呼叫';
-  }
-
-  @override
-  String hfTipBandPoor(String b) {
-    return '$b 條件偏差：換到其他波段，或等日落/日出灰線再試';
-  }
-
-  @override
-  String get weatherCurLoc => '當前位置';
-
-  @override
-  String get weatherNoLoc => '暫無定位：請在「我的電台」開啟位置服務後查看天氣';
-
-  @override
-  String get weatherUnavail => '天氣服務暫時不可用';
-
-  @override
-  String get weatherDataFail => '天氣資料獲取失敗';
-
-  @override
-  String get weatherConnFail => '天氣服務連線失敗';
-
-  @override
-  String get weatherCloud => '雲量';
-
-  @override
-  String get weatherDew => '露點';
-
-  @override
-  String get weatherHumidity => '濕度';
-
-  @override
-  String get weatherWindDir => '風向';
-
-  @override
-  String get weatherWindScale => '風力';
-
-  @override
-  String get weatherWindSpeed => '風速';
-
-  @override
-  String get weatherPressure => '氣壓';
-
-  @override
-  String get weatherVis => '能見度';
-
-  @override
-  String get weatherPrecip => '降水';
-
-  @override
-  String weatherFeels(String v) {
-    return '體感 $v°';
-  }
-
-  @override
-  String weatherObserved(String t) {
-    return '觀測 $t';
-  }
-
-  @override
-  String get hamTitle => '業餘無線電建議';
-
-  @override
-  String get hamNoData => '獲取天氣後，將給出適合架台/通聯/防雷的安全建議';
-
-  @override
-  String get hamStorm1 => '雷雨天氣：請勿在室外架設/操作天線！斷開天線饋線，謹防雷擊感應損壞設備';
-
-  @override
-  String get hamStorm2 => '如已架設，盡快收納拉倒；轉為室內收聽中繼與短波，注意設備防潮';
-
-  @override
-  String get hamRain => '有降水：戶外架台請備防雨罩/防水箱，接頭用膠帶或熱縮管密封，饋線避免積水';
-
-  @override
-  String get hamCold => '低溫/降雪：鋰電池容量明顯下降，多備電池並貼身保暖；天線結冰注意駐波變化';
-
-  @override
-  String hamWind(String w) {
-    return '風力 $w 級：架設天線務必拉好風繩加固，八木/長線收工時放倒，避免傾倒';
-  }
-
-  @override
-  String hamHot(String t) {
-    return '高溫 $t°C：注意防暑補水，設備避免長時間滿功率發射導致過熱';
-  }
-
-  @override
-  String hamHumid(String h) {
-    return '濕度 $h%：潮濕會降低絕緣與天線效率，VHF/UHF 訊號衰減偏大，注意接頭防鏽';
-  }
-
-  @override
-  String hamFog(String v) {
-    return '能見度低（${v}km）：出行架台注意安全；霧天易形成大氣波導，可嘗試遠地 V/U 通聯';
-  }
-
-  @override
-  String get hamGood => '天氣良好，適合架台！UV 段可嘗試本地中繼與直頻；短波留意晚間電離層變化';
-
-  @override
-  String hamWindExtra(String w) {
-    return '雖有 $w 級風，仍建議為天線加固風繩，野外架台注意安全';
-  }
-
-  @override
-  String get hamStorm3 =>
-      '雷電臨近：把天線饋線從設備上拔下並移至室外接地端洩放，關閉電源並拔掉插頭，避免突波經市電、網路線竄入；不要使用室外天線與有線電話';
-
-  @override
-  String get hamStorm4 => '雷暴前後靜電雜訊（QRN）驟增、短波底噪抬升；雷電活動結束後約 30 分鐘再恢復架台與發射';
-
-  @override
-  String get hamExtreme => '暴雨/極端降水：注意山洪、積水與落石，勿在河岸、低窪處架台；饋線入牆處做滴水彎，防止雨水順線灌入室內';
-
-  @override
-  String hamGale(String w) {
-    return '風力 $w 級：禁止上塔、爬桿作業！八木與長線天線務必放倒或降下，檢查風繩、地錨與桅杆拉線';
-  }
-
-  @override
-  String get hamIce => '天線與饋線結冰會升高駐波（SWR）並增加冰載：切勿滿功率硬發，先檢查拉線受力，待化冰後再正常通聯';
-
-  @override
-  String get hamFrost => '氣溫低於 0℃：鋰電池容量驟降，備用電池請貼身保溫；注意手部與面部凍傷，帶上暖手寶';
-
-  @override
-  String get hamHeat2 => '高溫易使功放與電源過熱降額：適度降低功率、縮短連續發射時間，並確保通風散熱';
-
-  @override
-  String get hamDust => '沙塵天氣：細沙滲入接頭與絕緣子會造成洩漏和雜訊，請加防塵罩；乾燥摩擦易累積靜電，注意接地洩放';
-
-  @override
-  String get hamAir => '空氣品質差：戶外架台請戴口罩並減少劇烈活動；污染物附著天線絕緣子會引入洩漏雜訊，收工後清潔';
-
-  @override
-  String hamDew(String d) {
-    return '露點差僅 $d℃，空氣接近飽和：設備與饋線易結露，收工後先緩溫除濕再通電，避免短路';
-  }
-
-  @override
-  String hamUV(String u) {
-    return '紫外線指數 $u，強度偏高：野外架台注意防曬；長期曝曬會加速同軸電纜外皮與束帶老化';
-  }
-
-  @override
-  String hamLowPressure(String p) {
-    return '氣壓偏低（$p hPa）：天氣趨於不穩，長時間野外架台請留好退路並留意臨近警報';
-  }
-
-  @override
-  String hamHighPressure(String p) {
-    return '氣壓較高（$p hPa）且穩定：易形成逆溫層，VHF/UHF 可能出現大氣波導，可嘗試超視距遠地直頻或中繼通聯';
-  }
-
-  @override
-  String get hamGrayLine => '正值日出/日落灰線時段：20/40m 短波傳播最佳，是跨洲遠程（DX）通聯的黃金窗口';
-
-  @override
-  String get hamNight => '夜間 D 層消失：80/40m 吸收減小、雜訊較低，適合本土與夜間遠程通信';
-
-  @override
-  String get hamRainFade => '較強降水對 1.2GHz 以上頻段有雨衰影響：微波與 EME 通聯建議改用較低頻段或等雨勢減弱';
-
-  @override
-  String get hamShower => '陣雨來去突然：架台請備好防雨罩並留意雲團移動，收工前先斷開發射再拆饋線';
-
-  @override
-  String get hamLevelDanger => '安全警示';
-
-  @override
-  String get hamLevelWarn => '注意';
-
-  @override
-  String get hamLevelGood => '通聯機會';
-
-  @override
-  String get hamLevelTip => '操作提示';
-
-  @override
-  String hamMore(String n) {
-    return '展開全部 $n 條建議';
-  }
-
-  @override
-  String get hamLess => '收合';
-
-  @override
-  String get weatherForecast3 => '三日預報';
-
-  @override
-  String get weatherDaily15 => '查看近 15 日天氣';
-
-  @override
-  String get weatherDaily15Title => '近 15 日天氣趨勢';
-
-  @override
-  String get weatherToday => '今天';
-
-  @override
-  String get weatherTomorrow => '明天';
-
-  @override
-  String get weatherDayAfter => '後天';
-
-  @override
-  String weatherWeekday(String d) {
+  String dateWeekday(String d) {
     String _temp0 = intl.Intl.selectLogic(d, {
       '1': '週一',
       '2': '週二',
@@ -12232,182 +8603,115 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get weatherSunrise => '日出';
+  String get dateYesterday => '昨天';
 
   @override
-  String get weatherSunset => '日落';
+  String get datumGcj => 'GCJ-02';
 
   @override
-  String get weatherUV => '紫外線';
+  String get datumWgs => 'WGS-84';
 
   @override
-  String get weatherDetails => '詳細資料';
-
-  @override
-  String get weatherAQIPrimary => '首要污染物';
-
-  @override
-  String get airExcellent => '優';
-
-  @override
-  String get airGood => '良';
-
-  @override
-  String get airModerate => '輕度污染';
-
-  @override
-  String get airUnhealthy => '中度污染';
-
-  @override
-  String get airVeryUnhealthy => '重度污染';
-
-  @override
-  String get airHazardous => '嚴重污染';
-
-  @override
-  String get weatherAir => '空氣品質';
-
-  @override
-  String get issStation => 'ISS 太空站';
-
-  @override
-  String get applyStationFilter => '台站篩選套用到地圖';
-
-  @override
-  String get stationFilterOn => '已依台站面板篩選顯示';
-
-  @override
-  String get stationList => '台站列表';
-
-  @override
-  String get statsPanel => '統計面板';
-
-  @override
-  String get statsOverview => '系統總覽';
-
-  @override
-  String get statsTotalRx => '總接收數';
-
-  @override
-  String get statsTotalTx => '總發送數';
-
-  @override
-  String get statsRate => '接收速率';
-
-  @override
-  String statsPerMin(String n) {
-    return '$n/分';
+  String daysAgo(int count) {
+    return '$count天前';
   }
 
   @override
-  String get statsStationsTotal => '台站總數';
+  String get debugLabel => '除錯';
 
   @override
-  String get statsCap => '容量上限';
+  String get defaultLabel => '預設';
 
   @override
-  String get statsConn => '連線狀態';
+  String get delete => '刪除';
 
   @override
-  String get statsConnected => '已連線';
-
-  @override
-  String get statsDisconnected => '未連線';
-
-  @override
-  String get statsMyGrid => '我的大網格';
-
-  @override
-  String get statsAprslocusUsers => 'APRSlocus 使用者';
-
-  @override
-  String get statsFarthest => '最遠台站';
-
-  @override
-  String get statsStatusDist => '台站狀態分佈';
-
-  @override
-  String get statsTypeDist => 'APRS 類型分佈';
-
-  @override
-  String get statsGridDist => '大網格台站分佈';
-
-  @override
-  String get statsGridHint => '依 Maidenhead 大網格（4 位）統計台站數量並排序';
-
-  @override
-  String statsGridCount(String n) {
-    return '$n 個網格';
+  String deleteAllChatsConfirm(int count) {
+    return '確定要刪除全部 $count 條聊天記錄嗎？此操作無法復原。';
   }
 
   @override
-  String get statsGridEmpty => '暫無台站位置資料';
+  String get deleteAllPackages => '刪除全部安裝檔';
 
   @override
-  String get statsDeviceDist => '裝置類別分佈';
+  String deleteAllPackagesConfirm(Object count, Object size) {
+    return '將刪除本機已下載的 $count 個安裝檔（共 $size），確定？';
+  }
 
   @override
-  String get statsOther => '其他指標';
+  String deleteAllPackagesWithCount(Object count) {
+    return '刪除全部安裝檔（$count 個）';
+  }
 
   @override
-  String get statsAvgSpeed => '平均速度';
+  String get deleteContact => '刪除聯絡人';
 
   @override
-  String get statsLastHeard => '最近上報';
+  String deleteContactConfirm(String call) {
+    return '確定刪除聯絡人 $call？';
+  }
 
   @override
-  String get statsPackets => '資料包(近期)';
+  String get deleteConversation => '刪除會話';
 
   @override
-  String get statsNoData => '暫無資料';
+  String deleteConversationConfirm(Object call) {
+    return '確定刪除與 $call 的聊天記錄嗎？該會話將從列表中移除，此操作不可恢復。';
+  }
 
   @override
-  String get noStationsFiltered => '目前篩選條件下沒有台站';
+  String get deleteGroup => '刪除群組';
 
   @override
-  String get noStationsFilteredHint => '篩選或接收範圍過窄。可清除篩選後重試，接收範圍見「設定 → 接收範圍」。';
+  String deleteGroupConfirm(String name) {
+    return '確定刪除「$name」？此操作無法復原。';
+  }
 
   @override
-  String get clearStationFilter => '清除篩選';
+  String get deletePackage => '刪除安裝檔';
 
   @override
-  String get clearSearch => '清除搜尋';
+  String deletePackageConfirm(Object file) {
+    return '確定刪除安裝檔 $file？';
+  }
 
   @override
-  String get activeConditions => '生效條件';
+  String deleteSelected(int n) {
+    return '刪除 ($n)';
+  }
 
   @override
-  String get statsMovingCount => '移動台站';
+  String deleteSelectedConfirm(int n) {
+    return '確定刪除選中的 $n 個會話？此操作不可恢復。';
+  }
 
   @override
-  String get statsOnlineRate => '在線率';
+  String get deleteStation => '刪除台站';
 
   @override
-  String get statsGridCountLabel => '大網格數';
+  String deleteStationConfirm(String name) {
+    return '確定刪除台站 $name 嗎？刪除後將從台站列表移除；若再次收到其報文會重新出現。';
+  }
 
   @override
-  String get maxPackets => '資料包保留條數';
+  String get deleteThisTier => '刪除此檔';
 
   @override
-  String get maxPacketsTip => '資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）';
+  String get deleteTrackGroup => '刪除追蹤組';
 
   @override
-  String get maxTrackPts => '軌跡點數上限';
+  String deleteTrackGroupConfirm(Object name) {
+    return '確定刪除追蹤組「$name」嗎？';
+  }
 
   @override
-  String get maxTrackPtsTip => '每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）';
+  String get demo => '演示';
 
   @override
-  String get onlineWindow => '在線判定時長（分鐘）';
+  String get deselectAll => '取消全選';
 
   @override
-  String get onlineWindowTip => '台站最後上報超過該時長即視為離線（預設 5 分鐘）';
-
-  @override
-  String get chatRecords => '聊天記錄';
-
-  @override
-  String get chatRecordsCleared => '聊天記錄已清空';
+  String get devDesc => '開發者除錯工具';
 
   @override
   String get deviceCat => '裝置';
@@ -12416,25 +8720,1316 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get deviceCatDesc => '電台裝置 · 待開放';
 
   @override
+  String get deviceClass => '裝置類別';
+
+  @override
+  String get deviceConflictDesc =>
+      'TNC 與 PKWDWPL 指向同一臺裝置時，接收到的資料會被兩條鏈路瓜分 —— 表現是「能發不能收」（發送正常、收不到報文）。請給其中一條換一臺裝置。TNC 優先：PKWDWPL 會拒絕連線。';
+
+  @override
+  String get deviceConflictTitle => '兩條鏈路綁定了同一臺裝置';
+
+  @override
+  String get deviceCurrentLink => '目前鏈路';
+
+  @override
+  String get deviceCurrentLinkDesc => '唯讀摘要 · 改參數請進對應子頁';
+
+  @override
+  String get deviceEntries => '裝置與參數';
+
+  @override
+  String get deviceEntriesDesc => '每條鏈路一個子頁，各管各的參數';
+
+  @override
+  String get deviceFilter => '裝置篩選';
+
+  @override
+  String get deviceInUseByPkwdwpl => '已被 PKWDWPL 使用，不能重複綁定';
+
+  @override
+  String get deviceInUseByTnc => '已被 TNC 使用，不能重複綁定';
+
+  @override
+  String get deviceInfoTitle => '裝置識別';
+
+  @override
+  String get deviceLogDesc => '顯示目前來源的日誌（TNC / 音訊自動切換）';
+
+  @override
+  String get deviceLogTitle => '鏈路日誌';
+
+  @override
+  String get deviceModel => '裝置型號';
+
+  @override
+  String get deviceOverviewSubtitle => '資料來源、鏈路狀態與自檢';
+
+  @override
+  String get deviceOverviewTitle => '裝置';
+
+  @override
   String get deviceSettings2 => '裝置設定';
 
   @override
   String get deviceSettingsSubtitle => '連接你的電台裝置';
 
   @override
-  String get underConstruction => '前方施工，尚未開放';
+  String get deviceToCall => '目的呼號';
 
   @override
-  String get underConstructionHint => '該功能正在開發中，敬請期待';
+  String get diagAfskLevelFail => '波形幅度過低（調變結果接近靜音）';
 
   @override
-  String get storageLimit => '資料上限';
+  String get diagAfskLoopback => 'AFSK 調變解調迴路';
 
   @override
-  String get storageLimitSubtitle => '本機保留的資料量';
+  String diagAfskLoopbackFail(int n) {
+    return '解出 $n 幀（應為 1 幀）';
+  }
 
   @override
-  String get connectionCard2 => 'APRS-IS 連線';
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return '調變→解調一致（$samples 取樣 @${rate}Hz）';
+  }
+
+  @override
+  String get diagAudioPlatformWarn => '不支援即時音訊 · 仍可用 WAV 檔案模式';
+
+  @override
+  String get diagAudioSection => '音訊（AFSK 1200）';
+
+  @override
+  String get diagAx25 => 'AX.25 幀編解碼';
+
+  @override
+  String get diagAx25Fail => 'AX.25 編碼失敗（報文格式不合法）';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'AX.25 迴路不一致，解回：$got';
+  }
+
+  @override
+  String get diagCapture => '音訊擷取';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return '開啟擷取失敗：$err';
+  }
+
+  @override
+  String get diagCaptureNoData => '沒有收到任何音訊資料 · 檢查輸入裝置與權限';
+
+  @override
+  String diagCaptureOk(int bytes, int rate) {
+    return '收到 $bytes 位元組 @${rate}Hz';
+  }
+
+  @override
+  String diagFailed(int n) {
+    return '失敗 $n 項';
+  }
+
+  @override
+  String get diagFcs => 'FCS 校驗';
+
+  @override
+  String get diagFcsFail => 'FCS 校驗異常（改動一個位元組本應被拒收）';
+
+  @override
+  String get diagFileDecodeFail => '檔案裡的音訊解不出報文（可能不是 AFSK 1200 錄音）';
+
+  @override
+  String get diagFileIo => 'WAV 檔案讀寫';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return '寫入→讀出→解調一致 @${rate}Hz';
+  }
+
+  @override
+  String get diagFileReadFail => '檔案讀取失敗';
+
+  @override
+  String diagFileWriteFail(String err) {
+    return '檔案寫入失敗：$err';
+  }
+
+  @override
+  String get diagHint => '協定迴路不接電台也能跑：先確認軟體層沒問題，再去查裝置與接線';
+
+  @override
+  String get diagKissEscape => 'KISS 跳脫';
+
+  @override
+  String get diagKissEscapeFail => 'KISS 跳脫還原失敗（軟體層問題，換裝置也沒用）';
+
+  @override
+  String get diagNoRealtime => '非即時';
+
+  @override
+  String diagPassed(int n) {
+    return '通過 $n 項';
+  }
+
+  @override
+  String get diagPermission => '錄音權限';
+
+  @override
+  String get diagPermissionOk => '已授權';
+
+  @override
+  String get diagPlatform => '平台能力';
+
+  @override
+  String diagPlatformOk(String name) {
+    return '可用 · 後端 $name';
+  }
+
+  @override
+  String get diagRun => '開始自檢';
+
+  @override
+  String get diagRunning => '自檢中…';
+
+  @override
+  String get diagSkipped => '已跳過（平台不支援）';
+
+  @override
+  String get diagSpeaker => '揚聲器輸出';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return '播放失敗：$err';
+  }
+
+  @override
+  String get diagSpeakerOk => '測試音已播放';
+
+  @override
+  String get diagSubtitle => '逐層確認協定、權限、裝置到底哪一環有問題';
+
+  @override
+  String get diagTitle => '鏈路自檢';
+
+  @override
+  String get diagTncLoopback => 'TNC 協定迴路';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'KISS/AX.25 編解碼往返一致（$len 位元組）';
+  }
+
+  @override
+  String get diagTncPlatformNo => '目前平台不支援 TNC 鏈路';
+
+  @override
+  String get diagTncSection => 'TNC（KISS / AX.25）';
+
+  @override
+  String get digipeaterTapHint => '點選中繼臺跳轉到對應臺站';
+
+  @override
+  String get disableClustering => '關閉聚合';
+
+  @override
+  String get disconnect => '斷開連線';
+
+  @override
+  String get disconnected => '未連線';
+
+  @override
+  String get displayCat => '顯示';
+
+  @override
+  String get displayCatDesc => '座標 · 主題';
+
+  @override
+  String get displayInfo => '顯示資訊';
+
+  @override
+  String get displaySettings => '顯示設定';
+
+  @override
+  String get displaySettings2 => '顯示設定';
+
+  @override
+  String distKm(Object d) {
+    return '距離 ${d}km';
+  }
+
+  @override
+  String get distance => '距離';
+
+  @override
+  String distanceBearing(String distance, String bearing) {
+    return '距我 ${distance}km · 方位 $bearing°';
+  }
+
+  @override
+  String get domesticMaps => '國內地圖';
+
+  @override
+  String get donateAlipay => 'Alipay 讚賞';
+
+  @override
+  String get donateAlipayDesc => '聯絡作者獲取讚賞碼';
+
+  @override
+  String get donateWechat => 'WeChat 讚賞';
+
+  @override
+  String get donateWechatDesc => '長按儲存讚賞碼 · 點選放大';
+
+  @override
+  String get done => '完成';
+
+  @override
+  String get download => '下載';
+
+  @override
+  String get downloadAgain => '重新下載安裝檔';
+
+  @override
+  String get downloadAndInstall => '下載並安裝';
+
+  @override
+  String get downloadComplete => '下載完成';
+
+  @override
+  String get downloadFailed => '下載失敗';
+
+  @override
+  String downloadHttpError(int code) {
+    return '下載失敗：HTTP $code';
+  }
+
+  @override
+  String get downloadInstaller => '下載安裝檔';
+
+  @override
+  String get downloadNow => '立即下載';
+
+  @override
+  String downloadProgress(Object p) {
+    return '下載中 $p%';
+  }
+
+  @override
+  String get downloadReady => '下載一份安裝檔';
+
+  @override
+  String get downloadUpdate => '下載更新';
+
+  @override
+  String get downloadUpdateTip => '下載更新並自動開啟';
+
+  @override
+  String downloadedBytes(String received, String total) {
+    return '已下載 $received / $total';
+  }
+
+  @override
+  String get downloading => '下載中';
+
+  @override
+  String get editTrackGroup => '編輯追蹤組';
+
+  @override
+  String get eggBg2hcb => '人生真是喵喵又咪咪啊';
+
+  @override
+  String get eggBg7lmw => '默不作聲...';
+
+  @override
+  String get eggBg7lzq => '哎呦你幹嘛~';
+
+  @override
+  String get eggBg7osl => '你的膽子肥嘟嘟的';
+
+  @override
+  String get eggBg7pgw => '鬧呢？';
+
+  @override
+  String get emergency => '緊急';
+
+  @override
+  String get enableClustering => '開啟聚合';
+
+  @override
+  String get enterCallsign => '請輸入你的呼號';
+
+  @override
+  String get enterMessage => '輸入訊息';
+
+  @override
+  String get enterValidCall => '請輸入有效呼號';
+
+  @override
+  String get errIntervalInt => '上報間隔需為 ≥5 秒的整數';
+
+  @override
+  String get errMinSpeedInt => '最低速度需為 ≥1 的整數';
+
+  @override
+  String get errTierDuplicate => '該速度檔已存在，速度值需互不相同';
+
+  @override
+  String get errorLabel => '錯誤';
+
+  @override
+  String everyNSeconds(String sec) {
+    return '每 $sec 秒';
+  }
+
+  @override
+  String get export => '匯出';
+
+  @override
+  String get exportAdif => '匯出 ADIF';
+
+  @override
+  String get exportAdifDesc => '把會話匯出為 ADIF 日誌檔案，可匯入 Log4OM、N3FJP 等日誌軟體';
+
+  @override
+  String get favorite => '收藏';
+
+  @override
+  String get favoriteStations => '收藏臺站';
+
+  @override
+  String get favorites => '收藏/手動';
+
+  @override
+  String get featureAutoConnect => '自動連線';
+
+  @override
+  String get featureAutoConnectDesc => '公共伺服器自動連線，背景執行時保持線上';
+
+  @override
+  String get featureBeacon => '信標傳送';
+
+  @override
+  String get featureBeaconDesc => '自定義內容、頻率、符號，支援 APRS 標準格式';
+
+  @override
+  String get featureFmo => 'FMO 臺站';
+
+  @override
+  String get featureFmoDesc => '自動識別 FMO 資料，顯示結構化資訊';
+
+  @override
+  String get featureGps => 'GPS 定位';
+
+  @override
+  String get featureGpsDesc => '原生 Android 定位，無需 Google 服務';
+
+  @override
+  String get featureLayerFilter => '圖層篩選';
+
+  @override
+  String get featureLayerFilterDesc => '按類型篩選：移動、固定、中繼、氣象、FMO';
+
+  @override
+  String get featureLiveMap => '線上地圖';
+
+  @override
+  String get featureLiveMapDesc => 'GCJ-02 座標，流暢的縮放與拖拽體驗';
+
+  @override
+  String get featureMsg => '訊息收發';
+
+  @override
+  String get featureMsgDesc => '瀑布流 + 會話模式，支援中文和自動應答';
+
+  @override
+  String get features => '功能特性';
+
+  @override
+  String get feedMode => '瀑布流';
+
+  @override
+  String get feedback => '使用者反饋';
+
+  @override
+  String get fillPasscode => '去填寫';
+
+  @override
+  String get filter => '接收範圍篩選';
+
+  @override
+  String get filterCenterFollows => '篩選中心跟隨我的位置';
+
+  @override
+  String get filterRadius => '篩選半徑(km)';
+
+  @override
+  String get filterRule => '篩選規則';
+
+  @override
+  String get filterSaved => '篩選已儲存並套用';
+
+  @override
+  String filterSavedRadius(String saved, int radius) {
+    return '$saved · 半徑 ${radius}km';
+  }
+
+  @override
+  String get filters => '篩選';
+
+  @override
+  String get finish => '完成並連線';
+
+  @override
+  String get fitAll => '全覽';
+
+  @override
+  String get fixed => '固定';
+
+  @override
+  String get fmo => 'FMO';
+
+  @override
+  String get fmoInfo => 'FMO 臺站資訊';
+
+  @override
+  String get followMe => '跟隨我';
+
+  @override
+  String get forwardingPath => '轉發路徑';
+
+  @override
+  String foundStations(Object count, Object q) {
+    return '找到 $count 臺符合「$q」';
+  }
+
+  @override
+  String fullCallsign(String call) {
+    return '完整呼號：$call';
+  }
+
+  @override
+  String get garminAutoFilled => '已自動填入分享連結';
+
+  @override
+  String get garminBadUrl =>
+      '連結格式不對。請貼上完整的 LiveTrack 分享連結（含 /session/…/token/…）';
+
+  @override
+  String get garminCardSubtitle => '把佳明手錶的活動即時位置接進來，隨信標上報';
+
+  @override
+  String get garminCardTitle => '佳明 LiveTrack';
+
+  @override
+  String garminError(Object error) {
+    return '抓取失敗：$error';
+  }
+
+  @override
+  String get garminHowTo =>
+      '怎麼拿到連結：在佳明 Connect App 裡打開該活動 → 分享 → 選「APRSlocus」（本應用已註冊系統分享入口），連結會自動填到這裡並開始追蹤；也可以手動複製連結後貼到上面。';
+
+  @override
+  String get garminLinkOk => '連結有效';
+
+  @override
+  String get garminNoPoints => '還沒有取到點。活動可能剛開始，或連結已過期。';
+
+  @override
+  String get garminNotStarted => '未開啟追蹤';
+
+  @override
+  String get garminOpen => '去設定';
+
+  @override
+  String get garminPaste => '從剪貼簿貼上';
+
+  @override
+  String get garminRunning => '追蹤中';
+
+  @override
+  String get garminShareNoLink => '分享的內容裡沒有找到佳明 LiveTrack 連結';
+
+  @override
+  String get garminSharedToast => '已收到佳明分享連結';
+
+  @override
+  String get garminStart => '開始追蹤';
+
+  @override
+  String garminStats(Object n, Object t) {
+    return '已轉發 $n 個點 · 最後更新 $t';
+  }
+
+  @override
+  String get garminStop => '停止追蹤';
+
+  @override
+  String get garminUrlHint => 'livetrack.garmin.com/session/…/token/…';
+
+  @override
+  String get garminUrlLabel => '分享連結';
+
+  @override
+  String get garminWebUnsupported =>
+      'Web 版不支援（瀏覽器的跨域限制），請在 Android / Windows 版使用';
+
+  @override
+  String get gcj02 => 'GCJ-02';
+
+  @override
+  String get getLocation => '獲取定位';
+
+  @override
+  String get goSettings => '去設定';
+
+  @override
+  String get gotIt => '知道了';
+
+  @override
+  String get gpsLocating => 'GPS 定位中…';
+
+  @override
+  String get gpsStatus => 'GPS 狀態';
+
+  @override
+  String get greetAfternoon => '下午好，';
+
+  @override
+  String get greetEvening => '晚上好，';
+
+  @override
+  String get greetMorning => '早上好，';
+
+  @override
+  String get greetNight => '夜深了，';
+
+  @override
+  String get greetNoon => '中午好，';
+
+  @override
+  String get grid => '網格';
+
+  @override
+  String get gridFormat => '網格格式';
+
+  @override
+  String gridValue(String grid) {
+    return '網格 $grid';
+  }
+
+  @override
+  String groupBubble(String name) {
+    return '群組 · $name';
+  }
+
+  @override
+  String groupCallsignLine(String call) {
+    return '群組呼號：$call';
+  }
+
+  @override
+  String groupCallsignValue(String call) {
+    return '群組呼號：$call';
+  }
+
+  @override
+  String get groupChat => '群組';
+
+  @override
+  String get groupChatExplain =>
+      '群組使用群組呼號廣播訊息，所有成員都能收到。建立後系統會自動產生群組呼號，並向你選擇的成員傳送邀請。';
+
+  @override
+  String get groupChatLabel => '群組聊天';
+
+  @override
+  String get groupChatShort => '群組';
+
+  @override
+  String groupChatTitle(Object name) {
+    return '群組 · $name';
+  }
+
+  @override
+  String groupInviteAccepted(String name) {
+    return '已接受邀請，加入 $name';
+  }
+
+  @override
+  String groupInviteFrom(String from) {
+    return '$from 邀請你加入群組';
+  }
+
+  @override
+  String groupInviteRejected(String name) {
+    return '已拒絕 $name 的邀請';
+  }
+
+  @override
+  String get groupInviteTitle => '群組邀請';
+
+  @override
+  String get groupNameHint => '輸入群組名稱';
+
+  @override
+  String groupNameValue(String name) {
+    return '群組名稱：$name';
+  }
+
+  @override
+  String get groupNotFound => '找不到群組';
+
+  @override
+  String get groupOwner => '群組管理員';
+
+  @override
+  String get groupShortLabel => '群組';
+
+  @override
+  String get groupTracking => '群組追蹤';
+
+  @override
+  String get groupTrackingHint => '把關心的呼號編成群組，在大地圖上持續追蹤（車隊 / 好友結伴），支援橫向顯示。';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from 邀請你加入「$name」';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return '已向 $n 位成員發出邀請';
+  }
+
+  @override
+  String get grpInviteTitle => '群聊邀請';
+
+  @override
+  String get grpNameInvalid => '群名不能為空、不能包含冒號或換行';
+
+  @override
+  String grpNameTooLong(int max) {
+    return '群名最長 $max 個字元（過長會讓邀請報文超出 APRS 訊息上限）';
+  }
+
+  @override
+  String get grpSelfPending => '等待群主確認';
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call 拒絕了邀請';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call 申請加入群聊';
+  }
+
+  @override
+  String grpSysJoined(String call) {
+    return '$call 加入了群聊';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call 離開了群聊';
+  }
+
+  @override
+  String get guideAudioBody => '用耳機孔 / 音效卡收發 AFSK 報文：選音訊裝置、調音量與增益，先「測試音」再連線。';
+
+  @override
+  String get guideAudioTitle => '音效卡 TNC';
+
+  @override
+  String get guideBackupBody => '匯出設定檔，換機後一鍵還原。圖磚與翻譯快取不在備份內，需重新下載。';
+
+  @override
+  String get guideBackupTitle => '備份與還原';
+
+  @override
+  String get guideDeviceBody =>
+      '選資料從哪來（APRS-IS / TNC / 音效卡）以及用哪條鏈路發射。藍牙 TNC 要先去「裝置」子頁配對。';
+
+  @override
+  String get guideDeviceTitle => '裝置與資料來源';
+
+  @override
+  String get guideExportAdifBody => '把收到的臺站位置匯出成 ADIF 檔，供日誌軟體匯入。可選時間範圍與模式。';
+
+  @override
+  String get guideExportAdifTitle => '匯出 ADIF';
+
+  @override
+  String get guideGotIt => '知道了';
+
+  @override
+  String get guideHomeBody => '點一個臺站看它的軌跡與詳情；底部按鈕把你的位置送出去（需先連線）。';
+
+  @override
+  String get guideHomeTitle => '主頁 · 地圖與臺站';
+
+  @override
+  String get guideImmersiveBody => '全螢幕看臺站：雙指縮放、單指拖曳，左下角可切換「跟隨自己」，左上角返回。';
+
+  @override
+  String get guideImmersiveTitle => '沉浸地圖';
+
+  @override
+  String get guideLogBody => '收發包與鏈路事件都記在這裡。排查問題時先看這裡，右上角可以複製全部日誌。';
+
+  @override
+  String get guideLogTitle => '系統日誌';
+
+  @override
+  String get guideMessagesBody => '輸入呼號即可開聊；右上角能建群組、發廣播。收不到回覆時，先確認頂部已連線。';
+
+  @override
+  String get guideMessagesTitle => '訊息';
+
+  @override
+  String get guideMoreInSettings => '之後可在「設定 → 重新查看功能導覽」裡再看';
+
+  @override
+  String get guideOfflineMapBody => '框選一塊區域下載圖磚，沒網路也能看地圖。下載可隨時暫停，之後接著下。';
+
+  @override
+  String get guideOfflineMapTitle => '離線地圖';
+
+  @override
+  String get guidePacketsBody => '原始收發報文列表，用來核對解析結果。點一行可以看到完整內容。';
+
+  @override
+  String get guidePacketsTitle => '資料封包';
+
+  @override
+  String get guidePkwdwplBody => '透過串列埠驅動 PKWDWPL：選連接埠與鮑率，連上後由它負責發射。';
+
+  @override
+  String get guidePkwdwplTitle => 'PKWDWPL 連接器';
+
+  @override
+  String get guideResetButton => '重新顯示';
+
+  @override
+  String get guideResetConfirm => '清空「已看過」記錄，各頁頂部的小提示卡會再出現一次。';
+
+  @override
+  String get guideResetDone => '功能導覽已重設';
+
+  @override
+  String get guideResetRow => '重新查看功能導覽';
+
+  @override
+  String get guideResetTitle => '重新查看功能導覽？';
+
+  @override
+  String get guideSettingsBody =>
+      '八類入口：電台、信標、連線、顯示、裝置、資料、進階、更新。改完的設定立刻生效，不需要重啟。';
+
+  @override
+  String get guideSettingsTitle => '設定';
+
+  @override
+  String get guideShowAgain => '重看本頁引導';
+
+  @override
+  String get guideStationsBody => '收到的臺站都在這裡，可搜尋、排序、依距離篩選；列表與地圖共用同一份篩選條件。';
+
+  @override
+  String get guideStationsTitle => '臺站列表';
+
+  @override
+  String get guideThemeBody => '換配色、背景圖、介面材質與縮放；改完立刻生效，可以在同一頁對比。';
+
+  @override
+  String get guideThemeTitle => '主題與介面';
+
+  @override
+  String get guideTitle => '功能導覽';
+
+  @override
+  String get guideTncDeviceBody => '搜尋並配對藍牙 TNC；配對後回到「鏈路」頁把它選作資料來源。';
+
+  @override
+  String get guideTncDeviceTitle => '藍牙 TNC';
+
+  @override
+  String get guideTrackHistoryBody => '依日期回放某個臺站當天走過的路線，拖動時間軸可以看每一段。';
+
+  @override
+  String get guideTrackHistoryTitle => '軌跡回放';
+
+  @override
+  String get guideTranslateBody => '設定聊天自動翻譯的目標語言與介面。沒設介面時不會翻譯，這裡會說明怎麼設。';
+
+  @override
+  String get guideTranslateTitle => '翻譯';
+
+  @override
+  String get hamAir => '空氣品質差：戶外架台請戴口罩並減少劇烈活動；污染物附著天線絕緣子會引入洩漏雜訊，收工後清潔';
+
+  @override
+  String get hamCold => '低溫/降雪：鋰電池容量明顯下降，多備電池並貼身保暖；天線結冰注意駐波變化';
+
+  @override
+  String hamDew(String d) {
+    return '露點差僅 $d℃，空氣接近飽和：設備與饋線易結露，收工後先緩溫除濕再通電，避免短路';
+  }
+
+  @override
+  String get hamDust => '沙塵天氣：細沙滲入接頭與絕緣子會造成洩漏和雜訊，請加防塵罩；乾燥摩擦易累積靜電，注意接地洩放';
+
+  @override
+  String get hamExtreme => '暴雨/極端降水：注意山洪、積水與落石，勿在河岸、低窪處架台；饋線入牆處做滴水彎，防止雨水順線灌入室內';
+
+  @override
+  String hamFog(String v) {
+    return '能見度低（${v}km）：出行架台注意安全；霧天易形成大氣波導，可嘗試遠地 V/U 通聯';
+  }
+
+  @override
+  String get hamFrost => '氣溫低於 0℃：鋰電池容量驟降，備用電池請貼身保溫；注意手部與面部凍傷，帶上暖手寶';
+
+  @override
+  String hamGale(String w) {
+    return '風力 $w 級：禁止上塔、爬桿作業！八木與長線天線務必放倒或降下，檢查風繩、地錨與桅杆拉線';
+  }
+
+  @override
+  String get hamGood => '天氣良好，適合架台！UV 段可嘗試本地中繼與直頻；短波留意晚間電離層變化';
+
+  @override
+  String get hamGrayLine => '正值日出/日落灰線時段：20/40m 短波傳播最佳，是跨洲遠程（DX）通聯的黃金窗口';
+
+  @override
+  String get hamHeat2 => '高溫易使功放與電源過熱降額：適度降低功率、縮短連續發射時間，並確保通風散熱';
+
+  @override
+  String hamHighPressure(String p) {
+    return '氣壓較高（$p hPa）且穩定：易形成逆溫層，VHF/UHF 可能出現大氣波導，可嘗試超視距遠地直頻或中繼通聯';
+  }
+
+  @override
+  String hamHot(String t) {
+    return '高溫 $t°C：注意防暑補水，設備避免長時間滿功率發射導致過熱';
+  }
+
+  @override
+  String hamHumid(String h) {
+    return '濕度 $h%：潮濕會降低絕緣與天線效率，VHF/UHF 訊號衰減偏大，注意接頭防鏽';
+  }
+
+  @override
+  String get hamIce => '天線與饋線結冰會升高駐波（SWR）並增加冰載：切勿滿功率硬發，先檢查拉線受力，待化冰後再正常通聯';
+
+  @override
+  String get hamLess => '收合';
+
+  @override
+  String get hamLevelDanger => '安全警示';
+
+  @override
+  String get hamLevelGood => '通聯機會';
+
+  @override
+  String get hamLevelTip => '操作提示';
+
+  @override
+  String get hamLevelWarn => '注意';
+
+  @override
+  String hamLowPressure(String p) {
+    return '氣壓偏低（$p hPa）：天氣趨於不穩，長時間野外架台請留好退路並留意臨近警報';
+  }
+
+  @override
+  String hamMore(String n) {
+    return '展開全部 $n 條建議';
+  }
+
+  @override
+  String get hamNight => '夜間 D 層消失：80/40m 吸收減小、雜訊較低，適合本土與夜間遠程通信';
+
+  @override
+  String get hamNoData => '獲取天氣後，將給出適合架台/通聯/防雷的安全建議';
+
+  @override
+  String get hamRain => '有降水：戶外架台請備防雨罩/防水箱，接頭用膠帶或熱縮管密封，饋線避免積水';
+
+  @override
+  String get hamRainFade => '較強降水對 1.2GHz 以上頻段有雨衰影響：微波與 EME 通聯建議改用較低頻段或等雨勢減弱';
+
+  @override
+  String get hamShower => '陣雨來去突然：架台請備好防雨罩並留意雲團移動，收工前先斷開發射再拆饋線';
+
+  @override
+  String get hamStorm1 => '雷雨天氣：請勿在室外架設/操作天線！斷開天線饋線，謹防雷擊感應損壞設備';
+
+  @override
+  String get hamStorm2 => '如已架設，盡快收納拉倒；轉為室內收聽中繼與短波，注意設備防潮';
+
+  @override
+  String get hamStorm3 =>
+      '雷電臨近：把天線饋線從設備上拔下並移至室外接地端洩放，關閉電源並拔掉插頭，避免突波經市電、網路線竄入；不要使用室外天線與有線電話';
+
+  @override
+  String get hamStorm4 => '雷暴前後靜電雜訊（QRN）驟增、短波底噪抬升；雷電活動結束後約 30 分鐘再恢復架台與發射';
+
+  @override
+  String get hamTitle => '業餘無線電建議';
+
+  @override
+  String hamUV(String u) {
+    return '紫外線指數 $u，強度偏高：野外架台注意防曬；長期曝曬會加速同軸電纜外皮與束帶老化';
+  }
+
+  @override
+  String hamWind(String w) {
+    return '風力 $w 級：架設天線務必拉好風繩加固，八木/長線收工時放倒，避免傾倒';
+  }
+
+  @override
+  String hamWindExtra(String w) {
+    return '雖有 $w 級風，仍建議為天線加固風繩，野外架台注意安全';
+  }
+
+  @override
+  String get headingUp => '航向朝上';
+
+  @override
+  String get heatmap => '臺站熱力圖';
+
+  @override
+  String get heatmapHint => '縮小地圖後顯示臺站密度熱力圖';
+
+  @override
+  String get hfAIndex => 'A 指數';
+
+  @override
+  String get hfAurora => '極光';
+
+  @override
+  String get hfBand => '波段';
+
+  @override
+  String get hfDay => '日間';
+
+  @override
+  String get hfEs => 'Es 偶發 E 層';
+
+  @override
+  String get hfF2 => 'F2 層';
+
+  @override
+  String get hfGeomag => '地磁';
+
+  @override
+  String get hfKp => '地磁 Kp';
+
+  @override
+  String get hfMuf => '最高可用頻率';
+
+  @override
+  String get hfNight => '夜間';
+
+  @override
+  String get hfNoData => '暫無短波傳播資料：連網後自動取得';
+
+  @override
+  String get hfNoise => '底噪';
+
+  @override
+  String get hfNow => '現在';
+
+  @override
+  String get hfPowered => '傳播資料由 hamqsl.com（N0NBH）提供 · 全球平均，非本地實測';
+
+  @override
+  String get hfQClosed => '未開通';
+
+  @override
+  String get hfQFair => '一般';
+
+  @override
+  String get hfQGood => '好';
+
+  @override
+  String get hfQPoor => '差';
+
+  @override
+  String get hfSfi => '太陽通量';
+
+  @override
+  String get hfSixMeter => '6m 波段';
+
+  @override
+  String get hfSolarWind => '太陽風速';
+
+  @override
+  String get hfSunspots => '太陽黑子';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b 傳播條件好：本時段優先使用這一段呼叫';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b 條件偏差：換到其他波段，或等日落/日出灰線再試';
+  }
+
+  @override
+  String get hfTipGeomagActive => '地磁較活躍：短波高緯度路徑不如平時穩定，DX 通聯建議留出更多呼叫時間';
+
+  @override
+  String get hfTipHighNoise => '底噪偏高：弱信號接收困難，建議收窄頻寬、降低前置增益，必要時用窄帶模式';
+
+  @override
+  String get hfTipHighSfi => '太陽活動活躍（SFI≥150）：白天高頻段（15m/12m/10m）有機會遠距離 DX';
+
+  @override
+  String get hfTipLowSfi =>
+      '太陽活動偏低（SFI<100）：白天高頻段（15m/12m/10m）機會少，優先 40m/30m/20m';
+
+  @override
+  String get hfTipStorm =>
+      '地磁暴（Kp≥5）：極區短波路徑衰減明顯，跨極地 DX 幾乎中斷；改走低緯度路徑或轉本地 VHF/UHF';
+
+  @override
+  String get hfTitle => '短波傳播';
+
+  @override
+  String get hfUnavailable => '短波傳播服務暫時無法使用';
+
+  @override
+  String get hfXray => 'X 射線';
+
+  @override
+  String get historyClearAll => '清空全部歷史軌跡';
+
+  @override
+  String get historyClearAllConfirm => '確定要清空全部歷史軌跡嗎？此操作無法復原。';
+
+  @override
+  String get historyClearDay => '刪除這一天的記錄';
+
+  @override
+  String get historyCleared => '已刪除該天記錄';
+
+  @override
+  String get historyClearedAll => '已清空全部歷史軌跡';
+
+  @override
+  String get historyEmpty => '還沒有歷史軌跡。開始定位並移動後會自動記錄。';
+
+  @override
+  String get historyFollow => '跟隨';
+
+  @override
+  String get historyMaxSpeed => '最高速度';
+
+  @override
+  String get historyMovingTime => '移動時長';
+
+  @override
+  String get historyPause => '暫停';
+
+  @override
+  String get historyPlay => '播放';
+
+  @override
+  String get historyPoints => '軌跡點';
+
+  @override
+  String get historyReplay => '重播';
+
+  @override
+  String get historyTapDay => '點按某一天可查看地圖與回放';
+
+  @override
+  String get historyTotalDistance => '總里程';
+
+  @override
+  String get historyTracks => '歷史軌跡';
+
+  @override
+  String get historyTracksDesc => '按天記錄自己的速度與里程，儲存在本機';
+
+  @override
+  String get historyVersions => '歷史版本';
+
+  @override
+  String get home => '首頁';
+
+  @override
+  String get homeBadgeLabel => '首頁展示徽章';
+
+  @override
+  String get homeBadgePickDesc => '在以下已獲得的徽章中選一個，作為首頁常駐展示';
+
+  @override
+  String get homeBadgePickTitle => '選擇首頁展示徽章';
+
+  @override
+  String honorCriteriaLine(String c) {
+    return '獲得條件：$c';
+  }
+
+  @override
+  String get honorWall => '榮譽牆';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '已點亮 $n/$m 徽章';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return '$count小時前';
+  }
+
+  @override
+  String get hrCardSubtitle => '藍牙心率帶（標準心率服務），可隨信標一起上報';
+
+  @override
+  String get hrCardTitle => '心率';
+
+  @override
+  String get hrConflictWithTnc => '這個裝置正被 TNC / PKWDWPL 的藍牙鏈路使用，不能同時當心率帶';
+
+  @override
+  String get hrConnect => '連線';
+
+  @override
+  String hrConnected(Object name) {
+    return '已連線 $name';
+  }
+
+  @override
+  String get hrDisconnect => '斷開';
+
+  @override
+  String get hrForTncNote => '心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線';
+
+  @override
+  String get hrForget => '忘記該裝置';
+
+  @override
+  String get hrFromGarmin => '心率來自佳明 LiveTrack（手錶）';
+
+  @override
+  String get hrIncludeHint =>
+      '開啟後在位置包的備註裡加 HR=nn（APRS 的通行寫法，第三方地圖會當備註顯示）。沒有讀數時不會發 HR=0 —— 那會被收端當成「心率 0」而不是「沒測」。';
+
+  @override
+  String get hrIncludeInBeacon => '信標附帶心率';
+
+  @override
+  String hrLineHr(String hr) {
+    return '心率 $hr';
+  }
+
+  @override
+  String get hrNoDevice => '沒有找到心率裝置。確認心率帶正在廣播（多數胸帶貼上電極片就開始廣播），並讓它離手機近一些。';
+
+  @override
+  String get hrNotSupported => '本機不支援藍牙心率（該功能在 Android / iOS 版提供）';
+
+  @override
+  String get hrScanning => '正在搜尋…';
+
+  @override
+  String get hrSearch => '搜尋心率裝置';
+
+  @override
+  String get hrSourceLabel => '心率來源';
+
+  @override
+  String get hrStopScan => '停止搜尋';
+
+  @override
+  String get hrStrapHint =>
+      '支援標準心率服務（0x180D）的胸帶／臂帶都行，例如 Polar H10、Garmin HRM、邁金、Coospo。TNC 走經典藍牙、心率走 BLE，兩條鏈路互不干擾。';
+
+  @override
+  String get hrWaitReading => '等待讀數（把心率帶貼緊皮膚）';
+
+  @override
+  String get iconDefaultMySymbol => '圖示 · 預設(我的符號)';
+
+  @override
+  String iconNamed(String name) {
+    return '圖示 · $name';
+  }
+
+  @override
+  String get idleTierDesc => '低於第一移動檔的速度都按此檔上報';
+
+  @override
+  String get idleTierNotDeletable => '靜止檔不可刪除';
+
+  @override
+  String get igateAllRejected =>
+      '收到了射頻報文，但全被迴路防護拒收：報文裡帶 TCPIP*/TCPXX* 或 q 構造，說明它本來就從網際網路來，再送回 APRS-IS 會讓同一條報文無限增殖。這是**在正確工作**，不是故障。';
+
+  @override
+  String get igateEnable => '啟用閘道';
+
+  @override
+  String get igateHint =>
+      '射頻上收到的報文會被送上 APRS-IS（自動加上 qAr/qAR 與你的呼號標識來路）。需要同時啟用 APRS-IS 和一個射頻來源（TNC / 音訊）。';
+
+  @override
+  String get igateIsDown => 'APRS-IS 沒連上：閘道沒有可轉遞的目標網路。等它連上（鏈路狀態卡裡能看到）後數字才會開始漲。';
+
+  @override
+  String get igateNeedIs => '還沒啟用 APRS-IS：請在上面勾選 APRS-IS，否則閘道沒有可轉遞的目標網路。';
+
+  @override
+  String get igateNeedRf => '還差一個射頻來源：請在上面的「資料來源」裡勾選 TNC 或音訊，否則閘道沒有可轉遞的射頻鏈路。';
+
+  @override
+  String get igateNoRfTraffic =>
+      '射頻上一條報文都沒收到：閘道的條件已經全齊，但它**無報文可轉**。這不是閘道的問題 —— 報文根本沒進到應用程式裡。查上游：電台音量與靜噪、天線、對方是否真的在發射，也可以在日誌頁確認有沒有任何射頻報文。';
+
+  @override
+  String get igateResetStats => '清空統計';
+
+  @override
+  String get igateRfDown =>
+      '射頻鏈路沒連上：閘道現在什麼都轉不了。上面的「射頻收到」如果一直是 0，說明報文根本沒進來 —— 先查裝置頁裡的 TNC / 音訊狀態（串列埠線速、裝置是否開機），而不是懷疑閘道。';
+
+  @override
+  String get igateStatBlocked => '迴路拒收（條）';
+
+  @override
+  String get igateStatDup => '重複丟棄（條）';
+
+  @override
+  String get igateStatRfSeen => '射頻收到（條）';
+
+  @override
+  String get igateStatToIs => '已轉遞 → APRS-IS（條）';
+
+  @override
+  String get igateStatToRf => '已轉遞 → 射頻（條）';
+
+  @override
+  String get igateSubtitle => '把射頻收到的報文送上 APRS-IS';
+
+  @override
+  String get igateTitle => '閘道（iGate）';
+
+  @override
+  String get igateTwoWay => '雙向閘道（向射頻轉遞訊息）';
+
+  @override
+  String get igateTwoWayHint =>
+      '打開後會**在射頻上真實發射**：只轉「發給最近在射頻上聽到過的台站」的點對點訊息（位置/天氣等廣播不轉，避免佔滿通道）。關閉時只做 RF→IS。';
 
   @override
   String get immersiveMap => '沉浸地圖';
@@ -12443,75 +10038,953 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get immersiveMapTip => '導航風格：以我為中心、航向朝上、四角 HUD';
 
   @override
-  String get headingUp => '航向朝上';
+  String get imminent => '即將';
 
   @override
-  String get northUp => '正北朝上';
+  String get information => '資訊';
 
   @override
-  String get followMe => '跟隨我';
+  String get infrastructure => '中繼';
 
   @override
-  String get beaconCountdown => '發送倒數';
+  String get inject => '注入';
 
   @override
-  String get beaconOff => '未開啟';
+  String get injected => '已注入資料包';
 
   @override
-  String get unlocated => '未定位';
+  String get inputTapHint => '點擊輸入';
 
   @override
-  String get platform => '平台';
+  String get install => '安裝';
+
+  @override
+  String get installApk => '安裝 APRSlocus';
+
+  @override
+  String get installComplete => '安裝完成';
+
+  @override
+  String get installNow => '立即安裝';
+
+  @override
+  String get installPermissionDesc =>
+      '偵測到系統未允許 APRSlocus 安裝應用程式。\n\n請點選「去設定」，在「安裝未知應用程式」中允許本應用程式安裝未知來源應用程式，然後返回重新安裝。';
+
+  @override
+  String get installPermissionTitle => '需要允許安裝應用程式';
+
+  @override
+  String installSize(Object os, Object size) {
+    return '$os 安裝檔大小：$size';
+  }
+
+  @override
+  String get internationalMaps => '國際地圖';
+
+  @override
+  String get intervalLabel => '間隔';
+
+  @override
+  String get intervalSeconds => '上報間隔 (秒)';
+
+  @override
+  String get invalidCoords => '請輸入有效的經緯度和半徑';
+
+  @override
+  String get invalidLatLng => '請輸入有效經緯度';
+
+  @override
+  String get invalidResponseData => '回傳資料格式錯誤';
+
+  @override
+  String get invite => '邀請';
+
+  @override
+  String get inviteMembers => '邀請成員';
+
+  @override
+  String get inviteMembersHint => '點選下方「邀請成員」新增';
+
+  @override
+  String inviteMembersTo(String name) {
+    return '邀請成員到 $name';
+  }
+
+  @override
+  String inviteSent(String call) {
+    return '已傳送邀請給 $call';
+  }
+
+  @override
+  String get invited => '已邀請';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS 不支援經典藍牙 / USB 序列埠鏈路（僅 MFi 認證配件可用），此功能無法開啟；可改用 APRS-IS 連網接入。';
+
+  @override
+  String get irreversibleKeepSettings => '此操作無法復原，連線設定和呼號不會被刪除。';
+
+  @override
+  String get issStation => 'ISS 太空站';
+
+  @override
+  String get kissApplyParams => '下發參數';
+
+  @override
+  String get kissAutoAck => '自動回覆 ACK';
+
+  @override
+  String get kissAutoAckTip => '關閉後不回覆收到的訊息回執，可減少射頻佔用';
+
+  @override
+  String get kissAutoReconnect => '斷開後自動重連';
+
+  @override
+  String get kissBackToCommand => '回到 TNC 命令模式';
+
+  @override
+  String get kissBackToCommandTip =>
+      '發送 RETURN (0x0F)。多數 KISS TNC 會就此停止轉發，需重啟鏈路才恢復';
+
+  @override
+  String get kissChannel => '信道 / KISS 埠';
+
+  @override
+  String get kissChannelTip => '多信道 TNC 才有多埠，單信道電台保持 0';
+
+  @override
+  String get kissFullDuplex => '全雙工';
+
+  @override
+  String get kissFullDuplexTip => 'KISS FULLDUPLEX，一般電台必須關閉（同時收發會互相干擾）';
+
+  @override
+  String get kissHardwareCmd => '廠商命令碼';
+
+  @override
+  String get kissHardwareTip => 'KISS SETHARDWARE (0x06)，廠商自訂；-1 表示不下發';
+
+  @override
+  String get kissHardwareVal => '參數值';
+
+  @override
+  String get kissMaxFrame => '幀長上限 (位元組)';
+
+  @override
+  String get kissMaxFrameTip => '超過此長度的報文不會發出（1200bd 下 AX.25 單幀約 330 位元組）';
+
+  @override
+  String get kissNeedConnected => '請先連接 TNC';
+
+  @override
+  String get kissParamsSent => 'KISS 參數已下發';
+
+  @override
+  String get kissParamsSubtitle => '直接下發到 TNC 的鏈路層參數';
+
+  @override
+  String get kissParamsTitle => 'KISS 參數';
+
+  @override
+  String get kissPersistence => '持續度 P';
+
+  @override
+  String get kissPersistenceTip => 'KISS PERSISTENCE，0-255。越小越禮讓，共用信道時能減少碰撞';
+
+  @override
+  String get kissRfBeacon => '允許射頻信標';
+
+  @override
+  String get kissRfBeaconTip => '打開後才會在射頻上定時發射位置。發射需以自己的呼號並在執照範圍內操作';
+
+  @override
+  String get kissRfPath => '射頻中繼路徑';
+
+  @override
+  String get kissRfPathTip => '射頻上使用的中繼，如 WIDE1-1,WIDE2-1；留空則不指定';
+
+  @override
+  String get kissSlotTime => '時隙 (ms)';
+
+  @override
+  String get kissSlotTimeTip => 'KISS SLOTTIME，單位 10ms。與持續度共同決定信道競爭節奏';
+
+  @override
+  String get kissTxDelay => '發射延時 (ms)';
+
+  @override
+  String get kissTxDelayTip => 'KISS TXDELAY，單位 10ms。發射前留給自己 PTT 建立的時間';
+
+  @override
+  String get kissTxTail => '發射尾音 (ms)';
+
+  @override
+  String get kissTxTailTip => 'KISS TXTAIL，單位 10ms。某些電台需要尾部保持才能收全';
+
+  @override
+  String get labDesc => '實驗室功能仍在測試中，可能影響使用體驗。預設鎖定直向顯示，開啟後支援橫向顯示。';
+
+  @override
+  String get langNameAr => '阿拉伯語';
+
+  @override
+  String get langNameDe => '德語';
+
+  @override
+  String get langNameEn => '英語';
+
+  @override
+  String get langNameEs => '西班牙語';
+
+  @override
+  String get langNameFr => '法語';
+
+  @override
+  String get langNameId => '印尼語';
+
+  @override
+  String get langNameIt => '義大利語';
+
+  @override
+  String get langNameJa => '日語';
+
+  @override
+  String get langNameKo => '韓語';
+
+  @override
+  String get langNamePt => '葡萄牙語';
+
+  @override
+  String get langNameRu => '俄語';
+
+  @override
+  String get langNameTh => '泰語';
+
+  @override
+  String get langNameVi => '越南語';
+
+  @override
+  String get langNameZh => '簡體中文';
+
+  @override
+  String get langNameZhTw => '繁體中文';
+
+  @override
+  String get language => '語言';
+
+  @override
+  String get languageEn => 'English';
+
+  @override
+  String get languageEs => '西班牙語';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
+
+  @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageSystem => '跟隨系統';
+
+  @override
+  String get languageZh => '中文';
+
+  @override
+  String get languageZhTw => '繁體中文';
+
+  @override
+  String get lastSeen => '最近活躍';
+
+  @override
+  String get latestVersion => '目前已是最新版本';
+
+  @override
+  String get latestVersionLabel => '最新版本';
+
+  @override
+  String get latitude => '緯度';
+
+  @override
+  String get latitudeHint => '緯度 39.9042';
+
+  @override
+  String get layerFilter => '圖層篩選';
+
+  @override
+  String get leave => '離開';
+
+  @override
+  String get leaveAction => '離開';
+
+  @override
+  String get leaveGroup => '離開群組';
+
+  @override
+  String leaveGroupConfirm(String name) {
+    return '確定離開「$name」？你將不再收到該群組的訊息。';
+  }
+
+  @override
+  String leftGroup(String name) {
+    return '已離開 $name';
+  }
+
+  @override
+  String get licenseName => 'GNU GPL v3';
+
+  @override
+  String get licenseNotice => 'GNU GPL v3 開源協議 · Copyright © BG7LZQ';
+
+  @override
+  String get licenseSection => '許可證宣告';
+
+  @override
+  String get licenseStatement =>
+      '本軟體依據 GNU GPL v3 開源許可證釋出。你可以在遵守許可證條款的前提下執行、研究、修改和再分發本軟體；修改和再分發時須遵守 GPL v3 的相應義務。本軟體不附帶任何擔保。';
+
+  @override
+  String get licenseText => '檢視許可證';
+
+  @override
+  String get linkNotConnected => '未連線';
+
+  @override
+  String get linkOpenFailed => '無法開啟連結';
+
+  @override
+  String get linkTapForSettings => '點一下查看連線設定';
+
+  @override
+  String get loadingVectorMap => '載入向量地圖…';
+
+  @override
+  String get locModeGps => '純 GPS';
+
+  @override
+  String get locModeGpsDesc => '僅衛星定位，更省電';
+
+  @override
+  String get locModeGpsNetwork => 'GPS + 網路';
+
+  @override
+  String get locModeGpsNetworkDesc => '網路僅作兜底（GPS 停更時），粗定位不寫軌跡';
+
+  @override
+  String get locModeNetHint =>
+      '網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 5 分鐘後才用它兜底；粗定位點不寫進軌跡與歷史，也不會觸發自動上報。';
+
+  @override
+  String get locModeNetwork => '純網路';
+
+  @override
+  String get locModeNetworkDesc => '僅基地台 / Wi-Fi，誤差百公尺級；最省電，適合沒有 GPS 的裝置';
+
+  @override
+  String get locModeNetworkHint =>
+      '純網路模式下只有基地台 / Wi-Fi 定位：誤差常在幾百公尺，且**不會**寫進軌跡與歷史；除非開啟「強制接受網路定位自動上報」，否則不會自動發信標。';
+
+  @override
+  String get localPackageExists => '本機已有一份安裝檔';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return '本機 v$local · 倉庫最新 v$latest';
+  }
+
+  @override
+  String get locateMe => '定位';
+
+  @override
+  String get location => '定位';
+
+  @override
+  String get locationCoarse => '網路定位（粗）';
+
+  @override
+  String get locationFailed => '定位失敗';
+
+  @override
+  String get locationFixed => '已定位';
+
+  @override
+  String get locationGarmin => '佳明 LiveTrack';
+
+  @override
+  String get locationInfo => '位置資訊';
+
+  @override
+  String locationInitError(String error) {
+    return '定位初始化失敗：$error';
+  }
+
+  @override
+  String get locationMode => '定位模式';
+
+  @override
+  String get locationNotFixed => '未定位';
+
+  @override
+  String get locationPermission => '請授予定位許可權…';
+
+  @override
+  String get locationSource => '定位來源';
+
+  @override
+  String get locationStatus => '定位狀態';
+
+  @override
+  String get locationStill => '靜止';
+
+  @override
+  String get locationStopped => '定位已停止';
+
+  @override
+  String locationStreamError(String error) {
+    return '定位流異常：$error';
+  }
+
+  @override
+  String get logout => '登出';
+
+  @override
+  String get logs => '日誌';
+
+  @override
+  String get longitude => '經度';
+
+  @override
+  String get longitudeHint => '經度 116.4074';
+
+  @override
+  String get lookupAprsFi => 'aprs.fi 位置';
+
+  @override
+  String get lookupPasscode => '點選查詢你的 Passcode →';
+
+  @override
+  String get lookupQrz => 'QRZ 呼號';
+
+  @override
+  String get manage => '管理';
+
+  @override
+  String get manageContacts => '管理聯絡人';
+
+  @override
+  String get management => '管理';
+
+  @override
+  String get manual => '手動';
+
+  @override
+  String get manualBeacon => '手動上報';
+
+  @override
+  String get manualCallsign => '手動輸入呼號';
+
+  @override
+  String get manualCallsignHint => '手動輸入呼號新增';
+
+  @override
+  String get manualCoordinates => '手動輸入座標';
+
+  @override
+  String get manualInject => '手動注入 APRS 資料包';
+
+  @override
+  String get manualLocation => '手動定位';
+
+  @override
+  String get manualLocationHelp => '無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。';
+
+  @override
+  String get manualStations => '手動臺站';
+
+  @override
+  String get map => '地圖';
+
+  @override
+  String mapDefaultCoord(int level) {
+    return '北京 · $level級';
+  }
+
+  @override
+  String get mapHelpIntro => '目前視野內沒有臺站。可能原因：未連線 APRS-IS、接收範圍較小或附近暫無活躍臺站。';
+
+  @override
+  String get mapHelpLayer => '圖層與底圖：右上角按鈕篩選臺站類型、切換地圖樣式';
+
+  @override
+  String get mapHelpLocate => '定位：點選右下角「定位到我」回到目前位置';
+
+  @override
+  String get mapHelpMove => '拖動 / 縮放：單指拖動地圖，雙指或滾輪縮放';
+
+  @override
+  String get mapHelpSearch => '搜尋：頂部搜尋框輸入呼號可快速定位臺站';
+
+  @override
+  String get mapHelpStation => '檢視臺站：點選標記選中並居中，雙擊開啟詳情';
+
+  @override
+  String get mapHelpTitle => '地圖幫助';
+
+  @override
+  String get mapHome => '回到中心';
+
+  @override
+  String get mapLayers => '圖層';
+
+  @override
+  String get mapLocate => '定位';
+
+  @override
+  String get mapMenu => '地圖選單';
+
+  @override
+  String get mapPickDesc => '點選地圖選擇我的位置';
+
+  @override
+  String get mapPickMode => '地圖選點模式';
+
+  @override
+  String get mapPickNow => '地圖選點';
+
+  @override
+  String get mapType => '地圖類型';
+
+  @override
+  String get mapTypeAmap => '高德地圖';
+
+  @override
+  String get mapTypeAmapSatellite => '高德衛星';
+
+  @override
+  String get mapTypeCarto => 'Carto 淺色';
+
+  @override
+  String get mapTypeCartoDark => 'Carto 深色';
+
+  @override
+  String get mapTypeCartoPositron => 'Carto Positron(淺色向量)';
+
+  @override
+  String get mapTypeCartoVoyager => 'Carto 航行者';
+
+  @override
+  String get mapTypeDesc =>
+      '「地圖 2.0（向量）」使用客戶端即時向量渲染，資料量小、縮放清晰；柵格圖源為線上圖磚，畫質取決於網路。';
+
+  @override
+  String get mapTypeEsriSat => 'Esri 影像';
+
+  @override
+  String get mapTypeEsriStreet => 'Esri 街道';
+
+  @override
+  String get mapTypeOpenTopo => 'OpenTopo 地形';
+
+  @override
+  String get mapTypeOsm => 'OSM 標準';
+
+  @override
+  String get mapTypeOsmHot => 'OSM 人道';
+
+  @override
+  String get mapTypeTitle => '地圖類型';
+
+  @override
+  String get mapTypeVector => '向量地圖';
+
+  @override
+  String get mapZoomIn => '放大';
+
+  @override
+  String get mapZoomOut => '縮小';
+
+  @override
+  String get maxPackets => '資料包保留條數';
+
+  @override
+  String get maxPacketsTip => '資料包頁面保留的歷史條數（預設 2000，提高會佔用更多記憶體）';
+
+  @override
+  String get maxSpeedTiers => '最多 5 個速度檔';
+
+  @override
+  String get maxStations => '最大臺站數';
+
+  @override
+  String get maxStationsTip => '記憶體中保留的最大臺站數量（預設不限制，可設更大值）';
+
+  @override
+  String get maxTrackPts => '軌跡點數上限';
+
+  @override
+  String get maxTrackPtsTip => '每個台站保留的軌跡點數（預設 300，決定運動軌跡能回溯多長；僅位移超過 20m 才記點）';
+
+  @override
+  String get meLabel => '我';
+
+  @override
+  String get memberBlocked => '已遮蔽';
+
+  @override
+  String memberCount(int count) {
+    return '$count 個成員';
+  }
+
+  @override
+  String memberCountTap(int count) {
+    return '$count 名成員 · 點選檢視';
+  }
+
+  @override
+  String get memberDeclined => '已拒絕';
+
+  @override
+  String get memberJoined => '已加入';
+
+  @override
+  String get memberLeft => '已離開';
+
+  @override
+  String memberOnlineCount(int members, int online) {
+    return '$members 名成員 · $online 線上';
+  }
+
+  @override
+  String get memberPending => '待確認';
+
+  @override
+  String get memberTimeout => '超時';
+
+  @override
+  String get message => '訊息';
+
+  @override
+  String get messageCountLabel => '訊息條數';
+
+  @override
+  String get messageFeed => '訊息瀑布流';
+
+  @override
+  String get messageSent => '訊息已傳送';
+
+  @override
+  String messageTotal(int count) {
+    return '共 $count 條';
+  }
+
+  @override
+  String get messages => '訊息';
+
+  @override
+  String get metricUnits => '公制 (km/h, m)';
+
+  @override
+  String get minSpeedKmh => '最低速度 (km/h)';
+
+  @override
+  String minutesAgo(int count) {
+    return '$count分前';
+  }
+
+  @override
+  String get mobile => '車載';
+
+  @override
+  String get moreSymbols => '更多符號';
+
+  @override
+  String get moving => '移動';
+
+  @override
+  String movingCount(Object count) {
+    return '$count 移動';
+  }
+
+  @override
+  String movingWithSpeed(String speed) {
+    return '移動中 · $speed';
+  }
+
+  @override
+  String get msgBlockedTooLong => '已阻止傳送：整包超出 APRS-IS 上限';
+
+  @override
+  String get msgHistory => '訊息記錄';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 字元 · 整包 $bytes/512 位元組';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return '整包 $bytes 位元組，超過 APRS-IS 單行上限 512 位元組，伺服器可能直接丟棄整包（連標頭都送不到）。請縮短約 $over 位元組。';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return '這則訊息 $chars 個字元，超過 APRS 規範的 67 字元上限。多數用戶端仍能讀出，但部分用戶端/閘道會截斷或拒收，對方可能解析不出來。仍要傳送嗎？';
+  }
+
+  @override
+  String get msgSendAnyway => '仍要傳送';
+
+  @override
+  String get msgSpecLimitHint =>
+      'APRS 規範建議單則訊息不超過 67 字元：過長文字在部分用戶端上會顯示不全或解析失敗。';
+
+  @override
+  String get myBadgesAndAchievements => '我的徽章與成就';
+
+  @override
+  String get myCallsign => '我的呼號';
+
+  @override
+  String get myLocation => '我的位置';
+
+  @override
+  String myLocationPanel(Object call) {
+    return '我的位置 · $call';
+  }
+
+  @override
+  String myLocationSetGrid(String grid) {
+    return '已設定我的位置，網格 $grid';
+  }
+
+  @override
+  String myPositionSet(String grid) {
+    return '已設定我的位置，網格 $grid';
+  }
+
+  @override
+  String get myStation => '我的電臺';
+
+  @override
+  String get myStationSettings => '我的電臺';
+
+  @override
+  String get myStationSettingsDesc => '呼號 · SSID · 符號 · 信標';
+
+  @override
+  String get mySymbol => '我的符號';
+
+  @override
+  String nItems(String n) {
+    return '$n 個';
+  }
+
+  @override
+  String nMessages(String n) {
+    return '$n 條';
+  }
+
+  @override
+  String get nameLabel => '名稱';
+
+  @override
+  String get navigate => '導航';
+
+  @override
+  String get navigationUnavailable => '未安裝地圖應用程式，且無法開啟其他地圖應用程式';
 
   @override
   String get nearbyStations => '附近台站';
 
   @override
-  String get honorWall => '榮譽牆';
+  String get newConversation => '新建會話';
 
   @override
-  String get accountHonors => '帳號榮譽';
+  String get newConversationDesc => '輸入呼號開始新的會話';
 
   @override
-  String get achievementsSection => '成就';
+  String get newGroup => '建立新群組';
+
+  @override
+  String get newTrackGroup => '建立新追蹤組';
+
+  @override
+  String get newVersion => '新版本';
+
+  @override
+  String get newVersionFound => '發現新版本';
+
+  @override
+  String newVersionTitle(String version) {
+    return '發現新版本 v$version';
+  }
+
+  @override
+  String get next => '下一步';
+
+  @override
+  String get nextBeacon => '下次上報';
+
+  @override
+  String nextBeaconIn(String time) {
+    return '下次上報 $time';
+  }
+
+  @override
+  String get nextBeaconLabel => '下次上報';
+
+  @override
+  String get noApkInstaller => '該版本沒有 APK 安裝檔';
+
+  @override
+  String get noContacts => '暫無聯絡人';
+
+  @override
+  String get noConversations => '暫無會話';
+
+  @override
+  String get noCountriesSelected => '未選擇國家/地區';
+
+  @override
+  String get noData => '暫無資料';
+
+  @override
+  String get noFixYet => '尚未定位，無法獲取目前位置';
+
+  @override
+  String get noGroupMessages => '群組暫無訊息';
+
+  @override
+  String get noInstaller => '無安裝檔';
+
+  @override
+  String noInstallerHistoryHint(String platform) {
+    return '該版本暫無 $platform 安裝檔，請到歷史版本中選擇可下載的版本';
+  }
+
+  @override
+  String get noLogs => '暫無日誌';
+
+  @override
+  String get noMatchingPackets => '沒有符合的資料包';
+
+  @override
+  String get noMembers => '暫無成員';
+
+  @override
+  String get noMembersSelected => '未選擇成員';
+
+  @override
+  String get noMessages => '暫無訊息';
+
+  @override
+  String get noMessagesHint => '暫無訊息，發一條吧';
+
+  @override
+  String get noMoreOnlineStations => '暫無更多線上臺站';
+
+  @override
+  String get noPacketReceived => '未收到資料包';
+
+  @override
+  String get noPackets => '暫無資料包';
+
+  @override
+  String noPositionInfo(Object call) {
+    return '$call 暫無位置資訊（資料包未含位置）';
+  }
+
+  @override
+  String get noRecipients => '未選擇接收人';
+
+  @override
+  String get noReleaseNotes => '暫無更新說明';
+
+  @override
+  String get noSsid => '無字尾（基本呼號）';
+
+  @override
+  String get noStationHelp => '該區域暫無臺站 · 點選檢視幫助';
+
+  @override
+  String get noStationInView => '該區域暫無臺站 · 點選顯示全部';
+
+  @override
+  String get noStations => '暫無臺站';
+
+  @override
+  String get noStationsFiltered => '目前篩選條件下沒有台站';
+
+  @override
+  String get noStationsFilteredHint => '篩選或接收範圍過窄。可清除篩選後重試，接收範圍見「設定 → 接收範圍」。';
+
+  @override
+  String get noStationsYet => '暫無臺站資料，連線 APRS-IS 後即可選擇。';
+
+  @override
+  String get noUpdateFound => '目前已是最新版本';
+
+  @override
+  String get noVersionsFound => '找不到任何版本';
+
+  @override
+  String get noWindowsInstaller => '該版本沒有 Windows 安裝檔';
+
+  @override
+  String get none => '無';
+
+  @override
+  String get nonprofitNote => '本專案為非盈利學習交流專案\n贊助僅用於伺服器與開發成本';
+
+  @override
+  String get northUp => '正北朝上';
+
+  @override
+  String get notConnectedAprsServer => '未連線 APRS-IS 伺服器';
+
+  @override
+  String get notFound => '未找到臺站';
 
   @override
   String get notLit => '未點亮';
 
   @override
-  String honorCriteriaLine(String c) {
-    return '獲得條件：$c';
+  String noticeCached(String ago) {
+    return '快取 · $ago';
   }
 
   @override
-  String get badgeFallback => '徽章';
+  String get noticeEmpty => '暫無公告';
 
   @override
-  String honoredBadges(String n, String m) {
-    return '已點亮 $n/$m 徽章';
+  String get noticeEntryDesc => '查看官網發布的最新公告';
+
+  @override
+  String get noticeLoading => '正在取得…';
+
+  @override
+  String noticeOfflineCache(String time) {
+    return '離線快取 · $time（連網後會自動更新）';
   }
 
   @override
-  String achievementsProgress(String n, String m) {
-    return '$n/$m 成就';
+  String get noticeReadMore => '查看全文';
+
+  @override
+  String get noticeTitle => '公告';
+
+  @override
+  String get notifAudioConnected => '音訊鏈路線上';
+
+  @override
+  String get notifAudioDisconnected => '音訊鏈路已中斷';
+
+  @override
+  String notifBeacon(String v) {
+    return '信標 $v';
   }
-
-  @override
-  String get beaconNotConnected => '未連線';
-
-  @override
-  String get beaconWaitingFix => '等待定位';
-
-  @override
-  String get beaconSoon => '即將';
-
-  @override
-  String beaconNextIn(String s) {
-    return '距下次上報 $s';
-  }
-
-  @override
-  String get beaconImminent => '即將上報…';
 
   @override
   String get notifConnected => '已連線';
@@ -12533,15 +11006,831 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String notifBeacon(String v) {
-    return '信標 $v';
+  String get notifTncConnected => 'TNC 已連線';
+
+  @override
+  String get notifTncDisconnected => 'TNC 未連線';
+
+  @override
+  String get objectType => '物件';
+
+  @override
+  String get officialWebsite => '官方網站';
+
+  @override
+  String get offline => '離線';
+
+  @override
+  String get offlineAreaHint => '目前畫面範圍就是下載範圍';
+
+  @override
+  String get offlineCacheDisabled => '圖磚快取無法使用（目前平台不支援）';
+
+  @override
+  String get offlineCacheSwitch => '快取地圖圖磚';
+
+  @override
+  String get offlineCacheSwitchDesc => '瀏覽地圖時把圖磚存到本機，之後可離線檢視';
+
+  @override
+  String get offlineCacheUsage => '圖磚快取';
+
+  @override
+  String get offlineCacheUsageDesc => '瀏覽地圖時自動快取，也可手動下載區域';
+
+  @override
+  String get offlineCancelDownload => '取消';
+
+  @override
+  String get offlineClearCache => '清除全部圖磚快取';
+
+  @override
+  String get offlineClearCacheConfirm => '清除全部已下載的地圖圖磚？';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      '已下載的圖磚會被刪除，區域記錄會保留（需要重新下載才能離線檢視）。';
+
+  @override
+  String get offlineDeleteKeepTiles => '僅刪除記錄（保留已下載圖磚）';
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '刪除離線區域「$name」？';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return '將刪除約 $n 張圖磚';
+  }
+
+  @override
+  String get offlineDeleteWithTiles => '刪除記錄並刪除圖磚';
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return '正在刪除 $done/$total';
+  }
+
+  @override
+  String get offlineDownloadBusy => '已有下載任務在進行，請先等待或取消';
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return '約 $tiles 張圖磚 · 約 $size';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n 張失敗';
+  }
+
+  @override
+  String get offlineLoading => '載入中…';
+
+  @override
+  String get offlineMap => '離線地圖';
+
+  @override
+  String get offlineMapDesc => '先把地圖圖磚下載到本機，沒有網路時也能看地圖';
+
+  @override
+  String get offlineMapFooter => '圖磚只保存在本機，不會上傳；不同圖源的圖磚分開快取';
+
+  @override
+  String get offlineName => '名稱';
+
+  @override
+  String get offlineNameHint => '例如：家附近';
+
+  @override
+  String get offlineNew => '新建區域';
+
+  @override
+  String get offlineNoRegions => '還沒有離線區域';
+
+  @override
+  String get offlineNoRegionsHint => '點右上角「新建區域」，把常去的地方下載下來';
+
+  @override
+  String get offlineOnlySwitch => '僅使用離線圖磚';
+
+  @override
+  String get offlineOnlySwitchDesc => '不再從網路載入圖磚，只用已下載/已快取的圖（省流量）';
+
+  @override
+  String get offlineOnlyWarn => '已開啟「僅使用離線圖磚」，地圖可能顯示不全';
+
+  @override
+  String get offlinePause => '暫停';
+
+  @override
+  String get offlineRegions => '離線區域';
+
+  @override
+  String get offlineRegionsDesc => '已下載的區域可在地圖上離線檢視';
+
+  @override
+  String get offlineResume => '繼續';
+
+  @override
+  String get offlineShort => '離線';
+
+  @override
+  String get offlineSource => '圖源';
+
+  @override
+  String get offlineStartDownload => '開始下載';
+
+  @override
+  String get offlineStatusCanceled => '已取消';
+
+  @override
+  String get offlineStatusDone => '已完成';
+
+  @override
+  String get offlineStatusFailed => '下載失敗';
+
+  @override
+  String get offlineStatusPaused => '已暫停';
+
+  @override
+  String get offlineStatusPending => '等待下載';
+
+  @override
+  String get offlineStatusRunning => '下載中';
+
+  @override
+  String get offlineSwitchFirst => '請先開啟「快取地圖圖磚」';
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total 張';
+  }
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '已下載 $n 張圖磚';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return '範圍太大（約 $tiles 張圖磚），請縮小範圍或降低最大層級';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return '$min–$max 級';
+  }
+
+  @override
+  String get ok => '確定';
+
+  @override
+  String get online => '線上';
+
+  @override
+  String onlineCount(Object count) {
+    return '$count 線上';
+  }
+
+  @override
+  String get onlineOnly => '僅線上';
+
+  @override
+  String get onlineWindow => '在線判定時長（分鐘）';
+
+  @override
+  String get onlineWindowTip => '台站最後上報超過該時長即視為離線（預設 5 分鐘）';
+
+  @override
+  String get onlyWgs84 => '僅標準 WGS-84';
+
+  @override
+  String get oobeAgreeBody =>
+      '歡迎使用 APRSlocus！在使用前，請閱讀並同意以下條款。請注意：APRS 資料是公開資訊，一旦傳送即代表其可能被全球 APRS 網路接收、儲存與轉發。';
+
+  @override
+  String get oobeAgreeCheck => '我已閱讀並同意《使用者協議》與 GPL-3.0 開源許可證';
+
+  @override
+  String get oobeAgreeNeed => '請先閱讀並勾選同意《使用者協議》';
+
+  @override
+  String get oobeAgreeTitle => '使用者協議與許可';
+
+  @override
+  String get oobeBackgroundTip =>
+      '提示：為保證背景執行時持續定位上報，請到系統設定中允許 APRSlocus 背景執行、關閉省電最佳化，並允許自啟動。';
+
+  @override
+  String get oobeCallDesc => '輸入你的呼號';
+
+  @override
+  String get oobeCallTitle => '你的呼號';
+
+  @override
+  String get oobeDeclineExit => '不同意並離開';
+
+  @override
+  String get oobeFilterDesc => '勾選要接收的國家/地區；不勾選則接收全部臺站，不做限制';
+
+  @override
+  String get oobeFilterTitle => '選擇接收地區';
+
+  @override
+  String get oobeGpsFeatureDesc => '自動取得位置並傳送信標到 APRS-IS';
+
+  @override
+  String get oobeIsFeatureDesc => '連線公共伺服器，接收全球 APRS 臺站資料';
+
+  @override
+  String get oobeMapFeatureDesc => '線上地圖圖磚，檢視附近 APRS 臺站與軌跡';
+
+  @override
+  String get oobeMsgFeatureDesc => '與臺站收發訊息，支援自動應答';
+
+  @override
+  String get oobeNextSteps => '接下來幾步完成基礎設定，隨時可在設定中修改。';
+
+  @override
+  String get oobePasscodeMissing => 'Passcode 未填寫';
+
+  @override
+  String get oobePasscodeMissingDesc =>
+      'Passcode 是 APRS-IS 登入驗證碼，用於識別你的呼號。\n\n使用預設值 -1（未驗證）雖然可以連線，但將無法正常收發訊息與群組。\n\n建議在 https://aprs.cool/AprsPG 輸入呼號查詢正確 Passcode 後填寫。';
+
+  @override
+  String get oobeServerDesc => '連線後接收全球 APRS 臺站資料，可保持預設設定直接使用';
+
+  @override
+  String get oobeServerTitle => '連線 APRS-IS 伺服器';
+
+  @override
+  String get oobeSymbolDesc => '符號代表臺站類型，會隨位置信標一起傳送';
+
+  @override
+  String get oobeSymbolTitle => '選擇臺站符號';
+
+  @override
+  String get oobeWelcomeDesc => '開始設定你的 APRS 電臺';
+
+  @override
+  String get oobeWelcomeGps => 'GPS 定位上報';
+
+  @override
+  String get oobeWelcomeIs => '連線至 APRS-IS';
+
+  @override
+  String get oobeWelcomeMsg => 'APRS 訊息';
+
+  @override
+  String get oobeWelcomeRealMap => '即時地圖';
+
+  @override
+  String get oobeWelcomeTitle => '歡迎使用 APRSlocus';
+
+  @override
+  String get openContainingFolder => '開啟所在目錄';
+
+  @override
+  String get openDownload => '開啟下載頁';
+
+  @override
+  String get openDownloadFolder => '開啟下載目錄';
+
+  @override
+  String get openDownloads => '開啟下載目錄';
+
+  @override
+  String get openFolder => '開啟目錄';
+
+  @override
+  String get openInBrowser => '在瀏覽器開啟';
+
+  @override
+  String get openInMap => '在地圖檢視';
+
+  @override
+  String get openInstallDir => '開啟安裝目錄';
+
+  @override
+  String get openPackageManually => '請在檔案管理程式中開啟安裝檔';
+
+  @override
+  String get openSource => '開源致謝';
+
+  @override
+  String orMoveM(String dist) {
+    return '或移動 $dist m';
+  }
+
+  @override
+  String orTurnDeg(String deg) {
+    return '或轉 $deg°';
+  }
+
+  @override
+  String get osAmap => '高德地圖';
+
+  @override
+  String get osAmapDesc => '地圖瓦片服務';
+
+  @override
+  String get osAprs => 'APRS-IS';
+
+  @override
+  String get osAprsDesc => '全球 APRS 資料網路';
+
+  @override
+  String get osFlutter => 'Flutter';
+
+  @override
+  String get osFlutterDesc => 'Google 跨平台 UI 框架';
+
+  @override
+  String get osHam => '業餘無線電';
+
+  @override
+  String get osHamDesc => '所有 APRS 愛好者的貢獻';
+
+  @override
+  String get ossLicenseSection => '開源與授權';
+
+  @override
+  String get otherType => '其他';
+
+  @override
+  String get ownSourceGarminLive => '追蹤中（手機 GPS 已讓位）';
+
+  @override
+  String get ownSourceGarminStale => '連結有效，但佳明沒有新點（暫時用不到）';
+
+  @override
+  String get ownSourceHrIdle => '未連線（點一下連線心率帶）';
+
+  @override
+  String get ownSourcePhoneGps => '手機 GPS';
+
+  @override
+  String get packageDeleted => '安裝檔已刪除';
+
+  @override
+  String packageSize(String platform, String size) {
+    return '$platform 安裝檔大小：$size';
+  }
+
+  @override
+  String get packetConsole => '資料包控制檯';
+
+  @override
+  String packetLimitIs(int bytes) {
+    return '整包 $bytes 位元組 · APRS-IS 單行上限 512 位元組';
+  }
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return '整包 $bytes 位元組 · 射頻單幀上限 $max 位元組';
+  }
+
+  @override
+  String get packetParseHint =>
+      '貼上原始 APRS 包，如：\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Test station';
+
+  @override
+  String get packetParseTest => '資料包解析測試';
+
+  @override
+  String packetSendFailed(String err) {
+    return '未發送：$err';
+  }
+
+  @override
+  String packetSent(String line) {
+    return '已交給鏈路發送：$line';
+  }
+
+  @override
+  String packetStats(Object ppm, Object rx, Object tx) {
+    return '收 $rx · 發 $tx · $ppm/分';
+  }
+
+  @override
+  String get packetTcpipWarning => '含 TCPIP*：射頻上會被自動剔除（那是 APRS-IS 的路徑）';
+
+  @override
+  String get packets => '資料包';
+
+  @override
+  String packetsPerMinute(int count) {
+    return '$count/分';
+  }
+
+  @override
+  String get packetsReceived => '收包';
+
+  @override
+  String get parseAndApply => '解析並套用';
+
+  @override
+  String get parsedMode => '解析模式';
+
+  @override
+  String get passcode => 'Passcode';
+
+  @override
+  String get passcodeImportant => 'Passcode 非常重要';
+
+  @override
+  String get passcodeImportantDesc =>
+      '正確的 Passcode 是接收群組訊息和傳送確認訊息的前提。填 -1 雖然可以連線，但無法正常收發訊息。';
+
+  @override
+  String get passcodeLookupHint => '輸入你的呼號即可取得，例如 BV2AAA';
+
+  @override
+  String get passcodeMessageWarning => 'APRS-IS 登入驗證碼，填 -1 無法正常收發訊息';
+
+  @override
+  String get passcodeTip => 'APRS-IS 登入驗證碼，可線上產生；填 -1 表示未驗證';
+
+  @override
+  String get passcodeUnverified => 'Passcode 未驗證';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 未驗證';
+
+  @override
+  String get passcodeWarning => '登入密碼可能錯誤，無法正常收發訊息';
+
+  @override
+  String get pasteAprsPacketHint =>
+      '貼上原始 APRS 封包，如：\\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>測試台';
+
+  @override
+  String get phoneBattery => '手機電量';
+
+  @override
+  String get pickBeaconIconDesc => '選擇信標圖示 ·「預設」= 沿用我的符號';
+
+  @override
+  String get pickOnMap => '在地圖選點';
+
+  @override
+  String get pickTrackMembers => '選擇成員（勾選要追蹤的呼號）';
+
+  @override
+  String pickedCoord(Object grid, Object lat, Object lng) {
+    return '已在地圖選點 · $lat, $lng · 網格 $grid';
+  }
+
+  @override
+  String get pkwdwplBindSubtitle => '選擇輸出 \$PKWDWPL 語句的那個串列埠 / 藍牙埠';
+
+  @override
+  String get pkwdwplBindTitle => '裝置綁定與狀態';
+
+  @override
+  String get pkwdwplDeviceDesc => '綁定電台連接埠 · 檢視航點接收狀態';
+
+  @override
+  String get pkwdwplDeviceTitle => 'PKWDWPL 裝置';
+
+  @override
+  String get pkwdwplErrReadOnly => '唯讀鏈路，不能發射';
+
+  @override
+  String get pkwdwplLogEmpty => '暫無 PKWDWPL 日誌';
+
+  @override
+  String get pkwdwplReadOnly => '唯讀接收中 · 本機不會發射任何報文';
+
+  @override
+  String get pkwdwplRxOnly => '只收不發';
+
+  @override
+  String get pkwdwplStatIgnored => '其它 NMEA 語句（已忽略）';
+
+  @override
+  String get pkwdwplStatMismatch => '校驗和不符';
+
+  @override
+  String get pkwdwplStatRejected => '丟棄/無效語句';
+
+  @override
+  String get pkwdwplStatTitle => '航點接收';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '已收航點 $rx 條';
+  }
+
+  @override
+  String get pkwdwplStrictChecksum => '嚴格校驗和（不符即丟棄）';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      '預設關閉：驗證不符時只標註並記日誌，不丟句子 —— 本機線纜上的不符多半是韌體格式與手冊有出入，整條丟棄會讓介面「什麼都不顯示」，反而更難排查';
+
+  @override
+  String get pkwdwplTip =>
+      '在電台選單裡把 PC / GPS 埠的輸出格式設為 \"\$PKWDWPL\"（一般 4800 8N1）；這條鏈路唯讀，不會發射任何報文';
+
+  @override
+  String get platform => '平台';
+
+  @override
+  String get port => '埠';
+
+  @override
+  String get posAccuracy => '位置精度';
+
+  @override
+  String get posSourceIdle => '未追蹤（未啟動定位）';
+
+  @override
+  String get posSourceLabel => '位置來源';
+
+  @override
+  String get posSourcePrecedence => '同時可用時的優先順序：模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS';
+
+  @override
+  String posSourceUsing(String src) {
+    return '目前使用：$src';
+  }
+
+  @override
+  String get posSrcGarmin => '佳明 LiveTrack';
+
+  @override
+  String get posSrcNone => '未定位';
+
+  @override
+  String get posSrcPhone => '手機 GPS';
+
+  @override
+  String get posSrcSim => '模擬/手動位置';
+
+  @override
+  String get position => '位置';
+
+  @override
+  String positionBeacon(Object grid) {
+    return '位置信標 · 網格 $grid';
+  }
+
+  @override
+  String positionBeaconDetail(String grid, String detail) {
+    return '位置信標 · 網格 $grid · $detail';
+  }
+
+  @override
+  String get previous => '上一步';
+
+  @override
+  String get projectRepo => '專案倉庫';
+
+  @override
+  String get qqGroup => 'QQ 群組';
+
+  @override
+  String get qqGroupDesc => 'APRSlocus 軟體 · 反饋問題/交流使用';
+
+  @override
+  String get qqSoftwareName => 'APRSlocus 軟體';
+
+  @override
+  String qrCodeTitle(String title) {
+    return '$title 讚賞碼';
+  }
+
+  @override
+  String get qrLoadFailed => '讚賞碼圖片載入失敗';
+
+  @override
+  String get qrSaveWechat => '長按圖片可儲存 · 使用 WeChat 掃一掃讚賞';
+
+  @override
+  String get quickActions => '快速操作';
+
+  @override
+  String get quickTrackCreate => '新建跟蹤組';
+
+  @override
+  String get quickTrackHint => '從已接收臺站勾選成員，也可手輸呼號補充；直接在地圖上跟蹤這些人，不需要先建聊天群。';
+
+  @override
+  String get quickTrackManualHint => '手輸呼號，如 BG7PGW,BG7LMW';
+
+  @override
+  String get quickTrackName => '組名（可選）';
+
+  @override
+  String get quickTrackNeedMembers => '請至少選擇或輸入一個呼號';
+
+  @override
+  String get quickTrackNoStations => '暫無已接收臺站，可直接手輸呼號（多個用逗號分隔）';
+
+  @override
+  String get quickTrackPickLabel => '選擇要跟蹤的臺站';
+
+  @override
+  String get quickTrackStart => '開始跟蹤';
+
+  @override
+  String get quitApp => '結束應用程式';
+
+  @override
+  String get quitAppDesc => '結束後 APRSlocus 將停止定位上報與背景接收，並結束行程。';
+
+  @override
+  String get radioCat => '電臺';
+
+  @override
+  String get radioCatDesc => '呼號 · SSID · 符號';
+
+  @override
+  String get radiusTip => '接收半徑（km），點「儲存並套用」生效';
+
+  @override
+  String get range10m => '10 分鐘';
+
+  @override
+  String get range1h => '1 小時';
+
+  @override
+  String get range30m => '30 分鐘';
+
+  @override
+  String get range3h => '3 小時';
+
+  @override
+  String get rangeAll => '全部';
+
+  @override
+  String get rangeFilterDesc => '只接收設定範圍內的臺站資料包';
+
+  @override
+  String get rawMode => '原始模式';
+
+  @override
+  String get receive => '接收';
+
+  @override
+  String get receiveCountries => '國家/地區';
+
+  @override
+  String get receiveCountryDesc => '按呼號字首批次接收某國家/地區全部臺站';
+
+  @override
+  String get receiveFilter => '接收呼號篩選';
+
+  @override
+  String get receiveFilterDesc2 => '除範圍篩選外，按國家/地區分組或精確呼號接收臺站';
+
+  @override
+  String get receiveOthers => '其他臺站';
+
+  @override
+  String get receiveOthersDesc => '接收不符合所選國家的特殊呼號臺站';
+
+  @override
+  String get recentPackets => '最近資料包';
+
+  @override
+  String get recheck => '重新檢查';
+
+  @override
+  String get reconnect => '重新連線';
+
+  @override
+  String get reconnectToApply => '重新連線後生效';
+
+  @override
+  String get reconnected => '已重新連線';
+
+  @override
+  String get redownload => '重新下載';
+
+  @override
+  String get refresh => '重新整理';
+
+  @override
+  String get reject => '拒絕';
+
+  @override
+  String get relatedStations => '相關臺站';
+
+  @override
+  String get releaseNotes => '更新日誌';
+
+  @override
+  String get reloadDone => '已重新載入';
+
+  @override
+  String get reloadUi => '重新載入介面';
+
+  @override
+  String get relocate => '重新定位';
+
+  @override
+  String get remove => '移除';
+
+  @override
+  String repoLatestTitle(String version) {
+    return '倉庫最新版本 v$version';
+  }
+
+  @override
+  String get reselectPoint => '重新選點';
+
+  @override
+  String get resetAll => '重置全部設定';
+
+  @override
+  String get resetAllDesc => '還原出廠設定';
+
+  @override
+  String get restartWizard => '重新執行設定精靈';
+
+  @override
+  String get restartWizardButton => '重新執行';
+
+  @override
+  String get restartWizardConfirm =>
+      '將重新進入首次啟動精靈，可重新設定呼號、接收地區等。\\n目前設定不會遺失，完成精靈後繼續使用。';
+
+  @override
+  String get restartWizardTitle => '重新執行設定精靈？';
+
+  @override
+  String get restoreDefaults => '恢復預設';
+
+  @override
+  String get retry => '重試';
+
+  @override
+  String get runInstaller => '執行安裝程式';
+
+  @override
+  String get runNow => '立即執行';
+
+  @override
+  String rxOnlyBanner(String arg) {
+    return '$arg 已連線 · 僅接收（目前發射來源未連線）';
+  }
+
+  @override
+  String get rxTx => '收包 / 發包';
+
+  @override
+  String get save => '儲存';
+
+  @override
+  String get saveAndApply => '儲存並套用篩選';
+
+  @override
+  String get saveAndTrack => '儲存並追蹤';
+
+  @override
+  String get savedLocation => '已儲存位置';
+
+  @override
+  String get search => '搜尋';
+
+  @override
+  String get searchCallsign => '搜尋呼號…';
+
+  @override
+  String get searchHint => '搜尋呼號 / 類型 / 網格 / 備註…';
+
+  @override
+  String get searchPacket => '搜尋呼號、目的地或原始內容…';
+
+  @override
+  String secondsAgo(int count) {
+    return '$count秒前';
+  }
+
+  @override
+  String secondsValue(int count) {
+    return '$count 秒';
   }
 
   @override
   String get selectAll => '全選';
 
   @override
-  String get deselectAll => '取消全選';
+  String get selectAllOnline => '全選線上';
+
+  @override
+  String get selectConversation => '選擇會話開始聊天';
+
+  @override
+  String get selectMapType => '選擇地圖類型';
+
+  @override
+  String get selectMessageReply => '點選訊息以回覆…';
 
   @override
   String selectedCount(int n) {
@@ -12549,146 +11838,661 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String deleteSelected(int n) {
-    return '刪除 ($n)';
+  String selectedRecipients(int count) {
+    return '已選 $count 人';
   }
 
   @override
-  String deleteSelectedConfirm(int n) {
-    return '確定刪除選中的 $n 個會話？此操作不可恢復。';
+  String get send => '傳送';
+
+  @override
+  String get sendBeacon => '傳送信標';
+
+  @override
+  String sendMessageTo(String call) {
+    return '發訊息給 $call…';
   }
 
   @override
-  String get chatManageHint => '點擊會話進行選擇，長按也可選中';
+  String sendRecipientsList(int count, String calls) {
+    return '將傳送給 $count 人：$calls';
+  }
 
   @override
-  String conversationsDeleted(int n) {
-    return '已刪除 $n 個會話';
+  String get sendTo => '傳送至';
+
+  @override
+  String sendToCallHint(String call) {
+    return '傳送給 $call…';
   }
+
+  @override
+  String sendToGroupHint(String group) {
+    return '傳送至 $group…';
+  }
+
+  @override
+  String get sender => '傳送方';
+
+  @override
+  String get sensorAssist => '感測器輔助定位';
+
+  @override
+  String get sensorAssistDesc =>
+      '用加速度計判斷是否真的在移動、用指南針補正低速航向，讓軌跡打點更準（僅 Android 生效）。';
+
+  @override
+  String get server => '伺服器';
+
+  @override
+  String serverReturned(int code) {
+    return '伺服器回傳 $code';
+  }
+
+  @override
+  String get setStep => '步驟';
+
+  @override
+  String get settings => '設定';
+
+  @override
+  String get settingsBeaconSubtitle => '傳送間隔與上報內容';
+
+  @override
+  String get settingsChatManageSubtitle => '聯絡人與聊天資料';
+
+  @override
+  String get settingsChatStatsSubtitle => '訊息與聯絡人統計';
+
+  @override
+  String get settingsClearDataSubtitle => '刪除本機記錄';
+
+  @override
+  String get settingsConnStatusSubtitle => '連線狀態與資訊';
+
+  @override
+  String get settingsContribCodeOptimization => '程式碼最佳化';
+
+  @override
+  String get settingsDesc => '設定電臺、定位與連線';
+
+  @override
+  String get settingsDevSubtitle => '除錯與測試';
+
+  @override
+  String get settingsDisplayInfoSubtitle => '我的符號與目前定位';
+
+  @override
+  String get settingsFilterHint => '只接收設定範圍內的臺站資料包';
+
+  @override
+  String get settingsFilterSubtitle => '過濾中心與接收半徑';
+
+  @override
+  String get settingsGeneralSubtitle => '主題、語言與座標顯示';
+
+  @override
+  String get settingsLabSubtitle => '實驗性功能';
+
+  @override
+  String get settingsLocModeSubtitle => '選擇定位方式';
+
+  @override
+  String get settingsLocSourceSubtitle => '選擇座標來源';
+
+  @override
+  String get settingsManualLocHint => '無法自動定位時，可手動輸入經緯度或用地圖選點，用於信標上報與臺站距離計算。';
+
+  @override
+  String get settingsManualLocSubtitle => '無定位時可手動輸入或選點';
+
+  @override
+  String get settingsMapSubtitle => '地圖類型與顯示';
+
+  @override
+  String get settingsReceivePrefHint => '除範圍篩選外，按國家/地區分組或精確呼號接收臺站';
+
+  @override
+  String get settingsReceivePrefSubtitle => '按國家/地區或呼號接收';
+
+  @override
+  String get settingsServerSubtitle => 'APRS-IS 伺服器與驗證碼';
+
+  @override
+  String get settingsStationIdentitySubtitle => '呼號、SSID 與備註';
+
+  @override
+  String get settingsSubtitle => '地圖座標與顯示偏好';
+
+  @override
+  String get shareApp => '分享 APRSlocus';
+
+  @override
+  String get shareText =>
+      'APRSlocus —— 業餘無線電 APRS 定位追蹤與地圖 📡\n即時臺站追蹤、訊息收發、信標上報，Android / Windows 全平台可用。\n官網：https://aprslocus.theez.top/\n下載：https://github.com/dariondong/APRSLocus/releases';
+
+  @override
+  String get shareTextCopied => '分享文案已複製，可貼上傳送給好友';
+
+  @override
+  String get shareToSystem => '分享到系統';
+
+  @override
+  String get shareToSystemDesc => 'WeChat / QQ / 簡訊等';
+
+  @override
+  String get showAll => '全部顯示';
+
+  @override
+  String get showStations => '顯示臺站';
+
+  @override
+  String get showTrails => '顯示軌跡';
+
+  @override
+  String get simData => '啟用模擬資料（示範臺站/資料包）';
+
+  @override
+  String get simLocationHint => '使用模擬位置，無需 GPS';
+
+  @override
+  String get simulatedKeepAlive => '模擬位置 · 背景保活';
+
+  @override
+  String get simulatedLocation => '模擬位置';
+
+  @override
+  String get smartBeacon => '智慧信標(依速度分檔)';
+
+  @override
+  String get software => '軟體';
+
+  @override
+  String get sortBy => '排序';
+
+  @override
+  String get sortCall => '呼號';
+
+  @override
+  String get sortDistance => '距離';
+
+  @override
+  String get sortRecent => '最近';
+
+  @override
+  String get sortStatus => '狀態';
+
+  @override
+  String get sourceMovedHint => '要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」';
+
+  @override
+  String get speed => '速度';
+
+  @override
+  String get speedLabel => '速度';
+
+  @override
+  String get speedTierDesc => '速度越快上報越頻繁；每檔可自訂間隔與圖示（留空=我的符號）。';
+
+  @override
+  String get speedTierRules => '速度分檔規則';
+
+  @override
+  String get speedTierShortIntervalWarn => '間隔低於 60 秒會顯著增加伺服器負載，建議 ≥60 秒。';
+
+  @override
+  String get sponsorAuthor => '作者 BG7LZQ';
+
+  @override
+  String get sponsorAuthorItems => '利用課餘時間開發維護本專案';
+
+  @override
+  String get sponsorBgp => 'BG7PGW';
+
+  @override
+  String get sponsorBgpItems => '感謝贊助的蜜雪冰城一杯 🧋';
+
+  @override
+  String get sponsorEvery => '每一位支持者';
+
+  @override
+  String get sponsorEveryItems => '你們的每一份支援都是動力';
+
+  @override
+  String get sponsorGroup => 'STUDENT HAMS 群組';
+
+  @override
+  String get sponsorGroupItems => '感謝群組的資金贊助支援';
+
+  @override
+  String get sponsorMethods => '贊助方式';
+
+  @override
+  String get sponsorSupport => '贊助支援';
+
+  @override
+  String get sponsors => '贊助與鳴謝';
+
+  @override
+  String get sponsorsThanks => '感謝每一位支持者';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get ssidDesc => 'SSID 是呼號字尾用於標識裝置，如 BG7ABC-9 中的 -9';
+
+  @override
+  String get ssidDescShort => 'SSID 是呼號後面的數字標識，如 BG7ABC-9 中的 -9';
+
+  @override
+  String get ssidOptional => 'SSID 字尾（可選）';
+
+  @override
+  String get ssidSuffix => 'SSID 字尾';
+
+  @override
+  String get start => '開始';
+
+  @override
+  String get startGps => '開啟 GPS 定位';
+
+  @override
+  String get station => '臺站';
 
   @override
   String get stationActions => '台站操作';
 
   @override
-  String get deleteStation => '刪除台站';
-
-  @override
-  String deleteStationConfirm(String name) {
-    return '確定刪除台站 $name 嗎？刪除後將從台站列表移除；若再次收到其報文會重新出現。';
+  String stationCount(Object count) {
+    return '$count 臺站';
   }
 
   @override
-  String get unfavorite => '取消收藏';
-
-  @override
-  String get copyCallsign => '複製呼號';
-
-  @override
-  String get callsignCopied => '呼號已複製';
+  String get stationCount2 => '臺站數量';
 
   @override
   String get stationDeleted => '已刪除台站';
 
   @override
-  String get exportAdif => '匯出 ADIF';
+  String get stationDetail => '臺站詳情';
 
   @override
-  String get exportAdifDesc => '把會話匯出為 ADIF 日誌檔案，可匯入 Log4OM、N3FJP 等日誌軟體';
+  String get stationFilterOn => '已依台站面板篩選顯示';
 
   @override
-  String get export => '匯出';
+  String get stationIdentity => '電臺身份';
 
   @override
-  String get adifHint => '每筆記錄只含呼號與首則訊息時間（UTC），不含模式與頻段';
+  String get stationList => '台站列表';
 
   @override
-  String get adifNoSelection => '請先選擇要匯出的會話';
+  String get stationListDesc => '收到的臺站與它們的軌跡，保存在本機';
 
   @override
-  String adifExported(int n) {
-    return '已匯出 $n 筆記錄';
+  String get stationListTitle => '臺站清單';
+
+  @override
+  String stationNoData(String call) {
+    return '臺站 $call 尚未收到資料';
   }
 
   @override
-  String get adifExportDone => '匯出完成';
+  String get stationSettings => '電臺設定';
 
   @override
-  String get adifExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';
+  String get stationSettings2 => '電臺設定';
 
   @override
-  String adifSavedTo(String path) {
-    return '已儲存至：$path';
+  String get stationSettingsDetail => '呼號、SSID、符號與備註';
+
+  @override
+  String get stationSettingsSubtitle => '呼號、符號與信標';
+
+  @override
+  String get stationary => '靜止';
+
+  @override
+  String get stations => '臺站';
+
+  @override
+  String get stationsCleared => '已清除臺站清單';
+
+  @override
+  String get stationsShown => '臺站';
+
+  @override
+  String get statistics => '統計';
+
+  @override
+  String get statsAprslocusUsers => 'APRSlocus 使用者';
+
+  @override
+  String get statsAvgSpeed => '平均速度';
+
+  @override
+  String get statsCap => '容量上限';
+
+  @override
+  String get statsConn => '連線狀態';
+
+  @override
+  String get statsConnected => '已連線';
+
+  @override
+  String get statsDeviceDist => '裝置類別分佈';
+
+  @override
+  String get statsDisconnected => '未連線';
+
+  @override
+  String get statsFarthest => '最遠台站';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n 個網格';
   }
 
   @override
-  String get adifCopyPath => '複製路徑';
+  String get statsGridCountLabel => '大網格數';
 
   @override
-  String get adifPathCopied => '路徑已複製';
+  String get statsGridDist => '大網格台站分佈';
 
   @override
-  String get chatShortLabel => '單聊';
+  String get statsGridEmpty => '暫無台站位置資料';
 
   @override
-  String get adifLogFile => '會話匯出為日誌檔案';
+  String get statsGridHint => '依 Maidenhead 大網格（4 位）統計台站數量並排序';
 
   @override
-  String get adifOptions => '匯出選項';
+  String get statsLastHeard => '最近上報';
 
   @override
-  String get adifMode => '模式（MODE）';
+  String get statsMovingCount => '移動台站';
 
   @override
-  String get adifNotWritten => '不寫';
+  String get statsMyGrid => '我的大網格';
 
   @override
-  String get adifModePkt => 'PKT（資料包，推薦）';
+  String get statsNoData => '暫無資料';
 
   @override
-  String get adifModeFm => 'FM（語音）';
+  String get statsOnlineRate => '在線率';
 
   @override
-  String get adifModeData => 'DATA（資料）';
+  String get statsOther => '其他指標';
 
   @override
-  String get adifSubModeAprs => '附加 SUBMODE=APRS';
+  String get statsOverview => '系統總覽';
 
   @override
-  String get adifBand => '頻段（BAND）';
+  String get statsPackets => '資料包(近期)';
 
   @override
-  String get adifStripSsid => '只寫基礎呼號（去掉 -SSID）';
+  String get statsPanel => '統計面板';
 
   @override
-  String get adifPreview => '預覽（將寫出的記錄）';
-
-  @override
-  String get adifModeRequiredHint => '多數日誌軟體（含 QRZ）要求 MODE，缺少會被拒收';
-
-  @override
-  String get adifFreq => '頻率（FREQ）';
-
-  @override
-  String get adifFreqHint => '單位 MHz，留空則不寫';
-
-  @override
-  String get adifFreqInvalid => '請輸入 MHz 數字，如 144.640';
-
-  @override
-  String get sysTitle => '系統狀態';
-
-  @override
-  String get sysLinkOff => '未啟用';
-
-  @override
-  String sysRx(String n) {
-    return '收 $n';
+  String statsPerMin(String n) {
+    return '$n/分';
   }
 
   @override
-  String sysTx(String n) {
-    return '發 $n';
+  String get statsRate => '接收速率';
+
+  @override
+  String get statsStationsTotal => '台站總數';
+
+  @override
+  String get statsStatusDist => '台站狀態分佈';
+
+  @override
+  String get statsTotalRx => '總接收數';
+
+  @override
+  String get statsTotalTx => '總發送數';
+
+  @override
+  String get statsTypeDist => 'APRS 類型分佈';
+
+  @override
+  String get statusFilter => '狀態';
+
+  @override
+  String get statusType => '狀態';
+
+  @override
+  String get stepContent => '內容';
+
+  @override
+  String get stepMembers => '成員';
+
+  @override
+  String get stepName => '名稱';
+
+  @override
+  String get stepRecipients => '選人';
+
+  @override
+  String get stoppedShort => '靜止';
+
+  @override
+  String get storageLimit => '資料上限';
+
+  @override
+  String get storageLimitSubtitle => '本機保留的資料量';
+
+  @override
+  String get supportProject => '你們的支援讓專案走得更遠';
+
+  @override
+  String get symAmbulance => '救護車';
+
+  @override
+  String get symBalloon => '氣球';
+
+  @override
+  String get symBicycle => '自行車';
+
+  @override
+  String get symBigAircraft => '大型飛機';
+
+  @override
+  String get symBus => '公車';
+
+  @override
+  String get symCamping => '露營';
+
+  @override
+  String get symCar => '汽車';
+
+  @override
+  String get symCatAirWater => '飛行 / 水域';
+
+  @override
+  String get symCatBuildings => '建築 / 設施';
+
+  @override
+  String get symCatComms => '通訊 / 其他';
+
+  @override
+  String get symCatEmergency => '應急救援';
+
+  @override
+  String get symCatNature => '氣象 / 自然';
+
+  @override
+  String get symCatVehicles => '車輛 / 交通';
+
+  @override
+  String get symCmdCenter => '指揮中心';
+
+  @override
+  String get symDigi => '數位中繼';
+
+  @override
+  String get symDigiTower => '中繼塔';
+
+  @override
+  String get symDog => '狗';
+
+  @override
+  String get symDxCluster => 'DX 叢集';
+
+  @override
+  String get symEmergCenter => '應急中心';
+
+  @override
+  String get symFileServer => '檔案伺服器';
+
+  @override
+  String get symFireAlarm => '火警';
+
+  @override
+  String get symFireStation => '消防站';
+
+  @override
+  String get symFireTruck => '消防車';
+
+  @override
+  String get symFmoStation => 'FMO 台站';
+
+  @override
+  String get symGlider => '滑翔機';
+
+  @override
+  String get symGrid => '網格';
+
+  @override
+  String get symHandicap => '殘障';
+
+  @override
+  String get symHfGateway => 'HF 閘道';
+
+  @override
+  String get symHorse => '騎馬';
+
+  @override
+  String get symHospital => '醫院';
+
+  @override
+  String get symHotel => '酒店';
+
+  @override
+  String get symHouse => '房屋';
+
+  @override
+  String get symHurricane => '颶風';
+
+  @override
+  String get symJeep => '吉普';
+
+  @override
+  String get symLaptop => '筆記型電腦';
+
+  @override
+  String get symMicE => 'Mic-E 中繼';
+
+  @override
+  String get symMobileSat => '移動衛星';
+
+  @override
+  String get symMotel => '旅館';
+
+  @override
+  String get symMotorcycle => '摩托';
+
+  @override
+  String get symNode => '節點';
+
+  @override
+  String get symPerson => '人';
+
+  @override
+  String get symPolice => '警局';
+
+  @override
+  String get symPoliceCar => '警車';
+
+  @override
+  String get symPostOffice => '郵局';
+
+  @override
+  String get symRedCross => '紅十字';
+
+  @override
+  String get symRv => '房車';
+
+  @override
+  String get symSailboat => '帆船';
+
+  @override
+  String get symSatAntenna => '衛星天線';
+
+  @override
+  String get symSchool => '學校';
+
+  @override
+  String get symSemi => '半掛車';
+
+  @override
+  String get symShelter => '避難所';
+
+  @override
+  String get symShip => '船';
+
+  @override
+  String get symSmallAircraft => '小型飛機';
+
+  @override
+  String get symSnowmobile => '雪地摩托';
+
+  @override
+  String get symTelephone => '電話';
+
+  @override
+  String get symTrain => '火車';
+
+  @override
+  String get symTruck => '卡車';
+
+  @override
+  String get symTruckStop => '卡車停靠';
+
+  @override
+  String get symVan => '麵包車';
+
+  @override
+  String get symWater => '供水站';
+
+  @override
+  String get symWeather => '氣象';
+
+  @override
+  String get symWxStation => '氣象站';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symYagi => '八木屋';
+
+  @override
+  String symbolCategoryName(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'vehicles': '車輛 / 交通',
+      'facilities': '建築 / 設施',
+      'weatherNature': '氣象 / 自然',
+      'emergencyRescue': '應急救援',
+      'airWater': '飛行 / 水域',
+      'communications': '通訊 / 其他',
+      'other': '其他',
+    });
+    return '$_temp0';
   }
+
+  @override
+  String get symbolLabel => '符號';
 
   @override
   String sysBeacon(String t) {
@@ -12696,9 +12500,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String sysStations(String n) {
-    return '臺站 $n';
-  }
+  String get sysEmpty => '開啟 APRSlocus 並連線後，這裡會顯示臺站執行狀態';
 
   @override
   String get sysFixOk => '已定位';
@@ -12707,253 +12509,207 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get sysLinkAudio => '音訊';
 
   @override
-  String get sysEmpty => '開啟 APRSlocus 並連線後，這裡會顯示臺站執行狀態';
+  String get sysLinkOff => '未啟用';
 
   @override
-  String get backupTitle => '備份與還原';
+  String get sysRecentLabel => '最近收到';
 
   @override
-  String get backupSubtitle => '匯出或匯入設定與資料';
-
-  @override
-  String get backupEntryDesc => '打包設定與資料為 JSON 檔';
-
-  @override
-  String get backupDesc => '備份檔是 JSON 文字，換機或重裝後可還原；匯入會依分組覆蓋，無法復原。';
-
-  @override
-  String get backupExport => '匯出備份';
-
-  @override
-  String get backupExportDesc => '選擇要包含的內容，再存成檔案或複製到剪貼簿';
-
-  @override
-  String get backupExportToFile => '存成檔案';
-
-  @override
-  String get backupCopyJson => '複製到剪貼簿';
-
-  @override
-  String get backupExportDone => '備份已匯出';
-
-  @override
-  String get backupExportFailed => '匯出失敗，請檢查儲存權限或剩餘空間';
-
-  @override
-  String get backupCopyDone => '備份內容已複製到剪貼簿';
-
-  @override
-  String backupSavedTo(String path) {
-    return '已儲存到：$path';
+  String sysRx(String n) {
+    return '收 $n';
   }
 
   @override
-  String get backupCatSettings => '設定';
-
-  @override
-  String get backupCatSettingsDesc => '電台、信標、地圖、篩選、資料來源、伺服器';
-
-  @override
-  String get backupCatStations => '臺站與聯絡人';
-
-  @override
-  String get backupCatStationsDesc => '我的最愛、手動新增的聯絡人與備註';
-
-  @override
-  String get backupCatMessages => '訊息記錄';
-
-  @override
-  String get backupCatMessagesDesc => '單聊訊息與已讀位置';
-
-  @override
-  String get backupCatChats => '群組聊天';
-
-  @override
-  String get backupCatChatsDesc => '群組、成員與已讀狀態';
-
-  @override
-  String get backupCatTranslate => '翻譯設定';
-
-  @override
-  String get backupCatTranslateDesc => '翻譯介面、金鑰與語言偏好';
-
-  @override
-  String get backupCatHonors => '成就與榮譽';
-
-  @override
-  String get backupCatHonorsDesc => '解鎖記錄、計數與預設徽章';
-
-  @override
-  String backupItems(int n) {
-    return '$n 項';
+  String sysStations(String n) {
+    return '臺站 $n';
   }
 
   @override
-  String get backupSelectAll => '全選';
+  String get sysTitle => '系統狀態';
 
   @override
-  String get backupNoSelection => '請至少選擇一個分組';
-
-  @override
-  String get backupImport => '匯入備份';
-
-  @override
-  String get backupImportDesc => '選擇先前匯出的 JSON 備份檔';
-
-  @override
-  String get backupPickFile => '選擇備份檔';
-
-  @override
-  String get backupPaste => '從剪貼簿貼上';
-
-  @override
-  String get backupPasteEmpty => '剪貼簿裡沒有文字';
-
-  @override
-  String get backupPreview => '備份內容';
-
-  @override
-  String backupFromVersion(String v) {
-    return '來源版本 $v';
+  String sysTx(String n) {
+    return '發 $n';
   }
 
   @override
-  String backupExportedAt(String t) {
-    return '匯出時間 $t';
+  String systemInviteDeclined(String call) {
+    return '$call 拒絕了邀請';
   }
 
   @override
-  String get backupImportSelected => '匯入所選';
+  String get systemLog => '系統日誌';
 
   @override
-  String get backupImportConfirmTitle => '確認匯入？';
-
-  @override
-  String get backupImportConfirm => '所選分組會被備份內容覆蓋，且無法復原。建議先匯出一次目前的資料。';
-
-  @override
-  String backupImported(int n) {
-    return '已匯入 $n 項';
+  String systemMemberJoined(String call) {
+    return '$call 加入了群組';
   }
 
   @override
-  String backupSkipped(int n) {
-    return '略過 $n 項（本版本不認識的內容）';
+  String systemMemberLeft(String call) {
+    return '$call 離開了群組';
   }
 
   @override
-  String get backupImportNothing => '備份裡不包含所選分組的資料';
+  String get tapAnywhereClose => '點選任意處關閉';
 
   @override
-  String get backupRestartTitle => '匯入完成';
+  String get tapMapHint => '點選地圖檢視臺站 · 雙指縮放';
 
   @override
-  String get backupRestartHint => '資料已寫入，重新啟動後才會完全生效（成就、翻譯、伺服器連線等）。';
+  String get tapToInvite => '點選邀請';
 
   @override
-  String get backupRestartNow => '結束應用程式';
+  String get tapToView => '雙擊信標查看更多';
 
   @override
-  String get backupLater => '稍後';
+  String get telemetryTitle => '速度 / 高度變化';
 
   @override
-  String get backupSecurityTip => '備份檔包含呼號、伺服器密碼與 API 金鑰，請妥善保管。';
+  String get testMembers => '測試成員';
 
   @override
-  String get backupWebHint => 'Web 版請用「複製到剪貼簿 / 從剪貼簿貼上」匯入匯出。';
+  String get testTxAction => '發射測試幀';
 
   @override
-  String get backupErrNotJson => '檔案不是有效的 JSON';
+  String get testTxDesc => '發一條狀態報文，驗證鏈路真的通到空中';
 
   @override
-  String get backupErrNotBackup => '這不是 APRSlocus 的備份檔';
+  String testTxFail(String err) {
+    return '測試幀發送失敗：$err';
+  }
 
   @override
-  String get backupErrSchemaNewer => '備份來自較新版本的 APRSlocus，請先更新應用程式';
+  String get testTxHint => '這是**真實發射**（狀態報文，不含座標）。射頻發射請確認在自己的呼號與執照範圍內';
 
   @override
-  String get backupErrEmpty => '備份裡沒有可匯入的內容';
+  String get testTxNeedsConnect => '請先連接鏈路';
 
   @override
-  String get backupErrTooLarge => '備份檔超過 32 MB，無法讀取';
+  String get testTxSent => '測試幀已交給鏈路';
 
   @override
-  String get backupErrRead => '讀取備份檔失敗';
+  String get testTxTitle => '測試發射';
 
   @override
-  String get backupErrUnsupported => '目前平台不支援選擇檔案，請改用剪貼簿貼上';
+  String get thanks => '感謝';
 
   @override
-  String get themeTitle => '主題';
+  String get themeAccentFrom => '漸變起始色';
 
   @override
-  String get themeEntryDesc => '自訂顏色、圖示與文字';
-
-  @override
-  String get themeSubtitle => '把介面配色、圖示與常用文案改成你自己的';
-
-  @override
-  String get themePresets => '預設與我的主題';
-
-  @override
-  String get themePresetTag => '預設';
+  String get themeAccentTo => '漸變結束色';
 
   @override
   String get themeActive => '使用中';
 
   @override
-  String get themePresetDefault => '預設';
+  String get themeAlignBottom => '下';
 
   @override
-  String get themePresetOcean => '海洋';
+  String get themeAlignBottomLeft => '左下';
 
   @override
-  String get themePresetForest => '森林';
+  String get themeAlignBottomRight => '右下';
 
   @override
-  String get themePresetMidnight => '暗夜';
+  String get themeAlignCenter => '置中';
 
   @override
-  String get themePresetSunset => '日落';
+  String get themeAlignLeft => '左';
 
   @override
-  String get themePresetContrast => '高對比';
+  String get themeAlignRight => '右';
+
+  @override
+  String get themeAlignTop => '上';
+
+  @override
+  String get themeAlignTopLeft => '左上';
+
+  @override
+  String get themeAlignTopRight => '右上';
+
+  @override
+  String get themeAuthor => '作者';
+
+  @override
+  String get themeAuthorHint => '你的呼號或暱稱';
+
+  @override
+  String get themeBg => '背景圖';
+
+  @override
+  String get themeBgAlign => '對齊';
+
+  @override
+  String get themeBgBlur => '模糊';
+
+  @override
+  String get themeBgBlurDesc => '模糊能把照片的細節壓掉，讓上面的文字更清楚';
+
+  @override
+  String get themeBgDesc => '用一張圖片做整個介面的底；卡片會自動變得半透明';
+
+  @override
+  String get themeBgDisabledHint => '目前主題未使用背景圖，介面底為純色';
+
+  @override
+  String get themeBgErrTooLarge => '背景圖超過 8MB，請先壓縮（圖示上限是 2MB）';
+
+  @override
+  String get themeBgFit => '填滿方式';
+
+  @override
+  String get themeBgFitContain => '完整顯示';
+
+  @override
+  String get themeBgFitCover => '鋪滿';
+
+  @override
+  String get themeBgFitStretch => '拉伸';
+
+  @override
+  String get themeBgFitTile => '並排';
+
+  @override
+  String get themeBgLocalOnly => '背景圖只存在本機：主題檔裡只記錄引用，不含圖片本身，分享給別人後對方會看到無背景的主題。';
+
+  @override
+  String get themeBgNone => '未設定';
+
+  @override
+  String get themeBgOpacity => '不透明度';
+
+  @override
+  String get themeBgOpacityDesc => '同時決定遮罩濃度：調高更看見圖，也更容易看不清文字';
+
+  @override
+  String get themeBgPick => '選擇圖片';
+
+  @override
+  String get themeBgRemove => '移除背景圖';
+
+  @override
+  String get themeBgReplace => '更換圖片';
+
+  @override
+  String get themeBgScale => '縮放';
+
+  @override
+  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用於「只取畫面一角」';
 
   @override
   String get themeBuiltinHint => '預設主題不可修改，複製為我的主題後即可自由編輯';
+
+  @override
+  String get themeColor => '主題顏色';
 
   @override
   String get themeColors => '顏色';
 
   @override
   String get themeColorsDesc => '逐項覆寫配色；未修改的項跟隨預設';
-
-  @override
-  String get themeRadius => '卡片圓角';
-
-  @override
-  String get themeRadiusDesc => '作用於卡片與輸入框（小徽標等不受影響）';
-
-  @override
-  String get themeIcons => '圖示';
-
-  @override
-  String get themeIconsDesc => '為底部頁籤與設定入口換圖示';
-
-  @override
-  String get themeTexts => '文字';
-
-  @override
-  String get themeTextsDesc => '覆寫常用文案（按鈕與錯誤提示不開放，避免介面變得不可操作）';
-
-  @override
-  String get themeNew => '新增主題';
-
-  @override
-  String get themeDuplicate => '複製為我的主題';
-
-  @override
-  String get themeRename => '重新命名';
 
   @override
   String get themeDelete => '刪除主題';
@@ -12964,80 +12720,37 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get themeReset => '恢復預設';
+  String get themeDensity => '鬆緊';
 
   @override
-  String get themeResetAll => '重設本主題';
+  String get themeDensityComfortable => '寬鬆';
 
   @override
-  String get themeSaved => '主題已儲存';
+  String get themeDensityCompact => '緊湊';
 
   @override
-  String get themeNameHint => '主題名稱';
+  String get themeDensityHint => '改的是卡片內邊距；若某項看起來沒變，說明那處留白是單獨寫死的';
 
   @override
-  String get themePickColor => '選擇顏色';
+  String get themeDensityNormal => '標準';
 
   @override
-  String get themePickIcon => '選擇圖示';
+  String get themeDescHint => '一句話說明這套皮膚';
 
   @override
-  String get themePickIconSearch => '搜尋圖示名稱（英文）';
+  String get themeDescription => '說明';
+
+  @override
+  String get themeDuplicate => '複製為我的主題';
 
   @override
   String get themeEditText => '修改文字';
 
   @override
-  String get themeTextHint => '留空即恢復預設';
+  String get themeEntryDesc => '自訂顏色、圖示與文字';
 
   @override
-  String get themeIconImport => '從圖片匯入';
-
-  @override
-  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
-
-  @override
-  String themeIconImportDone(String name) {
-    return '已匯入圖示：$name';
-  }
-
-  @override
-  String get themeIconWebHint => 'Web 版不支援匯入圖片，請使用內建圖示庫';
-
-  @override
-  String get themeIconErrFormat => '不支援的圖片格式（支援 PNG/JPG/WebP/GIF/BMP/SVG）';
-
-  @override
-  String get themeIconErrTooLarge => '圖片超過 2MB，請先壓縮';
-
-  @override
-  String get themeIconErrFailed => '匯入圖示失敗';
-
-  @override
-  String get themeIconErrUnsupported => '目前平台不支援匯入圖片';
-
-  @override
-  String get themeIo => '匯入與匯出';
-
-  @override
-  String get themeIoDesc => '主題是 JSON 文字，可以分享給別人，也可以手動編輯';
-
-  @override
-  String get themeExport => '匯出此主題';
-
-  @override
-  String get themeExportAll => '匯出全部主題';
-
-  @override
-  String get themeImport => '匯入主題';
-
-  @override
-  String get themeImportPaste => '從剪貼簿匯入';
-
-  @override
-  String themeImportDone(int n) {
-    return '已匯入 $n 個主題';
-  }
+  String get themeErrEmpty => '檔案裡沒有可用的主題';
 
   @override
   String get themeErrNotJson => '檔案不是有效的 JSON';
@@ -13049,100 +12762,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get themeErrSchemaNewer => '主題來自較新版本的 APRSlocus，請先更新應用程式';
 
   @override
-  String get themeErrEmpty => '檔案裡沒有可用的主題';
+  String get themeExport => '匯出此主題';
 
   @override
-  String get themeFixedPrimary => '目前主題已固定主色，請到「主題」頁修改';
+  String get themeExportAll => '匯出全部主題';
 
   @override
-  String get themeTokenPrimary => '主色';
+  String get themeExportClipboardTooBig => '圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案';
 
   @override
-  String get themeTokenSurface => '卡片表面';
-
-  @override
-  String get themeTokenBackground => '頁面背景';
-
-  @override
-  String get themeTokenBackgroundSoft => '次層背景';
-
-  @override
-  String get themeTokenTextPrimary => '主文字';
-
-  @override
-  String get themeTokenTextSecondary => '次要文字';
-
-  @override
-  String get themeTokenTextMuted => '弱化文字';
-
-  @override
-  String get themeTokenDivider => '分隔線';
-
-  @override
-  String get themeTokenSuccess => '成功/上線';
-
-  @override
-  String get themeTokenWarning => '警告';
-
-  @override
-  String get themeTokenDanger => '危險/離線';
-
-  @override
-  String get themeTokenInfo => '資訊/強調';
-
-  @override
-  String get themeBg => '背景圖';
-
-  @override
-  String get themeBgDesc => '用一張圖片做整個介面的底；卡片會自動變得半透明';
-
-  @override
-  String get themeBgPick => '選擇圖片';
-
-  @override
-  String get themeBgReplace => '更換圖片';
-
-  @override
-  String get themeBgRemove => '移除背景圖';
-
-  @override
-  String get themeBgOpacity => '不透明度';
-
-  @override
-  String get themeBgOpacityDesc => '同時決定遮罩濃度：調高更看見圖，也更容易看不清文字';
-
-  @override
-  String get themeBgBlur => '模糊';
-
-  @override
-  String get themeBgBlurDesc => '模糊能把照片的細節壓掉，讓上面的文字更清楚';
-
-  @override
-  String get themeBgFit => '填滿方式';
-
-  @override
-  String get themeBgFitCover => '鋪滿';
-
-  @override
-  String get themeBgFitContain => '完整顯示';
-
-  @override
-  String get themeBgFitStretch => '拉伸';
-
-  @override
-  String get themeBgFitTile => '並排';
-
-  @override
-  String get themeBgNone => '未設定';
-
-  @override
-  String get themeBgErrTooLarge => '背景圖超過 8MB，請先壓縮（圖示上限是 2MB）';
-
-  @override
-  String get themeBgLocalOnly => '背景圖只存在本機：主題檔裡只記錄引用，不含圖片本身，分享給別人後對方會看到無背景的主題。';
-
-  @override
-  String get themeBgDisabledHint => '目前主題未使用背景圖，介面底為純色';
+  String get themeExportNoImages => '目前主題沒有引用圖片，匯出檔只含配色與文字';
 
   @override
   String get themeExportWithImages => '匯出時包含圖片';
@@ -13153,57 +12782,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get themeExportNoImages => '目前主題沒有引用圖片，匯出檔只含配色與文字';
+  String get themeFixedPrimary => '目前主題已固定主色，請到「主題」頁修改';
 
   @override
-  String get themeExportClipboardTooBig => '圖片較大，無法透過剪貼簿傳遞，請用「匯出全部主題」存成檔案';
-
-  @override
-  String themeImportImagesSkipped(int n) {
-    return '有 $n 張圖片未匯入（過大或格式不支援）';
-  }
-
-  @override
-  String get backupThemeImagesHint => '備份會包含主題引用的圖片本體；不包含時，換機還原後主題會回退成內建圖示';
-
-  @override
-  String get backupThemeImagesOff => '不含圖片：備份更小，但換機還原後主題會缺少背景與自訂圖示';
-
-  @override
-  String get themeSurface => '卡片表面';
-
-  @override
-  String get themeSurfaceDesc => '有背景圖時，卡片要多透才既看得見圖又讀得清字';
-
-  @override
-  String get themeSurfaceAlpha => '不透明度（越低越透）';
-
-  @override
-  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮蓋力又透出一點背景；低於 0.6 文字容易糊';
-
-  @override
-  String get themeSurfaceNoBg => '目前沒有背景圖，這一項暫時看不出效果';
-
-  @override
-  String get themeLayout => '介面鬆緊與字體';
-
-  @override
-  String get themeLayoutDesc => '只作用於卡片與輸入框的留白，不改各處細節間距';
-
-  @override
-  String get themeDensity => '鬆緊';
-
-  @override
-  String get themeDensityCompact => '緊湊';
-
-  @override
-  String get themeDensityNormal => '標準';
-
-  @override
-  String get themeDensityComfortable => '寬鬆';
-
-  @override
-  String get themeDensityHint => '改的是卡片內邊距；若某項看起來沒變，說明那處留白是單獨寫死的';
+  String get themeFollowsPrimary => '跟隨主色';
 
   @override
   String get themeFont => '字體';
@@ -13212,76 +12794,148 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get themeFontDefault => '跟隨系統';
 
   @override
-  String get themeFontSystem => '系統介面字體';
+  String get themeFontHint => '只使用系統已裝的字體；某台裝置沒裝時會自動回退，不會變方框';
 
   @override
   String get themeFontMono => '等寬';
 
   @override
-  String get themeFontHint => '只使用系統已裝的字體；某台裝置沒裝時會自動回退，不會變方框';
+  String get themeFontSystem => '系統介面字體';
 
   @override
-  String get themeTabs => '強調色';
+  String get themeIconErrFailed => '匯入圖示失敗';
 
   @override
-  String get themeTabsDesc => '入口卡片的漸變色，以及每個頁籤自己的強調色';
+  String get themeIconErrFormat => '不支援的圖片格式（支援 PNG/JPG/WebP/GIF/BMP/SVG）';
 
   @override
-  String get themeUniformAccent => '統一入口卡片配色';
+  String get themeIconErrTooLarge => '圖片超過 2MB，請先壓縮';
 
   @override
-  String get themeAccentFrom => '漸變起始色';
+  String get themeIconErrUnsupported => '目前平台不支援匯入圖片';
 
   @override
-  String get themeAccentTo => '漸變結束色';
+  String get themeIconImport => '從圖片匯入';
+
+  @override
+  String themeIconImportDone(String name) {
+    return '已匯入圖示：$name';
+  }
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG，≤2MB';
+
+  @override
+  String get themeIconWebHint => 'Web 版不支援匯入圖片，請使用內建圖示庫';
+
+  @override
+  String get themeIcons => '圖示';
+
+  @override
+  String get themeIconsDesc => '為底部頁籤與設定入口換圖示';
+
+  @override
+  String get themeImport => '匯入主題';
+
+  @override
+  String themeImportDone(int n) {
+    return '已匯入 $n 個主題';
+  }
+
+  @override
+  String themeImportImagesSkipped(int n) {
+    return '有 $n 張圖片未匯入（過大或格式不支援）';
+  }
+
+  @override
+  String get themeImportPaste => '從剪貼簿匯入';
+
+  @override
+  String get themeIo => '匯入與匯出';
+
+  @override
+  String get themeIoDesc => '主題是 JSON 文字，可以分享給別人，也可以手動編輯';
+
+  @override
+  String get themeLayout => '介面鬆緊與字體';
+
+  @override
+  String get themeLayoutDesc => '只作用於卡片與輸入框的留白，不改各處細節間距';
+
+  @override
+  String get themeNameHint => '主題名稱';
+
+  @override
+  String get themeNew => '新增主題';
 
   @override
   String get themeOverridden => '已自訂';
 
   @override
-  String get themeFollowsPrimary => '跟隨主色';
+  String get themePickColor => '選擇顏色';
 
   @override
-  String get themeBgAlign => '對齊';
+  String get themePickIcon => '選擇圖示';
 
   @override
-  String get themeAlignCenter => '置中';
+  String get themePickIconSearch => '搜尋圖示名稱（英文）';
 
   @override
-  String get themeAlignTop => '上';
+  String get themePresetAmber => '琥珀';
 
   @override
-  String get themeAlignBottom => '下';
+  String get themePresetContrast => '高對比';
 
   @override
-  String get themeAlignLeft => '左';
+  String get themePresetDefault => '預設';
 
   @override
-  String get themeAlignRight => '右';
+  String get themePresetForest => '森林';
 
   @override
-  String get themeAlignTopLeft => '左上';
+  String get themePresetGraphite => '石墨';
 
   @override
-  String get themeAlignTopRight => '右上';
+  String get themePresetMidnight => '暗夜';
 
   @override
-  String get themeAlignBottomLeft => '左下';
+  String get themePresetOcean => '海洋';
 
   @override
-  String get themeAlignBottomRight => '右下';
+  String get themePresetSakura => '櫻花';
 
   @override
-  String get themeBgScale => '縮放';
+  String get themePresetSunset => '日落';
 
   @override
-  String get themeBgScaleDesc => '1.0 = 原始尺寸；放大可用於「只取畫面一角」';
+  String get themePresetTag => '預設';
 
   @override
-  String get themeAuthor => '作者';
+  String get themePresetTerminal => '終端';
 
   @override
-  String get themeDescription => '說明';
+  String get themePresets => '預設與我的主題';
+
+  @override
+  String get themePreviewSwatches => '預覽色板';
+
+  @override
+  String get themeRadius => '卡片圓角';
+
+  @override
+  String get themeRadiusDesc => '作用於卡片與輸入框（小徽標等不受影響）';
+
+  @override
+  String get themeRename => '重新命名';
+
+  @override
+  String get themeReset => '恢復預設';
+
+  @override
+  String get themeResetAll => '重設本主題';
+
+  @override
+  String get themeSaved => '主題已儲存';
 
   @override
   String get themeSkinInfo => '皮膚資訊';
@@ -13290,161 +12944,628 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get themeSkinInfoDesc => '分享給別人時，這兩項會跟著皮膚一起走';
 
   @override
-  String get themeAuthorHint => '你的呼號或暱稱';
+  String get themeSubtitle => '把介面配色、圖示與常用文案改成你自己的';
 
   @override
-  String get themeDescHint => '一句話說明這套皮膚';
+  String get themeSurface => '卡片表面';
 
   @override
-  String get themePreviewSwatches => '預覽色板';
+  String get themeSurfaceAlpha => '不透明度（越低越透）';
 
   @override
-  String get themePresetGraphite => '石墨';
+  String get themeSurfaceAlphaDesc => '0.85 左右既保留遮蓋力又透出一點背景；低於 0.6 文字容易糊';
 
   @override
-  String get themePresetSakura => '櫻花';
+  String get themeSurfaceDesc => '有背景圖時，卡片要多透才既看得見圖又讀得清字';
 
   @override
-  String get themePresetTerminal => '終端';
+  String get themeSurfaceNoBg => '目前沒有背景圖，這一項暫時看不出效果';
 
   @override
-  String get themePresetAmber => '琥珀';
+  String get themeTabs => '強調色';
 
   @override
-  String get sysRecentLabel => '最近收到';
+  String get themeTabsDesc => '入口卡片的漸變色，以及每個頁籤自己的強調色';
 
   @override
-  String get audioWavImportAction => '選擇 WAV 檔案';
+  String get themeTextHint => '留空即恢復預設';
 
   @override
-  String get audioWavExportToDownloads => '匯出到下載目錄';
+  String get themeTexts => '文字';
 
   @override
-  String audioWavSavedTo(String path) {
-    return '已儲存到 $path';
+  String get themeTextsDesc => '覆寫常用文案（按鈕與錯誤提示不開放，避免介面變得不可操作）';
+
+  @override
+  String get themeTitle => '主題';
+
+  @override
+  String get themeTokenBackground => '頁面背景';
+
+  @override
+  String get themeTokenBackgroundSoft => '次層背景';
+
+  @override
+  String get themeTokenDanger => '危險/離線';
+
+  @override
+  String get themeTokenDivider => '分隔線';
+
+  @override
+  String get themeTokenInfo => '資訊/強調';
+
+  @override
+  String get themeTokenPrimary => '主色';
+
+  @override
+  String get themeTokenSuccess => '成功/上線';
+
+  @override
+  String get themeTokenSurface => '卡片表面';
+
+  @override
+  String get themeTokenTextMuted => '弱化文字';
+
+  @override
+  String get themeTokenTextPrimary => '主文字';
+
+  @override
+  String get themeTokenTextSecondary => '次要文字';
+
+  @override
+  String get themeTokenWarning => '警告';
+
+  @override
+  String get themeUniformAccent => '統一入口卡片配色';
+
+  @override
+  String get tierIdleShort => '靜止/低速';
+
+  @override
+  String get tierIdleTitle => '編輯 · 靜止/低速檔';
+
+  @override
+  String get tierMinDist => '移動距離 (公尺)';
+
+  @override
+  String get tierMinDistHint => '自上次上報以來移動超過這個距離，就補報一次；0 = 關閉（只按間隔）';
+
+  @override
+  String get tierMinTurn => '航向變化 (度)';
+
+  @override
+  String get tierMinTurnHint =>
+      '轉過這個角度就補報一次（可填 10~180）；0 = 關閉。只在行駛中生效（停著不動時航向是雜訊）';
+
+  @override
+  String get tierSpeedTitle => '編輯 · 速度檔';
+
+  @override
+  String get time => '時間';
+
+  @override
+  String get timeJustNow => '剛剛';
+
+  @override
+  String get tncBindSubtitle => '綁定並連接電台端的 TNC';
+
+  @override
+  String get tncBindTitle => '藍牙 TNC';
+
+  @override
+  String get tncBoundDevice => '已綁定裝置';
+
+  @override
+  String get tncConnectAction => '連接 TNC';
+
+  @override
+  String get tncDeviceDesc => '藍牙/序列綁定、初始化串、KISS 參數與發射自檢';
+
+  @override
+  String get tncDeviceTitle => 'TNC 裝置與參數';
+
+  @override
+  String get tncErrBadFormat => '報文格式不合法';
+
+  @override
+  String get tncErrFrameTooLong => '幀長超出上限';
+
+  @override
+  String get tncErrNoDevice => '未綁定 TNC 裝置';
+
+  @override
+  String get tncErrNotConnected => '鏈路未連線';
+
+  @override
+  String get tncErrOpenRead => '無法開啟裝置（讀）';
+
+  @override
+  String get tncErrOpenWrite => '無法開啟裝置（寫）—— Windows 的 COM 埠是獨佔裝置，檢查是否被其他軟體佔用';
+
+  @override
+  String get tncErrTimeout => '連線逾時';
+
+  @override
+  String get tncErrUnsupported => '目前平台不支援';
+
+  @override
+  String get tncGroupDisabled => '射頻模式不支援群聊廣播';
+
+  @override
+  String get tncInitDelay => '行間隔 (ms)';
+
+  @override
+  String get tncInitDelayTip => '每行命令之間的等待時間。模組處理命令需要時間，太短會丟命令';
+
+  @override
+  String get tncInitEmpty => '未填寫初始化字串';
+
+  @override
+  String get tncInitSendAction => '立即傳送初始化字串';
+
+  @override
+  String tncInitSent(int n) {
+    return '已傳送 $n 行初始化字串';
   }
 
   @override
-  String get audioWavCopyPath => '複製路徑';
+  String get tncInitSubtitle => '連線後逐行傳送（等價 APRSdroid 的 kiss.init）';
 
   @override
-  String get audioWavPathCopied => '路徑已複製';
+  String get tncInitTip =>
+      '若 TNC「能收不能發」，先在這裡試：很多藍牙/序列 TNC 模組上電停在命令模式，必須先收到 KISS ON、RESTART 等指令才進入 KISS 轉發狀態。每行一條命令（傳送時自動補 CRLF）。';
 
   @override
-  String get audioWavCanceled => '已取消（未選擇檔案）';
+  String get tncInitTitle => 'TNC 初始化字串';
 
   @override
-  String get audioWavVerifyFailed => '匯出前的自檢失敗：生成的音訊解不出本報文（請回報）';
+  String get tncLog => '鏈路日誌';
 
   @override
-  String get audioWavMobileHint =>
-      'Android 不能寫任意目錄：匯出會存到「下載/APRSlocusAudio」，無需填路徑；複製到電腦後即可餵給 Direwolf 或電台';
+  String get tncLogEmpty => '暫無日誌';
 
   @override
-  String get audioWavPickHint => '桌面端請在下方填寫 WAV 路徑';
+  String get tncMsgDesc => '射頻信道是共享資源，訊息能力相應受限';
 
   @override
-  String get audioTxLevel => '發射電平';
-
-  @override
-  String get audioTxLevelTip => '發射前系統會把媒體音量拉到最大、並暫停麥克風擷取；峰值太低或削頂都會讓對端解不出';
-
-  @override
-  String audioTxPeak(int p, String sec, int flags) {
-    return '峰值 $p% · ${sec}s · 前導 $flags flag';
+  String tncMsgLimitHint(String n) {
+    return '單條限 $n 字元（APRS 訊息規範）';
   }
 
   @override
-  String get audioTxLevelClip => '波形削頂：請把「輸出幅度」調到 0.8 以下（削頂會產生諧波）';
+  String get tncMsgTitle => '射頻（TNC）模式';
 
   @override
-  String get audioTxLevelLow => '電平偏低：對方可能解不出，請調高「輸出幅度」與裝置音量';
+  String get tncMsgTooLong => '超出射頻模式單條訊息長度上限';
 
   @override
-  String get audioWiringHint =>
-      '接電台請用音訊線（耳機孔 → 電台資料孔/麥克風）；手機喇叭在 2200Hz 衰減很大，對著麥克風很難解出。對端是電腦上的 Direwolf 時，先用「匯出」出的 WAV 驗證一遍，能解出就說明問題在音訊通路而不是協定';
+  String get tncNeedConnected => '請先連接 TNC';
 
   @override
-  String packetLimitRf(int bytes, int max) {
-    return '整包 $bytes 位元組 · 射頻單幀上限 $max 位元組';
-  }
+  String get tncNeedPermission => '需要藍牙權限（掃描藍牙裝置用）；只用 USB 串列可忽略，插線時系統會單獨彈出授權';
 
   @override
-  String packetLimitIs(int bytes) {
-    return '整包 $bytes 位元組 · APRS-IS 單行上限 512 位元組';
-  }
+  String get tncNoPaired => '找不到裝置 · 請先在系統藍牙設定裡配對 TNC，或插上 USB 串列線（OTG）';
 
   @override
-  String get packetTcpipWarning => '含 TCPIP*：射頻上會被自動剔除（那是 APRS-IS 的路徑）';
+  String get tncNotBound => '未綁定裝置';
 
   @override
-  String packetSent(String line) {
-    return '已交給鏈路發送：$line';
-  }
+  String get tncOpenFailedHint => '開啟裝置失敗 · Windows 的 COM 埠是獨佔裝置，請確認沒有被其他軟體佔用';
 
   @override
-  String packetSendFailed(String err) {
-    return '未發送：$err';
-  }
+  String get tncPushParams => '連線後下發 KISS 參數';
+
+  @override
+  String get tncPushParamsTip =>
+      '預設關閉（與 APRSdroid 一致）。打開後連線時會把上面的參數推給 TNC，覆蓋它自己的設定 —— 參數不合適可能讓它一直退避而不發射，所以只在需要統一管理時打開。';
+
+  @override
+  String get tncRestart => '重啟鏈路';
+
+  @override
+  String get tncScanPaired => '掃描裝置（藍牙已配對 + USB 串列）';
 
   @override
   String get tncSerialBaud => '串列埠線速 (bd)';
+
+  @override
+  String get tncSerialBaudBluetooth => '目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效';
+
+  @override
+  String get tncSerialBaudHint => '改完線速後需要重新連線才會生效（點「下發參數」會自動重連一次）';
 
   @override
   String get tncSerialBaudTip =>
       'USB 串列線與電台資料埠必須同速，否則一個位元組都收不到。常見值：9600 / 19200 / 38400 / 57600 / 115200。藍牙 SPP 沒有線速概念，綁藍牙裝置時此項不生效。';
 
   @override
-  String get tncSerialBaudHint => '改完線速後需要重新連線才會生效（點「下發參數」會自動重連一次）';
+  String tncStats(String rx, String tx) {
+    return '收 $rx 幀 · 發 $tx 幀';
+  }
 
   @override
-  String get tncSerialBaudBluetooth => '目前綁的是藍牙裝置：藍牙 SPP 沒有線速概念，此項不生效';
+  String get tncSupportedNo => '目前平台暫不支援 TNC 鏈路';
 
   @override
-  String get uiMaterial => '介面材質';
+  String get tncSwitchOff => '已關閉';
 
   @override
-  String get uiMaterialDesc => '讓卡片、頂欄與彈窗半透明，並在她們背後做真實模糊';
+  String get tncSwitchOn => '已開啟';
 
   @override
-  String get uiMaterialOff => '關閉（實色）';
+  String get tncTxTestAction => '寫入測試幀';
 
   @override
-  String get uiMaterialOffDesc => '表面實色，與舊版完全一致';
+  String tncTxTestFail(String err) {
+    return '未寫入：$err';
+  }
 
   @override
-  String get uiMaterialGlass => '磨砂玻璃';
+  String get tncTxTestHint =>
+      '發的是一幀狀態包（不含座標），不會把台站在 aprs.fi 上挪位置。若這裡顯示「已寫入」卻仍然不發射，問題在 TNC 側：先試初始化字串（KISS ON / RESTART），再檢查 TxDelay 與通道佔用。';
 
   @override
-  String get uiMaterialGlassDesc => '更透、模糊更強：像 Windows 11 的壓克力（Acrylic）';
+  String tncTxTestOk(String n) {
+    return '已寫入 TNC（累計 $n 幀）。若電台仍不發射，問題在 TNC 側：試初始化字串或檢查 TxDelay。';
+  }
 
   @override
-  String get uiMaterialMica => '雲母';
+  String get tncTxTestOkPrefix => '已寫入';
 
   @override
-  String get uiMaterialMicaDesc => '更實、模糊較輕，帶一層主色色調：像 Windows 11 的雲母（Mica）';
+  String get tncTxTestSubtitle => '向 TNC 寫一幀測試包，判斷問題在鏈路還是 TNC';
 
   @override
-  String get uiMaterialHint =>
-      '材質只作用於應用程式自己的表面（卡片、頂欄、導覽列、彈窗、地圖浮層），不是系統視窗的透明。模糊要佔顯卡：舊機型上可能不如關閉時順暢。';
+  String get tncTxTestTitle => '發射自檢';
 
   @override
-  String get uiMaterialBgHint => '目前主題用了背景圖：材質不再另畫底色，只把頂欄與浮層做成磨砂。';
+  String get tncUnbind => '解除綁定';
 
   @override
-  String get uiMaterialPreview => '預覽';
+  String get totalStations => '總數';
+
+  @override
+  String get track => '軌跡';
+
+  @override
+  String get trackActive => '線上';
+
+  @override
+  String get trackGroupEmpty => '群組內成員暫無位置資料（未收到或未上報），點選下方可編輯成員。';
+
+  @override
+  String get trackGroupNameHint => '群組名稱，例如：週末騎乘';
+
+  @override
+  String get trackGroupsEmptyHint => '還沒有追蹤組，點「建立新追蹤組」建立一組要追蹤的呼號。';
+
+  @override
+  String trackHeader(Object fixed, Object online, Object total) {
+    return '$total 人 · $online 線上 · $fixed 已定位';
+  }
+
+  @override
+  String trackMemberSub(Object seen, Object type) {
+    return '$type · $seen';
+  }
+
+  @override
+  String get trackModeFitAll => '全覽保持中';
+
+  @override
+  String trackModeFollow(Object call) {
+    return '跟隨 $call';
+  }
+
+  @override
+  String get trackModeMe => '跟隨我';
+
+  @override
+  String trackPoints(int count) {
+    return '軌跡 ($count 點)';
+  }
+
+  @override
+  String get trackWaitingPos => '等待位置…';
+
+  @override
+  String get trackingBeaconing => '定位執行中，正在持續上報位置';
+
+  @override
+  String get translate => '翻譯';
+
+  @override
+  String get translateAuto => '自動翻譯收到的訊息';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return '所有免密鑰介面都無法使用（$e）· 建議在設定裡改用 Google / 百度密鑰或自建實例';
+  }
+
+  @override
+  String get translateAutoTip => '僅對本對話生效；只翻譯對方傳來的訊息';
+
+  @override
+  String get translateBaiduAppId => '百度 App ID';
+
+  @override
+  String get translateBaiduKey => '百度密鑰';
+
+  @override
+  String get translateBaiduTip => '在百度翻譯開放平台申請「通用文本翻譯」，密鑰只保存在本機';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '已翻譯 $n 條';
+  }
+
+  @override
+  String get translateContrast => '對照顯示原文與譯文';
+
+  @override
+  String get translateContrastTip => '關閉後只顯示譯文（原文仍可透過長按查看）';
+
+  @override
+  String get translateCopyOriginal => '複製原文';
+
+  @override
+  String get translateCopyResult => '複製譯文';
+
+  @override
+  String get translateCustomBody => '請求主體範本';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return '可用佔位符：$text 原文、$from 來源語言、$to 目標語言。選擇 GET 時忽略此項';
+  }
+
+  @override
+  String get translateCustomHeaders => '請求標頭 (JSON)';
+
+  @override
+  String get translateCustomMethod => '請求方式';
+
+  @override
+  String get translateCustomResultPath => '結果欄位路徑';
+
+  @override
+  String get translateCustomResultPathTip =>
+      '用點號表示層級，陣列用序號，如 data.translations.0.translatedText';
+
+  @override
+  String get translateCustomUrl => '介面網址';
+
+  @override
+  String translateFailed(String e) {
+    return '翻譯失敗：$e';
+  }
+
+  @override
+  String translateFreeFailed(String e) {
+    return '免費介面暫時無法使用（$e）· 可在設定裡改用 Google / 百度 / 自訂介面';
+  }
+
+  @override
+  String get translateGoogleKey => 'Google API Key';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Google Cloud Translation v2 的 API Key，需自行到 Google Cloud 主控台申請';
+
+  @override
+  String get translateInput => '翻譯輸入內容';
+
+  @override
+  String get translateLangAuto => '自動偵測';
+
+  @override
+  String get translateLangScopeNote =>
+      '各介面支援的語種範圍不同（例如百度標準版支援印尼語 id，但並非所有方向都支援）· 遇到不支援時會提示改用自動或其它介面';
+
+  @override
+  String get translateLangUnsupported => '該介面不支援翻譯成這一語言 · 可改用「自動」或其它介面';
+
+  @override
+  String get translateLearned => '已自動識別';
+
+  @override
+  String get translateLibreKey => '實例 API Key（公共實例需要，自建可留空）';
+
+  @override
+  String get translateLibreUrl => '實例網址';
+
+  @override
+  String get translateMyLang => '我的語言';
+
+  @override
+  String get translateMyLangHint => '對方傳來的訊息翻成它';
+
+  @override
+  String get translateNeedConfig => '請先填寫翻譯介面設定';
+
+  @override
+  String get translateNotNeeded => '該內容無需翻譯（數字 / 符號 / 呼號）';
+
+  @override
+  String get translateOutCancel => '取消翻譯';
+
+  @override
+  String get translateOutNeedPeer => '還不知道對方使用什麼語言 · 先在對話翻譯設定裡指定';
+
+  @override
+  String translateOutPreview(String text) {
+    return '將傳送：$text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return '已譯為 $lang · 點傳送即按此發出';
+  }
+
+  @override
+  String get translateOutgoing => '傳送前翻譯成對方的語言';
+
+  @override
+  String get translateOutgoingTip => '開啟後按傳送會先把內容譯成對方的語言再發出；請確認對方能讀懂該語言';
+
+  @override
+  String get translatePeerLang => '對方的語言';
+
+  @override
+  String get translatePeerUnknown => '還不知道對方使用什麼語言 · 先在翻譯設定裡指定，或收幾條對方訊息後會自動識別';
+
+  @override
+  String get translatePeerUnknownHint => '收到對方訊息後由翻譯介面自動識別';
+
+  @override
+  String get translatePrivacyNote => '翻譯會把訊息文字傳送到你選擇的第三方介面，請自行評估隱私';
+
+  @override
+  String get translateProvider => '翻譯介面';
+
+  @override
+  String get translateProviderAuto => '自動（推薦）';
+
+  @override
+  String get translateProviderAutoDesc => '依次嘗試多個免密鑰介面，取第一個真正翻譯成功的結果';
+
+  @override
+  String get translateProviderBaidu => '百度翻譯';
+
+  @override
+  String get translateProviderCustom => '自訂';
+
+  @override
+  String get translateProviderFree => '免費介面（無需密鑰）';
+
+  @override
+  String get translateProviderFreeDesc => '開箱即用 · 使用公開端點，可能被限流或不穩定';
+
+  @override
+  String get translateProviderGoogle => 'Google 翻譯';
+
+  @override
+  String get translateProviderGooglePublic => 'Google 公開端點（免密鑰）';
+
+  @override
+  String get translateProviderGooglePublicDesc => '品質較好，但可能被限流（實測會回傳 429）';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate（可自建）';
+
+  @override
+  String get translateProviderLibreDesc => '開源、可自建最可靠；公共實例現已要求密鑰且常不支援中文';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory（免密鑰）';
+
+  @override
+  String get translateProviderMyMemoryDesc => '官方免費介面，但本質是翻譯記憶庫：無匹配語料時會回傳原文';
+
+  @override
+  String get translateRetry => '重新翻譯';
+
+  @override
+  String get translateSameLang => '譯文與原文相同 · 可能無需翻譯，或該介面未能翻譯';
+
+  @override
+  String translateSentAs(String text) {
+    return '已按對方語言發出：$text';
+  }
+
+  @override
+  String get translateSettings => '翻譯設定';
+
+  @override
+  String get translateSettingsSubtitle => '翻譯介面、語言與自動翻譯';
+
+  @override
+  String get translateShowOriginal => '顯示原文';
+
+  @override
+  String get translateShowTranslation => '顯示譯文';
+
+  @override
+  String get translateSideIncoming => '對方傳來';
+
+  @override
+  String get translateSideOutgoing => '我發出';
+
+  @override
+  String get translateSourceLang => '原文語言';
+
+  @override
+  String get translateTargetLang => '翻譯為';
+
+  @override
+  String get translateTest => '測試翻譯';
+
+  @override
+  String translateTestOk(String text) {
+    return '介面可用：$text';
+  }
+
+  @override
+  String get translateText => '翻譯文字';
+
+  @override
+  String get translateToMeTag => '譯給我看';
+
+  @override
+  String get translateToPeerTag => '對方將讀到';
+
+  @override
+  String translateTooLongAfter(int n) {
+    return '譯文超出長度上限（$n 字元），未傳送';
+  }
+
+  @override
+  String get translateTranslating => '正在翻譯…';
+
+  @override
+  String get translateUntranslated => '介面沒有真正翻譯（回傳了原文）· 已自動嘗試下一個介面';
+
+  @override
+  String get translateUsedProvider => '本次實際使用';
+
+  @override
+  String get txButton => '發射';
+
+  @override
+  String get txNothingFilled => '上面幾項都為空，沒有可傳送的內容';
+
+  @override
+  String get txPartPosition => '位置報文';
+
+  @override
+  String get txPartStatus => '狀態報文';
+
+  @override
+  String txSent(String parts) {
+    return '已發射：$parts';
+  }
+
+  @override
+  String get typeFilter => '類型篩選';
+
+  @override
+  String get typeGroup => '類型';
 
   @override
   String get uiLayout => '介面佈局';
-
-  @override
-  String get uiLayoutDesc => '2.0 把地圖當成整個介面的底：其餘頁面收進底部可上滑的卡片';
 
   @override
   String get uiLayoutClassic => '經典佈局（1.0）';
 
   @override
   String get uiLayoutClassicDesc => '寬螢幕左側欄 + 窄螢幕底部導覽，與舊版完全一致';
+
+  @override
+  String get uiLayoutDesc => '2.0 把地圖當成整個介面的底：其餘頁面收進底部可上滑的卡片';
+
+  @override
+  String get uiLayoutHint => '切換後立即生效，兩種佈局的設定各自保留；卡片收起時地圖上的按鈕會自動上移';
 
   @override
   String get uiLayoutSheet => '地圖為基底（2.0）';
@@ -13454,13 +13575,19 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
       '地圖常駐整螢幕；台站 / 訊息 / 資料包 / 設定收進底部可拖曳卡片，上滑或點把手即可展開';
 
   @override
-  String get uiLayoutHint => '切換後立即生效，兩種佈局的設定各自保留；卡片收起時地圖上的按鈕會自動上移';
+  String get uiMaterial => '介面材質';
 
   @override
-  String get linkNotConnected => '未連線';
+  String get uiMaterialBgHint => '目前主題用了背景圖：材質不再另畫底色，只把頂欄與浮層做成磨砂。';
 
   @override
-  String get linkTapForSettings => '點一下查看連線設定';
+  String get uiMaterialDesc => '讓卡片、頂欄與彈窗半透明，並在她們背後做真實模糊';
+
+  @override
+  String get uiMaterialGlass => '磨砂玻璃';
+
+  @override
+  String get uiMaterialGlassDesc => '更透、模糊更強：像 Windows 11 的壓克力（Acrylic）';
 
   @override
   String get uiMaterialGlassFull => '滿血磨砂玻璃';
@@ -13470,277 +13597,326 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
       '最透、最糊，而且**小元件也一起糊**（工具鈕 / 圖例 / 小提示都有磨砂）—— 觀感最重，也最吃顯卡';
 
   @override
-  String get posAccuracy => '位置精度';
+  String get uiMaterialHint =>
+      '材質只作用於應用程式自己的表面（卡片、頂欄、導覽列、彈窗、地圖浮層），不是系統視窗的透明。模糊要佔顯卡：舊機型上可能不如關閉時順暢。';
 
   @override
-  String get locationStill => '靜止';
+  String get uiMaterialMica => '雲母';
 
   @override
-  String get dataSourceAudioShort => '音訊';
-  @override
-  String get historyTracks => "歷史軌跡";
+  String get uiMaterialMicaDesc => '更實、模糊較輕，帶一層主色色調：像 Windows 11 的雲母（Mica）';
 
   @override
-  String get historyTracksDesc => "按天記錄自己的速度與里程，儲存在本機";
+  String get uiMaterialOff => '關閉（實色）';
 
   @override
-  String get historyEmpty => "還沒有歷史軌跡。開始定位並移動後會自動記錄。";
+  String get uiMaterialOffDesc => '表面實色，與舊版完全一致';
 
   @override
-  String get historyTotalDistance => "總里程";
+  String get uiMaterialPreview => '預覽';
 
   @override
-  String get historyMaxSpeed => "最高速度";
+  String get uiScale => '介面縮放';
 
   @override
-  String get historyMovingTime => "移動時長";
+  String get unblock => '解除遮蔽';
 
   @override
-  String get historyPoints => "軌跡點";
+  String get underConstruction => '前方施工，尚未開放';
 
   @override
-  String get historyClearDay => "刪除這一天的記錄";
+  String get underConstructionHint => '該功能正在開發中，敬請期待';
 
   @override
-  String get historyCleared => "已刪除該天記錄";
+  String get unfavorite => '取消收藏';
 
   @override
-  String get historyClearAll => "清空全部歷史軌跡";
+  String get unit => '單位';
 
   @override
-  String get historyClearAllConfirm => "確定要清空全部歷史軌跡嗎？此操作無法復原。";
+  String get unitSeconds => '秒';
 
   @override
-  String get historyClearedAll => "已清空全部歷史軌跡";
+  String get unknown => '未知';
 
   @override
-  String get sensorAssist => "感測器輔助定位";
+  String get unlocated => '未定位';
 
-  @override
-  String get sensorAssistDesc => "用加速度計判斷是否真的在移動、用指南針補正低速航向，讓軌跡打點更準（僅 Android 生效）。";
   @override
-  String get historyTapDay => "點按某一天可查看地圖與回放";
+  String get unverified => '未驗證';
 
   @override
-  String get historyPlay => "播放";
+  String get updateCat => '更新';
 
   @override
-  String get historyPause => "暫停";
+  String get updateCatDesc => '檢查新版本';
 
   @override
-  String get historyReplay => "重播";
+  String get updateChannel => '更新管道';
 
   @override
-  String get historyFollow => "跟隨";
+  String get updateContents => '更新內容';
+
   @override
-  String get locationCoarse => "網路定位（粗）";
+  String get updateFailed => '檢查更新失敗';
+
   @override
-  String get locModeNetHint => "網路/基地台定位誤差常在幾百公尺。為免地圖上的「我」來回跳，只有 GPS 停更 5 分鐘後才用它兜底；粗定位點不寫進軌跡與歷史，也不會觸發自動上報。";
+  String get usageNotice => '本軟體僅供業餘無線電愛好者學習交流使用\n請遵守當地無線電管理法規';
+
   @override
-  String get beaconCoarseFix => "網路定位中 · 暫不自動上報";
+  String get useDeviceLocation => '使用裝置定位';
 
   @override
-  String get beaconCoarseHint => "目前定位來自網路（粗，誤差常達幾百公尺）—— 自動上報已暫停，GPS 恢復後自動繼續；期間仍可手動上報。";
+  String get useMyLocation => '用我的位置作為篩選中心';
+
   @override
-  String get locationGarmin => "佳明 LiveTrack";
+  String get userAgreement => '使用者協議';
 
   @override
-  String get hrCardTitle => "心率";
+  String vectorMapLoadFailed(String error) {
+    return '向量地圖載入失敗\n$error';
+  }
 
   @override
-  String get hrCardSubtitle => "藍牙心率帶（標準心率服務），可隨信標一起上報";
+  String get version => '版本';
 
   @override
-  String get hrIncludeInBeacon => "信標附帶心率";
+  String versionChangelog(String version) {
+    return 'v$version 更新日誌';
+  }
 
   @override
-  String get hrIncludeHint => "開啟後在位置包的備註裡加 HR=nn（APRS 的通行寫法，第三方地圖會當備註顯示）。沒有讀數時不會發 HR=0 —— 那會被收端當成「心率 0」而不是「沒測」。";
+  String versionCount(int count) {
+    return '$count 個';
+  }
 
   @override
-  String get hrConnected => "已連線 {name}";
+  String get viewChangelog => '檢視更新日誌';
 
   @override
-  String get hrWaitReading => "等待讀數（把心率帶貼緊皮膚）";
+  String get viewSponsorDetails => '檢視作者與贊助詳情 →';
 
   @override
-  String get hrSearch => "搜尋心率裝置";
+  String get waitingForLocation => '等待定位';
 
   @override
-  String get hrScanning => "正在搜尋…";
+  String get warning => '警告';
 
   @override
-  String get hrStopScan => "停止搜尋";
+  String get weather => '氣象';
 
   @override
-  String get hrNoDevice => "沒有找到心率裝置。確認心率帶正在廣播（多數胸帶貼上電極片就開始廣播），並讓它離手機近一些。";
+  String get weatherAQIPrimary => '首要污染物';
 
   @override
-  String get hrConnect => "連線";
+  String get weatherAir => '空氣品質';
 
   @override
-  String get hrDisconnect => "斷開";
+  String get weatherCloud => '雲量';
 
   @override
-  String get hrForget => "忘記該裝置";
+  String get weatherConnFail => '天氣服務連線失敗';
 
   @override
-  String get hrNotSupported => "本機不支援藍牙心率（該功能在 Android / iOS 版提供）";
+  String get weatherCurLoc => '當前位置';
 
   @override
-  String get hrConflictWithTnc => "這個裝置正被 TNC / PKWDWPL 的藍牙鏈路使用，不能同時當心率帶";
+  String get weatherDaily15 => '查看近 15 日天氣';
 
   @override
-  String get hrStrapHint => "支援標準心率服務（0x180D）的胸帶／臂帶都行，例如 Polar H10、Garmin HRM、邁金、Coospo。TNC 走經典藍牙、心率走 BLE，兩條鏈路互不干擾。";
+  String get weatherDaily15Title => '近 15 日天氣趨勢';
 
   @override
-  String get garminCardTitle => "佳明 LiveTrack";
+  String get weatherData => '氣象資料';
 
   @override
-  String get garminCardSubtitle => "把佳明手錶的活動即時位置接進來，隨信標上報";
+  String get weatherDataFail => '天氣資料獲取失敗';
 
   @override
-  String get garminUrlLabel => "分享連結";
+  String weatherDataValue(String data) {
+    return '氣象資料 · $data';
+  }
 
   @override
-  String get garminPaste => "從剪貼簿貼上";
+  String get weatherDayAfter => '後天';
 
   @override
-  String get garminStart => "開始追蹤";
+  String get weatherDetails => '詳細資料';
 
   @override
-  String get garminStop => "停止追蹤";
+  String get weatherDew => '露點';
 
   @override
-  String get garminRunning => "追蹤中";
+  String weatherFeels(String v) {
+    return '體感 $v°';
+  }
 
   @override
-  String get garminStats => "已轉發 {n} 個點 · 最後更新 {t}";
+  String get weatherForecast3 => '三日預報';
 
   @override
-  String get garminBadUrl => "連結格式不對。請貼上完整的 LiveTrack 分享連結（含 /session/…/token/…）";
+  String get weatherHumidity => '濕度';
 
   @override
-  String get garminNoPoints => "還沒有取到點。活動可能剛開始，或連結已過期。";
+  String get weatherNoLoc => '暫無定位：請在「我的電台」開啟位置服務後查看天氣';
 
   @override
-  String get garminError => "抓取失敗：{error}";
+  String weatherObserved(String t) {
+    return '觀測 $t';
+  }
 
   @override
-  String get garminHowTo => "怎麼拿到連結：在佳明 Connect App 裡打開該活動 → 分享 → 選「APRSlocus」（本應用已註冊系統分享入口），連結會自動填到這裡並開始追蹤；也可以手動複製連結後貼到上面。";
+  String get weatherPanelSub => '和風天氣 · 當前位置';
 
   @override
-  String get garminSharedToast => "已收到佳明分享連結";
+  String get weatherPanelTitle => '天氣 · 火腿建議';
 
   @override
-  String get garminOpen => "去設定";
+  String get weatherPowered => '資料由和風天氣提供 · APRSlocus';
 
   @override
-  String get garminWebUnsupported => "Web 版不支援（瀏覽器的跨域限制），請在 Android / Windows 版使用";
+  String get weatherPrecip => '降水';
 
   @override
-  String get hrForTncNote => "心率帶與 TNC 用的是兩套藍牙（BLE / 經典），可以同時連線";
+  String get weatherPressure => '氣壓';
+
   @override
-  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+  String get weatherRefresh => '重新整理';
 
+  @override
+  String get weatherSimDesc => '選擇後點頂欄天氣膠囊預覽；「跟隨即時」恢復真實天氣';
 
+  @override
+  String get weatherSimFollowLive => '跟隨即時';
 
+  @override
+  String get weatherSimTitle => '天氣模擬（預覽背景/特效/建議）';
 
   @override
-  String get beaconGarminSource => "佳明 LiveTrack 上報中";
+  String get weatherSunrise => '日出';
 
   @override
-  String beaconGarminNext(String s, String hr) => "佳明上報 · $s · ❤$hr";
+  String get weatherSunset => '日落';
 
   @override
-  String get posSourceLabel => "位置來源";
+  String get weatherToday => '今天';
 
   @override
-  String get hrSourceLabel => "心率來源";
+  String get weatherTomorrow => '明天';
 
   @override
-  String get ownSourcePhoneGps => "手機 GPS";
+  String get weatherUV => '紫外線';
 
   @override
+  String get weatherUnavail => '天氣服務暫時不可用';
 
   @override
-  String positionBeaconDetail(String grid, String detail) => "位置信標 · 網格 $grid · $detail";
+  String get weatherVis => '能見度';
 
   @override
-  String beaconAttachedHr(String hr) => "心率 $hr";
+  String weatherWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': '週一',
+      '2': '週二',
+      '3': '週三',
+      '4': '週四',
+      '5': '週五',
+      '6': '週六',
+      '7': '週日',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
 
   @override
-  String get beaconAttachedNone => "未附帶心率";
+  String get weatherWidget => '天氣元件';
 
   @override
-  String get posSourceIdle => "未追蹤（未啟動定位）";
+  String get weatherWindDir => '風向';
 
   @override
-  String get ownSourceGarminLive => "追蹤中（手機 GPS 已讓位）";
+  String get weatherWindScale => '風力';
 
   @override
-  String get ownSourceGarminStale => "連結有效，但佳明沒有新點（暫時用不到）";
+  String get weatherWindSpeed => '風速';
 
   @override
-  String get ownSourceHrIdle => "未連線（點一下連線心率帶）";
+  String get webLocationUnsupported => 'Web 平台暫不支援自動定位，請手動輸入座標';
 
   @override
-  String hrLineHr(String hr) => "心率 $hr";
+  String get website => '網站';
 
   @override
+  String get websocketOptional => 'WebSocket URL（可選）';
 
   @override
+  String get wgs84 => 'WGS-84';
 
   @override
+  String windowsInstallHelp(String path) {
+    return '安裝包已儲存到：\n$path\n\n點選「立即執行」直接啟動安裝程式；也可以開啟所在目錄檢視檔案。';
+  }
 
   @override
-  String get garminShareNoLink => "分享的內容裡沒有找到佳明 LiveTrack 連結";
+  String get wizard => '設定精靈';
 
   @override
-  String get hrFromGarmin => "心率來自佳明 LiveTrack（手錶）";
+  String get wsUrlOptional => 'WebSocket URL(可選)';
 
   @override
-  String get sourceMovedHint => "要啟用 / 切換資料來源（鏈路），請到「設定 → 裝置」";
+  String get wxClear => '晴';
 
   @override
-  String get posSourcePrecedence => "同時可用時的優先順序：模擬/手動位置 › 佳明（手錶有即時資料時）› 手機 GPS";
+  String get wxCloudy => '多雲';
 
   @override
-  String posSourceUsing(String src) => "目前使用：$src";
+  String get wxFog => '霧';
 
   @override
-  String get posSrcSim => "模擬/手動位置";
+  String get wxHeavyRain => '大雨';
 
   @override
-  String get posSrcGarmin => "佳明 LiveTrack";
+  String get wxLightRain => '小雨';
 
   @override
-  String get posSrcPhone => "手機 GPS";
+  String get wxModerateRain => '中雨';
 
   @override
-  String get posSrcNone => "未定位";
+  String get wxOvercast => '陰';
 
+  @override
+  String get wxSnow => '雪';
 
   @override
-  String get garminNotStarted => "未開啟追蹤";
+  String get wxStormRain => '暴雨';
 
   @override
-  String get garminAutoFilled => "已自動填入分享連結";
+  String get wxThunder => '雷陣雨';
 
   @override
-  String get garminLinkOk => "連結有效";
+  String zoomLevel(Object z) {
+    return '縮放 $z';
+  }
 
   @override
+  String get advancedMenu => '進階設定';
+
 
   @override
-  String get beaconForceCoarse => "強制接受網路定位自動上報";
+  String get beaconAltTip => '填了就用手填的這個海拔（更可靠：無氣壓計機型、室內、只有網路定位時 GPS 海拔常不可用），留空則跟隨定位的海拔。傳送時按英尺編成 `/A=aaaaaa` 六位；這是臺站**海拔**，與下面 PHG 裡的「天線高度」（高於當地平均地面）是兩個不同的量。';
 
   @override
-  String get beaconForceCoarseHint => "預設不開啟：網路定位（基地台 / Wi-Fi）常偏幾百公尺，自動發出去等於向全網宣告一個錯座標。只有裝置沒有 GPS（平板 / 只有網路定位）時才建議打開 —— 打開後粗定位也會自動發射；地圖與軌跡仍照原樣過濾粗點，不會因此變亂。手動「立即上報」不受這個開關影響。";
+  String get beaconAltWillSend => '目前將發出：';
+
+
+
+
+
 
   @override
-  String beaconCoarseForced(String s) => "網路定位（粗）· $s";
+  String get batteryNoFix => '還沒有定位，無法上報位置';
 
   @override
-  String get beaconCoarseForcedNote => "正在用網路定位（粗）上報";
+  String get aprsStatusHint => '這一點發的是**獨立一幀**狀態報文（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。';
 
 }

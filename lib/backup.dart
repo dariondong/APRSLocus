@@ -57,6 +57,14 @@ const List<BackupGroupSpec> kBackupGroups = [
     'beaconNetInterval',
     'smartBeaconOn', 'smartTiers',
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
+    // 手填的位置报文数据扩展（高度 / 功率 / 天线高度 / 增益）：属于「信标内容偏好」，
+    // 是用户照着自己电台手打的，换机后必须保留 —— 丢了会表现为
+    // 「信标里那几项悄悄没了」，而用户不知道要重新填。
+    // beaconAltOverrideM 只在用户手填过海拔时才存在；没填过就是「跟随定位」，
+    // 键缺失正好回到那个默认，不需要迁移。
+    'beaconPowerW', 'beaconAntennaHeightFt', 'beaconGainDb', 'beaconAltOverrideM',
+    // 独立状态报文的文本：同上，是用户手打的，换机后应保留。
+    'aprsStatusText',
     // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，
     // 换机后当然希望还按自己调的那样上报。
     'beaconIncludeHr',
