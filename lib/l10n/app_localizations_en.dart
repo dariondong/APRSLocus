@@ -2960,7 +2960,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allChangelog => 'All changelogs';
 
   @override
-  String get tapToView => 'Tap to view';
+  String get tapToView => 'Double-tap beacon for more';
 
   @override
   String get beaconNow => 'Beacon now';
@@ -4443,6 +4443,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beaconContentDesc => 'Sent with each position beacon';
+
+  @override
+  String get beaconTripMileage => 'Trip distance';
+
+  @override
+  String get beaconTotalMileage => 'Total distance';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS does not allow classic Bluetooth / USB serial links (MFi accessories only), so this cannot be enabled; use APRS-IS over the network instead.';
 
   @override
   String get phoneBattery => 'Phone battery';
@@ -6941,7 +6951,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hrForget => "Forget device";
 
   @override
-  String get hrNotSupported => "Bluetooth heart rate is not available on this platform (Android only)";
+  String get hrNotSupported => "Bluetooth heart rate is not available on this platform (available on Android / iOS)";
 
   @override
   String get hrConflictWithTnc => "That device is used by the TNC / PKWDWPL Bluetooth link; it cannot be the strap too";

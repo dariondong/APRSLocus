@@ -216,8 +216,17 @@ class SettingsSwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
   final Color? color;
+
+  /// 本平台是否支持该选项。为 false 时置灰并禁用开关（配合下方
+  /// [SettingsHint] 说明原因），而不是让用户点一个没反应的开关。
+  final bool enabled;
+
   const SettingsSwitch(this.label,
-      {super.key, required this.value, required this.onChanged, this.color});
+      {super.key,
+      required this.value,
+      required this.onChanged,
+      this.color,
+      this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +241,7 @@ class SettingsSwitch extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: ts(12, c: C.slate),
+            style: ts(12, c: enabled ? C.slate : C.greyLight),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -240,7 +249,7 @@ class SettingsSwitch extends StatelessWidget {
         const SizedBox(width: 8),
         Switch(
           value: value,
-          onChanged: onChanged,
+          onChanged: enabled ? onChanged : null,
           activeThumbColor: c,
           activeTrackColor: c.withValues(alpha: 0.25),
           inactiveThumbColor: C.grey,

@@ -6,6 +6,7 @@ import 'garmin_page.dart';
 import 'hr_page.dart';
 import 'link_test_card.dart';
 import 'pkwdwpl_device_page.dart';
+import 'platform_caps.dart';
 import 'settings_widgets.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -260,6 +261,8 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           title: s.tncDeviceTitle,
           desc: s.tncDeviceDesc,
           page: TncDevicePage(state: state),
+          disabled: !tncPlatformSupported,
+          disabledReason: s.iosFeatureUnsupported,
         ),
         _entry(
           context,
@@ -276,6 +279,8 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           title: s.pkwdwplDeviceTitle,
           desc: s.pkwdwplDeviceDesc,
           page: PkwdwplDevicePage(state: state),
+          disabled: !tncPlatformSupported,
+          disabledReason: s.iosFeatureUnsupported,
         ),
         // 心率带与佳明 LiveTrack：它们**不是报文链路**（不参与收发报文），
         // 而是「自己位置/心率的来源」，所以放在「设备」这一页的子页入口里，
@@ -288,6 +293,8 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           title: s.hrCardTitle,
           desc: s.hrCardSubtitle,
           page: HrDevicePage(state: state),
+          disabled: !bleHrPlatformSupported,
+          disabledReason: s.hrNotSupported,
         ),
         _entry(
           context,
@@ -308,10 +315,17 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
     required String title,
     required String desc,
     required Widget page,
+    bool disabled = false,
+    String? disabledReason,
   }) {
+    // 平台不支持（如 iOS 没有 TNC/音频/心率原生通道）：置灰、不可进，
+    // 副标题改为「为什么不可用」，而不是点进去才发现是空的。
+    final sub = disabled ? (disabledReason ?? desc) : desc;
     return InkWell(
-      onTap: () =>
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => page)),
+      onTap: disabled
+          ? null
+          : () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => page)),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
@@ -322,23 +336,37 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
+              color: disabled
+                  ? C.greyBg
+                  : color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, size: 17, color: color),
+            child: Icon(icon,
+                size: 17, color: disabled ? C.greyLight : color),
           ),
           const SizedBox(width: 11),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: ts(13, w: FontWeight.w700, c: C.ink)),
+                Text(title,
+                    style: ts(13,
+                        w: FontWeight.w700,
+                        c: disabled ? C.greyLight : C.ink)),
                 const SizedBox(height: 2),
-                Text(desc, style: ts(11, c: C.grey)),
+                Text(sub,
+                    style: ts(11, c: disabled ? C.orange : C.grey),
+                    maxLines: disabled ? 2 : 1,
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
-          Icon(Icons.chevron_right_rounded, size: 18, color: C.greyLight),
+          Icon(
+              disabled
+                  ? Icons.lock_outline
+                  : Icons.chevron_right_rounded,
+              size: 18,
+              color: C.greyLight),
         ]),
       ),
     );

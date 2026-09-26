@@ -320,6 +320,8 @@ class AppState extends ChangeNotifier {
         alt: p.altM,
         accuracyM: 0,
       );
+      // 佳明接管期间的里程也要记，否则那段路在里程里是空白（与台账一致）
+      if (last != null) _addMileage(movedM / 1000.0);
     }
     if (filterFollow) {
       filterLat = p.lat;
@@ -450,6 +452,25 @@ class AppState extends ChangeNotifier {
   /// APRS 没有心率的正式字段，`HR=nn` 是业界通行写法（参考
   /// garmin-livetrack-aprs-openwrt 的报文示例），第三方地图会把它当备注显示。
   bool beaconIncludeHr = true;
+
+  /// 信标备注里是否带上**本次里程**（`TRV:`，从本次开启信标起累计）。
+  ///
+  /// 与速度/电量不同，`TRV:`/`ODO:` 是**非标准** APRS 备注字段，会把备注
+  /// 撑长、也会显示在第三方地图的备注里，所以**默认关**，由用户按需开启。
+  bool beaconIncludeTripMileage = false;
+
+  /// 信标备注里是否带上**累计总里程**（`ODO:`，跨重启累计）。
+  bool beaconIncludeTotalMileage = false;
+
+  /// 本次里程（公里）：从**本次开启信标**（或本次启动）起走过的距离。
+  double tripMileageKm = 0;
+
+  /// 累计总里程（公里）：跨重启累计，持久化在 [SharedPreferences]。
+  double totalMileageKm = 0;
+
+  /// 累计里程落盘节流：定位回调约 1Hz，每次都写盘会让存储抖动。
+  DateTime _lastMileageSave = DateTime.fromMillisecondsSinceEpoch(0);
+
   int _battery = -1; // 电量百分比（-1 未知）
 
   /// **强制接受网络定位自动上报**（默认关）。
@@ -629,6 +650,8 @@ class AppState extends ChangeNotifier {
   }
 
   void setBeaconEnabled(bool v) {
+    // 开启信标 = 开始新一次上报会话 → 本次里程从零重新累计
+    if (v && !beaconEnabled) _resetTripMileage();
     beaconEnabled = v;
     persist();
     _notify();
@@ -661,6 +684,20 @@ class AppState extends ChangeNotifier {
   /// 信标是否带上心率（见 [beaconIncludeHr]）。
   void setBeaconIncludeHr(bool v) {
     beaconIncludeHr = v;
+    persist();
+    _notify();
+  }
+
+  /// 信标是否带上本次里程（见 [beaconIncludeTripMileage]）。
+  void setBeaconIncludeTripMileage(bool v) {
+    beaconIncludeTripMileage = v;
+    persist();
+    _notify();
+  }
+
+  /// 信标是否带上累计总里程（见 [beaconIncludeTotalMileage]）。
+  void setBeaconIncludeTotalMileage(bool v) {
+    beaconIncludeTotalMileage = v;
     persist();
     _notify();
   }
@@ -2095,6 +2132,11 @@ class AppState extends ChangeNotifier {
       beaconIncludeBattery =
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
       beaconIncludeHr = p.getBool('beaconIncludeHr') ?? beaconIncludeHr;
+      beaconIncludeTripMileage =
+          p.getBool('beaconIncludeTripMileage') ?? beaconIncludeTripMileage;
+      beaconIncludeTotalMileage = p.getBool('beaconIncludeTotalMileage') ??
+          beaconIncludeTotalMileage;
+      totalMileageKm = p.getDouble('totalMileageKm') ?? totalMileageKm;
       beaconForceCoarse =
           p.getBool('beaconForceCoarse') ?? beaconForceCoarse;
       bleHrId = p.getString('bleHrId') ?? bleHrId;
@@ -2304,6 +2346,9 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
     await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
+    await p.setBool('beaconIncludeTripMileage', beaconIncludeTripMileage);
+    await p.setBool('beaconIncludeTotalMileage', beaconIncludeTotalMileage);
+    await p.setDouble('totalMileageKm', totalMileageKm);
     await p.setBool('beaconForceCoarse', beaconForceCoarse);
     await p.setString('bleHrId', bleHrId);
     await p.setString('bleHrName', bleHrName);
@@ -3852,6 +3897,8 @@ class AppState extends ChangeNotifier {
           alt: alt,
           accuracyM: accuracy,
         );
+        // 里程与轨迹点同门限累计（见 _addMileage）：只在有上一个点时才有位移
+        if (last != null) _addMileage(movedM / 1000.0);
       }
     }
     // 过滤中心跟随我的位置
@@ -3974,7 +4021,43 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
-  /// 组装信标备注：高度(/A=英尺) + 速度/方位角 + 电量 + 自定义备注 + 版本号
+  /// 累加里程（公里）。只在**确实写了轨迹点**的两条路径（手机 GPS / 佳明）
+  /// 调用 —— 与按天台账同源、同门限，静止抖动不会把里程越加越大。
+  void _addMileage(double dKm) {
+    if (!dKm.isFinite || dKm <= 0) return;
+    tripMileageKm += dKm;
+    totalMileageKm += dKm;
+    _saveMileageThrottled();
+  }
+
+  /// 累计里程落盘节流（≥20s 一次）：定位回调约 1Hz，每次都写盘会抖动。
+  void _saveMileageThrottled() {
+    final now = DateTime.now();
+    if (now.difference(_lastMileageSave).inSeconds < 20) return;
+    _lastMileageSave = now;
+    unawaited(_persistTotalMileage());
+  }
+
+  Future<void> _persistTotalMileage() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setDouble('totalMileageKm', totalMileageKm);
+    } catch (_) {}
+  }
+
+  /// 本次里程归零（新一次信标上报会话开始时调用）。
+  void _resetTripMileage() {
+    tripMileageKm = 0;
+  }
+
+  /// 里程字段格式：<100km 保留 1 位小数，≥100km 取整
+  /// （`TRV:12.3km` / `ODO:1234km`）。不带空格，避免把备注切得太碎。
+  String _fmtMileageField(double km) {
+    final k = km < 0 ? 0.0 : km;
+    return k >= 100 ? '${k.round()}km' : '${k.toStringAsFixed(1)}km';
+  }
+
+  /// 组装信标备注：高度(/A=英尺) + 速度/方位角 + 电量 + 心率 + 里程 + 自定义备注
   String _beaconComment() {
     final parts = <String>[];
     // 标准 course/speed 格式：ddd/sss（度/节，各3位）
@@ -4004,6 +4087,14 @@ class AppState extends ChangeNotifier {
     // 只在**真有读数**时发：没读数时发 HR=0 会让收端以为「心率 0」而不是「没测」。
     if (beaconIncludeHr && myHr != null && myHr! > 0) {
       parts.add('HR=$myHr');
+    }
+    // 里程：TRV=本次（信标本次开启起）、ODO=累计总里程。非标准 APRS 字段，
+    // 默认关；用户开启后才附上（见 beaconIncludeTripMileage / ...TotalMileage）。
+    if (beaconIncludeTripMileage) {
+      parts.add('TRV:${_fmtMileageField(tripMileageKm)}');
+    }
+    if (beaconIncludeTotalMileage) {
+      parts.add('ODO:${_fmtMileageField(totalMileageKm)}');
     }
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());

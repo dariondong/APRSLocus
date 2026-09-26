@@ -21,6 +21,13 @@ import UIKit
     // 这里用 applicationRegistrar 的 messenger：按引擎头文件说明，
     // 它是面向「应用级方法通道」的入口（FlutterImplicitEngineBridge
     // 的 applicationRegistrar 属性，专为注册应用级通道/服务而设）。
-    LocationPlugin.register(with: engineBridge.applicationRegistrar.messenger())
+    let messenger = engineBridge.applicationRegistrar.messenger()
+    LocationPlugin.register(with: messenger)
+    // 运动传感器（CoreMotion）：加速度计 + 指南针，供轨迹打点更准。
+    MotionPlugin.register(with: messenger)
+    // 蓝牙心率带（CoreBluetooth）：BLE 标准心率服务 0x180D。
+    BleHrPlugin.register(with: messenger)
+    // 声卡 TNC（AVAudioEngine）：AFSK 采集 / 播放 PCM16。
+    AudioPlugin.register(with: messenger)
   }
 }

@@ -108,7 +108,7 @@ class _HrSettingsCardState extends State<HrSettingsCard> {
                   ),
                 ),
               // ② 设备连接区
-              if (!h.isAndroid || !h.supported)
+              if (!h.platformSupported || !h.supported)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(s.hrNotSupported, style: ts(11, c: C.orange, h: 1.5)),
@@ -235,7 +235,7 @@ class _HrSettingsCardState extends State<HrSettingsCard> {
                     style: ts(10.5, c: C.orange, h: 1.5),
                   ),
                 ),
-              if (h.isAndroid && h.supported)
+              if (h.platformSupported && h.supported)
                 Text(s.hrStrapHint, style: ts(10, c: C.greyLight, h: 1.5)),
             ],
           ),

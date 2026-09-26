@@ -70,6 +70,12 @@
 	<string>用于在 APRS 地图上显示您的位置、上报信标并计算与台站的距离</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>锁屏或切到后台时继续上报信标（APRS 追踪需要持续定位）</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>连接蓝牙心率带，把心率随位置信标一起上报</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>连接蓝牙心率带，把心率随位置信标一起上报</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>声卡 TNC 需要用麦克风接收 AFSK 音频（接收台站报文）</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

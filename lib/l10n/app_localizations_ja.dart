@@ -2881,7 +2881,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get allChangelog => 'すべての更新履歴';
 
   @override
-  String get tapToView => 'タップで表示';
+  String get tapToView => 'ビーコンをダブルタップで詳細';
 
   @override
   String get beaconNow => '今すぐ送信';
@@ -4334,6 +4334,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get beaconContentDesc => '位置ビーコンと一緒に送信';
+
+  @override
+  String get beaconTripMileage => '今回の走行距離';
+
+  @override
+  String get beaconTotalMileage => '累計走行距離';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS はクラシック Bluetooth / USB シリアル接続に対応していません（MFi 認証アクセサリのみ）。この機能は有効にできません。代わりに APRS-IS を利用してください。';
 
   @override
   String get phoneBattery => '端末のバッテリー';
@@ -6750,7 +6760,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hrForget => "デバイスを削除";
 
   @override
-  String get hrNotSupported => "この環境では Bluetooth 心拍を利用できません（Android 版のみ）";
+  String get hrNotSupported => "この環境では Bluetooth 心拍を利用できません（Android / iOS 版で利用可能）";
 
   @override
   String get hrConflictWithTnc => "そのデバイスは TNC / PKWDWPL の Bluetooth リンクが使用中です（兼用は不可）";

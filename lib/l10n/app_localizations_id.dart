@@ -2963,7 +2963,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get allChangelog => 'Semua catatan rilis';
 
   @override
-  String get tapToView => 'Ketuk untuk melihat';
+  String get tapToView => 'Ketuk dua kali beacon untuk detail';
 
   @override
   String get beaconNow => 'Beacon sekarang';
@@ -4451,6 +4451,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get beaconContentDesc => 'Dikirim bersama setiap beacon posisi';
+
+  @override
+  String get beaconTripMileage => 'Jarak perjalanan';
+
+  @override
+  String get beaconTotalMileage => 'Jarak total';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS tidak mengizinkan tautan Bluetooth klasik / serial USB (hanya aksesori MFi), jadi fitur ini tidak dapat diaktifkan; gunakan APRS-IS lewat jaringan.';
 
   @override
   String get phoneBattery => 'Baterai ponsel';
@@ -6950,7 +6960,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get hrForget => "Lupakan perangkat";
 
   @override
-  String get hrNotSupported => "Detak jantung Bluetooth tidak tersedia di platform ini (hanya Android)";
+  String get hrNotSupported => "Detak jantung Bluetooth tidak tersedia di platform ini (tersedia di Android / iOS)";
 
   @override
   String get hrConflictWithTnc => "Perangkat itu dipakai tautan Bluetooth TNC / PKWDWPL; tidak bisa jadi strap juga";

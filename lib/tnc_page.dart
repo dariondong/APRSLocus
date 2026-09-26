@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'settings_widgets.dart';
 import 'garmin_page.dart';
 import 'hr_page.dart';
+import 'platform_caps.dart';
 import 'state.dart';
 import 'theme.dart';
 import 'tnc.dart';
@@ -57,6 +58,8 @@ class DataSourceCard extends StatelessWidget {
           title: s.dataSourceTnc,
           desc: s.dataSourceTncDesc,
           icon: Icons.settings_input_antenna_rounded,
+          disabled: !tncPlatformSupported,
+          disabledReason: s.iosFeatureUnsupported,
         ),
         // PKWDWPL（Kenwood 航点语句）与 TNC 并列：同一根线缆/蓝牙，
         // 但线上是 NMEA 明文行、而且**只收不发**（canTx: false）
@@ -67,6 +70,8 @@ class DataSourceCard extends StatelessWidget {
           desc: s.dataSourcePkwdwplDesc,
           icon: Icons.route_rounded,
           canTx: false,
+          disabled: !tncPlatformSupported,
+          disabledReason: s.iosFeatureUnsupported,
         ),
         _tile(
           context,
@@ -141,6 +146,8 @@ class DataSourceCard extends StatelessWidget {
               (state.garminOn && state.garmin.fresh && state.myHr != null),
           onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => HrDevicePage(state: state))),
+          disabled: !bleHrPlatformSupported,
+          disabledReason: s.hrNotSupported,
         ),
         // 多选时才需要解释「发射走哪条」，单选时这句话是噪音
         // 位置来源的**优先级**（与上报页同一句文案、同一个 getter）：两处都写清楚，
@@ -228,18 +235,24 @@ class DataSourceCard extends StatelessWidget {
     required String desc,
     required bool active,
     required VoidCallback onTap,
+    bool disabled = false,
+    String? disabledReason,
   }) {
+    // 平台不支持：置灰、不可点，副标题换成原因（与 _tile 同一套观感）
+    final sub = disabled ? (disabledReason ?? desc) : desc;
     return ClickCursor(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: onTap,
+        onTap: disabled ? null : onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
           ),
           child: Row(children: [
-            Icon(icon, size: 16, color: active ? C.red : C.grey),
+            Icon(icon,
+                size: 16,
+                color: disabled ? C.greyLight : (active ? C.red : C.grey)),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -247,17 +260,28 @@ class DataSourceCard extends StatelessWidget {
                 children: [
                   Text(title,
                       style: ts(12.5,
-                          c: active ? C.ink : C.slate, w: FontWeight.w600)),
+                          c: disabled
+                              ? C.greyLight
+                              : (active ? C.ink : C.slate),
+                          w: FontWeight.w600)),
                   const SizedBox(height: 1),
-                  Text(desc,
-                      style: ts(10.5, c: C.grey),
-                      maxLines: 1,
+                  Text(sub,
+                      style: ts(10.5, c: disabled ? C.orange : C.grey),
+                      maxLines: disabled ? 2 : 1,
                       overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
-            Icon(active ? Icons.radio_button_checked : Icons.radio_button_off,
-                size: 16, color: active ? C.red : C.greyLight),
+            Icon(
+                disabled
+                    ? Icons.lock_outline
+                    : (active
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_off),
+                size: 16,
+                color: disabled
+                    ? C.greyLight
+                    : (active ? C.red : C.greyLight)),
           ]),
         ),
       ),
@@ -271,6 +295,8 @@ class DataSourceCard extends StatelessWidget {
     required String desc,
     required IconData icon,
     bool canTx = true,
+    bool disabled = false,
+    String? disabledReason,
   }) {
     final s = S.of(context);
     final enabled = state.enabledSources.contains(key);
@@ -280,32 +306,47 @@ class DataSourceCard extends StatelessWidget {
     final isTx = canTx && state.dataSource == key;
     // 最后一条不允许取消勾选：全关掉应用就什么都不收，而界面没有任何提示
     final canToggleOff = state.enabledSources.length > 1 || !enabled;
+    // 平台不支持：整行置灰、不可点，副标题换成「为什么不可用」——
+    // 让用户一眼看出不是坏了，而是本平台根本没有这条链路。
+    final sub = disabled ? (disabledReason ?? desc) : desc;
     return InkWell(
-      onTap: () => state.toggleSource(key, !enabled),
+      onTap: disabled ? null : () => state.toggleSource(key, !enabled),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: enabled ? C.blue.withValues(alpha: 0.04) : Colors.transparent,
+          color: disabled
+              ? Colors.transparent
+              : (enabled
+                  ? C.blue.withValues(alpha: 0.04)
+                  : Colors.transparent),
           border: Border(bottom: BorderSide(color: C.border, width: 0.4)),
         ),
         child: Row(children: [
           // 勾选状态：这是「是否启用这条链路」，不是「选中它去发射」
           Icon(
-            enabled
-                ? Icons.check_box_rounded
-                : Icons.check_box_outline_blank_rounded,
+            disabled
+                ? Icons.block
+                : (enabled
+                    ? Icons.check_box_rounded
+                    : Icons.check_box_outline_blank_rounded),
             size: 19,
-            color: enabled ? C.blue : C.greyLight,
+            color: disabled
+                ? C.greyLight
+                : (enabled ? C.blue : C.greyLight),
           ),
           const SizedBox(width: 10),
           Container(
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: enabled ? C.blue.withValues(alpha: 0.12) : C.greyBg,
+              color: disabled
+                  ? C.greyBg
+                  : (enabled ? C.blue.withValues(alpha: 0.12) : C.greyBg),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, size: 17, color: enabled ? C.blue : C.grey),
+            child: Icon(icon,
+                size: 17,
+                color: disabled ? C.greyLight : (enabled ? C.blue : C.grey)),
           ),
           const SizedBox(width: 11),
           Expanded(
@@ -317,10 +358,12 @@ class DataSourceCard extends StatelessWidget {
                     child: Text(title,
                         style: ts(13,
                             w: FontWeight.w700,
-                            c: enabled ? C.blue : C.grey),
+                            c: disabled
+                                ? C.greyLight
+                                : (enabled ? C.blue : C.grey)),
                         overflow: TextOverflow.ellipsis),
                   ),
-                  if (enabled) ...[
+                  if (!disabled && enabled) ...[
                     const SizedBox(width: 6),
                     // 每条链路的真实连通状态：多选时这是最需要一眼看到的信息
                     Container(
@@ -337,12 +380,22 @@ class DataSourceCard extends StatelessWidget {
                   ],
                 ]),
                 const SizedBox(height: 2),
-                Text(desc, style: ts(11, c: C.grey)),
+                Text(sub,
+                    style: ts(11, c: disabled ? C.orange : C.grey),
+                    maxLines: disabled ? 2 : 1,
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
+          // 平台不支持：用一把锁替代发射标记，明确「本平台不可用」
+          if (disabled)
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Icon(Icons.lock_outline,
+                  size: 16, color: C.greyLight),
+            )
           // 发射来源标记：只有启用的**可发射**链路才有资格
-          if (enabled && canTx)
+          else if (enabled && canTx)
             GestureDetector(
               onTap: isTx ? null : () => state.setTxSource(key),
               behavior: HitTestBehavior.opaque,

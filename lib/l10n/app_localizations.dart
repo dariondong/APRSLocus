@@ -7761,6 +7761,24 @@ abstract class AppLocalizations {
   /// **'随位置信标一起发送'**
   String get beaconContentDesc;
 
+  /// No description provided for @beaconTripMileage.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次里程'**
+  String get beaconTripMileage;
+
+  /// No description provided for @beaconTotalMileage.
+  ///
+  /// In zh, this message translates to:
+  /// **'累计里程'**
+  String get beaconTotalMileage;
+
+  /// No description provided for @iosFeatureUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'iOS 版暂不支持该功能（原生链路尚未实现）'**
+  String get iosFeatureUnsupported;
+
   /// No description provided for @phoneBattery.
   ///
   /// In zh, this message translates to:

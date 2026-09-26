@@ -12,6 +12,7 @@ import 'log_page.dart';
 import 'tile_map.dart';
 import 'audio_page.dart';
 import 'device_page.dart';
+import 'platform_caps.dart';
 import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
 import 'early_member.dart';
@@ -879,8 +880,11 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             ),
             SettingsSwitch(S.of(context).sensorAssist,
                 value: st.sensorAssist, color: C.green,
+                enabled: motionPlatformSupported,
                 onChanged: st.setSensorAssist),
-            SettingsHint(S.of(context).sensorAssistDesc),
+            // 传感器仅 Android 有原生实现：不支持时置灰并把说明标成警示色
+            SettingsHint(S.of(context).sensorAssistDesc,
+                color: motionPlatformSupported ? null : C.orange),
             // **优先级说明**（用户问「如果选了佳明，这里不重复了吗？听谁的？」）：
             // 这一页只管「手机 GPS / 模拟位置」二选一，佳明在「设置 → 设备 → 位置来源」，
             // 而两者同时可用时的顺序是**一处判断**（AppState.positionSourceNow），
@@ -1090,6 +1094,12 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       onChanged: st.setBeaconIncludeCourse),
                   SettingsMiniSwitch(S.of(context).phoneBattery, value: st.beaconIncludeBattery,
                       onChanged: st.setBeaconIncludeBattery),
+                  SettingsMiniSwitch(S.of(context).beaconTripMileage,
+                      value: st.beaconIncludeTripMileage,
+                      onChanged: st.setBeaconIncludeTripMileage),
+                  SettingsMiniSwitch(S.of(context).beaconTotalMileage,
+                      value: st.beaconIncludeTotalMileage,
+                      onChanged: st.setBeaconIncludeTotalMileage),
                 ],
               ),
             ),

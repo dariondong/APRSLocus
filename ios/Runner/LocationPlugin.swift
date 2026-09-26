@@ -118,6 +118,15 @@ final class LocationPlugin: NSObject, CLLocationManagerDelegate {
       mode = m ?? mode
       result(true)
 
+    case "getBattery":
+      // 电量：直接用系统 UIDevice 读取（无需权限）。batteryLevel 在未知
+      // （模拟器 / 电池监控刚开启）时返回 -1，与 Android 端「未知 = -1」一致。
+      DispatchQueue.main.async {
+        UIDevice.current.isBatteryMonitoringEnabled = true
+        let level = UIDevice.current.batteryLevel
+        result(level < 0 ? -1 : Int((level * 100).rounded()))
+      }
+
     default:
       result(FlutterMethodNotImplemented)
     }

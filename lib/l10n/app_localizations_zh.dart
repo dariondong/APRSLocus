@@ -2854,7 +2854,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get allChangelog => '全部更新日志';
 
   @override
-  String get tapToView => '点击查看';
+  String get tapToView => '双击信标查看更多';
 
   @override
   String get beaconNow => '手动上报';
@@ -4300,6 +4300,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get beaconContentDesc => '随位置信标一起发送';
+
+  @override
+  String get beaconTripMileage => '本次里程';
+
+  @override
+  String get beaconTotalMileage => '累计里程';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS 不支持经典蓝牙 / USB 串口链路（仅 MFi 认证配件可用），此功能无法开启；可改用 APRS-IS 联网接入。';
 
   @override
   String get phoneBattery => '手机电量';
@@ -6676,7 +6686,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hrForget => "忘记该设备";
 
   @override
-  String get hrNotSupported => "本机不支持蓝牙心率（该功能在 Android 版提供）";
+  String get hrNotSupported => "本机不支持蓝牙心率（该功能在 Android / iOS 版提供）";
 
   @override
   String get hrConflictWithTnc => "这个设备正被 TNC / PKWDWPL 的蓝牙链路使用，不能同时当心率带";
@@ -9686,7 +9696,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get allChangelog => '全部更新日誌';
 
   @override
-  String get tapToView => '點選檢視';
+  String get tapToView => '雙擊信標查看更多';
 
   @override
   String get beaconNow => '手動上報';
@@ -11132,6 +11142,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconContentDesc => '隨位置信標一起傳送';
+
+  @override
+  String get beaconTripMileage => '本次里程';
+
+  @override
+  String get beaconTotalMileage => '累計里程';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS 不支援經典藍牙 / USB 序列埠鏈路（僅 MFi 認證配件可用），此功能無法開啟；可改用 APRS-IS 連網接入。';
 
   @override
   String get phoneBattery => '手機電量';
@@ -13508,7 +13528,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get hrForget => "忘記該裝置";
 
   @override
-  String get hrNotSupported => "本機不支援藍牙心率（該功能在 Android 版提供）";
+  String get hrNotSupported => "本機不支援藍牙心率（該功能在 Android / iOS 版提供）";
 
   @override
   String get hrConflictWithTnc => "這個裝置正被 TNC / PKWDWPL 的藍牙鏈路使用，不能同時當心率帶";

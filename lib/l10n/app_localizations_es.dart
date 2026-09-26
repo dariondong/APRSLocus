@@ -2980,7 +2980,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get allChangelog => 'Todos los cambios';
 
   @override
-  String get tapToView => 'Toca para ver';
+  String get tapToView => 'Toca dos veces la baliza para más';
 
   @override
   String get beaconNow => 'Balizar ahora';
@@ -4479,6 +4479,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get beaconContentDesc => 'Se envía con cada baliza de posición';
+
+  @override
+  String get beaconTripMileage => 'Distancia del viaje';
+
+  @override
+  String get beaconTotalMileage => 'Distancia total';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS no permite enlaces Bluetooth clásico / serie USB (solo accesorios MFi), así que esta función no se puede activar; usa APRS-IS por red.';
 
   @override
   String get phoneBattery => 'Batería del teléfono';
@@ -6991,7 +7001,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get hrForget => "Olvidar dispositivo";
 
   @override
-  String get hrNotSupported => "El pulso por Bluetooth no está disponible en esta plataforma (solo Android)";
+  String get hrNotSupported => "El pulso por Bluetooth no está disponible en esta plataforma (disponible en Android / iOS)";
 
   @override
   String get hrConflictWithTnc => "Ese dispositivo lo usa el enlace Bluetooth de TNC / PKWDWPL; no puede ser la banda";

@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 
 /// ─── 运动传感器（加速度计 + 指南针）───
 ///
-/// 只有 Android 有实现（原生 `MotionManager.kt`）；其它平台一律返回
-/// [MotionSample.unknown]，调用方按「没有传感器」的旧路径走，不需要分平台写逻辑。
+/// Android / iOS 都有实现（原生 `MotionManager.kt` / `MotionPlugin.swift`）；
+/// 其它平台一律返回 [MotionSample.unknown]，调用方按「没有传感器」的旧路径走，
+/// 不需要分平台写逻辑。
 ///
 /// 为什么不用 `sensors_plus` 之类的插件：本项目对第三方插件的取舍一贯是
 /// 「能用平台通道自己搬的就不加依赖」（TNC / PKWDWPL / 音频 / USB 串口都是这么做的）。
@@ -59,8 +60,12 @@ class MotionService {
 
   bool _started = false;
 
+  /// Android（`MotionManager.kt`）与 iOS（`ios/Runner/MotionPlugin.swift`）都有实现；
+  /// 其它平台一律返回 [MotionSample.unknown]，调用方按「没有传感器」的旧路径走。
   bool get supported =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
 
   bool get running => _started;
 

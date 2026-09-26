@@ -58,6 +58,9 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，
     // 换机后当然希望还按自己调的那样上报。
     'beaconIncludeHr',
+    // 里程附带（TRV/ODO）与累计总里程：属于「信标内容 + 累计数据」，
+    // 换机后当然希望继续累计、按自己调的那样上报。
+    'beaconIncludeTripMileage', 'beaconIncludeTotalMileage', 'totalMileageKm',
     // 强制接受网络定位自动上报：同上 —— 这是用户对**上报行为**的知情选择，
     // 而且他的设备很可能正是因为**没有 GPS** 才需要它。丢了它换机后自动上报
     // 会静默变回「一直不报」，而用户不知道为什么（界面只显示「网络定位中」）。

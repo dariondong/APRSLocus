@@ -40,9 +40,14 @@ class BleHrService {
   static const MethodChannel _ch = MethodChannel('com.aprslocus/blehr');
   static const EventChannel _ev = EventChannel('com.aprslocus/blehr_events');
 
-  /// 仅 Android 实现了原生侧（与 TNC/PKWDWPL/USB 同一口径：桌面与 Web 没有）。
-  bool get isAndroid =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  /// 本平台是否实现了 BLE 心率原生侧。
+  ///
+  /// Android（`android/.../BleHrManager.kt`）与 iOS（`ios/Runner/BleHrPlugin.swift`）
+  /// 都有实现；桌面与 Web 没有。与 TNC/PKWDWPL 同一口径：**有原生链路的平台才可用**。
+  bool get platformSupported =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
 
   /// 原生侧 `isSupported()` 的结果（没有蓝牙适配器时为 false）。
   bool supported = false;
@@ -81,7 +86,7 @@ class BleHrService {
   Future<void> ensureInit() async {
     if (initialized) return;
     initialized = true;
-    if (!isAndroid) {
+    if (!platformSupported) {
       supported = false;
       return;
     }
@@ -99,7 +104,7 @@ class BleHrService {
   }
 
   Future<bool> requestPermissions() async {
-    if (!isAndroid) return false;
+    if (!platformSupported) return false;
     try {
       return await _ch.invokeMethod<bool>('requestPermissions') ?? false;
     } catch (e) {
@@ -112,7 +117,7 @@ class BleHrService {
   /// 开始扫描。**只在用户主动挑选设备时扫描**：BLE 扫描是持续射频活动，
   /// 开着不放既费电、也会与正在工作的链路争用天线。
   Future<bool> startScan() async {
-    if (!isAndroid || !supported) return false;
+    if (!platformSupported || !supported) return false;
     lastError = '';
     try {
       final ok = await _ch.invokeMethod<bool>('startScan') ?? false;
@@ -131,7 +136,7 @@ class BleHrService {
   }
 
   Future<void> stopScan() async {
-    if (!isAndroid) return;
+    if (!platformSupported) return;
     try {
       await _ch.invokeMethod<void>('stopScan');
     } catch (_) {
@@ -142,7 +147,7 @@ class BleHrService {
   }
 
   Future<bool> connect(BleHrDevice d, {Set<String> busySppAddresses = const {}}) async {
-    if (!isAndroid || !supported) return false;
+    if (!platformSupported || !supported) return false;
     // 与 TNC 的显式防冲突（见类注释第 2 条）：双模设备的经典地址与 BLE 地址相同。
     if (busySppAddresses.contains(d.id.toUpperCase())) {
       lastError = 'conflict:${d.id}';
@@ -166,7 +171,7 @@ class BleHrService {
   }
 
   Future<void> disconnect() async {
-    if (!isAndroid) return;
+    if (!platformSupported) return;
     try {
       await _ch.invokeMethod<void>('disconnect');
     } catch (_) {}
