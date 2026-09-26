@@ -749,9 +749,11 @@ class BeaconSettingsPage extends StatefulWidget {
 
 class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
   late final TextEditingController _interval;
+  late final TextEditingController _netInterval;
   late final TextEditingController _myLat;
   late final TextEditingController _myLng;
   final _intervalFocus = FocusNode();
+  final _netIntervalFocus = FocusNode();
   bool _manualOpen = false;
   int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
 
@@ -761,18 +763,24 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
   void initState() {
     super.initState();
     _interval = TextEditingController(text: '${st.beaconInterval}');
+    _netInterval = TextEditingController(text: '${st.beaconNetInterval}');
     _myLat = TextEditingController(text: st.myLat?.toString() ?? '');
     _myLng = TextEditingController(text: st.myLng?.toString() ?? '');
     // 失焦时统一校验（避免逐字符输入就弹窗）
     _intervalFocus.addListener(() {
       if (!_intervalFocus.hasFocus) _applyIntervalInput();
     });
+    _netIntervalFocus.addListener(() {
+      if (!_netIntervalFocus.hasFocus) _applyNetIntervalInput();
+    });
   }
 
   @override
   void dispose() {
     _intervalFocus.dispose();
+    _netIntervalFocus.dispose();
     _interval.dispose();
+    _netInterval.dispose();
     _myLat.dispose();
     _myLng.dispose();
     super.dispose();
@@ -791,6 +799,16 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     } else {
       st.setBeaconInterval(n);
     }
+  }
+
+  /// 纯网络模式专用间隔：读取输入并应用（非法回退当前值）
+  void _applyNetIntervalInput() {
+    final n = int.tryParse(_netInterval.text.trim());
+    if (n == null || n < 30) {
+      _netInterval.text = '${st.beaconNetInterval}';
+      return;
+    }
+    st.setBeaconNetInterval(n);
   }
 
   /// 信标间隔 < 60 秒 → 强提示（APRS-IS 建议移动站不低于 60 秒）
@@ -1070,19 +1088,31 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           children: [
             SettingsSwitch(S.of(context).beaconEnabled, value: st.beaconEnabled,
                 onChanged: st.setBeaconEnabled),
-            // 固定间隔：仅在关闭智能信标时作为兜底使用
-            if (!st.smartBeaconEnabled)
-              SettingsInput(S.of(context).beaconInterval, _interval,
-                  tip: S.of(context).beaconIntervalTip,
-                  focusNode: _intervalFocus,
+            // 纯网络模式：没有可靠速度 → 智能信标 / 距离 / 转弯都不适用，
+            // 改用**专用固定间隔**（见 AppState.beaconNetInterval）。
+            if (st.locationMode == 'network')
+              SettingsInput(S.of(context).beaconNetInterval, _netInterval,
+                  tip: S.of(context).beaconNetIntervalTip,
+                  focusNode: _netIntervalFocus,
                   onEditingComplete: () {
-                    // 回车=确认：立即收起键盘并校验
-                    _intervalFocus.unfocus();
-                    _applyIntervalInput();
-                  }),
-            SettingsSwitch(S.of(context).smartBeacon,
-                value: st.smartBeaconEnabled, onChanged: st.setSmartBeaconOn),
-            if (st.smartBeaconEnabled) _smartTierArea(),
+                    _netIntervalFocus.unfocus();
+                    _applyNetIntervalInput();
+                  })
+            else ...[
+              // 固定间隔：仅在关闭智能信标时作为兜底使用
+              if (!st.smartBeaconEnabled)
+                SettingsInput(S.of(context).beaconInterval, _interval,
+                    tip: S.of(context).beaconIntervalTip,
+                    focusNode: _intervalFocus,
+                    onEditingComplete: () {
+                      // 回车=确认：立即收起键盘并校验
+                      _intervalFocus.unfocus();
+                      _applyIntervalInput();
+                    }),
+              SettingsSwitch(S.of(context).smartBeacon,
+                  value: st.smartBeaconEnabled, onChanged: st.setSmartBeaconOn),
+              if (st.smartBeaconEnabled) _smartTierArea(),
+            ],
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 4, 14, 4),
               child: Column(

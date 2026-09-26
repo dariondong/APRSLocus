@@ -1356,6 +1356,8 @@
   "locModeNetworkHint": "Dalam mode hanya jaringan, lokasi hanya dari seluler / Wi-Fi: bisa meleset ratusan meter dan **tidak** dicatat ke lintasan atau riwayat. Tidak akan mengirim beacon otomatis kecuali kamu mengaktifkan “paksa laporan otomatis saat lokasi kasar”.",
   "beaconingSection": "Beaconing",
   "beaconIntervalTip": "Interval beacon posisi, minimal 5 detik",
+  "beaconNetInterval": "Interval hanya jaringan (dtk)",
+  "beaconNetIntervalTip": "Dalam mode hanya jaringan dipakai interval tetap; lokasi seluler/Wi-Fi tidak punya kecepatan andal, jadi smart beacon (kecepatan / jarak / belokan) tidak dipakai",
   "beaconContent": "Isi beacon",
   "beaconContentDesc": "Dikirim bersama setiap beacon posisi",
   "beaconTripMileage": "Jarak perjalanan",

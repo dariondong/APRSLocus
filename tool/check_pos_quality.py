@@ -94,14 +94,18 @@ def main() -> int:
     # 定位自动上报」。判据于是从「排除粗点」升级成「**默认**排除粗点，唯一的
     # 例外是那个用户显式开关」—— 守的还是同一件事：不许**代码**替用户默认把
     # 一个偏几百米的坐标发出去。
-    need('lib/state.dart', '      (!myFixCoarse || beaconForceCoarse) &&',
+    need('lib/state.dart',
+         "      (!myFixCoarse || beaconForceCoarse || locationMode == 'network') &&",
          'canAutoBeacon 不再默认排除粗定位 —— 网络定位下会自动发出一个偏几百米'
-         '的坐标（收端看到的是一条乱跳的轨迹）。唯一允许的例外是用户显式打开的'
-         ' beaconForceCoarse，不是默认放行')
+         '的坐标（收端看到的是一条乱跳的轨迹）。只允许两种**用户显式选择**的例外：'
+         "beaconForceCoarse，或纯网络定位模式（locationMode == 'network'）")
     # 开关打开时**不能**退回普通的 counting：界面上会变成一个正常的绿色倒计时，
     # 用户再也看不出「现在发出去的是网络定位」（两者常差几百米）。
+    #
+    # 纯网络模式例外：位置本来就只能来自网络（用户显式选择），此时走普通倒计时
+    # 才是诚实的 —— 它不是「粗点被放行」，而是「没有别的定位可用」。
     need('lib/state.dart',
-         '    if (myFixCoarse) {\n      return beaconForceCoarse\n          ? BeaconPhase.coarseForced\n          : BeaconPhase.coarseFix;\n    }',
+         "    if (myFixCoarse && locationMode != 'network') {\n      return beaconForceCoarse\n          ? BeaconPhase.coarseForced\n          : BeaconPhase.coarseFix;\n    }",
          'beaconPhase 的粗定位分支没了/被拆散 —— 要么界面继续显示一个不会生效的'
          '倒计时（老毛病），要么强制档与普通倒计时混成一样（看不出发的是粗坐标）')
     need('lib/state.dart', 'coarseFix,', 'BeaconPhase 里没有 coarseFix 枚举项')

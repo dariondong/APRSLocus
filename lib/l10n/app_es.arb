@@ -1355,6 +1355,8 @@
   "locModeNetworkHint": "En modo solo red la posición viene solo de la red móvil / Wi-Fi: puede desviarse cientos de metros y **nunca** se guarda en la ruta ni el historial. No enviará balizas automáticamente salvo que actives «forzar reporte automático con posición aproximada».",
   "beaconingSection": "Balizamiento",
   "beaconIntervalTip": "Intervalo de envío de la baliza de posición; mínimo 5 segundos",
+  "beaconNetInterval": "Intervalo solo red (s)",
+  "beaconNetIntervalTip": "En modo solo red se usa un intervalo fijo; las posiciones de red móvil / Wi-Fi no tienen velocidad fiable, así que no se usa el balizamiento inteligente (velocidad / distancia / giro)",
   "beaconContent": "Contenido de la baliza",
   "beaconContentDesc": "Se envía con cada baliza de posición",
   "beaconTripMileage": "Distancia del viaje",

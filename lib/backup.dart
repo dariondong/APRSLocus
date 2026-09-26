@@ -53,6 +53,8 @@ const List<BackupGroupSpec> kBackupGroups = [
   BackupGroupSpec(BackupCategory.settings, [
     'myCall', 'mySsid', 'mySymbol', 'myComment',
     'beacon', 'beaconAutoAsked', 'beaconInterval',
+    // 纯网络模式的专用上报间隔：属于「信标内容/节奏偏好」，换机后应保留
+    'beaconNetInterval',
     'smartBeaconOn', 'smartTiers',
     'beaconIncludeSpeed', 'beaconIncludeCourse', 'beaconIncludeBattery',
     // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，

@@ -4498,6 +4498,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Intervalo de envío de la baliza de posición; mínimo 5 segundos';
 
   @override
+  String get beaconNetInterval => 'Intervalo solo red (s)';
+
+  @override
+  String get beaconNetIntervalTip =>
+      'En modo solo red se usa un intervalo fijo; las posiciones de red móvil / Wi-Fi no tienen velocidad fiable, así que no se usa el balizamiento inteligente (velocidad / distancia / giro)';
+
+  @override
   String get beaconContent => 'Contenido de la baliza';
 
   @override

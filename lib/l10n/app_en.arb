@@ -1366,6 +1366,8 @@
   "locModeNetworkHint": "In network-only mode the fix comes from cell / Wi-Fi only: it can be hundreds of metres off and is **never** written to the track or history. It will not auto-beacon unless you enable “force auto-beacon on coarse fixes”.",
   "beaconingSection": "Beaconing",
   "beaconIntervalTip": "Position beacon interval, minimum 5 seconds",
+  "beaconNetInterval": "Network-only interval (s)",
+  "beaconNetIntervalTip": "In network-only mode a fixed interval is used; cell/Wi-Fi fixes have no reliable speed, so smart beaconing (speed / distance / turn) is not used",
   "beaconContent": "Beacon contents",
   "beaconContentDesc": "Sent with each position beacon",
   "beaconTripMileage": "Trip distance",

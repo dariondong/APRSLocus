@@ -4317,6 +4317,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get beaconIntervalTip => '位置信标的发送间隔，至少 5 秒';
 
   @override
+  String get beaconNetInterval => '纯网络上报间隔（秒）';
+
+  @override
+  String get beaconNetIntervalTip =>
+      '纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）';
+
+  @override
   String get beaconContent => '信标上报内容';
 
   @override
@@ -11178,6 +11185,13 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get beaconIntervalTip => '位置信標的傳送間隔，至少 5 秒';
+
+  @override
+  String get beaconNetInterval => '純網路上報間隔（秒）';
+
+  @override
+  String get beaconNetIntervalTip =>
+      '純網路模式使用固定間隔；網路定位沒有可靠速度，不使用智慧信標（依速度 / 距離 / 轉彎）';
 
   @override
   String get beaconContent => '信標上報內容';

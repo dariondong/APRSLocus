@@ -4352,6 +4352,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get beaconIntervalTip => '位置ビーコンの送信間隔（最短 5 秒）';
 
   @override
+  String get beaconNetInterval => 'ネットワークのみの送信間隔（秒）';
+
+  @override
+  String get beaconNetIntervalTip =>
+      'ネットワークのみモードでは固定間隔を使用します。基地局/Wi-Fi 測位には信頼できる速度がないため、スマートビーコン（速度 / 距離 / 旋回）は使いません';
+
+  @override
   String get beaconContent => 'ビーコンの内容';
 
   @override

@@ -418,6 +418,14 @@ class AppState extends ChangeNotifier {
   // 信标
   bool beaconEnabled = true;
   int beaconInterval = 60; // 秒（APRS-IS 建议移动站不低于 60 秒）
+
+  /// 纯网络定位模式下的**专用上报间隔**（秒）。
+  ///
+  /// 为什么单独一个：纯网络拿不到可靠速度，智能信标的「按速度分档 / 距离 /
+  /// 转弯」全都不可用（见 [beaconMinDistNow] / [beaconMinTurnNow]）。用户明确
+  /// 选了纯网络，就该有一个**可预期**的固定节奏；默认 300s（比移动站的 60s
+  /// 保守 —— 基站/Wi-Fi 本来就粗，不该频繁占用信道）。
+  int beaconNetInterval = 300;
   DateTime _lastBeacon = DateTime.now();
 
   /// 上一次信标发出的**位置**：智能信标的「距离打点」用它算「自上次上报以来
@@ -607,15 +615,20 @@ class AppState extends ChangeNotifier {
     return hit ?? smartTiers.first;
   }
 
-  /// 实际生效的上报间隔：智能信标按速度取档，否则用固定间隔
-  int get beaconIntervalNow => activeSmartTier?.intervalSec ?? beaconInterval;
+  /// 实际生效的上报间隔：纯网络用专用固定间隔；智能信标按速度取档；否则固定间隔
+  int get beaconIntervalNow => locationMode == 'network'
+      ? beaconNetInterval
+      : (activeSmartTier?.intervalSec ?? beaconInterval);
 
   /// 实际生效的**距离打点**门限（米）：0 = 只用定时。
-  /// 只有智能信标才有这一项 —— 固定间隔模式保持「纯定时」的老行为。
-  int get beaconMinDistNow => activeSmartTier?.minDistM ?? 0;
+  /// 只有智能信标才有这一项 —— 固定间隔模式与**纯网络模式**都保持「纯定时」。
+  int get beaconMinDistNow =>
+      locationMode == 'network' ? 0 : (activeSmartTier?.minDistM ?? 0);
 
   /// 实际生效的**转弯打点**阈值（度）：0 = 只用定时/距离。
-  int get beaconMinTurnNow => activeSmartTier?.minTurnDeg ?? 0;
+  /// 纯网络下航向不可靠，同样不用。
+  int get beaconMinTurnNow =>
+      locationMode == 'network' ? 0 : (activeSmartTier?.minTurnDeg ?? 0);
 
   /// 自上次**真的发出去**以来，航向变化了多少度（0~180，最小夹角）。
   ///
@@ -659,6 +672,13 @@ class AppState extends ChangeNotifier {
 
   void setBeaconInterval(int seconds) {
     beaconInterval = seconds < 5 ? 5 : seconds;
+    persist();
+    _notify();
+  }
+
+  /// 纯网络模式的专用上报间隔（见 [beaconNetInterval]）
+  void setBeaconNetInterval(int seconds) {
+    beaconNetInterval = seconds < 30 ? 30 : seconds;
     persist();
     _notify();
   }
@@ -2111,6 +2131,8 @@ class AppState extends ChangeNotifier {
       beaconEnabled = p.getBool('beacon') ?? beaconEnabled;
       beaconAutoAsked = p.getBool('beaconAutoAsked') ?? beaconAutoAsked;
       beaconInterval = p.getInt('beaconInterval') ?? beaconInterval;
+      beaconNetInterval =
+          p.getInt('beaconNetInterval') ?? beaconNetInterval;
       smartBeaconEnabled =
           p.getBool('smartBeaconOn') ?? smartBeaconEnabled;
       final smartJson = p.getString('smartTiers');
@@ -2337,6 +2359,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('beacon', beaconEnabled);
     await p.setBool('beaconAutoAsked', beaconAutoAsked);
     await p.setInt('beaconInterval', beaconInterval);
+    await p.setInt('beaconNetInterval', beaconNetInterval);
     _ensureSmartTiers();
     await p.setBool('smartBeaconOn', smartBeaconEnabled);
     await p.setString(
@@ -3132,7 +3155,7 @@ class AppState extends ChangeNotifier {
   /// 而不是代码替他默认。
   bool get canAutoBeacon => connected &&
       beaconEnabled &&
-      (!myFixCoarse || beaconForceCoarse) &&
+      (!myFixCoarse || beaconForceCoarse || locationMode == 'network') &&
       (!usingRf || (usingTnc ? tnc.config.rfBeacon : audio.config.rfBeacon));
 
   /// 连接**所有已启用**来源（多选）。
@@ -6187,7 +6210,7 @@ class AppState extends ChangeNotifier {
     // 开了强制开关时它**确实会发射**，所以这里必须给出倒计时；但绝不能退回到
     // 普通的 counting —— 那会让界面显示成一个正常的绿色倒计时，用户就再也看不出
     // 「现在发出去的是网络定位」。单独一档，由 UI 用颜色与文案说清。
-    if (myFixCoarse) {
+    if (myFixCoarse && locationMode != 'network') {
       return beaconForceCoarse
           ? BeaconPhase.coarseForced
           : BeaconPhase.coarseFix;

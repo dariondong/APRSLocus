@@ -7785,6 +7785,18 @@ abstract class AppLocalizations {
   /// **'位置信标的发送间隔，至少 5 秒'**
   String get beaconIntervalTip;
 
+  /// No description provided for @beaconNetInterval.
+  ///
+  /// In zh, this message translates to:
+  /// **'纯网络上报间隔（秒）'**
+  String get beaconNetInterval;
+
+  /// No description provided for @beaconNetIntervalTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'纯网络模式使用固定间隔……'**
+  String get beaconNetIntervalTip;
+
   /// No description provided for @beaconContent.
   ///
   /// In zh, this message translates to:

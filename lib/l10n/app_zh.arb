@@ -1623,6 +1623,8 @@
   "locModeNetworkHint": "纯网络模式下只有基站 / Wi-Fi 定位：误差常在几百米，且**不会**写进轨迹与历史；除非打开「强制接受网络定位自动上报」，否则不会自动发信标。",
   "beaconingSection": "信标上报",
   "beaconIntervalTip": "位置信标的发送间隔，至少 5 秒",
+  "beaconNetInterval": "纯网络上报间隔（秒）",
+  "beaconNetIntervalTip": "纯网络模式使用固定间隔；网络定位没有可靠速度，不使用智能信标（按速度 / 距离 / 转弯）",
   "beaconContent": "信标上报内容",
   "beaconContentDesc": "随位置信标一起发送",
   "beaconTripMileage": "本次里程",

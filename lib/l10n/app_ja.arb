@@ -1356,6 +1356,8 @@
   "locModeNetworkHint": "ネットワークのみモードでは基地局 / Wi-Fi のみで測位します。誤差は数百 m になることがあり、軌跡と履歴には**記録しません**。「粗い測位でも自動送信を強制」をオンにしない限り自動送信しません。",
   "beaconingSection": "ビーコン送信",
   "beaconIntervalTip": "位置ビーコンの送信間隔（最短 5 秒）",
+  "beaconNetInterval": "ネットワークのみの送信間隔（秒）",
+  "beaconNetIntervalTip": "ネットワークのみモードでは固定間隔を使用します。基地局/Wi-Fi 測位には信頼できる速度がないため、スマートビーコン（速度 / 距離 / 旋回）は使いません",
   "beaconContent": "ビーコンの内容",
   "beaconContentDesc": "位置ビーコンと一緒に送信",
   "beaconTripMileage": "今回の走行距離",

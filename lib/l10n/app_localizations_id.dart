@@ -4470,6 +4470,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get beaconIntervalTip => 'Interval beacon posisi, minimal 5 detik';
 
   @override
+  String get beaconNetInterval => 'Interval hanya jaringan (dtk)';
+
+  @override
+  String get beaconNetIntervalTip =>
+      'Dalam mode hanya jaringan dipakai interval tetap; lokasi seluler/Wi-Fi tidak punya kecepatan andal, jadi smart beacon (kecepatan / jarak / belokan) tidak dipakai';
+
+  @override
   String get beaconContent => 'Isi beacon';
 
   @override

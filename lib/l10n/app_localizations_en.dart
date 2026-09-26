@@ -4462,6 +4462,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaconIntervalTip => 'Position beacon interval, minimum 5 seconds';
 
   @override
+  String get beaconNetInterval => 'Network-only interval (s)';
+
+  @override
+  String get beaconNetIntervalTip =>
+      'In network-only mode a fixed interval is used; cell/Wi-Fi fixes have no reliable speed, so smart beaconing (speed / distance / turn) is not used';
+
+  @override
   String get beaconContent => 'Beacon contents';
 
   @override

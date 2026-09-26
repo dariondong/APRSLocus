@@ -1620,6 +1620,8 @@
   "locModeNetworkHint": "純網路模式下只有基地台 / Wi-Fi 定位：誤差常在幾百公尺，且**不會**寫進軌跡與歷史；除非開啟「強制接受網路定位自動上報」，否則不會自動發信標。",
   "beaconingSection": "信標上報",
   "beaconIntervalTip": "位置信標的傳送間隔，至少 5 秒",
+  "beaconNetInterval": "純網路上報間隔（秒）",
+  "beaconNetIntervalTip": "純網路模式使用固定間隔；網路定位沒有可靠速度，不使用智慧信標（依速度 / 距離 / 轉彎）",
   "beaconContent": "信標上報內容",
   "beaconContentDesc": "隨位置信標一起傳送",
   "beaconTripMileage": "本次里程",
