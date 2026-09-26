@@ -574,6 +574,19 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.2</span>
+        <span class="cl-date">2026-09-26</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New Baidu Map / Baidu Satellite sources**: Baidu is not Web Mercator (BD-09 coordinates plus its own projection, tiles with a north-pointing y-axis), so a per-source projection now runs through the whole chain — rendering, markers / tracks, the immersive map, the tracker, track replay and offline downloads share one projection, and markers no longer drift against the tiles.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New "Network only" location mode**: cell / Wi-Fi only (GPS not registered), for devices without GPS and for extreme battery saving; auto-beaconing uses a dedicated fixed interval (default 300s, configurable) — no force switch needed, and smart beaconing does not apply because network fixes have no reliable speed.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Notices can embed video**: the in-app notice is now hand-written Markdown (Simplified Chinese / Traditional Chinese / English) and an `@video` marker plays in-app (Android / iOS / macOS; Windows / Linux / Web fall back to the external browser). Older versions simply show that line as plain text (still a link).</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Update check on launch**: the app checks once on start and shows a reminder when a new version exists (once per version, dismissible).</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fixes**: the map info window still showed "Tap to view" (2.0.1 only changed the generated l10n output and missed the ARB source, so the build reverted it; fixed in all six languages); the Windows build now drops the webview_windows plugin that is incompatible with the current toolchain and opens such links externally.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.0</span>
         <span class="cl-date">2026-09-25</span>
       </div>

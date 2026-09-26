@@ -205,6 +205,61 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.2', 'date': '2026-09-26',
+        'items': [
+            ('new',
+             T('**新增百度地图 / 百度卫星图源**：百度不是 Web Mercator（BD-09 坐标 + 自有投影、'
+               '瓦片 y 轴朝北），为此把「按图源切换投影」做到全链路 —— 渲染、标记 / 轨迹、沉浸地图、'
+               '跟踪、历史回放、离线下载共用同一套投影，标记与瓦片不再错开。',
+               '**新增百度地圖 / 百度衛星圖源**：百度不是 Web Mercator（BD-09 座標 + 自有投影、'
+               '圖磚 y 軸朝北），為此把「依圖源切換投影」做到全鏈路 —— 渲染、標記 / 軌跡、沉浸地圖、'
+               '追蹤、歷史回放、離線下載共用同一套投影，標記與圖磚不再錯開。',
+               '**New Baidu Map / Baidu Satellite sources**: Baidu is not Web Mercator (BD-09 '
+               'coordinates plus its own projection, tiles with a north-pointing y-axis), so a '
+               'per-source projection now runs through the whole chain — rendering, markers / '
+               'tracks, the immersive map, the tracker, track replay and offline downloads share '
+               'one projection, and markers no longer drift against the tiles.')),
+            ('new',
+             T('**新增「纯网络」定位模式**：只用基站 / Wi-Fi（不注册 GPS），适合没有 GPS 的设备，'
+               '也用于极端省电；自动上报使用专用固定间隔（默认 300 秒、可调），不必再开强制开关，'
+               '也不走智能信标（网络没有可靠速度）。',
+               '**新增「純網路」定位模式**：只用基地台 / Wi-Fi（不註冊 GPS），適合沒有 GPS 的裝置，'
+               '也用於極端省電；自動上報使用專用固定間隔（預設 300 秒、可調），不必再開強制開關，'
+               '也不走智慧信標（網路沒有可靠速度）。',
+               '**New "Network only" location mode**: cell / Wi-Fi only (GPS not registered), for '
+               'devices without GPS and for extreme battery saving; auto-beaconing uses a dedicated '
+               'fixed interval (default 300s, configurable) — no force switch needed, and smart '
+               'beaconing does not apply because network fixes have no reliable speed.')),
+            ('new',
+             T('**公告支持内嵌视频**：应用内公告改为手写 Markdown（简中 / 繁中 / 英文），'
+               '`@video` 标记可在应用内播放（Android / iOS / macOS；Windows / Linux / Web 回退为'
+               '在浏览器打开）。旧版本读到那行只会当普通文字（仍是可点链接）。',
+               '**公告支援內嵌影片**：應用內公告改為手寫 Markdown（簡中 / 繁中 / 英文），'
+               '`@video` 標記可在應用內播放（Android / iOS / macOS；Windows / Linux / Web 回退為'
+               '在瀏覽器開啟）。舊版本讀到那行只會當普通文字（仍是可點連結）。',
+               '**Notices can embed video**: the in-app notice is now hand-written Markdown '
+               '(Simplified Chinese / Traditional Chinese / English) and an `@video` marker plays '
+               'in-app (Android / iOS / macOS; Windows / Linux / Web fall back to the external '
+               'browser). Older versions simply show that line as plain text (still a link).')),
+            ('new',
+             T('**启动检查新版本**：启动后检查一次，有新版时弹提醒（每版本只提醒一次、可稍后）。',
+               '**啟動檢查新版本**：啟動後檢查一次，有新版時彈提醒（每版本只提醒一次、可稍後）。',
+               '**Update check on launch**: the app checks once on start and shows a reminder when '
+               'a new version exists (once per version, dismissible).')),
+            ('fix',
+             T('**修**：地图信息窗仍显示「点击查看」—— 2.0.1 只改了生成的 l10n 产物、漏改 ARB 源，'
+               '构建时被覆盖，现已改到位（六语言）；Windows 构建移除与当前工具链不兼容的 '
+               'webview_windows，改走外部浏览器。',
+               '**修**：地圖資訊窗仍顯示「點選檢視」—— 2.0.1 只改了生成的 l10n 產物、漏改 ARB 源，'
+               '建置時被覆蓋，現已改到位（六語言）；Windows 建置移除與當前工具鏈不相容的 '
+               'webview_windows，改走外部瀏覽器。',
+               '**Fixes**: the map info window still showed "Tap to view" (2.0.1 only changed the '
+               'generated l10n output and missed the ARB source, so the build reverted it; fixed in '
+               'all six languages); the Windows build now drops the webview_windows plugin that is '
+               'incompatible with the current toolchain and opens such links externally.')),
+        ],
+    },
+    {
         'ver': 'v2.0.0', 'date': '2026-09-25',
         'items': [
             ('new',

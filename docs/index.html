@@ -700,6 +700,19 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.2</span>
+        <span class="cl-date">2026-09-26</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新增百度地图 / 百度卫星图源**：百度不是 Web Mercator（BD-09 坐标 + 自有投影、瓦片 y 轴朝北），为此把「按图源切换投影」做到全链路 —— 渲染、标记 / 轨迹、沉浸地图、跟踪、历史回放、离线下载共用同一套投影，标记与瓦片不再错开。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**新增「纯网络」定位模式**：只用基站 / Wi-Fi（不注册 GPS），适合没有 GPS 的设备，也用于极端省电；自动上报使用专用固定间隔（默认 300 秒、可调），不必再开强制开关，也不走智能信标（网络没有可靠速度）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**公告支持内嵌视频**：应用内公告改为手写 Markdown（简中 / 繁中 / 英文），`@video` 标记可在应用内播放（Android / iOS / macOS；Windows / Linux / Web 回退为在浏览器打开）。旧版本读到那行只会当普通文字（仍是可点链接）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**启动检查新版本**：启动后检查一次，有新版时弹提醒（每版本只提醒一次、可稍后）。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修**：地图信息窗仍显示「点击查看」—— 2.0.1 只改了生成的 l10n 产物、漏改 ARB 源，构建时被覆盖，现已改到位（六语言）；Windows 构建移除与当前工具链不兼容的 webview_windows，改走外部浏览器。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.0</span>
         <span class="cl-date">2026-09-25</span>
       </div>
