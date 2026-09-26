@@ -3,15 +3,19 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_windows/webview_windows.dart' as wv;
 
 import 'theme.dart';
 import 'widgets.dart';
 
 /// 本平台是否支持**应用内**嵌网页（B 站播放器这类 iframe 内容）。
 ///
-/// Android / iOS / macOS 走 `webview_flutter`；Windows 走 `webview_windows`
-/// （WebView2）；Web / Linux 没有可用的后端 → [WebEmbed] 回退成「在浏览器打开」。
+/// Android / iOS / macOS 走 `webview_flutter`（Android WebView / WKWebView）。
+/// Web / Linux / **Windows** 没有可用的内嵌后端 → [WebEmbed] 回退成
+/// 「在浏览器打开」的卡片。
+///
+/// 为什么 Windows 不接 `webview_windows`：它的 WebView2 实现与当前
+/// Flutter / Visual Studio 工具链不兼容（CI 的 Windows 构建直接失败）。
+/// 为不拖垮 Windows 出包，这里只用官方 `webview_flutter`（它不支持 Windows）。
 ///
 /// 旧版兼容：公告里的 `@video` 标记在不认识它的旧版本 app 里只会显示成一行
 /// 普通文字（还会被 GFM 自动识别为链接），不会白屏、也不影响其它内容。
@@ -19,8 +23,7 @@ bool get webEmbedSupported =>
     !kIsWeb &&
     (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS ||
-        defaultTargetPlatform == TargetPlatform.windows);
+        defaultTargetPlatform == TargetPlatform.macOS);
 
 /// 内嵌网页（公告里的 `@video <url>` 用它）。
 ///
@@ -35,9 +38,6 @@ class WebEmbed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!webEmbedSupported) return _FallbackCard(url: url, height: height);
-    if (defaultTargetPlatform == TargetPlatform.windows) {
-      return _WindowsEmbed(url: url, height: height);
-    }
     return _MobileEmbed(url: url, height: height);
   }
 }
@@ -84,69 +84,6 @@ class _MobileEmbedState extends State<_MobileEmbed> {
     return _EmbedFrame(
       height: widget.height,
       child: WebViewWidget(controller: _controller),
-    );
-  }
-}
-
-/// Windows：webview_windows（WebView2）
-class _WindowsEmbed extends StatefulWidget {
-  final String url;
-  final double height;
-  const _WindowsEmbed({required this.url, required this.height});
-
-  @override
-  State<_WindowsEmbed> createState() => _WindowsEmbedState();
-}
-
-class _WindowsEmbedState extends State<_WindowsEmbed> {
-  final wv.WebviewController _controller = wv.WebviewController();
-  bool _ready = false;
-  bool _failed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    try {
-      await _controller.initialize();
-      await _controller.setBackgroundColor(Colors.transparent);
-      await _controller.loadUrl(widget.url);
-      if (mounted) setState(() => _ready = true);
-    } catch (_) {
-      // 例如机器上没有 WebView2 运行时：回退成外部打开，而不是留一块空白
-      if (mounted) setState(() => _failed = true);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_failed) {
-      return _FallbackCard(url: widget.url, height: widget.height);
-    }
-    if (!_ready) {
-      return _EmbedFrame(
-        height: widget.height,
-        child: const Center(
-          child: SizedBox(
-            width: 22,
-            height: 22,
-            child: CircularProgressIndicator(strokeWidth: 2.5),
-          ),
-        ),
-      );
-    }
-    return _EmbedFrame(
-      height: widget.height,
-      child: wv.Webview(_controller),
     );
   }
 }
