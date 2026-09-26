@@ -6660,9 +6660,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get txButton => '送信';
 
   @override
-  String get txNothingFilled => '入力がすべて空のため、送信する内容がありません';
-
-  @override
   String get txPartPosition => '位置パケット';
 
   @override
@@ -7046,9 +7043,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
 
   @override
-  String get batteryNoFix => 'まだ測位していないため位置を送信できません';
+  String get aprsStatusHint => 'ここで送るのは**独立した 1 帧**のステータスパケットです（`>` で始まり、座標を含まず、aprs.fi 上の位置も動きません）。上のメモとは別種の APRS パケットです。空欄の場合は組み込みの APRSlocus オンライン フレームを送信します。';
 
   @override
-  String get aprsStatusHint => 'ここで送るのは**独立した 1 帧**のステータスパケットです（`>` で始まり、座標を含まず、aprs.fi 上の位置も動きません）。上のメモとは別種の APRS パケットです。空欄の場合は組み込みの APRSlocus オンライン フレームを送信します。';
+  String get codeContribution => "コード貢献";
 
 }

@@ -11901,12 +11901,6 @@ abstract class AppLocalizations {
   /// **'发射'**
   String get txButton;
 
-  /// No description provided for @txNothingFilled.
-  ///
-  /// In zh, this message translates to:
-  /// **'上面几项都为空，没有可发送的内容'**
-  String get txNothingFilled;
-
   /// No description provided for @txPartPosition.
   ///
   /// In zh, this message translates to:
@@ -12590,17 +12584,17 @@ abstract class AppLocalizations {
 
 
 
-  /// No description provided for @batteryNoFix.
-  ///
-  /// In zh, this message translates to:
-  /// **'还没有定位，无法上报位置'**
-  String get batteryNoFix;
-
   /// No description provided for @aprsStatusHint.
   ///
   /// In zh, this message translates to:
   /// **'这一点发的是**独立一帧**状态报文（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。'**
   String get aprsStatusHint;
+
+  /// No description provided for @codeContribution.
+  ///
+  /// In zh, this message translates to:
+  /// **'贡献代码'**
+  String get codeContribution;
 
 }
 

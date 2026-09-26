@@ -6875,9 +6875,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get txButton => 'Kirim';
 
   @override
-  String get txNothingFilled => 'Kolom kosong - tidak ada yang dikirim';
-
-  @override
   String get txPartPosition => 'paket posisi';
 
   @override
@@ -7267,9 +7264,9 @@ class AppLocalizationsId extends AppLocalizations {
 
 
   @override
-  String get batteryNoFix => 'Belum ada posisi - tidak bisa memancarkan';
+  String get aprsStatusHint => 'Ini mengirim paket status mandiri (diawali `>`, tanpa koordinat, dan tidak memindahkan posisi Anda di aprs.fi) - jenis paket APRS yang berbeda dari komentar di atas. Bila kosong, frame online APRSlocus bawaan yang dikirim.';
 
   @override
-  String get aprsStatusHint => 'Ini mengirim paket status mandiri (diawali `>`, tanpa koordinat, dan tidak memindahkan posisi Anda di aprs.fi) - jenis paket APRS yang berbeda dari komentar di atas. Bila kosong, frame online APRSlocus bawaan yang dikirim.';
+  String get codeContribution => "Kontribusi kode";
 
 }
