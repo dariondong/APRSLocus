@@ -17,13 +17,13 @@ import 'package:aprslocus/offline_map.dart';
 void main() {
   group('瓦片编号与范围', () {
     test('z=1 时的四个象限边界', () {
-      expect(tileXFor(-180, 1), 0);
-      expect(tileXFor(-0.0001, 1), 0);
-      expect(tileXFor(0, 1), 1);
-      expect(tileXFor(180, 1), 2); // 经度 +180 与 -180 是同一列，由 tileRange 收口
-      expect(tileYFor(85.0, 1), 0);
-      expect(tileYFor(0, 1), 1);
-      expect(tileYFor(-85.0, 1), 1);
+      expect(tileXFor(0, -180, 1), 0);
+      expect(tileXFor(0, -0.0001, 1), 0);
+      expect(tileXFor(0, 0, 1), 1);
+      expect(tileXFor(0, 180, 1), 2); // 经度 +180 与 -180 是同一列，由 tileRange 收口
+      expect(tileYFor(85.0, 0, 1), 0);
+      expect(tileYFor(0, 0, 1), 1);
+      expect(tileYFor(-85.0, 0, 1), 1);
     });
 
     test('整圈纬度的 tileRange 不会多出一列', () {
@@ -79,8 +79,8 @@ void main() {
           final lat = b.south + (b.north - b.south) * i / 10;
           final lng = b.west + (b.east - b.west) * j / 10;
           final n = 1 << z;
-          final x = ((tileXFor(lng, z) % n) + n) % n;
-          final y = tileYFor(lat, z);
+          final x = ((tileXFor(lat, lng, z) % n) + n) % n;
+          final y = tileYFor(lat, lng, z);
           expect(tiles.contains('$z/$x/$y'), isTrue,
               reason: '采样点 ($lat,$lng) 落在未枚举的瓦片上');
         }
@@ -274,10 +274,17 @@ void main() {
         id: 'b', name: 'b', mapType: MapType.osm.name,
         bounds: b, minZoom: 10, maxZoom: 12,
       );
+      // 百度是 BD-09 + 百度自有投影：编号空间既不是 WGS 也不是 GCJ
+      final bd = OfflineRegion(
+        id: 'c', name: 'c', mapType: MapType.baidu.name,
+        bounds: b, minZoom: 10, maxZoom: 12,
+      );
       expect(gcj.tileSpaceBounds, isNot(equals(b)));
       expect(wgs.tileSpaceBounds, b);
+      expect(bd.tileSpaceBounds, isNot(equals(b)));
       expect(gcj.tileCount > 0, isTrue);
       expect(wgs.tileCount > 0, isTrue);
+      expect(bd.tileCount > 0, isTrue);
     });
 
     test('resumable 只覆盖未完成的状态', () {
