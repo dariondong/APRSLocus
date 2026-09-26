@@ -296,69 +296,57 @@ html{overflow-x:hidden}
   <a class="hero-scroll" href="#features" aria-label="向下滚动"><span></span></a>
 </section>
 
-<script>
-(function(){
-  var target = new Date(2026, 8, 25, 22, 0, 0);
-  function pad(n){ return (n < 10 ? '0' : '') + n; }
-  function fmt(d){ var s = Math.floor(d / 1000); return Math.floor(s / 86400) + ' 天 ' + pad(Math.floor(s % 86400 / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60); }
-  function tick(){
-    var el = document.getElementById('hrCd'); if (!el) return;
-    var d = target - new Date();
-    if (d <= 0) {
-      document.getElementById('hrIcon').textContent = '✅';
-      document.getElementById('hrState').textContent = '已推送';
-      document.getElementById('hrTimer').innerHTML = '2.0 已发布 · <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener" style="color:#0369a1;font-weight:700">立即下载 →</a>';
-      var dl = document.getElementById('heroDlText'); if (dl) dl.textContent = '下载 2.0 最新版';
-      clearInterval(t);
-      return;
-    }
-    el.textContent = fmt(d);
-  }
-  tick();
-  var t = setInterval(tick, 1000);
-})();
-</script>
-
 <!-- ═══════════ 公告 · TOUCH SKY ═══════════ -->
 <section class="section announce" id="announce">
   <div class="announce-card reveal">
     <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
 
-    <header class="announce-head">
+        <header class="announce-head">
       <p class="announce-kicker">1.5.8 → 2.0 · 322 次更新</p>
-      <h2 class="announce-title">TOUCH SKY<span class="announce-en">2.0 更新公告 · What's New</span></h2>
-      <p class="announce-sub">从纯网络到射频，从「看见」到「抵达」——这是 2.0 这一路的全部脚印。</p>
+      <h2 class="announce-title">TOUCH SKY<span class="announce-en">2.0 已上线 · What's New</span></h2>
+      <p class="announce-sub">从 FIRST FIX 到 TOUCH SKY：1.0 让我们站稳，2.0 让我们仰望。这一次，我们把坐标点亮到了天上。</p>
     </header>
 
     <div class="announce-body">
-      <div id="cd" class="announce-countdown" style="display:flex;gap:16px;justify-content:center;align-items:flex-end;margin:8px 0 4px">
-        <div style="text-align:center;min-width:58px"><div id="cd-d" style="font-size:30px;font-weight:900;line-height:1;background:linear-gradient(120deg,#0369a1,#075985);-webkit-background-clip:text;background-clip:text;color:transparent">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">天</div></div>
-        <div style="text-align:center;min-width:58px"><div id="cd-h" style="font-size:30px;font-weight:900;line-height:1;color:#0f172a">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">时</div></div>
-        <div style="text-align:center;min-width:58px"><div id="cd-m" style="font-size:30px;font-weight:900;line-height:1;color:#0f172a">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">分</div></div>
-        <div style="text-align:center;min-width:58px"><div id="cd-s" style="font-size:30px;font-weight:900;line-height:1;color:#0f172a">--</div><div style="font-size:11px;color:#5b6b85;margin-top:6px">秒</div></div>
-      </div>
-      <p><b>APRSLocus 2.0 已于 9 月 25 日 22:00 正式发布</b>，可在 GitHub Releases 下载最新版。</p>
-      <p class="announce-greet">亲爱的 APRSLocus 同行者：</p>
-      <p>1.5.8 之后，我们写下了 <b>322 次更新</b>。这不是数字，是一条从「网络里的一个光点」走到「天空里的一声回应」的路。下面是这一路全部的脚印。</p>
-      <p><b>一、界面 · 全新 UI 2.0</b>：以地图为基底的布局，地图常驻整屏、其余内容装进可拖拽面板，显示设置里可切回 1.0；底部悬浮胶囊导航（滑动指示胶囊）＋右上悬浮胶囊（天气 / 连接 / 定位）；把手加大到 44px 且整页可拖；横屏在手机 / 平板 / 桌面三端统一为左栏 + 地图；去掉顶部搜索框、返回键回到地图、补回天气与一键连接；16 个页面新增「首次进入小提示卡」。</p>
-      <p><b>二、材质与主题</b>：新增磨砂玻璃（Acrylic）与云母（Mica）材质，另有「满血磨砂」档；主题的颜色 / 图标 / 文字可自定义，支持背景图与导出 JSON（可带图）；更多令牌、界面松紧与字体、分页签强调色；备份与恢复把设置与数据导出成一个 JSON。</p>
-      <p><b>三、地图 · 沉浸地图</b>：多图源（高德 / 卫星 / 矢量免 Key / Carto / OSM / OpenTopo / Esri）；新增沉浸地图页（导航风格，左侧附近台站）；台站筛选可应用到地图；离线地图按区域下载；去掉聚合；历史轨迹回放（点进某天，动画重播）。</p>
-      <p><b>四、台站与识别</b>：接入 aprs.org 官方设备库，自动识别厂商 / 型号 / 类别；内置 37 个符号表、3571 个标准图标；台站操作菜单（收藏 / 复制呼号 / 删除）与 APRS.tv 查询；APRSlocus 平台识别（不再一律归为手机 App）；打点算法重做（旧帧、重复帧、错包与模糊位置都不再骗人）。</p>
-      <p><b>五、消息与翻译</b>：单聊群聊统一会话 + ACK 确认；群聊重构（建群 / 邀请 / 成员 / 离开，no-ack 广播）；聊天翻译接口从 4 家扩到 7 家，默认自动、默认走免费免密钥接口；支持双向翻译、对照显示、发送前翻译、语言自动识别与记忆。</p>
-      <p><b>六、连接与射频</b>：新增蓝牙 TNC（完整 KISS，真正修好「能收不能发」）与音频声卡 TNC（AFSK 1200，手机 + 一根音频线即 TNC）；新增 PKWDWPL（Kenwood 航点，只收不发）与网关（iGate）；多数据来源可同时接收、发射来源单独指定；配套链路自检；修「TNC 与 PKWDWPL 同设备瓜分数据」与「音频发射对方解不出」。</p>
-      <p><b>七、定位与信标</b>：iOS 原生定位、macOS 改原生定位；网络粗定位不再自动上报；自身定位静止防抖；智能信标支持「按转弯」（先分清真拐弯与 GPS 抖动）与「按距离」打点；轨迹采样细化并标出信标点；轨迹与数据包上限可配置。</p>
-      <p><b>八、天气 · 传播 · 建议</b>：天气面板（实时 + 高低温 + 体感 + 湿度 / 气压 / 露点 / 风向 / 能见度 / 云量）；业余无线电建议按「安全警示 &gt; 注意 &gt; 通联机会 &gt; 操作提示」分级，含灰线、雨衰、结冰驻波、大气波导等结论；短波 / 电离层传播逐波段日 / 夜条件，6m 单独预测。</p>
-      <p><b>九、桌面小组件（Android）</b>：天气 + 业余无线电提示（4 档尺寸自适应）、短波传播组件、系统状态组件；真实图标与图形 logo；支持缩放与暗黑模式；新增设计预览工具。</p>
-      <p><b>十、数据 · 导出 · 备份</b>：ADIF 导出（频率可自定义、导出选项可选）；修导出路径与文件名；数据包控制台（原始 / 解析、手动注入、分类筛选）；新增台站面板内的统计视图。</p>
-      <p><b>十一、设备集成</b>：佳明 App 分享短链（gar.mn）与 LiveTrack；蓝牙心率带（BLE 0x180D）心率随信标上报；设备页新增「其他数据来源」。</p>
-      <p><b>十二、多语言与本地化</b>：界面语言增至 6 种（简体 / 繁體 / English / 日本語 / Indonesia / Español）；多批中文硬编码清理；荣誉墙与赞助名单多语言化。</p>
-      <p><b>十三、社区 · 荣誉 · 公告</b>：荣誉墙展示每枚徽章的获得条件，含「开发人员」「FIRST FIX · 至高荣誉」「早期成员」；赞助墙补齐遗漏；应用内公告横幅取自官网 Markdown。</p>
-      <p><b>十四、平台 · 性能 · 稳定</b>：iOS / macOS / 桌面三端支持与横屏打磨；修「越用越卡」的 APRS-IS 重建 + socket 泄漏；磨砂玻璃与动态背景性能优化；大量回归测试与静态检查。</p>
-      <p>以及数不清的修复：关于页卡片贴住下个板块、底图切换面板弹不出来、图层面板点了没反应、会话输入框藏底下、「在地图查看」不回地图、天气面板点空白关不掉…… 它们共同构成了从 1.5.8 到 2.0 的 322 次更新。</p>
-      <p class="announce-quote">FIRST FIX 是起点，TOUCH SKY 是致意。2.0，是下一次出发。<br>天空很大，我们继续同行。</p>
+      <p>星河浩瀚，追梦不止。</p>
+      <p>谨以此歌，致敬中国航天事业的每一位追梦人。<br>也致敬屏幕前的你——架台、守听、点亮信标、把信号送上天的每一个火腿。</p>
+      <p>他们仰望星空，我们守望电波；<br>他们向宇宙发问，我们向天空呼叫。<br>不同的频段，同一种追梦。</p>
+      <p class="announce-greet">跟我们一样。</p>
 
+      <div style="position:relative;width:100%;max-width:760px;margin:6px auto;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000">
+        <iframe src="//player.bilibili.com/player.html?isOutside=true&amp;aid=116047298434484&amp;bvid=BV18NF9zUEq3&amp;cid=35969762505&amp;p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position:absolute;inset:0;width:100%;height:100%"></iframe>
+      </div>
+      <p style="text-align:center;font-size:13px"><a href="https://www.bilibili.com/video/BV18NF9zUEq3" target="_blank" rel="noopener">🎵《星河追梦》BV18NF9zUEq3</a> · 视频来自 Bilibili @YSming_</p>
+
+      <p><b>🚀 2.0 更新内容（1.5.8 → 2.0，322 次更新）</b></p>
+      <p><b>全新 UI 2.0</b>：地图为基底 + 可拖拽面板 + 悬浮胶囊导航；横屏三端重做；磨砂玻璃 / 云母材质。</p>
+      <p><b>连接与射频</b>：蓝牙 TNC（完整 KISS）、声卡软 TNC（AFSK 1200）、PKWDWPL、iGate；多数据来源可同时收，发射来源单独指定；内置链路自检。</p>
+      <p><b>消息与翻译</b>：单聊群聊统一会话 + ACK；翻译接口 4 → 7，默认免密钥；双向翻译、对照显示、发送前翻译、语言自动记忆。</p>
+      <p><b>地图与定位</b>：多图源、沉浸地图、离线地图、历史轨迹回放；去掉聚合；智能信标（按转弯 / 按距离），静止防抖。</p>
+      <p><b>台站识别</b>：接入 aprs.org 官方设备库，识别厂商 / 型号 / 类别；内置 37 符号表、3571 图标。</p>
+      <p><b>天气 · 传播 · 小组件</b>：业余无线电建议分级（安全警示 &gt; 注意 &gt; 通联机会 &gt; 操作提示）、短波电离层逐波段日 / 夜条件、Android 三种桌面小组件。</p>
+      <p><b>个性化与数据</b>：主题自定义 + 背景图 + JSON 分享、备份与恢复、ADIF 导出、统计面板。</p>
+      <p><b>多语言与设备</b>：6 种界面语言；Garmin LiveTrack、蓝牙心率带。</p>
+      <p>以及 322 条里数不清的修复。</p>
+
+      <p><b>📥 下载</b></p>
+      <p><b>Android</b>：下载 APK 安装包 · <b>Windows</b>：下载 EXE 安装程序 · <b>GitHub Releases</b>：<a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">点击前往</a></p>
+
+      <p><b>⚠️ 升级前必读</b></p>
+      <p><b>v1.4.9 之前的老版本</b>：因 Android 签名密钥变更，<b>无法直接覆盖安装</b>。请先<b>备份</b>呼号、台站备注、自定义主题等重要设置，然后<b>卸载旧版</b>，再安装新版。</p>
+      <p><b>v1.4.9 及之后版本</b>：通常可直接覆盖升级，建议升级前同样做好备份。</p>
+
+      <p><b>🏆 称号发放 · 已开放申请</b></p>
+      <p>陪伴 APRSLocus 一路的朋友，你们的每一次反馈、测试与通联，都记在了这里。现在，以下称号开放申请：</p>
+      <p><b>🏆 FIRST FIX · 至高荣誉</b> —— 与你一起点亮第一个坐标<br><b>🧬 播种</b> —— 把 APRSLocus 传播给更多火腿的人</p>
+      <p><b>申请方式：</b>加入 QQ 交流群，或到 GitHub 提 Issue / 在群内留言，说明你想要申请的称号与理由即可。名单会陆续发放，也欢迎补充遗漏。</p>
+
+      <p><b>💬 反馈与致谢</b></p>
+      <p>APRSLocus 是一个开源项目（GPL-3.0），项目不会停止维护，欢迎各位继续提出建议、反馈问题。如果你对项目感兴趣，也非常欢迎提交 Issue 和 Pull Request。</p>
+      <p>更新后如有问题，欢迎群内或 GitHub Issue 反馈。</p>
+
+      <p class="announce-quote">73！</p>
       <div class="announce-sign">
-        <span class="ann-sign-line">电波无限，感谢同行！73！</span>
         <span class="ann-sign-team">APRSLocus 开发团队</span>
         <span class="ann-sign-date">2026 年 9 月 25 日</span>
       </div>
@@ -379,28 +367,6 @@ html{overflow-x:hidden}
       </a>
     </div>
   </div>
-  <script>
-  (function(){
-    var target = new Date(2026, 8, 25, 22, 0, 0);
-    function pad(n){ return (n < 10 ? '0' : '') + n; }
-    function tick(){
-      var box = document.getElementById('cd'); if (!box) return;
-      var d = target - new Date();
-      if (d <= 0) {
-        box.outerHTML = '<div style="text-align:center;font-size:20px;font-weight:800;color:#0369a1;margin:8px 0 20px">🚀 APRSLocus 2.0 已发布 · 立即下载最新版</div>';
-        clearInterval(timer);
-        return;
-      }
-      var s = Math.floor(d / 1000);
-      document.getElementById('cd-d').textContent = Math.floor(s / 86400);
-      document.getElementById('cd-h').textContent = pad(Math.floor(s % 86400 / 3600));
-      document.getElementById('cd-m').textContent = pad(Math.floor(s % 3600 / 60));
-      document.getElementById('cd-s').textContent = pad(s % 60);
-    }
-    tick();
-    var timer = setInterval(tick, 1000);
-  })();
-  </script>
 </section>
 
 <!-- ═══════════ 功能特性 ═══════════ -->
