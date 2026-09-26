@@ -195,6 +195,12 @@ jobs:
           known_lines=$(grep -c "Future<Directory> Function()" /tmp/analyze.log || true)
           other_errors=$(grep -v "Future<Directory> Function()" /tmp/analyze.log | grep -c "error •" || true)
           cat /tmp/analyze.log
+          if [ "$other_errors" -gt 0 ]; then
+            # 逐条打成**注解**（annotations 公开可读）：这样没有仓库日志权限时
+            # 也能从 check-runs API 直接看到是哪几条错误，不必翻 job 日志。
+            grep "error •" /tmp/analyze.log | grep -v "Future<Directory> Function()" \
+              | while IFS= read -r line; do echo "::error::$line"; done
+          fi
           if [ "$code" -ne 0 ] && [ "$other_errors" -gt 0 ]; then
             echo "analyze 发现除已知误报外的错误"
             exit 1
