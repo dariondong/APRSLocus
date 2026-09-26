@@ -4301,6 +4301,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get locModeGpsNetworkDesc => "网络仅作兜底（GPS 停更时），粗定位不写轨迹";
 
   @override
+  String get locModeNetwork => "纯网络";
+
+  @override
+  String get locModeNetworkDesc => "仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备";
+
+  @override
+  String get locModeNetworkHint =>
+      "纯网络模式下只有基站 / Wi-Fi 定位：误差常在几百米，且**不会**写进轨迹与历史；除非打开「强制接受网络定位自动上报」，否则不会自动发信标。";
+
+  @override
   String get beaconingSection => '信标上报';
 
   @override
@@ -11152,6 +11162,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get locModeGpsNetworkDesc => "網路僅作兜底（GPS 停更時），粗定位不寫軌跡";
+
+  @override
+  String get locModeNetwork => "純網路";
+
+  @override
+  String get locModeNetworkDesc => "僅基地台 / Wi-Fi，誤差百公尺級；最省電，適合沒有 GPS 的裝置";
+
+  @override
+  String get locModeNetworkHint =>
+      "純網路模式下只有基地台 / Wi-Fi 定位：誤差常在幾百公尺，且**不會**寫進軌跡與歷史；除非開啟「強制接受網路定位自動上報」，否則不會自動發信標。";
 
   @override
   String get beaconingSection => '信標上報';

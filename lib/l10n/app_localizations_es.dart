@@ -4480,6 +4480,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get locModeGpsNetworkDesc => "La red es solo un respaldo (si el GPS se corta); las posiciones aproximadas no se guardan en la ruta";
 
   @override
+  String get locModeNetwork => "Solo red";
+
+  @override
+  String get locModeNetworkDesc =>
+      "Solo red móvil / Wi-Fi, precisión de cientos de metros; el más eficiente, para dispositivos sin GPS";
+
+  @override
+  String get locModeNetworkHint =>
+      "En modo solo red la posición viene solo de la red móvil / Wi-Fi: puede desviarse cientos de metros y **nunca** se guarda en la ruta ni el historial. No enviará balizas automáticamente salvo que actives «forzar reporte automático con posición aproximada».";
+
+  @override
   String get beaconingSection => 'Balizamiento';
 
   @override

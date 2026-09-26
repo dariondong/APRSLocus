@@ -4453,6 +4453,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get locModeGpsNetworkDesc => "Jaringan hanya cadangan (saat GPS terputus); lokasi kasar tidak dicatat ke lintasan";
 
   @override
+  String get locModeNetwork => "Hanya jaringan";
+
+  @override
+  String get locModeNetworkDesc =>
+      "Hanya seluler / Wi-Fi, akurasi ratusan meter; paling hemat daya, untuk perangkat tanpa GPS";
+
+  @override
+  String get locModeNetworkHint =>
+      "Dalam mode hanya jaringan, lokasi hanya dari seluler / Wi-Fi: bisa meleset ratusan meter dan **tidak** dicatat ke lintasan atau riwayat. Tidak akan mengirim beacon otomatis kecuali kamu mengaktifkan “paksa laporan otomatis saat lokasi kasar”.";
+
+  @override
   String get beaconingSection => 'Beaconing';
 
   @override

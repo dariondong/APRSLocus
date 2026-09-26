@@ -4335,6 +4335,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get locModeGpsNetworkDesc => "ネットワークは補助のみ（GPS が途切れたとき）。粗い測位は軌跡に記録しません";
 
   @override
+  String get locModeNetwork => "ネットワークのみ";
+
+  @override
+  String get locModeNetworkDesc =>
+      "基地局 / Wi-Fi のみ（誤差は数百 m）。最も省電力で、GPS のない端末向け";
+
+  @override
+  String get locModeNetworkHint =>
+      "ネットワークのみモードでは基地局 / Wi-Fi のみで測位します。誤差は数百 m になることがあり、軌跡と履歴には**記録しません**。「粗い測位でも自動送信を強制」をオンにしない限り自動送信しません。";
+
+  @override
   String get beaconingSection => 'ビーコン送信';
 
   @override

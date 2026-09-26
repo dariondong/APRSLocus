@@ -1020,35 +1020,43 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-                child: Row(children: [
-                  Expanded(
-                    child: _locSourceCard(
-                      title: S.of(context).locModeGps,
-                      icon: Icons.gps_fixed_rounded,
-                      desc: S.of(context).locModeGpsDesc,
-                      selected: st.locationMode == 'gps',
-                      onTap: () => st.setLocationMode('gps'),
-                      color: C.cyan,
-                    ),
+                child: Column(children: [
+                  _locSourceCard(
+                    title: S.of(context).locModeGps,
+                    icon: Icons.gps_fixed_rounded,
+                    desc: S.of(context).locModeGpsDesc,
+                    selected: st.locationMode == 'gps',
+                    onTap: () => st.setLocationMode('gps'),
+                    color: C.cyan,
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: _locSourceCard(
-                      title: S.of(context).locModeGpsNetwork,
-                      icon: Icons.wifi_tethering_rounded,
-                      desc: S.of(context).locModeGpsNetworkDesc,
-                      selected: st.locationMode == 'gps_network',
-                      onTap: () => st.setLocationMode('gps_network'),
-                      color: C.cyan,
-                    ),
+                  SizedBox(height: 8),
+                  _locSourceCard(
+                    title: S.of(context).locModeGpsNetwork,
+                    icon: Icons.wifi_tethering_rounded,
+                    desc: S.of(context).locModeGpsNetworkDesc,
+                    selected: st.locationMode == 'gps_network',
+                    onTap: () => st.setLocationMode('gps_network'),
+                    color: C.cyan,
+                  ),
+                  SizedBox(height: 8),
+                  // 纯网络：只用基站 / Wi-Fi。给没有 GPS 的设备，也用于极端省电
+                  _locSourceCard(
+                    title: S.of(context).locModeNetwork,
+                    icon: Icons.network_cell_rounded,
+                    desc: S.of(context).locModeNetworkDesc,
+                    selected: st.locationMode == 'network',
+                    onTap: () => st.setLocationMode('network'),
+                    color: C.cyan,
                   ),
                 ]),
               ),
               // 诚实说清「网络辅助」的取舍：有用户报过「开了网络定位后位置
               // 飞来飞去」—— 那不是 bug，而是基站/Wi-Fi 定位本来就有几百米误差。
-              // 现在的行为是「只在 GPS 停更 2 分钟后兜底、且不写轨迹」，
-              // 说不清楚用户就会以为是应用坏了。
-              SettingsHint(S.of(context).locModeNetHint),
+              // 说不清楚用户就会以为是应用坏了。纯网络模式下换一条更贴切的说明。
+              if (st.locationMode == 'network')
+                SettingsHint(S.of(context).locModeNetworkHint)
+              else
+                SettingsHint(S.of(context).locModeNetHint),
               SizedBox(height: 10),
             ],
           ),

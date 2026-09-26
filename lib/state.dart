@@ -1818,11 +1818,11 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  // 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助
+  // 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助；'network' = 纯网络
   String locationMode = 'gps_network';
 
   void setLocationMode(String v) {
-    if (v != 'gps' && v != 'gps_network') return;
+    if (v != 'gps' && v != 'gps_network' && v != 'network') return;
     locationMode = v;
     loc.setMode(v); // 运行中立即生效
     persist();

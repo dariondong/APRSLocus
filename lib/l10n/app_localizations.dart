@@ -7755,6 +7755,24 @@ abstract class AppLocalizations {
   /// **'网络辅助，定位更快'**
   String get locModeGpsNetworkDesc;
 
+  /// No description provided for @locModeNetwork.
+  ///
+  /// In zh, this message translates to:
+  /// **'纯网络'**
+  String get locModeNetwork;
+
+  /// No description provided for @locModeNetworkDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅基站 / Wi-Fi，误差百米级；最省电，适合没有 GPS 的设备'**
+  String get locModeNetworkDesc;
+
+  /// No description provided for @locModeNetworkHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'纯网络模式下只有基站 / Wi-Fi 定位……'**
+  String get locModeNetworkHint;
+
   /// No description provided for @beaconingSection.
   ///
   /// In zh, this message translates to:

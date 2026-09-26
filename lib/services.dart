@@ -15,7 +15,8 @@ class LocService {
   static const _eventChannel = EventChannel('com.aprslocus/location_events');
   StreamSubscription? _sub;
   Duration interval = const Duration(seconds: 10);
-  /// 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助
+  /// 定位模式：'gps' = 纯 GPS；'gps_network' = GPS + 网络辅助；
+  /// 'network' = 纯网络（只用基站 / Wi-Fi，不注册 GPS）
   String mode = 'gps_network';
   /// 定位回调。
   ///
@@ -156,7 +157,7 @@ class LocService {
 
   /// 动态切换定位模式（服务运行中立即生效）
   Future<void> setMode(String m) async {
-    if (m != 'gps' && m != 'gps_network') return;
+    if (m != 'gps' && m != 'gps_network' && m != 'network') return;
     mode = m;
     try {
       await _channel.invokeMethod('setLocationMode', {'mode': m});

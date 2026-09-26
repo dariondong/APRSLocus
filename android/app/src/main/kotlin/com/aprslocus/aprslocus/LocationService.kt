@@ -84,13 +84,19 @@ class LocationService : Service() {
         const val MODE_GPS = "gps"
         const val MODE_GPS_NETWORK = "gps_network"
         /**
+         * 纯网络：只用基站 / Wi-Fi 粗定位，**不注册 GPS**。
+         * 给「没有 GPS 的设备」用，也用于极端省电；粗点在 Dart 侧按 coarse 处理
+         * （不写轨迹、默认不自动上报）。
+         */
+        const val MODE_NETWORK = "network"
+        /**
          * 仅保活：不采集任何定位（用户在「模拟位置」模式下使用），
          * 但保留前台服务 + WakeLock，使 APRS-IS 连接与信标定时器能在后台存活。
          */
         const val MODE_KEEPALIVE = "keepalive"
         /** 是否处于仅保活模式（不启动任何 provider 监听） */
         val keepAliveOnly: Boolean get() = mode == MODE_KEEPALIVE
-        /** 定位模式：gps = 纯 GPS；gps_network = GPS + 网络辅助 */
+        /** 定位模式：gps = 纯 GPS；gps_network = GPS + 网络辅助；network = 纯网络 */
         @Volatile var mode: String = "gps_network"
         /** 接受定位的精度上限（米）。超过则丢弃，避免基站/Wi-Fi 粗点引起漂移 */
         const val MAX_ACCURACY_M = 150f
@@ -203,7 +209,7 @@ class LocationService : Service() {
         }
         // 读取定位模式（Flutter 启动服务时传入）
         intent?.getStringExtra(EXTRA_MODE)?.let {
-            if (it == MODE_GPS || it == MODE_GPS_NETWORK || it == MODE_KEEPALIVE) mode = it
+            if (it == MODE_GPS || it == MODE_GPS_NETWORK || it == MODE_NETWORK || it == MODE_KEEPALIVE) mode = it
         }
         val notification = buildNotification("APRSlocus 运行中")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -358,14 +364,18 @@ class LocationService : Service() {
     @Suppress("MissingPermission")
     private fun startLocationUpdates() {
         val lm = locationManager ?: return
-        val useNetwork = mode == "gps_network"
+        val useNetwork = mode == MODE_GPS_NETWORK || mode == MODE_NETWORK
+        val useGps = mode != MODE_NETWORK
         // 先报告定位服务是否可用
         val gpsOn = try { lm.isProviderEnabled(LocationManager.GPS_PROVIDER) } catch (_: Exception) { false }
         val netOn = try { lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) } catch (_: Exception) { false }
-        if (!gpsOn && !(useNetwork && netOn)) {
+        if (useGps && !gpsOn && !(useNetwork && netOn)) {
             LocationBus.emit(mapOf("status" to (if (useNetwork) "定位服务未开启，请在系统设置中开启定位" else "GPS 未开启，请开启系统定位")))
-        } else if (!gpsOn) {
+        } else if (useGps && !gpsOn) {
             LocationBus.emit(mapOf("status" to "GPS 未开启，使用网络定位"))
+        } else if (!useGps && !netOn) {
+            // 纯网络模式：GPS 开关与它无关，只看网络定位是否可用
+            LocationBus.emit(mapOf("status" to "网络定位未开启，请在系统设置中开启定位"))
         }
         // 先用上次已知位置快速出图
         reportLastKnown()
@@ -384,29 +394,32 @@ class LocationService : Service() {
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
         }
         locationListener = listener
-        // GPS 高精度（两种模式都注册）
+        // GPS 高精度（gps / gps_network 注册；纯网络模式不注册 GPS）
         var gpsRequested = false
-        try {
-            // minTime 10s → 1s（用户反馈「实时轨迹采样率低」）：
-            // 10s 是「省电优先」的取值，代价是轨迹每 10 秒才一个点 —— 骑车/开车时
-            // 一个拐弯正好落在两个点之间，画出来就是一条切角的斜线。
-            // 1s 是导航类应用的常规取样率；下方 minDistance 仍是 5m，静止时 GPS 不给
-            // 回调，所以待机功耗并不跟着涨。
-            lm.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000L, 5f, listener, Looper.getMainLooper())
-            gpsRequested = true
-        } catch (_: Exception) {}
-        // GPS + 网络模式：额外注册网络辅助定位。
+        if (useGps) {
+            try {
+                // minTime 10s → 1s（用户反馈「实时轨迹采样率低」）：
+                // 10s 是「省电优先」的取值，代价是轨迹每 10 秒才一个点 —— 骑车/开车时
+                // 一个拐弯正好落在两个点之间，画出来就是一条切角的斜线。
+                // 1s 是导航类应用的常规取样率；下方 minDistance 仍是 5m，静止时 GPS 不给
+                // 回调，所以待机功耗并不跟着涨。
+                lm.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 1000L, 5f, listener, Looper.getMainLooper())
+                gpsRequested = true
+            } catch (_: Exception) {}
+        }
+        // GPS + 网络 / 纯网络模式：额外注册网络定位。
         //
-        // 网络定位**保持 10s**：它只做 GPS 停更时的兜底（见 considerLocation），
-        // 按 1s 轮询基站/Wi-Fi 毫无收益（也不会更准），只是白耗电与流量。
+        // 网络定位**保持 10s**：gps_network 下它只做 GPS 停更时的兜底
+        // （见 considerLocation），按 1s 轮询基站/Wi-Fi 毫无收益；
+        // 纯网络模式下基站/Wi-Fi 本身也不会更频繁地更新。
         if (useNetwork) {
             try {
                 lm.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, 10000L, 5f, listener, Looper.getMainLooper())
             } catch (_: Exception) {}
         }
-        if (!gpsRequested) {
+        if (useGps && !gpsRequested) {
             LocationBus.emit(mapOf("status" to "GPS 监听注册失败，请检查定位权限"))
         }
     }
@@ -434,12 +447,19 @@ class LocationService : Service() {
         // 1) 精度超限：直接丢弃（粗点比不准还伤——会拖走标记）
         if (!acc.isNaN() && acc > MAX_ACCURACY_M) return
 
-        // 2) 网络定位点：仅当 GPS 长期无更新时才允许兜底，避免与 GPS 交替跳动
+        // 2) 网络定位点
         if (!isGps) {
-            if (mode != "gps_network") return
-            if (lastGpsFixMs != 0L && now - lastGpsFixMs < NET_FALLBACK_GAP_MS) return
-            // 网络兜底点精度门槛更严，避免明显劣化
-            if (!acc.isNaN() && acc > 80f) return
+            if (mode == MODE_NETWORK) {
+                // 纯网络：网络点就是唯一来源，不需要「等 GPS 停更」。
+                // 精度闸仍由上面的 MAX_ACCURACY_M 把关；发到 Dart 侧后按 coarse
+                // 处理（不写轨迹、默认不自动上报）。
+            } else {
+                // GPS + 网络：仅当 GPS 长期无更新时才允许兜底，避免与 GPS 交替跳动
+                if (mode != MODE_GPS_NETWORK) return
+                if (lastGpsFixMs != 0L && now - lastGpsFixMs < NET_FALLBACK_GAP_MS) return
+                // 网络兜底点精度门槛更严，避免明显劣化
+                if (!acc.isNaN() && acc > 80f) return
+            }
         }
 
         // 3) 通过：记录时间并上报
@@ -468,12 +488,15 @@ class LocationService : Service() {
     @Suppress("MissingPermission")
     private fun reportLastKnown() {
         val lm = locationManager ?: return
-        try {
-            val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) {
-                considerLocation(gps, fromLastKnown = true); return
-            }
-        } catch (_: Exception) {}
+        // 纯网络模式不看 GPS 缓存：GPS 根本没在跑，缓存可能是几小时前、甚至在别的城市
+        if (mode != MODE_NETWORK) {
+            try {
+                val gps = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                if (gps != null && gps.latitude != 0.0 && gps.longitude != 0.0) {
+                    considerLocation(gps, fromLastKnown = true); return
+                }
+            } catch (_: Exception) {}
+        }
         // 纯 GPS 模式不查询网络位置
         if (mode == "gps") return
         try {

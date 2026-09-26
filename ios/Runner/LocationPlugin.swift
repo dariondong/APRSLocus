@@ -145,12 +145,16 @@ final class LocationPlugin: NSObject, CLLocationManagerDelegate {
       emitStatus("请授予定位权限…")
       return
     }
-    // iOS 无法像 Android 那样「仅 GPS / GPS+网络」二选一，
-    // 两种模式统一使用最高精度并允许系统自动选择定位源（含网络辅助）
-    manager.desiredAccuracy = kCLLocationAccuracyBest
+    // iOS 无法像 Android 那样「仅 GPS / GPS+网络 / 纯网络」三选一：
+    // 没有只走基站/Wi-Fi 的 provider。纯网络模式把 desiredAccuracy 放到最粗
+    // （三公里），让系统优先用基站 / Wi-Fi；它仍可能回落到 GPS —— 不影响
+    // 正确性，因为粗点在上层按 coarse 处理（不写轨迹、默认不自动上报）。
+    manager.desiredAccuracy = mode == "network"
+      ? kCLLocationAccuracyThreeKilometers
+      : kCLLocationAccuracyBest
     manager.startUpdatingLocation()
     manager.requestLocation() // 立即取一次，避免等待首次位移
-    emitStatus("GPS 定位中…")
+    emitStatus(mode == "network" ? "网络定位中（粗）…" : "GPS 定位中…")
   }
 
   // MARK: - 事件输出

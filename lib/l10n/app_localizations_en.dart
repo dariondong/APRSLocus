@@ -4445,6 +4445,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locModeGpsNetworkDesc => "Network is a fallback only (when GPS goes stale); coarse fixes are never written to the track";
 
   @override
+  String get locModeNetwork => "Network only";
+
+  @override
+  String get locModeNetworkDesc =>
+      "Cell / Wi-Fi only, accurate to a few hundred metres; most power-saving, for devices without GPS";
+
+  @override
+  String get locModeNetworkHint =>
+      "In network-only mode the fix comes from cell / Wi-Fi only: it can be hundreds of metres off and is **never** written to the track or history. It will not auto-beacon unless you enable “force auto-beacon on coarse fixes”.";
+
+  @override
   String get beaconingSection => 'Beaconing';
 
   @override
