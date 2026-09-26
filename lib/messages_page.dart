@@ -1397,7 +1397,12 @@ class _MessagesPageState extends State<MessagesPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(p, style: ts(13, w: FontWeight.w600)),
+                  Text(
+                    p,
+                    style: ts(13, w: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   SizedBox(height: 2),
                   Text(
                     last?.text ?? '',
@@ -1874,10 +1879,11 @@ class _MessagesPageState extends State<MessagesPage> {
                         child: Icon(Icons.arrow_back_rounded, color: C.grey),
                       ),
                       SizedBox(width: 10),
-                      // Flexible + 省略号：呼号常常是这一行里最长的一段，而它后面
-                      // 还挂着译发钮 / 星标 / 网格三样固定宽度的东西（窄面板下
-                      // 不省略就必然溢出，右侧被裁）。
-                      Flexible(
+                      // 必须用 Expanded（不要 Flexible + Spacer）：Flexible 与
+                      // Spacer 的 flex 都是 1，会各分走一半空白，呼号明明放得下
+                      // 也会被压窄、提前省略号（用户反馈的「呼号缩在一起」）。
+                      // Expanded 吃掉全部剩余宽度，右侧按钮照样被顶到边上。
+                      Expanded(
                         child: GestureDetector(
                           onTap: () => _openStation(st, _selected),
                           child: Row(
@@ -1913,7 +1919,6 @@ class _MessagesPageState extends State<MessagesPage> {
                           ),
                         ),
                       ),
-                      Spacer(),
                       _transBtn(
                         onTap: () => _openTransSheet(title: _selected),
                       ),
