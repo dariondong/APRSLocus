@@ -2518,5 +2518,6 @@
   "txPartPosition": "位置パケット",
   "txPartStatus": "ステータスパケット",
   "txSent": "送信しました：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "コード貢献"
 }

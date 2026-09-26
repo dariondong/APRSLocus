@@ -2434,5 +2434,6 @@
   "txPartPosition": "position packet",
   "txPartStatus": "status packet",
   "txSent": "Transmitted: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "Code contribution"
 }

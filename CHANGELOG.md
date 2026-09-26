@@ -34,6 +34,11 @@
 高级设置做成**可折叠**菜单，平时不改的几项不再把「台站备注」这张卡片撑得很长。
 手填的这几项（功率 / 天线高度 / 增益 / 手填海拔 / 状态文本）都会进备份，换机不必重新照电台手打。
 
+**六、致谢**：授予 **BH7GZB「开发人员」**—— 贡献代码：位置报文数据扩展（`/A=` 高度、
+PHG 功率 / 天线高度 / 增益）与独立状态报文（收发、台站详情与地图信息窗显示）。
+同批把**关于页「代码贡献」**新增这一行，官网三语首页贡献者区与荣誉墙同步。
+
+
 - [下载最新版](https://github.com/dariondong/APRSLocus/releases)
 - [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
 - [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
@@ -84,6 +89,13 @@ device's own state and says nothing about whether the radio can be heard). That 
 merged into it. Advanced is a **collapsible** menu, so the rarely-changed fields no longer stretch the
 station-comment card. The manually entered values (power / antenna height / gain / altitude override /
 status text) are included in backups, so a new device does not mean retyping them from the radio.
+
+**6 · Credits**: **BH7GZB** is awarded the **Developer** badge for contributing position-packet
+data extensions (the `/A=` altitude and the PHG power / antenna height / gain fields) and
+standalone status packets (receiving, sending, and showing them on station details and the map
+info window). The About page gains a matching line under "Code contributions", and the website's
+contributor section (all three languages) and honor wall are updated too.
+
 
 - [Download the latest version](https://github.com/dariondong/APRSLocus/releases)
 - [Full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)

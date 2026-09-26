@@ -1,6 +1,6 @@
 {
-  "version": 52,
-  "updated": "2026-09-25",
+  "version": 53,
+  "updated": "2026-09-27",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -248,6 +248,54 @@
         ]
       },
       "c": "#0ea5e9",
+      "grp": "core",
+      "honors": [
+        "developer"
+      ],
+      "primary": "developer"
+    },
+    {
+      "call": "BH7GZB",
+      "who": {
+        "zh": "BH7GZB",
+        "zh-TW": "BH7GZB",
+        "en": "BH7GZB"
+      },
+      "role": {
+        "zh": "贡献代码",
+        "zh-TW": "貢獻程式碼",
+        "en": "Code contribution"
+      },
+      "brief": {
+        "zh": "让每一帧报文都说清自己",
+        "zh-TW": "讓每一幀報文都說清自己",
+        "en": "Made every packet speak for itself"
+      },
+      "contrib": {
+        "zh": "提交位置报文数据扩展与独立状态报文的 PR：`/A=` 高度、PHG 功率 / 天线高度 / 增益，以及状态报文的收发与在台站详情、地图信息窗里的显示。",
+        "zh-TW": "提交位置報文資料擴充與獨立狀態報文的 PR：`/A=` 高度、PHG 功率 / 天線高度 / 增益，以及狀態報文的收發與在臺站詳情、地圖資訊窗裡的顯示。",
+        "en": "Contributed the pull request for position-packet data extensions and standalone status packets: the `/A=` altitude, the PHG power / antenna height / gain fields, and status packets being received, sent, and surfaced on station details and the map info window."
+      },
+      "quote": {
+        "zh": "报文短，能把话说全就好。",
+        "zh-TW": "報文短，能把話說全就好。",
+        "en": "Packets are short; saying it fully is what counts."
+      },
+      "tags": {
+        "zh": [
+          "APRS 协议",
+          "报文解析"
+        ],
+        "zh-TW": [
+          "APRS 協定",
+          "報文解析"
+        ],
+        "en": [
+          "APRS protocol",
+          "Packet parsing"
+        ]
+      },
+      "c": "#1D6FF2",
       "grp": "core",
       "honors": [
         "developer"

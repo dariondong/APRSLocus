@@ -2518,5 +2518,6 @@
   "txPartPosition": "paquete de posicion",
   "txPartStatus": "paquete de estado",
   "txSent": "Transmitido: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "Contribución de código"
 }

@@ -3033,5 +3033,6 @@
   "txPartPosition": "位置报文",
   "txPartStatus": "状态报文",
   "txSent": "已发射：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "贡献代码"
 }

@@ -2518,5 +2518,6 @@
   "txPartPosition": "paket posisi",
   "txPartStatus": "paket status",
   "txSent": "Terkirim: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "Kontribusi kode"
 }

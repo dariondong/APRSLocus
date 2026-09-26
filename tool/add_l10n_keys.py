@@ -89,6 +89,15 @@ KEYS = {
         'Balizando con posición de red (gruesa)',
         'Memancarkan posisi jaringan (kasar)',
     ),
+    # ── 关于页「代码贡献」里 BH7GZB 那一行的标签 ──
+    # 原来那一节的三行标签都是「具体做了什么」（国际化 / 英文界面、繁体中文界面、翻译），
+    # 而这位的贡献是**位置报文数据扩展与独立状态报文**（PR #11）—— 没有现成键能覆盖。
+    # 为什么不复用 settingsContribCodeOptimization（「代码优化」）：那是清零（BG2HCB）
+    # 的专属描述，套到别人身上等于把他的贡献说成别人的那种。
+    'codeContribution': (
+        '贡献代码', '貢獻程式碼', 'Code contribution',
+        'コード貢献', 'Contribución de código', 'Kontribusi kode',
+    ),
 }
 
 # ── 占位符声明（可空）──

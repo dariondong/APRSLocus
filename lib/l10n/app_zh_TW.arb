@@ -3022,5 +3022,6 @@
   "txPartPosition": "位置報文",
   "txPartStatus": "狀態報文",
   "txSent": "已發射：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "codeContribution": "貢獻程式碼"
 }

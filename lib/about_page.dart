@@ -493,6 +493,17 @@ class _AboutPageState extends State<AboutPage>
                               _eggRow(t.codeContributionI18n, 'BD3QID'),
                               _eggRow(t.codeContributionZhTw, 'BA4UAX'),
                               _eggRow(t.codeContributionTranslation, 'BA7KSM'),
+                              // BH7GZB：贡献代码（PR #11 —— 位置报文数据扩展 `/A=` 高度与
+                              // `PHGphgd` 功率 / 天线高度 / 增益，以及独立状态报文的收发与显示）。
+                              //
+                              // 为什么标签是**通用**的「贡献代码」而不是像上面三行那样写具体做了什么：
+                              // 上面三行各有专属键（国际化 / 繁体界面 / 翻译），而这个人的贡献属于
+                              // 「扩充报文内容」这一类，仓库里没有对应键；新写一个键比复用别人的
+                              // 描述诚实 —— 复用 settingsContribCodeOptimization（「代码优化」）
+                              // 会把清零（BG2HCB）的贡献安到别人头上。
+                              //
+                              // `_row` 而不是 `_eggRow`：他只是普通成员，没有彩蛋，长按不该弹东西。
+                              _row(t.codeContribution, 'BH7GZB'),
                               _row(
                                 t.settingsContribCodeOptimization,
                                 '清零（BG2HCB）',
