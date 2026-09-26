@@ -3384,6 +3384,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearStations => 'Clear station list';
 
   @override
+  String get stationListDesc =>
+      'Received stations and their tracks, stored on this device';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return 'Clear all stations? $n in total. This cannot be undone (messages, logs and packets are not affected).';
+  }
+
+  @override
+  String get stationsCleared => 'Station list cleared';
+
+  @override
   String get clearCache => 'Clear cache';
 
   @override

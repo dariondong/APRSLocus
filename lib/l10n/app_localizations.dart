@@ -6135,6 +6135,24 @@ abstract class AppLocalizations {
   /// **'清除台站列表'**
   String get clearStations;
 
+  /// No description provided for @stationListDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'收到的台站与它们的轨迹，保存在本机'**
+  String get stationListDesc;
+
+  /// No description provided for @clearStationsConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要清除全部台站吗？共 {n} 个，清除后不可恢复（消息 / 日志 / 数据包不受影响）。'**
+  String clearStationsConfirm(String n);
+
+  /// No description provided for @stationsCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清除台站列表'**
+  String get stationsCleared;
+
   /// No description provided for @clearCache.
   ///
   /// In zh, this message translates to:

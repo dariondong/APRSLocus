@@ -3405,6 +3405,44 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
           ],
         ),
         const SizedBox(height: 16),
+        // 单独一项：只清空**台站列表**（与「清空全部数据」分开），
+        // 用户常常只想清掉收来的台站，不想连消息/日志/数据包一起丢。
+        SettingsSectionCard(
+          title: S.of(context).stationList,
+          subtitle: S.of(context).stationListDesc,
+          icon: Icons.sensors_rounded,
+          color: C.green,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                _clearDataItem(S.of(context).stationList,
+                    S.of(context).nItems('${st.stations.length}')),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed:
+                        st.stations.isEmpty ? null : _confirmClearStations,
+                    icon: const Icon(Icons.delete_sweep_rounded, size: 16),
+                    label: Text(S.of(context).clearStations),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.red,
+                      side: BorderSide(color: C.red.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      textStyle: ts(12, w: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
         SettingsSectionCard(
           title: S.of(context).clearAllData,
           subtitle: S.of(context).settingsClearDataSubtitle,
@@ -3524,6 +3562,43 @@ class _DataSettingsPageState extends State<DataSettingsPage> {
             style: FilledButton.styleFrom(
               backgroundColor: C.red,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text(S.of(context).clear,
+                style: ts(13, c: Colors.white, w: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 只清空台站列表（收到的台站及其轨迹），消息 / 日志 / 数据包不受影响
+  void _confirmClearStations() {
+    final n = st.stations.length;
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title:
+            Text(S.of(context).clearStations, style: ts(16, w: FontWeight.w700)),
+        content: Text(S.of(context).clearStationsConfirm('$n'),
+            style: ts(13, c: C.slate)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(S.of(context).cancel, style: ts(13, c: C.grey)),
+          ),
+          FilledButton(
+            onPressed: () {
+              st.clearStations();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(S.of(context).stationsCleared)),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: C.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
             child: Text(S.of(context).clear,
                 style: ts(13, c: Colors.white, w: FontWeight.w600)),

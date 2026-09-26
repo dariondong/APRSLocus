@@ -3255,6 +3255,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clearStations => '清除台站列表';
 
   @override
+  String get stationListDesc => '收到的台站与它们的轨迹，保存在本机';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '确定要清除全部台站吗？共 $n 个，清除后不可恢复（消息 / 日志 / 数据包不受影响）。';
+  }
+
+  @override
+  String get stationsCleared => '已清除台站列表';
+
+  @override
   String get clearCache => '清除缓存';
 
   @override
@@ -10095,6 +10106,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get clearStations => '清除臺站清單';
+
+  @override
+  String get stationListDesc => '收到的臺站與它們的軌跡，保存在本機';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '確定要清除全部臺站嗎？共 $n 個，清除後無法復原（訊息 / 日誌 / 資料包不受影響）。';
+  }
+
+  @override
+  String get stationsCleared => '已清除臺站清單';
 
   @override
   String get clearCache => '清除快取';

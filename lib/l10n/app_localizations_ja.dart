@@ -3284,6 +3284,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get clearStations => '局リストを消去';
 
   @override
+  String get stationListDesc => '受信した局とその軌跡（本機に保存）';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return 'すべての局を消去しますか？合計 $n 件。元に戻せません（メッセージ・ログ・パケットは影響を受けません）。';
+  }
+
+  @override
+  String get stationsCleared => '局リストを消去しました';
+
+  @override
   String get clearCache => 'キャッシュを消去';
 
   @override

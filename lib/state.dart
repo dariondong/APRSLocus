@@ -6027,6 +6027,17 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 只清除**台站列表**（收到的台站及其各自的轨迹）。
+  ///
+  /// 与 [clearAllData] 的区别：这里**不动**消息 / 群聊 / 日志 / 数据包，
+  /// 也**不动**「我的轨迹」与信标点 —— 那些是「我的位置」，不属于台站列表。
+  void clearStations() {
+    stations.clear();
+    _bumpStationsVersion();
+    _saveStations();
+    _notify();
+  }
+
   /// 清除所有本地数据
   void clearAllData() {
     stations.clear();

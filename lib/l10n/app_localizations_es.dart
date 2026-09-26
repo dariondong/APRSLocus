@@ -3413,6 +3413,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clearStations => 'Borrar lista de estaciones';
 
   @override
+  String get stationListDesc =>
+      'Estaciones recibidas y sus recorridos, guardados en este dispositivo';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '¿Borrar todas las estaciones? $n en total. No se puede deshacer (mensajes, registros y paquetes no se ven afectados).';
+  }
+
+  @override
+  String get stationsCleared => 'Lista de estaciones borrada';
+
+  @override
   String get clearCache => 'Borrar caché';
 
   @override

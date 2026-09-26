@@ -3387,6 +3387,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get clearStations => 'Hapus daftar stasiun';
 
   @override
+  String get stationListDesc =>
+      'Stasiun yang diterima beserta jejaknya, disimpan di perangkat ini';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return 'Hapus semua stasiun? Total $n. Tidak dapat dibatalkan (pesan, log, dan paket tidak terpengaruh).';
+  }
+
+  @override
+  String get stationsCleared => 'Daftar stasiun dihapus';
+
+  @override
   String get clearCache => 'Hapus cache';
 
   @override
