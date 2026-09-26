@@ -3,6 +3,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'theme.dart';
+import 'web_embed.dart';
 
 /// ─── Markdown 渲染（公告用）───
 ///
@@ -38,16 +39,44 @@ class MarkdownView extends StatelessWidget {
 
   const MarkdownView(this.data, {super.key, this.baseUrl});
 
+  /// 内嵌视频指令：一整行 `@video <URL>`（见 [WebEmbed]）。
+  ///
+  /// 为什么用独立一行、而不是约定 Markdown 语法：**旧版兼容** ——
+  /// 不认识这条指令的旧版本 app 会把它当普通文字（GFM 还会把裸 URL 变成
+  /// 可点链接），不会白屏；而新版把它渲染成内嵌播放器。
+  static final RegExp _videoLine = RegExp(r'^@video\s+(\S+)\s*$');
+
   @override
   Widget build(BuildContext context) {
     // gitHubFlavored 而不是 commonMark：公告需要**表格**与**自动链接**
     // （把裸 URL 也变成可点的），这两样都是 GFM 扩展。
-    final nodes = md.Document(extensionSet: md.ExtensionSet.gitHubFlavored)
-        .parse(data);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _blocks(context, nodes),
-    );
+    //
+    // 先按 `@video` 指令把原文切成「Markdown 片段 + 内嵌块」：
+    // 指令行不交给 Markdown 解析（解析器会把 `@video` 当普通文字）。
+    final children = <Widget>[];
+    final buf = StringBuffer();
+    void flush() {
+      final src = buf.toString();
+      buf.clear();
+      if (src.trim().isEmpty) return;
+      final nodes = md.Document(extensionSet: md.ExtensionSet.gitHubFlavored)
+          .parse(src);
+      children.addAll(_blocks(context, nodes));
+    }
+
+    for (final line in data.split('\n')) {
+      final m = _videoLine.firstMatch(line.trim());
+      if (m != null) {
+        flush();
+        children.add(WebEmbed(url: m.group(1)!, height: 240));
+        children.add(const SizedBox(height: 12));
+      } else {
+        buf.writeln(line);
+      }
+    }
+    flush();
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   // ─────────────────────────── 块级 ───────────────────────────

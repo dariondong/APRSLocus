@@ -11,6 +11,7 @@ import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'app_widget.dart';
 import 'l10n/app_localizations.dart';
+import 'update_prompt.dart';
 
 /// 将设置里保存的语言码（如 'zh_TW'）解析成 Locale
 Locale _localeOf(String s) {
@@ -58,6 +59,9 @@ class _AppState extends State<App> {
   String _lastLayout = '';
   int _lastReloadTick = 0;
   int _lastThemeRevision = 0;
+
+  /// 「有新版弹提醒」只调一次（启动后第一次进入主页时挂一个 post-frame）
+  bool _updatePromptScheduled = false;
 
   @override
   void initState() {
@@ -167,10 +171,19 @@ class _AppState extends State<App> {
       },
       home: ListenableBuilder(
         listenable: _state,
-        builder: (_, _) {
+        builder: (context, _) {
           if (!_state.initialized) return const SplashPage();
           // 首次启动：进入设置向导
           if (!_state.oobeDone) return OobePage(state: _state);
+          // 启动后检查一次新版本：有则弹提醒（同一版本只提醒一次）。
+          // 放在 home 的 builder 里是为了拿到 **Navigator 之下**的 context
+          // （showDialog 需要它）。
+          if (!_updatePromptScheduled) {
+            _updatePromptScheduled = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) maybePromptUpdate(context: context, state: _state);
+            });
+          }
           // 两套外壳二选一（设置 → 显示 → 界面布局）。判断读 C 上的全局值
           // 而不是 _state.uiLayout：C.layout 与调色板同一时刻写入，不会出现
           // 「颜色已换、外壳还是旧的」这种半截状态。

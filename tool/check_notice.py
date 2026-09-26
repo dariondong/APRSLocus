@@ -33,11 +33,6 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(ROOT, 'tool'))
-
-# 与生成器**共用同一套解析**：不在这里再写一遍「公告区长什么样」——
-# 那种「检查器自己理解一份规则」的写法，一旦页面结构变了两边就会一起错。
-import sync_notice_md as SN  # noqa: E402
 
 # 应用支持的语言（与 lib/notice.dart 的构造规则一致）
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'es', 'id']
@@ -70,39 +65,31 @@ def main() -> int:
         if needle not in read(rel):
             errors.append(f'{rel} 里找不到 `{needle}` —— {why}')
 
-    # ── ① 官网公告区 → notice/*.md（**生成式**，唯一手写处是页面）──
+    # ── ① 公告 Markdown（**手写源**）──
     #
-    # 用户的要求是「把官网那条公告搬进公告文件夹，官网与应用共一份内容」。
-    # 所以这里不检查「文件存在」，而是检查**不漂移**：把官网公告区现渲染一遍，
-    # 与仓库里那份 .md 逐字节比对 —— 改了页面却忘了跑同步脚本，CI 直接报红。
-    # （这比「要求六个语言文件都存在」更贴合真实意图：官网只有三语，
-    #   其余语言由应用的兜底链退回 en.md。）
-    for lang, page in SN.PAGES:
+    # 历史：公告 md 曾由官网首页公告区生成（tool/sync_notice_md.py），
+    # 但公告内容越来越长（多级标题、内嵌视频等），固定字段的生成式表达不了。
+    # 现在改为**手写 Markdown**：`docs/notice/<lang>.md` 就是唯一来源。
+    # 这里只做「别被写空/写坏」的底线校验，不再与官网 HTML 逐字节比对。
+    for lang in ('zh', 'zh_TW', 'en'):
         rel = f'docs/notice/{lang}.md'
-        if not exists(page):
-            errors.append(f'缺 {page} —— 公告的唯一手写处（官网首页公告区）')
-            continue
-        want, err = SN.render_md(read(page))
-        if want is None:
-            errors.append(f'{page} 的公告区解析失败：{err}')
-            continue
-        if len(want.strip()) < 40:
-            errors.append(f'{page} 的公告区太短（<40 字符）—— 多半被写空了')
         if not exists(rel):
-            errors.append(f'缺 {rel} —— 跑 `python3 tool/sync_notice_md.py` 生成')
-        elif read(rel) != want:
-            errors.append(f'{rel} 与 {page} 的公告区**不一致**（内容漂移）—— '
-                          '跑 `python3 tool/sync_notice_md.py` 同步')
-    # 英文是兜底：它必须存在（其它语言取不到时全靠它）
-    if not exists('docs/notice/en.md'):
-        errors.append('缺 docs/notice/en.md —— 它是**兜底**语言，'
-                      '其它语言取不到时全靠它')
-    # 其余语言（官网没有）：可选 —— 应用会退回 en.md；但若存在就不能是空壳
+            errors.append(f'缺 {rel} —— 应用公告的来源（手写 Markdown）')
+            continue
+        body = read(rel).strip()
+        if len(body) < 40:
+            errors.append(f'{rel} 太短（<40 字符）—— 多半被写空了')
+        if not body.startswith('# '):
+            errors.append(f'{rel} 没有以一级标题 `# ` 开头 —— 横幅摘要取不到标题')
+    # 其余语言（可选）：应用会退回 en.md；但若存在就不能是空壳
     for lg in ('ja', 'es', 'id'):
         rel = f'docs/notice/{lg}.md'
         if exists(rel) and len(read(rel).strip()) < 20:
             errors.append(f'{rel} 太短（<20 字符）—— 要么写完整，要么删掉'
                           '（删掉后该语言会退回 en.md）')
+    # 公告里的内嵌视频标记必须真的被渲染（否则会露出一行 `@video ...` 文字）
+    need('lib/markdown_view.dart', '@video',
+         '公告的内嵌视频标记（`@video <url>`）没有被 markdown_view 渲染')
 
     # ── ② 开关关掉必须真的不发请求 ──
     nb = read('lib/notice_banner.dart')
@@ -205,8 +192,8 @@ def main() -> int:
         for e in errors:
             print('  -', e)
         return 1
-    print('公告横幅 ok（官网公告区与 notice/*.md 一致、开关关闭不联网、'
-          'MD 走 GFM 且链接交给系统浏览器、相对地址补全、开关落盘+进备份）')
+    print('公告横幅 ok（docs/notice/*.md 手写源齐备、开关关闭不联网、'
+          'MD 走 GFM 且链接交给系统浏览器、相对地址补全、@video 内嵌、开关落盘+进备份）')
     return 0
 
 

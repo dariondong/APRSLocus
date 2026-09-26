@@ -28,6 +28,8 @@ dependencies:
   # 只加解析器（纯 Dart，依赖仅 args/meta）风险最小，链接也由我们自己交给
   # url_launcher（应用内打开外链的既有做法）。
   markdown: ^7.3.0
+  webview_flutter: ^4.14.1
+  webview_windows: ^0.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
