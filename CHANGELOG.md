@@ -1,5 +1,72 @@
 # 更新日志
 
+## [2.0.2] - 2026-09-26
+
+### 🗺️ 百度图源 · 纯网络定位 · 公告内嵌视频
+
+**一、地图 · 新增百度图源**：加入「百度地图 / 百度卫星」。
+百度不是 Web Mercator —— 它用 BD-09 坐标 + 自有多项式投影，且瓦片 y 轴朝北、
+每级瓦片数不是 2^z。为此引入「按图源切换投影」：渲染、标记 / 轨迹、沉浸地图、
+跟踪、历史回放、离线下载全部走同一套投影，标记与瓦片不再错开。
+
+**二、定位 · 新增「纯网络」模式**：只用基站 / Wi-Fi（不注册 GPS），
+适合没有 GPS 的设备，也用于极端省电。该模式下自动上报视为用户显式选择：
+不必再开「强制接受网络定位自动上报」，并使用**专用固定间隔**（默认 300 秒、
+可调）—— 网络没有可靠速度，智能信标的按速度 / 距离 / 转弯都不适用。
+其余粗定位行为不变：GPS + 网络 的兜底点仍不写轨迹、默认不自动上报。
+
+**三、公告**：应用内公告改为手写 Markdown（简中 / 繁中 / 英文），
+新增 `@video` 内嵌视频（Android / iOS / macOS 内嵌播放；Windows / Linux / Web
+回退为「在浏览器打开」）。旧版本读到 `@video` 那行只会当普通文字（仍是可点链接）。
+
+**四、更新提醒**：启动后检查一次新版本，有新版弹提醒（每版本只提醒一次、可稍后）。
+
+**五、修复**：
+- 修 2.0.1 地图信息窗仍显示「点击查看」—— 之前只改了生成的 l10n 产物、漏改 ARB 源，构建时被覆盖；现已改到位（六语言）。
+- Windows 构建：移除与当前工具链不兼容的 webview_windows，Windows 走外部浏览器打开。
+
+- [下载最新版](https://github.com/dariondong/APRSLocus/releases)
+- [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
+
+## [2.0.2] - 2026-09-26 (English)
+
+### 🗺️ Baidu map sources · network-only positioning · embedded video in notices
+
+**1 · Map · new Baidu sources**: "Baidu Map" and "Baidu Satellite" are now available.
+Baidu is not Web Mercator — it uses BD-09 coordinates plus its own polynomial
+projection, its tile y-axis points north, and the tile count per level is not 2^z.
+So a per-source projection was introduced: rendering, markers / tracks, the immersive
+map, the tracker, track replay and offline downloads all use the same projection, and
+markers no longer drift against the tiles.
+
+**2 · Location · new "Network only" mode**: cell / Wi-Fi only (GPS is not registered);
+for devices without GPS and for extreme battery saving. In this mode auto-beaconing is
+treated as the user's explicit choice — there is no need to enable "force auto-beacon on
+coarse fixes" — and it uses a **dedicated fixed interval** (default 300 s, configurable).
+Network fixes have no reliable speed, so smart beaconing (speed / distance / turn) does
+not apply. Other coarse-fix behaviour is unchanged: GPS + Network fallback fixes are
+still never written to the track and do not auto-beacon by default.
+
+**3 · Notices**: the in-app notice is now hand-written Markdown (Simplified Chinese /
+Traditional Chinese / English) with an `@video` embed (in-app playback on Android /
+iOS / macOS; Windows / Linux / Web fall back to "open in browser"). Older app versions
+simply show that line as plain text (still a clickable link).
+
+**4 · Update reminder**: on launch the app checks once for a new version and shows a
+reminder dialog when one exists (once per version, dismissible).
+
+**5 · Fixes**:
+- The map info window no longer shows "Tap to view" (2.0.1 had only changed the
+  generated l10n output and missed the ARB source, so the build reverted it); fixed in
+  all six languages.
+- Windows build: removed the webview_windows plugin, which is incompatible with the
+  current toolchain; Windows opens such links in the external browser.
+
+- [Download the latest version](https://github.com/dariondong/APRSLocus/releases)
+- [Full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [Feedback & suggestions](https://github.com/dariondong/APRSLocus/issues)
+
 ## [2.0.1] - 2026-09-26
 
 ### 🔧 iOS 原生能力补齐 · 信标里程 · 交互打磨
