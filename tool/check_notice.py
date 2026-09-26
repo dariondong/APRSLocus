@@ -91,6 +91,33 @@ def main() -> int:
     need('lib/markdown_view.dart', '@video',
          '公告的内嵌视频标记（`@video <url>`）没有被 markdown_view 渲染')
 
+    # ── ①b 官网公告区必须与 app 公告（docs/notice/*.md）逐字节一致 ──
+    #
+    # 唯一手写处是 md（app 读它）；官网首页那条公告由
+    # `tool/sync_notice_site.py` 生成。两边各写一份必然漂移，所以这里按
+    # 「脚本会生成什么」与页面现内容比对：改了 md 忘了跑脚本 → CI 直接报红。
+    try:
+        sys.path.insert(0, os.path.join(ROOT, 'tool'))
+        import sync_notice_site as NS  # noqa: E402
+    except Exception as e:  # pragma: no cover
+        NS = None
+        errors.append(f'导入 tool/sync_notice_site.py 失败：{e}')
+    if NS is not None:
+        for lang, page_rel, md_rel in NS.PAGES:
+            if not exists(page_rel) or not exists(md_rel):
+                errors.append(f'缺 {page_rel} 或 {md_rel} —— 公告同步的输入/输出')
+                continue
+            page = read(page_rel)
+            want_head = NS.render_head(lang)
+            want_body = ('<div class="announce-body">\n'
+                         + NS.render_body(read(md_rel)) + '\n    </div>')
+            if want_head not in page:
+                errors.append(f'{page_rel} 公告头部与 {md_rel} 不一致 —— '
+                              '跑 `python3 tool/sync_notice_site.py`')
+            if want_body not in page:
+                errors.append(f'{page_rel} 公告正文与 {md_rel} 不一致 —— '
+                              '跑 `python3 tool/sync_notice_site.py`')
+
     # ── ② 开关关掉必须真的不发请求 ──
     nb = read('lib/notice_banner.dart')
     if 'if (!widget.state.noticeBanner) return; // 关掉 → 一次请求都不发' \
