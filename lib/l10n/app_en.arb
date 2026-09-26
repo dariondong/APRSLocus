@@ -886,7 +886,7 @@
   "mapHelpLocate": "Locate: tap “Locate me” (bottom-right) to return to your position",
   "mapHelpSearch": "Search: type a callsign in the top search box to jump to it",
   "allChangelog": "All changelogs",
-  "tapToView": "Tap to view",
+  "tapToView": "Double-tap beacon for more",
   "beaconNow": "Beacon now",
   "meLabel": "Me",
   "mapZoomIn": "Zoom in",

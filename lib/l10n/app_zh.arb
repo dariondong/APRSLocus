@@ -886,7 +886,7 @@
   "mapHelpLocate": "定位：点击右下角「定位到我」回到当前位置",
   "mapHelpSearch": "搜索：顶部搜索框输入呼号可快速定位台站",
   "allChangelog": "全部更新日志",
-  "tapToView": "点击查看",
+  "tapToView": "双击信标查看更多",
   "beaconNow": "手动上报",
   "meLabel": "我",
   "mapZoomIn": "放大",

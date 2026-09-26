@@ -879,7 +879,7 @@
   "mapHelpLocate": "現在地：右下の「現在地」をタップすると自分の位置に戻ります",
   "mapHelpSearch": "検索：上部の検索欄にコールサインを入力すると、その局へ素早く移動できます",
   "allChangelog": "すべての更新履歴",
-  "tapToView": "タップで表示",
+  "tapToView": "ビーコンをダブルタップで詳細",
   "beaconNow": "今すぐ送信",
   "meLabel": "自分",
   "mapZoomIn": "拡大",
