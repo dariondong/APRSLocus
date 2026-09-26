@@ -973,14 +973,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
+  /// 地图标记的信息窗（悬停/选中时跟着走的那张小浮窗）。
+  ///
+  /// 显示「三个报文」里落在这个台站上的内容：
+  ///   * 状态 / 速度 / 距离 —— 原有信息；
+  ///   * **高度** —— 位置报文的 `/A=` 数据扩展（`s.alt` 由它解析而来）；
+  ///   * **位置备注** —— 位置报文里跟在符号后的注释（中继台的频点常在这里）；
+  ///   * **状态文本** —— 独立状态报文（DTI `>`）。（紫色，与台站详情一致）
+  ///
+  /// 为什么这四行要**按需出现**而不是常驻占位：这三个字段绝大多数台站都没有，
+  /// 常驻会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。
   Widget _infoWindow(Station s) {
     final st = localizedStatusLabel(context, s.effectiveStatus);
     final info = StringBuffer(s.call)..write('  ·  $st');
     if (s.speed != null) info.write('  ·  ${s.speedStr}');
+    if (s.alt != null) info.write('  ·  ${s.altStr}');
     final my = widget.state.myStation;
     if (my != null) {
       info.write('  ·  ${s.distKm(my.lat, my.lng).toStringAsFixed(1)}km');
     }
+    final comment = s.comment?.trim() ?? '';
+    if (comment.isNotEmpty) info.write('\n$comment');
+    final statusText = s.statusText?.trim() ?? '';
+    if (statusText.isNotEmpty) info.write('\n$statusText');
     info.write('  · ${S.of(context).tapToView}');
     // blurSigma: 0：这是跟着鼠标走的小信息窗，原来自己带 12 的模糊 ——
     // 每次悬停都要重算一层离屏模糊。小浮层不值得付这个代价（见 material.dart）。

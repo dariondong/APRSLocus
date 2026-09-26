@@ -111,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.2';
+  static const appVersion = '2.0.3';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -122,6 +122,20 @@ class AppState extends ChangeNotifier {
 
   /// 历史版本的内置默认备注。升级时若仍是这个值（用户从未改过）则视为空。
   static const _legacyDefaultComment = 'APRSlocus 移动台';
+
+  /// 独立状态报文（`>` 开头）的文本，随「发送」写进信息字段的方括号里。
+  ///
+  /// 为什么单独存一份而不是复用 [myComment]：两者是**两种不同的 APRS 报文**——
+  /// 备注跟在**位置报文**里（会被 aprs.fi 当位置注释显示），状态报文是**独立一帧**
+  /// （不含坐标，第三方地图显示为台站状态）。共用一份文本会让用户以为
+  /// 「改了备注就连状态一起改了」，而实际两者互不影响。
+  ///
+  /// 留空表示不发自定义文本，改发内置的 `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。
+  String aprsStatusText = '';
+
+  /// 状态报文的文本上限（字符，APRS101 规定状态信息字段最长 62 个字符）。
+  /// 这里按 60 留 2 个字符余量，且截断在**发送时**做，输入框不硬拦。
+  static const int statusMaxLen = 60;
 
   /// 在线判定时长（分钟）：台站最后上报距今超过该值即视为离线。
   /// 原先是写死的 5 分钟，现改为用户可配置（步进见设置页）。
@@ -451,7 +465,17 @@ class AppState extends ChangeNotifier {
   // 信标上报内容选项
   bool beaconIncludeSpeed = true; // 速度
   bool beaconIncludeCourse = true; // 方位角
-  bool beaconIncludeBattery = true; // 手机电量
+
+  /// 信标备注里是否带上**手机电量**（`Bat:nn%`）。
+  ///
+  /// 默认**关**（用户要求）：电量属于「台站自身状态」，不是位置信息，
+  /// 而且手机电量与电台的工作状态没有关系 —— 把它塞进每一帧位置报文，
+  /// 收益很低却让备注变长、还向全网暴露设备电量。
+  ///
+  /// 开关**只有一处**：设置 → 电台 → 台站备注 → 高级设置。
+  /// （原先信标页「信标上报内容」里还有一个同名开关，两处控制同一个值，
+  /// 容易让人以为改了这里那里也会跟着变 —— 已按用户要求合并到高级设置。）
+  bool beaconIncludeBattery = false;
   /// 信标备注里是否带上**心率**（HR=nn）。
   ///
   /// 心率可能来自两个地方，共用这一个开关：
@@ -695,10 +719,107 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 设置独立状态报文的文本（见 [aprsStatusText]）。不发送，只存。
+  void setAprsStatusText(String v) {
+    aprsStatusText = v;
+    persist();
+    _notify();
+  }
+
   void setBeaconIncludeBattery(bool v) {
     beaconIncludeBattery = v;
     persist();
     _notify();
+  }
+
+  // ─── 位置报文的数据扩展（功率 / 天线高度 / 增益）───
+  //
+  // 由用户在「电台设置 → 台站备注」下方填写，**留空即不发送那一项**
+  // （不是发 0）：空值发出去等于向全网宣告一个假的「0 瓦」，
+  // 比不发更糟 —— 对方无法区分「没填」和「真的是 0」。
+  //
+  // 高度（`/A=`）**不在这里**：它跟随定位的海拔自动发送（见 `_beaconComment`）。
+  // 下面这个 `beaconAntennaHeightFt` 是**另一个量**，务必别混
+  // （规范原文特意强调 "not above ground or sea level"）：
+  //   * `/A=`（自动）→ 台站**海拔**；
+  //   * [beaconAntennaHeightFt] → PHG 的 h 码位：天线高于**当地平均地面**多少英尺。
+
+  /// 发射功率（瓦），PHG 的 p 码位。null = 不发 PHG。
+  double? beaconPowerW;
+
+  /// 天线有效高度（英尺，高于当地平均地面），PHG 的 h 码位。
+  ///
+  /// 为什么没有独立开关：PHG 是**一个** 7 字节字段，四个码位必须同时给。
+  /// 用户填了功率与增益、却没填天线高度时，这里按 0 档（10 英尺）编码，
+  /// 并在设置页把该档实际值回显出来，不静默编造。
+  double? beaconAntennaHeightFt;
+
+  /// 天线增益（dB），PHG 的 g 码位。
+  double? beaconGainDb;
+
+  /// 手填海拔（米），**覆盖**定位海拔；null = 用定位的（默认）。
+  ///
+  /// 为什么需要覆盖：定位给的海拔在不少机型上不可用（无气压计、室内、
+  /// 只有网络定位时干脆没有），而台站的实际海拔是用户查得到的确定值。
+  /// 语义刻意做成「留空 = 跟着定位走」：默认行为与改动前完全一致，
+  /// 想手填的人填了就生效，不必在两个开关之间做选择。
+  double? beaconAltOverrideM;
+
+  /// 方向性（PHG 的 d 码位）**刻意不做成设置项**：它描述定向天线的朝向，
+  /// 而本应用面向的是移动/固定台站，绝大多数是全向天线；多一个「朝向」
+  /// 下拉只是增加误填的机会。编码时固定用 0（全向）。
+  /// 将来若要支持定向台站，在这里加一个字段并把
+  /// `AprsPhg.directivityCode(isOmni: false, deg: …)` 接上即可。
+
+  /// 手填海拔（null = 恢复跟随定位）
+  void setBeaconAltOverride(double? m) {
+    beaconAltOverrideM = m;
+    persist();
+    _notify();
+  }
+
+  void setBeaconPower(double? w) {
+    beaconPowerW = w;
+    persist();
+    _notify();
+  }
+
+  void setBeaconAntennaHeight(double? ft) {
+    beaconAntennaHeightFt = ft;
+    persist();
+    _notify();
+  }
+
+  void setBeaconGain(double? db) {
+    beaconGainDb = db;
+    persist();
+    _notify();
+  }
+
+  /// 设置页的回显：实际会被编进报文的 `PHGphgd`（四个码位一起给）。
+  ///
+  /// 由 [AprsPhg] 的量化表反推，而不是另写一份 —— 两处各写一份必然漂。
+  String get phgPreview {
+    if (beaconPowerW == null && beaconGainDb == null) return '';
+    return AprsPhg.encode(
+      watts: beaconPowerW ?? 0,
+      heightFeet: beaconAntennaHeightFt ?? 0,
+      gainDb: beaconGainDb ?? 0,
+    );
+  }
+
+  /// 实际用于 `/A=` 的海拔（米）：手填优先，否则用定位的；都没有则 null。
+  ///
+  /// 单一出口：[_beaconComment] 与设置页回显都读它，不会出现
+  /// 「显示的是一个值、发出去的是另一个」。
+  double? get effectiveAltM => beaconAltOverrideM ?? myAlt;
+
+  /// 当前将发出的 `/A=` 片段（没有可用海拔时为空串）。
+  String get autoAltExtension {
+    final a = effectiveAltM;
+    if (a == null || a < 0) return '';
+    final ft = (a / 0.3048).round().clamp(0, 999999);
+    return '/A=${ft.toString().padLeft(6, '0')}';
   }
 
   /// 信标是否带上心率（见 [beaconIncludeHr]）。
@@ -2153,6 +2274,13 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeCourse') ?? beaconIncludeCourse;
       beaconIncludeBattery =
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
+      // 手填的数据扩展：键不存在时保持 null（= 不发），不能回落成 0 ——
+      // 回落成 0 会让「从没填过」变成「填了 0」，一升级就多发一项假数据。
+      beaconPowerW = p.getDouble('beaconPowerW');
+      beaconAntennaHeightFt = p.getDouble('beaconAntennaHeightFt');
+      beaconGainDb = p.getDouble('beaconGainDb');
+      beaconAltOverrideM = p.getDouble('beaconAltOverrideM');
+      aprsStatusText = p.getString('aprsStatusText') ?? aprsStatusText;
       beaconIncludeHr = p.getBool('beaconIncludeHr') ?? beaconIncludeHr;
       beaconIncludeTripMileage =
           p.getBool('beaconIncludeTripMileage') ?? beaconIncludeTripMileage;
@@ -2368,6 +2496,20 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeSpeed', beaconIncludeSpeed);
     await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
     await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
+    // 手填的位置报文数据扩展（留空 = 不发）
+    if (beaconPowerW != null) {
+      await p.setDouble('beaconPowerW', beaconPowerW!);
+    }
+    if (beaconAntennaHeightFt != null) {
+      await p.setDouble('beaconAntennaHeightFt', beaconAntennaHeightFt!);
+    }
+    if (beaconGainDb != null) {
+      await p.setDouble('beaconGainDb', beaconGainDb!);
+    }
+    if (beaconAltOverrideM != null) {
+      await p.setDouble('beaconAltOverrideM', beaconAltOverrideM!);
+    }
+    await p.setString('aprsStatusText', aprsStatusText);
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
     await p.setBool('beaconIncludeTripMileage', beaconIncludeTripMileage);
     await p.setBool('beaconIncludeTotalMileage', beaconIncludeTotalMileage);
@@ -3465,6 +3607,54 @@ class AppState extends ChangeNotifier {
     return comma < 0 ? p : p.substring(0, comma);
   }
 
+  /// 发送一帧**独立状态报文**（DTI `>`），返回整条报文原文（供 UI 回显）。
+  ///
+  /// 状态报文与位置报文是两种东西，这里必须分清楚：
+  ///   * 位置报文带上坐标 → 会移动你在 aprs.fi 等地图上的位置；
+  ///   * 状态报文不含坐标 → 只更新「台站状态」那一栏。
+  ///
+  /// 所以这个方法是**安全的**：即使在没有定位（`myHasFix == false`）时也能发，
+  /// 不会把台站扔到某个坐标上；这也是 [LinkDiag.testFrame] 当初选状态包做链路
+  /// 自检的原因，这里沿用同一形状。
+  ///
+  /// 文本留空时发内置的 APRSlocus 在线帧（`>APRSlocus CONNECT vX.Y.Z 平台`）——
+  /// 那正是连接成功时自动发的那一帧，用户手动发一次等价于「重新宣告我在线」。
+  ///
+  /// 超过 [statusMaxLen] 会被截断而不是拒发：APRS101 限 62 字符，截断能保住
+  /// 「状态可见」，而拒发只会让用户以为按钮坏了。
+  String sendStatus() {
+    var text = aprsStatusText.trim();
+    if (text.isEmpty) {
+      text = 'APRSlocus CONNECT v$appVersion $platformTag';
+    }
+    if (text.length > statusMaxLen) {
+      text = text.substring(0, statusMaxLen);
+    }
+    // 信息字段以 `>` 开头；换行会破坏 TNC2 单行结构，一律换成空格
+    text = text.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
+    final raw = '$myFullCall>$_destHeader:>$text';
+    _pushPacket(Packet(
+      raw,
+      myFullCall,
+      'APRS',
+      'status',
+      DateTime.now(),
+      info: text,
+    ));
+    _sendRaw(raw);
+    _lastTx = DateTime.now();
+    _log(LogLevel.info, '状态', '已发出状态报文：${_trunc(text)}');
+    setConnStatus(
+      usingTnc
+          ? ConnPhase.positionSentTnc
+          : (usingAudio ? ConnPhase.positionSentAudio : ConnPhase.positionSent),
+      arg: myCall,
+    );
+    _notify();
+    _updateNotification();
+    return raw;
+  }
+
   /// 是否自动回复 ack。TNC 模式下可由用户在设备页关闭 ——
   /// 射频信道上每个 ack 都是一次真实发射，共用信道时需要能关掉。
   bool get _autoAckEnabled =>
@@ -4098,10 +4288,29 @@ class AppState extends ChangeNotifier {
           .padLeft(3, '0');
       parts.add('$crs/$kt');
     }
-    // 高度：APRS 标准 /A=ffffff（英尺）
-    if (myAlt != null && myAlt! >= 0) {
-      final ft = (myAlt! / 0.3048).round().clamp(0, 999999);
+    // 高度：数据扩展 `/A=aaaaaa`（**英尺**，APRS101 第 6 章原文：
+    // "The comment may contain an altitude value, in the form /A=aaaaaa,
+    //  where aaaaaa is the altitude in feet"）。
+    //
+    // 取 [effectiveAltM]：手填海拔优先，否则跟随定位 —— 单一出口，
+    // 与设置页的回显同源，不会「显示一个值、发另一个」。
+    final alt = effectiveAltM;
+    if (alt != null && alt >= 0) {
+      final ft = (alt / 0.3048).round().clamp(0, 999999);
       parts.add('/A=${ft.toString().padLeft(6, '0')}');
+    }
+    // PHG 数据扩展（**固定 7 字节**）：功率 / 天线有效高度 / 增益 / 方向性。
+    //
+    // 为什么功率与增益一填就得连高度、方向性一起发：`PHGphgd` 在规范里是
+    // **一个**字段，四个码位不可拆 —— 没有「只报功率」的写法。所以这里
+    // 一旦填了功率或增益，就按 [AprsPhg] 的量化表把四位一次编全；
+    // 天线高度留空时落在 0 档（10 英尺），设置页会把该档实际值回显出来。
+    if (beaconPowerW != null || beaconGainDb != null) {
+      parts.add(AprsPhg.encode(
+        watts: beaconPowerW ?? 0,
+        heightFeet: beaconAntennaHeightFt ?? 0,
+        gainDb: beaconGainDb ?? 0,
+      ));
     }
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');
@@ -4253,7 +4462,26 @@ class AppState extends ChangeNotifier {
 
       // APRSlocus 状态包：>APRSlocus CONNECT vX.Y.Z 平台
       // （版本号自 v1.6.80 起从位置包移到这里，见 _mergeApStatus）
-      if (body.startsWith('>')) _mergeApStatus(src, body);
+      if (body.startsWith('>')) {
+        // 独立状态报文（DTI `>`）的文本落进台站，供台站详情 / 地图信息窗显示。
+        //
+        // 为什么必须单独一段：此前**只有**「APRSlocus 自己的」与「路径含 APFMO 的」
+        // 状态包会被提取，其余（如中继台的 `Powered by W0CHP-PiStar-Dash`）虽然
+        // 在数据包页看得到原文，却在台站详情里彻底看不到 —— Station 上根本没有
+        // 存放状态文本的字段。这里补上那个落点。
+        //
+        // 台站还不存在（只发状态、位置包还没到）时不建台站：没有坐标的台站会被
+        // 画到 (0,0)，比不显示更糟；该台站的位置包到达后更新的自然是最新状态。
+        final stText = _statusTextOf(body);
+        if (stText != null) {
+          final si = stations.indexWhere((s) => s.call == src);
+          if (si >= 0) {
+            stations[si].statusText = stText;
+            _stationsDirty = true;
+          }
+        }
+        _mergeApStatus(src, body);
+      }
 
       // FMO 状态包：>地区,状态,在线/峰值,描述（路径含 APFMO）
       if (body.startsWith('>') && line.contains('APFMO')) {
@@ -4381,6 +4609,26 @@ class AppState extends ChangeNotifier {
     // 「对象」筛选就永远筛不出东西（对象包全被当成了位置）。
     if (body.startsWith(';')) return 'object';
     return 'position';
+  }
+
+  /// APRS 状态报文的时间戳形式：`DDHHMMz` / `HHMMSSh` / `DDHHMM/`，共 7 字符。
+  static final RegExp _statusTimeRe = RegExp(r'^\d{6}[zZhH/]');
+
+  /// 从状态报文信息字段（`>` 开头）里取出**可读的状态文本**。
+  ///
+  /// 两种形态（APRS101 §16）：
+  ///   * `>文本` —— 无时间戳；
+  ///   * `>DDHHMMz文本` —— 带 7 字符时间戳，时间戳不属于状态内容，要剥掉；
+  ///     否则详情页会显示成 `071430zPowered by ...` 这种读不通的样子。
+  ///
+  /// 返回 null 表示这条状态报文没有可显示的内容（只有 `>` 或只有时间戳）。
+  static String? _statusTextOf(String body) {
+    var t = body.substring(1); // 去掉 DTI '>'
+    if (_statusTimeRe.hasMatch(t)) t = t.substring(7);
+    t = t.trim();
+    if (t.isEmpty) return null;
+    // 详情页是一行文本，换行会把布局撑破；状态文本里本来也不该有换行
+    return t.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
   }
 
   /// 拆一条 TNC2 报文的头：`SRC>DEST,DIGI1,DIGI2:info`

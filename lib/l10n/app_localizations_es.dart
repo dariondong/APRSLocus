@@ -10,4120 +10,36 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appName => 'APRSlocus';
-
-  @override
-  String get ok => 'OK';
-
-  @override
-  String get cancel => 'Cancelar';
-
-  @override
-  String get save => 'Guardar';
-
-  @override
-  String get delete => 'Eliminar';
-
-  @override
-  String get confirm => 'Confirmar';
-
-  @override
-  String get back => 'Atrás';
-
-  @override
-  String get next => 'Siguiente';
-
-  @override
-  String get finish => 'Finalizar y conectar';
-
-  @override
-  String get previous => 'Anterior';
-
-  @override
-  String get search => 'Buscar';
-
-  @override
-  String get settings => 'Ajustes';
-
-  @override
-  String get greetMorning => 'Buenos días, ';
-
-  @override
-  String get greetNoon => 'Buen mediodía, ';
-
-  @override
-  String get greetAfternoon => 'Buenas tardes, ';
-
-  @override
-  String get greetEvening => 'Buenas noches, ';
-
-  @override
-  String get greetNight => 'Hola, ';
-
-  @override
   String get about => 'Acerca de';
-
-  @override
-  String get logout => 'Salir';
-
-  @override
-  String get retry => 'Reintentar';
-
-  @override
-  String get all => 'Todo';
-
-  @override
-  String get online => 'En línea';
-
-  @override
-  String get offline => 'Sin conexión';
-
-  @override
-  String get moving => 'En movimiento';
-
-  @override
-  String get emergency => 'Emergencia';
-
-  @override
-  String get fixed => 'Fijo';
-
-  @override
-  String get infrastructure => 'Digipeater';
-
-  @override
-  String get weather => 'Meteorología';
-
-  @override
-  String get fmo => 'FMO';
-
-  @override
-  String get mobile => 'Móvil';
-
-  @override
-  String get favorite => 'Favorito';
-
-  @override
-  String get grid => 'Cuadrícula';
-
-  @override
-  String get callsign => 'Indicativo';
-
-  @override
-  String get speed => 'Velocidad';
-
-  @override
-  String get altitude => 'Altitud';
-
-  @override
-  String get course => 'Rumbo';
-
-  @override
-  String get distance => 'Distancia';
-
-  @override
-  String get bearing => 'Azimut';
-
-  @override
-  String get lastSeen => 'Última señal';
-
-  @override
-  String get latitude => 'Latitud';
-
-  @override
-  String get longitude => 'Longitud';
-
-  @override
-  String get station => 'Estación';
-
-  @override
-  String get stations => 'Estaciones';
-
-  @override
-  String get messages => 'Mensajes';
-
-  @override
-  String get packets => 'Paquetes';
-
-  @override
-  String get map => 'Mapa';
-
-  @override
-  String get home => 'Inicio';
-
-  @override
-  String get connection => 'Conexión';
-
-  @override
-  String get connected => 'Conectado';
-
-  @override
-  String get disconnected => 'Sin conexión';
-
-  @override
-  String get connecting => 'Conectando';
-
-  @override
-  String get reconnect => 'Reconectar';
-
-  @override
-  String get server => 'Servidor';
-
-  @override
-  String get port => 'Puerto';
-
-  @override
-  String get passcode => 'Passcode';
-
-  @override
-  String get beacon => 'Baliza de posición';
-
-  @override
-  String get beaconInterval => 'Intervalo de baliza (s)';
-
-  @override
-  String get nextBeacon => 'Próxima baliza';
-
-  @override
-  String get beaconsSent => 'Balizas enviadas';
-
-  @override
-  String get symCatVehicles => 'Vehículos / Tráfico';
-
-  @override
-  String get symCatBuildings => 'Edificios / Servicios';
-
-  @override
-  String get symCatNature => 'Meteorología / Naturaleza';
-
-  @override
-  String get symCatAirWater => 'Aire / Agua';
-
-  @override
-  String get symCatComms => 'Comunicaciones / Otros';
-
-  @override
-  String get homeBadgeLabel => 'Insignia en inicio';
-
-  @override
-  String get homeBadgePickTitle => 'Elegir insignia para el inicio';
-
-  @override
-  String get homeBadgePickDesc =>
-      'Elige una de tus insignias para mostrarla en el inicio';
-
-  @override
-  String get simLocationHint => 'Usar una ubicación simulada (sin GPS)';
-
-  @override
-  String get speedTierRules => 'Niveles de velocidad';
-
-  @override
-  String get restoreDefaults => 'Restaurar valores predeterminados';
-
-  @override
-  String get speedTierDesc =>
-      'Cuanto más rápido te mueves, más a menudo se reporta; cada nivel puede tener su propio intervalo e icono (vacío = mi símbolo).';
-
-  @override
-  String get speedTierShortIntervalWarn =>
-      'Intervalos inferiores a 60 s aumentan notablemente la carga del servidor; se recomiendan 60 s o más.';
-
-  @override
-  String get addSpeedTier => 'Añadir nivel de velocidad';
-
-  @override
-  String get maxSpeedTiers => 'Máximo 5 niveles de velocidad';
-
-  @override
-  String get iconDefaultMySymbol => 'Icono · Predeterminado (mi símbolo)';
-
-  @override
-  String iconNamed(String name) {
-    return 'Icono · $name';
-  }
-
-  @override
-  String everyNSeconds(String sec) {
-    return 'Cada $sec s';
-  }
-
-  @override
-  String get tierMinTurn => 'Giro (grados)';
-
-  @override
-  String get tierMinTurnHint => 'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
-
-  @override
-  String get guideMoreInSettings => 'Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones';
-
-  @override
-  String get guideStationsTitle => 'Lista de estaciones';
-
-  @override
-  String get guideStationsBody => 'Aquí están todas las estaciones que recibes: busca, ordena y filtra por distancia. La lista y el mapa comparten el mismo filtro.';
-
-  @override
-  String get guideTrackHistoryTitle => 'Reproducir recorrido';
-
-  @override
-  String get guideTrackHistoryBody => 'Reproduce la ruta de una estación en una fecha concreta; arrastra la línea de tiempo para recorrerla.';
-
-  @override
-  String get guideThemeTitle => 'Tema e interfaz';
-
-  @override
-  String get guideThemeBody => 'Cambia colores, imagen de fondo, material y escala de la interfaz; se aplica al momento para comparar.';
-
-  @override
-  String get guideTranslateTitle => 'Traducción';
-
-  @override
-  String get guideTranslateBody => 'Configura el idioma destino y la API para traducir los chats. Sin API no hay traducción; esta página indica qué hace falta.';
-
-  @override
-  String get guideAudioTitle => 'TNC por tarjeta de sonido';
-
-  @override
-  String get guideAudioBody => 'Envía y recibe tramas AFSK por la salida de audio: elige el dispositivo, ajusta volumen y ganancia y usa el tono de prueba antes de conectar.';
-
-  @override
-  String get guideTncDeviceTitle => 'TNC Bluetooth';
-
-  @override
-  String get guideTncDeviceBody => 'Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.';
-
-  @override
-  String get guidePkwdwplTitle => 'Interfaz PKWDWPL';
-
-  @override
-  String get guidePkwdwplBody => 'Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir.';
-
-  @override
-  String get guideTitle => 'Guía de funciones';
-
-  @override
-  String get guideGotIt => 'Entendido';
-
-  @override
-  String get guideShowAgain => 'Ver esta guía otra vez';
-
-  @override
-  String get guideHomeTitle => 'Inicio · mapa y estaciones';
-
-  @override
-  String get guideHomeBody => 'Toca una estación para ver su ruta y sus datos; el botón inferior envía tu posición (conecta antes).';
-
-  @override
-  String get guideImmersiveTitle => 'Mapa inmersivo';
-
-  @override
-  String get guideImmersiveBody => 'Mapa a pantalla completa: pellizca para ampliar, arrastra para mover, «seguirme» abajo a la izquierda, volver arriba a la izquierda.';
-
-  @override
-  String get guideMessagesTitle => 'Mensajes';
-
-  @override
-  String get guideMessagesBody => 'Escribe un indicativo para chatear; el menú superior derecho crea grupos y envía boletines. ¿Sin respuestas? Comprueba que estás conectado.';
-
-  @override
-  String get guideDeviceTitle => 'Dispositivos y fuentes';
-
-  @override
-  String get guideDeviceBody => 'Elige de dónde vienen los datos (APRS-IS / TNC / tarjeta de sonido) y qué enlace transmite. Empareja el TNC Bluetooth en su subpágina.';
-
-  @override
-  String get guideSettingsTitle => 'Ajustes';
-
-  @override
-  String get guideSettingsBody => 'Ocho categorías: radio, baliza, conexión, pantalla, dispositivos, datos, avanzado, actualización. Los cambios se aplican al momento.';
-
-  @override
-  String get guideOfflineMapTitle => 'Mapas sin conexión';
-
-  @override
-  String get guideOfflineMapBody => 'Selecciona una zona y descarga sus teselas para ver el mapa sin red. Puedes pausar y reanudar.';
-
-  @override
-  String get guideLogTitle => 'Registro del sistema';
-
-  @override
-  String get guideLogBody => 'Aquí se registran los paquetes y los eventos del enlace: es lo primero que hay que mirar si algo falla. Copia todo desde arriba a la derecha.';
-
-  @override
-  String get guideBackupTitle => 'Copia y restauración';
-
-  @override
-  String get guideBackupBody => 'Exporta un archivo de ajustes y restáuralo con un toque en otro dispositivo. Las teselas y la caché de traducción no se incluyen.';
-
-  @override
-  String get guideExportAdifTitle => 'Exportar ADIF';
-
-  @override
-  String get guideExportAdifBody => 'Guarda las estaciones recibidas en un archivo ADIF para tu programa de log, con rango de fechas y modo opcionales.';
-
-  @override
-  String get guidePacketsTitle => 'Paquetes';
-
-  @override
-  String get guidePacketsBody => 'Las tramas originales enviadas y recibidas, útiles para comprobar cómo se interpretó un paquete. Toca una fila para ver el texto completo.';
-
-  @override
-  String get guideResetRow => 'Ver otra vez las guías de funciones';
-
-  @override
-  String get guideResetTitle => '¿Ver otra vez las guías de funciones?';
-
-  @override
-  String get guideResetConfirm => 'Se borra el registro de «ya visto» y la tarjeta de ayuda vuelve a aparecer en cada página.';
-
-  @override
-  String get guideResetButton => 'Mostrar otra vez';
-
-  @override
-  String get guideResetDone => 'Guías de funciones restablecidas';
-
-  @override
-  String get ossLicenseSection => 'Código abierto y licencia';
-
-  @override
-  String get creditsSection => 'Créditos';
-
-  @override
-  String get noticeEntryDesc => 'Consulta los últimos avisos de la web';
-
-  @override
-  String get noticeTitle => 'Avisos';
-
-  @override
-  String get noticeEmpty => 'Sin avisos por ahora';
-
-  @override
-  String get noticeLoading => 'Cargando…';
-
-  @override
-  String get noticeReadMore => 'Leer más';
-
-  @override
-  String noticeCached(String ago) {
-    return 'En caché · ${ago}';
-  }
-
-  @override
-  String noticeOfflineCache(String time) {
-    return 'Copia sin conexión · ${time} (se actualiza al recuperar la red)';
-  }
-
-  @override
-  String get timeJustNow => 'ahora mismo';
-
-  @override
-  String get refresh => 'Actualizar';
-
-  @override
-  String get inputTapHint => 'Toca para escribir';
-
-  @override
-  String get callCommentEmpty => 'Sin definir · toca para escribir';
-
-  @override
-  String orTurnDeg(String deg) {
-    return 'o ${deg}°';
-  }
-
-  @override
-  String get tierMinDist => 'Distancia (m)';
-
-  @override
-  String get tierMinDistHint => 'También reporta tras desplazarse esta distancia desde el último envío; 0 = desactivado (solo intervalo)';
-
-  @override
-  String orMoveM(String dist) {
-    return 'o ${dist} m';
-  }
-
-  @override
-  String get tierIdleTitle => 'Editar · Nivel reposo/baja velocidad';
-
-  @override
-  String get tierSpeedTitle => 'Editar · Nivel de velocidad';
-
-  @override
-  String get minSpeedKmh => 'Velocidad mínima (km/h)';
-
-  @override
-  String get intervalSeconds => 'Intervalo de reporte (s)';
-
-  @override
-  String get idleTierDesc =>
-      'Las velocidades por debajo del primer nivel móvil se reportan con este nivel';
-
-  @override
-  String get intervalLabel => 'Intervalo';
-
-  @override
-  String get unitSeconds => 's';
-
-  @override
-  String get pickBeaconIconDesc =>
-      'Elige un icono de baliza · «Predeterminado» mantiene mi símbolo';
-
-  @override
-  String get defaultLabel => 'Predeterminado';
-
-  @override
-  String get deleteThisTier => 'Eliminar este nivel';
-
-  @override
-  String get idleTierNotDeletable => 'El nivel de reposo no se puede eliminar';
-
-  @override
-  String get errMinSpeedInt => 'La velocidad mínima debe ser un entero ≥ 1';
-
-  @override
-  String get errIntervalInt =>
-      'El intervalo debe ser un entero de al menos 5 s';
-
-  @override
-  String get errTierDuplicate =>
-      'Ese nivel ya existe; los umbrales deben ser distintos';
-
-  @override
-  String get wsUrlOptional => 'URL de WebSocket (opcional)';
-
-  @override
-  String get countryUnrestricted =>
-      'Sin país seleccionado · sin restricción (todas las estaciones)';
-
-  @override
-  String get weatherWidget => 'Widget del tiempo';
-
-  @override
-  String get groupChatLabel => 'Chats grupales';
-
-  @override
-  String nItems(String n) {
-    return '$n';
-  }
-
-  @override
-  String nMessages(String n) {
-    return '$n';
-  }
-
-  @override
-  String confirmDeleteMessages(String n) {
-    return '¿Eliminar los $n mensajes de chat? Esta acción no se puede deshacer.';
-  }
-
-  @override
-  String get weatherSimFollowLive => 'Seguir en vivo';
-
-  @override
-  String get wxClear => 'Despejado';
-
-  @override
-  String get wxCloudy => 'Nublado';
-
-  @override
-  String get wxOvercast => 'Cubierto';
-
-  @override
-  String get wxLightRain => 'Lluvia ligera';
-
-  @override
-  String get wxModerateRain => 'Lluvia moderada';
-
-  @override
-  String get wxHeavyRain => 'Lluvia fuerte';
-
-  @override
-  String get wxStormRain => 'Lluvia torrencial';
-
-  @override
-  String get wxThunder => 'Tormenta eléctrica';
-
-  @override
-  String get wxSnow => 'Nieve';
-
-  @override
-  String get wxFog => 'Niebla';
-
-  @override
-  String get weatherSimTitle =>
-      'Simulación del tiempo (vista previa de fondo/efectos/consejos)';
-
-  @override
-  String get weatherSimDesc =>
-      'Tras elegir, toca la píldora del tiempo en la barra superior para previsualizar; «Seguir en vivo» restaura el tiempo real';
-
-  @override
-  String get restartWizardConfirm =>
-      'Se abrirá de nuevo el asistente inicial para configurar indicativo, región de recepción, etc.\nTus ajustes actuales se conservan; podrás seguir usando la app al terminar.';
-
-  @override
-  String get restartWizardButton => 'Ejecutar de nuevo';
-
-  @override
-  String get pasteAprsPacketHint =>
-      'Pega un paquete APRS sin procesar, p. ej.\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Estación de prueba';
-
-  @override
-  String beaconsSentCount(String n) {
-    return '$n';
-  }
-
-  @override
-  String get myBadgesAndAchievements => 'Mis insignias y logros';
-
-  @override
-  String get quitApp => 'Salir de la app';
-
-  @override
-  String get quitAppDesc =>
-      'Al salir, APRSlocus detiene el reporte de ubicación y la recepción en segundo plano, y finaliza el proceso.';
-
-  @override
-  String get symCar => 'Coche';
-
-  @override
-  String get openInBrowser => 'Abrir en el navegador';
-
-  @override
-  String get badgeWall => 'Muro de insignias';
-
-  @override
-  String get achievementWall => 'Muro de logros';
-
-  @override
-  String get mapTypeCartoPositron => 'Carto Positron (vector claro)';
-
-  @override
-  String get mapTypeCarto => 'Carto claro';
-
-  @override
-  String get mapTypeCartoDark => 'Carto oscuro';
-
-  @override
-  String get mapTypeCartoVoyager => 'Carto Voyager';
-
-  @override
-  String get mapTypeOsm => 'OSM estándar';
-
-  @override
-  String get mapTypeOsmHot => 'OSM humanitario';
-
-  @override
-  String get mapTypeOpenTopo => 'OpenTopo terreno';
-
-  @override
-  String get mapTypeEsriStreet => 'Esri calles';
-
-  @override
-  String get mapTypeEsriSat => 'Esri imágenes';
-
-  @override
-  String get simulatedKeepAlive => 'Ubicación simulada · keep-alive';
-
-  @override
-  String get symCatEmergency => 'Emergencias';
-
-  @override
-  String get symSmallAircraft => 'Avioneta';
-
-  @override
-  String myPositionSet(String grid) {
-    return 'Mi posición establecida, cuadrícula $grid';
-  }
-
-  @override
-  String get tierIdleShort => 'Reposo/baja velocidad';
-
-  @override
-  String get symHouse => 'Casa';
-
-  @override
-  String get symPerson => 'Persona';
-
-  @override
-  String get symTruck => 'Camión';
-
-  @override
-  String get symBicycle => 'Bicicleta';
-
-  @override
-  String get symRv => 'Autocaravana';
-
-  @override
-  String get symWxStation => 'Estación meteorológica';
-
-  @override
-  String get symPolice => 'Policía';
-
-  @override
-  String get symMotorcycle => 'Moto';
-
-  @override
-  String get symSemi => 'Semirremolque';
-
-  @override
-  String get symVan => 'Furgoneta';
-
-  @override
-  String get symJeep => 'Jeep';
-
-  @override
-  String get symBus => 'Autobús';
-
-  @override
-  String get symTruckStop => 'Área de camiones';
-
-  @override
-  String get symTrain => 'Tren';
-
-  @override
-  String get symFireTruck => 'Camión de bomberos';
-
-  @override
-  String get symPoliceCar => 'Coche de policía';
-
-  @override
-  String get symSnowmobile => 'Moto de nieve';
-
-  @override
-  String get symYagi => 'Yagi';
-
-  @override
-  String get symHospital => 'Hospital';
-
-  @override
-  String get symAmbulance => 'Ambulancia';
-
-  @override
-  String get symFireStation => 'Parque de bomberos';
-
-  @override
-  String get symSchool => 'Escuela';
-
-  @override
-  String get symMotel => 'Motel';
-
-  @override
-  String get symHotel => 'Hotel';
-
-  @override
-  String get symLaptop => 'Portátil';
-
-  @override
-  String get symPostOffice => 'Oficina de correos';
-
-  @override
-  String get symWeather => 'Meteorología';
-
-  @override
-  String get symWater => 'Punto de agua';
-
-  @override
-  String get symHurricane => 'Huracán';
-
-  @override
-  String get symHorse => 'A caballo';
-
-  @override
-  String get symDog => 'Perro';
-
-  @override
-  String get symCamping => 'Acampada';
-
-  @override
-  String get symShelter => 'Refugio';
-
-  @override
-  String get symRedCross => 'Cruz Roja';
-
-  @override
-  String get symFireAlarm => 'Alarma de incendios';
-
-  @override
-  String get symEmergCenter => 'Centro de emergencias';
-
-  @override
-  String get symCmdCenter => 'Centro de mando';
-
-  @override
-  String get symHandicap => 'Discapacidad';
-
-  @override
-  String get symBigAircraft => 'Avión grande';
-
-  @override
-  String get symGlider => 'Planeador';
-
-  @override
-  String get symBalloon => 'Globo';
-
-  @override
-  String get symShip => 'Barco';
-
-  @override
-  String get symSailboat => 'Velero';
-
-  @override
-  String get symMobileSat => 'Satélite móvil';
-
-  @override
-  String get symSatAntenna => 'Antena de satélite';
-
-  @override
-  String get symDigi => 'Repetidor digital';
-
-  @override
-  String get symDigiTower => 'Torre repetidora';
-
-  @override
-  String get symMicE => 'Repetidor Mic-E';
-
-  @override
-  String get symNode => 'Nodo';
-
-  @override
-  String get symDxCluster => 'Clúster DX';
-
-  @override
-  String get symHfGateway => 'Pasarela HF';
-
-  @override
-  String get symFileServer => 'Servidor de archivos';
-
-  @override
-  String get symTelephone => 'Teléfono';
-
-  @override
-  String get symGrid => 'Cuadrícula';
-
-  @override
-  String get symXUnix => 'X/Unix';
-
-  @override
-  String get symFmoStation => 'Estación FMO';
-
-  @override
-  String get filter => 'Filtro de rango';
-
-  @override
-  String get filterRadius => 'Radio (km)';
-
-  @override
-  String get maxStations => 'Máx. estaciones';
-
-  @override
-  String get receiveFilter => 'Filtro por indicativo';
-
-  @override
-  String get receiveCountries => 'Países';
-
-  @override
-  String get receiveOthers => 'Otras estaciones';
-
-  @override
-  String get darkMode => 'Modo oscuro';
-
-  @override
-  String get themeColor => 'Color del tema';
-
-  @override
-  String get language => 'Idioma';
-
-  @override
-  String get languageSystem => 'Seguir al sistema';
-
-  @override
-  String get languageZh => '中文';
-
-  @override
-  String get languageEn => 'English';
-
-  @override
-  String get languageZhTw => '繁體中文';
-
-  @override
-  String get languageJa => '日本語';
-
-  @override
-  String get languageId => 'Bahasa Indonesia';
-
-  @override
-  String get languageEs => 'Español';
-
-  @override
-  String get displaySettings => 'Ajustes de pantalla';
-
-  @override
-  String get uiScale => 'Escala de la interfaz';
-
-  @override
-  String get reloadUi => 'Recargar interfaz';
-
-  @override
-  String get reloadDone => 'Recargado';
-
-  @override
-  String get mapType => 'Tipo de mapa';
-
-  @override
-  String get unit => 'Unidad';
-
-  @override
-  String get coordDatum => 'Datum';
-
-  @override
-  String get stationSettings => 'Ajustes de estación';
-
-  @override
-  String get connectionSettings => 'Ajustes de conexión';
-
-  @override
-  String get chatSettings => 'Ajustes del chat';
-
-  @override
-  String get dataSettings => 'Ajustes de datos';
-
-  @override
-  String get advancedSettings => 'Ajustes avanzados';
-
-  @override
-  String get sponsors => 'Patrocinadores y agradecimientos';
-
-  @override
-  String get sponsorsThanks => 'Gracias a todos los que apoyan';
-
-  @override
-  String get send => 'Enviar';
-
-  @override
-  String get receive => 'Recibir';
-
-  @override
-  String get clear => 'Borrar';
-
-  @override
-  String get copy => 'Copiar';
-
-  @override
-  String get copied => 'Copiado';
-
-  @override
-  String get version => 'Versión';
-
-  @override
-  String get location => 'Ubicación';
-
-  @override
-  String get gpsStatus => 'Estado del GPS';
-
-  @override
-  String get myLocation => 'Mi ubicación';
-
-  @override
-  String get track => 'Rastro';
-
-  @override
-  String get forwardingPath => 'Ruta';
-
-  @override
-  String get relatedStations => 'Estaciones relacionadas';
-
-  @override
-  String get openInMap => 'Ver en el mapa';
-
-  @override
-  String get navigate => 'Navegar';
-
-  @override
-  String get messageSent => 'Mensaje enviado';
-
-  @override
-  String get enterMessage => 'Escribe un mensaje';
-
-  @override
-  String get noData => 'Sin datos';
-
-  @override
-  String get searchHint =>
-      'Buscar indicativo / tipo / cuadrícula / comentario…';
-
-  @override
-  String get notFound => 'No se encontraron estaciones';
-
-  @override
-  String get totalStations => 'Total';
-
-  @override
-  String get sortBy => 'Ordenar';
-
-  @override
-  String get sortCall => 'Indicativo';
-
-  @override
-  String get sortRecent => 'Reciente';
-
-  @override
-  String get sortDistance => 'Distancia';
-
-  @override
-  String get sortStatus => 'Estado';
-
-  @override
-  String get typeFilter => 'Tipo';
-
-  @override
-  String get aprslocusOnly => 'APRSlocus';
-
-  @override
-  String get confirmDelete => '¿Eliminar este elemento?';
-
-  @override
-  String get confirmRestartOobe =>
-      'Se abrirá de nuevo el asistente inicial para configurar indicativo, región de recepción, etc.\nTus ajustes actuales se conservarán.';
-
-  @override
-  String get restartWizard => 'Ejecutar de nuevo el asistente';
-
-  @override
-  String get restartWizardTitle => '¿Ejecutar de nuevo el asistente?';
-
-  @override
-  String get oobeFilterTitle => 'Elegir región de recepción';
-
-  @override
-  String get oobeFilterDesc =>
-      'Marca los países o regiones que quieras recibir. Si no marcas ninguno, recibirás todas las estaciones sin restricción.';
-
-  @override
-  String get oobeWelcomeTitle => 'Te damos la bienvenida a APRSlocus';
-
-  @override
-  String get oobeWelcomeRealMap => 'Mapa en vivo';
-
-  @override
-  String get oobeWelcomeGps => 'Baliza de posición GPS';
-
-  @override
-  String get oobeWelcomeMsg => 'Mensajes APRS';
-
-  @override
-  String get oobeWelcomeIs => 'Conexión APRS-IS';
-
-  @override
-  String get oobeCallTitle => 'Tu indicativo';
-
-  @override
-  String get oobeSymbolTitle => 'Elegir símbolo de estación';
-
-  @override
-  String get oobeServerTitle => 'Conectar al servidor APRS-IS';
-
-  @override
-  String get weatherData => 'Datos meteorológicos';
-
-  @override
-  String get fmoInfo => 'Información FMO';
-
-  @override
-  String get aprslocusInfo => 'Información de APRSlocus';
-
-  @override
-  String get locationInfo => 'Ubicación';
-
-  @override
-  String get recentPackets => 'Paquetes recientes';
-
-  @override
-  String get quickActions => 'Acciones rápidas';
-
-  @override
-  String get copyCoords => 'Copiar coordenadas';
-
-  @override
-  String get copyGrid => 'Copiar cuadrícula';
-
-  @override
-  String get sender => 'Remitente';
-
-  @override
-  String get time => 'Hora';
-
-  @override
-  String get message => 'Mensaje';
-
-  @override
-  String get groupChat => 'Chat grupal';
-
-  @override
-  String get newGroup => 'Nuevo grupo';
-
-  @override
-  String get sendTo => 'Enviar a';
-
-  @override
-  String get filterRule => 'Regla de filtro';
-
-  @override
-  String get saveAndApply => 'Guardar y aplicar filtro';
-
-  @override
-  String get useMyLocation => 'Usar mi ubicación como centro del filtro';
-
-  @override
-  String get noFixYet =>
-      'Aún no hay posición; la ubicación actual no está disponible';
-
-  @override
-  String get invalidCoords => 'Introduce latitud, longitud y radio válidos';
-
-  @override
-  String get filterSaved => 'Filtro guardado y aplicado';
-
-  @override
-  String get stationsShown => 'Estaciones';
-
-  @override
-  String get settingsDesc => 'Configura estación, ubicación y conexión';
-
-  @override
-  String get radioCat => 'Estación';
-
-  @override
-  String get radioCatDesc => 'Indicativo · SSID · Símbolo';
-
-  @override
-  String get beaconCat => 'Balizamiento';
-
-  @override
-  String get beaconCatDesc => 'GPS · Baliza · Posición manual';
-
-  @override
-  String get connectionCat => 'Conexión';
-
-  @override
-  String get connectionCatDesc => 'Servidor · Filtro de rango';
-
-  @override
-  String get displayCat => 'Pantalla';
-
-  @override
-  String get displayCatDesc => 'Coordenadas · Tema';
-
-  @override
-  String get chatCat => 'Chat';
-
-  @override
-  String get chatCatDesc => 'Historial · Contactos';
-
-  @override
-  String get dataCat => 'Datos';
-
-  @override
-  String get dataCatDesc => 'Borrar datos locales';
-
-  @override
-  String get advancedCat => 'Avanzado';
-
-  @override
-  String get advancedCatDesc => 'Laboratorio · Desarrollador';
-
-  @override
-  String get updateCat => 'Actualización';
-
-  @override
-  String get updateCatDesc => 'Buscar nuevas versiones';
-
-  @override
-  String get checkUpdate => 'Buscar actualización';
-
-  @override
-  String get myStationSettings => 'Mi estación';
-
-  @override
-  String get myStationSettingsDesc => 'Indicativo · SSID · Símbolo · Baliza';
-
-  @override
-  String get oobeWelcomeDesc => 'Empieza a configurar tu estación APRS';
-
-  @override
-  String get oobeCallDesc => 'Introduce tu indicativo';
-
-  @override
-  String get oobeSymbolDesc =>
-      'El símbolo representa el tipo de estación y se envía con las balizas de posición';
-
-  @override
-  String get oobeServerDesc =>
-      'Conéctate para recibir datos de estaciones APRS de todo el mundo. La configuración predeterminada funciona tal cual.';
-
-  @override
-  String get wizard => 'Asistente de configuración';
-
-  @override
-  String get setStep => 'Paso';
-
-  @override
-  String get chooseSymbol => 'Elegir símbolo de estación';
-
-  @override
-  String get settingsSubtitle =>
-      'Coordenadas del mapa y preferencias de pantalla';
-
-  @override
-  String get stationSettingsSubtitle => 'Indicativo, símbolo y baliza';
-
-  @override
-  String get connectionSettingsSubtitle =>
-      'Servidor APRS-IS y rango de recepción';
-
-  @override
-  String get chatSettingsSubtitle => 'Historial de mensajes y contactos';
-
-  @override
-  String get dataSettingsSubtitle => 'Gestión de datos locales';
-
-  @override
-  String get advancedSettingsSubtitle =>
-      'Laboratorio y herramientas de desarrollo';
-
-  @override
-  String get stationListTitle => 'Estaciones';
-
-  @override
-  String get filters => 'Filtros';
-
-  @override
-  String get clearAll => 'Borrar todo';
-
-  @override
-  String get statusFilter => 'Estado';
-
-  @override
-  String get typeGroup => 'Tipo';
-
-  @override
-  String get appFilter => 'App';
-
-  @override
-  String get mapMenu => 'Menú del mapa';
-
-  @override
-  String get mapTypeTitle => 'Tipo de mapa';
-
-  @override
-  String get selectMapType => 'Seleccionar tipo de mapa';
-
-  @override
-  String get showTrails => 'Mostrar rastros';
-
-  @override
-  String get showStations => 'Mostrar estaciones';
-
-  @override
-  String get aboutTitle => 'Acerca de';
 
   @override
   String get aboutSubtitle => 'Seguimiento y mapas APRS';
 
   @override
-  String get author => 'Autor';
-
-  @override
-  String get codeContributions => 'Contribuciones de código';
-
-  @override
-  String get codeContributionI18n =>
-      'Internacionalización / interfaz en inglés';
-
-  @override
-  String get codeContributionZhTw => 'Interfaz en chino tradicional';
-
-  @override
-  String get codeContributionTranslation => 'Traducción';
-
-  @override
-  String get dataSourceTxHint =>
-      'Puedes activar varios enlaces para recibir, pero **solo uno transmite** (el punto a la derecha). Enviar el mismo indicativo por dos enlaces duplicaría paquetes.';
-
-  @override
-  String get dataSourceTxBadge => 'TX';
-
-  @override
-  String get dataSourceIgateHint =>
-      'Para actuar como pasarela (reenviar paquetes de RF a internet), activa APRS-IS y TNC/audio, y luego enciende «Pasarela» abajo.';
-
-  @override
-  String get igateTitle => 'Pasarela (iGate)';
-
-  @override
-  String get igateSubtitle => 'Reenvía a APRS-IS los paquetes oídos por RF';
-
-  @override
-  String get igateEnable => 'Activar pasarela';
-
-  @override
-  String get igateHint =>
-      'Los paquetes oídos por RF se reenvían a APRS-IS, marcados con qAr/qAR y tu indicativo. Requiere APRS-IS y una fuente de RF (TNC/audio) activas.';
-
-  @override
-  String get igateNeedRf =>
-      'Falta una fuente de RF: marca TNC o audio en «Fuente de datos» arriba.';
-
-  @override
-  String get igateNeedIs => 'APRS-IS no está activo: márcalo arriba.';
-
-  @override
-  String get igateTwoWay => 'Pasarela bidireccional (reenviar mensajes a RF)';
-
-  @override
-  String get igateTwoWayHint =>
-      'Si está activo, **transmite por RF**: solo mensajes punto a punto destinados a una estación oída recientemente por RF. Si está desactivado, solo RF→IS.';
-
-  @override
-  String get igateStatToIs => 'Reenviados → APRS-IS';
-
-  @override
-  String get igateStatToRf => 'Reenviados → RF';
-
-  @override
-  String get igateStatDup => 'Duplicados descartados';
-
-  @override
-  String get igateResetStats => 'Reiniciar contadores';
-
-  @override
-  String get igateStatRfSeen => 'Oídos por RF';
-
-  @override
-  String get igateStatBlocked => 'Rechazados por anti-bucle';
-
-  @override
-  String get igateRfDown =>
-      'El enlace de RF está caído: la pasarela no puede reenviar nada. Si «Oídos por RF» sigue en 0, no llega ningún paquete — revisa el estado del TNC/audio (velocidad serie, equipo encendido), no la pasarela.';
-
-  @override
-  String get igateIsDown =>
-      'APRS-IS no está conectado: la pasarela no tiene a dónde reenviar. Los contadores empezarán a subir cuando se conecte (ver la tarjeta de estado del enlace).';
-
-  @override
-  String get igateNoRfTraffic =>
-      'No se ha oído ningún paquete por RF: la pasarela está lista pero **no tiene nada que reenviar**. No es un problema de la pasarela: nada llega a la aplicación. Revisa el origen: volumen y silenciador del equipo, antena, si alguien está transmitiendo y el registro por si hay tráfico de RF.';
-
-  @override
-  String get igateAllRejected =>
-      'Llegan paquetes de RF pero todos fueron rechazados por la protección anti-bucle: llevan TCPIP*/TCPXX* o una construcción q, es decir, vienen de internet y reenviarlos multiplicaría el mismo paquete. Esto es **funcionar correctamente**, no una avería.';
-
-  @override
-  String grpSysJoined(String call) {
-    return '$call se unió al grupo';
-  }
-
-  @override
-  String grpSysLeft(String call) {
-    return '$call salió del grupo';
-  }
-
-  @override
-  String grpSysJoinReq(String call) {
-    return '$call pidió unirse';
-  }
-
-  @override
-  String grpSysDeclined(String call) {
-    return '$call rechazó la invitación';
-  }
-
-  @override
-  String get grpInviteTitle => 'Invitación a grupo';
-
-  @override
-  String grpInviteBody(String from, String name) {
-    return '$from te invitó a «$name»';
-  }
-
-  @override
-  String get grpNameInvalid =>
-      'El nombre del grupo no puede estar vacío ni contener dos puntos o saltos de línea';
-
-  @override
-  String grpNameTooLong(int max) {
-    return 'El nombre del grupo se limita a $max caracteres (más largo hace que la invitación supere el límite de APRS)';
-  }
-
-  @override
-  String grpInviteSent(int n) {
-    return 'Invitación enviada a $n miembro(s)';
-  }
-
-  @override
-  String get grpSelfPending => 'Esperando al propietario';
-
-  @override
-  String get deviceOverviewTitle => 'Dispositivos';
-
-  @override
-  String get deviceOverviewSubtitle =>
-      'Fuente de datos, estado del enlace y autodiagnóstico';
-
-  @override
-  String get deviceCurrentLink => 'Enlace actual';
-
-  @override
-  String get deviceCurrentLinkDesc =>
-      'Resumen de solo lectura: edita los parámetros en las subpáginas';
-
-  @override
-  String get deviceEntries => 'Dispositivos y parámetros';
-
-  @override
-  String get deviceEntriesDesc =>
-      'Una subpágina por enlace, cada una con sus ajustes';
-
-  @override
-  String get tncDeviceTitle => 'Dispositivo y parámetros TNC';
-
-  @override
-  String get tncDeviceDesc =>
-      'Emparejamiento Bluetooth/serie, cadena de inicio, parámetros KISS y autoprueba de TX';
-
-  @override
-  String get deviceLogTitle => 'Registro del enlace';
-
-  @override
-  String get deviceLogDesc =>
-      'Muestra el registro de la fuente actual (TNC/audio cambia solo)';
-
-  @override
-  String get tncInitTitle => 'Cadena de inicio del TNC';
-
-  @override
-  String get tncInitSubtitle =>
-      'Se envía línea a línea tras conectar (equivalente al kiss.init de APRSdroid)';
-
-  @override
-  String get tncInitTip =>
-      'Si el TNC recibe pero no transmite, prueba aquí primero: muchos módulos TNC Bluetooth/serie arrancan en modo comando y necesitan KISS ON / RESTART para reenviar en KISS. Un comando por línea (se añade CRLF automáticamente).';
-
-  @override
-  String get tncInitDelay => 'Retardo por línea (ms)';
-
-  @override
-  String get tncInitDelayTip =>
-      'Espera entre líneas. El módulo necesita tiempo; si es muy corto se pierden comandos';
-
-  @override
-  String get tncInitSendAction => 'Enviar cadena de inicio ahora';
-
-  @override
-  String tncInitSent(int n) {
-    return '$n línea(s) de inicio enviadas';
-  }
-
-  @override
-  String get tncInitEmpty => 'No hay cadena de inicio';
-
-  @override
-  String get tncPushParams => 'Enviar parámetros KISS al conectar';
-
-  @override
-  String get tncPushParamsTip =>
-      'Desactivado por defecto (igual que APRSdroid). Si se activa, los valores de arriba se envían al TNC al conectar y sobrescriben su configuración; valores inadecuados pueden hacer que nunca transmita, así que actívalo solo si quieres gestionarlo de forma centralizada.';
-
-  @override
-  String get tncTxTestTitle => 'Autoprueba de TX';
-
-  @override
-  String get tncTxTestSubtitle =>
-      'Escribe una trama de prueba al TNC para distinguir problemas de enlace o del TNC';
-
-  @override
-  String get tncTxTestHint =>
-      'Envía una trama de estado (sin coordenadas), así que no moverá tu estación en aprs.fi. Si indica \"escrito\" pero no se transmite, el problema está en el TNC: prueba primero la cadena de inicio (KISS ON / RESTART) y luego revisa TxDelay y la ocupación del canal.';
-
-  @override
-  String get tncTxTestAction => 'Escribir trama de prueba';
-
-  @override
-  String get tncTxTestOkPrefix => 'Escrito';
-
-  @override
-  String tncTxTestOk(String n) {
-    return 'Escrito en el TNC ($n tramas en total). Si la radio sigue sin transmitir, el problema está en el TNC: prueba la cadena de inicio o revisa TxDelay.';
-  }
-
-  @override
-  String tncTxTestFail(String err) {
-    return 'No escrito: $err';
-  }
-
-  @override
-  String get tncNeedConnected => 'Conecta primero el TNC';
-
-  @override
-  String msgLenCounter(int chars, int bytes) {
-    return '$chars/67 caracteres · $bytes/512 bytes en total';
-  }
-
-  @override
-  String msgOverSpecAsk(int chars) {
-    return 'Este mensaje tiene $chars caracteres y supera el límite de 67 de la especificación APRS. La mayoría de los clientes aún lo mostrará, pero algunos clientes/pasarelas lo truncan o rechazan, así que la otra estación podría no poder interpretarlo. ¿Enviar igualmente?';
-  }
-
-  @override
-  String msgOverServerLimit(int bytes, int over) {
-    return 'El paquete tiene $bytes bytes y supera el límite de 512 bytes por línea de APRS-IS. El servidor podría descartarlo por completo (ni siquiera llegaría la cabecera). Acorta unos $over bytes.';
-  }
-
-  @override
-  String get msgSendAnyway => 'Enviar igualmente';
-
-  @override
-  String get msgSpecLimitHint =>
-      'La especificación APRS recomienda mensajes de menos de 67 caracteres: el texto más largo puede truncarse o no interpretarse en algunos clientes.';
-
-  @override
-  String get msgBlockedTooLong =>
-      'Envío bloqueado: el paquete supera el límite de APRS-IS';
-
-  @override
-  String get beaconRfBeaconOff => 'Baliza RF desactivada';
-
-  @override
-  String get beaconRfEnableHint =>
-      'La transmisión automática en una fuente de RF requiere activar «Baliza RF». Hasta entonces no se transmite la posición automáticamente (ni corre la cuenta atrás).';
-
-  @override
-  String get beaconRfEnableAction => 'Activar baliza RF';
-
-  @override
-  String get beaconRfEnabled =>
-      'Baliza RF activada: transmitirá según el intervalo';
-
-  @override
-  String get beaconRfEnableWarn =>
-      'La transmisión usa tu indicativo: opera dentro de tu licencia';
-
-  @override
-  String get diagTitle => 'Autodiagnóstico del enlace';
-
-  @override
-  String get diagSubtitle =>
-      'Comprueba protocolo, permisos y dispositivos capa por capa';
-
-  @override
-  String get diagRun => 'Ejecutar prueba';
-
-  @override
-  String get diagRunning => 'Probando…';
-
-  @override
-  String diagPassed(int n) {
-    return '$n correctas';
-  }
-
-  @override
-  String diagFailed(int n) {
-    return '$n fallidas';
-  }
-
-  @override
-  String get diagHint =>
-      'Los bucles de protocolo funcionan sin radio: descarta el software y luego revisa dispositivos y cableado';
-
-  @override
-  String get diagTncSection => 'TNC (KISS / AX.25)';
-
-  @override
-  String get diagAudioSection => 'Audio (AFSK 1200)';
-
-  @override
-  String get diagKissEscape => 'Escape KISS';
-
-  @override
-  String get diagKissEscapeFail =>
-      'Fallo al deshacer el escape KISS (problema de software: cambiar el dispositivo no ayuda)';
-
-  @override
-  String get diagAx25 => 'Tramado AX.25';
-
-  @override
-  String get diagAx25Fail =>
-      'Fallo de codificación AX.25 (paquete mal formado)';
-
-  @override
-  String diagAx25Mismatch(String got) {
-    return 'El ida y vuelta AX.25 no coincide: $got';
-  }
-
-  @override
-  String get diagFcs => 'Comprobación FCS';
-
-  @override
-  String get diagFcsFail =>
-      'La comprobación FCS es incorrecta (un cambio de un byte debe rechazarse)';
-
-  @override
-  String get diagTncLoopback => 'Bucle de protocolo TNC';
-
-  @override
-  String diagTncLoopbackOk(int len) {
-    return 'Ida y vuelta KISS/AX.25 idéntico ($len bytes)';
-  }
-
-  @override
-  String get diagAfskLoopback => 'Bucle de módem AFSK';
-
-  @override
-  String diagAfskLoopbackOk(int samples, int rate) {
-    return 'Modular → demodular idéntico ($samples muestras @${rate}Hz)';
-  }
-
-  @override
-  String diagAfskLoopbackFail(int n) {
-    return '$n trama(s) decodificada(s): se esperaba 1';
-  }
-
-  @override
-  String get diagAfskLevelFail =>
-      'Nivel de onda demasiado bajo (casi silencio)';
-
-  @override
-  String get diagPlatform => 'Compatibilidad de plataforma';
-
-  @override
-  String diagPlatformOk(String name) {
-    return 'Disponible · motor $name';
-  }
-
-  @override
-  String get diagTncPlatformNo => 'Este sistema no admite enlaces TNC';
-
-  @override
-  String get diagAudioPlatformWarn =>
-      'Sin audio en tiempo real: el modo WAV sigue disponible';
-
-  @override
-  String get diagNoRealtime => 'no en tiempo real';
-
-  @override
-  String get diagPermission => 'Permiso de micrófono';
-
-  @override
-  String get diagPermissionOk => 'Concedido';
-
-  @override
-  String get diagSkipped => 'Omitido (plataforma no compatible)';
-
-  @override
-  String get diagCapture => 'Captura de audio';
-
-  @override
-  String diagCaptureOk(int bytes, int rate) {
-    return 'Recibidos $bytes bytes @${rate}Hz';
-  }
-
-  @override
-  String get diagCaptureNoData =>
-      'No se recibieron datos de audio: revisa el dispositivo de entrada y los permisos';
-
-  @override
-  String diagCaptureFailed(String err) {
-    return 'No se pudo iniciar la captura: $err';
-  }
-
-  @override
-  String get diagSpeaker => 'Salida de altavoz';
-
-  @override
-  String get diagSpeakerOk => 'Tono de prueba reproducido';
-
-  @override
-  String diagSpeakerFail(String err) {
-    return 'Fallo de reproducción: $err';
-  }
-
-  @override
-  String get diagFileIo => 'E/S de archivo WAV';
-
-  @override
-  String diagFileIoOk(int rate) {
-    return 'Escritura → lectura → decodificación idénticas @${rate}Hz';
-  }
-
-  @override
-  String diagFileWriteFail(String err) {
-    return 'Fallo de escritura: $err';
-  }
-
-  @override
-  String get diagFileReadFail => 'Fallo de lectura del archivo';
-
-  @override
-  String get diagFileDecodeFail =>
-      'No se decodificó ningún paquete del archivo (¿no es una grabación AFSK 1200?)';
-
-  @override
-  String get connAudioSourceHint =>
-      'El modo de audio no usa servidor, filtros ni ajustes KISS';
-
-  @override
-  String get testTxTitle => 'Transmisión de prueba';
-
-  @override
-  String get testTxDesc =>
-      'Envía un paquete de estado para comprobar que el enlace llega al aire';
-
-  @override
-  String get testTxAction => 'Transmitir trama de prueba';
-
-  @override
-  String get testTxSent => 'Trama de prueba entregada al enlace';
-
-  @override
-  String testTxFail(String err) {
-    return 'Fallo de la trama de prueba: $err';
-  }
-
-  @override
-  String get testTxNeedsConnect => 'Conecta primero el enlace';
-
-  @override
-  String get testTxHint =>
-      'Esto **transmite de verdad** (paquete de estado, sin coordenadas). Asegúrate de operar dentro de tu licencia e indicativo';
-
-  @override
-  String get audioStatsTitle => 'Estadísticas de audio';
-
-  @override
-  String audioStatRx(int n) {
-    return '$n tramas recibidas';
-  }
-
-  @override
-  String audioStatTx(int n) {
-    return '$n tramas enviadas';
-  }
-
-  @override
-  String audioStatDrop(int n) {
-    return '$n bytes descartados durante la transmisión';
-  }
-
-  @override
-  String get audioRestart => 'Reiniciar enlace de audio';
-
-  @override
-  String get audioTxDisabled =>
-      '\"Permitir transmisión\" desactivado: solo recepción';
-
-  @override
-  String get audioLoopbackHint =>
-      'La autocomprobación hace una ida y vuelta real de modulación→demodulación; en Android el micrófono se pausa al transmitir (semidúplex)';
-
-  @override
-  String get notifAudioConnected => 'Enlace de audio en línea';
-
-  @override
-  String get notifAudioDisconnected => 'Enlace de audio desconectado';
-
-  @override
-  String connConnectingAudio(String name) {
-    return 'Abriendo audio ($name)…';
-  }
-
-  @override
-  String connAudioConnected(String rate) {
-    return 'Enlace de audio en línea · $rate';
-  }
-
-  @override
-  String connRetryAudio(int seconds) {
-    return 'No se pudo abrir el audio · reintentando en ${seconds}s…';
-  }
-
-  @override
-  String connRetryAudioDetail(String detail, int seconds) {
-    return 'Fallo de audio ($detail) · reintentando en ${seconds}s…';
-  }
-
-  @override
-  String connAudioLinkLost(int seconds) {
-    return 'Enlace de audio perdido · reconectando en ${seconds}s…';
-  }
-
-  @override
-  String connAudioPositionSent(String call) {
-    return 'Enviado por audio · posición transmitida ($call)';
-  }
-
-  @override
-  String get dataSourceAudio => 'Audio (tarjeta de sonido)';
-
-  @override
-  String get dataSourceAudioDesc =>
-      'AFSK 1200 hacia/desde una radio por micrófono/altavoz o cable de sonido';
-
-  @override
-  String get audioSettings => 'Audio (TNC de tarjeta de sonido)';
-
-  @override
-  String get audioSettingsSubtitle =>
-      'Envía y recibe paquetes AFSK 1200 con la tarjeta de sonido';
-
-  @override
-  String get audioBackend => 'Motor de audio';
-
-  @override
-  String get audioUnsupported =>
-      'Este sistema no admite audio en tiempo real (el modo WAV sí está disponible)';
-
-  @override
-  String get audioNeedPermission =>
-      'Se requiere permiso de micrófono (RECORD_AUDIO): concédelo e inténtalo de nuevo';
-
-  @override
-  String get audioCaptureTitle => 'Captura de audio';
-
-  @override
-  String get audioCaptureDesc =>
-      'Demodula AFSK 1200 desde la entrada de micrófono/línea';
-
-  @override
-  String get audioCaptureStart => 'Iniciar captura';
-
-  @override
-  String get audioCaptureStop => 'Detener captura';
-
-  @override
-  String get audioSampleRate => 'Frecuencia de muestreo';
-
-  @override
-  String get audioSampleRateTip =>
-      '22050 Hz es lo habitual en TNC de tarjeta de sonido; usa 44100/48000 si no se admite. Cambiarlo reinicia la captura';
-
-  @override
-  String get audioLevel => 'Nivel de entrada';
-
-  @override
-  String get audioLevelTip =>
-      'El medidor sube con señal; \"Demodulación sincronizada\" se ilumina al detectar AFSK';
-
-  @override
-  String get audioSynced => 'Demodulación sincronizada';
-
-  @override
-  String get audioUnlocked => 'Sin sincronizar';
-
-  @override
-  String audioBadFrames(int n) {
-    return '$n decodificaciones abortadas (ruido/desincronización)';
-  }
-
-  @override
-  String get audioBaud => 'Velocidad en baudios';
-
-  @override
-  String get audioTones => 'Tonos (mark/space)';
-
-  @override
-  String get audioTxTitle => 'Transmisión de audio';
-
-  @override
-  String get audioTxDesc =>
-      'Escucha antes de transmitir para evitar colisiones';
-
-  @override
-  String get audioTxEnabled => 'Permitir transmisión';
-
-  @override
-  String get audioTxEnabledTip =>
-      'Si está desactivado, solo recepción: útil si solo quieres escuchar balizas';
-
-  @override
-  String get audioTxDelayTip =>
-      'Duración del preámbulo: da tiempo al demodulador remoto y al PTT';
-
-  @override
-  String get audioToneMark => 'Tono mark (Hz)';
-
-  @override
-  String get audioToneSpace => 'Tono space (Hz)';
-
-  @override
-  String get audioMarkTip =>
-      'Bell 202 define mark 1200 Hz y space 2200 Hz; la tolerancia es de unos pocos Hz';
-
-  @override
-  String get audioSpaceTip =>
-      'Tono space. Junto con mark define el desplazamiento FSK (1000 Hz nominal)';
-
-  @override
-  String get audioBaudTip =>
-      'APRS en VHF es siempre 1200 bd (Bell 202); 300 bd es para HF';
-
-  @override
-  String get audioTxDelayLabel => 'Preámbulo Tx (ms)';
-
-  @override
-  String get audioTnc2Tip =>
-      'Formato SRC>DEST,PATH:info, p. ej. BG7LZQ-9>APALOC:>TEST';
-
-  @override
-  String get audioCsmaWait => 'Esperar canal libre (ms)';
-
-  @override
-  String get audioCsmaWaitTip =>
-      'Cuánto esperar si el canal está ocupado; 0 = transmitir de inmediato';
-
-  @override
-  String get audioStopTx => 'Detener transmisión';
-
-  @override
-  String get audioWavTitle => 'Modo de archivo WAV';
-
-  @override
-  String get audioWavDesc =>
-      'Decodifica una grabación sin conexión o exporta un paquete como audio';
-
-  @override
-  String get audioWavPath => 'Ruta del archivo';
-
-  @override
-  String get audioWavDecodeAction => 'Decodificar este WAV';
-
-  @override
-  String get audioWavExportAction => 'Exportar este paquete';
-
-  @override
-  String get audioWavTnC2 => 'Paquete a exportar (TNC2)';
-
-  @override
-  String get audioWavNone =>
-      'No se decodificó ningún paquete (¿no es una grabación AFSK 1200?)';
-
-  @override
-  String audioWavFound(int n) {
-    return '$n paquete(s) decodificado(s)';
-  }
-
-  @override
-  String audioWavWritten(String path) {
-    return 'Guardado en $path';
-  }
-
-  @override
-  String audioWavFailed(String err) {
-    return 'Fallo de E/S: $err';
-  }
-
-  @override
-  String connTncConnected(String arg) {
-    return 'TNC conectado · $arg';
-  }
-
-  @override
-  String connTncPositionSent(String arg) {
-    return 'TNC conectado · posición enviada ($arg)';
-  }
-
-  @override
-  String connRetryTnc(int n) {
-    return 'Falló la conexión TNC · reintentando en ${n}s…';
-  }
-
-  @override
-  String connRetryTncDetail(String e, int n) {
-    return 'Falló la conexión TNC ($e) · reintentando en ${n}s…';
-  }
-
-  @override
-  String connTncLinkLost(int n) {
-    return 'Enlace TNC perdido · reconectando en ${n}s…';
-  }
-
-  @override
-  String get tncErrNoDevice => 'ningún dispositivo TNC emparejado';
-
-  @override
-  String get tncErrUnsupported => 'no compatible con esta plataforma';
-
-  @override
-  String get tncErrNotConnected => 'enlace sin conectar';
-
-  @override
-  String get tncErrOpenRead => 'no se puede abrir el dispositivo para lectura';
-
-  @override
-  String get tncErrOpenWrite =>
-      'no se puede abrir el dispositivo para escritura: los puertos COM son exclusivos; comprueba si otra app lo usa';
-
-  @override
-  String get tncErrBadFormat => 'paquete mal formado';
-
-  @override
-  String get tncErrFrameTooLong => 'la trama supera el límite de tamaño';
-
-  @override
-  String get tncErrTimeout => 'tiempo agotado';
-
-  @override
-  String get translateMyLang => 'Mi idioma';
-
-  @override
-  String get translateMyLangHint =>
-      'Los mensajes recibidos se traducen a este idioma';
-
-  @override
-  String get translatePeerLang => 'Idioma de la otra parte';
-
-  @override
-  String get translatePeerUnknownHint =>
-      'Se detecta automáticamente en sus mensajes';
-
-  @override
-  String get translateLearned => 'Detectado automáticamente';
-
-  @override
-  String get translatePeerUnknown =>
-      'Aún no se conoce el idioma de la otra parte: indícalo en los ajustes de traducción o se detectará tras varios mensajes suyos';
-
-  @override
-  String get translateSideIncoming => 'recibido';
-
-  @override
-  String get translateSideOutgoing => 'enviado';
-
-  @override
-  String get translateToMeTag => 'para mí';
-
-  @override
-  String get translateToPeerTag => 'lo que leerán';
-
-  @override
-  String get translateContrast => 'Mostrar original y traducción juntos';
-
-  @override
-  String get translateContrastTip =>
-      'Si está desactivado solo se ve la traducción (el original sigue en pulsación larga)';
-
-  @override
-  String get translateProviderFree => 'Gratis (sin clave)';
-
-  @override
-  String get translateProviderFreeDesc =>
-      'Funciona sin configurar · usa un endpoint público que puede limitarse o ser inestable';
-
-  @override
-  String translateFreeFailed(String e) {
-    return 'El endpoint gratuito no está disponible ($e) · cambia a Google / Baidu / personalizado en los ajustes';
-  }
-
-  @override
-  String get translateProviderAuto => 'Automático (recomendado)';
-
-  @override
-  String get translateProviderAutoDesc =>
-      'Prueba varios endpoints sin clave y usa la primera traducción válida';
-
-  @override
-  String get translateProviderGooglePublic =>
-      'Endpoint público de Google (sin clave)';
-
-  @override
-  String get translateProviderGooglePublicDesc =>
-      'Buena calidad, pero puede limitarse (se observó 429)';
-
-  @override
-  String get translateProviderMyMemory => 'MyMemory (sin clave)';
-
-  @override
-  String get translateProviderMyMemoryDesc =>
-      'API gratuita oficial, pero es una memoria de traducción: devuelve el original si no hay coincidencia';
-
-  @override
-  String get translateProviderLibre => 'LibreTranslate (autoalojable)';
-
-  @override
-  String get translateProviderLibreDesc =>
-      'Código abierto; lo más fiable es autoalojarlo. Las instancias públicas ya piden clave y a menudo no tienen chino';
-
-  @override
-  String get translateLibreUrl => 'URL de la instancia';
-
-  @override
-  String get translateLibreKey =>
-      'Clave de API de la instancia (necesaria en públicas; vacía si es propia)';
-
-  @override
-  String get translateUsedProvider => 'Usado realmente';
-
-  @override
-  String get translateUntranslated =>
-      'El endpoint no tradujo realmente (devolvió el original); se probó el siguiente';
-
-  @override
-  String translateAutoAllFailed(String e) {
-    return 'Fallaron todos los endpoints sin clave ($e) · usa una clave de Google/Baidu o tu propia instancia en los ajustes';
-  }
-
-  @override
-  String get translateLangUnsupported =>
-      'Este proveedor no puede traducir a ese idioma · prueba «Automático» u otro proveedor';
-
-  @override
-  String get translateLangScopeNote =>
-      'Cada proveedor cubre idiomas distintos (p. ej. Baidu estándar admite indonesio «id», pero no todas las direcciones) — si no se admite, la app sugiere Automático u otro proveedor';
-
-  @override
-  String get langNameZh => 'chino simplificado';
-
-  @override
-  String get langNameZhTw => 'chino tradicional';
-
-  @override
-  String get langNameEn => 'inglés';
-
-  @override
-  String get langNameJa => 'japonés';
-
-  @override
-  String get langNameKo => 'coreano';
-
-  @override
-  String get langNameEs => 'español';
-
-  @override
-  String get langNameFr => 'francés';
-
-  @override
-  String get langNameDe => 'alemán';
-
-  @override
-  String get langNameRu => 'ruso';
-
-  @override
-  String get langNamePt => 'portugués';
-
-  @override
-  String get langNameIt => 'italiano';
-
-  @override
-  String get langNameId => 'indonesio';
-
-  @override
-  String get langNameTh => 'tailandés';
-
-  @override
-  String get langNameVi => 'vietnamita';
-
-  @override
-  String get langNameAr => 'árabe';
-
-  @override
-  String get translateOutgoing => 'Traducir a su idioma antes de enviar';
-
-  @override
-  String get translateOutgoingTip =>
-      'Si está activado, al enviar se traduce el texto a su idioma: comprueba que puedan leerlo';
-
-  @override
-  String get translateInput => 'Traducir lo escrito';
-
-  @override
-  String translateOutPreview(String text) {
-    return 'Se enviará: $text';
-  }
-
-  @override
-  String translateOutPreviewHint(String lang) {
-    return 'Traducido a $lang · toca enviar para transmitir esto';
-  }
-
-  @override
-  String get translateOutCancel => 'Cancelar traducción';
-
-  @override
-  String get translateOutNeedPeer =>
-      'Aún no se conoce su idioma: indícalo en los ajustes de traducción de la conversación';
-
-  @override
-  String translateSentAs(String text) {
-    return 'Enviado en su idioma: $text';
-  }
-
-  @override
-  String translateTooLongAfter(int n) {
-    return 'La traducción supera el límite ($n caracteres); no se envió';
-  }
-
-  @override
-  String get dateToday => 'Hoy';
-
-  @override
-  String get dateYesterday => 'Ayer';
-
-  @override
-  String dateDividerFull(int y, int m, int d, String w) {
-    return '$d/$m/$y $w';
-  }
-
-  @override
-  String dateWeekday(String d) {
-    String _temp0 = intl.Intl.selectLogic(d, {
-      '1': 'lun',
-      '2': 'mar',
-      '3': 'mié',
-      '4': 'jue',
-      '5': 'vie',
-      '6': 'sáb',
-      '7': 'dom',
-      'other': '—',
-    });
-    return '$_temp0';
-  }
-
-  @override
-  String get translate => 'Traducir';
-
-  @override
-  String get translateText => 'Traducir texto';
-
-  @override
-  String get translateSettings => 'Ajustes de traducción';
-
-  @override
-  String get translateSettingsSubtitle =>
-      'Proveedor, idiomas y traducción automática';
-
-  @override
-  String get translateProvider => 'Proveedor';
-
-  @override
-  String get translateProviderGoogle => 'Google Translate';
-
-  @override
-  String get translateProviderBaidu => 'Baidu Translate';
-
-  @override
-  String get translateProviderCustom => 'Personalizado';
-
-  @override
-  String get translateGoogleKey => 'Clave de API de Google';
-
-  @override
-  String get translateGoogleKeyTip =>
-      'Clave de API de Google Cloud Translation v2: créala en la consola de Google Cloud';
-
-  @override
-  String get translateBaiduAppId => 'App ID de Baidu';
-
-  @override
-  String get translateBaiduKey => 'Clave secreta de Baidu';
-
-  @override
-  String get translateBaiduTip =>
-      'Solicita traducción de texto general en la plataforma de Baidu; la clave se guarda solo en este dispositivo';
-
-  @override
-  String get translateCustomUrl => 'URL del endpoint';
-
-  @override
-  String get translateCustomMethod => 'Método HTTP';
-
-  @override
-  String get translateCustomHeaders => 'Cabeceras (JSON)';
-
-  @override
-  String get translateCustomBody => 'Plantilla del cuerpo';
-
-  @override
-  String translateCustomBodyTip(String text, String from, String to) {
-    return 'Marcadores: $text, $from, $to. Se ignora con el método GET';
-  }
-
-  @override
-  String get translateCustomResultPath => 'Ruta JSON del resultado';
-
-  @override
-  String get translateCustomResultPathTip =>
-      'Ruta con puntos e índices de array, p. ej. data.translations.0.translatedText';
-
-  @override
-  String get translateTest => 'Probar traducción';
-
-  @override
-  String translateTestOk(String text) {
-    return 'El proveedor funciona: $text';
-  }
-
-  @override
-  String get translateNeedConfig =>
-      'Configura primero el proveedor de traducción';
-
-  @override
-  String translateFailed(String e) {
-    return 'Falló la traducción: $e';
-  }
-
-  @override
-  String get translateTargetLang => 'Traducir a';
-
-  @override
-  String get translateSourceLang => 'Idioma de origen';
-
-  @override
-  String get translateAuto => 'Traducir automáticamente los mensajes entrantes';
-
-  @override
-  String get translateAutoTip =>
-      'Se aplica solo a esta conversación y solo traduce los mensajes recibidos';
-
-  @override
-  String get translateShowOriginal => 'Ver original';
-
-  @override
-  String get translateShowTranslation => 'Ver traducción';
-
-  @override
-  String get translateRetry => 'Traducir de nuevo';
-
-  @override
-  String get translateTranslating => 'Traduciendo…';
-
-  @override
-  String get translateCopyOriginal => 'Copiar original';
-
-  @override
-  String get translateCopyResult => 'Copiar traducción';
-
-  @override
-  String get translateLangAuto => 'Detectar automáticamente';
-
-  @override
-  String get translateSameLang =>
-      'La traducción es idéntica al original · puede que no necesite traducción o que el proveedor fallara';
-
-  @override
-  String get translateNotNeeded =>
-      'Aquí no hay nada que traducir (números / símbolos / indicativos)';
-
-  @override
-  String translateBubbleCount(int n) {
-    return '$n traducidos';
-  }
-
-  @override
-  String get translatePrivacyNote =>
-      'La traducción envía el texto de los mensajes al proveedor externo que elijas; valora la privacidad';
-
-  @override
-  String get notifTncConnected => 'TNC conectado';
-
-  @override
-  String get notifTncDisconnected => 'TNC desconectado';
-
-  @override
-  String get dataSourceTitle => 'Fuente de datos';
-
-  @override
-  String get dataSourceSubtitle => 'De dónde vienen los paquetes';
-
-  @override
-  String get dataSourceAprsIs => 'APRS-IS';
-
-  @override
-  String get dataSourceAprsIsDesc => 'Red APRS global por internet';
-
-  @override
-  String get dataSourceTnc => 'TNC';
-
-  @override
-  String get dataSourceTncDesc =>
-      'Envía y recibe por radio mediante un TNC Bluetooth o serie';
-
-  @override
-  String get dataSourceSwitchHint =>
-      'Cambiar la fuente de datos desconecta el enlace actual';
-
-  @override
-  String get dataSourcePkwdwpl => 'PKWDWPL (puntos de ruta Kenwood)';
-
-  @override
-  String get dataSourcePkwdwplDesc =>
-      'Lee las sentencias Kenwood \$PKWDWPL que emite el equipo por Bluetooth o serie (solo recepción)';
-
-  @override
-  String get dataSourcePkwdwplHint =>
-      'PKWDWPL es un enlace de **solo recepción**: recibe estaciones pero nunca transmite (para transmitir usa APRS-IS / TNC / audio)';
-
-  @override
-  String connConnectingPkwdwpl(String arg) {
-    return 'Conectando a PKWDWPL ($arg)…';
-  }
-
-  @override
-  String connPkwdwplConnected(String arg) {
-    return 'PKWDWPL conectado · $arg';
-  }
-
-  @override
-  String get pkwdwplDeviceTitle => 'Dispositivo PKWDWPL';
-
-  @override
-  String get pkwdwplDeviceDesc =>
-      'Vincula el puerto del equipo y revisa la recepción de puntos de ruta';
-
-  @override
-  String get pkwdwplBindTitle => 'Vinculación y estado';
-
-  @override
-  String get pkwdwplBindSubtitle =>
-      'Elige el puerto serie o Bluetooth que emite sentencias \$PKWDWPL';
-
-  @override
-  String get pkwdwplRxOnly => 'Solo recepción';
-
-  @override
-  String get pkwdwplReadOnly =>
-      'Solo recepción · este equipo no transmite nada';
-
-  @override
-  String get deviceConflictTitle =>
-      'Dos enlaces están vinculados al mismo dispositivo';
-
-  @override
-  String get deviceConflictDesc =>
-      'Cuando TNC y PKWDWPL apuntan al mismo dispositivo, los datos recibidos se reparten entre ambos — el síntoma es «transmite bien pero no recibe». Asigne otro dispositivo a uno de ellos. TNC tiene prioridad: PKWDWPL se negará a conectar.';
-
-  @override
-  String get deviceInUseByTnc =>
-      'En uso por TNC — no se puede vincular de nuevo';
-
-  @override
-  String get deviceInUseByPkwdwpl =>
-      'En uso por PKWDWPL — no se puede vincular de nuevo';
-
-  @override
-  String rxOnlyBanner(String arg) {
-    return '$arg conectado · solo recepción (la fuente de transmisión está desconectada)';
-  }
-
-  @override
-  String get pkwdwplTip =>
-      'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
-
-  @override
-  String get pkwdwplStrictChecksum =>
-      'Suma de comprobación estricta (descarta si no coincide)';
-
-  @override
-  String get pkwdwplStrictChecksumTip =>
-      'Desactivado por defecto: una discrepancia se marca y se registra en lugar de descartarse, porque en un cable local suele significar que el formato del firmware difiere del manual. Descartar todo dejaría la pantalla vacía y dificultaría mucho el diagnóstico.';
-
-  @override
-  String get pkwdwplErrReadOnly =>
-      'el enlace de solo recepción no puede transmitir';
-
-  @override
-  String get pkwdwplStatTitle => 'Recepción de puntos de ruta';
-
-  @override
-  String pkwdwplStats(String rx) {
-    return '$rx puntos de ruta recibidos';
-  }
-
-  @override
-  String get pkwdwplStatRejected => 'Sentencias descartadas o inválidas';
-
-  @override
-  String get pkwdwplStatMismatch => 'Discrepancias de suma';
-
-  @override
-  String get pkwdwplStatIgnored => 'Otras sentencias NMEA (ignoradas)';
-
-  @override
-  String get pkwdwplLogEmpty => 'Aún no hay registro de PKWDWPL';
-
-  @override
-  String get tncBindTitle => 'TNC Bluetooth';
-
-  @override
-  String get tncBindSubtitle => 'Empareja y conecta el TNC de tu radio';
-
-  @override
-  String get tncBoundDevice => 'Dispositivo emparejado';
-
-  @override
-  String get tncNotBound => 'Sin dispositivo emparejado';
-
-  @override
-  String get tncScanPaired =>
-      'Buscar dispositivos (Bluetooth emparejado + serie USB)';
-
-  @override
-  String get tncNoPaired =>
-      'No se encontraron dispositivos: empareja el TNC en los ajustes de Bluetooth, o conecta el cable serie USB (OTG)';
-
-  @override
-  String get tncUnbind => 'Desemparejar';
-
-  @override
-  String get tncConnectAction => 'Conectar TNC';
-
-  @override
-  String get tncRestart => 'Reiniciar enlace';
-
-  @override
-  String get tncSupportedNo => 'Este sistema aún no admite enlaces TNC';
-
-  @override
-  String get tncNeedPermission =>
-      'Se necesita permiso de Bluetooth para buscar dispositivos Bluetooth; ignóralo si solo usas serie USB: el sistema lo pide aparte al conectar el cable';
-
-  @override
-  String get tncOpenFailedHint =>
-      'No se pudo abrir el dispositivo: los puertos COM de Windows son exclusivos; comprueba que ninguna otra app lo use';
-
-  @override
-  String tncStats(String rx, String tx) {
-    return '$rx tramas recibidas · $tx enviadas';
-  }
-
-  @override
-  String get tncLog => 'Registro del enlace';
-
-  @override
-  String get tncLogEmpty => 'Todavía no hay registros';
-
-  @override
-  String get kissParamsTitle => 'Parámetros KISS';
-
-  @override
-  String get kissParamsSubtitle =>
-      'Ajustes de capa de enlace enviados directamente al TNC';
-
-  @override
-  String get kissTxDelay => 'Retardo de TX (ms)';
-
-  @override
-  String get kissTxDelayTip =>
-      'KISS TXDELAY en unidades de 10 ms: tiempo para que el PTT se establezca';
-
-  @override
-  String get kissTxTail => 'Cola de TX (ms)';
-
-  @override
-  String get kissTxTailTip =>
-      'KISS TXTAIL en unidades de 10 ms: algunas radios necesitan la cola para oírse completas';
-
-  @override
-  String get kissPersistence => 'Persistencia';
-
-  @override
-  String get kissPersistenceTip =>
-      'KISS PERSISTENCE, 0-255: cuanto menor, más cede y menos colisiones en un canal compartido';
-
-  @override
-  String get kissSlotTime => 'Tiempo de ranura (ms)';
-
-  @override
-  String get kissSlotTimeTip =>
-      'KISS SLOTTIME en unidades de 10 ms: junto con la persistencia regula el acceso al canal';
-
-  @override
-  String get kissFullDuplex => 'Dúplex completo';
-
-  @override
-  String get kissFullDuplexTip =>
-      'KISS FULLDUPLEX: déjalo desactivado en radios normales (TX/RX simultáneos interfieren)';
-
-  @override
-  String get kissChannel => 'Canal / puerto KISS';
-
-  @override
-  String get kissChannelTip =>
-      'Solo los TNC multicanal tienen varios puertos; deja 0 en radios de un canal';
-
-  @override
-  String get kissMaxFrame => 'Tamaño máximo de trama (bytes)';
-
-  @override
-  String get kissMaxFrameTip =>
-      'Los paquetes más largos no se envían (a 1200 baudios una trama AX.25 ronda 330 bytes)';
-
-  @override
-  String get kissHardwareCmd => 'Comando del fabricante';
-
-  @override
-  String get kissHardwareVal => 'Valor';
-
-  @override
-  String get kissHardwareTip =>
-      'KISS SETHARDWARE (0x06), específico del fabricante; -1 significa no enviar';
-
-  @override
-  String get kissApplyParams => 'Enviar parámetros';
-
-  @override
-  String get kissParamsSent => 'Parámetros KISS enviados';
-
-  @override
-  String get kissBackToCommand => 'Volver al modo de comandos del TNC';
-
-  @override
-  String get kissBackToCommandTip =>
-      'Envía RETURN (0x0F). La mayoría de los TNC KISS dejan de reenviar hasta reiniciar el enlace';
-
-  @override
-  String get kissRfPath => 'Ruta de digipeadores RF';
-
-  @override
-  String get kissRfPathTip =>
-      'Digipeadores usados en el aire, p. ej. WIDE1-1,WIDE2-1; déjalo vacío para ninguno';
-
-  @override
-  String get kissRfBeacon => 'Permitir balizas por RF';
-
-  @override
-  String get kissRfBeaconTip =>
-      'Solo entonces se transmitirán posiciones por radio. Transmitir requiere tu licencia e indicativo';
-
-  @override
-  String get kissAutoAck => 'Confirmar automáticamente';
-
-  @override
-  String get kissAutoAckTip =>
-      'Si se desactiva, los mensajes entrantes no se confirman: el canal queda más libre';
-
-  @override
-  String get kissAutoReconnect => 'Reconectar automáticamente';
-
-  @override
-  String get kissNeedConnected => 'Conecta primero el TNC';
-
-  @override
-  String get tncSwitchOn => 'Activado';
-
-  @override
-  String get tncSwitchOff => 'Desactivado';
-
-  @override
-  String get connTncSourceHint =>
-      'El modo TNC no usa servidor ni filtros, así que esos ajustes están desactivados';
-
-  @override
-  String get connectTncBar => 'Toca Conectar para abrir el enlace TNC';
-
-  @override
-  String connectingToTnc(String name) {
-    return 'Conectando TNC · $name';
-  }
-
-  @override
-  String get tncMsgTitle => 'Modo radio (TNC)';
-
-  @override
-  String get tncMsgDesc =>
-      'El canal de radio es compartido, por lo que la mensajería está limitada';
-
-  @override
-  String get tncGroupDisabled =>
-      'Las difusiones de grupo no están disponibles en modo radio';
-
-  @override
-  String tncMsgLimitHint(String n) {
-    return '$n caracteres por mensaje (norma APRS)';
-  }
-
-  @override
-  String get tncMsgTooLong =>
-      'Supera el límite de longitud de mensaje en modo radio';
-
-  @override
-  String get licenseSection => 'Licencia';
-
-  @override
-  String get licenseName => 'GNU GPL v3';
-
-  @override
-  String get licenseStatement =>
-      'Este software se publica bajo la licencia GNU GPL v3. Puedes ejecutarlo, estudiarlo, modificarlo y redistribuirlo conforme a los términos de la licencia; las versiones modificadas y redistribuidas deben cumplir las obligaciones aplicables de la GPL v3. Este software se ofrece sin garantía alguna.';
-
-  @override
-  String get licenseText => 'Ver licencia';
-
-  @override
-  String get oobeAgreeTitle => 'Acuerdo de usuario y licencia';
-
-  @override
-  String get oobeAgreeBody =>
-      '¡Te damos la bienvenida a APRSlocus! Antes de usar la app, lee y acepta los términos siguientes. Ten en cuenta que los datos APRS son públicos: una vez enviados, pueden ser recibidos, almacenados y reenviados por la red APRS mundial.';
-
-  @override
-  String get oobeAgreeCheck =>
-      'He leído y acepto el Acuerdo de usuario y la licencia GPL-3.0';
-
-  @override
-  String get oobeAgreeNeed => 'Lee y marca primero el Acuerdo de usuario';
-
-  @override
-  String get oobeDeclineExit => 'Rechazar y salir';
-
-  @override
-  String get userAgreement => 'Acuerdo de usuario';
-
-  @override
-  String get beaconWarnTitle => 'Intervalo de baliza demasiado corto';
-
-  @override
-  String get beaconWarnBody =>
-      'APRS-IS recomienda un intervalo de baliza mínimo de 60 segundos para estaciones móviles. Enviar más rápido puede considerarse un abuso y provocar la desconexión. ¿Mantener este intervalo?';
-
-  @override
-  String get beaconWarnKeep => 'Mantener igualmente';
-
-  @override
-  String get beaconWarnFix => 'Poner 60 s';
-
-  @override
-  String get features => 'Funciones';
-
-  @override
-  String get openSource => 'Agradecimientos de código abierto';
-
-  @override
-  String get feedback => 'Comentarios';
-
-  @override
-  String get officialWebsite => 'Sitio web oficial';
-
-  @override
-  String get qqGroup => 'Grupo de QQ';
-
-  @override
-  String get projectRepo => 'Repositorio';
-
-  @override
-  String get testMembers => 'Colaboradores de prueba';
-
-  @override
-  String get aiSupport => 'Apoyo de cómputo con IA';
-
-  @override
-  String get copyAppInfo => 'Copiar información de la app';
-
-  @override
-  String get appInfoCopied => 'Información de la app copiada';
-
-  @override
-  String get shareApp => 'Compartir APRSlocus';
-
-  @override
-  String get shareToSystem => 'Compartir en el sistema';
-
-  @override
-  String get shareToSystemDesc => 'WeChat, QQ, SMS, etc.';
-
-  @override
-  String get copyShareText => 'Copiar texto para compartir';
-
-  @override
-  String get openDownload => 'Abrir página de descarga';
-
-  @override
-  String get shareTextCopied =>
-      'Texto copiado; pégalo para enviarlo a tus amigos';
-
-  @override
-  String get shareText =>
-      'APRSlocus — Seguimiento y mapas APRS para radioaficionados 📡\nSeguimiento de estaciones en tiempo real, mensajería y balizas. Disponible en Android y Windows.\nWeb: https://aprslocus.theez.top/\nDescarga: https://github.com/dariondong/APRSLocus/releases';
-
-  @override
-  String get enterCallsign => 'Introduce tu indicativo';
-
-  @override
-  String get enterValidCall => 'Introduce un indicativo válido';
-
-  @override
-  String get stationSettings2 => 'Ajustes de estación';
-
-  @override
-  String get beaconSettings => 'Balizamiento';
-
-  @override
-  String get displaySettings2 => 'Ajustes de pantalla';
-
-  @override
-  String get chatSettings2 => 'Ajustes del chat';
-
-  @override
-  String get dataSettings2 => 'Ajustes de datos';
-
-  @override
-  String get advancedSettings2 => 'Ajustes avanzados';
-
-  @override
-  String get connectionSettings2 => 'Ajustes de conexión';
-
-  @override
-  String get myCallsign => 'Mi indicativo';
-
-  @override
-  String get beaconEnabled => 'Activar baliza de posición';
-
-  @override
-  String get smartBeacon => 'SmartBeacon (por velocidad)';
-
-  @override
-  String get packetConsole => 'Consola de paquetes';
-
-  @override
-  String get rawMode => 'Modo sin procesar';
-
-  @override
-  String get parsedMode => 'Modo analizado';
-
-  @override
-  String get position => 'Posición';
-
-  @override
-  String get statusType => 'Estado';
-
-  @override
-  String get objectType => 'Objeto';
-
-  @override
-  String packetStats(Object ppm, Object rx, Object tx) {
-    return 'RX $rx · TX $tx · $ppm/min';
-  }
-
-  @override
-  String get searchPacket => 'Buscar indicativo, destino o bruto…';
-
-  @override
-  String get noMatchingPackets => 'No hay paquetes coincidentes';
-
-  @override
-  String get inject => 'Inyectar';
-
-  @override
-  String get manualInject => 'Inyectar paquete APRS sin procesar';
-
-  @override
-  String get injected => 'Paquete inyectado';
-
-  @override
-  String get clearedPackets => 'Paquetes borrados';
-
-  @override
-  String get clearPackets => 'Borrar paquetes';
-
-  @override
-  String noPositionInfo(Object call) {
-    return '$call no tiene información de posición (el paquete no incluye posición)';
-  }
-
-  @override
-  String get copiedPacket => 'Paquete copiado';
-
-  @override
-  String get mapPickMode => 'Modo de selección en el mapa';
-
-  @override
-  String get mapPickDesc => 'Toca el mapa para fijar tu posición';
-
-  @override
-  String foundStations(Object count, Object q) {
-    return '$count estaciones coinciden con «$q»';
-  }
-
-  @override
-  String get tapMapHint =>
-      'Toca el mapa para ver estaciones · pellizca para ampliar';
-
-  @override
-  String myLocationPanel(Object call) {
-    return 'Mi ubicación · $call';
-  }
-
-  @override
-  String get speedLabel => 'Velocidad';
-
-  @override
-  String get courseLabel => 'Rumbo';
-
-  @override
-  String get telemetryTitle => 'Cambios de velocidad / altitud';
-
-  @override
-  String get range10m => '10 min';
-
-  @override
-  String get range30m => '30 min';
-
-  @override
-  String get range1h => '1 h';
-
-  @override
-  String get range3h => '3 h';
-
-  @override
-  String get rangeAll => 'Todo';
-
-  @override
-  String get beaconIntervalLabel => 'Intervalo';
-
-  @override
-  String get beaconsSentLabel => 'Enviadas';
-
-  @override
-  String get nextBeaconLabel => 'Próxima';
-
-  @override
-  String positionBeacon(Object grid) {
-    return 'Baliza de posición · Cuadrícula $grid';
-  }
-
-  @override
-  String get manualBeacon => 'Balizar ahora';
-
-  @override
-  String get mapPickNow => 'Elegir en el mapa';
-
-  @override
-  String pickedCoord(Object grid, Object lat, Object lng) {
-    return 'Posición fijada · $lat, $lng · Cuadrícula $grid';
-  }
-
-  @override
-  String onlineCount(Object count) {
-    return '$count en línea';
-  }
-
-  @override
-  String movingCount(Object count) {
-    return '$count en movimiento';
-  }
-
-  @override
-  String stationCount(Object count) {
-    return '$count estaciones';
-  }
-
-  @override
-  String get locateMe => 'Localizar';
-
-  @override
-  String get layerFilter => 'Capas';
-
-  @override
-  String get showAll => 'Mostrar todo';
-
-  @override
-  String get otherType => 'Otros';
-
-  @override
-  String zoomLevel(Object z) {
-    return 'Zoom $z';
-  }
-
-  @override
-  String get datumGcj => 'GCJ-02';
-
-  @override
-  String get datumWgs => 'WGS-84';
-
-  @override
-  String distKm(Object d) {
-    return '$d km';
-  }
-
-  @override
-  String get noStationInView =>
-      'No hay estaciones aquí · toca para mostrar todas';
-
-  @override
-  String get noStationHelp => 'No hay estaciones aquí · toca para ver la ayuda';
-
-  @override
-  String get mapHelpTitle => 'Ayuda del mapa';
-
-  @override
-  String get mapHelpIntro =>
-      'No hay estaciones en la vista actual. Posibles motivos: sin conexión a APRS-IS, rango de recepción pequeño o ninguna estación activa cerca.';
-
-  @override
-  String get mapHelpMove =>
-      'Mover / ampliar: arrastra para desplazar, pellizca o usa la rueda para ampliar';
-
-  @override
-  String get mapHelpStation =>
-      'Estaciones: toca un marcador para seleccionarlo y centrarlo, doble toque para ver detalles';
-
-  @override
-  String get mapHelpLayer =>
-      'Capas y estilo: los botones de arriba a la derecha filtran tipos de estación y cambian el mapa base';
-
-  @override
-  String get mapHelpLocate =>
-      'Localizar: toca «Localizarme» (abajo a la derecha) para volver a tu posición';
-
-  @override
-  String get mapHelpSearch =>
-      'Buscar: escribe un indicativo en el cuadro de búsqueda superior para ir a él';
-
-  @override
-  String get allChangelog => 'Todos los cambios';
-
-  @override
-  String get tapToView => 'Toca dos veces la baliza para más';
-
-  @override
-  String get beaconNow => 'Balizar ahora';
-
-  @override
-  String get meLabel => 'Yo';
-
-  @override
-  String get mapZoomIn => 'Ampliar';
-
-  @override
-  String get mapZoomOut => 'Reducir';
-
-  @override
-  String get mapHome => 'Recentrar';
-
-  @override
-  String get mapLocate => 'Localizar';
-
-  @override
-  String get mapLayers => 'Capas';
-
-  @override
-  String get featureLiveMap => 'Mapa en línea';
-
-  @override
-  String get featureLiveMapDesc =>
-      'Coordenadas GCJ-02 con desplazamiento y zoom fluidos';
-
-  @override
-  String get featureGps => 'Posicionamiento GPS';
-
-  @override
-  String get featureGpsDesc =>
-      'Ubicación nativa de Android, sin servicios de Google';
-
-  @override
-  String get featureBeacon => 'Balizamiento';
-
-  @override
-  String get featureBeaconDesc =>
-      'Contenido, frecuencia y símbolo personalizados con formato estándar APRS';
-
-  @override
-  String get featureMsg => 'Mensajes';
-
-  @override
-  String get featureMsgDesc =>
-      'Vistas de flujo y de conversación, con texto Unicode y respuesta automática';
-
-  @override
-  String get featureAutoConnect => 'Conexión automática';
-
-  @override
-  String get featureAutoConnectDesc =>
-      'Se conecta automáticamente a un servidor público y permanece en línea en segundo plano';
-
-  @override
-  String get featureLayerFilter => 'Filtro de capas';
-
-  @override
-  String get featureLayerFilterDesc =>
-      'Filtrar: móvil, fijo, digipeater, meteorología, FMO';
-
-  @override
-  String get featureFmo => 'Estaciones FMO';
-
-  @override
-  String get featureFmoDesc =>
-      'Detecta automáticamente datos FMO y muestra información estructurada';
-
-  @override
-  String get osFlutter => 'Flutter';
-
-  @override
-  String get osFlutterDesc => 'Marco de interfaz multiplataforma de Google';
-
-  @override
-  String get osAmap => 'AMap';
-
-  @override
-  String get osAmapDesc => 'Servicio de teselas de mapa';
-
-  @override
-  String get osAprs => 'APRS-IS';
-
-  @override
-  String get osAprsDesc => 'Red mundial de datos APRS';
-
-  @override
-  String get osHam => 'Radioaficionados';
-
-  @override
-  String get osHamDesc =>
-      'Aportaciones de toda la comunidad APRS de radioaficionados';
-
-  @override
-  String get authorName => 'Darion';
-
-  @override
-  String get authorCall => 'Indicativo';
-
-  @override
-  String get website => 'Sitio web';
-
-  @override
-  String get sponsorAuthor => 'Autor BG7LZQ';
-
-  @override
-  String get sponsorAuthorItems =>
-      'Desarrolla y mantiene este proyecto en su tiempo libre';
-
-  @override
-  String get sponsorGroup => 'STUDENT HAMS';
-
-  @override
-  String get sponsorGroupItems => 'Gracias al grupo por su apoyo económico';
-
-  @override
-  String get sponsorBgp => 'BG7PGW';
-
-  @override
-  String get sponsorBgpItems => 'Gracias por patrocinar un Mixue 🧋';
-
-  @override
-  String get sponsorEvery => 'Todos los que apoyan';
-
-  @override
-  String get sponsorEveryItems =>
-      'Cada aportación ayuda a que el proyecto siga adelante';
-
-  @override
-  String get donateWechat => 'Donación por WeChat';
-
-  @override
-  String get donateWechatDesc =>
-      'Mantén pulsado para guardar el código QR · toca para ampliarlo';
-
-  @override
-  String get donateAlipay => 'Donación por Alipay';
-
-  @override
-  String get donateAlipayDesc =>
-      'Contacta con el autor para obtener el código QR de donación';
-
-  @override
-  String get nonprofitNote =>
-      'Este es un proyecto sin ánimo de lucro para aprender e intercambiar\nLas donaciones solo cubren los costes de servidor y desarrollo';
-
-  @override
-  String get myStation => 'Mi estación';
-
-  @override
-  String get callSsid => 'Indicativo · SSID';
-
-  @override
-  String get ssid => 'SSID';
-
-  @override
-  String get ssidDesc =>
-      'El SSID es un sufijo del indicativo que identifica el equipo; p. ej., -9 en BG7ABC-9';
-
-  @override
-  String get callComment => 'Comentario de estación';
-
-  @override
-  String get callCommentHint =>
-      'Comentario que se envía con las balizas de posición';
-
-  @override
-  String get callSymbol => 'Símbolo de estación';
-
-  @override
-  String get callSymbolDesc =>
-      'El símbolo se envía con las balizas de posición';
-
-  @override
-  String get autoReply => 'Respuesta automática';
-
-  @override
-  String get sendBeacon => 'Enviar baliza';
-
-  @override
-  String get mapTypeDesc =>
-      '«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; las fuentes ráster usan teselas en línea, así que la calidad depende de la red.';
-
-  @override
-  String get offlineLoading => 'Cargando…';
-
-  @override
-  String get offlineMap => 'Mapas sin conexión';
-
-  @override
-  String get offlineMapDesc =>
-      'Descargue teselas de mapa con antelación para ver el mapa sin red';
-
-  @override
-  String get offlineMapFooter =>
-      'Las teselas solo se guardan en este dispositivo; cada fuente tiene su propia caché';
-
-  @override
-  String get offlineRegions => 'Zonas sin conexión';
-
-  @override
-  String get offlineRegionsDesc =>
-      'Las zonas descargadas se pueden ver en el mapa sin conexión';
-
-  @override
-  String get offlineNew => 'Zona nueva';
-
-  @override
-  String get offlineNoRegions => 'Aún no hay zonas sin conexión';
-
-  @override
-  String get offlineNoRegionsHint =>
-      'Toque \"Zona nueva\" para descargar los lugares que frecuenta';
-
-  @override
-  String get offlineCacheUsage => 'Caché de teselas';
-
-  @override
-  String get offlineCacheUsageDesc =>
-      'Se almacena al navegar; también puede descargar zonas manualmente';
-
-  @override
-  String get offlineClearCache => 'Borrar toda la caché de teselas';
-
-  @override
-  String get offlineClearCacheConfirm =>
-      '¿Borrar todas las teselas descargadas?';
-
-  @override
-  String get offlineClearCacheConfirmBody =>
-      'Se eliminarán las teselas descargadas; las zonas se conservan y habrá que descargarlas de nuevo.';
-
-  @override
-  String get offlineAreaHint => 'La vista actual es la zona que se descargará';
-
-  @override
-  String get offlineSource => 'Fuente del mapa';
-
-  @override
-  String get offlineName => 'Nombre';
-
-  @override
-  String get offlineNameHint => 'p. ej. Cerca de casa';
-
-  @override
-  String get offlineStartDownload => 'Empezar descarga';
-
-  @override
-  String get offlineStatusPending => 'En espera';
-
-  @override
-  String get offlineStatusRunning => 'Descargando';
-
-  @override
-  String get offlineStatusPaused => 'En pausa';
-
-  @override
-  String get offlineStatusDone => 'Completado';
-
-  @override
-  String get offlineStatusCanceled => 'Cancelado';
-
-  @override
-  String get offlineStatusFailed => 'Falló';
-
-  @override
-  String get offlinePause => 'Pausar';
-
-  @override
-  String get offlineResume => 'Reanudar';
-
-  @override
-  String get offlineCancelDownload => 'Cancelar';
-
-  @override
-  String get offlineDeleteKeepTiles =>
-      'Eliminar solo el registro (conservar teselas)';
-
-  @override
-  String get offlineDeleteWithTiles => 'Eliminar el registro y sus teselas';
-
-  @override
-  String get offlineDownloadBusy =>
-      'Hay otra descarga en curso: espere o cancélela';
-
-  @override
-  String get offlineCacheSwitch => 'Guardar teselas en caché';
-
-  @override
-  String get offlineCacheSwitchDesc =>
-      'Guarda las teselas al navegar para verlas luego sin conexión';
-
-  @override
-  String get offlineOnlySwitch => 'Solo teselas sin conexión';
-
-  @override
-  String get offlineOnlySwitchDesc =>
-      'No carga teselas de la red: solo las descargadas o en caché (ahorra datos)';
-
-  @override
-  String get offlineCacheDisabled =>
-      'La caché de teselas no está disponible en esta plataforma';
-
-  @override
-  String get offlineSwitchFirst =>
-      'Active primero \"Guardar teselas en caché\"';
-
-  @override
-  String get offlineOnlyWarn =>
-      '\"Solo teselas sin conexión\" está activo: puede que falten partes del mapa';
-
-  @override
-  String offlineTilesDownloaded(String n) {
-    return '$n teselas descargadas';
-  }
-
-  @override
-  String offlineZoomLevels(String min, String max) {
-    return 'zoom $min–$max';
-  }
-
-  @override
-  String offlineEstimate(String tiles, String size) {
-    return 'unas $tiles teselas · unos $size';
-  }
-
-  @override
-  String offlineTooManyTiles(String tiles) {
-    return 'Zona demasiado grande (unas $tiles teselas): reduzca el área o el zoom máximo';
-  }
-
-  @override
-  String offlineDeleteRegionConfirm(String name) {
-    return '¿Eliminar la zona sin conexión \"$name\"?';
-  }
-
-  @override
-  String offlineDeleteTileCount(String n) {
-    return 'Se eliminarán unas $n teselas';
-  }
-
-  @override
-  String offlineDeletingTiles(String done, String total) {
-    return 'Eliminando $done/$total';
-  }
-
-  @override
-  String offlineFailedCount(String n) {
-    return '$n fallidas';
-  }
-
-  @override
-  String offlineTileProgress(String done, String total) {
-    return '$done/$total teselas';
-  }
-
-  @override
-  String get msgHistory => 'Historial de mensajes';
-
-  @override
-  String get statistics => 'Estadísticas';
-
-  @override
-  String get clearData => 'Borrar datos';
-
-  @override
-  String get favorites => 'Favoritos / Manuales';
-
-  @override
-  String get favoriteStations => 'Estaciones favoritas';
-
-  @override
-  String get manualStations => 'Estaciones manuales';
-
-  @override
-  String get wgs84 => 'WGS-84';
-
-  @override
-  String get gcj02 => 'GCJ-02';
-
-  @override
-  String get onlyWgs84 => 'Solo WGS-84';
-
-  @override
-  String get contactList => 'Contactos';
-
-  @override
-  String get contactDesc => 'Reglas de filtrado de mensajes y contactos';
-
-  @override
-  String get dataClearDesc =>
-      'Borra mensajes, paquetes, estaciones y otros datos locales';
-
-  @override
-  String get advancedDesc => 'Laboratorio y herramientas de desarrollo';
-
-  @override
-  String get labDesc =>
-      'Las funciones de laboratorio están en pruebas y pueden afectar al uso. La orientación vertical está bloqueada por defecto; actívalo para permitir la horizontal.';
-
-  @override
-  String get systemLog => 'Registro del sistema';
-
-  @override
-  String get devDesc => 'Herramientas de depuración';
-
-  @override
-  String get simData =>
-      'Activar datos de demostración (estaciones/paquetes de ejemplo)';
-
-  @override
-  String get rxTx => 'RX / TX';
-
-  @override
-  String get stationCount2 => 'Número de estaciones';
-
-  @override
-  String get appInfo => 'Información de la app';
-
-  @override
-  String get clearMessages => 'Borrar todo el historial de chat';
-
-  @override
-  String get clearPackets2 => 'Borrar paquetes';
-
-  @override
-  String get clearStations => 'Borrar lista de estaciones';
-
-  @override
-  String get stationListDesc =>
-      'Estaciones recibidas y sus recorridos, guardados en este dispositivo';
-
-  @override
-  String clearStationsConfirm(String n) {
-    return '¿Borrar todas las estaciones? $n en total. No se puede deshacer (mensajes, registros y paquetes no se ven afectados).';
-  }
-
-  @override
-  String get stationsCleared => 'Lista de estaciones borrada';
-
-  @override
-  String get clearCache => 'Borrar caché';
-
-  @override
-  String get resetAll => 'Restablecer toda la configuración';
-
-  @override
-  String get resetAllDesc => 'Restablecer valores de fábrica';
-
-  @override
-  String get dataPersistence => 'Persistencia de estaciones';
-
-  @override
-  String get autoSaveStations =>
-      'Guardar automáticamente los datos de estaciones';
-
-  @override
-  String get gridFormat => 'Formato de cuadrícula';
-
-  @override
-  String get coordsFormat => 'Formato de coordenadas';
-
-  @override
-  String get appVersion => 'Versión';
-
-  @override
-  String get appVersionDesc => 'Versión actual de la app';
-
-  @override
-  String get stationDetail => 'Detalle de estación';
-
-  @override
-  String get backToTop => 'Volver arriba';
-
-  @override
-  String get installApk => 'Instalar APRSlocus';
-
-  @override
-  String get install => 'Instalar';
-
-  @override
-  String get cancelInstall => 'Cancelar';
-
-  @override
-  String get openFolder => 'Abrir carpeta';
-
-  @override
-  String get browse => 'Examinar';
-
-  @override
-  String get downloadUpdate => 'Descargar actualización';
-
-  @override
-  String get downloadNow => 'Descargar ahora';
-
-  @override
-  String get downloading => 'Descargando';
-
-  @override
-  String downloadProgress(Object p) {
-    return 'Descargando $p%';
-  }
-
-  @override
-  String get downloadComplete => 'Descarga completada';
-
-  @override
-  String get downloadFailed => 'Error de descarga';
-
-  @override
-  String get installNow => 'Instalar ahora';
-
-  @override
-  String get installComplete => 'Instalación completada';
-
-  @override
-  String get openInstallDir => 'Abrir carpeta de instalación';
-
-  @override
-  String get deletePackage => 'Eliminar paquete';
-
-  @override
-  String deletePackageConfirm(Object file) {
-    return '¿Eliminar el paquete $file?';
-  }
-
-  @override
-  String get deleteAllPackages => 'Eliminar todos los paquetes';
-
-  @override
-  String deleteAllPackagesWithCount(Object count) {
-    return 'Eliminar todos los paquetes ($count)';
-  }
-
-  @override
-  String deleteAllPackagesConfirm(Object count, Object size) {
-    return 'Se eliminarán $count paquetes descargados ($size). ¿Continuar?';
-  }
-
-  @override
-  String get historyVersions => 'Historial';
-
-  @override
-  String get current => 'Actual';
-
-  @override
-  String get newVersion => 'Nueva versión';
-
-  @override
-  String get latestVersion => 'Ya tienes la última versión';
-
-  @override
-  String get currentVersion => 'Versión actual de APRSlocus';
-
-  @override
-  String get checking => 'Buscando actualizaciones…';
-
-  @override
-  String get checkingGitCode => 'Comprobando el repositorio de GitCode';
-
-  @override
-  String get updateFailed => 'Error al buscar actualizaciones';
-
-  @override
-  String get noUpdateFound => 'Ya tienes la última versión';
-
-  @override
-  String get newVersionFound => 'Nueva versión disponible';
-
-  @override
-  String get downloadAgain => 'Volver a descargar el paquete';
-
-  @override
-  String get openDownloads => 'Abrir carpeta de descargas';
-
-  @override
-  String get releaseNotes => 'Notas de la versión';
-
-  @override
-  String currentVsRepo(Object local, Object remote) {
-    return 'Instalada v$local · Última en el repositorio v$remote';
-  }
-
-  @override
-  String installSize(Object os, Object size) {
-    return 'Tamaño del paquete $os: $size';
-  }
-
-  @override
-  String get alreadyDownloaded => 'Paquete descargado';
-
-  @override
-  String get downloadReady => 'Descargar paquete de instalación';
-
-  @override
-  String get appInstallDir => 'Carpeta de instalación';
-
-  @override
-  String get runInstaller => 'Ejecutar instalador';
-
-  @override
-  String get downloadUpdateTip => 'Descargar la actualización y abrirla';
-
-  @override
-  String get openDownloadFolder => 'Abrir carpeta de descargas';
-
-  @override
-  String groupBubble(String name) {
-    return 'Grupo · $name';
-  }
-
-  @override
-  String get groupInviteTitle => 'Invitación a chat grupal';
-
-  @override
-  String groupInviteFrom(String from) {
-    return '$from te ha invitado a un chat grupal';
-  }
-
-  @override
-  String groupNameValue(String name) {
-    return 'Grupo: $name';
-  }
-
-  @override
-  String groupCallsignValue(String call) {
-    return 'Indicativo del grupo: $call';
-  }
-
-  @override
-  String groupInviteAccepted(String name) {
-    return 'Te has unido a $name';
-  }
+  String get aboutTitle => 'Acerca de';
 
   @override
   String get accept => 'Aceptar';
 
   @override
-  String groupInviteRejected(String name) {
-    return 'Has rechazado la invitación a $name';
+  String get accountHonors => 'Honores de la cuenta';
+
+  @override
+  String get achievementWall => 'Muro de logros';
+
+  @override
+  String achievementsProgress(String n, String m) {
+    return '$n/$m logros';
   }
 
   @override
-  String get reject => 'Rechazar';
+  String get achievementsSection => 'Logros';
 
   @override
-  String get appTagline => 'Seguimiento APRS';
+  String get activeConditions => 'Condiciones activas';
 
   @override
-  String gridValue(String grid) {
-    return 'Cuadrícula $grid';
-  }
-
-  @override
-  String packetsPerMinute(int count) {
-    return '$count/min';
-  }
-
-  @override
-  String get demo => 'Demo';
-
-  @override
-  String nextBeaconIn(String time) {
-    return 'Próxima baliza $time';
-  }
-
-  @override
-  String beaconCount(int count) {
-    return '$count balizas';
-  }
-
-  @override
-  String beaconSentAprsIs(String grid) {
-    return 'Baliza de posición enviada · Cuadrícula $grid · Enviada a APRS-IS';
-  }
-
-  @override
-  String beaconSentDemo(String grid) {
-    return 'Baliza de posición enviada · Cuadrícula $grid · Demo';
-  }
-
-  @override
-  String get getLocation => 'Obtener ubicación';
-
-  @override
-  String get disconnect => 'Desconectar';
-
-  @override
-  String get connectAprsIs => 'Conectar APRS-IS';
-
-  @override
-  String get packetsReceived => 'RX';
-
-  @override
-  String get passcodeUnverified => 'Passcode sin verificar';
-
-  @override
-  String get passcodeWarning =>
-      'Es posible que el passcode de acceso sea incorrecto; los mensajes podrían no funcionar';
-
-  @override
-  String get goSettings => 'Ajustes';
-
-  @override
-  String get connectingServer => 'Conectando al servidor…';
-
-  @override
-  String get notConnectedAprsServer => 'Sin conexión al servidor APRS-IS';
-
-  @override
-  String connectingToServer(String server, int port) {
-    return 'Conectando a $server:$port…';
-  }
-
-  @override
-  String get connectNearbyDesc =>
-      'Conéctate para recibir posiciones y mensajes de estaciones cercanas';
-
-  @override
-  String get connectAction => 'Conectar';
-
-  @override
-  String get backgroundRunTip =>
-      'Ejecución en segundo plano: para mantener el balizamiento activo, permite que APRSlocus se ejecute en segundo plano, desactiva la optimización de batería y permite el inicio automático.';
-
-  @override
-  String get connectedAprsIs => 'Conectado a APRS-IS';
-
-  @override
-  String get qqGroupDesc => 'APRSlocus · Comentarios y dudas';
-
-  @override
-  String get reselectPoint => 'Elegir de nuevo';
-
-  @override
-  String get disableClustering => 'Desactivar agrupación';
-
-  @override
-  String get enableClustering => 'Activar agrupación';
-
-  @override
-  String get heatmap => 'Mapa de calor de estaciones';
-
-  @override
-  String get heatmapHint =>
-      'Mostrar un mapa de calor de densidad de estaciones al alejar';
-
-  @override
-  String get groupTracking => 'Seguimiento por grupos';
-
-  @override
-  String get groupTrackingHint =>
-      'Agrupa los indicativos que te interesan y síguelos en un mapa grande (caravana / amigos). Compatible con horizontal.';
-
-  @override
-  String get newTrackGroup => 'Nuevo grupo de seguimiento';
-
-  @override
-  String get trackGroupNameHint => 'Nombre, p. ej. Ruta de fin de semana';
-
-  @override
-  String get editTrackGroup => 'Editar grupo de seguimiento';
-
-  @override
-  String get deleteTrackGroup => 'Eliminar grupo de seguimiento';
-
-  @override
-  String deleteTrackGroupConfirm(Object name) {
-    return '¿Eliminar el grupo de seguimiento «$name»?';
-  }
-
-  @override
-  String get pickTrackMembers =>
-      'Elegir miembros (marca los indicativos que quieras seguir)';
-
-  @override
-  String get saveAndTrack => 'Guardar y seguir';
-
-  @override
-  String get trackGroupsEmptyHint =>
-      'Aún no hay grupos de seguimiento. Toca «Nuevo grupo de seguimiento» para crear uno.';
-
-  @override
-  String trackMemberSub(Object seen, Object type) {
-    return '$type · $seen';
-  }
-
-  @override
-  String get trackGroupEmpty =>
-      'Los miembros aún no tienen datos de posición (no recibidos o sin baliza).';
-
-  @override
-  String get trackActive => 'Activo';
-
-  @override
-  String get trackWaitingPos => 'Esperando posición…';
-
-  @override
-  String get offlineShort => 'Sin conexión';
-
-  @override
-  String get stoppedShort => 'Detenido';
-
-  @override
-  String trackHeader(Object fixed, Object online, Object total) {
-    return '$total miembros · $online en línea · $fixed fijos';
-  }
-
-  @override
-  String get groupChatShort => 'Chat';
-
-  @override
-  String groupChatTitle(Object name) {
-    return 'Grupo · $name';
-  }
-
-  @override
-  String chatWithTitle(Object call) {
-    return 'Chat con $call';
-  }
-
-  @override
-  String get chatToGroupHint => 'Envía un mensaje al grupo…';
-
-  @override
-  String chatToHint(Object call) {
-    return 'Envía un mensaje a $call…';
-  }
-
-  @override
-  String get noMessagesHint => 'Aún no hay mensajes; ¡saluda!';
-
-  @override
-  String trackModeFollow(Object call) {
-    return 'Siguiendo a $call';
-  }
-
-  @override
-  String get trackModeMe => 'Siguiéndome';
-
-  @override
-  String get trackModeFitAll => 'Vista completa';
-
-  @override
-  String get fitAll => 'Ver todo';
-
-  @override
-  String get noStationsYet =>
-      'Aún no hay datos de estaciones. Conéctate a APRS-IS para elegir miembros.';
-
-  @override
-  String get noPackets => 'Aún no hay paquetes';
-
-  @override
-  String secondsAgo(int count) {
-    return 'hace ${count}s';
-  }
-
-  @override
-  String minutesAgo(int count) {
-    return 'hace $count min';
-  }
-
-  @override
-  String hoursAgo(int count) {
-    return 'hace $count h';
-  }
-
-  @override
-  String daysAgo(int count) {
-    return 'hace $count d';
-  }
-
-  @override
-  String copiedCoordsValue(String coords) {
-    return 'Coordenadas copiadas: $coords';
-  }
-
-  @override
-  String copiedGridValue(String grid) {
-    return 'Cuadrícula copiada: $grid';
-  }
-
-  @override
-  String distanceBearing(String distance, String bearing) {
-    return 'A $distance km · Azimut $bearing°';
-  }
-
-  @override
-  String weatherDataValue(String data) {
-    return 'Meteorología · $data';
-  }
-
-  @override
-  String get symbolLabel => 'Símbolo';
-
-  @override
-  String get digipeaterTapHint =>
-      'Toca un digipeater para abrir los detalles de su estación';
-
-  @override
-  String get copiedFmoInfo => 'Información FMO copiada';
-
-  @override
-  String get copiedAprslocusInfo => 'Información de APRSlocus copiada';
-
-  @override
-  String trackPoints(int count) {
-    return 'Rastro ($count puntos)';
-  }
-
-  @override
-  String sendMessageTo(String call) {
-    return 'Envía un mensaje a $call…';
-  }
-
-  @override
-  String get navigationUnavailable =>
-      'No hay ninguna app de mapas instalada y no se pudo abrir otra';
-
-  @override
-  String stationNoData(String call) {
-    return 'Aún no se han recibido datos de $call';
-  }
-
-  @override
-  String get software => 'Software';
-
-  @override
-  String get close => 'Cerrar';
-
-  @override
-  String get nameLabel => 'Nombre';
-
-  @override
-  String get viewSponsorDetails => 'Ver detalles del autor y patrocinadores →';
-
-  @override
-  String get thanks => 'Gracias';
-
-  @override
-  String get qqSoftwareName => 'APRSlocus';
-
-  @override
-  String get usageNotice =>
-      'Solo para aprendizaje e intercambio entre radioaficionados\nCumple la normativa local de radio';
-
-  @override
-  String get licenseNotice => 'Licencia GNU GPL v3 · Copyright © BG7LZQ';
-
-  @override
-  String appInfoText(String version) {
-    return 'APRSlocus v$version\nAutor: BG7LZQ (Darion)\nWeb: Theez.top';
-  }
-
-  @override
-  String get eggBg7lzq => 'Oye, ¿qué haces?~';
-
-  @override
-  String get eggBg7pgw => '¿En serio?';
-
-  @override
-  String get eggBg7lmw => 'Silencio absoluto...';
-
-  @override
-  String get eggBg7osl => 'Tienes mucho morro';
-
-  @override
-  String get manualCallsignHint => 'Añadir indicativo manualmente';
-
-  @override
-  String get noPacketReceived => 'No se han recibido paquetes';
-
-  @override
-  String get feedMode => 'Flujo';
-
-  @override
-  String get conversationMode => 'Chats';
-
-  @override
-  String get messageFeed => 'Flujo de mensajes';
-
-  @override
-  String messageTotal(int count) {
-    return '$count mensajes';
-  }
-
-  @override
-  String get noMessages => 'Aún no hay mensajes';
-
-  @override
-  String get copiedClipboard => 'Copiado al portapapeles';
-
-  @override
-  String get groupShortLabel => 'Grupo';
-
-  @override
-  String get conversations => 'Chats';
-
-  @override
-  String get noConversations => 'Aún no hay conversaciones';
-
-  @override
-  String get groupNotFound => 'Chat grupal no encontrado';
-
-  @override
-  String get invite => 'Invitar';
-
-  @override
-  String get manage => 'Gestionar';
-
-  @override
-  String get noGroupMessages => 'El grupo aún no tiene mensajes';
-
-  @override
-  String get selectConversation => 'Elige una conversación para empezar';
-
-  @override
-  String get newConversation => 'Nueva conversación';
-
-  @override
-  String get newConversationDesc =>
-      'Introduce un indicativo para empezar una conversación';
-
-  @override
-  String get callsignExample => 'Indicativo, p. ej. BG7ABC';
-
-  @override
-  String get start => 'Empezar';
-
-  @override
-  String get broadcastMessage => 'Mensaje masivo';
-
-  @override
-  String get noStations => 'Sin estaciones';
-
-  @override
-  String get broadcastHint =>
-      'Cada mensaje se envía por separado a cada destinatario';
-
-  @override
-  String broadcastSent(int count) {
-    return 'Enviado a $count destinatarios';
-  }
-
-  @override
-  String get searchCallsign => 'Buscar indicativo…';
-
-  @override
-  String get broadcastContentHint => 'Escribe el mensaje a enviar…';
-
-  @override
-  String get groupNameHint => 'Introduce el nombre del grupo';
-
-  @override
-  String get create => 'Crear';
-
-  @override
-  String groupCallsignLine(String call) {
-    return 'Indicativo del grupo: $call';
-  }
-
-  @override
-  String get noMembers => 'Sin miembros';
-
-  @override
-  String get inviteMembersHint => 'Toca «Invitar miembros» abajo para añadir';
-
-  @override
-  String get remove => 'Quitar';
-
-  @override
-  String get inviteMembers => 'Invitar miembros';
-
-  @override
-  String get deleteGroup => 'Eliminar grupo';
-
-  @override
-  String deleteGroupConfirm(String name) {
-    return '¿Eliminar «$name»? Esta acción no se puede deshacer.';
-  }
-
-  @override
-  String get deleteConversation => 'Eliminar chat';
-
-  @override
-  String deleteConversationConfirm(Object call) {
-    return '¿Eliminar el historial de chat con $call? La conversación también se quitará de la lista. Esta acción no se puede deshacer.';
-  }
-
-  @override
-  String clearGroupChatConfirm(Object name) {
-    return '¿Borrar el historial de chat de «$name»? Esta acción no se puede deshacer.';
-  }
-
-  @override
-  String memberOnlineCount(int members, int online) {
-    return '$members miembros · $online en línea';
-  }
-
-  @override
-  String get leaveGroup => 'Salir del grupo';
-
-  @override
-  String leaveGroupConfirm(String name) {
-    return '¿Salir de «$name»? Dejarás de recibir mensajes de este grupo.';
-  }
-
-  @override
-  String leftGroup(String name) {
-    return 'Has salido de $name';
-  }
-
-  @override
-  String get leave => 'Salir';
-
-  @override
-  String inviteMembersTo(String name) {
-    return 'Invitar miembros a $name';
-  }
-
-  @override
-  String get manualCallsign => 'Introducir indicativo manualmente';
-
-  @override
-  String inviteSent(String call) {
-    return 'Invitación enviada a $call';
-  }
-
-  @override
-  String get noMoreOnlineStations => 'No hay más estaciones en línea';
-
-  @override
-  String get invited => 'Invitado';
-
-  @override
-  String get tapToInvite => 'Toca para invitar';
-
-  @override
-  String get done => 'Hecho';
+  String get add => 'Añadir';
 
   @override
   String get addContact => 'Añadir contacto';
@@ -4133,54 +49,201 @@ class AppLocalizationsEs extends AppLocalizations {
       'Introduce un indicativo para añadirlo a los contactos';
 
   @override
-  String contactAdded(String call) {
-    return 'Contacto añadido: $call';
+  String get addCountry => 'Añadir país/región';
+
+  @override
+  String get addOrFavoriteContact =>
+      'Toca «Añadir» arriba o marca una estación como favorita en el mapa';
+
+  @override
+  String get addSpeedTier => 'Añadir nivel de velocidad';
+
+  @override
+  String get adifBand => 'Banda (BAND)';
+
+  @override
+  String get adifCopyPath => 'Copiar ruta';
+
+  @override
+  String get adifExportDone => 'Exportación completada';
+
+  @override
+  String get adifExportFailed =>
+      'Error al exportar: comprueba el permiso de almacenamiento o el espacio libre';
+
+  @override
+  String adifExported(int n) {
+    return '$n registros exportados';
   }
 
   @override
-  String get add => 'Añadir';
+  String get adifFreq => 'Frecuencia (FREQ)';
 
   @override
-  String get stationary => 'Estacionario';
+  String get adifFreqHint => 'En MHz; déjalo vacío para omitir';
 
   @override
-  String get unknown => 'Desconocido';
+  String get adifFreqInvalid => 'Introduce un número en MHz, p. ej. 144.640';
 
   @override
-  String get none => 'Ninguno';
+  String get adifHint =>
+      'Cada registro contiene solo el indicativo y la hora del primer mensaje (UTC); se omiten el modo y la banda';
 
   @override
-  String get manual => 'Manual';
+  String get adifLogFile => 'Exportar chats como archivo de registro';
 
   @override
-  String get management => 'Gestión';
+  String get adifMode => 'Modo (MODE)';
 
   @override
-  String get debugLabel => 'Depuración';
+  String get adifModeData => 'DATA (datos)';
 
   @override
-  String get information => 'Información';
+  String get adifModeFm => 'FM (voz)';
 
   @override
-  String get warning => 'Advertencia';
+  String get adifModePkt => 'PKT (paquete, recomendado)';
 
   @override
-  String get errorLabel => 'Error';
+  String get adifModeRequiredHint =>
+      'La mayoría de los programas de registro (incluido QRZ) exigen MODE; los registros sin él se rechazan';
 
   @override
-  String countTimes(int count) {
-    return '$count veces';
+  String get adifNoSelection =>
+      'Selecciona al menos una conversación para exportar';
+
+  @override
+  String get adifNotWritten => 'Omitir';
+
+  @override
+  String get adifOptions => 'Opciones de exportación';
+
+  @override
+  String get adifPathCopied => 'Ruta copiada';
+
+  @override
+  String get adifPreview => 'Vista previa (registro que se escribirá)';
+
+  @override
+  String adifSavedTo(String path) {
+    return 'Guardado en: $path';
   }
 
   @override
-  String countItems(int count) {
-    return '$count';
+  String get adifStripSsid => 'Escribir solo el indicativo base (sin -SSID)';
+
+  @override
+  String get adifSubModeAprs => 'Añadir SUBMODE=APRS';
+
+  @override
+  String get advancedCat => 'Avanzado';
+
+  @override
+  String get advancedCatDesc => 'Laboratorio · Desarrollador';
+
+  @override
+  String get advancedDesc => 'Laboratorio y herramientas de desarrollo';
+
+  @override
+  String get advancedSettings => 'Ajustes avanzados';
+
+  @override
+  String get advancedSettings2 => 'Ajustes avanzados';
+
+  @override
+  String get advancedSettingsSubtitle =>
+      'Laboratorio y herramientas de desarrollo';
+
+  @override
+  String get aiSupport => 'Apoyo de cómputo con IA';
+
+  @override
+  String get airExcellent => 'Excelente';
+
+  @override
+  String get airGood => 'Buena';
+
+  @override
+  String get airHazardous => 'Contaminación grave';
+
+  @override
+  String get airModerate => 'Contaminación leve';
+
+  @override
+  String get airUnhealthy => 'Contaminación moderada';
+
+  @override
+  String get airVeryUnhealthy => 'Contaminación alta';
+
+  @override
+  String get all => 'Todo';
+
+  @override
+  String get allAprsSymbols => 'Todos los símbolos APRS';
+
+  @override
+  String get allChangelog => 'Todos los cambios';
+
+  @override
+  String get allDataCleared => 'Todos los datos locales borrados';
+
+  @override
+  String get allowLandscape => 'Permitir orientación horizontal';
+
+  @override
+  String get alreadyDownloaded => 'Paquete descargado';
+
+  @override
+  String get altitude => 'Altitud';
+
+  @override
+  String get amapGroup => 'Nacional';
+
+  @override
+  String androidInstallHelp(String path) {
+    return 'Paquete descargado en:\n$path\n\nToca «Instalar» para abrir el instalador del sistema.\n\nSi Android bloquea aplicaciones desconocidas, permite que APRSlocus instale aplicaciones desconocidas en los ajustes del sistema.';
   }
 
   @override
-  String countEntries(int count) {
-    return '$count';
+  String get appFilter => 'App';
+
+  @override
+  String get appInfo => 'Información de la app';
+
+  @override
+  String get appInfoCopied => 'Información de la app copiada';
+
+  @override
+  String appInfoText(String version) {
+    return 'APRSlocus v$version\nAutor: BG7LZQ (Darion)\nWeb: Theez.top';
   }
+
+  @override
+  String get appInstallDir => 'Carpeta de instalación';
+
+  @override
+  String get appName => 'APRSlocus';
+
+  @override
+  String get appTagline => 'Seguimiento APRS';
+
+  @override
+  String get appVersion => 'Versión';
+
+  @override
+  String get appVersionDesc => 'Versión actual de la app';
+
+  @override
+  String get applyCoordinates => 'Aplicar coordenadas';
+
+  @override
+  String get applyStationFilter => 'Aplicar el filtro de estaciones al mapa';
+
+  @override
+  String get aprsCallsignHint => 'Indicativo APRS, p. ej. BV2AAA';
+
+  @override
+  String get aprsStatus => 'Paquete de estado independiente';
 
   @override
   String aprsSymbolName(String symbol) {
@@ -4253,17 +316,1239 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String symbolCategoryName(String category) {
-    String _temp0 = intl.Intl.selectLogic(category, {
-      'vehicles': 'Vehículos / transporte',
-      'facilities': 'Edificios / servicios',
-      'weatherNature': 'Meteorología / naturaleza',
-      'emergencyRescue': 'Emergencias / rescate',
-      'airWater': 'Aire / agua',
-      'communications': 'Comunicaciones / otros',
-      'other': 'Otros',
-    });
-    return '$_temp0';
+  String get aprsTv => 'APRS.tv';
+
+  @override
+  String get aprsTvInfo => 'Página de detalle';
+
+  @override
+  String get aprsTvMap => 'Ver en el mapa';
+
+  @override
+  String get aprslocusInfo => 'Información de APRSlocus';
+
+  @override
+  String get aprslocusOnly => 'APRSlocus';
+
+  @override
+  String get audioBackend => 'Motor de audio';
+
+  @override
+  String audioBadFrames(int n) {
+    return '$n decodificaciones abortadas (ruido/desincronización)';
+  }
+
+  @override
+  String get audioBaud => 'Velocidad en baudios';
+
+  @override
+  String get audioBaudTip =>
+      'APRS en VHF es siempre 1200 bd (Bell 202); 300 bd es para HF';
+
+  @override
+  String get audioCaptureDesc =>
+      'Demodula AFSK 1200 desde la entrada de micrófono/línea';
+
+  @override
+  String get audioCaptureStart => 'Iniciar captura';
+
+  @override
+  String get audioCaptureStop => 'Detener captura';
+
+  @override
+  String get audioCaptureTitle => 'Captura de audio';
+
+  @override
+  String get audioCsmaWait => 'Esperar canal libre (ms)';
+
+  @override
+  String get audioCsmaWaitTip =>
+      'Cuánto esperar si el canal está ocupado; 0 = transmitir de inmediato';
+
+  @override
+  String get audioLevel => 'Nivel de entrada';
+
+  @override
+  String get audioLevelTip =>
+      'El medidor sube con señal; \"Demodulación sincronizada\" se ilumina al detectar AFSK';
+
+  @override
+  String get audioLoopbackHint =>
+      'La autocomprobación hace una ida y vuelta real de modulación→demodulación; en Android el micrófono se pausa al transmitir (semidúplex)';
+
+  @override
+  String get audioMarkTip =>
+      'Bell 202 define mark 1200 Hz y space 2200 Hz; la tolerancia es de unos pocos Hz';
+
+  @override
+  String get audioNeedPermission =>
+      'Se requiere permiso de micrófono (RECORD_AUDIO): concédelo e inténtalo de nuevo';
+
+  @override
+  String get audioRestart => 'Reiniciar enlace de audio';
+
+  @override
+  String get audioSampleRate => 'Frecuencia de muestreo';
+
+  @override
+  String get audioSampleRateTip =>
+      '22050 Hz es lo habitual en TNC de tarjeta de sonido; usa 44100/48000 si no se admite. Cambiarlo reinicia la captura';
+
+  @override
+  String get audioSettings => 'Audio (TNC de tarjeta de sonido)';
+
+  @override
+  String get audioSettingsSubtitle =>
+      'Envía y recibe paquetes AFSK 1200 con la tarjeta de sonido';
+
+  @override
+  String get audioSpaceTip =>
+      'Tono space. Junto con mark define el desplazamiento FSK (1000 Hz nominal)';
+
+  @override
+  String audioStatDrop(int n) {
+    return '$n bytes descartados durante la transmisión';
+  }
+
+  @override
+  String audioStatRx(int n) {
+    return '$n tramas recibidas';
+  }
+
+  @override
+  String audioStatTx(int n) {
+    return '$n tramas enviadas';
+  }
+
+  @override
+  String get audioStatsTitle => 'Estadísticas de audio';
+
+  @override
+  String get audioStopTx => 'Detener transmisión';
+
+  @override
+  String get audioSynced => 'Demodulación sincronizada';
+
+  @override
+  String get audioTnc2Tip =>
+      'Formato SRC>DEST,PATH:info, p. ej. BG7LZQ-9>APALOC:>TEST';
+
+  @override
+  String get audioToneMark => 'Tono mark (Hz)';
+
+  @override
+  String get audioToneSpace => 'Tono space (Hz)';
+
+  @override
+  String get audioTones => 'Tonos (mark/space)';
+
+  @override
+  String get audioTxDelayLabel => 'Preámbulo Tx (ms)';
+
+  @override
+  String get audioTxDelayTip =>
+      'Duración del preámbulo: da tiempo al demodulador remoto y al PTT';
+
+  @override
+  String get audioTxDesc =>
+      'Escucha antes de transmitir para evitar colisiones';
+
+  @override
+  String get audioTxDisabled =>
+      '\"Permitir transmisión\" desactivado: solo recepción';
+
+  @override
+  String get audioTxEnabled => 'Permitir transmisión';
+
+  @override
+  String get audioTxEnabledTip =>
+      'Si está desactivado, solo recepción: útil si solo quieres escuchar balizas';
+
+  @override
+  String get audioTxLevel => 'Nivel de TX';
+
+  @override
+  String get audioTxLevelClip =>
+      'Recortado: baja la amplitud por debajo de 0.8 (genera armónicos)';
+
+  @override
+  String get audioTxLevelLow =>
+      'Nivel bajo: puede que no lo decodifiquen — sube amplitud y volumen';
+
+  @override
+  String get audioTxLevelTip =>
+      'Antes de transmitir se sube el volumen al máximo y se pausa el micrófono; un pico demasiado bajo o recortado impide decodificar al otro lado';
+
+  @override
+  String audioTxPeak(int p, String sec, int flags) {
+    return 'Pico $p% · ${sec}s · preámbulo $flags flags';
+  }
+
+  @override
+  String get audioTxTitle => 'Transmisión de audio';
+
+  @override
+  String get audioUnlocked => 'Sin sincronizar';
+
+  @override
+  String get audioUnsupported =>
+      'Este sistema no admite audio en tiempo real (el modo WAV sí está disponible)';
+
+  @override
+  String get audioWavCanceled => 'Cancelado';
+
+  @override
+  String get audioWavCopyPath => 'Copiar ruta';
+
+  @override
+  String get audioWavDecodeAction => 'Decodificar este WAV';
+
+  @override
+  String get audioWavDesc =>
+      'Decodifica una grabación sin conexión o exporta un paquete como audio';
+
+  @override
+  String get audioWavExportAction => 'Exportar este paquete';
+
+  @override
+  String get audioWavExportToDownloads => 'Exportar a Descargas';
+
+  @override
+  String audioWavFailed(String err) {
+    return 'Fallo de E/S: $err';
+  }
+
+  @override
+  String audioWavFound(int n) {
+    return '$n paquete(s) decodificado(s)';
+  }
+
+  @override
+  String get audioWavImportAction => 'Elegir archivo WAV';
+
+  @override
+  String get audioWavMobileHint =>
+      'Android no permite rutas arbitrarias: se guarda en Descargas/APRSlocusAudio — cópialo al PC para Direwolf o la radio';
+
+  @override
+  String get audioWavNone =>
+      'No se decodificó ningún paquete (¿no es una grabación AFSK 1200?)';
+
+  @override
+  String get audioWavPath => 'Ruta del archivo';
+
+  @override
+  String get audioWavPathCopied => 'Ruta copiada';
+
+  @override
+  String get audioWavPickHint => 'En escritorio, escribe la ruta del WAV abajo';
+
+  @override
+  String audioWavSavedTo(String path) {
+    return 'Guardado en $path';
+  }
+
+  @override
+  String get audioWavTitle => 'Modo de archivo WAV';
+
+  @override
+  String get audioWavTnC2 => 'Paquete a exportar (TNC2)';
+
+  @override
+  String get audioWavVerifyFailed =>
+      'Falló la autocomprobación: el audio generado no se puede decodificar';
+
+  @override
+  String audioWavWritten(String path) {
+    return 'Guardado en $path';
+  }
+
+  @override
+  String get audioWiringHint =>
+      'Usa un cable de audio hacia la radio (salida de auriculares → conector de datos/micrófono). El altavoz del móvil atenúa mucho a 2200 Hz, así que por aire casi nunca decodifica. Si el otro extremo es Direwolf, verifica primero con el WAV exportado: si eso decodifica, el problema es el audio, no el protocolo';
+
+  @override
+  String get author => 'Autor';
+
+  @override
+  String get authorCall => 'Indicativo';
+
+  @override
+  String get authorName => 'Darion';
+
+  @override
+  String get autoReply => 'Respuesta automática';
+
+  @override
+  String get autoSaveStations =>
+      'Guardar automáticamente los datos de estaciones';
+
+  @override
+  String get back => 'Atrás';
+
+  @override
+  String get backToTop => 'Volver arriba';
+
+  @override
+  String get backgroundRunTip =>
+      'Ejecución en segundo plano: para mantener el balizamiento activo, permite que APRSlocus se ejecute en segundo plano, desactiva la optimización de batería y permite el inicio automático.';
+
+  @override
+  String get backupCatChats => 'Chats grupales';
+
+  @override
+  String get backupCatChatsDesc => 'Grupos, miembros y estado leído';
+
+  @override
+  String get backupCatHonors => 'Logros y honores';
+
+  @override
+  String get backupCatHonorsDesc =>
+      'Desbloqueos, contadores y insignia predeterminada';
+
+  @override
+  String get backupCatMessages => 'Mensajes';
+
+  @override
+  String get backupCatMessagesDesc => 'Mensajes directos y posiciones leídas';
+
+  @override
+  String get backupCatSettings => 'Ajustes';
+
+  @override
+  String get backupCatSettingsDesc =>
+      'Estación, baliza, mapa, filtros, fuentes, servidor';
+
+  @override
+  String get backupCatStations => 'Estaciones y contactos';
+
+  @override
+  String get backupCatStationsDesc =>
+      'Favoritos, contactos manuales y sus notas';
+
+  @override
+  String get backupCatTranslate => 'Ajustes de traducción';
+
+  @override
+  String get backupCatTranslateDesc =>
+      'Proveedores, claves y preferencias de idioma';
+
+  @override
+  String get backupCopyDone => 'Copia copiada al portapapeles';
+
+  @override
+  String get backupCopyJson => 'Copiar al portapapeles';
+
+  @override
+  String get backupDesc =>
+      'La copia es un archivo JSON que puedes restaurar al cambiar de dispositivo o reinstalar. La importación sobrescribe por grupo y no se puede deshacer.';
+
+  @override
+  String get backupEntryDesc => 'Empaqueta ajustes y datos en JSON';
+
+  @override
+  String get backupErrEmpty => 'La copia no contiene nada que importar';
+
+  @override
+  String get backupErrNotBackup => 'No es una copia de APRSlocus';
+
+  @override
+  String get backupErrNotJson => 'El archivo no es JSON válido';
+
+  @override
+  String get backupErrRead => 'No se pudo leer la copia';
+
+  @override
+  String get backupErrSchemaNewer =>
+      'La copia proviene de una versión más nueva de APRSlocus: actualiza la app primero';
+
+  @override
+  String get backupErrTooLarge =>
+      'La copia supera los 32 MB y no se puede leer';
+
+  @override
+  String get backupErrUnsupported =>
+      'Aquí no se pueden elegir archivos: pega desde el portapapeles';
+
+  @override
+  String get backupExport => 'Exportar copia';
+
+  @override
+  String get backupExportDesc =>
+      'Elige qué incluir y guárdalo en un archivo o cópialo';
+
+  @override
+  String get backupExportDone => 'Copia exportada';
+
+  @override
+  String get backupExportFailed =>
+      'No se pudo exportar: revisa el permiso de almacenamiento o el espacio libre';
+
+  @override
+  String get backupExportToFile => 'Guardar en archivo';
+
+  @override
+  String backupExportedAt(String t) {
+    return 'Exportado $t';
+  }
+
+  @override
+  String backupFromVersion(String v) {
+    return 'Versión de origen $v';
+  }
+
+  @override
+  String get backupImport => 'Importar copia';
+
+  @override
+  String get backupImportConfirm =>
+      'Los grupos seleccionados se sobrescribirán y no se puede deshacer. Se recomienda exportar antes una copia de los datos actuales.';
+
+  @override
+  String get backupImportConfirmTitle => '¿Importar la copia?';
+
+  @override
+  String get backupImportDesc => 'Elige un archivo JSON exportado antes';
+
+  @override
+  String get backupImportNothing =>
+      'La copia no tiene datos de los grupos seleccionados';
+
+  @override
+  String get backupImportSelected => 'Importar selección';
+
+  @override
+  String backupImported(int n) {
+    return 'Se importaron $n elementos';
+  }
+
+  @override
+  String backupItems(int n) {
+    return '$n elementos';
+  }
+
+  @override
+  String get backupLater => 'Más tarde';
+
+  @override
+  String get backupNoSelection => 'Selecciona al menos un grupo';
+
+  @override
+  String get backupPaste => 'Pegar del portapapeles';
+
+  @override
+  String get backupPasteEmpty => 'No hay texto en el portapapeles';
+
+  @override
+  String get backupPickFile => 'Elegir archivo';
+
+  @override
+  String get backupPreview => 'Contenido de la copia';
+
+  @override
+  String get backupRestartHint =>
+      'Los datos están guardados; reinicia la app para que todo surta efecto (logros, traducción, conexión).';
+
+  @override
+  String get backupRestartNow => 'Salir de la app';
+
+  @override
+  String get backupRestartTitle => 'Importación completada';
+
+  @override
+  String backupSavedTo(String path) {
+    return 'Guardado en: $path';
+  }
+
+  @override
+  String get backupSecurityTip =>
+      'La copia incluye tu indicativo, la contraseña del servidor y claves API: guárdala bien.';
+
+  @override
+  String get backupSelectAll => 'Seleccionar todo';
+
+  @override
+  String backupSkipped(int n) {
+    return 'Se omitieron $n entradas desconocidas';
+  }
+
+  @override
+  String get backupSubtitle => 'Exporta o importa ajustes y datos';
+
+  @override
+  String get backupThemeImagesHint =>
+      'La copia incluirá las imágenes que usan tus temas. Sin ellas, al restaurar el tema vuelve a los iconos integrados.';
+
+  @override
+  String get backupThemeImagesOff =>
+      'Sin imágenes: copia más pequeña, pero al restaurar el tema le faltarán el fondo y los iconos personalizados';
+
+  @override
+  String get backupTitle => 'Copia de seguridad';
+
+  @override
+  String get backupWebHint =>
+      'En la web usa «copiar / pegar del portapapeles».';
+
+  @override
+  String get badgeFallback => 'Insignia';
+
+  @override
+  String get badgeWall => 'Muro de insignias';
+
+  @override
+  String get beacon => 'Baliza de posición';
+
+  @override
+  String get beaconAltLabel => 'Altitud (m, vacio = usar la posicion)';
+
+  @override
+  String get beaconAltNone => 'Se envia con la posicion · aun sin altitud';
+
+  @override
+  String get beaconAntHeightLabel => 'Altura de antena (pies)';
+
+  @override
+  String beaconAttachedHr(String hr) {
+    return 'pulso $hr';
+  }
+
+  @override
+  String get beaconAttachedNone => 'sin pulso';
+
+  @override
+  String get beaconAutoAskDesc =>
+      '¿Quieres que APRSlocus envíe tu posición (baliza) automáticamente mientras esté conectado? Se recomienda para uso móvil. Elige no para solo recibir (podrás enviar una baliza manualmente cuando quieras).';
+
+  @override
+  String get beaconAutoAskTitle =>
+      'Conectado: ¿informar de tu posición automáticamente?';
+
+  @override
+  String get beaconAutoNo => 'No, solo recibir';
+
+  @override
+  String get beaconAutoYes => 'Informar automáticamente';
+
+  @override
+  String get beaconCat => 'Balizamiento';
+
+  @override
+  String get beaconCatDesc => 'GPS · Baliza · Posición manual';
+
+  @override
+  String get beaconCoarseFix => 'Posición de red · baliza automática en pausa';
+
+  @override
+  String beaconCoarseForced(String s) {
+    return 'Posición de red (gruesa) · $s';
+  }
+
+  @override
+  String get beaconCoarseForcedNote => 'Balizando con posición de red (gruesa)';
+
+  @override
+  String get beaconCoarseHint =>
+      'La posición actual viene de la red (aproximada, a menudo cientos de metros) — los informes automáticos están en pausa y se reanudan al volver el GPS. Aún puedes balizar manualmente.';
+
+  @override
+  String get beaconContent => 'Contenido de la baliza';
+
+  @override
+  String get beaconContentDesc => 'Se envía con cada baliza de posición';
+
+  @override
+  String beaconCount(int count) {
+    return '$count balizas';
+  }
+
+  @override
+  String get beaconCountdown => 'Próxima baliza';
+
+  @override
+  String get beaconDisabled => 'Desactivado';
+
+  @override
+  String get beaconEnabled => 'Activar baliza de posición';
+
+  @override
+  String get beaconForceCoarse =>
+      'Balizar también con posición de red (gruesa)';
+
+  @override
+  String get beaconForceCoarseHint =>
+      'Desactivado por defecto: la posición de red (celda / Wi-Fi) suele fallar cientos de metros, así que balizarla anuncia una coordenada errónea a todos. Actívalo solo si el dispositivo no tiene GPS (tableta, solo red). El mapa y la traza siguen filtrando los puntos gruesos como siempre, así que no se vuelven inestables. El \"balizar ahora\" manual no se ve afectado.';
+
+  @override
+  String get beaconGainLabel => 'Ganancia (dB)';
+
+  @override
+  String beaconGarminNext(String s, String hr) {
+    return 'Garmin · $s · ❤$hr';
+  }
+
+  @override
+  String get beaconGarminSource => 'Balizando desde Garmin LiveTrack';
+
+  @override
+  String get beaconImminent => 'Informando…';
+
+  @override
+  String get beaconInterval => 'Intervalo de baliza (s)';
+
+  @override
+  String get beaconIntervalLabel => 'Intervalo';
+
+  @override
+  String get beaconIntervalTip =>
+      'Intervalo de envío de la baliza de posición; mínimo 5 segundos';
+
+  @override
+  String get beaconNetInterval => 'Intervalo solo red (s)';
+
+  @override
+  String get beaconNetIntervalTip =>
+      'En modo solo red se usa un intervalo fijo; las posiciones de red móvil / Wi-Fi no tienen velocidad fiable, así que no se usa el balizamiento inteligente (velocidad / distancia / giro)';
+
+  @override
+  String beaconNextIn(String s) {
+    return 'Próximo informe en $s';
+  }
+
+  @override
+  String get beaconNotConnected => 'Sin conexión';
+
+  @override
+  String get beaconNow => 'Balizar ahora';
+
+  @override
+  String get beaconOff => 'Desactivado';
+
+  @override
+  String get beaconOffChip => 'Informe automático desactivado';
+
+  @override
+  String beaconPhgPreview(String phg) {
+    return 'El paquete incluira: $phg';
+  }
+
+  @override
+  String get beaconPhgTip =>
+      'Potencia, altura de antena y ganancia comparten una extension PHG: al rellenar cualquiera se codifican y envian las tres (la norma lo define como un campo fijo de 7 bytes). La potencia toma el escalon mayor que no supere el valor real: 25 W informa 25, y 30 W tambien, porque sobreinformar infla tu circulo de cobertura. La altura de antena se mide sobre el terreno medio local, una magnitud distinta de la altitud /A= que se envia automaticamente arriba.';
+
+  @override
+  String get beaconPowerLabel => 'Potencia (W)';
+
+  @override
+  String get beaconRfBeaconOff => 'Baliza RF desactivada';
+
+  @override
+  String get beaconRfEnableAction => 'Activar baliza RF';
+
+  @override
+  String get beaconRfEnableHint =>
+      'La transmisión automática en una fuente de RF requiere activar «Baliza RF». Hasta entonces no se transmite la posición automáticamente (ni corre la cuenta atrás).';
+
+  @override
+  String get beaconRfEnableWarn =>
+      'La transmisión usa tu indicativo: opera dentro de tu licencia';
+
+  @override
+  String get beaconRfEnabled =>
+      'Baliza RF activada: transmitirá según el intervalo';
+
+  @override
+  String beaconSentAprsIs(String grid) {
+    return 'Baliza de posición enviada · Cuadrícula $grid · Enviada a APRS-IS';
+  }
+
+  @override
+  String beaconSentDemo(String grid) {
+    return 'Baliza de posición enviada · Cuadrícula $grid · Demo';
+  }
+
+  @override
+  String get beaconSettings => 'Balizamiento';
+
+  @override
+  String get beaconSettingsDetail => 'Fuente de GPS, baliza y ubicación manual';
+
+  @override
+  String get beaconSoon => 'Ahora';
+
+  @override
+  String get beaconTotalMileage => 'Distancia total';
+
+  @override
+  String get beaconTripMileage => 'Distancia del viaje';
+
+  @override
+  String get beaconWaitingFix => 'Esperando posición';
+
+  @override
+  String get beaconWarnBody =>
+      'APRS-IS recomienda un intervalo de baliza mínimo de 60 segundos para estaciones móviles. Enviar más rápido puede considerarse un abuso y provocar la desconexión. ¿Mantener este intervalo?';
+
+  @override
+  String get beaconWarnFix => 'Poner 60 s';
+
+  @override
+  String get beaconWarnKeep => 'Mantener igualmente';
+
+  @override
+  String get beaconWarnTitle => 'Intervalo de baliza demasiado corto';
+
+  @override
+  String get beaconingSection => 'Balizamiento';
+
+  @override
+  String get beaconsSent => 'Balizas enviadas';
+
+  @override
+  String beaconsSentCount(String n) {
+    return '$n';
+  }
+
+  @override
+  String get beaconsSentLabel => 'Enviadas';
+
+  @override
+  String get bearing => 'Azimut';
+
+  @override
+  String get block => 'Bloquear';
+
+  @override
+  String get broadcastContentHint => 'Escribe el mensaje a enviar…';
+
+  @override
+  String get broadcastHint =>
+      'Cada mensaje se envía por separado a cada destinatario';
+
+  @override
+  String get broadcastMessage => 'Mensaje masivo';
+
+  @override
+  String broadcastSent(int count) {
+    return 'Enviado a $count destinatarios';
+  }
+
+  @override
+  String get broadcastShort => 'Masivo';
+
+  @override
+  String get browse => 'Examinar';
+
+  @override
+  String get callComment => 'Comentario de estación';
+
+  @override
+  String get callCommentEmpty => 'Sin definir · toca para escribir';
+
+  @override
+  String get callCommentHint =>
+      'Comentario que se envía con las balizas de posición';
+
+  @override
+  String get callSsid => 'Indicativo · SSID';
+
+  @override
+  String get callSymbol => 'Símbolo de estación';
+
+  @override
+  String get callSymbolDesc =>
+      'El símbolo se envía con las balizas de posición';
+
+  @override
+  String get callsign => 'Indicativo';
+
+  @override
+  String get callsignCopied => 'Indicativo copiado';
+
+  @override
+  String get callsignExample => 'Indicativo, p. ej. BG7ABC';
+
+  @override
+  String get callsignMin3 => 'El indicativo debe tener al menos 3 caracteres';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get cancelInstall => 'Cancelar';
+
+  @override
+  String get cannotLaunchInstaller =>
+      'No se pudo lanzar el instalador; abre el paquete manualmente';
+
+  @override
+  String cannotOpenPackage(String error) {
+    return 'No se pudo abrir el paquete: $error';
+  }
+
+  @override
+  String get cannotRunInstaller =>
+      'No se pudo iniciar el instalador; ábrelo manualmente desde la carpeta contenedora';
+
+  @override
+  String get chatCat => 'Chat';
+
+  @override
+  String get chatCatDesc => 'Historial · Contactos';
+
+  @override
+  String get chatCleared => 'Historial de chat borrado';
+
+  @override
+  String get chatHistory => 'Historial de chat';
+
+  @override
+  String get chatManageHint =>
+      'Toca un chat para seleccionarlo; mantener pulsado también selecciona';
+
+  @override
+  String get chatRecords => 'Historial de chat';
+
+  @override
+  String get chatRecordsCleared => 'Historial de chat borrado';
+
+  @override
+  String get chatSettings => 'Ajustes del chat';
+
+  @override
+  String get chatSettings2 => 'Ajustes del chat';
+
+  @override
+  String get chatSettingsDetail => 'Mensajes, contactos y datos de chat';
+
+  @override
+  String get chatSettingsSubtitle => 'Historial de mensajes y contactos';
+
+  @override
+  String get chatShortLabel => 'Chat';
+
+  @override
+  String get chatToGroupHint => 'Envía un mensaje al grupo…';
+
+  @override
+  String chatToHint(Object call) {
+    return 'Envía un mensaje a $call…';
+  }
+
+  @override
+  String chatWithTitle(Object call) {
+    return 'Chat con $call';
+  }
+
+  @override
+  String get checkUpdate => 'Buscar actualización';
+
+  @override
+  String get checking => 'Buscando actualizaciones…';
+
+  @override
+  String get checkingGitCode => 'Comprobando el repositorio de GitCode';
+
+  @override
+  String get checkingLatest => 'Comprobando la última versión…';
+
+  @override
+  String get chooseSsidSuffix => 'Elegir sufijo SSID';
+
+  @override
+  String get chooseSymbol => 'Elegir símbolo de estación';
+
+  @override
+  String get clear => 'Borrar';
+
+  @override
+  String get clearAll => 'Borrar todo';
+
+  @override
+  String get clearAllData => 'Borrar todos los datos';
+
+  @override
+  String get clearAllDataConfirm =>
+      '¿Borrar todos los datos locales? Esta acción no se puede deshacer.';
+
+  @override
+  String get clearAllDataIntro =>
+      'Esta acción eliminará todos los datos locales siguientes:';
+
+  @override
+  String get clearCache => 'Borrar caché';
+
+  @override
+  String get clearData => 'Borrar datos';
+
+  @override
+  String clearGroupChatConfirm(Object name) {
+    return '¿Borrar el historial de chat de «$name»? Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get clearLogs => 'Borrar registros';
+
+  @override
+  String get clearMessages => 'Borrar todo el historial de chat';
+
+  @override
+  String get clearPackets => 'Borrar paquetes';
+
+  @override
+  String get clearPackets2 => 'Borrar paquetes';
+
+  @override
+  String get clearSearch => 'Borrar búsqueda';
+
+  @override
+  String get clearSelection => 'Borrar selección';
+
+  @override
+  String get clearStationFilter => 'Borrar filtro';
+
+  @override
+  String get clearStations => 'Borrar lista de estaciones';
+
+  @override
+  String clearStationsConfirm(String n) {
+    return '¿Borrar todas las estaciones? $n en total. No se puede deshacer (mensajes, registros y paquetes no se ven afectados).';
+  }
+
+  @override
+  String get clearedPackets => 'Paquetes borrados';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get codeContributionI18n =>
+      'Internacionalización / interfaz en inglés';
+
+  @override
+  String get codeContributionTranslation => 'Traducción';
+
+  @override
+  String get codeContributionZhTw => 'Interfaz en chino tradicional';
+
+  @override
+  String get codeContributions => 'Contribuciones de código';
+
+  @override
+  String get configChanged => 'Configuración modificada';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get confirmClear => 'Borrar';
+
+  @override
+  String get confirmClearAllData => 'Borrar todos los datos';
+
+  @override
+  String get confirmDelete => '¿Eliminar este elemento?';
+
+  @override
+  String confirmDeleteMessages(String n) {
+    return '¿Eliminar los $n mensajes de chat? Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get confirmRestartOobe =>
+      'Se abrirá de nuevo el asistente inicial para configurar indicativo, región de recepción, etc.\nTus ajustes actuales se conservarán.';
+
+  @override
+  String connAudioConnected(String rate) {
+    return 'Enlace de audio en línea · $rate';
+  }
+
+  @override
+  String connAudioLinkLost(int seconds) {
+    return 'Enlace de audio perdido · reconectando en ${seconds}s…';
+  }
+
+  @override
+  String connAudioPositionSent(String call) {
+    return 'Enviado por audio · posición transmitida ($call)';
+  }
+
+  @override
+  String get connAudioSourceHint =>
+      'El modo de audio no usa servidor, filtros ni ajustes KISS';
+
+  @override
+  String connAutoReconnect(int seconds) {
+    return 'Conexión perdida · Reconectando en ${seconds}s…';
+  }
+
+  @override
+  String connConnectingAudio(String name) {
+    return 'Abriendo audio ($name)…';
+  }
+
+  @override
+  String connConnectingPkwdwpl(String arg) {
+    return 'Conectando a PKWDWPL ($arg)…';
+  }
+
+  @override
+  String connConnectingTarget(String target) {
+    return 'Conectando a $target…';
+  }
+
+  @override
+  String get connDemoBeacon =>
+      'Sin conexión · Baliza de posición registrada (demo)';
+
+  @override
+  String get connManuallyDisconnected =>
+      'Sin conexión · Desconectado manualmente';
+
+  @override
+  String connOnline(String call) {
+    return 'Conectado · $call en línea';
+  }
+
+  @override
+  String get connPasscodeInvalid =>
+      'Conectado · Sin verificar (el Passcode puede ser incorrecto)';
+
+  @override
+  String connPkwdwplConnected(String arg) {
+    return 'PKWDWPL conectado · $arg';
+  }
+
+  @override
+  String connPositionSent(String call) {
+    return 'Conectado · Baliza de posición enviada ($call)';
+  }
+
+  @override
+  String connRetry(int seconds) {
+    return 'Error de conexión · Reintentando en ${seconds}s…';
+  }
+
+  @override
+  String connRetryAudio(int seconds) {
+    return 'No se pudo abrir el audio · reintentando en ${seconds}s…';
+  }
+
+  @override
+  String connRetryAudioDetail(String detail, int seconds) {
+    return 'Fallo de audio ($detail) · reintentando en ${seconds}s…';
+  }
+
+  @override
+  String connRetryTnc(int n) {
+    return 'Falló la conexión TNC · reintentando en ${n}s…';
+  }
+
+  @override
+  String connRetryTncDetail(String e, int n) {
+    return 'Falló la conexión TNC ($e) · reintentando en ${n}s…';
+  }
+
+  @override
+  String get connTapToConnect =>
+      'Sin conexión · Toca conectar para unirte a APRS-IS';
+
+  @override
+  String connTncConnected(String arg) {
+    return 'TNC conectado · $arg';
+  }
+
+  @override
+  String connTncLinkLost(int n) {
+    return 'Enlace TNC perdido · reconectando en ${n}s…';
+  }
+
+  @override
+  String connTncPositionSent(String arg) {
+    return 'TNC conectado · posición enviada ($arg)';
+  }
+
+  @override
+  String get connTncSourceHint =>
+      'El modo TNC no usa servidor ni filtros, así que esos ajustes están desactivados';
+
+  @override
+  String get connectAction => 'Conectar';
+
+  @override
+  String get connectAprsIs => 'Conectar APRS-IS';
+
+  @override
+  String get connectFailedCheckConfig =>
+      'Error de conexión; comprueba la configuración';
+
+  @override
+  String get connectNearbyDesc =>
+      'Conéctate para recibir posiciones y mensajes de estaciones cercanas';
+
+  @override
+  String get connectTncBar => 'Toca Conectar para abrir el enlace TNC';
+
+  @override
+  String get connected => 'Conectado';
+
+  @override
+  String get connectedAprsIs => 'Conectado a APRS-IS';
+
+  @override
+  String get connecting => 'Conectando';
+
+  @override
+  String get connectingEllipsis => 'Conectando…';
+
+  @override
+  String get connectingGitCode => 'Conectando al servidor de GitCode';
+
+  @override
+  String get connectingServer => 'Conectando al servidor…';
+
+  @override
+  String connectingToServer(String server, int port) {
+    return 'Conectando a $server:$port…';
+  }
+
+  @override
+  String connectingToTnc(String name) {
+    return 'Conectando TNC · $name';
+  }
+
+  @override
+  String get connection => 'Conexión';
+
+  @override
+  String get connectionCard2 => 'Conexión APRS-IS';
+
+  @override
+  String get connectionCat => 'Conexión';
+
+  @override
+  String get connectionCatDesc => 'Servidor · Filtro de rango';
+
+  @override
+  String get connectionSettings => 'Ajustes de conexión';
+
+  @override
+  String get connectionSettings2 => 'Ajustes de conexión';
+
+  @override
+  String get connectionSettingsSubtitle =>
+      'Servidor APRS-IS y rango de recepción';
+
+  @override
+  String contactAdded(String call) {
+    return 'Contacto añadido: $call';
+  }
+
+  @override
+  String contactDeleted(String call) {
+    return '$call eliminado';
+  }
+
+  @override
+  String get contactDesc => 'Reglas de filtrado de mensajes y contactos';
+
+  @override
+  String get contactList => 'Contactos';
+
+  @override
+  String get continueAnyway => 'Continuar igualmente';
+
+  @override
+  String get continuousIteration => 'Mejora continua';
+
+  @override
+  String get continuousIterationDesc =>
+      'Mejorando continuamente las funciones y la experiencia de APRSlocus';
+
+  @override
+  String get conversationMode => 'Chats';
+
+  @override
+  String get conversations => 'Chats';
+
+  @override
+  String conversationsDeleted(int n) {
+    return '$n chats eliminados';
+  }
+
+  @override
+  String get coordDatum => 'Datum';
+
+  @override
+  String get coordDisplay => 'Visualización de coordenadas';
+
+  @override
+  String get coordsFormat => 'Formato de coordenadas';
+
+  @override
+  String get copied => 'Copiado';
+
+  @override
+  String get copiedAprslocusInfo => 'Información de APRSlocus copiada';
+
+  @override
+  String get copiedClipboard => 'Copiado al portapapeles';
+
+  @override
+  String copiedCoordsValue(String coords) {
+    return 'Coordenadas copiadas: $coords';
+  }
+
+  @override
+  String get copiedFmoInfo => 'Información FMO copiada';
+
+  @override
+  String copiedGridValue(String grid) {
+    return 'Cuadrícula copiada: $grid';
+  }
+
+  @override
+  String copiedLogs(int count) {
+    return '$count entradas de registro copiadas';
+  }
+
+  @override
+  String get copiedPacket => 'Paquete copiado';
+
+  @override
+  String get copy => 'Copiar';
+
+  @override
+  String get copyAllLogs => 'Copiar todos los registros';
+
+  @override
+  String get copyAppInfo => 'Copiar información de la app';
+
+  @override
+  String get copyCallsign => 'Copiar indicativo';
+
+  @override
+  String get copyCoords => 'Copiar coordenadas';
+
+  @override
+  String get copyGrid => 'Copiar cuadrícula';
+
+  @override
+  String get copyShareText => 'Copiar texto para compartir';
+
+  @override
+  String countEntries(int count) {
+    return '$count';
+  }
+
+  @override
+  String countItems(int count) {
+    return '$count';
+  }
+
+  @override
+  String countTimes(int count) {
+    return '$count veces';
   }
 
   @override
@@ -4301,335 +1586,160 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get locationNotFixed => 'Sin ubicación';
+  String get countryUnrestricted =>
+      'Sin país seleccionado · sin restricción (todas las estaciones)';
 
   @override
-  String get simulatedLocation => 'Ubicación simulada';
+  String get course => 'Rumbo';
 
   @override
-  String get savedLocation => 'Ubicación guardada';
+  String get courseLabel => 'Rumbo';
 
   @override
-  String get locationFailed => 'Error de ubicación';
+  String get create => 'Crear';
 
   @override
-  String get locationStopped => 'Ubicación detenida';
+  String get creditsSection => 'Créditos';
 
   @override
-  String get locationFixed => 'Ubicación obtenida';
+  String get current => 'Actual';
 
   @override
-  String get locationPermission => 'Concede permiso de ubicación…';
+  String get currentVersion => 'Versión actual de APRSlocus';
 
   @override
-  String get gpsLocating => 'Obteniendo ubicación GPS…';
-
-  @override
-  String get webLocationUnsupported =>
-      'La ubicación automática no está disponible en la web; introduce las coordenadas a mano';
-
-  @override
-  String locationStreamError(String error) {
-    return 'Error en el flujo de ubicación: $error';
+  String currentVsRepo(Object local, Object remote) {
+    return 'Instalada v$local · Última en el repositorio v$remote';
   }
 
   @override
-  String locationInitError(String error) {
-    return 'Error al iniciar la ubicación: $error';
+  String get darkMode => 'Modo oscuro';
+
+  @override
+  String get dataCat => 'Datos';
+
+  @override
+  String get dataCatDesc => 'Borrar datos locales';
+
+  @override
+  String get dataClearDesc =>
+      'Borra mensajes, paquetes, estaciones y otros datos locales';
+
+  @override
+  String get dataMaintenance => 'Mantenimiento de datos';
+
+  @override
+  String get dataPersistence => 'Persistencia de estaciones';
+
+  @override
+  String get dataSettings => 'Ajustes de datos';
+
+  @override
+  String get dataSettings2 => 'Ajustes de datos';
+
+  @override
+  String get dataSettingsSubtitle => 'Gestión de datos locales';
+
+  @override
+  String get dataSourceAprsIs => 'APRS-IS';
+
+  @override
+  String get dataSourceAprsIsDesc => 'Red APRS global por internet';
+
+  @override
+  String get dataSourceAudio => 'Audio (tarjeta de sonido)';
+
+  @override
+  String get dataSourceAudioDesc =>
+      'AFSK 1200 hacia/desde una radio por micrófono/altavoz o cable de sonido';
+
+  @override
+  String get dataSourceAudioShort => 'Audio';
+
+  @override
+  String get dataSourceIgateHint =>
+      'Para actuar como pasarela (reenviar paquetes de RF a internet), activa APRS-IS y TNC/audio, y luego enciende «Pasarela» abajo.';
+
+  @override
+  String get dataSourcePkwdwpl => 'PKWDWPL (puntos de ruta Kenwood)';
+
+  @override
+  String get dataSourcePkwdwplDesc =>
+      'Lee las sentencias Kenwood \$PKWDWPL que emite el equipo por Bluetooth o serie (solo recepción)';
+
+  @override
+  String get dataSourcePkwdwplHint =>
+      'PKWDWPL es un enlace de **solo recepción**: recibe estaciones pero nunca transmite (para transmitir usa APRS-IS / TNC / audio)';
+
+  @override
+  String get dataSourceSubtitle => 'De dónde vienen los paquetes';
+
+  @override
+  String get dataSourceSwitchHint =>
+      'Cambiar la fuente de datos desconecta el enlace actual';
+
+  @override
+  String get dataSourceTitle => 'Fuente de datos';
+
+  @override
+  String get dataSourceTnc => 'TNC';
+
+  @override
+  String get dataSourceTncDesc =>
+      'Envía y recibe por radio mediante un TNC Bluetooth o serie';
+
+  @override
+  String get dataSourceTxBadge => 'TX';
+
+  @override
+  String get dataSourceTxHint =>
+      'Puedes activar varios enlaces para recibir, pero **solo uno transmite** (el punto a la derecha). Enviar el mismo indicativo por dos enlaces duplicaría paquetes.';
+
+  @override
+  String dateDividerFull(int y, int m, int d, String w) {
+    return '$d/$m/$y $w';
   }
 
   @override
-  String get beaconDisabled => 'Desactivado';
+  String get dateToday => 'Hoy';
 
   @override
-  String get waitingForLocation => 'Esperando ubicación';
-
-  @override
-  String get imminent => 'En breve';
-
-  @override
-  String get connTapToConnect =>
-      'Sin conexión · Toca conectar para unirte a APRS-IS';
-
-  @override
-  String get connManuallyDisconnected =>
-      'Sin conexión · Desconectado manualmente';
-
-  @override
-  String connAutoReconnect(int seconds) {
-    return 'Conexión perdida · Reconectando en ${seconds}s…';
+  String dateWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'lun',
+      '2': 'mar',
+      '3': 'mié',
+      '4': 'jue',
+      '5': 'vie',
+      '6': 'sáb',
+      '7': 'dom',
+      'other': '—',
+    });
+    return '$_temp0';
   }
 
   @override
-  String connConnectingTarget(String target) {
-    return 'Conectando a $target…';
+  String get dateYesterday => 'Ayer';
+
+  @override
+  String get datumGcj => 'GCJ-02';
+
+  @override
+  String get datumWgs => 'WGS-84';
+
+  @override
+  String daysAgo(int count) {
+    return 'hace $count d';
   }
 
   @override
-  String connOnline(String call) {
-    return 'Conectado · $call en línea';
-  }
+  String get debugLabel => 'Depuración';
 
   @override
-  String connRetry(int seconds) {
-    return 'Error de conexión · Reintentando en ${seconds}s…';
-  }
+  String get defaultLabel => 'Predeterminado';
 
   @override
-  String connPositionSent(String call) {
-    return 'Conectado · Baliza de posición enviada ($call)';
-  }
-
-  @override
-  String get connDemoBeacon =>
-      'Sin conexión · Baliza de posición registrada (demo)';
-
-  @override
-  String get connPasscodeInvalid =>
-      'Conectado · Sin verificar (el Passcode puede ser incorrecto)';
-
-  @override
-  String get mapTypeAmap => 'AMap';
-
-  @override
-  String get mapTypeAmapSatellite => 'AMap satélite';
-
-  @override
-  String get mapTypeVector => 'Mapa vectorial';
-
-  @override
-  String get amapGroup => 'Nacional';
-
-  @override
-  String get domesticMaps => 'Mapas de China';
-
-  @override
-  String get internationalMaps => 'Mapas globales';
-
-  @override
-  String get metricUnits => 'Métrico (km/h, m)';
-
-  @override
-  String get coordDisplay => 'Visualización de coordenadas';
-
-  @override
-  String mapDefaultCoord(int level) {
-    return 'Pekín · Zoom $level';
-  }
-
-  @override
-  String secondsValue(int count) {
-    return '$count s';
-  }
-
-  @override
-  String get stationSettingsDetail => 'Indicativo, SSID, símbolo y comentario';
-
-  @override
-  String get stationIdentity => 'Identidad de la estación';
-
-  @override
-  String get aprsCallsignHint => 'Indicativo APRS, p. ej. BV2AAA';
-
-  @override
-  String get displayInfo => 'Información de estación';
-
-  @override
-  String get ssidSuffix => 'Sufijo SSID';
-
-  @override
-  String get chooseSsidSuffix => 'Elegir sufijo SSID';
-
-  @override
-  String get mySymbol => 'Mi símbolo';
-
-  @override
-  String get moreSymbols => 'Más símbolos';
-
-  @override
-  String get allAprsSymbols => 'Todos los símbolos APRS';
-
-  @override
-  String get beaconSettingsDetail => 'Fuente de GPS, baliza y ubicación manual';
-
-  @override
-  String get locationSource => 'Fuente de ubicación';
-
-  @override
-  String get useDeviceLocation => 'Usar la ubicación del dispositivo';
-
-  @override
-  String get manualCoordinates => 'Introducir coordenadas a mano';
-
-  @override
-  String get locationMode => 'Modo de ubicación';
-
-  @override
-  String get settingsLocModeSubtitle => 'Elegir método de ubicación';
-
-  @override
-  String get locModeGps => 'Solo GPS';
-
-  @override
-  String get locModeGpsDesc => 'Solo satélite; ahorra batería';
-
-  @override
-  String get locModeGpsNetwork => 'GPS + red';
-
-  @override
-  String get locModeGpsNetworkDesc => "La red es solo un respaldo (si el GPS se corta); las posiciones aproximadas no se guardan en la ruta";
-
-  @override
-  String get locModeNetwork => "Solo red";
-
-  @override
-  String get locModeNetworkDesc =>
-      "Solo red móvil / Wi-Fi, precisión de cientos de metros; el más eficiente, para dispositivos sin GPS";
-
-  @override
-  String get locModeNetworkHint =>
-      "En modo solo red la posición viene solo de la red móvil / Wi-Fi: puede desviarse cientos de metros y **nunca** se guarda en la ruta ni el historial. No enviará balizas automáticamente salvo que actives «forzar reporte automático con posición aproximada».";
-
-  @override
-  String get beaconingSection => 'Balizamiento';
-
-  @override
-  String get beaconIntervalTip =>
-      'Intervalo de envío de la baliza de posición; mínimo 5 segundos';
-
-  @override
-  String get beaconNetInterval => 'Intervalo solo red (s)';
-
-  @override
-  String get beaconNetIntervalTip =>
-      'En modo solo red se usa un intervalo fijo; las posiciones de red móvil / Wi-Fi no tienen velocidad fiable, así que no se usa el balizamiento inteligente (velocidad / distancia / giro)';
-
-  @override
-  String get beaconContent => 'Contenido de la baliza';
-
-  @override
-  String get beaconContentDesc => 'Se envía con cada baliza de posición';
-
-  @override
-  String get beaconTripMileage => 'Distancia del viaje';
-
-  @override
-  String get beaconTotalMileage => 'Distancia total';
-
-  @override
-  String get iosFeatureUnsupported =>
-      'iOS no permite enlaces Bluetooth clásico / serie USB (solo accesorios MFi), así que esta función no se puede activar; usa APRS-IS por red.';
-
-  @override
-  String get phoneBattery => 'Batería del teléfono';
-
-  @override
-  String get locationStatus => 'Estado de la ubicación';
-
-  @override
-  String get relocate => 'Volver a ubicar';
-
-  @override
-  String get startGps => 'Iniciar GPS';
-
-  @override
-  String get trackingBeaconing =>
-      'La ubicación está activa y se siguen enviando balizas';
-
-  @override
-  String get manualLocation => 'Ubicación manual';
-
-  @override
-  String get latitudeHint => 'Latitud 39.9042';
-
-  @override
-  String get longitudeHint => 'Longitud 116.4074';
-
-  @override
-  String get invalidLatLng => 'Introduce una latitud y longitud válidas';
-
-  @override
-  String myLocationSetGrid(String grid) {
-    return 'Ubicación establecida · Cuadrícula $grid';
-  }
-
-  @override
-  String get applyCoordinates => 'Aplicar coordenadas';
-
-  @override
-  String get pickOnMap => 'Elegir en el mapa';
-
-  @override
-  String get manualLocationHelp =>
-      'Si la ubicación automática no está disponible, introduce coordenadas o elige un punto en el mapa para las balizas y el cálculo de distancias.';
-
-  @override
-  String get passcodeTip =>
-      'Passcode de acceso a APRS-IS; puedes generarlo en línea. Usa -1 para acceso sin verificar';
-
-  @override
-  String get websocketOptional => 'URL de WebSocket (opcional)';
-
-  @override
-  String get configChanged => 'Configuración modificada';
-
-  @override
-  String get reconnectToApply => 'Reconecta para aplicarlo';
-
-  @override
-  String get reconnected => 'Reconectado';
-
-  @override
-  String get connectFailedCheckConfig =>
-      'Error de conexión; comprueba la configuración';
-
-  @override
-  String get rangeFilterDesc =>
-      'Recibir solo paquetes de estaciones dentro del rango configurado';
-
-  @override
-  String get filterCenterFollows =>
-      'Seguir mi ubicación como centro del filtro';
-
-  @override
-  String get radiusTip =>
-      'Radio de recepción (km); toca «Guardar y aplicar filtro» para aplicar';
-
-  @override
-  String get maxStationsTip =>
-      'Máximo de estaciones en memoria (ilimitado por defecto; puedes aumentarlo)';
-
-  @override
-  String filterSavedRadius(String saved, int radius) {
-    return '$saved · Radio $radius km';
-  }
-
-  @override
-  String get receiveFilterDesc2 =>
-      'Además del filtro de rango, recibe estaciones por país/región o indicativo exacto';
-
-  @override
-  String get receiveCountryDesc =>
-      'Recibe todas las estaciones de un país/región por prefijo de indicativo';
-
-  @override
-  String get noCountriesSelected => 'Sin países ni regiones seleccionados';
-
-  @override
-  String get receiveOthersDesc =>
-      'Recibir estaciones especiales cuyo indicativo no coincide con los países elegidos';
-
-  @override
-  String get addCountry => 'Añadir país/región';
-
-  @override
-  String get chatSettingsDetail => 'Mensajes, contactos y datos de chat';
-
-  @override
-  String get messageCountLabel => 'Mensajes';
-
-  @override
-  String get manageContacts => 'Gestionar contactos';
+  String get delete => 'Eliminar';
 
   @override
   String deleteAllChatsConfirm(int count) {
@@ -4637,22 +1747,17 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get chatCleared => 'Historial de chat borrado';
+  String get deleteAllPackages => 'Eliminar todos los paquetes';
 
   @override
-  String get noContacts => 'Sin contactos';
-
-  @override
-  String get addOrFavoriteContact =>
-      'Toca «Añadir» arriba o marca una estación como favorita en el mapa';
-
-  @override
-  String movingWithSpeed(String speed) {
-    return 'En movimiento · $speed';
+  String deleteAllPackagesConfirm(Object count, Object size) {
+    return 'Se eliminarán $count paquetes descargados ($size). ¿Continuar?';
   }
 
   @override
-  String get callsignMin3 => 'El indicativo debe tener al menos 3 caracteres';
+  String deleteAllPackagesWithCount(Object count) {
+    return 'Eliminar todos los paquetes ($count)';
+  }
 
   @override
   String get deleteContact => 'Eliminar contacto';
@@ -4663,306 +1768,372 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String contactDeleted(String call) {
-    return '$call eliminado';
+  String get deleteConversation => 'Eliminar chat';
+
+  @override
+  String deleteConversationConfirm(Object call) {
+    return '¿Eliminar el historial de chat con $call? La conversación también se quitará de la lista. Esta acción no se puede deshacer.';
   }
 
   @override
-  String get dataMaintenance => 'Mantenimiento de datos';
+  String get deleteGroup => 'Eliminar grupo';
 
   @override
-  String get clearAllData => 'Borrar todos los datos';
-
-  @override
-  String get clearAllDataIntro =>
-      'Esta acción eliminará todos los datos locales siguientes:';
-
-  @override
-  String get chatHistory => 'Historial de chat';
-
-  @override
-  String get logs => 'Registros';
-
-  @override
-  String get irreversibleKeepSettings =>
-      'Esta acción no se puede deshacer. La configuración de conexión y el indicativo se conservarán.';
-
-  @override
-  String get confirmClearAllData => 'Borrar todos los datos';
-
-  @override
-  String get clearAllDataConfirm =>
-      '¿Borrar todos los datos locales? Esta acción no se puede deshacer.';
-
-  @override
-  String get allDataCleared => 'Todos los datos locales borrados';
-
-  @override
-  String get confirmClear => 'Borrar';
-
-  @override
-  String get allowLandscape => 'Permitir orientación horizontal';
-
-  @override
-  String get packetParseTest => 'Prueba del analizador de paquetes';
-
-  @override
-  String get packetParseHint =>
-      'Pega un paquete APRS sin procesar, p. ej.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Estación de prueba';
-
-  @override
-  String get parseAndApply => 'Analizar y aplicar';
-
-  @override
-  String get oobePasscodeMissing => 'Passcode sin introducir';
-
-  @override
-  String get oobePasscodeMissingDesc =>
-      'El Passcode es el código de verificación de APRS-IS para tu indicativo.\n\nEl valor predeterminado -1 permite una conexión sin verificar, pero los mensajes y el chat grupal no funcionarán correctamente.\n\nConsulta el Passcode correcto para tu indicativo en https://aprs.cool/AprsPG.';
-
-  @override
-  String get continueAnyway => 'Continuar igualmente';
-
-  @override
-  String get fillPasscode => 'Introducirlo';
-
-  @override
-  String get oobeMapFeatureDesc =>
-      'Teselas de mapa en línea con estaciones APRS y rastros cercanos';
-
-  @override
-  String get oobeGpsFeatureDesc =>
-      'Obtén tu ubicación y envía balizas de posición a APRS-IS';
-
-  @override
-  String get oobeMsgFeatureDesc =>
-      'Intercambia mensajes con estaciones, con respuesta automática';
-
-  @override
-  String get oobeIsFeatureDesc =>
-      'Conéctate a un servidor público y recibe datos de estaciones de todo el mundo';
-
-  @override
-  String get oobeBackgroundTip =>
-      'Consejo: permite que APRSlocus se ejecute en segundo plano, desactiva la optimización de batería y permite el inicio automático para mantener el balizamiento activo.';
-
-  @override
-  String get oobeNextSteps =>
-      'Completa la configuración básica en los siguientes pasos. Podrás cambiarla luego en Ajustes.';
-
-  @override
-  String get ssidDescShort =>
-      'El SSID es el sufijo numérico del indicativo, como -9 en BG7ABC-9';
-
-  @override
-  String get ssidOptional => 'Sufijo SSID (opcional)';
-
-  @override
-  String get noSsid => 'Sin sufijo (indicativo base)';
-
-  @override
-  String fullCallsign(String call) {
-    return 'Indicativo completo: $call';
+  String deleteGroupConfirm(String name) {
+    return '¿Eliminar «$name»? Esta acción no se puede deshacer.';
   }
 
   @override
-  String get passcodeImportant => 'El Passcode es importante';
+  String get deletePackage => 'Eliminar paquete';
 
   @override
-  String get passcodeImportantDesc =>
-      'Un Passcode correcto es necesario para recibir mensajes de grupo y enviar confirmaciones. Con -1 puedes conectarte, pero la mensajería no funcionará correctamente.';
-
-  @override
-  String get lookupPasscode => 'Consulta tu Passcode →';
-
-  @override
-  String get passcodeLookupHint => 'Introduce tu indicativo, p. ej. BV2AAA';
-
-  @override
-  String sendToGroupHint(String group) {
-    return 'Enviar a $group…';
+  String deletePackageConfirm(Object file) {
+    return '¿Eliminar el paquete $file?';
   }
 
   @override
-  String sendToCallHint(String call) {
-    return 'Enviar a $call…';
+  String deleteSelected(int n) {
+    return 'Eliminar ($n)';
   }
 
   @override
-  String get selectMessageReply => 'Toca un mensaje para responder…';
-
-  @override
-  String get broadcastShort => 'Masivo';
-
-  @override
-  String memberCount(int count) {
-    return '$count miembros';
+  String deleteSelectedConfirm(int n) {
+    return '¿Eliminar los $n chats seleccionados? Esta acción no se puede deshacer.';
   }
 
   @override
-  String memberCountTap(int count) {
-    return '$count miembros · Toca para ver';
+  String get deleteStation => 'Eliminar estación';
+
+  @override
+  String deleteStationConfirm(String name) {
+    return '¿Eliminar la estación $name? Se quitará de la lista; volverá a aparecer si se reciben de nuevo sus paquetes.';
   }
 
   @override
-  String get stepRecipients => 'Destinatarios';
+  String get deleteThisTier => 'Eliminar este nivel';
 
   @override
-  String get stepContent => 'Mensaje';
+  String get deleteTrackGroup => 'Eliminar grupo de seguimiento';
 
   @override
-  String get selectAllOnline => 'Seleccionar todos en línea';
-
-  @override
-  String get clearSelection => 'Borrar selección';
-
-  @override
-  String get onlineOnly => 'Solo en línea';
-
-  @override
-  String get noRecipients => 'Sin destinatarios seleccionados';
-
-  @override
-  String selectedRecipients(int count) {
-    return '$count seleccionados';
+  String deleteTrackGroupConfirm(Object name) {
+    return '¿Eliminar el grupo de seguimiento «$name»?';
   }
 
   @override
-  String sendRecipientsList(int count, String calls) {
-    return 'Se enviará a $count: $calls';
+  String get demo => 'Demo';
+
+  @override
+  String get deselectAll => 'Deseleccionar todo';
+
+  @override
+  String get devDesc => 'Herramientas de depuración';
+
+  @override
+  String get deviceCat => 'Dispositivo';
+
+  @override
+  String get deviceCatDesc => 'Equipos de radio · próximamente';
+
+  @override
+  String get deviceClass => 'Clase de dispositivo';
+
+  @override
+  String get deviceConflictDesc =>
+      'Cuando TNC y PKWDWPL apuntan al mismo dispositivo, los datos recibidos se reparten entre ambos — el síntoma es «transmite bien pero no recibe». Asigne otro dispositivo a uno de ellos. TNC tiene prioridad: PKWDWPL se negará a conectar.';
+
+  @override
+  String get deviceConflictTitle =>
+      'Dos enlaces están vinculados al mismo dispositivo';
+
+  @override
+  String get deviceCurrentLink => 'Enlace actual';
+
+  @override
+  String get deviceCurrentLinkDesc =>
+      'Resumen de solo lectura: edita los parámetros en las subpáginas';
+
+  @override
+  String get deviceEntries => 'Dispositivos y parámetros';
+
+  @override
+  String get deviceEntriesDesc =>
+      'Una subpágina por enlace, cada una con sus ajustes';
+
+  @override
+  String get deviceFilter => 'Filtro de dispositivos';
+
+  @override
+  String get deviceInUseByPkwdwpl =>
+      'En uso por PKWDWPL — no se puede vincular de nuevo';
+
+  @override
+  String get deviceInUseByTnc =>
+      'En uso por TNC — no se puede vincular de nuevo';
+
+  @override
+  String get deviceInfoTitle => 'Identificación del dispositivo';
+
+  @override
+  String get deviceLogDesc =>
+      'Muestra el registro de la fuente actual (TNC/audio cambia solo)';
+
+  @override
+  String get deviceLogTitle => 'Registro del enlace';
+
+  @override
+  String get deviceModel => 'Modelo';
+
+  @override
+  String get deviceOverviewSubtitle =>
+      'Fuente de datos, estado del enlace y autodiagnóstico';
+
+  @override
+  String get deviceOverviewTitle => 'Dispositivos';
+
+  @override
+  String get deviceSettings2 => 'Ajustes del dispositivo';
+
+  @override
+  String get deviceSettingsSubtitle => 'Conecta tu equipo de radio';
+
+  @override
+  String get deviceToCall => 'Indicativo de destino';
+
+  @override
+  String get diagAfskLevelFail =>
+      'Nivel de onda demasiado bajo (casi silencio)';
+
+  @override
+  String get diagAfskLoopback => 'Bucle de módem AFSK';
+
+  @override
+  String diagAfskLoopbackFail(int n) {
+    return '$n trama(s) decodificada(s): se esperaba 1';
   }
 
   @override
-  String get stepName => 'Nombre';
-
-  @override
-  String get stepMembers => 'Miembros';
-
-  @override
-  String get groupChatExplain =>
-      'Los chats grupales emiten a un indicativo de grupo, de modo que todos los miembros los reciben. El indicativo de grupo se genera automáticamente y se envían invitaciones a los miembros que elijas.';
-
-  @override
-  String get noMembersSelected => 'Sin miembros seleccionados';
-
-  @override
-  String get memberBlocked => 'Bloqueado';
-
-  @override
-  String get memberJoined => 'Unido';
-
-  @override
-  String get memberPending => 'Pendiente';
-
-  @override
-  String get memberDeclined => 'Rechazado';
-
-  @override
-  String get memberLeft => 'Salió';
-
-  @override
-  String get memberTimeout => 'Tiempo agotado';
-
-  @override
-  String get unblock => 'Desbloquear';
-
-  @override
-  String get block => 'Bloquear';
-
-  @override
-  String get groupOwner => 'Propietario';
-
-  @override
-  String systemMemberJoined(String call) {
-    return '$call se ha unido al grupo';
+  String diagAfskLoopbackOk(int samples, int rate) {
+    return 'Modular → demodular idéntico ($samples muestras @${rate}Hz)';
   }
 
   @override
-  String systemMemberLeft(String call) {
-    return '$call ha salido del grupo';
+  String get diagAudioPlatformWarn =>
+      'Sin audio en tiempo real: el modo WAV sigue disponible';
+
+  @override
+  String get diagAudioSection => 'Audio (AFSK 1200)';
+
+  @override
+  String get diagAx25 => 'Tramado AX.25';
+
+  @override
+  String get diagAx25Fail =>
+      'Fallo de codificación AX.25 (paquete mal formado)';
+
+  @override
+  String diagAx25Mismatch(String got) {
+    return 'El ida y vuelta AX.25 no coincide: $got';
   }
 
   @override
-  String systemInviteDeclined(String call) {
-    return '$call ha rechazado la invitación';
+  String get diagCapture => 'Captura de audio';
+
+  @override
+  String diagCaptureFailed(String err) {
+    return 'No se pudo iniciar la captura: $err';
   }
 
   @override
-  String get copyAllLogs => 'Copiar todos los registros';
+  String get diagCaptureNoData =>
+      'No se recibieron datos de audio: revisa el dispositivo de entrada y los permisos';
 
   @override
-  String copiedLogs(int count) {
-    return '$count entradas de registro copiadas';
+  String diagCaptureOk(int bytes, int rate) {
+    return 'Recibidos $bytes bytes @${rate}Hz';
   }
 
   @override
-  String get clearLogs => 'Borrar registros';
-
-  @override
-  String get noLogs => 'Aún no hay registros';
-
-  @override
-  String get supportProject => 'Tu apoyo ayuda al proyecto a llegar más lejos';
-
-  @override
-  String get continuousIteration => 'Mejora continua';
-
-  @override
-  String get continuousIterationDesc =>
-      'Mejorando continuamente las funciones y la experiencia de APRSlocus';
-
-  @override
-  String get sponsorSupport => 'Apoyo de patrocinadores';
-
-  @override
-  String get sponsorMethods => 'Formas de apoyar';
-
-  @override
-  String qrCodeTitle(String title) {
-    return 'Código QR de $title';
+  String diagFailed(int n) {
+    return '$n fallidas';
   }
 
   @override
-  String get qrLoadFailed => 'No se pudo cargar la imagen del código QR';
+  String get diagFcs => 'Comprobación FCS';
 
   @override
-  String get qrSaveWechat =>
-      'Mantén pulsado para guardar · Escanea con WeChat para apoyar';
+  String get diagFcsFail =>
+      'La comprobación FCS es incorrecta (un cambio de un byte debe rechazarse)';
 
   @override
-  String get tapAnywhereClose => 'Toca en cualquier sitio para cerrar';
+  String get diagFileDecodeFail =>
+      'No se decodificó ningún paquete del archivo (¿no es una grabación AFSK 1200?)';
 
   @override
-  String vectorMapLoadFailed(String error) {
-    return 'Error al cargar el mapa vectorial\n$error';
+  String get diagFileIo => 'E/S de archivo WAV';
+
+  @override
+  String diagFileIoOk(int rate) {
+    return 'Escritura → lectura → decodificación idénticas @${rate}Hz';
   }
 
   @override
-  String get loadingVectorMap => 'Cargando mapa vectorial…';
+  String get diagFileReadFail => 'Fallo de lectura del archivo';
 
   @override
-  String get updateChannel => 'Canal de actualización';
-
-  @override
-  String serverReturned(int code) {
-    return 'El servidor devolvió $code';
+  String diagFileWriteFail(String err) {
+    return 'Fallo de escritura: $err';
   }
 
   @override
-  String get invalidResponseData => 'Formato de respuesta no válido';
+  String get diagHint =>
+      'Los bucles de protocolo funcionan sin radio: descarta el software y luego revisa dispositivos y cableado';
 
   @override
-  String get noVersionsFound => 'No se encontraron versiones';
+  String get diagKissEscape => 'Escape KISS';
 
   @override
-  String get noWindowsInstaller =>
-      'Esta versión no tiene instalador para Windows';
+  String get diagKissEscapeFail =>
+      'Fallo al deshacer el escape KISS (problema de software: cambiar el dispositivo no ayuda)';
 
   @override
-  String get noApkInstaller => 'Esta versión no tiene APK';
+  String get diagNoRealtime => 'no en tiempo real';
 
   @override
-  String get connectingEllipsis => 'Conectando…';
+  String diagPassed(int n) {
+    return '$n correctas';
+  }
+
+  @override
+  String get diagPermission => 'Permiso de micrófono';
+
+  @override
+  String get diagPermissionOk => 'Concedido';
+
+  @override
+  String get diagPlatform => 'Compatibilidad de plataforma';
+
+  @override
+  String diagPlatformOk(String name) {
+    return 'Disponible · motor $name';
+  }
+
+  @override
+  String get diagRun => 'Ejecutar prueba';
+
+  @override
+  String get diagRunning => 'Probando…';
+
+  @override
+  String get diagSkipped => 'Omitido (plataforma no compatible)';
+
+  @override
+  String get diagSpeaker => 'Salida de altavoz';
+
+  @override
+  String diagSpeakerFail(String err) {
+    return 'Fallo de reproducción: $err';
+  }
+
+  @override
+  String get diagSpeakerOk => 'Tono de prueba reproducido';
+
+  @override
+  String get diagSubtitle =>
+      'Comprueba protocolo, permisos y dispositivos capa por capa';
+
+  @override
+  String get diagTitle => 'Autodiagnóstico del enlace';
+
+  @override
+  String get diagTncLoopback => 'Bucle de protocolo TNC';
+
+  @override
+  String diagTncLoopbackOk(int len) {
+    return 'Ida y vuelta KISS/AX.25 idéntico ($len bytes)';
+  }
+
+  @override
+  String get diagTncPlatformNo => 'Este sistema no admite enlaces TNC';
+
+  @override
+  String get diagTncSection => 'TNC (KISS / AX.25)';
+
+  @override
+  String get digipeaterTapHint =>
+      'Toca un digipeater para abrir los detalles de su estación';
+
+  @override
+  String get disableClustering => 'Desactivar agrupación';
+
+  @override
+  String get disconnect => 'Desconectar';
+
+  @override
+  String get disconnected => 'Sin conexión';
+
+  @override
+  String get displayCat => 'Pantalla';
+
+  @override
+  String get displayCatDesc => 'Coordenadas · Tema';
+
+  @override
+  String get displayInfo => 'Información de estación';
+
+  @override
+  String get displaySettings => 'Ajustes de pantalla';
+
+  @override
+  String get displaySettings2 => 'Ajustes de pantalla';
+
+  @override
+  String distKm(Object d) {
+    return '$d km';
+  }
+
+  @override
+  String get distance => 'Distancia';
+
+  @override
+  String distanceBearing(String distance, String bearing) {
+    return 'A $distance km · Azimut $bearing°';
+  }
+
+  @override
+  String get domesticMaps => 'Mapas de China';
+
+  @override
+  String get donateAlipay => 'Donación por Alipay';
+
+  @override
+  String get donateAlipayDesc =>
+      'Contacta con el autor para obtener el código QR de donación';
+
+  @override
+  String get donateWechat => 'Donación por WeChat';
+
+  @override
+  String get donateWechatDesc =>
+      'Mantén pulsado para guardar el código QR · toca para ampliarlo';
+
+  @override
+  String get done => 'Hecho';
+
+  @override
+  String get download => 'Descargar';
+
+  @override
+  String get downloadAgain => 'Volver a descargar el paquete';
+
+  @override
+  String get downloadAndInstall => 'Descargar e instalar';
+
+  @override
+  String get downloadComplete => 'Descarga completada';
+
+  @override
+  String get downloadFailed => 'Error de descarga';
 
   @override
   String downloadHttpError(int code) {
@@ -4970,490 +2141,652 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get downloadInstaller => 'Descargar instalador';
+
+  @override
+  String get downloadNow => 'Descargar ahora';
+
+  @override
+  String downloadProgress(Object p) {
+    return 'Descargando $p%';
+  }
+
+  @override
+  String get downloadReady => 'Descargar paquete de instalación';
+
+  @override
+  String get downloadUpdate => 'Descargar actualización';
+
+  @override
+  String get downloadUpdateTip => 'Descargar la actualización y abrirla';
+
+  @override
   String downloadedBytes(String received, String total) {
     return 'Descargado $received / $total';
   }
 
   @override
-  String androidInstallHelp(String path) {
-    return 'Paquete descargado en:\n$path\n\nToca «Instalar» para abrir el instalador del sistema.\n\nSi Android bloquea aplicaciones desconocidas, permite que APRSlocus instale aplicaciones desconocidas en los ajustes del sistema.';
-  }
+  String get downloading => 'Descargando';
 
   @override
-  String windowsInstallHelp(String path) {
-    return 'Instalador guardado en:\n$path\n\nToca «Ejecutar ahora» para abrirlo o abre la carpeta que lo contiene.';
-  }
-
-  @override
-  String get openContainingFolder => 'Abrir carpeta contenedora';
-
-  @override
-  String get runNow => 'Ejecutar ahora';
-
-  @override
-  String get cannotRunInstaller =>
-      'No se pudo iniciar el instalador; ábrelo manualmente desde la carpeta contenedora';
-
-  @override
-  String get cannotLaunchInstaller =>
-      'No se pudo lanzar el instalador; abre el paquete manualmente';
-
-  @override
-  String get openPackageManually => 'Abre el paquete en un gestor de archivos';
-
-  @override
-  String cannotOpenPackage(String error) {
-    return 'No se pudo abrir el paquete: $error';
-  }
-
-  @override
-  String get installPermissionTitle =>
-      'Permitir la instalación de aplicaciones';
-
-  @override
-  String get installPermissionDesc =>
-      'APRSlocus no tiene permiso para instalar aplicaciones.\n\nToca «Ajustes», permite que esta aplicación instale aplicaciones desconocidas y vuelve a intentarlo.';
-
-  @override
-  String get recheck => 'Comprobar de nuevo';
-
-  @override
-  String newVersionTitle(String version) {
-    return 'Nueva versión v$version disponible';
-  }
-
-  @override
-  String repoLatestTitle(String version) {
-    return 'Última versión del repositorio v$version';
-  }
-
-  @override
-  String get checkingLatest => 'Comprobando la última versión…';
-
-  @override
-  String get connectingGitCode => 'Conectando al servidor de GitCode';
-
-  @override
-  String get noReleaseNotes => 'Sin notas de la versión';
-
-  @override
-  String noInstallerHistoryHint(String platform) {
-    return 'No hay paquete $platform para esta versión. Elige una versión descargable en el historial.';
-  }
-
-  @override
-  String get latestVersionLabel => 'Última versión';
-
-  @override
-  String packageSize(String platform, String size) {
-    return 'Tamaño del paquete $platform: $size';
-  }
-
-  @override
-  String get updateContents => 'Novedades';
-
-  @override
-  String get redownload => 'Volver a descargar';
-
-  @override
-  String get downloadInstaller => 'Descargar instalador';
-
-  @override
-  String get downloadAndInstall => 'Descargar e instalar';
-
-  @override
-  String get localPackageExists => 'Ya hay un paquete descargado';
-
-  @override
-  String get packageDeleted => 'Paquete eliminado';
-
-  @override
-  String versionCount(int count) {
-    return '$count versiones';
-  }
-
-  @override
-  String get noInstaller => 'Sin paquete';
-
-  @override
-  String get download => 'Descargar';
-
-  @override
-  String get viewChangelog => 'Ver registro de cambios';
-
-  @override
-  String versionChangelog(String version) {
-    return 'Registro de cambios de v$version';
-  }
-
-  @override
-  String get gotIt => 'Entendido';
-
-  @override
-  String get leaveAction => 'Salir';
-
-  @override
-  String localRepoVersion(Object latest, Object local) {
-    return 'Local v$local · Última en el repositorio v$latest';
-  }
-
-  @override
-  String get unverified => 'Sin verificar';
-
-  @override
-  String get passcodeUnverifiedHint => '-1 (sin verificar)';
-
-  @override
-  String get passcodeMessageWarning =>
-      'Passcode de acceso a APRS-IS. Con -1 no se pueden enviar ni recibir mensajes con normalidad.';
-
-  @override
-  String get settingsStationIdentitySubtitle => 'Indicativo, SSID y comentario';
-
-  @override
-  String get settingsDisplayInfoSubtitle => 'Mi símbolo y posición actual';
-
-  @override
-  String get settingsLocSourceSubtitle => 'Elegir fuente de posición';
-
-  @override
-  String get settingsBeaconSubtitle => 'Intervalo de envío y contenido';
-
-  @override
-  String get settingsManualLocSubtitle =>
-      'Entrada manual o punto en el mapa cuando no hay posición';
-
-  @override
-  String get settingsManualLocHint =>
-      'Cuando la ubicación automática no esté disponible, introduce coordenadas o elige un punto en el mapa para las balizas y el cálculo de distancias.';
-
-  @override
-  String get settingsConnStatusSubtitle => 'Estado e información de conexión';
-
-  @override
-  String get settingsServerSubtitle => 'Servidor APRS-IS y passcode';
-
-  @override
-  String get settingsFilterSubtitle => 'Centro del filtro y radio';
-
-  @override
-  String get settingsReceivePrefSubtitle =>
-      'Recibir por país/región o indicativo';
-
-  @override
-  String get settingsGeneralSubtitle =>
-      'Tema, idioma y visualización de coordenadas';
-
-  @override
-  String get settingsMapSubtitle => 'Tipo de mapa y visualización';
-
-  @override
-  String get settingsChatStatsSubtitle =>
-      'Estadísticas de mensajes y contactos';
-
-  @override
-  String get settingsChatManageSubtitle => 'Contactos y datos de chat';
-
-  @override
-  String get settingsClearDataSubtitle => 'Eliminar registros locales';
-
-  @override
-  String get settingsLabSubtitle => 'Funciones experimentales';
-
-  @override
-  String get settingsDevSubtitle => 'Depuración y pruebas';
-
-  @override
-  String get settingsFilterHint =>
-      'Recibir solo paquetes de estaciones dentro del rango configurado';
-
-  @override
-  String get settingsReceivePrefHint =>
-      'Además del filtro de rango, recibe estaciones por grupo de país/región o indicativo exacto';
-
-  @override
-  String get settingsContribCodeOptimization => 'Optimización de código';
+  String get editTrackGroup => 'Editar grupo de seguimiento';
 
   @override
   String get eggBg2hcb => 'La vida es muy miau-miau~';
 
   @override
-  String get deviceInfoTitle => 'Identificación del dispositivo';
+  String get eggBg7lmw => 'Silencio absoluto...';
 
   @override
-  String get deviceToCall => 'Indicativo de destino';
+  String get eggBg7lzq => 'Oye, ¿qué haces?~';
 
   @override
-  String get deviceModel => 'Modelo';
+  String get eggBg7osl => 'Tienes mucho morro';
 
   @override
-  String get deviceClass => 'Clase de dispositivo';
+  String get eggBg7pgw => '¿En serio?';
 
   @override
-  String get deviceFilter => 'Filtro de dispositivos';
+  String get emergency => 'Emergencia';
 
   @override
-  String get lookupQrz => 'Indicativo en QRZ';
+  String get enableClustering => 'Activar agrupación';
 
   @override
-  String get lookupAprsFi => 'Posición en aprs.fi';
+  String get enterCallsign => 'Introduce tu indicativo';
 
   @override
-  String get aprsTv => 'APRS.tv';
+  String get enterMessage => 'Escribe un mensaje';
 
   @override
-  String get aprsTvInfo => 'Página de detalle';
+  String get enterValidCall => 'Introduce un indicativo válido';
 
   @override
-  String get aprsTvMap => 'Ver en el mapa';
+  String get errIntervalInt =>
+      'El intervalo debe ser un entero de al menos 5 s';
 
   @override
-  String get linkOpenFailed => 'No se pudo abrir el enlace';
+  String get errMinSpeedInt => 'La velocidad mínima debe ser un entero ≥ 1';
 
   @override
-  String get beaconAutoAskTitle =>
-      'Conectado: ¿informar de tu posición automáticamente?';
+  String get errTierDuplicate =>
+      'Ese nivel ya existe; los umbrales deben ser distintos';
 
   @override
-  String get beaconAutoAskDesc =>
-      '¿Quieres que APRSlocus envíe tu posición (baliza) automáticamente mientras esté conectado? Se recomienda para uso móvil. Elige no para solo recibir (podrás enviar una baliza manualmente cuando quieras).';
+  String get errorLabel => 'Error';
 
   @override
-  String get beaconAutoYes => 'Informar automáticamente';
-
-  @override
-  String get beaconAutoNo => 'No, solo recibir';
-
-  @override
-  String get beaconOffChip => 'Informe automático desactivado';
-
-  @override
-  String get quickTrackCreate => 'Nuevo grupo de seguimiento';
-
-  @override
-  String get quickTrackHint =>
-      'Elige estaciones recibidas o escribe indicativos; síguelos en el mapa directamente, sin necesidad de crear un chat grupal.';
-
-  @override
-  String get quickTrackName => 'Nombre (opcional)';
-
-  @override
-  String get quickTrackPickLabel => 'Elegir estaciones que seguir';
-
-  @override
-  String get quickTrackNoStations =>
-      'Aún no hay estaciones recibidas; escribe indicativos abajo (separados por comas)';
-
-  @override
-  String get quickTrackManualHint =>
-      'Escribe indicativos, p. ej. BG7PGW,BG7LMW';
-
-  @override
-  String get quickTrackStart => 'Empezar a seguir';
-
-  @override
-  String get quickTrackNeedMembers => 'Elige o escribe al menos un indicativo';
-
-  @override
-  String get weatherPanelTitle => 'Tiempo · Consejos para radioaficionados';
-
-  @override
-  String get weatherPanelSub => 'QWeather · Ubicación actual';
-
-  @override
-  String get weatherRefresh => 'Actualizar';
-
-  @override
-  String get weatherPowered => 'Datos de QWeather · APRSlocus';
-
-  @override
-  String get hfTitle => 'Propagación HF';
-
-  @override
-  String get hfSixMeter => 'Banda de 6m';
-
-  @override
-  String get hfEs => 'Es (E esporádica)';
-
-  @override
-  String get hfAurora => 'Aurora';
-
-  @override
-  String get hfF2 => 'Capa F2';
-
-  @override
-  String get hfBand => 'Banda';
-
-  @override
-  String get hfDay => 'Día';
-
-  @override
-  String get hfNight => 'Noche';
-
-  @override
-  String get hfNow => 'Ahora';
-
-  @override
-  String get hfSfi => 'Flujo solar';
-
-  @override
-  String get hfKp => 'Índice Kp';
-
-  @override
-  String get hfAIndex => 'Índice A';
-
-  @override
-  String get hfSunspots => 'Manchas solares';
-
-  @override
-  String get hfXray => 'Rayos X';
-
-  @override
-  String get hfSolarWind => 'Viento solar';
-
-  @override
-  String get hfGeomag => 'Geomag';
-
-  @override
-  String get hfNoise => 'Ruido';
-
-  @override
-  String get hfMuf => 'MUF';
-
-  @override
-  String get hfNoData => 'Aún no hay datos de HF: se cargan al conectarse';
-
-  @override
-  String get hfUnavailable =>
-      'El servicio de propagación HF no está disponible';
-
-  @override
-  String get hfQGood => 'Buena';
-
-  @override
-  String get hfQFair => 'Regular';
-
-  @override
-  String get hfQPoor => 'Mala';
-
-  @override
-  String get hfQClosed => 'Cerrada';
-
-  @override
-  String get hfPowered =>
-      'Datos de propagación de hamqsl.com (N0NBH) · promedio global, no medición local';
-
-  @override
-  String get hfTipStorm =>
-      'Tormenta geomagnética (Kp≥5): las rutas HF polares se atenúan mucho y el DX transpolar casi desaparece; pruebe rutas de menor latitud o VHF/UHF local';
-
-  @override
-  String get hfTipGeomagActive =>
-      'Campo geomagnético inquieto: las rutas HF de alta latitud son menos estables; dé más tiempo de llamada al DX';
-
-  @override
-  String get hfTipLowSfi =>
-      'Actividad solar baja (SFI<100): poca vida diurna en 15/12/10m; prefiera 40/30/20m';
-
-  @override
-  String get hfTipHighSfi =>
-      'Actividad solar alta (SFI≥150): 15/12/10m diurnas deberían abrir para DX de larga distancia';
-
-  @override
-  String get hfTipHighNoise =>
-      'Ruido de fondo alto: las señales débiles cuestan; reduzca el ancho de banda y la ganancia de RF, use modos estrechos si hace falta';
-
-  @override
-  String hfTipBandGood(String b) {
-    return '$b está abierta: prefiera esta banda para llamar';
+  String everyNSeconds(String sec) {
+    return 'Cada $sec s';
   }
 
   @override
-  String hfTipBandPoor(String b) {
-    return '$b está mala: pruebe otra banda o espere la línea gris de amanecer/atardecer';
+  String get export => 'Exportar';
+
+  @override
+  String get exportAdif => 'Exportar ADIF';
+
+  @override
+  String get exportAdifDesc =>
+      'Exporta conversaciones como un archivo de registro ADIF, importable en Log4OM, N3FJP y similares';
+
+  @override
+  String get favorite => 'Favorito';
+
+  @override
+  String get favoriteStations => 'Estaciones favoritas';
+
+  @override
+  String get favorites => 'Favoritos / Manuales';
+
+  @override
+  String get featureAutoConnect => 'Conexión automática';
+
+  @override
+  String get featureAutoConnectDesc =>
+      'Se conecta automáticamente a un servidor público y permanece en línea en segundo plano';
+
+  @override
+  String get featureBeacon => 'Balizamiento';
+
+  @override
+  String get featureBeaconDesc =>
+      'Contenido, frecuencia y símbolo personalizados con formato estándar APRS';
+
+  @override
+  String get featureFmo => 'Estaciones FMO';
+
+  @override
+  String get featureFmoDesc =>
+      'Detecta automáticamente datos FMO y muestra información estructurada';
+
+  @override
+  String get featureGps => 'Posicionamiento GPS';
+
+  @override
+  String get featureGpsDesc =>
+      'Ubicación nativa de Android, sin servicios de Google';
+
+  @override
+  String get featureLayerFilter => 'Filtro de capas';
+
+  @override
+  String get featureLayerFilterDesc =>
+      'Filtrar: móvil, fijo, digipeater, meteorología, FMO';
+
+  @override
+  String get featureLiveMap => 'Mapa en línea';
+
+  @override
+  String get featureLiveMapDesc =>
+      'Coordenadas GCJ-02 con desplazamiento y zoom fluidos';
+
+  @override
+  String get featureMsg => 'Mensajes';
+
+  @override
+  String get featureMsgDesc =>
+      'Vistas de flujo y de conversación, con texto Unicode y respuesta automática';
+
+  @override
+  String get features => 'Funciones';
+
+  @override
+  String get feedMode => 'Flujo';
+
+  @override
+  String get feedback => 'Comentarios';
+
+  @override
+  String get fillPasscode => 'Introducirlo';
+
+  @override
+  String get filter => 'Filtro de rango';
+
+  @override
+  String get filterCenterFollows =>
+      'Seguir mi ubicación como centro del filtro';
+
+  @override
+  String get filterRadius => 'Radio (km)';
+
+  @override
+  String get filterRule => 'Regla de filtro';
+
+  @override
+  String get filterSaved => 'Filtro guardado y aplicado';
+
+  @override
+  String filterSavedRadius(String saved, int radius) {
+    return '$saved · Radio $radius km';
   }
 
   @override
-  String get weatherCurLoc => 'Ubicación actual';
+  String get filters => 'Filtros';
 
   @override
-  String get weatherNoLoc =>
-      'Aún sin ubicación: activa el servicio de ubicación en «Mi estación» para ver el tiempo';
+  String get finish => 'Finalizar y conectar';
 
   @override
-  String get weatherUnavail => 'El servicio meteorológico no está disponible';
+  String get fitAll => 'Ver todo';
 
   @override
-  String get weatherDataFail =>
-      'No se pudieron obtener los datos meteorológicos';
+  String get fixed => 'Fijo';
 
   @override
-  String get weatherConnFail =>
-      'Error de conexión con el servicio meteorológico';
+  String get fmo => 'FMO';
 
   @override
-  String get weatherCloud => 'Nubosidad';
+  String get fmoInfo => 'Información FMO';
 
   @override
-  String get weatherDew => 'Punto de rocío';
+  String get followMe => 'Seguirme';
 
   @override
-  String get weatherHumidity => 'Humedad';
+  String get forwardingPath => 'Ruta';
 
   @override
-  String get weatherWindDir => 'Dir. del viento';
-
-  @override
-  String get weatherWindScale => 'Fuerza';
-
-  @override
-  String get weatherWindSpeed => 'Vel. del viento';
-
-  @override
-  String get weatherPressure => 'Presión';
-
-  @override
-  String get weatherVis => 'Visibilidad';
-
-  @override
-  String get weatherPrecip => 'Precipitación';
-
-  @override
-  String weatherFeels(String v) {
-    return 'Sensación $v°';
+  String foundStations(Object count, Object q) {
+    return '$count estaciones coinciden con «$q»';
   }
 
   @override
-  String weatherObserved(String t) {
-    return 'Observado $t';
+  String fullCallsign(String call) {
+    return 'Indicativo completo: $call';
   }
 
   @override
-  String get hamTitle => 'Consejos para radioaficionados';
+  String get garminAutoFilled => 'Enlace rellenado automáticamente';
 
   @override
-  String get hamNoData =>
-      'Cuando se cargue el tiempo, aparecerán consejos de seguridad para instalar antenas, operar y protegerse de los rayos';
+  String get garminBadUrl =>
+      'El enlace no es válido. Pega la URL completa (con /session/…/token/…)';
 
   @override
-  String get hamStorm1 =>
-      'Tormenta eléctrica: ¡NO instales ni uses antenas al aire libre! Desconecta las líneas de alimentación para evitar daños por sobretensión';
+  String get garminCardSubtitle =>
+      'Trae la actividad de tu reloj Garmin y balízala';
 
   @override
-  String get hamStorm2 =>
-      'Si ya está instalada, retírala cuanto antes; pasa a escuchar repetidores y HF en interior y mantén el equipo seco';
+  String get garminCardTitle => 'Garmin LiveTrack';
 
   @override
-  String get hamRain =>
-      'Precipitación: lleva cubiertas o cajas estancas, sella los conectores con cinta o termorretráctil y evita que se acumule agua en las líneas';
+  String garminError(Object error) {
+    return 'Fallo al obtener: $error';
+  }
+
+  @override
+  String get garminHowTo =>
+      'Cómo obtener el enlace: en la app Garmin Connect abre la actividad → Compartir → elige \"APRSlocus\" (la app registra un destino del sistema) y el enlace llega aquí.';
+
+  @override
+  String get garminLinkOk => 'Enlace válido';
+
+  @override
+  String get garminNoPoints =>
+      'Aún no hay puntos: puede que la actividad acabe de empezar o el enlace haya caducado.';
+
+  @override
+  String get garminNotStarted => 'Sin seguimiento';
+
+  @override
+  String get garminOpen => 'Abrir ajustes';
+
+  @override
+  String get garminPaste => 'Pegar del portapapeles';
+
+  @override
+  String get garminRunning => 'Siguiendo';
+
+  @override
+  String get garminShareNoLink =>
+      'No se encontró ningún enlace de Garmin LiveTrack';
+
+  @override
+  String get garminSharedToast => 'Enlace de Garmin recibido';
+
+  @override
+  String get garminStart => 'Iniciar seguimiento';
+
+  @override
+  String garminStats(Object n, Object t) {
+    return '$n puntos reenviados · última $t';
+  }
+
+  @override
+  String get garminStop => 'Detener seguimiento';
+
+  @override
+  String get garminUrlHint => 'livetrack.garmin.com/session/…/token/…';
+
+  @override
+  String get garminUrlLabel => 'Enlace compartido';
+
+  @override
+  String get garminWebUnsupported =>
+      'No disponible en la versión web (CORS del navegador); usa la de Android o Windows';
+
+  @override
+  String get gcj02 => 'GCJ-02';
+
+  @override
+  String get getLocation => 'Obtener ubicación';
+
+  @override
+  String get goSettings => 'Ajustes';
+
+  @override
+  String get gotIt => 'Entendido';
+
+  @override
+  String get gpsLocating => 'Obteniendo ubicación GPS…';
+
+  @override
+  String get gpsStatus => 'Estado del GPS';
+
+  @override
+  String get greetAfternoon => 'Buenas tardes, ';
+
+  @override
+  String get greetEvening => 'Buenas noches, ';
+
+  @override
+  String get greetMorning => 'Buenos días, ';
+
+  @override
+  String get greetNight => 'Hola, ';
+
+  @override
+  String get greetNoon => 'Buen mediodía, ';
+
+  @override
+  String get grid => 'Cuadrícula';
+
+  @override
+  String get gridFormat => 'Formato de cuadrícula';
+
+  @override
+  String gridValue(String grid) {
+    return 'Cuadrícula $grid';
+  }
+
+  @override
+  String groupBubble(String name) {
+    return 'Grupo · $name';
+  }
+
+  @override
+  String groupCallsignLine(String call) {
+    return 'Indicativo del grupo: $call';
+  }
+
+  @override
+  String groupCallsignValue(String call) {
+    return 'Indicativo del grupo: $call';
+  }
+
+  @override
+  String get groupChat => 'Chat grupal';
+
+  @override
+  String get groupChatExplain =>
+      'Los chats grupales emiten a un indicativo de grupo, de modo que todos los miembros los reciben. El indicativo de grupo se genera automáticamente y se envían invitaciones a los miembros que elijas.';
+
+  @override
+  String get groupChatLabel => 'Chats grupales';
+
+  @override
+  String get groupChatShort => 'Chat';
+
+  @override
+  String groupChatTitle(Object name) {
+    return 'Grupo · $name';
+  }
+
+  @override
+  String groupInviteAccepted(String name) {
+    return 'Te has unido a $name';
+  }
+
+  @override
+  String groupInviteFrom(String from) {
+    return '$from te ha invitado a un chat grupal';
+  }
+
+  @override
+  String groupInviteRejected(String name) {
+    return 'Has rechazado la invitación a $name';
+  }
+
+  @override
+  String get groupInviteTitle => 'Invitación a chat grupal';
+
+  @override
+  String get groupNameHint => 'Introduce el nombre del grupo';
+
+  @override
+  String groupNameValue(String name) {
+    return 'Grupo: $name';
+  }
+
+  @override
+  String get groupNotFound => 'Chat grupal no encontrado';
+
+  @override
+  String get groupOwner => 'Propietario';
+
+  @override
+  String get groupShortLabel => 'Grupo';
+
+  @override
+  String get groupTracking => 'Seguimiento por grupos';
+
+  @override
+  String get groupTrackingHint =>
+      'Agrupa los indicativos que te interesan y síguelos en un mapa grande (caravana / amigos). Compatible con horizontal.';
+
+  @override
+  String grpInviteBody(String from, String name) {
+    return '$from te invitó a «$name»';
+  }
+
+  @override
+  String grpInviteSent(int n) {
+    return 'Invitación enviada a $n miembro(s)';
+  }
+
+  @override
+  String get grpInviteTitle => 'Invitación a grupo';
+
+  @override
+  String get grpNameInvalid =>
+      'El nombre del grupo no puede estar vacío ni contener dos puntos o saltos de línea';
+
+  @override
+  String grpNameTooLong(int max) {
+    return 'El nombre del grupo se limita a $max caracteres (más largo hace que la invitación supere el límite de APRS)';
+  }
+
+  @override
+  String get grpSelfPending => 'Esperando al propietario';
+
+  @override
+  String grpSysDeclined(String call) {
+    return '$call rechazó la invitación';
+  }
+
+  @override
+  String grpSysJoinReq(String call) {
+    return '$call pidió unirse';
+  }
+
+  @override
+  String grpSysJoined(String call) {
+    return '$call se unió al grupo';
+  }
+
+  @override
+  String grpSysLeft(String call) {
+    return '$call salió del grupo';
+  }
+
+  @override
+  String get guideAudioBody =>
+      'Envía y recibe tramas AFSK por la salida de audio: elige el dispositivo, ajusta volumen y ganancia y usa el tono de prueba antes de conectar.';
+
+  @override
+  String get guideAudioTitle => 'TNC por tarjeta de sonido';
+
+  @override
+  String get guideBackupBody =>
+      'Exporta un archivo de ajustes y restáuralo con un toque en otro dispositivo. Las teselas y la caché de traducción no se incluyen.';
+
+  @override
+  String get guideBackupTitle => 'Copia y restauración';
+
+  @override
+  String get guideDeviceBody =>
+      'Elige de dónde vienen los datos (APRS-IS / TNC / tarjeta de sonido) y qué enlace transmite. Empareja el TNC Bluetooth en su subpágina.';
+
+  @override
+  String get guideDeviceTitle => 'Dispositivos y fuentes';
+
+  @override
+  String get guideExportAdifBody =>
+      'Guarda las estaciones recibidas en un archivo ADIF para tu programa de log, con rango de fechas y modo opcionales.';
+
+  @override
+  String get guideExportAdifTitle => 'Exportar ADIF';
+
+  @override
+  String get guideGotIt => 'Entendido';
+
+  @override
+  String get guideHomeBody =>
+      'Toca una estación para ver su ruta y sus datos; el botón inferior envía tu posición (conecta antes).';
+
+  @override
+  String get guideHomeTitle => 'Inicio · mapa y estaciones';
+
+  @override
+  String get guideImmersiveBody =>
+      'Mapa a pantalla completa: pellizca para ampliar, arrastra para mover, «seguirme» abajo a la izquierda, volver arriba a la izquierda.';
+
+  @override
+  String get guideImmersiveTitle => 'Mapa inmersivo';
+
+  @override
+  String get guideLogBody =>
+      'Aquí se registran los paquetes y los eventos del enlace: es lo primero que hay que mirar si algo falla. Copia todo desde arriba a la derecha.';
+
+  @override
+  String get guideLogTitle => 'Registro del sistema';
+
+  @override
+  String get guideMessagesBody =>
+      'Escribe un indicativo para chatear; el menú superior derecho crea grupos y envía boletines. ¿Sin respuestas? Comprueba que estás conectado.';
+
+  @override
+  String get guideMessagesTitle => 'Mensajes';
+
+  @override
+  String get guideMoreInSettings =>
+      'Puedes volver a verla en Ajustes → Ver otra vez las guías de funciones';
+
+  @override
+  String get guideOfflineMapBody =>
+      'Selecciona una zona y descarga sus teselas para ver el mapa sin red. Puedes pausar y reanudar.';
+
+  @override
+  String get guideOfflineMapTitle => 'Mapas sin conexión';
+
+  @override
+  String get guidePacketsBody =>
+      'Las tramas originales enviadas y recibidas, útiles para comprobar cómo se interpretó un paquete. Toca una fila para ver el texto completo.';
+
+  @override
+  String get guidePacketsTitle => 'Paquetes';
+
+  @override
+  String get guidePkwdwplBody =>
+      'Controla una interfaz PKWDWPL por puerto serie: elige el puerto y la velocidad; ella se encarga de transmitir.';
+
+  @override
+  String get guidePkwdwplTitle => 'Interfaz PKWDWPL';
+
+  @override
+  String get guideResetButton => 'Mostrar otra vez';
+
+  @override
+  String get guideResetConfirm =>
+      'Se borra el registro de «ya visto» y la tarjeta de ayuda vuelve a aparecer en cada página.';
+
+  @override
+  String get guideResetDone => 'Guías de funciones restablecidas';
+
+  @override
+  String get guideResetRow => 'Ver otra vez las guías de funciones';
+
+  @override
+  String get guideResetTitle => '¿Ver otra vez las guías de funciones?';
+
+  @override
+  String get guideSettingsBody =>
+      'Ocho categorías: radio, baliza, conexión, pantalla, dispositivos, datos, avanzado, actualización. Los cambios se aplican al momento.';
+
+  @override
+  String get guideSettingsTitle => 'Ajustes';
+
+  @override
+  String get guideShowAgain => 'Ver esta guía otra vez';
+
+  @override
+  String get guideStationsBody =>
+      'Aquí están todas las estaciones que recibes: busca, ordena y filtra por distancia. La lista y el mapa comparten el mismo filtro.';
+
+  @override
+  String get guideStationsTitle => 'Lista de estaciones';
+
+  @override
+  String get guideThemeBody =>
+      'Cambia colores, imagen de fondo, material y escala de la interfaz; se aplica al momento para comparar.';
+
+  @override
+  String get guideThemeTitle => 'Tema e interfaz';
+
+  @override
+  String get guideTitle => 'Guía de funciones';
+
+  @override
+  String get guideTncDeviceBody =>
+      'Busca y empareja tu TNC Bluetooth y luego elígelo como fuente de datos en la página de enlaces.';
+
+  @override
+  String get guideTncDeviceTitle => 'TNC Bluetooth';
+
+  @override
+  String get guideTrackHistoryBody =>
+      'Reproduce la ruta de una estación en una fecha concreta; arrastra la línea de tiempo para recorrerla.';
+
+  @override
+  String get guideTrackHistoryTitle => 'Reproducir recorrido';
+
+  @override
+  String get guideTranslateBody =>
+      'Configura el idioma destino y la API para traducir los chats. Sin API no hay traducción; esta página indica qué hace falta.';
+
+  @override
+  String get guideTranslateTitle => 'Traducción';
+
+  @override
+  String get hamAir =>
+      'Mala calidad del aire: usa mascarilla al aire libre y no te esfuerces de más; los contaminantes sobre los aisladores añaden ruido de fuga, limpia la antena al terminar';
 
   @override
   String get hamCold =>
       'Frío / nieve: la capacidad de las baterías de litio baja — lleva repuestos abrigados; vigila la ROE si se forma hielo en la antena';
 
   @override
-  String hamWind(String w) {
-    return 'Viento de fuerza $w: asegura bien las antenas con vientos; baja las direccionales y los hilos largos al recoger';
+  String hamDew(String d) {
+    return 'Diferencia de punto de rocío de solo $d℃ — el aire está casi saturado: el equipo y las líneas pueden condensar; deja que se atemperen y sequen antes de encender para evitar cortocircuitos';
+  }
+
+  @override
+  String get hamDust =>
+      'Tormenta de polvo: la arena fina en conectores y aisladores causa fugas y ruido — usa tapas antipolvo; la fricción seca acumula estática, asegura una buena descarga a tierra';
+
+  @override
+  String get hamExtreme =>
+      'Lluvia torrencial o extrema: atención a riadas, agua embalsada y desprendimientos — no instales en orillas ni en zonas bajas; haz un bucle antigoteo donde la línea entra en la pared';
+
+  @override
+  String hamFog(String v) {
+    return 'Visibilidad reducida ($v km): conduce con cuidado; la niebla puede crear conductos troposféricos — prueba contactos VHF/UHF lejanos';
+  }
+
+  @override
+  String get hamFrost =>
+      'Por debajo de 0℃: la capacidad de las baterías de litio cae en picado — lleva repuestos abrigados; cuidado con congelación en manos y cara, lleva calentadores de manos';
+
+  @override
+  String hamGale(String w) {
+    return 'Viento de fuerza $w: ¡prohibido subir a torres o mástiles! Baja o tumba las direccionales y los hilos largos, y revisa vientos, anclajes y retenidas';
+  }
+
+  @override
+  String get hamGood =>
+      '¡Buen tiempo para operar! Prueba repetidores y simplex en VHF/UHF; en HF, sigue los cambios de ionosfera por la tarde';
+
+  @override
+  String get hamGrayLine =>
+      'Estás en la línea gris del amanecer/atardecer: la propagación en HF de 20/40 m alcanza su máximo — la ventana dorada para DX de larga distancia';
+
+  @override
+  String get hamHeat2 =>
+      'El calor hace que amplificadores y fuentes se limiten: baja la potencia, acorta las transmisiones continuas y asegura buena ventilación';
+
+  @override
+  String hamHighPressure(String p) {
+    return 'Presión alta y estable ($p hPa): se forman inversiones con facilidad y puede haber conductos troposféricos en VHF/UHF — prueba contactos directos o por repetidor más allá del horizonte';
   }
 
   @override
@@ -5467,65 +2800,23 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String hamFog(String v) {
-    return 'Visibilidad reducida ($v km): conduce con cuidado; la niebla puede crear conductos troposféricos — prueba contactos VHF/UHF lejanos';
-  }
-
-  @override
-  String get hamGood =>
-      '¡Buen tiempo para operar! Prueba repetidores y simplex en VHF/UHF; en HF, sigue los cambios de ionosfera por la tarde';
-
-  @override
-  String hamWindExtra(String w) {
-    return 'Con viento de fuerza $w: asegura igualmente la antena con vientos y cuidado en el campo';
-  }
-
-  @override
-  String get hamStorm3 =>
-      'Se acerca una tormenta: desconecta la línea de antena del equipo, llévala al exterior a una pica de tierra para descargar la estática, apaga y desenchufa la red para que las sobretensiones no entren por la alimentación o la red; no uses antenas exteriores ni teléfonos con cable';
-
-  @override
-  String get hamStorm4 =>
-      'Alrededor de las tormentas aumentan los chasquidos estáticos (QRN) y sube el ruido de fondo en HF; espera unos 30 minutos tras el cese de los rayos antes de subir antenas y transmitir';
-
-  @override
-  String get hamExtreme =>
-      'Lluvia torrencial o extrema: atención a riadas, agua embalsada y desprendimientos — no instales en orillas ni en zonas bajas; haz un bucle antigoteo donde la línea entra en la pared';
-
-  @override
-  String hamGale(String w) {
-    return 'Viento de fuerza $w: ¡prohibido subir a torres o mástiles! Baja o tumba las direccionales y los hilos largos, y revisa vientos, anclajes y retenidas';
-  }
-
-  @override
   String get hamIce =>
       'El hielo en antenas y líneas sube la ROE y añade carga: no fuerces a plena potencia, revisa la tensión de los vientos y espera a que se derrita';
 
   @override
-  String get hamFrost =>
-      'Por debajo de 0℃: la capacidad de las baterías de litio cae en picado — lleva repuestos abrigados; cuidado con congelación en manos y cara, lleva calentadores de manos';
+  String get hamLess => 'Contraer';
 
   @override
-  String get hamHeat2 =>
-      'El calor hace que amplificadores y fuentes se limiten: baja la potencia, acorta las transmisiones continuas y asegura buena ventilación';
+  String get hamLevelDanger => 'Seguridad';
 
   @override
-  String get hamDust =>
-      'Tormenta de polvo: la arena fina en conectores y aisladores causa fugas y ruido — usa tapas antipolvo; la fricción seca acumula estática, asegura una buena descarga a tierra';
+  String get hamLevelGood => 'Propagación';
 
   @override
-  String get hamAir =>
-      'Mala calidad del aire: usa mascarilla al aire libre y no te esfuerces de más; los contaminantes sobre los aisladores añaden ruido de fuga, limpia la antena al terminar';
+  String get hamLevelTip => 'Consejo';
 
   @override
-  String hamDew(String d) {
-    return 'Diferencia de punto de rocío de solo $d℃ — el aire está casi saturado: el equipo y las líneas pueden condensar; deja que se atemperen y sequen antes de encender para evitar cortocircuitos';
-  }
-
-  @override
-  String hamUV(String u) {
-    return 'Índice UV $u, alto: protégete del sol en el campo — la exposición prolongada también degrada las fundas de coaxial y las bridas';
-  }
+  String get hamLevelWarn => 'Precaución';
 
   @override
   String hamLowPressure(String p) {
@@ -5533,17 +2824,21 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String hamHighPressure(String p) {
-    return 'Presión alta y estable ($p hPa): se forman inversiones con facilidad y puede haber conductos troposféricos en VHF/UHF — prueba contactos directos o por repetidor más allá del horizonte';
+  String hamMore(String n) {
+    return 'Mostrar los $n consejos';
   }
-
-  @override
-  String get hamGrayLine =>
-      'Estás en la línea gris del amanecer/atardecer: la propagación en HF de 20/40 m alcanza su máximo — la ventana dorada para DX de larga distancia';
 
   @override
   String get hamNight =>
       'De noche desaparece la capa D: baja la absorción en 80/40 m con menos ruido — ideal para comunicación regional y de larga distancia nocturna';
+
+  @override
+  String get hamNoData =>
+      'Cuando se cargue el tiempo, aparecerán consejos de seguridad para instalar antenas, operar y protegerse de los rayos';
+
+  @override
+  String get hamRain =>
+      'Precipitación: lleva cubiertas o cajas estancas, sella los conectores con cinta o termorretráctil y evita que se acumule agua en las líneas';
 
   @override
   String get hamRainFade =>
@@ -5554,188 +2849,1306 @@ class AppLocalizationsEs extends AppLocalizations {
       'Los chubascos van y vienen: lleva cubierta de lluvia, vigila el movimiento de las nubes y deja de transmitir antes de quitar la línea';
 
   @override
-  String get hamLevelDanger => 'Seguridad';
+  String get hamStorm1 =>
+      'Tormenta eléctrica: ¡NO instales ni uses antenas al aire libre! Desconecta las líneas de alimentación para evitar daños por sobretensión';
 
   @override
-  String get hamLevelWarn => 'Precaución';
+  String get hamStorm2 =>
+      'Si ya está instalada, retírala cuanto antes; pasa a escuchar repetidores y HF en interior y mantén el equipo seco';
 
   @override
-  String get hamLevelGood => 'Propagación';
+  String get hamStorm3 =>
+      'Se acerca una tormenta: desconecta la línea de antena del equipo, llévala al exterior a una pica de tierra para descargar la estática, apaga y desenchufa la red para que las sobretensiones no entren por la alimentación o la red; no uses antenas exteriores ni teléfonos con cable';
 
   @override
-  String get hamLevelTip => 'Consejo';
+  String get hamStorm4 =>
+      'Alrededor de las tormentas aumentan los chasquidos estáticos (QRN) y sube el ruido de fondo en HF; espera unos 30 minutos tras el cese de los rayos antes de subir antenas y transmitir';
 
   @override
-  String hamMore(String n) {
-    return 'Mostrar los $n consejos';
+  String get hamTitle => 'Consejos para radioaficionados';
+
+  @override
+  String hamUV(String u) {
+    return 'Índice UV $u, alto: protégete del sol en el campo — la exposición prolongada también degrada las fundas de coaxial y las bridas';
   }
 
   @override
-  String get hamLess => 'Contraer';
-
-  @override
-  String get weatherForecast3 => 'Previsión a 3 días';
-
-  @override
-  String get weatherDaily15 => 'Ver el tiempo de 15 días';
-
-  @override
-  String get weatherDaily15Title => 'Tendencia del tiempo a 15 días';
-
-  @override
-  String get weatherToday => 'Hoy';
-
-  @override
-  String get weatherTomorrow => 'Mañana';
-
-  @override
-  String get weatherDayAfter => 'Pasado mañana';
-
-  @override
-  String weatherWeekday(String d) {
-    String _temp0 = intl.Intl.selectLogic(d, {
-      '1': 'Lun',
-      '2': 'Mar',
-      '3': 'Mié',
-      '4': 'Jue',
-      '5': 'Vie',
-      '6': 'Sáb',
-      '7': 'Dom',
-      'other': '—',
-    });
-    return '$_temp0';
+  String hamWind(String w) {
+    return 'Viento de fuerza $w: asegura bien las antenas con vientos; baja las direccionales y los hilos largos al recoger';
   }
 
   @override
-  String get weatherSunrise => 'Amanecer';
+  String hamWindExtra(String w) {
+    return 'Con viento de fuerza $w: asegura igualmente la antena con vientos y cuidado en el campo';
+  }
 
   @override
-  String get weatherSunset => 'Atardecer';
+  String get headingUp => 'Rumbo arriba';
 
   @override
-  String get weatherUV => 'UV';
+  String get heatmap => 'Mapa de calor de estaciones';
 
   @override
-  String get weatherDetails => 'Datos detallados';
+  String get heatmapHint =>
+      'Mostrar un mapa de calor de densidad de estaciones al alejar';
 
   @override
-  String get weatherAQIPrimary => 'Principal';
+  String get hfAIndex => 'Índice A';
 
   @override
-  String get airExcellent => 'Excelente';
+  String get hfAurora => 'Aurora';
 
   @override
-  String get airGood => 'Buena';
+  String get hfBand => 'Banda';
 
   @override
-  String get airModerate => 'Contaminación leve';
+  String get hfDay => 'Día';
 
   @override
-  String get airUnhealthy => 'Contaminación moderada';
+  String get hfEs => 'Es (E esporádica)';
 
   @override
-  String get airVeryUnhealthy => 'Contaminación alta';
+  String get hfF2 => 'Capa F2';
 
   @override
-  String get airHazardous => 'Contaminación grave';
+  String get hfGeomag => 'Geomag';
 
   @override
-  String get weatherAir => 'ICA';
+  String get hfKp => 'Índice Kp';
+
+  @override
+  String get hfMuf => 'MUF';
+
+  @override
+  String get hfNight => 'Noche';
+
+  @override
+  String get hfNoData => 'Aún no hay datos de HF: se cargan al conectarse';
+
+  @override
+  String get hfNoise => 'Ruido';
+
+  @override
+  String get hfNow => 'Ahora';
+
+  @override
+  String get hfPowered =>
+      'Datos de propagación de hamqsl.com (N0NBH) · promedio global, no medición local';
+
+  @override
+  String get hfQClosed => 'Cerrada';
+
+  @override
+  String get hfQFair => 'Regular';
+
+  @override
+  String get hfQGood => 'Buena';
+
+  @override
+  String get hfQPoor => 'Mala';
+
+  @override
+  String get hfSfi => 'Flujo solar';
+
+  @override
+  String get hfSixMeter => 'Banda de 6m';
+
+  @override
+  String get hfSolarWind => 'Viento solar';
+
+  @override
+  String get hfSunspots => 'Manchas solares';
+
+  @override
+  String hfTipBandGood(String b) {
+    return '$b está abierta: prefiera esta banda para llamar';
+  }
+
+  @override
+  String hfTipBandPoor(String b) {
+    return '$b está mala: pruebe otra banda o espere la línea gris de amanecer/atardecer';
+  }
+
+  @override
+  String get hfTipGeomagActive =>
+      'Campo geomagnético inquieto: las rutas HF de alta latitud son menos estables; dé más tiempo de llamada al DX';
+
+  @override
+  String get hfTipHighNoise =>
+      'Ruido de fondo alto: las señales débiles cuestan; reduzca el ancho de banda y la ganancia de RF, use modos estrechos si hace falta';
+
+  @override
+  String get hfTipHighSfi =>
+      'Actividad solar alta (SFI≥150): 15/12/10m diurnas deberían abrir para DX de larga distancia';
+
+  @override
+  String get hfTipLowSfi =>
+      'Actividad solar baja (SFI<100): poca vida diurna en 15/12/10m; prefiera 40/30/20m';
+
+  @override
+  String get hfTipStorm =>
+      'Tormenta geomagnética (Kp≥5): las rutas HF polares se atenúan mucho y el DX transpolar casi desaparece; pruebe rutas de menor latitud o VHF/UHF local';
+
+  @override
+  String get hfTitle => 'Propagación HF';
+
+  @override
+  String get hfUnavailable =>
+      'El servicio de propagación HF no está disponible';
+
+  @override
+  String get hfXray => 'Rayos X';
+
+  @override
+  String get historyClearAll => 'Borrar todo el historial';
+
+  @override
+  String get historyClearAllConfirm =>
+      '¿Borrar todo el historial de rutas? No se puede deshacer.';
+
+  @override
+  String get historyClearDay => 'Eliminar este día';
+
+  @override
+  String get historyCleared => 'Día eliminado';
+
+  @override
+  String get historyClearedAll => 'Historial borrado por completo';
+
+  @override
+  String get historyEmpty =>
+      'Aún no hay historial de rutas. Se registrará automáticamente al posicionarte y moverte.';
+
+  @override
+  String get historyFollow => 'Seguir';
+
+  @override
+  String get historyMaxSpeed => 'Velocidad máx.';
+
+  @override
+  String get historyMovingTime => 'Tiempo en movimiento';
+
+  @override
+  String get historyPause => 'Pausar';
+
+  @override
+  String get historyPlay => 'Reproducir';
+
+  @override
+  String get historyPoints => 'Puntos';
+
+  @override
+  String get historyReplay => 'Repetir';
+
+  @override
+  String get historyTapDay => 'Toca un día para ver el mapa y su reproducción';
+
+  @override
+  String get historyTotalDistance => 'Distancia total';
+
+  @override
+  String get historyTracks => 'Historial de rutas';
+
+  @override
+  String get historyTracksDesc =>
+      'Registra tu velocidad y distancia por día, guardadas en este dispositivo';
+
+  @override
+  String get historyVersions => 'Historial';
+
+  @override
+  String get home => 'Inicio';
+
+  @override
+  String get homeBadgeLabel => 'Insignia en inicio';
+
+  @override
+  String get homeBadgePickDesc =>
+      'Elige una de tus insignias para mostrarla en el inicio';
+
+  @override
+  String get homeBadgePickTitle => 'Elegir insignia para el inicio';
+
+  @override
+  String honorCriteriaLine(String c) {
+    return 'Cómo obtenerlo: $c';
+  }
+
+  @override
+  String get honorWall => 'Honores';
+
+  @override
+  String honoredBadges(String n, String m) {
+    return '$n/$m insignias desbloqueadas';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    return 'hace $count h';
+  }
+
+  @override
+  String get hrCardSubtitle =>
+      'Bandas de pecho Bluetooth (servicio HR estándar), opcionalmente con tu baliza';
+
+  @override
+  String get hrCardTitle => 'Frecuencia cardíaca';
+
+  @override
+  String get hrConflictWithTnc =>
+      'Ese dispositivo lo usa el enlace Bluetooth de TNC / PKWDWPL; no puede ser la banda';
+
+  @override
+  String get hrConnect => 'Conectar';
+
+  @override
+  String hrConnected(Object name) {
+    return 'Conectado a $name';
+  }
+
+  @override
+  String get hrDisconnect => 'Desconectar';
+
+  @override
+  String get hrForTncNote =>
+      'El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez';
+
+  @override
+  String get hrForget => 'Olvidar dispositivo';
+
+  @override
+  String get hrFromGarmin => 'Pulso desde Garmin LiveTrack (reloj)';
+
+  @override
+  String get hrIncludeHint =>
+      'Añade HR=nn al comentario de posición (convención APRS habitual; los mapas de terceros lo muestran como comentario). Sin lectura no enviamos HR=0, porque el receptor lo leería como \"pulso 0\" en vez de \"sin medir\".';
+
+  @override
+  String get hrIncludeInBeacon => 'Enviar pulso en la baliza';
+
+  @override
+  String hrLineHr(String hr) {
+    return 'pulso $hr';
+  }
+
+  @override
+  String get hrNoDevice =>
+      'No se encontró ningún sensor. Comprueba que la banda esté emitiendo y cerca del teléfono.';
+
+  @override
+  String get hrNotSupported =>
+      'El pulso por Bluetooth no está disponible en esta plataforma (disponible en Android / iOS)';
+
+  @override
+  String get hrScanning => 'Buscando…';
+
+  @override
+  String get hrSearch => 'Buscar sensores de pulso';
+
+  @override
+  String get hrSourceLabel => 'Fuente de pulso';
+
+  @override
+  String get hrStopScan => 'Detener búsqueda';
+
+  @override
+  String get hrStrapHint =>
+      'Sirve cualquier banda que emita el servicio HR estándar (0x180D): Polar H10, Garmin HRM. TNC usa Bluetooth clásico y el pulso usa BLE, así que no interfieren.';
+
+  @override
+  String get hrWaitReading => 'Esperando lectura (ajusta la banda)';
+
+  @override
+  String get iconDefaultMySymbol => 'Icono · Predeterminado (mi símbolo)';
+
+  @override
+  String iconNamed(String name) {
+    return 'Icono · $name';
+  }
+
+  @override
+  String get idleTierDesc =>
+      'Las velocidades por debajo del primer nivel móvil se reportan con este nivel';
+
+  @override
+  String get idleTierNotDeletable => 'El nivel de reposo no se puede eliminar';
+
+  @override
+  String get igateAllRejected =>
+      'Llegan paquetes de RF pero todos fueron rechazados por la protección anti-bucle: llevan TCPIP*/TCPXX* o una construcción q, es decir, vienen de internet y reenviarlos multiplicaría el mismo paquete. Esto es **funcionar correctamente**, no una avería.';
+
+  @override
+  String get igateEnable => 'Activar pasarela';
+
+  @override
+  String get igateHint =>
+      'Los paquetes oídos por RF se reenvían a APRS-IS, marcados con qAr/qAR y tu indicativo. Requiere APRS-IS y una fuente de RF (TNC/audio) activas.';
+
+  @override
+  String get igateIsDown =>
+      'APRS-IS no está conectado: la pasarela no tiene a dónde reenviar. Los contadores empezarán a subir cuando se conecte (ver la tarjeta de estado del enlace).';
+
+  @override
+  String get igateNeedIs => 'APRS-IS no está activo: márcalo arriba.';
+
+  @override
+  String get igateNeedRf =>
+      'Falta una fuente de RF: marca TNC o audio en «Fuente de datos» arriba.';
+
+  @override
+  String get igateNoRfTraffic =>
+      'No se ha oído ningún paquete por RF: la pasarela está lista pero **no tiene nada que reenviar**. No es un problema de la pasarela: nada llega a la aplicación. Revisa el origen: volumen y silenciador del equipo, antena, si alguien está transmitiendo y el registro por si hay tráfico de RF.';
+
+  @override
+  String get igateResetStats => 'Reiniciar contadores';
+
+  @override
+  String get igateRfDown =>
+      'El enlace de RF está caído: la pasarela no puede reenviar nada. Si «Oídos por RF» sigue en 0, no llega ningún paquete — revisa el estado del TNC/audio (velocidad serie, equipo encendido), no la pasarela.';
+
+  @override
+  String get igateStatBlocked => 'Rechazados por anti-bucle';
+
+  @override
+  String get igateStatDup => 'Duplicados descartados';
+
+  @override
+  String get igateStatRfSeen => 'Oídos por RF';
+
+  @override
+  String get igateStatToIs => 'Reenviados → APRS-IS';
+
+  @override
+  String get igateStatToRf => 'Reenviados → RF';
+
+  @override
+  String get igateSubtitle => 'Reenvía a APRS-IS los paquetes oídos por RF';
+
+  @override
+  String get igateTitle => 'Pasarela (iGate)';
+
+  @override
+  String get igateTwoWay => 'Pasarela bidireccional (reenviar mensajes a RF)';
+
+  @override
+  String get igateTwoWayHint =>
+      'Si está activo, **transmite por RF**: solo mensajes punto a punto destinados a una estación oída recientemente por RF. Si está desactivado, solo RF→IS.';
+
+  @override
+  String get immersiveMap => 'Mapa inmersivo';
+
+  @override
+  String get immersiveMapTip =>
+      'Estilo navegación: centrado en ti, rumbo arriba, HUD en las esquinas';
+
+  @override
+  String get imminent => 'En breve';
+
+  @override
+  String get information => 'Información';
+
+  @override
+  String get infrastructure => 'Digipeater';
+
+  @override
+  String get inject => 'Inyectar';
+
+  @override
+  String get injected => 'Paquete inyectado';
+
+  @override
+  String get inputTapHint => 'Toca para escribir';
+
+  @override
+  String get install => 'Instalar';
+
+  @override
+  String get installApk => 'Instalar APRSlocus';
+
+  @override
+  String get installComplete => 'Instalación completada';
+
+  @override
+  String get installNow => 'Instalar ahora';
+
+  @override
+  String get installPermissionDesc =>
+      'APRSlocus no tiene permiso para instalar aplicaciones.\n\nToca «Ajustes», permite que esta aplicación instale aplicaciones desconocidas y vuelve a intentarlo.';
+
+  @override
+  String get installPermissionTitle =>
+      'Permitir la instalación de aplicaciones';
+
+  @override
+  String installSize(Object os, Object size) {
+    return 'Tamaño del paquete $os: $size';
+  }
+
+  @override
+  String get internationalMaps => 'Mapas globales';
+
+  @override
+  String get intervalLabel => 'Intervalo';
+
+  @override
+  String get intervalSeconds => 'Intervalo de reporte (s)';
+
+  @override
+  String get invalidCoords => 'Introduce latitud, longitud y radio válidos';
+
+  @override
+  String get invalidLatLng => 'Introduce una latitud y longitud válidas';
+
+  @override
+  String get invalidResponseData => 'Formato de respuesta no válido';
+
+  @override
+  String get invite => 'Invitar';
+
+  @override
+  String get inviteMembers => 'Invitar miembros';
+
+  @override
+  String get inviteMembersHint => 'Toca «Invitar miembros» abajo para añadir';
+
+  @override
+  String inviteMembersTo(String name) {
+    return 'Invitar miembros a $name';
+  }
+
+  @override
+  String inviteSent(String call) {
+    return 'Invitación enviada a $call';
+  }
+
+  @override
+  String get invited => 'Invitado';
+
+  @override
+  String get iosFeatureUnsupported =>
+      'iOS no permite enlaces Bluetooth clásico / serie USB (solo accesorios MFi), así que esta función no se puede activar; usa APRS-IS por red.';
+
+  @override
+  String get irreversibleKeepSettings =>
+      'Esta acción no se puede deshacer. La configuración de conexión y el indicativo se conservarán.';
 
   @override
   String get issStation => 'Estación ISS';
 
   @override
-  String get applyStationFilter => 'Aplicar el filtro de estaciones al mapa';
+  String get kissApplyParams => 'Enviar parámetros';
 
   @override
-  String get stationFilterOn => 'Filtrado por el panel de estaciones';
+  String get kissAutoAck => 'Confirmar automáticamente';
 
   @override
-  String get stationList => 'Estaciones';
+  String get kissAutoAckTip =>
+      'Si se desactiva, los mensajes entrantes no se confirman: el canal queda más libre';
 
   @override
-  String get statsPanel => 'Panel de estadísticas';
+  String get kissAutoReconnect => 'Reconectar automáticamente';
 
   @override
-  String get statsOverview => 'Resumen del sistema';
+  String get kissBackToCommand => 'Volver al modo de comandos del TNC';
 
   @override
-  String get statsTotalRx => 'Paquetes RX';
+  String get kissBackToCommandTip =>
+      'Envía RETURN (0x0F). La mayoría de los TNC KISS dejan de reenviar hasta reiniciar el enlace';
 
   @override
-  String get statsTotalTx => 'Paquetes TX';
+  String get kissChannel => 'Canal / puerto KISS';
 
   @override
-  String get statsRate => 'Velocidad';
+  String get kissChannelTip =>
+      'Solo los TNC multicanal tienen varios puertos; deja 0 en radios de un canal';
 
   @override
-  String statsPerMin(String n) {
-    return '$n/min';
+  String get kissFullDuplex => 'Dúplex completo';
+
+  @override
+  String get kissFullDuplexTip =>
+      'KISS FULLDUPLEX: déjalo desactivado en radios normales (TX/RX simultáneos interfieren)';
+
+  @override
+  String get kissHardwareCmd => 'Comando del fabricante';
+
+  @override
+  String get kissHardwareTip =>
+      'KISS SETHARDWARE (0x06), específico del fabricante; -1 significa no enviar';
+
+  @override
+  String get kissHardwareVal => 'Valor';
+
+  @override
+  String get kissMaxFrame => 'Tamaño máximo de trama (bytes)';
+
+  @override
+  String get kissMaxFrameTip =>
+      'Los paquetes más largos no se envían (a 1200 baudios una trama AX.25 ronda 330 bytes)';
+
+  @override
+  String get kissNeedConnected => 'Conecta primero el TNC';
+
+  @override
+  String get kissParamsSent => 'Parámetros KISS enviados';
+
+  @override
+  String get kissParamsSubtitle =>
+      'Ajustes de capa de enlace enviados directamente al TNC';
+
+  @override
+  String get kissParamsTitle => 'Parámetros KISS';
+
+  @override
+  String get kissPersistence => 'Persistencia';
+
+  @override
+  String get kissPersistenceTip =>
+      'KISS PERSISTENCE, 0-255: cuanto menor, más cede y menos colisiones en un canal compartido';
+
+  @override
+  String get kissRfBeacon => 'Permitir balizas por RF';
+
+  @override
+  String get kissRfBeaconTip =>
+      'Solo entonces se transmitirán posiciones por radio. Transmitir requiere tu licencia e indicativo';
+
+  @override
+  String get kissRfPath => 'Ruta de digipeadores RF';
+
+  @override
+  String get kissRfPathTip =>
+      'Digipeadores usados en el aire, p. ej. WIDE1-1,WIDE2-1; déjalo vacío para ninguno';
+
+  @override
+  String get kissSlotTime => 'Tiempo de ranura (ms)';
+
+  @override
+  String get kissSlotTimeTip =>
+      'KISS SLOTTIME en unidades de 10 ms: junto con la persistencia regula el acceso al canal';
+
+  @override
+  String get kissTxDelay => 'Retardo de TX (ms)';
+
+  @override
+  String get kissTxDelayTip =>
+      'KISS TXDELAY en unidades de 10 ms: tiempo para que el PTT se establezca';
+
+  @override
+  String get kissTxTail => 'Cola de TX (ms)';
+
+  @override
+  String get kissTxTailTip =>
+      'KISS TXTAIL en unidades de 10 ms: algunas radios necesitan la cola para oírse completas';
+
+  @override
+  String get labDesc =>
+      'Las funciones de laboratorio están en pruebas y pueden afectar al uso. La orientación vertical está bloqueada por defecto; actívalo para permitir la horizontal.';
+
+  @override
+  String get langNameAr => 'árabe';
+
+  @override
+  String get langNameDe => 'alemán';
+
+  @override
+  String get langNameEn => 'inglés';
+
+  @override
+  String get langNameEs => 'español';
+
+  @override
+  String get langNameFr => 'francés';
+
+  @override
+  String get langNameId => 'indonesio';
+
+  @override
+  String get langNameIt => 'italiano';
+
+  @override
+  String get langNameJa => 'japonés';
+
+  @override
+  String get langNameKo => 'coreano';
+
+  @override
+  String get langNamePt => 'portugués';
+
+  @override
+  String get langNameRu => 'ruso';
+
+  @override
+  String get langNameTh => 'tailandés';
+
+  @override
+  String get langNameVi => 'vietnamita';
+
+  @override
+  String get langNameZh => 'chino simplificado';
+
+  @override
+  String get langNameZhTw => 'chino tradicional';
+
+  @override
+  String get language => 'Idioma';
+
+  @override
+  String get languageEn => 'English';
+
+  @override
+  String get languageEs => 'Español';
+
+  @override
+  String get languageId => 'Bahasa Indonesia';
+
+  @override
+  String get languageJa => '日本語';
+
+  @override
+  String get languageSystem => 'Seguir al sistema';
+
+  @override
+  String get languageZh => '中文';
+
+  @override
+  String get languageZhTw => '繁體中文';
+
+  @override
+  String get lastSeen => 'Última señal';
+
+  @override
+  String get latestVersion => 'Ya tienes la última versión';
+
+  @override
+  String get latestVersionLabel => 'Última versión';
+
+  @override
+  String get latitude => 'Latitud';
+
+  @override
+  String get latitudeHint => 'Latitud 39.9042';
+
+  @override
+  String get layerFilter => 'Capas';
+
+  @override
+  String get leave => 'Salir';
+
+  @override
+  String get leaveAction => 'Salir';
+
+  @override
+  String get leaveGroup => 'Salir del grupo';
+
+  @override
+  String leaveGroupConfirm(String name) {
+    return '¿Salir de «$name»? Dejarás de recibir mensajes de este grupo.';
   }
 
   @override
-  String get statsStationsTotal => 'Estaciones';
-
-  @override
-  String get statsCap => 'Capacidad';
-
-  @override
-  String get statsConn => 'Enlace';
-
-  @override
-  String get statsConnected => 'Conectado';
-
-  @override
-  String get statsDisconnected => 'Sin conexión';
-
-  @override
-  String get statsMyGrid => 'Mi cuadrícula';
-
-  @override
-  String get statsAprslocusUsers => 'Usuarios de APRSlocus';
-
-  @override
-  String get statsFarthest => 'Más lejana';
-
-  @override
-  String get statsStatusDist => 'Distribución por estado';
-
-  @override
-  String get statsTypeDist => 'Distribución por tipo APRS';
-
-  @override
-  String get statsGridDist => 'Distribución por cuadrícula';
-
-  @override
-  String get statsGridHint =>
-      'Estaciones por campo Maidenhead (4 caracteres), ordenadas';
-
-  @override
-  String statsGridCount(String n) {
-    return '$n cuadrículas';
+  String leftGroup(String name) {
+    return 'Has salido de $name';
   }
 
   @override
-  String get statsGridEmpty => 'Aún no hay posiciones de estaciones';
+  String get licenseName => 'GNU GPL v3';
 
   @override
-  String get statsDeviceDist => 'Clases de dispositivo';
+  String get licenseNotice => 'Licencia GNU GPL v3 · Copyright © BG7LZQ';
 
   @override
-  String get statsOther => 'Otras métricas';
+  String get licenseSection => 'Licencia';
 
   @override
-  String get statsAvgSpeed => 'Velocidad media';
+  String get licenseStatement =>
+      'Este software se publica bajo la licencia GNU GPL v3. Puedes ejecutarlo, estudiarlo, modificarlo y redistribuirlo conforme a los términos de la licencia; las versiones modificadas y redistribuidas deben cumplir las obligaciones aplicables de la GPL v3. Este software se ofrece sin garantía alguna.';
 
   @override
-  String get statsLastHeard => 'Última señal';
+  String get licenseText => 'Ver licencia';
 
   @override
-  String get statsPackets => 'Paquetes (recientes)';
+  String get linkNotConnected => 'Sin conexión';
 
   @override
-  String get statsNoData => 'Sin datos';
+  String get linkOpenFailed => 'No se pudo abrir el enlace';
+
+  @override
+  String get linkTapForSettings => 'Toca para abrir los ajustes de conexión';
+
+  @override
+  String get loadingVectorMap => 'Cargando mapa vectorial…';
+
+  @override
+  String get locModeGps => 'Solo GPS';
+
+  @override
+  String get locModeGpsDesc => 'Solo satélite; ahorra batería';
+
+  @override
+  String get locModeGpsNetwork => 'GPS + red';
+
+  @override
+  String get locModeGpsNetworkDesc =>
+      'La red es solo un respaldo (si el GPS se corta); las posiciones aproximadas no se guardan en la ruta';
+
+  @override
+  String get locModeNetHint =>
+      'Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 5 minutos sin actualizarse; nunca se guardan en la ruta ni el historial, y nunca provocan un informe automático.';
+
+  @override
+  String get locModeNetwork => 'Solo red';
+
+  @override
+  String get locModeNetworkDesc =>
+      'Solo red móvil / Wi-Fi, precisión de cientos de metros; el más eficiente, para dispositivos sin GPS';
+
+  @override
+  String get locModeNetworkHint =>
+      'En modo solo red la posición viene solo de la red móvil / Wi-Fi: puede desviarse cientos de metros y **nunca** se guarda en la ruta ni el historial. No enviará balizas automáticamente salvo que actives «forzar reporte automático con posición aproximada».';
+
+  @override
+  String get localPackageExists => 'Ya hay un paquete descargado';
+
+  @override
+  String localRepoVersion(Object latest, Object local) {
+    return 'Local v$local · Última en el repositorio v$latest';
+  }
+
+  @override
+  String get locateMe => 'Localizar';
+
+  @override
+  String get location => 'Ubicación';
+
+  @override
+  String get locationCoarse => 'Posición de red (aproximada)';
+
+  @override
+  String get locationFailed => 'Error de ubicación';
+
+  @override
+  String get locationFixed => 'Ubicación obtenida';
+
+  @override
+  String get locationGarmin => 'Garmin LiveTrack';
+
+  @override
+  String get locationInfo => 'Ubicación';
+
+  @override
+  String locationInitError(String error) {
+    return 'Error al iniciar la ubicación: $error';
+  }
+
+  @override
+  String get locationMode => 'Modo de ubicación';
+
+  @override
+  String get locationNotFixed => 'Sin ubicación';
+
+  @override
+  String get locationPermission => 'Concede permiso de ubicación…';
+
+  @override
+  String get locationSource => 'Fuente de ubicación';
+
+  @override
+  String get locationStatus => 'Estado de la ubicación';
+
+  @override
+  String get locationStill => 'Estacionario';
+
+  @override
+  String get locationStopped => 'Ubicación detenida';
+
+  @override
+  String locationStreamError(String error) {
+    return 'Error en el flujo de ubicación: $error';
+  }
+
+  @override
+  String get logout => 'Salir';
+
+  @override
+  String get logs => 'Registros';
+
+  @override
+  String get longitude => 'Longitud';
+
+  @override
+  String get longitudeHint => 'Longitud 116.4074';
+
+  @override
+  String get lookupAprsFi => 'Posición en aprs.fi';
+
+  @override
+  String get lookupPasscode => 'Consulta tu Passcode →';
+
+  @override
+  String get lookupQrz => 'Indicativo en QRZ';
+
+  @override
+  String get manage => 'Gestionar';
+
+  @override
+  String get manageContacts => 'Gestionar contactos';
+
+  @override
+  String get management => 'Gestión';
+
+  @override
+  String get manual => 'Manual';
+
+  @override
+  String get manualBeacon => 'Balizar ahora';
+
+  @override
+  String get manualCallsign => 'Introducir indicativo manualmente';
+
+  @override
+  String get manualCallsignHint => 'Añadir indicativo manualmente';
+
+  @override
+  String get manualCoordinates => 'Introducir coordenadas a mano';
+
+  @override
+  String get manualInject => 'Inyectar paquete APRS sin procesar';
+
+  @override
+  String get manualLocation => 'Ubicación manual';
+
+  @override
+  String get manualLocationHelp =>
+      'Si la ubicación automática no está disponible, introduce coordenadas o elige un punto en el mapa para las balizas y el cálculo de distancias.';
+
+  @override
+  String get manualStations => 'Estaciones manuales';
+
+  @override
+  String get map => 'Mapa';
+
+  @override
+  String mapDefaultCoord(int level) {
+    return 'Pekín · Zoom $level';
+  }
+
+  @override
+  String get mapHelpIntro =>
+      'No hay estaciones en la vista actual. Posibles motivos: sin conexión a APRS-IS, rango de recepción pequeño o ninguna estación activa cerca.';
+
+  @override
+  String get mapHelpLayer =>
+      'Capas y estilo: los botones de arriba a la derecha filtran tipos de estación y cambian el mapa base';
+
+  @override
+  String get mapHelpLocate =>
+      'Localizar: toca «Localizarme» (abajo a la derecha) para volver a tu posición';
+
+  @override
+  String get mapHelpMove =>
+      'Mover / ampliar: arrastra para desplazar, pellizca o usa la rueda para ampliar';
+
+  @override
+  String get mapHelpSearch =>
+      'Buscar: escribe un indicativo en el cuadro de búsqueda superior para ir a él';
+
+  @override
+  String get mapHelpStation =>
+      'Estaciones: toca un marcador para seleccionarlo y centrarlo, doble toque para ver detalles';
+
+  @override
+  String get mapHelpTitle => 'Ayuda del mapa';
+
+  @override
+  String get mapHome => 'Recentrar';
+
+  @override
+  String get mapLayers => 'Capas';
+
+  @override
+  String get mapLocate => 'Localizar';
+
+  @override
+  String get mapMenu => 'Menú del mapa';
+
+  @override
+  String get mapPickDesc => 'Toca el mapa para fijar tu posición';
+
+  @override
+  String get mapPickMode => 'Modo de selección en el mapa';
+
+  @override
+  String get mapPickNow => 'Elegir en el mapa';
+
+  @override
+  String get mapType => 'Tipo de mapa';
+
+  @override
+  String get mapTypeAmap => 'AMap';
+
+  @override
+  String get mapTypeAmapSatellite => 'AMap satélite';
+
+  @override
+  String get mapTypeCarto => 'Carto claro';
+
+  @override
+  String get mapTypeCartoDark => 'Carto oscuro';
+
+  @override
+  String get mapTypeCartoPositron => 'Carto Positron (vector claro)';
+
+  @override
+  String get mapTypeCartoVoyager => 'Carto Voyager';
+
+  @override
+  String get mapTypeDesc =>
+      '«Mapa 2.0 (vectorial)» se dibuja en el dispositivo: menos datos y zoom nítido; las fuentes ráster usan teselas en línea, así que la calidad depende de la red.';
+
+  @override
+  String get mapTypeEsriSat => 'Esri imágenes';
+
+  @override
+  String get mapTypeEsriStreet => 'Esri calles';
+
+  @override
+  String get mapTypeOpenTopo => 'OpenTopo terreno';
+
+  @override
+  String get mapTypeOsm => 'OSM estándar';
+
+  @override
+  String get mapTypeOsmHot => 'OSM humanitario';
+
+  @override
+  String get mapTypeTitle => 'Tipo de mapa';
+
+  @override
+  String get mapTypeVector => 'Mapa vectorial';
+
+  @override
+  String get mapZoomIn => 'Ampliar';
+
+  @override
+  String get mapZoomOut => 'Reducir';
+
+  @override
+  String get maxPackets => 'Límite de paquetes';
+
+  @override
+  String get maxPacketsTip =>
+      'Cuántos paquetes conservar en la página de paquetes (predeterminado 2000; más usa más memoria)';
+
+  @override
+  String get maxSpeedTiers => 'Máximo 5 niveles de velocidad';
+
+  @override
+  String get maxStations => 'Máx. estaciones';
+
+  @override
+  String get maxStationsTip =>
+      'Máximo de estaciones en memoria (ilimitado por defecto; puedes aumentarlo)';
+
+  @override
+  String get maxTrackPts => 'Límite de puntos de rastro';
+
+  @override
+  String get maxTrackPtsTip =>
+      'Puntos de rastro por estación (predeterminado 300; determina cuánto atrás llega un rastro; solo se guarda un punto tras 20 m de movimiento)';
+
+  @override
+  String get meLabel => 'Yo';
+
+  @override
+  String get memberBlocked => 'Bloqueado';
+
+  @override
+  String memberCount(int count) {
+    return '$count miembros';
+  }
+
+  @override
+  String memberCountTap(int count) {
+    return '$count miembros · Toca para ver';
+  }
+
+  @override
+  String get memberDeclined => 'Rechazado';
+
+  @override
+  String get memberJoined => 'Unido';
+
+  @override
+  String get memberLeft => 'Salió';
+
+  @override
+  String memberOnlineCount(int members, int online) {
+    return '$members miembros · $online en línea';
+  }
+
+  @override
+  String get memberPending => 'Pendiente';
+
+  @override
+  String get memberTimeout => 'Tiempo agotado';
+
+  @override
+  String get message => 'Mensaje';
+
+  @override
+  String get messageCountLabel => 'Mensajes';
+
+  @override
+  String get messageFeed => 'Flujo de mensajes';
+
+  @override
+  String get messageSent => 'Mensaje enviado';
+
+  @override
+  String messageTotal(int count) {
+    return '$count mensajes';
+  }
+
+  @override
+  String get messages => 'Mensajes';
+
+  @override
+  String get metricUnits => 'Métrico (km/h, m)';
+
+  @override
+  String get minSpeedKmh => 'Velocidad mínima (km/h)';
+
+  @override
+  String minutesAgo(int count) {
+    return 'hace $count min';
+  }
+
+  @override
+  String get mobile => 'Móvil';
+
+  @override
+  String get moreSymbols => 'Más símbolos';
+
+  @override
+  String get moving => 'En movimiento';
+
+  @override
+  String movingCount(Object count) {
+    return '$count en movimiento';
+  }
+
+  @override
+  String movingWithSpeed(String speed) {
+    return 'En movimiento · $speed';
+  }
+
+  @override
+  String get msgBlockedTooLong =>
+      'Envío bloqueado: el paquete supera el límite de APRS-IS';
+
+  @override
+  String get msgHistory => 'Historial de mensajes';
+
+  @override
+  String msgLenCounter(int chars, int bytes) {
+    return '$chars/67 caracteres · $bytes/512 bytes en total';
+  }
+
+  @override
+  String msgOverServerLimit(int bytes, int over) {
+    return 'El paquete tiene $bytes bytes y supera el límite de 512 bytes por línea de APRS-IS. El servidor podría descartarlo por completo (ni siquiera llegaría la cabecera). Acorta unos $over bytes.';
+  }
+
+  @override
+  String msgOverSpecAsk(int chars) {
+    return 'Este mensaje tiene $chars caracteres y supera el límite de 67 de la especificación APRS. La mayoría de los clientes aún lo mostrará, pero algunos clientes/pasarelas lo truncan o rechazan, así que la otra estación podría no poder interpretarlo. ¿Enviar igualmente?';
+  }
+
+  @override
+  String get msgSendAnyway => 'Enviar igualmente';
+
+  @override
+  String get msgSpecLimitHint =>
+      'La especificación APRS recomienda mensajes de menos de 67 caracteres: el texto más largo puede truncarse o no interpretarse en algunos clientes.';
+
+  @override
+  String get myBadgesAndAchievements => 'Mis insignias y logros';
+
+  @override
+  String get myCallsign => 'Mi indicativo';
+
+  @override
+  String get myLocation => 'Mi ubicación';
+
+  @override
+  String myLocationPanel(Object call) {
+    return 'Mi ubicación · $call';
+  }
+
+  @override
+  String myLocationSetGrid(String grid) {
+    return 'Ubicación establecida · Cuadrícula $grid';
+  }
+
+  @override
+  String myPositionSet(String grid) {
+    return 'Mi posición establecida, cuadrícula $grid';
+  }
+
+  @override
+  String get myStation => 'Mi estación';
+
+  @override
+  String get myStationSettings => 'Mi estación';
+
+  @override
+  String get myStationSettingsDesc => 'Indicativo · SSID · Símbolo · Baliza';
+
+  @override
+  String get mySymbol => 'Mi símbolo';
+
+  @override
+  String nItems(String n) {
+    return '$n';
+  }
+
+  @override
+  String nMessages(String n) {
+    return '$n';
+  }
+
+  @override
+  String get nameLabel => 'Nombre';
+
+  @override
+  String get navigate => 'Navegar';
+
+  @override
+  String get navigationUnavailable =>
+      'No hay ninguna app de mapas instalada y no se pudo abrir otra';
+
+  @override
+  String get nearbyStations => 'Estaciones cercanas';
+
+  @override
+  String get newConversation => 'Nueva conversación';
+
+  @override
+  String get newConversationDesc =>
+      'Introduce un indicativo para empezar una conversación';
+
+  @override
+  String get newGroup => 'Nuevo grupo';
+
+  @override
+  String get newTrackGroup => 'Nuevo grupo de seguimiento';
+
+  @override
+  String get newVersion => 'Nueva versión';
+
+  @override
+  String get newVersionFound => 'Nueva versión disponible';
+
+  @override
+  String newVersionTitle(String version) {
+    return 'Nueva versión v$version disponible';
+  }
+
+  @override
+  String get next => 'Siguiente';
+
+  @override
+  String get nextBeacon => 'Próxima baliza';
+
+  @override
+  String nextBeaconIn(String time) {
+    return 'Próxima baliza $time';
+  }
+
+  @override
+  String get nextBeaconLabel => 'Próxima';
+
+  @override
+  String get noApkInstaller => 'Esta versión no tiene APK';
+
+  @override
+  String get noContacts => 'Sin contactos';
+
+  @override
+  String get noConversations => 'Aún no hay conversaciones';
+
+  @override
+  String get noCountriesSelected => 'Sin países ni regiones seleccionados';
+
+  @override
+  String get noData => 'Sin datos';
+
+  @override
+  String get noFixYet =>
+      'Aún no hay posición; la ubicación actual no está disponible';
+
+  @override
+  String get noGroupMessages => 'El grupo aún no tiene mensajes';
+
+  @override
+  String get noInstaller => 'Sin paquete';
+
+  @override
+  String noInstallerHistoryHint(String platform) {
+    return 'No hay paquete $platform para esta versión. Elige una versión descargable en el historial.';
+  }
+
+  @override
+  String get noLogs => 'Aún no hay registros';
+
+  @override
+  String get noMatchingPackets => 'No hay paquetes coincidentes';
+
+  @override
+  String get noMembers => 'Sin miembros';
+
+  @override
+  String get noMembersSelected => 'Sin miembros seleccionados';
+
+  @override
+  String get noMessages => 'Aún no hay mensajes';
+
+  @override
+  String get noMessagesHint => 'Aún no hay mensajes; ¡saluda!';
+
+  @override
+  String get noMoreOnlineStations => 'No hay más estaciones en línea';
+
+  @override
+  String get noPacketReceived => 'No se han recibido paquetes';
+
+  @override
+  String get noPackets => 'Aún no hay paquetes';
+
+  @override
+  String noPositionInfo(Object call) {
+    return '$call no tiene información de posición (el paquete no incluye posición)';
+  }
+
+  @override
+  String get noRecipients => 'Sin destinatarios seleccionados';
+
+  @override
+  String get noReleaseNotes => 'Sin notas de la versión';
+
+  @override
+  String get noSsid => 'Sin sufijo (indicativo base)';
+
+  @override
+  String get noStationHelp => 'No hay estaciones aquí · toca para ver la ayuda';
+
+  @override
+  String get noStationInView =>
+      'No hay estaciones aquí · toca para mostrar todas';
+
+  @override
+  String get noStations => 'Sin estaciones';
 
   @override
   String get noStationsFiltered =>
@@ -5746,155 +4159,73 @@ class AppLocalizationsEs extends AppLocalizations {
       'El filtro o el rango de recepción son demasiado estrechos. Borra el filtro para reintentar; el rango de recepción está en Ajustes.';
 
   @override
-  String get clearStationFilter => 'Borrar filtro';
+  String get noStationsYet =>
+      'Aún no hay datos de estaciones. Conéctate a APRS-IS para elegir miembros.';
 
   @override
-  String get clearSearch => 'Borrar búsqueda';
+  String get noUpdateFound => 'Ya tienes la última versión';
 
   @override
-  String get activeConditions => 'Condiciones activas';
+  String get noVersionsFound => 'No se encontraron versiones';
 
   @override
-  String get statsMovingCount => 'En movimiento';
+  String get noWindowsInstaller =>
+      'Esta versión no tiene instalador para Windows';
 
   @override
-  String get statsOnlineRate => 'Tasa en línea';
+  String get none => 'Ninguno';
 
   @override
-  String get statsGridCountLabel => 'Cuadrículas';
-
-  @override
-  String get maxPackets => 'Límite de paquetes';
-
-  @override
-  String get maxPacketsTip =>
-      'Cuántos paquetes conservar en la página de paquetes (predeterminado 2000; más usa más memoria)';
-
-  @override
-  String get maxTrackPts => 'Límite de puntos de rastro';
-
-  @override
-  String get maxTrackPtsTip =>
-      'Puntos de rastro por estación (predeterminado 300; determina cuánto atrás llega un rastro; solo se guarda un punto tras 20 m de movimiento)';
-
-  @override
-  String get onlineWindow => 'Ventana en línea (minutos)';
-
-  @override
-  String get onlineWindowTip =>
-      'Una estación sin informar durante más de este tiempo se considera sin conexión (predeterminado 5 minutos)';
-
-  @override
-  String get chatRecords => 'Historial de chat';
-
-  @override
-  String get chatRecordsCleared => 'Historial de chat borrado';
-
-  @override
-  String get deviceCat => 'Dispositivo';
-
-  @override
-  String get deviceCatDesc => 'Equipos de radio · próximamente';
-
-  @override
-  String get deviceSettings2 => 'Ajustes del dispositivo';
-
-  @override
-  String get deviceSettingsSubtitle => 'Conecta tu equipo de radio';
-
-  @override
-  String get underConstruction => 'En obras — aún no disponible';
-
-  @override
-  String get underConstructionHint =>
-      'Esta función aún se está desarrollando. Permanece atento.';
-
-  @override
-  String get storageLimit => 'Límites de datos';
-
-  @override
-  String get storageLimitSubtitle => 'Cuántos datos conservar localmente';
-
-  @override
-  String get connectionCard2 => 'Conexión APRS-IS';
-
-  @override
-  String get immersiveMap => 'Mapa inmersivo';
-
-  @override
-  String get immersiveMapTip =>
-      'Estilo navegación: centrado en ti, rumbo arriba, HUD en las esquinas';
-
-  @override
-  String get headingUp => 'Rumbo arriba';
+  String get nonprofitNote =>
+      'Este es un proyecto sin ánimo de lucro para aprender e intercambiar\nLas donaciones solo cubren los costes de servidor y desarrollo';
 
   @override
   String get northUp => 'Norte arriba';
 
   @override
-  String get followMe => 'Seguirme';
+  String get notConnectedAprsServer => 'Sin conexión al servidor APRS-IS';
 
   @override
-  String get beaconCountdown => 'Próxima baliza';
-
-  @override
-  String get beaconOff => 'Desactivado';
-
-  @override
-  String get unlocated => 'Sin ubicación';
-
-  @override
-  String get platform => 'Plataforma';
-
-  @override
-  String get nearbyStations => 'Estaciones cercanas';
-
-  @override
-  String get honorWall => 'Honores';
-
-  @override
-  String get accountHonors => 'Honores de la cuenta';
-
-  @override
-  String get achievementsSection => 'Logros';
+  String get notFound => 'No se encontraron estaciones';
 
   @override
   String get notLit => 'Aún no';
 
   @override
-  String honorCriteriaLine(String c) {
-    return 'Cómo obtenerlo: $c';
+  String noticeCached(String ago) {
+    return 'En caché · $ago';
   }
 
   @override
-  String get badgeFallback => 'Insignia';
+  String get noticeEmpty => 'Sin avisos por ahora';
 
   @override
-  String honoredBadges(String n, String m) {
-    return '$n/$m insignias desbloqueadas';
+  String get noticeEntryDesc => 'Consulta los últimos avisos de la web';
+
+  @override
+  String get noticeLoading => 'Cargando…';
+
+  @override
+  String noticeOfflineCache(String time) {
+    return 'Copia sin conexión · $time (se actualiza al recuperar la red)';
   }
 
   @override
-  String achievementsProgress(String n, String m) {
-    return '$n/$m logros';
+  String get noticeReadMore => 'Leer más';
+
+  @override
+  String get noticeTitle => 'Avisos';
+
+  @override
+  String get notifAudioConnected => 'Enlace de audio en línea';
+
+  @override
+  String get notifAudioDisconnected => 'Enlace de audio desconectado';
+
+  @override
+  String notifBeacon(String v) {
+    return 'Baliza $v';
   }
-
-  @override
-  String get beaconNotConnected => 'Sin conexión';
-
-  @override
-  String get beaconWaitingFix => 'Esperando posición';
-
-  @override
-  String get beaconSoon => 'Ahora';
-
-  @override
-  String beaconNextIn(String s) {
-    return 'Próximo informe en $s';
-  }
-
-  @override
-  String get beaconImminent => 'Informando…';
 
   @override
   String get notifConnected => 'Conectado';
@@ -5916,15 +4247,879 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String notifBeacon(String v) {
-    return 'Baliza $v';
+  String get notifTncConnected => 'TNC conectado';
+
+  @override
+  String get notifTncDisconnected => 'TNC desconectado';
+
+  @override
+  String get objectType => 'Objeto';
+
+  @override
+  String get officialWebsite => 'Sitio web oficial';
+
+  @override
+  String get offline => 'Sin conexión';
+
+  @override
+  String get offlineAreaHint => 'La vista actual es la zona que se descargará';
+
+  @override
+  String get offlineCacheDisabled =>
+      'La caché de teselas no está disponible en esta plataforma';
+
+  @override
+  String get offlineCacheSwitch => 'Guardar teselas en caché';
+
+  @override
+  String get offlineCacheSwitchDesc =>
+      'Guarda las teselas al navegar para verlas luego sin conexión';
+
+  @override
+  String get offlineCacheUsage => 'Caché de teselas';
+
+  @override
+  String get offlineCacheUsageDesc =>
+      'Se almacena al navegar; también puede descargar zonas manualmente';
+
+  @override
+  String get offlineCancelDownload => 'Cancelar';
+
+  @override
+  String get offlineClearCache => 'Borrar toda la caché de teselas';
+
+  @override
+  String get offlineClearCacheConfirm =>
+      '¿Borrar todas las teselas descargadas?';
+
+  @override
+  String get offlineClearCacheConfirmBody =>
+      'Se eliminarán las teselas descargadas; las zonas se conservan y habrá que descargarlas de nuevo.';
+
+  @override
+  String get offlineDeleteKeepTiles =>
+      'Eliminar solo el registro (conservar teselas)';
+
+  @override
+  String offlineDeleteRegionConfirm(String name) {
+    return '¿Eliminar la zona sin conexión \"$name\"?';
+  }
+
+  @override
+  String offlineDeleteTileCount(String n) {
+    return 'Se eliminarán unas $n teselas';
+  }
+
+  @override
+  String get offlineDeleteWithTiles => 'Eliminar el registro y sus teselas';
+
+  @override
+  String offlineDeletingTiles(String done, String total) {
+    return 'Eliminando $done/$total';
+  }
+
+  @override
+  String get offlineDownloadBusy =>
+      'Hay otra descarga en curso: espere o cancélela';
+
+  @override
+  String offlineEstimate(String tiles, String size) {
+    return 'unas $tiles teselas · unos $size';
+  }
+
+  @override
+  String offlineFailedCount(String n) {
+    return '$n fallidas';
+  }
+
+  @override
+  String get offlineLoading => 'Cargando…';
+
+  @override
+  String get offlineMap => 'Mapas sin conexión';
+
+  @override
+  String get offlineMapDesc =>
+      'Descargue teselas de mapa con antelación para ver el mapa sin red';
+
+  @override
+  String get offlineMapFooter =>
+      'Las teselas solo se guardan en este dispositivo; cada fuente tiene su propia caché';
+
+  @override
+  String get offlineName => 'Nombre';
+
+  @override
+  String get offlineNameHint => 'p. ej. Cerca de casa';
+
+  @override
+  String get offlineNew => 'Zona nueva';
+
+  @override
+  String get offlineNoRegions => 'Aún no hay zonas sin conexión';
+
+  @override
+  String get offlineNoRegionsHint =>
+      'Toque \"Zona nueva\" para descargar los lugares que frecuenta';
+
+  @override
+  String get offlineOnlySwitch => 'Solo teselas sin conexión';
+
+  @override
+  String get offlineOnlySwitchDesc =>
+      'No carga teselas de la red: solo las descargadas o en caché (ahorra datos)';
+
+  @override
+  String get offlineOnlyWarn =>
+      '\"Solo teselas sin conexión\" está activo: puede que falten partes del mapa';
+
+  @override
+  String get offlinePause => 'Pausar';
+
+  @override
+  String get offlineRegions => 'Zonas sin conexión';
+
+  @override
+  String get offlineRegionsDesc =>
+      'Las zonas descargadas se pueden ver en el mapa sin conexión';
+
+  @override
+  String get offlineResume => 'Reanudar';
+
+  @override
+  String get offlineShort => 'Sin conexión';
+
+  @override
+  String get offlineSource => 'Fuente del mapa';
+
+  @override
+  String get offlineStartDownload => 'Empezar descarga';
+
+  @override
+  String get offlineStatusCanceled => 'Cancelado';
+
+  @override
+  String get offlineStatusDone => 'Completado';
+
+  @override
+  String get offlineStatusFailed => 'Falló';
+
+  @override
+  String get offlineStatusPaused => 'En pausa';
+
+  @override
+  String get offlineStatusPending => 'En espera';
+
+  @override
+  String get offlineStatusRunning => 'Descargando';
+
+  @override
+  String get offlineSwitchFirst =>
+      'Active primero \"Guardar teselas en caché\"';
+
+  @override
+  String offlineTileProgress(String done, String total) {
+    return '$done/$total teselas';
+  }
+
+  @override
+  String offlineTilesDownloaded(String n) {
+    return '$n teselas descargadas';
+  }
+
+  @override
+  String offlineTooManyTiles(String tiles) {
+    return 'Zona demasiado grande (unas $tiles teselas): reduzca el área o el zoom máximo';
+  }
+
+  @override
+  String offlineZoomLevels(String min, String max) {
+    return 'zoom $min–$max';
+  }
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get online => 'En línea';
+
+  @override
+  String onlineCount(Object count) {
+    return '$count en línea';
+  }
+
+  @override
+  String get onlineOnly => 'Solo en línea';
+
+  @override
+  String get onlineWindow => 'Ventana en línea (minutos)';
+
+  @override
+  String get onlineWindowTip =>
+      'Una estación sin informar durante más de este tiempo se considera sin conexión (predeterminado 5 minutos)';
+
+  @override
+  String get onlyWgs84 => 'Solo WGS-84';
+
+  @override
+  String get oobeAgreeBody =>
+      '¡Te damos la bienvenida a APRSlocus! Antes de usar la app, lee y acepta los términos siguientes. Ten en cuenta que los datos APRS son públicos: una vez enviados, pueden ser recibidos, almacenados y reenviados por la red APRS mundial.';
+
+  @override
+  String get oobeAgreeCheck =>
+      'He leído y acepto el Acuerdo de usuario y la licencia GPL-3.0';
+
+  @override
+  String get oobeAgreeNeed => 'Lee y marca primero el Acuerdo de usuario';
+
+  @override
+  String get oobeAgreeTitle => 'Acuerdo de usuario y licencia';
+
+  @override
+  String get oobeBackgroundTip =>
+      'Consejo: permite que APRSlocus se ejecute en segundo plano, desactiva la optimización de batería y permite el inicio automático para mantener el balizamiento activo.';
+
+  @override
+  String get oobeCallDesc => 'Introduce tu indicativo';
+
+  @override
+  String get oobeCallTitle => 'Tu indicativo';
+
+  @override
+  String get oobeDeclineExit => 'Rechazar y salir';
+
+  @override
+  String get oobeFilterDesc =>
+      'Marca los países o regiones que quieras recibir. Si no marcas ninguno, recibirás todas las estaciones sin restricción.';
+
+  @override
+  String get oobeFilterTitle => 'Elegir región de recepción';
+
+  @override
+  String get oobeGpsFeatureDesc =>
+      'Obtén tu ubicación y envía balizas de posición a APRS-IS';
+
+  @override
+  String get oobeIsFeatureDesc =>
+      'Conéctate a un servidor público y recibe datos de estaciones de todo el mundo';
+
+  @override
+  String get oobeMapFeatureDesc =>
+      'Teselas de mapa en línea con estaciones APRS y rastros cercanos';
+
+  @override
+  String get oobeMsgFeatureDesc =>
+      'Intercambia mensajes con estaciones, con respuesta automática';
+
+  @override
+  String get oobeNextSteps =>
+      'Completa la configuración básica en los siguientes pasos. Podrás cambiarla luego en Ajustes.';
+
+  @override
+  String get oobePasscodeMissing => 'Passcode sin introducir';
+
+  @override
+  String get oobePasscodeMissingDesc =>
+      'El Passcode es el código de verificación de APRS-IS para tu indicativo.\n\nEl valor predeterminado -1 permite una conexión sin verificar, pero los mensajes y el chat grupal no funcionarán correctamente.\n\nConsulta el Passcode correcto para tu indicativo en https://aprs.cool/AprsPG.';
+
+  @override
+  String get oobeServerDesc =>
+      'Conéctate para recibir datos de estaciones APRS de todo el mundo. La configuración predeterminada funciona tal cual.';
+
+  @override
+  String get oobeServerTitle => 'Conectar al servidor APRS-IS';
+
+  @override
+  String get oobeSymbolDesc =>
+      'El símbolo representa el tipo de estación y se envía con las balizas de posición';
+
+  @override
+  String get oobeSymbolTitle => 'Elegir símbolo de estación';
+
+  @override
+  String get oobeWelcomeDesc => 'Empieza a configurar tu estación APRS';
+
+  @override
+  String get oobeWelcomeGps => 'Baliza de posición GPS';
+
+  @override
+  String get oobeWelcomeIs => 'Conexión APRS-IS';
+
+  @override
+  String get oobeWelcomeMsg => 'Mensajes APRS';
+
+  @override
+  String get oobeWelcomeRealMap => 'Mapa en vivo';
+
+  @override
+  String get oobeWelcomeTitle => 'Te damos la bienvenida a APRSlocus';
+
+  @override
+  String get openContainingFolder => 'Abrir carpeta contenedora';
+
+  @override
+  String get openDownload => 'Abrir página de descarga';
+
+  @override
+  String get openDownloadFolder => 'Abrir carpeta de descargas';
+
+  @override
+  String get openDownloads => 'Abrir carpeta de descargas';
+
+  @override
+  String get openFolder => 'Abrir carpeta';
+
+  @override
+  String get openInBrowser => 'Abrir en el navegador';
+
+  @override
+  String get openInMap => 'Ver en el mapa';
+
+  @override
+  String get openInstallDir => 'Abrir carpeta de instalación';
+
+  @override
+  String get openPackageManually => 'Abre el paquete en un gestor de archivos';
+
+  @override
+  String get openSource => 'Agradecimientos de código abierto';
+
+  @override
+  String orMoveM(String dist) {
+    return 'o $dist m';
+  }
+
+  @override
+  String orTurnDeg(String deg) {
+    return 'o $deg°';
+  }
+
+  @override
+  String get osAmap => 'AMap';
+
+  @override
+  String get osAmapDesc => 'Servicio de teselas de mapa';
+
+  @override
+  String get osAprs => 'APRS-IS';
+
+  @override
+  String get osAprsDesc => 'Red mundial de datos APRS';
+
+  @override
+  String get osFlutter => 'Flutter';
+
+  @override
+  String get osFlutterDesc => 'Marco de interfaz multiplataforma de Google';
+
+  @override
+  String get osHam => 'Radioaficionados';
+
+  @override
+  String get osHamDesc =>
+      'Aportaciones de toda la comunidad APRS de radioaficionados';
+
+  @override
+  String get ossLicenseSection => 'Código abierto y licencia';
+
+  @override
+  String get otherType => 'Otros';
+
+  @override
+  String get ownSourceGarminLive => 'Siguiendo (el GPS del teléfono cedió)';
+
+  @override
+  String get ownSourceGarminStale =>
+      'Enlace configurado, pero Garmin no tiene puntos nuevos';
+
+  @override
+  String get ownSourceHrIdle => 'Sin conectar (toca para conectar)';
+
+  @override
+  String get ownSourcePhoneGps => 'GPS del teléfono';
+
+  @override
+  String get packageDeleted => 'Paquete eliminado';
+
+  @override
+  String packageSize(String platform, String size) {
+    return 'Tamaño del paquete $platform: $size';
+  }
+
+  @override
+  String get packetConsole => 'Consola de paquetes';
+
+  @override
+  String packetLimitIs(int bytes) {
+    return 'Paquete $bytes B · límite de línea APRS-IS 512 B';
+  }
+
+  @override
+  String packetLimitRf(int bytes, int max) {
+    return 'Paquete $bytes B · límite de trama RF $max B';
+  }
+
+  @override
+  String get packetParseHint =>
+      'Pega un paquete APRS sin procesar, p. ej.:\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Estación de prueba';
+
+  @override
+  String get packetParseTest => 'Prueba del analizador de paquetes';
+
+  @override
+  String packetSendFailed(String err) {
+    return 'No enviado: $err';
+  }
+
+  @override
+  String packetSent(String line) {
+    return 'Entregado al enlace: $line';
+  }
+
+  @override
+  String packetStats(Object ppm, Object rx, Object tx) {
+    return 'RX $rx · TX $tx · $ppm/min';
+  }
+
+  @override
+  String get packetTcpipWarning =>
+      'Contiene TCPIP*: se elimina en RF (esa ruta es de APRS-IS)';
+
+  @override
+  String get packets => 'Paquetes';
+
+  @override
+  String packetsPerMinute(int count) {
+    return '$count/min';
+  }
+
+  @override
+  String get packetsReceived => 'RX';
+
+  @override
+  String get parseAndApply => 'Analizar y aplicar';
+
+  @override
+  String get parsedMode => 'Modo analizado';
+
+  @override
+  String get passcode => 'Passcode';
+
+  @override
+  String get passcodeImportant => 'El Passcode es importante';
+
+  @override
+  String get passcodeImportantDesc =>
+      'Un Passcode correcto es necesario para recibir mensajes de grupo y enviar confirmaciones. Con -1 puedes conectarte, pero la mensajería no funcionará correctamente.';
+
+  @override
+  String get passcodeLookupHint => 'Introduce tu indicativo, p. ej. BV2AAA';
+
+  @override
+  String get passcodeMessageWarning =>
+      'Passcode de acceso a APRS-IS. Con -1 no se pueden enviar ni recibir mensajes con normalidad.';
+
+  @override
+  String get passcodeTip =>
+      'Passcode de acceso a APRS-IS; puedes generarlo en línea. Usa -1 para acceso sin verificar';
+
+  @override
+  String get passcodeUnverified => 'Passcode sin verificar';
+
+  @override
+  String get passcodeUnverifiedHint => '-1 (sin verificar)';
+
+  @override
+  String get passcodeWarning =>
+      'Es posible que el passcode de acceso sea incorrecto; los mensajes podrían no funcionar';
+
+  @override
+  String get pasteAprsPacketHint =>
+      'Pega un paquete APRS sin procesar, p. ej.\nBV2XYZ>APRS,TCPIP*:!3904.25N/11624.44E>Estación de prueba';
+
+  @override
+  String get phoneBattery => 'Batería del teléfono';
+
+  @override
+  String get pickBeaconIconDesc =>
+      'Elige un icono de baliza · «Predeterminado» mantiene mi símbolo';
+
+  @override
+  String get pickOnMap => 'Elegir en el mapa';
+
+  @override
+  String get pickTrackMembers =>
+      'Elegir miembros (marca los indicativos que quieras seguir)';
+
+  @override
+  String pickedCoord(Object grid, Object lat, Object lng) {
+    return 'Posición fijada · $lat, $lng · Cuadrícula $grid';
+  }
+
+  @override
+  String get pkwdwplBindSubtitle =>
+      'Elige el puerto serie o Bluetooth que emite sentencias \$PKWDWPL';
+
+  @override
+  String get pkwdwplBindTitle => 'Vinculación y estado';
+
+  @override
+  String get pkwdwplDeviceDesc =>
+      'Vincula el puerto del equipo y revisa la recepción de puntos de ruta';
+
+  @override
+  String get pkwdwplDeviceTitle => 'Dispositivo PKWDWPL';
+
+  @override
+  String get pkwdwplErrReadOnly =>
+      'el enlace de solo recepción no puede transmitir';
+
+  @override
+  String get pkwdwplLogEmpty => 'Aún no hay registro de PKWDWPL';
+
+  @override
+  String get pkwdwplReadOnly =>
+      'Solo recepción · este equipo no transmite nada';
+
+  @override
+  String get pkwdwplRxOnly => 'Solo recepción';
+
+  @override
+  String get pkwdwplStatIgnored => 'Otras sentencias NMEA (ignoradas)';
+
+  @override
+  String get pkwdwplStatMismatch => 'Discrepancias de suma';
+
+  @override
+  String get pkwdwplStatRejected => 'Sentencias descartadas o inválidas';
+
+  @override
+  String get pkwdwplStatTitle => 'Recepción de puntos de ruta';
+
+  @override
+  String pkwdwplStats(String rx) {
+    return '$rx puntos de ruta recibidos';
+  }
+
+  @override
+  String get pkwdwplStrictChecksum =>
+      'Suma de comprobación estricta (descarta si no coincide)';
+
+  @override
+  String get pkwdwplStrictChecksumTip =>
+      'Desactivado por defecto: una discrepancia se marca y se registra en lugar de descartarse, porque en un cable local suele significar que el formato del firmware difiere del manual. Descartar todo dejaría la pantalla vacía y dificultaría mucho el diagnóstico.';
+
+  @override
+  String get pkwdwplTip =>
+      'Configura el formato de salida del puerto PC / GPS del equipo como \"\$PKWDWPL\" (normalmente 4800 8N1). Este enlace es de solo lectura y no transmite nada.';
+
+  @override
+  String get platform => 'Plataforma';
+
+  @override
+  String get port => 'Puerto';
+
+  @override
+  String get posAccuracy => 'Precisión de la posición';
+
+  @override
+  String get posSourceIdle => 'Sin seguimiento (ubicación desactivada)';
+
+  @override
+  String get posSourceLabel => 'Fuente de posición';
+
+  @override
+  String get posSourcePrecedence =>
+      'Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga datos en vivo) › GPS del teléfono';
+
+  @override
+  String posSourceUsing(String src) {
+    return 'En uso ahora: $src';
+  }
+
+  @override
+  String get posSrcGarmin => 'Garmin LiveTrack';
+
+  @override
+  String get posSrcNone => 'sin posición';
+
+  @override
+  String get posSrcPhone => 'GPS del teléfono';
+
+  @override
+  String get posSrcSim => 'simulada/manual';
+
+  @override
+  String get position => 'Posición';
+
+  @override
+  String positionBeacon(Object grid) {
+    return 'Baliza de posición · Cuadrícula $grid';
+  }
+
+  @override
+  String positionBeaconDetail(String grid, String detail) {
+    return 'Baliza de posición · Cuadrícula $grid · $detail';
+  }
+
+  @override
+  String get previous => 'Anterior';
+
+  @override
+  String get projectRepo => 'Repositorio';
+
+  @override
+  String get qqGroup => 'Grupo de QQ';
+
+  @override
+  String get qqGroupDesc => 'APRSlocus · Comentarios y dudas';
+
+  @override
+  String get qqSoftwareName => 'APRSlocus';
+
+  @override
+  String qrCodeTitle(String title) {
+    return 'Código QR de $title';
+  }
+
+  @override
+  String get qrLoadFailed => 'No se pudo cargar la imagen del código QR';
+
+  @override
+  String get qrSaveWechat =>
+      'Mantén pulsado para guardar · Escanea con WeChat para apoyar';
+
+  @override
+  String get quickActions => 'Acciones rápidas';
+
+  @override
+  String get quickTrackCreate => 'Nuevo grupo de seguimiento';
+
+  @override
+  String get quickTrackHint =>
+      'Elige estaciones recibidas o escribe indicativos; síguelos en el mapa directamente, sin necesidad de crear un chat grupal.';
+
+  @override
+  String get quickTrackManualHint =>
+      'Escribe indicativos, p. ej. BG7PGW,BG7LMW';
+
+  @override
+  String get quickTrackName => 'Nombre (opcional)';
+
+  @override
+  String get quickTrackNeedMembers => 'Elige o escribe al menos un indicativo';
+
+  @override
+  String get quickTrackNoStations =>
+      'Aún no hay estaciones recibidas; escribe indicativos abajo (separados por comas)';
+
+  @override
+  String get quickTrackPickLabel => 'Elegir estaciones que seguir';
+
+  @override
+  String get quickTrackStart => 'Empezar a seguir';
+
+  @override
+  String get quitApp => 'Salir de la app';
+
+  @override
+  String get quitAppDesc =>
+      'Al salir, APRSlocus detiene el reporte de ubicación y la recepción en segundo plano, y finaliza el proceso.';
+
+  @override
+  String get radioCat => 'Estación';
+
+  @override
+  String get radioCatDesc => 'Indicativo · SSID · Símbolo';
+
+  @override
+  String get radiusTip =>
+      'Radio de recepción (km); toca «Guardar y aplicar filtro» para aplicar';
+
+  @override
+  String get range10m => '10 min';
+
+  @override
+  String get range1h => '1 h';
+
+  @override
+  String get range30m => '30 min';
+
+  @override
+  String get range3h => '3 h';
+
+  @override
+  String get rangeAll => 'Todo';
+
+  @override
+  String get rangeFilterDesc =>
+      'Recibir solo paquetes de estaciones dentro del rango configurado';
+
+  @override
+  String get rawMode => 'Modo sin procesar';
+
+  @override
+  String get receive => 'Recibir';
+
+  @override
+  String get receiveCountries => 'Países';
+
+  @override
+  String get receiveCountryDesc =>
+      'Recibe todas las estaciones de un país/región por prefijo de indicativo';
+
+  @override
+  String get receiveFilter => 'Filtro por indicativo';
+
+  @override
+  String get receiveFilterDesc2 =>
+      'Además del filtro de rango, recibe estaciones por país/región o indicativo exacto';
+
+  @override
+  String get receiveOthers => 'Otras estaciones';
+
+  @override
+  String get receiveOthersDesc =>
+      'Recibir estaciones especiales cuyo indicativo no coincide con los países elegidos';
+
+  @override
+  String get recentPackets => 'Paquetes recientes';
+
+  @override
+  String get recheck => 'Comprobar de nuevo';
+
+  @override
+  String get reconnect => 'Reconectar';
+
+  @override
+  String get reconnectToApply => 'Reconecta para aplicarlo';
+
+  @override
+  String get reconnected => 'Reconectado';
+
+  @override
+  String get redownload => 'Volver a descargar';
+
+  @override
+  String get refresh => 'Actualizar';
+
+  @override
+  String get reject => 'Rechazar';
+
+  @override
+  String get relatedStations => 'Estaciones relacionadas';
+
+  @override
+  String get releaseNotes => 'Notas de la versión';
+
+  @override
+  String get reloadDone => 'Recargado';
+
+  @override
+  String get reloadUi => 'Recargar interfaz';
+
+  @override
+  String get relocate => 'Volver a ubicar';
+
+  @override
+  String get remove => 'Quitar';
+
+  @override
+  String repoLatestTitle(String version) {
+    return 'Última versión del repositorio v$version';
+  }
+
+  @override
+  String get reselectPoint => 'Elegir de nuevo';
+
+  @override
+  String get resetAll => 'Restablecer toda la configuración';
+
+  @override
+  String get resetAllDesc => 'Restablecer valores de fábrica';
+
+  @override
+  String get restartWizard => 'Ejecutar de nuevo el asistente';
+
+  @override
+  String get restartWizardButton => 'Ejecutar de nuevo';
+
+  @override
+  String get restartWizardConfirm =>
+      'Se abrirá de nuevo el asistente inicial para configurar indicativo, región de recepción, etc.\nTus ajustes actuales se conservan; podrás seguir usando la app al terminar.';
+
+  @override
+  String get restartWizardTitle => '¿Ejecutar de nuevo el asistente?';
+
+  @override
+  String get restoreDefaults => 'Restaurar valores predeterminados';
+
+  @override
+  String get retry => 'Reintentar';
+
+  @override
+  String get runInstaller => 'Ejecutar instalador';
+
+  @override
+  String get runNow => 'Ejecutar ahora';
+
+  @override
+  String rxOnlyBanner(String arg) {
+    return '$arg conectado · solo recepción (la fuente de transmisión está desconectada)';
+  }
+
+  @override
+  String get rxTx => 'RX / TX';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get saveAndApply => 'Guardar y aplicar filtro';
+
+  @override
+  String get saveAndTrack => 'Guardar y seguir';
+
+  @override
+  String get savedLocation => 'Ubicación guardada';
+
+  @override
+  String get search => 'Buscar';
+
+  @override
+  String get searchCallsign => 'Buscar indicativo…';
+
+  @override
+  String get searchHint =>
+      'Buscar indicativo / tipo / cuadrícula / comentario…';
+
+  @override
+  String get searchPacket => 'Buscar indicativo, destino o bruto…';
+
+  @override
+  String secondsAgo(int count) {
+    return 'hace ${count}s';
+  }
+
+  @override
+  String secondsValue(int count) {
+    return '$count s';
   }
 
   @override
   String get selectAll => 'Seleccionar todo';
 
   @override
-  String get deselectAll => 'Deseleccionar todo';
+  String get selectAllOnline => 'Seleccionar todos en línea';
+
+  @override
+  String get selectConversation => 'Elige una conversación para empezar';
+
+  @override
+  String get selectMapType => 'Seleccionar tipo de mapa';
+
+  @override
+  String get selectMessageReply => 'Toca un mensaje para responder…';
 
   @override
   String selectedCount(int n) {
@@ -5932,152 +5127,680 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String deleteSelected(int n) {
-    return 'Eliminar ($n)';
+  String selectedRecipients(int count) {
+    return '$count seleccionados';
   }
 
   @override
-  String deleteSelectedConfirm(int n) {
-    return '¿Eliminar los $n chats seleccionados? Esta acción no se puede deshacer.';
+  String get send => 'Enviar';
+
+  @override
+  String get sendBeacon => 'Enviar baliza';
+
+  @override
+  String sendMessageTo(String call) {
+    return 'Envía un mensaje a $call…';
   }
 
   @override
-  String get chatManageHint =>
-      'Toca un chat para seleccionarlo; mantener pulsado también selecciona';
+  String sendRecipientsList(int count, String calls) {
+    return 'Se enviará a $count: $calls';
+  }
 
   @override
-  String conversationsDeleted(int n) {
-    return '$n chats eliminados';
+  String get sendTo => 'Enviar a';
+
+  @override
+  String sendToCallHint(String call) {
+    return 'Enviar a $call…';
   }
+
+  @override
+  String sendToGroupHint(String group) {
+    return 'Enviar a $group…';
+  }
+
+  @override
+  String get sender => 'Remitente';
+
+  @override
+  String get sensorAssist => 'Posicionamiento con sensores';
+
+  @override
+  String get sensorAssistDesc =>
+      'Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android).';
+
+  @override
+  String get server => 'Servidor';
+
+  @override
+  String serverReturned(int code) {
+    return 'El servidor devolvió $code';
+  }
+
+  @override
+  String get setStep => 'Paso';
+
+  @override
+  String get settings => 'Ajustes';
+
+  @override
+  String get settingsBeaconSubtitle => 'Intervalo de envío y contenido';
+
+  @override
+  String get settingsChatManageSubtitle => 'Contactos y datos de chat';
+
+  @override
+  String get settingsChatStatsSubtitle =>
+      'Estadísticas de mensajes y contactos';
+
+  @override
+  String get settingsClearDataSubtitle => 'Eliminar registros locales';
+
+  @override
+  String get settingsConnStatusSubtitle => 'Estado e información de conexión';
+
+  @override
+  String get settingsContribCodeOptimization => 'Optimización de código';
+
+  @override
+  String get settingsDesc => 'Configura estación, ubicación y conexión';
+
+  @override
+  String get settingsDevSubtitle => 'Depuración y pruebas';
+
+  @override
+  String get settingsDisplayInfoSubtitle => 'Mi símbolo y posición actual';
+
+  @override
+  String get settingsFilterHint =>
+      'Recibir solo paquetes de estaciones dentro del rango configurado';
+
+  @override
+  String get settingsFilterSubtitle => 'Centro del filtro y radio';
+
+  @override
+  String get settingsGeneralSubtitle =>
+      'Tema, idioma y visualización de coordenadas';
+
+  @override
+  String get settingsLabSubtitle => 'Funciones experimentales';
+
+  @override
+  String get settingsLocModeSubtitle => 'Elegir método de ubicación';
+
+  @override
+  String get settingsLocSourceSubtitle => 'Elegir fuente de posición';
+
+  @override
+  String get settingsManualLocHint =>
+      'Cuando la ubicación automática no esté disponible, introduce coordenadas o elige un punto en el mapa para las balizas y el cálculo de distancias.';
+
+  @override
+  String get settingsManualLocSubtitle =>
+      'Entrada manual o punto en el mapa cuando no hay posición';
+
+  @override
+  String get settingsMapSubtitle => 'Tipo de mapa y visualización';
+
+  @override
+  String get settingsReceivePrefHint =>
+      'Además del filtro de rango, recibe estaciones por grupo de país/región o indicativo exacto';
+
+  @override
+  String get settingsReceivePrefSubtitle =>
+      'Recibir por país/región o indicativo';
+
+  @override
+  String get settingsServerSubtitle => 'Servidor APRS-IS y passcode';
+
+  @override
+  String get settingsStationIdentitySubtitle => 'Indicativo, SSID y comentario';
+
+  @override
+  String get settingsSubtitle =>
+      'Coordenadas del mapa y preferencias de pantalla';
+
+  @override
+  String get shareApp => 'Compartir APRSlocus';
+
+  @override
+  String get shareText =>
+      'APRSlocus — Seguimiento y mapas APRS para radioaficionados 📡\nSeguimiento de estaciones en tiempo real, mensajería y balizas. Disponible en Android y Windows.\nWeb: https://aprslocus.theez.top/\nDescarga: https://github.com/dariondong/APRSLocus/releases';
+
+  @override
+  String get shareTextCopied =>
+      'Texto copiado; pégalo para enviarlo a tus amigos';
+
+  @override
+  String get shareToSystem => 'Compartir en el sistema';
+
+  @override
+  String get shareToSystemDesc => 'WeChat, QQ, SMS, etc.';
+
+  @override
+  String get showAll => 'Mostrar todo';
+
+  @override
+  String get showStations => 'Mostrar estaciones';
+
+  @override
+  String get showTrails => 'Mostrar rastros';
+
+  @override
+  String get simData =>
+      'Activar datos de demostración (estaciones/paquetes de ejemplo)';
+
+  @override
+  String get simLocationHint => 'Usar una ubicación simulada (sin GPS)';
+
+  @override
+  String get simulatedKeepAlive => 'Ubicación simulada · keep-alive';
+
+  @override
+  String get simulatedLocation => 'Ubicación simulada';
+
+  @override
+  String get smartBeacon => 'SmartBeacon (por velocidad)';
+
+  @override
+  String get software => 'Software';
+
+  @override
+  String get sortBy => 'Ordenar';
+
+  @override
+  String get sortCall => 'Indicativo';
+
+  @override
+  String get sortDistance => 'Distancia';
+
+  @override
+  String get sortRecent => 'Reciente';
+
+  @override
+  String get sortStatus => 'Estado';
+
+  @override
+  String get sourceMovedHint =>
+      'Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos';
+
+  @override
+  String get speed => 'Velocidad';
+
+  @override
+  String get speedLabel => 'Velocidad';
+
+  @override
+  String get speedTierDesc =>
+      'Cuanto más rápido te mueves, más a menudo se reporta; cada nivel puede tener su propio intervalo e icono (vacío = mi símbolo).';
+
+  @override
+  String get speedTierRules => 'Niveles de velocidad';
+
+  @override
+  String get speedTierShortIntervalWarn =>
+      'Intervalos inferiores a 60 s aumentan notablemente la carga del servidor; se recomiendan 60 s o más.';
+
+  @override
+  String get sponsorAuthor => 'Autor BG7LZQ';
+
+  @override
+  String get sponsorAuthorItems =>
+      'Desarrolla y mantiene este proyecto en su tiempo libre';
+
+  @override
+  String get sponsorBgp => 'BG7PGW';
+
+  @override
+  String get sponsorBgpItems => 'Gracias por patrocinar un Mixue 🧋';
+
+  @override
+  String get sponsorEvery => 'Todos los que apoyan';
+
+  @override
+  String get sponsorEveryItems =>
+      'Cada aportación ayuda a que el proyecto siga adelante';
+
+  @override
+  String get sponsorGroup => 'STUDENT HAMS';
+
+  @override
+  String get sponsorGroupItems => 'Gracias al grupo por su apoyo económico';
+
+  @override
+  String get sponsorMethods => 'Formas de apoyar';
+
+  @override
+  String get sponsorSupport => 'Apoyo de patrocinadores';
+
+  @override
+  String get sponsors => 'Patrocinadores y agradecimientos';
+
+  @override
+  String get sponsorsThanks => 'Gracias a todos los que apoyan';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get ssidDesc =>
+      'El SSID es un sufijo del indicativo que identifica el equipo; p. ej., -9 en BG7ABC-9';
+
+  @override
+  String get ssidDescShort =>
+      'El SSID es el sufijo numérico del indicativo, como -9 en BG7ABC-9';
+
+  @override
+  String get ssidOptional => 'Sufijo SSID (opcional)';
+
+  @override
+  String get ssidSuffix => 'Sufijo SSID';
+
+  @override
+  String get start => 'Empezar';
+
+  @override
+  String get startGps => 'Iniciar GPS';
+
+  @override
+  String get station => 'Estación';
 
   @override
   String get stationActions => 'Acciones de estación';
 
   @override
-  String get deleteStation => 'Eliminar estación';
-
-  @override
-  String deleteStationConfirm(String name) {
-    return '¿Eliminar la estación $name? Se quitará de la lista; volverá a aparecer si se reciben de nuevo sus paquetes.';
+  String stationCount(Object count) {
+    return '$count estaciones';
   }
 
   @override
-  String get unfavorite => 'Quitar de favoritos';
-
-  @override
-  String get copyCallsign => 'Copiar indicativo';
-
-  @override
-  String get callsignCopied => 'Indicativo copiado';
+  String get stationCount2 => 'Número de estaciones';
 
   @override
   String get stationDeleted => 'Estación eliminada';
 
   @override
-  String get exportAdif => 'Exportar ADIF';
+  String get stationDetail => 'Detalle de estación';
 
   @override
-  String get exportAdifDesc =>
-      'Exporta conversaciones como un archivo de registro ADIF, importable en Log4OM, N3FJP y similares';
+  String get stationFilterOn => 'Filtrado por el panel de estaciones';
 
   @override
-  String get export => 'Exportar';
+  String get stationIdentity => 'Identidad de la estación';
 
   @override
-  String get adifHint =>
-      'Cada registro contiene solo el indicativo y la hora del primer mensaje (UTC); se omiten el modo y la banda';
+  String get stationList => 'Estaciones';
 
   @override
-  String get adifNoSelection =>
-      'Selecciona al menos una conversación para exportar';
+  String get stationListDesc =>
+      'Estaciones recibidas y sus recorridos, guardados en este dispositivo';
 
   @override
-  String adifExported(int n) {
-    return '$n registros exportados';
+  String get stationListTitle => 'Estaciones';
+
+  @override
+  String stationNoData(String call) {
+    return 'Aún no se han recibido datos de $call';
   }
 
   @override
-  String get adifExportDone => 'Exportación completada';
+  String get stationSettings => 'Ajustes de estación';
 
   @override
-  String get adifExportFailed =>
-      'Error al exportar: comprueba el permiso de almacenamiento o el espacio libre';
+  String get stationSettings2 => 'Ajustes de estación';
 
   @override
-  String adifSavedTo(String path) {
-    return 'Guardado en: $path';
+  String get stationSettingsDetail => 'Indicativo, SSID, símbolo y comentario';
+
+  @override
+  String get stationSettingsSubtitle => 'Indicativo, símbolo y baliza';
+
+  @override
+  String get stationary => 'Estacionario';
+
+  @override
+  String get stations => 'Estaciones';
+
+  @override
+  String get stationsCleared => 'Lista de estaciones borrada';
+
+  @override
+  String get stationsShown => 'Estaciones';
+
+  @override
+  String get statistics => 'Estadísticas';
+
+  @override
+  String get statsAprslocusUsers => 'Usuarios de APRSlocus';
+
+  @override
+  String get statsAvgSpeed => 'Velocidad media';
+
+  @override
+  String get statsCap => 'Capacidad';
+
+  @override
+  String get statsConn => 'Enlace';
+
+  @override
+  String get statsConnected => 'Conectado';
+
+  @override
+  String get statsDeviceDist => 'Clases de dispositivo';
+
+  @override
+  String get statsDisconnected => 'Sin conexión';
+
+  @override
+  String get statsFarthest => 'Más lejana';
+
+  @override
+  String statsGridCount(String n) {
+    return '$n cuadrículas';
   }
 
   @override
-  String get adifCopyPath => 'Copiar ruta';
+  String get statsGridCountLabel => 'Cuadrículas';
 
   @override
-  String get adifPathCopied => 'Ruta copiada';
+  String get statsGridDist => 'Distribución por cuadrícula';
 
   @override
-  String get chatShortLabel => 'Chat';
+  String get statsGridEmpty => 'Aún no hay posiciones de estaciones';
 
   @override
-  String get adifLogFile => 'Exportar chats como archivo de registro';
+  String get statsGridHint =>
+      'Estaciones por campo Maidenhead (4 caracteres), ordenadas';
 
   @override
-  String get adifOptions => 'Opciones de exportación';
+  String get statsLastHeard => 'Última señal';
 
   @override
-  String get adifMode => 'Modo (MODE)';
+  String get statsMovingCount => 'En movimiento';
 
   @override
-  String get adifNotWritten => 'Omitir';
+  String get statsMyGrid => 'Mi cuadrícula';
 
   @override
-  String get adifModePkt => 'PKT (paquete, recomendado)';
+  String get statsNoData => 'Sin datos';
 
   @override
-  String get adifModeFm => 'FM (voz)';
+  String get statsOnlineRate => 'Tasa en línea';
 
   @override
-  String get adifModeData => 'DATA (datos)';
+  String get statsOther => 'Otras métricas';
 
   @override
-  String get adifSubModeAprs => 'Añadir SUBMODE=APRS';
+  String get statsOverview => 'Resumen del sistema';
 
   @override
-  String get adifBand => 'Banda (BAND)';
+  String get statsPackets => 'Paquetes (recientes)';
 
   @override
-  String get adifStripSsid => 'Escribir solo el indicativo base (sin -SSID)';
+  String get statsPanel => 'Panel de estadísticas';
 
   @override
-  String get adifPreview => 'Vista previa (registro que se escribirá)';
-
-  @override
-  String get adifModeRequiredHint =>
-      'La mayoría de los programas de registro (incluido QRZ) exigen MODE; los registros sin él se rechazan';
-
-  @override
-  String get adifFreq => 'Frecuencia (FREQ)';
-
-  @override
-  String get adifFreqHint => 'En MHz; déjalo vacío para omitir';
-
-  @override
-  String get adifFreqInvalid => 'Introduce un número en MHz, p. ej. 144.640';
-
-  @override
-  String get sysTitle => 'Estado del sistema';
-
-  @override
-  String get sysLinkOff => 'Desactivado';
-
-  @override
-  String sysRx(String n) {
-    return 'Rx $n';
+  String statsPerMin(String n) {
+    return '$n/min';
   }
 
   @override
-  String sysTx(String n) {
-    return 'Tx $n';
+  String get statsRate => 'Velocidad';
+
+  @override
+  String get statsStationsTotal => 'Estaciones';
+
+  @override
+  String get statsStatusDist => 'Distribución por estado';
+
+  @override
+  String get statsTotalRx => 'Paquetes RX';
+
+  @override
+  String get statsTotalTx => 'Paquetes TX';
+
+  @override
+  String get statsTypeDist => 'Distribución por tipo APRS';
+
+  @override
+  String get statusFilter => 'Estado';
+
+  @override
+  String get statusType => 'Estado';
+
+  @override
+  String get stepContent => 'Mensaje';
+
+  @override
+  String get stepMembers => 'Miembros';
+
+  @override
+  String get stepName => 'Nombre';
+
+  @override
+  String get stepRecipients => 'Destinatarios';
+
+  @override
+  String get stoppedShort => 'Detenido';
+
+  @override
+  String get storageLimit => 'Límites de datos';
+
+  @override
+  String get storageLimitSubtitle => 'Cuántos datos conservar localmente';
+
+  @override
+  String get supportProject => 'Tu apoyo ayuda al proyecto a llegar más lejos';
+
+  @override
+  String get symAmbulance => 'Ambulancia';
+
+  @override
+  String get symBalloon => 'Globo';
+
+  @override
+  String get symBicycle => 'Bicicleta';
+
+  @override
+  String get symBigAircraft => 'Avión grande';
+
+  @override
+  String get symBus => 'Autobús';
+
+  @override
+  String get symCamping => 'Acampada';
+
+  @override
+  String get symCar => 'Coche';
+
+  @override
+  String get symCatAirWater => 'Aire / Agua';
+
+  @override
+  String get symCatBuildings => 'Edificios / Servicios';
+
+  @override
+  String get symCatComms => 'Comunicaciones / Otros';
+
+  @override
+  String get symCatEmergency => 'Emergencias';
+
+  @override
+  String get symCatNature => 'Meteorología / Naturaleza';
+
+  @override
+  String get symCatVehicles => 'Vehículos / Tráfico';
+
+  @override
+  String get symCmdCenter => 'Centro de mando';
+
+  @override
+  String get symDigi => 'Repetidor digital';
+
+  @override
+  String get symDigiTower => 'Torre repetidora';
+
+  @override
+  String get symDog => 'Perro';
+
+  @override
+  String get symDxCluster => 'Clúster DX';
+
+  @override
+  String get symEmergCenter => 'Centro de emergencias';
+
+  @override
+  String get symFileServer => 'Servidor de archivos';
+
+  @override
+  String get symFireAlarm => 'Alarma de incendios';
+
+  @override
+  String get symFireStation => 'Parque de bomberos';
+
+  @override
+  String get symFireTruck => 'Camión de bomberos';
+
+  @override
+  String get symFmoStation => 'Estación FMO';
+
+  @override
+  String get symGlider => 'Planeador';
+
+  @override
+  String get symGrid => 'Cuadrícula';
+
+  @override
+  String get symHandicap => 'Discapacidad';
+
+  @override
+  String get symHfGateway => 'Pasarela HF';
+
+  @override
+  String get symHorse => 'A caballo';
+
+  @override
+  String get symHospital => 'Hospital';
+
+  @override
+  String get symHotel => 'Hotel';
+
+  @override
+  String get symHouse => 'Casa';
+
+  @override
+  String get symHurricane => 'Huracán';
+
+  @override
+  String get symJeep => 'Jeep';
+
+  @override
+  String get symLaptop => 'Portátil';
+
+  @override
+  String get symMicE => 'Repetidor Mic-E';
+
+  @override
+  String get symMobileSat => 'Satélite móvil';
+
+  @override
+  String get symMotel => 'Motel';
+
+  @override
+  String get symMotorcycle => 'Moto';
+
+  @override
+  String get symNode => 'Nodo';
+
+  @override
+  String get symPerson => 'Persona';
+
+  @override
+  String get symPolice => 'Policía';
+
+  @override
+  String get symPoliceCar => 'Coche de policía';
+
+  @override
+  String get symPostOffice => 'Oficina de correos';
+
+  @override
+  String get symRedCross => 'Cruz Roja';
+
+  @override
+  String get symRv => 'Autocaravana';
+
+  @override
+  String get symSailboat => 'Velero';
+
+  @override
+  String get symSatAntenna => 'Antena de satélite';
+
+  @override
+  String get symSchool => 'Escuela';
+
+  @override
+  String get symSemi => 'Semirremolque';
+
+  @override
+  String get symShelter => 'Refugio';
+
+  @override
+  String get symShip => 'Barco';
+
+  @override
+  String get symSmallAircraft => 'Avioneta';
+
+  @override
+  String get symSnowmobile => 'Moto de nieve';
+
+  @override
+  String get symTelephone => 'Teléfono';
+
+  @override
+  String get symTrain => 'Tren';
+
+  @override
+  String get symTruck => 'Camión';
+
+  @override
+  String get symTruckStop => 'Área de camiones';
+
+  @override
+  String get symVan => 'Furgoneta';
+
+  @override
+  String get symWater => 'Punto de agua';
+
+  @override
+  String get symWeather => 'Meteorología';
+
+  @override
+  String get symWxStation => 'Estación meteorológica';
+
+  @override
+  String get symXUnix => 'X/Unix';
+
+  @override
+  String get symYagi => 'Yagi';
+
+  @override
+  String symbolCategoryName(String category) {
+    String _temp0 = intl.Intl.selectLogic(category, {
+      'vehicles': 'Vehículos / transporte',
+      'facilities': 'Edificios / servicios',
+      'weatherNature': 'Meteorología / naturaleza',
+      'emergencyRescue': 'Emergencias / rescate',
+      'airWater': 'Aire / agua',
+      'communications': 'Comunicaciones / otros',
+      'other': 'Otros',
+    });
+    return '$_temp0';
   }
+
+  @override
+  String get symbolLabel => 'Símbolo';
 
   @override
   String sysBeacon(String t) {
@@ -6085,9 +5808,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String sysStations(String n) {
-    return 'Estaciones $n';
-  }
+  String get sysEmpty => 'Abre APRSlocus y conéctate para ver el estado aquí';
 
   @override
   String get sysFixOk => 'Ubicado';
@@ -6096,237 +5817,212 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sysLinkAudio => 'Audio';
 
   @override
-  String get sysEmpty => 'Abre APRSlocus y conéctate para ver el estado aquí';
+  String get sysLinkOff => 'Desactivado';
 
   @override
-  String get backupTitle => 'Copia de seguridad';
+  String get sysRecentLabel => 'Última recepción';
 
   @override
-  String get backupSubtitle => 'Exporta o importa ajustes y datos';
-
-  @override
-  String get backupEntryDesc => 'Empaqueta ajustes y datos en JSON';
-
-  @override
-  String get backupDesc =>
-      'La copia es un archivo JSON que puedes restaurar al cambiar de dispositivo o reinstalar. La importación sobrescribe por grupo y no se puede deshacer.';
-
-  @override
-  String get backupExport => 'Exportar copia';
-
-  @override
-  String get backupExportDesc =>
-      'Elige qué incluir y guárdalo en un archivo o cópialo';
-
-  @override
-  String get backupExportToFile => 'Guardar en archivo';
-
-  @override
-  String get backupCopyJson => 'Copiar al portapapeles';
-
-  @override
-  String get backupExportDone => 'Copia exportada';
-
-  @override
-  String get backupExportFailed =>
-      'No se pudo exportar: revisa el permiso de almacenamiento o el espacio libre';
-
-  @override
-  String get backupCopyDone => 'Copia copiada al portapapeles';
-
-  @override
-  String backupSavedTo(String path) {
-    return 'Guardado en: $path';
+  String sysRx(String n) {
+    return 'Rx $n';
   }
 
   @override
-  String get backupCatSettings => 'Ajustes';
-
-  @override
-  String get backupCatSettingsDesc =>
-      'Estación, baliza, mapa, filtros, fuentes, servidor';
-
-  @override
-  String get backupCatStations => 'Estaciones y contactos';
-
-  @override
-  String get backupCatStationsDesc =>
-      'Favoritos, contactos manuales y sus notas';
-
-  @override
-  String get backupCatMessages => 'Mensajes';
-
-  @override
-  String get backupCatMessagesDesc => 'Mensajes directos y posiciones leídas';
-
-  @override
-  String get backupCatChats => 'Chats grupales';
-
-  @override
-  String get backupCatChatsDesc => 'Grupos, miembros y estado leído';
-
-  @override
-  String get backupCatTranslate => 'Ajustes de traducción';
-
-  @override
-  String get backupCatTranslateDesc =>
-      'Proveedores, claves y preferencias de idioma';
-
-  @override
-  String get backupCatHonors => 'Logros y honores';
-
-  @override
-  String get backupCatHonorsDesc =>
-      'Desbloqueos, contadores y insignia predeterminada';
-
-  @override
-  String backupItems(int n) {
-    return '$n elementos';
+  String sysStations(String n) {
+    return 'Estaciones $n';
   }
 
   @override
-  String get backupSelectAll => 'Seleccionar todo';
+  String get sysTitle => 'Estado del sistema';
 
   @override
-  String get backupNoSelection => 'Selecciona al menos un grupo';
-
-  @override
-  String get backupImport => 'Importar copia';
-
-  @override
-  String get backupImportDesc => 'Elige un archivo JSON exportado antes';
-
-  @override
-  String get backupPickFile => 'Elegir archivo';
-
-  @override
-  String get backupPaste => 'Pegar del portapapeles';
-
-  @override
-  String get backupPasteEmpty => 'No hay texto en el portapapeles';
-
-  @override
-  String get backupPreview => 'Contenido de la copia';
-
-  @override
-  String backupFromVersion(String v) {
-    return 'Versión de origen $v';
+  String sysTx(String n) {
+    return 'Tx $n';
   }
 
   @override
-  String backupExportedAt(String t) {
-    return 'Exportado $t';
+  String systemInviteDeclined(String call) {
+    return '$call ha rechazado la invitación';
   }
 
   @override
-  String get backupImportSelected => 'Importar selección';
+  String get systemLog => 'Registro del sistema';
 
   @override
-  String get backupImportConfirmTitle => '¿Importar la copia?';
-
-  @override
-  String get backupImportConfirm =>
-      'Los grupos seleccionados se sobrescribirán y no se puede deshacer. Se recomienda exportar antes una copia de los datos actuales.';
-
-  @override
-  String backupImported(int n) {
-    return 'Se importaron $n elementos';
+  String systemMemberJoined(String call) {
+    return '$call se ha unido al grupo';
   }
 
   @override
-  String backupSkipped(int n) {
-    return 'Se omitieron $n entradas desconocidas';
+  String systemMemberLeft(String call) {
+    return '$call ha salido del grupo';
   }
 
   @override
-  String get backupImportNothing =>
-      'La copia no tiene datos de los grupos seleccionados';
+  String get tapAnywhereClose => 'Toca en cualquier sitio para cerrar';
 
   @override
-  String get backupRestartTitle => 'Importación completada';
+  String get tapMapHint =>
+      'Toca el mapa para ver estaciones · pellizca para ampliar';
 
   @override
-  String get backupRestartHint =>
-      'Los datos están guardados; reinicia la app para que todo surta efecto (logros, traducción, conexión).';
+  String get tapToInvite => 'Toca para invitar';
 
   @override
-  String get backupRestartNow => 'Salir de la app';
+  String get tapToView => 'Toca dos veces la baliza para más';
 
   @override
-  String get backupLater => 'Más tarde';
+  String get telemetryTitle => 'Cambios de velocidad / altitud';
 
   @override
-  String get backupSecurityTip =>
-      'La copia incluye tu indicativo, la contraseña del servidor y claves API: guárdala bien.';
+  String get testMembers => 'Colaboradores de prueba';
 
   @override
-  String get backupWebHint =>
-      'En la web usa «copiar / pegar del portapapeles».';
+  String get testTxAction => 'Transmitir trama de prueba';
 
   @override
-  String get backupErrNotJson => 'El archivo no es JSON válido';
+  String get testTxDesc =>
+      'Envía un paquete de estado para comprobar que el enlace llega al aire';
 
   @override
-  String get backupErrNotBackup => 'No es una copia de APRSlocus';
+  String testTxFail(String err) {
+    return 'Fallo de la trama de prueba: $err';
+  }
 
   @override
-  String get backupErrSchemaNewer =>
-      'La copia proviene de una versión más nueva de APRSlocus: actualiza la app primero';
+  String get testTxHint =>
+      'Esto **transmite de verdad** (paquete de estado, sin coordenadas). Asegúrate de operar dentro de tu licencia e indicativo';
 
   @override
-  String get backupErrEmpty => 'La copia no contiene nada que importar';
+  String get testTxNeedsConnect => 'Conecta primero el enlace';
 
   @override
-  String get backupErrTooLarge =>
-      'La copia supera los 32 MB y no se puede leer';
+  String get testTxSent => 'Trama de prueba entregada al enlace';
 
   @override
-  String get backupErrRead => 'No se pudo leer la copia';
+  String get testTxTitle => 'Transmisión de prueba';
 
   @override
-  String get backupErrUnsupported =>
-      'Aquí no se pueden elegir archivos: pega desde el portapapeles';
+  String get thanks => 'Gracias';
 
   @override
-  String get themeTitle => 'Tema';
+  String get themeAccentFrom => 'Inicio del degradado';
 
   @override
-  String get themeEntryDesc => 'Personaliza colores, iconos y texto';
-
-  @override
-  String get themeSubtitle =>
-      'Haz tuyos los colores, iconos y textos habituales';
-
-  @override
-  String get themePresets => 'Preajustes y mis temas';
-
-  @override
-  String get themePresetTag => 'preajuste';
+  String get themeAccentTo => 'Fin del degradado';
 
   @override
   String get themeActive => 'En uso';
 
   @override
-  String get themePresetDefault => 'Predeterminado';
+  String get themeAlignBottom => 'Abajo';
 
   @override
-  String get themePresetOcean => 'Océano';
+  String get themeAlignBottomLeft => 'Abajo izq.';
 
   @override
-  String get themePresetForest => 'Bosque';
+  String get themeAlignBottomRight => 'Abajo der.';
 
   @override
-  String get themePresetMidnight => 'Medianoche';
+  String get themeAlignCenter => 'Centro';
 
   @override
-  String get themePresetSunset => 'Atardecer';
+  String get themeAlignLeft => 'Izquierda';
 
   @override
-  String get themePresetContrast => 'Alto contraste';
+  String get themeAlignRight => 'Derecha';
+
+  @override
+  String get themeAlignTop => 'Arriba';
+
+  @override
+  String get themeAlignTopLeft => 'Arriba izq.';
+
+  @override
+  String get themeAlignTopRight => 'Arriba der.';
+
+  @override
+  String get themeAuthor => 'Autor';
+
+  @override
+  String get themeAuthorHint => 'Tu indicativo o apodo';
+
+  @override
+  String get themeBg => 'Imagen de fondo';
+
+  @override
+  String get themeBgAlign => 'Alineación';
+
+  @override
+  String get themeBgBlur => 'Desenfoque';
+
+  @override
+  String get themeBgBlurDesc =>
+      'El desenfoque elimina detalle y hace legible el texto encima';
+
+  @override
+  String get themeBgDesc =>
+      'Usa una imagen como fondo; las tarjetas se vuelven transparentes automáticamente';
+
+  @override
+  String get themeBgDisabledHint =>
+      'Este tema no tiene fondo: el fondo es un color sólido';
+
+  @override
+  String get themeBgErrTooLarge =>
+      'El fondo supera los 8 MB: comprímelo (los iconos tienen un límite de 2 MB)';
+
+  @override
+  String get themeBgFit => 'Modo de ajuste';
+
+  @override
+  String get themeBgFitContain => 'Contener';
+
+  @override
+  String get themeBgFitCover => 'Cubrir';
+
+  @override
+  String get themeBgFitStretch => 'Estirar';
+
+  @override
+  String get themeBgFitTile => 'Mosaico';
+
+  @override
+  String get themeBgLocalOnly =>
+      'La imagen se queda en este dispositivo: el archivo de tema solo guarda una referencia, así que quien lo reciba verá el tema sin fondo.';
+
+  @override
+  String get themeBgNone => 'Sin definir';
+
+  @override
+  String get themeBgOpacity => 'Opacidad';
+
+  @override
+  String get themeBgOpacityDesc =>
+      'También define el velo: más alto muestra más imagen y arriesga la legibilidad';
+
+  @override
+  String get themeBgPick => 'Elegir imagen';
+
+  @override
+  String get themeBgRemove => 'Quitar fondo';
+
+  @override
+  String get themeBgReplace => 'Cambiar imagen';
+
+  @override
+  String get themeBgScale => 'Escala';
+
+  @override
+  String get themeBgScaleDesc =>
+      '1.0 = tamaño original; amplía para mostrar solo una parte';
 
   @override
   String get themeBuiltinHint =>
       'Los preajustes no se editan: cópialos a tus temas';
+
+  @override
+  String get themeColor => 'Color del tema';
 
   @override
   String get themeColors => 'Colores';
@@ -6334,36 +6030,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get themeColorsDesc =>
       'Sobrescribe colores uno a uno; el resto queda por defecto';
-
-  @override
-  String get themeRadius => 'Redondeo de tarjetas';
-
-  @override
-  String get themeRadiusDesc =>
-      'Se aplica a tarjetas y campos (las insignias no cambian)';
-
-  @override
-  String get themeIcons => 'Iconos';
-
-  @override
-  String get themeIconsDesc =>
-      'Cambia los iconos de las pestañas y de los ajustes';
-
-  @override
-  String get themeTexts => 'Texto';
-
-  @override
-  String get themeTextsDesc =>
-      'Sobrescribe textos habituales (los botones y los mensajes de error se excluyen a propósito)';
-
-  @override
-  String get themeNew => 'Nuevo tema';
-
-  @override
-  String get themeDuplicate => 'Copiar a mis temas';
-
-  @override
-  String get themeRename => 'Renombrar';
 
   @override
   String get themeDelete => 'Eliminar tema';
@@ -6374,84 +6040,38 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get themeReset => 'Restablecer';
+  String get themeDensity => 'Densidad';
 
   @override
-  String get themeResetAll => 'Restablecer este tema';
+  String get themeDensityComfortable => 'Amplia';
 
   @override
-  String get themeSaved => 'Tema guardado';
+  String get themeDensityCompact => 'Compacta';
 
   @override
-  String get themeNameHint => 'Nombre del tema';
+  String get themeDensityHint =>
+      'Cambia el relleno de las tarjetas; si algo no cambia, su espaciado está fijado aparte';
 
   @override
-  String get themePickColor => 'Elegir color';
+  String get themeDensityNormal => 'Normal';
 
   @override
-  String get themePickIcon => 'Elegir icono';
+  String get themeDescHint => 'Una línea sobre esta skin';
 
   @override
-  String get themePickIconSearch => 'Buscar nombres de iconos';
+  String get themeDescription => 'Descripción';
+
+  @override
+  String get themeDuplicate => 'Copiar a mis temas';
 
   @override
   String get themeEditText => 'Editar texto';
 
   @override
-  String get themeTextHint => 'Vacío para restablecer';
+  String get themeEntryDesc => 'Personaliza colores, iconos y texto';
 
   @override
-  String get themeIconImport => 'Importar imagen';
-
-  @override
-  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG, hasta 2 MB';
-
-  @override
-  String themeIconImportDone(String name) {
-    return 'Icono importado: $name';
-  }
-
-  @override
-  String get themeIconWebHint =>
-      'En la web no se pueden importar imágenes: usa la biblioteca integrada';
-
-  @override
-  String get themeIconErrFormat =>
-      'Formato de imagen no admitido (PNG/JPG/WebP/GIF/BMP/SVG)';
-
-  @override
-  String get themeIconErrTooLarge => 'La imagen supera los 2 MB: comprímela';
-
-  @override
-  String get themeIconErrFailed => 'No se pudo importar el icono';
-
-  @override
-  String get themeIconErrUnsupported =>
-      'Esta plataforma no admite importar imágenes';
-
-  @override
-  String get themeIo => 'Importar y exportar';
-
-  @override
-  String get themeIoDesc =>
-      'Un tema es texto JSON: se puede compartir y editar a mano';
-
-  @override
-  String get themeExport => 'Exportar este tema';
-
-  @override
-  String get themeExportAll => 'Exportar todos los temas';
-
-  @override
-  String get themeImport => 'Importar temas';
-
-  @override
-  String get themeImportPaste => 'Importar del portapapeles';
-
-  @override
-  String themeImportDone(int n) {
-    return 'Se importaron $n temas';
-  }
+  String get themeErrEmpty => 'El archivo no contiene ningún tema utilizable';
 
   @override
   String get themeErrNotJson => 'El archivo no es JSON válido';
@@ -6464,107 +6084,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'El tema proviene de una versión más nueva de APRSlocus: actualiza la app';
 
   @override
-  String get themeErrEmpty => 'El archivo no contiene ningún tema utilizable';
+  String get themeExport => 'Exportar este tema';
 
   @override
-  String get themeFixedPrimary =>
-      'El tema activo fija el color principal: cámbialo en la página Tema';
+  String get themeExportAll => 'Exportar todos los temas';
 
   @override
-  String get themeTokenPrimary => 'Principal';
+  String get themeExportClipboardTooBig =>
+      'Las imágenes son demasiado grandes para el portapapeles: usa «Exportar todos los temas» para guardarlas en un archivo';
 
   @override
-  String get themeTokenSurface => 'Superficie de tarjeta';
-
-  @override
-  String get themeTokenBackground => 'Fondo de página';
-
-  @override
-  String get themeTokenBackgroundSoft => 'Fondo secundario';
-
-  @override
-  String get themeTokenTextPrimary => 'Texto principal';
-
-  @override
-  String get themeTokenTextSecondary => 'Texto secundario';
-
-  @override
-  String get themeTokenTextMuted => 'Texto atenuado';
-
-  @override
-  String get themeTokenDivider => 'Separador';
-
-  @override
-  String get themeTokenSuccess => 'Éxito / en línea';
-
-  @override
-  String get themeTokenWarning => 'Aviso';
-
-  @override
-  String get themeTokenDanger => 'Peligro / sin conexión';
-
-  @override
-  String get themeTokenInfo => 'Información / acento';
-
-  @override
-  String get themeBg => 'Imagen de fondo';
-
-  @override
-  String get themeBgDesc =>
-      'Usa una imagen como fondo; las tarjetas se vuelven transparentes automáticamente';
-
-  @override
-  String get themeBgPick => 'Elegir imagen';
-
-  @override
-  String get themeBgReplace => 'Cambiar imagen';
-
-  @override
-  String get themeBgRemove => 'Quitar fondo';
-
-  @override
-  String get themeBgOpacity => 'Opacidad';
-
-  @override
-  String get themeBgOpacityDesc =>
-      'También define el velo: más alto muestra más imagen y arriesga la legibilidad';
-
-  @override
-  String get themeBgBlur => 'Desenfoque';
-
-  @override
-  String get themeBgBlurDesc =>
-      'El desenfoque elimina detalle y hace legible el texto encima';
-
-  @override
-  String get themeBgFit => 'Modo de ajuste';
-
-  @override
-  String get themeBgFitCover => 'Cubrir';
-
-  @override
-  String get themeBgFitContain => 'Contener';
-
-  @override
-  String get themeBgFitStretch => 'Estirar';
-
-  @override
-  String get themeBgFitTile => 'Mosaico';
-
-  @override
-  String get themeBgNone => 'Sin definir';
-
-  @override
-  String get themeBgErrTooLarge =>
-      'El fondo supera los 8 MB: comprímelo (los iconos tienen un límite de 2 MB)';
-
-  @override
-  String get themeBgLocalOnly =>
-      'La imagen se queda en este dispositivo: el archivo de tema solo guarda una referencia, así que quien lo reciba verá el tema sin fondo.';
-
-  @override
-  String get themeBgDisabledHint =>
-      'Este tema no tiene fondo: el fondo es un color sólido';
+  String get themeExportNoImages =>
+      'Este tema no usa imágenes: la exportación solo lleva colores y texto';
 
   @override
   String get themeExportWithImages => 'Incluir imágenes al exportar';
@@ -6575,12 +6106,71 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get themeExportNoImages =>
-      'Este tema no usa imágenes: la exportación solo lleva colores y texto';
+  String get themeFixedPrimary =>
+      'El tema activo fija el color principal: cámbialo en la página Tema';
 
   @override
-  String get themeExportClipboardTooBig =>
-      'Las imágenes son demasiado grandes para el portapapeles: usa «Exportar todos los temas» para guardarlas en un archivo';
+  String get themeFollowsPrimary => 'Sigue al principal';
+
+  @override
+  String get themeFont => 'Tipografía';
+
+  @override
+  String get themeFontDefault => 'Predeterminada';
+
+  @override
+  String get themeFontHint =>
+      'Solo usa fuentes instaladas en el sistema; si falta alguna, se sustituye automáticamente';
+
+  @override
+  String get themeFontMono => 'Monoespaciada';
+
+  @override
+  String get themeFontSystem => 'Fuente del sistema';
+
+  @override
+  String get themeIconErrFailed => 'No se pudo importar el icono';
+
+  @override
+  String get themeIconErrFormat =>
+      'Formato de imagen no admitido (PNG/JPG/WebP/GIF/BMP/SVG)';
+
+  @override
+  String get themeIconErrTooLarge => 'La imagen supera los 2 MB: comprímela';
+
+  @override
+  String get themeIconErrUnsupported =>
+      'Esta plataforma no admite importar imágenes';
+
+  @override
+  String get themeIconImport => 'Importar imagen';
+
+  @override
+  String themeIconImportDone(String name) {
+    return 'Icono importado: $name';
+  }
+
+  @override
+  String get themeIconImportHint => 'PNG/JPG/WebP/GIF/BMP/SVG, hasta 2 MB';
+
+  @override
+  String get themeIconWebHint =>
+      'En la web no se pueden importar imágenes: usa la biblioteca integrada';
+
+  @override
+  String get themeIcons => 'Iconos';
+
+  @override
+  String get themeIconsDesc =>
+      'Cambia los iconos de las pestañas y de los ajustes';
+
+  @override
+  String get themeImport => 'Importar temas';
+
+  @override
+  String themeImportDone(int n) {
+    return 'Se importaron $n temas';
+  }
 
   @override
   String themeImportImagesSkipped(int n) {
@@ -6588,19 +6178,109 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get backupThemeImagesHint =>
-      'La copia incluirá las imágenes que usan tus temas. Sin ellas, al restaurar el tema vuelve a los iconos integrados.';
+  String get themeImportPaste => 'Importar del portapapeles';
 
   @override
-  String get backupThemeImagesOff =>
-      'Sin imágenes: copia más pequeña, pero al restaurar el tema le faltarán el fondo y los iconos personalizados';
+  String get themeIo => 'Importar y exportar';
+
+  @override
+  String get themeIoDesc =>
+      'Un tema es texto JSON: se puede compartir y editar a mano';
+
+  @override
+  String get themeLayout => 'Densidad y tipografía';
+
+  @override
+  String get themeLayoutDesc => 'Solo afecta al relleno de tarjetas y campos';
+
+  @override
+  String get themeNameHint => 'Nombre del tema';
+
+  @override
+  String get themeNew => 'Nuevo tema';
+
+  @override
+  String get themeOverridden => 'Personalizado';
+
+  @override
+  String get themePickColor => 'Elegir color';
+
+  @override
+  String get themePickIcon => 'Elegir icono';
+
+  @override
+  String get themePickIconSearch => 'Buscar nombres de iconos';
+
+  @override
+  String get themePresetAmber => 'Ámbar';
+
+  @override
+  String get themePresetContrast => 'Alto contraste';
+
+  @override
+  String get themePresetDefault => 'Predeterminado';
+
+  @override
+  String get themePresetForest => 'Bosque';
+
+  @override
+  String get themePresetGraphite => 'Grafito';
+
+  @override
+  String get themePresetMidnight => 'Medianoche';
+
+  @override
+  String get themePresetOcean => 'Océano';
+
+  @override
+  String get themePresetSakura => 'Sakura';
+
+  @override
+  String get themePresetSunset => 'Atardecer';
+
+  @override
+  String get themePresetTag => 'preajuste';
+
+  @override
+  String get themePresetTerminal => 'Terminal';
+
+  @override
+  String get themePresets => 'Preajustes y mis temas';
+
+  @override
+  String get themePreviewSwatches => 'Muestras de color';
+
+  @override
+  String get themeRadius => 'Redondeo de tarjetas';
+
+  @override
+  String get themeRadiusDesc =>
+      'Se aplica a tarjetas y campos (las insignias no cambian)';
+
+  @override
+  String get themeRename => 'Renombrar';
+
+  @override
+  String get themeReset => 'Restablecer';
+
+  @override
+  String get themeResetAll => 'Restablecer este tema';
+
+  @override
+  String get themeSaved => 'Tema guardado';
+
+  @override
+  String get themeSkinInfo => 'Información de la skin';
+
+  @override
+  String get themeSkinInfoDesc => 'Ambos viajan con la skin al compartirla';
+
+  @override
+  String get themeSubtitle =>
+      'Haz tuyos los colores, iconos y textos habituales';
 
   @override
   String get themeSurface => 'Superficie de tarjeta';
-
-  @override
-  String get themeSurfaceDesc =>
-      'Con imagen de fondo, cuán translúcidas son las tarjetas';
 
   @override
   String get themeSurfaceAlpha => 'Opacidad (más bajo = más transparente)';
@@ -6610,46 +6290,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'En torno a 0.85 cubre y deja ver el fondo; por debajo de 0.6 el texto se emborrona';
 
   @override
+  String get themeSurfaceDesc =>
+      'Con imagen de fondo, cuán translúcidas son las tarjetas';
+
+  @override
   String get themeSurfaceNoBg =>
       'No hay imagen de fondo, así que aún no se nota';
-
-  @override
-  String get themeLayout => 'Densidad y tipografía';
-
-  @override
-  String get themeLayoutDesc => 'Solo afecta al relleno de tarjetas y campos';
-
-  @override
-  String get themeDensity => 'Densidad';
-
-  @override
-  String get themeDensityCompact => 'Compacta';
-
-  @override
-  String get themeDensityNormal => 'Normal';
-
-  @override
-  String get themeDensityComfortable => 'Amplia';
-
-  @override
-  String get themeDensityHint =>
-      'Cambia el relleno de las tarjetas; si algo no cambia, su espaciado está fijado aparte';
-
-  @override
-  String get themeFont => 'Tipografía';
-
-  @override
-  String get themeFontDefault => 'Predeterminada';
-
-  @override
-  String get themeFontSystem => 'Fuente del sistema';
-
-  @override
-  String get themeFontMono => 'Monoespaciada';
-
-  @override
-  String get themeFontHint =>
-      'Solo usa fuentes instaladas en el sistema; si falta alguna, se sustituye automáticamente';
 
   @override
   String get themeTabs => 'Colores de acento';
@@ -6659,231 +6305,634 @@ class AppLocalizationsEs extends AppLocalizations {
       'El degradado de las tarjetas y un color de acento por pestaña';
 
   @override
+  String get themeTextHint => 'Vacío para restablecer';
+
+  @override
+  String get themeTexts => 'Texto';
+
+  @override
+  String get themeTextsDesc =>
+      'Sobrescribe textos habituales (los botones y los mensajes de error se excluyen a propósito)';
+
+  @override
+  String get themeTitle => 'Tema';
+
+  @override
+  String get themeTokenBackground => 'Fondo de página';
+
+  @override
+  String get themeTokenBackgroundSoft => 'Fondo secundario';
+
+  @override
+  String get themeTokenDanger => 'Peligro / sin conexión';
+
+  @override
+  String get themeTokenDivider => 'Separador';
+
+  @override
+  String get themeTokenInfo => 'Información / acento';
+
+  @override
+  String get themeTokenPrimary => 'Principal';
+
+  @override
+  String get themeTokenSuccess => 'Éxito / en línea';
+
+  @override
+  String get themeTokenSurface => 'Superficie de tarjeta';
+
+  @override
+  String get themeTokenTextMuted => 'Texto atenuado';
+
+  @override
+  String get themeTokenTextPrimary => 'Texto principal';
+
+  @override
+  String get themeTokenTextSecondary => 'Texto secundario';
+
+  @override
+  String get themeTokenWarning => 'Aviso';
+
+  @override
   String get themeUniformAccent => 'Unificar colores de tarjetas';
 
   @override
-  String get themeAccentFrom => 'Inicio del degradado';
+  String get tierIdleShort => 'Reposo/baja velocidad';
 
   @override
-  String get themeAccentTo => 'Fin del degradado';
+  String get tierIdleTitle => 'Editar · Nivel reposo/baja velocidad';
 
   @override
-  String get themeOverridden => 'Personalizado';
+  String get tierMinDist => 'Distancia (m)';
 
   @override
-  String get themeFollowsPrimary => 'Sigue al principal';
+  String get tierMinDistHint =>
+      'También reporta tras desplazarse esta distancia desde el último envío; 0 = desactivado (solo intervalo)';
 
   @override
-  String get themeBgAlign => 'Alineación';
+  String get tierMinTurn => 'Giro (grados)';
 
   @override
-  String get themeAlignCenter => 'Centro';
+  String get tierMinTurnHint =>
+      'Reporta tras girar este ángulo (10–180); 0 = desactivado. Solo en movimiento (parado, el rumbo es ruido)';
 
   @override
-  String get themeAlignTop => 'Arriba';
+  String get tierSpeedTitle => 'Editar · Nivel de velocidad';
 
   @override
-  String get themeAlignBottom => 'Abajo';
+  String get time => 'Hora';
 
   @override
-  String get themeAlignLeft => 'Izquierda';
+  String get timeJustNow => 'ahora mismo';
 
   @override
-  String get themeAlignRight => 'Derecha';
+  String get tncBindSubtitle => 'Empareja y conecta el TNC de tu radio';
 
   @override
-  String get themeAlignTopLeft => 'Arriba izq.';
+  String get tncBindTitle => 'TNC Bluetooth';
 
   @override
-  String get themeAlignTopRight => 'Arriba der.';
+  String get tncBoundDevice => 'Dispositivo emparejado';
 
   @override
-  String get themeAlignBottomLeft => 'Abajo izq.';
+  String get tncConnectAction => 'Conectar TNC';
 
   @override
-  String get themeAlignBottomRight => 'Abajo der.';
+  String get tncDeviceDesc =>
+      'Emparejamiento Bluetooth/serie, cadena de inicio, parámetros KISS y autoprueba de TX';
 
   @override
-  String get themeBgScale => 'Escala';
+  String get tncDeviceTitle => 'Dispositivo y parámetros TNC';
 
   @override
-  String get themeBgScaleDesc =>
-      '1.0 = tamaño original; amplía para mostrar solo una parte';
+  String get tncErrBadFormat => 'paquete mal formado';
 
   @override
-  String get themeAuthor => 'Autor';
+  String get tncErrFrameTooLong => 'la trama supera el límite de tamaño';
 
   @override
-  String get themeDescription => 'Descripción';
+  String get tncErrNoDevice => 'ningún dispositivo TNC emparejado';
 
   @override
-  String get themeSkinInfo => 'Información de la skin';
+  String get tncErrNotConnected => 'enlace sin conectar';
 
   @override
-  String get themeSkinInfoDesc => 'Ambos viajan con la skin al compartirla';
+  String get tncErrOpenRead => 'no se puede abrir el dispositivo para lectura';
 
   @override
-  String get themeAuthorHint => 'Tu indicativo o apodo';
+  String get tncErrOpenWrite =>
+      'no se puede abrir el dispositivo para escritura: los puertos COM son exclusivos; comprueba si otra app lo usa';
 
   @override
-  String get themeDescHint => 'Una línea sobre esta skin';
+  String get tncErrTimeout => 'tiempo agotado';
 
   @override
-  String get themePreviewSwatches => 'Muestras de color';
+  String get tncErrUnsupported => 'no compatible con esta plataforma';
 
   @override
-  String get themePresetGraphite => 'Grafito';
+  String get tncGroupDisabled =>
+      'Las difusiones de grupo no están disponibles en modo radio';
 
   @override
-  String get themePresetSakura => 'Sakura';
+  String get tncInitDelay => 'Retardo por línea (ms)';
 
   @override
-  String get themePresetTerminal => 'Terminal';
+  String get tncInitDelayTip =>
+      'Espera entre líneas. El módulo necesita tiempo; si es muy corto se pierden comandos';
 
   @override
-  String get themePresetAmber => 'Ámbar';
+  String get tncInitEmpty => 'No hay cadena de inicio';
 
   @override
-  String get sysRecentLabel => 'Última recepción';
+  String get tncInitSendAction => 'Enviar cadena de inicio ahora';
 
   @override
-  String get audioWavImportAction => 'Elegir archivo WAV';
-
-  @override
-  String get audioWavExportToDownloads => 'Exportar a Descargas';
-
-  @override
-  String audioWavSavedTo(String path) {
-    return 'Guardado en $path';
+  String tncInitSent(int n) {
+    return '$n línea(s) de inicio enviadas';
   }
 
   @override
-  String get audioWavCopyPath => 'Copiar ruta';
+  String get tncInitSubtitle =>
+      'Se envía línea a línea tras conectar (equivalente al kiss.init de APRSdroid)';
 
   @override
-  String get audioWavPathCopied => 'Ruta copiada';
+  String get tncInitTip =>
+      'Si el TNC recibe pero no transmite, prueba aquí primero: muchos módulos TNC Bluetooth/serie arrancan en modo comando y necesitan KISS ON / RESTART para reenviar en KISS. Un comando por línea (se añade CRLF automáticamente).';
 
   @override
-  String get audioWavCanceled => 'Cancelado';
+  String get tncInitTitle => 'Cadena de inicio del TNC';
 
   @override
-  String get audioWavVerifyFailed =>
-      'Falló la autocomprobación: el audio generado no se puede decodificar';
+  String get tncLog => 'Registro del enlace';
 
   @override
-  String get audioWavMobileHint =>
-      'Android no permite rutas arbitrarias: se guarda en Descargas/APRSlocusAudio — cópialo al PC para Direwolf o la radio';
+  String get tncLogEmpty => 'Todavía no hay registros';
 
   @override
-  String get audioWavPickHint => 'En escritorio, escribe la ruta del WAV abajo';
+  String get tncMsgDesc =>
+      'El canal de radio es compartido, por lo que la mensajería está limitada';
 
   @override
-  String get audioTxLevel => 'Nivel de TX';
-
-  @override
-  String get audioTxLevelTip =>
-      'Antes de transmitir se sube el volumen al máximo y se pausa el micrófono; un pico demasiado bajo o recortado impide decodificar al otro lado';
-
-  @override
-  String audioTxPeak(int p, String sec, int flags) {
-    return 'Pico $p% · ${sec}s · preámbulo $flags flags';
+  String tncMsgLimitHint(String n) {
+    return '$n caracteres por mensaje (norma APRS)';
   }
 
   @override
-  String get audioTxLevelClip =>
-      'Recortado: baja la amplitud por debajo de 0.8 (genera armónicos)';
+  String get tncMsgTitle => 'Modo radio (TNC)';
 
   @override
-  String get audioTxLevelLow =>
-      'Nivel bajo: puede que no lo decodifiquen — sube amplitud y volumen';
+  String get tncMsgTooLong =>
+      'Supera el límite de longitud de mensaje en modo radio';
 
   @override
-  String get audioWiringHint =>
-      'Usa un cable de audio hacia la radio (salida de auriculares → conector de datos/micrófono). El altavoz del móvil atenúa mucho a 2200 Hz, así que por aire casi nunca decodifica. Si el otro extremo es Direwolf, verifica primero con el WAV exportado: si eso decodifica, el problema es el audio, no el protocolo';
+  String get tncNeedConnected => 'Conecta primero el TNC';
 
   @override
-  String packetLimitRf(int bytes, int max) {
-    return 'Paquete $bytes B · límite de trama RF $max B';
-  }
+  String get tncNeedPermission =>
+      'Se necesita permiso de Bluetooth para buscar dispositivos Bluetooth; ignóralo si solo usas serie USB: el sistema lo pide aparte al conectar el cable';
 
   @override
-  String packetLimitIs(int bytes) {
-    return 'Paquete $bytes B · límite de línea APRS-IS 512 B';
-  }
+  String get tncNoPaired =>
+      'No se encontraron dispositivos: empareja el TNC en los ajustes de Bluetooth, o conecta el cable serie USB (OTG)';
 
   @override
-  String get packetTcpipWarning =>
-      'Contiene TCPIP*: se elimina en RF (esa ruta es de APRS-IS)';
+  String get tncNotBound => 'Sin dispositivo emparejado';
 
   @override
-  String packetSent(String line) {
-    return 'Entregado al enlace: $line';
-  }
+  String get tncOpenFailedHint =>
+      'No se pudo abrir el dispositivo: los puertos COM de Windows son exclusivos; comprueba que ninguna otra app lo use';
 
   @override
-  String packetSendFailed(String err) {
-    return 'No enviado: $err';
-  }
+  String get tncPushParams => 'Enviar parámetros KISS al conectar';
+
+  @override
+  String get tncPushParamsTip =>
+      'Desactivado por defecto (igual que APRSdroid). Si se activa, los valores de arriba se envían al TNC al conectar y sobrescriben su configuración; valores inadecuados pueden hacer que nunca transmita, así que actívalo solo si quieres gestionarlo de forma centralizada.';
+
+  @override
+  String get tncRestart => 'Reiniciar enlace';
+
+  @override
+  String get tncScanPaired =>
+      'Buscar dispositivos (Bluetooth emparejado + serie USB)';
 
   @override
   String get tncSerialBaud => 'Velocidad en baudios (bd)';
-
-  @override
-  String get tncSerialBaudTip =>
-      'El cable serie USB y el puerto de datos de la radio deben usar la misma velocidad; si no, no pasa ni un byte. Valores habituales: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP no tiene velocidad en baudios, así que se ignora en dispositivos Bluetooth.';
-
-  @override
-  String get tncSerialBaudHint =>
-      'La nueva velocidad se aplica al reconectar (al enviar los parámetros se reconecta una vez automáticamente)';
 
   @override
   String get tncSerialBaudBluetooth =>
       'El dispositivo vinculado es Bluetooth: Bluetooth SPP no tiene velocidad en baudios, así que este ajuste no surte efecto';
 
   @override
-  String get uiMaterial => 'Material de la interfaz';
+  String get tncSerialBaudHint =>
+      'La nueva velocidad se aplica al reconectar (al enviar los parámetros se reconecta una vez automáticamente)';
 
   @override
-  String get uiMaterialDesc =>
-      'Hace translúcidas las tarjetas, barras y diálogos, con desenfoque real detrás';
+  String get tncSerialBaudTip =>
+      'El cable serie USB y el puerto de datos de la radio deben usar la misma velocidad; si no, no pasa ni un byte. Valores habituales: 9600 / 19200 / 38400 / 57600 / 115200. Bluetooth SPP no tiene velocidad en baudios, así que se ignora en dispositivos Bluetooth.';
 
   @override
-  String get uiMaterialOff => 'Desactivado (sólido)';
+  String tncStats(String rx, String tx) {
+    return '$rx tramas recibidas · $tx enviadas';
+  }
 
   @override
-  String get uiMaterialOffDesc => 'Superficies sólidas, igual que antes';
+  String get tncSupportedNo => 'Este sistema aún no admite enlaces TNC';
 
   @override
-  String get uiMaterialGlass => 'Cristal esmerilado';
+  String get tncSwitchOff => 'Desactivado';
 
   @override
-  String get uiMaterialGlassDesc =>
-      'Más transparente y con más desenfoque, como el acrílico de Windows 11';
+  String get tncSwitchOn => 'Activado';
 
   @override
-  String get uiMaterialMica => 'Mica';
+  String get tncTxTestAction => 'Escribir trama de prueba';
 
   @override
-  String get uiMaterialMicaDesc =>
-      'Más sólido, con menos desenfoque y un matiz de tu color de acento, como el Mica de Windows 11';
+  String tncTxTestFail(String err) {
+    return 'No escrito: $err';
+  }
 
   @override
-  String get uiMaterialHint =>
-      'El material solo afecta a las superficies de la app (tarjetas, barras, diálogos, capas del mapa); no es transparencia de ventana. El desenfoque consume GPU: en equipos antiguos puede ir menos fluido que con «Desactivado».';
+  String get tncTxTestHint =>
+      'Envía una trama de estado (sin coordenadas), así que no moverá tu estación en aprs.fi. Si indica \"escrito\" pero no se transmite, el problema está en el TNC: prueba primero la cadena de inicio (KISS ON / RESTART) y luego revisa TxDelay y la ocupación del canal.';
 
   @override
-  String get uiMaterialBgHint =>
-      'Este tema usa una imagen de fondo, así que el material no añade fondo propio y solo esmerila las barras y las capas.';
+  String tncTxTestOk(String n) {
+    return 'Escrito en el TNC ($n tramas en total). Si la radio sigue sin transmitir, el problema está en el TNC: prueba la cadena de inicio o revisa TxDelay.';
+  }
 
   @override
-  String get uiMaterialPreview => 'Vista previa';
+  String get tncTxTestOkPrefix => 'Escrito';
+
+  @override
+  String get tncTxTestSubtitle =>
+      'Escribe una trama de prueba al TNC para distinguir problemas de enlace o del TNC';
+
+  @override
+  String get tncTxTestTitle => 'Autoprueba de TX';
+
+  @override
+  String get tncUnbind => 'Desemparejar';
+
+  @override
+  String get totalStations => 'Total';
+
+  @override
+  String get track => 'Rastro';
+
+  @override
+  String get trackActive => 'Activo';
+
+  @override
+  String get trackGroupEmpty =>
+      'Los miembros aún no tienen datos de posición (no recibidos o sin baliza).';
+
+  @override
+  String get trackGroupNameHint => 'Nombre, p. ej. Ruta de fin de semana';
+
+  @override
+  String get trackGroupsEmptyHint =>
+      'Aún no hay grupos de seguimiento. Toca «Nuevo grupo de seguimiento» para crear uno.';
+
+  @override
+  String trackHeader(Object fixed, Object online, Object total) {
+    return '$total miembros · $online en línea · $fixed fijos';
+  }
+
+  @override
+  String trackMemberSub(Object seen, Object type) {
+    return '$type · $seen';
+  }
+
+  @override
+  String get trackModeFitAll => 'Vista completa';
+
+  @override
+  String trackModeFollow(Object call) {
+    return 'Siguiendo a $call';
+  }
+
+  @override
+  String get trackModeMe => 'Siguiéndome';
+
+  @override
+  String trackPoints(int count) {
+    return 'Rastro ($count puntos)';
+  }
+
+  @override
+  String get trackWaitingPos => 'Esperando posición…';
+
+  @override
+  String get trackingBeaconing =>
+      'La ubicación está activa y se siguen enviando balizas';
+
+  @override
+  String get translate => 'Traducir';
+
+  @override
+  String get translateAuto => 'Traducir automáticamente los mensajes entrantes';
+
+  @override
+  String translateAutoAllFailed(String e) {
+    return 'Fallaron todos los endpoints sin clave ($e) · usa una clave de Google/Baidu o tu propia instancia en los ajustes';
+  }
+
+  @override
+  String get translateAutoTip =>
+      'Se aplica solo a esta conversación y solo traduce los mensajes recibidos';
+
+  @override
+  String get translateBaiduAppId => 'App ID de Baidu';
+
+  @override
+  String get translateBaiduKey => 'Clave secreta de Baidu';
+
+  @override
+  String get translateBaiduTip =>
+      'Solicita traducción de texto general en la plataforma de Baidu; la clave se guarda solo en este dispositivo';
+
+  @override
+  String translateBubbleCount(int n) {
+    return '$n traducidos';
+  }
+
+  @override
+  String get translateContrast => 'Mostrar original y traducción juntos';
+
+  @override
+  String get translateContrastTip =>
+      'Si está desactivado solo se ve la traducción (el original sigue en pulsación larga)';
+
+  @override
+  String get translateCopyOriginal => 'Copiar original';
+
+  @override
+  String get translateCopyResult => 'Copiar traducción';
+
+  @override
+  String get translateCustomBody => 'Plantilla del cuerpo';
+
+  @override
+  String translateCustomBodyTip(String text, String from, String to) {
+    return 'Marcadores: $text, $from, $to. Se ignora con el método GET';
+  }
+
+  @override
+  String get translateCustomHeaders => 'Cabeceras (JSON)';
+
+  @override
+  String get translateCustomMethod => 'Método HTTP';
+
+  @override
+  String get translateCustomResultPath => 'Ruta JSON del resultado';
+
+  @override
+  String get translateCustomResultPathTip =>
+      'Ruta con puntos e índices de array, p. ej. data.translations.0.translatedText';
+
+  @override
+  String get translateCustomUrl => 'URL del endpoint';
+
+  @override
+  String translateFailed(String e) {
+    return 'Falló la traducción: $e';
+  }
+
+  @override
+  String translateFreeFailed(String e) {
+    return 'El endpoint gratuito no está disponible ($e) · cambia a Google / Baidu / personalizado en los ajustes';
+  }
+
+  @override
+  String get translateGoogleKey => 'Clave de API de Google';
+
+  @override
+  String get translateGoogleKeyTip =>
+      'Clave de API de Google Cloud Translation v2: créala en la consola de Google Cloud';
+
+  @override
+  String get translateInput => 'Traducir lo escrito';
+
+  @override
+  String get translateLangAuto => 'Detectar automáticamente';
+
+  @override
+  String get translateLangScopeNote =>
+      'Cada proveedor cubre idiomas distintos (p. ej. Baidu estándar admite indonesio «id», pero no todas las direcciones) — si no se admite, la app sugiere Automático u otro proveedor';
+
+  @override
+  String get translateLangUnsupported =>
+      'Este proveedor no puede traducir a ese idioma · prueba «Automático» u otro proveedor';
+
+  @override
+  String get translateLearned => 'Detectado automáticamente';
+
+  @override
+  String get translateLibreKey =>
+      'Clave de API de la instancia (necesaria en públicas; vacía si es propia)';
+
+  @override
+  String get translateLibreUrl => 'URL de la instancia';
+
+  @override
+  String get translateMyLang => 'Mi idioma';
+
+  @override
+  String get translateMyLangHint =>
+      'Los mensajes recibidos se traducen a este idioma';
+
+  @override
+  String get translateNeedConfig =>
+      'Configura primero el proveedor de traducción';
+
+  @override
+  String get translateNotNeeded =>
+      'Aquí no hay nada que traducir (números / símbolos / indicativos)';
+
+  @override
+  String get translateOutCancel => 'Cancelar traducción';
+
+  @override
+  String get translateOutNeedPeer =>
+      'Aún no se conoce su idioma: indícalo en los ajustes de traducción de la conversación';
+
+  @override
+  String translateOutPreview(String text) {
+    return 'Se enviará: $text';
+  }
+
+  @override
+  String translateOutPreviewHint(String lang) {
+    return 'Traducido a $lang · toca enviar para transmitir esto';
+  }
+
+  @override
+  String get translateOutgoing => 'Traducir a su idioma antes de enviar';
+
+  @override
+  String get translateOutgoingTip =>
+      'Si está activado, al enviar se traduce el texto a su idioma: comprueba que puedan leerlo';
+
+  @override
+  String get translatePeerLang => 'Idioma de la otra parte';
+
+  @override
+  String get translatePeerUnknown =>
+      'Aún no se conoce el idioma de la otra parte: indícalo en los ajustes de traducción o se detectará tras varios mensajes suyos';
+
+  @override
+  String get translatePeerUnknownHint =>
+      'Se detecta automáticamente en sus mensajes';
+
+  @override
+  String get translatePrivacyNote =>
+      'La traducción envía el texto de los mensajes al proveedor externo que elijas; valora la privacidad';
+
+  @override
+  String get translateProvider => 'Proveedor';
+
+  @override
+  String get translateProviderAuto => 'Automático (recomendado)';
+
+  @override
+  String get translateProviderAutoDesc =>
+      'Prueba varios endpoints sin clave y usa la primera traducción válida';
+
+  @override
+  String get translateProviderBaidu => 'Baidu Translate';
+
+  @override
+  String get translateProviderCustom => 'Personalizado';
+
+  @override
+  String get translateProviderFree => 'Gratis (sin clave)';
+
+  @override
+  String get translateProviderFreeDesc =>
+      'Funciona sin configurar · usa un endpoint público que puede limitarse o ser inestable';
+
+  @override
+  String get translateProviderGoogle => 'Google Translate';
+
+  @override
+  String get translateProviderGooglePublic =>
+      'Endpoint público de Google (sin clave)';
+
+  @override
+  String get translateProviderGooglePublicDesc =>
+      'Buena calidad, pero puede limitarse (se observó 429)';
+
+  @override
+  String get translateProviderLibre => 'LibreTranslate (autoalojable)';
+
+  @override
+  String get translateProviderLibreDesc =>
+      'Código abierto; lo más fiable es autoalojarlo. Las instancias públicas ya piden clave y a menudo no tienen chino';
+
+  @override
+  String get translateProviderMyMemory => 'MyMemory (sin clave)';
+
+  @override
+  String get translateProviderMyMemoryDesc =>
+      'API gratuita oficial, pero es una memoria de traducción: devuelve el original si no hay coincidencia';
+
+  @override
+  String get translateRetry => 'Traducir de nuevo';
+
+  @override
+  String get translateSameLang =>
+      'La traducción es idéntica al original · puede que no necesite traducción o que el proveedor fallara';
+
+  @override
+  String translateSentAs(String text) {
+    return 'Enviado en su idioma: $text';
+  }
+
+  @override
+  String get translateSettings => 'Ajustes de traducción';
+
+  @override
+  String get translateSettingsSubtitle =>
+      'Proveedor, idiomas y traducción automática';
+
+  @override
+  String get translateShowOriginal => 'Ver original';
+
+  @override
+  String get translateShowTranslation => 'Ver traducción';
+
+  @override
+  String get translateSideIncoming => 'recibido';
+
+  @override
+  String get translateSideOutgoing => 'enviado';
+
+  @override
+  String get translateSourceLang => 'Idioma de origen';
+
+  @override
+  String get translateTargetLang => 'Traducir a';
+
+  @override
+  String get translateTest => 'Probar traducción';
+
+  @override
+  String translateTestOk(String text) {
+    return 'El proveedor funciona: $text';
+  }
+
+  @override
+  String get translateText => 'Traducir texto';
+
+  @override
+  String get translateToMeTag => 'para mí';
+
+  @override
+  String get translateToPeerTag => 'lo que leerán';
+
+  @override
+  String translateTooLongAfter(int n) {
+    return 'La traducción supera el límite ($n caracteres); no se envió';
+  }
+
+  @override
+  String get translateTranslating => 'Traduciendo…';
+
+  @override
+  String get translateUntranslated =>
+      'El endpoint no tradujo realmente (devolvió el original); se probó el siguiente';
+
+  @override
+  String get translateUsedProvider => 'Usado realmente';
+
+  @override
+  String get txButton => 'Transmitir';
+
+  @override
+  String get txNothingFilled =>
+      'Los campos estan vacios: no hay nada que enviar';
+
+  @override
+  String get txPartPosition => 'paquete de posicion';
+
+  @override
+  String get txPartStatus => 'paquete de estado';
+
+  @override
+  String txSent(String parts) {
+    return 'Transmitido: $parts';
+  }
+
+  @override
+  String get typeFilter => 'Tipo';
+
+  @override
+  String get typeGroup => 'Tipo';
 
   @override
   String get uiLayout => 'Diseño de la interfaz';
-
-  @override
-  String get uiLayoutDesc =>
-      '2.0 usa el mapa como base de toda la interfaz y coloca las demás páginas en una tarjeta deslizable abajo';
 
   @override
   String get uiLayoutClassic => 'Diseño clásico (1.0)';
@@ -6893,6 +6942,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Barra lateral en pantallas anchas y navegación inferior en las estrechas, igual que antes';
 
   @override
+  String get uiLayoutDesc =>
+      '2.0 usa el mapa como base de toda la interfaz y coloca las demás páginas en una tarjeta deslizable abajo';
+
+  @override
+  String get uiLayoutHint =>
+      'Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta';
+
+  @override
   String get uiLayoutSheet => 'Mapa como base (2.0)';
 
   @override
@@ -6900,14 +6957,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'El mapa ocupa toda la pantalla; estaciones / mensajes / paquetes / ajustes van en una tarjeta deslizable abajo: desliza hacia arriba o toca el asa para expandirla';
 
   @override
-  String get uiLayoutHint =>
-      'Se aplica al instante; cada diseño conserva sus propios ajustes. Los controles del mapa suben solos al plegarse la tarjeta';
+  String get uiMaterial => 'Material de la interfaz';
 
   @override
-  String get linkNotConnected => 'Sin conexión';
+  String get uiMaterialBgHint =>
+      'Este tema usa una imagen de fondo, así que el material no añade fondo propio y solo esmerila las barras y las capas.';
 
   @override
-  String get linkTapForSettings => 'Toca para abrir los ajustes de conexión';
+  String get uiMaterialDesc =>
+      'Hace translúcidas las tarjetas, barras y diálogos, con desenfoque real detrás';
+
+  @override
+  String get uiMaterialGlass => 'Cristal esmerilado';
+
+  @override
+  String get uiMaterialGlassDesc =>
+      'Más transparente y con más desenfoque, como el acrílico de Windows 11';
 
   @override
   String get uiMaterialGlassFull => 'Cristal esmerilado intenso';
@@ -6917,277 +6982,335 @@ class AppLocalizationsEs extends AppLocalizations {
       'Lo más transparente y con más desenfoque, **incluidos los widgets pequeños** (botones del mapa, leyenda, avisos): el aspecto más marcado y también el más exigente para la GPU';
 
   @override
-  String get posAccuracy => 'Precisión de la posición';
+  String get uiMaterialHint =>
+      'El material solo afecta a las superficies de la app (tarjetas, barras, diálogos, capas del mapa); no es transparencia de ventana. El desenfoque consume GPU: en equipos antiguos puede ir menos fluido que con «Desactivado».';
 
   @override
-  String get locationStill => 'Estacionario';
+  String get uiMaterialMica => 'Mica';
 
   @override
-  String get dataSourceAudioShort => 'Audio';
-  @override
-  String get historyTracks => "Historial de rutas";
+  String get uiMaterialMicaDesc =>
+      'Más sólido, con menos desenfoque y un matiz de tu color de acento, como el Mica de Windows 11';
 
   @override
-  String get historyTracksDesc => "Registra tu velocidad y distancia por día, guardadas en este dispositivo";
+  String get uiMaterialOff => 'Desactivado (sólido)';
 
   @override
-  String get historyEmpty => "Aún no hay historial de rutas. Se registrará automáticamente al posicionarte y moverte.";
+  String get uiMaterialOffDesc => 'Superficies sólidas, igual que antes';
 
   @override
-  String get historyTotalDistance => "Distancia total";
+  String get uiMaterialPreview => 'Vista previa';
 
   @override
-  String get historyMaxSpeed => "Velocidad máx.";
+  String get uiScale => 'Escala de la interfaz';
 
   @override
-  String get historyMovingTime => "Tiempo en movimiento";
+  String get unblock => 'Desbloquear';
 
   @override
-  String get historyPoints => "Puntos";
+  String get underConstruction => 'En obras — aún no disponible';
 
   @override
-  String get historyClearDay => "Eliminar este día";
+  String get underConstructionHint =>
+      'Esta función aún se está desarrollando. Permanece atento.';
 
   @override
-  String get historyCleared => "Día eliminado";
+  String get unfavorite => 'Quitar de favoritos';
 
   @override
-  String get historyClearAll => "Borrar todo el historial";
+  String get unit => 'Unidad';
 
   @override
-  String get historyClearAllConfirm => "¿Borrar todo el historial de rutas? No se puede deshacer.";
+  String get unitSeconds => 's';
 
   @override
-  String get historyClearedAll => "Historial borrado por completo";
+  String get unknown => 'Desconocido';
 
   @override
-  String get sensorAssist => "Posicionamiento con sensores";
+  String get unlocated => 'Sin ubicación';
 
-  @override
-  String get sensorAssistDesc => "Usa el acelerómetro para saber si te mueves de verdad y la brújula para corregir el rumbo a baja velocidad, para puntos de ruta más precisos (solo Android).";
   @override
-  String get historyTapDay => "Toca un día para ver el mapa y su reproducción";
+  String get unverified => 'Sin verificar';
 
   @override
-  String get historyPlay => "Reproducir";
+  String get updateCat => 'Actualización';
 
   @override
-  String get historyPause => "Pausar";
+  String get updateCatDesc => 'Buscar nuevas versiones';
 
   @override
-  String get historyReplay => "Repetir";
+  String get updateChannel => 'Canal de actualización';
 
   @override
-  String get historyFollow => "Seguir";
+  String get updateContents => 'Novedades';
+
   @override
-  String get locationCoarse => "Posición de red (aproximada)";
+  String get updateFailed => 'Error al buscar actualizaciones';
+
   @override
-  String get locModeNetHint => "Las posiciones por red pueden desviarse cientos de metros. Para que el marcador no salte, solo se usan si el GPS lleva 5 minutos sin actualizarse; nunca se guardan en la ruta ni el historial, y nunca provocan un informe automático.";
+  String get usageNotice =>
+      'Solo para aprendizaje e intercambio entre radioaficionados\nCumple la normativa local de radio';
+
   @override
-  String get beaconCoarseFix => "Posición de red · baliza automática en pausa";
+  String get useDeviceLocation => 'Usar la ubicación del dispositivo';
 
   @override
-  String get beaconCoarseHint => "La posición actual viene de la red (aproximada, a menudo cientos de metros) — los informes automáticos están en pausa y se reanudan al volver el GPS. Aún puedes balizar manualmente.";
+  String get useMyLocation => 'Usar mi ubicación como centro del filtro';
+
   @override
-  String get locationGarmin => "Garmin LiveTrack";
+  String get userAgreement => 'Acuerdo de usuario';
 
   @override
-  String get hrCardTitle => "Frecuencia cardíaca";
+  String vectorMapLoadFailed(String error) {
+    return 'Error al cargar el mapa vectorial\n$error';
+  }
 
   @override
-  String get hrCardSubtitle => "Bandas de pecho Bluetooth (servicio HR estándar), opcionalmente con tu baliza";
+  String get version => 'Versión';
 
   @override
-  String get hrIncludeInBeacon => "Enviar pulso en la baliza";
+  String versionChangelog(String version) {
+    return 'Registro de cambios de v$version';
+  }
 
   @override
-  String get hrIncludeHint => "Añade HR=nn al comentario de posición (convención APRS habitual; los mapas de terceros lo muestran como comentario). Sin lectura no enviamos HR=0, porque el receptor lo leería como \"pulso 0\" en vez de \"sin medir\".";
+  String versionCount(int count) {
+    return '$count versiones';
+  }
 
   @override
-  String get hrConnected => "Conectado a {name}";
+  String get viewChangelog => 'Ver registro de cambios';
 
   @override
-  String get hrWaitReading => "Esperando lectura (ajusta la banda)";
+  String get viewSponsorDetails => 'Ver detalles del autor y patrocinadores →';
 
   @override
-  String get hrSearch => "Buscar sensores de pulso";
+  String get waitingForLocation => 'Esperando ubicación';
 
   @override
-  String get hrScanning => "Buscando…";
+  String get warning => 'Advertencia';
 
   @override
-  String get hrStopScan => "Detener búsqueda";
+  String get weather => 'Meteorología';
 
   @override
-  String get hrNoDevice => "No se encontró ningún sensor. Comprueba que la banda esté emitiendo y cerca del teléfono.";
+  String get weatherAQIPrimary => 'Principal';
 
   @override
-  String get hrConnect => "Conectar";
+  String get weatherAir => 'ICA';
 
   @override
-  String get hrDisconnect => "Desconectar";
+  String get weatherCloud => 'Nubosidad';
 
   @override
-  String get hrForget => "Olvidar dispositivo";
+  String get weatherConnFail =>
+      'Error de conexión con el servicio meteorológico';
 
   @override
-  String get hrNotSupported => "El pulso por Bluetooth no está disponible en esta plataforma (disponible en Android / iOS)";
+  String get weatherCurLoc => 'Ubicación actual';
 
   @override
-  String get hrConflictWithTnc => "Ese dispositivo lo usa el enlace Bluetooth de TNC / PKWDWPL; no puede ser la banda";
+  String get weatherDaily15 => 'Ver el tiempo de 15 días';
 
   @override
-  String get hrStrapHint => "Sirve cualquier banda que emita el servicio HR estándar (0x180D): Polar H10, Garmin HRM. TNC usa Bluetooth clásico y el pulso usa BLE, así que no interfieren.";
+  String get weatherDaily15Title => 'Tendencia del tiempo a 15 días';
 
   @override
-  String get garminCardTitle => "Garmin LiveTrack";
+  String get weatherData => 'Datos meteorológicos';
 
   @override
-  String get garminCardSubtitle => "Trae la actividad de tu reloj Garmin y balízala";
+  String get weatherDataFail =>
+      'No se pudieron obtener los datos meteorológicos';
 
   @override
-  String get garminUrlLabel => "Enlace compartido";
+  String weatherDataValue(String data) {
+    return 'Meteorología · $data';
+  }
 
   @override
-  String get garminPaste => "Pegar del portapapeles";
+  String get weatherDayAfter => 'Pasado mañana';
 
   @override
-  String get garminStart => "Iniciar seguimiento";
+  String get weatherDetails => 'Datos detallados';
 
   @override
-  String get garminStop => "Detener seguimiento";
+  String get weatherDew => 'Punto de rocío';
 
   @override
-  String get garminRunning => "Siguiendo";
+  String weatherFeels(String v) {
+    return 'Sensación $v°';
+  }
 
   @override
-  String get garminStats => "{n} puntos reenviados · última {t}";
+  String get weatherForecast3 => 'Previsión a 3 días';
 
   @override
-  String get garminBadUrl => "El enlace no es válido. Pega la URL completa (con /session/…/token/…)";
+  String get weatherHumidity => 'Humedad';
 
   @override
-  String get garminNoPoints => "Aún no hay puntos: puede que la actividad acabe de empezar o el enlace haya caducado.";
+  String get weatherNoLoc =>
+      'Aún sin ubicación: activa el servicio de ubicación en «Mi estación» para ver el tiempo';
 
   @override
-  String get garminError => "Fallo al obtener: {error}";
+  String weatherObserved(String t) {
+    return 'Observado $t';
+  }
 
   @override
-  String get garminHowTo => "Cómo obtener el enlace: en la app Garmin Connect abre la actividad → Compartir → elige \"APRSlocus\" (la app registra un destino del sistema) y el enlace llega aquí.";
+  String get weatherPanelSub => 'QWeather · Ubicación actual';
 
   @override
-  String get garminSharedToast => "Enlace de Garmin recibido";
+  String get weatherPanelTitle => 'Tiempo · Consejos para radioaficionados';
 
   @override
-  String get garminOpen => "Abrir ajustes";
+  String get weatherPowered => 'Datos de QWeather · APRSlocus';
 
   @override
-  String get garminWebUnsupported => "No disponible en la versión web (CORS del navegador); usa la de Android o Windows";
+  String get weatherPrecip => 'Precipitación';
 
   @override
-  String get hrForTncNote => "El pulso usa BLE y el TNC Bluetooth clásico, así que pueden conectarse a la vez";
+  String get weatherPressure => 'Presión';
+
   @override
-  String get garminUrlHint => "livetrack.garmin.com/session/…/token/…";
+  String get weatherRefresh => 'Actualizar';
 
+  @override
+  String get weatherSimDesc =>
+      'Tras elegir, toca la píldora del tiempo en la barra superior para previsualizar; «Seguir en vivo» restaura el tiempo real';
 
+  @override
+  String get weatherSimFollowLive => 'Seguir en vivo';
 
+  @override
+  String get weatherSimTitle =>
+      'Simulación del tiempo (vista previa de fondo/efectos/consejos)';
 
   @override
-  String get beaconGarminSource => "Balizando desde Garmin LiveTrack";
+  String get weatherSunrise => 'Amanecer';
 
   @override
-  String beaconGarminNext(String s, String hr) => "Garmin · $s · ❤$hr";
+  String get weatherSunset => 'Atardecer';
 
   @override
-  String get posSourceLabel => "Fuente de posición";
+  String get weatherToday => 'Hoy';
 
   @override
-  String get hrSourceLabel => "Fuente de pulso";
+  String get weatherTomorrow => 'Mañana';
 
   @override
-  String get ownSourcePhoneGps => "GPS del teléfono";
+  String get weatherUV => 'UV';
 
   @override
+  String get weatherUnavail => 'El servicio meteorológico no está disponible';
 
   @override
-  String positionBeaconDetail(String grid, String detail) => "Baliza de posición · Cuadrícula $grid · $detail";
+  String get weatherVis => 'Visibilidad';
 
   @override
-  String beaconAttachedHr(String hr) => "pulso $hr";
+  String weatherWeekday(String d) {
+    String _temp0 = intl.Intl.selectLogic(d, {
+      '1': 'Lun',
+      '2': 'Mar',
+      '3': 'Mié',
+      '4': 'Jue',
+      '5': 'Vie',
+      '6': 'Sáb',
+      '7': 'Dom',
+      'other': '—',
+    });
+    return '$_temp0';
+  }
 
   @override
-  String get beaconAttachedNone => "sin pulso";
+  String get weatherWidget => 'Widget del tiempo';
 
   @override
-  String get posSourceIdle => "Sin seguimiento (ubicación desactivada)";
+  String get weatherWindDir => 'Dir. del viento';
 
   @override
-  String get ownSourceGarminLive => "Siguiendo (el GPS del teléfono cedió)";
+  String get weatherWindScale => 'Fuerza';
 
   @override
-  String get ownSourceGarminStale => "Enlace configurado, pero Garmin no tiene puntos nuevos";
+  String get weatherWindSpeed => 'Vel. del viento';
 
   @override
-  String get ownSourceHrIdle => "Sin conectar (toca para conectar)";
+  String get webLocationUnsupported =>
+      'La ubicación automática no está disponible en la web; introduce las coordenadas a mano';
 
   @override
-  String hrLineHr(String hr) => "pulso $hr";
+  String get website => 'Sitio web';
 
   @override
+  String get websocketOptional => 'URL de WebSocket (opcional)';
 
   @override
+  String get wgs84 => 'WGS-84';
 
   @override
+  String windowsInstallHelp(String path) {
+    return 'Instalador guardado en:\n$path\n\nToca «Ejecutar ahora» para abrirlo o abre la carpeta que lo contiene.';
+  }
 
   @override
-  String get garminShareNoLink => "No se encontró ningún enlace de Garmin LiveTrack";
+  String get wizard => 'Asistente de configuración';
 
   @override
-  String get hrFromGarmin => "Pulso desde Garmin LiveTrack (reloj)";
+  String get wsUrlOptional => 'URL de WebSocket (opcional)';
 
   @override
-  String get sourceMovedHint => "Para activar o cambiar fuentes de datos (enlaces), ve a Ajustes → Dispositivos";
+  String get wxClear => 'Despejado';
 
   @override
-  String get posSourcePrecedence => "Prioridad cuando hay varias fuentes: simulada/manual › Garmin (mientras el reloj tenga datos en vivo) › GPS del teléfono";
+  String get wxCloudy => 'Nublado';
 
   @override
-  String posSourceUsing(String src) => "En uso ahora: $src";
+  String get wxFog => 'Niebla';
 
   @override
-  String get posSrcSim => "simulada/manual";
+  String get wxHeavyRain => 'Lluvia fuerte';
 
   @override
-  String get posSrcGarmin => "Garmin LiveTrack";
+  String get wxLightRain => 'Lluvia ligera';
 
   @override
-  String get posSrcPhone => "GPS del teléfono";
+  String get wxModerateRain => 'Lluvia moderada';
 
   @override
-  String get posSrcNone => "sin posición";
+  String get wxOvercast => 'Cubierto';
 
+  @override
+  String get wxSnow => 'Nieve';
 
   @override
-  String get garminNotStarted => "Sin seguimiento";
+  String get wxStormRain => 'Lluvia torrencial';
 
   @override
-  String get garminAutoFilled => "Enlace rellenado automáticamente";
+  String get wxThunder => 'Tormenta eléctrica';
 
   @override
-  String get garminLinkOk => "Enlace válido";
+  String zoomLevel(Object z) {
+    return 'Zoom $z';
+  }
 
   @override
+  String get advancedMenu => 'Avanzado';
+
 
   @override
-  String get beaconForceCoarse => "Balizar también con posición de red (gruesa)";
+  String get beaconAltTip => 'Al rellenarlo se usa esta altitud manual (mas fiable: en telefonos sin barometro, en interiores o con posicionamiento solo de red la altitud GPS suele ser inservible). Si se deja vacio se usa la de la posicion. Se codifica como seis digitos de pies en la extension /A=. Es la altitud de la estacion, distinta de la altura de antena PHG de abajo.';
 
   @override
-  String get beaconForceCoarseHint => "Desactivado por defecto: la posición de red (celda / Wi-Fi) suele fallar cientos de metros, así que balizarla anuncia una coordenada errónea a todos. Actívalo solo si el dispositivo no tiene GPS (tableta, solo red). El mapa y la traza siguen filtrando los puntos gruesos como siempre, así que no se vuelven inestables. El \"balizar ahora\" manual no se ve afectado.";
+  String get beaconAltWillSend => 'Se enviara:';
+
+
+
+
+
 
   @override
-  String beaconCoarseForced(String s) => "Posición de red (gruesa) · $s";
+  String get batteryNoFix => 'Aun sin posicion: no se puede balizar';
 
   @override
-  String get beaconCoarseForcedNote => "Balizando con posición de red (gruesa)";
+  String get aprsStatusHint => 'Esto envia un paquete de estado independiente (empieza por `>`, sin coordenadas y sin moverte en aprs.fi): un tipo de paquete APRS distinto del comentario de arriba. Si se deja vacio se envia la trama de presencia integrada de APRSlocus.';
 
 }

@@ -266,30 +266,52 @@ class SettingsMiniSwitch extends StatelessWidget {
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
+
+  /// 左侧缩进（逻辑像素）。默认 **0**。
+  ///
+  /// ── 为什么需要这个参数 ──
+  /// 本组件自身不带左内边距，因为它的主要用武之地是信标页「信标上报内容」
+  /// 那一节 —— 那里外面已经有一层 14px 的 Padding，再自带缩进就会变成 28px，
+  /// 反而与同节的「信标上报内容」标题错开。
+  ///
+  /// 但把它放进**台站设置的高级设置菜单**时（那一组其它行都是 14px 缩进），
+  /// 它的文字会比「功率（瓦）」「独立状态报文」等标签左移 14px —— 用户报的
+  /// 「手机电量这几个字和上面没有对齐」就是这一处。
+  ///
+  /// 所以缩进做成**调用方决定**：既能与已有 Padding 共存，也能单独对齐。
+  final double leftPad;
+
   const SettingsMiniSwitch(this.label,
-      {super.key, required this.value, required this.onChanged});
+      {super.key,
+      required this.value,
+      required this.onChanged,
+      this.leftPad = 0});
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(
-        child: Text(
-          label,
-          style: ts(11, c: C.slate),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+    return Padding(
+      // 右侧留 4：Switch 控件自带约 8px 内边距，留太多会让它显得缩进去
+      padding: EdgeInsets.fromLTRB(leftPad, 0, 4, 0),
+      child: Row(children: [
+        Expanded(
+          child: Text(
+            label,
+            style: ts(11, c: C.slate),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-      ),
-      const SizedBox(width: 8),
-      Switch(
-        value: value,
-        onChanged: onChanged,
-        activeThumbColor: C.green,
-        activeTrackColor: C.green.withValues(alpha: 0.25),
-        inactiveThumbColor: C.grey,
-        inactiveTrackColor: C.greyBg,
-      ),
-    ]);
+        const SizedBox(width: 8),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeThumbColor: C.green,
+          activeTrackColor: C.green.withValues(alpha: 0.25),
+          inactiveThumbColor: C.grey,
+          inactiveTrackColor: C.greyBg,
+        ),
+      ]),
+    );
   }
 }
 

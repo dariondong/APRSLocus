@@ -25,6 +25,20 @@ class Station {
   String? path; // 最近一次数据包的转发路径（如 WIDE1-1,WIDE2-1）
   String? toCall; // 目的呼号（APxxxx），官方 tocalls 设备识别的依据
 
+  /// 最近一次**独立状态报文**（DTI `>`）的文本，不含开头那个 `>`。
+  ///
+  /// 与 [comment] 是两回事，必须分开存：
+  ///   * [comment] 跟在**位置报文**里 —— 中继台常在那里写频点
+  ///     （`70cm MMDVM Voice (DMR) 439.75500MHz -5.0000MHz`）；
+  ///   * 这里是**独立一帧**的状态报文 —— 常写设备来源
+  ///     （`Powered by W0CHP-PiStar-Dash`）。
+  /// 两者来源不同、更新时机也不同，混进一个字段会互相覆盖。
+  ///
+  /// 此前这类文本**根本没有落点**：解析出来只进数据包页的原文，台站详情里看不到，
+  /// 因为 Station 上没有对应字段。只有 APRSlocus 自己的状态包（取版本/平台）与
+  /// 路径含 APFMO 的那种会被结构化提取，其余一律丢弃。
+  String? statusText;
+
   /// 目的呼号对应的设备（未识别/未加载返回 null）
   AprsDeviceInfo? get device => AprsDevice.instance.lookup(toCall);
 
@@ -71,6 +85,7 @@ class Station {
     this.aprslocus,
     this.path,
     this.toCall,
+    this.statusText,
     this.favorite = false,
     this.manual = false,
   });
