@@ -205,6 +205,92 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.3', 'date': '2026-09-27',
+        'items': [
+            ('new',
+             T('**位置报文数据扩展（PHG · APRS101 第 9 章）**：电台设置的「台站备注」下多了「高级设置」，'
+               '可填功率（瓦）/ 天线高度（英尺）/ 增益（dB）。填任一项就附上固定 7 字节的 `PHGphgd`，'
+               '留空则完全不发。量化照规范做：功率只取**不超过实际值的最大档**（25 W 报 25、30 W 也只报 25'
+               ' —— 报大了等于虚报覆盖范围），天线高度按 10×2ⁿ 英尺取档；设置页把**真正会被编进报文的'
+               '结果**回显出来（量化过程用户看不见，不摆出来就无从知道到底发了什么）。',
+               '**位置報文資料擴充（PHG · APRS101 第 9 章）**：電台設定的「臺站備註」下多了「進階設定」，'
+               '可填功率（瓦）/ 天線高度（英尺）/ 增益（dB）。填任一項就附上固定 7 位元組的 `PHGphgd`，'
+               '留空則完全不送。量化照規範做：功率只取**不超過實際值的最大檔**（25 W 報 25、30 W 也只報 25'
+               ' —— 報大了等於虛報涵蓋範圍），天線高度按 10×2ⁿ 英尺取檔；設定頁把**真正會被編進報文的'
+               '結果**回顯出來（量化過程使用者看不見，不擺出來就無從得知到底送出了什麼）。',
+               '**Position packet data extension (PHG, APRS101 chapter 9)**: under Radio settings → '
+               '"Station comment" there is now an "Advanced" section taking power (W) / antenna height (ft) / '
+               'gain (dB). Filling in any one of them appends the fixed 7-byte `PHGphgd`; leaving them empty '
+               'sends nothing at all. The encoding follows the spec: power uses the **largest step that does '
+               'not exceed the real value** (25 W reports 25, and 30 W still reports 25 — over-reporting '
+               'claims coverage you do not have) and antenna height snaps to 10×2ⁿ feet. The settings page '
+               '**echoes back what will actually be encoded**, since quantisation is invisible and there '
+               'would otherwise be no way to know what went out.')),
+            ('new',
+             T('**独立状态报文**：高级设置里可填状态文本，与位置报文共用一个「发射」按钮 —— 哪个有内容'
+               '就发哪个，状态文本留空时发内置的 `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。状态报文是'
+               '**独立一帧**（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），所以没有定位也能发。'
+               '发送时一律直接读输入框当前内容，不依赖输入事件的时序 —— 中文输入法组合输入时曾出现'
+               '「明明填了，却发出默认帧」。此外新增手填海拔：留空跟随定位（默认行为不变），'
+               '设置页显示当前将发出的 `/A=aaaaaa` 片段。',
+               '**獨立狀態報文**：進階設定裡可填狀態文字，與位置報文共用一個「發射」按鈕 —— 哪個有內容'
+               '就送哪個，狀態文字留空時送內建的 `APRSlocus CONNECT vX.Y.Z 平台` 在線幀。狀態報文是'
+               '**獨立一幀**（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），所以沒有定位也能送。'
+               '發射時一律直接讀輸入框目前內容，不依賴輸入事件的時序 —— 中文輸入法組合輸入時曾出現'
+               '「明明填了，卻送出預設幀」。此外新增手填海拔：留空跟隨定位（預設行為不變），'
+               '設定頁會顯示目前將送出的 `/A=aaaaaa` 片段。',
+               '**Standalone status packets**: the Advanced section takes a status text, sharing one '
+               '"Transmit" button with the position packet — whichever has content is sent, and an empty '
+               'status text sends the built-in `APRSlocus CONNECT vX.Y.Z` online frame. A status '
+               'packet is a **frame of its own** (`>`-prefixed, carrying no coordinates, and it does not '
+               'move you on aprs.fi), so it can be sent even without a fix. Transmitting reads the current '
+               'contents of the field directly instead of relying on input-event timing — with an IME '
+               'composing text the app used to send the default frame although the user had typed '
+               'something. A manually entered altitude was added too: empty follows the fix (the default '
+               'is unchanged), and the settings page shows the `/A=aaaaaa` fragment that will be sent.')),
+            ('new',
+             T('**台站详情与地图信息窗**：台站详情多出一行**独立状态报文**（紫色 + 播报图标），与'
+               '「位置备注」分开显示 —— 两者来源不同（频点常写在位置备注里、设备来源常写在状态报文里），'
+               '混成一行就分不出哪个是哪个；此前这类文本只进数据包页的原文，台站详情里彻底看不到。'
+               '地图标记信息窗新增**高度**、**位置备注**、**状态文本**三行，且**按需出现**而不是常驻'
+               '占位 —— 绝大多数台站没有这些字段，常驻只会给出两行 `--`，把「没有」和「没收到」'
+               '显示成同一个样子。',
+               '**臺站詳情與地圖資訊窗**：臺站詳情多出一列**獨立狀態報文**（紫色 + 播報圖示），與'
+               '「位置備註」分開顯示 —— 兩者來源不同（頻點常寫在位置備註裡、裝置來源常寫在狀態報文裡），'
+               '混成一列就分不出哪個是哪個；此前這類文字只進資料封包頁的原文，臺站詳情裡徹底看不到。'
+               '地圖標記資訊窗新增**高度**、**位置備註**、**狀態文字**三列，且**按需出現**而不是常駐'
+               '佔位 —— 絕大多數臺站沒有這些欄位，常駐只會給出兩列 `--`，把「沒有」和「沒收到」'
+               '顯示成同一個樣子。',
+               '**Station details and the map info window**: station details gained a line for the '
+               '**standalone status packet** (purple, with a megaphone icon), shown separately from the '
+               'position comment — the two come from different packets (frequencies usually live in the '
+               'position comment, device provenance in the status packet), and merging them makes it '
+               'impossible to tell which is which. That text used to appear only in the raw packet console '
+               'and never on the station. The map marker info window gained **altitude**, **position '
+               'comment** and **status text** lines, each **appearing only when present** rather than as a '
+               'permanent placeholder — few stations carry these fields, and placeholders would print two '
+               'rows of `--`, making "absent" and "not received" look identical.')),
+            ('up',
+             T('**手机电量默认不再随位置报文发送**：`Bat:` 是设备自身状态，与电台能否被听到无关；'
+               '该开关全应用只留**一处**（高级设置里），原先信标页「信标上报内容」里那个同名开关已'
+               '合并过来。高级设置做成**可折叠**菜单，平时不改的几项不再把「台站备注」这张卡片'
+               '撑得很长。手填的这几项（功率 / 天线高度 / 增益 / 手填海拔 / 状态文本）都会进备份，'
+               '换机不必重新照电台手打。',
+               '**手機電量預設不再隨位置報文發送**：`Bat:` 是裝置自身狀態，與電台能否被聽到無關；'
+               '該開關全應用只留**一處**（進階設定裡），原先信標頁「信標上報內容」裡那個同名開關已'
+               '合併過來。進階設定做成**可摺疊**選單，平時不改的幾項不再把「臺站備註」這張卡片'
+               '撐得很長。手填的這幾項（功率 / 天線高度 / 增益 / 手填海拔 / 狀態文字）都會進備份，'
+               '換機不必重新照電台手打。',
+               '**Phone battery is no longer sent with position packets by default**: `Bat:` is the '
+               "device's own state and says nothing about whether the radio can be heard. That switch now "
+               'exists in **exactly one place** (Advanced); the duplicate under the beacon page\'s '
+               '"Beacon contents" heading has been merged into it. Advanced is a **collapsible** menu, so the '
+               'rarely-changed fields no longer stretch the station-comment card. The manually entered '
+               'values (power / antenna height / gain / altitude override / status text) are included in '
+               'backups, so a new device does not mean retyping them from the radio.')),
+        ],
+    },
+    {
         'ver': 'v2.0.2', 'date': '2026-09-26',
         'items': [
             ('new',

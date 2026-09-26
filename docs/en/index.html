@@ -598,6 +598,18 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.3</span>
+        <span class="cl-date">2026-09-27</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**Position packet data extension (PHG, APRS101 chapter 9)**: under Radio settings → "Station comment" there is now an "Advanced" section taking power (W) / antenna height (ft) / gain (dB). Filling in any one of them appends the fixed 7-byte `PHGphgd`; leaving them empty sends nothing at all. The encoding follows the spec: power uses the **largest step that does not exceed the real value** (25 W reports 25, and 30 W still reports 25 — over-reporting claims coverage you do not have) and antenna height snaps to 10×2ⁿ feet. The settings page **echoes back what will actually be encoded**, since quantisation is invisible and there would otherwise be no way to know what went out.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Standalone status packets**: the Advanced section takes a status text, sharing one "Transmit" button with the position packet — whichever has content is sent, and an empty status text sends the built-in `APRSlocus CONNECT vX.Y.Z` online frame. A status packet is a **frame of its own** (`>`-prefixed, carrying no coordinates, and it does not move you on aprs.fi), so it can be sent even without a fix. Transmitting reads the current contents of the field directly instead of relying on input-event timing — with an IME composing text the app used to send the default frame although the user had typed something. A manually entered altitude was added too: empty follows the fix (the default is unchanged), and the settings page shows the `/A=aaaaaa` fragment that will be sent.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Station details and the map info window**: station details gained a line for the **standalone status packet** (purple, with a megaphone icon), shown separately from the position comment — the two come from different packets (frequencies usually live in the position comment, device provenance in the status packet), and merging them makes it impossible to tell which is which. That text used to appear only in the raw packet console and never on the station. The map marker info window gained **altitude**, **position comment** and **status text** lines, each **appearing only when present** rather than as a permanent placeholder — few stations carry these fields, and placeholders would print two rows of `--`, making "absent" and "not received" look identical.</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**Phone battery is no longer sent with position packets by default**: `Bat:` is the device's own state and says nothing about whether the radio can be heard. That switch now exists in **exactly one place** (Advanced); the duplicate under the beacon page's "Beacon contents" heading has been merged into it. Advanced is a **collapsible** menu, so the rarely-changed fields no longer stretch the station-comment card. The manually entered values (power / antenna height / gain / altitude override / status text) are included in backups, so a new device does not mean retyping them from the radio.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.2</span>
         <span class="cl-date">2026-09-26</span>
       </div>
@@ -1246,6 +1258,10 @@
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">Z</span>
           <span><span class="c-name">清零 (BG2HCB)</span><span class="c-role">Settings optimization</span></span>
+        </span>
+        <span class="contributor">
+          <span class="avatar" style="background:linear-gradient(135deg,#1d6ff2,#1348a8)">G</span>
+          <span><span class="c-name">BH7GZB</span><span class="c-role">Code contribution</span></span>
         </span>
       </div>
     </div>

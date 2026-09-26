@@ -673,6 +673,18 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.3</span>
+        <span class="cl-date">2026-09-27</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**位置报文数据扩展（PHG · APRS101 第 9 章）**：电台设置的「台站备注」下多了「高级设置」，可填功率（瓦）/ 天线高度（英尺）/ 增益（dB）。填任一项就附上固定 7 字节的 `PHGphgd`，留空则完全不发。量化照规范做：功率只取**不超过实际值的最大档**（25 W 报 25、30 W 也只报 25 —— 报大了等于虚报覆盖范围），天线高度按 10×2ⁿ 英尺取档；设置页把**真正会被编进报文的结果**回显出来（量化过程用户看不见，不摆出来就无从知道到底发了什么）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**独立状态报文**：高级设置里可填状态文本，与位置报文共用一个「发射」按钮 —— 哪个有内容就发哪个，状态文本留空时发内置的 `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。状态报文是**独立一帧**（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），所以没有定位也能发。发送时一律直接读输入框当前内容，不依赖输入事件的时序 —— 中文输入法组合输入时曾出现「明明填了，却发出默认帧」。此外新增手填海拔：留空跟随定位（默认行为不变），设置页显示当前将发出的 `/A=aaaaaa` 片段。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**台站详情与地图信息窗**：台站详情多出一行**独立状态报文**（紫色 + 播报图标），与「位置备注」分开显示 —— 两者来源不同（频点常写在位置备注里、设备来源常写在状态报文里），混成一行就分不出哪个是哪个；此前这类文本只进数据包页的原文，台站详情里彻底看不到。地图标记信息窗新增**高度**、**位置备注**、**状态文本**三行，且**按需出现**而不是常驻占位 —— 绝大多数台站没有这些字段，常驻只会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**手机电量默认不再随位置报文发送**：`Bat:` 是设备自身状态，与电台能否被听到无关；该开关全应用只留**一处**（高级设置里），原先信标页「信标上报内容」里那个同名开关已合并过来。高级设置做成**可折叠**菜单，平时不改的几项不再把「台站备注」这张卡片撑得很长。手填的这几项（功率 / 天线高度 / 增益 / 手填海拔 / 状态文本）都会进备份，换机不必重新照电台手打。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.2</span>
         <span class="cl-date">2026-09-26</span>
       </div>
@@ -1331,6 +1343,10 @@ html{overflow-x:hidden}
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>
           <span><span class="c-name">清零 (BG2HCB)</span><span class="c-role">设置页代码优化</span></span>
+        </span>
+        <span class="contributor">
+          <span class="avatar" style="background:linear-gradient(135deg,#1d6ff2,#1348a8)">G</span>
+          <span><span class="c-name">BH7GZB</span><span class="c-role">贡献代码</span></span>
         </span>
       </div>
     </div>

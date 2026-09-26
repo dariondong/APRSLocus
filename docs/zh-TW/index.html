@@ -604,6 +604,18 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.3</span>
+        <span class="cl-date">2026-09-27</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**位置報文資料擴充（PHG · APRS101 第 9 章）**：電台設定的「臺站備註」下多了「進階設定」，可填功率（瓦）/ 天線高度（英尺）/ 增益（dB）。填任一項就附上固定 7 位元組的 `PHGphgd`，留空則完全不送。量化照規範做：功率只取**不超過實際值的最大檔**（25 W 報 25、30 W 也只報 25 —— 報大了等於虛報涵蓋範圍），天線高度按 10×2ⁿ 英尺取檔；設定頁把**真正會被編進報文的結果**回顯出來（量化過程使用者看不見，不擺出來就無從得知到底送出了什麼）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**獨立狀態報文**：進階設定裡可填狀態文字，與位置報文共用一個「發射」按鈕 —— 哪個有內容就送哪個，狀態文字留空時送內建的 `APRSlocus CONNECT vX.Y.Z 平台` 在線幀。狀態報文是**獨立一幀**（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），所以沒有定位也能送。發射時一律直接讀輸入框目前內容，不依賴輸入事件的時序 —— 中文輸入法組合輸入時曾出現「明明填了，卻送出預設幀」。此外新增手填海拔：留空跟隨定位（預設行為不變），設定頁會顯示目前將送出的 `/A=aaaaaa` 片段。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**臺站詳情與地圖資訊窗**：臺站詳情多出一列**獨立狀態報文**（紫色 + 播報圖示），與「位置備註」分開顯示 —— 兩者來源不同（頻點常寫在位置備註裡、裝置來源常寫在狀態報文裡），混成一列就分不出哪個是哪個；此前這類文字只進資料封包頁的原文，臺站詳情裡徹底看不到。地圖標記資訊窗新增**高度**、**位置備註**、**狀態文字**三列，且**按需出現**而不是常駐佔位 —— 絕大多數臺站沒有這些欄位，常駐只會給出兩列 `--`，把「沒有」和「沒收到」顯示成同一個樣子。</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**手機電量預設不再隨位置報文發送**：`Bat:` 是裝置自身狀態，與電台能否被聽到無關；該開關全應用只留**一處**（進階設定裡），原先信標頁「信標上報內容」裡那個同名開關已合併過來。進階設定做成**可摺疊**選單，平時不改的幾項不再把「臺站備註」這張卡片撐得很長。手填的這幾項（功率 / 天線高度 / 增益 / 手填海拔 / 狀態文字）都會進備份，換機不必重新照電台手打。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.2</span>
         <span class="cl-date">2026-09-26</span>
       </div>
@@ -1252,6 +1264,10 @@
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>
           <span><span class="c-name">清零 (BG2HCB)</span><span class="c-role">設置頁代碼優化</span></span>
+        </span>
+        <span class="contributor">
+          <span class="avatar" style="background:linear-gradient(135deg,#1d6ff2,#1348a8)">G</span>
+          <span><span class="c-name">BH7GZB</span><span class="c-role">貢獻程式碼</span></span>
         </span>
       </div>
     </div>
