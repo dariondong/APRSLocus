@@ -57,22 +57,22 @@ PAGES = [
 # 而卡片标题要的是「TOUCH SKY」+ 右侧小字，推不出来（也不该推）。
 HEAD = {
     'zh': {
-        'kicker': '1.5.8 → 2.0 · 322 次更新',
-        'title': 'TOUCH SKY',
-        'en': "2.0 已上线 · What's New",
-        'sub': '从 FIRST FIX 到 TOUCH SKY：1.0 让我们站稳，2.0 让我们仰望。这一次，我们把坐标点亮到了天上。',
+        'kicker': '⚠️ 重要公告 · 2.0.3 已撤回',
+        'title': '请回退至 2.0.2',
+        'en': 'v2.0.3 withdrawn · roll back to 2.0.2',
+        'sub': '2.0.3 是一次非正常发行：版本号在正常发版流程之外被提升。我们已将它连同对应的 Release 与标签一并撤回，建议仍在使用 2.0.3 的朋友回退到 2.0.2。',
     },
     'zh_TW': {
-        'kicker': '1.5.8 → 2.0 · 322 次更新',
-        'title': 'TOUCH SKY',
-        'en': "2.0 已上線 · What's New",
-        'sub': '從 FIRST FIX 到 TOUCH SKY：1.0 讓我們站穩，2.0 讓我們仰望。這一次，我們把座標點亮到了天上。',
+        'kicker': '⚠️ 重要公告 · 2.0.3 已撤回',
+        'title': '請回退至 2.0.2',
+        'en': 'v2.0.3 withdrawn · roll back to 2.0.2',
+        'sub': '2.0.3 是一次非正常發行：版本號在正常發版流程之外被提升。我們已將它連同對應的 Release 與標籤一併撤回，建議仍在使用 2.0.3 的朋友回退到 2.0.2。',
     },
     'en': {
-        'kicker': '1.5.8 → 2.0 · 322 updates',
-        'title': 'TOUCH SKY',
-        'en': "2.0 is out · What's New",
-        'sub': 'From FIRST FIX to TOUCH SKY: 1.0 made us stand firm, 2.0 made us look up. This time, we lit our coordinates into the sky.',
+        'kicker': '⚠️ Important · v2.0.3 withdrawn',
+        'title': 'Please roll back to 2.0.2',
+        'en': 'v2.0.3 withdrawn',
+        'sub': 'v2.0.3 was an invalid release: its version number was raised outside the normal release process. We have withdrawn it together with its Release and tag; if you are on 2.0.3, please roll back to 2.0.2.',
     },
 }
 

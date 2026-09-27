@@ -1,96 +1,53 @@
-# 📡 APRSLocus 2.0 is out · TOUCH SKY
+# ⚠️ Important · v2.0.3 withdrawn — please roll back to 2.0.2
 
-From **FIRST FIX** to **TOUCH SKY** —
-1.0 made us stand firm, 2.0 made us look up.
-This time, we lit our coordinates into the sky.
+**v2.0.3 was an invalid release: it came from a version-number change made outside the normal release process. We have withdrawn it, and we recommend that anyone on 2.0.3 rolls back to 2.0.2.**
 
 ---
 
-The galaxy is vast; the dream goes on.
+## 1. What happened
 
-This song is a tribute to everyone who chases the dream of China's space programme,
-and to you, sitting in front of the screen —
-setting up a rig, listening, lighting a beacon, and sending a signal into the sky.
+**v2.0.3 has been withdrawn.**
 
-They look up at the stars; we keep watch over the airwaves.
-They ask the universe; we call into the sky.
-Different bands, the same dream.
+It originated from a **non-compliant version-number change**: outside the normal release process, the project version was raised from **2.0.2** to **2.0.3**, and a release was built from it.
 
-**Just like us.**
+That breaks a hard rule of this project: **the version number may only be raised by the maintainer, when a release is actually being prepared.** No feature contribution should ever touch it. So v2.0.3 is an **invalid release**, and we have:
 
-🎵 [▶ "Star River Dream" BV18NF9zUEq3](https://www.bilibili.com/video/BV18NF9zUEq3)
-
-@video https://player.bilibili.com/player.html?isOutside=true&aid=116047298434484&bvid=BV18NF9zUEq3&cid=35969762505&p=1
-
-> Video from Bilibili @YSming_
+- deleted the v2.0.3 **Release** and its **tag** on GitHub;
+- pointed the website and download entry **back to 2.0.2**;
+- **rolled the related changes back** out of the main branch.
 
 ---
 
-## 🚀 What's new in 2.0 (1.5.8 → 2.0, 322 updates)
+## 2. Recommendation: roll back to 2.0.2
 
-### All-new UI 2.0
-Map-first layout + draggable sheet + floating capsule navigation; landscape redone across all three form factors; frosted glass / mica materials.
+If you have installed or are running 2.0.3, **please roll back to 2.0.2**.
 
-### Links & RF
-Bluetooth TNC (full KISS), sound-card soft TNC (AFSK 1200), PKWDWPL, iGate; several sources can receive at once with the transmit source picked separately; built-in link self-test.
+- **Android**: download and install **APRSLocus_2.0.2.apk**. If you hit a signing-key conflict and cannot install over the top, **back up** first (callsign, station comments, custom themes and other important settings), then uninstall 2.0.3 and install again.
+- **Windows**: download and run **APRSLocus_Setup_2.0.2.exe**.
+- **iOS**: download **APRSLocus_2.0.2_unsigned.ipa** and sign it yourself.
 
-### Messaging & translation
-Unified chat and group conversations + ACK; translation providers grew from 4 to 7, keyless by default; two-way translation, side-by-side view, translate-before-send, language auto-memory.
+[▶ Download 2.0.2](https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2)
 
-### Map & positioning
-Multiple map sources, immersive map, offline maps, track replay; clustering removed; smart beaconing (by turn / by distance) with stationary debouncing.
-
-### Station identification
-The aprs.org device database identifies vendor / model / class; 37 symbol tables and 3571 icons built in.
-
-### Weather · propagation · widgets
-Amateur-radio advice levels (safety warning > caution > opportunity > tip), per-band day/night HF and ionospheric conditions, three Android home-screen widgets.
-
-### Personalisation & data
-Custom themes + background image + JSON sharing, backup & restore, ADIF export, statistics panel.
-
-### Languages & devices
-Six UI languages; Garmin LiveTrack and Bluetooth heart-rate straps.
-
-…plus countless fixes among those 322 updates.
+> It is a good idea to make a backup before rolling back (Settings → Backup & Restore) — useful both for changing phones and for downgrading.
 
 ---
 
-## 📥 Download
+## 3. Why the version number matters so much
 
-- **Android**: download the APK
-- **Windows**: download the EXE installer
-- **GitHub Releases**: [open the releases page](https://github.com/dariondong/APRSLocus/releases)
+APRSLocus **sends its version number over the air** — it appears in the identity and online frames on APRS-IS and on RF (for example, APRSlocus CONNECT v2.0.2).
 
-> 2.0 was officially shipped on **25 September, 22:00**.
+If two different packages both claim to be **2.0.3**, platforms such as aprs.fi can no longer tell **which one is beaconing** — and if something goes wrong, nobody can trace it. The version number is this project's identity on the air: it must stay unique, and only the maintainer may raise it when preparing a release.
 
 ---
 
-## ⚠️ Before you upgrade
+## 4. What happens next
 
-- **Versions older than v1.4.9**: the Android signing key changed, so you **cannot install over the top**. Please **back up** your callsign, station comments, custom themes and other important settings, then **uninstall the old version** and install the new one.
-- **v1.4.9 and later**: installing over the top usually works; backing up first is still recommended.
+- The related feature changes **are not lost**: once the **version-number change is removed**, they will be resubmitted, reviewed and merged through the normal process, and shipped in the next **official release**.
+- Genuine thanks to everyone who contributes, tests and reports issues. New features, bug reports and pull requests are all very welcome; the one rule we all share is simply — **do not touch the version number**.
 
----
-
-## 🏆 Titles · applications open
-
-To everyone who has been with APRSLocus along the way — every piece of feedback, every test, every contact is recorded here. The following titles are now open for application:
-
-- **🏆 FIRST FIX · highest honour** — you lit the first coordinate with us
-- **🧬 Sowing** — you spread APRSLocus to more hams
-
-**How to apply:** join the QQ group, or open a GitHub Issue / leave a message in the group, telling us which title you would like and why. The list will be granted over time; additions are welcome.
-
----
-
-## 💬 Feedback & thanks
-
-APRSLocus is an open-source project (GPL-3.0) and will keep being maintained. Suggestions and bug reports are always welcome. If the project interests you, Issues and Pull Requests are very welcome too.
-
-If anything goes wrong after updating, tell us in the group or via a GitHub Issue.
+If you have any questions about rolling back, or about the versioning rule, please ask in the QQ group or open a GitHub Issue.
 
 **73!**
 
 **The APRSLocus team**
-25 September 2026
+27 September 2026
