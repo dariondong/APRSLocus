@@ -49,7 +49,7 @@
    即 `v2.0.3-fork` 仍会被读成 `2.0.3`。
 
 3. **`versionCode` 必须自行单调递增，且不能与上游混淆。**
-   本仓库规则：`versionCode = major×10000 + minor×100 + patch`（`2.0.3 → 20003`）。
+   本仓库规则：`versionCode = major×10000 + minor×100 + patch`（`2.0.2 → 20002`）。
    Android 只认**同一个 applicationId 下**递增；改了 applicationId 的 fork 另起一套即可。
 
 ### fork 的正确做法
@@ -88,10 +88,10 @@
 
 | 位置 | 形式 | 谁在写 |
 |---|---|---|
-| `pubspec.yaml` | `version: 2.0.3+20003` | `tool/sync_version.py`（发版时由工作流调用） |
-| `lib/state.dart` | `static const appVersion = '2.0.3';` | 同上；**会被发射到空中**，也用于「关于页 / 更新页 / 备份」 |
+| `pubspec.yaml` | `version: 2.0.2+20002` | `tool/sync_version.py`（发版时由工作流调用） |
+| `lib/state.dart` | `static const appVersion = '2.0.2';` | 同上；**会被发射到空中**，也用于「关于页 / 更新页 / 备份」 |
 | `android/local.properties` | `flutter.versionName` / `flutter.versionCode` | 同上；**文件不存在就跳过**（CI 上由 flutter 自行生成） |
-| `CHANGELOG.md` 顶部标题 | `## [2.0.3] - 2026-09-27` | 人工；**Release 页正文就是从这儿抽的** |
+| `CHANGELOG.md` 顶部标题 | `## [2.0.2] - 2026-09-26` | 人工；**Release 页正文就是从这儿抽的** |
 | `docs/js/main.js` | 运行时取 GitHub `releases/latest` | 自动，无需手改 |
 
 **只有维护者改版本号**，且只在**准备发版时**改一次：
@@ -116,7 +116,7 @@ push tag v*  ──►  build-windows ┐
 - Release 正文由工作流里的 `awk` 从 `CHANGELOG.md` 抽 ——
   所以**每个版本条目必须是「中文条目 + 紧随其后的 `(English)` 条目」**，
   缺了英文或混入相邻版本都会被 `tool/check_release_notes.py` 在 CI 里拦住。
-- 资产名带版本号：`APRSLocus_Setup_2.0.3.exe` / `APRSLocus_2.0.3.apk` / `APRSLocus_2.0.3_unsigned.ipa`。
+- 资产名带版本号：`APRSLocus_Setup_2.0.2.exe` / `APRSLocus_2.0.2.apk` / `APRSLocus_2.0.2_unsigned.ipa`。
 
 **推荐顺序（踩过的坑：先打 tag 才发现编译错误，只能删 tag / 删 Release 重打）**：
 
@@ -144,7 +144,7 @@ push tag v*  ──►  build-windows ┐
 | [#5](https://github.com/dariondong/APRSLocus/pull/5) | `xaxovo` | 彩蛋打磨：触发位置 + 全屏粒子 | 2026-08-31 |
 | [#7](https://github.com/dariondong/APRSLocus/pull/7) | `Liyuchen0118` | **繁体中文**翻译润色 + 群聊术语统一 | 2026-09-06 |
 | [#10](https://github.com/dariondong/APRSLocus/pull/10) | `ju1c3rSH` | **协议页支持繁體中文**（原先只打包简 / 英两份） | 2026-09-12 |
-| [#11](https://github.com/dariondong/APRSLocus/pull/11) | `FengziLeo` | **位置报文数据扩展**（`/A=` 高度、PHG 功率 / 天线高度 / 增益）+ **独立状态报文**及其显示；同批把版本号提到 `2.0.3`（versionCode 20003） | 2026-09-26 |
+| [#11](https://github.com/dariondong/APRSLocus/pull/11) | `FengziLeo` | **位置报文数据扩展**（`/A=` 高度、PHG 功率 / 天线高度 / 增益）+ **独立状态报文**及其显示；同批把版本号提到 `2.0.3`（versionCode 20003）—— ⛔ 违反第一节铁律，**2026-09-27 已整体回滚**（`v2.0.3` 发行与 tag 一并撤回，主分支回到 #11 之前的 `2.0.2`） | 2026-09-26 |
 
 ### 这些贡献被记在哪（登记点）
 
