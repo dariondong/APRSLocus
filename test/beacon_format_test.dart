@@ -470,16 +470,21 @@ void main() {
       st.dispose();
     });
 
-    test('不变量：注释第一段只由 CsT / PHG / /A= 紧贴拼成', () {
-      final extOnly = RegExp(r'^(?:\d{3}/\d{3})?(?:PHG\d{4})?(?:/A=\d{6})?$');
-      // 三种典型组合都要满足（含「一个都没有」时的空串）
+    test('不变量：扩展整块紧贴，且不得漏进备注', () {
+      // 注释的第一段 = `!坐标+符号` 紧贴 `CsT? PHG? /A=?`（三者都可缺席）
+      final posExt = RegExp(r'^![0-9]{4}\.[0-9]{2}[NS]/[0-9]{5}\.[0-9]{2}[EW].'
+          r'(?:\d{3}/\d{3})?(?:PHG\d{4})?(?:/A=\d{6})?$');
+      // 任何一个数据扩展**单独出现**在后面的备注里，就说明扩展之间被空格拆开了
+      final leaked = RegExp(r'^(?:PHG\d{4}|/A=\d{6}|\d{3}/\d{3})$');
+
+      // 只取「至少带一个扩展」的组合：没有任何扩展时注释紧跟符号（本来就无空格），
+      // 那种形状由上一组「空/纯空白注释不产生多余分隔」覆盖。
       for (final (cse, phg, alt) in [
         (true, true, true),
         (false, true, true),
         (true, false, true),
         (false, false, true),
         (true, false, false),
-        (false, false, false),
       ]) {
         final st = userSetup()
           ..beaconIncludeSpeed = cse
@@ -492,11 +497,16 @@ void main() {
           ..beaconAltOverrideM = alt ? 10.0584 : null;
         st.sendBeacon();
         final raw = sentRaw(st);
-        final tok = raw.isEmpty ? '' : firstToken(raw);
-        expect(extOnly.hasMatch(tok), isTrue,
-            reason: 'cse=$cse phg=$phg alt=$alt 的首段是「$tok」，'
-                '只能由紧贴的 CsT/PHG//A= 组成');
-        expect(tok.contains(' '), isFalse);
+        final body = raw.substring(raw.indexOf(':') + 1);
+        final head = body.split(' ').first;
+        expect(posExt.hasMatch(head), isTrue,
+            reason: 'cse=$cse phg=$phg alt=$alt：首段是「$head」，'
+                '只能是「!坐标+符号」紧贴 CsT/PHG//A=（中间不得有空格）');
+        for (final tok in body.split(' ').skip(1)) {
+          expect(leaked.hasMatch(tok), isFalse,
+              reason: 'cse=$cse phg=$phg alt=$alt：数据扩展「$tok」跑进了备注 —— '
+                  '说明扩展之间被空格拆开了（这正是 v2.0.4 的 bug）');
+        }
         st.dispose();
       }
     });
