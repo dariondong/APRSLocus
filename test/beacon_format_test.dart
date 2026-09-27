@@ -397,10 +397,14 @@ void main() {
         .map((p) => p.raw)
         .firstWhere((r) => r.contains('PHG'), orElse: () => '');
 
-    /// 注释（`:` 之后）的第一段 —— 也就是「数据扩展块」该在的位置。
-    String firstToken(String raw) {
-      final body = raw.substring(raw.indexOf(':') + 1);
-      return body.split(' ').first;
+    /// 位置包的原文（**与「有没有 PHG」无关**）。
+    ///
+    /// 为什么不能复用 [sentRaw]：它按「含 PHG」筛，于是 phg=false 的组合一律
+    /// 拿到空串 —— 断言要么空转、要么直接失败。这正是本组「不变量」用例上一次
+    /// CI 报红的原因（`cse=true phg=false` 时首段是空串）。
+    String posRaw(AppState st) {
+      final hits = st.packets.where((p) => p.type == 'position');
+      return hits.isEmpty ? '' : hits.first.raw;
     }
 
     /// ⚠ 这一条说的是**第二个**独立的坑：就算整块紧贴了，只要 CsT 排在 PHG
@@ -496,7 +500,7 @@ void main() {
           ..beaconGainDb = phg ? 5 : null
           ..beaconAltOverrideM = alt ? 10.0584 : null;
         st.sendBeacon();
-        final raw = sentRaw(st);
+        final raw = posRaw(st);
         final body = raw.substring(raw.indexOf(':') + 1);
         final head = body.split(' ').first;
         expect(posExt.hasMatch(head), isTrue,
