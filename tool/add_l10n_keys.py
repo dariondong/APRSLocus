@@ -89,11 +89,62 @@ KEYS = {
         'Balizando con posición de red (gruesa)',
         'Memancarkan posisi jaringan (kasar)',
     ),
+    # ── 「发射」按钮：填了 PHG 却没有定位时的如实回执 ──
+    #
+    # 位置报文在 [AppState.sendBeacon] 里被 `!myHasFix` 拦下（没坐标不能发位置包），
+    # 而「发射」按钮无条件发状态帧 —— 于是用户填好功率/增益点一下，只发出一帧
+    # 状态报文，界面却什么也没说。这一句就是把「位置那半截为什么没发」说出来。
+    'txNoFixKeptStatus': (
+        '已发射：{parts}（还没有定位，带 PHG 的位置报文没能发出）',
+        '已發射：{parts}（還沒有定位，帶 PHG 的位置報文沒能發出）',
+        'Sent: {parts} (no fix yet - the position packet with PHG was not sent)',
+        '送信しました：{parts}（測位がないため PHG 付きの位置パケットは送信されませんでした）',
+        'Enviado: {parts} (sin posición todavía: el paquete de posición con PHG no se envió)',
+        'Terkirim: {parts} (belum ada posisi - paket posisi dengan PHG tidak dikirim)',
+    ),
+    # ── 状态报文自己的连接状态文案 ──
+    #
+    # 此前 sendStatus() 复用「位置已上报」那三档 → 状态下发出去后主横幅却写着
+    # 「位置已上报」，而一个位置包都没发。状态帧与位置帧是两种报文，文案必须分开。
+    'connStatusSent': (
+        '已连接 · 状态报文已发送 ({call})', '已連線 · 狀態報文已發送 ({call})',
+        'Connected · Status packet sent ({call})',
+        '接続済み · ステータスパケット送信済み ({call})',
+        'Conectado · paquete de estado enviado ({call})',
+        'Terhubung · paket status terkirim ({call})',
+    ),
+    'connTncStatusSent': (
+        'TNC 已连接 · 状态报文已发送 ({arg})', 'TNC 已連線 · 狀態報文已發送 ({arg})',
+        'TNC connected · status packet sent ({arg})',
+        'TNC 接続済み · ステータスパケット送信済み ({arg})',
+        'TNC conectado · paquete de estado enviado ({arg})',
+        'TNC terhubung · paket status terkirim ({arg})',
+    ),
+    'connAudioStatusSent': (
+        '音频已发射 · 状态报文已发送 ({call})', '音訊已發射 · 狀態報文已發送 ({call})',
+        'Sent over audio · status packet sent ({call})',
+        'オーディオ送信済み · ステータスパケット送信済み ({call})',
+        'Enviado por audio · paquete de estado enviado ({call})',
+        'Terkirim via audio · paket status terkirim ({call})',
+    ),
+    # ── 关于页「代码贡献」里 BH7GZB 那一行的标签 ──
+    # 原来那一节的三行标签都是「具体做了什么」（国际化 / 繁体中文界面 / 翻译），
+    # 而这位的贡献是**位置报文数据扩展与独立状态报文**（PR #11）—— 没有现成键能覆盖。
+    # 为什么不复用 settingsContribCodeOptimization（「代码优化」）：那是清零（BG2HCB）
+    # 的专属描述，套到别人身上等于张冠李戴。
+    'codeContribution': (
+        '贡献代码', '貢獻程式碼', 'Code contribution',
+        'コード貢献', 'Contribución de código', 'Kontribusi kode',
+    ),
 }
 
 # ── 占位符声明（可空）──
 META = {
     'beaconCoarseForced': '{"placeholders": {"s": {"type": "String"}}}',
+    'txNoFixKeptStatus': '{"placeholders": {"parts": {"type": "String"}}}',
+    'connStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
+    'connTncStatusSent': '{"placeholders": {"arg": {"type": "String"}}}',
+    'connAudioStatusSent': '{"placeholders": {"call": {"type": "String"}}}',
 }
 
 

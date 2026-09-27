@@ -1,51 +1,41 @@
-# ⚠️ Important · v2.0.3 withdrawn — please roll back to 2.0.2
+# 📡 v2.0.4 released — the withdrawn features are back
 
-**v2.0.3 was an invalid release: it came from a version-number change made outside the normal release process. We have withdrawn it, and we recommend that anyone on 2.0.3 rolls back to 2.0.2.**
+**v2.0.4 has been released.** The changes withdrawn earlier — because the **version number had been raised outside the normal release process** — are back: the position-packet data extensions (the `/A=` altitude and the PHG power / antenna height / gain fields) and standalone status packets, together with how they are shown. With the version-number change removed, they went through the normal process again and ship in this official release.
 
----
-
-## 1. What happened
-
-**v2.0.3 has been withdrawn.**
-
-It originated from a **non-compliant version-number change**: outside the normal release process, the project version was raised from **2.0.2** to **2.0.3**, and a release was built from it.
-
-That breaks a hard rule of this project: **the version number may only be raised by the maintainer, when a release is actually being prepared.** No feature contribution should ever touch it. So v2.0.3 is an **invalid release**, and we have:
-
-- deleted the v2.0.3 **Release** and its **tag** on GitHub;
-- pointed the website and download entry **back to 2.0.2**;
-- **rolled the related changes back** out of the main branch.
+If you are still on 2.0.3, please upgrade to **2.0.4** (2.0.3 is still an invalid release — see below).
 
 ---
 
-## 2. Recommendation: roll back to 2.0.2
+## 1. What is in this release
 
-If you have installed or are running 2.0.3, **please roll back to 2.0.2**.
+- **Position packet data extension (PHG)**: Settings → Radio → Station comment → "Advanced" takes power (W) / antenna height (ft) / gain (dB). Filling in any one of them appends the fixed 7-byte `PHGphgd`; the encoding follows APRS101 (power uses only the largest step that does not exceed the real value — over-reporting claims coverage you do not have), and the settings page echoes back what will actually be sent. In the packet the extension sits where the spec puts it: `PHG` comes **immediately after the symbol**.
+- **Altitude (`/A=`)**: you can enter an altitude by hand; **leaving it empty follows the fix** (the default is unchanged).
+- **Standalone status packets**: a status text can be entered, sharing one "Transmit" button with the position packet; an empty text sends the built-in `APRSlocus CONNECT` online frame. Received status text shows up on station details and in the map info window.
+- **Fixes**: the Transmit button checks the link first, PHG without a fix is reported honestly, status packets use their own connection text, the "next report in …" countdown ticks every second, the device page's link self-test no longer repeats its title, and the phone-battery switch stays on the beacon page.
 
-- **Android**: download and install **APRSLocus_2.0.2.apk**. If you hit a signing-key conflict and cannot install over the top, **back up** first (callsign, station comments, custom themes and other important settings), then uninstall 2.0.3 and install again.
-- **Windows**: download and run **APRSLocus_Setup_2.0.2.exe**.
-- **iOS**: download **APRSLocus_2.0.2_unsigned.ipa** and sign it yourself.
+See the changelog for the full list.
 
-[▶ Download 2.0.2](https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2)
+[▶ Download 2.0.4](https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4)
 
-> It is a good idea to make a backup before rolling back (Settings → Backup & Restore) — useful both for changing phones and for downgrading.
-
----
-
-## 3. Why the version number matters so much
-
-APRSLocus **sends its version number over the air** — it appears in the identity and online frames on APRS-IS and on RF (for example, APRSlocus CONNECT v2.0.2).
-
-If two different packages both claim to be **2.0.3**, platforms such as aprs.fi can no longer tell **which one is beaconing** — and if something goes wrong, nobody can trace it. The version number is this project's identity on the air: it must stay unique, and only the maintainer may raise it when preparing a release.
+> A backup before upgrading is a good idea (Settings → Backup & Restore). On Android, if a signing-key conflict prevents installing over the top, back up first, uninstall the old build and install again.
 
 ---
 
-## 4. What happens next
+## 2. About 2.0.3: still best avoided
 
-- The related feature changes **are not lost**: once the **version-number change is removed**, they will be resubmitted, reviewed and merged through the normal process, and shipped in the next **official release**.
-- Genuine thanks to everyone who contributes, tests and reports issues. New features, bug reports and pull requests are all very welcome; the one rule we all share is simply — **do not touch the version number**.
+**2.0.3 is still an invalid release.** It came from a change that **raised the version number from 2.0.2 to 2.0.3 outside the normal release process**, and a release was built from it.
 
-If you have any questions about rolling back, or about the versioning rule, please ask in the QQ group or open a GitHub Issue.
+APRSLocus **sends its version number over the air** (it appears in the identity and online frames on APRS-IS and on RF). If two different packages both claim to be **2.0.3**, platforms such as aprs.fi can no longer tell **which one is beaconing** — and if something goes wrong, nobody can trace it. That is why the release was withdrawn from GitHub and from this site.
+
+If you have 2.0.3 installed, please **upgrade to 2.0.4**.
+
+---
+
+## 3. One rule: only the maintainer raises the version number, and only when releasing
+
+Contributions are always welcome — issues, bug reports and pull requests. The one shared rule is simply: **do not touch the version number**; it is raised by the maintainer when a release is prepared.
+
+---
 
 **73!**
 

@@ -355,3 +355,101 @@ class AprsFmt {
     return '${r % 10000}'.padLeft(4, '0');
   }
 }
+
+/// ─── PHG 数据扩展编码（APRS101 第 9 章）───
+///
+/// `PHGphgd` 是**固定 7 字节**的数据扩展，四个码位各有自己的量化表：
+///
+/// | 码位 | 含义 | 取值 |
+/// |---|---|---|
+/// | p | 发射功率 | 0/1/4/9/16/25/36/49/64/81 W（10 档，**必须取不超过实际值的最大档**）|
+/// | h | 天线有效高度（高于当地平均地面）| 10/20/40/…/5120 英尺（10×2ⁿ）|
+/// | g | 天线增益 | 0–9 dB（整数）|
+/// | d | 天线方向性 | 0=全向，1=东北…8=北 |
+///
+/// 两个必须照规范做、做错就静默出错的地方：
+///
+///  1. **功率只能取「不超过实际值的最大档」**。规范说 25 W 的台站写 5 —— 因为
+///     写大了会让 aprs.fi 上的通信范围圈画得比实际更远，是在虚报覆盖能力。
+///     所以 30 W 只能报 25 W（取 5），不能四舍五入到 36 W。
+///  2. **高度是「高于当地平均地面」而不是海拔**。它回答的是「天线在地面上多高」，
+///     与 `/A=` 那个海拔是两个完全不同的量，不能互相替代 —— 规范原文特意强调
+///     "not above ground or sea level"。
+class AprsPhg {
+  AprsPhg._();
+
+  /// 功率档（瓦）→ 码位就是下标
+  static const List<int> powerSteps = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81];
+
+  /// 天线高度：档位 n（0–9）= 10 × 2ⁿ 英尺
+  static int heightStepFeet(int code) => 10 * (1 << code);
+
+  /// 功率（瓦）→ 码位字符。取**不超过**实际值的最大档（见类注释）。
+  static int powerCode(num watts) {
+    final w = watts.toDouble();
+    if (!w.isFinite || w <= 0) return 0;
+    var best = 0;
+    for (var i = 0; i < powerSteps.length; i++) {
+      if (powerSteps[i] <= w) best = i;
+    }
+    return best;
+  }
+
+  /// 天线高度（英尺，高于当地平均地面）→ 码位字符。同样取不超过实际值的最大档。
+  static int heightCode(num feet) {
+    final f = feet.toDouble();
+    if (!f.isFinite || f <= 0) return 0;
+    var best = 0;
+    for (var i = 0; i < 10; i++) {
+      if (heightStepFeet(i) <= f) best = i;
+    }
+    return best;
+  }
+
+  /// 天线增益（dB）→ 码位字符：规范只定义 0–9 的整数档，超出封顶。
+  static int gainCode(num db) {
+    final d = db.toDouble();
+    if (!d.isFinite || d <= 0) return 0;
+    final r = d.round();
+    return r > 9 ? 9 : r;
+  }
+
+  /// 方向性（度）→ 码位字符；[isOmni] 或 0 度表示全向。
+  static int directivityCode(int deg, {bool isOmni = true}) {
+    if (isOmni) return 0;
+    const table = [0, 45, 90, 135, 180, 225, 270, 315, 360];
+    var best = 0;
+    var bestDiff = 1 << 30;
+    for (var i = 1; i < table.length; i++) {
+      final diff = (table[i] - deg).abs();
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  /// 组装 `PHGphgd`。四个码位一次给全 —— 规范里它就是**一个** 7 字节字段，
+  /// 不存在「只报功率不报高度」的写法。
+  static String encode({
+    required num watts,
+    required num heightFeet,
+    required num gainDb,
+    int directivityDeg = 0,
+    bool isOmni = true,
+  }) {
+    return 'PHG'
+        '${powerCode(watts)}'
+        '${heightCode(heightFeet)}'
+        '${gainCode(gainDb)}'
+        '${directivityCode(directivityDeg, isOmni: isOmni)}';
+  }
+
+  /// 高度码位 → 展示用米数（设置页回显「这一档实际是多高」）
+  static int heightStepMeters(int code) =>
+      (heightStepFeet(code) * 0.3048).round();
+
+  /// 功率码位 → 展示用瓦数
+  static int powerStepWatts(int code) => powerSteps[code.clamp(0, 9)];
+}

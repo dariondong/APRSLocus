@@ -278,38 +278,34 @@
     <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
 
     <header class="announce-head">
-      <p class="announce-kicker">⚠️ 重要公告 · 2.0.3 已撤回</p>
-      <h2 class="announce-title">請回退至 2.0.2<span class="announce-en">v2.0.3 withdrawn · roll back to 2.0.2</span></h2>
-      <p class="announce-sub">2.0.3 是一次非正常發行：版本號在正常發版流程之外被提升。我們已將它連同對應的 Release 與標籤一併撤回，建議仍在使用 2.0.3 的朋友回退到 2.0.2。</p>
+      <p class="announce-kicker">📡 2.0.4 已發布</p>
+      <h2 class="announce-title">此前撤回的功能已正式回歸<span class="announce-en">v2.0.4 released · the features are back</span></h2>
+      <p class="announce-sub">此前因版本號在正常發版流程之外被提升而撤回的那批功能，已在去掉版本號變更之後按正常流程重新合併，並隨 2.0.4 正式發布。仍在 2.0.3 的朋友請升級到 2.0.4。</p>
     </header>
 
     <div class="announce-body">
-      <p><b>2.0.3 屬非正常發行：它由一次在正常發版流程之外提升版本號的變更帶出。我們已把該版本從 Release 與官網撤回，建議仍在使用 2.0.3 的朋友回退到 2.0.2。</b></p>
-      <p><b>一、發生了什麼</b></p>
-      <p><b>v2.0.3 已經撤回。</b></p>
-      <p>它源於一次<b>不合規的版本號變更</b> —— 在正式發版流程之外，專案版本號被從 <b>2.0.2</b> 提升為 <b>2.0.3</b>，並據此生成了發行版。</p>
-      <p>這違反了本專案的一條硬性規則：<b>版本號只能由維護者在正式發版時統一提升</b>，任何功能貢獻都不應改動它。因此 v2.0.3 屬於<b>非正常發行</b>，我們已完成以下處理：</p>
-      <ul class="announce-list"><li>刪除 GitHub 上的 v2.0.3 <b>Release</b> 及其<b>標籤</b>；</li><li>把官網與下載入口<b>回退到 2.0.2</b>；</li><li>將相關改動從主分支<b>整體回滾</b>。</li></ul>
-      <p><b>二、建議：回退到 2.0.2</b></p>
-      <p>如果你已經安裝或正在使用 2.0.3，<b>建議回退到 2.0.2</b>。</p>
-      <ul class="announce-list"><li><b>Android</b>：下載並安裝 <b>APRSLocus_2.0.2.apk</b>；若提示簽章衝突無法覆蓋安裝，請先<b>備份</b>（呼號、臺站備註、自訂主題等重要設定），再解除安裝 2.0.3 後重新安裝。</li><li><b>Windows</b>：下載並執行 <b>APRSLocus_Setup_2.0.2.exe</b>。</li><li><b>iOS</b>：下載 <b>APRSLocus_2.0.2_unsigned.ipa</b> 自行簽章安裝。</li></ul>
-      <p><a href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2" target="_blank" rel="noopener">▶ 前往下載 2.0.2</a></p>
-      <p class="announce-quote">建議回退前先做一次備份（設定 → 備份與還原），換機與降級都用得上。</p>
-      <p><b>三、為什麼版本號這麼重要</b></p>
-      <p>APRSLocus 會把版本號<b>發送到空中</b> —— 在 APRS-IS 與射頻的身分幀 / 線上幀裡都帶著它（形如 APRSlocus CONNECT v2.0.2）。</p>
-      <p>如果出現兩個都自稱 <b>2.0.3</b> 的安裝包，在 aprs.fi 這類平台上就<b>無法分辨</b>到底是哪一個在發信標：出了問題也沒法定位。版本號是這個專案在電波裡的身分，必須保持唯一，且只能由維護者在正式發版時提升。</p>
-      <p><b>四、後續安排</b></p>
-      <ul class="announce-list"><li>相關功能改動<b>不會丟</b>：它們會在<b>去掉版本號變更</b>之後，按正常流程重新提交、審核與合併，並隨下一個<b>正式版本</b>發布。</li><li>真誠感謝每一位參與貢獻、測試與回饋的朋友。提出新功能、回報問題、提交 PR 我們都非常歡迎；需要共同遵守的只有一條 —— <b>不要改動版本號</b>。</li></ul>
-      <p>如果你對回退操作或版本號規則有任何疑問，歡迎在 QQ 交流群或 GitHub Issue 中提出。</p>
+      <p><b>2.0.4 已正式發布。</b> 此前因<b>版本號在正常發版流程之外被提升</b>而撤回的那批功能（位置報文資料擴充 `/A=` 高度與 PHG 功率 / 天線高度 / 增益、獨立狀態報文及其顯示），已在<b>去掉版本號變更</b>之後按正常流程重新合併，並隨本次正式版本發布。</p>
+      <p>如果你現在還在 2.0.3，請升級到 <b>2.0.4</b>（2.0.3 仍屬非正常發行，原因見下）。</p>
+      <p><b>一、本次發布包含什麼</b></p>
+      <ul class="announce-list"><li><b>位置報文資料擴充（PHG）</b>：設定 → 電台 → 臺站備註 →「進階設定」可填功率（瓦）/ 天線高度（英尺）/ 增益（dB）。填任一項即附上固定 7 位元組的 `PHGphgd`；量化照 APRS101 做（功率只取不超過實際值的最大檔 —— 報大了等於虛報涵蓋範圍），設定頁會把真正會送出去的內容回顯出來。報文裡的位置也照規範：`PHG` <b>緊跟符號</b>。</li><li><b>高度（`/A=`）</b>：可手填海拔，<b>留空則跟隨定位</b>（預設行為不變）。</li><li><b>獨立狀態報文</b>：可填狀態文字，與位置報文共用一個「發射」按鈕；留空時送內建的 `APRSlocus CONNECT` 在線幀。收下來的狀態報文會顯示在臺站詳情與地圖資訊窗。</li><li><b>若干修正</b>：發射按鈕會先查連結、沒有定位時如實說明、狀態報文用自己的連線文案、地圖頁「距下次上報」每秒刷新、裝置頁「連結自檢」不再重複標題、手機電量開關仍在信標頁。</li></ul>
+      <p>完整內容見更新日誌。</p>
+      <p><a href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4" target="_blank" rel="noopener">▶ 前往下載 2.0.4</a></p>
+      <p class="announce-quote">升級前建議先做一次備份（設定 → 備份與還原）；Android 若提示簽章衝突無法覆蓋安裝，請先備份，再解除安裝舊版後安裝。</p>
+      <p><b>二、關於 2.0.3：仍建議不要使用</b></p>
+      <p><b>2.0.3 仍屬非正常發行。</b> 它源於一次<b>在正式發版流程之外把版本號從 2.0.2 提升為 2.0.3</b> 的變更，並據此生成了發行版。</p>
+      <p>APRSLocus 會把版本號<b>發送到空中</b>（APRS-IS 與射頻的身分幀 / 在線幀裡都帶著它）。如果出現兩個都自稱 <b>2.0.3</b> 的安裝包，在 aprs.fi 這類平台上就<b>無法分辨</b>到底是哪一個在發信標 —— 出了問題也沒法定位。因此該版本已從 Release 與官網撤回。</p>
+      <p>若你安裝過 2.0.3，請<b>升級到 2.0.4</b>。</p>
+      <p><b>三、一條規則：版本號只由維護者在發版時提升</b></p>
+      <p>功能貢獻照常歡迎 —— 提 Issue、回報問題、提交 PR 都可以；需要共同遵守的只有一條：<b>不要改動版本號</b>，它只在正式發版時由維護者統一提升。</p>
       <p><b>73！</b></p>
       <p><b>APRSLocus 開發團隊</b></p>
       <p>2026 年 9 月 27 日</p>
     </div>
 
     <div class="announce-actions">
-      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4" target="_blank" rel="noopener">
         <i class="fa-solid fa-download"></i>
-        下載 2.0.2
+        下載 2.0.4
       </a>
       <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
         <i class="fa-solid fa-list-check"></i>
@@ -573,6 +569,18 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.4</span>
+        <span class="cl-date">2026-09-27</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**位置報文資料擴充（PHG · APRS101 第 9 章）**：電台設定的「臺站備註」下多了「進階設定」，可填功率（瓦）/ 天線高度（英尺）/ 增益（dB）。填任一項就附上固定 7 位元組的 `PHGphgd`，留空則完全不送。量化照規範做：功率只取**不超過實際值的最大檔**（25 W 報 25、30 W 也只報 25 —— 報大了等於虛報涵蓋範圍），天線高度按 10×2ⁿ 英尺取檔；設定頁把**真正會被編進報文的結果**回顯出來（量化過程使用者看不見，不擺出來就無從得知到底送出了什麼）。報文裡的位置也照規範來：`PHGphgd` **緊跟符號**（`!座標/符號` 之後，排在 `/A=` 海拔與其它備註文字之前），與標準報文 `…:!2216.45N/11113.90ErPHG5950` 形狀一致 —— 第三方解析器依「註解開頭的資料擴充」辨識 PHG，插在後面就讀不出來。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**獨立狀態報文**：進階設定裡可填狀態文字，與位置報文共用一個「發射」按鈕 —— 哪個有內容就送哪個，狀態文字留空時送內建的 `APRSlocus CONNECT vX.Y.Z 平台` 在線幀。狀態報文是**獨立一幀**（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），所以沒有定位也能送。發射時一律直接讀輸入框目前內容，不依賴輸入事件的時序 —— 中文輸入法組合輸入時曾出現「明明填了，卻送出預設幀」。此外新增手填海拔：留空跟隨定位（預設行為不變），設定頁會顯示目前將送出的 `/A=aaaaaa` 片段。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**臺站詳情與地圖資訊窗**：臺站詳情多出一列**獨立狀態報文**（紫色 + 播報圖示），與「位置備註」分開顯示 —— 兩者來源不同（頻點常寫在位置備註裡、裝置來源常寫在狀態報文裡），混成一列就分不出哪個是哪個；此前這類文字只進資料封包頁的原文，臺站詳情裡徹底看不到。地圖標記資訊窗新增**高度**、**位置備註**、**狀態文字**三列，且**按需出現**而不是常駐佔位 —— 絕大多數臺站沒有這些欄位，常駐只會給出兩列 `--`，把「沒有」和「沒收到」顯示成同一個樣子。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**本版修正**：①「發射」按鈕會**先查連結**，未連線時直接說明「請先連接連結」，不再靜默只做本機記錄；②填了 PHG 卻還沒有定位時，如實回執「帶 PHG 的位置報文沒能送出」；③狀態報文**改用自己的連線文案**（此前只送狀態幀，介面卻寫著「位置已上報」）；④地圖頁「距下次上報」的秒數改為**每秒刷新**（此前沒有臺站刷新時會停住）；⑤裝置頁「連結自檢」不再出現兩遍標題與副標題；⑥手機電量開關**保持在信標頁「信標上報內容」**，預設值不變。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.2</span>
@@ -1223,6 +1231,10 @@
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>
           <span><span class="c-name">清零 (BG2HCB)</span><span class="c-role">設置頁代碼優化</span></span>
+        </span>
+        <span class="contributor">
+          <span class="avatar" style="background:linear-gradient(135deg,#1d6ff2,#1348a8)">G</span>
+          <span><span class="c-name">BH7GZB</span><span class="c-role">貢獻程式碼</span></span>
         </span>
       </div>
     </div>

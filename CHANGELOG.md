@@ -1,5 +1,129 @@
 # 更新日志
 
+## [2.0.4] - 2026-09-27
+
+### 📡 位置报文数据扩展（高度 / PHG）· 独立状态报文 · 若干修正
+
+本版把此前因**版本号变更**被撤回的那批功能，去掉版本号变更后按正常流程重新合并，正式发布。
+
+**一、位置报文数据扩展（PHG · APRS101 第 9 章）**：电台设置 → 台站备注 →「高级设置」里新增
+功率（瓦）/ 天线高度（英尺）/ 增益（dB）。填任一项即附上固定 7 字节的 `PHGphgd`，留空即不发送。
+量化编码照规范做了两件容易做错的事：功率**只取不超过实际值的最大档**（25 W 报 25、30 W 也只报
+25 —— 报大了等于虚报覆盖范围），天线高度按 10×2ⁿ 英尺取档。设置页把**实际会被编进去的结果回显**
+出来：量化过程用户看不见，不摆出来就无从知道到底发了什么。
+报文里的位置照规范来：`PHGphgd` **紧跟符号**（`!坐标/符号` 之后，排在 `/A=` 海拔与其它备注文字之前），
+与标准报文 `…:!2216.45N/11113.90ErPHG5950` 形状一致 —— 第三方解析器按「注释开头的数据扩展」识别
+PHG，插在后面就读不出来了。
+
+**二、高度（`/A=`）**：新增手填海拔，**留空跟随定位**（默认行为与之前完全一致）。
+定位给的海拔在不少机型上不可用（无气压计、室内、只有网络定位），而台站的实际海拔是用户查得到
+的确定值。设置页显示当前将发出的 `/A=aaaaaa` 片段；发送与回显走**同一个出口**，不会出现
+「显示一个值、发出去的是另一个」。注意「天线高度」是 PHG 里**高于当地平均地面**的高度，
+与这个**海拔**是两个量，不能互相替代。
+
+**三、独立状态报文**：高级设置里可填状态文本，与位置报文共用一个「发射」按钮 ——
+两者哪个有内容就发哪个，状态文本留空时发内置的 `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。
+状态报文是**独立一帧**（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），所以没有定位也能发。
+发送时**一律直接读输入框的当前内容**，不依赖输入事件的时序 —— 中文输入法组合输入时曾出现
+「明明填了，却发出默认帧」。收下来的状态报文（如中继台的 `Powered by …`）现在会落进台站。
+
+**四、台站详情与地图信息窗**：台站详情新增一行**独立状态报文**（紫色 + 播报图标），
+与「位置备注」分开显示 —— 两者来源不同（频点常写在位置备注里、设备来源常写在状态报文里），
+混成一行就分不出哪个是哪个。此前这类文本只进数据包页的原文，台站详情里彻底看不到；
+若台站只有状态包、位置包还没到，则不建台站（没有坐标的台站会被画到 (0,0)，比不显示更糟）。
+地图标记信息窗新增**高度**、**位置备注**、**状态文本**三行，且**按需出现**而不是常驻占位 ——
+绝大多数台站没有这些字段，常驻只会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。
+
+**五、其他修正**：
+
+- **发射按钮会先查链路**：未连接时直接提示「请先连接链路」，不再静默只做本地记录、让人以为信号已发出；
+- **填了 PHG 却没有定位时如实说明**：没坐标不能发位置包，回执会写明「带 PHG 的位置报文没能发出」；
+- **状态报文用自己的连接文案**：此前只发状态帧时，界面却写着「位置已上报」；
+- **地图页「距下次上报」的秒数每秒刷新**：此前只在有台站刷新时才动，没有流量时秒数会停住；
+- **设备页「链路自检」不再出现两遍标题与副标题**；
+- **手机电量开关保持在信标页「信标上报内容」**，默认值不变（上一版曾把它挪进「高级设置」，现已回原位）；
+- 手填的这几项（功率 / 天线高度 / 增益 / 手填海拔 / 状态文本）都会进备份，换机不必重新照电台手打。
+
+**六、致谢**：授予 **BH7GZB「开发人员」** —— 贡献代码：位置报文数据扩展（`/A=` 高度、
+PHG 功率 / 天线高度 / 增益）与独立状态报文（收发、台站详情与地图信息窗显示）。
+关于页「代码贡献」新增这一行，官网三语首页贡献者区与荣誉墙同步。
+
+- [下载最新版](https://github.com/dariondong/APRSLocus/releases)
+- [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
+
+## [2.0.4] - 2026-09-27 (English)
+
+### 📡 Position data extensions (altitude / PHG) · standalone status packets · fixes
+
+This release ships the changes that had been withdrawn because of the **version-number change**:
+with that change removed, they went back through the normal process and are released here.
+
+**1 · Position packet data extension (PHG, APRS101 chapter 9)**: Radio settings → Station comment →
+"Advanced" now takes power (W) / antenna height (ft) / gain (dB). Filling in any one of them appends
+the fixed 7-byte `PHGphgd`; leaving them empty sends nothing. The encoding follows the two rules that
+are easy to get wrong: power uses the **largest step that does not exceed the real value** (25 W
+reports 25, and 30 W still reports 25 — over-reporting claims coverage you do not have), and antenna
+height snaps to 10×2ⁿ feet. The settings page **echoes back what will actually be encoded**, because
+quantisation is invisible and there would otherwise be no way to know what went out. In the packet the
+extension sits where the spec puts it: `PHGphgd` comes **immediately after the symbol** (right after
+`!lat/lon/symbol`, ahead of the `/A=` altitude and any other comment text), matching the standard
+packet `…:!2216.45N/11113.90ErPHG5950` — third-party parsers look for PHG as a data extension at the
+start of the comment, and reading it after other fields fails.
+
+**2 · Altitude (`/A=`)**: a manually entered altitude overrides the fix, and **empty means "follow the
+fix"**, so the default behaviour is exactly as before. The altitude a fix reports is unusable on plenty
+of devices (no barometer, indoors, network-only positioning), while a station's actual altitude is a
+known value the user can look up. The settings page shows the `/A=aaaaaa` fragment that will be sent,
+and sending and the preview share **one source**, so what is displayed is what goes out. Note that the
+antenna height above is the PHG height above **local average terrain** — a different quantity from this
+**altitude**, and the two cannot stand in for each other.
+
+**3 · Standalone status packets**: a status text can be entered in Advanced, sharing one "Transmit"
+button with the position packet — whichever of the two has content is sent, and an empty status text
+sends the built-in `APRSlocus CONNECT vX.Y.Z` online frame. A status packet is a **frame of its own**
+(`>`-prefixed, carrying no coordinates, and it does not move you on aprs.fi), so it can be sent even
+without a fix. Transmitting reads **the current contents of the field directly** instead of relying on
+input-event timing — with an IME composing text the app used to send the default frame even though the
+user had typed something. Received status text (a repeater's `Powered by …`) now lands on the station.
+
+**4 · Station details and the map info window**: station details gained a line for the **standalone
+status packet** (purple, with a megaphone icon), shown separately from the position comment — the two
+come from different packets (frequencies usually live in the position comment, device provenance in the
+status packet), and merging them makes it impossible to tell which is which. That text used to appear
+only in the raw packet console and never on the station; and if only a status packet has arrived for a
+station whose position packet has not, no station is created (a station without coordinates would be
+drawn at (0,0), which is worse than not showing it). The map marker info window gained **altitude**,
+**position comment** and **status text** lines, each appearing **only when present** rather than as a
+permanent placeholder — few stations carry these fields, and placeholders would print two rows of `--`,
+making "absent" and "not received" look identical.
+
+**5 · Fixes in this build**:
+
+- **The Transmit button checks the link first**: with no link it says "connect the link first" instead
+  of silently recording locally and letting you think a signal went out;
+- **PHG without a fix is reported honestly**: no coordinates means no position packet, and the receipt
+  now says the position packet with PHG was not sent;
+- **Status packets use their own connection text**: previously the banner claimed "position beacon
+  sent" when only a status frame had gone out;
+- **The map page's "next report in …" countdown ticks every second**: it used to move only when a
+  station update arrived, so it froze whenever there was no traffic;
+- **The device page's link self-test no longer shows its title and subtitle twice**;
+- **The phone-battery switch stays on the beacon page** ("Beacon contents") with unchanged defaults
+  (the previous build moved it into Advanced; it is back where it was);
+- The manually entered values (power / antenna height / gain / altitude override / status text) are
+  included in backups, so a new device does not mean retyping them from the radio.
+
+**6 · Credits**: **BH7GZB** is awarded the **Developer** badge for contributing the position-packet
+data extensions (the `/A=` altitude and the PHG power / antenna height / gain fields) and standalone
+status packets (receiving, sending, and showing them on station details and the map info window). The
+About page gains a matching line under "Code contributions", and the website's contributor section (all
+three languages) and honor wall are updated too.
+
+- [Download the latest version](https://github.com/dariondong/APRSLocus/releases)
+- [Full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [Feedback & suggestions](https://github.com/dariondong/APRSLocus/issues)
+
 ## [2.0.2] - 2026-09-26
 
 ### 🗺️ 百度图源 · 纯网络定位 · 公告内嵌视频

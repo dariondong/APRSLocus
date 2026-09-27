@@ -734,7 +734,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                             left: 14 + widget.leftInset,
                             right: 14,
                             bottom: 62 + MediaQuery.of(context).padding.bottom + widget.bottomInset,
-                            child: _beaconBar(),
+                            // 「距下次上报 12 秒」是**秒级**字段：整页只在
+                            // AppState 通知（有台站刷新 / 状态翻转）时重建，
+                            // 于是**没有台站刷新时这个秒数就冻住不动**（用户报的
+                            // 「地图页如果没有台站刷新上报秒数就不会更新」）。
+                            // 挂到每秒自增的 [AppState.tick] 上即可 —— 与
+                            // MyPanel / 台站页的口径一致。
+                            child: ValueListenableBuilder<int>(
+                              valueListenable: widget.state.tick,
+                              builder: (_, _, _) => _beaconBar(),
+                            ),
                           ),
                         // 底部控制（安全区白条 + 14px）
                         if (roomForBottom)
@@ -973,14 +982,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
+  /// 地图标记的信息窗（悬停/选中时跟着走的那张小浮窗）。
+  ///
+  /// 显示「三个报文」里落在这个台站上的内容：
+  ///   * 状态 / 速度 / 距离 —— 原有信息；
+  ///   * **高度** —— 位置报文的 `/A=` 数据扩展（`s.alt` 由它解析而来）；
+  ///   * **位置备注** —— 位置报文里跟在符号后的注释（中继台的频点常在这里）；
+  ///   * **状态文本** —— 独立状态报文（DTI `>`）。（紫色，与台站详情一致）
+  ///
+  /// 为什么这四行要**按需出现**而不是常驻占位：这三个字段绝大多数台站都没有，
+  /// 常驻会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。
   Widget _infoWindow(Station s) {
     final st = localizedStatusLabel(context, s.effectiveStatus);
     final info = StringBuffer(s.call)..write('  ·  $st');
     if (s.speed != null) info.write('  ·  ${s.speedStr}');
+    if (s.alt != null) info.write('  ·  ${s.altStr}');
     final my = widget.state.myStation;
     if (my != null) {
       info.write('  ·  ${s.distKm(my.lat, my.lng).toStringAsFixed(1)}km');
     }
+    final comment = s.comment?.trim() ?? '';
+    if (comment.isNotEmpty) info.write('\n$comment');
+    final statusText = s.statusText?.trim() ?? '';
+    if (statusText.isNotEmpty) info.write('\n$statusText');
     info.write('  · ${S.of(context).tapToView}');
     // blurSigma: 0：这是跟着鼠标走的小信息窗，原来自己带 12 的模糊 ——
     // 每次悬停都要重算一层离屏模糊。小浮层不值得付这个代价（见 material.dart）。
@@ -1139,69 +1163,74 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 const SizedBox(height: 14),
                 SoftCard(
                   padding: const EdgeInsets.all(14),
-                  child: Column(
-                    children: [
-                      KV(
-                        S.of(context).latitude,
-                        st.myLat?.toStringAsFixed(5) ?? '--',
-                        icon: Icons.explore_rounded,
-                      ),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).longitude,
-                        st.myLng?.toStringAsFixed(5) ?? '--',
-                        icon: Icons.explore_rounded,
-                      ),
-                      // 定位精度：GPS 实测值（1σ）。以前它算而不报，用户无从
-                      // 判断眼前这个点到底是「±5m」还是「±80m」——
-                      // 而这两种情况的可用性完全不同
-                      if (st.myAccuracy > 0) ...[
+                  child: ValueListenableBuilder<int>(
+                    // 弹层里也有「距下次上报」这种秒级字段，同样挂到 tick 上：
+                    // 弹层是点开时一次性构建的，不挂的话开着它秒数一样不动。
+                    valueListenable: st.tick,
+                    builder: (_, _, _) => Column(
+                      children: [
+                        KV(
+                          S.of(context).latitude,
+                          st.myLat?.toStringAsFixed(5) ?? '--',
+                          icon: Icons.explore_rounded,
+                        ),
                         const SizedBox(height: 8),
                         KV(
-                          S.of(context).posAccuracy,
-                          '±${fmtUncertaintyM(st.myAccuracy)}',
-                          icon: Icons.my_location_rounded,
+                          S.of(context).longitude,
+                          st.myLng?.toStringAsFixed(5) ?? '--',
+                          icon: Icons.explore_rounded,
+                        ),
+                        // 定位精度：GPS 实测值（1σ）。以前它算而不报，用户无从
+                        // 判断眼前这个点到底是「±5m」还是「±80m」——
+                        // 而这两种情况的可用性完全不同
+                        if (st.myAccuracy > 0) ...[
+                          const SizedBox(height: 8),
+                          KV(
+                            S.of(context).posAccuracy,
+                            '±${fmtUncertaintyM(st.myAccuracy)}',
+                            icon: Icons.my_location_rounded,
+                          ),
+                        ],
+                        const SizedBox(height: 8),
+                        KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).speedLabel,
+                          st.mySpeed != null
+                              ? '${st.mySpeed!.toStringAsFixed(1)} km/h'
+                              : '--',
+                          icon: Icons.speed_rounded,
+                        ),
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).bearing,
+                          st.myCourse != null
+                              ? '${st.myCourse!.toStringAsFixed(0)}°'
+                              : '--',
+                          icon: Icons.explore_rounded,
+                        ),
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).beaconIntervalLabel,
+                          st.smartBeaconEnabled
+                              ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
+                              : S.of(context).secondsValue(st.beaconInterval),
+                          icon: Icons.timer_rounded,
+                        ),
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).beaconsSentLabel,
+                          S.of(context).countTimes(st.beaconsSent),
+                          icon: Icons.sync_rounded,
+                        ),
+                        const SizedBox(height: 8),
+                        KV(
+                          S.of(context).nextBeaconLabel,
+                          st.nextBeaconIn,
+                          icon: Icons.access_time_rounded,
                         ),
                       ],
-                      const SizedBox(height: 8),
-                      KV('Maidenhead', st.myGrid, icon: Icons.grid_4x4_rounded),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).speedLabel,
-                        st.mySpeed != null
-                            ? '${st.mySpeed!.toStringAsFixed(1)} km/h'
-                            : '--',
-                        icon: Icons.speed_rounded,
-                      ),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).bearing,
-                        st.myCourse != null
-                            ? '${st.myCourse!.toStringAsFixed(0)}°'
-                            : '--',
-                        icon: Icons.explore_rounded,
-                      ),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).beaconIntervalLabel,
-                        st.smartBeaconEnabled
-                            ? '智能 · ${S.of(context).secondsValue(st.beaconIntervalNow)}'
-                            : S.of(context).secondsValue(st.beaconInterval),
-                        icon: Icons.timer_rounded,
-                      ),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).beaconsSentLabel,
-                        S.of(context).countTimes(st.beaconsSent),
-                        icon: Icons.sync_rounded,
-                      ),
-                      const SizedBox(height: 8),
-                      KV(
-                        S.of(context).nextBeaconLabel,
-                        st.nextBeaconIn,
-                        icon: Icons.access_time_rounded,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 14),

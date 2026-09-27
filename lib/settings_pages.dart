@@ -34,6 +34,17 @@ class StationSettingsPage extends StatefulWidget {
 class _StationSettingsPageState extends State<StationSettingsPage> {
   late final TextEditingController _call;
   late final TextEditingController _comment;
+  late final TextEditingController _status;
+  // 手填的数据扩展（海拔覆盖 / 功率 / 天线高度 / 增益），都在「高级设置」里。
+  // 注意「天线高度」与 `/A=` 的海拔是两个量：前者是 PHG 里
+  // 「高于当地平均地面」的高度，不能互相替代。
+  late final TextEditingController _alt;
+  late final TextEditingController _power;
+  late final TextEditingController _height;
+  late final TextEditingController _gain;
+
+  /// 高级设置是否展开。默认收起（那些项平时不改）。
+  bool _advOpen = false;
 
   AppState get st => widget.state;
 
@@ -42,13 +53,183 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     super.initState();
     _call = TextEditingController(text: st.myCall);
     _comment = TextEditingController(text: st.myComment);
+    _status = TextEditingController(text: st.aprsStatusText);
+    _alt = TextEditingController(text: _fmtNum(st.beaconAltOverrideM));
+    _power = TextEditingController(text: _fmtNum(st.beaconPowerW));
+    _height = TextEditingController(text: _fmtNum(st.beaconAntennaHeightFt));
+    _gain = TextEditingController(text: _fmtNum(st.beaconGainDb));
   }
 
   @override
   void dispose() {
     _call.dispose();
     _comment.dispose();
+    _status.dispose();
+    _alt.dispose();
+    _power.dispose();
+    _height.dispose();
+    _gain.dispose();
     super.dispose();
+  }
+
+  /// 数值 → 输入框文本。null（= 不发送该项）显示为空，而不是 0。
+  static String _fmtNum(double? v) {
+    if (v == null) return '';
+    return v == v.roundToDouble()
+        ? v.toInt().toString()
+        : v.toString();
+  }
+
+  /// 输入框文本 → 数值并写回状态。**空串解析成 null**，即「不发送这一项」；
+  /// 无法解析的输入（用户打到一半的「-」之类）同样按 null 处理，
+  /// 免得把半截输入当成 0 发出去。
+  void _num(String raw, void Function(double?) apply) {
+    final t = raw.trim();
+    if (t.isEmpty) {
+      apply(null);
+      return;
+    }
+    apply(double.tryParse(t));
+  }
+
+  /// 一个发射按钮：位置报文与状态报文**哪个有内容就发哪个**。
+  ///
+  /// 之所以合并成一个而不是两个按钮：用户要的是「把我填的东西发出去」这一件事。
+  /// 分成两个按钮会逼他先判断「我这几项属于哪个报文」—— 而它们其实分属两种
+  /// 报文（PHG 跟在位置报文里，状态文本是独立一帧），这个区分对用户
+  /// 没有任何操作意义。
+  ///
+  /// ⚠ **一律直接读输入框当前内容**，不依赖 `onChanged` 是否已经把值写回 state：
+  /// 中文输入法的组合输入、以及「打完字直接点按钮」这类路径下，`onChanged`
+  /// 未必来得及写入，于是会出现「明明填了，却发出默认的 APRSlocus 在线帧」——
+  /// 这正是用户报过的现象。边输边存只作为兜底，发送时以输入框为准。
+  ///
+  /// ── 留空是正常用法，不是错误 ──
+  ///
+  /// 台站备注 / 高度 / 功率 / 天线高度 / 增益 / 独立状态报文**全部允许留空**：
+  ///   * 位置报文那一侧本来就按「哪项有值拼哪项」组装，全空时不带这些扩展，合法；
+  ///   * 状态报文那一侧，文本留空时 [AppState.sendStatus] 会自动发内置的
+  ///     `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。
+  ///
+  /// 所以这里**没有「没有可发送的内容」这条拦截**：什么都不填时仍然发一帧
+  /// 内置在线帧 —— 那也正是「宣告我在线」最有用的默认动作。
+  void _transmit(BuildContext context) {
+    final s = S.of(context);
+    // ── 链接检查（用户要求）──
+    //
+    // 这个「发射」按钮是本页新增的入口，最容易被理解成「按了就发出去」——
+    // 而链路没连上时 [AppState.sendBeacon] / [AppState.sendStatus] 只做本地
+    // 记录、并不会真的发射。所以先判连通性：没连就**直说**，别让用户以为
+    // 信号已经上天了（文案与链路自检里「发射测试帧」用同一句
+    // [S.testTxNeedsConnect]：「请先连接链路」）。
+    if (!st.connected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.testTxNeedsConnect),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: C.red,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
+    // 先把各输入框的现值同步进 state（发送的一瞬间取值）
+    _num(_power.text, st.setBeaconPower);
+    _num(_height.text, st.setBeaconAntennaHeight);
+    _num(_gain.text, st.setBeaconGain);
+    _num(_alt.text, st.setBeaconAltOverride);
+    st.myComment = _comment.text.trim();
+    st.setAprsStatusText(_status.text);
+
+    // 位置报文的数据扩展只要 PHG 三项里有任一项就带上（功率 / 天线高度 /
+    // 增益**都**属于同一个 `PHGphgd`，见 [AppState.hasPhg]）；没有扩展就不发
+    // 位置报文 —— 位置包的价值就在那段随包扩展上。
+    final hasExt = st.hasPhg;
+    // 「填了 PHG 却没定位」要**明说**：`sendBeacon()` 内部被 `!myHasFix`
+    // 直接挡回（没坐标不能发位置包），这么一来只发出一帧状态报文。
+    // 不提示的话用户会以为 PHG 已经上天了 —— 只看流量、看不到一条位置帧。
+    final noFix = hasExt && !st.myHasFix;
+    final sent = <String>[];
+    if (hasExt && st.myHasFix) {
+      st.sendBeacon();
+      sent.add(s.txPartPosition);
+    }
+    // 状态报文总是发：文本为空时 sendStatus 内部改用内置在线帧
+    st.sendStatus();
+    sent.add(s.txPartStatus);
+    final parts = sent.join(' + ');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(noFix ? s.txNoFixKeptStatus(parts) : s.txSent(parts)),
+        behavior: SnackBarBehavior.floating,
+        // 没定位时用橙色：提示这是「发了一半」，与纯成功的绿色区分开
+        backgroundColor: noFix ? C.orange : null,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  /// ── 高级设置：默认折叠的一张子卡 ──
+  ///
+  /// 收纳平时不改的东西：高度覆盖、PHG（功率/天线高度/增益）、独立状态报文。
+  /// 用自绘的标题行而不是 [SettingsFold]，是因为这里要放在**已有卡片的子级**
+  /// （缩进一层），而 SettingsFold 的外框是给整卡用的。
+  ///
+  /// ⚠ **手机电量开关不在这里**：它属于「信标上报内容」，仍在信标页那一节
+  /// （见 `_BeaconSettingsPageState`）。用户明确要求不要把它搬过来，
+  /// 也不要改它的默认值 —— 别再合并第二次。
+  Widget _advancedMenu(BuildContext context, AppState st) {
+    final s = S.of(context);
+    return Column(children: [
+      // 标题行（整行可点）
+      InkWell(
+        onTap: () => setState(() => _advOpen = !_advOpen),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+              border: Border(
+                  top: BorderSide(color: C.border, width: 0.4),
+                  bottom: BorderSide(
+                      color: C.border, width: _advOpen ? 0.4 : 0.0))),
+          child: Row(children: [
+            Icon(_advOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                size: 18, color: C.purple),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(s.advancedMenu,
+                  style: ts(12, c: C.purple, w: FontWeight.w700)),
+            ),
+          ]),
+        ),
+      ),
+      if (_advOpen) ...[
+        // ── 高度：手填优先，留空跟随定位 ──
+        SettingsInput(s.beaconAltLabel, _alt,
+            tip: s.beaconAltTip,
+            onChanged: (v) => _num(v, st.setBeaconAltOverride)),
+        // 回显当前实际会发出的 /A=：手填了就显示手填值，否则显示定位来的，
+        // 两者都没有时明说「没有」—— 不摆出来用户无从知道到底发了什么。
+        SettingsHint(
+            st.autoAltExtension.isEmpty
+                ? s.beaconAltNone
+                : '${s.beaconAltWillSend}  ${st.autoAltExtension}',
+            color: st.autoAltExtension.isEmpty ? C.grey : C.purple),
+        // ── PHG：功率 / 天线高度 / 增益（填任一即整组编码）──
+        SettingsInput(s.beaconPowerLabel, _power,
+            tip: s.beaconPhgTip, onChanged: (v) => _num(v, st.setBeaconPower)),
+        SettingsInput(s.beaconAntHeightLabel, _height,
+            tip: s.beaconPhgTip,
+            onChanged: (v) => _num(v, st.setBeaconAntennaHeight)),
+        SettingsInput(s.beaconGainLabel, _gain,
+            tip: s.beaconPhgTip, onChanged: (v) => _num(v, st.setBeaconGain)),
+        if (st.phgPreview.isNotEmpty)
+          SettingsHint(s.beaconPhgPreview(st.phgPreview), color: C.purple),
+        // ── 独立状态报文：与上面那行备注是两种 APRS 报文 ──
+        SettingsInput(s.aprsStatus, _status,
+            tip: s.aprsStatusHint, onChanged: (v) => st.setAprsStatusText(v)),
+      ],
+    ]);
   }
 
   @override
@@ -87,6 +268,33 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
               st.myComment = v.trim();
               st.persist();
             }),
+            // ── 高级设置（默认折叠）──
+            //
+            // 为什么折叠：这些项（高度覆盖 / PHG 三项 / 状态报文）平时根本不改，
+            // 常驻展开会把「台站备注」这一张卡片撑得很长，而它上面才是用户
+            // 天天要动的呼号与备注。默认收起、点标题才展开。
+            _advancedMenu(context, st),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 2, 14, 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  // 未连接时**不发**，只在下面 `_transmit` 里给一句
+                  // 「请先连接链路」——按钮本身不禁用，否则用户不知道
+                  // 为什么点了没反应。
+                  onPressed: () => _transmit(context),
+                  icon: const Icon(Icons.campaign_rounded, size: 16),
+                  label: Text(S.of(context).txButton,
+                      style: ts(12, c: Colors.white, w: FontWeight.w700)),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: C.purple,
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
         SizedBox(height: 16),
@@ -1130,6 +1338,8 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       onChanged: st.setBeaconIncludeSpeed),
                   SettingsMiniSwitch(S.of(context).bearing, value: st.beaconIncludeCourse,
                       onChanged: st.setBeaconIncludeCourse),
+                  // 手机电量：**留在本页**（用户要求）。它是「信标上报内容」
+                  // 的一项，与上面几项同源；默认开（与 2.0.2 一致）。
                   SettingsMiniSwitch(S.of(context).phoneBattery, value: st.beaconIncludeBattery,
                       onChanged: st.setBeaconIncludeBattery),
                   SettingsMiniSwitch(S.of(context).beaconTripMileage,

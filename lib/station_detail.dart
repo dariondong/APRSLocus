@@ -239,6 +239,32 @@ class _StationDetailState extends State<StationDetail> {
                                     '${localizedAprsSymbolName(context, s.symbol)} · ${s.comment ?? ''}',
                                     style: ts(12, c: C.slate),
                                   ),
+                                  // 独立状态报文（DTI `>`）：与上面那行「位置报文备注」
+                                  // 是两种报文，所以**分两行**显示、用紫色区分 ——
+                                  // 中继台常把「设备来源」（Powered by …）写在状态报文里，
+                                  // 而把「频点」写在位置备注里；混成一行就分不出哪个是哪个。
+                                  if (s.statusText != null &&
+                                      s.statusText!.isNotEmpty) ...[
+                                    SizedBox(height: 3),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.campaign_rounded,
+                                          size: 13,
+                                          color: C.purple,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            s.statusText!,
+                                            style: ts(11, c: C.purple),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),

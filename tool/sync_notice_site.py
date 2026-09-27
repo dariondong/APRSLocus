@@ -57,22 +57,22 @@ PAGES = [
 # 而卡片标题要的是「TOUCH SKY」+ 右侧小字，推不出来（也不该推）。
 HEAD = {
     'zh': {
-        'kicker': '⚠️ 重要公告 · 2.0.3 已撤回',
-        'title': '请回退至 2.0.2',
-        'en': 'v2.0.3 withdrawn · roll back to 2.0.2',
-        'sub': '2.0.3 是一次非正常发行：版本号在正常发版流程之外被提升。我们已将它连同对应的 Release 与标签一并撤回，建议仍在使用 2.0.3 的朋友回退到 2.0.2。',
+        'kicker': '📡 2.0.4 已发布',
+        'title': '此前撤回的功能已正式回归',
+        'en': 'v2.0.4 released · the features are back',
+        'sub': '此前因版本号在正常发版流程之外被提升而撤回的那批功能，已在去掉版本号变更之后按正常流程重新合并，并随 2.0.4 正式发布。仍在 2.0.3 的朋友请升级到 2.0.4。',
     },
     'zh_TW': {
-        'kicker': '⚠️ 重要公告 · 2.0.3 已撤回',
-        'title': '請回退至 2.0.2',
-        'en': 'v2.0.3 withdrawn · roll back to 2.0.2',
-        'sub': '2.0.3 是一次非正常發行：版本號在正常發版流程之外被提升。我們已將它連同對應的 Release 與標籤一併撤回，建議仍在使用 2.0.3 的朋友回退到 2.0.2。',
+        'kicker': '📡 2.0.4 已發布',
+        'title': '此前撤回的功能已正式回歸',
+        'en': 'v2.0.4 released · the features are back',
+        'sub': '此前因版本號在正常發版流程之外被提升而撤回的那批功能，已在去掉版本號變更之後按正常流程重新合併，並隨 2.0.4 正式發布。仍在 2.0.3 的朋友請升級到 2.0.4。',
     },
     'en': {
-        'kicker': '⚠️ Important · v2.0.3 withdrawn',
-        'title': 'Please roll back to 2.0.2',
-        'en': 'v2.0.3 withdrawn',
-        'sub': 'v2.0.3 was an invalid release: its version number was raised outside the normal release process. We have withdrawn it together with its Release and tag; if you are on 2.0.3, please roll back to 2.0.2.',
+        'kicker': '📡 v2.0.4 released',
+        'title': 'The withdrawn features are back',
+        'en': 'v2.0.4 released',
+        'sub': 'The changes withdrawn because the version number had been raised outside the normal release process are back: with that change removed they went through the normal process again and ship in v2.0.4. Still on 2.0.3? Please upgrade to 2.0.4.',
     },
 }
 

@@ -302,38 +302,34 @@ html{overflow-x:hidden}
     <div class="announce-ribbon"><span class="ar-dot"></span>公告 · Announcement</div>
 
     <header class="announce-head">
-      <p class="announce-kicker">⚠️ 重要公告 · 2.0.3 已撤回</p>
-      <h2 class="announce-title">请回退至 2.0.2<span class="announce-en">v2.0.3 withdrawn · roll back to 2.0.2</span></h2>
-      <p class="announce-sub">2.0.3 是一次非正常发行：版本号在正常发版流程之外被提升。我们已将它连同对应的 Release 与标签一并撤回，建议仍在使用 2.0.3 的朋友回退到 2.0.2。</p>
+      <p class="announce-kicker">📡 2.0.4 已发布</p>
+      <h2 class="announce-title">此前撤回的功能已正式回归<span class="announce-en">v2.0.4 released · the features are back</span></h2>
+      <p class="announce-sub">此前因版本号在正常发版流程之外被提升而撤回的那批功能，已在去掉版本号变更之后按正常流程重新合并，并随 2.0.4 正式发布。仍在 2.0.3 的朋友请升级到 2.0.4。</p>
     </header>
 
     <div class="announce-body">
-      <p><b>2.0.3 属非正常发行：它由一次在正常发版流程之外提升版本号的变更带出。我们已把该版本从 Release 与官网撤回，建议仍在使用 2.0.3 的朋友回退到 2.0.2。</b></p>
-      <p><b>一、发生了什么</b></p>
-      <p><b>v2.0.3 已经撤回。</b></p>
-      <p>它源于一次<b>不合规的版本号变更</b> —— 在正式发版流程之外，项目版本号被从 <b>2.0.2</b> 提升为 <b>2.0.3</b>，并据此生成了发行版。</p>
-      <p>这违反了本项目的一条硬性规则：<b>版本号只能由维护者在正式发版时统一提升</b>，任何功能贡献都不应改动它。因此 v2.0.3 属于<b>非正常发行</b>，我们已完成以下处理：</p>
-      <ul class="announce-list"><li>删除 GitHub 上的 v2.0.3 <b>Release</b> 及其<b>标签</b>；</li><li>把官网与下载入口<b>回退到 2.0.2</b>；</li><li>将相关改动从主分支<b>整体回滚</b>。</li></ul>
-      <p><b>二、建议：回退到 2.0.2</b></p>
-      <p>如果你已经安装或正在使用 2.0.3，<b>建议回退到 2.0.2</b>。</p>
-      <ul class="announce-list"><li><b>Android</b>：下载并安装 <b>APRSLocus_2.0.2.apk</b>；若提示签名冲突无法覆盖安装，请先<b>备份</b>（呼号、台站备注、自定义主题等重要设置），再卸载 2.0.3 后重新安装。</li><li><b>Windows</b>：下载并运行 <b>APRSLocus_Setup_2.0.2.exe</b>。</li><li><b>iOS</b>：下载 <b>APRSLocus_2.0.2_unsigned.ipa</b> 自行签名安装。</li></ul>
-      <p><a href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2" target="_blank" rel="noopener">▶ 前往下载 2.0.2</a></p>
-      <p class="announce-quote">建议回退前先做一次备份（设置 → 备份与恢复），换机与降级都用得上。</p>
-      <p><b>三、为什么版本号这么重要</b></p>
-      <p>APRSLocus 会把版本号<b>发送到空中</b> —— 在 APRS-IS 与射频的身份帧 / 在线帧里都带着它（形如 APRSlocus CONNECT v2.0.2）。</p>
-      <p>如果出现两个都自称 <b>2.0.3</b> 的安装包，在 aprs.fi 这类平台上就<b>无法分辨</b>到底是哪一个在发信标：出了问题也没法定位。版本号是这个项目在电波里的身份，必须保持唯一，且只能由维护者在正式发版时提升。</p>
-      <p><b>四、后续安排</b></p>
-      <ul class="announce-list"><li>相关功能改动<b>不会丢</b>：它们会在<b>去掉版本号变更</b>之后，按正常流程重新提交、审核与合并，并随下一个<b>正式版本</b>发布。</li><li>真诚感谢每一位参与贡献、测试与反馈的朋友。提出新功能、报告问题、提交 PR 我们都非常欢迎；需要共同遵守的只有一条 —— <b>不要改动版本号</b>。</li></ul>
-      <p>如果你对回退操作或版本号规则有任何疑问，欢迎在 QQ 交流群或 GitHub Issue 中提出。</p>
+      <p><b>2.0.4 已正式发布。</b> 此前因<b>版本号在正常发版流程之外被提升</b>而撤回的那批功能（位置报文数据扩展 `/A=` 高度与 PHG 功率 / 天线高度 / 增益、独立状态报文及其显示），已在<b>去掉版本号变更</b>之后按正常流程重新合并，并随本次正式版本发布。</p>
+      <p>如果你现在还在 2.0.3，请升级到 <b>2.0.4</b>（2.0.3 仍属非正常发行，原因见下）。</p>
+      <p><b>一、本次发布包含什么</b></p>
+      <ul class="announce-list"><li><b>位置报文数据扩展（PHG）</b>：设置 → 电台 → 台站备注 →「高级设置」可填功率（瓦）/ 天线高度（英尺）/ 增益（dB）。填任一项即附上固定 7 字节的 `PHGphgd`；量化照 APRS101 做（功率只取不超过实际值的最大档 —— 报大了等于虚报覆盖范围），设置页会把真正会发出去的内容回显出来。报文里的位置也照规范：`PHG` <b>紧跟符号</b>。</li><li><b>高度（`/A=`）</b>：可手填海拔，<b>留空则跟随定位</b>（默认行为不变）。</li><li><b>独立状态报文</b>：可填状态文本，与位置报文共用一个「发射」按钮；留空时发内置的 `APRSlocus CONNECT` 在线帧。收下来的状态报文会显示在台站详情与地图信息窗。</li><li><b>若干修正</b>：发射按钮会先查链路、没有定位时如实说明、状态报文用自己的连接文案、地图页「距下次上报」每秒刷新、设备页「链路自检」不再重复标题、手机电量开关仍在信标页。</li></ul>
+      <p>完整内容见更新日志。</p>
+      <p><a href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4" target="_blank" rel="noopener">▶ 前往下载 2.0.4</a></p>
+      <p class="announce-quote">升级前建议先做一次备份（设置 → 备份与恢复）；Android 若提示签名冲突无法覆盖安装，请先备份，再卸载旧版后安装。</p>
+      <p><b>二、关于 2.0.3：仍建议不要使用</b></p>
+      <p><b>2.0.3 仍属非正常发行。</b> 它源于一次<b>在正式发版流程之外把版本号从 2.0.2 提升为 2.0.3</b> 的变更，并据此生成了发行版。</p>
+      <p>APRSLocus 会把版本号<b>发送到空中</b>（APRS-IS 与射频的身份帧 / 在线帧里都带着它）。如果出现两个都自称 <b>2.0.3</b> 的安装包，在 aprs.fi 这类平台上就<b>无法分辨</b>到底是哪一个在发信标 —— 出了问题也没法定位。因此该版本已从 Release 与官网撤回。</p>
+      <p>若你安装过 2.0.3，请<b>升级到 2.0.4</b>。</p>
+      <p><b>三、一条规则：版本号只由维护者在发版时提升</b></p>
+      <p>功能贡献照常欢迎 —— 提 Issue、报告问题、提交 PR 都可以；需要共同遵守的只有一条：<b>不要改动版本号</b>，它只在正式发版时由维护者统一提升。</p>
       <p><b>73！</b></p>
       <p><b>APRSLocus 开发团队</b></p>
       <p>2026 年 9 月 27 日</p>
     </div>
 
     <div class="announce-actions">
-      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.2" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4" target="_blank" rel="noopener">
         <i class="fa-solid fa-download"></i>
-        下载 2.0.2
+        下载 2.0.4
       </a>
       <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
         <i class="fa-solid fa-list-check"></i>
@@ -642,6 +638,18 @@ html{overflow-x:hidden}
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.4</span>
+        <span class="cl-date">2026-09-27</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**位置报文数据扩展（PHG · APRS101 第 9 章）**：电台设置的「台站备注」下多了「高级设置」，可填功率（瓦）/ 天线高度（英尺）/ 增益（dB）。填任一项就附上固定 7 字节的 `PHGphgd`，留空则完全不发。量化照规范做：功率只取**不超过实际值的最大档**（25 W 报 25、30 W 也只报 25 —— 报大了等于虚报覆盖范围），天线高度按 10×2ⁿ 英尺取档；设置页把**真正会被编进报文的结果**回显出来（量化过程用户看不见，不摆出来就无从知道到底发了什么）。报文里的位置也照规范来：`PHGphgd` **紧跟符号**（`!坐标/符号` 之后，排在 `/A=` 海拔与其它备注文字之前），与标准报文 `…:!2216.45N/11113.90ErPHG5950` 形状一致 —— 第三方解析器按「注释开头的数据扩展」识别 PHG，插在后面就读不出来。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**独立状态报文**：高级设置里可填状态文本，与位置报文共用一个「发射」按钮 —— 哪个有内容就发哪个，状态文本留空时发内置的 `APRSlocus CONNECT vX.Y.Z 平台` 在线帧。状态报文是**独立一帧**（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），所以没有定位也能发。发送时一律直接读输入框当前内容，不依赖输入事件的时序 —— 中文输入法组合输入时曾出现「明明填了，却发出默认帧」。此外新增手填海拔：留空跟随定位（默认行为不变），设置页显示当前将发出的 `/A=aaaaaa` 片段。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**台站详情与地图信息窗**：台站详情多出一行**独立状态报文**（紫色 + 播报图标），与「位置备注」分开显示 —— 两者来源不同（频点常写在位置备注里、设备来源常写在状态报文里），混成一行就分不出哪个是哪个；此前这类文本只进数据包页的原文，台站详情里彻底看不到。地图标记信息窗新增**高度**、**位置备注**、**状态文本**三行，且**按需出现**而不是常驻占位 —— 绝大多数台站没有这些字段，常驻只会给出两行 `--`，把「没有」和「没收到」显示成同一个样子。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**本版修正**：①「发射」按钮会**先查链路**，未连接时直接说明「请先连接链路」，不再静默只做本地记录；②填了 PHG 却还没有定位时，如实回执「带 PHG 的位置报文没能发出」；③状态报文**改用自己的连接文案**（此前只发状态帧，界面却写着「位置已上报」）；④地图页「距下次上报」的秒数改为**每秒刷新**（此前没有台站刷新时会停住）；⑤设备页「链路自检」不再出现两遍标题与副标题；⑥手机电量开关**保持在信标页「信标上报内容」**，默认值不变。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.2</span>
@@ -1302,6 +1310,10 @@ html{overflow-x:hidden}
         <span class="contributor">
           <span class="avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">零</span>
           <span><span class="c-name">清零 (BG2HCB)</span><span class="c-role">设置页代码优化</span></span>
+        </span>
+        <span class="contributor">
+          <span class="avatar" style="background:linear-gradient(135deg,#1d6ff2,#1348a8)">G</span>
+          <span><span class="c-name">BH7GZB</span><span class="c-role">贡献代码</span></span>
         </span>
       </div>
     </div>
