@@ -7057,4 +7057,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String connAudioStatusSent(String call) => "オーディオ送信済み · ステータスパケット送信済み ($call)";
 
+  @override
+  String get codeContribution => "コード貢献";
+
 }

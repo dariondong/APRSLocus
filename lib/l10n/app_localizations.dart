@@ -12614,6 +12614,12 @@ abstract class AppLocalizations {
   /// **'音频已发射 · 状态报文已发送 ({call})'**
   String connAudioStatusSent(String call);
 
+  /// No description provided for @codeContribution.
+  ///
+  /// In zh, this message translates to:
+  /// **'贡献代码'**
+  String get codeContribution;
+
 }
 
 class _AppLocalizationsDelegate

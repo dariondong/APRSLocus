@@ -7278,4 +7278,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String connAudioStatusSent(String call) => "Terkirim via audio · paket status terkirim ($call)";
 
+  @override
+  String get codeContribution => "Kontribusi kode";
+
 }

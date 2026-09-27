@@ -7268,4 +7268,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String connAudioStatusSent(String call) => "Sent over audio · status packet sent ($call)";
 
+  @override
+  String get codeContribution => "Code contribution";
+
 }

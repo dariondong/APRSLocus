@@ -6967,6 +6967,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String connAudioStatusSent(String call) => "音频已发射 · 状态报文已发送 ($call)";
 
+  @override
+  String get codeContribution => "贡献代码";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13930,5 +13933,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String connAudioStatusSent(String call) => "音訊已發射 · 狀態報文已發送 ($call)";
+
+  @override
+  String get codeContribution => "貢獻程式碼";
 
 }

@@ -3041,5 +3041,6 @@
   "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
-  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "codeContribution": "贡献代码"
 }

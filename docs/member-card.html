@@ -233,6 +233,14 @@ let PEOPLE=[
   role:{zh:"赞助支持","zh-TW":"贊助支持",en:"Sponsorship support"},
   brief:{zh:"以一份心意相赠，让这盏灯火照得更远。","zh-TW":"以一份心意相贈，讓這盞燈火照得更遠。",en:"A gift from the heart, so this beacon can shine farther."},
   honors:["jadeGift"],primary:"jadeGift",c:"#0EA5B7",grp:"support"}
+ /* BH7GZB：开发人员（与 members.json v53 对齐；本名单是「取不到 JSON」时的兜底，
+    因此只列精选成员，不是全量）。
+    ⚠️ `honors` 必须显式写出 —— 只给 grp:"core" 会被上面 honorDefsOf 的兜底映射成
+    [kaishan, developer, earlyMember]（那是创始团队那几位的组合），离线时徽章就多出来了。 */
+ {call:"BH7GZB",who:{zh:"BH7GZB","zh-TW":"BH7GZB",en:"BH7GZB"},
+  role:{zh:"贡献代码","zh-TW":"貢獻程式碼",en:"Code contribution"},
+  brief:{zh:"让每一帧报文都说清自己","zh-TW":"讓每一幀報文都說清自己",en:"Made every packet speak for itself"},
+  honors:["developer"],primary:"developer",c:"#1D6FF2",grp:"core"}
 ];
 /* 团体/赞助项（无呼号） */
 let GROUPS=[
