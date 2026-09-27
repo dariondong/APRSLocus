@@ -176,6 +176,14 @@ jobs:
       - name: Test third-party packet unwrapping
         run: flutter test test/third_party_packet_test.dart
 
+      # 信标报文的**第三方兼容性**：格式错了不会编译失败、analyze 也全绿，
+      # 只会让 aprs.fi 里少东西 —— 属于「测试没跑就必然漏」的那一类。
+      # v2.0.4 就是活教材：数据扩展被空格分隔（`000/000 PHG2130 /A=000033`），
+      # 用户实测 aprslib 解出来 `phg` 完全缺失、`PHG2130` 落进 comment 当文字。
+      # 这个文件当时不在 CI 里，所以没有任何环节能拦住它。
+      - name: Test beacon packet format (third-party compatibility)
+        run: flutter test test/beacon_format_test.dart
+
       # 百度瓦片投影/编号数学：官方参考向量锁定（BD-09 坐标 + 多项式平面投影 +
       # 瓦片 y 朝北 + 每级瓦片数不是 2^z）。这些**编译能过、analyze 也全绿**，
       # 只有把标记画到与瓦片错开的位置才看得出来，所以钉在 CI。

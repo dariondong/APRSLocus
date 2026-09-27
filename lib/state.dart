@@ -4274,10 +4274,23 @@ class AppState extends ChangeNotifier {
 
   /// 组装信标备注：高度(/A=英尺) + 速度/方位角 + 电量 + 心率 + 里程 + 自定义备注
   String _beaconComment() {
-    final parts = <String>[];
-    // 标准 course/speed 格式：ddd/sss（度/节，各3位）
-    // 必须位于备注最前（APRS101 规定），否则 aprs.fi 等第三方地图
-    // 不会解析，会把速度/方位角当作普通备注文字显示。
+    // ── APRS 标准数据扩展：**整块紧贴，内部不得有空格** ──
+    //
+    // APRS101 第 9 章把这些字段规定为「固定长度的数据扩展」，直接拼在符号之后、
+    // **彼此之间不用空格分隔**。现网样本也正是这样：
+    //   `!3155.21N/12016.69ErPHG1460/A=000071`
+    //   `!2155.17N/11052.40Eb000/000/A=000033`
+    //   `!2305.90N/11318.59ErPHG4430 GuangZhou APRS Digi …`
+    //
+    // 一旦在扩展内部插了空格（如用户实测的 `000/000 PHG2130 /A=000033`），
+    // 第三方解析器只认得出它前面那一段，**PHG 会被当成普通备注文字丢掉**：
+    // 用参考实现 aprslib 解那条报文，结果里 `phg` 完全缺失、`PHG2130` 落进
+    // comment；而本机 6 万余条现网报文里「扩展内部带空格」的样本是 **0 条**。
+    // 回归测试见 test/beacon_format_test.dart「数据扩展必须整块紧贴」。
+    final ext = StringBuffer();
+    // 1) CsT：标准 course/speed 格式 ddd/sss（度/节，各 3 位）。
+    // 必须位于扩展块**最前**（APRS101 规定），否则 aprs.fi 等第三方地图
+    // 不会解析速度/方位角，会把它们当作普通备注文字显示（v1.6.119 踩过）。
     if (beaconIncludeSpeed &&
         beaconIncludeCourse &&
         myCourse != null &&
@@ -4288,24 +4301,23 @@ class AppState extends ChangeNotifier {
           .clamp(0, 999)
           .toString()
           .padLeft(3, '0');
-      parts.add('$crs/$kt');
+      ext.write('$crs/$kt');
     }
     // PHG 数据扩展（**固定 7 字节**）：功率 / 天线有效高度 / 增益 / 方向性。
     //
-    // ⚠ **位置**：PHG 必须**紧跟符号**（即备注的最前面），排在 `/A=` 海拔与
-    // 其它备注文字之前。标准报文形如
+    // ⚠ **位置**：PHG 属于数据扩展块，必须与 CsT、`/A=` **紧贴**（无空格）地
+    // 排在符号之后。标准报文形如
     //   `BI7KZM-13>APAVT7,WIDE1-1,qAS,BI7KZM-10:!2216.45N/11113.90ErPHG5950`
     // —— `!坐标/符号` 之后**紧接着**就是 `PHG5950`。第三方解析器（aprs.fi /
-    // aprslib）普遍把「注释开头的数据扩展」当作 PHG 的识别位置，把 `/A=` 或
-    // 备注文字插在它前面会让 PHG 读不出来（用户报的「PHG 格式不规范」即此）。
-    // CsT（`ddd/sss`）是规范里唯一允许排在它前面的字段，见上面那一段。
+    // aprslib）只在「注释开头的数据扩展」位置上认 PHG，中间插空格或备注文字
+    // 都会让 PHG 读不出来（用户报的「PHG 格式不规范」即此）。
     //
     // 为什么三项里填任一项就得连高度、方向性一起发：`PHGphgd` 在规范里是
     // **一个**字段，四个码位不可拆 —— 没有「只报功率」的写法。所以只要
     // [hasPhg] 成立，就按 [AprsPhg] 的量化表把四位一次编全；未填的项落在
     // 0 档（功率 0 W、高度 10 英尺），设置页会把该档实际值回显出来。
     if (hasPhg) {
-      parts.add(AprsPhg.encode(
+      ext.write(AprsPhg.encode(
         watts: beaconPowerW ?? 0,
         heightFeet: beaconAntennaHeightFt ?? 0,
         gainDb: beaconGainDb ?? 0,
@@ -4320,8 +4332,13 @@ class AppState extends ChangeNotifier {
     final alt = effectiveAltM;
     if (alt != null && alt >= 0) {
       final ft = (alt / 0.3048).round().clamp(0, 999999);
-      parts.add('/A=${ft.toString().padLeft(6, '0')}');
+      ext.write('/A=${ft.toString().padLeft(6, '0')}');
     }
+
+    // 扩展块整块作为**第一段**，之后才是可读备注（APRS 没有标准字段的那些：
+    // 电量 / 心率 / 里程 / 用户备注）—— 它们之间照常用空格分隔。
+    final parts = <String>[];
+    if (ext.isNotEmpty) parts.add(ext.toString());
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');
     }

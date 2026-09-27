@@ -23,6 +23,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// `'APRS,TCPIP*'` —— 于是位置包/消息的 tocall 变成 `APRS`，
 /// 第三方统计站按 `u/APALOC` 订阅时只能收到状态包、收不到位置包。
 void main() {
+  // 本文件多处分组要构造 AppState（读设置 / persist），所以 binding 与
+  // SharedPreferences 的 mock 在这里统一备好 —— 与 beacon_coarse_force_test
+  // 同一写法。分组内再设一遍无妨（幂等）。
+  TestWidgetsFlutterBinding.ensureInitialized();
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
   group('信标报文格式（第三方兼容性）', () {
     test('注释必须紧跟符号，中间不得有空格', () {
       final raw = AprsFmt.position(
@@ -351,4 +357,118 @@ void main() {
       st.dispose();
     });
   });
+
+  /// ─── 数据扩展必须**整块紧贴**（第三方解析器的前提）───
+  ///
+  /// 实测事故：v2.0.4 发出的备注是
+  ///   `000/000 PHG2130 /A=000033 Bat:22% E4[中国人能飞]`
+  /// —— 扩展之间被空格分隔。用参考实现 aprslib 解这条报文，结果是
+  /// `phg` **完全缺失**、`PHG2130` 落进 comment 当普通文字：
+  ///
+  ///   aprslib.parse(… 'b000/000 PHG2130 /A=000033 …')
+  ///   → {'altitude': 10.0584}   comment='PHG2130  Bat:22% …'
+  ///
+  /// 而 APRS101 第 9 章把这些字段定义为**固定长度的数据扩展**，直接拼在符号
+  /// 之后、彼此之间**不用空格分隔**。6 万余条现网报文里「扩展内部带空格」的
+  /// 样本是 **0 条**；真实台站长这样：
+  ///   `!3155.21N/12016.69ErPHG1460/A=000071`
+  ///   `!2155.17N/11052.40Eb000/000/A=000033`
+  ///
+  /// 所以这一组把「整块紧贴」钉死：**注释的第一段只能是 CsT / PHG / `/A=`
+  /// 的紧贴拼接**，不允许出现空格。
+  group('数据扩展必须整块紧贴（否则第三方读不出 PHG）', () {
+    /// 用户实测那份配置的复现：4 W / 20 ft / 3 dB（→ `PHG2130`）、
+    /// 手填海拔 10.0584 m（→ `/A=000033`）。
+    AppState userSetup() => AppState()
+      ..myCall = 'BG7LZQ'
+      ..mySsid = 2
+      ..mySymbol = 'b'
+      ..myLat = 21 + 55.17 / 60
+      ..myLng = 110 + 52.40 / 60
+      ..myHasFix = true
+      ..beaconPowerW = 4
+      ..beaconAntennaHeightFt = 20
+      ..beaconGainDb = 3
+      ..beaconAltOverrideM = 10.0584
+      ..beaconIncludeBattery = false
+      ..myComment = 'E4[中国人能飞]';
+
+    String sentRaw(AppState st) => st.packets
+        .map((p) => p.raw)
+        .firstWhere((r) => r.contains('PHG'), orElse: () => '');
+
+    /// 注释（`:` 之后）的第一段 —— 也就是「数据扩展块」该在的位置。
+    String firstToken(String raw) {
+      final body = raw.substring(raw.indexOf(':') + 1);
+      return body.split(' ').first;
+    }
+
+    test('速度/方位角开着时：CsT 与 PHG、/A= 紧贴', () {
+      final st = userSetup()
+        ..beaconIncludeSpeed = true
+        ..beaconIncludeCourse = true
+        ..myCourse = 0
+        ..mySpeed = 0;
+      st.sendBeacon();
+      final raw = sentRaw(st);
+      expect(
+        raw,
+        'BG7LZQ-2>APALOC,TCPIP*:!2155.17N/11052.40Eb000/000PHG2130/A=000033 '
+        'E4[中国人能飞]',
+        reason: '扩展之间出现空格，第三方会把 PHG 当普通备注文字',
+      );
+      expect(raw.contains(' PHG'), isFalse);
+      expect(raw.contains('/A=000033 '), isTrue, reason: '空格应在扩展块与备注之间');
+
+      st.dispose();
+    });
+
+    test('关掉速度/方位角时：PHG 紧跟符号（= 标准报文形状）', () {
+      final st = userSetup()
+        ..beaconIncludeSpeed = false
+        ..beaconIncludeCourse = false;
+      st.sendBeacon();
+      final raw = sentRaw(st);
+      expect(
+        raw,
+        'BG7LZQ-2>APALOC,TCPIP*:!2155.17N/11052.40EbPHG2130/A=000033 '
+        'E4[中国人能飞]',
+        reason: '这是标准报文的形状（PHG 紧贴符号、/A= 紧贴 PHG）',
+      );
+
+      st.dispose();
+    });
+
+    test('不变量：注释第一段只由 CsT / PHG / /A= 紧贴拼成', () {
+      final extOnly = RegExp(r'^(?:\d{3}/\d{3})?(?:PHG\d{4})?(?:/A=\d{6})?$');
+      // 三种典型组合都要满足（含「一个都没有」时的空串）
+      for (final (cse, phg, alt) in [
+        (true, true, true),
+        (false, true, true),
+        (true, false, true),
+        (false, false, true),
+        (true, false, false),
+        (false, false, false),
+      ]) {
+        final st = userSetup()
+          ..beaconIncludeSpeed = cse
+          ..beaconIncludeCourse = cse
+          ..myCourse = cse ? 123.0 : null
+          ..mySpeed = cse ? 20.0 : null
+          ..beaconPowerW = phg ? 25 : null
+          ..beaconAntennaHeightFt = phg ? 5120 : null
+          ..beaconGainDb = phg ? 5 : null
+          ..beaconAltOverrideM = alt ? 10.0584 : null;
+        st.sendBeacon();
+        final raw = sentRaw(st);
+        final tok = raw.isEmpty ? '' : firstToken(raw);
+        expect(extOnly.hasMatch(tok), isTrue,
+            reason: 'cse=$cse phg=$phg alt=$alt 的首段是「$tok」，'
+                '只能由紧贴的 CsT/PHG//A= 组成');
+        expect(tok.contains(' '), isFalse);
+        st.dispose();
+      }
+    });
+  });
 }
+
