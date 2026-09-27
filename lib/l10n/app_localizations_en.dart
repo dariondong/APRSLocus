@@ -6863,9 +6863,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get txButton => 'Transmit';
 
   @override
-  String get txNothingFilled => 'All fields are empty - nothing to send';
-
-  @override
   String get txPartPosition => 'position packet';
 
   @override
@@ -7255,9 +7252,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
 
 
-
-  @override
-  String get batteryNoFix => 'No fix yet - cannot beacon a position';
 
   @override
   String get aprsStatusHint => 'This sends a standalone status packet (starts with `>`, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.';

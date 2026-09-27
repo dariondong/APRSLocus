@@ -21,7 +21,19 @@ class LinkTestCard extends StatefulWidget {
   final AppState state;
   final LinkTestSource source;
 
-  const LinkTestCard({super.key, required this.state, required this.source});
+  /// 是否画卡片自带的标题栏（标题 / 副标题 / 图标）。
+  ///
+  /// 默认画。**嵌在别的卡片里时置 `false`**：设备页把它放进自己的
+  /// `SettingsFold`，那一层已经画过同一份标题与副标题 —— 两处都画，同一张卡上
+  /// 就会出现两遍「链路自检」标题与副标题（用户报的「链路自检出现相同元素」）。
+  final bool showHeader;
+
+  const LinkTestCard({
+    super.key,
+    required this.state,
+    required this.source,
+    this.showHeader = true,
+  });
 
   @override
   State<LinkTestCard> createState() => _LinkTestCardState();
@@ -97,90 +109,103 @@ class _LinkTestCardState extends State<LinkTestCard> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final r = _result;
+    final children = _children(l, _result);
+    if (!widget.showHeader) {
+      // 嵌在外部折叠卡里：标题/副标题由外层给，这里只出正文。
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      );
+    }
     return SettingsSectionCard(
       title: l.diagTitle,
       subtitle: l.diagSubtitle,
       icon: Icons.health_and_safety_rounded,
       color: C.cyan,
-      children: [
-        // 结果列表（跑过才显示）
-        if (r != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final item in r.items) _row(item),
-                const SizedBox(height: 6),
-                Row(children: [
-                  Icon(
-                    r.ok ? Icons.check_circle_rounded : Icons.error_rounded,
-                    size: 14,
-                    color: r.ok ? C.green : C.red,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    [
-                      l.diagPassed(r.passed),
-                      if (r.failures > 0) l.diagFailed(r.failures),
-                    ].join(' · '),
-                    style: ts(11,
-                        c: r.ok ? C.green : C.red, w: FontWeight.w700),
-                  ),
-                ]),
-              ],
-            ),
-          )
-        else
-          SettingsHint(l.diagHint),
-        if (_isAudio) SettingsHint(l.audioLoopbackHint),
-        // 操作行：开始自检 + 测试发射
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
-          child: Row(children: [
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: _running ? null : _run,
-                icon: _running
-                    ? const SizedBox(
-                        width: 14,
-                        height: 14,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.play_arrow_rounded, size: 16),
-                label: Text(_running ? l.diagRunning : l.diagRun,
-                    style: ts(12, c: Colors.white, w: FontWeight.w600)),
-                style: FilledButton.styleFrom(
-                  backgroundColor: C.cyan,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: st.connected ? _testTx : null,
-                icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
-                label: Text(l.testTxAction, style: ts(12, w: FontWeight.w600)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: C.orange,
-                  side: BorderSide(color: C.orange.withValues(alpha: 0.5)),
-                ),
-              ),
-            ),
-          ]),
-        ),
-        SettingsHint(
-          st.connected ? l.testTxDesc : l.testTxNeedsConnect,
-          color: st.connected ? C.orange : C.grey,
-          icon: Icons.warning_amber_rounded,
-        ),
-        SettingsHint(l.testTxHint, color: C.red, icon: Icons.campaign_rounded),
-      ],
+      children: children,
     );
   }
+
+  /// 卡片的正文：结果列表 + 两个按钮 + 两行提示。
+  ///
+  /// 与「有没有标题栏」无关，所以抽出来 —— 设备页（`showHeader: false`）与
+  /// 独立成卡的场景共用同一份正文，不会各写一遍而慢慢长歪。
+  List<Widget> _children(AppLocalizations l, DiagResult? r) => [
+    // 结果列表（跑过才显示）
+    if (r != null)
+      Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final item in r.items) _row(item),
+            const SizedBox(height: 6),
+            Row(children: [
+              Icon(
+                r.ok ? Icons.check_circle_rounded : Icons.error_rounded,
+                size: 14,
+                color: r.ok ? C.green : C.red,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                [
+                  l.diagPassed(r.passed),
+                  if (r.failures > 0) l.diagFailed(r.failures),
+                ].join(' · '),
+                style: ts(11,
+                    c: r.ok ? C.green : C.red, w: FontWeight.w700),
+              ),
+            ]),
+          ],
+        ),
+      )
+    else
+      SettingsHint(l.diagHint),
+    if (_isAudio) SettingsHint(l.audioLoopbackHint),
+    // 操作行：开始自检 + 测试发射
+    Padding(
+      padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
+      child: Row(children: [
+        Expanded(
+          child: FilledButton.icon(
+            onPressed: _running ? null : _run,
+            icon: _running
+                ? const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.play_arrow_rounded, size: 16),
+            label: Text(_running ? l.diagRunning : l.diagRun,
+                style: ts(12, c: Colors.white, w: FontWeight.w600)),
+            style: FilledButton.styleFrom(
+              backgroundColor: C.cyan,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: st.connected ? _testTx : null,
+            icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+            label: Text(l.testTxAction, style: ts(12, w: FontWeight.w600)),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: C.orange,
+              side: BorderSide(color: C.orange.withValues(alpha: 0.5)),
+            ),
+          ),
+        ),
+      ]),
+    ),
+    SettingsHint(
+      st.connected ? l.testTxDesc : l.testTxNeedsConnect,
+      color: st.connected ? C.orange : C.grey,
+      icon: Icons.warning_amber_rounded,
+    ),
+        SettingsHint(l.testTxHint, color: C.red, icon: Icons.campaign_rounded),
+  ];
 
   Widget _row(DiagItem item) {
     final col = item.ok ? (item.warn ? C.orange : C.green) : C.red;

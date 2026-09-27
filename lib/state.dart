@@ -111,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.3';
+  static const appVersion = '2.0.2';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -465,17 +465,7 @@ class AppState extends ChangeNotifier {
   // 信标上报内容选项
   bool beaconIncludeSpeed = true; // 速度
   bool beaconIncludeCourse = true; // 方位角
-
-  /// 信标备注里是否带上**手机电量**（`Bat:nn%`）。
-  ///
-  /// 默认**关**（用户要求）：电量属于「台站自身状态」，不是位置信息，
-  /// 而且手机电量与电台的工作状态没有关系 —— 把它塞进每一帧位置报文，
-  /// 收益很低却让备注变长、还向全网暴露设备电量。
-  ///
-  /// 开关**只有一处**：设置 → 电台 → 台站备注 → 高级设置。
-  /// （原先信标页「信标上报内容」里还有一个同名开关，两处控制同一个值，
-  /// 容易让人以为改了这里那里也会跟着变 —— 已按用户要求合并到高级设置。）
-  bool beaconIncludeBattery = false;
+  bool beaconIncludeBattery = true; // 手机电量
   /// 信标备注里是否带上**心率**（HR=nn）。
   ///
   /// 心率可能来自两个地方，共用这一个开关：
@@ -796,11 +786,21 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 三个 PHG 输入项（功率 / 天线高度 / 增益）是否**任一**已填。
+  ///
+  /// 单一出口：设置页回显、位置报文组装与「发射」按钮都读它 —— 三处各写
+  /// 一份条件必然漂，而本功能的约定就是「填任一项即附上固定 7 字节的
+  /// `PHGphgd`」。
+  bool get hasPhg =>
+      beaconPowerW != null ||
+      beaconAntennaHeightFt != null ||
+      beaconGainDb != null;
+
   /// 设置页的回显：实际会被编进报文的 `PHGphgd`（四个码位一起给）。
   ///
   /// 由 [AprsPhg] 的量化表反推，而不是另写一份 —— 两处各写一份必然漂。
   String get phgPreview {
-    if (beaconPowerW == null && beaconGainDb == null) return '';
+    if (!hasPhg) return '';
     return AprsPhg.encode(
       watts: beaconPowerW ?? 0,
       heightFeet: beaconAntennaHeightFt ?? 0,
@@ -4288,6 +4288,27 @@ class AppState extends ChangeNotifier {
           .padLeft(3, '0');
       parts.add('$crs/$kt');
     }
+    // PHG 数据扩展（**固定 7 字节**）：功率 / 天线有效高度 / 增益 / 方向性。
+    //
+    // ⚠ **位置**：PHG 必须**紧跟符号**（即备注的最前面），排在 `/A=` 海拔与
+    // 其它备注文字之前。标准报文形如
+    //   `BI7KZM-13>APAVT7,WIDE1-1,qAS,BI7KZM-10:!2216.45N/11113.90ErPHG5950`
+    // —— `!坐标/符号` 之后**紧接着**就是 `PHG5950`。第三方解析器（aprs.fi /
+    // aprslib）普遍把「注释开头的数据扩展」当作 PHG 的识别位置，把 `/A=` 或
+    // 备注文字插在它前面会让 PHG 读不出来（用户报的「PHG 格式不规范」即此）。
+    // CsT（`ddd/sss`）是规范里唯一允许排在它前面的字段，见上面那一段。
+    //
+    // 为什么三项里填任一项就得连高度、方向性一起发：`PHGphgd` 在规范里是
+    // **一个**字段，四个码位不可拆 —— 没有「只报功率」的写法。所以只要
+    // [hasPhg] 成立，就按 [AprsPhg] 的量化表把四位一次编全；未填的项落在
+    // 0 档（功率 0 W、高度 10 英尺），设置页会把该档实际值回显出来。
+    if (hasPhg) {
+      parts.add(AprsPhg.encode(
+        watts: beaconPowerW ?? 0,
+        heightFeet: beaconAntennaHeightFt ?? 0,
+        gainDb: beaconGainDb ?? 0,
+      ));
+    }
     // 高度：数据扩展 `/A=aaaaaa`（**英尺**，APRS101 第 6 章原文：
     // "The comment may contain an altitude value, in the form /A=aaaaaa,
     //  where aaaaaa is the altitude in feet"）。
@@ -4298,19 +4319,6 @@ class AppState extends ChangeNotifier {
     if (alt != null && alt >= 0) {
       final ft = (alt / 0.3048).round().clamp(0, 999999);
       parts.add('/A=${ft.toString().padLeft(6, '0')}');
-    }
-    // PHG 数据扩展（**固定 7 字节**）：功率 / 天线有效高度 / 增益 / 方向性。
-    //
-    // 为什么功率与增益一填就得连高度、方向性一起发：`PHGphgd` 在规范里是
-    // **一个**字段，四个码位不可拆 —— 没有「只报功率」的写法。所以这里
-    // 一旦填了功率或增益，就按 [AprsPhg] 的量化表把四位一次编全；
-    // 天线高度留空时落在 0 档（10 英尺），设置页会把该档实际值回显出来。
-    if (beaconPowerW != null || beaconGainDb != null) {
-      parts.add(AprsPhg.encode(
-        watts: beaconPowerW ?? 0,
-        heightFeet: beaconAntennaHeightFt ?? 0,
-        gainDb: beaconGainDb ?? 0,
-      ));
     }
     if (beaconIncludeBattery && _battery >= 0) {
       parts.add('Bat:$_battery%');

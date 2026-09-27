@@ -77,11 +77,14 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
             open: _testOpen,
             onToggle: () => setState(() => _testOpen = !_testOpen),
             children: [
+              // showHeader: false —— 外层 SettingsFold 已经画过「链路自检」
+              // 的标题与副标题，卡片再画一遍就会出现两遍相同元素。
               LinkTestCard(
                 state: state,
                 source: state.audioOn && !state.tncOn
                     ? LinkTestSource.audio
                     : LinkTestSource.tnc,
+                showHeader: false,
               ),
             ],
           ),

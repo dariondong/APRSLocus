@@ -114,6 +114,26 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
   /// 所以这里**没有「没有可发送的内容」这条拦截**：什么都不填时仍然发一帧
   /// 内置在线帧 —— 那也正是「宣告我在线」最有用的默认动作。
   void _transmit(BuildContext context) {
+    final s = S.of(context);
+    // ── 链接检查（用户要求）──
+    //
+    // 这个「发射」按钮是本页新增的入口，最容易被理解成「按了就发出去」——
+    // 而链路没连上时 [AppState.sendBeacon] / [AppState.sendStatus] 只做本地
+    // 记录、并不会真的发射。所以先判连通性：没连就**直说**，别让用户以为
+    // 信号已经上天了（文案与链路自检里「发射测试帧」用同一句
+    // [S.testTxNeedsConnect]：「请先连接链路」）。
+    if (!st.connected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.testTxNeedsConnect),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: C.red,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
     // 先把各输入框的现值同步进 state（发送的一瞬间取值）
     _num(_power.text, st.setBeaconPower);
     _num(_height.text, st.setBeaconAntennaHeight);
@@ -122,9 +142,10 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     st.myComment = _comment.text.trim();
     st.setAprsStatusText(_status.text);
 
-    // 位置报文的扩展只有功率/增益两项；没有扩展就不发位置报文。
-    final hasExt = st.beaconPowerW != null || st.beaconGainDb != null;
-    final s = S.of(context);
+    // 位置报文的数据扩展只要 PHG 三项里有任一项就带上（功率 / 天线高度 /
+    // 增益**都**属于同一个 `PHGphgd`，见 [AppState.hasPhg]）；没有扩展就不发
+    // 位置报文 —— 位置包的价值就在那段随包扩展上。
+    final hasExt = st.hasPhg;
     final sent = <String>[];
     // 有扩展却没定位：位置报文发不了，但状态报文照发。
     if (hasExt && st.myHasFix) {
@@ -144,9 +165,13 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
 
   /// ── 高级设置：默认折叠的一张子卡 ──
   ///
-  /// 收纳平时不改的东西：高度覆盖、PHG（功率/天线高度/增益）、独立状态报文、
-  /// 以及手机电量开关。用自绘的标题行而不是 [SettingsFold]，是因为这里要放在
-  /// **已有卡片的子级**（缩进一层），而 SettingsFold 的外框是给整卡用的。
+  /// 收纳平时不改的东西：高度覆盖、PHG（功率/天线高度/增益）、独立状态报文。
+  /// 用自绘的标题行而不是 [SettingsFold]，是因为这里要放在**已有卡片的子级**
+  /// （缩进一层），而 SettingsFold 的外框是给整卡用的。
+  ///
+  /// ⚠ **手机电量开关不在这里**：它属于「信标上报内容」，仍在信标页那一节
+  /// （见 `_BeaconSettingsPageState`）。用户明确要求不要把它搬过来，
+  /// 也不要改它的默认值 —— 别再合并第二次。
   Widget _advancedMenu(BuildContext context, AppState st) {
     final s = S.of(context);
     return Column(children: [
@@ -196,20 +221,6 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
         // ── 独立状态报文：与上面那行备注是两种 APRS 报文 ──
         SettingsInput(s.aprsStatus, _status,
             tip: s.aprsStatusHint, onChanged: (v) => st.setAprsStatusText(v)),
-        // ── 手机电量：全应用唯一一处开关 ──
-        //
-        // 默认关（电量是设备自身状态，与电台能否被听到无关）。原先信标页
-        // 「信标上报内容」里还有一个同名开关，两处控制同一个值容易让人误判，
-        // 已按用户要求合并到这里。
-        // leftPad 14：与上面那几行输入框的标签对齐（本组件自身不带缩进，
-        // 见 SettingsMiniSwitch 的说明）。
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: SettingsMiniSwitch(s.phoneBattery,
-              value: st.beaconIncludeBattery,
-              onChanged: st.setBeaconIncludeBattery,
-              leftPad: 14),
-        ),
       ],
     ]);
   }
@@ -261,7 +272,9 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
               child: SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  // 未连接也能点：两个发送方法内部都会判连通性并照常本地记录
+                  // 未连接时**不发**，只在下面 `_transmit` 里给一句
+                  // 「请先连接链路」——按钮本身不禁用，否则用户不知道
+                  // 为什么点了没反应。
                   onPressed: () => _transmit(context),
                   icon: const Icon(Icons.campaign_rounded, size: 16),
                   label: Text(S.of(context).txButton,
@@ -1318,6 +1331,10 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                       onChanged: st.setBeaconIncludeSpeed),
                   SettingsMiniSwitch(S.of(context).bearing, value: st.beaconIncludeCourse,
                       onChanged: st.setBeaconIncludeCourse),
+                  // 手机电量：**留在本页**（用户要求）。它是「信标上报内容」
+                  // 的一项，与上面几项同源；默认开（与 2.0.2 一致）。
+                  SettingsMiniSwitch(S.of(context).phoneBattery, value: st.beaconIncludeBattery,
+                      onChanged: st.setBeaconIncludeBattery),
                   SettingsMiniSwitch(S.of(context).beaconTripMileage,
                       value: st.beaconIncludeTripMileage,
                       onChanged: st.setBeaconIncludeTripMileage),

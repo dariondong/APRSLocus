@@ -6911,10 +6911,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get txButton => 'Transmitir';
 
   @override
-  String get txNothingFilled =>
-      'Los campos estan vacios: no hay nada que enviar';
-
-  @override
   String get txPartPosition => 'paquete de posicion';
 
   @override
@@ -7306,9 +7302,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
 
 
-
-  @override
-  String get batteryNoFix => 'Aun sin posicion: no se puede balizar';
 
   @override
   String get aprsStatusHint => 'Esto envia un paquete de estado independiente (empieza por `>`, sin coordenadas y sin moverte en aprs.fi): un tipo de paquete APRS distinto del comentario de arriba. Si se deja vacio se envia la trama de presencia integrada de APRSlocus.';

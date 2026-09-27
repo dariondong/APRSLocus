@@ -6575,9 +6575,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get txButton => '发射';
 
   @override
-  String get txNothingFilled => '上面几项都为空，没有可发送的内容';
-
-  @override
   String get txPartPosition => '位置报文';
 
   @override
@@ -6954,9 +6951,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
 
 
-
-  @override
-  String get batteryNoFix => '还没有定位，无法上报位置';
 
   @override
   String get aprsStatusHint => '这一点发的是**独立一帧**状态报文（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。';
@@ -13533,9 +13527,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get txButton => '發射';
 
   @override
-  String get txNothingFilled => '上面幾項都為空，沒有可傳送的內容';
-
-  @override
   String get txPartPosition => '位置報文';
 
   @override
@@ -13912,9 +13903,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
 
 
-
-  @override
-  String get batteryNoFix => '還沒有定位，無法上報位置';
 
   @override
   String get aprsStatusHint => '這一點發的是**獨立一幀**狀態報文（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。';
