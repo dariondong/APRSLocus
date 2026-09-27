@@ -12590,6 +12590,30 @@ abstract class AppLocalizations {
   /// **'这一点发的是**独立一帧**状态报文（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。'**
   String get aprsStatusHint;
 
+  /// No description provided for @txNoFixKeptStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发射：{parts}（还没有定位，带 PHG 的位置报文没能发出）'**
+  String txNoFixKeptStatus(String parts);
+
+  /// No description provided for @connStatusSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接 · 状态报文已发送 ({call})'**
+  String connStatusSent(String call);
+
+  /// No description provided for @connTncStatusSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'TNC 已连接 · 状态报文已发送 ({arg})'**
+  String connTncStatusSent(String arg);
+
+  /// No description provided for @connAudioStatusSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频已发射 · 状态报文已发送 ({call})'**
+  String connAudioStatusSent(String call);
+
 }
 
 class _AppLocalizationsDelegate

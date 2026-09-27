@@ -2518,5 +2518,13 @@
   "txPartPosition": "paquete de posicion",
   "txPartStatus": "paquete de estado",
   "txSent": "Transmitido: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "Enviado: {parts} (sin posición todavía: el paquete de posición con PHG no se envió)",
+  "connStatusSent": "Conectado · paquete de estado enviado ({call})",
+  "connTncStatusSent": "TNC conectado · paquete de estado enviado ({arg})",
+  "connAudioStatusSent": "Enviado por audio · paquete de estado enviado ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

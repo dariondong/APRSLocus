@@ -2518,5 +2518,13 @@
   "txPartPosition": "位置パケット",
   "txPartStatus": "ステータスパケット",
   "txSent": "送信しました：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "送信しました：{parts}（測位がないため PHG 付きの位置パケットは送信されませんでした）",
+  "connStatusSent": "接続済み · ステータスパケット送信済み ({call})",
+  "connTncStatusSent": "TNC 接続済み · ステータスパケット送信済み ({arg})",
+  "connAudioStatusSent": "オーディオ送信済み · ステータスパケット送信済み ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

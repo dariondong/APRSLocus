@@ -7266,4 +7266,16 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get aprsStatusHint => 'Ini mengirim paket status mandiri (diawali `>`, tanpa koordinat, dan tidak memindahkan posisi Anda di aprs.fi) - jenis paket APRS yang berbeda dari komentar di atas. Bila kosong, frame online APRSlocus bawaan yang dikirim.';
 
+  @override
+  String txNoFixKeptStatus(String parts) => "Terkirim: $parts (belum ada posisi - paket posisi dengan PHG tidak dikirim)";
+
+  @override
+  String connStatusSent(String call) => "Terhubung · paket status terkirim ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC terhubung · paket status terkirim ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "Terkirim via audio · paket status terkirim ($call)";
+
 }

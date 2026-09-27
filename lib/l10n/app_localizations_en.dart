@@ -7256,4 +7256,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aprsStatusHint => 'This sends a standalone status packet (starts with `>`, carries no coordinates, and does not move you on aprs.fi) - a different APRS packet type from the comment above. Left empty, the built-in APRSlocus online frame is sent instead.';
 
+  @override
+  String txNoFixKeptStatus(String parts) => "Sent: $parts (no fix yet - the position packet with PHG was not sent)";
+
+  @override
+  String connStatusSent(String call) => "Connected · Status packet sent ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC connected · status packet sent ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "Sent over audio · status packet sent ($call)";
+
 }

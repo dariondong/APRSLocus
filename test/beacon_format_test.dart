@@ -248,6 +248,8 @@ void main() {
       expect(st.hasPhg, isTrue,
           reason: '说明里写的是「填任一项即附上固定 7 字节的 PHGphgd」');
       expect(st.phgPreview, startsWith('PHG'));
+
+      st.dispose();
     });
 
     test('实际发出的位置报文：PHG 紧跟符号，且排在 /A= 之前', () {
@@ -274,6 +276,79 @@ void main() {
         'BI7KZM-13>APALOC,TCPIP*:!2216.45N/11113.90ErPHG5950/A=000039',
         reason: 'PHG 必须在符号之后、/A= 之前（标准报文就是这样）',
       );
+
+      st.dispose();
+    });
+  });
+
+  /// ─── 「发射」按钮的两条回执口径 ───
+  ///
+  /// 两个真实问题（都在 PR #11 的「发射」按钮上）：
+  ///   1. 填了 PHG 却没有定位时，位置包被 `!myHasFix` 挡回，只发出状态帧 ——
+  ///      界面原来一声不吭，用户以为 PHG 上天了；
+  ///   2. `sendStatus()` 复用「位置已上报」那三档连接状态文案，于是只发状态帧
+  ///      时主横幅写着「位置已上报」。状态帧与位置帧是两种报文，文案必须分开。
+  group('发射回执：状态帧不能写成「位置已上报」', () {
+    setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues({});
+    });
+
+    test('发状态报文 → 文案说「状态报文」，不再说「位置已上报」', () {
+      final st = AppState()
+        ..setLocale('zh')
+        ..myCall = 'BG7LZG'
+        ..debugSetLinkUp(AppState.srcAprsIs, true);
+      st.sendStatus();
+      expect(st.connInfo, contains('状态报文'));
+      expect(st.connInfo, isNot(contains('位置已上报')),
+          reason: '状态帧不含坐标，不能显示成位置已上报');
+
+      st.dispose();
+    });
+
+    test('发位置报文 → 仍然说「位置已上报」（两档没混）', () {
+      final st = AppState()
+        ..setLocale('zh')
+        ..myCall = 'BG7LZG'
+        ..mySymbol = '>'
+        ..myLat = 39.1
+        ..myLng = 116.4
+        ..myHasFix = true
+        ..debugSetLinkUp(AppState.srcAprsIs, true);
+      st.sendBeacon();
+      expect(st.connInfo, contains('位置'));
+      expect(st.connInfo, isNot(contains('状态报文')));
+
+      st.dispose();
+    });
+
+    test('TNC 发射时状态文案也分档（TNC + 状态报文）', () {
+      final st = AppState()
+        ..setLocale('zh')
+        ..myCall = 'BG7LZG'
+        ..debugSetLinkUp(AppState.srcAprsIs, false)
+        ..dataSource = AppState.srcTnc
+        ..debugSetLinkUp(AppState.srcTnc, true);
+      st.sendStatus();
+      expect(st.connInfo, contains('TNC'));
+      expect(st.connInfo, contains('状态报文'));
+
+      st.dispose();
+    });
+
+    test('填了 PHG 但没定位：位置包不发，状态帧照发（这就是界面要提示的情形）', () {
+      final st = AppState()
+        ..myCall = 'BG7LZG'
+        ..beaconPowerW = 25; // 有 PHG，但 myHasFix 仍为 false
+      st.sendBeacon(); // 内部被 !myHasFix 挡回
+      st.sendStatus();
+      expect(st.packets.where((p) => p.type == 'position'), isEmpty,
+          reason: '没有定位不能发位置包');
+      expect(st.packets.where((p) => p.type == 'status'), isNotEmpty,
+          reason: '状态帧不含坐标，无定位也能发');
+
+      st.dispose();
     });
   });
 }

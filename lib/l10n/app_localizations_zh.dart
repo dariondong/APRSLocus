@@ -6955,6 +6955,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get aprsStatusHint => '这一点发的是**独立一帧**状态报文（`>` 开头、不含坐标、不会移动你在 aprs.fi 上的位置），与上面那行备注是两种不同的 APRS 报文。留空则发送内置的 APRSlocus 在线帧。';
 
+  @override
+  String txNoFixKeptStatus(String parts) => "已发射：$parts（还没有定位，带 PHG 的位置报文没能发出）";
+
+  @override
+  String connStatusSent(String call) => "已连接 · 状态报文已发送 ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC 已连接 · 状态报文已发送 ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "音频已发射 · 状态报文已发送 ($call)";
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13906,5 +13918,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get aprsStatusHint => '這一點發的是**獨立一幀**狀態報文（`>` 開頭、不含座標、不會移動你在 aprs.fi 上的位置），與上面那行備註是兩種不同的 APRS 報文。留空則傳送內建的 APRSlocus 在線幀。';
+
+  @override
+  String txNoFixKeptStatus(String parts) => "已發射：$parts（還沒有定位，帶 PHG 的位置報文沒能發出）";
+
+  @override
+  String connStatusSent(String call) => "已連線 · 狀態報文已發送 ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC 已連線 · 狀態報文已發送 ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "音訊已發射 · 狀態報文已發送 ($call)";
 
 }

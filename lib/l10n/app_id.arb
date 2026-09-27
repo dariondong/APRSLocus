@@ -2518,5 +2518,13 @@
   "txPartPosition": "paket posisi",
   "txPartStatus": "paket status",
   "txSent": "Terkirim: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "Terkirim: {parts} (belum ada posisi - paket posisi dengan PHG tidak dikirim)",
+  "connStatusSent": "Terhubung · paket status terkirim ({call})",
+  "connTncStatusSent": "TNC terhubung · paket status terkirim ({arg})",
+  "connAudioStatusSent": "Terkirim via audio · paket status terkirim ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

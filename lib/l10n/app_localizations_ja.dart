@@ -7045,4 +7045,16 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get aprsStatusHint => 'ここで送るのは**独立した 1 帧**のステータスパケットです（`>` で始まり、座標を含まず、aprs.fi 上の位置も動きません）。上のメモとは別種の APRS パケットです。空欄の場合は組み込みの APRSlocus オンライン フレームを送信します。';
 
+  @override
+  String txNoFixKeptStatus(String parts) => "送信しました：$parts（測位がないため PHG 付きの位置パケットは送信されませんでした）";
+
+  @override
+  String connStatusSent(String call) => "接続済み · ステータスパケット送信済み ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC 接続済み · ステータスパケット送信済み ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "オーディオ送信済み · ステータスパケット送信済み ($call)";
+
 }

@@ -2434,5 +2434,13 @@
   "txPartPosition": "position packet",
   "txPartStatus": "status packet",
   "txSent": "Transmitted: {parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "Sent: {parts} (no fix yet - the position packet with PHG was not sent)",
+  "connStatusSent": "Connected · Status packet sent ({call})",
+  "connTncStatusSent": "TNC connected · status packet sent ({arg})",
+  "connAudioStatusSent": "Sent over audio · status packet sent ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

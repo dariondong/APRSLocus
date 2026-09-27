@@ -3033,5 +3033,13 @@
   "txPartPosition": "位置报文",
   "txPartStatus": "状态报文",
   "txSent": "已发射：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "已发射：{parts}（还没有定位，带 PHG 的位置报文没能发出）",
+  "connStatusSent": "已连接 · 状态报文已发送 ({call})",
+  "connTncStatusSent": "TNC 已连接 · 状态报文已发送 ({arg})",
+  "connAudioStatusSent": "音频已发射 · 状态报文已发送 ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

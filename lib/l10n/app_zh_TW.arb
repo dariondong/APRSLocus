@@ -3022,5 +3022,13 @@
   "txPartPosition": "位置報文",
   "txPartStatus": "狀態報文",
   "txSent": "已發射：{parts}",
-  "@txSent": {"placeholders": {"parts": {"type": "String"}}}
+  "@txSent": {"placeholders": {"parts": {"type": "String"}}},
+  "txNoFixKeptStatus": "已發射：{parts}（還沒有定位，帶 PHG 的位置報文沒能發出）",
+  "connStatusSent": "已連線 · 狀態報文已發送 ({call})",
+  "connTncStatusSent": "TNC 已連線 · 狀態報文已發送 ({arg})",
+  "connAudioStatusSent": "音訊已發射 · 狀態報文已發送 ({call})",
+  "@txNoFixKeptStatus": {"placeholders": {"parts": {"type": "String"}}},
+  "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
+  "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
+  "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}}
 }

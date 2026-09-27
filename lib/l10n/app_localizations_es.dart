@@ -7306,4 +7306,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get aprsStatusHint => 'Esto envia un paquete de estado independiente (empieza por `>`, sin coordenadas y sin moverte en aprs.fi): un tipo de paquete APRS distinto del comentario de arriba. Si se deja vacio se envia la trama de presencia integrada de APRSlocus.';
 
+  @override
+  String txNoFixKeptStatus(String parts) => "Enviado: $parts (sin posición todavía: el paquete de posición con PHG no se envió)";
+
+  @override
+  String connStatusSent(String call) => "Conectado · paquete de estado enviado ($call)";
+
+  @override
+  String connTncStatusSent(String arg) => "TNC conectado · paquete de estado enviado ($arg)";
+
+  @override
+  String connAudioStatusSent(String call) => "Enviado por audio · paquete de estado enviado ($call)";
+
 }

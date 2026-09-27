@@ -3644,10 +3644,12 @@ class AppState extends ChangeNotifier {
     _sendRaw(raw);
     _lastTx = DateTime.now();
     _log(LogLevel.info, '状态', '已发出状态报文：${_trunc(text)}');
+    // 状态报文有自己的三档：这条帧不含坐标，写成「位置已上报」会骗人
+    // （用户会以为位置包也发出去了）。
     setConnStatus(
       usingTnc
-          ? ConnPhase.positionSentTnc
-          : (usingAudio ? ConnPhase.positionSentAudio : ConnPhase.positionSent),
+          ? ConnPhase.statusSentTnc
+          : (usingAudio ? ConnPhase.statusSentAudio : ConnPhase.statusSent),
       arg: myCall,
     );
     _notify();
@@ -6610,9 +6612,21 @@ enum ConnPhase {
   linkLostTnc,
   linkLostAudio,
   manual,
+
+  /// 位置报文已发送（三档按当前发射来源分）。
+  ///
+  /// ⚠ **只用于位置报文**。状态报文是另一种帧（DTI `>`、不含坐标），
+  /// 它有自己的 `statusSent*` 三档 —— 混用会让主横幅在「只发了状态帧」时
+  /// 显示「位置已上报」，而一个位置包都没发。
   positionSent,
   positionSentTnc,
   positionSentAudio,
+
+  /// 状态报文已发送（三档按当前发射来源分；见 [ConnPhase.positionSent]）。
+  statusSent,
+  statusSentTnc,
+  statusSentAudio,
+
   demoBeacon,
 }
 
@@ -6699,6 +6713,12 @@ class ConnStatus {
         return l.connTncPositionSent(arg);
       case ConnPhase.positionSentAudio:
         return l.connAudioPositionSent(arg);
+      case ConnPhase.statusSent:
+        return l.connStatusSent(arg);
+      case ConnPhase.statusSentTnc:
+        return l.connTncStatusSent(arg);
+      case ConnPhase.statusSentAudio:
+        return l.connAudioStatusSent(arg);
       case ConnPhase.demoBeacon:
         return l.connDemoBeacon;
     }

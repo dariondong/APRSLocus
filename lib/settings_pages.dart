@@ -146,8 +146,11 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     // 增益**都**属于同一个 `PHGphgd`，见 [AppState.hasPhg]）；没有扩展就不发
     // 位置报文 —— 位置包的价值就在那段随包扩展上。
     final hasExt = st.hasPhg;
+    // 「填了 PHG 却没定位」要**明说**：`sendBeacon()` 内部被 `!myHasFix`
+    // 直接挡回（没坐标不能发位置包），这么一来只发出一帧状态报文。
+    // 不提示的话用户会以为 PHG 已经上天了 —— 只看流量、看不到一条位置帧。
+    final noFix = hasExt && !st.myHasFix;
     final sent = <String>[];
-    // 有扩展却没定位：位置报文发不了，但状态报文照发。
     if (hasExt && st.myHasFix) {
       st.sendBeacon();
       sent.add(s.txPartPosition);
@@ -155,10 +158,14 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     // 状态报文总是发：文本为空时 sendStatus 内部改用内置在线帧
     st.sendStatus();
     sent.add(s.txPartStatus);
+    final parts = sent.join(' + ');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(s.txSent(sent.join(' + '))),
+        content: Text(noFix ? s.txNoFixKeptStatus(parts) : s.txSent(parts)),
         behavior: SnackBarBehavior.floating,
+        // 没定位时用橙色：提示这是「发了一半」，与纯成功的绿色区分开
+        backgroundColor: noFix ? C.orange : null,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
