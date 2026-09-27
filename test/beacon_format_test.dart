@@ -403,7 +403,13 @@ void main() {
       return body.split(' ').first;
     }
 
-    test('速度/方位角开着时：CsT 与 PHG、/A= 紧贴', () {
+    /// ⚠ 这一条说的是**第二个**独立的坑：就算整块紧贴了，只要 CsT 排在 PHG
+    /// 前面，PHG 一样读不出来 —— 参考实现 aprslib 的 `parse_data_extentions()`
+    /// 先匹配 `^\d{3}/\d{3}`，命中后**只**再看 DF report，根本不再找 PHG。
+    /// 实测（0.7.2）：`…Eb000/000PHG2130/A=000033` → `phg` 缺失、
+    /// `PHG2130` 落进 comment；`…EbPHG2130/A=000033` → `phg=2130` ✓
+    /// 所以**扩展块的首位让给 PHG，CsT 不发**（取舍见 state.dart 的注释）。
+    test('速度/方位角开着 + 有 PHG：PHG 仍占首位，CsT 让位', () {
       final st = userSetup()
         ..beaconIncludeSpeed = true
         ..beaconIncludeCourse = true
@@ -413,12 +419,37 @@ void main() {
       final raw = sentRaw(st);
       expect(
         raw,
-        'BG7LZQ-2>APALOC,TCPIP*:!2155.17N/11052.40Eb000/000PHG2130/A=000033 '
+        'BG7LZQ-2>APALOC,TCPIP*:!2155.17N/11052.40EbPHG2130/A=000033 '
         'E4[中国人能飞]',
-        reason: '扩展之间出现空格，第三方会把 PHG 当普通备注文字',
+        reason: 'CsT 排在 PHG 前面时第三方读不出 PHG（两个都要求「最前」）',
       );
-      expect(raw.contains(' PHG'), isFalse);
+      expect(raw.contains('000/000'), isFalse,
+          reason: 'PHG 在场时 CsT 必须整段不发，而不是挪到后面当备注文字');
+      expect(raw.contains(' PHG'), isFalse, reason: '扩展之间不能有空格');
       expect(raw.contains('/A=000033 '), isTrue, reason: '空格应在扩展块与备注之间');
+
+      st.dispose();
+    });
+
+    test('没有 PHG 时：CsT 照旧占首位（既有行为不变）', () {
+      final st = userSetup()
+        ..beaconPowerW = null
+        ..beaconAntennaHeightFt = null
+        ..beaconGainDb = null
+        ..beaconIncludeSpeed = true
+        ..beaconIncludeCourse = true
+        ..myCourse = 0
+        ..mySpeed = 0;
+      st.sendBeacon();
+      final raw = st.packets
+          .map((p) => p.raw)
+          .firstWhere((r) => r.contains('/A='), orElse: () => '');
+      expect(
+        raw,
+        'BG7LZQ-2>APALOC,TCPIP*:!2155.17N/11052.40Eb000/000/A=000033 '
+        'E4[中国人能飞]',
+        reason: '没开 PHG 的台站，CsT//A= 的紧贴顺序与 v2.0.4 之前完全一致',
+      );
 
       st.dispose();
     });

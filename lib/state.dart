@@ -4291,6 +4291,20 @@ class AppState extends ChangeNotifier {
     // 1) CsT：标准 course/speed 格式 ddd/sss（度/节，各 3 位）。
     // 必须位于扩展块**最前**（APRS101 规定），否则 aprs.fi 等第三方地图
     // 不会解析速度/方位角，会把它们当作普通备注文字显示（v1.6.119 踩过）。
+    //
+    // ⚠ **PHG 在场时 CsT 必须让位**（所以这里只算不写，写入在下面的 PHG 分支）：
+    // 「最前」只有一个位置，而解析器只认最前面那一个字段 —— 参考实现 aprslib
+    // 的 `parse_data_extentions()` 先匹配 `^\d{3}/\d{3}`，**一旦命中就只再看
+    // DF report，根本不再去找 PHG**。实测（aprslib 0.7.2）：
+    //   `…Eb000/000PHG2130/A=000033` → `phg` 缺失、`PHG2130` 落进 comment；
+    //   `…EbPHG2130/A=000033`        → `phg=2130`、4 W / 6.1 m / omni ✓
+    // 注意本函数开头那条「整块紧贴不插空格」并不能救「CsT 在前」这种 ——
+    // 那是另一个独立的坑，两个都得满足才行。
+    //
+    // 取舍（写在这里是因为它是个**真实的功能损失**）：同时开了 PHG 的移动台，
+    // aprs.fi 上就没有速度/方位角了。PHG 描述的是固定天线安装，与 CsT（移动台
+    // 的速度/方位角）本就不是同一类台站；想要速度/方位角被解析，只能不填 PHG。
+    String? cst;
     if (beaconIncludeSpeed &&
         beaconIncludeCourse &&
         myCourse != null &&
@@ -4301,7 +4315,7 @@ class AppState extends ChangeNotifier {
           .clamp(0, 999)
           .toString()
           .padLeft(3, '0');
-      ext.write('$crs/$kt');
+      cst = '$crs/$kt';
     }
     // PHG 数据扩展（**固定 7 字节**）：功率 / 天线有效高度 / 增益 / 方向性。
     //
@@ -4317,11 +4331,14 @@ class AppState extends ChangeNotifier {
     // [hasPhg] 成立，就按 [AprsPhg] 的量化表把四位一次编全；未填的项落在
     // 0 档（功率 0 W、高度 10 英尺），设置页会把该档实际值回显出来。
     if (hasPhg) {
+      // PHG 占扩展块首位 —— 这是第三方唯一认它的位置（CsT 已在上面让位）。
       ext.write(AprsPhg.encode(
         watts: beaconPowerW ?? 0,
         heightFeet: beaconAntennaHeightFt ?? 0,
         gainDb: beaconGainDb ?? 0,
       ));
+    } else if (cst != null) {
+      ext.write(cst);
     }
     // 高度：数据扩展 `/A=aaaaaa`（**英尺**，APRS101 第 6 章原文：
     // "The comment may contain an altitude value, in the form /A=aaaaaa,
