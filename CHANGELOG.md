@@ -1,5 +1,100 @@
 # 更新日志
 
+## [2.0.5] - 2026-09-27
+
+### 📡 修：PHG 在第三方侧其实没生效（2.0.4 的问题）
+
+**一、2.0.4 的 PHG 读不出来 —— 这一版修好它。**
+
+2.0.4 里填了「功率 / 天线高度 / 增益」之后，报文长这样：
+
+```
+BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40Eb000/000 PHG2130 /A=000033 Bat:22%
+                                                         ↑ 扩展之间被空格分隔
+```
+
+用参考实现（aprslib）解这条报文，`phg` **完全缺失**、`PHG2130` 被当成普通备注文字 ——
+也就是说第三方地图上看不到覆盖范围，这个功能等于没做。原因是**两个独立的坑**，只修一个都不够：
+
+1. **数据扩展之间不能有空格**。APRS101 把 PHG、`/A=`、CsT 这些定义为**固定长度的数据扩展**，
+   直接拼在符号之后、彼此不用空格分隔。真实台站都长这样：
+   `!3155.21N/12016.69ErPHG1460/A=000071`。一旦在中间插空格，解析器只认得出最前面那一段。
+2. **CsT 与 PHG 争同一个「注释开头」**。解析器（aprslib 的 `parse_data_extentions()`）先匹配
+   `^\d{3}/\d{3}`，**一旦命中就只再看 DF 测向报文，根本不再去找 PHG**。所以哪怕紧贴，
+   只要 `000/000` 排在 PHG 前面，PHG 照样读不出来。
+
+修法：扩展块**整块紧贴**，且**位置让给 PHG** —— 填了 PHG 时 CsT 不再随位置报文发送。
+修好后同一条报文：
+
+```
+BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%
+                                    ↑ 坐标+符号 紧贴 PHG，再紧贴 /A=，空格只在扩展块与备注之间
+```
+
+**二、一个要说明的取舍**：同时填了 PHG 的**移动台**，aprs.fi 上就没有速度/方位角了 ——
+两者都要「注释开头」这一个位置，无法共存。PHG 描述的是固定天线安装，与移动台本不是一类台站；
+想让速度/方位角被解析，只能不填 PHG。**没有填 PHG 的台站一切照旧**（已加回归测试钉住）。
+
+**三、顺手把这类问题挡在发版之前**：信标报文的第三方兼容性测试已纳入 CI（Analyze 作业）——
+它编译得过、analyze 也全绿，只有第三方解析器读不出来，所以只能靠测试守住。
+
+> 如果你装了 2.0.4，**建议升级到 2.0.5**：2.0.4 的 PHG 在第三方侧不生效。
+
+- [下载最新版](https://github.com/dariondong/APRSLocus/releases)
+- [查看完整更新日志](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [反馈与建议](https://github.com/dariondong/APRSLocus/issues)
+
+## [2.0.5] - 2026-09-27 (English)
+
+### 📡 Fix: PHG never actually took effect for third parties (a 2.0.4 bug)
+
+**1 · PHG was unreadable in 2.0.4 — this build fixes it.**
+
+In 2.0.4, once power / antenna height / gain were filled in, the packet looked like this:
+
+```
+BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40Eb000/000 PHG2130 /A=000033 Bat:22%
+                                                         ↑ the extensions are space-separated
+```
+
+Parsed with the reference implementation (aprslib), `phg` is **missing entirely** and `PHG2130` ends up
+as ordinary comment text — which means third-party maps showed no coverage at all and the feature did
+nothing. The cause was **two independent traps**, and fixing only one is not enough:
+
+1. **Data extensions must not contain spaces.** APRS101 defines PHG, `/A=` and CsT as **fixed-length
+   data extensions**, appended directly after the symbol with no separators between them. Real stations
+   look like `!3155.21N/12016.69ErPHG1460/A=000071`. Insert a space in the middle and a parser only
+   recognises the piece before it.
+2. **CsT and PHG compete for the same "start of comment" slot.** Parsers (aprslib's
+   `parse_data_extentions()`) match `^\d{3}/\d{3}` first and, **once it hits, only look for a DF report
+   and never search for PHG at all**. So even when everything is glued together, PHG is still unreadable
+   if `000/000` comes before it.
+
+The fix: keep the extension block **glued together**, and **give the first slot to PHG** — when PHG is
+present, CsT is no longer sent with the position packet. The same packet afterwards:
+
+```
+BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%
+                                    ↑ lat/lon+symbol glued to PHG, then /A=; spaces only between the block and the comment
+```
+
+**2 · One trade-off to be aware of**: a **mobile** station that also fills in PHG will no longer show
+speed/bearing on aprs.fi — both need the single "start of comment" slot and cannot coexist. PHG
+describes a fixed antenna installation, which is not the same kind of station as a mobile one; to have
+speed/bearing parsed, PHG has to be left empty. **Stations that do not fill in PHG are unaffected**
+(a regression test now pins this down).
+
+**3 · Stopping this class of bug before release**: the beacon packet's third-party compatibility test
+now runs in CI (the Analyze job) — the code compiles and analyze is green, and only a third-party parser
+can tell that something is unreadable, so a test is the only guard.
+
+> If you have 2.0.4 installed, **upgrading to 2.0.5 is recommended**: 2.0.4's PHG does not take effect
+> for third parties.
+
+- [Download the latest version](https://github.com/dariondong/APRSLocus/releases)
+- [Full changelog](https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md)
+- [Feedback & suggestions](https://github.com/dariondong/APRSLocus/issues)
+
 ## [2.0.4] - 2026-09-27
 
 ### 📡 位置报文数据扩展（高度 / PHG）· 独立状态报文 · 若干修正

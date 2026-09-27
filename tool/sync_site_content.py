@@ -205,6 +205,57 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.5', 'date': '2026-09-27',
+        'items': [
+            ('fix',
+             T('**修：2.0.4 的 PHG 在第三方侧其实没生效**。2.0.4 发出的报文里，数据扩展被空格分隔'
+               '（`000/000 PHG2130 /A=000033`），用参考实现 aprslib 解出来 `phg` **完全缺失**、'
+               '`PHG2130` 被当成普通备注文字 —— 也就是说第三方地图上看不到覆盖范围，这个功能等于没做。'
+               '根因是**两个独立的坑**：① APRS101 把 PHG / `/A=` / CsT 定义为**固定长度的数据扩展**，'
+               '必须紧贴符号、彼此之间不用空格（真实台站都是 `…ErPHG1460/A=000071` 这样）；'
+               '② CsT 与 PHG 争同一个「注释开头」，解析器先匹配 `^\\d{3}/\\d{3}`，一旦命中就'
+               '**只再看 DF 测向报文，根本不再去找 PHG**，所以哪怕紧贴，只要 `000/000` 在前 PHG 也读不出来。',
+               '**修：2.0.4 的 PHG 在第三方端其實沒生效**。2.0.4 送出的報文裡，資料擴充被空格分隔'
+               '（`000/000 PHG2130 /A=000033`），用參考實作 aprslib 解出來 `phg` **完全缺失**、'
+               '`PHG2130` 被當成普通備註文字 —— 也就是說第三方地圖上看不到涵蓋範圍，這個功能等於沒做。'
+               '根因是**兩個獨立的坑**：① APRS101 把 PHG / `/A=` / CsT 定義為**固定長度的資料擴充**，'
+               '必須緊貼符號、彼此之間不用空格（真實臺站都是 `…ErPHG1460/A=000071` 這樣）；'
+               '② CsT 與 PHG 爭同一個「註解開頭」，解析器先匹配 `^\\d{3}/\\d{3}`，一旦命中就'
+               '**只再看 DF 測向報文，根本不再去找 PHG**，所以哪怕緊貼，只要 `000/000` 在前 PHG 也讀不出來。',
+               '**Fix: 2.0.4\'s PHG never actually took effect for third parties.** In 2.0.4 the data '
+               'extensions were space-separated (`000/000 PHG2130 /A=000033`), and the reference '
+               'implementation (aprslib) reports `phg` as **missing entirely** with `PHG2130` left as '
+               'ordinary comment text — meaning third-party maps showed no coverage and the feature did '
+               'nothing. Two independent traps caused it: (1) APRS101 defines PHG / `/A=` / CsT as '
+               '**fixed-length data extensions** that must be glued to the symbol with no separators '
+               '(real stations look like `…ErPHG1460/A=000071`); (2) CsT and PHG compete for the same '
+               '"start of comment" slot — parsers match `^\\d{3}/\\d{3}` first and, once it hits, **only '
+               'look for a DF report and never search for PHG**, so even glued together PHG stays '
+               'unreadable while `000/000` comes first.')),
+            ('up',
+             T('**修法**：扩展块**整块紧贴**，且**首位让给 PHG** —— 填了 PHG 时 CsT 不再随位置报文发送。'
+               '修好后：`!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%`（空格只出现在扩展块与备注之间）。'
+               '**一个取舍**：同时填了 PHG 的移动台，aprs.fi 上就没有速度/方位角了 —— 两者都要'
+               '「注释开头」这一个位置，无法共存；没填 PHG 的台站一切照旧。'
+               '另把信标报文的第三方兼容性测试纳入 CI，这类「编译过、analyze 绿、第三方读不出」的'
+               '问题从此有测试兜底。',
+               '**修法**：擴充區塊**整塊緊貼**，且**首位讓給 PHG** —— 填了 PHG 時 CsT 不再隨位置報文發送。'
+               '修好後：`!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%`（空格只出現在擴充區塊與備註之間）。'
+               '**一個取捨**：同時填了 PHG 的移動臺，aprs.fi 上就沒有速度/方位角了 —— 兩者都要'
+               '「註解開頭」這一個位置，無法共存；沒填 PHG 的臺站一切照舊。'
+               '另把信標報文的第三方相容性測試納入 CI，這類「編譯過、analyze 綠、第三方讀不出」的'
+               '問題從此有測試把關。',
+               '**The fix**: keep the extension block **glued together** and **give the first slot to '
+               'PHG** — when PHG is present, CsT is no longer sent with the position packet. Afterwards: '
+               '`!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%` (spaces appear only between the block and '
+               'the comment). **One trade-off**: a mobile station that also fills in PHG shows no '
+               'speed/bearing on aprs.fi — both need that single "start of comment" slot and cannot '
+               'coexist; stations without PHG are unaffected. The beacon packet\'s third-party '
+               'compatibility test now runs in CI, so this class of "compiles, analyze is green, '
+               'third parties cannot read it" bug has a guard.')),
+        ],
+    },
+    {
         'ver': 'v2.0.4', 'date': '2026-09-27',
         'items': [
             ('new',
