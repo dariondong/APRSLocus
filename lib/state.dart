@@ -2009,14 +2009,8 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
-  void setNoticeBanner(bool v) {
-    noticeBanner = v;
-    // 关掉时**记下当时那一条的指纹**：以后拉到的公告只要不是这一条（= 更新了），
-    // 就自动重新显示横幅（见 [onNoticeLoaded]）。
-    if (!v) _noticeDismissedIdentity = noticeIdentity;
-    persist();
-    _notify();
-  }
+  // 公告的开关与「关掉的是哪一条」（noticeIdentity）放在一起 —— 见下方
+  // setNoticeBanner / onNoticeLoaded：两处各写一遍持久化必然漂。
 
   // 界面语言：'' = 跟随系统；'zh' 中文；'en' English
   String locale = '';
