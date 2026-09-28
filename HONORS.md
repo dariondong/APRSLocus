@@ -12,7 +12,8 @@
 
 | 场景 | 改动文件数 | 是否需发版 |
 |---|---|---|
-| **① 授予已有称号**（最常见） | 1（`docs/members.json`） | ❌ 不需要 |
+| **① 授予称号**（名单里已有的人） | 1（`docs/members.json`） | ❌ 不需要 |
+| **①′ 授予称号 + 新面孔**（首次进名单） | 3（`members.json` + `member-card.html` + `lib/early_member.dart`） | ❌ 即时生效；`lib/` 那处**要发版**才完全生效 |
 | **② 新增一个称号** | 7（`docs/` + `lib/`） | ✅ **需要**（`lib/` 那 3 处） |
 | **③ 上赞助墙**（见文末，独立于称号） | 5 | ❌ 不需要 |
 
@@ -23,17 +24,33 @@
 
 ---
 
-## ① 授予已有称号
+## ① 授予称号
 
-只改 `docs/members.json` 一个文件。
+**名单里已有的人**：只改 `docs/members.json` 一个文件。
+**首次进名单的新面孔**：另有 2 处配套（见下「新面孔的补充登记」）——漏了就会出现
+「官网会员卡里查无此人」或「卡面三块留白」。
 
 ### 步骤
 
 1. 在 `developers`（默认称号 `kaishan`）或 `earlyMembers`（默认称号 `earlyMember`）里找到该呼号
+   —— **找不到就是新面孔**，先把下面「新面孔的补充登记」那 3 处一起做完
 2. 往它的 `honors` 数组**追加**称号 key
 3. `primary` 按惯例处理（见下）
 4. `version` +1、`updated` 改成当天（仅人工追溯，见「易错点」）
 5. `git commit` → `git push` → 等 Pages 部署（约 1 分钟）后线上即生效
+
+### 新面孔的补充登记（缺一处就少一块）
+
+| # | 文件 | 做什么 | 漏了会怎样 |
+|---|---|---|---|
+| 1 | `docs/members.json` | 追加成员条目：`call` / `who` / `role` / `brief` / **`contrib` / `quote` / `tags`** / `c` / `grp` / `honors` / `primary` | 官网会员卡的「贡献」「寄语」「标签」三块**空着**（寄语框里只剩一个大引号） |
+| 2 | `docs/member-card.html` | `PEOPLE` 兜底名单末尾追加一条，注释写 `与 members.json vNN 对齐`；**`honors` 必须显式写出** | 「取不到 JSON」时（断网 / 本地 `file://` 打开）**整条不出现**；只给 `grp` 不给 `honors` 时，徽章会按 grp 兜底映射成别人的组合 |
+| 3 | `lib/early_member.dart` | `_seedDefaults()` 的 `_honorsCache` / `_primariesCache` 各加一行 | App 离线 / 首帧时该称号不显示（**要发版才生效**） |
+
+> `contrib` / `quote` / `tags` 三语都写，但**只写在 `members.json` 一处**即可 ——
+> `member-card.html` 的 `toPeople()` 取值顺序是
+> `it.contrib || 兜底名单.contrib || 空`，**在线内容优先**；兜底名单那条保持精简，避免两处漂移。
+> 最近的完整范例：**BH7GZB**（v53，开发人员）、**BA7NFI**（v55，播种）。
 
 ### 示例
 

@@ -1,5 +1,5 @@
 {
-  "version": 54,
+  "version": 55,
   "updated": "2026-09-28",
   "developers": [
     {
@@ -1637,12 +1637,36 @@
         "zh-TW": "把這份熱愛講給更多人聽，讓電波的種子隨風散開。",
         "en": "Sharing this passion far and wide, letting seeds of radio drift on the wind."
       },
+      "contrib": {
+        "zh": "在社交媒体上持续分享 APRSlocus —— 把电波里的乐趣讲给更多人听，也让新的同好循着这束信号找过来。",
+        "zh-TW": "在社群媒體上持續分享 APRSlocus —— 把電波裡的樂趣講給更多人聽，也讓新的同好循著這束訊號找過來。",
+        "en": "Keeps sharing APRSlocus on social media — spreading the fun of radio and helping new hams follow the signal in."
+      },
+      "quote": {
+        "zh": "把热爱播出去，总有人循声而来。",
+        "zh-TW": "把熱愛播出去，總有人循聲而來。",
+        "en": "Sow the passion — someone will follow the call."
+      },
+      "tags": {
+        "zh": [
+          "社交分享",
+          "社区传播"
+        ],
+        "zh-TW": [
+          "社群分享",
+          "社群傳播"
+        ],
+        "en": [
+          "Social sharing",
+          "Community reach"
+        ]
+      },
+      "c": "#2E9E5B",
+      "grp": "support",
       "honors": [
         "sower"
       ],
-      "primary": "sower",
-      "grp": "support",
-      "c": "#2E9E5B"
+      "primary": "sower"
     }
   ],
   "groups": [
