@@ -652,6 +652,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.0</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**历史轨迹新增心率记录与折线图**。轨迹点开始记心率（来源与信标里的 `HR=` 一致：蓝牙心率带或佳明 LiveTrack），历史轨迹详情页多了**心率 / 速度 / 里程**三条折线，可逐条开关、也可整块隐藏；播放时有竖起指示线对着当前位置，心率那一栏还显示当天的最低–最高。没有心率读数的时间段曲线会**断开**（不连成直线）。一天最多 4 万个点，曲线进页时一次性分桶到 240 个点，播放时不掉帧。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Windows 可选音频设备与发射串口**。音频页现在能选**播放设备 / 采集设备**，不再只能用系统默认 —— 这直接决定接到电台的是哪一路信号；TNC 设备页可以选**发射串口**，默认仍与接收共用一个口，分成两个口可以避开 Windows 上同一 COM 口读写互相打架的问题。（Android / iOS 不显示音频设备选择器：那里音频路由由系统决定，摆一个假开关只会误导人。）</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修一轮用户反馈（#12 / #13 / #15 / #16 / #18 / #19）**。① 电台身份卡片「更多附加」里的海拔 / 功率 / 天线高度 / 增益设过就删不掉 —— 留空的语义是「不发送」，但保存时只是跳过写入，旧值一直留在本地、重启又回来，现在留空会真的把它清掉；② 自定义状态会被 15 秒一次的心跳包顶掉，现在填了自定义状态就紧跟着补发一帧；③ Android 15 强制 edge-to-edge，三大金刚键压住页面底部按钮，现在滚动内容底部让出导航栏高度；④ 设置详情页面板展开 / 收起会闪一下或突然填充，现在高度与透明度一起动；⑤ 下载完成后「立即下载」按钮还在（拿文件名里的 `2.0.5` 去比 tag 的 `v2.0.5`，永远不相等），现在比较时忽略 `v` 前缀；⑥ 更新渠道默认改为 GitHub（更新页仍可一键切回镜像）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.5</span>
         <span class="cl-date">2026-09-27</span>
       </div>

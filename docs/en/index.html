@@ -577,6 +577,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.0</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**Heart-rate logging and charts on the history track page.** Track points now record heart rate (from the same source as `HR=` in the beacon comment: a BLE chest strap or Garmin LiveTrack), and the day detail page gains three polylines — **heart rate / speed / distance** — each of which can be toggled, or the whole panel hidden. A vertical cursor follows playback, and the heart-rate row shows the day's min–max. Gaps with no reading are drawn as **breaks**, not straight lines. A day can hold 40,000 points, so the curves are bucketed once to 240 points on entry; playback stays smooth.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Selectable audio devices and TX serial port on Windows.** The audio page can now pick the **playback and capture device** instead of being stuck with the system default — which decides what actually feeds your radio. The TNC device page can pick a **separate TX serial port**; the default is still one port for both directions, and splitting them avoids two handles fighting over one COM port on Windows. (Android/iOS hide the audio picker: routing there is the OS's job, and a fake switch would only mislead.)</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**A round of user-reported fixes (#12, #13, #15, #16, #18, #19).** (1) The "Advanced" extras on the station identity card could not be cleared: empty means "do not send", but saving merely skipped the write, so the old value stayed on disk and came back after a restart — clearing now removes it. (2) A custom status was overwritten by the 15-second keep-alive frame; a custom status is now re-sent right after it. (3) Android 15 forces edge-to-edge, so the navigation bar covered buttons at the bottom of a page — scrollable content now reserves that inset. (4) Expand/collapse on settings pages flashed or snapped; height and opacity now animate together. (5) The download button stayed after finishing (a file-name version `2.0.5` was compared against the tag `v2.0.5`, which never matches); the comparison now ignores the `v` prefix. (6) The update channel now defaults to GitHub (one tap switches back to the mirror).</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.5</span>
         <span class="cl-date">2026-09-27</span>
       </div>

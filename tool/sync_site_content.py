@@ -205,6 +205,72 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.1.0', 'date': '2026-09-28',
+        'items': [
+            ('new',
+             T('**历史轨迹新增心率记录与折线图**。轨迹点开始记心率（来源与信标里的 `HR=` 一致：'
+               '蓝牙心率带或佳明 LiveTrack），历史轨迹详情页多了**心率 / 速度 / 里程**三条折线，'
+               '可逐条开关、也可整块隐藏；播放时有竖起指示线对着当前位置，心率那一栏还显示当天的最低–最高。'
+               '没有心率读数的时间段曲线会**断开**（不连成直线）。一天最多 4 万个点，曲线进页时一次性'
+               '分桶到 240 个点，播放时不掉帧。',
+               '**歷史軌跡新增心率記錄與折線圖**。軌跡點開始記心率（來源與信標裡的 `HR=` 一致：'
+               '藍牙心率帶或 Garmin LiveTrack），歷史軌跡詳情頁多了**心率 / 速度 / 里程**三條折線，'
+               '可逐條開關、也可整塊隱藏；播放時有豎起指示線對著目前位置，心率那一欄還顯示當天的最低–最高。'
+               '沒有心率讀取的時間段曲線會**斷開**（不連成直線）。一天最多 4 萬個點，曲線進頁時一次性'
+               '分桶到 240 個點，播放時不掉格。',
+               '**Heart-rate logging and charts on the history track page.** Track points now record '
+               'heart rate (from the same source as `HR=` in the beacon comment: a BLE chest strap or '
+               'Garmin LiveTrack), and the day detail page gains three polylines — **heart rate / '
+               'speed / distance** — each of which can be toggled, or the whole panel hidden. A vertical '
+               'cursor follows playback, and the heart-rate row shows the day\'s min–max. Gaps with no '
+               'reading are drawn as **breaks**, not straight lines. A day can hold 40,000 points, so '
+               'the curves are bucketed once to 240 points on entry; playback stays smooth.')),
+            ('new',
+             T('**Windows 可选音频设备与发射串口**。音频页现在能选**播放设备 / 采集设备**，'
+               '不再只能用系统默认 —— 这直接决定接到电台的是哪一路信号；TNC 设备页可以选**发射串口**，'
+               '默认仍与接收共用一个口，分成两个口可以避开 Windows 上同一 COM 口读写互相打架的问题。'
+               '（Android / iOS 不显示音频设备选择器：那里音频路由由系统决定，摆一个假开关只会误导人。）',
+               '**Windows 可選音訊裝置與發射串口**。音訊頁現在能選**播放裝置 / 擷取裝置**，'
+               '不再只能用系統預設 —— 這直接決定接到電台的是哪一路訊號；TNC 裝置頁可以選**發射串口**，'
+               '預設仍與接收共用一個埠，分成兩個埠可以避開 Windows 上同一 COM 埠讀寫互相打架的問題。'
+               '（Android / iOS 不顯示音訊裝置選擇器：那裡音訊路由由系統決定，擺一個假開關只會誤導人。）',
+               '**Selectable audio devices and TX serial port on Windows.** The audio page can now pick '
+               'the **playback and capture device** instead of being stuck with the system default — '
+               'which decides what actually feeds your radio. The TNC device page can pick a **separate '
+               'TX serial port**; the default is still one port for both directions, and splitting them '
+               'avoids two handles fighting over one COM port on Windows. (Android/iOS hide the audio '
+               'picker: routing there is the OS\'s job, and a fake switch would only mislead.)')),
+            ('fix',
+             T('**修一轮用户反馈（#12 / #13 / #15 / #16 / #18 / #19）**。'
+               '① 电台身份卡片「更多附加」里的海拔 / 功率 / 天线高度 / 增益设过就删不掉 —— 留空的语义是'
+               '「不发送」，但保存时只是跳过写入，旧值一直留在本地、重启又回来，现在留空会真的把它清掉；'
+               '② 自定义状态会被 15 秒一次的心跳包顶掉，现在填了自定义状态就紧跟着补发一帧；'
+               '③ Android 15 强制 edge-to-edge，三大金刚键压住页面底部按钮，现在滚动内容底部让出导航栏高度；'
+               '④ 设置详情页面板展开 / 收起会闪一下或突然填充，现在高度与透明度一起动；'
+               '⑤ 下载完成后「立即下载」按钮还在（拿文件名里的 `2.0.5` 去比 tag 的 `v2.0.5`，永远不相等），'
+               '现在比较时忽略 `v` 前缀；⑥ 更新渠道默认改为 GitHub（更新页仍可一键切回镜像）。',
+               '**修一輪使用者回報（#12 / #13 / #15 / #16 / #18 / #19）**。'
+               '① 電台身份卡片「更多附加」裡的海拔 / 功率 / 天線高度 / 增益設過就刪不掉 —— 留空的語意是'
+               '「不傳送」，但儲存時只是跳過寫入，舊值一直留在本機、重啟又回來，現在留空會真的把它清掉；'
+               '② 自訂狀態會被 15 秒一次的心跳包頂掉，現在填了自訂狀態就緊跟著補發一幀；'
+               '③ Android 15 強制 edge-to-edge，三大金剛鍵壓住頁面底部按鈕，現在捲動內容底部讓出導覽列高度；'
+               '④ 設定詳情頁面板展開 / 收起會閃一下或突然填充，現在高度與透明度一起動；'
+               '⑤ 下載完成後「立即下載」按鈕還在（拿檔案名稱裡的 `2.0.5` 去比 tag 的 `v2.0.5`，永遠不相等），'
+               '現在比較時忽略 `v` 前綴；⑥ 更新渠道預設改為 GitHub（更新頁仍可一鍵切回鏡像）。',
+               '**A round of user-reported fixes (#12, #13, #15, #16, #18, #19).** (1) The "Advanced" '
+               'extras on the station identity card could not be cleared: empty means "do not send", '
+               'but saving merely skipped the write, so the old value stayed on disk and came back after '
+               'a restart — clearing now removes it. (2) A custom status was overwritten by the '
+               '15-second keep-alive frame; a custom status is now re-sent right after it. (3) Android '
+               '15 forces edge-to-edge, so the navigation bar covered buttons at the bottom of a page — '
+               'scrollable content now reserves that inset. (4) Expand/collapse on settings pages '
+               'flashed or snapped; height and opacity now animate together. (5) The download button '
+               'stayed after finishing (a file-name version `2.0.5` was compared against the tag '
+               '`v2.0.5`, which never matches); the comparison now ignores the `v` prefix. (6) The update '
+               'channel now defaults to GitHub (one tap switches back to the mirror).')),
+        ],
+    },
+    {
         'ver': 'v2.0.5', 'date': '2026-09-27',
         'items': [
             ('fix',

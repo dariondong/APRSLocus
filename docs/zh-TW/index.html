@@ -583,6 +583,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.1.0</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**歷史軌跡新增心率記錄與折線圖**。軌跡點開始記心率（來源與信標裡的 `HR=` 一致：藍牙心率帶或 Garmin LiveTrack），歷史軌跡詳情頁多了**心率 / 速度 / 里程**三條折線，可逐條開關、也可整塊隱藏；播放時有豎起指示線對著目前位置，心率那一欄還顯示當天的最低–最高。沒有心率讀取的時間段曲線會**斷開**（不連成直線）。一天最多 4 萬個點，曲線進頁時一次性分桶到 240 個點，播放時不掉格。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**Windows 可選音訊裝置與發射串口**。音訊頁現在能選**播放裝置 / 擷取裝置**，不再只能用系統預設 —— 這直接決定接到電台的是哪一路訊號；TNC 裝置頁可以選**發射串口**，預設仍與接收共用一個埠，分成兩個埠可以避開 Windows 上同一 COM 埠讀寫互相打架的問題。（Android / iOS 不顯示音訊裝置選擇器：那裡音訊路由由系統決定，擺一個假開關只會誤導人。）</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修一輪使用者回報（#12 / #13 / #15 / #16 / #18 / #19）**。① 電台身份卡片「更多附加」裡的海拔 / 功率 / 天線高度 / 增益設過就刪不掉 —— 留空的語意是「不傳送」，但儲存時只是跳過寫入，舊值一直留在本機、重啟又回來，現在留空會真的把它清掉；② 自訂狀態會被 15 秒一次的心跳包頂掉，現在填了自訂狀態就緊跟著補發一幀；③ Android 15 強制 edge-to-edge，三大金剛鍵壓住頁面底部按鈕，現在捲動內容底部讓出導覽列高度；④ 設定詳情頁面板展開 / 收起會閃一下或突然填充，現在高度與透明度一起動；⑤ 下載完成後「立即下載」按鈕還在（拿檔案名稱裡的 `2.0.5` 去比 tag 的 `v2.0.5`，永遠不相等），現在比較時忽略 `v` 前綴；⑥ 更新渠道預設改為 GitHub（更新頁仍可一鍵切回鏡像）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.5</span>
         <span class="cl-date">2026-09-27</span>
       </div>

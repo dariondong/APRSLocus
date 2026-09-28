@@ -1,5 +1,77 @@
 # 更新日志
 
+## [2.1.0] - 2026-09-28
+
+### 📈 新：历史轨迹折线图 + 心率记录
+
+**一、轨迹点开始记心率。** 来源与信标备注里的 `HR=` 完全一致（蓝牙心率带 / 佳明 LiveTrack）。
+只记「有读数」的时刻 —— 没有读数就不记，而不是记 0（记 0 会在图上画出一条扑到地上的线，
+也会把平均心率算错）。
+
+**二、历史轨迹详情页新增折线图面板**，三条曲线：**心率 / 速度 / 里程**。
+可以逐条开关，也可以整块隐藏（隐藏后控制条上留一个按钮，随时再打开）。
+播放时有一条竖直指示线对着当前位置，心率那一栏还会显示当天的最低–最高值。
+
+关于性能：一天最多 4 万个点，每帧重画三条 4 万点的折线会明显掉帧。所以曲线在进页时
+**一次性分桶**到 240 个点（心率取桶内**有读数点**的平均、速度取最大值、里程取最后一个点的累计值），
+播放期间每帧只画 240 个点。心率没有读数的时段曲线会**断开**，不会连成直线骗人。
+
+### 🎧 新：Windows 可选音频设备与发射串口
+
+**一、音频页可以选择播放设备与采集设备。** 此前 Windows 只能用系统默认设备；现在可以选具体声卡，
+直接决定接到电台的是哪一路信号。选完提示「重新连接音频链路后生效」。
+（Android / iOS 不显示这个选择器 —— 音频路由由系统决定，摆一个假开关只会误导人。）
+
+**二、TNC 设备页可以选择「发射串口」。** 默认仍与接收共用一个口；分成两个口可以避开
+Windows 上同一个 COM 口开读、写两个句柄互相打架的问题（也可以实现「一个口收、一个口发」的接法）。
+
+### 🐛 修：一轮用户反馈（#12 / #13 / #15 / #16 / #18 / #19）
+
+**一、#19 电台身份卡片里的「更多附加」设过就删不掉。** 海拔 / 功率 / 天线高度 / 增益这四项
+留空时的语义是「不发送」，而保存时只是**跳过写入** —— 上一次的值永久留在本地，重启又被读回来。
+现在留空会真的把该项清掉。
+
+**二、#18 自定义状态被心跳包顶掉。** 链路保活帧（每 15 秒一帧的 `APRSlocus CONNECT v…`）会把
+aprs.fi 上的「台站状态」改写成内置文本，于是用户自己填的状态每 15 秒被覆盖一次。
+现在填了自定义状态就紧跟着**补发一帧**（不走会弹提示的那条路径，避免每 15 秒打扰一次）。
+
+**三、#12 三大金刚键压住页面底部的按钮。** Android 15 起强制 edge-to-edge，窗口不再自动让出
+导航栏的高度，设置子页与检查更新页最底下那个按钮会被导航栏盖住、点不到。
+现在滚动内容底部额外让出导航栏高度（非 edge-to-edge 的系统上该值为 0，不会多留白）。
+
+**四、#16 设置详情页面板的展开/收起会闪一下、或者突然填充。** 原因是只有外框在做动画，
+内容本身是瞬间出现、瞬间消失的。现在高度与透明度**一起**动，裁切也不再溢出卡片。
+
+**五、#13 下载完成后「立即下载」按钮还在。** 「已下载」的判断拿文件名里的版本号（`2.0.5`）
+去比 API 给的 tag（`v2.0.5`），永远不相等。现在比较时忽略 `v` 前缀，已下过最新版就不再显示那个按钮
+（下面那张「已下载」卡片里本来就有安装 / 重新下载 / 删除）。
+
+**六、#15 更新渠道默认改为 GitHub**（仍可在更新页一键切回镜像）。
+
+## [2.1.0] - 2026-09-28 (English)
+
+### 📈 New: history charts and heart-rate logging
+
+The history track detail page now has a chart panel with three series — **heart rate / speed / distance**. Each series can be toggled, and the whole panel can be hidden (a button on the control bar brings it back). A vertical cursor tracks the playback position, and the heart-rate row shows the day's min–max.
+
+Track points now record heart rate, from exactly the same source as `HR=` in the beacon comment (BLE chest strap or Garmin LiveTrack). Only readings that actually exist are stored — a missing reading is stored as absent, not as 0 (0 would draw a line pinned to the floor and skew the average).
+
+On performance: a day can hold 40,000 points, and redrawing three 40k-point polylines every frame visibly drops frames. So the curves are bucketed **once** when the page opens, down to 240 points (heart rate = mean of the readings in the bucket, speed = maximum, distance = last cumulative value). Heart-rate gaps are drawn as **breaks**, not interpolated lines. A day with no heart-rate data at all simply doesn't show that row.
+
+### 🎧 New: selectable audio devices and a TX serial port on Windows
+
+- The audio page now lets you pick the **playback and capture device**, instead of being stuck with the system default. This decides which sound card actually feeds the radio. Android/iOS don't show the picker — audio routing there is the OS's job, and a fake switch would only mislead.
+- The TNC device page now lets you pick a **separate TX serial port**. The default is still one port for both directions; splitting them avoids two handles fighting over the same COM port on Windows (and supports the "one port in, one port out" wiring).
+
+### 🐛 Fixes (GitHub issues #12, #13, #15, #16, #18, #19)
+
+- **#19 — "Advanced" extras could not be cleared.** Altitude override, power, antenna height and gain all mean "don't send" when empty, but saving only *skipped* the write, so the previous value stayed on disk and came back after a restart. Clearing a field now removes the stored key.
+- **#18 — a custom status was overwritten by the keep-alive frame.** The 15-second keep-alive (`APRSlocus CONNECT v…`) rewrites the station status shown on aprs.fi, so a user's own status lasted at most 15 seconds. A custom status is now re-sent right after the keep-alive frame (through a path that doesn't touch connection state or spam notifications).
+- **#12 — the navigation bar covered buttons at the bottom of a page.** Android 15 forces edge-to-edge, so the window no longer reserves space for the navigation bar, and the last button on settings sub-pages and the update page became unreachable. Scrollable content now adds the navigation-bar inset at the bottom (which is 0 on systems that still reserve it, so nothing is double-padded).
+- **#16 — expand/collapse flashed or snapped.** Only the outer frame was animating while the content appeared and disappeared instantly. Height and opacity now animate together, and the clip no longer overflows the card.
+- **#13 — the download button stayed after the download finished.** The "already downloaded" check compared a version parsed from the file name (`2.0.5`) with the API tag (`v2.0.5`), which can never match. The comparison now ignores the `v` prefix, so the button disappears once the latest version is on disk (the "already downloaded" card already offers install / re-download / delete).
+- **#15 — the update channel now defaults to GitHub** (the mirror is still one tap away on the update page).
+
 ## [2.0.5] - 2026-09-27
 
 ### 📡 修：PHG 在第三方侧其实没生效（2.0.4 的问题）
