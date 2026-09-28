@@ -1,5 +1,75 @@
 # 更新日志
 
+## [2.0.9] - 2026-09-28
+
+### 🆘 新：生命守护增加「碰撞与摔倒检测」（测试）
+
+用手机加速度判断，检测到就弹提醒（与心率告警同一套动作：**我没事 / 拨打急救 /
+向附近台站求助**），通知栏也会提示。
+
+判据是**两段式**的：① 加速度出现一个很陡的尖峰（车祸与摔倒都会有）；
+② 之后连续 12 秒几乎没有运动。两段都要满足才提醒。
+
+为什么要第二段：只看尖峰的话，**过减速带、手机掉在桌上、甩一甩**全都算，
+一天响好几次就没人再看了。代价写清楚：**轻微碰撞（人还能动）不会提醒** ——
+这个功能的定位是「人已经动不了了」，不是「发生过撞击」。
+
+**它会误报**（过减速带之后正好等红灯停了 12 秒），所以提醒里第一个按钮就是
+「我没事」；页面上也写明这是**启发式判断**，不是工程级碰撞检测。
+设置项在**设置 → 生命守护**，旁边还有「检测到冲击，正在观察」的实时状态。
+
+### 🐛 修：步数一直显示「请授权」，但其实已经授权了
+
+读数是 `-1` 时有**三种**完全不同的原因 —— 没有计步传感器、没有活动识别权限、
+以及**还没收到第一个硬件事件**（没权限时系统只是不派发事件，不报错）。
+之前把它们混为一谈，于是「刚授权、还没走过路」被显示成「请授权」，点授权按钮
+也永远是「已授权」，怎么看都不对。
+
+现在原生单独上报权限状态，App 里把步数收成**四态**（不支持 / 需授权 /
+**等待数据** / 正常），两个页面共用同一份判定 —— 以前两处各写一遍，都漏了
+「等待数据」这一档。顺带修掉两个相关问题：**计步不再依赖「传感器辅助」开关**
+（关掉它也会继续计步，那个开关只管加速度计与指南针）；只有真的没授权时才显示
+授权按钮。
+
+### 🐛 修：生命守护页的开关点了没反应
+
+这一页的开关（启用异常告警、阈值、紧急号码）写回状态后界面不刷新 ——
+`SettingsPageShell` 的 `state` 参数只服务于页首的引导卡，并不会让页面跟随状态刷新
+（它的注释以前写着「传入后自动监听刷新」，把人带沟里了，已经订正）。
+
+### 🐛 修：速度档编辑弹层的「保存」被三大金刚键压住
+
+那个底部弹层只让出了键盘高度，键盘收起时「保存」正好压在导航栏底下，点不到而且
+看不出来是被挡住了。现在底部同时让出键盘与**系统导航栏**；顺带把另一处同类弹层
+一起修了。取值取 `padding` 与 `viewPadding` 的较大者 —— 有些 ROM 在全面屏下
+`padding.bottom` 给 0（`SafeArea` 同样是 0，所以不能只靠它）。
+
+## [2.0.9] - 2026-09-28 (English)
+
+### 🆘 New: crash and fall detection in Life guard (beta)
+
+Judged from the phone accelerometer, it raises an alert when detected (same actions as the heart-rate alarm: **I am fine / call emergency services / ask nearby stations**), and it also shows up in the notification.
+
+The test is **two-stage**: (1) a sharp spike in acceleration (both crashes and falls produce one); (2) then almost no movement for 12 seconds. Both must hold.
+
+Why the second stage: with the spike alone, **speed bumps, a phone dropped on a desk and a good shake** all qualify, and an alert that fires several times a day gets ignored. The trade-off is stated plainly: **a minor impact (where you can still move) will not alert** — this is about "I cannot move", not "a collision happened".
+
+**It can false-alarm** (a speed bump followed by a 12-second stop at a red light), so the first button in the alert is "I am fine", and the page states that this is a **heuristic, not engineering-grade crash detection**. The switch lives in **Settings → Life guard**, next to a live "impact detected — watching" indicator.
+
+### 🐛 Fix: steps always showed "permission needed" even after granting it
+
+A reading of `-1` has **three** completely different causes — no step sensor, no activity-recognition permission, and **no hardware event received yet** (without permission the system simply does not dispatch events and reports no error). They were being treated as one, so "granted, but has not walked yet" read as "permission needed", and pressing the grant button kept saying "granted" — nothing made sense.
+
+The native side now reports the permission state separately, and steps are modelled as **four states** (unsupported / needs permission / **waiting for data** / ok) with a single shared decision — the two pages used to each have their own copy and both missed "waiting for data". Two related fixes came along: **step counting no longer depends on the "sensor assist" switch** (turning it off only disables the accelerometer and compass, not the pedometer), and the grant button now only appears when permission is genuinely missing.
+
+### 🐛 Fix: switches on the Life guard page did nothing
+
+Toggles there (enable the alarm, thresholds, emergency number) wrote back to the state but the UI never refreshed: `SettingsPageShell`'s `state` parameter only serves the guide card at the top, it does not make the page follow state changes (its comment claimed otherwise — it has been corrected).
+
+### 🐛 Fix: the speed-tier editor's "Save" was covered by the navigation bar
+
+That bottom sheet only reserved space for the keyboard, so once the keyboard was hidden "Save" sat under the navigation bar — unreachable, and nothing indicated it was covered. It now reserves both the keyboard and the **system navigation bar**, and another sheet of the same kind was fixed too. The inset takes the larger of `padding` and `viewPadding`: on some ROMs `padding.bottom` is 0 in edge-to-edge mode (and `SafeArea` reads the same value, so it cannot be relied on alone).
+
 ## [2.0.8] - 2026-09-28
 
 ### 🐛 修：心率异常告警的上/下限改不动

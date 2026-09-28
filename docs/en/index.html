@@ -577,6 +577,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.9</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New: crash and fall detection in Life guard (beta)** — judged from the phone accelerometer; it raises an alert (I am fine / call emergency services / ask nearby stations) and also shows in the notification. The test is **two-stage**: a sharp spike **and** then almost no movement for 12 seconds. With the spike alone, speed bumps and a phone dropped on a desk all qualify, and an alert that fires several times a day gets ignored; the trade-off is that a minor impact (where you can still move) will not alert — this is about "I cannot move". It can false-alarm (speed bump plus a red light), so the first button is "I am fine" and the page states it is a heuristic, not engineering-grade crash detection.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: steps always showed "permission needed" even after granting it.** A reading of -1 has three causes — no sensor / no activity-recognition permission / **no hardware event yet** (without permission the system just does not dispatch events, with no error). They were conflated, so "granted but has not walked yet" read as "permission needed". The native side now reports the permission separately and steps have four states (unsupported / needs permission / **waiting for data** / ok) behind one decision point; the step counting depending on the sensor-assist switch, and the grant button appearing while merely waiting, were fixed too. **Fix: switches on the Life guard page did nothing** (SettingsPageShell.state only serves the guide card; it does not make the page follow state changes). **Fix: the speed-tier editor Save button was covered by the navigation bar** — the sheet now reserves both the keyboard and the system navigation bar, taking the larger of padding and viewPadding (some ROMs only report the latter).</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.8</span>
         <span class="cl-date">2026-09-28</span>
       </div>

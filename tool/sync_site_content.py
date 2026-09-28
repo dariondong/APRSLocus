@@ -205,6 +205,19 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.9', 'date': '2026-09-28',
+        'items': [
+            ('new',
+             T('**新：生命守护增加「碰撞与摔倒检测」（测试）** —— 用手机加速度判断，检测到就弹提醒（我没事 / 拨打急救 / 向附近台站求助），通知栏也会提示。判据是**两段式**：加速度出现很陡的尖峰**且**之后连续 12 秒几乎没动。只报尖峰的话，过减速带、手机掉桌上都会响，一天几次就没人看了；代价是「轻微碰撞（人还能动）不提醒」——它管的是「人已经动不了了」。它会误报（过减速带+等红灯），所以第一个按钮就是「我没事」，页面上也写明这是启发式判断，不是工程级碰撞检测。',
+               '**新：生命守護增加「碰撞與摔倒偵測」（測試）** —— 用手機加速度判斷，偵測到就彈提醒（我沒事 / 撥打急救 / 向附近臺站求助），通知列也會提示。判據是**兩段式**：加速度出現很陡的尖峰**且**之後連續 12 秒幾乎沒動。只報尖峰的話，過減速帶、手機掉桌上都會響，一天幾次就沒人看了；代價是「輕微碰撞（人還能動）不提醒」——它管的是「人已經動不了了」。它會誤報（過減速帶+等紅燈），所以第一個按鈕就是「我沒事」，頁面上也寫明這是啟發式判斷，不是工程級碰撞偵測。',
+               '**New: crash and fall detection in Life guard (beta)** — judged from the phone accelerometer; it raises an alert (I am fine / call emergency services / ask nearby stations) and also shows in the notification. The test is **two-stage**: a sharp spike **and** then almost no movement for 12 seconds. With the spike alone, speed bumps and a phone dropped on a desk all qualify, and an alert that fires several times a day gets ignored; the trade-off is that a minor impact (where you can still move) will not alert — this is about "I cannot move". It can false-alarm (speed bump plus a red light), so the first button is "I am fine" and the page states it is a heuristic, not engineering-grade crash detection.')),
+            ('fix',
+             T('**修：步数一直显示「请授权」，但其实已授权**。读数为 -1 有三种原因：没有传感器 / 没有活动识别权限 / **还没收到第一个硬件事件**（没权限时系统只是不派发事件、不报错），之前混为一谈，于是「刚授权还没走过路」被显示成「请授权」。现在原生单独上报权限，四态（不支持/需授权/**等待数据**/正常）只留一个判定出口；顺带修掉「计步依赖传感器辅助开关」与「等待数据也显示授权按钮」。**修：生命守护页的开关点了没反应**（`SettingsPageShell.state` 只管引导卡，并不让页面跟随状态刷新）。**修：速度档编辑弹层的「保存」被三大金刚键压住** —— 底部现在同时让出键盘与系统导航栏，取值取 padding 与 viewPadding 的较大者（有些 ROM 只报后者）。',
+               '**修：步數一直顯示「請授權」，但其實已授權**。讀數為 -1 有三種原因：沒有感測器 / 沒有活動辨識權限 / **還沒收到第一個硬體事件**（沒權限時系統只是不派發事件、不報錯），之前混為一談，於是「剛授權還沒走過路」被顯示成「請授權」。現在原生單獨上報權限，四態（不支援/需授權/**等待資料**/正常）只留一個判定出口；順帶修掉「計步依賴感測器輔助開關」與「等待資料也顯示授權按鈕」。**修：生命守護頁的開關點了沒反應**（`SettingsPageShell.state` 只管引導卡，並不讓頁面跟隨狀態刷新）。**修：速度檔編輯彈層的「儲存」被三大金剛鍵壓住** —— 底部現在同時讓出鍵盤與系統導覽列，取值取 padding 與 viewPadding 的較大者（有些 ROM 只報後者）。',
+               '**Fix: steps always showed "permission needed" even after granting it.** A reading of -1 has three causes — no sensor / no activity-recognition permission / **no hardware event yet** (without permission the system just does not dispatch events, with no error). They were conflated, so "granted but has not walked yet" read as "permission needed". The native side now reports the permission separately and steps have four states (unsupported / needs permission / **waiting for data** / ok) behind one decision point; the step counting depending on the sensor-assist switch, and the grant button appearing while merely waiting, were fixed too. **Fix: switches on the Life guard page did nothing** (SettingsPageShell.state only serves the guide card; it does not make the page follow state changes). **Fix: the speed-tier editor Save button was covered by the navigation bar** — the sheet now reserves both the keyboard and the system navigation bar, taking the larger of padding and viewPadding (some ROMs only report the latter).')),
+        ],
+    },
+    {
         'ver': 'v2.0.8', 'date': '2026-09-28',
         'items': [
             ('new',

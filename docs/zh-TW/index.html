@@ -583,6 +583,16 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.9</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：生命守護增加「碰撞與摔倒偵測」（測試）** —— 用手機加速度判斷，偵測到就彈提醒（我沒事 / 撥打急救 / 向附近臺站求助），通知列也會提示。判據是**兩段式**：加速度出現很陡的尖峰**且**之後連續 12 秒幾乎沒動。只報尖峰的話，過減速帶、手機掉桌上都會響，一天幾次就沒人看了；代價是「輕微碰撞（人還能動）不提醒」——它管的是「人已經動不了了」。它會誤報（過減速帶+等紅燈），所以第一個按鈕就是「我沒事」，頁面上也寫明這是啟發式判斷，不是工程級碰撞偵測。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：步數一直顯示「請授權」，但其實已授權**。讀數為 -1 有三種原因：沒有感測器 / 沒有活動辨識權限 / **還沒收到第一個硬體事件**（沒權限時系統只是不派發事件、不報錯），之前混為一談，於是「剛授權還沒走過路」被顯示成「請授權」。現在原生單獨上報權限，四態（不支援/需授權/**等待資料**/正常）只留一個判定出口；順帶修掉「計步依賴感測器輔助開關」與「等待資料也顯示授權按鈕」。**修：生命守護頁的開關點了沒反應**（`SettingsPageShell.state` 只管引導卡，並不讓頁面跟隨狀態刷新）。**修：速度檔編輯彈層的「儲存」被三大金剛鍵壓住** —— 底部現在同時讓出鍵盤與系統導覽列，取值取 padding 與 viewPadding 的較大者（有些 ROM 只報後者）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.8</span>
         <span class="cl-date">2026-09-28</span>
       </div>

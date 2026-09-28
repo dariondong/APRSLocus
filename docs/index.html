@@ -652,6 +652,16 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.9</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：生命守护增加「碰撞与摔倒检测」（测试）** —— 用手机加速度判断，检测到就弹提醒（我没事 / 拨打急救 / 向附近台站求助），通知栏也会提示。判据是**两段式**：加速度出现很陡的尖峰**且**之后连续 12 秒几乎没动。只报尖峰的话，过减速带、手机掉桌上都会响，一天几次就没人看了；代价是「轻微碰撞（人还能动）不提醒」——它管的是「人已经动不了了」。它会误报（过减速带+等红灯），所以第一个按钮就是「我没事」，页面上也写明这是启发式判断，不是工程级碰撞检测。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：步数一直显示「请授权」，但其实已授权**。读数为 -1 有三种原因：没有传感器 / 没有活动识别权限 / **还没收到第一个硬件事件**（没权限时系统只是不派发事件、不报错），之前混为一谈，于是「刚授权还没走过路」被显示成「请授权」。现在原生单独上报权限，四态（不支持/需授权/**等待数据**/正常）只留一个判定出口；顺带修掉「计步依赖传感器辅助开关」与「等待数据也显示授权按钮」。**修：生命守护页的开关点了没反应**（`SettingsPageShell.state` 只管引导卡，并不让页面跟随状态刷新）。**修：速度档编辑弹层的「保存」被三大金刚键压住** —— 底部现在同时让出键盘与系统导航栏，取值取 padding 与 viewPadding 的较大者（有些 ROM 只报后者）。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.8</span>
         <span class="cl-date">2026-09-28</span>
       </div>
