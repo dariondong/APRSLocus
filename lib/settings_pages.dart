@@ -967,10 +967,21 @@ class BeaconSettingsPage extends StatefulWidget {
 }
 
 class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
+  late final TextEditingController _interval;
+  late final TextEditingController _netInterval;
+  late final TextEditingController _myLat;
+  late final TextEditingController _myLng;
+  final _intervalFocus = FocusNode();
+  final _netIntervalFocus = FocusNode();
+  bool _manualOpen = false;
+  int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
+
+  AppState get st => widget.state;
+
   /// 选「纯网络定位时用的符号」（issue #21-6）。
   ///
-  /// 与 [_showSymbolPicker] 共用同一张符号表（`_symCategories`），但**多一项**
-  /// 「跟随我的符号」：那块是 [AppState.networkSymbol] 为空串的语义，
+  /// 与「我的符号」那张卡共用同一张符号表（`_symCategories`），但**多一项**
+  /// 「跟随我的符号」：那一项是 [AppState.networkSymbol] 为空串的语义，
   /// 也是默认值（保持旧行为）。
   Future<void> _pickNetSymbol() async {
     final cats = _symCategories(S.of(context));
@@ -1070,6 +1081,7 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
     setState(() {});
   }
 
+  @override
   void initState() {
     super.initState();
     _interval = TextEditingController(text: '${st.beaconInterval}');
