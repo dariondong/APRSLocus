@@ -52,12 +52,29 @@ class MotionManager(context: Context) : SensorEventListener {
     private val rotation: Sensor? = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
     private val mag: Sensor? = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
+    /**
+     * 计步传感器（issue #22-2）。
+     *
+     * TYPE_STEP_COUNTER 返回的是**开机以来的累计步数**（硬件/协处理器自己数，
+     * 比用加速度计积分猜步数准得多、也省电），所以上层必须自己减基线：
+     * 这里只如实上报原始值，「今天走了多少」由 Dart 侧按天算（见 AppState.stepsToday）。
+     *
+     * 为什么不用 TYPE_STEP_DETECTOR：那是一次一个事件的「检测到一步」，
+     * 应用被杀死/重启期间就断了，累计值没法补；而计数器是硬件累加的，重启也连续。
+     *
+     * Android 10（API 29）起读取它需要 ACTIVITY_RECOGNITION 运行时权限；没有权限时
+     * 系统**不派发事件**（不抛异常），所以这里的 [steps] 会一直是 -1，
+     * 上层据此显示「未授权」而不是显示 0 —— 0 步与「读不到」是两件事。
+     */
+    private val stepCounter: Sensor? = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+
     private var registered = false
 
     // ── 缓存的状态 ──
     private val gravity = FloatArray(3)
     private var accelEnergy = 0.0          // 线性加速度平方的指数平均
     private var heading = -1.0             // 磁北航向（度）；<0 不可用
+    private var steps = -1L                // 开机以来累计步数；<0 表示读不到（无传感器/无权限）
     private var pitch = 0.0
     private var roll = 0.0
 
@@ -88,8 +105,27 @@ class MotionManager(context: Context) : SensorEventListener {
         rotation?.let { ok = sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) || ok }
         accel?.let { ok = sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) || ok }
         mag?.let { ok = sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) || ok }
+        // 计步器：SENSOR_DELAY_NORMAL 就够（它本身是低频的硬件计数），
+        // 注册失败（旧系统无权限模型、个别 ROM 限制）不影响其它传感器。
+        try {
+            stepCounter?.let {
+                sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+            }
+        } catch (_: Exception) {
+        }
         registered = ok
         return ok
+    }
+
+    /** 授权后调用：把它当成「重新注册一次」，否则要等下一个硬件事件才更新。 */
+    fun refreshStepsRegistration() {
+        stepCounter?.let {
+            try {
+                sm.unregisterListener(this, it)
+                sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     fun stop() {
@@ -134,6 +170,12 @@ class MotionManager(context: Context) : SensorEventListener {
                 hasAccel = true
             }
 
+            Sensor.TYPE_STEP_COUNTER -> {
+                // 硬件累计值（Float，但精度到整数步）：直接取整上报，不做平滑 ——
+                // 平滑会让「今天走了多少」随时间漂。
+                if (event.values.isNotEmpty()) steps = event.values[0].toLong()
+            }
+
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 val v = event.values
                 magVec[0] = v[0]
@@ -170,6 +212,11 @@ class MotionManager(context: Context) : SensorEventListener {
             "pitch" to pitch,
             "roll" to roll,
             "accel" to rms,
+            // 计步（issue #22-2）：-1 = 没有传感器或没有 ACTIVITY_RECOGNITION 权限。
+            // 单独给一个 hasSteps 而不是让上层拿 -1 猜 —— 「没有这个传感器」与
+            // 「有但没授权」在界面上要给出不同的指引。
+            "steps" to steps,
+            "hasSteps" to (stepCounter != null),
         )
     }
 

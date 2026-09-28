@@ -24,6 +24,16 @@ class MainActivity : FlutterActivity() {
     private val EVENT_CHANNEL = "com.aprslocus/location_events"
     private var permCompleter: MethodChannel.Result? = null
 
+    /**
+     * 计步（ACTIVITY_RECOGNITION）权限请求的回调（issue #22-2）。
+     *
+     * 与定位权限分开一个 requestCode：`onRequestPermissionsResult` 里按 code 分派，
+     * 共用 code 会让两边同时命中、把对方尚未完成的 completer 误 resolve
+     * （TNC/PKWDWPL 那里已经踩过一次，注释就在下面）。
+     */
+    private var motionPermCompleter: MethodChannel.Result? = null
+    private val motionPermCode = 200
+
     // 备份导入的文件选择：系统文件选择器是异步的（先 startActivityForResult，
     // 结果在 onActivityResult 里回来），所以这里要暂存 Dart 侧的 Result，
     // 等选完再回。同一时刻只允许一个选择在飞（否则两个 Result 会互相踩）。
@@ -100,7 +110,15 @@ class MainActivity : FlutterActivity() {
         // 避免持续的事件流；没有传感器的设备 start() 返回 false。
         val motionManager = MotionManager(this)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, MotionManager.CHANNEL)
-            .setMethodCallHandler { call, result -> motionManager.handle(call, result) }
+            .setMethodCallHandler { call, result ->
+                // 计步权限必须由 Activity 发起（MotionManager 只有 Context），
+                // 所以这一条在这里拦下来，其余照旧交给 manager。
+                if (call.method == "requestActivityPermission") {
+                    requestActivityPermission(result)
+                } else {
+                    motionManager.handle(call, result)
+                }
+            }
         motion = motionManager
 
         // 方法通道：控制定位服务 + 权限
@@ -1005,6 +1023,30 @@ class MainActivity : FlutterActivity() {
         // 这里仅兜底：如果 Dart 尚未请求但用户已回到前台且已有权限，就绪无需操作。
     }
 
+    /**
+     * 请求 ACTIVITY_RECOGNITION（计步）。Android 10 以下没有这条运行时权限，
+     * 直接返回 true —— 免得在旧系统上弹一个不存在的权限、永远等不到回调。
+     */
+    private fun requestActivityPermission(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.success(true)
+            return
+        }
+        if (checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            motionManager.refreshStepsRegistration()
+            result.success(true)
+            return
+        }
+        motionPermCompleter = result
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+            motionPermCode,
+        )
+    }
+
     private fun requestPermissionsNow() {
         val perms = mutableListOf<String>()
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -1029,6 +1071,14 @@ class MainActivity : FlutterActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == motionPermCode) {
+            val ok = checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
+                PackageManager.PERMISSION_GRANTED
+            if (ok) motionManager.refreshStepsRegistration()
+            motionPermCompleter?.success(ok)
+            motionPermCompleter = null
+            return
+        }
         // 蓝牙/录音权限请求走各自的 requestCode，勿与定位权限混淆
         tnc?.onRequestPermissionsResult(requestCode, grantResults)
         pkwdwpl?.onRequestPermissionsResult(requestCode, grantResults)

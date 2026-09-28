@@ -489,6 +489,32 @@ class AppState extends ChangeNotifier {
   /// 信标备注里是否带上**累计总里程**（`ODO:`，跨重启累计）。
   bool beaconIncludeTotalMileage = false;
 
+  /// 本应用的 tocall（官方注册标识）：APRSlocus 用户的台站用它在报文头上区分自己。
+  static const String apalocToCall = 'APALOC';
+
+  /// 今日运动排行榜（issue #22-3）。
+  ///
+  /// 数据来源只有一处可能：**本机收到的位置报文**里 `STEPS=` 那个非标准备注字段
+  /// （见 [_beaconComment] 里附带步数的实现）。所以这个列表的语义是
+  /// 「我听得到的、且开了步数上报的 APRSlocus 邻居」，**不是全网排行** ——
+  /// 这一条必须如实写在页面上，否则用户会以为自己在跟全中国比。
+  ///
+  /// 只认 `toCall == APALOC`（其它设备即使备注里凑巧有 STEPS= 也不该进榜），
+  /// 且只取**最后一次**报文里的值 —— 旧值没有意义（人一直在走）。
+  List<(Station, int)> sportRank({int limit = 50}) {
+    final out = <(Station, int)>[];
+    for (final s in stations) {
+      if (s.toCall != apalocToCall) continue;
+      final m = RegExp(r'STEPS=(\d+)').firstMatch(s.comment ?? '');
+      if (m == null) continue;
+      final n = int.tryParse(m.group(1)!) ?? 0;
+      if (n <= 0) continue;
+      out.add((s, n));
+    }
+    out.sort((a, b) => b.$2.compareTo(a.$2));
+    return out.length > limit ? out.sublist(0, limit) : out;
+  }
+
   /// 地图页上报状态栏的样式（issue #21-2）。
   ///
   /// * true（默认）= **详细**：多一行判据（当前档位 / 还差多少秒·多少米 /
@@ -497,6 +523,98 @@ class AppState extends ChangeNotifier {
   ///
   /// 默认详细：用户提这条反馈时说的就是「想看到当前触发的是哪个条件」；
   /// 不想要的人可以切回经典（与旧版观感一致）。
+  // ─── 计步（issue #22-2）───
+  //
+  // 数据来源：Android 的 TYPE_STEP_COUNTER（硬件/协处理器计数，比加速度计积分猜
+  // 步数准、也省电）。它是**开机以来**的累计值，所以这里必须自己减基线：
+  //
+  //   * 基线按**本地日期**切分（跨天重置，与「今天走了多少」的语义一致）；
+  //   * 设备重启会让硬件的累计值回到 0 —— 这时**不能**让今天的步数跟着回退，
+  //     所以把已经攒下的那部分挪进 [_stepsCarry]（当天累计的「重启前」部分）。
+  //
+  // 与信标的关系：`STEPS=` 是**非标准** APRS 备注字段（和 `TRV:`/`ODO:` 同类），
+  // 会把备注撑长、也只在 APRSlocus 自己的运动排行榜里有意义，所以**默认关**。
+  bool beaconIncludeSteps = false;
+
+  /// 今日步数（0 = 还没读到或确实没走）。
+  int stepsToday = 0;
+
+  /// 今日步数里「设备重启之前」已经攒下的部分（见上）。
+  int _stepsCarry = 0;
+
+  /// 基线：当天第一次读到硬件累计值时的那个值。
+  int _stepsBaseline = -1;
+
+  /// 基线是哪一天建立的（`yyyy-MM-dd`）。
+  String _stepsDayKey = '';
+
+  /// 最近一次硬件原始累计值；-1 = 读不到（无传感器/无权限）。
+  int stepsRaw = -1;
+
+  /// 设备上有没有计步传感器（决定界面说「不支持」还是给授权按钮）。
+  bool hasStepSensor = false;
+
+  void setBeaconIncludeSteps(bool v) {
+    beaconIncludeSteps = v;
+    persist();
+    _notify();
+  }
+
+  /// 请求计步权限（Android 10+ 的 ACTIVITY_RECOGNITION），并顺手刷一次读数。
+  Future<bool> requestStepsPermission() async {
+    final ok = await MotionService.instance.requestActivityPermission();
+    if (ok) {
+      // 授权成功后原生侧会重新注册监听；这里再拉一次，界面不用等下一个定位点
+      await MotionService.instance.refresh();
+      _syncSteps();
+    }
+    _notify();
+    return ok;
+  }
+
+  /// 用最近一次采样更新「今日步数」。很便宜：只在值真的变了时 `_notify()`。
+  ///
+  /// 调用点：每次定位回调（那里已经拉过一次采样，见 `_onFix`）——
+  /// 刻意**不**放进 1Hz tick：那会让每秒多一次平台通道往返，而步数本身
+  /// 也不需要秒级精度。
+  void _syncSteps() {
+    final smp = MotionService.instance.sample;
+    hasStepSensor = smp.hasSteps;
+    final raw = smp.steps;
+    if (raw < 0) {
+      // 读不到：保留上一次的今日步数与传感器能力，只是不更新（显示层会说原因）
+      stepsRaw = -1;
+      return;
+    }
+    stepsRaw = raw;
+    final today = TrackLogStore.dayKey(DateTime.now());
+    if (_stepsDayKey != today) {
+      // 跨天：基线重取，今日归零（与历史轨迹按天切分同一套日期口径）
+      _stepsDayKey = today;
+      _stepsBaseline = raw;
+      _stepsCarry = 0;
+      stepsToday = 0;
+      persist();
+      return;
+    }
+    if (_stepsBaseline < 0 || raw < _stepsBaseline) {
+      // ① 今天第一次读到；② 设备重启（累计值回到 0）—— 两者都是「重新取基线」，
+      //    区别是重启时要把已经攒下的部分接住，否则今日步数会凭空少一截。
+      if (_stepsBaseline >= 0) _stepsCarry = stepsToday;
+      _stepsBaseline = raw;
+      persist();
+    }
+    // ⚠ 不能用 `.clamp()`：`int.clamp` 的返回类型是 **num**（它声明在 num 上），
+    // 赋给 int 字段会报 argument_type_not_assignable/类型不匹配 —— CI 才看得出来。
+    var delta = raw - _stepsBaseline;
+    if (delta < 0) delta = 0;
+    final v = _stepsCarry + delta;
+    if (v != stepsToday) {
+      stepsToday = v;
+      _notify();
+    }
+  }
+
   /// 外置 GPS（佳明 LiveTrack）新鲜期间，把**手机 GPS 停下来**（issue #21-4）。
   ///
   /// 用户的原话是「在有外置 GPS 信息输入的时候，不激活手机的 GPS；当外置 GPS
@@ -2552,6 +2670,12 @@ class AppState extends ChangeNotifier {
       hrAlarmHigh = p.getInt('hrAlarmHigh') ?? hrAlarmHigh;
       hrAlarmLow = p.getInt('hrAlarmLow') ?? hrAlarmLow;
       emergencyTel = p.getString('emergencyTel') ?? emergencyTel;
+      beaconIncludeSteps =
+          p.getBool('beaconIncludeSteps') ?? beaconIncludeSteps;
+      // 计步基线：跨重启必须留着，否则重启后「今日步数」会从 0 重新数
+      _stepsBaseline = p.getInt('stepsBaseline') ?? _stepsBaseline;
+      _stepsDayKey = p.getString('stepsDayKey') ?? _stepsDayKey;
+      _stepsCarry = p.getInt('stepsCarry') ?? _stepsCarry;
       beaconIncludeTripMileage =
           p.getBool('beaconIncludeTripMileage') ?? beaconIncludeTripMileage;
       beaconIncludeTotalMileage = p.getBool('beaconIncludeTotalMileage') ??
@@ -2802,6 +2926,10 @@ class AppState extends ChangeNotifier {
     await p.setInt('hrAlarmHigh', hrAlarmHigh);
     await p.setInt('hrAlarmLow', hrAlarmLow);
     await p.setString('emergencyTel', emergencyTel);
+    await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
+    await p.setInt('stepsBaseline', _stepsBaseline);
+    await p.setString('stepsDayKey', _stepsDayKey);
+    await p.setInt('stepsCarry', _stepsCarry);
     await p.setBool('beaconIncludeTripMileage', beaconIncludeTripMileage);
     await p.setBool('beaconIncludeTotalMileage', beaconIncludeTotalMileage);
     await p.setDouble('totalMileageKm', totalMileageKm);
@@ -4232,6 +4360,13 @@ class AppState extends ChangeNotifier {
     final motion = sensorAssist
         ? await MotionService.instance.refresh()
         : MotionSample.unknown;
+    // 计步（issue #22-2）：步数不是「传感器辅助」的一部分 —— 它不参与定位判定，
+    // 但同一次采样里就有，所以在这里顺带同步一次。
+    // ⚠ 必须**在 sensorAssist 之外**也拿：关掉传感器辅助的用户同样会想要步数。
+    // 这里 await 掉（而不是 unawaited）是为了**确定性**：不 await 的话 `_syncSteps()`
+    // 读到的还是上一次的采样，步数会慢一拍（观感上像「计步不灵」）。
+    if (!sensorAssist) await MotionService.instance.refresh();
+    _syncSteps();
 
     // ── 位置跳变守卫：不要用「瞬移的点」污染轨迹 ──
     //
@@ -4681,6 +4816,11 @@ class AppState extends ChangeNotifier {
     }
     if (beaconIncludeTotalMileage) {
       parts.add('ODO:${_fmtMileageField(totalMileageKm)}');
+    }
+    // 步数：非标准字段（与 TRV/ODO 同类），默认关。只在**真的有步数**时发 ——
+    // 发 `STEPS=0` 会让收端以为「他一步没走」，而实际可能只是没授权/没传感器。
+    if (beaconIncludeSteps && stepsToday > 0) {
+      parts.add('STEPS=$stepsToday');
     }
     if (myComment.trim().isNotEmpty) {
       parts.add(myComment.trim());

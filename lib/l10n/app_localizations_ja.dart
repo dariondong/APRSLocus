@@ -7285,4 +7285,55 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String hrAlarmRangeNote => '入力範囲：上限 80〜240、下限 20〜100。これは「明らかな異常」の線で、運動時の心拍域ではありません。通常は上限を 150 未満にしないでください。';
 
+  @override
+  String beaconIncludeSteps => '歩数';
+
+  @override
+  String stepsTodayLabel => '今日の歩数';
+
+  @override
+  String stepsCount(String n) => '{n} 歩';
+
+  @override
+  String stepsUnsupported => 'この端末に歩数センサーがありません';
+
+  @override
+  String stepsNeedPermission => '権限が必要です';
+
+  @override
+  String stepsGrant => '「身体活動」権限を許可';
+
+  @override
+  String stepsGranted => '許可しました。計測を開始します';
+
+  @override
+  String stepsDenied => '未許可のため歩数は取得できません';
+
+  @override
+  String stepsHint => '歩数はスマホの歩数センサー（ハードウェア計数。加速度計からの推定より正確）から取得します。ビーコンに載せて送出でき（`STEPS=`）、相手も APRSlocus なら運動ランキングに表示されます。';
+
+  @override
+  String sportRank => '運動ランキング';
+
+  @override
+  String sportRankDesc => '今日の歩数ランキング（ビーコンの STEPS= より）';
+
+  @override
+  String sportRankToday => '今日';
+
+  @override
+  String sportRankEmpty => '今日は歩数付きの APRSlocus ビーコンを受信していません。';
+
+  @override
+  String sportRankNote => '**集計範囲の注意**：この順位は**この端末が受信したパケット**のみを対象にします（APRS-IS のフィルタと無線の受信範囲が「誰が見えるか」を決めます）。また相手が**ビーコンで「歩数」を有効にしている**必要があります。つまり「聞こえる範囲の隣人」のランキングで、ネットワーク全体ではありません。ご自身の行はスマホの歩数センサーから。';
+
+  @override
+  String sportRankNoSteps => '歩数なし';
+
+  @override
+  String sportRankMe => '自分';
+
+  @override
+  String get sportRankEntryDesc => '今日の歩数ランキング（この端末が受信した分のみ）';
+
 }

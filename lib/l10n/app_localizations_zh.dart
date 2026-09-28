@@ -7195,6 +7195,57 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String hrAlarmRangeNote => '可填范围：上限 80~240、下限 20~100。这两条线是「明显不正常」，不是运动区间 —— 普通运动心率不该把上限设在 150 以下。';
 
+  @override
+  String beaconIncludeSteps => '步数';
+
+  @override
+  String stepsTodayLabel => '今日步数';
+
+  @override
+  String stepsCount(String n) => '{n} 步';
+
+  @override
+  String stepsUnsupported => '这台设备没有计步传感器';
+
+  @override
+  String stepsNeedPermission => '需要授权才能读取';
+
+  @override
+  String stepsGrant => '授予「身体活动」权限';
+
+  @override
+  String stepsGranted => '已授权，开始计步';
+
+  @override
+  String stepsDenied => '未授权，步数读不到';
+
+  @override
+  String stepsHint => '步数来自手机的计步传感器（硬件计数，比用加速度计估算准）。可以随信标一起发出（`STEPS=`），对方也是 APRSlocus 时就能在运动排行榜里看到你。';
+
+  @override
+  String sportRank => '运动排行榜';
+
+  @override
+  String sportRankDesc => '今日步数排行（基于信标里的 STEPS=）';
+
+  @override
+  String sportRankToday => '今日';
+
+  @override
+  String sportRankEmpty => '今天还没收到带步数的 APRSlocus 信标。';
+
+  @override
+  String sportRankNote => '**口径要说清**：这里的排名只统计**本机收到的报文**（APRS-IS 的过滤范围、射频接收范围决定你能看到谁），而且**对方要在信标里开启「步数」**才会出现 —— 所以这是一份「我听得到的邻居」的排行，不是全网排行。你自己那一行来自手机计步传感器。';
+
+  @override
+  String sportRankNoSteps => '未附带步数';
+
+  @override
+  String sportRankMe => '我';
+
+  @override
+  String get sportRankEntryDesc => '今日步数排行（只统计本机收到的报文）';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14386,5 +14437,56 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String hrAlarmRangeNote => '可填範圍：上限 80~240、下限 20~100。這兩條線是「明顯不正常」，不是運動區間 —— 一般運動心率不該把上限設在 150 以下。';
+
+  @override
+  String beaconIncludeSteps => '步數';
+
+  @override
+  String stepsTodayLabel => '今日步數';
+
+  @override
+  String stepsCount(String n) => '{n} 步';
+
+  @override
+  String stepsUnsupported => '這台裝置沒有計步感測器';
+
+  @override
+  String stepsNeedPermission => '需要授權才能讀取';
+
+  @override
+  String stepsGrant => '授予「身體活動」權限';
+
+  @override
+  String stepsGranted => '已授權，開始計步';
+
+  @override
+  String stepsDenied => '未授權，步數讀不到';
+
+  @override
+  String stepsHint => '步數來自手機的計步感測器（硬體計數，比用加速度計估算準）。可以隨信標一起發出（`STEPS=`），對方也是 APRSlocus 時就能在運動排行榜裡看到你。';
+
+  @override
+  String sportRank => '運動排行榜';
+
+  @override
+  String sportRankDesc => '今日步數排行（基於信標裡的 STEPS=）';
+
+  @override
+  String sportRankToday => '今日';
+
+  @override
+  String sportRankEmpty => '今天還沒收到帶步數的 APRSlocus 信標。';
+
+  @override
+  String sportRankNote => '**口徑要說清**：這裡的排名只統計**本機收到的報文**（APRS-IS 的過濾範圍、射頻接收範圍決定你能看到誰），而且**對方要在信標裡開啟「步數」**才會出現 —— 所以這是一份「我聽得到的鄰居」的排行，不是全網排行。你自己那一行來自手機計步感測器。';
+
+  @override
+  String sportRankNoSteps => '未附帶步數';
+
+  @override
+  String sportRankMe => '我';
+
+  @override
+  String get sportRankEntryDesc => '今日步數排行（只統計本機收到的報文）';
 
 }

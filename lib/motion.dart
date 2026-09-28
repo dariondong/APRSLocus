@@ -32,12 +32,27 @@ class MotionSample {
   /// 线性加速度的 RMS（m/s²，已去重力）：静止约 0.0x，步行 0.5~3
   final double accel;
 
+  /// **开机以来**的累计步数（issue #22-2）；-1 = 读不到。
+  ///
+  /// 刻意不在这里减基线：「今天走了多少」要按**本地日期**切分，而这个类只是
+  /// 一次采样。基线算法在 AppState（见 `stepsToday`），那里才有日期与持久化。
+  final int steps;
+
+  /// 设备上有没有计步传感器。
+  ///
+  /// 与「读数为 -1」分开：没有传感器（[hasSteps] = false）与「有传感器但没给
+  /// ACTIVITY_RECOGNITION 权限」（[hasSteps] = true、[steps] = -1）在界面上要
+  /// 给出**不同的**指引 —— 前者说「这台设备不支持」，后者给一个授权按钮。
+  final bool hasSteps;
+
   const MotionSample({
     required this.available,
     required this.moving,
     required this.hasCompass,
     required this.heading,
     required this.accel,
+    this.steps = -1,
+    this.hasSteps = false,
   });
 
   static const MotionSample unknown = MotionSample(
@@ -46,6 +61,8 @@ class MotionSample {
     hasCompass: false,
     heading: -1,
     accel: 0,
+    steps: -1,
+    hasSteps: false,
   );
 }
 
@@ -84,6 +101,20 @@ class MotionService {
     }
   }
 
+  /// 请求计步所需的 ACTIVITY_RECOGNITION 权限（Android 10+）。
+  ///
+  /// 由 MainActivity 实现（请求权限必须是 Activity 的事，MotionManager 只有
+  /// Context）；其它平台与旧系统直接返回 true。
+  Future<bool> requestActivityPermission() async {
+    if (!supported) return false;
+    try {
+      return await _channel.invokeMethod<bool>('requestActivityPermission') ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<void> stop() async {
     if (!supported) return;
     final was = _started;
@@ -107,6 +138,8 @@ class MotionService {
         hasCompass: r['hasCompass'] == true,
         heading: (r['heading'] as num?)?.toDouble() ?? -1,
         accel: (r['accel'] as num?)?.toDouble() ?? 0,
+        steps: (r['steps'] as num?)?.toInt() ?? -1,
+        hasSteps: r['hasSteps'] == true,
       );
     } catch (_) {}
     return sample;

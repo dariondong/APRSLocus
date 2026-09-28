@@ -1511,9 +1511,55 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                   SettingsMiniSwitch(S.of(context).beaconTotalMileage,
                       value: st.beaconIncludeTotalMileage,
                       onChanged: st.setBeaconIncludeTotalMileage),
+                  // 步数（issue #22-2）：非标准字段（同 TRV/ODO 一类），默认关。
+                  SettingsMiniSwitch(S.of(context).beaconIncludeSteps,
+                      value: st.beaconIncludeSteps,
+                      onChanged: st.setBeaconIncludeSteps),
                 ],
               ),
             ),
+            // 步数状态：读到了就显示今日步数；读不到时**说清是哪种读不到** ——
+            // 「这台设备没有计步传感器」与「有传感器但没授权」要给不同的动作，
+            // 混成一句「无数据」等于让用户没法处理。
+            SettingsRow2(
+              S.of(context).stepsTodayLabel,
+              st.stepsToday > 0
+                  ? S.of(context).stepsCount('${st.stepsToday}')
+                  : (st.hasStepSensor
+                      ? S.of(context).stepsNeedPermission
+                      : S.of(context).stepsUnsupported),
+              valueColor: st.stepsToday > 0
+                  ? C.green
+                  : (st.hasStepSensor ? C.orange : C.grey),
+            ),
+            if (st.hasStepSensor && st.stepsRaw < 0)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      final ok = await st.requestStepsPermission();
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(ok
+                            ? S.of(context).stepsGranted
+                            : S.of(context).stepsDenied),
+                        behavior: SnackBarBehavior.floating,
+                      ));
+                    },
+                    icon: const Icon(Icons.directions_walk_rounded, size: 16),
+                    label: Text(S.of(context).stepsGrant),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.orange,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      textStyle: ts(12, w: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ),
+            if (st.hasStepSensor)
+              SettingsHint(S.of(context).stepsHint, color: C.grey),
             SettingsRow2(S.of(context).locationStatus,
                 localizedLocationStatus(context, st.locStatus)),
             SettingsRow2(S.of(context).beaconsSent,

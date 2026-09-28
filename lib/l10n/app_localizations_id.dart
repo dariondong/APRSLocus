@@ -7506,4 +7506,55 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String hrAlarmRangeNote => 'Rentang yang diterima: atas 80–240, bawah 20–100. Ini garis "jelas tidak normal", bukan zona latihan — jangan set batas atas di bawah 150 untuk olahraga biasa.';
 
+  @override
+  String beaconIncludeSteps => 'Langkah';
+
+  @override
+  String stepsTodayLabel => 'Langkah hari ini';
+
+  @override
+  String stepsCount(String n) => '{n} langkah';
+
+  @override
+  String stepsUnsupported => 'Perangkat ini tidak punya sensor langkah';
+
+  @override
+  String stepsNeedPermission => 'Perlu izin';
+
+  @override
+  String stepsGrant => 'Beri izin aktivitas';
+
+  @override
+  String stepsGranted => 'Diberikan — mulai menghitung langkah';
+
+  @override
+  String stepsDenied => 'Tidak diberikan — langkah tidak tersedia';
+
+  @override
+  String stepsHint => 'Langkah berasal dari sensor langkah ponsel (hitungan perangkat keras, lebih akurat daripada memperkirakan lewat akselerometer). Dapat dikirim bersama beacon (`STEPS=`), sehingga pengguna APRSlocus lain bisa melihat Anda di peringkat aktivitas.';
+
+  @override
+  String sportRank => 'Peringkat aktivitas';
+
+  @override
+  String sportRankDesc => 'Peringkat langkah hari ini (dari STEPS= di beacon)';
+
+  @override
+  String sportRankToday => 'Hari ini';
+
+  @override
+  String sportRankEmpty => 'Hari ini belum ada beacon APRSlocus dengan langkah.';
+
+  @override
+  String sportRankNote => '**Apa yang sebenarnya diperingkatkan**: hanya yang **perangkat ini terima** (filter APRS-IS dan jangkauan RF menentukan siapa yang terlihat), dan hanya stasiun yang **mengaktifkan "langkah" di beacon-nya**. Jadi ini peringkat tetangga yang terdengar, bukan seluruh jaringan. Baris Anda sendiri berasal dari sensor langkah ponsel.';
+
+  @override
+  String sportRankNoSteps => 'Tanpa langkah';
+
+  @override
+  String sportRankMe => 'Saya';
+
+  @override
+  String get sportRankEntryDesc => 'Peringkat langkah hari ini (hanya yang diterima perangkat ini)';
+
 }

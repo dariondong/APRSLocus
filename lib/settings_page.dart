@@ -7,6 +7,7 @@ import 'notice.dart';
 import 'notice_banner.dart';
 import 'theme.dart';
 import 'sponsor_page.dart';
+import 'sport_rank_page.dart';
 import 'guide.dart';
 import 'state.dart';
 import 'models.dart';
@@ -204,6 +205,62 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 SizedBox(height: 16),
+                // 运动排行榜（issue #22-3：用户要求加在荣誉墙**上方**）
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SportRankPage(state: widget.state)),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: C.accentDeco(
+                            radius: 8,
+                            fallback: const [
+                              Color(0xFF16A34A),
+                              Color(0xFF0B7A37),
+                            ],
+                          ),
+                          child: const Icon(Icons.leaderboard_rounded,
+                              color: Colors.white, size: 17),
+                        ),
+                        SizedBox(width: 10),
+                        Flexible(
+                          flex: 2,
+                          child: Text(
+                            S.of(context).sportRank,
+                            style: ts(13, w: FontWeight.w700),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            S.of(context).sportRankEntryDesc,
+                            style: const TextStyle(
+                                fontSize: 10, color: Color(0xFF98A2B8)),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
                 // 荣誉墙（徽章墙 / 成就墙 / FIRST FIX）
                 GestureDetector(
                   onTap: () => Navigator.push(

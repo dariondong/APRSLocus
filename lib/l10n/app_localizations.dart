@@ -12845,6 +12845,57 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String hrAlarmRangeNote;
 
+  /// In zh, this message translates to:
+  String beaconIncludeSteps;
+
+  /// In zh, this message translates to:
+  String stepsTodayLabel;
+
+  /// In zh, this message translates to:
+  String stepsCount(String n);
+
+  /// In zh, this message translates to:
+  String stepsUnsupported;
+
+  /// In zh, this message translates to:
+  String stepsNeedPermission;
+
+  /// In zh, this message translates to:
+  String stepsGrant;
+
+  /// In zh, this message translates to:
+  String stepsGranted;
+
+  /// In zh, this message translates to:
+  String stepsDenied;
+
+  /// In zh, this message translates to:
+  String stepsHint;
+
+  /// In zh, this message translates to:
+  String sportRank;
+
+  /// In zh, this message translates to:
+  String sportRankDesc;
+
+  /// In zh, this message translates to:
+  String sportRankToday;
+
+  /// In zh, this message translates to:
+  String sportRankEmpty;
+
+  /// In zh, this message translates to:
+  String sportRankNote;
+
+  /// In zh, this message translates to:
+  String sportRankNoSteps;
+
+  /// In zh, this message translates to:
+  String sportRankMe;
+
+  /// In zh, this message translates to:
+  String sportRankEntryDesc;
+
 }
 
 class _AppLocalizationsDelegate

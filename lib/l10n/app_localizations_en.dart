@@ -7496,4 +7496,55 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String hrAlarmRangeNote => 'Accepted ranges: upper 80–240, lower 20–100. These are "clearly abnormal" lines, not training zones — do not set the upper limit below 150 for ordinary exercise.';
 
+  @override
+  String beaconIncludeSteps => 'Steps';
+
+  @override
+  String stepsTodayLabel => 'Today\'s steps';
+
+  @override
+  String stepsCount(String n) => '{n} steps';
+
+  @override
+  String stepsUnsupported => 'No step-counting sensor on this device';
+
+  @override
+  String stepsNeedPermission => 'Permission needed';
+
+  @override
+  String stepsGrant => 'Grant activity permission';
+
+  @override
+  String stepsGranted => 'Granted — counting steps now';
+
+  @override
+  String stepsDenied => 'Not granted — steps unavailable';
+
+  @override
+  String stepsHint => 'Steps come from the phone\'s step counter (hardware counting, more accurate than estimating from the accelerometer). They can be sent along with the beacon (`STEPS=`), so other APRSlocus users can see you in the activity leaderboard.';
+
+  @override
+  String sportRank => 'Activity leaderboard';
+
+  @override
+  String sportRankDesc => 'Steps ranking for today (from STEPS= in beacons)';
+
+  @override
+  String sportRankToday => 'Today';
+
+  @override
+  String sportRankEmpty => 'No APRSlocus beacon with steps has been heard today.';
+
+  @override
+  String sportRankNote => '**What this actually ranks**: only what **this device has received** (the APRS-IS filter and your RF range decide who you can see), and only stations that **enabled "steps" in their beacon**. So it is a ranking of the neighbours you can hear, not of the whole network. Your own row comes from the phone\'s step counter.';
+
+  @override
+  String sportRankNoSteps => 'No steps sent';
+
+  @override
+  String sportRankMe => 'Me';
+
+  @override
+  String get sportRankEntryDesc => 'Steps ranking for today (only what this device received)';
+
 }

@@ -7546,4 +7546,55 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String hrAlarmRangeNote => 'Rangos aceptados: superior 80–240, inferior 20–100. Son líneas de "claramente anormal", no zonas de entrenamiento; no pongas el límite superior por debajo de 150 para ejercicio normal.';
 
+  @override
+  String beaconIncludeSteps => 'Pasos';
+
+  @override
+  String stepsTodayLabel => 'Pasos de hoy';
+
+  @override
+  String stepsCount(String n) => '{n} pasos';
+
+  @override
+  String stepsUnsupported => 'Este dispositivo no tiene podómetro';
+
+  @override
+  String stepsNeedPermission => 'Falta permiso';
+
+  @override
+  String stepsGrant => 'Conceder permiso de actividad';
+
+  @override
+  String stepsGranted => 'Concedido: contando pasos';
+
+  @override
+  String stepsDenied => 'Sin permiso: no hay pasos';
+
+  @override
+  String stepsHint => 'Los pasos vienen del podómetro del teléfono (conteo por hardware, más preciso que estimarlos con el acelerómetro). Pueden enviarse con el beacon (`STEPS=`), y otros usuarios de APRSlocus te verán en la clasificación de actividad.';
+
+  @override
+  String sportRank => 'Clasificación de actividad';
+
+  @override
+  String sportRankDesc => 'Clasificación de pasos de hoy (según STEPS= en los beacons)';
+
+  @override
+  String sportRankToday => 'Hoy';
+
+  @override
+  String sportRankEmpty => 'Hoy no se ha recibido ningún beacon de APRSlocus con pasos.';
+
+  @override
+  String sportRankNote => '**Qué clasifica esto realmente**: solo lo que **este dispositivo ha recibido** (el filtro de APRS-IS y tu alcance de RF deciden a quién ves), y solo las estaciones que **activaron "pasos" en su beacon**. Es una clasificación de los vecinos que oyes, no de toda la red. Tu propia fila viene del podómetro del teléfono.';
+
+  @override
+  String sportRankNoSteps => 'Sin pasos';
+
+  @override
+  String sportRankMe => 'Yo';
+
+  @override
+  String get sportRankEntryDesc => 'Clasificación de pasos de hoy (solo lo recibido por este dispositivo)';
+
 }

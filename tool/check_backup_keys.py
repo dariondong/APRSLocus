@@ -54,6 +54,12 @@ EXCLUDE = {
     'noticeCacheBody': '官网公告的本地副本（可再生）',
     'noticeCacheLang': '公告副本对应的语言',
     'noticeCacheAt': '公告副本的拉取时间戳',
+    # 计步基线（issue #22-2）：它来自**本机硬件**「开机以来累计步数」这个计数，
+    # 换一台机器恢复过去毫无意义 —— 硬件计数与新机完全不同，还会把「今日步数」
+    # 直接算成一个错得离谱的值。属于「跟着设备走、不跟着用户走」的数据。
+    'stepsBaseline': '本机计步硬件的累计基线（换机后无意义）',
+    'stepsDayKey': '计步基线对应的日期',
+    'stepsCarry': '当日重启前已累计的步数（与基线配套）',
 }
 
 GETSET = re.compile(r"\.(?:get|set)(?:String|Bool|Int|Double|StringList)\(")
