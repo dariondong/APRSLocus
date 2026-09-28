@@ -7,6 +7,20 @@ import 'audio_base.dart';
 /// 注意 `realtime == false` 且 `supported == false`：上层据此提示用户
 /// 「当前平台仅支持 WAV 文件方式收发」，而不是静默不工作。
 class AudioStub implements AudioTransport {
+  // 非 Windows 后端没有「按设备序号打开」这个概念（Android/iOS 由系统路由
+  // 决定，Linux/macOS 没有实时后端），这四个成员只是接口占位；
+  // Windows 的真实实现在 net/audio_winmm.dart。
+  @override
+  void setOutputDevice(int id) {}
+
+  @override
+  void setInputDevice(int id) {}
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async => const [];
   @override
   bool get realtime => false;
 

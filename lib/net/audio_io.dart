@@ -31,6 +31,19 @@ AudioTransport createAudioTransport() {
 /// AFSK 调制解调与 HDLC 帧定界都在 Dart 侧（lib/afsk.dart），
 /// 因此协议实现只有一份、可单元测试。
 class AudioNative implements AudioTransport {
+  // 设备选择只在 Windows（winmm）上有意义：Android/iOS 的音频路由由系统
+  // 决定，这四个成员是接口占位（见 net/audio_winmm.dart 的真实实现）。
+  @override
+  void setOutputDevice(int id) {}
+
+  @override
+  void setInputDevice(int id) {}
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async => const [];
   static const MethodChannel _ch = MethodChannel('com.aprslocus/audio');
   static const EventChannel _ev = EventChannel('com.aprslocus/audio_events');
 
@@ -191,6 +204,18 @@ class AudioNative implements AudioTransport {
 
 /// Linux / macOS 等无实时后端平台的占位实现
 class AudioStub implements AudioTransport {
+  // 占位（同上，见 AudioNative）
+  @override
+  void setOutputDevice(int id) {}
+
+  @override
+  void setInputDevice(int id) {}
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async => const [];
   @override
   bool get realtime => false;
 

@@ -8,6 +8,18 @@ import 'audio_base.dart';
 AudioTransport createAudioTransport() => AudioStub();
 
 class AudioStub implements AudioTransport {
+  // Web 没有「选设备」的概念（浏览器不给），四项只是接口占位。
+  @override
+  void setOutputDevice(int id) {}
+
+  @override
+  void setInputDevice(int id) {}
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async => const [];
   @override
   bool get realtime => false;
 

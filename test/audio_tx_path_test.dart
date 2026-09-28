@@ -15,6 +15,18 @@ import 'package:flutter_test/flutter_test.dart';
 /// 拿回来自己解一遍 —— 出口的采样能解出，就说明问题一定在音频通路
 /// （音量/接线/扬声器频响），而不在协议或流水线。
 class _FakeTransport implements AudioTransport {
+  // 设备选择（issue #14）：测试用假后端没有设备概念，接口占位。
+  @override
+  void setOutputDevice(int id) {}
+
+  @override
+  void setInputDevice(int id) {}
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async => const [];
   final List<int> played = [];
   int playCount = 0;
 

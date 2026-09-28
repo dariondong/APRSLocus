@@ -636,7 +636,7 @@ class TncLink {
       // **一个字节都收不到**，而界面上没有任何地方能看出线速变了
       // （症状是台站不上图、网关统计恒为 0，像是「射频坏了」）。
       // 教训：漏字段 = 静默复位，与「没持久化」完全等价，所以拷贝必须成对。
-      ..serialBaud = from.serialBaud;
+      ..serialBaud = from.serialBaud
       ..txSerialId = from.txSerialId;
   }
 

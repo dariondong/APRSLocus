@@ -624,9 +624,15 @@ class WinmmAudio implements AudioTransport {
   ///
   /// 不用 `toDartString()`：那要求拿到的指针是 `Pointer<Utf16>`，而这里是
   /// 结构体里的**内联数组**，只能自己按 UTF-16 码元拼。
+  /// MAXPNAMELEN = 32（mmreg.h）：与结构体里的 `@Array(32)` 必须一致。
+  ///
+  /// 不能读 `Array.length` —— 这个 Dart 版本上内联数组没有那个 getter
+  /// （CI 上一轮就是报 `The getter 'length' isn't defined for Array<Uint16>`）。
+  static const int _maxPnameLen = 32;
+
   static String _wsz(Array<Uint16> a) {
     final sb = StringBuffer();
-    for (var i = 0; i < a.length; i++) {
+    for (var i = 0; i < _maxPnameLen; i++) {
       final c = a[i];
       if (c == 0) break;
       sb.writeCharCode(c);
