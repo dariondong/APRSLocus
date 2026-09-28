@@ -7547,4 +7547,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sportRankEntryDesc => 'Steps ranking for today (only what this device received)';
 
+  @override
+  String get sportRankGateTitle => 'Share yours to see theirs';
+
+  @override
+  String get sportRankGateSubtitle => 'It\'s a two-way leaderboard';
+
+  @override
+  String get sportRankGateBody => 'Every number here was **sent out by someone else** (the `STEPS=` field in their beacon comment). Someone who only listens gets everyone else\'s steps without contributing their own — so this is two-way: **turn your upload on and you can see what others uploaded.**';
+
+  @override
+  String get sportRankGateWhatSent => 'What gets sent once you turn it on: one extra `STEPS=<today>` field in your beacon comment (non-standard, same family as `TRV:`/`ODO:`, only sent when there really are steps). Only other APRSlocus users can read it.';
+
+  @override
+  String get sportRankGateEnable => 'Turn on upload and see the board';
+
 }

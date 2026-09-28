@@ -1035,7 +1035,7 @@ class MainActivity : FlutterActivity() {
         if (checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            motionManager.refreshStepsRegistration()
+            motion?.refreshStepsRegistration()
             result.success(true)
             return
         }
@@ -1074,7 +1074,7 @@ class MainActivity : FlutterActivity() {
         if (requestCode == motionPermCode) {
             val ok = checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
                 PackageManager.PERMISSION_GRANTED
-            if (ok) motionManager.refreshStepsRegistration()
+            if (ok) motion?.refreshStepsRegistration()
             motionPermCompleter?.success(ok)
             motionPermCompleter = null
             return

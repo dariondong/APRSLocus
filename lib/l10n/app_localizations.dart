@@ -12896,6 +12896,21 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String sportRankEntryDesc;
 
+  /// In zh, this message translates to:
+  String sportRankGateTitle;
+
+  /// In zh, this message translates to:
+  String sportRankGateSubtitle;
+
+  /// In zh, this message translates to:
+  String sportRankGateBody;
+
+  /// In zh, this message translates to:
+  String sportRankGateWhatSent;
+
+  /// In zh, this message translates to:
+  String sportRankGateEnable;
+
 }
 
 class _AppLocalizationsDelegate

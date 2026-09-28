@@ -7597,4 +7597,19 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sportRankEntryDesc => 'Clasificación de pasos de hoy (solo lo recibido por este dispositivo)';
 
+  @override
+  String get sportRankGateTitle => 'Comparte lo tuyo para ver lo demás';
+
+  @override
+  String get sportRankGateSubtitle => 'Es una clasificación mutua';
+
+  @override
+  String get sportRankGateBody => 'Cada número de aquí lo **envió otra persona** (el campo `STEPS=` de su comentario de beacon). Quien solo escucha obtiene los pasos de los demás sin aportar los suyos, así que es mutuo: **activa tu envío y verás lo que enviaron los demás.**';
+
+  @override
+  String get sportRankGateWhatSent => 'Qué se envía al activarlo: un campo extra `STEPS=<hoy>` en el comentario del beacon (no estándar, de la familia de `TRV:`/`ODO:`; solo se envía si hay pasos reales). Solo lo entienden otros usuarios de APRSlocus.';
+
+  @override
+  String get sportRankGateEnable => 'Activar envío y ver la tabla';
+
 }

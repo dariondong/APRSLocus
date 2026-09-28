@@ -2546,5 +2546,10 @@
   "sportRankNote": "**What this actually ranks**: only what **this device has received** (the APRS-IS filter and your RF range decide who you can see), and only stations that **enabled \"steps\" in their beacon**. So it is a ranking of the neighbours you can hear, not of the whole network. Your own row comes from the phone's step counter.",
   "sportRankNoSteps": "No steps sent",
   "sportRankMe": "Me",
-  "sportRankEntryDesc": "Steps ranking for today (only what this device received)"
+  "sportRankEntryDesc": "Steps ranking for today (only what this device received)",
+  "sportRankGateTitle": "Share yours to see theirs",
+  "sportRankGateSubtitle": "It's a two-way leaderboard",
+  "sportRankGateBody": "Every number here was **sent out by someone else** (the `STEPS=` field in their beacon comment). Someone who only listens gets everyone else's steps without contributing their own — so this is two-way: **turn your upload on and you can see what others uploaded.**",
+  "sportRankGateWhatSent": "What gets sent once you turn it on: one extra `STEPS=<today>` field in your beacon comment (non-standard, same family as `TRV:`/`ODO:`, only sent when there really are steps). Only other APRSlocus users can read it.",
+  "sportRankGateEnable": "Turn on upload and see the board"
 }

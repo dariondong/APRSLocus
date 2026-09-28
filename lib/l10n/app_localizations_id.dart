@@ -7557,4 +7557,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get sportRankEntryDesc => 'Peringkat langkah hari ini (hanya yang diterima perangkat ini)';
 
+  @override
+  String get sportRankGateTitle => 'Bagikan milik Anda untuk melihat yang lain';
+
+  @override
+  String get sportRankGateSubtitle => 'Ini peringkat dua arah';
+
+  @override
+  String get sportRankGateBody => 'Setiap angka di sini **dikirim oleh orang lain** (kolom `STEPS=` di komentar beacon mereka). Yang hanya mendengarkan mendapat langkah orang lain tanpa menyumbang miliknya — jadi ini dua arah: **aktifkan pengiriman Anda dan Anda bisa melihat kiriman orang lain.**';
+
+  @override
+  String get sportRankGateWhatSent => 'Yang dikirim setelah diaktifkan: satu kolom tambahan `STEPS=<hari ini>` di komentar beacon (non-standar, sekeluarga `TRV:`/`ODO:`, hanya dikirim bila benar-benar ada langkah). Hanya pengguna APRSlocus lain yang bisa membacanya.';
+
+  @override
+  String get sportRankGateEnable => 'Aktifkan kirim dan lihat peringkat';
+
 }

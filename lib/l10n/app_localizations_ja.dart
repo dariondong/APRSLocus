@@ -7336,4 +7336,19 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get sportRankEntryDesc => '今日の歩数ランキング（この端末が受信した分のみ）';
 
+  @override
+  String get sportRankGateTitle => '自分も送信すると見られます';
+
+  @override
+  String get sportRankGateSubtitle => 'お互いが見えるランキングです';
+
+  @override
+  String get sportRankGateBody => 'ここにある数字はすべて**他の誰かが送信したもの**です（ビーコン備註の `STEPS=`）。受信だけの人は他人の歩数を得るのに、自分の分を出しません。そこで相互公開にしました：**自分も送信をオンにすると、他の人の分が見られます。**';
+
+  @override
+  String get sportRankGateWhatSent => 'オンにすると送られるもの：ビーコン備註に `STEPS=<今日の歩数>` が 1 つ増えます（`TRV:`/`ODO:` と同じ非標準フィールド。実際に歩数があるときだけ送信）。相手も APRSlocus のときだけ解釈できます。';
+
+  @override
+  String get sportRankGateEnable => '送信をオンにしてランキングを見る';
+
 }

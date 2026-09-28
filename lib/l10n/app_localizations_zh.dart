@@ -7246,6 +7246,21 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sportRankEntryDesc => '今日步数排行（只统计本机收到的报文）';
 
+  @override
+  String get sportRankGateTitle => '要先自己打开才看得到';
+
+  @override
+  String get sportRankGateSubtitle => '这是一份互相可见的榜单';
+
+  @override
+  String get sportRankGateBody => '榜单上每一个数字都是**别人主动发出来的**（信标备注里的 `STEPS=`）。只收不发的人拿得到别人的步数，却不贡献自己那一份 —— 所以这里改成互相可见：**你开了上传，才看得到别人上传的**。';
+
+  @override
+  String get sportRankGateWhatSent => '打开后会发出什么：信标备注里多一个 `STEPS=<今天步数>`（与 `TRV:`/`ODO:` 同类的非标准字段，只在真有步数时发）。对方也是 APRSlocus 时才看得懂。';
+
+  @override
+  String get sportRankGateEnable => '打开上传，查看榜单';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14488,5 +14503,20 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sportRankEntryDesc => '今日步數排行（只統計本機收到的報文）';
+
+  @override
+  String get sportRankGateTitle => '要先自己打開才看得到';
+
+  @override
+  String get sportRankGateSubtitle => '這是一份互相可見的榜單';
+
+  @override
+  String get sportRankGateBody => '榜單上每一個數字都是**別人主動發出來的**（信標備註裡的 `STEPS=`）。只收不發的人拿得到別人的步數，卻不貢獻自己那一份 —— 所以這裡改成互相可見：**你開了上傳，才看得到別人上傳的**。';
+
+  @override
+  String get sportRankGateWhatSent => '打開後會發出什麼：信標備註裡多一個 `STEPS=<今天步數>`（與 `TRV:`/`ODO:` 同類的非標準欄位，只在真有步數時發）。對方也是 APRSlocus 時才看得懂。';
+
+  @override
+  String get sportRankGateEnable => '打開上傳，查看榜單';
 
 }

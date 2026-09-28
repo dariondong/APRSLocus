@@ -3145,5 +3145,10 @@
   "sportRankNote": "**口径要说清**：这里的排名只统计**本机收到的报文**（APRS-IS 的过滤范围、射频接收范围决定你能看到谁），而且**对方要在信标里开启「步数」**才会出现 —— 所以这是一份「我听得到的邻居」的排行，不是全网排行。你自己那一行来自手机计步传感器。",
   "sportRankNoSteps": "未附带步数",
   "sportRankMe": "我",
-  "sportRankEntryDesc": "今日步数排行（只统计本机收到的报文）"
+  "sportRankEntryDesc": "今日步数排行（只统计本机收到的报文）",
+  "sportRankGateTitle": "要先自己打开才看得到",
+  "sportRankGateSubtitle": "这是一份互相可见的榜单",
+  "sportRankGateBody": "榜单上每一个数字都是**别人主动发出来的**（信标备注里的 `STEPS=`）。只收不发的人拿得到别人的步数，却不贡献自己那一份 —— 所以这里改成互相可见：**你开了上传，才看得到别人上传的**。",
+  "sportRankGateWhatSent": "打开后会发出什么：信标备注里多一个 `STEPS=<今天步数>`（与 `TRV:`/`ODO:` 同类的非标准字段，只在真有步数时发）。对方也是 APRSlocus 时才看得懂。",
+  "sportRankGateEnable": "打开上传，查看榜单"
 }

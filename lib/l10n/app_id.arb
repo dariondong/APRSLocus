@@ -2630,5 +2630,10 @@
   "sportRankNote": "**Apa yang sebenarnya diperingkatkan**: hanya yang **perangkat ini terima** (filter APRS-IS dan jangkauan RF menentukan siapa yang terlihat), dan hanya stasiun yang **mengaktifkan \"langkah\" di beacon-nya**. Jadi ini peringkat tetangga yang terdengar, bukan seluruh jaringan. Baris Anda sendiri berasal dari sensor langkah ponsel.",
   "sportRankNoSteps": "Tanpa langkah",
   "sportRankMe": "Saya",
-  "sportRankEntryDesc": "Peringkat langkah hari ini (hanya yang diterima perangkat ini)"
+  "sportRankEntryDesc": "Peringkat langkah hari ini (hanya yang diterima perangkat ini)",
+  "sportRankGateTitle": "Bagikan milik Anda untuk melihat yang lain",
+  "sportRankGateSubtitle": "Ini peringkat dua arah",
+  "sportRankGateBody": "Setiap angka di sini **dikirim oleh orang lain** (kolom `STEPS=` di komentar beacon mereka). Yang hanya mendengarkan mendapat langkah orang lain tanpa menyumbang miliknya — jadi ini dua arah: **aktifkan pengiriman Anda dan Anda bisa melihat kiriman orang lain.**",
+  "sportRankGateWhatSent": "Yang dikirim setelah diaktifkan: satu kolom tambahan `STEPS=<hari ini>` di komentar beacon (non-standar, sekeluarga `TRV:`/`ODO:`, hanya dikirim bila benar-benar ada langkah). Hanya pengguna APRSlocus lain yang bisa membacanya.",
+  "sportRankGateEnable": "Aktifkan kirim dan lihat peringkat"
 }

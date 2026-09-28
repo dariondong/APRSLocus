@@ -2630,5 +2630,10 @@
   "sportRankNote": "**Qué clasifica esto realmente**: solo lo que **este dispositivo ha recibido** (el filtro de APRS-IS y tu alcance de RF deciden a quién ves), y solo las estaciones que **activaron \"pasos\" en su beacon**. Es una clasificación de los vecinos que oyes, no de toda la red. Tu propia fila viene del podómetro del teléfono.",
   "sportRankNoSteps": "Sin pasos",
   "sportRankMe": "Yo",
-  "sportRankEntryDesc": "Clasificación de pasos de hoy (solo lo recibido por este dispositivo)"
+  "sportRankEntryDesc": "Clasificación de pasos de hoy (solo lo recibido por este dispositivo)",
+  "sportRankGateTitle": "Comparte lo tuyo para ver lo demás",
+  "sportRankGateSubtitle": "Es una clasificación mutua",
+  "sportRankGateBody": "Cada número de aquí lo **envió otra persona** (el campo `STEPS=` de su comentario de beacon). Quien solo escucha obtiene los pasos de los demás sin aportar los suyos, así que es mutuo: **activa tu envío y verás lo que enviaron los demás.**",
+  "sportRankGateWhatSent": "Qué se envía al activarlo: un campo extra `STEPS=<hoy>` en el comentario del beacon (no estándar, de la familia de `TRV:`/`ODO:`; solo se envía si hay pasos reales). Solo lo entienden otros usuarios de APRSlocus.",
+  "sportRankGateEnable": "Activar envío y ver la tabla"
 }

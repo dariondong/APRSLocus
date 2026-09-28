@@ -21,14 +21,46 @@ import 'widgets.dart';
 ///
 /// 排序只在「有步数的人之间」有意义，所以没带步数的 APRSlocus 台站单独列一段 ——
 /// 直接丢掉它们会让人以为「附近只有这几个人在用」。
-class SportRankPage extends StatelessWidget {
+class SportRankPage extends StatefulWidget {
   final AppState state;
   const SportRankPage({super.key, required this.state});
+
+  @override
+  State<SportRankPage> createState() => _SportRankPageState();
+}
+
+class _SportRankPageState extends State<SportRankPage> {
+  AppState get state => widget.state;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final st = state;
+
+    // ── 门票：自己不开「随信标发步数」，就看不到榜单（用户要求）──
+    //
+    // 这不是「小气」，而是这份数据唯一的来源决定的：榜单上每一个数字都是**别人
+    // 主动发出来的**。只读不发的人拿得到别人的位置，却不贡献自己那一份 ——
+    // 长期看就是「榜上永远是那几个在发的人」。所以改成互相可见：
+    // 你开了上传，才看得到别人上传的。
+    //
+    // ⚠ 注意这里**只挡榜单**，不挡页面本身：口径说明、自己的今日步数、授权按钮
+    // 都要照常显示 —— 否则新用户进门就是一句「看不到」，连怎么开都不知道。
+    if (!st.beaconIncludeSteps) {
+      return SettingsPageShell(
+        title: s.sportRank,
+        subtitle: s.sportRankDesc,
+        icon: Icons.leaderboard_rounded,
+        color: C.green,
+        body: Column(children: [
+          _gateCard(context, st),
+          const SizedBox(height: 16),
+          _meCard(context, st),
+          const SizedBox(height: 24),
+        ]),
+      );
+    }
+
     final ranked = st.sportRank();
     // 没带步数的 APRSlocus 台站：只列出来（不排），让用户知道自己并不孤单
     final noSteps = st.stations
@@ -86,6 +118,71 @@ class SportRankPage extends StatelessWidget {
     );
   }
 
+  /// 门票卡：说清「为什么必须先自己开」，并给一个一键开启。
+  ///
+  /// 三个要素缺一不可：
+  ///   * **原因**（榜单上的数字都来自别人主动发出的报文）；
+  ///   * **一键开启**（不要只留一句「请先去设置里打开」—— 让用户自己回去翻三层菜单）；
+  ///   * **开启后我会发出什么**（`STEPS=今天步数`，与 TRV/ODO 同类的非标准字段）——
+  ///     分享自己的数据这件事必须由用户看清了再点，不能含糊过去。
+  Widget _gateCard(BuildContext context, AppState st) {
+    final s = S.of(context);
+    return SettingsSectionCard(
+      title: s.sportRankGateTitle,
+      subtitle: s.sportRankGateSubtitle,
+      icon: Icons.lock_outline_rounded,
+      color: C.orange,
+      children: [
+        SettingsHint(s.sportRankGateBody, color: C.orange),
+        SettingsHint(s.sportRankGateWhatSent, color: C.grey),
+        if (!st.hasStepSensor)
+          SettingsHint(s.stepsUnsupported, color: C.grey)
+        else if (st.stepsRaw < 0)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final ok = await st.requestStepsPermission();
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(ok ? s.stepsGranted : s.stepsDenied),
+                    behavior: SnackBarBehavior.floating,
+                  ));
+                  setState(() {});
+                },
+                icon: const Icon(Icons.directions_walk_rounded, size: 16),
+                label: Text(s.stepsGrant),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: C.orange,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  textStyle: ts(12, w: FontWeight.w600),
+                ),
+              ),
+            ),
+          ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 6, 14, 14),
+          child: SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: FilledButton.icon(
+              onPressed: () => setState(() => st.setBeaconIncludeSteps(true)),
+              icon: const Icon(Icons.upload_rounded, size: 18),
+              label: Text(s.sportRankGateEnable),
+              style: FilledButton.styleFrom(
+                backgroundColor: C.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   /// 我自己：今日步数 + 是否随信标发出（决定别人能不能在榜上看到我）。
   Widget _meCard(BuildContext context, AppState st) {
     final s = S.of(context);
@@ -105,7 +202,10 @@ class SportRankPage extends StatelessWidget {
           valueColor: st.stepsToday > 0 ? C.green : C.orange,
         ),
         SettingsSwitch(s.beaconIncludeSteps,
-            value: st.beaconIncludeSteps, onChanged: st.setBeaconIncludeSteps),
+            value: st.beaconIncludeSteps,
+            // 用 setState 包一层：打开后本页立刻放行（否则要退出去再进来）
+            onChanged: (v) =>
+                setState(() => st.setBeaconIncludeSteps(v))),
         SettingsHint(
           st.beaconIncludeSteps
               ? s.stepsHint
