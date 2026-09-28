@@ -91,7 +91,18 @@ class SettingsPageShell extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        // 底部额外让出系统导航栏的高度（三大金刚键 / 手势条）：
+        // Android 15（targetSdk 35+）起强制 edge-to-edge，窗口不再自动
+        // 让出导航栏占位，页面最底下那个按钮（如「保存并应用过滤」）会
+        // 被导航栏压住、点不到 —— 用户报的正是这个（issue #12）。
+        // 非 edge-to-edge（旧系统）下 viewPadding.bottom 本来就是 0，
+        // 所以加上它不会重复留白。
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          16 + MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -480,18 +491,103 @@ class SettingsFold extends StatelessWidget {
             ]),
           ),
         ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          alignment: Alignment.topCenter,
-          child: open
-              ? Column(children: [
-                  Divider(height: 1, color: C.border),
-                  ...children,
-                ])
-              : const SizedBox(width: double.infinity),
+        SettingsExpandable(
+          open: open,
+          children: [
+            Divider(height: 1, color: C.border),
+            ...children,
+          ],
         ),
       ]),
+    );
+  }
+}
+
+/// 折叠面板的「展开内容」：高度与透明度**一起**做动画。
+///
+/// 为什么不是 `open ? Column(...) : SizedBox()` + [AnimatedSize]：
+/// 那样只有外框在动，内容本身是**瞬间**出现、瞬间消失的 —— 收起时内容
+/// 先凭空不见、再看着一块空白塌下去，展开时则是「啪」地一下填满。
+/// 用户报的「面板退出/进入动画会突然闪一下，或者突然填充」正是这个
+/// （issue #16）。
+///
+/// 实现用 [SizeTransition] + [FadeTransition]（同一个 controller 驱动）：
+///   * 尺寸从 0 长到内容高度、内容同时淡入；收起反过来，先淡出、再塌高；
+///   * 裁切交给 SizeTransition 自带的 ClipRect，动画中途内容不会溢出卡片
+///     （溢出也会被看成「闪」）；
+///   * **不用 [AnimatedCrossFade]**：它的 layoutBuilder 是「只有 Positioned
+///     子项的 Stack」，而本控件嵌在 Column / 卡片里（竖向约束无界），
+///     那种 Stack 的尺寸会取 constraints.biggest。这里用最普通的
+///     「带高度因子的 Align（SizeTransition 内部就是这个）」 ——
+///     子项拿到无界高度时 Column 会自己收缩，不会出无界尺寸问题。
+///
+/// 子控件始终在树上（只是被裁切/透明），所以**收起态下也能 `find` 到它们**；
+/// 这是淡出动画必须的代价，没有 UI 测试依赖「收起时不存在」。
+class SettingsExpandable extends StatefulWidget {
+  final bool open;
+  final List<Widget> children;
+
+  /// 与 [SettingsFold] 原来的展开时长保持一致（200ms）。
+  final Duration duration;
+
+  const SettingsExpandable({
+    super.key,
+    required this.open,
+    required this.children,
+    this.duration = const Duration(milliseconds: 200),
+  });
+
+  @override
+  State<SettingsExpandable> createState() => _SettingsExpandableState();
+}
+
+class _SettingsExpandableState extends State<SettingsExpandable>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+      // 初始就停在终态：页面刚进来时不应看到一段「展开动画」。
+      value: widget.open ? 1 : 0,
+    );
+  }
+
+  @override
+  void didUpdateWidget(SettingsExpandable old) {
+    super.didUpdateWidget(old);
+    if (widget.open == old.open) return;
+    // ⚠ 必须区分 forward / reverse 而不能统一 reverseFrom(1)：
+    // forward() 在控制器已经是 1 时是空操作，反向同理。
+    if (widget.open) {
+      _c.forward();
+    } else {
+      _c.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor: _c,
+      axis: Axis.vertical,
+      // 从顶部展开（与 [SettingsFold] 的 alignment: topCenter 一致）。
+      axisAlignment: -1,
+      child: FadeTransition(
+        opacity: _c,
+        // 保留 Column 的默认 crossAxisAlignment（center）：与改动前
+        // 完全一致，避免无意中把某行子控件从居中改成拉伸。
+        child: Column(children: widget.children),
+      ),
     );
   }
 }

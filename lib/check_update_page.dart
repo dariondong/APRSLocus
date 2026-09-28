@@ -119,6 +119,27 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   // 本地已下载的全部安装包（按版本会累积多个，用于"删除全部"）
   List<File> _localPackages = [];
 
+  /// 两个 tag 是否指向**同一版本**（比较时忽略开头的 `v`）。
+  ///
+  /// 为什么不能直接比字符串：下载卡片里的 `_downloadedTag` 是从**文件名**
+  /// 里抠出来的（`APRSLocus_2.0.5.apk` → `2.0.5`），而 API 给的
+  /// `_latest.tagName` 是 `v2.0.5` —— 直接比永远不相等，于是「已下载」
+  /// 判断永远不成立、下载按钮永远不消（issue #13）。
+  static bool _sameVersion(String? a, String? b) {
+    if (a == null || b == null) return false;
+    String norm(String s) => s.trim().replaceAll(RegExp('^[vV]'), '');
+    final na = norm(a);
+    return na.isNotEmpty && na == norm(b);
+  }
+
+  /// 最新版**已经下载到本地**吗？是的话顶部那张卡片不再收「立即下载」——
+  /// 再点也只是下载同一个包，而下面那张「已下载」卡片已经给了安装/重新
+  /// 下载/删除的入口。
+  bool get _alreadyDownloadedLatest =>
+      _downloadedPath != null &&
+      _downloadingTag == null &&
+      _sameVersion(_downloadedTag, _latest?.tagName);
+
   @override
   void initState() {
     super.initState();
@@ -677,7 +698,15 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        // 底部让出系统导航栏（三大金刚键 / 手势条）：Android 15 起强制
+        // edge-to-edge，不让的话最后一张卡片的按钮会被导航栏压住
+        // （与设置子页同一个问题，见 issue #12）。
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          16 + MediaQuery.of(context).viewPadding.bottom,
+        ),
         children: [
           // 签名已固定（1.5.2 起 release 统一 keystore），不再提示“签名变更需卸载重装”
           _versionCard(isWin),
@@ -793,10 +822,13 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   // 主操作：整行白底按钮，放在最上面这张卡里。
                   // 以前这里只有一个向下的箭头图标，既像下载按钮又点不动；
                   // 真正的下载按钮却压在更新日志最底下、要滚动才看得到。
+                  // 已下过最新版就不再收「立即下载」：下面那张「已下载」
+                  // 卡片才是接下来该点的东西（安装 / 重新下载 / 删除）。
                   if (_isNewer &&
                       !_checking &&
                       !_hasError &&
-                      _downloadingTag == null) ...[
+                      _downloadingTag == null &&
+                      !_alreadyDownloadedLatest) ...[
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,

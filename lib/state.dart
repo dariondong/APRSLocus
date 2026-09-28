@@ -1999,7 +1999,12 @@ class AppState extends ChangeNotifier {
   }
 
   // 更新渠道：'gitcode' / 'github'
-  String updateChannel = 'gitcode';
+  //
+  // 默认 **GitHub**：GitCode 的 release API 在境外/部分网络下不稳定，而且
+  // 镜像站可能滞后或缺少资产 —— 默认指向「官方发布的地方」更不容易出现
+  // 「检查更新永远失败/永远没有新版」。想用镜像的用户仍可在更新页一键切换
+  // （选择会写进 prefs，不会被这里的默认值覆盖）。
+  String updateChannel = 'github';
 
   void setUpdateChannel(String c) {
     updateChannel = c;
@@ -2276,6 +2281,8 @@ class AppState extends ChangeNotifier {
           p.getBool('beaconIncludeBattery') ?? beaconIncludeBattery;
       // 手填的数据扩展：键不存在时保持 null（= 不发），不能回落成 0 ——
       // 回落成 0 会让「从没填过」变成「填了 0」，一升级就多发一项假数据。
+      // （用户清空输入框时 _writePrefs 会把键 remove 掉，所以「删掉」
+      //  重启后确实会回到「不发送」，不会又被旧值填回来。）
       beaconPowerW = p.getDouble('beaconPowerW');
       beaconAntennaHeightFt = p.getDouble('beaconAntennaHeightFt');
       beaconGainDb = p.getDouble('beaconGainDb');
@@ -2497,17 +2504,31 @@ class AppState extends ChangeNotifier {
     await p.setBool('beaconIncludeCourse', beaconIncludeCourse);
     await p.setBool('beaconIncludeBattery', beaconIncludeBattery);
     // 手填的位置报文数据扩展（留空 = 不发）
+    //
+    // ⚠ 留空时必须**删掉键**，不能只是「跳过写入」：跳过等于把上一次的值
+    // 永久留在磁盘上 —— 用户清空输入框、重启后旧值又回来了，看起来就是
+    // 「这些附加项一旦设过就删不掉」（用户报的就是这个）。
+    // null 在 SharedPreferences 里没有对应类型，所以用 remove 表达
+    // 「没有这一项」；[SharedPreferences.remove] 对不存在的键是安全的。
     if (beaconPowerW != null) {
       await p.setDouble('beaconPowerW', beaconPowerW!);
+    } else {
+      await p.remove('beaconPowerW');
     }
     if (beaconAntennaHeightFt != null) {
       await p.setDouble('beaconAntennaHeightFt', beaconAntennaHeightFt!);
+    } else {
+      await p.remove('beaconAntennaHeightFt');
     }
     if (beaconGainDb != null) {
       await p.setDouble('beaconGainDb', beaconGainDb!);
+    } else {
+      await p.remove('beaconGainDb');
     }
     if (beaconAltOverrideM != null) {
       await p.setDouble('beaconAltOverrideM', beaconAltOverrideM!);
+    } else {
+      await p.remove('beaconAltOverrideM');
     }
     await p.setString('aprsStatusText', aprsStatusText);
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
@@ -2730,6 +2751,19 @@ class AppState extends ChangeNotifier {
       final raw =
           '$myFullCall>APALOC,TCPIP*:>APRSlocus CONNECT v$appVersion $platformTag';
       aprs.send(raw);
+      // 用户填了自定义状态文本时，紧跟着**补发一帧**自定义状态报文：
+      // 保活帧会把 aprs.fi 上「台站状态」那一栏改写成内置的 CONNECT 文本，
+      // 不补一帧的话，用户自己的状态每 15 秒就被顶掉一次（看起来就是
+      // 「状态根本设不住」）。
+      //
+      // 这里**不走 [sendStatus]**：那条路会改连接状态、写日志、_notify()，
+      // 于是界面每 15 秒弹一次「状态已发送」—— 保活是后台行为，不该打扰用户。
+      final custom = aprsStatusText.trim();
+      if (custom.isNotEmpty) {
+        var txt = custom.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
+        if (txt.length > statusMaxLen) txt = txt.substring(0, statusMaxLen);
+        aprs.send('$myFullCall>$_destHeader:>$txt');
+      }
       _lastTx = DateTime.now();
       _updateNotification(); // 定期刷新通知内容（台站数/收包数）
     });

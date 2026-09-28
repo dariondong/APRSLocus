@@ -203,32 +203,42 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
           ]),
         ),
       ),
-      if (_advOpen) ...[
-        // ── 高度：手填优先，留空跟随定位 ──
-        SettingsInput(s.beaconAltLabel, _alt,
-            tip: s.beaconAltTip,
-            onChanged: (v) => _num(v, st.setBeaconAltOverride)),
-        // 回显当前实际会发出的 /A=：手填了就显示手填值，否则显示定位来的，
-        // 两者都没有时明说「没有」—— 不摆出来用户无从知道到底发了什么。
-        SettingsHint(
-            st.autoAltExtension.isEmpty
-                ? s.beaconAltNone
-                : '${s.beaconAltWillSend}  ${st.autoAltExtension}',
-            color: st.autoAltExtension.isEmpty ? C.grey : C.purple),
-        // ── PHG：功率 / 天线高度 / 增益（填任一即整组编码）──
-        SettingsInput(s.beaconPowerLabel, _power,
-            tip: s.beaconPhgTip, onChanged: (v) => _num(v, st.setBeaconPower)),
-        SettingsInput(s.beaconAntHeightLabel, _height,
-            tip: s.beaconPhgTip,
-            onChanged: (v) => _num(v, st.setBeaconAntennaHeight)),
-        SettingsInput(s.beaconGainLabel, _gain,
-            tip: s.beaconPhgTip, onChanged: (v) => _num(v, st.setBeaconGain)),
-        if (st.phgPreview.isNotEmpty)
-          SettingsHint(s.beaconPhgPreview(st.phgPreview), color: C.purple),
-        // ── 独立状态报文：与上面那行备注是两种 APRS 报文 ──
-        SettingsInput(s.aprsStatus, _status,
-            tip: s.aprsStatusHint, onChanged: (v) => st.setAprsStatusText(v)),
-      ],
+      // 展开/收起走 SettingsExpandable：尺寸与淡入淡出一起做。
+      // 这里原本是裸的 `if (_advOpen) ...[...]` —— 内容瞬间进出，
+      // 也就是 issue #16 说的「突然填充 / 突然闪一下」。
+      // （折叠态下子控件仍在树上、只是被裁切，这是淡出动画需要的。）
+      SettingsExpandable(
+        open: _advOpen,
+        children: [
+          // ── 高度：手填优先，留空跟随定位 ──
+          SettingsInput(s.beaconAltLabel, _alt,
+              tip: s.beaconAltTip,
+              onChanged: (v) => _num(v, st.setBeaconAltOverride)),
+          // 回显当前实际会发出的 /A=：手填了就显示手填值，否则显示定位来的，
+          // 两者都没有时明说「没有」—— 不摆出来用户无从知道到底发了什么。
+          SettingsHint(
+              st.autoAltExtension.isEmpty
+                  ? s.beaconAltNone
+                  : '${s.beaconAltWillSend}  ${st.autoAltExtension}',
+              color: st.autoAltExtension.isEmpty ? C.grey : C.purple),
+          // ── PHG：功率 / 天线高度 / 增益（填任一即整组编码）──
+          SettingsInput(s.beaconPowerLabel, _power,
+              tip: s.beaconPhgTip,
+              onChanged: (v) => _num(v, st.setBeaconPower)),
+          SettingsInput(s.beaconAntHeightLabel, _height,
+              tip: s.beaconPhgTip,
+              onChanged: (v) => _num(v, st.setBeaconAntennaHeight)),
+          SettingsInput(s.beaconGainLabel, _gain,
+              tip: s.beaconPhgTip,
+              onChanged: (v) => _num(v, st.setBeaconGain)),
+          if (st.phgPreview.isNotEmpty)
+            SettingsHint(s.beaconPhgPreview(st.phgPreview), color: C.purple),
+          // ── 独立状态报文：与上面那行备注是两种 APRS 报文 ──
+          SettingsInput(s.aprsStatus, _status,
+              tip: s.aprsStatusHint,
+              onChanged: (v) => st.setAprsStatusText(v)),
+        ],
+      ),
     ]);
   }
 
