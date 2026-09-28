@@ -577,6 +577,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.7</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: dragging the immersive map jumped to Beijing.** The follow-mode viewport offset was never handed to manual mode, so a drag snapped the map to the projection base point. It now picks up the current viewport first, and the map rotation is accounted for (with the heading up, a screen drag must be converted back to canvas space).</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New: a "Detailed" beacon status bar** showing what will actually trigger the next report (active tier, seconds left, metres until the distance trigger, degrees until the turn trigger). **New: heart-rate alarm** — an out-of-range reading raises a warning and a notification, offering an emergency call or a help message to the 5 closest stations within 100 km; it only warns, never acts for you. **New: idle the phone GPS while an external GPS feeds data**, switching back and saying so when the external source goes stale.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fixes**: the notice banner reappears when the notice changes; network-only positioning can use its own station icon; the 2.0 connection banner says what is missing; the sponsors entry moved above "About". **Update page**: the channel text follows the current channel, long release notes are collapsed by default, and the button turns into "Install" after downloading. **Floating panels and the exit animation**: panels and the bottom pill now use the system-UI inset (it used to compute as 0 on some ROMs), and the "flat colour then gone" exit is fixed.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.6</span>
         <span class="cl-date">2026-09-28</span>
       </div>

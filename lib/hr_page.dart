@@ -46,8 +46,86 @@ class HrDevicePage extends StatelessWidget {
             color: C.red,
             children: [HrSettingsCard(state: state)],
           ),
+          const SizedBox(height: 16),
+          _HrAlarmCard(state: state),
         ],
       ),
+    );
+  }
+}
+
+
+/// 心率异常告警设置（issue #21-8）。
+///
+/// 只在这里**配置**，不在这一页弹告警：告警的判定在 AppState（`_checkHrAlarm`），
+/// 呈现由 `HrAlarmWatcher` 统一负责 —— 那里才能保证「无论在哪个页面都弹得出来」。
+///
+/// 单独一个 StatefulWidget 只为一件事：三个输入框各自的 controller 与「回车即
+/// 写入」的时序（与信标页那一套同一个做法：失焦/回车才提交，不逐字符写 prefs）。
+class _HrAlarmCard extends StatefulWidget {
+  final AppState state;
+  const _HrAlarmCard({required this.state});
+
+  @override
+  State<_HrAlarmCard> createState() => _HrAlarmCardState();
+}
+
+class _HrAlarmCardState extends State<_HrAlarmCard> {
+  AppState get st => widget.state;
+  late final TextEditingController _high;
+  late final TextEditingController _low;
+  late final TextEditingController _tel;
+
+  @override
+  void initState() {
+    super.initState();
+    _high = TextEditingController(text: '${st.hrAlarmHigh}');
+    _low = TextEditingController(text: '${st.hrAlarmLow}');
+    _tel = TextEditingController(text: st.emergencyTel);
+  }
+
+  @override
+  void dispose() {
+    _high.dispose();
+    _low.dispose();
+    _tel.dispose();
+    super.dispose();
+  }
+
+  void _commit() {
+    st.setHrAlarmThresholds(
+      high: int.tryParse(_high.text.trim()),
+      low: int.tryParse(_low.text.trim()),
+    );
+    // 回写：setter 里做了 clamp，把夹过的值显示回输入框，
+    // 否则用户输入的 300 会被静默改成 240 而界面还写着 300。
+    _high.text = '${st.hrAlarmHigh}';
+    _low.text = '${st.hrAlarmLow}';
+    st.setEmergencyTel(_tel.text);
+    _tel.text = st.emergencyTel;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return SettingsSectionCard(
+      title: s.hrAlarmCard,
+      subtitle: s.hrAlarmCardSub,
+      icon: Icons.warning_amber_rounded,
+      color: C.red,
+      children: [
+        SettingsSwitch(s.hrAlarmEnabled, value: st.hrAlarmEnabled,
+            color: C.red, onChanged: st.setHrAlarmEnabled),
+        SettingsHint(s.hrAlarmEnabledTip, color: C.grey),
+        if (st.hrAlarmEnabled) ...[
+          SettingsInput(s.hrAlarmHighLabel, _high,
+              tip: s.hrAlarmHighTip, onEditingComplete: _commit),
+          SettingsInput(s.hrAlarmLowLabel, _low,
+              tip: s.hrAlarmLowTip, onEditingComplete: _commit),
+          SettingsInput(s.hrAlarmTelLabel, _tel,
+              tip: s.hrAlarmTelTip, onEditingComplete: _commit),
+        ],
+      ],
     );
   }
 }

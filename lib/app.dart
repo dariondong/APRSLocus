@@ -6,6 +6,7 @@ import 'theme.dart';
 import 'theme_store.dart';
 import 'state.dart';
 import 'home_page.dart';
+import 'hr_alarm.dart';
 import 'shell2.dart';
 import 'splash_page.dart';
 import 'oobe_page.dart';
@@ -187,9 +188,14 @@ class _AppState extends State<App> {
           // 两套外壳二选一（设置 → 显示 → 界面布局）。判断读 C 上的全局值
           // 而不是 _state.uiLayout：C.layout 与调色板同一时刻写入，不会出现
           // 「颜色已换、外壳还是旧的」这种半截状态。
-          return C.sheetLayout
-              ? HomeShell2(state: _state)
-              : HomePage(state: _state);
+          // 外面套一层心率异常告警（issue #21-8）：告警可能在用户停留在任何页面、
+          // 任何一套外壳下发生，挂在 home 这一层才保证「无论在哪儿都弹得出来」。
+          return HrAlarmWatcher(
+            state: _state,
+            child: C.sheetLayout
+                ? HomeShell2(state: _state)
+                : HomePage(state: _state),
+          );
         },
       ),
     );
@@ -243,24 +249,24 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
     final inner = const PageTransitionsTheme()
             .builders[defaultTargetPlatform] ??
         const ZoomPageTransitionsBuilder();
+    // ⚠ 这份「底」必须包在**页面自己的子树里**，再交给平台转场去做动画。
+    //
+    // 上一版是把它当成转场 Stack 的一层、压在页面**外面**（不参与动画）——
+    // 结果整段退出动画期间它都把底下的页面（地图）盖着，用户看到的就是
+    // 「什么都不动，一片纯色，然后页面消失」（issue #16 的追加反馈）。
+    //
+    // 放进子树之后：它跟着页面一起缩放/淡出，退出时底下的页面是被**逐渐
+    // 露出**的 —— 这才是正常的返回观感；而它压在页面之下，仍然挡住了「页面
+    // 底色透明、旧路由照常绘制」造成的穿透（当初加它的原因）。
+    final backed = _TransitionBackdrop(animation: animation, child: child);
     final transitioned = inner.buildTransitions<T>(
       route,
       context,
       animation,
       secondaryAnimation,
-      child,
+      backed,
     );
-    return Stack(
-      children: [
-        // 转场期间才画；**停稳**（completed / dismissed）后置空。
-        // 判据为什么不能是「value == 1」，见 [_TransitionBackdrop] 顶部那一段。
-        Positioned.fill(
-          child: _TransitionBackdrop(animation: animation),
-        ),
-        // 转场包在底之上：否则淡入/缩放会把这份底一起缩进去
-        Positioned.fill(child: transitioned),
-      ],
-    );
+    return transitioned;
   }
 }
 
@@ -291,7 +297,11 @@ class _BackdropTransitionBuilder extends PageTransitionsBuilder {
 class _TransitionBackdrop extends StatefulWidget {
   final Animation<double> animation;
 
-  const _TransitionBackdrop({required this.animation});
+  /// 转场中的页面。底画在它**之下、同一个子树里** —— 跟着它一起缩放/淡出，
+  /// 退出时底下的页面才会被逐渐露出（见 [buildTransitions] 里的说明）。
+  final Widget child;
+
+  const _TransitionBackdrop({required this.animation, required this.child});
 
   @override
   State<_TransitionBackdrop> createState() => _TransitionBackdropState();
@@ -332,8 +342,22 @@ class _TransitionBackdropState extends State<_TransitionBackdrop> {
   }
 
   @override
-  Widget build(BuildContext context) => _on
-      // 与 `builder` 那份**同一个函数**：逐像素一致，看不出「换了一次底」
-      ? (ThemeController.instance.buildBackdrop() ?? const SizedBox.shrink())
-      : const SizedBox.shrink();
+  Widget build(BuildContext context) {
+    // 停稳之后**不画**：`builder` 那份底已经在位，再画一份就是白多一层
+    // 合成（这是当初就定下的取舍）。
+    if (!_on) return widget.child;
+    // 与 `builder` 那份**同一个函数**：逐像素一致，看不出「换了一次底」
+    final backdrop =
+        ThemeController.instance.buildBackdrop() ?? const SizedBox.shrink();
+    // ⚠ `StackFit.passthrough`：把外层约束原样传给页面，布局与不加这层时
+    // 完全一致（`expand` 会强制拉满，对话框 / 底部弹层这类节点会被撑坏）。
+    return Stack(
+      fit: StackFit.passthrough,
+      children: [
+        // 底在页面**之下**：页面底色透明的那几帧由它挡住旧路由的穿透
+        Positioned.fill(child: backdrop),
+        widget.child,
+      ],
+    );
+  }
 }

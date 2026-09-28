@@ -76,6 +76,68 @@ class _ReleaseInfo {
   }
 }
 
+/// 更新日志正文：**默认折叠**（issue #20：「有时候日志很长的，就很难看」）。
+///
+/// 一版日志常常几十行，整段铺开会把「立即下载」挤出屏幕 —— 而用户第一眼要的是
+/// 「这一版改了什么、要不要升」，不是把几十行逐字读完。所以先露前
+/// [_CollapsibleNotes.collapsedLines] 行，想细看再点「展开」。
+///
+/// 按**行**而不是按字符截：Markdown 的段落/列表都靠换行，按字符切会把半行标题
+/// 或者一个列表项切两半，看起来像排版坏了。
+class _CollapsibleNotes extends StatefulWidget {
+  final String text;
+  const _CollapsibleNotes(this.text);
+
+  static const int collapsedLines = 8;
+
+  @override
+  State<_CollapsibleNotes> createState() => _CollapsibleNotesState();
+}
+
+class _CollapsibleNotesState extends State<_CollapsibleNotes> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final lines = widget.text.split('\n');
+    final long = lines.length > _CollapsibleNotes.collapsedLines;
+    final shown = (!_open && long)
+        ? lines.take(_CollapsibleNotes.collapsedLines).join('\n')
+        : widget.text;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(shown, style: ts(13, c: C.slate, h: 1.7)),
+        if (long)
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _open = !_open),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _open ? s.collapseNotes : s.expandNotes,
+                    style: ts(12, c: C.blue, w: FontWeight.w700),
+                  ),
+                  Icon(
+                    _open
+                        ? Icons.expand_less_rounded
+                        : Icons.expand_more_rounded,
+                    size: 16,
+                    color: C.blue,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 /// 检查更新页面
 class CheckUpdatePage extends StatefulWidget {
   final AppState state;
@@ -822,8 +884,41 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   // 主操作：整行白底按钮，放在最上面这张卡里。
                   // 以前这里只有一个向下的箭头图标，既像下载按钮又点不动；
                   // 真正的下载按钮却压在更新日志最底下、要滚动才看得到。
-                  // 已下过最新版就不再收「立即下载」：下面那张「已下载」
-                  // 卡片才是接下来该点的东西（安装 / 重新下载 / 删除）。
+                  // 已经下过最新版：按钮**变成安装**，而不是消失
+                  // （issue #20：「下载完成后下载按钮应变成安装按钮」）。
+                  // 以前这里直接隐藏，用户以为要滚到下面那张卡里去找入口。
+                  if (_alreadyDownloadedLatest) ...[
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF0A5CFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          final p = _downloadedPath;
+                          if (p == null) return;
+                          if (isWin) {
+                            _runExe(p);
+                          } else {
+                            unawaited(_openApk(p));
+                          }
+                        },
+                        icon: const Icon(Icons.install_mobile_rounded, size: 19),
+                        label: Text(
+                          isWin
+                              ? S.of(context).runInstaller
+                              : S.of(context).installNow,
+                          style: ts(14, w: FontWeight.w800),
+                        ),
+                      ),
+                    ),
+                  ],
                   if (_isNewer &&
                       !_checking &&
                       !_hasError &&
@@ -994,8 +1089,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 style: TextStyle(fontSize: 13, color: C.grey),
               ),
               SizedBox(height: 4),
+              // 文案必须跟着**当前渠道**（issue #20：默认已改成 GitHub，
+     // 而这里一直写死「GitCode」，用户看到的就是「描述一直是 gitcode」）。
               Text(
-                S.of(context).connectingGitCode,
+                widget.state.updateChannel == 'github'
+                    ? S.of(context).connectingGitHub
+                    : S.of(context).connectingGitCode,
                 style: TextStyle(fontSize: 11, color: C.greyLight),
               ),
             ],
@@ -1121,11 +1220,10 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                   color: C.greyBg,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
+                child: _CollapsibleNotes(
                   release.body.trim().isNotEmpty
                       ? release.body.trim()
                       : S.of(context).noReleaseNotes,
-                  style: ts(13, c: C.slate, h: 1.7),
                 ),
               ),
               SizedBox(height: 16),
@@ -1266,10 +1364,7 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                       ],
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      release.body.trim(),
-                      style: ts(13, c: C.slate, h: 1.7),
-                    ),
+                    _CollapsibleNotes(release.body.trim()),
                   ],
                 ),
               ),

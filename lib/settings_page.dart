@@ -506,6 +506,59 @@ class _SettingsPageState extends State<SettingsPage> {
                 // 不然「不想在主页看到横幅」的人就再也读不到公告了。
                 _noticeEntry(),
                 SizedBox(height: 12),
+                // 赞助与鸣谢（issue #21-7：用户要求把入口从「关于」里挪到设置页
+                // **关于之上**，并把它当成一个正经入口 —— 支持的渠道要看得见，
+                // 而不是藏在关于页的第二屏）。
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SponsorPage()),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: C.accentDeco(
+                            radius: 8,
+                            fallback: const [
+                              Color(0xFFF59E0B),
+                              Color(0xFFB45309),
+                            ],
+                          ),
+                          child: const Icon(Icons.favorite_rounded,
+                              color: Colors.white, size: 17),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).sponsorEntry,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).sponsorEntryDesc,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFF98A2B8),
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
                 // 关于
                 GestureDetector(
                   onTap: () => Navigator.push(

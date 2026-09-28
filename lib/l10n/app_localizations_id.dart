@@ -7320,4 +7320,151 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get tncTxSerialHint => 'Tersimpan. Secara bawaan TX memakai port RX; port terpisah menghindari dua handle berebut satu port COM di Windows.';
 
+  @override
+  String beaconBarStyle => 'Bilah status beacon';
+
+  @override
+  String beaconBarClassic => 'Klasik';
+
+  @override
+  String beaconBarDetailedOption => 'Detail';
+
+  @override
+  String beaconBarStyleTip => 'Klasik: satu baris (status + kirim sekarang). Detail: satu baris tambahan berisi tingkat aktif, sisa detik, sisa meter pemicu jarak, dan sisa derajat pemicu belokan — diperbarui tiap detik.';
+
+  @override
+  String beaconBarTierNetwork => 'Posisi jaringan · interval tetap';
+
+  @override
+  String beaconBarTierSmart => 'Tingkat pintar';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => 'Tingkat pintar · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => 'Interval tetap';
+
+  @override
+  String beaconBarTimeLeft(String time) => 'Waktu {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => 'Jarak {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => 'Belokan {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => 'Belokan ditahan · perlu ≥{speed} km/h';
+
+  @override
+  String beaconBarTurnWait(String time) => 'Belokan ditahan · siap dalam {time}';
+
+  @override
+  String netSymbol => 'Ikon stasiun untuk posisi jaringan';
+
+  @override
+  String netSymbolHint => 'Posisi jaringan bisa meleset ratusan meter hingga kilometer; ikon berbeda membuat jelas bahwa posisi berasal dari jaringan. Bawaannya mengikuti simbol Anda.';
+
+  @override
+  String netSymbolFollow => 'Ikuti simbol saya';
+
+  @override
+  String extGpsStandby => 'Istirahatkan GPS ponsel saat ada GPS eksternal';
+
+  @override
+  String extGpsStandbyTip => 'Saat GPS eksternal (Garmin LiveTrack) mengirim data, lokasi ponsel dihentikan untuk menghemat daya; bila data berhenti, GPS ponsel otomatis mengambil alih dan bilah status serta log menjelaskannya. Mematikannya tidak membuat posisi salah — sumber eksternal memang sudah diprioritaskan.';
+
+  @override
+  String sponsorEntry => 'Sponsor & terima kasih';
+
+  @override
+  String sponsorEntryDesc => 'Daftar dan cara mendukung (server dan lalu lintas peta bergantung padanya)';
+
+  @override
+  String connectingGitHub => 'Menghubungkan ke GitHub';
+
+  @override
+  String expandNotes => 'Tampilkan semua';
+
+  @override
+  String collapseNotes => 'Ringkas';
+
+  @override
+  String hrAlarmCard => 'Alarm detak jantung';
+
+  @override
+  String hrAlarmCardSub => 'Beri peringatan saat bacaan di luar rentang; telepon atau minta bantuan stasiun terdekat dengan satu ketuk';
+
+  @override
+  String hrAlarmEnabled => 'Aktifkan alarm';
+
+  @override
+  String hrAlarmEnabledTip => 'Hanya memberi peringatan, tidak bertindak untuk Anda: menelepon dan meminta bantuan tetap perlu Anda tekan sendiri (alarm palsu jauh lebih mahal daripada yang terlewat). Hanya bacaan terkini yang dinilai; bacaan lama tidak memicu alarm.';
+
+  @override
+  String hrAlarmHighLabel => 'Batas atas (bpm)';
+
+  @override
+  String hrAlarmHighTip => 'Memicu pada atau di atas nilai ini (80–240). Ini "jelas tidak normal", bukan zona latihan — jangan set di bawah 150 untuk olahraga biasa.';
+
+  @override
+  String hrAlarmLowLabel => 'Batas bawah (bpm)';
+
+  @override
+  String hrAlarmLowTip => 'Memicu pada atau di bawah nilai ini (20–100). Jika detak istirahat Anda memang rendah, konsultasikan ke dokter sebelum mengubahnya.';
+
+  @override
+  String hrAlarmTelLabel => 'Nomor darurat';
+
+  @override
+  String hrAlarmTelTip => 'Nomor yang dihubungi dari alarm; bawaan 120. Ganti ke 112 atau nomor rekan sesuai kebutuhan.';
+
+  @override
+  String hrAlarmTitle => 'Detak jantung tidak normal';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => 'Detak jantung {bpm} bpm di luar rentang {low}–{high} Anda.\n\nJika merasa tidak enak badan, segera hubungi layanan darurat. Anda juga dapat mengirim pesan bantuan ke stasiun dalam 100 km.';
+
+  @override
+  String hrAlarmDismiss => 'Saya tidak apa-apa';
+
+  @override
+  String hrAlarmCall => 'Hubungi darurat';
+
+  @override
+  String hrAlarmSendNearby => 'Minta bantuan stasiun terdekat';
+
+  @override
+  String hrAlarmNoDialer => 'Perangkat ini tidak bisa menelepon';
+
+  @override
+  String hrAlarmNoNearby => 'Tidak ada stasiun dikenal dalam 100 km';
+
+  @override
+  String hrAlarmSendConfirmTitle => 'Kirim permintaan bantuan?';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => 'Satu pesan dikirim ke masing-masing {n} stasiun terdekat:\n{calls}\n\nPesan akan muncul di perangkat mereka — mohon konfirmasi.';
+
+  @override
+  String hrAlarmSent(String n) => 'Permintaan bantuan dikirim ke {n} stasiun';
+
+  @override
+  String hrAlarmNotif(String bpm) => 'DJ tidak normal {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => 'GPS eksternal aktif · GPS ponsel siaga';
+
+  @override
+  String get locExtGpsLost => 'GPS eksternal hilang · memakai GPS ponsel';
+
+  @override
+  String get locPhoneGpsActive => 'GPS ponsel mengambil alih';
+
+  @override
+  String get linkNoServer => 'Alamat server belum diisi · ketuk untuk mengatur';
+
+  @override
+  String get linkNoPasscode => 'Passcode belum diisi · ketuk untuk mengatur';
+
 }

@@ -132,6 +132,12 @@ String localizedLocationStatus(BuildContext context, String value) {
   if (value == '佳明 LiveTrack') return s.locationGarmin;
   if (value == '请授予定位权限…') return s.locationPermission;
   if (value == 'GPS 定位中…') return s.gpsLocating;
+  // 外置 GPS（佳明）与手机 GPS 的交接（issue #21-4）：三档都要登记 ——
+  // 这一段的判据是**白名单**，不登记就会在非中文界面漏出中文
+  // （tool/check_pos_quality.py 会把「所有 locStatus 字面量都已登记」当断言查）。
+  if (value == '外置 GPS 供位 · 手机 GPS 已待机') return s.locExtGpsActive;
+  if (value == '外置 GPS 已失效 · 改用手机 GPS') return s.locExtGpsLost;
+  if (value == '手机 GPS 已接管') return s.locPhoneGpsActive;
   if (value == 'Web 平台暂不支持自动定位，请手动输入坐标') {
     return s.webLocationUnsupported;
   }

@@ -7099,4 +7099,151 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get tncTxSerialHint => '保存しました。既定では受信と同じポートを使います。別ポートにすると Windows で同一 COM ポートの読み書きが競合しません。';
 
+  @override
+  String beaconBarStyle => 'ビーコンステータスバー';
+
+  @override
+  String beaconBarClassic => 'クラシック';
+
+  @override
+  String beaconBarDetailedOption => '詳細';
+
+  @override
+  String beaconBarStyleTip => 'クラシック：1行（状態＋今すぐ送信）。詳細：有効な段、残り秒数、距離トリガまであと何メートル、旋回トリガまであと何度を表示する行を追加（毎秒更新）。';
+
+  @override
+  String beaconBarTierNetwork => 'ネットワーク測位・固定間隔';
+
+  @override
+  String beaconBarTierSmart => 'スマート段';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => 'スマート段 · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => '固定間隔';
+
+  @override
+  String beaconBarTimeLeft(String time) => '時間 {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => '距離 {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => '旋回 {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => '旋回待機 · ≥{speed} km/h が必要';
+
+  @override
+  String beaconBarTurnWait(String time) => '旋回待機 · {time} 後に判定';
+
+  @override
+  String netSymbol => 'ネットワーク測位時の局アイコン';
+
+  @override
+  String netSymbolHint => 'ネットワーク測位は数百メートル〜数キロずれることがあります。別のアイコンにすると「ネットワーク測位の位置」だと一目で分かります。既定では自分の記号に従います。';
+
+  @override
+  String netSymbolFollow => '自分の記号に従う';
+
+  @override
+  String extGpsStandby => '外部 GPS 優先時はスマホ GPS を待機';
+
+  @override
+  String extGpsStandbyTip => '外部 GPS（Garmin LiveTrack）が受信中はスマホの測位を止めて省電力にします。外部が失効すると自動でスマホ GPS に戻り、状態行とログにその旨を表示します。オフにしても位置は狂いません（外部優先は元々の仕様）。';
+
+  @override
+  String sponsorEntry => 'スポンサーと謝辞';
+
+  @override
+  String sponsorEntryDesc => 'リストと支援方法（サーバーと地図通信を支えています）';
+
+  @override
+  String connectingGitHub => 'GitHub に接続中';
+
+  @override
+  String expandNotes => 'すべて表示';
+
+  @override
+  String collapseNotes => '折りたたむ';
+
+  @override
+  String hrAlarmCard => '心拍異常アラーム';
+
+  @override
+  String hrAlarmCardSub => '値が範囲外のときに警告し、発信や近隣局への連絡をワンタップで';
+
+  @override
+  String hrAlarmEnabled => 'アラームを有効にする';
+
+  @override
+  String hrAlarmEnabledTip => '警告のみで、代わりに行動はしません。発信と救援依頼は必ずご自身で押してください（誤報のほうが高くつきます）。判定は最新の値のみを使い、古い値では鳴りません。';
+
+  @override
+  String hrAlarmHighLabel => '上限（bpm）';
+
+  @override
+  String hrAlarmHighTip => 'この値以上で鳴ります（80〜240）。「明らかな異常」用で、運動時の心拍域ではありません。通常は 150 未満にしないでください。';
+
+  @override
+  String hrAlarmLowLabel => '下限（bpm）';
+
+  @override
+  String hrAlarmLowTip => 'この値以下で鳴ります（20〜100）。安静時心拍が低い方は、変更前に医師に相談してください。';
+
+  @override
+  String hrAlarmTelLabel => '緊急番号';
+
+  @override
+  String hrAlarmTelTip => 'アラームの「発信」で使う番号。既定は 120。地域や状況に応じて 112 や仲間の番号に変更できます。';
+
+  @override
+  String hrAlarmTitle => '心拍異常';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => '心拍 {bpm} bpm は設定した {low}〜{high} の範囲外です。\n\n体調が悪い場合はすぐに救急へ電話してください。100 km 以内の局に救援メッセージを送ることもできます。';
+
+  @override
+  String hrAlarmDismiss => '問題なし';
+
+  @override
+  String hrAlarmCall => '救急へ電話';
+
+  @override
+  String hrAlarmSendNearby => '近隣局に救援依頼';
+
+  @override
+  String hrAlarmNoDialer => 'この端末では発信できません';
+
+  @override
+  String hrAlarmNoNearby => '100 km 以内に既知の局がありません';
+
+  @override
+  String hrAlarmSendConfirmTitle => '救援依頼を送信しますか';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => '最も近い {n} 局それぞれに1通送ります：\n{calls}\n\n相手の端末に表示されます。確認してから送信してください。';
+
+  @override
+  String hrAlarmSent(String n) => '{n} 局に救援依頼を送信しました';
+
+  @override
+  String hrAlarmNotif(String bpm) => '心拍異常 {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => '外部 GPS 使用中 · スマホ GPS 待機';
+
+  @override
+  String get locExtGpsLost => '外部 GPS が失効 · スマホ GPS に切替';
+
+  @override
+  String get locPhoneGpsActive => 'スマホ GPS が引き継ぎ';
+
+  @override
+  String get linkNoServer => 'サーバーアドレスが未設定 · タップして設定';
+
+  @override
+  String get linkNoPasscode => 'パスコードが未設定 · タップして設定';
+
 }

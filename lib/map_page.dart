@@ -2161,50 +2161,154 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               boxShadow: elev2(),
               border: Border.all(color: c.withValues(alpha: 0.25)),
             ),
-            child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  on ? Icons.send_rounded : Icons.notifications_off_rounded,
-                  size: 14,
-                  color: c,
-                ),
-                SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: ts(11, c: C.ink, w: FontWeight.w600),
-                  ),
-                ),
-                // 立即上报（信标开时绿色；关时置灰仍可发一次）
-                ClickCursor(
-                  child: GestureDetector(
-                    onTap: () {
-                      st.sendBeacon();
-                      _toastMsg(S.of(context).positionBeaconDetail(
-                        st.myGrid,
-                        st.beaconAttachedDetail,
-                      ));
-                    },
-                    child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: C.blue,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                Row(
+                  children: [
+                    Icon(
+                      on ? Icons.send_rounded : Icons.notifications_off_rounded,
+                      size: st.beaconBarDetailed ? 16 : 14,
+                      color: c,
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
                       child: Text(
-                        S.of(context).manualBeacon,
-                        style: ts(10, c: Colors.white, w: FontWeight.w700),
+                        label,
+                        style: ts(st.beaconBarDetailed ? 12.5 : 11,
+                            c: C.ink, w: FontWeight.w600),
+                      ),
+                    ),
+                    // 立即上报（信标开时绿色；关时置灰仍可发一次）
+                    ClickCursor(
+                      child: GestureDetector(
+                        onTap: () {
+                          st.sendBeacon();
+                          _toastMsg(S.of(context).positionBeaconDetail(
+                            st.myGrid,
+                            st.beaconAttachedDetail,
+                          ));
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: st.beaconBarDetailed ? 14 : 12,
+                              vertical: st.beaconBarDetailed ? 7 : 5),
+                          decoration: BoxDecoration(
+                            color: C.blue,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            S.of(context).manualBeacon,
+                            style: ts(st.beaconBarDetailed ? 11 : 10,
+                                c: Colors.white, w: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // ── 详细档：一行「当前触发条件」（issue #21-2）──
+                //
+                // 秒级字段（倒计时/还差多少米）必须挂到 `tick` 上：这一条每
+                // 秒重建一次，但只有这一行 —— 整个面板/地图不跟着重建（若把
+                // 它挂到整页上，就是每秒重刷一遍地图与标记）。
+                //
+                // 不挂到 `st` 本身：`_notify()` 在收包高峰会每秒叫好几次，
+                // 而这一行的信息量只到「秒」，按 tick 刷新就是恰当的频次。
+                if (st.beaconBarDetailed)
+                  ValueListenableBuilder<int>(
+                    valueListenable: st.tick,
+                    builder: (_, _, _) => Padding(
+                      padding: const EdgeInsets.only(top: 5, left: 2),
+                      child: Text(
+                        _beaconCriteriaLine(st),
+                        style: ts(10.5, c: C.slate, h: 1.3, w: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// 详细档那一行「当前触发条件」（issue #21-2）。
+  ///
+  /// 只摆**真的生效**的量（门限全部来自 AppState 的 `...Now` getter）：
+  /// 当前档位、还剩多少秒、距离打点还差多少米、转弯还差多少度；
+  /// 没有开、或当前模式下不适用的判据**如实写「关」**，而不是隐藏 ——
+  /// 隐藏会让人以为「这一档本该有距离打点」。
+  String _beaconCriteriaLine(AppState st) {
+    final s = S.of(context);
+    final parts = <String>[];
+
+    // ① 当前档位：智能档按速度区间描述；纯网络是固定间隔；其余是固定间隔。
+    if (st.locationMode == 'network') {
+      parts.add(s.beaconBarTierNetwork);
+    } else if (st.smartBeaconEnabled) {
+      final tier = st.activeSmartTier;
+      parts.add(tier == null
+          ? s.beaconBarTierSmart
+          : s.beaconBarTierSmartFrom('${tier.minSpeed}'));
+    } else {
+      parts.add(s.beaconBarTierFixed);
+    }
+
+    // ② 时间判据：只有「确实会发射」的阶段才给倒计时；否则说原因
+    //   （与 _beaconBar 的 label 同源，避免两行各说一套）。
+    switch (st.beaconPhase) {
+      case BeaconPhase.counting:
+      case BeaconPhase.coarseForced:
+        parts.add(s.beaconBarTimeLeft('${st.beaconSecondsLeft}s'));
+      case BeaconPhase.imminent:
+        parts.add(s.beaconBarTimeLeft(s.beaconSoon));
+      default:
+        // 不发射的阶段（未连接 / 等待定位 / 信标关 / 射频信标关 /
+        // 网络定位暂不上报 / 佳明来源）：倒计时没有意义，因此不摆。
+        // 佳明那一档例外地要给来源，所以单独列出来。
+        if (st.beaconPhase == BeaconPhase.garmin) {
+          parts.add(s.beaconGarminSource);
+        }
+    }
+
+    // ③ 距离判据：0 = 这一档没开距离打点
+    final needDist = st.beaconMinDistNow;
+    if (needDist > 0) {
+      parts.add(s.beaconBarDistLeft(_fmtDistM(st.beaconDistToGoM)));
+    }
+
+    // ④ 转弯判据：两个闸（速度 / 最小间隔）也摆出来 —— 否则用户转了个弯
+    //    却没发，会以为功能失灵（实际是速度不够或刚发过）
+    final needTurn = st.beaconMinTurnNow;
+    if (needTurn > 0) {
+      final gateLeft = st.beaconTurnGateSecLeft;
+      if ((st.mySpeed ?? 0) < AppState.turnGateSpeedKmh) {
+        parts.add(s.beaconBarTurnLowSpeed('${AppState.turnGateSpeedKmh}'));
+      } else if (gateLeft > 0) {
+        parts.add(s.beaconBarTurnWait('${gateLeft}s'));
+      } else {
+        parts.add(s.beaconBarTurnLeft(
+          st.beaconTurnDeg.toStringAsFixed(0),
+          '$needTurn',
+        ));
+      }
+    }
+
+    return parts.join('  ·  ');
+  }
+
+  /// 距离 → 人读文字（米 / 公里）。
+  ///
+  /// 不直接调 `track_log.dart` 的 `fmtKm`：那会把地图页与历史轨迹模块绑在一起
+  /// （而这里只需要一个两位数的小格式），能少一个跨层依赖就少一个。
+  static String _fmtDistM(double m) {
+    if (m < 1000) return '${m.round()} m';
+    return '${(m / 1000).toStringAsFixed(m >= 10000 ? 0 : 1)} km';
   }
 
   void _toastMsg(String m) {

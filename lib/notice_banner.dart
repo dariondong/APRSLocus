@@ -62,7 +62,12 @@ class _NoticeBannerState extends State<NoticeBanner> {
     // ① 先上缓存：有旧公告时立刻可见，不必等网络
     final cached = await NoticeStore.instance.cachedOnly();
     if (!mounted) return;
-    if (cached != null) setState(() => _doc = cached);
+    if (cached != null) {
+      setState(() => _doc = cached);
+      // 缓存也要过一遍“是不是同一条”：否则“关掉横幅 → 重启 → 横幅回来”
+      // 那条老毛病会从这里复活（issue #21-5）。
+      widget.state.onNoticeLoaded(cached.body);
+    }
     // ② 再联网刷新
     await _refresh();
   }
@@ -78,6 +83,11 @@ class _NoticeBannerState extends State<NoticeBanner> {
       // 刷新失败时**不要**把已有的内容清掉（宁可显示旧的）
       if (d != null) _doc = d;
     });
+    // 公告**内容变了**就把横幅重新打开（issue #21-5）。
+    //
+    // 用户的需求：「软件内的公告更新时，公告横幅再次出现」。
+    // 放在 setState 之后调：它会写 prefs 并 notify，不该在 build/状态写回里做。
+    if (d != null) widget.state.onNoticeLoaded(d.body);
   }
 
   void _open() {
@@ -87,12 +97,12 @@ class _NoticeBannerState extends State<NoticeBanner> {
         markdown: d.body, fetchedAt: d.fetchedAt, fromCache: d.fromCache);
   }
 
-  /// 横幅上的「关闭」：把**开关**置为 off。
+  /// 横幅上的「关闭」：把**开关**置为 off，并记住「关掉的是哪一条」。
   ///
   /// 为什么不只隐藏这一条：开关是唯一的持久状态。只隐藏的话，用户下次打开
-  /// 应用它又回来了（「我明明关了」），而若另存一个「已忽略」标记，就又多出
-  /// 一个没人知道的状态。置 off 之后：两处横幅一起收起、设置里的开关同步变成
-  /// 「关」，想再看打开即可 —— 行为闭环、可解释。
+  /// 应用它又回来了（「我明明关了」）。而**只**置 off 又走到另一个极端 ——
+  /// 将来真出了新公告他也永远看不到（issue #21-5）。所以两者都要：
+  /// 置 off + 记下指纹，指纹变了就重新显示（见 [AppState.onNoticeLoaded]）。
   void _dismiss() => widget.state.setNoticeBanner(false);
 
   @override

@@ -63,28 +63,62 @@ def main() -> int:
         errors.append('lib/app.dart 的转场底不是按 status 判断的 —— '
                       '必须是「转场是否进行中」而不是「值到没到 1」')
 
-    # ── ② 不许再用「值等于 1」当「转场结束」 ──
+    # ── ② 不许再用「值到没到 1」当「转场结束」 ──
     #
-    # 形态：`v >= 1` / `v == 1` / `animation.value >= 1.0` / `.value == 1`。
-    # 这条是**回归样本验过的**：把判断改回 `v >= 1`，本检查器立刻报红。
-    bad = re.search(r'\b(?:value|v)\s*(?:>=|>|==)\s*1(?:\.0)?\b', code)
-    if bad:
-        errors.append(f'lib/app.dart 又出现「{bad.group(0)}」—— 用「值到 1」当'
-                      '「转场结束」在**弹出**方向是错的（那一帧值仍然是 1），'
-                      '底下那一页会整整透出一帧（公告横幅在设置子页上闪一下）')
+    # 两种写法都要抓：
+    #   * `v >= 1` / `v == 1` —— 把「值到 1」当「停稳」；
+    #   * `v < 1` / `v <= 1`  —— 反过来说「值没到 1 就还在转场中」。
+    # 它们在**弹出**方向是**同一个错误**：`reverse()` 只改 status，值要等下一个
+    # tick 才动，而 ticker 首次回调 elapsed 恒为 0 —— 这一帧里 value 仍然是 1。
+    # 于是那份底不画，底下的页面整整透出一帧（用户看到的公告横幅在设置子页上闪一下）。
+    #
+    # ⚠ 第二类（`< 1`）是**回归样本验证时才发现漏掉的**：第一版只写了 `>= 1`，
+    # 把判据改成 `value < 1 && …` 照样报绿 —— 而行为与 bug 版一模一样。
+    # 假绿比没有检查更坏（它会让人以为这条已经钉住了）。
+    for pat, why in (
+        (r'\b(?:value|v)\s*(?:>=|>|==)\s*1(?:\.0)?\b', '把「值到 1」当「转场结束」'),
+        (r'\b(?:value|v)\s*(?:<=|<)\s*1(?:\.0)?\b', '把「值小于 1」当「还在转场中」'),
+    ):
+        bad = re.search(pat, code)
+        if bad:
+            errors.append(f'lib/app.dart 出现「{bad.group(0)}」—— {why}，'
+                          '在**弹出**方向都是错的（那一帧值仍然是 1），'
+                          '底下那一页会整整透出一帧（公告横幅在设置子页上闪一下）')
 
-    # ── ③ 那份底要真的被用上，而且必须压在转场页面**之下** ──
+    # ── ③ 那份底要真的被用上，而且必须包在页面子树里（参与动画）──
+    #
+    # ⚠ v2.0.7 改过一次形状：原来是「转场 Stack 的一层、压在页面外面」——
+    # 那样它**不参与动画**，整段退出期间都把底下的页面盖着，用户看到的是
+    # 「什么都不动、一片纯色然后消失」（issue #16 的追加反馈）。
+    # 现在它是**包住页面的包装层**，包完再交给平台转场做动画。
     if 'class _TransitionBackdrop extends StatefulWidget' not in code:
         errors.append('lib/app.dart 里没有 _TransitionBackdrop —— '
                       '转场期的那份底没了（进/出子页都会透出上一页）')
-    use = code.find('child: _TransitionBackdrop(')
-    if use < 0:
-        errors.append('转场的 Stack 里没有用 _TransitionBackdrop —— '
-                      '那份底定义了却没画上')
-    inner = code.find('child: transitioned)')
-    if use >= 0 and inner >= 0 and not use < inner:
-        errors.append('转场里那份底没有画在页面**之下**（Stack 顺序反了）—— '
-                      '淡入/缩放会盖住页面，等于页面底色没了')
+    if '_TransitionBackdrop(animation: animation, child: child)' not in code:
+        errors.append('lib/app.dart 里的 _TransitionBackdrop 没有把页面当 child 包起来 —— '
+                      '包在页面子树里才会跟着动画一起动；'
+                      '当成转场 Stack 的独立一层会让退出看起来「一片纯色然后消失」')
+    if 'required this.child' not in code:
+        errors.append('lib/app.dart 的 _TransitionBackdrop 不收 child —— '
+                      '它必须是一个包装层（见上一条）')
+    if 'StackFit.passthrough' not in code:
+        errors.append('lib/app.dart 包页面那层的 Stack 不是 StackFit.passthrough —— '
+                      '`expand` 会强制拉满，对话框 / 底部弹层这类节点会被撑坏')
+    # 包装层必须真的**交给平台转场当 child**，否则它只是个没人用的局部变量。
+    #
+    # ⚠ 这里比的是「实参序列」而不是「行号先后」：第一版写的是
+    # 「_TransitionBackdrop 的位置是否在 inner.buildTransitions 之前」，而
+    # 「插入一行局部变量、实参依旧传 child」的写法照样报绿 —— 那个变量谁也没用，
+    # 退出依旧没动画（也是回归样本验证时抓出来的假绿）。
+    flat = re.sub(r'\s+', '', code)
+    if ('inner.buildTransitions<T>(route,context,animation,secondaryAnimation,backed,)'
+            not in flat):
+        errors.append('lib/app.dart 没有把包好的 backed 传给 inner.buildTransitions —— '
+                      '平台转场动画的必须是那个包装层，否则它不参与动画，'
+                      '退出会变成「一片纯色然后消失」')
+    if 'Positioned.fill(\n          child: _TransitionBackdrop(' in code:
+        errors.append('lib/app.dart 又把这份底当成转场 Stack 的独立一层了 —— '
+                      '那样它不参与动画，退出会变成「一片纯色然后消失」')
 
     # ── ④ 底必须与 `builder` 那份同源 ──
     if 'ThemeController.instance.buildBackdrop()' not in code:

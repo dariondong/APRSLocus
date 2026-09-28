@@ -205,6 +205,59 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.7', 'date': '2026-09-28',
+        'items': [
+            ('fix',
+             T('**修：沉浸地图一拖就跳回北京**。跟随时用的视野偏移从来没有交给手动模式，'
+               '拖动那一瞬间地图平移到了投影基准点；现在先从当前视野接手再切手动，'
+               '并把地图旋转一并算进去（横屏航向朝上时位移要换算回画布方向）。',
+               '**修：沉浸地圖一拖就跳回北京**。跟隨時用的視野偏移從來沒有交給手動模式，'
+               '拖動那一瞬間地圖平移到了投影基準點；現在先從目前視野接手再切手動，'
+               '並把地圖旋轉一併算進去（橫屏航向朝上時位移要換算回畫布方向）。',
+               '**Fix: dragging the immersive map jumped to Beijing.** The follow-mode viewport '
+               'offset was never handed to manual mode, so a drag snapped the map to the '
+               'projection base point. It now picks up the current viewport first, and the map '
+               'rotation is accounted for (with the heading up, a screen drag must be converted '
+               'back to canvas space).')),
+            ('new',
+             T('**新：上报状态栏可切「详细」** —— 多一行当前触发条件：哪一档、还有多少秒、'
+               '距离打点还差多少米、转弯还差多少度（转弯那两个闸也如实摆出来）。'
+               '**新：心率异常告警** —— 读数越界弹警告并进通知栏，可拨紧急电话或向 100 公里内'
+               '最近的 5 个台站发一条求助；只提醒，不代替你行动。'
+               '**新：外置 GPS 优先时手机 GPS 待机** —— 外置失效自动切回并明说是谁在供位。',
+               '**新：上報狀態列可切「詳細」** —— 多一行目前觸發條件：哪一檔、還剩多少秒、'
+               '距離打點還差多少公尺、轉彎還差多少度（轉彎那兩道閘也如實擺出來）。'
+               '**新：心率異常告警** —— 讀數越界彈警告並進通知列，可撥緊急電話或向 100 公里內'
+               '最近的 5 個臺站發一則求助；只提醒，不代替你行動。'
+               '**新：外接 GPS 優先時手機 GPS 待機** —— 外接失效自動切回並明說是誰在供位。',
+               '**New: a "Detailed" beacon status bar** showing what will actually trigger the '
+               'next report (active tier, seconds left, metres until the distance trigger, degrees '
+               'until the turn trigger). **New: heart-rate alarm** — an out-of-range reading raises '
+               'a warning and a notification, offering an emergency call or a help message to the 5 '
+               'closest stations within 100 km; it only warns, never acts for you. '
+               '**New: idle the phone GPS while an external GPS feeds data**, switching back and '
+               'saying so when the external source goes stale.')),
+            ('fix',
+             T('**修：公告更新后横幅重新出现；纯网络定位可单独选台站图标；2.0 未连接提示会说清'
+               '缺什么；赞助入口挪到「关于」上方**。**更新页三处**：渠道文案跟着当前渠道、'
+               '长日志默认折叠（可展开）、下载完成后按钮变成「安装」。**浮动面板与退出动画**：'
+               '面板高度与底部胶囊改用系统 UI 内边距（某些 ROM 上以前算成 0），'
+               '退出设置子页的「一片纯色然后消失」也修好了。',
+               '**修：公告更新後橫幅重新出現；純網路定位可單獨選臺站圖示；2.0 未連線提示會說清'
+               '缺什麼；贊助入口挪到「關於」上方**。**更新頁三處**：管道文案跟著目前管道、'
+               '長日誌預設摺叠（可展開）、下載完成後按鈕變成「安裝」。**浮動面板與退出動畫**：'
+               '面板高度與底部膠囊改用系統 UI 內距（某些 ROM 上以前算成 0），'
+               '退出設定子頁的「一片純色然後消失」也修好了。',
+               '**Fixes**: the notice banner reappears when the notice changes; network-only '
+               'positioning can use its own station icon; the 2.0 connection banner says what is '
+               'missing; the sponsors entry moved above "About". **Update page**: the channel text '
+               'follows the current channel, long release notes are collapsed by default, and the '
+               'button turns into "Install" after downloading. **Floating panels and the exit '
+               'animation**: panels and the bottom pill now use the system-UI inset (it used to '
+               'compute as 0 on some ROMs), and the "flat colour then gone" exit is fixed.')),
+        ],
+    },
+    {
         'ver': 'v2.0.6', 'date': '2026-09-28',
         'items': [
             ('new',

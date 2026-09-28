@@ -111,7 +111,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.6';
+  static const appVersion = '2.0.7';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -289,7 +289,10 @@ class AppState extends ChangeNotifier {
     myAccuracy = 0; // 佳明页面不给精度 → 0 = 未知（不画精度圈）
     if (p.altM != null) myAlt = p.altM;
     if (p.speedMps != null) mySpeed = p.speedMps! * 3.6;
-    if (p.hr != null && p.hr! > 0) myHr = p.hr;
+    if (p.hr != null && p.hr! > 0) {
+      myHr = p.hr;
+      _checkHrAlarm();
+    }
     // 航向：佳明的点里没有这个字段，用**前后两点**算（见 bearingDeg 的注释）。
     // 没有上一个点（首个点）时不改 —— 保留手机 GPS 的最后已知航向，比瞎指北好。
     final prev = _lastGarminPoint;
@@ -486,6 +489,163 @@ class AppState extends ChangeNotifier {
   /// 信标备注里是否带上**累计总里程**（`ODO:`，跨重启累计）。
   bool beaconIncludeTotalMileage = false;
 
+  /// 地图页上报状态栏的样式（issue #21-2）。
+  ///
+  /// * true（默认）= **详细**：多一行判据（当前档位 / 还差多少秒·多少米 /
+  ///   转弯还差多少度），并每秒刷新一次；
+  /// * false = **经典**：单行（状态文案 + 立即上报），不挂秒级刷新。
+  ///
+  /// 默认详细：用户提这条反馈时说的就是「想看到当前触发的是哪个条件」；
+  /// 不想要的人可以切回经典（与旧版观感一致）。
+  /// 外置 GPS（佳明 LiveTrack）新鲜期间，把**手机 GPS 停下来**（issue #21-4）。
+  ///
+  /// 用户的原话是「在有外置 GPS 信息输入的时候，不激活手机的 GPS；当外置 GPS
+  /// 失效时才激活手机 GPS 并替代，并发通知给用户，说明外置 GPS 失效」。
+  ///
+  /// 这里做成一个**可关的开关**，理由要说清楚：位置的优先级本来就已实现
+  /// （sim > garmin > phone，见 [positionSourceNow]），手机点根本抢不走手表的
+  /// 位置；这个开关多管一步 —— 干脆不让手机侧去点 GPS（省电）。
+  /// 而它带来的额外风险是「手表数据静默断供时，手机也没在定位」，所以
+  /// ① 默认开但可关；② 状态栏与日志都会明说现在是谁在供位（见 [_syncPhoneGps]）。
+  bool extGpsStandby = true;
+
+  /// 是否正因为外置 GPS 而停着手机定位（内部状态，不持久化）
+  bool _phoneGpsPaused = false;
+
+  void setExtGpsStandby(bool v) {
+    extGpsStandby = v;
+    persist();
+    _notify();
+  }
+
+  /// 每秒 tick 调一次：把手机定位的启停与外置源的鲜度对齐。
+  ///
+  /// 很便宜：只在**状态翻转**时才做事（不翻转时就是两次判断）。
+  void _syncPhoneGps() {
+    if (useSimLocation) return;
+    final ext = garmin.on && garmin.fresh;
+    if (extGpsStandby && ext && !_phoneGpsPaused) {
+      _phoneGpsPaused = true;
+      loc.stop();
+      locStatus = '外置 GPS 供位 · 手机 GPS 已待机';
+      _log(LogLevel.info, '定位', '外置 GPS（佳明）接管，手机 GPS 已待机');
+      return;
+    }
+    if (_phoneGpsPaused && (!ext || !extGpsStandby)) {
+      _phoneGpsPaused = false;
+      // 外置失效（或用户关掉了这个开关）：把手机 GPS 接回来，并**明确告诉用户**
+      // —— 否则「位置突然换了一批点」会被当成漂移故障。
+      locStatus = ext ? '手机 GPS 已接管' : '外置 GPS 已失效 · 改用手机 GPS';
+      _log(LogLevel.info, '定位',
+          ext ? '手机 GPS 已接管' : '外置 GPS 已失效，改用手机 GPS');
+      unawaited(startTracking());
+    }
+  }
+
+  // ─── 心率异常告警（issue #21-8）───
+  //
+  // 只做「发现异常 → 把入口摆到用户面前」，**不做任何自动拨号/自动发报**：
+  // 紧急电话与向附近台站发信息都必须由用户亲手按。理由：误报的代价不对称 ——
+  // 静默不动只是错过一次提醒，而自动发出去的 SOS 会让一群人真的出动。
+  bool hrAlarmEnabled = true;
+
+  /// 阈值（bpm）。这两条线是「明显不正常」，不是运动区间。
+  int hrAlarmHigh = 150;
+  int hrAlarmLow = 40;
+
+  /// 告警时建议拨的号码（issue #21-8）。默认 120。
+  ///
+  /// 做成可改而不是写死：不同地区/场景的急救号码并不相同（112 是多数 GSM 网络的
+  /// 通用紧急号码，也有人想把队友或家庭医生的号码放这里）。
+  String emergencyTel = '120';
+
+  void setEmergencyTel(String v) {
+    emergencyTel = v.trim().isEmpty ? '120' : v.trim();
+    persist();
+    _notify();
+  }
+
+  void setHrAlarmEnabled(bool v) {
+    hrAlarmEnabled = v;
+    if (!v) clearHrAlarm();
+    persist();
+    _notify();
+  }
+
+  void setHrAlarmThresholds({int? high, int? low}) {
+    if (high != null) hrAlarmHigh = high.clamp(80, 240);
+    if (low != null) hrAlarmLow = low.clamp(20, 100);
+    persist();
+    _notify();
+  }
+
+  /// 当前未关闭的告警读数（bpm）；null = 无告警。界面用它弹警告。
+  int? hrAlarm;
+
+  /// 告警序号：界面靠它区分「同一次告警不要反复弹窗」。
+  int hrAlarmSeq = 0;
+
+  DateTime _lastHrAlarm = DateTime.fromMillisecondsSinceEpoch(0);
+
+  static const Duration _kHrAlarmCooldown = Duration(minutes: 3);
+
+  void clearHrAlarm() {
+    if (hrAlarm == null) return;
+    hrAlarm = null;
+    _notify();
+  }
+
+  /// 每次心率读数更新后调。两个必须的抑制条件：
+  ///   * **刚才报过**（[_kHrAlarmCooldown] 内）不再报；
+  ///   * 读数**不新鲜**时不报（读数带没连、佳明没推时 [myHr] 会被清空，
+  ///     拿一个过期读数去报警比不报更糟）。
+  void _checkHrAlarm() {
+    if (!hrAlarmEnabled) return;
+    final b = myHr;
+    if (b == null || b <= 0) return;
+    final bool bad = b >= hrAlarmHigh || b <= hrAlarmLow;
+    if (!bad) {
+      // 恢复正常：把告警收起来（但**不**重置冷却，避免「刚到 150 又 149」
+      // 这种在阈值上下抖动时反复弹窗）。
+      if (hrAlarm != null) {
+        hrAlarm = null;
+        _notify();
+      }
+      return;
+    }
+    final now = DateTime.now();
+    if (now.difference(_lastHrAlarm) < _kHrAlarmCooldown) return;
+    _lastHrAlarm = now;
+    hrAlarm = b;
+    hrAlarmSeq++;
+    _log(LogLevel.warn, '心率', '心率异常：$b bpm（阈值 $hrAlarmLow~$hrAlarmHigh）');
+    _notify();
+  }
+
+  /// 我附近（[radiusKm] 内）的台站，按距离升序，最多 [limit] 条。
+  ///
+  /// 供「向附近台站发求助」用（issue #21-8）。与地图筛选不同：这里不看图层隐藏
+  /// 与接收国别 —— 那些是**显示**偏好，而求助要看的是「附近到底有谁」。
+  List<Station> nearbyStations(double radiusKm, {int limit = 5}) {
+    if (!myHasFix || myLat == null || myLng == null) return const [];
+    final lat = myLat!, lng = myLng!;
+    final out = <Station>[];
+    for (final s in stations) {
+      if (s.call == myFullCall) continue;
+      if (s.distKm(lat, lng) <= radiusKm) out.add(s);
+    }
+    out.sort((a, b) => a.distKm(lat, lng).compareTo(b.distKm(lat, lng)));
+    return out.length > limit ? out.sublist(0, limit) : out;
+  }
+
+  bool beaconBarDetailed = true;
+
+  void setBeaconBarDetailed(bool v) {
+    beaconBarDetailed = v;
+    persist();
+    _notify();
+  }
+
   /// 本次里程（公里）：从**本次开启信标**（或本次启动）起走过的距离。
   double tripMileageKm = 0;
 
@@ -631,7 +791,7 @@ class AppState extends ChangeNotifier {
     return hit ?? smartTiers.first;
   }
 
-  /// 实际生效的上报间隔：纯网络用专用固定间隔；智能信标按速度取档；否则固定间隔
+  /// 实际上报间隔（秒）：纯网络用专用固定间隔；智能信标按速度取档；否则固定间隔
   int get beaconIntervalNow => locationMode == 'network'
       ? beaconNetInterval
       : (activeSmartTier?.intervalSec ?? beaconInterval);
@@ -659,6 +819,38 @@ class AppState extends ChangeNotifier {
   /// 新基准。理由与实测数据见 lib/turn_dot.dart 的文件头。
   double get beaconTurnDeg => _turnDot.deviationDeg;
 
+  // ─── 上报状态栏（详细档）要用的几个量（issue #21-2）───
+  //
+  // 「还有一个判据离触发差多少」必须由 state 算，UI 不能自己拿门限去减：
+  // 门限有两个来源（智能档 / 固定间隔 / 纯网络），谁生效由 state 决定；
+  // 界面再算一遍就迟早会出现「显示还差 10 秒，实际永远不会发」那种漂移
+  // （本仓库在 beaconPhase 上已经踩过一次）。
+
+  /// 距上次**真的发出去**过了多少秒（没发过时返回 0）。
+  int get beaconSecsSinceLast {
+    final s = DateTime.now().difference(_lastBeacon).inSeconds;
+    return s > 0 ? s : 0;
+  }
+
+  /// 距离判据还差多少米（0 = 没开距离打点，或已经达到）。
+  double get beaconDistToGoM {
+    final need = beaconMinDistNow;
+    if (need <= 0 || !myHasFix) return 0;
+    final d = need - beaconDistMovedM;
+    return d > 0 ? d : 0;
+  }
+
+  /// 转弯判据的两个「闸」—— 在详细状态栏里要如实摆出来，否则用户会以为
+  /// 转个弯就发，而实际上低速（<5 km/h）与刚发过（<20s）时它根本不参与判断。
+  static const int turnGateSpeedKmh = 5;
+  static const int turnGateSec = 20;
+
+  /// 转弯判据的距离？不是 —— 是它距「可以参与判断」还差多少秒（0 = 已就绪）。
+  int get beaconTurnGateSecLeft {
+    final left = turnGateSec - beaconSecsSinceLast;
+    return left > 0 ? left : 0;
+  }
+
   /// 自上次**真的发出去**以来移动了多远（米）。
   ///
   /// 与 `_lastBeacon`（时间）成对：两者都在发送成功后更新，所以这个距离
@@ -671,10 +863,29 @@ class AppState extends ChangeNotifier {
     return haversine(la, ln, myLat!, myLng!) * 1000;
   }
 
+  /// 纯网络定位模式下使用的台站符号（issue #21-6）；空串 = 仍用 [mySymbol]。
+  ///
+  /// 为什么单独一个：网络点与 GPS 点精度差一个量级，而**符号是唯一能让别人
+  /// （与自己回头看轨迹时）分辨「这个位是网络标的」的字段**。
+  /// 默认空串 = 完全保持旧行为，不动老用户的报文。
+  String networkSymbol = '';
+
+  void setNetworkSymbol(String v) {
+    networkSymbol = v;
+    persist();
+    _notify();
+  }
+
   /// 实际生效的信标符号：智能档指定了符号则用之，否则用「我的符号」
   String get beaconSymbolNow {
     final tier = activeSmartTier;
     if (tier != null && tier.symbol.isNotEmpty) return tier.symbol;
+    // 纯网络定位时可以单独指定一个符号（issue #21-6）：网络点可能偏几百米到
+    // 几公里，用与 GPS 档不同的符号能让别人（与自己看历史轨迹时）一眼分出来
+    // 「这是网络定位标的位」。留空 = 仍然用 mySymbol（旧行为）。
+    if (locationMode == 'network' && networkSymbol.isNotEmpty) {
+      return networkSymbol;
+    }
     return mySymbol;
   }
 
@@ -1800,6 +2011,9 @@ class AppState extends ChangeNotifier {
 
   void setNoticeBanner(bool v) {
     noticeBanner = v;
+    // 关掉时**记下当时那一条的指纹**：以后拉到的公告只要不是这一条（= 更新了），
+    // 就自动重新显示横幅（见 [onNoticeLoaded]）。
+    if (!v) _noticeDismissedIdentity = noticeIdentity;
     persist();
     _notify();
   }
@@ -2012,6 +2226,51 @@ class AppState extends ChangeNotifier {
     updateChannel = c;
     persist();
     _notify();
+  }
+
+  // ─── 公告横幅：关闭的是哪一条（issue #21-5）───
+  //
+  // 用户要的是：**公告更新了，横幅要重新出现**。
+  //
+  // 光有一个开关做不到这件事：关掉 = `noticeBanner = false`，而“又发生了一条新公告”
+  // 与“用户就是不想看”是两件事（一个开关管两件事，就一定会顺此失彼）。
+  // 所以再加一个轻量的“已关闭的是哪一条”：存公告正文的指纹；指纹不同 = 来了新的，
+  // 就**自动把开关重新打开一次**（用户会再看到一次横幅，而不是永远错过）。
+  //
+  // 指纹不看时间戳：时间戳只说明“什么时候拉的”，正文才是内容本身
+  // （同一条公告重拉一次不应又把横幅弹出来）。
+  String noticeIdentity = '';
+
+  String _noticeDismissedIdentity = '';
+
+  void setNoticeBanner(bool v) {
+    noticeBanner = v;
+    if (!v) _noticeDismissedIdentity = noticeIdentity;
+    persist();
+    _notify();
+  }
+
+  /// 公告拉到（或缓存命中）时调。只存指纹；上次关掉的不是这一条 → 把开关短开。
+  void onNoticeLoaded(String body) {
+    if (body.trim().isEmpty) return;
+    noticeIdentity = _noticeIdentityOf(body);
+    if (noticeIdentity == _noticeDismissedIdentity) return;
+    if (!noticeBanner) {
+      noticeBanner = true;
+      _log(LogLevel.info, '公告', '公告已更新，横幅重新显示');
+    }
+    persist();
+    _notify();
+  }
+
+  /// 公告正文 → 指纹（FNV-1a，32 位）。只用来比“是不是同一条”，不是密码学哈希。
+  static String _noticeIdentityOf(String body) {
+    var h = 0x811c9dc5;
+    final t = body.trim();
+    for (final b in utf8.encode(t)) {
+      h = ((h ^ b) * 0x01000193) & 0xffffffff;
+    }
+    return '${t.length}-${h.toRadixString(16)}';
   }
 
   // ─── ADIF 导出选项 ───
@@ -2291,6 +2550,14 @@ class AppState extends ChangeNotifier {
       beaconAltOverrideM = p.getDouble('beaconAltOverrideM');
       aprsStatusText = p.getString('aprsStatusText') ?? aprsStatusText;
       beaconIncludeHr = p.getBool('beaconIncludeHr') ?? beaconIncludeHr;
+      beaconBarDetailed =
+          p.getBool('beaconBarDetailed') ?? beaconBarDetailed;
+      networkSymbol = p.getString('networkSymbol') ?? networkSymbol;
+      extGpsStandby = p.getBool('extGpsStandby') ?? extGpsStandby;
+      hrAlarmEnabled = p.getBool('hrAlarmEnabled') ?? hrAlarmEnabled;
+      hrAlarmHigh = p.getInt('hrAlarmHigh') ?? hrAlarmHigh;
+      hrAlarmLow = p.getInt('hrAlarmLow') ?? hrAlarmLow;
+      emergencyTel = p.getString('emergencyTel') ?? emergencyTel;
       beaconIncludeTripMileage =
           p.getBool('beaconIncludeTripMileage') ?? beaconIncludeTripMileage;
       beaconIncludeTotalMileage = p.getBool('beaconIncludeTotalMileage') ??
@@ -2534,6 +2801,13 @@ class AppState extends ChangeNotifier {
     }
     await p.setString('aprsStatusText', aprsStatusText);
     await p.setBool('beaconIncludeHr', beaconIncludeHr);
+    await p.setBool('beaconBarDetailed', beaconBarDetailed);
+    await p.setString('networkSymbol', networkSymbol);
+    await p.setBool('extGpsStandby', extGpsStandby);
+    await p.setBool('hrAlarmEnabled', hrAlarmEnabled);
+    await p.setInt('hrAlarmHigh', hrAlarmHigh);
+    await p.setInt('hrAlarmLow', hrAlarmLow);
+    await p.setString('emergencyTel', emergencyTel);
     await p.setBool('beaconIncludeTripMileage', beaconIncludeTripMileage);
     await p.setBool('beaconIncludeTotalMileage', beaconIncludeTotalMileage);
     await p.setDouble('totalMileageKm', totalMileageKm);
@@ -2688,6 +2962,7 @@ class AppState extends ChangeNotifier {
       } else if (!bleHr.connected && !(garmin.on && garmin.fresh)) {
         myHr = null;
       }
+      _checkHrAlarm();
       _notify();
     };
     // 佳明 LiveTrack：每个新点都当作一次「自己」的定位（见 _onGarminPoint）。
@@ -2733,6 +3008,9 @@ class AppState extends ChangeNotifier {
       // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
       if (_bumpStatusVersionIfChanged()) _notify();
       _checkStationAchievement();
+      // 外置 GPS（佳明）与手机 GPS 的启停对齐（issue #21-4）：很便宜，
+      // 只在状态翻转时做事，不需要再开一个定时器。
+      _syncPhoneGps();
       // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
       // 不再全量 _notify() 重建整个页面树
       tick.value++;
@@ -6581,6 +6859,10 @@ class AppState extends ChangeNotifier {
   void _updateNotification() {
     final l = l10n;
     final parts = <String>[];
+    // 心率异常告警也要进**系统通知**（issue #21-8 的「系统通知弹出警告」）：
+    // 弹窗在用户没看屏幕时是看不见的，而通知栏会一直挂着。
+    final hr = hrAlarm;
+    if (hr != null) parts.add('⚠ ${l.hrAlarmNotif('$hr')}');
     if (connected) {
       // TNC 模式：明确标出「射频」，否则用户会以为走的是网络，
       // 从而忽略「发射要在自己呼号/执照下操作」这件事。

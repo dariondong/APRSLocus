@@ -535,6 +535,101 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     );
   }
 
+  /// 选「纯网络定位时用的符号」（issue #21-6）。
+  ///
+  /// 与 [_showSymbolPicker] 共用同一张符号表（`_symCategories`），但**多一项**
+  /// 「跟随我的符号」：那块是 [AppState.networkSymbol] 为空串的语义，
+  /// 也是默认值（保持旧行为）。
+  Future<void> _pickNetSymbol() async {
+    final cats = _symCategories(S.of(context));
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(S.of(ctx).netSymbol, style: ts(16, w: FontWeight.w800)),
+                const SizedBox(height: 4),
+                Text(S.of(ctx).netSymbolHint,
+                    style: ts(11, c: C.grey, h: 1.4)),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => Navigator.pop(ctx, ''),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9),
+                    child: Row(children: [
+                      Icon(
+                        st.networkSymbol.isEmpty
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_off_rounded,
+                        size: 17,
+                        color: st.networkSymbol.isEmpty ? C.orange : C.greyLight,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(S.of(ctx).netSymbolFollow, style: ts(12)),
+                    ]),
+                  ),
+                ),
+                for (final cat in cats) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 2),
+                    child: Text(cat.$1, style: ts(11, c: C.grey, w: FontWeight.w700)),
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final sym in cat.$2)
+                        GestureDetector(
+                          onTap: () => Navigator.pop(ctx, sym.$1),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: st.networkSymbol == sym.$1
+                                  ? C.orange.withValues(alpha: 0.14)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: st.networkSymbol == sym.$1
+                                      ? C.orange
+                                      : C.border),
+                            ),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              _symIcon(sym.$1, sym.$2,
+                                  active: st.networkSymbol == sym.$1),
+                              const SizedBox(width: 6),
+                              Text(symName(S.of(ctx), sym.$1), style: ts(11)),
+                            ]),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    if (picked == null || !mounted) return;
+    st.setNetworkSymbol(picked);
+    setState(() {});
+  }
+
   Widget _symbolPicker() {
     // 名称已改走 l10n（见 symName），这里只做 符号码 → 图标 的查表
     final cats = _symCategories(S.of(context));
@@ -1293,6 +1388,23 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
                 SettingsHint(S.of(context).locModeNetworkHint)
               else
                 SettingsHint(S.of(context).locModeNetHint),
+              // 纯网络定位时的台站图标（issue #21-6）：只在纯网络模式下出现 ——
+              // 其它模式这个设置没有任何作用，摆出来只会让人以为是坏的。
+              if (st.locationMode == 'network')
+                SettingsNavRow(
+                  title: S.of(context).netSymbol,
+                  subtitle: S.of(context).netSymbolHint,
+                  icon: Icons.emoji_emotions_rounded,
+                  color: C.orange,
+                  trailing: st.networkSymbol.isEmpty
+                      ? S.of(context).netSymbolFollow
+                      : st.networkSymbol,
+                  onTap: () => unawaited(_pickNetSymbol()),
+                ),
+              // 外置 GPS 优先时让手机 GPS 待机（issue #21-4）
+              SettingsSwitch(S.of(context).extGpsStandby,
+                  value: st.extGpsStandby, onChanged: st.setExtGpsStandby),
+              SettingsHint(S.of(context).extGpsStandbyTip),
               SizedBox(height: 10),
             ],
           ),
@@ -1306,6 +1418,38 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
           children: [
             SettingsSwitch(S.of(context).beaconEnabled, value: st.beaconEnabled,
                 onChanged: st.setBeaconEnabled),
+            // 上报状态栏样式：经典（单行）/ 详细（多一行判据，每秒刷新）。
+            // 放在信标这一节里：它描述的就是「信标什么时候会发」。（issue #21-2）
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(S.of(context).beaconBarStyle,
+                        style: ts(12, c: C.slate, w: FontWeight.w600)),
+                  ),
+                  SegmentedButton<bool>(
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      textStyle: WidgetStatePropertyAll(ts(11)),
+                    ),
+                    segments: [
+                      ButtonSegment(
+                          value: false,
+                          label: Text(S.of(context).beaconBarClassic)),
+                      ButtonSegment(
+                          value: true,
+                          label: Text(S.of(context).beaconBarDetailedOption)),
+                    ],
+                    selected: {st.beaconBarDetailed},
+                    onSelectionChanged: (v) =>
+                        st.setBeaconBarDetailed(v.first),
+                  ),
+                ],
+              ),
+            ),
+            SettingsHint(S.of(context).beaconBarStyleTip),
             // 纯网络模式：没有可靠速度 → 智能信标 / 距离 / 转弯都不适用，
             // 改用**专用固定间隔**（见 AppState.beaconNetInterval）。
             if (st.locationMode == 'network')

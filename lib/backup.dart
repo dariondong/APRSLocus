@@ -68,6 +68,14 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 心率（BLE 心率带 / 佳明 LiveTrack 都会用到）：属于**信标内容偏好**，
     // 换机后当然希望还按自己调的那样上报。
     'beaconIncludeHr',
+    // 地图页上报状态栏的样式（经典 / 详细）：与其它显示偏好同类 ——
+    // 换机后当然希望屏幕还是自己调好的那副样子。
+    'beaconBarDetailed',
+    // 纯网络定位时的台站符号 + 外置 GPS 待机 + 心率异常告警：三者都是
+    // 「用户自己配的行为偏好」，换机后应当保留。
+    'networkSymbol', 'extGpsStandby',
+    'hrAlarmEnabled', 'hrAlarmHigh', 'hrAlarmLow',
+    'emergencyTel',
     // 里程附带（TRV/ODO）与累计总里程：属于「信标内容 + 累计数据」，
     // 换机后当然希望继续累计、按自己调的那样上报。
     'beaconIncludeTripMileage', 'beaconIncludeTotalMileage', 'totalMileageKm',

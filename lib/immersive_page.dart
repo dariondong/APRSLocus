@@ -162,6 +162,16 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
     });
   }
 
+  /// 把**屏幕**上的位移换算回画布坐标。
+  ///
+  /// 画布被 `Transform.rotate(_rot)` 转过了，手指的位移是屏幕方向的；
+  /// 直接累加到 pan 上，会变成「横屏导航时往左拖、地图往斜下方跑」。
+  /// 因为 `Transform.rotate(a)` 把画布映射到屏幕是乘 `R(a)`，所以反过来是 `R(-a)`。
+  static Offset _rotateDelta(Offset d, double a) {
+    final c = math.cos(a), s = math.sin(a);
+    return Offset(d.dx * c - d.dy * s, d.dx * s + d.dy * c);
+  }
+
   void _zoomBy(double dz) {
     final z = (_zoom + dz).clamp(3.0, 19.0);
     if (z == _zoom) return;
@@ -279,8 +289,22 @@ class _ImmersiveMapPageState extends State<ImmersiveMapPage>
                   zoom: _zoom,
                   pan: pan,
                   onPan: (d) => setState(() {
-                    _follow = false;
-                    _manualPan = _manualPan + d;
+                    // ── 拖动会「跳到北京」的根因就在这里（issue #21-1）──
+                    //
+                    // 跟随时 `_pan` 是**由我的位置实时算出**的，而 `_manualPan`
+                    // 一直是零（从来没人给它赋过值）。所以原来这一行：
+                    //   先 `_follow = false`，pan 立刻改读 `_manualPan`，
+                    //   而这个值是**空**的 —— 地图当场平移到投影基准点
+                    //   （`_baseLat/_baseLng` 写的是北京），也就是用户看到的
+                    //   「一拖就跑到北京」。
+                    //
+                    // 修法：切手动之前**先把当前视野接过来**（这一帧 `_pan` 还是
+                    // 跟随算出来的），然后才置 false。
+                    if (_follow) {
+                      _manualPan = _pan;
+                      _follow = false;
+                    }
+                    _manualPan = _manualPan + _rotateDelta(d, -_rot);
                   }),
                   onViewChanged: (z, p) => setState(() {
                     _follow = false;

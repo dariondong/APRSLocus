@@ -7360,4 +7360,151 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tncTxSerialHint => 'Guardado. Por defecto TX comparte el puerto de RX; usar otro puerto evita que dos descriptores compitan por un COM en Windows.';
 
+  @override
+  String beaconBarStyle => 'Barra de estado del beacon';
+
+  @override
+  String beaconBarClassic => 'Clásica';
+
+  @override
+  String beaconBarDetailedOption => 'Detallada';
+
+  @override
+  String beaconBarStyleTip => 'Clásica: una línea (estado + enviar ahora). Detallada: una línea extra con el nivel activo, los segundos restantes, los metros que faltan para el disparo por distancia y los grados para el de giro (se actualiza cada segundo).';
+
+  @override
+  String beaconBarTierNetwork => 'Posición por red · intervalo fijo';
+
+  @override
+  String beaconBarTierSmart => 'Nivel inteligente';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => 'Nivel inteligente · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => 'Intervalo fijo';
+
+  @override
+  String beaconBarTimeLeft(String time) => 'Tiempo {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => 'Distancia {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => 'Giro {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => 'Giro en espera · requiere ≥{speed} km/h';
+
+  @override
+  String beaconBarTurnWait(String time) => 'Giro en espera · listo en {time}';
+
+  @override
+  String netSymbol => 'Icono de estación con posición por red';
+
+  @override
+  String netSymbolHint => 'Las posiciones por red pueden desviarse cientos de metros o kilómetros; un icono distinto deja claro que la posición vino de la red. Por defecto sigue tu símbolo.';
+
+  @override
+  String netSymbolFollow => 'Seguir mi símbolo';
+
+  @override
+  String extGpsStandby => 'Poner en espera el GPS del teléfono mientras hay un GPS externo';
+
+  @override
+  String extGpsStandbyTip => 'Mientras un GPS externo (Garmin LiveTrack) envía datos, se detiene la ubicación del teléfono para ahorrar batería; cuando deja de llegar, el GPS del teléfono vuelve automáticamente y la barra de estado y el registro lo indican. Desactivarlo no puede dar una posición errónea: el origen externo ya tiene prioridad.';
+
+  @override
+  String sponsorEntry => 'Patrocinadores y agradecimientos';
+
+  @override
+  String sponsorEntryDesc => 'La lista y cómo apoyar (los servidores y el tráfico de mapas dependen de ello)';
+
+  @override
+  String connectingGitHub => 'Conectando con GitHub';
+
+  @override
+  String expandNotes => 'Mostrar todo';
+
+  @override
+  String collapseNotes => 'Contraer';
+
+  @override
+  String hrAlarmCard => 'Alarma de frecuencia cardíaca';
+
+  @override
+  String hrAlarmCardSub => 'Avisa cuando la lectura sale de rango; llamar o pedir ayuda a estaciones cercanas con un toque';
+
+  @override
+  String hrAlarmEnabled => 'Activar la alarma';
+
+  @override
+  String hrAlarmEnabledTip => 'Solo avisa, nunca actúa por ti: llamar y pedir ayuda requieren tu toque (una falsa alarma cuesta mucho más que una omitida). Solo se juzgan lecturas en vivo; una lectura antigua no la dispara.';
+
+  @override
+  String hrAlarmHighLabel => 'Límite superior (bpm)';
+
+  @override
+  String hrAlarmHighTip => 'Se dispara al alcanzar o superar este valor (80–240). Es "claramente anormal", no una zona de entrenamiento; no lo bajes de 150 para ejercicio normal.';
+
+  @override
+  String hrAlarmLowLabel => 'Límite inferior (bpm)';
+
+  @override
+  String hrAlarmLowTip => 'Se dispara al alcanzar o bajar de este valor (20–100). Si tu frecuencia en reposo es naturalmente baja, consulta a un médico antes de cambiarlo.';
+
+  @override
+  String hrAlarmTelLabel => 'Número de emergencia';
+
+  @override
+  String hrAlarmTelTip => 'El número que se marca desde la alarma; por defecto 120. Cámbialo a 112 o al de un compañero según necesites.';
+
+  @override
+  String hrAlarmTitle => 'Frecuencia cardíaca anormal';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => 'La frecuencia {bpm} bpm está fuera de tu rango {low}–{high}.\n\nSi te sientes mal, llama ya a emergencias. También puedes enviar un mensaje de ayuda a las estaciones en 100 km.';
+
+  @override
+  String hrAlarmDismiss => 'Estoy bien';
+
+  @override
+  String hrAlarmCall => 'Llamar a emergencias';
+
+  @override
+  String hrAlarmSendNearby => 'Pedir ayuda a estaciones cercanas';
+
+  @override
+  String hrAlarmNoDialer => 'Este dispositivo no puede llamar';
+
+  @override
+  String hrAlarmNoNearby => 'No hay estaciones conocidas en 100 km';
+
+  @override
+  String hrAlarmSendConfirmTitle => '¿Enviar la petición?';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => 'Se enviará un mensaje a cada una de las {n} estaciones más cercanas:\n{calls}\n\nAparecerán en sus dispositivos; confirma antes de enviar.';
+
+  @override
+  String hrAlarmSent(String n) => 'Petición de ayuda enviada a {n} estación(es)';
+
+  @override
+  String hrAlarmNotif(String bpm) => 'FC anormal {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => 'GPS externo activo · GPS del teléfono en espera';
+
+  @override
+  String get locExtGpsLost => 'GPS externo perdido · usando el del teléfono';
+
+  @override
+  String get locPhoneGpsActive => 'El GPS del teléfono tomó el control';
+
+  @override
+  String get linkNoServer => 'Aún no hay servidor · toca para configurarlo';
+
+  @override
+  String get linkNoPasscode => 'Aún no hay código · toca para configurarlo';
+
 }

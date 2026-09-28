@@ -1,5 +1,107 @@
 # 更新日志
 
+## [2.0.7] - 2026-09-28
+
+### 🐛 修：沉浸地图一拖就跳回北京
+
+沉浸式导航页跟着你走时，视野是**按你的位置实时算**出来的；一旦开始手动拖动，
+那个「跟随时用的偏移量」从来没有交给手动模式 —— 于是拖动的那一瞬间地图平移到了
+投影基准点（代码里写的是北京天安门），也就是「一拖就跑到北京」。现在拖动会先从
+当前视野接手，再切手动。顺带把**旋转**算进去：横屏导航时航向朝上，屏幕上的位移要
+先换算回画布方向再累加，否则「往哪拖就往斜里跑」。
+
+### 📊 新：地图页上报状态栏可以切成「详细」
+
+详细档多一行**当前触发条件**：现在是哪一档（智能档按速度区间 / 固定间隔 / 纯网络固定）、
+还有多少秒、距离打点还差多少米、转弯还差多少度。转弯那两个「闸」也如实摆出来 ——
+速度不到 5 km/h 或距上次上报不到 20 秒时它根本不参与判断，不写出来会让人以为功能失灵。
+
+刷新频次只给那一行（秒级 tick），面板和地图不跟着每秒重建。
+不想要的人在**电台设置 → 信标**里切回「经典」即可。
+
+### 🆘 新：心率异常告警
+
+连了外置心率设备时，读数越过你设的上/下限会弹警告，并出现在系统通知栏。警告里给两条路：
+**拨打紧急电话**（号码可改，默认 120）与**向附近台站求助**（取 100 公里内最近的 5 个台站
+各发一条消息，正文简到 `SOS HR=… 坐标`，避免撞上 67 字符上限）。
+
+两条刻意的约束：**它只提醒，不代替你行动** —— 拨号与发求助都必须你亲手按；
+**读数过期时不报警**。误报的代价是不对称的：静默不动只是错过一次提醒，
+而自动发出去的 SOS 会让一群人真的出动。
+
+阈值、号码、开关都在**设置 → 设备 → 心率**。
+
+### 🛰 新：外置 GPS 优先时手机 GPS 待机
+
+外置 GPS（佳明 LiveTrack）在推数据时，停掉手机定位以省电；外置失效时自动切回手机 GPS，
+并在状态栏、日志与通知里**明说现在是谁在供位**（写清「外置 GPS 已失效」，
+而不是让用户看到位置突然换了一批点却不知道发生了什么）。
+关掉它也不会让位置变错 —— 位置优先级本来就是「外置优先」。
+
+### 🔄 修与改：公告、网络定位符号、未连接提示、赞助入口
+
+- **公告更新后横幅会重新出现**。以前关掉横幅 = 关掉一个开关，将来真出了新公告也永远
+  看不到；现在「关掉的是哪一条」也记着（公告正文指纹），内容变了就重新显示一次。
+- **纯网络定位可以单独选台站图标**：网络点可能偏几百米到几公里，换个图标让旁人一眼
+  看出「这是网络标的位」。默认跟随「我的符号」。
+- **2.0 主页的未连接提示会说清缺什么**：服务器地址或验证码没填时直接写出来 ——
+  这种情况点多少次「连接」都不会成功，只写「未连接」等于让用户白查设置。
+- **赞助与鸣谢入口挪到设置页「关于」上方**，并带上说明（以前藏在关于页第二屏）。
+
+### 🔧 修：更新页三处
+
+- 渠道文案跟着当前渠道走（默认已是 GitHub，而这里一直写死「GitCode」）。
+- **长更新日志默认折叠**（只露前 8 行，可展开）：几十行整段铺开会把「立即下载」挤出屏幕。
+- **下载完成后按钮变成「安装 / 运行安装程序」**，而不是消失让用户去下面找入口。
+
+### 🔧 修：浮动面板与退出动画（上一版的追加反馈）
+
+- **三大金刚键压住浮动面板**：面板可用高度与底部胶囊的位置改用「系统 UI 内边距」
+  （取 `padding` 与 `viewPadding` 的较大值，但键盘弹出时只用前者），
+  某些只报 `viewPadding` 的 ROM 上以前会算成 0。
+- **退出设置子页「没有动画、一片纯色然后消失」**：上一版给转场加的那份「底」画在了
+  动画之外，整段退出期间都把底下的地图盖着。现在它画在**页面自己的子树里**，
+  跟着页面一起动 —— 退出时地图是被逐渐露出的，退回动画也就回来了。
+  （对应的静态检查器也重写了断言，并用回归样本验证过会报红。）
+
+## [2.0.7] - 2026-09-28 (English)
+
+### 🐛 Fix: dragging the immersive map jumped to Beijing
+
+The immersive navigation page derives its viewport from your live position. That follow-mode offset was never handed over to manual mode, so the instant you dragged, the map pitched to the projection's base point (Beijing — hence "drag and it jumps to Beijing"). Dragging now picks up the current viewport first, and the map's rotation is handled too: with the heading pointing up, a screen-space drag has to be converted back into canvas space, otherwise it goes off at an angle.
+
+### 📊 New: the beacon status bar can be switched to "Detailed"
+
+Detailed mode adds a line showing what will actually trigger the next report: the active tier (smart tier by speed range / fixed interval / network-only interval), the seconds left, how many metres the distance trigger still needs, and how many degrees the turn trigger still needs. The turn trigger's two gates are spelled out as well — it is ignored below 5 km/h and within 20 s of the last report, and hiding that makes the feature look broken. Only that one line refreshes each second; the panel and the map are not rebuilt with it. Switch back to "Classic" under **Station settings → Beacon**.
+
+### 🆘 New: heart-rate alarm
+
+With an external heart-rate device connected, a reading outside your upper/lower limits raises a warning dialog and a notification. It offers two paths: **call emergency services** (number configurable, 120 by default) and **ask nearby stations** (the 5 closest within 100 km, each getting a short `SOS HR=… position` message to stay under the 67-character limit).
+
+Two deliberate constraints: it only warns — **it never acts for you**, since calling and asking for help both require your own tap; and it never fires on a stale reading. The cost of a false alarm is asymmetric: staying silent merely misses one reminder, while an automatically transmitted SOS sends people out. Thresholds, number and the switch live in **Settings → Devices → Heart rate**.
+
+### 🛰 New: idle the phone GPS while an external GPS is feeding data
+
+While an external GPS (Garmin LiveTrack) is supplying position, the phone location is stopped to save power; when it goes stale the phone GPS takes over and the status line, log and notification **say so explicitly** ("external GPS lost") instead of the position quietly changing source. Turning this off cannot make the position wrong — the external source is already preferred.
+
+### 🔄 Fixes and changes: notice banner, network symbol, connection hint, sponsors
+
+- **The notice banner comes back when the notice changes.** Dismissing it used to just turn off a switch, so a future notice would never be seen. The banner now also remembers *which* notice was dismissed (a fingerprint of the body) and reappears once the content changes.
+- **A separate station icon for network-only positioning**: network fixes can be off by hundreds of metres to kilometres, and a distinct icon makes that obvious to others. Defaults to following your own symbol.
+- **The 2.0 home connection banner now says what is missing** (server address or passcode) instead of only repeating "not connected" — in that state tapping connect can never succeed.
+- **The sponsors entry moved above "About"** in Settings, with a description (it used to be buried on the second screen of the About page).
+
+### 🔧 Fixes on the update page
+
+- The channel text follows the current channel (GitHub is the default now, but the line still said "GitCode").
+- **Long release notes are collapsed by default** (first 8 lines, expandable): dozens of lines push the download button off screen.
+- **After downloading, the button becomes "Install / Run installer"** instead of disappearing and sending you hunting for the entry below.
+
+### 🔧 Fixes: floating panels and the exit animation (follow-up feedback)
+
+- **The navigation bar covered floating panels.** Panel height and the bottom pill now use the system-UI inset, taking the larger of `padding` and `viewPadding` (falling back to `padding` while the keyboard is up) — some ROMs only report `viewPadding`, where this used to compute as 0.
+- **Leaving a settings sub-page showed "no animation, just a flat colour, then gone".** The backdrop added in the last version was painted outside the animation, covering the map for the whole exit. It now lives inside the page's own subtree and moves with the page, so the map underneath is progressively revealed. (The static checker for that backdrop was rewritten too, and verified against regression samples.)
+
 ## [2.0.6] - 2026-09-28
 
 ### 📈 新：历史轨迹折线图 + 心率记录

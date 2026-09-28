@@ -362,9 +362,24 @@ class _HomeShell2State extends State<HomeShell2>
     setState(() {});
   }
 
-  /// 底部导航占的总高度（含安全区与下边距）
+  /// 系统导航栏（三大金刚键 / 手势条）占的高度。
+  ///
+  /// 用 `max(padding.bottom, viewPadding.bottom)`，但**键盘弹出时只用
+  /// padding.bottom**：那时 window 被键盘顶起，而 viewPadding 依旧是“键盘不
+  /// 可见时会有的内边距”（等于导航栏高度）—— 拿它算，胶囊会凭空浮在键盘上方
+  /// 一段。反过来，只信 padding 又会在某些 ROM 上拿到 0（它们只报 viewPadding）。
+  ///
+  /// 用户报的「三大金刚键压住浮动面板 / 底部按钮」（issue #12）就是后者：
+  /// 面板的可用高度是拿这个值算出来的，算成 0 就会把内容伸到导航栏底下。
+  double _sysBottom(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final pad = mq.padding.bottom;
+    if (mq.viewInsets.bottom > 0) return pad;
+    final vp = mq.viewPadding.bottom;
+    return vp > pad ? vp : pad;
+  }
   double _navSpace(BuildContext context) =>
-      _kNav + MediaQuery.of(context).padding.bottom + _kGutter;
+      _kNav + _sysBottom(context) + _kGutter;
 
   /// 顶栏占的高度（顶部安全区 + 栏高 + 间隙），同时是地图顶部让位量与面板上限
   double _topInset() => MediaQuery.of(context).padding.top + 6 + _barH + 8;
@@ -620,7 +635,9 @@ class _HomeShell2State extends State<HomeShell2>
           Positioned(
             left: _kGutter,
             right: _kGutter,
-            bottom: pad.bottom + _kGutter,
+            // 与 _navSpace 同一口径（见 _sysBottom）：否则胶囊会半截压在
+            // 三大金刚键底下（issue #12）。
+            bottom: _sysBottom(context) + _kGutter,
             child: _navBar(),
           ),
 
@@ -1000,7 +1017,9 @@ class _HomeShell2State extends State<HomeShell2>
             ? size.width * 0.34
             : mapCap)
         .clamp(240.0, 560.0);
-    final double paneBottom = _kGutter + pad.bottom;
+    // 系统导航栏（横屏时在手势条一侧/底部）—— 用 _sysBottom 而不是裸的
+    // pad.bottom：某些 ROM 只报 viewPadding，裸读会算成 0（issue #12）。
+    final double paneBottom = _kGutter + _sysBottom(context);
     final bool showPane = _tab != 0;
     // 地图贴左控件要避开的宽度：竖条 + 间距，加上展开时**压在地图上**的内容面板。
     // 不让开的话，信息条/沉浸入口/上报横杠/底部坐标条会压在工作区背后。
@@ -1330,6 +1349,20 @@ class _HomeShell2State extends State<HomeShell2>
   bool _showLinkBanner(AppState st) =>
       !st.connected && !st.connecting && !st.readOnlyMode;
 
+  /// 未连接横幅的副文案：**说清现在缺什么**（issue #21-3）。
+  ///
+  /// 判据只看「必然导致连不上」的两项（服务器地址、验证码），不看上次失败原因 ——
+  /// 后者可能是几小时前的网络抖动，写在这里会让人以为现在还是那个原因。
+  String _linkReason(AppState st) {
+    final s = S.of(context);
+    // 服务器/验证码都在 `aprs`（连接配置）里，不在 AppState 上直接暴露。
+    if (st.aprs.server.trim().isEmpty) return s.linkNoServer;
+    // 只看**空**：APRS 默认的 `-1` 是合法的「只收不发」验证码，它不会让连接失败，
+    // 把它也判成“没填”会给出一个错误的指引。
+    if (st.aprs.passcode.trim().isEmpty) return s.linkNoPasscode;
+    return s.connectNearbyDesc;
+  }
+
   /// **未连接横幅**：把「现在发不出去」这件事明确说出来，并给一个能立刻点的动作。
   ///
   /// 为什么需要（用户反馈「强化未连接提示」）：2.0 里连接状态只由右上角那颗
@@ -1373,7 +1406,10 @@ class _HomeShell2State extends State<HomeShell2>
                           style: ts(11, w: FontWeight.w700, h: 1.1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
-                      Text(s.connectNearbyDesc,
+                      // 副文案改成**说清现在缺什么**（issue #21-3）：2.0 里这条
+                      // 横幅原来只重复一句「未连接」，用户点进设置也不知道该改哪一
+                      // 项 —— 服务器地址/验证码没填时点多少次连接都不会成功。
+                      Text(_linkReason(st),
                           style: ts(9, c: C.grey, h: 1.1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),

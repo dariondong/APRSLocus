@@ -7310,4 +7310,151 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tncTxSerialHint => 'Saved. By default TX shares the RX port; a separate port avoids two handles fighting over one COM port on Windows.';
 
+  @override
+  String beaconBarStyle => 'Beacon status bar';
+
+  @override
+  String beaconBarClassic => 'Classic';
+
+  @override
+  String beaconBarDetailedOption => 'Detailed';
+
+  @override
+  String beaconBarStyleTip => 'Classic: one line (status + send now). Detailed: an extra line showing which tier is active, the seconds left, how many metres the distance trigger still needs, and how many degrees the turn trigger still needs — refreshed once a second.';
+
+  @override
+  String beaconBarTierNetwork => 'Network fix · fixed interval';
+
+  @override
+  String beaconBarTierSmart => 'Smart tier';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => 'Smart tier · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => 'Fixed interval';
+
+  @override
+  String beaconBarTimeLeft(String time) => 'Time {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => 'Distance {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => 'Turn {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => 'Turn on hold · needs ≥{speed} km/h';
+
+  @override
+  String beaconBarTurnWait(String time) => 'Turn on hold · ready in {time}';
+
+  @override
+  String netSymbol => 'Station icon for network fixes';
+
+  @override
+  String netSymbolHint => 'Network fixes can be off by hundreds of metres to kilometres; a distinct icon makes it obvious that the position came from the network. Defaults to following your own symbol.';
+
+  @override
+  String netSymbolFollow => 'Follow my symbol';
+
+  @override
+  String extGpsStandby => 'Idle the phone GPS while an external GPS is active';
+
+  @override
+  String extGpsStandbyTip => 'While an external GPS (Garmin LiveTrack) is feeding data, stop the phone location to save power; when it goes stale the phone GPS takes over automatically, and the status line and log say so. Turning this off cannot make the position wrong — the external source is already preferred.';
+
+  @override
+  String sponsorEntry => 'Sponsors & thanks';
+
+  @override
+  String sponsorEntryDesc => 'The list and how to support (servers and map traffic depend on it)';
+
+  @override
+  String connectingGitHub => 'Connecting to GitHub';
+
+  @override
+  String expandNotes => 'Show all';
+
+  @override
+  String collapseNotes => 'Collapse';
+
+  @override
+  String hrAlarmCard => 'Heart-rate alarm';
+
+  @override
+  String hrAlarmCardSub => 'Warn when the reading goes out of range; call or ask nearby stations with one tap';
+
+  @override
+  String hrAlarmEnabled => 'Enable the alarm';
+
+  @override
+  String hrAlarmEnabledTip => 'It only warns — it never acts for you: calling and asking for help both require your tap (a false alarm is far more costly than a missed one). Only live readings are judged; a stale reading never triggers it.';
+
+  @override
+  String hrAlarmHighLabel => 'Upper limit (bpm)';
+
+  @override
+  String hrAlarmHighTip => 'Trigger at or above this value (80–240). This is "clearly abnormal", not a training zone — do not set it below 150 for ordinary exercise.';
+
+  @override
+  String hrAlarmLowLabel => 'Lower limit (bpm)';
+
+  @override
+  String hrAlarmLowTip => 'Trigger at or below this value (20–100). If your resting rate is naturally low, check with a doctor before changing it.';
+
+  @override
+  String hrAlarmTelLabel => 'Emergency number';
+
+  @override
+  String hrAlarmTelTip => 'The number dialled from the alarm; defaults to 120. Change it to 112 or a teammate\'s number as needed.';
+
+  @override
+  String hrAlarmTitle => 'Abnormal heart rate';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => 'Heart rate {bpm} bpm is outside your {low}–{high} range.\n\nIf you feel unwell, call emergency services now. You can also send a help message to stations within 100 km — nearby hams will see it.';
+
+  @override
+  String hrAlarmDismiss => 'I\'m fine';
+
+  @override
+  String hrAlarmCall => 'Call emergency';
+
+  @override
+  String hrAlarmSendNearby => 'Ask nearby stations';
+
+  @override
+  String hrAlarmNoDialer => 'This device cannot make calls';
+
+  @override
+  String hrAlarmNoNearby => 'No known stations within 100 km';
+
+  @override
+  String hrAlarmSendConfirmTitle => 'Send the request?';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => 'One message will be sent to each of the nearest {n} stations:\n{calls}\n\nThese will show up on their devices — please confirm.';
+
+  @override
+  String hrAlarmSent(String n) => 'Help request sent to {n} station(s)';
+
+  @override
+  String hrAlarmNotif(String bpm) => 'Abnormal HR {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => 'External GPS active · phone GPS idle';
+
+  @override
+  String get locExtGpsLost => 'External GPS lost · using phone GPS';
+
+  @override
+  String get locPhoneGpsActive => 'Phone GPS took over';
+
+  @override
+  String get linkNoServer => 'No server address yet · tap to set it up';
+
+  @override
+  String get linkNoPasscode => 'No passcode yet · tap to set it up';
+
 }

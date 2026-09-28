@@ -12659,6 +12659,153 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String get tncTxSerialHint;
 
+  /// In zh, this message translates to:
+  String beaconBarStyle;
+
+  /// In zh, this message translates to:
+  String beaconBarClassic;
+
+  /// In zh, this message translates to:
+  String beaconBarDetailedOption;
+
+  /// In zh, this message translates to:
+  String beaconBarStyleTip;
+
+  /// In zh, this message translates to:
+  String beaconBarTierNetwork;
+
+  /// In zh, this message translates to:
+  String beaconBarTierSmart;
+
+  /// In zh, this message translates to:
+  String beaconBarTierSmartFrom(String speed);
+
+  /// In zh, this message translates to:
+  String beaconBarTierFixed;
+
+  /// In zh, this message translates to:
+  String beaconBarTimeLeft(String time);
+
+  /// In zh, this message translates to:
+  String beaconBarDistLeft(String dist);
+
+  /// In zh, this message translates to:
+  String beaconBarTurnLeft(String cur, String need);
+
+  /// In zh, this message translates to:
+  String beaconBarTurnLowSpeed(String speed);
+
+  /// In zh, this message translates to:
+  String beaconBarTurnWait(String time);
+
+  /// In zh, this message translates to:
+  String netSymbol;
+
+  /// In zh, this message translates to:
+  String netSymbolHint;
+
+  /// In zh, this message translates to:
+  String netSymbolFollow;
+
+  /// In zh, this message translates to:
+  String extGpsStandby;
+
+  /// In zh, this message translates to:
+  String extGpsStandbyTip;
+
+  /// In zh, this message translates to:
+  String sponsorEntry;
+
+  /// In zh, this message translates to:
+  String sponsorEntryDesc;
+
+  /// In zh, this message translates to:
+  String connectingGitHub;
+
+  /// In zh, this message translates to:
+  String expandNotes;
+
+  /// In zh, this message translates to:
+  String collapseNotes;
+
+  /// In zh, this message translates to:
+  String hrAlarmCard;
+
+  /// In zh, this message translates to:
+  String hrAlarmCardSub;
+
+  /// In zh, this message translates to:
+  String hrAlarmEnabled;
+
+  /// In zh, this message translates to:
+  String hrAlarmEnabledTip;
+
+  /// In zh, this message translates to:
+  String hrAlarmHighLabel;
+
+  /// In zh, this message translates to:
+  String hrAlarmHighTip;
+
+  /// In zh, this message translates to:
+  String hrAlarmLowLabel;
+
+  /// In zh, this message translates to:
+  String hrAlarmLowTip;
+
+  /// In zh, this message translates to:
+  String hrAlarmTelLabel;
+
+  /// In zh, this message translates to:
+  String hrAlarmTelTip;
+
+  /// In zh, this message translates to:
+  String hrAlarmTitle;
+
+  /// In zh, this message translates to:
+  String hrAlarmBody(String bpm, String low, String high);
+
+  /// In zh, this message translates to:
+  String hrAlarmDismiss;
+
+  /// In zh, this message translates to:
+  String hrAlarmCall;
+
+  /// In zh, this message translates to:
+  String hrAlarmSendNearby;
+
+  /// In zh, this message translates to:
+  String hrAlarmNoDialer;
+
+  /// In zh, this message translates to:
+  String hrAlarmNoNearby;
+
+  /// In zh, this message translates to:
+  String hrAlarmSendConfirmTitle;
+
+  /// In zh, this message translates to:
+  String hrAlarmSendConfirmBody(String n, String calls);
+
+  /// In zh, this message translates to:
+  String hrAlarmSent(String n);
+
+  /// In zh, this message translates to:
+  String hrAlarmNotif(String bpm);
+
+  /// In zh, this message translates to:
+  String locExtGpsActive;
+
+  /// In zh, this message translates to:
+  String locExtGpsLost;
+
+  /// In zh, this message translates to:
+  String locPhoneGpsActive;
+
+  /// In zh, this message translates to:
+  String linkNoServer;
+
+  /// In zh, this message translates to:
+  String linkNoPasscode;
+
 }
 
 class _AppLocalizationsDelegate

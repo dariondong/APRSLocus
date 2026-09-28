@@ -7009,6 +7009,153 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get tncTxSerialHint => '已保存。默认与接收共用一个口；分开口可避免 Windows 上读写争用同一 COM 口。';
 
+  @override
+  String beaconBarStyle => '上报状态栏';
+
+  @override
+  String beaconBarClassic => '经典';
+
+  @override
+  String beaconBarDetailedOption => '详细';
+
+  @override
+  String beaconBarStyleTip => '经典＝一行（状态 + 立即上报）；详细＝多一行判据：当前档位、还差多少秒、距离打点还差多少米、转弯还差多少度，并每秒刷新一次。';
+
+  @override
+  String beaconBarTierNetwork => '网络定位固定间隔';
+
+  @override
+  String beaconBarTierSmart => '智能档';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => '智能档 · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => '固定间隔';
+
+  @override
+  String beaconBarTimeLeft(String time) => '时间 {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => '距离 {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => '转弯 {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => '转弯待机 · 需 ≥{speed} km/h';
+
+  @override
+  String beaconBarTurnWait(String time) => '转弯待机 · {time} 后可判';
+
+  @override
+  String netSymbol => '网络定位时的台站图标';
+
+  @override
+  String netSymbolHint => '纯网络定位的点可能偏几百米到几公里，换一个图标能让别人一眼看出「这是网络标的位」。默认跟随「我的符号」。';
+
+  @override
+  String netSymbolFollow => '跟随我的符号';
+
+  @override
+  String extGpsStandby => '外置 GPS 优先时手机 GPS 待机';
+
+  @override
+  String extGpsStandbyTip => '外置 GPS（佳明 LiveTrack）在推数据时，停掉手机的定位以省电；外置失效时会自动切回手机 GPS，并在状态栏与日志里说明。关掉它也不会让位置变错——位置优先级本来就是「外置优先」。';
+
+  @override
+  String sponsorEntry => '赞助与鸣谢';
+
+  @override
+  String sponsorEntryDesc => '名单与赞助方式（服务器与地图流量都靠它）';
+
+  @override
+  String connectingGitHub => '正在连接 GitHub';
+
+  @override
+  String expandNotes => '展开全部';
+
+  @override
+  String collapseNotes => '收起';
+
+  @override
+  String hrAlarmCard => '心率异常告警';
+
+  @override
+  String hrAlarmCardSub => '读数越界时弹警告，可一键拨号或向附近台站求助';
+
+  @override
+  String hrAlarmEnabled => '启用异常告警';
+
+  @override
+  String hrAlarmEnabledTip => '只提醒，不代替你行动：拨号与发求助都必须你亲手按（误报的代价不对称）。判定用的是实时读数，读数过期时不会报警。';
+
+  @override
+  String hrAlarmHighLabel => '上限（bpm）';
+
+  @override
+  String hrAlarmHighTip => '读数达到或超过它即告警。取值 80~240。这是「明显不正常」而非运动区间，普通运动心率不该设在 150 以下。';
+
+  @override
+  String hrAlarmLowLabel => '下限（bpm）';
+
+  @override
+  String hrAlarmLowTip => '读数达到或低于它即告警（取值 20~100）。静息心率偏低的人应向医生确认后再改这个值。';
+
+  @override
+  String hrAlarmTelLabel => '紧急号码';
+
+  @override
+  String hrAlarmTelTip => '告警时「拨打」用这个号码，默认 120。不同地区/场景可以改成 112 或队友的号码。';
+
+  @override
+  String hrAlarmTitle => '心率异常';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => '检测到心率 {bpm} bpm，超出你设置的 {low}~{high} 范围。\n\n如果身体不适，请立即拨打急救电话；也可以向附近 100 公里内的台站发出求助信息，附近有火腿收到就能看到。';
+
+  @override
+  String hrAlarmDismiss => '我没事';
+
+  @override
+  String hrAlarmCall => '拨打急救电话';
+
+  @override
+  String hrAlarmSendNearby => '向附近台站求助';
+
+  @override
+  String hrAlarmNoDialer => '这台设备不能打电话';
+
+  @override
+  String hrAlarmNoNearby => '附近 100 公里内没有已知台站';
+
+  @override
+  String hrAlarmSendConfirmTitle => '确认发送求助';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => '将向最近的 {n} 个台站各发一条消息：\n{calls}\n\n这些消息会出现在对方的手机上，请确认后再发。';
+
+  @override
+  String hrAlarmSent(String n) => '已向 {n} 个台站发出求助';
+
+  @override
+  String hrAlarmNotif(String bpm) => '心率异常 {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => '外置 GPS 供位 · 手机 GPS 已待机';
+
+  @override
+  String get locExtGpsLost => '外置 GPS 已失效 · 改用手机 GPS';
+
+  @override
+  String get locPhoneGpsActive => '手机 GPS 已接管';
+
+  @override
+  String get linkNoServer => '还没填服务器地址 · 点一下去设置里填';
+
+  @override
+  String get linkNoPasscode => '还没填验证码 · 点一下去设置里填';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14014,5 +14161,152 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get tncTxSerialHint => '已儲存。預設與接收共用一個埠；分開埠可避免 Windows 上讀寫爭用同一 COM 埠。';
+
+  @override
+  String beaconBarStyle => '上報狀態列';
+
+  @override
+  String beaconBarClassic => '經典';
+
+  @override
+  String beaconBarDetailedOption => '詳細';
+
+  @override
+  String beaconBarStyleTip => '經典＝一行（狀態 + 立即上報）；詳細＝多一行判據：目前檔位、還差多少秒、距離打點還差多少公尺、轉彎還差多少度，並每秒更新一次。';
+
+  @override
+  String beaconBarTierNetwork => '網路定位固定間隔';
+
+  @override
+  String beaconBarTierSmart => '智能檔';
+
+  @override
+  String beaconBarTierSmartFrom(String speed) => '智能檔 · ≥{speed} km/h';
+
+  @override
+  String beaconBarTierFixed => '固定間隔';
+
+  @override
+  String beaconBarTimeLeft(String time) => '時間 {time}';
+
+  @override
+  String beaconBarDistLeft(String dist) => '距離 {dist}';
+
+  @override
+  String beaconBarTurnLeft(String cur, String need) => '轉彎 {cur}° / {need}°';
+
+  @override
+  String beaconBarTurnLowSpeed(String speed) => '轉彎待機 · 需 ≥{speed} km/h';
+
+  @override
+  String beaconBarTurnWait(String time) => '轉彎待機 · {time} 後可判';
+
+  @override
+  String netSymbol => '網路定位時的臺站圖示';
+
+  @override
+  String netSymbolHint => '純網路定位的點可能偏幾百公尺到幾公里，換一個圖示能讓別人一眼看出「這是網路標的位」。預設跟隨「我的符號」。';
+
+  @override
+  String netSymbolFollow => '跟隨我的符號';
+
+  @override
+  String extGpsStandby => '外接 GPS 優先時手機 GPS 待機';
+
+  @override
+  String extGpsStandbyTip => '外接 GPS（Garmin LiveTrack）推送資料時，停掉手機的定位以省電；外接失效時會自動切回手機 GPS，並在狀態列與日誌中說明。關掉它也不會讓位置變錯——位置優先順序本來就是「外接優先」。';
+
+  @override
+  String sponsorEntry => '贊助與鳴謝';
+
+  @override
+  String sponsorEntryDesc => '名單與贊助方式（伺服器與地圖流量都靠它）';
+
+  @override
+  String connectingGitHub => '正在連線 GitHub';
+
+  @override
+  String expandNotes => '展開全部';
+
+  @override
+  String collapseNotes => '收合';
+
+  @override
+  String hrAlarmCard => '心率異常告警';
+
+  @override
+  String hrAlarmCardSub => '讀數越界時彈警告，可一鍵撥號或向附近臺站求助';
+
+  @override
+  String hrAlarmEnabled => '啟用異常告警';
+
+  @override
+  String hrAlarmEnabledTip => '只提醒，不代替你行動：撥號與發求助都必須你親手按（誤報的代價不對稱）。判定用的是即時讀數，讀數過期時不會報警。';
+
+  @override
+  String hrAlarmHighLabel => '上限（bpm）';
+
+  @override
+  String hrAlarmHighTip => '讀數達到或超過即告警。取值 80~240。這是「明顯不正常」而非運動區間，一般運動心率不該設在 150 以下。';
+
+  @override
+  String hrAlarmLowLabel => '下限（bpm）';
+
+  @override
+  String hrAlarmLowTip => '讀數達到或低於即告警（取值 20~100）。靜息心率偏低的人應向醫師確認後再改這個值。';
+
+  @override
+  String hrAlarmTelLabel => '緊急號碼';
+
+  @override
+  String hrAlarmTelTip => '告警時「撥打」用這個號碼，預設 120。不同地區/情境可改成 112 或隊友的號碼。';
+
+  @override
+  String hrAlarmTitle => '心率異常';
+
+  @override
+  String hrAlarmBody(String bpm, String low, String high) => '偵測到心率 {bpm} bpm，超出你設定的 {low}~{high} 範圍。\n\n如果身體不適，請立即撥打急救電話；也可以向附近 100 公里內的臺站發出求助訊息，附近有火腿收到就能看到。';
+
+  @override
+  String hrAlarmDismiss => '我沒事';
+
+  @override
+  String hrAlarmCall => '撥打急救電話';
+
+  @override
+  String hrAlarmSendNearby => '向附近臺站求助';
+
+  @override
+  String hrAlarmNoDialer => '這台裝置不能打電話';
+
+  @override
+  String hrAlarmNoNearby => '附近 100 公里內沒有已知臺站';
+
+  @override
+  String hrAlarmSendConfirmTitle => '確認傳送求助';
+
+  @override
+  String hrAlarmSendConfirmBody(String n, String calls) => '將向最近的 {n} 個臺站各發一則訊息：\n{calls}\n\n這些訊息會出現在對方的手機上，請確認後再發。';
+
+  @override
+  String hrAlarmSent(String n) => '已向 {n} 個臺站發出求助';
+
+  @override
+  String hrAlarmNotif(String bpm) => '心率異常 {bpm} bpm';
+
+  @override
+  String get locExtGpsActive => '外接 GPS 供位 · 手機 GPS 已待機';
+
+  @override
+  String get locExtGpsLost => '外接 GPS 已失效 · 改用導航手機 GPS';
+
+  @override
+  String get locPhoneGpsActive => '手機 GPS 已接管';
+
+  @override
+  String get linkNoServer => '還沒填伺服器位址 · 點一下去設定裡填';
+
+  @override
+  String get linkNoPasscode => '還沒填驗證碼 · 點一下去設定裡填';
 
 }

@@ -652,6 +652,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.7</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：沉浸地图一拖就跳回北京**。跟随时用的视野偏移从来没有交给手动模式，拖动那一瞬间地图平移到了投影基准点；现在先从当前视野接手再切手动，并把地图旋转一并算进去（横屏航向朝上时位移要换算回画布方向）。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**新：上报状态栏可切「详细」** —— 多一行当前触发条件：哪一档、还有多少秒、距离打点还差多少米、转弯还差多少度（转弯那两个闸也如实摆出来）。**新：心率异常告警** —— 读数越界弹警告并进通知栏，可拨紧急电话或向 100 公里内最近的 5 个台站发一条求助；只提醒，不代替你行动。**新：外置 GPS 优先时手机 GPS 待机** —— 外置失效自动切回并明说是谁在供位。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：公告更新后横幅重新出现；纯网络定位可单独选台站图标；2.0 未连接提示会说清缺什么；赞助入口挪到「关于」上方**。**更新页三处**：渠道文案跟着当前渠道、长日志默认折叠（可展开）、下载完成后按钮变成「安装」。**浮动面板与退出动画**：面板高度与底部胶囊改用系统 UI 内边距（某些 ROM 上以前算成 0），退出设置子页的「一片纯色然后消失」也修好了。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.6</span>
         <span class="cl-date">2026-09-28</span>
       </div>
