@@ -2191,7 +2191,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           ));
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
+                          // **不能是 const**：里面的档位判断是运行期表达式
+                          // （CI 报 invalid_constant）。
+                          padding: EdgeInsets.symmetric(
                               horizontal: st.beaconBarDetailed ? 14 : 12,
                               vertical: st.beaconBarDetailed ? 7 : 5),
                           decoration: BoxDecoration(

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'notice.dart';
 import 'notice_banner.dart';
 import 'theme.dart';
+import 'sponsor_page.dart';
 import 'guide.dart';
 import 'state.dart';
 import 'models.dart';

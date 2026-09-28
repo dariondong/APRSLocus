@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -535,101 +536,6 @@ class _StationSettingsPageState extends State<StationSettingsPage> {
     );
   }
 
-  /// 选「纯网络定位时用的符号」（issue #21-6）。
-  ///
-  /// 与 [_showSymbolPicker] 共用同一张符号表（`_symCategories`），但**多一项**
-  /// 「跟随我的符号」：那块是 [AppState.networkSymbol] 为空串的语义，
-  /// 也是默认值（保持旧行为）。
-  Future<void> _pickNetSymbol() async {
-    final cats = _symCategories(S.of(context));
-    final picked = await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => MaterialSurface(
-        radius: 24,
-        topOnly: true,
-        child: Container(
-          decoration: BoxDecoration(
-            color: C.sheetFill,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(S.of(ctx).netSymbol, style: ts(16, w: FontWeight.w800)),
-                const SizedBox(height: 4),
-                Text(S.of(ctx).netSymbolHint,
-                    style: ts(11, c: C.grey, h: 1.4)),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => Navigator.pop(ctx, ''),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9),
-                    child: Row(children: [
-                      Icon(
-                        st.networkSymbol.isEmpty
-                            ? Icons.radio_button_checked_rounded
-                            : Icons.radio_button_off_rounded,
-                        size: 17,
-                        color: st.networkSymbol.isEmpty ? C.orange : C.greyLight,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(S.of(ctx).netSymbolFollow, style: ts(12)),
-                    ]),
-                  ),
-                ),
-                for (final cat in cats) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 2),
-                    child: Text(cat.$1, style: ts(11, c: C.grey, w: FontWeight.w700)),
-                  ),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final sym in cat.$2)
-                        GestureDetector(
-                          onTap: () => Navigator.pop(ctx, sym.$1),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: st.networkSymbol == sym.$1
-                                  ? C.orange.withValues(alpha: 0.14)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: st.networkSymbol == sym.$1
-                                      ? C.orange
-                                      : C.border),
-                            ),
-                            child: Row(mainAxisSize: MainAxisSize.min, children: [
-                              _symIcon(sym.$1, sym.$2,
-                                  active: st.networkSymbol == sym.$1),
-                              const SizedBox(width: 6),
-                              Text(symName(S.of(ctx), sym.$1), style: ts(11)),
-                            ]),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    if (picked == null || !mounted) return;
-    st.setNetworkSymbol(picked);
-    setState(() {});
-  }
-
   Widget _symbolPicker() {
     // 名称已改走 l10n（见 symName），这里只做 符号码 → 图标 的查表
     final cats = _symCategories(S.of(context));
@@ -1061,18 +967,109 @@ class BeaconSettingsPage extends StatefulWidget {
 }
 
 class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
-  late final TextEditingController _interval;
-  late final TextEditingController _netInterval;
-  late final TextEditingController _myLat;
-  late final TextEditingController _myLng;
-  final _intervalFocus = FocusNode();
-  final _netIntervalFocus = FocusNode();
-  bool _manualOpen = false;
-  int? _fastApproved; // 已确认的低间隔值（避免同值重复弹窗）
+  /// 选「纯网络定位时用的符号」（issue #21-6）。
+  ///
+  /// 与 [_showSymbolPicker] 共用同一张符号表（`_symCategories`），但**多一项**
+  /// 「跟随我的符号」：那块是 [AppState.networkSymbol] 为空串的语义，
+  /// 也是默认值（保持旧行为）。
+  Future<void> _pickNetSymbol() async {
+    final cats = _symCategories(S.of(context));
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(S.of(ctx).netSymbol, style: ts(16, w: FontWeight.w800)),
+                const SizedBox(height: 4),
+                Text(S.of(ctx).netSymbolHint,
+                    style: ts(11, c: C.grey, h: 1.4)),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => Navigator.pop(ctx, ''),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9),
+                    child: Row(children: [
+                      Icon(
+                        st.networkSymbol.isEmpty
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_off_rounded,
+                        size: 17,
+                        color: st.networkSymbol.isEmpty ? C.orange : C.greyLight,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(S.of(ctx).netSymbolFollow, style: ts(12)),
+                    ]),
+                  ),
+                ),
+                for (final cat in cats) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 2),
+                    child: Text(cat.$1, style: ts(11, c: C.grey, w: FontWeight.w700)),
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final sym in cat.$2)
+                        GestureDetector(
+                          onTap: () => Navigator.pop(ctx, sym.$1),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: st.networkSymbol == sym.$1
+                                  ? C.orange.withValues(alpha: 0.14)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: st.networkSymbol == sym.$1
+                                      ? C.orange
+                                      : C.border),
+                            ),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              // 这里**不调 `_symIcon`**：它是「我的符号」那张卡
+                              // （_StationSettingsPageState）的私有方法，本页拿不到；
+                              // 网络符号只需要「看得出是哪个图标」。
+                              Icon(
+                                sym.$2,
+                                size: 15,
+                                color: st.networkSymbol == sym.$1
+                                    ? C.orange
+                                    : C.grey,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(symName(S.of(ctx), sym.$1), style: ts(11)),
+                            ]),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    if (picked == null || !mounted) return;
+    st.setNetworkSymbol(picked);
+    setState(() {});
+  }
 
-  AppState get st => widget.state;
-
-  @override
   void initState() {
     super.initState();
     _interval = TextEditingController(text: '${st.beaconInterval}');

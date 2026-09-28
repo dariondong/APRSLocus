@@ -159,8 +159,10 @@ class _HrAlarmWatcherState extends State<HrAlarmWatcher> {
         backgroundColor: Colors.white,
         title: Text(s.hrAlarmSendConfirmTitle, style: ts(15, w: FontWeight.w800)),
         content: Text(
+          // 占位符在 arb 里声明为 String，所以这里显式插值 ——
+          // 直接传 int 会报 argument_type_not_assignable（CI 上踩过）。
           s.hrAlarmSendConfirmBody(
-            targets.length,
+            '${targets.length}',
             targets.map((t) => t.call).join('、'),
           ),
           style: ts(13, h: 1.5),
