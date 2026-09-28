@@ -3147,5 +3147,6 @@
   "notifUpdateDownload": "正在下載更新 {tag} · {pct}%",
   "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
   "notifUpdateReady": "更新包已下載 · 開啟更新頁安裝",
-  "notifUpdateFailed": "更新包下載失敗"
+  "notifUpdateFailed": "更新包下載失敗",
+  "sportRankGateNoSensor": "這台裝置沒有計步感測器：開關打開也**不會真的發出步數**（本來就沒有步數可發）。打開它只是讓你能看別人的榜單 —— 這沒問題，看得到別人是因為你同意了「互相可見」這套規則。"
 }

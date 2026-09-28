@@ -2643,5 +2643,6 @@
   "notifUpdateDownload": "Mengunduh pembaruan {tag} · {pct}%",
   "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
   "notifUpdateReady": "Pembaruan terunduh · buka halaman pembaruan untuk memasang",
-  "notifUpdateFailed": "Unduhan pembaruan gagal"
+  "notifUpdateFailed": "Unduhan pembaruan gagal",
+  "sportRankGateNoSensor": "Perangkat ini tidak punya sensor langkah, jadi mengaktifkannya **tidak akan mengirim langkah** (memang tidak ada). Ini hanya membuka peringkat — dan itu wajar: Anda bisa melihat yang lain karena menerima aturan dua arah yang sama."
 }

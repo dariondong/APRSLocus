@@ -7633,4 +7633,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String notifUpdateFailed => 'Fallo al descargar la actualización';
 
+  @override
+  String get sportRankGateNoSensor => 'Este dispositivo no tiene podómetro, así que activarlo **no enviará pasos reales** (no hay ninguno que enviar). Solo desbloquea la tabla: ves a los demás porque aceptaste la misma regla mutua.';
+
 }

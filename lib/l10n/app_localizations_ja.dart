@@ -7372,4 +7372,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String notifUpdateFailed => '更新パッケージの取得に失敗';
 
+  @override
+  String get sportRankGateNoSensor => 'この端末には歩数センサーがないため、オンにしても**実際には歩数を送りません**（送る歩数が無いため）。オンにすることでランキングが見られるようになります。相互公開のルールに同意した扱いです。';
+
 }

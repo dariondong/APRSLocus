@@ -7583,4 +7583,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String notifUpdateFailed => 'Update download failed';
 
+  @override
+  String get sportRankGateNoSensor => 'This device has no step sensor, so turning it on will **not actually send any steps** (there are none to send). It only unlocks the board — which is fine: you can see others because you accepted the same two-way rule.';
+
 }

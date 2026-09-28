@@ -135,8 +135,10 @@ class _SportRankPageState extends State<SportRankPage> {
       children: [
         SettingsHint(s.sportRankGateBody, color: C.orange),
         SettingsHint(s.sportRankGateWhatSent, color: C.grey),
+        // 没有传感器时**如实说清**：打开开关也不会真的发出步数（本来就没有）——
+        // 但开关确实能开，所以这不是死路，只是「互相可见」在你这台机器上单向。
         if (!st.hasStepSensor)
-          SettingsHint(s.stepsUnsupported, color: C.grey)
+          SettingsHint(s.sportRankGateNoSensor, color: C.grey)
         else if (st.stepsRaw < 0)
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),

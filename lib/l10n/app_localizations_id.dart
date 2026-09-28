@@ -7593,4 +7593,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String notifUpdateFailed => 'Unduhan pembaruan gagal';
 
+  @override
+  String get sportRankGateNoSensor => 'Perangkat ini tidak punya sensor langkah, jadi mengaktifkannya **tidak akan mengirim langkah** (memang tidak ada). Ini hanya membuka peringkat — dan itu wajar: Anda bisa melihat yang lain karena menerima aturan dua arah yang sama.';
+
 }

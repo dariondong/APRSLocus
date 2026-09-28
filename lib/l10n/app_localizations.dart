@@ -12932,6 +12932,9 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String notifUpdateFailed;
 
+  /// In zh, this message translates to:
+  String sportRankGateNoSensor;
+
 }
 
 class _AppLocalizationsDelegate

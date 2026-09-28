@@ -2643,5 +2643,6 @@
   "notifUpdateDownload": "更新 {tag} をダウンロード中 · {pct}%",
   "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
   "notifUpdateReady": "更新パッケージを取得済み · 更新ページからインストール",
-  "notifUpdateFailed": "更新パッケージの取得に失敗"
+  "notifUpdateFailed": "更新パッケージの取得に失敗",
+  "sportRankGateNoSensor": "この端末には歩数センサーがないため、オンにしても**実際には歩数を送りません**（送る歩数が無いため）。オンにすることでランキングが見られるようになります。相互公開のルールに同意した扱いです。"
 }

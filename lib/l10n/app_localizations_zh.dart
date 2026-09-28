@@ -7282,6 +7282,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String notifUpdateFailed => '更新包下载失败';
 
+  @override
+  String get sportRankGateNoSensor => '这台设备没有计步传感器：开关打开也**不会真的发出步数**（本来就没有步数可发）。打开它只是让你能看别人的榜单 —— 这没问题，看得到别人是因为你同意了「互相可见」这套规则。';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14560,5 +14563,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String notifUpdateFailed => '更新包下載失敗';
+
+  @override
+  String get sportRankGateNoSensor => '這台裝置沒有計步感測器：開關打開也**不會真的發出步數**（本來就沒有步數可發）。打開它只是讓你能看別人的榜單 —— 這沒問題，看得到別人是因為你同意了「互相可見」這套規則。';
 
 }

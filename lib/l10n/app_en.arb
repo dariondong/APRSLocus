@@ -2559,5 +2559,6 @@
   "notifUpdateDownload": "Downloading update {tag} · {pct}%",
   "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
   "notifUpdateReady": "Update downloaded · open the update page to install",
-  "notifUpdateFailed": "Update download failed"
+  "notifUpdateFailed": "Update download failed",
+  "sportRankGateNoSensor": "This device has no step sensor, so turning it on will **not actually send any steps** (there are none to send). It only unlocks the board — which is fine: you can see others because you accepted the same two-way rule."
 }
