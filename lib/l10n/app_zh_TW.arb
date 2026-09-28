@@ -3031,5 +3031,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "貢獻程式碼"
+  "codeContribution": "貢獻程式碼",
+  "historyCharts": "折線圖",
+  "historyChartsShow": "顯示折線圖",
+  "historyChartsHide": "隱藏折線圖",
+  "historyChartHr": "心率",
+  "historyChartSpeed": "速度",
+  "historyChartDist": "里程",
+  "audioOutDevice": "播放裝置",
+  "audioInDevice": "擷取裝置",
+  "audioDeviceDefault": "系統預設",
+  "audioDeviceHint": "裝置已儲存；重新連接音訊連結後生效",
+  "tncTxSerial": "發射串口",
+  "tncTxSerialDefault": "與接收同一個",
+  "tncTxSerialHint": "已儲存。預設與接收共用一個埠；分開埠可避免 Windows 上讀寫爭用同一 COM 埠。"
 }

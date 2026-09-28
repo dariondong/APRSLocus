@@ -7321,4 +7321,43 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get codeContribution => "Contribución de código";
 
+  @override
+  String get historyCharts => 'Gráficas';
+
+  @override
+  String get historyChartsShow => 'Mostrar gráficas';
+
+  @override
+  String get historyChartsHide => 'Ocultar gráficas';
+
+  @override
+  String get historyChartHr => 'Frecuencia cardíaca';
+
+  @override
+  String get historyChartSpeed => 'Velocidad';
+
+  @override
+  String get historyChartDist => 'Distancia';
+
+  @override
+  String get audioOutDevice => 'Dispositivo de reproducción';
+
+  @override
+  String get audioInDevice => 'Dispositivo de captura';
+
+  @override
+  String get audioDeviceDefault => 'Predeterminado del sistema';
+
+  @override
+  String get audioDeviceHint => 'Guardado. Reconecta el enlace de audio para aplicarlo.';
+
+  @override
+  String get tncTxSerial => 'Puerto serie de TX';
+
+  @override
+  String get tncTxSerialDefault => 'Igual que RX';
+
+  @override
+  String get tncTxSerialHint => 'Guardado. Por defecto TX comparte el puerto de RX; usar otro puerto evita que dos descriptores compitan por un COM en Windows.';
+
 }

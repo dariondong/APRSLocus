@@ -90,6 +90,18 @@ class _TrackDayPageState extends State<TrackDayPage>
   double _speed = 1;
   bool _resumeAfterSeek = false;
 
+  // ── 折线图（issue #17）──
+  /// 图表面板是否显示（用户可隐藏；收起后控制条上会出现「再打开」按钮）
+  bool _chartOpen = true;
+
+  /// 当前勾选的曲线：'hr' / 'spd' / 'dist'
+  final Set<String> _series = {'hr', 'spd', 'dist'};
+
+  /// 分桶后的曲线（长度 [_cN]，值已归一到 0..1；NaN = 该桶没有读数）。
+  /// 为什么分桶见 [_prepareCharts]。
+  int _cN = 0;
+  Float64List? _cHr, _cSpd, _cDist;
+
   // ── 已走过的线：**只往长**（向后拖时才重建）──
   final Path _donePath = Path();
   final Path _fullPath = Path();
@@ -190,6 +202,7 @@ class _TrackDayPageState extends State<TrackDayPage>
       _rev++;
     }
     _syncDrawn(0);
+    _prepareCharts();
   }
 
   /// 当前播放到的点序号。按**时间轴**二分，而不是按点序号线性 —— 点数密度
@@ -444,7 +457,21 @@ class _TrackDayPageState extends State<TrackDayPage>
               left: 12,
               right: 12,
               bottom: 12,
-              child: SafeArea(top: false, child: _controls(s, idx)),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 折线图放在控制条**上面**、同一个 Column 里：
+                    // 不用算控制条的高度就能贴住它（issue #17）
+                    if (_chartOpen && _cN >= 2) ...[
+                      _charts(s, idx),
+                      const SizedBox(height: 8),
+                    ],
+                    _controls(s, idx),
+                  ],
+                ),
+              ),
             ),
           ],
         );
@@ -542,6 +569,27 @@ class _TrackDayPageState extends State<TrackDayPage>
                     ),
                   ),
                 ),
+                // 折线图收起后，这里是唯一的「再打开」入口（issue #17）
+                if (!_chartOpen) ...[
+                  const SizedBox(width: 6),
+                  Tooltip(
+                    message: s.historyChartsShow,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _chartOpen = true),
+                      child: Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          color: C.bgSoft,
+                          borderRadius: BorderRadius.circular(11),
+                          border: Border.all(color: C.border),
+                        ),
+                        child: Icon(Icons.show_chart_rounded,
+                            size: 17, color: C.grey),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             SliderTheme(
@@ -611,6 +659,226 @@ class _TrackDayPageState extends State<TrackDayPage>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ─── 折线图（issue #17）───
+  //
+  // 三条曲线（心率 / 速度 / 里程）都取自**那一天已落盘的点**，与列表页的
+  // 统计同源，不存在「图上的数字和列表对不上」。
+  //
+  // ## 为什么要先分桶
+  //
+  // 一天最多 4 万个点（见 TrackLogStore.maxPointsPerDay），播放时每帧重画
+  // 三条 4 万点的折线会明显掉帧。这里在 [_prepare] 里**一次性**分桶到
+  // ≤[_chartBuckets] 个桶（屏宽 2~3 个像素一个桶），之后每帧只画 240 个点：
+  //   * 心率：桶内**有读数的点取平均**（读数抖动不该画成毛刺），
+  //     整个桶都没读数 → NaN，画线时断开（不是拉直，更不是当成 0）；
+  //   * 速度：桶内取**最大值**（峰值不该被平均掉）；
+  //   * 里程：桶内**最后一个点**的累计里程（单调递增，取平均没有意义）。
+  static const int _chartBuckets = 240;
+
+  void _prepareCharts() {
+    final pts = widget.day.points;
+    if (pts.length < 2) {
+      _cN = 0;
+      _cHr = _cSpd = _cDist = null;
+      return;
+    }
+    final buckets = math.min(_chartBuckets, pts.length);
+    final rawHr = Float64List(buckets);
+    final rawSpd = Float64List(buckets);
+    final rawDist = Float64List(buckets);
+    var hrLo = double.infinity, hrHi = -double.infinity;
+    var spHi = 0.0;
+    final distTotal = _cumKm[_n - 1];
+    for (var b = 0; b < buckets; b++) {
+      final from = (b * pts.length / buckets).floor();
+      final to =
+          math.min(pts.length, ((b + 1) * pts.length / buckets).ceil());
+      var hrSum = 0, hrN = 0;
+      var spMax = 0.0;
+      var lastKm = 0.0;
+      for (var i = from; i < to; i++) {
+        final h = pts[i].hr;
+        if (h != null && h > 0) {
+          hrSum += h;
+          hrN++;
+        }
+        if (pts[i].speedKmh > spMax) spMax = pts[i].speedKmh;
+        lastKm = _cumKm[i];
+      }
+      final hrAvg = hrN == 0 ? double.nan : hrSum / hrN;
+      rawHr[b] = hrAvg;
+      rawSpd[b] = spMax;
+      rawDist[b] = lastKm;
+      if (hrN > 0) {
+        if (hrAvg < hrLo) hrLo = hrAvg;
+        if (hrAvg > hrHi) hrHi = hrAvg;
+      }
+      if (spMax > spHi) spHi = spMax;
+    }
+    _cN = buckets;
+    _cHr = _normSeries(rawHr, hrLo, hrHi);
+    _cSpd = _normSeries(rawSpd, 0, spHi);
+    _cDist = _normSeries(rawDist, 0, distTotal);
+  }
+
+  /// 归一到 0..1；NaN 原样传下去（= 断开）。
+  static Float64List _normSeries(Float64List v, double lo, double hi) {
+    final out = Float64List(v.length);
+    final span = hi - lo;
+    for (var i = 0; i < v.length; i++) {
+      final x = v[i];
+      if (x.isNaN) {
+        out[i] = double.nan;
+        continue;
+      }
+      out[i] = span <= 0 ? 0.5 : ((x - lo) / span).clamp(0.0, 1.0);
+    }
+    return out;
+  }
+
+  /// 当前播放点落在哪个桶（用于图上的竖直指示线）。
+  int get _chartCursor {
+    if (_cN == 0 || _n == 0) return 0;
+    return (((_index + 0.5) * _cN / _n).floor()).clamp(0, _cN - 1);
+  }
+
+  Widget _charts(S s, int idx) {
+    final day = widget.day;
+    final cur = _chartCursor;
+    final rows = <Widget>[];
+    if (_series.contains('hr') && day.hasHr) {
+      rows.add(_chartRow(s.historyChartHr, _cHr, cur, C.red,
+          '${day.minHr ?? 0}–${day.maxHr ?? 0}'));
+    }
+    if (_series.contains('spd')) {
+      rows.add(_chartRow(s.historyChartSpeed, _cSpd, cur, C.blue,
+          '${day.maxSpeedKmh.toStringAsFixed(0)} km/h'));
+    }
+    if (_series.contains('dist')) {
+      rows.add(_chartRow(
+          s.historyChartDist, _cDist, cur, C.green, fmtKm(day.distanceKm)));
+    }
+    return MaterialSurface(
+      radius: 18,
+      blurSigma: C.chipBlur,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+        decoration: BoxDecoration(
+          color: C.chipFill,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: C.border),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.show_chart_rounded, size: 15, color: C.green),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(s.historyCharts,
+                      style: ts(11, c: C.slate, w: FontWeight.w700)),
+                ),
+                Tooltip(
+                  message: s.historyChartsHide,
+                  child: GestureDetector(
+                    onTap: () => setState(() => _chartOpen = false),
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: C.bgSoft,
+                        borderRadius: BorderRadius.circular(9),
+                        border: Border.all(color: C.border),
+                      ),
+                      child: Icon(Icons.visibility_off_rounded,
+                          size: 15, color: C.grey),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            // 曲线开关：关掉的曲线不画，但数据不丢（再点一下回来）
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                if (day.hasHr) _seriesChip('hr', s.historyChartHr, C.red),
+                _seriesChip('spd', s.historyChartSpeed, C.blue),
+                _seriesChip('dist', s.historyChartDist, C.green),
+              ],
+            ),
+            ...rows,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _seriesChip(String key, String label, Color color) {
+    final on = _series.contains(key);
+    return GestureDetector(
+      onTap: () => setState(() {
+        if (on) {
+          _series.remove(key);
+        } else {
+          _series.add(key);
+        }
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+        decoration: BoxDecoration(
+          color: on ? color.withValues(alpha: 0.14) : Colors.transparent,
+          borderRadius: BorderRadius.circular(9),
+          border: Border.all(color: on ? color : C.border),
+        ),
+        child: Text(label,
+            style: ts(10, c: on ? color : C.grey, w: FontWeight.w700)),
+      ),
+    );
+  }
+
+  Widget _chartRow(
+      String label, Float64List? data, int cur, Color color, String range) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 32,
+            child: Text(label,
+                style: ts(10, c: color, w: FontWeight.w700)),
+          ),
+          Expanded(
+            child: SizedBox(
+              height: 34,
+              child: CustomPaint(
+                painter: _SeriesPainter(
+                  data: data,
+                  n: _cN,
+                  cur: cur,
+                  color: color,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 76,
+            child: Text(
+              range,
+              textAlign: TextAlign.right,
+              style: ts(10, c: C.grey),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -710,4 +978,78 @@ class _ReplayPainter extends CustomPainter {
       old.origin != origin ||
       old.course != course ||
       !identical(old.lx, lx);
+}
+
+/// 一条折线（issue #17）：把归一到 0..1 的序列画成线，NaN 处**断开**。
+///
+/// 「断开」是刻意的：心率带没连、佳明没推数据的那段时间根本没有读数，
+/// 连成直线会让人以为那一段是「心率平稳地维持着」。
+///
+/// 竖直指示线 = 当前播放位置（与回放进度同一个桶）。
+class _SeriesPainter extends CustomPainter {
+  final Float64List? data;
+  final int n;
+  final int cur;
+  final Color color;
+
+  _SeriesPainter({
+    required this.data,
+    required this.n,
+    required this.cur,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final d = data;
+    if (d == null || n < 2 || d.length < 2) return;
+    final dx = size.width / (n - 1);
+    // 基线（数值最低处）
+    canvas.drawLine(
+      Offset(0, size.height - 0.5),
+      Offset(size.width, size.height - 0.5),
+      Paint()
+        ..color = C.border
+        ..strokeWidth = 1,
+    );
+    final path = Path();
+    var pen = false;
+    for (var i = 0; i < n; i++) {
+      final v = d[i];
+      if (v.isNaN) {
+        pen = false;
+        continue;
+      }
+      final x = i * dx;
+      final y = size.height - 2 - v.clamp(0.0, 1.0) * (size.height - 4);
+      if (pen) {
+        path.lineTo(x, y);
+      } else {
+        path.moveTo(x, y);
+        pen = true;
+      }
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6
+        ..strokeJoin = StrokeJoin.round,
+    );
+    if (cur >= 0 && cur < n) {
+      final x = cur * dx;
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        Paint()
+          ..color = color.withValues(alpha: 0.55)
+          ..strokeWidth = 1.2,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SeriesPainter old) =>
+      old.cur != cur || !identical(old.data, data) || old.color != color;
 }

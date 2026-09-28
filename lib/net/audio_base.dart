@@ -16,6 +16,25 @@ library;
 
 import 'dart:typed_data';
 
+/// 一个可选的音频设备（Windows 的 waveOut / waveIn）。
+///
+/// `id` 是后端自己的设备序号（winmm 的 uDeviceID）；[AudioTransport] 负责
+/// 解释它。**-1 表示系统默认**（WAVE_MAPPER），这也是各平台的默认值。
+class AudioDevice {
+  final int id;
+  final String name;
+  const AudioDevice(this.id, this.name);
+
+  @override
+  bool operator ==(Object other) => other is AudioDevice && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
+/// 系统默认设备（与 winmm 的 WAVE_MAPPER 对应）。
+const int kAudioDeviceDefault = -1;
+
 /// 音频后端接口
 abstract class AudioTransport {
   /// 平台是否具备音频能力（Web / 无音频设备时为 false）
@@ -66,4 +85,28 @@ abstract class AudioTransport {
 
   /// 释放资源（幂等）
   Future<void> dispose();
+
+  // ─── 设备选择（目前只有 Windows 有真实实现）───
+  //
+  // 为什么用「设置 + 默认空实现」而不是把 deviceId 加进 startCapture/play 的
+  // 形参：改形参会连带改 4 个平台的实现与所有调用点，而收/发设备的切换时机
+  // 与采样率并不一致（采样率变了要重开句柄，换设备也一样）。用两个 setter
+  // 让「只有需要它的后端」参与，其它平台一行不改 —— 与 `TncTransport` 里
+  // 蓝牙/USB 专有概念只出现在实现类里的做法一致。
+
+  /// 选择播放设备；[kAudioDeviceDefault] 表示系统默认。
+  ///
+  /// **下一次 `play` 生效**（各平台在句柄需要重建时应用）。
+  void setOutputDevice(int id) {}
+
+  /// 选择采集设备；[kAudioDeviceDefault] 表示系统默认。
+  /// **下一次 `startCapture` 生效**。
+  void setInputDevice(int id) {}
+
+  /// 可用播放设备；空列表 = 该平台没有「选设备」这个概念（Android/iOS 由系统
+  /// 路由决定），UI 据此**不显示**选择器 —— 不给用户一个假的开关。
+  Future<List<AudioDevice>> listOutputDevices() async => const [];
+
+  /// 可用采集设备；语义同 [listOutputDevices]。
+  Future<List<AudioDevice>> listInputDevices() async => const [];
 }

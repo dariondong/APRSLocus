@@ -6970,6 +6970,45 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get codeContribution => "贡献代码";
 
+  @override
+  String get historyCharts => '折线图';
+
+  @override
+  String get historyChartsShow => '显示折线图';
+
+  @override
+  String get historyChartsHide => '隐藏折线图';
+
+  @override
+  String get historyChartHr => '心率';
+
+  @override
+  String get historyChartSpeed => '速度';
+
+  @override
+  String get historyChartDist => '里程';
+
+  @override
+  String get audioOutDevice => '播放设备';
+
+  @override
+  String get audioInDevice => '采集设备';
+
+  @override
+  String get audioDeviceDefault => '系统默认';
+
+  @override
+  String get audioDeviceHint => '设备已保存；重新连接音频链路后生效';
+
+  @override
+  String get tncTxSerial => '发射串口';
+
+  @override
+  String get tncTxSerialDefault => '与接收同一个';
+
+  @override
+  String get tncTxSerialHint => '已保存。默认与接收共用一个口；分开口可避免 Windows 上读写争用同一 COM 口。';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -13936,5 +13975,44 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get codeContribution => "貢獻程式碼";
+
+  @override
+  String get historyCharts => '折線圖';
+
+  @override
+  String get historyChartsShow => '顯示折線圖';
+
+  @override
+  String get historyChartsHide => '隱藏折線圖';
+
+  @override
+  String get historyChartHr => '心率';
+
+  @override
+  String get historyChartSpeed => '速度';
+
+  @override
+  String get historyChartDist => '里程';
+
+  @override
+  String get audioOutDevice => '播放裝置';
+
+  @override
+  String get audioInDevice => '擷取裝置';
+
+  @override
+  String get audioDeviceDefault => '系統預設';
+
+  @override
+  String get audioDeviceHint => '裝置已儲存；重新連接音訊連結後生效';
+
+  @override
+  String get tncTxSerial => '發射串口';
+
+  @override
+  String get tncTxSerialDefault => '與接收同一個';
+
+  @override
+  String get tncTxSerialHint => '已儲存。預設與接收共用一個埠；分開埠可避免 Windows 上讀寫爭用同一 COM 埠。';
 
 }

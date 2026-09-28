@@ -7281,4 +7281,43 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get codeContribution => "Kontribusi kode";
 
+  @override
+  String get historyCharts => 'Grafik';
+
+  @override
+  String get historyChartsShow => 'Tampilkan grafik';
+
+  @override
+  String get historyChartsHide => 'Sembunyikan grafik';
+
+  @override
+  String get historyChartHr => 'Detak jantung';
+
+  @override
+  String get historyChartSpeed => 'Kecepatan';
+
+  @override
+  String get historyChartDist => 'Jarak';
+
+  @override
+  String get audioOutDevice => 'Perangkat pemutaran';
+
+  @override
+  String get audioInDevice => 'Perangkat perekaman';
+
+  @override
+  String get audioDeviceDefault => 'Bawaan sistem';
+
+  @override
+  String get audioDeviceHint => 'Tersimpan. Sambungkan ulang tautan audio untuk menerapkannya.';
+
+  @override
+  String get tncTxSerial => 'Port serial TX';
+
+  @override
+  String get tncTxSerialDefault => 'Sama dengan RX';
+
+  @override
+  String get tncTxSerialHint => 'Tersimpan. Secara bawaan TX memakai port RX; port terpisah menghindari dua handle berebut satu port COM di Windows.';
+
 }

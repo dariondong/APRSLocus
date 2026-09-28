@@ -61,6 +61,45 @@ final class _WaveHdr extends Struct {
   external int reserved;
 }
 
+/// WAVEOUTCAPSW（mmeapi.h）。只需要前几项，但**必须把数组前面的字段都写上**——
+/// FFI 的字段偏移要自己对上，少一个字段读到的就是垃圾（甚至越界）。
+final class _WaveOutCapsW extends Struct {
+  @Uint16()
+  external int wMid;
+  @Uint16()
+  external int wPid;
+  @Uint32()
+  external int vDriverVersion;
+  @Array(32)
+  external Array<Uint16> szPname;
+  @Uint32()
+  external int dwFormats;
+  @Uint16()
+  external int wChannels;
+  @Uint16()
+  external int wReserved1;
+  @Uint32()
+  external int dwSupport;
+}
+
+/// WAVEINCAPSW（mmeapi.h）：比输出少了 dwSupport。
+final class _WaveInCapsW extends Struct {
+  @Uint16()
+  external int wMid;
+  @Uint16()
+  external int wPid;
+  @Uint32()
+  external int vDriverVersion;
+  @Array(32)
+  external Array<Uint16> szPname;
+  @Uint32()
+  external int dwFormats;
+  @Uint16()
+  external int wChannels;
+  @Uint16()
+  external int wReserved1;
+}
+
 // ─── 常量 ───
 const int _waveMapper = 0xFFFFFFFF; // WAVE_MAPPER：让系统选默认设备
 const int _callbackNull = 0x00000000;
@@ -131,6 +170,19 @@ class _WinmmApi {
     waveOutClose =
         winmm.lookupFunction<Int32 Function(IntPtr), int Function(int)>(
             'waveOutClose');
+    // 设备枚举（issue #14）：让用户在设置里选播放/采集设备，而不是只能用
+    // 系统默认。winmm 的 caps 结构里带的是**人读的设备名**。
+    waveOutGetNumDevs =
+        winmm.lookupFunction<Uint32 Function(), int Function()>(
+            'waveOutGetNumDevs');
+    waveOutGetDevCaps = winmm.lookupFunction<
+        Uint32 Function(IntPtr, Pointer<_WaveOutCapsW>, Uint32),
+        int Function(int, Pointer<_WaveOutCapsW>, int)>('waveOutGetDevCapsW');
+    waveInGetNumDevs = winmm.lookupFunction<Uint32 Function(), int Function()>(
+        'waveInGetNumDevs');
+    waveInGetDevCaps = winmm.lookupFunction<
+        Uint32 Function(IntPtr, Pointer<_WaveInCapsW>, Uint32),
+        int Function(int, Pointer<_WaveInCapsW>, int)>('waveInGetDevCapsW');
   }
 
   late final Pointer<Uint8> Function(int, int) localAlloc;
@@ -151,6 +203,10 @@ class _WinmmApi {
   late final int Function(int, Pointer<_WaveHdr>, int) waveOutWrite;
   late final int Function(int) waveOutReset;
   late final int Function(int) waveOutClose;
+  late final int Function() waveOutGetNumDevs;
+  late final int Function(int, Pointer<_WaveOutCapsW>, int) waveOutGetDevCaps;
+  late final int Function() waveInGetNumDevs;
+  late final int Function(int, Pointer<_WaveInCapsW>, int) waveInGetDevCaps;
 }
 
 /// 一次待播发的缓冲（要一直持有到设备播完，否则 Dart GC 后驱动读到野指针）
@@ -215,6 +271,14 @@ class WinmmAudio implements AudioTransport {
   int _hwo = 0; // HWAVEOUT
   Pointer<Uint8> _fmtOut = nullptr;
   int _outRate = 0;
+
+  /// 用户选的播放/采集设备（[kAudioDeviceDefault] = 系统默认）。
+  /// 句柄打开时才生效 —— 设置里改完提示用户重连，与串口波特率同一口径。
+  int _outDev = kAudioDeviceDefault;
+  int _inDev = kAudioDeviceDefault;
+
+  /// 当前播放句柄实际用的设备（用于判断能不能复用句柄）。
+  int _openedOutDev = kAudioDeviceDefault;
   final List<_PlayItem> _pending = [];
   Timer? _outTimer;
 
@@ -266,7 +330,8 @@ class WinmmAudio implements AudioTransport {
 
     _fmtIn = _makeFormat(sampleRate);
     final phwi = _alloc(sizeOf<IntPtr>()).cast<IntPtr>();
-    var rc = api.waveInOpen(phwi, _waveMapper, _fmtIn.cast<_WaveFormatEx>(),
+    final inDev = _inDev < 0 ? _waveMapper : _inDev;
+    var rc = api.waveInOpen(phwi, inDev, _fmtIn.cast<_WaveFormatEx>(),
         _callbackNull, 0, 0);
     if (rc != 0) {
       _free(phwi.cast<Uint8>());
@@ -381,11 +446,14 @@ class WinmmAudio implements AudioTransport {
   Future<String?> _ensureOut(int sampleRate) async {
     final api = _lib;
     if (api == null) return 'winmm-unavailable';
-    if (_hwo != 0 && _outRate == sampleRate) return null;
+    if (_hwo != 0 && _outRate == sampleRate && _openedOutDev == _outDev) {
+      return null;
+    }
     await _closeOut();
     _fmtOut = _makeFormat(sampleRate);
     final phwo = _alloc(sizeOf<IntPtr>()).cast<IntPtr>();
-    final rc = api.waveOutOpen(phwo, _waveMapper, _fmtOut.cast<_WaveFormatEx>(),
+    final dev = _outDev < 0 ? _waveMapper : _outDev;
+    final rc = api.waveOutOpen(phwo, dev, _fmtOut.cast<_WaveFormatEx>(),
         _callbackNull, 0, 0);
     if (rc != 0) {
       _free(phwo.cast<Uint8>());
@@ -396,6 +464,7 @@ class WinmmAudio implements AudioTransport {
     _hwo = phwo.value;
     _free(phwo.cast<Uint8>());
     _outRate = sampleRate;
+    _openedOutDev = _outDev;
     return null;
   }
 
@@ -503,6 +572,66 @@ class WinmmAudio implements AudioTransport {
     _outRate = 0;
     _free(_fmtOut);
     _fmtOut = nullptr;
+  }
+
+  @override
+  void setOutputDevice(int id) => _outDev = id;
+
+  @override
+  void setInputDevice(int id) => _inDev = id;
+
+  @override
+  Future<List<AudioDevice>> listOutputDevices() async {
+    final api = _lib;
+    if (api == null) return const [];
+    final out = <AudioDevice>[];
+    final n = api.waveOutGetNumDevs();
+    for (var i = 0; i < n; i++) {
+      final caps = _alloc(sizeOf<_WaveOutCapsW>()).cast<_WaveOutCapsW>();
+      try {
+        if (api.waveOutGetDevCaps(i, caps, sizeOf<_WaveOutCapsW>()) == 0) {
+          final name = _wsz(caps.ref.szPname);
+          out.add(AudioDevice(i, name.isEmpty ? 'Output ${i + 1}' : name));
+        }
+      } finally {
+        _free(caps.cast<Uint8>());
+      }
+    }
+    return out;
+  }
+
+  @override
+  Future<List<AudioDevice>> listInputDevices() async {
+    final api = _lib;
+    if (api == null) return const [];
+    final out = <AudioDevice>[];
+    final n = api.waveInGetNumDevs();
+    for (var i = 0; i < n; i++) {
+      final caps = _alloc(sizeOf<_WaveInCapsW>()).cast<_WaveInCapsW>();
+      try {
+        if (api.waveInGetDevCaps(i, caps, sizeOf<_WaveInCapsW>()) == 0) {
+          final name = _wsz(caps.ref.szPname);
+          out.add(AudioDevice(i, name.isEmpty ? 'Input ${i + 1}' : name));
+        }
+      } finally {
+        _free(caps.cast<Uint8>());
+      }
+    }
+    return out;
+  }
+
+  /// WCHAR 数组 → Dart 字符串（到第一个 NUL 为止）。
+  ///
+  /// 不用 `toDartString()`：那要求拿到的指针是 `Pointer<Utf16>`，而这里是
+  /// 结构体里的**内联数组**，只能自己按 UTF-16 码元拼。
+  static String _wsz(Array<Uint16> a) {
+    final sb = StringBuffer();
+    for (var i = 0; i < a.length; i++) {
+      final c = a[i];
+      if (c == 0) break;
+      sb.writeCharCode(c);
+    }
+    return sb.toString().trim();
   }
 
   @override

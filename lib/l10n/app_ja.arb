@@ -2527,5 +2527,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "コード貢献"
+  "codeContribution": "コード貢献",
+  "historyCharts": "グラフ",
+  "historyChartsShow": "グラフを表示",
+  "historyChartsHide": "グラフを隠す",
+  "historyChartHr": "心拍数",
+  "historyChartSpeed": "速度",
+  "historyChartDist": "距離",
+  "audioOutDevice": "再生デバイス",
+  "audioInDevice": "録音デバイス",
+  "audioDeviceDefault": "システム既定",
+  "audioDeviceHint": "保存しました。音声リンクを再接続すると反映されます。",
+  "tncTxSerial": "送信シリアルポート",
+  "tncTxSerialDefault": "受信と同じ",
+  "tncTxSerialHint": "保存しました。既定では受信と同じポートを使います。別ポートにすると Windows で同一 COM ポートの読み書きが競合しません。"
 }

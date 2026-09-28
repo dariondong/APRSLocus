@@ -12620,6 +12620,45 @@ abstract class AppLocalizations {
   /// **'贡献代码'**
   String get codeContribution;
 
+  /// In zh, this message translates to:
+  String get historyCharts;
+
+  /// In zh, this message translates to:
+  String get historyChartsShow;
+
+  /// In zh, this message translates to:
+  String get historyChartsHide;
+
+  /// In zh, this message translates to:
+  String get historyChartHr;
+
+  /// In zh, this message translates to:
+  String get historyChartSpeed;
+
+  /// In zh, this message translates to:
+  String get historyChartDist;
+
+  /// In zh, this message translates to:
+  String get audioOutDevice;
+
+  /// In zh, this message translates to:
+  String get audioInDevice;
+
+  /// In zh, this message translates to:
+  String get audioDeviceDefault;
+
+  /// In zh, this message translates to:
+  String get audioDeviceHint;
+
+  /// In zh, this message translates to:
+  String get tncTxSerial;
+
+  /// In zh, this message translates to:
+  String get tncTxSerialDefault;
+
+  /// In zh, this message translates to:
+  String get tncTxSerialHint;
+
 }
 
 class _AppLocalizationsDelegate

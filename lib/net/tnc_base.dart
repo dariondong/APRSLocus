@@ -34,12 +34,22 @@ class TncDevice {
   /// 单一来源，避免「设备里存一个、配置里存一个、两边还可能不一致」。
   final int baud;
 
+  /// **发射专用串口**（issue #14）；空 = 与 [id] 同一个口。
+  ///
+  /// 与 [baud] 同一套做法：真正的设置存在 `TncConfig.txSerialId`，
+  /// 连拍时由 `TncLink.connect` 填进来，不随设备 JSON 持久化。
+  /// 为什么需要它：Windows 的 COM 口是**独占**设备，一个口同时开读、写
+  /// 两个句柄会失败（见 tnc_io.dart 里的 spawn）；把发射放到另一个口
+  /// 更稳，也方便「接收监控口 + 发射数据口」分接。
+  final String txSerialId;
+
   const TncDevice({
     required this.id,
     this.name = '',
     this.kind = 'bluetooth',
     this.paired = true,
     this.baud = 0,
+    this.txSerialId = '',
   });
 
   String get label => name.isEmpty ? id : '$name · $id';
@@ -53,13 +63,20 @@ class TncDevice {
   bool get needsBaud => kind == 'usb' || kind == 'serial';
 
   /// 复制并覆盖若干字段。连拍时用它把用户配置的线速带上（见 [baud]）
-  TncDevice copyWith({String? id, String? name, String? kind, bool? paired, int? baud}) =>
+  TncDevice copyWith(
+          {String? id,
+          String? name,
+          String? kind,
+          bool? paired,
+          int? baud,
+          String? txSerialId}) =>
       TncDevice(
         id: id ?? this.id,
         name: name ?? this.name,
         kind: kind ?? this.kind,
         paired: paired ?? this.paired,
         baud: baud ?? this.baud,
+        txSerialId: txSerialId ?? this.txSerialId,
       );
 
   Map<String, dynamic> toJson() =>

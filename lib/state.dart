@@ -333,6 +333,8 @@ class AppState extends ChangeNotifier {
         course: myCourse,
         alt: p.altM,
         accuracyM: 0,
+        // 佳明轨迹点自带心率，上面已经把有效值写进 [myHr]（issue #17）
+        hr: myHr,
       );
       // 佳明接管期间的里程也要记，否则那段路在里程里是空白（与台账一致）
       if (last != null) _addMileage(movedM / 1000.0);
@@ -4137,7 +4139,8 @@ class AppState extends ChangeNotifier {
           myTrack.removeRange(0, myTrack.length - maxTrackPts);
         }
         // 个人历史台账（按天落盘）与屏幕轨迹分开写：只在「确实在动」时
-        // 记，并带上速度/航向/精度，供事后按天统计里程与速度。
+        // 记，并带上速度/航向/精度，供事后按天统计里程与速度；
+        // 有心率读数（心率带 / 佳明）就一并记下，供事后画心率折线（issue #17）。
         TrackLogStore.instance.record(
           lat: outLat,
           lng: outLng,
@@ -4145,6 +4148,7 @@ class AppState extends ChangeNotifier {
           course: myCourse,
           alt: alt,
           accuracyM: accuracy,
+          hr: myHr,
         );
         // 里程与轨迹点同门限累计（见 _addMileage）：只在有上一个点时才有位移
         if (last != null) _addMileage(movedM / 1000.0);

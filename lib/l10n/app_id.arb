@@ -2527,5 +2527,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "Kontribusi kode"
+  "codeContribution": "Kontribusi kode",
+  "historyCharts": "Grafik",
+  "historyChartsShow": "Tampilkan grafik",
+  "historyChartsHide": "Sembunyikan grafik",
+  "historyChartHr": "Detak jantung",
+  "historyChartSpeed": "Kecepatan",
+  "historyChartDist": "Jarak",
+  "audioOutDevice": "Perangkat pemutaran",
+  "audioInDevice": "Perangkat perekaman",
+  "audioDeviceDefault": "Bawaan sistem",
+  "audioDeviceHint": "Tersimpan. Sambungkan ulang tautan audio untuk menerapkannya.",
+  "tncTxSerial": "Port serial TX",
+  "tncTxSerialDefault": "Sama dengan RX",
+  "tncTxSerialHint": "Tersimpan. Secara bawaan TX memakai port RX; port terpisah menghindari dua handle berebut satu port COM di Windows."
 }

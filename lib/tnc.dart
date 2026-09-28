@@ -86,6 +86,14 @@ class TncConfig {
   /// 更是从无到有。默认 9600（APRS 串口 TNC 最常见）。
   int serialBaud;
 
+  /// **发射专用串口**（如 `COM5`；留空 = 与接收设备同一个口，issue #14）。
+  ///
+  /// 为什么单独一个设置：Windows 的 COM 口是**独占**设备 —— 同一个口开
+  /// 读、写两个句柄会失败（tnc_io 里要是真失败会直接报出来），而不少
+  /// 用户的接法是「一个口收、另一个口发」。留空即保持旧行为（单口收发），
+  /// 所以对现有用户零影响。
+  String txSerialId;
+
   TncConfig({
     this.txDelayMs = 300,
     this.txTailMs = 50,
@@ -104,6 +112,7 @@ class TncConfig {
     this.initDelayMs = 300,
     this.pushKissParams = false,
     this.serialBaud = 9600,
+    this.txSerialId = '',
   });
 
   /// ms → KISS 值（10ms 单位，封顶 255）
@@ -133,6 +142,7 @@ class TncConfig {
         // 用户会看到「设了 38400、下次打开又变回 9600」这种静默复位。
         // 连拍时由 TncLink.connect 把它填进 TncDevice.baud 交给传输层。
         'serialBaud': serialBaud,
+        'txSerialId': txSerialId,
       };
 
   static TncConfig fromJson(Object? j) {
@@ -159,6 +169,7 @@ class TncConfig {
       initDelayMs: i('initDelayMs', c.initDelayMs).clamp(0, 5000),
       pushKissParams: b('pushKissParams', c.pushKissParams),
       serialBaud: i('serialBaud', c.serialBaud).clamp(1200, 1000000),
+      txSerialId: j['txSerialId']?.toString() ?? c.txSerialId,
     );
   }
 }
@@ -329,7 +340,7 @@ class TncLink {
     // 传输层接口只有 connect(device)，线速作为设备属性传最自然，
     // 也不必为一个参数去改所有平台实现的签名。蓝牙不需要（无此概念）。
     final wireTarget = target.needsBaud
-        ? target.copyWith(baud: config.serialBaud)
+        ? target.copyWith(baud: config.serialBaud, txSerialId: config.txSerialId)
         : target;
     final err = await _t.connect(wireTarget);
     connecting = false;
@@ -626,6 +637,7 @@ class TncLink {
       // （症状是台站不上图、网关统计恒为 0，像是「射频坏了」）。
       // 教训：漏字段 = 静默复位，与「没持久化」完全等价，所以拷贝必须成对。
       ..serialBaud = from.serialBaud;
+      ..txSerialId = from.txSerialId;
   }
 
   Future<void> persistConfig() async {

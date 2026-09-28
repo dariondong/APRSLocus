@@ -2443,5 +2443,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "Code contribution"
+  "codeContribution": "Code contribution",
+  "historyCharts": "Charts",
+  "historyChartsShow": "Show charts",
+  "historyChartsHide": "Hide charts",
+  "historyChartHr": "Heart rate",
+  "historyChartSpeed": "Speed",
+  "historyChartDist": "Distance",
+  "audioOutDevice": "Playback device",
+  "audioInDevice": "Capture device",
+  "audioDeviceDefault": "System default",
+  "audioDeviceHint": "Saved. Reconnect the audio link to apply.",
+  "tncTxSerial": "TX serial port",
+  "tncTxSerialDefault": "Same as RX",
+  "tncTxSerialHint": "Saved. By default TX shares the RX port; a separate port avoids two handles fighting over one COM port on Windows."
 }

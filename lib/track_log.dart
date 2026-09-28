@@ -43,6 +43,13 @@ class TrackLogPoint {
   /// 水平精度（米）；<=0 表示平台没给
   final double accuracyM;
 
+  /// 该点的心率（bpm）；null = 那一刻没有心率读数。
+  ///
+  /// 来源与信标备注里的 `HR=` 完全一致（见 `AppState.myHr`）：蓝牙心率带或
+  /// 佳明 LiveTrack。**只记「有读数」的点**：没有心率时写 null 而不是 0 ——
+  /// 0 会在折线图上画出一条扑到地上的线，也会把「平均心率」算错。
+  final int? hr;
+
   const TrackLogPoint({
     required this.lat,
     required this.lng,
@@ -51,6 +58,7 @@ class TrackLogPoint {
     this.course,
     this.alt,
     this.accuracyM = 0,
+    this.hr,
   });
 
   Map<String, dynamic> toJson() => {
@@ -61,6 +69,7 @@ class TrackLogPoint {
         if (course != null) 'c': course!.round(),
         if (alt != null) 'a': double.parse(alt!.toStringAsFixed(1)),
         if (accuracyM > 0) 'acc': accuracyM.round(),
+        if (hr != null && hr! > 0) 'hr': hr,
       };
 
   static TrackLogPoint? fromJson(Object? raw) {
@@ -77,6 +86,7 @@ class TrackLogPoint {
       course: (raw['c'] as num?)?.toDouble(),
       alt: (raw['a'] as num?)?.toDouble(),
       accuracyM: (raw['acc'] as num?)?.toDouble() ?? 0,
+      hr: (raw['hr'] as num?)?.toInt(),
     );
   }
 }
@@ -145,6 +155,41 @@ class DayTrack {
   double get avgSpeedKmh {
     final h = movingTime.inSeconds / 3600;
     return h <= 0 ? 0 : distanceKm / h;
+  }
+
+  // ─── 心率统计（issue #17）───
+  //
+  // 只统计「真有读数」的点（hr != null && > 0）。手机上没连心率带、或佳明
+  // 没在推数据时，一天里大部分点是没有心率的 —— 把那些点当 0 参与平均
+  // 会把数字拉得毫无意义，所以宁可显示「--」。
+
+  /// 这一天有没有心率数据（决定要不要显示心率那一栏 / 那条折线）。
+  bool get hasHr => points.any((p) => p.hr != null && p.hr! > 0);
+
+  /// 最低 / 最高 / 平均心率；一个读数都没有时返回 null。
+  int? get minHr => _hrReduce((a, b) => a < b ? a : b);
+  int? get maxHr => _hrReduce((a, b) => a > b ? a : b);
+
+  int? get avgHr {
+    var sum = 0;
+    var n = 0;
+    for (final p in points) {
+      final h = p.hr;
+      if (h == null || h <= 0) continue;
+      sum += h;
+      n++;
+    }
+    return n == 0 ? null : (sum / n).round();
+  }
+
+  int? _hrReduce(int Function(int a, int b) pick) {
+    int? acc;
+    for (final p in points) {
+      final h = p.hr;
+      if (h == null || h <= 0) continue;
+      acc = acc == null ? h : pick(acc, h);
+    }
+    return acc;
   }
 
   Map<String, dynamic> toJson() => {
@@ -247,6 +292,7 @@ class TrackLogStore {
     double? course,
     double? alt,
     double accuracyM = 0,
+    int? hr,
   }) {
     if (!available) return;
     final now = DateTime.now();
@@ -267,6 +313,7 @@ class TrackLogStore {
       course: course,
       alt: alt,
       accuracyM: accuracyM,
+      hr: hr,
     );
     // 与上一个点的间隔 < 1 秒且没挪动时合并（定位偶发重复回调）
     if (day.points.isNotEmpty) {

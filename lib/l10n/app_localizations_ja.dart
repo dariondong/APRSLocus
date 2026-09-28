@@ -7060,4 +7060,43 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get codeContribution => "コード貢献";
 
+  @override
+  String get historyCharts => 'グラフ';
+
+  @override
+  String get historyChartsShow => 'グラフを表示';
+
+  @override
+  String get historyChartsHide => 'グラフを隠す';
+
+  @override
+  String get historyChartHr => '心拍数';
+
+  @override
+  String get historyChartSpeed => '速度';
+
+  @override
+  String get historyChartDist => '距離';
+
+  @override
+  String get audioOutDevice => '再生デバイス';
+
+  @override
+  String get audioInDevice => '録音デバイス';
+
+  @override
+  String get audioDeviceDefault => 'システム既定';
+
+  @override
+  String get audioDeviceHint => '保存しました。音声リンクを再接続すると反映されます。';
+
+  @override
+  String get tncTxSerial => '送信シリアルポート';
+
+  @override
+  String get tncTxSerialDefault => '受信と同じ';
+
+  @override
+  String get tncTxSerialHint => '保存しました。既定では受信と同じポートを使います。別ポートにすると Windows で同一 COM ポートの読み書きが競合しません。';
+
 }

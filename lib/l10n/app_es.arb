@@ -2527,5 +2527,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "Contribución de código"
+  "codeContribution": "Contribución de código",
+  "historyCharts": "Gráficas",
+  "historyChartsShow": "Mostrar gráficas",
+  "historyChartsHide": "Ocultar gráficas",
+  "historyChartHr": "Frecuencia cardíaca",
+  "historyChartSpeed": "Velocidad",
+  "historyChartDist": "Distancia",
+  "audioOutDevice": "Dispositivo de reproducción",
+  "audioInDevice": "Dispositivo de captura",
+  "audioDeviceDefault": "Predeterminado del sistema",
+  "audioDeviceHint": "Guardado. Reconecta el enlace de audio para aplicarlo.",
+  "tncTxSerial": "Puerto serie de TX",
+  "tncTxSerialDefault": "Igual que RX",
+  "tncTxSerialHint": "Guardado. Por defecto TX comparte el puerto de RX; usar otro puerto evita que dos descriptores compitan por un COM en Windows."
 }

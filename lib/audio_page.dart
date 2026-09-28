@@ -9,6 +9,7 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'audio.dart';
 import 'l10n/app_localizations.dart';
 import 'link_test_card.dart';
+import 'material.dart';
 import 'net/audio_export.dart';
 import 'settings_widgets.dart';
 import 'tnc_page.dart';
@@ -96,6 +97,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     _csma = TextEditingController(text: '${c.csmaWaitMs}');
     _wavTnc2.text = diagSampleFrame;
     unawaited(_probe());
+    unawaited(_loadDevices());
   }
 
   @override
@@ -112,6 +114,136 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   Future<void> _probe() async {
     final ok = await audio.supported();
     if (mounted) setState(() => _supported = ok);
+  }
+
+  // ─── 音频设备选择（issue #14）───
+  //
+  // 只在 Windows 出现：winmm 是唯一有「按设备序号打开」概念的后端，而
+  // Android/iOS 的音频路由由系统决定 —— 给一个假选择器只会误导用户。
+  //
+  // 这里**不写 `AudioDevice` 这个名字**（那是 net/audio_base.dart 的类型）：
+  // UI 层不该直接依赖平台传输层的类型，`audio.transport` 的返回值用类型推导
+  // 取 id/name 就够了。
+
+  /// 系统默认设备（与 `kAudioDeviceDefault` 同值）。
+  static const int _devDefault = -1;
+
+  /// 设备序号 → 名字（用于行尾显示当前选择）。
+  final Map<int, String> _devNames = {};
+  List<int> _outDevIds = const [];
+  List<int> _inDevIds = const [];
+
+  /// 枚举可用设备；非 Windows 直接返回（选择器也不会出现）。
+  Future<void> _loadDevices() async {
+    if (defaultTargetPlatform != TargetPlatform.windows) return;
+    try {
+      final outs = await audio.transport.listOutputDevices();
+      final ins = await audio.transport.listInputDevices();
+      if (!mounted) return;
+      setState(() {
+        _outDevIds = outs.map((d) => d.id).toList();
+        _inDevIds = ins.map((d) => d.id).toList();
+        _devNames
+          ..clear()
+          ..addEntries(
+              [...outs, ...ins].map((d) => MapEntry(d.id, d.name)));
+      });
+    } catch (_) {
+      // 枚举失败不算错：选择器里至少还有「系统默认」可选项
+    }
+  }
+
+  /// 设备选择行（非 Windows 返回空列表，卡片里就不会多出这一行）。
+  List<Widget> _deviceRows(S s, {required bool output}) {
+    if (defaultTargetPlatform != TargetPlatform.windows) return const [];
+    final cur = output ? audio.config.outDeviceId : audio.config.inDeviceId;
+    final name = cur == _devDefault
+        ? s.audioDeviceDefault
+        : (_devNames[cur] ?? '#${cur + 1}');
+    return [
+      SettingsNavRow(
+        title: output ? s.audioOutDevice : s.audioInDevice,
+        icon: output ? Icons.volume_up_rounded : Icons.mic_none_rounded,
+        color: C.cyan,
+        trailing: name,
+        onTap: () => unawaited(_pickDevice(s, output: output)),
+      ),
+    ];
+  }
+
+  /// 选设备。每次打开都**重新枚举**：USB 声卡常是「先插上、再进设置」，
+  /// 用启动时那份缓存会让用户以为「我的设备没被识别」。
+  Future<void> _pickDevice(S s, {required bool output}) async {
+    await _loadDevices();
+    if (!mounted) return;
+    final ids = output ? _outDevIds : _inDevIds;
+    final cur = output ? audio.config.outDeviceId : audio.config.inDeviceId;
+    final picked = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => MaterialSurface(
+        radius: 24,
+        topOnly: true,
+        child: Container(
+          decoration: BoxDecoration(
+            color: C.sheetFill,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(output ? s.audioOutDevice : s.audioInDevice,
+                  style: ts(13, w: FontWeight.w700)),
+              const SizedBox(height: 6),
+              for (final id in [_devDefault, ...ids])
+                InkWell(
+                  onTap: () => Navigator.pop(ctx, id),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    child: Row(
+                      children: [
+                        Icon(
+                          id == cur
+                              ? Icons.radio_button_checked_rounded
+                              : Icons.radio_button_off_rounded,
+                          size: 17,
+                          color: id == cur ? C.cyan : C.greyLight,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            id == _devDefault
+                                ? s.audioDeviceDefault
+                                : (_devNames[id] ?? '#${id + 1}'),
+                            style: ts(12, c: C.ink),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      if (output) {
+        audio.config.outDeviceId = picked;
+        audio.transport.setOutputDevice(picked);
+      } else {
+        audio.config.inDeviceId = picked;
+        audio.transport.setInputDevice(picked);
+      }
+    });
+    await audio.save();
+    if (mounted) _toast(s.audioDeviceHint);
   }
 
   void _toast(String msg, {Color? color}) {
@@ -319,6 +451,8 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           _supported ? audio.backendName : s.audioUnsupported,
           valueColor: _supported ? C.ink : C.orange,
         ),
+        // 采集设备选择（仅 Windows，见 _deviceRows）
+        ..._deviceRows(s, output: false),
         SettingsRow2(
           s.connection,
           audio.connected ? s.connected : s.disconnected,
@@ -460,6 +594,9 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           if (mounted) setState(() {});
         }),
         SettingsHint(s.audioTxEnabledTip, color: C.orange),
+        // 播放设备选择（仅 Windows）——发时用哪个声卡输出，决定接到电台的
+        // 是哪一路信号（issue #14）
+        ..._deviceRows(s, output: true),
         SettingsSwitch(s.kissRfBeacon, value: audio.config.rfBeacon,
             color: C.orange, onChanged: (v) async {
           audio.config.rfBeacon = v;

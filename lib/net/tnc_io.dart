@@ -362,6 +362,17 @@ class TncDesktopSerial implements TncTransport {
   }
 
   @override
+  /// Windows 的 COM 口要写成 `\\.\COM3`（设备命名空间路径）才能被 dart:io
+  /// 打开；其它平台原样返回。
+  ///
+  /// 单独抽出来是因为「发射专用串口」（issue #14）也要拼同一个前缀 ——
+  /// 两处各写一遍就迟早会有一处写错。
+  static String _portPath(String id) {
+    if (defaultTargetPlatform != TargetPlatform.windows) return id;
+    if (id.startsWith(r'\\.\')) return id;
+    return r'\\.\' + id;
+  }
+
   Future<String?> connect(TncDevice device) async {
     await disconnect();
     // 串口参数（波特率 / 8N1 / raw）：dart:io 没有串口 API，但**系统有工具** ——
@@ -381,14 +392,25 @@ class TncDesktopSerial implements TncTransport {
     } catch (e) {
       return 'open-read-failed: $e';
     }
+    // 发射口（issue #14）：配了「发射专用串口」就写到那个口，否则读写同一个。
+    // 两个口的串口参数各设各的（Windows 的 `mode COMx: BAUD=` 是写在设备上的）。
+    final txId = device.txSerialId;
+    final separateTx = txId.isNotEmpty && txId != device.id;
+    if (separateTx) {
+      final terr = await _applySerialParams(
+          TncDevice(id: txId, name: txId, kind: device.kind, baud: device.baud));
+      if (terr != null) onStatus?.call('发射串口参数未设置：$terr');
+    }
+    final txPath = separateTx ? _portPath(txId) : path;
     try {
-      _write = await File(path).open(mode: FileMode.append);
+      _write = await File(txPath).open(mode: FileMode.append);
     } catch (e) {
       try {
         await _read?.close();
       } catch (_) {}
       _read = null;
-      // Windows COM 口独占：读句柄已占用导致写句柄打不开
+      // Windows COM 口独占：读句柄已占用导致写句柄打不开。
+      // 解法：在设备页把「发射串口」改成另一个 COM 口（issue #14）。
       return 'open-write-failed: $e';
     }
     _closing = false;

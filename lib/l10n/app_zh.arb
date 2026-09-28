@@ -3042,5 +3042,18 @@
   "@connStatusSent": {"placeholders": {"call": {"type": "String"}}},
   "@connTncStatusSent": {"placeholders": {"arg": {"type": "String"}}},
   "@connAudioStatusSent": {"placeholders": {"call": {"type": "String"}}},
-  "codeContribution": "贡献代码"
+  "codeContribution": "贡献代码",
+  "historyCharts": "折线图",
+  "historyChartsShow": "显示折线图",
+  "historyChartsHide": "隐藏折线图",
+  "historyChartHr": "心率",
+  "historyChartSpeed": "速度",
+  "historyChartDist": "里程",
+  "audioOutDevice": "播放设备",
+  "audioInDevice": "采集设备",
+  "audioDeviceDefault": "系统默认",
+  "audioDeviceHint": "设备已保存；重新连接音频链路后生效",
+  "tncTxSerial": "发射串口",
+  "tncTxSerialDefault": "与接收同一个",
+  "tncTxSerialHint": "已保存。默认与接收共用一个口；分开口可避免 Windows 上读写争用同一 COM 口。"
 }

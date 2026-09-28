@@ -72,6 +72,15 @@ class AudioConfig {
   /// 发射前等待信道空闲的最长时间（ms）；期间持续检测到信号则延后发射
   int csmaWaitMs;
 
+  /// 播放（發射）设备序号；[kAudioDeviceDefault] = 系统默认（issue #14）。
+  ///
+  /// 只有 Windows（winmm）真的参与选择 —— 其它平台由系统路由决定，
+  /// 存着这个值也不会有效果（UI 也不显示选择器）。
+  int outDeviceId;
+
+  /// 采集（接收）设备序号；语义同 [outDeviceId]。
+  int inDeviceId;
+
   AudioConfig({
     this.afsk = const AfskParams(),
     this.path = 'WIDE1-1,WIDE2-1',
@@ -81,6 +90,8 @@ class AudioConfig {
     this.autoAck = true,
     this.autoReconnect = true,
     this.csmaWaitMs = 3000,
+    this.outDeviceId = kAudioDeviceDefault,
+    this.inDeviceId = kAudioDeviceDefault,
   });
 
   Map<String, dynamic> toJson() => {
@@ -92,6 +103,8 @@ class AudioConfig {
         'autoAck': autoAck,
         'autoReconnect': autoReconnect,
         'csmaWaitMs': csmaWaitMs,
+        'outDeviceId': outDeviceId,
+        'inDeviceId': inDeviceId,
       };
 
   static AudioConfig fromJson(Object? j) {
@@ -107,6 +120,8 @@ class AudioConfig {
       autoAck: b(j['autoAck'], true),
       autoReconnect: b(j['autoReconnect'], true),
       csmaWaitMs: i(j['csmaWaitMs'], 3000).clamp(0, 10000),
+      outDeviceId: i(j['outDeviceId'], kAudioDeviceDefault),
+      inDeviceId: i(j['inDeviceId'], kAudioDeviceDefault),
     );
   }
 }
@@ -271,6 +286,9 @@ class AudioLink {
     _log('打开音频采集 @${config.afsk.sampleRate}Hz（${_t.backendName}）…');
     onStateChanged?.call();
     _rebuildModem();
+    // 采集设备必须在打开句柄**之前**告诉后端（Windows 换设备要重开 waveIn）
+    _t.setInputDevice(config.inDeviceId);
+    _t.setOutputDevice(config.outDeviceId);
     final err = await _t.startCapture(sampleRate: config.afsk.sampleRate);
     connecting = false;
     if (err != null) {
@@ -462,6 +480,9 @@ class AudioLink {
     _txActive = true;
     _playing = true;
     _playDone = Completer<void>();
+    // 发射前把当前选择的播放设备同步给后端（设置里刚改完也能直接生效，
+    // 不必非要重连一次；Windows 侧_ensureOut 会发现设备变了而重开句柄）
+    _t.setOutputDevice(config.outDeviceId);
     final err = await _t.play(pcm, sampleRate: config.afsk.sampleRate);
     if (err != null) {
       lastError = err;

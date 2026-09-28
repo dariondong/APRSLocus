@@ -7271,4 +7271,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get codeContribution => "Code contribution";
 
+  @override
+  String get historyCharts => 'Charts';
+
+  @override
+  String get historyChartsShow => 'Show charts';
+
+  @override
+  String get historyChartsHide => 'Hide charts';
+
+  @override
+  String get historyChartHr => 'Heart rate';
+
+  @override
+  String get historyChartSpeed => 'Speed';
+
+  @override
+  String get historyChartDist => 'Distance';
+
+  @override
+  String get audioOutDevice => 'Playback device';
+
+  @override
+  String get audioInDevice => 'Capture device';
+
+  @override
+  String get audioDeviceDefault => 'System default';
+
+  @override
+  String get audioDeviceHint => 'Saved. Reconnect the audio link to apply.';
+
+  @override
+  String get tncTxSerial => 'TX serial port';
+
+  @override
+  String get tncTxSerialDefault => 'Same as RX';
+
+  @override
+  String get tncTxSerialHint => 'Saved. By default TX shares the RX port; a separate port avoids two handles fighting over one COM port on Windows.';
+
 }
