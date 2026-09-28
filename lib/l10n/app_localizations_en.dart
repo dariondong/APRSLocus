@@ -7457,4 +7457,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get linkNoPasscode => 'No passcode yet · tap to set it up';
 
+  @override
+  String lifeGuard => 'Life guard';
+
+  @override
+  String lifeGuardSubtitle => 'Heart-rate alarm and help shortcuts';
+
+  @override
+  String lifeGuardEntryDesc => 'Alarm on abnormal heart rate, call emergency services, ask nearby stations';
+
+  @override
+  String lifeGuardBeta => 'Beta';
+
+  @override
+  String lifeGuardIntroTitle => 'What this is';
+
+  @override
+  String lifeGuardIntroBody => 'With an external heart-rate device connected (a BLE chest strap or Garmin LiveTrack), a reading outside your limits raises an alarm dialog and a notification. It offers two paths: call emergency services, or send a help message to nearby stations.\n\nIt only warns — it never acts for you: calling and asking for help both require your own tap. The cost of a false alarm is asymmetric: staying silent merely misses one reminder, while an automatically transmitted distress call sends people out.';
+
+  @override
+  String lifeGuardCondTitle => 'Requirements';
+
+  @override
+  String lifeGuardCondSubtitle => 'Only these conditions make it speak';
+
+  @override
+  String lifeGuardCondBody => '① the switch above is on; ② an external heart-rate device is connected and actually streaming; ③ the reading reaches or crosses your limits; ④ more than 3 minutes have passed since the last alarm.\n\nA stale reading never triggers it (the reading is cleared when the strap disconnects or LiveTrack stops), and the alarm clears itself once the reading returns to normal.';
+
+  @override
+  String lifeGuardNearbyNote => '"Ask nearby stations" is only triggered by hand from the alarm dialog: the 5 closest stations within 100 km each get a short message (`SOS HR=… position`), with one more confirmation before sending. It never broadcasts automatically and never decides for you.';
+
+  @override
+  String lifeGuardMovedHint => 'Moved to Settings → Life guard';
+
+  @override
+  String hrAlarmCurrent => 'Currently active';
+
+  @override
+  String hrAlarmRangeNote => 'Accepted ranges: upper 80–240, lower 20–100. These are "clearly abnormal" lines, not training zones — do not set the upper limit below 150 for ordinary exercise.';
+
 }

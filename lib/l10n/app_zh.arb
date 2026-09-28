@@ -3114,5 +3114,18 @@
   "locExtGpsLost": "外置 GPS 已失效 · 改用手机 GPS",
   "locPhoneGpsActive": "手机 GPS 已接管",
   "linkNoServer": "还没填服务器地址 · 点一下去设置里填",
-  "linkNoPasscode": "还没填验证码 · 点一下去设置里填"
+  "linkNoPasscode": "还没填验证码 · 点一下去设置里填",
+  "lifeGuard": "生命守护",
+  "lifeGuardSubtitle": "心率异常告警与求助入口",
+  "lifeGuardEntryDesc": "心率异常时告警、拨打急救、向附近台站求助",
+  "lifeGuardBeta": "测试功能",
+  "lifeGuardIntroTitle": "这是什么",
+  "lifeGuardIntroBody": "连接外置心率设备（蓝牙心率带或佳明 LiveTrack）时，读数越过你设的上/下限会弹出告警，并出现在系统通知栏。告警里给两条路：拨打紧急电话，或向附近的台站发出求助信息。\n\n它只提醒、不代替你行动 —— 拨号与发求助都必须你亲手按。误报的代价是不对称的：静默不动只是错过一次提醒，而自动发出去的求救会让一群人真的出动。",
+  "lifeGuardCondTitle": "开启条件",
+  "lifeGuardCondSubtitle": "满足这些条件它才会说话",
+  "lifeGuardCondBody": "① 上面的开关打开；② 外置心率设备已连接、且在正常推数据；③ 读数**达到或越过**你设的上/下限；④ 距上次告警超过 3 分钟。\n\n读数过期时不报警（设备断开、佳明停止推送时读数会被清空），恢复正常后告警自动收起 —— 不用管它。",
+  "lifeGuardNearbyNote": "「向附近台站求助」只在告警弹窗里手动触发：取 100 公里内**最近的 5 个**台站各发一条短信 （`SOS HR=… 坐标`），发送前会再确认一次。它不会自动广播，也不会代替你判断该不该求助。",
+  "lifeGuardMovedHint": "已移到「设置 → 生命守护」",
+  "hrAlarmCurrent": "当前生效",
+  "hrAlarmRangeNote": "可填范围：上限 80~240、下限 20~100。这两条线是「明显不正常」，不是运动区间 —— 普通运动心率不该把上限设在 150 以下。"
 }

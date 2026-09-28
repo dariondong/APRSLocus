@@ -2599,5 +2599,18 @@
   "locExtGpsLost": "GPS externo perdido · usando el del teléfono",
   "locPhoneGpsActive": "El GPS del teléfono tomó el control",
   "linkNoServer": "Aún no hay servidor · toca para configurarlo",
-  "linkNoPasscode": "Aún no hay código · toca para configurarlo"
+  "linkNoPasscode": "Aún no hay código · toca para configurarlo",
+  "lifeGuard": "Guardián vital",
+  "lifeGuardSubtitle": "Alarma de frecuencia cardíaca y ayuda",
+  "lifeGuardEntryDesc": "Avisa si la frecuencia es anormal, llama a emergencias, pide ayuda a estaciones cercanas",
+  "lifeGuardBeta": "Beta",
+  "lifeGuardIntroTitle": "Qué es esto",
+  "lifeGuardIntroBody": "Con un dispositivo de frecuencia cardíaca externo conectado (banda BLE o Garmin LiveTrack), una lectura fuera de tus límites muestra una alarma y una notificación. Ofrece dos caminos: llamar a emergencias o enviar un mensaje de ayuda a estaciones cercanas.\n\nSolo avisa, nunca actúa por ti: llamar y pedir ayuda requieren tu toque. El coste de una falsa alarma es asimétrico: callar solo pierde un aviso, mientras que una llamada de socorro automática moviliza a personas.",
+  "lifeGuardCondTitle": "Requisitos",
+  "lifeGuardCondSubtitle": "Solo estas condiciones lo activan",
+  "lifeGuardCondBody": "① el interruptor de arriba está activo; ② hay un dispositivo externo conectado y enviando datos; ③ la lectura alcanza o cruza tus límites; ④ han pasado más de 3 minutos desde la última alarma.\n\nUna lectura antigua no la activa (se borra al desconectarse la banda o al parar LiveTrack), y la alarma se retira sola cuando la lectura vuelve a la normalidad.",
+  "lifeGuardNearbyNote": "\"Pedir ayuda a estaciones cercanas\" solo se lanza a mano desde el diálogo de alarma: las 5 estaciones más cercanas en 100 km reciben un mensaje corto (`SOS HR=… posición`), con una confirmación más antes de enviar. Nunca emite de forma automática ni decide por ti.",
+  "lifeGuardMovedHint": "Se movió a Ajustes → Guardián vital",
+  "hrAlarmCurrent": "Activo ahora",
+  "hrAlarmRangeNote": "Rangos aceptados: superior 80–240, inferior 20–100. Son líneas de \"claramente anormal\", no zonas de entrenamiento; no pongas el límite superior por debajo de 150 para ejercicio normal."
 }

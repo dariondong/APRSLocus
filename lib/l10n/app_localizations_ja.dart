@@ -7246,4 +7246,43 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get linkNoPasscode => 'パスコードが未設定 · タップして設定';
 
+  @override
+  String lifeGuard => 'ライフガード';
+
+  @override
+  String lifeGuardSubtitle => '心拍異常アラームと救援の入口';
+
+  @override
+  String lifeGuardEntryDesc => '心拍異常時に警告・救急への発信・近隣局への依頼';
+
+  @override
+  String lifeGuardBeta => 'テスト機能';
+
+  @override
+  String lifeGuardIntroTitle => 'これは何か';
+
+  @override
+  String lifeGuardIntroBody => '外部の心拍デバイス（BLE 胸帯または Garmin LiveTrack）を接続しているとき、設定した上下限を外れると警告ダイアログと通知が出ます。警告からは救急への発信と、近隣局への救援メッセージの2つを選べます。\n\n警告のみで、代わりに行動はしません。発信と救援依頼は必ずご自身で押してください。誤報のほうが高くつくからです。';
+
+  @override
+  String lifeGuardCondTitle => '動作条件';
+
+  @override
+  String lifeGuardCondSubtitle => 'これらを満たすときだけ作動します';
+
+  @override
+  String lifeGuardCondBody => '① 上のスイッチがオン、② 外部心拍デバイスが接続され実際に受信中、③ 設定した上下限に達するか超えた、④ 前回の警告から3分以上経過。\n\n古い値では鳴りません（デバイス切断や LiveTrack 停止時は値が消えます）。正常に戻れば警告は自動で消えます。';
+
+  @override
+  String lifeGuardNearbyNote => '「近隣局に救援依頼」は警告ダイアログから手動でのみ実行されます。100 km 以内の**最も近い5局**に短文（`SOS HR=… 座標`）を送り、送信前に再確認します。自動でブロードキャストすることはなく、判断を代行しません。';
+
+  @override
+  String lifeGuardMovedHint => '「設定 → ライフガード」に移動しました';
+
+  @override
+  String hrAlarmCurrent => '現在の設定';
+
+  @override
+  String hrAlarmRangeNote => '入力範囲：上限 80〜240、下限 20〜100。これは「明らかな異常」の線で、運動時の心拍域ではありません。通常は上限を 150 未満にしないでください。';
+
 }

@@ -7467,4 +7467,43 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get linkNoPasscode => 'Passcode belum diisi · ketuk untuk mengatur';
 
+  @override
+  String lifeGuard => 'Pelindung nyawa';
+
+  @override
+  String lifeGuardSubtitle => 'Alarm detak jantung dan bantuan';
+
+  @override
+  String lifeGuardEntryDesc => 'Beri peringatan saat detak tidak normal, hubungi darurat, minta bantuan stasiun terdekat';
+
+  @override
+  String lifeGuardBeta => 'Beta';
+
+  @override
+  String lifeGuardIntroTitle => 'Apa ini';
+
+  @override
+  String lifeGuardIntroBody => 'Saat perangkat detak jantung eksternal terhubung (dada BLE atau Garmin LiveTrack), bacaan di luar batas Anda memunculkan alarm dan notifikasi. Tersedia dua jalan: hubungi darurat, atau kirim pesan bantuan ke stasiun terdekat.\n\nHanya memberi peringatan, tidak bertindak untuk Anda: menelepon dan meminta bantuan tetap perlu Anda tekan sendiri. Alarm palsu jauh lebih mahal daripada yang terlewat.';
+
+  @override
+  String lifeGuardCondTitle => 'Syarat';
+
+  @override
+  String lifeGuardCondSubtitle => 'Hanya syarat ini yang mengaktifkannya';
+
+  @override
+  String lifeGuardCondBody => '① sakelar di atas aktif; ② perangkat eksternal terhubung dan benar-benar mengirim data; ③ bacaan mencapai atau melewati batas Anda; ④ lebih dari 3 menit sejak alarm terakhir.\n\nBacaan lama tidak memicu alarm (dibersihkan saat dada terputus atau LiveTrack berhenti), dan alarm hilang sendiri saat bacaan kembali normal.';
+
+  @override
+  String lifeGuardNearbyNote => '"Minta bantuan stasiun terdekat" hanya dipicu manual dari dialog alarm: 5 stasiun terdekat dalam 100 km masing-masing menerima pesan singkat (`SOS HR=… posisi`), dengan satu konfirmasi lagi sebelum dikirim. Tidak pernah menyiarkan otomatis dan tidak memutuskan untuk Anda.';
+
+  @override
+  String lifeGuardMovedHint => 'Dipindahkan ke Pengaturan → Pelindung nyawa';
+
+  @override
+  String hrAlarmCurrent => 'Aktif saat ini';
+
+  @override
+  String hrAlarmRangeNote => 'Rentang yang diterima: atas 80–240, bawah 20–100. Ini garis "jelas tidak normal", bukan zona latihan — jangan set batas atas di bawah 150 untuk olahraga biasa.';
+
 }

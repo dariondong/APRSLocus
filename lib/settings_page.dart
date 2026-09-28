@@ -17,6 +17,7 @@ import 'exit_app.dart';
 import 'early_member.dart';
 import 'honor_wall_page.dart';
 import 'settings_pages.dart';
+import 'life_guard_page.dart';
 import 'translate_page.dart';
 import 'export_adif_page.dart';
 import 'backup_page.dart';
@@ -590,6 +591,58 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: ts(13, w: FontWeight.w700),
                         ),
                         Spacer(),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: C.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                // 生命守护（issue #22-4）：用户要求「在设置页底下添加一个生命守护页面」。
+                // 放在「关于」之后、退出应用之前 —— 它是设置页最底下的一项，
+                // 与「关于」并列而不是塞进某个业务分组里（它不属于任何一类设置）。
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => LifeGuardPage(state: widget.state)),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: cardDeco(),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: C.accentDeco(
+                            radius: 8,
+                            fallback: const [
+                              Color(0xFFEF4444),
+                              Color(0xFF991B1B),
+                            ],
+                          ),
+                          child: const Icon(Icons.health_and_safety_rounded,
+                              color: Colors.white, size: 17),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          S.of(context).lifeGuard,
+                          style: ts(13, w: FontWeight.w700),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            S.of(context).lifeGuardEntryDesc,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 10, color: Color(0xFF98A2B8)),
+                          ),
+                        ),
                         Icon(
                           Icons.chevron_right_rounded,
                           color: C.grey,

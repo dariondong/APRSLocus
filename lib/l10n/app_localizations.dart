@@ -12806,6 +12806,45 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String linkNoPasscode;
 
+  /// In zh, this message translates to:
+  String lifeGuard;
+
+  /// In zh, this message translates to:
+  String lifeGuardSubtitle;
+
+  /// In zh, this message translates to:
+  String lifeGuardEntryDesc;
+
+  /// In zh, this message translates to:
+  String lifeGuardBeta;
+
+  /// In zh, this message translates to:
+  String lifeGuardIntroTitle;
+
+  /// In zh, this message translates to:
+  String lifeGuardIntroBody;
+
+  /// In zh, this message translates to:
+  String lifeGuardCondTitle;
+
+  /// In zh, this message translates to:
+  String lifeGuardCondSubtitle;
+
+  /// In zh, this message translates to:
+  String lifeGuardCondBody;
+
+  /// In zh, this message translates to:
+  String lifeGuardNearbyNote;
+
+  /// In zh, this message translates to:
+  String lifeGuardMovedHint;
+
+  /// In zh, this message translates to:
+  String hrAlarmCurrent;
+
+  /// In zh, this message translates to:
+  String hrAlarmRangeNote;
+
 }
 
 class _AppLocalizationsDelegate

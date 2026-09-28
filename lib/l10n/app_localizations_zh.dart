@@ -7156,6 +7156,45 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get linkNoPasscode => '还没填验证码 · 点一下去设置里填';
 
+  @override
+  String lifeGuard => '生命守护';
+
+  @override
+  String lifeGuardSubtitle => '心率异常告警与求助入口';
+
+  @override
+  String lifeGuardEntryDesc => '心率异常时告警、拨打急救、向附近台站求助';
+
+  @override
+  String lifeGuardBeta => '测试功能';
+
+  @override
+  String lifeGuardIntroTitle => '这是什么';
+
+  @override
+  String lifeGuardIntroBody => '连接外置心率设备（蓝牙心率带或佳明 LiveTrack）时，读数越过你设的上/下限会弹出告警，并出现在系统通知栏。告警里给两条路：拨打紧急电话，或向附近的台站发出求助信息。\n\n它只提醒、不代替你行动 —— 拨号与发求助都必须你亲手按。误报的代价是不对称的：静默不动只是错过一次提醒，而自动发出去的求救会让一群人真的出动。';
+
+  @override
+  String lifeGuardCondTitle => '开启条件';
+
+  @override
+  String lifeGuardCondSubtitle => '满足这些条件它才会说话';
+
+  @override
+  String lifeGuardCondBody => '① 上面的开关打开；② 外置心率设备已连接、且在正常推数据；③ 读数**达到或越过**你设的上/下限；④ 距上次告警超过 3 分钟。\n\n读数过期时不报警（设备断开、佳明停止推送时读数会被清空），恢复正常后告警自动收起 —— 不用管它。';
+
+  @override
+  String lifeGuardNearbyNote => '「向附近台站求助」只在告警弹窗里手动触发：取 100 公里内**最近的 5 个**台站各发一条短信 （`SOS HR=… 坐标`），发送前会再确认一次。它不会自动广播，也不会代替你判断该不该求助。';
+
+  @override
+  String lifeGuardMovedHint => '已移到「设置 → 生命守护」';
+
+  @override
+  String hrAlarmCurrent => '当前生效';
+
+  @override
+  String hrAlarmRangeNote => '可填范围：上限 80~240、下限 20~100。这两条线是「明显不正常」，不是运动区间 —— 普通运动心率不该把上限设在 150 以下。';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14308,5 +14347,44 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get linkNoPasscode => '還沒填驗證碼 · 點一下去設定裡填';
+
+  @override
+  String lifeGuard => '生命守護';
+
+  @override
+  String lifeGuardSubtitle => '心率異常告警與求助入口';
+
+  @override
+  String lifeGuardEntryDesc => '心率異常時告警、撥打急救、向附近臺站求助';
+
+  @override
+  String lifeGuardBeta => '測試功能';
+
+  @override
+  String lifeGuardIntroTitle => '這是什麼';
+
+  @override
+  String lifeGuardIntroBody => '連接外接心率裝置（藍牙心率帶或 Garmin LiveTrack）時，讀數越過你設的上/下限會彈出告警，並出現在系統通知列。告警裡給兩條路：撥打緊急電話，或向附近的臺站發出求助訊息。\n\n它只提醒、不代替你行動 —— 撥號與發求助都必須你親手按。誤報的代價是不對稱的：靜默不動只是錯過一次提醒，而自動發出去的求救會讓一群人真的出動。';
+
+  @override
+  String lifeGuardCondTitle => '開啟條件';
+
+  @override
+  String lifeGuardCondSubtitle => '滿足這些條件它才會說話';
+
+  @override
+  String lifeGuardCondBody => '① 上面的開關打開；② 外接心率裝置已連接、且在正常推送資料；③ 讀數**達到或越過**你設的上/下限；④ 距上次告警超過 3 分鐘。\n\n讀數過期時不報警（裝置斷開、Garmin 停止推送時讀數會被清空），恢復正常後告警自動收起 —— 不用管它。';
+
+  @override
+  String lifeGuardNearbyNote => '「向附近臺站求助」只在告警彈窗裡手動觸發：取 100 公里內**最近的 5 個**臺站各發一則簡訊 （`SOS HR=… 座標`），傳送前會再確認一次。它不會自動廣播，也不會代替你判斷該不該求助。';
+
+  @override
+  String lifeGuardMovedHint => '已移到「設定 → 生命守護」';
+
+  @override
+  String hrAlarmCurrent => '目前生效';
+
+  @override
+  String hrAlarmRangeNote => '可填範圍：上限 80~240、下限 20~100。這兩條線是「明顯不正常」，不是運動區間 —— 一般運動心率不該把上限設在 150 以下。';
 
 }
