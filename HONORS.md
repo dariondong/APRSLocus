@@ -278,14 +278,11 @@ iSelfReliant:'<path d="M4.5 5h15v14h-15zM8 9.5l3 3-3 3M13.5 15.5h3"/>'
 # 1) JSON 合法性
 python3 -c "import json;json.load(open('docs/members.json',encoding='utf-8'));print('json ok')"
 
-# 2) HTML 内嵌 JS 括号平衡（有字符串内的括号，只看基线是否与改动前一致）
-python3 - <<'PY'
-for f in ['docs/member-card.html','docs/badge.html','lib/early_member.dart']:
-    s=open(f,encoding='utf-8').read()
-    print(f, 'braces', s.count('{')-s.count('}'),
-             'parens', s.count('(')-s.count(')'),
-             'brackets', s.count('[')-s.count(']'))
-PY
+# 2) 内嵌 JS 真体检（**必跑**）：数组元素逗号 + 括号配对，会指出行号
+#    注意：不要再用「数括号个数」那种写法 —— 往对象数组里手加一条、
+#    忘了给上一条补逗号时，**括号个数完全是对的**，只是那个 <script>
+#    整段解析失败、页面一个人都不显示（member-card.html 从 v2.0.4 踩到 v2.0.5）。
+python3 tool/check_embedded_js.py
 
 # 3) 与既有称号逐处对照计数（新增称号时用；数字应一致）
 #    仅 members.json 允许 +1，因为 primary 也指向新称号

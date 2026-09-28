@@ -232,7 +232,7 @@ let PEOPLE=[
  {call:"BG2EFX",who:{zh:"BG2EFX","zh-TW":"BG2EFX",en:"BG2EFX"},
   role:{zh:"赞助支持","zh-TW":"贊助支持",en:"Sponsorship support"},
   brief:{zh:"以一份心意相赠，让这盏灯火照得更远。","zh-TW":"以一份心意相贈，讓這盞燈火照得更遠。",en:"A gift from the heart, so this beacon can shine farther."},
-  honors:["jadeGift"],primary:"jadeGift",c:"#0EA5B7",grp:"support"}
+  honors:["jadeGift"],primary:"jadeGift",c:"#0EA5B7",grp:"support"},
  /* BH7GZB：开发人员（与 members.json v53 对齐；本名单是「取不到 JSON」时的兜底，
     因此只列精选成员，不是全量）。
     ⚠️ `honors` 必须显式写出 —— 只给 grp:"core" 会被上面 honorDefsOf 的兜底映射成
@@ -297,7 +297,11 @@ function labelOf(c){return c.kind==="p"?c.p.call:T(c.g.name);}
 function detect(){const q=new URLSearchParams(location.search);if(q.get("lang"))return q.get("lang");
  const n=(navigator.language||"zh-CN").toLowerCase();return n.startsWith("zh-tw")||n.startsWith("zh-hk")?"zh-TW":n.startsWith("en")?"en":"zh";}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function T(obj){return obj?(obj[lang]||obj.zh):"";}
+function T(obj){return obj?(obj[lang]||obj.zh||""):"";}
+/* 数组型字段（如 tags）用这个取：取不到就回 []。
+   ⚠️ 不能直接 `T(m.tags).map(...)` —— 兜底名单里没写 tags 的成员会返回 ""，
+   而字符串没有 .map，点到那个人的卡片就会 TypeError（离线/首帧时整页卡住）。 */
+function TArr(o){const v=T(o);return Array.isArray(v)?v:[];}
 /* 称号：members.json honors 定义 + 每人 honors 推导（内置兜底，联网后覆盖） */
 let HONOR_DEFS={
  kaishan:{zh:"开山","zh-TW":"開山",en:"Founding pioneer",color:"#E67E22"},
@@ -438,7 +442,7 @@ function profile(){
  const c=cur(),g=cardColor(c);const box=document.getElementById("profile");
  if(c.kind==="p"){
   const m=c.p;const who=m.who?(m.who[lang]||m.who.zh):"";
-  const contrib=T(m.contrib),quote=T(m.quote),tags=T(m.tags),role=T(m.role);
+  const contrib=T(m.contrib),quote=T(m.quote),tags=TArr(m.tags),role=T(m.role);
   box.innerHTML=`<div class="p-top">
    <div class="p-av" style="background:linear-gradient(140deg,${g},${g})">${(m.call[0]||"A").toUpperCase()}</div>
    <div class="p-id">

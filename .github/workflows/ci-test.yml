@@ -145,6 +145,16 @@ jobs:
       - name: Check IPA packaging
         run: python3 tool/check_ipa_packaging.py
 
+      # 官网静态页里内嵌的 JS（docs/ 下 98 段 <script>）是手写维护的，
+      # 最容易犯、也最不容易被发现的错是「往对象数组里手加一条，忘了给上一条补逗号」：
+      # 它不会少一条，而是**整个 <script> 解析失败 → 页面整块空白**，
+      # 而 HTML 结构、括号个数、命名全是对的 —— check_site.py 那条
+      # 「js braces/parens balanced」只数括号，数不出逗号。
+      # docs/member-card.html 从 v2.0.4 起就踩了这个（追加 BH7GZB 时漏了
+      # BG2EFX 那条末尾的逗号），会员卡页一个人都不显示，一路带到 v2.0.5 才发现。
+      - name: Check embedded JS in site pages
+        run: python3 tool/check_embedded_js.py
+
       # 自己位置「静止防抖」的算法回归（纯 Python，1:1 移植自 pos_quality.dart）。
       # 断言的是可数的量：静止不许反复横跳、单点 200m 漂移不许漏出去、
       # **步行/开车不许被平滑**（加了滞后就是 bug），并校验 Dart 常量与仿真一致。
