@@ -75,6 +75,8 @@ const List<BackupGroupSpec> kBackupGroups = [
     // 「用户自己配的行为偏好」，换机后应当保留。
     'networkSymbol', 'extGpsStandby',
     'hrAlarmEnabled', 'hrAlarmHigh', 'hrAlarmLow',
+    // 碰撞/摔倒提醒：与心率告警同属「安全策略」偏好，换机后应保留。
+    'crashDetectEnabled',
     // 信标是否附带步数（非标准字段，同 TRV/ODO 一类）：属于信标内容偏好。
     'beaconIncludeSteps',
     'emergencyTel',

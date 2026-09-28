@@ -7375,4 +7375,37 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get sportRankGateNoSensor => 'この端末には歩数センサーがないため、オンにしても**実際には歩数を送りません**（送る歩数が無いため）。オンにすることでランキングが見られるようになります。相互公開のルールに同意した扱いです。';
 
+  @override
+  String get stepsWaiting => '歩数データ待ち · 数歩あるくと表示されます';
+
+  @override
+  String get crashCard => '衝突・転倒の検知';
+
+  @override
+  String get crashCardSub => 'スマホの加速度で判断し、検知したら通知します（テスト）';
+
+  @override
+  String get crashEnabled => '衝突・転倒の通知を有効にする';
+
+  @override
+  String get crashHowItWorks => '判定は**2段階**です：① 加速度に鋭いスパイク（事故でも転倒でも出ます）、② その後12秒間ほとんど動かない。両方を満たしたときだけ通知します。\n\n2段目が必要な理由：スパイクだけだと**段差・机に落とした・振った**だけで該当し、1日に何度も鳴る通知は誰も見なくなります。代わりに**軽い衝突（まだ動ける）では鳴りません** ——この機能は「動けない状態」のためのもので、「衝突があったこと」ではありません。';
+
+  @override
+  String get crashNoSensor => 'この端末に加速度センサーがないため検知できません';
+
+  @override
+  String get crashPending => '衝撃を検知 — 経過観察中';
+
+  @override
+  String get crashFalsePositive => '**誤報はあります**：段差のあと赤信号で12秒止まると2段階の条件を満たします。通知の最初のボタンが「問題なし」なので、押して消せば他に影響しません。';
+
+  @override
+  String get crashAlarmTitle => '衝突または転倒の可能性を検知';
+
+  @override
+  String get crashAlarmBody => '強い衝撃のあと、約12秒間ほとんど動きがありませんでした。\n\n問題なければ「問題なし」を押してください。体調が悪い、または動けない場合は、すぐに救急へ電話するか、100 km 以内の局に救援メッセージを送ってください。\n\n**これはヒューリスティックな判定で、工学レベルの衝突検知ではありません**：段差や落下でも鳴ることがあります。';
+
+  @override
+  String get crashNotif => 'ライフガード：衝突の可能性を検知';
+
 }

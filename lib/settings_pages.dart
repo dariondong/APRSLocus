@@ -1521,18 +1521,27 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
             // 步数状态：读到了就显示今日步数；读不到时**说清是哪种读不到** ——
             // 「这台设备没有计步传感器」与「有传感器但没授权」要给不同的动作，
             // 混成一句「无数据」等于让用户没法处理。
+            // 四态（见 StepsStatus）：判定只走 st.stepsStatus 一个出口 ——
+            // 以前这里与排行榜页各写一遍「读数为 -1 怎么显示」，两处都漏了
+            // 「有权限但还没数据」这一档，于是授权了也一直显示「请授权」（#23）。
             SettingsRow2(
               S.of(context).stepsTodayLabel,
-              st.stepsToday > 0
-                  ? S.of(context).stepsCount('${st.stepsToday}')
-                  : (st.hasStepSensor
-                      ? S.of(context).stepsNeedPermission
-                      : S.of(context).stepsUnsupported),
-              valueColor: st.stepsToday > 0
-                  ? C.green
-                  : (st.hasStepSensor ? C.orange : C.grey),
+              switch (st.stepsStatus) {
+                StepsStatus.ok => S.of(context).stepsCount('${st.stepsToday}'),
+                StepsStatus.waiting => S.of(context).stepsWaiting,
+                StepsStatus.needPermission => S.of(context).stepsNeedPermission,
+                StepsStatus.unsupported => S.of(context).stepsUnsupported,
+              },
+              valueColor: switch (st.stepsStatus) {
+                StepsStatus.ok => C.green,
+                StepsStatus.waiting => C.slate,
+                StepsStatus.needPermission => C.orange,
+                StepsStatus.unsupported => C.grey,
+              },
             ),
-            if (st.hasStepSensor && st.stepsRaw < 0)
+            // 只有**确实没授权**时才给授权按钮：有权限但还没数据时按钮没用，
+            // 摆出来反而让用户以为「再点一次就好了」。
+            if (st.stepsStatus == StepsStatus.needPermission)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
                 child: SizedBox(
@@ -1847,8 +1856,17 @@ class _BeaconSettingsPageState extends State<BeaconSettingsPage> {
               color: C.sheetFill,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
-            padding: EdgeInsets.fromLTRB(20, 10, 20,
-                MediaQuery.of(ctx).viewInsets.bottom + 10),
+            // 底部要让出**两块**：键盘（输入时）与系统导航栏（三大金刚键/手势条）。
+            // 只让键盘的话，键盘收起时「保存」正好压在三大金刚键底下 ——
+            // 用户点不到，而且看不出来是被挡住了（issue #25）。
+            padding: EdgeInsets.fromLTRB(
+              20,
+              10,
+              20,
+              MediaQuery.of(ctx).viewInsets.bottom +
+                  sysBottomInset(ctx) +
+                  10,
+            ),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

@@ -7636,4 +7636,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sportRankGateNoSensor => 'Este dispositivo no tiene podómetro, así que activarlo **no enviará pasos reales** (no hay ninguno que enviar). Solo desbloquea la tabla: ves a los demás porque aceptaste la misma regla mutua.';
 
+  @override
+  String get stepsWaiting => 'Esperando datos de pasos · da unos pasos';
+
+  @override
+  String get crashCard => 'Detección de choque y caída';
+
+  @override
+  String get crashCardSub => 'Se juzga con el acelerómetro del teléfono y avisa al detectarlo (beta)';
+
+  @override
+  String get crashEnabled => 'Activar avisos de choque/caída';
+
+  @override
+  String get crashHowItWorks => 'La prueba es **en dos etapas**: (1) un pico brusco de aceleración (tanto choques como caídas lo producen); (2) después, casi sin movimiento durante 12 segundos. Deben cumplirse las dos.\n\nPor qué la segunda: con solo el pico, **un badén, el móvil cayéndose en la mesa o agitarlo** ya cuentan, y un aviso que suena varias veces al día se ignora. El coste es que **un impacto leve (si aún puedes moverte) no avisa** — esto es para "no puedo moverme", no para "hubo un golpe".';
+
+  @override
+  String get crashNoSensor => 'Este dispositivo no tiene acelerómetro; no se puede detectar';
+
+  @override
+  String get crashPending => 'Impacto detectado — observando';
+
+  @override
+  String get crashFalsePositive => '**Puede dar falsas alarmas**: pasar un badén y luego estar quieto 12 segundos (en un semáforo) cumple ambas etapas. El primer botón del aviso es "Estoy bien": descártalo y nada más se ve afectado.';
+
+  @override
+  String get crashAlarmTitle => 'Posible choque o caída detectado';
+
+  @override
+  String get crashAlarmBody => 'El teléfono detectó un impacto fuerte y después ningún movimiento significativo (unos 12 segundos).\n\nSi estás bien, pulsa "Estoy bien". Si te encuentras mal o no puedes moverte, llama ya a emergencias o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Es una heurística, no detección de choques de nivel ingenieril**: un badén o dejar caer el móvil pueden activarla.';
+
+  @override
+  String get crashNotif => 'Guardián vital: posible choque';
+
 }

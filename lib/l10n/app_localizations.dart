@@ -12935,6 +12935,39 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String sportRankGateNoSensor;
 
+  /// In zh, this message translates to:
+  String stepsWaiting;
+
+  /// In zh, this message translates to:
+  String crashCard;
+
+  /// In zh, this message translates to:
+  String crashCardSub;
+
+  /// In zh, this message translates to:
+  String crashEnabled;
+
+  /// In zh, this message translates to:
+  String crashHowItWorks;
+
+  /// In zh, this message translates to:
+  String crashNoSensor;
+
+  /// In zh, this message translates to:
+  String crashPending;
+
+  /// In zh, this message translates to:
+  String crashFalsePositive;
+
+  /// In zh, this message translates to:
+  String crashAlarmTitle;
+
+  /// In zh, this message translates to:
+  String crashAlarmBody;
+
+  /// In zh, this message translates to:
+  String crashNotif;
+
 }
 
 class _AppLocalizationsDelegate

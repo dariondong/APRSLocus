@@ -7285,6 +7285,39 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sportRankGateNoSensor => '这台设备没有计步传感器：开关打开也**不会真的发出步数**（本来就没有步数可发）。打开它只是让你能看别人的榜单 —— 这没问题，看得到别人是因为你同意了「互相可见」这套规则。';
 
+  @override
+  String get stepsWaiting => '等待步数数据 · 走几步就会出现';
+
+  @override
+  String get crashCard => '碰撞与摔倒检测';
+
+  @override
+  String get crashCardSub => '用手机加速度判断，检测到就提醒（测试）';
+
+  @override
+  String get crashEnabled => '启用碰撞/摔倒提醒';
+
+  @override
+  String get crashHowItWorks => '判据是**两段式**：① 加速度出现一个很陡的尖峰（车祸与摔倒都会有）；② 之后连续 12 秒几乎没有运动。两段都要满足才会提醒。\n\n为什么要第二段：只看尖峰的话，**过减速带、手机掉在桌上、甩一甩**全都算，一天响好几次就没人再看了。代价是**轻微碰撞（人还能动）不会提醒** —— 这个功能的定位是「人已经动不了了」，不是「发生过撞击」。';
+
+  @override
+  String get crashNoSensor => '这台设备没有加速度计，检测不了';
+
+  @override
+  String get crashPending => '检测到冲击，正在观察';
+
+  @override
+  String get crashFalsePositive => '**它会误报**：过减速带之后正好停了 12 秒（等红灯）就满足两段判据。提醒里第一个按钮就是「我没事」，按掉即可，不影响其它功能。';
+
+  @override
+  String get crashAlarmTitle => '检测到疑似碰撞或摔倒';
+
+  @override
+  String get crashAlarmBody => '手机检测到一次强烈的冲击，之后一直没有明显移动（约 12 秒）。\n\n如果你没事，按「我没事」即可；如果身体不适或无法行动，请立即拨打急救电话，或向附近 100 公里内的台站发出求助信息。\n\n**这是启发式判断，不是工程级碰撞检测**：过减速带、手机摔落在地上都可能触发。';
+
+  @override
+  String get crashNotif => '生命守护：检测到疑似碰撞';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14566,5 +14599,38 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sportRankGateNoSensor => '這台裝置沒有計步感測器：開關打開也**不會真的發出步數**（本來就沒有步數可發）。打開它只是讓你能看別人的榜單 —— 這沒問題，看得到別人是因為你同意了「互相可見」這套規則。';
+
+  @override
+  String get stepsWaiting => '等待步數資料 · 走幾步就會出現';
+
+  @override
+  String get crashCard => '碰撞與摔倒偵測';
+
+  @override
+  String get crashCardSub => '用手機加速度判斷，偵測到就提醒（測試）';
+
+  @override
+  String get crashEnabled => '啟用碰撞/摔倒提醒';
+
+  @override
+  String get crashHowItWorks => '判據是**兩段式**：① 加速度出現一個很陡的尖峰（車禍與摔倒都會有）；② 之後連續 12 秒幾乎沒有運動。兩段都要滿足才會提醒。\n\n為什麼要第二段：只看尖峰的話，**過減速帶、手機掉在桌上、甩一甩**全都算，一天響好幾次就沒人再看了。代價是**輕微碰撞（人還能動）不會提醒** —— 這個功能的定位是「人已經動不了了」，不是「發生過撞擊」。';
+
+  @override
+  String get crashNoSensor => '這台裝置沒有加速度計，無法偵測';
+
+  @override
+  String get crashPending => '偵測到衝擊，正在觀察';
+
+  @override
+  String get crashFalsePositive => '**它會誤報**：過減速帶之後剛好停了 12 秒（等紅燈）就滿足兩段判據。提醒裡第一個按鈕就是「我沒事」，按掉即可，不影響其它功能。';
+
+  @override
+  String get crashAlarmTitle => '偵測到疑似碰撞或摔倒';
+
+  @override
+  String get crashAlarmBody => '手機偵測到一次強烈的衝擊，之後一直沒有明顯移動（約 12 秒）。\n\n如果你沒事，按「我沒事」即可；如果身體不適或無法行動，請立即撥打急救電話，或向附近 100 公里內的臺站發出求助訊息。\n\n**這是啟發式判斷，不是工程級碰撞偵測**：過減速帶、手機摔落在地上都可能觸發。';
+
+  @override
+  String get crashNotif => '生命守護：偵測到疑似碰撞';
 
 }

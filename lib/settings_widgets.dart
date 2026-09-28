@@ -12,7 +12,13 @@ class SettingsPageShell extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Widget body;
-  final AppState? state; // 传入后自动监听刷新（body 需引用 state 的 getter 以实时更新）
+  /// **只服务于本页的引导卡**（见 build 里的 GuideTipCard）。
+  ///
+  /// ⚠ 它**不会**让本页跟着 state 实时刷新 —— 这里曾经写着「传入后自动监听刷新」，
+  /// 于是新页面（生命守护）照字面理解只传了 state、没自己包 ListenableBuilder，
+  /// 开关点了界面纹丝不动（issue #24）。要实时刷新请自己包：
+  /// `ListenableBuilder(listenable: state, builder: ...)`。
+  final AppState? state;
 
   /// 本页的功能引导 id（见 lib/guide.dart）。给上它，顶栏会出现「重看引导」按钮，
   /// 首次进入时正文顶部会多一张小提示卡。

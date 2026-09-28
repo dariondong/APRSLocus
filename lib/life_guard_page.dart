@@ -27,8 +27,20 @@ class LifeGuardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ⚠ 必须自己包 ListenableBuilder：`SettingsPageShell.state` **只**服务于引导卡，
+    // 并不会让本页跟随状态刷新（那个参数以前的注释写错了，害得本页开关点了不动 ——
+    // issue #24）。这一页上每一个开关/输入框都写回 AppState，不监听就是「点了没反应」。
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) => _build(context),
+    );
+  }
+
+  Widget _build(BuildContext context) {
     final s = S.of(context);
     return SettingsPageShell(
+      // 传给外壳只为引导卡（首次进入的提示卡）；实时刷新靠上面那层 ListenableBuilder
+      state: state,
       title: s.lifeGuard,
       subtitle: s.lifeGuardSubtitle,
       icon: Icons.health_and_safety_rounded,
@@ -59,7 +71,10 @@ class LifeGuardPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        // ③ 告警设置
+        // ③ 碰撞 / 摔倒检测（issue #26）
+        _CrashCard(state: state),
+        const SizedBox(height: 16),
+        // ④ 心率告警设置
         _HrAlarmCard(state: state),
         const SizedBox(height: 24),
       ]),
@@ -196,6 +211,60 @@ class _HrAlarmCardState extends State<_HrAlarmCard> {
               onEditingComplete: _normalize),
           SettingsHint(s.hrAlarmRangeNote, color: C.grey),
         ],
+      ],
+    );
+  }
+}
+
+
+/// 碰撞 / 摔倒检测的设置卡（issue #26）。
+///
+/// 用户需求：「生命守护支持车祸与摔落检测提醒（测试），通过手机加速度判断」。
+///
+/// 判定在原生侧（`MotionManager.checkImpact`：**冲击 + 随后静止**两段式），
+/// 这一张卡只负责开关与说明 —— 而说明比开关重要：
+///   * 它是**启发式**的（固定阈值、不看行车方向、不融合 GPS），必须写明；
+///   * 它**会误报**（过减速带 + 随后停车正好满足两段判据），也要写明，
+///     并且弹窗第一个按钮是「我没事」；
+///   * 「随后静止」这条为什么必须有：不要求静止的话，手机放桌上、甩一甩都会报，
+///     每天响几次，用户第一件事就是把它永久关掉。
+class _CrashCard extends StatelessWidget {
+  final AppState state;
+  const _CrashCard({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final st = state;
+    return SettingsSectionCard(
+      title: s.crashCard,
+      subtitle: s.crashCardSub,
+      icon: Icons.car_crash_rounded,
+      color: C.orange,
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: C.orange.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(s.lifeGuardBeta,
+            style: ts(10, c: C.orange, w: FontWeight.w700)),
+      ),
+      children: [
+        SettingsSwitch(s.crashEnabled,
+            value: st.crashDetectEnabled,
+            color: C.orange,
+            onChanged: st.setCrashDetectEnabled),
+        SettingsHint(s.crashHowItWorks, color: C.grey),
+        // 没有加速度计：开关照旧可以点，但要如实说「这台设备检测不了」
+        if (!st.hasCrashSensor && st.crashDetectEnabled)
+          SettingsHint(s.crashNoSensor, color: C.orange),
+        // 「检测到冲击、正在观察」：把它显示出来，用户就能理解
+        // 「刚才那下颠簸它在看」——否则只会觉得这个功能「有时候会突然弹一下」
+        if (st.crashDetectEnabled && st.impactPending)
+          SettingsRow2(s.crashPending, s.hrAlarmCurrent,
+              valueColor: C.orange),
+        SettingsHint(s.crashFalsePositive, color: C.grey),
       ],
     );
   }

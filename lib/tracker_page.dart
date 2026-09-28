@@ -888,7 +888,10 @@ class _TrackerPageState extends State<TrackerPage>
       isScrollControlled: true,
       builder: (bctx) {
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(bctx).viewInsets.bottom),
+          // 键盘 + 系统导航栏（同 settings_pages 的速度档弹层，issue #25）
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(bctx).viewInsets.bottom +
+                  sysBottomInset(bctx)),
           child: StatefulBuilder(
             builder: (bctx, setSheet) {
               final isGroup = target == null;

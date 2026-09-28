@@ -293,6 +293,7 @@ class AppState extends ChangeNotifier {
       myHr = p.hr;
       _checkHrAlarm();
     }
+    _checkCrash();
     // 航向：佳明的点里没有这个字段，用**前后两点**算（见 bearingDeg 的注释）。
     // 没有上一个点（首个点）时不改 —— 保留手机 GPS 的最后已知航向，比瞎指北好。
     final prev = _lastGarminPoint;
@@ -568,6 +569,25 @@ class AppState extends ChangeNotifier {
   /// 设备上有没有计步传感器（决定界面说「不支持」还是给授权按钮）。
   bool hasStepSensor = false;
 
+  /// 有没有读计步器所需的权限（Android 10+ 的 ACTIVITY_RECOGNITION）。
+  ///
+  /// 与 [stepsRaw] **必须分开**：没权限时系统只是不派发事件，所以「没权限」
+  /// 「没传感器」「还没收到第一个事件」在读数上都表现为 -1。之前把后者当成
+  /// 前者，用户明明授权了却一直看到「请授权」（issue #23）。
+  bool stepsPermission = false;
+
+  /// 步数在界面上该怎么呈现。
+  ///
+  /// 抽成枚举而不是让每个页面自己 if：运动排行榜与信标设置两处**已经**各写了一遍
+  /// 判断，结果其中一处漏了「有权限但还没数据」这一档（issue #23 的现场）。
+  /// 判定只留这一个出口。
+  StepsStatus get stepsStatus {
+    if (!hasStepSensor) return StepsStatus.unsupported;
+    if (!stepsPermission) return StepsStatus.needPermission;
+    if (stepsRaw < 0) return StepsStatus.waiting;
+    return StepsStatus.ok;
+  }
+
   void setBeaconIncludeSteps(bool v) {
     beaconIncludeSteps = v;
     persist();
@@ -594,6 +614,7 @@ class AppState extends ChangeNotifier {
   void _syncSteps() {
     final smp = MotionService.instance.sample;
     hasStepSensor = smp.hasSteps;
+    stepsPermission = smp.stepsPermission;
     final raw = smp.steps;
     if (raw < 0) {
       // 读不到：保留上一次的今日步数与传感器能力，只是不更新（显示层会说原因）
@@ -672,6 +693,78 @@ class AppState extends ChangeNotifier {
           ext ? '手机 GPS 已接管' : '外置 GPS 已失效，改用手机 GPS');
       unawaited(startTracking());
     }
+  }
+
+  // ─── 碰撞 / 摔倒检测（issue #26）───
+  //
+  // 用户需求：「生命守护支持车祸与摔落检测提醒（测试），通过手机加速度判断」。
+  //
+  // 判定在原生侧（它才有连续的加速度流，见 MotionManager.checkImpact 的两段式
+  // 判据：冲击 + 随后静止）。这里只负责**把事件变成一次告警**：
+  //   * 靠 [MotionSample.crashSeq] 的序号变化发现「又发生了一次」——
+  //     用布尔标志会在「事件发生时用户不在这一页、回来后又读到 true」时重复弹窗；
+  //   * 冷却时间在原生侧（一次事故后会连续出现多个尖峰）。
+  //
+  // 默认**开**：这是生命守护里的安全功能，藏起来等于没有。但它会误报
+  // （过减速带 + 随后停车这类组合），所以弹窗第一按钮是「我没事」，并且
+  // 界面上如实写明这是**启发式**判断、不是工程级碰撞检测。
+  bool crashDetectEnabled = true;
+
+  /// 当前未处理的碰撞告警（null = 没有）。
+  String? crashAlarm;
+
+  /// 告警序号：界面靠它区分「同一次告警不要反复弹窗」。
+  int crashAlarmSeq = 0;
+
+  /// 原生侧「检测到冲击、正在观察」——只用于界面显示，不触发告警。
+  bool impactPending = false;
+
+  /// 设备上有没有加速度计（碰撞检测的前提）。
+  bool hasCrashSensor = false;
+
+  /// 已经处理过的原生事件序号（见 [MotionSample.crashSeq]）。
+  int _crashSeqSeen = 0;
+
+  /// 碰撞检测的轮询节拍（见 tick）
+  int _crashPollTick = 0;
+
+  /// 首次采样时把序号对齐，避免把「进应用之前发生的事」当成新事件。
+  bool _crashSeqInited = false;
+
+  void setCrashDetectEnabled(bool v) {
+    crashDetectEnabled = v;
+    if (!v) clearCrashAlarm();
+    if (loc.running) {
+      // 打开时要把加速度计接上（它可能在传感器辅助关闭时是停着的）
+      unawaited(MotionService.instance.start(motion: _needMotion));
+    }
+    persist();
+    _notify();
+  }
+
+  void clearCrashAlarm() {
+    if (crashAlarm == null) return;
+    crashAlarm = null;
+    _notify();
+  }
+
+  /// 每次采样之后调（与 [_checkHrAlarm] 同一时机）。
+  void _checkCrash() {
+    final smp = MotionService.instance.sample;
+    hasCrashSensor = smp.hasCrashSensor;
+    impactPending = smp.impactPending;
+    if (!_crashSeqInited) {
+      _crashSeqInited = true;
+      _crashSeqSeen = smp.crashSeq;
+      return;
+    }
+    if (smp.crashSeq == _crashSeqSeen) return;
+    _crashSeqSeen = smp.crashSeq;
+    if (!crashDetectEnabled) return;
+    crashAlarm = 'crash';
+    crashAlarmSeq++;
+    _log(LogLevel.warn, '生命守护', '检测到疑似碰撞/摔倒（冲击后持续静止）');
+    _notify();
   }
 
   // ─── 心率异常告警（issue #21-8）───
@@ -2470,15 +2563,21 @@ class AppState extends ChangeNotifier {
     _notify();
   }
 
+  /// 要不要监听「在不在动 / 航向」这一类传感器。
+  ///
+  /// ⚠ 与「要不要步数」**不是**一件事：计步器与加速度计同属一个原生监听器，
+  /// 而它无论用户怎么设都必须注册（否则关掉传感器辅助的人连步数都没了 ——
+  /// issue #23 的现场）。这个 getter 只决定加速度计/旋转矢量/磁力计要不要开；
+  /// 顺带把碰撞检测也算进来（它也要加速度计，见 [crashDetectEnabled]）。
+  bool get _needMotion => sensorAssist || crashDetectEnabled;
+
   /// 传感器辅助开关：打开时若正在定位就立刻启动传感器监听，
-  /// 关闭时立刻注销 —— 不能让传感器在用户关掉它之后还在后台采样耗电。
+  /// 关闭时**只关掉运动那一部分**（计步器继续跑，见 [_needMotion]）。
   void setSensorAssist(bool v) {
     if (sensorAssist == v) return;
     sensorAssist = v;
-    if (v) {
-      if (loc.running) unawaited(MotionService.instance.start());
-    } else {
-      unawaited(MotionService.instance.stop());
+    if (loc.running) {
+      unawaited(MotionService.instance.start(motion: _needMotion));
     }
     persist();
     _notify();
@@ -2683,6 +2782,8 @@ class AppState extends ChangeNotifier {
       hrAlarmEnabled = p.getBool('hrAlarmEnabled') ?? hrAlarmEnabled;
       hrAlarmHigh = p.getInt('hrAlarmHigh') ?? hrAlarmHigh;
       hrAlarmLow = p.getInt('hrAlarmLow') ?? hrAlarmLow;
+      crashDetectEnabled =
+          p.getBool('crashDetectEnabled') ?? crashDetectEnabled;
       emergencyTel = p.getString('emergencyTel') ?? emergencyTel;
       beaconIncludeSteps =
           p.getBool('beaconIncludeSteps') ?? beaconIncludeSteps;
@@ -2939,6 +3040,7 @@ class AppState extends ChangeNotifier {
     await p.setBool('hrAlarmEnabled', hrAlarmEnabled);
     await p.setInt('hrAlarmHigh', hrAlarmHigh);
     await p.setInt('hrAlarmLow', hrAlarmLow);
+    await p.setBool('crashDetectEnabled', crashDetectEnabled);
     await p.setString('emergencyTel', emergencyTel);
     await p.setBool('beaconIncludeSteps', beaconIncludeSteps);
     await p.setInt('stepsBaseline', _stepsBaseline);
@@ -3099,6 +3201,7 @@ class AppState extends ChangeNotifier {
         myHr = null;
       }
       _checkHrAlarm();
+      _checkCrash();
       _notify();
     };
     // 佳明 LiveTrack：每个新点都当作一次「自己」的定位（见 _onGarminPoint）。
@@ -3144,6 +3247,23 @@ class AppState extends ChangeNotifier {
       // 否则不触发任何页面重建；无翻转只刷新秒级 UI（tick）。
       if (_bumpStatusVersionIfChanged()) _notify();
       _checkStationAchievement();
+      // 碰撞/摔倒（issue #26）：它**不能**只挂在定位回调上 —— 事件可能在没开定位、
+      // 或定位很慢（静止后系统常常不再给点）的时候发生，而那正是这个功能要管的场景。
+      //
+      // 每 2 秒拉一次原生快照：`refresh()` 是一次平台通道往返，每秒一次没必要
+      // （判据里「静止 12 秒」的粒度本来就粗），而 2 秒足够让告警在十几秒内出来。
+      if (crashDetectEnabled) {
+        // 没在跑就起一个：碰撞检测不该依赖「用户是否开了定位」
+        if (!MotionService.instance.running) {
+          unawaited(MotionService.instance.start(motion: true));
+        }
+        if (++_crashPollTick >= 2) {
+          _crashPollTick = 0;
+          unawaited(MotionService.instance.refresh().then((_) {
+            if (!_disposed) _checkCrash();
+          }));
+        }
+      }
       // 外置 GPS（佳明）与手机 GPS 的启停对齐（issue #21-4）：很便宜，
       // 只在状态翻转时做事，不需要再开一个定时器。
       _syncPhoneGps();
@@ -4274,14 +4394,27 @@ class AppState extends ChangeNotifier {
     } else {
       _log(LogLevel.info, '定位', '定位服务已启动');
       // 传感器与定位同生共死：没有定位就不需要判「在不在动」
-      if (sensorAssist) unawaited(MotionService.instance.start());
+      // 计步与碰撞检测都要这个监听器，所以**无论传感器辅助开没开**都要起：
+      // motion 参数只决定加速度计/指南针那部分要不要注册（issue #23）。
+      unawaited(MotionService.instance.start(motion: _needMotion));
+      // 起来之后立刻拉一次：界面不必等到下一次定位回调才有步数/权限状态
+      unawaited(MotionService.instance.refresh().then((_) {
+        if (!_disposed) _syncSteps();
+      }));
     }
     return ok;
   }
 
   void stopTracking() {
     loc.stop();
-    unawaited(MotionService.instance.stop());
+    // 监听器**不无条件停**：碰撞/摔倒检测（issue #26）是安全网，它不该因为
+    // 「用户关了定位」就一起失效 —— 关定位往往正是为了省电出门骑车。
+    // 其余情况照旧停掉（传感器是真实耗电项，用户关了定位就该安静下来）。
+    if (crashDetectEnabled) {
+      unawaited(MotionService.instance.start(motion: true));
+    } else {
+      unawaited(MotionService.instance.stop());
+    }
     myHasFix = false;
     _resetSelfFix();
     locStatus = '定位已停止';
@@ -7011,6 +7144,8 @@ class AppState extends ChangeNotifier {
     // 弹窗在用户没看屏幕时是看不见的，而通知栏会一直挂着。
     final hr = hrAlarm;
     if (hr != null) parts.add('⚠ ${l.hrAlarmNotif('$hr')}');
+    // 碰撞/摔倒（issue #26）：与心率告警同理 —— 用户没看屏幕时只有通知栏能说话。
+    if (crashAlarm != null) parts.add('⚠ ${l.crashNotif}');
     // 更新包下载进度（issue #22-5）：放在最前 —— 它是「正在发生的事」，
     // 也是用户切到后台后唯一能确认「还在跑」的地方。
     if (notifExtra.isNotEmpty) parts.add(notifExtra);
@@ -7065,6 +7200,25 @@ class AppState extends ChangeNotifier {
 /// 抽成枚举而不是字符串：界面要按它选文案/颜色，用中文串比较必然漂
 /// （本仓库在 [BeaconPhase] 上已经踩过一次）。
 enum PositionSourceNow { sim, garmin, phone, none }
+
+/// 步数在界面上的四种状态（issue #23）。
+///
+/// 「读数 = -1」有三种完全不同的原因（没有传感器 / 没有权限 / 还没收到硬件事件），
+/// 而界面要给出**不同的话和不同的按钮** —— 判定只留 [AppState.stepsStatus] 一个出口，
+/// 免得像之前那样两个页面各写一遍、其中一处漏档。
+enum StepsStatus {
+  /// 这台设备没有计步传感器
+  unsupported,
+
+  /// 有传感器，但没给 ACTIVITY_RECOGNITION 权限（Android 10+）→ 给授权按钮
+  needPermission,
+
+  /// 有权限，但还没收到硬件事件 → **不是**「请授权」，而是「等一下就有的」
+  waiting,
+
+  /// 有数据
+  ok,
+}
 
 /// 自动上报阶段（结构化，供 UI 本地化；见 [AppState.beaconPhase]）
 enum BeaconPhase {

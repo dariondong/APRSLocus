@@ -196,13 +196,45 @@ class _SportRankPageState extends State<SportRankPage> {
       children: [
         SettingsRow2(
           s.stepsTodayLabel,
-          st.stepsToday > 0
-              ? s.stepsCount('${st.stepsToday}')
-              : (st.hasStepSensor
-                  ? s.stepsNeedPermission
-                  : s.stepsUnsupported),
-          valueColor: st.stepsToday > 0 ? C.green : C.orange,
+          switch (st.stepsStatus) {
+            StepsStatus.ok => s.stepsCount('${st.stepsToday}'),
+            StepsStatus.waiting => s.stepsWaiting,
+            StepsStatus.needPermission => s.stepsNeedPermission,
+            StepsStatus.unsupported => s.stepsUnsupported,
+          },
+          valueColor: switch (st.stepsStatus) {
+            StepsStatus.ok => C.green,
+            StepsStatus.waiting => C.slate,
+            StepsStatus.needPermission => C.orange,
+            StepsStatus.unsupported => C.grey,
+          },
         ),
+        // 只有确实没授权才给按钮（见设置页同一处的说明）
+        if (st.stepsStatus == StepsStatus.needPermission)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final ok = await st.requestStepsPermission();
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(ok ? s.stepsGranted : s.stepsDenied),
+                    behavior: SnackBarBehavior.floating,
+                  ));
+                  setState(() {});
+                },
+                icon: const Icon(Icons.directions_walk_rounded, size: 16),
+                label: Text(s.stepsGrant),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: C.orange,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  textStyle: ts(12, w: FontWeight.w600),
+                ),
+              ),
+            ),
+          ),
         SettingsSwitch(s.beaconIncludeSteps,
             value: st.beaconIncludeSteps,
             // 用 setState 包一层：打开后本页立刻放行（否则要退出去再进来）

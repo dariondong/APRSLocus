@@ -7586,4 +7586,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sportRankGateNoSensor => 'This device has no step sensor, so turning it on will **not actually send any steps** (there are none to send). It only unlocks the board — which is fine: you can see others because you accepted the same two-way rule.';
 
+  @override
+  String get stepsWaiting => 'Waiting for step data · take a few steps';
+
+  @override
+  String get crashCard => 'Crash & fall detection';
+
+  @override
+  String get crashCardSub => 'Judged from the phone accelerometer; warns when detected (beta)';
+
+  @override
+  String get crashEnabled => 'Enable crash/fall alerts';
+
+  @override
+  String get crashHowItWorks => 'The test is **two-stage**: (1) a sharp spike in acceleration (both crashes and falls produce one); (2) then almost no movement for 12 seconds. Both must hold.\n\nWhy the second stage: with the spike alone, **speed bumps, a phone dropped on a desk and a good shake** all qualify, and an alert that fires several times a day gets ignored. The trade-off is that **a minor impact (where you can still move) will not alert** — this feature is about "I cannot move", not "a collision happened".';
+
+  @override
+  String get crashNoSensor => 'This device has no accelerometer, so detection is unavailable';
+
+  @override
+  String get crashPending => 'Impact detected — watching';
+
+  @override
+  String get crashFalsePositive => '**It can false-alarm**: hitting a speed bump and then standing still for 12 seconds (at a red light) satisfies both stages. The first button in the alert is "I am fine" — dismiss it and nothing else is affected.';
+
+  @override
+  String get crashAlarmTitle => 'Possible crash or fall detected';
+
+  @override
+  String get crashAlarmBody => 'The phone detected a strong impact, followed by no significant movement (about 12 seconds).\n\nIf you are fine, tap "I am fine". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade crash detection**: a speed bump or dropping the phone can trigger it.';
+
+  @override
+  String get crashNotif => 'Life guard: possible crash detected';
+
 }

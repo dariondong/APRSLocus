@@ -38,6 +38,14 @@ class MotionSample {
   /// 一次采样。基线算法在 AppState（见 `stepsToday`），那里才有日期与持久化。
   final int steps;
 
+  /// 有没有读计步器所需的 ACTIVITY_RECOGNITION 权限（Android 10+；更早的系统恒 true）。
+  ///
+  /// 必须与「读数为 -1」分开看：系统在没权限时**只是不派发事件**，不报错，
+  /// 所以「没权限」「没传感器」「还没走过路」这三件事在读数上长得一模一样。
+  /// 之前把「还没收到第一个事件」当成「没授权」，用户明明授权了却一直看到
+  /// 「请授权」（issue #23）—— 判定要基于这个字段，而不是基于读数。
+  final bool stepsPermission;
+
   /// 设备上有没有计步传感器。
   ///
   /// 与「读数为 -1」分开：没有传感器（[hasSteps] = false）与「有传感器但没给
@@ -53,7 +61,21 @@ class MotionSample {
     required this.accel,
     this.steps = -1,
     this.hasSteps = false,
+    this.stepsPermission = false,
+    this.crashSeq = 0,
+    this.hasCrashSensor = false,
+    this.impactPending = false,
   });
+
+  /// 碰撞/摔倒事件序号（issue #26）。Dart 侧靠它发现「又发生了一次」——
+  /// 用布尔标志会在「事件发生时不在这页、回来后又读到 true」时重复告警。
+  final int crashSeq;
+
+  /// 设备上有没有加速度计（碰撞检测的前提）。
+  final bool hasCrashSensor;
+
+  /// 「检测到冲击，正在观察」——只用于界面显示，不触发告警。
+  final bool impactPending;
 
   static const MotionSample unknown = MotionSample(
     available: false,
@@ -63,6 +85,10 @@ class MotionSample {
     accel: 0,
     steps: -1,
     hasSteps: false,
+    stepsPermission: false,
+    crashSeq: 0,
+    hasCrashSensor: false,
+    impactPending: false,
   );
 }
 
@@ -77,6 +103,9 @@ class MotionService {
 
   bool _started = false;
 
+  /// 上一次 start 用的 [motion] 值（变了就重新注册，见 start）。
+  bool _motion = true;
+
   /// Android（`MotionManager.kt`）与 iOS（`ios/Runner/MotionPlugin.swift`）都有实现；
   /// 其它平台一律返回 [MotionSample.unknown]，调用方按「没有传感器」的旧路径走。
   bool get supported =>
@@ -87,11 +116,18 @@ class MotionService {
   bool get running => _started;
 
   /// 启动传感器监听；设备没有传感器时静默失败（返回 false）。
-  Future<bool> start() async {
+  ///
+  /// [motion] = 要不要「在不在动 / 航向」（加速度计、旋转矢量、磁力计）。
+  /// 计步器**始终**注册：步数与「在不在动」是两件事，关掉传感器辅助的用户
+  /// 不该连步数一起没了（issue #23）。
+  Future<bool> start({bool motion = true}) async {
     if (!supported) return false;
-    if (_started) return true;
+    if (_started && _motion == motion) return true;
     try {
-      final ok = await _channel.invokeMethod<bool>('start') ?? false;
+      final ok =
+          await _channel.invokeMethod<bool>('start', {'motion': motion}) ??
+              false;
+      _motion = motion;
       _started = ok;
       return ok;
     } catch (_) {
@@ -140,6 +176,10 @@ class MotionService {
         accel: (r['accel'] as num?)?.toDouble() ?? 0,
         steps: (r['steps'] as num?)?.toInt() ?? -1,
         hasSteps: r['hasSteps'] == true,
+        stepsPermission: r['stepsPermission'] == true,
+        crashSeq: (r['crashSeq'] as num?)?.toInt() ?? 0,
+        hasCrashSensor: r['hasCrashSensor'] == true,
+        impactPending: r['impactPending'] == true,
       );
     } catch (_) {}
     return sample;

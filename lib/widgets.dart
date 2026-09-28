@@ -8,6 +8,26 @@ import 'l10n/app_localizations.dart';
 /// 界面本地化便捷别名
 typedef S = AppLocalizations;
 
+/// 系统导航栏（三大金刚键 / 手势条）占的高度。
+///
+/// 取值是 `max(padding.bottom, viewPadding.bottom)`，但**键盘弹出时只用
+/// padding.bottom**：那时 window 被键盘顶起，而 viewPadding 依旧是「键盘不可见
+/// 时会有的内边距」（也就是导航栏高度），拿它算会让弹层凭空浮在键盘上方一段。
+///
+/// 为什么不能只信 `padding.bottom`：有些 ROM 在 edge-to-edge 下只报
+/// `viewPadding`，`padding` 给 0 —— 于是自绘的底部按钮正好压在三大金刚键底下
+/// （用户报过两次：#12 的页面底按钮、#25 的「速度档」编辑弹层保存按钮）。
+///
+/// 为什么不是 `SafeArea`：SafeArea 读的是 `padding`，在这些 ROM 上同样是 0。
+/// 需要精确控制的场合（底部弹层的内边距）用它更直接。
+double sysBottomInset(BuildContext context) {
+  final mq = MediaQuery.of(context);
+  final pad = mq.padding.bottom;
+  if (mq.viewInsets.bottom > 0) return pad;
+  final vp = mq.viewPadding.bottom;
+  return vp > pad ? vp : pad;
+}
+
 String _aprsSymbolKey(String symbol) => switch (symbol) {
   '>' => 'car',
   '!' => 'police',

@@ -7596,4 +7596,37 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get sportRankGateNoSensor => 'Perangkat ini tidak punya sensor langkah, jadi mengaktifkannya **tidak akan mengirim langkah** (memang tidak ada). Ini hanya membuka peringkat — dan itu wajar: Anda bisa melihat yang lain karena menerima aturan dua arah yang sama.';
 
+  @override
+  String get stepsWaiting => 'Menunggu data langkah · berjalan beberapa langkah';
+
+  @override
+  String get crashCard => 'Deteksi benturan & jatuh';
+
+  @override
+  String get crashCardSub => 'Dinilai dari akselerometer ponsel dan memberi peringatan bila terdeteksi (beta)';
+
+  @override
+  String get crashEnabled => 'Aktifkan peringatan benturan/jatuh';
+
+  @override
+  String get crashHowItWorks => 'Ujinya **dua tahap**: (1) lonjakan akselerasi tajam (benturan maupun jatuh menghasilkannya); (2) lalu nyaris tanpa gerakan selama 12 detik. Keduanya harus terpenuhi.\n\nAlasan tahap kedua: dengan lonjakan saja, **polisi tidur, ponsel jatuh ke meja, dan menggoyang-goyang** semuanya memicu, dan peringatan yang berbunyi berkali-kali sehari akan diabaikan. Konsekuensinya **benturan ringan (masih bisa bergerak) tidak akan memicu** — fitur ini untuk "saya tidak bisa bergerak", bukan "telah terjadi benturan".';
+
+  @override
+  String get crashNoSensor => 'Perangkat ini tidak punya akselerometer, jadi tidak bisa mendeteksi';
+
+  @override
+  String get crashPending => 'Benturan terdeteksi — memantau';
+
+  @override
+  String get crashFalsePositive => '**Bisa salah alarm**: melewati polisi tidur lalu berhenti 12 detik (di lampu merah) memenuhi kedua tahap. Tombol pertama pada peringatan adalah "Saya tidak apa-apa" — cukup ditekan dan tidak memengaruhi yang lain.';
+
+  @override
+  String get crashAlarmTitle => 'Kemungkinan benturan atau jatuh terdeteksi';
+
+  @override
+  String get crashAlarmBody => 'Ponsel mendeteksi benturan kuat, lalu nyaris tidak ada gerakan (sekitar 12 detik).\n\nJika Anda baik-baik saja, tekan "Saya tidak apa-apa". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi benturan tingkat rekayasa**: polisi tidur atau ponsel terjatuh juga bisa memicunya.';
+
+  @override
+  String get crashNotif => 'Pelindung nyawa: kemungkinan benturan';
+
 }
