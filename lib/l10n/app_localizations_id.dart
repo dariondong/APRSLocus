@@ -7572,4 +7572,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get sportRankGateEnable => 'Aktifkan kirim dan lihat peringkat';
 
+  @override
+  String downloadAlreadyRunning => 'Sudah ada unduhan berjalan';
+
+  @override
+  String downloadCancel => 'Batalkan unduhan';
+
+  @override
+  String downloadCanceled => 'Unduhan dibatalkan';
+
+  @override
+  String downloadBackgroundHint => 'Anda boleh meninggalkan halaman ini atau menaruh aplikasi di latar belakang — unduhan tetap berjalan (progresnya juga tampil di notifikasi). Berhenti bila proses dimatikan.';
+
+  @override
+  String notifUpdateDownload(String tag, String pct) => 'Mengunduh pembaruan {tag} · {pct}%';
+
+  @override
+  String notifUpdateReady => 'Pembaruan terunduh · buka halaman pembaruan untuk memasang';
+
+  @override
+  String notifUpdateFailed => 'Unduhan pembaruan gagal';
+
 }

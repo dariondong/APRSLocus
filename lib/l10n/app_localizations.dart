@@ -12911,6 +12911,27 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String sportRankGateEnable;
 
+  /// In zh, this message translates to:
+  String downloadAlreadyRunning;
+
+  /// In zh, this message translates to:
+  String downloadCancel;
+
+  /// In zh, this message translates to:
+  String downloadCanceled;
+
+  /// In zh, this message translates to:
+  String downloadBackgroundHint;
+
+  /// In zh, this message translates to:
+  String notifUpdateDownload(String tag, String pct);
+
+  /// In zh, this message translates to:
+  String notifUpdateReady;
+
+  /// In zh, this message translates to:
+  String notifUpdateFailed;
+
 }
 
 class _AppLocalizationsDelegate

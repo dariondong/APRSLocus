@@ -2635,5 +2635,13 @@
   "sportRankGateSubtitle": "Es una clasificación mutua",
   "sportRankGateBody": "Cada número de aquí lo **envió otra persona** (el campo `STEPS=` de su comentario de beacon). Quien solo escucha obtiene los pasos de los demás sin aportar los suyos, así que es mutuo: **activa tu envío y verás lo que enviaron los demás.**",
   "sportRankGateWhatSent": "Qué se envía al activarlo: un campo extra `STEPS=<hoy>` en el comentario del beacon (no estándar, de la familia de `TRV:`/`ODO:`; solo se envía si hay pasos reales). Solo lo entienden otros usuarios de APRSlocus.",
-  "sportRankGateEnable": "Activar envío y ver la tabla"
+  "sportRankGateEnable": "Activar envío y ver la tabla",
+  "downloadAlreadyRunning": "Ya hay una descarga en curso",
+  "downloadCancel": "Cancelar descarga",
+  "downloadCanceled": "Descarga cancelada",
+  "downloadBackgroundHint": "Puedes salir de esta página o poner la app en segundo plano: la descarga continúa (el progreso también aparece en la notificación). Se detiene si el sistema mata el proceso.",
+  "notifUpdateDownload": "Descargando actualización {tag} · {pct}%",
+  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "notifUpdateReady": "Actualización descargada · abre la página de actualización",
+  "notifUpdateFailed": "Fallo al descargar la actualización"
 }

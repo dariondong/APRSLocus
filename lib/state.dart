@@ -515,6 +515,20 @@ class AppState extends ChangeNotifier {
     return out.length > limit ? out.sublist(0, limit) : out;
   }
 
+  /// 通知栏的**附加行**（更新包下载进度等）。
+  ///
+  /// 为什么不直接调 `loc.updateNotification()`：常驻通知的文字由
+  /// [_updateNotification] 整体拼装（连接状态 / 台站数 / 信标倒计时…），
+  /// 15 秒一次的保活刷新会把它覆盖掉。放在这里当一段「额外信息」，
+  /// 由拼装函数统一带上，才不会被顶掉（issue #22-5）。
+  String notifExtra = '';
+
+  void setNotifExtra(String v) {
+    if (notifExtra == v) return;
+    notifExtra = v;
+    _updateNotification();
+  }
+
   /// 地图页上报状态栏的样式（issue #21-2）。
   ///
   /// * true（默认）= **详细**：多一行判据（当前档位 / 还差多少秒·多少米 /
@@ -6997,6 +7011,9 @@ class AppState extends ChangeNotifier {
     // 弹窗在用户没看屏幕时是看不见的，而通知栏会一直挂着。
     final hr = hrAlarm;
     if (hr != null) parts.add('⚠ ${l.hrAlarmNotif('$hr')}');
+    // 更新包下载进度（issue #22-5）：放在最前 —— 它是「正在发生的事」，
+    // 也是用户切到后台后唯一能确认「还在跑」的地方。
+    if (notifExtra.isNotEmpty) parts.add(notifExtra);
     if (connected) {
       // TNC 模式：明确标出「射频」，否则用户会以为走的是网络，
       // 从而忽略「发射要在自己呼号/执照下操作」这件事。

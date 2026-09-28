@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'theme.dart';
+import 'update_download.dart';
 import 'state.dart';
 import 'widgets.dart';
 import 'material.dart';
@@ -170,13 +171,24 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
   bool _latestHasAsset = false; // 最新版本是否有当前平台安装包
   bool _moreOpen = false; // 更多版本折叠
 
-  // 正在下载的特定版本（tagName → true）
-  String? _downloadingTag;
-  double _progress = 0;
-  String _dlStatus = '';
+  // ── 下载相关：**状态在 UpdateDownloader 单例里**（issue #22-5 后台下载）──
+  //
+  // 页面只是订阅者，所以这几个名字都改成 getter 转发 —— 下面所有引用它们的
+  // 代码一行都不用动，而「离开页面→回来」天然就是连续的（状态不随页面销毁）。
+  final _dl = UpdateDownloader.instance;
+
+  /// 正在下载的版本 tag；null = 没在下载
+  String? get _downloadingTag => _dl.running ? _dl.tag : null;
+  double get _progress => _dl.progress;
+  String get _dlStatus => _dl.statusText;
+  bool get _dlError => _dl.error != null;
+
+  /// 已下载到本地的安装包（页面自己扫出来的那份）
   String? _downloadedPath;
   String? _downloadedTag; // 实际下载成功的版本
-  bool _dlError = false;
+
+  /// 已经弹过「下载完成」对话框的序号（见 UpdateDownloader.doneSeq）
+  int _doneSeqSeen = 0;
 
   // 本地已下载的全部安装包（按版本会累积多个，用于"删除全部"）
   List<File> _localPackages = [];
@@ -211,12 +223,51 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     )..repeat();
     _check();
     _findLocalApk();
+    // 后台下载（issue #22-5）：任务归单例，页面订阅它 —— 离开页面下载照跑，
+    // 回到页面从这里接着显示。
+    _dl.bind(widget.state);
+    _doneSeqSeen = _dl.doneSeq;
+    _dl.addListener(_onDownloadTick);
+    // 之前那次「下载完成」的通知已经看过了（用户进这一页了），清掉它。
+    if (_dl.path != null) _dl.clearDoneNotice();
   }
 
   @override
   void dispose() {
+    _dl.removeListener(_onDownloadTick);
     _sheen.dispose();
     super.dispose();
+  }
+
+  /// 单例有变化：刷新进度，并在**本次**真的下完时弹安装对话框。
+  ///
+  /// 用 doneSeq 而不是「path != null」判断「刚下完」：后者在「下载完成时页面
+  /// 不在、用户后来才进来」的情况下会平白弹一次（用户只是想看看更新页）。
+  void _onDownloadTick() {
+    if (!mounted) return;
+    final done = _dl.doneSeq;
+    if (done != _doneSeqSeen) {
+      _doneSeqSeen = done;
+      final p = _dl.path;
+      if (p != null) {
+        setState(() {
+          _downloadedPath = p;
+          _downloadedTag = _dl.doneTag ?? _downloadedTag;
+          if (!_localPackages.any((f) => f.path == p)) {
+            _localPackages.add(File(p));
+          }
+        });
+        // 弹安装对话框只在**页面还开着**时做；页面不在时靠通知栏那条
+        // 「更新包已下载」告诉用户（见 UpdateDownloader._notifyBar）。
+        if (defaultTargetPlatform == TargetPlatform.windows) {
+          _showWinDialog(p);
+        } else {
+          _showInstallDialog(p);
+        }
+      }
+      return;
+    }
+    setState(() {});
   }
 
   /// 查找已下载的安装包（按平台对应格式）
@@ -475,8 +526,12 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     return 0;
   }
 
-  /// 下载安装包
-  /// [target] 指定版本，默认最新
+  /// 下载安装包（**委托给 UpdateDownloader**，见 lib/update_download.dart）。
+  /// [target] 指定版本，默认最新。
+  ///
+  /// 原来这一大段逻辑写在本页 State 里，用户一离开页面就没人更新进度、
+  /// 完成后还会拿失效的 context 去弹窗。现在只做三件事：校验参数、
+  /// 起任务、把用户可能踩到的两种「没反应」说清楚。
   Future<void> _download([_ReleaseInfo? target]) async {
     final rel = target ?? _latest;
     if (rel == null) return;
@@ -488,80 +543,23 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
       );
       return;
     }
+    if (_dl.running) {
+      // 同一时刻只跑一条流：用户连点两次不该开出两条下载（也避免两个写句柄
+      // 抢同一个文件）。如实说一句，比静默忽略好。
+      _showSnack(S.of(context).downloadAlreadyRunning);
+      return;
+    }
     final tag = rel.tagName;
     // 本地缓存文件名：去掉 tag 的 v 前缀，与 CI 产物命名一致（APRSLocus_1.4.4.apk）
     final ver = tag.replaceAll(RegExp('^v'), '');
     final fileName = isWin ? 'APRSLocus_$ver.exe' : 'APRSLocus_$ver.apk';
-    setState(() {
-      _downloadingTag = tag;
-      _progress = 0;
-      _dlStatus = S.of(context).connectingEllipsis;
-      _dlError = false;
-    });
-
-    try {
-      final dir = await _downloadDir();
-      if (!await dir.exists()) await dir.create(recursive: true);
-      final file = File('${dir.path}/$fileName');
-
-      final client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: 30);
-      final req = await client
-          .getUrl(Uri.parse(url))
-          .timeout(const Duration(seconds: 30));
-      final resp = await req.close().timeout(const Duration(seconds: 120));
-      if (resp.statusCode != 200) {
-        throw Exception(S.of(context).downloadHttpError(resp.statusCode));
-      }
-      final total = resp.contentLength;
-
-      final sink = file.openWrite();
-      int received = 0;
-      await for (final chunk in resp) {
-        sink.add(chunk);
-        received += chunk.length;
-        if (total > 0) {
-          final p = received / total;
-          if (mounted) {
-            setState(() {
-              _progress = p;
-              _dlStatus = S
-                  .of(context)
-                  .downloadedBytes(_fmtSize(received), _fmtSize(total));
-            });
-          }
-        }
-      }
-      await sink.flush();
-      await sink.close();
-      client.close();
-
-      if (mounted) {
-        setState(() {
-          _downloadingTag = null;
-          _downloadedPath = file.path;
-          _downloadedTag = tag;
-          if (!_localPackages.any((f) => f.path == file.path)) {
-            _localPackages.add(file);
-          }
-          _dlStatus = S.of(context).downloadComplete;
-        });
-      }
-      if (defaultTargetPlatform == TargetPlatform.windows) {
-        _showWinDialog(file.path);
-      } else {
-        _showInstallDialog(file.path);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _downloadingTag = null;
-          _dlError = true;
-          _dlStatus =
-              '${S.of(context).downloadFailed}: ${e.toString().replaceFirst('Exception: ', '')}';
-        });
-      }
-    }
+    // 不 await：用户要的是「点完就能走」，进度由单例驱动（订阅见 initState）
+    unawaited(_dl.start(
+      url: url,
+      fileName: fileName,
+      versionTag: tag,
+      dirProvider: _downloadDir,
+    ));
   }
 
   /// 弹出安装确认
@@ -1422,6 +1420,34 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
         ),
         SizedBox(height: 8),
         Text(_dlStatus, style: ts(12, c: C.grey)),
+        SizedBox(height: 8),
+        // 后台下载（issue #22-5）：把**边界**写明 —— 承诺「后台下载」却悄悄
+        // 断在半路，比不做这个功能更伤人。用户可以离开这一页，也可以把 App
+        // 切到后台，下载都在跑（进度也在通知栏里）；但**进程被杀就断了**。
+        Row(
+          children: [
+            Icon(Icons.cloud_download_outlined, size: 13, color: C.green),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(S.of(context).downloadBackgroundHint,
+                  style: ts(10.5, c: C.green, h: 1.4)),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => _dl.cancel(),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: C.redBg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(S.of(context).downloadCancel,
+                    style: ts(10.5, c: C.red, w: FontWeight.w700)),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

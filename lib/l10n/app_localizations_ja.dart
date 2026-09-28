@@ -7351,4 +7351,25 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get sportRankGateEnable => '送信をオンにしてランキングを見る';
 
+  @override
+  String downloadAlreadyRunning => 'すでにダウンロード中です';
+
+  @override
+  String downloadCancel => 'ダウンロード中止';
+
+  @override
+  String downloadCanceled => 'ダウンロードを中止しました';
+
+  @override
+  String downloadBackgroundHint => 'この画面を離れても、アプリをバックグラウンドにしてもダウンロードは続きます（進捗は通知にも表示されます）。ただしプロセスが終了されると中断します。';
+
+  @override
+  String notifUpdateDownload(String tag, String pct) => '更新 {tag} をダウンロード中 · {pct}%';
+
+  @override
+  String notifUpdateReady => '更新パッケージを取得済み · 更新ページからインストール';
+
+  @override
+  String notifUpdateFailed => '更新パッケージの取得に失敗';
+
 }

@@ -3150,5 +3150,13 @@
   "sportRankGateSubtitle": "这是一份互相可见的榜单",
   "sportRankGateBody": "榜单上每一个数字都是**别人主动发出来的**（信标备注里的 `STEPS=`）。只收不发的人拿得到别人的步数，却不贡献自己那一份 —— 所以这里改成互相可见：**你开了上传，才看得到别人上传的**。",
   "sportRankGateWhatSent": "打开后会发出什么：信标备注里多一个 `STEPS=<今天步数>`（与 `TRV:`/`ODO:` 同类的非标准字段，只在真有步数时发）。对方也是 APRSlocus 时才看得懂。",
-  "sportRankGateEnable": "打开上传，查看榜单"
+  "sportRankGateEnable": "打开上传，查看榜单",
+  "downloadAlreadyRunning": "已经有一个下载在进行",
+  "downloadCancel": "取消下载",
+  "downloadCanceled": "已取消下载",
+  "downloadBackgroundHint": "可以离开这一页或把应用切到后台，下载会继续（进度也在通知栏里）。但应用进程被系统结束时会中断。",
+  "notifUpdateDownload": "正在下载更新 {tag} · {pct}%",
+  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "notifUpdateReady": "更新包已下载 · 打开更新页安装",
+  "notifUpdateFailed": "更新包下载失败"
 }

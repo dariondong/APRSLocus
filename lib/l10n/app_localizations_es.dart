@@ -7612,4 +7612,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sportRankGateEnable => 'Activar envío y ver la tabla';
 
+  @override
+  String downloadAlreadyRunning => 'Ya hay una descarga en curso';
+
+  @override
+  String downloadCancel => 'Cancelar descarga';
+
+  @override
+  String downloadCanceled => 'Descarga cancelada';
+
+  @override
+  String downloadBackgroundHint => 'Puedes salir de esta página o poner la app en segundo plano: la descarga continúa (el progreso también aparece en la notificación). Se detiene si el sistema mata el proceso.';
+
+  @override
+  String notifUpdateDownload(String tag, String pct) => 'Descargando actualización {tag} · {pct}%';
+
+  @override
+  String notifUpdateReady => 'Actualización descargada · abre la página de actualización';
+
+  @override
+  String notifUpdateFailed => 'Fallo al descargar la actualización';
+
 }

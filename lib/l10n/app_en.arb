@@ -2551,5 +2551,13 @@
   "sportRankGateSubtitle": "It's a two-way leaderboard",
   "sportRankGateBody": "Every number here was **sent out by someone else** (the `STEPS=` field in their beacon comment). Someone who only listens gets everyone else's steps without contributing their own — so this is two-way: **turn your upload on and you can see what others uploaded.**",
   "sportRankGateWhatSent": "What gets sent once you turn it on: one extra `STEPS=<today>` field in your beacon comment (non-standard, same family as `TRV:`/`ODO:`, only sent when there really are steps). Only other APRSlocus users can read it.",
-  "sportRankGateEnable": "Turn on upload and see the board"
+  "sportRankGateEnable": "Turn on upload and see the board",
+  "downloadAlreadyRunning": "A download is already running",
+  "downloadCancel": "Cancel download",
+  "downloadCanceled": "Download cancelled",
+  "downloadBackgroundHint": "You can leave this page or put the app in the background — the download keeps going (progress also shows in the notification). It stops if the app process is killed.",
+  "notifUpdateDownload": "Downloading update {tag} · {pct}%",
+  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "notifUpdateReady": "Update downloaded · open the update page to install",
+  "notifUpdateFailed": "Update download failed"
 }

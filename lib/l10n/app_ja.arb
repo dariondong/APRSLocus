@@ -2635,5 +2635,13 @@
   "sportRankGateSubtitle": "お互いが見えるランキングです",
   "sportRankGateBody": "ここにある数字はすべて**他の誰かが送信したもの**です（ビーコン備註の `STEPS=`）。受信だけの人は他人の歩数を得るのに、自分の分を出しません。そこで相互公開にしました：**自分も送信をオンにすると、他の人の分が見られます。**",
   "sportRankGateWhatSent": "オンにすると送られるもの：ビーコン備註に `STEPS=<今日の歩数>` が 1 つ増えます（`TRV:`/`ODO:` と同じ非標準フィールド。実際に歩数があるときだけ送信）。相手も APRSlocus のときだけ解釈できます。",
-  "sportRankGateEnable": "送信をオンにしてランキングを見る"
+  "sportRankGateEnable": "送信をオンにしてランキングを見る",
+  "downloadAlreadyRunning": "すでにダウンロード中です",
+  "downloadCancel": "ダウンロード中止",
+  "downloadCanceled": "ダウンロードを中止しました",
+  "downloadBackgroundHint": "この画面を離れても、アプリをバックグラウンドにしてもダウンロードは続きます（進捗は通知にも表示されます）。ただしプロセスが終了されると中断します。",
+  "notifUpdateDownload": "更新 {tag} をダウンロード中 · {pct}%",
+  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "notifUpdateReady": "更新パッケージを取得済み · 更新ページからインストール",
+  "notifUpdateFailed": "更新パッケージの取得に失敗"
 }

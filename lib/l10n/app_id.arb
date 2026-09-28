@@ -2635,5 +2635,13 @@
   "sportRankGateSubtitle": "Ini peringkat dua arah",
   "sportRankGateBody": "Setiap angka di sini **dikirim oleh orang lain** (kolom `STEPS=` di komentar beacon mereka). Yang hanya mendengarkan mendapat langkah orang lain tanpa menyumbang miliknya — jadi ini dua arah: **aktifkan pengiriman Anda dan Anda bisa melihat kiriman orang lain.**",
   "sportRankGateWhatSent": "Yang dikirim setelah diaktifkan: satu kolom tambahan `STEPS=<hari ini>` di komentar beacon (non-standar, sekeluarga `TRV:`/`ODO:`, hanya dikirim bila benar-benar ada langkah). Hanya pengguna APRSlocus lain yang bisa membacanya.",
-  "sportRankGateEnable": "Aktifkan kirim dan lihat peringkat"
+  "sportRankGateEnable": "Aktifkan kirim dan lihat peringkat",
+  "downloadAlreadyRunning": "Sudah ada unduhan berjalan",
+  "downloadCancel": "Batalkan unduhan",
+  "downloadCanceled": "Unduhan dibatalkan",
+  "downloadBackgroundHint": "Anda boleh meninggalkan halaman ini atau menaruh aplikasi di latar belakang — unduhan tetap berjalan (progresnya juga tampil di notifikasi). Berhenti bila proses dimatikan.",
+  "notifUpdateDownload": "Mengunduh pembaruan {tag} · {pct}%",
+  "@notifUpdateDownload": {"placeholders": {"tag": {"type": "String"}, "pct": {"type": "String"}}},
+  "notifUpdateReady": "Pembaruan terunduh · buka halaman pembaruan untuk memasang",
+  "notifUpdateFailed": "Unduhan pembaruan gagal"
 }

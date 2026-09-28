@@ -7261,6 +7261,27 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sportRankGateEnable => '打开上传，查看榜单';
 
+  @override
+  String downloadAlreadyRunning => '已经有一个下载在进行';
+
+  @override
+  String downloadCancel => '取消下载';
+
+  @override
+  String downloadCanceled => '已取消下载';
+
+  @override
+  String downloadBackgroundHint => '可以离开这一页或把应用切到后台，下载会继续（进度也在通知栏里）。但应用进程被系统结束时会中断。';
+
+  @override
+  String notifUpdateDownload(String tag, String pct) => '正在下载更新 {tag} · {pct}%';
+
+  @override
+  String notifUpdateReady => '更新包已下载 · 打开更新页安装';
+
+  @override
+  String notifUpdateFailed => '更新包下载失败';
+
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -14518,5 +14539,26 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get sportRankGateEnable => '打開上傳，查看榜單';
+
+  @override
+  String downloadAlreadyRunning => '已經有一個下載在進行';
+
+  @override
+  String downloadCancel => '取消下載';
+
+  @override
+  String downloadCanceled => '已取消下載';
+
+  @override
+  String downloadBackgroundHint => '可以離開這一頁或把應用切到背景，下載會繼續（進度也在通知列裡）。但應用程式行程被系統結束時會中斷。';
+
+  @override
+  String notifUpdateDownload(String tag, String pct) => '正在下載更新 {tag} · {pct}%';
+
+  @override
+  String notifUpdateReady => '更新包已下載 · 開啟更新頁安裝';
+
+  @override
+  String notifUpdateFailed => '更新包下載失敗';
 
 }
