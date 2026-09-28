@@ -205,6 +205,55 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.8', 'date': '2026-09-28',
+        'items': [
+            ('new',
+             T('**新：运动步数与排行榜** —— 读手机硬件计步传感器，今日步数可随信标附带（`STEPS=`，'
+               '默认关）。设置页荣誉墙上方新增**运动排行榜**：今日步数排行，点一行进台站详情。'
+               '**自己不开上传就看不到榜单** —— 榜上每个数字都是别人主动发出来的，'
+               '只收不发不该白拿别人的。页面上写明这只是「你听得到的邻居」而不是全网排行。',
+               '**新：運動步數與排行榜** —— 讀手機硬體計步感測器，今日步數可隨信標附帶（`STEPS=`，'
+               '預設關）。設定頁榮譽牆上方新增**運動排行榜**：今日步數排行，點一列進臺站詳情。'
+               '**自己不開上傳就看不到榜單** —— 榜上每個數字都是別人主動發出來的，'
+               '只收不發不該白拿別人的。頁面上寫明這只是「你聽得到的鄰居」而不是全網排行。',
+               '**New: step counting and a leaderboard** — steps come from the phone\'s hardware '
+               'counter and can ride along in the beacon (`STEPS=`, off by default). A new '
+               '**activity leaderboard** sits above the honour wall in Settings: today\'s steps, and '
+               'tapping a row opens the station detail. **You cannot see the board without '
+               'contributing** — every number there was sent by someone else, and receiving without '
+               'sending should not get you other people\'s data for free. The page states plainly '
+               'that it ranks the neighbours you can hear, not the whole network.')),
+            ('new',
+             T('**新：「生命守护」页与更新包后台下载**。心率异常告警从「设备 → 心率」搬进独立的'
+               '**生命守护**页，说清它是什么、开启条件、以及「向附近台站求助」的口径，并标注'
+               '这是测试功能（判定只基于心率数值，无医学依据）。更新包下载现在**支持后台**：'
+               '离开页面或切到后台继续下载，通知栏显示进度，可取消；先写 `.part` 再原子改名，'
+               '断掉不会留下一个装不上的包。',
+               '**新：「生命守護」頁與更新包背景下載**。心率異常告警從「裝置 → 心率」搬進獨立的'
+               '**生命守護**頁，說清它是什麼、開啟條件、以及「向附近臺站求助」的口徑，並標註'
+               '這是測試功能（判定只基於心率數值，無醫學依據）。更新包下載現在**支援背景**：'
+               '離開頁面或切到背景繼續下載，通知列顯示進度，可取消；先寫 `.part` 再原子改名，'
+               '中斷不會留下一個裝不上的包。',
+               '**New: a "Life guard" page, and background downloads.** The heart-rate alarm moved '
+               'into its own **Life guard** page that states what it is, the exact trigger '
+               'conditions, and what "ask nearby stations" does — clearly marked as beta (the '
+               'judgement uses the heart-rate number only, with no medical basis). Update downloads '
+               'now **run in the background**: leaving the page or backgrounding the app keeps it '
+               'going, progress shows in the notification, and it can be cancelled. It writes a '
+               '`.part` file and renames atomically, so an interrupted download never leaves an '
+               'uninstallable package behind.')),
+            ('fix',
+             T('**修：心率告警的上/下限改不动** —— 输入框原来只在按回车时才保存，失焦不保存，'
+               '改完随手点别处就等于没改。现在输入即保存，卡片里还会显示「当前生效 40 ~ 150 bpm」。',
+               '**修：心率告警的上/下限改不動** —— 輸入框原來只在按 Enter 時才儲存，失焦不儲存，'
+               '改完隨手點別處就等於沒改。現在輸入即儲存，卡片裡還會顯示「目前生效 40 ~ 150 bpm」。',
+               '**Fix: the heart-rate alarm limits could not be changed** — the fields only saved on '
+               'the keyboard\'s enter key, not on focus loss, so editing and tapping elsewhere saved '
+               'nothing. Input now saves as you type, and the card shows "Currently active 40 ~ 150 '
+               'bpm".')),
+        ],
+    },
+    {
         'ver': 'v2.0.7', 'date': '2026-09-28',
         'items': [
             ('fix',

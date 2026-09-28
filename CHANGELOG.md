@@ -1,5 +1,91 @@
 # 更新日志
 
+## [2.0.8] - 2026-09-28
+
+### 🐛 修：心率异常告警的上/下限改不动
+
+三个输入框原来只在 `onEditingComplete` 里提交，而 Flutter 的这个回调**只在按键盘「完成/回车」时触发，失焦不触发** ——
+改完随手点别处，什么都没保存，表现就是「数值无法更改」。现在输入即保存（解析不出来的中间态不写），
+失焦/回车再做一次范围校正与回显；卡片里新增一行**「当前生效 40 ~ 150 bpm」**，
+改没改、改成多少一眼可见（用户说的「按钮更新并不及时」正是缺这个反馈）。
+
+### ❤️ 新：「生命守护」页（设置页底部）
+
+心率异常告警从「设备 → 心率」搬进独立的**生命守护**页 —— 那个页面讲的是「心率带怎么连」，
+与「安全策略」不是一类东西。新页面把三件事说清：
+**这是什么**（越界弹警告 + 通知栏，可拨急救或向附近台站求助）、
+**开启条件**（开关打开 / 外置心率设备在正常推数据 / 越界 / 距上次告警超 3 分钟）、
+以及**向附近台站求助的口径**（手动触发、100 公里内最近 5 个、发送前再确认一次）。
+并明确标注**这是测试功能** —— 判定只基于心率数值，没有任何医学依据。
+原位置留了一行入口，老用户不至于找不到。
+
+### 🚶 新：运动步数与信标上传
+
+- 新增**计步**：读手机的硬件计步传感器（比用加速度计估算准、也更省电），
+  设置页可以看到「今日步数」。跨天自动归零；手机重启（硬件计数回到 0）也不会让今日步数回退。
+- **信标里可以附带 `STEPS=`**（非标准字段，与 `TRV:`/`ODO:` 同类），默认关闭 ——
+  分享自己的数据应当由你决定。
+- 读不到步数时会**分清**是「这台设备没有计步传感器」还是「有传感器但没授权」，
+  后者给一个授权按钮 —— 两者要给的动作完全不同，混成一句「无数据」等于没法处理。
+
+### 🏆 新：运动排行榜（设置页，荣誉墙上方）
+
+今日步数排行榜，点一行进台站详情。
+**它是什么要说清**：这里没有服务器，数据只能来自**本机收到的报文**里那个 `STEPS=`，
+所以榜单的语义是「你听得到的、且开了步数上报的 APRSlocus 邻居」，不是全网排行 ——
+这一条写在页面最上面。没带步数的 APRSlocus 台站单独列一段（不参与排序），
+免得看着像「附近只有这几个人在用」。
+
+**并且：自己不开上传就看不到榜单。** 榜上每个数字都是别人主动发出来的，
+只收不发的人拿得到别人的步数却不贡献自己那份。未开启时页面只给一张「门票」卡：
+说清为什么、写明开启后我会发出什么（`STEPS=<今日步数>`）、一键开启，开完立刻放行。
+
+### ⬇️ 新：更新包支持后台下载
+
+原来下载写在更新页里：用户一离开页面，进度就没人更新；而且**下完之后会拿已经失效的页面
+去弹安装对话框**——轻则毫无提示，重则踩到「用了已卸载的 context」。
+现在下载任务归一个独立单例所有，页面只是订阅者：
+
+- 离开页面 / 切到后台，下载继续；回到页面从当前进度接着显示；
+- **通知栏里能看到进度**（「正在下载更新 vX · 45%」），完成/失败各有提示；
+- 先写 `.part` 再原子改名：中途断掉留下的是半截文件，不会被「已下载」当成可用安装包；
+- 同一时刻只跑一条流，进度卡上可以**取消下载**。
+
+边界也写在界面上：进程被系统结束时会中断（几百 MB 的包不做断点续传）。
+
+## [2.0.8] - 2026-09-28 (English)
+
+### 🐛 Fix: the heart-rate alarm limits could not be changed
+
+The three fields only committed in `onEditingComplete`, and Flutter fires that **only when you press the keyboard's done/enter key — not on focus loss**. So editing a value and tapping elsewhere silently saved nothing. Input now saves as you type (unparseable intermediate states are skipped), and blur/enter does a range correction plus write-back. A new line shows **"Currently active 40 ~ 150 bpm"**, so what actually took effect is visible — which is exactly the missing feedback behind "the button doesn't update in time".
+
+### ❤️ New: a "Life guard" page at the bottom of Settings
+
+The heart-rate alarm moved out of Devices → Heart rate into its own page, because that page is about *how to connect a strap*, which is a different subject from *a safety policy*. The new page spells out three things: **what it is** (out-of-range warning plus notification, offering an emergency call or a help message to nearby stations), **the exact conditions** (switch on / external device actually streaming / reading out of range / more than 3 minutes since the last alarm), and **what "ask nearby stations" does** (manual trigger, 5 closest within 100 km, one more confirmation). It is also clearly marked as a **beta** feature — the judgement is based on the heart-rate number alone, with no medical basis. A pointer row remains in the old location so existing users can find it.
+
+### 🚶 New: step counting and steps in the beacon
+
+- **Step counting** from the phone's hardware step counter (more accurate and cheaper than estimating from the accelerometer), with today's steps shown in Settings. It resets across midnight, and a device reboot (the hardware counter returning to 0) no longer makes today's count go backwards.
+- The beacon can include **`STEPS=`** (a non-standard field, same family as `TRV:`/`ODO:`), off by default — sharing your data should be your decision.
+- When steps are unavailable, it distinguishes "this device has no step sensor" from "there is one but permission was not granted", the latter offering a grant button — the two need completely different actions, and merging them into "no data" leaves the user stuck.
+
+### 🏆 New: activity leaderboard (in Settings, above the honour wall)
+
+Today's steps ranking; tapping a row opens the station detail. **What it is must be stated**: there is no server, so the data can only come from `STEPS=` in **packets this device has received** — the ranking therefore means "the APRSlocus neighbours you can hear who enabled steps upload", not a network-wide ranking, and that is written at the top of the page. APRSlocus stations without steps are listed separately (not ranked), so it does not look like nobody nearby is using it.
+
+**And you cannot see the board without contributing**: every number on it was sent by someone else, and someone who only receives gets everyone's steps without contributing their own. When upload is off, the page shows a single "ticket" card explaining why, stating what will be sent (`STEPS=<today's steps>`), and offering a one-tap enable — which immediately unlocks the list.
+
+### ⬇️ New: background downloads for the update package
+
+The download used to live in the update page: leaving it meant nobody updated the progress, and when the download finished it would **pop an install dialog from an already-dead page** — at best no notice at all, at worst a disposed `context`. The job now belongs to a standalone singleton and the page is merely a subscriber:
+
+- leave the page or background the app — the download continues, and returning shows the current progress;
+- **progress is visible in the notification** ("Downloading update vX · 45%"), with completion/failure notices;
+- it writes a `.part` file and renames atomically, so an interrupted download can never be mistaken for a usable installer;
+- only one stream runs at a time, and the progress card offers **cancel**.
+
+The boundary is stated in the UI too: killing the process aborts it (no resume for a few hundred MB).
+
 ## [2.0.7] - 2026-09-28
 
 ### 🐛 修：沉浸地图一拖就跳回北京

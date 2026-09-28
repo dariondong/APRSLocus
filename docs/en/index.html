@@ -577,6 +577,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.8</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New: step counting and a leaderboard** — steps come from the phone's hardware counter and can ride along in the beacon (`STEPS=`, off by default). A new **activity leaderboard** sits above the honour wall in Settings: today's steps, and tapping a row opens the station detail. **You cannot see the board without contributing** — every number there was sent by someone else, and receiving without sending should not get you other people's data for free. The page states plainly that it ranks the neighbours you can hear, not the whole network.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New: a "Life guard" page, and background downloads.** The heart-rate alarm moved into its own **Life guard** page that states what it is, the exact trigger conditions, and what "ask nearby stations" does — clearly marked as beta (the judgement uses the heart-rate number only, with no medical basis). Update downloads now **run in the background**: leaving the page or backgrounding the app keeps it going, progress shows in the notification, and it can be cancelled. It writes a `.part` file and renames atomically, so an interrupted download never leaves an uninstallable package behind.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: the heart-rate alarm limits could not be changed** — the fields only saved on the keyboard's enter key, not on focus loss, so editing and tapping elsewhere saved nothing. Input now saves as you type, and the card shows "Currently active 40 ~ 150 bpm".</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.7</span>
         <span class="cl-date">2026-09-28</span>
       </div>

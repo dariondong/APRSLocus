@@ -652,6 +652,17 @@ html{overflow-x:hidden}
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.8</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：运动步数与排行榜** —— 读手机硬件计步传感器，今日步数可随信标附带（`STEPS=`，默认关）。设置页荣誉墙上方新增**运动排行榜**：今日步数排行，点一行进台站详情。**自己不开上传就看不到榜单** —— 榜上每个数字都是别人主动发出来的，只收不发不该白拿别人的。页面上写明这只是「你听得到的邻居」而不是全网排行。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**新：「生命守护」页与更新包后台下载**。心率异常告警从「设备 → 心率」搬进独立的**生命守护**页，说清它是什么、开启条件、以及「向附近台站求助」的口径，并标注这是测试功能（判定只基于心率数值，无医学依据）。更新包下载现在**支持后台**：离开页面或切到后台继续下载，通知栏显示进度，可取消；先写 `.part` 再原子改名，断掉不会留下一个装不上的包。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：心率告警的上/下限改不动** —— 输入框原来只在按回车时才保存，失焦不保存，改完随手点别处就等于没改。现在输入即保存，卡片里还会显示「当前生效 40 ~ 150 bpm」。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.7</span>
         <span class="cl-date">2026-09-28</span>
       </div>

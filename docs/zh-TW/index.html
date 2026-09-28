@@ -583,6 +583,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.8</span>
+        <span class="cl-date">2026-09-28</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：運動步數與排行榜** —— 讀手機硬體計步感測器，今日步數可隨信標附帶（`STEPS=`，預設關）。設定頁榮譽牆上方新增**運動排行榜**：今日步數排行，點一列進臺站詳情。**自己不開上傳就看不到榜單** —— 榜上每個數字都是別人主動發出來的，只收不發不該白拿別人的。頁面上寫明這只是「你聽得到的鄰居」而不是全網排行。</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**新：「生命守護」頁與更新包背景下載**。心率異常告警從「裝置 → 心率」搬進獨立的**生命守護**頁，說清它是什麼、開啟條件、以及「向附近臺站求助」的口徑，並標註這是測試功能（判定只基於心率數值，無醫學依據）。更新包下載現在**支援背景**：離開頁面或切到背景繼續下載，通知列顯示進度，可取消；先寫 `.part` 再原子改名，中斷不會留下一個裝不上的包。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：心率告警的上/下限改不動** —— 輸入框原來只在按 Enter 時才儲存，失焦不儲存，改完隨手點別處就等於沒改。現在輸入即儲存，卡片裡還會顯示「目前生效 40 ~ 150 bpm」。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.7</span>
         <span class="cl-date">2026-09-28</span>
       </div>
