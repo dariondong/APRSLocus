@@ -272,46 +272,36 @@
     <div class="announce-ribbon"><span class="ar-dot"></span>Announcement</div>
 
     <header class="announce-head">
-      <p class="announce-kicker">📡 v2.0.4 released</p>
-      <h2 class="announce-title">The withdrawn features are back<span class="announce-en">v2.0.4 released</span></h2>
-      <p class="announce-sub">The changes withdrawn because the version number had been raised outside the normal release process are back: with that change removed they went through the normal process again and ship in v2.0.4. Still on 2.0.3? Please upgrade to 2.0.4.</p>
+      <p class="announce-kicker">📡 v2.0.9 released · Life guard beta</p>
+      <h2 class="announce-title">Life guard: crash &amp; fall detection (beta)<span class="announce-en">v2.0.9 · crash &amp; fall detection (beta)</span></h2>
+      <p class="announce-sub">The phone accelerometer watches for "one sharp impact, then no movement from you" and raises an alert plus a system notification. It is a beta feature and it does false-alarm — please read the caveats before leaving it switched on.</p>
     </header>
 
     <div class="announce-body">
-      <p><b>v2.0.5 is out.</b> It fixes <b>a problem in 2.0.4</b>: once power / antenna height / gain were filled in, third parties could <b>not</b> read the `PHGphgd` field — so maps such as aprs.fi showed no coverage and the feature did nothing.</p>
-      <p>If you have <b>2.0.4</b> installed, please upgrade to <b>2.0.5</b>.</p>
-      <p><b>1. What was wrong in 2.0.4</b></p>
-      <p>The packet 2.0.4 sent looked like this (note the spaces between the extensions):</p>
-      <p>```</p>
-      <p>BG7LZQ-2&gt;APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40Eb000/000 PHG2130 /A=000033 Bat:22%</p>
-      <p>```</p>
-      <p>Parsed with the reference implementation (aprslib), `phg` is <b>missing entirely</b> and `PHG2130` ends up as ordinary comment text.</p>
-      <p>Two independent traps caused it, and fixing only one is not enough:</p>
-      <p>1. <b>Data extensions must not be space-separated.</b> APRS101 defines PHG, `/A=` and the course/speed field (CsT) as <b>fixed-length data extensions</b> that must be glued to the symbol with no separators between them. Real stations look like `!3155.21N/12016.69ErPHG1460/A=000071`.</p>
-      <p>2. <b>CsT and PHG compete for the same "start of comment" slot.</b> Parsers match the `ddd/sss` course/speed form first and, <b>once it hits, only look for a DF report and never search for PHG</b>. So even glued together, PHG stays unreadable while `000/000` comes first.</p>
-      <p><b>2. How 2.0.5 fixes it</b></p>
-      <p><b>The extension block is kept glued together, and the first slot goes to PHG</b> — when PHG is present, course/speed (CsT) is no longer sent with the position packet. Afterwards:</p>
-      <p>```</p>
-      <p>BG7LZQ-2&gt;APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%</p>
-      <p>← lat/lon+symbol glued to PHG, then /A=; spaces appear only between the block and the comment</p>
-      <p>```</p>
-      <p><b>One trade-off to be aware of</b>: a <b>mobile</b> station that also fills in PHG shows no speed/bearing on aprs.fi — both need that single "start of comment" slot and cannot coexist. PHG describes a fixed antenna installation, which is not the same kind of station as a mobile one. <b>Stations without PHG are unaffected.</b></p>
-      <p>The beacon packet's third-party compatibility test now runs in CI: this class of problem compiles fine and passes static analysis, and only a third-party parser can tell that something is unreadable — so a test is the only guard.</p>
-      <p><b>3. About 2.0.3: still an invalid release</b></p>
-      <p><b>2.0.3 is still best avoided.</b> It came from a change that <b>raised the version number from 2.0.2 to 2.0.3 outside the normal release process</b>, and a release was built from it.</p>
-      <p>APRSLocus <b>sends its version number over the air</b> (it appears in the identity and online frames on APRS-IS and on RF). If two different packages both claim to be <b>2.0.3</b>, platforms such as aprs.fi can no longer tell <b>which one is beaconing</b> — and if something goes wrong, nobody can trace it. That is why the release was withdrawn from GitHub and from this site.</p>
-      <p>If you have 2.0.3 installed, please <b>upgrade to 2.0.5</b>.</p>
-      <p><b>4. One rule: only the maintainer raises the version number, and only when releasing</b></p>
-      <p>Contributions are always welcome — issues, bug reports and pull requests. The one shared rule is simply: <b>do not touch the version number</b>; it is raised by the maintainer when a release is prepared.</p>
+      <p><b>v2.0.9 is out.</b> It extends <b>Life guard</b> beyond the abnormal-heart-rate alarm with <b>crash and fall detection</b>: the phone notices one sharp impact and then no movement from you, and it raises an alert plus a system notification.</p>
+      <p><b>This is a beta feature. Treat it as "may help, will sometimes false-alarm".</b> The criteria and the caveats are below — please read them before leaving it switched on.</p>
+      <p><b>1. How it decides that something happened</b></p>
+      <p>Two stages, and <b>both</b> must hold:</p>
+      <p><b>① Impact</b> — the acceleration with gravity removed spikes above <b>3.2 g</b>. Crashes and falls both produce such a spike; sustained acceleration such as hard braking does not (gravity is separated out of the reading first).</p>
+      <p><b>② Then stillness</b> — for <b>12 seconds</b> after the impact there is almost no movement.</p>
+      <p>Why the second stage is required: with the spike alone, <b>speed bumps, a phone dropped on a desk, or a good shake</b> all qualify, and an alert that fires several times a day gets ignored. The trade-off, stated plainly: <b>a minor impact — one where you can still move — will not alert.</b> This is about "I cannot move", not "a collision occurred".</p>
+      <p>Two more guards: nothing is judged in the first <b>20 seconds</b> after the app starts (picking the phone up and putting it down also creates spikes), and two alerts are at least <b>3 minutes</b> apart (one crash produces a burst of spikes).</p>
+      <p><b>2. Caveats — please read them all</b></p>
+      <ul class="announce-list"><li><b>It does false-alarm.</b> A speed bump followed by a 12-second stop at a red light satisfies both stages. The first button in the alert is "I am fine"; tap it and nothing else is affected.</li><li><b>It is a heuristic, not engineering-grade crash detection.</b> Fixed thresholds, no direction of travel, no GPS fusion, no cross-checking of any kind.</li><li><b>It only alerts; it does not act for you.</b> Calling emergency services and asking nearby stations for help both require <b>you to press the button</b> — the app never dials by itself and never sends a distress message on its own.</li><li><b>"Ask nearby stations" is not 110 / 120.</b> It sends one message to each of the <b>5</b> nearest APRSLocus stations within 100 km: `SOS CRASH HR=… position` (`SOS HR=…` for a heart-rate alarm), and it asks for confirmation first. Those operators <b>may not be online or looking at their phones</b>, and if no station is known nearby the request cannot be sent (the app says so).</li><li><b>It depends on phone hardware and on the app running.</b> An accelerometer is required (if there is none, the page says "this device cannot detect impact"); the accelerometer needs no extra permission. <b>Once the system ends the app's process there will be no alert</b> — this is not a background-resident service.</li><li><b>It is on by default</b> and can be turned off in <b>Settings → Life guard</b>. It does <b>not</b> require tracking to be on: it keeps watching even with no position updates (deliberately so — people turn GPS off to save battery when riding).</li><li><b>Please do not treat it as your only safety measure.</b> Ride and drive as carefully as you always would, and in a real emergency call <b>110 / 120</b> (or your local emergency number) directly.</li></ul>
+      <p><b>3. The heart-rate alarm is unchanged</b></p>
+      <p>The original <b>abnormal heart-rate alarm</b> still works the same way: an <b>external heart-rate device must be connected and pushing data</b> (a Bluetooth chest strap or Garmin LiveTrack), and a reading must reach or cross the upper / lower limit you set. <b>A stale reading does not alert.</b> The limits and the emergency number are on the same page and take effect the moment you change them.</p>
+      <p><b>4. Three fixes in this release</b></p>
+      <ul class="announce-list"><li><b>Steps always showed "permission needed" even after it was granted.</b> A reading of -1 has three different causes: no step sensor, no activity-recognition permission, or <b>no hardware event yet</b> (without permission the system simply does not dispatch events, and reports no error). They were conflated, so "granted but has not walked yet" was displayed as "permission needed". There are now four states: unsupported / needs permission / <b>waiting for data</b> / ok.</li><li><b>Switches on the Life guard page did nothing</b> (state was written back, but the page did not follow it).</li><li><b>The "Save" button of the speed-tier editor was covered by the navigation bar</b> — the sheet now reserves both the keyboard and the system navigation bar.</li></ul>
+      <p><b>Please report what you see while it is in beta.</b> If it fires when it should not (or stays silent when it should not), send the <b>phone model and what was happening</b> (speed bump, hard braking, phone dropped…) to <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a> — thresholds like these can only be tuned against real situations.</p>
       <p><b>73!</b></p>
       <p><b>The APRSLocus team</b></p>
-      <p>27 September 2026</p>
+      <p>29 September 2026</p>
     </div>
 
     <div class="announce-actions">
-      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.4" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://github.com/dariondong/APRSLocus/releases/tag/v2.0.9" target="_blank" rel="noopener">
         <i class="fa-solid fa-download"></i>
-        Download 2.0.4
+        Download 2.0.9
       </a>
       <a class="btn btn-ghost" href="https://github.com/dariondong/APRSLocus/blob/main/CHANGELOG.md" target="_blank" rel="noopener">
         <i class="fa-solid fa-list-check"></i>
@@ -581,7 +571,7 @@
         <span class="cl-date">2026-09-28</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>**New: crash and fall detection in Life guard (beta)** — judged from the phone accelerometer; it raises an alert (I am fine / call emergency services / ask nearby stations) and also shows in the notification. The test is **two-stage**: a sharp spike **and** then almost no movement for 12 seconds. With the spike alone, speed bumps and a phone dropped on a desk all qualify, and an alert that fires several times a day gets ignored; the trade-off is that a minor impact (where you can still move) will not alert — this is about "I cannot move". It can false-alarm (speed bump plus a red light), so the first button is "I am fine" and the page states it is a heuristic, not engineering-grade crash detection.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**New: crash and fall detection in Life guard (beta)** — judged from the phone accelerometer; it raises an alert (I am fine / call emergency services / ask nearby stations) and also shows in the notification. The test is **two-stage**: a sharp spike **and** then almost no movement for 12 seconds. With the spike alone, speed bumps and a phone dropped on a desk all qualify, and an alert that fires several times a day gets ignored; the trade-off is that a minor impact (where you can still move) will not alert — this is about "I cannot move". It can false-alarm (speed bump plus a red light), so the first button is "I am fine" and the page states it is a heuristic, not engineering-grade crash detection.</div>
         <div class="cl-item"><span class="cl-dot fix"></span>**Fix: steps always showed "permission needed" even after granting it.** A reading of -1 has three causes — no sensor / no activity-recognition permission / **no hardware event yet** (without permission the system just does not dispatch events, with no error). They were conflated, so "granted but has not walked yet" read as "permission needed". The native side now reports the permission separately and steps have four states (unsupported / needs permission / **waiting for data** / ok) behind one decision point; the step counting depending on the sensor-assist switch, and the grant button appearing while merely waiting, were fixed too. **Fix: switches on the Life guard page did nothing** (SettingsPageShell.state only serves the guide card; it does not make the page follow state changes). **Fix: the speed-tier editor Save button was covered by the navigation bar** — the sheet now reserves both the keyboard and the system navigation bar, taking the larger of padding and viewPadding (some ROMs only report the latter).</div>
       </div>
     </div>

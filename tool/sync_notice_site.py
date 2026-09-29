@@ -57,22 +57,22 @@ PAGES = [
 # 而卡片标题要的是「TOUCH SKY」+ 右侧小字，推不出来（也不该推）。
 HEAD = {
     'zh': {
-        'kicker': '📡 2.0.4 已发布',
-        'title': '此前撤回的功能已正式回归',
-        'en': 'v2.0.4 released · the features are back',
-        'sub': '此前因版本号在正常发版流程之外被提升而撤回的那批功能，已在去掉版本号变更之后按正常流程重新合并，并随 2.0.4 正式发布。仍在 2.0.3 的朋友请升级到 2.0.4。',
+        'kicker': '📡 2.0.9 已发布 · 生命守护测试上线',
+        'title': '生命守护「碰撞与摔倒检测」测试上线',
+        'en': 'v2.0.9 · crash & fall detection (beta)',
+        'sub': '用手机加速度判断「一次强烈冲击之后你一直没有动静」，检测到就弹提醒并推系统通知栏。它是测试功能、会误报 —— 请先读完注意事项，再决定要不要让它一直开着。',
     },
     'zh_TW': {
-        'kicker': '📡 2.0.4 已發布',
-        'title': '此前撤回的功能已正式回歸',
-        'en': 'v2.0.4 released · the features are back',
-        'sub': '此前因版本號在正常發版流程之外被提升而撤回的那批功能，已在去掉版本號變更之後按正常流程重新合併，並隨 2.0.4 正式發布。仍在 2.0.3 的朋友請升級到 2.0.4。',
+        'kicker': '📡 2.0.9 已發布 · 生命守護測試上線',
+        'title': '生命守護「碰撞與摔倒偵測」測試上線',
+        'en': 'v2.0.9 · crash & fall detection (beta)',
+        'sub': '用手機加速度判斷「一次強烈衝擊之後你一直沒有動靜」，偵測到就彈提醒並推系統通知列。它是測試功能、會誤報 —— 請先讀完注意事項，再決定要不要讓它一直開著。',
     },
     'en': {
-        'kicker': '📡 v2.0.4 released',
-        'title': 'The withdrawn features are back',
-        'en': 'v2.0.4 released',
-        'sub': 'The changes withdrawn because the version number had been raised outside the normal release process are back: with that change removed they went through the normal process again and ship in v2.0.4. Still on 2.0.3? Please upgrade to 2.0.4.',
+        'kicker': '📡 v2.0.9 released · Life guard beta',
+        'title': 'Life guard: crash & fall detection (beta)',
+        'en': 'v2.0.9 · crash & fall detection (beta)',
+        'sub': 'The phone accelerometer watches for "one sharp impact, then no movement from you" and raises an alert plus a system notification. It is a beta feature and it does false-alarm — please read the caveats before leaving it switched on.',
     },
 }
 

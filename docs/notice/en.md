@@ -1,58 +1,48 @@
-# 📡 v2.0.5 released — fixes 2.0.4's PHG (unreadable by third parties)
+# 🆘 v2.0.9 · Life guard: crash & fall detection (beta)
 
-**v2.0.5 is out.** It fixes **a problem in 2.0.4**: once power / antenna height / gain were filled in, third parties could **not** read the `PHGphgd` field — so maps such as aprs.fi showed no coverage and the feature did nothing.
+**v2.0.9 is out.** It extends **Life guard** beyond the abnormal-heart-rate alarm with **crash and fall detection**: the phone notices one sharp impact and then no movement from you, and it raises an alert plus a system notification.
 
-If you have **2.0.4** installed, please upgrade to **2.0.5**.
-
----
-
-## 1. What was wrong in 2.0.4
-
-The packet 2.0.4 sent looked like this (note the spaces between the extensions):
-
-```
-BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40Eb000/000 PHG2130 /A=000033 Bat:22%
-```
-
-Parsed with the reference implementation (aprslib), `phg` is **missing entirely** and `PHG2130` ends up as ordinary comment text.
-
-Two independent traps caused it, and fixing only one is not enough:
-
-1. **Data extensions must not be space-separated.** APRS101 defines PHG, `/A=` and the course/speed field (CsT) as **fixed-length data extensions** that must be glued to the symbol with no separators between them. Real stations look like `!3155.21N/12016.69ErPHG1460/A=000071`.
-2. **CsT and PHG compete for the same "start of comment" slot.** Parsers match the `ddd/sss` course/speed form first and, **once it hits, only look for a DF report and never search for PHG**. So even glued together, PHG stays unreadable while `000/000` comes first.
-
-## 2. How 2.0.5 fixes it
-
-**The extension block is kept glued together, and the first slot goes to PHG** — when PHG is present, course/speed (CsT) is no longer sent with the position packet. Afterwards:
-
-```
-BG7LZQ-2>APALOC,TCPIP*,qAC,T2FZ:!2155.17N/11052.40EbPHG2130/A=000033 Bat:22%
-← lat/lon+symbol glued to PHG, then /A=; spaces appear only between the block and the comment
-```
-
-**One trade-off to be aware of**: a **mobile** station that also fills in PHG shows no speed/bearing on aprs.fi — both need that single "start of comment" slot and cannot coexist. PHG describes a fixed antenna installation, which is not the same kind of station as a mobile one. **Stations without PHG are unaffected.**
-
-The beacon packet's third-party compatibility test now runs in CI: this class of problem compiles fine and passes static analysis, and only a third-party parser can tell that something is unreadable — so a test is the only guard.
+**This is a beta feature. Treat it as "may help, will sometimes false-alarm".** The criteria and the caveats are below — please read them before leaving it switched on.
 
 ---
 
-## 3. About 2.0.3: still an invalid release
+## 1. How it decides that something happened
 
-**2.0.3 is still best avoided.** It came from a change that **raised the version number from 2.0.2 to 2.0.3 outside the normal release process**, and a release was built from it.
+Two stages, and **both** must hold:
 
-APRSLocus **sends its version number over the air** (it appears in the identity and online frames on APRS-IS and on RF). If two different packages both claim to be **2.0.3**, platforms such as aprs.fi can no longer tell **which one is beaconing** — and if something goes wrong, nobody can trace it. That is why the release was withdrawn from GitHub and from this site.
+**① Impact** — the acceleration with gravity removed spikes above **3.2 g**. Crashes and falls both produce such a spike; sustained acceleration such as hard braking does not (gravity is separated out of the reading first).
 
-If you have 2.0.3 installed, please **upgrade to 2.0.5**.
+**② Then stillness** — for **12 seconds** after the impact there is almost no movement.
+
+Why the second stage is required: with the spike alone, **speed bumps, a phone dropped on a desk, or a good shake** all qualify, and an alert that fires several times a day gets ignored. The trade-off, stated plainly: **a minor impact — one where you can still move — will not alert.** This is about "I cannot move", not "a collision occurred".
+
+Two more guards: nothing is judged in the first **20 seconds** after the app starts (picking the phone up and putting it down also creates spikes), and two alerts are at least **3 minutes** apart (one crash produces a burst of spikes).
+
+## 2. Caveats — please read them all
+
+- **It does false-alarm.** A speed bump followed by a 12-second stop at a red light satisfies both stages. The first button in the alert is "I am fine"; tap it and nothing else is affected.
+- **It is a heuristic, not engineering-grade crash detection.** Fixed thresholds, no direction of travel, no GPS fusion, no cross-checking of any kind.
+- **It only alerts; it does not act for you.** Calling emergency services and asking nearby stations for help both require **you to press the button** — the app never dials by itself and never sends a distress message on its own.
+- **"Ask nearby stations" is not 110 / 120.** It sends one message to each of the **5** nearest APRSLocus stations within 100 km: `SOS CRASH HR=… position` (`SOS HR=…` for a heart-rate alarm), and it asks for confirmation first. Those operators **may not be online or looking at their phones**, and if no station is known nearby the request cannot be sent (the app says so).
+- **It depends on phone hardware and on the app running.** An accelerometer is required (if there is none, the page says "this device cannot detect impact"); the accelerometer needs no extra permission. **Once the system ends the app's process there will be no alert** — this is not a background-resident service.
+- **It is on by default** and can be turned off in **Settings → Life guard**. It does **not** require tracking to be on: it keeps watching even with no position updates (deliberately so — people turn GPS off to save battery when riding).
+- **Please do not treat it as your only safety measure.** Ride and drive as carefully as you always would, and in a real emergency call **110 / 120** (or your local emergency number) directly.
+
+## 3. The heart-rate alarm is unchanged
+
+The original **abnormal heart-rate alarm** still works the same way: an **external heart-rate device must be connected and pushing data** (a Bluetooth chest strap or Garmin LiveTrack), and a reading must reach or cross the upper / lower limit you set. **A stale reading does not alert.** The limits and the emergency number are on the same page and take effect the moment you change them.
+
+## 4. Three fixes in this release
+
+- **Steps always showed "permission needed" even after it was granted.** A reading of -1 has three different causes: no step sensor, no activity-recognition permission, or **no hardware event yet** (without permission the system simply does not dispatch events, and reports no error). They were conflated, so "granted but has not walked yet" was displayed as "permission needed". There are now four states: unsupported / needs permission / **waiting for data** / ok.
+- **Switches on the Life guard page did nothing** (state was written back, but the page did not follow it).
+- **The "Save" button of the speed-tier editor was covered by the navigation bar** — the sheet now reserves both the keyboard and the system navigation bar.
 
 ---
 
-## 4. One rule: only the maintainer raises the version number, and only when releasing
-
-Contributions are always welcome — issues, bug reports and pull requests. The one shared rule is simply: **do not touch the version number**; it is raised by the maintainer when a release is prepared.
-
----
+**Please report what you see while it is in beta.** If it fires when it should not (or stays silent when it should not), send the **phone model and what was happening** (speed bump, hard braking, phone dropped…) to [GitHub Issues](https://github.com/dariondong/APRSLocus/issues) — thresholds like these can only be tuned against real situations.
 
 **73!**
 
 **The APRSLocus team**
-27 September 2026
+29 September 2026

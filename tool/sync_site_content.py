@@ -207,7 +207,7 @@ CL = [
     {
         'ver': 'v2.0.9', 'date': '2026-09-28',
         'items': [
-            ('new',
+            ('fix',
              T('**新：生命守护增加「碰撞与摔倒检测」（测试）** —— 用手机加速度判断，检测到就弹提醒（我没事 / 拨打急救 / 向附近台站求助），通知栏也会提示。判据是**两段式**：加速度出现很陡的尖峰**且**之后连续 12 秒几乎没动。只报尖峰的话，过减速带、手机掉桌上都会响，一天几次就没人看了；代价是「轻微碰撞（人还能动）不提醒」——它管的是「人已经动不了了」。它会误报（过减速带+等红灯），所以第一个按钮就是「我没事」，页面上也写明这是启发式判断，不是工程级碰撞检测。',
                '**新：生命守護增加「碰撞與摔倒偵測」（測試）** —— 用手機加速度判斷，偵測到就彈提醒（我沒事 / 撥打急救 / 向附近臺站求助），通知列也會提示。判據是**兩段式**：加速度出現很陡的尖峰**且**之後連續 12 秒幾乎沒動。只報尖峰的話，過減速帶、手機掉桌上都會響，一天幾次就沒人看了；代價是「輕微碰撞（人還能動）不提醒」——它管的是「人已經動不了了」。它會誤報（過減速帶+等紅燈），所以第一個按鈕就是「我沒事」，頁面上也寫明這是啟發式判斷，不是工程級碰撞偵測。',
                '**New: crash and fall detection in Life guard (beta)** — judged from the phone accelerometer; it raises an alert (I am fine / call emergency services / ask nearby stations) and also shows in the notification. The test is **two-stage**: a sharp spike **and** then almost no movement for 12 seconds. With the spike alone, speed bumps and a phone dropped on a desk all qualify, and an alert that fires several times a day gets ignored; the trade-off is that a minor impact (where you can still move) will not alert — this is about "I cannot move". It can false-alarm (speed bump plus a red light), so the first button is "I am fine" and the page states it is a heuristic, not engineering-grade crash detection.')),
