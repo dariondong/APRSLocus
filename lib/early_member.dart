@@ -688,6 +688,7 @@ class _HonorWallSheet extends StatelessWidget {
                   fontSize: 30,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'monospace',
+                  fontFamilyFallback: kCjkFallback,
                   letterSpacing: 1.5,
                   height: 1.1)),
           const SizedBox(width: 12),

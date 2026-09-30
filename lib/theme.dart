@@ -124,11 +124,27 @@ String uiMaterialName(UiMaterial m) {
   }
 }
 
-/// Windows 上 Roboto 未预装，用系统字体避免字体回退导致发虚
-String get _uiFont {
+/// 界面默认字体族（用户没在「主题 → 字体」里另选时用它）。
+///
+/// * Windows：`Segoe UI` —— Roboto 在 Windows 上未预装，靠回退会发虚；
+/// * Linux：`Noto Sans`；
+/// * **macOS：不指定（null）**；
+/// * 其余（Android / iOS / Web）：`Roboto`。
+///
+/// ── 为什么 macOS 要返回 null（#27「mac 端有些文本乱码」）──
+/// 以前这里写的是 `'.SF NS Text'` —— 那是 CoreText 的**私有字体族名**（以 `.` 开头）。
+/// 它要么在不同 macOS 版本上解析不到，要么解析到了一个**不含中文字形**的 SF 变体，
+/// 而本应用的正文几乎全部走 [ts()]。结果是整屏中文找不到能用的中文字体，
+/// 表现就是用户报的「地图页 / 设置页文字乱码」。
+///
+/// 返回 null 就是「用系统默认字体」—— macOS 的系统默认字体本来就是 SF，
+/// **与写死 `.SF NS Text` 想要的效果完全一致**，但把「挑字体 + 中文回退」交回给
+/// 系统去做（macOS 对中文的系统回退是可靠的）。也就是说：写死这个名字没有收益，
+/// 只剩风险。
+String? get _uiFont {
   if (Platform.isWindows) return 'Segoe UI';
   if (Platform.isLinux) return 'Noto Sans';
-  if (Platform.isMacOS) return '.SF NS Text';
+  if (Platform.isMacOS) return null;
   return 'Roboto';
 }
 
@@ -512,6 +528,12 @@ class C {
   }
 }
 
+/// 界面文字样式。
+///
+/// [fontFamilyFallback] 必须**三平台的中文字体都列上**：主字体（如 Windows 的
+/// Segoe UI、macOS 的系统字体）都不含中文字形，中文全靠这张表挑字体。少一个平台
+/// 的名字，那个平台的中文就会掉到「找不到字体」上（#27「mac 端有些文本乱码」就是
+/// 因为主字体写死了一个 macOS 私有名，中文没得回退）。
 TextStyle ts(double s, {Color? c, FontWeight? w, double? h, double? ls}) =>
     TextStyle(
       fontSize: s,
@@ -520,17 +542,37 @@ TextStyle ts(double s, {Color? c, FontWeight? w, double? h, double? ls}) =>
       height: h,
       letterSpacing: ls,
       fontFamily: C.uiFont ?? _uiFont,
-      fontFamilyFallback: const ['Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC'],
+      fontFamilyFallback: kCjkFallback,
       package: null,
     );
 
+/// 中文回退字体族（三平台各一个，全列上；缺失的名字会被 Flutter 跳过）。
+const List<String> kCjkFallback = [
+  'PingFang SC', // macOS
+  'Microsoft YaHei', // Windows
+  'Noto Sans CJK SC', // Linux / 通用
+  'Noto Sans SC',
+  'Hiragino Sans GB', // macOS（较老系统）
+];
+
+/// 等宽文字样式（报文 / 日志 / 呼号）。
+///
+/// 等宽字体（Consolas / Menlo）**同样不含中文字形**，所以回退表里也要有中文字体，
+/// 否则这些区域里的中文在 macOS / Linux 上会变成方框。
 TextStyle mono(double s, {Color? c, FontWeight? w}) =>
     TextStyle(
       fontSize: s,
       color: c ?? C.ink,
       fontWeight: w ?? FontWeight.w500,
       fontFamily: 'monospace',
-      fontFamilyFallback: const ['Consolas', 'Microsoft YaHei'],
+      fontFamilyFallback: const [
+        'Consolas', // Windows
+        'Menlo', // macOS
+        'DejaVu Sans Mono', // Linux
+        'PingFang SC',
+        'Microsoft YaHei',
+        'Noto Sans CJK SC',
+      ],
       package: null,
     );
 

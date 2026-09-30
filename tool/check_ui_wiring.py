@@ -288,6 +288,61 @@ def main() -> int:
             errors.append(f'{_f}（{_n}）没有指路文案（sourceMovedHint）—— '
                           '删掉来源卡后用户会以为启用入口没了')
 
+    # ── 字体回退：#27「mac 端有些文本乱码」 ──
+    #
+    # 正文几乎全部走 `ts()`：它把「主字体」交给平台（Windows=Segoe UI、
+    # macOS=系统默认、Linux=Noto Sans）。这些主字体**都不含中文字形** ——
+    # 中文全靠 `fontFamilyFallback` 那张表挑字体。表里少一个平台的中文字体名，
+    # 那个平台的中文就掉到「找不到字体」上，整屏变方块 / 乱码（用户报的 #27）。
+    #
+    # 判据都很窄，只钉「会真的坏掉」的写法：
+    #   ① `_uiFont` 不许再写 macOS 私有字体名（以 `.` 开头的 CoreText 名）；
+    #   ② 中文回退表必须同时含三平台的中文字体；
+    #   ③ 散落的等宽样式（不走 `mono()`）也必须带中文回退。
+    th = read('lib/theme.dart')
+
+    def _strip_comments(src):
+        """只去注释、**保留字符串字面量**。
+
+        为什么不能直接用 code_only：`code_only` 会把字符串也剥掉，而我们要找的
+        `.SF NS Text` 正好是个**字符串字面量** —— 用 code_only 查等于永远查不出来
+        （判据自己失效）。也不能直接查原文：本文件的注释里就会解释「为什么不再用
+        这个名字」，写进去就假失败（本仓库踩过好几次）。所以这里只去注释。
+        """
+        out, i, n = [], 0, len(src)
+        while i < n:
+            c = src[i]
+            if c == '/' and src[i + 1:i + 2] == '/':
+                j = src.find('\n', i)
+                i = n if j < 0 else j
+                continue
+            if c == '/' and src[i + 1:i + 2] == '*':
+                j = src.find('*/', i + 2)
+                i = n if j < 0 else j + 2
+                continue
+            out.append(c)
+            i += 1
+        return ''.join(out)
+
+    if '.SF NS Text' in _strip_comments(th):
+        errors.append('lib/theme.dart 又用 macOS 私有字体名 .SF NS Text 了 —— '
+                      '它解析不到时整屏中文没有可回退的字体（#27 乱码）')
+    if 'kCjkFallback' not in th:
+        errors.append('lib/theme.dart 没有共用的中文回退字体表（kCjkFallback）—— '
+                      '各处样式会各自漏掉某个平台的中文，中文变方块')
+    for _fam, _plat in (('PingFang SC', 'macOS'),
+                        ('Microsoft YaHei', 'Windows'),
+                        ('Noto Sans CJK SC', 'Linux')):
+        if _fam not in th:
+            errors.append(f'中文回退字体表里缺 {_plat} 的 `{_fam}` —— '
+                          f'{_plat} 上的中文没有字体可回退（#27 乱码）')
+    for _f in ('lib/honor_wall_page.dart', 'lib/early_member.dart'):
+        _src = read(_f)
+        _n = _src.count("fontFamily: 'monospace'")
+        if _n and _src.count('fontFamilyFallback') < _n:
+            errors.append(f'{_f} 里有 {_n} 处等宽字体没写中文回退 —— '
+                          '那边的中文在 macOS / Linux 上会变成方框')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:

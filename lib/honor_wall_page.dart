@@ -53,6 +53,7 @@ class HonorWallPage extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'monospace',
+                  fontFamilyFallback: kCjkFallback,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -113,6 +114,7 @@ class HonorWallPage extends StatelessWidget {
                                     fontSize: 26,
                                     fontWeight: FontWeight.w900,
                                     fontFamily: 'monospace',
+                                    fontFamilyFallback: kCjkFallback,
                                     letterSpacing: 1.5)),
                             const SizedBox(height: 4),
                             Text(
@@ -202,7 +204,8 @@ class HonorWallPage extends StatelessWidget {
               fontSize: 26,
               fontWeight: FontWeight.w900,
               color: Color(0xFF14203A),
-              fontFamily: 'monospace'));
+              fontFamily: 'monospace',
+              fontFamilyFallback: kCjkFallback));
     }
     return img;
   }
