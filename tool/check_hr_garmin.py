@@ -201,8 +201,21 @@ def main() -> int:
 
     # ── ⑤ Dart：佳明 LiveTrack ──
     g = read('lib/garmin.dart')
-    need('lib/garmin.dart', r'livetrack\.garmin\.com',
+    need('lib/garmin.dart', r'livetrack\.garmin\.',
          'LiveTrack 链接的正则没了 —— 用户粘贴的链接永远判为无效')
+    # **国区（中国大陆）是另一套服务器**：国际区 `livetrack.garmin.com`，
+    # 国区 `livetrack.garmin.cn`（DNS 实测：该域名有 A 记录，而随手编的子域
+    # 解析不出来 → 不是通配符，是真实配置）。只认 `.com` 的话，国区用户点分享
+    # 会落进「没有找到链接」—— 功能是**静默无效**的。这里把 `.cn` 钉住。
+    if 'com|cn|com\\.cn' not in g:
+        errors.append('LiveTrack 正则没把国区域名（`livetrack.garmin.cn`）算进去 —— '
+                      '国区用户分享的链接会被判为无效（国际区正常，国区整条路是死的）')
+    need('lib/garmin.dart', '_bareGarminRe',
+         '没有「无 scheme 的佳明域名」兜底 —— 国区用户从聊天窗口复制的一段 '
+         '`livetrack.garmin.cn/…`（常常没有 https://）会被判为无效')
+    need('lib/garmin.dart', 'document.indexOf(\'"trackPoints":\')',
+         '没有「整篇文档找 trackPoints」的兜底 —— 非 Next.js 形态的分享页'
+         '（国区 / 老版）会「页面上明明有点、应用里一个都没有」')
     # **佳明 App 的「分享」给的是短链 `gar.mn/xxx`**，参考项目（从 Gmail 邮件取长链）
     # 里根本没有这条分支 —— 只认长链的话，用户在佳明 App 里点分享选 APRSlocus
     # 会「什么都没发生」（Dart 与 Android 的域名闸门两处都会把它挡掉）。
@@ -223,8 +236,9 @@ def main() -> int:
     need('lib/garmin_fetch_io.dart', 'followRedirects = true',
          '抓取没有显式跟随跳转 —— 短链靠 301 跳到长链，关掉就再也抓不到数据'
          '（而长链照常，极难归因）')
-    need('lib/garmin.dart', 'garmin\\.com',
-         '链接识别里没有「任何佳明域名」的兜底 —— 佳明一改分享形式就会「没反应」')
+    need('lib/garmin.dart', r'garmin\.(?:com|cn|com\.cn)',
+         '链接识别里没有「任何佳明域名」的兜底（且必须含国区 `.cn`）—— '
+         '佳明一改分享形式就会「没反应」')
     # 原生侧**不许**再按域名过滤：应用是否出现在分享面板只由 intent-filter 决定，
     # 那道理过滤不掉任何东西，只会把「佳明换了域名」变成静默丢弃。
     if 'TRACK_HOSTS' in read('android/app/src/main/kotlin/com/aprslocus/aprslocus/MainActivity.kt'):

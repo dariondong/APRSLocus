@@ -48,8 +48,19 @@ class GarminPoint {
 /// 佳明 LiveTrack 分享链接的正则（uuid + token 两段都必须有）。
 ///
 /// 形如：`https://livetrack.garmin.com/session/<uuid>/token/<HEX>`
+///
+/// ── 为什么域名要认三种写法（`.com` / `.cn` / `.com.cn`）──
+/// 佳明的账号体系分**国际区**与**国区**（中国大陆）两套，数据存在两套服务器上：
+/// 国际区的分享页在 `livetrack.garmin.com`，国区在 `livetrack.garmin.cn`
+/// （DNS 实测：`livetrack.garmin.cn` 有 A 记录，而随手编的
+/// `asdfqwer1234.garmin.cn` 解析不出来 —— 说明它不是通配符，是真实配置的域名）。
+/// 老一点的分享里还出现过 `garmin.com.cn` 这种写法，一并收下。
+///
+/// 不认国区域名的话，国区用户点分享会落进「没有找到链接」—— 功能是**静默无效**的，
+/// 而这恰恰是国区用户最常遇到的一条路（国区 App 给的就是 `.cn` 链接）。
 final RegExp _longRe = RegExp(
-  r'https?://livetrack\.garmin\.com/session/[0-9a-fA-F-]{36}/token/[0-9A-Fa-f]+',
+  r'https?://livetrack\.garmin\.(?:com|cn|com\.cn)'
+  r'/session/[0-9a-fA-F-]{36}/token/[0-9A-Fa-f]+',
 );
 
 /// 短链：**佳明 App 的「分享」按钮给出的就是这个**（形如 `gar.mn/3nN1LAZebB`）。
@@ -71,6 +82,20 @@ final RegExp _shortRe = RegExp(
 /// 用户可能只复制到 `gar.mn/xxx`（分享面板里显示的常常没有 scheme）。
 final RegExp _bareShortRe = RegExp(
   r'(?<![\w./-])gar\.mn/[A-Za-z0-9_-]+',
+  caseSensitive: false,
+);
+
+/// 只差 scheme 的**佳明域名**链接。
+///
+/// 国区用户从聊天窗口里复制出来的常常是 `livetrack.garmin.cn/session/…/token/…`
+/// 这样一段，连 `https://` 都没有 —— `gar.mn/xxx` 那条只覆盖短链，覆盖不到它，
+/// 于是「链接明明贴进来了却没有反应」。
+///
+/// 负向断言 `(?<![\w./-])` 不能省：否则 `https://livetrack.garmin.com/…` 里 host
+/// 前面那个 `/` 之后也会命中，兜底会给已经带 scheme 的链接再套一层 `https://`
+/// （变成 `https://https://…`，抓取必然失败，看起来像「佳明坏了」）。
+final RegExp _bareGarminRe = RegExp(
+  r"(?<![\w./-])(?:[\w-]+\.)*garmin\.(?:com\.cn|com|cn)/[^\s<>'\x22]+",
   caseSensitive: false,
 );
 
@@ -98,14 +123,18 @@ String? extractLiveTrackUrl(String raw) {
   // 兜底：任何**佳明域名**的链接都先收下。
   //
   // 为什么需要它：佳明的分享形式改过（邮件里是长链、App 里是 `gar.mn` 短链），
-  // 而且还有 `connect.garmin.com/...` 这类页面 —— 只认死两种形态的话，佳明一改
-  // 用户就会遇到「分享过来没反应」，而我们在代码里连一次网络请求都没有发出，
-  // 也就没有任何错误可看。收下之后抓不到点会走「还没有取到点 / 抓取失败」的
-  // 提示，失败至少是**可见**的。
+  // 而且还有 `connect.garmin.com/...` 这类页面，国区则是 `livetrack.garmin.cn/...`
+  // —— 只认死两种形态的话，佳明一改用户就会遇到「分享过来没反应」，而我们在代码里
+  // 连一次网络请求都没有发出，也就没有任何错误可看。收下之后抓不到点会走
+  // 「还没有取到点 / 抓取失败」的提示，失败至少是**可见**的。
   final anyGarmin =
-      RegExp(r"https?://[\w.-]*\bgarmin\.com/[^\s<>'\x22]+")
+      RegExp(r"https?://[\w.-]*\bgarmin\.(?:com|cn|com\.cn)/[^\s<>'\x22]+")
           .firstMatch(text);
   if (anyGarmin != null) return anyGarmin.group(0);
+  // 最后再兜一次：连 scheme 都没有的佳明域名（`livetrack.garmin.cn/session/…`）。
+  // 放在最末是为了不把上面已经收下的链接再拼一次 scheme。
+  final bareGarmin = _bareGarminRe.firstMatch(text);
+  if (bareGarmin != null) return 'https://${bareGarmin.group(0)}';
   return null;
 }
 
@@ -138,17 +167,41 @@ List<GarminPoint> parseTrackPoints(String document) {
     if (text is! String) continue;
     final i = text.indexOf('"trackPoints":');
     if (i < 0) continue;
-    final arr = _decodeFirstJsonValue(text.substring(i + '"trackPoints":'.length));
-    if (arr is! List) continue;
-    final out = <GarminPoint>[];
-    for (final e in arr) {
-      if (e is! Map) continue;
-      final p = _pointOf(e);
-      if (p != null) out.add(p);
-    }
+    final out = _pointsOf(
+      _decodeFirstJsonValue(text.substring(i + '"trackPoints":'.length)),
+    );
+    if (out.isNotEmpty) return out;
+  }
+  // 兜底：直接在**整篇文档**里找 `"trackPoints":`。
+  //
+  // 上面那条路只认 Next.js 的 `self.__next_f.push([1,"…"])` 形态。国区
+  // （`livetrack.garmin.cn`）与老版本的分享页不一定是这个框架，数据可能就摆在
+  // 普通的 `<script>` / `__NEXT_DATA__` 里 —— 只认一种形态就会出现「页面上明明
+  // 有点，应用里一个都没有」，而用户没有任何办法自查。按「先窄后宽」的顺序找：
+  // 流式块优先（它最可能是实时点），整篇兜底。
+  final i = document.indexOf('"trackPoints":');
+  if (i >= 0) {
+    final out = _pointsOf(
+      _decodeFirstJsonValue(document.substring(i + '"trackPoints":'.length)),
+    );
     if (out.isNotEmpty) return out;
   }
   return const [];
+}
+
+/// 把 `trackPoints` 数组（可能是 `null`、或元素不是 map）转成点列表。
+///
+/// 单独抽出来是为了让「流式块」与「整篇兜底」两条路**共用同一段解析** ——
+/// 各写一份的话，字段修正只会落到其中一条上（这类分叉在本仓库已经出过好几次）。
+List<GarminPoint> _pointsOf(dynamic arr) {
+  if (arr is! List) return const [];
+  final out = <GarminPoint>[];
+  for (final e in arr) {
+    if (e is! Map) continue;
+    final p = _pointOf(e);
+    if (p != null) out.add(p);
+  }
+  return out;
 }
 
 /// 从某个位置起解出**第一个完整的 JSON 值**（Dart 没有 Python 的 raw_decode，
