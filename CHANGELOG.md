@@ -1,5 +1,61 @@
 # 更新日志
 
+## [2.0.10] - 2026-09-30
+
+### 🌏 新：支持国区（中国大陆）佳明 LiveTrack
+
+佳明的账号体系分**国际区**与**国区**两套服务器：国际区在 `livetrack.garmin.com`，
+国区在 `livetrack.garmin.cn`。此前只认国际区域名 —— 国区用户从佳明 App 分享过来
+只会看到「没有找到 LiveTrack 链接」，而且**连一次网络请求都没发出**，功能是静默失效的。
+
+现在三种域名写法都认（`.com` / `.cn` / `.com.cn`），**没有 `https://` 的一段链接也认**
+（从聊天窗口里复制出来的常常就是那样），并补了两处兜底：解析时会在**整篇文档**里找
+`trackPoints`（国区与老版分享页不是 Next.js 的流式块形态），抓取时照旧跟随 301 跳转。
+
+### 🐛 修：macOS 上主界面中文乱码
+
+正文几乎全部走同一个文字样式，而它的「主字体」在 macOS 上被写死成一个 CoreText
+**私有字体名**（`.SF NS Text`）。这个名字解析不到时，中文就**没有可回退的字体**，
+于是地图页、设置页的中文整片乱码。
+
+现在 macOS 交回系统默认字体（本来就是 SF，观感一致，但「挑字体 + 中文回退」交给系统做），
+并把中文回退表补全（`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …）；
+等宽区域（报文、日志、荣誉墙）也补上了中文回退 —— 等宽字体同样不含中文字形。
+`tool/check_ui_wiring.py` 加了判据：**不许再出现那个私有字体名**，回退表必须含三平台的中文字体。
+
+### 🐛 修：聊天输入框上方的长度计数器不实时
+
+报的是「字符数 / 整包字节」那一行不跟着打字变，**要等输入框失去焦点才更新**。
+
+根因：它在页面构建时读一次输入内容，而打字只会重建输入框自己，不会重建它旁边的计数器；
+「失焦」恰好也是一次重建，所以看起来像是失焦才刷新。
+
+现在它**自己监听输入**（打字时只重建这一行，不在每次按键时重建整个消息页），
+译发预览的判定（预览原文 == 当前输入）也一并搬进去；并补了回归测试 ——
+把监听去掉时测试立刻报红。
+
+## [2.0.10] - 2026-09-30 (English)
+
+### 🌏 New: LiveTrack from China-region Garmin accounts
+
+Garmin runs **two separate account systems** on two sets of servers: the international one at `livetrack.garmin.com` and the China-region (mainland) one at `livetrack.garmin.cn`. Only the international host was recognised, so a link shared from the China-region app just said "no LiveTrack link found" — and **not a single network request was ever made**, making the feature silently dead.
+
+All three host forms are accepted now (`.com` / `.cn` / `.com.cn`), including a link **without `https://`** (which is what copying from a chat window usually gives), and two fallbacks were added: parsing searches the **whole document** for `trackPoints` (the China-region and older share pages are not Next.js streaming chunks), and fetching still follows the 301 redirect.
+
+### 🐛 Fix: Chinese text was garbled across the macOS UI
+
+Almost all body text goes through one shared text style, and on macOS its "primary font" was pinned to a CoreText **private** family name (`.SF NS Text`). When that name fails to resolve, **no fallback is left for Chinese**, so the map page and the settings pages came out as garbage.
+
+macOS now uses the system default font instead (it is SF either way, so nothing looks different — the OS just does the font picking and CJK fallback), and the CJK fallback list was completed (`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …). Monospace areas (packets, logs, the honour wall) got CJK fallbacks as well — monospace faces carry no Chinese glyphs either. `tool/check_ui_wiring.py` now refuses that private font name and requires the three platforms' CJK families.
+
+### 🐛 Fix: the length counter above the chat input was not live
+
+Reported: the "characters / whole-packet bytes" row did not follow typing and **only updated once the field lost focus**.
+
+Cause: it read the field once during a page build, and typing rebuilds only the text field itself, never the counter beside it; losing focus happens to be one such rebuild, which is why it looked focus-driven.
+
+It now **listens to the input** (typing rebuilds just that one row, not the whole messages page), the translation-preview rule (the preview counts only while its source still matches what is typed) moved in with it, and a regression test goes red the moment that subscription is removed.
+
 ## [2.0.9] - 2026-09-28
 
 ### 🆘 新：生命守护增加「碰撞与摔倒检测」（测试）

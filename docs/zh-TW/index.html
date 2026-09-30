@@ -573,6 +573,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.10</span>
+        <span class="cl-date">2026-09-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：支援國區（中國大陸）佳明 LiveTrack**。佳明的帳號體系分國際區與國區兩套伺服器：國際區在 `livetrack.garmin.com`、國區在 `livetrack.garmin.cn`。此前只認國際區域名 —— 國區使用者從佳明 App 分享過來只會看到「沒有找到 LiveTrack 連結」，而且**連一次網路請求都沒送出**，功能是靜默失效的。現在三種網域寫法都認（`.com` / `.cn` / `.com.cn`），**沒有 `https://` 的一段連結也認**（從聊天視窗裡複製出來的常常就是那樣），並補了兩處兜底：解析時會在**整篇文件**裡找 `trackPoints`（國區與舊版分享頁不是 Next.js 的串流區塊形態），抓取時照舊跟隨 301 跳轉。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：macOS 上主介面中文亂碼**。正文幾乎全部走同一個文字樣式，而它的「主字體」在 macOS 上被寫死成一個 CoreText **私有字體名**（`.SF NS Text`）—— 這個名字解析不到時，中文就**沒有可回退的字體**，於是地圖頁、設定頁的中文整片亂碼。現在 macOS 交回系統預設字體（本來就是 SF，觀感一致，但「挑字體 + 中文回退」交給系統做），並把中文回退表補全（`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …）；等寬區域（報文、日誌、榮譽牆）也補上了中文回退 —— 等寬字體同樣不含中文字形。新增判據：不許再出現那個私有字體名，回退表必須含三平台的中文字體。</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：聊天輸入框上方的「字元數 / 整包位元組」計數器不即時**（使用者回報：要等輸入框失去焦點才更新）。根因是它在頁面建構時讀一次輸入內容，而打字只會重建輸入框自己、不會重建它旁邊的計數器；「失焦」恰好也是一次重建，所以看起來像是失焦才刷新。現在它**自己監聽輸入**（打字時只重建這一列，不在每次按鍵時重建整個訊息頁），譯發預覽的判定（預覽原文 == 目前輸入）也一併搬進去；並補了回歸測試 —— 把監聽去掉時測試立刻報紅。</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.9</span>
         <span class="cl-date">2026-09-28</span>
       </div>

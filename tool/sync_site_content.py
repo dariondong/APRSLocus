@@ -205,6 +205,81 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.10', 'date': '2026-09-30',
+        'items': [
+            ('new',
+             T('**新：支持国区（中国大陆）佳明 LiveTrack**。佳明的账号体系分国际区与国区两套服务器：'
+               '国际区在 `livetrack.garmin.com`、国区在 `livetrack.garmin.cn`。此前只认国际区域名 —— '
+               '国区用户从佳明 App 分享过来只会看到「没有找到 LiveTrack 链接」，而且**连一次网络请求都没发出**，'
+               '功能是静默失效的。现在三种域名写法都认（`.com` / `.cn` / `.com.cn`），'
+               '**没有 `https://` 的一段链接也认**（从聊天窗口里复制出来的常常就是那样），'
+               '并补了两处兜底：解析时会在**整篇文档**里找 `trackPoints`（国区与老版分享页不是 Next.js 的'
+               '流式块形态），抓取时照旧跟随 301 跳转。',
+               '**新：支援國區（中國大陸）佳明 LiveTrack**。佳明的帳號體系分國際區與國區兩套伺服器：'
+               '國際區在 `livetrack.garmin.com`、國區在 `livetrack.garmin.cn`。此前只認國際區域名 —— '
+               '國區使用者從佳明 App 分享過來只會看到「沒有找到 LiveTrack 連結」，而且**連一次網路請求都沒送出**，'
+               '功能是靜默失效的。現在三種網域寫法都認（`.com` / `.cn` / `.com.cn`），'
+               '**沒有 `https://` 的一段連結也認**（從聊天視窗裡複製出來的常常就是那樣），'
+               '並補了兩處兜底：解析時會在**整篇文件**裡找 `trackPoints`（國區與舊版分享頁不是 Next.js 的'
+               '串流區塊形態），抓取時照舊跟隨 301 跳轉。',
+               '**New: LiveTrack from China-region Garmin accounts.** Garmin runs **two separate '
+               'account systems** on two sets of servers: the international one at '
+               '`livetrack.garmin.com` and the China-region (mainland) one at '
+               '`livetrack.garmin.cn`. Only the international host was recognised, so a link shared '
+               'from the China-region app just said "no LiveTrack link found" — and **not a single '
+               'network request was ever made**, making the feature silently dead. All three host '
+               'forms are accepted now (`.com` / `.cn` / `.com.cn`), including a link **without '
+               '`https://`** (which is what copying from a chat window usually gives), and two '
+               'fallbacks were added: parsing searches the **whole document** for `trackPoints` '
+               '(the China-region and older share pages are not Next.js streaming chunks), and '
+               'fetching still follows the 301 redirect.')),
+            ('fix',
+             T('**修：macOS 上主界面中文乱码**。正文几乎全部走同一个文字样式，而它的「主字体」在 macOS 上'
+               '被写死成一个 CoreText **私有字体名**（`.SF NS Text`）—— 这个名字解析不到时，中文就'
+               '**没有可回退的字体**，于是地图页、设置页的中文整片乱码。现在 macOS 交回系统默认字体'
+               '（本来就是 SF，观感一致，但「挑字体 + 中文回退」交给系统做），并把中文回退表补全'
+               '（`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …）；等宽区域（报文、日志、'
+               '荣誉墙）也补上了中文回退 —— 等宽字体同样不含中文字形。新增判据：不许再出现那个私有'
+               '字体名，回退表必须含三平台的中文字体。',
+               '**修：macOS 上主介面中文亂碼**。正文幾乎全部走同一個文字樣式，而它的「主字體」在 macOS 上'
+               '被寫死成一個 CoreText **私有字體名**（`.SF NS Text`）—— 這個名字解析不到時，中文就'
+               '**沒有可回退的字體**，於是地圖頁、設定頁的中文整片亂碼。現在 macOS 交回系統預設字體'
+               '（本來就是 SF，觀感一致，但「挑字體 + 中文回退」交給系統做），並把中文回退表補全'
+               '（`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …）；等寬區域（報文、日誌、'
+               '榮譽牆）也補上了中文回退 —— 等寬字體同樣不含中文字形。新增判據：不許再出現那個私有'
+               '字體名，回退表必須含三平台的中文字體。',
+               '**Fix: Chinese text was garbled across the macOS UI.** Almost all body text goes '
+               'through one shared text style, and on macOS its "primary font" was pinned to a '
+               'CoreText **private** family name (`.SF NS Text`). When that name fails to resolve, '
+               '**no fallback is left for Chinese**, so the map page and the settings pages came out '
+               'as garbage. macOS now uses the system default font instead (it is SF either way, so '
+               'nothing looks different — the OS just does the font picking and CJK fallback), and '
+               'the CJK fallback list was completed (`PingFang SC` / `Microsoft YaHei` / '
+               '`Noto Sans CJK SC` …). Monospace areas (packets, logs, the honour wall) got CJK '
+               'fallbacks as well — monospace faces carry no Chinese glyphs either. A new check '
+               'refuses that private family name and requires the three platforms\' CJK families.')),
+            ('fix',
+             T('**修：聊天输入框上方的「字符数 / 整包字节」计数器不实时**（用户上报：要等输入框失去焦点'
+               '才更新）。根因是它在页面构建时读一次输入内容，而打字只会重建输入框自己、不会重建它旁边'
+               '的计数器；「失焦」恰好也是一次重建，所以看起来像是失焦才刷新。现在它**自己监听输入**'
+               '（打字时只重建这一行，不在每次按键时重建整个消息页），译发预览的判定（预览原文 == 当前'
+               '输入）也一并搬进去；并补了回归测试 —— 把监听去掉时测试立刻报红。',
+               '**修：聊天輸入框上方的「字元數 / 整包位元組」計數器不即時**（使用者回報：要等輸入框失去'
+               '焦點才更新）。根因是它在頁面建構時讀一次輸入內容，而打字只會重建輸入框自己、不會重建它'
+               '旁邊的計數器；「失焦」恰好也是一次重建，所以看起來像是失焦才刷新。現在它**自己監聽輸入**'
+               '（打字時只重建這一列，不在每次按鍵時重建整個訊息頁），譯發預覽的判定（預覽原文 == 目前'
+               '輸入）也一併搬進去；並補了回歸測試 —— 把監聽去掉時測試立刻報紅。',
+               '**Fix: the length counter above the chat input was not live** (reported: it only '
+               'updated once the field lost focus). It was computed by reading the field during a '
+               'page build, and typing only rebuilds the text field itself, never the counter beside '
+               'it; losing focus happens to be one such rebuild, which is why it looked '
+               'focus-driven. It now **listens to the input** (typing rebuilds just that one row, '
+               'not the whole messages page), the translation-preview rule (the preview counts only '
+               'while its source still matches what is typed) moved in with it, and a regression '
+               'test goes red the moment that subscription is removed.')),
+        ],
+    },
+    {
         'ver': 'v2.0.9', 'date': '2026-09-28',
         'items': [
             ('fix',

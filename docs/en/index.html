@@ -567,6 +567,17 @@
 <!-- site-sync:changelog -->
     <div class="cl-version reveal">
       <div class="cl-head">
+        <span class="cl-tag">v2.0.10</span>
+        <span class="cl-date">2026-09-30</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New: LiveTrack from China-region Garmin accounts.** Garmin runs **two separate account systems** on two sets of servers: the international one at `livetrack.garmin.com` and the China-region (mainland) one at `livetrack.garmin.cn`. Only the international host was recognised, so a link shared from the China-region app just said "no LiveTrack link found" — and **not a single network request was ever made**, making the feature silently dead. All three host forms are accepted now (`.com` / `.cn` / `.com.cn`), including a link **without `https://`** (which is what copying from a chat window usually gives), and two fallbacks were added: parsing searches the **whole document** for `trackPoints` (the China-region and older share pages are not Next.js streaming chunks), and fetching still follows the 301 redirect.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: Chinese text was garbled across the macOS UI.** Almost all body text goes through one shared text style, and on macOS its "primary font" was pinned to a CoreText **private** family name (`.SF NS Text`). When that name fails to resolve, **no fallback is left for Chinese**, so the map page and the settings pages came out as garbage. macOS now uses the system default font instead (it is SF either way, so nothing looks different — the OS just does the font picking and CJK fallback), and the CJK fallback list was completed (`PingFang SC` / `Microsoft YaHei` / `Noto Sans CJK SC` …). Monospace areas (packets, logs, the honour wall) got CJK fallbacks as well — monospace faces carry no Chinese glyphs either. A new check refuses that private family name and requires the three platforms' CJK families.</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: the length counter above the chat input was not live** (reported: it only updated once the field lost focus). It was computed by reading the field during a page build, and typing only rebuilds the text field itself, never the counter beside it; losing focus happens to be one such rebuild, which is why it looked focus-driven. It now **listens to the input** (typing rebuilds just that one row, not the whole messages page), the translation-preview rule (the preview counts only while its source still matches what is typed) moved in with it, and a regression test goes red the moment that subscription is removed.</div>
+      </div>
+    </div>
+    <div class="cl-version reveal">
+      <div class="cl-head">
         <span class="cl-tag">v2.0.9</span>
         <span class="cl-date">2026-09-28</span>
       </div>
