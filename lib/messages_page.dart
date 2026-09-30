@@ -17,6 +17,7 @@ import 'translate_page.dart';
 import 'widgets.dart';
 import 'group_chat.dart';
 import 'msg_limit.dart';
+import 'msg_len_counter.dart';
 import 'station_detail.dart';
 import 'tracker_page.dart';
 
@@ -679,34 +680,17 @@ class _MessagesPageState extends State<MessagesPage> {
     // 长度计数器：APRS-IS 与射频都会「太长就解析不出来」，但此前只有
     // 射频侧在发送时才拦。这里把实际占用（字符 + 整包字节）实时显示出来，
     // 让用户在打字过程中就知道自己在逼近哪条线 —— 发送前的弹窗只作兜底。
-    final wired = _outPreview != null && _outPreviewSrc == _input.text.trim()
-        ? _outPreview!
-        : _input.text.trim();
-    final fit = MsgLimit.check(
+    //
+    // ⚠ 它**自己监听输入控制器**（见 [MsgLenCounter]），所以不需要在这里 setState。
+    //    以前这里直接读 `_input.text` 拼一行 —— 那只在页面因别的原因重建时才刷新，
+    //    用户看到的现象就是「数字不跟着打字变，要等输入框失去焦点才变」（用户上报）。
+    final counter = MsgLenCounter(
+      controller: _input,
       from: st.myFullCall,
       path: st.txPath,
       to: inGroupChat ? (group?.groupCall ?? '') : _selected,
-      text: wired,
-    );
-    final counter = Container(
-      padding: const EdgeInsets.fromLTRB(14, 4, 14, 0),
-      child: Row(children: [
-        Icon(
-          fit.fit == MsgFit.ok ? Icons.check_circle_outline_rounded
-              : fit.fit == MsgFit.overSpec ? Icons.warning_amber_rounded
-              : Icons.error_rounded,
-          size: 12,
-          color: fit.fit == MsgFit.ok ? C.grey
-              : fit.fit == MsgFit.overSpec ? C.orange : C.red,
-        ),
-        const SizedBox(width: 5),
-        Text(
-          S.of(context).msgLenCounter(fit.textChars, fit.packetBytes),
-          style: ts(9,
-              c: fit.fit == MsgFit.ok ? C.grey
-                  : fit.fit == MsgFit.overSpec ? C.orange : C.red),
-        ),
-      ]),
+      preview: _outPreview,
+      previewSrc: _outPreviewSrc,
     );
 
     // 射频模式的限制说明：紧贴输入栏，解释「为什么这里能做的事变少了」。

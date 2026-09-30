@@ -343,6 +343,22 @@ def main() -> int:
             errors.append(f'{_f} 里有 {_n} 处等宽字体没写中文回退 —— '
                           '那边的中文在 macOS / Linux 上会变成方框')
 
+    # ── 输入栏长度计数器必须**实时**（用户实测：「要失去焦点才更新」）──
+    #
+    # 实时性靠计数器**自己监听输入控制器**（`MsgLenCounter` 里的
+    # `ListenableBuilder(listenable: controller)`）。如果又在页面里直接读
+    # `_input.text` 拼一行，就退化回「只在页面因别的原因重建时才刷新」——
+    # 用户看到的现象就是「数字不跟着打字变，要等输入框失去焦点才变」。
+    #
+    # 判据：页面里必须**用** MsgLenCounter，且不许再自己调那条文案。
+    mp = read('lib/messages_page.dart')
+    if 'MsgLenCounter(' not in mp:
+        errors.append('lib/messages_page.dart 没有用 MsgLenCounter —— '
+                      '长度计数器会退回「打字不更新、要失焦才更新」')
+    if 'msgLenCounter(' in mp:
+        errors.append('lib/messages_page.dart 又在页面里自己拼长度计数器了 —— '
+                      '那样打字时不会实时刷新（用户实测上报）')
+
     if errors:
         print('交互接线检查失败：')
         for e in errors:
