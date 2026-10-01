@@ -730,6 +730,7 @@
   "boxPushTitle": "Status ponsel ke kotak",
   "boxPushStatus": "Kirim status langsung (detak jantung / kecepatan / hitung mundur / jarak)",
   "boxPushHint": "Halaman PHONE kotak menampilkan ini; hanya menggambar di layar kotak, tidak dipancarkan. Terpisah dari memasok posisi.",
+  "boxPassHint": "Passcode APRS-IS kotak adalah -1 (**hanya terima**): untuk memancar, ubah `pass` di bawah ke passcode Anda - passcode untuk **callsign dasar** (tanpa -SSID)",
   "boxEvtTitle": "Peristiwa kotak",
   "dataSourcePkwdwpl": "PKWDWPL (waypoint Kenwood)",
   "dataSourcePkwdwplDesc": "Baca kalimat waypoint Kenwood $PKWDWPL dari radio lewat Bluetooth/serial (hanya terima)",

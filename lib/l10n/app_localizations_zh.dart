@@ -1606,6 +1606,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get boxPassHint => '盒子的 APRS-IS passcode 是 -1（**只收不发**）：要发射就在下面把 `pass` 改成你的 passcode —— 注意要**基础呼号**（不含 -SSID）的那个';
+
+  @override
   String get boxDeviceTitle => 'APRSlocusBOX';
 
   @override
@@ -9045,6 +9048,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get boxPassHint => '盒子的 APRS-IS passcode 是 -1（**只收不發**）：要發射就在下面把 `pass` 改成你的 passcode —— 注意要**基礎呼號**（不含 -SSID）的那個';
 
   @override
   String get boxDeviceTitle => 'APRSlocusBOX';

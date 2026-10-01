@@ -737,6 +737,7 @@
   "boxPushTitle": "手機狀態給盒子",
   "boxPushStatus": "推送即時狀態（心率 / 速度 / 倒計時 / 里程 / 附近台站）",
   "boxPushHint": "盒子 PHONE 頁顯示這些；只寫盒子螢幕，不上射頻。與「餵位置」是兩件事。",
+  "boxPassHint": "盒子的 APRS-IS passcode 是 -1（**只收不發**）：要發射就在下面把 `pass` 改成你的 passcode —— 注意要**基礎呼號**（不含 -SSID）的那個",
   "boxEvtTitle": "盒子事件",
   "dataSourcePkwdwpl": "PKWDWPL（Kenwood 航點）",
   "dataSourcePkwdwplDesc": "用藍牙/串列埠讀取電台輸出的 Kenwood $PKWDWPL 航點語句（只收不發）",

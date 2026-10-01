@@ -11,6 +11,8 @@ The protocol also changed to `TEL k=v ...`, which survives new fields: the app c
 keys without touching the firmware (unknown keys are skipped, empty values are not sent,
 and the box shows `--` instead of a fake 0).
 
+
+**2.0.14 also fixes two things**: `IS rx-only` on the box now states the cause and the fix in the open (home `set pass`, the server own words on the SYS page, and the app event log; set `pass` to the passcode of the **base callsign**), and countdowns now tick **locally every second** with status pushed every **5 s**.
 ---
 
 > Below is the box support introduced in **2.0.13**; it is still valid.

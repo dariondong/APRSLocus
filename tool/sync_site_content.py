@@ -214,7 +214,10 @@ CL = [
                'APRS-IS 与未读 —— 跑步骑车时手机在包里，挂在车把上的盒子一眼就能看到。'
                '心率测到就放大当主角，没测到自动换成速度；附近台站另拆一页 **NEARBY**'
                '（整屏 8 行）。协议改用 `TEL k=v …`：应用以后加字段**不用动固件**'
-               '（不认识的键静默跳过；空值不发，盒子写 `--`，绝不显示假的 0）。',
+               '（不认识的键静默跳过；空值不发，盒子写 `--`，绝不显示假的 0）。'
+               '另：`IS rx-only` 现在三处写清原因（首页 `set pass`、SYS 页的服务器原话、'
+               '应用事件日志）并给出修法（`pass` 填**基础呼号**的 passcode）；'
+               '倒计时改为**盒子本地每秒递减**，状态推送收紧到 5 秒。',
                '**新：盒子上的「APRSLOCUS」即時儀表板**。接著上一版的盒子支援，'
                '這一版把**手機那側的即時狀態**也推給盒子：心率、速度、方位、'
                '**自動上報倒數**（帶進度條）、里程（本次/累計）、電量、步數、定位精度、'
@@ -231,7 +234,11 @@ CL = [
                'available, otherwise speed does; nearby stations moved to their own '
                '**NEARBY** page (8 rows). The protocol now uses `TEL k=v ...`, so the app '
                'can add fields without touching the firmware (unknown keys are skipped, '
-               'empty values are not sent, and the box shows `--`, never a fake 0).')),
+               'empty values are not sent, and the box shows `--`, never a fake 0). '
+               'Also: `IS rx-only` now explains itself in three places (home `set pass`, '
+               'the server own words on the SYS page, and the app event log) with the fix '
+               '(use the passcode of the base callsign), and countdowns now tick locally '
+               'on the box with status pushed every 5 s.')),
         ],
     },
     {

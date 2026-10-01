@@ -1614,6 +1614,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get boxPassHint => '箱の APRS-IS passcode が -1（**受信のみ**）です：送信するには下の `pass` を自分の passcode に変えてください（**SSID 無しの基本コールサイン**のものです）';
+
+  @override
   String get boxDeviceTitle => 'APRSlocusBOX';
 
   @override

@@ -2663,11 +2663,12 @@ class AppState extends ChangeNotifier {
   /// 最近一次把位置喂给盒子的时刻（喂位置按 30 秒节流：盒子侧 60 秒内算新鲜）
   DateTime? _lastBoxFeed;
 
-  /// 盒子推送的节流时刻：手机状态 15 秒、附近台站 30 秒。
+  /// 盒子推送的节流时刻：手机状态 **5 秒**、附近台站 **15 秒**。
   ///
-  /// 为什么分开节流：状态是"我自己的数字"（变得快、报文短），台站列表一次
-  /// 要发 8 行 —— 蓝牙串口是窄带，不能拿它刷屏（APRSlocus 里"射频是共享
-  /// 资源、串口也不是无限宽"的同一考虑）。
+  /// 为什么分开节流：状态是"我自己的数字"（变得快、报文短 —— 心率/速度要跟上人），
+  /// 台站列表一次要发 8 行。用户反馈过"信息不够实时"，所以这两条都收紧了一档；
+  /// 更省的做法是让**盒子自己把倒计时走完**（固件已经这么做），这里只负责把
+  /// "当下的事实"尽快送过去。
   DateTime? _lastBoxPushApp;
   DateTime? _lastBoxPushNear;
 
@@ -3400,7 +3401,7 @@ class AppState extends ChangeNotifier {
       if (boxOn && box.config.pushStatus && box.connected) {
         final now = DateTime.now();
         if (_lastBoxPushApp == null ||
-            now.difference(_lastBoxPushApp!).inSeconds >= 15) {
+            now.difference(_lastBoxPushApp!).inSeconds >= 5) {
           _lastBoxPushApp = now;
           box.pushApp(
             fix: myHasFix,
@@ -3425,17 +3426,17 @@ class AppState extends ChangeNotifier {
           );
         }
         if (_lastBoxPushNear == null ||
-            now.difference(_lastBoxPushNear!).inSeconds >= 30) {
+            now.difference(_lastBoxPushNear!).inSeconds >= 15) {
           _lastBoxPushNear = now;
           _pushBoxNearby();
         }
       }
-      // 盒子喂位置：每秒看一眼，**30 秒**才真发一次（盒子侧 60 秒内算新鲜）。
+      // 盒子喂位置：每秒看一眼，**15 秒**才真发一次（盒子侧 60 秒内算新鲜）。
       // 开关关着、没定位、没连上时什么都不做（不空转、不 notify）。
       if (boxOn && box.config.feedPos && box.connected && myHasFix) {
         final now = DateTime.now();
         if (_lastBoxFeed == null ||
-            now.difference(_lastBoxFeed!).inSeconds >= 30) {
+            now.difference(_lastBoxFeed!).inSeconds >= 15) {
           _lastBoxFeed = now;
           box.feedPos(
             lat: myLat!,

@@ -169,6 +169,13 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
     }
   }
 
+  /// 盒子的 APRS-IS passcode 是不是 `-1`（= 只收不发）。
+  ///
+  /// 为什么要专门判它：盒子上会显示 `IS RX-only`，而**原因在盒子那一侧**：
+  /// 服务器对 `pass -1` 或错误的 passcode 只给收。用户看不到原因，只会以为
+  /// "盒子收不到数据/坏了"。这里直接把结论和修法写在配置卡片上。
+  bool get _passIsRxOnly => (link.cfg['pass'] ?? '') == '-1';
+
   /// 蓝牙管理只在盒子的 `link` 是 `bt`/`both` 时可用 —— 这是**最容易
   /// 误判成「蓝牙坏了」**的一条，所以单独拎出来提前说清楚。
   bool get _btWontWork {
@@ -491,6 +498,10 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
       color: C.indigo,
       children: [
         SettingsHint(s.boxCfgRebootHint, color: C.orange),
+        // `pass=-1`（默认）→ 盒子连上 APRS-IS 也只会收到 "RX-only"：
+        // 这条不写在明处，用户会以为盒子坏了。
+        if (link.cfg.isNotEmpty && _passIsRxOnly)
+          SettingsHint(s.boxPassHint, color: C.orange),
         if (keys.isEmpty)
           SettingsHint(s.boxCfgEmpty)
         else

@@ -729,6 +729,7 @@
   "boxPushTitle": "Estado del teléfono a la caja",
   "boxPushStatus": "Enviar estado en vivo (pulso / velocidad / cuenta atrás / distancia)",
   "boxPushHint": "La página PHONE de la caja muestra esto; solo se dibuja en la pantalla de la caja, nunca sale al aire. Es distinto de enviar una posición.",
+  "boxPassHint": "El passcode APRS-IS de la caja es -1 (**solo recepción**): para transmitir, cambia `pass` abajo por tu passcode - el del **indicativo base** (sin el -SSID)",
   "boxEvtTitle": "Eventos de la caja",
   "dataSourcePkwdwpl": "PKWDWPL (puntos de ruta Kenwood)",
   "dataSourcePkwdwplDesc": "Lee las sentencias Kenwood $PKWDWPL que emite el equipo por Bluetooth o serie (solo recepción)",

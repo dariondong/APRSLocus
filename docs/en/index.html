@@ -287,6 +287,7 @@
       <p>The protocol also changed to `TEL k=v ...`, which survives new fields: the app can add</p>
       <p>keys without touching the firmware (unknown keys are skipped, empty values are not sent,</p>
       <p>and the box shows `--` instead of a fake 0).</p>
+      <p><b>2.0.14 also fixes two things</b>: `IS rx-only` on the box now states the cause and the fix in the open (home `set pass`, the server own words on the SYS page, and the app event log; set `pass` to the passcode of the <b>base callsign</b>), and countdowns now tick <b>locally every second</b> with status pushed every <b>5 s</b>.</p>
       <p class="announce-quote">Below is the box support introduced in <b>2.0.13</b>; it is still valid.</p>
       <p><b>1. What the box reports back</b></p>
       <p>Once connected, the app shows what the <b>box itself</b> reports:</p>
@@ -603,7 +604,7 @@
         <span class="cl-date">2026-10-01</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot new"></span>**New: an "APRSLOCUS" live dashboard on the box.** Building on the box support from the previous release, the phone live status is now pushed to the box too: heart rate, speed, course, the **auto-report countdown** with a progress bar, mileage (trip / total), battery, steps, GPS accuracy, APRS-IS state and unread messages - visible at a glance on the bar-mounted box while the phone stays in the bag. Heart rate takes the lead when available, otherwise speed does; nearby stations moved to their own **NEARBY** page (8 rows). The protocol now uses `TEL k=v ...`, so the app can add fields without touching the firmware (unknown keys are skipped, empty values are not sent, and the box shows `--`, never a fake 0).</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**New: an "APRSLOCUS" live dashboard on the box.** Building on the box support from the previous release, the phone live status is now pushed to the box too: heart rate, speed, course, the **auto-report countdown** with a progress bar, mileage (trip / total), battery, steps, GPS accuracy, APRS-IS state and unread messages - visible at a glance on the bar-mounted box while the phone stays in the bag. Heart rate takes the lead when available, otherwise speed does; nearby stations moved to their own **NEARBY** page (8 rows). The protocol now uses `TEL k=v ...`, so the app can add fields without touching the firmware (unknown keys are skipped, empty values are not sent, and the box shows `--`, never a fake 0). Also: `IS rx-only` now explains itself in three places (home `set pass`, the server own words on the SYS page, and the app event log) with the fix (use the passcode of the base callsign), and countdowns now tick locally on the box with status pushed every 5 s.</div>
       </div>
     </div>
     <div class="cl-version reveal">

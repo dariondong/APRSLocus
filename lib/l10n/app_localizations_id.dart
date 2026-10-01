@@ -1662,6 +1662,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get boxPassHint => 'Passcode APRS-IS kotak adalah -1 (**hanya terima**): untuk memancar, ubah `pass` di bawah ke passcode Anda - passcode untuk **callsign dasar** (tanpa -SSID)';
+
+  @override
   String get boxDeviceTitle => 'APRSlocusBOX';
 
   @override

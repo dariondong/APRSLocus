@@ -730,6 +730,7 @@
   "boxPushTitle": "スマホの状態を箱へ",
   "boxPushStatus": "リアルタイム状態を送る（心拍 / 速度 / カウントダウン / 距離 / 近くの局）",
   "boxPushHint": "箱の PHONE ページに表示します。箱の画面に描くだけで電波は出しません。位置の供給とは別物です。",
+  "boxPassHint": "箱の APRS-IS passcode が -1（**受信のみ**）です：送信するには下の `pass` を自分の passcode に変えてください（**SSID 無しの基本コールサイン**のものです）",
   "boxEvtTitle": "箱のイベント",
   "dataSourcePkwdwpl": "PKWDWPL（ケンウッド航点）",
   "dataSourcePkwdwplDesc": "Bluetooth/シリアルで無線機が出力する Kenwood $PKWDWPL 航点文を読み取ります（受信のみ）",

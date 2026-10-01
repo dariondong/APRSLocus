@@ -2804,6 +2804,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @boxPassHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子的 APRS-IS passcode 是 -1（**只收不发**）：要发射就在下面把 `pass` 改成你的 passcode —— 注意要**基础呼号**（不含 -SSID）的那个'**
+  String get boxPassHint;
   /// No description provided for @boxDeviceTitle.
   ///
   /// In zh, this message translates to:

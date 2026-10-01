@@ -293,6 +293,23 @@ DATA = {
               'pantalla de la caja, nunca sale al aire. Es distinto de enviar '
               'una posición.',
     },
+    'boxPassHint': {
+        'zh': '盒子的 APRS-IS passcode 是 -1（**只收不发**）：要发射就在下面把 `pass` '
+              '改成你的 passcode —— 注意要**基础呼号**（不含 -SSID）的那个',
+        'zh_TW': '盒子的 APRS-IS passcode 是 -1（**只收不發**）：要發射就在下面把 `pass` '
+                 '改成你的 passcode —— 注意要**基礎呼號**（不含 -SSID）的那個',
+        'en': 'The box APRS-IS passcode is -1 (**receive-only**): to transmit, change '
+              '`pass` below to your passcode - note it is the one for the **base '
+              'callsign** (without the -SSID)',
+        'ja': '箱の APRS-IS passcode が -1（**受信のみ**）です：送信するには下の `pass` を'
+              '自分の passcode に変えてください（**SSID 無しの基本コールサイン**のものです）',
+        'id': 'Passcode APRS-IS kotak adalah -1 (**hanya terima**): untuk memancar, ubah '
+              '`pass` di bawah ke passcode Anda - passcode untuk **callsign dasar** '
+              '(tanpa -SSID)',
+        'es': 'El passcode APRS-IS de la caja es -1 (**solo recepción**): para transmitir, '
+              'cambia `pass` abajo por tu passcode - el del **indicativo base** '
+              '(sin el -SSID)',
+    },
     'boxEvtTitle': {
         'zh': '盒子事件', 'zh_TW': '盒子事件', 'en': 'Box events',
         'ja': '箱のイベント', 'id': 'Peristiwa kotak',
