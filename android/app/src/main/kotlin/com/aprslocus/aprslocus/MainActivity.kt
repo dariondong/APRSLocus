@@ -522,6 +522,11 @@ class MainActivity : FlutterActivity() {
                 }
             )
 
+        // IC-705 Wi-Fi 局域网通道：Android 平台网络选择器（无外网 AP 路由与 IP 探测）
+        val ic705Network = Ic705NetworkManager(applicationContext)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, Ic705NetworkManager.CHANNEL_NAME)
+            .setMethodCallHandler(ic705Network)
+
         // 安装器通道：安装 APK 更新包
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.aprslocus/installer").setMethodCallHandler { call, result ->
             when (call.method) {
