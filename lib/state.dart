@@ -113,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.15';
+  static const appVersion = '2.0.16';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1905,6 +1905,13 @@ class AppState extends ChangeNotifier {
   /// 下一次**廉价检查**的时刻（真正的拉取在 [recheckBlacklist] 里按 6 小时节流）
   DateTime? _blacklistNext;
 
+  /// 本会话是否已经**成功**拉到过名单。
+  ///
+  /// 为什么需要它：名单是"远程开关"，紧急封禁不该等 6 小时。所以**每次启动（新会话）
+  /// 都拉一次**，6 小时节流只用来挡同一会话内的重复检查（挡的是轮询，不是启动）。
+  /// 只在**成功**时置位：失败（离线）就留给下一次检查再试，不要一整会话都不再拉。
+  bool _blacklistFetched = false;
+
   /// 查一次远程限制名单。
   ///
   /// 时机：启动后一次 + 每 [Blacklist.kRefresh]（6 小时）一次；`force` 供"重新检查"
@@ -1918,12 +1925,18 @@ class AppState extends ChangeNotifier {
       final id = await Blacklist.deviceId();
       var bl = cached;
       final last = await Blacklist.lastChecked();
+      // 新会话第一次必拉（改完名单，重开应用就生效）；同一会话内才按 6 小时节流。
       final due = force ||
+          !_blacklistFetched ||
           last == null ||
           DateTime.now().difference(last) > Blacklist.kRefresh;
       if (due) {
         final fresh = await Blacklist.fetch();
-        if (fresh != null) bl = fresh;             // 拉取失败 → 沿用缓存（有就认）
+        if (fresh != null) {
+          bl = fresh;                              // 拉到了就用新的
+          _blacklistFetched = true;
+        }
+        // 拉取失败 → 沿用缓存（有就认）；不置位，留给下次检查再试
       }
       final hit = bl?.match(myFullCall, id);
       final changed = (hit == null) != (blacklistHit == null) ||

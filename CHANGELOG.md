@@ -1,5 +1,23 @@
 # 更新日志
 
+## [2.0.16] - 2026-10-02
+
+### 修复
+
+- **远程限制名单：改完名单，重开应用就生效**。原来只在"距上次成功拉取超过 6 小时"时才拉，
+  于是新加的条目最多要等 6 小时才落地 —— 对一个远程开关来说太久。现在**每次启动
+  （新会话）都拉一次**，6 小时节流只用来挡同一会话内的重复检查。
+
+## [2.0.16] - 2026-10-02 (English)
+
+### Fix
+
+- **Remote restriction list: a changed list now applies when you restart the app.** It used to
+  fetch only when more than 6 hours had passed since the last success, so a new entry could
+  take up to 6 hours to take effect - too slow for a remote switch. The list is now fetched on
+  **every launch** (each new session); the 6-hour throttle only limits repeat checks within one
+  session.
+
 ## [2.0.15] - 2026-10-01
 
 ### 📄 用户协议更新到 V1.1（含赞赏声明）+ 新增限制名单 + 三处修复

@@ -205,6 +205,16 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.16', 'date': '2026-10-02',
+        'items': [
+            ('fix',
+             T('**远程限制名单：改完名单，重开应用就生效**（原来要等最长 6 小时才落地）。',
+               '**遠端限制名單：改完名單，重開應用程式就生效**（原本要等最長 6 小時才生效）。',
+               '**Remote restriction list: a changed list now applies when you restart the app** '
+               '(it used to take up to 6 hours to take effect).')),
+        ],
+    },
+    {
         'ver': 'v2.0.15', 'date': '2026-10-01',
         'items': [
             ('up',
