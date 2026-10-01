@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'terms_version.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
@@ -467,7 +468,7 @@ class _OobePageState extends State<OobePage> {
                 _agreeLink(
                   Icons.assignment_rounded,
                   S.of(context).userAgreement,
-                  'V1.0',
+                  kTermsVersion,
                   () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const TermsPage()),

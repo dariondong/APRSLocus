@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'terms_version.dart';
 
 import 'package:flutter/foundation.dart'
     show kIsWeb, defaultTargetPlatform, TargetPlatform;
@@ -1216,7 +1217,7 @@ class _AboutPageState extends State<AboutPage>
             Text(S.of(context).userAgreement, style: ts(12, c: C.slate)),
             Spacer(),
             Text(
-              'V1.0',
+              kTermsVersion,
               style: ts(12, c: C.blue, w: FontWeight.w600),
             ),
             SizedBox(width: 2),

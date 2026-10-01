@@ -77,6 +77,12 @@ jobs:
       - name: Check l10n sync
         run: python3 tool/check_l10n_sync.py
 
+      # 用户协议正文有**两份手工副本**（App 打包一份、官网在线一份），必须逐字节一致；
+      # 而且三语条款号必须一致 —— 只加在中文里，用户切一次语言就是两份不同的协议。
+      # 这两条都"不报错但错"，所以钉在这里。
+      - name: Check terms
+        run: python3 tool/check_terms.py
+
       # 打点质量层的**接线**检查：算法写好了但忘了在某条路径上调用，
       # 编译与 analyze 都不会报错 —— 功能只是悄悄不生效。
       - name: Check position quality wiring
