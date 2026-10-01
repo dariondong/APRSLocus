@@ -137,6 +137,13 @@ jobs:
       - name: Check release notes extraction
         run: python3 tool/check_release_notes.py
 
+      # 安卓分架构打包的接线：`--split-per-abi` + 三个包的命名 + 「64 位沿用原名」
+      # 这条不变量（应用内更新取资产列表里第一个 `.apk`，而 GitHub 按名字升序返回）。
+      # 破坏它不会有任何东西失败 —— CI 全绿、Release 正常，只有「应用内更新」
+      # 默默下到 32 位包（装不上）。所以把这条不变量在这里算一遍并钉住。
+      - name: Check release assets (split per ABI)
+        run: python3 tool/check_release_assets.py
+
       # iOS 打包：真跑一遍 tool/make_ipa.py（造一个忠实的最小 Runner.app），断言封出来的
       # .ipa 结构对（Payload 顶层 / Info.plist / 执行位 / 符号链接），并断言
       # build-release.yml 里 .ipa 真的挂进了 Release。
