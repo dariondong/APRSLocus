@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'icom_lan_base.dart';
 import 'icom_lan_protocol.dart' show IcomLanAudioCodec;
+import 'icom_lan_rx_session.dart';
 import 'icom_lan_rx_session_engine.dart' show IcomLanPhase;
-import 'icom_lan_session.dart' as session_impl;
 import 'icom_lan_settings.dart';
 
 /// IC-705 局域网链路的真实实现（`dart:io` 平台）。
@@ -18,7 +18,7 @@ class IcomLanLinkIo implements IcomLanLink {
   @override
   final IcomLanConfig config;
 
-  session_impl.IcomLanSession? _session;
+  IcomLanRxSession? _session;
   final List<String> _log = [];
   String _phaseLabel = '未连接';
   Completer<void>? _ready;
@@ -83,9 +83,9 @@ class IcomLanLinkIo implements IcomLanLink {
     if (_session != null) return null;
 
     _ready = Completer<void>();
-    final session = session_impl.IcomLanSession(
+    final session = IcomLanRxSession(
       config: config,
-      callbacks: session_impl.IcomLanCallbacks(
+      callbacks: IcomLanCallbacks(
         onLog: _addLog,
         onPcm: (pcm) => onPcm?.call(pcm),
         onAudioDiscontinuity: (reason) => _addLog('音频断点：$reason'),
@@ -184,7 +184,14 @@ class IcomLanLinkIo implements IcomLanLink {
     final session = _session;
     _session = null;
     if (session != null) {
-      await session.close();
+      final completer = Completer<void>();
+      session.close(() {
+        if (!completer.isCompleted) completer.complete();
+      });
+      await completer.future.timeout(
+        const Duration(milliseconds: 500),
+        onTimeout: () {},
+      );
     }
     _phaseLabel = '未连接';
     _playing = false;

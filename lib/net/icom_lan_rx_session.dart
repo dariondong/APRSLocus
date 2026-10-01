@@ -128,6 +128,7 @@ class IcomLanRxSession implements IcomLanRadioSession {
   DateTime? _lastTxFinishedAt;
   int _lastTxCompletedMonotonicMillis = 0;
   Completer<void>? _socketsOpenCompleter;
+  bool _txCancelled = false;
 
   int _nextTxOuterSequence = 1;
   int _nextTxAudioSequence = 1;
@@ -819,6 +820,7 @@ class IcomLanRxSession implements IcomLanRadioSession {
       return '上一次发射尚未冷却';
     }
 
+    _txCancelled = false;
     final now = _monotonicMillis();
     final cooldownRemaining = 50 - (now - _lastTxCompletedMonotonicMillis);
     if (cooldownRemaining > 0) {
@@ -849,7 +851,7 @@ class IcomLanRxSession implements IcomLanRadioSession {
       final stopwatch = Stopwatch()..start();
       var index = 0;
       for (final datagram in datagrams) {
-        if (!_pttStateMachine.canStreamAudio) break;
+        if (!_pttStateMachine.canStreamAudio || _txCancelled) break;
         final targetMillis = index *
                 (IcomLanAudioCodec.samplesPerPacket * 1000 ~/ sampleRate) -
             60;
@@ -867,6 +869,12 @@ class IcomLanRxSession implements IcomLanRadioSession {
       _lastTxCompletedMonotonicMillis = _monotonicMillis();
     }
     return null;
+  }
+
+  /// 取消当前正在进行的发射。
+  void cancelTransmit() {
+    _txCancelled = true;
+    _pttStateMachine.forceRelease('发射已被取消');
   }
 
   /// 兼容旧版 play(pcm) 方法。
