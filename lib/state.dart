@@ -3110,8 +3110,13 @@ class AppState extends ChangeNotifier {
       await audio.load();
       await pkwdwpl.load();
       await box.load();
-      // 远程限制名单：启动就查一次（放在配置载入之后 —— 要用到 myFullCall）
-      await recheckBlacklist();
+      // 远程限制名单：启动就查一次（放在配置载入之后 —— 要用到 myFullCall）。
+      // ⚠ 用 timeout 把"等它"限制在 400ms：只有 prefs 读 + 缓存比对这么快。
+      // 联网那份**不会**被取消（超时只是不再等它），会在后台跑完并自己通知 ——
+      // 于是野外弱网/断网时启动画面不会被一次最长 8 秒的连接拖住，而"命中后
+      // 离线也拦"的语义也不受影响。
+      await recheckBlacklist()
+          .timeout(const Duration(milliseconds: 400), onTimeout: () {});
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
       if (savedLat != null && savedLng != null) {
