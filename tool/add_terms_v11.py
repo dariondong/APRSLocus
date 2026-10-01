@@ -29,24 +29,32 @@ TARGETS = ['terms_zh.txt', 'terms_zh_TW.txt', 'terms_en.txt']
 # ── 三语的新增内容 ──
 NEW_34 = {
     'terms_zh.txt': """
+
 3.5 开启「网关（iGate）」或使用射频链路转发报文，意味着您将代表他人在业余频段上发射。您应自行确保所用呼号、频率、功率与工作方式合法合规，并对转发的内容负责。未取得相应操作资格时，请勿开启射频转发功能。
 
 3.6 本软件面向具备相应民事行为能力的使用者。未成年人（未满 18 周岁，或所在国家/地区规定的成年年龄）应在监护人同意并指导下使用本软件；因未成年人使用本软件所产生的一切后果，由监护人承担。未成年人尤其不得在未取得相应资格的情况下进行射频发射。
+
+3.7 APRS 是公开、跨国的网络：您通过 APRS 发送的内容（位置、消息、备注、状态）应当真实、准确、合法，并尊重不同国家和地区的法律、宗教与文化习俗。请勿发送不实信息、违法内容，或可能被视为骚扰、冒犯的内容；您对以自己呼号发出的全部内容负责。
 """,
     'terms_zh_TW.txt': """
 3.5 開啟「閘道（iGate）」或使用射頻鏈路轉發報文，意味著您將代表他人在業餘頻段上發射。您應自行確保所用呼號、頻率、功率與工作方式合法合規，並對轉發的內容負責。未取得相應操作資格時，請勿開啟射頻轉發功能。
 
 3.6 本軟體面向具備相應民事行為能力的使用者。未成年人（未滿 18 歲，或所在國家/地區規定的成年年齡）應在監護人同意並指導下使用本軟體；因未成年人使用本軟體所產生的一切後果，由監護人承擔。未成年人尤其不得在未取得相應資格的情況下進行射頻發射。
+
+3.7 APRS 是公開、跨國的網絡：您透過 APRS 傳送的內容（位置、訊息、備註、狀態）應當真實、準確、合法，並尊重不同國家和地區的法律、宗教與文化習俗。請勿傳送不實資訊、違法內容，或可能被視為騷擾、冒犯的內容；您對以自己呼號發出的全部內容負責。
 """,
     'terms_en.txt': """
 3.5 Enabling the "Gateway (iGate)" feature or forwarding packets over a radio link means that you will transmit on amateur bands on behalf of others. You are responsible for ensuring that your callsign, frequency, power, and mode of operation are lawful and compliant, and for the content you forward. Do not enable RF forwarding if you do not hold the required operator privileges.
 
 3.6 This software is intended for users with the corresponding legal capacity. Minors (under 18, or the age of majority in your jurisdiction) should use this software with the consent and guidance of a guardian, and the guardian bears all consequences of the minor's use. In particular, minors must not transmit on radio frequencies without the required qualifications.
+
+3.7 APRS is a public, international network: the content you send over APRS (position, messages, comments, status) should be truthful, accurate, and lawful, and should respect the laws, religions, and cultural customs of different countries and regions. Do not send false information, unlawful content, or content that could reasonably be seen as harassment or offensive; you are responsible for all content transmitted under your callsign.
 """,
 }
 
 NEW_52 = {
     'terms_zh.txt': """
+
 5.3 除 APRS-IS 与地图服务外，本软件在您使用相应功能时还会与其它第三方通信：查询天气时会发送位置（和风天气）、翻译消息时会发送待翻译文本（Google 翻译或您自行配置的接口）、检查更新时会向 GitHub 请求版本信息、添加佳明 LiveTrack 分享链接时会访问该链接、以及在地图上加载第三方瓦片（高德、百度、腾讯、OpenStreetMap、CARTO、Esri 等）。这些通信仅在您主动使用该功能时发生，不使用即不发生；各服务商对数据的处理受其各自的条款与隐私政策约束。
 """,
     'terms_zh_TW.txt': """
@@ -59,6 +67,7 @@ NEW_52 = {
 
 NEW_75 = {
     'terms_zh.txt': """
+
 7.6 「生命守护」「碰撞/摔倒检测」「心率告警」等功能仅是基于手机传感器与定位的辅助提醒，不是医疗设备，也不是紧急救援服务；它们可能漏报、误报或延迟，并且依赖设备状态与网络。请勿依赖上述功能保障人身安全；遇到紧急情况，请直接拨打当地急救电话。
 
 7.7 使用天气、翻译、地图、应用更新、佳明 LiveTrack 等功能时，相关数据（如位置、待翻译文本、设备与版本信息）会发送给您所选择的第三方软件服务商。我们无法控制其对数据的处理、存储、留存与再分发，不对第三方对您数据的处理行为及由此产生的任何后果承担责任；该等传输受各服务商自身的条款与隐私政策约束。您可以在不使用这些功能的情况下使用本软件的核心 APRS 功能。
@@ -103,13 +112,18 @@ VER = {
 def patch(path, name):
     s = io.open(path, encoding='utf-8', newline='').read()
     nl = '\r\n' if '\r\n' in s else '\n'      # ⚠ 这些文本是 CRLF（别用 \n 去找）
-    if '5.3 ' in s and '7.7 ' in s:
+    if '3.7 ' in s and '5.3 ' in s and '7.7 ' in s:
         print('%-26s 已经是 V1.1（跳过）' % name)
         return
     n0 = len(s)
 
     def add(text):
-        return text.replace('\n', nl)
+        # 插入点落在"段末 + 空行 + ---"的**第一个换行**上，所以这里必须自己补一个
+        # 空行 —— 否则新条款会和上一条贴成一段（用户报过「7.5 和 7.6 贴在一起了」）。
+        # 放在逻辑里而不是逐个字符串前面加，是因为三个语言的块各有自己的前文，
+        # 用字符串锚点去补的写法只对第一个键生效（另外两个静默跳过 —— 踩过）。
+        t = text.replace('\n', nl)
+        return t if t.startswith(nl + nl) else nl + t
 
     # ① 版本 / 日期
     a, b, c, d = VER[name]
@@ -137,8 +151,12 @@ def patch(path, name):
     s = s[:idx] + add(NEW_75[name]) + s[idx:]
 
     # ⑥ §10 联系方式
-    tail = add(NEW_10[name])
+    # ⚠ 这里是**替换**不是插入：不能走 add()（那会给它加一个前导换行，
+    #   于是 `split(nl)[0]` 变成空串，`replace('', …)` 会把整段塞到文件开头 ——
+    #   重放测试当场抓出来的）。
+    tail = NEW_10[name].replace('\n', nl)
     first = tail.split(nl)[0]
+    assert first.strip(), '§10 的锚点不能是空串'
     assert first in s, '%s 找不到 §10 的 GitHub 行' % name
     s = s.replace(first, tail, 1)
 

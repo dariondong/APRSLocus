@@ -54,9 +54,12 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 · Sending data at beacon rates higher than reasonable, thereby interfering with normal APRS-IS operations;
 · Injecting non-amateur-radio content into APRS-IS or impersonating others;
 · Reverse engineering, decompiling, disassembling, or otherwise infringing the intellectual property rights of this software.
+
 3.5 Enabling the "Gateway (iGate)" feature or forwarding packets over a radio link means that you will transmit on amateur bands on behalf of others. You are responsible for ensuring that your callsign, frequency, power, and mode of operation are lawful and compliant, and for the content you forward. Do not enable RF forwarding if you do not hold the required operator privileges.
 
 3.6 This software is intended for users with the corresponding legal capacity. Minors (under 18, or the age of majority in your jurisdiction) should use this software with the consent and guidance of a guardian, and the guardian bears all consequences of the minor's use. In particular, minors must not transmit on radio frequencies without the required qualifications.
+
+3.7 APRS is a public, international network: the content you send over APRS (position, messages, comments, status) should be truthful, accurate, and lawful, and should respect the laws, religions, and cultural customs of different countries and regions. Do not send false information, unlawful content, or content that could reasonably be seen as harassment or offensive; you are responsible for all content transmitted under your callsign.
 
 
 ---
@@ -90,6 +93,7 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 5.1 This software may connect to third-party APRS-IS servers (e.g., rotate.aprs2.net, noam.aprs2.net, etc.) and third-party map services (e.g., Amap, etc.). These services are independently provided by third parties, and we assume no responsibility for their availability, accuracy, or security.
 
 5.2 When using third-party services, you shall comply with their respective terms of use and privacy policies.
+
 5.3 In addition to APRS-IS and map services, this software communicates with other third parties when you use the corresponding features: it sends a location when fetching weather (QWeather), the text to be translated when translating messages (Google Translate or an endpoint you configure yourself), a version request to GitHub when checking for updates, accesses the link you add for Garmin LiveTrack, and loads third-party map tiles (Amap, Baidu, Tencent, OpenStreetMap, CARTO, Esri, etc.). Such communication only happens when you actively use that feature, and not otherwise. Each provider processes data under its own terms and privacy policy.
 
 
@@ -116,6 +120,7 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 7.4 The APRS-IS is a public network. Data you send through this software may be received, stored, and used by third parties. You are responsible for judging the appropriateness of the information you publish and for bearing the corresponding consequences.
 
 7.5 In no event shall the development team's total liability to you exceed the amount you paid for this software (if any). Since this software is provided free of charge, the liability cap is zero.
+
 7.6 Features such as "Life Guard", "crash/fall detection", and "heart-rate alarms" are auxiliary reminders based on phone sensors and location only. They are not medical devices and not an emergency service, and they may miss events, raise false alarms, or be delayed; they also depend on device state and network availability. Do not rely on them to protect personal safety. In an emergency, call your local emergency number directly.
 
 7.7 When you use features such as weather, translation, maps, app updates, or Garmin LiveTrack, the relevant data (for example your location, the text to be translated, device and version information) is sent to the third-party software service you choose. We cannot control how those providers process, store, retain, or redistribute it, and we assume no liability for their handling of your data or for any consequences arising from it. Those transfers are governed by the providers' own terms and privacy policies. You may use the core APRS features of this software without using any of these features.
