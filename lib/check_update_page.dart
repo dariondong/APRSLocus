@@ -7,8 +7,8 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'device_abi.dart';
 import 'theme.dart';
 import 'update_download.dart';
 import 'update_packages.dart';
@@ -45,13 +45,13 @@ class _ReleaseInfo {
       }
       return null;
     }
-    // 安卓（及其它非 Windows 平台）：取列表里**第一个** `.apk`。
+    // 安卓（及其它非 Windows 平台）：**按本机 CPU 架构挑对应的包**。
     //
-    // ⚠ 这是用户明确要求「不要动」的那条逻辑：平台按名字升序返回资产，
-    //   而命名约定（发版流水线 + tool/check_release_assets.py）保证那个位置
-    //   就是 64 位包。不要在这里加排序或 ABI 判断 —— 要改先看
-    //   lib/update_packages.dart 的说明。
-    return pickUpdateAsset(assets);
+    // 架构不对的包装不上（Android 报 ABI 不匹配），而「该下哪个」这件事
+    // 不该让用户判断 —— 32 位老机型自动拿到 32 位包，模拟器自动拿到 x86_64。
+    // 认不出架构时回退到「列表里第一个 .apk」（分架构之前的行为）。
+    // 规则本体与守卫都在 lib/update_packages.dart。
+    return pickUpdateAssetFor(assets, deviceAbi());
   }
   String assetNameFor(bool isWindows) {
     final a = assetFor(isWindows);
@@ -84,17 +84,6 @@ class _ReleaseInfo {
     final s = a['size'];
     return s is num ? s.toInt() : 0;
   }
-
-  /// 该版本里**全部 APK**（安卓按 ABI 分三个包发布：64 位不带后缀、另两个带 ABI 后缀）。
-  ///
-  /// 顺序按文件名升序 —— 与 Release 页上 GitHub 的排序一致，于是
-  /// `APRSLocus_x.y.z.apk`（64 位）天然排第一，**正是应用内更新选中的那个包**
-  /// （见 lib/update_packages.dart，那条不变量由 tool/check_release_assets.py 盯着）。
-  List<Map<String, dynamic>> apkAssets() => apkAssetsOf(assets);
-
-  /// 从文件名读架构标签（无后缀 ⇒ 64 位）；规则见 lib/update_packages.dart。
-  static String abiOf(Map<String, dynamic> a) =>
-      abiLabelOfAssetName((a['name'] ?? '').toString());
 }
 
 /// 更新日志正文：**默认折叠**（issue #20：「有时候日志很长的，就很难看」）。
@@ -1219,10 +1208,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 ],
               ),
               SizedBox(height: 16),
-              // 该版本有多个 APK（安卓按 ABI 分了三个）时，把包列清楚 ——
-              // 应用内更新只会下 64 位那个，别的架构得给个入口（见 _packagePicker）。
-              if (_hasMultiPackages(release)) ...[
-                _packagePicker(release),
+              // 这次会下哪个包：如实写出来（文件名 · 架构），用户不需要做选择。
+              if (_hasPackage(release, isWin)) ...[
+                _packageLine(release, isWin),
                 SizedBox(height: 16),
               ],
               Row(
@@ -1369,9 +1357,9 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
                 ],
               ),
             ],
-            if (_hasMultiPackages(release)) ...[
+            if (_hasPackage(release, isWin)) ...[
               SizedBox(height: 16),
-              _packagePicker(release),
+              _packageLine(release, isWin),
             ],
             if (release.body.trim().isNotEmpty) ...[
               SizedBox(height: 14),
@@ -1500,126 +1488,33 @@ class _CheckUpdatePageState extends State<CheckUpdatePage>
     );
   }
 
-  /// 「选择安装包」：安卓按 ABI 分三个包发布后，Release 里有三个 APK。
+  /// 该版本有没有本平台的安装包（没有就不占位）。
+  bool _hasPackage(_ReleaseInfo r, bool isWin) => r.assetFor(isWin) != null;
+
+  /// 「这次会下哪个包」—— 文件名 + 架构 + 大小。
   ///
-  /// ── 为什么需要它（这才是「合理」的那一半）──
-  /// 应用内更新只会下 **64 位**那个包（命名约定见 tool/check_release_assets.py：
-  /// 64 位沿用原来的文件名，好让更新逻辑不用改）。而 **32 位老机型**与
-  /// **模拟器 / Chromebook** 用户在那条路上会直接装不上，页面上却只有一句
-  /// 「APK 安装包 <大小>」—— 他们既看不出还有别的包，也没有入口去拿。
-  ///
-  /// 这里只做「列清楚 + 打开该包的下载地址」：**不在应用内下第二个包** ——
-  /// 后台下载是一套「一次一个任务」的单例状态机（含通知栏进度、`.part` 原子改名），
-  /// 为这一屏加多任务下载会把那套逻辑复杂化，而收益只是少一次浏览器跳转。
-  Widget _packagePicker(_ReleaseInfo release) {
-    final apks = release.apkAssets();
-    assert(apks.length > 1, '只有 ≥2 个包时才显示安装包选择区（调用方已判断）');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  /// 分架构发布之后，用户唯一需要知道的就是这一句：**我会拿到哪一个**。
+  /// 挑包由 [pickUpdateAssetFor] 按本机架构自动完成（32 位老机型自动拿到 32 位包），
+  /// 这里只把结果如实写出来 —— **不摆一排让用户选**：绝大多数人只知道「我要更新」，
+  /// 让他们去理解 `armeabi-v7a` 是什么，等于把应用该做的事推给用户。
+  Widget _packageLine(_ReleaseInfo release, bool isWin) {
+    final a = release.assetFor(isWin);
+    if (a == null) return const SizedBox.shrink();
+    final name = (a['name'] ?? '').toString();
+    final abi = isWin ? '' : ' · ${abiLabelOfAssetName(name)}';
+    return Row(
       children: [
-        Row(
-          children: [
-            Icon(Icons.inventory_2_outlined, size: 14, color: C.greyLight),
-            SizedBox(width: 4),
-            Text(
-              S.of(context).choosePackage,
-              style: ts(12, c: C.grey, w: FontWeight.w700),
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        Material(
-          color: C.greyBg,
-          borderRadius: BorderRadius.circular(12),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              for (var i = 0; i < apks.length; i++) ...[
-                if (i > 0)
-                  Divider(height: 1, thickness: 1, color: C.border),
-                // 第一个就是 64 位那个（列表按文件名升序，见 apkAssets 的注释）。
-                _packageRow(apks[i], recommended: i == 0),
-              ],
-            ],
+        Icon(Icons.inventory_2_outlined, size: 13, color: C.greyLight),
+        SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            '$name$abi',
+            style: ts(10.5, c: C.greyLight),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        SizedBox(height: 6),
-        Text(
-          S.of(context).choosePackageHint,
-          style: ts(10.5, c: C.greyLight, h: 1.45),
-        ),
       ],
-    );
-  }
-
-  /// 该版本是否有**多个** APK（安卓分架构发布）：有才显示「选择安装包」。
-  ///
-  /// 单包的旧版本、以及 Windows（只有 .exe，没有 .apk）都返回 false ——
-  /// 那种情况下再多一块说明只会让页面更啰嗦。
-  bool _hasMultiPackages(_ReleaseInfo r) => r.apkAssets().length > 1;
-
-  /// 安装包一行：文件名 + 架构 + 大小，点一行打开该包的下载地址。
-  Widget _packageRow(Map<String, dynamic> a, {required bool recommended}) {
-    final name = (a['name'] ?? '').toString();
-    final url = _ReleaseInfo.urlOf(a);
-    return InkWell(
-      onTap: url == null
-          ? null
-          : () => launchUrl(
-                Uri.parse(url),
-                mode: LaunchMode.externalApplication,
-              ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          name,
-                          style: ts(11.5, w: FontWeight.w700),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (recommended) ...[
-                        SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: C.greenBg,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            S.of(context).pkgRecommended,
-                            style: ts(9, c: C.green, w: FontWeight.w800),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    // 架构是技术名（不翻译）：arm64-v8a / armeabi-v7a / x86_64
-                    '${_ReleaseInfo.abiOf(a)} · ${_fmtSize(_ReleaseInfo.sizeOf(a))}',
-                    style: ts(10, c: C.grey),
-                  ),
-                ],
-              ),
-            ),
-            if (url != null)
-              Icon(Icons.open_in_new_rounded, size: 15, color: C.blue),
-          ],
-        ),
-      ),
     );
   }
 

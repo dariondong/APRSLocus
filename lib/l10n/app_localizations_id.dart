@@ -7629,13 +7629,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get crashNotif => 'Pelindung nyawa: kemungkinan benturan';
 
-  @override
-  String get choosePackage => "Pilih paket";
 
-  @override
-  String get pkgRecommended => "Disarankan";
 
-  @override
-  String get choosePackageHint => "Paket 64-bit untuk hampir semua ponsel (inilah yang diunduh pembaruan dalam aplikasi); _armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. Ketuk satu baris untuk membuka tautan unduhan paket itu.";
 
 }

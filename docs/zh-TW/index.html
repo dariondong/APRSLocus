@@ -294,9 +294,10 @@
       <p><b>二、現在 Release 裡有三個包</b></p>
       <p>每個都約 <b>30 MB</b>：</p>
       <ul class="announce-list"><li><b>`APRSLocus_2.0.11.apk`</b> —— <b>64 位元</b>，用於<b>絕大多數手機</b>（2015 年以後的機型）。<b>應用程式內更新下載的就是它</b>，升級方式沒變。</li><li><b>`APRSLocus_2.0.11_armeabi-v7a.apk`</b> —— <b>32 位元</b>，用於較舊的機型。<b>只有只支援 32 位元的手機才需要它</b>（這類手機裝 64 位元包會提示「與裝置不相容」）。</li><li><b>`APRSLocus_2.0.11_x86_64.apk`</b> —— 只用於<b>模擬器 / Chromebook</b>，真機一般用不到。</li></ul>
-      <p class="announce-quote">不確定就下第一個。裝上之後功能完全一樣 —— 三個包是同一份程式碼，只是按 CPU 各編譯了一遍。</p>
-      <p><b>三、更新頁現在會列出這些包</b></p>
-      <p>安卓上，若該版本有多個包，「檢查更新」頁會多出一塊<b>選擇安裝包</b>：一列一個包，寫明<b>檔案名稱 · 架構 · 大小</b>，第一個標著「建議」（就是應用程式內更新會下、也最可能適合你的那個）。<b>點一列會在瀏覽器裡開啟該包的下載網址</b> —— 方便舊機器使用者直接取 32 位元那個。</p>
+      <p class="announce-quote">不用自己挑：應用程式內「檢查更新」會按你這台手機的 CPU 自動選對應的那個。三個包是同一份程式碼，只是按 CPU 各編譯了一遍。</p>
+      <p><b>三、更新頁會替你挑好，並直接在應用程式內下載</b></p>
+      <p>安卓上「檢查更新」頁會<b>按你手機的 CPU 自動挑好對應的包</b>，<b>直接在應用程式內下載</b>（不跳瀏覽器），並寫明這次下的是哪個包（檔案名稱 · 架構 · 大小）。32 位元的舊機器會自動拿到 32 位元包 —— 不會再出現「下載完卻提示與裝置不相容」。</p>
+      <p>需要別的架構（例如給模擬器）可以到 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a> 頁面自己取。</p>
       <p>順帶修掉一處顯示問題：以前下載時頁面上會<b>同時出現兩條進度列</b>（看著像兩個任務），現在只有一條。</p>
       <p><b>這次改動不影響功能與設定</b> —— 你原有的連線、信標與主題都不會變。升級後如果發現哪裡不對，歡迎發到 <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a>。</p>
       <p><b>73！</b></p>
@@ -571,6 +572,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.12</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：更新頁不再讓你自己選包，也不再跳瀏覽器**。上一版把三個包的名單擺出來、點一列去瀏覽器下載 —— 這是錯的：絕大多數人只知道「我要更新」，讓他去理解`armeabi-v7a` 是什麼、該選哪一個，等於把應用該做的事推給使用者。現在更新頁**按本機 CPU 自動挑好對應的包**（`Abi.current()`，無需原生通道）並**直接在應用程式內下載**：32 位元舊機型自動拿到 32 位元包、模擬器拿到 x86_64，不會再出現「下載完提示與裝置不相容」；認不出架構時回退到分架構之前的行為，所以也不會變成「挑不到包」。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.11</span>

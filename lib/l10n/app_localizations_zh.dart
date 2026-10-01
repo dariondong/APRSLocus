@@ -7318,14 +7318,8 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get crashNotif => '生命守护：检测到疑似碰撞';
 
-  @override
-  String get choosePackage => "选择安装包";
 
-  @override
-  String get pkgRecommended => "推荐";
 
-  @override
-  String get choosePackageHint => "64 位包用于绝大多数手机（应用内更新下的是这个）；带 _armeabi-v7a 的是 32 位老机型；_x86_64 只用于模拟器 / Chromebook。点一行会打开该包的下载地址。";
 
 }
 
@@ -14642,13 +14636,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get crashNotif => '生命守護：偵測到疑似碰撞';
 
-  @override
-  String get choosePackage => "選擇安裝包";
 
-  @override
-  String get pkgRecommended => "建議";
 
-  @override
-  String get choosePackageHint => "64 位元套件用於絕大多數手機（應用程式內更新下載的是這個）；帶 _armeabi-v7a 的是 32 位元舊機型；_x86_64 只用於模擬器 / Chromebook。點一列會開啟該套件的下載網址。";
 
 }

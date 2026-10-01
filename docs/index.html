@@ -318,9 +318,10 @@ html{overflow-x:hidden}
       <p><b>二、现在 Release 里有三个包</b></p>
       <p>每个都约 <b>30 MB</b>：</p>
       <ul class="announce-list"><li><b>`APRSLocus_2.0.11.apk`</b> —— <b>64 位</b>，用于<b>绝大多数手机</b>（2015 年以后的机型）。<b>应用内更新下载的就是它</b>，升级方式没变。</li><li><b>`APRSLocus_2.0.11_armeabi-v7a.apk`</b> —— <b>32 位</b>，用于较老的机型。<b>只有只支持 32 位的手机才需要它</b>（这类手机装 64 位包会提示「与设备不兼容」）。</li><li><b>`APRSLocus_2.0.11_x86_64.apk`</b> —— 只用于<b>模拟器 / Chromebook</b>，真机一般用不到。</li></ul>
-      <p class="announce-quote">不确定就下第一个。装上之后功能完全一样 —— 三个包是同一份代码，只是按 CPU 各编译了一遍。</p>
-      <p><b>三、更新页现在会列出这些包</b></p>
-      <p>安卓上，若该版本有多个包，「检查更新」页会多出一块<b>选择安装包</b>：一行一个包，写明<b>文件名 · 架构 · 大小</b>，第一个标着「推荐」（就是应用内更新会下、也最可能适合你的那个）。<b>点一行会在浏览器里打开该包的下载地址</b> —— 方便老机器用户直接取 32 位那个。</p>
+      <p class="announce-quote">不用自己挑：应用内「检查更新」会按你这台手机的 CPU 自动选对应的那个。三个包是同一份代码，只是按 CPU 各编译了一遍。</p>
+      <p><b>三、更新页会替你挑好，并直接在应用内下载</b></p>
+      <p>安卓上「检查更新」页会<b>按你手机的 CPU 自动挑好对应的包</b>，<b>直接在应用内下载</b>（不跳浏览器），并写明这次下的是哪个包（文件名 · 架构 · 大小）。32 位的老机器会自动拿到 32 位包 —— 不会再出现「下完却提示与设备不兼容」。</p>
+      <p>需要别的架构（比如给模拟器）可以到 <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a> 页面自己取。</p>
       <p>顺带修掉一处显示问题：以前下载时页面上会<b>同时出现两条进度条</b>（看着像两个任务），现在只有一条。</p>
       <p><b>这次改动不影响功能与设置</b> —— 你原有的链路、信标与主题都不会变。升级后如果发现哪里不对，欢迎发到 <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a>。</p>
       <p><b>73！</b></p>
@@ -640,6 +641,15 @@ html{overflow-x:hidden}
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.12</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**修：更新页不再让你自己选包，也不再跳浏览器**。上一版把三个包的名单摆出来、点一行去浏览器下载 —— 这是错的：绝大多数人只知道「我要更新」，让他去理解`armeabi-v7a` 是什么、该选哪一个，等于把应用该做的事推给用户。现在更新页**按本机 CPU 自动挑好对应的包**（`Abi.current()`，无需原生通道）并**直接在应用内下载**：32 位老机型自动拿到 32 位包、模拟器拿到 x86_64，不会再出现「下完提示与设备不兼容」；认不出架构时回退到分架构之前的行为，所以也不会变成「挑不到包」。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.11</span>

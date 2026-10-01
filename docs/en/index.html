@@ -288,9 +288,10 @@
       <p><b>2. There are three packages in the release now</b></p>
       <p>Each is about <b>30 MB</b>:</p>
       <ul class="announce-list"><li><b>`APRSLocus_2.0.11.apk`</b> — <b>64-bit</b>, for <b>almost every phone</b> (anything from 2015 on). <b>This is what the in-app update downloads</b>, so upgrading works exactly as before.</li><li><b>`APRSLocus_2.0.11_armeabi-v7a.apk`</b> — <b>32-bit</b>, for older devices. <b>Only needed on phones that are 32-bit only</b> (those cannot install the 64-bit build; Android reports an ABI mismatch).</li><li><b>`APRSLocus_2.0.11_x86_64.apk`</b> — only for <b>emulators / Chromebooks</b>; real phones normally do not need it.</li></ul>
-      <p class="announce-quote">Pick the first one when in doubt. They are the same code, compiled once per CPU, so all three behave identically.</p>
-      <p><b>3. The update page now lists them</b></p>
-      <p>On Android, when a release has more than one package, the update page gains a <b>"Choose a package"</b> block: one row per file showing its <b>name · architecture · size</b>, with the first marked "Recommended" (that is the one the in-app update fetches, and the one most phones want). <b>Tapping a row opens that package's download URL in the browser</b>, so older devices can grab the 32-bit build directly.</p>
+      <p class="announce-quote">No need to choose: the in-app "Check for updates" picks the right one for your phone automatically. All three are the same code, compiled once per CPU.</p>
+      <p><b>3. The update page picks for you and downloads in-app</b></p>
+      <p>On Android the "Check for updates" page <b>picks the package matching your phone's CPU by itself</b> and <b>downloads it inside the app</b> (no browser hop), then tells you which file it is fetching (name · architecture · size). A 32-bit device gets the 32-bit build automatically — no more "installed, but Android says it is incompatible".</p>
+      <p>If you need another architecture (an emulator, say), grab it yourself from the <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a> page.</p>
       <p>One display fix came along: while downloading, the page used to show <b>two progress bars</b> for the same download (it looked like two tasks). Now there is one.</p>
       <p><b>Nothing about the app's features or settings changed</b> — your links, beacon and theme stay as they are. If something looks wrong after upgrading, please report it at <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a>.</p>
       <p><b>73!</b></p>
@@ -565,6 +566,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.12</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot fix"></span>**Fix: the update page no longer asks you to pick a package and never opens a browser.** The previous build listed the three packages and sent a tap to the browser — that was wrong: almost everyone only knows "I want to update", and making them work out what `armeabi-v7a` means (or which row to choose) pushes the app's job onto the user. The page now **picks the package matching this device's CPU by itself** (`Abi.current()`, no platform channel needed) and **downloads it in-app**: a 32-bit device gets the 32-bit build, an emulator gets x86_64, and no one sees "incompatible with this device" after downloading. When the architecture cannot be determined it falls back to the pre-split behaviour, so an unknown device never ends up with no package at all.</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.11</span>

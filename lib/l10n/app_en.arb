@@ -2571,8 +2571,5 @@
   "crashFalsePositive": "**It can false-alarm**: hitting a speed bump and then standing still for 12 seconds (at a red light) satisfies both stages. The first button in the alert is \"I am fine\" — dismiss it and nothing else is affected.",
   "crashAlarmTitle": "Possible crash or fall detected",
   "crashAlarmBody": "The phone detected a strong impact, followed by no significant movement (about 12 seconds).\n\nIf you are fine, tap \"I am fine\". If you feel unwell or cannot move, call emergency services now, or send a help message to stations within 100 km.\n\n**This is a heuristic, not engineering-grade crash detection**: a speed bump or dropping the phone can trigger it.",
-  "crashNotif": "Life guard: possible crash detected",
-  "choosePackage": "Choose a package",
-  "pkgRecommended": "Recommended",
-  "choosePackageHint": "The 64-bit package covers almost every phone (this is what the in-app update fetches); _armeabi-v7a is for older 32-bit devices; _x86_64 is only for emulators / Chromebooks. Tapping a row opens that package's download URL."
+  "crashNotif": "Life guard: possible crash detected"
 }

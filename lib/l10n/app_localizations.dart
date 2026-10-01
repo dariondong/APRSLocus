@@ -12968,23 +12968,8 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   String crashNotif;
 
-  /// No description provided for @choosePackage.
-  ///
-  /// In zh, this message translates to:
-  /// **'选择安装包'**
-  String get choosePackage;
 
-  /// No description provided for @pkgRecommended.
-  ///
-  /// In zh, this message translates to:
-  /// **'推荐'**
-  String get pkgRecommended;
 
-  /// No description provided for @choosePackageHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'64 位包用于绝大多数手机（应用内更新下的是这个）；带 _armeabi-v7a 的是 32 位老机型；_x86_64 只用于模拟器 / Chromebook。点一行会打开该包的下载地址。'**
-  String get choosePackageHint;
 
 }
 

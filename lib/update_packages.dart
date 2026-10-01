@@ -7,14 +7,15 @@
 ///      `tool/check_release_assets.py` 盯着）：安卓按 ABI 出三个包，
 ///      **64 位沿用原来的名字** `APRSLocus_<版本>.apk`，另外两个带
 ///      `_armeabi-v7a` / `_x86_64` 后缀；
-///   2. **应用内更新**（本文件的 [pickUpdateAsset]）：取资产列表里**第一个** `.apk`
-///      —— 平台按名字升序返回，于是 `.`（0x2E）比 `_`（0x5F）小的那个（64 位）
-///      永远排第一。**这条逻辑一个字节都不该动**（用户明确要求）；
-///   3. **更新页的「选择安装包」列表**（[apkAssetsOf] + [abiLabelOfAssetName]）：
-///      按同一个顺序展示，并把第一个标成「推荐」。
+///   2. **应用内更新**（[pickUpdateAssetFor]）：**按本机 CPU 架构挑对应的包**
+///      （架构不对的包装不上），认不出来时回退到「列表里第一个 `.apk`」
+///      （[pickUpdateAsset]）—— 也就是分架构之前的行为。这一步**由应用自己做**，
+///      不摆一排让用户选：绝大多数人只知道「我要更新」；
+///   3. **更新页**只把「这次会下哪个包」如实写出来（文件名 · 架构 · 大小），
+///      不需要用户做任何选择。
 ///
 /// 抽成纯函数还有一个实际好处：更新页要 AppState + 网络才挂得起来，测不动；
-/// 而这三条规则正是「错了不会有任何东西失败、只会有人下到装不上的包」的那类
+/// 而这些规则正是「错了不会有任何东西失败、只会有人下到装不上的包」的那类
 /// 约定，必须有单测盯着（见 `test/update_packages_test.dart`）。
 library;
 
@@ -33,10 +34,36 @@ Map<String, dynamic>? pickUpdateAsset(List<Map<String, dynamic>> assets) {
   return null;
 }
 
+/// 更新要下的那个包：**优先挑与本机架构一致的那个**。
+///
+/// ── 为什么必须由应用自己挑 ──
+/// 安卓从 v2.0.12 起按 ABI 分三个包，而**架构不对的包装不上**
+/// （Android 会报 ABI 不匹配）。让用户在一排文件名里自己选「该下哪个」是错的：
+/// 绝大多数人只知道「我要更新」，不该被迫了解 `armeabi-v7a` 是什么。
+/// 所以更新页把本机架构（[deviceAbi]）传进来，这里替他挑好 ——
+/// 32 位老机型自动拿到 32 位包，模拟器自动拿到 x86_64，谁都只需要按一次「下载」。
+///
+/// [deviceAbi] 为 null（桌面端 / Web / 没见过的架构）或找不到匹配时，
+/// 回退到 [pickUpdateAsset]（列表里第一个 `.apk`）—— 也就是**分架构之前的行为**，
+/// 于是认不出来也不会变成「挑不到包」。
+Map<String, dynamic>? pickUpdateAssetFor(
+  List<Map<String, dynamic>> assets,
+  String? deviceAbi,
+) {
+  if (deviceAbi != null) {
+    for (final a in assets) {
+      final n = (a['name'] ?? '').toString();
+      if (isApkAsset(n) && abiLabelOfAssetName(n) == deviceAbi) return a;
+    }
+  }
+  return pickUpdateAsset(assets);
+}
+
 /// 「选择安装包」列表：该版本的全部 APK，按**文件名升序**排。
 ///
-/// 与 Release 页上 GitHub 的展示顺序一致 —— 于是第一个就是 [pickUpdateAsset]
-/// 会挑中的那个包，标签「推荐」也就名副其实。
+/// ⚠ 现在**只有测试与守卫用它**：更新页在 v2.0.12 起不再把包列给用户选，
+/// 而是按本机架构自动挑好（[pickUpdateAssetFor]）。保留它是为了能对
+/// 「列表顺序」这条命名约定写断言（谁先谁后是发版流水线定的）。
 List<Map<String, dynamic>> apkAssetsOf(List<Map<String, dynamic>> assets) {
   final out = assets
       .where((a) => isApkAsset((a['name'] ?? '').toString()))

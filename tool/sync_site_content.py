@@ -205,6 +205,36 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.12', 'date': '2026-10-01',
+        'items': [
+            ('fix',
+             T('**修：更新页不再让你自己选包，也不再跳浏览器**。上一版把三个包的名单摆出来、'
+               '点一行去浏览器下载 —— 这是错的：绝大多数人只知道「我要更新」，让他去理解'
+               '`armeabi-v7a` 是什么、该选哪一个，等于把应用该做的事推给用户。现在更新页'
+               '**按本机 CPU 自动挑好对应的包**（`Abi.current()`，无需原生通道）并'
+               '**直接在应用内下载**：32 位老机型自动拿到 32 位包、模拟器拿到 x86_64，'
+               '不会再出现「下完提示与设备不兼容」；认不出架构时回退到分架构之前的行为，'
+               '所以也不会变成「挑不到包」。',
+               '**修：更新頁不再讓你自己選包，也不再跳瀏覽器**。上一版把三個包的名單擺出來、'
+               '點一列去瀏覽器下載 —— 這是錯的：絕大多數人只知道「我要更新」，讓他去理解'
+               '`armeabi-v7a` 是什麼、該選哪一個，等於把應用該做的事推給使用者。現在更新頁'
+               '**按本機 CPU 自動挑好對應的包**（`Abi.current()`，無需原生通道）並'
+               '**直接在應用程式內下載**：32 位元舊機型自動拿到 32 位元包、模擬器拿到 x86_64，'
+               '不會再出現「下載完提示與裝置不相容」；認不出架構時回退到分架構之前的行為，'
+               '所以也不會變成「挑不到包」。',
+               '**Fix: the update page no longer asks you to pick a package and never opens a '
+               'browser.** The previous build listed the three packages and sent a tap to the '
+               'browser — that was wrong: almost everyone only knows "I want to update", and '
+               'making them work out what `armeabi-v7a` means (or which row to choose) pushes the '
+               'app\'s job onto the user. The page now **picks the package matching this device\'s '
+               'CPU by itself** (`Abi.current()`, no platform channel needed) and **downloads it '
+               'in-app**: a 32-bit device gets the 32-bit build, an emulator gets x86_64, and no '
+               'one sees "incompatible with this device" after downloading. When the architecture '
+               'cannot be determined it falls back to the pre-split behaviour, so an unknown '
+               'device never ends up with no package at all.')),
+        ],
+    },
+    {
         'ver': 'v2.0.11', 'date': '2026-10-01',
         'items': [
             ('up',

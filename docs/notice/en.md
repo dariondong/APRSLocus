@@ -25,11 +25,13 @@ Each is about **30 MB**:
 - **`APRSLocus_2.0.11_armeabi-v7a.apk`** — **32-bit**, for older devices. **Only needed on phones that are 32-bit only** (those cannot install the 64-bit build; Android reports an ABI mismatch).
 - **`APRSLocus_2.0.11_x86_64.apk`** — only for **emulators / Chromebooks**; real phones normally do not need it.
 
-> Pick the first one when in doubt. They are the same code, compiled once per CPU, so all three behave identically.
+> No need to choose: the in-app "Check for updates" picks the right one for your phone automatically. All three are the same code, compiled once per CPU.
 
-## 3. The update page now lists them
+## 3. The update page picks for you and downloads in-app
 
-On Android, when a release has more than one package, the update page gains a **"Choose a package"** block: one row per file showing its **name · architecture · size**, with the first marked "Recommended" (that is the one the in-app update fetches, and the one most phones want). **Tapping a row opens that package's download URL in the browser**, so older devices can grab the 32-bit build directly.
+On Android the "Check for updates" page **picks the package matching your phone's CPU by itself** and **downloads it inside the app** (no browser hop), then tells you which file it is fetching (name · architecture · size). A 32-bit device gets the 32-bit build automatically — no more "installed, but Android says it is incompatible".
+
+If you need another architecture (an emulator, say), grab it yourself from the [Releases](https://github.com/dariondong/APRSLocus/releases) page.
 
 One display fix came along: while downloading, the page used to show **two progress bars** for the same download (it looked like two tasks). Now there is one.
 

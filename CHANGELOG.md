@@ -1,5 +1,43 @@
 # 更新日志
 
+## [2.0.12] - 2026-10-01
+
+### 🧭 修：更新页不再让你自己选包，也不再跳浏览器
+
+2.0.11 里我把三个包的名单摆出来、点一行去浏览器下载 —— **这是错的**：
+绝大多数人只知道「我要更新」，让他去理解 `armeabi-v7a` 是什么、该选哪一个，
+等于把应用该做的事推给用户；而且下载本来就该在应用里完成。
+
+现在更新页**按本机 CPU 自动挑好对应的包**（`dart:ffi` 的 `Abi.current()`，
+不需要任何原生通道），**直接在应用内下载**，只把「这次下的是哪个包」如实写出来
+（文件名 · 架构 · 大小）：
+
+- **32 位老机型自动拿到 `_armeabi-v7a`**、模拟器自动拿到 `_x86_64`、
+  64 位手机照旧拿 `APRSLocus_<版本>.apk` —— 不会再出现「下完提示与设备不兼容」；
+- 认不出架构（桌面端 / Web / 没见过的 ABI）时回退到**分架构之前的行为**
+  （列表里第一个 `.apk`），所以认不出来也不会变成「挑不到包」；
+- 跟随的是**运行态** ABI：64 位手机若装的是 32 位包，就继续给它 32 位包
+  （同架构才能覆盖安装）。
+
+配套：挑包规则抽进 `lib/update_packages.dart`（纯函数），单测 8 条
+（其中一条专门钉「32 位机器绝不能拿到 64 位包」）；`tool/check_release_assets.py`
+扩到 9 条判据（含「本机架构标签必须与产物标签逐字一致」「更新页不许出现跳浏览器的入口」），
+负向自测 9/9 报红。
+
+## [2.0.12] - 2026-10-01 (English)
+
+### 🧭 Fix: the update page no longer asks you to choose a package, and never opens a browser
+
+In 2.0.11 I laid out the three packages as a list and had a tap open the browser download — **that was wrong**. Almost everyone only knows "I want to update"; making them work out what `armeabi-v7a` means and which row to pick pushes the app's job onto the user. And a download belongs inside the app anyway.
+
+The update page now **picks the package matching this device's CPU by itself** (`Abi.current()` from `dart:ffi` — no platform channel needed) and **downloads it in-app**, simply stating which file it is fetching (name · architecture · size):
+
+- a **32-bit device automatically gets `_armeabi-v7a`**, an emulator gets `_x86_64`, and a 64-bit phone keeps getting `APRSLocus_<version>.apk` — no more "downloaded, but Android says it is incompatible";
+- when the architecture cannot be determined (desktop / web / an ABI we have not seen) it falls back to the **pre-split behaviour** (the first `.apk` in the list), so an unknown device never ends up with "no package to download";
+- it follows the **running** ABI: a 64-bit phone that installed the 32-bit build keeps getting 32-bit packages, which is what an in-place update needs.
+
+Alongside: the picking rules moved into `lib/update_packages.dart` (pure functions) with 8 unit tests, one of which pins "a 32-bit device must never receive the 64-bit package"; `tool/check_release_assets.py` grew to 9 assertions (including "the local architecture labels must match the release labels character for character" and "the update page must not contain an external-browser entry point"), and its negative self-test goes red 9/9.
+
 ## [2.0.11] - 2026-10-01
 
 ### 📦 安卓安装包按 CPU 架构分包：81.6 MB → 约 30 MB
