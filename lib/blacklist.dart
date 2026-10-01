@@ -1,0 +1,182 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+/// ─── 远程限制名单（黑名单）───
+///
+/// 从官网读一份 JSON（`assets/blacklist.json`）；命中则不允许继续使用本软件
+/// （用户协议第 8.2 条：违反协议的，我们有权限制、暂停或终止其使用）。
+///
+/// ── 三条设计原则（都是"别把自己坑了"）──
+///
+///  1. **失败放行**：第一次拉取失败（离线 / 接口挂了 / JSON 坏了）**不拦人**。
+///     否则一次网络抖动就把所有用户挡在门外 —— 那比没有这个功能更糟。
+///  2. **命中后离线也拦**：一旦**成功**拉到过名单（有缓存），命中就继续拦。
+///     否则被限制的人只要关掉网络就能接着用。
+///  3. **这只是"客户端礼貌拦截"**：本软件是 GPL-3.0 开源，任何人都能自己编译一份
+///     去掉这段检查的版本。它挡的是"用官方安装包的人"，不是有心人 —— 真正的约束在
+///     APRS-IS 侧（passcode 失效）。把这条写在代码里，免得以后有人以为它很硬。
+///
+/// ── 名单文件格式（官网 `docs/assets/blacklist.json`）──
+/// ```json
+/// { "updated": "2026-10-01",
+///   "entries": [ { "call": "BG7LZQ-9", "reason": "…", "at": "2026-10-01" },
+///                { "device": "9f2c…", "reason": "…", "at": "2026-10-01" } ] }
+/// ```
+/// 每条至少要有一个 `call` 或 `device`；两个都没有的条目**永不命中**（防止手滑写空条目
+/// 把所有人拦下）。
+class BlacklistEntry {
+  final String? call;    // 呼号（含 SSID，大小写不敏感）
+  final String? device;  // 安装标识（见 [Blacklist.deviceId]）
+  final String reason;   // 给用户看的原因（可空）
+  final String at;       // 列入日期（可空）
+
+  const BlacklistEntry({this.call, this.device, this.reason = '', this.at = ''});
+
+  bool get usable => (call != null && call!.isNotEmpty) ||
+      (device != null && device!.isNotEmpty);
+
+  static BlacklistEntry? fromJson(Object? j) {
+    if (j is! Map) return null;
+    String? s(Object? v) {
+      final t = v?.toString().trim() ?? '';
+      return t.isEmpty ? null : t;
+    }
+
+    return BlacklistEntry(
+      call: s(j['call'])?.toUpperCase(),
+      device: s(j['device'])?.toLowerCase(),
+      reason: j['reason']?.toString() ?? '',
+      at: j['at']?.toString() ?? '',
+    );
+  }
+}
+
+/// 命中的结果（界面拿它显示原因）
+class BlacklistHit {
+  final String reason;
+  final String matched;   // 命中的是哪一项（呼号 / 安装标识），用于如实显示
+
+  const BlacklistHit(this.reason, this.matched);
+}
+
+class Blacklist {
+  /// 官网基址（与用户协议、公告同一个站点）
+  static const String kBase = 'https://aprslocus.theez.top/';
+  static const String kPath = 'assets/blacklist.json';
+
+  static const String _kCache = 'blacklistCacheJson';
+  static const String _kCheckedAt = 'blacklistCheckedAt';
+  static const String _kDeviceId = 'blacklistDeviceId';
+
+  /// 拉到新名单后多久再拉一次
+  static const Duration kRefresh = Duration(hours: 6);
+
+  final List<BlacklistEntry> entries;
+  final String updated;
+
+  const Blacklist(this.entries, {this.updated = ''});
+
+  /// 解析名单。**坏 JSON / 结构不对一律返回 null**（调用方按"失败放行"处理）。
+  static Blacklist? parse(String text) {
+    try {
+      final j = jsonDecode(text);
+      if (j is! Map) return null;
+      final raw = j['entries'];
+      if (raw is! List) return null;
+      final out = <BlacklistEntry>[];
+      for (final it in raw) {
+        final e = BlacklistEntry.fromJson(it);
+        if (e != null && e.usable) out.add(e);   // 空条目不进表（见类注释）
+      }
+      return Blacklist(out, updated: j['updated']?.toString() ?? '');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 命中判断：呼号（去空白、大写）或安装标识（小写）任一相同即命中。
+  BlacklistHit? match(String call, String deviceId) {
+    final c = call.trim().toUpperCase();
+    final d = deviceId.trim().toLowerCase();
+    for (final e in entries) {
+      if (e.call != null && e.call == c && c.isNotEmpty) {
+        return BlacklistHit(e.reason, e.call!);
+      }
+      if (e.device != null && e.device == d && d.isNotEmpty) {
+        return BlacklistHit(e.reason, e.device!);
+      }
+    }
+    return null;
+  }
+
+  /// 稳定的安装标识：**随机生成一次**存在本地。
+  ///
+  /// 为什么不用硬件号：Android 早就限制读取（要特权），而且那属于设备隐私 ——
+  /// 我们只需要一个"能被列进名单、也能在误判时对得上"的名字。
+  /// ⚠ 它**只存在于本机**：应用只**下载**名单，从不上传这个标识（重装/清数据会换新的）。
+  static Future<String> deviceId() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final cur = p.getString(_kDeviceId);
+      if (cur != null && cur.isNotEmpty) return cur;
+      final r = Random.secure();
+      final id = List.generate(32, (_) => r.nextInt(16).toRadixString(16)).join();
+      await p.setString(_kDeviceId, id);
+      return id;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// 读本地缓存的名单（没有 / 坏了 → null）
+  static Future<Blacklist?> cached() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final s = p.getString(_kCache);
+      if (s == null || s.isEmpty) return null;
+      return parse(s);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 上次成功拉取的时间（给节流用）
+  static Future<DateTime?> lastChecked() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      final ms = p.getInt(_kCheckedAt);
+      return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// 拉一份新名单并写缓存。**失败返回 null**（调用方据此沿用缓存 / 放行）。
+  static Future<Blacklist?> fetch(
+      {Duration timeout = const Duration(seconds: 8)}) async {
+    HttpClient? client;
+    try {
+      client = HttpClient()..connectionTimeout = timeout;
+      final url = Uri.parse(kBase).resolve(kPath).toString();
+      final req = await client.getUrl(Uri.parse(url));
+      req.headers.set(HttpHeaders.userAgentHeader, 'APRSlocus');
+      final res = await req.close();
+      if (res.statusCode != 200) return null;
+      final text = await res.transform(utf8.decoder).join().timeout(timeout);
+      final bl = parse(text);
+      if (bl == null) return null;
+      final p = await SharedPreferences.getInstance();
+      await p.setString(_kCache, text);
+      await p.setInt(_kCheckedAt, DateTime.now().millisecondsSinceEpoch);
+      return bl;
+    } catch (_) {
+      return null;      // 失败放行（见类注释第 1 条）
+    } finally {
+      client?.close(force: true);
+    }
+  }
+}

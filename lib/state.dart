@@ -44,6 +44,7 @@ import 'achievements.dart';
 import 'theme.dart';
 import 'theme_store.dart';
 import 'ble_hr.dart';
+import 'blacklist.dart';
 import 'garmin.dart';
 import 'share_in.dart';
 import 'turn_dot.dart';
@@ -112,7 +113,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.14';
+  static const appVersion = '2.0.15';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -1896,6 +1897,47 @@ class AppState extends ChangeNotifier {
   bool get audioOn => enabledSources.contains(srcAudio);
   bool get pkwdwplOn => enabledSources.contains(srcPkwdwpl);
 
+  /// 远程限制名单（黑名单）命中的结果；null = 没被限制 / 还没查到。
+  ///
+  /// 命中时 `app.dart` 会用整页把它拦下（依据用户协议第 8.2 条）。
+  BlacklistHit? blacklistHit;
+
+  /// 下一次**廉价检查**的时刻（真正的拉取在 [recheckBlacklist] 里按 6 小时节流）
+  DateTime? _blacklistNext;
+
+  /// 查一次远程限制名单。
+  ///
+  /// 时机：启动后一次 + 每 [Blacklist.kRefresh]（6 小时）一次；`force` 供"重新检查"
+  /// 按钮用（绕过节流，解除限制后能立刻放行）。
+  ///
+  /// 三条原则见 `lib/blacklist.dart`：**失败放行**（从没拉到过 → 不拦）、
+  /// **命中后离线也拦**（有缓存就认）、**只是礼貌拦截**（GPL 开源，改编译就能绕过）。
+  Future<void> recheckBlacklist({bool force = false}) async {
+    try {
+      final cached = await Blacklist.cached();     // 先看缓存：命中立刻拦，不等网络
+      final id = await Blacklist.deviceId();
+      var bl = cached;
+      final last = await Blacklist.lastChecked();
+      final due = force ||
+          last == null ||
+          DateTime.now().difference(last) > Blacklist.kRefresh;
+      if (due) {
+        final fresh = await Blacklist.fetch();
+        if (fresh != null) bl = fresh;             // 拉取失败 → 沿用缓存（有就认）
+      }
+      final hit = bl?.match(myFullCall, id);
+      final changed = (hit == null) != (blacklistHit == null) ||
+          hit?.matched != blacklistHit?.matched;
+      blacklistHit = hit;
+      if (hit != null && changed) {
+        _log(LogLevel.warn, '限制', '本机被远程限制名单命中（${hit.matched}）');
+      }
+      if (changed) _notify();
+    } catch (_) {
+      // 任何异常都当"没查到"（放行）—— 绝不让这个功能把正常用户挡在门外
+    }
+  }
+
   /// 盒子链路是否被用户启用（**不在 [enabledSources] 里**，见 [box]）
   bool get boxOn => box.config.enabled;
 
@@ -3068,6 +3110,8 @@ class AppState extends ChangeNotifier {
       await audio.load();
       await pkwdwpl.load();
       await box.load();
+      // 远程限制名单：启动就查一次（放在配置载入之后 —— 要用到 myFullCall）
+      await recheckBlacklist();
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
       if (savedLat != null && savedLng != null) {
@@ -3435,6 +3479,12 @@ class AppState extends ChangeNotifier {
             if (!_disposed) _checkCrash();
           }));
         }
+      }
+      // 远程限制名单：启动后一次 + 每 30 分钟做一次"到点了没"的廉价判断
+      // （真正的网络请求在 recheckBlacklist 里按 6 小时节流）。
+      if (_blacklistNext == null || DateTime.now().isAfter(_blacklistNext!)) {
+        _blacklistNext = DateTime.now().add(const Duration(minutes: 30));
+        unawaited(recheckBlacklist());
       }
       // 手机电量：与定位解耦，自己按时间刷（30 秒一次，见 _refreshBattery）。
       // 盒子那边的「APRSLOCUS」页显示它，所以必须保证这个数**不是几小时前的**。

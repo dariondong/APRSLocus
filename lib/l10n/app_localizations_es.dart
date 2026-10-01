@@ -1679,6 +1679,30 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get blTitle => 'Este dispositivo ha sido bloqueado';
+
+  @override
+  String get blBody => 'Según la sección 8.2 de los Términos de uso, podemos restringir, suspender o terminar el uso de quien incumpla el acuerdo. Este dispositivo (indicativo o ID de instalación) figura en la lista de restricción, por lo que la app ya no puede utilizarse.';
+
+  @override
+  String get blReason => 'Motivo';
+
+  @override
+  String get blMatched => 'Entrada coincidente';
+
+  @override
+  String get blId => 'ID de instalación';
+
+  @override
+  String get blContact => 'Si crees que es un error, abre un Issue en el repositorio de GitHub e incluye el ID de instalación de arriba: es lo único con lo que podemos comparar.';
+
+  @override
+  String get blRetry => 'Comprobar de nuevo';
+
+  @override
+  String get blChecking => 'Comprobando…';
+
+  @override
   String get donateNotice => 'Las donaciones son totalmente voluntarias: no compran ninguna función, soporte prioritario ni compromiso de servicio, y no son reembolsables. Los menores deben pedir permiso a su tutor.';
 
   @override

@@ -1606,6 +1606,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get blTitle => '本设备已被限制使用';
+
+  @override
+  String get blBody => '依据《用户协议》第 8.2 条，我们有权限制、暂停或终止违反协议者的使用。本设备（呼号或安装标识）已被列入限制名单，因此无法继续使用本软件。';
+
+  @override
+  String get blReason => '原因';
+
+  @override
+  String get blMatched => '命中项';
+
+  @override
+  String get blId => '本机安装标识';
+
+  @override
+  String get blContact => '如果你认为这是误判，请通过 GitHub 仓库提交 Issue，并附上上面的安装标识 —— 那是我们核对时的唯一依据。';
+
+  @override
+  String get blRetry => '重新检查';
+
+  @override
+  String get blChecking => '正在检查…';
+
+  @override
   String get donateNotice => '赞赏完全出于自愿：不换取任何功能、优先支持或服务承诺，且不予退还；未成年人请在监护人同意后再进行。';
 
   @override
@@ -9051,6 +9075,30 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get blTitle => '本裝置已被限制使用';
+
+  @override
+  String get blBody => '依《使用者條款》第 8.2 條，我們有權限制、暫停或終止違反條款者的使用。本裝置（呼號或安裝識別碼）已被列入限制名單，因此無法繼續使用本軟體。';
+
+  @override
+  String get blReason => '原因';
+
+  @override
+  String get blMatched => '命中項';
+
+  @override
+  String get blId => '本機安裝識別碼';
+
+  @override
+  String get blContact => '如果你認為這是誤判，請透過 GitHub 倉庫提交 Issue，並附上上面的安裝識別碼 —— 那是我們核對時的唯㇐依據。';
+
+  @override
+  String get blRetry => '重新檢查';
+
+  @override
+  String get blChecking => '檢查中…';
 
   @override
   String get donateNotice => '贊賞完全出於自願：不換取任何功能、優先支援或服務承諾，且不予退還；未成年人請在監護人同意後再進行。';

@@ -2804,6 +2804,53 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @blTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'本设备已被限制使用'**
+  String get blTitle;
+
+  /// No description provided for @blBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'依据《用户协议》第 8.2 条，我们有权限制、暂停或终止违反协议者的使用。本设备（呼号或安装标识）已被列入限制名单，因此无法继续使用本软件。'**
+  String get blBody;
+
+  /// No description provided for @blReason.
+  ///
+  /// In zh, this message translates to:
+  /// **'原因'**
+  String get blReason;
+
+  /// No description provided for @blMatched.
+  ///
+  /// In zh, this message translates to:
+  /// **'命中项'**
+  String get blMatched;
+
+  /// No description provided for @blId.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机安装标识'**
+  String get blId;
+
+  /// No description provided for @blContact.
+  ///
+  /// In zh, this message translates to:
+  /// **'如果你认为这是误判，请通过 GitHub 仓库提交 Issue，并附上上面的安装标识 —— 那是我们核对时的唯一依据。'**
+  String get blContact;
+
+  /// No description provided for @blRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新检查'**
+  String get blRetry;
+
+  /// No description provided for @blChecking.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在检查…'**
+  String get blChecking;
   /// No description provided for @donateNotice.
   ///
   /// In zh, this message translates to:

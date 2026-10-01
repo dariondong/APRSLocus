@@ -1661,6 +1661,30 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get blTitle => 'This device has been blocked';
+
+  @override
+  String get blBody => 'Under section 8.2 of the Terms of Use we may restrict, suspend, or terminate use by anyone who violates the agreement. This device (callsign or install ID) is on the restriction list, so the app can no longer be used.';
+
+  @override
+  String get blReason => 'Reason';
+
+  @override
+  String get blMatched => 'Matched entry';
+
+  @override
+  String get blId => 'Install ID';
+
+  @override
+  String get blContact => 'If you believe this is a mistake, open an Issue in the GitHub repository and include the install ID above - it is the only thing we can match against.';
+
+  @override
+  String get blRetry => 'Check again';
+
+  @override
+  String get blChecking => 'Checking…';
+
+  @override
   String get donateNotice => 'Tips are entirely voluntary: they do not buy any feature, priority support, or service commitment, and are non-refundable. Minors should ask a guardian first.';
 
   @override

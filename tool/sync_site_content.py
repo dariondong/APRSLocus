@@ -205,6 +205,51 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.15', 'date': '2026-10-01',
+        'items': [
+            ('up',
+             T('**用户协议更新到 V1.1（含赞赏声明）**。三语同步、34 → 41 条，把'
+               '「软件实际会做的事」补齐了：网关转发等于**代表他人在业余频段上发射**'
+               '（3.5）；未成年人需监护人同意、无资格不得发射（3.6）；发出内容要真实、'
+               '准确、合法并尊重各国法律与文化习俗（3.7）；与哪些第三方通信（天气发送'
+               '位置、翻译发送文本、更新向 GitHub 请求…，不使用即不发生，5.3）；'
+               '「生命守护」等不是医疗设备、不是紧急救援（7.6）；数据可能传入第三方软件'
+               '服务的免责（7.7）；**关于赞赏**（自愿、不换取功能、不予退还、未成年人需'
+               '监护人同意，9.4）。应用内公告与赞赏页都有同一口径的说明。'
+               '同版还修了三处：**蓝牙连不上就闪退**（阻塞的连接跑在主线程 → 系统判定'
+               '无响应）、**电量半天不动**（只在有定位时才读）、**运动排行榜**的占位'
+               '文字与排序口径（只统计今天，且自己也在榜上并标出）。同版还**新增了远程限制名单**：启动时与每 6 小时从官网读一份名单，命中呼号或本机安装标识的将无法继续使用（名单拉不到一律放行；安装标识只在本机、不上传）。',
+               '**使用者條款更新到 V1.1（含贊賞聲明）**。三語同步、34 → 41 條，把'
+               '「軟體實際會做的事」補齊了：閘道轉發等於**代表他人在業餘頻段上發射**'
+               '（3.5）；未成年人需監護人同意、無資格不得發射（3.6）；送出的內容要真實、'
+               '準確、合法並尊重各國法律與文化習俗（3.7）；與哪些第三方通訊（天氣傳送'
+               '位置、翻譯傳送文字、更新向 GitHub 請求…，不使用即不發生，5.3）；'
+               '「生命守護」等不是醫療設備、不是緊急救援（7.6）；資料可能傳入第三方軟體'
+               '服務的免責（7.7）；**關於贊賞**（自願、不換取功能、不予退還、未成年人需'
+               '監護人同意，9.4）。應用程式內公告與贊賞頁都有同一口徑的說明。'
+               '同版還修了三處：**藍牙連不上就閃退**（阻塞的連線跑在主執行緒 → 系統判定'
+               '無回應）、**電量半天不動**（只在有定位時才讀）、**運動排行榜**的佔位'
+               '文字與排序口徑（只統計今天，且自己也在榜上並標出）。同版還**新增了遠端限制名單**：啟動時與每 6 小時從官網讀取一份名單，命中呼號或本機安裝識別碼的將無法繼續使用（名單讀不到一律放行；安裝識別碼只在本機、不上傳）。',
+               '**Terms of Use updated to V1.1 (with a donation clause).** All three '
+               'languages, 34 -> 41 clauses, documenting what the software actually does: '
+               'gateway forwarding means transmitting on amateur bands on behalf of others '
+               '(3.5); minors need a guardian consent and must not transmit unqualified '
+               '(3.6); what you send must be truthful, accurate, lawful and respectful of '
+               'local laws and customs (3.7); which third parties see what (weather sends a '
+               'location, translation sends text, update checks query GitHub - none of it '
+               'happens unless you use the feature, 5.3); Life Guard etc. are not medical '
+               'devices and not an emergency service (7.6); a disclaimer that data may be '
+               'passed to third-party software services (7.7); and about tips and donations '
+               '(voluntary, no feature in return, non-refundable, minors need a guardian, '
+               '9.4). The in-app notice and the sponsor page state the same. '
+               'The same release fixes three things: the **crash when Bluetooth fails to '
+               'connect** (the blocking connect ran on the main thread, so the system killed '
+               'the app), a **phone battery that never updated** (it was only read when a '
+               'location fix arrived), and the **sport ranking** placeholder text and '
+               'counting rule (today only, and you now appear on the board, marked). It also adds a **remote restriction list**, read from the official site on launch and every 6 hours: a matching callsign or install ID can no longer use the app (an unreachable list never blocks anyone; the install ID stays on the device and is never uploaded).')),
+        ],
+    },
+    {
         'ver': 'v2.0.14', 'date': '2026-10-01',
         'items': [
             ('new',

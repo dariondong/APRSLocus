@@ -1,5 +1,102 @@
 # 更新日志
 
+## [2.0.15] - 2026-10-01
+
+### 📄 用户协议更新到 V1.1（含赞赏声明）+ 新增限制名单 + 三处修复
+
+**协议 V1.1**（三语同步，34 → 41 条）把"软件实际会做的事"补齐了 —— 以前有几件事代码里
+做了、协议里却没写：
+
+- **3.5 网关转发责任**：把 APRS-IS 的报文转到射频发射等于**代表他人在业余频段上发射**，
+  呼号/频率/功率/工作方式都需合法合规；
+- **3.6 未成年人**：应在监护人同意与指导下使用，后果由监护人承担；不得在无相应资格时发射；
+- **3.7 发出内容的正确性、合法性与各国文化差异**：APRS 是公开跨国网络，内容须真实、
+  准确、合法，并尊重各国法律、宗教与文化习俗；
+- **5.3 与哪些第三方通信**：天气发送位置、翻译发送待翻译文本、更新向 GitHub 请求版本、
+  佳明 LiveTrack 访问你填的链接、地图瓦片来自多源 —— **不使用该功能就不会发生**；
+- **7.6 "生命守护"等不是医疗设备**：碰撞/摔倒检测与心率告警只是辅助提醒，可能漏报误报
+  或延迟，**不是紧急救援服务**；紧急情况请直接拨打急救电话；
+- **7.7 数据可能传入第三方软件服务的免责声明**；
+- **9.4 关于赞赏**：赞赏完全自愿，不换取任何功能、优先支持或服务承诺，且不予退还；
+  未成年人需先取得监护人同意（赞赏页在二维码之前也写了同一口径的声明）。
+
+### 新增
+
+- **远程限制名单（黑名单）**：应用启动时、以及每 6 小时，会从官网读一份名单
+  （`blacklist.json`）—— 命中**呼号**或**本机安装标识**的将无法继续使用本软件
+  （依据《用户协议》第 8.2 条：违反协议的，我们有权限制、暂停或终止其使用）。
+  两条安全底线写死在实现里：**名单拉不到一律放行**（一次网络抖动不能把所有人挡在
+  门外）；而**只要成功读到过名单，命中后断网也照样拦**（否则关掉网络就能绕过）。
+  安装标识只随机生成并保存在本机、**从不上传**（应用只是下载名单来比对）；拦截页会
+  如实显示命中的是哪一项、原因，以及申诉方式。
+
+### 修复
+
+- **蓝牙连不上就闪退**：`BluetoothSocket.connect()` 是阻塞调用却跑在**主线程**上
+  （方法通道回调），连不上要等十几秒 → 系统判定"应用无响应"并杀掉它。现在连接在
+  工作线程进行、结果回主线程，失败时把半开的 socket 关掉；"连上后重算前台服务类型"
+  也改成连接成功的回调触发（否则 Android 14+ 后台会限制蓝牙）；
+- **手机电量同步不及时**：电量原来只在**定位回调**里刷新（手机放着不动、系统停发定位点
+  时就冻住），盒子上的电量会是几小时前的 → 改成按时间自节流刷新（30 秒，挂在已有的
+  1 秒 tick 上），与定位解耦；
+- **运动排行榜**：每行的副标题/尾标原来是占位文字（"今日 · …"、"未带步数"）、没有名次
+  数字、卡片副标题与页头重复、"我"卡片复述长说明；点台站只有它用整页 push（改成全应用
+  统一的底部面板）；**自己在榜上并标出来**；今日榜**只统计今天**听到的（三天前的步数
+  不再排在今天前面）。
+
+## [2.0.15] - 2026-10-01 (English)
+
+### ?? Terms of Use updated to V1.1 (with a donation clause) + a restriction list + three fixes
+
+**Terms V1.1** (all three languages, 34 -> 41 clauses) now documents what the software
+actually does:
+
+- **3.5 Gateway responsibility**: forwarding APRS-IS packets onto RF means you **transmit on
+  amateur bands on behalf of others** - callsign, frequency, power and mode must be lawful;
+- **3.6 Minors**: use with a guardian\'s consent and guidance, who bears the consequences; do
+  not transmit without the required qualifications;
+- **3.7 Accuracy, legality and cultural differences of what you send**: APRS is a public,
+  international network; content must be truthful, accurate and lawful and must respect local
+  laws, religions and customs;
+- **5.3 Which third parties see what**: weather sends a location, translation sends the text,
+  update checks query GitHub, Garmin LiveTrack opens the link you add, map tiles come from
+  several providers - **none of it happens unless you use that feature**;
+- **7.6 Life Guard etc. are not medical devices**: crash/fall detection and heart-rate alarms
+  are auxiliary reminders that may miss, misfire or lag - **not an emergency service**;
+- **7.7 Disclaimer: data may be passed to third-party software services**;
+- **9.4 About tips and donations**: entirely voluntary, they buy no feature, priority support
+  or service commitment, and are non-refundable; minors need a guardian\'s consent (the
+  sponsor page states the same before the QR codes).
+
+### New
+
+- **Remote restriction list (blocklist)**: on launch and every 6 hours the app reads a list
+  from the official site (`blacklist.json`); a matching **callsign** or **install ID** can no
+  longer use the app (per section 8.2 of the Terms of Use - we may restrict, suspend or
+  terminate use by anyone who violates the agreement). Two safety rules are hard-coded: a
+  list that **cannot be fetched never blocks anyone** (one network hiccup must not lock
+  everyone out); and once a list **has** been fetched successfully, a hit stays blocked
+  **offline** (otherwise going offline would bypass it). The install ID is generated randomly
+  and kept on the device only, and is **never uploaded** (the app just downloads the list to
+  compare against); the block screen states exactly which entry and reason matched, and how
+  to appeal.
+
+### Fixes
+
+- **Crash when Bluetooth fails to connect**: the blocking `BluetoothSocket.connect()` ran on
+  the **main thread** (method-channel callback) and could block for tens of seconds, so the
+  system declared the app unresponsive and killed it. Connecting now runs on a worker thread
+  with the result posted back; half-open sockets are closed on failure, and refreshing the
+  foreground-service type is triggered by the connected callback (otherwise Android 14+ would
+  restrict Bluetooth in the background);
+- **Stale phone battery**: it was only refreshed inside the location callback (a stationary
+  phone stops receiving fixes, freezing the value). It is now refreshed on a 30 s self-throttled
+  timer, independent of location;
+- **Sport ranking**: rows showed placeholder text ("Today - ...", "No steps"), had no rank
+  number, and the card subtitle duplicated the page header; tapping a station used a full-page
+  push instead of the app-wide bottom sheet; you are now on the board (and marked), and the
+  board counts **today only**.
+
 ## [2.0.14] - 2026-10-01
 
 ### 📊 新：盒子上的「APRSLOCUS」实时仪表盘（手机状态一眼可见）

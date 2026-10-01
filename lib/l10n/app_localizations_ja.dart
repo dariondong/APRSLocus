@@ -1614,6 +1614,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get blTitle => 'この端末は利用を制限されています';
+
+  @override
+  String get blBody => '利用規約 8.2 に基づき、規約に違反する方の利用を制限・停止・終了できるものとします。この端末（コールサインまたはインストール識別子）は制限リストに含まれているため、本ソフトは利用できません。';
+
+  @override
+  String get blReason => '理由';
+
+  @override
+  String get blMatched => '一致した項目';
+
+  @override
+  String get blId => 'インストール識別子';
+
+  @override
+  String get blContact => '誤りだと思われる場合は、GitHub リポジトリで Issue を作成し、上のインストール識別子を添えてください。照合できるのはそれだけです。';
+
+  @override
+  String get blRetry => '再確認';
+
+  @override
+  String get blChecking => '確認中…';
+
+  @override
   String get donateNotice => 'ご支援は完全に任意です：機能・優先サポート・サービスを約束するものではなく、返金もできません。未成年の方は保護者の同意を得てからお願いします。';
 
   @override

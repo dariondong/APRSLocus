@@ -11,6 +11,7 @@ import 'shell2.dart';
 import 'splash_page.dart';
 import 'oobe_page.dart';
 import 'app_widget.dart';
+import 'blacklist_page.dart';
 import 'l10n/app_localizations.dart';
 import 'update_prompt.dart';
 
@@ -176,6 +177,10 @@ class _AppState extends State<App> {
           if (!_state.initialized) return const SplashPage();
           // 首次启动：进入设置向导
           if (!_state.oobeDone) return OobePage(state: _state);
+      // 远程限制名单命中 → 整页拦下（用户协议 8.2：违反协议的，我们有权限制使用）。
+      // 放在首次引导之前/之后都一样：引导页也不该给被限制的人继续用。
+      final bl = _state.blacklistHit;
+      if (bl != null) return BlacklistPage(hit: bl, state: _state);
           // 启动后检查一次新版本：有则弹提醒（同一版本只提醒一次）。
           // 放在 home 的 builder 里是为了拿到 **Navigator 之下**的 context
           // （showDialog 需要它）。

@@ -1662,6 +1662,30 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get blTitle => 'Perangkat ini telah dibatasi';
+
+  @override
+  String get blBody => 'Menurut Pasal 8.2 Ketentuan Penggunaan, kami dapat membatasi, menangguhkan, atau menghentikan penggunaan oleh pihak yang melanggar. Perangkat ini (callsign atau ID instalasi) ada dalam daftar pembatasan, sehingga aplikasi tidak dapat digunakan lagi.';
+
+  @override
+  String get blReason => 'Alasan';
+
+  @override
+  String get blMatched => 'Entri yang cocok';
+
+  @override
+  String get blId => 'ID instalasi';
+
+  @override
+  String get blContact => 'Jika menurut Anda ini keliru, buka Issue di repositori GitHub dan sertakan ID instalasi di atas - hanya itu yang bisa kami cocokkan.';
+
+  @override
+  String get blRetry => 'Periksa lagi';
+
+  @override
+  String get blChecking => 'Memeriksa…';
+
+  @override
   String get donateNotice => 'Dukungan sepenuhnya sukarela: tidak menukar fitur, dukungan prioritas, atau jaminan layanan apa pun, dan tidak dapat dikembalikan. Anak di bawah umur harap meminta izin orang tua/wali.';
 
   @override

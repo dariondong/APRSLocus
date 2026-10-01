@@ -60,6 +60,12 @@ EXCLUDE = {
     'stepsBaseline': '本机计步硬件的累计基线（换机后无意义）',
     'stepsDayKey': '计步基线对应的日期',
     'stepsCarry': '当日重启前已累计的步数（与基线配套）',
+    # 远程限制名单：三个键都**只对本机有意义**，进备份只会帮倒忙 ——
+    # 标识混进备份文件（可能被分享）会违背"只在本机、不上传"的承诺；缓存/时间戳
+    # 恢复后也会重新拉取；而重装本来就会换新标识，备份它挡不住任何人也救不了任何人。
+    'blacklistCacheJson': '远程限制名单的本地缓存（恢复后会重新拉取）',
+    'blacklistCheckedAt': '名单上次成功拉取的时间（缓存的一部分）',
+    'blacklistDeviceId': '本机安装标识（只在本机有效；写进备份会违背"不上传"的承诺）',
 }
 
 GETSET = re.compile(r"\.(?:get|set)(?:String|Bool|Int|Double|StringList)\(")

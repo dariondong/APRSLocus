@@ -83,6 +83,12 @@ jobs:
       - name: Check terms
         run: python3 tool/check_terms.py
 
+      # 远程限制名单是**手写的 JSON**，写坏的三种方式（条目两项都空 / 小写呼号 /
+      # JSON 语法坏）在应用里**都不报错**，只是"名单没生效" —— 所以钉在这里，
+      # 连"应用到底从哪里取这份文件"一起核对。
+      - name: Check blacklist
+        run: python3 tool/check_blacklist.py
+
       # 打点质量层的**接线**检查：算法写好了但忘了在某条路径上调用，
       # 编译与 analyze 都不会报错 —— 功能只是悄悄不生效。
       - name: Check position quality wiring
