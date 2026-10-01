@@ -2655,5 +2655,8 @@
   "crashFalsePositive": "**Bisa salah alarm**: melewati polisi tidur lalu berhenti 12 detik (di lampu merah) memenuhi kedua tahap. Tombol pertama pada peringatan adalah \"Saya tidak apa-apa\" — cukup ditekan dan tidak memengaruhi yang lain.",
   "crashAlarmTitle": "Kemungkinan benturan atau jatuh terdeteksi",
   "crashAlarmBody": "Ponsel mendeteksi benturan kuat, lalu nyaris tidak ada gerakan (sekitar 12 detik).\n\nJika Anda baik-baik saja, tekan \"Saya tidak apa-apa\". Jika merasa tidak enak badan atau tidak bisa bergerak, segera hubungi layanan darurat atau kirim pesan bantuan ke stasiun dalam 100 km.\n\n**Ini penilaian heuristik, bukan deteksi benturan tingkat rekayasa**: polisi tidur atau ponsel terjatuh juga bisa memicunya.",
-  "crashNotif": "Pelindung nyawa: kemungkinan benturan"
+  "crashNotif": "Pelindung nyawa: kemungkinan benturan",
+  "choosePackage": "Pilih paket",
+  "pkgRecommended": "Disarankan",
+  "choosePackageHint": "Paket 64-bit untuk hampir semua ponsel (inilah yang diunduh pembaruan dalam aplikasi); _armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. Ketuk satu baris untuk membuka tautan unduhan paket itu."
 }

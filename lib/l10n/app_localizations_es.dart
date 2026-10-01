@@ -7669,4 +7669,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get crashNotif => 'Guardián vital: posible choque';
 
+  @override
+  String get choosePackage => "Elegir paquete";
+
+  @override
+  String get pkgRecommended => "Recomendado";
+
+  @override
+  String get choosePackageHint => "El paquete de 64 bits sirve para casi todos los teléfonos (es el que descarga la actualización integrada); _armeabi-v7a es para equipos antiguos de 32 bits; _x86_64 solo para emuladores / Chromebooks. Toca una fila para abrir la descarga de ese paquete.";
+
 }

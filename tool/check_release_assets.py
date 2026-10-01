@@ -38,6 +38,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 WORKFLOW = '.github/workflows/build-release.yml'
 UPDATE_PAGE = 'lib/check_update_page.dart'
+PACKAGES = 'lib/update_packages.dart'
 
 # 约定：ABI → 文件名的后缀（64 位是空后缀 = 沿用原来的名字）
 ABI_SUFFIX = {
@@ -96,15 +97,63 @@ def main() -> int:
     if 'APRSLocus_*.apk' not in yml:
         errors.append('%s 的 upload-artifact 路径没覆盖 `APRSLocus_*.apk`' % WORKFLOW)
 
-    # ── ④ 更新逻辑必须保持「取第一个 .apk」，且不许按 ABI 挑包 ──
-    if "if (n.endsWith('.apk')) return a;" not in upd:
-        errors.append('%s 的 assetFor 不再用「第一个 .apk」的规则 —— '
-                      '本检查的前提（与命名约定）需要跟着重新设计' % UPDATE_PAGE)
-    # 注意不要把裸 `abi` 当关键词：它太短，会命中无关的词（本仓库踩过「裸名误报」的坑）。
-    for bad in ('armeabi-v7a', 'arm64-v8a', 'SUPPORTED_ABIS'):
-        if bad in upd:
-            errors.append('%s 里出现了 `%s` —— 应用内更新被改成按 ABI 挑包了；'
-                          '用户要求「更新默认走 64 位、逻辑不要动」' % (UPDATE_PAGE, bad))
+    # ── ④ 更新逻辑必须保持「取第一个 .apk」，且**挑包**不许看 ABI ──
+    #
+    # ⚠ 判据的粒度很关键：更新页现在要给**安装包列表贴架构标签**
+    #   （`arm64-v8a · 30.1 MB`），那是对的东西 —— 对全文搜 `arm64-v8a` 会把它
+    #   当成「按 ABI 挑包」误报（第一版就是这么写的，护栏当场把自己绊倒）。
+    #   所以只看**挑包那一小段代码**，并且先剥掉注释（本仓库「注释命中」的老坑）。
+    pkg = read(PACKAGES)
+
+    def _code_only_lines(src):
+        return '\n'.join(l for l in src.split('\n')
+                         if not l.lstrip().startswith('//'))
+
+    i0, i1 = pkg.find('bool isApkAsset'), pkg.find('String abiLabelOfAssetName')
+    if i0 < 0 or i1 < 0 or i1 < i0:
+        errors.append('%s 里找不到 isApkAsset / abiLabelOfAssetName —— '
+                      '检查器自己失效了（结构变了？）' % PACKAGES)
+        pick_region = ''
+    else:
+        pick_region = _code_only_lines(pkg[i0:i1])
+        if "endsWith('.apk')" not in pick_region:
+            errors.append('%s 里没有「第一个 .apk」的判据 —— 更新会挑不到包' % PACKAGES)
+        for bad in ('armeabi', 'arm64', 'x86_64', 'SUPPORTED_ABIS'):
+            if bad in pick_region:
+                errors.append('%s 的挑包部分（isApkAsset / pickUpdateAsset）出现了 `%s` '
+                              '—— 挑包开始看 ABI 了；用户要求「更新默认走 64 位、逻辑不要动」'
+                              % (PACKAGES, bad))
+
+    m = re.search(r'Map<String, dynamic>\? assetFor\(bool isWindows\) \{(.*?)\n  \}', upd, re.S)
+    if not m:
+        errors.append('%s 里找不到 assetFor 的实现 —— 检查器自己失效了（函数被改名/搬走？）'
+                      % UPDATE_PAGE)
+    else:
+        body = _code_only_lines(m.group(1))
+        if 'pickUpdateAsset(assets)' not in body:
+            errors.append('%s 的 assetFor 不再走 pickUpdateAsset() —— '
+                          '挑包规则被搬到别处，本检查的前提需要跟着重新设计' % UPDATE_PAGE)
+        for bad in ('armeabi', 'arm64', 'x86_64', 'SUPPORTED_ABIS'):
+            if bad in body:
+                errors.append('%s 的 assetFor 里出现了 `%s` —— 挑包开始看 ABI 了；'
+                              '用户要求「更新默认走 64 位、逻辑不要动」' % (UPDATE_PAGE, bad))
+
+    # 反过来：安装包列表要贴架构标签，标签必须来自 abiLabelOfAssetName()（约定同发版）。
+    if 'abiLabelOfAssetName(' not in pkg:
+        errors.append('%s 里没有 abiLabelOfAssetName(...) —— 安装包列表的架构标签'
+                      '会与发版命名漂开' % PACKAGES)
+    else:
+        if "return 'arm64-v8a';" not in pkg:
+            errors.append('%s 的 abiLabelOfAssetName 没有「无后缀 ⇒ 64 位」的兜底 —— '
+                          '认错架构会让用户下到装不上的包' % PACKAGES)
+        for abi in ('armeabi-v7a', 'x86_64'):
+            if abi not in pkg:
+                errors.append('%s 里缺少架构标签 `%s` —— 与发版命名约定不一致'
+                              % (PACKAGES, abi))
+    # 页面必须用这个标签函数（不许自己再解析一遍文件名）。
+    if 'abiOf(' not in upd:
+        errors.append('%s 里没有 abiOf(...) —— 安装包列表的架构标签会与发版命名漂开'
+                      % UPDATE_PAGE)
 
     # ── ⑤ 把「64 位排第一」算一遍（这才是让「不改逻辑」成立的那条性质）──
     for ver in ('1.0.0', '2.0.11', '9.9.99', '10.0.0'):

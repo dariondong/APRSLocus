@@ -136,6 +136,39 @@ KEYS = {
         '贡献代码', '貢獻程式碼', 'Code contribution',
         'コード貢献', 'Contribución de código', 'Kontribusi kode',
     ),
+    # ── 更新页「选择安装包」（v2.0.11：安卓改成按 ABI 分三个包发布）──
+    #
+    # 更新页原来只说一句「APK 安装包 <大小>」，而 Release 里现在有**三个**包
+    # （64 位 / 32 位 / x86_64）。32 位老机型与模拟器用户从那句话里看不出还有
+    # 适合自己的包，而应用内更新只会下 64 位那个（也装不上）。
+    # 这三条就是那个「选择安装包」区：标题、推荐标记、以及一句解释。
+    'choosePackage': (
+        '选择安装包', '選擇安裝包', 'Choose a package',
+        'パッケージを選ぶ', 'Elegir paquete', 'Pilih paket',
+    ),
+    'pkgRecommended': (
+        '推荐', '建議', 'Recommended',
+        '推奨', 'Recomendado', 'Disarankan',
+    ),
+    # 说清「点一行会怎样」，否则用户会以为点一下就在应用内换包下载（不是）。
+    'choosePackageHint': (
+        '64 位包用于绝大多数手机（应用内更新下的是这个）；带 _armeabi-v7a 的是 32 位老机型；'
+        '_x86_64 只用于模拟器 / Chromebook。点一行会打开该包的下载地址。',
+        '64 位元套件用於絕大多數手機（應用程式內更新下載的是這個）；帶 _armeabi-v7a 的是 32 位元舊機型；'
+        '_x86_64 只用於模擬器 / Chromebook。點一列會開啟該套件的下載網址。',
+        'The 64-bit package covers almost every phone (this is what the in-app update fetches); '
+        '_armeabi-v7a is for older 32-bit devices; _x86_64 is only for emulators / Chromebooks. '
+        'Tapping a row opens that package\'s download URL.',
+        '64 ビット版はほとんどのスマホ向け（アプリ内更新が取得するのはこれです）。'
+        '_armeabi-v7a は古い 32 ビット機、_x86_64 はエミュレータ / Chromebook 専用です。'
+        '行をタップするとそのパッケージのダウンロード先を開きます。',
+        'El paquete de 64 bits sirve para casi todos los teléfonos (es el que descarga la '
+        'actualización integrada); _armeabi-v7a es para equipos antiguos de 32 bits; _x86_64 '
+        'solo para emuladores / Chromebooks. Toca una fila para abrir la descarga de ese paquete.',
+        'Paket 64-bit untuk hampir semua ponsel (inilah yang diunduh pembaruan dalam aplikasi); '
+        '_armeabi-v7a untuk perangkat 32-bit lama; _x86_64 hanya untuk emulator / Chromebook. '
+        'Ketuk satu baris untuk membuka tautan unduhan paket itu.',
+    ),
 }
 
 # ── 占位符声明（可空）──

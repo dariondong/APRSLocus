@@ -2655,5 +2655,8 @@
   "crashFalsePositive": "**Puede dar falsas alarmas**: pasar un badén y luego estar quieto 12 segundos (en un semáforo) cumple ambas etapas. El primer botón del aviso es \"Estoy bien\": descártalo y nada más se ve afectado.",
   "crashAlarmTitle": "Posible choque o caída detectado",
   "crashAlarmBody": "El teléfono detectó un impacto fuerte y después ningún movimiento significativo (unos 12 segundos).\n\nSi estás bien, pulsa \"Estoy bien\". Si te encuentras mal o no puedes moverte, llama ya a emergencias o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Es una heurística, no detección de choques de nivel ingenieril**: un badén o dejar caer el móvil pueden activarla.",
-  "crashNotif": "Guardián vital: posible choque"
+  "crashNotif": "Guardián vital: posible choque",
+  "choosePackage": "Elegir paquete",
+  "pkgRecommended": "Recomendado",
+  "choosePackageHint": "El paquete de 64 bits sirve para casi todos los teléfonos (es el que descarga la actualización integrada); _armeabi-v7a es para equipos antiguos de 32 bits; _x86_64 solo para emuladores / Chromebooks. Toca una fila para abrir la descarga de ese paquete."
 }

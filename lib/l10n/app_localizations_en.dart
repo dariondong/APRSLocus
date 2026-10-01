@@ -7619,4 +7619,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get crashNotif => 'Life guard: possible crash detected';
 
+  @override
+  String get choosePackage => "Choose a package";
+
+  @override
+  String get pkgRecommended => "Recommended";
+
+  @override
+  String get choosePackageHint => "The 64-bit package covers almost every phone (this is what the in-app update fetches); _armeabi-v7a is for older 32-bit devices; _x86_64 is only for emulators / Chromebooks. Tapping a row opens that package's download URL.";
+
 }

@@ -7408,4 +7408,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get crashNotif => 'ライフガード：衝突の可能性を検知';
 
+  @override
+  String get choosePackage => "パッケージを選ぶ";
+
+  @override
+  String get pkgRecommended => "推奨";
+
+  @override
+  String get choosePackageHint => "64 ビット版はほとんどのスマホ向け（アプリ内更新が取得するのはこれです）。_armeabi-v7a は古い 32 ビット機、_x86_64 はエミュレータ / Chromebook 専用です。行をタップするとそのパッケージのダウンロード先を開きます。";
+
 }
