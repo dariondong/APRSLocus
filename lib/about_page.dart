@@ -501,6 +501,11 @@ class _AboutPageState extends State<AboutPage>
                           child: Column(
                             children: [
                               _eggRow(t.codeContributionI18n, 'BD3QID'),
+                              // 同一个人的第二项贡献（IC-705 局域网直连）**单独一行**：
+                              // 官网致谢里它同样是与「英文翻译」并列的第二条，而不是并进原条目。
+                              // 这里用 `_row` 而非 `_eggRow`：彩蛋按呼号绑定，同一呼号再挂一行长按
+                              // 会让同一个彩蛋触发两次。
+                              _row(t.codeContributionIcomLan, 'BD3QID'),
                               _eggRow(t.codeContributionZhTw, 'BA4UAX'),
                               _eggRow(t.codeContributionTranslation, 'BA7KSM'),
                               // BH7GZB：贡献代码（PR #11 —— 位置报文数据扩展 `/A=` 高度与
