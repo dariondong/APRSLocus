@@ -208,10 +208,10 @@ CL = [
         'ver': 'v2.0.16', 'date': '2026-10-02',
         'items': [
             ('fix',
-             T('**远程限制名单：改完名单，重开应用就生效**（原来要等最长 6 小时才落地）。',
-               '**遠端限制名單：改完名單，重開應用程式就生效**（原本要等最長 6 小時才生效）。',
-               '**Remote restriction list: a changed list now applies when you restart the app** '
-               '(it used to take up to 6 hours to take effect).')),
+             T('**启动时的远程检查更及时**：现在每次启动都会检查一次（原来要等最长 6 小时）。',
+               '**啟動時的遠端檢查更及時**：現在每次啟動都會檢查一次（原本要等最長 6 小時）。',
+               '**Remote checks are timely at launch**: the app now checks on every launch '
+               '(it used to take up to 6 hours).')),
         ],
     },
     {
@@ -228,7 +228,7 @@ CL = [
                '监护人同意，9.4）。应用内公告与赞赏页都有同一口径的说明。'
                '同版还修了三处：**蓝牙连不上就闪退**（阻塞的连接跑在主线程 → 系统判定'
                '无响应）、**电量半天不动**（只在有定位时才读）、**运动排行榜**的占位'
-               '文字与排序口径（只统计今天，且自己也在榜上并标出）。同版还**新增了远程限制名单**：启动时与每 6 小时从官网读一份名单，命中呼号或本机安装标识的将无法继续使用（名单拉不到一律放行；安装标识只在本机、不上传）。安装标识可在「设置 → 关于」查看并复制。',
+               '文字与排序口径（只统计今天，且自己也在榜上并标出）。',
                '**使用者條款更新到 V1.1（含贊賞聲明）**。三語同步、34 → 41 條，把'
                '「軟體實際會做的事」補齊了：閘道轉發等於**代表他人在業餘頻段上發射**'
                '（3.5）；未成年人需監護人同意、無資格不得發射（3.6）；送出的內容要真實、'
@@ -239,7 +239,7 @@ CL = [
                '監護人同意，9.4）。應用程式內公告與贊賞頁都有同一口徑的說明。'
                '同版還修了三處：**藍牙連不上就閃退**（阻塞的連線跑在主執行緒 → 系統判定'
                '無回應）、**電量半天不動**（只在有定位時才讀）、**運動排行榜**的佔位'
-               '文字與排序口徑（只統計今天，且自己也在榜上並標出）。同版還**新增了遠端限制名單**：啟動時與每 6 小時從官網讀取一份名單，命中呼號或本機安裝識別碼的將無法繼續使用（名單讀不到一律放行；安裝識別碼只在本機、不上傳）。安裝識別碼可在「設定 → 關於」查看並複製。',
+               '文字與排序口徑（只統計今天，且自己也在榜上並標出）。',
                '**Terms of Use updated to V1.1 (with a donation clause).** All three '
                'languages, 34 -> 41 clauses, documenting what the software actually does: '
                'gateway forwarding means transmitting on amateur bands on behalf of others '
@@ -256,7 +256,7 @@ CL = [
                'connect** (the blocking connect ran on the main thread, so the system killed '
                'the app), a **phone battery that never updated** (it was only read when a '
                'location fix arrived), and the **sport ranking** placeholder text and '
-               'counting rule (today only, and you now appear on the board, marked). It also adds a **remote restriction list**, read from the official site on launch and every 6 hours: a matching callsign or install ID can no longer use the app (an unreachable list never blocks anyone; the install ID stays on the device and is never uploaded). The install ID can be viewed and copied under Settings -> About.')),
+               'counting rule (today only, and you now appear on the board, marked). ')),
         ],
     },
     {

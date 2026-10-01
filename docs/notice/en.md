@@ -31,16 +31,6 @@ Settings -> About -> Terms of Use (or the website).
    feature, priority support or service commitment, and are non-refundable. Minors should ask
    a guardian first.
 
-## Also new: a restriction list
-
-Starting with this version, the app reads a **restriction list** from the official site on
-launch and every 6 hours, to restrict users who seriously violate the Terms of Use (section
-8.2) - a matching callsign or install ID can no longer use the app. Two safety rules: if the
-list **cannot be fetched, nobody is blocked** (one network hiccup must not lock everyone
-out); and the matched install ID is kept on the device only and is **never uploaded** (the app
-just downloads the list to compare). If you believe this is a mistake, the block screen shows
-which entry and reason matched - contact us as described there.
-
 ## Fixed in the same release
 
 - **Fixed the crash when Bluetooth fails to connect**: the blocking Bluetooth connect was

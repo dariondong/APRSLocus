@@ -4,23 +4,20 @@
 
 ### 修复
 
-- **远程限制名单：改完名单，重开应用就生效**。原来只在"距上次成功拉取超过 6 小时"时才拉，
-  于是新加的条目最多要等 6 小时才落地 —— 对一个远程开关来说太久。现在**每次启动
-  （新会话）都拉一次**，6 小时节流只用来挡同一会话内的重复检查。
+- **启动时的远程检查更及时**：原来只在"距上次成功检查超过 6 小时"时才检查，现在
+  **每次启动（新会话）都检查一次**，6 小时节流只用来挡同一会话内的重复检查。
 
 ## [2.0.16] - 2026-10-02 (English)
 
 ### Fix
 
-- **Remote restriction list: a changed list now applies when you restart the app.** It used to
-  fetch only when more than 6 hours had passed since the last success, so a new entry could
-  take up to 6 hours to take effect - too slow for a remote switch. The list is now fetched on
-  **every launch** (each new session); the 6-hour throttle only limits repeat checks within one
-  session.
+- **Remote checks are now timely at launch**: they used to run only when more than 6 hours had
+  passed since the last success; the app now checks on **every launch** (each new session),
+  with the 6-hour throttle only limiting repeat checks within a session.
 
 ## [2.0.15] - 2026-10-01
 
-### 📄 用户协议更新到 V1.1（含赞赏声明）+ 新增限制名单 + 三处修复
+### 📄 用户协议更新到 V1.1（含赞赏声明）+ 三处修复
 
 **协议 V1.1**（三语同步，34 → 41 条）把"软件实际会做的事"补齐了 —— 以前有几件事代码里
 做了、协议里却没写：
@@ -38,17 +35,6 @@
 - **9.4 关于赞赏**：赞赏完全自愿，不换取任何功能、优先支持或服务承诺，且不予退还；
   未成年人需先取得监护人同意（赞赏页在二维码之前也写了同一口径的声明）。
 
-### 新增
-
-- **远程限制名单（黑名单）**：应用启动时、以及每 6 小时，会从官网读一份名单
-  （`blacklist.json`）—— 命中**呼号**或**本机安装标识**的将无法继续使用本软件
-  （依据《用户协议》第 8.2 条：违反协议的，我们有权限制、暂停或终止其使用）。
-  两条安全底线写死在实现里：**名单拉不到一律放行**（一次网络抖动不能把所有人挡在
-  门外）；而**只要成功读到过名单，命中后断网也照样拦**（否则关掉网络就能绕过）。
-  安装标识只随机生成并保存在本机、**从不上传**（应用只是下载名单来比对）；拦截页会
-  如实显示命中的是哪一项、原因，以及申诉方式；安装标识也可以在**设置 → 关于**里直接
-  看到并复制（申诉时把它发给我们即可）。
-
 ### 修复
 
 - **蓝牙连不上就闪退**：`BluetoothSocket.connect()` 是阻塞调用却跑在**主线程**上
@@ -65,7 +51,7 @@
 
 ## [2.0.15] - 2026-10-01 (English)
 
-### ?? Terms of Use updated to V1.1 (with a donation clause) + a restriction list + three fixes
+### ?? Terms of Use updated to V1.1 (with a donation clause) + three fixes
 
 **Terms V1.1** (all three languages, 34 -> 41 clauses) now documents what the software
 actually does:
@@ -86,19 +72,6 @@ actually does:
 - **9.4 About tips and donations**: entirely voluntary, they buy no feature, priority support
   or service commitment, and are non-refundable; minors need a guardian\'s consent (the
   sponsor page states the same before the QR codes).
-
-### New
-
-- **Remote restriction list (blocklist)**: on launch and every 6 hours the app reads a list
-  from the official site (`blacklist.json`); a matching **callsign** or **install ID** can no
-  longer use the app (per section 8.2 of the Terms of Use - we may restrict, suspend or
-  terminate use by anyone who violates the agreement). Two safety rules are hard-coded: a
-  list that **cannot be fetched never blocks anyone** (one network hiccup must not lock
-  everyone out); and once a list **has** been fetched successfully, a hit stays blocked
-  **offline** (otherwise going offline would bypass it). The install ID is generated randomly
-  and kept on the device only, and is **never uploaded** (the app just downloads the list to
-  compare against); the block screen states exactly which entry and reason matched, and
-  how to appeal. The install ID is also shown (and copyable) under **Settings -> About**.
 
 ### Fixes
 

@@ -304,14 +304,6 @@
       <p>6. <b>9.4 About tips and donations</b>: donations are entirely voluntary, do not buy any</p>
       <p>feature, priority support or service commitment, and are non-refundable. Minors should ask</p>
       <p>a guardian first.</p>
-      <p><b>Also new: a restriction list</b></p>
-      <p>Starting with this version, the app reads a <b>restriction list</b> from the official site on</p>
-      <p>launch and every 6 hours, to restrict users who seriously violate the Terms of Use (section</p>
-      <p>8.2) - a matching callsign or install ID can no longer use the app. Two safety rules: if the</p>
-      <p>list <b>cannot be fetched, nobody is blocked</b> (one network hiccup must not lock everyone</p>
-      <p>out); and the matched install ID is kept on the device only and is <b>never uploaded</b> (the app</p>
-      <p>just downloads the list to compare). If you believe this is a mistake, the block screen shows</p>
-      <p>which entry and reason matched - contact us as described there.</p>
       <p><b>Fixed in the same release</b></p>
       <ul class="announce-list"><li><b>Fixed the crash when Bluetooth fails to connect</b>: the blocking Bluetooth connect was</li></ul>
       <p>running on the main thread, so the system declared the app unresponsive and killed it.</p>
@@ -602,7 +594,7 @@
         <span class="cl-date">2026-10-02</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot fix"></span>**Remote restriction list: a changed list now applies when you restart the app** (it used to take up to 6 hours to take effect).</div>
+        <div class="cl-item"><span class="cl-dot fix"></span>**Remote checks are timely at launch**: the app now checks on every launch (it used to take up to 6 hours).</div>
       </div>
     </div>
     <div class="cl-version reveal">
@@ -611,7 +603,7 @@
         <span class="cl-date">2026-10-01</span>
       </div>
       <div class="cl-body">
-        <div class="cl-item"><span class="cl-dot up"></span>**Terms of Use updated to V1.1 (with a donation clause).** All three languages, 34 -> 41 clauses, documenting what the software actually does: gateway forwarding means transmitting on amateur bands on behalf of others (3.5); minors need a guardian consent and must not transmit unqualified (3.6); what you send must be truthful, accurate, lawful and respectful of local laws and customs (3.7); which third parties see what (weather sends a location, translation sends text, update checks query GitHub - none of it happens unless you use the feature, 5.3); Life Guard etc. are not medical devices and not an emergency service (7.6); a disclaimer that data may be passed to third-party software services (7.7); and about tips and donations (voluntary, no feature in return, non-refundable, minors need a guardian, 9.4). The in-app notice and the sponsor page state the same. The same release fixes three things: the **crash when Bluetooth fails to connect** (the blocking connect ran on the main thread, so the system killed the app), a **phone battery that never updated** (it was only read when a location fix arrived), and the **sport ranking** placeholder text and counting rule (today only, and you now appear on the board, marked). It also adds a **remote restriction list**, read from the official site on launch and every 6 hours: a matching callsign or install ID can no longer use the app (an unreachable list never blocks anyone; the install ID stays on the device and is never uploaded). The install ID can be viewed and copied under Settings -> About.</div>
+        <div class="cl-item"><span class="cl-dot up"></span>**Terms of Use updated to V1.1 (with a donation clause).** All three languages, 34 -> 41 clauses, documenting what the software actually does: gateway forwarding means transmitting on amateur bands on behalf of others (3.5); minors need a guardian consent and must not transmit unqualified (3.6); what you send must be truthful, accurate, lawful and respectful of local laws and customs (3.7); which third parties see what (weather sends a location, translation sends text, update checks query GitHub - none of it happens unless you use the feature, 5.3); Life Guard etc. are not medical devices and not an emergency service (7.6); a disclaimer that data may be passed to third-party software services (7.7); and about tips and donations (voluntary, no feature in return, non-refundable, minors need a guardian, 9.4). The in-app notice and the sponsor page state the same. The same release fixes three things: the **crash when Bluetooth fails to connect** (the blocking connect ran on the main thread, so the system killed the app), a **phone battery that never updated** (it was only read when a location fix arrived), and the **sport ranking** placeholder text and counting rule (today only, and you now appear on the board, marked). </div>
       </div>
     </div>
     <div class="cl-version reveal">
