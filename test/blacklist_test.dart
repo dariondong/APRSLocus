@@ -76,6 +76,47 @@ void main() {
     });
   });
 
+  group('呼号通配符', () {
+    test('B-* ：任意 SSID，**并含不带 SSID 的那个**', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ-*","reason":"任意 SSID"}]}')!;
+      for (final c in ['BG7LZQ', 'BG7LZQ-0', 'BG7LZQ-7', 'bg7lzq-15']) {
+        expect(bl.match(c, '')?.matched, 'BG7LZQ-*', reason: '该命中：$c');
+      }
+      for (final c in ['BG7LZQ2', 'BG7LZQ-1A', 'BA7LZQ-7', 'BG7LZ']) {
+        expect(bl.match(c, ''), isNull, reason: '不该命中：$c');
+      }
+    });
+
+    test('其他位置的 * 是任意串', () {
+      final bl = Blacklist.parse('{"entries":['
+          '{"call":"BH7*","reason":"前缀"},'
+          '{"call":"*LZQ-9","reason":"后缀"}]}')!;
+      expect(bl.match('BH7GZB-3', '')?.reason, '前缀');
+      expect(bl.match('bg7lzq-9', '')?.reason, '后缀');
+      expect(bl.match('BH7GZB', '')?.reason, '前缀');
+      expect(bl.match('BG7LZQ-7', ''), isNull);
+    });
+
+    test('不带 * 仍是完全相等（有通配符不等于放松匹配）', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ-7","reason":"exact"}]}')!;
+      expect(bl.match('BG7LZQ-7', ''), isNotNull);
+      expect(bl.match('BG7LZQ', ''), isNull, reason: '不带 SSID 的那个不该命中');
+      expect(bl.match('BG7LZQ-9', ''), isNull);
+    });
+
+    test('只有通配符的条目被丢弃（防手滑把所有人拦下）', () {
+      final bl = Blacklist.parse('{"entries":['
+          '{"call":"*","reason":"oops"},'
+          '{"call":"-*","reason":"oops"},'
+          '{"call":"BG7LZQ-*","reason":"ok"}]}')!;
+      expect(bl.entries.length, 1, reason: '只该留下带真实呼号的那条');
+      expect(bl.match('BA1AAA-1', ''), isNull);
+      expect(bl.match('BG7LZQ-1', ''), isNotNull);
+    });
+  });
+
   group('本地缓存与安装标识', () {
     test('安装标识随机生成一次后稳定（且是本机才有，不上传）', () async {
       final a = await Blacklist.deviceId();

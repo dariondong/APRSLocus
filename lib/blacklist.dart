@@ -22,22 +22,53 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// ── 名单文件格式（官网 `docs/assets/blacklist.json`）──
 /// ```json
-/// { "updated": "2026-10-01",
-///   "entries": [ { "call": "BG7LZQ-9", "reason": "…", "at": "2026-10-01" },
-///                { "device": "9f2c…", "reason": "…", "at": "2026-10-01" } ] }
+/// { "updated": "2026-10-02",
+///   "entries": [ { "call": "BG7LZQ-9",  "reason": "…", "at": "2026-10-02" },
+///                { "call": "BG7LZQ-*", "reason": "…" },   // 该呼号的任意 SSID
+///                { "device": "9f2c…", "reason": "…" } ] }
 /// ```
-/// 每条至少要有一个 `call` 或 `device`；两个都没有的条目**永不命中**（防止手滑写空条目
-/// 把所有人拦下）。
+/// `call` 支持 `*` 通配符（大小写不敏感），规则见 [BlacklistEntry.hitsCall]。
+///
+/// 两条"防止自己把自己坑了"的作废规则：一条里 `call` / `device` 都空 → 永不命中；
+/// `call` 里**一个非通配符字符都没有**（比如只写 `*` 或 `-*`）→ 同样作废 ——
+/// 否则手滑一个星号就把所有用户挡在门外。
 class BlacklistEntry {
-  final String? call;    // 呼号（含 SSID，大小写不敏感）
+  final String? call;    // 呼号模式（大写；可含 `*` 通配符，大小写不敏感）
   final String? device;  // 安装标识（见 [Blacklist.deviceId]）
   final String reason;   // 给用户看的原因（可空）
   final String at;       // 列入日期（可空）
 
   const BlacklistEntry({this.call, this.device, this.reason = '', this.at = ''});
 
-  bool get usable => (call != null && call!.isNotEmpty) ||
+  /// 这条到底能不能用来拦人。
+  ///
+  /// 呼号侧要求**至少有一个非通配符字符**：只写 `*`（或 `-*`）等于"拦所有人"，
+  /// 一律作废 —— 名单是手写的，手滑一个星号不能把整个用户群挡在门外。
+  bool get usable =>
+      (call != null &&
+          call!.replaceAll('*', '').replaceAll('-', '').isNotEmpty) ||
       (device != null && device!.isNotEmpty);
+
+  /// 该呼号是否命中本条目（大小写不敏感）。就三条规则：
+  ///
+  ///   1. 不带 `*` → **完全相等**（`BG7LZQ-7` 只匹配 `BG7LZQ-7`）；
+  ///   2. `CALL-*` → 该呼号的**任意 SSID（0–15），并含不带 SSID 的那个** ——
+  ///      "封一个人"最常用的写法：`BG7LZQ-*` 同时命中 `BG7LZQ`、`BG7LZQ-7`、`BG7LZQ-15`；
+  ///   3. 其他位置的 `*` → 任意串（`BH7*`、`*LZQ-9` 都行）。
+  bool hitsCall(String call) {
+    final c = call.trim().toUpperCase();
+    final p = this.call;
+    if (p == null || p.isEmpty || c.isEmpty) return false;
+    if (!p.contains('*')) return p == c;                        // 规则 1
+    final head = p.endsWith('-*') ? p.substring(0, p.length - 2) : null;
+    if (head != null && head.isNotEmpty && !head.contains('*')) {
+      // 规则 2：SSID 按 APRS 的写法限 1–2 位数字，避免 `CALL-1A` 这种误伤
+      return RegExp('^${RegExp.escape(head)}(-[0-9]{1,2})?\$').hasMatch(c);
+    }
+    // 规则 3：`*` → `.*`，其余字符转义后整体锚定
+    return RegExp('^${p.split('*').map(RegExp.escape).join('.*')}\$')
+        .hasMatch(c);
+  }
 
   static BlacklistEntry? fromJson(Object? j) {
     if (j is! Map) return null;
@@ -98,12 +129,12 @@ class Blacklist {
     }
   }
 
-  /// 命中判断：呼号（去空白、大写）或安装标识（小写）任一相同即命中。
+  /// 命中判断：呼号（支持 `*` 通配符，见 [BlacklistEntry.hitsCall]）或安装标识
+  /// （精确、小写）任一命中即命中。
   BlacklistHit? match(String call, String deviceId) {
-    final c = call.trim().toUpperCase();
     final d = deviceId.trim().toLowerCase();
     for (final e in entries) {
-      if (e.call != null && e.call == c && c.isNotEmpty) {
+      if (e.hitsCall(call)) {
         return BlacklistHit(e.reason, e.call!);
       }
       if (e.device != null && e.device == d && d.isNotEmpty) {

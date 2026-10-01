@@ -8,6 +8,8 @@
 
   * 条目里 `call` / `device` 都忘了写 → 在应用里是"永不命中"（不会误伤，但也白写）；
   * 写成小写呼号 / 带空格的标识 → 应用里**静默不命中**（用户明明在名单上却能用）；
+  * `call` 写成 `*` 或 `-*`（一个非通配符字符都没有）→ 应用会**作废**这条
+    （否则手滑一个星号就把所有用户挡在门外）；
   * JSON 语法坏掉 → 应用侧解析失败 → **放行**（名单形同虚设，而且不报错）。
 
 最要命的是：这三种情况在应用里**都不报错**，只是"名单没生效"。所以钉在这里，
@@ -28,7 +30,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JSON_PATH = os.path.join(ROOT, 'docs', 'assets', 'blacklist.json')
 APP = os.path.join(ROOT, 'lib', 'blacklist.dart')
 
-RE_CALL = re.compile(r'^[A-Z0-9]{1,6}(-[0-9]{1,2})?$')
+RE_CALL = re.compile(r'^[A-Z0-9*-]{1,16}$')
+RE_HAS_ALNUM = re.compile(r'[A-Z0-9]')
 RE_DEVICE = re.compile(r'^[0-9a-f]{32}$')
 RE_DATE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 
@@ -67,13 +70,17 @@ def main() -> int:
         if not call and not dev:
             errors.append('%s 既没有 call 也没有 device —— 这条**永远不会生效**' % where)
         if call is not None:
-            if not RE_CALL.match(str(call)):
-                errors.append('%s 的 call=%r 不合法（大写字母数字 + 可选 -SSID；'
+            c = str(call)
+            if not RE_CALL.match(c):
+                errors.append('%s 的 call=%r 不合法（大写字母数字、可带 -SSID、可含 `*` 通配符；'
                               '小写或带空格在应用里会**静默不命中**）' % (where, call))
-            elif str(call) in seen:
-                errors.append('%s 的 call=%s 与 %s 重复' % (where, call, seen[str(call)]))
+            elif not RE_HAS_ALNUM.search(c):
+                errors.append('%s 的 call=%r 里一个字母数字都没有 —— 那等于"拦所有人"，'
+                              '应用会**作废**这条（防手滑）' % (where, call))
+            elif c in seen:
+                errors.append('%s 的 call=%s 与 %s 重复' % (where, call, seen[c]))
             else:
-                seen[str(call)] = where
+                seen[c] = where
         if dev is not None:
             if not RE_DEVICE.match(str(dev)):
                 errors.append('%s 的 device=%r 不是 32 位小写十六进制 —— 应用生成的'
