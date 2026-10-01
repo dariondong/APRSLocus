@@ -9,7 +9,7 @@
 /// 把收到的报文翻译成事件。
 library;
 
-import 'icom_lan_protocol.dart';
+import 'icom_lan_connection_info_retry_policy.dart';
 
 /// 会话阶段。
 enum IcomLanPhase {
@@ -325,43 +325,6 @@ class IcomLanTransition {
   final List<IcomLanAction> actions;
 }
 
-/// 连接信息重试上限（超过就整段重连）。
-const int kIcomLanMaxConnectionInfoAttempts = 4;
-
-/// 收到「会话未就绪」状态时的处置。
-enum IcomLanConnectionInfoStatusDecision { ignore, retrySameSession, rejectSession }
-
-/// 收到「会话未就绪」状态时的处置决策。
-IcomLanConnectionInfoStatusDecision icomLanConnectionInfoStatusDecision({
-  required bool connectionInfoSent,
-  required bool hasStreamEndpoints,
-  required int errorCode,
-  required int disconnectFlag,
-}) {
-  if (!connectionInfoSent || hasStreamEndpoints) {
-    return IcomLanConnectionInfoStatusDecision.ignore;
-  }
-  return errorCode == 0 && disconnectFlag == 0
-      ? IcomLanConnectionInfoStatusDecision.retrySameSession
-      : IcomLanConnectionInfoStatusDecision.rejectSession;
-}
-
-enum IcomLanConnectionInfoRetryDecision { ignore, retry, exhausted }
-
-/// 连接信息重试计时器到点后的决策。
-IcomLanConnectionInfoRetryDecision icomLanConnectionInfoRetryDecision({
-  required bool connectionInfoSent,
-  required bool hasStreamEndpoints,
-  required int attempts,
-}) {
-  if (!connectionInfoSent || hasStreamEndpoints) {
-    return IcomLanConnectionInfoRetryDecision.ignore;
-  }
-  return attempts >= kIcomLanMaxConnectionInfoAttempts
-      ? IcomLanConnectionInfoRetryDecision.exhausted
-      : IcomLanConnectionInfoRetryDecision.retry;
-}
-
 /// 会话状态机。
 class IcomLanSessionEngine {
   IcomLanSessionEngine._();
@@ -649,16 +612,3 @@ class IcomLanSessionEngine {
   }
 }
 
-/// 该协议里客户端 ID 的构造方式：把本机 IPv4 的后两段与本地端口拼进 32 位。
-///
-/// 电台按这个 ID 区分客户端，所以每次重连（端口/地址可能变）都要重算。
-int icomLanClientIdForEndpoint({int? ipv4LastTwoOctets, required int localPort}) {
-  if (localPort <= 0 || localPort > 0xffff) {
-    throw IcomLanProtocolException('localPort must be a bound UDP port');
-  }
-  if (ipv4LastTwoOctets != null) {
-    return ((ipv4LastTwoOctets & 0xffff) << 16) | localPort;
-  }
-  // 拿不到具体路由 IPv4 时的兜底形式（同样来自端点，不用随机值）。
-  return 0x00010000 | localPort;
-}

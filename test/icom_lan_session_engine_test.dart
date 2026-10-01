@@ -4,7 +4,8 @@
 // 重复/乱序事件必须幂等；可恢复失败必须关套接字 + 通知音频中断 + 按次数退避；
 // 电台明确拒绝必须与「暂时没准备好」区分开。
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aprslocus/net/icom_lan_session_engine.dart';
+import 'package:aprslocus/net/icom_lan_rx_session_engine.dart';
+import 'package:aprslocus/net/icom_lan_connection_info_retry_policy.dart';
 
 const endpoints = IcomLanStreamEndpoints(civPort: 50002, audioPort: 50003);
 
@@ -300,16 +301,4 @@ void main() {
     });
   });
 
-  group('客户端 ID 构造', () {
-    test('用本机 IPv4 后两段 + 本地端口拼成', () {
-      expect(icomLanClientIdForEndpoint(ipv4LastTwoOctets: 0x0102, localPort: 50001),
-          0x0102c351);
-    });
-
-    test('拿不到路由地址时用端点兜底，且不做随机', () {
-      final id = icomLanClientIdForEndpoint(localPort: 50001);
-      expect(id, 0x0001c351);
-      expect(icomLanClientIdForEndpoint(localPort: 50001), id);
-    });
-  });
 }

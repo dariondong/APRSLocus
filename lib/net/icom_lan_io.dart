@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'icom_lan_base.dart';
 import 'icom_lan_protocol.dart' show IcomLanAudioCodec;
-import 'icom_lan_session_engine.dart' show IcomLanPhase;
+import 'icom_lan_rx_session_engine.dart' show IcomLanPhase;
 import 'icom_lan_session.dart' as session_impl;
 import 'icom_lan_settings.dart';
 

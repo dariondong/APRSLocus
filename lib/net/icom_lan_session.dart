@@ -2,7 +2,7 @@
 ///
 /// 分工：
 ///   * `icom_lan_protocol.dart` —— 字节编解码（纯函数）；
-///   * `icom_lan_session_engine.dart` —— 握手/重连状态机（纯逻辑）；
+///   * `icom_lan_rx_session_engine.dart` —— 握手/重连状态机（纯逻辑）；
 ///   * 本文件 —— 把状态机要求的动作翻译成真实 UDP 收发，并把收到的报文
 ///     翻译成状态机事件；同时负责音频重排、保活与 watchdog。
 ///
@@ -19,13 +19,12 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'icom_lan_protocol.dart';
-import 'icom_lan_session_engine.dart';
+import 'icom_lan_rx_session_engine.dart';
+import 'icom_lan_rx_session_types.dart';
 import 'icom_lan_settings.dart';
 
 export 'icom_lan_settings.dart' show IcomLanConfig;
-
-/// 三个 UDP 通道的角色。
-enum IcomLanChannelRole { control, civ, audio }
+export 'icom_lan_rx_session_types.dart';
 
 extension IcomLanConfigPorts on IcomLanConfig {
   /// 各角色使用的本地/远端端口。

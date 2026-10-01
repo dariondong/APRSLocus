@@ -9,7 +9,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aprslocus/net/icom_lan_protocol.dart';
 import 'package:aprslocus/net/icom_lan_session.dart';
-import 'package:aprslocus/net/icom_lan_session_engine.dart';
+import 'package:aprslocus/net/icom_lan_rx_session_engine.dart';
 
 /// 记录所有发出的报文，并允许注入"电台发来的"报文。
 class FakeSocket implements IcomLanDatagramSocket {
