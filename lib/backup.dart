@@ -119,15 +119,16 @@ const List<BackupGroupSpec> kBackupGroups = [
     'server', 'port', 'passcode', 'dataSource', 'enabledSources',
     'igateEnabled', 'igateTwoWay',
     'myLat', 'myLng',
-    // 链路配置（TNC / 声卡 TNC / PKWDWPL）与各自上次选的设备。
+    // 链路配置（TNC / 声卡 TNC / PKWDWPL / 小盒子）与各自上次选的设备。
     //
-    // 这 5 个键是 tool/check_backup_keys.py 补强后「查」出来的：原先只扫
+    // 这 7 个键是 tool/check_backup_keys.py 补强后「查」出来的：原先只扫
     // 字面量键，而这几个是通过 `static const _kConfig` 这类常量读写的，
     // 于是整套链路配置在备份里**静默缺失** —— 用户换机后要重新配蓝牙
     // 设备与串口。备份功能里这种缺失最致命：以为备了，直到恢复那天才发现。
     'tncConfigJson', 'tncDeviceJson',
     'audioConfigJson',
     'pkwdwplConfigJson', 'pkwdwplDeviceJson',
+    'boxConfigJson', 'boxDeviceJson',
   ]),
   // 台站与联系人：整份 stations JSON（收藏/手动添加/备注）
   BackupGroupSpec(BackupCategory.stations, ['stations']),

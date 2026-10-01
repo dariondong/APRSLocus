@@ -1661,6 +1661,129 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => 'The box: connect to change its config, feed it a position, trigger a beacon';
+
+  @override
+  String get boxBindTitle => 'Box connection';
+
+  @override
+  String get boxModeTip => 'Bluetooth only works when the box link mode is bt or both; in wifi mode use a USB serial cable. link and bt apply after rebooting the box.';
+
+  @override
+  String get boxBtLinkWarn => 'The box is in link = wifi: Bluetooth management will not work. Set it to bt/both and reboot, or use a USB serial cable.';
+
+  @override
+  String get boxBaud => 'Serial baud rate (USB / desktop)';
+
+  @override
+  String get boxStatTitle => 'Box status';
+
+  @override
+  String get boxStatLinkMode => 'Link mode';
+
+  @override
+  String get boxStatBeacon => 'Auto beacon';
+
+  @override
+  String get boxStatHost => 'APRS-IS server';
+
+  @override
+  String get boxStatGps => 'GPS baud';
+
+  @override
+  String get boxStatEvents => 'Event counters';
+
+  @override
+  String get boxLastEvent => 'Last event';
+
+  @override
+  String get boxNoEventYet => 'No events yet';
+
+  @override
+  String get boxCfgTitle => 'Box config';
+
+  @override
+  String get boxCfgSubtitle => 'Key names match the box documentation; tap an item to change it';
+
+  @override
+  String get boxCfgRead => 'Read config';
+
+  @override
+  String get boxCfgEmpty => 'No config read yet — connect first, then tap Read config';
+
+  @override
+  String get boxCfgRebootHint => 'link and bt are boot settings: reboot the box to apply';
+
+  @override
+  String get boxCfgSent => 'Sent to the box';
+
+  @override
+  String get boxCfgEditTitle => 'Change setting';
+
+  @override
+  String get boxCfgEditHint => 'Sends CFG key=value; leave empty to clear the value';
+
+  @override
+  String get boxCfgMasked => 'Passwords are not echoed: leave empty to keep it, enter a new value to overwrite';
+
+  @override
+  String get boxCfgNoChange => 'Not changed (password is not echoed)';
+
+  @override
+  String get boxFeedTitle => 'Feed position to the box';
+
+  @override
+  String get boxFeedSubtitle => 'Use it when the box has no GPS; a fed position stays valid for 60 seconds';
+
+  @override
+  String get boxFeedAuto => 'Feed automatically (every 30 s)';
+
+  @override
+  String get boxFeedSend => 'Send current position';
+
+  @override
+  String get boxFeedStop => 'Stop feeding';
+
+  @override
+  String get boxFeedNoFix => 'No fix on the phone yet — get a position on the home page first';
+
+  @override
+  String get boxActTitle => 'Box actions';
+
+  @override
+  String get boxActBeacon => 'Beacon now';
+
+  @override
+  String get boxActStatus => 'Status packet';
+
+  @override
+  String get boxActNet => 'Reconnect APRS-IS';
+
+  @override
+  String get boxActClear => 'Clear stations';
+
+  @override
+  String get boxActTest => 'Format self-test';
+
+  @override
+  String get boxActReboot => 'Reboot box';
+
+  @override
+  String get boxPushTitle => 'Phone status to the box';
+
+  @override
+  String get boxPushStatus => 'Push speed / course / nearby stations';
+
+  @override
+  String get boxPushHint => 'The box PHONE page shows these; it only draws on the box screen, never on air. Separate from feeding a position.';
+
+  @override
+  String get boxEvtTitle => 'Box events';
+
+  @override
   String get dataSourceTitle => 'Data source';
 
   @override

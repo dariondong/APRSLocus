@@ -1662,6 +1662,129 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => 'Kotak: sambungkan untuk mengubah konfigurasi, memasok posisi, memicu beacon';
+
+  @override
+  String get boxBindTitle => 'Koneksi kotak';
+
+  @override
+  String get boxModeTip => 'Bluetooth hanya aktif bila mode link kotak disetel bt atau both; pada mode wifi gunakan kabel serial USB. link dan bt berlaku setelah kotak di-reboot.';
+
+  @override
+  String get boxBtLinkWarn => 'Kotak sedang link = wifi: manajemen Bluetooth tidak bisa dipakai. Ubah ke bt/both lalu reboot, atau pakai kabel serial USB.';
+
+  @override
+  String get boxBaud => 'Baud serial (USB / desktop)';
+
+  @override
+  String get boxStatTitle => 'Status kotak';
+
+  @override
+  String get boxStatLinkMode => 'Mode link';
+
+  @override
+  String get boxStatBeacon => 'Beacon otomatis';
+
+  @override
+  String get boxStatHost => 'Server APRS-IS';
+
+  @override
+  String get boxStatGps => 'Baud GPS';
+
+  @override
+  String get boxStatEvents => 'Jumlah peristiwa';
+
+  @override
+  String get boxLastEvent => 'Peristiwa terakhir';
+
+  @override
+  String get boxNoEventYet => 'Belum ada peristiwa';
+
+  @override
+  String get boxCfgTitle => 'Konfigurasi kotak';
+
+  @override
+  String get boxCfgSubtitle => 'Nama kunci sama persis dengan dokumentasi kotak; ketuk item untuk mengubah';
+
+  @override
+  String get boxCfgRead => 'Baca konfigurasi';
+
+  @override
+  String get boxCfgEmpty => 'Konfigurasi belum terbaca — sambungkan dulu, lalu ketuk Baca konfigurasi';
+
+  @override
+  String get boxCfgRebootHint => 'link dan bt adalah setelan boot: reboot kotak untuk menerapkannya';
+
+  @override
+  String get boxCfgSent => 'Terkirim ke kotak';
+
+  @override
+  String get boxCfgEditTitle => 'Ubah setelan';
+
+  @override
+  String get boxCfgEditHint => 'Akan mengirim CFG kunci=nilai; kosongkan untuk menghapus nilai';
+
+  @override
+  String get boxCfgMasked => 'Kata sandi tidak ditampilkan: biarkan kosong berarti tidak berubah, isi nilai baru untuk menimpa';
+
+  @override
+  String get boxCfgNoChange => 'Tidak diubah (kata sandi tidak ditampilkan)';
+
+  @override
+  String get boxFeedTitle => 'Pasok posisi ke kotak';
+
+  @override
+  String get boxFeedSubtitle => 'Pakai bila kotak tidak punya GPS; posisi yang dipasok berlaku 60 detik';
+
+  @override
+  String get boxFeedAuto => 'Pasok otomatis (tiap 30 detik)';
+
+  @override
+  String get boxFeedSend => 'Kirim posisi saat ini';
+
+  @override
+  String get boxFeedStop => 'Hentikan pasokan';
+
+  @override
+  String get boxFeedNoFix => 'Ponsel belum punya posisi — dapatkan dulu di halaman utama';
+
+  @override
+  String get boxActTitle => 'Aksi kotak';
+
+  @override
+  String get boxActBeacon => 'Beacon sekarang';
+
+  @override
+  String get boxActStatus => 'Paket status';
+
+  @override
+  String get boxActNet => 'Sambung ulang APRS-IS';
+
+  @override
+  String get boxActClear => 'Bersihkan stasiun';
+
+  @override
+  String get boxActTest => 'Uji mandiri format';
+
+  @override
+  String get boxActReboot => 'Reboot kotak';
+
+  @override
+  String get boxPushTitle => 'Status ponsel ke kotak';
+
+  @override
+  String get boxPushStatus => 'Kirim kecepatan / arah / stasiun terdekat';
+
+  @override
+  String get boxPushHint => 'Halaman PHONE kotak menampilkan ini; hanya menggambar di layar kotak, tidak dipancarkan. Terpisah dari memasok posisi.';
+
+  @override
+  String get boxEvtTitle => 'Peristiwa kotak';
+
+  @override
   String get dataSourceTitle => 'Sumber data';
 
   @override

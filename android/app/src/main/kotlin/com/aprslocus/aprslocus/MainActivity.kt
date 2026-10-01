@@ -74,6 +74,11 @@ class MainActivity : FlutterActivity() {
     // （lib/pkwdwpl.dart 按行解析 NMEA，而不是解 KISS 帧）。
     private var pkwdwpl: TncManager? = null
 
+    // APRSlocusBOX（APRS 小盒子）：又说一遍 —— 独立通道 + 独立 socket，
+    // 所以「用手机管盒子」不会打断正在收发的 TNC。线上是明文命令行
+    // （`CFG k=v` / `POS …`），解析全在 Dart 侧（lib/box.dart）。
+    private var box: TncManager? = null
+
     // 声卡 TNC（AFSK 1200）：同样只搬 PCM 采样，调制解调在 Dart 侧
     private var audio: AudioManager? = null
 
@@ -305,6 +310,16 @@ class MainActivity : FlutterActivity() {
             TncManager.EVENT_CHANNEL_PKWDWPL,
         )
 
+        // ③ APRSlocusBOX（APRS 小盒子：改配置 / 喂位置 / 催它发信标）
+        val boxManager = TncManager(
+            this,
+            TncManager.METHOD_CHANNEL_BOX,
+            TncManager.EVENT_CHANNEL_BOX,
+            TncManager.PERM_REQUEST_BOX,
+        )
+        box = boxManager
+        wireSppLink(boxManager, TncManager.METHOD_CHANNEL_BOX, TncManager.EVENT_CHANNEL_BOX)
+
         // BLE 心率带通道：扫描 → 连接 → 订阅标准心率服务 0x180D 的通知。
         //
         // 与上面两条 SPP 链路**刻意隔离**（用户明确要求「不要跟 TNC 的蓝牙
@@ -322,7 +337,11 @@ class MainActivity : FlutterActivity() {
             // 传回调而不是把 TncManager 塞进去，是为了不让两个管理器互相引用 ——
             // 这里只需要「哪些地址现在被占着」这一个事实。
             busySppAddresses = {
-                setOfNotNull(tnc?.connectedAddress(), pkwdwpl?.connectedAddress())
+                setOfNotNull(
+                    tnc?.connectedAddress(),
+                    pkwdwpl?.connectedAddress(),
+                    box?.connectedAddress(),
+                )
             },
             // 链路状态是异步变化的（GATT 回调），Dart 的方法调用点覆盖不到，
             // 所以由管理器主动通知这里重算前台服务类型。
@@ -1082,6 +1101,7 @@ class MainActivity : FlutterActivity() {
         // 蓝牙/录音权限请求走各自的 requestCode，勿与定位权限混淆
         tnc?.onRequestPermissionsResult(requestCode, grantResults)
         pkwdwpl?.onRequestPermissionsResult(requestCode, grantResults)
+        box?.onRequestPermissionsResult(requestCode, grantResults)
         audio?.onRequestPermissionsResult(requestCode, grantResults)
         bleHr?.onRequestPermissionsResult(requestCode, grantResults)
         if (requestCode != 100) return
@@ -1130,6 +1150,7 @@ class MainActivity : FlutterActivity() {
     private fun refreshBtActive() {
         val anyActive = tnc?.isConnected() == true ||
             pkwdwpl?.isConnected() == true ||
+            box?.isConnected() == true ||
             usbSerial?.isConnected() == true ||
             bleHr?.isConnected() == true
         setBtActive(anyActive)
@@ -1231,6 +1252,8 @@ class MainActivity : FlutterActivity() {
         }
         tnc = null
         try {
+            box?.dispose()
+            box = null
             pkwdwpl?.dispose()
         } catch (_: Exception) {
         }

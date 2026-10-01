@@ -49,3 +49,6 @@ TncTransport createTncTransport() => TncStub();
 
 /// PKWDWPL 链路在无匹配平台上同样只返回「不支持」
 TncTransport createPkwdwplTransport() => TncStub();
+
+/// 盒子链路在无匹配平台上同样只返回「不支持」
+TncTransport createBoxTransport() => TncStub();

@@ -56,6 +56,28 @@ TncTransport createPkwdwplTransport() {
   }
 }
 
+/// APRSlocusBOX（小盒子）的传输层。
+///
+/// 与 TNC 一样**同时支持蓝牙 SPP 与 USB-OTG 串口**（盒子的两种线都可以），
+/// 由 [TncAutoTransport] 按绑定设备的 `kind` 自动选路。差别只在通道名 ——
+/// 原生侧是**独立实例**（独立 socket），所以「管盒子」不会打断正在收发的 TNC。
+TncTransport createBoxTransport() {
+  if (kIsWeb) return TncDesktopSerial();
+  switch (defaultTargetPlatform) {
+    case TargetPlatform.android:
+    case TargetPlatform.iOS:
+      return TncAutoTransport(
+        bluetooth: TncNativeBluetooth(
+          methodChannel: 'com.aprslocus/box',
+          eventChannel: 'com.aprslocus/box_events',
+        ),
+        usb: TncNativeUsb(),
+      );
+    default:
+      return TncDesktopSerial();
+  }
+}
+
 /// ─── Android / iOS：原生蓝牙 SPP ───
 ///
 /// Dart 侧不做任何协议处理，只搬运字节；KISS 组帧在 `kiss.dart`。

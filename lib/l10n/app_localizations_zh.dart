@@ -1606,6 +1606,129 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => '小盒子：连上后用手机改配置、喂位置、发信标';
+
+  @override
+  String get boxBindTitle => '盒子连接';
+
+  @override
+  String get boxModeTip => '盒子的「链路模式」要先设成 bt 或 both，蓝牙才可用；wifi 模式下请用 USB 串口连。link 与 bt 改完要重启盒子才生效。';
+
+  @override
+  String get boxBtLinkWarn => '盒子现在是 link = wifi：蓝牙管理用不了 —— 改成 bt/both 并重启盒子，或者插 USB 串口';
+
+  @override
+  String get boxBaud => '串口线速（USB / 桌面）';
+
+  @override
+  String get boxStatTitle => '盒子状态';
+
+  @override
+  String get boxStatLinkMode => '链路模式';
+
+  @override
+  String get boxStatBeacon => '自动信标';
+
+  @override
+  String get boxStatHost => 'APRS-IS 服务器';
+
+  @override
+  String get boxStatGps => 'GPS 波特率';
+
+  @override
+  String get boxStatEvents => '事件计数';
+
+  @override
+  String get boxLastEvent => '最近事件';
+
+  @override
+  String get boxNoEventYet => '还没有事件';
+
+  @override
+  String get boxCfgTitle => '盒子配置';
+
+  @override
+  String get boxCfgSubtitle => '键名与盒子文档逐字一致，点一项即可修改';
+
+  @override
+  String get boxCfgRead => '读取配置';
+
+  @override
+  String get boxCfgEmpty => '还没读到配置 —— 先连接，再点「读取配置」';
+
+  @override
+  String get boxCfgRebootHint => 'link 与 bt 是开机设置：改完必须重启盒子才生效';
+
+  @override
+  String get boxCfgSent => '已发送到盒子';
+
+  @override
+  String get boxCfgEditTitle => '修改配置项';
+
+  @override
+  String get boxCfgEditHint => '会发送 CFG 键=值；留空表示清空该值';
+
+  @override
+  String get boxCfgMasked => '密码不回显：留空表示不改，只有填了新值才会写入';
+
+  @override
+  String get boxCfgNoChange => '未修改（密码不回显）';
+
+  @override
+  String get boxFeedTitle => '把位置喂给盒子';
+
+  @override
+  String get boxFeedSubtitle => '盒子没有 GPS 时用它；喂进去的位置 60 秒内有效';
+
+  @override
+  String get boxFeedAuto => '自动喂位置（30 秒一次）';
+
+  @override
+  String get boxFeedSend => '发送当前位置';
+
+  @override
+  String get boxFeedStop => '停止喂位置';
+
+  @override
+  String get boxFeedNoFix => '手机还没有定位 —— 先在主页拿到定位';
+
+  @override
+  String get boxActTitle => '盒子动作';
+
+  @override
+  String get boxActBeacon => '立即信标';
+
+  @override
+  String get boxActStatus => '状态报文';
+
+  @override
+  String get boxActNet => '重连 APRS-IS';
+
+  @override
+  String get boxActClear => '清空台站';
+
+  @override
+  String get boxActTest => '格式自检';
+
+  @override
+  String get boxActReboot => '重启盒子';
+
+  @override
+  String get boxPushTitle => '手机状态给盒子';
+
+  @override
+  String get boxPushStatus => '推送速度 / 方位 / 附近台站';
+
+  @override
+  String get boxPushHint => '盒子 PHONE 页显示这些；只写盒子屏幕，不上射频。与「喂位置」是两件事。';
+
+  @override
+  String get boxEvtTitle => '盒子事件';
+
+  @override
   String get dataSourceTitle => '数据来源';
 
   @override
@@ -8922,6 +9045,129 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => '小盒子：連上後用手機改設定、餵位置、發信標';
+
+  @override
+  String get boxBindTitle => '盒子連線';
+
+  @override
+  String get boxModeTip => '盒子的「鏈路模式」要先設成 bt 或 both，藍牙才能用；wifi 模式下請用 USB 串列埠連。link 與 bt 改完要重啟盒子才生效。';
+
+  @override
+  String get boxBtLinkWarn => '盒子現在是 link = wifi：藍牙管理用不了 —— 改成 bt/both 並重啟盒子，或者插 USB 串列埠';
+
+  @override
+  String get boxBaud => '串列埠線速（USB / 桌面）';
+
+  @override
+  String get boxStatTitle => '盒子狀態';
+
+  @override
+  String get boxStatLinkMode => '鏈路模式';
+
+  @override
+  String get boxStatBeacon => '自動信標';
+
+  @override
+  String get boxStatHost => 'APRS-IS 伺服器';
+
+  @override
+  String get boxStatGps => 'GPS 波特率';
+
+  @override
+  String get boxStatEvents => '事件計數';
+
+  @override
+  String get boxLastEvent => '最近事件';
+
+  @override
+  String get boxNoEventYet => '還沒有事件';
+
+  @override
+  String get boxCfgTitle => '盒子設定';
+
+  @override
+  String get boxCfgSubtitle => '鍵名與盒子文件逐字一致，點一項即可修改';
+
+  @override
+  String get boxCfgRead => '讀取設定';
+
+  @override
+  String get boxCfgEmpty => '還沒讀到設定 —— 先連線，再點「讀取設定」';
+
+  @override
+  String get boxCfgRebootHint => 'link 與 bt 是開機設定：改完必須重啟盒子才生效';
+
+  @override
+  String get boxCfgSent => '已傳送到盒子';
+
+  @override
+  String get boxCfgEditTitle => '修改設定項';
+
+  @override
+  String get boxCfgEditHint => '會傳送 CFG 鍵=值；留空表示清空該值';
+
+  @override
+  String get boxCfgMasked => '密碼不回顯：留空表示不改，只有填了新值才會寫入';
+
+  @override
+  String get boxCfgNoChange => '未修改（密碼不回顯）';
+
+  @override
+  String get boxFeedTitle => '把位置餵給盒子';
+
+  @override
+  String get boxFeedSubtitle => '盒子沒有 GPS 時用它；餵進去的位置 60 秒內有效';
+
+  @override
+  String get boxFeedAuto => '自動餵位置（30 秒一次）';
+
+  @override
+  String get boxFeedSend => '傳送目前位置';
+
+  @override
+  String get boxFeedStop => '停止餵位置';
+
+  @override
+  String get boxFeedNoFix => '手機還沒有定位 —— 先在首頁取得定位';
+
+  @override
+  String get boxActTitle => '盒子動作';
+
+  @override
+  String get boxActBeacon => '立即信標';
+
+  @override
+  String get boxActStatus => '狀態報文';
+
+  @override
+  String get boxActNet => '重連 APRS-IS';
+
+  @override
+  String get boxActClear => '清空台站';
+
+  @override
+  String get boxActTest => '格式自檢';
+
+  @override
+  String get boxActReboot => '重啟盒子';
+
+  @override
+  String get boxPushTitle => '手機狀態給盒子';
+
+  @override
+  String get boxPushStatus => '推送速度 / 方位 / 附近台站';
+
+  @override
+  String get boxPushHint => '盒子 PHONE 頁顯示這些；只寫盒子螢幕，不上射頻。與「餵位置」是兩件事。';
+
+  @override
+  String get boxEvtTitle => '盒子事件';
 
   @override
   String get dataSourceTitle => '資料來源';

@@ -1,5 +1,79 @@
 # 更新日志
 
+## [2.0.13] - 2026-10-01
+
+### 📦 新：APRSlocusBOX（APRS 小盒子）—— 用手机管你那台小盒子
+
+「设备」页多了一条 **APRSlocusBOX**：连上盒子之后，手机上就能把它管起来 ——
+读配置、改配置、把手机的位置喂给它、催它发一帧信标、看它到底在干什么。
+
+- **连接**：蓝牙 SPP 与 USB 串口都可以（按绑定设备自动选路，线速默认 115200）。
+  它走**独立通道** —— 管盒子不会打断正在收发的 TNC；
+- **盒子状态**：读回来的呼号/SSID、链路模式、自动信标间隔、APRS-IS 服务器、
+  GPS 波特率，以及 TX / BEACON / RXMSG / ACK / ERR 计数与最近一条事件；
+- **盒子配置**：全部 23 个键（键名与盒子文档逐字一致），点一项就地改，发 `CFG 键=值`；
+  改完自动回读 —— 显示的是**盒子里的真值**，不是你刚输入的值；
+- **把位置喂给盒子**：`POS lat lon [alt] [spd] [crs]`，可开「自动喂位置」（30 秒一次）——
+  盒子没有 GPS 时，出门带手机就能用；
+- **手机状态给盒子**：把**手机这侧看到的东西**推过去 —— 自己的速度/方位/海拔/
+  有没有定位/APRS-IS 通不通/未读消息，以及**附近台站列表**（按距离，最多 8 条）。
+  盒子的 **PHONE 页**显示这些：盒子只跑蓝牙（自己不上 APRS-IS）时，
+  「旁边有谁」在它上面本来是空的，现在这份数据能顶上去；
+- **盒子动作**：立即信标 / 状态报文 / 重连 APRS-IS / 清空台站 / 格式自检 / 重启盒子；
+- **盒子事件**：盒子推回来的 `EVT …` 与命令回执原文，可一键复制（排查时的唯一证据）。
+
+两条刻意的规矩：
+
+- 盒子**不是**「数据来源」：它自己就上 APRS-IS、自己组报文，本应用再收一遍只会重复，
+  所以它只作为「一台要管的设备」出现在设备页，不进数据来源多选；
+- **绝不自动发射**：信标与状态报文必须人点（与「射频发射永远要显式」同一条规矩）；
+  自动的只有本地的位置喂养与状态推送 —— 它们只写盒子的位置与屏幕，不上射频。
+
+顺带：备份里补上了盒子的配置与绑定设备，换机不用重新配一遍。
+
+> 盒子固件是配套的另一份工程（本版应用把协议与界面这一半做完了；固件那半需要有盒子的人
+> 自行烧录）。盒子侧同步新增了 **PHONE 页**与一次界面重做。
+
+## [2.0.13] - 2026-10-01 (English)
+
+### 📦 New: APRSlocusBOX — manage your little APRS box from the phone
+
+The Device page has a new entry, **APRSlocusBOX**: once connected you can manage the
+box from the phone — read its config, change it, feed it your position, trigger a
+beacon, and see what it is actually doing.
+
+- **Connection**: Bluetooth SPP or USB serial (picked automatically from the bound
+  device; baud defaults to 115200). It uses its **own channel**, so managing the box
+  never interrupts a TNC that is receiving or transmitting;
+- **Box status**: callsign/SSID, link mode, beacon interval, APRS-IS server, GPS baud,
+  plus TX / BEACON / RXMSG / ACK / ERR counters and the latest event;
+- **Box config**: all 23 keys (names match the box documentation), tap one to change it;
+  the app sends `CFG key=value` and then re-reads — so what you see is the **real value
+  in the box**, not the value you typed;
+- **Feed a position to the box**: `POS lat lon [alt] [spd] [crs]`, with an optional
+  "feed automatically" (every 30 s) — handy when the box has no GPS of its own;
+- **Phone status to the box**: pushes what the **phone** sees — speed, course, altitude,
+  fix, APRS-IS up/down, unread messages, and the **nearby station list** (by distance,
+  up to 8). The box shows them on its new **PHONE** page: in Bluetooth-only mode the box
+  has no APRS-IS of its own, so this is the only way it can show "who is nearby";
+- **Box actions**: beacon now / status packet / reconnect APRS-IS / clear stations /
+  format self-test / reboot the box;
+- **Box events**: the `EVT …` lines and command replies the box sends back, with
+  one-tap copy — the only evidence when something is wrong.
+
+Two deliberate rules:
+
+- the box is **not** a "data source": it talks to APRS-IS by itself, so receiving its
+  packets again here would only duplicate them — it appears as a managed device only;
+- **nothing is transmitted automatically**: beacons and status packets must be tapped
+  (same rule as "RF transmission is always explicit"); only position feeding and status
+  pushing are automatic, and they never go on air.
+
+Also: the box config and bound device are now included in backups.
+
+> The box firmware is a separate companion project; the app half (protocol + UI) is
+> done in this release. The firmware gained a **PHONE** page and a UI refresh.
+
 ## [2.0.12] - 2026-10-01
 
 ### 🧭 修：更新页不再让你自己选包，也不再跳浏览器

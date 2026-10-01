@@ -85,8 +85,15 @@ class TncManager(
         const val METHOD_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl"
         const val EVENT_CHANNEL_PKWDWPL = "com.aprslocus/pkwdwpl_events"
 
+        /** APRSlocusBOX（APRS 小盒子）：同样是独立通道 + 独立 socket */
+        const val METHOD_CHANNEL_BOX = "com.aprslocus/box"
+        const val EVENT_CHANNEL_BOX = "com.aprslocus/box_events"
+
         /** PKWDWPL 实例专用的权限 requestCode（与 TNC 的 0x7A31 区分开） */
         const val PERM_REQUEST_PKWDWPL = 0x7A32
+
+        /** 盒子实例专用的权限 requestCode（三个实例必须互不相同） */
+        const val PERM_REQUEST_BOX = 0x7A33
 
         /** 蓝牙串口服务（SPP）标准 UUID */
         private val SPP_UUID: UUID =

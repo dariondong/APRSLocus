@@ -278,22 +278,49 @@
     </header>
 
     <div class="announce-body">
-      <p><b>v2.0.11 is out.</b> It adds <b>no features</b>. It does two things: the Android build is now <b>split per CPU architecture</b> (about a third of the old size), and the update page can <b>list the packages</b> — because from this release on there are three of them.</p>
-      <p><b>Bottom line: if you are not sure which one to pick, you do not have to.</b> The in-app "Check for updates" still downloads the 64-bit package, exactly as before.</p>
-      <p><b>1. Why it used to be that big</b></p>
-      <p>The build used to be a <b>universal APK</b>: one file carrying the machine code for <b>three CPUs</b> (arm64-v8a / armeabi-v7a / x86_64). Your phone only ever used one of them — the other two were <b>dead weight</b>.</p>
-      <p>Measured on the v2.0.10 package (81.6 MB):</p>
-      <ul class="announce-list"><li>the three sets of native libraries totalled <b>76.6 MB (94%)</b> — each one holding your app's compiled code (14–17 MB) plus the Flutter engine (8–12 MB);</li><li>everything else added up to roughly 4 MB (images, icons, symbol tables, text…).</li></ul>
-      <p>So the fix is not to remove features, it is to stop making every user carry three copies.</p>
-      <p><b>2. There are three packages in the release now</b></p>
-      <p>Each is about <b>30 MB</b>:</p>
-      <ul class="announce-list"><li><b>`APRSLocus_2.0.11.apk`</b> — <b>64-bit</b>, for <b>almost every phone</b> (anything from 2015 on). <b>This is what the in-app update downloads</b>, so upgrading works exactly as before.</li><li><b>`APRSLocus_2.0.11_armeabi-v7a.apk`</b> — <b>32-bit</b>, for older devices. <b>Only needed on phones that are 32-bit only</b> (those cannot install the 64-bit build; Android reports an ABI mismatch).</li><li><b>`APRSLocus_2.0.11_x86_64.apk`</b> — only for <b>emulators / Chromebooks</b>; real phones normally do not need it.</li></ul>
-      <p class="announce-quote">No need to choose: the in-app "Check for updates" picks the right one for your phone automatically. All three are the same code, compiled once per CPU.</p>
-      <p><b>3. The update page picks for you and downloads in-app</b></p>
-      <p>On Android the "Check for updates" page <b>picks the package matching your phone's CPU by itself</b> and <b>downloads it inside the app</b> (no browser hop), then tells you which file it is fetching (name · architecture · size). A 32-bit device gets the 32-bit build automatically — no more "installed, but Android says it is incompatible".</p>
-      <p>If you need another architecture (an emulator, say), grab it yourself from the <a href="https://github.com/dariondong/APRSLocus/releases" target="_blank" rel="noopener">Releases</a> page.</p>
-      <p>One display fix came along: while downloading, the page used to show <b>two progress bars</b> for the same download (it looked like two tasks). Now there is one.</p>
-      <p><b>Nothing about the app's features or settings changed</b> — your links, beacon and theme stay as they are. If something looks wrong after upgrading, please report it at <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a>.</p>
+      <p><b>2.0.13 is out.</b> This release brings the little box (ESP32 + screen + knob) into the</p>
+      <p>app: the Device page has a new entry, <b>APRSlocusBOX</b> - once connected you can read</p>
+      <p>its config, change it, feed it your position, trigger a beacon, and see what it is</p>
+      <p>actually doing.</p>
+      <p><b>Short version: if you do not own a box, there is nothing to do.</b> No settings change,</p>
+      <p>and the way you update has not changed either.</p>
+      <p><b>1. What the box reports back</b></p>
+      <p>Once connected, the app shows what the <b>box itself</b> reports:</p>
+      <ul class="announce-list"><li>callsign / SSID, link mode (wifi / bt / both), beacon interval, APRS-IS server, GPS baud;</li><li>frames sent (TX), beacons (BEACON), messages received (RXMSG), acknowledgements (ACK),</li></ul>
+      <p>errors (ERR), and the <b>text of the latest event</b>;</p>
+      <ul class="announce-list"><li>every `EVT …` line and command reply the box sends lands in the log with one-tap copy -</li></ul>
+      <p>that is the only evidence when something is wrong.</p>
+      <p><b>2. What the phone can do for the box</b></p>
+      <ul class="announce-list"><li><b>Change the config</b>: all 23 keys (names match the box documentation), tap one to edit.</li></ul>
+      <p>The app <b>re-reads after each change</b>, so the screen shows the **real value in the</p>
+      <p>box**, not what you just typed;</p>
+      <ul class="announce-list"><li><b>Feed a position</b>: send the phone current coordinates (`POS lat lon [alt] [spd] [crs]`),</li></ul>
+      <p>optionally automatically every 30 seconds. Handy when the box has no GPS of its own;</p>
+      <ul class="announce-list"><li><b>Box actions</b>: beacon now / status packet / reconnect APRS-IS / clear stations /</li></ul>
+      <p>format self-test / <b>reboot the box</b> (link mode and Bluetooth are boot settings that</p>
+      <p>need a restart - no need to pull the power any more).</p>
+      <p><b>3. New: phone status to the box (the box PHONE page)</b></p>
+      <p>This release also pushes what the <b>phone</b> sees to the box: its speed, course, altitude,</p>
+      <p>whether it has a fix, whether APRS-IS is up, unread messages, and the **nearby station</p>
+      <p>list** (by distance, up to 8).</p>
+      <p>The box gained a <b>PHONE</b> page that shows all of it; the home screen bottom line also</p>
+      <p>shows `PH 12km/h`, and the header has a `P` badge - it is <b>bright</b> only while the</p>
+      <p>phone is pushing (it dims after 120 s, so stale data never pretends to be live).</p>
+      <p>Why this matters: in Bluetooth-only mode the box has <b>no APRS-IS of its own</b>, so</p>
+      <p>"who is nearby" used to be empty on it; even in wifi mode the phone filter radius and</p>
+      <p>position can differ. Seeing both sides is the point.</p>
+      <p><b>4. Two deliberate rules</b></p>
+      <ul class="announce-list"><li>the box is <b>not a data source</b>: it talks to APRS-IS by itself, so receiving its</li></ul>
+      <p>packets here again would only duplicate them. It appears as a managed device only;</p>
+      <ul class="announce-list"><li><b>nothing is transmitted automatically</b>: beacons and status packets must be tapped</li></ul>
+      <p>(same rule as "RF transmission is always explicit"). Only local position feeding and</p>
+      <p>status pushing are automatic, and they never go on air.</p>
+      <p><b>5. Do I need to flash firmware</b></p>
+      <p>Yes - if you own a box. The app half (protocol + UI) is finished in this release; the</p>
+      <p>box half is a <b>separate firmware project</b> and needs a reflash (it gained the PHONE</p>
+      <p>page and a UI refresh). Without a box this release changes nothing for you.</p>
+      <p><b>Updating has not changed</b>: in-app "check for updates" still picks the right package</p>
+      <p>for your CPU and <b>downloads it in-app</b>.</p>
       <p><b>73!</b></p>
       <p><b>The APRSLocus team</b></p>
       <p>1 October 2026</p>
@@ -566,6 +593,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.13</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New: APRSlocusBOX - manage your little APRS box from the phone.** The Device page has a new entry, **APRSlocusBOX**: once connected you can read the box config, change it, feed it your position, trigger a beacon and see what it is actually doing. It connects over **Bluetooth SPP or USB serial** on its own channel, so managing the box never interrupts a TNC. Config covers all 23 keys (names match the box documentation) and the app re-reads after each change, so what you see is the real value in the box. This release also pushes what the phone sees - speed, course, altitude, fix, APRS-IS up/down, unread messages and the nearby station list (by distance, up to 8) - to the box PHONE page. In Bluetooth-only mode the box has no APRS-IS of its own, so that list is the only way it can show who is nearby. Two deliberate rules: the box is not a data source, and nothing is transmitted automatically - beacons and status packets must be tapped.</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.12</span>

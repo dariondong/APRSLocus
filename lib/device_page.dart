@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'audio_page.dart';
+import 'box_device_page.dart';
 import 'garmin_page.dart';
 import 'hr_page.dart';
 import 'link_test_card.dart';
@@ -284,6 +285,21 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           page: PkwdwplDevicePage(state: state),
           disabled: !tncPlatformSupported,
           disabledReason: s.iosFeatureUnsupported,
+        ),
+        // APRSlocus 小盒子（APRSlocusBOX）：它**不是报文来源** —— 盒子自己
+        // 就上 APRS-IS、自己组报文，本应用再收一遍只会与 APRS-IS/TNC 重复。
+        // 它对手机的意义是「一台要用手机管的设备」：改配置、喂位置、发信标。
+        // 所以它只出现在这里，不进「数据来源」多选。
+        _entry(
+          context,
+          icon: Icons.developer_board_rounded,
+          color: C.indigo,
+          title: s.boxDeviceTitle,
+          desc: state.box.config.enabled
+              ? '${state.box.connected ? s.connected : s.disconnected}'
+                  '${state.box.connected ? ' · ${state.box.device?.name ?? ''}' : ''}'
+              : s.boxDeviceDesc,
+          page: BoxDevicePage(state: state),
         ),
         // 心率带与佳明 LiveTrack：它们**不是报文链路**（不参与收发报文），
         // 而是「自己位置/心率的来源」，所以放在「设备」这一页的子页入口里，

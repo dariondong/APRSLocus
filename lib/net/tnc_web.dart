@@ -9,6 +9,9 @@ TncTransport createTncTransport() => TncStub();
 /// PKWDWPL 链路同样需要串口/蓝牙，Web 不支持（UI 会给出提示）
 TncTransport createPkwdwplTransport() => TncStub();
 
+/// 盒子链路同样需要串口/蓝牙，Web 不支持（UI 会给出提示）
+TncTransport createBoxTransport() => TncStub();
+
 class TncStub implements TncTransport {
   @override
   bool get connected => false;

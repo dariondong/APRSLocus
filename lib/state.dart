@@ -29,6 +29,7 @@ import 'l10n/app_localizations_ja.dart';
 import 'l10n/app_localizations_zh.dart';
 import 'net/aprs.dart';
 import 'audio.dart';
+import 'box.dart';
 import 'pkwdwpl.dart';
 import 'diag.dart';
 import 'group_chat.dart';
@@ -111,7 +112,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.12';
+  static const appVersion = '2.0.13';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -861,6 +862,32 @@ class AppState extends ChangeNotifier {
     }
     out.sort((a, b) => a.distKm(lat, lng).compareTo(b.distKm(lat, lng)));
     return out.length > limit ? out.sublist(0, limit) : out;
+  }
+
+  /// 把「我附近按距离排的台站」推给盒子（最多 8 条 = 固件那侧列表上限）。
+  ///
+  /// 为什么用 [filterRadius] 而不是盒子自己的半径：这条数据表达的是
+  /// 「**手机**这侧看到谁」——两边半径一致反而让盒子上的列表与它自己收到的
+  /// 永远一样，失去了"对照"的意义（盒子在 bt 模式下更是完全没有这份数据）。
+  void _pushBoxNearby() {
+    if (!myHasFix || myLat == null || myLng == null) {
+      box.pushNear(const []);   // 没定位就说清楚：清空，别让盒子留着旧列表
+      return;
+    }
+    final lat = myLat!, lng = myLng!;
+    final list = nearbyStations(filterRadius.toDouble(), limit: 8);
+    final rows = <BoxNearRow>[];
+    for (final st in list) {
+      if (st.call == myFullCall) continue;
+      rows.add(BoxNearRow(
+        call: st.call,
+        distM: (st.distKm(lat, lng) * 1000).round(),
+        brg: st.bearingFrom(lat, lng).round(),
+        ageSec: DateTime.now().difference(st.lastHeard).inSeconds,
+        comment: st.comment ?? '',
+      ));
+    }
+    box.pushNear(rows);
   }
 
   bool beaconBarDetailed = true;
@@ -1795,6 +1822,14 @@ class AppState extends ChangeNotifier {
   /// 且电台只单向输出。因此它参与「收」（台站上图/台账），不参与「发」。
   final PkwdwplLink pkwdwpl = PkwdwplLink();
 
+  /// APRSlocusBOX（小盒子）链路。
+  ///
+  /// ⚠ **不进 [enabledSources]**：盒子自己就上 APRS-IS、自己组报文，本应用
+  /// 再收一遍只会与 APRS-IS / TNC 重复。它对手机的意义是「一台要管的设备」
+  /// （改配置 / 喂位置 / 催它发信标），所以它只有「用户在设备页开了没有」
+  /// 这一个开关：[BoxConfig.enabled]。
+  final BoxLink box = BoxLink();
+
   /// 发射是否走 TNC（射频）
   bool get usingTnc => dataSource == 'tnc';
 
@@ -1806,6 +1841,9 @@ class AppState extends ChangeNotifier {
   bool get tncOn => enabledSources.contains(srcTnc);
   bool get audioOn => enabledSources.contains(srcAudio);
   bool get pkwdwplOn => enabledSources.contains(srcPkwdwpl);
+
+  /// 盒子链路是否被用户启用（**不在 [enabledSources] 里**，见 [box]）
+  bool get boxOn => box.config.enabled;
 
   /// 是否有多条链路在同时工作（此时界面需要区分「发射来源」）
   bool get multiSource => enabledSources.length > 1;
@@ -1864,6 +1902,7 @@ class AppState extends ChangeNotifier {
     if (deviceId == null || deviceId.isEmpty) return null;
     if (tnc.device?.id == deviceId) return srcTnc;
     if (pkwdwpl.device?.id == deviceId) return srcPkwdwpl;
+    if (box.device?.id == deviceId) return srcBox;
     return null;
   }
 
@@ -1945,6 +1984,10 @@ class AppState extends ChangeNotifier {
 
   /// PKWDWPL（Kenwood 航点语句）——**只收不发**的来源
   static const String srcPkwdwpl = 'pkwdwpl';
+
+  /// 盒子链路。**不属于**数据来源，只在「哪条链路占着设备」与
+  /// 「重连时要照顾到它」这两件事上出现（见 [box] 的注释）。
+  static const String srcBox = 'box';
 
   /// 可发射的来源（用于「至少要保留一条能发射的链路」与各种发射守卫）。
   ///
@@ -2065,6 +2108,16 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
+  /// 设备页手动连/断**盒子**之后，把结果同步回 [_linkUp]。
+  ///
+  /// 为什么不复用 [adoptDeviceLink]：那个会 `ensureSourceEnabled` ——
+  /// 把 'box' 塞进 [enabledSources] 会让它被当成报文来源（多选里多一项、
+  /// 参与发射来源编排），而盒子根本不是来源。这里只记链路表。
+  void adoptBoxLink(bool up) {
+    _setLinkUp(srcBox, up);
+    _notify();
+  }
+
   /// 设备页连接**之前**的守卫：返回 null 表示可以连，否则返回不可连的原因。
   ///
   /// 为什么不能只把关卡放在 [_connectTnc] / [_connectPkwdwpl] 里：那两个方法
@@ -2076,6 +2129,31 @@ class AppState extends ChangeNotifier {
   ///   * **PKWDWPL** 是只读链路 —— 冲突时直接拒绝，避免抢走 TNC 的接收字节流。
   Future<String?> guardDeviceConnect(String src) async {
     final s0 = _normalizeSrc(src);
+    // 盒子是**最低优先**的链路：它既不是报文来源、也不参与发射编排，
+    // 所以「别的链路要用的设备正被盒子占着」时，让盒子先让路。
+    // 反过来，盒子绝不抢别人的设备（下面直接拒绝）。
+    final wantId = _targetDeviceId(s0);
+    if (s0 != srcBox &&
+        wantId != null &&
+        box.connected &&
+        box.device?.id == wantId) {
+      _log(
+        LogLevel.info,
+        '连接',
+        '盒子正占用 ${box.device?.label}：已先断开盒子，把设备让给 '
+            '${_sourceName(s0)}。',
+      );
+      await box.disconnect(manual: false);
+      _setLinkUp(srcBox, false);
+    }
+    if (s0 == srcBox) {
+      final owner = deviceBoundBy(box.device?.id);
+      if (owner != null && owner != srcBox) {
+        box.lastError = 'device-in-use';
+        return 'device-in-use';
+      }
+      return null;
+    }
     if (!tncPkwdwplConflict) return null;
     if (s0 == srcTnc) {
       _log(
@@ -2110,11 +2188,27 @@ class AppState extends ChangeNotifier {
     _updateNotification();
   }
 
-  String _normalizeSrc(String src) => src == srcTnc
-      ? srcTnc
-      : (src == srcAudio
-          ? srcAudio
-          : (src == srcPkwdwpl ? srcPkwdwpl : srcAprsIs));
+  String _normalizeSrc(String src) {
+    if (src == srcTnc) return srcTnc;
+    if (src == srcAudio) return srcAudio;
+    if (src == srcPkwdwpl) return srcPkwdwpl;
+    if (src == srcBox) return srcBox;
+    return srcAprsIs;
+  }
+
+  /// 某条链路当前**绑定**的设备 id（「谁占着这台设备」的判断用）
+  String? _targetDeviceId(String src) {
+    switch (src) {
+      case srcTnc:
+        return tnc.device?.id;
+      case srcPkwdwpl:
+        return pkwdwpl.device?.id;
+      case srcBox:
+        return box.device?.id;
+      default:
+        return null;
+    }
+  }
 
   /// 让「实际链路」与「已启用集合」对齐：新启用的连上，取消启用的断开。
   ///
@@ -2194,6 +2288,11 @@ class AppState extends ChangeNotifier {
             pkwdwpl.lastError == 'no-device' ||
             pkwdwpl.lastError == 'unsupported' ||
             pkwdwpl.lastError == 'device-in-use';
+      case srcBox:
+        return box.device == null ||
+            box.lastError == BoxStatus.noDevice ||
+            box.lastError == BoxStatus.unsupported ||
+            box.lastError == 'device-in-use';
       default:
         return false;
     }
@@ -2203,8 +2302,13 @@ class AppState extends ChangeNotifier {
   ///
   /// 专门抽出来避免两处重连判断（排程时、定时器触发时）写得不一致 ——
   /// 只改一处就会漏成无限重连。
-  bool get _allExpectedLinksUp => enabledSources.every(
-      (s) => isUp(s) || blockedByConflict(s) || _permanentlyDown(s));
+  bool get _allExpectedLinksUp {
+    // 盒子不在 enabledSources 里（它不是报文来源），但同样是「期望连上」的
+    // 一条链路 —— 不把它算进来，它掉线之后重连定时器就再也不会重试。
+    if (boxOn && !box.connected && !_permanentlyDown(srcBox)) return false;
+    return enabledSources.every(
+        (s) => isUp(s) || blockedByConflict(s) || _permanentlyDown(s));
+  }
 
   /// 任一已启用来源掉线就安排重连（不是只看发射来源）
   void _scheduleReconnectIfNeeded() {
@@ -2544,6 +2648,17 @@ class AppState extends ChangeNotifier {
   Timer? _keepaliveTimer;
   Timer? _reconnectTimer;
   bool _userDisconnected = false;
+
+  /// 最近一次把位置喂给盒子的时刻（喂位置按 30 秒节流：盒子侧 60 秒内算新鲜）
+  DateTime? _lastBoxFeed;
+
+  /// 盒子推送的节流时刻：手机状态 15 秒、附近台站 30 秒。
+  ///
+  /// 为什么分开节流：状态是"我自己的数字"（变得快、报文短），台站列表一次
+  /// 要发 8 行 —— 蓝牙串口是窄带，不能拿它刷屏（APRSlocus 里"射频是共享
+  /// 资源、串口也不是无限宽"的同一考虑）。
+  DateTime? _lastBoxPushApp;
+  DateTime? _lastBoxPushNear;
 
   // 开发者模式：开启后显示模拟台站/模拟数据
   bool devMode = false;
@@ -2897,6 +3012,7 @@ class AppState extends ChangeNotifier {
       await tnc.load();
       await audio.load();
       await pkwdwpl.load();
+      await box.load();
       final savedLat = p.getDouble('myLat');
       final savedLng = p.getDouble('myLng');
       if (savedLat != null && savedLng != null) {
@@ -3184,6 +3300,7 @@ class AppState extends ChangeNotifier {
     _wireTnc();
     _wireAudio();
     _wirePkwdwpl();
+    _wireBox();
     // 蓝牙心率带：状态变化只影响 UI 与信标备注，通知一次即可。
     bleHr.onChanged = () {
       if (_disposed) return;
@@ -3267,6 +3384,44 @@ class AppState extends ChangeNotifier {
       // 外置 GPS（佳明）与手机 GPS 的启停对齐（issue #21-4）：很便宜，
       // 只在状态翻转时做事，不需要再开一个定时器。
       _syncPhoneGps();
+      // 盒子推送：把**手机这侧看到的东西**给盒子（速度/方位/海拔/未读 + 附近台站）。
+      // 与"喂位置"是两件事：这个只写盒子的屏幕，不上射频。
+      if (boxOn && box.config.pushStatus && box.connected) {
+        final now = DateTime.now();
+        if (_lastBoxPushApp == null ||
+            now.difference(_lastBoxPushApp!).inSeconds >= 15) {
+          _lastBoxPushApp = now;
+          box.pushApp(
+            fix: myHasFix,
+            isUp: isUp(srcAprsIs),
+            unread: unreadMessages,
+            speedKmh: mySpeed,          // km/h（与盒子 APP 命令同一单位）
+            courseDeg: myCourse,
+            altM: myAlt,                // 米
+          );
+        }
+        if (_lastBoxPushNear == null ||
+            now.difference(_lastBoxPushNear!).inSeconds >= 30) {
+          _lastBoxPushNear = now;
+          _pushBoxNearby();
+        }
+      }
+      // 盒子喂位置：每秒看一眼，**30 秒**才真发一次（盒子侧 60 秒内算新鲜）。
+      // 开关关着、没定位、没连上时什么都不做（不空转、不 notify）。
+      if (boxOn && box.config.feedPos && box.connected && myHasFix) {
+        final now = DateTime.now();
+        if (_lastBoxFeed == null ||
+            now.difference(_lastBoxFeed!).inSeconds >= 30) {
+          _lastBoxFeed = now;
+          box.feedPos(
+            lat: myLat!,
+            lon: myLng!,
+            altM: myAlt,                       // 米（app 与盒子同一单位）
+            speedMps: (mySpeed ?? 0) / 3.6,    // app 是 km/h，盒子要 m/s
+            courseDeg: myCourse,
+          );
+        }
+      }
       // 每秒刷新：只通知“秒级 UI”（信标倒计时/收包速率），
       // 不再全量 _notify() 重建整个页面树
       tick.value++;
@@ -3379,6 +3534,7 @@ class AppState extends ChangeNotifier {
     // 应当立即释放，不能等进程被杀 —— BluetoothSocket 不关会占住电台，
     // 下次打开应用重连会失败。
     unawaited(pkwdwpl.disconnect(manual: false));
+    unawaited(box.disconnect(manual: false));
     unawaited(tnc.disconnect(manual: false));
     unawaited(audio.disconnect(manual: false));
     if (_stationsDirty) _saveStations();
@@ -3409,6 +3565,7 @@ class AppState extends ChangeNotifier {
     // pkwdwpl 的传输层持有一个 EventChannel 订阅，不释放会一直挂在平台通道上；
     // TNC 同样有 reader/writer 线程与 socket。
     unawaited(pkwdwpl.disconnect(manual: false));
+    unawaited(box.disconnect(manual: false));
     unawaited(tnc.disconnect(manual: false));
     unawaited(audio.disconnect(manual: false));
     // 退出前保存台站列表
@@ -3747,6 +3904,27 @@ class AppState extends ChangeNotifier {
   ///
   /// 只收不发：本函数里没有任何 `_sendVia` 调用，且 [AppState.dataSource]
   /// 永远不会是 pkwdwpl（见 [canTransmit]）。
+  /// 盒子链路的接线。
+  ///
+  /// 与 PKWDWPL 的差别只有一处：**它不参与收报文**（没有 onFix），
+  /// 所以只需要「掉线 → 排重连」「有变化 → 刷新界面」两件事。
+  void _wireBox() {
+    box.onClosed = () {
+      _setLinkUp(srcBox, false);
+      if (!_userDisconnected && box.config.autoReconnect) {
+        _scheduleReconnectIfNeeded();
+      }
+    };
+    box.onStateChanged = () {
+      if (boxOn) _notifyRx();
+    };
+    box.onEvent = (kind, text) {
+      // 事件原文已经进盒子自己的日志；这里只把**错误**升到应用日志 ——
+      // 那才是需要跨页面看到的（例如 ERR not-logged-in beacon-not-sent）。
+      if (kind == 'ERR') _log(LogLevel.warn, '盒子', 'ERR $text');
+    };
+  }
+
   void _wirePkwdwpl() {
     pkwdwpl.onFix = (fix) {
       if (_disposed) return;
@@ -3895,6 +4073,7 @@ class AppState extends ChangeNotifier {
       if (tncOn && !isUp(srcTnc)) await _connectTnc();
       if (audioOn && !isUp(srcAudio)) await _connectAudio();
       if (pkwdwplOn && !isUp(srcPkwdwpl)) await _connectPkwdwpl();
+      if (boxOn && !box.connected) await _connectBox();
     } finally {
       _connectingAll = false;
     }
@@ -4052,6 +4231,26 @@ class AppState extends ChangeNotifier {
   /// 与其他射频链路一样：不发身份帧、不注册过滤器、passcode 不适用。
   /// 差别是它连上后什么都不用下发 —— 电台自己会持续输出语句，
   /// 我们只需要静静地分帧、校验、解析。
+  /// 盒子链路连接（手动与自动都走这里）。
+  ///
+  /// 与报文链路最大的不同：**它连不上不影响应用工作**（报文照走
+  /// APRS-IS/TNC），所以这里不设 ConnPhase、不弹横幅，只在日志留痕，
+  /// 失败原因由设备页如实显示。
+  Future<void> _connectBox() async {
+    if (box.connected) return;
+    final conflict = await guardDeviceConnect(srcBox);
+    if (conflict != null) {
+      box.lastError = conflict;
+      _log(LogLevel.warn, '盒子', '设备被别的链路占用，盒子暂不连接。');
+      return;
+    }
+    final ok = await box.connect();
+    _setLinkUp(srcBox, ok);
+    if (ok) {
+      _log(LogLevel.info, '盒子', '已连接 ${box.device?.label ?? ''}');
+    }
+  }
+
   Future<void> _connectPkwdwpl() async {
     // 与 TNC 抢同一台设备时拒绝连接：TNC 是发射链路，让它先。
     // 两条链路同时连会瓜分接收字节流（症状：TNC 能发不能收）。
@@ -5006,6 +5205,10 @@ class AppState extends ChangeNotifier {
       // PKWDWPL：只要断连重连（没有参数需要重下发）
       await pkwdwpl.restart();
       _setLinkUp(srcPkwdwpl, pkwdwpl.connected);
+    }
+    if (boxOn) {
+      await box.restart();
+      _setLinkUp(srcBox, box.connected);
     }
     if (!aprsIsOn) {
       _notify();

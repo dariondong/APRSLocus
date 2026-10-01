@@ -1679,6 +1679,129 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => 'La caja: conéctala para cambiar su configuración, darle posición y lanzar un beacon';
+
+  @override
+  String get boxBindTitle => 'Conexión de la caja';
+
+  @override
+  String get boxModeTip => 'El Bluetooth solo funciona si el modo enlace de la caja es bt o both; en modo wifi usa un cable serie USB. link y bt se aplican tras reiniciar la caja.';
+
+  @override
+  String get boxBtLinkWarn => 'La caja está en link = wifi: la gestión por Bluetooth no funcionará. Cámbialo a bt/both y reinicia, o usa un cable serie USB.';
+
+  @override
+  String get boxBaud => 'Velocidad serie (USB / escritorio)';
+
+  @override
+  String get boxStatTitle => 'Estado de la caja';
+
+  @override
+  String get boxStatLinkMode => 'Modo de enlace';
+
+  @override
+  String get boxStatBeacon => 'Beacon automático';
+
+  @override
+  String get boxStatHost => 'Servidor APRS-IS';
+
+  @override
+  String get boxStatGps => 'Baudios del GPS';
+
+  @override
+  String get boxStatEvents => 'Recuento de eventos';
+
+  @override
+  String get boxLastEvent => 'Último evento';
+
+  @override
+  String get boxNoEventYet => 'Aún no hay eventos';
+
+  @override
+  String get boxCfgTitle => 'Configuración de la caja';
+
+  @override
+  String get boxCfgSubtitle => 'Los nombres de clave coinciden con la documentación; toca un elemento para cambiarlo';
+
+  @override
+  String get boxCfgRead => 'Leer configuración';
+
+  @override
+  String get boxCfgEmpty => 'Aún no se ha leído la configuración — conecta primero y toca Leer configuración';
+
+  @override
+  String get boxCfgRebootHint => 'link y bt son ajustes de arranque: reinicia la caja para aplicarlos';
+
+  @override
+  String get boxCfgSent => 'Enviado a la caja';
+
+  @override
+  String get boxCfgEditTitle => 'Cambiar ajuste';
+
+  @override
+  String get boxCfgEditHint => 'Envía CFG clave=valor; déjalo vacío para borrar el valor';
+
+  @override
+  String get boxCfgMasked => 'Las contraseñas no se muestran: déjalo vacío para no cambiarla o escribe un valor nuevo';
+
+  @override
+  String get boxCfgNoChange => 'Sin cambios (la contraseña no se muestra)';
+
+  @override
+  String get boxFeedTitle => 'Enviar posición a la caja';
+
+  @override
+  String get boxFeedSubtitle => 'Úsalo si la caja no tiene GPS; la posición enviada vale 60 segundos';
+
+  @override
+  String get boxFeedAuto => 'Enviar automáticamente (cada 30 s)';
+
+  @override
+  String get boxFeedSend => 'Enviar posición actual';
+
+  @override
+  String get boxFeedStop => 'Dejar de enviar';
+
+  @override
+  String get boxFeedNoFix => 'El teléfono aún no tiene posición — consíguela primero en la página principal';
+
+  @override
+  String get boxActTitle => 'Acciones de la caja';
+
+  @override
+  String get boxActBeacon => 'Beacon ahora';
+
+  @override
+  String get boxActStatus => 'Paquete de estado';
+
+  @override
+  String get boxActNet => 'Reconectar APRS-IS';
+
+  @override
+  String get boxActClear => 'Borrar estaciones';
+
+  @override
+  String get boxActTest => 'Autoprueba de formato';
+
+  @override
+  String get boxActReboot => 'Reiniciar la caja';
+
+  @override
+  String get boxPushTitle => 'Estado del teléfono a la caja';
+
+  @override
+  String get boxPushStatus => 'Enviar velocidad / rumbo / estaciones cercanas';
+
+  @override
+  String get boxPushHint => 'La página PHONE de la caja muestra esto; solo se dibuja en la pantalla de la caja, nunca sale al aire. Es distinto de enviar una posición.';
+
+  @override
+  String get boxEvtTitle => 'Eventos de la caja';
+
+  @override
   String get dataSourceTitle => 'Fuente de datos';
 
   @override

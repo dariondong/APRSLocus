@@ -2804,6 +2804,251 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @boxDeviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRSlocusBOX'**
+  String get boxDeviceTitle;
+
+  /// No description provided for @boxDeviceDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'小盒子：连上后用手机改配置、喂位置、发信标'**
+  String get boxDeviceDesc;
+
+  /// No description provided for @boxBindTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子连接'**
+  String get boxBindTitle;
+
+  /// No description provided for @boxModeTip.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子的「链路模式」要先设成 bt 或 both，蓝牙才可用；wifi 模式下请用 USB 串口连。link 与 bt 改完要重启盒子才生效。'**
+  String get boxModeTip;
+
+  /// No description provided for @boxBtLinkWarn.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子现在是 link = wifi：蓝牙管理用不了 —— 改成 bt/both 并重启盒子，或者插 USB 串口'**
+  String get boxBtLinkWarn;
+
+  /// No description provided for @boxBaud.
+  ///
+  /// In zh, this message translates to:
+  /// **'串口线速（USB / 桌面）'**
+  String get boxBaud;
+
+  /// No description provided for @boxStatTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子状态'**
+  String get boxStatTitle;
+
+  /// No description provided for @boxStatLinkMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'链路模式'**
+  String get boxStatLinkMode;
+
+  /// No description provided for @boxStatBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动信标'**
+  String get boxStatBeacon;
+
+  /// No description provided for @boxStatHost.
+  ///
+  /// In zh, this message translates to:
+  /// **'APRS-IS 服务器'**
+  String get boxStatHost;
+
+  /// No description provided for @boxStatGps.
+  ///
+  /// In zh, this message translates to:
+  /// **'GPS 波特率'**
+  String get boxStatGps;
+
+  /// No description provided for @boxStatEvents.
+  ///
+  /// In zh, this message translates to:
+  /// **'事件计数'**
+  String get boxStatEvents;
+
+  /// No description provided for @boxLastEvent.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近事件'**
+  String get boxLastEvent;
+
+  /// No description provided for @boxNoEventYet.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有事件'**
+  String get boxNoEventYet;
+
+  /// No description provided for @boxCfgTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子配置'**
+  String get boxCfgTitle;
+
+  /// No description provided for @boxCfgSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'键名与盒子文档逐字一致，点一项即可修改'**
+  String get boxCfgSubtitle;
+
+  /// No description provided for @boxCfgRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'读取配置'**
+  String get boxCfgRead;
+
+  /// No description provided for @boxCfgEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没读到配置 —— 先连接，再点「读取配置」'**
+  String get boxCfgEmpty;
+
+  /// No description provided for @boxCfgRebootHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'link 与 bt 是开机设置：改完必须重启盒子才生效'**
+  String get boxCfgRebootHint;
+
+  /// No description provided for @boxCfgSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已发送到盒子'**
+  String get boxCfgSent;
+
+  /// No description provided for @boxCfgEditTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改配置项'**
+  String get boxCfgEditTitle;
+
+  /// No description provided for @boxCfgEditHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'会发送 CFG 键=值；留空表示清空该值'**
+  String get boxCfgEditHint;
+
+  /// No description provided for @boxCfgMasked.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码不回显：留空表示不改，只有填了新值才会写入'**
+  String get boxCfgMasked;
+
+  /// No description provided for @boxCfgNoChange.
+  ///
+  /// In zh, this message translates to:
+  /// **'未修改（密码不回显）'**
+  String get boxCfgNoChange;
+
+  /// No description provided for @boxFeedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'把位置喂给盒子'**
+  String get boxFeedTitle;
+
+  /// No description provided for @boxFeedSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子没有 GPS 时用它；喂进去的位置 60 秒内有效'**
+  String get boxFeedSubtitle;
+
+  /// No description provided for @boxFeedAuto.
+  ///
+  /// In zh, this message translates to:
+  /// **'自动喂位置（30 秒一次）'**
+  String get boxFeedAuto;
+
+  /// No description provided for @boxFeedSend.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送当前位置'**
+  String get boxFeedSend;
+
+  /// No description provided for @boxFeedStop.
+  ///
+  /// In zh, this message translates to:
+  /// **'停止喂位置'**
+  String get boxFeedStop;
+
+  /// No description provided for @boxFeedNoFix.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机还没有定位 —— 先在主页拿到定位'**
+  String get boxFeedNoFix;
+
+  /// No description provided for @boxActTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子动作'**
+  String get boxActTitle;
+
+  /// No description provided for @boxActBeacon.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即信标'**
+  String get boxActBeacon;
+
+  /// No description provided for @boxActStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'状态报文'**
+  String get boxActStatus;
+
+  /// No description provided for @boxActNet.
+  ///
+  /// In zh, this message translates to:
+  /// **'重连 APRS-IS'**
+  String get boxActNet;
+
+  /// No description provided for @boxActClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空台站'**
+  String get boxActClear;
+
+  /// No description provided for @boxActTest.
+  ///
+  /// In zh, this message translates to:
+  /// **'格式自检'**
+  String get boxActTest;
+
+  /// No description provided for @boxActReboot.
+  ///
+  /// In zh, this message translates to:
+  /// **'重启盒子'**
+  String get boxActReboot;
+
+  /// No description provided for @boxPushTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机状态给盒子'**
+  String get boxPushTitle;
+
+  /// No description provided for @boxPushStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'推送速度 / 方位 / 附近台站'**
+  String get boxPushStatus;
+
+  /// No description provided for @boxPushHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子 PHONE 页显示这些；只写盒子屏幕，不上射频。与「喂位置」是两件事。'**
+  String get boxPushHint;
+
+  /// No description provided for @boxEvtTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'盒子事件'**
+  String get boxEvtTitle;
 
   /// No description provided for @dataSourceTitle.
   ///

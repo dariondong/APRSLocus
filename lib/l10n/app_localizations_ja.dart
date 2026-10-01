@@ -1614,6 +1614,129 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get boxDeviceTitle => 'APRSlocusBOX';
+
+  @override
+  String get boxDeviceDesc => '小箱：接続してスマホから設定変更・位置供給・ビーコン送信';
+
+  @override
+  String get boxBindTitle => '箱の接続';
+
+  @override
+  String get boxModeTip => '箱のリンクモードを bt か both にしないと Bluetooth は使えません。wifi モードでは USB シリアルで接続してください。link と bt は箱の再起動で反映されます。';
+
+  @override
+  String get boxBtLinkWarn => '箱は link = wifi です：Bluetooth 管理は使えません。bt/both に変えて再起動するか、USB シリアルを使ってください。';
+
+  @override
+  String get boxBaud => 'シリアル速度（USB / デスクトップ）';
+
+  @override
+  String get boxStatTitle => '箱の状態';
+
+  @override
+  String get boxStatLinkMode => 'リンクモード';
+
+  @override
+  String get boxStatBeacon => '自動ビーコン';
+
+  @override
+  String get boxStatHost => 'APRS-IS サーバー';
+
+  @override
+  String get boxStatGps => 'GPS ボーレート';
+
+  @override
+  String get boxStatEvents => 'イベント数';
+
+  @override
+  String get boxLastEvent => '最新イベント';
+
+  @override
+  String get boxNoEventYet => 'イベントはまだありません';
+
+  @override
+  String get boxCfgTitle => '箱の設定';
+
+  @override
+  String get boxCfgSubtitle => 'キー名は箱のドキュメントと同じです。項目をタップして変更します';
+
+  @override
+  String get boxCfgRead => '設定を読み込む';
+
+  @override
+  String get boxCfgEmpty => '設定はまだ読めていません — 接続してから読み込んでください';
+
+  @override
+  String get boxCfgRebootHint => 'link と bt は起動時設定です：箱の再起動で反映されます';
+
+  @override
+  String get boxCfgSent => '箱へ送信しました';
+
+  @override
+  String get boxCfgEditTitle => '設定を変更';
+
+  @override
+  String get boxCfgEditHint => 'CFG キー=値を送信します。空欄は値を消去します';
+
+  @override
+  String get boxCfgMasked => 'パスワードは表示されません：空欄なら変更なし、新しい値だけ書き込まれます';
+
+  @override
+  String get boxCfgNoChange => '変更なし（パスワードは非表示）';
+
+  @override
+  String get boxFeedTitle => '位置を箱へ供給';
+
+  @override
+  String get boxFeedSubtitle => '箱に GPS がないときに使います。供給した位置は 60 秒有効です';
+
+  @override
+  String get boxFeedAuto => '自動で位置を供給（30 秒ごと）';
+
+  @override
+  String get boxFeedSend => '現在位置を送信';
+
+  @override
+  String get boxFeedStop => '供給を停止';
+
+  @override
+  String get boxFeedNoFix => 'スマホ側にまだ位置がありません — 先にホームで測位してください';
+
+  @override
+  String get boxActTitle => '箱の操作';
+
+  @override
+  String get boxActBeacon => '今すぐビーコン';
+
+  @override
+  String get boxActStatus => 'ステータス';
+
+  @override
+  String get boxActNet => 'APRS-IS 再接続';
+
+  @override
+  String get boxActClear => '局リストを消去';
+
+  @override
+  String get boxActTest => '書式セルフテスト';
+
+  @override
+  String get boxActReboot => '箱を再起動';
+
+  @override
+  String get boxPushTitle => 'スマホの状態を箱へ';
+
+  @override
+  String get boxPushStatus => '速度 / 方位 / 近くの局を送る';
+
+  @override
+  String get boxPushHint => '箱の PHONE ページに表示します。箱の画面に描くだけで電波は出しません。位置の供給とは別物です。';
+
+  @override
+  String get boxEvtTitle => '箱のイベント';
+
+  @override
   String get dataSourceTitle => 'データソース';
 
   @override

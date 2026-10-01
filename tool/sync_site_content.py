@@ -205,6 +205,53 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.13', 'date': '2026-10-01',
+        'items': [
+            ('new',
+             T('**新：APRSlocusBOX（APRS 小盒子）—— 用手机管你那台小盒子**。'
+               '「设备」页多了一条 **APRSlocusBOX**：连上盒子之后，手机上就能读它的配置、'
+               '改它的配置、把手机的位置喂给它、催它发一帧信标、看它到底在干什么。'
+               '连接走**蓝牙 SPP 或 USB 串口**（独立通道，管盒子不会打断正在收发的 TNC）；'
+               '配置是全部 23 个键（键名与盒子文档逐字一致），改完还会自动回读 —— '
+               '显示的是**盒子里的真值**；盒子推回来的 `EVT …` 事件与命令回执一并显示，'
+               '可一键复制。'
+               '这一版还把**手机这侧看到的东西**推给盒子：自己的速度/方位/海拔/有没有定位/'
+               'APRS-IS 通不通/未读消息，以及**附近台站列表**（按距离，最多 8 条）—— '
+               '盒子新增的 **PHONE 页**显示这些。盒子只跑蓝牙（自己不上 APRS-IS）时，'
+               '「旁边有谁」在它上面本来是空的，现在这份数据能顶上去。'
+               '两条刻意的规矩：盒子**不是**「数据来源」（它自己就上 APRS-IS，本应用再收一遍'
+               '只会重复），且**绝不自动发射** —— 信标与状态报文必须人点，自动的只有本地的'
+               '位置喂养与状态推送（都不上射频）。',
+               '**新：APRSlocusBOX（APRS 小盒子）—— 用手機管你那台小盒子**。'
+               '「裝置」頁多了一條 **APRSlocusBOX**：連上盒子之後，手機上就能讀它的設定、'
+               '改它的設定、把手機的位置餵給它、催它發一幀信標、看它到底在幹什麼。'
+               '連線走**藍牙 SPP 或 USB 串列埠**（獨立通道，管盒子不會打斷正在收發的 TNC）；'
+               '設定是全部 23 個鍵（鍵名與盒子文件逐字一致），改完還會自動回讀 —— '
+               '顯示的是**盒子裡的真值**；盒子推回來的 `EVT …` 事件與指令回執一併顯示，'
+               '可一鍵複製。'
+               '這一版還把**手機這側看到的東西**推給盒子：自己的速度/方位/海拔/有沒有定位/'
+               'APRS-IS 通不通/未讀訊息，以及**附近台站列表**（按距離，最多 8 條）—— '
+               '盒子新增的 **PHONE 頁**顯示這些。盒子只跑藍牙（自己不上 APRS-IS）時，'
+               '「旁邊有誰」在它上面本來是空的，現在這份資料能頂上去。'
+               '兩條刻意的規矩：盒子**不是**「資料來源」（它自己就上 APRS-IS，本應用再收一遍'
+               '只會重複），且**絕不自動發射** —— 信標與狀態報文必須人點，自動的只有本地的'
+               '位置餵養與狀態推送（都不上射頻）。',
+               '**New: APRSlocusBOX - manage your little APRS box from the phone.** '
+               'The Device page has a new entry, **APRSlocusBOX**: once connected you can read '
+               'the box config, change it, feed it your position, trigger a beacon and see what '
+               'it is actually doing. It connects over **Bluetooth SPP or USB serial** on its own '
+               'channel, so managing the box never interrupts a TNC. Config covers all 23 keys '
+               '(names match the box documentation) and the app re-reads after each change, so '
+               'what you see is the real value in the box. This release also pushes what the '
+               'phone sees - speed, course, altitude, fix, APRS-IS up/down, unread messages and '
+               'the nearby station list (by distance, up to 8) - to the box PHONE page. In '
+               'Bluetooth-only mode the box has no APRS-IS of its own, so that list is the only '
+               'way it can show who is nearby. Two deliberate rules: the box is not a data '
+               'source, and nothing is transmitted automatically - beacons and status packets '
+               'must be tapped.')),
+        ],
+    },
+    {
         'ver': 'v2.0.12', 'date': '2026-10-01',
         'items': [
             ('fix',

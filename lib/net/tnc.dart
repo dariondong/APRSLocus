@@ -15,3 +15,11 @@ TncTransport createTncTransport() => impl.createTncTransport();
 /// 与 TNC 共用字节搬运实现，但走**独立通道** → 原生侧独立实例、独立 socket，
 /// 因此两条链路可以同时开着互不干扰。
 TncTransport createPkwdwplTransport() => impl.createPkwdwplTransport();
+
+/// APRSlocusBOX（APRS 小盒子）的传输层工厂。
+///
+/// 盒子的线上协议是**明文命令行**（`CFG k=v` / `POS …` / `BEACON`），既不是
+/// KISS 也不是 NMEA —— 但字节搬运与 TNC/PKWDWPL 完全一样：蓝牙 SPP / USB-OTG
+/// 串口 / 桌面串口。这里只多一条**独立通道**：原生 `TncManager` 一次只维护
+/// 一个 socket，共用通道会让「管盒子」把正在工作的 TNC 顶掉。
+TncTransport createBoxTransport() => impl.createBoxTransport();
