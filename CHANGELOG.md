@@ -28,7 +28,8 @@
   两条安全底线写死在实现里：**名单拉不到一律放行**（一次网络抖动不能把所有人挡在
   门外）；而**只要成功读到过名单，命中后断网也照样拦**（否则关掉网络就能绕过）。
   安装标识只随机生成并保存在本机、**从不上传**（应用只是下载名单来比对）；拦截页会
-  如实显示命中的是哪一项、原因，以及申诉方式。
+  如实显示命中的是哪一项、原因，以及申诉方式；安装标识也可以在**设置 → 关于**里直接
+  看到并复制（申诉时把它发给我们即可）。
 
 ### 修复
 
@@ -78,8 +79,8 @@ actually does:
   everyone out); and once a list **has** been fetched successfully, a hit stays blocked
   **offline** (otherwise going offline would bypass it). The install ID is generated randomly
   and kept on the device only, and is **never uploaded** (the app just downloads the list to
-  compare against); the block screen states exactly which entry and reason matched, and how
-  to appeal.
+  compare against); the block screen states exactly which entry and reason matched, and
+  how to appeal. The install ID is also shown (and copyable) under **Settings -> About**.
 
 ### Fixes
 

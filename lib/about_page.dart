@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'theme.dart';
 import 'widgets.dart';
 import 'state.dart';
+import 'blacklist.dart';
 import 'sponsor_page.dart';
 import 'terms_page.dart';
 import 'material.dart';
@@ -26,6 +27,9 @@ class _AboutPageState extends State<AboutPage>
     with SingleTickerProviderStateMixin {
   /// 分享通道：Android 调用系统分享面板（ACTION_SEND）
   static const _shareChannel = MethodChannel('com.aprslocus/share');
+
+  /// 本机安装标识：与远程限制名单里比对的是**同一个值**（只在本机生成，不上传）
+  String _deviceId = '';
 
   bool get _isAndroid =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
@@ -298,6 +302,11 @@ class _AboutPageState extends State<AboutPage>
   @override
   void initState() {
     super.initState();
+    // 取一次本机安装标识。为什么要放在能看到的地方：被限制的人只会看到拦截页，
+    // 而"想核对 / 想申诉"的人得先能看到它 —— 支持往来里我们只认这个值。
+    Blacklist.deviceId().then((v) {
+      if (mounted && v.isNotEmpty) setState(() => _deviceId = v);
+    });
     _ctrl =
         AnimationController(
           vsync: this,
@@ -661,6 +670,29 @@ class _AboutPageState extends State<AboutPage>
                         ),
 
                         const SizedBox(height: 28),
+                        const SizedBox(height: 22),
+
+                        // ── 本机安装标识 ──
+                        // 放在这里而不是只放拦截页：被限制的人才会看到拦截页，
+                        // 而"想核对 / 想申诉"的人必须先能**看到**它。
+                        _sectionHeader(t.blId, Icons.fingerprint_rounded, C.blue),
+                        const SizedBox(height: 12),
+                        SoftCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _idRow(context),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                                child: Text(
+                                  t.blContact,
+                                  style: ts(11, c: C.grey, h: 1.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         _footer(context),
                       ],
                     ),
@@ -1040,7 +1072,9 @@ class _AboutPageState extends State<AboutPage>
         const SizedBox(height: 18),
         GestureDetector(
           onTap: () {
-            final info = t.appInfoText(AppState.appVersion);
+            // 顺带带上本机安装标识：用户报问题时复制一次就带全了
+            final info = t.appInfoText(AppState.appVersion) +
+                (_deviceId.isEmpty ? '' : '\n${t.blId}: $_deviceId');
             Clipboard.setData(ClipboardData(text: info));
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -1139,6 +1173,58 @@ class _AboutPageState extends State<AboutPage>
         // 右侧细横线：把标题和内容一条条串起来
         Expanded(child: Container(height: 1, color: C.border)),
       ],
+    );
+  }
+
+  /// 本机安装标识：短显示 + 点一下复制**全值**。
+  ///
+  /// 不整条显示的原因：32 位十六进制在窄屏上必然溢出（西语那版标签还长），
+  /// 而这里要的是"一眼认得出、点一下能复制走"，不是给人念的。
+  Widget _idRow(BuildContext context) {
+    final short = _deviceId.isEmpty
+        ? '…'
+        : '${_deviceId.substring(0, 8)}…'
+              '${_deviceId.substring(_deviceId.length - 6)}';
+    return InkWell(
+      onTap: _copyId,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Icon(Icons.copy_rounded, size: 15, color: C.grey),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                short,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: ts(
+                  12,
+                  w: FontWeight.w600,
+                ).copyWith(fontFamily: 'monospace'),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(Icons.chevron_right_rounded, size: 16, color: C.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 复制本机安装标识（申诉时把它发给我们即可核对）
+  Future<void> _copyId() async {
+    if (_deviceId.isEmpty) return;
+    await Clipboard.setData(ClipboardData(text: _deviceId));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).copiedClipboard),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: C.ink,
+      ),
     );
   }
 
