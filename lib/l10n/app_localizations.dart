@@ -13221,6 +13221,38 @@ abstract class AppLocalizations {
 
 
 
+  /// In zh, this message translates to:
+  /// **'IC-705 Wi-Fi（电台直连）'**
+  String icomLanTitle;
+
+  /// In zh, this message translates to:
+  /// **'启用 IC-705 局域网直连'**
+  String icomLanEnable;
+
+  /// In zh, this message translates to:
+  /// **'电台 IP'**
+  String icomLanHost;
+
+  /// In zh, this message translates to:
+  /// **'控制端口'**
+  String icomLanPort;
+
+  /// In zh, this message translates to:
+  /// **'用户名（Network User）'**
+  String icomLanUsername;
+
+  /// In zh, this message translates to:
+  /// **'密码（Network User）'**
+  String icomLanPassword;
+
+  /// In zh, this message translates to:
+  /// **'在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。'**
+  String icomLanHint;
+
+  /// In zh, this message translates to:
+  /// **'IC-705 电台直连'**
+  String codeContributionIcomLan;
+
 }
 
 class _AppLocalizationsDelegate

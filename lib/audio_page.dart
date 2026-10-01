@@ -41,6 +41,11 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   late final TextEditingController _path;
   late final TextEditingController _maxFrame;
   late final TextEditingController _csma;
+  // IC-705 局域网（Wi-Fi 直连电台）的设置输入
+  late final TextEditingController _icomHost;
+  late final TextEditingController _icomPort;
+  late final TextEditingController _icomUser;
+  late final TextEditingController _icomPass;
   final TextEditingController _wavPath = TextEditingController();
   final TextEditingController _wavTnc2 = TextEditingController();
 
@@ -95,6 +100,10 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     _path = TextEditingController(text: c.path);
     _maxFrame = TextEditingController(text: '${c.maxFrame}');
     _csma = TextEditingController(text: '${c.csmaWaitMs}');
+    _icomHost = TextEditingController(text: c.icomLan.host);
+    _icomPort = TextEditingController(text: '${c.icomLan.controlPort}');
+    _icomUser = TextEditingController(text: c.icomLan.username);
+    _icomPass = TextEditingController(text: c.icomLan.password);
     _wavTnc2.text = diagSampleFrame;
     unawaited(_probe());
     unawaited(_loadDevices());
@@ -105,6 +114,7 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
     for (final c in [
       _sampleRate, _baud, _mark, _space, _txDelay,
       _path, _maxFrame, _csma, _wavPath, _wavTnc2,
+      _icomHost, _icomPort, _icomUser, _icomPass,
     ]) {
       c.dispose();
     }
@@ -114,6 +124,27 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
   Future<void> _probe() async {
     final ok = await audio.supported();
     if (mounted) setState(() => _supported = ok);
+  }
+
+  // ─── IC-705 局域网直连（Wi-Fi 电台连接）───
+  //
+  // 它与"系统声卡"是**同一个数据源的两个实现**：都走 lib/audio.dart 的
+  // AFSK/AX.25/TNC2 管线，只是 PCM 的来源换成电台的 Wi-Fi 音频流。
+  // 所以这里只配置"连哪台电台"，不动任何既有解析/消息/地图逻辑。
+
+  Future<void> _saveIcomLan({bool? on}) async {
+    final c = audio.config;
+    c.icomLan = c.icomLan.copyWith(
+      host: _icomHost.text.trim(),
+      controlPort: _intOf(_icomPort, 50001).clamp(1, 65533),
+      username: _icomUser.text.trim(),
+      password: _icomPass.text,
+    );
+    if (on != null) {
+      c.source = on ? AudioSource.icomLan : AudioSource.device;
+    }
+    await audio.save();
+    if (mounted) setState(() {});
   }
 
   // ─── 音频设备选择（issue #14）───
@@ -420,6 +451,8 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           // 「数据来源」卡不在这里重复（只在设置→设备）——这一页专注音频参数。
           SettingsHint(s.sourceMovedHint),
           const SizedBox(height: 6),
+          _icomCard(s),
+          const SizedBox(height: 16),
           _captureCard(s),
           const SizedBox(height: 16),
           _paramsCard(s),
@@ -434,6 +467,55 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           const SizedBox(height: 24),
         ]),
       ),
+    );
+  }
+
+  /// ⓪ IC-705 Wi-Fi 直连：开关 + 电台地址/凭据 + 链路阶段
+  ///
+  /// 放在最上面是因为它决定"音频从哪来"：选了电台就该先去电台里设好
+  /// Network User，再谈 AFSK 参数。
+  Widget _icomCard(S s) {
+    final cfg = audio.config;
+    final enabled = cfg.source == AudioSource.icomLan;
+    final link = audio.icomLanLink;
+    final problem = cfg.icomLan.validate();
+    final phase = link?.phaseLabel ??
+        (audio.connected ? s.connected : s.disconnected);
+    return SettingsSectionCard(
+      title: s.icomLanTitle,
+      subtitle: s.icomLanHint,
+      icon: Icons.wifi_tethering_rounded,
+      color: C.cyan,
+      children: [
+        SettingsSwitch(
+          s.icomLanEnable,
+          value: enabled,
+          onChanged: (v) => unawaited(_saveIcomLan(on: v)),
+        ),
+        if (enabled) ...[
+          SettingsInput(s.icomLanHost, _icomHost,
+              hint: '192.168.1.143',
+              onEditingComplete: () => unawaited(_saveIcomLan())),
+          SettingsInput(s.icomLanPort, _icomPort,
+              hint: '50001',
+              onEditingComplete: () => unawaited(_saveIcomLan())),
+          SettingsInput(s.icomLanUsername, _icomUser,
+              hint: 'ic705',
+              onEditingComplete: () => unawaited(_saveIcomLan())),
+          SettingsInput(s.icomLanPassword, _icomPass,
+              onEditingComplete: () => unawaited(_saveIcomLan())),
+          SettingsRow2(
+            s.audioBackend,
+            phase,
+            valueColor: link?.isReceiving == true
+                ? C.green
+                : (problem == null ? C.slate : C.orange),
+          ),
+          if (problem != null) SettingsHint(problem, color: C.orange),
+          if (link != null && link.logs.isNotEmpty)
+            SettingsHint(link.logs.last, color: C.grey),
+        ],
+      ],
     );
   }
 

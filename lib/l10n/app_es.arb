@@ -2697,5 +2697,13 @@
   "crashFalsePositive": "**Puede dar falsas alarmas**: pasar un badén y luego estar quieto 12 segundos (en un semáforo) cumple ambas etapas. El primer botón del aviso es \"Estoy bien\": descártalo y nada más se ve afectado.",
   "crashAlarmTitle": "Posible choque o caída detectado",
   "crashAlarmBody": "El teléfono detectó un impacto fuerte y después ningún movimiento significativo (unos 12 segundos).\n\nSi estás bien, pulsa \"Estoy bien\". Si te encuentras mal o no puedes moverte, llama ya a emergencias o envía un mensaje de ayuda a las estaciones en 100 km.\n\n**Es una heurística, no detección de choques de nivel ingenieril**: un badén o dejar caer el móvil pueden activarla.",
-  "crashNotif": "Guardián vital: posible choque"
+  "crashNotif": "Guardián vital: posible choque",
+  "icomLanTitle": "IC-705 Wi-Fi (radio direct)",
+  "icomLanEnable": "Enable IC-705 LAN link",
+  "icomLanHost": "Radio IP",
+  "icomLanPort": "Control port",
+  "icomLanUsername": "Username (Network User)",
+  "icomLanPassword": "Password (Network User)",
+  "icomLanHint": "Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.",
+  "codeContributionIcomLan": "IC-705 radio link"
 }

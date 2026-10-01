@@ -28,6 +28,7 @@ import 'kiss.dart';
 import 'net/audio.dart';
 import 'net/audio_export.dart';
 import 'net/audio_file.dart';
+import 'net/icom_lan.dart';
 import 'wav.dart';
 
 /// 音频链路状态码
@@ -41,6 +42,25 @@ class AudioStatus {
   static const String error = 'error';
   static const String unsupported = 'unsupported';
   static const String noPermission = 'no-permission';
+}
+
+/// 音频数据源：系统声卡，还是 IC-705 局域网（Wi-Fi 直连电台）。
+///
+/// 两者共用同一条 AFSK/AX.25 管线 —— 区别只在"PCM 从哪来、往哪去"，
+/// 所以这里只是一个开关，不会给台站解析/消息/地图引入任何分叉。
+enum AudioSource {
+  device('device', '系统声卡（麦克风/喇叭）'),
+  icomLan('ic705', 'IC-705 Wi-Fi（局域网直连）');
+
+  const AudioSource(this.wireName, this.label);
+
+  final String wireName;
+  final String label;
+
+  static AudioSource fromWire(String? value) => values.firstWhere(
+        (s) => s.wireName == value,
+        orElse: () => AudioSource.device,
+      );
 }
 
 /// 音频链路设置
@@ -81,6 +101,12 @@ class AudioConfig {
   /// 采集（接收）设备序号；语义同 [outDeviceId]。
   int inDeviceId;
 
+  /// 数据源：系统声卡（默认）或 IC-705 局域网。
+  AudioSource source;
+
+  /// IC-705 局域网设置（仅 [source] 为 [AudioSource.icomLan] 时使用）。
+  IcomLanConfig icomLan;
+
   AudioConfig({
     this.afsk = const AfskParams(),
     this.path = 'WIDE1-1,WIDE2-1',
@@ -92,6 +118,8 @@ class AudioConfig {
     this.csmaWaitMs = 3000,
     this.outDeviceId = kAudioDeviceDefault,
     this.inDeviceId = kAudioDeviceDefault,
+    this.source = AudioSource.device,
+    this.icomLan = const IcomLanConfig(host: '', username: '', password: ''),
   });
 
   Map<String, dynamic> toJson() => {
@@ -105,6 +133,8 @@ class AudioConfig {
         'csmaWaitMs': csmaWaitMs,
         'outDeviceId': outDeviceId,
         'inDeviceId': inDeviceId,
+        'source': source.wireName,
+        'icomLan': icomLan.toJson(),
       };
 
   static AudioConfig fromJson(Object? j) {
@@ -122,6 +152,8 @@ class AudioConfig {
       csmaWaitMs: i(j['csmaWaitMs'], 3000).clamp(0, 10000),
       outDeviceId: i(j['outDeviceId'], kAudioDeviceDefault),
       inDeviceId: i(j['inDeviceId'], kAudioDeviceDefault),
+      source: AudioSource.fromWire(j['source']?.toString()),
+      icomLan: IcomLanConfig.fromJson(j['icomLan']),
     );
   }
 }
@@ -129,7 +161,22 @@ class AudioConfig {
 /// 音频链路：参数、收发、统计与日志
 class AudioLink {
   AudioLink({AudioTransport? transport})
-      : _t = transport ?? createAudioTransport() {
+      : _t = transport ?? createAudioTransport(),
+        _injectedTransport = transport != null {
+    _bindTransport();
+    _rebuildModem();
+  }
+
+  /// 传输层。数据源切换（声卡 ↔ IC-705）时会整体替换，所以不是 final。
+  AudioTransport _t;
+
+  /// 测试注入的传输层不参与自动替换。
+  final bool _injectedTransport;
+
+  /// 当前 IC-705 链路（数据源为电台时非空），供界面读取阶段/日志。
+  IcomLanLink? _icomLan;
+
+  void _bindTransport() {
     _t.onPcm = _onPcm;
     _t.onStatus = (s) {
       _log(s);
@@ -142,10 +189,7 @@ class AudioLink {
       _playDone = null;
       onStateChanged?.call();
     };
-    _rebuildModem();
   }
-
-  final AudioTransport _t;
 
   AudioConfig config = AudioConfig();
 
@@ -263,9 +307,49 @@ class AudioLink {
   /// 请求平台权限（Android 的 RECORD_AUDIO）
   Future<bool> requestPermissions() => _t.requestPermissions();
 
+  /// 当前数据源是否为 IC-705 局域网。
+  bool get usingIcomLan => _t is IcomLanLink;
+
+  /// 当前 IC-705 链路（非电台源时为 null）；界面据此显示握手阶段与日志。
+  IcomLanLink? get icomLanLink => _icomLan;
+
+  /// 按 `config.source` 选择传输层：系统声卡 ↔ IC-705 局域网。
+  ///
+  /// 只有**切换数据源**时才重建传输层（声卡后端与电台链路互不兼容），
+  /// 同一数据源下调用是空操作 —— 因此可以安全地放在 connect() 里。
+  Future<void> _selectTransport() async {
+    if (_injectedTransport) return;
+    final wantIcom = config.source == AudioSource.icomLan;
+    if (wantIcom == usingIcomLan) {
+      if (wantIcom) _syncIcomSampleRate();
+      return;
+    }
+    await _t.dispose();
+    _t = wantIcom
+        ? createIcomLanLink(config: config.icomLan)
+        : createAudioTransport();
+    _icomLan = _t is IcomLanLink ? _t as IcomLanLink : null;
+    _log(wantIcom
+        ? '数据源切换为 IC-705 Wi-Fi（${config.icomLan.host}）'
+        : '数据源切换回系统声卡');
+    _bindTransport();
+    if (wantIcom) _syncIcomSampleRate();
+    _rebuildModem();
+    onStateChanged?.call();
+  }
+
+  /// IC-705 的局域网音频固定 12 kHz（协议协商值），AFSK 参数必须跟着走。
+  void _syncIcomSampleRate() {
+    const target = 12000;
+    if (config.afsk.sampleRate == target) return;
+    config.afsk = config.afsk.copyWith(sampleRate: target);
+    _log('IC-705 音频固定 $target Hz，已同步 AFSK 采样率');
+  }
+
   /// 建立链路：打开采集。音频链路没有「对端设备」，连上即可收。
   Future<bool> connect() async {
     if (connected) return true;
+    await _selectTransport();
     if (!await _t.supported) {
       status = AudioStatus.unsupported;
       lastError = 'unsupported';

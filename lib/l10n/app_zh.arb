@@ -3212,5 +3212,13 @@
   "crashFalsePositive": "**它会误报**：过减速带之后正好停了 12 秒（等红灯）就满足两段判据。提醒里第一个按钮就是「我没事」，按掉即可，不影响其它功能。",
   "crashAlarmTitle": "检测到疑似碰撞或摔倒",
   "crashAlarmBody": "手机检测到一次强烈的冲击，之后一直没有明显移动（约 12 秒）。\n\n如果你没事，按「我没事」即可；如果身体不适或无法行动，请立即拨打急救电话，或向附近 100 公里内的台站发出求助信息。\n\n**这是启发式判断，不是工程级碰撞检测**：过减速带、手机摔落在地上都可能触发。",
-  "crashNotif": "生命守护：检测到疑似碰撞"
+  "crashNotif": "生命守护：检测到疑似碰撞",
+  "icomLanTitle": "IC-705 Wi-Fi（电台直连）",
+  "icomLanEnable": "启用 IC-705 局域网直连",
+  "icomLanHost": "电台 IP",
+  "icomLanPort": "控制端口",
+  "icomLanUsername": "用户名（Network User）",
+  "icomLanPassword": "密码（Network User）",
+  "icomLanHint": "在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。",
+  "codeContributionIcomLan": "IC-705 电台直连"
 }
