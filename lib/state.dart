@@ -504,9 +504,15 @@ class AppState extends ChangeNotifier {
   /// 只认 `toCall == APALOC`（其它设备即使备注里凑巧有 STEPS= 也不该进榜），
   /// 且只取**最后一次**报文里的值 —— 旧值没有意义（人一直在走）。
   List<(Station, int)> sportRank({int limit = 50}) {
+    final now = DateTime.now();
     final out = <(Station, int)>[];
     for (final s in stations) {
       if (s.toCall != apalocToCall) continue;
+      // 自己在榜里（用户要求）：榜上要能看到"我第几"——上面那张「我」卡片管的是
+      // 开关与授权，不承担"名次"这件事。
+      // **只算今天**：卡片标题写的是「今日」，而台站最后一次报文可能是三天前的 ——
+      // 把三天前的 30000 步排在今天 8000 步前面，读者只会以为自己今天输了。
+      if (!_heardToday(s.lastHeard, now)) continue;
       final m = RegExp(r'STEPS=(\d+)').firstMatch(s.comment ?? '');
       if (m == null) continue;
       final n = int.tryParse(m.group(1)!) ?? 0;
@@ -516,6 +522,13 @@ class AppState extends ChangeNotifier {
     out.sort((a, b) => b.$2.compareTo(a.$2));
     return out.length > limit ? out.sublist(0, limit) : out;
   }
+
+  /// 是不是**今天**听到的（本地日历日）。
+  ///
+  /// 为什么按"日历日"而不是"最近 24 小时"：界面上的标题、空提示写的都是
+  /// 「今日」—— 口径必须与文案一致，否则又是"两个数字各说各话"。
+  static bool _heardToday(DateTime t, DateTime now) =>
+      t.year == now.year && t.month == now.month && t.day == now.day;
 
   /// 通知栏的**附加行**（更新包下载进度等）。
   ///
@@ -864,7 +877,29 @@ class AppState extends ChangeNotifier {
     return out.length > limit ? out.sublist(0, limit) : out;
   }
 
-  /// 把「我附近按距离排的台站」推给盒子（最多 8 条 = 固件那侧列表上限）。
+  /// 读一次手机电量（**自节流**：默认 30 秒内不重复读）。
+  ///
+  /// 30 秒是刻意的：电量是"分钟级"的量，读得太勤只是在耗电（每次都是一趟平台通道），
+  /// 读得太懒又会出现"盒子上的数字与状态栏差一截"。`force` 留给"马上就要用到"的场合。
+  Future<void> _refreshBattery({bool force = false}) async {
+    final now = DateTime.now();
+    if (!force &&
+        _batteryAt != null &&
+        now.difference(_batteryAt!).inSeconds < 30) {
+      return;
+    }
+    _batteryAt = now;
+    // 没人用这个数就别读：信标不带电量、盒子链路也没开 → 跳过这趟平台通道
+    if (!beaconIncludeBattery && !box.config.enabled) return;
+    try {
+      final v = await loc.getBatteryLevel();
+      if (v >= 0) _battery = v;
+    } catch (_) {
+      // 读不到就保持上一次的值（-1 = 未知），界面/盒子上会如实写 `--`
+    }
+  }
+
+  /// 盒子的 APRS-IS passcode 是不是
   ///
   /// 为什么用 [filterRadius] 而不是盒子自己的半径：这条数据表达的是
   /// 「**手机**这侧看到谁」——两边半径一致反而让盒子上的列表与它自己收到的
@@ -919,6 +954,14 @@ class AppState extends ChangeNotifier {
   DateTime _lastMileageSave = DateTime.fromMillisecondsSinceEpoch(0);
 
   int _battery = -1; // 电量百分比（-1 未知）
+
+  /// 最近一次读到电量的时刻。
+  ///
+  /// 为什么需要它：电量以前**只在定位回调里**刷新（而且只在"随信标发手机电量"开着时）——
+  /// 手机放着不动时系统会停发定位点，那一刻电量就冻在旧值上；而盒子每 5 秒推一次
+  /// `TEL bat=…`，推的一直是那个旧数（用户看到的"电量同步不及时"）。
+  /// 现在改成**按时间自己刷新**，与定位无关、也与那个开关无关。
+  DateTime? _batteryAt;
 
   /// **强制接受网络定位自动上报**（默认关）。
   ///
@@ -3393,6 +3436,9 @@ class AppState extends ChangeNotifier {
           }));
         }
       }
+      // 手机电量：与定位解耦，自己按时间刷（30 秒一次，见 _refreshBattery）。
+      // 盒子那边的「APRSLOCUS」页显示它，所以必须保证这个数**不是几小时前的**。
+      unawaited(_refreshBattery());
       // 外置 GPS（佳明）与手机 GPS 的启停对齐（issue #21-4）：很便宜，
       // 只在状态翻转时做事，不需要再开一个定时器。
       _syncPhoneGps();
@@ -4954,12 +5000,9 @@ class AppState extends ChangeNotifier {
     }
     _notify();
     _updateNotification();
-    // 定期刷新电量（每次定位都取一次，便于上报）
-    if (beaconIncludeBattery) {
-      loc.getBatteryLevel().then((v) {
-        if (v >= 0) _battery = v;
-      });
-    }
+    // 有定位点时顺手刷一下电量（真正的节流在 _refreshBattery 里）。
+    // 注意它**不再**是唯一的刷新点：定位会停，电量不会停。
+    unawaited(_refreshBattery());
   }
 
   // ─── 信标（定位上传） ───

@@ -117,10 +117,12 @@ class _BoxDevicePageState extends State<BoxDevicePage> {
         _toast(s.deviceConflictTitle, color: C.red);
         return;
       }
-      link.config.enabled = true;
-      await link.persistConfig();
       final ok = await link.connect();
-      // 连上了才记账：`_linkUp` 会被重连逻辑读，写错会让它一直重试
+      // ⚠ **连上之后才记「启用」**：以前先写 `enabled = true` 再连 —— 连不上时它
+      // 仍被记成启用，自动重连定时器于是**永远**在试，而每试一次都是一次会阻塞
+      // 十几秒的 RFCOMM 连接（把"连不上"放大成"反复卡主线程 → ANR/闪退"）。
+      link.config.enabled = ok;
+      await link.persistConfig();
       st.adoptBoxLink(ok);
       if (!ok) {
         if (link.status == BoxStatus.openFailed) {

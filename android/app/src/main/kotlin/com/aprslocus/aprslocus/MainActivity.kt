@@ -221,17 +221,16 @@ class MainActivity : FlutterActivity() {
                             if (address.isNullOrEmpty()) {
                                 result.error("NO_ADDRESS", "缺少设备地址", null)
                             } else {
-                                try {
-                                    manager.connect(address)
-                                    // 蓝牙已接入：重算「还有没有设备在用蓝牙」，让前台
-                                    // 服务声明 connectedDevice 类型。与音频同一个坑 ——
-                                    // Android 14+ 不声明就会在退到后台后限制蓝牙访问
-                                    // （表现为「切后台收不到报文」）。
-                                    refreshBtActive()
-                                    result.success(true)
-                                } catch (e: Exception) {
-                                    result.error("BT_CONNECT_FAILED", e.message ?: "连接失败", null)
-                                }
+                                // connect 现在是**异步**的（RFCOMM 连接会阻塞十几秒，
+                                // 放主线程就是 ANR/闪退）：结果由 TncManager 在工作线程
+                                // 完成后回主线程 resolve —— 这里**不能**再 try/catch 同步包它，
+                                // 也不能自己 result.success(true)。
+                                manager.connect(address, result)
+                                // 蓝牙已接入：重算「还有没有设备在用蓝牙」，让前台服务
+                                // 声明 connectedDevice 类型（Android 14+ 不声明会在后台
+                                // 被限制蓝牙访问）。连接是异步的，所以在结果回来之前
+                                // 先按现状重算一次；真正连上后 emitState 还会再走一遍。
+                                refreshBtActive()
                             }
                         }
                         "disconnect" -> {
@@ -289,7 +288,7 @@ class MainActivity : FlutterActivity() {
         }
 
         // ① TNC（KISS 收发）
-        val tncManager = TncManager(this)
+        val tncManager = TncManager(this, onLinkChanged = { refreshBtActive() })
         tnc = tncManager
         wireSppLink(tncManager, TncManager.METHOD_CHANNEL, TncManager.EVENT_CHANNEL)
 
@@ -298,10 +297,12 @@ class MainActivity : FlutterActivity() {
             this,
             TncManager.METHOD_CHANNEL_PKWDWPL,
             TncManager.EVENT_CHANNEL_PKWDWPL,
+            // 注意：onLinkChanged 是**最后一个**具名参数，放在下面传入
             // 权限 requestCode 必须与 TNC 不同：下面 onRequestPermissionsResult
             // 会把结果转发给**两个**实例，共用同一个 code 会让两边同时命中，
             // 把对方尚未完成的 permResult 误 resolve。
             TncManager.PERM_REQUEST_PKWDWPL,
+            onLinkChanged = { refreshBtActive() },
         )
         pkwdwpl = pkwdwplManager
         wireSppLink(
@@ -316,6 +317,7 @@ class MainActivity : FlutterActivity() {
             TncManager.METHOD_CHANNEL_BOX,
             TncManager.EVENT_CHANNEL_BOX,
             TncManager.PERM_REQUEST_BOX,
+            onLinkChanged = { refreshBtActive() },
         )
         box = boxManager
         wireSppLink(boxManager, TncManager.METHOD_CHANNEL_BOX, TncManager.EVENT_CHANNEL_BOX)

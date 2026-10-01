@@ -75,6 +75,15 @@ class TncManager(
      * 这正是「参数化通道名就能复用」这种想法容易漏掉的那类**隐式共享状态**。
      */
     private val permRequestCode: Int = PERM_REQUEST,
+    /**
+     * 链路**真的连上**之后的回调（在主线程上调用）。
+     *
+     * 为什么需要它：`connect` 改成异步之后，"连上"发生在工作线程上，MainActivity
+     * 里紧跟 connect 的那句 `refreshBtActive()` 已经**来不及**了 —— 前台服务就
+     * 晚一步才声明 connectedDevice 类型，Android 14+ 在后台会因此限制蓝牙访问
+     * （表现：切后台收不到报文）。这个回调与 `BleHrManager.onLinkChanged` 同一个写法。
+     */
+    private val onLinkChanged: (() -> Unit)? = null,
 ) {
 
     companion object {
@@ -199,43 +208,74 @@ class TncManager(
 
     // ─── 连接 / 断开 ───
 
+    /**
+     * 连接（**异步**）。
+     *
+     * ⚠ 为什么不能同步做：`BluetoothSocket.connect()` 是**阻塞**调用，连不上时要等
+     * 十几秒（对端关机 / 不在范围 / 配对失效）。它原本跑在方法通道回调 = **主线程**上，
+     * 主线程被卡住就是 ANR，系统会直接把应用杀掉 —— 用户看到的就是「蓝牙连不上
+     * 就闪退」。
+     *
+     * 分工：`teardown()`（拆旧链路，快）仍在主线程做；真正的 socket 连接在
+     * 工作线程；结果回主线程 `result.success/error`（与 `UsbSerialManager` 同一套）。
+     */
     @SuppressLint("MissingPermission")
-    fun connect(address: String) {
+    fun connect(address: String, result: MethodChannel.Result) {
         if (!hasBtPermission()) {
-            throw SecurityException("缺少蓝牙权限（BLUETOOTH_CONNECT）")
+            result.error("BT_NO_PERMISSION", "缺少蓝牙权限（BLUETOOTH_CONNECT）", null)
+            return
         }
         // 并发保护：两次 connect 同时跑时，后一次会把前一次刚建好的 socket 关掉，
         // 表现为「刚连上就断」。宁可让调用方收到明确错误、稍后重试。
         if (!connecting.compareAndSet(false, true)) {
-            throw IllegalStateException("正在连接中，请稍后重试")
+            result.error("BT_BUSY", "正在连接中，请稍后重试", null)
+            return
         }
-        try {
-            val a = adapter() ?: throw IllegalStateException("蓝牙不可用或未开启")
-            // 关掉旧链路并把代次推进，使旧的 reader/writer 立刻失效
-            teardown()
-
-            val device = a.getRemoteDevice(address)
-            // 发现附近设备会严重拖慢甚至导致 RFCOMM 连接失败，必须先取消
+        // 拆旧链路（把代次推进，使旧的 reader/writer 立刻失效）—— 这一步很快
+        teardown()
+        Thread {
+            var sock: BluetoothSocket? = null
+            var err: String? = null
             try {
-                if (a.isDiscovering) a.cancelDiscovery()
-            } catch (_: SecurityException) {
+                val a = adapter() ?: throw IllegalStateException("蓝牙不可用或未开启")
+                val device = a.getRemoteDevice(address)
+                // 发现附近设备会严重拖慢甚至导致 RFCOMM 连接失败，必须先取消
+                try {
+                    if (a.isDiscovering) a.cancelDiscovery()
+                } catch (_: SecurityException) {
+                }
+                sock = device.createRfcommSocketToServiceRecord(SPP_UUID)
+                sock.connect() // 阻塞；失败抛 IOException（现在阻塞的是工作线程）
+
+                val gen = generation.incrementAndGet()
+                val s = sock
+                socket = s
+                startWriter(s, gen)
+                startReader(s, gen)
+                // 只有真的活着才广播 connected。
+                // startWriter / startReader 在里面拿不到流时会 teardown()（清掉 socket
+                // 并推进代次），此时再无条件广播 connected 会让界面显示「已连接」
+                // 而链路其实是废的 —— 正是这个“看着正常、实际不通”的状态让问题难查。
+                if (isConnected()) {
+                    emitState("connected")
+                    main.post { onLinkChanged?.invoke() }
+                }
+            } catch (e: Exception) {
+                err = e.message ?: "连接失败"
+                // 失败别把半开的 socket 留着（每次重试都漏一个，最后连手机蓝牙都卡）
+                try {
+                    sock?.close()
+                } catch (_: Exception) {
+                }
+            } finally {
+                connecting.set(false)
             }
-
-            val sock = device.createRfcommSocketToServiceRecord(SPP_UUID)
-            sock.connect() // 阻塞；失败抛 IOException
-
-            val gen = generation.incrementAndGet()
-            socket = sock
-            startWriter(sock, gen)
-            startReader(sock, gen)
-            // 只有真的活着才广播 connected。
-            // startWriter / startReader 在里面拿不到流时会 teardown()（清掉 socket
-            // 并推进代次），此时再无条件广播 connected 会让界面显示「已连接」
-            // 而链路其实是废的 —— 正是这个“看着正常、实际不通”的状态让问题难查。
-            if (isConnected()) emitState("connected")
-        } finally {
-            connecting.set(false)
-        }
+            val e2 = err
+            main.post {
+                if (e2 == null) result.success(true)
+                else result.error("BT_CONNECT_FAILED", e2, null)
+            }
+        }.also { it.name = "bt-connect" }.start()
     }
 
     /**

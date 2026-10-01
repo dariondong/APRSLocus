@@ -85,8 +85,8 @@ class _SportRankPageState extends State<SportRankPage> {
         const SizedBox(height: 16),
         // ③ 榜单
         SettingsSectionCard(
+          // 副标题原来等于**页头副标题**（同一句话在一屏里出现两次），去掉
           title: s.sportRankToday,
-          subtitle: S.of(context).sportRankDesc,
           icon: Icons.emoji_events_rounded,
           color: C.green,
           children: [
@@ -104,8 +104,8 @@ class _SportRankPageState extends State<SportRankPage> {
         if (noSteps.isNotEmpty) ...[
           const SizedBox(height: 16),
           SettingsSectionCard(
+            // 副标题原来用的是**开关的文案**（beaconIncludeSteps）—— 语义不对，去掉
             title: s.sportRankNoSteps,
-            subtitle: S.of(context).beaconIncludeSteps,
             icon: Icons.person_search_rounded,
             color: C.grey,
             children: [
@@ -241,9 +241,9 @@ class _SportRankPageState extends State<SportRankPage> {
             onChanged: (v) =>
                 setState(() => st.setBeaconIncludeSteps(v))),
         SettingsHint(
-          st.beaconIncludeSteps
-              ? s.stepsHint
-              : S.of(context).sportRankNote,
+          // 关着的时候别再复述页头那句长说明（同一屏第二次出现）；改成讲清
+          // 「打开后会发出什么」—— 代价写在手边，用户才好决定。
+          st.beaconIncludeSteps ? s.stepsHint : s.sportRankGateWhatSent,
           color: C.grey,
         ),
       ],
@@ -259,9 +259,13 @@ class _SportRankPageState extends State<SportRankPage> {
       3 => const Color(0xFFB45309),
       _ => C.grey,
     };
+    // 一行要能回答：**这是谁、多远、多久前、多少步**。
+    // （原来副标题写的是卡片标题「今日 · …」—— 那不是行信息，是复制粘贴留下的占位。）
+    final mine = x.call == st.myFullCall;
     return SettingsNavRow(
-      title: x.call,
-      subtitle: '${s.sportRankToday} · ${_ago(context, x.lastHeard)}',
+      // 名次写成数字（只有前三名有奖牌色，其余看不出第几）；自己那一行标出来
+      title: '$rank. ${x.call}${mine ? ' · ${s.sportRankMe}' : ''}',
+      subtitle: _lineInfo(context, st, x),
       icon: rank <= 3 ? Icons.emoji_events_rounded : Icons.person_rounded,
       color: medal,
       trailing: s.stepsCount('$steps'),
@@ -270,22 +274,40 @@ class _SportRankPageState extends State<SportRankPage> {
   }
 
   Widget _noStepsTile(BuildContext context, AppState st, Station x) {
-    final s = S.of(context);
     return SettingsNavRow(
       title: x.call,
-      subtitle: _ago(context, x.lastHeard),
+      subtitle: _lineInfo(context, st, x),
       icon: Icons.person_outline_rounded,
       color: C.grey,
-      trailing: s.sportRankNoSteps,
+      // 尾标原来是卡片标题（「未带步数」）—— 每行重复标题没有信息量，去掉
       onTap: () => _open(context, st, x),
     );
   }
 
-  /// 打开台站详情。类名是 [StationDetail]（不是 StationDetailPage），
-  /// 参数顺序是 `state` 在前 —— 与仓库里其它调用点保持一致。
+  /// 行副标题：`3.2km · 5 分钟前`。
+  /// 没有我的定位、或对方报文里没带坐标时**只写时间** —— 不写 `--`，也不去算
+  /// "到几内亚湾的距离"（(0,0) 是"没有位置"的哨兵值）。
+  String _lineInfo(BuildContext context, AppState st, Station x) {
+    final ago = _ago(context, x.lastHeard);
+    final lat = st.myLat, lng = st.myLng;
+    if (lat == null || lng == null) return ago;
+    if (x.lat == 0 && x.lng == 0) return ago;
+    final km = x.distKm(lat, lng);
+    if (km.isNaN || km.isInfinite || km <= 0) return ago;
+    return '${km.toStringAsFixed(1)}km · $ago';
+  }
+
+  /// 打开台站详情 —— **用全应用统一的底部面板**（`showModalBottomSheet`）。
+  ///
+  /// 为什么不是 `Navigator.push` 整页：台站页、地图点标记都是弹面板
+  /// （见 `stations_page.dart` / `map_page.dart`）—— 同一个"点开一个台站"的动作，
+  /// 在排行榜里变成翻页就很不合理（用户原话）。参数与其它调用点逐字一致。
   void _open(BuildContext context, AppState st, Station x) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => StationDetail(state: st, station: x)),
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => StationDetail(state: st, station: x),
     );
   }
 

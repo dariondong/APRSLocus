@@ -226,9 +226,20 @@ class TncNativeBluetooth implements TncTransport {
     if (!await supported) return 'unsupported';
     try {
       _listen();
-      await _ch.invokeMethod<bool>('connect', {'address': device.id});
+      // 原生侧现在是**异步**的（阻塞的 RFCOMM 连接挪到了工作线程）。这里的超时
+      // 是为了界面别卡在「连接中」：原生万一因为系统原因不回调，20 秒后如实报错，
+      // 而不是让上层以为"还在连"，重连逻辑也跟着卡住。
+      await _ch
+          .invokeMethod<bool>('connect', {'address': device.id})
+          .timeout(const Duration(seconds: 20));
       connected = true;
       return null;
+    } on TimeoutException {
+      connected = false;
+      // 把可能已经建立的连接拆掉：否则原生连上了、这边以为失败，
+      // 就会出现「界面说没连上、实际占着电台」的鬼状态。
+      unawaited(disconnect());
+      return 'connect-timeout';
     } on PlatformException catch (e) {
       connected = false;
       return e.message ?? e.code;
