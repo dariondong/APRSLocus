@@ -205,6 +205,52 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.11', 'date': '2026-10-01',
+        'items': [
+            ('up',
+             T('**安卓安装包按 CPU 架构分包：81.6 MB → 约 30 MB**。实测上一版 81.6 MB 里'
+               '**76.6 MB（94%）是三套原生库**（应用代码编译出的机器码 + Flutter 引擎，'
+               '分别对应 arm64-v8a / armeabi-v7a / x86_64），而一台手机只用得上其中一套。'
+               '现在 Release 里有**三个各约 30 MB** 的包：64 位沿用原来的文件名'
+               '（**应用内更新默认下这个，逻辑一行没改**）、32 位、x86_64（模拟器 / Chromebook）。'
+               '「64 位沿用原名」是刻意的：更新取资产列表里第一个 `.apk`，而资产按名字升序'
+               '返回，`.` 比 `_` 小 —— 所以它永远排第一，这条不变量有专门的检查与自测盯着。',
+               '**安卓安裝包按 CPU 架構分包：81.6 MB → 約 30 MB**。實測上一版 81.6 MB 裡'
+               '**76.6 MB（94%）是三套原生函式庫**（應用程式碼編譯出的機器碼 + Flutter 引擎，'
+               '分別對應 arm64-v8a / armeabi-v7a / x86_64），而一台手機只用得上其中一套。'
+               '現在 Release 裡有**三個各約 30 MB** 的包：64 位元沿用原來的檔案名稱'
+               '（**應用程式內更新預設下這個，邏輯一行沒改**）、32 位元、x86_64（模擬器 / Chromebook）。'
+               '「64 位元沿用原名」是刻意的：更新取資產清單裡第一個 `.apk`，而資產按名稱升序'
+               '回傳，`.` 比 `_` 小 —— 所以它永遠排第一，這條不變量有專門的檢查與自測盯著。',
+               '**Android packages are now split per CPU architecture: 81.6 MB → about 30 MB.** '
+               'In the previous build, **76.6 MB of the 81.6 MB — 94% — was three sets of native '
+               'libraries** (the machine code compiled from the app plus the Flutter engine, for '
+               'arm64-v8a / armeabi-v7a / x86_64), while a phone only ever uses one of them. A '
+               'release now carries **three packages of about 30 MB each**: 64-bit keeps the '
+               'original file name (**this is what the in-app update downloads; that logic is '
+               'untouched**), plus 32-bit and x86_64 (emulators / Chromebooks). Keeping the plain '
+               'name is deliberate: the updater takes the first `.apk` in the asset list and '
+               'assets come back in ascending name order, where `.` sorts before `_` — so the '
+               '64-bit build is always first, an invariant with a dedicated check and self-test.')),
+            ('new',
+             T('**更新页新增「选择安装包」**：该版本有多个包时，一行一个（**文件名 · 架构 · 大小**），'
+               '第一个标「推荐」= 应用内更新会挑的那个；**点一行在浏览器打开该包的下载地址**，'
+               '方便只支持 32 位的老机型直接取 `_armeabi-v7a`。顺带修掉一处显示问题：'
+               '下载中以前英雄卡与下方卡片**各画一条进度条**（同一个下载看着像两个任务），现在只留一条。',
+               '**更新頁新增「選擇安裝包」**：該版本有多個包時，一列一個（**檔案名稱 · 架構 · 大小**），'
+               '第一個標「建議」= 應用程式內更新會挑的那個；**點一列在瀏覽器開啟該包的下載網址**，'
+               '方便只支援 32 位元的舊機型直接取 `_armeabi-v7a`。順帶修掉一處顯示問題：'
+               '下載中以前英雄卡與下方卡片**各畫一條進度列**（同一個下載看著像兩個任務），現在只留一條。',
+               '**A "choose a package" block on the update page**: when a release has more than one '
+               'package it lists one row per file (**name · architecture · size**), the first '
+               'marked "Recommended" — the one the in-app update fetches — and **tapping a row '
+               'opens that package\'s download URL in the browser**, so 32-bit-only devices can '
+               'grab `_armeabi-v7a` directly. One display fix came along: while downloading, the '
+               'hero card and the card below it **each drew a progress bar** for the same download '
+               '(it read as two tasks); now there is one.')),
+        ],
+    },
+    {
         'ver': 'v2.0.10', 'date': '2026-09-30',
         'items': [
             ('new',

@@ -1,5 +1,57 @@
 # 更新日志
 
+## [2.0.11] - 2026-10-01
+
+### 📦 安卓安装包按 CPU 架构分包：81.6 MB → 约 30 MB
+
+实测 v2.0.10 的包（81.6 MB）里，**76.6 MB（94%）是三套原生库** —— 每套包含
+应用代码编译出的机器码（`libapp.so` 14~17 MB）与 Flutter 引擎（`libflutter.so`
+8~12 MB），分别对应 arm64-v8a / armeabi-v7a / x86_64。**而一台手机只会用得上其中一套**，
+另外两套是白带的。
+
+现在改成 `--split-per-abi`：Release 里有**三个各约 30 MB** 的包 ——
+**64 位**（沿用原来的文件名 `APRSLocus_2.0.11.apk`，**应用内更新默认下这个，
+逻辑一行没改**）、**32 位**（`_armeabi-v7a`）、**x86_64**（`_x86_64`，模拟器 / Chromebook）。
+
+「64 位沿用原名」不是随手定的：应用内更新取的是资产列表里**第一个 `.apk`**，
+而 GitHub 按**名字升序**返回 —— `.`（0x2E）比 `_`（0x5F）小，所以 64 位永远排第一。
+这条不变量由 `tool/check_release_assets.py` 钉住（8 条判据 + 负向自测 8/8 报红），
+破坏它**不会有任何东西失败**，只会有人默默下到装不上的包。
+
+### 🧭 更新页新增「选择安装包」
+
+安卓上若该版本有多个包，「检查更新」页会列出一行一个包（**文件名 · 架构 · 大小**），
+第一个标「推荐」= 应用内更新会挑的那个；**点一行在浏览器打开该包的下载地址**，
+方便只支持 32 位的老机型直接取 `_armeabi-v7a`。只在 ≥2 个包时出现，单包页面不变。
+
+- 顺带修：下载中以前英雄卡与下方卡片**各画一条进度条**（同一个下载看起来像两个任务），现在只留一条。
+- 挑包 / 命名 / 列表顺序这三条跨处约定抽成 `lib/update_packages.dart`（纯函数，页面要 AppState + 网络测不动），新增 6 条单测；其中一条专门钉住「**标推荐的那个 == 应用内更新会挑的那个**」。
+
+### 📣 公告
+
+公告整条改为说明这次「包小了、以及三个包怎么选」（简中 / 繁中 / 英文，官网同源）。
+
+## [2.0.11] - 2026-10-01 (English)
+
+### 📦 Android packages split per CPU architecture: 81.6 MB → about 30 MB
+
+In the v2.0.10 package (81.6 MB), **76.6 MB — 94% — was three sets of native libraries**, each holding the machine code compiled from the app (14–17 MB `libapp.so`) plus the Flutter engine (8–12 MB `libflutter.so`) for arm64-v8a / armeabi-v7a / x86_64. **A phone only ever uses one of them**; the other two were dead weight.
+
+The build now uses `--split-per-abi`, so a release carries **three packages of about 30 MB each**: **64-bit** (keeping the original file name `APRSLocus_2.0.11.apk` — **this is what the in-app update downloads, and that logic is untouched**), **32-bit** (`_armeabi-v7a`) and **x86_64** (`_x86_64`, for emulators / Chromebooks).
+
+Keeping the plain name for the 64-bit build is not arbitrary: the in-app updater takes the **first `.apk`** in the asset list, and GitHub returns assets in **ascending name order** — `.` (0x2E) sorts before `_` (0x5F), so the 64-bit package is always first. `tool/check_release_assets.py` pins that invariant down (8 assertions, and its own negative self-test goes red 8/8), because breaking it **fails nothing at all** — someone just silently downloads a package that will not install.
+
+### 🧭 A "choose a package" block on the update page
+
+On Android, when a release has more than one package, the update page lists one row per file (**name · architecture · size**) with the first marked "Recommended" — the one the in-app update fetches — and **tapping a row opens that package's download URL in the browser**, so 32-bit-only devices can grab `_armeabi-v7a` directly. It only appears when there are two or more packages.
+
+- Also fixed: while downloading, the hero card and the card below it **each drew a progress bar** for the same download (it read as two separate tasks); now there is one.
+- The three cross-cutting rules — which package updates fetch, how they are named, and the order the list uses — were extracted into `lib/update_packages.dart` (pure functions; the page itself needs AppState and the network, so it cannot be unit-tested). Six unit tests cover them, one of which pins "**the row marked Recommended is the one the update downloads**".
+
+### 📣 Notice
+
+The in-app notice now explains the smaller package and which of the three to pick (Simplified Chinese / Traditional Chinese / English, generated for the website from the same source).
+
 ## [2.0.10] - 2026-09-30
 
 ### 🌏 新：支持国区（中国大陆）佳明 LiveTrack

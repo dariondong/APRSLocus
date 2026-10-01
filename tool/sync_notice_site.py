@@ -57,22 +57,22 @@ PAGES = [
 # 而卡片标题要的是「TOUCH SKY」+ 右侧小字，推不出来（也不该推）。
 HEAD = {
     'zh': {
-        'kicker': '📡 2.0.9 已发布 · 生命守护测试上线',
-        'title': '生命守护「碰撞与摔倒检测」测试上线',
-        'en': 'v2.0.9 · crash & fall detection (beta)',
-        'sub': '用手机加速度判断「一次强烈冲击之后你一直没有动静」，检测到就弹提醒并推系统通知栏。它是测试功能、会误报 —— 请先读完注意事项，再决定要不要让它一直开着。',
+        'kicker': '📦 2.0.11 已发布 · 安装包小了约 2/3',
+        'title': '安卓安装包从 81.6 MB 降到约 30 MB',
+        'en': 'v2.0.11 · split per CPU architecture',
+        'sub': '以前一个包装了三套 CPU 的机器码，手机只用得上其中一套。现在按架构分成三个约 30 MB 的包，应用内「检查更新」照旧下 64 位那个，升级方式没变。',
     },
     'zh_TW': {
-        'kicker': '📡 2.0.9 已發布 · 生命守護測試上線',
-        'title': '生命守護「碰撞與摔倒偵測」測試上線',
-        'en': 'v2.0.9 · crash & fall detection (beta)',
-        'sub': '用手機加速度判斷「一次強烈衝擊之後你一直沒有動靜」，偵測到就彈提醒並推系統通知列。它是測試功能、會誤報 —— 請先讀完注意事項，再決定要不要讓它一直開著。',
+        'kicker': '📦 2.0.11 已發布 · 安裝包小了約 2/3',
+        'title': '安卓安裝包從 81.6 MB 降到約 30 MB',
+        'en': 'v2.0.11 · split per CPU architecture',
+        'sub': '以前一個包裝了三套 CPU 的機器碼，手機只用得上其中一套。現在按架構分成三個約 30 MB 的包，應用程式內「檢查更新」照舊下 64 位元那個，升級方式沒變。',
     },
     'en': {
-        'kicker': '📡 v2.0.9 released · Life guard beta',
-        'title': 'Life guard: crash & fall detection (beta)',
-        'en': 'v2.0.9 · crash & fall detection (beta)',
-        'sub': 'The phone accelerometer watches for "one sharp impact, then no movement from you" and raises an alert plus a system notification. It is a beta feature and it does false-alarm — please read the caveats before leaving it switched on.',
+        'kicker': '📦 v2.0.11 released · about 2/3 smaller',
+        'title': 'Android package: 81.6 MB → about 30 MB',
+        'en': 'v2.0.11 · split per CPU architecture',
+        'sub': 'One file used to carry the machine code for three CPUs while your phone only ever used one. There are now three ~30 MB packages, one per architecture, and the in-app "Check for updates" still fetches the 64-bit one — upgrading works exactly as before.',
     },
 }
 

@@ -272,30 +272,30 @@
     <div class="announce-ribbon"><span class="ar-dot"></span>Announcement</div>
 
     <header class="announce-head">
-      <p class="announce-kicker">📡 v2.0.9 released · Life guard beta</p>
-      <h2 class="announce-title">Life guard: crash &amp; fall detection (beta)<span class="announce-en">v2.0.9 · crash &amp; fall detection (beta)</span></h2>
-      <p class="announce-sub">The phone accelerometer watches for "one sharp impact, then no movement from you" and raises an alert plus a system notification. It is a beta feature and it does false-alarm — please read the caveats before leaving it switched on.</p>
+      <p class="announce-kicker">📦 v2.0.11 released · about 2/3 smaller</p>
+      <h2 class="announce-title">Android package: 81.6 MB → about 30 MB<span class="announce-en">v2.0.11 · split per CPU architecture</span></h2>
+      <p class="announce-sub">One file used to carry the machine code for three CPUs while your phone only ever used one. There are now three ~30 MB packages, one per architecture, and the in-app "Check for updates" still fetches the 64-bit one — upgrading works exactly as before.</p>
     </header>
 
     <div class="announce-body">
-      <p><b>v2.0.9 is out.</b> It extends <b>Life guard</b> beyond the abnormal-heart-rate alarm with <b>crash and fall detection</b>: the phone notices one sharp impact and then no movement from you, and it raises an alert plus a system notification.</p>
-      <p><b>This is a beta feature. Treat it as "may help, will sometimes false-alarm".</b> The criteria and the caveats are below — please read them before leaving it switched on.</p>
-      <p><b>1. How it decides that something happened</b></p>
-      <p>Two stages, and <b>both</b> must hold:</p>
-      <p><b>① Impact</b> — the acceleration with gravity removed spikes above <b>3.2 g</b>. Crashes and falls both produce such a spike; sustained acceleration such as hard braking does not (gravity is separated out of the reading first).</p>
-      <p><b>② Then stillness</b> — for <b>12 seconds</b> after the impact there is almost no movement.</p>
-      <p>Why the second stage is required: with the spike alone, <b>speed bumps, a phone dropped on a desk, or a good shake</b> all qualify, and an alert that fires several times a day gets ignored. The trade-off, stated plainly: <b>a minor impact — one where you can still move — will not alert.</b> This is about "I cannot move", not "a collision occurred".</p>
-      <p>Two more guards: nothing is judged in the first <b>20 seconds</b> after the app starts (picking the phone up and putting it down also creates spikes), and two alerts are at least <b>3 minutes</b> apart (one crash produces a burst of spikes).</p>
-      <p><b>2. Caveats — please read them all</b></p>
-      <ul class="announce-list"><li><b>It does false-alarm.</b> A speed bump followed by a 12-second stop at a red light satisfies both stages. The first button in the alert is "I am fine"; tap it and nothing else is affected.</li><li><b>It is a heuristic, not engineering-grade crash detection.</b> Fixed thresholds, no direction of travel, no GPS fusion, no cross-checking of any kind.</li><li><b>It only alerts; it does not act for you.</b> Calling emergency services and asking nearby stations for help both require <b>you to press the button</b> — the app never dials by itself and never sends a distress message on its own.</li><li><b>"Ask nearby stations" is not 110 / 120.</b> It sends one message to each of the <b>5</b> nearest APRSLocus stations within 100 km: `SOS CRASH HR=… position` (`SOS HR=…` for a heart-rate alarm), and it asks for confirmation first. Those operators <b>may not be online or looking at their phones</b>, and if no station is known nearby the request cannot be sent (the app says so).</li><li><b>It depends on phone hardware and on the app running.</b> An accelerometer is required (if there is none, the page says "this device cannot detect impact"); the accelerometer needs no extra permission. <b>Once the system ends the app's process there will be no alert</b> — this is not a background-resident service.</li><li><b>It is on by default</b> and can be turned off in <b>Settings → Life guard</b>. It does <b>not</b> require tracking to be on: it keeps watching even with no position updates (deliberately so — people turn GPS off to save battery when riding).</li><li><b>Please do not treat it as your only safety measure.</b> Ride and drive as carefully as you always would, and in a real emergency call <b>110 / 120</b> (or your local emergency number) directly.</li></ul>
-      <p><b>3. The heart-rate alarm is unchanged</b></p>
-      <p>The original <b>abnormal heart-rate alarm</b> still works the same way: an <b>external heart-rate device must be connected and pushing data</b> (a Bluetooth chest strap or Garmin LiveTrack), and a reading must reach or cross the upper / lower limit you set. <b>A stale reading does not alert.</b> The limits and the emergency number are on the same page and take effect the moment you change them.</p>
-      <p><b>4. Three fixes in this release</b></p>
-      <ul class="announce-list"><li><b>Steps always showed "permission needed" even after it was granted.</b> A reading of -1 has three different causes: no step sensor, no activity-recognition permission, or <b>no hardware event yet</b> (without permission the system simply does not dispatch events, and reports no error). They were conflated, so "granted but has not walked yet" was displayed as "permission needed". There are now four states: unsupported / needs permission / <b>waiting for data</b> / ok.</li><li><b>Switches on the Life guard page did nothing</b> (state was written back, but the page did not follow it).</li><li><b>The "Save" button of the speed-tier editor was covered by the navigation bar</b> — the sheet now reserves both the keyboard and the system navigation bar.</li></ul>
-      <p><b>Please report what you see while it is in beta.</b> If it fires when it should not (or stays silent when it should not), send the <b>phone model and what was happening</b> (speed bump, hard braking, phone dropped…) to <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a> — thresholds like these can only be tuned against real situations.</p>
+      <p><b>v2.0.11 is out.</b> It adds <b>no features</b>. It does two things: the Android build is now <b>split per CPU architecture</b> (about a third of the old size), and the update page can <b>list the packages</b> — because from this release on there are three of them.</p>
+      <p><b>Bottom line: if you are not sure which one to pick, you do not have to.</b> The in-app "Check for updates" still downloads the 64-bit package, exactly as before.</p>
+      <p><b>1. Why it used to be that big</b></p>
+      <p>The build used to be a <b>universal APK</b>: one file carrying the machine code for <b>three CPUs</b> (arm64-v8a / armeabi-v7a / x86_64). Your phone only ever used one of them — the other two were <b>dead weight</b>.</p>
+      <p>Measured on the v2.0.10 package (81.6 MB):</p>
+      <ul class="announce-list"><li>the three sets of native libraries totalled <b>76.6 MB (94%)</b> — each one holding your app's compiled code (14–17 MB) plus the Flutter engine (8–12 MB);</li><li>everything else added up to roughly 4 MB (images, icons, symbol tables, text…).</li></ul>
+      <p>So the fix is not to remove features, it is to stop making every user carry three copies.</p>
+      <p><b>2. There are three packages in the release now</b></p>
+      <p>Each is about <b>30 MB</b>:</p>
+      <ul class="announce-list"><li><b>`APRSLocus_2.0.11.apk`</b> — <b>64-bit</b>, for <b>almost every phone</b> (anything from 2015 on). <b>This is what the in-app update downloads</b>, so upgrading works exactly as before.</li><li><b>`APRSLocus_2.0.11_armeabi-v7a.apk`</b> — <b>32-bit</b>, for older devices. <b>Only needed on phones that are 32-bit only</b> (those cannot install the 64-bit build; Android reports an ABI mismatch).</li><li><b>`APRSLocus_2.0.11_x86_64.apk`</b> — only for <b>emulators / Chromebooks</b>; real phones normally do not need it.</li></ul>
+      <p class="announce-quote">Pick the first one when in doubt. They are the same code, compiled once per CPU, so all three behave identically.</p>
+      <p><b>3. The update page now lists them</b></p>
+      <p>On Android, when a release has more than one package, the update page gains a <b>"Choose a package"</b> block: one row per file showing its <b>name · architecture · size</b>, with the first marked "Recommended" (that is the one the in-app update fetches, and the one most phones want). <b>Tapping a row opens that package's download URL in the browser</b>, so older devices can grab the 32-bit build directly.</p>
+      <p>One display fix came along: while downloading, the page used to show <b>two progress bars</b> for the same download (it looked like two tasks). Now there is one.</p>
+      <p><b>Nothing about the app's features or settings changed</b> — your links, beacon and theme stay as they are. If something looks wrong after upgrading, please report it at <a href="https://github.com/dariondong/APRSLocus/issues" target="_blank" rel="noopener">GitHub Issues</a>.</p>
       <p><b>73!</b></p>
       <p><b>The APRSLocus team</b></p>
-      <p>29 September 2026</p>
+      <p>1 October 2026</p>
     </div>
 
     <div class="announce-actions">
@@ -565,6 +565,16 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.11</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot up"></span>**Android packages are now split per CPU architecture: 81.6 MB → about 30 MB.** In the previous build, **76.6 MB of the 81.6 MB — 94% — was three sets of native libraries** (the machine code compiled from the app plus the Flutter engine, for arm64-v8a / armeabi-v7a / x86_64), while a phone only ever uses one of them. A release now carries **three packages of about 30 MB each**: 64-bit keeps the original file name (**this is what the in-app update downloads; that logic is untouched**), plus 32-bit and x86_64 (emulators / Chromebooks). Keeping the plain name is deliberate: the updater takes the first `.apk` in the asset list and assets come back in ascending name order, where `.` sorts before `_` — so the 64-bit build is always first, an invariant with a dedicated check and self-test.</div>
+        <div class="cl-item"><span class="cl-dot new"></span>**A "choose a package" block on the update page**: when a release has more than one package it lists one row per file (**name · architecture · size**), the first marked "Recommended" — the one the in-app update fetches — and **tapping a row opens that package's download URL in the browser**, so 32-bit-only devices can grab `_armeabi-v7a` directly. One display fix came along: while downloading, the hero card and the card below it **each drew a progress bar** for the same download (it read as two tasks); now there is one.</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.10</span>
