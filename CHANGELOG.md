@@ -22,6 +22,19 @@
 盒子固件那边同时修了两处真 bug：README/HELP 承诺却**没实现**的 `CFG?`，
 以及 `NEAR 0`（清空附近台站列表）。
 
+### 📡 修：`IS rx-only` 说清楚 + 实时性（倒计时本地走）
+
+- **`IS rx-only` 不是故障**：`pass` 为 `-1`（默认"只收不发"）或 passcode 不对时，
+  APRS-IS 只认**通过验证**的登录，服务器回一句 `unverified` —— 以前这句话只存在
+  盒子内存里，界面只写 `RX-only`，让人以为坏了。现在三处都写清楚：首页卡片直接给
+  **`set pass`**；**SYS 页**补 `is RUN rxonly` 与**服务器的原话**
+  （`passcode invalid: RX only`）；这条状态变化还会作为 `EVT ERR …` 进应用的盒子事件
+  日志。**修法**：`pass` 填**基础呼号**（不含 `-SSID`）的 passcode，改完自动重连；
+- **实时性改成"盒子自己走"**：自动上报 / 自动信标的倒计时由**盒子本地每秒递减**
+  （应用只推"当下的事实"，盒子记住收到时刻自己减），这两页 **1 Hz 重绘** ——
+  屏幕每秒都在动，而不是等下一次推送；
+- **推送节奏收紧**：状态 **5 秒**、附近台站 **15 秒**、喂位置 **15 秒**。
+
 ## [2.0.14] - 2026-10-01 (English)
 
 ### 📊 New: the box now shows an "APRSLOCUS" live dashboard
@@ -46,6 +59,22 @@ unread messages - all visible without taking the phone out of the bag.
 
 The box firmware also fixes two real bugs: `CFG?`, which the README and HELP promised
 but the code never implemented, and `NEAR 0` (clearing the nearby list).
+
+### 📡 Fix: `IS rx-only` explained + real-time (local countdown)
+
+- **`IS rx-only` is not a fault**: when `pass` is `-1` (the default, receive-only) or the
+  passcode is wrong, APRS-IS only accepts a **verified** login and answers `unverified`.
+  That sentence used to live only in the box memory while the UI just said `RX-only`, so it
+  looked broken. Three places now spell it out: the home card shows **`set pass`**, the
+  **SYS page** gained `is RUN rxonly` plus the **server own words**
+  (`passcode invalid: RX only`), and a change of that state is pushed as `EVT ERR …` into
+  the app box log. **Fix**: set `pass` to the passcode of the **base callsign**
+  (without the -SSID); the box reconnects automatically;
+- **Real-time now comes from the box itself**: the auto-report / auto-beacon countdown
+  ticks **locally every second** (the app only pushes current facts; the box remembers when
+  it received them) and those two pages redraw at 1 Hz;
+- **Push cadence tightened**: status every **5 s**, nearby stations every **15 s**,
+  position feed every **15 s**.
 
 ## [2.0.13] - 2026-10-01
 
