@@ -73,6 +73,26 @@ DATA = {
         'zh': '正在检查…', 'zh_TW': '檢查中…', 'en': 'Checking…',
         'ja': '確認中…', 'id': 'Memeriksa…', 'es': 'Comprobando…',
     },
+    'blExemptOn': {
+        'zh': '已加入本机白名单：本机不再受远程限制（再长按可恢复）',
+        'zh_TW': '已加入本機白名單：本機不再受遠端限制（再長按可恢復）',
+        'en': 'Added to the local whitelist: this device is no longer restricted '
+              '(long-press again to restore)',
+        'ja': '本機の許可リストに追加しました：この端末は制限されません'
+              '（もう一度長押しで元に戻せます）',
+        'id': 'Ditambahkan ke daftar putih lokal: perangkat ini tidak lagi dibatasi '
+              '(tekan lama lagi untuk memulihkan)',
+        'es': 'Añadido a la lista blanca local: este dispositivo ya no está restringido '
+              '(mantén pulsado de nuevo para restaurar)',
+    },
+    'blExemptOff': {
+        'zh': '已恢复远程限制（本机不再豁免）',
+        'zh_TW': '已恢復遠端限制（本機不再豁免）',
+        'en': 'Remote restriction restored (no longer exempt)',
+        'ja': 'リモート制限を再び有効にしました（免除は解除）',
+        'id': 'Pembatasan jarak jauh diaktifkan kembali (tidak lagi dikecualikan)',
+        'es': 'Restricción remota restaurada (ya no exento)',
+    },
 }
 
 LANGS = ['zh', 'zh_TW', 'en', 'ja', 'id', 'es']

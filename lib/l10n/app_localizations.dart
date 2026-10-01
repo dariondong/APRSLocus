@@ -2804,6 +2804,17 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @blExemptOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已加入本机白名单：本机不再受远程限制（再长按可恢复）'**
+  String get blExemptOn;
+
+  /// No description provided for @blExemptOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'已恢复远程限制（本机不再豁免）'**
+  String get blExemptOff;
   /// No description provided for @blTitle.
   ///
   /// In zh, this message translates to:

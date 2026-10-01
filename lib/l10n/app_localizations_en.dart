@@ -1661,6 +1661,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get blExemptOn => 'Added to the local whitelist: this device is no longer restricted (long-press again to restore)';
+
+  @override
+  String get blExemptOff => 'Remote restriction restored (no longer exempt)';
+
+  @override
   String get blTitle => 'This device has been blocked';
 
   @override

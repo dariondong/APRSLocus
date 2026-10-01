@@ -1923,6 +1923,10 @@ class AppState extends ChangeNotifier {
     try {
       final cached = await Blacklist.cached();     // 先看缓存：命中立刻拦，不等网络
       final id = await Blacklist.deviceId();
+      // 本机豁免（本地白名单）：在拦截页 / 「关于」长按安装标识切换 —— 见
+      // `Blacklist.localExempt` 的注释（一句话：这是给"被误判的人"和自测留的出口，
+      // 代价是它挡不住有心人）。
+      final exempt = await Blacklist.localExempt();
       var bl = cached;
       final last = await Blacklist.lastChecked();
       // 新会话第一次必拉（改完名单，重开应用就生效）；同一会话内才按 6 小时节流。
@@ -1938,7 +1942,7 @@ class AppState extends ChangeNotifier {
         }
         // 拉取失败 → 沿用缓存（有就认）；不置位，留给下次检查再试
       }
-      final hit = bl?.match(myFullCall, id);
+      final hit = exempt ? null : bl?.match(myFullCall, id);
       final changed = (hit == null) != (blacklistHit == null) ||
           hit?.matched != blacklistHit?.matched;
       blacklistHit = hit;

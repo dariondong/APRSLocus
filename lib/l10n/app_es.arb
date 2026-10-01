@@ -697,6 +697,8 @@
   "blContact": "Si crees que es un error, abre un Issue en el repositorio de GitHub e incluye el ID de instalación de arriba: es lo único con lo que podemos comparar.",
   "blRetry": "Comprobar de nuevo",
   "blChecking": "Comprobando…",
+  "blExemptOn": "Añadido a la lista blanca local: este dispositivo ya no está restringido (mantén pulsado de nuevo para restaurar)",
+  "blExemptOff": "Restricción remota restaurada (ya no exento)",
   "donateNotice": "Las donaciones son totalmente voluntarias: no compran ninguna función, soporte prioritario ni compromiso de servicio, y no son reembolsables. Los menores deben pedir permiso a su tutor.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "La caja: conéctala para cambiar su configuración, darle posición y lanzar un beacon",

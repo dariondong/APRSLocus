@@ -66,6 +66,7 @@ EXCLUDE = {
     'blacklistCacheJson': '远程限制名单的本地缓存（恢复后会重新拉取）',
     'blacklistCheckedAt': '名单上次成功拉取的时间（缓存的一部分）',
     'blacklistDeviceId': '本机安装标识（只在本机有效；写进备份会违背"不上传"的承诺）',
+    'blacklistLocalExempt': '本地白名单开关（本机豁免；该由本人在本机决定，不该随备份搬走）',
 }
 
 GETSET = re.compile(r"\.(?:get|set)(?:String|Bool|Int|Double|StringList)\(")

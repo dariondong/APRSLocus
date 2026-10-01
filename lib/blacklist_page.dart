@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'blacklist.dart';
 import 'state.dart';
@@ -40,6 +41,40 @@ class _BlacklistPageState extends State<BlacklistPage> {
     // 重新拉一次名单：解除了限制就能立刻放行（不用等 6 小时的节流）
     await widget.state.recheckBlacklist(force: true);
     if (mounted) setState(() => _busy = false);
+  }
+
+  /// 长按安装标识 → **本机豁免**（本地白名单）并重新判定；页面会自己消失。
+  ///
+  /// 先把 messenger 抓在手里：判定一改，这页就被换掉了，届时 `ScaffoldMessenger.of`
+  /// 的 context 已经失效。SnackBar 落在根 messenger 上，所以能盖在新界面上继续显示。
+  Future<void> _exemptLocally() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final text = S.of(context).blExemptOn;
+    await Blacklist.setLocalExempt(true);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: C.ink,
+      ),
+    );
+    await widget.state.recheckBlacklist(force: true);
+  }
+
+  /// 复制本机安装标识（申诉时把它发给我们）
+  Future<void> _copyId() async {
+    if (_deviceId.isEmpty) return;
+    await Clipboard.setData(ClipboardData(text: _deviceId));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).copiedClipboard),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: C.ink,
+      ),
+    );
   }
 
   @override
@@ -98,11 +133,40 @@ class _BlacklistPageState extends State<BlacklistPage> {
                           .copyWith(fontFamily: 'monospace')),
                   if (_deviceId.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    Text(s.blId, style: ts(11, c: C.grey, w: FontWeight.w700)),
-                    const SizedBox(height: 3),
-                    SelectableText(_deviceId,
-                        style: ts(12, c: C.ink, h: 1.5)
-                            .copyWith(fontFamily: 'monospace')),
+                    // 长按整块安装标识 = **本机豁免（本地白名单）**。
+                    // 故意不写任何提示：这是给"被误判要自救"和自测留的出口，
+                    // 不是给所有人指路的按钮。复制另给一个小图标（原来靠 SelectableText，
+                    // 但长按会被它的选择手势吃掉，所以换成普通 Text + 复制按钮）。
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onLongPress: _exemptLocally,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(s.blId,
+                                    style: ts(11, c: C.grey, w: FontWeight.w700)),
+                                const SizedBox(height: 3),
+                                Text(_deviceId,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: ts(12, c: C.ink, h: 1.5)
+                                        .copyWith(fontFamily: 'monospace')),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _copyId,
+                            icon: Icon(Icons.copy_rounded,
+                                size: 16, color: C.grey),
+                            visualDensity: VisualDensity.compact,
+                            tooltip: s.blId,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                   const SizedBox(height: 14),
                   Text(s.blContact, style: ts(12, c: C.slate, h: 1.6)),

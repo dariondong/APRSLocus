@@ -143,5 +143,13 @@ void main() {
       expect(await Blacklist.cached(), isNull);
       expect(await Blacklist.lastChecked(), isNull);
     });
+
+    test('本地白名单开关：默认关，可开可关（本机豁免的存储）', () async {
+      expect(await Blacklist.localExempt(), isFalse, reason: '默认不豁免');
+      await Blacklist.setLocalExempt(true);
+      expect(await Blacklist.localExempt(), isTrue);
+      await Blacklist.setLocalExempt(false);
+      expect(await Blacklist.localExempt(), isFalse, reason: '还要能关回去（否则没法再自测封禁）');
+    });
   });
 }

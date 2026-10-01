@@ -1662,6 +1662,12 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get blExemptOn => 'Ditambahkan ke daftar putih lokal: perangkat ini tidak lagi dibatasi (tekan lama lagi untuk memulihkan)';
+
+  @override
+  String get blExemptOff => 'Pembatasan jarak jauh diaktifkan kembali (tidak lagi dikecualikan)';
+
+  @override
   String get blTitle => 'Perangkat ini telah dibatasi';
 
   @override

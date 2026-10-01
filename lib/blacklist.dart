@@ -113,6 +113,7 @@ class Blacklist {
   static const String _kCache = 'blacklistCacheJson';
   static const String _kCheckedAt = 'blacklistCheckedAt';
   static const String _kDeviceId = 'blacklistDeviceId';
+  static const String _kLocalExempt = 'blacklistLocalExempt';
 
   /// 拉到新名单后多久再拉一次
   static const Duration kRefresh = Duration(hours: 6);
@@ -153,6 +154,31 @@ class Blacklist {
       }
     }
     return null;
+  }
+
+  /// 本机是否已被**本地豁免**（本地白名单）。
+  ///
+  /// 在拦截页 / 「设置 → 关于」**长按本机安装标识**可切换。为什么留这个口子：
+  /// 这本来就是客户端礼貌拦截（GPL 开源，自己编译一份就能绕），与其逼人去改源码，
+  /// 不如给一个明确的、**只留在本机**的出口。
+  ///
+  /// ⚠ 代价要说清楚：被限制的人长按一下就能自己解封 —— 它挡的是"不想折腾的人"，
+  /// 不是有心人。真要硬封，得去掉这个开关。
+  static Future<bool> localExempt() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      return p.getBool(_kLocalExempt) ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// 切换/设置本地白名单（见 [localExempt]）。
+  static Future<void> setLocalExempt(bool v) async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setBool(_kLocalExempt, v);
+    } catch (_) {}
   }
 
   /// 稳定的安装标识：**随机生成一次**存在本地。

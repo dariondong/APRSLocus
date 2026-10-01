@@ -1606,6 +1606,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get blExemptOn => '已加入本机白名单：本机不再受远程限制（再长按可恢复）';
+
+  @override
+  String get blExemptOff => '已恢复远程限制（本机不再豁免）';
+
+  @override
   String get blTitle => '本设备已被限制使用';
 
   @override
@@ -9075,6 +9081,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get blExemptOn => '已加入本機白名單：本機不再受遠端限制（再長按可恢復）';
+
+  @override
+  String get blExemptOff => '已恢復遠端限制（本機不再豁免）';
 
   @override
   String get blTitle => '本裝置已被限制使用';

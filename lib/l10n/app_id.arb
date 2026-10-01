@@ -698,6 +698,8 @@
   "blContact": "Jika menurut Anda ini keliru, buka Issue di repositori GitHub dan sertakan ID instalasi di atas - hanya itu yang bisa kami cocokkan.",
   "blRetry": "Periksa lagi",
   "blChecking": "Memeriksa…",
+  "blExemptOn": "Ditambahkan ke daftar putih lokal: perangkat ini tidak lagi dibatasi (tekan lama lagi untuk memulihkan)",
+  "blExemptOff": "Pembatasan jarak jauh diaktifkan kembali (tidak lagi dikecualikan)",
   "donateNotice": "Dukungan sepenuhnya sukarela: tidak menukar fitur, dukungan prioritas, atau jaminan layanan apa pun, dan tidak dapat dikembalikan. Anak di bawah umur harap meminta izin orang tua/wali.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "Kotak: sambungkan untuk mengubah konfigurasi, memasok posisi, memicu beacon",

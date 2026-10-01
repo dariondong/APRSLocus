@@ -1187,6 +1187,9 @@ class _AboutPageState extends State<AboutPage>
               '${_deviceId.substring(_deviceId.length - 6)}';
     return InkWell(
       onTap: _copyId,
+      // 长按 = 切换**本地白名单**（本机豁免远程限制）。在拦截页长按是"解封"，
+      // 这里长按是同一个开关 —— 否则一旦豁免就再也回不去，没法再自测封禁。
+      onLongPress: _toggleLocalExempt,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
@@ -1221,6 +1224,22 @@ class _AboutPageState extends State<AboutPage>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(S.of(context).copiedClipboard),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: C.ink,
+      ),
+    );
+  }
+
+  /// 长按安装标识 → 切换本地白名单（本机豁免远程限制），并提示当前状态。
+  Future<void> _toggleLocalExempt() async {
+    final t = S.of(context);
+    final on = await Blacklist.localExempt();
+    await Blacklist.setLocalExempt(!on);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(!on ? t.blExemptOn : t.blExemptOff),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         backgroundColor: C.ink,
