@@ -128,6 +128,48 @@ void main() {
     });
   });
 
+  group('软封 / 硬封（本地白名单只放行软封）', () {
+    test('默认是硬封：命中后不能被本机豁免', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ","reason":"默认硬封"}]}')!;
+      final hit = bl.match('BG7LZQ-9', '', exemptSoft: true);
+      expect(hit, isNotNull, reason: '硬封在豁免开启时也要拦住');
+      expect(hit!.hard, isTrue);
+    });
+
+    test('hard:false 是软封：本机豁免一开就放行', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ","reason":"软封","hard":false}]}')!;
+      expect(bl.match('BG7LZQ-9', '')?.hard, isFalse);
+      expect(bl.match('BG7LZQ-9', '', exemptSoft: true), isNull, reason: '软封该被豁免');
+    });
+
+    test('软硬同时命中时，硬的赢', () {
+      final bl = Blacklist.parse('{"entries":['
+          '{"call":"BG7LZQ","reason":"软","hard":false},'
+          '{"call":"BG7LZQ","reason":"硬"}]}')!;
+      final hit = bl.match('BG7LZQ-7', '', exemptSoft: true);
+      expect(hit?.reason, '硬');
+      expect(hit?.hard, isTrue);
+    });
+
+    test('hard 写成非布尔 → 按硬封处理（宁可封紧）', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ","reason":"x","hard":"false"}]}')!;
+      final hit = bl.match('BG7LZQ', '', exemptSoft: true);
+      expect(hit?.hard, isTrue, reason: '字符串 "false" 不算软封');
+    });
+
+    test('device 条目同样分软硬', () {
+      const id = '68a3192c336d1576f348c70997cbcf48';
+      final soft = Blacklist.parse(
+          '{"entries":[{"device":"$id","reason":"软","hard":false}]}')!;
+      expect(soft.match('BA1AAA', id, exemptSoft: true), isNull);
+      final hard = Blacklist.parse('{"entries":[{"device":"$id","reason":"硬"}]}')!;
+      expect(hard.match('BA1AAA', id, exemptSoft: true), isNotNull);
+    });
+  });
+
   group('本地缓存与安装标识', () {
     test('安装标识随机生成一次后稳定（且是本机才有，不上传）', () async {
       final a = await Blacklist.deviceId();

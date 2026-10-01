@@ -1614,12 +1614,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
-  String get blExemptOn => '本機の許可リストに追加しました：この端末は制限されません（もう一度長押しで元に戻せます）';
-
-  @override
-  String get blExemptOff => 'リモート制限を再び有効にしました（免除は解除）';
-
-  @override
   String get blTitle => 'この端末は利用を制限されています';
 
   @override

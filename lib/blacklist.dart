@@ -39,7 +39,18 @@ class BlacklistEntry {
   final String reason;   // 给用户看的原因（可空）
   final String at;       // 列入日期（可空）
 
-  const BlacklistEntry({this.call, this.device, this.reason = '', this.at = ''});
+  /// **硬封**（默认）：命中后不能用长按安装标识的本地白名单豁免。
+  /// 写 `"hard": false` 变软封（长按可解）。缺省是硬封 —— 名单是"封人"的，
+  /// 默认就该封得住；想让对方能自救再显式放宽。
+  final bool hard;
+
+  const BlacklistEntry({
+    this.call,
+    this.device,
+    this.reason = '',
+    this.at = '',
+    this.hard = true,
+  });
 
   /// 这条到底能不能用来拦人。
   ///
@@ -93,6 +104,9 @@ class BlacklistEntry {
       device: s(j['device'])?.toLowerCase(),
       reason: j['reason']?.toString() ?? '',
       at: j['at']?.toString() ?? '',
+      // 只有**显式**写 false 才是软封；写成别的（字符串 "false" 之类）一律按硬封处理 ——
+      // 手写的 JSON，宁可封得紧一点，也别因为写错类型而悄悄放开。
+      hard: j['hard'] is bool ? (j['hard'] as bool) : true,
     );
   }
 }
@@ -102,7 +116,11 @@ class BlacklistHit {
   final String reason;
   final String matched;   // 命中的是哪一项（呼号 / 安装标识），用于如实显示
 
-  const BlacklistHit(this.reason, this.matched);
+  /// 硬封（条目里 `hard`，**默认就是硬封**）：命中后**不能**用长按安装标识的
+  /// 本地白名单豁免。写 `"hard": false` 才是软封（长按能解）。
+  final bool hard;
+
+  const BlacklistHit(this.reason, this.matched, {this.hard = true});
 }
 
 class Blacklist {
@@ -143,14 +161,19 @@ class Blacklist {
 
   /// 命中判断：呼号（支持 `*` 通配符，见 [BlacklistEntry.hitsCall]）或安装标识
   /// （精确、小写）任一命中即命中。
-  BlacklistHit? match(String call, String deviceId) {
+  ///
+  /// [exemptSoft] = 本机白名单已开（长按安装标识）：此时**软封**条目被跳过，
+  /// **硬封**条目照样命中 —— 这正是"硬封 = 不能长按豁免"的落点。两项都命中时，
+  /// 硬的那条一定赢（软的被 continue 掉，硬的一定会被返回）。
+  BlacklistHit? match(String call, String deviceId, {bool exemptSoft = false}) {
     final d = deviceId.trim().toLowerCase();
     for (final e in entries) {
+      if (exemptSoft && !e.hard) continue;              // 软封：本机可豁免
       if (e.hitsCall(call)) {
-        return BlacklistHit(e.reason, e.call!);
+        return BlacklistHit(e.reason, e.call!, hard: e.hard);
       }
       if (e.device != null && e.device == d && d.isNotEmpty) {
-        return BlacklistHit(e.reason, e.device!);
+        return BlacklistHit(e.reason, e.device!, hard: e.hard);
       }
     }
     return null;

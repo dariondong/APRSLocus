@@ -723,8 +723,6 @@
   "blContact": "If you believe this is a mistake, open an Issue in the GitHub repository and include the install ID above - it is the only thing we can match against.",
   "blRetry": "Check again",
   "blChecking": "Checking…",
-  "blExemptOn": "Added to the local whitelist: this device is no longer restricted (long-press again to restore)",
-  "blExemptOff": "Remote restriction restored (no longer exempt)",
   "donateNotice": "Tips are entirely voluntary: they do not buy any feature, priority support, or service commitment, and are non-refundable. Minors should ask a guardian first.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "The box: connect to change its config, feed it a position, trigger a beacon",

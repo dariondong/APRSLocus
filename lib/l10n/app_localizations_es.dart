@@ -1679,12 +1679,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
-  String get blExemptOn => 'Añadido a la lista blanca local: este dispositivo ya no está restringido (mantén pulsado de nuevo para restaurar)';
-
-  @override
-  String get blExemptOff => 'Restricción remota restaurada (ya no exento)';
-
-  @override
   String get blTitle => 'Este dispositivo ha sido bloqueado';
 
   @override

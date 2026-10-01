@@ -93,6 +93,11 @@ def main() -> int:
             errors.append('%s 缺 reason —— 拦截页会没有原因可显示' % where)
         if 'at' in e and not RE_DATE.match(str(e.get('at'))):
             errors.append('%s 的 at=%r 不是 YYYY-MM-DD' % (where, e.get('at')))
+        # hard 只认布尔：写成字符串 "false" 在应用里会被当成**硬封**（宁可封紧一点），
+        # 手滑的概率不小，所以这里直接点名。
+        if 'hard' in e and not isinstance(e.get('hard'), bool):
+            errors.append('%s 的 hard=%r 必须是布尔 true/false（写成字符串会被应用当成硬封）'
+                          % (where, e.get('hard')))
 
     # 应用必须从这份文件取（路径写错 = 名单取不到，而应用只会"静默放行"）
     if not os.path.exists(APP):

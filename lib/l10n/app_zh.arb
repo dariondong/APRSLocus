@@ -705,8 +705,6 @@
   "blContact": "如果你认为这是误判，请通过 GitHub 仓库提交 Issue，并附上上面的安装标识 —— 那是我们核对时的唯一依据。",
   "blRetry": "重新检查",
   "blChecking": "正在检查…",
-  "blExemptOn": "已加入本机白名单：本机不再受远程限制（再长按可恢复）",
-  "blExemptOff": "已恢复远程限制（本机不再豁免）",
   "donateNotice": "赞赏完全出于自愿：不换取任何功能、优先支持或服务承诺，且不予退还；未成年人请在监护人同意后再进行。",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "小盒子：连上后用手机改配置、喂位置、发信标",

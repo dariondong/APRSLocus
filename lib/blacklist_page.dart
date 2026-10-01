@@ -45,20 +45,11 @@ class _BlacklistPageState extends State<BlacklistPage> {
 
   /// 长按安装标识 → **本机豁免**（本地白名单）并重新判定；页面会自己消失。
   ///
-  /// 先把 messenger 抓在手里：判定一改，这页就被换掉了，届时 `ScaffoldMessenger.of`
-  /// 的 context 已经失效。SnackBar 落在根 messenger 上，所以能盖在新界面上继续显示。
+  /// ⚠ 硬封（`hard`，默认）豁免不了：那种条目**静默无反应** —— 按要求，长按不给用户
+  /// 任何提示（软封解掉了不提示，硬封解不开也不提示，免得这套机制被"试出来"）。
   Future<void> _exemptLocally() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final text = S.of(context).blExemptOn;
+    if (widget.hit.hard) return;
     await Blacklist.setLocalExempt(true);
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(text),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: C.ink,
-      ),
-    );
     await widget.state.recheckBlacklist(force: true);
   }
 

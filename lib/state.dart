@@ -1942,7 +1942,9 @@ class AppState extends ChangeNotifier {
         }
         // 拉取失败 → 沿用缓存（有就认）；不置位，留给下次检查再试
       }
-      final hit = exempt ? null : bl?.match(myFullCall, id);
+      // 本机白名单只放行**软封**：硬封（`hard`，默认）命中后照样拦 —— 见
+      // `Blacklist.match` 的注释。
+      final hit = bl?.match(myFullCall, id, exemptSoft: exempt);
       final changed = (hit == null) != (blacklistHit == null) ||
           hit?.matched != blacklistHit?.matched;
       blacklistHit = hit;
