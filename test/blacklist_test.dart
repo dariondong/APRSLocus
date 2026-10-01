@@ -98,9 +98,20 @@ void main() {
       expect(bl.match('BG7LZQ-7', ''), isNull);
     });
 
-    test('不带 * 仍是完全相等（有通配符不等于放松匹配）', () {
+    test('裸呼号 = 封这个人（连他的各 SSID 一起）', () {
       final bl = Blacklist.parse(
-          '{"entries":[{"call":"BG7LZQ-7","reason":"exact"}]}')!;
+          '{"entries":[{"call":"BG7LZQ","reason":"封人"}]}')!;
+      for (final c in ['BG7LZQ', 'BG7LZQ-0', 'BG7LZQ-7', 'bg7lzq-15']) {
+        expect(bl.match(c, '')?.reason, '封人', reason: '该命中：$c');
+      }
+      for (final c in ['BG7LZQ2', 'BG7LZQ-1A', 'BA7LZQ-9', 'BG7LZ']) {
+        expect(bl.match(c, ''), isNull, reason: '不该命中：$c');
+      }
+    });
+
+    test('带 SSID 的条目只封那一台（精确）', () {
+      final bl = Blacklist.parse(
+          '{"entries":[{"call":"BG7LZQ-7","reason":"只封这一台"}]}')!;
       expect(bl.match('BG7LZQ-7', ''), isNotNull);
       expect(bl.match('BG7LZQ', ''), isNull, reason: '不带 SSID 的那个不该命中');
       expect(bl.match('BG7LZQ-9', ''), isNull);

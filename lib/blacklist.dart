@@ -28,6 +28,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///                { "device": "9f2c…", "reason": "…" } ] }
 /// ```
 /// `call` 支持 `*` 通配符（大小写不敏感），规则见 [BlacklistEntry.hitsCall]。
+/// 一句话：**写裸呼号 = 封这个人**（含他的所有 SSID）；写 `CALL-N` = 只封那一台。
 ///
 /// 两条"防止自己把自己坑了"的作废规则：一条里 `call` / `device` 都空 → 永不命中；
 /// `call` 里**一个非通配符字符都没有**（比如只写 `*` 或 `-*`）→ 同样作废 ——
@@ -49,26 +50,36 @@ class BlacklistEntry {
           call!.replaceAll('*', '').replaceAll('-', '').isNotEmpty) ||
       (device != null && device!.isNotEmpty);
 
-  /// 该呼号是否命中本条目（大小写不敏感）。就三条规则：
+  /// 该呼号是否命中本条目（大小写不敏感）。四条规则：
   ///
-  ///   1. 不带 `*` → **完全相等**（`BG7LZQ-7` 只匹配 `BG7LZQ-7`）；
-  ///   2. `CALL-*` → 该呼号的**任意 SSID（0–15），并含不带 SSID 的那个** ——
-  ///      "封一个人"最常用的写法：`BG7LZQ-*` 同时命中 `BG7LZQ`、`BG7LZQ-7`、`BG7LZQ-15`；
-  ///   3. 其他位置的 `*` → 任意串（`BH7*`、`*LZQ-9` 都行）。
+  ///   1. `CALL`（不带 SSID、也不带 `*`）→ **封这个呼号**：`CALL` 本身与它的**任意 SSID**
+  ///      （0–15）都算 —— 写 `BG7LZQ` 就命中 `BG7LZQ`、`BG7LZQ-9`、`BG7LZQ-7`、`BG7LZQ-15`。
+  ///      这是最常用的一条：封人，不封某一台设备。
+  ///   2. `CALL-N`（带 SSID）→ 只封**那一台**（精确相等，`BG7LZQ-7` 不命中 `BG7LZQ-9`）；
+  ///   3. `CALL-*` → 与规则 1 等价（老写法，保留兼容）；
+  ///   4. 其他位置的 `*` → 任意串（`BH7*`、`*LZQ-9`）。
   bool hitsCall(String call) {
     final c = call.trim().toUpperCase();
     final p = this.call;
     if (p == null || p.isEmpty || c.isEmpty) return false;
-    if (!p.contains('*')) return p == c;                        // 规则 1
+    if (!p.contains('-') && !p.contains('*')) {
+      return _withSsids(p, c);                                  // 规则 1
+    }
+    if (!p.contains('*')) return p == c;                        // 规则 2
     final head = p.endsWith('-*') ? p.substring(0, p.length - 2) : null;
     if (head != null && head.isNotEmpty && !head.contains('*')) {
-      // 规则 2：SSID 按 APRS 的写法限 1–2 位数字，避免 `CALL-1A` 这种误伤
-      return RegExp('^${RegExp.escape(head)}(-[0-9]{1,2})?\$').hasMatch(c);
+      return _withSsids(head, c);                               // 规则 3
     }
-    // 规则 3：`*` → `.*`，其余字符转义后整体锚定
+    // 规则 4：`*` → `.*`，其余字符转义后整体锚定
     return RegExp('^${p.split('*').map(RegExp.escape).join('.*')}\$')
         .hasMatch(c);
   }
+
+  /// [base] 本身，或它的任意 SSID（APRS 的 SSID 是 1–2 位数字 —— 限数字是为了
+  /// 不让 `BG7LZQ-1A` 这种无效写法被误伤）。
+  static bool _withSsids(String base, String call) =>
+      call == base ||
+      RegExp('^${RegExp.escape(base)}-[0-9]{1,2}\$').hasMatch(call);
 
   static BlacklistEntry? fromJson(Object? j) {
     if (j is! Map) return null;
