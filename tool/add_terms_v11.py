@@ -84,6 +84,15 @@ NEW_75 = {
 """,
 }
 
+NEW_93 = {
+    'terms_zh.txt':
+        '9.4 关于赞赏：本软件免费提供，您的赞赏（打赏/赞助）完全出于自愿，是对开发团队的鼓励，不构成购买任何商品或服务，也不换取任何特殊功能、优先支持或服务质量承诺；除法律法规另有规定外，赞赏款项不予退还。赞赏与否不影响您使用本软件的完整功能。未成年人进行赞赏前应先取得监护人同意。',
+    'terms_zh_TW.txt':
+        '9.4 關於贊賞：本軟體免費提供，您的贊賞（打賞/贊助）完全出於自願，是對開發團隊的鼓勵，不構成購買任何商品或服務，也不換取任何特殊功能、優先支援或服務品質承諾；除法律法規另有規定外，贊賞款項不予退還。贊賞與否不影響您使用本軟體的完整功能。未成年人進行贊賞前應先取得監護人同意。',
+    'terms_en.txt':
+        "9.4 About tips and donations: this software is provided free of charge. Any tip or donation you make is entirely voluntary and is a token of encouragement to the development team; it does not constitute the purchase of any goods or services, and does not buy any special feature, priority support, or service-level commitment. Except where otherwise required by law, donations are non-refundable. Whether or not you donate has no effect on your access to the full functionality of this software. Minors should obtain a guardian's consent before making a donation.",
+}
+
 # §6.3（只有中文两版夹了英文）
 FIX_63 = {
     'terms_zh.txt': (
@@ -112,7 +121,7 @@ VER = {
 def patch(path, name):
     s = io.open(path, encoding='utf-8', newline='').read()
     nl = '\r\n' if '\r\n' in s else '\n'      # ⚠ 这些文本是 CRLF（别用 \n 去找）
-    if '3.7 ' in s and '5.3 ' in s and '7.7 ' in s:
+    if '3.7 ' in s and '5.3 ' in s and '7.7 ' in s and '9.4 ' in s:
         print('%-26s 已经是 V1.1（跳过）' % name)
         return
     n0 = len(s)
@@ -123,7 +132,11 @@ def patch(path, name):
         # 放在逻辑里而不是逐个字符串前面加，是因为三个语言的块各有自己的前文，
         # 用字符串锚点去补的写法只对第一个键生效（另外两个静默跳过 —— 踩过）。
         t = text.replace('\n', nl)
-        return t if t.startswith(nl + nl) else nl + t
+        if t.startswith(nl + nl):
+            return t                       # 已经是"空行 + 内容"
+        if t.startswith(nl):
+            return nl + t                  # 只有一个换行 → 再补一个空行
+        return nl + nl + t                 # 没有换行 → 直接补一个空行
 
     # ① 版本 / 日期
     a, b, c, d = VER[name]
@@ -149,6 +162,10 @@ def patch(path, name):
     # ⑤ 7.6 / 7.7：插在 7.5 之后
     idx = s.index(sep, s.index('7.5 '))
     s = s[:idx] + add(NEW_75[name]) + s[idx:]
+
+    # 9.4 关于赞赏：插在 9.3 之后
+    idx = s.index(sep, s.index('9.3 '))
+    s = s[:idx] + add(NEW_93[name]) + s[idx:]
 
     # ⑥ §10 联系方式
     # ⚠ 这里是**替换**不是插入：不能走 add()（那会给它加一个前导换行，

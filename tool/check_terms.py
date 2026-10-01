@@ -95,7 +95,7 @@ def main() -> int:
                 if RE_CLAUSE.match(ln) and i > 0 and ls[i - 1].strip():
                     errors.append('%s 的条款 `%s` 与上一条**贴在了一起**（缺空行）—— '
                                   '正文会挤成一段' % (name, ln.strip()[:6]))
-        must_have = ['3.5', '3.6', '3.7', '5.3', '7.6', '7.7']
+        must_have = ['3.5', '3.6', '3.7', '5.3', '7.6', '7.7', '9.4']
         for name in LANGS:
             for k in must_have:
                 if k not in clauses.get(name, []):
@@ -103,10 +103,10 @@ def main() -> int:
                                   '生命守护 / 第三方数据免责）' % (name, k))
         # 这三件事的关键词至少得出现
         words = {
-            'terms_zh.txt': ['未成年人', '第三方', '生命守护', '文化习俗'],
-            'terms_zh_TW.txt': ['未成年人', '第三方', '生命守護', '文化習俗'],
+            'terms_zh.txt': ['未成年人', '第三方', '生命守护', '文化习俗', '赞赏'],
+            'terms_zh_TW.txt': ['未成年人', '第三方', '生命守護', '文化習俗', '贊賞'],
             'terms_en.txt': ['Minors', 'third-party', 'medical devices',
-                             'cultural customs'],
+                             'cultural customs', 'donations'],
         }
         for name, ws in words.items():
             text = read(os.path.join(APP_DIR, name))

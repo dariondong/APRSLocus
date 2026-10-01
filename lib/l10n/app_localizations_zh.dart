@@ -1606,6 +1606,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get donateNotice => '赞赏完全出于自愿：不换取任何功能、优先支持或服务承诺，且不予退还；未成年人请在监护人同意后再进行。';
+
+  @override
   String get boxPassHint => '盒子的 APRS-IS passcode 是 -1（**只收不发**）：要发射就在下面把 `pass` 改成你的 passcode —— 注意要**基础呼号**（不含 -SSID）的那个';
 
   @override
@@ -9048,6 +9051,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get donateNotice => '贊賞完全出於自願：不換取任何功能、優先支援或服務承諾，且不予退還；未成年人請在監護人同意後再進行。';
 
   @override
   String get boxPassHint => '盒子的 APRS-IS passcode 是 -1（**只收不發**）：要發射就在下面把 `pass` 改成你的 passcode —— 注意要**基礎呼號**（不含 -SSID）的那個';

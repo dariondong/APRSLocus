@@ -1661,6 +1661,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switching the data source disconnects the current link';
 
   @override
+  String get donateNotice => 'Tips are entirely voluntary: they do not buy any feature, priority support, or service commitment, and are non-refundable. Minors should ask a guardian first.';
+
+  @override
   String get boxPassHint => 'The box APRS-IS passcode is -1 (**receive-only**): to transmit, change `pass` below to your passcode - note it is the one for the **base callsign** (without the -SSID)';
 
   @override

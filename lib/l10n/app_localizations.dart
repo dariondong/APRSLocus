@@ -2804,6 +2804,11 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @donateNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'赞赏完全出于自愿：不换取任何功能、优先支持或服务承诺，且不予退还；未成年人请在监护人同意后再进行。'**
+  String get donateNotice;
   /// No description provided for @boxPassHint.
   ///
   /// In zh, this message translates to:

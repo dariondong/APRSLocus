@@ -146,6 +146,8 @@ Thank you for using APRSlocus! APRSlocus is an open-source APRS client software,
 
 9.3 If any provision of this agreement is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
 
+9.4 About tips and donations: this software is provided free of charge. Any tip or donation you make is entirely voluntary and is a token of encouragement to the development team; it does not constitute the purchase of any goods or services, and does not buy any special feature, priority support, or service-level commitment. Except where otherwise required by law, donations are non-refundable. Whether or not you donate has no effect on your access to the full functionality of this software. Minors should obtain a guardian's consent before making a donation.
+
 ---
 
 10. Contact Us

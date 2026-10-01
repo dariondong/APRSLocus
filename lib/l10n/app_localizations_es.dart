@@ -1679,6 +1679,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambiar la fuente de datos desconecta el enlace actual';
 
   @override
+  String get donateNotice => 'Las donaciones son totalmente voluntarias: no compran ninguna función, soporte prioritario ni compromiso de servicio, y no son reembolsables. Los menores deben pedir permiso a su tutor.';
+
+  @override
   String get boxPassHint => 'El passcode APRS-IS de la caja es -1 (**solo recepción**): para transmitir, cambia `pass` abajo por tu passcode - el del **indicativo base** (sin el -SSID)';
 
   @override

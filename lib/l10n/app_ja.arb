@@ -690,6 +690,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Bluetooth／シリアルの TNC 経由で無線機から直接送受信",
   "dataSourceSwitchHint": "データソースを切り替えると現在の接続は切断されます",
+  "donateNotice": "ご支援は完全に任意です：機能・優先サポート・サービスを約束するものではなく、返金もできません。未成年の方は保護者の同意を得てからお願いします。",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "小箱：接続してスマホから設定変更・位置供給・ビーコン送信",
   "boxBindTitle": "箱の接続",

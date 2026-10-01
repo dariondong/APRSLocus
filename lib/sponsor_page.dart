@@ -9,6 +9,7 @@ import 'widgets.dart';
 // honorLangOf：荣誉/成就/赞助共用同一套语言回落（ja/id → 英文）
 import 'early_member.dart';
 import 'material.dart';
+import 'settings_widgets.dart';
 
 /// 赞助与鸣谢页面（赞助名单从官网 sponsors.json 在线更新，离线用内置兜底）
 const String kSponsorsUrl = 'https://aprslocus.theez.top/sponsors.json';
@@ -315,6 +316,11 @@ class _SponsorPageState extends State<SponsorPage> {
             C.green,
           ),
           const SizedBox(height: 8),
+          // 赞赏声明（与用户协议 9.4 同一口径）：自愿、不换取功能、不退费、
+          // 未成年人需监护人同意。**放在二维码之前** —— 用户真要掏钱的地方就该
+          // 看到它，而不是只写在协议第九节里。
+          SettingsHint(S.of(context).donateNotice, color: C.grey),
+          const SizedBox(height: 4),
           SoftCard(
             padding: EdgeInsets.zero,
             child: Column(

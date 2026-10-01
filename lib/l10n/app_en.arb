@@ -715,6 +715,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Send and receive on air through a Bluetooth or serial TNC",
   "dataSourceSwitchHint": "Switching the data source disconnects the current link",
+  "donateNotice": "Tips are entirely voluntary: they do not buy any feature, priority support, or service commitment, and are non-refundable. Minors should ask a guardian first.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "The box: connect to change its config, feed it a position, trigger a beacon",
   "boxBindTitle": "Box connection",

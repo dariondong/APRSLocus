@@ -1662,6 +1662,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Mengganti sumber data akan memutus koneksi saat ini';
 
   @override
+  String get donateNotice => 'Dukungan sepenuhnya sukarela: tidak menukar fitur, dukungan prioritas, atau jaminan layanan apa pun, dan tidak dapat dikembalikan. Anak di bawah umur harap meminta izin orang tua/wali.';
+
+  @override
   String get boxPassHint => 'Passcode APRS-IS kotak adalah -1 (**hanya terima**): untuk memancar, ubah `pass` di bawah ke passcode Anda - passcode untuk **callsign dasar** (tanpa -SSID)';
 
   @override

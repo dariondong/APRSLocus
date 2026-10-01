@@ -690,6 +690,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Kirim dan terima lewat udara via TNC Bluetooth atau serial",
   "dataSourceSwitchHint": "Mengganti sumber data akan memutus koneksi saat ini",
+  "donateNotice": "Dukungan sepenuhnya sukarela: tidak menukar fitur, dukungan prioritas, atau jaminan layanan apa pun, dan tidak dapat dikembalikan. Anak di bawah umur harap meminta izin orang tua/wali.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "Kotak: sambungkan untuk mengubah konfigurasi, memasok posisi, memicu beacon",
   "boxBindTitle": "Koneksi kotak",

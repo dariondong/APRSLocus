@@ -697,6 +697,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "通过蓝牙或串口的 TNC 与电台直接收发",
   "dataSourceSwitchHint": "切换数据来源会断开当前连接",
+  "donateNotice": "赞赏完全出于自愿：不换取任何功能、优先支持或服务承诺，且不予退还；未成年人请在监护人同意后再进行。",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "小盒子：连上后用手机改配置、喂位置、发信标",
   "boxBindTitle": "盒子连接",

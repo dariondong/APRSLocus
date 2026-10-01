@@ -689,6 +689,7 @@
   "dataSourceTnc": "TNC",
   "dataSourceTncDesc": "Envía y recibe por radio mediante un TNC Bluetooth o serie",
   "dataSourceSwitchHint": "Cambiar la fuente de datos desconecta el enlace actual",
+  "donateNotice": "Las donaciones son totalmente voluntarias: no compran ninguna función, soporte prioritario ni compromiso de servicio, y no son reembolsables. Los menores deben pedir permiso a su tutor.",
   "boxDeviceTitle": "APRSlocusBOX",
   "boxDeviceDesc": "La caja: conéctala para cambiar su configuración, darle posición y lanzar un beacon",
   "boxBindTitle": "Conexión de la caja",
