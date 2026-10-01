@@ -278,12 +278,16 @@
     </header>
 
     <div class="announce-body">
-      <p><b>2.0.13 is out.</b> This release brings the little box (ESP32 + screen + knob) into the</p>
-      <p>app: the Device page has a new entry, <b>APRSlocusBOX</b> - once connected you can read</p>
-      <p>its config, change it, feed it your position, trigger a beacon, and see what it is</p>
-      <p>actually doing.</p>
-      <p><b>Short version: if you do not own a box, there is nothing to do.</b> No settings change,</p>
-      <p>and the way you update has not changed either.</p>
+      <p><b>2.0.14 is out.</b> This release pushes the <b>phone live status</b> to the box: heart rate,</p>
+      <p>speed, course, the <b>auto-report countdown</b> (with a progress bar), mileage (trip /</p>
+      <p>total), battery, steps, GPS accuracy, APRS-IS state and unread messages - so while the</p>
+      <p>phone sits in a bag, the bar-mounted box shows it all at a glance. Heart rate takes the</p>
+      <p>lead when available (speed takes over otherwise), and nearby stations moved to their own</p>
+      <p><b>NEARBY</b> page (8 rows).</p>
+      <p>The protocol also changed to `TEL k=v ...`, which survives new fields: the app can add</p>
+      <p>keys without touching the firmware (unknown keys are skipped, empty values are not sent,</p>
+      <p>and the box shows `--` instead of a fake 0).</p>
+      <p class="announce-quote">Below is the box support introduced in <b>2.0.13</b>; it is still valid.</p>
       <p><b>1. What the box reports back</b></p>
       <p>Once connected, the app shows what the <b>box itself</b> reports:</p>
       <ul class="announce-list"><li>callsign / SSID, link mode (wifi / bt / both), beacon interval, APRS-IS server, GPS baud;</li><li>frames sent (TX), beacons (BEACON), messages received (RXMSG), acknowledgements (ACK),</li></ul>
@@ -593,6 +597,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.14</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**New: an "APRSLOCUS" live dashboard on the box.** Building on the box support from the previous release, the phone live status is now pushed to the box too: heart rate, speed, course, the **auto-report countdown** with a progress bar, mileage (trip / total), battery, steps, GPS accuracy, APRS-IS state and unread messages - visible at a glance on the bar-mounted box while the phone stays in the bag. Heart rate takes the lead when available, otherwise speed does; nearby stations moved to their own **NEARBY** page (8 rows). The protocol now uses `TEL k=v ...`, so the app can add fields without touching the firmware (unknown keys are skipped, empty values are not sent, and the box shows `--`, never a fake 0).</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.13</span>

@@ -1793,7 +1793,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get boxPushTitle => 'Estado del teléfono a la caja';
 
   @override
-  String get boxPushStatus => 'Enviar velocidad / rumbo / estaciones cercanas';
+  String get boxPushStatus => 'Enviar estado en vivo (pulso / velocidad / cuenta atrás / distancia)';
 
   @override
   String get boxPushHint => 'La página PHONE de la caja muestra esto; solo se dibuja en la pantalla de la caja, nunca sale al aire. Es distinto de enviar una posición.';

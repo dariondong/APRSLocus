@@ -1,14 +1,20 @@
-# 📦 2.0.13 · APRSlocusBOX - manage your little box from the phone
+# ?? 2.0.14 - an "APRSLOCUS" dashboard on the box
 
-**2.0.13 is out.** This release brings the little box (ESP32 + screen + knob) into the
-app: the Device page has a new entry, **APRSlocusBOX** - once connected you can read
-its config, change it, feed it your position, trigger a beacon, and see what it is
-actually doing.
+**2.0.14 is out.** This release pushes the **phone live status** to the box: heart rate,
+speed, course, the **auto-report countdown** (with a progress bar), mileage (trip /
+total), battery, steps, GPS accuracy, APRS-IS state and unread messages - so while the
+phone sits in a bag, the bar-mounted box shows it all at a glance. Heart rate takes the
+lead when available (speed takes over otherwise), and nearby stations moved to their own
+**NEARBY** page (8 rows).
 
-**Short version: if you do not own a box, there is nothing to do.** No settings change,
-and the way you update has not changed either.
+The protocol also changed to `TEL k=v ...`, which survives new fields: the app can add
+keys without touching the firmware (unknown keys are skipped, empty values are not sent,
+and the box shows `--` instead of a fake 0).
 
 ---
+
+> Below is the box support introduced in **2.0.13**; it is still valid.
+
 
 ## 1. What the box reports back
 

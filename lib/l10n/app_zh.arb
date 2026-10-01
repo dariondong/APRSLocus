@@ -735,7 +735,7 @@
   "boxActTest": "格式自检",
   "boxActReboot": "重启盒子",
   "boxPushTitle": "手机状态给盒子",
-  "boxPushStatus": "推送速度 / 方位 / 附近台站",
+  "boxPushStatus": "推送实时状态（心率 / 速度 / 倒计时 / 里程 / 附近台站）",
   "boxPushHint": "盒子 PHONE 页显示这些；只写盒子屏幕，不上射频。与「喂位置」是两件事。",
   "boxEvtTitle": "盒子事件",
   "dataSourcePkwdwpl": "PKWDWPL（Kenwood 航点）",

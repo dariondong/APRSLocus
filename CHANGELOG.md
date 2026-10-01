@@ -1,5 +1,52 @@
 # 更新日志
 
+## [2.0.14] - 2026-10-01
+
+### 📊 新：盒子上的「APRSLOCUS」实时仪表盘（手机状态一眼可见）
+
+接着 2.0.13 的盒子支持，这一版把**手机那侧的实时状态**也推了过去：盒子上多了一页
+**APRSLOCUS** —— 心率、速度、方位、**自动上报倒计时**、里程（本次/累计）、电量、步数、
+定位精度、APRS-IS 与未读。跑步骑车时手机在包里，这些**不用掏手机就能看到**。
+
+- **心率当主角**：测到心率就放大显示（与应用里那颗红心同源）；没测到就自动换成
+  速度当主角，不留空白；
+- **上报倒计时 + 进度条**：与应用主页那根"上报横杠"**同一个判据**（`canAutoBeacon`），
+  一眼看出"还有多久发下一帧"；
+- **里程 / 电量 / 步数 / 精度**：来自应用的本次里程、累计里程、电量、步数、定位精度
+  （电量 ≤20% 会变橙色提醒）；
+- **附近台站**另拆一页 **NEARBY**（整屏 8 行：呼号 · 距离 · 方位 · 年龄 + 选中台备注）；
+- **协议改用 `TEL k=v …`**（不再堆位置参数）：应用以后加字段**不用动固件** ——
+  盒子对不认识的键静默跳过；值为空的键干脆不发，盒子写 `--`，绝不显示一个假的 0；
+- **时效照旧不骗人**：没推过写 `none`、超过 120 秒写 `stale`。
+
+盒子固件那边同时修了两处真 bug：README/HELP 承诺却**没实现**的 `CFG?`，
+以及 `NEAR 0`（清空附近台站列表）。
+
+## [2.0.14] - 2026-10-01 (English)
+
+### 📊 New: the box now shows an "APRSLOCUS" live dashboard
+
+Building on the box support in 2.0.13, this release also pushes the phone live status
+to the box: a new **APRSLOCUS** page shows heart rate, speed, course, the **auto-report
+countdown**, mileage (trip / total), battery, steps, GPS accuracy, APRS-IS state and
+unread messages - all visible without taking the phone out of the bag.
+
+- **Heart rate takes the lead when available** (same source as the red heart in the
+  app); when there is none, speed takes that slot instead of leaving a blank;
+- **Countdown + progress bar** share the same rule as the app home bar
+  (`canAutoBeacon`), so "when does the next frame go out" is one glance;
+- **Mileage / battery / steps / accuracy** come from the app (battery turns orange at
+  20% or below);
+- **Nearby stations moved to their own NEARBY page** (8 rows: callsign, distance,
+  bearing, age, plus the selected station comment);
+- **The protocol now uses `TEL k=v …`** instead of positional fields: the app can add
+  a key without touching the firmware - the box silently skips keys it does not know,
+  and keys with no value are simply not sent (the box shows `--`, never a fake 0);
+- **Freshness still never lies**: `none` if nothing was pushed, `stale` past 120 s.
+
+The box firmware also fixes two real bugs: `CFG?`, which the README and HELP promised
+but the code never implemented, and `NEAR 0` (clearing the nearby list).
+
 ## [2.0.13] - 2026-10-01
 
 ### 📦 新：APRSlocusBOX（APRS 小盒子）—— 用手机管你那台小盒子

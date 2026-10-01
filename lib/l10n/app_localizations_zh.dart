@@ -1720,7 +1720,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get boxPushTitle => '手机状态给盒子';
 
   @override
-  String get boxPushStatus => '推送速度 / 方位 / 附近台站';
+  String get boxPushStatus => '推送实时状态（心率 / 速度 / 倒计时 / 里程 / 附近台站）';
 
   @override
   String get boxPushHint => '盒子 PHONE 页显示这些；只写盒子屏幕，不上射频。与「喂位置」是两件事。';
@@ -9161,7 +9161,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get boxPushTitle => '手機狀態給盒子';
 
   @override
-  String get boxPushStatus => '推送速度 / 方位 / 附近台站';
+  String get boxPushStatus => '推送即時狀態（心率 / 速度 / 倒計時 / 里程 / 附近台站）';
 
   @override
   String get boxPushHint => '盒子 PHONE 頁顯示這些；只寫盒子螢幕，不上射頻。與「餵位置」是兩件事。';

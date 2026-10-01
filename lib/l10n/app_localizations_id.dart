@@ -1776,7 +1776,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get boxPushTitle => 'Status ponsel ke kotak';
 
   @override
-  String get boxPushStatus => 'Kirim kecepatan / arah / stasiun terdekat';
+  String get boxPushStatus => 'Kirim status langsung (detak jantung / kecepatan / hitung mundur / jarak)';
 
   @override
   String get boxPushHint => 'Halaman PHONE kotak menampilkan ini; hanya menggambar di layar kotak, tidak dipancarkan. Terpisah dari memasok posisi.';

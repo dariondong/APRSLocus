@@ -1775,7 +1775,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boxPushTitle => 'Phone status to the box';
 
   @override
-  String get boxPushStatus => 'Push speed / course / nearby stations';
+  String get boxPushStatus => 'Push live status (heart rate / speed / countdown / mileage / nearby)';
 
   @override
   String get boxPushHint => 'The box PHONE page shows these; it only draws on the box screen, never on air. Separate from feeding a position.';

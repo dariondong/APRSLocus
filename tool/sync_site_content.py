@@ -205,6 +205,36 @@ CARDS = [
 # 只列「重点版本」：中间几十个纯修 bug 的版本归纳进文字说明，完整记录指向 Releases。
 CL = [
     {
+        'ver': 'v2.0.14', 'date': '2026-10-01',
+        'items': [
+            ('new',
+             T('**新：盒子上的「APRSLOCUS」实时仪表盘**。接着上一版的盒子支持，'
+               '这一版把**手机那侧的实时状态**也推给盒子：心率、速度、方位、'
+               '**自动上报倒计时**（带进度条）、里程（本次/累计）、电量、步数、定位精度、'
+               'APRS-IS 与未读 —— 跑步骑车时手机在包里，挂在车把上的盒子一眼就能看到。'
+               '心率测到就放大当主角，没测到自动换成速度；附近台站另拆一页 **NEARBY**'
+               '（整屏 8 行）。协议改用 `TEL k=v …`：应用以后加字段**不用动固件**'
+               '（不认识的键静默跳过；空值不发，盒子写 `--`，绝不显示假的 0）。',
+               '**新：盒子上的「APRSLOCUS」即時儀表板**。接著上一版的盒子支援，'
+               '這一版把**手機那側的即時狀態**也推給盒子：心率、速度、方位、'
+               '**自動上報倒數**（帶進度條）、里程（本次/累計）、電量、步數、定位精度、'
+               'APRS-IS 與未讀 —— 跑步騎車時手機在包包裡，掛在車把上的盒子一眼就能看到。'
+               '心率測到就放大當主角，沒測到自動換成速度；附近台站另拆一頁 **NEARBY**'
+               '（整屏 8 行）。協定改用 `TEL k=v …`：應用程式以後加欄位**不用動韌體**'
+               '（不認識的鍵靜默跳過；空值不送，盒子寫 `--`，絕不顯示假的 0）。',
+               '**New: an "APRSLOCUS" live dashboard on the box.** Building on the box '
+               'support from the previous release, the phone live status is now pushed to '
+               'the box too: heart rate, speed, course, the **auto-report countdown** with '
+               'a progress bar, mileage (trip / total), battery, steps, GPS accuracy, '
+               'APRS-IS state and unread messages - visible at a glance on the bar-mounted '
+               'box while the phone stays in the bag. Heart rate takes the lead when '
+               'available, otherwise speed does; nearby stations moved to their own '
+               '**NEARBY** page (8 rows). The protocol now uses `TEL k=v ...`, so the app '
+               'can add fields without touching the firmware (unknown keys are skipped, '
+               'empty values are not sent, and the box shows `--`, never a fake 0).')),
+        ],
+    },
+    {
         'ver': 'v2.0.13', 'date': '2026-10-01',
         'items': [
             ('new',

@@ -1728,7 +1728,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get boxPushTitle => 'スマホの状態を箱へ';
 
   @override
-  String get boxPushStatus => '速度 / 方位 / 近くの局を送る';
+  String get boxPushStatus => 'リアルタイム状態を送る（心拍 / 速度 / カウントダウン / 距離 / 近くの局）';
 
   @override
   String get boxPushHint => '箱の PHONE ページに表示します。箱の画面に描くだけで電波は出しません。位置の供給とは別物です。';

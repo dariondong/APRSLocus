@@ -273,12 +273,12 @@ DATA = {
         'id': 'Status ponsel ke kotak', 'es': 'Estado del teléfono a la caja',
     },
     'boxPushStatus': {
-        'zh': '推送速度 / 方位 / 附近台站',
-        'zh_TW': '推送速度 / 方位 / 附近台站',
-        'en': 'Push speed / course / nearby stations',
-        'ja': '速度 / 方位 / 近くの局を送る',
-        'id': 'Kirim kecepatan / arah / stasiun terdekat',
-        'es': 'Enviar velocidad / rumbo / estaciones cercanas',
+        'zh': '推送实时状态（心率 / 速度 / 倒计时 / 里程 / 附近台站）',
+        'zh_TW': '推送即時狀態（心率 / 速度 / 倒計時 / 里程 / 附近台站）',
+        'en': 'Push live status (heart rate / speed / countdown / mileage / nearby)',
+        'ja': 'リアルタイム状態を送る（心拍 / 速度 / カウントダウン / 距離 / 近くの局）',
+        'id': 'Kirim status langsung (detak jantung / kecepatan / hitung mundur / jarak)',
+        'es': 'Enviar estado en vivo (pulso / velocidad / cuenta atrás / distancia)',
     },
     'boxPushHint': {
         'zh': '盒子 PHONE 页显示这些；只写盒子屏幕，不上射频。与「喂位置」是两件事。',

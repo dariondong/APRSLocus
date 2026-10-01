@@ -531,6 +531,40 @@ class BoxLink {
         '${fix ? 1 : 0} ${isUp ? 1 : 0} $unread');
   }
 
+  /// 手机那侧的实时状态：`TEL k=v …`
+  ///
+  /// 心率 / 电量 / 里程 / 上报倒计时 / 步数 / 定位精度 / 生命守护 —— 盒子那页
+  /// 「APRSLOCUS」就是拿这些当仪表盘的，跑步骑车时手机在包里，看一眼车把就行。
+  ///
+  /// 为什么用 `k=v` 而不继续堆位置参数：位置参数每加一个键都要动固件的
+  /// `sscanf` 格式串，而且**跳一个字段就把后面全对错位**；`k=v` 让应用随时
+  /// 多发一个键，老固件静默跳过即可。值为空（null）的键**不发** ——
+  /// 盒子会写 `--`，而不是显示一个假的 0。
+  bool pushTel({
+    int? hr,
+    int? bat,
+    double? tripKm,
+    double? odoKm,
+    int? nextSec,
+    int? ivalSec,
+    int? steps,
+    double? accM,
+    bool? guard,
+  }) {
+    final parts = <String>[];
+    if (hr != null && hr > 0) parts.add('hr=$hr');
+    if (bat != null && bat >= 0) parts.add('bat=$bat');
+    if (tripKm != null) parts.add('trip=${tripKm.toStringAsFixed(1)}');
+    if (odoKm != null) parts.add('odo=${odoKm.toStringAsFixed(1)}');
+    if (nextSec != null) parts.add('next=$nextSec');
+    if (ivalSec != null && ivalSec > 0) parts.add('ival=$ivalSec');
+    if (steps != null && steps >= 0) parts.add('step=$steps');
+    if (accM != null && accM > 0) parts.add('acc=${accM.toStringAsFixed(0)}');
+    if (guard != null) parts.add('guard=${guard ? 1 : 0}');
+    if (parts.isEmpty) return false;
+    return send('TEL ${parts.join(' ')}');
+  }
+
   /// 附近台站列表（一条一行）。
   ///
   /// `idx` 从 1 开始；固件收到 `idx == total` 才算整轮完整（半截列表一闪

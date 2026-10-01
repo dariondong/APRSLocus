@@ -753,7 +753,7 @@
   "boxActTest": "Format self-test",
   "boxActReboot": "Reboot box",
   "boxPushTitle": "Phone status to the box",
-  "boxPushStatus": "Push speed / course / nearby stations",
+  "boxPushStatus": "Push live status (heart rate / speed / countdown / mileage / nearby)",
   "boxPushHint": "The box PHONE page shows these; it only draws on the box screen, never on air. Separate from feeding a position.",
   "boxEvtTitle": "Box events",
   "dataSourcePkwdwpl": "PKWDWPL (Kenwood waypoints)",

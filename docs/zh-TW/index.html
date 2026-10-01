@@ -284,10 +284,13 @@
     </header>
 
     <div class="announce-body">
-      <p><b>2.0.13 已發布。</b> 這一版把「小盒子」（ESP32 + 螢幕 + 旋鈕那台）接進了應用程式：</p>
-      <p>「裝置」頁多了一條 <b>APRSlocusBOX</b> —— 連上之後，手機上就能讀它的設定、改它的設定、</p>
-      <p>把手機的位置餵給它、催它發一幀信標、看它到底在幹什麼。</p>
-      <p><b>先說結論：沒有盒子的人什麼都不用做。</b> 這一版不需要你做任何設定，升級方式也沒變。</p>
+      <p><b>2.0.14 已發布。</b> 這一版把<b>手機那側的即時狀態</b>推給了盒子：心率、速度、方位、</p>
+      <p><b>自動上報倒數</b>（帶進度條）、里程（本次/累計）、電量、步數、定位精度、APRS-IS 與未讀 ——</p>
+      <p>跑步騎車時手機在包包裡，掛在車把上的盒子<b>一眼就能看到</b>。心率測到就放大當主角</p>
+      <p>（沒測到自動換成速度），附近台站另拆一頁 <b>NEARBY</b>（整屏 8 行）。</p>
+      <p>協定也換成更耐得住加欄位的寫法：`TEL k=v …`（應用程式以後加欄位<b>不用動韌體</b>，</p>
+      <p>不認識的鍵靜默跳過；空值不送，盒子寫 `--`，絕不顯示假的 0）。</p>
+      <p class="announce-quote">下面是 <b>2.0.13</b> 引入的「用手機管盒子」，內容仍然有效。</p>
       <p><b>一、盒子推回來、手機上看得到</b></p>
       <p>連上盒子之後，應用程式能看到它<b>自己報回來的</b>東西：</p>
       <ul class="announce-list"><li>呼號 / SSID、鏈路模式（wifi / bt / both）、自動信標間隔、APRS-IS 伺服器、GPS 波特率；</li><li>發出去多少幀（TX）、發了多少次信標（BEACON）、收到多少則訊息（RXMSG）、</li></ul>
@@ -590,6 +593,15 @@
 
   <div class="changelog-list">
 <!-- site-sync:changelog -->
+    <div class="cl-version reveal">
+      <div class="cl-head">
+        <span class="cl-tag">v2.0.14</span>
+        <span class="cl-date">2026-10-01</span>
+      </div>
+      <div class="cl-body">
+        <div class="cl-item"><span class="cl-dot new"></span>**新：盒子上的「APRSLOCUS」即時儀表板**。接著上一版的盒子支援，這一版把**手機那側的即時狀態**也推給盒子：心率、速度、方位、**自動上報倒數**（帶進度條）、里程（本次/累計）、電量、步數、定位精度、APRS-IS 與未讀 —— 跑步騎車時手機在包包裡，掛在車把上的盒子一眼就能看到。心率測到就放大當主角，沒測到自動換成速度；附近台站另拆一頁 **NEARBY**（整屏 8 行）。協定改用 `TEL k=v …`：應用程式以後加欄位**不用動韌體**（不認識的鍵靜默跳過；空值不送，盒子寫 `--`，絕不顯示假的 0）。</div>
+      </div>
+    </div>
     <div class="cl-version reveal">
       <div class="cl-head">
         <span class="cl-tag">v2.0.13</span>

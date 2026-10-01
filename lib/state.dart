@@ -112,7 +112,7 @@ class SmartBeaconTier {
 
 class AppState extends ChangeNotifier {
   /// 应用版本（用于信标备注、APRSlocus 识别）
-  static const appVersion = '2.0.13';
+  static const appVersion = '2.0.14';
   // 我的电台
   String myCall = 'BV2AAA';
   int mySsid = 0; // 0 = 无后缀, 1-15 = -1 到 -15
@@ -869,6 +869,17 @@ class AppState extends ChangeNotifier {
   /// 为什么用 [filterRadius] 而不是盒子自己的半径：这条数据表达的是
   /// 「**手机**这侧看到谁」——两边半径一致反而让盒子上的列表与它自己收到的
   /// 永远一样，失去了"对照"的意义（盒子在 bt 模式下更是完全没有这份数据）。
+  /// 距下次**自动上报**还有多少秒（盒子仪表盘的"UPLOAD"进度条用）。
+  ///
+  /// 返回 -1 = 当前不会自动上报（手动模式 / 链路不可用），盒子会写 `manual` ——
+  /// 与首页那根上报横杠同一个判据（[canAutoBeacon]），不另立一套。
+  int? _boxUploadInSec() {
+    if (!canAutoBeacon) return -1;
+    final since = DateTime.now().difference(_lastBeacon).inSeconds;
+    final left = beaconIntervalNow - since;
+    return left < 0 ? 0 : left;
+  }
+
   void _pushBoxNearby() {
     if (!myHasFix || myLat == null || myLng == null) {
       box.pushNear(const []);   // 没定位就说清楚：清空，别让盒子留着旧列表
@@ -3398,6 +3409,19 @@ class AppState extends ChangeNotifier {
             speedKmh: mySpeed,          // km/h（与盒子 APP 命令同一单位）
             courseDeg: myCourse,
             altM: myAlt,                // 米
+          );
+          // 实时状态（盒子的「APRSLOCUS」仪表盘页）：心率/电量/里程/上报倒计时/
+          // 步数/精度/守护。跑步骑车时手机在包里 —— 这些必须不掏手机也能看到。
+          box.pushTel(
+            hr: myHr,
+            bat: _battery >= 0 ? _battery : null,
+            tripKm: tripMileageKm,
+            odoKm: totalMileageKm,
+            nextSec: _boxUploadInSec(),
+            ivalSec: beaconIntervalNow,
+            steps: stepsToday > 0 ? stepsToday : null,
+            accM: myAccuracy > 0 ? myAccuracy : null,
+            guard: crashDetectEnabled,
           );
         }
         if (_lastBoxPushNear == null ||

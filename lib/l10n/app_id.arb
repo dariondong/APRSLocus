@@ -728,7 +728,7 @@
   "boxActTest": "Uji mandiri format",
   "boxActReboot": "Reboot kotak",
   "boxPushTitle": "Status ponsel ke kotak",
-  "boxPushStatus": "Kirim kecepatan / arah / stasiun terdekat",
+  "boxPushStatus": "Kirim status langsung (detak jantung / kecepatan / hitung mundur / jarak)",
   "boxPushHint": "Halaman PHONE kotak menampilkan ini; hanya menggambar di layar kotak, tidak dipancarkan. Terpisah dari memasok posisi.",
   "boxEvtTitle": "Peristiwa kotak",
   "dataSourcePkwdwpl": "PKWDWPL (waypoint Kenwood)",

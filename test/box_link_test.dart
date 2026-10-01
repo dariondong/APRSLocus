@@ -245,6 +245,26 @@ void main() {
     });
   });
 
+  group('实时状态推送（TEL）', () {
+    test('发 k=v；空值不发（盒子写 `--`，而不是假的 0）', () {
+      link.pushTel(hr: 75, bat: 88, tripKm: 12.34, odoKm: 456.78,
+          nextSec: 42, ivalSec: 300, steps: 1234, accM: 5.4, guard: true);
+      expect(t.sent.single,
+          'TEL hr=75 bat=88 trip=12.3 odo=456.8 next=42 ival=300 '
+          'step=1234 acc=5 guard=1\n');
+    });
+
+    test('心率没测到 / 没定位时那些键直接不发', () {
+      link.pushTel(hr: null, bat: -1, nextSec: -1, guard: false);
+      expect(t.sent.single, 'TEL next=-1 guard=0\n');
+    });
+
+    test('全空时不发（不让盒子以为收到了状态）', () {
+      expect(link.pushTel(), isFalse);
+      expect(t.sent, isEmpty);
+    });
+  });
+
   group('生命周期', () {
     test('连上就回读配置（界面立刻有内容，也顺带证明对端是盒子）', () async {
       final t2 = _FakeTransport();

@@ -728,7 +728,7 @@
   "boxActTest": "書式セルフテスト",
   "boxActReboot": "箱を再起動",
   "boxPushTitle": "スマホの状態を箱へ",
-  "boxPushStatus": "速度 / 方位 / 近くの局を送る",
+  "boxPushStatus": "リアルタイム状態を送る（心拍 / 速度 / カウントダウン / 距離 / 近くの局）",
   "boxPushHint": "箱の PHONE ページに表示します。箱の画面に描くだけで電波は出しません。位置の供給とは別物です。",
   "boxEvtTitle": "箱のイベント",
   "dataSourcePkwdwpl": "PKWDWPL（ケンウッド航点）",
