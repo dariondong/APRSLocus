@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'settings_widgets.dart';
+import 'audio.dart';
 import 'garmin_page.dart';
 import 'hr_page.dart';
+import 'ic705_device_page.dart';
 import 'platform_caps.dart';
 import 'state.dart';
 import 'theme.dart';
@@ -76,9 +78,47 @@ class DataSourceCard extends StatelessWidget {
         _tile(
           context,
           key: AppState.srcAudio,
-          title: s.dataSourceAudio,
-          desc: s.dataSourceAudioDesc,
-          icon: Icons.graphic_eq_rounded,
+          title: state.audio.config.source == AudioSource.icomLan
+              ? '${s.dataSourceAudio} (${s.icomLanTitle})'
+              : s.dataSourceAudio,
+          desc: state.audio.config.source == AudioSource.icomLan
+              ? '通过 Wi-Fi 直连 IC-705 电台收发音频与 CI-V 控制'
+              : s.dataSourceAudioDesc,
+          icon: state.audio.config.source == AudioSource.icomLan
+              ? Icons.wifi_tethering_rounded
+              : Icons.graphic_eq_rounded,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 2, 14, 8),
+          child: InkWell(
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => Ic705DevicePage(state: state),
+              ),
+            ),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: C.cyan.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: C.cyan.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.wifi_tethering_rounded, size: 16, color: C.cyan),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${s.icomLanTitle} · 进入专属电台控制面板',
+                      style: ts(12, c: C.cyan, w: FontWeight.w600),
+                    ),
+                  ),
+                  Icon(Icons.chevron_right_rounded, size: 16, color: C.cyan),
+                ],
+              ),
+            ),
+          ),
         ),
         // ── 位置来源 / 心率来源（用户要求：佳明应当作为「数据来源」的一种选择）──
         //

@@ -11,8 +11,10 @@ import 'garmin_page.dart';
 import 'hr_card.dart';
 import 'log_page.dart';
 import 'tile_map.dart';
+import 'audio.dart';
 import 'audio_page.dart';
 import 'device_page.dart';
+import 'ic705_device_page.dart';
 import 'platform_caps.dart';
 import 'pkwdwpl_device_page.dart';
 import 'tnc_page.dart';
@@ -2541,21 +2543,29 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
   /// 过滤器在音频模式下全不生效），只放「链路状态 + 音频关键信息 + 进入音频页」。
   Widget _audioCard() {
     final a = st.audio;
+    final isIcom = a.config.source == AudioSource.icomLan;
     return SettingsSectionCard(
-      title: S.of(context).connectionCard2,
-      subtitle: S.of(context).dataSourceAudioDesc,
-      icon: Icons.graphic_eq_rounded,
+      title: isIcom ? S.of(context).icomLanTitle : S.of(context).connectionCard2,
+      subtitle: isIcom ? S.of(context).icomLanHint : S.of(context).dataSourceAudioDesc,
+      icon: isIcom ? Icons.wifi_tethering_rounded : Icons.graphic_eq_rounded,
       color: C.cyan,
       children: [
         _connBanner(),
         Divider(height: 1, color: C.border),
         SettingsRow2(
-          S.of(context).audioBackend,
-          a.backendName,
+          isIcom ? '电台地址' : S.of(context).audioBackend,
+          isIcom
+              ? '${a.config.icomLan.host}:${a.config.icomLan.controlPort}'
+              : a.backendName,
         ),
         SettingsRow2(
-          S.of(context).audioSampleRate,
-          '${a.config.afsk.sampleRate} Hz',
+          isIcom ? '链路阶段' : S.of(context).audioSampleRate,
+          isIcom
+              ? (a.icomLanLink?.phaseLabel ??
+                  (a.connected
+                      ? S.of(context).connected
+                      : S.of(context).disconnected))
+              : '${a.config.afsk.sampleRate} Hz',
         ),
         if (st.connected)
           SettingsRow2(
@@ -2570,25 +2580,83 @@ class _ConnectionSettingsPageState extends State<ConnectionSettingsPage> {
               : S.of(context).tncSwitchOff,
           valueColor: a.config.rfBeacon ? C.green : C.grey,
         ),
-        SettingsHint(S.of(context).connAudioSourceHint),
+        SettingsHint(isIcom
+            ? '当前已启用 IC-705 Wi-Fi 直连模式。'
+            : S.of(context).connAudioSourceHint),
         Padding(
           padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
-          child: SizedBox(
-            width: double.infinity,
-            height: 42,
-            child: OutlinedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AudioSettingsPage(state: st),
+          child: Row(
+            children: [
+              if (isIcom) ...[
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => Ic705DevicePage(state: st),
+                      ),
+                    ),
+                    icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+                    label: Text(S.of(context).icomLanTitle,
+                        style: ts(12, w: FontWeight.w600)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: C.cyan,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-              icon: const Icon(Icons.tune_rounded, size: 16),
-              label: Text(S.of(context).audioSettings, style: ts(12, w: FontWeight.w600)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: C.cyan,
-                side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
-              ),
-            ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AudioSettingsPage(state: st),
+                      ),
+                    ),
+                    icon: const Icon(Icons.tune_rounded, size: 16),
+                    label: Text(S.of(context).audioSettings,
+                        style: ts(12, w: FontWeight.w600)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.cyan,
+                      side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+                    ),
+                  ),
+                ),
+              ] else ...[
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AudioSettingsPage(state: st),
+                      ),
+                    ),
+                    icon: const Icon(Icons.tune_rounded, size: 16),
+                    label: Text(S.of(context).audioSettings,
+                        style: ts(12, w: FontWeight.w600)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.cyan,
+                      side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => Ic705DevicePage(state: st),
+                      ),
+                    ),
+                    icon: const Icon(Icons.wifi_tethering_rounded, size: 16),
+                    label: Text(S.of(context).icomLanTitle,
+                        style: ts(12, w: FontWeight.w600)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: C.cyan,
+                      side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ],

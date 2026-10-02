@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 import 'audio.dart';
+import 'ic705_device_page.dart';
 import 'l10n/app_localizations.dart';
 import 'link_test_card.dart';
 import 'material.dart';
@@ -491,6 +492,26 @@ class _AudioSettingsPageState extends State<AudioSettingsPage> {
           s.icomLanEnable,
           value: enabled,
           onChanged: (v) => unawaited(_saveIcomLan(on: v)),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 4, 14, 8),
+          child: SizedBox(
+            width: double.infinity,
+            height: 38,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => Ic705DevicePage(state: widget.state),
+                ),
+              ),
+              icon: const Icon(Icons.open_in_new_rounded, size: 16),
+              label: const Text('进入独立 IC-705 电台控制面板'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: C.cyan,
+                side: BorderSide(color: C.cyan.withValues(alpha: 0.5)),
+              ),
+            ),
+          ),
         ),
         if (enabled) ...[
           SettingsInput(s.icomLanHost, _icomHost,
