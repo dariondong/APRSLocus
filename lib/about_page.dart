@@ -508,7 +508,7 @@ class _AboutPageState extends State<AboutPage>
                               _eggRow(t.codeContributionTranslation, 'BA7KSM'),
                               // BH7GZB：贡献代码（PR #11 —— 位置报文数据扩展 `/A=` 高度与
                               // `PHGphgd` 功率 / 天线高度 / 增益，以及独立状态报文的收发与显示）。
-                              _row(t.codeContribution, 'BH7GZB'),
+                              _eggRow(t.codeContribution, 'BH7GZB'),
                               _row(
                                 t.settingsContribCodeOptimization,
                                 '清零（BG2HCB）',
