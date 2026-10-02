@@ -1,43 +1,31 @@
-# 📢 Terms of Use updated to V1.2: no server addresses, no Internet service
+# Statement - please read
 
-**The Terms of Use were updated to V1.2 (2 October 2026).** This revision spells out whether the
-software touches a server at all. It is published in the app and on GitHub per section 8;
-**continued use means you accept it**. Full text: Settings -> About -> Terms of Use.
 
+【Important: this software provides no server address and no Internet service】
+
+This software is a local APRS client tool only. It does not provide, operate, or recommend any APRS server address, nor does it provide any Internet service such as APRS-IS, iGate, data upload, data relay, or data storage.
+
+1. No server is connected by default
+On first launch and under default settings, the software connects to no APRS-IS, iGate, or other network server. All server addresses, ports, and connection actions are entered and decided by the user alone.
+
+2. Your responsibility when you configure a server
+If you configure and connect to a third-party server yourself, you must confirm that the server and your use of it comply with the law, and you bear all responsibility arising from cross-border data transfer, personal-data processing, radio regulation, and the third party's terms of service. The developer has no affiliation, agency, or cooperation with any third-party server.
+
+3. Data storage and public exposure
+Beacon history, message logs, and contacts are stored on your device only. APRS data may travel in the clear over radio and public networks and may be publicly archived by third parties. Do not send state secrets, trade secrets, personal data, or sensitive location information.
+
+4. Lawful use
+Use only a callsign you lawfully hold, and comply with the applicable radio regulations and data-protection laws. It is forbidden to use this software for unlawful tracking, harassment, interference with networks, or any illegal activity. Minors should use it with a guardian's consent and guidance.
+
+5. Disclaimer
+This software is provided "as is", as an auxiliary tool for amateur radio operators, and is not suitable for critical tasks such as the safety of life or property. The development team is not liable for any direct or indirect loss caused by servers you configure, data you upload, or your use of this software.
+
+Please do not ask for, post, or discuss any specific server address in the group. The group is for software discussion only and provides no server resources or Internet service.
+
+Thank you for your understanding and cooperation.
 ---
 
-## What this revision makes clear
-
-1. **No preset server, no recommended server**: the software ships with no server address or port,
-   and **on first launch and under default settings it connects to no** APRS-IS, iGate, or other
-   network server - whether to connect, and to where, is **yours to enter and decide** (which is
-   why the "server" field in the first-run guide may be left empty);
-2. **No Internet service**: we do not operate APRS-IS or an iGate, and we do not upload, relay, or
-   store your data; we have no affiliation, agency, or cooperation with any third-party server;
-3. **Your responsibility when you configure one**: for any third-party server you connect to, you
-   must confirm that the server and your use of it are lawful, and you bear the responsibility
-   arising from cross-border transfer, personal-data processing, and radio regulation;
-4. **Lawful use**: use only a callsign you lawfully hold and comply with applicable
-   data-protection and personal-information laws; unlawful tracking, harassment, or interference
-   with networks is prohibited;
-5. **Do not send sensitive data**: never send state secrets, trade secrets, personal data, or
-   sensitive location information - APRS is plain text and may be received, stored, or publicly
-   archived by third parties.
-
-## Fixed in the same release
-
-- **The first-run guide no longer pre-fills a public server, nor connects automatically**: leaving
-  the server empty means no connection at all and the app works locally only; to go online, enter a
-  server and port you trust. The old wording "the default settings work as-is" is gone (it amounted
-  to a recommendation);
-- The server addresses named in clause 5.1 have been removed.
-
----
-
-**Nothing is required from you**: continued use means you accept the revised agreement. If you do
-not agree, please stop using this software.
-
-**73!**
+**Nothing is required from you**: continued use means you accept the revised agreement. If you do not agree, please stop using this software.
 
 **The APRSLocus team**
-2 October 2026
+1 October 2026
