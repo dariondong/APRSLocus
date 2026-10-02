@@ -1606,6 +1606,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dataSourceSwitchHint => '切换数据来源会断开当前连接';
 
   @override
+  String get icomLanTitle => 'IC-705 Wi-Fi（电台直连）';
+
+  @override
+  String get icomLanEnable => '启用 IC-705 局域网直连';
+
+  @override
+  String get icomLanHost => '电台 IP';
+
+  @override
+  String get icomLanPort => '控制端口';
+
+  @override
+  String get icomLanUsername => '用户名（Network User）';
+
+  @override
+  String get icomLanPassword => '密码（Network User）';
+
+  @override
+  String get icomLanHint => '在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。';
+
+  @override
+  String get codeContributionIcomLan => 'IC-705 电台直连';
+
+  @override
   String get dataNoticeTitle => '数据与网络使用告知';
 
   @override
@@ -9084,6 +9108,30 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get dataSourceSwitchHint => '切換資料來源會中斷目前連線';
+
+  @override
+  String get icomLanTitle => 'IC-705 Wi-Fi（電台直連）';
+
+  @override
+  String get icomLanEnable => '啟用 IC-705 區域網路直連';
+
+  @override
+  String get icomLanHost => '電台 IP';
+
+  @override
+  String get icomLanPort => '控制埠';
+
+  @override
+  String get icomLanUsername => '使用者名稱（Network User）';
+
+  @override
+  String get icomLanPassword => '密碼（Network User）';
+
+  @override
+  String get icomLanHint => '在電台 WLAN 設定裡開啟遙控並設定 Network User 名稱/密碼，手機與電台保持同一網段。IC-705 區域網路音訊固定 12000 Hz。';
+
+  @override
+  String get codeContributionIcomLan => 'IC-705 電台直連';
 
   @override
   String get dataNoticeTitle => '資料與網路使用告知';

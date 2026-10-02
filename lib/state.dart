@@ -1897,6 +1897,18 @@ class AppState extends ChangeNotifier {
   bool get audioOn => enabledSources.contains(srcAudio);
   bool get pkwdwplOn => enabledSources.contains(srcPkwdwpl);
 
+  /// IC-705 Wi-Fi 直连是否已启用（多选接收）
+  bool get icomLanOn => audioOn && audio.config.source == AudioSource.icomLan;
+
+  /// AFSK 系统声卡是否已启用（多选接收）
+  bool get audioDeviceOn => audioOn && audio.config.source == AudioSource.device;
+
+  /// IC-705 是否为当前发射来源
+  bool get isIcomLanTx => dataSource == srcAudio && audio.config.source == AudioSource.icomLan;
+
+  /// AFSK 系统声卡是否为当前发射来源
+  bool get isAudioDeviceTx => dataSource == srcAudio && audio.config.source == AudioSource.device;
+
   /// 远程限制名单（黑名单）命中的结果；null = 没被限制 / 还没查到。
   ///
   /// 命中时 `app.dart` 会用整页把它拦下（依据用户协议第 8.2 条）。
@@ -2197,6 +2209,88 @@ class AppState extends ChangeNotifier {
       _heard.clear();
     }
     _reconcileSources();
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 启用/停用 IC-705 Wi-Fi 直连（作为独立数据来源）
+  Future<void> toggleIcomLan(bool on) async {
+    if (on) {
+      final wasOther = audio.config.source != AudioSource.icomLan;
+      audio.config.source = AudioSource.icomLan;
+      await audio.save();
+      if (!enabledSources.contains(srcAudio)) {
+        await toggleSource(srcAudio, true);
+      } else if (wasOther && (anyLinkUp || audio.connected)) {
+        await audio.disconnect(manual: false);
+        _setLinkUp(srcAudio, false);
+        if (!_userDisconnected) await _connectAudio();
+      }
+    } else {
+      if (icomLanOn) {
+        await toggleSource(srcAudio, false);
+      }
+    }
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 启用/停用 AFSK 系统声卡（作为独立数据来源）
+  Future<void> toggleAudioDevice(bool on) async {
+    if (on) {
+      final wasOther = audio.config.source != AudioSource.device;
+      audio.config.source = AudioSource.device;
+      await audio.save();
+      if (!enabledSources.contains(srcAudio)) {
+        await toggleSource(srcAudio, true);
+      } else if (wasOther && (anyLinkUp || audio.connected)) {
+        await audio.disconnect(manual: false);
+        _setLinkUp(srcAudio, false);
+        if (!_userDisconnected) await _connectAudio();
+      }
+    } else {
+      if (audioDeviceOn) {
+        await toggleSource(srcAudio, false);
+      }
+    }
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 指定 IC-705 为发射来源
+  Future<void> setTxIcomLan() async {
+    final wasOther = audio.config.source != AudioSource.icomLan;
+    audio.config.source = AudioSource.icomLan;
+    await audio.save();
+    if (!enabledSources.contains(srcAudio)) {
+      await toggleSource(srcAudio, true);
+    } else if (wasOther && (anyLinkUp || audio.connected)) {
+      await audio.disconnect(manual: false);
+      _setLinkUp(srcAudio, false);
+      if (!_userDisconnected) await _connectAudio();
+    }
+    setTxSource(srcAudio);
+    persist();
+    _notify();
+    _updateNotification();
+  }
+
+  /// 指定 AFSK 系统声卡为发射来源
+  Future<void> setTxAudioDevice() async {
+    final wasOther = audio.config.source != AudioSource.device;
+    audio.config.source = AudioSource.device;
+    await audio.save();
+    if (!enabledSources.contains(srcAudio)) {
+      await toggleSource(srcAudio, true);
+    } else if (wasOther && (anyLinkUp || audio.connected)) {
+      await audio.disconnect(manual: false);
+      _setLinkUp(srcAudio, false);
+      if (!_userDisconnected) await _connectAudio();
+    }
+    setTxSource(srcAudio);
     persist();
     _notify();
     _updateNotification();
@@ -4360,12 +4454,20 @@ class AppState extends ChangeNotifier {
     _scheduleReconnectIfNeeded();
   }
 
-  /// 音频（声卡 TNC）连接。与 TNC 的差异：没有「绑定设备」，连上即开始采集；
-  /// 相同点：不发 APRSlocus CONNECT 身份帧、不注册过滤器、passcode 不适用。
+  /// 音频 / WLAN 电台直连连接。
   Future<void> _connectAudio() async {
+    final isIcom = audio.config.source == AudioSource.icomLan;
+    final radioName = audio.config.icomLan.model.id;
     connecting = true;
-    setConnStatus(ConnPhase.connectingAudio, arg: audio.backendName);
-    _log(LogLevel.info, '连接', '正在打开音频采集（${audio.backendName}）…');
+    setConnStatus(ConnPhase.connectingAudio,
+        arg: isIcom ? '$radioName 直连' : audio.backendName);
+    _log(
+      LogLevel.info,
+      '连接',
+      isIcom
+          ? '正在连接 $radioName 电台（${audio.config.icomLan.host.isNotEmpty ? audio.config.icomLan.host : "未配IP"}）…'
+          : '正在打开音频采集（${audio.backendName}）…',
+    );
     _notify();
     _updateNotification();
     final ok = await audio.connect();
@@ -4377,20 +4479,31 @@ class AppState extends ChangeNotifier {
       passcodeInvalid = false;
       _lastTx = DateTime.now();
       final rate = audio.config.afsk.sampleRate;
-      setConnStatus(ConnPhase.audioConnected, arg: '${rate}Hz');
-      _log(LogLevel.info, '连接',
-          '音频链路已建立 · AFSK 1200 @${rate}Hz（${audio.backendName}）');
+      setConnStatus(ConnPhase.audioConnected,
+          arg: isIcom ? '$radioName 直连' : '${rate}Hz');
+      _log(
+        LogLevel.info,
+        '连接',
+        isIcom
+            ? '$radioName 直连链路已建立（${audio.config.icomLan.host}:${audio.config.icomLan.controlPort}）'
+            : '音频链路已建立 · AFSK 1200 @${rate}Hz（${audio.backendName}）',
+      );
       _flushPendingTx();
       if (beaconEnabled && !audio.config.rfBeacon) {
         _log(LogLevel.warn, '信标',
-            '音频模式下射频信标开关未打开，不会自动发射位置（可在音频页开启）');
+            '${isIcom ? radioName : "音频"}模式下射频信标开关未打开，不会自动发射位置（可在设备页开启）');
       }
     } else {
       final backoff = [8, 16, 32, 60][_reconnectAttempt.clamp(0, 3)];
       setConnStatus(ConnPhase.retryAudio,
           arg: audio.lastError, seconds: backoff);
-      _log(LogLevel.error, '连接',
-          '音频链路打开失败（${audio.lastError}），${backoff} 秒后自动重试');
+      _log(
+        LogLevel.error,
+        '连接',
+        isIcom
+            ? '$radioName 连接失败（${audio.lastError}），$backoff 秒后自动重试'
+            : '音频链路打开失败（${audio.lastError}），$backoff 秒后自动重试',
+      );
     }
     _notify();
     _updateNotification();
@@ -7531,9 +7644,12 @@ class AppState extends ChangeNotifier {
     if (connected) {
       // TNC 模式：明确标出「射频」，否则用户会以为走的是网络，
       // 从而忽略「发射要在自己呼号/执照下操作」这件事。
+      final radioName = audio.config.icomLan.model.id;
       parts.add(usingTnc
           ? l.notifTncConnected
-          : (usingAudio ? l.notifAudioConnected : l.notifConnected));
+          : (usingAudio
+              ? (isIcomLanTx ? '$radioName 已连接' : l.notifAudioConnected)
+              : l.notifConnected));
     } else if (connecting) {
       parts.add(l.notifConnecting);
     } else if (readOnlyMode) {
@@ -7542,9 +7658,12 @@ class AppState extends ChangeNotifier {
       // 通知栏却写「未连接」会让人以为链路坏了。
       parts.add(l.pkwdwplReadOnly);
     } else {
+      final radioName = audio.config.icomLan.model.id;
       parts.add(usingTnc
           ? l.notifTncDisconnected
-          : (usingAudio ? l.notifAudioDisconnected : l.notifDisconnected));
+          : (usingAudio
+              ? (isIcomLanTx ? '$radioName 未连接' : l.notifAudioDisconnected)
+              : l.notifDisconnected));
     }
     if (myHasFix) {
       parts.add('GPS·$myGrid');
@@ -7554,7 +7673,8 @@ class AppState extends ChangeNotifier {
     if (usingTnc) {
       parts.add('RF·${tnc.rxFrames}/${tnc.txFrames}');
     } else if (usingAudio) {
-      parts.add('AFSK·${audio.rxFrames}/${audio.txFrames}');
+      final radioName = audio.config.icomLan.model.id;
+      parts.add('${isIcomLanTx ? radioName : "AFSK"}·${audio.rxFrames}/${audio.txFrames}');
     }
     if (aprsIsOn) {
       parts.add(l.notifOnline('$online'));

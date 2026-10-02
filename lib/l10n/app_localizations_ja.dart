@@ -1614,6 +1614,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dataSourceSwitchHint => 'データソースを切り替えると現在の接続は切断されます';
 
   @override
+  String get icomLanTitle => 'IC-705 Wi-Fi (radio direct)';
+
+  @override
+  String get icomLanEnable => 'Enable IC-705 LAN link';
+
+  @override
+  String get icomLanHost => 'Radio IP';
+
+  @override
+  String get icomLanPort => 'Control port';
+
+  @override
+  String get icomLanUsername => 'Username (Network User)';
+
+  @override
+  String get icomLanPassword => 'Password (Network User)';
+
+  @override
+  String get icomLanHint => 'Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.';
+
+  @override
+  String get codeContributionIcomLan => 'IC-705 radio link';
+
+  @override
   String get dataNoticeTitle => 'データとネットワークの告知';
 
   @override

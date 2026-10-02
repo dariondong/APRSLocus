@@ -1,6 +1,6 @@
 {
-  "version": 55,
-  "updated": "2026-09-28",
+  "version": 56,
+  "updated": "2026-10-01",
   "developers": [
     {
       "call": "BG7LZQ",
@@ -164,9 +164,9 @@
         "en": "BD3QID"
       },
       "role": {
-        "zh": "英文翻译 · 测试",
-        "zh-TW": "英文翻譯 · 測試",
-        "en": "English · Testing"
+        "zh": "英文翻译 · 测试 · 电台直连",
+        "zh-TW": "英文翻譯 · 測試 · 電台直連",
+        "en": "English · Testing · Radio link"
       },
       "brief": {
         "zh": "把 APRSlocus 讲给世界",
@@ -174,9 +174,9 @@
         "en": "Told APRSlocus' story to the world"
       },
       "contrib": {
-        "zh": "推进英文国际化与多轮真实测试，提交详细反馈，协助完善台站与消息流程。",
-        "zh-TW": "推進英文國際化與多輪真實測試，提交詳細回饋，協助完善台站與訊息流程。",
-        "en": "Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows."
+        "zh": "推进英文国际化与多轮真实测试，提交详细反馈，协助完善台站与消息流程；并完成 IC-705 局域网直连（Wi-Fi 电台连接）的移植、联调与实测。",
+        "zh-TW": "推進英文國際化與多輪真實測試，提交詳細回饋，協助完善台站與訊息流程；並完成 IC-705 區域網路直連（Wi-Fi 電台連線）的移植、聯調與實測。",
+        "en": "Drove English internationalization and rounds of hands-on testing, filing detailed feedback that shaped stations and messaging flows; also ported, integrated and field-tested the IC-705 LAN link (Wi-Fi radio connection)."
       },
       "quote": {
         "zh": "让世界听见我们的信标。",
@@ -186,15 +186,18 @@
       "tags": {
         "zh": [
           "英文翻译",
-          "质量测试"
+          "质量测试",
+          "IC-705 电台直连"
         ],
         "zh-TW": [
           "英文翻譯",
-          "品質測試"
+          "品質測試",
+          "IC-705 電台直連"
         ],
         "en": [
           "English",
-          "QA"
+          "QA",
+          "IC-705 radio link"
         ]
       },
       "c": "#8a5cf0",

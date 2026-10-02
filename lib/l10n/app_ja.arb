@@ -2707,5 +2707,13 @@
   "crashFalsePositive": "**誤報はあります**：段差のあと赤信号で12秒止まると2段階の条件を満たします。通知の最初のボタンが「問題なし」なので、押して消せば他に影響しません。",
   "crashAlarmTitle": "衝突または転倒の可能性を検知",
   "crashAlarmBody": "強い衝撃のあと、約12秒間ほとんど動きがありませんでした。\n\n問題なければ「問題なし」を押してください。体調が悪い、または動けない場合は、すぐに救急へ電話するか、100 km 以内の局に救援メッセージを送ってください。\n\n**これはヒューリスティックな判定で、工学レベルの衝突検知ではありません**：段差や落下でも鳴ることがあります。",
-  "crashNotif": "ライフガード：衝突の可能性を検知"
+  "crashNotif": "ライフガード：衝突の可能性を検知",
+  "icomLanTitle": "IC-705 Wi-Fi (radio direct)",
+  "icomLanEnable": "Enable IC-705 LAN link",
+  "icomLanHost": "Radio IP",
+  "icomLanPort": "Control port",
+  "icomLanUsername": "Username (Network User)",
+  "icomLanPassword": "Password (Network User)",
+  "icomLanHint": "Enable remote control in the radio WLAN settings, set the Network User name/password, and keep the phone on the same subnet. IC-705 LAN audio is fixed at 12000 Hz.",
+  "codeContributionIcomLan": "IC-705 radio link"
 }

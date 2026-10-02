@@ -2804,6 +2804,53 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'切换数据来源会断开当前连接'**
   String get dataSourceSwitchHint;
+  /// No description provided for @icomLanTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'IC-705 Wi-Fi（电台直连）'**
+  String get icomLanTitle;
+
+  /// No description provided for @icomLanEnable.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用 IC-705 局域网直连'**
+  String get icomLanEnable;
+
+  /// No description provided for @icomLanHost.
+  ///
+  /// In zh, this message translates to:
+  /// **'电台 IP'**
+  String get icomLanHost;
+
+  /// No description provided for @icomLanPort.
+  ///
+  /// In zh, this message translates to:
+  /// **'控制端口'**
+  String get icomLanPort;
+
+  /// No description provided for @icomLanUsername.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户名（Network User）'**
+  String get icomLanUsername;
+
+  /// No description provided for @icomLanPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码（Network User）'**
+  String get icomLanPassword;
+
+  /// No description provided for @icomLanHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'在电台 WLAN 设置里开启遥控并设置 Network User 名/密码，手机与电台保持同一网段。IC-705 局域网音频固定 12000 Hz。'**
+  String get icomLanHint;
+
+  /// No description provided for @codeContributionIcomLan.
+  ///
+  /// In zh, this message translates to:
+  /// **'IC-705 电台直连'**
+  String get codeContributionIcomLan;
   /// No description provided for @dataNoticeTitle.
   ///
   /// In zh, this message translates to:

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'audio.dart';
 import 'audio_page.dart';
 import 'box_device_page.dart';
 import 'garmin_page.dart';
 import 'hr_page.dart';
+import 'ic705_device_page.dart';
 import 'link_test_card.dart';
 import 'pkwdwpl_device_page.dart';
 import 'platform_caps.dart';
@@ -201,19 +203,26 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
       if (!state.enabledSources.contains(src)) continue;
       final up = state.isUp(src);
       final isTx = state.dataSource == src;
+      final isIcom = src == AppState.srcAudio &&
+          state.audio.config.source == AudioSource.icomLan;
+      final radioModel = state.audio.config.icomLan.model;
       final name = src == AppState.srcAprsIs
           ? s.dataSourceAprsIs
           : (src == AppState.srcTnc
               ? s.dataSourceTnc
               : (src == AppState.srcAudio
-                  ? s.dataSourceAudio
+                  ? (isIcom ? 'WLAN 电台（${radioModel.id}）' : s.dataSourceAudio)
                   : s.dataSourcePkwdwpl));
       final detail = switch (src) {
         AppState.srcAprsIs => '${state.aprs.server}:${state.aprs.port}',
         AppState.srcTnc => state.tnc.device?.label ?? s.tncNotBound,
         AppState.srcPkwdwpl =>
           state.pkwdwpl.device?.label ?? s.tncNotBound,
-        _ => '${state.audio.config.afsk.sampleRate} Hz · ${state.audio.backendName}',
+        _ => isIcom
+            ? (state.audio.config.icomLan.host.isNotEmpty
+                ? '${radioModel.displayName} · ${state.audio.config.icomLan.host}:${state.audio.config.icomLan.controlPort}'
+                : 'WLAN 电台（${radioModel.id}）')
+            : '${state.audio.config.afsk.sampleRate} Hz · ${state.audio.backendName}',
       };
       final stats = switch (src) {
         AppState.srcAprsIs => s.notifRx('${state.packetsRx}'),
@@ -267,6 +276,17 @@ class _DeviceOverviewPageState extends State<DeviceOverviewPage> {
           page: TncDevicePage(state: state),
           disabled: !tncPlatformSupported,
           disabledReason: s.iosFeatureUnsupported,
+        ),
+        _entry(
+          context,
+          icon: Icons.wifi_tethering_rounded,
+          color: C.cyan,
+          title: 'WLAN 电台（${state.audio.config.icomLan.model.id}）',
+          desc: state.audio.config.source == AudioSource.icomLan
+              ? (state.audio.icomLanLink?.phaseLabel ??
+                  (state.audio.connected ? s.connected : s.disconnected))
+              : '局域网直连 Icom 电台（IC-705 / IC-9700 / IC-7610 / IC-905）',
+          page: Ic705DevicePage(state: state),
         ),
         _entry(
           context,
